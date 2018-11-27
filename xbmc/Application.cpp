@@ -22,6 +22,7 @@
 #include "cores/AudioEngine/Engines/ActiveAE/ActiveAE.h"
 #include "cores/IPlayer.h"
 #include "cores/playercorefactory/PlayerCoreFactory.h"
+#include "dialogs/GUIDialogBacklightBar.h"
 #include "dialogs/GUIDialogBusy.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "events/EventLog.h"
@@ -86,6 +87,7 @@
 #include "settings/SkinSettings.h"
 #include "utils/CPUInfo.h"
 #include "utils/FileExtensionProvider.h"
+#include "utils/IBacklight.h"
 #include "utils/SystemInfo.h"
 #include "utils/TimeUtils.h"
 #include "utils/XTimeUtils.h"
@@ -1995,6 +1997,35 @@ bool CApplication::OnAction(const CAction &action)
       CServiceBroker::GetGUI()->GetWindowManager().SendMessage(msg);
     }
     return true;
+  }
+
+  if (action.GetID() == ACTION_BACKLIGHT_BRIGHTNESS_UP ||
+      action.GetID() == ACTION_BACKLIGHT_BRIGHTNESS_DOWN)
+  {
+    std::shared_ptr<IBacklight> backlight = CServiceBroker::GetBacklight();
+
+    if (backlight)
+    {
+      int brightness{backlight->GetBrightness()};
+      int brightnessSteps{5};
+
+      if (action.GetID() == ACTION_BACKLIGHT_BRIGHTNESS_UP)
+      {
+        brightness += action.GetAmount() * brightnessSteps;
+      }
+      else if (action.GetID() == ACTION_BACKLIGHT_BRIGHTNESS_DOWN)
+      {
+        brightness -= action.GetAmount() * brightnessSteps;
+      }
+
+      // limit the range from 0 to max brightness
+      brightness = std::min(backlight->GetMaxBrightness(), brightness);
+      brightness = std::max(0, brightness);
+
+      SetBacklightBrightness(brightness, false);
+    }
+
+    ShowBacklightBar(&action);
   }
 
   // Check for global volume control
@@ -4377,6 +4408,19 @@ void CApplication::ShowVolumeBar(const CAction *action)
   }
 }
 
+void CApplication::ShowBacklightBar(const CAction* action)
+{
+  auto backlightBar = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogBacklightBar>(WINDOW_DIALOG_BACKLIGHT_BAR);
+  if (backlightBar)
+  {
+    backlightBar->Open();
+    if (action)
+    {
+      backlightBar->OnAction(*action);
+    }
+  }
+}
+
 bool CApplication::IsMuted() const
 {
   if (CServiceBroker::GetPeripherals().IsMuted())
@@ -4470,6 +4514,20 @@ void CApplication::VolumeChanged()
   // if player has volume control, set it.
   m_appPlayer.SetVolume(m_volumeLevel);
   m_appPlayer.SetMute(m_muted);
+}
+
+void CApplication::SetBacklightBrightness(int iValue, bool isPercentage /*=true*/)
+{
+  int brightness = iValue;
+
+  std::shared_ptr<IBacklight> backlight = CServiceBroker::GetBacklight();
+
+  if (backlight)
+  {
+    // set the brightness range
+    brightness *= (backlight->GetMaxBrightness() / 100);
+    backlight->SetBrightness(brightness);
+  }
 }
 
 int CApplication::GetSubtitleDelay()

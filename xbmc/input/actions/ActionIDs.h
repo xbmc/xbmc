@@ -337,6 +337,9 @@
 
 #define ACTION_HDR_TOGGLE 260 //!< Toggle display HDR on/off
 
+#define ACTION_BACKLIGHT_BRIGHTNESS_UP 251
+#define ACTION_BACKLIGHT_BRIGHTNESS_DOWN 252
+
 // Voice actions
 #define ACTION_VOICE_RECOGNIZE 300
 

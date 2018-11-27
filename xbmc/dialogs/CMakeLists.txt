@@ -1,4 +1,5 @@
-set(SOURCES GUIDialogBoxBase.cpp
+set(SOURCES GUIDialogBacklightBar.cpp
+            GUIDialogBoxBase.cpp
             GUIDialogBusy.cpp
             GUIDialogBusyNoCancel.cpp
             GUIDialogButtonMenu.cpp
@@ -29,7 +30,8 @@ set(SOURCES GUIDialogBoxBase.cpp
             GUIDialogVolumeBar.cpp
             GUIDialogYesNo.cpp)
 
-set(HEADERS GUIDialogBoxBase.h
+set(HEADERS GUIDialogBacklightBar.h
+            GUIDialogBoxBase.h
             GUIDialogBusy.h
             GUIDialogBusyNoCancel.h
             GUIDialogButtonMenu.h

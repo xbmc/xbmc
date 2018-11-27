@@ -286,6 +286,10 @@
 		<value condition="player.passthrough">dialogs/volume/volume.png</value>
 		<value>dialogs/volume/volume1.png</value>
 	</variable>
+	<variable name="BacklightIconVar">
+		<value condition="System.HasBacklight">dialogs/backlight/backlight.png</value>
+		<value></value>
+	</variable>
 	<variable name="ListSubLabelVar">
 		<value condition="ListItem.IsCollection"></value>
 		<value>[COLOR grey]$INFO[ListItem.Year, (,)][/COLOR]</value>

@@ -193,6 +193,8 @@ static const std::map<ActionName, ActionID> ActionMappings = {
     {"settingslevelchange", ACTION_SETTINGS_LEVEL_CHANGE},
     {"togglefont", ACTION_TOGGLE_FONT},
     {"videonextstream", ACTION_VIDEO_NEXT_STREAM},
+    {"backlightbrightnessup", ACTION_BACKLIGHT_BRIGHTNESS_UP},
+    {"backlightbrightnessdown", ACTION_BACKLIGHT_BRIGHTNESS_DOWN},
 
     // 3D movie playback/GUI
     {"stereomode", ACTION_STEREOMODE_SELECT}, // cycle 3D modes, for now an alias for next

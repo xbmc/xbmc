@@ -20,6 +20,9 @@
 #if defined(TARGET_DARWIN_OSX)
 #include "platform/darwin/osx/smc.h"
 #endif
+#include "guilib/guiinfo/GUIInfo.h"
+#include "guilib/guiinfo/GUIInfoHelper.h"
+#include "guilib/guiinfo/GUIInfoLabels.h"
 #include "powermanagement/PowerManager.h"
 #include "profiles/ProfileManager.h"
 #include "settings/AdvancedSettings.h"
@@ -30,16 +33,13 @@
 #include "storage/MediaManager.h"
 #include "utils/AlarmClock.h"
 #include "utils/CPUInfo.h"
+#include "utils/IBacklight.h"
 #include "utils/MemUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/SystemInfo.h"
 #include "utils/TimeUtils.h"
 #include "windowing/WinSystem.h"
 #include "windows/GUIMediaWindow.h"
-
-#include "guilib/guiinfo/GUIInfo.h"
-#include "guilib/guiinfo/GUIInfoHelper.h"
-#include "guilib/guiinfo/GUIInfoLabels.h"
 
 using namespace KODI::GUILIB;
 using namespace KODI::GUILIB::GUIINFO;
@@ -414,6 +414,14 @@ bool CSystemGUIInfo::GetInt(int& value, const CGUIListItem *gitem, int contextWi
     case SYSTEM_BATTERY_LEVEL:
       value = CServiceBroker::GetPowerManager().BatteryLevel();
       return true;
+    case SYSTEM_BACKLIGHT_BRIGHTNESS:
+      std::shared_ptr<IBacklight> backlight = CServiceBroker::GetBacklight();
+      if (backlight)
+      {
+        value = backlight->GetBrightness();
+        return true;
+      }
+      break;
   }
 
   return false;
@@ -645,6 +653,10 @@ bool CSystemGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int context
       }
       break;
     }
+    case SYSTEM_HAS_BACKLIGHT:
+      std::shared_ptr<IBacklight> backlight = CServiceBroker::GetBacklight();
+      value = !!backlight;
+      return true;
   }
 
   return false;

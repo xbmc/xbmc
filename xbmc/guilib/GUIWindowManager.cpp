@@ -70,6 +70,7 @@
 #endif
 #include "addons/gui/GUIDialogAddonInfo.h"
 #include "addons/gui/GUIDialogAddonSettings.h"
+#include "dialogs/GUIDialogBacklightBar.h"
 #include "dialogs/GUIDialogBusy.h"
 #include "dialogs/GUIDialogBusyNoCancel.h"
 #include "dialogs/GUIDialogButtonMenu.h"
@@ -299,6 +300,8 @@ void CGUIWindowManager::CreateWindows()
   Add(new GAME::CDialogGameAdvancedSettings);
   Add(new GAME::CDialogGameVideoRotation);
   Add(new RETRO::CGameWindowFullScreen);
+
+  Add(new CGUIDialogBacklightBar);
 }
 
 bool CGUIWindowManager::DestroyWindows()
@@ -424,6 +427,7 @@ bool CGUIWindowManager::DestroyWindows()
     Remove(WINDOW_DIALOG_KAI_TOAST);
     Remove(WINDOW_DIALOG_SEEK_BAR);
     Remove(WINDOW_DIALOG_VOLUME_BAR);
+    Remove(WINDOW_DIALOG_BACKLIGHT_BAR);
 
     DestroyWindow(WINDOW_EVENT_LOG);
 

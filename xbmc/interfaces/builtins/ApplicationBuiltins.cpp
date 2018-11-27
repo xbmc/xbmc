@@ -88,6 +88,20 @@ static int NotifyAll(const std::vector<std::string>& params)
 
 /*! \brief Set volume.
  *  \param params the parameters.
+ *  \details params[0] = Backlight level.
+ *           params[1] = unused.
+ */
+static int SetBacklightBrightness(const std::vector<std::string>& params)
+{
+  int brightness = atoi(params[0].c_str());
+
+  g_application.SetBacklightBrightness(brightness);
+
+  return 0;
+}
+
+/*! \brief Set volume.
+ *  \param params the parameters.
  *  \details params[0] = Volume level.
  *           params[1] = "showVolumeBar" to show volume bar (optional).
  */
@@ -203,13 +217,15 @@ static int WakeOnLAN(const std::vector<std::string>& params)
 
 CBuiltins::CommandMap CApplicationBuiltins::GetOperations() const
 {
-  return {
-           {"extract", {"Extracts the specified archive", 1, Extract}},
-           {"mute", {"Mute the player", 0, Mute}},
-           {"notifyall", {"Notify all connected clients", 2, NotifyAll}},
-           {"setvolume", {"Set the current volume", 1, SetVolume}},
-           {"toggledebug", {"Enables/disables debug mode", 0, ToggleDebug}},
-           {"toggledpms", {"Toggle DPMS mode manually", 0, ToggleDPMS}},
-           {"wakeonlan", {"Sends the wake-up packet to the broadcast address for the specified MAC address", 1, WakeOnLAN}}
-         };
+  return {{"extract", {"Extracts the specified archive", 1, Extract}},
+          {"mute", {"Mute the player", 0, Mute}},
+          {"notifyall", {"Notify all connected clients", 2, NotifyAll}},
+          {"setvolume", {"Set the current volume", 1, SetVolume}},
+          {"setbacklightbrightness",
+           {"Set the current backlight brightness", 1, SetBacklightBrightness}},
+          {"toggledebug", {"Enables/disables debug mode", 0, ToggleDebug}},
+          {"toggledpms", {"Toggle DPMS mode manually", 0, ToggleDPMS}},
+          {"wakeonlan",
+           {"Sends the wake-up packet to the broadcast address for the specified MAC address", 1,
+            WakeOnLAN}}};
 }

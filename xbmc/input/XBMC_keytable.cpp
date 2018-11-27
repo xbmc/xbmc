@@ -185,6 +185,12 @@ static const XBMCKEYTABLE XBMCKeyTable[] = {
     {XBMCK_FASTFORWARD, 0, 0, XBMCVK_MEDIA_FASTFORWARD, "fastforward"},
     {XBMCK_RECORD, 0, 0, XBMCVK_MEDIA_RECORD, "record"}
 
+    // Hardware Keys
+    ,
+    {XBMCK_BACKLIGHT_BRIGHTNESS_UP, 0, 0, XBMCVK_BACKLIGHT_BRIGHTNESS_UP,
+     "backlight_brightness_up"},
+    {XBMCK_BACKLIGHT_BRIGHTNESS_DOWN, 0, 0, XBMCVK_BACKLIGHT_BRIGHTNESS_DOWN,
+     "backlight_brightness_down"}
 
     // Function keys
     ,

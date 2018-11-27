@@ -119,12 +119,12 @@ const CWindowTranslator::WindowMapByName CWindowTranslator::WindowMappingByName 
     {"textviewer", WINDOW_DIALOG_TEXT_VIEWER},
     {"fullscreenvideo", WINDOW_FULLSCREEN_VIDEO},
     {"fullscreenlivetv", WINDOW_FULLSCREEN_LIVETV}, // virtual window for fullscreen radio, uses
-                                                    // WINDOW_FULLSCREEN_VIDEO as fallback
+    // WINDOW_FULLSCREEN_VIDEO as fallback
     {"fullscreenlivetvpreview", WINDOW_FULLSCREEN_LIVETV_PREVIEW}, // Live TV channel preview
     {"fullscreenlivetvinput",
      WINDOW_FULLSCREEN_LIVETV_INPUT}, // Livr TV direct channel number input
     {"fullscreenradio", WINDOW_FULLSCREEN_RADIO}, // virtual window for fullscreen radio, uses
-                                                  // WINDOW_VISUALISATION as fallback
+    // WINDOW_VISUALISATION as fallback
     {"fullscreenradiopreview", WINDOW_FULLSCREEN_RADIO_PREVIEW}, // PVR Radio channel preview
     {"fullscreenradioinput",
      WINDOW_FULLSCREEN_RADIO_INPUT}, // PVR radio direct channel number input
@@ -152,6 +152,7 @@ const CWindowTranslator::WindowMapByName CWindowTranslator::WindowMappingByName 
     {"gamevolume", WINDOW_DIALOG_GAME_VOLUME},
     {"gameadvancedsettings", WINDOW_DIALOG_GAME_ADVANCED_SETTINGS},
     {"gamevideorotation", WINDOW_DIALOG_GAME_VIDEO_ROTATION},
+    {"backlightbar", WINDOW_DIALOG_BACKLIGHT_BAR},
 };
 
 namespace

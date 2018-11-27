@@ -214,11 +214,13 @@ public:
   float GetVolumePercent() const;
   float GetVolumeRatio() const;
   void SetVolume(float iValue, bool isPercentage = true);
+  void SetBacklightBrightness(int iValue, bool isPercentage = true);
   bool IsMuted() const;
   bool IsMutedInternal() const { return m_muted; }
   void ToggleMute(void);
   void SetMute(bool mute);
   void ShowVolumeBar(const CAction *action = NULL);
+  void ShowBacklightBar(const CAction* action);
   int GetSubtitleDelay();
   int GetAudioDelay();
   void ResetSystemIdleTimer();

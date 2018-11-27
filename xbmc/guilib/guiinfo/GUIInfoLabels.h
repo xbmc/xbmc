@@ -396,6 +396,8 @@
 #define SKIN_ASPECT_RATIO           607
 #define SKIN_FONT                   608
 
+#define SYSTEM_HAS_BACKLIGHT 641
+#define SYSTEM_BACKLIGHT_BRIGHTNESS 642
 #define SYSTEM_PRIVACY_POLICY       643
 #define SYSTEM_TOTAL_MEMORY         644
 #define SYSTEM_CPU_USAGE            645

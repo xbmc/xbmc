@@ -220,6 +220,10 @@ typedef enum
   XBMCK_CONFIG = 0x14f,
   XBMCK_EPG = 0x150,
 
+  // Hardware keys
+  XBMCK_BACKLIGHT_BRIGHTNESS_DOWN = 0x160,
+  XBMCK_BACKLIGHT_BRIGHTNESS_UP = 0x161,
+
   // Add any other keys here
 
   /* Media keys */

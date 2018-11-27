@@ -299,3 +299,18 @@ void CServiceBroker::UnregisterCPUInfo()
 {
   g_serviceBroker.m_cpuInfo.reset();
 }
+
+std::shared_ptr<IBacklight> CServiceBroker::GetBacklight()
+{
+  return g_serviceBroker.m_backlight;
+}
+
+void CServiceBroker::RegisterBacklight(std::shared_ptr<IBacklight> backlight)
+{
+  g_serviceBroker.m_backlight = backlight;
+}
+
+void CServiceBroker::UnregisterBacklight()
+{
+  g_serviceBroker.m_backlight.reset();
+}

@@ -58,6 +58,7 @@ class CDecoderFilterManager;
 class CMediaManager;
 class CCPUInfo;
 class CLog;
+class IBacklight;
 
 namespace KODI
 {
@@ -147,6 +148,10 @@ public:
   static void RegisterCPUInfo(std::shared_ptr<CCPUInfo> cpuInfo);
   static void UnregisterCPUInfo();
 
+  static std::shared_ptr<IBacklight> GetBacklight();
+  static void RegisterBacklight(std::shared_ptr<IBacklight> backlight);
+  static void UnregisterBacklight();
+
 private:
   std::unique_ptr<CLog> m_logging;
   std::shared_ptr<ANNOUNCEMENT::CAnnouncementManager> m_pAnnouncementManager;
@@ -157,6 +162,7 @@ private:
   CSettingsComponent* m_pSettingsComponent;
   CDecoderFilterManager* m_decoderFilterManager;
   std::shared_ptr<CCPUInfo> m_cpuInfo;
+  std::shared_ptr<IBacklight> m_backlight;
 };
 
 XBMC_GLOBAL_REF(CServiceBroker, g_serviceBroker);
