@@ -52,8 +52,10 @@ IImage* ImageFactory::CreateLoaderFromMimeType(const std::string& strMimeType)
     }
   }
 
-  if (strMimeType == "image/jpeg") {
-    return new JPEGImage();
+  std::cerr << "mime = " << strMimeType << std::endl;
+
+  if (strMimeType == "image/jpeg" || strMimeType == "image/jpg") {
+    return new JPEGImage(strMimeType);
   } else {
     return new CFFmpegImage(strMimeType);
   }

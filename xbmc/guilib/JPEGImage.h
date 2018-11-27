@@ -5,14 +5,15 @@
 #include <jpeglib.h>
 
 #include "iimage.h"
+#include "FFmpegImage.h"
 #include "TextureFormats.h"
 
 #include <iostream>
 
-class JPEGImage : public IImage
+class JPEGImage : public CFFmpegImage
 {
 public:
-  JPEGImage()
+  JPEGImage(std::string const & mime) : CFFmpegImage(mime)
   {
       m_allocated = false;
   }
@@ -65,10 +66,6 @@ struct jpeg_error_mgr jerr;
 
     return true;
   }
-
-  bool CreateThumbnailFromSurface(unsigned char*, unsigned int, unsigned int,
-                                    unsigned int, unsigned int, const std::string&,
-                                    unsigned char*&, unsigned int&) override { return false; }
 
   bool Decode(unsigned char * const pixels, unsigned int width, unsigned int height,
               unsigned int pitch, unsigned int format) override
