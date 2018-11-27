@@ -162,6 +162,11 @@ bool CAndroidJoystickState::Initialize(const CJNIViewInputDevice& inputDevice)
   m_buttons.push_back({ { AKEYCODE_BUTTON_R2 } });
   m_buttons.push_back({ { AKEYCODE_BUTTON_THUMBL } });
   m_buttons.push_back({ { AKEYCODE_BUTTON_THUMBR } });
+  m_buttons.push_back({ { AKEYCODE_DPAD_UP } });
+  m_buttons.push_back({ { AKEYCODE_DPAD_RIGHT } });
+  m_buttons.push_back({ { AKEYCODE_DPAD_DOWN } });
+  m_buttons.push_back({ { AKEYCODE_DPAD_LEFT } });
+  m_buttons.push_back({ { AKEYCODE_DPAD_CENTER} });
 
   // check if there are no buttons or axes at all
   if (GetButtonCount() == 0 && GetAxisCount() == 0)
