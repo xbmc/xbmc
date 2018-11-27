@@ -24,6 +24,7 @@
 #include "windowing/GraphicContext.h"
 
 #include "platform/freebsd/OptionalsReg.h"
+#include "platform/linux/Backlight.h"
 #include "platform/linux/OptionalsReg.h"
 #include "platform/linux/powermanagement/LinuxPowerSyscall.h"
 
@@ -31,10 +32,11 @@
 
 using namespace KODI::WINDOWING::GBM;
 
-CWinSystemGbm::CWinSystemGbm() :
-  m_DRM(nullptr),
-  m_GBM(new CGBMUtils),
-  m_libinput(new CLibInputHandler)
+CWinSystemGbm::CWinSystemGbm()
+  : m_DRM(nullptr),
+    m_GBM(new CGBMUtils),
+    m_libinput(new CLibInputHandler),
+    m_backlight(new CBacklight)
 {
   std::string envSink;
   if (getenv("KODI_AE_SINK"))
@@ -106,6 +108,11 @@ bool CWinSystemGbm::InitWindowSystem()
     }
   }
 
+  if (m_backlight->Init(drmGetDeviceNameFromFd2(m_DRM->GetFileDescriptor())))
+  {
+    CBacklight::Register(m_backlight);
+  }
+
   if (!m_GBM->CreateDevice(m_DRM->GetFileDescriptor()))
   {
     m_GBM.reset();
@@ -123,6 +130,8 @@ bool CWinSystemGbm::DestroyWindowSystem()
   CLog::Log(LOGDEBUG, "CWinSystemGbm::%s - deinitialized DRM", __FUNCTION__);
 
   m_libinput.reset();
+
+  CServiceBroker::UnregisterBacklight();
 
   return true;
 }

@@ -21,6 +21,7 @@
 #include <gbm.h>
 
 class IDispResource;
+class CBacklight;
 
 namespace KODI
 {
@@ -74,6 +75,7 @@ protected:
   XbmcThreads::EndTime m_dispResetTimer;
   std::unique_ptr<OPTIONALS::CLircContainer, OPTIONALS::delete_CLircContainer> m_lirc;
   std::unique_ptr<CLibInputHandler> m_libinput;
+  std::shared_ptr<CBacklight> m_backlight;
 };
 
 }
