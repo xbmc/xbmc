@@ -171,33 +171,21 @@ jni::CJNIAudioTrack *CAESinkAUDIOTRACK::CreateAudioTrack(int stream, int sampleR
 
   try
   {
-    if (CJNIBase::GetSDKVersion() >= 21)
-    {
-      CJNIAudioAttributesBuilder attrBuilder;
-      attrBuilder.setUsage(CJNIAudioAttributes::USAGE_MEDIA);
-      attrBuilder.setContentType(CJNIAudioAttributes::CONTENT_TYPE_MUSIC);
-      attrBuilder.setLegacyStreamType(CJNIAudioManager::STREAM_MUSIC);
+    CJNIAudioAttributesBuilder attrBuilder;
+    attrBuilder.setUsage(CJNIAudioAttributes::USAGE_MEDIA);
+    attrBuilder.setContentType(CJNIAudioAttributes::CONTENT_TYPE_MUSIC);
+    attrBuilder.setLegacyStreamType(CJNIAudioManager::STREAM_MUSIC);
 
-      CJNIAudioFormatBuilder fmtBuilder;
-      fmtBuilder.setChannelMask(channelMask);
-      fmtBuilder.setEncoding(encoding);
-      fmtBuilder.setSampleRate(sampleRate);
+    CJNIAudioFormatBuilder fmtBuilder;
+    fmtBuilder.setChannelMask(channelMask);
+    fmtBuilder.setEncoding(encoding);
+    fmtBuilder.setSampleRate(sampleRate);
 
-      jniAt = new CJNIAudioTrack(attrBuilder.build(),
-                                 fmtBuilder.build(),
-                                 bufferSize,
-                                 CJNIAudioTrack::MODE_STREAM,
-                                 CJNIAudioManager::AUDIO_SESSION_ID_GENERATE);
-    }
-    else
-    {
-      jniAt = new CJNIAudioTrack(stream,
-                                 sampleRate,
-                                 channelMask,
-                                 encoding,
-                                 bufferSize,
-                                 CJNIAudioTrack::MODE_STREAM);
-    }
+    jniAt = new CJNIAudioTrack(attrBuilder.build(),
+                               fmtBuilder.build(),
+                               bufferSize,
+                               CJNIAudioTrack::MODE_STREAM,
+                               CJNIAudioManager::AUDIO_SESSION_ID_GENERATE);
   }
   catch (const std::invalid_argument& e)
   {
