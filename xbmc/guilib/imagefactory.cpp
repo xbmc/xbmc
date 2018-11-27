@@ -8,6 +8,7 @@
 
 #include "imagefactory.h"
 #include "guilib/FFmpegImage.h"
+#include "guilib/JPEGImage.h"
 #include "addons/ImageDecoder.h"
 #include "addons/binary-addons/BinaryAddonBase.h"
 #include "utils/Mime.h"
@@ -51,5 +52,9 @@ IImage* ImageFactory::CreateLoaderFromMimeType(const std::string& strMimeType)
     }
   }
 
-  return new CFFmpegImage(strMimeType);
+  if (strMimeType == "image/jpeg") {
+    return new JPEGImage();
+  } else {
+    return new CFFmpegImage(strMimeType);
+  }
 }
