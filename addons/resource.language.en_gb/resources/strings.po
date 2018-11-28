@@ -14869,7 +14869,8 @@ msgctxt "#24041"
 msgid "Install from zip file"
 msgstr ""
 
-#: xbmc/addons/GUIViewStateAddonBrowser.cpp
+#. Used to show on addon list the current download process
+#: xbmc/addons/GUIWindowAddonBrowser.cpp
 msgctxt "#24042"
 msgid "Downloading {0:d}%"
 msgstr ""
@@ -14880,7 +14881,11 @@ msgctxt "#24043"
 msgid "Available updates"
 msgstr ""
 
-#empty string with id 24044
+#. Used to show on addon list the current install process (shown after 24042)
+#: xbmc/addons/GUIWindowAddonBrowser.cpp
+msgctxt "#24044"
+msgid "Installing {0:d}%"
+msgstr ""
 
 #. Used as an event log description for add-ons failed to install from zip
 #: xbmc/addons/AddonInstaller.cpp
