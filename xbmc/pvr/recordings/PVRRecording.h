@@ -29,6 +29,7 @@
 
 #include "XBDateTime.h"
 #include "addons/kodi-addon-dev-kit/include/kodi/xbmc_pvr_types.h"
+#include "threads/SystemClock.h"
 #include "video/VideoInfoTag.h"
 
 #include "pvr/PVRTypes.h"
@@ -320,6 +321,7 @@ namespace PVR
     bool         m_bRadio;        /*!< radio or tv recording */
     int          m_iGenreType = 0;    /*!< genre type */
     int          m_iGenreSubType = 0; /*!< genre subtype */
+    mutable XbmcThreads::EndTime m_resumePointRefetchTimeout;
 
     void UpdatePath(void);
   };

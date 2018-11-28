@@ -302,8 +302,12 @@ bool CPVRRecording::SetResumePoint(double timeInSeconds, double totalTimeInSecon
 CBookmark CPVRRecording::GetResumePoint() const
 {
   const CPVRClientPtr client = CServiceBroker::GetPVRManager().GetClient(m_iClientId);
-  if (client && client->GetClientCapabilities().SupportsRecordingsLastPlayedPosition())
+  if (client && client->GetClientCapabilities().SupportsRecordingsLastPlayedPosition() &&
+      m_resumePointRefetchTimeout.IsTimePast())
   {
+    // @todo: root cause should be fixed. details: https://github.com/xbmc/xbmc/pull/14961
+    m_resumePointRefetchTimeout.Set(10000); // update resume point from backend at most every 10 secs
+
     int pos = -1;
     client->GetRecordingLastPlayedPosition(*this, pos);
 
