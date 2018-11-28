@@ -28,6 +28,7 @@ namespace PERIPHERALS
     bool InitialiseFeature(const PeripheralFeature feature) override;
     void RegisterMouseDriverHandler(KODI::MOUSE::IMouseDriverHandler* handler, bool bPromiscuous) override;
     void UnregisterMouseDriverHandler(KODI::MOUSE::IMouseDriverHandler* handler) override;
+    CDateTime LastActive() override { return m_lastActive; }
 
     // implementation of IMouseDriverHandler
     bool OnPosition(int x, int y) override;
@@ -43,5 +44,6 @@ namespace PERIPHERALS
 
     std::vector<MouseHandle> m_mouseHandlers;
     CCriticalSection m_mutex;
+    CDateTime m_lastActive;
   };
 }

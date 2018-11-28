@@ -199,6 +199,8 @@ bool CPeripheralJoystick::OnButtonMotion(unsigned int buttonIndex, bool bPressed
   if (bPressed && !g_application.IsAppFocused())
     return false;
 
+  m_lastActive = CDateTime::GetCurrentDateTime();
+
   CSingleLock lock(m_handlerMutex);
 
   // Process promiscuous handlers
@@ -239,6 +241,8 @@ bool CPeripheralJoystick::OnHatMotion(unsigned int hatIndex, HAT_STATE state)
   // Avoid sending activated input if the app is in the background
   if (state != HAT_STATE::NONE && !g_application.IsAppFocused())
     return false;
+
+  m_lastActive = CDateTime::GetCurrentDateTime();
 
   CSingleLock lock(m_handlerMutex);
 
@@ -316,6 +320,9 @@ bool CPeripheralJoystick::OnAxisMotion(unsigned int axisIndex, float position)
         break;
     }
   }
+
+  if (bHandled)
+    m_lastActive = CDateTime::GetCurrentDateTime();
 
   return bHandled;
 }

@@ -52,6 +52,7 @@ namespace PERIPHERALS
     void UnregisterJoystickDriverHandler(KODI::JOYSTICK::IDriverHandler* handler) override;
     KODI::JOYSTICK::IDriverReceiver* GetDriverReceiver() override { return this; }
     IKeymap *GetKeymap(const std::string &controllerId) override;
+    CDateTime LastActive() override { return m_lastActive; }
 
     bool OnButtonMotion(unsigned int buttonIndex, bool bPressed);
     bool OnHatMotion(unsigned int hatIndex, KODI::JOYSTICK::HAT_STATE state);
@@ -122,5 +123,6 @@ namespace PERIPHERALS
     std::unique_ptr<KODI::JOYSTICK::CDeadzoneFilter> m_deadzoneFilter;
     std::vector<DriverHandler>          m_driverHandlers;
     CCriticalSection                    m_handlerMutex;
+    CDateTime m_lastActive;
   };
 }
