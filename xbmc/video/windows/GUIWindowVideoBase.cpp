@@ -1186,7 +1186,7 @@ bool CGUIWindowVideoBase::OnPlayAndQueueMedia(const CFileItemPtr& item, const st
 
 void CGUIWindowVideoBase::PlayMovie(const CFileItem *item, const std::string &player)
 {
-  if(m_thumbLoader.IsLoading())
+  if (m_thumbLoader.IsLoading())
     m_thumbLoader.StopAsync();
 
   CServiceBroker::GetPlaylistPlayer().Play(std::make_shared<CFileItem>(*item), player);

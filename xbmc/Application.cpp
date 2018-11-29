@@ -24,6 +24,7 @@
 #include "cores/playercorefactory/PlayerCoreFactory.h"
 #include "dialogs/GUIDialogBusy.h"
 #include "dialogs/GUIDialogKaiToast.h"
+#include "dialogs/GUIDialogSelect.h"
 #include "events/EventLog.h"
 #include "events/NotificationEvent.h"
 #include "guilib/GUIComponent.h"
@@ -2502,8 +2503,60 @@ bool CApplication::PlayStack(CFileItem& item, bool bRestart)
   return PlayFile(selectedStackPart, "", true);
 }
 
+void CApplication::SelectMovieVersion(CFileItem& item)
+{
+  if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+          CSettings::SETTING_VIDEOPLAYER_PLAYDEFAULTVERSION))
+    return;
+
+  CVideoDatabase videodb;
+  if (!videodb.Open())
+    return;
+
+  CFileItemList list;
+  int dbId = item.GetVideoInfoTag()->m_iDbId;
+  videodb.GetMovieVersion(dbId, list);
+
+  if (list.Size() < 2)
+    return;
+
+  CGUIDialogSelect* dialog =
+      CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogSelect>(
+          WINDOW_DIALOG_SELECT);
+  if (!dialog)
+    return;
+
+  list.Sort(SortByLabel, SortOrderAscending,
+            CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+                CSettings::SETTING_FILELISTS_IGNORETHEWHENSORTING)
+                ? SortAttributeIgnoreArticle
+                : SortAttributeNone);
+  dialog->Reset();
+  dialog->SetItems(list);
+  dialog->SetHeading(CVariant{39303});
+  dialog->SetSelected(videodb.GetMovieCurrentVersion(dbId));
+  dialog->Open();
+
+  if (dialog->IsConfirmed())
+  {
+    CFileItemPtr selectedItem = dialog->GetSelectedFileItem();
+    if (selectedItem)
+    {
+      std::string path = selectedItem->GetLabel2();
+      item.SetPath(path);
+      item.SetDynPath(path);
+      videodb.GetMovieInfo(path, *item.GetVideoInfoTag());
+    }
+  }
+}
+
 bool CApplication::PlayFile(CFileItem item, const std::string& player, bool bRestart)
 {
+  if (item.IsVideo() && item.GetVideoContentType() == VIDEODB_CONTENT_MOVIES)
+  {
+    SelectMovieVersion(item);
+  }
+
   // Ensure the MIME type has been retrieved for http:// and shout:// streams
   if (item.GetMimeType().empty())
     item.FillInMimeType();

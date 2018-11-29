@@ -131,6 +131,10 @@ bool CVideoDbUrl::parse()
       m_itemType = "tags";
       break;
 
+    case VIDEODATABASEDIRECTORY::NODE_TYPE_TYPES:
+      m_itemType = "types";
+      break;
+
     case VIDEODATABASEDIRECTORY::NODE_TYPE_ROOT:
     case VIDEODATABASEDIRECTORY::NODE_TYPE_OVERVIEW:
     default:

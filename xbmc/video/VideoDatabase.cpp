@@ -198,6 +198,14 @@ void CVideoDatabase::CreateTables()
 
   CLog::Log(LOGINFO, "create uniqueid table");
   m_pDS->exec("CREATE TABLE uniqueid (uniqueid_id INTEGER PRIMARY KEY, media_id INTEGER, media_type TEXT, value TEXT, type TEXT)");
+
+  CLog::Log(LOGINFO, "create type table");
+  m_pDS->exec("CREATE TABLE type (type_id INTEGER PRIMARY KEY, name TEXT)");
+  InitializeTypeTable();
+
+  CLog::Log(LOGINFO, "create type_link table");
+  m_pDS->exec("CREATE TABLE type_link (file_id INTEGER PRIMARY KEY, media_id INTEGER, "
+    "media_type TEXT, type_id INTEGER)");
 }
 
 void CVideoDatabase::CreateLinkIndex(const char *table)
@@ -299,6 +307,7 @@ void CVideoDatabase::CreateAnalytics()
               "DELETE FROM tag_link WHERE media_id=old.idMovie AND media_type='movie'; "
               "DELETE FROM rating WHERE media_id=old.idMovie AND media_type='movie'; "
               "DELETE FROM uniqueid WHERE media_id=old.idMovie AND media_type='movie'; "
+              "DELETE FROM type_link WHERE media_id=old.idMovie AND media_type='movie'; "
               "END");
   m_pDS->exec("CREATE TRIGGER delete_tvshow AFTER DELETE ON tvshow FOR EACH ROW BEGIN "
               "DELETE FROM actor_link WHERE media_id=old.idShow AND media_type='tvshow'; "
@@ -1226,15 +1235,19 @@ int CVideoDatabase::GetMovieId(const std::string& strFilenameAndPath)
 
     std::string strSQL;
     if (idFile == -1)
-      strSQL=PrepareSQL("select idMovie from movie join files on files.idFile=movie.idFile where files.idPath=%i",idPath);
+      strSQL = PrepareSQL(
+          "select idMovie from movie join files on files.idFile=movie.idFile where files.idPath=%i",
+          idPath);
     else
-      strSQL=PrepareSQL("select idMovie from movie where idFile=%i", idFile);
+      // TODO(ccope): Why is this change safe?
+      strSQL = PrepareSQL(
+          "select media_id from type_link where file_id = %i and media_type = 'movie'", idFile);
 
     CLog::Log(LOGDEBUG, LOGDATABASE, "{} ({}), query = {}", __FUNCTION__,
               CURL::GetRedacted(strFilenameAndPath), strSQL);
     m_pDS->query(strSQL);
     if (m_pDS->num_rows() > 0)
-      idMovie = m_pDS->fv("idMovie").get_asInt();
+      idMovie = m_pDS->fv(0).get_asInt(); // TODO(ccope): What does this change mean?
     m_pDS->close();
 
     return idMovie;
@@ -1413,6 +1426,7 @@ int CVideoDatabase::AddNewMovie(CVideoInfoTag& details)
     m_pDS->exec(strSQL);
     details.m_iDbId = static_cast<int>(m_pDS->lastinsertid());
 
+    m_pDS->exec(PrepareSQL("INSERT INTO type_link VALUES(%i, %i, 'movie', 1)", details.m_iFileId, details.m_iDbId));
     return details.m_iDbId;
   }
   catch (...)
@@ -1703,6 +1717,42 @@ int CVideoDatabase::AddSet(const std::string& strSet, const std::string& strOver
   catch (...)
   {
     CLog::Log(LOGERROR, "{} ({}) failed", __FUNCTION__, strSet);
+  }
+
+  return -1;
+}
+
+int CVideoDatabase::AddType(const std::string& strType)
+{
+  if (strType.empty())
+    return -1;
+
+  try
+  {
+    if (!m_pDB || !m_pDS)
+      return -1;
+
+    std::string strSQL =
+        PrepareSQL("SELECT type_id FROM type WHERE name LIKE '%s'", strType.c_str());
+    m_pDS->query(strSQL);
+    if (m_pDS->num_rows() == 0)
+    {
+      m_pDS->close();
+      strSQL =
+          PrepareSQL("INSERT INTO type (type_id, name) VALUES(NULL, '%s')", strType.c_str(), 0);
+      m_pDS->exec(strSQL);
+      return static_cast<int>(m_pDS->lastinsertid());
+    }
+    else
+    {
+      int id = m_pDS->fv("type_id").get_asInt();
+      m_pDS->close();
+      return id;
+    }
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, strType.c_str());
   }
 
   return -1;
@@ -2109,6 +2159,19 @@ bool CVideoDatabase::GetMovieInfo(const std::string& strFilenameAndPath, CVideoI
     CLog::Log(LOGERROR, "{} ({}) failed", __FUNCTION__, strFilenameAndPath);
   }
   return false;
+}
+
+std::string CVideoDatabase::GetMovieTitle(int idMovie) const
+{
+  if (!m_pDB || !m_pDS)
+    return "";
+
+  m_pDS->query(PrepareSQL("SELECT c%02d from movie where idMovie = %i", VIDEODB_ID_TITLE, idMovie));
+
+  if (!m_pDS->eof())
+    return m_pDS->fv(0).get_asString();
+  else
+    return "";
 }
 
 //********************************************************************************************************************************
@@ -3505,8 +3568,7 @@ void CVideoDatabase::DeleteMovie(int idMovie, bool bKeepId /* = false */)
       if (!path.empty())
         InvalidatePathHash(path);
 
-      std::string strSQL = PrepareSQL("delete from movie where idMovie=%i", idMovie);
-      m_pDS->exec(strSQL);
+      m_pDS->exec(PrepareSQL("DELETE FROM movie WHERE idMovie = %i", idMovie));
     }
 
     //! @todo move this below CommitTransaction() once UPnP doesn't rely on this anymore
@@ -3751,6 +3813,234 @@ void CVideoDatabase::SetMovieSet(int idMovie, int idSet)
     ExecuteQuery(PrepareSQL("update movie set idSet = %i where idMovie = %i", idSet, idMovie));
   else
     ExecuteQuery(PrepareSQL("update movie set idSet = null where idMovie = %i", idMovie));
+}
+
+void CVideoDatabase::GetMovieVersion(int idMovie, CFileItemList& items) const
+{
+  if (!m_pDB || !m_pDS)
+    return;
+
+  try
+  {
+    m_pDS->query(PrepareSQL("SELECT type.name AS name,"
+                            "  path.strPath AS strPath,"
+                            "  files.strFileName AS strFileName "
+                            "FROM type"
+                            "  JOIN type_link ON"
+                            "    type_link.type_id = type.type_id"
+                            "  JOIN files ON"
+                            "    files.idFile = type_link.file_id"
+                            "  JOIN path ON"
+                            "    path.idPath = files.idPath "
+                            "WHERE type_link.media_id = %i", idMovie));
+
+    std::string file;
+
+    while (!m_pDS->eof())
+    {
+      CFileItemPtr pItem(new CFileItem());
+      pItem->SetLabel(m_pDS->fv(0).get_asString());
+      ConstructPath(file, m_pDS->fv(1).get_asString(), m_pDS->fv(2).get_asString());
+      pItem->SetLabel2(file);
+      items.Add(pItem);
+      m_pDS->next();
+    }
+
+    m_pDS->close();
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s failed for movie %d", __FUNCTION__, idMovie);
+  }
+}
+
+std::string CVideoDatabase::GetMovieCurrentVersion(int idMovie) const
+{
+  if (!m_pDB || !m_pDS)
+    return "";
+
+  std::string name;
+
+  try
+  {
+    m_pDS->query(PrepareSQL("SELECT type.name AS name "
+                            "FROM type"
+                            "  JOIN type_link ON"
+                            "    type_link.type_id = type.type_id"
+                            "  JOIN movie ON"
+                            "    movie.idFile = type_link.file_id "
+                            "WHERE movie.idMovie = %i", idMovie));
+
+    if (!m_pDS->eof())
+    {
+      name = m_pDS->fv(0).get_asString();
+    }
+
+    m_pDS->close();
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s failed for movie %d", __FUNCTION__, idMovie);
+  }
+
+  return name;
+}
+
+std::string CVideoDatabase::GetFilePathByFileId(int idFile) const
+{
+  if (!m_pDB || !m_pDS)
+    return "";
+
+  std::string path;
+
+  try
+  {
+    m_pDS->query(PrepareSQL("SELECT strPath, strFileName FROM files JOIN path ON path.idPath = "
+                            "files.idPath WHERE idFile = %i",
+                            idFile));
+
+    if (!m_pDS->eof())
+    {
+      ConstructPath(path, m_pDS->fv(0).get_asString(), m_pDS->fv(1).get_asString());
+    }
+
+    m_pDS->close();
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s failed for file %d", __FUNCTION__, idFile);
+  }
+
+  return path;
+}
+
+int CVideoDatabase::GetFileIdByMovie(int idMovie) const
+{
+  if (!m_pDB || !m_pDS)
+    return -1;
+
+  int idFile = -1;
+
+  try
+  {
+    m_pDS->query(PrepareSQL("SELECT idFile FROM movie WHERE idMovie = %i", idMovie));
+
+    if (!m_pDS->eof())
+    {
+      idFile = m_pDS->fv(0).get_asInt();
+    }
+
+    m_pDS->close();
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s failed for movie %d", __FUNCTION__, idMovie);
+  }
+
+  return idFile;
+}
+
+int CVideoDatabase::GetFileIdByMovieVersion(int idMovie, int idType) const
+{
+  if (!m_pDB || !m_pDS)
+    return -1;
+
+  int idFile = -1;
+
+  try
+  {
+    m_pDS->query(PrepareSQL("SELECT file_id FROM type_link WHERE media_id = %i AND type_id = %i",
+                            idMovie, idType));
+
+    if (!m_pDS->eof())
+    {
+      idFile = m_pDS->fv(0).get_asInt();
+    }
+
+    m_pDS->close();
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s failed for movie %d", __FUNCTION__, idMovie);
+  }
+
+  return idFile;
+}
+
+void CVideoDatabase::SetMovieVersion(int idMovieSource, int idMovieTarget, int idType)
+{
+  int idFile = GetFileIdByMovie(idMovieSource);
+  if (idFile < 0)
+    return;
+
+  BeginTransaction();
+
+  if (idMovieSource != idMovieTarget)
+  {
+    ExecuteQuery(PrepareSQL("UPDATE type_link SET media_id = %i, type_id = %i WHERE file_id = %i",
+                            idMovieTarget, idType, idFile));
+    DeleteMovie(idMovieSource);
+  }
+  else
+    ExecuteQuery(
+        PrepareSQL("UPDATE type_link SET type_id = %i WHERE file_id = %i", idType, idFile));
+
+  CommitTransaction();
+}
+
+void CVideoDatabase::ChangeMovieVersion(int idMovie, int idType)
+{
+  int idFile = GetFileIdByMovieVersion(idMovie, idType);
+  if (idFile < 0)
+    return;
+
+  std::string path = GetFilePathByFileId(idFile);
+  if (path.empty())
+    return;
+
+  BeginTransaction();
+
+  ExecuteQuery(PrepareSQL("UPDATE movie SET idFile = %i, c%02d = '%s' WHERE idMovie = %i", idFile,
+                          VIDEODB_ID_BASEPATH, path.c_str(), idMovie));
+
+  CommitTransaction();
+}
+
+void CVideoDatabase::GetMoviesByTitle(std::string title, CFileItemList& items) const
+{
+  if (!m_pDB || !m_pDS)
+    return;
+
+  try
+  {
+    m_pDS->query(PrepareSQL("SELECT movie.idMovie AS idMovie,"
+                            "  path.strPath AS strPath,"
+                            "  files.strFileName AS strFileName "
+                            "FROM movie"
+                            "  JOIN files ON"
+                            "    files.idFile = movie.idFile"
+                            "  JOIN path ON"
+                            "    path.idPath = files.idPath "
+                            "WHERE movie.c%02d = '%s'", VIDEODB_ID_TITLE, title.c_str()));
+
+    std::string file;
+
+    while (!m_pDS->eof())
+    {
+      CFileItemPtr pItem(new CFileItem());
+      ConstructPath(file, m_pDS->fv(1).get_asString(), m_pDS->fv(2).get_asString());
+      pItem->SetLabel(file);
+      pItem->SetLabel2(m_pDS->fv(0).get_asString());
+      items.Add(pItem);
+      m_pDS->next();
+    }
+
+    m_pDS->close();
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s failed for movie %s", __FUNCTION__, title.c_str());
+  }
 }
 
 void CVideoDatabase::DeleteTag(int idTag, VIDEODB_CONTENT_TYPE mediaType)
@@ -5864,11 +6154,23 @@ void CVideoDatabase::UpdateTables(int iVersion)
     }
     m_pDS->close();
   }
+
+
+  if (iVersion < 122)
+  {
+    // create type table
+    m_pDS->exec("CREATE TABLE type (type_id INTEGER PRIMARY KEY, name TEXT)");
+
+    // create type_link table
+    m_pDS->exec("CREATE TABLE type_link (file_id INTEGER PRIMARY KEY, media_id INTEGER, media_type "
+                "TEXT, type_id INTEGER)");
+    m_pDS->exec("INSERT INTO type_link SELECT idFile, idMovie, 'movie', 1 FROM movie");
+  }
 }
 
 int CVideoDatabase::GetSchemaVersion() const
 {
-  return 121;
+  return 122;
 }
 
 bool CVideoDatabase::LookupByFolders(const std::string &path, bool shows)
@@ -6536,6 +6838,43 @@ bool CVideoDatabase::GetSetsByWhere(const std::string& strBaseDir, const Filter 
   catch (...)
   {
     CLog::Log(LOGERROR, "{} failed", __FUNCTION__);
+  }
+  return false;
+}
+
+bool CVideoDatabase::GetTypesNav(const std::string& strBaseDir, CFileItemList& items,
+                                 int idMedia /* = -1 */) const
+{
+  if (!m_pDB || !m_pDS)
+    return false;
+
+  try
+  {
+    std::string strSQL;
+
+    if (idMedia != -1)
+      strSQL = PrepareSQL("SELECT type.name, type.type_id FROM type JOIN type_link ON "
+                          "type_link.type_id = type.type_id WHERE media_id = %i",
+                          idMedia);
+    else
+      strSQL = PrepareSQL("SELECT name, type_id FROM type");
+
+    m_pDS->query(strSQL);
+
+    while (!m_pDS->eof())
+    {
+      CFileItemPtr pItem(new CFileItem());
+      pItem->SetLabel(m_pDS->fv(0).get_asString());
+      pItem->SetLabel2(m_pDS->fv(1).get_asString());
+      items.Add(pItem);
+      m_pDS->next();
+    }
+    m_pDS->close();
+    return true;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
   }
   return false;
 }
@@ -7449,6 +7788,8 @@ bool CVideoDatabase::GetItems(const std::string &strBaseDir, VIDEODB_CONTENT_TYP
     return GetCountriesNav(strBaseDir, items, mediaType, filter);
   else if (StringUtils::EqualsNoCase(itemType, "tags"))
     return GetTagsNav(strBaseDir, items, mediaType, filter);
+  else if (StringUtils::EqualsNoCase(itemType, "types"))
+    return GetTypesNav(strBaseDir, items);
   else if (StringUtils::EqualsNoCase(itemType, "artists") && mediaType == VIDEODB_CONTENT_MUSICVIDEOS)
     return GetActorsNav(strBaseDir, items, mediaType, filter);
   else if (StringUtils::EqualsNoCase(itemType, "albums") && mediaType == VIDEODB_CONTENT_MUSICVIDEOS)
@@ -10602,7 +10943,8 @@ bool CVideoDatabase::ImportArtFromXML(const TiXmlNode *node, std::map<std::strin
   return !artwork.empty();
 }
 
-void CVideoDatabase::ConstructPath(std::string& strDest, const std::string& strPath, const std::string& strFileName)
+void CVideoDatabase::ConstructPath(std::string & strDest, const std::string& strPath,
+                                   const std::string& strFileName) const
 {
   if (URIUtils::IsStack(strFileName) ||
       URIUtils::IsInArchive(strFileName) || URIUtils::IsPlugin(strPath))
@@ -10611,7 +10953,8 @@ void CVideoDatabase::ConstructPath(std::string& strDest, const std::string& strP
     strDest = URIUtils::AddFileToFolder(strPath, strFileName);
 }
 
-void CVideoDatabase::SplitPath(const std::string& strFileNameAndPath, std::string& strPath, std::string& strFileName)
+void CVideoDatabase::SplitPath(const std::string& strFileNameAndPath, std::string& strPath,
+                               std::string& strFileName) const
 {
   if (URIUtils::IsStack(strFileNameAndPath) || StringUtils::StartsWithNoCase(strFileNameAndPath, "rar://") || StringUtils::StartsWithNoCase(strFileNameAndPath, "zip://"))
   {
@@ -11172,4 +11515,40 @@ void CVideoDatabase::EraseAllForPath(const std::string& path)
   {
     CLog::Log(LOGERROR, "{} failed", __FUNCTION__);
   }
+}
+
+void CVideoDatabase::InitializeTypeTable()
+{
+  const char* types[] = { "Standard",
+                          "Extended",
+                          "Unrated",
+                          "Uncut",
+                          "Remastered",
+                          "Limited",
+                          "Special",
+                          "Director Cut",
+                          "3D",
+                          "4K",
+                          "IMAX",
+                          "BluRay",
+                          "WEB-DL",
+                          "DVD",
+                          "VHS",
+                          "VCD",
+                          "The Final Cut",
+                          "Super Duper Cut",
+                          "Theatrical",
+                          "Collector",
+                          "Ultimate Collector",
+                          "Criterion Collection",
+                          "10th Anniversary",
+                          "20th Anniversary",
+                          "25th Anniversary",
+                          "30th Anniversary",
+                          "40th Anniversary",
+                          "50th Anniversary",
+  };
+
+  for (const char* type : types)
+    m_pDS->exec(PrepareSQL("INSERT INTO type VALUES(NULL, '%s')", type));
 }

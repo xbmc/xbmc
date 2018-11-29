@@ -46,6 +46,8 @@ public:
   static bool GetSetForMovie(const CFileItem *movieItem, CFileItemPtr &selectedSet);
   static bool SetMovieSet(const CFileItem *movieItem, const CFileItem *selectedSet);
 
+  static bool SetMovieVersion(const CFileItemPtr& item);
+
   static bool GetItemsForTag(const std::string &strHeading, const std::string &type, CFileItemList &items, int idTag = -1, bool showAll = true);
   static bool AddItemsToTag(const CFileItemPtr &tagItem);
   static bool RemoveItemsFromTag(const CFileItemPtr &tagItem);
@@ -80,6 +82,7 @@ protected:
    * \param pItem Search result item
    */
   void OnSearchItemFound(const CFileItem* pItem);
+  void OnChangeVersion();
   void Play(bool resume = false);
   void OnGetArt();
   void OnGetFanart();

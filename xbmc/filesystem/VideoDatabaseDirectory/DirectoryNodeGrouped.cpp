@@ -86,6 +86,8 @@ std::string CDirectoryNodeGrouped::GetContentType(const CQueryParams &params) co
       return "sets";
     case NODE_TYPE_TAGS:
       return "tags";
+    case NODE_TYPE_TYPES:
+      return "types";
     case NODE_TYPE_YEAR:
       return "years";
     case NODE_TYPE_ACTOR:

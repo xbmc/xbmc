@@ -310,6 +310,8 @@ protected:
 
   void HandlePortEvents();
 
+  void SelectMovieVersion(CFileItem& movieItem);
+
   CInertialScrollingHandler *m_pInertialScrollingHandler;
 
   ReplayGainSettings m_replayGainSettings;

@@ -81,6 +81,7 @@ public:
       "videolibrary.groupsingleitemsets";
   static constexpr auto SETTING_VIDEOLIBRARY_UPDATEONSTARTUP = "videolibrary.updateonstartup";
   static constexpr auto SETTING_VIDEOLIBRARY_BACKGROUNDUPDATE = "videolibrary.backgroundupdate";
+  static constexpr auto SETTING_VIDEOLIBRARY_ADDDUPLICATEVIDEO = "videolibrary.addduplicatevideo";
   static constexpr auto SETTING_VIDEOLIBRARY_CLEANUP = "videolibrary.cleanup";
   static constexpr auto SETTING_VIDEOLIBRARY_EXPORT = "videolibrary.export";
   static constexpr auto SETTING_VIDEOLIBRARY_IMPORT = "videolibrary.import";
@@ -100,6 +101,7 @@ public:
       "videolibrary.musicvideosallperformers";
   static constexpr auto SETTING_LOCALE_AUDIOLANGUAGE = "locale.audiolanguage";
   static constexpr auto SETTING_VIDEOPLAYER_PREFERDEFAULTFLAG = "videoplayer.preferdefaultflag";
+  static constexpr auto SETTING_VIDEOPLAYER_PLAYDEFAULTVERSION = "videoplayer.playdefaultversion";
   static constexpr auto SETTING_VIDEOPLAYER_AUTOPLAYNEXTITEM = "videoplayer.autoplaynextitem";
   static constexpr auto SETTING_VIDEOPLAYER_SEEKSTEPS = "videoplayer.seeksteps";
   static constexpr auto SETTING_VIDEOPLAYER_SEEKDELAY = "videoplayer.seekdelay";

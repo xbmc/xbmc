@@ -145,6 +145,7 @@ public:
   void SetSet(std::string set);
   void SetSetOverview(std::string setOverview);
   void SetTags(std::vector<std::string> tags);
+  void SetVersion(std::string version);
   void SetFile(std::string file);
   void SetPath(std::string path);
   void SetMPAARating(std::string mpaaRating);
@@ -238,6 +239,7 @@ public:
   };
   SetInfo m_set; //!< Assigned movie set
   std::vector<std::string> m_tags;
+  std::string m_strVersion;
   std::string m_strFile;
   std::string m_strPath;
   std::string m_strMPAARating;
