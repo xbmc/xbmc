@@ -5148,6 +5148,8 @@ const infomap container_str[]  = {{ "property",         CONTAINER_PROPERTY },
 ///                  _string_,
 ///     @return The duration of the next item (PVR) in the format <b>hh:mm:ss</b>.
 ///     @note <b>hh:</b> will be omitted if hours value is zero.
+///     <p><hr>
+///     @skinning_v18 **[New Infolabel]** \link ListItem_NextDuration `ListItem.NextDuration`\endlink
 ///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.NextDuration(format)`</b>,
@@ -5156,6 +5158,8 @@ const infomap container_str[]  = {{ "property",         CONTAINER_PROPERTY },
 ///     @return The duration of the next item (PVR) in different formats.
 ///     @param format [opt] The format of the return time value.
 ///     See \ref TIME_FORMAT for the list of possible values.
+///     <p><hr>
+///     @skinning_v18 **[New Infolabel]** \link ListItem_NextDuration_format `ListItem.NextDuration(format)`\endlink
 ///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.ChannelGroup`</b>,
