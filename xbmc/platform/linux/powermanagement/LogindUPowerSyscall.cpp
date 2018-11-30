@@ -121,7 +121,37 @@ bool CLogindUPowerSyscall::HasLogind()
   // recommended method by systemd devs. The seats directory
   // doesn't exist unless logind created it and therefore is running.
   // see also https://mail.gnome.org/archives/desktop-devel-list/2013-March/msg00092.html
-  return (access("/run/systemd/seats/", F_OK) >= 0);
+  if (access("/run/systemd/seats/", F_OK) >= 0)
+    return true;
+
+  // on some environments "/run/systemd/seats/" doesn't exist, e.g. on flatpak. Try DBUS instead.
+  CDBusMessage message(LOGIND_DEST, LOGIND_PATH, LOGIND_IFACE, "ListSeats");
+  DBusMessage *reply = message.SendSystem();
+  if (!reply)
+    return false;
+
+  DBusMessageIter arrIter;
+  if (dbus_message_iter_init(reply, &arrIter) && dbus_message_iter_get_arg_type(&arrIter) == DBUS_TYPE_ARRAY)
+  {
+    DBusMessageIter structIter;
+    dbus_message_iter_recurse(&arrIter, &structIter);
+    if (dbus_message_iter_get_arg_type(&structIter) == DBUS_TYPE_STRUCT)
+    {
+      DBusMessageIter strIter;
+      dbus_message_iter_recurse(&structIter, &strIter);
+      if (dbus_message_iter_get_arg_type(&strIter) == DBUS_TYPE_STRING)
+      {
+        char *seat;
+        dbus_message_iter_get_basic(&strIter, &seat);
+        if (StringUtils::StartsWith(seat, "seat"))
+        {
+            CLog::Log(LOGDEBUG, "LogindUPowerSyscall::HasLogind - found seat: {}", seat);
+            return true;
+        }
+      }
+    }
+  }
+  return false;
 }
 
 bool CLogindUPowerSyscall::LogindSetPowerState(const char *state)
