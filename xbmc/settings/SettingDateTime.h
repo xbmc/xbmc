@@ -10,6 +10,7 @@
 
 #include "XBDateTime.h"
 #include "settings/lib/Setting.h"
+#include "utils/TimeUtils.h"
 
 class CSettingDate : public CSettingString
 {
@@ -40,5 +41,5 @@ public:
   bool CheckValidity(const std::string &value) const override;
 
   CDateTime GetTime() const { return CDateTime::FromDBTime(GetValue()); }
-  bool SetTime(const CDateTime& time) { return SetValue(time.GetAsDBTime()); }
+  bool SetTime(const CDateTime& time) { return SetValue(CTimeUtils::WithoutSeconds(time.GetAsDBTime())); }
 };
