@@ -42,6 +42,7 @@
    - \link PVR_TimeshiftProgressDuration_format `PVR.TimeshiftProgressDuration(format)`\endlink
    - \link PVR_TimeshiftProgressEndTime `PVR.TimeshiftProgressEndTime`\endlink
    - \link PVR_TimeshiftProgressEndTime_format `PVR.TimeshiftProgressEndTime(format)`\endlink
+   - \link ListItem_NextDuration_format `ListItem.NextDuration(format)` \endlink
   <p>
  */
 enum TIME_FORMAT { TIME_FORMAT_GUESS       =  0, ///< usually used as the fallback value if the format value is empty
