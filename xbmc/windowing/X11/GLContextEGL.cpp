@@ -424,6 +424,7 @@ void CGLContextEGL::SwapBuffers()
   if ((msc1 - m_sync.msc1) > 2)
   {
     m_sync.cont = 0;
+    CLog::Log(LOGDEBUG, "CGLContextEGL::SwapBuffers: sync reset");
   }
 
   // we want to block in SwapBuffers
@@ -439,22 +440,29 @@ void CGLContextEGL::SwapBuffers()
     {
       m_sync.interval = (ust1 - m_sync.ust1) / (msc1 - m_sync.msc1);
       m_sync.cont++;
+      CLog::Log(LOGDEBUG, "CGLContextEGL::SwapBuffers: sync interval: %ld", m_sync.interval);
     }
   }
-  else if ((m_sync.cont == 5) && (msc2 == msc1))
+  else if (m_sync.cont == 5)
   {
-    // if no vertical retrace has occurred in eglSwapBuffers,
-    // sleep until next vertical retrace
-    uint64_t lastIncrement = (now / 1000 - ust2);
-    if (lastIncrement > m_sync.interval)
+    CLog::Log(LOGDEBUG, "CGLContextEGL::SwapBuffers: sync check blocking");
+
+    if (msc2 == msc1)
     {
-      lastIncrement = m_sync.interval;
-      CLog::Log(LOGWARNING, "CGLContextEGL::SwapBuffers: last msc time greater than interval");
+      // if no vertical retrace has occurred in eglSwapBuffers,
+      // sleep until next vertical retrace
+      uint64_t lastIncrement = (now / 1000 - ust2);
+      if (lastIncrement > m_sync.interval)
+      {
+        lastIncrement = m_sync.interval;
+        CLog::Log(LOGWARNING, "CGLContextEGL::SwapBuffers: last msc time greater than interval");
+      }
+      uint64_t sleeptime = m_sync.interval - lastIncrement;
+      usleep(sleeptime);
+      m_sync.cont++;
+      msc2++;
+      CLog::Log(LOGDEBUG, "CGLContextEGL::SwapBuffers: sync sleep: %ld", sleeptime);
     }
-    uint64_t sleeptime = m_sync.interval - lastIncrement;
-    usleep(sleeptime);
-    m_sync.cont++;
-    msc2++;
   }
   else if ((m_sync.cont > 5) && (msc2 == m_sync.msc2))
   {
