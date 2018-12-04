@@ -1003,8 +1003,14 @@ void CXBMCApp::onReceive(CJNIIntent intent)
       m_hdmiPlugged = newstate;
       if (m_hdmiPlugged != m_hdmiReportedState)
       {
-        dynamic_cast<CWinSystemAndroid*>(CServiceBroker::GetWinSystem())->SetHDMIState(m_hdmiPlugged);
-        m_hdmiReportedState = m_hdmiPlugged;
+        if (g_application.IsInitialized())
+        {
+          CWinSystemBase* winSystem = CServiceBroker::GetWinSystem();
+          if (winSystem && dynamic_cast<CWinSystemAndroid*>(winSystem))
+            dynamic_cast<CWinSystemAndroid*>(winSystem)->SetHDMIState(m_hdmiPlugged);
+
+          m_hdmiReportedState = m_hdmiPlugged;
+        }
       }
     }
   }
