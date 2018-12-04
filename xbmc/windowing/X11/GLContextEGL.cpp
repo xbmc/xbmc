@@ -18,6 +18,9 @@
 #include "GLContextEGL.h"
 #include "utils/log.h"
 #include <EGL/eglext.h>
+#include "ServiceBroker.h"
+#include "settings/AdvancedSettings.h"
+#include "settings/SettingsComponent.h"
 
 #define EGL_NO_CONFIG (EGLConfig)0
 
@@ -30,6 +33,12 @@ CGLContextEGL::CGLContextEGL(Display *dpy) : CGLContext(dpy)
   m_eglConfig = EGL_NO_CONFIG;
 
   eglGetPlatformDisplayEXT = (PFNEGLGETPLATFORMDISPLAYEXTPROC)eglGetProcAddress("eglGetPlatformDisplayEXT");
+
+  CSettingsComponent *settings = CServiceBroker::GetSettingsComponent();
+  if (settings)
+  {
+    m_omlSync = settings->GetAdvancedSettings()->m_omlSync;
+  }
 }
 
 CGLContextEGL::~CGLContextEGL()
@@ -443,7 +452,7 @@ void CGLContextEGL::SwapBuffers()
       CLog::Log(LOGDEBUG, "CGLContextEGL::SwapBuffers: sync interval: %ld", m_sync.interval);
     }
   }
-  else if (m_sync.cont == 5)
+  else if (m_sync.cont == 5 && m_omlSync)
   {
     CLog::Log(LOGDEBUG, "CGLContextEGL::SwapBuffers: sync check blocking");
 

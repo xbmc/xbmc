@@ -568,6 +568,12 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
     XMLUtils::GetBoolean(pElement, "omxdecodestartwithvalidframe", m_omxDecodeStartWithValidFrame);
   }
 
+  pElement = pRootElement->FirstChildElement("x11");
+  if (pElement)
+  {
+    XMLUtils::GetBoolean(pElement, "omlsync", m_omlSync);
+  }
+
   pElement = pRootElement->FirstChildElement("video");
   if (pElement)
   {
