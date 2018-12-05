@@ -103,6 +103,10 @@
 // Message sent to tell the GUI to update a single item
 #define GUI_MSG_UPDATE_ITEM           GUI_MSG_USER + 29
 
+// Flags for GUI_MSG_UPDATE_ITEM message
+constexpr int GUI_MSG_FLAG_UPDATE_LIST = 0x00000001;
+constexpr int GUI_MSG_FLAG_FORCE_UPDATE = 0x00000002;
+
 // Message sent to tell the GUI to change view mode
 #define GUI_MSG_CHANGE_VIEW_MODE      GUI_MSG_USER + 30
 
