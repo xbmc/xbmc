@@ -714,7 +714,7 @@ bool CAddonInstallJob::Install(const std::string &installFrom, const RepositoryP
   SetText(g_localizeStrings.Get(24079));
   auto deps = m_addon->GetDependencies();
 
-  unsigned int totalSteps = static_cast<unsigned int>(deps.size());
+  unsigned int totalSteps = static_cast<unsigned int>(deps.size()) + 1;
   if (ShouldCancel(0, totalSteps))
     return false;
 
@@ -786,7 +786,7 @@ bool CAddonInstallJob::Install(const std::string &installFrom, const RepositoryP
   }
 
   SetText(g_localizeStrings.Get(24086));
-  SetProgress(0);
+  SetProgress(static_cast<unsigned int>(100.0 * (totalSteps - 1.0) / totalSteps));
 
   CFilesystemInstaller fsInstaller;
   if (!fsInstaller.InstallToFilesystem(installFrom, m_addon->ID()))
