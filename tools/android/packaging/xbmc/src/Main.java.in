@@ -293,11 +293,7 @@ public class Main extends NativeActivity implements Choreographer.FrameCallback
 
   private void runNativeOnUiThread(final long funcAddr, final long variantAddr)
   {
-    HandlerThread runThread = new HandlerThread("KodiRunUI");
-    runThread.start();
-    Handler runHandler = new Handler(runThread.getLooper());
-
-    runHandler.post(new Runnable()
+    runOnUiThread(new Runnable()
     {
       @Override
       public void run()
