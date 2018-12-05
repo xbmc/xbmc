@@ -17,6 +17,7 @@ import android.view.View;
 import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.os.Handler;
+import android.os.HandlerThread;
 import android.widget.RelativeLayout;
 
 import @APP_PACKAGE@.channels.util.TvUtil;
@@ -292,7 +293,11 @@ public class Main extends NativeActivity implements Choreographer.FrameCallback
 
   private void runNativeOnUiThread(final long funcAddr, final long variantAddr)
   {
-    runOnUiThread(new Runnable()
+    HandlerThread runThread = new HandlerThread("KodiRunUI");
+    runThread.start();
+    Handler runHandler = new Handler(runThread.getLooper());
+
+    runHandler.post(new Runnable()
     {
       @Override
       public void run()
