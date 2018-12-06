@@ -19,7 +19,8 @@ endif()
 
 find_path(FREETYPE_INCLUDE_DIR NAMES freetype/freetype.h freetype.h
                                PATHS ${PC_FREETYPE_INCLUDEDIR}
-                                     ${PC_FREETYPE_INCLUDE_DIRS})
+                                     ${PC_FREETYPE_INCLUDE_DIRS}
+                               PATH_SUFFIXES freetype2)
 find_library(FREETYPE_LIBRARY NAMES freetype freetype246MT
                               PATHS ${PC_FREETYPE_LIBDIR})
 
