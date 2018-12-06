@@ -278,28 +278,28 @@ void COMXAudioCodecOMX::Reset()
   m_iBufferOutputUsed = 0;
 }
 
-int COMXAudioCodecOMX::GetChannels()
+int COMXAudioCodecOMX::GetChannels() const
 {
   if (!m_pCodecContext)
     return 0;
   return m_pCodecContext->channels;
 }
 
-int COMXAudioCodecOMX::GetSampleRate()
+int COMXAudioCodecOMX::GetSampleRate() const
 {
   if (!m_pCodecContext)
     return 0;
   return m_pCodecContext->sample_rate;
 }
 
-int COMXAudioCodecOMX::GetBitsPerSample()
+int COMXAudioCodecOMX::GetBitsPerSample() const
 {
   if (!m_pCodecContext)
     return 0;
   return m_desiredSampleFormat == AV_SAMPLE_FMT_S16 ? 16 : 32;
 }
 
-int COMXAudioCodecOMX::GetBitRate()
+int COMXAudioCodecOMX::GetBitRate() const
 {
   if (!m_pCodecContext)
     return 0;

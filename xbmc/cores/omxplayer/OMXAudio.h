@@ -71,7 +71,7 @@ typedef struct tWAVEFORMATEXTENSIBLE
 class COMXAudio
 {
 public:
-  unsigned int GetChunkLen();
+  unsigned int GetChunkLen() const;
   float GetDelay();
   float GetCacheTime();
   float GetCacheTotal();
@@ -101,7 +101,7 @@ public:
   void SetCodingType(AEAudioFormat format);
 
   static void PrintChannels(OMX_AUDIO_CHANNELTYPE eChannelMapping[]);
-  void PrintPCM(OMX_AUDIO_PARAM_PCMMODETYPE *pcm, std::string direction);
+  static void PrintPCM(OMX_AUDIO_PARAM_PCMMODETYPE *pcm, std::string direction);
   void UpdateAttenuation();
 
   bool BadState() const { return !m_Initialized; };

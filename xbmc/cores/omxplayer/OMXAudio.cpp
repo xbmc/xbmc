@@ -1312,7 +1312,7 @@ float COMXAudio::GetCacheTotal()
 }
 
 //***********************************************************************************************
-unsigned int COMXAudio::GetChunkLen()
+unsigned int COMXAudio::GetChunkLen() const
 {
   return m_ChunkLen;
 }
