@@ -77,6 +77,47 @@
 			<key>UILaunchImageOrientation</key>
 			<string>Portrait</string>
 			<key>UILaunchImageName</key>
+			<string>LaunchImage-1200-Portrait-2224h</string>
+			<key>UILaunchImageSize</key>
+			<string>{834, 1112}</string>
+			<key>UILaunchImageMinimumOSVersion</key>
+			<string>12.0</string>
+		</dict>
+		<dict>
+			<key>UILaunchImageOrientation</key>
+			<string>Landscape</string>
+			<key>UILaunchImageName</key>
+			<string>LaunchImage-1200-Landscape-2224h</string>
+			<key>UILaunchImageSize</key>
+			<string>{834, 1112}</string>
+			<key>UILaunchImageMinimumOSVersion</key>
+			<string>12.0</string>
+		</dict>
+		<dict>
+			<key>UILaunchImageOrientation</key>
+			<string>Portrait</string>
+			<key>UILaunchImageName</key>
+			<string>LaunchImage-1200-Portrait-2388h</string>
+			<key>UILaunchImageSize</key>
+			<string>{834, 1194}</string>
+			<key>UILaunchImageMinimumOSVersion</key>
+			<string>12.0</string>
+		</dict>
+		<dict>
+			<key>UILaunchImageOrientation</key>
+			<string>Landscape</string>
+			<key>UILaunchImageName</key>
+			<string>LaunchImage-1200-Landscape-2388h</string>
+			<key>UILaunchImageSize</key>
+			<string>{834, 1194}</string>
+			<key>UILaunchImageMinimumOSVersion</key>
+			<string>12.0</string>
+		</dict>
+
+		<dict>
+			<key>UILaunchImageOrientation</key>
+			<string>Portrait</string>
+			<key>UILaunchImageName</key>
 			<string>LaunchImage-1200-Portrait-2688h</string>
 			<key>UILaunchImageSize</key>
 			<string>{414, 896}</string>
