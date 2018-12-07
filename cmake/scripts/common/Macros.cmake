@@ -777,6 +777,12 @@ endmacro()
 # find all folders containing addon.xml.in and used to define
 # ADDON_XML_OUTPUTS, ADDON_XML_DEPENDS and ADDON_INSTALL_DATA
 macro(find_addon_xml_in_files)
+  set(filter ${ARGV0})
+
+  if(filter AND VERBOSE)
+    message(STATUS "find_addon_xml_in_files: filtering ${filter}")
+  endif()
+
   file(GLOB ADDON_XML_IN_FILE ${CMAKE_SOURCE_DIR}/addons/*/addon.xml.in)
   foreach(loop_var ${ADDON_XML_IN_FILE})
     list(GET loop_var 0 xml_name)
@@ -785,7 +791,9 @@ macro(find_addon_xml_in_files)
     string(REPLACE "${CORE_SOURCE_DIR}/" "" xml_name ${xml_name})
 
     list(APPEND ADDON_XML_DEPENDS "${CORE_SOURCE_DIR}/${xml_name}/addon.xml.in")
-    list(APPEND ADDON_XML_OUTPUTS "${CMAKE_BINARY_DIR}/${xml_name}/addon.xml")
+    if(filter AND NOT xml_name MATCHES ${filter})
+      list(APPEND ADDON_XML_OUTPUTS "${CMAKE_BINARY_DIR}/${xml_name}/addon.xml")
+    endif()
 
     # Read content of add-on folder to have on install
     file(GLOB ADDON_FILES "${CORE_SOURCE_DIR}/${xml_name}/*")
