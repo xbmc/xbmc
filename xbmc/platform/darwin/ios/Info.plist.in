@@ -74,65 +74,176 @@
 	<key>UILaunchImages</key>
 	<array>
 		<dict>
-			<key>UILaunchImageSize</key>
-			<string>{375, 667}</string>
-			<key>UILaunchImageName</key>
-			<string>Default-667h</string>
-			<key>UILaunchImageMinimumOSVersion</key>
-			<string>8.0</string>
 			<key>UILaunchImageOrientation</key>
 			<string>Portrait</string>
+			<key>UILaunchImageName</key>
+			<string>LaunchImage-1200-Portrait-2224h</string>
+			<key>UILaunchImageSize</key>
+			<string>{834, 1112}</string>
+			<key>UILaunchImageMinimumOSVersion</key>
+			<string>12.0</string>
 		</dict>
 		<dict>
-			<key>UILaunchImageSize</key>
-			<string>{414, 736}</string>
-			<key>UILaunchImageName</key>
-			<string>Default-736h</string>
-			<key>UILaunchImageMinimumOSVersion</key>
-			<string>8.0</string>
-			<key>UILaunchImageOrientation</key>
-			<string>Portrait</string>
-		</dict>
-		<dict>
-			<key>UILaunchImageSize</key>
-			<string>{414, 736}</string>
-			<key>UILaunchImageName</key>
-			<string>Default-Landscape-736h</string>
-			<key>UILaunchImageMinimumOSVersion</key>
-			<string>8.0</string>
 			<key>UILaunchImageOrientation</key>
 			<string>Landscape</string>
+			<key>UILaunchImageName</key>
+			<string>LaunchImage-1200-Landscape-2224h</string>
+			<key>UILaunchImageSize</key>
+			<string>{834, 1112}</string>
+			<key>UILaunchImageMinimumOSVersion</key>
+			<string>12.0</string>
 		</dict>
 		<dict>
-			<key>UILaunchImageSize</key>
-			<string>{320, 568}</string>
-			<key>UILaunchImageName</key>
-			<string>Default-568h</string>
-			<key>UILaunchImageMinimumOSVersion</key>
-			<string>8.0</string>
 			<key>UILaunchImageOrientation</key>
 			<string>Portrait</string>
+			<key>UILaunchImageName</key>
+			<string>LaunchImage-1200-Portrait-2388h</string>
+			<key>UILaunchImageSize</key>
+			<string>{834, 1194}</string>
+			<key>UILaunchImageMinimumOSVersion</key>
+			<string>12.0</string>
 		</dict>
-                <dict>
-                        <key>UILaunchImageSize</key>
-                        <string>{375, 812}</string>
-                        <key>UILaunchImageName</key>
-                        <string>Default-812h</string>
-                        <key>UILaunchImageMinimumOSVersion</key>
-                        <string>9.0</string>
-                        <key>UILaunchImageOrientation</key>
-                        <string>Portrait</string>
-                </dict>
-                <dict>
-                        <key>UILaunchImageSize</key>
-                        <string>{375, 812}</string>
-                        <key>UILaunchImageName</key>
-                        <string>Default-Landscape-812h</string>
-                        <key>UILaunchImageMinimumOSVersion</key>
-                        <string>9.0</string>
-                        <key>UILaunchImageOrientation</key>
-                        <string>Landscape</string>
-                </dict>
+		<dict>
+			<key>UILaunchImageOrientation</key>
+			<string>Landscape</string>
+			<key>UILaunchImageName</key>
+			<string>LaunchImage-1200-Landscape-2388h</string>
+			<key>UILaunchImageSize</key>
+			<string>{834, 1194}</string>
+			<key>UILaunchImageMinimumOSVersion</key>
+			<string>12.0</string>
+		</dict>
+
+		<dict>
+			<key>UILaunchImageOrientation</key>
+			<string>Portrait</string>
+			<key>UILaunchImageName</key>
+			<string>LaunchImage-1200-Portrait-2688h</string>
+			<key>UILaunchImageSize</key>
+			<string>{414, 896}</string>
+			<key>UILaunchImageMinimumOSVersion</key>
+			<string>12.0</string>
+		</dict>
+		<dict>
+			<key>UILaunchImageOrientation</key>
+			<string>Landscape</string>
+			<key>UILaunchImageName</key>
+			<string>LaunchImage-1200-Landscape-2688h</string>
+			<key>UILaunchImageSize</key>
+			<string>{414, 896}</string>
+			<key>UILaunchImageMinimumOSVersion</key>
+			<string>12.0</string>
+		</dict>
+		<dict>
+			<key>UILaunchImageOrientation</key>
+			<string>Portrait</string>
+			<key>UILaunchImageName</key>
+			<string>LaunchImage-1200-Portrait-1792h</string>
+			<key>UILaunchImageSize</key>
+			<string>{414, 896}</string>
+			<key>UILaunchImageMinimumOSVersion</key>
+			<string>12.0</string>
+		</dict>
+		<dict>
+			<key>UILaunchImageOrientation</key>
+			<string>Landscape</string>
+			<key>UILaunchImageName</key>
+			<string>LaunchImage-1200-Landscape-1792h</string>
+			<key>UILaunchImageSize</key>
+			<string>{414, 896}</string>
+			<key>UILaunchImageMinimumOSVersion</key>
+			<string>12.0</string>
+		</dict>
+		<dict>
+			<key>UILaunchImageOrientation</key>
+			<string>Portrait</string>
+			<key>UILaunchImageName</key>
+			<string>LaunchImage-1100-Portrait-2436h</string>
+			<key>UILaunchImageSize</key>
+			<string>{375, 812}</string>
+			<key>UILaunchImageMinimumOSVersion</key>
+			<string>11.0</string>
+		</dict>
+		<dict>
+			<key>UILaunchImageOrientation</key>
+			<string>Landscape</string>
+			<key>UILaunchImageName</key>
+			<string>LaunchImage-1100-Landscape-2436h</string>
+			<key>UILaunchImageSize</key>
+			<string>{375, 812}</string>
+			<key>UILaunchImageMinimumOSVersion</key>
+			<string>11.0</string>
+		</dict>
+		<dict>
+			<key>UILaunchImageOrientation</key>
+			<string>Portrait</string>
+			<key>UILaunchImageName</key>
+			<string>LaunchImage-800-Portrait-736h</string>
+			<key>UILaunchImageSize</key>
+			<string>{414, 736}</string>
+			<key>UILaunchImageMinimumOSVersion</key>
+			<string>8.0</string>
+		</dict>
+		<dict>
+			<key>UILaunchImageOrientation</key>
+			<string>Landscape</string>
+			<key>UILaunchImageName</key>
+			<string>LaunchImage-800-Landscape-736h</string>
+			<key>UILaunchImageSize</key>
+			<string>{414, 736}</string>
+			<key>UILaunchImageMinimumOSVersion</key>
+			<string>8.0</string>
+		</dict>
+		<dict>
+			<key>UILaunchImageOrientation</key>
+			<string>Portrait</string>
+			<key>UILaunchImageName</key>
+			<string>LaunchImage-800-667h</string>
+			<key>UILaunchImageSize</key>
+			<string>{375, 667}</string>
+			<key>UILaunchImageMinimumOSVersion</key>
+			<string>8.0</string>
+		</dict>
+		<dict>
+			<key>UILaunchImageOrientation</key>
+			<string>Portrait</string>
+			<key>UILaunchImageName</key>
+			<string>LaunchImage-700</string>
+			<key>UILaunchImageSize</key>
+			<string>{320, 480}</string>
+			<key>UILaunchImageMinimumOSVersion</key>
+			<string>7.0</string>
+		</dict>
+		<dict>
+			<key>UILaunchImageOrientation</key>
+			<string>Portrait</string>
+			<key>UILaunchImageName</key>
+			<string>LaunchImage-700-568h</string>
+			<key>UILaunchImageSize</key>
+			<string>{320, 568}</string>
+			<key>UILaunchImageMinimumOSVersion</key>
+			<string>7.0</string>
+		</dict>
+		<dict>
+			<key>UILaunchImageOrientation</key>
+			<string>Portrait</string>
+			<key>UILaunchImageName</key>
+			<string>LaunchImage-700-Portrait</string>
+			<key>UILaunchImageSize</key>
+			<string>{768, 1024}</string>
+			<key>UILaunchImageMinimumOSVersion</key>
+			<string>7.0</string>
+		</dict>
+		<dict>
+			<key>UILaunchImageOrientation</key>
+			<string>Landscape</string>
+			<key>UILaunchImageName</key>
+			<string>LaunchImage-700-Landscape</string>
+			<key>UILaunchImageSize</key>
+			<string>{768, 1024}</string>
+			<key>UILaunchImageMinimumOSVersion</key>
+			<string>7.0</string>
+		</dict>
 	</array>
 	<key>UIDeviceFamily</key>
 	<array>

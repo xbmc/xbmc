@@ -81,16 +81,23 @@ enum iosPlatform
   iPhoneSE,
   iPhone7,
   iPhone8,
+  iPhoneXR,
   iPadAir2Wifi,
   iPadAir2Cellular,
   iPadPro9_7InchWifi,
   iPadPro9_7InchCellular,
+  iPad6thGeneration9_7InchWifi,
+  iPad6thGeneration9_7InchCellular,
   iPadPro12_9InchWifi,
   iPadPro12_9InchCellular,
   iPadPro2_12_9InchWifi,
   iPadPro2_12_9InchCellular,
+  iPadPro3_12_9InchWifi,
+  iPadPro3_12_9InchCellular,
   iPadPro_10_5InchWifi,
   iPadPro_10_5InchCellular,
+  iPadPro11InchWifi,
+  iPadPro11InchCellular,
   iPadMini3Wifi,
   iPadMini3Cellular,
   iPadMini4Wifi,
@@ -100,6 +107,8 @@ enum iosPlatform
   iPhone7Plus,
   iPhone8Plus,
   iPhoneX,
+  iPhoneXS,
+  iPhoneXSMax,
 };
 
 // platform strings are based on http://theiphonewiki.com/wiki/Models
@@ -163,6 +172,9 @@ enum iosPlatform getIosPlatform()
     else if (devStr == "iPhone10,4") eDev = iPhone8;
     else if (devStr == "iPhone10,5") eDev = iPhone8Plus;
     else if (devStr == "iPhone10,6") eDev = iPhoneX;
+    else if (devStr == "iPhone11,2") eDev = iPhoneXS;
+    else if (devStr == "iPhone11,6") eDev = iPhoneXSMax;
+    else if (devStr == "iPhone11,8") eDev = iPhoneXR;
     else if (devStr == "iPod1,1") eDev = iPodTouch1G;
     else if (devStr == "iPod2,1") eDev = iPodTouch2G;
     else if (devStr == "iPod3,1") eDev = iPodTouch3G;
@@ -207,6 +219,16 @@ enum iosPlatform getIosPlatform()
     else if (devStr == "iPad7,2") eDev = iPadPro2_12_9InchCellular;
     else if (devStr == "iPad7,3") eDev = iPadPro_10_5InchWifi;
     else if (devStr == "iPad7,4") eDev = iPadPro_10_5InchCellular;
+    else if (devStr == "iPad7,5") eDev = iPad6thGeneration9_7InchWifi;
+    else if (devStr == "iPad7,6") eDev = iPad6thGeneration9_7InchCellular;
+    else if (devStr == "iPad8,1") eDev = iPadPro11InchWifi;
+    else if (devStr == "iPad8,2") eDev = iPadPro11InchWifi;
+    else if (devStr == "iPad8,3") eDev = iPadPro11InchCellular;
+    else if (devStr == "iPad8,4") eDev = iPadPro11InchCellular;
+    else if (devStr == "iPad8,5") eDev = iPadPro3_12_9InchWifi;
+    else if (devStr == "iPad8,6") eDev = iPadPro3_12_9InchWifi;
+    else if (devStr == "iPad8,7") eDev = iPadPro3_12_9InchCellular;
+    else if (devStr == "iPad8,8") eDev = iPadPro3_12_9InchCellular;
     else if (devStr == "AppleTV2,1") eDev = AppleTV2;
     else if (devStr == "AppleTV5,3") eDev = AppleTV4;
     else if (devStr == "AppleTV6,2") eDev = AppleTV4K;
