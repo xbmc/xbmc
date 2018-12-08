@@ -639,13 +639,16 @@ void CDVDDemuxClient::OpenStream(int id)
 {
   // OpenStream may change some parameters
   // in this case we need to reset our stream properties
-  if (m_IDemux && m_IDemux->OpenStream(id))
+  if (m_IDemux)
   {
+    bool bOpenStream = m_IDemux->OpenStream(id);
+
     CDemuxStream *stream(m_IDemux->GetStream(id));
     if (stream && stream->type == STREAM_VIDEO)
       m_videoStreamPlaying = id;
 
-    SetStreamProps(stream, m_streams, true);
+    if (bOpenStream)
+      SetStreamProps(stream, m_streams, true);
   }
 }
 
