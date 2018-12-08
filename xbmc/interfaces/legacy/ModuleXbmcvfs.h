@@ -74,7 +74,7 @@ namespace XBMCAddon
     /// ..
     /// ~~~~~~~~~~~~~
     ///
-    deleteFile(...);
+    delete(...);
 #else
     bool deleteFile(const String& file);
 #endif

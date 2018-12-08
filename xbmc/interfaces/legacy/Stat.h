@@ -160,13 +160,13 @@ namespace XBMCAddon
 #ifdef DOXYGEN_SHOULD_USE_THIS
       ///
       /// \ingroup python_stat
-      /// @brief \python_func{ atime() }
+      /// @brief \python_func{ st_atime() }
       ///-----------------------------------------------------------------------
       /// To get time of last access.
       ///
       /// @return                        st_atime
       ///
-      atime();
+      st_atime();
 #else
       inline long long atime() { return st.st_atime; }; //names st_atime/st_mtime/st_ctime are used by sys/stat.h
 #endif
@@ -174,13 +174,13 @@ namespace XBMCAddon
 #ifdef DOXYGEN_SHOULD_USE_THIS
       ///
       /// \ingroup python_stat
-      /// @brief \python_func{ mtime() }
+      /// @brief \python_func{ st_mtime() }
       ///-----------------------------------------------------------------------
       /// To get time of last modification.
       ///
       /// @return                        st_mtime
       ///
-      mtime();
+      st_mtime();
 #else
       inline long long mtime() { return st.st_mtime; };
 #endif
@@ -188,13 +188,13 @@ namespace XBMCAddon
 #ifdef DOXYGEN_SHOULD_USE_THIS
       ///
       /// \ingroup python_stat
-      /// @brief \python_func{ ctime() }
+      /// @brief \python_func{ st_ctime() }
       ///-----------------------------------------------------------------------
       /// To get time of last status change.
       ///
       /// @return                        st_ctime
       ///
-      ctime();
+      st_ctime();
 #else
       inline long long ctime() { return st.st_ctime; };
 #endif
