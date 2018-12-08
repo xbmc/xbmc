@@ -94,3 +94,8 @@ CDateTime CTimeUtils::GetLocalTime(time_t time)
 
   return result;
 }
+
+std::string CTimeUtils::WithoutSeconds(const std::string hhmmss)
+{
+  return hhmmss.substr(0, 5);
+}

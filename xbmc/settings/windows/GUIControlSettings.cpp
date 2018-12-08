@@ -648,14 +648,7 @@ bool CGUIControlButtonSetting::OnClick()
 
       SYSTEMTIME systemtime;
       settingTime->GetTime().GetAsSystemTime(systemtime);
-      /* TODO
-      if (value.size() >= 5)
-      {
-        // assumes HH:MM
-        systemtime.wHour = atoi(value.substr(0, 2).c_str());
-        systemtime.wMinute = atoi(value.substr(3, 2).c_str());
-      }
-      */
+
       if (CGUIDialogNumeric::ShowAndGetTime(systemtime, Localize(buttonControl->GetHeading())))
         SetValid(settingTime->SetTime(CDateTime(systemtime)));
     }
