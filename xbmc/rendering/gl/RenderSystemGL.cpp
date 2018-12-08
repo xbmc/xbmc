@@ -111,6 +111,9 @@ bool CRenderSystemGL::InitRenderSystem()
 
 bool CRenderSystemGL::ResetRenderSystem(int width, int height)
 {
+  if (!m_bRenderCreated)
+    return false;
+
   m_width = width;
   m_height = height;
 
