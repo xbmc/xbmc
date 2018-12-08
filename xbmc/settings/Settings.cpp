@@ -833,6 +833,7 @@ void CSettings::InitializeISettingCallbacks()
   settingSet.insert(CSettings::SETTING_VIDEOLIBRARY_CLEANUP);
   settingSet.insert(CSettings::SETTING_VIDEOLIBRARY_IMPORT);
   settingSet.insert(CSettings::SETTING_VIDEOLIBRARY_EXPORT);
+  settingSet.insert(CSettings::SETTING_VIDEOLIBRARY_SHOWUNWATCHEDPLOTS);
   GetSettingsManager()->RegisterCallback(&CMediaSettings::GetInstance(), settingSet);
 
   settingSet.clear();

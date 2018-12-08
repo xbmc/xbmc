@@ -376,6 +376,7 @@ public:
   // values for SETTING_VIDEOLIBRARY_SHOWUNWATCHEDPLOTS
   static const int VIDEOLIBRARY_PLOTS_SHOW_UNWATCHED_MOVIES = 0;
   static const int VIDEOLIBRARY_PLOTS_SHOW_UNWATCHED_TVSHOWEPISODES = 1;
+  static const int VIDEOLIBRARY_THUMB_SHOW_UNWATCHED_EPISODE = 2;
 
   /*!
    \brief Creates a new settings wrapper around a new settings manager.
