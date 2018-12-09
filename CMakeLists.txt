@@ -227,6 +227,7 @@ add_custom_command(OUTPUT ${CORE_BUILD_DIR}/xbmc/CompileInfo.cpp
                                             -DARCH_DEFINES="${ARCH_DEFINES}"
                                             -DAPP_SCMID=${APP_SCMID}
                                             -DAPP_COPYRIGHT_YEARS=${APP_COPYRIGHT_YEARS}
+                                            -DAPP_BUILD_DATE=${APP_BUILD_DATE}
                                             -Dprefix=${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}
                                             -P ${CMAKE_SOURCE_DIR}/cmake/scripts/common/GenerateVersionedFiles.cmake
                    DEPENDS ${CMAKE_SOURCE_DIR}/version.txt
@@ -488,6 +489,7 @@ if(VERBOSE)
   message(STATUS "BINARY: ${APP_NAME_LC}${APP_BINARY_SUFFIX}")
   message(STATUS "#---------------------------------------------#")
   message(STATUS "GIT_REV: ${APP_SCMID}")
+  message(STATUS "Build date: ${APP_BUILD_DATE}")
   message(STATUS "#---------------------------------------------#")
   message(STATUS "CPACK_GENERATOR       : ${CPACK_GENERATOR}")
   message(STATUS "CPACK_SOURCE_GENERATOR: ${CPACK_SOURCE_GENERATOR}")

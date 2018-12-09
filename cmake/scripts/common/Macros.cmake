@@ -653,12 +653,18 @@ function(core_find_git_rev stamp)
                       WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
       string(REPLACE "\"" "" DATE ${DATE})
       string(REPLACE "-" "" DATE ${DATE})
+
+      # build date
+      string(TIMESTAMP APP_BUILD_DATE "%Y%m%d" UTC)
+      set(APP_BUILD_DATE ${APP_BUILD_DATE} PARENT_SCOPE)
     else()
       if(EXISTS ${CMAKE_SOURCE_DIR}/BUILDDATE)
         file(STRINGS ${CMAKE_SOURCE_DIR}/BUILDDATE DATE LIMIT_INPUT 8)
       else()
         string(TIMESTAMP DATE "%Y%m%d" UTC)
       endif()
+      set(APP_BUILD_DATE ${DATE} PARENT_SCOPE)
+
       if(EXISTS ${CMAKE_SOURCE_DIR}/VERSION)
         file(STRINGS ${CMAKE_SOURCE_DIR}/VERSION HASH LIMIT_INPUT 16)
       else()
