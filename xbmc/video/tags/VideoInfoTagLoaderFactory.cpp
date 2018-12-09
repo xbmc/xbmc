@@ -14,6 +14,7 @@
 #include "ServiceBroker.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
+#include "utils/URIUtils.h"
 
 using namespace VIDEO;
 
@@ -23,7 +24,7 @@ IVideoInfoTagLoader* CVideoInfoTagLoaderFactory::CreateLoader(const CFileItem& i
                                                               bool forceRefresh)
 {
   // don't try to read tags for streams
-  if (item.IsInternetStream())
+  if (item.IsInternetStream() && !URIUtils::IsOnLAN(item.GetPath()))
     return nullptr;
 
   if (item.IsPlugin() && info && info->ID() == "metadata.local")

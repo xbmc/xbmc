@@ -3043,7 +3043,7 @@ bool CFileItem::SkipLocalArt() const
        || StringUtils::StartsWithNoCase(m_strPath, "newsmartplaylist://")
        || StringUtils::StartsWithNoCase(m_strPath, "newplaylist://")
        || m_bIsShareOrDrive
-       || IsInternetStream()
+       || (IsInternetStream() && !URIUtils::IsOnLAN(GetPath()))
        || URIUtils::IsUPnP(m_strPath)
        || (URIUtils::IsFTP(m_strPath) && !CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_bFTPThumbs)
        || IsPlugin()
