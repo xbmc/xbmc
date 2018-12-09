@@ -24,7 +24,7 @@ IVideoInfoTagLoader* CVideoInfoTagLoaderFactory::CreateLoader(const CFileItem& i
                                                               bool forceRefresh)
 {
   // don't try to read tags for streams
-  if (item.IsInternetStream() && !URIUtils::IsOnLAN(item.GetPath()))
+  if (item.IsInternetStream() && !URIUtils::IsOnLAN(item.GetDynPath()))
     return nullptr;
 
   if (item.IsPlugin() && info && info->ID() == "metadata.local")
