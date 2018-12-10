@@ -24,6 +24,7 @@ public:
 
   void ProcessButton(libinput_event_pointer *e);
   void ProcessMotion(libinput_event_pointer *e);
+  void ProcessMotionAbsolute(libinput_event_pointer *e);
   void ProcessAxis(libinput_event_pointer *e);
 
 private:

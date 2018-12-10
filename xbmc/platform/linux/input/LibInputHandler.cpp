@@ -181,6 +181,9 @@ void CLibInputHandler::ProcessEvent(libinput_event *ev)
     case LIBINPUT_EVENT_POINTER_MOTION:
       m_pointer->ProcessMotion(libinput_event_get_pointer_event(ev));
       break;
+    case LIBINPUT_EVENT_POINTER_MOTION_ABSOLUTE:
+      m_pointer->ProcessMotionAbsolute(libinput_event_get_pointer_event(ev));
+      break;
     case LIBINPUT_EVENT_POINTER_AXIS:
       m_pointer->ProcessAxis(libinput_event_get_pointer_event(ev));
       break;
