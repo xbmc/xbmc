@@ -258,6 +258,7 @@ bool CAndroidUtils::ProbeResolutions(std::vector<RESOLUTION_INFO> &resolutions)
       {
         res.iWidth = std::min(res.iWidth, m_width);
         res.iHeight = std::min(res.iHeight, m_height);
+        res.iSubtitles = static_cast<int>(0.965 * res.iHeight);
       }
       resolutions.push_back(res);
     }
