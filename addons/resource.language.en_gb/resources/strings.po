@@ -20658,6 +20658,7 @@ msgid "Configure audio encoder settings such as quality and compression level"
 msgstr ""
 
 #: system/settings/rbp.xml
+#: system/settings/android.xml
 msgctxt "#37026"
 msgid "Auto"
 msgstr ""
@@ -20668,6 +20669,7 @@ msgid "540"
 msgstr ""
 
 #: system/settings/rbp.xml
+#: system/settings/android.xml
 msgctxt "#37028"
 msgid "720"
 msgstr ""
@@ -20678,6 +20680,7 @@ msgid "900"
 msgstr ""
 
 #: system/settings/rbp.xml
+#: system/settings/android.xml
 msgctxt "#37030"
 msgid "Unlimited"
 msgstr ""
@@ -20772,7 +20775,12 @@ msgctxt "#37045"
 msgid "Extract chapter thumbnails for presentation in the chapters / bookmarks dialogue. This might increase CPU load."
 msgstr ""
 
-#empty strings from id 37046 to 38009
+#: system/settings/android.xml
+msgctxt "#37046"
+msgid "1080"
+msgstr ""
+
+#empty strings from id 37047 to 38009
 
 #: system/settings/rbp.xml
 msgctxt "#38010"
