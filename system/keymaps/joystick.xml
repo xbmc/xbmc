@@ -169,6 +169,8 @@
   </FullscreenGame>
   <FullscreenLiveTV>
     <joystick profile="game.controller.default">
+      <x>OSD</x>
+      <back>OSD</back>
       <guide>OSD</guide>
       <up>ChannelUp</up>
       <down>ChannelDown</down>
