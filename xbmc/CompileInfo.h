@@ -19,4 +19,5 @@ public:
   static const char *GetSuffix();  // Git "Tag", e.g. alpha1
   static const char* GetSCMID();   // Git Revision
   static const char* GetCopyrightYears();
+  static const char* GetBuildDate();
 };
