@@ -720,10 +720,6 @@ CDVDVideoCodec::VCReturn CMMALVideo::GetPicture(VideoPicture* picture)
   bool drain = (m_codecControlFlags & DVD_CODEC_CTRL_DRAIN) ? true : false;
   bool send_eos = drain && !m_got_eos && m_packet_num_eos != m_packet_num;
 
-  if (picture->videoBuffer)
-    picture->videoBuffer->Release();
-  picture->videoBuffer = nullptr;
-
   // we don't get an EOS response if no packets have been sent
   if (!drain)
     m_got_eos = false;
@@ -799,6 +795,8 @@ CDVDVideoCodec::VCReturn CMMALVideo::GetPicture(VideoPicture* picture)
   if (ret == CDVDVideoCodec::VC_PICTURE)
   {
     assert(buffer && buffer->mmal_buffer);
+    if (picture->videoBuffer)
+      picture->videoBuffer->Release();
     picture->videoBuffer = dynamic_cast<CVideoBuffer*>(buffer);
     assert(picture->videoBuffer);
     picture->color_range  = 0;
