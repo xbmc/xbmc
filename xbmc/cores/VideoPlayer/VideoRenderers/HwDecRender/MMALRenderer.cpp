@@ -172,11 +172,12 @@ CMMALPool::~CMMALPool()
       CLog::Log(LOGERROR, "%s::%s Failed to disable component %s (status=%x %s)", CLASSNAME, __func__, m_component->name, status, mmal_status_to_string(status));
   }
 
+  mmal_port_pool_destroy(port, m_mmal_pool);
+
   if (m_component)
     mmal_component_destroy(m_component);
   m_component = nullptr;
 
-  mmal_port_pool_destroy(port, m_mmal_pool);
   m_mmal_pool = nullptr;
   for (auto buf : m_all)
   {
