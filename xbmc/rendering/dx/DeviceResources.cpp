@@ -195,13 +195,14 @@ bool DX::DeviceResources::SetFullScreen(bool fullscreen, RESOLUTION_INFO& res)
 
   critical_section::scoped_lock lock(m_criticalSection);
 
-  CLog::LogF(LOGDEBUG, "switching to/from fullscreen (%f x %f)", m_outputSize.Width,
-             m_outputSize.Height);
-
   BOOL bFullScreen;
-  bool recreate = m_stereoEnabled != (CServiceBroker::GetWinSystem()->GetGfxContext().GetStereoMode() == RENDER_STEREO_MODE_HARDWAREBASED);
-
   m_swapChain->GetFullscreenState(&bFullScreen, nullptr);
+
+  CLog::LogF(LOGDEBUG, "switching from %s(%.0f x %.0f) to %s(%d x %d)",
+             bFullScreen ? "fullscreen " : "", m_outputSize.Width, m_outputSize.Height,
+             fullscreen  ? "fullscreen " : "", res.iWidth, res.iHeight);
+
+  bool recreate = m_stereoEnabled != (CServiceBroker::GetWinSystem()->GetGfxContext().GetStereoMode() == RENDER_STEREO_MODE_HARDWAREBASED);
   if (!!bFullScreen && !fullscreen)
   {
     CLog::LogF(LOGDEBUG, "switching to windowed");
@@ -257,7 +258,15 @@ bool DX::DeviceResources::SetFullScreen(bool fullscreen, RESOLUTION_INFO& res)
           recreate |= SUCCEEDED(m_swapChain->SetFullscreenState(true, pOutput.Get()));
           m_swapChain->GetFullscreenState(&bFullScreen, nullptr);
         }
-        recreate |= SUCCEEDED(m_swapChain->ResizeTarget(&currentMode));
+        bool resized = SUCCEEDED(m_swapChain->ResizeTarget(&currentMode));
+        if (resized) 
+        {
+          // some system doesn't inform windowing about desktop size changes
+          // so we have to change output size before resizing buffers
+          m_outputSize.Width = static_cast<float>(currentMode.Width);
+          m_outputSize.Height = static_cast<float>(currentMode.Height);
+        }
+        recreate |= resized;
       }
     }
     if (!bFullScreen)
