@@ -525,16 +525,20 @@ void DX::DeviceResources::ResizeBuffers()
   DXGI_SWAP_CHAIN_DESC1 scDesc = { 0 };
   if (m_swapChain)
   {
+    BOOL bFullcreen = 0;
+    m_swapChain->GetFullscreenState(&bFullcreen, nullptr);
+    if (!!bFullcreen)
+    {
+      windowed = false;
+    }
+
     // check if swapchain needs to be recreated
     m_swapChain->GetDesc1(&scDesc);
     if ((scDesc.Stereo == TRUE) != bHWStereoEnabled)
     {
       // check fullscreen state and go to windowing if necessary
-      BOOL bFullcreen;
-      m_swapChain->GetFullscreenState(&bFullcreen, nullptr);
       if (!!bFullcreen)
       {
-        windowed = false; // will create fullscreen swapchain
         m_swapChain->SetFullscreenState(false, nullptr); // mandatory before releasing swapchain
       }
 
@@ -553,7 +557,7 @@ void DX::DeviceResources::ResizeBuffers()
       lround(m_outputSize.Width),
       lround(m_outputSize.Height),
       scDesc.Format,
-      0
+      windowed ? 0 : DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH
     );
 
     if (hr == DXGI_ERROR_DEVICE_REMOVED || hr == DXGI_ERROR_DEVICE_RESET)
@@ -578,7 +582,7 @@ void DX::DeviceResources::ResizeBuffers()
     swapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
     swapChainDesc.BufferCount = 3 * (1 + bHWStereoEnabled);
     swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_SEQUENTIAL;
-    swapChainDesc.Flags = 0;
+    swapChainDesc.Flags = windowed ? 0 : DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
     swapChainDesc.AlphaMode = DXGI_ALPHA_MODE_IGNORE;
     swapChainDesc.SampleDesc.Count = 1;
     swapChainDesc.SampleDesc.Quality = 0;
