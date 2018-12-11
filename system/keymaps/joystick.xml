@@ -169,6 +169,8 @@
   </FullscreenGame>
   <FullscreenLiveTV>
     <joystick profile="game.controller.default">
+      <x>OSD</x>
+      <back>OSD</back>
       <guide>OSD</guide>
       <up>ChannelUp</up>
       <down>ChannelDown</down>
@@ -176,8 +178,15 @@
       <right>StepForward</right>
     </joystick>
   </FullscreenLiveTV>
+  <TVGuide>
+    <joystick profile="game.controller.default">
+      <back>Menu</back>
+    </joystick>
+  </TVGuide>
   <FullscreenRadio>
     <joystick profile="game.controller.default">
+      <x>OSD</x>
+      <back>OSD</back>
       <guide>OSD</guide>
       <up>ChannelUp</up>
       <down>ChannelDown</down>
@@ -185,6 +194,11 @@
       <right>StepForward</right>
     </joystick>
   </FullscreenRadio>
+  <RadioGuide>
+    <joystick profile="game.controller.default">
+      <back>Menu</back>
+    </joystick>
+  </RadioGuide>
   <FullscreenInfo>
     <joystick profile="game.controller.default">
       <b>Close</b>
