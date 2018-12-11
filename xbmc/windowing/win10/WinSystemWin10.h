@@ -143,6 +143,7 @@ protected:
   WINDOW_WINDOW_STATE m_windowState;          // the state of the window when in windowed
   bool m_inFocus;
   bool m_bMinimized;
+  bool m_bFirstResChange = true;
 
   winrt::Windows::UI::Core::CoreWindow m_coreWindow = nullptr;
 };

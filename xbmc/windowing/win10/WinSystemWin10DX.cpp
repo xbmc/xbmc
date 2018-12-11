@@ -52,8 +52,7 @@ bool CWinSystemWin10DX::CreateNewWindow(const std::string& name, bool fullScreen
   if (CWinSystemWin10::CreateNewWindow(name, fullScreen, res) && m_deviceResources->HasValidDevice())
   {
     CGenericTouchInputHandler::GetInstance().RegisterHandler(&CGenericTouchActionHandler::GetInstance());
-    CGenericTouchInputHandler::GetInstance().SetScreenDPI(DX::DisplayMetrics::Dpi100);
-    ChangeResolution(res, true);
+    CGenericTouchInputHandler::GetInstance().SetScreenDPI(m_deviceResources->GetDpi());
     return true;
   }
   return false;
