@@ -662,20 +662,20 @@ void OMXPlayerVideo::SetVideoRect(const CRect &InSrcRect, const CRect &InDestRec
 
   if (stereoMode == "left_right")
   {
-    video_stereo_mode = RENDER_STEREO_MODE_SPLIT_HORIZONTAL;
+    video_stereo_mode = RENDER_STEREO_MODE_SPLIT_VERTICAL;
   }
   else if (stereoMode == "right_left")
   {
-    video_stereo_mode = RENDER_STEREO_MODE_SPLIT_HORIZONTAL;
+    video_stereo_mode = RENDER_STEREO_MODE_SPLIT_VERTICAL;
     stereo_invert = true;
   }
   else if (stereoMode == "top_bottom")
   {
-    video_stereo_mode = RENDER_STEREO_MODE_SPLIT_VERTICAL;
+    video_stereo_mode = RENDER_STEREO_MODE_SPLIT_HORIZONTAL;
   }
   else if (stereoMode == "bottom_top")
   {
-    video_stereo_mode = RENDER_STEREO_MODE_SPLIT_VERTICAL;
+    video_stereo_mode = RENDER_STEREO_MODE_SPLIT_HORIZONTAL;
     stereo_invert = true;
   }
 
