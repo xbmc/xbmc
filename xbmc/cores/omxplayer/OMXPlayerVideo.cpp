@@ -310,6 +310,13 @@ void OMXPlayerVideo::Output(double pts, bool bDropPacket)
   omvb->m_state = MMAL::MMALStateBypass;
   picture.videoBuffer = omvb;
 
+  if (m_processInfo.GetVideoStereoMode() != GetStereoMode())
+  {
+    m_processInfo.SetVideoStereoMode(picture.stereoMode);
+    // signal about changes in video parameters
+    m_messageParent.Put(new CDVDMsg(CDVDMsg::PLAYER_AVCHANGE));
+  }
+
   m_renderManager.AddVideoPicture(picture, m_bAbortOutput, EINTERLACEMETHOD::VS_INTERLACEMETHOD_NONE, (m_syncState == ESyncState::SYNC_STARTING));
 }
 
