@@ -285,7 +285,7 @@ bool DX::DeviceResources::SetFullScreen(bool fullscreen, RESOLUTION_INFO& res)
 
   CLog::LogF(LOGDEBUG, "switching done.");
 
-  return true;
+  return recreate;
 }
 
 // Configures resources that don't depend on the Direct3D device.
