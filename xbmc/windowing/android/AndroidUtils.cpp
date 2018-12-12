@@ -23,8 +23,12 @@
 
 #include "windowing/GraphicContext.h"
 #include "utils/log.h"
+
 #include "settings/Settings.h"
+#include "settings/DisplaySettings.h"
 #include "settings/SettingsComponent.h"
+#include "settings/lib/SettingsManager.h"
+
 #include "ServiceBroker.h"
 #include "utils/StringUtils.h"
 #include "utils/SysfsUtils.h"
@@ -118,6 +122,8 @@ static void fetchDisplayModes()
   }
 }
 
+const std::string CAndroidUtils::SETTING_LIMITGUI = "videoscreen.limitgui";
+
 CAndroidUtils::CAndroidUtils()
 {
   std::string displaySize;
@@ -153,7 +159,7 @@ CAndroidUtils::CAndroidUtils()
   }
 
   CLog::Log(LOGDEBUG, "CAndroidUtils: maximum/current resolution: %dx%d", m_width, m_height);
-  int limit = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt("videoscreen.limitgui");
+  int limit = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CAndroidUtils::SETTING_LIMITGUI);
   switch (limit)
   {
     case 0: // auto
@@ -181,6 +187,10 @@ CAndroidUtils::CAndroidUtils()
       break;
   }
   CLog::Log(LOGDEBUG, "CAndroidUtils: selected resolution: %dx%d", m_width, m_height);
+
+  CServiceBroker::GetSettingsComponent()->GetSettings()->GetSettingsManager()->RegisterCallback(this, {
+    CAndroidUtils::SETTING_LIMITGUI
+  });
 }
 
 CAndroidUtils::~CAndroidUtils()
@@ -302,4 +312,12 @@ bool CAndroidUtils::ProbeResolutions(std::vector<RESOLUTION_INFO> &resolutions)
     return true;
   }
   return false;
+}
+
+void  CAndroidUtils::OnSettingChanged(std::shared_ptr<const CSetting> setting)
+{
+  const std::string &settingId = setting->GetId();
+  /* Calibration (overscan / subtitles) are based on GUI size -> reset required */
+  if (settingId == CAndroidUtils::SETTING_LIMITGUI)
+    CDisplaySettings::GetInstance().ClearCalibrations();
 }
