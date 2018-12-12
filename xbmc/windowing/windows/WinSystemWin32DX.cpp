@@ -100,7 +100,10 @@ bool CWinSystemWin32DX::DestroyRenderSystem()
 
 void CWinSystemWin32DX::SetDeviceFullScreen(bool fullScreen, RESOLUTION_INFO& res)
 {
-  m_deviceResources->SetFullScreen(fullScreen, res);
+  if (m_deviceResources->SetFullScreen(fullScreen, res))
+  {
+    ResolutionChanged();
+  }
 }
 
 bool CWinSystemWin32DX::ResizeWindow(int newWidth, int newHeight, int newLeft, int newTop)
