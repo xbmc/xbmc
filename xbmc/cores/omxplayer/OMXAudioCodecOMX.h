@@ -31,14 +31,14 @@ public:
   int Decode(unsigned char* pData, int iSize, double dts, double pts);
   int GetData(unsigned char** dst, double &dts, double &pts);
   void Reset();
-  int GetChannels();
+  int GetChannels() const;
   void BuildChannelMap();
   CAEChannelInfo GetChannelMap();
-  int GetSampleRate();
-  int GetBitsPerSample();
+  int GetSampleRate() const;
+  int GetBitsPerSample() const;
   static const char* GetName() { return "FFmpeg"; }
-  int GetBitRate();
-  unsigned int GetFrameSize() { return m_frameSize; }
+  int GetBitRate() const;
+  unsigned int GetFrameSize() const { return m_frameSize; }
 
 protected:
   CProcessInfo &m_processInfo;
