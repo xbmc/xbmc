@@ -3231,9 +3231,6 @@ IAEStream *CActiveAE::MakeStream(AEAudioFormat &audioFormat, unsigned int option
     return nullptr;
   }
 
-  if (IsSuspended())
-    return NULL;
-
   //! @todo pass number of samples in audio packet
 
   AEAudioFormat format = audioFormat;
