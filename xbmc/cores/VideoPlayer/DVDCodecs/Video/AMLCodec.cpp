@@ -2206,8 +2206,8 @@ void CAMLCodec::SetVideoZoom(const float zoom)
 void CAMLCodec::SetVideoContrast(const int contrast)
 {
   // input contrast range is 0 to 100 with default of 50.
-  // output contrast range is -255 to 255 with default of 0.
-  int aml_contrast = (255 * (contrast - 50)) / 50;
+  // output contrast range is -127 to 127 with default of 0.
+  int aml_contrast = (127 * (contrast - 50)) / 50;
   SysfsUtils::SetInt("/sys/class/video/contrast", aml_contrast);
 }
 void CAMLCodec::SetVideoBrightness(const int brightness)
