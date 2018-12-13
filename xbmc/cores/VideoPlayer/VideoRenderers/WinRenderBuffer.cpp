@@ -85,6 +85,7 @@ void CRenderBuffer::Release()
   m_activePlanes = 0;
   texBits = 8;
   bits = 8;
+  m_locked = false;
 
   m_planes[0] = nullptr;
   m_planes[1] = nullptr;
