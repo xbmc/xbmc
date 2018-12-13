@@ -183,6 +183,7 @@ protected:
   mpeg2_sequence  *m_mpeg2_sequence;
   int             m_src_offset[4];
   int             m_src_stride[4];
+  bool            m_useDTSforPTS;
 
   // CJNISurfaceHolderCallback interface
 public:
