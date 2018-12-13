@@ -566,6 +566,12 @@ void CDisplaySettings::UpdateCalibrations()
   }
 }
 
+void CDisplaySettings::ClearCalibrations()
+{
+  CSingleLock lock(m_critical);
+  m_calibrations.clear();
+}
+
 DisplayMode CDisplaySettings::GetCurrentDisplayMode() const
 {
   if (GetCurrentResolution() == RES_WINDOW)
