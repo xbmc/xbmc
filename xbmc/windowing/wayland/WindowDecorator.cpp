@@ -420,102 +420,116 @@ CWindowDecorator::CWindowDecorator(IWindowDecorationHandler& handler, CConnectio
   m_registry.RequestSingleton(m_compositor, 1, 4);
   m_registry.RequestSingleton(m_subcompositor, 1, 1, false);
   m_registry.RequestSingleton(m_shm, 1, 1);
-  m_registry.Request<wayland::seat_t>(1, 5, std::bind(&CWindowDecorator::OnSeatAdded, this, _1, _2), std::bind(&CWindowDecorator::OnSeatRemoved, this, _1));
 
   m_registry.Bind();
 }
 
-void CWindowDecorator::OnSeatAdded(std::uint32_t name, wayland::proxy_t&& proxy)
+void CWindowDecorator::AddSeat(CSeat* seat)
 {
-  wayland::seat_t seat{proxy};
-  seat.on_capabilities() = std::bind(&CWindowDecorator::OnSeatCapabilities, this, name, _1);
-  m_seats.emplace(std::piecewise_construct, std::forward_as_tuple(name), std::forward_as_tuple(std::move(seat)));
+  m_seats.emplace(std::piecewise_construct, std::forward_as_tuple(seat->GetGlobalName()), std::forward_as_tuple(seat));
+  seat->AddRawInputHandlerTouch(this);
+  seat->AddRawInputHandlerPointer(this);
 }
 
-void CWindowDecorator::OnSeatRemoved(std::uint32_t name)
+void CWindowDecorator::RemoveSeat(CSeat* seat)
 {
-  m_seats.erase(name);
+  seat->RemoveRawInputHandlerTouch(this);
+  seat->RemoveRawInputHandlerPointer(this);
+  m_seats.erase(seat->GetGlobalName());
   UpdateButtonHoverState();
 }
 
-void CWindowDecorator::OnSeatCapabilities(std::uint32_t name, wayland::seat_capability capabilities)
+void CWindowDecorator::OnPointerEnter(CSeat* seat, std::uint32_t serial, wayland::surface_t surface, double surfaceX, double surfaceY)
 {
-  auto& seat = m_seats.at(name);
-  if (HandleCapabilityChange(capabilities, wayland::seat_capability::pointer, seat.pointer, std::bind(&wayland::seat_t::get_pointer, seat.seat)))
+  auto seatStateI = m_seats.find(seat->GetGlobalName());
+  if (seatStateI == m_seats.end())
   {
-    HandleSeatPointer(seat);
+    return;
   }
-  if (HandleCapabilityChange(capabilities, wayland::seat_capability::touch, seat.touch, std::bind(&wayland::seat_t::get_touch, seat.seat)))
+  auto& seatState = seatStateI->second;
+  // Reset first so we ignore events for surfaces we don't handle
+  seatState.currentSurface = SURFACE_COUNT;
+  CSingleLock lock(m_mutex);
+  for (std::size_t i{0}; i < m_borderSurfaces.size(); i++)
   {
-    HandleSeatTouch(seat);
-  }
-  UpdateButtonHoverState();
-}
-
-void CWindowDecorator::HandleSeatPointer(Seat& seat)
-{
-  seat.pointer.on_enter() = [this, &seat](std::uint32_t serial, wayland::surface_t surface, float x, float y)
-  {
-    // Reset first so we ignore events for surfaces we don't handle
-    seat.currentSurface = SURFACE_COUNT;
-    CSingleLock lock(m_mutex);
-    for (std::size_t i{0}; i < m_borderSurfaces.size(); i++)
+    if (m_borderSurfaces[i].surface.wlSurface == surface)
     {
-      if (m_borderSurfaces[i].surface.wlSurface == surface)
-      {
-        seat.pointerEnterSerial = serial;
-        seat.currentSurface = static_cast<SurfaceIndex> (i);
-        seat.pointerPosition = {x, y};
-        UpdateSeatCursor(seat);
-        UpdateButtonHoverState();
-        break;
-      }
-    }
-  };
-  seat.pointer.on_leave() = [this, &seat](std::uint32_t, wayland::surface_t)
-  {
-    seat.currentSurface = SURFACE_COUNT;
-    // Recreate cursor surface on reenter
-    seat.cursorName.clear();
-    seat.cursor.proxy_release();
-    UpdateButtonHoverState();
-  };
-  seat.pointer.on_motion() = [this, &seat](std::uint32_t, float x, float y)
-  {
-    if (seat.currentSurface != SURFACE_COUNT)
-    {
-      seat.pointerPosition = {x, y};
-      UpdateSeatCursor(seat);
+      seatState.pointerEnterSerial = serial;
+      seatState.currentSurface = static_cast<SurfaceIndex> (i);
+      seatState.pointerPosition = {static_cast<float> (surfaceX), static_cast<float> (surfaceY)};
+      UpdateSeatCursor(seatState);
       UpdateButtonHoverState();
+      break;
     }
-  };
-  seat.pointer.on_button() = [this, &seat](std::uint32_t serial, std::uint32_t, std::uint32_t button, wayland::pointer_button_state state)
-  {
-    if (seat.currentSurface != SURFACE_COUNT && state == wayland::pointer_button_state::pressed)
-    {
-      HandleSeatClick(seat.seat, seat.currentSurface, serial, button, seat.pointerPosition);
-    }
-  };
+  }
 }
 
-void CWindowDecorator::HandleSeatTouch(Seat& seat)
+void CWindowDecorator::OnPointerLeave(CSeat* seat, std::uint32_t serial, wayland::surface_t surface)
 {
-  seat.touch.on_down() = [this, &seat](std::uint32_t serial, std::uint32_t, wayland::surface_t surface, std::int32_t id, float x, float y)
+  auto seatStateI = m_seats.find(seat->GetGlobalName());
+  if (seatStateI == m_seats.end())
   {
-    CSingleLock lock(m_mutex);
-    for (std::size_t i{0}; i < m_borderSurfaces.size(); i++)
-    {
-      if (m_borderSurfaces[i].surface.wlSurface == surface)
-      {
-        HandleSeatClick(seat.seat, static_cast<SurfaceIndex> (i), serial, BTN_LEFT, {x, y});
-      }
-    }
-  };
+    return;
+  }
+  auto& seatState = seatStateI->second;
+  seatState.currentSurface = SURFACE_COUNT;
+  // Recreate cursor surface on reenter
+  seatState.cursorName.clear();
+  seatState.cursor.proxy_release();
+  UpdateButtonHoverState();
 }
 
-void CWindowDecorator::UpdateSeatCursor(Seat& seat)
+void CWindowDecorator::OnPointerMotion(CSeat* seat, std::uint32_t time, double surfaceX, double surfaceY)
 {
-  if (seat.currentSurface == SURFACE_COUNT)
+  auto seatStateI = m_seats.find(seat->GetGlobalName());
+  if (seatStateI == m_seats.end())
+  {
+    return;
+  }
+  auto& seatState = seatStateI->second;
+  if (seatState.currentSurface != SURFACE_COUNT)
+  {
+    seatState.pointerPosition = {static_cast<float> (surfaceX), static_cast<float> (surfaceY)};
+    UpdateSeatCursor(seatState);
+    UpdateButtonHoverState();
+  }
+}
+
+void CWindowDecorator::OnPointerButton(CSeat* seat, std::uint32_t serial, std::uint32_t time, std::uint32_t button, wayland::pointer_button_state state)
+{
+  auto seatStateI = m_seats.find(seat->GetGlobalName());
+  if (seatStateI == m_seats.end())
+  {
+    return;
+  }
+  auto& seatState = seatStateI->second;
+  if (seatState.currentSurface != SURFACE_COUNT && state == wayland::pointer_button_state::pressed)
+  {
+    HandleSeatClick(seatState, seatState.currentSurface, serial, button, seatState.pointerPosition);
+  }
+}
+
+void CWindowDecorator::OnTouchDown(CSeat* seat, std::uint32_t serial, std::uint32_t time, wayland::surface_t surface, std::int32_t id, double x, double y)
+{
+  auto seatStateI = m_seats.find(seat->GetGlobalName());
+  if (seatStateI == m_seats.end())
+  {
+    return;
+  }
+  auto& seatState = seatStateI->second;
+  CSingleLock lock(m_mutex);
+  for (std::size_t i{0}; i < m_borderSurfaces.size(); i++)
+  {
+    if (m_borderSurfaces[i].surface.wlSurface == surface)
+    {
+      HandleSeatClick(seatState, static_cast<SurfaceIndex> (i), serial, BTN_LEFT, {static_cast<float> (x), static_cast<float> (y)});
+    }
+  }
+}
+
+void CWindowDecorator::UpdateSeatCursor(SeatState& seatState)
+{
+  if (seatState.currentSurface == SURFACE_COUNT)
   {
     // Don't set anything if not on any surface
     return;
@@ -527,19 +541,19 @@ void CWindowDecorator::UpdateSeatCursor(Seat& seat)
 
   {
     CSingleLock lock(m_mutex);
-    auto resizeEdge = ResizeEdgeForPosition(seat.currentSurface, SurfaceGeometry(seat.currentSurface, m_mainSurfaceSize).ToSize(), CPointInt{seat.pointerPosition});
+    auto resizeEdge = ResizeEdgeForPosition(seatState.currentSurface, SurfaceGeometry(seatState.currentSurface, m_mainSurfaceSize).ToSize(), CPointInt{seatState.pointerPosition});
     if (resizeEdge != wayland::shell_surface_resize::none)
     {
       cursorName = CursorForResizeEdge(resizeEdge);
     }
   }
 
-  if (cursorName == seat.cursorName)
+  if (cursorName == seatState.cursorName)
   {
     // Don't reload cursor all the time when nothing is changing
     return;
   }
-  seat.cursorName = cursorName;
+  seatState.cursorName = cursorName;
 
   wayland::cursor_t cursor;
   try
@@ -553,20 +567,20 @@ void CWindowDecorator::UpdateSeatCursor(Seat& seat)
   }
   auto cursorImage = cursor.image(0);
 
-  if (!seat.cursor)
+  if (!seatState.cursor)
   {
-    seat.cursor = m_compositor.create_surface();
+    seatState.cursor = m_compositor.create_surface();
   }
-  int calcScale{seat.cursor.can_set_buffer_scale() ? m_scale : 1};
+  int calcScale{seatState.cursor.can_set_buffer_scale() ? m_scale : 1};
 
-  seat.pointer.set_cursor(seat.pointerEnterSerial, seat.cursor, cursorImage.hotspot_x() / calcScale, cursorImage.hotspot_y() / calcScale);
-  seat.cursor.attach(cursorImage.get_buffer(), 0, 0);
-  seat.cursor.damage(0, 0, cursorImage.width() / calcScale, cursorImage.height() / calcScale);
-  if (seat.cursor.can_set_buffer_scale())
+  seatState.seat->SetCursor(seatState.pointerEnterSerial, seatState.cursor, cursorImage.hotspot_x() / calcScale, cursorImage.hotspot_y() / calcScale);
+  seatState.cursor.attach(cursorImage.get_buffer(), 0, 0);
+  seatState.cursor.damage(0, 0, cursorImage.width() / calcScale, cursorImage.height() / calcScale);
+  if (seatState.cursor.can_set_buffer_scale())
   {
-    seat.cursor.set_buffer_scale(m_scale);
+    seatState.cursor.set_buffer_scale(m_scale);
   }
-  seat.cursor.commit();
+  seatState.cursor.commit();
 }
 
 void CWindowDecorator::UpdateButtonHoverState()
@@ -599,7 +613,7 @@ void CWindowDecorator::UpdateButtonHoverState()
   }
 }
 
-void CWindowDecorator::HandleSeatClick(wayland::seat_t seat, SurfaceIndex surface, std::uint32_t serial, std::uint32_t button, CPoint position)
+void CWindowDecorator::HandleSeatClick(SeatState const& seatState, SurfaceIndex surface, std::uint32_t serial, std::uint32_t button, CPoint position)
 {
   switch (button)
   {
@@ -618,18 +632,18 @@ void CWindowDecorator::HandleSeatClick(wayland::seat_t seat, SurfaceIndex surfac
           }
         }
 
-        m_handler.OnWindowMove(seat, serial);
+        m_handler.OnWindowMove(seatState.seat->GetWlSeat(), serial);
       }
       else
       {
-        m_handler.OnWindowResize(seat, serial, resizeEdge);
+        m_handler.OnWindowResize(seatState.seat->GetWlSeat(), serial, resizeEdge);
       }
     }
     break;
     case BTN_RIGHT:
       if (surface == SURFACE_TOP)
       {
-        m_handler.OnWindowShowContextMenu(seat, serial, CPointInt{position} - CPointInt{BORDER_WIDTH, BORDER_WIDTH + TOP_BAR_HEIGHT});
+        m_handler.OnWindowShowContextMenu(seatState.seat->GetWlSeat(), serial, CPointInt{position} - CPointInt{BORDER_WIDTH, BORDER_WIDTH + TOP_BAR_HEIGHT});
       }
       break;
   }

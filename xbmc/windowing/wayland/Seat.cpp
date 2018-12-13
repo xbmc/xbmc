@@ -8,6 +8,11 @@
 
 #include "Seat.h"
 
+#include <cassert>
+#include <unistd.h>
+
+#include "platform/posix/utils/FileHandle.h"
+#include "platform/posix/utils/Mmap.h"
 #include "utils/log.h"
 
 using namespace KODI::WINDOWING::WAYLAND;
@@ -20,55 +25,54 @@ namespace
  * Handle change of availability of a wl_seat input capability
  *
  * This checks whether the capability is currently available with the wl_seat
- * and whether it was bound to a processor. If there is a mismatch between
- * these two, the processor is destroyed if a capability was removed or created
+ * and whether it was bound to a protocol object. If there is a mismatch between
+ * these two, the protocol proxy is released if a capability was removed or bound
  * if a capability was added.
  *
- * \param handler CSeat instance
  * \param caps new capabilities
  * \param cap capability to check for
+ * \param seatName human-readable name of the seat for log messages
  * \param capName human-readable name of the capability for log messages
- * \param processor reference to a smart pointer that holds the
- *                  processor corresponding to the capability
+ * \param proxy proxy object that should be filled with a new instance or reset
  * \param instanceProvider function that functions as factory for the Wayland
  *                         protocol instance if the capability has been added
- * \param onNewCapability function that is called after setting the new capability
- *                        instance when it was added
  */
-template<typename T, typename ProcessorPtrT, typename InstanceProviderT, typename OnNewCapabilityT>
-void HandleCapabilityChange(CSeat* handler,
-                            wayland::seat_capability caps,
+template<typename T, typename InstanceProviderT>
+bool HandleCapabilityChange(wayland::seat_capability caps,
                             wayland::seat_capability cap,
-                            std::string const & capName,
-                            ProcessorPtrT& processor,
-                            InstanceProviderT instanceProvider,
-                            OnNewCapabilityT onNewCapability)
+                            std::string const& seatName,
+                            std::string const& capName,
+                            T& proxy,
+                            InstanceProviderT instanceProvider)
 {
   bool hasCapability = caps & cap;
 
-  if ((!!processor) != hasCapability)
+  if ((!!proxy) != hasCapability)
   {
     // Capability changed
 
     if (hasCapability)
     {
       // The capability was added
-      CLog::Log(LOGDEBUG, "Wayland seat %s gained capability %s", handler->GetName().c_str(), capName.c_str());
-      onNewCapability(instanceProvider());
+      CLog::Log(LOGDEBUG, "Wayland seat {} gained capability {}", seatName, capName);
+      proxy = instanceProvider();
+      return true;
     }
     else
     {
       // The capability was removed
-      CLog::Log(LOGDEBUG, "Wayland seat %s lost capability %s", handler->GetName().c_str(), capName.c_str());
-      processor.reset();
+      CLog::Log(LOGDEBUG, "Wayland seat {} lost capability {}", seatName, capName);
+      proxy.proxy_release();
     }
   }
+
+  return false;
 }
 
 }
 
-CSeat::CSeat(std::uint32_t globalName, wayland::seat_t const& seat, wayland::surface_t const& inputSurface, CConnection& connection, IInputHandler& handler)
-: m_globalName{globalName}, m_seat{seat}, m_inputSurface{inputSurface}, m_handler{handler}, m_selection{connection, seat}
+CSeat::CSeat(std::uint32_t globalName, wayland::seat_t const& seat, CConnection& connection)
+: m_globalName{globalName}, m_seat{seat}, m_selection{connection, seat}
 {
   m_seat.on_name() = [this](std::string name)
   {
@@ -79,96 +83,194 @@ CSeat::CSeat(std::uint32_t globalName, wayland::seat_t const& seat, wayland::sur
 
 CSeat::~CSeat() noexcept = default;
 
+void CSeat::AddRawInputHandlerKeyboard(KODI::WINDOWING::WAYLAND::IRawInputHandlerKeyboard *rawKeyboardHandler)
+{
+  assert(rawKeyboardHandler);
+  m_rawKeyboardHandlers.emplace(rawKeyboardHandler);
+}
+
+void CSeat::RemoveRawInputHandlerKeyboard(KODI::WINDOWING::WAYLAND::IRawInputHandlerKeyboard *rawKeyboardHandler)
+{
+  m_rawKeyboardHandlers.erase(rawKeyboardHandler);
+}
+
+void CSeat::AddRawInputHandlerPointer(IRawInputHandlerPointer* rawPointerHandler)
+{
+  assert(rawPointerHandler);
+  m_rawPointerHandlers.emplace(rawPointerHandler);
+}
+
+void CSeat::RemoveRawInputHandlerPointer(KODI::WINDOWING::WAYLAND::IRawInputHandlerPointer *rawPointerHandler)
+{
+  m_rawPointerHandlers.erase(rawPointerHandler);
+}
+
+void CSeat::AddRawInputHandlerTouch(IRawInputHandlerTouch* rawTouchHandler)
+{
+  assert(rawTouchHandler);
+  m_rawTouchHandlers.emplace(rawTouchHandler);
+}
+
+void CSeat::RemoveRawInputHandlerTouch(KODI::WINDOWING::WAYLAND::IRawInputHandlerTouch *rawTouchHandler)
+{
+  m_rawTouchHandlers.erase(rawTouchHandler);
+}
+
 void CSeat::HandleOnCapabilities(wayland::seat_capability caps)
 {
-  HandleCapabilityChange<wayland::pointer_t>
-    (this,
-     caps,
-     wayland::seat_capability::pointer,
-     "pointer",
-     m_pointer,
-     std::bind(&wayland::seat_t::get_pointer, &m_seat),
-     std::bind(&CSeat::HandlePointerCapability, this, _1));
-  HandleCapabilityChange<wayland::keyboard_t>
-    (this,
-     caps,
-     wayland::seat_capability::keyboard,
-     "keyboard",
-     m_keyboard,
-     std::bind(&wayland::seat_t::get_keyboard, &m_seat),
-     std::bind(&CSeat::HandleKeyboardCapability, this, _1));
-  HandleCapabilityChange<wayland::touch_t>
-    (this,
-     caps,
-     wayland::seat_capability::touch,
-     "touch",
-     m_touch,
-     std::bind(&wayland::seat_t::get_touch, &m_seat),
-     std::bind(&CSeat::HandleTouchCapability, this, _1));
+  if (HandleCapabilityChange(caps, wayland::seat_capability::keyboard, GetName(), "keyboard", m_keyboard, std::bind(&wayland::seat_t::get_keyboard, m_seat)))
+  {
+    HandleKeyboardCapability();
+  }
+  if (HandleCapabilityChange(caps, wayland::seat_capability::pointer, GetName(), "pointer", m_pointer, std::bind(&wayland::seat_t::get_pointer, m_seat)))
+  {
+    HandlePointerCapability();
+  }
+  if (HandleCapabilityChange(caps, wayland::seat_capability::touch, GetName(), "touch", m_touch, std::bind(&wayland::seat_t::get_touch, m_seat)))
+  {
+    HandleTouchCapability();
+  }
 }
 
-void CSeat::HandlePointerCapability(wayland::pointer_t const& pointer)
-{
-  m_pointer.reset(new CInputProcessorPointer(pointer, m_inputSurface, static_cast<IInputHandlerPointer&> (*this)));
-  UpdateCoordinateScale();
-}
-
-void CSeat::OnPointerEnter(wayland::pointer_t& pointer, std::uint32_t serial)
-{
-  m_handler.OnSetCursor(pointer, serial);
-  m_handler.OnEnter(m_globalName, InputType::POINTER);
-}
-
-void CSeat::OnPointerLeave()
-{
-  m_handler.OnLeave(m_globalName, InputType::POINTER);
-}
-
-void CSeat::OnPointerEvent(XBMC_Event& event)
-{
-  m_handler.OnEvent(m_globalName, InputType::POINTER, event);
-}
-
-void CSeat::HandleKeyboardCapability(wayland::keyboard_t const& keyboard)
-{
-  m_keyboard.reset(new CInputProcessorKeyboard(keyboard, static_cast<IInputHandlerKeyboard&> (*this)));
-}
-
-void CSeat::OnKeyboardEnter()
-{
-  m_handler.OnEnter(m_globalName, InputType::KEYBOARD);
-}
-
-void CSeat::OnKeyboardLeave()
-{
-  m_handler.OnLeave(m_globalName, InputType::KEYBOARD);
-}
-
-void CSeat::OnKeyboardEvent(XBMC_Event& event)
-{
-  m_handler.OnEvent(m_globalName, InputType::KEYBOARD, event);
-}
-
-void CSeat::HandleTouchCapability(wayland::touch_t const& touch)
-{
-  m_touch.reset(new CInputProcessorTouch(touch, m_inputSurface));
-  UpdateCoordinateScale();
-}
-
-void CSeat::SetCoordinateScale(std::int32_t scale)
-{
-  m_coordinateScale = scale;
-  UpdateCoordinateScale();
-}
-
-void CSeat::UpdateCoordinateScale()
+void CSeat::SetCursor(std::uint32_t serial, wayland::surface_t const &surface, std::int32_t hotspotX, std::int32_t hotspotY)
 {
   if (m_pointer)
   {
-    m_pointer->SetCoordinateScale(m_coordinateScale);
+    m_pointer.set_cursor(serial, surface, hotspotX, hotspotY);
   }
-  if (m_touch)
+}
+
+void CSeat::HandleKeyboardCapability()
+{
+  m_keyboard.on_keymap() = [this](wayland::keyboard_keymap_format format, int fd, std::uint32_t size)
   {
-    m_touch->SetCoordinateScale(m_coordinateScale);
-  }
+    KODI::UTILS::POSIX::CFileHandle fdGuard{fd};
+    KODI::UTILS::POSIX::CMmap mmap{nullptr, size, PROT_READ, MAP_PRIVATE, fd, 0};
+    std::string keymap{static_cast<const char*> (mmap.Data()), size};
+    for (auto handler : m_rawKeyboardHandlers)
+    {
+      handler->OnKeyboardKeymap(this, format, keymap);
+    }
+  };
+  m_keyboard.on_enter() = [this](std::uint32_t serial, wayland::surface_t surface, wayland::array_t keys)
+  {
+    for (auto handler : m_rawKeyboardHandlers)
+    {
+      handler->OnKeyboardEnter(this, serial, surface, keys);
+    }
+  };
+  m_keyboard.on_leave() = [this](std::uint32_t serial, wayland::surface_t surface)
+  {
+    for (auto handler : m_rawKeyboardHandlers)
+    {
+      handler->OnKeyboardLeave(this, serial, surface);
+    }
+  };
+  m_keyboard.on_key() = [this](std::uint32_t serial, std::uint32_t time, std::uint32_t key, wayland::keyboard_key_state state)
+  {
+    for (auto handler : m_rawKeyboardHandlers)
+    {
+      handler->OnKeyboardKey(this, serial, time, key, state);
+    }
+  };
+  m_keyboard.on_modifiers() = [this](std::uint32_t serial, std::uint32_t modsDepressed, std::uint32_t modsLatched, std::uint32_t modsLocked, std::uint32_t group)
+  {
+    for (auto handler : m_rawKeyboardHandlers)
+    {
+      handler->OnKeyboardModifiers(this, serial, modsDepressed, modsLatched, modsLocked, group);
+    }
+  };
+  m_keyboard.on_repeat_info() = [this](std::int32_t rate, std::int32_t delay)
+  {
+    for (auto handler : m_rawKeyboardHandlers)
+    {
+      handler->OnKeyboardRepeatInfo(this, rate, delay);
+    }
+  };
+}
+
+
+void CSeat::HandlePointerCapability()
+{
+  m_pointer.on_enter() = [this](std::uint32_t serial, wayland::surface_t surface, double surfaceX, double surfaceY)
+  {
+    for (auto handler : m_rawPointerHandlers)
+    {
+      handler->OnPointerEnter(this, serial, surface, surfaceX, surfaceY);
+    }
+  };
+  m_pointer.on_leave() = [this](std::uint32_t serial, wayland::surface_t surface)
+  {
+    for (auto handler : m_rawPointerHandlers)
+    {
+      handler->OnPointerLeave(this, serial, surface);
+    }
+  };
+  m_pointer.on_motion() = [this](std::uint32_t time, double surfaceX, double surfaceY)
+  {
+    for (auto handler : m_rawPointerHandlers)
+    {
+      handler->OnPointerMotion(this, time, surfaceX, surfaceY);
+    }
+  };
+  m_pointer.on_button() = [this](std::uint32_t serial, std::uint32_t time, std::uint32_t button, wayland::pointer_button_state state)
+  {
+    for (auto handler : m_rawPointerHandlers)
+    {
+      handler->OnPointerButton(this, serial, time, button, state);
+    }
+  };
+  m_pointer.on_axis() = [this](std::uint32_t time, wayland::pointer_axis axis, double value)
+  {
+    for (auto handler : m_rawPointerHandlers)
+    {
+      handler->OnPointerAxis(this, time, axis, value);
+    }
+  };
+  // Wayland groups pointer events, but right now there is no benefit in
+  // treating them in groups. The main use case for doing so seems to be
+  // multi-axis (i.e. diagnoal) scrolling, but we do not support this anyway.
+  /*m_pointer.on_frame() = [this]()
+  {
+
+  };*/
+}
+
+void CSeat::HandleTouchCapability()
+{
+  m_touch.on_down() = [this](std::uint32_t serial, std::uint32_t time, wayland::surface_t surface, std::int32_t id, double x, double y)
+  {
+    for (auto handler : m_rawTouchHandlers)
+    {
+      handler->OnTouchDown(this, serial, time, surface, id, x, y);
+    }
+  };
+  m_touch.on_up() = [this](std::uint32_t serial, std::uint32_t time, std::int32_t id)
+  {
+    for (auto handler : m_rawTouchHandlers)
+    {
+      handler->OnTouchUp(this, serial, time, id);
+    }
+  };
+  m_touch.on_motion() = [this](std::uint32_t time, std::int32_t id, double x, double y)
+  {
+    for (auto handler : m_rawTouchHandlers)
+    {
+      handler->OnTouchMotion(this, time, id, x, y);
+    }
+  };
+  m_touch.on_cancel() = [this]()
+  {
+    for (auto handler : m_rawTouchHandlers)
+    {
+      handler->OnTouchCancel(this);
+    }
+  };
+  m_touch.on_shape() = [this](std::int32_t id, double major, double minor)
+  {
+    for (auto handler : m_rawTouchHandlers)
+    {
+      handler->OnTouchShape(this, id, major, minor);
+    }
+  };
 }

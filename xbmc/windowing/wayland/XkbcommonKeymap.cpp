@@ -16,10 +16,8 @@
 #include "Application.h"
 #include "Util.h"
 #include "utils/log.h"
-#include "platform/posix/utils/Mmap.h"
 
 using namespace KODI::WINDOWING::WAYLAND;
-using namespace KODI::UTILS::POSIX;
 
 namespace
 {
@@ -195,19 +193,16 @@ void CXkbcommonContext::XkbContextDeleter::operator()(xkb_context* ctx) const
   xkb_context_unref(ctx);
 }
 
-std::unique_ptr<CXkbcommonKeymap> CXkbcommonContext::KeymapFromSharedMemory(int fd, std::size_t size)
+std::unique_ptr<CXkbcommonKeymap> CXkbcommonContext::KeymapFromString(std::string const& keymap)
 {
-  CMmap mmap(nullptr, size, PROT_READ, MAP_PRIVATE, fd, 0);
-  auto keymapString = static_cast<const char *> (mmap.Data());
+  std::unique_ptr<xkb_keymap, CXkbcommonKeymap::XkbKeymapDeleter> xkbKeymap{xkb_keymap_new_from_string(m_context.get(), keymap.c_str(), XKB_KEYMAP_FORMAT_TEXT_V1, XKB_KEYMAP_COMPILE_NO_FLAGS), CXkbcommonKeymap::XkbKeymapDeleter()};
 
-  std::unique_ptr<xkb_keymap, CXkbcommonKeymap::XkbKeymapDeleter> keymap{xkb_keymap_new_from_string(m_context.get(), keymapString, XKB_KEYMAP_FORMAT_TEXT_V1, XKB_KEYMAP_COMPILE_NO_FLAGS), CXkbcommonKeymap::XkbKeymapDeleter()};
-
-  if (!keymap)
+  if (!xkbKeymap)
   {
     throw std::runtime_error("Failed to compile keymap");
   }
 
-  return std::unique_ptr<CXkbcommonKeymap>{new CXkbcommonKeymap(std::move(keymap))};
+  return std::unique_ptr<CXkbcommonKeymap>{new CXkbcommonKeymap(std::move(xkbKeymap))};
 }
 
 std::unique_ptr<CXkbcommonKeymap> CXkbcommonContext::KeymapFromNames(const std::string& rules, const std::string& model, const std::string& layout, const std::string& variant, const std::string& options)
