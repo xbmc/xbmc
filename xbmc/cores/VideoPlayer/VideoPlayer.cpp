@@ -4444,6 +4444,8 @@ bool CVideoPlayer::OnAction(const CAction &action)
     }
   }
 
+  pMenus.reset();
+
   switch (action.GetID())
   {
     case ACTION_NEXT_ITEM:
