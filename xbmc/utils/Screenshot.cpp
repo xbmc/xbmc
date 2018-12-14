@@ -234,33 +234,19 @@ void CScreenShot::TakeScreenshot(const std::string &filename, bool sync)
 
 void CScreenShot::TakeScreenshot()
 {
-  static bool savingScreenshots = false;
-  static std::vector<std::string> screenShots;
-  bool promptUser = false;
-  std::string strDir;
-
-  // check to see if we have a screenshot folder yet
   std::shared_ptr<CSettingPath> screenshotSetting = std::static_pointer_cast<CSettingPath>(CServiceBroker::GetSettingsComponent()->GetSettings()->GetSetting(CSettings::SETTING_DEBUG_SCREENSHOTPATH));
-  if (screenshotSetting != NULL)
-  {
-    strDir = screenshotSetting->GetValue();
-    if (strDir.empty())
-    {
-      if (CGUIControlButtonSetting::GetPath(screenshotSetting, &g_localizeStrings))
-        strDir = screenshotSetting->GetValue();
-    }
-  }
+  if (!screenshotSetting)
+    return;
 
+  std::string strDir = screenshotSetting->GetValue();
   if (strDir.empty())
   {
-    strDir = "special://temp/";
-    if (!savingScreenshots)
-    {
-      promptUser = true;
-      savingScreenshots = true;
-      screenShots.clear();
-    }
+    if (!CGUIControlButtonSetting::GetPath(screenshotSetting, &g_localizeStrings))
+      return;
+
+    strDir = screenshotSetting->GetValue();
   }
+
   URIUtils::RemoveSlashAtEnd(strDir);
 
   if (!strDir.empty())
@@ -270,32 +256,6 @@ void CScreenShot::TakeScreenshot()
     if (!file.empty())
     {
       TakeScreenshot(file, false);
-      if (savingScreenshots)
-        screenShots.push_back(file);
-      if (promptUser)
-      { // grab the real directory
-        std::string newDir;
-        if (screenshotSetting != NULL)
-        {
-          newDir = screenshotSetting->GetValue();
-          if (newDir.empty())
-          {
-            if (CGUIControlButtonSetting::GetPath(screenshotSetting, &g_localizeStrings))
-              newDir = screenshotSetting->GetValue();
-          }
-        }
-
-        if (!newDir.empty())
-        {
-          for (unsigned int i = 0; i < screenShots.size(); i++)
-          {
-            std::string file = CUtil::GetNextFilename(URIUtils::AddFileToFolder(newDir, "screenshot%03d.png"), 999);
-            CFile::Copy(screenShots[i], file);
-          }
-          screenShots.clear();
-        }
-        savingScreenshots = false;
-      }
     }
     else
     {
