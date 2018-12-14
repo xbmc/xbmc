@@ -344,6 +344,7 @@ CDVDVideoCodecAndroidMediaCodec::CDVDVideoCodecAndroidMediaCodec(CProcessInfo &p
 , m_bitstream(nullptr)
 , m_render_surface(surface_render)
 , m_mpeg2_sequence(nullptr)
+, m_useDTSforPTS(false)
 {
   m_videobuffer.Reset();
 }
@@ -418,6 +419,7 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
   m_hints = hints;
   m_indexInputBuffer = -1;
   m_dtsShift = DVD_NOPTS_VALUE;
+  m_useDTSforPTS = false;
 
   CLog::Log(LOGDEBUG, LOGVIDEO, "CDVDVideoCodecAndroidMediaCodec::Open hints: fpsrate %d / fpsscale %d\n", m_hints.fpsrate, m_hints.fpsscale);
   CLog::Log(LOGDEBUG, LOGVIDEO, "CDVDVideoCodecAndroidMediaCodec::Open hints: CodecID %d \n", m_hints.codec);
@@ -441,10 +443,9 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
       m_formatname = "amc-mpeg2";
       break;
     case AV_CODEC_ID_MPEG4:
-      if (hints.width <= 800)
-        goto FAIL;
       m_mime = "video/mp4v-es";
       m_formatname = "amc-mpeg4";
+      m_useDTSforPTS = true;
       break;
     case AV_CODEC_ID_H263:
       m_mime = "video/3gpp";
@@ -906,6 +907,8 @@ bool CDVDVideoCodecAndroidMediaCodec::AddData(const DemuxPacket &packet)
       int64_t presentationTimeUs = 0;
       if (pts != DVD_NOPTS_VALUE)
         presentationTimeUs = (pts - m_dtsShift);
+      else if (m_useDTSforPTS && dts != DVD_NOPTS_VALUE)
+        presentationTimeUs = (dts - m_dtsShift);
 
       int flags = 0;
       int offset = 0;
