@@ -441,11 +441,8 @@ bool CWinSystemWin32::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool 
   bool changeScreen = false;   // display is changed
   bool stereoChange = IsStereoEnabled() != (CServiceBroker::GetWinSystem()->GetGfxContext().GetStereoMode() == RENDER_STEREO_MODE_HARDWAREBASED);
 
-  if ( m_nWidth != res.iWidth
-    || m_nHeight != res.iHeight
-    || m_fRefreshRate != res.fRefreshRate
-    || oldMonitor->hMonitor != newMonitor->hMonitor
-    || stereoChange)
+  if ( m_nWidth != res.iWidth || m_nHeight != res.iHeight  || m_fRefreshRate != res.fRefreshRate ||
+      oldMonitor->hMonitor != newMonitor->hMonitor || stereoChange || m_bFirstResChange)
   {
     if (oldMonitor->hMonitor != newMonitor->hMonitor)
       changeScreen = true;
@@ -458,7 +455,8 @@ bool CWinSystemWin32::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool 
   // entering to stereo mode, limit resolution to 1080p@23.976
   if (stereoChange && !IsStereoEnabled() && res.iWidth > 1280)
   {
-    res = CDisplaySettings::GetInstance().GetResolutionInfo(CResolutionUtils::ChooseBestResolution(24.f / 1.001f, 1920, 1080, true));
+    res = CDisplaySettings::GetInstance().GetResolutionInfo(
+        CResolutionUtils::ChooseBestResolution(24.f / 1.001f, 1920, 1080, true));
   }
 
   if (m_state == WINDOW_STATE_WINDOWED)
@@ -490,6 +488,7 @@ bool CWinSystemWin32::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool 
     OnScreenChange(newMonitor->hMonitor);
   }
 
+  m_bFirstResChange = false;
   m_bFullScreen = fullScreen;
   m_hMonitor = newMonitor->hMonitor;
   m_nWidth = res.iWidth;
