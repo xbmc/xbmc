@@ -430,11 +430,10 @@ bool CAddonSettings::ParseSettingVersion(const CXBMCTinyXML& doc, uint32_t& vers
   return true;
 }
 
-std::shared_ptr<CSettingGroup> CAddonSettings::ParseOldSettingElement(const TiXmlElement* categoryElement, std::shared_ptr<CSettingCategory> category, std::set<std::string>& actionSettings)
+std::shared_ptr<CSettingGroup> CAddonSettings::ParseOldSettingElement(const TiXmlElement* categoryElement, std::shared_ptr<CSettingCategory> category, std::set<std::string>& actionSettings, std::set<std::string>& settingIds)
 {
     // build a vector of settings from the same category
     std::vector<std::shared_ptr<const CSetting>> categorySettings;
-    std::set<std::string> settingIds;
 
     // prepare for settings with enable/visible conditions
     struct SettingWithConditions {
@@ -593,9 +592,11 @@ std::shared_ptr<CSettingGroup> CAddonSettings::ParseOldSettingElement(const TiXm
           // turn the setting into a reference setting
           setting = std::make_shared<CSettingReference>(settingId, GetSettingsManager());
         }
-
-        // add the setting's identifier to the list of all identifiers
-        settingIds.insert(setting->GetId());
+        else
+        {
+          // add the setting's identifier to the list of all identifiers
+          settingIds.insert(setting->GetId());
+        }
 
         // add the setting to the list of settings from the same category
         categorySettings.push_back(setting);
@@ -646,7 +647,7 @@ std::shared_ptr<CSettingGroup> CAddonSettings::ParseOldSettingElement(const TiXm
     return group;
 }
 
-std::shared_ptr<CSettingCategory> CAddonSettings::ParseOldCategoryElement(uint32_t &categoryId, const TiXmlElement * categoryElement, std::set<std::string> &actionSettings)
+std::shared_ptr<CSettingCategory> CAddonSettings::ParseOldCategoryElement(uint32_t &categoryId, const TiXmlElement * categoryElement, std::set<std::string> &actionSettings, std::set<std::string> &settingIds)
 {
   // create the category
   auto category = std::make_shared<CSettingCategory>(StringUtils::Format("category%u", categoryId), GetSettingsManager());
@@ -658,7 +659,7 @@ std::shared_ptr<CSettingCategory> CAddonSettings::ParseOldCategoryElement(uint32
   category->SetLabel(categoryLabel);
 
   // prepare a setting group
-  auto group = ParseOldSettingElement(categoryElement, category, actionSettings);
+  auto group = ParseOldSettingElement(categoryElement, category, actionSettings, settingIds);
 
   // add the group to the category
   category->AddGroup(group);
@@ -680,14 +681,16 @@ bool CAddonSettings::InitializeFromOldSettingDefinitions(const CXBMCTinyXML& doc
   uint32_t categoryId = 0;
   std::set<std::string> actionSettings;
 
+  // Settings id set
+  std::set<std::string> settingIds;
 
   // Special case for no category settings
-  section->AddCategory(ParseOldCategoryElement(categoryId, root, actionSettings));
+  section->AddCategory(ParseOldCategoryElement(categoryId, root, actionSettings, settingIds));
 
   const TiXmlElement *categoryElement = root->FirstChildElement("category");
   while (categoryElement != nullptr)
   {
-    section->AddCategory(ParseOldCategoryElement(categoryId, categoryElement, actionSettings));
+    section->AddCategory(ParseOldCategoryElement(categoryId, categoryElement, actionSettings, settingIds));
 
     // look for the next category
     categoryElement = categoryElement->NextSiblingElement("category");

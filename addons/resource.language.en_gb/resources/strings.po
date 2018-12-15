@@ -12877,7 +12877,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#20369"
-msgid "Show plot for unwatched items"
+msgid "Show information for unwatched items"
 msgstr ""
 
 msgctxt "#20370"
@@ -18113,10 +18113,10 @@ msgctxt "#36140"
 msgid "Choose which temperature unit is used for displaying temperatures in the user interface."
 msgstr ""
 
-#. Description of setting with label #20369 "Show plot for unwatched items"
+#. Description of setting with label #20369 "Show information for unwatched items"
 #: system/settings/settings.xml
 msgctxt "#36141"
-msgid "Show plot information for unwatched media in the video library. The plot will be shown for the specific category you have selected. For example if 'Movies' is selected, the plot will be shown at the movie library, but will be hidden for TV shows and otherwise."
+msgid "Show information for unwatched media in the video library or hide them if not selected to prevent spoilers. Available options are 'Movie plot', 'Episode plot' and 'Episode thumb'."
 msgstr ""
 
 #. Description of setting with label #14106 "Speed unit"
@@ -20658,6 +20658,7 @@ msgid "Configure audio encoder settings such as quality and compression level"
 msgstr ""
 
 #: system/settings/rbp.xml
+#: system/settings/android.xml
 msgctxt "#37026"
 msgid "Auto"
 msgstr ""
@@ -20668,6 +20669,7 @@ msgid "540"
 msgstr ""
 
 #: system/settings/rbp.xml
+#: system/settings/android.xml
 msgctxt "#37028"
 msgid "720"
 msgstr ""
@@ -20678,6 +20680,7 @@ msgid "900"
 msgstr ""
 
 #: system/settings/rbp.xml
+#: system/settings/android.xml
 msgctxt "#37030"
 msgid "Unlimited"
 msgstr ""
@@ -20772,7 +20775,12 @@ msgctxt "#37045"
 msgid "Extract chapter thumbnails for presentation in the chapters / bookmarks dialogue. This might increase CPU load."
 msgstr ""
 
-#empty strings from id 37046 to 38009
+#: system/settings/android.xml
+msgctxt "#37046"
+msgid "1080"
+msgstr ""
+
+#empty strings from id 37047 to 38009
 
 #: system/settings/rbp.xml
 msgctxt "#38010"
@@ -21587,4 +21595,22 @@ msgstr ""
 #: xbmc/video/dialogs/GUIDialogAudioSettings.cpp
 msgctxt "#39113"
 msgid "Center Mix Level in dB relative to metadata or default (-3 dB)"
+msgstr ""
+
+#. Label for "show information for unwatched items" setting option
+#: system/settings/settings.xml
+msgctxt "#39114"
+msgid "Episode thumb"
+msgstr ""
+
+#. Label for "show information for unwatched items" setting option
+#: system/settings/settings.xml
+msgctxt "#39115"
+msgid "Movie plot"
+msgstr ""
+
+#. Label for "show information for unwatched items" setting option
+#: system/settings/settings.xml
+msgctxt "#39116"
+msgid "Episode plot"
 msgstr ""
