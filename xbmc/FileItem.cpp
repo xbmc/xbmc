@@ -741,7 +741,7 @@ bool CFileItem::Exists(bool bUseCache /* = true */) const
 {
   if (m_strPath.empty()
    || IsPath("add")
-   || IsInternetStream()
+   || (IsInternetStream() && !URIUtils::IsOnLAN(GetDynPath()))
    || IsParentFolder()
    || IsVirtualDirectoryRoot()
    || IsPlugin()
