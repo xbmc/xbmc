@@ -255,7 +255,8 @@ void CDirectoryProvider::Announce(ANNOUNCEMENT::AnnouncementFlag flag, const cha
       if (strcmp(message, "OnScanFinished") == 0 ||
           strcmp(message, "OnCleanFinished") == 0 ||
           strcmp(message, "OnUpdate") == 0 ||
-          strcmp(message, "OnRemove") == 0)
+          strcmp(message, "OnRemove") == 0 ||
+          strcmp(message, "OnRefresh") == 0)
         m_updateState = INVALIDATED;
     }
   }
