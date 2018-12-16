@@ -310,6 +310,13 @@ void OMXPlayerVideo::Output(double pts, bool bDropPacket)
   omvb->m_state = MMAL::MMALStateBypass;
   picture.videoBuffer = omvb;
 
+  if (m_processInfo.GetVideoStereoMode() != GetStereoMode())
+  {
+    m_processInfo.SetVideoStereoMode(picture.stereoMode);
+    // signal about changes in video parameters
+    m_messageParent.Put(new CDVDMsg(CDVDMsg::PLAYER_AVCHANGE));
+  }
+
   m_renderManager.AddVideoPicture(picture, m_bAbortOutput, EINTERLACEMETHOD::VS_INTERLACEMETHOD_NONE, (m_syncState == ESyncState::SYNC_STARTING));
 }
 
@@ -662,20 +669,20 @@ void OMXPlayerVideo::SetVideoRect(const CRect &InSrcRect, const CRect &InDestRec
 
   if (stereoMode == "left_right")
   {
-    video_stereo_mode = RENDER_STEREO_MODE_SPLIT_HORIZONTAL;
+    video_stereo_mode = RENDER_STEREO_MODE_SPLIT_VERTICAL;
   }
   else if (stereoMode == "right_left")
   {
-    video_stereo_mode = RENDER_STEREO_MODE_SPLIT_HORIZONTAL;
+    video_stereo_mode = RENDER_STEREO_MODE_SPLIT_VERTICAL;
     stereo_invert = true;
   }
   else if (stereoMode == "top_bottom")
   {
-    video_stereo_mode = RENDER_STEREO_MODE_SPLIT_VERTICAL;
+    video_stereo_mode = RENDER_STEREO_MODE_SPLIT_HORIZONTAL;
   }
   else if (stereoMode == "bottom_top")
   {
-    video_stereo_mode = RENDER_STEREO_MODE_SPLIT_VERTICAL;
+    video_stereo_mode = RENDER_STEREO_MODE_SPLIT_HORIZONTAL;
     stereo_invert = true;
   }
 
