@@ -171,6 +171,7 @@ protected:
 
   uint32_t m_OutputDuration, m_fpsDuration;
   int64_t m_lastPTS;
+  int64_t m_invalidPTSValue = 0;
   double m_dtsShift;
 
   static std::atomic<bool> m_InstanceGuard;
