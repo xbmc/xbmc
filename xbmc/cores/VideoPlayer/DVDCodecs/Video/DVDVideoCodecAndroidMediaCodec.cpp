@@ -440,6 +440,7 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
       m_mpeg2_sequence->ratio  = m_hints.aspect;
       m_mpeg2_sequence->fps_scale = m_hints.fpsscale;
       m_mpeg2_sequence->fps_rate = m_hints.fpsrate;
+      m_useDTSforPTS = true;
       m_formatname = "amc-mpeg2";
       break;
     case AV_CODEC_ID_MPEG4:
@@ -714,6 +715,11 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
   if (!ConfigureMediaCodec())
     goto FAIL;
 
+  if (m_codecname.find("OMX", 0, 3) == 0)
+    m_invalidPTSValue = AV_NOPTS_VALUE;
+  else
+    m_invalidPTSValue = 0;
+
   CLog::Log(LOGINFO, "CDVDVideoCodecAndroidMediaCodec:: "
     "Open Android MediaCodec %s", m_codecname.c_str());
 
@@ -904,9 +910,12 @@ bool CDVDVideoCodecAndroidMediaCodec::AddData(const DemuxPacket &packet)
       if (m_dtsShift == DVD_NOPTS_VALUE)
         m_dtsShift = (dts == DVD_NOPTS_VALUE) ? 0 : dts;
 
-      int64_t presentationTimeUs = 0;
+      int64_t presentationTimeUs = m_invalidPTSValue;
       if (pts != DVD_NOPTS_VALUE)
+      {
         presentationTimeUs = (pts - m_dtsShift);
+        m_useDTSforPTS = false;
+      }
       else if (m_useDTSforPTS && dts != DVD_NOPTS_VALUE)
         presentationTimeUs = (dts - m_dtsShift);
 
