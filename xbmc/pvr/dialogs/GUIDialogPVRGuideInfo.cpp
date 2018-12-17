@@ -40,6 +40,7 @@ using namespace KODI::MESSAGING;
 #define CONTROL_BTN_PLAY_RECORDING      8
 #define CONTROL_BTN_ADD_TIMER           9
 #define CONTROL_BTN_PLAY_EPGTAG        10
+#define CONTROL_BTN_SET_REMINDER       11
 
 CGUIDialogPVRGuideInfo::CGUIDialogPVRGuideInfo(void)
     : CGUIDialog(WINDOW_DIALOG_PVR_GUIDE_INFO, "DialogPVRInfo.xml")
@@ -100,7 +101,26 @@ bool CGUIDialogPVRGuideInfo::OnClickButtonAddTimer(CGUIMessage &message)
     if (m_progItem && !CServiceBroker::GetPVRManager().Timers()->GetTimerForEpgTag(m_progItem))
     {
       const CFileItemPtr item(new CFileItem(m_progItem));
-      bReturn = CServiceBroker::GetPVRManager().GUIActions()->AddTimerRule(item, true);
+      bReturn = CServiceBroker::GetPVRManager().GUIActions()->AddTimerRule(item, true, true);
+    }
+  }
+
+  if (bReturn)
+    Close();
+
+  return bReturn;
+}
+
+bool CGUIDialogPVRGuideInfo::OnClickButtonSetReminder(CGUIMessage& message)
+{
+  bool bReturn = false;
+
+  if (message.GetSenderId() == CONTROL_BTN_SET_REMINDER)
+  {
+    if (m_progItem && !CServiceBroker::GetPVRManager().Timers()->GetTimerForEpgTag(m_progItem))
+    {
+      const std::shared_ptr<CFileItem> item = std::make_shared<CFileItem>(m_progItem);
+      bReturn = CServiceBroker::GetPVRManager().GUIActions()->AddReminder(item);
     }
   }
 
@@ -153,7 +173,8 @@ bool CGUIDialogPVRGuideInfo::OnMessage(CGUIMessage& message)
            OnClickButtonRecord(message) ||
            OnClickButtonPlay(message) ||
            OnClickButtonFind(message) ||
-           OnClickButtonAddTimer(message);
+           OnClickButtonAddTimer(message) ||
+           OnClickButtonSetReminder(message);
   }
 
   return CGUIDialog::OnMessage(message);
@@ -191,10 +212,11 @@ void CGUIDialogPVRGuideInfo::OnInitWindow()
     SET_CONTROL_HIDDEN(CONTROL_BTN_PLAY_RECORDING);
   }
 
-  bool bHideRecord(true);
-  bool bHideAddTimer(true);
-
+  bool bHideRecord = true;
+  bool bHideAddTimer = true;
   const std::shared_ptr<CPVRTimerInfoTag> timer = CServiceBroker::GetPVRManager().Timers()->GetTimerForEpgTag(m_progItem);
+  bool bHideSetReminder = timer || (m_progItem->StartAsLocalTime() <= CDateTime::GetCurrentDateTime());
+
   if (timer)
   {
     if (timer->IsRecording())
@@ -213,7 +235,7 @@ void CGUIDialogPVRGuideInfo::OnInitWindow()
     const CPVRClientPtr client = CServiceBroker::GetPVRManager().GetClient(m_progItem->ClientID());
     if (client && client->GetClientCapabilities().SupportsTimers())
     {
-      SET_CONTROL_LABEL(CONTROL_BTN_RECORD, 264);     /* Record */
+      SET_CONTROL_LABEL(CONTROL_BTN_RECORD, 264); /* Record */
       bHideRecord = false;
       bHideAddTimer = false;
     }
@@ -227,6 +249,9 @@ void CGUIDialogPVRGuideInfo::OnInitWindow()
 
   if (bHideAddTimer)
     SET_CONTROL_HIDDEN(CONTROL_BTN_ADD_TIMER);
+
+  if (bHideSetReminder)
+    SET_CONTROL_HIDDEN(CONTROL_BTN_SET_REMINDER);
 }
 
 void CGUIDialogPVRGuideInfo::ShowFor(const CFileItemPtr& item)

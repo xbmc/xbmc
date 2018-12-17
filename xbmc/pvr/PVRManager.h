@@ -48,7 +48,11 @@ namespace PVR
     ManagerStarted,
 
     // Recording events
-    RecordingsInvalidated
+    RecordingsInvalidated,
+
+    // Timer events
+    TimersInvalidated,
+    AnnounceReminder
   };
 
   class CPVRManagerJobQueue

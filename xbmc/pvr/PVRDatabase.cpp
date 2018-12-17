@@ -20,9 +20,43 @@
 #include "utils/log.h"
 
 #include "pvr/channels/PVRChannelGroups.h"
+#include "pvr/timers/PVRTimerInfoTag.h"
+#include "pvr/timers/PVRTimerType.h"
+#include "pvr/timers/PVRTimers.h"
 
 using namespace dbiplus;
 using namespace PVR;
+
+namespace
+{
+  static const std::string sqlCreateTimersTable =
+    "CREATE TABLE timers ("
+      "iClientIndex       integer primary key, "
+      "iParentClientIndex integer, "
+      "iClientId          integer, "
+      "iTimerType         integer, "
+      "iState             integer, "
+      "sTitle             varchar(255), "
+      "iClientChannelUid  integer, "
+      "sSeriesLink        varchar(255), "
+      "sStartTime         varchar(20), "
+      "bStartAnyTime      bool, "
+      "sEndTime           varchar(20), "
+      "bEndAnyTime        bool, "
+      "sFirstDay          varchar(20), "
+      "iWeekdays          integer, "
+      "iEpgUid            integer, "
+      "iMarginStart       integer, "
+      "iMarginEnd         integer, "
+      "sEpgSearchString   varchar(255), "
+      "bFullTextEpgSearch bool, "
+      "iPreventDuplicates integer,"
+      "iPrority           integer,"
+      "iLifetime          integer,"
+      "iMaxRecordings     integer,"
+      "iRecordingGroup    integer"
+  ")";
+} // unnamed namespace
 
 bool CPVRDatabase::Open()
 {
@@ -93,6 +127,9 @@ void CPVRDatabase::CreateTables()
         "iPriority integer"
       ")"
   );
+
+  CLog::LogFC(LOGDEBUG, LOGPVR, "Creating table 'timers'");
+  m_pDS->exec(sqlCreateTimersTable);
 }
 
 void CPVRDatabase::CreateAnalytics()
@@ -104,6 +141,7 @@ void CPVRDatabase::CreateAnalytics()
   m_pDS->exec("CREATE UNIQUE INDEX idx_channels_iClientId_iUniqueId on channels(iClientId, iUniqueId);");
   m_pDS->exec("CREATE INDEX idx_channelgroups_bIsRadio on channelgroups(bIsRadio);");
   m_pDS->exec("CREATE UNIQUE INDEX idx_idGroup_idChannel on map_channelgroups_channels(idGroup, idChannel);");
+  m_pDS->exec("CREATE INDEX idx_timers_iClientIndex on timers(iClientIndex);");
 }
 
 void CPVRDatabase::UpdateTables(int iVersion)
@@ -150,6 +188,9 @@ void CPVRDatabase::UpdateTables(int iVersion)
 
   if (iVersion < 32)
     m_pDS->exec("CREATE TABLE clients (idClient integer primary key, iPriority integer)");
+
+  if (iVersion < 33)
+    m_pDS->exec(sqlCreateTimersTable);
 }
 
 /********** Client methods **********/
@@ -802,4 +843,130 @@ bool CPVRDatabase::UpdateLastWatched(const CPVRChannelGroup &group)
   const std::string strQuery = PrepareSQL("UPDATE channelgroups SET iLastWatched = %u WHERE idGroup = %d",
     static_cast<unsigned int>(group.LastWatched()), group.GroupID());
   return ExecuteQuery(strQuery);
+}
+
+/********** Timer methods **********/
+
+std::vector<std::shared_ptr<CPVRTimerInfoTag>> CPVRDatabase::GetTimers(CPVRTimers& timers)
+{
+  std::vector<std::shared_ptr<CPVRTimerInfoTag>> result;
+
+  CSingleLock lock(m_critSection);
+  const std::string strQuery = PrepareSQL("SELECT * FROM timers");
+  if (ResultQuery(strQuery))
+  {
+    try
+    {
+      while (!m_pDS->eof())
+      {
+        std::shared_ptr<CPVRTimerInfoTag> newTag(new CPVRTimerInfoTag());
+
+        newTag->m_iClientIndex = -m_pDS->fv("iClientIndex").get_asInt();
+        newTag->m_iParentClientIndex = m_pDS->fv("iParentClientIndex").get_asInt();
+        newTag->m_iClientId = m_pDS->fv("iClientId").get_asInt();
+        newTag->SetTimerType(CPVRTimerType::CreateFromIds(m_pDS->fv("iTimerType").get_asInt(), -1));
+        newTag->m_state = static_cast<PVR_TIMER_STATE>(m_pDS->fv("iState").get_asInt());
+        newTag->m_strTitle = m_pDS->fv("sTitle").get_asString().c_str();
+        newTag->m_iClientChannelUid = m_pDS->fv("iClientChannelUid").get_asInt();
+        newTag->m_strSeriesLink = m_pDS->fv("sSeriesLink").get_asString().c_str();
+        newTag->SetStartFromUTC(CDateTime::FromDBDateTime(m_pDS->fv("sStartTime").get_asString().c_str()));
+        newTag->m_bStartAnyTime = m_pDS->fv("bStartAnyTime").get_asBool();
+        newTag->SetEndFromUTC(CDateTime::FromDBDateTime(m_pDS->fv("sEndTime").get_asString().c_str()));
+        newTag->m_bEndAnyTime = m_pDS->fv("bEndAnyTime").get_asBool();
+        newTag->SetFirstDayFromUTC(CDateTime::FromDBDateTime(m_pDS->fv("sFirstDay").get_asString().c_str()));
+        newTag->m_iWeekdays = m_pDS->fv("iWeekdays").get_asInt();
+        newTag->m_iEpgUid = m_pDS->fv("iEpgUid").get_asInt();
+        newTag->m_iMarginStart = m_pDS->fv("iMarginStart").get_asInt();
+        newTag->m_iMarginEnd = m_pDS->fv("iMarginEnd").get_asInt();
+        newTag->m_strEpgSearchString = m_pDS->fv("sEpgSearchString").get_asString().c_str();
+        newTag->m_bFullTextEpgSearch = m_pDS->fv("bFullTextEpgSearch").get_asBool();
+        newTag->m_iPreventDupEpisodes = m_pDS->fv("iPreventDuplicates").get_asInt();
+        newTag->m_iPriority = m_pDS->fv("iPrority").get_asInt();
+        newTag->m_iLifetime = m_pDS->fv("iLifetime").get_asInt();
+        newTag->m_iMaxRecordings = m_pDS->fv("iMaxRecordings").get_asInt();
+        newTag->m_iRecordingGroup = m_pDS->fv("iRecordingGroup").get_asInt();
+        newTag->UpdateSummary();
+
+        result.emplace_back(newTag);
+
+        m_pDS->next();
+      }
+      m_pDS->close();
+    }
+    catch (...)
+    {
+      CLog::LogF(LOGERROR, "Could not load timer data from the database");
+    }
+  }
+  return result;
+}
+
+bool CPVRDatabase::Persist(CPVRTimerInfoTag& timer)
+{
+  CSingleLock lock(m_critSection);
+
+  // insert a new entry if this is a new timer, or replace the existing one otherwise
+  std::string strQuery;
+  if (timer.m_iClientIndex == PVR_TIMER_NO_CLIENT_INDEX)
+    strQuery = PrepareSQL("INSERT INTO timers "
+                          "(iParentClientIndex, iClientId, iTimerType, iState, sTitle, iClientChannelUid, sSeriesLink, sStartTime,"
+                          " bStartAnyTime, sEndTime, bEndAnyTime, sFirstDay, iWeekdays, iEpgUid, iMarginStart, iMarginEnd,"
+                          " sEpgSearchString, bFullTextEpgSearch, iPreventDuplicates, iPrority, iLifetime, iMaxRecordings, iRecordingGroup) "
+                          "VALUES (%i, %i, %u, %i, '%s', %i, '%s', '%s', %i, '%s', %i, '%s', %i, %u, %i, %i, '%s', %i, %i, %i, %i, %i, %i);",
+                          timer.m_iParentClientIndex, timer.m_iClientId, timer.GetTimerType()->GetTypeId(), timer.m_state,
+                          timer.Title().c_str(), timer.m_iClientChannelUid, timer.SeriesLink().c_str(),
+                          timer.StartAsUTC().GetAsDBDateTime().c_str(), timer.m_bStartAnyTime ? 1 : 0,
+                          timer.EndAsUTC().GetAsDBDateTime().c_str(), timer.m_bEndAnyTime ? 1 : 0,
+                          timer.FirstDayAsUTC().GetAsDBDateTime().c_str(), timer.m_iWeekdays, timer.UniqueBroadcastID(),
+                          timer.m_iMarginStart, timer.m_iMarginEnd, timer.m_strEpgSearchString.c_str(), timer.m_bFullTextEpgSearch ? 1 : 0,
+                          timer.m_iPreventDupEpisodes, timer.m_iPriority, timer.m_iLifetime, timer.m_iMaxRecordings, timer.m_iRecordingGroup);
+  else
+    strQuery = PrepareSQL("REPLACE INTO timers "
+                          "(iClientIndex,"
+                          " iParentClientIndex, iClientId, iTimerType, iState, sTitle, iClientChannelUid, sSeriesLink, sStartTime,"
+                          " bStartAnyTime, sEndTime, bEndAnyTime, sFirstDay, iWeekdays, iEpgUid, iMarginStart, iMarginEnd,"
+                          " sEpgSearchString, bFullTextEpgSearch, iPreventDuplicates, iPrority, iLifetime, iMaxRecordings, iRecordingGroup) "
+                          "VALUES (%i, %i, %i, %u, %i, '%s', %i, '%s', '%s', %i, '%s', %i, '%s', %i, %u, %i, %i, '%s', %i, %i, %i, %i, %i, %i);",
+                          -timer.m_iClientIndex,
+                          timer.m_iParentClientIndex, timer.m_iClientId, timer.GetTimerType()->GetTypeId(), timer.m_state,
+                          timer.Title().c_str(), timer.m_iClientChannelUid, timer.SeriesLink().c_str(),
+                          timer.StartAsUTC().GetAsDBDateTime().c_str(), timer.m_bStartAnyTime ? 1 : 0,
+                          timer.EndAsUTC().GetAsDBDateTime().c_str(), timer.m_bEndAnyTime ? 1 : 0,
+                          timer.FirstDayAsUTC().GetAsDBDateTime().c_str(), timer.m_iWeekdays, timer.UniqueBroadcastID(),
+                          timer.m_iMarginStart, timer.m_iMarginEnd, timer.m_strEpgSearchString.c_str(), timer.m_bFullTextEpgSearch ? 1 : 0,
+                          timer.m_iPreventDupEpisodes, timer.m_iPriority, timer.m_iLifetime, timer.m_iMaxRecordings, timer.m_iRecordingGroup);
+
+  bool bReturn = ExecuteQuery(strQuery);
+
+  // set the client index for just inserted timers
+  if (bReturn && timer.m_iClientIndex == PVR_TIMER_NO_CLIENT_INDEX)
+  {
+    // index must be negative for local timers!
+    timer.m_iClientIndex = -static_cast<int>(m_pDS->lastinsertid());
+  }
+
+  return bReturn;
+}
+
+bool CPVRDatabase::Delete(const CPVRTimerInfoTag& timer)
+{
+  if (timer.m_iClientIndex == PVR_TIMER_NO_CLIENT_INDEX)
+    return false;
+
+  CLog::LogFC(LOGDEBUG, LOGPVR, "Deleting timer '%i' from the database", timer.m_iClientIndex);
+
+  CSingleLock lock(m_critSection);
+
+  Filter filter;
+  filter.AppendWhere(PrepareSQL("iClientIndex = '%i'", -timer.m_iClientIndex));
+
+  return DeleteValues("timers", filter);
+}
+
+bool CPVRDatabase::DeleteTimers()
+{
+  CLog::LogFC(LOGDEBUG, LOGPVR, "Deleting all timers from the database");
+
+  CSingleLock lock(m_critSection);
+  return DeleteValues("timers");
 }

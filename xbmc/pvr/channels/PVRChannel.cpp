@@ -139,6 +139,8 @@ bool CPVRChannel::Delete(void)
 
 CPVREpgPtr CPVRChannel::GetEPG(void) const
 {
+  const_cast<CPVRChannel*>(this)->CreateEPG();
+
   CSingleLock lock(m_critSection);
   if (!m_bIsHidden && m_bEPGEnabled)
     return m_epg;

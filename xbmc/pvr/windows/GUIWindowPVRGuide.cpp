@@ -482,7 +482,7 @@ bool CGUIWindowPVRGuideBase::OnMessage(CGUIMessage& message)
               bReturn = true;
               break;
             case ACTION_PVR_SHOW_TIMER_RULE:
-              CServiceBroker::GetPVRManager().GUIActions()->AddTimerRule(pItem, true);
+              CServiceBroker::GetPVRManager().GUIActions()->AddTimerRule(pItem, true, false);
               bReturn = true;
               break;
             case ACTION_CONTEXT_MENU:
