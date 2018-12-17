@@ -31,6 +31,9 @@ public:
   bool OnMessage(CGUIMessage& message) override;
   bool OnBack(int actionID) override;
 
+  void Reset();
+  int GetResult() const;
+
   enum TimeOut
   {
     NO_TIMEOUT = 0
