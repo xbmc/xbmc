@@ -5216,6 +5216,22 @@ const infomap container_str[]  = {{ "property",         CONTAINER_PROPERTY },
 ///     @skinning_v16 **[New Boolean Condition]** \ref ListItem_HasTimerSchedule "ListItem.HasTimerSchedule"
 ///     <p>
 ///   }
+///   \table_row3{   <b>`ListItem.HasReminder`</b>,
+///                  \anchor ListItem_HasReminder
+///                  _boolean_,
+///     @return **True** if the item has a reminder set (PVR).
+///     <p><hr>
+///     @skinning_v19 **[New Boolean Condition]** \ref ListItem_HasReminder "ListItem.HasReminder"
+///     <p>
+///   }
+///   \table_row3{   <b>`ListItem.HasReminderRule`</b>,
+///                  \anchor ListItem_ListItem.HasReminderRule
+///                  _boolean_,
+///     @return **True** if the item was scheduled by a reminder timer rule (PVR).
+///     <p><hr>
+///     @skinning_v19 **[New Boolean Condition]** \ref ListItem_HasReminderRule "ListItem.HasReminderRule"
+///     <p>
+///   }
 ///   \table_row3{   <b>`ListItem.HasRecording`</b>,
 ///                  \anchor ListItem_HasRecording
 ///                  _boolean_,
@@ -5774,6 +5790,8 @@ const infomap listitem_labels[]= {{ "thumb",            LISTITEM_THUMB },
                                   { "hasepg",           LISTITEM_HAS_EPG },
                                   { "hastimer",         LISTITEM_HASTIMER },
                                   { "hastimerschedule", LISTITEM_HASTIMERSCHEDULE },
+                                  { "hasreminder",      LISTITEM_HASREMINDER },
+                                  { "hasreminderrule",  LISTITEM_HASREMINDERRULE },
                                   { "hasrecording",     LISTITEM_HASRECORDING },
                                   { "isrecording",      LISTITEM_ISRECORDING },
                                   { "inprogress",       LISTITEM_INPROGRESS },
