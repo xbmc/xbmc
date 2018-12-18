@@ -12,6 +12,7 @@
 #include "guilib/LocalizeStrings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
+#include "settings/lib/SettingDefinitions.h"
 #include "settings/lib/SettingsManager.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
@@ -144,7 +145,7 @@ std::string CPVRSettings::GetStringValue(const std::string &settingName) const
 }
 
 void CPVRSettings::MarginTimeFiller(
-  SettingConstPtr  /*setting*/, std::vector< std::pair<std::string, int> > &list, int &current, void * /*data*/)
+  SettingConstPtr  /*setting*/, std::vector<IntegerSettingOption> &list, int &current, void * /*data*/)
 {
   list.clear();
 
@@ -156,7 +157,7 @@ void CPVRSettings::MarginTimeFiller(
   for (int iValue : marginTimeValues)
   {
     list.push_back(
-      std::make_pair(StringUtils::Format(g_localizeStrings.Get(14044).c_str(), iValue) /* %i min */, iValue));
+      IntegerSettingOption(StringUtils::Format(g_localizeStrings.Get(14044).c_str(), iValue) /* %i min */, iValue));
   }
 }
 

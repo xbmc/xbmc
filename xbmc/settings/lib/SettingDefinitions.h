@@ -13,6 +13,8 @@
 #include <utility>
 #include <vector>
 
+#include "utils/Variant.h"
+
 #define SETTING_XML_ROOT "settings"
 #define SETTING_XML_ROOT_VERSION "version"
 
@@ -58,13 +60,39 @@
 #define SETTING_XML_ATTR_BEFORE "before"
 #define SETTING_XML_ATTR_AFTER "after"
 
+struct IntegerSettingOption
+{
+  IntegerSettingOption(const std::string& _label, int _value)
+  : label(_label), value(_value) {}
+
+  IntegerSettingOption(const std::string& _label, int _value,
+                       const std::vector<std::pair<std::string, CVariant>>& props)
+  : label(_label), value(_value), properties(props) {}
+
+  std::string label;
+  int value = 0;
+  std::vector<std::pair<std::string, CVariant>> properties;
+};
+
+struct StringSettingOption
+{
+  StringSettingOption(const std::string& _label, const std::string& _value)
+  : label(_label), value(_value) {}
+
+  StringSettingOption(const std::string& _label, const std::string& _value,
+                      const std::vector<std::pair<std::string, CVariant>>& props)
+  : label(_label), value(_value), properties(props) {}
+
+  std::string label;
+  std::string value;
+  std::vector<std::pair<std::string, CVariant>> properties;
+};
+
 using TranslatableIntegerSettingOption = std::pair<int, int>;
 using TranslatableIntegerSettingOptions = std::vector<TranslatableIntegerSettingOption>;
-using IntegerSettingOption = std::pair<std::string, int>;
 using IntegerSettingOptions = std::vector<IntegerSettingOption>;
 using TranslatableStringSettingOption = std::pair<int, std::string>;
 using TranslatableStringSettingOptions = std::vector<TranslatableStringSettingOption>;
-using StringSettingOption = std::pair<std::string, std::string>;
 using StringSettingOptions = std::vector<StringSettingOption>;
 
 class CSetting;

@@ -10,6 +10,8 @@
 
 #include "settings/dialogs/GUIDialogSettingsManualBase.h"
 
+struct StringSettingOption;
+
 class CGUIDialogCMSSettings : public CGUIDialogSettingsManualBase
 {
 public:
@@ -32,7 +34,7 @@ protected:
 private:
   static void Cms3dLutsFiller(
     std::shared_ptr<const CSetting> setting,
-    std::vector< std::pair<std::string, std::string> > &list,
+    std::vector<StringSettingOption> &list,
     std::string &current,
     void *data);
 };

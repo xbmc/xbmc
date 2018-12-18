@@ -21,6 +21,7 @@
 #include "settings/lib/SettingSection.h"
 
 class CXBMCTinyXML;
+struct StringSettingOption;
 
 namespace ADDON
 {
@@ -109,7 +110,7 @@ namespace ADDON
     bool ParseOldCondition(std::shared_ptr<const CSetting> setting, const std::vector<std::shared_ptr<const CSetting>> settings, const std::string& condition, CSettingDependency& dependeny) const;
     static bool ParseOldConditionExpression(std::string str, ConditionExpression& expression);
 
-    static void FileEnumSettingOptionsFiller(std::shared_ptr<const CSetting> setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data);
+    static void FileEnumSettingOptionsFiller(std::shared_ptr<const CSetting> setting, std::vector<StringSettingOption> &list, std::string &current, void *data);
 
     std::weak_ptr<const IAddon> m_addon;
     // store these values so that we don't always have to access the weak pointer

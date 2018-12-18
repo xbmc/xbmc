@@ -20,6 +20,7 @@
 #include "playlists/SmartPlayList.h"
 #include "settings/SettingUtils.h"
 #include "settings/lib/Setting.h"
+#include "settings/lib/SettingDefinitions.h"
 #include "settings/windows/GUIControlSettings.h"
 #include "utils/log.h"
 #include "utils/SortUtils.h"
@@ -733,7 +734,7 @@ void CGUIDialogMediaFilter::DeleteRule(Field field)
   }
 }
 
-void CGUIDialogMediaFilter::GetStringListOptions(SettingConstPtr setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data)
+void CGUIDialogMediaFilter::GetStringListOptions(SettingConstPtr setting, std::vector<StringSettingOption> &list, std::string &current, void *data)
 {
   if (setting == NULL || data == NULL)
     return;
@@ -749,7 +750,7 @@ void CGUIDialogMediaFilter::GetStringListOptions(SettingConstPtr setting, std::v
     return;
 
   for (std::vector<std::string>::const_iterator item = items.begin(); item != items.end(); ++item)
-    list.push_back(make_pair(*item, *item));
+    list.push_back(StringSettingOption(*item, *item));
 }
 
 void CGUIDialogMediaFilter::GetRange(const Filter &filter, int &min, int &interval, int &max)

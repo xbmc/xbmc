@@ -16,6 +16,7 @@
 #include "guilib/LocalizeStrings.h"
 #include "settings/SettingUtils.h"
 #include "settings/lib/Setting.h"
+#include "settings/lib/SettingDefinitions.h"
 #include "settings/lib/SettingsManager.h"
 #include "settings/windows/GUIControlSettings.h"
 #include "utils/StringUtils.h"
@@ -791,7 +792,7 @@ void CGUIDialogPVRTimerSettings::InitializeChannelsList()
 }
 
 void CGUIDialogPVRTimerSettings::TypesFiller(
-  SettingConstPtr setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data)
+  SettingConstPtr setting, std::vector<IntegerSettingOption> &list, int &current, void *data)
 {
   CGUIDialogPVRTimerSettings *pThis = static_cast<CGUIDialogPVRTimerSettings*>(data);
   if (pThis)
@@ -802,7 +803,7 @@ void CGUIDialogPVRTimerSettings::TypesFiller(
     bool foundCurrent(false);
     for (const auto &typeEntry : pThis->m_typeEntries)
     {
-      list.push_back(std::make_pair(typeEntry.second->GetDescription(), typeEntry.first));
+      list.push_back(IntegerSettingOption(typeEntry.second->GetDescription(), typeEntry.first));
 
       if (!foundCurrent && (*(pThis->m_timerType) == *(typeEntry.second)))
       {
@@ -816,7 +817,7 @@ void CGUIDialogPVRTimerSettings::TypesFiller(
 }
 
 void CGUIDialogPVRTimerSettings::ChannelsFiller(
-  SettingConstPtr setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data)
+  SettingConstPtr setting, std::vector<IntegerSettingOption> &list, int &current, void *data)
 {
   CGUIDialogPVRTimerSettings *pThis = static_cast<CGUIDialogPVRTimerSettings*>(data);
   if (pThis)
@@ -836,7 +837,7 @@ void CGUIDialogPVRTimerSettings::ChannelsFiller(
             !pThis->m_timerType->SupportsAnyChannel())
           continue;
 
-        list.emplace_back(std::make_pair(channelEntry.second.description, channelEntry.first));
+        list.emplace_back(IntegerSettingOption(channelEntry.second.description, channelEntry.first));
       }
 
       if (!foundCurrent && (pThis->m_channel == channelEntry.second))
@@ -851,7 +852,7 @@ void CGUIDialogPVRTimerSettings::ChannelsFiller(
 }
 
 void CGUIDialogPVRTimerSettings::DaysFiller(
-  SettingConstPtr setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data)
+  SettingConstPtr setting, std::vector<IntegerSettingOption> &list, int &current, void *data)
 {
   CGUIDialogPVRTimerSettings *pThis = static_cast<CGUIDialogPVRTimerSettings*>(data);
   if (pThis)
@@ -875,11 +876,11 @@ void CGUIDialogPVRTimerSettings::DaysFiller(
     const CDateTime oldCDate(oldCDateTime.GetYear(), oldCDateTime.GetMonth(), oldCDateTime.GetDay(), 0, 0, 0);
 
     if ((oldCDate < time) || (oldCDate > yesterdayPlusOneYear))
-      list.push_back(std::make_pair(oldCDate.GetAsLocalizedDate(true /*long date*/), GetDateAsIndex(oldCDate)));
+      list.push_back(IntegerSettingOption(oldCDate.GetAsLocalizedDate(true /*long date*/), GetDateAsIndex(oldCDate)));
 
     while (time <= yesterdayPlusOneYear)
     {
-      list.push_back(std::make_pair(time.GetAsLocalizedDate(true /*long date*/), GetDateAsIndex(time)));
+      list.push_back(IntegerSettingOption(time.GetAsLocalizedDate(true /*long date*/), GetDateAsIndex(time)));
       time += CDateTimeSpan(1, 0, 0, 0);
     }
 
@@ -895,13 +896,18 @@ void CGUIDialogPVRTimerSettings::DaysFiller(
 }
 
 void CGUIDialogPVRTimerSettings::DupEpisodesFiller(
-  SettingConstPtr setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data)
+  SettingConstPtr setting, std::vector<IntegerSettingOption> &list, int &current, void *data)
 {
   CGUIDialogPVRTimerSettings *pThis = static_cast<CGUIDialogPVRTimerSettings*>(data);
   if (pThis)
   {
     list.clear();
-    pThis->m_timerType->GetPreventDuplicateEpisodesValues(list);
+
+    std::vector<std::pair<std::string,int>> values;
+    pThis->m_timerType->GetPreventDuplicateEpisodesValues(values);
+    for (const auto& value : values)
+      list.emplace_back(IntegerSettingOption(value.first, value.second));
+
     current = pThis->m_iPreventDupEpisodes;
   }
   else
@@ -909,19 +915,19 @@ void CGUIDialogPVRTimerSettings::DupEpisodesFiller(
 }
 
 void CGUIDialogPVRTimerSettings::WeekdaysFiller(
-  SettingConstPtr setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data)
+  SettingConstPtr setting, std::vector<IntegerSettingOption> &list, int &current, void *data)
 {
   CGUIDialogPVRTimerSettings *pThis = static_cast<CGUIDialogPVRTimerSettings*>(data);
   if (pThis)
   {
     list.clear();
-    list.push_back(std::make_pair(g_localizeStrings.Get(831), PVR_WEEKDAY_MONDAY));    // "Mondays"
-    list.push_back(std::make_pair(g_localizeStrings.Get(832), PVR_WEEKDAY_TUESDAY));   // "Tuesdays"
-    list.push_back(std::make_pair(g_localizeStrings.Get(833), PVR_WEEKDAY_WEDNESDAY)); // "Wednesdays"
-    list.push_back(std::make_pair(g_localizeStrings.Get(834), PVR_WEEKDAY_THURSDAY));  // "Thursdays"
-    list.push_back(std::make_pair(g_localizeStrings.Get(835), PVR_WEEKDAY_FRIDAY));    // "Fridays"
-    list.push_back(std::make_pair(g_localizeStrings.Get(836), PVR_WEEKDAY_SATURDAY));  // "Saturdays"
-    list.push_back(std::make_pair(g_localizeStrings.Get(837), PVR_WEEKDAY_SUNDAY));    // "Sundays"
+    list.push_back(IntegerSettingOption(g_localizeStrings.Get(831), PVR_WEEKDAY_MONDAY));    // "Mondays"
+    list.push_back(IntegerSettingOption(g_localizeStrings.Get(832), PVR_WEEKDAY_TUESDAY));   // "Tuesdays"
+    list.push_back(IntegerSettingOption(g_localizeStrings.Get(833), PVR_WEEKDAY_WEDNESDAY)); // "Wednesdays"
+    list.push_back(IntegerSettingOption(g_localizeStrings.Get(834), PVR_WEEKDAY_THURSDAY));  // "Thursdays"
+    list.push_back(IntegerSettingOption(g_localizeStrings.Get(835), PVR_WEEKDAY_FRIDAY));    // "Fridays"
+    list.push_back(IntegerSettingOption(g_localizeStrings.Get(836), PVR_WEEKDAY_SATURDAY));  // "Saturdays"
+    list.push_back(IntegerSettingOption(g_localizeStrings.Get(837), PVR_WEEKDAY_SUNDAY));    // "Sundays"
 
     current = pThis->m_iWeekdays;
   }
@@ -930,19 +936,24 @@ void CGUIDialogPVRTimerSettings::WeekdaysFiller(
 }
 
 void CGUIDialogPVRTimerSettings::PrioritiesFiller(
-  SettingConstPtr setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data)
+  SettingConstPtr setting, std::vector<IntegerSettingOption> &list, int &current, void *data)
 {
   CGUIDialogPVRTimerSettings *pThis = static_cast<CGUIDialogPVRTimerSettings*>(data);
   if (pThis)
   {
     list.clear();
-    pThis->m_timerType->GetPriorityValues(list);
+
+    std::vector<std::pair<std::string,int>> values;
+    pThis->m_timerType->GetPriorityValues(values);
+    for (const auto& value : values)
+      list.emplace_back(IntegerSettingOption(value.first, value.second));
+
     current = pThis->m_iPriority;
 
     auto it = list.begin();
     while (it != list.end())
     {
-      if (it->second == current)
+      if (it->value == current)
         break; // value already in list
 
       ++it;
@@ -951,7 +962,7 @@ void CGUIDialogPVRTimerSettings::PrioritiesFiller(
     if (it == list.end())
     {
       // PVR backend supplied value is not in the list of predefined values. Insert it.
-      list.insert(it, std::make_pair(StringUtils::Format("%d", current), current));
+      list.insert(it, IntegerSettingOption(StringUtils::Format("%d", current), current));
     }
   }
   else
@@ -959,19 +970,24 @@ void CGUIDialogPVRTimerSettings::PrioritiesFiller(
 }
 
 void CGUIDialogPVRTimerSettings::LifetimesFiller(
-  SettingConstPtr setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data)
+  SettingConstPtr setting, std::vector<IntegerSettingOption> &list, int &current, void *data)
 {
   CGUIDialogPVRTimerSettings *pThis = static_cast<CGUIDialogPVRTimerSettings*>(data);
   if (pThis)
   {
     list.clear();
-    pThis->m_timerType->GetLifetimeValues(list);
+
+    std::vector<std::pair<std::string,int>> values;
+    pThis->m_timerType->GetLifetimeValues(values);
+    for (const auto& value : values)
+      list.emplace_back(IntegerSettingOption(value.first, value.second));
+
     current = pThis->m_iLifetime;
 
     auto it = list.begin();
     while (it != list.end())
     {
-      if (it->second == current)
+      if (it->value == current)
         break; // value already in list
 
       ++it;
@@ -980,7 +996,7 @@ void CGUIDialogPVRTimerSettings::LifetimesFiller(
     if (it == list.end())
     {
       // PVR backend supplied value is not in the list of predefined values. Insert it.
-      list.insert(it, std::make_pair(StringUtils::Format(g_localizeStrings.Get(17999).c_str(), current) /* %i days */, current));
+      list.insert(it, IntegerSettingOption(StringUtils::Format(g_localizeStrings.Get(17999).c_str(), current) /* %i days */, current));
     }
   }
   else
@@ -988,19 +1004,24 @@ void CGUIDialogPVRTimerSettings::LifetimesFiller(
 }
 
 void CGUIDialogPVRTimerSettings::MaxRecordingsFiller(
-  SettingConstPtr setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data)
+  SettingConstPtr setting, std::vector<IntegerSettingOption> &list, int &current, void *data)
 {
   CGUIDialogPVRTimerSettings *pThis = static_cast<CGUIDialogPVRTimerSettings*>(data);
   if (pThis)
   {
     list.clear();
-    pThis->m_timerType->GetMaxRecordingsValues(list);
+
+    std::vector<std::pair<std::string,int>> values;
+    pThis->m_timerType->GetMaxRecordingsValues(values);
+    for (const auto& value : values)
+      list.emplace_back(IntegerSettingOption(value.first, value.second));
+
     current = pThis->m_iMaxRecordings;
 
     auto it = list.begin();
     while (it != list.end())
     {
-      if (it->second == current)
+      if (it->value == current)
         break; // value already in list
 
       ++it;
@@ -1009,7 +1030,7 @@ void CGUIDialogPVRTimerSettings::MaxRecordingsFiller(
     if (it == list.end())
     {
       // PVR backend supplied value is not in the list of predefined values. Insert it.
-      list.insert(it, std::make_pair(StringUtils::Format("%d", current), current));
+      list.insert(it, IntegerSettingOption(StringUtils::Format("%d", current), current));
     }
   }
   else
@@ -1017,13 +1038,18 @@ void CGUIDialogPVRTimerSettings::MaxRecordingsFiller(
 }
 
 void CGUIDialogPVRTimerSettings::RecordingGroupFiller(
-  SettingConstPtr setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data)
+  SettingConstPtr setting, std::vector<IntegerSettingOption> &list, int &current, void *data)
 {
   CGUIDialogPVRTimerSettings *pThis = static_cast<CGUIDialogPVRTimerSettings*>(data);
   if (pThis)
   {
     list.clear();
-    pThis->m_timerType->GetRecordingGroupValues(list);
+
+    std::vector<std::pair<std::string,int>> values;
+    pThis->m_timerType->GetRecordingGroupValues(values);
+    for (const auto& value : values)
+      list.emplace_back(IntegerSettingOption(value.first, value.second));
+
     current = pThis->m_iRecordingGroup;
   }
   else
@@ -1031,7 +1057,7 @@ void CGUIDialogPVRTimerSettings::RecordingGroupFiller(
 }
 
 void CGUIDialogPVRTimerSettings::MarginTimeFiller(
-  SettingConstPtr setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data)
+  SettingConstPtr setting, std::vector<IntegerSettingOption> &list, int &current, void *data)
 {
   CGUIDialogPVRTimerSettings *pThis = static_cast<CGUIDialogPVRTimerSettings*>(data);
   if (pThis)
@@ -1050,13 +1076,13 @@ void CGUIDialogPVRTimerSettings::MarginTimeFiller(
     auto it = list.begin();
     while (it != list.end())
     {
-      if (it->second == current)
+      if (it->value == current)
       {
         bInsertValue = false;
         break; // value already in list
       }
 
-      if (it->second > current)
+      if (it->value > current)
         break;
 
       ++it;
@@ -1065,7 +1091,7 @@ void CGUIDialogPVRTimerSettings::MarginTimeFiller(
     if (bInsertValue)
     {
       // PVR backend supplied value is not in the list of predefined values. Insert it.
-      list.insert(it, std::make_pair(StringUtils::Format(g_localizeStrings.Get(14044).c_str(), current) /* %i min */, current));
+      list.insert(it, IntegerSettingOption(StringUtils::Format(g_localizeStrings.Get(14044).c_str(), current) /* %i min */, current));
     }
   }
   else

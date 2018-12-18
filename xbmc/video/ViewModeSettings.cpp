@@ -10,6 +10,7 @@
 
 #include "guilib/LocalizeStrings.h"
 #include "cores/VideoSettings.h"
+#include "settings/lib/SettingDefinitions.h"
 
 struct ViewModeProperties
 {
@@ -87,12 +88,12 @@ int CViewModeSettings::GetViewModeStringIndex(int viewMode)
 
 /** Fills the list with all visible view modes
  */
-void CViewModeSettings::ViewModesFiller(std::shared_ptr<const CSetting> setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data)
+void CViewModeSettings::ViewModesFiller(std::shared_ptr<const CSetting> setting, std::vector<IntegerSettingOption> &list, int &current, void *data)
 {
   // Add all appropriate view modes to the list control
   for (const auto &item : viewModes)
   {
     if (!item.hideFromList)
-      list.push_back(make_pair(g_localizeStrings.Get(item.stringIndex), item.viewMode));
+      list.push_back(IntegerSettingOption(g_localizeStrings.Get(item.stringIndex), item.viewMode));
   }
 }

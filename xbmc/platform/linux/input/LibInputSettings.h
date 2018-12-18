@@ -14,6 +14,7 @@
 #include <vector>
 
 class CLibInputHandler;
+struct StringSettingOption;
 
 class CLibInputSettings : public ISettingCallback, public ISettingsHandler
 {
@@ -21,7 +22,7 @@ public:
   static const std::string SETTING_INPUT_LIBINPUTKEYBOARDLAYOUT;
 
   void OnSettingChanged(std::shared_ptr<const CSetting> setting) override;
-  static void SettingOptionsKeyboardLayoutsFiller(std::shared_ptr<const CSetting> setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data);
+  static void SettingOptionsKeyboardLayoutsFiller(std::shared_ptr<const CSetting> setting, std::vector<StringSettingOption> &list, std::string &current, void *data);
 
   CLibInputSettings(CLibInputHandler *handler);
   ~CLibInputSettings();

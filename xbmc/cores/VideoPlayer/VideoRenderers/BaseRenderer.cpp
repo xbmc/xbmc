@@ -13,6 +13,7 @@
 #include "settings/DisplaySettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
+#include "settings/lib/SettingDefinitions.h"
 #include "guilib/GUIComponent.h"
 #include "windowing/GraphicContext.h"
 #include "guilib/GUIWindowManager.h"
@@ -480,13 +481,13 @@ void CBaseRenderer::SetVideoSettings(const CVideoSettings &settings)
   m_videoSettings = settings;
 }
 
-void CBaseRenderer::SettingOptionsRenderMethodsFiller(std::shared_ptr<const CSetting> setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data)
+void CBaseRenderer::SettingOptionsRenderMethodsFiller(std::shared_ptr<const CSetting> setting, std::vector<IntegerSettingOption> &list, int &current, void *data)
 {
-  list.push_back(make_pair(g_localizeStrings.Get(13416), RENDER_METHOD_AUTO));
+  list.push_back(IntegerSettingOption(g_localizeStrings.Get(13416), RENDER_METHOD_AUTO));
 
 #ifdef HAS_DX
-  list.push_back(make_pair(g_localizeStrings.Get(16319), RENDER_METHOD_DXVA));
-  list.push_back(make_pair(g_localizeStrings.Get(13431), RENDER_METHOD_D3D_PS));
-  list.push_back(make_pair(g_localizeStrings.Get(13419), RENDER_METHOD_SOFTWARE));
+  list.push_back(IntegerSettingOption(g_localizeStrings.Get(16319), RENDER_METHOD_DXVA));
+  list.push_back(IntegerSettingOption(g_localizeStrings.Get(13431), RENDER_METHOD_D3D_PS));
+  list.push_back(IntegerSettingOption(g_localizeStrings.Get(13419), RENDER_METHOD_SOFTWARE));
 #endif
 }

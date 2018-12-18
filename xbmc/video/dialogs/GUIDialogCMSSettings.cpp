@@ -19,6 +19,7 @@
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "settings/lib/Setting.h"
+#include "settings/lib/SettingDefinitions.h"
 #include "settings/lib/SettingsManager.h"
 #include "utils/log.h"
 #include "utils/URIUtils.h"
@@ -209,7 +210,7 @@ void CGUIDialogCMSSettings::Save()
 
 void CGUIDialogCMSSettings::Cms3dLutsFiller(
     SettingConstPtr setting,
-    std::vector< std::pair<std::string, std::string> > &list,
+    std::vector<StringSettingOption> &list,
     std::string &current,
     void *data)
 {
@@ -224,6 +225,6 @@ void CGUIDialogCMSSettings::Cms3dLutsFiller(
 
   for (int i = 0; i < items.Size(); i++)
   {
-    list.push_back(make_pair(items[i]->GetLabel(), items[i]->GetPath()));
+    list.push_back(StringSettingOption(items[i]->GetLabel(), items[i]->GetPath()));
   }
 }

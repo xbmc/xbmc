@@ -22,6 +22,7 @@
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
 #include "settings/lib/Setting.h"
+#include "settings/lib/SettingDefinitions.h"
 #include "settings/Settings.h"
 #include "utils/log.h"
 #include "utils/MathUtils.h"
@@ -226,7 +227,7 @@ void CSeekHandler::FrameMove()
   }
 }
 
-void CSeekHandler::SettingOptionsSeekStepsFiller(SettingConstPtr setting, std::vector<std::pair<std::string, int>> &list, int &current, void *data)
+void CSeekHandler::SettingOptionsSeekStepsFiller(SettingConstPtr setting, std::vector<IntegerSettingOption> &list, int &current, void *data)
 {
   std::string label;
   for (int seconds : CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_seekSteps)
@@ -236,8 +237,8 @@ void CSeekHandler::SettingOptionsSeekStepsFiller(SettingConstPtr setting, std::v
     else
       label = StringUtils::Format(g_localizeStrings.Get(14045).c_str(), seconds);
 
-    list.insert(list.begin(), std::make_pair("-" + label, seconds * -1));
-    list.push_back(std::make_pair(label, seconds));
+    list.insert(list.begin(), IntegerSettingOption("-" + label, seconds * -1));
+    list.push_back(IntegerSettingOption(label, seconds));
   }
 }
 

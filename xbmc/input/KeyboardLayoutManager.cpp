@@ -14,6 +14,7 @@
 #include "filesystem/Directory.h"
 #include "URL.h"
 #include "settings/lib/Setting.h"
+#include "settings/lib/SettingDefinitions.h"
 #include "utils/log.h"
 #include "utils/XBMCTinyXML.h"
 
@@ -116,13 +117,21 @@ bool CKeyboardLayoutManager::GetLayout(const std::string& name, CKeyboardLayout&
   return true;
 }
 
-void CKeyboardLayoutManager::SettingOptionsKeyboardLayoutsFiller(SettingConstPtr setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void* data)
+namespace
+{
+  inline bool LayoutSort(const StringSettingOption& i, const StringSettingOption& j)
+  {
+    return (i.value > j.value);
+  }
+}
+
+void CKeyboardLayoutManager::SettingOptionsKeyboardLayoutsFiller(SettingConstPtr setting, std::vector<StringSettingOption> &list, std::string &current, void* data)
 {
   for (KeyboardLayouts::const_iterator it = CKeyboardLayoutManager::GetInstance().m_layouts.begin(); it != CKeyboardLayoutManager::GetInstance().m_layouts.end(); ++it)
   {
     std::string name = it->second.GetName();
-    list.push_back(make_pair(name, name));
+    list.push_back(StringSettingOption(name, name));
   }
 
-  std::sort(list.begin(), list.end());
+  std::sort(list.begin(), list.end(), LayoutSort);
 }

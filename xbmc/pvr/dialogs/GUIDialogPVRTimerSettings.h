@@ -21,6 +21,7 @@
 #include "pvr/PVRTypes.h"
 
 class CSetting;
+struct IntegerSettingOption;
 
 namespace PVR
 {
@@ -59,25 +60,25 @@ namespace PVR
     static int GetWeekdaysFromSetting(std::shared_ptr<const CSetting> setting);
 
     static void TypesFiller(
-      std::shared_ptr<const CSetting> setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data);
+      std::shared_ptr<const CSetting> setting, std::vector<IntegerSettingOption> &list, int &current, void *data);
     static void ChannelsFiller(
-      std::shared_ptr<const CSetting> setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data);
+      std::shared_ptr<const CSetting> setting, std::vector<IntegerSettingOption> &list, int &current, void *data);
     static void DaysFiller(
-      std::shared_ptr<const CSetting> setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data);
+      std::shared_ptr<const CSetting> setting, std::vector<IntegerSettingOption> &list, int &current, void *data);
     static void DupEpisodesFiller(
-      std::shared_ptr<const CSetting> setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data);
+      std::shared_ptr<const CSetting> setting, std::vector<IntegerSettingOption> &list, int &current, void *data);
     static void WeekdaysFiller(
-      std::shared_ptr<const CSetting> setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data);
+      std::shared_ptr<const CSetting> setting, std::vector<IntegerSettingOption> &list, int &current, void *data);
     static void PrioritiesFiller(
-      std::shared_ptr<const CSetting> setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data);
+      std::shared_ptr<const CSetting> setting, std::vector<IntegerSettingOption> &list, int &current, void *data);
     static void LifetimesFiller(
-      std::shared_ptr<const CSetting> setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data);
+      std::shared_ptr<const CSetting> setting, std::vector<IntegerSettingOption> &list, int &current, void *data);
     static void MaxRecordingsFiller(
-      std::shared_ptr<const CSetting> setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data);
+      std::shared_ptr<const CSetting> setting, std::vector<IntegerSettingOption> &list, int &current, void *data);
     static void RecordingGroupFiller(
-      std::shared_ptr<const CSetting> setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data);
+      std::shared_ptr<const CSetting> setting, std::vector<IntegerSettingOption> &list, int &current, void *data);
     static void MarginTimeFiller(
-      std::shared_ptr<const CSetting> setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data);
+      std::shared_ptr<const CSetting> setting, std::vector<IntegerSettingOption> &list, int &current, void *data);
 
     static std::string WeekdaysValueFormatter(std::shared_ptr<const CSetting> setting);
 

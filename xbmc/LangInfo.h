@@ -33,6 +33,7 @@
 #endif // TARGET_WINDOWS
 
 class TiXmlNode;
+struct StringSettingOption;
 
 namespace ADDON
 {
@@ -163,18 +164,18 @@ public:
 
   static void LoadTokens(const TiXmlNode* pTokens, std::set<std::string>& vecTokens);
 
-  static void SettingOptionsLanguageNamesFiller(std::shared_ptr<const CSetting> setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data);
-  static void SettingOptionsAudioStreamLanguagesFiller(std::shared_ptr<const CSetting> setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data);
-  static void SettingOptionsSubtitleStreamLanguagesFiller(std::shared_ptr<const CSetting> setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data);
-  static void SettingOptionsSubtitleDownloadlanguagesFiller(std::shared_ptr<const CSetting> setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data);
-  static void SettingOptionsISO6391LanguagesFiller(std::shared_ptr<const CSetting> setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data);
-  static void SettingOptionsRegionsFiller(std::shared_ptr<const CSetting> setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data);
-  static void SettingOptionsShortDateFormatsFiller(std::shared_ptr<const CSetting> setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data);
-  static void SettingOptionsLongDateFormatsFiller(std::shared_ptr<const CSetting> setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data);
-  static void SettingOptionsTimeFormatsFiller(std::shared_ptr<const CSetting> setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data);
-  static void SettingOptions24HourClockFormatsFiller(std::shared_ptr<const CSetting> setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data);
-  static void SettingOptionsTemperatureUnitsFiller(std::shared_ptr<const CSetting> setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data);
-  static void SettingOptionsSpeedUnitsFiller(std::shared_ptr<const CSetting> setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data);
+  static void SettingOptionsLanguageNamesFiller(std::shared_ptr<const CSetting> setting, std::vector<StringSettingOption> &list, std::string &current, void *data);
+  static void SettingOptionsAudioStreamLanguagesFiller(std::shared_ptr<const CSetting> setting, std::vector<StringSettingOption> &list, std::string &current, void *data);
+  static void SettingOptionsSubtitleStreamLanguagesFiller(std::shared_ptr<const CSetting> setting, std::vector<StringSettingOption> &list, std::string &current, void *data);
+  static void SettingOptionsSubtitleDownloadlanguagesFiller(std::shared_ptr<const CSetting> setting, std::vector<StringSettingOption> &list, std::string &current, void *data);
+  static void SettingOptionsISO6391LanguagesFiller(std::shared_ptr<const CSetting> setting, std::vector<StringSettingOption> &list, std::string &current, void *data);
+  static void SettingOptionsRegionsFiller(std::shared_ptr<const CSetting> setting, std::vector<StringSettingOption> &list, std::string &current, void *data);
+  static void SettingOptionsShortDateFormatsFiller(std::shared_ptr<const CSetting> setting, std::vector<StringSettingOption> &list, std::string &current, void *data);
+  static void SettingOptionsLongDateFormatsFiller(std::shared_ptr<const CSetting> setting, std::vector<StringSettingOption> &list, std::string &current, void *data);
+  static void SettingOptionsTimeFormatsFiller(std::shared_ptr<const CSetting> setting, std::vector<StringSettingOption> &list, std::string &current, void *data);
+  static void SettingOptions24HourClockFormatsFiller(std::shared_ptr<const CSetting> setting, std::vector<StringSettingOption> &list, std::string &current, void *data);
+  static void SettingOptionsTemperatureUnitsFiller(std::shared_ptr<const CSetting> setting, std::vector<StringSettingOption> &list, std::string &current, void *data);
+  static void SettingOptionsSpeedUnitsFiller(std::shared_ptr<const CSetting> setting, std::vector<StringSettingOption> &list, std::string &current, void *data);
 
 protected:
   void SetDefaults();
@@ -183,7 +184,7 @@ protected:
   static bool DetermineUse24HourClockFromTimeFormat(const std::string& timeFormat);
   static bool DetermineUseMeridiemFromTimeFormat(const std::string& timeFormat);
   static std::string PrepareTimeFormat(const std::string& timeFormat, bool use24HourClock);
-  static void AddLanguages(std::vector< std::pair<std::string, std::string> > &list);
+  static void AddLanguages(std::vector<StringSettingOption> &list);
 
   class CRegion final
   {
