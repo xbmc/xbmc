@@ -685,21 +685,6 @@ std::vector<std::string> CMediaManager::GetDiskUsage()
   return m_platformStorage->GetDiskUsage();
 }
 
-namespace
-{
-void ShowGUINotification(CGUIDialogKaiToast::eMessageType eType, const std::string& caption, const std::string& message)
-{
-  int activeWindow = CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow();
-  if (activeWindow != WINDOW_FULLSCREEN_VIDEO &&
-      activeWindow != WINDOW_FULLSCREEN_GAME &&
-      activeWindow != WINDOW_VISUALISATION &&
-      activeWindow != WINDOW_SLIDESHOW)
-  {
-    CGUIDialogKaiToast::QueueNotification(eType, caption, message, TOAST_DISPLAY_TIME, false);
-  }
-}
-} // unnamed namespace
-
 void CMediaManager::OnStorageAdded(const std::string &label, const std::string &path)
 {
 #ifdef HAS_DVD_DRIVE
@@ -710,18 +695,18 @@ void CMediaManager::OnStorageAdded(const std::string &label, const std::string &
     else
       CJobManager::GetInstance().AddJob(new CAutorunMediaJob(label, path), this, CJob::PRIORITY_HIGH);
   else
-    ShowGUINotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(13021), label);
+    CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(13021), label, TOAST_DISPLAY_TIME, false);
 #endif
 }
 
 void CMediaManager::OnStorageSafelyRemoved(const std::string &label)
 {
-  ShowGUINotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(13023), label);
+  CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(13023), label, TOAST_DISPLAY_TIME, false);
 }
 
 void CMediaManager::OnStorageUnsafelyRemoved(const std::string &label)
 {
-  ShowGUINotification(CGUIDialogKaiToast::Warning, g_localizeStrings.Get(13022), label);
+  CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Warning, g_localizeStrings.Get(13022), label);
 }
 
 CMediaManager::DiscInfo CMediaManager::GetDiscInfo(const std::string& mediaPath)
