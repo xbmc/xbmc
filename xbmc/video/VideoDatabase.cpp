@@ -5379,11 +5379,56 @@ void CVideoDatabase::UpdateTables(int iVersion)
 
   if (iVersion < 112)
     m_pDS->exec("ALTER TABLE settings ADD CenterMixLevel integer");
+
+  if (iVersion < 113)
+  {
+    // fb9c25f5 and e5f6d204 changed the behavior of path splitting for plugin URIs (previously it would only use the root)
+    // Re-split paths for plugin files in order to maintain watched state etc.
+    m_pDS->query("SELECT files.idFile, files.strFilename, path.strPath FROM files LEFT JOIN path ON files.idPath = path.idPath WHERE files.strFilename LIKE 'plugin://%'");
+    while (!m_pDS->eof())
+    {
+      std::string path, fn;
+      SplitPath(m_pDS->fv(1).get_asString(), path, fn);
+      if (path != m_pDS->fv(2).get_asString())
+      {
+        int pathid = -1;
+        m_pDS2->query(PrepareSQL("SELECT idPath FROM path WHERE strPath='%s'", path.c_str()));
+        if (!m_pDS2->eof())
+          pathid = m_pDS2->fv(0).get_asInt();
+        m_pDS2->close();
+        if (pathid < 0)
+        {
+          std::string parent = URIUtils::GetParentPath(path);
+          int parentid = -1;
+          m_pDS2->query(PrepareSQL("SELECT idPath FROM path WHERE strPath='%s'", parent.c_str()));
+          if (!m_pDS2->eof())
+            parentid = m_pDS2->fv(0).get_asInt();
+          m_pDS2->close();
+          if (parentid < 0)
+          {
+            m_pDS2->exec(PrepareSQL("INSERT INTO path (strPath) VALUES ('%s')", parent.c_str()));
+            parentid = (int)m_pDS2->lastinsertid();
+          }
+          m_pDS2->exec(PrepareSQL("INSERT INTO path (strPath, idParentPath) VALUES ('%s', %i)", path.c_str(), parentid));
+          pathid = (int)m_pDS2->lastinsertid();
+        }
+        m_pDS2->query(PrepareSQL("SELECT idFile FROM files WHERE strFileName='%s' AND idPath=%i", fn.c_str(), pathid));
+        bool exists = !m_pDS2->eof();
+        m_pDS2->close();
+        if (exists)
+          m_pDS2->exec(PrepareSQL("DELETE FROM files WHERE idFile=%i", m_pDS->fv(0).get_asInt()));
+        else
+          m_pDS2->exec(PrepareSQL("UPDATE files SET idPath=%i WHERE idFile=%i", pathid, m_pDS->fv(0).get_asInt()));
+      }
+      m_pDS->next();
+    }
+    m_pDS->close();
+  }
 }
 
 int CVideoDatabase::GetSchemaVersion() const
 {
-  return 112;
+  return 113;
 }
 
 bool CVideoDatabase::LookupByFolders(const std::string &path, bool shows)
