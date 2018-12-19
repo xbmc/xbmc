@@ -800,10 +800,15 @@ void CGUIDialogPVRTimerSettings::TypesFiller(
     list.clear();
     current = 0;
 
+    static const std::vector<std::pair<std::string, CVariant>> reminderTimerProps{std::make_pair("PVR.IsRemindingTimer", CVariant{true})};
+    static const std::vector<std::pair<std::string, CVariant>> recordingTimerProps{std::make_pair("PVR.IsRecordingTimer", CVariant{true})};
+
     bool foundCurrent(false);
     for (const auto &typeEntry : pThis->m_typeEntries)
     {
-      list.push_back(IntegerSettingOption(typeEntry.second->GetDescription(), typeEntry.first));
+      list.push_back(IntegerSettingOption(typeEntry.second->GetDescription(),
+                                          typeEntry.first,
+                                          typeEntry.second->IsReminder() ? reminderTimerProps : recordingTimerProps));
 
       if (!foundCurrent && (*(pThis->m_timerType) == *(typeEntry.second)))
       {
