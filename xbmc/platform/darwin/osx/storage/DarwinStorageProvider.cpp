@@ -340,23 +340,17 @@ bool CDarwinStorageProvider::Eject(const std::string& mountpath)
 
 bool CDarwinStorageProvider::PumpDriveChangeEvents(IStorageEventsCallback *callback)
 {
-  bool changed = !m_mountsToNotify.empty() || !m_unmountsToNotify.empty();
-
-  if (callback)
+  // Note: If we find a way to only notify kodi user initiated mounts/unmounts we
+  //       could do this here, but currently we can't distinguish this and popups
+  //       for system initiated mounts/unmounts (like done by Time Machine automatic
+  //       backups) are very confusing and annoying.
+  bool bChanged = !m_mountsToNotify.empty() || !m_unmountsToNotify.empty();
+  if (bChanged)
   {
-    for (const auto& mountToNotify : m_mountsToNotify)
-    {
-      callback->OnStorageAdded(mountToNotify.first, mountToNotify.second);
-    }
     m_mountsToNotify.clear();
-
-    for (const auto& unmountToNotify : m_unmountsToNotify)
-    {
-      callback->OnStorageSafelyRemoved(unmountToNotify.first);
-    }
     m_unmountsToNotify.clear();
   }
-  return changed;
+  return bChanged;
 }
 
 void CDarwinStorageProvider::VolumeMountNotification(const char* label, const char* mountpoint)
