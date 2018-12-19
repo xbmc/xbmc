@@ -1287,7 +1287,7 @@ CPVRTimerInfoTagPtr CPVRTimers::GetTimerRule(const CPVRTimerInfoTagPtr &timer) c
 {
   if (timer)
   {
-    unsigned int iRuleId = timer->GetTimerRuleId();
+    int iRuleId = timer->GetTimerRuleId();
     if (iRuleId != PVR_TIMER_NO_PARENT)
     {
       int iClientId = timer->m_iClientId;

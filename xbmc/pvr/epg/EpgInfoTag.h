@@ -444,7 +444,7 @@ namespace PVR
     int                      m_iSeriesNumber = 0;   /*!< series number */
     int                      m_iEpisodeNumber = 0;  /*!< episode number */
     int                      m_iEpisodePart = 0;    /*!< episode part number */
-    unsigned int m_iUniqueBroadcastID = EPG_TAG_INVALID_UID;   /*!< unique broadcast ID */
+    unsigned int             m_iUniqueBroadcastID = EPG_TAG_INVALID_UID;   /*!< unique broadcast ID */
     std::string              m_strTitle;            /*!< title */
     std::string              m_strPlotOutline;      /*!< plot outline */
     std::string              m_strPlot;             /*!< plot */

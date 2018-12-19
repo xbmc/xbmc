@@ -331,7 +331,7 @@ namespace PVR
      * @brief For timers scheduled by a timer rule, return the id of the rule (aka the id of the "parent" of the timer).
      * @return the id of the timer rule or PVR_TIMER_NO_PARENT in case the timer was not scheduled by a timer rule.
      */
-    unsigned int GetTimerRuleId() const { return m_iParentClientIndex; }
+    int GetTimerRuleId() const { return m_iParentClientIndex; }
 
     /*!
      * @brief Check, whether this timer is owned by a pvr client or by Kodi.
