@@ -172,6 +172,7 @@
       <x>OSD</x>
       <back>OSD</back>
       <guide>OSD</guide>
+      <start>Info</start>
       <up>ChannelUp</up>
       <down>ChannelDown</down>
       <left>StepBack</left>
@@ -188,6 +189,7 @@
       <x>OSD</x>
       <back>OSD</back>
       <guide>OSD</guide>
+      <start>Info</start>
       <up>ChannelUp</up>
       <down>ChannelDown</down>
       <left>StepBack</left>
