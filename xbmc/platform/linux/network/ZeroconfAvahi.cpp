@@ -362,8 +362,8 @@ bool CZeroconfAvahi::createClient()
     if (!mp_client)
     {
       CLog::Log(LOGERROR, "CZeroconfAvahi::createClient() failed with %d", error);
-    }
       return false;
+    }
     return true;
 }
 
