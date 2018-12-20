@@ -87,12 +87,14 @@ void CGUIFadeLabelControl::Process(unsigned int currentTime, CDirtyRegionList &d
       m_scrollInfo.Reset();
       m_fadeAnim.ResetAnimation();
     }
+    MarkDirtyRegion();
   }
   if (m_currentLabel != m_lastLabel)
   { // new label - reset scrolling
     m_scrollInfo.Reset();
     m_fadeAnim.QueueAnimation(ANIM_PROCESS_REVERSE);
     m_lastLabel = m_currentLabel;
+    MarkDirtyRegion();
   }
 
   if (m_infoLabels.size() > 1 || !m_shortText)
