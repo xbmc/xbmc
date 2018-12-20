@@ -46,7 +46,7 @@ msgstr "Bezig..."
 
 msgctxt "#31011"
 msgid "Recent"
-msgstr "Recent"
+msgstr "Recente"
 
 msgctxt "#31013"
 msgid "Movies"
@@ -134,7 +134,7 @@ msgstr "Sluit afspeellijst"
 
 msgctxt "#31058"
 msgid "System music files"
-msgstr "Systeem muziekbestanden"
+msgstr "Systeemmuziekbestanden"
 
 msgctxt "#31059"
 msgid "Current playlist"
@@ -250,7 +250,7 @@ msgstr "Achtergronden"
 
 msgctxt "#31551"
 msgid "Add-on Shortcut"
-msgstr "Add-on snelkoppelingen"
+msgstr "Add-on snelkoppeling"
 
 msgctxt "#31552"
 msgid "SYNC"
