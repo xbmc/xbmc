@@ -652,7 +652,6 @@ bool CApplication::CreateGUI()
     // If OS has no screen saver, use Kodi one by default
     screensaverModeSetting->SetDefault("screensaver.xbmc.builtin.dim");
   }
-  CheckOSScreenSaverInhibitionSetting();
 
   if (sav_res)
     CDisplaySettings::GetInstance().SetCurrentResolution(RES_DESKTOP, true);
@@ -862,6 +861,7 @@ bool CApplication::Initialize()
 
   CLog::Log(LOGNOTICE, "initialize done");
 
+  CheckOSScreenSaverInhibitionSetting();
   // reset our screensaver (starts timers etc.)
   ResetScreenSaver();
 
