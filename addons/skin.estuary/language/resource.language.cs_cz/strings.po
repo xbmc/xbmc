@@ -126,7 +126,7 @@ msgstr "Časový posun"
 
 msgctxt "#31028"
 msgid "Show fanart"
-msgstr "Zobrazit fanouškovské umění"
+msgstr "Zobrazit fanart"
 
 msgctxt "#31029"
 msgid "Last logged in"

@@ -48,6 +48,10 @@ msgctxt "#31007"
 msgid "Unwatched movies"
 msgstr "Películas sin mirar"
 
+msgctxt "#31008"
+msgid "Enable category widgets"
+msgstr "Habilitar categoría de widgets"
+
 msgctxt "#31009"
 msgid "Download icons"
 msgstr "Download iconos"
@@ -107,6 +111,10 @@ msgstr "Ordenar por"
 msgctxt "#31023"
 msgid "Viewtype"
 msgstr "Tipo de vista"
+
+msgctxt "#31024"
+msgid "Choose rating to display for media items"
+msgstr "Escoger rating para mostrar para archivos multimedia"
 
 msgctxt "#31025"
 msgid "No favourites found. You can add any item from media views to this list by using the context menu."
@@ -436,6 +444,14 @@ msgctxt "#31131"
 msgid "Choose skin fanart pack"
 msgstr "Elegir paquete de skin fanart"
 
+msgctxt "#31132"
+msgid "Select Program"
+msgstr "Seleccionar programa"
+
+msgctxt "#31133"
+msgid "Select Resolution"
+msgstr "Seleccionar Resolución"
+
 msgctxt "#31134"
 msgid "Remaining"
 msgstr "Restante"
@@ -536,6 +552,26 @@ msgctxt "#31161"
 msgid "Numeric pad"
 msgstr "Teclado numérico"
 
+msgctxt "#31162"
+msgid "Play your personal games or download one of the many game add-ons from the official repository."
+msgstr "Jugar tu juego personal o descarga uno de los muchos complementos de juegos desde el repositorio oficial."
+
+msgctxt "#31163"
+msgid "Show Fanart background"
+msgstr "Mostrar Fanart de fondo"
+
+msgctxt "#31164"
+msgid "Choose kind of profile identification"
+msgstr "Escoja el tipo de identificación de perfil"
+
 msgctxt "#31165"
 msgid "Profile name"
 msgstr "Nombre de perfil"
+
+msgctxt "#31166"
+msgid "Profile avatar"
+msgstr "Avatar del perfil"
+
+msgctxt "#31167"
+msgid "Animate background"
+msgstr "Animar fondo"

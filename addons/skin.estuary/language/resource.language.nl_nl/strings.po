@@ -178,7 +178,7 @@ msgstr "Afspeellijstopties"
 
 msgctxt "#31043"
 msgid "Set the type and add rules to create a smart playlist. These playlists are dynamic and include all media items from your database which apply to your chosen rules."
-msgstr "Stel het type in en voeg regels toe om een slimme afspeellijst te maken. Deze afspeellijsten zijn dynamisch en bevatten alle media items vanuit uw database die voldoen aan uw gekozen regels."
+msgstr "Stel het type in en voeg regels toe om een slimme afspeellijst te maken. Deze afspeellijsten zijn dynamisch en bevatten alle media-items vanuit uw database die voldoen aan uw gekozen regels."
 
 msgctxt "#31044"
 msgid "Add group"
@@ -571,3 +571,7 @@ msgstr "Profielnaam"
 msgctxt "#31166"
 msgid "Profile avatar"
 msgstr "Profielafbeelding"
+
+msgctxt "#31167"
+msgid "Animate background"
+msgstr "Achtergrondanimatie"

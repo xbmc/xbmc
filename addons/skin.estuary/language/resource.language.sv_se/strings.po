@@ -42,7 +42,7 @@ msgstr "Se i 2D"
 
 msgctxt "#31006"
 msgid "Random movies"
-msgstr "Slumpvis urvalda filmer"
+msgstr "Slumpvis utvalda filmer"
 
 msgctxt "#31007"
 msgid "Unwatched movies"
@@ -66,11 +66,11 @@ msgstr "Mest spelade album"
 
 msgctxt "#31012"
 msgid "Random albums"
-msgstr "Slumpvis urvalda album"
+msgstr "Slumpvis utvalda album"
 
 msgctxt "#31013"
 msgid "Random artists"
-msgstr "Slumpvis urvalda artister"
+msgstr "Slumpvis utvalda artister"
 
 msgctxt "#31014"
 msgid "Unplayed albums"
@@ -514,7 +514,7 @@ msgstr "Osedda musikvideor"
 
 msgctxt "#31152"
 msgid "Random music videos"
-msgstr "Slumpvis urvalda musikvideor"
+msgstr "Slumpvis utvalda musikvideor"
 
 msgctxt "#31153"
 msgid "You do not have any add-ons of this type installed. Enter the add-on browser to download add-ons created by our community."
