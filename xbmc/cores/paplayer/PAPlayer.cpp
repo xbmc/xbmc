@@ -562,14 +562,18 @@ void PAPlayer::Process()
 
     if (m_newForcedPlayerTime != -1)
     {
-      SetTimeInternal(m_newForcedPlayerTime);
-      m_newForcedPlayerTime = -1;
+      if (SetTimeInternal(m_newForcedPlayerTime))
+      {
+        m_newForcedPlayerTime = -1;
+      }
     }
 
     if (m_newForcedTotalTime != -1)
     {
-      SetTotalTimeInternal(m_newForcedTotalTime);
-      m_newForcedTotalTime = -1;
+      if (SetTotalTimeInternal(m_newForcedTotalTime))
+      {
+        m_newForcedTotalTime = -1;
+      }
     }
 
     GetTimeInternal(); //update for GUI
@@ -956,26 +960,32 @@ int64_t PAPlayer::GetTimeInternal()
   return (int64_t)time;
 }
 
-void PAPlayer::SetTotalTimeInternal(int64_t time)
+bool PAPlayer::SetTotalTimeInternal(int64_t time)
 {
   CSingleLock lock(m_streamsLock);
   if (!m_currentStream)
-    return;
+  {
+    return false;
+  }
 
   m_currentStream->m_decoder.SetTotalTime(time);
   UpdateGUIData(m_currentStream);
+  
+  return true;
 }
 
-void PAPlayer::SetTimeInternal(int64_t time)
+bool PAPlayer::SetTimeInternal(int64_t time)
 {
   CSingleLock lock(m_streamsLock);
   if (!m_currentStream)
-    return;
+    return false;
 
   m_currentStream->m_framesSent = time / 1000 * m_currentStream->m_audioFormat.m_sampleRate;
 
   if (m_currentStream->m_stream)
     m_currentStream->m_framesSent += m_currentStream->m_stream->GetDelay() * m_currentStream->m_audioFormat.m_sampleRate;
+  
+  return true;
 }
 
 void PAPlayer::SetTime(int64_t time)

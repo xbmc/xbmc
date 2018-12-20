@@ -145,8 +145,8 @@ private:
   void UpdateStreamInfoPlayNextAtFrame(StreamInfo *si, unsigned int crossFadingTime);
   void UpdateGUIData(StreamInfo *si);
   int64_t GetTimeInternal();
-  void SetTimeInternal(int64_t time);
-  void SetTotalTimeInternal(int64_t time);
+  bool SetTimeInternal(int64_t time);
+  bool SetTotalTimeInternal(int64_t time);
   void CloseFileCB(StreamInfo &si);
   void AdvancePlaylistOnError(CFileItem &fileItem);
 };
