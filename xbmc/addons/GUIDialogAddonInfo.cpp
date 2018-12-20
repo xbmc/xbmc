@@ -471,12 +471,21 @@ bool CGUIDialogAddonInfo::ShowDependencyList(const std::vector<ADDON::Dependency
   CFileItemList items;
   for (auto& it : deps)
   {
-    AddonPtr dep_addon, local_addon;
+    AddonPtr dep_addon, local_addon, info_addon;
+    // Find add-on in repositories
     CServiceBroker::GetAddonMgr().FindInstallableById(it.id, dep_addon);
+    // Find add-on in local installation
     CServiceBroker::GetAddonMgr().GetAddon(it.id, local_addon);
-    if (dep_addon)
+
+    // All combinations of dep_addon and local_addon validity are possible and information
+    // must be displayed even when there is no dep_addon.
+    // info_addon is the add-on to take the information to display (name, icon) from. The
+    // version in the repository is preferred because it might contain more recent data.
+    info_addon = dep_addon ? dep_addon : local_addon;
+
+    if (info_addon)
     {
-      CFileItemPtr item(new CFileItem(dep_addon->Name()));
+      CFileItemPtr item(new CFileItem(info_addon->Name()));
       std::stringstream str;
       str << it.id << " " << it.requiredVersion.asString();
       if ((it.optional && !local_addon) || (!it.optional && local_addon))
@@ -489,7 +498,7 @@ bool CGUIDialogAddonInfo::ShowDependencyList(const std::vector<ADDON::Dependency
                                           g_localizeStrings.Get(39018).c_str());
 
       item->SetLabel2(str.str());
-      item->SetIconImage(dep_addon->Icon());
+      item->SetIconImage(info_addon->Icon());
       item->SetProperty("addon_id", it.id);
       items.Add(item);
     }
