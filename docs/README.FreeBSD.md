@@ -74,7 +74,7 @@ If you get a `package not found` type of message with the below command, remove 
 
 Install build dependencies:
 ```
-sudo pkg install autoconf automake avahi-app binutils cmake curl dbus doxygen dri2proto dri3proto e2fsprogs-libuuid enca encodings flac flatbuffers font-util fontconfig freetype2 fribidi gawk gettext-tools giflib git glew glproto gmake gmp gnutls gperf gstreamer1-vaapi hal inputproto jpeg-turbo libaacs libass libbdplus libbluray libcapn libcdio libcec libedit libfmt libgcrypt libgpg-error libidn libinotify libmicrohttpd libnfs libogg libplist librtmp libtool libudev-devd libva libvdpau libvorbis libxslt lirc lzo2 m4 mesa-libs mysql57-client nasm openjdk8 p8-platform pkgconf python2 rapidjson samba46 shairplay sndio sqlite3 swig30 taglib tiff tinyxml xf86-input-keyboard xf86-input-mouse xf86vidmodeproto xorg-server xrandr zip
+sudo pkg install autoconf automake avahi-app binutils cmake curl dbus doxygen e2fsprogs-libuuid enca encodings flac flatbuffers font-util fontconfig freetype2 fribidi gawk gettext-tools giflib git glew gmake gmp gnutls gperf gstreamer1-vaapi hal jpeg-turbo libaacs libass libbdplus libbluray libcapn libcdio libcec libedit libfmt libgcrypt libgpg-error libidn libinotify libmicrohttpd libnfs libogg libplist librtmp libtool libudev-devd libva libvdpau libvorbis libxslt lirc lzo2 m4 mesa-libs mysql57-client nasm openjdk8 p8-platform pkgconf python2 rapidjson samba46 shairplay sndio sqlite3 swig30 taglib tiff tinyxml xf86-input-keyboard xf86-input-mouse xorg-proto xorg-server xrandr zip
 ```
 
 **WARNING:** Make sure you copy paste the entire line or you might receive an error or miss a few dependencies.
