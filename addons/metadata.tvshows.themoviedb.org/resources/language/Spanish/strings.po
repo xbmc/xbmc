@@ -18,12 +18,24 @@ msgstr ""
 
 msgctxt "#30000"
 msgid "Enable Fanart"
-msgstr "Descargar Fanart"
+msgstr "Habilitar Fanart"
+
+#empty string with id 30001
 
 msgctxt "#30002"
 msgid "Preferred Language"
 msgstr "Idioma preferido"
 
+#empty strings from id 30003 to 30004
+
 msgctxt "#30005"
 msgid "Keep Original Title"
 msgstr "Mantener título original"
+
+msgctxt "#30006"
+msgid "Get Artwork from themoviedb.org"
+msgstr "Obtener ilustraciones desde themoviedb.org"
+
+msgctxt "#30007"
+msgid "Get Extra Artwork from fanart.tv"
+msgstr "Obtener ilustraciones adicionales desde fanart.tv"
