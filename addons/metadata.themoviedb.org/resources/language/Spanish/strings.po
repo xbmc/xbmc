@@ -18,11 +18,11 @@ msgstr ""
 
 msgctxt "#30000"
 msgid "Enable Fanart"
-msgstr "Descargar Fanart"
+msgstr "Habilitar Fanart"
 
 msgctxt "#30001"
 msgid "Prefer Trailer from HD-Trailers.net"
-msgstr "Activar Trailers de HD-Trailers.net"
+msgstr "Preferir tráiler de HD-Trailers.net"
 
 msgctxt "#30002"
 msgid "Preferred Language"
@@ -30,11 +30,11 @@ msgstr "Idioma preferido"
 
 msgctxt "#30003"
 msgid "Get Rating from"
-msgstr "Obtener puntuación de"
+msgstr "Obtener calificación de"
 
 msgctxt "#30004"
 msgid "Enable Trailer (YouTube)"
-msgstr "Activar trailer (Youtube)"
+msgstr "Habilitar tráiler (Youtube)"
 
 msgctxt "#30005"
 msgid "Keep Original Title"
@@ -42,4 +42,8 @@ msgstr "Mantener título original"
 
 msgctxt "#30006"
 msgid "Preferred Certification Country"
-msgstr "Clasificación por edades"
+msgstr "País de certificación preferido"
+
+msgctxt "#30007"
+msgid "Add also IMDb ratings"
+msgstr "Añadir también calificaciones de IMDb"
