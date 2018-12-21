@@ -352,6 +352,11 @@ void CGUIFontTTFBase::End()
 
 void CGUIFontTTFBase::DrawTextInternal(float x, float y, const std::vector<UTILS::Color> &colors, const vecText &text, uint32_t alignment, float maxPixelWidth, bool scrolling)
 {
+  if (text.empty())
+  {
+    return;
+  }
+
   Begin();
 
   uint32_t rawAlignment = alignment;
