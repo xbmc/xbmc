@@ -967,10 +967,21 @@ void CWindowDecorator::CommitAllBuffers()
     if (emplaceResult.second)
     {
       // Buffer was not pending already
-      auto iter = emplaceResult.first;
-      wlBuffer.on_release() = [this, iter]()
+      auto wlBufferC = reinterpret_cast<wl_buffer*> (wlBuffer.c_ptr());
+      // We can refer to the buffer neither by iterator (might be invalidated) nor by
+      // capturing the C++ instance in the lambda (would create a reference loop and
+      // never allow the object to be freed), so use the raw pointer for now
+      wlBuffer.on_release() = [this, wlBufferC]()
       {
         CSingleLock lock(m_pendingBuffersMutex);
+        // Construct a dummy object for searching the set
+        wayland::buffer_t findDummy(wlBufferC, wayland::proxy_t::wrapper_type::foreign);
+        auto iter = m_pendingBuffers.find(findDummy);
+        if (iter == m_pendingBuffers.end())
+        {
+          throw std::logic_error("Cannot release buffer that is not pending");
+        }
+
         // Do not erase again until buffer is reattached (should not happen anyway, just to be safe)
         // const_cast is OK since changing the function pointer does not affect
         // the key in the set
