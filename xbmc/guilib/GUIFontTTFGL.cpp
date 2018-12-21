@@ -23,6 +23,8 @@
 #endif
 #include "rendering/MatrixGL.h"
 
+#include <cassert>
+
 // stuff for freetype
 #include <ft2build.h>
 #include FT_FREETYPE_H
@@ -280,6 +282,9 @@ void CGUIFontTTFGL::LastEnd()
 
 CVertexBuffer CGUIFontTTFGL::CreateVertexBuffer(const std::vector<SVertex> &vertices) const
 {
+  assert(!vertices.empty());
+  assert(vertices.size() % 4 == 0);
+
   // Generate a unique buffer object name and put it in bufferHandle
   GLuint bufferHandle;
   glGenBuffers(1, &bufferHandle);
@@ -288,7 +293,7 @@ CVertexBuffer CGUIFontTTFGL::CreateVertexBuffer(const std::vector<SVertex> &vert
   // Create a data store for the buffer object bound to the GL_ARRAY_BUFFER
   // binding point (i.e. our buffer object) and initialise it from the
   // specified client-side pointer
-  glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof (SVertex), &vertices[0], GL_STATIC_DRAW);
+  glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof (SVertex), vertices.data(), GL_STATIC_DRAW);
   // Unbind GL_ARRAY_BUFFER
   glBindBuffer(GL_ARRAY_BUFFER, 0);
 
