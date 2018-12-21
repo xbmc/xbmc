@@ -29,8 +29,8 @@ msgid "Preferred Language"
 msgstr "Idioma preferido"
 
 msgctxt "#30003"
-msgid "Get Rating from"
-msgstr "Obtener calificación de"
+msgid "Default Rating from"
+msgstr "Obtener calificación desde"
 
 msgctxt "#30004"
 msgid "Enable Trailer (YouTube)"
