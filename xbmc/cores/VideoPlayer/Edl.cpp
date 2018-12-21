@@ -89,7 +89,6 @@ bool CEdl::ReadEditDecisionLists(const CFileItem& fileItem, const float fFrameRa
    */
   const std::string strMovie = fileItem.GetDynPath();
   if ((URIUtils::IsHD(strMovie) || URIUtils::IsOnLAN(strMovie)) &&
-      !fileItem.IsPVRRecording() &&
       !URIUtils::IsInternetStream(strMovie))
   {
     CLog::Log(LOGDEBUG, "%s - Checking for edit decision lists (EDL) on local drive or remote share for: %s",
