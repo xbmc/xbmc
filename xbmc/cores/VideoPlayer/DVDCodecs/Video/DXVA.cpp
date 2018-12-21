@@ -552,7 +552,9 @@ bool CDXVAContext::CreateSurfaces(const D3D11_VIDEO_DECODER_DESC &format, const 
   vdovDesc.DecodeProfile = format.Guid;
   vdovDesc.Texture2D.ArraySlice = 0;
   vdovDesc.ViewDimension = D3D11_VDOV_DIMENSION_TEXTURE2D;
-  float clearColor[] = { 0.0625f, 0.5f, 0.5f, 1.0f }; // black color in YUV
+  // For video views with YUV or YCbBr formats, ClearView doesn't 
+  // convert color values but assumes UINT texture format
+  float clearColor[] = { 16.f, 127.f, 127.f, 255.f }; // black color in YUV
 
   size_t i;
   for (i = 0; i < count; ++i)
