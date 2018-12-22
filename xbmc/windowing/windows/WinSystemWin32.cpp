@@ -266,7 +266,7 @@ bool CWinSystemWin32::BlankNonActiveMonitors(bool bBlank)
   }
 
   // Move a blank window in front of every display, except the current display.
-  for (size_t i = 0; i < m_displays.size(); ++i)
+  for (size_t i = 0, j = 0; i < m_displays.size(); ++i)
   {
     MONITOR_DETAILS& details = m_displays[i];
     if (details.hMonitor == m_hMonitor)
@@ -274,11 +274,12 @@ bool CWinSystemWin32::BlankNonActiveMonitors(bool bBlank)
 
     RECT rBounds = ScreenRect(details.hMonitor);
     // move and resize the window
-    SetWindowPos(m_hBlankWindows[i], nullptr, rBounds.left, rBounds.top,
+    SetWindowPos(m_hBlankWindows[j], nullptr, rBounds.left, rBounds.top,
       rBounds.right - rBounds.left, rBounds.bottom - rBounds.top,
       SWP_NOACTIVATE);
 
-    ShowWindow(m_hBlankWindows[i], SW_SHOW | SW_SHOWNOACTIVATE);
+    ShowWindow(m_hBlankWindows[j], SW_SHOW | SW_SHOWNOACTIVATE);
+    j++;
   }
 
   if (m_hWnd)
@@ -450,7 +451,11 @@ bool CWinSystemWin32::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool 
   }
 
   if (state == m_state && !forceChange)
+  {
+    m_bBlankOtherDisplay = blankOtherDisplays;
+    BlankNonActiveMonitors(m_bBlankOtherDisplay);
     return true;
+  }
 
   // entering to stereo mode, limit resolution to 1080p@23.976
   if (stereoChange && !IsStereoEnabled() && res.iWidth > 1280)
@@ -540,7 +545,10 @@ bool CWinSystemWin32::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool 
     CenterCursor();
 
   CreateBackBuffer();
+
+  BlankNonActiveMonitors(m_bBlankOtherDisplay);
   m_IsAlteringWindow = false;
+
   return true;
 }
 
