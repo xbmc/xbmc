@@ -29,7 +29,10 @@ CGUIListLabel::~CGUIListLabel(void) = default;
 
 void CGUIListLabel::SetScrolling(bool scrolling)
 {
-  m_label.SetScrolling(scrolling);
+  if (m_scroll == CGUIControl::FOCUS)
+    m_label.SetScrolling(scrolling);
+  else
+    m_label.SetScrolling((m_scroll == CGUIControl::ALWAYS) ? true : false);
 }
 
 void CGUIListLabel::SetSelected(bool selected)
