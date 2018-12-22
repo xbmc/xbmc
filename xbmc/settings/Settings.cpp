@@ -844,6 +844,7 @@ void CSettings::InitializeISettingCallbacks()
   settingSet.insert(CSettings::SETTING_VIDEOSCREEN_PREFEREDSTEREOSCOPICMODE);
   settingSet.insert(CSettings::SETTING_VIDEOSCREEN_3DLUT);
   settingSet.insert(CSettings::SETTING_VIDEOSCREEN_DISPLAYPROFILE);
+  settingSet.insert(CSettings::SETTING_VIDEOSCREEN_BLANKDISPLAYS);
   GetSettingsManager()->RegisterCallback(&CDisplaySettings::GetInstance(), settingSet);
 
   settingSet.clear();
