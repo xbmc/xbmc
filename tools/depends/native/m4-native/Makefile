@@ -1,7 +1,7 @@
 include ../../Makefile.include
 PREFIX=$(NATIVEPREFIX)
 PLATFORM=$(NATIVEPLATFORM)
-DEPS= ../../Makefile.include Makefile osx_snprintf.patch
+DEPS= ../../Makefile.include Makefile 01-fix-ftbfs-with-glibc-2.28.patch osx_snprintf.patch
 
 # lib name, version
 LIBNAME=m4
@@ -22,6 +22,7 @@ $(TARBALLS_LOCATION)/$(ARCHIVE):
 $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 	-rm -rf $(PLATFORM)/*; mkdir -p $(PLATFORM)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
+	cd $(PLATFORM); patch -p1 -i ../01-fix-ftbfs-with-glibc-2.28.patch
 	cd $(PLATFORM); patch -p1 -i ../osx_snprintf.patch
 	cd $(PLATFORM); $(CONFIGURE)
 
