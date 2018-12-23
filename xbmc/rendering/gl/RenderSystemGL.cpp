@@ -48,21 +48,25 @@ bool CRenderSystemGL::InitRenderSystem()
   if (m_RenderVersionMajor > 3 ||
       (m_RenderVersionMajor == 3 && m_RenderVersionMinor >= 2))
   {
-    GLint n;
+    GLint n = 0;
     glGetIntegerv(GL_NUM_EXTENSIONS, &n);
     if (n > 0)
     {
       GLint i;
       for (i = 0; i < n; i++)
       {
-        m_RenderExtensions += (const char*)glGetStringi(GL_EXTENSIONS, i);
+        m_RenderExtensions += (const char*) glGetStringi(GL_EXTENSIONS, i);
         m_RenderExtensions += " ";
       }
     }
   }
   else
   {
-    m_RenderExtensions += (const char*) glGetString(GL_EXTENSIONS);
+    auto extensions = (const char*) glGetString(GL_EXTENSIONS);
+    if (extensions)
+    {
+      m_RenderExtensions += extensions;
+    }
   }
   m_RenderExtensions += " ";
 
