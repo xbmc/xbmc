@@ -14,6 +14,7 @@
 
 #include "input/XBMC_keysym.h"
 #include "utils/Geometry.h"
+#include "Seat.h"
 #include "windowing/XBMC_events.h"
 
 namespace KODI
@@ -26,17 +27,24 @@ namespace WAYLAND
 class IInputHandlerPointer
 {
 public:
-  virtual void OnPointerEnter(wayland::pointer_t& pointer, std::uint32_t serial) {};
-  virtual void OnPointerLeave() {};
+  virtual void OnPointerEnter(std::uint32_t seatGlobalName, std::uint32_t serial) {}
+  virtual void OnPointerLeave() {}
   virtual void OnPointerEvent(XBMC_Event& event) = 0;
-  virtual ~IInputHandlerPointer() = default;
+protected:
+  ~IInputHandlerPointer() {}
 };
 
-class CInputProcessorPointer
+class CInputProcessorPointer final : public IRawInputHandlerPointer
 {
 public:
-  CInputProcessorPointer(wayland::pointer_t const& pointer, wayland::surface_t const& surface, IInputHandlerPointer& handler);
+  CInputProcessorPointer(wayland::surface_t const& surface, IInputHandlerPointer& handler);
   void SetCoordinateScale(std::int32_t scale) { m_coordinateScale = scale; }
+
+  void OnPointerEnter(CSeat* seat, std::uint32_t serial, wayland::surface_t surface, double surfaceX, double surfaceY) override;
+  void OnPointerLeave(CSeat* seat, std::uint32_t serial, wayland::surface_t surface) override;
+  void OnPointerMotion(CSeat* seat, std::uint32_t time, double surfaceX, double surfaceY) override;
+  void OnPointerButton(CSeat* seat, std::uint32_t serial, std::uint32_t time, std::uint32_t button, wayland::pointer_button_state state) override;
+  void OnPointerAxis(CSeat* seat, std::uint32_t time, wayland::pointer_axis axis, double value) override;
 
 private:
   CInputProcessorPointer(CInputProcessorPointer const& other) = delete;
@@ -47,7 +55,6 @@ private:
   void SendMouseMotion();
   void SendMouseButton(unsigned char button, bool pressed);
 
-  wayland::pointer_t m_pointer;
   wayland::surface_t m_surface;
   IInputHandlerPointer& m_handler;
 

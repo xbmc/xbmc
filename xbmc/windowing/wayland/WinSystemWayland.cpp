@@ -241,6 +241,9 @@ bool CWinSystemWayland::DestroyWindowSystem()
   m_outputsInPreparation.clear();
   m_outputs.clear();
   m_frameCallback = wayland::callback_t{};
+  m_screenSaverManager.reset();
+
+  m_seatInputProcessing.reset();
 
   if (m_registry)
   {
@@ -347,6 +350,7 @@ bool CWinSystemWayland::CreateNewWindow(const std::string& name,
   UpdateDesktopResolution(res, m_bufferSize.Width(), m_bufferSize.Height(), res.fRefreshRate, 0);
   res.bFullScreen = fullScreen;
 
+  m_seatInputProcessing.reset(new CSeatInputProcessing(m_surface, *this));
   m_seatRegistry.reset(new CRegistry{*m_connection});
   // version 2 adds name event -> optional
   // version 4 adds wl_keyboard repeat_info -> optional
@@ -354,7 +358,7 @@ bool CWinSystemWayland::CreateNewWindow(const std::string& name,
   m_seatRegistry->Request<wayland::seat_t>(1, 5, std::bind(&CWinSystemWayland::OnSeatAdded, this, _1, _2), std::bind(&CWinSystemWayland::OnSeatRemoved, this, _1));
   m_seatRegistry->Bind();
 
-  if (m_seatProcessors.empty())
+  if (m_seats.empty())
   {
     CLog::Log(LOGWARNING, "Wayland compositor did not announce a wl_seat - you will not have any input devices for the time being");
   }
@@ -399,7 +403,7 @@ bool CWinSystemWayland::DestroyWindow()
   // waylandpp automatically calls wl_surface_destroy when the last reference is removed
   m_surface = wayland::surface_t();
   m_windowDecorator.reset();
-  m_seatProcessors.clear();
+  m_seats.clear();
   m_lastSetOutput.proxy_release();
   m_surfaceOutputs.clear();
   m_surfaceSubmissions.clear();
@@ -1056,9 +1060,9 @@ bool CWinSystemWayland::Minimize()
 
 bool CWinSystemWayland::HasCursor()
 {
-  CSingleLock lock(m_seatProcessorsMutex);
-  return std::any_of(m_seatProcessors.cbegin(), m_seatProcessors.cend(),
-                     [](decltype(m_seatProcessors)::value_type const& entry)
+  CSingleLock lock(m_seatsMutex);
+  return std::any_of(m_seats.cbegin(), m_seats.cend(),
+                     [](decltype(m_seats)::value_type const& entry)
                      {
                        return entry.second.HasPointerCapability();
                      });
@@ -1112,20 +1116,29 @@ void CWinSystemWayland::Unregister(IDispResource* resource)
 
 void CWinSystemWayland::OnSeatAdded(std::uint32_t name, wayland::proxy_t&& proxy)
 {
-  CSingleLock lock(m_seatProcessorsMutex);
+  CSingleLock lock(m_seatsMutex);
 
   wayland::seat_t seat(proxy);
-  auto newSeatEmplace = m_seatProcessors.emplace(std::piecewise_construct,
-                                                 std::forward_as_tuple(name),
-                                                 std::forward_as_tuple(name, seat, m_surface, *m_connection, static_cast<IInputHandler&> (*this)));
-  newSeatEmplace.first->second.SetCoordinateScale(m_scale);
+  auto newSeatEmplace = m_seats.emplace(std::piecewise_construct,
+                                           std::forward_as_tuple(name),
+                                                 std::forward_as_tuple(name, seat, *m_connection));
+
+  auto& seatInst = newSeatEmplace.first->second;
+  m_seatInputProcessing->AddSeat(&seatInst);
+  m_windowDecorator->AddSeat(&seatInst);
 }
 
 void CWinSystemWayland::OnSeatRemoved(std::uint32_t name)
 {
-  CSingleLock lock(m_seatProcessorsMutex);
+  CSingleLock lock(m_seatsMutex);
 
-  m_seatProcessors.erase(name);
+  auto seatI = m_seats.find(name);
+  if (seatI != m_seats.end())
+  {
+    m_seatInputProcessing->RemoveSeat(&seatI->second);
+    m_windowDecorator->RemoveSeat(&seatI->second);
+    m_seats.erase(name);
+  }
 }
 
 void CWinSystemWayland::OnOutputAdded(std::uint32_t name, wayland::proxy_t&& proxy)
@@ -1179,7 +1192,7 @@ void CWinSystemWayland::SendFocusChange(bool focus)
   }
 }
 
-void CWinSystemWayland::OnEnter(std::uint32_t seatGlobalName, InputType type)
+void CWinSystemWayland::OnEnter(InputType type)
 {
   // Couple to keyboard focus
   if (type == InputType::KEYBOARD)
@@ -1192,7 +1205,7 @@ void CWinSystemWayland::OnEnter(std::uint32_t seatGlobalName, InputType type)
   }
 }
 
-void CWinSystemWayland::OnLeave(std::uint32_t seatGlobalName, InputType type)
+void CWinSystemWayland::OnLeave(InputType type)
 {
   // Couple to keyboard focus
   if (type == InputType::KEYBOARD)
@@ -1205,25 +1218,31 @@ void CWinSystemWayland::OnLeave(std::uint32_t seatGlobalName, InputType type)
   }
 }
 
-void CWinSystemWayland::OnEvent(std::uint32_t seatGlobalName, InputType type, XBMC_Event& event)
+void CWinSystemWayland::OnEvent(InputType type, XBMC_Event& event)
 {
   // FIXME
   dynamic_cast<CWinEventsWayland&>(*m_winEvents).MessagePush(&event);
 }
 
-void CWinSystemWayland::OnSetCursor(wayland::pointer_t& pointer, std::uint32_t serial)
+void CWinSystemWayland::OnSetCursor(std::uint32_t seatGlobalName, std::uint32_t serial)
 {
+  auto seatI = m_seats.find(seatGlobalName);
+  if (seatI == m_seats.end())
+  {
+    return;
+  }
+
   if (m_osCursorVisible)
   {
     LoadDefaultCursor();
     if (m_cursorSurface) // Cursor loading could have failed
     {
-      pointer.set_cursor(serial, m_cursorSurface, m_cursorImage.hotspot_x(), m_cursorImage.hotspot_y());
+      seatI->second.SetCursor(serial, m_cursorSurface, m_cursorImage.hotspot_x(), m_cursorImage.hotspot_y());
     }
   }
   else
   {
-    pointer.set_cursor(serial, wayland::surface_t{}, 0, 0);
+    seatI->second.SetCursor(serial, wayland::surface_t{}, 0, 0);
   }
 }
 
@@ -1244,11 +1263,7 @@ void CWinSystemWayland::ApplyBufferScale()
   CLog::LogF(LOGINFO, "Setting Wayland buffer scale to %d", m_scale);
   m_surface.set_buffer_scale(m_scale);
   m_windowDecorator->SetState(m_configuredSize, m_scale, m_shellSurfaceState);
-  CSingleLock lock(m_seatProcessorsMutex);
-  for (auto& seatProcessor : m_seatProcessors)
-  {
-    seatProcessor.second.SetCoordinateScale(m_scale);
-  }
+  m_seatInputProcessing->SetCoordinateScale(m_scale);
 }
 
 void CWinSystemWayland::UpdateTouchDpi()
@@ -1458,12 +1473,12 @@ std::unique_ptr<IOSScreenSaver> CWinSystemWayland::GetOSScreenSaverImpl()
 
 std::string CWinSystemWayland::GetClipboardText()
 {
-  CSingleLock lock(m_seatProcessorsMutex);
+  CSingleLock lock(m_seatsMutex);
   // Get text of first seat with non-empty selection
   // Actually, the value of the seat that received the Ctrl+V keypress should be used,
   // but this would need a workaround or proper multi-seat support in Kodi - it's
   // probably just not that relevant in practice
-  for (auto const& seat : m_seatProcessors)
+  for (auto const& seat : m_seats)
   {
     auto text = seat.second.GetSelectionText();
     if (text != "")

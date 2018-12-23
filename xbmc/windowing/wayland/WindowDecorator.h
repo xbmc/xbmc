@@ -17,6 +17,7 @@
 
 #include "Connection.h"
 #include "Registry.h"
+#include "Seat.h"
 #include "ShellSurface.h"
 #include "threads/CriticalSection.h"
 #include "Util.h"
@@ -58,7 +59,7 @@ enum SurfaceIndex
  *
  * The decorations are positioned around the main surface automatically.
  */
-class CWindowDecorator
+class CWindowDecorator final : IRawInputHandlerTouch, IRawInputHandlerPointer
 {
 public:
   /**
@@ -107,6 +108,9 @@ public:
 
   bool IsDecorationActive() const;
 
+  void AddSeat(CSeat* seat);
+  void RemoveSeat(CSeat* seat);
+
   struct Buffer
   {
     void* data{};
@@ -137,6 +141,14 @@ public:
 private:
   CWindowDecorator(CWindowDecorator const& other) = delete;
   CWindowDecorator& operator=(CWindowDecorator const& other) = delete;
+
+  // IRawInputHandlerTouch
+  void OnTouchDown(CSeat* seat, std::uint32_t serial, std::uint32_t time, wayland::surface_t surface, std::int32_t id, double x, double y) override;
+  // IRawInputHandlerPointer
+  void OnPointerEnter(CSeat* seat, std::uint32_t serial, wayland::surface_t surface, double surfaceX, double surfaceY) override;
+  void OnPointerLeave(CSeat* seat, std::uint32_t serial, wayland::surface_t surface) override;
+  void OnPointerMotion(CSeat* seat, std::uint32_t time, double surfaceX, double surfaceY) override;
+  void OnPointerButton(CSeat* seat, std::uint32_t serial, std::uint32_t time, std::uint32_t button, wayland::pointer_button_state state) override;
 
   void Reset(bool reallocate);
 
@@ -197,24 +209,21 @@ private:
   std::set<wayland::buffer_t, WaylandCPtrCompare> m_pendingBuffers;
   CCriticalSection m_pendingBuffersMutex;
 
-  struct Seat
+  struct SeatState
   {
-    wayland::seat_t seat;
-    wayland::pointer_t pointer;
-    wayland::touch_t touch;
-
+    CSeat* seat;
     SurfaceIndex currentSurface{SURFACE_COUNT};
     CPoint pointerPosition;
 
-    std::uint32_t pointerEnterSerial;
+    std::uint32_t pointerEnterSerial{};
     std::string cursorName;
     wayland::surface_t cursor;
 
-    explicit Seat(wayland::seat_t seat)
-    : seat{std::move(seat)}
+    explicit SeatState(CSeat* seat)
+    : seat{seat}
     {}
   };
-  std::map<std::uint32_t, Seat> m_seats;
+  std::map<std::uint32_t, SeatState> m_seats;
 
   struct Button
   {
@@ -230,15 +239,9 @@ private:
 
   void LoadCursorTheme();
 
-  void OnSeatAdded(std::uint32_t name, wayland::proxy_t&& seat);
-  void OnSeatRemoved(std::uint32_t name);
-  void OnSeatCapabilities(std::uint32_t name, wayland::seat_capability capability);
-  void HandleSeatPointer(Seat& seat);
-  void HandleSeatTouch(Seat& seat);
-
-  void UpdateSeatCursor(Seat& seat);
+  void UpdateSeatCursor(SeatState& seatState);
   void UpdateButtonHoverState();
-  void HandleSeatClick(wayland::seat_t seat, SurfaceIndex surface, std::uint32_t serial, std::uint32_t button, CPoint position);
+  void HandleSeatClick(SeatState const& seatState, SurfaceIndex surface, std::uint32_t serial, std::uint32_t button, CPoint position);
 };
 
 }

@@ -123,7 +123,7 @@ public:
    * This function does not own the file descriptor. It must not be closed
    * from this function.
    */
-  std::unique_ptr<CXkbcommonKeymap> KeymapFromSharedMemory(int fd, std::size_t size);
+  std::unique_ptr<CXkbcommonKeymap> KeymapFromString(std::string const& keymap);
   std::unique_ptr<CXkbcommonKeymap> KeymapFromNames(const std::string &rules, const std::string &model, const std::string &layout, const std::string &variant, const std::string &options);
 
 private:

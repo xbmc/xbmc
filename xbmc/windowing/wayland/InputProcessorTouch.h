@@ -14,6 +14,7 @@
 #include <wayland-client-protocol.hpp>
 
 #include "input/touch/ITouchInputHandler.h"
+#include "Seat.h"
 
 namespace KODI
 {
@@ -27,12 +28,18 @@ namespace WAYLAND
  *
  * Events go directly to \ref CGenericTouchInputHandler, so no callbacks here
  */
-class CInputProcessorTouch
+class CInputProcessorTouch final : public IRawInputHandlerTouch
 {
 public:
-  CInputProcessorTouch(wayland::touch_t const& touch, wayland::surface_t const& surface);
+  CInputProcessorTouch(wayland::surface_t const& surface);
   ~CInputProcessorTouch() noexcept;
   void SetCoordinateScale(std::int32_t scale) { m_coordinateScale = scale; }
+
+  void OnTouchDown(CSeat* seat, std::uint32_t serial, std::uint32_t time, wayland::surface_t surface, std::int32_t id, double x, double y) override;
+  void OnTouchUp(CSeat* seat, std::uint32_t serial, std::uint32_t time, std::int32_t id) override;
+  void OnTouchMotion(CSeat* seat, std::uint32_t time, std::int32_t id, double x, double y) override;
+  void OnTouchCancel(CSeat* seat) override;
+  void OnTouchShape(CSeat* seat, std::int32_t id, double major, double minor) override;
 
 private:
   CInputProcessorTouch(CInputProcessorTouch const& other) = delete;
@@ -57,7 +64,6 @@ private:
   void UpdateTouchPoint(TouchPoint const& point);
   void AbortTouches();
 
-  wayland::touch_t m_touch;
   wayland::surface_t m_surface;
   std::int32_t m_coordinateScale{1};
 

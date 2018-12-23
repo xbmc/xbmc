@@ -12,6 +12,7 @@ set(SOURCES Connection.cpp
             OSScreenSaverIdleInhibitUnstableV1.cpp
             Registry.cpp
             Seat.cpp
+            SeatInputProcessing.cpp
             SeatSelection.cpp
             ShellSurface.cpp
             ShellSurfaceWlShell.cpp
@@ -35,6 +36,7 @@ set(HEADERS Connection.h
             OSScreenSaverIdleInhibitUnstableV1.h
             Registry.h
             Seat.h
+            SeatInputProcessing.h
             SeatSelection.h
             ShellSurface.h
             ShellSurfaceWlShell.h

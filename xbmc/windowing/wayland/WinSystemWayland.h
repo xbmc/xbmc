@@ -23,6 +23,7 @@
 #include "Connection.h"
 #include "Output.h"
 #include "Seat.h"
+#include "SeatInputProcessing.h"
 #include "Signals.h"
 #include "ShellSurface.h"
 #include "platform/linux/OptionalsReg.h"
@@ -114,10 +115,10 @@ protected:
 
 private:
   // IInputHandler
-  void OnEnter(std::uint32_t seatGlobalName, InputType type) override;
-  void OnLeave(std::uint32_t seatGlobalName, InputType type) override;
-  void OnEvent(std::uint32_t seatGlobalName, InputType type, XBMC_Event& event) override;
-  void OnSetCursor(wayland::pointer_t& pointer, std::uint32_t serial) override;
+  void OnEnter(InputType type) override;
+  void OnLeave(InputType type) override;
+  void OnEvent(InputType type, XBMC_Event& event) override;
+  void OnSetCursor(std::uint32_t seatGlobalName, std::uint32_t serial) override;
 
   // IWindowDecorationHandler
   void OnWindowMove(const wayland::seat_t& seat, std::uint32_t serial) override;
@@ -202,8 +203,9 @@ private:
 
   // Seat handling
   // -------------
-  std::map<std::uint32_t, CSeat> m_seatProcessors;
-  CCriticalSection m_seatProcessorsMutex;
+  std::map<std::uint32_t, CSeat> m_seats;
+  CCriticalSection m_seatsMutex;
+  std::unique_ptr<CSeatInputProcessing> m_seatInputProcessing;
   std::map<std::uint32_t, std::shared_ptr<COutput>> m_outputs;
   /// outputs that did not receive their done event yet
   std::map<std::uint32_t, std::shared_ptr<COutput>> m_outputsInPreparation;
