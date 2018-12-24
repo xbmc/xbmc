@@ -23,6 +23,7 @@
 #include "utils/XMLUtils.h"
 #include "utils/log.h"
 #include "utils/Variant.h"
+#include "video/Bookmark.h"
 #include "ServiceBroker.h"
 #include "cores/AudioEngine/Interfaces/AE.h"
 #include "cores/DataCacheCore.h"
@@ -367,6 +368,12 @@ void CExternalPlayer::Process()
     SetCursorPos(m_xPos,m_yPos);
   }
 #endif
+
+  CBookmark bookmark;
+  bookmark.totalTimeInSeconds = 1;
+  bookmark.timeInSeconds = (elapsedMillis / 1000 >= m_playCountMinTime) ? 1 : 0;
+  bookmark.player = m_name;
+  m_callback.OnPlayerCloseFile(m_file, bookmark);
 
   /* Resume AE processing of XBMC native audio */
   if (!CServiceBroker::GetActiveAE()->Resume())
