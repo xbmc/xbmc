@@ -7013,6 +7013,7 @@ bool CVideoDatabase::GetMoviesByWhere(const std::string& strBaseDir, const Filte
         std::string path = StringUtils::Format("%i", movie.m_iDbId);
         itemUrl.AppendPath(path);
         pItem->SetPath(itemUrl.ToString());
+        pItem->SetDynPath(movie.m_strFileNameAndPath);
 
         pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED,movie.GetPlayCount() > 0);
         items.Add(pItem);
@@ -7255,6 +7256,7 @@ bool CVideoDatabase::GetEpisodesByWhere(const std::string& strBaseDir, const Fil
           path = StringUtils::Format("%i", idEpisode);
         itemUrl.AppendPath(path);
         pItem->SetPath(itemUrl.ToString());
+        pItem->SetDynPath(movie.m_strFileNameAndPath);
 
         pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, movie.GetPlayCount() > 0);
         pItem->m_dateTime = movie.m_firstAired;
