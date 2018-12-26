@@ -119,6 +119,7 @@ waylandpp: wayland $(WAYLANDPP_DEPS)
 dbus: expat
 libinput: mtdev libevdev
 libevdev: libudev
+taglib: $(ZLIB)
 
 .installed-$(PLATFORM): $(DEPENDS)
 	touch $@
