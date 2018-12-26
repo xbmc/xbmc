@@ -135,6 +135,8 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
 
     bool  m_omxDecodeStartWithValidFrame;
 
+    bool  m_omlSync = false;
+
     float m_videoSubsDelayRange;
     float m_videoAudioDelayRange;
     bool m_videoUseTimeSeeking;

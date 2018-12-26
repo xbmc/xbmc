@@ -34,4 +34,7 @@ public:
   std::string m_extensions;
 
   Display *m_dpy;
+
+protected:
+  bool m_omlSync = false;
 };
