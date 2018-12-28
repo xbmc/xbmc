@@ -397,8 +397,8 @@ bool CTagLoaderTagLib::ParseTag(ID3v2::Tag *id3v2, EmbeddedArt *art, MUSIC_INFO:
       // Loop through any UFID frames and set them
       for (ID3v2::FrameList::ConstIterator ut = it->second.begin(); ut != it->second.end(); ++ut)
       {
-        auto ufid = reinterpret_cast<ID3v2::UniqueFileIdentifierFrame*> (*ut);
-        if (ufid->owner() == "http://musicbrainz.org")
+        auto ufid = dynamic_cast<ID3v2::UniqueFileIdentifierFrame*> (*ut);
+        if (ufid && ufid->owner() == "http://musicbrainz.org")
         {
           // MusicBrainz pads with a \0, but the spec requires binary, be cautious
           char cUfid[64];
