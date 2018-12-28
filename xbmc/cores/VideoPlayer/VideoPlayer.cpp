@@ -951,7 +951,7 @@ void CVideoPlayer::OpenDefaultStreams(bool reset)
   }
 
   // enable  or disable subtitles
-  bool visible = m_processInfo->GetVideoSettings().m_SubtitleOn;
+  bool *visible = nullptr;
 
   // open subtitle stream
   SelectionStream as = m_SelectionStreams.Get(STREAM_AUDIO, GetAudioStream());
@@ -965,18 +965,16 @@ void CVideoPlayer::OpenDefaultStreams(bool reset)
     if (OpenStream(m_CurrentSubtitle, stream.demuxerId, stream.id, stream.source))
     {
       valid = true;
-      if(!psp.relevant(stream))
-        visible = false;
-      else if(stream.flags & StreamFlags::FLAG_FORCED)
-        visible = true;
+      if(psp.relevant(stream) && stream.flags & StreamFlags::FLAG_FORCED)
+        *visible = true;
       break;
     }
   }
   if(!valid)
     CloseStream(m_CurrentSubtitle, false);
 
-  if (!std::dynamic_pointer_cast<CDVDInputStreamNavigator>(m_pInputStream) || m_playerOptions.state.empty())
-    SetSubtitleVisibleInternal(visible); // only set subtitle visibility if state not stored by dvd navigator, because navigator will restore it (if visible)
+  if (visible != nullptr && (!std::dynamic_pointer_cast<CDVDInputStreamNavigator>(m_pInputStream) || m_playerOptions.state.empty()))
+    SetSubtitleVisibleInternal(*visible); // only set subtitle visibility if state not stored by dvd navigator, because navigator will restore it (if visible)
 
   // open teletext stream
   valid   = false;
@@ -4882,6 +4880,11 @@ void CVideoPlayer::SetVideoSettings(CVideoSettings& settings)
   m_processInfo->SetVideoSettings(settings);
   m_renderManager.SetVideoSettings(settings);
   m_renderManager.SetDelay(static_cast<int>(settings.m_AudioDelay * 1000.0f));
+
+  // subtitles may have been explicitly disabled on the ListItem
+  if (this->m_item.HasProperty("enabledsubtitles") && !m_item.GetProperty("enabledsubtitles").asBoolean())
+    settings.m_SubtitleOn = false;
+
   m_VideoPlayerVideo->EnableSubtitle(settings.m_SubtitleOn);
   m_VideoPlayerVideo->SetSubtitleDelay(static_cast<int>(-settings.m_SubtitleDelay * DVD_TIME_BASE));
 }

@@ -1076,6 +1076,34 @@ namespace XBMCAddon
 #ifdef DOXYGEN_SHOULD_USE_THIS
       ///
       /// \ingroup python_xbmcgui_listitem
+      /// @brief \python_func{ setSubtitlesEnabled(bool) }
+      ///-----------------------------------------------------------------------
+      /// Set subtitles enabled/disabled.
+      ///
+      /// @param bool True/False - enable or disable the subtitles.
+      /// @note If a user changes the subtitle enable condition after the playback
+      /// has started, Kodi will store and reuse the setting the next time the item
+      /// is played.
+      ///
+      ///-----------------------------------------------------------------------
+      ///
+      /// **Example:**
+      /// ~~~~~~~~~~~~~{.py}
+      /// ...
+      /// listitem.setSubtitlesEnabled(False)
+      /// ...
+      /// ~~~~~~~~~~~~~
+      ///-----------------------------------------------------------------------
+      /// @python_v19 New function added.
+      ///
+      setSubtitlesEnabled(...);
+#else
+      void setSubtitlesEnabled(bool enable);
+#endif
+
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_xbmcgui_listitem
       /// @brief \python_func{ getdescription() }
       ///-----------------------------------------------------------------------
       /// @python_v17 Deprecated.

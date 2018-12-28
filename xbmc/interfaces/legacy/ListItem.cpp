@@ -836,6 +836,12 @@ namespace XBMCAddon
       }
     }
 
+    void ListItem::setSubtitlesEnabled(bool enable)
+    {
+      XBMCAddonUtils::GuiLock lock(languageHook, m_offscreen);
+      item->SetProperty("enabledsubtitles", enable);
+    }
+
     xbmc::InfoTagVideo* ListItem::getVideoInfoTag()
     {
       XBMCAddonUtils::GuiLock lock(languageHook, m_offscreen);
