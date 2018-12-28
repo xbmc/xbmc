@@ -8,9 +8,9 @@
 
 #include "CompileInfo.h"
 
+#include <algorithm>
 #include <cstddef>
 #include <string>
-#include <algorithm>
 
 
 int CCompileInfo::GetMajor()
@@ -60,13 +60,13 @@ const char* CCompileInfo::GetCopyrightYears()
   return "@APP_COPYRIGHT_YEARS@";
 }
 
-const char* CCompileInfo::GetBuildDate()
+std::string CCompileInfo::GetBuildDate()
 {
   const std::string bdate = "@APP_BUILD_DATE@";
   if (!bdate.empty())
   {
     std::string datestamp = bdate.substr(0, 4) + "-" + bdate.substr(4, 2) + "-" + bdate.substr(6, 2);
-    return datestamp.c_str();
+    return datestamp;
   }
   return "1970-01-01";
 }
