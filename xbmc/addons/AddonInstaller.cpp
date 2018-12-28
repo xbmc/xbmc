@@ -509,9 +509,6 @@ bool CAddonInstallJob::DoWork()
     // packages folder, then extracting from the local .zip package into the addons folder
     // Both these functions are achieved by "copying" using the vfs.
 
-    std::string dest = "special://home/addons/packages/";
-    std::string package = URIUtils::AddFileToFolder("special://home/addons/packages/",
-                                                    URIUtils::GetFileName(m_addon->Path()));
     if (!m_repo && URIUtils::HasSlashAtEnd(m_addon->Path()))
     { // passed in a folder - all we need do is copy it across
       installFrom = m_addon->Path();
@@ -541,6 +538,18 @@ bool CAddonInstallJob::DoWork()
         return false;
       }
 
+      std::string packageOriginalPath, packageFileName;
+      URIUtils::Split(path, packageOriginalPath, packageFileName);
+      // Use ChangeBasePath so the URL is decoded if necessary
+      const std::string packagePath = "special://home/addons/packages/";
+      //!@todo fix design flaw in file copying: We use CFileOperationJob to download the package from the internet
+      // to the local cache. It tries to be "smart" and decode the URL. But it never tells us what the result is,
+      // so if we try for example to download "http://localhost/a+b.zip" the result ends up in "a b.zip".
+      // First bug is that it actually decodes "+", which is not necessary except in query parts. Second bug
+      // is that we cannot know that it does this and what the result is so the package will not be found without
+      // using ChangeBasePath here (which is the same function the copying code uses and performs the translation).
+      std::string package = URIUtils::ChangeBasePath(packageOriginalPath, packageFileName, packagePath);
+
       // check that we don't already have a valid copy
       if (!hash.Empty())
       {
@@ -558,7 +567,7 @@ bool CAddonInstallJob::DoWork()
       // zip passed in - download + extract
       if (!CFile::Exists(package))
       {
-        if (!DownloadPackage(path, dest))
+        if (!DownloadPackage(path, packagePath))
         {
           CFile::Delete(package);
 
