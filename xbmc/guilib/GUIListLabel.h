@@ -40,7 +40,6 @@ public:
 
   void SetLabel(const std::string &label);
   void SetSelected(bool selected);
-  void SetScrolling(bool scrolling);
 
   static void CheckAndCorrectOverlap(CGUIListLabel &label1, CGUIListLabel &label2)
   {
