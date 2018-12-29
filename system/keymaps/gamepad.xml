@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- This file contains the mapping of keys to actions within Kodi.                       -->
+<!-- This file contains the mapping of EventServer "gamepad" keys to actions within Kodi. -->
 <!--                                                                                      -->
 <!-- The format is:                                                                       -->
 <!--  <window>                                                                            -->
