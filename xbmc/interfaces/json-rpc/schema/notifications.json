@@ -325,6 +325,15 @@
     ],
     "returns": null
   },
+  "VideoLibrary.OnRefresh": {
+    "type": "notification",
+    "description": "The video library has been refreshed and a home screen reload might be necessary.",
+    "params": [
+      { "name": "sender", "type": "string", "required": true },
+      { "name": "data", "type": "null", "required": true }
+    ],
+    "returns": null
+  },
   "System.OnQuit": {
     "type": "notification",
     "description": "Kodi will be closed.",
