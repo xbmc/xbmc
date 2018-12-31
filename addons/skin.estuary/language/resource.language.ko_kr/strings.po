@@ -48,6 +48,10 @@ msgctxt "#31007"
 msgid "Unwatched movies"
 msgstr "시청하지 않은 영화"
 
+msgctxt "#31008"
+msgid "Enable category widgets"
+msgstr "카테고리 위젯 사용"
+
 msgctxt "#31009"
 msgid "Download icons"
 msgstr "다운로드 아이콘"
@@ -107,6 +111,10 @@ msgstr "정렬 기준"
 msgctxt "#31023"
 msgid "Viewtype"
 msgstr "보기 형식"
+
+msgctxt "#31024"
+msgid "Choose rating to display for media items"
+msgstr "미디어 항목에서 보는 평점 선택"
 
 msgctxt "#31025"
 msgid "No favourites found. You can add any item from media views to this list by using the context menu."
@@ -436,6 +444,14 @@ msgctxt "#31131"
 msgid "Choose skin fanart pack"
 msgstr "스킨 팬아트 팩 선택"
 
+msgctxt "#31132"
+msgid "Select Program"
+msgstr "프로그램 선택"
+
+msgctxt "#31133"
+msgid "Select Resolution"
+msgstr "해상도 선택"
+
 msgctxt "#31134"
 msgid "Remaining"
 msgstr "남음"
@@ -536,6 +552,26 @@ msgctxt "#31161"
 msgid "Numeric pad"
 msgstr "숫자 패드"
 
+msgctxt "#31162"
+msgid "Play your personal games or download one of the many game add-ons from the official repository."
+msgstr "개인 게임을 실행하거나 공식 저장소의 많은 게임 애드온에서 내려 받습니다."
+
+msgctxt "#31163"
+msgid "Show Fanart background"
+msgstr "팬아트 배경 보기"
+
+msgctxt "#31164"
+msgid "Choose kind of profile identification"
+msgstr "프로파일 확인 선택"
+
 msgctxt "#31165"
 msgid "Profile name"
 msgstr "프로파일 이름"
+
+msgctxt "#31166"
+msgid "Profile avatar"
+msgstr "프로파일 아바타"
+
+msgctxt "#31167"
+msgid "Animate background"
+msgstr "움직이는 배경"

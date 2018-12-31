@@ -114,7 +114,7 @@ msgstr "Изглед"
 
 msgctxt "#31024"
 msgid "Choose rating to display for media items"
-msgstr "Избор на оценка за показване към медийните елементи"
+msgstr "Изберете коя оценка, медийните елементи, да се показва"
 
 msgctxt "#31025"
 msgid "No favourites found. You can add any item from media views to this list by using the context menu."
@@ -530,7 +530,7 @@ msgstr "Няма отметки."
 
 msgctxt "#31156"
 msgid "Choose background pattern"
-msgstr "Избор на фонов мотив"
+msgstr "Избор на мотив за фона"
 
 msgctxt "#31157"
 msgid "Edit categories"
@@ -546,7 +546,7 @@ msgstr "Изображения"
 
 msgctxt "#31160"
 msgid "Show media flags"
-msgstr "Показване на флаговете на медийното съдържание"
+msgstr "Показвай флаговете на медийното съдържание"
 
 msgctxt "#31161"
 msgid "Numeric pad"
@@ -574,4 +574,4 @@ msgstr "Снимка на профила"
 
 msgctxt "#31167"
 msgid "Animate background"
-msgstr "Анимиран фон"
+msgstr "Анимиране на фон"
