@@ -284,7 +284,7 @@ bool CRendererVDPAU::CreateVDPAUTexture(int index)
   DeleteVDPAUTexture(index);
 
   memset(&im, 0, sizeof(im));
-  memset(&plane, 0, sizeof(CYuvPlane));
+  plane = {};
   im.height = m_sourceHeight;
   im.width = m_sourceWidth;
 
