@@ -84,8 +84,7 @@ void CViewDatabase::UpdateTables(int version)
   if (version < 6)
   {
     // convert the "path" table
-    m_pDS->exec("CREATE TABLE tmp_view AS SELECT * FROM view");
-    m_pDS->exec("DROP TABLE view");
+    m_pDS->exec("ALTER TABLE view RENAME TO tmp_view");
 
     m_pDS->exec("CREATE TABLE view ("
                 "idView integer primary key,"
