@@ -398,11 +398,14 @@ bool CGUIDialogMusicInfo::OnMessage(CGUIMessage& message)
           CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), iControl);
           CServiceBroker::GetGUI()->GetWindowManager().SendMessage(msg);
           int iItem = msg.GetParam1();
-          if (iItem < 0 || iItem >= m_albumSongs->Size())
-            break;
-          OnAlbumInfo(m_albumSongs->Get(iItem)->GetMusicInfoTag()->GetDatabaseId());
-
-          return true;
+          int id = -1;
+          if (iItem >= 0 && iItem < m_albumSongs->Size())
+              id = m_albumSongs->Get(iItem)->GetMusicInfoTag()->GetDatabaseId();
+          if (id > 0)
+          {
+            OnAlbumInfo(id);
+            return true;
+          }
         }
       }
     }
@@ -1010,10 +1013,12 @@ void CGUIDialogMusicInfo::ShowFor(CFileItem* pItem)
       // Maybe only path is set, then set MusicInfoTag
       CQueryParams params;
       CDirectoryNode::GetDatabaseInfo(pItem->GetPath(), params);
-      if (params.GetAlbumId() == -1)
+      if (params.GetArtistId() > 0)
         pItem->GetMusicInfoTag()->SetDatabaseId(params.GetArtistId(), MediaTypeArtist);
-      else
+      else if (params.GetAlbumId() > 0)
         pItem->GetMusicInfoTag()->SetDatabaseId(params.GetAlbumId(), MediaTypeAlbum);
+      else
+        return; // nothing to do
     }
     CGUIDialogMusicInfo *pDlgMusicInfo = CServiceBroker::GetGUI()->GetWindowManager().
 	  GetWindow<CGUIDialogMusicInfo>(WINDOW_DIALOG_MUSIC_INFO);
