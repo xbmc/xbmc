@@ -6055,7 +6055,7 @@ const infomap skin_labels[] =    {{ "currenttheme",      SKIN_THEME },
 ///     to make it easier for skins to work with custom icon sets\, it now will return the filename only
 ///     i.e. 28.png
 ///     @skinning_v13 **[Infolabel Updated]** \link Window_Weather_Property `Window(Weather).Property(property)`\endlink
-///     added `WeatherProviderLogo` propertu - weather provider logo (for weather addons that support it).
+///     added `WeatherProviderLogo` property - weather provider logo (for weather addons that support it).
 ///     <p>
 ///   }
 /// \table_end
