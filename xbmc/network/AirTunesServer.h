@@ -59,6 +59,7 @@ private:
   static void RefreshCoverArt(const char *outputFilename = NULL);
   static void RefreshMetadata();
   static void ResetMetadata();
+  static void InformPlayerAboutPlayTimes();
 
   int m_port;
   static DllLibShairplay *m_pLibShairplay;//the lib
@@ -77,6 +78,9 @@ private:
   static std::list<CAction> m_actionQueue;
   static CEvent m_processActions;
   static int m_sampleRate;
+  static unsigned int m_cachedStartTime;
+  static unsigned int m_cachedEndTime;
+  static unsigned int m_cachedCurrentTime;
 
   class AudioOutputFunctions
   {

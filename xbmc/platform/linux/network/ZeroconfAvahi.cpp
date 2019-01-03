@@ -355,10 +355,15 @@ bool CZeroconfAvahi::createClient()
     {
       avahi_client_free(mp_client);
     }
+
+    int error = 0;
     mp_client = avahi_client_new(avahi_threaded_poll_get(mp_poll),
-                                 AVAHI_CLIENT_NO_FAIL, &clientCallback,this,0);
+                                 AVAHI_CLIENT_NO_FAIL, &clientCallback,this,&error);
     if (!mp_client)
+    {
+      CLog::Log(LOGERROR, "CZeroconfAvahi::createClient() failed with %d", error);
       return false;
+    }
     return true;
 }
 

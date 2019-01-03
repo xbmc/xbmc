@@ -72,6 +72,10 @@ std::list<CAction> CAirTunesServer::m_actionQueue;
 CEvent CAirTunesServer::m_processActions;
 int CAirTunesServer::m_sampleRate = 44100;
 
+unsigned int CAirTunesServer::m_cachedStartTime = 0;
+unsigned int CAirTunesServer::m_cachedEndTime = 0;
+unsigned int CAirTunesServer::m_cachedCurrentTime = 0;
+
 
 //parse daap metadata - thx to project MythTV
 std::map<std::string, std::string> decodeDMAP(const char *buffer, unsigned int size)
@@ -398,15 +402,39 @@ void CAirTunesServer::AudioOutputFunctions::audio_remote_control_id(void *cls, c
   }
 }
 
+void CAirTunesServer::InformPlayerAboutPlayTimes()
+{
+  if (m_cachedEndTime > 0)
+  {
+    unsigned int duration = m_cachedEndTime - m_cachedStartTime;
+    unsigned int position = m_cachedCurrentTime - m_cachedStartTime;
+    duration /= m_sampleRate;
+    position /= m_sampleRate;
+  
+    if (g_application.GetAppPlayer().IsPlaying())
+    {
+      g_application.GetAppPlayer().SetTime(position * 1000);
+      g_application.GetAppPlayer().SetTotalTime(duration * 1000);
+      
+      // reset play times now that we have informed the player
+      m_cachedEndTime = 0;
+      m_cachedCurrentTime = 0;
+      m_cachedStartTime = 0;
+
+    }
+  }
+}
+
 void CAirTunesServer::AudioOutputFunctions::audio_set_progress(void *cls, void *session, unsigned int start, unsigned int curr, unsigned int end)
 {
-  unsigned int duration = end - start;
-  unsigned int position = curr - start;
-  duration /= m_sampleRate;
-  position /= m_sampleRate;
-
-  g_application.GetAppPlayer().SetTime(position * 1000);
-  g_application.GetAppPlayer().SetTotalTime(duration * 1000);
+  m_cachedStartTime = start;
+  m_cachedCurrentTime = curr;
+  m_cachedEndTime = end;
+  if (g_application.GetAppPlayer().IsPlaying())
+  {
+    // player is there - directly inform him about play times
+    InformPlayerAboutPlayTimes();
+  }
 }
 
 void CAirTunesServer::SetupRemoteControl()
@@ -462,6 +490,9 @@ void  CAirTunesServer::AudioOutputFunctions::audio_process(void *cls, void *sess
 {
   XFILE::CPipeFile *pipe=(XFILE::CPipeFile *)cls;
   pipe->Write(buffer, buflen);
+  
+  // in case there are some play times cached that are not yet sent to the player - do it here
+  InformPlayerAboutPlayTimes();
 }
 
 void  CAirTunesServer::AudioOutputFunctions::audio_destroy(void *cls, void *session)
