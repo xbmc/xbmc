@@ -1113,7 +1113,7 @@ CUPnPServer::OnUpdateObject(PLT_ActionReference&             action,
              CUtil::DeleteMusicDatabaseDirectoryCache();
 
         CFileItemPtr msgItem(new CFileItem(updated));
-        CGUIMessage message(GUI_MSG_NOTIFY_ALL, CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow(), 0, GUI_MSG_UPDATE_ITEM, 1, msgItem);
+        CGUIMessage message(GUI_MSG_NOTIFY_ALL, CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow(), 0, GUI_MSG_UPDATE_ITEM, GUI_MSG_FLAG_UPDATE_LIST, msgItem);
         CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(message);
     }
 
