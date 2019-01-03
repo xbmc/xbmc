@@ -1385,16 +1385,24 @@ void CWinSystemWayland::PrepareFramePresentation()
     // while it is minimized (since the wait needs to be interrupted for that).
     // -> Use Wait with timeout here so we can maintain a reasonable frame rate
     //    even when the window is not visible and we do not get any frame callbacks.
-    m_frameCallbackEvent.WaitMSec(50);
-    m_frameCallbackEvent.Reset();
+    if (m_frameCallbackEvent.WaitMSec(50))
+    {
+      // Only reset frame callback object a callback was received so a
+      // new one is not requested continuously
+      m_frameCallback = {};
+      m_frameCallbackEvent.Reset();
+    }
   }
 
-  // Get frame callback event for checking in the next call to this function
-  m_frameCallback = m_surface.frame();
-  m_frameCallback.on_done() = [this](std::uint32_t)
+  if (!m_frameCallback)
   {
-    m_frameCallbackEvent.Set();
-  };
+    // Get frame callback event for checking in the next call to this function
+    m_frameCallback = m_surface.frame();
+    m_frameCallback.on_done() = [this](std::uint32_t)
+    {
+      m_frameCallbackEvent.Set();
+    };
+  }
 }
 
 void CWinSystemWayland::FinishFramePresentation()
