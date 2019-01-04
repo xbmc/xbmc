@@ -394,7 +394,7 @@ void CVideoDatabase::CreateViews()
                                        "        episode.idShow=tvshow.idShow"
                                        "      LEFT JOIN files ON"
                                        "        files.idFile=episode.idFile "
-                                       "    GROUP BY tvshow.idShow");
+                                       "GROUP BY tvshow.idShow");
   m_pDS->exec(tvshowcounts);
 
   CLog::Log(LOGINFO, "create tvshow_view");
@@ -419,13 +419,17 @@ void CVideoDatabase::CreateViews()
                                      "  LEFT JOIN rating ON"
                                      "    rating.rating_id=tvshow.c%02d "
                                      "  LEFT JOIN uniqueid ON"
-                                     "    uniqueid.uniqueid_id=tvshow.c%02d "
-                                     "GROUP BY tvshow.idShow",
+                                     "    uniqueid.uniqueid_id=tvshow.c%02d ",
                                      VIDEODB_ID_TV_RATING_ID, VIDEODB_ID_TV_IDENT_ID);
   m_pDS->exec(tvshowview);
+  
   CLog::Log(LOGINFO, "create season_view");
   std::string seasonview = PrepareSQL("CREATE VIEW season_view AS SELECT "
-                                     "  seasons.*, "
+                                     "  seasons.idSeason AS idSeason,"
+                                     "  seasons.idShow AS idShow,"
+                                     "  seasons.season AS season,"
+                                     "  seasons.name AS name,"
+                                     "  seasons.userrating AS userrating,"
                                      "  tvshow_view.strPath AS strPath,"
                                      "  tvshow_view.c%02d AS showTitle,"
                                      "  tvshow_view.c%02d AS plot,"
@@ -443,10 +447,23 @@ void CVideoDatabase::CreateViews()
                                      "    episode.idShow = seasons.idShow AND episode.c%02d = seasons.season"
                                      "  JOIN files ON"
                                      "    files.idFile = episode.idFile "
-                                     "GROUP BY seasons.idSeason",
+                                     "GROUP BY seasons.idSeason,"
+				     "         seasons.idShow,"
+				     "         seasons.season,"
+				     "         seasons.name,"
+				     "         seasons.userrating,"
+				     "         tvshow_view.strPath,"
+				     "         tvshow_view.c%02d,"
+				     "         tvshow_view.c%02d,"
+				     "         tvshow_view.c%02d,"
+				     "         tvshow_view.c%02d,"
+				     "         tvshow_view.c%02d,"
+				     "         tvshow_view.c%02d ",
                                      VIDEODB_ID_TV_TITLE, VIDEODB_ID_TV_PLOT, VIDEODB_ID_TV_PREMIERED,
                                      VIDEODB_ID_TV_GENRE, VIDEODB_ID_TV_STUDIOS, VIDEODB_ID_TV_MPAA,
-                                     VIDEODB_ID_EPISODE_AIRED, VIDEODB_ID_EPISODE_SEASON);
+                                     VIDEODB_ID_EPISODE_AIRED, VIDEODB_ID_EPISODE_SEASON,
+                                     VIDEODB_ID_TV_TITLE, VIDEODB_ID_TV_PLOT, VIDEODB_ID_TV_PREMIERED,
+                                     VIDEODB_ID_TV_GENRE, VIDEODB_ID_TV_STUDIOS, VIDEODB_ID_TV_MPAA);
   m_pDS->exec(seasonview);
 
   CLog::Log(LOGINFO, "create musicvideo_view");
@@ -5428,7 +5445,7 @@ void CVideoDatabase::UpdateTables(int iVersion)
 
 int CVideoDatabase::GetSchemaVersion() const
 {
-  return 113;
+  return 114;
 }
 
 bool CVideoDatabase::LookupByFolders(const std::string &path, bool shows)
