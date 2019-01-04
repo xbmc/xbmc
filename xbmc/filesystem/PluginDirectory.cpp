@@ -59,7 +59,8 @@ void CPluginDirectory::CScriptObserver::Process()
 
 void CPluginDirectory::CScriptObserver::Abort()
 {
-  m_bStop = true;
+  // will wait until thread exits
+  StopThread();
 }
 
 CPluginDirectory::CPluginDirectory()
