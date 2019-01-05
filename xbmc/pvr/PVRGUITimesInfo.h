@@ -67,6 +67,7 @@ namespace PVR
     mutable CCriticalSection m_critSection;
 
     CPVREpgInfoTagPtr m_playingEpgTag;
+    CPVRChannelPtr m_playingChannel;
 
     time_t m_iStartTime;
     unsigned int m_iDuration;
