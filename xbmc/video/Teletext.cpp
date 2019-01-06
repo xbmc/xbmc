@@ -105,8 +105,8 @@ TextPageAttr_t Text_AtrTable[] =
   { TXT_ColorWhite  , TXT_ColorBlack , C_G0P, 0, 0, 0 ,0, 0, 0, 0, 0, 0, 0, 0x3f}, /* ATR_WB */
   { TXT_ColorWhite  , TXT_ColorBlack , C_G0P, 0, 0, 1 ,0, 0, 0, 0, 0, 0, 0, 0x3f}, /* ATR_PassiveDefault */
   { TXT_ColorWhite  , TXT_ColorRed   , C_G0P, 0, 0, 0 ,0, 0, 0, 0, 0, 0, 0, 0x3f}, /* ATR_L250 */
-  { TXT_ColorBlack  , TXT_ColorYellow, C_G0P, 0, 0, 0 ,0, 0, 0, 0, 0, 0, 0, 0x3f}, /* ATR_L252 */
   { TXT_ColorBlack  , TXT_ColorGreen , C_G0P, 0, 0, 0 ,0, 0, 0, 0, 0, 0, 0, 0x3f}, /* ATR_L251 */
+  { TXT_ColorBlack  , TXT_ColorYellow, C_G0P, 0, 0, 0 ,0, 0, 0, 0, 0, 0, 0, 0x3f}, /* ATR_L252 */
   { TXT_ColorWhite  , TXT_ColorBlue  , C_G0P, 0, 0, 0 ,0, 0, 0, 0, 0, 0, 0, 0x3f}, /* ATR_L253 */
   { TXT_ColorMagenta, TXT_ColorBlack , C_G0P, 0, 0, 0 ,0, 0, 0, 0, 0, 0, 0, 0x3f}, /* ATR_TOPMENU0 */
   { TXT_ColorGreen  , TXT_ColorBlack , C_G0P, 0, 0, 0 ,0, 0, 0, 0, 0, 0, 0, 0x3f}, /* ATR_TOPMENU1 */
