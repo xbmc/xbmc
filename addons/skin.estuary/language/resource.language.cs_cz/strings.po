@@ -230,7 +230,7 @@ msgstr "Položky hlavní nabídky"
 
 msgctxt "#31062"
 msgid "Choose weather fanart pack"
-msgstr "Zvolte balíček fanatrů počasí"
+msgstr "Zvolte balíček fanartů počasí"
 
 msgctxt "#31063"
 msgid "Sections"
@@ -442,7 +442,7 @@ msgstr "Nastavení související s hlavní nabídkou: Konfigurujte domovskou obr
 
 msgctxt "#31131"
 msgid "Choose skin fanart pack"
-msgstr "Zvolte balíček fanatrů vzhledu"
+msgstr "Zvolte balíček fanartů vzhledu"
 
 msgctxt "#31132"
 msgid "Select Program"
@@ -502,7 +502,7 @@ msgstr "Kategorie"
 
 msgctxt "#31149"
 msgid "Select genre fanart pack"
-msgstr "Zvolte balíček fanatrů žánru"
+msgstr "Zvolte balíček fanartů žánru"
 
 msgctxt "#31150"
 msgid "Repository"
