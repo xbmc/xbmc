@@ -71,7 +71,7 @@ Used Operating system:
  - [ ] iOS
  - [ ] Linux
  - [ ] OSX
- - [ ] Raspberri-Pi
+ - [ ] Raspberry-Pi
  - [ ] Windows
  - [ ] Windows UWP
 

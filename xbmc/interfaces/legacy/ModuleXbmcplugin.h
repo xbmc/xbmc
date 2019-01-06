@@ -325,15 +325,16 @@ namespace XBMCAddon
     /// @param content     string - content type (eg. movies)
     ///
     /// @par Available content strings
-    /// |          |          |          |          |
-    /// |:--------:|:--------:|:--------:|:--------:|
-    /// |  files   |  songs   | artists  | albums
-    /// | movies   | tvshows  | episodes | musicvideos
-    /// | videos   | images   |  games   |
+    /// |          |          |          |             |
+    /// |:--------:|:--------:|:--------:|:-----------:|
+    /// |  files   |  songs   | artists  | albums      |
+    /// | movies   | tvshows  | episodes | musicvideos |
+    /// | videos   | images   |  games   |     --      |
     ///
     /// @remark Use **videos** for all videos which do not apply to the
     /// more specific mentioned ones like "movies", "episodes" etc.
     /// A good example is youtube.
+    ///
     ///
     /// ------------------------------------------------------------------------
     /// @python_v18 Added new **games** content
