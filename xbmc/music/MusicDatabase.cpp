@@ -10708,11 +10708,16 @@ void CMusicDatabase::UpdateFileDateAdded(int songId, const std::string& strFileN
 
 bool CMusicDatabase::AddAudioBook(const CFileItem& item)
 {
-  std::string strSQL = PrepareSQL("INSERT INTO audiobook (idBook,strBook,strAuthor,bookmark,file,dateAdded) VALUES (NULL,'%s','%s',%i,'%s','%s')",
-                                 item.GetMusicInfoTag()->GetAlbum().c_str(),
-                                 item.GetMusicInfoTag()->GetArtist()[0].c_str(), 0,
-                                 item.GetPath().c_str(),
-                                 CDateTime::GetCurrentDateTime().GetAsDBDateTime().c_str());
+  auto const& artists = item.GetMusicInfoTag()->GetArtist();
+  std::string strSQL = PrepareSQL(
+    "INSERT INTO audiobook (idBook,strBook,strAuthor,bookmark,file,dateAdded) "
+    "VALUES (NULL,'%s','%s',%i,'%s','%s')",
+    item.GetMusicInfoTag()->GetAlbum().c_str(),
+    artists.empty() ? "" : artists[0].c_str(),
+    0,
+    item.GetPath().c_str(),
+    CDateTime::GetCurrentDateTime().GetAsDBDateTime().c_str()
+  );
   return ExecuteQuery(strSQL);
 }
 
