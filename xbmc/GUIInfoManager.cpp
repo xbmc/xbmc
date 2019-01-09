@@ -1000,6 +1000,14 @@ const infomap weather[] =        {{ "isfetched",        WEATHER_IS_FETCHED },
 ///     @return **True** if there is a CD or DVD in the DVD-ROM drive.
 ///     <p>
 ///   }
+///   \table_row3{   <b>`System.HasMediaAudioCD`</b>,
+///                  \anchor System_HasMediaAudioCD
+///                  _boolean_,
+///     @return **True** if there is an audio CD in the optical drive. **False** if no drive available\, empty drive or other medium.
+///   <p><hr>
+///   @skinning_v18 **[New Boolean Condition]** \link System_HasMediaAudioCD `System.HasMediaAudioCD` \endlink
+///   <p>
+///   }
 ///   \table_row3{   <b>`System.DVDReady`</b>,
 ///                  \anchor System_DVDReady
 ///                  _boolean_,
@@ -1581,6 +1589,7 @@ const infomap weather[] =        {{ "isfetched",        WEATHER_IS_FETCHED },
 ///   }
 const infomap system_labels[] =  {{ "hasnetwork",       SYSTEM_ETHERNET_LINK_ACTIVE },
                                   { "hasmediadvd",      SYSTEM_MEDIA_DVD },
+                                  { "hasmediaaudiocd",  SYSTEM_MEDIA_AUDIO_CD },
                                   { "dvdready",         SYSTEM_DVDREADY },
                                   { "trayopen",         SYSTEM_TRAYOPEN },
                                   { "haslocks",         SYSTEM_HASLOCKS },
