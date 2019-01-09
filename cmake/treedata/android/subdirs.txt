@@ -15,3 +15,4 @@ xbmc/platform/android/network           platform/android/network
 xbmc/platform/android/peripherals       platform/android/peripherals
 xbmc/platform/android/powermanagement   platform/android/powermanagement
 xbmc/platform/android/storage           platform/android/storage
+xbmc/cores/VideoPlayer/Process/android/ cores/VideoPlayer/Process/android/
