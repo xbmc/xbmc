@@ -10750,10 +10750,10 @@ bool CMusicDatabase::SetResumeBookmarkForAudioBook(const CFileItem& item, int bo
   return ExecuteQuery(strSQL);
 }
 
-bool CMusicDatabase::GetResumeBookmarkForAudioBook(const std::string& path, int& bookmark)
+bool CMusicDatabase::GetResumeBookmarkForAudioBook(const CFileItem& item, int& bookmark)
 {
   std::string strSQL = PrepareSQL("SELECT bookmark FROM audiobook WHERE file='%s'",
-                                 path.c_str());
+                                 item.GetPath().c_str());
   if (!m_pDS->query(strSQL.c_str()) || m_pDS->num_rows() == 0)
     return false;
 
