@@ -59,7 +59,7 @@ public class XBMCVideoView extends SurfaceView implements
     super(context);
     setZOrderMediaOverlay(true);
     getHolder().addCallback(this);
-    getHolder().setFormat(PixelFormat.TRANSLUCENT);
+    getHolder().setFormat(PixelFormat.TRANSPARENT);
 
     mVideoLayout = (RelativeLayout) Main.MainActivity.findViewById(R.id.VideoLayout);
   }
