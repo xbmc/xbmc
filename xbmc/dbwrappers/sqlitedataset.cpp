@@ -11,7 +11,9 @@
  */
 
 #include <iostream>
+#include <map>
 #include <string>
+#include <sstream>
 
 #include "sqlitedataset.h"
 #include "utils/log.h"
@@ -20,6 +22,137 @@
 #ifdef TARGET_POSIX
 #include "platform/linux/XTimeUtils.h"
 #endif
+
+namespace {
+#define X(VAL) std::make_pair(VAL, #VAL)
+//!@todo Remove ifdefs when sqlite version requirement has been bumped to at least 3.26.0
+const std::map<int, const char*> g_SqliteErrorStrings =
+{
+  X(SQLITE_OK),
+  X(SQLITE_ERROR),
+  X(SQLITE_INTERNAL),
+  X(SQLITE_PERM),
+  X(SQLITE_ABORT),
+  X(SQLITE_BUSY),
+  X(SQLITE_LOCKED),
+  X(SQLITE_NOMEM),
+  X(SQLITE_READONLY),
+  X(SQLITE_INTERRUPT),
+  X(SQLITE_IOERR),
+  X(SQLITE_CORRUPT),
+  X(SQLITE_NOTFOUND),
+  X(SQLITE_FULL),
+  X(SQLITE_CANTOPEN),
+  X(SQLITE_PROTOCOL),
+  X(SQLITE_EMPTY),
+  X(SQLITE_SCHEMA),
+  X(SQLITE_TOOBIG),
+  X(SQLITE_CONSTRAINT),
+  X(SQLITE_MISMATCH),
+  X(SQLITE_MISUSE),
+  X(SQLITE_NOLFS),
+  X(SQLITE_AUTH),
+  X(SQLITE_FORMAT),
+  X(SQLITE_RANGE),
+  X(SQLITE_NOTADB),
+  X(SQLITE_NOTICE),
+  X(SQLITE_WARNING),
+  X(SQLITE_ROW),
+  X(SQLITE_DONE),
+#if defined(SQLITE_ERROR_MISSING_COLLSEQ)
+  X(SQLITE_ERROR_MISSING_COLLSEQ),
+#endif
+#if defined(SQLITE_ERROR_RETRY)
+  X(SQLITE_ERROR_RETRY),
+#endif
+#if defined(SQLITE_ERROR_SNAPSHOT)
+  X(SQLITE_ERROR_SNAPSHOT),
+#endif
+  X(SQLITE_IOERR_READ),
+  X(SQLITE_IOERR_SHORT_READ),
+  X(SQLITE_IOERR_WRITE),
+  X(SQLITE_IOERR_FSYNC),
+  X(SQLITE_IOERR_DIR_FSYNC),
+  X(SQLITE_IOERR_TRUNCATE),
+  X(SQLITE_IOERR_FSTAT),
+  X(SQLITE_IOERR_UNLOCK),
+  X(SQLITE_IOERR_RDLOCK),
+  X(SQLITE_IOERR_DELETE),
+  X(SQLITE_IOERR_BLOCKED),
+  X(SQLITE_IOERR_NOMEM),
+  X(SQLITE_IOERR_ACCESS),
+  X(SQLITE_IOERR_CHECKRESERVEDLOCK),
+  X(SQLITE_IOERR_LOCK),
+  X(SQLITE_IOERR_CLOSE),
+  X(SQLITE_IOERR_DIR_CLOSE),
+  X(SQLITE_IOERR_SHMOPEN),
+  X(SQLITE_IOERR_SHMSIZE),
+  X(SQLITE_IOERR_SHMLOCK),
+  X(SQLITE_IOERR_SHMMAP),
+  X(SQLITE_IOERR_SEEK),
+  X(SQLITE_IOERR_DELETE_NOENT),
+  X(SQLITE_IOERR_MMAP),
+  X(SQLITE_IOERR_GETTEMPPATH),
+  X(SQLITE_IOERR_CONVPATH),
+  X(SQLITE_IOERR_VNODE),
+  X(SQLITE_IOERR_AUTH),
+#if defined(SQLITE_IOERR_BEGIN_ATOMIC)
+  X(SQLITE_IOERR_BEGIN_ATOMIC),
+#endif
+#if defined(SQLITE_IOERR_COMMIT_ATOMIC)
+  X(SQLITE_IOERR_COMMIT_ATOMIC),
+#endif
+#if defined(SQLITE_IOERR_ROLLBACK_ATOMIC)
+  X(SQLITE_IOERR_ROLLBACK_ATOMIC),
+#endif
+  X(SQLITE_LOCKED_SHAREDCACHE),
+#if defined(SQLITE_LOCKED_VTAB)
+  X(SQLITE_LOCKED_VTAB),
+#endif
+  X(SQLITE_BUSY_RECOVERY),
+  X(SQLITE_BUSY_SNAPSHOT),
+  X(SQLITE_CANTOPEN_NOTEMPDIR),
+  X(SQLITE_CANTOPEN_ISDIR),
+  X(SQLITE_CANTOPEN_FULLPATH),
+  X(SQLITE_CANTOPEN_CONVPATH),
+#if defined(SQLITE_CANTOPEN_DIRTYWAL)
+  X(SQLITE_CANTOPEN_DIRTYWAL),
+#endif
+  X(SQLITE_CORRUPT_VTAB),
+#if defined(SQLITE_CORRUPT_SEQUENCE)
+  X(SQLITE_CORRUPT_SEQUENCE),
+#endif
+  X(SQLITE_READONLY_RECOVERY),
+  X(SQLITE_READONLY_CANTLOCK),
+  X(SQLITE_READONLY_ROLLBACK),
+  X(SQLITE_READONLY_DBMOVED),
+#if defined(SQLITE_READONLY_CANTINIT)
+  X(SQLITE_READONLY_CANTINIT),
+#endif
+#if defined(SQLITE_READONLY_DIRECTORY)
+  X(SQLITE_READONLY_DIRECTORY),
+#endif
+  X(SQLITE_ABORT_ROLLBACK),
+  X(SQLITE_CONSTRAINT_CHECK),
+  X(SQLITE_CONSTRAINT_COMMITHOOK),
+  X(SQLITE_CONSTRAINT_FOREIGNKEY),
+  X(SQLITE_CONSTRAINT_FUNCTION),
+  X(SQLITE_CONSTRAINT_NOTNULL),
+  X(SQLITE_CONSTRAINT_PRIMARYKEY),
+  X(SQLITE_CONSTRAINT_TRIGGER),
+  X(SQLITE_CONSTRAINT_UNIQUE),
+  X(SQLITE_CONSTRAINT_VTAB),
+  X(SQLITE_CONSTRAINT_ROWID),
+  X(SQLITE_NOTICE_RECOVER_WAL),
+  X(SQLITE_NOTICE_RECOVER_ROLLBACK),
+  X(SQLITE_WARNING_AUTOINDEX),
+  X(SQLITE_AUTH_USER),
+#if defined(SQLITE_OK_LOAD_PERMANENTLY)
+  X(SQLITE_OK_LOAD_PERMANENTLY),
+#endif
+};
+#undef X
+}
 
 namespace dbiplus {
 //************* Callback function ***************************
@@ -129,56 +262,17 @@ int SqliteDatabase::status(void) {
   return DB_CONNECTION_OK;
 }
 
-int SqliteDatabase::setErr(int err_code, const char * qry){
-  switch (err_code) {
-  case SQLITE_OK: error ="Successful result";
-    break;
-  case SQLITE_ERROR: error = "SQL error or missing database";
-    break;
-  case SQLITE_INTERNAL: error = "An internal logic error in SQLite";
-    break;
-  case SQLITE_PERM: error ="Access permission denied";
-    break;
-  case SQLITE_ABORT: error = "Callback routine requested an abort";
-    break;
-  case SQLITE_BUSY: error = "The database file is locked";
-    break;
-  case SQLITE_LOCKED: error = "A table in the database is locked";
-    break;
-  case SQLITE_NOMEM: error = "A malloc() failed";
-    break;
-  case SQLITE_READONLY: error = "Attempt to write a readonly database";
-    break;
-  case SQLITE_INTERRUPT: error = "Operation terminated by sqlite_interrupt()";
-    break;
-  case  SQLITE_IOERR: error = "Some kind of disk I/O error occurred";
-    break;
-  case  SQLITE_CORRUPT: error = "The database disk image is malformed";
-    break;
-  case SQLITE_NOTFOUND: error = "(Internal Only) Table or record not found";
-    break;
-  case SQLITE_FULL: error = "Insertion failed because database is full";
-    break;
-  case SQLITE_CANTOPEN: error = "Unable to open the database file";
-    break;
-  case SQLITE_PROTOCOL: error = "Database lock protocol error";
-    break;
-  case SQLITE_EMPTY:  error = "(Internal Only) Database table is empty";
-    break;
-  case SQLITE_SCHEMA: error = "The database schema changed";
-    break;
-  case SQLITE_TOOBIG: error = "Too much data for one row of a table";
-    break;
-  case SQLITE_CONSTRAINT: error = "Abort due to constraint violation";
-    break;
-  case SQLITE_MISMATCH:  error = "Data type mismatch";
-    break;
-  default : error = "Undefined SQLite error";
+int SqliteDatabase::setErr(int err_code, const char * qry) {
+  std::stringstream ss;
+  ss << "[" << db << "] ";
+  auto errorIt = g_SqliteErrorStrings.find(err_code);
+  if (errorIt != g_SqliteErrorStrings.end()) {
+    ss << "SQLite error " << errorIt->second;
+  } else {
+    ss << "Undefined SQLite error " << err_code;
   }
-  error = "[" + db + "] " + error;
-  error += "\nQuery: ";
-  error += qry;
-  error += "\n";
+  ss << "\nQuery: " << qry;
+  error = ss.str();
   return err_code;
 }
 
@@ -208,6 +302,7 @@ int SqliteDatabase::connect(bool create) {
     }
     else if (errorCode == SQLITE_OK)
     {
+      sqlite3_extended_result_codes(conn, 1);
       sqlite3_busy_handler(conn, busy_callback, NULL);
       char* err=NULL;
       if (setErr(sqlite3_exec(getHandle(),"PRAGMA empty_result_callbacks=ON",NULL,NULL,&err),"PRAGMA empty_result_callbacks=ON") != SQLITE_OK)
