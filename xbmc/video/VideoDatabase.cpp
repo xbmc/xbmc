@@ -410,7 +410,9 @@ void CVideoDatabase::CreateViews()
                                      "  uniqueid.value AS uniqueid_value, "
                                      "  uniqueid.type AS uniqueid_type "
                                      "FROM tvshow"
-                                     "  LEFT JOIN tvshowlinkpath ON"
+				     "  LEFT JOIN (SELECT idShow, MAX(idPath) as idPath "
+				     "               FROM tvshowlinkpath "
+				     "              GROUP BY tvshowlinkpath.idShow) AS tvshowlinkpath ON "
                                      "    tvshowlinkpath.idShow=tvshow.idShow"
                                      "  LEFT JOIN path ON"
                                      "    path.idPath=tvshowlinkpath.idPath"
@@ -5453,7 +5455,7 @@ void CVideoDatabase::UpdateTables(int iVersion)
 
 int CVideoDatabase::GetSchemaVersion() const
 {
-  return 114;
+  return 115;
 }
 
 bool CVideoDatabase::LookupByFolders(const std::string &path, bool shows)
