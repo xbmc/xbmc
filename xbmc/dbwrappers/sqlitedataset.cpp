@@ -620,7 +620,14 @@ void SqliteDataset::make_query(StringList &_sql) {
   char* err=NULL;
   Dataset::parse_sql(query);
   if (db->setErr(sqlite3_exec(this->handle(),query.c_str(),NULL,NULL,&err),query.c_str())!=SQLITE_OK) {
-    throw DbErrors(db->getErrorMsg());
+    std::string message = db->getErrorMsg();
+    if (err) {
+      message.append(" (");
+      message.append(err);
+      message.append(")");
+      sqlite3_free(err);
+    }
+    throw DbErrors("%s", message.c_str());
   }
   } // end of for
 
@@ -748,7 +755,10 @@ int SqliteDataset::exec(const std::string &sql) {
     return res;
   else
     {
-      throw DbErrors(db->getErrorMsg());
+      if (errmsg)
+        throw DbErrors("%s (%s)", db->getErrorMsg(), errmsg);
+      else
+        throw DbErrors("%s", db->getErrorMsg());
     }
 }
 
