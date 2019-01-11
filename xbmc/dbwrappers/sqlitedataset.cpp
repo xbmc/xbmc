@@ -309,7 +309,7 @@ int SqliteDatabase::connect(bool create) {
       char* err=NULL;
       if (setErr(sqlite3_exec(getHandle(),"PRAGMA empty_result_callbacks=ON",NULL,NULL,&err),"PRAGMA empty_result_callbacks=ON") != SQLITE_OK)
       {
-        throw DbErrors(getErrorMsg());
+        throw DbErrors("%s", getErrorMsg());
       }
       else if (sqlite3_db_readonly(conn, nullptr) == 1)
       {
@@ -783,7 +783,7 @@ bool SqliteDataset::query(const std::string &query) {
 
   sqlite3_stmt *stmt = NULL;
   if (db->setErr(sqlite3_prepare_v2(handle(),query.c_str(),-1,&stmt, NULL),query.c_str()) != SQLITE_OK)
-    throw DbErrors(db->getErrorMsg());
+    throw DbErrors("%s", db->getErrorMsg());
 
   // column headers
   const unsigned int numColumns = sqlite3_column_count(stmt);
@@ -831,7 +831,7 @@ bool SqliteDataset::query(const std::string &query) {
   }
   else
   {
-    throw DbErrors(db->getErrorMsg());
+    throw DbErrors("%s", db->getErrorMsg());
   }
 }
 
