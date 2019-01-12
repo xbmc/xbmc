@@ -450,17 +450,17 @@ void CVideoDatabase::CreateViews()
                                      "  JOIN files ON"
                                      "    files.idFile = episode.idFile "
                                      "GROUP BY seasons.idSeason,"
-				     "         seasons.idShow,"
-				     "         seasons.season,"
-				     "         seasons.name,"
-				     "         seasons.userrating,"
-				     "         tvshow_view.strPath,"
-				     "         tvshow_view.c%02d,"
-				     "         tvshow_view.c%02d,"
-				     "         tvshow_view.c%02d,"
-				     "         tvshow_view.c%02d,"
-				     "         tvshow_view.c%02d,"
-				     "         tvshow_view.c%02d ",
+                                     "         seasons.idShow,"
+                                     "         seasons.season,"
+                                     "         seasons.name,"
+                                     "         seasons.userrating,"
+                                     "         tvshow_view.strPath,"
+                                     "         tvshow_view.c%02d,"
+                                     "         tvshow_view.c%02d,"
+                                     "         tvshow_view.c%02d,"
+                                     "         tvshow_view.c%02d,"
+                                     "         tvshow_view.c%02d,"
+                                     "         tvshow_view.c%02d ",
                                      VIDEODB_ID_TV_TITLE, VIDEODB_ID_TV_PLOT, VIDEODB_ID_TV_PREMIERED,
                                      VIDEODB_ID_TV_GENRE, VIDEODB_ID_TV_STUDIOS, VIDEODB_ID_TV_MPAA,
                                      VIDEODB_ID_EPISODE_AIRED, VIDEODB_ID_EPISODE_SEASON,
