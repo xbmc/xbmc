@@ -423,6 +423,12 @@ NSString* screenNameForDisplay(CGDirectDisplayID displayID)
   {
     screenName = [[NSString alloc] initWithFormat:@"%i", displayID];
   }
+  else
+  {
+    // ensure screen name is unique by appending displayid
+    screenName = [[screenName stringByAppendingFormat:@" (%@)", [@(displayID) stringValue]] retain];
+  }
+
   return [screenName autorelease];
 }
 
