@@ -433,7 +433,6 @@ void CGLContextEGL::SwapBuffers()
   if ((msc1 - m_sync.msc1) > 2)
   {
     m_sync.cont = 0;
-    CLog::Log(LOGDEBUG, "CGLContextEGL::SwapBuffers: sync reset");
   }
 
   // we want to block in SwapBuffers
@@ -449,7 +448,6 @@ void CGLContextEGL::SwapBuffers()
     {
       m_sync.interval = (ust1 - m_sync.ust1) / (msc1 - m_sync.msc1);
       m_sync.cont++;
-      CLog::Log(LOGDEBUG, "CGLContextEGL::SwapBuffers: sync interval: %ld", m_sync.interval);
     }
   }
   else if (m_sync.cont == 5 && m_omlSync)
