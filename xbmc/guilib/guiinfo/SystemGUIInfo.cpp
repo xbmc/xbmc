@@ -488,6 +488,19 @@ bool CSystemGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int context
     case SYSTEM_MEDIA_DVD:
       value = g_mediaManager.IsDiscInDrive();
       return true;
+    case SYSTEM_MEDIA_AUDIO_CD:
+    #ifdef HAS_DVD_DRIVE
+      if (g_mediaManager.IsDiscInDrive())
+      {
+        MEDIA_DETECT::CCdInfo *pCdInfo = g_mediaManager.GetCdInfo();
+        value = pCdInfo && (pCdInfo->IsAudio(1) || pCdInfo->IsCDExtra(1) || pCdInfo->IsMixedMode(1));
+      }
+      else
+    #endif
+      {
+        value = false;
+      }
+      return true;
 #ifdef HAS_DVD_DRIVE
     case SYSTEM_DVDREADY:
       value = g_mediaManager.GetDriveStatus() != DRIVE_NOT_READY;
