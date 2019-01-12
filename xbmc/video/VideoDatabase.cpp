@@ -397,6 +397,20 @@ void CVideoDatabase::CreateViews()
                                        "GROUP BY tvshow.idShow");
   m_pDS->exec(tvshowcounts);
 
+  CLog::Log(LOGINFO, "create tvshowlinkpath_minview");
+  // This view only exists to workaround a limitation in MySQL <5.7 which is not able to
+  // perform subqueries in joins.
+  // Also, the correct solution is to remove the path information altogether, since a
+  // TV series can always have multiple paths. It is used in the GUI at the moment, but
+  // such usage should be removed together with this view and the path columns in tvshow_view.
+  //!@todo Remove the hacky selection of a semi-random path for tvshows from the queries and UI
+  std::string tvshowlinkpathview = PrepareSQL("CREATE VIEW tvshowlinkpath_minview AS SELECT "
+                                             "  idShow, "
+                                             "  min(idPath) AS idPath "
+                                             "FROM tvshowlinkpath "
+                                             "GROUP BY idShow");
+  m_pDS->exec(tvshowlinkpathview);
+
   CLog::Log(LOGINFO, "create tvshow_view");
   std::string tvshowview = PrepareSQL("CREATE VIEW tvshow_view AS SELECT "
                                      "  tvshow.*,"
@@ -410,12 +424,10 @@ void CVideoDatabase::CreateViews()
                                      "  uniqueid.value AS uniqueid_value, "
                                      "  uniqueid.type AS uniqueid_type "
                                      "FROM tvshow"
-				     "  LEFT JOIN (SELECT idShow, MAX(idPath) as idPath "
-				     "               FROM tvshowlinkpath "
-				     "              GROUP BY tvshowlinkpath.idShow) AS tvshowlinkpath ON "
-                                     "    tvshowlinkpath.idShow=tvshow.idShow"
+                                     "  LEFT JOIN tvshowlinkpath_minview ON "
+                                     "    tvshowlinkpath_minview.idShow=tvshow.idShow"
                                      "  LEFT JOIN path ON"
-                                     "    path.idPath=tvshowlinkpath.idPath"
+                                     "    path.idPath=tvshowlinkpath_minview.idPath"
                                      "  INNER JOIN tvshowcounts ON"
                                      "    tvshow.idShow = tvshowcounts.idShow "
                                      "  LEFT JOIN rating ON"
@@ -450,17 +462,17 @@ void CVideoDatabase::CreateViews()
                                      "  JOIN files ON"
                                      "    files.idFile = episode.idFile "
                                      "GROUP BY seasons.idSeason,"
-				     "         seasons.idShow,"
-				     "         seasons.season,"
-				     "         seasons.name,"
-				     "         seasons.userrating,"
-				     "         tvshow_view.strPath,"
-				     "         tvshow_view.c%02d,"
-				     "         tvshow_view.c%02d,"
-				     "         tvshow_view.c%02d,"
-				     "         tvshow_view.c%02d,"
-				     "         tvshow_view.c%02d,"
-				     "         tvshow_view.c%02d ",
+                                     "         seasons.idShow,"
+                                     "         seasons.season,"
+                                     "         seasons.name,"
+                                     "         seasons.userrating,"
+                                     "         tvshow_view.strPath,"
+                                     "         tvshow_view.c%02d,"
+                                     "         tvshow_view.c%02d,"
+                                     "         tvshow_view.c%02d,"
+                                     "         tvshow_view.c%02d,"
+                                     "         tvshow_view.c%02d,"
+                                     "         tvshow_view.c%02d ",
                                      VIDEODB_ID_TV_TITLE, VIDEODB_ID_TV_PLOT, VIDEODB_ID_TV_PREMIERED,
                                      VIDEODB_ID_TV_GENRE, VIDEODB_ID_TV_STUDIOS, VIDEODB_ID_TV_MPAA,
                                      VIDEODB_ID_EPISODE_AIRED, VIDEODB_ID_EPISODE_SEASON,
@@ -5455,7 +5467,7 @@ void CVideoDatabase::UpdateTables(int iVersion)
 
 int CVideoDatabase::GetSchemaVersion() const
 {
-  return 115;
+  return 116;
 }
 
 bool CVideoDatabase::LookupByFolders(const std::string &path, bool shows)
