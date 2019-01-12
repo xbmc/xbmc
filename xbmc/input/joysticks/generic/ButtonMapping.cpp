@@ -531,7 +531,7 @@ CAxisDetector& CButtonMapping::GetAxis(unsigned int axisIndex,
     }
 
     // Report axis
-    CLog::Log(LOGDEBUG, "Axis %u discovered at position %.04f after %lu frames",
+    CLog::Log(LOGDEBUG, "Axis %u discovered at position %.4f after %lu frames",
               axisIndex, position, static_cast<unsigned long>(m_frameCount));
 
     m_axes.insert(std::make_pair(axisIndex, CAxisDetector(this, axisIndex, config)));

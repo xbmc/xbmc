@@ -349,7 +349,7 @@ std::string ByVideoCodec(SortAttribute attributes, const SortItem &values)
 
 std::string ByVideoAspectRatio(SortAttribute attributes, const SortItem &values)
 {
-  return StringUtils::Format("%.03f %s", values.at(FieldVideoAspectRatio).asFloat(), ByLabel(attributes, values).c_str());
+  return StringUtils::Format("%.3f %s", values.at(FieldVideoAspectRatio).asFloat(), ByLabel(attributes, values).c_str());
 }
 
 std::string ByAudioChannels(SortAttribute attributes, const SortItem &values)
