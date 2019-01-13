@@ -60,6 +60,7 @@ public:
 
   bool loaded;
   unsigned int frameIdx;
+  unsigned int pictureFlags = 0;
   EBufferFormat format;
   CVideoBuffer* videoBuffer;
   AVColorPrimaries primaries;
