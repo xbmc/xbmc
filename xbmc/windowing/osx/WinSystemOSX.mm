@@ -423,6 +423,12 @@ NSString* screenNameForDisplay(CGDirectDisplayID displayID)
   {
     screenName = [[NSString alloc] initWithFormat:@"%i", displayID];
   }
+  else
+  {
+    // ensure screen name is unique by appending displayid
+    screenName = [[screenName stringByAppendingFormat:@" (%@)", [@(displayID) stringValue]] retain];
+  }
+
   return [screenName autorelease];
 }
 
@@ -1340,9 +1346,6 @@ void CWinSystemOSX::FillInVideoModes()
 
   for (int disp = 0; disp < numDisplays; disp++)
   {
-    if (disp != dispIdx)
-      continue;
-
     Boolean stretched;
     Boolean interlaced;
     Boolean safeForHardware;
@@ -1385,27 +1388,32 @@ void CWinSystemOSX::FillInVideoModes()
         }
         CLog::Log(LOGNOTICE, "Found possible resolution for display %d with %d x %d @ %f Hz\n", disp, w, h, refreshrate);
 
-        if (dispName != nil)
+        // only add the resolution if it belongs to "our" screen
+        // all others are only logged above...
+        if (disp == dispIdx)
         {
-          res.strOutput = [dispName UTF8String];
+          if (dispName != nil)
+          {
+            res.strOutput = [dispName UTF8String];
+          }
+
+          UpdateDesktopResolution(res, w, h, refreshrate, 0);
+
+          // overwrite the mode str because  UpdateDesktopResolution adds a
+          // "Full Screen". Since the current resolution is there twice
+          // this would lead to 2 identical resolution entrys in the guisettings.xml.
+          // That would cause problems with saving screen overscan calibration
+          // because the wrong entry is picked on load.
+          // So we just use UpdateDesktopResolutions for the current DESKTOP_RESOLUTIONS
+          // in UpdateResolutions. And on all other resolutions make a unique
+          // mode str by doing it without appending "Full Screen".
+          // this is what linux does - though it feels that there shouldn't be
+          // the same resolution twice... - thats why i add a FIXME here.
+          res.strMode = StringUtils::Format("%dx%d @ %.2f", w, h, refreshrate);
+
+          CServiceBroker::GetWinSystem()->GetGfxContext().ResetOverscan(res);
+          CDisplaySettings::GetInstance().AddResolutionInfo(res);
         }
-
-        UpdateDesktopResolution(res, w, h, refreshrate, 0);
-
-        // overwrite the mode str because  UpdateDesktopResolution adds a
-        // "Full Screen". Since the current resolution is there twice
-        // this would lead to 2 identical resolution entrys in the guisettings.xml.
-        // That would cause problems with saving screen overscan calibration
-        // because the wrong entry is picked on load.
-        // So we just use UpdateDesktopResolutions for the current DESKTOP_RESOLUTIONS
-        // in UpdateResolutions. And on all other resolutions make a unique
-        // mode str by doing it without appending "Full Screen".
-        // this is what linux does - though it feels that there shouldn't be
-        // the same resolution twice... - thats why i add a FIXME here.
-        res.strMode = StringUtils::Format("%dx%d @ %.2f", w, h, refreshrate);
-
-        CServiceBroker::GetWinSystem()->GetGfxContext().ResetOverscan(res);
-        CDisplaySettings::GetInstance().AddResolutionInfo(res);
       }
     }
     CFRelease(displayModes);
