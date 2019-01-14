@@ -1131,8 +1131,10 @@ bool CWinRenderer::NeedBuffer(int idx)
   {
     if (m_renderBuffers[idx].loaded)
     {
-      int numPast = m_processor->PastRefs();
-      if (m_renderBuffers[idx].frameIdx + numPast*2 >= m_renderBuffers[m_iYV12RenderBuffer].frameIdx)
+      const int numPast = m_processor->PastRefs();
+      if (m_renderBuffers[idx].pictureFlags & DVP_FLAG_INTERLACED &&
+          m_renderBuffers[idx].frameIdx + numPast * 2 >=
+              m_renderBuffers[m_iYV12RenderBuffer].frameIdx)
         return true;
     }
   }
