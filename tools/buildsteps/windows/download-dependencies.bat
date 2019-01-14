@@ -53,6 +53,12 @@ IF NOT EXIST %FORMED_OK_FLAG% (
   ECHO   C:\^> SET KODI_MIRROR=http://example.com/pub/xbmc/
   ECHO.
   ECHO Then, rerun this script.
+  
+  REM Restore the previous current directory
+  POPD
+
+  ENDLOCAL
+  
   EXIT /B 101
 )
 
