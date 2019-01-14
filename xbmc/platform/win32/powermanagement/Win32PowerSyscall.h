@@ -58,6 +58,8 @@ public:
   static bool IsSuspending() { return m_OnSuspend; }
 
 private:
+  BOOLEAN m_hascapabilities;
+  SYSTEM_POWER_CAPABILITIES m_capabilities;
   CWin32PowerStateWorker m_worker;
 
   static bool m_OnResume;

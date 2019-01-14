@@ -110,6 +110,7 @@ bool CWin32PowerStateWorker::PowerManagement(PowerState State)
 
 CWin32PowerSyscall::CWin32PowerSyscall()
 {
+  m_hascapabilities = GetPwrCapabilities(&m_capabilities);
   m_worker.Create();
 }
 
@@ -142,10 +143,14 @@ bool CWin32PowerSyscall::CanPowerdown()
 }
 bool CWin32PowerSyscall::CanSuspend()
 {
+  if (m_hascapabilities)
+    return (m_capabilities.SystemS1 == TRUE || m_capabilities.SystemS2 == TRUE || m_capabilities.SystemS3 == TRUE);
   return true;
 }
 bool CWin32PowerSyscall::CanHibernate()
 {
+  if (m_hascapabilities)
+    return (m_capabilities.SystemS4 == TRUE && m_capabilities.HiberFilePresent == TRUE);
   return true;
 }
 bool CWin32PowerSyscall::CanReboot()
