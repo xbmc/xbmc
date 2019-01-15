@@ -571,3 +571,7 @@ msgstr "Название профиля"
 msgctxt "#31166"
 msgid "Profile avatar"
 msgstr "Аватар профиля"
+
+msgctxt "#31167"
+msgid "Animate background"
+msgstr "Анимированный фон"

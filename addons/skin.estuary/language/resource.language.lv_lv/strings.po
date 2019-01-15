@@ -188,6 +188,10 @@ msgctxt "#31065"
 msgid "Video playlist"
 msgstr "Video spēļsaraksts"
 
+msgctxt "#31066"
+msgid "Music playlist"
+msgstr "Mūzikas spēļsaraksts"
+
 msgctxt "#31067"
 msgid "Event log"
 msgstr "Notikumu žurnāls"
@@ -252,9 +256,21 @@ msgctxt "#31114"
 msgid "Search YouTube"
 msgstr "Meklēt YouTube"
 
+msgctxt "#31132"
+msgid "Select Program"
+msgstr "Programmas izvēle"
+
+msgctxt "#31133"
+msgid "Select Resolution"
+msgstr "Izšķirtspējas izvēle"
+
 msgctxt "#31137"
 msgid "PVR info"
 msgstr "PVR info"
+
+msgctxt "#31138"
+msgid "Player process info"
+msgstr "Atskaņotāja procesu informācija"
 
 msgctxt "#31139"
 msgid "Video decoder"
