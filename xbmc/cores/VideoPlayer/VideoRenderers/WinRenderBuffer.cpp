@@ -66,12 +66,8 @@ CRenderBuffer::~CRenderBuffer()
 
 void CRenderBuffer::Release()
 {
-  loaded = false;
-  if (videoBuffer)
-  {
-    videoBuffer->Release();
-    videoBuffer = nullptr;
-  }
+  ReleasePicture();
+
   m_staging = nullptr;
   for (unsigned i = 0; i < m_activePlanes; i++)
   {
@@ -87,9 +83,6 @@ void CRenderBuffer::Release()
   bits = 8;
   pictureFlags = 0;
   m_locked = false;
-
-  m_planes[0] = nullptr;
-  m_planes[1] = nullptr;
 }
 
 void CRenderBuffer::Lock()
@@ -302,7 +295,7 @@ bool CRenderBuffer::UploadBuffer()
   {
   case BUFFER_FMT_D3D11_BYPASS:
   {
-    const auto buf = static_cast<DXVA::CDXVAOutputBuffer*>(videoBuffer);
+    const auto buf = static_cast<DXVA::CVideoBuffer*>(videoBuffer);
     // rewrite dimension to actual values for proper usage in shaders
     m_widthTex = buf->width;
     m_heightTex = buf->height;
@@ -418,7 +411,7 @@ ID3D11View* CRenderBuffer::GetView(unsigned idx)
       CLog::LogF(LOGERROR, "unable to open d3d11va resource.");
       return nullptr;
     }
-    auto dxva = dynamic_cast<DXVA::CDXVAOutputBuffer*>(videoBuffer);
+    auto dxva = dynamic_cast<DXVA::CVideoBuffer*>(videoBuffer);
     if (!dxva)
       return nullptr;
 
@@ -492,7 +485,7 @@ bool CRenderBuffer::UnmapPlane(unsigned idx) const
 
 bool CRenderBuffer::HasPic() const
 {
-  const auto dxva_buffer = dynamic_cast<DXVA::CDXVAOutputBuffer*>(videoBuffer);
+  const auto dxva_buffer = dynamic_cast<DXVA::CVideoBuffer*>(videoBuffer);
   return dxva_buffer || m_textures[0].Get();
 }
 
@@ -779,32 +772,12 @@ HRESULT CRenderBuffer::GetDXVAResource(ID3D11Resource** ppResource, unsigned* ar
   if (!arrayIdx)
     return E_POINTER;
 
-  auto dxva = dynamic_cast<DXVA::CDXVAOutputBuffer*>(videoBuffer);
+  auto dxva = dynamic_cast<DXVA::CVideoBuffer*>(videoBuffer);
   if (!dxva)
-    return E_UNEXPECTED;
+    return E_NOT_SET;
 
   ComPtr<ID3D11Resource> pResource;
-  HRESULT hr;
-  if (dxva->shared)
-  {
-    HANDLE sharedHandle = dxva->GetHandle();
-    if (sharedHandle == INVALID_HANDLE_VALUE)
-      return E_HANDLE;
-
-    ComPtr<ID3D11Device> pD3DDevice = DX::DeviceResources::Get()->GetD3DDevice();
-    hr = pD3DDevice->OpenSharedResource(sharedHandle, __uuidof(ID3D11Resource), reinterpret_cast<void**>(pResource.GetAddressOf()));
-  }
-  else
-  {
-    if (dxva->view)
-    {
-      dxva->view->GetResource(&pResource);
-      hr = S_OK;
-    }
-    else
-      hr = E_UNEXPECTED;
-  }
-
+  const HRESULT hr = dxva->GetResource(&pResource);
   if (SUCCEEDED(hr))
   {
     *ppResource = pResource.Detach();

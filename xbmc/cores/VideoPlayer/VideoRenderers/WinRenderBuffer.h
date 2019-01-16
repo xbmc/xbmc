@@ -96,7 +96,6 @@ private:
   CD3D11_TEXTURE2D_DESC m_sDesc;
   Microsoft::WRL::ComPtr<ID3D11Texture2D> m_staging;
   Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_planes[2];
-
   D3D11_MAPPED_SUBRESOURCE m_rects[YuvImage::MAX_PLANES];
   CD3DTexture m_textures[YuvImage::MAX_PLANES];
 };

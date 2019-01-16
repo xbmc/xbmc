@@ -236,7 +236,7 @@ bool CWinRenderer::Configure(const VideoPicture &picture, float fps, unsigned in
   m_format = picture.videoBuffer->GetFormat();
   if (m_format == AV_PIX_FMT_D3D11VA_VLD)
   {
-    DXVA::CDXVAOutputBuffer *dxvaBuf = static_cast<DXVA::CDXVAOutputBuffer*>(picture.videoBuffer);
+    DXVA::CVideoBuffer *dxvaBuf = dynamic_cast<DXVA::CVideoBuffer*>(picture.videoBuffer);
     m_dxva_format = dxvaBuf->format;
   }
 
@@ -992,7 +992,6 @@ bool CWinRenderer::RenderCapture(CRenderCapture* capture)
 void CWinRenderer::DeleteRenderBuffer(int index)
 {
   CSingleLock lock(CServiceBroker::GetWinSystem()->GetGfxContext());
-  ReleaseBuffer(index);
   m_renderBuffers[index].Release();
 }
 
