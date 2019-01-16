@@ -91,8 +91,8 @@
   <FullscreenVideo>
     <joystick profile="game.controller.default">
       <a>Pause</a>
-      <b>Fullscreen</b>
-      <b holdtime="500">Stop</b>
+      <b>Stop</b>
+      <b holdtime="500">FullScreen</b>
       <x>OSD</x>
       <y>FullScreen</y>
       <start>Info</start>
