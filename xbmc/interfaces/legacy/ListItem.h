@@ -704,10 +704,10 @@ namespace XBMCAddon
       /// @python_v15 **duration** has to be set in seconds.
       /// @python_v16 Added new label **mediatype**.
       /// @python_v17
-      /// Added labels **setid**, **set**, **imdbnumber**, **code**, **dbid**, **path** and **userrating**.
+      /// Added labels **setid**, **set**, **imdbnumber**, **code**, **dbid** (video), **path** and **userrating**.
       /// Expanded the possible infoLabels for the option **mediatype**.
       /// @python_v18 Added new **game** type and associated infolabels.
-      /// Added labels **setoverview**, **tag**, **sortepisode**, **sortseason**, **episodeguide**, **showlink**.
+      /// Added labels **dbid** (music), **setoverview**, **tag**, **sortepisode**, **sortseason**, **episodeguide**, **showlink**.
       /// Extended labels **genre**, **country**, **director**, **studio**, **writer**, **tag**, **credits** to also use a list of strings.
       ///
       /// **Example:**
