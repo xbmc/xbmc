@@ -689,22 +689,18 @@ bool CGUIWindowMusicBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 
   case CONTEXT_BUTTON_RESUME_ITEM: //audiobooks
     {
-      Update(item->GetPath());
       int bookmark;
       m_musicdatabase.GetResumeBookmarkForAudioBook(*item, bookmark);
 
-      auto itemIt = std::find_if(
-        m_vecItems->cbegin(),
-        m_vecItems->cend(),
-        [&](const CFileItemPtr& item) { return bookmark <= item->m_lEndOffset; }
-      );
-      if (itemIt != m_vecItems->cend())
+      for (int i = 0; i < m_vecItems->Size(); ++i)
       {
-        CFileItem resItem(**itemIt);
-        resItem.SetProperty("StartPercent",
-          100.0 * (bookmark - resItem.m_lStartOffset) / (resItem.m_lEndOffset - resItem.m_lStartOffset)
-        );
-        g_application.PlayFile(resItem, "", false);
+        auto item = m_vecItems->Get(i);
+        if (bookmark < item->m_lEndOffset)
+        {
+          item->SetProperty("audiobook_bookmark", bookmark);
+          PlayItem(i);
+          break;
+        }
       }
     }
 
