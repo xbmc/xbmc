@@ -136,9 +136,17 @@ const char** CGameClientProperties::GetResourceDirectories(void)
       CDirectory::Create(addonProfile);
     }
 
-    char* addonProfileDir = new char[addonProfile.length() + 1];
-    std::strcpy(addonProfileDir, addonProfile.c_str());
-    m_resourceDirectories.push_back(addonProfileDir);
+    // Only add user profile directory if non-empty
+    CFileItemList items;
+    if (CDirectory::GetDirectory(addonProfile, items, "", DIR_FLAG_DEFAULTS))
+    {
+      if (!items.IsEmpty())
+      {
+        char* addonProfileDir = new char[addonProfile.length() + 1];
+        std::strcpy(addonProfileDir, addonProfile.c_str());
+        m_resourceDirectories.push_back(addonProfileDir);
+      }
+    }
 
     char* addonPathDir = new char[addonPath.length() + 1];
     std::strcpy(addonPathDir, addonPath.c_str());
