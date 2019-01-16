@@ -49,6 +49,7 @@
       <x>ContextMenu</x>
       <y>FullScreen</y>
       <start>ActivateWindow(PlayerControls)</start>
+      <back>ActivateWindow(Home)</back>
       <guide>ActivateWindow(Home)</guide>
       <up>Up</up>
       <down>Down</down>
@@ -91,12 +92,12 @@
   <FullscreenVideo>
     <joystick profile="game.controller.default">
       <a>Pause</a>
-      <b>Fullscreen</b>
-      <b holdtime="500">Stop</b>
+      <b>Stop</b>
+      <b holdtime="500">FullScreen</b>
       <x>OSD</x>
       <y>FullScreen</y>
       <start>Info</start>
-      <back>OSD</back>
+      <back>FullScreen</back>
       <guide>OSD</guide>
       <up>ChapterOrBigStepForward</up>
       <down>ChapterOrBigStepBack</down>
