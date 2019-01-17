@@ -58,6 +58,10 @@ CGUIBaseContainer::CGUIBaseContainer(const CGUIBaseContainer &) = default;
 
 CGUIBaseContainer::~CGUIBaseContainer(void)
 {
+  // release the container from items
+  for (auto item : m_items)
+    item->FreeMemory();
+
   delete m_listProvider;
 }
 
