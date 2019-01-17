@@ -114,7 +114,7 @@
 					<height>50</height>
 					<align>right</align>
 					<aligny>center</aligny>
-					<font>font30</font>
+					<font>font13</font>
 					<label>$INFO[PVR.TimeshiftProgressEndTime]</label>
 				</control>
 				<control type="label">
@@ -124,7 +124,7 @@
 					<height>50</height>
 					<align>left</align>
 					<aligny>center</aligny>
-					<font>font30</font>
+					<font>font13</font>
 					<label>$INFO[PVR.TimeshiftProgressStartTime]</label>
 				</control>
 				<control type="label">
@@ -134,7 +134,7 @@
 					<height>50</height>
 					<align>center</align>
 					<aligny>center</aligny>
-					<font>font30</font>
+					<font>font13</font>
 					<label>[B]$LOCALIZE[31026][/B] $INFO[PVR.TimeshiftCur] (-$INFO[PVR.TimeshiftOffset])</label>
 					<visible>PVR.IsTimeShift</visible>
 				</control>
@@ -385,7 +385,7 @@
 					<control type="label">
 						<width>1700</width>
 						<height>45</height>
-						<font>font24</font>
+						<font>font13</font>
 						<label>$INFO[ListItem.Label]</label>
 						<textcolor>button_focus</textcolor>
 						<align>center</align>
