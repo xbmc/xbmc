@@ -1365,6 +1365,7 @@ bool CMusicDatabase::GetArtist(int idArtist, CArtist &artist, bool fetchAll /* =
 {
   try
   {
+    unsigned int time = XbmcThreads::SystemClockMillis();
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
 
@@ -1399,6 +1400,7 @@ bool CMusicDatabase::GetArtist(int idArtist, CArtist &artist, bool fetchAll /* =
       }
     }
     m_pDS->close(); // cleanup recordset data
+    CLog::Log(LOGDEBUG, LOGDATABASE, "{0}({1}) - took {2} ms", __FUNCTION__, strSQL, XbmcThreads::SystemClockMillis() - time);
     return true;
   }
   catch (...)
@@ -1481,9 +1483,10 @@ bool CMusicDatabase::GetArtistDiscography(int idArtist, CFileItemList& items)
 
     // Combine entries from discography and album tables
     // When title in both, album entry will be before disco entry
+    // Use PrepareSQL to adjust CAST syntax to AS UNSIGNED INTEGER for MySQL
     std::string strSQL;
     strSQL = PrepareSQL("SELECT strAlbum, "
-      "CAST(discography.strYear as INT) AS iYear, -1 AS idAlbum "
+      "CAST(discography.strYear AS INTEGER) AS iYear, -1 AS idAlbum "
       "FROM discography "
       "WHERE discography.idArtist = %i "
       "UNION "
@@ -9984,7 +9987,17 @@ void CMusicDatabase::SetPropertiesForFileItem(CFileItem& item)
 {
   if (!item.HasMusicInfoTag())
     return;
-  int idArtist = GetArtistByName(item.GetMusicInfoTag()->GetArtistString());
+  // May already have song artist ids as item property set when data read from
+  // db, but check property is valid array (scripts could set item properties
+  // incorrectly), otherwise try to fetch artist by name.
+  int idArtist = -1;
+  if (item.HasProperty("artistid") && item.GetProperty("artistid").isArray())
+  {
+    CVariant::const_iterator_array varid = item.GetProperty("artistid").begin_array();
+    idArtist = varid->asInteger();
+  }
+  else
+    idArtist = GetArtistByName(item.GetMusicInfoTag()->GetArtistString());
   if (idArtist > -1)
   {
     CArtist artist;

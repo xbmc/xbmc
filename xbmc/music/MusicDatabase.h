@@ -290,7 +290,7 @@ public:
 
   int  AddArtist(const std::string& strArtist, const std::string& strMusicBrainzArtistID, const std::string& strSortName, bool bScrapedMBID = false);
   int  AddArtist(const std::string& strArtist, const std::string& strMusicBrainzArtistID, bool bScrapedMBID = false);
-  bool GetArtist(int idArtist, CArtist& artist, bool fetchAll = true);
+  bool GetArtist(int idArtist, CArtist& artist, bool fetchAll = false);
   bool GetArtistExists(int idArtist);
   int GetLastArtist();
   int  UpdateArtist(int idArtist,
