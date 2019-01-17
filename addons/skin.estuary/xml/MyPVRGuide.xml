@@ -29,20 +29,20 @@
 							<left>0</left>
 							<top>0</top>
 							<width>100%</width>
-							<height>44</height>
+							<height>50</height>
 							<texture colordiffuse="border_alpha">colors/white50.png</texture>
 						</control>
 						<control type="image">
 							<left>42</left>
 							<top>0</top>
 							<width>364</width>
-							<height>44</height>
+							<height>50</height>
 							<texture colordiffuse="button_focus">colors/white.png</texture>
 							<visible>Control.HasFocus(11)</visible>
 						</control>
 						<control type="image">
 							<left>10</left>
-							<top>7</top>
+							<top>10</top>
 							<width>20</width>
 							<height>30</height>
 							<texture>icons/keyboard/arrowleft.png</texture>
@@ -51,7 +51,7 @@
 						</control>
 						<control type="image">
 							<right>10</right>
-							<top>7</top>
+							<top>10</top>
 							<width>20</width>
 							<height>30</height>
 							<texture>icons/keyboard/arrowright.png</texture>
@@ -70,30 +70,30 @@
 						<orientation>horizontal</orientation>
 						<scrolltime>200</scrolltime>
 						<visible>Control.IsVisible(50) | Control.IsVisible(51)</visible>
-						<itemlayout height="44" width="368">
+						<itemlayout height="50" width="368">
 							<control type="image">
 								<left>1</left>
 								<top>0</top>
 								<width>366</width>
-								<height>44</height>
+								<height>49</height>
 								<texture colordiffuse="60FFFFFF">colors/white50.png</texture>
 							</control>
 							<control type="label">
 								<left>5</left>
 								<width>358</width>
-								<height>42</height>
+								<height>48</height>
 								<align>center</align>
 								<aligny>center</aligny>
 								<label>$INFO[ListItem.Label]</label>
 								<textcolor>lightgrey</textcolor>
 							</control>
 						</itemlayout>
-						<focusedlayout height="44" width="368">
+						<focusedlayout height="50" width="368">
 							<control type="image">
 								<left>1</left>
 								<top>0</top>
 								<width>366</width>
-								<height>44</height>
+								<height>50</height>
 								<texture colordiffuse="button_focus">colors/white.png</texture>
 								<animation effect="fade" end="30" condition="true">Conditional</animation>
 								<visible>!Control.HasFocus(11)</visible>
@@ -101,7 +101,7 @@
 							<control type="label">
 								<left>5</left>
 								<width>358</width>
-								<height>42</height>
+								<height>48</height>
 								<align>center</align>
 								<aligny>center</aligny>
 								<scroll>true</scroll>
@@ -113,7 +113,7 @@
 						<include content="EpgGrid">
 							<param name="control_id" value="50"/>
 							<param name="control_orientation" value="vertical"/>
-							<param name="control_top" value="55"/>
+							<param name="control_top" value="62"/>
 							<param name="control_onupdown_id" value="11"/>
 							<param name="viewtype_label" value="19298"/>
 							<param name="progress_texture_border" value="0,60,18,14"/>
@@ -122,12 +122,12 @@
 							<param name="ruler_width" value="1400"/>
 							<param name="ruler_label_width" value="365"/>
 							<param name="channel_width" value="350"/>
-							<param name="scrollbar_top" value="47"/>
+							<param name="scrollbar_top" value="110"/>
 						</include>
 						<include content="EpgGrid">
 							<param name="control_id" value="51"/>
 							<param name="control_orientation" value="horizontal"/>
-							<param name="control_top" value="55"/>
+							<param name="control_top" value="62"/>
 							<param name="control_onupdown_id" value="11"/>
 							<param name="viewtype_label" value="19297"/>
 							<param name="progress_texture_border" value="5,10,5,10"/>
@@ -136,7 +136,7 @@
 							<param name="ruler_width" value="150"/>
 							<param name="ruler_label_width" value="150"/>
 							<param name="channel_width" value="310"/>
-							<param name="scrollbar_top" value="105"/>
+							<param name="scrollbar_top" value="168"/>
 						</include>
 						<include content="EpgGrid">
 							<param name="control_id" value="52"/>
@@ -164,7 +164,7 @@
 							<param name="ruler_width" value="150"/>
 							<param name="ruler_label_width" value="150"/>
 							<param name="channel_width" value="310"/>
-							<param name="scrollbar_top" value="105"/>
+							<param name="scrollbar_top" value="102"/>
 						</include>
 					</control>
 				</control>

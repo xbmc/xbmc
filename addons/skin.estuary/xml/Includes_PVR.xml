@@ -369,7 +369,7 @@
 				<left>0</left>
 				<top>$PARAM[control_top]</top>
 				<right>20</right>
-				<bottom>340</bottom>
+				<bottom>333</bottom>
 				<orientation>$PARAM[control_orientation]</orientation>
 				<pagecontrol>60</pagecontrol>
 				<scrolltime tween="quadratic" easing="out">300</scrolltime>
