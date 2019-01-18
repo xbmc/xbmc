@@ -97,6 +97,7 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
   else if (url.IsProtocol("musicdb")) return new CMusicDatabaseFile();
   else if (url.IsProtocol("videodb")) return new CVideoDatabaseFile();
   else if (url.IsProtocol("library")) return nullptr;
+  else if (url.IsProtocol("pvr")) return nullptr;
   else if (url.IsProtocol("special")) return new CSpecialProtocolFile();
   else if (url.IsProtocol("multipath")) return new CMultiPathFile();
   else if (url.IsProtocol("image")) return new CImageFile();
