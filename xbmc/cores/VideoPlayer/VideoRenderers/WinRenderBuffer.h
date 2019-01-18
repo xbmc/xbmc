@@ -34,10 +34,10 @@ class CRenderBuffer
 public:
   CRenderBuffer();
   ~CRenderBuffer();
-  void Release();            // Release any allocated resource
+  void Release();     // Release any allocated resource
   void Lock();        // Prepare the buffer to receive data from VideoPlayer
-  void Unlock();        // VideoPlayer finished filling the buffer with data
-  void Clear() const;        // clear the buffer with solid black
+  void Unlock();      // VideoPlayer finished filling the buffer with data
+  void Clear() const; // clear the buffer with solid black
 
   bool CreateBuffer(EBufferFormat format, unsigned width, unsigned height, bool software);
   bool UploadBuffer();
@@ -50,7 +50,7 @@ public:
 
   void GetDataPtr(unsigned idx, void **pData, int *pStride) const;
   bool MapPlane(unsigned idx, void **pData, int *pStride) const;
-  bool UnmapPlane(unsigned idx) const;
+  void UnmapPlane(unsigned idx) const;
 
   unsigned GetWidth() const { return m_widthTex; }
   unsigned GetHeight() const { return m_heightTex; }

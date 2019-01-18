@@ -394,6 +394,9 @@ HRESULT CRenderBuffer::GetResource(ID3D11Resource** ppResource, unsigned* index)
 
 ID3D11View* CRenderBuffer::GetView(unsigned idx)
 {
+  if (idx >= m_activePlanes)
+    return nullptr;
+
   switch (format)
   {
   case BUFFER_FMT_D3D11_BYPASS:
@@ -417,7 +420,7 @@ ID3D11View* CRenderBuffer::GetView(unsigned idx)
 
     DXGI_FORMAT plane_format = plane_formats[dxva->format - DXGI_FORMAT_NV12][idx];
     CD3D11_SHADER_RESOURCE_VIEW_DESC srvDesc(D3D11_SRV_DIMENSION_TEXTURE2DARRAY, plane_format,
-                                             0, 1, dxva->GetIdx(), 1);
+                                             0, 1, arrayIdx, 1);
     hr = pD3DDevice->CreateShaderResourceView(pResource.Get(), &srvDesc, m_planes[idx].ReleaseAndGetAddressOf());
     if (FAILED(hr))
     {
@@ -428,14 +431,10 @@ ID3D11View* CRenderBuffer::GetView(unsigned idx)
     return m_planes[idx].Get();
   }
   case BUFFER_FMT_D3D11_NV12:
+    return m_textures[PLANE_D3D11].GetShaderResource(idx ? DXGI_FORMAT_R8G8_UNORM : DXGI_FORMAT_R8_UNORM);
   case BUFFER_FMT_D3D11_P010:
   case BUFFER_FMT_D3D11_P016:
-  {
-    if (format == BUFFER_FMT_D3D11_NV12)
-      return m_textures[PLANE_D3D11].GetShaderResource(idx ? DXGI_FORMAT_R8G8_UNORM : DXGI_FORMAT_R8_UNORM);
     return m_textures[PLANE_D3D11].GetShaderResource(idx ? DXGI_FORMAT_R16G16_UNORM : DXGI_FORMAT_R16_UNORM);
-
-  }
   case BUFFER_FMT_NV12:
   case BUFFER_FMT_YUV420P:
   case BUFFER_FMT_YUV420P10:
@@ -443,9 +442,7 @@ ID3D11View* CRenderBuffer::GetView(unsigned idx)
   case BUFFER_FMT_UYVY422:
   case BUFFER_FMT_YUYV422:
   default:
-  {
     return m_textures[idx].GetShaderResource();
-  }
   }
 }
 
@@ -473,14 +470,12 @@ bool CRenderBuffer::MapPlane(unsigned idx, void** pData, int* pStride) const
   return true;
 }
 
-bool CRenderBuffer::UnmapPlane(unsigned idx) const
+void CRenderBuffer::UnmapPlane(unsigned idx) const
 {
   if (!m_textures[idx].UnlockRect(0))
   {
     CLog::Log(LOGERROR, "%s - failed to unlock buffer texture.", __FUNCTION__);
-    return false;
   }
-  return true;
 }
 
 bool CRenderBuffer::HasPic() const

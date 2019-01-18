@@ -81,42 +81,42 @@ protected:
   void SelectSWVideoFilter();
   void SelectPSVideoFilter();
   void UpdatePSVideoFilter();
-  void ColorManagmentUpdate();
+  void ColorManagementUpdate();
   bool CreateIntermediateRenderTarget(unsigned int width, unsigned int height, bool dynamic);
   EBufferFormat SelectBufferFormat(AVPixelFormat format, const RenderMethod method) const;
-  AVColorPrimaries GetSrcPrimaries(AVColorPrimaries srcPrimaries, unsigned int width, unsigned int height) const;
+  static AVColorPrimaries GetSrcPrimaries(AVColorPrimaries srcPrimaries, unsigned int width, unsigned int height);
 
   bool LoadCLUT();
 
-  bool m_bConfigured;
-  bool m_bUseHQScaler;
-  bool m_bFilterInitialized;
-  bool m_cmsOn;
-  bool m_clutLoaded;
-  bool m_useDithering;
-  bool m_toneMapping;
+  bool m_bConfigured = false;
+  bool m_bUseHQScaler = false;
+  bool m_bFilterInitialized = false;
+  bool m_cmsOn = false;
+  bool m_clutLoaded = false;
+  bool m_useDithering = false;
+  bool m_toneMapping = false;
 
-  unsigned int m_destWidth;
-  unsigned int m_destHeight;
-  unsigned int m_frameIdx;
+  unsigned int m_destWidth = 0;
+  unsigned int m_destHeight = 0;
+  unsigned int m_frameIdx = 0;
 
-  int m_iYV12RenderBuffer;
-  int m_NumYV12Buffers;
-  int m_neededBuffers;
-  int m_iRequestedMethod;
-  int m_cmsToken{ -1 };
-  int m_CLUTSize{ 0 };
-  int m_ditherDepth;
+  int m_iYV12RenderBuffer = 0;
+  int m_NumYV12Buffers = 0;
+  int m_neededBuffers = 0;
+  int m_iRequestedMethod = RENDER_METHOD_AUTO;
+  int m_cmsToken = -1;
+  int m_CLUTSize = 0;
+  int m_ditherDepth = 0;
 
-  DXGI_FORMAT m_dxva_format;
-  RenderMethod m_renderMethod;
-  EBufferFormat m_bufferFormat;
-  ESCALINGMETHOD m_scalingMethod;
-  ESCALINGMETHOD m_scalingMethodGui;
+  DXGI_FORMAT m_dxva_format = DXGI_FORMAT_UNKNOWN;
+  RenderMethod m_renderMethod = RENDER_PS;
+  EBufferFormat m_bufferFormat = BUFFER_FMT_NONE;
+  ESCALINGMETHOD m_scalingMethod = VS_SCALINGMETHOD_LINEAR;
+  ESCALINGMETHOD m_scalingMethodGui = static_cast<ESCALINGMETHOD>(-1);
   CRenderBuffer m_renderBuffers[NUM_BUFFERS];
 
-  struct SwsContext *m_sw_scale_ctx;
-  CRenderCapture* m_capture;
+  struct SwsContext *m_sw_scale_ctx = nullptr;
+  CRenderCapture* m_capture = nullptr;
   std::unique_ptr<DXVA::CProcessorHD> m_processor;
   std::unique_ptr<CYUV2RGBShader> m_colorShader;
   std::unique_ptr<CConvolutionShader> m_scalerShader;
@@ -125,5 +125,5 @@ protected:
   Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_pCLUTView;
 
   CD3DTexture m_IntermediateTarget;
-  AVColorPrimaries m_srcPrimaries;
+  AVColorPrimaries m_srcPrimaries = AVCOL_PRI_BT709;
 };

@@ -22,7 +22,6 @@
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "ServiceBroker.h"
-#include "system.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 #include "VideoShaders/WinVideoFilter.h"
@@ -52,49 +51,25 @@ static RenderMethodDetail *FindRenderMethod(RenderMethod m)
   return nullptr;
 }
 
-CBaseRenderer* CWinRenderer::Create(CVideoBuffer *buffer)
+CBaseRenderer* CWinRenderer::Create(CVideoBuffer*)
 {
   return new CWinRenderer();
 }
 
 bool CWinRenderer::Register()
 {
-  VIDEOPLAYER::CRendererFactory::RegisterRenderer("default", CWinRenderer::Create);
+  VIDEOPLAYER::CRendererFactory::RegisterRenderer("default", Create);
   return true;
 }
 
-CWinRenderer::CWinRenderer() : CBaseRenderer()
-  , m_bConfigured(false)
-  , m_bUseHQScaler(false)
-  , m_bFilterInitialized(false)
-  , m_cmsOn(false)
-  , m_clutLoaded(true)
-  , m_toneMapping(false)
-  , m_destWidth(0)
-  , m_destHeight(0)
-  , m_frameIdx(0)
-  , m_iYV12RenderBuffer(0)
-  , m_NumYV12Buffers(0)
-  , m_neededBuffers(0)
-  , m_iRequestedMethod(RENDER_METHOD_AUTO)
-  , m_dxva_format(DXGI_FORMAT_UNKNOWN)
-  , m_renderMethod(RENDER_PS)
-  , m_bufferFormat(BUFFER_FMT_NONE)
-  , m_scalingMethod(VS_SCALINGMETHOD_LINEAR)
-  , m_scalingMethodGui(static_cast<ESCALINGMETHOD>(-1))
-  , m_processor(nullptr)
-  , m_sw_scale_ctx(nullptr)
-  , m_colorShader(nullptr)
-  , m_scalerShader(nullptr)
-  , m_capture(nullptr)
-  , m_pCLUTView(nullptr)
+CWinRenderer::CWinRenderer()
 {
   m_format = AV_PIX_FMT_NONE;
-  for (unsigned i = 0; i < NUM_BUFFERS; i++)
-    m_renderBuffers[i].Release();
+  for (auto& m_renderBuffer : m_renderBuffers)
+    m_renderBuffer.Release();
 
   m_colorManager = std::make_unique<CColorManager>();
-  m_outputShader.reset();
+
   const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
   m_useDithering = settings->GetBool("videoscreen.dither");
   m_ditherDepth = settings->GetInt("videoscreen.ditherdepth");
@@ -128,8 +103,8 @@ void CWinRenderer::ManageTextures()
 
 void CWinRenderer::SelectRenderMethod()
 {
-  EBufferFormat dxFormat = SelectBufferFormat(m_format, RENDER_DXVA);
-  EBufferFormat psFormat = SelectBufferFormat(m_format, RENDER_PS);
+  const EBufferFormat dxFormat = SelectBufferFormat(m_format, RENDER_DXVA);
+  const EBufferFormat psFormat = SelectBufferFormat(m_format, RENDER_PS);
   // modern drivers allow using HW pic in shaders
   bool allowChangeMethod = dxFormat == psFormat && m_iRequestedMethod != RENDER_SW;
 
@@ -236,7 +211,7 @@ bool CWinRenderer::Configure(const VideoPicture &picture, float fps, unsigned in
   m_format = picture.videoBuffer->GetFormat();
   if (m_format == AV_PIX_FMT_D3D11VA_VLD)
   {
-    DXVA::CVideoBuffer *dxvaBuf = dynamic_cast<DXVA::CVideoBuffer*>(picture.videoBuffer);
+    auto* dxvaBuf = dynamic_cast<DXVA::CVideoBuffer*>(picture.videoBuffer);
     m_dxva_format = dxvaBuf->format;
   }
 
@@ -249,7 +224,7 @@ bool CWinRenderer::Configure(const VideoPicture &picture, float fps, unsigned in
   m_bConfigured = true;
 
   // load 3DLUT
-  ColorManagmentUpdate();
+  ColorManagementUpdate();
 
   return true;
 }
@@ -601,7 +576,7 @@ void CWinRenderer::UpdatePSVideoFilter()
 
     // we're in big trouble - fallback to sw method
     m_renderMethod = RENDER_SW;
-    EBufferFormat oldFormat = m_bufferFormat;
+    const EBufferFormat oldFormat = m_bufferFormat;
     m_bufferFormat = SelectBufferFormat(m_format, m_renderMethod);
     if (oldFormat != m_bufferFormat && m_NumYV12Buffers > 0)
     {
@@ -633,7 +608,7 @@ void CWinRenderer::UpdateVideoFilter()
   }
 
   if (cmsChanged)
-    ColorManagmentUpdate();
+    ColorManagementUpdate();
 
   if (cmsChanged || !m_outputShader)
   {
@@ -680,7 +655,7 @@ void CWinRenderer::Render(DWORD flags, CD3DTexture* target)
       return;
   }
 
-  AVColorPrimaries srcPrim = GetSrcPrimaries(buf.primaries, buf.GetWidth(), buf.GetHeight());
+  const AVColorPrimaries srcPrim = GetSrcPrimaries(buf.primaries, buf.GetWidth(), buf.GetHeight());
   if (srcPrim != m_srcPrimaries)
   {
     m_srcPrimaries = srcPrim;
@@ -754,7 +729,6 @@ void CWinRenderer::RenderSW(CD3DTexture* target)
     }
   }
 
-  // 1. convert yuv to rgb
   m_sw_scale_ctx = sws_getCachedContext(m_sw_scale_ctx,
                                         m_sourceWidth, m_sourceHeight, decoderFormat,
                                         m_sourceWidth, m_sourceHeight, AV_PIX_FMT_BGRA,
@@ -765,30 +739,36 @@ void CWinRenderer::RenderSW(CD3DTexture* target)
   uint8_t* src[YuvImage::MAX_PLANES];
   int srcStride[YuvImage::MAX_PLANES];
 
+  bool mapped = true;
   for (unsigned int idx = 0; idx < buf.GetActivePlanes(); idx++)
-    buf.MapPlane(idx, reinterpret_cast<void**>(&src[idx]), &srcStride[idx]);
+    mapped &= buf.MapPlane(idx, reinterpret_cast<void**>(&src[idx]), &srcStride[idx]);
 
-  D3D11_MAPPED_SUBRESOURCE destlr;
-  if (!m_IntermediateTarget.LockRect(0, &destlr, D3D11_MAP_WRITE_DISCARD))
-    CLog::Log(LOGERROR, "%s: failed to lock swtarget texture into memory.", __FUNCTION__);
+  D3D11_MAPPED_SUBRESOURCE subresource = {};
+  if (mapped && m_IntermediateTarget.LockRect(0, &subresource, D3D11_MAP_WRITE_DISCARD))
+  {
+    uint8_t *dst[] = { static_cast<uint8_t*>(subresource.pData), nullptr, nullptr };
+    int dstStride[] = { static_cast<int>(subresource.RowPitch), 0, 0 };
 
-  uint8_t *dst[] = { static_cast<uint8_t*>(destlr.pData), nullptr, nullptr };
-  int dstStride[] = { static_cast<int>(destlr.RowPitch), 0, 0 };
+    // 1. convert yuv to rgb
+    sws_scale(m_sw_scale_ctx, src, srcStride, 0, m_sourceHeight, dst, dstStride);
 
-  sws_scale(m_sw_scale_ctx, src, srcStride, 0, m_sourceHeight, dst, dstStride);
+    if (m_IntermediateTarget.UnlockRect(0))
+    {
+      // 2. output to display
+      m_outputShader->SetDisplayMetadata(buf.hasDisplayMetadata, buf.displayMetadata, buf.hasLightMetadata, buf.lightMetadata);
+      m_outputShader->SetToneMapParam(m_videoSettings.m_ToneMapParam);
+      m_outputShader->Render(m_IntermediateTarget, m_sourceWidth, m_sourceHeight, m_sourceRect, m_rotatedDestCoords, target,
+        DX::Windowing()->UseLimitedColor(), m_videoSettings.m_Contrast * 0.01f, m_videoSettings.m_Brightness * 0.01f);
+    }
+    else
+      CLog::LogF(LOGERROR, "failed to unlock swtarget texture.");
+  }
+  else if (mapped)
+    CLog::LogF(LOGERROR, "failed to lock swtarget texture into memory");
 
   for (unsigned int idx = 0; idx < buf.GetActivePlanes(); idx++)
     buf.UnmapPlane(idx);
 
-  if (!m_IntermediateTarget.UnlockRect(0))
-    CLog::Log(LOGERROR, "%s: failed to unlock swtarget texture.", __FUNCTION__);
-
-  // 2. output to display
-
-  m_outputShader->SetDisplayMetadata(buf.hasDisplayMetadata, buf.displayMetadata, buf.hasLightMetadata, buf.lightMetadata);
-  m_outputShader->SetToneMapParam(m_videoSettings.m_ToneMapParam);
-  m_outputShader->Render(m_IntermediateTarget, m_sourceWidth, m_sourceHeight, m_sourceRect, m_rotatedDestCoords, target,
-                         DX::Windowing()->UseLimitedColor(), m_videoSettings.m_Contrast * 0.01f, m_videoSettings.m_Brightness * 0.01f);
 }
 
 void CWinRenderer::RenderPS(CD3DTexture* target)
@@ -966,7 +946,7 @@ bool CWinRenderer::RenderCapture(CRenderCapture* capture)
 
   bool succeeded = false;
 
-  CRect saveSize = m_destRect;
+  const CRect saveSize = m_destRect;
   saveRotatedCoords();//backup current m_rotatedDestCoords
 
   m_destRect.SetRect(0, 0, static_cast<float>(capture->GetWidth()), static_cast<float>(capture->GetHeight()));
@@ -1061,12 +1041,10 @@ bool CWinRenderer::Supports(ESCALINGMETHOD method)
        || method == VS_SCALINGMETHOD_LANCZOS3)
       {
         // if scaling is below level, avoid hq scaling
-        float scaleX = fabs((static_cast<float>(m_sourceWidth) - m_destRect.Width())/m_sourceWidth)*100;
-        float scaleY = fabs((static_cast<float>(m_sourceHeight) - m_destRect.Height())/m_sourceHeight)*100;
-        int minScale = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_VIDEOPLAYER_HQSCALERS);
-        if (scaleX < minScale && scaleY < minScale)
-          return false;
-        return true;
+        const float scaleX = fabs((static_cast<float>(m_sourceWidth) - m_destRect.Width())/m_sourceWidth)*100;
+        const float scaleY = fabs((static_cast<float>(m_sourceHeight) - m_destRect.Height())/m_sourceHeight)*100;
+        const int minScale = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_VIDEOPLAYER_HQSCALERS);
+        return !(scaleX < minScale && scaleY < minScale);
       }
     }
   }
@@ -1081,18 +1059,12 @@ bool CWinRenderer::Supports(ESCALINGMETHOD method)
 
 bool CWinRenderer::WantsDoublePass()
 {
-  if (m_renderMethod == RENDER_DXVA)
-    return true;
-
-  return false;
+  return m_renderMethod == RENDER_DXVA;
 }
 
 bool CWinRenderer::ConfigChanged(const VideoPicture& picture)
 {
-  if (picture.videoBuffer->GetFormat() != m_format)
-    return true;
-
-  return false;
+  return picture.videoBuffer->GetFormat() != m_format;
 }
 
 CRenderInfo CWinRenderer::GetRenderInfo()
@@ -1111,7 +1083,7 @@ CRenderInfo CWinRenderer::GetRenderInfo()
   info.max_buffer_size = NUM_BUFFERS;
   if (m_renderMethod == RENDER_DXVA && m_processor)
   {
-    int buffers = m_processor->Size() + m_processor->PastRefs(); // extra buffers for past refs
+    const int buffers = NUM_BUFFERS + m_processor->PastRefs(); // extra buffers for past refs
     info.optimal_buffer_size = std::min(NUM_BUFFERS, buffers);
     if (m_format != AV_PIX_FMT_D3D11VA_VLD)
       info.m_deintMethods.push_back(VS_INTERLACEMETHOD_DXVA_AUTO);
@@ -1145,7 +1117,7 @@ bool CWinRenderer::NeedBuffer(int idx)
 
 // Color management helpers
 
-void CWinRenderer::ColorManagmentUpdate()
+void CWinRenderer::ColorManagementUpdate()
 {
   if (m_colorManager->IsEnabled())
   {
@@ -1167,20 +1139,21 @@ bool CWinRenderer::LoadCLUT()
   m_CLUTSize = 0;
   m_clutLoaded = false;
 
-  auto loadLutTask = Concurrency::create_task([this]{
+  auto loadLutTask = Concurrency::create_task([this]
+  {
     // load 3DLUT data
     int clutSize, dataSize;
     if (!CColorManager::Get3dLutSize(CMS_DATA_FMT_RGBA, &clutSize, &dataSize))
       return 0;
 
-    uint16_t* clutData = static_cast<uint16_t*>(_aligned_malloc(dataSize, 16));
+    auto* clutData = static_cast<uint16_t*>(_aligned_malloc(dataSize, 16));
     bool success = m_colorManager->GetVideo3dLut(m_iFlags, &m_cmsToken, CMS_DATA_FMT_RGBA, clutSize, clutData);
     if (success)
     {
       success = COutputShader::CreateCLUTView(clutSize, clutData, false, m_pCLUTView.ReleaseAndGetAddressOf());
     }
     else
-      CLog::Log(LOGERROR, "%s: unable to loading the 3dlut data.", __FUNCTION__);
+      CLog::LogFunction(LOGERROR, "CWinRenderer::LoadCLUT", "unable to loading the 3dlut data.");
 
     _aligned_free(clutData);
     if (!success)
@@ -1189,7 +1162,8 @@ bool CWinRenderer::LoadCLUT()
     return clutSize;
   });
 
-  loadLutTask.then([&](int clutSize){
+  loadLutTask.then([&](int clutSize)
+  {
     m_CLUTSize = clutSize;
     if (m_outputShader)
         m_outputShader->SetCLUT(m_CLUTSize, m_pCLUTView.Get());
@@ -1198,7 +1172,7 @@ bool CWinRenderer::LoadCLUT()
   return true;
 }
 
-AVColorPrimaries CWinRenderer::GetSrcPrimaries(AVColorPrimaries srcPrimaries, unsigned int width, unsigned int height) const
+AVColorPrimaries CWinRenderer::GetSrcPrimaries(AVColorPrimaries srcPrimaries, unsigned int width, unsigned int height)
 {
   AVColorPrimaries ret = srcPrimaries;
   if (ret == AVCOL_PRI_UNSPECIFIED)
