@@ -11,15 +11,16 @@
 #define FF_API_OLD_SAMPLE_FMT 0
 #define DEFAULT_STREAM_INDEX (0)
 
-#include <windows.h>
 #include "DXVAHD.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderManager.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderFlags.h"
 #include "cores/VideoPlayer/VideoRenderers/WinRenderBuffer.h"
-#include "utils/Log.h"
 #include "platform/win32/WIN32Util.h"
 #include "rendering/dx/RenderContext.h"
 #include "rendering/dx/DeviceResources.h"
+#include "utils/log.h"
+
+#include <Windows.h>
 
 using namespace DXVA;
 using namespace Microsoft::WRL;
@@ -34,12 +35,6 @@ do { \
 } while(0);
 
 CProcessorHD::CProcessorHD()
-  : m_width(0)
-  , m_height(0)
-  , m_pVideoDevice(nullptr)
-  , m_pVideoContext(nullptr)
-  , m_pEnumerator(nullptr)
-  , m_pVideoProcessor(nullptr)
 {
   DX::Windowing()->Register(this);
 }
@@ -65,7 +60,7 @@ void CProcessorHD::Close()
   m_pVideoDevice = nullptr;
 }
 
-bool CProcessorHD::PreInit()
+bool CProcessorHD::PreInit() const
 {
   ComPtr<ID3D11VideoDevice> pVideoDevice;
   ComPtr<ID3D11VideoProcessorEnumerator> pEnumerator;
@@ -77,8 +72,7 @@ bool CProcessorHD::PreInit()
     return false;
   }
 
-  D3D11_VIDEO_PROCESSOR_CONTENT_DESC desc1 = { };
-  memset(&desc1, 0, sizeof(D3D11_VIDEO_PROCESSOR_CONTENT_DESC));
+  D3D11_VIDEO_PROCESSOR_CONTENT_DESC desc1 = {};
   desc1.InputFrameFormat = D3D11_VIDEO_FRAME_FORMAT_INTERLACED_TOP_FIELD_FIRST;
   desc1.InputWidth = 640;
   desc1.InputHeight = 480;
@@ -118,7 +112,6 @@ bool CProcessorHD::InitProcessor()
   CLog::LogF(LOGDEBUG, "initing video enumerator with params: %dx%d.", m_width, m_height);
 
   D3D11_VIDEO_PROCESSOR_CONTENT_DESC contentDesc = {};
-  memset(&contentDesc, 0, sizeof(contentDesc));
   contentDesc.InputFrameFormat = D3D11_VIDEO_FRAME_FORMAT_INTERLACED_TOP_FIELD_FIRST;
   contentDesc.InputWidth = m_width;
   contentDesc.InputHeight = m_height;
@@ -182,27 +175,25 @@ bool CProcessorHD::InitProcessor()
 
   CLog::LogF(LOGDEBUG, "selected video processor allows %d future frames and %d past frames.", m_rateCaps.FutureFrames, m_rateCaps.PastFrames);
 
-  m_size = m_max_back_refs + 1 + m_max_fwd_refs;  // refs + 1 display
+  //m_size = m_max_back_refs + 1 + m_max_fwd_refs;  // refs + 1 display
 
   // Get the image filtering capabilities.
-  for (long i = 0; i < NUM_FILTERS; i++)
+  for (size_t i = 0; i < NUM_FILTERS; i++)
   {
     if (m_vcaps.FilterCaps & (1 << i))
     {
-      ZeroMemory(&m_Filters[i].Range, sizeof(D3D11_VIDEO_PROCESSOR_FILTER_RANGE));
-      if (FAILED(m_pEnumerator->GetVideoProcessorFilterRange(PROCAMP_FILTERS[i], &m_Filters[i].Range)))
+      m_Filters[i].Range = {};
+      m_Filters[i].bSupported = SUCCEEDED(m_pEnumerator->GetVideoProcessorFilterRange(PROCAMP_FILTERS[i], &m_Filters[i].Range));
+
+      if (m_Filters[i].bSupported)
       {
-        m_Filters[i].bSupported = false;
-        continue;
+        CLog::LogF(LOGDEBUG, "filter %d has following params - max: %d, min: %d, default: %d",
+          PROCAMP_FILTERS[i], m_Filters[i].Range.Maximum, m_Filters[i].Range.Minimum, m_Filters[i].Range.Default);
       }
-      m_Filters[i].bSupported = true;
-      CLog::LogF(LOGDEBUG, "filter %d has following params - max: %d, min: %d, default: %d",
-        PROCAMP_FILTERS[i], m_Filters[i].Range.Maximum, m_Filters[i].Range.Minimum, m_Filters[i].Range.Default);
     }
     else
     {
       CLog::LogF(LOGDEBUG, "filter %d not supported by processor.", PROCAMP_FILTERS[i]);
-
       m_Filters[i].bSupported = false;
     }
   }
@@ -226,10 +217,7 @@ bool CProcessorHD::IsFormatSupported(DXGI_FORMAT format, D3D11_VIDEO_PROCESSOR_F
 bool CProcessorHD::CheckFormats() const
 {
   // check default output format (as render target)
-  DXGI_FORMAT backBufferFormat = DX::Windowing()->GetBackBuffer()->GetFormat();
-  if (!IsFormatSupported(backBufferFormat, D3D11_VIDEO_PROCESSOR_FORMAT_SUPPORT_OUTPUT))
-    return false;
-  return true;
+  return IsFormatSupported(DX::Windowing()->GetBackBuffer()->GetFormat(), D3D11_VIDEO_PROCESSOR_FORMAT_SUPPORT_OUTPUT);
 }
 
 bool CProcessorHD::Open(UINT width, UINT height)
@@ -290,14 +278,14 @@ bool CProcessorHD::OpenProcessor()
   return true;
 }
 
-bool CProcessorHD::ApplyFilter(D3D11_VIDEO_PROCESSOR_FILTER filter, int value, int min, int max, int def) const
+void CProcessorHD::ApplyFilter(D3D11_VIDEO_PROCESSOR_FILTER filter, int value, int min, int max, int def) const
 {
-  if (filter >= NUM_FILTERS)
-    return false;
+  if (filter >= static_cast<D3D11_VIDEO_PROCESSOR_FILTER>(NUM_FILTERS))
+    return;
 
   // Unsupported filter. Ignore.
   if (!m_Filters[filter].bSupported)
-    return false;
+    return;
 
   D3D11_VIDEO_PROCESSOR_FILTER_RANGE range = m_Filters[filter].Range;
   int val;
@@ -310,18 +298,16 @@ bool CProcessorHD::ApplyFilter(D3D11_VIDEO_PROCESSOR_FILTER filter, int value, i
     val = range.Default;
 
   m_pVideoContext->VideoProcessorSetStreamFilter(m_pVideoProcessor.Get(), DEFAULT_STREAM_INDEX, filter, val != range.Default, val);
-  return true;
 }
 
 ID3D11VideoProcessorInputView* CProcessorHD::GetInputView(CRenderBuffer* view) const
 {
-  HRESULT hr = S_FALSE;
   ComPtr<ID3D11VideoProcessorInputView> inputView;
-  D3D11_VIDEO_PROCESSOR_INPUT_VIEW_DESC vpivd = { 0, D3D11_VPIV_DIMENSION_TEXTURE2D,{ 0, 0 } };
+  D3D11_VIDEO_PROCESSOR_INPUT_VIEW_DESC vpivd = {0, D3D11_VPIV_DIMENSION_TEXTURE2D, {0, 0}};
 
   ComPtr<ID3D11Resource> resource;
   unsigned arrayIdx = 0;
-  hr = view->GetResource(resource.GetAddressOf(), &arrayIdx);
+  HRESULT hr = view->GetResource(resource.GetAddressOf(), &arrayIdx);
   if (SUCCEEDED(hr))
   {
     vpivd.Texture2D.ArraySlice = arrayIdx;
@@ -334,14 +320,9 @@ ID3D11VideoProcessorInputView* CProcessorHD::GetInputView(CRenderBuffer* view) c
   return inputView.Detach();
 }
 
-static void ReleaseStream(D3D11_VIDEO_PROCESSOR_STREAM &stream_data)
-{
-  delete[] stream_data.ppPastSurfaces;
-  delete[] stream_data.ppFutureSurfaces;
-}
-
 static DXGI_COLOR_SPACE_TYPE GetDXGIColorSpace(CRenderBuffer* view)
 {
+  // RGB
   if (view->color_space == AVCOL_SPC_RGB)
   {
     if (!view->full_range)
@@ -349,106 +330,64 @@ static DXGI_COLOR_SPACE_TYPE GetDXGIColorSpace(CRenderBuffer* view)
       if (view->primaries == AVCOL_PRI_BT2020)
       {
         if (view->color_transfer == AVCOL_TRC_SMPTEST2084)
-        {
           return DXGI_COLOR_SPACE_RGB_STUDIO_G2084_NONE_P2020;
-        }
-        else
-        {
-          return DXGI_COLOR_SPACE_RGB_STUDIO_G22_NONE_P2020;
-        }
+
+        return DXGI_COLOR_SPACE_RGB_STUDIO_G22_NONE_P2020;
       }
-      else
-      {
-        return DXGI_COLOR_SPACE_RGB_STUDIO_G22_NONE_P709;
-      }
+      return DXGI_COLOR_SPACE_RGB_STUDIO_G22_NONE_P709;
     }
-    else
+
+    if (view->primaries == AVCOL_PRI_BT2020)
     {
-      if (view->primaries == AVCOL_PRI_BT2020)
-      {
-        if (view->color_transfer == AVCOL_TRC_SMPTEST2084)
-        {
-          return DXGI_COLOR_SPACE_RGB_FULL_G2084_NONE_P2020;
-        }
-        else
-        {
-          return DXGI_COLOR_SPACE_RGB_FULL_G22_NONE_P2020;
-        }
-      }
-      else
-      {
-        if (view->color_transfer == AVCOL_TRC_LINEAR ||
-            view->color_transfer == AVCOL_TRC_LOG)
-        {
-          return DXGI_COLOR_SPACE_RGB_FULL_G10_NONE_P709;
-        }
-        else
-        {
-          return DXGI_COLOR_SPACE_RGB_FULL_G22_NONE_P709;
-        }
-      }
+      if (view->color_transfer == AVCOL_TRC_SMPTEST2084)
+        return DXGI_COLOR_SPACE_RGB_FULL_G2084_NONE_P2020;
+
+      return DXGI_COLOR_SPACE_RGB_FULL_G22_NONE_P2020;
     }
+    if (view->color_transfer == AVCOL_TRC_LINEAR ||
+        view->color_transfer == AVCOL_TRC_LOG)
+      return DXGI_COLOR_SPACE_RGB_FULL_G10_NONE_P709;
+
+    return DXGI_COLOR_SPACE_RGB_FULL_G22_NONE_P709;
   }
-  else
+  // UHDTV
+  if (view->primaries == AVCOL_PRI_BT2020)
   {
-    if (view->primaries == AVCOL_PRI_BT2020) // UHDTV
-    {
-      if (view->color_transfer == AVCOL_TRC_SMPTEST2084) // HDR
-      {
-        return DXGI_COLOR_SPACE_YCBCR_STUDIO_G2084_LEFT_P2020;
-        // Could also be:
-        // DXGI_COLOR_SPACE_YCBCR_STUDIO_G2084_TOPLEFT_P2020
-      }
-      else
-      {
-        if (view->full_range)
-        {
-          return DXGI_COLOR_SPACE_YCBCR_FULL_G22_LEFT_P2020;
-        }
-        else
-        {
-          return DXGI_COLOR_SPACE_YCBCR_STUDIO_G22_LEFT_P2020;
-          // Could also be:
-          // DXGI_COLOR_SPACE_YCBCR_STUDIO_G22_TOPLEFT_P2020
-        }
-      }
-    }
-    else if (view->primaries == AVCOL_PRI_BT470BG ||
-             view->primaries == AVCOL_PRI_SMPTE170M) // SDTV
-    {
-      if (view->full_range)
-      {
-        return DXGI_COLOR_SPACE_YCBCR_FULL_G22_LEFT_P601;
-      }
-      else
-      {
-        return DXGI_COLOR_SPACE_YCBCR_STUDIO_G22_LEFT_P601;
-      }
-    }
-    else // HDTV
-    {
-      if (view->full_range)
-      {
-        if (view->color_transfer == AVCOL_TRC_SMPTE170M)
-        {
-          return DXGI_COLOR_SPACE_YCBCR_FULL_G22_NONE_P709_X601;
-        }
-        else
-        {
-          return DXGI_COLOR_SPACE_YCBCR_FULL_G22_LEFT_P709;
-        }
-      }
-      else
-      {
-        return DXGI_COLOR_SPACE_YCBCR_STUDIO_G22_LEFT_P709;
-      }
-    }
+    if (view->color_transfer == AVCOL_TRC_SMPTEST2084) // HDR
+      // Could also be:
+      // DXGI_COLOR_SPACE_YCBCR_STUDIO_G2084_TOPLEFT_P2020
+      return DXGI_COLOR_SPACE_YCBCR_STUDIO_G2084_LEFT_P2020;
+
+    if (view->full_range)
+      return DXGI_COLOR_SPACE_YCBCR_FULL_G22_LEFT_P2020;
+
+    // Could also be:
+    // DXGI_COLOR_SPACE_YCBCR_STUDIO_G22_TOPLEFT_P2020
+    return DXGI_COLOR_SPACE_YCBCR_STUDIO_G22_LEFT_P2020;
   }
+  // SDTV
+  if (view->primaries == AVCOL_PRI_BT470BG ||
+      view->primaries == AVCOL_PRI_SMPTE170M)
+  {
+    if (view->full_range)
+      return DXGI_COLOR_SPACE_YCBCR_FULL_G22_LEFT_P601;
+
+    return DXGI_COLOR_SPACE_YCBCR_STUDIO_G22_LEFT_P601;
+  }
+  // HDTV
+  if (view->full_range)
+  {
+    if (view->color_transfer == AVCOL_TRC_SMPTE170M)
+      return DXGI_COLOR_SPACE_YCBCR_FULL_G22_NONE_P709_X601;
+
+    return DXGI_COLOR_SPACE_YCBCR_FULL_G22_LEFT_P709;
+  }
+
+  return DXGI_COLOR_SPACE_YCBCR_STUDIO_G22_LEFT_P709;
 }
 
 bool CProcessorHD::Render(CRect src, CRect dst, ID3D11Resource* target, CRenderBuffer** views, DWORD flags, UINT frameIdx, UINT rotation, float contrast, float brightness)
 {
-  HRESULT hr;
   CSingleLock lock(m_section);
 
   // restore processor if it was lost
@@ -475,21 +414,21 @@ bool CProcessorHD::Render(CRect src, CRect dst, ID3D11Resource* target, CRenderB
     if (views[i])
       providedFuture++;
   }
-  int futureFrames = std::min(providedFuture, m_rateCaps.FutureFrames);
-  int pastFrames = std::min(providedPast, m_rateCaps.PastFrames);
+  const int futureFrames = std::min(providedFuture, m_rateCaps.FutureFrames);
+  const int pastFrames = std::min(providedPast, m_rateCaps.PastFrames);
+  std::vector<ID3D11VideoProcessorInputView*> pastViews(pastFrames, nullptr);
+  std::vector<ID3D11VideoProcessorInputView*> futureViews(futureFrames, nullptr);
 
-  D3D11_VIDEO_PROCESSOR_STREAM stream_data = { 0 };
+  D3D11_VIDEO_PROCESSOR_STREAM stream_data = {};
   stream_data.Enable = TRUE;
   stream_data.PastFrames = pastFrames;
   stream_data.FutureFrames = futureFrames;
-  if (pastFrames)
-    stream_data.ppPastSurfaces = new ID3D11VideoProcessorInputView*[pastFrames];
-  if (futureFrames)
-    stream_data.ppFutureSurfaces = new ID3D11VideoProcessorInputView*[futureFrames];
+  stream_data.ppPastSurfaces = pastViews.data();
+  stream_data.ppFutureSurfaces = futureViews.data();
 
-  std::vector<ComPtr<ID3D11VideoProcessorInputView>> comViews;
-  int start = 2 - futureFrames;
-  int end = 2 + pastFrames;
+  std::vector<ComPtr<ID3D11VideoProcessorInputView>> all_views;
+  const int start = 2 - futureFrames;
+  const int end = 2 + pastFrames;
   int count = 0;
 
   for (int i = start; i <= end; i++)
@@ -503,7 +442,7 @@ bool CProcessorHD::Render(CRect src, CRect dst, ID3D11Resource* target, CRenderB
     if (i > 2)
     {
       // frames order should be { ?, T-3, T-2, T-1 }
-      stream_data.ppPastSurfaces[2 + pastFrames - i] = view.Get();
+      pastViews[2 + pastFrames - i] = view.Get();
     }
     else if (i == 2)
     {
@@ -512,19 +451,18 @@ bool CProcessorHD::Render(CRect src, CRect dst, ID3D11Resource* target, CRenderB
     else if (i < 2)
     {
       // frames order should be { T+1, T+2, T+3, .. }
-      stream_data.ppFutureSurfaces[1 - i] = view.Get();
+      futureViews[1 - i] = view.Get();
     }
     if (view)
     {
       count++;
-      comViews.push_back(view);
+      all_views.push_back(view);
     }
   }
 
   if (count != pastFrames + futureFrames + 1)
   {
     CLog::LogF(LOGERROR, "incomplete views set.");
-    ReleaseStream(stream_data);
     return false;
   }
 
@@ -568,11 +506,12 @@ bool CProcessorHD::Render(CRect src, CRect dst, ID3D11Resource* target, CRenderB
     bool isBT601 = views[2]->color_space == AVCOL_SPC_BT470BG || views[2]->color_space == AVCOL_SPC_SMPTE170M;
     D3D11_VIDEO_PROCESSOR_COLOR_SPACE colorSpace
     {
-      0,                                                    // 0 - Playback, 1 - Processing
-      views[2]->full_range ? 0 : 1,                         // 0 - Full (0-255), 1 - Limited (16-235) (RGB)
-      isBT601 ? 1 : 0,                                      // 0 - BT.601, 1 - BT.709
-      0,                                                    // 0 - Conventional YCbCr, 1 - xvYCC
+      0,                            // 0 - Playback, 1 - Processing
+      views[2]->full_range ? 0 : 1, // 0 - Full (0-255), 1 - Limited (16-235) (RGB)
+      isBT601 ? 1 : 0,              // 0 - BT.601, 1 - BT.709
+      0,                            // 0 - Conventional YCbCr, 1 - xvYCC
       views[2]->full_range ? 2 : 1, // 0 - driver defaults, 2 - Full range [0-255], 1 - Studio range [16-235] (YUV)
+      0                             // unused
     };
     m_pVideoContext->VideoProcessorSetStreamColorSpace(m_pVideoProcessor.Get(), DEFAULT_STREAM_INDEX, &colorSpace);
     // Output color space
@@ -586,22 +525,20 @@ bool CProcessorHD::Render(CRect src, CRect dst, ID3D11Resource* target, CRenderB
   }
 
   // brightness
-  ApplyFilter(D3D11_VIDEO_PROCESSOR_FILTER_BRIGHTNESS,
-              brightness, 0, 100, 50);
+  ApplyFilter(D3D11_VIDEO_PROCESSOR_FILTER_BRIGHTNESS, brightness, 0, 100, 50);
   // contrast
-  ApplyFilter(D3D11_VIDEO_PROCESSOR_FILTER_CONTRAST,
-              contrast, 0, 100, 50);
+  ApplyFilter(D3D11_VIDEO_PROCESSOR_FILTER_CONTRAST, contrast, 0, 100, 50);
   // unused filters
   ApplyFilter(D3D11_VIDEO_PROCESSOR_FILTER_HUE, 50, 0, 100, 50);
   ApplyFilter(D3D11_VIDEO_PROCESSOR_FILTER_SATURATION, 50, 0, 100, 50);
   // Rotation
-  m_pVideoContext->VideoProcessorSetStreamRotation(m_pVideoProcessor.Get(), DEFAULT_STREAM_INDEX, rotation != 0
-                                                 , static_cast<D3D11_VIDEO_PROCESSOR_ROTATION>(rotation / 90));
+  m_pVideoContext->VideoProcessorSetStreamRotation(m_pVideoProcessor.Get(), DEFAULT_STREAM_INDEX, rotation != 0,
+                                                   static_cast<D3D11_VIDEO_PROCESSOR_ROTATION>(rotation / 90));
 
   // create output view for surface.
   D3D11_VIDEO_PROCESSOR_OUTPUT_VIEW_DESC OutputViewDesc = { D3D11_VPOV_DIMENSION_TEXTURE2D, { 0 }};
   ComPtr<ID3D11VideoProcessorOutputView> pOutputView;
-  hr = m_pVideoDevice->CreateVideoProcessorOutputView(target, m_pEnumerator.Get(), &OutputViewDesc, pOutputView.GetAddressOf());
+  HRESULT hr = m_pVideoDevice->CreateVideoProcessorOutputView(target, m_pEnumerator.Get(), &OutputViewDesc, &pOutputView);
   if (S_OK != hr)
     CLog::LogF(FAILED(hr) ? LOGERROR : LOGWARNING, "video device returns result '%x' while creating processor output view.", hr);
 
@@ -613,8 +550,6 @@ bool CProcessorHD::Render(CRect src, CRect dst, ID3D11Resource* target, CRenderB
       CLog::LogF(FAILED(hr) ? LOGERROR : LOGWARNING, "video device returns result '%x' while VideoProcessorBlt execution.", hr);
     }
   }
-
-  ReleaseStream(stream_data);
 
   return !FAILED(hr);
 }
