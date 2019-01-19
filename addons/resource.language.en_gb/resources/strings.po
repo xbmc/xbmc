@@ -21614,3 +21614,9 @@ msgstr ""
 msgctxt "#39116"
 msgid "Episode plot"
 msgstr ""
+
+#. Label for "show information for unwatched items" setting option
+#: system/settings/settings.xml
+msgctxt "#39117"
+msgid "Episode name"
+msgstr ""

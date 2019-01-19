@@ -13,6 +13,7 @@ set(SOURCES GUIInfo.cpp
             PlayerGUIInfo.cpp
             SkinGUIInfo.cpp
             SystemGUIInfo.cpp
+            UnwatchedGUIInfo.cpp
             VideoGUIInfo.cpp
             VisualisationGUIInfo.cpp
             WeatherGUIInfo.cpp)
@@ -35,6 +36,7 @@ set(HEADERS GUIInfo.h
             PlayerGUIInfo.h
             SkinGUIInfo.h
             SystemGUIInfo.h
+            UnwatchedGUIInfo.h
             VideoGUIInfo.h
             VisualisationGUIInfo.h
             WeatherGUIInfo.h)

@@ -970,12 +970,13 @@
         </setting>
         <setting id="videolibrary.showunwatchedplots" type="list[integer]" label="20369" help="36141">
           <level>0</level>
-          <default>0,1,2</default> <!-- Show plot for both -->
+          <default>0,1,2,3</default> <!-- Show plot for both -->
           <constraints>
             <options>
               <option label="39115">0</option> <!-- Show plot for unwatched movies only -->
               <option label="39116">1</option> <!-- Show plot for unwatched tv show episodes only -->
               <option label="39114">2</option> <!-- Show thumb for unwatched tv show episodes only -->
+              <option label="39117">3</option> <!-- Show name for unwatched tv show episodes only -->
             </options>
             <delimiter>,</delimiter>
           </constraints>

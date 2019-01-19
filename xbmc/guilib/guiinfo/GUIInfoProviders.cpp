@@ -16,6 +16,7 @@ using namespace KODI::GUILIB::GUIINFO;
 CGUIInfoProviders::CGUIInfoProviders()
 {
   RegisterProvider(&m_guiControlsGUIInfo);
+  RegisterProvider(&m_unwatchedGUIInfo);
   RegisterProvider(&m_videoGUIInfo); // Note: video info provider must be registered before music info provider,
                                      // because of music videos having both a video info tag and a music info tag
                                      // and video info tag always has to be evaluated first.
@@ -44,6 +45,7 @@ CGUIInfoProviders::~CGUIInfoProviders()
   UnregisterProvider(&m_picturesGUIInfo);
   UnregisterProvider(&m_musicGUIInfo);
   UnregisterProvider(&m_videoGUIInfo);
+  UnregisterProvider(&m_unwatchedGUIInfo);
   UnregisterProvider(&m_guiControlsGUIInfo);
 }
 

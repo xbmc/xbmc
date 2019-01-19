@@ -20,6 +20,7 @@
 #include "guilib/guiinfo/PlayerGUIInfo.h"
 #include "guilib/guiinfo/SkinGUIInfo.h"
 #include "guilib/guiinfo/SystemGUIInfo.h"
+#include "guilib/guiinfo/UnwatchedGUIInfo.h"
 #include "guilib/guiinfo/VideoGUIInfo.h"
 #include "guilib/guiinfo/VisualisationGUIInfo.h"
 #include "guilib/guiinfo/WeatherGUIInfo.h"
@@ -147,6 +148,7 @@ private:
   CPlayerGUIInfo m_playerGUIInfo;
   CSkinGUIInfo m_skinGUIInfo;
   CSystemGUIInfo m_systemGUIInfo;
+  CUnwatchedGUIInfo m_unwatchedGUIInfo;
   CVideoGUIInfo m_videoGUIInfo;
   CVisualisationGUIInfo m_visualisationGUIInfo;
   CWeatherGUIInfo m_weatherGUIInfo;
