@@ -210,7 +210,7 @@ msgstr "Configuration de l'affichage · Configuration de l'audio · Configuratio
 
 msgctxt "#31407"
 msgid "Manage your installed add-ons · Browse for and install add-ons from kodi.tv · Modify add-on settings"
-msgstr "Gestion des extensions installées · Parcours et installation des extensions depuis kodi.tv · Modification des paramètres des extensions"
+msgstr "Gestion des extensions installées · Parcours et installation des extensions depuis Kodi.tv · Modification des paramètres des extensions"
 
 msgctxt "#31408"
 msgid "Configure actions that can be used during playback · Configure how media content is played"
