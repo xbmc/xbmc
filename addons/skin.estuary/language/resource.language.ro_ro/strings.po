@@ -448,6 +448,10 @@ msgctxt "#31132"
 msgid "Select Program"
 msgstr "Selectare program"
 
+msgctxt "#31133"
+msgid "Select Resolution"
+msgstr "Selectare rezoluție"
+
 msgctxt "#31134"
 msgid "Remaining"
 msgstr "Rămas"
