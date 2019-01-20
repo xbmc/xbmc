@@ -69,26 +69,28 @@ void CGUISliderControl::Process(unsigned int currentTime, CDirtyRegionList &dirt
       SetIntValue(val);
   }
 
-
   dirty |= m_guiBackground.SetHeight(m_height);
   dirty |= m_guiBackground.SetWidth(m_width);
   dirty |= m_guiBackground.Process(currentTime);
 
   CGUITexture &nibLower = (IsActive() && m_bHasFocus && !IsDisabled() && m_currentSelector == RangeSelectorLower) ? m_guiSelectorLowerFocus : m_guiSelectorLower;
-  float fScale;
-  if (m_orientation == HORIZONTAL)
-    fScale = m_height == 0 ? 1.0f : m_height / m_guiBackground.GetTextureHeight();
-  else
-    fScale = m_width == 0 ? 1.0f : m_width / nibLower.GetTextureWidth();
 
+  float fScale = 1.0f;
+
+  if (m_orientation == HORIZONTAL && m_guiBackground.GetTextureHeight() != 0)
+    fScale = m_height / m_guiBackground.GetTextureHeight();
+  else if (m_width != 0 && nibLower.GetTextureWidth() != 0)
+    fScale = m_width / nibLower.GetTextureWidth();
   dirty |= ProcessSelector(nibLower, currentTime, fScale, RangeSelectorLower);
   if (m_rangeSelection)
   {
     CGUITexture &nibUpper = (IsActive() && m_bHasFocus && !IsDisabled() && m_currentSelector == RangeSelectorUpper) ? m_guiSelectorUpperFocus : m_guiSelectorUpper;
-    if (m_orientation == HORIZONTAL)
-      fScale = m_height == 0 ? 1.0f : m_height / m_guiBackground.GetTextureHeight();
-    else
-      fScale = m_width == 0 ? 1.0f : m_width / nibUpper.GetTextureWidth();
+
+    if (m_orientation == HORIZONTAL && m_guiBackground.GetTextureHeight() != 0)
+      fScale = m_height / m_guiBackground.GetTextureHeight();
+    else if (m_width != 0 && nibUpper.GetTextureWidth() != 0)
+      fScale = m_width / nibUpper.GetTextureWidth();
+
     dirty |= ProcessSelector(nibUpper, currentTime, fScale, RangeSelectorUpper);
   }
 
