@@ -1376,7 +1376,20 @@ bool CMusicDatabase::GetArtist(int idArtist, CArtist &artist, bool fetchAll /* =
     if (fetchAll)
       strSQL = PrepareSQL("SELECT * FROM artistview LEFT JOIN discography ON artistview.idArtist = discography.idArtist WHERE artistview.idArtist = %i", idArtist);
     else
-      strSQL = PrepareSQL("SELECT * FROM artistview WHERE artistview.idArtist = %i", idArtist);
+      // Same fields as artistview, but don't fetch dateadded when value not 
+      // needed. MySQL very slow for view with subquery column with aggregate
+      //! @todo replace with artistview once dateadded is column of artist table
+      strSQL = PrepareSQL("SELECT "
+        "idArtist, strArtist, strSortName, "
+        "strMusicBrainzArtistID, "
+        "strType, strGender, strDisambiguation, "
+        "strBorn, strFormed, strGenres,"
+        "strMoods, strStyles, strInstruments, "
+        "strBiography, strDied, strDisbanded, "
+        "strYearsActive, strImage, strFanart, "
+        "bScrapedMBID, lastScraped, "
+        "'' AS dateAdded "
+        "FROM artist WHERE idArtist = %i", idArtist);
 
     if (!m_pDS->query(strSQL)) return false;
     if (m_pDS->num_rows() == 0)
