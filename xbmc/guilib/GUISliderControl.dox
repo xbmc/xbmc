@@ -54,8 +54,11 @@ important, as xml tags are case-sensitive.
 | controloffsety        | Amount to offset the slider background texture from the top edge of the control.
 | info                  | Specifies the information that the slider controls. [See here for more information](http://kodi.wiki/view/InfoLabels).
 | orientation           | Specifies whether this scrollbar is horizontal or vertical. Defaults to vertical.
-| action                | Can be <b>'volume'</b> to adjust the volume or 'seek' to change the seek position.
+| action                | Can be <b>`volume`</b> to adjust the volume, <b>`seek`</b> to change the seek position, <b>`pvr.seek`</b> for timeshifting in PVR.
 
+\section Slider_Control_revhistory Revision History
+
+@skinning_v18 <b>[Slider Control]</b> Added <b>`pvr.seek`</b> as possible <b>action</b> tag value (timeshifting in PVR).
 
 --------------------------------------------------------------------------------
 \section Slider_Control_sect3 See also
