@@ -10741,7 +10741,7 @@ bool CMusicDatabase::AddAudioBook(const CFileItem& item)
     item.GetMusicInfoTag()->GetAlbum().c_str(),
     artists.empty() ? "" : artists[0].c_str(),
     0,
-    item.GetPath().c_str(),
+    item.GetDynPath().c_str(),
     CDateTime::GetCurrentDateTime().GetAsDBDateTime().c_str()
   );
   return ExecuteQuery(strSQL);
@@ -10750,7 +10750,7 @@ bool CMusicDatabase::AddAudioBook(const CFileItem& item)
 bool CMusicDatabase::SetResumeBookmarkForAudioBook(const CFileItem& item, int bookmark)
 {
   std::string strSQL = PrepareSQL("select bookmark from audiobook where file='%s'",
-                                 item.GetPath().c_str());
+                                 item.GetDynPath().c_str());
   if (!m_pDS->query(strSQL.c_str()) || m_pDS->num_rows() == 0)
   {
     if (!AddAudioBook(item))
@@ -10758,15 +10758,15 @@ bool CMusicDatabase::SetResumeBookmarkForAudioBook(const CFileItem& item, int bo
   }
 
   strSQL = PrepareSQL("UPDATE audiobook SET bookmark=%i WHERE file='%s'",
-                      bookmark, item.GetPath().c_str());
+                      bookmark, item.GetDynPath().c_str());
 
   return ExecuteQuery(strSQL);
 }
 
-bool CMusicDatabase::GetResumeBookmarkForAudioBook(const std::string& path, int& bookmark)
+bool CMusicDatabase::GetResumeBookmarkForAudioBook(const CFileItem& item, int& bookmark)
 {
   std::string strSQL = PrepareSQL("SELECT bookmark FROM audiobook WHERE file='%s'",
-                                 path.c_str());
+                                 item.GetDynPath().c_str());
   if (!m_pDS->query(strSQL.c_str()) || m_pDS->num_rows() == 0)
     return false;
 

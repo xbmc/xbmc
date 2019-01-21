@@ -2802,12 +2802,9 @@ bool CApplication::PlayFile(CFileItem item, const std::string& player, bool bRes
 
   CPlayerOptions options;
 
-  if( item.HasProperty("StartPercent") )
+  if (item.HasProperty("StartPercent"))
   {
-    double fallback = 0.0f;
-    if(item.GetProperty("StartPercent").isString())
-      fallback = atof(item.GetProperty("StartPercent").asString().c_str());
-    options.startpercent = item.GetProperty("StartPercent").asDouble(fallback);
+    options.startpercent = item.GetProperty("StartPercent").asDouble();
     item.m_lStartOffset = 0;
   }
 
