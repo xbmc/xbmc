@@ -29,6 +29,7 @@
 #include "cores/VideoPlayer/DVDCodecs/Video/DVDVideoCodecAndroidMediaCodec.h"
 #include "cores/VideoPlayer/DVDCodecs/Audio/DVDAudioCodecAndroidMediaCodec.h"
 #include "cores/VideoPlayer/VideoRenderers/HwDecRender/RendererMediaCodec.h"
+#include "cores/VideoPlayer/Process/android/ProcessInfoAndroid.h"
 #include "cores/VideoPlayer/VideoRenderers/HwDecRender/RendererMediaCodecSurface.h"
 #include "platform/android/powermanagement/AndroidPowerSyscall.h"
 #include "addons/interfaces/platform/android/System.h"
@@ -84,6 +85,7 @@ bool CWinSystemAndroid::InitWindowSystem()
   CRendererMediaCodecSurface::Register();
   ADDON::Interface_Android::Register();
   DRM::CMediaDrmCryptoSession::Register();
+  VIDEOPLAYER::CProcessInfoAndroid::Register();
   return CWinSystemBase::InitWindowSystem();
 }
 
