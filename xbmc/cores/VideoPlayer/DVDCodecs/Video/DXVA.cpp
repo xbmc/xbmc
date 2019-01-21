@@ -967,12 +967,6 @@ static bool HasXbox4kHevcMain10Bug(AVCodecContext *avctx)
 
 static bool CheckCompatibility(AVCodecContext *avctx)
 {
-  if (HasXbox4kHevcMain10Bug(avctx))
-  {
-    CLog::LogFunction(LOGWARNING, "DXVA", "UHD hevc main10 is not supported on Xbox One S/X. DXVA will not be used.");
-    return false;
-  }
-
   if (avctx->codec_id == AV_CODEC_ID_MPEG2VIDEO && HasATIMP2Bug(avctx))
     return false;
 
@@ -1040,10 +1034,10 @@ bool CDecoder::Open(AVCodecContext *avctx, AVCodecContext* mainctx, enum AVPixel
     return false;
   }
 
-  if (7 > m_shared)
-    m_shared = 7;
+  if (6 > m_shared)
+    m_shared = 6;
 
-  m_refs = 2; // 1 decode + 1 safety
+  m_refs = 2 + m_shared; // 1 decode + 1 safety + display
   m_surface_alignment = 16;
 
   switch (avctx->codec_id)
@@ -1052,19 +1046,32 @@ bool CDecoder::Open(AVCodecContext *avctx, AVCodecContext* mainctx, enum AVPixel
     /* decoding MPEG-2 requires additional alignment on some Intel GPUs,
     but it causes issues for H.264 on certain AMD GPUs..... */
     m_surface_alignment = 32;
-    m_refs += 2 + 2;
+    m_refs += 4;
     break;
   case AV_CODEC_ID_HEVC:
     /* the HEVC DXVA2 spec asks for 128 pixel aligned surfaces to ensure
     all coding features have enough room to work with */
-    m_surface_alignment = 128;
-    m_refs += 16;
+    if (CSysInfo::GetWindowsDeviceFamily() != CSysInfo::Xbox)
+      m_surface_alignment = 128;
+    /* On the Xbox 1/S with limited memory we have to 
+       limit refs to avoid crashing device completely */
+    if (HasXbox4kHevcMain10Bug(avctx))
+    {
+      if (m_refs + avctx->refs > 16)
+      {
+        CLog::LogFunction(LOGWARNING, "DXVA", "source requires to much refs which is not supported on Xbox One S/X. dxva will not be used.");
+        return false;
+      }
+      m_refs = 16;
+    }
+    else
+      m_refs += 16;
     break;
   case AV_CODEC_ID_H264:
     m_refs += 16;
     break;
   case AV_CODEC_ID_VP9:
-    m_refs += 4;
+    m_refs += 8;
     break;
   default:
     m_refs += 2;
@@ -1271,8 +1278,7 @@ bool CDecoder::OpenDecoder()
   m_vcontext = nullptr;
   m_context->decoder = nullptr;
   m_context->video_context = nullptr;
-
-  m_context->surface_count = m_refs + m_shared; // refs + processor buffer
+  m_context->surface_count = m_refs;
 
   if (!m_dxva_context->CreateSurfaces(m_format, m_context->surface_count, m_surface_alignment, m_context->surface))
     return false;
