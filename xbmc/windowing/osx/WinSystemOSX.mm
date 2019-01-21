@@ -195,7 +195,10 @@ CGDirectDisplayID GetDisplayID(int screen_index)
 
   // Get the list of displays.
   CGGetActiveDisplayList(MAX_DISPLAYS, displayArray, &numDisplays);
-  return(displayArray[screen_index]);
+  if (screen_index >= 0 && screen_index < numDisplays)
+    return(displayArray[screen_index]);
+  else
+    return(displayArray[0]);
 }
 
 size_t DisplayBitsPerPixelForMode(CGDisplayModeRef mode)
