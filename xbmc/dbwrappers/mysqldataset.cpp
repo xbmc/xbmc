@@ -176,8 +176,22 @@ int MysqlDatabase::connect(bool create_new) {
       static bool showed_ver_info = false;
       if (!showed_ver_info)
       {
-        CLog::Log(LOGINFO, "MYSQL: Connected to version %s", mysql_get_server_info(conn));
+        std::string version_string = mysql_get_server_info(conn);
+        CLog::Log(LOGNOTICE, "MYSQL: Connected to version {}", version_string);
         showed_ver_info = true;
+        unsigned long version = mysql_get_server_version(conn);
+        // Minimum for MySQL: 5.6 (5.5 is EOL)
+        unsigned long min_version = 50600;
+        if (version_string.find("MariaDB") != std::string::npos)
+        {
+          // Minimum for MariaDB: 5.5 (still supported)
+          min_version = 50500;
+        }
+
+        if (version < min_version)
+        {
+          CLog::Log(LOGWARNING, "MYSQL: Your database server version {} is very old and might not be supported in future Kodi versions. Please consider upgrading to MySQL 5.7 or MariaDB 10.2.", version_string);
+        }
       }
 
       // disable mysql autocommit since we handle it
