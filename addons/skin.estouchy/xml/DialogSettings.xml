@@ -95,6 +95,7 @@
 		<control type="sliderex" id="13">
 			<height>70</height>
 			<font>font25</font>
+			<textwidth>300</textwidth>
 		</control>
 		<control type="label" id="14">
 			<posx>0</posx>
