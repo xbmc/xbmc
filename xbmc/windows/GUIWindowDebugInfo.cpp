@@ -55,6 +55,9 @@ bool CGUIWindowDebugInfo::OnMessage(CGUIMessage &message)
     delete m_layout;
     m_layout = nullptr;
   }
+  else if (message.GetMessage() == GUI_MSG_REFRESH_TIMER)
+    MarkDirtyRegion();
+
   return CGUIDialog::OnMessage(message);
 }
 
