@@ -267,17 +267,25 @@ void CLinuxRendererGLES::LoadPlane(CYuvPlane& plane, int type,
   if (stride != static_cast<int>(width * bps))
   {
 #if HAS_GLES >= 3
-    glGetIntegerv(GL_UNPACK_ROW_LENGTH, &pixelStore);
-    glPixelStorei(GL_UNPACK_ROW_LENGTH, stride);
-#else
-    unsigned char *src(static_cast<unsigned char*>(data)),
-                  *dst(m_planeBuffer);
+    unsigned int verMajor, verMinor;
+    m_renderSystem->GetRenderVersion(verMajor, verMinor);
 
-    for (unsigned int y = 0; y < height; ++y, src += stride, dst += width * bpp)
-      memcpy(dst, src, width * bpp);
-
-    pixelData = m_planeBuffer;
+    if (verMajor >= 3)
+    {
+      glGetIntegerv(GL_UNPACK_ROW_LENGTH, &pixelStore);
+      glPixelStorei(GL_UNPACK_ROW_LENGTH, stride);
+    }
+    else
 #endif
+    {
+      unsigned char *src(static_cast<unsigned char*>(data)),
+                    *dst(m_planeBuffer);
+
+      for (unsigned int y = 0; y < height; ++y, src += stride, dst += width * bpp)
+        memcpy(dst, src, width * bpp);
+
+      pixelData = m_planeBuffer;
+    }
   }
   glTexSubImage2D(m_textureTarget, 0, 0, 0, width, height, type, GL_UNSIGNED_BYTE, pixelData);
 
