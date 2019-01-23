@@ -21769,12 +21769,6 @@ msgstr ""
 
 #. Label for "show information for unwatched items" setting option
 #: system/settings/settings.xml
-msgctxt "#39114"
-msgid "Episode thumb"
-msgstr ""
-
-#. Label for "show information for unwatched items" setting option
-#: system/settings/settings.xml
 msgctxt "#39115"
 msgid "Movie plot"
 msgstr ""

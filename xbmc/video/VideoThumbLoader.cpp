@@ -24,7 +24,6 @@
 #include "GUIUserMessages.h"
 #include "music/MusicDatabase.h"
 #include "settings/AdvancedSettings.h"
-#include "settings/lib/Setting.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "cores/VideoSettings.h"
@@ -348,27 +347,6 @@ bool CVideoThumbLoader::LoadItemCached(CFileItem* pItem)
         artwork.insert(std::make_pair(type, art));
     }
     SetArt(*pItem, artwork);
-  }
-
-  // hide thumb if episode is unwatched 
-  std::shared_ptr<CSettingList> setting(std::dynamic_pointer_cast<CSettingList>(
-    CServiceBroker::GetSettingsComponent()->GetSettings()->GetSetting(CSettings::SETTING_VIDEOLIBRARY_SHOWUNWATCHEDPLOTS)));
-  if (pItem->HasArt("thumb") && pItem->HasVideoInfoTag() &&
-      pItem->GetVideoInfoTag()->m_type == MediaTypeEpisode &&
-      pItem->GetVideoInfoTag()->GetPlayCount() == 0 &&
-      setting && 
-      !setting->FindIntInList(CSettings::VIDEOLIBRARY_THUMB_SHOW_UNWATCHED_EPISODE)
-     )
-  {
-    // use fanart if available
-    if (pItem->HasArt("fanart"))
-    {
-      pItem->SetArt("thumb", pItem->GetArt("fanart"));
-    }
-    else
-    {
-      pItem->SetArt("thumb", "OverlaySpoiler.png");
-    }
   }
 
   m_videoDatabase->Close();
