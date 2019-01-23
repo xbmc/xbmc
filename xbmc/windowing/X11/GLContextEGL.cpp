@@ -21,6 +21,7 @@
 #include "ServiceBroker.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
+#include "threads/SingleLock.h"
 
 #define EGL_NO_CONFIG (EGLConfig)0
 
@@ -420,6 +421,8 @@ void CGLContextEGL::SwapBuffers()
   uint64_t sbc1, sbc2;
   struct timespec nowTs;
   uint64_t now;
+  uint64_t cont = m_sync.cont;
+  uint64_t interval = m_sync.interval;
 
   eglGetSyncValuesCHROMIUM(m_eglDisplay, m_eglSurface, &ust1, &msc1, &sbc1);
 
@@ -432,7 +435,7 @@ void CGLContextEGL::SwapBuffers()
 
   if ((msc1 - m_sync.msc1) > 2)
   {
-    m_sync.cont = 0;
+    cont = 0;
   }
 
   // we want to block in SwapBuffers
@@ -442,12 +445,12 @@ void CGLContextEGL::SwapBuffers()
   {
     if ((msc1 - m_sync.msc1) == 2)
     {
-      m_sync.cont = 0;
+      cont = 0;
     }
     else if ((msc1 - m_sync.msc1) == 1)
     {
-      m_sync.interval = (ust1 - m_sync.ust1) / (msc1 - m_sync.msc1);
-      m_sync.cont++;
+      interval = (ust1 - m_sync.ust1) / (msc1 - m_sync.msc1);
+      cont++;
     }
   }
   else if (m_sync.cont == 5 && m_omlSync)
@@ -466,7 +469,7 @@ void CGLContextEGL::SwapBuffers()
       }
       uint64_t sleeptime = m_sync.interval - lastIncrement;
       usleep(sleeptime);
-      m_sync.cont++;
+      cont++;
       msc2++;
       CLog::Log(LOGDEBUG, "CGLContextEGL::SwapBuffers: sync sleep: %ld", sleeptime);
     }
@@ -485,11 +488,15 @@ void CGLContextEGL::SwapBuffers()
     usleep(sleeptime);
     msc2++;
   }
-
-  m_sync.ust1 = ust1;
-  m_sync.ust2 = ust2;
-  m_sync.msc1 = msc1;
-  m_sync.msc2 = msc2;
+  {
+    CSingleLock lock(m_syncLock);
+    m_sync.ust1 = ust1;
+    m_sync.ust2 = ust2;
+    m_sync.msc1 = msc1;
+    m_sync.msc2 = msc2;
+    m_sync.interval = interval;
+    m_sync.cont = cont;
+  }
 }
 
 uint64_t CGLContextEGL::GetVblankTiming(uint64_t &msc, uint64_t &interval)
@@ -500,6 +507,7 @@ uint64_t CGLContextEGL::GetVblankTiming(uint64_t &msc, uint64_t &interval)
   now = nowTs.tv_sec * 1000000000 + nowTs.tv_nsec;
   now /= 1000;
 
+  CSingleLock lock(m_syncLock);
   msc = m_sync.msc2;
 
   interval = (m_sync.cont > 5) ? m_sync.interval : m_sync.ust2 - m_sync.ust1;
