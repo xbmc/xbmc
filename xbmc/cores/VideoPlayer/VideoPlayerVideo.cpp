@@ -670,7 +670,14 @@ bool CVideoPlayerVideo::ProcessDecoderOutput(double &frametime, double &pts)
 
     // use forced aspect if any
     if (m_fForcedAspectRatio != 0.0f)
+    {
       m_picture.iDisplayWidth = (int) (m_picture.iDisplayHeight * m_fForcedAspectRatio);
+      if (m_picture.iDisplayWidth > m_picture.iWidth)
+      {
+        m_picture.iDisplayWidth =  m_picture.iWidth;
+        m_picture.iDisplayHeight = (int) (m_picture.iDisplayWidth / m_fForcedAspectRatio);
+      }
+    }
 
     // set stereo mode if not set by decoder
     if (m_picture.stereoMode.empty())
