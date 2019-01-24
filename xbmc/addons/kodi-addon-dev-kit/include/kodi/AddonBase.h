@@ -43,6 +43,20 @@
   #define ATTRIBUTE_HIDDEN
 #endif
 
+#ifdef _MSC_VER
+    #define ATTRIBUTE_FORCEINLINE __forceinline
+#elif defined(__GNUC__)
+    #define ATTRIBUTE_FORCEINLINE inline __attribute__((__always_inline__))
+#elif defined(__CLANG__)
+    #if __has_attribute(__always_inline__)
+        #define ATTRIBUTE_FORCEINLINE inline __attribute__((__always_inline__))
+    #else
+        #define ATTRIBUTE_FORCEINLINE inline
+    #endif
+#else
+    #define ATTRIBUTE_FORCEINLINE inline
+#endif
+
 #include "versions.h"
 
 namespace kodi { namespace addon { class CAddonBase; }}
