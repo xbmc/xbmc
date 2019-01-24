@@ -280,7 +280,7 @@ void CLinuxRendererGLES::LoadPlane(CYuvPlane& plane, int type,
     }
     else
 #elif defined (GL_UNPACK_ROW_LENGTH_EXT)
-    if (m_pRenderSystem->IsExtSupported("GL_EXT_unpack_subimage"))
+    if (m_renderSystem->IsExtSupported("GL_EXT_unpack_subimage"))
     {
       glGetIntegerv(GL_UNPACK_ROW_LENGTH_EXT, &pixelStore);
       glPixelStorei(GL_UNPACK_ROW_LENGTH_EXT, stride);
