@@ -846,7 +846,9 @@ bool CPVRChannelGroup::Renumber(void)
       (*it).channelNumber = currentChannelNumber;
     }
 
-    (*it).channel->SetChannelNumber((*it).channelNumber);
+    //! @todo This is a quick fix for v18. Whole channel number handling should be reworked - code is imo unmaintainable.
+    if (IsInternalGroup())
+      (*it).channel->SetChannelNumber((*it).channelNumber);
   }
 
   SortByChannelNumber();
