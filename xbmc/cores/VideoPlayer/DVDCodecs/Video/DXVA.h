@@ -106,6 +106,10 @@ public:
   {
     return m_sharingAllowed;
   }
+  bool HasAMDWorkaround() const
+  {
+    return m_atiWorkaround;
+  }
 
 private:
   explicit CContext() = default;

@@ -1161,31 +1161,22 @@ bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, enum AVPixel
     m_refs += 2;
     break;
   case AV_CODEC_ID_HEVC:
-  case AV_CODEC_ID_H264:
     /* the HEVC DXVA2 spec asks for 128 pixel aligned surfaces to ensure
        all coding features have enough room to work with */
-    if (avctx->codec_id == AV_CODEC_ID_HEVC &&
-        CSysInfo::GetWindowsDeviceFamily() != CSysInfo::Xbox)
-      m_surface_alignment = 128;
-    /* On the Xbox 1/S with limited memory we have to 
-       limit refs to avoid crashing device completely */
-    if (HasXbox4kHevcMain10Bug(avctx))
+    if (CSysInfo::GetWindowsDeviceFamily() != CSysInfo::Xbox)
     {
-      if (m_refs + avctx->refs > 16)
-      {
-        CLog::LogFunction(LOGWARNING, "DXVA", "source requires to much refs which is not supported on Xbox One S/X. dxva will not be used.");
-        return false;
-      }
-      m_refs = 16;
+      m_surface_alignment = 128;
+      // a driver may use multi-thread decoding internally
+      m_refs += CSysInfo::GetCPUCount();
     }
     else
-    {
-      /* limiting refs on Intel if source doesn't require so much */
-      if (AIdentifier.VendorId == PCIV_Intel)
-        m_refs = std::max(m_refs + avctx->refs, 16);
-      else
-        m_refs += 16;
-    }
+      m_refs += CSysInfo::GetCPUCount() / 2;
+    // by specification hevc decoder can hold up to 8 unique refs
+    m_refs += avctx->refs ? avctx->refs : 8;
+    break;
+  case AV_CODEC_ID_H264:
+    // by specification h264 decoder can hold up to 16 unique refs
+    m_refs += avctx->refs ? avctx->refs : 16;
     break;
   case AV_CODEC_ID_VP9:
     m_refs += 8;
@@ -1196,6 +1187,14 @@ bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, enum AVPixel
 
   if (avctx->active_thread_type & FF_THREAD_FRAME)
     m_refs += avctx->thread_count;
+
+  /* On the Xbox 1/S with limited memory we have to
+     limit refs to avoid crashing device completely */
+  if (HasXbox4kHevcMain10Bug(avctx) && m_refs > 16)
+  {
+    CLog::LogFunction(LOGWARNING, "DXVA", "source requires to much refs which is not supported on Xbox One S/X. dxva will not be used.");
+    return false;
+  }
 
   if (!OpenDecoder())
   {
