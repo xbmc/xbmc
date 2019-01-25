@@ -27,6 +27,13 @@
 			<style>lighten</style>
 		</font>
 		<font>
+			<name>font23_narrow</name>
+			<filename>NotoSans-Regular.ttf</filename>
+			<size>23</size>
+			<style>lighten</style>
+			<linespacing>0.8</linespacing>
+		</font>
+		<font>
 			<name>font25_narrow</name>
 			<filename>NotoSans-Regular.ttf</filename>
 			<size>25</size>
@@ -148,6 +155,12 @@
 			<name>font14</name>
 			<filename>arial.ttf</filename>
 			<size>30</size>
+		</font>
+		<font>
+			<name>font23_narrow</name>
+			<filename>arial.ttf</filename>
+			<size>23</size>
+			<linespacing>0.8</linespacing>
 		</font>
 		<font>
 			<name>font25_narrow</name>

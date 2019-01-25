@@ -262,12 +262,12 @@
 					<height>370</height>
 					<onleft>50</onleft>
 					<onright>50</onright>
-					<onup condition="System.hasAddon(script.extendedinfo) + Control.HasFocus(50)">RunScript(script.extendedinfo,info=extendedactorinfo,name=$INFO[Container(50).ListItem.Label])</onup>
-					<onup condition="!System.hasAddon(script.extendedinfo)">InstallAddon(script.extendedinfo)</onup>
+					<onup condition="System.hasAddon(script.extendedinfo) + Control.HasFocus(50) + !String.IsEqual(ListItem.DBType,set)">RunScript(script.extendedinfo,info=extendedactorinfo,name=$INFO[Container(50).ListItem.Label])</onup>
+					<onup condition="!System.hasAddon(script.extendedinfo) + !String.IsEqual(ListItem.DBType,set)">InstallAddon(script.extendedinfo)</onup>
 					<ondown>140</ondown>
 					<scrolltime>200</scrolltime>
 					<orientation>horizontal</orientation>
-					<itemlayout height="317" width="245">
+					<itemlayout height="317" width="245" condition="!Container.Content(Sets)">
 						<control type="group">
 							<top>10</top>
 							<control type="image">
@@ -318,7 +318,7 @@
 							</control>
 						</control>
 					</itemlayout>
-					<focusedlayout height="317" width="245">
+					<focusedlayout height="317" width="245" condition="!Container.Content(Sets)">
 						<control type="group">
 							<left>0</left>
 							<top>10</top>
@@ -379,6 +379,95 @@
 							</control>
 						</control>
 					</focusedlayout>
+					<itemlayout height="317" width="245" condition="Container.Content(Sets)">
+						<control type="group">
+							<top>10</top>
+							<control type="image">
+								<top>0</top>
+								<width>264</width>
+								<height>317</height>
+								<texture>DefaultActorSolid.png</texture>
+								<aspectratio aligny="center">scale</aspectratio>
+								<bordertexture border="21">overlays/shadow.png</bordertexture>
+								<bordersize>20</bordersize>
+							</control>
+							<control type="image">
+								<top>20</top>
+								<left>20</left>
+								<width>224</width>
+								<height>277</height>
+								<texture background="true">$INFO[ListItem.Thumb]</texture>
+								<aspectratio aligny="center">scale</aspectratio>
+							</control>
+							<control type="image">
+								<left>20</left>
+								<width>224</width>
+								<height>180</height>
+								<bottom>10</bottom>
+								<texture>overlays/overlayfade.png</texture>
+								<animation effect="fade" start="100" end="80" time="0" condition="true">Conditional</animation>
+							</control>
+							<control type="textbox">
+								<left>25</left>
+								<width>214</width>
+								<height>84</height>
+								<top>210</top>
+								<align>center</align>
+								<aligny>center</aligny>
+								<font>font23_narrow</font>
+								<label>$INFO[ListItem.Label]</label>
+							</control>
+						</control>
+					</itemlayout>
+					<focusedlayout height="317" width="245" condition="Container.Content(Sets)">
+						<control type="group">
+							<left>0</left>
+							<top>10</top>
+							<control type="image">
+								<top>0</top>
+								<width>264</width>
+								<height>317</height>
+								<texture>DefaultActorSolid.png</texture>
+								<aspectratio aligny="center">scale</aspectratio>
+								<bordertexture border="21">overlays/shadow.png</bordertexture>
+								<bordersize>20</bordersize>
+							</control>
+							<control type="image">
+								<top>20</top>
+								<left>20</left>
+								<width>224</width>
+								<height>277</height>
+								<texture background="true">$INFO[ListItem.Thumb]</texture>
+								<aspectratio aligny="center">scale</aspectratio>
+							</control>
+							<control type="image">
+								<left>20</left>
+								<width>224</width>
+								<height>180</height>
+								<bottom>10</bottom>
+								<texture>overlays/overlayfade.png</texture>
+								<animation effect="fade" start="100" end="80" time="0" condition="true">Conditional</animation>
+							</control>
+							<control type="textbox">
+								<left>25</left>
+								<width>214</width>
+								<height>84</height>
+								<top>210</top>
+								<align>center</align>
+								<aligny>center</aligny>
+								<font>font23_narrow</font>
+								<scroll>true</scroll>
+								<label>$INFO[ListItem.Label]</label>
+							</control>
+							<control type="image">
+								<left>16</left>
+								<top>16</top>
+								<width>232</width>
+								<height>285</height>
+								<texture border="8" colordiffuse="button_focus">buttons/thumbnail_focused.png</texture>
+							</control>
+						</control>
+					</focusedlayout>
 				</control>
 				<control type="grouplist" id="5000">
 					<left>0</left>
@@ -398,7 +487,7 @@
 						<param name="id" value="8" />
 						<param name="icon_on" value="icons/filemanager.png" />
 						<param name="icon_off" value="icons/infodialogs/play.png" />
-						<param name="selected" value="String.IsEqual(ListItem.DBType,tvshow) | String.IsEqual(ListItem.DBType,season)" />
+						<param name="selected" value="String.IsEqual(ListItem.DBType,tvshow) | String.IsEqual(ListItem.DBType,season) | String.IsEqual(ListItem.DBType,set)" />
 						<param name="label" value="$VAR[VideoInfoPlayButtonLabelVar]" />
 					</include>
 					<include content="InfoDialogButton">
@@ -434,7 +523,7 @@
 							<onleft>441</onleft>
 							<onright>101</onright>
 							<onup>140</onup>
-							<enable>String.IsEmpty(Container.PluginName)</enable>
+							<enable>String.IsEmpty(Container.PluginName) + !Container.Content(Sets)</enable>
 							<ondown condition="Integer.IsEqual(Container(5000).CurrentItem,1)">SetFocus(50,0)</ondown>
 							<ondown condition="Integer.IsEqual(Container(5000).CurrentItem,2)">SetFocus(50,1)</ondown>
 							<ondown condition="Integer.IsEqual(Container(5000).CurrentItem,3)">SetFocus(50,2)</ondown>
@@ -547,7 +636,7 @@
 			<height>70</height>
 			<include>MediaFlags</include>
 			<control type="group">
-				<visible>Control.HasFocus(50)</visible>
+				<visible>Control.HasFocus(50) + !String.IsEqual(ListItem.DBType,set)</visible>
 				<animation effect="fade" time="200">VisibleChange</animation>
 				<top>10</top>
 				<left>0</left>
