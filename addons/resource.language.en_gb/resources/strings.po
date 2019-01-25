@@ -12819,6 +12819,7 @@ msgstr ""
 #: xbmc/dialogs/GUIDialogSmartPlaylistRule.cpp
 #: xbmc/media/MediaTypes.cpp
 #: addons/skin.estuary/xml/Variables.xml
+#: xbmc/video/dialogs/GUIDialogVideoInfo.cpp
 #: xbmc/view/GUIViewState.cpp
 #: system/settings/settings.xml
 msgctxt "#20342"
