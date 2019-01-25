@@ -35,29 +35,7 @@ static DXGI_FORMAT plane_formats[][2] =
 
 using namespace Microsoft::WRL;
 
-CRenderBuffer::CRenderBuffer()
-  : loaded(false)
-  , frameIdx(0)
-  , format(BUFFER_FMT_NONE)
-  , videoBuffer(nullptr)
-  , primaries(AVCOL_PRI_UNSPECIFIED)
-  , color_space(AVCOL_SPC_BT709)
-  , full_range(false)
-  , bits(8)
-  , texBits(8)
-  , m_locked(false)
-  , m_bPending(false)
-  , m_soft(false)
-  , m_width(0)
-  , m_height(0)
-  , m_widthTex(0)
-  , m_heightTex(0)
-  , m_activePlanes(0)
-  , m_mapType(D3D11_MAP_WRITE_DISCARD)
-  , m_staging(nullptr)
-  , m_rects()
-{
-}
+CRenderBuffer::CRenderBuffer() = default;
 
 CRenderBuffer::~CRenderBuffer()
 {
@@ -71,12 +49,15 @@ void CRenderBuffer::Release()
   m_staging = nullptr;
   for (unsigned i = 0; i < m_activePlanes; i++)
   {
+    if (!m_textures[i].Get())
+      break;
+
     // unlock before release
-    if (m_locked && m_textures[i].Get() && m_rects[i].pData)
-      m_textures[i].UnlockRect(0);
+    if (m_rects[i].pData && m_textures[i].UnlockRect(0))
+      ;
 
     m_textures[i].Release();
-    memset(&m_rects[i], 0, sizeof(D3D11_MAPPED_SUBRESOURCE));
+    m_rects[i] = {};
   }
   m_activePlanes = 0;
   texBits = 8;
@@ -95,12 +76,12 @@ void CRenderBuffer::Lock()
   for (unsigned i = 0; i < m_activePlanes; i++)
   {
     if (!m_textures[i].Get())
-      continue;
+      break;
 
-    if (m_textures[i].LockRect(0, &m_rects[i], m_mapType) == false)
+    if (!m_textures[i].LockRect(0, &m_rects[i], m_mapType))
     {
-      memset(&m_rects[i], 0, sizeof(D3D11_MAPPED_SUBRESOURCE));
-      CLog::Log(LOGERROR, "%s - failed to lock texture %d into memory", __FUNCTION__, i);
+      CLog::LogF(LOGERROR, "failed to lock texture %d into memory", i);
+      m_rects[i] = {};
       m_locked = false;
     }
   }
@@ -117,9 +98,9 @@ void CRenderBuffer::Unlock()
   {
     if (m_textures[i].Get() && m_rects[i].pData)
       if (!m_textures[i].UnlockRect(0))
-        CLog::Log(LOGERROR, "% - failed to unlock texture %d", __FUNCTION__, i);
+        CLog::LogF(LOGERROR, "failed to unlock texture %d", i);
 
-    memset(&m_rects[i], 0, sizeof(D3D11_MAPPED_SUBRESOURCE));
+    m_rects[i] = {};
   }
 }
 
@@ -295,7 +276,7 @@ bool CRenderBuffer::UploadBuffer()
   {
   case BUFFER_FMT_D3D11_BYPASS:
   {
-    const auto buf = static_cast<DXVA::CVideoBuffer*>(videoBuffer);
+    const auto buf = dynamic_cast<DXVA::CVideoBuffer*>(videoBuffer);
     // rewrite dimension to actual values for proper usage in shaders
     m_widthTex = buf->width;
     m_heightTex = buf->height;
@@ -306,7 +287,7 @@ bool CRenderBuffer::UploadBuffer()
   case BUFFER_FMT_D3D11_P010:
   case BUFFER_FMT_D3D11_P016:
   {
-    ret = CopyToD3D11();
+    ret = CopyToPlanarTexture();
     break;
   }
   case BUFFER_FMT_NV12:
@@ -316,7 +297,7 @@ bool CRenderBuffer::UploadBuffer()
   case BUFFER_FMT_UYVY422:
   case BUFFER_FMT_YUYV422:
   {
-    ret = CopyBuffer();
+    ret = UploadFromVideoBuffer();
     break;
   }
   default:
@@ -344,11 +325,11 @@ void CRenderBuffer::AppendPicture(const VideoPicture & picture)
   hasDisplayMetadata = picture.hasDisplayMetadata;
   displayMetadata = picture.displayMetadata;
   lightMetadata = picture.lightMetadata;
-  if (picture.hasLightMetadata && picture.lightMetadata.MaxCLL)
-    hasLightMetadata = true;
+  hasLightMetadata = picture.hasLightMetadata && picture.lightMetadata.MaxCLL;
 
   if (picture.videoBuffer->GetFormat() == AV_PIX_FMT_D3D11VA_VLD)
     QueueCopyBuffer();
+
   loaded = false;
 }
 
@@ -363,7 +344,7 @@ void CRenderBuffer::ReleasePicture()
   loaded = false;
 }
 
-HRESULT CRenderBuffer::GetResource(ID3D11Resource** ppResource, unsigned* index)
+HRESULT CRenderBuffer::GetResource(ID3D11Resource** ppResource, unsigned* index) const
 {
   if (!ppResource)
     return E_POINTER;
@@ -371,24 +352,19 @@ HRESULT CRenderBuffer::GetResource(ID3D11Resource** ppResource, unsigned* index)
   if (format == BUFFER_FMT_D3D11_BYPASS)
   {
     unsigned arrayIdx = 0;
-    HRESULT hr = GetDXVAResource(ppResource, &arrayIdx);
+    const HRESULT hr = GetDXVAResource(ppResource, &arrayIdx);
     if (FAILED(hr))
-    {
       CLog::LogF(LOGERROR, "unable to open d3d11va resource.");
-    }
     else if (index)
-    {
       *index = arrayIdx;
-    }
+
     return hr;
   }
-  else
-  {
-    ComPtr<ID3D11Resource> pResource = m_textures[0].Get();
-    *ppResource = pResource.Detach();
-    if (index)
-      *index = 0;
-  }
+
+  ComPtr<ID3D11Resource> pResource = m_textures[0].Get();
+  *ppResource = pResource.Detach();
+  if (index)
+    *index = 0;
   return S_OK;
 }
 
@@ -414,7 +390,7 @@ ID3D11View* CRenderBuffer::GetView(unsigned idx)
       CLog::LogF(LOGERROR, "unable to open d3d11va resource.");
       return nullptr;
     }
-    auto dxva = dynamic_cast<DXVA::CVideoBuffer*>(videoBuffer);
+    const auto dxva = dynamic_cast<DXVA::CVideoBuffer*>(videoBuffer);
     if (!dxva)
       return nullptr;
 
@@ -459,7 +435,7 @@ bool CRenderBuffer::MapPlane(unsigned idx, void** pData, int* pStride) const
   D3D11_MAPPED_SUBRESOURCE res;
   if (!m_textures[idx].LockRect(0, &res, D3D11_MAP_READ))
   {
-    CLog::Log(LOGERROR, "%s - failed to lock buffer textures into memory.", __FUNCTION__);
+    CLog::LogF(LOGERROR, "failed to lock buffer textures into memory.");
     *pData = nullptr;
     *pStride = 0;
     return false;
@@ -474,7 +450,7 @@ void CRenderBuffer::UnmapPlane(unsigned idx) const
 {
   if (!m_textures[idx].UnlockRect(0))
   {
-    CLog::Log(LOGERROR, "%s - failed to unlock buffer texture.", __FUNCTION__);
+    CLog::LogF(LOGERROR, "failed to unlock buffer texture.");
   }
 }
 
@@ -489,20 +465,21 @@ void CRenderBuffer::QueueCopyBuffer()
   if (!videoBuffer)
     return;
 
-  if (videoBuffer->GetFormat() == AV_PIX_FMT_D3D11VA_VLD && format < BUFFER_FMT_D3D11_BYPASS)
+  if (videoBuffer->GetFormat() == AV_PIX_FMT_D3D11VA_VLD && 
+      format < BUFFER_FMT_D3D11_BYPASS)
   {
-    CopyToStaging();
+    QueueCopyingFromGpu();
   }
 }
 
-bool CRenderBuffer::CopyToD3D11()
+bool CRenderBuffer::CopyToPlanarTexture()
 {
   if (!m_locked || !m_rects[PLANE_D3D11].pData)
     return false;
 
   // destination
-  D3D11_MAPPED_SUBRESOURCE rect = m_rects[PLANE_D3D11];
-  uint8_t* pData = static_cast<uint8_t*>(rect.pData);
+  const D3D11_MAPPED_SUBRESOURCE& rect = m_rects[PLANE_D3D11];
+  const auto pData = static_cast<uint8_t*>(rect.pData);
   uint8_t* dst[] = {pData, pData + m_heightTex * rect.RowPitch};
   int dstStride[] = {rect.RowPitch, rect.RowPitch};
   // source
@@ -530,7 +507,7 @@ bool CRenderBuffer::CopyToD3D11()
     // copy cache size of UV line again to fix Intel cache issue
     copy_plane(src[1], srcStrides[1], 1, 32, dst[1], dstStride[1]);
   }
-  // convert 8bit
+  // convert 8bit YUV to NV12
   else if ( buffer_format == AV_PIX_FMT_YUV420P )
   {
     Concurrency::parallel_invoke([&]() {
@@ -544,7 +521,7 @@ bool CRenderBuffer::CopyToD3D11()
     // height and width multiplied by two because they will be divided by func
     convert_yuv420_nv12_chrome(&src[1], &srcStrides[1], 2, 64, dst[1], dstStride[1]);
   }
-  // convert 10/16bit
+  // convert YUV 10/16bit to P010/P016
   else if ( buffer_format == AV_PIX_FMT_YUV420P10
          || buffer_format == AV_PIX_FMT_YUV420P16 )
   {
@@ -563,12 +540,11 @@ bool CRenderBuffer::CopyToD3D11()
   return true;
 }
 
-bool CRenderBuffer::CopyToStaging()
+bool CRenderBuffer::QueueCopyingFromGpu()
 {
   unsigned index;
   ComPtr<ID3D11Resource> pResource;
-  HRESULT hr = GetDXVAResource(pResource.GetAddressOf(), &index);
-  if (FAILED(hr))
+  if (FAILED(GetDXVAResource(pResource.GetAddressOf(), &index)))
   {
     CLog::LogF(LOGERROR, "unable to open d3d11va resource.");
     return false;
@@ -611,7 +587,7 @@ bool CRenderBuffer::CopyToStaging()
   return m_staging != nullptr;
 }
 
-void CRenderBuffer::CopyFromStaging() const
+void CRenderBuffer::UploadFromStaging() const
 {
   if (!m_locked)
     return;
@@ -626,10 +602,10 @@ void CRenderBuffer::CopyFromStaging() const
 #endif
       memcpy;
 
-    uint8_t* s_y = static_cast<uint8_t*>(rectangle.pData);
-    uint8_t* s_uv = static_cast<uint8_t*>(rectangle.pData) + m_sDesc.Height * rectangle.RowPitch;
-    uint8_t* d_y = static_cast<uint8_t*>(m_rects[PLANE_Y].pData);
-    uint8_t* d_uv = static_cast<uint8_t*>(m_rects[PLANE_UV].pData);
+    auto s_y = static_cast<uint8_t*>(rectangle.pData);
+    auto s_uv = static_cast<uint8_t*>(rectangle.pData) + m_sDesc.Height * rectangle.RowPitch;
+    auto d_y = static_cast<uint8_t*>(m_rects[PLANE_Y].pData);
+    auto d_uv = static_cast<uint8_t*>(m_rects[PLANE_UV].pData);
 
     if ( m_rects[PLANE_Y].RowPitch == rectangle.RowPitch
       && m_rects[PLANE_UV].RowPitch == rectangle.RowPitch)
@@ -666,14 +642,14 @@ void CRenderBuffer::CopyFromStaging() const
   }
 }
 
-bool CRenderBuffer::CopyBuffer()
+bool CRenderBuffer::UploadFromVideoBuffer()
 {
   const AVPixelFormat buffer_format = videoBuffer->GetFormat();
   if (buffer_format == AV_PIX_FMT_D3D11VA_VLD)
   {
     if (m_bPending)
     {
-      CopyFromStaging();
+      UploadFromStaging();
       m_bPending = false;
     }
     return true;
@@ -692,8 +668,8 @@ bool CRenderBuffer::CopyBuffer()
 
     for (unsigned plane = 0; plane < m_activePlanes; ++plane)
     {
-      uint8_t* dst = static_cast<uint8_t*>(m_rects[plane].pData);
-      uint8_t* src = bufData[plane];
+      auto dst = static_cast<uint8_t*>(m_rects[plane].pData);
+      auto src = bufData[plane];
       int srcLine = srcLines[plane];
       int dstLine = m_rects[plane].RowPitch;
       int height = plane == 0 ? m_height : m_height >> 1;
@@ -737,10 +713,10 @@ bool CRenderBuffer::CopyBuffer()
     videoBuffer->GetPlanes(bufData);
     videoBuffer->GetStrides(srcLines);
 
-    uint8_t* src = bufData[PLANE_Y];
-    uint8_t* dst = static_cast<uint8_t*>(m_rects[PLANE_Y].pData);
-    int srcLine = srcLines[PLANE_Y];
-    int dstLine = m_rects[PLANE_Y].RowPitch;
+    auto src = bufData[PLANE_Y];
+    auto dst = static_cast<uint8_t*>(m_rects[PLANE_Y].pData);
+    const int srcLine = srcLines[PLANE_Y];
+    const int dstLine = m_rects[PLANE_Y].RowPitch;
 
     if (srcLine == dstLine)
     {
@@ -760,7 +736,7 @@ bool CRenderBuffer::CopyBuffer()
   return false;
 }
 
-HRESULT CRenderBuffer::GetDXVAResource(ID3D11Resource** ppResource, unsigned* arrayIdx)
+HRESULT CRenderBuffer::GetDXVAResource(ID3D11Resource** ppResource, unsigned* arrayIdx) const
 {
   if (!ppResource)
     return E_POINTER;
