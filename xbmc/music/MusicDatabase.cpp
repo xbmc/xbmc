@@ -8783,7 +8783,7 @@ bool CMusicDatabase::GetGenresJSON(CFileItemList& items, bool bSources)
       extFilter.AppendJoin("JOIN song_genre ON song_genre.idGenre = genre.idGenre");
       extFilter.AppendJoin("JOIN song ON song.idSong = song_genre.idSong");
       extFilter.AppendJoin("JOIN album ON album.idAlbum = song.idAlbum");
-      extFilter.AppendJoin("JOIN album_source on album_source.idAlbum = album.idAlbum");
+      extFilter.AppendJoin("LEFT JOIN album_source on album_source.idAlbum = album.idAlbum");
       extFilter.AppendOrder("genre.strGenre");
       extFilter.AppendOrder("album_source.idSource");
     }   
@@ -8794,7 +8794,6 @@ bool CMusicDatabase::GetGenresJSON(CFileItemList& items, bool bSources)
       return false;
    
     strSQL = PrepareSQL(strSQL.c_str(), extFilter.fields.c_str()) + strSQLExtra;
-
 
     // run query
     CLog::Log(LOGDEBUG, "%s query: %s", __FUNCTION__, strSQL.c_str());
@@ -8819,7 +8818,7 @@ bool CMusicDatabase::GetGenresJSON(CFileItemList& items, bool bSources)
     {
       if (idGenre != m_pDS->fv("genre.idGenre").get_asInt())
       { // New genre
-        if (idGenre > 0 && !genreSources.empty())
+        if (idGenre > 0 && bSources)
         {
           //Store sources for previous genre in item list
           items[items.Size() - 1].get()->SetProperty("sourceid", genreSources);
@@ -8837,14 +8836,17 @@ bool CMusicDatabase::GetGenresJSON(CFileItemList& items, bool bSources)
       }
       // Get source data
       if (bSources)
-        genreSources.push_back(m_pDS->fv("album_source.idSource").get_asInt());
+      {
+        int sourceid = m_pDS->fv("album_source.idSource").get_asInt();
+        if (sourceid > 0)
+          genreSources.push_back(sourceid);
+      }
       m_pDS->next();
     }
-    if (!genreSources.empty())
+    if (bSources)
     {
       //Store sources for final genre
       items[items.Size() - 1].get()->SetProperty("sourceid", genreSources);
-      genreSources.clear();
     }
 
     // cleanup
