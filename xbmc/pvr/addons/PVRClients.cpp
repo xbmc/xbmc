@@ -476,7 +476,11 @@ bool CPVRClients::GetTimers(CPVRTimersContainer *timers, std::vector<int> &faile
 PVR_ERROR CPVRClients::GetTimerTypes(CPVRTimerTypes& results) const
 {
   return ForCreatedClients(__FUNCTION__, [&results](const CPVRClientPtr &client) {
-    return client->GetTimerTypes(results);
+    CPVRTimerTypes types;
+    PVR_ERROR ret = client->GetTimerTypes(types);
+    if (ret == PVR_ERROR_NO_ERROR)
+      results.insert(results.end(), types.begin(), types.end());
+    return ret;
   });
 }
 
