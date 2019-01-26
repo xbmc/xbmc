@@ -78,6 +78,7 @@
 			<control type="sliderex" id="13">
 				<description>Default Slider</description>
 				<include>DefaultSettingButton</include>
+				<textwidth>700</textwidth>
 			</control>
 			<control type="label" id="14">
 				<description>Default Label</description>

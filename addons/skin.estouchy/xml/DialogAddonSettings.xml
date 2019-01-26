@@ -144,6 +144,7 @@
 			<description>Default Slider</description>
 			<height>70</height>
 			<font>font25</font>
+			<textwidth>550</textwidth>
 		</control>
 		<control type="edit" id="12">
 			<height>70</height>
