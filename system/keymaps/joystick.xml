@@ -91,8 +91,8 @@
   <FullscreenVideo>
     <joystick profile="game.controller.default">
       <a>Pause</a>
-      <b>Fullscreen</b>
-      <b holdtime="500">Stop</b>
+      <b>Stop</b>
+      <b holdtime="500">FullScreen</b>
       <x>OSD</x>
       <y>FullScreen</y>
       <start>Info</start>
@@ -169,6 +169,9 @@
   </FullscreenGame>
   <FullscreenLiveTV>
     <joystick profile="game.controller.default">
+      <a>Pause</a>
+      <b>Stop</b>
+      <b holdtime="500">FullScreen</b>
       <x>OSD</x>
       <back>OSD</back>
       <guide>OSD</guide>
@@ -186,6 +189,9 @@
   </TVGuide>
   <FullscreenRadio>
     <joystick profile="game.controller.default">
+      <a>Pause</a>
+      <b>Stop</b>
+      <b holdtime="500">FullScreen</b>
       <x>OSD</x>
       <back>OSD</back>
       <guide>OSD</guide>
