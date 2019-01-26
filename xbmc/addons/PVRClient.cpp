@@ -188,6 +188,7 @@ void CPVRClient::Destroy(void)
 void CPVRClient::Stop()
 {
   m_bBlockAddonCalls = true;
+  m_bPriorityFetched = false;
 }
 
 void CPVRClient::Continue()
