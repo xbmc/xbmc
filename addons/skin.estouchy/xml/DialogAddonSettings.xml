@@ -72,7 +72,6 @@
 			<height>60</height>
 			<itemgap>5</itemgap>
 			<align>center</align>
-			<aligny>center</aligny>
 			<orientation>horizontal</orientation>
 			<onleft>3</onleft>
 			<onright>3</onright>

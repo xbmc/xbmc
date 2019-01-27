@@ -217,7 +217,6 @@
 					<label>$LOCALIZE[24098]:</label>
 					<align>right</align>
 					<aligny>center</aligny>
-					<font>font20_title</font>
 					<textcolor>selected</textcolor>
 					<visible>!String.IsEmpty(ListItem.AddonBroken)</visible>
 				</control>
