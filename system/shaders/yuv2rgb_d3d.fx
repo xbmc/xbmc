@@ -32,16 +32,8 @@ SamplerState YUVSampler : IMMUTABLE
 {
   AddressU = CLAMP;
   AddressV = CLAMP;
-  Filter   = MIN_MAG_MIP_LINEAR;
-};
-#ifdef NV12_SNORM_UV
-SamplerState UVSamplerSNORM : IMMUTABLE
-{
-  AddressU = CLAMP;
-  AddressV = CLAMP;
   Filter   = MIN_MAG_MIP_POINT;
 };
-#endif
 
 struct VS_INPUT
 {
@@ -93,7 +85,7 @@ float4 YUV2RGB(VS_OUTPUT In) : SV_TARGET
 #elif defined(XBMC_NV12)
   float4 YUV = float4(g_Texture[0].Sample(YUVSampler, In.TextureY).r
   #if defined(NV12_SNORM_UV)
-                    , unormUV(g_Texture[1].Sample(UVSamplerSNORM, In.TextureUV).rg)
+                    , unormUV(g_Texture[1].Sample(YUVSampler, In.TextureUV).rg)
   #else
                     , g_Texture[1].Sample(YUVSampler, In.TextureUV).rg
   #endif
