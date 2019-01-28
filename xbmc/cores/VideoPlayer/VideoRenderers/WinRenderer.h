@@ -17,13 +17,10 @@
 
 #include <wrl/client.h>
 
-#define AUTOSOURCE -1
-
 class CYUV2RGBShader;
 class CConvolutionShader;
 class COutputShader;
 struct VideoPicture;
-enum EBufferFormat;
 
 enum RenderMethod
 {
@@ -67,11 +64,11 @@ public:
 
 protected:
   void PreInit();
-  virtual void Render(DWORD flags, CD3DTexture* target);
-  void RenderSW(CD3DTexture* target);
-  void RenderHW(DWORD flags, CD3DTexture* target);
-  void RenderPS(CD3DTexture* target);
-  void RenderHQ(CD3DTexture* target);
+  virtual void Render(DWORD flags, CD3DTexture& target);
+  void RenderSW(CD3DTexture& target);
+  void RenderHW(DWORD flags, CD3DTexture& target);
+  void RenderPS(CD3DTexture& target);
+  void RenderHQ(CD3DTexture& target);
   void ManageTextures();
   void DeleteRenderBuffer(int index);
   bool CreateRenderBuffer(int index);
@@ -120,7 +117,7 @@ protected:
   std::unique_ptr<DXVA::CProcessorHD> m_processor;
   std::unique_ptr<CYUV2RGBShader> m_colorShader;
   std::unique_ptr<CConvolutionShader> m_scalerShader;
-  std::unique_ptr<COutputShader> m_outputShader;
+  std::shared_ptr<COutputShader> m_outputShader;
   std::unique_ptr<CColorManager> m_colorManager;
   Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_pCLUTView;
 

@@ -228,7 +228,7 @@ bool CRPWinRenderer::ConfigureInternal()
 {
   CRenderSystemDX *renderingDx = static_cast<CRenderSystemDX*>(m_context.Rendering());
 
-  DXGI_FORMAT targetDxFormat = renderingDx->GetBackBuffer()->GetFormat();
+  DXGI_FORMAT targetDxFormat = renderingDx->GetBackBuffer().GetFormat();
 
   static_cast<CWinRenderBufferPool*>(m_bufferPool.get())->ConfigureDX(targetDxFormat);
 
@@ -242,7 +242,8 @@ void CRPWinRenderer::RenderInternal(bool clear, uint8_t alpha)
   // Set alpha blend state
   renderingDx->SetAlphaBlendEnable(alpha < 0xFF);
 
-  Render(renderingDx->GetBackBuffer());
+  CD3DTexture& back_buffer = renderingDx->GetBackBuffer();
+  Render(&back_buffer);
 }
 
 bool CRPWinRenderer::Supports(RENDERFEATURE feature) const

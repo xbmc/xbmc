@@ -170,7 +170,7 @@ public:
   bool SetResources(LPCSTR handle, ID3D11ShaderResourceView** ppSRViews, size_t count);
   bool SetConstantBuffer(LPCSTR handle, ID3D11Buffer *buffer);
   bool SetScalar(LPCSTR handle, float value);
-  bool Begin(UINT *passes, DWORD flags);
+  bool Begin(size_t* passes, DWORD flags);
   bool BeginPass(UINT pass);
   bool EndPass();
   bool End();

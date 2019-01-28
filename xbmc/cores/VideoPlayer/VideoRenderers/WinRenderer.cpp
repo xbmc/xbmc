@@ -31,24 +31,25 @@
 typedef struct
 {
   RenderMethod  method;
-  const char   *name;
+  std::string name;
 } RenderMethodDetail;
 
 static RenderMethodDetail RenderMethodDetails[] =
 {
-    { RENDER_SW     , "Software" },
-    { RENDER_PS     , "Pixel Shaders" },
-    { RENDER_DXVA   , "DXVA" },
-    { RENDER_INVALID, nullptr }
+    { RENDER_SW, "Software" },
+    { RENDER_PS, "Pixel Shaders" },
+    { RENDER_DXVA, "DXVA" },
+    { RENDER_INVALID, "" }
 };
 
-static RenderMethodDetail *FindRenderMethod(RenderMethod m)
+static std::string& GetRenderMethodName(RenderMethod m)
 {
+  static std::string unknown = "Unknown";
   for (unsigned i = 0; RenderMethodDetails[i].method != RENDER_INVALID; i++) {
     if (RenderMethodDetails[i].method == m)
-      return &RenderMethodDetails[i];
+      return RenderMethodDetails[i].name;
   }
-  return nullptr;
+  return unknown;
 }
 
 CBaseRenderer* CWinRenderer::Create(CVideoBuffer*)
@@ -65,8 +66,6 @@ bool CWinRenderer::Register()
 CWinRenderer::CWinRenderer()
 {
   m_format = AV_PIX_FMT_NONE;
-  for (auto& m_renderBuffer : m_renderBuffers)
-    m_renderBuffer.Release();
 
   m_colorManager = std::make_unique<CColorManager>();
 
@@ -111,11 +110,11 @@ void CWinRenderer::SelectRenderMethod()
   // old drivers + HW decoded picture -> we must force DXVA render method
   if (!allowChangeMethod && m_format == AV_PIX_FMT_D3D11VA_VLD)
   {
-    CLog::Log(LOGNOTICE, "%s: rendering method forced to DXVA processor.", __FUNCTION__);
+    CLog::LogF(LOGNOTICE, "rendering method forced to DXVA processor.");
     m_renderMethod = RENDER_DXVA;
     if (!m_processor || !m_processor->Open(m_sourceWidth, m_sourceHeight))
     {
-      CLog::Log(LOGNOTICE, "%s: unable to open DXVA processor.", __FUNCTION__);
+      CLog::LogF(LOGNOTICE, "unable to open DXVA processor.");
       if (m_processor)
         m_processor->Close();
       m_renderMethod = RENDER_INVALID;
@@ -123,7 +122,7 @@ void CWinRenderer::SelectRenderMethod()
   }
   else
   {
-    CLog::Log(LOGDEBUG, "%s: requested render method: %d", __FUNCTION__, m_iRequestedMethod);
+    CLog::LogF(LOGDEBUG, "requested render method: %d", m_iRequestedMethod);
     switch (m_iRequestedMethod)
     {
     case RENDER_METHOD_DXVA:
@@ -137,7 +136,7 @@ void CWinRenderer::SelectRenderMethod()
           break;
         }
         allowChangeMethod = false;
-        CLog::Log(LOGNOTICE, "%s: unable to open DXVA processor.", __FUNCTION__);
+        CLog::LogF(LOGNOTICE, "unable to open DXVA processor.");
         if (m_processor)
           m_processor->Close();
       }
@@ -155,7 +154,7 @@ void CWinRenderer::SelectRenderMethod()
             m_renderMethod = RENDER_DXVA;
             break;
           }
-          CLog::Log(LOGNOTICE, "%s: unable to open DXVA processor", __FUNCTION__);
+          CLog::LogF(LOGNOTICE, "unable to open DXVA processor");
           if (m_processor)
             m_processor->Close();
         }
@@ -170,7 +169,7 @@ void CWinRenderer::SelectRenderMethod()
         break;
       }
       // this is something out of the ordinary
-      CLog::Log(LOGNOTICE, "%s: unable to load test shader - D3D installation is most likely incomplete, falling back to SW mode.", __FUNCTION__);
+      CLog::LogF(LOGNOTICE, "unable to load test shader - D3D installation is most likely incomplete, falling back to SW mode.");
       CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Warning, "DirectX", g_localizeStrings.Get(2101));
     }
     // drop through to software
@@ -185,9 +184,8 @@ void CWinRenderer::SelectRenderMethod()
   m_bufferFormat = SelectBufferFormat(m_format, m_renderMethod);
   m_frameIdx = 0;
 
-  RenderMethodDetail *rmdet = FindRenderMethod(m_renderMethod);
-  CLog::Log(LOGDEBUG, "%s: selected render method %d: %s", __FUNCTION__, m_renderMethod, rmdet != nullptr ? rmdet->name : "unknown");
-  CLog::Log(LOGDEBUG, "%s: selected buffer format %d", __FUNCTION__, m_bufferFormat);
+  CLog::LogF(LOGDEBUG, "selected render method {}: {}", m_renderMethod, GetRenderMethodName(m_renderMethod));
+  CLog::LogF(LOGDEBUG, "selected buffer format %d", m_bufferFormat);
 }
 
 bool CWinRenderer::Configure(const VideoPicture &picture, float fps, unsigned int orientation)
@@ -332,7 +330,7 @@ bool CWinRenderer::Flush(bool saveBuffers)
 
 bool CWinRenderer::CreateIntermediateRenderTarget(unsigned int width, unsigned int height, bool dynamic)
 {
-  DXGI_FORMAT format = DX::Windowing()->GetBackBuffer()->GetFormat();
+  DXGI_FORMAT format = DX::Windowing()->GetBackBuffer().GetFormat();
 
   // don't create new one if it exists with requested size and format
   if ( m_IntermediateTarget.Get() && m_IntermediateTarget.GetFormat() == format
@@ -342,11 +340,11 @@ bool CWinRenderer::CreateIntermediateRenderTarget(unsigned int width, unsigned i
   if (m_IntermediateTarget.Get())
     m_IntermediateTarget.Release();
 
-  CLog::Log(LOGDEBUG, "%s: format %i.", __FUNCTION__, format);
+  CLog::LogF(LOGDEBUG, "format %i.", format);
 
   if (!m_IntermediateTarget.Create(width, height, 1, dynamic ? D3D11_USAGE_DYNAMIC : D3D11_USAGE_DEFAULT, format))
   {
-    CLog::Log(LOGERROR, "%s: intermediate render target creation failed.", __FUNCTION__);
+    CLog::LogF(LOGERROR, "intermediate render target creation failed.");
     return false;
   }
   return true;
@@ -529,10 +527,10 @@ void CWinRenderer::UpdatePSVideoFilter()
     // First try the more efficient two pass convolution scaler
     m_scalerShader = std::make_unique<CConvolutionShaderSeparable>();
 
-    if (!m_scalerShader->Create(m_scalingMethod, m_outputShader.get()))
+    if (!m_scalerShader->Create(m_scalingMethod, m_outputShader))
     {
       m_scalerShader.reset();
-      CLog::Log(LOGNOTICE, "%s: two pass convolution shader init problem, falling back to one pass.", __FUNCTION__);
+      CLog::LogF(LOGNOTICE, "two pass convolution shader init problem, falling back to one pass.");
     }
 
     // Fallback on the one pass version
@@ -540,7 +538,7 @@ void CWinRenderer::UpdatePSVideoFilter()
     {
       m_scalerShader = std::make_unique<CConvolutionShader1Pass>();
 
-      if (!m_scalerShader->Create(m_scalingMethod, m_outputShader.get()))
+      if (!m_scalerShader->Create(m_scalingMethod, m_outputShader))
       {
         m_scalerShader.reset();
         CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error, g_localizeStrings.Get(34400), g_localizeStrings.Get(34401));
@@ -603,7 +601,8 @@ void CWinRenderer::UpdateVideoFilter()
 
   if (!Supports(m_scalingMethod))
   {
-    CLog::Log(LOGWARNING, "%s: chosen scaling method %d is not supported by renderer", __FUNCTION__, static_cast<int>(m_scalingMethod));
+    CLog::LogF(LOGDEBUG, "chosen scaling method {} is not supported by {} renderer (fallback to auto)", 
+               static_cast<int>(m_scalingMethod), GetRenderMethodName(m_renderMethod));
     m_scalingMethod = VS_SCALINGMETHOD_AUTO;
   }
 
@@ -612,10 +611,10 @@ void CWinRenderer::UpdateVideoFilter()
 
   if (cmsChanged || !m_outputShader)
   {
-    m_outputShader = std::make_unique<COutputShader>();
+    m_outputShader = std::make_shared<COutputShader>();
     if (!m_outputShader->Create(m_cmsOn, m_useDithering, m_ditherDepth, m_toneMapping))
     {
-      CLog::Log(LOGDEBUG, "%s: Unable to create output shader.", __FUNCTION__);
+      CLog::LogF(LOGDEBUG, "unable to create output shader.");
       m_outputShader.reset();
     }
     else if (m_pCLUTView && m_CLUTSize)
@@ -646,7 +645,7 @@ void CWinRenderer::UpdateVideoFilter()
   }
 }
 
-void CWinRenderer::Render(DWORD flags, CD3DTexture* target)
+void CWinRenderer::Render(DWORD flags, CD3DTexture& target)
 {
   CRenderBuffer& buf = m_renderBuffers[m_iYV12RenderBuffer];
   if (!buf.loaded)
@@ -698,7 +697,7 @@ void CWinRenderer::Render(DWORD flags, CD3DTexture* target)
   DX::Windowing()->ApplyStateBlock();
 }
 
-void CWinRenderer::RenderSW(CD3DTexture* target)
+void CWinRenderer::RenderSW(CD3DTexture& target)
 {
   // if creation failed
   if (!m_outputShader)
@@ -771,7 +770,7 @@ void CWinRenderer::RenderSW(CD3DTexture* target)
 
 }
 
-void CWinRenderer::RenderPS(CD3DTexture* target)
+void CWinRenderer::RenderPS(CD3DTexture& target)
 {
   CD3D11_VIEWPORT viewPort(0.0f, 0.0f, static_cast<float>(m_sourceWidth), static_cast<float>(m_sourceHeight));
 
@@ -788,7 +787,7 @@ void CWinRenderer::RenderPS(CD3DTexture* target)
   m_colorShader->SetParams(m_videoSettings.m_Contrast, m_videoSettings.m_Brightness, DX::Windowing()->UseLimitedColor());
   m_colorShader->SetColParams(buf.color_space, buf.bits, !buf.full_range, buf.texBits);
   // convert YUV -> RGB
-  m_colorShader->Render(m_sourceRect, srcPoints, &buf, &m_IntermediateTarget);
+  m_colorShader->Render(m_sourceRect, srcPoints, &buf, m_IntermediateTarget);
 
   if (!m_bUseHQScaler)
   {
@@ -808,8 +807,8 @@ void CWinRenderer::RenderPS(CD3DTexture* target)
     m_outputShader->SetDisplayMetadata(buf.hasDisplayMetadata, buf.displayMetadata, buf.hasLightMetadata, buf.lightMetadata);
     m_outputShader->SetToneMapParam(m_videoSettings.m_ToneMapParam);
 
-    viewPort.Width = static_cast<float>(target->GetWidth());
-    viewPort.Height = static_cast<float>(target->GetHeight());
+    viewPort.Width = static_cast<float>(target.GetWidth());
+    viewPort.Height = static_cast<float>(target.GetHeight());
     // set viewport to the whole target
     DX::DeviceResources::Get()->GetD3DContext()->RSSetViewports(1, &viewPort);
     // restore scissors
@@ -821,14 +820,14 @@ void CWinRenderer::RenderPS(CD3DTexture* target)
   DX::Windowing()->RestoreViewPort();
 }
 
-void CWinRenderer::RenderHQ(CD3DTexture* target)
+void CWinRenderer::RenderHQ(CD3DTexture& target)
 {
   m_scalerShader->Render(m_IntermediateTarget, m_sourceWidth, m_sourceHeight, m_destWidth, m_destHeight
                        , m_sourceRect, CServiceBroker::GetWinSystem()->GetGfxContext().StereoCorrection(m_destRect)
                        , false, target);
 }
 
-void CWinRenderer::RenderHW(DWORD flags, CD3DTexture* target)
+void CWinRenderer::RenderHW(DWORD flags, CD3DTexture& target)
 {
   CRenderBuffer& buf = m_renderBuffers[m_iYV12RenderBuffer];
   if ( buf.format != BUFFER_FMT_D3D11_BYPASS
@@ -910,11 +909,11 @@ void CWinRenderer::RenderHW(DWORD flags, CD3DTexture* target)
                        static_cast<float>(m_IntermediateTarget.GetWidth()),
                        static_cast<float>(m_IntermediateTarget.GetHeight()));
 
-  if (target != DX::Windowing()->GetBackBuffer())
+  if (&target != &DX::Windowing()->GetBackBuffer())
   {
     // rendering capture
-    targetRect.x2 = static_cast<float>(target->GetWidth());
-    targetRect.y2 = static_cast<float>(target->GetHeight());
+    targetRect.x2 = static_cast<float>(target.GetWidth());
+    targetRect.y2 = static_cast<float>(target.GetHeight());
   }
   CWIN32Util::CropSource(src, dst, targetRect, m_renderOrientation);
 
@@ -926,8 +925,8 @@ void CWinRenderer::RenderHW(DWORD flags, CD3DTexture* target)
     if ( CServiceBroker::GetWinSystem()->GetGfxContext().GetStereoMode() == RENDER_STEREO_MODE_SPLIT_HORIZONTAL
       || CServiceBroker::GetWinSystem()->GetGfxContext().GetStereoMode() == RENDER_STEREO_MODE_SPLIT_VERTICAL)
     {
-      CD3DTexture *backBuffer = DX::Windowing()->GetBackBuffer();
-      CD3D11_VIEWPORT bbSize(0.f, 0.f, static_cast<float>(backBuffer->GetWidth()), static_cast<float>(backBuffer->GetHeight()));
+      CD3DTexture& backBuffer = DX::Windowing()->GetBackBuffer();
+      CD3D11_VIEWPORT bbSize(0.f, 0.f, static_cast<float>(backBuffer.GetWidth()), static_cast<float>(backBuffer.GetHeight()));
       DX::DeviceResources::Get()->GetD3DContext()->RSSetViewports(1, &bbSize);
     }
 
@@ -982,14 +981,14 @@ bool CWinRenderer::CreateRenderBuffer(int index)
 
   if (!m_renderBuffers[index].CreateBuffer(m_bufferFormat, m_sourceWidth, m_sourceHeight, m_renderMethod == RENDER_SW))
   {
-    CLog::Log(LOGERROR, "%s: unable to create video buffer %i", __FUNCTION__, index);
+    CLog::LogF(LOGERROR, "unable to create video buffer %i", index);
     m_renderBuffers[index].Release();
     return false;
   }
   m_renderBuffers[index].Lock();
   m_renderBuffers[index].Clear();
 
-  CLog::Log(LOGDEBUG, "%s: created video buffer %i", __FUNCTION__, index);
+  CLog::LogF(LOGDEBUG, "created video buffer %i", index);
   return true;
 }
 
@@ -1123,7 +1122,7 @@ void CWinRenderer::ColorManagementUpdate()
   {
     if (!m_colorManager->CheckConfiguration(m_cmsToken, m_iFlags))
     {
-      CLog::Log(LOGDEBUG, "%s: CMS configuration changed, reload LUT", __FUNCTION__);
+      CLog::LogF(LOGDEBUG, "CMS configuration changed, reload 3DLUT");
       LoadCLUT();
     }
     m_cmsOn = true;

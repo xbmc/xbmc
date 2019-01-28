@@ -8,8 +8,15 @@
 
 #pragma once
 
-#include "DVDCodecs/Video/DXVA.h"
+#include "guilib/D3DResource.h"
+#include <d3d11.h>
 #include <wrl/client.h>
+
+extern "C"
+{
+#include <libavutil/mastering_display_metadata.h>
+#include <libavutil/pixfmt.h>
+}
 
 class CVideoBuffer;
 struct VideoPicture;
@@ -32,8 +39,9 @@ enum EBufferFormat
 class CRenderBuffer
 {
 public:
-  CRenderBuffer();
+  CRenderBuffer() = default;
   ~CRenderBuffer();
+
   void Release();     // Release any allocated resource
   void Lock();        // Prepare the buffer to receive data from VideoPlayer
   void Unlock();      // VideoPlayer finished filling the buffer with data
@@ -48,7 +56,6 @@ public:
   HRESULT GetResource(ID3D11Resource** ppResource, unsigned* index) const;
   ID3D11View* GetView(unsigned idx = 0);
 
-  void GetDataPtr(unsigned idx, void **pData, int *pStride) const;
   bool MapPlane(unsigned idx, void **pData, int *pStride) const;
   void UnmapPlane(unsigned idx) const;
 
@@ -76,6 +83,8 @@ public:
   AVContentLightMetadata lightMetadata = {};
 
 private:
+  static const int MAX_PLANES = 3;
+
   bool CopyToPlanarTexture();
   bool QueueCopyingFromGpu();
   void UploadFromStaging() const;
@@ -96,6 +105,6 @@ private:
   CD3D11_TEXTURE2D_DESC m_sDesc = {};
   Microsoft::WRL::ComPtr<ID3D11Texture2D> m_staging;
   Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_planes[2];
-  D3D11_MAPPED_SUBRESOURCE m_rects[YuvImage::MAX_PLANES] = {{}};
-  CD3DTexture m_textures[YuvImage::MAX_PLANES];
+  D3D11_MAPPED_SUBRESOURCE m_rects[MAX_PLANES] = {{}};
+  CD3DTexture m_textures[MAX_PLANES];
 };

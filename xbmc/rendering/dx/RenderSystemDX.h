@@ -66,7 +66,7 @@ public:
   bool Interlaced() const { return m_interlaced; }
   bool IsFormatSupport(DXGI_FORMAT format, unsigned int usage) const;
   CRect GetBackBufferRect();
-  CD3DTexture* GetBackBuffer();
+  CD3DTexture& GetBackBuffer();
 
   void FlushGPU() const;
   void RequestDecodingTime();

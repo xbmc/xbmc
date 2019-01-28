@@ -6,19 +6,19 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include <ppl.h>
-#include <ppltasks.h>
-
 #include "WinRenderBuffer.h"
-#include "cores/VideoPlayer/VideoRenderers/WinRenderer.h"
-#include "rendering/dx/DeviceResources.h"
-#include "rendering/dx/RenderContext.h"
-#include "utils/log.h"
+#include "DVDCodecs/Video/DXVA.h"
 #if defined(HAVE_SSE2)
 #include "platform/win32/utils/gpu_memcpy_sse4.h"
 #endif
 #include "platform/win32/utils/memcpy_sse2.h"
+#include "rendering/dx/DeviceResources.h"
+#include "rendering/dx/RenderContext.h"
+#include "utils/log.h"
 #include "utils/CPUInfo.h"
+
+#include <ppl.h>
+#include <ppltasks.h>
 
 #define PLANE_Y 0
 #define PLANE_U 1
@@ -26,16 +26,14 @@
 #define PLANE_UV 1
 #define PLANE_D3D11 0
 
+using namespace Microsoft::WRL;
+
 static DXGI_FORMAT plane_formats[][2] =
 {
   { DXGI_FORMAT_R8_UNORM,  DXGI_FORMAT_R8G8_UNORM },   // NV12
   { DXGI_FORMAT_R16_UNORM, DXGI_FORMAT_R16G16_UNORM }, // P010
   { DXGI_FORMAT_R16_UNORM, DXGI_FORMAT_R16G16_UNORM }  // P016
 };
-
-using namespace Microsoft::WRL;
-
-CRenderBuffer::CRenderBuffer() = default;
 
 CRenderBuffer::~CRenderBuffer()
 {
@@ -422,14 +420,6 @@ ID3D11View* CRenderBuffer::GetView(unsigned idx)
   }
 }
 
-void CRenderBuffer::GetDataPtr(unsigned idx, void** pData, int* pStride) const
-{
-  if (pData)
-    *pData = m_rects[idx].pData;
-  if (pStride)
-    *pStride = m_rects[idx].RowPitch;
-}
-
 bool CRenderBuffer::MapPlane(unsigned idx, void** pData, int* pStride) const
 {
   D3D11_MAPPED_SUBRESOURCE res;
@@ -565,7 +555,7 @@ bool CRenderBuffer::QueueCopyingFromGpu()
       sDesc.CPUAccessFlags = D3D11_CPU_ACCESS_READ;
       sDesc.BindFlags = 0;
 
-      if (SUCCEEDED(DX::DeviceResources::Get()->GetD3DDevice()->CreateTexture2D(&sDesc, nullptr, m_staging.GetAddressOf())))
+      if (SUCCEEDED(DX::DeviceResources::Get()->GetD3DDevice()->CreateTexture2D(&sDesc, nullptr, &m_staging)))
         m_sDesc = sDesc;
     }
   }

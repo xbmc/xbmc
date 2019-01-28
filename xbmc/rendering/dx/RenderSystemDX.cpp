@@ -155,7 +155,7 @@ void CRenderSystemDX::CheckInterlacedStereoView()
       || RENDER_STEREO_MODE_CHECKERBOARD == stereoMode))
   {
     const auto outputSize = m_deviceResources->GetOutputSize();
-    DXGI_FORMAT texFormat = m_deviceResources->GetBackBuffer()->GetFormat();
+    DXGI_FORMAT texFormat = m_deviceResources->GetBackBuffer().GetFormat();
     if (!m_rightEyeTex.Create(outputSize.Width, outputSize.Height, 1, D3D11_USAGE_DEFAULT, texFormat))
     {
       CLog::Log(LOGERROR, "%s - Failed to create right eye buffer.", __FUNCTION__);
@@ -670,10 +670,10 @@ void CRenderSystemDX::SetAlphaBlendEnable(bool enable)
   m_BlendEnabled = enable;
 }
 
-CD3DTexture* CRenderSystemDX::GetBackBuffer()
+CD3DTexture& CRenderSystemDX::GetBackBuffer()
 {
   if (m_stereoView == RENDER_STEREO_VIEW_RIGHT && m_rightEyeTex.Get())
-    return &m_rightEyeTex;
+    return m_rightEyeTex;
 
   return m_deviceResources->GetBackBuffer();
 }

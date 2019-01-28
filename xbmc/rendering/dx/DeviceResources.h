@@ -67,7 +67,7 @@ namespace DX
     ID3D11RenderTargetView* GetBackBufferRTV();
     ID3D11DepthStencilView* GetDSV() const { return m_d3dDepthStencilView.Get(); }
     D3D_FEATURE_LEVEL GetDeviceFeatureLevel() const { return m_d3dFeatureLevel; }
-    CD3DTexture* GetBackBuffer() { return &m_backBufferTex; }
+    CD3DTexture& GetBackBuffer() { return m_backBufferTex; }
 
     void GetOutput(IDXGIOutput** ppOutput) const;
     void GetAdapterDesc(DXGI_ADAPTER_DESC *desc) const;

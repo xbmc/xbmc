@@ -78,12 +78,12 @@ bool CScreenshotSurface::capture()
 
   ComPtr<ID3D11DeviceContext> pImdContext = deviceResources->GetImmediateContext();
   ComPtr<ID3D11Device> pDevice = deviceResources->GetD3DDevice();
-  CD3DTexture* backbuffer = deviceResources->GetBackBuffer();
-  if (!backbuffer)
+  CD3DTexture& backbuffer = deviceResources->GetBackBuffer();
+  if (!backbuffer.Get())
     return false;
 
   D3D11_TEXTURE2D_DESC desc = { 0 };
-  backbuffer->GetDesc(&desc);
+  backbuffer.GetDesc(&desc);
   desc.Usage = D3D11_USAGE_STAGING;
   desc.CPUAccessFlags = D3D11_CPU_ACCESS_READ;
   desc.BindFlags = 0;
@@ -92,7 +92,7 @@ bool CScreenshotSurface::capture()
   if (SUCCEEDED(pDevice->CreateTexture2D(&desc, nullptr, &pCopyTexture)))
   {
     // take copy
-    pImdContext->CopyResource(pCopyTexture.Get(), backbuffer->Get());
+    pImdContext->CopyResource(pCopyTexture.Get(), backbuffer.Get());
 
     D3D11_MAPPED_SUBRESOURCE res;
     if (SUCCEEDED(pImdContext->Map(pCopyTexture.Get(), 0, D3D11_MAP_READ, 0, &res)))
