@@ -202,8 +202,8 @@ void CApplicationMessenger::ProcessMessages()
     //Leave here as the message might make another
     //thread call processmessages or sendmessage
 
-    std::shared_ptr<CEvent> waitEvent = pMsg->waitEvent;
     lock.Leave(); // <- see the large comment in SendMessage ^
+    std::shared_ptr<CEvent> waitEvent = pMsg->waitEvent;
 
     ProcessMessage(pMsg);
 
@@ -225,15 +225,19 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
     return;
   }
 
-  CSingleLock lock(m_critSection);
   int mask = pMsg->dwMessage & TMSG_MASK_MESSAGE;
 
-  auto target = m_mapTargets.at(mask);
-  if (target != nullptr)
+  IMessageTarget* target = nullptr;
   {
-    CSingleExit exit(m_critSection);
-    target->OnApplicationMessage(pMsg);
+    CSingleLock lock(m_targetCritSection);
+    auto targetI = m_mapTargets.find(mask);
+    if (targetI != m_mapTargets.end())
+    {
+      target = targetI->second;
+    }
   }
+  if (target != nullptr)
+    target->OnApplicationMessage(pMsg);
 }
 
 void CApplicationMessenger::ProcessWindowMessages()
@@ -248,8 +252,8 @@ void CApplicationMessenger::ProcessWindowMessages()
 
     // leave here in case we make more thread messages from this one
 
-    std::shared_ptr<CEvent> waitEvent = pMsg->waitEvent;
     lock.Leave(); // <- see the large comment in SendMessage ^
+    std::shared_ptr<CEvent> waitEvent = pMsg->waitEvent;
 
     ProcessMessage(pMsg);
     if (waitEvent)
@@ -270,7 +274,7 @@ void CApplicationMessenger::SendGUIMessage(const CGUIMessage &message, int windo
 
 void CApplicationMessenger::RegisterReceiver(IMessageTarget* target)
 {
-  CSingleLock lock(m_critSection);
+  CSingleLock lock(m_targetCritSection);
   m_mapTargets.insert(std::make_pair(target->GetMessageMask(), target));
 }
 

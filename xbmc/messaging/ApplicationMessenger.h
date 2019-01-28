@@ -421,6 +421,7 @@ private:
   std::queue<ThreadMessage*> m_vecWindowMessages; /*!< queue for UI messages */
   std::map<int, IMessageTarget*> m_mapTargets; /*!< a map of registered receivers indexed on the message mask*/
   CCriticalSection m_critSection;
+  CCriticalSection m_targetCritSection;
   ThreadIdentifier m_guiThreadId{0};
   bool m_bStop{ false };
 };
