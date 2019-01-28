@@ -322,7 +322,7 @@ JSONRPC_STATUS CPlayerOperations::Stop(const std::string &method, ITransportLaye
   {
     case Video:
     case Audio:
-      CApplicationMessenger::GetInstance().SendMsg(TMSG_MEDIA_STOP, static_cast<int>(parameterObject["playerid"].asInteger()));
+      CApplicationMessenger::GetInstance().PostMsg(TMSG_MEDIA_STOP, static_cast<int>(parameterObject["playerid"].asInteger()));
       return ACK;
 
     case Picture:
@@ -536,8 +536,7 @@ JSONRPC_STATUS CPlayerOperations::Open(const std::string &method, ITransportLaye
     {
       case PLAYLIST_MUSIC:
       case PLAYLIST_VIDEO:
-        CApplicationMessenger::GetInstance().SendMsg(TMSG_MEDIA_PLAY, playlistid, playlistStartPosition);
-        OnPlaylistChanged();
+        CApplicationMessenger::GetInstance().PostMsg(TMSG_MEDIA_PLAY, playlistid, playlistStartPosition);
         break;
 
       case PLAYLIST_PICTURE:
@@ -572,7 +571,7 @@ JSONRPC_STATUS CPlayerOperations::Open(const std::string &method, ITransportLaye
   {
     if (g_partyModeManager.IsEnabled())
       g_partyModeManager.Disable();
-    CApplicationMessenger::GetInstance().SendMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr, "playercontrol(partymode(" + parameterObject["item"]["partymode"].asString() + "))");
+    CApplicationMessenger::GetInstance().PostMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr, "playercontrol(partymode(" + parameterObject["item"]["partymode"].asString() + "))");
     return ACK;
   }
   else if (parameterObject["item"].isMember("channelid"))
@@ -691,7 +690,7 @@ JSONRPC_STATUS CPlayerOperations::Open(const std::string &method, ITransportLaye
 
         auto l = new CFileItemList(); //don't delete
         l->Copy(list);
-        CApplicationMessenger::GetInstance().SendMsg(TMSG_MEDIA_PLAY, -1, -1, static_cast<void*>(l), playername);
+        CApplicationMessenger::GetInstance().PostMsg(TMSG_MEDIA_PLAY, -1, -1, static_cast<void*>(l), playername);
       }
 
       return ACK;
@@ -758,7 +757,6 @@ JSONRPC_STATUS CPlayerOperations::GoTo(const std::string &method, ITransportLaye
       return FailedToExecute;
   }
 
-  OnPlaylistChanged();
   return ACK;
 }
 
@@ -781,7 +779,6 @@ JSONRPC_STATUS CPlayerOperations::SetShuffle(const std::string &method, ITranspo
             (shuffle.isString() && shuffle.asString() == "toggle"))
         {
           CApplicationMessenger::GetInstance().SendMsg(TMSG_PLAYLISTPLAYER_SHUFFLE, playlistid, 0);
-          OnPlaylistChanged();
         }
       }
       else
@@ -790,7 +787,6 @@ JSONRPC_STATUS CPlayerOperations::SetShuffle(const std::string &method, ITranspo
             (shuffle.isString() && shuffle.asString() == "toggle"))
         {
           CApplicationMessenger::GetInstance().SendMsg(TMSG_PLAYLISTPLAYER_SHUFFLE, playlistid, 1);
-          OnPlaylistChanged();
         }
       }
       break;
@@ -846,7 +842,6 @@ JSONRPC_STATUS CPlayerOperations::SetRepeat(const std::string &method, ITranspor
         repeat = (REPEAT_STATE)ParseRepeatState(parameterObject["repeat"]);
 
       CApplicationMessenger::GetInstance().SendMsg(TMSG_PLAYLISTPLAYER_REPEAT, playlistid, repeat);
-      OnPlaylistChanged();
       break;
     }
 
@@ -899,7 +894,7 @@ JSONRPC_STATUS CPlayerOperations::SetPartymode(const std::string &method, ITrans
       }
 
       if (change)
-        CApplicationMessenger::GetInstance().SendMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr, "playercontrol(partymode(" + strContext + "))");
+        CApplicationMessenger::GetInstance().PostMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr, "playercontrol(partymode(" + strContext + "))");
       break;
     }
 
@@ -1166,12 +1161,6 @@ JSONRPC_STATUS CPlayerOperations::StartSlideshow(const std::string& path, bool r
 void CPlayerOperations::SendSlideshowAction(int actionID)
 {
   CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION, WINDOW_SLIDESHOW, -1, static_cast<void*>(new CAction(actionID)));
-}
-
-void CPlayerOperations::OnPlaylistChanged()
-{
-  CGUIMessage msg(GUI_MSG_PLAYLIST_CHANGED, 0, 0);
-  CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg);
 }
 
 JSONRPC_STATUS CPlayerOperations::GetPropertyValue(PlayerType player, const std::string &property, CVariant &result)

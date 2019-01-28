@@ -62,7 +62,6 @@ namespace JSONRPC
     static int GetPlaylist(PlayerType player);
     static JSONRPC_STATUS StartSlideshow(const std::string& path, bool recursive, bool random, const std::string &firstPicturePath = "");
     static void SendSlideshowAction(int actionID);
-    static void OnPlaylistChanged();
     static JSONRPC_STATUS GetPropertyValue(PlayerType player, const std::string &property, CVariant &result);
 
     static int ParseRepeatState(const CVariant &repeat);

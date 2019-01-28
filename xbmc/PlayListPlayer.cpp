@@ -523,6 +523,13 @@ void CPlayListPlayer::SetShuffle(int iPlaylist, bool bYesNo, bool bNotify /* = f
     }
   }
 
+  // its likely that the playlist changed   
+  if (CServiceBroker::GetGUI() != nullptr)
+  {
+    CGUIMessage msg(GUI_MSG_PLAYLIST_CHANGED, 0, 0);
+    CServiceBroker::GetGUI()->GetWindowManager().SendMessage(msg);
+  }
+
   AnnouncePropertyChanged(iPlaylist, "shuffled", IsShuffled(iPlaylist));
 }
 
@@ -575,6 +582,14 @@ void CPlayListPlayer::SetRepeat(int iPlaylist, REPEAT_STATE state, bool bNotify 
     data = "off";
     break;
   }
+
+  // its likely that the playlist changed   
+  if (CServiceBroker::GetGUI() != nullptr)
+  {
+    CGUIMessage msg(GUI_MSG_PLAYLIST_CHANGED, 0, 0);
+    CServiceBroker::GetGUI()->GetWindowManager().SendMessage(msg);
+  }
+
   AnnouncePropertyChanged(iPlaylist, "repeat", data);
 }
 
@@ -644,6 +659,10 @@ void CPlayListPlayer::Add(int iPlaylist, const CFileItemList& items)
   list.Add(items);
   if (list.IsShuffled())
     ReShuffle(iPlaylist, iSize);
+
+  // its likely that the playlist changed
+  CGUIMessage msg(GUI_MSG_PLAYLIST_CHANGED, 0, 0);
+  CServiceBroker::GetGUI()->GetWindowManager().SendMessage(msg);
 }
 
 void CPlayListPlayer::Insert(int iPlaylist, const CPlayList& playlist, int iIndex)
@@ -683,6 +702,10 @@ void CPlayListPlayer::Insert(int iPlaylist, const CFileItemList& items, int iInd
     ReShuffle(iPlaylist, iSize);
   else if (m_iCurrentPlayList == iPlaylist && m_iCurrentSong >= iIndex)
     m_iCurrentSong++;
+
+  // its likely that the playlist changed
+  CGUIMessage msg(GUI_MSG_PLAYLIST_CHANGED, 0, 0);
+  CServiceBroker::GetGUI()->GetWindowManager().SendMessage(msg);
 }
 
 void CPlayListPlayer::Remove(int iPlaylist, int iPosition)
