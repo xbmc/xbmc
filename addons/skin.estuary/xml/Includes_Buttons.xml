@@ -19,16 +19,21 @@
 		<radioposy>0</radioposy>
 	</include>
 	<include name="InfoDialogMetadata">
-		<control type="button" id="$PARAM[control_id]">
-			<width>505</width>
+		<control type="togglebutton" id="$PARAM[control_id]">
+			<width>472</width>
 			<height>49</height>
-			<textoffsetx>40</textoffsetx>
+			<textoffsetx>16</textoffsetx>
 			<aligny>center</aligny>
 			<font>font12</font>
-			<texturefocus />
+			<texturefocus colordiffuse="button_focus">lists/focus.png</texturefocus>
+			<alttexturefocus colordiffuse="button_focus">lists/focus.png</alttexturefocus>
 			<texturenofocus />
+			<alttexturenofocus />
 			<onclick>noop</onclick>
+			<altclick>noop</altclick>
 			<label>$PARAM[label]</label>
+			<altlabel>$PARAM[altlabel]</altlabel>
+			<usealttexture>Control.HasFocus($PARAM[control_id])</usealttexture>
 			<visible>$PARAM[visible]</visible>
 		</control>
 	</include>
