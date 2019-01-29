@@ -53,7 +53,7 @@ void Interface_GUIControlFadeLabel::add_label(void* kodiBase, void* handle, cons
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   CGUIFadeLabelControl* control = static_cast<CGUIFadeLabelControl*>(handle);
-  if (!addon || !control | !label)
+  if (!addon || !control || !label)
   {
     CLog::Log(LOGERROR, "Interface_GUIControlFadeLabel::%s - invalid handler data (kodiBase='%p', handle='%p', label='%p') on addon '%s'",
                           __FUNCTION__, kodiBase, handle, label, addon ? addon->ID().c_str() : "unknown");
