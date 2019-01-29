@@ -469,6 +469,14 @@
 						<param name="visible" value="!String.IsEmpty(ListItem.Director)" />
 					</include>
 					<include content="InfoDialogButton">
+						<param name="id" value="443" />
+						<param name="icon" value="icons/infodialogs/set.png" />
+						<param name="label" value="$LOCALIZE[20457]" />
+						<param name="onclick_1" value="Dialog.Close(all,true)" />
+						<param name="onclick_2" value="ActivateWindow(Videos,videodb://movies/sets/$INFO[ListItem.SetId]/?setid=$INFO[ListItem.SetId])" />
+						<param name="visible" value="!String.IsEmpty(ListItem.SetID)" />
+					</include>
+					<include content="InfoDialogButton">
 						<param name="id" value="10" />
 						<param name="icon" value="icons/infodialogs/choose_image.png" />
 						<param name="label" value="$LOCALIZE[13511]" />
