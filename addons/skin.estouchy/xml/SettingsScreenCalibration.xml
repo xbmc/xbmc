@@ -78,23 +78,24 @@
 		<control type="group">
 			<posx>20</posx>
 			<posy>80</posy>
+			<include>16x9_xPos_Relocation</include>
 			<control type="label" id="2">
 				<description>coordinates label</description>
 				<posx>0</posx>
 				<posy>10</posy>
-				<width>1240</width>
+				<width>1280</width>
 				<label></label>
 				<align>center</align>
-				<font>font13caps</font>
+				<font>font24_title</font>
 			</control>
 			<control type="label" id="3">
 				<description>help information</description>
 				<posx>0</posx>
 				<posy>40</posy>
-				<width>1240</width>
+				<width>1280</width>
 				<label></label>
 				<align>center</align>
-				<font>font13caps</font>
+				<font>font24_title</font>
 			</control>
 		</control>
 	</controls>

@@ -1153,7 +1153,7 @@
 		<control type="button">
 			<label>31006</label>
 			<include>MenuButtonCommonValues</include>
-			<onclick>ActivateWindow(122)</onclick>
+			<onclick>ActivateWindow(visualisationpresetlist)</onclick>
 		</control>
 		<control type="button">
 			<label>$LOCALIZE[486]$INFO[Playlist.Repeat, : ]</label>
@@ -2492,7 +2492,7 @@
 			<visible>VideoPlayer.HasMenu + !VideoPlayer.Content(LiveTV)</visible>
 		</control>
 		<control type="button">
-			<label>Player info</label>
+			<label>31015</label>
 			<include>MenuButtonCommonValues</include>
 			<onclick>ClearProperty(PopupMenuVisible,Home)</onclick>
 			<onclick>ActivateWindow(playerprocessinfo)</onclick>

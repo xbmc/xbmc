@@ -102,7 +102,7 @@
 						<description>current temp Value</description>
 						<width min="0" max="50">auto</width>
 						<height>130</height>
-						<font>font16_title</font>
+						<font>font18_title</font>
 						<aligny>center</aligny>
 						<label>$INFO[System.TemperatureUnits]</label>
 					</control>
@@ -388,7 +388,7 @@
 					</focusedlayout>
 					<content>
 						<item>
-							<label>$LOCALIZE[31909]</label>
+							<label>$LOCALIZE[19055]</label>
 							<icon></icon>
 							<onclick>noop</onclick>
 							<visible>!Weather.IsFetched</visible>
