@@ -199,7 +199,7 @@ macro (build_addon target prefix libs)
     endif()
 
     # TODO: remove this hack after v18
-    string(REPLACE "<platform>\@PLATFORM\@</platform>" "<platform>@PLATFORM_TAG@</platform>" addon_file "${addon_file}")
+    string(REPLACE "<platform>\@PLATFORM\@</platform>" "<platform>\@PLATFORM_TAG\@</platform>" addon_file "${addon_file}")
 
     string(CONFIGURE "${addon_file}" addon_file_conf @ONLY)
     file(GENERATE OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/${target}/addon.xml CONTENT "${addon_file_conf}")
