@@ -556,7 +556,7 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
       return(0);
     }
     case WM_DISPLAYCHANGE:
-      CLog::LogF(LOGDEBUG, "display change event");
+      CLog::LogFC(LOGDEBUG, LOGWINDOWING, "display change event");
       if (g_application.GetRenderGUI() && !DX::Windowing()->IsAlteringWindow() && GET_X_LPARAM(lParam) > 0 && GET_Y_LPARAM(lParam) > 0)
       {
         DX::Windowing()->UpdateResolutions();
