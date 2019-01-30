@@ -129,25 +129,18 @@ bool CGLContextEGL::Refresh(bool force, int screen, Window glWindow, bool &newCo
     return false;
   }
 
-  if (!IsSuitableVisual(vInfo))
-  {
-    CLog::Log(LOGWARNING, "Visual 0x%x of the window is not suitable", (unsigned) vInfo->visualid);
-    XFree(vInfo);
-    Destroy();
-    return false;
-  }
-
-  CLog::Log(LOGNOTICE, "Using visual 0x%x", (unsigned) vInfo->visualid);
-
+  unsigned int visualid = static_cast<unsigned int>(vInfo->visualid);
   m_eglConfig = GetEGLConfig(m_eglDisplay, vInfo);
   XFree(vInfo);
 
   if (m_eglConfig == EGL_NO_CONFIG)
   {
-    CLog::Log(LOGERROR, "failed to get eglconfig for visual id");
+    CLog::Log(LOGERROR, "failed to get suitable eglconfig for visual 0x%x", visualid);
     Destroy();
     return false;
   }
+
+  CLog::Log(LOGNOTICE, "Using visual 0x%x", visualid);
 
   m_eglSurface = eglCreateWindowSurface(m_eglDisplay, m_eglConfig, glWindow, NULL);
   if (m_eglSurface == EGL_NO_SURFACE)
@@ -330,12 +323,6 @@ void CGLContextEGL::Detach()
     eglDestroySurface(m_eglDisplay, m_eglSurface);
     m_eglSurface = EGL_NO_SURFACE;
   }
-}
-
-bool CGLContextEGL::IsSuitableVisual(XVisualInfo *vInfo)
-{
-  EGLConfig config = GetEGLConfig(m_eglDisplay, vInfo);
-  return config != EGL_NO_CONFIG;
 }
 
 bool CGLContextEGL::SuitableCheck(EGLDisplay eglDisplay, EGLConfig config)
