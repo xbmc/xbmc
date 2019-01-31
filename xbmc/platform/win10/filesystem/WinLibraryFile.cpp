@@ -85,8 +85,7 @@ void CWinLibraryFile::Close()
 {
   if (m_fileStream != nullptr)
   {
-    // see https://docs.microsoft.com/en-us/uwp/api/windows.storage.streams.irandomaccessstream
-    // m_fileStream->Close(); // where it is?
+    m_fileStream.Close();
     m_fileStream = nullptr;
   }
   if (m_sFile)
@@ -99,9 +98,17 @@ ssize_t CWinLibraryFile::Read(void* lpBuf, size_t uiBufSize)
     return -1;
 
   IBuffer buf = winrt::make<CustomBuffer>(lpBuf, static_cast<uint32_t>(uiBufSize));
-  Wait(m_fileStream.ReadAsync(buf, buf.Capacity(), InputStreamOptions::None));
-
-  return static_cast<intptr_t>(buf.Length());
+  try
+  {
+    Wait(m_fileStream.ReadAsync(buf, buf.Capacity(), InputStreamOptions::None));
+    return static_cast<ssize_t>(buf.Length());
+  }
+  catch (const winrt::hresult_error& ex)
+  {
+    using KODI::PLATFORM::WINDOWS::FromW;
+    CLog::LogF(LOGERROR, "unable to read file ({})", FromW(ex.message().c_str()));
+    return -1;
+  }
 }
 
 ssize_t CWinLibraryFile::Write(const void* lpBuf, size_t uiBufSize)
@@ -110,10 +117,19 @@ ssize_t CWinLibraryFile::Write(const void* lpBuf, size_t uiBufSize)
     return -1;
 
   uint8_t* buff = (uint8_t*)lpBuf;
-  auto winrt_buffer = CryptographicBuffer::CreateFromByteArray({ buff, buff + uiBufSize });
+  const auto winrt_buffer = CryptographicBuffer::CreateFromByteArray({ buff, buff + uiBufSize });
 
-  uint32_t result = Wait(m_fileStream.WriteAsync(winrt_buffer));
-  return static_cast<intptr_t>(result);
+  try
+  {
+    const uint32_t result = Wait(m_fileStream.WriteAsync(winrt_buffer));
+    return static_cast<ssize_t>(result);
+  }
+  catch (const winrt::hresult_error& ex)
+  {
+    using KODI::PLATFORM::WINDOWS::FromW;
+    CLog::LogF(LOGERROR, "unable write to file ({})", FromW(ex.message().c_str()));
+    return -1;
+  }
 }
 
 int64_t CWinLibraryFile::Seek(int64_t iFilePosition, int iWhence)
