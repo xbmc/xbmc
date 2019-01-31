@@ -56,5 +56,8 @@ protected:
   double m_dtsAtDisplayTime;
   std::unique_ptr<DemuxPacket> m_packet;
   int m_videoStreamPlaying = -1;
+
+private:
+  static inline bool CodecHasExtraData(AVCodecID id);
 };
 

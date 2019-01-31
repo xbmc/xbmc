@@ -480,6 +480,9 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
       }
       m_mime = "video/x-vnd.on2.vp9";
       m_formatname = "amc-vp9";
+      free(m_hints.extradata);
+      m_hints.extradata = nullptr;
+      m_hints.extrasize = 0;
       break;
     case AV_CODEC_ID_AVS:
     case AV_CODEC_ID_CAVS:
