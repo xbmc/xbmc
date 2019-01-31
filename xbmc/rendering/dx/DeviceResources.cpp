@@ -115,7 +115,7 @@ void DX::DeviceResources::Release()
 void DX::DeviceResources::GetOutput(IDXGIOutput** ppOutput) const
 {
   ComPtr<IDXGIOutput> pOutput;
-  if (FAILED(m_swapChain->GetContainingOutput(pOutput.GetAddressOf())) || !pOutput)
+  if (FAILED(m_swapChain->GetContainingOutput(&pOutput)) || !pOutput)
     m_output.As(&pOutput);
   *ppOutput = pOutput.Detach();
 }
@@ -131,11 +131,13 @@ void DX::DeviceResources::GetDisplayMode(DXGI_MODE_DESC* mode) const
   DXGI_OUTPUT_DESC outDesc;
   ComPtr<IDXGIOutput> pOutput;
 
-  GetOutput(pOutput.GetAddressOf());
-  pOutput->GetDesc(&outDesc);
+  GetOutput(&pOutput);
+  if (FAILED(pOutput->GetDesc(&outDesc)))
+    return;
 
   DXGI_SWAP_CHAIN_DESC scDesc;
-  m_swapChain->GetDesc(&scDesc);
+  if (FAILED(m_swapChain->GetDesc(&scDesc)))
+    return;
 
   memset(mode, 0, sizeof(DXGI_MODE_DESC));
   // desktop coords depend on DPI
@@ -174,18 +176,7 @@ ID3D11RenderTargetView* DX::DeviceResources::GetBackBufferRTV()
 
 void DX::DeviceResources::SetViewPort(D3D11_VIEWPORT& viewPort) const
 {
-  // convert logical viewport to real
-  D3D11_VIEWPORT realViewPort =
-  {
-    viewPort.TopLeftX,
-    viewPort.TopLeftY,
-    viewPort.Width,
-    viewPort.Height,
-    viewPort.MinDepth,
-    viewPort.MinDepth
-  };
-
-  m_deferrContext->RSSetViewports(1, &realViewPort);
+  m_deferrContext->RSSetViewports(1, &viewPort);
 }
 
 bool DX::DeviceResources::SetFullScreen(bool fullscreen, RESOLUTION_INFO& res)
@@ -213,9 +204,9 @@ bool DX::DeviceResources::SetFullScreen(bool fullscreen, RESOLUTION_INFO& res)
     const bool isResValid = res.iWidth > 0 && res.iHeight > 0 && res.fRefreshRate > 0.f;
     if (isResValid)
     {
-      DXGI_MODE_DESC currentMode;
+      DXGI_MODE_DESC currentMode = {};
       GetDisplayMode(&currentMode);
-      DXGI_SWAP_CHAIN_DESC scDesc;
+      DXGI_SWAP_CHAIN_DESC scDesc = {};
       m_swapChain->GetDesc(&scDesc);
 
       bool is_interlaced = scDesc.BufferDesc.ScanlineOrdering > DXGI_MODE_SCANLINE_ORDER_PROGRESSIVE;
@@ -223,19 +214,21 @@ bool DX::DeviceResources::SetFullScreen(bool fullscreen, RESOLUTION_INFO& res)
       if (res.dwFlags & D3DPRESENTFLAG_INTERLACED)
         refreshRate *= 2;
 
-      if (currentMode.Width != res.iWidth
-        || currentMode.Height != res.iHeight
-        || DX::RationalToFloat(currentMode.RefreshRate) != refreshRate
-        || is_interlaced != (res.dwFlags & D3DPRESENTFLAG_INTERLACED ? true : false)
-        // force resolution change for stereo mode
-        // some drivers unable to create stereo swapchain if mode does not match @23.976
-        || CServiceBroker::GetWinSystem()->GetGfxContext().GetStereoMode() == RENDER_STEREO_MODE_HARDWAREBASED)
+      // force resolution change for stereo mode some drivers unable 
+      // to create stereo swapchain if mode does not match @23.976
+      const bool bHwStereoEnabled = CServiceBroker::GetWinSystem()->GetGfxContext().GetStereoMode() == RENDER_STEREO_MODE_HARDWAREBASED;
+
+      if (currentMode.Width != static_cast<unsigned>(res.iWidth)
+        || currentMode.Height != static_cast<unsigned>(res.iHeight)
+        || RationalToFloat(currentMode.RefreshRate) != refreshRate
+        || is_interlaced != ((res.dwFlags & D3DPRESENTFLAG_INTERLACED) != 0)
+        || bHwStereoEnabled)
       {
         CLog::Log(LOGDEBUG, __FUNCTION__": changing display mode to %dx%d@%0.3f", res.iWidth, res.iHeight, res.fRefreshRate,
                   res.dwFlags & D3DPRESENTFLAG_INTERLACED ? "i" : "");
 
-        int refresh = static_cast<int>(res.fRefreshRate);
-        int i = (refresh + 1) % 24 == 0 || (refresh + 1) % 30 == 0 ? 1 : 0;
+        const int refresh = static_cast<int>(res.fRefreshRate);
+        const int i = (refresh + 1) % 24 == 0 || (refresh + 1) % 30 == 0 ? 1 : 0;
 
         currentMode.Width = res.iWidth;
         currentMode.Height = res.iHeight;
@@ -258,13 +251,13 @@ bool DX::DeviceResources::SetFullScreen(bool fullscreen, RESOLUTION_INFO& res)
           recreate |= SUCCEEDED(m_swapChain->SetFullscreenState(true, pOutput.Get()));
           m_swapChain->GetFullscreenState(&bFullScreen, nullptr);
         }
-        bool resized = SUCCEEDED(m_swapChain->ResizeTarget(&currentMode));
+        const bool resized = SUCCEEDED(m_swapChain->ResizeTarget(&currentMode));
         if (resized) 
         {
           // some system doesn't inform windowing about desktop size changes
           // so we have to change output size before resizing buffers
-          m_outputSize.Width = static_cast<float>(currentMode.Width);
-          m_outputSize.Height = static_cast<float>(currentMode.Height);
+          m_outputSize.Width = static_cast<float>(res.iWidth);
+          m_outputSize.Height = static_cast<float>(res.iHeight);
         }
         recreate |= resized;
       }
@@ -272,14 +265,14 @@ bool DX::DeviceResources::SetFullScreen(bool fullscreen, RESOLUTION_INFO& res)
     if (!bFullScreen)
     {
       ComPtr<IDXGIOutput> pOutput;
-      GetOutput(pOutput.GetAddressOf());
+      GetOutput(&pOutput);
 
       CLog::LogF(LOGDEBUG, "switching to fullscreen");
       recreate |= SUCCEEDED(m_swapChain->SetFullscreenState(true, pOutput.Get()));
     }
   }
 
-  // resize backbuffer to proper hanlde fullscreen/stereo transition
+  // resize backbuffer to proper handle fullscreen/stereo transition
   if (recreate)
     ResizeBuffers();
 
@@ -574,7 +567,7 @@ void DX::DeviceResources::ResizeBuffers()
   else
   {
     // Otherwise, create a new one using the same adapter as the existing Direct3D device.
-    DXGI_SWAP_CHAIN_DESC1 swapChainDesc = { 0 };
+    DXGI_SWAP_CHAIN_DESC1 swapChainDesc = {};
     swapChainDesc.Width = lround(m_outputSize.Width);
     swapChainDesc.Height = lround(m_outputSize.Height);
     swapChainDesc.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
@@ -587,7 +580,7 @@ void DX::DeviceResources::ResizeBuffers()
     swapChainDesc.SampleDesc.Count = 1;
     swapChainDesc.SampleDesc.Quality = 0;
 
-    DXGI_SWAP_CHAIN_FULLSCREEN_DESC scFSDesc = { 0 }; // unused for uwp
+    DXGI_SWAP_CHAIN_FULLSCREEN_DESC scFSDesc = {}; // unused for uwp
     scFSDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
     scFSDesc.Windowed = windowed;
 
@@ -674,8 +667,8 @@ void DX::DeviceResources::UpdateRenderTargetSize()
   }
 
   // Calculate the necessary render target size in pixels.
-  m_outputSize.Width = DX::ConvertDipsToPixels(m_logicalSize.Width, m_effectiveDpi);
-  m_outputSize.Height = DX::ConvertDipsToPixels(m_logicalSize.Height, m_effectiveDpi);
+  m_outputSize.Width = ConvertDipsToPixels(m_logicalSize.Width, m_effectiveDpi);
+  m_outputSize.Height = ConvertDipsToPixels(m_logicalSize.Height, m_effectiveDpi);
 
   // Prevent zero size DirectX content from being created.
   m_outputSize.Width = std::max(m_outputSize.Width, 1.f);
@@ -691,7 +684,7 @@ void DX::DeviceResources::Register(ID3DResource* resource)
 void DX::DeviceResources::Unregister(ID3DResource* resource)
 {
   critical_section::scoped_lock lock(m_resourceSection);
-  std::vector<ID3DResource*>::iterator i = find(m_resources.begin(), m_resources.end(), resource);
+  const auto i = find(m_resources.begin(), m_resources.end(), resource);
   if (i != m_resources.end())
     m_resources.erase(i);
 }
