@@ -609,10 +609,10 @@ namespace PVR
 
     /*!
      * @brief Open a live stream on the server.
-     * @param channel The channel to stream.
+     * @param channelItem The channel to stream.
      * @return PVR_ERROR_NO_ERROR on success, respective error code otherwise.
      */
-    PVR_ERROR OpenLiveStream(const CPVRChannelPtr &channel);
+    PVR_ERROR OpenLiveStream(const CFileItem& channelItem);
 
     /*!
      * @brief Close an open live stream.
@@ -711,10 +711,10 @@ namespace PVR
 
     /*!
      * @brief Open a recording on the server.
-     * @param recording The recording to open.
+     * @param recordingItem The recording to open.
      * @return PVR_ERROR_NO_ERROR on success, respective error code otherwise.
      */
-    PVR_ERROR OpenRecordedStream(const CPVRRecordingPtr &recording);
+    PVR_ERROR OpenRecordedStream(const CFileItem& recordingItem);
 
     /*!
      * @brief Close an open recording stream.

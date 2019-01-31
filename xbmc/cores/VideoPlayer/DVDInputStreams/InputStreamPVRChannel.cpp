@@ -32,7 +32,7 @@ CDVDInputStream::IDemux* CInputStreamPVRChannel::GetIDemux()
 
 bool CInputStreamPVRChannel::OpenPVRStream()
 {
-  if (m_client && (m_client->OpenLiveStream(m_item.GetPVRChannelInfoTag()) == PVR_ERROR_NO_ERROR))
+  if (m_client && (m_client->OpenLiveStream(m_item) == PVR_ERROR_NO_ERROR))
   {
     m_bDemuxActive = m_client->GetClientCapabilities().HandlesDemuxing();
     CLog::Log(LOGDEBUG, "CInputStreamPVRChannel - %s - opened channel stream %s", __FUNCTION__, m_item.GetPath().c_str());
