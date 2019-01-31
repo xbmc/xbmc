@@ -452,6 +452,14 @@ public:
     return fragmentsList;
   }
 
+  void GetQuad(point_type (&points)[4])
+  {
+    points[0] = { x1, y1 };
+    points[1] = { x2, y1 };
+    points[2] = { x2, y2 };
+    points[3] = { x1, y2 };
+  }
+
   T x1{}, y1{}, x2{}, y2{};
 private:
   static constexpr T clamp_range(T x, T l, T h) XBMC_FORCE_INLINE

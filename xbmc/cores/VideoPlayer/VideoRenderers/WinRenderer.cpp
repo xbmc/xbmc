@@ -574,11 +574,8 @@ void CWinRenderer::UpdatePSVideoFilter()
     }
   }
 
-  if (m_bUseHQScaler && !CreateIntermediateRenderTarget(m_sourceWidth, m_sourceHeight, false))
-  {
-    m_scalerShader.reset();
-    m_bUseHQScaler = false;
-  }
+  if (m_renderMethod != RENDER_DXVA || m_bUseHQScaler)
+    CreateIntermediateRenderTarget(m_sourceWidth, m_sourceHeight, false);
 
   m_colorShader.reset();
 
@@ -592,7 +589,7 @@ void CWinRenderer::UpdatePSVideoFilter()
   }
 
   m_colorShader = std::make_unique<CYUV2RGBShader>();
-  if (!m_colorShader->Create(m_bufferFormat, AVColorPrimaries::AVCOL_PRI_BT709, m_srcPrimaries, m_bUseHQScaler ? nullptr : m_outputShader.get()))
+  if (!m_colorShader->Create(m_bufferFormat, AVCOL_PRI_BT709, m_srcPrimaries))
   {
     if (m_bUseHQScaler)
     {
@@ -796,44 +793,50 @@ void CWinRenderer::RenderSW(CD3DTexture* target)
 
 void CWinRenderer::RenderPS(CD3DTexture* target)
 {
-  if (m_bUseHQScaler)
-    target = &m_IntermediateTarget;
+  CD3D11_VIEWPORT viewPort(0.0f, 0.0f, static_cast<float>(m_sourceWidth), static_cast<float>(m_sourceHeight));
 
-  CD3D11_VIEWPORT viewPort(0.0f, 0.0f, static_cast<float>(target->GetWidth()), static_cast<float>(target->GetHeight()));
-
-  if (m_bUseHQScaler)
-    DX::Windowing()->ResetScissors();
-
+  // reset scissors
+  DX::Windowing()->ResetScissors();
   // reset view port
   DX::DeviceResources::Get()->GetD3DContext()->RSSetViewports(1, &viewPort);
 
-  // select destination rectangle
-  CPoint destPoints[4];
-  if (m_renderOrientation)
-  {
-    for (size_t i = 0; i < 4; i++)
-      destPoints[i] = m_rotatedDestCoords[i];
-  }
-  else
-  {
-    CRect destRect = m_bUseHQScaler ? m_sourceRect : CServiceBroker::GetWinSystem()->GetGfxContext().StereoCorrection(m_destRect);
-    destPoints[0] = { destRect.x1, destRect.y1 };
-    destPoints[1] = { destRect.x2, destRect.y1 };
-    destPoints[2] = { destRect.x2, destRect.y2 };
-    destPoints[3] = { destRect.x1, destRect.y2 };
-  }
-
   CRenderBuffer& buf = m_renderBuffers[m_iYV12RenderBuffer];
 
-  // set params
-  m_outputShader->SetDisplayMetadata(buf.hasDisplayMetadata, buf.displayMetadata, buf.hasLightMetadata, buf.lightMetadata);
-  m_outputShader->SetToneMapParam(m_videoSettings.m_ToneMapParam);
-
+  CPoint srcPoints[4];
+  m_sourceRect.GetQuad(srcPoints);
+  // set converter params
   m_colorShader->SetParams(m_videoSettings.m_Contrast, m_videoSettings.m_Brightness, DX::Windowing()->UseLimitedColor());
   m_colorShader->SetColParams(buf.color_space, buf.bits, !buf.full_range, buf.texBits);
+  // convert YUV -> RGB
+  m_colorShader->Render(m_sourceRect, srcPoints, &buf, &m_IntermediateTarget);
 
-  // render video frame
-  m_colorShader->Render(m_sourceRect, destPoints, &buf, target);
+  if (!m_bUseHQScaler)
+  {
+    // second pass (bilinear scaling)
+    // select destination rectangle
+    CPoint destPoints[4];
+    if (m_renderOrientation)
+    {
+      for (size_t i = 0; i < 4; i++)
+        destPoints[i] = m_rotatedDestCoords[i];
+    }
+    else
+    {
+      CServiceBroker::GetWinSystem()->GetGfxContext().StereoCorrection(m_destRect).GetQuad(destPoints);
+    }
+    // set params
+    m_outputShader->SetDisplayMetadata(buf.hasDisplayMetadata, buf.displayMetadata, buf.hasLightMetadata, buf.lightMetadata);
+    m_outputShader->SetToneMapParam(m_videoSettings.m_ToneMapParam);
+
+    viewPort.Width = static_cast<float>(target->GetWidth());
+    viewPort.Height = static_cast<float>(target->GetHeight());
+    // set viewport to the whole target
+    DX::DeviceResources::Get()->GetD3DContext()->RSSetViewports(1, &viewPort);
+    // restore scissors
+    DX::Windowing()->SetScissors(CServiceBroker::GetWinSystem()->GetGfxContext().StereoCorrection(CServiceBroker::GetWinSystem()->GetGfxContext().GetScissors()));
+    // render frame
+    m_outputShader->Render(m_IntermediateTarget, m_sourceWidth, m_sourceHeight, m_sourceRect, destPoints, target);
+  }
   // Restore our view port.
   DX::Windowing()->RestoreViewPort();
 }
