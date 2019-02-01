@@ -597,7 +597,10 @@ void CWinRenderer::UpdateVideoFilter()
   if (cmsChanged || !m_outputShader)
   {
     m_outputShader = std::make_shared<COutputShader>();
-    if (!m_outputShader->Create(m_cmsOn, m_useDithering, m_ditherDepth, m_toneMapping))
+    // use mapping only if processor doesn't support HDR10
+    // and mapping enabled in settings.
+    const bool mapping = !m_processor->HasHDR10Support() && m_toneMapping;
+    if (!m_outputShader->Create(m_cmsOn, m_useDithering, m_ditherDepth, mapping))
     {
       CLog::LogF(LOGDEBUG, "unable to create output shader.");
       m_outputShader.reset();
@@ -916,8 +919,11 @@ void CWinRenderer::RenderHW(DWORD flags, CD3DTexture& target)
     }
 
     // render frame
-    m_outputShader->SetDisplayMetadata(buf.hasDisplayMetadata, buf.displayMetadata, buf.hasLightMetadata, buf.lightMetadata);
-    m_outputShader->SetToneMapParam(m_videoSettings.m_ToneMapParam);
+    if (!m_processor->HasHDR10Support())
+    {
+      m_outputShader->SetDisplayMetadata(buf.hasDisplayMetadata, buf.displayMetadata, buf.hasLightMetadata, buf.lightMetadata);
+      m_outputShader->SetToneMapParam(m_videoSettings.m_ToneMapParam);
+    }
     m_outputShader->Render(m_IntermediateTarget, m_destWidth, m_destHeight, dst, dst, target);
     DX::Windowing()->RestoreViewPort();
   }

@@ -42,10 +42,13 @@ public:
   void Close();
   bool Render(CRect src, CRect dst, ID3D11Resource* target, CRenderBuffer **views, DWORD flags, UINT frameIdx, UINT rotation, float contrast, float brightness);
   uint8_t PastRefs() const { return m_max_back_refs; }
+  bool HasHDR10Support() const { return m_bSupportHDR10; }
 
   // ID3DResource overrides
   void OnCreateDevice() override  {}
   void OnDestroyDevice(bool) override { CSingleLock lock(m_section); UnInit(); }
+
+  static DXGI_COLOR_SPACE_TYPE GetDXGIColorSpace(CRenderBuffer*, bool);
 
 protected:
   bool ReInit();
@@ -65,13 +68,14 @@ protected:
   uint32_t m_procIndex = 0;
   D3D11_VIDEO_PROCESSOR_CAPS m_vcaps = {};
   D3D11_VIDEO_PROCESSOR_RATE_CONVERSION_CAPS m_rateCaps = {};
+  bool m_bSupportHDR10 = false;
 
   struct ProcAmpInfo
   {
     bool bSupported;
     D3D11_VIDEO_PROCESSOR_FILTER_RANGE Range;
   };
-  ProcAmpInfo m_Filters[NUM_FILTERS];
+  ProcAmpInfo m_Filters[NUM_FILTERS]{};
   Microsoft::WRL::ComPtr<ID3D11VideoDevice> m_pVideoDevice;
   Microsoft::WRL::ComPtr<ID3D11VideoContext> m_pVideoContext;
   Microsoft::WRL::ComPtr<ID3D11VideoProcessorEnumerator> m_pEnumerator;
