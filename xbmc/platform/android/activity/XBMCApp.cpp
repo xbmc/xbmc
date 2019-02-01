@@ -1083,6 +1083,12 @@ void CXBMCApp::onReceive(CJNIIntent intent)
 
 void CXBMCApp::onNewIntent(CJNIIntent intent)
 {
+  if (!intent)
+  {
+    CLog::Log(LOGNOTICE, "CXBMCApp::onNewIntent - Got invalid intent.");
+    return;
+  }
+
   std::string action = intent.getAction();
   CLog::Log(LOGDEBUG, "CXBMCApp::onNewIntent - Got intent. Action: %s", action.c_str());
   std::string targetFile = GetFilenameFromIntent(intent);
