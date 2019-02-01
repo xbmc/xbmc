@@ -1218,8 +1218,22 @@ bool CPVRClient::CanPlayChannel(const CPVRChannelPtr &channel) const
             (m_clientCapabilities.SupportsRadio() && channel->IsRadio())));
 }
 
-PVR_ERROR CPVRClient::OpenLiveStream(const CPVRChannelPtr &channel)
+PVR_ERROR CPVRClient::OpenLiveStream(const CFileItem& channelItem)
 {
+  std::shared_ptr<CPVRChannel> channel = channelItem.GetPVRChannelInfoTag();
+  if (!channel)
+  {
+    const std::shared_ptr<CFileItem> item = CServiceBroker::GetPVRManager().ChannelGroups()->GetByPath(channelItem.GetPath());
+    if (item)
+      channel = item->GetPVRChannelInfoTag();
+  }
+
+  if (!channel)
+  {
+    CLog::LogFC(LOGERROR, LOGPVR, "Unable to obtain channel for path '%s'", channelItem.GetPath().c_str());
+    return PVR_ERROR_INVALID_PARAMETERS;
+  }
+
   return DoAddonCall(__FUNCTION__, [this, channel](const AddonInstance* addon) {
     CloseLiveStream();
 
@@ -1238,8 +1252,22 @@ PVR_ERROR CPVRClient::OpenLiveStream(const CPVRChannelPtr &channel)
   });
 }
 
-PVR_ERROR CPVRClient::OpenRecordedStream(const CPVRRecordingPtr &recording)
+PVR_ERROR CPVRClient::OpenRecordedStream(const CFileItem& recordingItem)
 {
+  std::shared_ptr<CPVRRecording> recording = recordingItem.GetPVRRecordingInfoTag();
+  if (!recording)
+  {
+    const std::shared_ptr<CFileItem> item = CServiceBroker::GetPVRManager().Recordings()->GetByPath(recordingItem.GetPath());
+    if (item)
+      recording = item->GetPVRRecordingInfoTag();
+  }
+
+  if (!recording)
+  {
+    CLog::LogFC(LOGERROR, LOGPVR, "Unable to obtain recording for path '%s'", recordingItem.GetPath().c_str());
+    return PVR_ERROR_INVALID_PARAMETERS;
+  }
+
   return DoAddonCall(__FUNCTION__, [this, recording](const AddonInstance* addon) {
     CloseRecordedStream();
 

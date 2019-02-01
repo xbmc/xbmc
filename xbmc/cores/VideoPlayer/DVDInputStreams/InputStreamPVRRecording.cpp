@@ -23,7 +23,7 @@ CInputStreamPVRRecording::~CInputStreamPVRRecording()
 
 bool CInputStreamPVRRecording::OpenPVRStream()
 {
-  if (m_client && (m_client->OpenRecordedStream(m_item.GetPVRRecordingInfoTag()) == PVR_ERROR_NO_ERROR))
+  if (m_client && (m_client->OpenRecordedStream(m_item) == PVR_ERROR_NO_ERROR))
   {
     CLog::Log(LOGDEBUG, "CInputStreamPVRRecording - %s - opened recording stream %s", __FUNCTION__, m_item.GetPath().c_str());
     return true;
