@@ -62,6 +62,15 @@
 #include "view/GUIViewState.h"
 #include <inttypes.h>
 
+
+
+#include <pthread.h>
+#include <unistd.h>
+
+
+
+
+
 #define CONTROL_BTNVIEWASICONS       2
 #define CONTROL_BTNSORTBY            3
 #define CONTROL_BTNSORTASC           4
@@ -1511,7 +1520,7 @@ bool CGUIMediaWindow::OnPlayAndQueueMedia(const CFileItemPtr &item, std::string 
       }
     }
 
-    // now queue...
+    // Load selected file into playlist and start playing
     for ( int i = 0; i < m_vecItems->Size(); i++ )
     {
       CFileItemPtr nItem = m_vecItems->Get(i);
@@ -1519,13 +1528,21 @@ bool CGUIMediaWindow::OnPlayAndQueueMedia(const CFileItemPtr &item, std::string 
       if (nItem->m_bIsFolder)
         continue;
 
-      if (!nItem->IsZIP() && !nItem->IsRAR() && (!nItem->IsDVDFile() || (URIUtils::GetFileName(nItem->GetPath()) == mainDVD)))
-        CServiceBroker::GetPlaylistPlayer().Add(iPlaylist, nItem);
+        if (item->IsSamePath(nItem.get()))
+        { // item that was clicked
+          //CServiceBroker::GetPlaylistPlayer().Add(iPlaylist, nItem);
+          CGUIMediaWindow::PlaylistPosition = i;
+          CServiceBroker::GetPlaylistPlayer().Insert(iPlaylist, nItem, i);
+          mediaToPlay = CServiceBroker::GetPlaylistPlayer().GetPlaylist(iPlaylist).size() - 1;
+        }
 
-      if (item->IsSamePath(nItem.get()))
-      { // item that was clicked
-        mediaToPlay = CServiceBroker::GetPlaylistPlayer().GetPlaylist(iPlaylist).size() - 1;
-      }
+//      if (!nItem->IsZIP() && !nItem->IsRAR() && (!nItem->IsDVDFile() || (URIUtils::GetFileName(nItem->GetPath()) == mainDVD)))
+//        CServiceBroker::GetPlaylistPlayer().Add(iPlaylist, nItem);
+
+//      if (item->IsSamePath(nItem.get()))
+//      { // item that was clicked
+//        mediaToPlay = CServiceBroker::GetPlaylistPlayer().GetPlaylist(iPlaylist).size() - 1;
+//      }
     }
 
     // Save current window and directory to know where the selected item was
@@ -1543,9 +1560,58 @@ bool CGUIMediaWindow::OnPlayAndQueueMedia(const CFileItemPtr &item, std::string 
     // play
     CServiceBroker::GetPlaylistPlayer().SetCurrentPlaylist(iPlaylist);
     CServiceBroker::GetPlaylistPlayer().Play(mediaToPlay, player);
+
+    // trigger queuing thread
+    pthread_t tid;
+    int       result;
+    result = pthread_create(&tid, 0, CGUIMediaWindow::callPlaylistAddAsync, this);
+    if (result == 0)
+    {
+       pthread_detach(tid);
+    }
+
+
   }
   return true;
 }
+
+
+
+
+void* CGUIMediaWindow::PlaylistAddAsync(void) {
+  // Do actual work here
+    int iPlaylist = m_guiState->GetPlaylist();
+
+    for ( int i = 0; i < m_vecItems->Size(); i++ )
+    {
+      CFileItemPtr nItem = m_vecItems->Get(i);
+
+      if (nItem->m_bIsFolder)
+        continue;
+
+        //if (!nItem->IsZIP() && !nItem->IsRAR() && (!nItem->IsDVDFile() || (URIUtils::GetFileName(nItem->GetPath()) == mainDVD))
+        //if (i <= 10) //For debug reasons, playlist is limited to 10 items
+        //{
+            sleep(10); // for debug delay the playlist loading
+            //sleep(0.1); //productive
+
+            if (i != CGUIMediaWindow::PlaylistPosition)
+            { // item that was clicked
+              CServiceBroker::GetPlaylistPlayer().Insert(iPlaylist, nItem, i);
+            }
+        //}
+    }
+  return 0;
+}
+
+
+
+
+
+
+
+
+
 
 /*!
  * \brief Update file list

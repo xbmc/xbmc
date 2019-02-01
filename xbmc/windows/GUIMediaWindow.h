@@ -57,6 +57,8 @@ public:
   const CGUIViewState *GetViewState() const;
   virtual bool UseFileDirectories() { return true; }
 
+  int PlaylistPosition = 0;
+
 protected:
   // specializations of CGUIControlGroup
   CGUIControl *GetFirstFocusableControl(int id) override;
@@ -155,6 +157,12 @@ protected:
   virtual void LoadPlayList(const std::string& strFileName) {}
   virtual bool OnPlayMedia(int iItem, const std::string &player = "");
   virtual bool OnPlayAndQueueMedia(const CFileItemPtr &item, std::string player = "");
+
+
+  static void* callPlaylistAddAsync(void *arg) { return ((CGUIMediaWindow*)arg)->PlaylistAddAsync(); }
+  void*         PlaylistAddAsync(void);
+
+
   void UpdateFileList();
   virtual void OnDeleteItem(int iItem);
   void OnRenameItem(int iItem);
