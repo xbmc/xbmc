@@ -322,7 +322,7 @@ ID3D11RenderTargetView** CD3DTexture::GetAddressOfRTV()
 {
   if (!m_renderTargets[m_viewIdx])
     GetRenderTargetInternal(m_viewIdx);
-  return m_renderTargets[0].GetAddressOf();
+  return m_renderTargets[m_viewIdx].GetAddressOf();
 }
 
 void CD3DTexture::Release()
