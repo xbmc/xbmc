@@ -45,7 +45,14 @@ void CVideoSyncOML::Run(CEvent& stopEvent)
     timeSinceVblank = m_winSystem.GetVblankTiming(newMsc, interval);
 
     if (newMsc == msc)
+    {
+      newMsc++;
+    }
+    else if (newMsc < msc)
+    {
+      timeSinceVblank = interval;
       continue;
+    }
 
     uint64_t now = CurrentHostCounter();
     UpdateClock(newMsc - msc, now, m_refClock);
