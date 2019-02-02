@@ -335,18 +335,22 @@ void CGLContextEGL::Detach()
 bool CGLContextEGL::IsSuitableVisual(XVisualInfo *vInfo)
 {
   EGLConfig config = GetEGLConfig(m_eglDisplay, vInfo);
-  if (config == EGL_NO_CONFIG)
-  {
-    CLog::Log(LOGERROR, "Failed to determine egl config for visual info");
-    return false;
-  }
-  EGLint value;
+  return config != EGL_NO_CONFIG;
+}
 
-  if (!eglGetConfigAttrib(m_eglDisplay, config, EGL_RED_SIZE, &value) || value < 8)
+bool CGLContextEGL::SuitableCheck(EGLDisplay eglDisplay, EGLConfig config)
+{
+  if (config == EGL_NO_CONFIG)
     return false;
-  if (!eglGetConfigAttrib(m_eglDisplay, config, EGL_GREEN_SIZE, &value) || value < 8)
+
+  EGLint value;
+  if (!eglGetConfigAttrib(eglDisplay, config, EGL_RED_SIZE, &value) || value < 8)
     return false;
-  if (!eglGetConfigAttrib(m_eglDisplay, config, EGL_BLUE_SIZE, &value) || value < 8)
+  if (!eglGetConfigAttrib(eglDisplay, config, EGL_GREEN_SIZE, &value) || value < 8)
+    return false;
+  if (!eglGetConfigAttrib(eglDisplay, config, EGL_BLUE_SIZE, &value) || value < 8)
+    return false;
+  if (!eglGetConfigAttrib(eglDisplay, config, EGL_DEPTH_SIZE, &value) || value < 24)
     return false;
 
   return true;
@@ -382,13 +386,17 @@ EGLConfig CGLContextEGL::GetEGLConfig(EGLDisplay eglDisplay, XVisualInfo *vInfo)
   }
   for (EGLint i = 0; i < numConfigs; ++i)
   {
+    if (!SuitableCheck(eglDisplay, eglConfigs[i]))
+      continue;
+
     EGLint value;
     if (!eglGetConfigAttrib(eglDisplay, eglConfigs[i], EGL_NATIVE_VISUAL_ID, &value))
     {
       CLog::Log(LOGERROR, "Failed to query EGL_NATIVE_VISUAL_ID for egl config.");
       break;
     }
-    if (value == (EGLint)vInfo->visualid) {
+    if (value == (EGLint)vInfo->visualid)
+    {
       eglConfig = eglConfigs[i];
       break;
     }
