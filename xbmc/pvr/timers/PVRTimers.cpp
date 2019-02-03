@@ -683,6 +683,8 @@ TimerOperationResult CPVRTimers::DeleteTimer(const CPVRTimerInfoTagPtr &tag, boo
       CLog::LogF(LOGERROR, "Unable to obtain timer rule for given timer");
       return TimerOperationResult::FAILED;
     }
+
+    return ruleTag->DeleteFromClient(bForce);
   }
 
   return tag->DeleteFromClient(bForce);
