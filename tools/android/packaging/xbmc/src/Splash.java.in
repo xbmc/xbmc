@@ -137,7 +137,7 @@ public class Splash extends Activity
           mSplash.mTextView.setText("Asking for permissions...");
           mSplash.mProgress.setVisibility(View.INVISIBLE);
 
-          requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+          requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE},
                     PERMISSION_RESULT_CODE);
           break;
         case CheckingPermissionsDone:
