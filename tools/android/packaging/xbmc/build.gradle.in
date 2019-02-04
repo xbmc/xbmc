@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 26
-    buildToolsVersion "25.0.3"
+    buildToolsVersion "27.0.3"
     defaultConfig {
         applicationId "@APP_PACKAGE@"
         minSdkVersion 21
@@ -44,6 +44,6 @@ project.afterEvaluate {
 
 dependencies {
     // New support library to for channels/programs development.
-    compile 'com.android.support:support-tv-provider:26.0.1'
-    compile 'com.google.code.gson:gson:2.8.0'
+    api 'com.android.support:support-tv-provider:26.0.1'
+    api 'com.google.code.gson:gson:2.8.0'
 }

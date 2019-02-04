@@ -44,10 +44,12 @@ else ifeq ($(findstring arm,$(CPU)),arm)
 endif
 
 # libc++
-STLLIB=$(TOOLCHAIN)/$(HOST)/lib/libc++_shared.so
-# https://android.googlesource.com/platform/ndk/+/fe0fe5dc32682d1811d32492c3055becb512c147/build/tools/make_standalone_toolchain.py#308
-ifeq ($(findstring armeabi-v7a,$(CPU)),armeabi-v7a)
+ifneq (,$(wildcard $(TOOLCHAIN)/sysroot/usr/lib/$(HOST)/libc++_shared.so))
+  STLLIB=$(TOOLCHAIN)/sysroot/usr/lib/$(HOST)/libc++_shared.so
+else ifeq ($(findstring armeabi-v7a,$(CPU)),armeabi-v7a)
   STLLIB=$(TOOLCHAIN)/$(HOST)/lib/armv7-a/libc++_shared.so
+else
+  STLLIB=$(TOOLCHAIN)/$(HOST)/lib/libc++_shared.s
 endif
 
 #older ndk x86
@@ -163,7 +165,7 @@ java: res
 package: libs python java
 	@echo "Gradle build..."
 	ANDROID_HOME=$(SDKROOT) ./gradlew assemble$(BUILD_TYPE)Unsigned
-	@cp xbmc/build/outputs/apk/xbmc-$(BUILD_TYPE_LC)Unsigned-unsigned.apk images/@APP_NAME_LC@app-debug-$(CPU)-unaligned.apk
+	@cp xbmc/build/outputs/apk/releaseUnsigned/xbmc-$(BUILD_TYPE_LC)Unsigned-unsigned.apk images/@APP_NAME_LC@app-debug-$(CPU)-unaligned.apk
 
 apk-sign:
 	@echo "Signing..."

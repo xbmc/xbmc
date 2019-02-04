@@ -95,7 +95,7 @@ cd $HOME/android-tools/android-sdk-linux/tools/bin
 ./sdkmanager --licenses
 ./sdkmanager platform-tools
 ./sdkmanager "platforms;android-26"
-./sdkmanager "build-tools;25.0.3"
+./sdkmanager "build-tools;27.0.3"
 ```
 
 ### 3.3. Set up the Android toolchain
