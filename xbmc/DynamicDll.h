@@ -125,7 +125,7 @@ public: \
   public: \
     virtual result name args override \
     { \
-      return m_##name args2; \
+      return m_##name ? m_##name args2 : (result) 0; \
     }
 
 #define DEFINE_METHOD_LINKAGE0(result, linkage, name) \
@@ -402,6 +402,10 @@ public: \
 #define RESOLVE_METHOD_RENAME(dllmethod, method) \
   if (!m_dll->ResolveExport( #dllmethod , & m_##method##_ptr )) \
     return false;
+
+#define RESOLVE_METHOD_RENAME_OPTIONAL(dllmethod, method) \
+  m_##method##_ptr = nullptr; \
+  m_dll->ResolveExport( #dllmethod , & m_##method##_ptr );
 
 #define RESOLVE_METHOD_RENAME_FP(dllmethod, method) \
   if (!m_dll->ResolveExport( #dllmethod , & method##_ptr )) \

@@ -15,12 +15,17 @@ extern "C" {
 #endif
 
   ADDON_STATUS __declspec(dllexport) ADDON_Create(void *callbacks, void* props);
+  ADDON_STATUS __declspec(dllexport) ADDON_CreateEx(void *callbacks, const char* globalApiVersion, void* props);
   void         __declspec(dllexport) ADDON_Destroy();
   ADDON_STATUS __declspec(dllexport) ADDON_GetStatus();
   ADDON_STATUS __declspec(dllexport) ADDON_SetSetting(const char *settingName, const void *settingValue);
   __declspec(dllexport) const char* ADDON_GetTypeVersion(int type)
   {
     return kodi::addon::GetTypeVersion(type);
+  }
+  __declspec(dllexport) const char* ADDON_GetTypeMinVersion(int type)
+  {
+    return kodi::addon::GetTypeMinVersion(type);
   }
 
 #ifdef __cplusplus

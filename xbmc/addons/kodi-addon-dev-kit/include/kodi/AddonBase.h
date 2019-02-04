@@ -193,6 +193,7 @@ typedef struct KodiToAddonFuncTable_Addon
   ADDON_STATUS (*create_instance)(int instanceType, const char* instanceID, KODI_HANDLE instance, KODI_HANDLE* addonInstance, KODI_HANDLE parent);
   void (*destroy_instance)(int instanceType, KODI_HANDLE instance);
   ADDON_STATUS (*set_setting)(const char *settingName, const void *settingValue);
+  ADDON_STATUS(*create_instance_ex)(int instanceType, const char* instanceID, KODI_HANDLE instance, KODI_HANDLE* addonInstance, KODI_HANDLE parent, const char* version);
 } KodiToAddonFuncTable_Addon;
 
 /*
@@ -251,6 +252,11 @@ public:
     return ADDON_STATUS_NOT_IMPLEMENTED;
   }
 
+  virtual ADDON_STATUS CreateInstanceEx(int instanceType, std::string instanceID, KODI_HANDLE instance, KODI_HANDLE& addonInstance, const std::string &version)
+  {
+    return CreateInstance(instanceType, instanceID, instance, addonInstance);
+  }
+
   const ADDON_TYPE m_type;
 };
 } /* namespace addon */
@@ -292,6 +298,9 @@ public:
     CAddonBase::m_interface->toAddon->create_instance = ADDONBASE_CreateInstance;
     CAddonBase::m_interface->toAddon->destroy_instance = ADDONBASE_DestroyInstance;
     CAddonBase::m_interface->toAddon->set_setting = ADDONBASE_SetSetting;
+    // If version is present, we know that kodi has create_instance_ex implemented
+    if (!CAddonBase::m_strGlobalApiVersion.empty())
+      CAddonBase::m_interface->toAddon->create_instance_ex = ADDONBASE_CreateInstanceEx;
   }
 
   virtual ~CAddonBase() = default;
@@ -320,8 +329,14 @@ public:
     return ADDON_STATUS_UNKNOWN;
   }
 
+  virtual ADDON_STATUS CreateInstanceEx(int instanceType, std::string instanceID, KODI_HANDLE instance, KODI_HANDLE& addonInstance, const std::string &version)
+  {
+    return CreateInstance(instanceType, instanceID, instance, addonInstance);
+  }
+
   /* Global variables of class */
   static AddonGlobalInterface* m_interface; // Interface function table to hold addresses on add-on and from kodi
+  static std::string m_strGlobalApiVersion;
 
 /*private:*/ /* Needed public as long the old call functions becomes used! */
   static inline void ADDONBASE_Destroy()
@@ -339,16 +354,21 @@ public:
 
   static inline ADDON_STATUS ADDONBASE_CreateInstance(int instanceType, const char* instanceID, KODI_HANDLE instance, KODI_HANDLE* addonInstance, KODI_HANDLE parent)
   {
+    return ADDONBASE_CreateInstanceEx(instanceType, instanceID, instance, addonInstance, parent, nullptr);
+  }
+
+  static inline ADDON_STATUS ADDONBASE_CreateInstanceEx(int instanceType, const char* instanceID, KODI_HANDLE instance, KODI_HANDLE* addonInstance, KODI_HANDLE parent, const char* version)
+  {
     ADDON_STATUS status = ADDON_STATUS_NOT_IMPLEMENTED;
     if (parent != nullptr)
-      status = static_cast<IAddonInstance*>(parent)->CreateInstance(instanceType, instanceID, instance, *addonInstance);
+      status = static_cast<IAddonInstance*>(parent)->CreateInstanceEx(instanceType, instanceID, instance, *addonInstance, version);
     if (status == ADDON_STATUS_NOT_IMPLEMENTED)
-      status = CAddonBase::m_interface->addonBase->CreateInstance(instanceType, instanceID, instance, *addonInstance);
+      status = CAddonBase::m_interface->addonBase->CreateInstanceEx(instanceType, instanceID, instance, *addonInstance, version);
     if (*addonInstance == nullptr)
-      throw std::logic_error("kodi::addon::CAddonBase CreateInstance returns a empty instance pointer!");
+      throw std::logic_error("kodi::addon::CAddonBase CreateInstanceEx returns a empty instance pointer!");
 
     if (static_cast<::kodi::addon::IAddonInstance*>(*addonInstance)->m_type != instanceType)
-      throw std::logic_error("kodi::addon::CAddonBase CreateInstance with difference on given and returned instance type!");
+      throw std::logic_error("kodi::addon::CAddonBase CreateInstanceEx with difference on given and returned instance type!");
 
     return status;
   }
@@ -650,6 +670,11 @@ inline void* GetInterface(const std::string &name, const std::string &version)
     kodi::addon::CAddonBase::m_interface->addonBase = new AddonClass; \
     return kodi::addon::CAddonBase::m_interface->addonBase->Create(); \
   } \
+  extern "C" __declspec(dllexport) ADDON_STATUS ADDON_CreateEx(KODI_HANDLE addonInterface, const char* globalApiVersion, void *unused) \
+  { \
+    kodi::addon::CAddonBase::m_strGlobalApiVersion = globalApiVersion; \
+    return ADDON_Create(addonInterface, unused); \
+  } \
   extern "C" __declspec(dllexport) void ADDON_Destroy() \
   { \
     kodi::addon::CAddonBase::ADDONBASE_Destroy(); \
@@ -666,4 +691,10 @@ inline void* GetInterface(const std::string &name, const std::string &version)
   { \
     return kodi::addon::GetTypeVersion(type); \
   } \
-  AddonGlobalInterface* kodi::addon::CAddonBase::m_interface = nullptr;
+  extern "C" __declspec(dllexport) const char* ADDON_GetTypeMinVersion(int type) \
+  { \
+    return kodi::addon::GetTypeMinVersion(type); \
+  } \
+  AddonGlobalInterface* kodi::addon::CAddonBase::m_interface = nullptr; \
+  std::string kodi::addon::CAddonBase::m_strGlobalApiVersion;
+
