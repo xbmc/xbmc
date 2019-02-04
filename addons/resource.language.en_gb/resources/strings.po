@@ -10920,7 +10920,11 @@ msgctxt "#19302"
 msgid "Do you want to record the selected programme or to switch to the current programme?"
 msgstr ""
 
-#empty string with id 19303
+#. label for PVR settings close channel OSD after channel switch control
+#: system/settings/settings.xml
+msgctxt "#19303"
+msgid "Close channel OSD after switching channels"
+msgstr ""
 
 #. Label for context menu entry to open settings dialog for a timer rule (read-only)
 #: xbmc/pvr/PVRContextMenus.cpp
@@ -18641,7 +18645,10 @@ msgctxt "#36234"
 msgid "Duration of instant recordings when pressing the record button. This value will be taken into account if \"Instant recording action\" is set to \"Record for a fixed period of time\""
 msgstr ""
 
-#empty string with id 36235
+#: system/settings/settings.xml
+msgctxt "#36235"
+msgid "Close the on screen display controls after switching channels."
+msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36236"
