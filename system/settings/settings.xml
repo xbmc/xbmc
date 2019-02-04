@@ -1294,6 +1294,11 @@
             <formatlabel>14045</formatlabel>
           </control>
         </setting>
+        <setting id="pvrmenu.closechannelosdonswitch" type="boolean" label="19303" help="36235">
+          <level>2</level>
+          <default>true</default>
+          <control type="toggle" />
+        </setting>
       </group>
       <group id="2" label="14302">
         <setting id="pvrmenu.iconpath" type="path" label="19018" help="36216">
