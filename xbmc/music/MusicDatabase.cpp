@@ -4293,7 +4293,7 @@ bool CMusicDatabase::GetArtistsByWhere(const std::string& strBaseDir, const Filt
     sorting = sortDescription;
     if (limitedInSQL && sortDescription.sortBy == SortByRandom)
       sorting.sortBy = SortByNone;
-    if (!SortUtils::SortFromDataset(sorting, MediaTypeSong, m_pDS, results))
+    if (!SortUtils::SortFromDataset(sorting, MediaTypeArtist, m_pDS, results))
       return false;
     
     // get data from returned rows
@@ -4467,7 +4467,7 @@ bool CMusicDatabase::GetAlbumsByWhere(const std::string &baseDir, const Filter &
     sorting = sortDescription;
     if (limitedInSQL && sortDescription.sortBy == SortByRandom)
       sorting.sortBy = SortByNone;
-    if (!SortUtils::SortFromDataset(sorting, MediaTypeSong, m_pDS, results))
+    if (!SortUtils::SortFromDataset(sorting, MediaTypeAlbum, m_pDS, results))
       return false;
 
     // get data from returned rows
