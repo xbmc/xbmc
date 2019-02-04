@@ -70,6 +70,11 @@ ThreadIdentifier CThread::GetCurrentThreadId()
   return ::GetCurrentThreadId();
 }
 
+ThreadIdentifier CThread::GetDisplayThreadId(const ThreadIdentifier tid)
+{
+  return tid;
+}
+
 bool CThread::IsCurrentThread(const ThreadIdentifier tid)
 {
   return (::GetCurrentThreadId() == tid);
