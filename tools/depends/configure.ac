@@ -197,6 +197,8 @@ case $host in
     platform_cxx=clang++
     deps_dir="$use_host-$use_ndk_api-$build_type"
     platform_cflags="-DANDROID -D__ANDROID_API__=$use_ndk_api -fexceptions -funwind-tables -fstack-protector-strong -no-canonical-prefixes -fPIC -DPIC"
+    #workaround NDK 19 stdlib=c++11 warning
+    platform_cflags+=" -Qunused-arguments"
     optimize_flags="-Os"
     platform_ldflags="-Wl,--exclude-libs,libgcc.a -Wl,--exclude-libs,libatomic.a -L$prefix/$deps_dir/lib/android-$use_ndk_api"
 

@@ -64,7 +64,9 @@ endif()
 # where is the target environment
 if(NOT "@use_toolchain@" STREQUAL "")
   list(APPEND CMAKE_FIND_ROOT_PATH @use_toolchain@/sysroot/usr)
-  list(APPEND CMAKE_SYSTEM_LIBRARY_PATH @use_toolchain@/sysroot/usr/lib/@use_host@/@use_ndk_api@)
+  if(OS STREQUAL android)
+    list(APPEND CMAKE_SYSTEM_LIBRARY_PATH @use_toolchain@/sysroot/usr/lib/@use_host@/@use_ndk_api@)
+  endif()
 endif()
 
 # add RBPI's firmware directories

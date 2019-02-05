@@ -47,9 +47,10 @@ endif
 ifneq (,$(wildcard $(TOOLCHAIN)/sysroot/usr/lib/$(HOST)/libc++_shared.so))
   STLLIB=$(TOOLCHAIN)/sysroot/usr/lib/$(HOST)/libc++_shared.so
 else ifeq ($(findstring armeabi-v7a,$(CPU)),armeabi-v7a)
+# https://android.googlesource.com/platform/ndk/+/fe0fe5dc32682d1811d32492c3055becb512c147/build/tools/make_standalone_toolchain.py#308
   STLLIB=$(TOOLCHAIN)/$(HOST)/lib/armv7-a/libc++_shared.so
 else
-  STLLIB=$(TOOLCHAIN)/$(HOST)/lib/libc++_shared.s
+  STLLIB=$(TOOLCHAIN)/$(HOST)/lib/libc++_shared.so
 endif
 
 #older ndk x86
