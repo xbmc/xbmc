@@ -1490,13 +1490,72 @@ bool CGUIMediaWindow::OnPlayMedia(int iItem, const std::string &player)
  */
 bool CGUIMediaWindow::OnPlayAndQueueMedia(const CFileItemPtr &item, std::string player)
 {
-  //play and add current directory to temporary playlist
-  int iPlaylist = m_guiState->GetPlaylist();
+  int iPlaylist = m_guiState->GetPlaylist(); // load Playlist ID, 0=audio, 1=Video
   if (iPlaylist != PLAYLIST_NONE)
   {
+	PlaylistThreadPause[0] = true;
+	PlaylistThreadPause[1] = true;
+    int m_vecItemsSize = m_vecItems->Size();
+
+    // Generate a signature for the itemlist
+    float ItemListContentSignatureCompare = 0;
+
+    if (m_vecItemsSize > 2)
+    {
+      std::string path1 = m_vecItems->Get(0)->GetPath();
+      std::string path2 = m_vecItems->Get(m_vecItemsSize - 1)->GetPath();
+      std::size_t h1 = std::hash<std::string>{}(path1);
+      std::size_t h2 = std::hash<std::string>{}(path2);
+      ItemListContentSignatureCompare = h1 + h2 + m_vecItemsSize;
+    }
+
+    // Do not reload complete Playlist, if nothing has changed
+    if (ItemListContentSignature[iPlaylist] == ItemListContentSignatureCompare)
+    { // Skip reloading Playlist (identical playlist according to verification), just play Song according to selection
+      int iPlaylist = m_guiState->GetPlaylist();
+
+      for ( int i = 0; i < m_vecItems->Size(); i++ )
+      {
+        CFileItemPtr nItem = m_vecItems->Get(i);
+
+        if (item->IsSamePath(nItem.get()))
+        {
+      	  int PlaylistSize = CServiceBroker::GetPlaylistPlayer().GetPlaylist(iPlaylist).size();
+
+      	  if (i > PlaylistSize)
+      	  {
+      	    CServiceBroker::GetPlaylistPlayer().Add(iPlaylist, nItem);
+            PlaylistPosition[iPlaylist] = i;
+      	  }
+
+          CServiceBroker::GetPlaylistPlayer().SetCurrentPlaylist(iPlaylist);
+          CServiceBroker::GetPlaylistPlayer().Play(i, player);
+          break;
+        }
+      }
+
+      PlaylistThreadPause[0] = false;
+      PlaylistThreadPause[1] = false;
+      return true;
+    }
+
+    //The following code will only be executed, if the itemlist has changed
+    PlaylistPosition[iPlaylist] = -1; // Preload Playlistposition to nothing = -1 (needed for Async Playlist Thread)
+    ItemListContentSignature[iPlaylist] = ItemListContentSignatureCompare; //Save Itemlist signature
+
+    // Kill Async Thread if it's already running
+    if (PlaylistThreadRunning[iPlaylist])
+    {
+      PlaylistThreadTerminate[iPlaylist] = true; //Trigger Asyc Playlist Thread stop
+
+      while (PlaylistThreadRunning[iPlaylist])
+      { // Wait for Asyc Playlist Thread has stopped
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+      }
+    }
+
     CServiceBroker::GetPlaylistPlayer().ClearPlaylist(iPlaylist);
     CServiceBroker::GetPlaylistPlayer().Reset();
-    int mediaToPlay = 0;
 
     // first try to find mainDVD file (VIDEO_TS.IFO).
     // If we find this we should not allow to queue VOB files
@@ -1511,7 +1570,7 @@ bool CGUIMediaWindow::OnPlayAndQueueMedia(const CFileItemPtr &item, std::string 
       }
     }
 
-    // now queue...
+    // Load only selected file into playlist on its position
     for ( int i = 0; i < m_vecItems->Size(); i++ )
     {
       CFileItemPtr nItem = m_vecItems->Get(i);
@@ -1519,12 +1578,17 @@ bool CGUIMediaWindow::OnPlayAndQueueMedia(const CFileItemPtr &item, std::string 
       if (nItem->m_bIsFolder)
         continue;
 
-      if (!nItem->IsZIP() && !nItem->IsRAR() && (!nItem->IsDVDFile() || (URIUtils::GetFileName(nItem->GetPath()) == mainDVD)))
-        CServiceBroker::GetPlaylistPlayer().Add(iPlaylist, nItem);
-
       if (item->IsSamePath(nItem.get()))
       { // item that was clicked
-        mediaToPlay = CServiceBroker::GetPlaylistPlayer().GetPlaylist(iPlaylist).size() - 1;
+        if (!nItem->IsZIP() && !nItem->IsRAR() && (!nItem->IsDVDFile() || (URIUtils::GetFileName(nItem->GetPath()) == mainDVD)))
+        {
+          CServiceBroker::GetPlaylistPlayer().Add(iPlaylist, nItem);
+          CServiceBroker::GetPlaylistPlayer().SetCurrentPlaylist(iPlaylist);
+          CServiceBroker::GetPlaylistPlayer().Play(i, player);
+          PlaylistPosition[iPlaylist] = i;
+        }
+
+        break;
       }
     }
 
@@ -1532,19 +1596,62 @@ bool CGUIMediaWindow::OnPlayAndQueueMedia(const CFileItemPtr &item, std::string 
     if (m_guiState.get())
       m_guiState->SetPlaylistDirectory(m_vecItems->GetPath());
 
-    // figure out where we start playback
-    if (CServiceBroker::GetPlaylistPlayer().IsShuffled(iPlaylist))
+    // Make copy of m_vecItems (listitems) for PlaylistAddAsync worker thread
+    std::unique_ptr<CFileItemList> Localm_vecItems;
+    Localm_vecItems.reset(new CFileItemList);
+    Localm_vecItems->Copy(*m_vecItems);
+
+    // Start Async Playlist loading Thread
+    PlaylistAddAsyncThread[iPlaylist] = std::thread(&CGUIMediaWindow::PlaylistAddAsync, this, iPlaylist, std::move(Localm_vecItems));
+  }
+
+  PlaylistThreadPause[0] = false;
+  PlaylistThreadPause[1] = false;
+  return true;
+}
+
+// Load rest of the playlist items async
+void CGUIMediaWindow::PlaylistAddAsync(int iPlaylist, std::unique_ptr<CFileItemList> Localm_vecItems)
+{
+  PlaylistThreadRunning[iPlaylist] = true;
+  int Localm_vecItemsSize = Localm_vecItems->Size();
+  std::this_thread::sleep_for(std::chrono::milliseconds(1000)); //wait a second, just a bit refresh time for player to start
+
+  for ( int i = 0; i < Localm_vecItemsSize; i++ )
+  {
+    if (PlaylistThreadTerminate[iPlaylist])
     {
-      int iIndex = CServiceBroker::GetPlaylistPlayer().GetPlaylist(iPlaylist).FindOrder(mediaToPlay);
-      CServiceBroker::GetPlaylistPlayer().GetPlaylist(iPlaylist).Swap(0, iIndex);
-      mediaToPlay = 0;
+      break;
     }
 
-    // play
-    CServiceBroker::GetPlaylistPlayer().SetCurrentPlaylist(iPlaylist);
-    CServiceBroker::GetPlaylistPlayer().Play(mediaToPlay, player);
+    while (PlaylistThreadPause[iPlaylist])
+    {
+      std::this_thread::sleep_for(std::chrono::milliseconds(1000)); // Give some refresh time on playlist modifications
+    }
+
+    // Perform Playlist refresh every 100 items
+    if ( i % 250 == 0 )
+    {
+      CGUIMessage msg(GUI_MSG_PLAYLIST_CHANGED, 0, 0);
+      CServiceBroker::GetGUI()->GetWindowManager().SendMessage(msg);
+      std::this_thread::sleep_for(std::chrono::milliseconds(20));
+    }
+
+    if (i != PlaylistPosition[iPlaylist])
+    { // item that was clicked
+      CFileItemPtr nItem = Localm_vecItems->Get(i);
+      CServiceBroker::GetPlaylistPlayer().Insert(iPlaylist, nItem, i);
+      std::this_thread::sleep_for(std::chrono::milliseconds(10));
+    }
   }
-  return true;
+
+  // Perform final Playlist refresh
+  CGUIMessage msg(GUI_MSG_PLAYLIST_CHANGED, 0, 0);
+  CServiceBroker::GetGUI()->GetWindowManager().SendMessage(msg);
+
+  PlaylistThreadTerminate[iPlaylist] = false;
+  PlaylistThreadRunning[iPlaylist] = false;
+  PlaylistAddAsyncThread[iPlaylist].detach();
 }
 
 /*!

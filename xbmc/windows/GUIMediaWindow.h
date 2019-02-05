@@ -16,6 +16,7 @@
 #include "view/GUIViewControl.h"
 
 #include <atomic>
+#include <thread>
 
 class CFileItemList;
 class CGUIViewState;
@@ -186,6 +187,16 @@ protected:
   CDirectoryHistory m_history;
   std::unique_ptr<CGUIViewState> m_guiState;
   std::atomic_bool m_vecItemsUpdating = {false};
+
+  //PlaylistAsync Threading
+  int PlaylistPosition[2] = {-1, -1};
+  float ItemListContentSignature[2] = {-1, -1};
+  bool PlaylistThreadRunning[2] = {false, false};
+  bool PlaylistThreadPause[2] = {false, false};
+  bool PlaylistThreadTerminate[2] = {false, false};
+  void PlaylistAddAsync(int iPlaylist, std::unique_ptr<CFileItemList> Localm_vecItems);
+  std::thread PlaylistAddAsyncThread[2];
+
   class CUpdateGuard
   {
   public:
