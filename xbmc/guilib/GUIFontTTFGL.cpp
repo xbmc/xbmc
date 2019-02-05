@@ -221,6 +221,11 @@ void CGUIFontTTFGL::LastEnd()
 
     for (size_t i = 0; i < m_vertexTrans.size(); i++)
     {
+      if (m_vertexTrans[i].vertexBuffer->bufferHandle == 0)
+      {
+        continue;
+      }
+
       // Apply the clip rectangle
       CRect clip = renderSystem->ClipRectToScissorRect(m_vertexTrans[i].clip);
       if (!clip.IsEmpty())
@@ -282,20 +287,23 @@ void CGUIFontTTFGL::LastEnd()
 
 CVertexBuffer CGUIFontTTFGL::CreateVertexBuffer(const std::vector<SVertex> &vertices) const
 {
-  assert(!vertices.empty());
   assert(vertices.size() % 4 == 0);
+  GLuint bufferHandle = 0;
 
-  // Generate a unique buffer object name and put it in bufferHandle
-  GLuint bufferHandle;
-  glGenBuffers(1, &bufferHandle);
-  // Bind the buffer to the OpenGL context's GL_ARRAY_BUFFER binding point
-  glBindBuffer(GL_ARRAY_BUFFER, bufferHandle);
-  // Create a data store for the buffer object bound to the GL_ARRAY_BUFFER
-  // binding point (i.e. our buffer object) and initialise it from the
-  // specified client-side pointer
-  glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof (SVertex), vertices.data(), GL_STATIC_DRAW);
-  // Unbind GL_ARRAY_BUFFER
-  glBindBuffer(GL_ARRAY_BUFFER, 0);
+  // Do not create empty buffers, leave buffer as 0, it will be ignored in drawing stage
+  if (!vertices.empty())
+  {
+    // Generate a unique buffer object name and put it in bufferHandle
+    glGenBuffers(1, &bufferHandle);
+    // Bind the buffer to the OpenGL context's GL_ARRAY_BUFFER binding point
+    glBindBuffer(GL_ARRAY_BUFFER, bufferHandle);
+    // Create a data store for the buffer object bound to the GL_ARRAY_BUFFER
+    // binding point (i.e. our buffer object) and initialise it from the
+    // specified client-side pointer
+    glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(SVertex), vertices.data(), GL_STATIC_DRAW);
+    // Unbind GL_ARRAY_BUFFER
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+  }
 
   return CVertexBuffer(bufferHandle, vertices.size() / 4, this);
 }

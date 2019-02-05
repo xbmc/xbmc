@@ -103,7 +103,7 @@ THREADFUNC CThread::staticThread(void* data)
   }
 
   name = pThread->m_ThreadName;
-  id = pThread->m_ThreadId;
+  id = GetDisplayThreadId(pThread->m_ThreadId);
   autodelete = pThread->m_bAutoDelete;
 
   pThread->SetThreadInfo();

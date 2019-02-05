@@ -47,8 +47,6 @@
 #include <lzo/lzo1x.h>
 #include <sys/stat.h>
 
-using namespace std;
-
 #define FLAGS_USE_LZO     1
 
 #define DIR_SEPARATOR "/"
@@ -223,8 +221,8 @@ void Usage()
 }
 
 static bool checkDupe(struct MD5Context* ctx,
-                      map<string,unsigned int>& hashes,
-                      vector<unsigned int>& dupes, unsigned int pos)
+                      std::map<std::string, unsigned int>& hashes,
+                      std::vector<unsigned int>& dupes, unsigned int pos)
 {
   unsigned char digest[17];
   MD5Final(digest,ctx);
@@ -236,14 +234,14 @@ static bool checkDupe(struct MD5Context* ctx,
       digest[9], digest[10], digest[11], digest[12], digest[13], digest[14],
       digest[15]);
   hex[32] = 0;
-  map<string,unsigned int>::iterator it = hashes.find(hex);
+  std::map<std::string, unsigned int>::iterator it = hashes.find(hex);
   if (it != hashes.end())
   {
     dupes[pos] = it->second;
     return true;
   }
 
-  hashes.insert(make_pair(hex,pos));
+  hashes.insert(std::make_pair(hex,pos));
   dupes[pos] = pos;
 
   return false;
@@ -258,8 +256,8 @@ int createBundle(const std::string& InputDir, const std::string& OutputFile, dou
     return 1;
   }
 
-  map<string,unsigned int> hashes;
-  vector<unsigned int> dupes;
+  std::map<std::string, unsigned int> hashes;
+  std::vector<unsigned int> dupes;
   CreateSkeletonHeader(writer, InputDir);
 
   std::vector<CXBTFFile> files = writer.GetFiles();

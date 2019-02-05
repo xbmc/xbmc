@@ -510,7 +510,7 @@ uint64_t CGLContextEGL::GetVblankTiming(uint64_t &msc, uint64_t &interval)
   CSingleLock lock(m_syncLock);
   msc = m_sync.msc2;
 
-  interval = (m_sync.cont > 5) ? m_sync.interval : m_sync.ust2 - m_sync.ust1;
+  interval = (m_sync.cont >= 5) ? m_sync.interval : m_sync.ust2 - m_sync.ust1;
   if (interval == 0)
     return 0;
 
