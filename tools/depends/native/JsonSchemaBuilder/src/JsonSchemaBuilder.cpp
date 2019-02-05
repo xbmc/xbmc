@@ -24,26 +24,24 @@
 #include <string>
 #include <regex>
 
-using namespace std;
-
-void print_version(ifstream &in, ofstream &out)
+void print_version(std::ifstream &in, std::ofstream &out)
 {
-  string line;
+  std::string line;
   if (getline(in, line))
-    out << regex_replace(line, regex("(\\s+)?JSONRPC_VERSION\\s+|(\\s+)?#.*"), "");
+    out << std::regex_replace(line, std::regex("(\\s+)?JSONRPC_VERSION\\s+|(\\s+)?#.*"), "");
 }
 
-void print_license(ifstream &in, ofstream &out)
+void print_license(std::ifstream &in, std::ofstream &out)
 {
-  string line;
+  std::string line;
 
   while (getline(in, line, '\n'))
-    out << line << endl;
+    out << line << std::endl;
 }
 
-void print_json(ifstream &in, ofstream &out)
+void print_json(std::ifstream &in, std::ofstream &out)
 {
-  string line;
+  std::string line;
   unsigned int count = 0;
   bool closing = false;
 
@@ -52,18 +50,18 @@ void print_json(ifstream &in, ofstream &out)
     // No need to handle the last line
     if (line == "}")
     {
-      out << endl;
+      out << std::endl;
       continue;
     }
 
     // If we just closed a whole object we need to print the separator
     if (closing)
-      out << "," << endl;
+      out << "," << std::endl;
 
     out << "  ";
     bool started = false;
     closing = false;
-    for (string::iterator itr = line.begin(); itr != line.end(); itr++)
+    for (std::string::iterator itr = line.begin(); itr != line.end(); itr++)
     {
       // Skip \r characters
       if (*itr == '\r') {
@@ -114,13 +112,13 @@ void print_json(ifstream &in, ofstream &out)
 
     // Only print a newline if we haven't just closed a whole object
     if (!closing)
-      out << endl;
+      out << std::endl;
   }
 }
 
 void print_usage(const char *application)
 {
-  cout << application << " version.txt license.txt methods.json types.json notifications.json" << endl;
+  std::cout << application << " version.txt license.txt methods.json types.json notifications.json" << std::endl;
 }
 
 int main(int argc, char* argv[])
@@ -131,48 +129,48 @@ int main(int argc, char* argv[])
     return -1;
   }
 
-  ofstream out ("ServiceDescription.h", ofstream::binary);
+  std::ofstream out ("ServiceDescription.h", std::ofstream::binary);
 
-  ifstream version(argv[1], ios_base::in);
-  ifstream license(argv[2], ios_base::in);
-  ifstream methods(argv[3], ios_base::in);
-  ifstream types(argv[4], ios_base::in);
-  ifstream notifications(argv[5], ios_base::in);
+  std::ifstream version(argv[1], std::ios_base::in);
+  std::ifstream license(argv[2], std::ios_base::in);
+  std::ifstream methods(argv[3], std::ios_base::in);
+  std::ifstream types(argv[4], std::ios_base::in);
+  std::ifstream notifications(argv[5], std::ios_base::in);
 
   if (!(version && license && methods && types && notifications))
   {
-    cout << "Failed to find one or more of version.txt, license.txt, methods.json, types.json or notifications.json" << endl;
+    std::cout << "Failed to find one or more of version.txt, license.txt, methods.json, types.json or notifications.json" << std::endl;
     return -1;
   }
 
-  out << "#pragma once" << endl;
+  out << "#pragma once" << std::endl;
 
   print_license(license, out);
 
-  out << endl;
+  out << std::endl;
 
-  out << "namespace JSONRPC" << endl;
-  out << "{" << endl;
-  out << "  const char* const JSONRPC_SERVICE_ID          = \"http://xbmc.org/jsonrpc/ServiceDescription.json\";" << endl;
-  out << "  const char* const JSONRPC_SERVICE_VERSION     = \""; print_version(version, out); out << "\";" << endl;
-  out << "  const char* const JSONRPC_SERVICE_DESCRIPTION = \"JSON-RPC API of XBMC\";" << endl;
-  out << endl;
+  out << "namespace JSONRPC" << std::endl;
+  out << "{" << std::endl;
+  out << "  const char* const JSONRPC_SERVICE_ID          = \"http://xbmc.org/jsonrpc/ServiceDescription.json\";" << std::endl;
+  out << "  const char* const JSONRPC_SERVICE_VERSION     = \""; print_version(version, out); out << "\";" << std::endl;
+  out << "  const char* const JSONRPC_SERVICE_DESCRIPTION = \"JSON-RPC API of XBMC\";" << std::endl;
+  out << std::endl;
 
   out << "  const char* const JSONRPC_SERVICE_TYPES[] = {";
   print_json(types, out);
-  out << "  };" << endl;
-  out << endl;
+  out << "  };" << std::endl;
+  out << std::endl;
 
   out << "  const char* const JSONRPC_SERVICE_METHODS[] = {";
   print_json(methods, out);
-  out << "  };" << endl;
-  out << endl;
+  out << "  };" << std::endl;
+  out << std::endl;
 
   out << "  const char* const JSONRPC_SERVICE_NOTIFICATIONS[] = {";
   print_json(notifications, out);
-  out << "  };" << endl;
+  out << "  };" << std::endl;
 
-  out << "}" << endl;
+  out << "}" << std::endl;
 
   return 0;
 }
