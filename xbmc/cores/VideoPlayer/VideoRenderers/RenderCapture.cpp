@@ -149,7 +149,7 @@ void CRenderCaptureGL::BeginRender()
         CLog::Log(LOGWARNING, "CRenderCaptureGL: Occlusion_query not supported, performance might suffer");
       if (!CServiceBroker::GetRenderSystem()->IsExtSupported("GL_ARB_pixel_buffer_object"))
         CLog::Log(LOGWARNING, "CRenderCaptureGL: GL_ARB_pixel_buffer_object not supported, performance might suffer");
-      if (UseOcclusionQuery())
+      if (!UseOcclusionQuery())
         CLog::Log(LOGWARNING, "CRenderCaptureGL: GL_ARB_occlusion_query disabled, performance might suffer");
     }
 #endif
