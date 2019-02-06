@@ -596,6 +596,13 @@ void CPVRClients::ConnectionStateChange(
   {
     case PVR_CONNECTION_STATE_SERVER_UNREACHABLE:
       iMsg = 35505; // Server is unreachable
+      if (client->GetPreviousConnectionState() == PVR_CONNECTION_STATE_UNKNOWN ||
+          client->GetPreviousConnectionState() == PVR_CONNECTION_STATE_CONNECTING)
+      {
+        // Make our users happy. There were so many complaints about this notification because their TV backend
+        // was not up quick enough after Kodi start. So, ignore the very first 'server not reachable' notification.
+        bNotify = false;
+      }
       break;
     case PVR_CONNECTION_STATE_SERVER_MISMATCH:
       iMsg = 35506; // Server does not respond properly
