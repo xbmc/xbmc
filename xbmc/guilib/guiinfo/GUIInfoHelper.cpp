@@ -166,7 +166,8 @@ CGUIListItemPtr GetCurrentListItem(int contextWindow, int containerId /* = 0 */,
   if (containerId == 0  &&
       itemOffset == 0 &&
       !(itemFlags & INFOFLAG_LISTITEM_CONTAINER) &&
-      !(itemFlags & INFOFLAG_LISTITEM_ABSOLUTE))
+      !(itemFlags & INFOFLAG_LISTITEM_ABSOLUTE) &&
+      !(itemFlags & INFOFLAG_LISTITEM_POSITION))
     item = GetCurrentListItemFromWindow(contextWindow);
 
   if (!item)
