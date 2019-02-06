@@ -215,7 +215,10 @@ ADDON_STATUS CAddonDll::Create(ADDON_TYPE type, void* funcTable, void* info)
 
   /* Call Create to make connections, initializing data or whatever is
      needed to become the AddOn running */
-  ADDON_STATUS status = m_pDll->Create(m_pHelpers->GetCallbacks(), info);
+  ADDON_STATUS status = m_pDll->CreateEx_available()
+    ? m_pDll->CreateEx(m_pHelpers->GetCallbacks(), kodi::addon::GetTypeVersion(ADDON_GLOBAL_MAIN), info)
+    : m_pDll->Create(m_pHelpers->GetCallbacks(), info);
+
   if (status == ADDON_STATUS_OK)
   {
     m_initialized = true;
@@ -263,7 +266,10 @@ ADDON_STATUS CAddonDll::Create(KODI_HANDLE firstKodiInstance)
 
   /* Call Create to make connections, initializing data or whatever is
      needed to become the AddOn running */
-  ADDON_STATUS status = m_pDll->Create(&m_interface, nullptr);
+  ADDON_STATUS status = m_pDll->CreateEx_available()
+    ? m_pDll->CreateEx(&m_interface, kodi::addon::GetTypeVersion(ADDON_GLOBAL_MAIN), nullptr)
+    : m_pDll->Create(&m_interface, nullptr);
+
   if (status == ADDON_STATUS_OK)
   {
     m_initialized = true;
@@ -323,7 +329,11 @@ ADDON_STATUS CAddonDll::CreateInstance(ADDON_TYPE instanceType, const std::strin
     return ADDON_STATUS_PERMANENT_FAILURE;
 
   KODI_HANDLE addonInstance;
-  status = m_interface.toAddon->create_instance(instanceType, instanceID.c_str(), instance, &addonInstance, parentInstance);
+  if (!m_interface.toAddon->create_instance_ex)
+    status = m_interface.toAddon->create_instance(instanceType, instanceID.c_str(), instance, &addonInstance, parentInstance);
+  else
+    status = m_interface.toAddon->create_instance_ex(instanceType, instanceID.c_str(), instance, &addonInstance, parentInstance, kodi::addon::GetTypeVersion(instanceType));
+
   if (status == ADDON_STATUS_OK)
   {
     m_usedInstances[instanceID] = std::make_pair(instanceType, addonInstance);
@@ -334,6 +344,9 @@ ADDON_STATUS CAddonDll::CreateInstance(ADDON_TYPE instanceType, const std::strin
 
 void CAddonDll::DestroyInstance(const std::string& instanceID)
 {
+  if (m_usedInstances.empty())
+    return;
+
   auto it = m_usedInstances.find(instanceID);
   if (it != m_usedInstances.end())
   {
@@ -450,6 +463,9 @@ bool CAddonDll::CheckAPIVersion(int type)
   /* check the API version */
   AddonVersion kodiMinVersion(kodi::addon::GetTypeMinVersion(type));
   AddonVersion addonVersion(m_pDll->GetAddonTypeVersion(type));
+  AddonVersion addonMinVersion = m_pDll->GetAddonTypeMinVersion_available()
+    ? AddonVersion(m_pDll->GetAddonTypeMinVersion(type))
+    : addonVersion;
 
   /* Check the global usage from addon
    * if not used from addon becomes "0.0.0" returned
@@ -461,13 +477,15 @@ bool CAddonDll::CheckAPIVersion(int type)
    * present.
    */
   if (kodiMinVersion > addonVersion ||
-      addonVersion > AddonVersion(kodi::addon::GetTypeVersion(type)))
+    addonMinVersion > AddonVersion(kodi::addon::GetTypeVersion(type)))
   {
-    CLog::Log(LOGERROR, "Add-on '%s' is using an incompatible API version for type '%s'. Kodi API min version = '%s', add-on API version '%s'",
-                            Name().c_str(),
-                            kodi::addon::GetTypeName(type),
-                            kodiMinVersion.asString().c_str(),
-                            addonVersion.asString().c_str());
+    CLog::Log(LOGERROR, "Add-on '{}' is using an incompatible API version for type '{}'. Kodi API min version = '{}/{}', add-on API version '{}/{}'",
+      Name(),
+      kodi::addon::GetTypeName(type),
+      kodi::addon::GetTypeVersion(type),
+      kodiMinVersion.asString(),
+      addonMinVersion.asString(),
+      addonVersion.asString());
 
     CEventLog &eventLog = CServiceBroker::GetEventLog();
     eventLog.AddWithNotification(EventPtr(new CNotificationEvent(Name(), 24152, EventLevel::Error)));
