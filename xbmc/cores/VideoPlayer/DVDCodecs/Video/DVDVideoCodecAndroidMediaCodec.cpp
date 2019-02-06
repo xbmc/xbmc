@@ -718,7 +718,7 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
   if (!ConfigureMediaCodec())
     goto FAIL;
 
-  if (m_codecname.find("OMX", 0, 3) == 0)
+  if (m_codecname.find("OMX.NVidia", 0, 10) == 0)
     m_invalidPTSValue = AV_NOPTS_VALUE;
   else
     m_invalidPTSValue = 0;
