@@ -188,17 +188,20 @@ void CLog::PrintDebugString(const std::string& line)
 
 bool CLog::WriteLogString(int logLevel, const std::string& logString)
 {
-  static const char* prefixFormat = "%02d:%02d:%02d.%03d T:%" PRIu64" %7s: ";
+  static const char* prefixFormat = "%02d-%02d-%02d %02d:%02d:%02d.%03d T:%" PRIu64" %7s: ";
 
   std::string strData(logString);
   /* fixup newline alignment, number of spaces should equal prefix length */
   StringUtils::Replace(strData, "\n", "\n                                            ");
 
-  int hour, minute, second;
+  int year, month, day, hour, minute, second;
   double millisecond;
-  g_logState.m_platform.GetCurrentLocalTime(hour, minute, second, millisecond);
+  g_logState.m_platform.GetCurrentLocalTime(year, month, day, hour, minute, second, millisecond);
 
   strData = StringUtils::Format(prefixFormat,
+                                  year,
+                                  month,
+                                  day,
                                   hour,
                                   minute,
                                   second,
