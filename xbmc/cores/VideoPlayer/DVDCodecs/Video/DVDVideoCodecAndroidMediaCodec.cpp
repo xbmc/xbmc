@@ -766,14 +766,14 @@ void CDVDVideoCodecAndroidMediaCodec::Dispose()
   if (!m_opened)
     return;
 
+  // invalidate any inflight outputbuffers
+  FlushInternal();
+
   if (m_videoBufferPool)
   {
     m_videoBufferPool->ResetMediaCodec();
     m_videoBufferPool = nullptr;
   }
-
-  // invalidate any inflight outputbuffers
-  FlushInternal();
 
   m_videobuffer.iFlags = 0;
 
@@ -1054,6 +1054,9 @@ void CDVDVideoCodecAndroidMediaCodec::FlushInternal()
 {
   // invalidate any existing inflight buffers and create
   // new ones to match the number of output buffers
+  if (m_indexInputBuffer >=0)
+    AMediaCodec_queueInputBuffer(m_codec->codec(), m_indexInputBuffer, 0, 0, 0, AMEDIACODEC_BUFFER_FLAG_END_OF_STREAM);
+
   m_OutputDuration = 0;
   m_lastPTS = -1;
   m_dtsShift = DVD_NOPTS_VALUE;
@@ -1164,8 +1167,7 @@ int CDVDVideoCodecAndroidMediaCodec::GetOutputPicture(void)
       return -1;
     }
 
-    int flags = bufferInfo.flags;
-    if (flags & AMEDIACODEC_BUFFER_FLAG_END_OF_STREAM)
+    if (bufferInfo.flags & AMEDIACODEC_BUFFER_FLAG_END_OF_STREAM)
     {
       CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec:: BUFFER_FLAG_END_OF_STREAM");
       AMediaCodec_releaseOutputBuffer(m_codec->codec(), index, false);
