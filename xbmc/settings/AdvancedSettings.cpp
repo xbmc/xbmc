@@ -324,13 +324,30 @@ void CAdvancedSettings::Initialize()
   m_videoMovieSetExtraArt = {};
   m_videoMusicVideoExtraArt = {};
 
-  m_iEpgUpdateCheckInterval = 300; /* check if tables need to be updated every 5 minutes */
-  m_iEpgCleanupInterval = 900;     /* remove old entries from the EPG every 15 minutes */
-  m_iEpgActiveTagCheckInterval = 60; /* check for updated active tags every minute */
-  m_iEpgRetryInterruptedUpdateInterval = 30; /* retry an interrupted epg update after 30 seconds */
-  m_iEpgUpdateEmptyTagsInterval = 7200; /* override user selectable EPG update interval for empty EPG tags */
-  m_bEpgDisplayUpdatePopup = true; /* display a progress popup while updating EPG data from clients */
-  m_bEpgDisplayIncrementalUpdatePopup = false; /* also display a progress popup while doing incremental EPG updates */
+  m_iEpgUpdateCheckInterval = 300; /* Check every X seconds, if EPG data need to be updated. This does not mean that
+                                      every X seconds an EPG update is actually triggered, it's just the interval how
+                                      often to check whether an update should be triggered. If this value is greater
+                                      than GUI setting 'epg.epgupdate' value, then EPG updates will done with the value
+                                      specified for 'updatecheckinterval', effectively overriding the GUI setting's value. */
+  m_iEpgCleanupInterval = 900; /* Remove old entries from the EPG every X seconds */
+  m_iEpgActiveTagCheckInterval = 60; /* Check for updated active tags every X seconds */
+  m_iEpgRetryInterruptedUpdateInterval = 30; /* Retry an interrupted EPG update after X seconds */
+  m_iEpgUpdateEmptyTagsInterval = 7200; /* If a TV channel has no EPG data, try to obtain data for that channel every
+                                           X seconds. This overrides the GUI setting 'epg.epgupdate' value, but only
+                                           for channels without EPG data. If this value is less than 'updatecheckinterval'
+                                           value, then data update will be done with the interval specified by
+                                           'updatecheckinterval'.
+                                           Example 1: epg.epgupdate = 120 (minutes!), updatecheckinterval = 300,
+                                                      updateemptytagsinterval = 60 => trigger an EPG update for every
+                                                      channel without EPG data every 5 minutes and trigger an EPG update
+                                                      for every channel with EPG data every 2 hours.
+                                           Example 2: epg.epgupdate = 120 (minutes!), updatecheckinterval = 300,
+                                                      updateemptytagsinterval = 3600 => trigger an EPG update for every
+                                                      channel without EPG data every 2 hours and trigger an EPG update
+                                                      for every channel with EPG data every 1 hour. */
+  m_bEpgDisplayUpdatePopup = true; /* Display a progress popup while updating EPG data from clients */
+  m_bEpgDisplayIncrementalUpdatePopup = false; /* Display a progress popup while doing incremental EPG updates, but
+                                                  only if 'displayupdatepopup' is also enabled. */
 
   m_bEdlMergeShortCommBreaks = false;      // Off by default
   m_iEdlMaxCommBreakLength = 8 * 30 + 10;  // Just over 8 * 30 second commercial break.
