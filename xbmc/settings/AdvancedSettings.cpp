@@ -328,7 +328,7 @@ void CAdvancedSettings::Initialize()
   m_iEpgCleanupInterval = 900;     /* remove old entries from the EPG every 15 minutes */
   m_iEpgActiveTagCheckInterval = 60; /* check for updated active tags every minute */
   m_iEpgRetryInterruptedUpdateInterval = 30; /* retry an interrupted epg update after 30 seconds */
-  m_iEpgUpdateEmptyTagsInterval = 60; /* override user selectable EPG update interval for empty EPG tags */
+  m_iEpgUpdateEmptyTagsInterval = 7200; /* override user selectable EPG update interval for empty EPG tags */
   m_bEpgDisplayUpdatePopup = true; /* display a progress popup while updating EPG data from clients */
   m_bEpgDisplayIncrementalUpdatePopup = false; /* also display a progress popup while doing incremental EPG updates */
 
