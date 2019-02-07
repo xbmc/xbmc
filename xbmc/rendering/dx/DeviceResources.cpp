@@ -739,11 +739,9 @@ void DX::DeviceResources::SetLogicalSize(float width, float height)
 // This method is called in the event handler for the DpiChanged event.
 void DX::DeviceResources::SetDpi(float dpi)
 {
+  dpi = std::max(dpi, DisplayMetrics::Dpi100);
   if (dpi != m_dpi)
-  {
     m_dpi = dpi;
-    CreateWindowSizeDependentResources();
-  }
 }
 
 // This method is called in the event handler for the DisplayContentsInvalidated event.

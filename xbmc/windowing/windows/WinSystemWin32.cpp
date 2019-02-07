@@ -566,22 +566,31 @@ bool CWinSystemWin32::DPIChanged(WORD dpi, RECT windowRect) const
   {
     MONITORINFOEX monitorInfo;
     monitorInfo.cbSize = sizeof(MONITORINFOEX);
-    GetMonitorInfo(hMon, &monitorInfo);
-    RECT wr = monitorInfo.rcWork;
-    long wrWidth = wr.right - wr.left;
-    long wrHeight = wr.bottom - wr.top;
-    long resizeWidth = resizeRect.right - resizeRect.left;
-    long resizeHeight = resizeRect.bottom - resizeRect.top;
+    GetMonitorInfoW(hMon, &monitorInfo);
 
-    if (resizeWidth > wrWidth)
+    if (m_state == WINDOW_STATE_FULLSCREEN_WINDOW ||
+        m_state == WINDOW_STATE_FULLSCREEN)
     {
-      resizeRect.right = resizeRect.left + wrWidth;
+      resizeRect = monitorInfo.rcMonitor; // the whole screen
     }
-
-    // make sure suggested windows size is not taller or wider than working area of new monitor (considers the toolbar)
-    if (resizeHeight > wrHeight)
+    else
     {
-      resizeRect.bottom = resizeRect.top + wrHeight;
+      RECT wr = monitorInfo.rcWork; // it excludes task bar
+      long wrWidth = wr.right - wr.left;
+      long wrHeight = wr.bottom - wr.top;
+      long resizeWidth = resizeRect.right - resizeRect.left;
+      long resizeHeight = resizeRect.bottom - resizeRect.top;
+
+      if (resizeWidth > wrWidth)
+      {
+        resizeRect.right = resizeRect.left + wrWidth;
+      }
+
+      // make sure suggested windows size is not taller or wider than working area of new monitor (considers the toolbar)
+      if (resizeHeight > wrHeight)
+      {
+        resizeRect.bottom = resizeRect.top + wrHeight;
+      }
     }
   }
 

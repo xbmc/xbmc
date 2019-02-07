@@ -20,6 +20,24 @@ namespace DX
 #define RATIONAL_TO_FLOAT(rational) ((rational.Denominator != 0) ? \
   static_cast<float>(rational.Numerator) / static_cast<float>(rational.Denominator) : 0.0f)
 
+  namespace DisplayMetrics
+  {
+    // High resolution displays can require a lot of GPU and battery power to render.
+    // High resolution phones, for example, may suffer from poor battery life if
+    // games attempt to render at 60 frames per second at full fidelity.
+    // The decision to render at full fidelity across all platforms and form factors
+    // should be deliberate.
+    static const bool SupportHighResolutions = true;
+
+    // The default thresholds that define a "high resolution" display. If the thresholds
+    // are exceeded and SupportHighResolutions is false, the dimensions will be scaled
+    // by 50%.
+    static const float Dpi100 = 96.0f;    // 100% of standard desktop display.
+    static const float DpiThreshold = 192.0f;    // 200% of standard desktop display.
+    static const float WidthThreshold = 1920.0f;  // 1080p width.
+    static const float HeightThreshold = 1080.0f;  // 1080p height.
+  };
+
   inline void BreakIfFailed(HRESULT hr)
   {
     if (FAILED(hr))
@@ -32,18 +50,18 @@ namespace DX
     }
   }
 
-	// Converts a length in device-independent pixels (DIPs) to a length in physical pixels.
-	inline float ConvertDipsToPixels(float dips, float dpi)
-	{
-		static const float dipsPerInch = 96.0f;
-		return floorf(dips * dpi / dipsPerInch + 0.5f); // Round to nearest integer.
-	}
+  // Converts a length in device-independent pixels (DIPs) to a length in physical pixels.
+  inline float ConvertDipsToPixels(float dips, float dpi)
+  {
+	  static const float dipsPerInch = DisplayMetrics::Dpi100;
+	  return floorf(dips * dpi / dipsPerInch + 0.5f); // Round to nearest integer.
+  }
 
-	inline float ConvertPixelsToDips(float pixels, float dpi)
-	{
-		static const float dipsPerInch = 96.0f;
-		return floorf(pixels / (dpi / dipsPerInch) + 0.5f); // Round to nearest integer.
-	}
+  inline float ConvertPixelsToDips(float pixels, float dpi)
+  {
+	  static const float dipsPerInch = DisplayMetrics::Dpi100;
+	  return floorf(pixels / (dpi / dipsPerInch) + 0.5f); // Round to nearest integer.
+  }
 
   inline float RationalToFloat(DXGI_RATIONAL rational)
   {

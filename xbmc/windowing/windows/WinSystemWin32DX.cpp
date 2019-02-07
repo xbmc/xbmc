@@ -14,6 +14,7 @@
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/log.h"
+#include "utils/SystemInfo.h"
 #include "windowing/GraphicContext.h"
 
 #include "system.h"
@@ -133,9 +134,13 @@ void CWinSystemWin32DX::OnMove(int x, int y)
 
 bool CWinSystemWin32DX::DPIChanged(WORD dpi, RECT windowRect) const
 {
+  // on Win10 FCU the OS keeps window size exactly the same size as it was
+  if (CSysInfo::IsWindowsVersionAtLeast(CSysInfo::WindowsVersionWin10_FCU))
+    return true;
+
   m_deviceResources->SetDpi(dpi);
   if (!IsAlteringWindow())
-    return CWinSystemWin32::DPIChanged(dpi, windowRect);
+    return __super::DPIChanged(dpi, windowRect);
 
   return true;
 }
