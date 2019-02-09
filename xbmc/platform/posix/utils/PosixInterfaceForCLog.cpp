@@ -83,13 +83,16 @@ void CPosixInterfaceForCLog::PrintDebugString(const std::string &debugString)
 #endif // _DEBUG
 }
 
-void CPosixInterfaceForCLog::GetCurrentLocalTime(int &hour, int &minute, int &second, double &milliseconds)
+void CPosixInterfaceForCLog::GetCurrentLocalTime(int& year, int& month, int& day, int &hour, int& minute, int& second, double& milliseconds)
 {
   struct tm localTime;
   struct timeval tv;
 
   if (gettimeofday(&tv, nullptr) != -1 && localtime_r(&tv.tv_sec, &localTime) != NULL)
   {
+    year   = localTime.tm_year + 1900;
+    month  = localTime.tm_mon + 1;
+    day    = localTime.tm_mday;
     hour   = localTime.tm_hour;
     minute = localTime.tm_min;
     second = localTime.tm_sec;
@@ -97,7 +100,7 @@ void CPosixInterfaceForCLog::GetCurrentLocalTime(int &hour, int &minute, int &se
   }
   else
   {
-    hour = minute = second = 0;
+    year = month = day = hour = minute = second = 0;
     milliseconds = 0.0;
   }
 }

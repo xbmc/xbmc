@@ -21,7 +21,7 @@ public:
   void CloseLogFile(void);
   bool WriteStringToLog(const std::string& logString);
   void PrintDebugString(const std::string& debugString);
-  static void GetCurrentLocalTime(int& hour, int& minute, int& second, double& millisecond);
+  static void GetCurrentLocalTime(int& year, int& month, int& day, int& hour, int& minute, int& second, double& millisecond);
 private:
   FILEWRAP* m_file;
 };
