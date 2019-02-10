@@ -129,25 +129,18 @@ bool CGLContextEGL::Refresh(bool force, int screen, Window glWindow, bool &newCo
     return false;
   }
 
-  if (!IsSuitableVisual(vInfo))
-  {
-    CLog::Log(LOGWARNING, "Visual 0x%x of the window is not suitable", (unsigned) vInfo->visualid);
-    XFree(vInfo);
-    Destroy();
-    return false;
-  }
-
-  CLog::Log(LOGNOTICE, "Using visual 0x%x", (unsigned) vInfo->visualid);
-
+  unsigned int visualid = static_cast<unsigned int>(vInfo->visualid);
   m_eglConfig = GetEGLConfig(m_eglDisplay, vInfo);
   XFree(vInfo);
 
   if (m_eglConfig == EGL_NO_CONFIG)
   {
-    CLog::Log(LOGERROR, "failed to get eglconfig for visual id");
+    CLog::Log(LOGERROR, "failed to get suitable eglconfig for visual 0x%x", visualid);
     Destroy();
     return false;
   }
+
+  CLog::Log(LOGNOTICE, "Using visual 0x%x", visualid);
 
   m_eglSurface = eglCreateWindowSurface(m_eglDisplay, m_eglConfig, glWindow, NULL);
   if (m_eglSurface == EGL_NO_SURFACE)
@@ -332,21 +325,19 @@ void CGLContextEGL::Detach()
   }
 }
 
-bool CGLContextEGL::IsSuitableVisual(XVisualInfo *vInfo)
+bool CGLContextEGL::SuitableCheck(EGLDisplay eglDisplay, EGLConfig config)
 {
-  EGLConfig config = GetEGLConfig(m_eglDisplay, vInfo);
   if (config == EGL_NO_CONFIG)
-  {
-    CLog::Log(LOGERROR, "Failed to determine egl config for visual info");
     return false;
-  }
-  EGLint value;
 
-  if (!eglGetConfigAttrib(m_eglDisplay, config, EGL_RED_SIZE, &value) || value < 8)
+  EGLint value;
+  if (!eglGetConfigAttrib(eglDisplay, config, EGL_RED_SIZE, &value) || value < 8)
     return false;
-  if (!eglGetConfigAttrib(m_eglDisplay, config, EGL_GREEN_SIZE, &value) || value < 8)
+  if (!eglGetConfigAttrib(eglDisplay, config, EGL_GREEN_SIZE, &value) || value < 8)
     return false;
-  if (!eglGetConfigAttrib(m_eglDisplay, config, EGL_BLUE_SIZE, &value) || value < 8)
+  if (!eglGetConfigAttrib(eglDisplay, config, EGL_BLUE_SIZE, &value) || value < 8)
+    return false;
+  if (!eglGetConfigAttrib(eglDisplay, config, EGL_DEPTH_SIZE, &value) || value < 24)
     return false;
 
   return true;
@@ -382,13 +373,17 @@ EGLConfig CGLContextEGL::GetEGLConfig(EGLDisplay eglDisplay, XVisualInfo *vInfo)
   }
   for (EGLint i = 0; i < numConfigs; ++i)
   {
+    if (!SuitableCheck(eglDisplay, eglConfigs[i]))
+      continue;
+
     EGLint value;
     if (!eglGetConfigAttrib(eglDisplay, eglConfigs[i], EGL_NATIVE_VISUAL_ID, &value))
     {
       CLog::Log(LOGERROR, "Failed to query EGL_NATIVE_VISUAL_ID for egl config.");
       break;
     }
-    if (value == (EGLint)vInfo->visualid) {
+    if (value == (EGLint)vInfo->visualid)
+    {
       eglConfig = eglConfigs[i];
       break;
     }

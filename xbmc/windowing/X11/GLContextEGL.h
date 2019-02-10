@@ -34,7 +34,7 @@ public:
   EGLContext m_eglContext;
   EGLConfig m_eglConfig;
 protected:
-  bool IsSuitableVisual(XVisualInfo *vInfo);
+  bool SuitableCheck(EGLDisplay eglDisplay, EGLConfig config);
   EGLConfig GetEGLConfig(EGLDisplay eglDisplay, XVisualInfo *vInfo);
   PFNEGLGETSYNCVALUESCHROMIUMPROC eglGetSyncValuesCHROMIUM = nullptr;
   PFNEGLGETPLATFORMDISPLAYEXTPROC eglGetPlatformDisplayEXT = nullptr;
