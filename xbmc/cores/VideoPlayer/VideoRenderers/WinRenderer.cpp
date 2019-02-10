@@ -493,30 +493,13 @@ void CWinRenderer::SelectPSVideoFilter()
 
   switch (m_scalingMethod)
   {
-  case VS_SCALINGMETHOD_NEAREST:
-  case VS_SCALINGMETHOD_LINEAR:
-    break;
-
   case VS_SCALINGMETHOD_CUBIC:
   case VS_SCALINGMETHOD_LANCZOS2:
   case VS_SCALINGMETHOD_SPLINE36_FAST:
   case VS_SCALINGMETHOD_LANCZOS3_FAST:
-    m_bUseHQScaler = true;
-    break;
-
   case VS_SCALINGMETHOD_SPLINE36:
   case VS_SCALINGMETHOD_LANCZOS3:
     m_bUseHQScaler = true;
-    break;
-
-  case VS_SCALINGMETHOD_SINC8:
-    CLog::Log(LOGERROR, "D3D: TODO: This scaler has not yet been implemented");
-    break;
-
-  case VS_SCALINGMETHOD_BICUBIC_SOFTWARE:
-  case VS_SCALINGMETHOD_LANCZOS_SOFTWARE:
-  case VS_SCALINGMETHOD_SINC_SOFTWARE:
-    CLog::Log(LOGERROR, "D3D: TODO: Software scaling has not yet been implemented");
     break;
 
   default:
@@ -525,10 +508,10 @@ void CWinRenderer::SelectPSVideoFilter()
 
   if (m_scalingMethod == VS_SCALINGMETHOD_AUTO)
   {
-    bool scaleSD = m_sourceHeight < 720 && m_sourceWidth < 1280;
-    bool scaleUp = static_cast<int>(m_sourceHeight) < CServiceBroker::GetWinSystem()->GetGfxContext().GetHeight()
+    const bool scaleSD = m_sourceHeight < 720 && m_sourceWidth < 1280;
+    const bool scaleUp = static_cast<int>(m_sourceHeight) < CServiceBroker::GetWinSystem()->GetGfxContext().GetHeight()
                 && static_cast<int>(m_sourceWidth) < CServiceBroker::GetWinSystem()->GetGfxContext().GetWidth();
-    bool scaleFps = m_fps < (CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoAutoScaleMaxFps + 0.01f);
+    const bool scaleFps = m_fps < CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoAutoScaleMaxFps + 0.01f;
 
     if (m_renderMethod == RENDER_DXVA)
     {
@@ -540,6 +523,8 @@ void CWinRenderer::SelectPSVideoFilter()
       m_scalingMethod = VS_SCALINGMETHOD_LANCZOS3_FAST;
       m_bUseHQScaler = true;
     }
+    else
+      m_scalingMethod = VS_SCALINGMETHOD_LINEAR;
   }
   if (m_renderOrientation)
     m_bUseHQScaler = false;
@@ -1037,21 +1022,17 @@ bool CWinRenderer::Supports(ERENDERFEATURE feature)
 
 bool CWinRenderer::Supports(ESCALINGMETHOD method)
 {
+  if (method == VS_SCALINGMETHOD_AUTO)
+    return true;
+
+  if (method == VS_SCALINGMETHOD_LINEAR && m_renderMethod != RENDER_DXVA)
+    return true;
+
+  if (method == VS_SCALINGMETHOD_DXVA_HARDWARE && m_renderMethod == RENDER_DXVA)
+    return true;
+
   if (m_renderMethod == RENDER_PS || m_renderMethod == RENDER_DXVA)
   {
-    if (m_renderMethod == RENDER_DXVA)
-    {
-      if (method == VS_SCALINGMETHOD_DXVA_HARDWARE
-       || method == VS_SCALINGMETHOD_AUTO)
-        return true;
-      if (!CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_DXVAAllowHqScaling || m_renderOrientation)
-        return false;
-    }
-
-    if ( method == VS_SCALINGMETHOD_AUTO
-     || (method == VS_SCALINGMETHOD_LINEAR && m_renderMethod == RENDER_PS))
-        return true;
-
     if (DX::DeviceResources::Get()->GetDeviceFeatureLevel() >= D3D_FEATURE_LEVEL_9_3 && !m_renderOrientation)
     {
       if (method == VS_SCALINGMETHOD_CUBIC
@@ -1071,12 +1052,7 @@ bool CWinRenderer::Supports(ESCALINGMETHOD method)
       }
     }
   }
-  else if(m_renderMethod == RENDER_SW)
-  {
-    if (method == VS_SCALINGMETHOD_AUTO
-     || method == VS_SCALINGMETHOD_LINEAR)
-      return true;
-  }
+  
   return false;
 }
 
