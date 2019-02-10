@@ -12,6 +12,7 @@
 #include <memory>
 
 #include "FileItem.h"
+#include "utils/EventStream.h"
 #include "video/VideoDatabase.h"
 
 #include "pvr/PVRTypes.h"
@@ -21,10 +22,27 @@ namespace PVR
 {
   class CPVRRecordingsPath;
 
+  struct PVRRecordingsEvent
+  {
+    static const int RecordingUpdated = 0;
+    static const int RecordingRemoved = 1;
+
+    PVRRecordingsEvent(int _id, const std::shared_ptr<CPVRRecording>& _recording)
+    : id(_id), recording(_recording) {}
+
+    int id;
+    std::shared_ptr<CPVRRecording> recording;
+  };
+
   class CPVRRecordings
   {
   public:
     virtual ~CPVRRecordings(void);
+
+    /*!
+     * @brief Query the events available for CEventStream
+     */
+    CEventStream<PVRRecordingsEvent>& Events() { return m_events; }
 
     /**
      * @brief (re)load the recordings from the clients.
@@ -97,6 +115,8 @@ namespace PVR
     bool m_bDeletedRadioRecordings = false;
     unsigned int m_iTVRecordings = 0;
     unsigned int m_iRadioRecordings = 0;
+
+    CEventSource<PVRRecordingsEvent> m_events;
 
     void UpdateFromClients(void);
     std::string TrimSlashes(const std::string &strOrig) const;

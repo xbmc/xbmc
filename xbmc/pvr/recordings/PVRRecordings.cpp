@@ -24,7 +24,6 @@
 
 #include "pvr/PVRManager.h"
 #include "pvr/addons/PVRClients.h"
-#include "pvr/epg/EpgContainer.h"
 #include "pvr/epg/EpgInfoTag.h"
 #include "pvr/recordings/PVRRecordingsPath.h"
 
@@ -209,7 +208,12 @@ bool CPVRRecordings::DeleteRecording(const CFileItem &item)
   }
 
   CPVRRecordingPtr tag = item.GetPVRRecordingInfoTag();
-  return tag->Delete();
+  if (tag->Delete())
+  {
+    m_events.Publish(PVRRecordingsEvent(PVRRecordingsEvent::RecordingRemoved, tag));
+    return true;
+  }
+  return false;
 }
 
 bool CPVRRecordings::Undelete(const CFileItem &item)
@@ -395,22 +399,14 @@ void CPVRRecordings::UpdateFromClient(const CPVRRecordingPtr &tag)
   {
     newTag = CPVRRecordingPtr(new CPVRRecording);
     newTag->Update(*tag);
-    if (newTag->BroadcastUid() != EPG_TAG_INVALID_UID)
-    {
-      const CPVRChannelPtr channel(newTag->Channel());
-      if (channel)
-      {
-        const CPVREpgInfoTagPtr epgTag = CServiceBroker::GetPVRManager().EpgContainer().GetTagById(channel, newTag->BroadcastUid());
-        if (epgTag)
-          epgTag->SetRecording(newTag);
-      }
-    }
     newTag->m_iRecordingId = ++m_iLastId;
     m_recordings.insert(std::make_pair(CPVRRecordingUid(newTag->m_iClientId, newTag->m_strRecordingId), newTag));
     if (newTag->IsRadio())
       ++m_iRadioRecordings;
     else
       ++m_iTVRecordings;
+
+    m_events.Publish(PVRRecordingsEvent(PVRRecordingsEvent::RecordingUpdated, newTag));
   }
 }
 

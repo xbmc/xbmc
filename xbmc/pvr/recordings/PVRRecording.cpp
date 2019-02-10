@@ -22,7 +22,6 @@
 #include "pvr/PVRManager.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/epg/Epg.h"
-#include "pvr/epg/EpgContainer.h"
 #include "pvr/recordings/PVRRecordingsPath.h"
 #include "pvr/timers/PVRTimers.h"
 
@@ -220,22 +219,7 @@ bool CPVRRecording::Delete(void)
   if (!client || client->DeleteRecording(*this) != PVR_ERROR_NO_ERROR)
     return false;
 
-  OnDelete();
   return true;
-}
-
-void CPVRRecording::OnDelete(void)
-{
-  if (m_iEpgEventId != EPG_TAG_INVALID_UID)
-  {
-    const CPVRChannelPtr channel(Channel());
-    if (channel)
-    {
-      const CPVREpgInfoTagPtr epgTag(CServiceBroker::GetPVRManager().EpgContainer().GetTagById(channel, m_iEpgEventId));
-      if (epgTag)
-        epgTag->ClearRecording();
-    }
-  }
 }
 
 bool CPVRRecording::Undelete(void)
@@ -409,9 +393,6 @@ void CPVRRecording::Update(const CPVRRecording &tag)
     strEpisode.erase(0, pos + 2);
     m_strShowTitle = strEpisode;
   }
-
-  if (m_bIsDeleted)
-    OnDelete();
 
   UpdatePath();
 }

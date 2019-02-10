@@ -22,6 +22,7 @@ class CFileItemList;
 
 namespace PVR
 {
+  struct PVRRecordingsEvent;
   class CEpgUpdateRequest;
   class CEpgTagStateChange;
 
@@ -75,6 +76,12 @@ namespace PVR
      * @return True on success, false otherwise.
      */
     bool DeleteEpg(const CPVREpgPtr &epg, bool bDeleteFromDatabase = false);
+
+    /*!
+     * @brief Process an event.
+     * @param event The event.
+     */
+    void OnPVRRecordingsEvent(const PVRRecordingsEvent& event);
 
     /*!
      * @brief Process a notification from an observable.

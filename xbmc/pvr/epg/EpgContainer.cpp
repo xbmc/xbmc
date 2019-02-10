@@ -221,6 +221,8 @@ void CPVREpgContainer::Start(bool bAsync)
     {
       CheckPlayingEvents();
 
+      CServiceBroker::GetPVRManager().Recordings()->Events().Subscribe(this, &CPVREpgContainer::OnPVRRecordingsEvent);
+
       Create();
       SetPriority(-1);
 
@@ -237,12 +239,44 @@ void CPVREpgContainer::Start(bool bAsync)
 
 void CPVREpgContainer::Stop(void)
 {
+  if (m_bStarted)
+    CServiceBroker::GetPVRManager().Recordings()->Events().Unsubscribe(this);
+
   StopThread();
 
   m_database->Close();
 
   CSingleLock lock(m_critSection);
   m_bStarted = false;
+}
+
+void CPVREpgContainer::OnPVRRecordingsEvent(const PVRRecordingsEvent& event)
+{
+  switch (event.id)
+  {
+    case PVRRecordingsEvent::RecordingUpdated:
+    case PVRRecordingsEvent::RecordingRemoved:
+    {
+      if (event.recording->BroadcastUid() == EPG_TAG_INVALID_UID )
+        break;
+
+      const std::shared_ptr<CPVRChannel> channel
+        = CServiceBroker::GetPVRManager().ChannelGroups()->GetByUniqueID(event.recording->ChannelUid(),
+                                                                         event.recording->ClientID());
+      const std::shared_ptr<CPVREpgInfoTag> epgTag = GetTagById(channel, event.recording->BroadcastUid());
+      if (!epgTag)
+        break;;
+
+      if (event.id == PVRRecordingsEvent::RecordingUpdated)
+        epgTag->SetRecording(event.recording);
+      else if (event.id == PVRRecordingsEvent::RecordingRemoved)
+        epgTag->ClearRecording();
+
+      break;
+    }
+    default:
+      break;
+  }
 }
 
 void CPVREpgContainer::Notify(const Observable &obs, const ObservableMessage msg)
