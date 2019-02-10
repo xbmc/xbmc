@@ -30,7 +30,6 @@ namespace JSONRPC
     static JSONRPC_STATUS Swap(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
   private:
     static int GetPlaylist(const CVariant &playlist);
-    static inline void NotifyAll();
     static JSONRPC_STATUS GetPropertyValue(int playlist, const std::string &property, CVariant &result);
     static bool CheckMediaParameter(int playlist, const CVariant &itemObject);
     static bool HandleItemsParameter(int playlistid, const CVariant &itemParam, CFileItemList &items);
