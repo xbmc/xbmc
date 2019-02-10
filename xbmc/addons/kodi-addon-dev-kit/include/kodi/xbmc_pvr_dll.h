@@ -497,7 +497,7 @@ extern "C"
    * Get the stream properties of the stream that's currently being read.
    * @param pProperties The properties of the currently playing stream.
    * @return PVR_ERROR_NO_ERROR if the properties have been fetched successfully.
-   * @remarks Required if bHandlesInputStream or bHandlesDemuxing is set to true.
+   * @remarks Required if bHandlesDemuxing is set to true.
    *          Return PVR_ERROR_NOT_IMPLEMENTED if this add-on won't provide this function.
    */
   PVR_ERROR GetStreamProperties(PVR_STREAM_PROPERTIES* pProperties);
