@@ -90,6 +90,9 @@ bool CRenderManager::Configure(const VideoPicture& picture, float fps, unsigned 
   {
     CSingleLock lock(m_statelock);
 
+    if (!m_bRenderGUI)
+      return true;
+
     if (m_width == picture.iWidth &&
         m_height == picture.iHeight &&
         m_dwidth == picture.iDisplayWidth &&
@@ -399,6 +402,7 @@ void CRenderManager::UnInit()
   m_renderState = STATE_UNCONFIGURED;
   m_width = 0;
   m_height = 0;
+  m_bRenderGUI = false;
   RemoveCaptures();
 
   m_initEvent.Set();
