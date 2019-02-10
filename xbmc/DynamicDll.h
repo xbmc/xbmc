@@ -381,11 +381,11 @@ public: \
 
 #define RESOLVE_METHOD_OPTIONAL(method) \
    m_##method##_ptr = nullptr; \
-   m_dll->ResolveExport( #method , & m_##method##_ptr );
+   m_dll->ResolveExport( #method , & m_##method##_ptr, false );
 
 #define RESOLVE_METHOD_OPTIONAL_FP(method) \
    method##_ptr = NULL; \
-   m_dll->ResolveExport( #method , & method##_ptr );
+   m_dll->ResolveExport( #method , & method##_ptr, false );
 
 
 
@@ -405,7 +405,7 @@ public: \
 
 #define RESOLVE_METHOD_RENAME_OPTIONAL(dllmethod, method) \
   m_##method##_ptr = nullptr; \
-  m_dll->ResolveExport( #dllmethod , & m_##method##_ptr );
+  m_dll->ResolveExport( #dllmethod , & m_##method##_ptr, false );
 
 #define RESOLVE_METHOD_RENAME_FP(dllmethod, method) \
   if (!m_dll->ResolveExport( #dllmethod , & method##_ptr )) \
