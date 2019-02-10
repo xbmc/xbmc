@@ -54,7 +54,7 @@ public:
     , m_callback(callback)
     , m_postime(0)
   {
-    memset(&m_posinfo, 0, sizeof(m_posinfo));
+    m_posinfo = {};
     m_device->FindServiceByType("urn:schemas-upnp-org:service:AVTransport:1", m_transport);
   }
 
