@@ -195,6 +195,29 @@
       "speed": { "type": "integer" }
     }
   },
+  "Player.ViewMode": {
+    "type": "string",
+    "enum": [  "normal", "zoom", "stretch4x3", "widezoom", "stretch16x9", "original",
+               "stretch16x9nonlin", "zoom120width", "zoom110width" ]
+  },
+  "Player.CustomViewMode": {
+    "type": "object",
+    "required": true,
+    "properties": {
+      "zoom": { "type": [
+          { "type": "string", "enum": [ "increase", "decrease" ], "required": true },
+          { "$ref": "Optional.Number", "minimum":0.5, "maximum": 2.0, "description": "Zoom where 1.0 means 100%", "required": true } ] },
+      "pixelratio": { "type": [
+          { "type": "string", "enum": [ "increase", "decrease" ], "required": true },
+          { "$ref": "Optional.Number", "minimum":0.5, "maximum": 2.0, "description": "Pixel aspect ratio where 1.0 means square pixel", "required": true } ] },
+      "verticalshift": { "type": [
+          { "type": "string", "enum": [ "increase", "decrease" ], "required": true },	  
+          { "$ref": "Optional.Number", "minimum": -2.0, "maximum": 2.0, "description": "Vertical shift 1.0 means shift to bottom", "required": true } ] },
+      "nonlinearstretch": { "type": [
+          { "type": "string", "enum": [ "increase", "decrease" ], "required": true },	  
+          { "$ref": "Optional.Boolean", "description": "Flag to enable nonlinear stretch", "required": true } ] }
+    }
+  },
   "Player.Repeat": {
     "type": "string",
     "enum": [ "off", "one", "all" ]

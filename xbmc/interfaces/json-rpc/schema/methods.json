@@ -335,6 +335,37 @@
     ],
     "returns": "string"
   },
+  "Player.SetViewMode": {
+    "type": "method",
+    "description": "Set view mode of video player",
+    "transport": "Response",
+    "permission": "ControlPlayback",
+    "params": [
+      { "name": "viewmode", "type": [
+          { "$ref": "Player.CustomViewMode", "description": "Custom view mode", "required": true },
+          { "name": "value", "$ref": "Player.ViewMode", "required": true}
+        ],
+      "required": true }
+    ],
+    "returns": "string"
+  },
+  "Player.GetViewMode": {
+    "type": "method",
+    "description": "Get view mode of video player",
+    "transport": "Response",
+    "permission": "ReadData",
+    "params": [],
+    "returns": {
+      "type": "object",
+      "properties": {
+        "viewmode": { "$ref": "Player.ViewMode", "required": true },
+        "zoom": { "type": "number", "required": true },
+        "pixelratio": { "type": "number", "required": true },
+        "verticalshift": { "type": "number", "required": true },
+        "nonlinearstretch": { "type": "boolean", "required": true }		
+        }
+      }
+  },
   "Player.Rotate": {
     "type": "method",
     "description": "Rotates current picture",
