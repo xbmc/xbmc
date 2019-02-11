@@ -270,7 +270,11 @@ public:
   explicit ProgressDialogHelper (const std::string& heading) : m_dialog(0)
   {
     if (g_application.IsCurrentThread())
-      m_dialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogProgress>(WINDOW_DIALOG_PROGRESS);
+    {
+      CGUIComponent *gui = CServiceBroker::GetGUI();
+      if (gui)
+        m_dialog = gui->GetWindowManager().GetWindow<CGUIDialogProgress>(WINDOW_DIALOG_PROGRESS);
+    }
 
     if (m_dialog)
     {
