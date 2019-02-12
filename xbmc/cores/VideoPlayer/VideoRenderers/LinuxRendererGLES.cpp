@@ -29,6 +29,10 @@
 #include "VideoShaders/YUV2RGBShaderGLES.h"
 #include "VideoShaders/VideoFilterShaderGLES.h"
 
+#ifndef GL_UNPACK_ROW_LENGTH
+#define GL_UNPACK_ROW_LENGTH 0x0CF2
+#endif
+
 using namespace Shaders;
 
 CLinuxRendererGLES::CLinuxRendererGLES()
@@ -119,6 +123,10 @@ bool CLinuxRendererGLES::Configure(const VideoPicture &picture, float fps, unsig
   // Ensure that textures are recreated and rendering starts only after the 1st
   // frame is loaded after every call to Configure().
   m_bValidated = false;
+
+  GLint pixelStore;
+  glGetIntegerv(GL_UNPACK_ROW_LENGTH, &pixelStore);
+  m_unpackRowLengthSupported = (glGetError() == GL_NO_ERROR);
 
   // setup the background colour
   m_clearColour = CServiceBroker::GetWinSystem()->UseLimitedColor() ? (16.0f / 0xff) : 0.0f;
@@ -268,26 +276,13 @@ void CLinuxRendererGLES::LoadPlane(CYuvPlane& plane, int type,
 
   if (stride != static_cast<int>(width * bps))
   {
-#if HAS_GLES >= 3
-    unsigned int verMajor, verMinor;
-    m_renderSystem->GetRenderVersion(verMajor, verMinor);
-
-    if (verMajor >= 3)
+    if (m_unpackRowLengthSupported)
     {
       glGetIntegerv(GL_UNPACK_ROW_LENGTH, &pixelStore);
       glPixelStorei(GL_UNPACK_ROW_LENGTH, stride);
       pixelStoreKey = GL_UNPACK_ROW_LENGTH;
     }
     else
-#elif defined (GL_UNPACK_ROW_LENGTH_EXT)
-    if (m_renderSystem->IsExtSupported("GL_EXT_unpack_subimage"))
-    {
-      glGetIntegerv(GL_UNPACK_ROW_LENGTH_EXT, &pixelStore);
-      glPixelStorei(GL_UNPACK_ROW_LENGTH_EXT, stride);
-      pixelStoreKey = GL_UNPACK_ROW_LENGTH_EXT;
-    }
-    else
-#endif
     {
       unsigned char *src(static_cast<unsigned char*>(data)),
                     *dst(m_planeBuffer);
