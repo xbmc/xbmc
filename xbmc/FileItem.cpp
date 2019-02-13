@@ -34,7 +34,9 @@
 #include "music/MusicDatabase.h"
 #include "pvr/channels/PVRChannel.h"
 #include "pvr/epg/Epg.h"
+#include "pvr/PVRManager.h"
 #include "pvr/recordings/PVRRecording.h"
+#include "pvr/recordings/PVRRecordings.h"
 #include "pvr/timers/PVRTimerInfoTag.h"
 #include "video/Bookmark.h"
 #include "video/VideoInfoTag.h"
@@ -1627,10 +1629,22 @@ void CFileItem::SetFromVideoInfoTag(const CVideoInfoTag &video)
     m_bIsFolder = false;
   }
 
-  if (m_videoInfoTag)
-    *m_videoInfoTag = video;
+  if (!m_bIsFolder && URIUtils::IsPVRRecording(m_strPath))
+  {
+    delete m_videoInfoTag;
+    m_videoInfoTag = NULL;
+    CPVRRecordingsPtr recordings = CServiceBroker::GetPVRManager().Recordings();
+    if (recordings)
+      m_pvrRecordingInfoTag = recordings->GetByPath(m_strPath)->m_pvrRecordingInfoTag;
+    *GetVideoInfoTag() = video;
+  }
   else
-    m_videoInfoTag = new CVideoInfoTag(video);
+  {
+    if (m_videoInfoTag)
+      *m_videoInfoTag = video;
+    else
+      m_videoInfoTag = new CVideoInfoTag(video);
+  }
 
   if (video.m_iSeason == 0)
     SetProperty("isspecial", "true");
