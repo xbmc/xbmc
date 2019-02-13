@@ -554,7 +554,7 @@ void CDisplaySettings::UpdateCalibrations()
   CSingleLock lock(m_critical);
 
   // Add new (unique) resolutions
-  for (ResolutionInfos::const_iterator res(m_resolutions.cbegin() + RES_DESKTOP + 1); res != m_resolutions.cend(); ++res)
+  for (ResolutionInfos::const_iterator res(m_resolutions.cbegin() + RES_DESKTOP); res != m_resolutions.cend(); ++res)
     if (std::find_if(m_calibrations.cbegin(), m_calibrations.cend(),
       [&](const RESOLUTION_INFO& info) { return StringUtils::EqualsNoCase(res->strMode, info.strMode); }) == m_calibrations.cend())
         m_calibrations.push_back(*res);
