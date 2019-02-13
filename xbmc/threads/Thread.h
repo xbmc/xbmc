@@ -61,7 +61,6 @@ public:
 
   static bool IsCurrentThread(const ThreadIdentifier tid);
   static ThreadIdentifier GetCurrentThreadId();
-  static ThreadIdentifier GetDisplayThreadId(const ThreadIdentifier tid);
   static CThread* GetCurrentThread();
 
   virtual void OnException(){} // signal termination handler

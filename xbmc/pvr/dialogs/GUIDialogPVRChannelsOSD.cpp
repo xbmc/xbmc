@@ -15,8 +15,6 @@
 #include "guilib/GUIMessage.h"
 #include "input/Key.h"
 #include "messaging/ApplicationMessenger.h"
-#include "settings/Settings.h"
-#include "settings/SettingsComponent.h"
 
 #include "pvr/PVRGUIActions.h"
 #include "pvr/PVRManager.h"
@@ -216,9 +214,7 @@ void CGUIDialogPVRChannelsOSD::GotoChannel(int item)
 
   // Preserve the item before closing self, because this will clear m_vecItems
   const CFileItemPtr itemptr = m_vecItems->Get(item);
-  if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_PVRMENU_CLOSECHANNELOSDONSWITCH))
-    Close();
-
+  Close();
   CServiceBroker::GetPVRManager().GUIActions()->SwitchToChannel(itemptr, true /* bCheckResume */);
 }
 
