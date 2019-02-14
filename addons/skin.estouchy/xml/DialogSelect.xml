@@ -147,7 +147,7 @@
 					<posy>5</posy>
 					<width>110</width>
 					<height>110</height>
-					<texture>$INFO[Listitem.Icon]</texture>
+					<texture>$VAR[PosterThumb]</texture>
 				</control>
 			</itemlayout>
 			<focusedlayout height="120" width="680">
@@ -184,7 +184,7 @@
 					<posy>5</posy>
 					<width>110</width>
 					<height>110</height>
-					<texture>$INFO[Listitem.Icon]</texture>
+					<texture>$VAR[PosterThumb]</texture>
 				</control>
 			</focusedlayout>
 		</control>
