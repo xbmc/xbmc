@@ -380,7 +380,7 @@ void CWinSystemWin10::UpdateResolutions()
     refreshRate = static_cast<float>(details->RefreshRate);
 
   RESOLUTION_INFO& primary_info = CDisplaySettings::GetInstance().GetResolutionInfo(RES_DESKTOP);
-  UpdateDesktopResolution(primary_info, w, h, refreshRate, dwFlags);
+  UpdateDesktopResolution(primary_info, "Default", w, h, refreshRate, dwFlags);
   CLog::Log(LOGNOTICE, "Primary mode: %s", primary_info.strMode.c_str());
 
   // erase previous stored modes

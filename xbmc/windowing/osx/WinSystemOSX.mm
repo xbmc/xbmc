@@ -1115,10 +1115,8 @@ void CWinSystemOSX::UpdateResolutions()
 
   int dispIdx = GetDisplayIndex(CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(CSettings::SETTING_VIDEOSCREEN_MONITOR));
   GetScreenResolution(&w, &h, &fps, dispIdx);
-  UpdateDesktopResolution(CDisplaySettings::GetInstance().GetResolutionInfo(RES_DESKTOP), w, h, fps, 0);
-  NSString *dispName = screenNameForDisplay(GetDisplayID(dispIdx));
-
-  CDisplaySettings::GetInstance().GetResolutionInfo(RES_DESKTOP).strOutput = [dispName UTF8String];
+  NSString *dispName = screenNameForDisplay(GetDisplayID(dispIdx));  
+  UpdateDesktopResolution(CDisplaySettings::GetInstance().GetResolutionInfo(RES_DESKTOP), [dispName UTF8String], w, h, fps, 0);
 
   CDisplaySettings::GetInstance().ClearCustomResolutions();
 
@@ -1395,25 +1393,7 @@ void CWinSystemOSX::FillInVideoModes()
         // all others are only logged above...
         if (disp == dispIdx)
         {
-          if (dispName != nil)
-          {
-            res.strOutput = [dispName UTF8String];
-          }
-
-          UpdateDesktopResolution(res, w, h, refreshrate, 0);
-
-          // overwrite the mode str because  UpdateDesktopResolution adds a
-          // "Full Screen". Since the current resolution is there twice
-          // this would lead to 2 identical resolution entrys in the guisettings.xml.
-          // That would cause problems with saving screen overscan calibration
-          // because the wrong entry is picked on load.
-          // So we just use UpdateDesktopResolutions for the current DESKTOP_RESOLUTIONS
-          // in UpdateResolutions. And on all other resolutions make a unique
-          // mode str by doing it without appending "Full Screen".
-          // this is what linux does - though it feels that there shouldn't be
-          // the same resolution twice... - thats why i add a FIXME here.
-          res.strMode = StringUtils::Format("%dx%d @ %.2f", w, h, refreshrate);
-
+          UpdateDesktopResolution(res, (dispName != nil) ? [dispName UTF8String] : "Unknown", w, h, refreshrate, 0);
           CServiceBroker::GetWinSystem()->GetGfxContext().ResetOverscan(res);
           CDisplaySettings::GetInstance().AddResolutionInfo(res);
         }

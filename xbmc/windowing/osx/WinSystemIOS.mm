@@ -261,10 +261,7 @@ void CWinSystemIOS::UpdateResolutions()
 
   //first screen goes into the current desktop mode
   if(GetScreenResolution(&w, &h, &fps, screenIdx))
-  {
-    UpdateDesktopResolution(CDisplaySettings::GetInstance().GetResolutionInfo(RES_DESKTOP), w, h, fps, 0);
-    CDisplaySettings::GetInstance().GetResolutionInfo(RES_DESKTOP).strOutput = screenIdx == 0 ? CONST_TOUCHSCREEN : CONST_EXTERNAL;
-  }
+    UpdateDesktopResolution(CDisplaySettings::GetInstance().GetResolutionInfo(RES_DESKTOP), screenIdx == 0 ? CONST_TOUCHSCREEN : CONST_EXTERNAL, w, h, fps, 0);
 
   CDisplaySettings::GetInstance().ClearCustomResolutions();
 
@@ -291,16 +288,7 @@ void CWinSystemIOS::FillInVideoModes(int screenIdx)
     w = mode.size.width;
     h = mode.size.height;
 
-    if (screenIdx == 0)
-    {
-      res.strOutput = CONST_TOUCHSCREEN;
-    }
-    else
-    {
-      res.strOutput = CONST_EXTERNAL;
-    }
-
-    UpdateDesktopResolution(res, w, h, refreshrate, 0);
+    UpdateDesktopResolution(res, screenIdx == 0 ? CONST_TOUCHSCREEN : CONST_EXTERNAL, w, h, refreshrate, 0);
     CLog::Log(LOGNOTICE, "Found possible resolution for display %d with %d x %d\n", screenIdx, w, h);
 
     CServiceBroker::GetWinSystem()->GetGfxContext().ResetOverscan(res);
