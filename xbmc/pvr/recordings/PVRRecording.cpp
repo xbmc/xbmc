@@ -488,8 +488,22 @@ bool CPVRRecording::IsInProgress() const
   // Note: It is not enough to only check recording time and duration against 'now'.
   //       Only the state of the related timer is a safe indicator that the backend
   //       actually is recording this.
+  //
+  //       Matching timers vs. recordings only can work if channeluid is set for both
+  //       entities to compare. Unfortunately, PVR addon API defines channeluid as optional.
+  //
+  //! @todo PVR Addon API change: introduce required PVR_RECORDING.state member
 
-  return CServiceBroker::GetPVRManager().Timers()->HasRecordingTimerForRecording(*this);
+  if (m_iChannelUid != PVR_CHANNEL_INVALID_UID)
+  {
+    return CServiceBroker::GetPVRManager().Timers()->HasRecordingTimerForRecording(*this);
+  }
+  else
+  {
+    const CDateTime now(CDateTime::GetUTCDateTime());
+    return (m_recordingTime <= now &&
+            (m_recordingTime + CDateTimeSpan(0, 0, m_duration / 60, m_duration % 60)) >= now);
+  }
 }
 
 void CPVRRecording::SetGenre(int iGenreType, int iGenreSubType, const std::string &strGenre)
