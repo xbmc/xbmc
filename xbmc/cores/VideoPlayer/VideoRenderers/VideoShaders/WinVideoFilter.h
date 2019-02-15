@@ -21,8 +21,7 @@ extern "C" {
 #include "libavutil/pixfmt.h"
 #include "libavutil/mastering_display_metadata.h"
 }
-enum EBufferFormat;
-class CRenderBuffer;
+class CRenderBufferBase;
 
 using namespace DirectX;
 
@@ -116,21 +115,21 @@ class CYUV2RGBShader : public CWinShader
 public:
   CYUV2RGBShader();
   virtual ~CYUV2RGBShader();
-  bool Create(EBufferFormat fmt, AVColorPrimaries dstPrimaries, AVColorPrimaries srcPrimaries, COutputShader *pOutShader = nullptr);
-  void Render(CRect sourceRect, CPoint dest[], CRenderBuffer& videoBuffer, CD3DTexture& target);
+  bool Create(AVPixelFormat fmt, AVColorPrimaries dstPrimaries, AVColorPrimaries srcPrimaries, COutputShader *pOutShader = nullptr);
+  void Render(CRect sourceRect, CPoint dest[], CRenderBufferBase* videoBuffer, CD3DTexture& target);
   void SetParams(float contrast, float black, bool limited);
   void SetColParams(AVColorSpace colSpace, int bits, bool limited, int textuteBits);
 
 protected:
-  void PrepareParameters(CRenderBuffer& videoBuffer, CRect sourceRect, CPoint dest[]);
-  void SetShaderParameters(CRenderBuffer& videoBuffer);
+  void PrepareParameters(CRenderBufferBase* videoBuffer, CRect sourceRect, CPoint dest[]);
+  void SetShaderParameters(CRenderBufferBase* videoBuffer);
 
 private:
   unsigned int m_sourceWidth;
   unsigned int m_sourceHeight;
   CRect m_sourceRect;
   CPoint m_dest[4];
-  EBufferFormat m_format;
+  AVPixelFormat m_format;
   float m_texSteps[2];
   COutputShader *m_pOutShader;
   std::shared_ptr<CConvertMatrix> m_pConvMatrix;

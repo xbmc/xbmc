@@ -9,7 +9,6 @@
 #include "WinVideoFilter.h"
 #include "ConvolutionKernels.h"
 #include "cores/VideoPlayer/VideoRenderers/VideoShaders/dither.h"
-#include "cores/VideoPlayer/VideoRenderers/WinRenderBuffer.h"
 #include "filesystem/File.h"
 #include "windowing/GraphicContext.h"
 #include "platform/win32/WIN32Util.h"
@@ -17,6 +16,7 @@
 #include "rendering/dx/DeviceResources.h"
 #include "Util.h"
 #include "utils/log.h"
+#include "VideoRenderers/windows/RendererBase.h"
 
 #include <DirectXPackedVector.h>
 #include <map>
@@ -454,7 +454,7 @@ void COutputShader::CreateDitherView()
 
 //==================================================================================
 
-bool CYUV2RGBShader::Create(EBufferFormat fmt, AVColorPrimaries dstPrimaries, AVColorPrimaries srcPrimaries, COutputShader *pCLUT)
+bool CYUV2RGBShader::Create(AVPixelFormat fmt, AVColorPrimaries dstPrimaries, AVColorPrimaries srcPrimaries, COutputShader *pCLUT)
 {
   m_format = fmt;
   m_pOutShader = pCLUT;
@@ -463,25 +463,24 @@ bool CYUV2RGBShader::Create(EBufferFormat fmt, AVColorPrimaries dstPrimaries, AV
 
   switch (fmt)
   {
-  case BUFFER_FMT_YUV420P:
-  case BUFFER_FMT_YUV420P10:
-  case BUFFER_FMT_YUV420P16:
+  case AV_PIX_FMT_YUV420P:
+  case AV_PIX_FMT_YUV420P10:
+  case AV_PIX_FMT_YUV420P16:
     defines["XBMC_YV12"] = "";
     break;
-  case BUFFER_FMT_D3D11_BYPASS:
-  case BUFFER_FMT_D3D11_NV12:
-  case BUFFER_FMT_D3D11_P010:
-  case BUFFER_FMT_D3D11_P016:
-  case BUFFER_FMT_NV12:
+  case AV_PIX_FMT_D3D11VA_VLD:
+  case AV_PIX_FMT_NV12:
+  case AV_PIX_FMT_P010:
+  case AV_PIX_FMT_P016:
     defines["XBMC_NV12"] = "";
     // FL 9.x doesn't support DXGI_FORMAT_R8G8_UNORM, so we have to use SNORM and correct values in shader
     if (!DX::Windowing()->IsFormatSupport(DXGI_FORMAT_R8G8_UNORM, D3D11_FORMAT_SUPPORT_TEXTURE2D))
       defines["NV12_SNORM_UV"] = "";
     break;
-  case BUFFER_FMT_UYVY422:
+  case AV_PIX_FMT_UYVY422:
     defines["XBMC_UYVY"] = "";
     break;
-  case BUFFER_FMT_YUYV422:
+  case AV_PIX_FMT_YUYV422:
     defines["XBMC_YUY2"] = "";
     break;
   default:
@@ -522,7 +521,7 @@ bool CYUV2RGBShader::Create(EBufferFormat fmt, AVColorPrimaries dstPrimaries, AV
   return true;
 }
 
-void CYUV2RGBShader::Render(CRect sourceRect, CPoint dest[], CRenderBuffer& videoBuffer, CD3DTexture& target)
+void CYUV2RGBShader::Render(CRect sourceRect, CPoint dest[], CRenderBufferBase* videoBuffer, CD3DTexture& target)
 {
   PrepareParameters(videoBuffer, sourceRect, dest);
   SetShaderParameters(videoBuffer);
@@ -549,7 +548,7 @@ void CYUV2RGBShader::SetColParams(AVColorSpace colSpace, int bits, bool limited,
 CYUV2RGBShader::CYUV2RGBShader()
   : m_sourceWidth(0)
   , m_sourceHeight(0)
-  , m_format(BUFFER_FMT_NONE)
+  , m_format(AV_PIX_FMT_NONE)
   , m_pOutShader(nullptr)
 {
   memset(&m_texSteps, 0, sizeof(m_texSteps));
@@ -559,19 +558,19 @@ CYUV2RGBShader::~CYUV2RGBShader()
 {
 }
 
-void CYUV2RGBShader::PrepareParameters(CRenderBuffer& videoBuffer, CRect sourceRect, CPoint dest[])
+void CYUV2RGBShader::PrepareParameters(CRenderBufferBase* videoBuffer, CRect sourceRect, CPoint dest[])
 {
   if (m_sourceRect != sourceRect
     || m_dest[0] != dest[0] || m_dest[1] != dest[1]
     || m_dest[2] != dest[2] || m_dest[3] != dest[3]
-    || videoBuffer.GetWidth() != m_sourceWidth
-    || videoBuffer.GetHeight() != m_sourceHeight)
+    || videoBuffer->GetWidth() != m_sourceWidth
+    || videoBuffer->GetHeight() != m_sourceHeight)
   {
     m_sourceRect = sourceRect;
     for (size_t i = 0; i < 4; ++i)
       m_dest[i] = dest[i];
-    m_sourceWidth = videoBuffer.GetWidth();
-    m_sourceHeight = videoBuffer.GetHeight();
+    m_sourceWidth = videoBuffer->GetWidth();
+    m_sourceHeight = videoBuffer->GetHeight();
 
     CUSTOMVERTEX* v;
     CWinShader::LockVertexBuffer(reinterpret_cast<void**>(&v));
@@ -612,21 +611,21 @@ void CYUV2RGBShader::PrepareParameters(CRenderBuffer& videoBuffer, CRect sourceR
   }
 
   unsigned int texWidth = m_sourceWidth;
-  if ( m_format == BUFFER_FMT_UYVY422
-    || m_format == BUFFER_FMT_YUYV422)
+  if ( m_format == AV_PIX_FMT_UYVY422
+    || m_format == AV_PIX_FMT_YUYV422)
     texWidth = texWidth >> 1;
 
   m_texSteps[0] = 1.0f / texWidth;
   m_texSteps[1] = 1.0f / m_sourceHeight;
 }
 
-void CYUV2RGBShader::SetShaderParameters(CRenderBuffer& videoBuffer)
+void CYUV2RGBShader::SetShaderParameters(CRenderBufferBase* videoBuffer)
 {
   m_effect.SetTechnique("YUV2RGB_T");
   ID3D11ShaderResourceView* ppSRView[3] = {};
-  for (unsigned i = 0, max_i = videoBuffer.GetActivePlanes(); i < max_i; i++)
-    ppSRView[i] = reinterpret_cast<ID3D11ShaderResourceView*>(videoBuffer.GetView(i));
-  m_effect.SetResources("g_Texture", ppSRView, videoBuffer.GetActivePlanes());
+  for (unsigned i = 0, max_i = videoBuffer->GetViewCount(); i < max_i; i++)
+    ppSRView[i] = reinterpret_cast<ID3D11ShaderResourceView*>(videoBuffer->GetView(i));
+  m_effect.SetResources("g_Texture", ppSRView, videoBuffer->GetViewCount());
   m_effect.SetFloatArray("g_StepXY", m_texSteps, ARRAY_SIZE(m_texSteps));
 
   float yuvMat[4][4];
