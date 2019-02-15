@@ -20,6 +20,7 @@
 #include "pvr/channels/PVRChannel.h"
 #include "pvr/epg/EpgInfoTag.h"
 #include "pvr/recordings/PVRRecording.h"
+#include "pvr/recordings/PVRRecordings.h"
 #include "pvr/recordings/PVRRecordingsPath.h"
 #include "pvr/timers/PVRTimers.h"
 
@@ -115,12 +116,7 @@ namespace PVR
 
     bool PlayRecording::IsVisible(const CFileItem &item) const
     {
-      CPVRRecordingPtr recording;
-
-      const CPVREpgInfoTagPtr epg(item.GetEPGInfoTag());
-      if (epg)
-        recording = epg->Recording();
-
+      const std::shared_ptr<CPVRRecording> recording = CServiceBroker::GetPVRManager().Recordings()->GetRecordingForEpgTag(item.GetEPGInfoTag());
       if (recording)
         return !recording->IsDeleted();
 

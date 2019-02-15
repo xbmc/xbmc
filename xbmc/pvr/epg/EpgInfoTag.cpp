@@ -136,8 +136,6 @@ bool CPVREpgInfoTag::operator !=(const CPVREpgInfoTag& right) const
 
 void CPVREpgInfoTag::Serialize(CVariant &value) const
 {
-  const CPVRRecordingPtr recording = Recording();
-
   value["broadcastid"] = m_iUniqueBroadcastID;
   value["channeluid"] = m_iUniqueChannelID;
   value["parentalrating"] = m_iParentalRating;
@@ -164,8 +162,8 @@ void CPVREpgInfoTag::Serialize(CVariant &value) const
   value["episodepart"] = m_iEpisodePart;
   value["hastimer"] = HasTimer();
   value["hastimerrule"] = HasTimerRule();
-  value["hasrecording"] = HasRecording();
-  value["recording"] = recording ? recording->m_strFileNameAndPath : "";
+  value["hasrecording"] = false; // compat
+  value["recording"] = ""; // compat
   value["isactive"] = IsActive();
   value["wasactive"] = WasActive();
   value["isseries"] = IsSeries();
@@ -724,30 +722,6 @@ void CPVREpgInfoTag::ClearTimer(void)
 
   if (previousTag)
     previousTag->ClearEpgTag();
-}
-
-void CPVREpgInfoTag::SetRecording(const CPVRRecordingPtr &recording)
-{
-  CSingleLock lock(m_critSection);
-  m_recording = recording;
-}
-
-void CPVREpgInfoTag::ClearRecording(void)
-{
-  CSingleLock lock(m_critSection);
-  m_recording.reset();
-}
-
-bool CPVREpgInfoTag::HasRecording(void) const
-{
-  CSingleLock lock(m_critSection);
-  return m_recording != nullptr;
-}
-
-CPVRRecordingPtr CPVREpgInfoTag::Recording(void) const
-{
-  CSingleLock lock(m_critSection);
-  return m_recording;
 }
 
 bool CPVREpgInfoTag::IsRecordable(void) const

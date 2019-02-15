@@ -16,6 +16,7 @@
 #include "pvr/channels/PVRChannel.h"
 #include "pvr/epg/EpgInfoTag.h"
 #include "pvr/recordings/PVRRecording.h"
+#include "pvr/recordings/PVRRecordings.h"
 #include "pvr/timers/PVRTimerInfoTag.h"
 #include "pvr/timers/PVRTimers.h"
 
@@ -125,7 +126,7 @@ namespace PVR
     }
     else if (m_item->IsEPG())
     {
-      return m_item->GetEPGInfoTag()->Recording();
+      return CServiceBroker::GetPVRManager().Recordings()->GetRecordingForEpgTag(m_item->GetEPGInfoTag());
     }
     else
     {

@@ -1130,20 +1130,33 @@ namespace PVR
     if (item->m_bIsFolder)
       return false;
 
+    std::shared_ptr<CPVRRecording> recording;
     const CPVRChannelPtr channel(CPVRItem(item).GetChannel());
-    if ((channel && CServiceBroker::GetPVRManager().IsPlayingChannel(channel)) ||
-        (channel && channel->HasRecording() && CServiceBroker::GetPVRManager().IsPlayingRecording(channel->GetRecording())))
+    if (channel)
     {
-      CGUIMessage msg(GUI_MSG_FULLSCREEN, 0, CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow());
-      CServiceBroker::GetGUI()->GetWindowManager().SendMessage(msg);
-      return true;
+      bool bSwitchToFullscreen = CServiceBroker::GetPVRManager().IsPlayingChannel(channel);
+
+      if (!bSwitchToFullscreen)
+      {
+        recording = CServiceBroker::GetPVRManager().Recordings()->GetRecordingForEpgTag(channel->GetEPGNow());
+        bSwitchToFullscreen = recording && CServiceBroker::GetPVRManager().IsPlayingRecording(recording);
+      }
+
+      if (bSwitchToFullscreen)
+      {
+        CGUIMessage msg(GUI_MSG_FULLSCREEN, 0, CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow());
+        CServiceBroker::GetGUI()->GetWindowManager().SendMessage(msg);
+        return true;
+      }
     }
 
     ParentalCheckResult result = channel ? CheckParentalLock(channel) : ParentalCheckResult::FAILED;
     if (result == ParentalCheckResult::SUCCESS)
     {
       // switch to channel or if recording present, ask whether to switch or play recording...
-      const CPVRRecordingPtr recording(channel->GetRecording());
+      if (!recording)
+        recording = CServiceBroker::GetPVRManager().Recordings()->GetRecordingForEpgTag(channel->GetEPGNow());
+
       if (recording)
       {
         bool bCancel(false);

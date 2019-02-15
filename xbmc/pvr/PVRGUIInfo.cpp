@@ -1178,7 +1178,7 @@ bool CPVRGUIInfo::GetListItemAndPlayerBool(const CFileItem *item, const CGUIInfo
       {
         const CPVREpgInfoTagPtr epgTag = CPVRItem(item).GetEpgInfoTag();
         if (epgTag)
-          bValue = epgTag->HasRecording();
+          bValue = !!CServiceBroker::GetPVRManager().Recordings()->GetRecordingForEpgTag(epgTag);
         return true;
       }
       break;

@@ -19,7 +19,6 @@
 
 #include "pvr/PVRTypes.h"
 #include "pvr/channels/PVRChannel.h"
-#include "pvr/recordings/PVRRecording.h"
 #include "pvr/timers/PVRTimerInfoTag.h"
 
 class CVariant;
@@ -369,29 +368,6 @@ namespace PVR
     CPVRTimerInfoTagPtr Timer(void) const;
 
     /*!
-     * @brief Set a recording for this event.
-     * @param recording The recording.
-     */
-    void SetRecording(const CPVRRecordingPtr &recording);
-
-    /*!
-     * @brief Clear a recording for this event.
-     */
-    void ClearRecording(void);
-
-    /*!
-     * @brief Check whether this event has a recording.
-     * @return True if it has a recording, false if not.
-     */
-    bool HasRecording(void) const;
-
-    /*!
-     * @brief Get the recording for this event, if any.
-     * @return The pointer or nullptr if there is none.
-     */
-    CPVRRecordingPtr Recording(void) const;
-
-    /*!
      * @brief Check if this event can be recorded.
      * @return True if it can be recorded, false otherwise.
      */
@@ -533,6 +509,5 @@ namespace PVR
     CPVREpg *m_epg = nullptr;
     CPVRChannelPtr m_channel;
     CPVRTimerInfoTagPtr m_timer;
-    CPVRRecordingPtr m_recording;
   };
 }

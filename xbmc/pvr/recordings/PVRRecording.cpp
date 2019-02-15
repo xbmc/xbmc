@@ -217,25 +217,7 @@ void CPVRRecording::Reset(void)
 bool CPVRRecording::Delete(void)
 {
   CPVRClientPtr client = CServiceBroker::GetPVRManager().GetClient(m_iClientId);
-  if (!client || client->DeleteRecording(*this) != PVR_ERROR_NO_ERROR)
-    return false;
-
-  OnDelete();
-  return true;
-}
-
-void CPVRRecording::OnDelete(void)
-{
-  if (m_iEpgEventId != EPG_TAG_INVALID_UID)
-  {
-    const CPVRChannelPtr channel(Channel());
-    if (channel)
-    {
-      const CPVREpgInfoTagPtr epgTag(CServiceBroker::GetPVRManager().EpgContainer().GetTagById(channel, m_iEpgEventId));
-      if (epgTag)
-        epgTag->ClearRecording();
-    }
-  }
+  return client && (client->DeleteRecording(*this) == PVR_ERROR_NO_ERROR);
 }
 
 bool CPVRRecording::Undelete(void)
@@ -409,9 +391,6 @@ void CPVRRecording::Update(const CPVRRecording &tag)
     strEpisode.erase(0, pos + 2);
     m_strShowTitle = strEpisode;
   }
-
-  if (m_bIsDeleted)
-    OnDelete();
 
   UpdatePath();
 }

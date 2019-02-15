@@ -27,6 +27,7 @@
 #include "pvr/PVRManager.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/epg/EpgContainer.h"
+#include "pvr/recordings/PVRRecordings.h"
 #include "pvr/windows/GUIEPGGridContainer.h"
 
 using namespace KODI::MESSAGING;
@@ -453,7 +454,7 @@ bool CGUIWindowPVRGuideBase::OnMessage(CGUIMessage& message)
                     else
                     {
                       // past event
-                      if (tag->HasRecording())
+                      if (CServiceBroker::GetPVRManager().Recordings()->GetRecordingForEpgTag(tag))
                         CServiceBroker::GetPVRManager().GUIActions()->PlayRecording(pItem, true);
                       else if (tag->IsPlayable())
                         CServiceBroker::GetPVRManager().GUIActions()->PlayEpgTag(pItem);

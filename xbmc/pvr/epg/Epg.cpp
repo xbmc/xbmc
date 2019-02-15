@@ -22,7 +22,6 @@
 #include "utils/log.h"
 
 #include "pvr/PVRManager.h"
-#include "pvr/recordings/PVRRecordings.h"
 #include "pvr/timers/PVRTimers.h"
 
 using namespace PVR;
@@ -91,7 +90,6 @@ void CPVREpg::Cleanup(const CDateTime &time)
         m_nowActiveStart.SetValid(false);
 
       it->second->ClearTimer();
-      it->second->ClearRecording();
       it = m_tags.erase(it);
     }
     else
@@ -297,7 +295,6 @@ void CPVREpg::AddEntry(const CPVREpgInfoTag &tag)
     newTag->SetChannel(channel);
     newTag->SetEpg(this);
     newTag->SetTimer(CServiceBroker::GetPVRManager().Timers()->GetTimerForEpgTag(newTag));
-    newTag->SetRecording(CServiceBroker::GetPVRManager().Recordings()->GetRecordingForEpgTag(newTag));
   }
 }
 
@@ -415,7 +412,6 @@ bool CPVREpg::UpdateEntry(const CPVREpgInfoTagPtr &tag, bool bUpdateDatabase)
   }
 
   infoTag->SetTimer(CServiceBroker::GetPVRManager().Timers()->GetTimerForEpgTag(infoTag));
-  infoTag->SetRecording(CServiceBroker::GetPVRManager().Recordings()->GetRecordingForEpgTag(infoTag));
 
   return true;
 }
@@ -454,7 +450,6 @@ bool CPVREpg::UpdateEntry(const CPVREpgInfoTagPtr &tag, EPG_EVENT_STATE newState
           m_deletedTags.insert(std::make_pair(it->second->UniqueBroadcastID(), it->second));
 
         it->second->ClearTimer();
-        it->second->ClearRecording();
         m_tags.erase(it);
       }
       else
@@ -643,7 +638,6 @@ bool CPVREpg::FixOverlappingEvents(bool bUpdateDb /* = false */)
         m_nowActiveStart.SetValid(false);
 
       it->second->ClearTimer();
-      it->second->ClearRecording();
       m_tags.erase(it++);
     }
     else if (previousTag->EndAsUTC() > currentTag->StartAsUTC())

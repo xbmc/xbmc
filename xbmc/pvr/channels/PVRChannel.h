@@ -145,11 +145,6 @@ namespace PVR
     bool IsRecording(void) const;
 
     /*!
-     * @return If recording, gets the recording if the add-on provides the epg id in recordings
-     */
-    CPVRRecordingPtr GetRecording(void) const;
-
-    /*!
      * @brief Obtain the Radio RDS data for this channel, if available.
      * @return The Radio RDS data or nullptr.
      */
@@ -160,11 +155,6 @@ namespace PVR
      * @param tag The RDS data.
      */
     void SetRadioRDSInfoTag(const std::shared_ptr<CPVRRadioRDSInfoTag>& tag);
-
-    /*!
-     * @return True if this channel has a corresponding recording, false otherwise
-     */
-    bool HasRecording(void) const;
 
     /*!
      * @return The path to the icon for this channel.
