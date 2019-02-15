@@ -56,39 +56,16 @@ HRESULT CRenderBufferBase::GetResource(ID3D11Resource** ppResource, unsigned* in
   if (!index)
     return E_POINTER;
 
-  HRESULT hr = E_UNEXPECTED;
+  auto dxva = dynamic_cast<DXVA::CVideoBuffer*>(videoBuffer);
+  if (!dxva)
+    return E_NOT_SET;
+
   ComPtr<ID3D11Resource> pResource;
-  unsigned idx = -1;
-
-  auto dxva = dynamic_cast<DXVA::CDXVAOutputBuffer*>(videoBuffer);
-  if (dxva)
-  {
-    if (dxva->shared)
-    {
-      const auto handle = dxva->GetHandle();
-      if (handle == INVALID_HANDLE_VALUE)
-        return E_HANDLE;
-
-      ComPtr<ID3D11Device> pD3DDevice = DX::DeviceResources::Get()->GetD3DDevice();
-      hr = pD3DDevice->OpenSharedResource(handle, __uuidof(ID3D11Resource),
-        reinterpret_cast<void**>(pResource.GetAddressOf()));
-    }
-    else
-    {
-      if (dxva->view)
-      {
-        dxva->view->GetResource(&pResource);
-        hr = S_OK;
-      }
-      else
-        hr = E_UNEXPECTED;
-    }
-    idx = dxva->GetIdx();
-  }
+  const HRESULT hr = dxva->GetResource(&pResource);
   if (SUCCEEDED(hr))
   {
     *ppResource = pResource.Detach();
-    *index = idx;
+    *index = dxva->GetIdx();
   }
 
   return hr;
@@ -443,7 +420,7 @@ DXGI_FORMAT CRendererBase::GetDXGIFormat(const VideoPicture& picture)
 
 DXGI_FORMAT CRendererBase::GetDXGIFormat(CVideoBuffer* videoBuffer)
 {
-  const auto dxva_buf = dynamic_cast<DXVA::CDXVAOutputBuffer*>(videoBuffer);
+  const auto dxva_buf = dynamic_cast<DXVA::CVideoBuffer*>(videoBuffer);
   if (dxva_buf)
     return dxva_buf->format;
 

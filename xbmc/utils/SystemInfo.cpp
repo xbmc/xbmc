@@ -522,6 +522,11 @@ std::string CSysInfo::GetCPUSerial()
   return "Serial: " + g_cpuInfo.getCPUSerial();
 }
 
+int CSysInfo::GetCPUCount()
+{
+  return g_cpuInfo.getCPUCount();
+}
+
 std::string CSysInfo::GetKernelName(bool emptyIfUnknown /*= false*/)
 {
   static std::string kernelName;

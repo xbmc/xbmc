@@ -126,6 +126,7 @@ public:
   std::string GetCPUHardware();
   std::string GetCPURevision();
   std::string GetCPUSerial();
+  static int GetCPUCount();
   static std::string GetManufacturerName(void);
   static std::string GetModelName(void);
   bool GetDiskSpace(std::string drive,int& iTotal, int& iTotalFree, int& iTotalUsed, int& iPercentFree, int& iPercentUsed);
