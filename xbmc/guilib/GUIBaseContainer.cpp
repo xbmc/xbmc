@@ -126,6 +126,8 @@ void CGUIBaseContainer::Process(unsigned int currentTime, CDirtyRegionList &dirt
     if (itemNo >= 0)
     {
       CGUIListItemPtr item = m_items[itemNo];
+      item->SetCurrentItem(itemNo + 1);
+
       // render our item
       if (m_orientation == VERTICAL)
         ProcessItem(origin.x, pos, item, focused, currentTime, dirtyregions);

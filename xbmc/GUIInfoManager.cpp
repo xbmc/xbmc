@@ -5687,6 +5687,14 @@ const infomap container_str[]  = {{ "property",         CONTAINER_PROPERTY },
 ///     @return The parental rating of the list item (PVR).
 ///     <p>
 ///   }
+///   \table_row3{   <b>`ListItem.CurrentItem`</b>,
+///                  \anchor ListItem_CurrentItem
+///                  _string_,
+///     @return The current index of the item in a container starting at 1.
+///     <p><hr>
+///     @skinning_v19 **[New Infolabel]** \link ListItem_CurrentItem `ListItem.CurrentItem`\endlink
+///     <p>
+///   }
 /// \table_end
 ///
 /// -----------------------------------------------------------------------------
@@ -5877,7 +5885,8 @@ const infomap listitem_labels[]= {{ "thumb",            LISTITEM_THUMB },
                                   { "expirationtime",   LISTITEM_EXPIRATION_TIME },
                                   { "art",              LISTITEM_ART },
                                   { "property",         LISTITEM_PROPERTY },
-                                  { "parentalrating",   LISTITEM_PARENTAL_RATING }
+                                  { "parentalrating",   LISTITEM_PARENTAL_RATING },
+                                  { "currentitem",      LISTITEM_CURRENTITEM }
 };
 
 /// \page modules__infolabels_boolean_conditions
@@ -9825,6 +9834,8 @@ std::string CGUIInfoManager::GetMultiInfoItemLabel(const CFileItem *item, int co
           return item->m_dateTime.GetAsLocalizedDate(true);
         break;
       }
+      case LISTITEM_CURRENTITEM:
+        return std::to_string(item->GetCurrentItem());
     }
   }
 
