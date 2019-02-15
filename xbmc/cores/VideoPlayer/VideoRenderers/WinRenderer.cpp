@@ -357,7 +357,7 @@ bool CWinRenderer::Flush(bool saveBuffers)
 
 bool CWinRenderer::CreateIntermediateRenderTarget(unsigned int width, unsigned int height, bool dynamic)
 {
-  DXGI_FORMAT format = DX::Windowing()->GetBackBuffer()->GetFormat();
+  DXGI_FORMAT format = DX::Windowing()->GetBackBuffer().GetFormat();
 
   // don't create new one if it exists with requested size and format
   if ( m_IntermediateTarget.Get() && m_IntermediateTarget.GetFormat() == format
@@ -656,7 +656,7 @@ void CWinRenderer::UpdateVideoFilter()
   }
 }
 
-void CWinRenderer::Render(DWORD flags, CD3DTexture* target)
+void CWinRenderer::Render(DWORD flags, CD3DTexture& target)
 {
   CRenderBuffer& buf = m_renderBuffers[m_iYV12RenderBuffer];
   if (!buf.loaded)
@@ -705,10 +705,12 @@ void CWinRenderer::Render(DWORD flags, CD3DTexture* target)
   if (m_bUseHQScaler)
     RenderHQ(target);
 
+  // Restore our view port.
+  DX::Windowing()->RestoreViewPort();
   DX::Windowing()->ApplyStateBlock();
 }
 
-void CWinRenderer::RenderSW(CD3DTexture* target)
+void CWinRenderer::RenderSW(CD3DTexture& target)
 {
   // if creation failed
   if (!m_outputShader)
@@ -769,17 +771,15 @@ void CWinRenderer::RenderSW(CD3DTexture* target)
     CLog::Log(LOGERROR, "%s: failed to unlock swtarget texture.", __FUNCTION__);
 
   // 2. output to display
-
   m_outputShader->SetDisplayMetadata(buf.hasDisplayMetadata, buf.displayMetadata, buf.hasLightMetadata, buf.lightMetadata);
   m_outputShader->SetToneMapParam(m_videoSettings.m_ToneMapParam);
-  m_outputShader->Render(m_IntermediateTarget, m_sourceWidth, m_sourceHeight, m_sourceRect, m_rotatedDestCoords, target,
+  m_outputShader->Render(m_IntermediateTarget, m_sourceRect, m_rotatedDestCoords, target,
                          DX::Windowing()->UseLimitedColor(), m_videoSettings.m_Contrast * 0.01f, m_videoSettings.m_Brightness * 0.01f);
 }
 
-void CWinRenderer::RenderPS(CD3DTexture* target)
+void CWinRenderer::RenderPS(CD3DTexture& target)
 {
   CD3D11_VIEWPORT viewPort(0.0f, 0.0f, static_cast<float>(m_sourceWidth), static_cast<float>(m_sourceHeight));
-
   // reset scissors
   DX::Windowing()->ResetScissors();
   // reset view port
@@ -793,7 +793,7 @@ void CWinRenderer::RenderPS(CD3DTexture* target)
   m_colorShader->SetParams(m_videoSettings.m_Contrast, m_videoSettings.m_Brightness, DX::Windowing()->UseLimitedColor());
   m_colorShader->SetColParams(buf.color_space, buf.bits, !buf.full_range, buf.texBits);
   // convert YUV -> RGB
-  m_colorShader->Render(m_sourceRect, srcPoints, &buf, &m_IntermediateTarget);
+  m_colorShader->Render(m_sourceRect, srcPoints, buf, m_IntermediateTarget);
 
   if (!m_bUseHQScaler)
   {
@@ -813,27 +813,25 @@ void CWinRenderer::RenderPS(CD3DTexture* target)
     m_outputShader->SetDisplayMetadata(buf.hasDisplayMetadata, buf.displayMetadata, buf.hasLightMetadata, buf.lightMetadata);
     m_outputShader->SetToneMapParam(m_videoSettings.m_ToneMapParam);
 
-    viewPort.Width = static_cast<float>(target->GetWidth());
-    viewPort.Height = static_cast<float>(target->GetHeight());
+    viewPort.Width = static_cast<float>(target.GetWidth());
+    viewPort.Height = static_cast<float>(target.GetHeight());
+
     // set viewport to the whole target
     DX::DeviceResources::Get()->GetD3DContext()->RSSetViewports(1, &viewPort);
     // restore scissors
     DX::Windowing()->SetScissors(CServiceBroker::GetWinSystem()->GetGfxContext().StereoCorrection(CServiceBroker::GetWinSystem()->GetGfxContext().GetScissors()));
     // render frame
-    m_outputShader->Render(m_IntermediateTarget, m_sourceWidth, m_sourceHeight, m_sourceRect, destPoints, target);
+    m_outputShader->Render(m_IntermediateTarget, m_sourceRect, destPoints, target);
   }
-  // Restore our view port.
-  DX::Windowing()->RestoreViewPort();
 }
 
-void CWinRenderer::RenderHQ(CD3DTexture* target)
+void CWinRenderer::RenderHQ(CD3DTexture& target)
 {
-  m_scalerShader->Render(m_IntermediateTarget, m_sourceWidth, m_sourceHeight, m_destWidth, m_destHeight
-                       , m_sourceRect, CServiceBroker::GetWinSystem()->GetGfxContext().StereoCorrection(m_destRect)
-                       , false, target);
+  const CRect dest = CServiceBroker::GetWinSystem()->GetGfxContext().StereoCorrection(m_destRect);
+  m_scalerShader->Render(m_IntermediateTarget, m_destWidth, m_destHeight, m_sourceRect, dest, false, target);
 }
 
-void CWinRenderer::RenderHW(DWORD flags, CD3DTexture* target)
+void CWinRenderer::RenderHW(DWORD flags, CD3DTexture& target)
 {
   CRenderBuffer& buf = m_renderBuffers[m_iYV12RenderBuffer];
   if ( buf.format != BUFFER_FMT_D3D11_BYPASS
@@ -915,11 +913,11 @@ void CWinRenderer::RenderHW(DWORD flags, CD3DTexture* target)
                        static_cast<float>(m_IntermediateTarget.GetWidth()),
                        static_cast<float>(m_IntermediateTarget.GetHeight()));
 
-  if (target != DX::Windowing()->GetBackBuffer())
+  if (&target != &DX::Windowing()->GetBackBuffer())
   {
     // rendering capture
-    targetRect.x2 = static_cast<float>(target->GetWidth());
-    targetRect.y2 = static_cast<float>(target->GetHeight());
+    targetRect.x2 = static_cast<float>(target.GetWidth());
+    targetRect.y2 = static_cast<float>(target.GetHeight());
   }
   CWIN32Util::CropSource(src, dst, targetRect, m_renderOrientation);
 
@@ -928,19 +926,13 @@ void CWinRenderer::RenderHW(DWORD flags, CD3DTexture* target)
 
   if (!m_bUseHQScaler)
   {
-    if ( CServiceBroker::GetWinSystem()->GetGfxContext().GetStereoMode() == RENDER_STEREO_MODE_SPLIT_HORIZONTAL
-      || CServiceBroker::GetWinSystem()->GetGfxContext().GetStereoMode() == RENDER_STEREO_MODE_SPLIT_VERTICAL)
-    {
-      CD3DTexture *backBuffer = DX::Windowing()->GetBackBuffer();
-      CD3D11_VIEWPORT bbSize(0.f, 0.f, static_cast<float>(backBuffer->GetWidth()), static_cast<float>(backBuffer->GetHeight()));
-      DX::DeviceResources::Get()->GetD3DContext()->RSSetViewports(1, &bbSize);
-    }
+    CD3D11_VIEWPORT viewPort(0.f, 0.f, static_cast<float>(target.GetWidth()), static_cast<float>(target.GetHeight()));
+    DX::DeviceResources::Get()->GetD3DContext()->RSSetViewports(1, &viewPort);
 
     // render frame
     m_outputShader->SetDisplayMetadata(buf.hasDisplayMetadata, buf.displayMetadata, buf.hasLightMetadata, buf.lightMetadata);
     m_outputShader->SetToneMapParam(m_videoSettings.m_ToneMapParam);
-    m_outputShader->Render(m_IntermediateTarget, m_destWidth, m_destHeight, dst, dst, target);
-    DX::Windowing()->RestoreViewPort();
+    m_outputShader->Render(m_IntermediateTarget, dst, dst, target);
   }
 }
 

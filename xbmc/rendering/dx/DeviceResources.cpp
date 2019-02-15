@@ -167,11 +167,6 @@ void DX::DeviceResources::GetDisplayMode(DXGI_MODE_DESC* mode) const
 #endif
 }
 
-ID3D11RenderTargetView* DX::DeviceResources::GetBackBufferRTV()
-{
-  return m_backBufferTex.GetRenderTarget();
-}
-
 void DX::DeviceResources::SetViewPort(D3D11_VIEWPORT& viewPort) const
 {
   // convert logical viewport to real

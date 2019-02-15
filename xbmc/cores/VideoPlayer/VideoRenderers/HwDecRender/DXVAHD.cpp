@@ -226,7 +226,7 @@ bool CProcessorHD::IsFormatSupported(DXGI_FORMAT format, D3D11_VIDEO_PROCESSOR_F
 bool CProcessorHD::CheckFormats() const
 {
   // check default output format (as render target)
-  DXGI_FORMAT backBufferFormat = DX::Windowing()->GetBackBuffer()->GetFormat();
+  DXGI_FORMAT backBufferFormat = DX::Windowing()->GetBackBuffer().GetFormat();
   if (!IsFormatSupported(backBufferFormat, D3D11_VIDEO_PROCESSOR_FORMAT_SUPPORT_OUTPUT))
     return false;
   return true;

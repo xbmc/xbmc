@@ -155,7 +155,7 @@ void CRenderSystemDX::CheckInterlacedStereoView()
       || RENDER_STEREO_MODE_CHECKERBOARD == stereoMode))
   {
     const auto outputSize = m_deviceResources->GetOutputSize();
-    DXGI_FORMAT texFormat = m_deviceResources->GetBackBuffer()->GetFormat();
+    DXGI_FORMAT texFormat = m_deviceResources->GetBackBuffer().GetFormat();
     if (!m_rightEyeTex.Create(outputSize.Width, outputSize.Height, 1, D3D11_USAGE_DEFAULT, texFormat))
     {
       CLog::Log(LOGERROR, "%s - Failed to create right eye buffer.", __FUNCTION__);
@@ -265,8 +265,7 @@ void CRenderSystemDX::PresentRender(bool rendered, bool videoLayer)
     auto m_pContext = m_deviceResources->GetD3DContext();
 
     // all views prepared, let's merge them before present
-    ID3D11RenderTargetView *const views[1] = { m_deviceResources->GetBackBufferRTV() };
-    m_pContext->OMSetRenderTargets(1, views, m_deviceResources->GetDSV());
+    m_pContext->OMSetRenderTargets(1, m_deviceResources->GetBackBuffer().GetAddressOfRTV(), m_deviceResources->GetDSV());
 
     auto outputSize = m_deviceResources->GetOutputSize();
     CRect destRect = { 0.0f, 0.0f, float(outputSize.Width), float(outputSize.Height) };
@@ -333,7 +332,7 @@ bool CRenderSystemDX::ClearBuffers(UTILS::Color color)
 
   float fColor[4];
   CD3DHelper::XMStoreColor(fColor, color);
-  ID3D11RenderTargetView* pRTView = m_deviceResources->GetBackBufferRTV();
+  ID3D11RenderTargetView* pRTView = m_deviceResources->GetBackBuffer().GetRenderTarget();
 
   if ( m_stereoMode != RENDER_STEREO_MODE_OFF
     && m_stereoMode != RENDER_STEREO_MODE_MONO)
@@ -594,8 +593,7 @@ void CRenderSystemDX::SetStereoMode(RENDER_STEREO_MODE mode, RENDER_STEREO_VIEW 
   {
     m_deviceResources->SetStereoIdx(m_stereoView == RENDER_STEREO_VIEW_RIGHT ? 1 : 0);
 
-    ID3D11RenderTargetView* const views[] = { m_deviceResources->GetBackBufferRTV() };
-    m_pContext->OMSetRenderTargets(1, views, m_deviceResources->GetDSV());
+    m_pContext->OMSetRenderTargets(1, m_deviceResources->GetBackBuffer().GetAddressOfRTV(), m_deviceResources->GetDSV());
   }
 
   auto m_pD3DDev = m_deviceResources->GetD3DDevice();
@@ -670,10 +668,10 @@ void CRenderSystemDX::SetAlphaBlendEnable(bool enable)
   m_BlendEnabled = enable;
 }
 
-CD3DTexture* CRenderSystemDX::GetBackBuffer()
+CD3DTexture& CRenderSystemDX::GetBackBuffer()
 {
   if (m_stereoView == RENDER_STEREO_VIEW_RIGHT && m_rightEyeTex.Get())
-    return &m_rightEyeTex;
+    return m_rightEyeTex;
 
   return m_deviceResources->GetBackBuffer();
 }

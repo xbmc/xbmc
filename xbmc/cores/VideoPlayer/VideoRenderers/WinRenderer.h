@@ -67,11 +67,11 @@ public:
 
 protected:
   void PreInit();
-  virtual void Render(DWORD flags, CD3DTexture* target);
-  void RenderSW(CD3DTexture* target);
-  void RenderHW(DWORD flags, CD3DTexture* target);
-  void RenderPS(CD3DTexture* target);
-  void RenderHQ(CD3DTexture* target);
+  virtual void Render(DWORD flags, CD3DTexture& target);
+  void RenderSW(CD3DTexture& target);
+  void RenderHW(DWORD flags, CD3DTexture& target);
+  void RenderPS(CD3DTexture& target);
+  void RenderHQ(CD3DTexture& target);
   void ManageTextures();
   void DeleteRenderBuffer(int index);
   bool CreateRenderBuffer(int index);

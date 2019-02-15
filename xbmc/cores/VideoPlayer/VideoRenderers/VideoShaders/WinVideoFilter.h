@@ -39,7 +39,7 @@ protected:
   virtual bool LockVertexBuffer(void **data);
   virtual bool UnlockVertexBuffer();
   virtual bool LoadEffect(const std::string& filename, DefinesMap* defines);
-  virtual bool Execute(const std::vector<CD3DTexture*> &targets, unsigned int vertexIndexStep);
+  virtual bool Execute(const std::vector<CD3DTexture*>& targets, unsigned int vertexIndexStep);
   virtual void SetStepParams(UINT stepIndex) { }
   virtual bool CreateInputLayout(D3D11_INPUT_ELEMENT_DESC *layout, unsigned numElements);
 
@@ -63,10 +63,10 @@ public:
   void ApplyEffectParameters(CD3DEffect &effect, unsigned sourceWidth, unsigned sourceHeight);
   void GetDefines(DefinesMap &map) const;
   bool Create(bool useCLUT, bool useDithering, int ditherDepth, bool toneMapping);
-  void Render(CD3DTexture &sourceTexture, unsigned sourceWidth, unsigned sourceHeight, CRect sourceRect, const CPoint points[4]
-            , CD3DTexture *target, unsigned range = 0, float contrast = 0.5f, float brightness = 0.5f);
-  void Render(CD3DTexture &sourceTexture, unsigned sourceWidth, unsigned sourceHeight, CRect sourceRect, CRect destRect
-            , CD3DTexture *target, unsigned range = 0, float contrast = 0.5f, float brightness = 0.5f);
+  void Render(CD3DTexture& sourceTexture, CRect sourceRect, const CPoint points[4]
+            , CD3DTexture& target, unsigned range = 0, float contrast = 0.5f, float brightness = 0.5f);
+  void Render(CD3DTexture& sourceTexture, CRect sourceRect, CRect destRect
+            , CD3DTexture& target, unsigned range = 0, float contrast = 0.5f, float brightness = 0.5f);
   void SetCLUT(int clutSize, ID3D11ShaderResourceView *pCLUTView);
   void SetDisplayMetadata(bool hasDisplayMetadata, AVMasteringDisplayMetadata displayMetadata,
                           bool hasLightMetadata, AVContentLightMetadata lightMetadata);
@@ -117,13 +117,13 @@ public:
   CYUV2RGBShader();
   virtual ~CYUV2RGBShader();
   bool Create(EBufferFormat fmt, AVColorPrimaries dstPrimaries, AVColorPrimaries srcPrimaries, COutputShader *pOutShader = nullptr);
-  void Render(CRect sourceRect, CPoint dest[], CRenderBuffer* videoBuffer, CD3DTexture *target);
+  void Render(CRect sourceRect, CPoint dest[], CRenderBuffer& videoBuffer, CD3DTexture& target);
   void SetParams(float contrast, float black, bool limited);
   void SetColParams(AVColorSpace colSpace, int bits, bool limited, int textuteBits);
 
 protected:
-  void PrepareParameters(CRenderBuffer* videoBuffer, CRect sourceRect, CPoint dest[]);
-  void SetShaderParameters(CRenderBuffer* videoBuffer);
+  void PrepareParameters(CRenderBuffer& videoBuffer, CRect sourceRect, CPoint dest[]);
+  void SetShaderParameters(CRenderBuffer& videoBuffer);
 
 private:
   unsigned int m_sourceWidth;
@@ -146,11 +146,10 @@ class CConvolutionShader : public CWinShader
 {
 public:
   virtual bool Create(ESCALINGMETHOD method, COutputShader *pOutShader = nullptr) = 0;
-  virtual void Render(CD3DTexture &sourceTexture,
-                      unsigned int sourceWidth, unsigned int sourceHeight,
+  virtual void Render(CD3DTexture& sourceTexture,
                       unsigned int destWidth, unsigned int destHeight,
                       CRect sourceRect, CRect destRect, bool useLimitRange,
-                      CD3DTexture *target) = 0;
+                      CD3DTexture& target) = 0;
   CConvolutionShader();
   virtual ~CConvolutionShader();
 
@@ -175,11 +174,10 @@ class CConvolutionShader1Pass : public CConvolutionShader
 {
 public:
   bool Create(ESCALINGMETHOD method, COutputShader *pCLUT = nullptr) override;
-  void Render(CD3DTexture &sourceTexture,
-              unsigned int sourceWidth, unsigned int sourceHeight,
+  void Render(CD3DTexture& sourceTexture,
               unsigned int destWidth, unsigned int destHeight,
               CRect sourceRect, CRect destRect, bool useLimitRange,
-              CD3DTexture *target) override;
+              CD3DTexture& target) override;
   CConvolutionShader1Pass() : CConvolutionShader(), m_sourceWidth(0), m_sourceHeight(0) {}
 
 protected:
@@ -199,11 +197,10 @@ class CConvolutionShaderSeparable : public CConvolutionShader
 public:
   CConvolutionShaderSeparable();
   bool Create(ESCALINGMETHOD method, COutputShader *pOutShader = nullptr) override;
-  void Render(CD3DTexture &sourceTexture,
-              unsigned int sourceWidth, unsigned int sourceHeight,
+  void Render(CD3DTexture& sourceTexture,
               unsigned int destWidth, unsigned int destHeight,
               CRect sourceRect, CRect destRect, bool useLimitRange,
-              CD3DTexture *target) override;
+              CD3DTexture& target) override;
   virtual ~CConvolutionShaderSeparable();
 
 protected:
