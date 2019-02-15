@@ -328,6 +328,12 @@ CRect CRendererDXVA::ApplyTransforms(const CRect& destRect) const
   return result;
 }
 
+bool CRendererDXVA::UseToneMapping() const
+{
+  // use mapping only if processor doesn't support HDR10
+  return !m_processor->HasHDR10Support() && __super::UseToneMapping();
+}
+
 void CRendererDXVA::FillBuffersSet(CRenderBufferBase* (&buffers)[8])
 {
   int past = 0;

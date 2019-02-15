@@ -138,6 +138,7 @@ protected:
   virtual void CheckVideoParameters();
   virtual void OnViewSizeChanged() {}
   virtual void OnOutputReset() {}
+  virtual bool UseToneMapping() const { return m_toneMapping; }
 
   bool m_toneMapping = false;
   bool m_useDithering = false;

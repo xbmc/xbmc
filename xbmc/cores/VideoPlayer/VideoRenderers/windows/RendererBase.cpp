@@ -210,7 +210,7 @@ void CRendererBase::Render(CD3DTexture& target, const CRect& sourceRect, const C
 
   RenderImpl(m_IntermediateTarget, source, dest, flags);
 
-  if (m_toneMapping)
+  if (UseToneMapping())
   {
     m_outputShader->SetDisplayMetadata(buf->hasDisplayMetadata, buf->displayMetadata, buf->hasLightMetadata, buf->lightMetadata);
     m_outputShader->SetToneMapParam(m_videoSettings.m_ToneMapParam);
@@ -372,7 +372,7 @@ void CRendererBase::UpdateVideoFilters()
   if (!m_outputShader)
   {
     m_outputShader = std::make_unique<COutputShader>();
-    if (!m_outputShader->Create(m_cmsOn, m_useDithering, m_ditherDepth, m_toneMapping))
+    if (!m_outputShader->Create(m_cmsOn, m_useDithering, m_ditherDepth, UseToneMapping()))
     {
       CLog::LogF(LOGDEBUG, "unable to create output shader.");
       m_outputShader.reset();
