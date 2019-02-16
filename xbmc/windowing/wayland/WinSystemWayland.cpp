@@ -299,6 +299,19 @@ bool CWinSystemWayland::CreateNewWindow(const std::string& name,
 
   m_windowDecorator.reset(new CWindowDecorator(*this, *m_connection, m_surface));
 
+  m_seatInputProcessing.reset(new CSeatInputProcessing(m_surface, *this));
+  m_seatRegistry.reset(new CRegistry{*m_connection});
+  // version 2 adds name event -> optional
+  // version 4 adds wl_keyboard repeat_info -> optional
+  // version 5 adds discrete axis events in wl_pointer -> unused
+  m_seatRegistry->Request<wayland::seat_t>(1, 5, std::bind(&CWinSystemWayland::OnSeatAdded, this, _1, _2), std::bind(&CWinSystemWayland::OnSeatRemoved, this, _1));
+  m_seatRegistry->Bind();
+
+  if (m_seats.empty())
+  {
+    CLog::Log(LOGWARNING, "Wayland compositor did not announce a wl_seat - you will not have any input devices for the time being");
+  }
+
   if (fullScreen)
   {
     m_shellSurfaceState.set(IShellSurface::STATE_FULLSCREEN);
@@ -349,19 +362,6 @@ bool CWinSystemWayland::CreateNewWindow(const std::string& name,
   // Update resolution with real size as it could have changed due to configure()
   UpdateDesktopResolution(res, m_bufferSize.Width(), m_bufferSize.Height(), res.fRefreshRate, 0);
   res.bFullScreen = fullScreen;
-
-  m_seatInputProcessing.reset(new CSeatInputProcessing(m_surface, *this));
-  m_seatRegistry.reset(new CRegistry{*m_connection});
-  // version 2 adds name event -> optional
-  // version 4 adds wl_keyboard repeat_info -> optional
-  // version 5 adds discrete axis events in wl_pointer -> unused
-  m_seatRegistry->Request<wayland::seat_t>(1, 5, std::bind(&CWinSystemWayland::OnSeatAdded, this, _1, _2), std::bind(&CWinSystemWayland::OnSeatRemoved, this, _1));
-  m_seatRegistry->Bind();
-
-  if (m_seats.empty())
-  {
-    CLog::Log(LOGWARNING, "Wayland compositor did not announce a wl_seat - you will not have any input devices for the time being");
-  }
 
   // Now start processing events
   //
