@@ -376,6 +376,7 @@ void CRenderManager::PreInit()
   m_QueueSize   = 2;
   m_QueueSkip   = 0;
   m_presentstep = PRESENT_IDLE;
+  m_bRenderGUI = true;
 
   m_initEvent.Set();
 }
