@@ -295,13 +295,6 @@ void CPVRTimerInfoTag::Serialize(CVariant &value) const
   value["serieslink"]        = m_strSeriesLink;
 }
 
-void CPVRTimerInfoTag::UpdateEpgInfoTag(void)
-{
-  CSingleLock lock(m_critSection);
-  m_epgTag.reset();
-  GetEpgInfoTag();
-}
-
 void CPVRTimerInfoTag::UpdateSummary(void)
 {
   CSingleLock lock(m_critSection);
@@ -713,7 +706,7 @@ CPVRTimerInfoTagPtr CPVRTimerInfoTag::CreateInstantTimerTag(const CPVRChannelPtr
     newTimer->SetTimerType(timerType);
 
     if (epgTag)
-      newTimer->SetEpgTag(epgTag);
+      newTimer->SetEpgInfoTag(epgTag);
     else
       newTimer->UpdateEpgInfoTag();
   }
@@ -820,7 +813,7 @@ CPVRTimerInfoTagPtr CPVRTimerInfoTag::CreateFromEpg(const CPVREpgInfoTagPtr &tag
 
   newTag->SetTimerType(timerType);
   newTag->UpdateSummary();
-  newTag->SetEpgTag(tag);
+  newTag->SetEpgInfoTag(tag);
 
   /* unused only for reference */
   newTag->m_strFileNameAndPath = CPVRTimersPath::PATH_NEW;
@@ -938,6 +931,19 @@ std::string CPVRTimerInfoTag::GetDeletedNotificationText() const
   return StringUtils::Format("%s: '%s'", g_localizeStrings.Get(stringID).c_str(), m_strTitle.c_str());
 }
 
+void CPVRTimerInfoTag::SetEpgInfoTag(const std::shared_ptr<CPVREpgInfoTag>& tag)
+{
+  CSingleLock lock(m_critSection);
+  m_epgTag = tag;
+}
+
+void CPVRTimerInfoTag::UpdateEpgInfoTag()
+{
+  CSingleLock lock(m_critSection);
+  m_epgTag.reset();
+  GetEpgInfoTag();
+}
+
 CPVREpgInfoTagPtr CPVRTimerInfoTag::GetEpgInfoTag(bool bCreate /* = true */) const
 {
   if (!m_epgTag && bCreate)
@@ -1005,12 +1011,6 @@ CPVREpgInfoTagPtr CPVRTimerInfoTag::GetEpgInfoTag(bool bCreate /* = true */) con
     }
   }
   return m_epgTag;
-}
-
-void CPVRTimerInfoTag::SetEpgTag(const CPVREpgInfoTagPtr &tag)
-{
-  CSingleLock lock(m_critSection);
-  m_epgTag = tag;
 }
 
 bool CPVRTimerInfoTag::HasChannel() const

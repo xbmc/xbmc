@@ -77,6 +77,12 @@ namespace PVR
     static CPVRTimerInfoTagPtr CreateFromEpg(const CPVREpgInfoTagPtr &tag, bool bCreateRule = false);
 
     /*!
+     * @brief Associate the given epg tag with this timer.
+     * @param tag The epg tag to assign.
+     */
+    void SetEpgInfoTag(const std::shared_ptr<CPVREpgInfoTag>& tag);
+
+    /*!
      * @brief get the epg info tag associated with this timer, if any
      * @param bCreate if true, try to find the epg tag if not yet set (lazy evaluation)
      * @return the epg info tag associated with this timer or null if there is no tag
@@ -245,12 +251,6 @@ namespace PVR
      * @return True on success, false otherwise.
      */
     bool UpdateOnClient();
-
-    /*!
-     * @brief Associate the given epg tag with this timer; before, clear old timer at associated epg tag, if any.
-     * @param tag The epg tag to assign.
-     */
-    void SetEpgTag(const CPVREpgInfoTagPtr &tag);
 
     /*!
      * @brief Update the channel associated with this timer.
