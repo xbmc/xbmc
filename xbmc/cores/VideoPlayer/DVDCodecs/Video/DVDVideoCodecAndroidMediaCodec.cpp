@@ -1054,7 +1054,7 @@ void CDVDVideoCodecAndroidMediaCodec::FlushInternal()
 {
   // invalidate any existing inflight buffers and create
   // new ones to match the number of output buffers
-  if (m_indexInputBuffer >=0)
+  if (m_indexInputBuffer >=0 && CJNIBase::GetSDKVersion() >= 26)
     AMediaCodec_queueInputBuffer(m_codec->codec(), m_indexInputBuffer, 0, 0, 0, AMEDIACODEC_BUFFER_FLAG_END_OF_STREAM);
 
   m_OutputDuration = 0;
