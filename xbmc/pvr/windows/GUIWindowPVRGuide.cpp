@@ -28,6 +28,7 @@
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/epg/EpgContainer.h"
 #include "pvr/recordings/PVRRecordings.h"
+#include "pvr/timers/PVRTimers.h"
 #include "pvr/windows/GUIEPGGridContainer.h"
 
 using namespace KODI::MESSAGING;
@@ -436,7 +437,7 @@ bool CGUIWindowPVRGuideBase::OnMessage(CGUIMessage& message)
                     else if (now < start)
                     {
                       // future event
-                      if (tag->HasTimer())
+                      if (CServiceBroker::GetPVRManager().Timers()->GetTimerForEpgTag(tag))
                         CServiceBroker::GetPVRManager().GUIActions()->EditTimer(pItem);
                       else
                       {

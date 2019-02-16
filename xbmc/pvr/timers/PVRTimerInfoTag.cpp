@@ -986,7 +986,7 @@ CPVREpgInfoTagPtr CPVRTimerInfoTag::GetEpgInfoTag(bool bCreate /* = true */) con
               if (!bTagMatches)
               {
                 // Check whether the tag actually is an event that belongs to a child of this timer rule
-                const CPVRTimerInfoTagPtr timer = epgTag->Timer();
+                const std::shared_ptr<CPVRTimerInfoTag> timer = CServiceBroker::GetPVRManager().Timers()->GetTimerForEpgTag(epgTag);
                 if (timer && (timer->GetTimerRuleId() == m_iClientIndex))
                 {
                   bTagMatches = true;
@@ -1009,20 +1009,8 @@ CPVREpgInfoTagPtr CPVRTimerInfoTag::GetEpgInfoTag(bool bCreate /* = true */) con
 
 void CPVRTimerInfoTag::SetEpgTag(const CPVREpgInfoTagPtr &tag)
 {
-  CPVREpgInfoTagPtr previousTag;
-  {
-    CSingleLock lock(m_critSection);
-    previousTag = m_epgTag;
-    m_epgTag = tag;
-  }
-
-  if (previousTag)
-    previousTag->ClearTimer();
-}
-
-void CPVRTimerInfoTag::ClearEpgTag(void)
-{
-  SetEpgTag(CPVREpgInfoTagPtr());
+  CSingleLock lock(m_critSection);
+  m_epgTag = tag;
 }
 
 bool CPVRTimerInfoTag::HasChannel() const

@@ -97,19 +97,11 @@ namespace PVR
     }
     else if (m_item->IsEPG())
     {
-      return m_item->GetEPGInfoTag()->Timer();
+      return CServiceBroker::GetPVRManager().Timers()->GetTimerForEpgTag(m_item->GetEPGInfoTag());
     }
     else if (m_item->IsPVRChannel())
     {
-      CPVRTimerInfoTagPtr timer;
-      const CPVREpgInfoTagPtr epgTag(m_item->GetPVRChannelInfoTag()->GetEPGNow());
-      if (epgTag)
-        timer = epgTag->Timer(); // cheap method, but not reliable as timers get set at epg tags asynchronously
-
-      if (timer)
-        return timer;
-
-      return CServiceBroker::GetPVRManager().Timers()->GetActiveTimerForChannel(m_item->GetPVRChannelInfoTag()); // more expensive, but reliable and works even for channels with no epg data
+      return CServiceBroker::GetPVRManager().Timers()->GetActiveTimerForChannel(m_item->GetPVRChannelInfoTag());
     }
     else
     {

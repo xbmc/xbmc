@@ -86,7 +86,7 @@ namespace PVR
 
       const CPVREpgInfoTagPtr epg(item.GetEPGInfoTag());
       if (epg)
-        timer = epg->Timer();
+        timer = CServiceBroker::GetPVRManager().Timers()->GetTimerForEpgTag(epg);
 
       if (!timer)
         timer = item.GetPVRTimerInfoTag();
@@ -219,7 +219,10 @@ namespace PVR
         return !channel->IsRecording() && client && client->GetClientCapabilities().SupportsTimers();
 
       const CPVREpgInfoTagPtr epg = item.GetEPGInfoTag();
-      if (epg && !epg->Timer() && epg->Channel() && epg->IsRecordable())
+      if (epg &&
+          !CServiceBroker::GetPVRManager().Timers()->GetTimerForEpgTag(epg) &&
+          epg->Channel() &&
+          epg->IsRecordable())
         return client && client->GetClientCapabilities().SupportsTimers();
 
       return false;
@@ -377,7 +380,9 @@ namespace PVR
     bool AddTimerRule::IsVisible(const CFileItem &item) const
     {
       const CPVREpgInfoTagPtr epg = item.GetEPGInfoTag();
-      if (epg && epg->Channel() && !epg->Timer())
+      if (epg &&
+          epg->Channel() &&
+          !CServiceBroker::GetPVRManager().Timers()->GetTimerForEpgTag(epg))
       {
         const CPVRClientPtr client = CServiceBroker::GetPVRManager().GetClient(item);
         return client && client->GetClientCapabilities().SupportsTimers();

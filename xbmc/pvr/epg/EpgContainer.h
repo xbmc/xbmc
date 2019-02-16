@@ -126,13 +126,6 @@ namespace PVR
     CPVREpgInfoTagPtr GetTagById(const CPVRChannelPtr &channel, unsigned int iBroadcastId) const;
 
     /*!
-     * @brief Get the EPG events matching the given timer
-     * @param timer The timer to get the matching events for.
-     * @return The matching events, or an empty vector when no matching tag was found
-     */
-    std::vector<CPVREpgInfoTagPtr> GetEpgTagsForTimer(const CPVRTimerInfoTagPtr &timer) const;
-
-    /*!
      * @brief Check whether data should be persisted to the EPG database.
      * @return True if data should not be persisted to the EPG database, false otherwise.
      */

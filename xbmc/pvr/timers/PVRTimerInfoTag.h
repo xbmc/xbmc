@@ -253,11 +253,6 @@ namespace PVR
     void SetEpgTag(const CPVREpgInfoTagPtr &tag);
 
     /*!
-     * @brief Clear the epg tag associated with this timer; before, clear this timer at associated epg tag, if any.
-     */
-    void ClearEpgTag(void);
-
-    /*!
      * @brief Update the channel associated with this timer.
      * @return the channel for the timer. Can be empty for epg based repeating timers (e.g. "match any channel" rules)
      */

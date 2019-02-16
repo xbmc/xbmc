@@ -24,7 +24,6 @@
 #include "pvr/epg/Epg.h"
 #include "pvr/epg/EpgContainer.h"
 #include "pvr/epg/EpgDatabase.h"
-#include "pvr/timers/PVRTimers.h"
 
 using namespace PVR;
 
@@ -160,8 +159,8 @@ void CPVREpgInfoTag::Serialize(CVariant &value) const
   value["episodename"] = m_strEpisodeName;
   value["episodenum"] = m_iEpisodeNumber;
   value["episodepart"] = m_iEpisodePart;
-  value["hastimer"] = HasTimer();
-  value["hastimerrule"] = HasTimerRule();
+  value["hastimer"] = false; // compat
+  value["hastimerrule"] = false; // compat
   value["hasrecording"] = false; // compat
   value["recording"] = ""; // compat
   value["isactive"] = IsActive();
@@ -524,24 +523,6 @@ std::string CPVREpgInfoTag::Path(void) const
   return m_strFileNameAndPath;
 }
 
-bool CPVREpgInfoTag::HasTimer(void) const
-{
-  CSingleLock lock(m_critSection);
-  return m_timer != nullptr;
-}
-
-bool CPVREpgInfoTag::HasTimerRule(void) const
-{
-  CSingleLock lock(m_critSection);
-  return m_timer && (m_timer->GetTimerRuleId() != PVR_TIMER_NO_PARENT);
-}
-
-CPVRTimerInfoTagPtr CPVREpgInfoTag::Timer(void) const
-{
-  CSingleLock lock(m_critSection);
-  return m_timer;
-}
-
 void CPVREpgInfoTag::SetChannel(const CPVRChannelPtr &channel)
 {
   CSingleLock lock(m_critSection);
@@ -704,24 +685,6 @@ void CPVREpgInfoTag::UpdatePath(void)
 int CPVREpgInfoTag::EpgID(void) const
 {
   return m_epg ? m_epg->EpgID() : -1;
-}
-
-void CPVREpgInfoTag::SetTimer(const CPVRTimerInfoTagPtr &timer)
-{
-  CSingleLock lock(m_critSection);
-  m_timer = timer;
-}
-
-void CPVREpgInfoTag::ClearTimer(void)
-{
-  CPVRTimerInfoTagPtr previousTag;
-  {
-    CSingleLock lock(m_critSection);
-    previousTag = std::move(m_timer);
-  }
-
-  if (previousTag)
-    previousTag->ClearEpgTag();
 }
 
 bool CPVREpgInfoTag::IsRecordable(void) const

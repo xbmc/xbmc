@@ -140,42 +140,6 @@ bool CPVRTimers::IsRecording(void) const
   return false;
 }
 
-bool CPVRTimers::SetEpgTagTimer(const CPVRTimerInfoTagPtr &timer)
-{
-  if (timer->IsTimerRule() || timer->m_bStartAnyTime || timer->m_bEndAnyTime)
-    return false;
-
-  std::vector<CPVREpgInfoTagPtr> tags(CServiceBroker::GetPVRManager().EpgContainer().GetEpgTagsForTimer(timer));
-
-  if (tags.empty())
-    return false;
-
-  // assign first matching epg tag to the timer.
-  timer->SetEpgTag(tags.front());
-
-  // assign timer to every matching epg tag.
-  for (const auto &tag : tags)
-    tag->SetTimer(timer);
-
-  return true;
-}
-
-bool CPVRTimers::ClearEpgTagTimer(const CPVRTimerInfoTagPtr &timer)
-{
-  if (timer->IsTimerRule() || timer->m_bStartAnyTime || timer->m_bEndAnyTime)
-    return false;
-
-  std::vector<CPVREpgInfoTagPtr> tags(CServiceBroker::GetPVRManager().EpgContainer().GetEpgTagsForTimer(timer));
-
-  if (tags.empty())
-    return false;
-
-  for (const auto &tag : tags)
-    tag->ClearTimer();
-
-  return true;
-}
-
 bool CPVRTimers::UpdateEntries(const CPVRTimersContainer &timers, const std::vector<int> &failedClients)
 {
   bool bChanged(false);
@@ -195,11 +159,8 @@ bool CPVRTimers::UpdateEntries(const CPVRTimersContainer &timers, const std::vec
       {
         /* if it's present, update the current tag */
         bool bStateChanged(existingTimer->m_state != (*timerIt)->m_state);
-        ClearEpgTagTimer(existingTimer);
         if (existingTimer->UpdateEntry(*timerIt))
         {
-          SetEpgTagTimer(existingTimer);
-
           bChanged = true;
           existingTimer->ResetChildState();
 
@@ -220,7 +181,6 @@ bool CPVRTimers::UpdateEntries(const CPVRTimersContainer &timers, const std::vec
         CPVRTimerInfoTagPtr newTimer = CPVRTimerInfoTagPtr(new CPVRTimerInfoTag);
         newTimer->UpdateEntry(*timerIt);
         newTimer->m_iTimerId = ++m_iLastId;
-        SetEpgTagTimer(newTimer);
         InsertTimer(newTimer);
 
         bChanged = true;
@@ -269,8 +229,6 @@ bool CPVRTimers::UpdateEntries(const CPVRTimersContainer &timers, const std::vec
 
         timerNotifications.push_back(std::make_pair(timer->m_iClientId, timer->GetDeletedNotificationText()));
 
-        ClearEpgTagTimer(timer);
-
         it2 = it->second.erase(it2);
 
         bChanged = true;
@@ -282,8 +240,6 @@ bool CPVRTimers::UpdateEntries(const CPVRTimersContainer &timers, const std::vec
         /* timer start has changed */
         CLog::LogFC(LOGDEBUG, LOGPVR, "Changed start time timer %d on client %d",
                     timer->m_iClientIndex, timer->m_iClientId);
-
-        ClearEpgTagTimer(timer);
 
         /* remember timer */
         timersToMove.push_back(timer);
@@ -307,10 +263,7 @@ bool CPVRTimers::UpdateEntries(const CPVRTimersContainer &timers, const std::vec
 
   /* reinsert timers with changed timer start */
   for (VecTimerInfoTag::const_iterator timerIt = timersToMove.begin(); timerIt != timersToMove.end(); ++timerIt)
-  {
-    SetEpgTagTimer(*timerIt);
     InsertTimer(*timerIt);
-  }
 
   /* update child information for all parent timers */
   for (const auto &tagsEntry : m_tags)
@@ -742,11 +695,6 @@ CPVRTimerInfoTagPtr CPVRTimers::GetTimerForEpgTag(const CPVREpgInfoTagPtr &epgTa
 {
   if (epgTag)
   {
-    // already a timer assigned to tag?
-    const CPVRTimerInfoTagPtr timer(epgTag->Timer());
-    if (timer)
-      return timer;
-
     // try to find a matching timer for the tag.
     const CPVRChannelPtr channel(epgTag->Channel());
     if (channel)
@@ -847,7 +795,7 @@ CFileItemPtr CPVRTimers::GetTimerRule(const CFileItemPtr &item) const
 {
   CPVRTimerInfoTagPtr timer;
   if (item && item->HasEPGInfoTag())
-    timer = item->GetEPGInfoTag()->Timer();
+    timer = GetTimerForEpgTag(item->GetEPGInfoTag());
   else if (item && item->HasPVRTimerInfoTag())
     timer = item->GetPVRTimerInfoTag();
 

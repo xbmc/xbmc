@@ -25,7 +25,6 @@
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/epg/Epg.h"
 #include "pvr/epg/EpgSearchFilter.h"
-#include "pvr/timers/PVRTimerInfoTag.h"
 
 namespace PVR
 {
@@ -470,22 +469,6 @@ CPVREpgInfoTagPtr CPVREpgContainer::GetTagById(const CPVRChannelPtr &channel, un
   }
 
   return retval;
-}
-
-std::vector<CPVREpgInfoTagPtr> CPVREpgContainer::GetEpgTagsForTimer(const CPVRTimerInfoTagPtr &timer) const
-{
-  CPVRChannelPtr channel = timer->Channel();
-
-  if (!channel)
-    channel = timer->UpdateChannel();
-
-  if (channel)
-  {
-    const CPVREpgPtr epg = channel->GetEPG();
-    if (epg)
-      return epg->GetTagsBetween(timer->StartAsUTC(), timer->EndAsUTC());
-  }
-  return std::vector<CPVREpgInfoTagPtr>();
 }
 
 void CPVREpgContainer::InsertFromDB(const CPVREpgPtr &newEpg)

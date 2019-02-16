@@ -22,7 +22,6 @@
 #include "utils/log.h"
 
 #include "pvr/PVRManager.h"
-#include "pvr/timers/PVRTimers.h"
 
 using namespace PVR;
 
@@ -89,7 +88,6 @@ void CPVREpg::Cleanup(const CDateTime &time)
       if (m_nowActiveStart == it->first)
         m_nowActiveStart.SetValid(false);
 
-      it->second->ClearTimer();
       it = m_tags.erase(it);
     }
     else
@@ -252,25 +250,6 @@ CPVREpgInfoTagPtr CPVREpg::GetTagBetween(const CDateTime &beginTime, const CDate
   return tag;
 }
 
-std::vector<CPVREpgInfoTagPtr> CPVREpg::GetTagsBetween(const CDateTime &beginTime, const CDateTime &endTime) const
-{
-  std::vector<CPVREpgInfoTagPtr> epgTags;
-
-  CSingleLock lock(m_critSection);
-  for (const auto &infoTag : m_tags)
-  {
-    if (infoTag.second->StartAsUTC() >= beginTime)
-    {
-      if (infoTag.second->EndAsUTC() <= endTime)
-        epgTags.emplace_back(infoTag.second);
-      else
-        break; // done.
-    }
-  }
-
-  return epgTags;
-}
-
 void CPVREpg::AddEntry(const CPVREpgInfoTag &tag)
 {
   CPVREpgInfoTagPtr newTag;
@@ -294,7 +273,6 @@ void CPVREpg::AddEntry(const CPVREpgInfoTag &tag)
     newTag->Update(tag);
     newTag->SetChannel(channel);
     newTag->SetEpg(this);
-    newTag->SetTimer(CServiceBroker::GetPVRManager().Timers()->GetTimerForEpgTag(newTag));
   }
 }
 
@@ -411,8 +389,6 @@ bool CPVREpg::UpdateEntry(const CPVREpgInfoTagPtr &tag, bool bUpdateDatabase)
       m_changedTags.insert(std::make_pair(infoTag->UniqueBroadcastID(), infoTag));
   }
 
-  infoTag->SetTimer(CServiceBroker::GetPVRManager().Timers()->GetTimerForEpgTag(infoTag));
-
   return true;
 }
 
@@ -449,7 +425,6 @@ bool CPVREpg::UpdateEntry(const CPVREpgInfoTagPtr &tag, EPG_EVENT_STATE newState
         if (bUpdateDatabase)
           m_deletedTags.insert(std::make_pair(it->second->UniqueBroadcastID(), it->second));
 
-        it->second->ClearTimer();
         m_tags.erase(it);
       }
       else
@@ -637,7 +612,6 @@ bool CPVREpg::FixOverlappingEvents(bool bUpdateDb /* = false */)
       if (m_nowActiveStart == it->first)
         m_nowActiveStart.SetValid(false);
 
-      it->second->ClearTimer();
       m_tags.erase(it++);
     }
     else if (previousTag->EndAsUTC() > currentTag->StartAsUTC())

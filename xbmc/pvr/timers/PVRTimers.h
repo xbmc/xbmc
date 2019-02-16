@@ -287,8 +287,6 @@ namespace PVR
     bool UpdateEntries(const CPVRTimersContainer &timers, const std::vector<int> &failedClients);
     bool GetRootDirectory(const CPVRTimersPath &path, CFileItemList &items) const;
     bool GetSubDirectory(const CPVRTimersPath &path, CFileItemList &items) const;
-    bool SetEpgTagTimer(const CPVRTimerInfoTagPtr &timer);
-    bool ClearEpgTagTimer(const CPVRTimerInfoTagPtr &timer);
 
     enum TimerKind
     {

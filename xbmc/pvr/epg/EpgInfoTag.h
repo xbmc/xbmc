@@ -19,7 +19,6 @@
 
 #include "pvr/PVRTypes.h"
 #include "pvr/channels/PVRChannel.h"
-#include "pvr/timers/PVRTimerInfoTag.h"
 
 class CVariant;
 
@@ -339,35 +338,6 @@ namespace PVR
     std::string Path(void) const;
 
     /*!
-     * @brief Set a timer for this event.
-     * @param timer The timer.
-     */
-    void SetTimer(const CPVRTimerInfoTagPtr &timer);
-
-    /*!
-     * @brief Clear the timer for this event.
-     */
-    void ClearTimer(void);
-
-    /*!
-     * @brief Check whether this event has a timer tag.
-     * @return True if it has a timer tag, false if not.
-     */
-    bool HasTimer(void) const;
-
-    /*!
-     * @brief Check whether this event has a timer rule.
-     * @return True if it has a timer rule, false if not.
-     */
-    bool HasTimerRule(void) const;
-
-    /*!
-     * @brief Get the timer for this event, if any.
-     * @return The timer or nullptr if there is none.
-     */
-    CPVRTimerInfoTagPtr Timer(void) const;
-
-    /*!
      * @brief Check if this event can be recorded.
      * @return True if it can be recorded, false otherwise.
      */
@@ -508,6 +478,5 @@ namespace PVR
     mutable CCriticalSection m_critSection;
     CPVREpg *m_epg = nullptr;
     CPVRChannelPtr m_channel;
-    CPVRTimerInfoTagPtr m_timer;
   };
 }
