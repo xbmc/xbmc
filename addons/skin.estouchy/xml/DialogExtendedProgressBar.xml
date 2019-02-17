@@ -30,7 +30,6 @@
 				<aligny>center</aligny>
 				<scrollout>false</scrollout>
 				<pauseatend>2000</pauseatend>
-				<haspath>true</haspath>
 			</control>
 			<control type="progress" id="32">
 				<description>progress control</description>

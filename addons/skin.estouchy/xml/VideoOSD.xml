@@ -7,6 +7,8 @@
 		<posy>0</posy>
 	</coordinates>
 	<controls>
-		<include>PlayerControlCommons</include>
+		<control type="group">
+			<include>PlayerControlCommons</include>
+		</control>
 	</controls>
 </window>

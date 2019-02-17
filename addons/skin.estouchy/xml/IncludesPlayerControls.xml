@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <includes>
 	<include name="PlayerControlCommons">
+		<visible>!Window.IsVisible(SliderDialog)</visible>
 		<include>VisibleFadeEffect</include>
 		<control type="image">
 			<posx>0</posx>

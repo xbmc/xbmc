@@ -23,7 +23,7 @@
 					<onup>50</onup>
 					<ondown>50</ondown>
 					<pagecontrol>60</pagecontrol>
-					<viewtype label="List">list</viewtype>
+					<viewtype label="535">list</viewtype>
 					<preloaditems>1</preloaditems>
 					<focusedlayout height="list_item_height">
 						<control type="image">
