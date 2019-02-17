@@ -13,6 +13,9 @@ set(HEADERS ISavestate.h
 core_add_library(retroplayer_savestates)
 
 set(DEPENDS retroplayer_messages)
+if(ENABLE_INTERNAL_FLATBUFFERS)
+  list(APPEND DEPENDS flatbuffers)
+endif()
 
 if(ENABLE_STATIC_LIBS)
   add_dependencies(retroplayer_savestates ${DEPENDS})
