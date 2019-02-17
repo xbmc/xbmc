@@ -14,6 +14,7 @@
 #include "guilib/GUIWindow.h"
 #include "playlists/SmartPlayList.h"
 #include "view/GUIViewControl.h"
+#include "utils/JobManager.h"
 
 #include <atomic>
 
@@ -25,7 +26,7 @@ class CGetDirectoryItems;
 }
 
 // base class for all media windows
-class CGUIMediaWindow : public CGUIWindow
+class CGUIMediaWindow : public CGUIWindow, public CJobQueue
 {
 public:
   CGUIMediaWindow(int id, const char *xmlFile);
@@ -186,6 +187,12 @@ protected:
   CDirectoryHistory m_history;
   std::unique_ptr<CGUIViewState> m_guiState;
   std::atomic_bool m_vecItemsUpdating = {false};
+
+  //PlaylistAsync Threading
+  float ItemListContentSignature = -1;
+  int QueueMediaAsyncJobID = -1;
+  void OnJobComplete(unsigned int jobID, bool success, CJob *job) override;
+
   class CUpdateGuard
   {
   public:

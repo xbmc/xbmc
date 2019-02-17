@@ -47,6 +47,8 @@ public:
   const CFileItemPtr operator[] (int iItem) const;
   CFileItemPtr operator[] (int iItem);
 
+  const CFileItemPtr GetItem(int Index) const;
+
   void Shuffle(int iPosition = 0);
   void UnShuffle();
   bool IsShuffled() const { return m_bShuffled; }

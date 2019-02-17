@@ -228,6 +228,11 @@ int CPlayList::size() const
   return (int)m_vecItems.size();
 }
 
+const CFileItemPtr CPlayList::GetItem(int Index) const
+{
+  return m_vecItems[Index];
+}
+
 const CFileItemPtr CPlayList::operator[] (int iItem) const
 {
   if (iItem < 0 || iItem >= size())
