@@ -553,16 +553,19 @@ void CDisplaySettings::UpdateCalibrations()
 {
   CSingleLock lock(m_critical);
 
+  if (m_resolutions.size() <= RES_DESKTOP)
+    return;
+
   // Add new (unique) resolutions
-  for (ResolutionInfos::const_iterator res(m_resolutions.cbegin() + RES_DESKTOP + 1); res != m_resolutions.cend(); ++res)
+  for (ResolutionInfos::const_iterator res(m_resolutions.cbegin() + RES_CUSTOM); res != m_resolutions.cend(); ++res)
     if (std::find_if(m_calibrations.cbegin(), m_calibrations.cend(),
       [&](const RESOLUTION_INFO& info) { return StringUtils::EqualsNoCase(res->strMode, info.strMode); }) == m_calibrations.cend())
         m_calibrations.push_back(*res);
 
   for (auto &cal : m_calibrations)
   {
-    ResolutionInfos::const_iterator res(std::find_if(m_resolutions.cbegin()+ RES_DESKTOP, m_resolutions.cend(),
-      [&](const RESOLUTION_INFO& info) { return StringUtils::EqualsNoCase(cal.strMode, info.strMode); }));
+    ResolutionInfos::const_iterator res(std::find_if(m_resolutions.cbegin() + RES_DESKTOP, m_resolutions.cend(),
+    [&](const RESOLUTION_INFO& info) { return StringUtils::EqualsNoCase(cal.strMode, info.strMode); }));
 
     if (res != m_resolutions.cend())
     {

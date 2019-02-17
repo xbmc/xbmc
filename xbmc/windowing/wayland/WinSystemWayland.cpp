@@ -360,7 +360,7 @@ bool CWinSystemWayland::CreateNewWindow(const std::string& name,
   ApplyWindowGeometry();
 
   // Update resolution with real size as it could have changed due to configure()
-  UpdateDesktopResolution(res, m_bufferSize.Width(), m_bufferSize.Height(), res.fRefreshRate, 0);
+  UpdateDesktopResolution(res, res.strOutput, m_bufferSize.Width(), m_bufferSize.Height(), res.fRefreshRate, 0);
   res.bFullScreen = fullScreen;
 
   // Now start processing events
@@ -475,8 +475,7 @@ void CWinSystemWayland::UpdateResolutions()
     CLog::LogF(LOGINFO, "- %dx%d @%.3f Hz pixel ratio %.3f%s", mode.size.Width(), mode.size.Height(), mode.refreshMilliHz / 1000.0f, pixelRatio, isCurrent ? " current" : "");
 
     RESOLUTION_INFO res;
-    UpdateDesktopResolution(res, mode.size.Width(), mode.size.Height(), mode.GetRefreshInHz(), 0);
-    res.strOutput = outputName;
+    UpdateDesktopResolution(res, outputName, mode.size.Width(), mode.size.Height(), mode.GetRefreshInHz(), 0);
     res.fPixelRatio = pixelRatio;
 
     if (isCurrent)
@@ -889,8 +888,8 @@ void CWinSystemWayland::SetResolutionInternal(CSizeInt size, std::int32_t scale,
       {
         // Add new resolution if none found
         RESOLUTION_INFO newResInfo;
-        UpdateDesktopResolution(newResInfo, sizes.bufferSize.Width(), sizes.bufferSize.Height(), refreshRate, 0);
-        newResInfo.strOutput = CDisplaySettings::GetInstance().GetCurrentResolutionInfo().strOutput; // we just assume the compositor put us on the right output
+        // we just assume the compositor put us on the right output
+        UpdateDesktopResolution(newResInfo, CDisplaySettings::GetInstance().GetCurrentResolutionInfo().strOutput, sizes.bufferSize.Width(), sizes.bufferSize.Height(), refreshRate, 0);
         CDisplaySettings::GetInstance().AddResolutionInfo(newResInfo);
         CDisplaySettings::GetInstance().ApplyCalibrations();
         res = static_cast<RESOLUTION> (CDisplaySettings::GetInstance().ResolutionInfoSize() - 1);
