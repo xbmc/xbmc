@@ -10,17 +10,14 @@
 
 #include "TextureGLBase.h"
 
-class CTextureGL : public CTextureGLBase
+class CTextureGLES : public CTextureGLBase
 {
 public:
-  CTextureGL(unsigned int width = 0,
-             unsigned int height = 0,
-             unsigned int format = XB_FMT_A8R8G8B8);
+  CTextureGLES(unsigned int width = 0,
+               unsigned int height = 0,
+               unsigned int format = XB_FMT_A8R8G8B8);
 
   void LoadToGPU() override;
-
-private:
-  bool m_isOglVersion3orNewer = false;
 };
 
-using CTexture = CTextureGL;
+using CTexture = CTextureGLES;

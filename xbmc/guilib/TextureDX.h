@@ -39,3 +39,5 @@ private:
   CD3DTexture m_texture;
   DXGI_FORMAT GetFormat();
 };
+
+using CTexture = CDXTexture;

@@ -15,11 +15,6 @@
 struct COLOR {unsigned char b,g,r,x;};	// Windows GDI expects 4bytes per color
 #pragma pack()
 
-class CTexture;
-class CGLTexture;
-class CPiTexture;
-class CDXTexture;
-
 enum class TEXTURE_SCALING
 {
   LINEAR,
@@ -134,9 +129,7 @@ protected:
 };
 
 #if defined(HAS_GL) || defined(HAS_GLES)
-#include "TextureGL.h"
-#define CTexture CGLTexture
+#include "TextureGLBase.h"
 #elif defined(HAS_DX)
 #include "TextureDX.h"
-#define CTexture CDXTexture
 #endif

@@ -156,8 +156,11 @@ set(HEADERS DDSImage.h
             XBTFReader.h)
 
 if(OPENGL_FOUND OR OPENGLES_FOUND)
-  list(APPEND SOURCES GUIFontTTFGLBase.cpp)
-  list(APPEND HEADERS GUIFontTTFGLBase.h)
+  list(APPEND SOURCES GUIFontTTFGLBase.cpp
+                      TextureGLBase.cpp)
+
+  list(APPEND HEADERS GUIFontTTFGLBase.h
+                      TextureGLBase.h)
 
   if(OPENGL_FOUND)
     list(APPEND SOURCES GUIFontTTFGL.cpp
@@ -174,11 +177,11 @@ if(OPENGL_FOUND OR OPENGLES_FOUND)
     list(APPEND SOURCES GUIFontTTFGLES.cpp
                         GUITextureGLES.cpp
                         Shader.cpp
-                        TextureGL.cpp)
+                        TextureGLES.cpp)
     list(APPEND HEADERS GUIFontTTFGLES.h
                         GUITextureGLES.h
                         Shader.h
-                        TextureGL.h)
+                        TextureGLES.h)
   endif()
 endif()
 
