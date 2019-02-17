@@ -173,7 +173,10 @@ namespace XBMCAddon
                     const String& line3)
     {
       DelayedCallGuard dcguard(languageHook);
-      return HELPERS::ShowOKDialogLines(CVariant{heading}, CVariant{line1}, CVariant{line2}, CVariant{line3});
+      if (line2.empty() && line3.empty())
+        return HELPERS::ShowOKDialogText(CVariant{heading}, CVariant{line1});
+      else
+        return HELPERS::ShowOKDialogLines(CVariant{heading}, CVariant{line1}, CVariant{line2}, CVariant{line3});
     }
 
     void Dialog::textviewer(const String& heading, const String& text, bool usemono)
