@@ -14,7 +14,6 @@
 #include "utils/Color.h"
 #include "rendering/RenderSystem.h"
 
-#include <vector>
 #include <wrl/client.h>
 
 enum PCI_Vendors
@@ -76,10 +75,6 @@ public:
   // empty overrides
   bool IsExtSupported(const char* extension) const override { return false; };
   bool ResetRenderSystem(int width, int height) override { return true; };
-
-  std::vector<AVPixelFormat> m_processorFormats;
-  std::vector<AVPixelFormat> m_sharedFormats;
-  std::vector<AVPixelFormat> m_shaderFormats;
 
 protected:
   virtual void PresentRenderImpl(bool rendered) = 0;

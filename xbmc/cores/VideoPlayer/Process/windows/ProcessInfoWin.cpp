@@ -8,8 +8,6 @@
 
 #include "ProcessInfoWin.h"
 #include "cores/VideoPlayer/Process/ProcessInfo.h"
-#include "rendering/dx/RenderContext.h"
-#include <set>
 
 using namespace VIDEOPLAYER;
 
@@ -20,7 +18,7 @@ CProcessInfo* CProcessInfoWin::Create()
 
 void CProcessInfoWin::Register()
 {
-  CProcessInfo::RegisterProcessControl("win", CProcessInfoWin::Create);
+  RegisterProcessControl("win", Create);
 }
 
 EINTERLACEMETHOD CProcessInfoWin::GetFallbackDeintMethod()
@@ -30,12 +28,13 @@ EINTERLACEMETHOD CProcessInfoWin::GetFallbackDeintMethod()
 
 std::vector<AVPixelFormat> CProcessInfoWin::GetRenderFormats()
 {
-  auto processor = DX::Windowing()->m_processorFormats;
-  auto shaders = DX::Windowing()->m_shaderFormats;
-
-  std::set<AVPixelFormat> formats;
-  formats.insert(processor.begin(), processor.end());
-  formats.insert(shaders.begin(), shaders.end());
-
-  return std::vector<AVPixelFormat>(formats.begin(), formats.end());
+  return {
+    AV_PIX_FMT_D3D11VA_VLD,
+    AV_PIX_FMT_NV12,
+    AV_PIX_FMT_YUV420P,
+    AV_PIX_FMT_P010,
+    AV_PIX_FMT_YUV420P10,
+    AV_PIX_FMT_P016,
+    AV_PIX_FMT_YUV420P16
+  };
 }

@@ -678,9 +678,7 @@ CD3DTexture& CRenderSystemDX::GetBackBuffer()
 
 void CRenderSystemDX::CheckDeviceCaps()
 {
-  HRESULT hr;
-
-  auto feature_level = m_deviceResources->GetDeviceFeatureLevel();
+  const auto feature_level = m_deviceResources->GetDeviceFeatureLevel();
   if (feature_level < D3D_FEATURE_LEVEL_9_3)
     m_maxTextureSize = D3D_FL9_1_REQ_TEXTURE2D_U_OR_V_DIMENSION;
   else if (feature_level < D3D_FEATURE_LEVEL_10_0)
@@ -690,96 +688,6 @@ void CRenderSystemDX::CheckDeviceCaps()
   else
     // 11_x and greater feature level. Limit this size to avoid memory overheads
     m_maxTextureSize = D3D11_REQ_TEXTURE2D_U_OR_V_DIMENSION >> 1;
-
-  m_processorFormats.clear();
-  m_sharedFormats.clear();
-  m_shaderFormats.clear();
-
-  // check video buffer caps
-  ComPtr<ID3D11Device> d3d11Dev(m_deviceResources->GetD3DDevice());
-  ComPtr<ID3D11DeviceContext> ctx(m_deviceResources->GetImmediateContext());
-  ComPtr<ID3D11VideoDevice> videoDev;
-  ComPtr<ID3D11VideoContext> videoCtx;
-  CD3D11_TEXTURE2D_DESC texDesc(DXGI_FORMAT_NV12, 1920, 1080, 1, 1, D3D11_BIND_DECODER, D3D11_USAGE_DEFAULT, 0);
-
-  if (SUCCEEDED(d3d11Dev.As(&videoDev)) && SUCCEEDED(ctx.As(&videoCtx)))
-  {
-    // VA decoding/rendering exists, let's check caps
-#ifdef _M_ARM
-    bool isNotArm = false;
-#else
-    // possible fast converting on x86/x64
-    bool isNotArm = true;
-#endif
-    // check renderer formats
-    texDesc.Usage = D3D11_USAGE_DYNAMIC;
-    texDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-    if (SUCCEEDED(d3d11Dev->CreateTexture2D(&texDesc, nullptr, nullptr)))
-    {
-      m_processorFormats.push_back(AV_PIX_FMT_NV12);
-      if (isNotArm)
-        m_processorFormats.push_back(AV_PIX_FMT_YUV420P);
-    }
-    texDesc.Format = DXGI_FORMAT_P010;
-    if (SUCCEEDED(d3d11Dev->CreateTexture2D(&texDesc, nullptr, nullptr)))
-    {
-      m_processorFormats.push_back(AV_PIX_FMT_P010);
-      if (isNotArm)
-        m_processorFormats.push_back(AV_PIX_FMT_YUV420P10);
-    }
-    texDesc.Format = DXGI_FORMAT_P016;
-    if (SUCCEEDED(hr = d3d11Dev->CreateTexture2D(&texDesc, nullptr, nullptr)))
-    {
-      m_processorFormats.push_back(AV_PIX_FMT_P016);
-      if (isNotArm)
-        m_processorFormats.push_back(AV_PIX_FMT_YUV420P16);
-    }
-
-    // check shared formats between d3d11va and shaders
-    texDesc.BindFlags |= D3D11_BIND_SHADER_RESOURCE;
-    texDesc.Format = DXGI_FORMAT_NV12;
-    if (SUCCEEDED(d3d11Dev->CreateTexture2D(&texDesc, nullptr, nullptr)))
-    {
-      m_sharedFormats.push_back(AV_PIX_FMT_NV12);
-      if (isNotArm)
-        m_sharedFormats.push_back(AV_PIX_FMT_YUV420P);
-    }
-    texDesc.Format = DXGI_FORMAT_P010;
-    if (SUCCEEDED(d3d11Dev->CreateTexture2D(&texDesc, nullptr, nullptr)))
-    {
-      m_sharedFormats.push_back(AV_PIX_FMT_P010);
-      if (isNotArm)
-        m_sharedFormats.push_back(AV_PIX_FMT_YUV420P10);
-    }
-    texDesc.Format = DXGI_FORMAT_P016;
-    if (SUCCEEDED(d3d11Dev->CreateTexture2D(&texDesc, nullptr, nullptr)))
-    {
-      m_sharedFormats.push_back(AV_PIX_FMT_P016);
-      if (isNotArm)
-        m_sharedFormats.push_back(AV_PIX_FMT_YUV420P16);
-    }
-  }
-
-  // common shader formats
-  texDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
-  texDesc.Format = DXGI_FORMAT_R8_UNORM;
-  if (SUCCEEDED(d3d11Dev->CreateTexture2D(&texDesc, nullptr, nullptr)))
-  {
-    m_shaderFormats.push_back(AV_PIX_FMT_YUV420P);
-    m_shaderFormats.push_back(AV_PIX_FMT_NV12);
-  }
-  texDesc.Format = DXGI_FORMAT_R16_UNORM;
-  if (SUCCEEDED(d3d11Dev->CreateTexture2D(&texDesc, nullptr, nullptr)))
-  {
-    m_shaderFormats.push_back(AV_PIX_FMT_YUV420P10);
-    m_shaderFormats.push_back(AV_PIX_FMT_YUV420P16);
-  }
-  texDesc.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
-  if (SUCCEEDED(d3d11Dev->CreateTexture2D(&texDesc, nullptr, nullptr)))
-  {
-    m_shaderFormats.push_back(AV_PIX_FMT_YUYV422);
-    m_shaderFormats.push_back(AV_PIX_FMT_UYVY422);
-  }
 }
 
 bool CRenderSystemDX::SupportsNPOT(bool dxt) const
