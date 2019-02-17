@@ -413,6 +413,7 @@ extern "C"
    * @param channel The channel to stream.
    * @return True if the stream has been opened successfully, false otherwise.
    * @remarks Required if bHandlesInputStream or bHandlesDemuxing is set to true.
+   *          CloseLiveStream() will always be called by Kodi prior to calling this function.
    *          Return false if this add-on won't provide this function.
    */
   bool OpenLiveStream(const PVR_CHANNEL& channel);
@@ -523,6 +524,7 @@ extern "C"
    * @param recording The recording to open.
    * @return True if the stream has been opened successfully, false otherwise.
    * @remarks Optional, and only used if bSupportsRecordings is set to true.
+   *          CloseRecordedStream() will always be called by Kodi prior to calling this function.
    *          Return false if this add-on won't provide this function.
    */
   bool OpenRecordedStream(const PVR_RECORDING& recording);
