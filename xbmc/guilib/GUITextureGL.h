@@ -41,3 +41,4 @@ private:
   CRenderSystemGL *m_renderSystem;
 };
 
+using CGUITexture = CGUITextureGL;

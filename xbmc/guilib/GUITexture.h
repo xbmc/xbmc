@@ -157,15 +157,10 @@ protected:
   CTextureArray m_texture;
 };
 
-
 #if defined(HAS_GL)
 #include "GUITextureGL.h"
-#define CGUITexture CGUITextureGL
 #elif defined(HAS_GLES)
 #include "GUITextureGLES.h"
-#define CGUITexture CGUITextureGLES
 #elif defined(HAS_DX)
 #include "GUITextureD3D.h"
-#define CGUITexture CGUITextureD3D
 #endif
-
