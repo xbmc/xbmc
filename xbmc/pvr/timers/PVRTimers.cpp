@@ -794,27 +794,59 @@ CPVRTimerInfoTagPtr CPVRTimers::GetRecordingTimerForRecording(const CPVRRecordin
     for (const auto &timersEntry : tagsEntry.second)
     {
       if (timersEntry->IsRecording() &&
-          !timersEntry->IsTimerRule() &&
+         !timersEntry->IsTimerRule() &&
           timersEntry->m_iClientId == recording.ClientID() &&
           timersEntry->m_iClientChannelUid == recording.ChannelUid())
       {
-        // first, match epg event uids, if available
-        if (timersEntry->UniqueBroadcastID() == recording.BroadcastUid() &&
-            timersEntry->UniqueBroadcastID() != EPG_TAG_INVALID_UID)
-          return timersEntry;
+        if (recording.ChannelUid() != PVR_CHANNEL_INVALID_UID && recording.RecordingState() != PVR_RECORDED_TV_ITEM_STATE_INVALID)
+        {
+          if (recording.IsInProgress())
+            return timersEntry;
+        }
+        else
+        {
+          // first, match epg event uids, if available
+          if (timersEntry->UniqueBroadcastID() == recording.BroadcastUid() &&
+              timersEntry->UniqueBroadcastID() != EPG_TAG_INVALID_UID)
+            return timersEntry;
 
-        // alternatively, match start and end times
-        const CDateTime timerStart = timersEntry->StartAsUTC() - CDateTimeSpan(0, 0, timersEntry->m_iMarginStart, 0);
-        const CDateTime timerEnd = timersEntry->EndAsUTC() + CDateTimeSpan(0, 0, timersEntry->m_iMarginEnd, 0);
-        if (timerStart <= recording.RecordingTimeAsUTC() &&
-            timerEnd >= recording.EndTimeAsUTC())
-          return timersEntry;
+          // alternatively, match start and end times
+          const CDateTime timerStart = timersEntry->StartAsUTC() - CDateTimeSpan(0, 0, timersEntry->m_iMarginStart, 0);
+          const CDateTime timerEnd = timersEntry->EndAsUTC() + CDateTimeSpan(0, 0, timersEntry->m_iMarginEnd, 0);
+          if (timerStart <= recording.RecordingTimeAsUTC() &&
+              timerEnd >= recording.EndTimeAsUTC())
+            return timersEntry;
+        }
       }
     }
   }
 
   return CPVRTimerInfoTagPtr();
 }
+
+/* Or with 'ChannelUid' and 'RecordingState' mandatory it becomes:
+
+CPVRTimerInfoTagPtr CPVRTimers::GetRecordingTimerForRecording(const CPVRRecording &recording) const
+{
+  CSingleLock lock(m_critSection);
+
+  for (const auto &tagsEntry : m_tags)
+  {
+    for (const auto &timersEntry : tagsEntry.second)
+    {
+      if (timersEntry->IsRecording() &&
+         !timersEntry->IsTimerRule() &&
+          timersEntry->m_iClientId == recording.ClientID() &&
+          timersEntry->m_iClientChannelUid == recording.ChannelUid() &&
+          recording.IsInProgress())
+        return timersEntry;
+     }
+  }
+
+  return CPVRTimerInfoTagPtr();
+}
+
+*/
 
 CPVRTimerInfoTagPtr CPVRTimers::GetTimerRule(const CPVRTimerInfoTagPtr &timer) const
 {

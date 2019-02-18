@@ -263,6 +263,12 @@ namespace PVR
     int ChannelUid(void) const;
 
     /*!
+     * @brief Get the recording state of the channel on which this recording is/was running
+     * @return the recording state of the channel on which this recording is/was running
+     */
+    int RecordingState(void) const;
+
+    /*!
      * @brief the identifier of the client that serves this recording
      * @return the client identifier
      */
@@ -313,12 +319,13 @@ namespace PVR
    const std::string GetGenresLabel() const;
 
   private:
-    CDateTime    m_recordingTime; /*!< start time of the recording */
+    CDateTime    m_recordingTime;     /*!< start time of the recording */
     bool         m_bGotMetaData;
-    bool         m_bIsDeleted;    /*!< set if entry is a deleted recording which can be undelete */
-    unsigned int m_iEpgEventId;   /*!< epg broadcast id associated with this recording */
-    int          m_iChannelUid;   /*!< channel uid associated with this recording */
-    bool         m_bRadio;        /*!< radio or tv recording */
+    bool         m_bIsDeleted;        /*!< set if entry is a deleted recording which can be undelete */
+    unsigned int m_iEpgEventId;       /*!< epg broadcast id associated with this recording */
+    int          m_iChannelUid;       /*!< channel uid associated with this recording */
+    int          m_iRecordingState;   /*!< recording state associated with this recording */
+    bool         m_bRadio;            /*!< radio or tv recording */
     int          m_iGenreType = 0;    /*!< genre type */
     int          m_iGenreSubType = 0; /*!< genre subtype */
     mutable XbmcThreads::EndTime m_resumePointRefetchTimeout;

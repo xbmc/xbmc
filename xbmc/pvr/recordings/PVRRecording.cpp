@@ -91,6 +91,7 @@ CPVRRecording::CPVRRecording(const PVR_RECORDING &recording, unsigned int iClien
   m_bIsDeleted                     = recording.bIsDeleted;
   m_iEpgEventId                    = recording.iEpgEventId;
   m_iChannelUid                    = recording.iChannelUid;
+  m_iRecordingState                = recording.iRecordingState;
 
   SetGenre(recording.iGenreType, recording.iGenreSubType, recording.strGenreDescription);
   CVideoInfoTag::SetPlayCount(recording.iPlayCount);
@@ -208,6 +209,7 @@ void CPVRRecording::Reset(void)
   m_iSeason            = -1;
   m_iEpisode           = -1;
   m_iChannelUid        = PVR_CHANNEL_INVALID_UID;
+  m_iRecordingState    = PVR_RECORDED_TV_ITEM_STATE_INVALID;
   m_bRadio             = false;
 
   m_recordingTime.Reset();
@@ -376,6 +378,7 @@ void CPVRRecording::Update(const CPVRRecording &tag)
   m_bIsDeleted        = tag.m_bIsDeleted;
   m_iEpgEventId       = tag.m_iEpgEventId;
   m_iChannelUid       = tag.m_iChannelUid;
+  m_iRecordingState   = tag.m_iRecordingState;
   m_bRadio            = tag.m_bRadio;
 
   CVideoInfoTag::SetPlayCount(tag.GetLocalPlayCount());
@@ -478,6 +481,11 @@ int CPVRRecording::ChannelUid(void) const
   return m_iChannelUid;
 }
 
+int CPVRRecording::RecordingState(void) const
+{
+  return m_iRecordingState;
+}
+
 int CPVRRecording::ClientID(void) const
 {
   return m_iClientId;
@@ -489,8 +497,24 @@ bool CPVRRecording::IsInProgress() const
   //       Only the state of the related timer is a safe indicator that the backend
   //       actually is recording this.
 
-  return CServiceBroker::GetPVRManager().Timers()->HasRecordingTimerForRecording(*this);
+  if (m_iChannelUid != PVR_CHANNEL_INVALID_UID && m_iRecordingState != PVR_RECORDED_TV_ITEM_STATE_INVALID)
+  {
+    return (m_iRecordingState == PVR_RECORDED_TV_ITEM_STATE_IN_PROGRESS);
+  }
+  else
+  {
+    return CServiceBroker::GetPVRManager().Timers()->HasRecordingTimerForRecording(*this);
+  }
 }
+
+/* Or with 'ChannelUid' and 'RecordingState' mandatory it becomes:
+
+bool CPVRRecording::IsInProgress() const
+{
+  return (m_iRecordingState == PVR_RECORDED_TV_ITEM_STATE_IN_PROGRESS);
+}
+
+*/
 
 void CPVRRecording::SetGenre(int iGenreType, int iGenreSubType, const std::string &strGenre)
 {
