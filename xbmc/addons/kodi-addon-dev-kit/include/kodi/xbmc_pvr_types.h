@@ -250,6 +250,15 @@ extern "C" {
   } PVR_CONNECTION_STATE;
 
   /*!
+  * @brief PVR recording states
+  */
+  const int PVR_RECORDING_STATE_INVALID              = 0; /*!< @brief denotes that no recording state is available */
+  const int PVR_RECORDING_STATE_IN_PROGRESS          = 1; /*!< @brief recording is in progress */
+  const int PVR_RECORDING_STATE_ERROR                = 2; /*!< @brief recording not started because of error */
+  const int PVR_RECORDING_STATE_FORCED_TO_COMPLETION = 3; /*!< @brief recording was forced to completion, but may miss a certain part at the end because it was cancelled by user */
+  const int PVR_RECORDING_STATE_COMPLETED            = 4; /*!< @brief recording completed successfully */
+
+  /*!
    * @brief PVR recording channel types
    */
   typedef enum
@@ -546,6 +555,7 @@ extern "C" {
     bool   bIsDeleted;                                    /*!< @brief (optional) shows this recording is deleted and can be undelete */
     unsigned int iEpgEventId;                             /*!< @brief (optional) EPG event id associated with this recording. Valid ids must be greater than EPG_TAG_INVALID_UID. */
     int    iChannelUid;                                   /*!< @brief (optional) unique identifier of the channel for this recording. PVR_CHANNEL_INVALID_UID denotes that channel uid is not available. */
+    int    iRecordingState;                               /*!< @brief (required) the recording state of the recorded TV item. PVR_RECORDING_STATE_INVALID denotes that the recording state is not available */
     PVR_RECORDING_CHANNEL_TYPE channelType;               /*!< @brief (optional) channel type. Set to PVR_RECORDING_CHANNEL_TYPE_UNKNOWN if the type cannot be determined. */
   } ATTRIBUTE_PACKED PVR_RECORDING;
 

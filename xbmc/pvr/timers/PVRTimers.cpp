@@ -796,21 +796,10 @@ CPVRTimerInfoTagPtr CPVRTimers::GetRecordingTimerForRecording(const CPVRRecordin
       if (timersEntry->IsRecording() &&
           !timersEntry->IsTimerRule() &&
           timersEntry->m_iClientId == recording.ClientID() &&
-          timersEntry->m_iClientChannelUid == recording.ChannelUid())
-      {
-        // first, match epg event uids, if available
-        if (timersEntry->UniqueBroadcastID() == recording.BroadcastUid() &&
-            timersEntry->UniqueBroadcastID() != EPG_TAG_INVALID_UID)
-          return timersEntry;
-
-        // alternatively, match start and end times
-        const CDateTime timerStart = timersEntry->StartAsUTC() - CDateTimeSpan(0, 0, timersEntry->m_iMarginStart, 0);
-        const CDateTime timerEnd = timersEntry->EndAsUTC() + CDateTimeSpan(0, 0, timersEntry->m_iMarginEnd, 0);
-        if (timerStart <= recording.RecordingTimeAsUTC() &&
-            timerEnd >= recording.EndTimeAsUTC())
-          return timersEntry;
-      }
-    }
+          timersEntry->m_iClientChannelUid == recording.ChannelUid() &&
+          recording.IsInProgress())
+        return timersEntry;
+     }
   }
 
   return CPVRTimerInfoTagPtr();
