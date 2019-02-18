@@ -191,10 +191,7 @@ private:
 };
 
 #if defined(HAS_GL) || defined(HAS_GLES)
-#include "GUIFontTTFGL.h"
-#define CGUIFontTTF CGUIFontTTFGL
+#include "GUIFontTTFGLBase.h"
 #elif defined(HAS_DX)
 #include "GUIFontTTFDX.h"
-#define CGUIFontTTF CGUIFontTTFDX
 #endif
-

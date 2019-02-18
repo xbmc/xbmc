@@ -6,43 +6,30 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include "GUIFontTTFGL.h"
+#include "GUIFontTTFGLES.h"
 
 #include "GUIComponent.h"
 #include "ServiceBroker.h"
 #include "Texture.h"
 #include "TextureManager.h"
 #include "rendering/MatrixGL.h"
-#include "rendering/gl/RenderSystemGL.h"
 #include "utils/GLUtils.h"
 #include "windowing/GraphicContext.h"
 
-CGUIFontTTFGL::CGUIFontTTFGL(const std::string& strFileName) : CGUIFontTTFGLBase(strFileName)
+CGUIFontTTFGLES::CGUIFontTTFGLES(const std::string& strFileName) : CGUIFontTTFGLBase(strFileName)
 {
-  m_renderSystem = dynamic_cast<CRenderSystemGL*>(CServiceBroker::GetRenderSystem());
+  m_renderSystem = dynamic_cast<CRenderSystemGLES*>(CServiceBroker::GetRenderSystem());
 }
 
-bool CGUIFontTTFGL::FirstBegin()
+bool CGUIFontTTFGLES::FirstBegin()
 {
-  GLenum pixformat = GL_RED;
-  GLenum internalFormat;
-  unsigned int major, minor;
-  m_renderSystem->GetRenderVersion(major, minor);
-  if (major >= 3)
-  {
-    internalFormat = GL_R8;
-  }
-  else
-  {
-    internalFormat = GL_LUMINANCE;
-  }
+  GLenum pixformat = GL_ALPHA; // deprecated
+  GLenum internalFormat = GL_ALPHA;
 
   if (m_textureStatus == TEXTURE_REALLOCATED)
   {
     if (glIsTexture(m_nTexture))
-    {
       CServiceBroker::GetGUI()->GetTextureManager().ReleaseHwTexture(m_nTexture);
-    }
 
     m_textureStatus = TEXTURE_VOID;
   }
@@ -50,7 +37,7 @@ bool CGUIFontTTFGL::FirstBegin()
   if (m_textureStatus == TEXTURE_VOID)
   {
     // Have OpenGL generate a texture object handle for us
-    glGenTextures(1, (GLuint*) &m_nTexture);
+    glGenTextures(1, (GLuint*)&m_nTexture);
 
     // Bind the texture object
     glBindTexture(GL_TEXTURE_2D, m_nTexture);
@@ -61,7 +48,7 @@ bool CGUIFontTTFGL::FirstBegin()
 
     // Set the texture image -- THIS WORKS, so the pixels must be wrong.
     glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, m_texture->GetWidth(), m_texture->GetHeight(), 0,
-        pixformat, GL_UNSIGNED_BYTE, 0);
+                 pixformat, GL_UNSIGNED_BYTE, 0);
 
     VerifyGLState();
     m_textureStatus = TEXTURE_UPDATED;
@@ -70,8 +57,9 @@ bool CGUIFontTTFGL::FirstBegin()
   if (m_textureStatus == TEXTURE_UPDATED)
   {
     glBindTexture(GL_TEXTURE_2D, m_nTexture);
-    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, m_updateY1, m_texture->GetWidth(), m_updateY2 - m_updateY1, pixformat, GL_UNSIGNED_BYTE,
-        m_texture->GetPixels() + m_updateY1 * m_texture->GetPitch());
+    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, m_updateY1, m_texture->GetWidth(), m_updateY2 - m_updateY1,
+                    pixformat, GL_UNSIGNED_BYTE,
+                    m_texture->GetPixels() + m_updateY1 * m_texture->GetPitch());
 
     m_updateY1 = m_updateY2 = 0;
     m_textureStatus = TEXTURE_READY;
@@ -86,14 +74,14 @@ bool CGUIFontTTFGL::FirstBegin()
   return true;
 }
 
-void CGUIFontTTFGL::LastEnd()
+void CGUIFontTTFGLES::LastEnd()
 {
-  m_renderSystem->EnableShader(SM_FONTS);
+  m_renderSystem->EnableGUIShader(SM_FONTS);
 
-  GLint posLoc = m_renderSystem->ShaderGetPos();
-  GLint colLoc = m_renderSystem->ShaderGetCol();
-  GLint tex0Loc = m_renderSystem->ShaderGetCoord0();
-  GLint modelLoc = m_renderSystem->ShaderGetModel();
+  GLint posLoc = m_renderSystem->GUIShaderGetPos();
+  GLint colLoc = m_renderSystem->GUIShaderGetCol();
+  GLint tex0Loc = m_renderSystem->GUIShaderGetCoord0();
+  GLint modelLoc = m_renderSystem->GUIShaderGetModel();
 
   CreateStaticVertexBuffers();
 
@@ -106,7 +94,7 @@ void CGUIFontTTFGL::LastEnd()
   {
     // Deal with vertices that had to use software clipping
     std::vector<SVertex> vecVertices(6 * (m_vertex.size() / 4));
-    SVertex *vertices = &vecVertices[0];
+    SVertex* vertices = &vecVertices[0];
     for (size_t i = 0; i < m_vertex.size(); i += 4)
     {
       *vertices++ = m_vertex[i];
@@ -119,20 +107,11 @@ void CGUIFontTTFGL::LastEnd()
 
     vertices = &vecVertices[0];
 
-    GLuint VertexVBO;
-
-    glGenBuffers(1, &VertexVBO);
-    glBindBuffer(GL_ARRAY_BUFFER, VertexVBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(SVertex)*vecVertices.size(), &vecVertices[0], GL_STATIC_DRAW);
-
-    glVertexAttribPointer(posLoc, 3, GL_FLOAT, GL_FALSE, sizeof(SVertex), BUFFER_OFFSET(offsetof(SVertex, x)));
-    glVertexAttribPointer(colLoc, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(SVertex), BUFFER_OFFSET(offsetof(SVertex, r)));
-    glVertexAttribPointer(tex0Loc, 2, GL_FLOAT, GL_FALSE, sizeof(SVertex), BUFFER_OFFSET(offsetof(SVertex, u)));
+    glVertexAttribPointer(posLoc,  3, GL_FLOAT, GL_FALSE, sizeof(SVertex), (char*)vertices + offsetof(SVertex, x));
+    glVertexAttribPointer(colLoc,  4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(SVertex), (char*)vertices + offsetof(SVertex, r));
+    glVertexAttribPointer(tex0Loc, 2, GL_FLOAT,  GL_FALSE, sizeof(SVertex), (char*)vertices + offsetof(SVertex, u));
 
     glDrawArrays(GL_TRIANGLES, 0, vecVertices.size());
-
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glDeleteBuffers(1, &VertexVBO);
   }
 
   if (!m_vertexTrans.empty())
@@ -142,7 +121,8 @@ void CGUIFontTTFGL::LastEnd()
     // Bind our pre-calculated array to GL_ELEMENT_ARRAY_BUFFER
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_elementArrayHandle);
     // Store current scissor
-    CRect scissor = CServiceBroker::GetWinSystem()->GetGfxContext().StereoCorrection(CServiceBroker::GetWinSystem()->GetGfxContext().GetScissors());
+    CRect scissor = CServiceBroker::GetWinSystem()->GetGfxContext().StereoCorrection(
+        CServiceBroker::GetWinSystem()->GetGfxContext().GetScissors());
 
     for (size_t i = 0; i < m_vertexTrans.size(); i++)
     {
@@ -168,7 +148,8 @@ void CGUIFontTTFGL::LastEnd()
 
       // Apply the translation to the currently active (top-of-stack) model view matrix
       glMatrixModview.Push();
-      glMatrixModview.Get().Translatef(m_vertexTrans[i].translateX, m_vertexTrans[i].translateY, m_vertexTrans[i].translateZ);
+      glMatrixModview.Get().Translatef(m_vertexTrans[i].translateX, m_vertexTrans[i].translateY,
+                                       m_vertexTrans[i].translateZ);
       glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glMatrixModview.Get());
 
       // Bind the buffer to the OpenGL context's GL_ARRAY_BUFFER binding point
@@ -183,9 +164,18 @@ void CGUIFontTTFGL::LastEnd()
 
         // Set up the offsets of the various vertex attributes within the buffer
         // object bound to GL_ARRAY_BUFFER
-        glVertexAttribPointer(posLoc,  3, GL_FLOAT,         GL_FALSE, sizeof(SVertex), (GLvoid *) (character*sizeof(SVertex)*4 + offsetof(SVertex, x)));
-        glVertexAttribPointer(colLoc,  4, GL_UNSIGNED_BYTE, GL_TRUE,  sizeof(SVertex), (GLvoid *) (character*sizeof(SVertex)*4 + offsetof(SVertex, r)));
-        glVertexAttribPointer(tex0Loc, 2, GL_FLOAT,         GL_FALSE, sizeof(SVertex), (GLvoid *) (character*sizeof(SVertex)*4 + offsetof(SVertex, u)));
+        glVertexAttribPointer(
+            posLoc, 3, GL_FLOAT, GL_FALSE, sizeof(SVertex),
+            reinterpret_cast<const GLvoid*>(
+                reinterpret_cast<char*>(character * sizeof(SVertex) * 4) + offsetof(SVertex, x)));
+        glVertexAttribPointer(
+            colLoc, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(SVertex),
+            reinterpret_cast<const GLvoid*>(
+                reinterpret_cast<char*>(character * sizeof(SVertex) * 4) + offsetof(SVertex, r)));
+        glVertexAttribPointer(
+            tex0Loc, 2, GL_FLOAT, GL_FALSE, sizeof(SVertex),
+            reinterpret_cast<const GLvoid*>(
+                reinterpret_cast<char*>(character * sizeof(SVertex) * 4) + offsetof(SVertex, u)));
 
         glDrawElements(GL_TRIANGLES, 6 * count, GL_UNSIGNED_SHORT, 0);
       }
@@ -207,5 +197,5 @@ void CGUIFontTTFGL::LastEnd()
   glDisableVertexAttribArray(colLoc);
   glDisableVertexAttribArray(tex0Loc);
 
-  m_renderSystem->DisableShader();
+  m_renderSystem->DisableGUIShader();
 }

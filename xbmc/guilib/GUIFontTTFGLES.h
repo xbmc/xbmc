@@ -9,22 +9,22 @@
 #pragma once
 
 #include "GUIFontTTFGLBase.h"
+#include "rendering/gles/RenderSystemGLES.h"
 
 #include <string>
-#include <vector>
 
 #include "system_gl.h"
 
-class CGUIFontTTFGL : public CGUIFontTTFGLBase
+class CGUIFontTTFGLES : public CGUIFontTTFGLBase
 {
 public:
-  explicit CGUIFontTTFGL(const std::string& strFileName);
+  explicit CGUIFontTTFGLES(const std::string& strFileName);
 
   bool FirstBegin() override;
   void LastEnd() override;
 
 private:
-  CRenderSystemGL* m_renderSystem = nullptr;
+  CRenderSystemGLES* m_renderSystem = nullptr;
 };
 
-using CGUIFontTTF = CGUIFontTTFGL;
+using CGUIFontTTF = CGUIFontTTFGLES;
