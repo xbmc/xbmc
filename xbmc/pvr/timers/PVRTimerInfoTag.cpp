@@ -742,7 +742,7 @@ CPVRTimerInfoTagPtr CPVRTimerInfoTag::CreateFromEpg(const CPVREpgInfoTagPtr &tag
   CPVRTimerInfoTagPtr newTag(new CPVRTimerInfoTag());
 
   /* check if a valid channel is set */
-  CPVRChannelPtr channel = tag->Channel();
+  const std::shared_ptr<CPVRChannel> channel = CServiceBroker::GetPVRManager().ChannelGroups()->GetChannelForEpgTag(tag);
   if (!channel)
   {
     CLog::LogF(LOGERROR, "EPG tag has no channel");
@@ -754,7 +754,10 @@ CPVRTimerInfoTagPtr CPVRTimerInfoTag::CreateFromEpg(const CPVREpgInfoTagPtr &tag
   CDateTime newEnd = tag->EndAsUTC();
   newTag->m_iClientIndex       = PVR_TIMER_NO_CLIENT_INDEX;
   newTag->m_iParentClientIndex = PVR_TIMER_NO_PARENT;
-  newTag->m_strTitle           = tag->Title().empty() ? channel->ChannelName() : tag->Title();
+  if (!CServiceBroker::GetPVRManager().IsParentalLocked(tag))
+    newTag->m_strTitle = tag->Title();
+  if (newTag->m_strTitle.empty())
+    newTag->m_strTitle = channel->ChannelName();
   newTag->m_iClientChannelUid  = channel->UniqueID();
   newTag->m_iClientId          = channel->ClientID();
   newTag->m_bIsRadio           = channel->IsRadio();

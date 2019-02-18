@@ -537,15 +537,19 @@ namespace PVR
             epgTag = channel->GetEPGNow();
             if (epgTag)
             {
+              bool bLocked = CServiceBroker::GetPVRManager().IsParentalLocked(epgTag);
+
               // "now"
-              selector.AddAction(RECORD_CURRENT_SHOW, epgTag->Title());
+              const std::string currentTitle = bLocked ? g_localizeStrings.Get(19266) /* Parental locked */ : epgTag->Title();
+              selector.AddAction(RECORD_CURRENT_SHOW, currentTitle);
               ePreselect = RECORD_CURRENT_SHOW;
 
               // "next"
               epgTagNext = channel->GetEPGNext();
               if (epgTagNext)
               {
-                selector.AddAction(RECORD_NEXT_SHOW, epgTagNext->Title());
+                const std::string nextTitle = bLocked ? g_localizeStrings.Get(19266) /* Parental locked */ : epgTagNext->Title();
+                selector.AddAction(RECORD_NEXT_SHOW, nextTitle);
 
                 // be smart. if current show is almost over, preselect next show.
                 if (epgTag->ProgressPercentage() > 90.0f)

@@ -546,7 +546,7 @@ bool CPVRChannelGroups::CreateChannelEpgs(void)
   CSingleLock lock(m_critSection);
   for (std::vector<CPVRChannelGroupPtr>::iterator it = m_groups.begin(); it != m_groups.end(); ++it)
   {
-    /* Only create EPGs for the internatl groups */
+    /* Only create EPGs for the internal groups */
     if ((*it)->IsInternalGroup())
       bReturn = (*it)->CreateChannelEpgs();
   }

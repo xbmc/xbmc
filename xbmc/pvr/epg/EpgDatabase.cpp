@@ -213,7 +213,7 @@ std::vector<CPVREpgPtr> CPVREpgDatabase::Get(const CPVREpgContainer &container)
         std::string strName        = m_pDS->fv("sName").get_asString().c_str();
         std::string strScraperName = m_pDS->fv("sScraperName").get_asString().c_str();
 
-        result.emplace_back(new CPVREpg(iEpgID, strName, strScraperName, true));
+        result.emplace_back(new CPVREpg(iEpgID, strName, strScraperName));
         m_pDS->next();
       }
       m_pDS->close();
@@ -359,7 +359,7 @@ int CPVREpgDatabase::Persist(const CPVREpgInfoTag &tag, bool bSingleUpdate /* = 
 
   if (tag.EpgID() <= 0)
   {
-    CLog::LogF(LOGERROR, "Tag '%s' does not have a valid table", tag.Title(true).c_str());
+    CLog::LogF(LOGERROR, "Tag '%s' does not have a valid table", tag.Title().c_str());
     return iReturn;
   }
 
@@ -384,12 +384,12 @@ int CPVREpgDatabase::Persist(const CPVREpgInfoTag &tag, bool bSingleUpdate /* = 
         "iEpisodeId, iEpisodePart, sEpisodeName, iFlags, sSeriesLink, iBroadcastUid) "
         "VALUES (%u, %u, %u, '%s', '%s', '%s', '%s', '%s', '%s', '%s', %i, '%s', '%s', %i, %i, '%s', %u, %i, %i, %i, %i, %i, %i, '%s', %i, '%s', %i);",
         tag.EpgID(), static_cast<unsigned int>(iStartTime), static_cast<unsigned int>(iEndTime),
-        tag.Title(true).c_str(), tag.PlotOutline(true).c_str(), tag.Plot(true).c_str(),
-        tag.OriginalTitle(true).c_str(), tag.DeTokenize(tag.Cast()).c_str(), tag.DeTokenize(tag.Directors()).c_str(),
+        tag.Title().c_str(), tag.PlotOutline().c_str(), tag.Plot().c_str(),
+        tag.OriginalTitle().c_str(), tag.DeTokenize(tag.Cast()).c_str(), tag.DeTokenize(tag.Directors()).c_str(),
         tag.DeTokenize(tag.Writers()).c_str(), tag.Year(), tag.IMDBNumber().c_str(),
         tag.Icon().c_str(), tag.GenreType(), tag.GenreSubType(), strGenre.c_str(),
         static_cast<unsigned int>(iFirstAired), tag.ParentalRating(), tag.StarRating(), tag.Notify(),
-        tag.SeriesNumber(), tag.EpisodeNumber(), tag.EpisodePart(), tag.EpisodeName(true).c_str(), tag.Flags(), tag.SeriesLink().c_str(),
+        tag.SeriesNumber(), tag.EpisodeNumber(), tag.EpisodePart(), tag.EpisodeName().c_str(), tag.Flags(), tag.SeriesLink().c_str(),
         tag.UniqueBroadcastID());
   }
   else
@@ -400,12 +400,12 @@ int CPVREpgDatabase::Persist(const CPVREpgInfoTag &tag, bool bSingleUpdate /* = 
         "iEpisodeId, iEpisodePart, sEpisodeName, iFlags, sSeriesLink, iBroadcastUid, idBroadcast) "
         "VALUES (%u, %u, %u, '%s', '%s', '%s', '%s', '%s', '%s', '%s', %i, '%s', '%s', %i, %i, '%s', %u, %i, %i, %i, %i, %i, %i, '%s', %i, '%s', %i, %i);",
         tag.EpgID(), static_cast<unsigned int>(iStartTime), static_cast<unsigned int>(iEndTime),
-        tag.Title(true).c_str(), tag.PlotOutline(true).c_str(), tag.Plot(true).c_str(),
-        tag.OriginalTitle(true).c_str(), tag.DeTokenize(tag.Cast()).c_str(), tag.DeTokenize(tag.Directors()).c_str(),
+        tag.Title().c_str(), tag.PlotOutline().c_str(), tag.Plot().c_str(),
+        tag.OriginalTitle().c_str(), tag.DeTokenize(tag.Cast()).c_str(), tag.DeTokenize(tag.Directors()).c_str(),
         tag.DeTokenize(tag.Writers()).c_str(), tag.Year(), tag.IMDBNumber().c_str(),
         tag.Icon().c_str(), tag.GenreType(), tag.GenreSubType(), strGenre.c_str(),
         static_cast<unsigned int>(iFirstAired), tag.ParentalRating(), tag.StarRating(), tag.Notify(),
-        tag.SeriesNumber(), tag.EpisodeNumber(), tag.EpisodePart(), tag.EpisodeName(true).c_str(), tag.Flags(), tag.SeriesLink().c_str(),
+        tag.SeriesNumber(), tag.EpisodeNumber(), tag.EpisodePart(), tag.EpisodeName().c_str(), tag.Flags(), tag.SeriesLink().c_str(),
         tag.UniqueBroadcastID(), iBroadcastId);
   }
 

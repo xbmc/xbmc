@@ -695,34 +695,29 @@ CPVRTimerInfoTagPtr CPVRTimers::GetTimerForEpgTag(const CPVREpgInfoTagPtr &epgTa
 {
   if (epgTag)
   {
-    // try to find a matching timer for the tag.
-    const CPVRChannelPtr channel(epgTag->Channel());
-    if (channel)
+    CSingleLock lock(m_critSection);
+
+    for (const auto &tagsEntry : m_tags)
     {
-      CSingleLock lock(m_critSection);
-
-      for (const auto &tagsEntry : m_tags)
+      for (const auto &timersEntry : tagsEntry.second)
       {
-        for (const auto &timersEntry : tagsEntry.second)
-        {
-          if (timersEntry->IsTimerRule())
-            continue;
+        if (timersEntry->IsTimerRule())
+          continue;
 
-          if (timersEntry->GetEpgInfoTag(false) == epgTag)
+        if (timersEntry->GetEpgInfoTag(false) == epgTag)
+          return timersEntry;
+
+        if (timersEntry->m_iClientChannelUid != PVR_CHANNEL_INVALID_UID &&
+            timersEntry->m_iClientChannelUid == epgTag->UniqueChannelID())
+        {
+          if (timersEntry->UniqueBroadcastID() != EPG_TAG_INVALID_UID &&
+              timersEntry->UniqueBroadcastID() == epgTag->UniqueBroadcastID())
             return timersEntry;
 
-          if (timersEntry->m_iClientChannelUid != PVR_CHANNEL_INVALID_UID &&
-              timersEntry->m_iClientChannelUid == channel->UniqueID())
-          {
-            if (timersEntry->UniqueBroadcastID() != EPG_TAG_INVALID_UID &&
-                timersEntry->UniqueBroadcastID() == epgTag->UniqueBroadcastID())
-              return timersEntry;
-
-            if (timersEntry->m_bIsRadio == channel->IsRadio() &&
-                timersEntry->StartAsUTC() <= epgTag->StartAsUTC() &&
-                timersEntry->EndAsUTC() >= epgTag->EndAsUTC())
-              return timersEntry;
-          }
+          if (timersEntry->m_bIsRadio == epgTag->IsRadio() &&
+              timersEntry->StartAsUTC() <= epgTag->StartAsUTC() &&
+              timersEntry->EndAsUTC() >= epgTag->EndAsUTC())
+            return timersEntry;
         }
       }
     }

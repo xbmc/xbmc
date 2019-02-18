@@ -96,7 +96,7 @@ void CGUIWindowPVRSearchBase::SetItemToSearch(const CFileItemPtr &item)
   else
   {
     const CPVREpgInfoTagPtr epgTag(CPVRItem(item).GetEpgInfoTag());
-    if (epgTag)
+    if (epgTag && !CServiceBroker::GetPVRManager().IsParentalLocked(epgTag))
       m_searchfilter->SetSearchPhrase(epgTag->Title());
   }
 

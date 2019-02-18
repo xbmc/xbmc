@@ -17,13 +17,14 @@
 #include "utils/Observer.h"
 
 #include "pvr/PVRTypes.h"
-#include "pvr/channels/PVRChannel.h"
 #include "pvr/epg/EpgInfoTag.h"
 #include "pvr/epg/EpgSearchFilter.h"
 
 /** EPG container for CPVREpgInfoTag instances */
 namespace PVR
 {
+  class CPVREpgChannelData;
+
   class CPVREpg : public Observable
   {
     friend class CPVREpgDatabase;
@@ -34,15 +35,17 @@ namespace PVR
      * @param iEpgID The ID of this table or <= 0 to create a new ID.
      * @param strName The name of this table.
      * @param strScraperName The name of the scraper to use.
-     * @param bLoadedFromDb True if this table was loaded from the database, false otherwise.
      */
-    CPVREpg(int iEpgID, const std::string &strName, const std::string &strScraperName, bool bLoadedFromDb);
+    CPVREpg(int iEpgID, const std::string& strName, const std::string& strScraperName);
 
     /*!
-     * @brief Create a new EPG instance for a channel.
-     * @param channel The channel to create the EPG for.
+     * @brief Create a new EPG instance.
+     * @param iEpgID The ID of this table or <= 0 to create a new ID.
+     * @param strName The name of this table.
+     * @param strScraperName The name of the scraper to use.
+     * @param channelData The channel data.
      */
-    CPVREpg(const CPVRChannelPtr &channel);
+    CPVREpg(int iEpgID, const std::string& strName, const std::string& strScraperName, const std::shared_ptr<CPVREpgChannelData>& channelData);
 
     /*!
      * @brief Destroy this EPG instance.
@@ -56,22 +59,22 @@ namespace PVR
     bool Load(void);
 
     /*!
-     * @brief The channel this EPG belongs to.
-     * @return The channel this EPG belongs to
+     * @brief Get data for the channel associated with this EPG.
+     * @return The data.
      */
-    CPVRChannelPtr Channel(void) const;
+    std::shared_ptr<CPVREpgChannelData> GetChannelData() const;
 
     /*!
-     * @brief The id of the channel this EPG belongs to.
-     * @return The channel id or -1 if no channel
+     * @brief Set data for the channel associated with this EPG.
+     * @param data The data.
+     */
+    void SetChannelData(const std::shared_ptr<CPVREpgChannelData>& data);
+
+    /*!
+     * @brief The id of the channel associated with this EPG.
+     * @return The channel id or -1 if no channel is associated
      */
     int ChannelID(void) const;
-
-    /*!
-     * @brief Channel the channel tag linked to this EPG table.
-     * @param channel The new channel tag.
-     */
-    void SetChannel(const CPVRChannelPtr &channel);
 
     /*!
      * @brief Get the name of the scraper to use for this table.
@@ -317,12 +320,10 @@ namespace PVR
     std::string                         m_strName;         /*!< the name of this table */
     std::string                         m_strScraperName;  /*!< the name of the scraper to use */
     mutable CDateTime                   m_nowActiveStart;  /*!< the start time of the tag that is currently active */
-
     CDateTime                           m_lastScanTime;    /*!< the last time the EPG has been updated */
-
-    CPVRChannelPtr                      m_pvrChannel;      /*!< the channel this EPG belongs to */
-
     mutable CCriticalSection            m_critSection;     /*!< critical section for changes in this table */
     bool                                m_bUpdateLastScanTime = false;
+
+    std::shared_ptr<CPVREpgChannelData> m_channelData;
   };
 }

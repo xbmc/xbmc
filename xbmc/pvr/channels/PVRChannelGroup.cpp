@@ -30,6 +30,7 @@
 #include "pvr/PVRManager.h"
 #include "pvr/addons/PVRClients.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
+#include "pvr/epg/EpgChannelData.h"
 #include "pvr/epg/EpgContainer.h"
 
 using namespace PVR;
@@ -941,16 +942,16 @@ int CPVRChannelGroup::GetEPGAll(CFileItemList &results, bool bIncludeChannelsWit
 
       CPVREpgPtr epg = channel->GetEPG();
       if (epg)
-      {
-        // XXX channel pointers aren't set in some occasions. this works around the issue, but is not very nice
-        epg->SetChannel(channel);
         iAdded = epg->Get(results);
-      }
 
       if (bIncludeChannelsWithoutEPG && iAdded == 0)
       {
         // Add dummy EPG tag associated with this channel
-        epgTag = std::make_shared<CPVREpgInfoTag>(channel);
+        if (epg)
+          epgTag = std::make_shared<CPVREpgInfoTag>(epg->GetChannelData(), epg->EpgID());
+        else
+          epgTag = std::make_shared<CPVREpgInfoTag>(std::make_shared<CPVREpgChannelData>(*channel), -1);
+
         results.Add(std::make_shared<CFileItem>(epgTag));
       }
     }

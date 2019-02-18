@@ -69,14 +69,6 @@ bool CGUIDialogPVRGuideInfo::OnClickButtonRecord(CGUIMessage &message)
   {
     bReturn = true;
 
-    if (!m_progItem || !m_progItem->HasChannel())
-    {
-      /* invalid channel */
-      HELPERS::ShowOKDialogText(CVariant{19033}, CVariant{19067});
-      Close();
-      return bReturn;
-    }
-
     const std::shared_ptr<CPVRTimerInfoTag> timerTag = CServiceBroker::GetPVRManager().Timers()->GetTimerForEpgTag(m_progItem);
     if (timerTag)
     {
@@ -216,7 +208,7 @@ void CGUIDialogPVRGuideInfo::OnInitWindow()
       bHideRecord = false;
     }
   }
-  else if (m_progItem->Channel() && m_progItem->IsRecordable())
+  else if (m_progItem->IsRecordable())
   {
     const CPVRClientPtr client = CServiceBroker::GetPVRManager().GetClient(m_progItem->ClientID());
     if (client && client->GetClientCapabilities().SupportsTimers())

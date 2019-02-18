@@ -8,6 +8,10 @@
 
 #pragma once
 
+#include <list>
+#include <map>
+#include <utility>
+
 #include "XBDateTime.h"
 #include "threads/CriticalSection.h"
 #include "threads/Thread.h"
@@ -22,6 +26,7 @@ class CFileItemList;
 
 namespace PVR
 {
+  class CPVREpgChannelData;
   class CEpgUpdateRequest;
   class CEpgTagStateChange;
 
@@ -85,10 +90,12 @@ namespace PVR
 
     /*!
      * @brief Create the EPg for a given channel.
-     * @param channel The channel.
+     * @param iEpgId The EPG id.
+     * @param strScraperName The scraper name.
+     * @param channelData The channel data.
      * @return the created EPG
      */
-    CPVREpgPtr CreateChannelEpg(const CPVRChannelPtr &channel);
+    std::shared_ptr<CPVREpg> CreateChannelEpg(int iEpgId, const std::string& strScraperName, const std::shared_ptr<CPVREpgChannelData>& channelData);
 
     /*!
      * @brief Get all EPG tables and apply a filter.
@@ -111,19 +118,27 @@ namespace PVR
     const CDateTime GetLastEPGDate(void);
 
     /*!
-     * @brief Get an EPG table given it's ID.
+     * @brief Get an EPG given its ID.
      * @param iEpgId The database ID of the table.
-     * @return The table or NULL if it wasn't found.
+     * @return The EPG or nullptr if it wasn't found.
      */
     CPVREpgPtr GetById(int iEpgId) const;
 
     /*!
+     * @brief Get an EPG given its client id and channel uid.
+     * @param iClientId the id of the pvr client providing the EPG
+     * @param iChannelUid the uid of the channel for the EPG
+     * @return The EPG or nullptr if it wasn't found.
+     */
+    std::shared_ptr<CPVREpg> GetByChannelUid(int iClientId, int iChannelUid) const;
+
+    /*!
      * @brief Get the EPG event with the given event id
-     * @param channel The channel to get the event for.
-     * @param iBroadcastId The event id to get
+     * @param epg The epg to lookup the event.
+     * @param iBroadcastId The event id to lookup.
      * @return The requested event, or an empty tag when not found
      */
-    CPVREpgInfoTagPtr GetTagById(const CPVRChannelPtr &channel, unsigned int iBroadcastId) const;
+    std::shared_ptr<CPVREpgInfoTag> GetTagById(const std::shared_ptr<CPVREpg>& epg, unsigned int iBroadcastId) const;
 
     /*!
      * @brief Check whether data should be persisted to the EPG database.
@@ -142,7 +157,7 @@ namespace PVR
      * @param iClientID The id of the client which triggered the update request
      * @param iUniqueChannelID The uid of the channel for which the epg shall be updated
      */
-    void UpdateRequest(int iClientID, unsigned int iUniqueChannelID);
+    void UpdateRequest(int iClientID, int iUniqueChannelID);
 
     /*!
      * @brief A client announced an updated epg tag for a channel
@@ -175,7 +190,6 @@ namespace PVR
      */
     void OnPlaybackStopped(const CFileItemPtr &item);
 
-
   private:
     /*!
      * @brief Notify EPG table observers when the currently active tag changed.
@@ -187,7 +201,7 @@ namespace PVR
      * @brief The next EPG ID to be given to a table when the db isn't being used.
      * @return The next ID.
      */
-    unsigned int NextEpgId(void);
+    int NextEpgId(void);
 
     /*!
      * @brief Wait for an EPG update to finish.
@@ -247,8 +261,10 @@ namespace PVR
     time_t m_iLastEpgCleanup = 0;              /*!< the time the EPG was cleaned up */
     time_t m_iNextEpgUpdate = 0;               /*!< the time the EPG will be updated */
     time_t m_iNextEpgActiveTagCheck = 0;       /*!< the time the EPG will be checked for active tag updates */
-    unsigned int m_iNextEpgId = 0;             /*!< the next epg ID that will be given to a new table when the db isn't being used */
-    std::map<unsigned int, CPVREpgPtr> m_epgs; /*!< the EPGs in this container */
+    int m_iNextEpgId = 0;                      /*!< the next epg ID that will be given to a new table when the db isn't being used */
+
+    std::map<int, std::shared_ptr<CPVREpg>> m_epgIdToEpgMap; /*!< the EPGs in this container. maps epg ids to epgs */
+    std::map<std::pair<int, int>, std::shared_ptr<CPVREpg>> m_channelUidToEpgMap; /*!< the EPGs in this container. maps channel uids to epgs */
 
     mutable CCriticalSection m_critSection;    /*!< a critical section for changes to this container */
     CEvent m_updateEvent;                      /*!< trigger when an update finishes */

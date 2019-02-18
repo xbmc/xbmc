@@ -22,6 +22,7 @@
 namespace PVR
 {
   class CPVRChannelGroups;
+  class CPVREpgChannelData;
   class CPVRTimersContainer;
   class CPVRClientMenuHook;
   class CPVRClientMenuHooks;
@@ -400,14 +401,14 @@ namespace PVR
 
     /*!
      * @brief Request an EPG table for a channel from the client.
-     * @param channel The channel to get the EPG table for.
+     * @param channelData The data for the channel to get the EPG table for.
      * @param epg The table to write the data to.
      * @param start The start time to use.
      * @param end The end time to use.
      * @param bSaveInDb If true, tell the callback method to save any new entry in the database or not. see CAddonCallbacksPVR::PVRTransferEpgEntry()
      * @return PVR_ERROR_NO_ERROR if the table has been fetched successfully.
      */
-    PVR_ERROR GetEPGForChannel(const CPVRChannelPtr &channel, CPVREpg *epg, time_t start = 0, time_t end = 0, bool bSaveInDb = false);
+    PVR_ERROR GetEPGForChannel(const std::shared_ptr<CPVREpgChannelData>& channelData, CPVREpg* epg, time_t start = 0, time_t end = 0, bool bSaveInDb = false);
 
     /*!
      * Tell the client the time frame to use when notifying epg events back to Kodi. The client might push epg events asynchronously

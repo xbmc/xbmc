@@ -32,8 +32,7 @@ namespace PVR
   /** PVR Channel class */
   class CPVRChannel : public Observable,
                       public ISerializable,
-                      public ISortable,
-                      public std::enable_shared_from_this<CPVRChannel>
+                      public ISortable
   {
     friend class CPVRDatabase;
 

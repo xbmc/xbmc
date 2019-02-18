@@ -111,9 +111,11 @@ bool CPVREpgSearchFilter::MatchSearchTerm(const CPVREpgInfoTagPtr &tag) const
   if (!m_strSearchTerm.empty())
   {
     CTextSearch search(m_strSearchTerm, m_bIsCaseSensitive, SEARCH_DEFAULT_OR);
-    bReturn = search.Search(tag->Title()) ||
-              search.Search(tag->PlotOutline()) ||
-              (m_bSearchInDescription && search.Search(tag->Plot()));
+    bReturn = !CServiceBroker::GetPVRManager().IsParentalLocked(tag);
+    if (bReturn)
+      bReturn = search.Search(tag->Title()) ||
+                search.Search(tag->PlotOutline()) ||
+                (m_bSearchInDescription && search.Search(tag->Plot()));
   }
 
   return bReturn;
@@ -136,11 +138,10 @@ bool CPVREpgSearchFilter::FilterEntry(const CPVREpgInfoTagPtr &tag) const
       MatchSearchTerm(tag) &&
       MatchTimers(tag) &&
       MatchRecordings(tag)) &&
-      (!tag->HasChannel() ||
-       (MatchChannelType(tag) &&
-        MatchChannelNumber(tag) &&
-        MatchChannelGroup(tag) &&
-        MatchFreeToAir(tag)));
+      MatchChannelType(tag) &&
+      MatchChannelNumber(tag) &&
+      MatchChannelGroup(tag) &&
+      MatchFreeToAir(tag);
 }
 
 int CPVREpgSearchFilter::RemoveDuplicates(CFileItemList &results)
@@ -179,20 +180,17 @@ int CPVREpgSearchFilter::RemoveDuplicates(CFileItemList &results)
 
 bool CPVREpgSearchFilter::MatchChannelType(const CPVREpgInfoTagPtr &tag) const
 {
-  return (CServiceBroker::GetPVRManager().IsStarted() && tag->Channel()->IsRadio() == m_bIsRadio);
+  return tag && (tag->IsRadio() == m_bIsRadio);
 }
 
 bool CPVREpgSearchFilter::MatchChannelNumber(const CPVREpgInfoTagPtr &tag) const
 {
   bool bReturn(true);
 
-  if (m_channelNumber.IsValid() && CServiceBroker::GetPVRManager().IsStarted())
+  if (m_channelNumber.IsValid())
   {
-    CPVRChannelGroupPtr group = (m_iChannelGroup != EPG_SEARCH_UNSET) ? CServiceBroker::GetPVRManager().ChannelGroups()->GetByIdFromAll(m_iChannelGroup) : CServiceBroker::GetPVRManager().ChannelGroups()->GetGroupAllTV();
-    if (!group)
-      group = CServiceBroker::GetPVRManager().ChannelGroups()->GetGroupAllTV();
-
-    bReturn = (m_channelNumber == group->GetChannelNumber(tag->Channel()));
+    const std::shared_ptr<CPVRChannel> channel = CServiceBroker::GetPVRManager().ChannelGroups()->GetChannelForEpgTag(tag);
+    bReturn = channel && (m_channelNumber ==  channel->ChannelNumber());
   }
 
   return bReturn;
@@ -202,10 +200,14 @@ bool CPVREpgSearchFilter::MatchChannelGroup(const CPVREpgInfoTagPtr &tag) const
 {
   bool bReturn(true);
 
-  if (m_iChannelGroup != EPG_SEARCH_UNSET && CServiceBroker::GetPVRManager().IsStarted())
+  if (m_iChannelGroup != EPG_SEARCH_UNSET)
   {
     CPVRChannelGroupPtr group = CServiceBroker::GetPVRManager().ChannelGroups()->GetByIdFromAll(m_iChannelGroup);
-    bReturn = (group && group->IsGroupMember(tag->Channel()));
+    if (group)
+    {
+      const std::shared_ptr<CPVRChannel> channel = CServiceBroker::GetPVRManager().ChannelGroups()->GetChannelForEpgTag(tag);
+      bReturn = (channel && group->IsGroupMember(channel));
+    }
   }
 
   return bReturn;
@@ -213,7 +215,15 @@ bool CPVREpgSearchFilter::MatchChannelGroup(const CPVREpgInfoTagPtr &tag) const
 
 bool CPVREpgSearchFilter::MatchFreeToAir(const CPVREpgInfoTagPtr &tag) const
 {
-  return (!m_bFreeToAirOnly || !tag->Channel()->IsEncrypted());
+  bool bReturn(true);
+
+  if (m_bFreeToAirOnly)
+  {
+    const std::shared_ptr<CPVRChannel> channel = CServiceBroker::GetPVRManager().ChannelGroups()->GetChannelForEpgTag(tag);
+    bReturn = (channel && !channel->IsEncrypted());
+  }
+
+  return bReturn;
 }
 
 bool CPVREpgSearchFilter::MatchTimers(const CPVREpgInfoTagPtr &tag) const

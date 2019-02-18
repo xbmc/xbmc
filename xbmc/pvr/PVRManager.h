@@ -240,6 +240,14 @@ namespace PVR
     }
 
     /*!
+     * @brief Check whether playing channel matches given uids.
+     * @param iClientID The client id.
+     * @param iUniqueChannelID The channel uid.
+     * @return True on match, false if there is no match or no channel is playing.
+     */
+    bool MatchPlayingChannel(int iClientID, int iUniqueChannelID) const;
+
+    /*!
      * @brief Return the channel that is currently playing.
      * @return The channel or NULL if none is playing.
      */
@@ -403,10 +411,17 @@ namespace PVR
 
     /*!
      * @brief Check if parental lock is overridden at the given moment.
-     * @param channel The channel to open.
+     * @param channel The channel to check.
      * @return True if parental lock is overridden, false otherwise.
      */
-    bool IsParentalLocked(const CPVRChannelPtr &channel);
+    bool IsParentalLocked(const std::shared_ptr<CPVRChannel>& channel) const;
+
+    /*!
+     * @brief Check if parental lock is overridden at the given moment.
+     * @param epgTag The epg tag to check.
+     * @return True if parental lock is overridden, false otherwise.
+     */
+    bool IsParentalLocked(const std::shared_ptr<CPVREpgInfoTag>& epgTag) const;
 
     /*!
      * @brief Restart the parental timer.
@@ -508,6 +523,8 @@ namespace PVR
      * @param state the new state.
      */
     void SetState(ManagerState state);
+
+    bool IsCurrentlyParentalLocked(const std::shared_ptr<CPVRChannel>& channel, bool bGenerallyLocked) const;
 
     /** @name containers */
     //@{
