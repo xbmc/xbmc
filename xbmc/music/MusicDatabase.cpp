@@ -7482,16 +7482,17 @@ void CMusicDatabase::SetLibraryLastUpdated()
 }
 
 
-unsigned int CMusicDatabase::GetSongIDs(const Filter &filter, std::vector<std::pair<int,int> > &songIDs)
+unsigned int CMusicDatabase::GetRandomSongIDs(const Filter &filter, std::vector<std::pair<int,int> > &songIDs)
 {
   try
   {
     if (NULL == m_pDB.get()) return 0;
     if (NULL == m_pDS.get()) return 0;
 
-    std::string strSQL = "select idSong from songview ";
+    std::string strSQL = "SELECT idSong FROM songview ";
     if (!CDatabase::BuildSQL(strSQL, filter, strSQL))
       return false;
+    strSQL += PrepareSQL(" ORDER BY RANDOM()");
 
     if (!m_pDS->query(strSQL)) return 0;
     songIDs.clear();
@@ -7503,7 +7504,7 @@ unsigned int CMusicDatabase::GetSongIDs(const Filter &filter, std::vector<std::p
     songIDs.reserve(m_pDS->num_rows());
     while (!m_pDS->eof())
     {
-      songIDs.push_back(std::make_pair<int,int>(1,m_pDS->fv(song_idSong).get_asInt()));
+      songIDs.push_back(std::make_pair<int,int>(1, m_pDS->fv(song_idSong).get_asInt()));
       m_pDS->next();
     }    // cleanup
     m_pDS->close();
@@ -8879,53 +8880,6 @@ bool CMusicDatabase::GetGenresJSON(CFileItemList& items, bool bSources)
   catch (...)
   {
     CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, strSQL.c_str());
-  }
-  return false;
-}
-
-bool CMusicDatabase::GetRandomSong(CFileItem* item, int& idSong, const Filter &filter)
-{
-  try
-  {
-    idSong = -1;
-
-    if (NULL == m_pDB.get()) return false;
-    if (NULL == m_pDS.get()) return false;
-
-    // Get a random song that matches filter criteria (which may exclude some songs)
-    // We don't use PrepareSQL here, as the WHERE clause is already formatted but must
-    // use songview as that is what the WHERE clause has as reference table
-    std::string strSQL = "SELECT idSong FROM songview ";
-    Filter extFilter = filter;
-    extFilter.AppendOrder(PrepareSQL("RANDOM()"));
-    extFilter.limit = "1";
-    if (!CDatabase::BuildSQL(strSQL, extFilter, strSQL))
-      return false;
-    if (!m_pDS->query(strSQL))
-      return false;
-    int iRowsFound = m_pDS->num_rows();
-    if (iRowsFound != 1)
-    {
-      m_pDS->close();
-      return false;
-    }
-    idSong = m_pDS->fv("songview.idSong").get_asInt();
-    m_pDS->close();
-
-    // Fetch the full song details, including contributors
-    std::string baseDir = StringUtils::Format("musicdb://songs/?songid=%d", idSong);
-    CFileItemList items;
-    GetSongsFullByWhere(baseDir, Filter(), items, SortDescription(), true);
-    if (items.Size() > 0)
-    {
-      *item = *items[0];
-      return true;
-    }
-    return false;
-  }
-  catch(...)
-  {
-    CLog::Log(LOGERROR, "%s(%s) failed", __FUNCTION__, filter.where.c_str());
   }
   return false;
 }

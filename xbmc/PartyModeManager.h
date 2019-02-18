@@ -49,8 +49,7 @@ public:
 
 private:
   void Process();
-  bool AddRandomSongs(int iSongs = 0);
-  bool AddInitialSongs(std::vector< std::pair<int,int> > &songIDs);
+  bool AddRandomSongs();
   void Add(CFileItemPtr &pItem);
   bool ReapSongs();
   bool MovePlaying();
@@ -58,17 +57,12 @@ private:
   void OnError(int iError, const std::string& strLogMessage);
   void ClearState();
   void UpdateStats();
-  std::pair<std::string,std::string> GetWhereClauseWithHistory() const;
-  void AddToHistory(int type, int songID);
-  void GetRandomSelection(std::vector< std::pair<int,int> > &in, unsigned int number, std::vector< std::pair<int, int> > &out);
   void Announce();
 
   // state
   bool m_bEnabled;
   bool m_bIsVideo;
   int m_iLastUserSong;
-  std::string m_strCurrentFilterMusic;
-  std::string m_strCurrentFilterVideo;
   std::string m_type;
 
   // statistics
@@ -80,8 +74,7 @@ private:
   int m_iRandomSongs;
 
   // history
-  unsigned int m_songsInHistory;
-  std::vector< std::pair<int,int> > m_history;
+  std::vector<std::pair<int, int>> m_songIDCache;
 };
 
 extern CPartyModeManager g_partyModeManager;

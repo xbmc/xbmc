@@ -808,8 +808,12 @@ public:
   std::string GetItemById(const std::string &itemType, int id);
 
   // partymode
-  unsigned int GetMusicVideoIDs(const std::string& strWhere, std::vector<std::pair<int, int> > &songIDs);
-  bool GetRandomMusicVideo(CFileItem* item, int& idSong, const std::string& strWhere);
+  /*! \brief Gets music video IDs in random order that match the where clause
+  \param strWhere the SQL where clause to apply in the query
+  \param songIDs a vector of <2, id> pairs suited to party mode use
+  \return count of music video IDs found.
+  */
+  unsigned int GetRandomMusicVideoIDs(const std::string& strWhere, std::vector<std::pair<int, int> > &songIDs);
 
   static void VideoContentTypeToString(VIDEODB_CONTENT_TYPE type, std::string& out)
   {
