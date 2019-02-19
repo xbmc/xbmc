@@ -1016,44 +1016,106 @@ void CLinuxRendererGLES::RenderToFBO(int index, int field)
 
   // 1st Pass to video frame size
   GLubyte idx[4] = {0, 1, 3, 2}; // determines order of triangle strip
-  GLfloat vert[4][3];
-  GLfloat tex[3][4][2];
+  GLuint vertexVBO;
+  GLuint indexVBO;
+  struct PackedVertex
+  {
+    float x, y, z;
+    float u1, v1;
+    float u2, v2;
+    float u3, v3;
+  };
+
+  std::array<PackedVertex, 4> vertex;
 
   GLint vertLoc = pYUVShader->GetVertexLoc();
   GLint Yloc = pYUVShader->GetYcoordLoc();
   GLint Uloc = pYUVShader->GetUcoordLoc();
   GLint Vloc = pYUVShader->GetVcoordLoc();
 
-  glVertexAttribPointer(vertLoc, 3, GL_FLOAT, 0, 0, vert);
-  glVertexAttribPointer(Yloc, 2, GL_FLOAT, 0, 0, tex[0]);
-  glVertexAttribPointer(Uloc, 2, GL_FLOAT, 0, 0, tex[1]);
-  glVertexAttribPointer(Vloc, 2, GL_FLOAT, 0, 0, tex[2]);
+  // top left
+  vertex[0].x = 0.0f;
+  vertex[0].y = 0.0f;
+  vertex[0].z = 0.0f;
+  vertex[0].u1 = planes[0].rect.x1;
+  vertex[0].v1 = planes[0].rect.y1;
+  vertex[0].u2 = planes[1].rect.x1;
+  vertex[0].v2 = planes[1].rect.y1;
+  vertex[0].u3 = planes[2].rect.x1;
+  vertex[0].v3 = planes[2].rect.y1;
+
+  // top right
+  vertex[1].x = m_fbo.width;
+  vertex[1].y = 0.0f;
+  vertex[1].z = 0.0f;
+  vertex[1].u1 = planes[0].rect.x2;
+  vertex[1].v1 = planes[0].rect.y1;
+  vertex[1].u2 = planes[1].rect.x2;
+  vertex[1].v2 = planes[1].rect.y1;
+  vertex[1].u3 = planes[2].rect.x2;
+  vertex[1].v3 = planes[2].rect.y1;
+
+  // bottom right
+  vertex[2].x = m_fbo.width;
+  vertex[2].y = m_fbo.height;
+  vertex[2].z = 0.0f;
+  vertex[2].u1 = planes[0].rect.x2;
+  vertex[2].v1 = planes[0].rect.y2;
+  vertex[2].u2 = planes[1].rect.x2;
+  vertex[2].v2 = planes[1].rect.y2;
+  vertex[2].u3 = planes[2].rect.x2;
+  vertex[2].v3 = planes[2].rect.y2;
+
+  // bottom left
+  vertex[3].x = 0.0f;
+  vertex[3].y = m_fbo.height;
+  vertex[3].z = 0.0f;
+  vertex[3].u1 = planes[0].rect.x1;
+  vertex[3].v1 = planes[0].rect.y2;
+  vertex[3].u2 = planes[1].rect.x1;
+  vertex[3].v2 = planes[1].rect.y2;
+  vertex[3].u3 = planes[2].rect.x1;
+  vertex[3].v3 = planes[2].rect.y2;
+
+  glGenBuffers(1, &vertexVBO);
+  glBindBuffer(GL_ARRAY_BUFFER, vertexVBO);
+  glBufferData(GL_ARRAY_BUFFER, sizeof(PackedVertex) * vertex.size(), vertex.data(), GL_STATIC_DRAW);
+
+  glVertexAttribPointer(vertLoc, 3, GL_FLOAT, 0, sizeof(PackedVertex), reinterpret_cast<const GLvoid*>(offsetof(PackedVertex, x)));
+  glVertexAttribPointer(Yloc, 2, GL_FLOAT, 0, sizeof(PackedVertex), reinterpret_cast<const GLvoid*>(offsetof(PackedVertex, u1)));
+  glVertexAttribPointer(Uloc, 2, GL_FLOAT, 0, sizeof(PackedVertex), reinterpret_cast<const GLvoid*>(offsetof(PackedVertex, u2)));
+  if (Vloc != -1)
+  {
+    glVertexAttribPointer(Vloc, 2, GL_FLOAT, 0, sizeof(PackedVertex), reinterpret_cast<const GLvoid*>(offsetof(PackedVertex, u3)));
+  }
 
   glEnableVertexAttribArray(vertLoc);
   glEnableVertexAttribArray(Yloc);
   glEnableVertexAttribArray(Uloc);
-  glEnableVertexAttribArray(Vloc);
-
-  // Setup vertex position values
-  // Set vertex coordinates
-  vert[0][0] = vert[3][0] = 0.0f;
-  vert[0][1] = vert[1][1] = 0.0f;
-  vert[1][0] = vert[2][0] = m_fbo.width;
-  vert[2][1] = vert[3][1] = m_fbo.height;
-  vert[0][2] = vert[1][2] = vert[2][2] = vert[3][2] = 0.0f;
-
-  // Setup texture coordinates
-  for (int i = 0; i < 3; i++)
+  if (Vloc != -1)
   {
-    tex[i][0][0] = tex[i][3][0] = planes[i].rect.x1;
-    tex[i][0][1] = tex[i][1][1] = planes[i].rect.y1;
-    tex[i][1][0] = tex[i][2][0] = planes[i].rect.x2;
-    tex[i][2][1] = tex[i][3][1] = planes[i].rect.y2;
+    glEnableVertexAttribArray(Vloc);
   }
 
-  glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_BYTE, idx);
+  glGenBuffers(1, &indexVBO);
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexVBO);
+  glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLubyte) * 4, idx, GL_STATIC_DRAW);
 
+  glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_BYTE, 0);
   VerifyGLState();
+
+  glDisableVertexAttribArray(vertLoc);
+  glDisableVertexAttribArray(Yloc);
+  glDisableVertexAttribArray(Uloc);
+  if (Vloc != -1)
+  {
+    glDisableVertexAttribArray(Vloc);
+  }
+
+  glBindBuffer(GL_ARRAY_BUFFER, 0);
+  glDeleteBuffers(1, &vertexVBO);
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+  glDeleteBuffers(1, &indexVBO);
 
   pYUVShader->Disable();
 
@@ -1061,11 +1123,6 @@ void CLinuxRendererGLES::RenderToFBO(int index, int field)
   glMatrixProject.PopLoad();
 
   VerifyGLState();
-
-  glDisableVertexAttribArray(vertLoc);
-  glDisableVertexAttribArray(Yloc);
-  glDisableVertexAttribArray(Uloc);
-  glDisableVertexAttribArray(Vloc);
 
   m_renderSystem->SetViewPort(viewport);
 
@@ -1112,35 +1169,72 @@ void CLinuxRendererGLES::RenderFromFBO()
   float imgheight = m_fbo.height / m_sourceHeight;
 
   GLubyte idx[4] = {0, 1, 3, 2}; // determines order of triangle strip
-  GLfloat vert[4][3];
-  GLfloat tex[4][2];
+  GLuint vertexVBO;
+  GLuint indexVBO;
+  struct PackedVertex
+  {
+    float x, y, z;
+    float u1, v1;
+  };
+
+  std::array<PackedVertex, 4> vertex;
 
   GLint vertLoc = m_pVideoFilterShader->GetVertexLoc();
   GLint loc = m_pVideoFilterShader->GetcoordLoc();
 
-  glVertexAttribPointer(vertLoc, 3, GL_FLOAT, 0, 0, vert);
-  glVertexAttribPointer(loc, 2, GL_FLOAT, 0, 0, tex);
+  // Setup vertex position values
+  // top left
+  vertex[0].x = m_rotatedDestCoords[0].x;
+  vertex[0].y = m_rotatedDestCoords[0].y;
+  vertex[0].z = 0.0f;
+  vertex[0].u1 = 0.0;
+  vertex[0].v1 = 0.0;
+
+  // top right
+  vertex[1].x = m_rotatedDestCoords[1].x;
+  vertex[1].y = m_rotatedDestCoords[1].y;
+  vertex[1].z = 0.0f;
+  vertex[1].u1 = imgwidth;
+  vertex[1].v1 = 0.0f;
+
+  // bottom right
+  vertex[2].x = m_rotatedDestCoords[2].x;
+  vertex[2].y = m_rotatedDestCoords[2].y;
+  vertex[2].z = 0.0f;
+  vertex[2].u1 = imgwidth;
+  vertex[2].v1 = imgheight;
+
+  // bottom left
+  vertex[3].x = m_rotatedDestCoords[3].x;
+  vertex[3].y = m_rotatedDestCoords[3].y;
+  vertex[3].z = 0.0f;
+  vertex[3].u1 = 0.0f;
+  vertex[3].v1 = imgheight;
+
+  glGenBuffers(1, &vertexVBO);
+  glBindBuffer(GL_ARRAY_BUFFER, vertexVBO);
+  glBufferData(GL_ARRAY_BUFFER, sizeof(PackedVertex) * vertex.size(), vertex.data(), GL_STATIC_DRAW);
+
+  glVertexAttribPointer(vertLoc, 3, GL_FLOAT, 0, sizeof(PackedVertex), reinterpret_cast<const GLvoid*>(offsetof(PackedVertex, x)));
+  glVertexAttribPointer(loc, 2, GL_FLOAT, 0, sizeof(PackedVertex), reinterpret_cast<const GLvoid*>(offsetof(PackedVertex, u1)));
 
   glEnableVertexAttribArray(vertLoc);
   glEnableVertexAttribArray(loc);
 
-  // Setup vertex position values
-  for(int i = 0; i < 4; i++)
-  {
-    vert[i][0] = m_rotatedDestCoords[i].x;
-    vert[i][1] = m_rotatedDestCoords[i].y;
-    vert[i][2] = 0.0f; // set z to 0
-  }
+  glGenBuffers(1, &indexVBO);
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexVBO);
+  glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLubyte) * 4, idx, GL_STATIC_DRAW);
 
-  // Setup texture coordinates
-  tex[0][0] = tex[3][0] = 0.0f;
-  tex[0][1] = tex[1][1] = 0.0f;
-  tex[1][0] = tex[2][0] = imgwidth;
-  tex[2][1] = tex[3][1] = imgheight;
-
-  glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_BYTE, idx);
-
+  glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_BYTE, 0);
   VerifyGLState();
+
+  glDisableVertexAttribArray(vertLoc);
+  glDisableVertexAttribArray(loc);
+
+  glBindBuffer(GL_ARRAY_BUFFER, 0);
+  glDeleteBuffers(1, &vertexVBO);
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+  glDeleteBuffers(1, &indexVBO);
 
   if (m_pVideoFilterShader)
   {
