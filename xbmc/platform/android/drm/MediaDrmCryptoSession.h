@@ -59,6 +59,7 @@ namespace DRM
     static CCryptoSession* Create(const std::string &UUID, const std::string &cipherAlgo, const std::string &hmacAlgo);
     bool OpenSession();
     void CloseSession();
+    bool ProvisionRequest();
 
     CJNIMediaDrm *m_mediaDrm;
     CJNIMediaDrmCryptoSession *m_cryptoSession;
