@@ -23,7 +23,7 @@
 				<width>461</width>
 				<height>461</height>
 				<aspectratio>keep</aspectratio>
-				<texture fallback="DefaultTVShows.png">$INFO[ListItem.Icon]</texture>
+				<texture fallback="DefaultTVShows.png">$VAR[ChannelListEPGIconVar]</texture>
 			</control>
 			<control type="group">
 				<top>230</top>
