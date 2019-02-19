@@ -40,6 +40,9 @@ public:
   void ReleaseBuffer(int index) override;
   bool NeedBuffer(int index) override;
 
+  bool Supports(ERENDERFEATURE feature) override;
+  bool Supports(ESCALINGMETHOD method) override;
+
 protected:
   // CLinuxRendererGLES overrides
   bool LoadShadersHook() override;

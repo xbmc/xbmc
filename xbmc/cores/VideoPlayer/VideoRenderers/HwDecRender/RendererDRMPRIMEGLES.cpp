@@ -223,3 +223,29 @@ void CRendererDRMPRIMEGLES::AfterRenderHook(int index)
 {
   m_fences[index]->CreateFence();
 }
+
+bool CRendererDRMPRIMEGLES::Supports(ERENDERFEATURE feature)
+{
+  switch (feature)
+  {
+  case RENDERFEATURE_STRETCH:
+  case RENDERFEATURE_ZOOM:
+  case RENDERFEATURE_VERTICAL_SHIFT:
+  case RENDERFEATURE_PIXEL_RATIO:
+  case RENDERFEATURE_ROTATION:
+    return true;
+  default:
+    return false;
+  }
+}
+
+bool CRendererDRMPRIMEGLES::Supports(ESCALINGMETHOD method)
+{
+  switch (method)
+  {
+  case VS_SCALINGMETHOD_LINEAR:
+    return true;
+  default:
+    return false;
+  }
+}
