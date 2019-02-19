@@ -98,7 +98,7 @@ protected:
   virtual bool ValidateRenderTarget();
   virtual void LoadShaders(int field=FIELD_FULL);
   virtual void ReleaseShaders();
-  void SetTextureFilter(GLenum method);
+  void SetTextureFilter(ESCALINGMETHOD scalingMethod);
   void UpdateVideoFilter();
   AVColorPrimaries GetSrcPrimaries(AVColorPrimaries srcPrimaries, unsigned int width, unsigned int height);
 
@@ -121,7 +121,6 @@ protected:
   // renderers
   void RenderToFBO(int index, int field);
   void RenderFromFBO();
-  void RenderSinglePass(int index, int field); // single pass glsl renderer
 
   // hooks for HwDec Renderered
   virtual bool LoadShadersHook() { return false; };

@@ -96,11 +96,6 @@ bool CLinuxRendererGLES::ValidateRenderTarget()
     UpdateVideoFilter();
     LoadShaders();
 
-    if (m_renderMethod < 0)
-    {
-      return false;
-    }
-
     for (int i = 0 ; i < m_NumYV12Buffers ; i++)
     {
       CreateTexture(i);
@@ -465,24 +460,32 @@ void CLinuxRendererGLES::UpdateVideoFilter()
     m_pVideoFilterShader = nullptr;
   }
 
-  m_fbo.fbo.Cleanup();
-
   VerifyGLState();
+
+  if (!m_fbo.fbo.IsValid())
+  {
+    if (!m_fbo.fbo.Initialize())
+    {
+      CLog::Log(LOGERROR, "GLES: Error initializing FBO");
+    }
+
+    if (!m_fbo.fbo.CreateAndBindToTexture(GL_TEXTURE_2D, m_sourceWidth, m_sourceHeight, GL_RGBA))
+    {
+      CLog::Log(LOGERROR, "GLES: Error creating texture and binding to FBO");
+    }
+  }
 
   switch (m_scalingMethod)
   {
   case VS_SCALINGMETHOD_NEAREST:
-  {
-    CLog::Log(LOGNOTICE, "GLES: Selecting single pass rendering");
-    SetTextureFilter(GL_NEAREST);
-    m_renderQuality = RQ_SINGLEPASS;
-    return;
-  }
   case VS_SCALINGMETHOD_LINEAR:
   {
-    CLog::Log(LOGNOTICE, "GLES: Selecting single pass rendering");
-    SetTextureFilter(GL_LINEAR);
-    m_renderQuality = RQ_SINGLEPASS;
+    SetTextureFilter(m_scalingMethod);
+    m_pVideoFilterShader = new DefaultFilterShader();
+    if (!m_pVideoFilterShader->CompileAndLink())
+    {
+      CLog::Log(LOGERROR, "GLES: Error compiling and linking video filter shader");
+    }
     return;
   }
   case VS_SCALINGMETHOD_LANCZOS2:
@@ -492,32 +495,13 @@ void CLinuxRendererGLES::UpdateVideoFilter()
   case VS_SCALINGMETHOD_LANCZOS3:
   case VS_SCALINGMETHOD_CUBIC:
   {
-    if (m_renderMethod & RENDER_GLSL)
-    {
-      if (!m_fbo.fbo.Initialize())
-      {
-        CLog::Log(LOGERROR, "GLES: Error initializing FBO");
-        break;
-      }
-
-      if (!m_fbo.fbo.CreateAndBindToTexture(GL_TEXTURE_2D, m_sourceWidth, m_sourceHeight, GL_RGBA))
-      {
-        CLog::Log(LOGERROR, "GLES: Error creating texture and binding to FBO");
-        break;
-      }
-    }
-
     m_pVideoFilterShader = new ConvolutionFilterShader(m_scalingMethod);
     if (!m_pVideoFilterShader->CompileAndLink())
     {
       CLog::Log(LOGERROR, "GLES: Error compiling and linking video filter shader");
       break;
     }
-
-    CLog::Log(LOGNOTICE, "GLES: Selecting multi pass rendering");
-    SetTextureFilter(GL_LINEAR);
-    m_renderQuality = RQ_MULTIPASS;
-      return;
+    return;
   }
   case VS_SCALINGMETHOD_BICUBIC_SOFTWARE:
   case VS_SCALINGMETHOD_LANCZOS_SOFTWARE:
@@ -530,18 +514,6 @@ void CLinuxRendererGLES::UpdateVideoFilter()
   default:
     break;
   }
-
-  CLog::Log(LOGERROR, "GLES: Falling back to bilinear due to failure to init scaler");
-  if (m_pVideoFilterShader)
-  {
-    delete m_pVideoFilterShader;
-    m_pVideoFilterShader = nullptr;
-  }
-
-  m_fbo.fbo.Cleanup();
-
-  SetTextureFilter(GL_LINEAR);
-  m_renderQuality = RQ_SINGLEPASS;
 }
 
 void CLinuxRendererGLES::LoadShaders(int field)
@@ -550,50 +522,29 @@ void CLinuxRendererGLES::LoadShaders(int field)
 
   if (!LoadShadersHook())
   {
-    int requestedMethod = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_VIDEOPLAYER_RENDERMETHOD);
-    CLog::Log(LOGDEBUG, "GLES: Requested render method: %d", requestedMethod);
-
     ReleaseShaders();
 
-    switch(requestedMethod)
+    // Try GLSL shaders if supported and user requested auto or GLSL.
+    if (glCreateProgram())
     {
-      case RENDER_METHOD_AUTO:
-      case RENDER_METHOD_GLSL:
+      // create regular scan shader
+      CLog::Log(LOGNOTICE, "GLES: Selecting YUV 2 RGB shader");
+
+      EShaderFormat shaderFormat = GetShaderFormat();
+      m_pYUVProgShader = new YUV2RGBProgressiveShader(shaderFormat, AVColorPrimaries::AVCOL_PRI_BT709, m_srcPrimaries, m_toneMap);
+      m_pYUVProgShader->SetConvertFullColorRange(m_fullRange);
+      m_pYUVBobShader = new YUV2RGBBobShader(shaderFormat, AVColorPrimaries::AVCOL_PRI_BT709, m_srcPrimaries, m_toneMap);
+      m_pYUVBobShader->SetConvertFullColorRange(m_fullRange);
+
+      if ((m_pYUVProgShader && m_pYUVProgShader->CompileAndLink())
+          && (m_pYUVBobShader && m_pYUVBobShader->CompileAndLink()))
       {
-        // Try GLSL shaders if supported and user requested auto or GLSL.
-        if (glCreateProgram())
-        {
-          // create regular scan shader
-          CLog::Log(LOGNOTICE, "GLES: Selecting YUV 2 RGB shader");
-
-          EShaderFormat shaderFormat = GetShaderFormat();
-          m_pYUVProgShader = new YUV2RGBProgressiveShader(shaderFormat, AVColorPrimaries::AVCOL_PRI_BT709, m_srcPrimaries, m_toneMap);
-          m_pYUVProgShader->SetConvertFullColorRange(m_fullRange);
-          m_pYUVBobShader = new YUV2RGBBobShader(shaderFormat, AVColorPrimaries::AVCOL_PRI_BT709, m_srcPrimaries, m_toneMap);
-          m_pYUVBobShader->SetConvertFullColorRange(m_fullRange);
-
-          if ((m_pYUVProgShader && m_pYUVProgShader->CompileAndLink())
-              && (m_pYUVBobShader && m_pYUVBobShader->CompileAndLink()))
-          {
-            m_renderMethod = RENDER_GLSL;
-            UpdateVideoFilter();
-            break;
-          }
-          else
-          {
-            ReleaseShaders();
-            CLog::Log(LOGERROR, "GLES: Error enabling YUV2RGB GLSL shader");
-            m_renderMethod = -1;
-            break;
-          }
-        }
-
-        break;
+        UpdateVideoFilter();
       }
-      default:
+      else
       {
-        m_renderMethod = -1 ;
-        CLog::Log(LOGERROR, "GLES: render method not supported");
+        ReleaseShaders();
+        CLog::Log(LOGERROR, "GLES: Error enabling YUV2RGB GLSL shader");
       }
     }
   }
@@ -721,164 +672,14 @@ void CLinuxRendererGLES::Render(unsigned int flags, int index)
   {
     ;
   }
-  else if (m_renderMethod & RENDER_GLSL)
+  else
   {
     UpdateVideoFilter();
-    switch(m_renderQuality)
-    {
-    case RQ_LOW:
-    case RQ_SINGLEPASS:
-    {
-      RenderSinglePass(index, m_currentField);
-      VerifyGLState();
-      break;
-    }
-    case RQ_MULTIPASS:
-    {
-      RenderToFBO(index, m_currentField);
-      RenderFromFBO();
-      VerifyGLState();
-      break;
-    }
-    default:
-      break;
-    }
+    RenderToFBO(index, m_currentField);
+    RenderFromFBO();
   }
 
   AfterRenderHook(index);
-}
-
-void CLinuxRendererGLES::RenderSinglePass(int index, int field)
-{
-  CPictureBuffer &buf = m_buffers[index];
-  CYuvPlane (&planes)[YuvImage::MAX_PLANES] = m_buffers[index].fields[field];
-
-  AVColorPrimaries srcPrim = GetSrcPrimaries(buf.m_srcPrimaries, buf.image.width, buf.image.height);
-  if (srcPrim != m_srcPrimaries)
-  {
-    m_srcPrimaries = srcPrim;
-    m_reloadShaders = true;
-  }
-
-  bool toneMap = false;
-
-  if (m_videoSettings.m_ToneMapMethod != VS_TONEMAPMETHOD_OFF)
-  {
-    if (buf.hasLightMetadata || (buf.hasDisplayMetadata && buf.displayMetadata.has_luminance))
-    {
-      toneMap = true;
-    }
-  }
-
-  if (toneMap != m_toneMap)
-  {
-    m_reloadShaders = true;
-  }
-
-  m_toneMap = toneMap;
-
-  if (m_reloadShaders)
-  {
-    LoadShaders(field);
-  }
-
-  glDisable(GL_DEPTH_TEST);
-
-  // Y
-  glActiveTexture(GL_TEXTURE0);
-  glBindTexture(m_textureTarget, planes[0].id);
-
-  // U
-  glActiveTexture(GL_TEXTURE1);
-  glBindTexture(m_textureTarget, planes[1].id);
-
-  // V
-  glActiveTexture(GL_TEXTURE2);
-  glBindTexture(m_textureTarget, planes[2].id);
-
-  glActiveTexture(GL_TEXTURE0);
-  VerifyGLState();
-
-  Shaders::BaseYUV2RGBGLSLShader *pYUVShader;
-  if (field != FIELD_FULL)
-  {
-    pYUVShader = m_pYUVBobShader;
-  }
-  else
-  {
-    pYUVShader = m_pYUVProgShader;
-  }
-
-  pYUVShader->SetBlack(m_videoSettings.m_Brightness * 0.01f - 0.5f);
-  pYUVShader->SetContrast(m_videoSettings.m_Contrast * 0.02f);
-  pYUVShader->SetWidth(planes[0].texwidth);
-  pYUVShader->SetHeight(planes[0].texheight);
-  pYUVShader->SetColParams(buf.m_srcColSpace, buf.m_srcBits, !buf.m_srcFullRange, buf.m_srcTextureBits);
-  pYUVShader->SetDisplayMetadata(buf.hasDisplayMetadata, buf.displayMetadata,
-                                 buf.hasLightMetadata, buf.lightMetadata);
-  pYUVShader->SetToneMapParam(m_videoSettings.m_ToneMapParam);
-
-  if (field == FIELD_TOP)
-  {
-    pYUVShader->SetField(1);
-  }
-  else if(field == FIELD_BOT)
-  {
-    pYUVShader->SetField(0);
-  }
-
-  pYUVShader->SetMatrices(glMatrixProject.Get(), glMatrixModview.Get());
-  pYUVShader->Enable();
-
-  GLubyte idx[4] = {0, 1, 3, 2}; // determines order of triangle strip
-  GLfloat m_vert[4][3];
-  GLfloat m_tex[3][4][2];
-
-  GLint vertLoc = pYUVShader->GetVertexLoc();
-  GLint Yloc = pYUVShader->GetYcoordLoc();
-  GLint Uloc = pYUVShader->GetUcoordLoc();
-  GLint Vloc = pYUVShader->GetVcoordLoc();
-
-  glVertexAttribPointer(vertLoc, 3, GL_FLOAT, 0, 0, m_vert);
-  glVertexAttribPointer(Yloc, 2, GL_FLOAT, 0, 0, m_tex[0]);
-  glVertexAttribPointer(Uloc, 2, GL_FLOAT, 0, 0, m_tex[1]);
-  glVertexAttribPointer(Vloc, 2, GL_FLOAT, 0, 0, m_tex[2]);
-
-  glEnableVertexAttribArray(vertLoc);
-  glEnableVertexAttribArray(Yloc);
-  glEnableVertexAttribArray(Uloc);
-  glEnableVertexAttribArray(Vloc);
-
-  // Setup vertex position values
-  for(int i = 0; i < 4; i++)
-  {
-    m_vert[i][0] = m_rotatedDestCoords[i].x;
-    m_vert[i][1] = m_rotatedDestCoords[i].y;
-    m_vert[i][2] = 0.0f;// set z to 0
-  }
-
-  // Setup texture coordinates
-  for (int i = 0; i < 3; i++)
-  {
-    m_tex[i][0][0] = m_tex[i][3][0] = planes[i].rect.x1;
-    m_tex[i][0][1] = m_tex[i][1][1] = planes[i].rect.y1;
-    m_tex[i][1][0] = m_tex[i][2][0] = planes[i].rect.x2;
-    m_tex[i][2][1] = m_tex[i][3][1] = planes[i].rect.y2;
-  }
-
-  glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_BYTE, idx);
-
-  VerifyGLState();
-
-  pYUVShader->Disable();
-  VerifyGLState();
-
-  glDisableVertexAttribArray(vertLoc);
-  glDisableVertexAttribArray(Yloc);
-  glDisableVertexAttribArray(Uloc);
-  glDisableVertexAttribArray(Vloc);
-
-  VerifyGLState();
 }
 
 void CLinuxRendererGLES::RenderToFBO(int index, int field)
@@ -915,21 +716,6 @@ void CLinuxRendererGLES::RenderToFBO(int index, int field)
     LoadShaders(m_currentField);
   }
 
-  if (!m_fbo.fbo.IsValid())
-  {
-    if (!m_fbo.fbo.Initialize())
-    {
-      CLog::Log(LOGERROR, "GLES: Error initializing FBO");
-      return;
-    }
-
-    if (!m_fbo.fbo.CreateAndBindToTexture(GL_TEXTURE_2D, m_sourceWidth, m_sourceHeight, GL_RGBA))
-    {
-      CLog::Log(LOGERROR, "GLES: Error creating texture and binding to FBO");
-      return;
-    }
-  }
-
   glDisable(GL_DEPTH_TEST);
 
   // Y
@@ -951,12 +737,6 @@ void CLinuxRendererGLES::RenderToFBO(int index, int field)
   VerifyGLState();
 
   Shaders::BaseYUV2RGBGLSLShader *pYUVShader = m_pYUVProgShader;
-  // make sure the yuv shader is loaded and ready to go
-  if (!pYUVShader || (!pYUVShader->OK()))
-  {
-    CLog::Log(LOGERROR, "GLES: YUV shader not active, cannot do multipass render");
-    return;
-  }
 
   m_fbo.fbo.BeginRender();
   VerifyGLState();
@@ -1084,27 +864,19 @@ void CLinuxRendererGLES::RenderFromFBO()
 
   // 2nd Pass to screen size with optional video filter
 
-  if (m_pVideoFilterShader)
+  GLint filter;
+  if (!m_pVideoFilterShader->GetTextureFilter(filter))
   {
-    GLint filter;
-    if (!m_pVideoFilterShader->GetTextureFilter(filter))
-    {
-      filter = m_scalingMethod == VS_SCALINGMETHOD_NEAREST ? GL_NEAREST : GL_LINEAR;
-    }
+    filter = m_scalingMethod == VS_SCALINGMETHOD_NEAREST ? GL_NEAREST : GL_LINEAR;
+  }
 
-    m_fbo.fbo.SetFiltering(GL_TEXTURE_2D, filter);
-    m_pVideoFilterShader->SetSourceTexture(0);
-    m_pVideoFilterShader->SetWidth(m_sourceWidth);
-    m_pVideoFilterShader->SetHeight(m_sourceHeight);
-    m_pVideoFilterShader->SetAlpha(1.0f);
-    m_pVideoFilterShader->SetMatrices(glMatrixProject.Get(), glMatrixModview.Get());
-    m_pVideoFilterShader->Enable();
-  }
-  else
-  {
-    GLint filter = m_scalingMethod == VS_SCALINGMETHOD_NEAREST ? GL_NEAREST : GL_LINEAR;
-    m_fbo.fbo.SetFiltering(GL_TEXTURE_2D, filter);
-  }
+  m_fbo.fbo.SetFiltering(GL_TEXTURE_2D, filter);
+  m_pVideoFilterShader->SetSourceTexture(0);
+  m_pVideoFilterShader->SetWidth(m_sourceWidth);
+  m_pVideoFilterShader->SetHeight(m_sourceHeight);
+  m_pVideoFilterShader->SetAlpha(1.0f);
+  m_pVideoFilterShader->SetMatrices(glMatrixProject.Get(), glMatrixModview.Get());
+  m_pVideoFilterShader->Enable();
 
   VerifyGLState();
 
@@ -1561,11 +1333,10 @@ void CLinuxRendererGLES::DeleteNV12Texture(int index)
   }
 }
 
-//********************************************************************************************************
-// SurfaceTexture creation, deletion, copying + clearing
-//********************************************************************************************************
-void CLinuxRendererGLES::SetTextureFilter(GLenum method)
+void CLinuxRendererGLES::SetTextureFilter(ESCALINGMETHOD scalingMethod)
 {
+  auto method = scalingMethod == VS_SCALINGMETHOD_LINEAR ? GL_LINEAR : GL_NEAREST;
+
   for (int i = 0 ; i < m_NumYV12Buffers; i++)
   {
     CPictureBuffer& buf = m_buffers[i];
@@ -1641,18 +1412,15 @@ bool CLinuxRendererGLES::Supports(ESCALINGMETHOD method)
       return false;
     }
 
-    if (m_renderMethod & RENDER_GLSL)
+    // spline36 and lanczos3 are only allowed through advancedsettings.xml
+    if(method != VS_SCALINGMETHOD_SPLINE36 &&
+       method != VS_SCALINGMETHOD_LANCZOS3)
     {
-      // spline36 and lanczos3 are only allowed through advancedsettings.xml
-      if(method != VS_SCALINGMETHOD_SPLINE36 &&
-         method != VS_SCALINGMETHOD_LANCZOS3)
-      {
-        return true;
-      }
-      else
-      {
-        return CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoEnableHighQualityHwScalers;
-      }
+      return true;
+    }
+    else
+    {
+      return CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoEnableHighQualityHwScalers;
     }
   }
 
