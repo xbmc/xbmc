@@ -86,3 +86,28 @@ unsigned int GetFlagsStereoMode(const std::string& mode)
   return convert[mode];
 }
 
+std::string InvertStereoMode(const std::string& mode)
+{
+  static std::map<std::string, std::string> convert;
+  if(convert.empty())
+  {
+    convert[""]                       = "";
+    convert["left_right"]             = "right_left";
+    convert["bottom_top"]             = "top_bottom";
+    convert["top_bottom"]             = "bottom_top";
+    convert["checkerboard_rl"]        = "checkerboard_lr";
+    convert["checkerboard_lr"]        = "checkerboard_rl";
+    convert["row_interleaved_rl"]     = "row_interleaved_lr";
+    convert["row_interleaved_lr"]     = "row_interleaved_rl";
+    convert["col_interleaved_rl"]     = "col_interleaved_lr";
+    convert["col_interleaved_lr"]     = "col_interleaved_rl";
+    convert["right_left"]             = "left_right";
+    convert["block_lr"]               = "block_rl";
+    convert["block_rl"]               = "block_lr";
+  }
+  // if the format is not known then leave it as it is
+  if (convert.count(mode) == 0)
+    return mode;
+  return convert[mode];
+}
+

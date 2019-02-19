@@ -264,6 +264,8 @@ std::string OMXPlayerVideo::GetStereoMode()
       break;
     default:
       stereoMode = m_hints.stereo_mode;
+      if (m_processInfo.GetVideoSettings().m_StereoInvert)
+        stereoMode = InvertStereoMode(stereoMode);
       break;
   }
   return stereoMode;
