@@ -12,7 +12,10 @@
 #include <androidjni/UUID.h>
 #include <stdexcept>
 
+#include "filesystem/File.h"
 #include "utils/StringUtils.h"
+#include "utils/log.h"
+#include "utils/Base64.h"
 
 using namespace DRM;
 using namespace XbmcCommons;
@@ -66,11 +69,15 @@ CMediaDrmCryptoSession::CMediaDrmCryptoSession(const std::string &UUID, const st
   if (xbmc_jnienv()->ExceptionCheck())
   {
     xbmc_jnienv()->ExceptionClear();
+    CLog::Log(LOGERROR, "MediaDrm: Failure creating instance");
     throw std::runtime_error("Failure creating MediaDrm");
   }
 
   if (!OpenSession())
+  {
+    CLog::Log(LOGERROR, "MediaDrm: Unable to create a session");
     throw std::runtime_error("Unable to create a session");
+  }
 }
 
 CMediaDrmCryptoSession::~CMediaDrmCryptoSession()
@@ -199,18 +206,29 @@ bool CMediaDrmCryptoSession::Verify(const Buffer &macKeyId, const Buffer &messag
 //Private stuff
 bool CMediaDrmCryptoSession::OpenSession()
 {
+  bool provisioned = false;
+TRYAGAIN:
   m_sessionId = new CharVecBuffer(m_mediaDrm->openSession());
   if (xbmc_jnienv()->ExceptionCheck())
   {
-    delete m_sessionId, m_sessionId = nullptr;
     xbmc_jnienv()->ExceptionClear();
-    return false;;
+    if (provisioned || !ProvisionRequest())
+    {
+      delete m_sessionId, m_sessionId = nullptr;
+      return false;
+    }
+    else
+    {
+      provisioned = true;
+      goto TRYAGAIN;
+    }
   }
 
   m_cryptoSession = new CJNIMediaDrmCryptoSession(m_mediaDrm->getCryptoSession(*m_sessionId, m_cipherAlgo, m_macAlgo));
 
   if (xbmc_jnienv()->ExceptionCheck())
   {
+    CLog::Log(LOGERROR, "MediaDrm: getCryptoSession failed");
     xbmc_jnienv()->ExceptionClear();
     return false;
   }
@@ -231,4 +249,62 @@ void CMediaDrmCryptoSession::CloseSession()
     m_hasKeys = false;
     m_keySetId.clear();
   }
+}
+
+bool CMediaDrmCryptoSession::ProvisionRequest()
+{
+  CLog::Log(LOGINFO, "MediaDrm: starting provisioning");
+
+  CJNIMediaDrmProvisionRequest request = m_mediaDrm->getProvisionRequest();
+  if (xbmc_jnienv()->ExceptionCheck())
+  {
+    CLog::Log(LOGERROR, "MediaDrm: getProvisionRequest failed");
+    xbmc_jnienv()->ExceptionClear();
+    return false;
+  }
+
+  std::vector<char> provData = request.getData();
+  std::string url = request.getDefaultUrl();
+
+  CLog::Log(LOGDEBUG, "MediaDrm: Provisioning: size: %lu, url: %s", provData.size(), url.c_str());
+
+  std::string tmp_str("{\"signedRequest\":\"");
+  tmp_str += std::string(provData.data(), provData.size());
+  tmp_str += "\"}";
+
+  std::string encoded;
+  Base64::Encode(tmp_str.data(), tmp_str.size(), encoded);
+
+  XFILE::CFile file;
+  if (!file.CURLCreate(url))
+  {
+    CLog::Log(LOGERROR, "MediaDrm: CURLCreate failed!");
+    return false;
+  }
+
+  file.CURLAddOption(XFILE::CURL_OPTION_PROTOCOL, "Content-Type", "application/json");
+  file.CURLAddOption(XFILE::CURL_OPTION_PROTOCOL, "seekable", "0");
+  file.CURLAddOption(XFILE::CURL_OPTION_PROTOCOL, "postdata", encoded.c_str());
+
+  if (!file.CURLOpen(0))
+  {
+    CLog::Log(LOGERROR, "MediaDrm: Provisioning server returned failure");
+    return false;
+  }
+  provData.clear();
+  char buf[8192];
+  size_t nbRead;
+
+  // read the file
+  while ((nbRead = file.Read(buf, 8192)) > 0)
+    provData.insert(provData.end(), buf, buf + nbRead);
+
+  m_mediaDrm->provideProvisionResponse(provData);
+  if (xbmc_jnienv()->ExceptionCheck())
+  {
+    CLog::Log(LOGERROR, "MediaDrm: provideProvisionResponse failed");
+    xbmc_jnienv()->ExceptionClear();
+    return false;
+  }
+  return true;
 }
