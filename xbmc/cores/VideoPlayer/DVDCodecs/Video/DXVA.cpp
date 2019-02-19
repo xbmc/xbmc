@@ -1231,7 +1231,6 @@ bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, enum AVPixel
 
   std::list<EINTERLACEMETHOD> deintMethods;
   deintMethods.push_back(VS_INTERLACEMETHOD_NONE);
-  deintMethods.push_back(VS_INTERLACEMETHOD_DXVA_AUTO);
   m_processInfo.UpdateDeinterlacingMethods(deintMethods);
   m_processInfo.SetDeinterlacingMethodDefault(VS_INTERLACEMETHOD_DXVA_AUTO);
 
