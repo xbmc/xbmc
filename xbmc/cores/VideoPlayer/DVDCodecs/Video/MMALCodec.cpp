@@ -795,11 +795,9 @@ CDVDVideoCodec::VCReturn CMMALVideo::GetPicture(VideoPicture* picture)
   if (ret == CDVDVideoCodec::VC_PICTURE)
   {
     assert(buffer && buffer->mmal_buffer);
-    if (picture->videoBuffer)
-      picture->videoBuffer->Release();
+    picture->Reset();
     picture->videoBuffer = dynamic_cast<CVideoBuffer*>(buffer);
     assert(picture->videoBuffer);
-    picture->color_range  = 0;
     picture->iWidth = buffer->Width() ? buffer->Width() : m_decoded_width;
     picture->iHeight = buffer->Height() ? buffer->Height() : m_decoded_height;
     picture->iDisplayWidth  = picture->iWidth;
@@ -819,8 +817,6 @@ CDVDVideoCodec::VCReturn CMMALVideo::GetPicture(VideoPicture* picture)
     // timestamp is in microseconds
     picture->dts = buffer->mmal_buffer->dts == MMAL_TIME_UNKNOWN ? DVD_NOPTS_VALUE : buffer->mmal_buffer->dts;
     picture->pts = buffer->mmal_buffer->pts == MMAL_TIME_UNKNOWN ? DVD_NOPTS_VALUE : buffer->mmal_buffer->pts;
-    picture->iRepeatPicture = 0;
-    picture->iFlags  = 0;
     if (buffer->mmal_buffer->flags & MMAL_BUFFER_HEADER_FLAG_USER3)
       picture->iFlags |= DVP_FLAG_DROPPED;
     CLog::Log(LOGINFO, LOGVIDEO,
