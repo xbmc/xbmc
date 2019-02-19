@@ -20,6 +20,8 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.widget.RelativeLayout;
 
+import java.util.ArrayList;
+
 import @APP_PACKAGE@.channels.util.TvUtil;
 
 public class Main extends NativeActivity implements Choreographer.FrameCallback
@@ -35,8 +37,20 @@ public class Main extends NativeActivity implements Choreographer.FrameCallback
   private View mDecorView = null;
   private RelativeLayout mVideoLayout = null;
   private Handler handler = new Handler();
-  private Intent mNewIntent = null;
-  private int mNewIntentDelay = 0;
+
+  private class DelayedIntent
+  {
+    public Intent mIntent = null;
+    public int mDelay = 0;
+
+    public DelayedIntent(Intent intent, int delay) {
+      mIntent = intent;
+      mDelay = delay;
+    }
+  }
+  private ArrayList<DelayedIntent> mDelayedIntents = new ArrayList<DelayedIntent>();
+  private boolean mPaused = true;
+
 
   native void _onNewIntent(Intent intent);
 
@@ -117,8 +131,7 @@ public class Main extends NativeActivity implements Choreographer.FrameCallback
     // Delayed Intent
     if (getIntent().getData() != null)
     {
-      mNewIntent = new Intent(getIntent());
-      mNewIntentDelay = 5000;
+      mDelayedIntents.add(new DelayedIntent(new Intent(getIntent()), 5000));
       getIntent().setData(null);
     }
 
@@ -189,8 +202,16 @@ public class Main extends NativeActivity implements Choreographer.FrameCallback
   {
     super.onNewIntent(intent);
     // Delay until after Resume
-    mNewIntent = intent;
-    mNewIntentDelay = 500;
+    if (mPaused)
+    {
+      Log.d("Main", "onNewIntent (delayed)");
+      mDelayedIntents.add(new DelayedIntent(new Intent(intent), 500));
+    }
+    else
+    {
+      Log.d("Main", "onNewIntent (immediate)");
+      _onNewIntent(intent);
+    }
   }
 
   @Override
@@ -225,7 +246,7 @@ public class Main extends NativeActivity implements Choreographer.FrameCallback
     }
 
     // New intent ?
-    if (mNewIntent != null)
+    for (final DelayedIntent delayedIntent : mDelayedIntents)
     {
       handler.postDelayed(new Runnable()
       {
@@ -234,18 +255,17 @@ public class Main extends NativeActivity implements Choreographer.FrameCallback
         {
           try
           {
-            _onNewIntent(mNewIntent);
+            _onNewIntent(delayedIntent.mIntent);
           }
           catch (UnsatisfiedLinkError e)
           {
             Log.e("Main", "Native not registered");
-          } finally
-          {
-            mNewIntent = null;
           }
         }
-      }, mNewIntentDelay);
+      }, delayedIntent.mDelay);
     }
+    mDelayedIntents.clear();
+    mPaused = false;
   }
 
   @Override
@@ -255,6 +275,8 @@ public class Main extends NativeActivity implements Choreographer.FrameCallback
 
     if (getPackageManager().hasSystemFeature("android.software.leanback") && Build.VERSION.SDK_INT >= VERSION_CODES.O)
       TvUtil.scheduleSyncingChannel(this);
+
+    mPaused = true;
   }
 
   @Override
