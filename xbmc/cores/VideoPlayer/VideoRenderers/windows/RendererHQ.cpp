@@ -115,7 +115,7 @@ void CRendererHQ::UpdateVideoFilters()
     // firstly try the more efficient two pass convolution shader
     m_scalerShader = std::make_unique<CConvolutionShaderSeparable>();
 
-    if (!m_scalerShader->Create(m_scalingMethod, m_outputShader.get()))
+    if (!m_scalerShader->Create(m_scalingMethod, m_outputShader))
     {
       m_scalerShader.reset();
       CLog::LogF(LOGNOTICE, "two pass convolution shader init problem, falling back to one pass.");
@@ -126,7 +126,7 @@ void CRendererHQ::UpdateVideoFilters()
     {
       m_scalerShader = std::make_unique<CConvolutionShader1Pass>();
 
-      if (!m_scalerShader->Create(m_scalingMethod, m_outputShader.get()))
+      if (!m_scalerShader->Create(m_scalingMethod, m_outputShader))
       {
         // we are in a big trouble
         m_scalerShader.reset();
@@ -142,7 +142,7 @@ void CRendererHQ::FinalOutput(CD3DTexture& source, CD3DTexture& target, const CR
   if (HasHQScaler())
   {
     const CRect destRect = CServiceBroker::GetWinSystem()->GetGfxContext().StereoCorrection(CRect(destPoints[0], destPoints[2]));
-    m_scalerShader->Render(source, target.GetWidth(), target.GetHeight(), sourceRect, destRect, false, target);
+    m_scalerShader->Render(source, target, sourceRect, destRect, false);
   }
   else
   {
@@ -150,7 +150,8 @@ void CRendererHQ::FinalOutput(CD3DTexture& source, CD3DTexture& target, const CR
     // restore view port
     DX::DeviceResources::Get()->GetD3DContext()->RSSetViewports(1, &viewPort);
     // restore scissors
-    DX::Windowing()->SetScissors(CServiceBroker::GetWinSystem()->GetGfxContext().StereoCorrection(CServiceBroker::GetWinSystem()->GetGfxContext().GetScissors()));
+    auto& context = CServiceBroker::GetWinSystem()->GetGfxContext();
+    DX::Windowing()->SetScissors(context.StereoCorrection(context.GetScissors()));
     // render frame
     __super::FinalOutput(source, target, sourceRect, destPoints);
   }

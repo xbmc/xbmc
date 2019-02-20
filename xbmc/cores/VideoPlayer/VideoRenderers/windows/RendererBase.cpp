@@ -326,7 +326,7 @@ void CRendererBase::OnCMSConfigChanged(unsigned flags)
     bool success = m_colorManager->GetVideo3dLut(flags, &m_cmsToken, CMS_DATA_FMT_RGBA, lutSize, lutData);
     if (success)
     {
-      success = COutputShader::CreateCLUTView(lutSize, lutData, false, m_pLUTView.ReleaseAndGetAddressOf());
+      success = COutputShader::CreateLUTView(lutSize, lutData, false, m_pLUTView.ReleaseAndGetAddressOf());
     }
     else
       CLog::LogFunction(LOGERROR, "CRendererBase::OnCMSConfigChanged", "unable to loading the 3dlut data.");
@@ -371,7 +371,7 @@ void CRendererBase::UpdateVideoFilters()
 {
   if (!m_outputShader)
   {
-    m_outputShader = std::make_unique<COutputShader>();
+    m_outputShader = std::make_shared<COutputShader>();
     if (!m_outputShader->Create(m_cmsOn, m_useDithering, m_ditherDepth, UseToneMapping()))
     {
       CLog::LogF(LOGDEBUG, "unable to create output shader.");
@@ -379,7 +379,7 @@ void CRendererBase::UpdateVideoFilters()
     }
     else if (m_pLUTView && m_lutSize)
     {
-      m_outputShader->SetCLUT(m_lutSize, m_pLUTView.Get());
+      m_outputShader->SetLUT(m_lutSize, m_pLUTView.Get());
     }
   }
 }
