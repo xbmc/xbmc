@@ -52,7 +52,7 @@
 						<top>7</top>
 						<width>110</width>
 						<height>110</height>
-						<texture>$INFO[Listitem.Icon]</texture>
+						<texture>$VAR[InfoWallThumbVar]</texture>
 						<aspectratio>keep</aspectratio>
 					</control>
 					<control type="label">
@@ -88,7 +88,7 @@
 						<top>7</top>
 						<width>110</width>
 						<height>110</height>
-						<texture>$INFO[Listitem.Icon]</texture>
+						<texture>$VAR[InfoWallThumbVar]</texture>
 						<aspectratio>keep</aspectratio>
 					</control>
 					<control type="label">
