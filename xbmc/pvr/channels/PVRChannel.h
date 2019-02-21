@@ -27,6 +27,7 @@ class CFileItemList;
 namespace PVR
 {
   class CPVRChannelGroupInternal;
+  class CPVREpg;
   class CPVRRadioRDSInfoTag;
 
   /** PVR Channel class */
@@ -334,10 +335,9 @@ namespace PVR
 
     /*!
      * @brief Create the EPG for this channel, if it does not yet exist
-     * @param bForce to create a new EPG, even if it already exists.
      * @return true if a new epg was created, false otherwise.
      */
-    bool CreateEPG(bool bForce);
+    bool CreateEPG();
 
     /*!
      * @brief Get the EPG table for this channel.
@@ -453,9 +453,9 @@ namespace PVR
      */
     //@{
     int              m_iEpgId;                  /*!< the id of the EPG for this channel */
-    bool             m_bEPGCreated;             /*!< true if an EPG has been created for this channel */
     bool             m_bEPGEnabled;             /*!< don't use an EPG for this channel if set to false */
     std::string      m_strEPGScraper;           /*!< the name of the scraper to be used for this channel */
+    std::shared_ptr<CPVREpg> m_epg;
     //@}
 
     /*! @name Client related channel data

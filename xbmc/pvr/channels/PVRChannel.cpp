@@ -50,7 +50,6 @@ CPVRChannel::CPVRChannel(bool bRadio /* = false */)
   m_bChanged                = false;
 
   m_iEpgId                  = -1;
-  m_bEPGCreated             = false;
   m_bEPGEnabled             = true;
   m_strEPGScraper           = "client";
 
@@ -80,7 +79,6 @@ CPVRChannel::CPVRChannel(const PVR_CHANNEL &channel, unsigned int iClientId)
   m_bEPGEnabled             = !channel.bIsHidden;
   m_strEPGScraper           = "client";
   m_iEpgId                  = -1;
-  m_bEPGCreated             = false;
   m_bChanged                = false;
 
   if (m_strChannelName.empty())
@@ -134,7 +132,7 @@ bool CPVRChannel::Delete(void)
     CServiceBroker::GetPVRManager().EpgContainer().DeleteEpg(epg, true);
 
     CSingleLock lock(m_critSection);
-    m_bEPGCreated = false;
+    m_epg.reset();
   }
 
   bReturn = database->Delete(*this);
@@ -143,33 +141,28 @@ bool CPVRChannel::Delete(void)
 
 CPVREpgPtr CPVRChannel::GetEPG(void) const
 {
-  int iEpgId(-1);
-  {
-    CSingleLock lock(m_critSection);
-    if (!m_bIsHidden && m_bEPGEnabled && m_iEpgId > 0)
-      iEpgId = m_iEpgId;
-  }
+  CSingleLock lock(m_critSection);
+  if (!m_bIsHidden && m_bEPGEnabled)
+    return m_epg;
 
-  return iEpgId > 0 ? CServiceBroker::GetPVRManager().EpgContainer().GetById(iEpgId) : CPVREpgPtr();
+  return std::shared_ptr<CPVREpg>();
 }
 
-bool CPVRChannel::CreateEPG(bool bForce)
+bool CPVRChannel::CreateEPG()
 {
   CSingleLock lock(m_critSection);
-  if (!m_bEPGCreated || bForce)
+  if (!m_epg)
   {
-    const CPVREpgPtr epg = CServiceBroker::GetPVRManager().EpgContainer().CreateChannelEpg(m_iEpgId,
-                                                                                           m_strEPGScraper,
-                                                                                           std::make_shared<CPVREpgChannelData>(*this));
-    if (epg)
+    m_epg = CServiceBroker::GetPVRManager().EpgContainer().CreateChannelEpg(m_iEpgId,
+                                                                            m_strEPGScraper,
+                                                                            std::make_shared<CPVREpgChannelData>(*this));
+    if (m_epg)
     {
-      m_bEPGCreated = true;
-      if (epg->EpgID() != m_iEpgId)
+      if (m_epg->EpgID() != m_iEpgId)
       {
-        m_iEpgId = epg->EpgID();
+        m_iEpgId = m_epg->EpgID();
         m_bChanged = true;
       }
-
       return true;
     }
   }
@@ -316,7 +309,6 @@ bool CPVRChannel::IsRecording(void) const
 bool CPVRChannel::SetIconPath(const std::string &strIconPath, bool bIsUserSetIcon /* = false */)
 {
   CSingleLock lock(m_critSection);
-
   if (m_strIconPath != strIconPath)
   {
     m_strIconPath = StringUtils::Format("%s", strIconPath.c_str());
@@ -375,6 +367,7 @@ bool CPVRChannel::SetLastWatched(time_t iLastWatched)
     if (m_iLastWatched != iLastWatched)
     {
       m_iLastWatched = iLastWatched;
+
       const std::shared_ptr<CPVREpg> epg = GetEPG();
       if (epg)
         epg->GetChannelData()->SetLastWatched(iLastWatched);
@@ -611,7 +604,7 @@ bool CPVRChannel::SetEPGEnabled(bool bEPGEnabled)
     m_bChanged = true;
 
     /* clear the previous EPG entries if needed */
-    if (!m_bEPGEnabled && m_bEPGCreated)
+    if (!m_bEPGEnabled && m_epg)
       ClearEPG();
 
     return true;
@@ -633,7 +626,7 @@ bool CPVRChannel::SetEPGScraper(const std::string &strScraper)
     m_bChanged = true;
 
     /* clear the previous EPG entries if needed */
-    if (bCleanEPG && m_bEPGEnabled && m_bEPGCreated)
+    if (bCleanEPG && m_bEPGEnabled && m_epg)
       ClearEPG();
 
     return true;
@@ -802,10 +795,10 @@ int CPVRChannel::EpgID(void) const
 void CPVRChannel::SetEpgID(int iEpgId)
 {
   CSingleLock lock(m_critSection);
-
   if (m_iEpgId != iEpgId)
   {
     m_iEpgId = iEpgId;
+    m_epg.reset();
     SetChanged();
     m_bChanged = true;
   }

@@ -134,7 +134,7 @@ namespace PVR
      */
     void UpdateChannelPaths(void);
 
-    void CreateChannelEpg(const CPVRChannelPtr &channel, bool bForce = false);
+    void CreateChannelEpg(const std::shared_ptr<CPVRChannel>& channel);
 
     size_t m_iHiddenChannels; /*!< the amount of hidden channels in this container */
 
