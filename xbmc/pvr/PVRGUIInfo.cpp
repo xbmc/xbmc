@@ -297,6 +297,13 @@ bool CPVRGUIInfo::GetListItemAndPlayerLabel(const CFileItem *item, const CGUIInf
       case LISTITEM_ENDTIME:
         strValue = timer->EndAsLocalTime().GetAsLocalizedTime("", false);
         return true;
+      case LISTITEM_DURATION:
+        if (timer->GetDuration() > 0)
+        {
+          strValue = StringUtils::SecondsToTimeString(timer->GetDuration(), static_cast<TIME_FORMAT>(info.GetData4()));
+          return true;
+        }
+        return false;
       case LISTITEM_TITLE:
         strValue = timer->Title();
         return true;
@@ -314,7 +321,6 @@ bool CPVRGUIInfo::GetListItemAndPlayerLabel(const CFileItem *item, const CGUIInf
       case LISTITEM_GENRE:
       case LISTITEM_PLOT:
       case LISTITEM_PLOT_OUTLINE:
-      case LISTITEM_DURATION:
       case LISTITEM_ORIGINALTITLE:
       case LISTITEM_YEAR:
       case LISTITEM_SEASON:

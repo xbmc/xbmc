@@ -180,6 +180,12 @@ namespace PVR
     void SetEndFromUTC(CDateTime &end) { m_StopTime = end; }
     void SetEndFromLocalTime(CDateTime &end) { m_StopTime = end.GetAsUTCDateTime(); }
 
+    /*!
+     * @brief Get the duration of this timer in seconds, excluding padding times.
+     * @return The duration.
+     */
+    int GetDuration() const;
+
     CDateTime FirstDayAsUTC(void) const;
     CDateTime FirstDayAsLocalTime(void) const;
     void SetFirstDayFromLocalTime(CDateTime &firstDay) { m_FirstDay = firstDay.GetAsUTCDateTime(); }

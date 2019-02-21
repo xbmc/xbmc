@@ -828,6 +828,14 @@ CDateTime CPVRTimerInfoTag::EndAsLocalTime(void) const
   return retVal;
 }
 
+int CPVRTimerInfoTag::GetDuration() const
+{
+  time_t start, end;
+  m_StartTime.GetAsTime(start);
+  m_StopTime.GetAsTime(end);
+  return end - start > 0 ? end - start : 3600;
+}
+
 CDateTime CPVRTimerInfoTag::FirstDayAsUTC(void) const
 {
   CDateTime retVal = m_FirstDay;
