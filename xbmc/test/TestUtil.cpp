@@ -102,3 +102,27 @@ TEST(TestUtil, MakeShortenPath)
   EXPECT_EQ(true, CUtil::MakeShortenPath("//test//string/is/long/and/very//much/so", result, 30));
   EXPECT_EQ("/../../../../../so", result);
 }
+
+TEST(TestUtil, ValidatePath)
+{
+  std::string path;
+#ifdef TARGET_WINDOWS
+  path = "C:/foo/bar/";
+  EXPECT_EQ(CUtil::ValidatePath(path), "C:\\foo\\bar\\");
+  path = "C:\\\\foo\\\\bar\\";
+  EXPECT_EQ(CUtil::ValidatePath(path, true), "C:\\foo\\bar\\");
+  path = "\\\\foo\\\\bar\\";
+  EXPECT_EQ(CUtil::ValidatePath(path, true), "\\\\foo\\bar\\");
+#else
+  path = "\\foo\\bar\\";
+  EXPECT_EQ(CUtil::ValidatePath(path), "/foo/bar/");
+  path = "/foo//bar/";
+  EXPECT_EQ(CUtil::ValidatePath(path, true), "/foo/bar/");
+#endif
+  path = "smb://foo/bar/";
+  EXPECT_EQ(CUtil::ValidatePath(path), "smb://foo/bar/");
+  path = "smb://foo//bar/";
+  EXPECT_EQ(CUtil::ValidatePath(path, true), "smb://foo/bar/");
+  path = "smb:\\\\foo\\\\bar\\";
+  EXPECT_EQ(CUtil::ValidatePath(path, true), "smb://foo/bar/");
+}
