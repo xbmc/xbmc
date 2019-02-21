@@ -7,7 +7,7 @@ endif
 DEPENDS = \
 	pcre expat gettext sqlite3 libgpg-error \
 	libgcrypt bzip2 libfstrcmp liblzo2 libzip freetype2 fontconfig \
-	openssl gmp nettle gnutls curl \
+	openssl gmp nettle gnutls curl nghttp2 \
 	libjpeg-turbo libpng fribidi libass \
 	libxml2 rapidjson libmicrohttpd mariadb libffi \
 	python27 libshairplay libfmt \
@@ -90,7 +90,7 @@ all: .installed-$(PLATFORM)
 gettext: $(ICONV)
 libgcrypt: libgpg-error
 fontconfig: freetype2 expat $(ICONV)
-curl: openssl
+curl: openssl nghttp2
 libass: fontconfig fribidi libpng freetype2 expat $(ICONV)
 libmicrohttpd: gnutls libgcrypt libgpg-error
 python27: expat gettext libxml2 sqlite3 openssl libffi
