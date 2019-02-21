@@ -112,7 +112,7 @@ bool CAEBitstreamPacker::PackPause(CAEStreamInfo &info, unsigned int millis, boo
   return true;
 }
 
-unsigned int CAEBitstreamPacker::GetSize()
+unsigned int CAEBitstreamPacker::GetSize() const
 {
   return m_dataSize;
 }

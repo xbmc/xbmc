@@ -33,7 +33,7 @@ void AEDelayStatus::SetDelay(double d)
   tick = CurrentHostCounter();
 }
 
-double AEDelayStatus::GetDelay()
+double AEDelayStatus::GetDelay() const
 {
   double d = 0;
   if (tick)

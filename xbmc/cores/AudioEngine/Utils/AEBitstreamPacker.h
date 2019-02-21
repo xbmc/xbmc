@@ -25,7 +25,7 @@ public:
   bool PackPause(CAEStreamInfo &info, unsigned int millis, bool iecBursts);
   void Reset();
   uint8_t* GetBuffer();
-  unsigned int GetSize();
+  unsigned int GetSize() const;
   static unsigned int GetOutputRate(CAEStreamInfo &info);
   static CAEChannelInfo GetOutputChannelMap(CAEStreamInfo &info);
 
