@@ -450,10 +450,18 @@ public:
   bool GetSongsFullByWhere(const std::string &baseDir, const Filter &filter, CFileItemList& items, const SortDescription &sortDescription = SortDescription(), bool artistData = false);
   bool GetAlbumsByWhere(const std::string &baseDir, const Filter &filter, CFileItemList &items, const SortDescription &sortDescription = SortDescription(), bool countOnly = false);
   bool GetArtistsByWhere(const std::string& strBaseDir, const Filter &filter, CFileItemList& items, const SortDescription &sortDescription = SortDescription(), bool countOnly = false);
-  bool GetRandomSong(CFileItem* item, int& idSong, const Filter &filter);
   int GetSongsCount(const Filter &filter = Filter());
-  unsigned int GetSongIDs(const Filter &filter, std::vector<std::pair<int,int> > &songIDs);
   bool GetFilter(CDbUrl &musicUrl, Filter &filter, SortDescription &sorting) override;
+
+  /////////////////////////////////////////////////
+  // Party Mode
+  /////////////////////////////////////////////////
+  /*! \brief Gets song IDs in random order that match the filter criteria
+  \param filter the criteria to apply in the query
+  \param songIDs a vector of <1, id> pairs suited to party mode use
+  \return count of song ids found.
+  */
+  unsigned int GetRandomSongIDs(const Filter &filter, std::vector<std::pair<int, int> > &songIDs);
 
   /////////////////////////////////////////////////
   // JSON-RPC 

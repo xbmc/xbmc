@@ -8145,7 +8145,7 @@ bool CVideoDatabase::GetMusicVideosByWhere(const std::string &baseDir, const Fil
   return false;
 }
 
-unsigned int CVideoDatabase::GetMusicVideoIDs(const std::string& strWhere, std::vector<std::pair<int,int> > &songIDs)
+unsigned int CVideoDatabase::GetRandomMusicVideoIDs(const std::string& strWhere, std::vector<std::pair<int,int> > &songIDs)
 {
   try
   {
@@ -8155,6 +8155,7 @@ unsigned int CVideoDatabase::GetMusicVideoIDs(const std::string& strWhere, std::
     std::string strSQL = "select distinct idMVideo from musicvideo_view";
     if (!strWhere.empty())
       strSQL += " where " + strWhere;
+    strSQL += PrepareSQL(" ORDER BY RANDOM()");
 
     if (!m_pDS->query(strSQL)) return 0;
     songIDs.clear();
@@ -8177,44 +8178,6 @@ unsigned int CVideoDatabase::GetMusicVideoIDs(const std::string& strWhere, std::
     CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, strWhere.c_str());
   }
   return 0;
-}
-
-bool CVideoDatabase::GetRandomMusicVideo(CFileItem* item, int& idSong, const std::string& strWhere)
-{
-  try
-  {
-    idSong = -1;
-
-    if (NULL == m_pDB.get()) return false;
-    if (NULL == m_pDS.get()) return false;
-
-    std::string strSQL = "select * from musicvideo_view";
-    if (!strWhere.empty())
-      strSQL += " where " + strWhere;
-    strSQL += PrepareSQL(" order by RANDOM() limit 1");
-    CLog::Log(LOGDEBUG, LOGDATABASE, "%s query = %s", __FUNCTION__, strSQL.c_str());
-    // run query
-    if (!m_pDS->query(strSQL))
-      return false;
-    int iRowsFound = m_pDS->num_rows();
-    if (iRowsFound != 1)
-    {
-      m_pDS->close();
-      return false;
-    }
-    *item->GetVideoInfoTag() = GetDetailsForMusicVideo(m_pDS);
-    std::string path = StringUtils::Format("videodb://musicvideos/titles/%i",item->GetVideoInfoTag()->m_iDbId);
-    item->SetPath(path);
-    idSong = m_pDS->fv("idMVideo").get_asInt();
-    item->SetLabel(item->GetVideoInfoTag()->m_strTitle);
-    m_pDS->close();
-    return true;
-  }
-  catch(...)
-  {
-    CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, strWhere.c_str());
-  }
-  return false;
 }
 
 int CVideoDatabase::GetMatchingMusicVideo(const std::string& strArtist, const std::string& strAlbum, const std::string& strTitle)
