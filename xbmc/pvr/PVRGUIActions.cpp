@@ -483,7 +483,7 @@ namespace PVR
   {
     const CPVRChannelPtr channel = CServiceBroker::GetPVRManager().GetPlayingChannel();
     if (channel && channel->CanRecord())
-      return SetRecordingOnChannel(channel, !channel->IsRecording());
+      return SetRecordingOnChannel(channel, !CServiceBroker::GetPVRManager().Timers()->IsRecordingOnChannel(*channel));
 
     return false;
   }
@@ -502,7 +502,7 @@ namespace PVR
     if (client && client->GetClientCapabilities().SupportsTimers())
     {
       /* timers are supported on this channel */
-      if (bOnOff && !channel->IsRecording())
+      if (bOnOff && !CServiceBroker::GetPVRManager().Timers()->IsRecordingOnChannel(*channel))
       {
         CPVREpgInfoTagPtr epgTag;
         int iDuration = m_settings.GetIntValue(CSettings::SETTING_PVRRECORD_INSTANTRECORDTIME);
@@ -613,7 +613,7 @@ namespace PVR
         if (!bReturn)
           HELPERS::ShowOKDialogText(CVariant{257}, CVariant{19164}); // "Error", "Could not start recording. Check the log for more information about this message."
       }
-      else if (!bOnOff && channel->IsRecording())
+      else if (!bOnOff && CServiceBroker::GetPVRManager().Timers()->IsRecordingOnChannel(*channel))
       {
         /* delete active timers */
         bReturn = CServiceBroker::GetPVRManager().Timers()->DeleteTimersOnChannel(channel, true, true);

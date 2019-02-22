@@ -24,7 +24,6 @@
 #include "pvr/addons/PVRClients.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/epg/EpgContainer.h"
-#include "pvr/timers/PVRTimers.h"
 
 using namespace PVR;
 using namespace KODI::MESSAGING;
@@ -298,7 +297,6 @@ bool CPVRChannelGroupInternal::UpdateGroupEntries(const CPVRChannelGroup &channe
     if (CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_bPVRChannelIconsAutoScan)
       SearchAndSetChannelIcons();
 
-    CServiceBroker::GetPVRManager().Timers()->UpdateChannels();
     Persist();
 
     bReturn = true;

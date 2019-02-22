@@ -686,7 +686,7 @@ int CPVRManager::GetPlayingClientID(void) const
 bool CPVRManager::IsRecordingOnPlayingChannel(void) const
 {
   const CPVRChannelPtr currentChannel = GetPlayingChannel();
-  return currentChannel && currentChannel->IsRecording();
+  return currentChannel && CServiceBroker::GetPVRManager().Timers()->IsRecordingOnChannel(*currentChannel);
 }
 
 bool CPVRManager::CanRecordOnPlayingChannel(void) const

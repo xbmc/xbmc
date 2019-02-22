@@ -211,13 +211,14 @@ JSONRPC_STATUS CPVROperations::Record(const std::string &method, ITransportLayer
     return FailedToExecute;
 
   CVariant record = parameterObject["record"];
+  bool bIsRecording = CServiceBroker::GetPVRManager().Timers()->IsRecordingOnChannel(*pChannel);
   bool toggle = true;
-  if (record.isBoolean() && record.asBoolean() == pChannel->IsRecording())
+  if (record.isBoolean() && record.asBoolean() == bIsRecording)
     toggle = false;
 
   if (toggle)
   {
-    if (!CServiceBroker::GetPVRManager().GUIActions()->SetRecordingOnChannel(pChannel, !pChannel->IsRecording()))
+    if (!CServiceBroker::GetPVRManager().GUIActions()->SetRecordingOnChannel(pChannel, !bIsRecording))
       return FailedToExecute;
   }
 

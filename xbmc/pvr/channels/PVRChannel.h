@@ -140,11 +140,6 @@ namespace PVR
     bool SetLocked(bool bIsLocked);
 
     /*!
-     * @return True if a recording is currently running on this channel. False if not.
-     */
-    bool IsRecording(void) const;
-
-    /*!
      * @brief Obtain the Radio RDS data for this channel, if available.
      * @return The Radio RDS data or nullptr.
      */

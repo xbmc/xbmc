@@ -216,7 +216,8 @@ namespace PVR
 
       const CPVRChannelPtr channel = item.GetPVRChannelInfoTag();
       if (channel)
-        return !channel->IsRecording() && client && client->GetClientCapabilities().SupportsTimers();
+        return client && client->GetClientCapabilities().SupportsTimers() &&
+               !CServiceBroker::GetPVRManager().Timers()->IsRecordingOnChannel(*channel);
 
       const CPVREpgInfoTagPtr epg = item.GetEPGInfoTag();
       if (epg &&
@@ -243,7 +244,7 @@ namespace PVR
 
       const CPVRChannelPtr channel(item.GetPVRChannelInfoTag());
       if (channel)
-        return channel->IsRecording();
+        return CServiceBroker::GetPVRManager().Timers()->IsRecordingOnChannel(*channel);
 
       const CPVRTimerInfoTagPtr timer(GetTimerInfoTagFromItem(item));
       if (timer && !URIUtils::PathEquals(item.GetPath(), CPVRTimersPath::PATH_ADDTIMER))

@@ -22,7 +22,6 @@
 #include "pvr/channels/PVRChannelGroupInternal.h"
 #include "pvr/epg/EpgChannelData.h"
 #include "pvr/epg/EpgContainer.h"
-#include "pvr/timers/PVRTimers.h"
 
 using namespace PVR;
 
@@ -114,7 +113,7 @@ void CPVRChannel::Serialize(CVariant& value) const
   if (epg)
     epg->Serialize(value["broadcastnext"]);
 
-  value["isrecording"] = IsRecording();
+  value["isrecording"] = false; // compat
 }
 
 /********** XBMC related channel methods **********/
@@ -299,11 +298,6 @@ void CPVRChannel::SetRadioRDSInfoTag(const std::shared_ptr<CPVRRadioRDSInfoTag>&
 {
   CSingleLock lock(m_critSection);
   m_rdsTag = tag;
-}
-
-bool CPVRChannel::IsRecording(void) const
-{
-  return CServiceBroker::GetPVRManager().Timers()->IsRecordingOnChannel(*this);
 }
 
 bool CPVRChannel::SetIconPath(const std::string &strIconPath, bool bIsUserSetIcon /* = false */)

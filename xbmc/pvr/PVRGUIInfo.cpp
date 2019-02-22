@@ -1110,7 +1110,7 @@ bool CPVRGUIInfo::GetListItemAndPlayerBool(const CFileItem *item, const CGUIInfo
     case LISTITEM_ISRECORDING:
       if (item->IsPVRChannel())
       {
-        bValue = item->GetPVRChannelInfoTag()->IsRecording();
+        bValue = CServiceBroker::GetPVRManager().Timers()->IsRecordingOnChannel(*item->GetPVRChannelInfoTag());
         return true;
       }
       else if (item->IsEPG() || item->IsPVRTimer())
