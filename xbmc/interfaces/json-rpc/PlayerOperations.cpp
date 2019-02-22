@@ -33,6 +33,9 @@
 #include "SeekHandler.h"
 #include "utils/Variant.h"
 #include "Util.h"
+#include "settings/DisplaySettings.h"
+#include <tuple>
+#include <map>
 
 using namespace JSONRPC;
 using namespace PLAYLIST;
@@ -487,6 +490,132 @@ JSONRPC_STATUS CPlayerOperations::Zoom(const std::string &method, ITransportLaye
     default:
       return FailedToExecute;
   }
+}
+
+// Matching pairs of values from JSON type "Player.ViewMode" and C++ enum ViewMode
+// Additions to enum ViewMode need to be added here and in the JSON type
+std::map<std::string, ViewMode> viewModes =
+{
+  {"normal", ViewModeNormal},
+  {"zoom", ViewModeZoom},
+  {"stretch4x3", ViewModeStretch4x3},
+  {"widezoom", ViewModeWideZoom, },
+  {"stretch16x9", ViewModeStretch16x9},
+  {"original", ViewModeOriginal},
+  {"stretch16x9nonlin", ViewModeStretch16x9Nonlin},
+  {"zoom120width", ViewModeZoom120Width},
+  {"zoom110width", ViewModeZoom110Width}
+};
+
+std::string GetStringFromViewMode(ViewMode viewMode)
+{
+  std::string result = "custom";
+
+  auto it = find_if(viewModes.begin(), viewModes.end(), [viewMode](const std::pair<std::string, ViewMode> & p)
+  {
+    return p.second == viewMode;
+  });
+  
+  if (it != viewModes.end())
+  {
+    std::pair<std::string, ViewMode> value = *it;
+    result = value.first;
+  }
+  
+  return result;
+}
+
+void GetNewValueForViewModeParameter(const CVariant &parameter, float stepSize, float minValue, float maxValue, float &result)
+{
+  if (parameter.isDouble())
+  {
+    result = parameter.asDouble();
+  }
+  else if (parameter.isString())
+  {
+    std::string parameterStr = parameter.asString();
+    if (parameter == "decrease")
+    {
+      stepSize *= -1;
+    }
+    
+    result += stepSize;
+  }
+
+  result = std::max(minValue, std::min(result, maxValue));
+}
+
+JSONRPC_STATUS CPlayerOperations::SetViewMode(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+{
+  JSONRPC_STATUS jsonStatus = InvalidParams;
+  // init with current values from settings
+  CVideoSettings vs = g_application.GetAppPlayer().GetVideoSettings();
+  ViewMode mode = ViewModeNormal;
+
+  CVariant viewMode = parameterObject["viewmode"];
+  if (viewMode.isString())
+  {
+    std::string modestr = viewMode.asString();
+    if (viewModes.find(modestr) != viewModes.end())
+    {
+      mode = viewModes[modestr];
+      jsonStatus = ACK;
+    }
+  }
+  else if (viewMode.isObject())
+  {
+    mode = ViewModeCustom;
+    CVariant zoom = viewMode["zoom"];
+    CVariant pixelRatio = viewMode["pixelratio"];
+    CVariant verticalShift = viewMode["verticalshift"];
+    CVariant stretch = viewMode["nonlinearstretch"];
+
+    if (!zoom.isNull())
+    {
+      GetNewValueForViewModeParameter(zoom, 0.01f, 0.5f, 2.f, vs.m_CustomZoomAmount);
+      jsonStatus = ACK;
+    }
+
+    if (!pixelRatio.isNull())
+    {
+      GetNewValueForViewModeParameter(pixelRatio, 0.01f, 0.5f, 2.f, vs.m_CustomPixelRatio);
+      jsonStatus = ACK;
+    }
+    
+    if (!verticalShift.isNull())
+    {
+      GetNewValueForViewModeParameter(verticalShift, -0.01f, -2.f, 2.f, vs.m_CustomVerticalShift);
+      jsonStatus = ACK;
+    }
+
+    if (stretch.isBoolean())
+    {
+      vs.m_CustomNonLinStretch = stretch.asBoolean();
+      jsonStatus = ACK;
+    }
+  }
+
+  if (jsonStatus == ACK)
+  {
+    g_application.GetAppPlayer().SetRenderViewMode(static_cast<int>(mode),
+      vs.m_CustomZoomAmount, vs.m_CustomPixelRatio, vs.m_CustomVerticalShift,
+      vs.m_CustomNonLinStretch);
+  }
+
+  return jsonStatus;
+}
+
+JSONRPC_STATUS CPlayerOperations::GetViewMode(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+{
+  int mode = g_application.GetAppPlayer().GetVideoSettings().m_ViewMode;
+  
+  result["viewmode"] = GetStringFromViewMode(static_cast<ViewMode>(mode));
+
+  result["zoom"] = CDisplaySettings::GetInstance().GetZoomAmount();
+  result["pixelratio"] = CDisplaySettings::GetInstance().GetPixelRatio();
+  result["verticalshift"] = CDisplaySettings::GetInstance().GetVerticalShift();
+  result["nonlinearstretch"] = CDisplaySettings::GetInstance().IsNonLinearStretched();
+  return OK;
 }
 
 JSONRPC_STATUS CPlayerOperations::Rotate(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
