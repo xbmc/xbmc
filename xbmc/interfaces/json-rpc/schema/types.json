@@ -1476,7 +1476,9 @@
       "displaycomposer": { "type": "string"},
       "displayconductor": { "type": "string"},
       "displayorchestra": { "type": "string"},
-      "displaylyricist": { "type": "string"}
+      "displaylyricist": { "type": "string"},
+      "mediapath": { "type": "string", "description": "Media source path that identifies the item"},
+      "dynpath": { "type": "string", "description": "An experimental property for debug purposes, often same as mediapath but when different gives the actual file playing that should also be in file property"}
     }
   },
   "List.Fields.All": {
@@ -1497,7 +1499,7 @@
                 "locked", "channelnumber", "starttime", "endtime", "specialsortseason",
                 "specialsortepisode", "compilation", "releasetype", "albumreleasetype",
                 "contributors", "displaycomposer", "displayconductor", "displayorchestra", "displaylyricist",
-                "userrating", "votes", "sortartist", "musicbrainzreleasegroupid"]
+                "userrating", "votes", "sortartist", "musicbrainzreleasegroupid", "mediapath", "dynpath"]
     }
   },
   "List.Item.All": {

@@ -270,8 +270,22 @@ void CFileItemHandler::HandleFileItem(const char *ID, bool allowFile, const char
           object["file"] = item->GetPVRTimerInfoTag()->m_strFileNameAndPath.c_str();
 
         if (!object.isMember("file"))
-          object["file"] = item->GetPath().c_str();
+          object["file"] = item->GetDynPath().c_str();
       }
+      fields.erase(fileField);
+    }
+
+    fileField = fields.find("mediapath");
+    if (fileField != fields.end())
+    {
+      object["mediapath"] = item->GetPath().c_str();
+      fields.erase(fileField);
+    }
+
+    fileField = fields.find("dynpath");
+    if (fileField != fields.end())
+    {
+      object["dynpath"] = item->GetDynPath().c_str();
       fields.erase(fileField);
     }
 
