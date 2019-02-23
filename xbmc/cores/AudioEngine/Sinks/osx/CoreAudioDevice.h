@@ -38,7 +38,7 @@ public:
   void          RemoveObjectListenerProc(AudioObjectPropertyListenerProc callback, void *pClientData);
   bool          SetObjectListenerProc(AudioObjectPropertyListenerProc callback, void *pClientData);
 
-  AudioDeviceID GetId() {return m_DeviceId;}
+  AudioDeviceID GetId() const {return m_DeviceId;}
   std::string   GetName() const;
   bool          IsDigital() const;
   UInt32        GetTransportType() const;

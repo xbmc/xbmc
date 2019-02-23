@@ -22,7 +22,7 @@ extern "C" {
 class CAEStreamInfo
 {
 public:
-  double GetDuration();
+  double GetDuration() const;
   bool operator==(const CAEStreamInfo& info) const;
 
   enum DataType
@@ -58,16 +58,16 @@ public:
   int AddData(uint8_t *data, unsigned int size, uint8_t **buffer = NULL, unsigned int *bufferSize = 0);
 
   void SetCoreOnly(bool value) { m_coreOnly = value; }
-  unsigned int IsValid() { return m_hasSync; }
-  unsigned int GetSampleRate() { return m_info.m_sampleRate; }
-  unsigned int GetChannels() { return m_info.m_channels; }
-  unsigned int GetFrameSize() { return m_fsize; }
-  // unsigned int GetDTSBlocks() { return m_dtsBlocks; }
-  unsigned int GetDTSPeriod() { return m_info.m_dtsPeriod; }
-  unsigned int GetEAC3BlocksDiv() { return m_info.m_repeat; }
-  enum CAEStreamInfo::DataType GetDataType() { return m_info.m_type; }
-  bool IsLittleEndian() { return m_info.m_dataIsLE; }
-  unsigned int GetBufferSize() { return m_bufferSize; }
+  unsigned int IsValid() const { return m_hasSync; }
+  unsigned int GetSampleRate() const { return m_info.m_sampleRate; }
+  unsigned int GetChannels() const { return m_info.m_channels; }
+  unsigned int GetFrameSize() const { return m_fsize; }
+  // unsigned int GetDTSBlocks() const { return m_dtsBlocks; }
+  unsigned int GetDTSPeriod() const { return m_info.m_dtsPeriod; }
+  unsigned int GetEAC3BlocksDiv() const { return m_info.m_repeat; }
+  enum CAEStreamInfo::DataType const GetDataType() const { return m_info.m_type; }
+  bool IsLittleEndian() const { return m_info.m_dataIsLE; }
+  unsigned int GetBufferSize() const { return m_bufferSize; }
   CAEStreamInfo& GetStreamInfo() { return m_info; }
   void Reset();
 

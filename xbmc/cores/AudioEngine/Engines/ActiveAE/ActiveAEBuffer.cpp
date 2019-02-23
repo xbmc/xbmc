@@ -438,7 +438,7 @@ void CActiveAEBufferPoolResample::SetRR(double rr)
   m_resampleRatio = rr;
 }
 
-double CActiveAEBufferPoolResample::GetRR()
+double CActiveAEBufferPoolResample::GetRR() const
 {
   return m_resampleRatio;
 }
@@ -448,7 +448,7 @@ void CActiveAEBufferPoolResample::FillBuffer()
   m_fillPackets = true;
 }
 
-bool CActiveAEBufferPoolResample::DoesNormalize()
+bool CActiveAEBufferPoolResample::DoesNormalize() const
 {
   return m_normalize;
 }
@@ -687,7 +687,7 @@ void CActiveAEBufferPoolAtempo::SetTempo(float tempo)
   m_tempo = tempo;
 }
 
-float CActiveAEBufferPoolAtempo::GetTempo()
+float CActiveAEBufferPoolAtempo::GetTempo() const
 {
   return m_tempo;
 }
