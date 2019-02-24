@@ -23,6 +23,9 @@
 
 #include "utils/AMLUtils.h"
 
+#include <chrono>
+#include <thread>
+
 // This is an alternative to the linear weighted delay smoothing
 // advantages: only one history value needs to be stored
 // in tests the linear weighted average smoother yield better results
@@ -591,6 +594,10 @@ void CAESinkAUDIOTRACK::Deinitialize()
 
   delete m_at_jni;
   m_at_jni = NULL;
+  
+  // We wait a bit for the device to be fully released or the next call to CreateAudioTrack
+  // will fail if it is done right after here (At least on the Nvidia Shield)
+  std::this_thread::sleep_for(std::chrono::milliseconds(50));
 }
 
 bool CAESinkAUDIOTRACK::IsInitialized()
