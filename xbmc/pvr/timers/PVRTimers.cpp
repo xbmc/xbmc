@@ -320,7 +320,7 @@ bool CPVRTimers::KindMatchesTag(const TimerKind &eKind, const CPVRTimerInfoTagPt
          (eKind == TimerKindRadio && tag->m_bIsRadio);
 }
 
-CFileItemPtr CPVRTimers::GetNextActiveTimer(const TimerKind &eKind) const
+std::shared_ptr<CPVRTimerInfoTag> CPVRTimers::GetNextActiveTimer(const TimerKind &eKind) const
 {
   CSingleLock lock(m_critSection);
 
@@ -333,31 +333,31 @@ CFileItemPtr CPVRTimers::GetNextActiveTimer(const TimerKind &eKind) const
           !timersEntry->IsRecording() &&
           !timersEntry->IsTimerRule() &&
           !timersEntry->IsBroken())
-        return CFileItemPtr(new CFileItem(timersEntry));
+        return timersEntry;
     }
   }
 
-  return CFileItemPtr();
+  return std::shared_ptr<CPVRTimerInfoTag>();
 }
 
-CFileItemPtr CPVRTimers::GetNextActiveTimer(void) const
+std::shared_ptr<CPVRTimerInfoTag> CPVRTimers::GetNextActiveTimer(void) const
 {
   return GetNextActiveTimer(TimerKindAny);
 }
 
-CFileItemPtr CPVRTimers::GetNextActiveTVTimer(void) const
+std::shared_ptr<CPVRTimerInfoTag> CPVRTimers::GetNextActiveTVTimer(void) const
 {
   return GetNextActiveTimer(TimerKindTV);
 }
 
-CFileItemPtr CPVRTimers::GetNextActiveRadioTimer(void) const
+std::shared_ptr<CPVRTimerInfoTag> CPVRTimers::GetNextActiveRadioTimer(void) const
 {
   return GetNextActiveTimer(TimerKindRadio);
 }
 
-std::vector<CFileItemPtr> CPVRTimers::GetActiveTimers(void) const
+std::vector<std::shared_ptr<CPVRTimerInfoTag>> CPVRTimers::GetActiveTimers(void) const
 {
-  std::vector<CFileItemPtr> tags;
+  std::vector<std::shared_ptr<CPVRTimerInfoTag>> tags;
   CSingleLock lock(m_critSection);
 
   for (MapTags::const_iterator it = m_tags.begin(); it != m_tags.end(); ++it)
@@ -367,8 +367,7 @@ std::vector<CFileItemPtr> CPVRTimers::GetActiveTimers(void) const
       CPVRTimerInfoTagPtr current = *timerIt;
       if (current->IsActive() && !current->IsTimerRule() && !current->IsBroken())
       {
-        CFileItemPtr fileItem(new CFileItem(current));
-        tags.push_back(fileItem);
+        tags.emplace_back(current);
       }
     }
   }
@@ -411,9 +410,9 @@ int CPVRTimers::AmountActiveRadioTimers(void) const
   return AmountActiveTimers(TimerKindRadio);
 }
 
-std::vector<CFileItemPtr> CPVRTimers::GetActiveRecordings(const TimerKind &eKind) const
+std::vector<std::shared_ptr<CPVRTimerInfoTag>> CPVRTimers::GetActiveRecordings(const TimerKind& eKind) const
 {
-  std::vector<CFileItemPtr> tags;
+  std::vector<std::shared_ptr<CPVRTimerInfoTag>> tags;
   CSingleLock lock(m_critSection);
 
   for (const auto &tagsEntry : m_tags)
@@ -425,8 +424,7 @@ std::vector<CFileItemPtr> CPVRTimers::GetActiveRecordings(const TimerKind &eKind
           !timersEntry->IsTimerRule() &&
           !timersEntry->IsBroken())
       {
-        CFileItemPtr fileItem(new CFileItem(timersEntry));
-        tags.push_back(fileItem);
+        tags.emplace_back(timersEntry);
       }
     }
   }
@@ -434,17 +432,17 @@ std::vector<CFileItemPtr> CPVRTimers::GetActiveRecordings(const TimerKind &eKind
   return tags;
 }
 
-std::vector<CFileItemPtr> CPVRTimers::GetActiveRecordings(void) const
+std::vector<std::shared_ptr<CPVRTimerInfoTag>> CPVRTimers::GetActiveRecordings() const
 {
   return GetActiveRecordings(TimerKindAny);
 }
 
-std::vector<CFileItemPtr> CPVRTimers::GetActiveTVRecordings(void) const
+std::vector<std::shared_ptr<CPVRTimerInfoTag>> CPVRTimers::GetActiveTVRecordings() const
 {
   return GetActiveRecordings(TimerKindTV);
 }
 
-std::vector<CFileItemPtr> CPVRTimers::GetActiveRadioRecordings(void) const
+std::vector<std::shared_ptr<CPVRTimerInfoTag>> CPVRTimers::GetActiveRadioRecordings() const
 {
   return GetActiveRecordings(TimerKindRadio);
 }
@@ -819,11 +817,11 @@ CDateTime CPVRTimers::GetNextEventTime(void) const
   CDateTime wakeuptime;
 
   /* Check next active time */
-  CFileItemPtr item = GetNextActiveTimer();
-  if (item && item->HasPVRTimerInfoTag())
+  const std::shared_ptr<CPVRTimerInfoTag> timer = GetNextActiveTimer();
+  if (timer)
   {
-    const CDateTimeSpan prestart(0, 0, item->GetPVRTimerInfoTag()->MarginStart(), 0);
-    const CDateTime start = item->GetPVRTimerInfoTag()->StartAsUTC();
+    const CDateTimeSpan prestart(0, 0, timer->MarginStart(), 0);
+    const CDateTime start = timer->StartAsUTC();
     wakeuptime = ((start - prestart - prewakeup - idle) > now) ?
         start - prestart - prewakeup :
         now + idle;

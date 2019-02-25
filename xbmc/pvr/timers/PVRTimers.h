@@ -87,24 +87,24 @@ namespace PVR
     bool Update(void);
 
     /*!
-     * @return The tv or radio timer that will be active next (state scheduled), or an empty fileitemptr if none.
+     * @return The tv or radio timer that will be active next (state scheduled), or nullptr if none.
      */
-    CFileItemPtr GetNextActiveTimer(void) const;
+    std::shared_ptr<CPVRTimerInfoTag> GetNextActiveTimer(void) const;
 
     /*!
-     * @return The tv timer that will be active next (state scheduled), or an empty fileitemptr if none.
+     * @return The tv timer that will be active next (state scheduled), or nullptr if none.
      */
-    CFileItemPtr GetNextActiveTVTimer(void) const;
+    std::shared_ptr<CPVRTimerInfoTag> GetNextActiveTVTimer(void) const;
 
     /*!
-     * @return The radio timer that will be active next (state scheduled), or an empty fileitemptr if none.
+     * @return The radio timer that will be active next (state scheduled), or nullptr if none.
      */
-    CFileItemPtr GetNextActiveRadioTimer(void) const;
+    std::shared_ptr<CPVRTimerInfoTag> GetNextActiveRadioTimer(void) const;
 
     /*!
      * @return All timers that are active (states scheduled or recording)
      */
-    std::vector<CFileItemPtr> GetActiveTimers(void) const;
+    std::vector<std::shared_ptr<CPVRTimerInfoTag>> GetActiveTimers(void) const;
 
     /*!
      * Get all timers
@@ -135,17 +135,17 @@ namespace PVR
     /*!
      * @return All tv and radio timers that are recording
      */
-    std::vector<CFileItemPtr> GetActiveRecordings(void) const;
+    std::vector<std::shared_ptr<CPVRTimerInfoTag>> GetActiveRecordings() const;
 
     /*!
      * @return All tv timers that are recording
      */
-    std::vector<CFileItemPtr> GetActiveTVRecordings(void) const;
+    std::vector<std::shared_ptr<CPVRTimerInfoTag>> GetActiveTVRecordings() const;
 
     /*!
      * @return All radio timers that are recording
      */
-    std::vector<CFileItemPtr> GetActiveRadioRecordings(void) const;
+    std::vector<std::shared_ptr<CPVRTimerInfoTag>> GetActiveRadioRecordings() const;
 
     /*!
      * @return True when recording, false otherwise.
@@ -237,7 +237,7 @@ namespace PVR
     /*!
      * @brief Get the timer tag that matches the given epg tag.
      * @param epgTag The epg tag.
-     * @return The requested timer tag, or an empty fileitemptr if none was found.
+     * @return The requested timer tag, or nullptr if none was found.
      */
     CPVRTimerInfoTagPtr GetTimerForEpgTag(const CPVREpgInfoTagPtr &epgTag) const;
 
@@ -258,7 +258,7 @@ namespace PVR
     /*!
      * Get the timer rule for a given timer tag
      * @param timer The timer to query the timer rule for
-     * @return The timer rule, or null if none was found.
+     * @return The timer rule, or nullptr if none was found.
      */
     CPVRTimerInfoTagPtr GetTimerRule(const CPVRTimerInfoTagPtr &timer) const;
 
@@ -297,9 +297,9 @@ namespace PVR
 
     bool KindMatchesTag(const TimerKind &eKind, const CPVRTimerInfoTagPtr &tag) const;
 
-    CFileItemPtr GetNextActiveTimer(const TimerKind &eKind) const;
+    std::shared_ptr<CPVRTimerInfoTag> GetNextActiveTimer(const TimerKind& eKind) const;
     int AmountActiveTimers(const TimerKind &eKind) const;
-    std::vector<CFileItemPtr> GetActiveRecordings(const TimerKind &eKind) const;
+    std::vector<std::shared_ptr<CPVRTimerInfoTag>> GetActiveRecordings(const TimerKind& eKind) const;
     int AmountActiveRecordings(const TimerKind &eKind) const;
 
     bool m_bIsUpdating = false;

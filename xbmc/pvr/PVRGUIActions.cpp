@@ -1699,12 +1699,12 @@ namespace PVR
   bool CPVRGUIActions::AllLocalBackendsIdle(CPVRTimerInfoTagPtr& causingEvent) const
   {
     // active recording on local backend?
-    const std::vector<CFileItemPtr> activeRecordings = CServiceBroker::GetPVRManager().Timers()->GetActiveRecordings();
+    const std::vector<std::shared_ptr<CPVRTimerInfoTag>> activeRecordings = CServiceBroker::GetPVRManager().Timers()->GetActiveRecordings();
     for (const auto& timer : activeRecordings)
     {
-      if (EventOccursOnLocalBackend(timer))
+      if (EventOccursOnLocalBackend(std::make_shared<CFileItem>(timer)))
       {
-        causingEvent = timer->GetPVRTimerInfoTag();
+        causingEvent = timer;
         return false;
       }
     }
@@ -1712,17 +1712,17 @@ namespace PVR
     // soon recording on local backend?
     if (IsNextEventWithinBackendIdleTime())
     {
-      const CFileItemPtr item = CServiceBroker::GetPVRManager().Timers()->GetNextActiveTimer();
-      if (!item)
+      const std::shared_ptr<CPVRTimerInfoTag> timer = CServiceBroker::GetPVRManager().Timers()->GetNextActiveTimer();
+      if (!timer)
       {
         // Next event is due to automatic daily wakeup of PVR!
         causingEvent.reset();
         return false;
       }
 
-      if (EventOccursOnLocalBackend(item))
+      if (EventOccursOnLocalBackend(std::make_shared<CFileItem>(timer)))
       {
-        causingEvent = item->GetPVRTimerInfoTag();
+        causingEvent = timer;
         return false;
       }
     }
