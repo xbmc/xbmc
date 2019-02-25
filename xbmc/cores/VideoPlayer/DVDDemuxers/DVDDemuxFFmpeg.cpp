@@ -439,7 +439,7 @@ bool CDVDDemuxFFmpeg::Open(std::shared_ptr<CDVDInputStream> pInput, bool streami
   bool isBluray = pInput->IsStreamType(DVDSTREAM_TYPE_BLURAY);
   if (iformat && (strcmp(iformat->name, "mpegts") == 0) && !fileinfo && !isBluray)
   {
-    av_opt_set_int(m_pFormatContext, "analyzeduration", 500000, 0);
+    av_opt_set_int(m_pFormatContext, "analyzeduration", 2000000, 0);
     m_checkvideo = true;
     skipCreateStreams = true;
   }
