@@ -560,6 +560,18 @@ msgctxt "#31163"
 msgid "Show Fanart background"
 msgstr "Pokazuj fototapetę w tle interfejsu"
 
+msgctxt "#31164"
+msgid "Choose kind of profile identification"
+msgstr "Wybierz rodzaj identyfikacji profilu"
+
 msgctxt "#31165"
 msgid "Profile name"
 msgstr "Nazwa profilu"
+
+msgctxt "#31166"
+msgid "Profile avatar"
+msgstr "Awatar profilu"
+
+msgctxt "#31167"
+msgid "Animate background"
+msgstr "Animowane tło"

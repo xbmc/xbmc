@@ -406,7 +406,7 @@ msgstr "Időjárás-szolgáltató beállítása"
 
 msgctxt "#31122"
 msgid "Unwatched TV Shows"
-msgstr "Nem látott TV sorozatok"
+msgstr "Nem látott TV-sorozatok"
 
 msgctxt "#31123"
 msgid "Same director"

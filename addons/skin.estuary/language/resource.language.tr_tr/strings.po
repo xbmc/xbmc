@@ -560,6 +560,10 @@ msgctxt "#31163"
 msgid "Show Fanart background"
 msgstr "Arka plan fanartını göster"
 
+msgctxt "#31164"
+msgid "Choose kind of profile identification"
+msgstr "Profil kimliği türünü seçin"
+
 msgctxt "#31165"
 msgid "Profile name"
 msgstr "Profil adı"

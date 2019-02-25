@@ -560,6 +560,18 @@ msgctxt "#31163"
 msgid "Show Fanart background"
 msgstr "顯示劇照背景"
 
+msgctxt "#31164"
+msgid "Choose kind of profile identification"
+msgstr "選擇設定檔案的標識類型"
+
 msgctxt "#31165"
 msgid "Profile name"
 msgstr "設定檔名稱"
+
+msgctxt "#31166"
+msgid "Profile avatar"
+msgstr "個人資料圖像"
+
+msgctxt "#31167"
+msgid "Animate background"
+msgstr "動畫背景"

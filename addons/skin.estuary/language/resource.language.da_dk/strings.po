@@ -78,11 +78,11 @@ msgstr "Uafspillede album"
 
 msgctxt "#31015"
 msgid "Recent recordings"
-msgstr "Nyelig optagelser"
+msgstr "Nylig optagelser"
 
 msgctxt "#31016"
 msgid "Recently played channels"
-msgstr "Nyelig sete kanaler"
+msgstr "Nylig sete kanaler"
 
 msgctxt "#31017"
 msgid "Rated"
@@ -90,7 +90,7 @@ msgstr "Vurderet"
 
 msgctxt "#31018"
 msgid "Recently played channels"
-msgstr "Nyelig sete kanaler"
+msgstr "Nylig sete kanaler"
 
 msgctxt "#31019"
 msgid "Forecast"
@@ -203,6 +203,10 @@ msgstr "filtreret"
 msgctxt "#31053"
 msgid "Arial based"
 msgstr "Baseret på Arial"
+
+msgctxt "#31054"
+msgid "Press [B]Left[/B] to rewind, or [B]Right[/B] to fast-forward"
+msgstr "Tryk {B]Venstre[/B] for tilbagespoling, eller [B]Højre[/B] for at spole fremad"
 
 msgctxt "#31056"
 msgid "Go to playlist"
@@ -327,6 +331,14 @@ msgstr "Væg"
 msgctxt "#31103"
 msgid "Enter text here..."
 msgstr "Indtast tekst her..."
+
+msgctxt "#31104"
+msgid "Your library is currently empty. In order to populate it with your personal media, enter \"Files\" section, add a media source and configure it. After the source has been added and indexed you will be able to browse your library."
+msgstr "Biblioteket er tomt. Tilføj medie i File sektionen, tilføj mediekilde og konfigurer den. Efter en kilde er tilføjet og indeksere kan indholdet ses i biblioteket."
+
+msgctxt "#31105"
+msgid "Add video sources and set the appropriate content type in order to populate your video libraries."
+msgstr "Tilføj en videokilde med korrekt indhold for at se det i videobiblioteket."
 
 msgctxt "#31106"
 msgid "Teletext"

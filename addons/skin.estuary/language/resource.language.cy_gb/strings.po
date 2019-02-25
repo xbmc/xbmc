@@ -80,6 +80,10 @@ msgctxt "#31106"
 msgid "Teletext"
 msgstr "Teludestun"
 
+msgctxt "#31137"
+msgid "PVR info"
+msgstr "Manylion y PVR"
+
 msgctxt "#31138"
 msgid "Player process info"
 msgstr "Gwybodaeth ar gynnydd chwaraewr"

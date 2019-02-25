@@ -567,3 +567,11 @@ msgstr "Scegli il tipo di indentificazione del profilo"
 msgctxt "#31165"
 msgid "Profile name"
 msgstr "Nome profilo"
+
+msgctxt "#31166"
+msgid "Profile avatar"
+msgstr "Avatar profilo"
+
+msgctxt "#31167"
+msgid "Animate background"
+msgstr "Anima background"
