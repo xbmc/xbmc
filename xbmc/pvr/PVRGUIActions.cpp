@@ -755,7 +755,7 @@ namespace PVR
     CPVRTimerInfoTagPtr timer;
     const CPVRRecordingPtr recording(CPVRItem(item).GetRecording());
     if (recording)
-      timer = CServiceBroker::GetPVRManager().Timers()->GetRecordingTimerForRecording(*recording);
+      timer = recording->GetRecordingTimer();
 
     if (!timer)
       timer = CPVRItem(item).GetTimerInfoTag();

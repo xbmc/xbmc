@@ -724,43 +724,6 @@ CPVRTimerInfoTagPtr CPVRTimers::GetTimerForEpgTag(const CPVREpgInfoTagPtr &epgTa
   return CPVRTimerInfoTagPtr();
 }
 
-bool CPVRTimers::HasRecordingTimerForRecording(const CPVRRecording &recording) const
-{
-  return GetRecordingTimerForRecording(recording) != nullptr;
-}
-
-CPVRTimerInfoTagPtr CPVRTimers::GetRecordingTimerForRecording(const CPVRRecording &recording) const
-{
-  CSingleLock lock(m_critSection);
-
-  for (const auto &tagsEntry : m_tags)
-  {
-    for (const auto &timersEntry : tagsEntry.second)
-    {
-      if (timersEntry->IsRecording() &&
-          !timersEntry->IsTimerRule() &&
-          !timersEntry->IsBroken() &&
-          timersEntry->m_iClientId == recording.ClientID() &&
-          timersEntry->m_iClientChannelUid == recording.ChannelUid())
-      {
-        // first, match epg event uids, if available
-        if (timersEntry->UniqueBroadcastID() == recording.BroadcastUid() &&
-            timersEntry->UniqueBroadcastID() != EPG_TAG_INVALID_UID)
-          return timersEntry;
-
-        // alternatively, match start and end times
-        const CDateTime timerStart = timersEntry->StartAsUTC() - CDateTimeSpan(0, 0, timersEntry->m_iMarginStart, 0);
-        const CDateTime timerEnd = timersEntry->EndAsUTC() + CDateTimeSpan(0, 0, timersEntry->m_iMarginEnd, 0);
-        if (timerStart <= recording.RecordingTimeAsUTC() &&
-            timerEnd >= recording.EndTimeAsUTC())
-          return timersEntry;
-      }
-    }
-  }
-
-  return CPVRTimerInfoTagPtr();
-}
-
 CPVRTimerInfoTagPtr CPVRTimers::GetTimerRule(const CPVRTimerInfoTagPtr &timer) const
 {
   if (timer)

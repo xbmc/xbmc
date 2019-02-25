@@ -26,7 +26,6 @@ typedef std::shared_ptr<CFileItem> CFileItemPtr;
 
 namespace PVR
 {
-  class CPVRRecording;
   class CPVRTimersPath;
 
   class CPVRTimersContainer
@@ -240,20 +239,6 @@ namespace PVR
      * @return The requested timer tag, or nullptr if none was found.
      */
     CPVRTimerInfoTagPtr GetTimerForEpgTag(const CPVREpgInfoTagPtr &epgTag) const;
-
-    /*!
-     * @brief Check whether there is a timer currently recording the given recording.
-     * @param recording The recording to check.
-     * @return true if there is a timer currently recording the given recording, false otherwise.
-     */
-    bool HasRecordingTimerForRecording(const CPVRRecording &recording) const;
-
-    /*!
-     * @brief Get the timer currently recording the given recording, if any.
-     * @param recording The recording to check.
-     * @return The requested timer tag, or an null if none was found.
-     */
-    CPVRTimerInfoTagPtr GetRecordingTimerForRecording(const CPVRRecording &recording) const;
 
     /*!
      * Get the timer rule for a given timer tag

@@ -276,6 +276,12 @@ namespace PVR
     bool IsInProgress() const;
 
     /*!
+     * @brief return the timer for an in-progress recording, if any
+     * @return the timer if the recording is in progress, nullptr otherwise
+     */
+    std::shared_ptr<CPVRTimerInfoTag> GetRecordingTimer() const;
+
+    /*!
     * @brief set the genre for this recording.
     * @param iGenreType The genre type ID. If set to EPG_GENRE_USE_STRING, set genre to the value provided with strGenre. Otherwise, compile the genre string from the values given by iGenreType and iGenreSubType
     * @param iGenreSubType The genre subtype ID

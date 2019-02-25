@@ -462,13 +462,38 @@ int CPVRRecording::ClientID(void) const
   return m_iClientId;
 }
 
+std::shared_ptr<CPVRTimerInfoTag> CPVRRecording::GetRecordingTimer() const
+{
+  const std::vector<std::shared_ptr<CPVRTimerInfoTag>> recordingTimers = CServiceBroker::GetPVRManager().Timers()->GetActiveRecordings();
+
+  for (const auto& timer : recordingTimers)
+  {
+    if (timer->m_iClientId == ClientID() &&
+        timer->m_iClientChannelUid == ChannelUid())
+    {
+      // first, match epg event uids, if available
+      if (timer->UniqueBroadcastID() == BroadcastUid() &&
+          timer->UniqueBroadcastID() != EPG_TAG_INVALID_UID)
+        return timer;
+
+      // alternatively, match start and end times
+      const CDateTime timerStart = timer->StartAsUTC() - CDateTimeSpan(0, 0, timer->m_iMarginStart, 0);
+      const CDateTime timerEnd = timer->EndAsUTC() + CDateTimeSpan(0, 0, timer->m_iMarginEnd, 0);
+      if (timerStart <= RecordingTimeAsUTC() &&
+          timerEnd >= EndTimeAsUTC())
+        return timer;
+    }
+  }
+  return std::shared_ptr<CPVRTimerInfoTag>();
+}
+
 bool CPVRRecording::IsInProgress() const
 {
   // Note: It is not enough to only check recording time and duration against 'now'.
   //       Only the state of the related timer is a safe indicator that the backend
   //       actually is recording this.
 
-  return CServiceBroker::GetPVRManager().Timers()->HasRecordingTimerForRecording(*this);
+  return GetRecordingTimer() != nullptr;
 }
 
 void CPVRRecording::SetGenre(int iGenreType, int iGenreSubType, const std::string &strGenre)
