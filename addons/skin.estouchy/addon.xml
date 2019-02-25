@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<addon id="skin.estouchy" version="2.0.22" name="Estouchy" provider-name="Team Kodi">
+<addon id="skin.estouchy" version="2.0.23" name="Estouchy" provider-name="Team Kodi">
 	<requires>
 		<import addon="xbmc.gui" version="5.14.0"/>
 	</requires>

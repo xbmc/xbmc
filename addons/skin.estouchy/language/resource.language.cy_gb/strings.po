@@ -28,6 +28,10 @@ msgctxt "#31009"
 msgid "Working..."
 msgstr "Gweithio..."
 
+msgctxt "#31011"
+msgid "Recent"
+msgstr "Diweddar"
+
 msgctxt "#31013"
 msgid "Movies"
 msgstr "Ffilmiau"
@@ -39,6 +43,10 @@ msgstr "Rhifynnau"
 msgctxt "#31016"
 msgid "Albums"
 msgstr "Album"
+
+msgctxt "#31017"
+msgid "PVR info"
+msgstr "Manylion y PVR"
 
 msgctxt "#31018"
 msgid "Player process info"
