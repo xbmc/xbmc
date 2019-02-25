@@ -479,7 +479,7 @@ bool CDVDDemuxFFmpeg::Open(const std::shared_ptr<CDVDInputStream>& pInput, bool 
       !isBluray && m_pFormatContext->nb_streams > 0 && m_pFormatContext->streams != nullptr &&
       m_pFormatContext->streams[0]->codecpar->codec_id != AV_CODEC_ID_HEVC)
   {
-    av_opt_set_int(m_pFormatContext, "analyzeduration", 500000, 0);
+    av_opt_set_int(m_pFormatContext, "analyzeduration", 2000000, 0);
     m_checkTransportStream = true;
     skipCreateStreams = true;
   }
