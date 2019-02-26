@@ -565,13 +565,14 @@ bool CPVRGUIInfo::GetListItemAndPlayerLabel(const CFileItem *item, const CGUIInf
         strValue = epgTag->Icon();
         return true;
       case VIDEOPLAYER_PARENTAL_RATING:
-      case LISTITEM_PARENTALRATING:
+      case LISTITEM_PARENTAL_RATING:
         if (epgTag->ParentalRating() > 0)
         {
           strValue = StringUtils::Format("%i", epgTag->ParentalRating());
           return true;
         }
         return false;
+      case VIDEOPLAYER_PREMIERED:
       case LISTITEM_PREMIERED:
         if (epgTag->FirstAiredAsLocalTime().IsValid())
         {
@@ -579,6 +580,17 @@ bool CPVRGUIInfo::GetListItemAndPlayerLabel(const CFileItem *item, const CGUIInf
           return true;
         }
         return false;
+      case VIDEOPLAYER_RATING:
+      case LISTITEM_RATING:
+      {
+        int iStarRating = epgTag->StarRating();
+        if (iStarRating > 0)
+        {
+          strValue = StringUtils::FormatNumber(iStarRating);
+          return true;
+        }
+        return false;
+      }
     }
   }
 
