@@ -247,11 +247,11 @@ int CDVDClock::UpdateFramerate(double fps, double* interval /*= NULL*/)
   //set the speed of the videoreferenceclock based on fps, refreshrate and maximum speed adjust set by user
   if (m_maxspeedadjust > 0.05)
   {
-    if (weight / MathUtils::round_int(weight) < 1.0 + m_maxspeedadjust / 50.0
-    &&  weight / MathUtils::round_int(weight) > 1.0 - m_maxspeedadjust / 50.0)
-      weight = MathUtils::round_int(weight) * 0.5;
+    if (weight / MathUtils::round_int(weight) < 1.0 + m_maxspeedadjust / 200.0
+    &&  weight / MathUtils::round_int(weight) > 1.0 - m_maxspeedadjust / 200.0)
+      weight = MathUtils::round_int(weight);
   }
-  double speed = rate / (fps * weight);
+  double speed = (rate * 2.0 ) / (fps * weight);
   lock.Leave();
 
   m_videoRefClock->SetSpeed(speed);
