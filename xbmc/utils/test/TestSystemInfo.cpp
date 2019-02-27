@@ -9,7 +9,9 @@
 #include "utils/SystemInfo.h"
 #include "settings/Settings.h"
 #include "GUIInfoManager.h"
+#if defined(TARGET_WINDOWS)
 #include "platform/win32/CharsetConverter.h"
+#endif
 
 #include "gtest/gtest.h"
 
