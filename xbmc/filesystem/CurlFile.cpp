@@ -425,6 +425,7 @@ CCurlFile::CCurlFile()
   m_httpresponse = -1;
   m_acceptCharset = "UTF-8,*;q=0.8"; /* prefer UTF-8 if available */
   m_allowRetry = true;
+  m_acceptencoding = "gzip";
 }
 
 //Has to be called before Open()
