@@ -27,9 +27,9 @@ public:
 
   struct TRANSITION
   {
-    TRANSITION_EFFECT type;
-    int start;
-    int length;
+    TRANSITION_EFFECT type = TRANSITION_NONE;
+    int start = 0;
+    int length = 0;
   };
 
   CSlideShowPic();
@@ -108,14 +108,14 @@ private:
   float m_ox[4], m_oy[4];
 
   // transition and display effects
-  DISPLAY_EFFECT m_displayEffect;
+  DISPLAY_EFFECT m_displayEffect = EFFECT_NONE;
   TRANSITION m_transitionStart;
   TRANSITION m_transitionEnd;
   TRANSITION m_transitionTemp; // used for rotations + zooms
   float m_fAngle; // angle (between 0 and 2pi to display the image)
   float m_fTransitionAngle;
   float m_fTransitionZoom;
-  int m_iCounter;
+  int m_iCounter = 0;
   int m_iTotalFrames;
   bool m_bPause;
   bool m_bNoEffect;
