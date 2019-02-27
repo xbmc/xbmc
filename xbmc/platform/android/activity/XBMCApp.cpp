@@ -1006,7 +1006,9 @@ void CXBMCApp::onReceive(CJNIIntent intent)
     if (newstate != m_headsetPlugged)
     {
       m_headsetPlugged = newstate;
-      CServiceBroker::GetActiveAE()->DeviceChange();
+      IAE *iae = CServiceBroker::GetActiveAE();
+      if (iae)
+        iae->DeviceChange();
     }
   }
   else if (action == "android.media.action.HDMI_AUDIO_PLUG")
