@@ -1504,8 +1504,8 @@ namespace VIDEO
         continue;
       std::string aspect = url.m_aspect;
       if (aspect.empty())
-        // temporary support for XML music video scrapers that share music album scraper bits
-        aspect = content == CONTENT_MUSICVIDEOS ? "poster" : "thumb";
+        // Backward compatibility with Kodi 11 Eden NFO files
+        aspect = ContentToMediaType(content, pItem->m_bIsFolder) == MediaTypeEpisode ? "thumb" : "poster";
       if (find(artTypes.begin(), artTypes.end(), aspect) == artTypes.end() || art.find(aspect) != art.end())
         continue;
       std::string image = GetImage(url, pItem->GetPath());
