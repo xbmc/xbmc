@@ -179,12 +179,6 @@ namespace PVR
     bool CreateChannelEpgs(void);
 
     /*!
-     * @brief Remove a channel from all non-system groups.
-     * @param channel The channel to remove.
-     */
-    void RemoveFromAllGroups(const CPVRChannelPtr &channel);
-
-    /*!
      * @brief Persist all changes in channel groups.
      * @return True if everything was persisted, false otherwise.
      */
@@ -206,6 +200,18 @@ namespace PVR
     bool LoadUserDefinedChannelGroups(void);
     bool GetGroupsFromClients(void);
     void SortGroups(void);
+
+    /*!
+     * @brief Remove the given channels from all non-system groups.
+     * @param channel The channels to remove.
+     */
+    void RemoveFromAllGroups(const std::vector<std::shared_ptr<CPVRChannel>>& channelsToRemove);
+
+    /*!
+     * @brief Remove a channel from all non-system groups.
+     * @param channel The channel to remove.
+     */
+    void RemoveFromAllGroups(const std::shared_ptr<CPVRChannel>& channel);
 
     bool                             m_bRadio;         /*!< true if this is a container for radio channels, false if it is for tv channels */
     CPVRChannelGroupPtr              m_selectedGroup;  /*!< the group that's currently selected in the UI */

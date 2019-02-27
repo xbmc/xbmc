@@ -1499,7 +1499,7 @@ void CPVRClient::cb_transfer_channel_group(void *kodiInstance, const ADDON_HANDL
   }
 
   /* transfer this entry to the groups container */
-  CPVRChannelGroup transferGroup(*group);
+  CPVRChannelGroup transferGroup(*group, kodiGroups->GetGroupAll());
   kodiGroups->UpdateFromClient(transferGroup);
 }
 

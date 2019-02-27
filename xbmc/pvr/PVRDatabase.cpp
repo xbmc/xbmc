@@ -521,7 +521,7 @@ bool CPVRDatabase::Get(CPVRChannelGroups &results)
     {
       while (!m_pDS->eof())
       {
-        CPVRChannelGroup data(m_pDS->fv("bIsRadio").get_asBool(), m_pDS->fv("idGroup").get_asInt(), m_pDS->fv("sName").get_asString());
+        CPVRChannelGroup data(m_pDS->fv("bIsRadio").get_asBool(), m_pDS->fv("idGroup").get_asInt(), m_pDS->fv("sName").get_asString(), results.GetGroupAll());
         data.SetGroupType(m_pDS->fv("iGroupType").get_asInt());
         data.SetLastWatched(static_cast<time_t>(m_pDS->fv("iLastWatched").get_asInt()));
         data.SetHidden(m_pDS->fv("bIsHidden").get_asBool());

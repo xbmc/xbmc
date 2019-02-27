@@ -64,14 +64,16 @@ namespace PVR
      * @param bRadio True if this group holds radio channels.
      * @param iGroupId The database ID of this group.
      * @param strGroupName The name of this group.
+     * @param allChannelsGroup The channel group containing all TV or radio channels.
      */
-    CPVRChannelGroup(bool bRadio, unsigned int iGroupId, const std::string &strGroupName);
+    CPVRChannelGroup(bool bRadio, unsigned int iGroupId, const std::string& strGroupName, const std::shared_ptr<CPVRChannelGroup>& allChannelsGroup);
 
     /*!
      * @brief Create a new channel group instance from a channel group provided by an add-on.
      * @param group The channel group provided by the add-on.
+     * @param allChannelsGroup The channel group containing all TV or radio channels.
      */
-    explicit CPVRChannelGroup(const PVR_CHANNEL_GROUP &group);
+    CPVRChannelGroup(const PVR_CHANNEL_GROUP& group, const std::shared_ptr<CPVRChannelGroup>& allChannelsGroup);
 
     /*!
      * @brief Copy constructor
@@ -91,9 +93,10 @@ namespace PVR
 
     /*!
      * @brief Load the channels from the database.
+     * @param channelsToRemove Returns the channels to be removed from all groups, if any
      * @return True when loaded successfully, false otherwise.
      */
-    virtual bool Load(void);
+    virtual bool Load(std::vector<std::shared_ptr<CPVRChannel>>& channelsToRemove);
 
     /*!
      * @return The amount of group members
@@ -102,8 +105,9 @@ namespace PVR
 
     /*!
      * @brief Refresh the channel list from the clients.
+     * @param channelsToRemove Returns the channels to be removed from all groups, if any
      */
-    virtual bool Update(void);
+    virtual bool Update(std::vector<std::shared_ptr<CPVRChannel>>& channelsToRemove);
 
     /*!
      * @brief Get the path of this group.
@@ -336,16 +340,6 @@ namespace PVR
     void GetChannelNumbers(std::vector<std::string>& channelNumbers) const;
 
     /*!
-     * @return The next channel group.
-     */
-    CPVRChannelGroupPtr GetNextGroup(void) const;
-
-    /*!
-     * @return The previous channel group.
-     */
-    CPVRChannelGroupPtr GetPreviousGroup(void) const;
-
-    /*!
      * @brief The amount of hidden channels in this container.
      * @return The amount of hidden channels in this container.
      */
@@ -457,9 +451,10 @@ namespace PVR
      * Only the new channels will be present in the passed list after this call.
      *
      * @param channels The channels to use to update this list.
+     * @param channelsToRemove Returns the channels to be removed from all groups, if any
      * @return True if everything went well, false otherwise.
      */
-    virtual bool UpdateGroupEntries(const CPVRChannelGroup &channels);
+    virtual bool UpdateGroupEntries(const CPVRChannelGroup& channels, std::vector<std::shared_ptr<CPVRChannel>>& channelsToRemove);
 
     /*!
      * @brief Add new channels to this group; updtae data.
@@ -522,5 +517,7 @@ namespace PVR
 
   private:
     CDateTime GetEPGDate(EpgDateType epgDateType) const;
+
+    std::shared_ptr<CPVRChannelGroup> m_allChannelsGroup;
   };
 }

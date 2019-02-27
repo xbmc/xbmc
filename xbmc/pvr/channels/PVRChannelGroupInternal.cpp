@@ -22,7 +22,6 @@
 #include "pvr/PVRDatabase.h"
 #include "pvr/PVRManager.h"
 #include "pvr/addons/PVRClients.h"
-#include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/epg/EpgContainer.h"
 
 using namespace PVR;
@@ -48,9 +47,9 @@ CPVRChannelGroupInternal::~CPVRChannelGroupInternal(void)
   CServiceBroker::GetPVRManager().Events().Unsubscribe(this);
 }
 
-bool CPVRChannelGroupInternal::Load(void)
+bool CPVRChannelGroupInternal::Load(std::vector<std::shared_ptr<CPVRChannel>>& channelsToRemove)
 {
-  if (CPVRChannelGroup::Load())
+  if (CPVRChannelGroup::Load(channelsToRemove))
   {
     UpdateChannelPaths();
     CServiceBroker::GetPVRManager().Events().Subscribe(this, &CPVRChannelGroupInternal::OnPVRManagerEvent);
@@ -113,13 +112,13 @@ CPVRChannelPtr CPVRChannelGroupInternal::UpdateFromClient(const CPVRChannelPtr &
   return channel;
 }
 
-bool CPVRChannelGroupInternal::Update(void)
+bool CPVRChannelGroupInternal::Update(std::vector<std::shared_ptr<CPVRChannel>>& channelsToRemove)
 {
   CPVRChannelGroupInternal PVRChannels_tmp(m_bRadio);
   PVRChannels_tmp.SetPreventSortAndRenumber();
   PVRChannels_tmp.LoadFromClients();
   m_failedClientsForChannels = PVRChannels_tmp.m_failedClientsForChannels;
-  return UpdateGroupEntries(PVRChannels_tmp);
+  return UpdateGroupEntries(PVRChannels_tmp, channelsToRemove);
 }
 
 bool CPVRChannelGroupInternal::AddToGroup(const CPVRChannelPtr &channel, const CPVRChannelNumber &channelNumber, bool bUseBackendChannelNumbers)
@@ -269,12 +268,8 @@ std::vector<CPVRChannelPtr> CPVRChannelGroupInternal::RemoveDeletedChannels(cons
 
   if (!removedChannels.empty())
   {
-    CPVRChannelGroups* groups = CServiceBroker::GetPVRManager().ChannelGroups()->Get(m_bRadio);
     for (const auto& channel : removedChannels)
     {
-      /* remove this channel from all non-system groups */
-      groups->RemoveFromAllGroups(channel);
-
       /* do we have valid data from channel's client? */
       if (!IsMissingChannelsFromClient(channel->ClientID()))
       {
@@ -287,11 +282,11 @@ std::vector<CPVRChannelPtr> CPVRChannelGroupInternal::RemoveDeletedChannels(cons
   return removedChannels;
 }
 
-bool CPVRChannelGroupInternal::UpdateGroupEntries(const CPVRChannelGroup &channels)
+bool CPVRChannelGroupInternal::UpdateGroupEntries(const CPVRChannelGroup& channels, std::vector<std::shared_ptr<CPVRChannel>>& channelsToRemove)
 {
   bool bReturn(false);
 
-  if (CPVRChannelGroup::UpdateGroupEntries(channels))
+  if (CPVRChannelGroup::UpdateGroupEntries(channels, channelsToRemove))
   {
     /* try to find channel icons */
     if (CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_bPVRChannelIconsAutoScan)
