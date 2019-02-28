@@ -130,9 +130,9 @@ void CAlbum::SetArtistCredits(const std::vector<std::string>& names, const std::
                 if (albumartistHints.size() < i + 1)
                   albumartistHints.resize(i + 1);
                 if (artistmbids.size() == artisthints.size())
-                  albumartistHints[j] = artisthints[j];
+                  albumartistHints[i] = artisthints[j];
                 else
-                  albumartistHints[j] = artistnames[j];
+                  albumartistHints[i] = artistnames[j];
               }
             }
           }
