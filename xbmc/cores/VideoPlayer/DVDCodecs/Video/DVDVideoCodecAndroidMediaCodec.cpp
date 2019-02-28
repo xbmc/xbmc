@@ -1085,7 +1085,8 @@ void CDVDVideoCodecAndroidMediaCodec::FlushInternal()
 
 void CDVDVideoCodecAndroidMediaCodec::SignalEndOfStream()
 {
-  if (m_codec->codec() && m_state == MEDIACODEC_STATE_RUNNING)
+  CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec::%s: state: %d", __func__, m_state);
+  if (m_codec->codec() && (m_state == MEDIACODEC_STATE_RUNNING || m_state == MEDIACODEC_STATE_ENDOFSTREAM))
   {
     // Release all mediaodec output buffers to allow drain if we don't get inputbuffer early
     if (m_videoBufferPool)
