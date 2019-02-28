@@ -367,6 +367,7 @@ bool CApplication::Create(const CAppParamParser &params)
   m_bPlatformDirectories = params.m_platformDirectories;
   m_bTestMode = params.m_testmode;
   m_bStandalone = params.m_standAlone;
+  m_bHeadless = params.m_headLess;
 
   m_pSettingsComponent.reset(new CSettingsComponent());
   m_pSettingsComponent->Init(params);
@@ -561,7 +562,7 @@ bool CApplication::Create(const CAppParamParser &params)
   m_pAppPort = std::make_shared<CAppInboundProtocol>(*this);
   CServiceBroker::RegisterAppPort(m_pAppPort);
 
-  m_pWinSystem = CWinSystemBase::CreateWinSystem();
+  m_pWinSystem = CWinSystemBase::CreateWinSystem(!m_bHeadless);
   CServiceBroker::RegisterWinSystem(m_pWinSystem.get());
 
   if (!m_ServiceManager->InitStageTwo(params, m_pSettingsComponent->GetProfileManager()->GetProfileUserDataFolder()))
@@ -608,7 +609,7 @@ bool CApplication::CreateGUI()
 {
   m_frameMoveGuard.lock();
 
-  m_renderGUI = true;
+  m_renderGUI = !m_bHeadless;
 
   if (!CServiceBroker::GetWinSystem()->InitWindowSystem())
   {
@@ -762,7 +763,7 @@ bool CApplication::Initialize()
   // Init DPMS, before creating the corresponding setting control.
   m_dpms.reset(new DPMSSupport());
   bool uiInitializationFinished = false;
-  if (CServiceBroker::GetGUI()->GetWindowManager().Initialized())
+  if (!m_bHeadless && CServiceBroker::GetGUI()->GetWindowManager().Initialized())
   {
     const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
     settings->GetSetting(CSettings::SETTING_POWERMANAGEMENT_DISPLAYSOFF)->SetRequirementsMet(m_dpms->IsSupported());
@@ -873,9 +874,12 @@ bool CApplication::Initialize()
 
   CLog::Log(LOGNOTICE, "initialize done");
 
-  CheckOSScreenSaverInhibitionSetting();
-  // reset our screensaver (starts timers etc.)
-  ResetScreenSaver();
+  if (!m_bHeadless)
+  {
+    CheckOSScreenSaverInhibitionSetting();
+    // reset our screensaver (starts timers etc.)
+    ResetScreenSaver();
+  }
 
   // if the user interfaces has been fully initialized let everyone know
   if (uiInitializationFinished)

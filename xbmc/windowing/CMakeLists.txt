@@ -1,13 +1,15 @@
 set(SOURCES GraphicContext.cpp
             OSScreenSaver.cpp
             Resolution.cpp
-            WinSystem.cpp)
+            WinSystem.cpp
+            WinSystemHeadless.cpp)
 
 set(HEADERS GraphicContext.h
             OSScreenSaver.h
             Resolution.h
             WinEvents.h
             WinSystem.h
+            WinSystemHeadless.h
             XBMC_events.h
             VideoSync.h)
 

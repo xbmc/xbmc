@@ -54,6 +54,7 @@ void CAppParamParser::DisplayHelp()
   printf("Arguments:\n");
   printf("  -fs\t\t\tRuns %s in full screen\n", CSysInfo::GetAppName().c_str());
   printf("  --standalone\t\t%s runs in a stand alone environment without a window \n", CSysInfo::GetAppName().c_str());
+  printf("  --headless\t\t%s runs in headless mode without a window \n", CSysInfo::GetAppName().c_str());
   printf("\t\t\tmanager and supporting applications. For example, that\n");
   printf("\t\t\tenables network settings.\n");
   printf("  -p or --portable\t%s will look for configurations in install folder instead of ~/.%s\n", CSysInfo::GetAppName().c_str(), lcAppName.c_str());
@@ -75,6 +76,8 @@ void CAppParamParser::ParseArg(const std::string &arg)
     DisplayVersion();
   else if (arg == "--standalone")
     m_standAlone = true;
+  else if (arg == "--headless")
+    m_headLess = true;
   else if (arg == "-p" || arg  == "--portable")
     m_platformDirectories = false;
   else if (arg == "--debug")

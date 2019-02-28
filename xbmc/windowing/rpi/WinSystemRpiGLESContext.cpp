@@ -8,6 +8,7 @@
 
 #include "Application.h"
 #include "VideoSyncPi.h"
+#include "windowing/WinSystemHeadless.h"
 #include "WinSystemRpiGLESContext.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
@@ -24,9 +25,16 @@
 using namespace KODI;
 
 
-std::unique_ptr<CWinSystemBase> CWinSystemBase::CreateWinSystem()
+std::unique_ptr<CWinSystemBase> CWinSystemBase::CreateWinSystem(bool render)
 {
-  std::unique_ptr<CWinSystemBase> winSystem(new CWinSystemRpiGLESContext());
+  std::unique_ptr<CWinSystemBase> winSystem(nullptr);
+  if (render)
+    winSystem.reset(new CWinSystemRpiGLESContext());
+  else
+  {
+    winSystem.reset(new CWinSystemHeadless());
+    CLog::Log(LOGWARNING, "HEADLESS MOD NOT TESTED ON THIS BUILD");
+  }
   return winSystem;
 }
 

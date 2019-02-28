@@ -7,6 +7,7 @@
  */
 
 #include "VideoSyncIos.h"
+#include "windowing/WinSystemHeadless.h"
 #include "WinEventsIOS.h"
 #include "WinSystemIOS.h"
 #include "cores/AudioEngine/Sinks/AESinkDARWINIOS.h"
@@ -63,9 +64,16 @@ struct CADisplayLinkWrapper
   IOSDisplayLinkCallback *callbackClass;
 };
 
-std::unique_ptr<CWinSystemBase> CWinSystemBase::CreateWinSystem()
+std::unique_ptr<CWinSystemBase> CWinSystemBase::CreateWinSystem(bool render)
 {
-  std::unique_ptr<CWinSystemBase> winSystem(new CWinSystemIOS());
+  std::unique_ptr<CWinSystemBase> winSystem(nullptr);
+  if (render)
+    winSystem.reset(new CWinSystemIOS());
+  else
+  {
+    winSystem.reset(new CWinSystemHeadless());
+    CLog::Log(LOGWARNING, "HEADLESS MOD NOT TESTED ON THIS BUILD");
+  }
   return winSystem;
 }
 

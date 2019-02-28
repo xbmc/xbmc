@@ -7,15 +7,24 @@
  */
 
 #include "guilib/Texture.h"
+#include "windowing/WinSystemHeadless.h"
 #include "WinSystemOSXGL.h"
 #include "rendering/gl/RenderSystemGL.h"
+#include "utils/log.h"
 
 
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
-std::unique_ptr<CWinSystemBase> CWinSystemBase::CreateWinSystem()
+std::unique_ptr<CWinSystemBase> CWinSystemBase::CreateWinSystem(bool render)
 {
-  std::unique_ptr<CWinSystemBase> winSystem(new CWinSystemOSXGL());
+  std::unique_ptr<CWinSystemBase> winSystem(nullptr);
+  if (render)
+    winSystem.reset(new CWinSystemOSXGL());
+  else
+  {
+    winSystem.reset(new CWinSystemHeadless());
+    CLog::Log(LOGWARNING, "HEADLESS MOD NOT TESTED ON THIS BUILD");
+  }
   return winSystem;
 }
 

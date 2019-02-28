@@ -7,14 +7,22 @@
  */
 
 #include "VideoSyncAndroid.h"
+#include "windowing/WinSystemHeadless.h"
 #include "WinSystemAndroidGLESContext.h"
 #include "utils/log.h"
 #include "threads/SingleLock.h"
 #include "platform/android/activity/XBMCApp.h"
 
-std::unique_ptr<CWinSystemBase> CWinSystemBase::CreateWinSystem()
+std::unique_ptr<CWinSystemBase> CWinSystemBase::CreateWinSystem(bool render)
 {
-  std::unique_ptr<CWinSystemBase> winSystem(new CWinSystemAndroidGLESContext());
+  std::unique_ptr<CWinSystemBase> winSystem(nullptr);
+  if (render)
+    winSystem.reset(new CWinSystemAndroidGLESContext());
+  else
+  {
+    winSystem.reset(new CWinSystemHeadless());
+    CLog::Log(LOGWARNING, "HEADLESS MOD NOT TESTED ON THIS BUILD");
+  }
   return winSystem;
 }
 

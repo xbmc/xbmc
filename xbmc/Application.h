@@ -309,6 +309,7 @@ public:
 
   bool PlatformDirectoriesEnabled() { return m_bPlatformDirectories; }
   bool IsStandAlone() { return m_bStandalone; }
+  bool IsHeadLess() { return m_bHeadless; }
   bool IsEnableTestMode() { return m_bTestMode; }
 
   bool IsAppFocused() const { return m_AppFocused; }
@@ -439,6 +440,7 @@ protected:
   bool m_skipGuiRender = false;
 
   bool m_bStandalone = false;
+  bool m_bHeadless = false;
   bool m_bTestMode = false;
   bool m_bSystemScreenSaverEnable = false;
 

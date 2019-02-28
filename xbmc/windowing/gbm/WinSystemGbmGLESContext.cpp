@@ -20,6 +20,7 @@
 #include "OptionalsReg.h"
 #include "platform/linux/XTimeUtils.h"
 #include "utils/log.h"
+#include "windowing/WinSystemHeadless.h"
 #include "WinSystemGbmGLESContext.h"
 
 #include <gbm.h>
@@ -32,9 +33,13 @@ CWinSystemGbmGLESContext::CWinSystemGbmGLESContext()
 : CWinSystemGbmEGLContext(EGL_PLATFORM_GBM_MESA, "EGL_MESA_platform_gbm")
 {}
 
-std::unique_ptr<CWinSystemBase> CWinSystemBase::CreateWinSystem()
+std::unique_ptr<CWinSystemBase> CWinSystemBase::CreateWinSystem(bool render)
 {
-  std::unique_ptr<CWinSystemBase> winSystem(new CWinSystemGbmGLESContext());
+  std::unique_ptr<CWinSystemBase> winSystem(nullptr);
+  if (render)
+    winSystem.reset(new CWinSystemGbmGLESContext());
+  else
+    winSystem.reset(new CWinSystemHeadless());
   return winSystem;
 }
 

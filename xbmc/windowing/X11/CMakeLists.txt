@@ -4,6 +4,7 @@ set(SOURCES GLContextEGL.cpp
             OSScreenSaverX11.cpp
             WinEventsX11.cpp
             WinSystemX11.cpp
+            WinSystemHeadlessX11.cpp
             WinSystemX11GLContext.cpp
             XRandR.cpp
             VideoSyncOML.cpp)
@@ -14,6 +15,7 @@ set(HEADERS GLContext.h
             OSScreenSaverX11.h
             WinEventsX11.h
             WinSystemX11.h
+            WinSystemHeadlessX11.h
             WinSystemX11GLContext.h
             XRandR.h
             VideoSyncOML.h)

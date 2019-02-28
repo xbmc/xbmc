@@ -7,13 +7,21 @@
  */
 
 #include "VideoSyncAML.h"
+#include "windowing/WinSystemHeadless.h"
 #include "WinSystemAmlogicGLESContext.h"
 #include "utils/log.h"
 #include "threads/SingleLock.h"
 
-std::unique_ptr<CWinSystemBase> CWinSystemBase::CreateWinSystem()
+std::unique_ptr<CWinSystemBase> CWinSystemBase::CreateWinSystem(bool render)
 {
-  std::unique_ptr<CWinSystemBase> winSystem(new CWinSystemAmlogicGLESContext());
+  std::unique_ptr<CWinSystemBase> winSystem(nullptr);
+  if (render)
+    winSystem.reset(new CWinSystemAmlogicGLESContext());
+  else
+  {
+    winSystem.reset(new CWinSystemHeadless());
+    CLog::Log(LOGWARNING, "HEADLESS MOD NOT TESTED ON THIS BUILD");
+  }
   return winSystem;
 }
 

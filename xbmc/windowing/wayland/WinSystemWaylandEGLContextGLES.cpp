@@ -6,6 +6,7 @@
  *  See LICENSES/README.md for more information.
  */
 
+#include "windowing/WinSystemHeadless.h"
 #include "WinSystemWaylandEGLContextGLES.h"
 #include "OptionalsReg.h"
 
@@ -19,9 +20,16 @@
 
 using namespace KODI::WINDOWING::WAYLAND;
 
-std::unique_ptr<CWinSystemBase> CWinSystemBase::CreateWinSystem()
+std::unique_ptr<CWinSystemBase> CWinSystemBase::CreateWinSystem(bool render)
 {
-  std::unique_ptr<CWinSystemBase> winSystem(new CWinSystemWaylandEGLContextGLES());
+  std::unique_ptr<CWinSystemBase> winSystem(nullptr);
+  if (render)
+    winSystem.reset(new CWinSystemWaylandEGLContextGLES());
+  else
+  {
+    winSystem.reset(new CWinSystemHeadless());
+    CLog::Log(LOGWARNING, "HEADLESS MOD NOT TESTED ON THIS BUILD");
+  }
   return winSystem;
 }
 

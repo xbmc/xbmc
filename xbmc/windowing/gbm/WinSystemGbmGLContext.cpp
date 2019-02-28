@@ -14,6 +14,7 @@
 #include "cores/VideoPlayer/VideoRenderers/RenderFactory.h"
 #include "EGL/egl.h"
 #include "EGL/eglext.h"
+#include "windowing/WinSystemHeadless.h"
 #include "WinSystemGbmGLContext.h"
 #include "OptionalsReg.h"
 #include "platform/linux/XTimeUtils.h"
@@ -25,9 +26,13 @@ CWinSystemGbmGLContext::CWinSystemGbmGLContext()
 : CWinSystemGbmEGLContext(EGL_PLATFORM_GBM_MESA, "EGL_MESA_platform_gbm")
 {}
 
-std::unique_ptr<CWinSystemBase> CWinSystemBase::CreateWinSystem()
+std::unique_ptr<CWinSystemBase> CWinSystemBase::CreateWinSystem(bool render)
 {
-  std::unique_ptr<CWinSystemBase> winSystem(new CWinSystemGbmGLContext());
+  std::unique_ptr<CWinSystemBase> winSystem(nullptr);
+  if (render)
+    winSystem.reset(new CWinSystemGbmGLContext());
+  else
+    winSystem.reset(new CWinSystemHeadless());
   return winSystem;
 }
 
