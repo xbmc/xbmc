@@ -94,6 +94,23 @@ void CGUIDialogPVRRecordingSettings::InitializeSettings()
     setting = AddList(group, SETTING_RECORDING_LIFETIME, 19083, SettingLevel::Basic, m_iLifetime, LifetimesFiller, 19083);
 }
 
+bool CGUIDialogPVRRecordingSettings::CanEditRecording(const CFileItem& item)
+{
+  if (!item.HasPVRRecordingInfoTag())
+    return false;
+
+  const std::shared_ptr<CPVRClient> client = CServiceBroker::GetPVRManager().GetClient(item.GetPVRRecordingInfoTag()->ClientID());
+
+  if (!client)
+    return false;
+
+  const CPVRClientCapabilities& capabilities = client->GetClientCapabilities();
+
+  return capabilities.SupportsRecordingsRename() ||
+         capabilities.SupportsRecordingsPlayCount() ||
+         capabilities.SupportsRecordingsLifetimeChange();
+}
+
 bool CGUIDialogPVRRecordingSettings::OnSettingChanging(std::shared_ptr<const CSetting> setting)
 {
   if (setting == nullptr)

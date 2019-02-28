@@ -26,6 +26,7 @@ namespace PVR
     CGUIDialogPVRRecordingSettings();
 
     void SetRecording(const CPVRRecordingPtr &recording);
+    static bool CanEditRecording(const CFileItem& item);
 
   protected:
     // implementation of ISettingCallback
