@@ -26,7 +26,6 @@ class CFileItemList;
 
 namespace PVR
 {
-  class CPVRChannelGroupInternal;
   class CPVREpg;
   class CPVRRadioRDSInfoTag;
 
@@ -277,10 +276,10 @@ namespace PVR
     void ToSortable(SortItem& sortable, Field field) const override;
 
     /*!
-     * @brief Update the path this channel got added to the internal group
-     * @param group The internal group that contains this channel
+     * @brief Update the channel path
+     * @param groupPath The new path of the group this channel belongs to
      */
-    void UpdatePath(CPVRChannelGroupInternal* group);
+    void UpdatePath(const std::string& groupPath);
 
     /*!
      * @return Storage id for this channel in CPVRChannelGroup

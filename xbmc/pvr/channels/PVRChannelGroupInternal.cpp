@@ -83,7 +83,7 @@ void CPVRChannelGroupInternal::UpdateChannelPaths(void)
     if (it->second.channel->IsHidden())
       ++m_iHiddenChannels;
     else
-      it->second.channel->UpdatePath(this);
+      it->second.channel->UpdatePath(GetPath());
   }
 }
 
@@ -103,7 +103,7 @@ CPVRChannelPtr CPVRChannelGroupInternal::UpdateFromClient(const CPVRChannelPtr &
       iChannelNumber = static_cast<int>(m_sortedMembers.size()) + 1;
 
     PVRChannelGroupMember newMember(channel, CPVRChannelNumber(iChannelNumber, channelNumber.GetSubChannelNumber()), 0);
-    channel->UpdatePath(this);
+    channel->UpdatePath(GetPath());
     m_sortedMembers.push_back(newMember);
     m_members.insert(std::make_pair(channel->StorageId(), newMember));
     m_bChanged = true;
