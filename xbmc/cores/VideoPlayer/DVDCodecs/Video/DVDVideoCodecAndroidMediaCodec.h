@@ -104,6 +104,7 @@ public:
 
   std::shared_ptr<CMediaCodec> GetMediaCodec();
   void ResetMediaCodec();
+  void ReleaseMediaCodecBuffers();
 
 private:
   CCriticalSection m_criticalSection;;
@@ -136,6 +137,8 @@ public:
 protected:
   void            Dispose();
   void            FlushInternal(void);
+  void            SignalEndOfStream();
+  void            InjectExtraData(AMediaFormat* mediaformat);
   bool            ConfigureMediaCodec(void);
   int             GetOutputPicture(void);
   void            ConfigureOutputFormat(AMediaFormat* mediaformat);

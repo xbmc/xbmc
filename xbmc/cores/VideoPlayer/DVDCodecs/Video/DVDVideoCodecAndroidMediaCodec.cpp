@@ -321,8 +321,17 @@ std::shared_ptr<CMediaCodec> CMediaCodecVideoBufferPool::GetMediaCodec()
 
 void CMediaCodecVideoBufferPool::ResetMediaCodec()
 {
+  ReleaseMediaCodecBuffers();
+
   CSingleLock lock(m_criticalSection);
   m_codec = nullptr;
+}
+
+void CMediaCodecVideoBufferPool::ReleaseMediaCodecBuffers()
+{
+  CSingleLock lock(m_criticalSection);
+  for (auto buffer : m_videoBuffers)
+    buffer->ReleaseOutputBuffer(false, 0, this);
 }
 
 
@@ -720,6 +729,8 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
 
   if (m_codecname.find("OMX.Nvidia", 0, 10) == 0)
     m_invalidPTSValue = AV_NOPTS_VALUE;
+  else if (m_codecname.find("OMX.MTK", 0, 7) == 0)
+    m_invalidPTSValue = -1; //Use DTS
   else
     m_invalidPTSValue = 0;
 
@@ -831,8 +842,6 @@ bool CDVDVideoCodecAndroidMediaCodec::AddData(const DemuxPacket &packet)
   {
     if (m_indexInputBuffer >= 0)
     {
-      if (m_state == MEDIACODEC_STATE_FLUSHED)
-        m_state = MEDIACODEC_STATE_RUNNING;
       if (!(m_state == MEDIACODEC_STATE_FLUSHED || m_state == MEDIACODEC_STATE_RUNNING))
         CLog::Log(LOGERROR, "CDVDVideoCodecAndroidMediaCodec::AddData: Wrong state (%d)", m_state);
 
@@ -852,14 +861,25 @@ bool CDVDVideoCodecAndroidMediaCodec::AddData(const DemuxPacket &packet)
       if (pData && m_bitstream)
       {
         m_bitstream->Convert(pData, iSize);
+
+        if (m_state == MEDIACODEC_STATE_FLUSHED && !m_bitstream->CanStartDecode())
+        {
+          CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec::AddData: waiting for keyframe (bitstream)");
+          return true;
+        }
+
         iSize = m_bitstream->GetConvertSize();
         pData = m_bitstream->GetConvertBuffer();
       }
+
+      if (m_state == MEDIACODEC_STATE_FLUSHED)
+        m_state = MEDIACODEC_STATE_RUNNING;
+
       size_t out_size;
       uint8_t* dst_ptr = AMediaCodec_getInputBuffer(m_codec->codec(), m_indexInputBuffer, &out_size);
       if ((size_t)iSize > out_size)
       {
-        CLog::Log(LOGERROR, "CDVDVideoCodecAndroidMediaCodec::Decode, iSize(%d) > size(%d)", iSize, out_size);
+        CLog::Log(LOGERROR, "CDVDVideoCodecAndroidMediaCodec::AddData, iSize(%d) > size(%d)", iSize, out_size);
         iSize = out_size;
       }
 
@@ -919,8 +939,10 @@ bool CDVDVideoCodecAndroidMediaCodec::AddData(const DemuxPacket &packet)
         presentationTimeUs = (pts - m_dtsShift);
         m_useDTSforPTS = false;
       }
-      else if (m_useDTSforPTS && dts != DVD_NOPTS_VALUE)
+      else if ((presentationTimeUs < 0 || m_useDTSforPTS) && dts != DVD_NOPTS_VALUE)
         presentationTimeUs = (dts - m_dtsShift);
+      else
+        presentationTimeUs = 0;
 
       int flags = 0;
       int offset = 0;
@@ -962,6 +984,8 @@ void CDVDVideoCodecAndroidMediaCodec::Reset()
     CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec::Reset Current state (%d)", m_state);
     m_state = MEDIACODEC_STATE_FLUSHED;
     AMediaCodec_flush(m_codec->codec());
+
+    InjectExtraData(nullptr);
 
     // Invalidate our local VideoPicture bits
     m_videobuffer.pts = DVD_NOPTS_VALUE;
@@ -1035,7 +1059,7 @@ void CDVDVideoCodecAndroidMediaCodec::SetCodecControl(int flags)
 {
   if (m_codecControlFlags != flags)
   {
-    CLog::Log(LOGDEBUG, LOGVIDEO, "%s %x->%x",  __func__, m_codecControlFlags, flags);
+    CLog::Log(LOGDEBUG, LOGVIDEO, "CDVDVideoCodecAndroidMediaCodec::%s %x->%x",  __func__, m_codecControlFlags, flags);
     m_codecControlFlags = flags;
 
     if (m_codecControlFlags & DVD_CODEC_CTRL_DROP)
@@ -1052,14 +1076,64 @@ unsigned CDVDVideoCodecAndroidMediaCodec::GetAllowedReferences()
 
 void CDVDVideoCodecAndroidMediaCodec::FlushInternal()
 {
-  // invalidate any existing inflight buffers and create
-  // new ones to match the number of output buffers
-  if (m_indexInputBuffer >=0 && CJNIBase::GetSDKVersion() >= 26)
-    AMediaCodec_queueInputBuffer(m_codec->codec(), m_indexInputBuffer, 0, 0, 0, AMEDIACODEC_BUFFER_FLAG_END_OF_STREAM);
+  SignalEndOfStream();
 
   m_OutputDuration = 0;
   m_lastPTS = -1;
   m_dtsShift = DVD_NOPTS_VALUE;
+}
+
+void CDVDVideoCodecAndroidMediaCodec::SignalEndOfStream()
+{
+  if (m_codec->codec() && m_state == MEDIACODEC_STATE_RUNNING)
+  {
+    // Release all mediaodec output buffers to allow drain if we don't get inputbuffer early
+    if (m_videoBufferPool)
+    {
+      CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec::%s: ReleaseMediaCodecBuffers", __func__);
+      m_videoBufferPool->ReleaseMediaCodecBuffers();
+    }
+
+    if (m_indexInputBuffer < 0)
+      m_indexInputBuffer = AMediaCodec_dequeueInputBuffer(m_codec->codec(), 100000);
+
+    if (m_indexInputBuffer >= 0)
+    {
+      media_status_t status= AMediaCodec_queueInputBuffer(m_codec->codec(), m_indexInputBuffer, 0, 0, 0, AMEDIACODEC_BUFFER_FLAG_END_OF_STREAM);
+      if (status == AMEDIA_OK)
+      {
+        m_indexInputBuffer = -1;
+        CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec::%s: BUFFER_FLAG_END_OF_STREAM send", __func__);
+      }
+      else
+        CLog::Log(LOGWARNING, "CDVDVideoCodecAndroidMediaCodec::%s: AMediaCodec_queueInputBuffer returned: %d", __func__, status);
+    }
+    else
+      CLog::Log(LOGWARNING, "CDVDVideoCodecAndroidMediaCodec::%s: invalid index: %d", __func__, m_indexInputBuffer);
+  }
+}
+
+void CDVDVideoCodecAndroidMediaCodec::InjectExtraData(AMediaFormat* mediaformat)
+{
+  if (!m_hints.extrasize)
+    return;
+
+  if (!mediaformat && m_codec->codec())
+    mediaformat = AMediaCodec_getOutputFormat(m_codec->codec());
+
+  if (mediaformat)
+  {
+    CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec::%s", __func__);
+    size_t size = m_hints.extrasize;
+    void  *src_ptr = m_hints.extradata;
+    if (m_bitstream)
+    {
+      size = m_bitstream->GetExtraSize();
+      src_ptr = m_bitstream->GetExtraData();
+    }
+
+    AMediaFormat_setBuffer(mediaformat, "csd-0", src_ptr, size);
+  }
 }
 
 bool CDVDVideoCodecAndroidMediaCodec::ConfigureMediaCodec(void)
@@ -1081,18 +1155,7 @@ bool CDVDVideoCodecAndroidMediaCodec::ConfigureMediaCodec(void)
 
 
   // handle codec extradata
-  if (m_hints.extrasize)
-  {
-    size_t size = m_hints.extrasize;
-    void  *src_ptr = m_hints.extradata;
-    if (m_bitstream)
-    {
-      size = m_bitstream->GetExtraSize();
-      src_ptr = m_bitstream->GetExtraData();
-    }
-
-    AMediaFormat_setBuffer(mediaformat, "csd-0", src_ptr, size);
-  }
+  InjectExtraData(mediaformat);
 
   if (m_render_surface)
   {
