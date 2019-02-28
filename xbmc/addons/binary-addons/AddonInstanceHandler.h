@@ -45,6 +45,7 @@ namespace ADDON
     KODI_HANDLE m_parentInstance;
     BinaryAddonBasePtr m_addonBase;
     AddonDllPtr m_addon;
+    static CCriticalSection m_cdSec;
   };
 
 } /* namespace ADDON */
