@@ -1460,11 +1460,14 @@ void CVideoPlayer::Process()
       continue;
     }
 
-    if (m_demuxerSpeed == DVD_PLAYSPEED_PAUSE)
+    // adjust demuxer speed; some rtsp servers wants to know for i.e. ff
+    // delay pause until queue is full
+    if (m_playSpeed != DVD_PLAYSPEED_PAUSE &&
+        m_demuxerSpeed != m_playSpeed)
     {
       if (m_pDemuxer)
-        m_pDemuxer->SetSpeed(DVD_PLAYSPEED_NORMAL);
-      m_demuxerSpeed = DVD_PLAYSPEED_NORMAL;
+        m_pDemuxer->SetSpeed(m_playSpeed);
+      m_demuxerSpeed = m_playSpeed;
     }
 
     // always yield to players if they have data levels > 50 percent
