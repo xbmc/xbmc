@@ -21,6 +21,7 @@
 #include "cores/VideoPlayer/VideoRenderers/RenderFactory.h"
 #include "rendering/gles/ScreenshotSurfaceGLES.h"
 #include "utils/BufferObjectFactory.h"
+#include "utils/DumbBufferObject.h"
 #include "utils/GBMBufferObject.h"
 #include "utils/XTimeUtils.h"
 #include "utils/log.h"
@@ -73,6 +74,7 @@ bool CWinSystemGbmGLESContext::InitWindowSystem()
   CScreenshotSurfaceGLES::Register();
 
   CBufferObjectFactory::ClearBufferObjects();
+  CDumbBufferObject::Register();
 #if defined(HAS_GBM_BO_MAP)
   CGBMBufferObject::Register();
 #endif
