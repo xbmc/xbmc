@@ -290,7 +290,7 @@ bool CAESinkAUDIOTRACK::VerifySinkConfiguration(int sampleRate, int channelMask,
     jniAt->release();
     delete jniAt;
   }
-
+  usleep(50 * 1000); // Enumeration only, reduce pressure while starting
   return success;
 }
 
@@ -575,6 +575,7 @@ void CAESinkAUDIOTRACK::Deinitialize()
   if (!m_at_jni)
     return;
 
+  uint64_t before = CurrentHostCounter();
   if (IsInitialized())
   {
     m_at_jni->stop();
@@ -591,6 +592,14 @@ void CAESinkAUDIOTRACK::Deinitialize()
 
   delete m_at_jni;
   m_at_jni = NULL;
+  uint64_t gone = CurrentHostCounter() - before;
+  uint64_t delta_ms = 1000 * gone / CurrentHostFrequency();
+  int64_t diff = m_audiotrackbuffer_sec * 1000 - delta_ms;
+  if (diff > 0)
+  {
+    CLog::Log(LOGDEBUG, "Flushing might not be properly implemented, sleeping: %d ms", diff);
+    usleep(diff * 1000);
+  }
 }
 
 bool CAESinkAUDIOTRACK::IsInitialized()
