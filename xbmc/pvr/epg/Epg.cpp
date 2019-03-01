@@ -506,12 +506,11 @@ std::vector<std::shared_ptr<CPVREpgInfoTag>> CPVREpg::GetTags(const CPVREpgSearc
   return tags;
 }
 
-bool CPVREpg::Persist(void)
+bool CPVREpg::Persist(const std::shared_ptr<CPVREpgDatabase>& database)
 {
   if (CServiceBroker::GetPVRManager().EpgContainer().IgnoreDB() || !NeedsSave())
     return true;
 
-  const CPVREpgDatabasePtr database = CServiceBroker::GetPVRManager().EpgContainer().GetEpgDatabase();
   if (!database)
   {
     CLog::LogF(LOGERROR, "Could not open the EPG database");
@@ -537,7 +536,7 @@ bool CPVREpg::Persist(void)
       database->Delete(*tag.second);
 
     for (const auto& tag : m_changedTags)
-      tag.second->Persist(false);
+      tag.second->Persist(database, false);
 
     if (m_bUpdateLastScanTime)
       database->PersistLastEpgScanTime(m_iEpgID, true);

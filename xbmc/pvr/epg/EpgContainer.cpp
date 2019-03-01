@@ -302,7 +302,7 @@ bool CPVREpgContainer::PersistAll(void)
   for (const auto& epg : epgs)
   {
     if (epg.second && epg.second->NeedsSave())
-      bReturn &= epg.second->Persist();
+      bReturn &= epg.second->Persist(GetEpgDatabase());
   }
 
   return bReturn;

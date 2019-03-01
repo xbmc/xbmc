@@ -352,11 +352,12 @@ namespace PVR
     bool IsPlayable(void) const;
 
     /*!
-     * @brief Persist this tag in the database.
+     * @brief Persist this tag in the given database.
+     * @param database The database.
      * @param bSingleUpdate True if this is a single update, false if more updates will follow.
      * @return True if the tag was persisted correctly, false otherwise.
      */
-    bool Persist(bool bSingleUpdate = true);
+    bool Persist(const std::shared_ptr<CPVREpgDatabase>& database, bool bSingleUpdate = true);
 
     /*!
      * @brief Update the information in this tag with the info in the given tag.

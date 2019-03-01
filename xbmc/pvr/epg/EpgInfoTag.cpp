@@ -19,9 +19,7 @@
 #include "utils/log.h"
 
 #include "pvr/PVRManager.h"
-#include "pvr/epg/Epg.h"
 #include "pvr/epg/EpgChannelData.h"
-#include "pvr/epg/EpgContainer.h"
 #include "pvr/epg/EpgDatabase.h"
 
 using namespace PVR;
@@ -593,11 +591,10 @@ bool CPVREpgInfoTag::Update(const CPVREpgInfoTag &tag, bool bUpdateBroadcastId /
   return bChanged;
 }
 
-bool CPVREpgInfoTag::Persist(bool bSingleUpdate /* = true */)
+bool CPVREpgInfoTag::Persist(const std::shared_ptr<CPVREpgDatabase>& database, bool bSingleUpdate /* = true */)
 {
   bool bReturn = false;
 
-  const CPVREpgDatabasePtr database = CServiceBroker::GetPVRManager().EpgContainer().GetEpgDatabase();
   if (!database)
   {
     CLog::LogF(LOGERROR, "Could not open the EPG database");

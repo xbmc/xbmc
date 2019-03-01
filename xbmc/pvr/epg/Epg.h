@@ -212,10 +212,11 @@ namespace PVR
     std::vector<std::shared_ptr<CPVREpgInfoTag>> GetTags(const CPVREpgSearchFilter& filter) const;
 
     /*!
-     * @brief Persist this table in the database.
+     * @brief Persist this table in the given database
+     * @param database The database.
      * @return True if the table was persisted, false otherwise.
      */
-    bool Persist(void);
+    bool Persist(const std::shared_ptr<CPVREpgDatabase>& database);
 
     /*!
      * @brief Get the start time of the first entry in this table.
