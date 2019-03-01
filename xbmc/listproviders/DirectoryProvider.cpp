@@ -190,6 +190,7 @@ bool CDirectoryProvider::Update(bool forceRefresh)
   fireJob |= UpdateURL();
   fireJob |= UpdateSort();
   fireJob |= UpdateLimit();
+  fireJob &= !m_currentUrl.empty();
 
   CSingleLock lock(m_section);
   if (m_updateState == INVALIDATED)

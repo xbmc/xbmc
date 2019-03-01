@@ -12,7 +12,7 @@ class CExifParse
 
   private:
     ExifInfo_t *m_ExifInfo = nullptr;
-    double m_FocalPlaneXRes;
+    double m_FocalPlaneXRes = 0.0;
     double m_FocalPlaneUnits = 0.0;
     unsigned m_LargestExifOffset = 0;          // Last exif data referenced (to check if thumbnail is at end)
     int m_ExifImageWidth = 0;

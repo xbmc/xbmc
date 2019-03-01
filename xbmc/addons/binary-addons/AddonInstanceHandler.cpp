@@ -15,6 +15,8 @@
 namespace ADDON
 {
 
+CCriticalSection IAddonInstanceHandler::m_cdSec;
+
 IAddonInstanceHandler::IAddonInstanceHandler(ADDON_TYPE type, const BinaryAddonBasePtr& addonBase, KODI_HANDLE parentInstance/* = nullptr*/, const std::string& instanceID/* = ""*/)
   : m_type(type),
     m_parentInstance(parentInstance),
@@ -76,6 +78,8 @@ ADDON_STATUS IAddonInstanceHandler::CreateInstance(KODI_HANDLE instance)
   if (!m_addon)
     return ADDON_STATUS_UNKNOWN;
 
+  CSingleLock lock(m_cdSec);
+
   ADDON_STATUS status = m_addon->CreateInstance(m_type, m_instanceId, instance, m_parentInstance);
   if (status != ADDON_STATUS_OK)
   {
@@ -89,6 +93,7 @@ ADDON_STATUS IAddonInstanceHandler::CreateInstance(KODI_HANDLE instance)
 
 void IAddonInstanceHandler::DestroyInstance()
 {
+  CSingleLock lock(m_cdSec);
   if (m_addon)
     m_addon->DestroyInstance(m_instanceId);
 }
