@@ -62,10 +62,7 @@ CWinSystemAndroid::CWinSystemAndroid()
 
 CWinSystemAndroid::~CWinSystemAndroid()
 {
-  if(m_nativeWindow)
-  {
-    m_nativeWindow = nullptr;
-  }
+  m_nativeWindow = nullptr;
   delete m_dispResetTimer, m_dispResetTimer = nullptr;
 }
 
@@ -134,6 +131,8 @@ bool CWinSystemAndroid::CreateNewWindow(const std::string& name,
 
 bool CWinSystemAndroid::DestroyWindow()
 {
+  m_nativeWindow = nullptr;
+  m_bWindowCreated = false;
   return true;
 }
 
