@@ -4159,6 +4159,9 @@ CVideoInfoTag CVideoDatabase::GetDetailsForMusicVideo(const dbiplus::sql_record*
 {
   CVideoInfoTag details;
 
+  if (record == nullptr)
+    return details;
+
   unsigned int time = XbmcThreads::SystemClockMillis();
   int idMVideo = record->at(0).get_asInt();
 
