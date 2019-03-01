@@ -246,6 +246,11 @@ void CPVREpgContainer::Notify(const Observable &obs, const ObservableMessage msg
     m_bUpdateNotificationPending = true;
     return;
   }
+  else if (msg == ObservableMessageEpgUpdatePending)
+  {
+    SetHasPendingUpdates(true);
+    return;
+  }
 
   SetChanged();
   CSingleExit ex(m_critSection);
@@ -282,7 +287,7 @@ void CPVREpgContainer::LoadFromDB(void)
     progressHandler->UpdateProgress(epgEntry.second->Name(), ++iCounter, m_epgIdToEpgMap.size());
 
     lock.Leave();
-    epgEntry.second->Load();
+    epgEntry.second->Load(GetEpgDatabase());
     lock.Enter();
   }
 
@@ -293,16 +298,21 @@ void CPVREpgContainer::LoadFromDB(void)
 
 bool CPVREpgContainer::PersistAll(void)
 {
-  bool bReturn = true;
+  bool bReturn = IgnoreDB();
 
-  m_critSection.lock();
-  const auto epgs = m_epgIdToEpgMap;
-  m_critSection.unlock();
-
-  for (const auto& epg : epgs)
+  if (!bReturn)
   {
-    if (epg.second && epg.second->NeedsSave())
-      bReturn &= epg.second->Persist(GetEpgDatabase());
+    m_critSection.lock();
+    const auto epgs = m_epgIdToEpgMap;
+    m_critSection.unlock();
+
+    const std::shared_ptr<CPVREpgDatabase> database = GetEpgDatabase();
+
+    for (const auto& epg : epgs)
+    {
+      if (epg.second && epg.second->NeedsSave())
+        bReturn &= epg.second->Persist(database);
+    }
   }
 
   return bReturn;
@@ -649,6 +659,7 @@ bool CPVREpgContainer::UpdateEPG(bool bOnlyPending /* = false */)
 
   /* load or update all EPG tables */
   unsigned int iCounter = 0;
+  const std::shared_ptr<CPVREpgDatabase> database = IgnoreDB() ? nullptr : GetEpgDatabase();
   for (const auto &epgEntry : m_epgIdToEpgMap)
   {
     if (InterruptUpdate())
@@ -665,7 +676,12 @@ bool CPVREpgContainer::UpdateEPG(bool bOnlyPending /* = false */)
       progressHandler->UpdateProgress(epg->Name(), ++iCounter, m_epgIdToEpgMap.size());
 
     if ((!bOnlyPending || epg->UpdatePending()) &&
-        epg->Update(start, end, m_settings.GetIntValue(CSettings::SETTING_EPG_EPGUPDATE) * 60, bOnlyPending))
+        epg->Update(start,
+                    end,
+                    m_settings.GetIntValue(CSettings::SETTING_EPG_EPGUPDATE) * 60,
+                    m_settings.GetIntValue(CSettings::SETTING_EPG_PAST_DAYSTODISPLAY),
+                    database,
+                    bOnlyPending))
     {
       iUpdatedTables++;
     }

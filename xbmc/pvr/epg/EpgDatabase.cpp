@@ -317,11 +317,11 @@ bool CPVREpgDatabase::GetLastEpgScanTime(int iEpgId, CDateTime *lastScan)
   return bReturn;
 }
 
-bool CPVREpgDatabase::PersistLastEpgScanTime(int iEpgId /* = 0 */, bool bQueueWrite /* = false */)
+bool CPVREpgDatabase::PersistLastEpgScanTime(int iEpgId, const CDateTime& lastScanTime, bool bQueueWrite /* = false */)
 {
   CSingleLock lock(m_critSection);
   std::string strQuery = PrepareSQL("REPLACE INTO lastepgscan(idEpg, sLastScan) VALUES (%u, '%s');",
-      iEpgId, CDateTime::GetCurrentDateTime().GetAsUTCDateTime().GetAsDBDateTime().c_str());
+      iEpgId, lastScanTime.GetAsDBDateTime().c_str());
 
   return bQueueWrite ? QueueInsertQuery(strQuery) : ExecuteQuery(strQuery);
 }

@@ -121,11 +121,12 @@ namespace PVR
 
     /*!
      * @brief Update the last scan time.
-     * @param iEpgId The table to update the time for. Use 0 for a global value.
+     * @param iEpgId The table to update the time for.
+     * @param lastScanTime The time to write to the database.
      * @param bQueueWrite Don't execute the query immediately but queue it if true.
      * @return True if it was updated successfully, false otherwise.
      */
-    bool PersistLastEpgScanTime(int iEpgId = 0, bool bQueueWrite = false);
+    bool PersistLastEpgScanTime(int iEpgId, const CDateTime& lastScanTime, bool bQueueWrite = false);
 
     /*!
      * @brief Persist an EPG table. It's entries are not persisted.

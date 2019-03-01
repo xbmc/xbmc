@@ -52,10 +52,11 @@ namespace PVR
     ~CPVREpg(void) override;
 
     /*!
-     * @brief Load all entries for this table from the database.
+     * @brief Load all entries for this table from the given database.
+     * @param database The database.
      * @return True if any entries were loaded, false otherwise.
      */
-    bool Load(void);
+    bool Load(const std::shared_ptr<CPVREpgDatabase>& database);
 
     /*!
      * @brief Get data for the channel associated with this EPG.
@@ -111,17 +112,10 @@ namespace PVR
     bool HasValidEntries(void) const;
 
     /*!
-     * @brief Remove all entries from this EPG that finished before the given time
-     *        and that have no timers set.
+     * @brief Remove all entries from this EPG that finished before the given time.
      * @param time Delete entries with an end time before this time in UTC.
      */
     void Cleanup(const CDateTime &time);
-
-    /*!
-     * @brief Remove all entries from this EPG that finished before the given time
-     *        and that have no timers set.
-     */
-    void Cleanup(void);
 
     /*!
      * @brief Remove all entries from this EPG.
@@ -193,10 +187,12 @@ namespace PVR
      * @param start The start time.
      * @param end The end time.
      * @param iUpdateTime Update the table after the given amount of time has passed.
+     * @param iPastDays Amount of past days from now on, for which past entries are to be kept.
+     * @param database If given, the database to store the data.
      * @param bForceUpdate Force update from client even if it's not the time to
      * @return True if the update was successful, false otherwise.
      */
-    bool Update(const time_t start, const time_t end, int iUpdateTime, bool bForceUpdate = false);
+    bool Update(time_t start, time_t end, int iUpdateTime, int iPastDays, const std::shared_ptr<CPVREpgDatabase>& database, bool bForceUpdate = false);
 
     /*!
      * @brief Get all EPG tags.
@@ -229,12 +225,6 @@ namespace PVR
      * @return The last date in UTC.
      */
     CDateTime GetLastDate(void) const;
-
-    /*!
-     * @brief Get the time the EPG data were last updated.
-     * @return The last time this table was scanned.
-     */
-    CDateTime GetLastScanTime(void);
 
     /*!
      * @brief Notify observers when the currently active tag changed.
@@ -306,6 +296,12 @@ namespace PVR
      * @return True if the update was successful, false otherwise.
      */
     bool UpdateEntries(const CPVREpg &epg, bool bStoreInDb = true);
+
+    /*!
+     * @brief Remove all entries from this EPG that finished before the given amount of days.
+     * @param iPastDays Delete entries with an end time before the given amount of days from now on.
+     */
+    void Cleanup(int iPastDays);
 
     std::map<CDateTime, CPVREpgInfoTagPtr> m_tags;
     std::map<int, CPVREpgInfoTagPtr>       m_changedTags;
