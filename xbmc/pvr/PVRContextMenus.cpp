@@ -266,8 +266,9 @@ namespace PVR
     {
       const CPVRRecordingPtr recording(item.GetPVRRecordingInfoTag());
       if (recording && !recording->IsDeleted() && !recording->IsInProgress())
-        return true;
-
+      {
+        return CServiceBroker::GetPVRManager().GUIActions()->CanEditRecording(item);
+      }
       return false;
     }
 

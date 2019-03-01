@@ -916,6 +916,11 @@ namespace PVR
     return true;
   }
 
+  bool CPVRGUIActions::CanEditRecording(const CFileItem& item) const
+  {
+    return CGUIDialogPVRRecordingSettings::CanEditRecording(item);
+  }
+
   bool CPVRGUIActions::RenameRecording(const CFileItemPtr &item) const
   {
     const CPVRRecordingPtr recording(item->GetPVRRecordingInfoTag());
