@@ -17866,7 +17866,12 @@ msgctxt "#36049"
 msgid "Remote button press release time (ms)"
 msgstr ""
 
-#empty strings from id 36050 to 36098
+#: system/settings.xml
+msgctxt "#36050"
+msgid "On start"
+msgstr ""
+
+#empty strings from id 36051 to 36098
 
 #: system/settings/settings.xml
 msgctxt "#36099"

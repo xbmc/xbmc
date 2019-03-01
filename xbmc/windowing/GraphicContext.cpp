@@ -333,13 +333,20 @@ void CGraphicContext::SetFullScreenVideo(bool bOnOff)
           bTriggerUpdateRes = true;
       }
     }
-
+    
+    bool allowResolutionChangeOnStop = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_VIDEOPLAYER_ADJUSTREFRESHRATE) != ADJUST_REFRESHRATE_ON_START;
+    RESOLUTION targetResolutionOnStop = RES_DESKTOP;
     if (bTriggerUpdateRes)
       g_application.GetAppPlayer().TriggerUpdateResolution();
     else if (CDisplaySettings::GetInstance().GetCurrentResolution() > RES_DESKTOP)
-      SetVideoResolution(CDisplaySettings::GetInstance().GetCurrentResolution(), false);
-    else
-      SetVideoResolution(RES_DESKTOP, false);
+    {
+      targetResolutionOnStop = CDisplaySettings::GetInstance().GetCurrentResolution();
+    }
+    
+    if (allowResolutionChangeOnStop && !bTriggerUpdateRes)
+    {
+      SetVideoResolution(targetResolutionOnStop, false);
+    }
   }
   else
     SetVideoResolution(RES_WINDOW, false);
