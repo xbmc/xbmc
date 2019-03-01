@@ -94,9 +94,9 @@
 	<default type="slider">
 		<controloffsetx>75</controloffsetx>
 		<controloffsety>0</controloffsety>
-		<texturesliderbar></texturesliderbar>
-		<textureslidernib></textureslidernib>
-		<textureslidernibfocus></textureslidernibfocus>
+		<texturesliderbar>slider.png</texturesliderbar>
+		<textureslidernib>slider_nofocus.png</textureslidernib>
+		<textureslidernibfocus>slider_focus.png</textureslidernibfocus>
 		<orientation>horizontal</orientation>
 	</default>
 	<default type="sliderex">

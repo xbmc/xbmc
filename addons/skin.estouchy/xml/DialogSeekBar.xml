@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <window>
-	<visible>[Window.IsActive(FullscreenVideo) | Window.IsActive(Visualisation)] + ![Window.IsActive(VideoOSD) | Window.IsActive(MusicOSD)] + [Player.Seeking | Player.DisplayAfterSeek]</visible>
+	<visible>[Window.IsActive(FullscreenVideo) | Window.IsActive(Visualisation)] + ![Window.IsActive(VideoOSD) | Window.IsActive(MusicOSD) | Window.IsActive(SliderDialog)] + [Player.Seeking | Player.DisplayAfterSeek]</visible>
 	<controls>
 		<control type="group">
 			<posx>364</posx>

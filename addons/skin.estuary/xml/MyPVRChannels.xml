@@ -23,7 +23,7 @@
 					<onright>73</onright>
 					<onup>50</onup>
 					<ondown>50</ondown>
-					<viewtype label="List">list</viewtype>
+					<viewtype label="535">list</viewtype>
 					<preloaditems>1</preloaditems>
 					<pagecontrol>73</pagecontrol>
 					<focusedlayout height="90">
@@ -166,7 +166,7 @@
 					<onright>73</onright>
 					<onup>51</onup>
 					<ondown>51</ondown>
-					<viewtype label="List">list</viewtype>
+					<viewtype label="535">list</viewtype>
 					<preloaditems>1</preloaditems>
 					<pagecontrol>73</pagecontrol>
 					<focusedlayout height="70">

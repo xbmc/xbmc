@@ -49,7 +49,6 @@
 				<height>70</height>
 				<font>font25</font>
 				<textcolor>selected</textcolor>
-				<disabledcolor>grey2</disabledcolor>
 				<align>center</align>
 				<aligny>center</aligny>
 			</control>

@@ -76,7 +76,7 @@
 					<top>80</top>
 					<control type="list" id="1103">
 						<defaultcontrol always="true">2101</defaultcontrol>
-						<height max="400">auto</height>
+						<height>400</height>
 						<orientation>vertical</orientation>
 						<itemlayout condition="!Control.IsVisible(2200)" width="700" height="80">
 							<control type="image">
