@@ -425,6 +425,7 @@ CCurlFile::CCurlFile()
   m_httpresponse = -1;
   m_acceptCharset = "UTF-8,*;q=0.8"; /* prefer UTF-8 if available */
   m_allowRetry = true;
+  m_acceptencoding = "all"; /* Accept all supported encoding by default */
 }
 
 //Has to be called before Open()
@@ -579,7 +580,7 @@ void CCurlFile::SetCommonOptions(CReadState* state, bool failOnError /* = true *
 
   // setup Accept-Encoding if requested
   if (m_acceptencoding.length() > 0)
-    g_curlInterface.easy_setopt(h, CURLOPT_ACCEPT_ENCODING, m_acceptencoding.c_str());
+    g_curlInterface.easy_setopt(h, CURLOPT_ACCEPT_ENCODING, m_acceptencoding == "all" ? "" : m_acceptencoding.c_str());
 
   if (!m_acceptCharset.empty())
     SetRequestHeader("Accept-Charset", m_acceptCharset);
