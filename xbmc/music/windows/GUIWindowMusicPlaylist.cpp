@@ -93,6 +93,12 @@ bool CGUIWindowMusicPlayList::OnMessage(CGUIMessage& message)
     }
     break;
 
+  case GUI_MSG_PLAYLIST_CHANGED_FAST:
+    {
+    	RefreshPlaylist();
+    }
+    break;
+
   case GUI_MSG_WINDOW_DEINIT:
     {
       if (m_musicInfoLoader.IsLoading())
