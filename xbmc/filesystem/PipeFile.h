@@ -14,9 +14,6 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#if !defined(AFX_FILEPIPE_H__DD2B0A9E_4971_4A29_B525_78CEFCDAF4A1__INCLUDED_)
-#define AFX_FILEPIPE_H__DD2B0A9E_4971_4A29_B525_78CEFCDAF4A1__INCLUDED_
-
 #include <string>
 #include <vector>
 
@@ -78,4 +75,3 @@ protected:
 };
 
 }
-#endif // !defined(AFX_FILEPIPE_H__DD2B0A9E_4971_4A29_B525_78CEFCDAF4A1__INCLUDED_)
