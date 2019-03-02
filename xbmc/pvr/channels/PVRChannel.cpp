@@ -527,16 +527,16 @@ void CPVRChannel::UpdateEncryptionName(void)
 
 /********** EPG methods **********/
 
-int CPVRChannel::GetEPG(CFileItemList &results) const
+std::vector<std::shared_ptr<CPVREpgInfoTag>> CPVRChannel::GetEpgTags() const
 {
   const CPVREpgPtr epg = GetEPG();
   if (!epg)
   {
     CLog::LogFC(LOGDEBUG, LOGPVR, "Cannot get EPG for channel '%s'", m_strChannelName.c_str());
-    return -1;
+    return std::vector<std::shared_ptr<CPVREpgInfoTag>>();
   }
 
-  return epg->Get(results);
+  return epg->GetTags();
 }
 
 bool CPVRChannel::ClearEPG() const

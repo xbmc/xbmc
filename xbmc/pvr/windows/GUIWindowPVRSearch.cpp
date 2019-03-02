@@ -23,6 +23,7 @@
 #include "pvr/PVRItem.h"
 #include "pvr/PVRManager.h"
 #include "pvr/addons/PVRClients.h"
+#include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/dialogs/GUIDialogPVRGuideSearch.h"
 #include "pvr/epg/EpgContainer.h"
 #include "pvr/epg/EpgSearchFilter.h"
@@ -55,7 +56,11 @@ namespace
 
   void AsyncSearchAction::Run()
   {
-    CServiceBroker::GetPVRManager().EpgContainer().GetEPGSearch(*m_items, *m_filter);
+    const std::vector<std::shared_ptr<CPVREpgInfoTag>> tags = CServiceBroker::GetPVRManager().EpgContainer().GetEPGSearch(*m_filter);
+    for (const auto& tag : tags)
+    {
+      m_items->Add(std::make_shared<CFileItem>(tag));
+    }
   }
 } // unnamed namespace
 

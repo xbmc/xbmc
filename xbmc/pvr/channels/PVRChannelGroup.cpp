@@ -913,9 +913,10 @@ void CPVRChannelGroup::OnSettingChanged(std::shared_ptr<const CSetting> setting)
   }
 }
 
-int CPVRChannelGroup::GetEPGAll(CFileItemList &results, bool bIncludeChannelsWithoutEPG /* = false */) const
+std::vector<std::shared_ptr<CPVREpgInfoTag>> CPVRChannelGroup::GetEPGAll(bool bIncludeChannelsWithoutEPG /* = false */) const
 {
-  int iInitialSize = results.Size();
+  std::vector<std::shared_ptr<CPVREpgInfoTag>> tags;
+
   CPVREpgInfoTagPtr epgTag;
   CPVRChannelPtr channel;
   CSingleLock lock(m_critSection);
@@ -925,13 +926,18 @@ int CPVRChannelGroup::GetEPGAll(CFileItemList &results, bool bIncludeChannelsWit
     channel = (*it).channel;
     if (!channel->IsHidden())
     {
-      int iAdded = 0;
+      bool bEmpty = false;
 
       CPVREpgPtr epg = channel->GetEPG();
       if (epg)
-        iAdded = epg->Get(results);
+      {
+        const std::vector<std::shared_ptr<CPVREpgInfoTag>> epgTags = epg->GetTags();
+        bEmpty = epgTags.empty();
+        if (!bEmpty)
+          tags.insert(tags.end(), epgTags.begin(), epgTags.end());
+      }
 
-      if (bIncludeChannelsWithoutEPG && iAdded == 0)
+      if (bIncludeChannelsWithoutEPG && bEmpty)
       {
         // Add dummy EPG tag associated with this channel
         if (epg)
@@ -939,12 +945,12 @@ int CPVRChannelGroup::GetEPGAll(CFileItemList &results, bool bIncludeChannelsWit
         else
           epgTag = std::make_shared<CPVREpgInfoTag>(std::make_shared<CPVREpgChannelData>(*channel), -1);
 
-        results.Add(std::make_shared<CFileItem>(epgTag));
+        tags.emplace_back(epgTag);
       }
     }
   }
 
-  return results.Size() - iInitialSize;
+  return tags;
 }
 
 CDateTime CPVRChannelGroup::GetEPGDate(EpgDateType epgDateType) const

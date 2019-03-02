@@ -10,6 +10,7 @@
 
 #include <list>
 #include <map>
+#include <memory>
 #include <utility>
 
 #include "XBDateTime.h"
@@ -22,7 +23,7 @@
 #include "pvr/epg/Epg.h"
 #include "pvr/epg/EpgDatabase.h"
 
-class CFileItemList;
+class CFileItem;
 
 namespace PVR
 {
@@ -98,12 +99,11 @@ namespace PVR
     std::shared_ptr<CPVREpg> CreateChannelEpg(int iEpgId, const std::string& strScraperName, const std::shared_ptr<CPVREpgChannelData>& channelData);
 
     /*!
-     * @brief Get all EPG tables and apply a filter.
-     * @param results The fileitem list to store the results in.
+     * @brief Get all EPG tags matching the given filter.
      * @param filter The filter to apply.
-     * @return The amount of entries that were added.
+     * @return The matching tags.
      */
-    int GetEPGSearch(CFileItemList &results, const CPVREpgSearchFilter &filter);
+    const std::vector<std::shared_ptr<CPVREpgInfoTag>> GetEPGSearch(const CPVREpgSearchFilter &filter);
 
     /*!
      * @brief Get the start time of the first entry.
@@ -182,13 +182,13 @@ namespace PVR
      * @brief Inform the epg container that playback of an item just started.
      * @param item The item that started to play.
      */
-    void OnPlaybackStarted(const CFileItemPtr &item);
+    void OnPlaybackStarted(const std::shared_ptr<CFileItem>& item);
 
     /*!
      * @brief Inform the epg container that playback of an item was stopped due to user interaction.
      * @param item The item that stopped to play.
      */
-    void OnPlaybackStopped(const CFileItemPtr &item);
+    void OnPlaybackStopped(const std::shared_ptr<CFileItem>& item);
 
   private:
     /*!

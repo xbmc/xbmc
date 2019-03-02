@@ -481,32 +481,29 @@ bool CPVREpg::Update(const time_t start, const time_t end, int iUpdateTime, bool
   return bGrabSuccess;
 }
 
-int CPVREpg::Get(CFileItemList &results) const
+std::vector<std::shared_ptr<CPVREpgInfoTag>> CPVREpg::GetTags() const
 {
-  int iInitialSize = results.Size();
+  std::vector<std::shared_ptr<CPVREpgInfoTag>> tags;
 
   CSingleLock lock(m_critSection);
   for (const auto& tag : m_tags)
-    results.Add(std::make_shared<CFileItem>(tag.second));
+    tags.emplace_back(tag.second);
 
-  return results.Size() - iInitialSize;
+  return tags;
 }
 
-int CPVREpg::Get(CFileItemList &results, const CPVREpgSearchFilter &filter) const
+std::vector<std::shared_ptr<CPVREpgInfoTag>> CPVREpg::GetTags(const CPVREpgSearchFilter& filter) const
 {
-  int iInitialSize = results.Size();
-
-  if (!HasValidEntries())
-    return -1;
+  std::vector<std::shared_ptr<CPVREpgInfoTag>> tags;
 
   CSingleLock lock(m_critSection);
   for (const auto& tag : m_tags)
   {
     if (filter.FilterEntry(tag.second))
-      results.Add(std::make_shared<CFileItem>(tag.second));
+      tags.emplace_back(tag.second);
   }
 
-  return results.Size() - iInitialSize;
+  return tags;
 }
 
 bool CPVREpg::Persist(void)

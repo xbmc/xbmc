@@ -748,22 +748,23 @@ const CDateTime CPVREpgContainer::GetLastEPGDate(void)
   return returnValue;
 }
 
-int CPVREpgContainer::GetEPGSearch(CFileItemList &results, const CPVREpgSearchFilter &filter)
+const std::vector<std::shared_ptr<CPVREpgInfoTag>> CPVREpgContainer::GetEPGSearch(const CPVREpgSearchFilter &filter)
 {
-  int iInitialSize = results.Size();
+  std::vector<std::shared_ptr<CPVREpgInfoTag>> tags;
 
-  /* get filtered results from all tables */
   {
     CSingleLock lock(m_critSection);
     for (const auto &epgEntry : m_epgIdToEpgMap)
-      epgEntry.second->Get(results, filter);
+    {
+      const std::vector<std::shared_ptr<CPVREpgInfoTag>> epgTags = epgEntry.second->GetTags(filter);
+      tags.insert(tags.end(), epgTags.begin(), epgTags.end());
+    }
   }
 
-  /* remove duplicate entries */
   if (filter.ShouldRemoveDuplicates())
-    filter.RemoveDuplicates(results);
+    filter.RemoveDuplicates(tags);
 
-  return results.Size() - iInitialSize;
+  return tags;
 }
 
 bool CPVREpgContainer::CheckPlayingEvents(void)

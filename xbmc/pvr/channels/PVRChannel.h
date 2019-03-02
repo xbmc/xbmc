@@ -11,6 +11,7 @@
 #include <memory>
 #include <string>
 #include <utility>
+#include <vector>
 
 #include "addons/kodi-addon-dev-kit/include/kodi/xbmc_pvr_types.h"
 #include "threads/CriticalSection.h"
@@ -22,7 +23,6 @@
 #include "pvr/PVRTypes.h"
 
 class CVariant;
-class CFileItemList;
 
 namespace PVR
 {
@@ -340,11 +340,10 @@ namespace PVR
     CPVREpgPtr GetEPG(void) const;
 
     /*!
-     * @brief Get the EPG table for this channel.
-     * @param results The file list to store the results in.
-     * @return The number of tables that were added.
+     * @brief Get the EPG tags for this channel.
+     * @return The tags.
      */
-    int GetEPG(CFileItemList &results) const;
+    std::vector<std::shared_ptr<CPVREpgInfoTag>> GetEpgTags() const;
 
     /*!
      * @brief Clear the EPG for this channel.

@@ -8,12 +8,14 @@
 
 #pragma once
 
+#include <memory>
+#include <string>
+#include <vector>
+
 #include "XBDateTime.h"
 
 #include "pvr/PVRTypes.h"
 #include "pvr/channels/PVRChannelNumber.h"
-
-class CFileItemList;
 
 namespace PVR
 {
@@ -46,10 +48,9 @@ namespace PVR
 
     /*!
      * @brief remove duplicates from a list of epg tags.
-     * @param results the list of epg tags.
-     * @return the number of items in the list after removing duplicates.
+     * @param results The list of epg tags.
      */
-    static int RemoveDuplicates(CFileItemList &results);
+    static void RemoveDuplicates(std::vector<std::shared_ptr<CPVREpgInfoTag>>& results);
 
     /*!
      * @brief Get the type of channels to search.

@@ -22,6 +22,8 @@
 class CFileItem;
 typedef std::shared_ptr<CFileItem> CFileItemPtr;
 
+class CFileItemList;
+
 namespace PVR
 {
 #define PVR_GROUP_TYPE_DEFAULT      0
@@ -374,12 +376,11 @@ namespace PVR
     virtual bool CreateChannelEpgs(bool bForce = false);
 
     /*!
-     * @brief Get all EPG tables.
-     * @param results The fileitem list to store the results in.
+     * @brief Get all EPG tags for all channels in this group.
      * @param bIncludeChannelsWithoutEPG, for channels without EPG data, put an empty EPG tag associated with the channel into results
-     * @return The amount of entries that were added.
+     * @return The tags.
      */
-    int GetEPGAll(CFileItemList &results, bool bIncludeChannelsWithoutEPG = false) const;
+    std::vector<std::shared_ptr<CPVREpgInfoTag>> GetEPGAll(bool bIncludeChannelsWithoutEPG = false) const;
 
     /*!
      * @brief Get the start time of the first entry.

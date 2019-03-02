@@ -144,38 +144,21 @@ bool CPVREpgSearchFilter::FilterEntry(const CPVREpgInfoTagPtr &tag) const
       MatchFreeToAir(tag);
 }
 
-int CPVREpgSearchFilter::RemoveDuplicates(CFileItemList &results)
+void CPVREpgSearchFilter::RemoveDuplicates(std::vector<std::shared_ptr<CPVREpgInfoTag>>& results)
 {
-  unsigned int iSize = results.Size();
-
-  for (unsigned int iResultPtr = 0; iResultPtr < iSize; iResultPtr++)
+  for (auto it = results.begin(); it != results.end();)
   {
-    const CPVREpgInfoTagPtr epgentry_1(results.Get(iResultPtr)->GetEPGInfoTag());
-    if (!epgentry_1)
-      continue;
-
-    for (unsigned int iTagPtr = 0; iTagPtr < iSize; iTagPtr++)
-    {
-      if (iResultPtr == iTagPtr)
-        continue;
-
-      const CPVREpgInfoTagPtr epgentry_2(results.Get(iTagPtr)->GetEPGInfoTag());
-      if (!epgentry_2)
-        continue;
-
-      if (epgentry_1->Title()       != epgentry_2->Title() ||
-          epgentry_1->Plot()        != epgentry_2->Plot() ||
-          epgentry_1->PlotOutline() != epgentry_2->PlotOutline())
-        continue;
-
-      results.Remove(iTagPtr);
-      iResultPtr--;
-      iTagPtr--;
-      iSize--;
-    }
+    it = results.erase(std::remove_if(results.begin(),
+                                      results.end(),
+                                      [&it](const std::shared_ptr<CPVREpgInfoTag>& entry)
+                                      {
+                                         return *it != entry &&
+                                                (*it)->Title() == entry->Title() &&
+                                                (*it)->Plot() == entry->Plot() &&
+                                                (*it)->PlotOutline() == entry->PlotOutline();
+                                      }),
+                       results.end());
   }
-
-  return iSize;
 }
 
 bool CPVREpgSearchFilter::MatchChannelType(const CPVREpgInfoTagPtr &tag) const

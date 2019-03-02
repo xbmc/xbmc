@@ -157,7 +157,12 @@ JSONRPC_STATUS CPVROperations::GetBroadcasts(const std::string &method, ITranspo
     return InternalError;
 
   CFileItemList programFull;
-  channelEpg->Get(programFull);
+
+  const std::vector<std::shared_ptr<CPVREpgInfoTag>> tags = channelEpg->GetTags();
+  for (const auto& tag : tags)
+  {
+    programFull.Add(std::make_shared<CFileItem>(tag));
+  }
 
   HandleFileItemList("broadcastid", false, "broadcasts", programFull, parameterObject, result, programFull.Size(), true);
 

@@ -12,7 +12,6 @@
 #include <string>
 #include <vector>
 
-#include "FileItem.h"
 #include "threads/CriticalSection.h"
 #include "utils/Observer.h"
 
@@ -200,19 +199,17 @@ namespace PVR
     bool Update(const time_t start, const time_t end, int iUpdateTime, bool bForceUpdate = false);
 
     /*!
-     * @brief Get all EPG entries.
-     * @param results The file list to store the results in.
-     * @return The amount of entries that were added.
+     * @brief Get all EPG tags.
+     * @return The tags.
      */
-    int Get(CFileItemList &results) const;
+    std::vector<std::shared_ptr<CPVREpgInfoTag>> GetTags() const;
 
     /*!
-     * @brief Get all EPG entries that and apply a filter.
-     * @param results The file list to store the results in.
+     * @brief Get all EPG tags matching the given filter.
      * @param filter The filter to apply.
-     * @return The amount of entries that were added.
+     * @return The matching tags.
      */
-    int Get(CFileItemList &results, const CPVREpgSearchFilter &filter) const;
+    std::vector<std::shared_ptr<CPVREpgInfoTag>> GetTags(const CPVREpgSearchFilter& filter) const;
 
     /*!
      * @brief Persist this table in the database.

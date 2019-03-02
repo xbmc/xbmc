@@ -642,7 +642,11 @@ bool CGUIWindowPVRGuideBase::RefreshTimelineItems()
       else
       {
         // can be very expensive. never call with lock acquired.
-        group->GetEPGAll(*timeline, true);
+        const std::vector<std::shared_ptr<CPVREpgInfoTag>> tags = group->GetEPGAll(true);
+        for (const auto& tag : tags)
+        {
+          timeline->Add(std::make_shared<CFileItem>(tag));
+        }
       }
 
       CDateTime startDate(group->GetFirstEPGDate());
