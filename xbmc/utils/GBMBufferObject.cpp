@@ -47,6 +47,8 @@ void CGBMBufferObject::DestroyBufferObject()
 
   if (m_bo)
     gbm_bo_destroy(m_bo);
+
+  m_bo = nullptr;
 }
 
 uint8_t* CGBMBufferObject::GetMemory()
