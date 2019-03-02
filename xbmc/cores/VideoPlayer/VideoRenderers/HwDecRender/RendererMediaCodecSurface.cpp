@@ -156,8 +156,10 @@ void CRendererMediaCodecSurface::RenderUpdate(int index, int index2, bool clear,
       m_surfDestRect.x2 *= 2.0;
       break;
     case RENDER_STEREO_MODE_MONO:
-      m_surfDestRect.y2 = m_surfDestRect.y2 * (m_surfDestRect.y2 / m_sourceRect.y2);
-      m_surfDestRect.x2 = m_surfDestRect.x2 * (m_surfDestRect.x2 / m_sourceRect.x2);
+      if (CONF_FLAGS_STEREO_MODE_MASK(m_iFlags) == CONF_FLAGS_STEREO_MODE_TAB)
+        m_surfDestRect.y2 = m_surfDestRect.y2 * 2.0;
+      else
+        m_surfDestRect.x2 = m_surfDestRect.x2 * 2.0;
       break;
     default:
       break;
