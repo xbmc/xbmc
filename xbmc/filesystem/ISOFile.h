@@ -14,9 +14,6 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#if !defined(AFX_FILEISO_H__C2FB9C6D_3319_4182_AB45_65E57EFAC8D1__INCLUDED_)
-#define AFX_FILEISO_H__C2FB9C6D_3319_4182_AB45_65E57EFAC8D1__INCLUDED_
-
 #include "IFile.h"
 #include "utils/RingBuffer.h"
 
@@ -42,5 +39,3 @@ protected:
   CRingBuffer m_cache;
 };
 }
-
-#endif // !defined(AFX_FILEISO_H__C2FB9C6D_3319_4182_AB45_65E57EFAC8D1__INCLUDED_)

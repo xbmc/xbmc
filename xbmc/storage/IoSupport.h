@@ -14,9 +14,6 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#if !defined(AFX_IOSUPPORT_H__F084A488_BD6E_49D5_8CD3_0BE62149DB40__INCLUDED_)
-#define AFX_IOSUPPORT_H__F084A488_BD6E_49D5_8CD3_0BE62149DB40__INCLUDED_
-
 #include "PlatformDefs.h" // for Win32 types
 
 #define MODE1_DATA_SIZE    2048 // Mode1 sector has 2048 bytes of data
@@ -40,5 +37,3 @@ public:
 private:
   static void* m_rawXferBuffer;
 };
-
-#endif // !defined(AFX_IOSUPPORT_H__F084A488_BD6E_49D5_8CD3_0BE62149DB40__INCLUDED_)
