@@ -10484,13 +10484,6 @@ bool CMusicDatabase::GetFilter(CDbUrl &musicUrl, Filter &filter, SortDescription
     }
     // remove the null string
     filter.AppendWhere("artistview.strArtist != ''");
-
-    // and the various artist entry if applicable
-    if (!albumArtistsOnly)
-    {
-      std::string strVariousArtists = g_localizeStrings.Get(340);
-      filter.AppendWhere(PrepareSQL("artistview.strArtist <> '%s'", strVariousArtists.c_str()));
-    }
   }
   else if (type == "albums")
   {
