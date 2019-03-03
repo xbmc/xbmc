@@ -182,11 +182,12 @@ namespace XBMCAddon
       /// Seek to position in file.
       ///
       /// @param seekBytes          position in the file
-      /// @param iWhence            where in a file to seek from[0 beginning,
+      /// @param iWhence            [opt] where in a file to seek from[0 beginning,
       ///                           1 current , 2 end position]
       ///
       ///
       ///-----------------------------------------------------------------------
+      /// @python_v19 Function changed. param **iWhence** is now optional.
       ///
       /// **Example:**
       /// ~~~~~~~~~~~~~{.py}
@@ -199,7 +200,7 @@ namespace XBMCAddon
       ///
       seek(...);
 #else
-      inline long long seek(long long seekBytes, int iWhence) { DelayedCallGuard dg(languageHook); return file->Seek(seekBytes,iWhence); }
+      inline long long seek(long long seekBytes, int iWhence = SEEK_SET) { DelayedCallGuard dg(languageHook); return file->Seek(seekBytes,iWhence); }
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
