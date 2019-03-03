@@ -111,7 +111,7 @@ namespace XBMCAddon
       /// ~~~~~~~~~~~~~{.py}
       /// ..
       /// f = xbmcvfs.File(file)
-      /// b = f.read()
+      /// b = f.readBytes()
       /// f.close()
       /// ..
       /// ~~~~~~~~~~~~~
