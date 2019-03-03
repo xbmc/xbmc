@@ -229,6 +229,7 @@ private:
   static bool m_headsetPlugged;
   static bool m_hdmiPlugged;
   static bool m_hdmiReportedState;
+  static bool m_hdmiSource;
   static IInputDeviceCallbacks* m_inputDeviceCallbacks;
   static IInputDeviceEventHandler* m_inputDeviceEventHandler;
   static bool m_hasReqVisible;

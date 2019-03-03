@@ -45,6 +45,7 @@
 #include <androidjni/StatFs.h>
 #include <androidjni/System.h>
 #include <androidjni/SystemClock.h>
+#include <androidjni/SystemProperties.h>
 #include <androidjni/URI.h>
 #include <androidjni/View.h>
 #include <androidjni/WakeLock.h>
@@ -120,6 +121,7 @@ bool CXBMCApp::m_hasFocus = false;
 bool CXBMCApp::m_headsetPlugged = false;
 bool CXBMCApp::m_hdmiPlugged = true;
 bool CXBMCApp::m_hdmiReportedState = true;
+bool CXBMCApp::m_hdmiSource = false;
 IInputDeviceCallbacks* CXBMCApp::m_inputDeviceCallbacks = nullptr;
 IInputDeviceEventHandler* CXBMCApp::m_inputDeviceEventHandler = nullptr;
 bool CXBMCApp::m_hasReqVisible = false;
@@ -151,6 +153,7 @@ CXBMCApp::CXBMCApp(ANativeActivity* nativeActivity)
   m_mainView.reset(new CJNIXBMCMainView(this));
   m_firstrun = true;
   m_exiting = false;
+  m_hdmiSource = CJNISystemProperties::get("ro.hdmi.device_type", "") == "4";
   android_printf("CXBMCApp: Created");
 }
 
@@ -212,7 +215,10 @@ void CXBMCApp::onStart()
     intentFilter.addAction("android.intent.action.BATTERY_CHANGED");
     intentFilter.addAction("android.intent.action.SCREEN_ON");
     intentFilter.addAction("android.intent.action.HEADSET_PLUG");
-    intentFilter.addAction("android.media.action.HDMI_AUDIO_PLUG");
+    // We currently use HDMI_AUDIO_PLUG for mode switch, don't use it on TV's (device_type = "0"
+    if (m_hdmiSource)
+      intentFilter.addAction("android.media.action.HDMI_AUDIO_PLUG");
+
     intentFilter.addAction("android.intent.action.SCREEN_OFF");
     intentFilter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
     registerReceiver(*this, intentFilter);
@@ -518,7 +524,7 @@ void CXBMCApp::SetRefreshRateCallback(CVariant* rateVariant)
     CJNIWindowManagerLayoutParams params = window.getAttributes();
     if (fabs(params.getpreferredRefreshRate() - rate) > 0.001)
     {
-      if (g_application.GetAppPlayer().IsPlaying())
+      if (m_hdmiSource && g_application.GetAppPlayer().IsPlaying())
       {
         dynamic_cast<CWinSystemAndroid*>(CServiceBroker::GetWinSystem())->SetHDMIState(false, 1000);
         m_hdmiReportedState = false;
@@ -546,7 +552,7 @@ void CXBMCApp::SetDisplayModeCallback(CVariant* variant)
     CJNIWindowManagerLayoutParams params = window.getAttributes();
     if (params.getpreferredDisplayModeId() != mode)
     {
-      if (g_application.GetAppPlayer().IsPlaying())
+      if (m_hdmiSource && g_application.GetAppPlayer().IsPlaying())
       {
         dynamic_cast<CWinSystemAndroid*>(CServiceBroker::GetWinSystem())->SetHDMIState(false);
         m_hdmiReportedState = false;
@@ -591,7 +597,6 @@ void CXBMCApp::SetDisplayMode(int mode, float rate)
   if (window)
   {
     CJNIWindowManagerLayoutParams params = window.getAttributes();
-    CLog::Log(LOGDEBUG, "XXX %d %d", params.getpreferredDisplayModeId(), mode);
     if (params.getpreferredDisplayModeId() == mode)
       return;
   }
