@@ -13,7 +13,7 @@ LDID32="$NATIVEPREFIX/bin/ldid32"
 LDID64="$NATIVEPREFIX/bin/ldid64"
 LDID=${LDID32}
 
-if [ "${CURRENT_ARCH}" == "arm64" ]; then
+if [ "${CURRENT_ARCH}" == "arm64" ] || [ "${CURRENT_ARCH}" == "aarch64" ]; then
   LDID=${LDID64}
   echo "using LDID64"
 else
