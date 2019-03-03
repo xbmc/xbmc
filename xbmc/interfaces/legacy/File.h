@@ -205,6 +205,33 @@ namespace XBMCAddon
 #ifdef DOXYGEN_SHOULD_USE_THIS
       ///
       /// \ingroup python_file
+      /// @brief \python_func{ tell() }
+      ///-----------------------------------------------------------------------
+      /// Get the current position in the file.
+      ///
+      /// @return                       The file position
+      ///
+      ///
+      ///-----------------------------------------------------------------------
+      /// @python_v19 New function added
+      ///
+      /// **Example:**
+      /// ~~~~~~~~~~~~~{.py}
+      /// ..
+      /// f = xbmcvfs.File(file)
+      /// s = f.tell()
+      /// f.close()
+      /// ..
+      /// ~~~~~~~~~~~~~
+      ///
+      tell();
+#else
+      inline long long tell() { DelayedCallGuard dg(languageHook); return file->GetPosition(); }
+#endif
+
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_file
       /// @brief \python_func{ close() }
       ///-----------------------------------------------------------------------
       /// Close opened file.
