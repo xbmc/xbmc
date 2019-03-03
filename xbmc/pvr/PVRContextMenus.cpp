@@ -536,7 +536,7 @@ namespace PVR
     bool DeleteTimer::IsVisible(const CFileItem &item) const
     {
       const CPVRTimerInfoTagPtr timer(GetTimerInfoTagFromItem(item));
-      if (timer && (!item.GetEPGInfoTag() || !URIUtils::PathEquals(item.GetPath(), CPVRTimersPath::PATH_ADDTIMER)) && !timer->IsRecording())
+      if (timer && (!item.GetEPGInfoTag() || !URIUtils::PathEquals(item.GetPath(), CPVRTimersPath::PATH_ADDTIMER)) && !timer->IsRecording() && timer->IsActive())
       {
         const CPVRTimerTypePtr timerType(timer->GetTimerType());
         return  timerType && timerType->AllowsDelete();
