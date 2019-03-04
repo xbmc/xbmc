@@ -1,0 +1,31 @@
+v1.0.7
+- fix crash when album type is absent or empty in the api response
+- filter inaccurate search results from discogs
+- filter inaccurate albumdetails from allmusic
+- filter blank allmusic album thumb
+- consider both score and releasedate when selecting the top release from releasegroup
+
+v1.0.6
+- improve custom scoring
+- add support for original release date
+- fix release date from musicbrainz
+- use releasegroup id to fetch coverartarchive artwork
+- only use one release from each releasegroup
+- provide detailed search results
+
+v1.0.5
+- don't set releasetype
+- fix types from musicbrainz
+- add release status
+
+v1.0.4
+- catch time-outs
+
+v1.0.3
+- replace beautifulsoup with regex
+
+v1.0.2
+- replace requests with urllib
+
+v1.0.1
+- release

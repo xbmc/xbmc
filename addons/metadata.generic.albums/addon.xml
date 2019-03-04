@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<addon id="metadata.generic.albums" name="Generic Album Scraper" version="1.0.7" provider-name="Team Kodi">
+	<requires>
+		<import addon="xbmc.python" version="3.0.0"/>
+		<import addon="xbmc.metadata" version="2.1.0"/>
+	</requires>
+	<extension point="xbmc.metadata.scraper.albums" library="default.py"/>
+	<extension point="xbmc.addon.metadata">
+		<summary lang="en_GB">Generic music scraper for albums</summary>
+		<description lang="en_GB">Searches for album information and artwork across multiple websites.</description>
+		<platform>all</platform>
+		<license>GPL-2.0-only</license>
+		<forum>https://forum.kodi.tv/showthread.php?tid=351570</forum>
+		<source>https://gitlab.com/ronie/metadata.generic.albums/</source>
+		<assets>
+			<icon>resources/icon.png</icon>
+		</assets>
+		<news>- first release</news>
+	</extension>
+</addon>
