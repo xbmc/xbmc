@@ -549,6 +549,9 @@ void CTCPServer::CTCPClient::Send(const char *data, unsigned int size)
 void CTCPServer::CTCPClient::PushBuffer(CTCPServer *host, const char *buffer, int length)
 {
   m_new = false;
+  bool inObject = false;
+  bool inString = false;
+  bool escapeNext = false;
 
   for (int i = 0; i < length; i++)
   {
@@ -568,10 +571,42 @@ void CTCPServer::CTCPClient::PushBuffer(CTCPServer *host, const char *buffer, in
     if (m_beginChar != 0)
     {
       m_buffer.push_back(c);
-      if (c == m_beginChar)
-        m_beginBrackets++;
-      else if (c == m_endChar)
-        m_endBrackets++;
+      if (inObject)
+      {
+        if (!inString)
+        {
+          if (c == '"')
+            inString = true;
+        }
+        else
+        {
+          if (escapeNext)
+          {
+            escapeNext = false;
+          }
+          else
+          {
+            if (c == '\\')
+              escapeNext = true;
+            else if (c == '"')
+              inString = false;
+          }
+        }
+      }
+      if (!inString)
+      {
+        if (c == m_beginChar)
+        {
+          m_beginBrackets++;
+          inObject = true;
+        }
+        else if (c == m_endChar)
+        {
+          m_endBrackets++;
+          if (m_beginBrackets == m_endBrackets)
+            inObject = false;
+        }
+      }
       if (m_beginBrackets > 0 && m_endBrackets > 0 && m_beginBrackets == m_endBrackets)
       {
         std::string line = CJSONRPC::MethodCall(m_buffer, host, this);
