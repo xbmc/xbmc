@@ -1,0 +1,22 @@
+v1.0.7
+- include alias and sortname in artist search
+- filter inaccurate search results from discogs
+
+v1.0.6
+- provide musicbrainzreleasegroupid for artist albums
+
+v1.0.5
+- add artist gender
+- disallow 0 value born/formed/died/disbanded dates from theaudiodb
+
+v1.0.4
+- catch time-outs
+
+v1.0.3
+- replace beautifulsoup with regex
+
+v1.0.2
+- replace requests with urllib
+
+v1.0.1
+- release
