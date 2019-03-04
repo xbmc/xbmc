@@ -21,11 +21,38 @@
 
 enum RenderMethod;
 
-class CRenderBufferShaders : public CRenderBufferBase
+class CRendererShaders : public CRendererHQ
+{
+  class CRenderBufferImpl;
+public:
+  ~CRendererShaders() = default;
+
+  bool Supports(ESCALINGMETHOD method) override;
+  bool Configure(const VideoPicture& picture, float fps, unsigned orientation) override;
+
+  static CRendererBase* Create(CVideoSettings& videoSettings);
+  static void GetWeight(std::map<RenderMethod, int>& weights, const VideoPicture& picture);
+
+protected:
+  explicit CRendererShaders(CVideoSettings& videoSettings) : CRendererHQ(videoSettings) {}
+  void RenderImpl(CD3DTexture& target, CRect& sourceRect, CPoint(&destPoints)[4], uint32_t flags) override;
+  void CheckVideoParameters() override;
+  void UpdateVideoFilters() override;
+  CRenderBuffer* CreateBuffer() override;
+  static bool IsHWPicSupported(const VideoPicture& picture);
+
+private:
+  static AVColorPrimaries GetSrcPrimaries(AVColorPrimaries srcPrimaries, unsigned int width, unsigned int height);
+
+  AVColorPrimaries m_srcPrimaries = AVCOL_PRI_BT709;
+  std::unique_ptr<CYUV2RGBShader> m_colorShader;
+};
+
+class CRendererShaders::CRenderBufferImpl : public CRenderBuffer
 {
 public:
-  explicit CRenderBufferShaders(AVPixelFormat av_pix_format, unsigned width, unsigned height);
-  ~CRenderBufferShaders();
+  explicit CRenderBufferImpl(AVPixelFormat av_pix_format, unsigned width, unsigned height);
+  ~CRenderBufferImpl();
 
   void AppendPicture(const VideoPicture& picture) override;
   bool IsLoaded() override;
@@ -42,30 +69,4 @@ private:
   unsigned m_viewCount = 0;
   CD3DTexture m_textures[YuvImage::MAX_PLANES];
   Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_planes[2];
-};
-
-class CRendererShaders : public CRendererHQ
-{
-public:
-  ~CRendererShaders() = default;
-
-  bool Supports(ESCALINGMETHOD method) override;
-  bool Configure(const VideoPicture& picture, float fps, unsigned orientation) override;
-
-  static CRendererBase* Create(CVideoSettings& videoSettings);
-  static void GetWeight(std::map<RenderMethod, int>& weights, const VideoPicture& picture);
-
-protected:
-  explicit CRendererShaders(CVideoSettings& videoSettings) : CRendererHQ(videoSettings) {}
-  void RenderImpl(CD3DTexture& target, CRect& sourceRect, CPoint(&destPoints)[4], uint32_t flags) override;
-  void CheckVideoParameters() override;
-  void UpdateVideoFilters() override;
-  CRenderBufferBase* CreateBuffer() override;
-  static bool IsHWPicSupported(const VideoPicture& picture);
-
-private:
-  static AVColorPrimaries GetSrcPrimaries(AVColorPrimaries srcPrimaries, unsigned int width, unsigned int height);
-
-  AVColorPrimaries m_srcPrimaries = AVCOL_PRI_BT709;
-  std::unique_ptr<CYUV2RGBShader> m_colorShader;
 };

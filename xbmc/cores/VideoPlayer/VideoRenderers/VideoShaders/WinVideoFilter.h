@@ -21,7 +21,7 @@ extern "C" {
 #include "libavutil/pixfmt.h"
 #include "libavutil/mastering_display_metadata.h"
 }
-class CRenderBufferBase;
+class CRenderBuffer;
 
 using namespace DirectX;
 
@@ -112,13 +112,13 @@ public:
 
   bool Create(AVPixelFormat fmt, AVColorPrimaries dstPrimaries, AVColorPrimaries srcPrimaries, 
               const std::shared_ptr<COutputShader>& pOutShader = nullptr);
-  void Render(CRect sourceRect, CPoint dest[], CRenderBufferBase* videoBuffer, CD3DTexture& target);
+  void Render(CRect sourceRect, CPoint dest[], CRenderBuffer* videoBuffer, CD3DTexture& target);
   void SetParams(float contrast, float black, bool limited) const;
   void SetColParams(AVColorSpace colSpace, int bits, bool limited, int texBits) const;
 
 protected:
-  void PrepareParameters(CRenderBufferBase* videoBuffer, CRect sourceRect, CPoint dest[]);
-  void SetShaderParameters(CRenderBufferBase* videoBuffer);
+  void PrepareParameters(CRenderBuffer* videoBuffer, CRect sourceRect, CPoint dest[]);
+  void SetShaderParameters(CRenderBuffer* videoBuffer);
 
 private:
   struct Vertex {

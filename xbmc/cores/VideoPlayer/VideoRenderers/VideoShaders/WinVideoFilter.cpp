@@ -508,7 +508,7 @@ bool CYUV2RGBShader::Create(AVPixelFormat fmt, AVColorPrimaries dstPrimaries,
   return true;
 }
 
-void CYUV2RGBShader::Render(CRect sourceRect, CPoint dest[], CRenderBufferBase* videoBuffer, CD3DTexture& target)
+void CYUV2RGBShader::Render(CRect sourceRect, CPoint dest[], CRenderBuffer* videoBuffer, CD3DTexture& target)
 {
   PrepareParameters(videoBuffer, sourceRect, dest);
   SetShaderParameters(videoBuffer);
@@ -532,7 +532,7 @@ void CYUV2RGBShader::SetColParams(AVColorSpace colSpace, int bits, bool limited,
   m_pConvMatrix->SetColParams(colSpace, bits, limited, texBits);
 }
 
-void CYUV2RGBShader::PrepareParameters(CRenderBufferBase* videoBuffer, CRect sourceRect, CPoint dest[])
+void CYUV2RGBShader::PrepareParameters(CRenderBuffer* videoBuffer, CRect sourceRect, CPoint dest[])
 {
   if (m_sourceRect != sourceRect
     || m_dest[0] != dest[0] || m_dest[1] != dest[1]
@@ -593,7 +593,7 @@ void CYUV2RGBShader::PrepareParameters(CRenderBufferBase* videoBuffer, CRect sou
   m_texSteps[1] = 1.0f / m_sourceHeight;
 }
 
-void CYUV2RGBShader::SetShaderParameters(CRenderBufferBase* videoBuffer)
+void CYUV2RGBShader::SetShaderParameters(CRenderBuffer* videoBuffer)
 {
   m_effect.SetTechnique("YUV2RGB_T");
   ID3D11ShaderResourceView* ppSRView[3] = {};

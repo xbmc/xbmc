@@ -311,7 +311,7 @@ void CProcessorHD::ApplyFilter(D3D11_VIDEO_PROCESSOR_FILTER filter, int value, i
   m_pVideoContext->VideoProcessorSetStreamFilter(m_pVideoProcessor.Get(), DEFAULT_STREAM_INDEX, filter, val != range.Default, val);
 }
 
-ID3D11VideoProcessorInputView* CProcessorHD::GetInputView(CRenderBufferBase* view) const
+ID3D11VideoProcessorInputView* CProcessorHD::GetInputView(CRenderBuffer* view) const
 {
   ComPtr<ID3D11VideoProcessorInputView> inputView;
   D3D11_VIDEO_PROCESSOR_INPUT_VIEW_DESC vpivd = {0, D3D11_VPIV_DIMENSION_TEXTURE2D, {0, 0}};
@@ -331,7 +331,7 @@ ID3D11VideoProcessorInputView* CProcessorHD::GetInputView(CRenderBufferBase* vie
   return inputView.Detach();
 }
 
-DXGI_COLOR_SPACE_TYPE CProcessorHD::GetDXGIColorSpace(CRenderBufferBase* view, bool supportHDR)
+DXGI_COLOR_SPACE_TYPE CProcessorHD::GetDXGIColorSpace(CRenderBuffer* view, bool supportHDR)
 {
   // RGB
   if (view->color_space == AVCOL_SPC_RGB)
@@ -397,7 +397,7 @@ DXGI_COLOR_SPACE_TYPE CProcessorHD::GetDXGIColorSpace(CRenderBufferBase* view, b
   return DXGI_COLOR_SPACE_YCBCR_STUDIO_G22_LEFT_P709;
 }
 
-bool CProcessorHD::Render(CRect src, CRect dst, ID3D11Resource* target, CRenderBufferBase** views, DWORD flags, UINT frameIdx, UINT rotation, float contrast, float brightness)
+bool CProcessorHD::Render(CRect src, CRect dst, ID3D11Resource* target, CRenderBuffer** views, DWORD flags, UINT frameIdx, UINT rotation, float contrast, float brightness)
 {
   CSingleLock lock(m_section);
 

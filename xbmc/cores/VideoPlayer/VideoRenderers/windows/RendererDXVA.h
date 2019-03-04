@@ -16,28 +16,9 @@
 
 enum RenderMethod;
 
-class CRenderBufferDXVA : public CRenderBufferBase
-{
-public:
-  explicit CRenderBufferDXVA(AVPixelFormat av_pix_format, unsigned width, unsigned height);
-  ~CRenderBufferDXVA();
-
-  bool IsLoaded() override;
-  bool UploadBuffer() override;
-  void ReleasePicture() override;
-  HRESULT GetResource(ID3D11Resource** ppResource, unsigned* index) const override;
-
-  static DXGI_FORMAT GetDXGIFormat(AVPixelFormat format, DXGI_FORMAT default_fmt = DXGI_FORMAT_UNKNOWN);
-
-private:
-  bool UploadToTexture();
-
-  bool m_loaded = false;
-  CD3DTexture m_texture;
-};
-
 class CRendererDXVA : public CRendererHQ
 {
+  class CRenderBufferImpl;
 public:
   ~CRendererDXVA() = default;
 
@@ -55,12 +36,32 @@ protected:
 
   void CheckVideoParameters() override;
   void RenderImpl(CD3DTexture& target, CRect& sourceRect, CPoint(&destPoints)[4], uint32_t flags) override;
-  CRenderBufferBase* CreateBuffer() override;
+  CRenderBuffer* CreateBuffer() override;
   bool UseToneMapping() const override;
 
 private:
-  void FillBuffersSet(CRenderBufferBase* (&buffers)[8]);
+  void FillBuffersSet(CRenderBuffer* (&buffers)[8]);
   CRect ApplyTransforms(const CRect& destRect) const;
 
   std::unique_ptr<DXVA::CProcessorHD> m_processor;
+};
+
+class CRendererDXVA::CRenderBufferImpl : public CRenderBuffer
+{
+public:
+  explicit CRenderBufferImpl(AVPixelFormat av_pix_format, unsigned width, unsigned height);
+  ~CRenderBufferImpl();
+
+  bool IsLoaded() override;
+  bool UploadBuffer() override;
+  void ReleasePicture() override;
+  HRESULT GetResource(ID3D11Resource** ppResource, unsigned* index) const override;
+
+  static DXGI_FORMAT GetDXGIFormat(AVPixelFormat format, DXGI_FORMAT default_fmt = DXGI_FORMAT_UNKNOWN);
+
+private:
+  bool UploadToTexture();
+
+  bool m_loaded = false;
+  CD3DTexture m_texture;
 };

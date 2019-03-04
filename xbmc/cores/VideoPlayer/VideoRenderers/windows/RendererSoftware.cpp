@@ -14,75 +14,9 @@
 
 using namespace Microsoft::WRL;
 
-CRenderBufferSoftware::CRenderBufferSoftware(AVPixelFormat av_pix_format, unsigned width, unsigned height)
-  : CRenderBufferBase(av_pix_format, width, height)
+CRendererBase* CRendererSoftware::Create(CVideoSettings& videoSettings)
 {
-}
-
-CRenderBufferSoftware::~CRenderBufferSoftware()
-{
-  CRenderBufferSoftware::ReleasePicture();
-}
-
-void CRenderBufferSoftware::AppendPicture(const VideoPicture& picture)
-{
-  __super::AppendPicture(picture);
-
-  if (videoBuffer->GetFormat() == AV_PIX_FMT_D3D11VA_VLD)
-  {
-    QueueCopyFromGPU();
-    m_widthTex = m_sDesc.Width;
-    m_heightTex = m_sDesc.Height;
-  }
-}
-
-bool CRenderBufferSoftware::GetDataPlanes(uint8_t*(& planes)[3], int(& strides)[3])
-{
-  if (!videoBuffer)
-    return false;
-
-  switch (videoBuffer->GetFormat())
-  {
-  case AV_PIX_FMT_D3D11VA_VLD:
-      planes[0] = reinterpret_cast<uint8_t*>(m_msr.pData);
-      planes[1] = reinterpret_cast<uint8_t*>(m_msr.pData) + m_msr.RowPitch * m_sDesc.Height;
-      strides[0] = strides[1] = m_msr.RowPitch;
-    break;
-  default:
-    videoBuffer->GetPlanes(planes);
-    videoBuffer->GetStrides(strides);
-  }
-
-  return true;
-}
-
-void CRenderBufferSoftware::ReleasePicture()
-{
-  if (m_staging && m_msr.pData != nullptr)
-  {
-    DX::DeviceResources::Get()->GetImmediateContext()->Unmap(m_staging.Get(), 0);
-    m_msr = {};
-  }
-  __super::ReleasePicture();
-}
-
-bool CRenderBufferSoftware::IsLoaded()
-{
-  if (!videoBuffer)
-    return false;
-
-  if (videoBuffer->GetFormat() == AV_PIX_FMT_D3D11VA_VLD)
-    return m_msr.pData != nullptr;
-  return true;
-}
-
-bool CRenderBufferSoftware::UploadBuffer()
-{
-  if (!m_staging)
-    return false;
-
-  // map will finish copying data from GPU to CPU
-  return SUCCEEDED(SUCCEEDED(DX::DeviceResources::Get()->GetImmediateContext()->Map(m_staging.Get(), 0, D3D11_MAP_READ, 0, &m_msr)));
+  return new CRendererSoftware(videoSettings);
 }
 
 void CRendererSoftware::GetWeight(std::map<RenderMethod, int>& weights, const VideoPicture& picture)
@@ -113,11 +47,6 @@ CRendererSoftware::~CRendererSoftware()
   }
 }
 
-CRenderBufferBase* CRendererSoftware::CreateBuffer()
-{
-  return new CRenderBufferSoftware(m_format, m_sourceWidth, m_sourceHeight);
-}
-
 bool CRendererSoftware::Configure(const VideoPicture& picture, float fps, unsigned orientation)
 {
   if (__super::Configure(picture, fps, orientation))
@@ -140,18 +69,13 @@ bool CRendererSoftware::Supports(ESCALINGMETHOD method)
     || method == VS_SCALINGMETHOD_LINEAR;
 }
 
-CRendererBase* CRendererSoftware::Create(CVideoSettings& videoSettings)
-{
-  return new CRendererSoftware(videoSettings);
-}
-
 void CRendererSoftware::RenderImpl(CD3DTexture& target, CRect& sourceRect, CPoint(&destPoints)[4], uint32_t flags)
 {
   // if creation failed
   if (!m_outputShader)
     return;
 
-  CRenderBufferBase* buf = m_renderBuffers[m_iBufferIndex];
+  CRenderBuffer* buf = m_renderBuffers[m_iBufferIndex];
 
   // 1. convert yuv to rgb
   m_sw_scale_ctx = sws_getCachedContext(m_sw_scale_ctx,
@@ -195,4 +119,80 @@ void CRendererSoftware::FinalOutput(CD3DTexture& source, CD3DTexture& target, co
     DX::Windowing()->UseLimitedColor(), 
     m_videoSettings.m_Contrast * 0.01f,
     m_videoSettings.m_Brightness * 0.01f);
+}
+
+CRenderBuffer* CRendererSoftware::CreateBuffer()
+{
+  return new CRenderBufferImpl(m_format, m_sourceWidth, m_sourceHeight);
+}
+
+CRendererSoftware::CRenderBufferImpl::CRenderBufferImpl(AVPixelFormat av_pix_format, unsigned width, unsigned height)
+  : CRenderBuffer(av_pix_format, width, height)
+{
+}
+
+CRendererSoftware::CRenderBufferImpl::~CRenderBufferImpl()
+{
+  CRenderBufferImpl::ReleasePicture();
+}
+
+void CRendererSoftware::CRenderBufferImpl::AppendPicture(const VideoPicture& picture)
+{
+  __super::AppendPicture(picture);
+
+  if (videoBuffer->GetFormat() == AV_PIX_FMT_D3D11VA_VLD)
+  {
+    QueueCopyFromGPU();
+    m_widthTex = m_sDesc.Width;
+    m_heightTex = m_sDesc.Height;
+  }
+}
+
+bool CRendererSoftware::CRenderBufferImpl::GetDataPlanes(uint8_t*(&planes)[3], int(&strides)[3])
+{
+  if (!videoBuffer)
+    return false;
+
+  switch (videoBuffer->GetFormat())
+  {
+  case AV_PIX_FMT_D3D11VA_VLD:
+    planes[0] = reinterpret_cast<uint8_t*>(m_msr.pData);
+    planes[1] = reinterpret_cast<uint8_t*>(m_msr.pData) + m_msr.RowPitch * m_sDesc.Height;
+    strides[0] = strides[1] = m_msr.RowPitch;
+    break;
+  default:
+    videoBuffer->GetPlanes(planes);
+    videoBuffer->GetStrides(strides);
+  }
+
+  return true;
+}
+
+void CRendererSoftware::CRenderBufferImpl::ReleasePicture()
+{
+  if (m_staging && m_msr.pData != nullptr)
+  {
+    DX::DeviceResources::Get()->GetImmediateContext()->Unmap(m_staging.Get(), 0);
+    m_msr = {};
+  }
+  __super::ReleasePicture();
+}
+
+bool CRendererSoftware::CRenderBufferImpl::IsLoaded()
+{
+  if (!videoBuffer)
+    return false;
+
+  if (videoBuffer->GetFormat() == AV_PIX_FMT_D3D11VA_VLD)
+    return m_msr.pData != nullptr;
+  return true;
+}
+
+bool CRendererSoftware::CRenderBufferImpl::UploadBuffer()
+{
+  if (!m_staging)
+    return false;
+
+  // map will finish copying data from GPU to CPU
+  return SUCCEEDED(SUCCEEDED(DX::DeviceResources::Get()->GetImmediateContext()->Map(m_staging.Get(), 0, D3D11_MAP_READ, 0, &m_msr)));
 }

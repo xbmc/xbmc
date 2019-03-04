@@ -19,155 +19,6 @@
 
 using namespace Microsoft::WRL;
 
-CRenderBufferDXVA::CRenderBufferDXVA(AVPixelFormat av_pix_format, unsigned width, unsigned height)
-  : CRenderBufferBase(av_pix_format, width, height)
-{
-  const auto dxgi_format = GetDXGIFormat(av_pix_format);
-  if (dxgi_format == DXGI_FORMAT_UNKNOWN)
-    return;
-
-  m_widthTex = FFALIGN(width, 32);
-  m_heightTex = FFALIGN(height, 32);
-
-  m_texture.Create(m_widthTex, m_heightTex, 1, D3D11_USAGE_DYNAMIC, dxgi_format);
-}
-
-CRenderBufferDXVA::~CRenderBufferDXVA()
-{
-  CRenderBufferDXVA::ReleasePicture();
-}
-
-bool CRenderBufferDXVA::IsLoaded()
-{
-  if (videoBuffer && videoBuffer->GetFormat() == AV_PIX_FMT_D3D11VA_VLD)
-    return true;
-
-  return m_loaded;
-}
-
-bool CRenderBufferDXVA::UploadBuffer()
-{
-  if (!videoBuffer)
-    return false;
-
-  if (videoBuffer->GetFormat() == AV_PIX_FMT_D3D11VA_VLD)
-    return true;
-
-  return UploadToTexture();
-}
-
-HRESULT CRenderBufferDXVA::GetResource(ID3D11Resource** ppResource, unsigned* index) const
-{
-  if (!ppResource)
-    return E_POINTER;
-  if (!index)
-    return E_POINTER;
-
-  if (videoBuffer->GetFormat() == AV_PIX_FMT_D3D11VA_VLD)
-    return __super::GetResource(ppResource, index);
-
-  ComPtr<ID3D11Resource> pResource = m_texture.Get();
-  *ppResource = pResource.Detach();
-  *index = 0;
-
-  return S_OK;
-}
-
-void CRenderBufferDXVA::ReleasePicture()
-{
-  __super::ReleasePicture();
-  m_loaded = false;
-}
-
-DXGI_FORMAT CRenderBufferDXVA::GetDXGIFormat(AVPixelFormat format, DXGI_FORMAT default_fmt)
-{
-  switch (format)
-  {
-  case AV_PIX_FMT_NV12:
-  case AV_PIX_FMT_YUV420P:
-    return DXGI_FORMAT_NV12;
-  case AV_PIX_FMT_P010:
-  case AV_PIX_FMT_YUV420P10:
-    return DXGI_FORMAT_P010;
-  case AV_PIX_FMT_P016:
-  case AV_PIX_FMT_YUV420P16:
-    return DXGI_FORMAT_P016;
-  default:
-    return default_fmt;
-  }
-}
-
-bool CRenderBufferDXVA::UploadToTexture()
-{
-  D3D11_MAPPED_SUBRESOURCE rect;
-  if (!m_texture.LockRect(0, &rect, D3D11_MAP_WRITE_DISCARD))
-    return false;
-
-  // destination
-  uint8_t* pData = static_cast<uint8_t*>(rect.pData);
-  uint8_t* dst[] = { pData, pData + m_texture.GetHeight() * rect.RowPitch };
-  int dstStride[] = { static_cast<int>(rect.RowPitch), static_cast<int>(rect.RowPitch) };
-
-  // source
-  uint8_t* src[3];
-  int srcStrides[3];
-  videoBuffer->GetPlanes(src);
-  videoBuffer->GetStrides(srcStrides);
-
-  const unsigned width = m_width;
-  const unsigned height = m_height;
-
-  const AVPixelFormat buffer_format = videoBuffer->GetFormat();
-  // copy to texture
-  if (buffer_format == AV_PIX_FMT_NV12 ||
-      buffer_format == AV_PIX_FMT_P010 ||
-      buffer_format == AV_PIX_FMT_P016)
-  {
-    Concurrency::parallel_invoke([&]() {
-      // copy Y
-      copy_plane(src[0], srcStrides[0], height, width, dst[0], dstStride[0]);
-    }, [&]() {
-      // copy UV
-      copy_plane(src[1], srcStrides[1], height >> 1, width, dst[1], dstStride[1]);
-    });
-    // copy cache size of UV line again to fix Intel cache issue
-    copy_plane(src[1], srcStrides[1], 1, 32, dst[1], dstStride[1]);
-  }
-  // convert 8bit
-  else if (buffer_format == AV_PIX_FMT_YUV420P)
-  {
-    Concurrency::parallel_invoke([&]() {
-      // copy Y
-      copy_plane(src[0], srcStrides[0], height, width, dst[0], dstStride[0]);
-    }, [&]() {
-      // convert U+V -> UV
-      convert_yuv420_nv12_chrome(&src[1], &srcStrides[1], height, width, dst[1], dstStride[1]);
-    });
-    // copy cache size of UV line again to fix Intel cache issue
-    // height and width multiplied by two because they will be divided by func
-    convert_yuv420_nv12_chrome(&src[1], &srcStrides[1], 2, 64, dst[1], dstStride[1]);
-  }
-  // convert 10/16bit
-  else if (buffer_format == AV_PIX_FMT_YUV420P10 ||
-    buffer_format == AV_PIX_FMT_YUV420P16)
-  {
-    const uint8_t bpp = buffer_format == AV_PIX_FMT_YUV420P10 ? 10 : 16;
-    Concurrency::parallel_invoke([&]() {
-      // copy Y
-      copy_plane(src[0], srcStrides[0], height, width, dst[0], dstStride[0], bpp);
-    }, [&]() {
-      // convert U+V -> UV
-      convert_yuv420_p01x_chrome(&src[1], &srcStrides[1], height, width, dst[1], dstStride[1], bpp);
-    });
-    // copy cache size of UV line again to fix Intel cache issue
-    // height multiplied by two because it will be divided by func
-    convert_yuv420_p01x_chrome(&src[1], &srcStrides[1], 2, 32, dst[1], dstStride[1], bpp);
-  }
-
-  m_loaded = m_texture.UnlockRect(0);
-  return m_loaded;
-}
-
 CRendererBase* CRendererDXVA::Create(CVideoSettings& videoSettings)
 {
   return new CRendererDXVA(videoSettings);
@@ -183,7 +34,7 @@ void CRendererDXVA::GetWeight(std::map<RenderMethod, int>& weights, const VideoP
   else
   {
     // check format for buffer
-    const DXGI_FORMAT dxgi_format = CRenderBufferDXVA::GetDXGIFormat(av_pixel_format, GetDXGIFormat(picture));
+    const DXGI_FORMAT dxgi_format = CRenderBufferImpl::GetDXGIFormat(av_pixel_format, GetDXGIFormat(picture));
     if (dxgi_format == DXGI_FORMAT_UNKNOWN)
       return;
 
@@ -239,7 +90,7 @@ bool CRendererDXVA::Configure(const VideoPicture& picture, float fps, unsigned o
   if (__super::Configure(picture, fps, orientation))
   {
     m_format = picture.videoBuffer->GetFormat();
-    const DXGI_FORMAT dxgi_format = CRenderBufferDXVA::GetDXGIFormat(m_format, GetDXGIFormat(picture));
+    const DXGI_FORMAT dxgi_format = CRenderBufferImpl::GetDXGIFormat(m_format, GetDXGIFormat(picture));
 
     // create processor
     m_processor = std::make_unique<DXVA::CProcessorHD>();
@@ -286,8 +137,8 @@ void CRendererDXVA::RenderImpl(CD3DTexture& target, CRect& sourceRect, CPoint(&d
 
   CWIN32Util::CropSource(src, dst, trg, m_renderOrientation);
 
-  CRenderBufferBase* buf = m_renderBuffers[m_iBufferIndex];
-  CRenderBufferBase* views[8] = {};
+  CRenderBuffer* buf = m_renderBuffers[m_iBufferIndex];
+  CRenderBuffer* views[8] = {};
   FillBuffersSet(views);
 
   m_processor->Render(src, dst, target.Get(), views,
@@ -334,12 +185,12 @@ bool CRendererDXVA::UseToneMapping() const
   return !m_processor->HasHDR10Support() && __super::UseToneMapping();
 }
 
-void CRendererDXVA::FillBuffersSet(CRenderBufferBase* (&buffers)[8])
+void CRendererDXVA::FillBuffersSet(CRenderBuffer* (&buffers)[8])
 {
   int past = 0;
   int future = 0;
 
-  CRenderBufferBase* buf = m_renderBuffers[m_iBufferIndex];
+  CRenderBuffer* buf = m_renderBuffers[m_iBufferIndex];
   buffers[2] = buf;
 
   // set future frames
@@ -392,7 +243,156 @@ bool CRendererDXVA::Supports(ESCALINGMETHOD method)
   return __super::Supports(method);
 }
 
-CRenderBufferBase* CRendererDXVA::CreateBuffer()
+CRenderBuffer* CRendererDXVA::CreateBuffer()
 {
-  return new CRenderBufferDXVA(m_format, m_sourceWidth, m_sourceHeight);
+  return new CRenderBufferImpl(m_format, m_sourceWidth, m_sourceHeight);
+}
+
+CRendererDXVA::CRenderBufferImpl::CRenderBufferImpl(AVPixelFormat av_pix_format, unsigned width, unsigned height)
+  : CRenderBuffer(av_pix_format, width, height)
+{
+  const auto dxgi_format = GetDXGIFormat(av_pix_format);
+  if (dxgi_format == DXGI_FORMAT_UNKNOWN)
+    return;
+
+  m_widthTex = FFALIGN(width, 32);
+  m_heightTex = FFALIGN(height, 32);
+
+  m_texture.Create(m_widthTex, m_heightTex, 1, D3D11_USAGE_DYNAMIC, dxgi_format);
+}
+
+CRendererDXVA::CRenderBufferImpl::~CRenderBufferImpl()
+{
+  CRenderBufferImpl::ReleasePicture();
+}
+
+bool CRendererDXVA::CRenderBufferImpl::IsLoaded()
+{
+  if (videoBuffer && videoBuffer->GetFormat() == AV_PIX_FMT_D3D11VA_VLD)
+    return true;
+
+  return m_loaded;
+}
+
+bool CRendererDXVA::CRenderBufferImpl::UploadBuffer()
+{
+  if (!videoBuffer)
+    return false;
+
+  if (videoBuffer->GetFormat() == AV_PIX_FMT_D3D11VA_VLD)
+    return true;
+
+  return UploadToTexture();
+}
+
+HRESULT CRendererDXVA::CRenderBufferImpl::GetResource(ID3D11Resource** ppResource, unsigned* index) const
+{
+  if (!ppResource)
+    return E_POINTER;
+  if (!index)
+    return E_POINTER;
+
+  if (videoBuffer->GetFormat() == AV_PIX_FMT_D3D11VA_VLD)
+    return __super::GetResource(ppResource, index);
+
+  ComPtr<ID3D11Resource> pResource = m_texture.Get();
+  *ppResource = pResource.Detach();
+  *index = 0;
+
+  return S_OK;
+}
+
+void CRendererDXVA::CRenderBufferImpl::ReleasePicture()
+{
+  __super::ReleasePicture();
+  m_loaded = false;
+}
+
+DXGI_FORMAT CRendererDXVA::CRenderBufferImpl::GetDXGIFormat(AVPixelFormat format, DXGI_FORMAT default_fmt)
+{
+  switch (format)
+  {
+  case AV_PIX_FMT_NV12:
+  case AV_PIX_FMT_YUV420P:
+    return DXGI_FORMAT_NV12;
+  case AV_PIX_FMT_P010:
+  case AV_PIX_FMT_YUV420P10:
+    return DXGI_FORMAT_P010;
+  case AV_PIX_FMT_P016:
+  case AV_PIX_FMT_YUV420P16:
+    return DXGI_FORMAT_P016;
+  default:
+    return default_fmt;
+  }
+}
+
+bool CRendererDXVA::CRenderBufferImpl::UploadToTexture()
+{
+  D3D11_MAPPED_SUBRESOURCE rect;
+  if (!m_texture.LockRect(0, &rect, D3D11_MAP_WRITE_DISCARD))
+    return false;
+
+  // destination
+  uint8_t* pData = static_cast<uint8_t*>(rect.pData);
+  uint8_t* dst[] = { pData, pData + m_texture.GetHeight() * rect.RowPitch };
+  int dstStride[] = { static_cast<int>(rect.RowPitch), static_cast<int>(rect.RowPitch) };
+
+  // source
+  uint8_t* src[3];
+  int srcStrides[3];
+  videoBuffer->GetPlanes(src);
+  videoBuffer->GetStrides(srcStrides);
+
+  const unsigned width = m_width;
+  const unsigned height = m_height;
+
+  const AVPixelFormat buffer_format = videoBuffer->GetFormat();
+  // copy to texture
+  if (buffer_format == AV_PIX_FMT_NV12 ||
+    buffer_format == AV_PIX_FMT_P010 ||
+    buffer_format == AV_PIX_FMT_P016)
+  {
+    Concurrency::parallel_invoke([&]() {
+      // copy Y
+      copy_plane(src[0], srcStrides[0], height, width, dst[0], dstStride[0]);
+    }, [&]() {
+      // copy UV
+      copy_plane(src[1], srcStrides[1], height >> 1, width, dst[1], dstStride[1]);
+    });
+    // copy cache size of UV line again to fix Intel cache issue
+    copy_plane(src[1], srcStrides[1], 1, 32, dst[1], dstStride[1]);
+  }
+  // convert 8bit
+  else if (buffer_format == AV_PIX_FMT_YUV420P)
+  {
+    Concurrency::parallel_invoke([&]() {
+      // copy Y
+      copy_plane(src[0], srcStrides[0], height, width, dst[0], dstStride[0]);
+    }, [&]() {
+      // convert U+V -> UV
+      convert_yuv420_nv12_chrome(&src[1], &srcStrides[1], height, width, dst[1], dstStride[1]);
+    });
+    // copy cache size of UV line again to fix Intel cache issue
+    // height and width multiplied by two because they will be divided by func
+    convert_yuv420_nv12_chrome(&src[1], &srcStrides[1], 2, 64, dst[1], dstStride[1]);
+  }
+  // convert 10/16bit
+  else if (buffer_format == AV_PIX_FMT_YUV420P10 ||
+    buffer_format == AV_PIX_FMT_YUV420P16)
+  {
+    const uint8_t bpp = buffer_format == AV_PIX_FMT_YUV420P10 ? 10 : 16;
+    Concurrency::parallel_invoke([&]() {
+      // copy Y
+      copy_plane(src[0], srcStrides[0], height, width, dst[0], dstStride[0], bpp);
+    }, [&]() {
+      // convert U+V -> UV
+      convert_yuv420_p01x_chrome(&src[1], &srcStrides[1], height, width, dst[1], dstStride[1], bpp);
+    });
+    // copy cache size of UV line again to fix Intel cache issue
+    // height multiplied by two because it will be divided by func
+    convert_yuv420_p01x_chrome(&src[1], &srcStrides[1], 2, 32, dst[1], dstStride[1], bpp);
+  }
+
+  m_loaded = m_texture.UnlockRect(0);
+  return m_loaded;
 }

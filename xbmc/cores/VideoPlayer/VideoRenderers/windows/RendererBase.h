@@ -42,10 +42,10 @@ enum RenderMethod
   RENDER_SW = 0x03,
 };
 
-class CRenderBufferBase
+class CRenderBuffer
 {
 public:
-  virtual ~CRenderBufferBase() = default;
+  virtual ~CRenderBuffer() = default;
 
   unsigned GetWidth() const { return m_widthTex; }
   unsigned GetHeight() const { return m_heightTex; }
@@ -79,7 +79,7 @@ public:
   uint64_t frameIdx = 0;
 
 protected:
-  CRenderBufferBase(AVPixelFormat av_pix_format, unsigned width, unsigned height);
+  CRenderBuffer(AVPixelFormat av_pix_format, unsigned width, unsigned height);
   void QueueCopyFromGPU();
 
   // video buffer size
@@ -133,7 +133,7 @@ protected:
   virtual void RenderImpl(CD3DTexture& target, CRect& sourceRect, CPoint (&destPoints)[4], uint32_t flags) = 0;
   virtual void FinalOutput(CD3DTexture& source, CD3DTexture& target, const CRect& sourceRect, const CPoint(&destPoints)[4]);
 
-  virtual CRenderBufferBase* CreateBuffer() = 0;
+  virtual CRenderBuffer* CreateBuffer() = 0;
   virtual void UpdateVideoFilters();
   virtual void CheckVideoParameters();
   virtual void OnViewSizeChanged() {}
@@ -165,5 +165,5 @@ protected:
   std::unique_ptr<CColorManager> m_colorManager;
   Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_pLUTView;
   CVideoSettings& m_videoSettings;
-  std::map<int, CRenderBufferBase*> m_renderBuffers;
+  std::map<int, CRenderBuffer*> m_renderBuffers;
 };

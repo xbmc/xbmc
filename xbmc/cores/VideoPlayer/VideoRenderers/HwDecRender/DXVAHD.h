@@ -15,7 +15,7 @@
 
 #include <wrl/client.h>
 
-class CRenderBufferBase;
+class CRenderBuffer;
 
 namespace DXVA {
 
@@ -40,7 +40,7 @@ public:
   void UnInit();
   bool Open(UINT width, UINT height);
   void Close();
-  bool Render(CRect src, CRect dst, ID3D11Resource* target, CRenderBufferBase **views, DWORD flags, UINT frameIdx, UINT rotation, float contrast, float brightness);
+  bool Render(CRect src, CRect dst, ID3D11Resource* target, CRenderBuffer **views, DWORD flags, UINT frameIdx, UINT rotation, float contrast, float brightness);
   uint8_t PastRefs() const { return m_max_back_refs; }
   bool IsFormatSupported(DXGI_FORMAT format, D3D11_VIDEO_PROCESSOR_FORMAT_SUPPORT support) const;
   bool HasHDR10Support() const { return m_bSupportHDR10; }
@@ -49,7 +49,7 @@ public:
   void OnCreateDevice() override  {}
   void OnDestroyDevice(bool) override { CSingleLock lock(m_section); UnInit(); }
 
-  static DXGI_COLOR_SPACE_TYPE GetDXGIColorSpace(CRenderBufferBase*, bool);
+  static DXGI_COLOR_SPACE_TYPE GetDXGIColorSpace(CRenderBuffer*, bool);
 
 protected:
   bool ReInit();
@@ -57,7 +57,7 @@ protected:
   bool CheckFormats() const;
   bool OpenProcessor();
   void ApplyFilter(D3D11_VIDEO_PROCESSOR_FILTER filter, int value, int min, int max, int def) const;
-  ID3D11VideoProcessorInputView* GetInputView(CRenderBufferBase* view) const;
+  ID3D11VideoProcessorInputView* GetInputView(CRenderBuffer* view) const;
 
   CCriticalSection m_section;
 

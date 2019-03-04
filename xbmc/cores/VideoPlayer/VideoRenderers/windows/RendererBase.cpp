@@ -18,7 +18,7 @@
 
 using namespace Microsoft::WRL;
 
-void CRenderBufferBase::AppendPicture(const VideoPicture& picture)
+void CRenderBuffer::AppendPicture(const VideoPicture& picture)
 {
   videoBuffer = picture.videoBuffer;
   videoBuffer->Acquire();
@@ -37,19 +37,19 @@ void CRenderBufferBase::AppendPicture(const VideoPicture& picture)
   hasLightMetadata = picture.hasLightMetadata && picture.lightMetadata.MaxCLL;
 }
 
-void CRenderBufferBase::ReleasePicture()
+void CRenderBuffer::ReleasePicture()
 {
   if (videoBuffer)
     videoBuffer->Release();
   videoBuffer = nullptr;
 }
 
-CRenderBufferBase::CRenderBufferBase(AVPixelFormat av_pix_format, unsigned width, unsigned height)
+CRenderBuffer::CRenderBuffer(AVPixelFormat av_pix_format, unsigned width, unsigned height)
   : av_format(av_pix_format) , m_width(width) , m_height(height), m_widthTex(width), m_heightTex(height)
 {
 }
 
-HRESULT CRenderBufferBase::GetResource(ID3D11Resource** ppResource, unsigned* index) const
+HRESULT CRenderBuffer::GetResource(ID3D11Resource** ppResource, unsigned* index) const
 {
   if (!ppResource)
     return E_POINTER;
@@ -71,7 +71,7 @@ HRESULT CRenderBufferBase::GetResource(ID3D11Resource** ppResource, unsigned* in
   return hr;
 }
 
-void CRenderBufferBase::QueueCopyFromGPU()
+void CRenderBuffer::QueueCopyFromGPU()
 {
   if (!videoBuffer)
     return;
@@ -185,7 +185,7 @@ void CRendererBase::Render(CD3DTexture& target, const CRect& sourceRect, const C
   if (m_iNumBuffers == 0)
     return;
 
-  CRenderBufferBase* buf = m_renderBuffers[m_iBufferIndex];
+  CRenderBuffer* buf = m_renderBuffers[m_iBufferIndex];
   if (!buf->IsLoaded())
   {
     if (!buf->UploadBuffer())
@@ -386,7 +386,7 @@ void CRendererBase::UpdateVideoFilters()
 
 void CRendererBase::CheckVideoParameters()
 {
-  CRenderBufferBase* buf = m_renderBuffers[m_iBufferIndex];
+  CRenderBuffer* buf = m_renderBuffers[m_iBufferIndex];
 
   bool toneMap = false;
   if (m_videoSettings.m_ToneMapMethod != VS_TONEMAPMETHOD_OFF)
