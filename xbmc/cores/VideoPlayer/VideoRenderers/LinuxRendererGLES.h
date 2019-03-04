@@ -148,6 +148,7 @@ protected:
   int m_currentField{FIELD_FULL};
   int m_reloadShaders{0};
   CRenderSystemGLES *m_renderSystem{nullptr};
+  GLenum m_pixelStoreKey{0};
 
   struct CYuvPlane
   {
