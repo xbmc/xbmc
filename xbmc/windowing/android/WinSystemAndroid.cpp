@@ -88,6 +88,7 @@ bool CWinSystemAndroid::InitWindowSystem()
 
 bool CWinSystemAndroid::DestroyWindowSystem()
 {
+  CLog::Log(LOGNOTICE, "CWinSystemAndroid::%s", __FUNCTION__);
   delete m_android;
   m_android = nullptr;
 
@@ -115,7 +116,7 @@ bool CWinSystemAndroid::CreateNewWindow(const std::string& name,
     (current_resolution.dwFlags & D3DPRESENTFLAG_MODEMASK) == (res.dwFlags & D3DPRESENTFLAG_MODEMASK) &&
     m_stereo_mode == stereo_mode)
   {
-    CLog::Log(LOGDEBUG, "CWinSystemEGL::CreateNewWindow: No need to create a new window");
+    CLog::Log(LOGDEBUG, "CWinSystemAndroid::CreateNewWindow: No need to create a new window");
     return true;
   }
 
@@ -131,6 +132,7 @@ bool CWinSystemAndroid::CreateNewWindow(const std::string& name,
 
 bool CWinSystemAndroid::DestroyWindow()
 {
+  CLog::Log(LOGNOTICE, "CWinSystemAndroid::%s", __FUNCTION__);
   m_nativeWindow = nullptr;
   m_bWindowCreated = false;
   return true;
@@ -145,7 +147,7 @@ void CWinSystemAndroid::UpdateResolutions()
 
   if (!m_android->ProbeResolutions(resolutions) || resolutions.empty())
   {
-    CLog::Log(LOGWARNING, "%s: ProbeResolutions failed.",__FUNCTION__);
+    CLog::Log(LOGWARNING, "CWinSystemAndroid::%s failed.", __FUNCTION__);
   }
 
   /* ProbeResolutions includes already all resolutions.
