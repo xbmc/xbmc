@@ -1286,6 +1286,8 @@ void CGUIMediaWindow::SaveSelectedItemInHistory()
     CFileItemPtr pItem = m_vecItems->Get(iItem);
     if (!pItem->IsParentFolder())
       GetDirectoryHistoryString(pItem.get(), strSelectedItem);
+    else
+      m_history.RemoveSelectedItem(m_vecItems->GetPath());
   }
 
   m_history.SetSelectedItem(strSelectedItem, m_vecItems->GetPath());
