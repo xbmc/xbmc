@@ -60,6 +60,7 @@ void CJNIXBMCMediaSession::RegisterNatives(JNIEnv* env)
       {"_onRewindRequested", "()V", (void*)&CJNIXBMCMediaSession::_onRewindRequested},
       {"_onStopRequested", "()V", (void*)&CJNIXBMCMediaSession::_onStopRequested},
       {"_onSeekRequested", "(J)V", (void*)&CJNIXBMCMediaSession::_onSeekRequested},
+      {"_onMediaButtonEvent", "(Landroid/content/Intent;)Z", (void*)&CJNIXBMCMediaSession::_onMediaButtonEvent},
     };
 
     env->RegisterNatives(cClass, methods, sizeof(methods)/sizeof(methods[0]));
@@ -100,12 +101,6 @@ void CJNIXBMCMediaSession::updateIntent(const CJNIIntent& intent)
 
 void CJNIXBMCMediaSession::OnPlayRequested()
 {
-  if (CXBMCApp::HasFocus())
-  {
-    CAndroidKey::XBMC_Key(CJNIKeyEvent::KEYCODE_MEDIA_PLAY, XBMCK_MEDIA_PLAY_PAUSE, 0, 0, false);
-    return;
-  }
-
   if (g_application.GetAppPlayer().IsPlaying())
   {
     if (g_application.GetAppPlayer().IsPaused())
@@ -115,12 +110,6 @@ void CJNIXBMCMediaSession::OnPlayRequested()
 
 void CJNIXBMCMediaSession::OnPauseRequested()
 {
-  if (CXBMCApp::HasFocus())
-  {
-    CAndroidKey::XBMC_Key(CJNIKeyEvent::KEYCODE_MEDIA_PAUSE, XBMCK_MEDIA_PLAY_PAUSE, 0, 0, false);
-    return;
-  }
-
   if (g_application.GetAppPlayer().IsPlaying())
   {
     if (!g_application.GetAppPlayer().IsPaused())
@@ -130,36 +119,18 @@ void CJNIXBMCMediaSession::OnPauseRequested()
 
 void CJNIXBMCMediaSession::OnNextRequested()
 {
-  if (CXBMCApp::HasFocus())
-  {
-    CAndroidKey::XBMC_Key(CJNIKeyEvent::KEYCODE_MEDIA_NEXT, XBMCK_MEDIA_NEXT_TRACK, 0, 0, false);
-    return;
-  }
-
   if (g_application.GetAppPlayer().IsPlaying())
     KODI::MESSAGING::CApplicationMessenger::GetInstance().PostMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_NEXT_ITEM)));
 }
 
 void CJNIXBMCMediaSession::OnPreviousRequested()
 {
-  if (CXBMCApp::HasFocus())
-  {
-    CAndroidKey::XBMC_Key(CJNIKeyEvent::KEYCODE_MEDIA_PREVIOUS, XBMCK_MEDIA_PREV_TRACK, 0, 0, false);
-    return;
-  }
-
   if (g_application.GetAppPlayer().IsPlaying())
     KODI::MESSAGING::CApplicationMessenger::GetInstance().PostMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_PREV_ITEM)));
 }
 
 void CJNIXBMCMediaSession::OnForwardRequested()
 {
-  if (CXBMCApp::HasFocus())
-  {
-    CAndroidKey::XBMC_Key(CJNIKeyEvent::KEYCODE_MEDIA_FAST_FORWARD, XBMCK_MEDIA_FASTFORWARD, 0, 0, false);
-    return;
-  }
-
   if (g_application.GetAppPlayer().IsPlaying())
   {
     if (!g_application.GetAppPlayer().IsPaused())
@@ -169,12 +140,6 @@ void CJNIXBMCMediaSession::OnForwardRequested()
 
 void CJNIXBMCMediaSession::OnRewindRequested()
 {
-  if (CXBMCApp::HasFocus())
-  {
-    CAndroidKey::XBMC_Key(CJNIKeyEvent::KEYCODE_MEDIA_REWIND, XBMCK_MEDIA_REWIND, 0, 0, false);
-    return;
-  }
-
   if (g_application.GetAppPlayer().IsPlaying())
   {
     if (!g_application.GetAppPlayer().IsPaused())
@@ -184,12 +149,6 @@ void CJNIXBMCMediaSession::OnRewindRequested()
 
 void CJNIXBMCMediaSession::OnStopRequested()
 {
-  if (CXBMCApp::HasFocus())
-  {
-    CAndroidKey::XBMC_Key(CJNIKeyEvent::KEYCODE_MEDIA_STOP, XBMCK_MEDIA_STOP, 0, 0, false);
-    return;
-  }
-
   if (g_application.GetAppPlayer().IsPlaying())
     KODI::MESSAGING::CApplicationMessenger::GetInstance().PostMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_STOP)));
 }
@@ -197,6 +156,16 @@ void CJNIXBMCMediaSession::OnStopRequested()
 void CJNIXBMCMediaSession::OnSeekRequested(int64_t pos)
 {
   g_application.SeekTime(pos / 1000.0);
+}
+
+bool CJNIXBMCMediaSession::OnMediaButtonEvent(CJNIIntent intent)
+{
+  if (CXBMCApp::HasFocus())
+  {
+    CXBMCApp::get()->onReceive(intent);
+    return true;
+  }
+  return false;
 }
 
 bool CJNIXBMCMediaSession::isActive() const
@@ -277,3 +246,14 @@ void CJNIXBMCMediaSession::_onSeekRequested(JNIEnv* env, jobject thiz, jlong pos
   if (inst)
     inst->OnSeekRequested(pos);
 }
+
+bool CJNIXBMCMediaSession::_onMediaButtonEvent(JNIEnv* env, jobject thiz, jobject intent)
+{
+  (void)env;
+
+  CJNIXBMCMediaSession *inst = find_instance(thiz);
+  if (inst)
+    return inst->OnMediaButtonEvent(CJNIIntent(jhobject::fromJNI(intent)));
+  return false;
+}
+

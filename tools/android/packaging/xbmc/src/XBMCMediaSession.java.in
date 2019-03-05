@@ -33,6 +33,8 @@ public class XBMCMediaSession
 
   native void _onSeekRequested(long pos);
 
+  native boolean _onMediaButtonEvent(Intent intent);
+
   private static final String TAG = "XBMCMediaSession";
 
   private class XBMCMediaSessionCallback extends MediaSession.Callback
@@ -100,6 +102,15 @@ public class XBMCMediaSession
       Log.d(TAG, "onSeekTo: ");
       super.onSeekTo(pos);
       _onSeekRequested(pos);
+    }
+
+    @Override
+    public boolean onMediaButtonEvent(Intent intent)
+    {
+      Log.d(TAG, "onMediaButtonEvent: ");
+      if (!_onMediaButtonEvent(intent))
+        return super.onMediaButtonEvent(intent);
+      return true;
     }
   }
 
