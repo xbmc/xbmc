@@ -1125,7 +1125,7 @@ bool CGUIDialogPVRTimerSettings::TypeReadOnlyCondition(const std::string &condit
   }
 
   /* Always enable enable/disable, if supported by the timer type. */
-  if (pThis->m_timerType->SupportsEnableDisable())
+  if (pThis->m_timerType->SupportsEnableDisable() && !pThis->m_timerInfoTag->IsBroken())
   {
     if (cond == SETTING_TMR_ACTIVE)
       return true;
