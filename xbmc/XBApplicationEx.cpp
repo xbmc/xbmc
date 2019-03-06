@@ -32,7 +32,7 @@ CXBApplicationEx::~CXBApplicationEx() = default;
 /* Destroy the app */
 void CXBApplicationEx::Destroy()
 {
-  CLog::Log(LOGNOTICE, "destroy");
+  CLog::Log(LOGNOTICE, "XBApplicationEx: destroying...");
   // Perform app-specific cleanup
   Cleanup();
 }
@@ -82,6 +82,6 @@ int CXBApplicationEx::Run(const CAppParamParser &params)
   }
   Destroy();
 
-  CLog::Log(LOGNOTICE, "application stopped..." );
+  CLog::Log(LOGNOTICE, "XBApplicationEx: application stopped!" );
   return m_ExitCode;
 }
