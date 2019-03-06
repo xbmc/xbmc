@@ -273,7 +273,7 @@ void CPVREpgContainer::LoadFromDB(void)
   m_database->Lock();
   m_iNextEpgId = m_database->GetLastEPGId();
   m_database->DeleteEpgEntries(cleanupTime);
-  const std::vector<CPVREpgPtr> result = m_database->Get(*this);
+  const std::vector<std::shared_ptr<CPVREpg>> result = m_database->GetAll();
   m_database->Unlock();
 
   for (const auto& entry : result)

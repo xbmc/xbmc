@@ -8,16 +8,15 @@
 
 #pragma once
 
-#include "XBDateTime.h"
 #include "dbwrappers/Database.h"
 #include "threads/CriticalSection.h"
 
-#include "pvr/epg/Epg.h"
+class CDateTime;
 
 namespace PVR
 {
+  class CPVREpg;
   class CPVREpgInfoTag;
-  class CPVREpgContainer;
 
   /** The EPG database */
 
@@ -99,17 +98,16 @@ namespace PVR
 
     /*!
      * @brief Get all EPG tables from the database. Does not get the EPG tables' entries.
-     * @param container The container to get the EPG tables for.
      * @return The entries.
      */
-    std::vector<CPVREpgPtr> Get(const CPVREpgContainer &container);
+    std::vector<std::shared_ptr<CPVREpg>> GetAll();
 
     /*!
      * @brief Get all EPG entries for a table.
      * @param epg The EPG table to get the entries for.
      * @return The entries.
      */
-    std::vector<CPVREpgInfoTagPtr> Get(const CPVREpg &epg);
+    std::vector<std::shared_ptr<CPVREpgInfoTag>> Get(const CPVREpg &epg);
 
     /*!
      * @brief Get the last stored EPG scan time.
