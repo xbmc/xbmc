@@ -56,8 +56,22 @@ namespace
 
   void AsyncSearchAction::Run()
   {
-    const std::vector<std::shared_ptr<CPVREpgInfoTag>> tags = CServiceBroker::GetPVRManager().EpgContainer().GetEPGSearch(*m_filter);
-    for (const auto& tag : tags)
+    std::vector<std::shared_ptr<CPVREpgInfoTag>> results = CServiceBroker::GetPVRManager().EpgContainer().GetAllTags();
+    for (auto it = results.begin(); it != results.end();)
+    {
+      it = results.erase(std::remove_if(results.begin(),
+                                        results.end(),
+                                        [this](const std::shared_ptr<CPVREpgInfoTag>& entry)
+                                        {
+                                          return !m_filter->FilterEntry(entry);
+                                        }),
+                         results.end());
+    }
+
+    if (m_filter->ShouldRemoveDuplicates())
+      m_filter->RemoveDuplicates(results);
+
+    for (const auto& tag : results)
     {
       m_items->Add(std::make_shared<CFileItem>(tag));
     }
@@ -67,6 +81,10 @@ namespace
 CGUIWindowPVRSearchBase::CGUIWindowPVRSearchBase(bool bRadio, int id, const std::string &xmlFile) :
   CGUIWindowPVRBase(bRadio, id, xmlFile),
   m_bSearchConfirmed(false)
+{
+}
+
+CGUIWindowPVRSearchBase::~CGUIWindowPVRSearchBase()
 {
 }
 

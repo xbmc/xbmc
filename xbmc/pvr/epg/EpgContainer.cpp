@@ -488,6 +488,20 @@ std::shared_ptr<CPVREpgInfoTag> CPVREpgContainer::GetTagById(const std::shared_p
   return retval;
 }
 
+std::vector<std::shared_ptr<CPVREpgInfoTag>> CPVREpgContainer::GetAllTags() const
+{
+  std::vector<std::shared_ptr<CPVREpgInfoTag>> allTags;
+
+  CSingleLock lock(m_critSection);
+  for (const auto& epgEntry : m_epgIdToEpgMap)
+  {
+    const std::vector<std::shared_ptr<CPVREpgInfoTag>> epgTags = epgEntry.second->GetTags();
+    allTags.insert(allTags.end(), epgTags.begin(), epgTags.end());
+  }
+
+  return allTags;
+}
+
 void CPVREpgContainer::InsertFromDB(const CPVREpgPtr &newEpg)
 {
   // table might already have been created when pvr channels were loaded
@@ -762,25 +776,6 @@ const CDateTime CPVREpgContainer::GetLastEPGDate(void)
   }
 
   return returnValue;
-}
-
-const std::vector<std::shared_ptr<CPVREpgInfoTag>> CPVREpgContainer::GetEPGSearch(const CPVREpgSearchFilter &filter)
-{
-  std::vector<std::shared_ptr<CPVREpgInfoTag>> tags;
-
-  {
-    CSingleLock lock(m_critSection);
-    for (const auto &epgEntry : m_epgIdToEpgMap)
-    {
-      const std::vector<std::shared_ptr<CPVREpgInfoTag>> epgTags = epgEntry.second->GetTags(filter);
-      tags.insert(tags.end(), epgTags.begin(), epgTags.end());
-    }
-  }
-
-  if (filter.ShouldRemoveDuplicates())
-    filter.RemoveDuplicates(tags);
-
-  return tags;
 }
 
 bool CPVREpgContainer::CheckPlayingEvents(void)

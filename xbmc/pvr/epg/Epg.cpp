@@ -478,20 +478,6 @@ std::vector<std::shared_ptr<CPVREpgInfoTag>> CPVREpg::GetTags() const
   return tags;
 }
 
-std::vector<std::shared_ptr<CPVREpgInfoTag>> CPVREpg::GetTags(const CPVREpgSearchFilter& filter) const
-{
-  std::vector<std::shared_ptr<CPVREpgInfoTag>> tags;
-
-  CSingleLock lock(m_critSection);
-  for (const auto& tag : m_tags)
-  {
-    if (filter.FilterEntry(tag.second))
-      tags.emplace_back(tag.second);
-  }
-
-  return tags;
-}
-
 bool CPVREpg::Persist(const std::shared_ptr<CPVREpgDatabase>& database)
 {
   if (!database)

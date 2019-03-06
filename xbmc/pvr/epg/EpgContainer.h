@@ -99,13 +99,6 @@ namespace PVR
     std::shared_ptr<CPVREpg> CreateChannelEpg(int iEpgId, const std::string& strScraperName, const std::shared_ptr<CPVREpgChannelData>& channelData);
 
     /*!
-     * @brief Get all EPG tags matching the given filter.
-     * @param filter The filter to apply.
-     * @return The matching tags.
-     */
-    const std::vector<std::shared_ptr<CPVREpgInfoTag>> GetEPGSearch(const CPVREpgSearchFilter &filter);
-
-    /*!
      * @brief Get the start time of the first entry.
      * @return The start time.
      */
@@ -139,6 +132,12 @@ namespace PVR
      * @return The requested event, or an empty tag when not found
      */
     std::shared_ptr<CPVREpgInfoTag> GetTagById(const std::shared_ptr<CPVREpg>& epg, unsigned int iBroadcastId) const;
+
+    /*!
+     * @brief Get all EPG tags.
+     * @return The tags.
+     */
+    std::vector<std::shared_ptr<CPVREpgInfoTag>> GetAllTags() const;
 
     /*!
      * @brief Check whether data should be persisted to the EPG database.

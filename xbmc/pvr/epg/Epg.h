@@ -17,7 +17,6 @@
 
 #include "pvr/PVRTypes.h"
 #include "pvr/epg/EpgInfoTag.h"
-#include "pvr/epg/EpgSearchFilter.h"
 
 /** EPG container for CPVREpgInfoTag instances */
 namespace PVR
@@ -199,13 +198,6 @@ namespace PVR
      * @return The tags.
      */
     std::vector<std::shared_ptr<CPVREpgInfoTag>> GetTags() const;
-
-    /*!
-     * @brief Get all EPG tags matching the given filter.
-     * @param filter The filter to apply.
-     * @return The matching tags.
-     */
-    std::vector<std::shared_ptr<CPVREpgInfoTag>> GetTags(const CPVREpgSearchFilter& filter) const;
 
     /*!
      * @brief Persist this table in the given database
