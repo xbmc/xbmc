@@ -15,7 +15,7 @@
 #include "view/ViewStateSettings.h"
 
 #include "pvr/recordings/PVRRecordingsPath.h"
-#include "pvr/timers/PVRTimers.h"
+#include "pvr/timers/PVRTimersPath.h"
 
 using namespace PVR;
 

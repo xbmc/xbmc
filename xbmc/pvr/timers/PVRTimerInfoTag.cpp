@@ -23,7 +23,7 @@
 #include "pvr/addons/PVRClients.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/epg/Epg.h"
-#include "pvr/timers/PVRTimers.h"
+#include "pvr/timers/PVRTimersPath.h"
 
 using namespace PVR;
 
@@ -974,7 +974,7 @@ CPVREpgInfoTagPtr CPVRTimerInfoTag::GetEpgInfoTag(bool bCreate /* = true */) con
           }
         }
 
-        if (!m_epgTag && m_epTagRefetchTimeout.IsTimePast())
+        if (!IsTimerRule() && !m_epgTag && m_epTagRefetchTimeout.IsTimePast())
         {
           m_epTagRefetchTimeout.Set(30000); // try to fetch missing epg tag from backend at most every 30 secs
 
@@ -988,26 +988,9 @@ CPVREpgInfoTagPtr CPVRTimerInfoTag::GetEpgInfoTag(bool bCreate /* = true */) con
           if (startTime > 0 && endTime > 0)
           {
             // try to fetch missing epg tag from backend
-            const CPVREpgInfoTagPtr epgTag = epg->GetTagBetween(StartAsUTC() - CDateTimeSpan(0, 0, 2, 0), EndAsUTC() + CDateTimeSpan(0, 0, 2, 0), true);
-            if (epgTag)
-            {
-              bool bTagMatches = !IsTimerRule();
-              if (!bTagMatches)
-              {
-                // Check whether the tag actually is an event that belongs to a child of this timer rule
-                const std::shared_ptr<CPVRTimerInfoTag> timer = CServiceBroker::GetPVRManager().Timers()->GetTimerForEpgTag(epgTag);
-                if (timer && (timer->GetTimerRuleId() == m_iClientIndex))
-                {
-                  bTagMatches = true;
-                }
-              }
-
-              if (bTagMatches)
-              {
-                m_epgTag = epgTag;
-                m_iEpgUid = m_epgTag->UniqueBroadcastID();
-              }
-            }
+            m_epgTag = epg->GetTagBetween(StartAsUTC() - CDateTimeSpan(0, 0, 2, 0), EndAsUTC() + CDateTimeSpan(0, 0, 2, 0), true);
+            if (m_epgTag)
+              m_iEpgUid = m_epgTag->UniqueBroadcastID();
           }
         }
       }

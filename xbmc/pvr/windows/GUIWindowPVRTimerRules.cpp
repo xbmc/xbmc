@@ -11,7 +11,7 @@
 #include "FileItem.h"
 #include "utils/URIUtils.h"
 
-#include "pvr/timers/PVRTimers.h"
+#include "pvr/timers/PVRTimersPath.h"
 
 using namespace PVR;
 

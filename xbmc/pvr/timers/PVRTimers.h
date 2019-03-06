@@ -290,36 +290,4 @@ namespace PVR
     bool m_bIsUpdating = false;
     CPVRSettings m_settings;
   };
-
-  class CPVRTimersPath
-  {
-  public:
-    static const std::string PATH_ADDTIMER;
-    static const std::string PATH_NEW;
-
-    explicit CPVRTimersPath(const std::string &strPath);
-    CPVRTimersPath(const std::string &strPath, int iClientId, unsigned int iParentId);
-    CPVRTimersPath(bool bRadio, bool bTimerRules);
-
-    bool IsValid() const { return m_bValid; }
-
-    const std::string &GetPath() const     { return m_path; }
-    bool              IsTimersRoot() const { return m_bRoot; }
-    bool              IsTimerRule() const  { return !IsTimersRoot(); }
-    bool              IsRadio() const      { return m_bRadio; }
-    bool              IsRules() const      { return m_bTimerRules; }
-    int               GetClientId() const  { return m_iClientId; }
-    unsigned int      GetParentId() const  { return m_iParentId; }
-
-  private:
-    bool Init(const std::string &strPath);
-
-    std::string  m_path;
-    bool         m_bValid;
-    bool         m_bRoot;
-    bool         m_bRadio;
-    bool         m_bTimerRules;
-    int          m_iClientId;
-    unsigned int m_iParentId;
-  };
 }
