@@ -363,7 +363,7 @@ namespace PVR
     bool ToggleTimerState::IsVisible(const CFileItem &item) const
     {
       const CPVRTimerInfoTagPtr timer(item.GetPVRTimerInfoTag());
-      if (!timer || URIUtils::PathEquals(item.GetPath(), CPVRTimersPath::PATH_ADDTIMER))
+      if (!timer || URIUtils::PathEquals(item.GetPath(), CPVRTimersPath::PATH_ADDTIMER) || timer->IsBroken())
         return false;
 
       const CPVRTimerTypePtr timerType(timer->GetTimerType());
