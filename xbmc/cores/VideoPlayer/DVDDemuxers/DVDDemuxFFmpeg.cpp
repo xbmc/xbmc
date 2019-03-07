@@ -2078,6 +2078,21 @@ bool CDVDDemuxFFmpeg::IsVideoReady()
         hasVideo = true;
       }
     }
+    // Workaround for live audio-only MPEG-TS streams: If there are no elementary video streams
+    // present attempt to set the start time from the first available elementary audio stream instead
+    if (!hasVideo && !m_startTime)
+    {
+      for (unsigned int i = 0; i < m_pFormatContext->programs[m_program]->nb_stream_indexes; i++)
+      {
+        int idx = m_pFormatContext->programs[m_program]->stream_index[i];
+        st = m_pFormatContext->streams[idx];
+        if (st->codecpar->codec_type == AVMEDIA_TYPE_AUDIO)
+        {
+          m_startTime = static_cast<double>(av_rescale(st->cur_dts, st->time_base.num, st->time_base.den));
+          break;
+        }
+      }
+    }
   }
   else
   {
@@ -2093,6 +2108,20 @@ bool CDVDDemuxFFmpeg::IsVideoReady()
           return true;
         }
         hasVideo = true;
+      }
+    }
+    // Workaround for live audio-only MPEG-TS streams: If there are no elementary video streams
+    // present attempt to set the start time from the first available elementary audio stream instead
+    if (!hasVideo && !m_startTime)
+    {
+      for (unsigned int i = 0; i < m_pFormatContext->nb_streams; i++)
+      {
+        st = m_pFormatContext->streams[i];
+        if (st->codecpar->codec_type == AVMEDIA_TYPE_AUDIO)
+        {
+          m_startTime = static_cast<double>(av_rescale(st->cur_dts, st->time_base.num, st->time_base.den));
+          break;
+        }
       }
     }
   }
