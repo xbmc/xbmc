@@ -250,6 +250,19 @@ void CGUIWindowPVRGuideBase::FormatAndSort(CFileItemList &items)
   CGUIWindowPVRBase::FormatAndSort(items);
 }
 
+CFileItemPtr CGUIWindowPVRGuideBase::GetCurrentListItem(int offset /*= 0*/)
+{
+  CFileItemPtr item = CGUIWindowPVRBase::GetCurrentListItem(offset);
+  if (!item)
+  {
+    // EPG "gap" item selected?
+    CGUIEPGGridContainer* epgGridContainer = GetGridControl();
+    if (epgGridContainer)
+      item = epgGridContainer->GetSelectedGridItem(offset);
+  }
+  return item;
+}
+
 bool CGUIWindowPVRGuideBase::ShouldNavigateToGridContainer(int iAction)
 {
   CGUIEPGGridContainer *epgGridContainer = GetGridControl();
@@ -488,7 +501,7 @@ bool CGUIWindowPVRGuideBase::OnMessage(CGUIMessage& message)
               CGUIEPGGridContainer *epgGridContainer = GetGridControl();
               if (epgGridContainer)
               {
-                const CFileItemPtr item(epgGridContainer->GetSelectedChannelItem());
+                const CFileItemPtr item(epgGridContainer->GetSelectedGridItem());
                 if (item)
                 {
                   CServiceBroker::GetPVRManager().GUIActions()->SwitchToChannel(item, true);

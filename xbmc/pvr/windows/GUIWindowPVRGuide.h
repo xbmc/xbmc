@@ -50,6 +50,7 @@ namespace PVR
     std::string GetDirectoryPath(void) override { return ""; }
     bool GetDirectory(const std::string &strDirectory, CFileItemList &items) override;
     void FormatAndSort(CFileItemList &items) override;
+    CFileItemPtr GetCurrentListItem(int offset = 0) override;
 
     void ClearData() override;
 

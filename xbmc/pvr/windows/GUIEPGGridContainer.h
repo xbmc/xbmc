@@ -58,7 +58,7 @@ namespace PVR
     CGUIListItemPtr GetListItem(int offset, unsigned int flag = 0) const override;
     std::string GetLabel(int info) const override;
 
-    CFileItemPtr GetSelectedChannelItem() const;
+    CFileItemPtr GetSelectedGridItem(int offset = 0) const;
     PVR::CPVRChannelPtr GetSelectedChannel() const;
     CDateTime GetSelectedDate() const;
 
