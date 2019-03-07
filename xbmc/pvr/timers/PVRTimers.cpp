@@ -412,7 +412,7 @@ std::vector<CFileItemPtr> CPVRTimers::GetActiveTimers(void) const
     for (VecTimerInfoTag::const_iterator timerIt = it->second.begin(); timerIt != it->second.end(); ++timerIt)
     {
       CPVRTimerInfoTagPtr current = *timerIt;
-      if (current->IsActive() && !current->IsTimerRule())
+      if (current->IsActive() && !current->IsTimerRule() && !current->IsBroken())
       {
         CFileItemPtr fileItem(new CFileItem(current));
         tags.push_back(fileItem);
@@ -434,7 +434,8 @@ int CPVRTimers::AmountActiveTimers(const TimerKind &eKind) const
     {
       if (KindMatchesTag(eKind, timersEntry) &&
           timersEntry->IsActive() &&
-          !timersEntry->IsTimerRule())
+          !timersEntry->IsTimerRule() &&
+          !timersEntry->IsBroken())
         ++iReturn;
     }
   }
@@ -468,7 +469,8 @@ std::vector<CFileItemPtr> CPVRTimers::GetActiveRecordings(const TimerKind &eKind
     {
       if (KindMatchesTag(eKind, timersEntry) &&
           timersEntry->IsRecording() &&
-          !timersEntry->IsTimerRule())
+          !timersEntry->IsTimerRule() &&
+          !timersEntry->IsBroken())
       {
         CFileItemPtr fileItem(new CFileItem(timersEntry));
         tags.push_back(fileItem);
@@ -505,7 +507,8 @@ int CPVRTimers::AmountActiveRecordings(const TimerKind &eKind) const
     {
       if (KindMatchesTag(eKind, timersEntry) &&
           timersEntry->IsRecording() &&
-          !timersEntry->IsTimerRule())
+          !timersEntry->IsTimerRule() &&
+          !timersEntry->IsBroken())
         ++iReturn;
     }
   }
@@ -533,7 +536,7 @@ bool CPVRTimers::HasActiveTimers(void) const
   CSingleLock lock(m_critSection);
   for (MapTags::const_iterator it = m_tags.begin(); it != m_tags.end(); ++it)
     for (VecTimerInfoTag::const_iterator timerIt = it->second.begin(); timerIt != it->second.end(); ++timerIt)
-      if ((*timerIt)->IsActive() && !(*timerIt)->IsTimerRule())
+      if ((*timerIt)->IsActive() && !(*timerIt)->IsTimerRule() && !(*timerIt)->IsBroken())
         return true;
 
   return false;
@@ -795,6 +798,7 @@ CPVRTimerInfoTagPtr CPVRTimers::GetRecordingTimerForRecording(const CPVRRecordin
     {
       if (timersEntry->IsRecording() &&
           !timersEntry->IsTimerRule() &&
+          !timersEntry->IsBroken() &&
           timersEntry->m_iClientId == recording.ClientID() &&
           timersEntry->m_iClientChannelUid == recording.ChannelUid())
       {
