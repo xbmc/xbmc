@@ -275,6 +275,25 @@ bool CPVRGUIInfo::GetLabel(std::string& value, const CFileItem *item, int contex
          GetRadioRDSLabel(item, info, value);
 }
 
+namespace
+{
+  std::string GetAsLocalizedDateString(const CDateTime& datetime, bool bLongDate)
+  {
+    return datetime.IsValid() ? datetime.GetAsLocalizedDate(bLongDate) : "";
+  }
+
+  std::string GetAsLocalizedTimeString(const CDateTime& datetime)
+  {
+    return datetime.IsValid() ? datetime.GetAsLocalizedTime("", false) : "";
+  }
+
+  std::string GetAsLocalizedDateTimeString(const CDateTime& datetime)
+  {
+    return datetime.IsValid() ? datetime.GetAsLocalizedDateTime(false, false) : "";
+  }
+
+} // unnamed namespace
+
 bool CPVRGUIInfo::GetListItemAndPlayerLabel(const CFileItem *item, const CGUIInfo &info, std::string &strValue) const
 {
   const CPVRTimerInfoTagPtr timer = item->GetPVRTimerInfoTag();
@@ -286,16 +305,16 @@ bool CPVRGUIInfo::GetListItemAndPlayerLabel(const CFileItem *item, const CGUIInf
         strValue = timer->Summary();
         return true;
       case LISTITEM_STARTDATE:
-        strValue = timer->StartAsLocalTime().GetAsLocalizedDate(true);
+        strValue = GetAsLocalizedDateString(timer->StartAsLocalTime(), true);
         return true;
       case LISTITEM_STARTTIME:
-        strValue = timer->StartAsLocalTime().GetAsLocalizedTime("", false);
+        strValue = GetAsLocalizedTimeString(timer->StartAsLocalTime());
         return true;
       case LISTITEM_ENDDATE:
-        strValue = timer->EndAsLocalTime().GetAsLocalizedDate(true);
+        strValue = GetAsLocalizedDateString(timer->EndAsLocalTime(), true);
         return true;
       case LISTITEM_ENDTIME:
-        strValue = timer->EndAsLocalTime().GetAsLocalizedTime("", false);
+        strValue = GetAsLocalizedTimeString(timer->EndAsLocalTime());
         return true;
       case LISTITEM_DURATION:
         if (timer->GetDuration() > 0)
@@ -343,33 +362,33 @@ bool CPVRGUIInfo::GetListItemAndPlayerLabel(const CFileItem *item, const CGUIInf
     switch (info.m_info)
     {
       case LISTITEM_DATE:
-        strValue = recording->RecordingTimeAsLocalTime().GetAsLocalizedDateTime(false, false);
+        strValue = GetAsLocalizedDateTimeString(recording->RecordingTimeAsLocalTime());
         return true;
       case LISTITEM_STARTDATE:
-        strValue = recording->RecordingTimeAsLocalTime().GetAsLocalizedDate(true);
+        strValue = GetAsLocalizedDateString(recording->RecordingTimeAsLocalTime(), true);
         return true;
       case VIDEOPLAYER_STARTTIME:
       case LISTITEM_STARTTIME:
-        strValue = recording->RecordingTimeAsLocalTime().GetAsLocalizedTime("", false);
+        strValue = GetAsLocalizedTimeString(recording->RecordingTimeAsLocalTime());
         return true;
       case LISTITEM_ENDDATE:
-        strValue = recording->EndTimeAsLocalTime().GetAsLocalizedDate(true);
+        strValue = GetAsLocalizedDateString(recording->EndTimeAsLocalTime(), true);
         return true;
       case VIDEOPLAYER_ENDTIME:
       case LISTITEM_ENDTIME:
-        strValue = recording->EndTimeAsLocalTime().GetAsLocalizedTime("", false);
+        strValue = GetAsLocalizedTimeString(recording->EndTimeAsLocalTime());
         return true;
       case LISTITEM_EXPIRATION_DATE:
         if (recording->HasExpirationTime())
         {
-          strValue = recording->ExpirationTimeAsLocalTime().GetAsLocalizedDate(false);
+          strValue = GetAsLocalizedDateString(recording->ExpirationTimeAsLocalTime(), false);
           return true;
         }
         break;
       case LISTITEM_EXPIRATION_TIME:
         if (recording->HasExpirationTime())
         {
-          strValue = recording->ExpirationTimeAsLocalTime().GetAsLocalizedTime("", false);;
+          strValue = GetAsLocalizedTimeString(recording->ExpirationTimeAsLocalTime());;
           return true;
         }
         break;
@@ -478,27 +497,27 @@ bool CPVRGUIInfo::GetListItemAndPlayerLabel(const CFileItem *item, const CGUIInf
         strValue = epgTag->PlotOutline();
         return true;
       case LISTITEM_DATE:
-        strValue = epgTag->StartAsLocalTime().GetAsLocalizedDateTime(false, false);
+        strValue = GetAsLocalizedDateTimeString(epgTag->StartAsLocalTime());
         return true;
       case LISTITEM_STARTDATE:
       case LISTITEM_NEXT_STARTDATE:
-        strValue = epgTag->StartAsLocalTime().GetAsLocalizedDate(true);
+        strValue = GetAsLocalizedDateString(epgTag->StartAsLocalTime(), true);
         return true;
       case VIDEOPLAYER_STARTTIME:
       case VIDEOPLAYER_NEXT_STARTTIME:
       case LISTITEM_STARTTIME:
       case LISTITEM_NEXT_STARTTIME:
-        strValue = epgTag->StartAsLocalTime().GetAsLocalizedTime("", false);
+        strValue = GetAsLocalizedTimeString(epgTag->StartAsLocalTime());
         return true;
       case LISTITEM_ENDDATE:
       case LISTITEM_NEXT_ENDDATE:
-        strValue = epgTag->EndAsLocalTime().GetAsLocalizedDate(true);
+        strValue = GetAsLocalizedDateString(epgTag->EndAsLocalTime(), true);
         return true;
       case VIDEOPLAYER_ENDTIME:
       case VIDEOPLAYER_NEXT_ENDTIME:
       case LISTITEM_ENDTIME:
       case LISTITEM_NEXT_ENDTIME:
-        strValue = epgTag->EndAsLocalTime().GetAsLocalizedTime("", false);
+        strValue = GetAsLocalizedTimeString(epgTag->EndAsLocalTime());
         return true;
       // note: for some reason, there is no VIDEOPLAYER_DURATION
       case LISTITEM_DURATION:
