@@ -104,7 +104,7 @@ void CGUIWindowPVRGuideBase::OnDeinitWindow(int nextWindowID)
     {
       // speedup: save a copy of current items for reuse when re-opening the window
       m_newTimeline.reset(new CFileItemList);
-      m_newTimeline->Copy(*m_vecItems);
+      m_newTimeline->Assign(*m_vecItems);
     }
   }
 
