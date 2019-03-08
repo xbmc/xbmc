@@ -10,10 +10,12 @@
 
 #include "cores/VideoPlayer/VideoRenderers/RenderFactory.h"
 #include "ServiceBroker.h"
+#include "utils/EGLFence.h"
 #include "utils/log.h"
 #include "windowing/gbm/WinSystemGbmGLESContext.h"
 
 using namespace KODI::WINDOWING::GBM;
+using namespace KODI::UTILS::EGL;
 
 CRendererDRMPRIMEGLES::~CRendererDRMPRIMEGLES()
 {
@@ -43,13 +45,25 @@ bool CRendererDRMPRIMEGLES::Configure(const VideoPicture &picture, float fps, un
   for (auto &texture : m_DRMPRIMETextures)
     texture.Init(winSystem->GetEGLDisplay());
 
+  for (auto& fence : m_fences)
+  {
+    fence.reset(new CEGLFence(winSystem->GetEGLDisplay()));
+  }
+
   return CLinuxRendererGLES::Configure(picture, fps, orientation);
 }
 
 void CRendererDRMPRIMEGLES::ReleaseBuffer(int index)
 {
+  m_fences[index]->DestroyFence();
+
   m_DRMPRIMETextures[index].Unmap();
   CLinuxRendererGLES::ReleaseBuffer(index);
+}
+
+bool CRendererDRMPRIMEGLES::NeedBuffer(int index)
+{
+  return !m_fences[index]->IsSignaled();
 }
 
 bool CRendererDRMPRIMEGLES::CreateTexture(int index)
@@ -187,4 +201,9 @@ bool CRendererDRMPRIMEGLES::RenderHook(int index)
   glBindTexture(GL_TEXTURE_EXTERNAL_OES, 0);
 
   return true;
+}
+
+void CRendererDRMPRIMEGLES::AfterRenderHook(int index)
+{
+  m_fences[index]->CreateFence();
 }
