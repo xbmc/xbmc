@@ -1314,13 +1314,13 @@ int CGUIEPGGridContainer::GetSelectedItem() const
   return m_gridModel->GetGridItemIndex(m_channelCursor + m_channelOffset, m_blockCursor + m_blockOffset);
 }
 
-CFileItemPtr CGUIEPGGridContainer::GetSelectedChannelItem() const
+CFileItemPtr CGUIEPGGridContainer::GetSelectedGridItem(int offset /*= 0*/) const
 {
   CFileItemPtr item;
 
   if (m_gridModel->HasGridItems() &&
       m_gridModel->ChannelItemsSize() > 0 &&
-      m_channelCursor + m_channelOffset < m_gridModel->ChannelItemsSize() &&
+      m_channelCursor + m_channelOffset + offset < m_gridModel->ChannelItemsSize() &&
       m_blockCursor + m_blockOffset < m_gridModel->GetBlockCount())
     item = m_gridModel->GetGridItem(m_channelCursor + m_channelOffset, m_blockCursor + m_blockOffset);
 
