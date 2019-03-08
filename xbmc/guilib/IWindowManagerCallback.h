@@ -26,4 +26,5 @@ public:
   virtual void FrameMove(bool processEvents, bool processGUI = true) = 0;
   virtual void Render() = 0;
   virtual void Process() = 0;
+  virtual bool GetRenderGUI() const { return false; };
 };
