@@ -1401,7 +1401,7 @@ bool CMusicDatabase::GetArtist(int idArtist, CArtist &artist, bool fetchAll /* =
     int discographyOffset = artist_enumCount;
 
     artist.discography.clear();
-    artist = GetArtistFromDataset(m_pDS.get()->get_sql_record(), 0, fetchAll);
+    artist = GetArtistFromDataset(m_pDS.get()->get_sql_record(), 0, true); // inc scraped art URLs
     if (fetchAll)
     {
       while (!m_pDS->eof())
@@ -9707,7 +9707,7 @@ void CMusicDatabase::ExportToXML(const CLibExportSettings& settings,  CGUIDialog
       for (const auto &artistId : artistIds)
       {
         CArtist artist;
-        GetArtist(artistId, artist);
+        GetArtist(artistId, artist, true); // include discography
         std::string strPath;
         std::map<std::string, std::string> artwork;
         if (settings.IsSingleFile())
@@ -9866,7 +9866,7 @@ void CMusicDatabase::ImportFromXML(const std::string &xmlFile)
         if (idArtist > -1)
         {
           CArtist artist;
-          GetArtist(idArtist, artist);
+          GetArtist(idArtist, artist, true); // include discography
           artist.MergeScrapedArtist(importedArtist, true);
           UpdateArtist(artist);
         }
