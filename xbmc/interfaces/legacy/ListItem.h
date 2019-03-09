@@ -761,7 +761,7 @@ namespace XBMCAddon
       /// \ingroup python_xbmcgui_listitem
       /// @brief \python_func{ setAvailableFanart(images) }
       ///-----------------------------------------------------------------------
-      /// @brief Set available images (needed for scrapers)
+      /// @brief Set available images (needed for video scrapers)
       ///
       /// @param images            list of dictionaries (see below for relevant keys)
       ///
@@ -794,7 +794,7 @@ namespace XBMCAddon
       /// \ingroup python_xbmcgui_listitem
       /// @brief \python_func{ addAvailableArtwork(images) }
       ///-----------------------------------------------------------------------
-      /// @brief Add an image to available artworks (needed for scrapers)
+      /// @brief Add an image to available artworks (needed for video scrapers)
       ///
       /// @param url            string (image path url)
       /// @param art_type       string (image type)
