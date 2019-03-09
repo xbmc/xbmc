@@ -34,7 +34,8 @@ using namespace PVR;
 
 CGUIWindowPVRGuideBase::CGUIWindowPVRGuideBase(bool bRadio, int id, const std::string &xmlFile) :
   CGUIWindowPVRBase(bRadio, id, xmlFile),
-  m_bChannelSelectionRestored(false)
+  m_bChannelSelectionRestored(false),
+  m_bFirstOpen(true)
 {
   m_bRefreshTimelineItems = false;
   m_bSyncRefreshTimelineItems = false;
@@ -616,8 +617,27 @@ bool CGUIWindowPVRGuideBase::RefreshTimelineItems()
 
       std::unique_ptr<CFileItemList> timeline(new CFileItemList);
 
-      // can be very expensive. never call with lock acquired.
-      group->GetEPGAll(*timeline, true);
+      if (m_bFirstOpen)
+      {
+        m_bFirstOpen = false;
+
+        // very first open of the window. come up with some data very fast...
+        const std::vector<PVRChannelGroupMember> groupMembers = group->GetMembers();
+        for (const auto& groupMember : groupMembers)
+        {
+          // fake a channel without epg
+          const std::shared_ptr<CPVREpgInfoTag> gapTag = std::make_shared<CPVREpgInfoTag>(groupMember.channel);
+          timeline->Add(std::make_shared<CFileItem>(gapTag));
+        }
+
+        // next, fetch actual data.
+        m_bRefreshTimelineItems = true;
+      }
+      else
+      {
+        // can be very expensive. never call with lock acquired.
+        group->GetEPGAll(*timeline, true);
+      }
 
       CDateTime startDate(group->GetFirstEPGDate());
       CDateTime endDate(group->GetLastEPGDate());
