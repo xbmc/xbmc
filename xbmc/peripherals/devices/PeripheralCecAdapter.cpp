@@ -599,6 +599,8 @@ void CPeripheralCecAdapter::OnTvStandby(void)
   case LOCALISED_ID_STOP:
     KODI::MESSAGING::CApplicationMessenger::GetInstance().PostMsg(TMSG_MEDIA_STOP);
     break;
+  case LOCALISED_ID_IGNORE:
+  break;
   default:
     CLog::Log(LOGERROR, "%s - Unexpected [standby_pc_on_tv_standby] setting value", __FUNCTION__);
     break;
