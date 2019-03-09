@@ -554,11 +554,11 @@ void CGameClient::LogAddonProperties(void) const
 {
   CLog::Log(LOGINFO, "GAME: ------------------------------------");
   CLog::Log(LOGINFO, "GAME: Loaded DLL for {}", ID());
-  CLog::Log(LOGINFO, "GAME: Client: {} at version {}", Name(), Version().asString());
-  CLog::Log(LOGINFO, "GAME: Valid extensions: {}", StringUtils::Join(m_extensions, " "));
-  CLog::Log(LOGINFO, "GAME: Supports VFS:                  {}", m_bSupportsVFS ? "yes" : "no");
-  CLog::Log(LOGINFO, "GAME: Supports standalone execution: {}",
-            m_bSupportsStandalone ? "yes" : "no");
+  CLog::Log(LOGINFO, "GAME: Client:              {}", Name());
+  CLog::Log(LOGINFO, "GAME: Version:             {}", Version().asString());
+  CLog::Log(LOGINFO, "GAME: Valid extensions:    {}", StringUtils::Join(m_extensions, " "));
+  CLog::Log(LOGINFO, "GAME: Supports VFS:        {}", m_bSupportsVFS);
+  CLog::Log(LOGINFO, "GAME: Supports standalone: {}", m_bSupportsStandalone);
   CLog::Log(LOGINFO, "GAME: ------------------------------------");
 }
 
