@@ -1059,6 +1059,9 @@ bool CFileItem::IsNFO() const
 
 bool CFileItem::IsDiscImage() const
 {
+  if (!m_strDynPath.empty())
+    return URIUtils::HasExtension(m_strDynPath, ".img|.iso|.nrg|.udf");
+
   return URIUtils::HasExtension(m_strPath, ".img|.iso|.nrg|.udf");
 }
 
@@ -1241,7 +1244,7 @@ bool CFileItem::IsMusicDb() const
 
 bool CFileItem::IsVideoDb() const
 {
-  return URIUtils::IsVideoDb(m_strPath);
+  return URIUtils::IsVideoDb(m_strPath) || URIUtils::IsVideoDb(m_strDynPath);
 }
 
 bool CFileItem::IsVirtualDirectoryRoot() const

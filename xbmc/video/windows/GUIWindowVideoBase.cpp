@@ -1097,11 +1097,6 @@ bool CGUIWindowVideoBase::OnPlayMedia(int iItem, const std::string &player)
   CServiceBroker::GetPlaylistPlayer().SetCurrentPlaylist(PLAYLIST_NONE);
 
   CFileItem item(*pItem);
-  if (pItem->IsVideoDb())
-  {
-    item.SetPath(pItem->GetVideoInfoTag()->m_strFileNameAndPath);
-    item.SetProperty("original_listitem_url", pItem->GetPath());
-  }
   CLog::Log(LOGDEBUG, "%s %s", __FUNCTION__, CURL::GetRedacted(item.GetPath()).c_str());
 
   PlayMovie(&item, player);

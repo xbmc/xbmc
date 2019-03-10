@@ -298,7 +298,11 @@ bool CPlayListPlayer::Play(int iSong, std::string player, bool bAutoPlay /* = fa
   m_iCurrentSong = iSong;
   CFileItemPtr item = playlist[m_iCurrentSong];
   if (item->IsVideoDb() && !item->HasVideoInfoTag())
-    *(item->GetVideoInfoTag()) = XFILE::CVideoDatabaseFile::GetVideoTag(CURL(item->GetPath()));
+  {
+    *(item->GetVideoInfoTag()) = XFILE::CVideoDatabaseFile::GetVideoTag(CURL(item->GetDynPath()));
+    item->SetProperty("original_listitem_url", item->GetDynPath());
+    item->SetDynPath(item->GetVideoInfoTag()->m_strFileNameAndPath);
+  }
 
   playlist.SetPlayed(true);
 
