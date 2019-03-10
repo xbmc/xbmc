@@ -189,10 +189,14 @@ bool CPVRTimerInfoTag::operator ==(const CPVRTimerInfoTag& right) const
           m_iTimerId            == right.m_iTimerId &&
           m_strSeriesLink       == right.m_strSeriesLink &&
           m_iEpgUid             == right.m_iEpgUid &&
-          m_iActiveChildTimers  == right.m_iActiveChildTimers &&
-          m_bHasChildConflictNOK== right.m_bHasChildConflictNOK &&
-          m_bHasChildRecording  == right.m_bHasChildRecording &&
-          m_bHasChildErrors     == right.m_bHasChildErrors);
+          m_iActiveTVChildTimers == right.m_iActiveTVChildTimers &&
+          m_iActiveRadioChildTimers == right.m_iActiveRadioChildTimers &&
+          m_bHasTVChildConflictNOK == right.m_bHasTVChildConflictNOK &&
+          m_bHasRadioChildConflictNOK == right.m_bHasRadioChildConflictNOK &&
+          m_bHasTVChildRecording == right.m_bHasTVChildRecording &&
+          m_bHasRadioChildRecording == right.m_bHasRadioChildRecording &&
+          m_bHasTVChildErrors == right.m_bHasTVChildErrors &&
+          m_bHasRadioChildErrors == right.m_bHasRadioChildErrors);
 }
 
 /**
@@ -362,7 +366,7 @@ void CPVRTimerInfoTag::SetTimerType(const CPVRTimerTypePtr &type)
 /**
  * Get the status string of this Timer, is used by the GUIInfoManager
  */
-std::string CPVRTimerInfoTag::GetStatus() const
+std::string CPVRTimerInfoTag::GetStatus(bool bRadio) const
 {
   std::string strReturn = g_localizeStrings.Get(305);
   CSingleLock lock(m_critSection);
@@ -381,20 +385,21 @@ std::string CPVRTimerInfoTag::GetStatus() const
   else if (m_state == PVR_TIMER_STATE_DISABLED)
     strReturn = g_localizeStrings.Get(13106);
   else if (m_state == PVR_TIMER_STATE_COMPLETED)
-    if (m_bHasChildRecording)
+    if ((m_bHasTVChildRecording && !bRadio) || (m_bHasRadioChildRecording && bRadio))
       strReturn = g_localizeStrings.Get(19162); // "Recording active"
     else
       strReturn = g_localizeStrings.Get(19256); // "Completed"
   else if (m_state == PVR_TIMER_STATE_SCHEDULED || m_state == PVR_TIMER_STATE_NEW)
   {
-    if (m_bHasChildRecording)
+    if ((m_bHasTVChildRecording && !bRadio) || (m_bHasRadioChildRecording && bRadio))
       strReturn = g_localizeStrings.Get(19162); // "Recording active"
-    else if (m_bHasChildErrors)
+    else if ((m_bHasTVChildErrors && !bRadio) || (m_bHasRadioChildErrors && bRadio))
       strReturn = g_localizeStrings.Get(257);   // "Error"
-    else if (m_bHasChildConflictNOK)
+    else if ((m_bHasTVChildConflictNOK && !bRadio) || (m_bHasRadioChildConflictNOK && bRadio))
       strReturn = g_localizeStrings.Get(19276); // "Conflict error"
-    else if (m_iActiveChildTimers > 0)
-      strReturn = StringUtils::Format(g_localizeStrings.Get(19255).c_str(), m_iActiveChildTimers); // "%d scheduled"
+    else if ((m_iActiveTVChildTimers > 0 && !bRadio) || (m_iActiveRadioChildTimers > 0 && bRadio))
+      strReturn = StringUtils::Format(g_localizeStrings.Get(19255).c_str(),
+                                      bRadio ? m_iActiveRadioChildTimers : m_iActiveTVChildTimers); // "%d scheduled"
   }
 
   return strReturn;
@@ -581,17 +586,34 @@ bool CPVRTimerInfoTag::UpdateChildState(const CPVRTimerInfoTagPtr &childTimer)
   case PVR_TIMER_STATE_NEW:
   case PVR_TIMER_STATE_SCHEDULED:
   case PVR_TIMER_STATE_CONFLICT_OK:
-    m_iActiveChildTimers++;
+    if (childTimer->m_bIsRadio)
+      m_iActiveRadioChildTimers++;
+    else
+      m_iActiveTVChildTimers++;
     break;
   case PVR_TIMER_STATE_RECORDING:
-    m_iActiveChildTimers++;
-    m_bHasChildRecording = true;
+    if (childTimer->m_bIsRadio)
+    {
+      m_iActiveRadioChildTimers++;
+      m_bHasRadioChildRecording = true;
+    }
+    else
+    {
+      m_iActiveTVChildTimers++;
+      m_bHasTVChildRecording = true;
+    }
     break;
   case PVR_TIMER_STATE_CONFLICT_NOK:
-    m_bHasChildConflictNOK = true;
+    if (childTimer->m_bIsRadio)
+      m_bHasRadioChildConflictNOK = true;
+    else
+      m_bHasTVChildConflictNOK = true;
     break;
   case PVR_TIMER_STATE_ERROR:
-    m_bHasChildErrors = true;
+    if (childTimer->m_bIsRadio)
+      m_bHasRadioChildErrors = true;
+    else
+      m_bHasTVChildErrors = true;
     break;
   case PVR_TIMER_STATE_COMPLETED:
   case PVR_TIMER_STATE_ABORTED:
@@ -605,10 +627,14 @@ bool CPVRTimerInfoTag::UpdateChildState(const CPVRTimerInfoTagPtr &childTimer)
 
 void CPVRTimerInfoTag::ResetChildState()
 {
-  m_iActiveChildTimers = 0;
-  m_bHasChildConflictNOK = false;
-  m_bHasChildRecording = false;
-  m_bHasChildErrors = false;
+  m_iActiveTVChildTimers = 0;
+  m_iActiveRadioChildTimers = 0;
+  m_bHasTVChildConflictNOK = false;
+  m_bHasRadioChildConflictNOK = false;
+  m_bHasTVChildRecording = false;
+  m_bHasRadioChildRecording = false;
+  m_bHasTVChildErrors = false;
+  m_bHasRadioChildErrors = false;
 }
 
 bool CPVRTimerInfoTag::UpdateOnClient()

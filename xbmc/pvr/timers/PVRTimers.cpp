@@ -561,7 +561,7 @@ bool CPVRTimers::GetRootDirectory(const CPVRTimersPath &path, CFileItemList &ite
   {
     for (const auto &timer : tagsEntry.second)
     {
-      if ((bRadio == timer->m_bIsRadio) &&
+      if ((bRadio == timer->m_bIsRadio || (bRules && timer->m_iClientChannelUid == PVR_TIMER_ANY_CHANNEL)) &&
           (bRules == timer->IsTimerRule()) &&
           (!bHideDisabled || (timer->m_state != PVR_TIMER_STATE_DISABLED)))
       {
