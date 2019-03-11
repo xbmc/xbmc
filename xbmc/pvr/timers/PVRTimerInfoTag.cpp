@@ -397,7 +397,8 @@ std::string CPVRTimerInfoTag::GetStatus(bool bRadio) const
       strReturn = g_localizeStrings.Get(257);   // "Error"
     else if ((m_bHasTVChildConflictNOK && !bRadio) || (m_bHasRadioChildConflictNOK && bRadio))
       strReturn = g_localizeStrings.Get(19276); // "Conflict error"
-    else if ((m_iActiveTVChildTimers > 0 && !bRadio) || (m_iActiveRadioChildTimers > 0 && bRadio))
+    else if ((m_iActiveTVChildTimers > 0 && !bRadio) || (m_iActiveRadioChildTimers > 0 && bRadio) ||
+            (IsTimerRule() && ((m_iActiveTVChildTimers == 0 && !bRadio) || (m_iActiveRadioChildTimers == 0 && bRadio))))
       strReturn = StringUtils::Format(g_localizeStrings.Get(19255).c_str(),
                                       bRadio ? m_iActiveRadioChildTimers : m_iActiveTVChildTimers); // "%d scheduled"
   }
@@ -1052,6 +1053,18 @@ const std::string& CPVRTimerInfoTag::Title(void) const
 const std::string& CPVRTimerInfoTag::Summary(void) const
 {
   return m_strSummary;
+}
+
+const std::string& CPVRTimerInfoTag::Summary(bool bRadio) const
+{
+  if (IsTimerRule() && ((m_iActiveTVChildTimers == 0 && !bRadio) || (m_iActiveRadioChildTimers == 0 && bRadio)))
+  {
+    return g_localizeStrings.Get(819); // "No matching events found"
+  }
+  else
+  {
+    return m_strSummary;
+  }
 }
 
 const std::string& CPVRTimerInfoTag::Path(void) const

@@ -205,6 +205,7 @@ namespace PVR
 
     const std::string& Title(void) const;
     const std::string& Summary(void) const;
+    const std::string& Summary(bool bRadio) const;
     const std::string& Path(void) const;
 
     /*!

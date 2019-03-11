@@ -300,10 +300,12 @@ bool CPVRGUIInfo::GetListItemAndPlayerLabel(const CFileItem *item, const CGUIInf
   const CPVRTimerInfoTagPtr timer = item->GetPVRTimerInfoTag();
   if (timer)
   {
+    bool bRadio = CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() == WINDOW_RADIO_TIMER_RULES;
+
     switch (info.m_info)
     {
       case LISTITEM_DATE:
-        strValue = timer->Summary();
+        strValue = timer->Summary(bRadio);
         return true;
       case LISTITEM_STARTDATE:
         strValue = GetAsLocalizedDateString(timer->StartAsLocalTime(), true);
@@ -328,7 +330,7 @@ bool CPVRGUIInfo::GetListItemAndPlayerLabel(const CFileItem *item, const CGUIInf
         strValue = timer->Title();
         return true;
       case LISTITEM_COMMENT:
-        strValue = timer->GetStatus(CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() == WINDOW_RADIO_TIMER_RULES);
+        strValue = timer->GetStatus(bRadio);
         return true;
       case LISTITEM_TIMERTYPE:
         strValue = timer->GetTypeAsString();
