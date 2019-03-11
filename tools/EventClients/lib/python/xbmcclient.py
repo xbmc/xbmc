@@ -101,7 +101,7 @@ ACTION_BUTTON      = 0x02
 
 def format_string(msg):
     """ """
-    return msg.encode() + b"\0"
+    return msg.encode('utf-8') + b"\0"
 
 def format_uint32(num):
     """ """
