@@ -107,14 +107,14 @@ bool CDVDVideoCodecAmlogic::Open(CDVDStreamInfo &hints, CDVDCodecOptions &option
     return false;
   }
 
-  m_opened = false;
-
   // allow only 1 instance here
   if (m_InstanceGuard.exchange(true))
   {
     CLog::Log(LOGERROR, "CDVDVideoCodecAmlogic::Open - InstanceGuard locked\n");
     return false;
   }
+
+  m_opened = false;
 
   m_hints = hints;
 
@@ -283,7 +283,6 @@ bool CDVDVideoCodecAmlogic::Open(CDVDStreamInfo &hints, CDVDCodecOptions &option
   CLog::Log(LOGINFO, "%s: Opened Amlogic Codec", __MODULE_NAME__);
   return true;
 FAIL:
-  m_InstanceGuard.exchange(false);
   Dispose();
   return false;
 }
@@ -294,9 +293,6 @@ void CDVDVideoCodecAmlogic::Dispose(void)
 
   if (m_Codec)
     m_Codec->CloseDecoder(), m_Codec = nullptr;
-
-  if (m_opened)
-    m_InstanceGuard.exchange(false);
 
   m_videobuffer.iFlags = 0;
 
@@ -310,6 +306,7 @@ void CDVDVideoCodecAmlogic::Dispose(void)
     delete m_bitparser, m_bitparser = NULL;
 
   m_opened = false;
+  m_InstanceGuard.exchange(false);
 }
 
 bool CDVDVideoCodecAmlogic::AddData(const DemuxPacket &packet)
