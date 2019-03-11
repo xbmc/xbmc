@@ -1061,11 +1061,6 @@ void CDVDVideoCodecAndroidMediaCodec::SetCodecControl(int flags)
   {
     CLog::Log(LOGDEBUG, LOGVIDEO, "CDVDVideoCodecAndroidMediaCodec::%s %x->%x",  __func__, m_codecControlFlags, flags);
     m_codecControlFlags = flags;
-
-    if (m_codecControlFlags & DVD_CODEC_CTRL_DROP)
-      m_videobuffer.iFlags |= DVP_FLAG_DROPPED;
-    else
-      m_videobuffer.iFlags &= ~DVP_FLAG_DROPPED;
   }
 }
 
@@ -1227,8 +1222,9 @@ int CDVDVideoCodecAndroidMediaCodec::GetOutputPicture(void)
 
     if (m_codecControlFlags & DVD_CODEC_CTRL_DROP)
     {
+      m_noPictureLoop = 0;
       AMediaCodec_releaseOutputBuffer(m_codec->codec(), index, false);
-      return -1;
+      return -2;
     }
 
     if (bufferInfo.flags & AMEDIACODEC_BUFFER_FLAG_END_OF_STREAM)
