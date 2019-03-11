@@ -16,6 +16,7 @@
 #include "ServiceBroker.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/LocalizeStrings.h"
+#include "guilib/GUIWindowManager.h"
 #include "guilib/guiinfo/GUIInfo.h"
 #include "guilib/guiinfo/GUIInfoHelper.h"
 #include "guilib/guiinfo/GUIInfoLabels.h"
@@ -327,7 +328,7 @@ bool CPVRGUIInfo::GetListItemAndPlayerLabel(const CFileItem *item, const CGUIInf
         strValue = timer->Title();
         return true;
       case LISTITEM_COMMENT:
-        strValue = timer->GetStatus();
+        strValue = timer->GetStatus(CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() == WINDOW_RADIO_TIMER_RULES);
         return true;
       case LISTITEM_TIMERTYPE:
         strValue = timer->GetTypeAsString();
