@@ -484,7 +484,7 @@ std::shared_ptr<CPVRTimerInfoTag> CPVRRecording::GetRecordingTimer() const
         return timer;
     }
   }
-  return std::shared_ptr<CPVRTimerInfoTag>();
+  return {};
 }
 
 bool CPVRRecording::IsInProgress() const

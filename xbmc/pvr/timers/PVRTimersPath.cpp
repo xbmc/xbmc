@@ -28,7 +28,7 @@ CPVRTimersPath::CPVRTimersPath(const std::string& strPath, int iClientId, unsign
 {
   if (Init(strPath))
   {
-    /* set/replace client and parent id. */
+    // set/replace client and parent id.
     m_path = StringUtils::Format("pvr://timers/%s/%s/%d/%d",
                                  m_bRadio      ? "radio" : "tv",
                                  m_bTimerRules ? "rules" : "timers",
@@ -75,9 +75,8 @@ bool CPVRTimersPath::Init(const std::string& strPath)
   }
   else
   {
-    char *end;
-    m_iClientId = std::strtol (segments.at(4).c_str(), &end, 10);
-    m_iParentId = std::strtoul(segments.at(5).c_str(), &end, 10);
+    m_iClientId = std::stoi(segments.at(4));
+    m_iParentId = std::stoul(segments.at(5));
   }
 
   return m_bValid;

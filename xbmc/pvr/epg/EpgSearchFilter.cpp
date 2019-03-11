@@ -198,15 +198,13 @@ bool CPVREpgSearchFilter::MatchChannelGroup(const CPVREpgInfoTagPtr &tag) const
 
 bool CPVREpgSearchFilter::MatchFreeToAir(const CPVREpgInfoTagPtr &tag) const
 {
-  bool bReturn(true);
-
   if (m_bFreeToAirOnly)
   {
     const std::shared_ptr<CPVRChannel> channel = CServiceBroker::GetPVRManager().ChannelGroups()->GetChannelForEpgTag(tag);
-    bReturn = (channel && !channel->IsEncrypted());
+    return channel && !channel->IsEncrypted();
   }
 
-  return bReturn;
+  return true;
 }
 
 bool CPVREpgSearchFilter::MatchTimers(const CPVREpgInfoTagPtr &tag) const

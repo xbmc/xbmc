@@ -115,6 +115,7 @@ bool CPVREpgInfoTag::operator ==(const CPVREpgInfoTag& right) const
   if (this == &right)
     return true;
 
+  CSingleLock lock(m_critSection);
   return (m_bNotify            == right.m_bNotify &&
           m_iDatabaseID        == right.m_iDatabaseID &&
           m_iGenreType         == right.m_iGenreType &&
@@ -157,6 +158,7 @@ bool CPVREpgInfoTag::operator !=(const CPVREpgInfoTag& right) const
 
 void CPVREpgInfoTag::Serialize(CVariant &value) const
 {
+  CSingleLock lock(m_critSection);
   value["broadcastid"] = m_iUniqueBroadcastID;
   value["channeluid"] = m_channelData->UniqueClientChannelId();
   value["parentalrating"] = m_iParentalRating;
@@ -193,6 +195,7 @@ void CPVREpgInfoTag::Serialize(CVariant &value) const
 
 int CPVREpgInfoTag::ClientID() const
 {
+  CSingleLock lock(m_critSection);
   return m_channelData->ClientId();
 }
 
@@ -297,6 +300,7 @@ int CPVREpgInfoTag::DatabaseID(void) const
 
 int CPVREpgInfoTag::UniqueChannelID(void) const
 {
+  CSingleLock lock(m_critSection);
   return m_channelData->UniqueClientChannelId();
 }
 
@@ -506,6 +510,7 @@ std::string CPVREpgInfoTag::Path(void) const
 
 bool CPVREpgInfoTag::Update(const CPVREpgInfoTag &tag, bool bUpdateBroadcastId /* = true */)
 {
+  CSingleLock lock(m_critSection);
   bool bChanged = (
       m_strTitle           != tag.m_strTitle ||
       m_strPlotOutline     != tag.m_strPlotOutline ||
@@ -616,6 +621,8 @@ bool CPVREpgInfoTag::Persist(const std::shared_ptr<CPVREpgDatabase>& database, b
 std::vector<PVR_EDL_ENTRY> CPVREpgInfoTag::GetEdl() const
 {
   std::vector<PVR_EDL_ENTRY> edls;
+
+  CSingleLock lock(m_critSection);
   const std::shared_ptr<CPVRClient> client = CServiceBroker::GetPVRManager().GetClient(m_channelData->ClientId());
 
   if (client && client->GetClientCapabilities().SupportsEpgTagEdl())
@@ -643,6 +650,8 @@ void CPVREpgInfoTag::SetEpgID(int iEpgID)
 bool CPVREpgInfoTag::IsRecordable(void) const
 {
   bool bIsRecordable = false;
+
+  CSingleLock lock(m_critSection);
   const std::shared_ptr<CPVRClient> client = CServiceBroker::GetPVRManager().GetClient(m_channelData->ClientId());
   if (!client || (client->IsRecordable(shared_from_this(), bIsRecordable) != PVR_ERROR_NO_ERROR))
   {
@@ -655,6 +664,8 @@ bool CPVREpgInfoTag::IsRecordable(void) const
 bool CPVREpgInfoTag::IsPlayable(void) const
 {
   bool bIsPlayable = false;
+
+  CSingleLock lock(m_critSection);
   const std::shared_ptr<CPVRClient> client = CServiceBroker::GetPVRManager().GetClient(m_channelData->ClientId());
   if (!client || (client->IsPlayable(shared_from_this(), bIsPlayable) != PVR_ERROR_NO_ERROR))
   {
@@ -674,11 +685,13 @@ bool CPVREpgInfoTag::IsSeries(void) const
 
 bool CPVREpgInfoTag::IsRadio() const
 {
+  CSingleLock lock(m_critSection);
   return m_channelData->IsRadio();
 }
 
 bool CPVREpgInfoTag::IsParentalLocked() const
 {
+  CSingleLock lock(m_critSection);
   return m_channelData->IsLocked();
 }
 

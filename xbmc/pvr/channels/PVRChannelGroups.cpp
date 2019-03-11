@@ -193,7 +193,7 @@ void CPVRChannelGroups::RemoveFromAllGroups(const std::vector<std::shared_ptr<CP
 {
   for (const auto& channel : channelsToRemove)
   {
-    /* remove this channel from all non-system groups */
+    // remove this channel from all non-system groups
     RemoveFromAllGroups(channel);
   }
 }

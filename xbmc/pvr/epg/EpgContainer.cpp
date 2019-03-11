@@ -457,7 +457,7 @@ std::shared_ptr<CPVREpg> CPVREpgContainer::GetByChannelUid(int iClientId, int iC
     return epg;
 
   CSingleLock lock(m_critSection);
-  const auto &epgEntry = m_channelUidToEpgMap.find(std::pair<int, int>(iClientId, iChannelUid));
+  const auto& epgEntry = m_channelUidToEpgMap.find(std::pair<int, int>(iClientId, iChannelUid));
   if (epgEntry != m_channelUidToEpgMap.end())
     epg = epgEntry->second;
 
@@ -477,7 +477,7 @@ std::shared_ptr<CPVREpgInfoTag> CPVREpgContainer::GetTagById(const std::shared_p
   }
   else
   {
-    for (const auto &epgEntry : m_epgIdToEpgMap)
+    for (const auto& epgEntry : m_epgIdToEpgMap)
     {
       retval = epgEntry.second->GetTagByBroadcastId(iBroadcastId);
       if (retval)
@@ -519,7 +519,7 @@ void CPVREpgContainer::InsertFromDB(const CPVREpgPtr &newEpg)
   {
     // create a new epg table
     epg = newEpg;
-    m_epgIdToEpgMap.insert(std::make_pair(epg->EpgID(), epg));
+    m_epgIdToEpgMap.insert({epg->EpgID(), epg});
     SetChanged();
     epg->RegisterObserver(this);
   }
@@ -543,15 +543,15 @@ CPVREpgPtr CPVREpgContainer::CreateChannelEpg(int iEpgId, const std::string& str
     epg.reset(new CPVREpg(iEpgId, channelData->ChannelName(), strScraperName, channelData));
 
     CSingleLock lock(m_critSection);
-    m_epgIdToEpgMap.insert(std::make_pair(iEpgId, epg));
-    m_channelUidToEpgMap.insert(std::make_pair(std::make_pair(channelData->ClientId(), channelData->UniqueClientChannelId()), epg));
+    m_epgIdToEpgMap.insert({iEpgId, epg});
+    m_channelUidToEpgMap.insert({{channelData->ClientId(), channelData->UniqueClientChannelId()}, epg});
     SetChanged();
     epg->RegisterObserver(this);
   }
   else if (epg->ChannelID() == -1)
   {
     CSingleLock lock(m_critSection);
-    m_channelUidToEpgMap.insert(std::make_pair(std::make_pair(channelData->ClientId(), channelData->UniqueClientChannelId()), epg));
+    m_channelUidToEpgMap.insert({{channelData->ClientId(), channelData->UniqueClientChannelId()}, epg});
     epg->SetChannelData(channelData);
   }
 
@@ -572,7 +572,7 @@ bool CPVREpgContainer::RemoveOldEntries(void)
   const CDateTime cleanupTime(CDateTime::GetUTCDateTime() - CDateTimeSpan(GetPastDaysToDisplay(), 0, 0, 0));
 
   /* call Cleanup() on all known EPG tables */
-  for (const auto &epgEntry : m_epgIdToEpgMap)
+  for (const auto& epgEntry : m_epgIdToEpgMap)
     epgEntry.second->Cleanup(cleanupTime);
 
   /* remove the old entries from the database */
@@ -592,7 +592,7 @@ bool CPVREpgContainer::DeleteEpg(const CPVREpgPtr &epg, bool bDeleteFromDatabase
 
   CSingleLock lock(m_critSection);
 
-  const auto &epgEntry = m_epgIdToEpgMap.find(epg->EpgID());
+  const auto& epgEntry = m_epgIdToEpgMap.find(epg->EpgID());
   if (epgEntry == m_epgIdToEpgMap.end())
     return false;
 
@@ -674,7 +674,7 @@ bool CPVREpgContainer::UpdateEPG(bool bOnlyPending /* = false */)
   /* load or update all EPG tables */
   unsigned int iCounter = 0;
   const std::shared_ptr<CPVREpgDatabase> database = IgnoreDB() ? nullptr : GetEpgDatabase();
-  for (const auto &epgEntry : m_epgIdToEpgMap)
+  for (const auto& epgEntry : m_epgIdToEpgMap)
   {
     if (InterruptUpdate())
     {
@@ -793,7 +793,7 @@ bool CPVREpgContainer::CheckPlayingEvents(void)
   CDateTime::GetCurrentDateTime().GetAsUTCDateTime().GetAsTime(iNow);
   if (iNow >= iNextEpgActiveTagCheck)
   {
-    for (const auto &epgEntry : m_epgIdToEpgMap)
+    for (const auto& epgEntry : m_epgIdToEpgMap)
       bFoundChanges = epgEntry.second->CheckPlayingEvent() || bFoundChanges;
 
     CDateTime::GetCurrentDateTime().GetAsUTCDateTime().GetAsTime(iNextEpgActiveTagCheck);

@@ -407,7 +407,7 @@ void CPVRRecordings::UpdateFromClient(const CPVRRecordingPtr &tag)
 CPVRRecordingPtr CPVRRecordings::GetRecordingForEpgTag(const CPVREpgInfoTagPtr &epgTag) const
 {
   if (!epgTag)
-    return std::shared_ptr<CPVRRecording>();
+    return {};
 
   CSingleLock lock(m_critSection);
 

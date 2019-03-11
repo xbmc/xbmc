@@ -143,7 +143,7 @@ CPVREpgPtr CPVRChannel::GetEPG(void) const
   if (!m_bIsHidden && m_bEPGEnabled)
     return m_epg;
 
-  return std::shared_ptr<CPVREpg>();
+  return {};
 }
 
 bool CPVRChannel::CreateEPG()
@@ -533,7 +533,7 @@ std::vector<std::shared_ptr<CPVREpgInfoTag>> CPVRChannel::GetEpgTags() const
   if (!epg)
   {
     CLog::LogFC(LOGDEBUG, LOGPVR, "Cannot get EPG for channel '%s'", m_strChannelName.c_str());
-    return std::vector<std::shared_ptr<CPVREpgInfoTag>>();
+    return {};
   }
 
   return epg->GetTags();
