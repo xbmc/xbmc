@@ -34,7 +34,7 @@ public:
   bool DestroyWindow() override;
   void UpdateResolutions() override;
 
-  void SetHDMIState(bool connected, uint32_t timeoutMs = 0);
+  void SetHDMIState(bool connected);
 
   bool HasCursor() override { return false; };
 

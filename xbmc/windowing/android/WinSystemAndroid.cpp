@@ -201,29 +201,37 @@ void CWinSystemAndroid::OnTimeout()
   SetHDMIState(true);
 }
 
-void CWinSystemAndroid::SetHDMIState(bool connected, uint32_t timeoutMs)
+void CWinSystemAndroid::SetHDMIState(bool connected)
 {
   CSingleLock lock(m_resourceSection);
-  if (connected && m_dispResetState == RESET_WAITEVENT)
+  CLog::Log(LOGDEBUG, "CWinSystemAndroid::SetHDMIState: connected: %d, dispResetState: %d", static_cast<int>(connected), m_dispResetState);
+  if (connected && m_dispResetState != RESET_NOTWAITING)
   {
     for (auto resource : m_resources)
       resource->OnResetDisplay();
+    m_dispResetState = RESET_NOTWAITING;
+    m_dispResetTimer->Stop();
   }
   else if (!connected)
   {
+    if (m_dispResetState == RESET_WAITTIMER)
+    {
+      //HDMI_AUDIOPLUG arrived, use this
+      m_dispResetTimer->Stop();
+      m_dispResetState = RESET_WAITEVENT;
+      return;
+    }
+    else if (m_dispResetState != RESET_NOTWAITING)
+      return;
+
     int delay = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt("videoscreen.delayrefreshchange") * 100;
 
-    if (timeoutMs > delay)
-      delay = timeoutMs;
+    if (delay < 2000)
+      delay = 2000;
 
-    if (delay > 0)
-    {
-       m_dispResetState = RESET_WAITTIMER;
-       m_dispResetTimer->Stop();
-       m_dispResetTimer->Start(delay);
-    }
-    else
-      m_dispResetState = RESET_WAITEVENT;
+    m_dispResetState = RESET_WAITTIMER;
+    m_dispResetTimer->Stop();
+    m_dispResetTimer->Start(delay);
 
     for (auto resource : m_resources)
       resource->OnLostDisplay();
