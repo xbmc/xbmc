@@ -22,5 +22,6 @@ CPlatformDarwin::~CPlatformDarwin()
 
 void CPlatformDarwin::Init()
 {
-    setenv("SSL_CERT_FILE", CSpecialProtocol::TranslatePath("special://xbmc/system/certs/cacert.pem").c_str(), 0);
+  CPlatformPosix::Init();
+  setenv("SSL_CERT_FILE", CSpecialProtocol::TranslatePath("special://xbmc/system/certs/cacert.pem").c_str(), 0);
 }

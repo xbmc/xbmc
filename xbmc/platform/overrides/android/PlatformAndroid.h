@@ -8,9 +8,9 @@
 
 #pragma once
 
-#include "platform/Platform.h"
+#include "platform/posix/PlatformPosix.h"
 
-class CPlatformAndroid : public CPlatform
+class CPlatformAndroid : public CPlatformPosix
 {
   public:
     /**\brief C'tor */
