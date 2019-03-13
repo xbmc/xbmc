@@ -224,7 +224,7 @@ bool CGUIWindowPVRGuideBase::GetDirectory(const std::string &strDirectory, CFile
 
   // never call DoRefresh with locked mutex!
   if (m_bSyncRefreshTimelineItems)
-    m_refreshTimelineItemsThread->DoRefresh();
+    m_refreshTimelineItemsThread->DoRefresh(true);
 
   {
     CSingleLock lock(m_critSection);
@@ -632,6 +632,7 @@ bool CGUIWindowPVRGuideBase::RefreshTimelineItems()
 
         // next, fetch actual data.
         m_bRefreshTimelineItems = true;
+        m_refreshTimelineItemsThread->DoRefresh(false);
       }
       else
       {
@@ -766,11 +767,15 @@ void CPVRRefreshTimelineItemsThread::Stop()
   m_ready.Set(); // wake up the worker thread to let it exit
 }
 
-void CPVRRefreshTimelineItemsThread::DoRefresh()
+void CPVRRefreshTimelineItemsThread::DoRefresh(bool bWait)
 {
   m_ready.Set(); // wake up the worker thread
-  m_done.Reset();
-  CGUIDialogBusy::WaitOnEvent(m_done, 100, false);
+
+  if (bWait)
+  {
+    m_done.Reset();
+    CGUIDialogBusy::WaitOnEvent(m_done, 100, false);
+  }
 }
 
 void CPVRRefreshTimelineItemsThread::Process()
