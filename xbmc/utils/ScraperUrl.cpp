@@ -328,7 +328,7 @@ bool CScraperUrl::ParseEpisodeGuide(std::string strUrls)
   return true;
 }
 
-void CScraperUrl::AddElement(std::string url, std::string aspect, std::string referrer, std::string cache, bool post, bool isgz, int season)
+void CScraperUrl::AddElement(std::string url, std::string aspect, std::string preview, std::string referrer, std::string cache, bool post, bool isgz, int season)
 {
   TiXmlElement thumb("thumb");
   thumb.SetAttribute("spoof", referrer);
@@ -343,6 +343,7 @@ void CScraperUrl::AddElement(std::string url, std::string aspect, std::string re
     thumb.SetAttribute("type", "season");
   }
   thumb.SetAttribute("aspect", aspect);
+  thumb.SetAttribute("preview", preview);
   TiXmlText text(url);
   thumb.InsertEndChild(text);
   m_xml << thumb;
