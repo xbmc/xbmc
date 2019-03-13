@@ -206,6 +206,7 @@ bool CScraperUrl::Get(const SUrlEntry& scrURL, std::string& strHTML, XFILE::CCur
 
   std::string strHTML1(strHTML);
 
+  url.SetProtocolOption("seekable", "0");
   if (scrURL.m_post)
   {
     std::string strOptions = url.GetOptions();
