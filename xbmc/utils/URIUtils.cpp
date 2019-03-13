@@ -323,15 +323,15 @@ bool URIUtils::GetParentPath(const std::string& strPath, std::string& strParent)
     CFileItemList items;
     if (!dir.GetDirectory(url, items))
       return false;
-    items[0]->m_strDVDLabel = GetDirectory(items[0]->GetPath());
-    if (IsProtocol(items[0]->m_strDVDLabel, "rar") || IsProtocol(items[0]->m_strDVDLabel, "zip"))
-      GetParentPath(items[0]->m_strDVDLabel, strParent);
+    CURL url2(GetDirectory(items[0]->GetPath()));
+    if (HasParentInHostname(url2))
+      GetParentPath(url2.Get(), strParent);
     else
-      strParent = items[0]->m_strDVDLabel;
+      strParent = url2.Get();
     for( int i=1;i<items.Size();++i)
     {
       items[i]->m_strDVDLabel = GetDirectory(items[i]->GetPath());
-      if (IsProtocol(items[0]->m_strDVDLabel, "rar") || IsProtocol(items[0]->m_strDVDLabel, "zip"))
+      if (HasParentInHostname(url2))
         items[i]->SetPath(GetParentPath(items[i]->m_strDVDLabel));
       else
         items[i]->SetPath(items[i]->m_strDVDLabel);
