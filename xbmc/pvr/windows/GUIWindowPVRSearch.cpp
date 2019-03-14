@@ -23,6 +23,7 @@
 #include "pvr/PVRItem.h"
 #include "pvr/PVRManager.h"
 #include "pvr/addons/PVRClients.h"
+#include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/dialogs/GUIDialogPVRGuideSearch.h"
 #include "pvr/epg/EpgContainer.h"
 #include "pvr/epg/EpgSearchFilter.h"
@@ -55,13 +56,35 @@ namespace
 
   void AsyncSearchAction::Run()
   {
-    CServiceBroker::GetPVRManager().EpgContainer().GetEPGSearch(*m_items, *m_filter);
+    std::vector<std::shared_ptr<CPVREpgInfoTag>> results = CServiceBroker::GetPVRManager().EpgContainer().GetAllTags();
+    for (auto it = results.begin(); it != results.end();)
+    {
+      it = results.erase(std::remove_if(results.begin(),
+                                        results.end(),
+                                        [this](const std::shared_ptr<CPVREpgInfoTag>& entry)
+                                        {
+                                          return !m_filter->FilterEntry(entry);
+                                        }),
+                         results.end());
+    }
+
+    if (m_filter->ShouldRemoveDuplicates())
+      m_filter->RemoveDuplicates(results);
+
+    for (const auto& tag : results)
+    {
+      m_items->Add(std::make_shared<CFileItem>(tag));
+    }
   }
 } // unnamed namespace
 
 CGUIWindowPVRSearchBase::CGUIWindowPVRSearchBase(bool bRadio, int id, const std::string &xmlFile) :
   CGUIWindowPVRBase(bRadio, id, xmlFile),
   m_bSearchConfirmed(false)
+{
+}
+
+CGUIWindowPVRSearchBase::~CGUIWindowPVRSearchBase()
 {
 }
 
@@ -96,7 +119,7 @@ void CGUIWindowPVRSearchBase::SetItemToSearch(const CFileItemPtr &item)
   else
   {
     const CPVREpgInfoTagPtr epgTag(CPVRItem(item).GetEpgInfoTag());
-    if (epgTag)
+    if (epgTag && !CServiceBroker::GetPVRManager().IsParentalLocked(epgTag))
       m_searchfilter->SetSearchPhrase(epgTag->Title());
   }
 

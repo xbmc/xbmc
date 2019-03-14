@@ -84,6 +84,7 @@ namespace PVR
 
   private:
     void FreeItemsMemory();
+    std::shared_ptr<CFileItem> CreateGapItem(int iChannel) const;
 
     struct ItemsPtr
     {

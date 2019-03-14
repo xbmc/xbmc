@@ -87,10 +87,10 @@ void CPVRGUITimerInfo::UpdateTimersToggle()
   /* safe to fetch these unlocked, since they're updated from the same thread as this one */
   if (m_iRecordingTimerAmount > 0)
   {
-    std::vector<CFileItemPtr> activeTags = GetActiveRecordings();
-    if (m_iTimerInfoToggleCurrent < activeTags.size() && activeTags.at(m_iTimerInfoToggleCurrent)->HasPVRTimerInfoTag())
+    std::vector<std::shared_ptr<CPVRTimerInfoTag>> activeTags = GetActiveRecordings();
+    if (m_iTimerInfoToggleCurrent < activeTags.size())
     {
-      CPVRTimerInfoTagPtr tag = activeTags.at(m_iTimerInfoToggleCurrent)->GetPVRTimerInfoTag();
+      const std::shared_ptr<CPVRTimerInfoTag> tag = activeTags.at(m_iTimerInfoToggleCurrent);
       strActiveTimerTitle = StringUtils::Format("%s", tag->Title().c_str());
       strActiveTimerChannelName = StringUtils::Format("%s", tag->ChannelName().c_str());
       strActiveTimerChannelIcon = StringUtils::Format("%s", tag->ChannelIcon().c_str());
@@ -128,10 +128,9 @@ void CPVRGUITimerInfo::UpdateNextTimer()
   std::string strNextRecordingTime;
   std::string strNextTimerInfo;
 
-  CFileItemPtr tag = GetNextActiveTimer();
-  if (tag && tag->HasPVRTimerInfoTag())
+  const std::shared_ptr<CPVRTimerInfoTag> timer = GetNextActiveTimer();
+  if (timer)
   {
-    CPVRTimerInfoTagPtr timer = tag->GetPVRTimerInfoTag();
     strNextRecordingTitle = StringUtils::Format("%s", timer->Title().c_str());
     strNextRecordingChannelName = StringUtils::Format("%s", timer->ChannelName().c_str());
     strNextRecordingChannelIcon = StringUtils::Format("%s", timer->ChannelIcon().c_str());
@@ -216,12 +215,12 @@ int CPVRGUIAnyTimerInfo::AmountActiveRecordings()
   return CServiceBroker::GetPVRManager().Timers()->AmountActiveRecordings();
 }
 
-std::vector<CFileItemPtr> CPVRGUIAnyTimerInfo::GetActiveRecordings()
+std::vector<std::shared_ptr<CPVRTimerInfoTag>> CPVRGUIAnyTimerInfo::GetActiveRecordings()
 {
   return CServiceBroker::GetPVRManager().Timers()->GetActiveRecordings();
 }
 
-CFileItemPtr CPVRGUIAnyTimerInfo::GetNextActiveTimer()
+std::shared_ptr<CPVRTimerInfoTag> CPVRGUIAnyTimerInfo::GetNextActiveTimer()
 {
   return CServiceBroker::GetPVRManager().Timers()->GetNextActiveTimer();
 }
@@ -236,12 +235,12 @@ int CPVRGUITVTimerInfo::AmountActiveRecordings()
   return CServiceBroker::GetPVRManager().Timers()->AmountActiveTVRecordings();
 }
 
-std::vector<CFileItemPtr> CPVRGUITVTimerInfo::GetActiveRecordings()
+std::vector<std::shared_ptr<CPVRTimerInfoTag>> CPVRGUITVTimerInfo::GetActiveRecordings()
 {
   return CServiceBroker::GetPVRManager().Timers()->GetActiveTVRecordings();
 }
 
-CFileItemPtr CPVRGUITVTimerInfo::GetNextActiveTimer()
+std::shared_ptr<CPVRTimerInfoTag> CPVRGUITVTimerInfo::GetNextActiveTimer()
 {
   return CServiceBroker::GetPVRManager().Timers()->GetNextActiveTVTimer();
 }
@@ -256,12 +255,12 @@ int CPVRGUIRadioTimerInfo::AmountActiveRecordings()
   return CServiceBroker::GetPVRManager().Timers()->AmountActiveRadioRecordings();
 }
 
-std::vector<CFileItemPtr> CPVRGUIRadioTimerInfo::GetActiveRecordings()
+std::vector<std::shared_ptr<CPVRTimerInfoTag>> CPVRGUIRadioTimerInfo::GetActiveRecordings()
 {
   return CServiceBroker::GetPVRManager().Timers()->GetActiveRadioRecordings();
 }
 
-CFileItemPtr CPVRGUIRadioTimerInfo::GetNextActiveTimer()
+std::shared_ptr<CPVRTimerInfoTag> CPVRGUIRadioTimerInfo::GetNextActiveTimer()
 {
   return CServiceBroker::GetPVRManager().Timers()->GetNextActiveRadioTimer();
 }

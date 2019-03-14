@@ -20,8 +20,10 @@
 #include "pvr/channels/PVRChannel.h"
 #include "pvr/epg/EpgInfoTag.h"
 #include "pvr/recordings/PVRRecording.h"
+#include "pvr/recordings/PVRRecordings.h"
 #include "pvr/recordings/PVRRecordingsPath.h"
 #include "pvr/timers/PVRTimers.h"
+#include "pvr/timers/PVRTimersPath.h"
 
 namespace PVR
 {
@@ -85,7 +87,7 @@ namespace PVR
 
       const CPVREpgInfoTagPtr epg(item.GetEPGInfoTag());
       if (epg)
-        timer = epg->Timer();
+        timer = CServiceBroker::GetPVRManager().Timers()->GetTimerForEpgTag(epg);
 
       if (!timer)
         timer = item.GetPVRTimerInfoTag();
@@ -115,12 +117,7 @@ namespace PVR
 
     bool PlayRecording::IsVisible(const CFileItem &item) const
     {
-      CPVRRecordingPtr recording;
-
-      const CPVREpgInfoTagPtr epg(item.GetEPGInfoTag());
-      if (epg)
-        recording = epg->Recording();
-
+      const std::shared_ptr<CPVRRecording> recording = CServiceBroker::GetPVRManager().Recordings()->GetRecordingForEpgTag(item.GetEPGInfoTag());
       if (recording)
         return !recording->IsDeleted();
 
@@ -220,10 +217,13 @@ namespace PVR
 
       const CPVRChannelPtr channel = item.GetPVRChannelInfoTag();
       if (channel)
-        return !channel->IsRecording() && client && client->GetClientCapabilities().SupportsTimers();
+        return client && client->GetClientCapabilities().SupportsTimers() &&
+               !CServiceBroker::GetPVRManager().Timers()->IsRecordingOnChannel(*channel);
 
       const CPVREpgInfoTagPtr epg = item.GetEPGInfoTag();
-      if (epg && !epg->Timer() && epg->Channel() && epg->IsRecordable())
+      if (epg &&
+          !CServiceBroker::GetPVRManager().Timers()->GetTimerForEpgTag(epg) &&
+          epg->IsRecordable())
         return client && client->GetClientCapabilities().SupportsTimers();
 
       return false;
@@ -245,7 +245,7 @@ namespace PVR
 
       const CPVRChannelPtr channel(item.GetPVRChannelInfoTag());
       if (channel)
-        return channel->IsRecording();
+        return CServiceBroker::GetPVRManager().Timers()->IsRecordingOnChannel(*channel);
 
       const CPVRTimerInfoTagPtr timer(GetTimerInfoTagFromItem(item));
       if (timer && !URIUtils::PathEquals(item.GetPath(), CPVRTimersPath::PATH_ADDTIMER))
@@ -381,7 +381,7 @@ namespace PVR
     bool AddTimerRule::IsVisible(const CFileItem &item) const
     {
       const CPVREpgInfoTagPtr epg = item.GetEPGInfoTag();
-      if (epg && epg->Channel() && !epg->Timer())
+      if (epg && !CServiceBroker::GetPVRManager().Timers()->GetTimerForEpgTag(epg))
       {
         const CPVRClientPtr client = CServiceBroker::GetPVRManager().GetClient(item);
         return client && client->GetClientCapabilities().SupportsTimers();

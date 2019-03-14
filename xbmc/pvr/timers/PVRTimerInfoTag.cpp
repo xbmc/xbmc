@@ -23,7 +23,7 @@
 #include "pvr/addons/PVRClients.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/epg/Epg.h"
-#include "pvr/timers/PVRTimers.h"
+#include "pvr/timers/PVRTimersPath.h"
 
 using namespace PVR;
 
@@ -293,13 +293,6 @@ void CPVRTimerInfoTag::Serialize(CVariant &value) const
   value["maxrecordings"]     = m_iMaxRecordings;
   value["epguid"]            = m_iEpgUid;
   value["serieslink"]        = m_strSeriesLink;
-}
-
-void CPVRTimerInfoTag::UpdateEpgInfoTag(void)
-{
-  CSingleLock lock(m_critSection);
-  m_epgTag.reset();
-  GetEpgInfoTag();
 }
 
 void CPVRTimerInfoTag::UpdateSummary(void)
@@ -713,7 +706,7 @@ CPVRTimerInfoTagPtr CPVRTimerInfoTag::CreateInstantTimerTag(const CPVRChannelPtr
     newTimer->SetTimerType(timerType);
 
     if (epgTag)
-      newTimer->SetEpgTag(epgTag);
+      newTimer->SetEpgInfoTag(epgTag);
     else
       newTimer->UpdateEpgInfoTag();
   }
@@ -749,7 +742,7 @@ CPVRTimerInfoTagPtr CPVRTimerInfoTag::CreateFromEpg(const CPVREpgInfoTagPtr &tag
   CPVRTimerInfoTagPtr newTag(new CPVRTimerInfoTag());
 
   /* check if a valid channel is set */
-  CPVRChannelPtr channel = tag->Channel();
+  const std::shared_ptr<CPVRChannel> channel = CServiceBroker::GetPVRManager().ChannelGroups()->GetChannelForEpgTag(tag);
   if (!channel)
   {
     CLog::LogF(LOGERROR, "EPG tag has no channel");
@@ -761,7 +754,10 @@ CPVRTimerInfoTagPtr CPVRTimerInfoTag::CreateFromEpg(const CPVREpgInfoTagPtr &tag
   CDateTime newEnd = tag->EndAsUTC();
   newTag->m_iClientIndex       = PVR_TIMER_NO_CLIENT_INDEX;
   newTag->m_iParentClientIndex = PVR_TIMER_NO_PARENT;
-  newTag->m_strTitle           = tag->Title().empty() ? channel->ChannelName() : tag->Title();
+  if (!CServiceBroker::GetPVRManager().IsParentalLocked(tag))
+    newTag->m_strTitle = tag->Title();
+  if (newTag->m_strTitle.empty())
+    newTag->m_strTitle = channel->ChannelName();
   newTag->m_iClientChannelUid  = channel->UniqueID();
   newTag->m_iClientId          = channel->ClientID();
   newTag->m_bIsRadio           = channel->IsRadio();
@@ -820,7 +816,7 @@ CPVRTimerInfoTagPtr CPVRTimerInfoTag::CreateFromEpg(const CPVREpgInfoTagPtr &tag
 
   newTag->SetTimerType(timerType);
   newTag->UpdateSummary();
-  newTag->SetEpgTag(tag);
+  newTag->SetEpgInfoTag(tag);
 
   /* unused only for reference */
   newTag->m_strFileNameAndPath = CPVRTimersPath::PATH_NEW;
@@ -938,6 +934,19 @@ std::string CPVRTimerInfoTag::GetDeletedNotificationText() const
   return StringUtils::Format("%s: '%s'", g_localizeStrings.Get(stringID).c_str(), m_strTitle.c_str());
 }
 
+void CPVRTimerInfoTag::SetEpgInfoTag(const std::shared_ptr<CPVREpgInfoTag>& tag)
+{
+  CSingleLock lock(m_critSection);
+  m_epgTag = tag;
+}
+
+void CPVRTimerInfoTag::UpdateEpgInfoTag()
+{
+  CSingleLock lock(m_critSection);
+  m_epgTag.reset();
+  GetEpgInfoTag();
+}
+
 CPVREpgInfoTagPtr CPVRTimerInfoTag::GetEpgInfoTag(bool bCreate /* = true */) const
 {
   if (!m_epgTag && bCreate)
@@ -965,7 +974,7 @@ CPVREpgInfoTagPtr CPVRTimerInfoTag::GetEpgInfoTag(bool bCreate /* = true */) con
           }
         }
 
-        if (!m_epgTag && m_epTagRefetchTimeout.IsTimePast())
+        if (!IsTimerRule() && !m_epgTag && m_epTagRefetchTimeout.IsTimePast())
         {
           m_epTagRefetchTimeout.Set(30000); // try to fetch missing epg tag from backend at most every 30 secs
 
@@ -979,50 +988,15 @@ CPVREpgInfoTagPtr CPVRTimerInfoTag::GetEpgInfoTag(bool bCreate /* = true */) con
           if (startTime > 0 && endTime > 0)
           {
             // try to fetch missing epg tag from backend
-            const CPVREpgInfoTagPtr epgTag = epg->GetTagBetween(StartAsUTC() - CDateTimeSpan(0, 0, 2, 0), EndAsUTC() + CDateTimeSpan(0, 0, 2, 0), true);
-            if (epgTag)
-            {
-              bool bTagMatches = !IsTimerRule();
-              if (!bTagMatches)
-              {
-                // Check whether the tag actually is an event that belongs to a child of this timer rule
-                const CPVRTimerInfoTagPtr timer = epgTag->Timer();
-                if (timer && (timer->GetTimerRuleId() == m_iClientIndex))
-                {
-                  bTagMatches = true;
-                }
-              }
-
-              if (bTagMatches)
-              {
-                m_epgTag = epgTag;
-                m_iEpgUid = m_epgTag->UniqueBroadcastID();
-              }
-            }
+            m_epgTag = epg->GetTagBetween(StartAsUTC() - CDateTimeSpan(0, 0, 2, 0), EndAsUTC() + CDateTimeSpan(0, 0, 2, 0), true);
+            if (m_epgTag)
+              m_iEpgUid = m_epgTag->UniqueBroadcastID();
           }
         }
       }
     }
   }
   return m_epgTag;
-}
-
-void CPVRTimerInfoTag::SetEpgTag(const CPVREpgInfoTagPtr &tag)
-{
-  CPVREpgInfoTagPtr previousTag;
-  {
-    CSingleLock lock(m_critSection);
-    previousTag = m_epgTag;
-    m_epgTag = tag;
-  }
-
-  if (previousTag)
-    previousTag->ClearTimer();
-}
-
-void CPVRTimerInfoTag::ClearEpgTag(void)
-{
-  SetEpgTag(CPVREpgInfoTagPtr());
 }
 
 bool CPVRTimerInfoTag::HasChannel() const

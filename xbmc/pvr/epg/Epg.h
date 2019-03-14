@@ -12,18 +12,17 @@
 #include <string>
 #include <vector>
 
-#include "FileItem.h"
 #include "threads/CriticalSection.h"
 #include "utils/Observer.h"
 
 #include "pvr/PVRTypes.h"
-#include "pvr/channels/PVRChannel.h"
 #include "pvr/epg/EpgInfoTag.h"
-#include "pvr/epg/EpgSearchFilter.h"
 
 /** EPG container for CPVREpgInfoTag instances */
 namespace PVR
 {
+  class CPVREpgChannelData;
+
   class CPVREpg : public Observable
   {
     friend class CPVREpgDatabase;
@@ -34,15 +33,17 @@ namespace PVR
      * @param iEpgID The ID of this table or <= 0 to create a new ID.
      * @param strName The name of this table.
      * @param strScraperName The name of the scraper to use.
-     * @param bLoadedFromDb True if this table was loaded from the database, false otherwise.
      */
-    CPVREpg(int iEpgID, const std::string &strName, const std::string &strScraperName, bool bLoadedFromDb);
+    CPVREpg(int iEpgID, const std::string& strName, const std::string& strScraperName);
 
     /*!
-     * @brief Create a new EPG instance for a channel.
-     * @param channel The channel to create the EPG for.
+     * @brief Create a new EPG instance.
+     * @param iEpgID The ID of this table or <= 0 to create a new ID.
+     * @param strName The name of this table.
+     * @param strScraperName The name of the scraper to use.
+     * @param channelData The channel data.
      */
-    CPVREpg(const CPVRChannelPtr &channel);
+    CPVREpg(int iEpgID, const std::string& strName, const std::string& strScraperName, const std::shared_ptr<CPVREpgChannelData>& channelData);
 
     /*!
      * @brief Destroy this EPG instance.
@@ -50,28 +51,29 @@ namespace PVR
     ~CPVREpg(void) override;
 
     /*!
-     * @brief Load all entries for this table from the database.
+     * @brief Load all entries for this table from the given database.
+     * @param database The database.
      * @return True if any entries were loaded, false otherwise.
      */
-    bool Load(void);
+    bool Load(const std::shared_ptr<CPVREpgDatabase>& database);
 
     /*!
-     * @brief The channel this EPG belongs to.
-     * @return The channel this EPG belongs to
+     * @brief Get data for the channel associated with this EPG.
+     * @return The data.
      */
-    CPVRChannelPtr Channel(void) const;
+    std::shared_ptr<CPVREpgChannelData> GetChannelData() const;
 
     /*!
-     * @brief The id of the channel this EPG belongs to.
-     * @return The channel id or -1 if no channel
+     * @brief Set data for the channel associated with this EPG.
+     * @param data The data.
+     */
+    void SetChannelData(const std::shared_ptr<CPVREpgChannelData>& data);
+
+    /*!
+     * @brief The id of the channel associated with this EPG.
+     * @return The channel id or -1 if no channel is associated
      */
     int ChannelID(void) const;
-
-    /*!
-     * @brief Channel the channel tag linked to this EPG table.
-     * @param channel The new channel tag.
-     */
-    void SetChannel(const CPVRChannelPtr &channel);
 
     /*!
      * @brief Get the name of the scraper to use for this table.
@@ -109,17 +111,10 @@ namespace PVR
     bool HasValidEntries(void) const;
 
     /*!
-     * @brief Remove all entries from this EPG that finished before the given time
-     *        and that have no timers set.
+     * @brief Remove all entries from this EPG that finished before the given time.
      * @param time Delete entries with an end time before this time in UTC.
      */
     void Cleanup(const CDateTime &time);
-
-    /*!
-     * @brief Remove all entries from this EPG that finished before the given time
-     *        and that have no timers set.
-     */
-    void Cleanup(void);
 
     /*!
      * @brief Remove all entries from this EPG.
@@ -152,14 +147,6 @@ namespace PVR
      * @return The found tag or NULL if it wasn't found.
      */
     CPVREpgInfoTagPtr GetTagBetween(const CDateTime &beginTime, const CDateTime &endTime, bool bUpdateFromClient = false);
-
-    /*!
-     * @brief Get all events occurring between the given begin and end time.
-     * @param beginTime Minimum start time in UTC of the event.
-     * @param endTime Maximum end time in UTC of the event.
-     * @return The tags found or an empty vector if none was found.
-     */
-    std::vector<CPVREpgInfoTagPtr> GetTagsBetween(const CDateTime &beginTime, const CDateTime &endTime) const;
 
     /*!
      * @brief Get the event matching the given unique broadcast id
@@ -199,31 +186,25 @@ namespace PVR
      * @param start The start time.
      * @param end The end time.
      * @param iUpdateTime Update the table after the given amount of time has passed.
+     * @param iPastDays Amount of past days from now on, for which past entries are to be kept.
+     * @param database If given, the database to store the data.
      * @param bForceUpdate Force update from client even if it's not the time to
      * @return True if the update was successful, false otherwise.
      */
-    bool Update(const time_t start, const time_t end, int iUpdateTime, bool bForceUpdate = false);
+    bool Update(time_t start, time_t end, int iUpdateTime, int iPastDays, const std::shared_ptr<CPVREpgDatabase>& database, bool bForceUpdate = false);
 
     /*!
-     * @brief Get all EPG entries.
-     * @param results The file list to store the results in.
-     * @return The amount of entries that were added.
+     * @brief Get all EPG tags.
+     * @return The tags.
      */
-    int Get(CFileItemList &results) const;
+    std::vector<std::shared_ptr<CPVREpgInfoTag>> GetTags() const;
 
     /*!
-     * @brief Get all EPG entries that and apply a filter.
-     * @param results The file list to store the results in.
-     * @param filter The filter to apply.
-     * @return The amount of entries that were added.
-     */
-    int Get(CFileItemList &results, const CPVREpgSearchFilter &filter) const;
-
-    /*!
-     * @brief Persist this table in the database.
+     * @brief Persist this table in the given database
+     * @param database The database.
      * @return True if the table was persisted, false otherwise.
      */
-    bool Persist(void);
+    bool Persist(const std::shared_ptr<CPVREpgDatabase>& database);
 
     /*!
      * @brief Get the start time of the first entry in this table.
@@ -236,12 +217,6 @@ namespace PVR
      * @return The last date in UTC.
      */
     CDateTime GetLastDate(void) const;
-
-    /*!
-     * @brief Get the time the EPG data were last updated.
-     * @return The last time this table was scanned.
-     */
-    CDateTime GetLastScanTime(void);
 
     /*!
      * @brief Notify observers when the currently active tag changed.
@@ -314,6 +289,12 @@ namespace PVR
      */
     bool UpdateEntries(const CPVREpg &epg, bool bStoreInDb = true);
 
+    /*!
+     * @brief Remove all entries from this EPG that finished before the given amount of days.
+     * @param iPastDays Delete entries with an end time before the given amount of days from now on.
+     */
+    void Cleanup(int iPastDays);
+
     std::map<CDateTime, CPVREpgInfoTagPtr> m_tags;
     std::map<int, CPVREpgInfoTagPtr>       m_changedTags;
     std::map<int, CPVREpgInfoTagPtr>       m_deletedTags;
@@ -325,12 +306,10 @@ namespace PVR
     std::string                         m_strName;         /*!< the name of this table */
     std::string                         m_strScraperName;  /*!< the name of the scraper to use */
     mutable CDateTime                   m_nowActiveStart;  /*!< the start time of the tag that is currently active */
-
     CDateTime                           m_lastScanTime;    /*!< the last time the EPG has been updated */
-
-    CPVRChannelPtr                      m_pvrChannel;      /*!< the channel this EPG belongs to */
-
     mutable CCriticalSection            m_critSection;     /*!< critical section for changes in this table */
     bool                                m_bUpdateLastScanTime = false;
+
+    std::shared_ptr<CPVREpgChannelData> m_channelData;
   };
 }

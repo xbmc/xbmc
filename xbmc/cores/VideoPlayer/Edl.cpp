@@ -575,7 +575,7 @@ bool CEdl::ReadPvr(const CFileItem &fileItem)
   }
   else if (fileItem.HasEPGInfoTag())
   {
-    CLog::Log(LOGDEBUG, "%s - Reading Edl for EPG: %s", __FUNCTION__, fileItem.GetEPGInfoTag()->Title(true).c_str());
+    CLog::Log(LOGDEBUG, "%s - Reading Edl for EPG: %s", __FUNCTION__, fileItem.GetEPGInfoTag()->Title().c_str());
     edl = fileItem.GetEPGInfoTag()->GetEdl();
   }
   else

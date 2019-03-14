@@ -95,11 +95,6 @@ namespace PVR
     bool Delete(void);
 
     /*!
-     * @brief Called when this recording has been deleted
-     */
-    void OnDelete(void);
-
-    /*!
      * @brief Undelete this recording on the client (if supported).
      * @return True if it was undeleted successfully, false otherwise.
      */
@@ -279,6 +274,12 @@ namespace PVR
      * @return true if the recording is in progress, false otherwise
      */
     bool IsInProgress() const;
+
+    /*!
+     * @brief return the timer for an in-progress recording, if any
+     * @return the timer if the recording is in progress, nullptr otherwise
+     */
+    std::shared_ptr<CPVRTimerInfoTag> GetRecordingTimer() const;
 
     /*!
     * @brief set the genre for this recording.

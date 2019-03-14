@@ -113,6 +113,13 @@ namespace PVR
     CPVRChannelPtr GetChannelByEpgId(int iEpgId) const;
 
     /*!
+     * @brief Get the channel for the given epg tag.
+     * @param epgTag The epg tag.
+     * @return The channel.
+     */
+    std::shared_ptr<CPVRChannel> GetChannelForEpgTag(const std::shared_ptr<CPVREpgInfoTag>& epgTag) const;
+
+    /*!
      * @brief Get the groups list for a directory.
      * @param strBase The directory path.
      * @param results The file list to store the results in.

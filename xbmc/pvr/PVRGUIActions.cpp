@@ -308,7 +308,7 @@ namespace PVR
       return false;
     }
 
-    CPVRTimerInfoTagPtr timer(bCreateRule || !epgTag ? nullptr : epgTag->Timer());
+    CPVRTimerInfoTagPtr timer(bCreateRule || !epgTag ? nullptr : CServiceBroker::GetPVRManager().Timers()->GetTimerForEpgTag(epgTag));
     CPVRTimerInfoTagPtr rule (bCreateRule ? CServiceBroker::GetPVRManager().Timers()->GetTimerRule(timer) : nullptr);
     if (timer || rule)
     {
@@ -483,7 +483,7 @@ namespace PVR
   {
     const CPVRChannelPtr channel = CServiceBroker::GetPVRManager().GetPlayingChannel();
     if (channel && channel->CanRecord())
-      return SetRecordingOnChannel(channel, !channel->IsRecording());
+      return SetRecordingOnChannel(channel, !CServiceBroker::GetPVRManager().Timers()->IsRecordingOnChannel(*channel));
 
     return false;
   }
@@ -502,7 +502,7 @@ namespace PVR
     if (client && client->GetClientCapabilities().SupportsTimers())
     {
       /* timers are supported on this channel */
-      if (bOnOff && !channel->IsRecording())
+      if (bOnOff && !CServiceBroker::GetPVRManager().Timers()->IsRecordingOnChannel(*channel))
       {
         CPVREpgInfoTagPtr epgTag;
         int iDuration = m_settings.GetIntValue(CSettings::SETTING_PVRRECORD_INSTANTRECORDTIME);
@@ -537,15 +537,19 @@ namespace PVR
             epgTag = channel->GetEPGNow();
             if (epgTag)
             {
+              bool bLocked = CServiceBroker::GetPVRManager().IsParentalLocked(epgTag);
+
               // "now"
-              selector.AddAction(RECORD_CURRENT_SHOW, epgTag->Title());
+              const std::string currentTitle = bLocked ? g_localizeStrings.Get(19266) /* Parental locked */ : epgTag->Title();
+              selector.AddAction(RECORD_CURRENT_SHOW, currentTitle);
               ePreselect = RECORD_CURRENT_SHOW;
 
               // "next"
               epgTagNext = channel->GetEPGNext();
               if (epgTagNext)
               {
-                selector.AddAction(RECORD_NEXT_SHOW, epgTagNext->Title());
+                const std::string nextTitle = bLocked ? g_localizeStrings.Get(19266) /* Parental locked */ : epgTagNext->Title();
+                selector.AddAction(RECORD_NEXT_SHOW, nextTitle);
 
                 // be smart. if current show is almost over, preselect next show.
                 if (epgTag->ProgressPercentage() > 90.0f)
@@ -609,7 +613,7 @@ namespace PVR
         if (!bReturn)
           HELPERS::ShowOKDialogText(CVariant{257}, CVariant{19164}); // "Error", "Could not start recording. Check the log for more information about this message."
       }
-      else if (!bOnOff && channel->IsRecording())
+      else if (!bOnOff && CServiceBroker::GetPVRManager().Timers()->IsRecordingOnChannel(*channel))
       {
         /* delete active timers */
         bReturn = CServiceBroker::GetPVRManager().Timers()->DeleteTimersOnChannel(channel, true, true);
@@ -751,7 +755,7 @@ namespace PVR
     CPVRTimerInfoTagPtr timer;
     const CPVRRecordingPtr recording(CPVRItem(item).GetRecording());
     if (recording)
-      timer = CServiceBroker::GetPVRManager().Timers()->GetRecordingTimerForRecording(*recording);
+      timer = recording->GetRecordingTimer();
 
     if (!timer)
       timer = CPVRItem(item).GetTimerInfoTag();
@@ -1130,20 +1134,33 @@ namespace PVR
     if (item->m_bIsFolder)
       return false;
 
+    std::shared_ptr<CPVRRecording> recording;
     const CPVRChannelPtr channel(CPVRItem(item).GetChannel());
-    if ((channel && CServiceBroker::GetPVRManager().IsPlayingChannel(channel)) ||
-        (channel && channel->HasRecording() && CServiceBroker::GetPVRManager().IsPlayingRecording(channel->GetRecording())))
+    if (channel)
     {
-      CGUIMessage msg(GUI_MSG_FULLSCREEN, 0, CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow());
-      CServiceBroker::GetGUI()->GetWindowManager().SendMessage(msg);
-      return true;
+      bool bSwitchToFullscreen = CServiceBroker::GetPVRManager().IsPlayingChannel(channel);
+
+      if (!bSwitchToFullscreen)
+      {
+        recording = CServiceBroker::GetPVRManager().Recordings()->GetRecordingForEpgTag(channel->GetEPGNow());
+        bSwitchToFullscreen = recording && CServiceBroker::GetPVRManager().IsPlayingRecording(recording);
+      }
+
+      if (bSwitchToFullscreen)
+      {
+        CGUIMessage msg(GUI_MSG_FULLSCREEN, 0, CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow());
+        CServiceBroker::GetGUI()->GetWindowManager().SendMessage(msg);
+        return true;
+      }
     }
 
     ParentalCheckResult result = channel ? CheckParentalLock(channel) : ParentalCheckResult::FAILED;
     if (result == ParentalCheckResult::SUCCESS)
     {
       // switch to channel or if recording present, ask whether to switch or play recording...
-      const CPVRRecordingPtr recording(channel->GetRecording());
+      if (!recording)
+        recording = CServiceBroker::GetPVRManager().Recordings()->GetRecordingForEpgTag(channel->GetEPGNow());
+
       if (recording)
       {
         bool bCancel(false);
@@ -1682,12 +1699,12 @@ namespace PVR
   bool CPVRGUIActions::AllLocalBackendsIdle(CPVRTimerInfoTagPtr& causingEvent) const
   {
     // active recording on local backend?
-    const std::vector<CFileItemPtr> activeRecordings = CServiceBroker::GetPVRManager().Timers()->GetActiveRecordings();
+    const std::vector<std::shared_ptr<CPVRTimerInfoTag>> activeRecordings = CServiceBroker::GetPVRManager().Timers()->GetActiveRecordings();
     for (const auto& timer : activeRecordings)
     {
-      if (EventOccursOnLocalBackend(timer))
+      if (EventOccursOnLocalBackend(std::make_shared<CFileItem>(timer)))
       {
-        causingEvent = timer->GetPVRTimerInfoTag();
+        causingEvent = timer;
         return false;
       }
     }
@@ -1695,17 +1712,17 @@ namespace PVR
     // soon recording on local backend?
     if (IsNextEventWithinBackendIdleTime())
     {
-      const CFileItemPtr item = CServiceBroker::GetPVRManager().Timers()->GetNextActiveTimer();
-      if (!item)
+      const std::shared_ptr<CPVRTimerInfoTag> timer = CServiceBroker::GetPVRManager().Timers()->GetNextActiveTimer();
+      if (!timer)
       {
         // Next event is due to automatic daily wakeup of PVR!
         causingEvent.reset();
         return false;
       }
 
-      if (EventOccursOnLocalBackend(item))
+      if (EventOccursOnLocalBackend(std::make_shared<CFileItem>(timer)))
       {
-        causingEvent = item->GetPVRTimerInfoTag();
+        causingEvent = timer;
         return false;
       }
     }

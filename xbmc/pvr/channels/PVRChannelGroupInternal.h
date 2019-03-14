@@ -95,9 +95,10 @@ namespace PVR
      * Only the new channels will be present in the passed list after this call.
      *
      * @param channels The channels to use to update this list.
+     * @param channelsToRemove Returns the channels to be removed from all groups, if any
      * @return True if everything went well, false otherwise.
      */
-    bool UpdateGroupEntries(const CPVRChannelGroup &channels) override;
+    bool UpdateGroupEntries(const CPVRChannelGroup& channels, std::vector<std::shared_ptr<CPVRChannel>>& channelsToRemove) override;
 
     /*!
      * @brief Add new channels to this group; updtae data.
@@ -116,8 +117,9 @@ namespace PVR
 
     /*!
      * @brief Refresh the channel list from the clients.
+     * @param channelsToRemove Returns the channels to be removed from all groups, if any
      */
-    bool Update(void) override;
+    bool Update(std::vector<std::shared_ptr<CPVRChannel>>& channelsToRemove) override;
 
     /*!
      * @brief Load the channels from the database.
@@ -125,16 +127,17 @@ namespace PVR
      * Load the channels from the database.
      * If no channels are stored in the database, then the channels will be loaded from the clients.
      *
+     * @param channelsToRemove Returns the channels to be removed from all groups, if any
      * @return True when loaded successfully, false otherwise.
      */
-    bool Load(void) override;
+    bool Load(std::vector<std::shared_ptr<CPVRChannel>>& channelsToRemove) override;
 
     /*!
      * @brief Update the vfs paths of all channels.
      */
     void UpdateChannelPaths(void);
 
-    void CreateChannelEpg(const CPVRChannelPtr &channel, bool bForce = false);
+    void CreateChannelEpg(const std::shared_ptr<CPVRChannel>& channel);
 
     size_t m_iHiddenChannels; /*!< the amount of hidden channels in this container */
 

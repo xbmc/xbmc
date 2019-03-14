@@ -15,6 +15,7 @@
 #include "utils/log.h"
 
 #include "pvr/PVRManager.h"
+#include "pvr/epg/EpgInfoTag.h"
 
 using namespace PVR;
 
@@ -103,6 +104,15 @@ CPVRChannelPtr CPVRChannelGroupsContainer::GetChannelByEpgId(int iEpgId) const
     channel = m_groupsRadio->GetGroupAll()->GetByChannelEpgID(iEpgId);
 
   return channel;
+}
+
+std::shared_ptr<CPVRChannel> CPVRChannelGroupsContainer::GetChannelForEpgTag(const std::shared_ptr<CPVREpgInfoTag>& epgTag) const
+{
+  if (!epgTag)
+    return {};
+
+  const CPVRChannelGroups* groups = epgTag->IsRadio() ? m_groupsRadio : m_groupsTV;
+  return groups->GetGroupAll()->GetByUniqueID(epgTag->UniqueChannelID(), epgTag->ClientID());
 }
 
 bool CPVRChannelGroupsContainer::GetGroupsDirectory(CFileItemList *results, bool bRadio) const

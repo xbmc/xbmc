@@ -76,7 +76,7 @@ bool CPVRChannelGroups::Update(const CPVRChannelGroup &group, bool bUpdateFromCl
     {
       // create a new group if none was found. Copy the properties immediately
       // so the group doesn't get flagged as "changed" further down.
-      updateGroup = CPVRChannelGroupPtr(new CPVRChannelGroup(group.IsRadio(), group.GroupID(), group.GroupName()));
+      updateGroup.reset(new CPVRChannelGroup(group.IsRadio(), group.GroupID(), group.GroupName(), GetGroupAll()));
       m_groups.push_back(updateGroup);
     }
 
@@ -189,6 +189,15 @@ CPVRChannelGroupPtr CPVRChannelGroups::GetByName(const std::string &strName) con
   return empty;
 }
 
+void CPVRChannelGroups::RemoveFromAllGroups(const std::vector<std::shared_ptr<CPVRChannel>>& channelsToRemove)
+{
+  for (const auto& channel : channelsToRemove)
+  {
+    // remove this channel from all non-system groups
+    RemoveFromAllGroups(channel);
+  }
+}
+
 void CPVRChannelGroups::RemoveFromAllGroups(const CPVRChannelPtr &channel)
 {
   CSingleLock lock(m_critSection);
@@ -221,7 +230,11 @@ bool CPVRChannelGroups::Update(bool bChannelsOnly /* = false */)
   for (const auto &group : groups)
   {
     if (bUpdateAllGroups || group->IsInternalGroup())
-      bReturn = group->Update() && bReturn;
+    {
+      std::vector<std::shared_ptr<CPVRChannel>> channelsToRemove;
+      bReturn = group->Update(channelsToRemove) && bReturn;
+      RemoveFromAllGroups(channelsToRemove);
+    }
   }
 
   // persist changes
@@ -252,11 +265,14 @@ bool CPVRChannelGroups::LoadUserDefinedChannelGroups(void)
     // load only user defined groups, as internal group is already loaded
     if (!(*it)->IsInternalGroup())
     {
-      if (!(*it)->Load())
+      std::vector<std::shared_ptr<CPVRChannel>> channelsToRemove;
+      if (!(*it)->Load(channelsToRemove))
       {
         CLog::LogFC(LOGDEBUG, LOGPVR, "Failed to load user defined channel group '%s'", (*it)->GroupName().c_str());
         return false;
       }
+
+      RemoveFromAllGroups(channelsToRemove);
 
       // remove empty groups when sync with backend is enabled
       if (bSyncWithBackends && (*it)->Size() == 0)
@@ -296,11 +312,14 @@ bool CPVRChannelGroups::Load(void)
   CLog::LogFC(LOGDEBUG, LOGPVR, "%d %s groups fetched from the database", m_groups.size(), m_bRadio ? "radio" : "TV");
 
   // load channels of internal group
-  if (!internalGroup->Load())
+  std::vector<std::shared_ptr<CPVRChannel>> channelsToRemove;
+  if (!internalGroup->Load(channelsToRemove))
   {
     CLog::LogF(LOGERROR, "Failed to load 'all channels' group");
     return false;
   }
+
+  RemoveFromAllGroups(channelsToRemove);
 
   // load the other groups from the database
   if (!LoadUserDefinedChannelGroups())
@@ -528,7 +547,7 @@ bool CPVRChannelGroups::DeleteGroup(const CPVRChannelGroup &group)
   }
 
   if (playingGroup)
-    CServiceBroker::GetPVRManager().SetPlayingGroup(playingGroup);
+    SetSelectedGroup(playingGroup);
 
   if (group.GroupID() > 0)
   {
@@ -546,7 +565,7 @@ bool CPVRChannelGroups::CreateChannelEpgs(void)
   CSingleLock lock(m_critSection);
   for (std::vector<CPVRChannelGroupPtr>::iterator it = m_groups.begin(); it != m_groups.end(); ++it)
   {
-    /* Only create EPGs for the internatl groups */
+    /* Only create EPGs for the internal groups */
     if ((*it)->IsInternalGroup())
       bReturn = (*it)->CreateChannelEpgs();
   }

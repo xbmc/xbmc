@@ -8,16 +8,15 @@
 
 #pragma once
 
-#include "XBDateTime.h"
 #include "dbwrappers/Database.h"
 #include "threads/CriticalSection.h"
 
-#include "pvr/epg/Epg.h"
+class CDateTime;
 
 namespace PVR
 {
+  class CPVREpg;
   class CPVREpgInfoTag;
-  class CPVREpgContainer;
 
   /** The EPG database */
 
@@ -99,17 +98,16 @@ namespace PVR
 
     /*!
      * @brief Get all EPG tables from the database. Does not get the EPG tables' entries.
-     * @param container The container to get the EPG tables for.
      * @return The entries.
      */
-    std::vector<CPVREpgPtr> Get(const CPVREpgContainer &container);
+    std::vector<std::shared_ptr<CPVREpg>> GetAll();
 
     /*!
      * @brief Get all EPG entries for a table.
      * @param epg The EPG table to get the entries for.
      * @return The entries.
      */
-    std::vector<CPVREpgInfoTagPtr> Get(const CPVREpg &epg);
+    std::vector<std::shared_ptr<CPVREpgInfoTag>> Get(const CPVREpg &epg);
 
     /*!
      * @brief Get the last stored EPG scan time.
@@ -121,11 +119,12 @@ namespace PVR
 
     /*!
      * @brief Update the last scan time.
-     * @param iEpgId The table to update the time for. Use 0 for a global value.
+     * @param iEpgId The table to update the time for.
+     * @param lastScanTime The time to write to the database.
      * @param bQueueWrite Don't execute the query immediately but queue it if true.
      * @return True if it was updated successfully, false otherwise.
      */
-    bool PersistLastEpgScanTime(int iEpgId = 0, bool bQueueWrite = false);
+    bool PersistLastEpgScanTime(int iEpgId, const CDateTime& lastScanTime, bool bQueueWrite = false);
 
     /*!
      * @brief Persist an EPG table. It's entries are not persisted.

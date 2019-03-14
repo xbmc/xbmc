@@ -20,7 +20,7 @@ namespace PVR
   {
   public:
     CGUIWindowPVRSearchBase(bool bRadio, int id, const std::string &xmlFile);
-    ~CGUIWindowPVRSearchBase() override = default;
+    ~CGUIWindowPVRSearchBase() override;
 
     bool OnMessage(CGUIMessage& message)  override;
     void GetContextButtons(int itemNumber, CContextButtons &buttons) override;

@@ -157,7 +157,12 @@ JSONRPC_STATUS CPVROperations::GetBroadcasts(const std::string &method, ITranspo
     return InternalError;
 
   CFileItemList programFull;
-  channelEpg->Get(programFull);
+
+  const std::vector<std::shared_ptr<CPVREpgInfoTag>> tags = channelEpg->GetTags();
+  for (const auto& tag : tags)
+  {
+    programFull.Add(std::make_shared<CFileItem>(tag));
+  }
 
   HandleFileItemList("broadcastid", false, "broadcasts", programFull, parameterObject, result, programFull.Size(), true);
 
@@ -169,7 +174,8 @@ JSONRPC_STATUS CPVROperations::GetBroadcastDetails(const std::string &method, IT
   if (!CServiceBroker::GetPVRManager().IsStarted())
     return FailedToExecute;
 
-  const CPVREpgInfoTagPtr epgTag = CServiceBroker::GetPVRManager().EpgContainer().GetTagById(CPVRChannelPtr(), parameterObject["broadcastid"].asUnsignedInteger());
+  const std::shared_ptr<CPVREpgInfoTag> epgTag = CServiceBroker::GetPVRManager().EpgContainer().GetTagById(nullptr,
+                                                                                                           parameterObject["broadcastid"].asUnsignedInteger());
 
   if (!epgTag)
     return InvalidParams;
@@ -210,13 +216,14 @@ JSONRPC_STATUS CPVROperations::Record(const std::string &method, ITransportLayer
     return FailedToExecute;
 
   CVariant record = parameterObject["record"];
+  bool bIsRecording = CServiceBroker::GetPVRManager().Timers()->IsRecordingOnChannel(*pChannel);
   bool toggle = true;
-  if (record.isBoolean() && record.asBoolean() == pChannel->IsRecording())
+  if (record.isBoolean() && record.asBoolean() == bIsRecording)
     toggle = false;
 
   if (toggle)
   {
-    if (!CServiceBroker::GetPVRManager().GUIActions()->SetRecordingOnChannel(pChannel, !pChannel->IsRecording()))
+    if (!CServiceBroker::GetPVRManager().GUIActions()->SetRecordingOnChannel(pChannel, !bIsRecording))
       return FailedToExecute;
   }
 
@@ -321,12 +328,13 @@ JSONRPC_STATUS CPVROperations::AddTimer(const std::string &method, ITransportLay
   if (!CServiceBroker::GetPVRManager().IsStarted())
     return FailedToExecute;
 
-  const CPVREpgInfoTagPtr epgTag = CServiceBroker::GetPVRManager().EpgContainer().GetTagById(CPVRChannelPtr(), parameterObject["broadcastid"].asUnsignedInteger());
+  const std::shared_ptr<CPVREpgInfoTag> epgTag = CServiceBroker::GetPVRManager().EpgContainer().GetTagById(nullptr,
+                                                                                                           parameterObject["broadcastid"].asUnsignedInteger());
 
   if (!epgTag)
     return InvalidParams;
 
-  if (epgTag->HasTimer())
+  if (CServiceBroker::GetPVRManager().Timers()->GetTimerForEpgTag(epgTag))
     return InvalidParams;
 
   CPVRTimerInfoTagPtr newTimer = CPVRTimerInfoTag::CreateFromEpg(epgTag, parameterObject["timerrule"].asBoolean(false));
@@ -363,14 +371,15 @@ JSONRPC_STATUS CPVROperations::ToggleTimer(const std::string &method, ITransport
   if (!CServiceBroker::GetPVRManager().IsStarted())
     return FailedToExecute;
 
-  const CPVREpgInfoTagPtr epgTag = CServiceBroker::GetPVRManager().EpgContainer().GetTagById(CPVRChannelPtr(), parameterObject["broadcastid"].asUnsignedInteger());
+  const std::shared_ptr<CPVREpgInfoTag> epgTag = CServiceBroker::GetPVRManager().EpgContainer().GetTagById(nullptr,
+                                                                                                           parameterObject["broadcastid"].asUnsignedInteger());
 
   if (!epgTag)
     return InvalidParams;
 
   bool timerrule = parameterObject["timerrule"].asBoolean(false);
   bool sentOkay = false;
-  CPVRTimerInfoTagPtr timer(epgTag->Timer());
+  std::shared_ptr<CPVRTimerInfoTag> timer = CServiceBroker::GetPVRManager().Timers()->GetTimerForEpgTag(epgTag);
   if (timer)
   {
     if (timerrule)

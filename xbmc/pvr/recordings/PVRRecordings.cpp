@@ -395,16 +395,6 @@ void CPVRRecordings::UpdateFromClient(const CPVRRecordingPtr &tag)
   {
     newTag = CPVRRecordingPtr(new CPVRRecording);
     newTag->Update(*tag);
-    if (newTag->BroadcastUid() != EPG_TAG_INVALID_UID)
-    {
-      const CPVRChannelPtr channel(newTag->Channel());
-      if (channel)
-      {
-        const CPVREpgInfoTagPtr epgTag = CServiceBroker::GetPVRManager().EpgContainer().GetTagById(channel, newTag->BroadcastUid());
-        if (epgTag)
-          epgTag->SetRecording(newTag);
-      }
-    }
     newTag->m_iRecordingId = ++m_iLastId;
     m_recordings.insert(std::make_pair(CPVRRecordingUid(newTag->m_iClientId, newTag->m_strRecordingId), newTag));
     if (newTag->IsRadio())
@@ -416,6 +406,9 @@ void CPVRRecordings::UpdateFromClient(const CPVRRecordingPtr &tag)
 
 CPVRRecordingPtr CPVRRecordings::GetRecordingForEpgTag(const CPVREpgInfoTagPtr &epgTag) const
 {
+  if (!epgTag)
+    return {};
+
   CSingleLock lock(m_critSection);
 
   for (const auto recording : m_recordings)
@@ -423,25 +416,21 @@ CPVRRecordingPtr CPVRRecordings::GetRecordingForEpgTag(const CPVREpgInfoTagPtr &
     if (recording.second->IsDeleted())
       continue;
 
+    if (recording.second->ClientID() != epgTag->ClientID())
+      continue;
+
+    if (recording.second->ChannelUid() != epgTag->UniqueChannelID())
+      continue;
+
     unsigned int iEpgEvent = recording.second->BroadcastUid();
     if (iEpgEvent != EPG_TAG_INVALID_UID)
     {
       if (iEpgEvent == epgTag->UniqueBroadcastID())
-      {
-        // uid matches. perfect.
         return recording.second;
-      }
     }
     else
     {
-      // uid is optional, so check other relevant data.
-
-      // note: don't use recording.second->Channel() for comparing channels here as this can lead
-      //       to deadlocks. compare client ids and channel ids instead, this has the same effect.
-      if (epgTag->Channel() &&
-          recording.second->ClientID() == epgTag->Channel()->ClientID() &&
-          recording.second->ChannelUid() == epgTag->Channel()->UniqueID() &&
-          recording.second->RecordingTimeAsUTC() <= epgTag->StartAsUTC() &&
+      if (recording.second->RecordingTimeAsUTC() <= epgTag->StartAsUTC() &&
           recording.second->EndTimeAsUTC() >= epgTag->EndAsUTC())
         return recording.second;
     }
