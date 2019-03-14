@@ -101,7 +101,7 @@ namespace PVR
 
     void Process() override;
 
-    void DoRefresh();
+    void DoRefresh(bool bWait);
     void Stop();
 
   private:
