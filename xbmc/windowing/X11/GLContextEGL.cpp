@@ -424,7 +424,7 @@ void CGLContextEGL::SwapBuffers()
   eglSwapBuffers(m_eglDisplay, m_eglSurface);
 
   clock_gettime(CLOCK_MONOTONIC, &nowTs);
-  now = nowTs.tv_sec * 1000000000 + nowTs.tv_nsec;
+  now = static_cast<uint64_t>(nowTs.tv_sec) * 1000000000ULL + nowTs.tv_nsec;
 
   eglGetSyncValuesCHROMIUM(m_eglDisplay, m_eglSurface, &ust2, &msc2, &sbc2);
 
@@ -499,7 +499,7 @@ uint64_t CGLContextEGL::GetVblankTiming(uint64_t &msc, uint64_t &interval)
   struct timespec nowTs;
   uint64_t now;
   clock_gettime(CLOCK_MONOTONIC, &nowTs);
-  now = nowTs.tv_sec * 1000000000 + nowTs.tv_nsec;
+  now = static_cast<uint64_t>(nowTs.tv_sec) * 1000000000ULL + nowTs.tv_nsec;
   now /= 1000;
 
   CSingleLock lock(m_syncLock);
