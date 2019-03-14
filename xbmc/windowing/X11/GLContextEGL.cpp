@@ -424,7 +424,7 @@ void CGLContextEGL::SwapBuffers()
   eglSwapBuffers(m_eglDisplay, m_eglSurface);
 
   clock_gettime(CLOCK_MONOTONIC, &nowTs);
-  now = static_cast<uint64_t>(nowTs.tv_sec) * 1000000000ULL + nowTs.tv_nsec;
+  now = static_cast<uint64_t>(nowTs.tv_sec) * 1000000 + nowTs.tv_nsec / 1000;
 
   eglGetSyncValuesCHROMIUM(m_eglDisplay, m_eglSurface, &ust2, &msc2, &sbc2);
 
@@ -456,7 +456,7 @@ void CGLContextEGL::SwapBuffers()
     {
       // if no vertical retrace has occurred in eglSwapBuffers,
       // sleep until next vertical retrace
-      uint64_t lastIncrement = (now / 1000 - ust2);
+      uint64_t lastIncrement = (now - ust2);
       if (lastIncrement > m_sync.interval)
       {
         lastIncrement = m_sync.interval;
@@ -473,7 +473,7 @@ void CGLContextEGL::SwapBuffers()
   {
     // sleep until next vertical retrace
     // this avoids blocking outside of this function
-    uint64_t lastIncrement = (now / 1000 - ust2);
+    uint64_t lastIncrement = (now - ust2);
     if (lastIncrement > m_sync.interval)
     {
       lastIncrement = m_sync.interval;
@@ -499,8 +499,7 @@ uint64_t CGLContextEGL::GetVblankTiming(uint64_t &msc, uint64_t &interval)
   struct timespec nowTs;
   uint64_t now;
   clock_gettime(CLOCK_MONOTONIC, &nowTs);
-  now = static_cast<uint64_t>(nowTs.tv_sec) * 1000000000ULL + nowTs.tv_nsec;
-  now /= 1000;
+  now = static_cast<uint64_t>(nowTs.tv_sec) * 1000000 + nowTs.tv_nsec / 1000;
 
   CSingleLock lock(m_syncLock);
   msc = m_sync.msc2;
