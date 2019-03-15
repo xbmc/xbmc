@@ -188,10 +188,28 @@ void CGUIControllerWindow::OnEvent(const ADDON::CRepositoryUpdater::RepositoryUp
   UpdateButtons();
 }
 
+void CGUIControllerWindow::OnEvent(const ADDON::AddonEvent& event)
+{
+  using namespace ADDON;
+
+  if (typeid(event) == typeid(AddonEvents::Enabled) ||  // also called on install,
+      typeid(event) == typeid(AddonEvents::Disabled) || // not called on uninstall
+      typeid(event) == typeid(AddonEvents::UnInstalled) ||
+      typeid(event) == typeid(AddonEvents::ReInstalled))
+  {
+    if (CServiceBroker::GetAddonMgr().HasType(event.id, ADDON_GAME_CONTROLLER))
+    {
+      UpdateControllerList();
+      UpdateButtons();
+    }
+  }
+}
+
 void CGUIControllerWindow::OnInitWindow(void)
 {
   // subscribe to events
   CServiceBroker::GetRepositoryUpdater().Events().Subscribe(this, &CGUIControllerWindow::OnEvent);
+  CServiceBroker::GetAddonMgr().Events().Subscribe(this, &CGUIControllerWindow::OnEvent);
   // Get active game add-on
   GameClientPtr gameClient;
   {
@@ -219,12 +237,7 @@ void CGUIControllerWindow::OnInitWindow(void)
 
   if (!m_controllerList && m_featureList)
   {
-    m_controllerList = new CGUIControllerList(this, m_featureList, m_gameClient);
-    if (!m_controllerList->Initialize())
-    {
-      delete m_controllerList;
-      m_controllerList = nullptr;
-    }
+    UpdateControllerList();
   }
 
   // Focus the first controller so that the feature list is loaded properly
@@ -240,6 +253,7 @@ void CGUIControllerWindow::OnInitWindow(void)
 void CGUIControllerWindow::OnDeinitWindow(int nextWindowID)
 {
   CServiceBroker::GetRepositoryUpdater().Events().Unsubscribe(this);
+  CServiceBroker::GetAddonMgr().Events().Unsubscribe(this);
 
   if (m_controllerList)
   {
@@ -282,6 +296,22 @@ void CGUIControllerWindow::OnFeatureSelected(unsigned int buttonIndex)
 {
   if (m_featureList)
     m_featureList->OnSelect(buttonIndex);
+}
+
+void CGUIControllerWindow::UpdateControllerList(void)
+{
+  if (m_controllerList)
+  {
+    delete m_controllerList;
+    m_controllerList = nullptr;
+  }
+
+  m_controllerList = new CGUIControllerList(this, m_featureList, m_gameClient);
+  if (!m_controllerList->Initialize())
+  {
+    delete m_controllerList;
+    m_controllerList = nullptr;
+  }
 }
 
 void CGUIControllerWindow::UpdateButtons(void)

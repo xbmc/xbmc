@@ -42,8 +42,8 @@ namespace GAME
     void OnControllerSelected(unsigned int controllerIndex);
     void OnFeatureFocused(unsigned int featureIndex);
     void OnFeatureSelected(unsigned int featureIndex);
-    void OnEvent(const ADDON::CRepositoryUpdater::RepositoryUpdated& event);
     void UpdateButtons(void);
+    void UpdateControllerList(void);
 
     // Action for the available button
     void GetMoreControllers(void);
@@ -51,6 +51,10 @@ namespace GAME
     void ResetController(void);
     void ShowHelp(void);
     void ShowButtonCaptureDialog(void);
+
+    // Callbacks for events
+    void OnEvent(const ADDON::CRepositoryUpdater::RepositoryUpdated& event);
+    void OnEvent(const ADDON::AddonEvent& event);
 
     IControllerList* m_controllerList = nullptr;
     IFeatureList* m_featureList = nullptr;
