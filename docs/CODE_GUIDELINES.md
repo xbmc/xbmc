@@ -1,6 +1,6 @@
-![Kodi Logo](resources/banner_slim.png)
-
 # Code Guidelines
+
+![Kodi Logo](https://github.com/xbmc/xbmc/raw/master/docs/resources/banner_slim.png)
 
 ## Table of Contents
 * [1. Motivation](#1-motivation)

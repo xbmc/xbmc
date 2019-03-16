@@ -5,5 +5,5 @@ DOXYFILE = docs/doxygen/Doxyfile.doxy
 PROJECT_LOGO = docs/doxygen/Thumbnail-symbol-whitebg-small.jpg
 
 INPUT= xbmc \
-       docs/doxygen/CODING_GUIDELINES.dox \
+       docs/CODE_GUIDELINES.md \
        docs/doxygen
