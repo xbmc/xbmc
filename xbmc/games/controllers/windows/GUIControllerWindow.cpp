@@ -190,6 +190,8 @@ void CGUIControllerWindow::OnEvent(const ADDON::CRepositoryUpdater::RepositoryUp
 
 void CGUIControllerWindow::OnInitWindow(void)
 {
+  // subscribe to events
+  CServiceBroker::GetRepositoryUpdater().Events().Subscribe(this, &CGUIControllerWindow::OnEvent);
   // Get active game add-on
   GameClientPtr gameClient;
   {
@@ -237,6 +239,8 @@ void CGUIControllerWindow::OnInitWindow(void)
 
 void CGUIControllerWindow::OnDeinitWindow(int nextWindowID)
 {
+  CServiceBroker::GetRepositoryUpdater().Events().Unsubscribe(this);
+
   if (m_controllerList)
   {
     m_controllerList->Deinitialize();
