@@ -82,6 +82,7 @@ add_custom_command(TARGET ${APP_NAME_LC} POST_BUILD
             "BUILT_PRODUCTS_DIR=$<TARGET_FILE_DIR:${APP_NAME_LC}>/.."
             "WRAPPER_NAME=${APP_NAME}.app"
             "APP_NAME=${APP_NAME}"
+            "CURRENT_ARCH=${ARCH}"
             ${CMAKE_SOURCE_DIR}/tools/darwin/Support/Codesign.command
 )
 

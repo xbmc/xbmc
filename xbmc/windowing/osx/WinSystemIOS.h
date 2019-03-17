@@ -85,5 +85,7 @@ private:
   void FillInVideoModes(int screenIdx);
   bool SwitchToVideoMode(int width, int height, double refreshrate);
   CADisplayLinkWrapper *m_pDisplayLink;
+  int m_internalTouchscreenResolutionWidth = -1;
+  int m_internalTouchscreenResolutionHeight = -1;
 };
 

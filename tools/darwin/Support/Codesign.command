@@ -9,7 +9,16 @@ export CODESIGN_ALLOCATE=`xcodebuild -find codesign_allocate`
 
 GEN_ENTITLEMENTS="$NATIVEPREFIX/bin/gen_entitlements.py"
 IOS11_ENTITLEMENTS="$XBMC_DEPENDS/share/ios11_entitlements.xml"
-LDID="$NATIVEPREFIX/bin/ldid"
+LDID32="$NATIVEPREFIX/bin/ldid32"
+LDID64="$NATIVEPREFIX/bin/ldid64"
+LDID=${LDID32}
+
+if [ "${CURRENT_ARCH}" == "arm64" ] || [ "${CURRENT_ARCH}" == "aarch64" ]; then
+  LDID=${LDID64}
+  echo "using LDID64"
+else
+  echo "using LDID32"
+fi
 
 if [ ! -f ${GEN_ENTITLEMENTS} ]; then
   echo "error: $GEN_ENTITLEMENTS not found. Codesign won't work."
