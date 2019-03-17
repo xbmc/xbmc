@@ -12,8 +12,12 @@
 
 #include <atomic>
 #include <memory>
+#include <utility>
+#include <vector>
 
 #include "XBDateTime.h"
+
+class CDataCacheCore;
 
 namespace KODI
 {
@@ -61,6 +65,10 @@ private:
   std::string GetDuration(TIME_FORMAT format) const;
   std::string GetCurrentSeekTime(TIME_FORMAT format) const;
   std::string GetSeekTime(TIME_FORMAT format) const;
+
+  std::string GetContentRanges(int iInfo) const;
+  std::vector<std::pair<float, float>> GetCutList(CDataCacheCore& data, time_t duration) const;
+  std::vector<std::pair<float, float>> GetChapters(CDataCacheCore& data, time_t duration) const;
 };
 
 } // namespace GUIINFO

@@ -628,6 +628,24 @@ const infomap integer_bools[] =  {{ "isequal",          INTEGER_IS_EQUAL },
 ///     @skinning_v18 **[New Infolabel]** \link Player_Icon `Player.Icon`\endlink
 ///     <p>  
 ///   }
+///   \table_row3{   <b>`Player.Cutlist`</b>,
+///                  \anchor Player_Cutlist
+///                  _string_,
+///     @return The cutlist of the currently playing item as csv in the format start1\,end1\,start2\,end2\,...
+///     Tokens must have values in the range from 0.0 to 100.0. end token must be less or equal than start token.
+///     <p><hr>
+///     @skinning_v19 **[New Infolabel]** \link Player_Cutlist `Player.Cutlist`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`Player.Chapters`</b>,
+///                  \anchor Player_Chapters
+///                  _string_,
+///     @return The chapters of the currently playing item as csv in the format start1\,end1\,start2\,end2\,...
+///     Tokens must have values in the range from 0.0 to 100.0. end token must be less or equal than start token.
+///     <p><hr>
+///     @skinning_v19 **[New Infolabel]** \link Player_Chapters `Player.Chapters`\endlink
+///     <p>
+///   }
 const infomap player_labels[] =  {{ "hasmedia",         PLAYER_HAS_MEDIA },
                                   { "hasaudio",         PLAYER_HAS_AUDIO },
                                   { "hasvideo",         PLAYER_HAS_VIDEO },
@@ -678,7 +696,9 @@ const infomap player_labels[] =  {{ "hasmedia",         PLAYER_HAS_MEDIA },
                                   { "hasprograms",      PLAYER_HAS_PROGRAMS },
                                   { "hasresolutions",   PLAYER_HAS_RESOLUTIONS },
                                   { "frameadvance",     PLAYER_FRAMEADVANCE },
-                                  { "icon",             PLAYER_ICON }};
+                                  { "icon",             PLAYER_ICON },
+                                  { "cutlist",          PLAYER_CUTLIST },
+                                  { "chapters",         PLAYER_CHAPTERS }};
 
 /// \page modules__infolabels_boolean_conditions
 ///   \table_row3{   <b>`Player.Art(type)`</b>,
