@@ -75,7 +75,7 @@ void CGUIControllerList::Deinitialize(void)
   m_controllerButton = nullptr;
 }
 
-bool CGUIControllerList::Refresh(const std::string &controllerId)
+bool CGUIControllerList::Refresh(const std::string& controllerId)
 {
   // Focus specified controller after refresh
   std::string focusController = controllerId;

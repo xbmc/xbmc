@@ -67,7 +67,7 @@ namespace GAME
      * \param controllerId The controller to focus, or empty to leave focus unchanged
      * \return True if the list was changed
      */
-    virtual bool Refresh(const std::string &controllerId) = 0;
+    virtual bool Refresh(const std::string& controllerId) = 0;
 
     /*
      * \brief  The specified controller has been focused
