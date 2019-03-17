@@ -146,7 +146,9 @@ void CGUIControllerList::ResetController(void)
 
 void CGUIControllerList::OnEvent(const ADDON::AddonEvent& event)
 {
-  if (typeid(event) == typeid(ADDON::AddonEvents::ReInstalled) ||
+  if (typeid(event) == typeid(ADDON::AddonEvents::Enabled) ||  // also called on install,
+      typeid(event) == typeid(ADDON::AddonEvents::Disabled) || // not called on uninstall
+      typeid(event) == typeid(ADDON::AddonEvents::ReInstalled) ||
       typeid(event) == typeid(ADDON::AddonEvents::UnInstalled))
   {
     using namespace MESSAGING;
