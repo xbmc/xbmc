@@ -44,12 +44,20 @@ RenderBufferPoolVector CRendererFactoryOpenGLES::CreateBufferPools(CRenderContex
 CRPRendererOpenGLES::CRPRendererOpenGLES(const CRenderSettings &renderSettings, CRenderContext &context, std::shared_ptr<IRenderBufferPool> bufferPool) :
   CRPBaseRenderer(renderSettings, context, std::move(bufferPool))
 {
+}
+
+CRPRendererOpenGLES::~CRPRendererOpenGLES() = default;
+
+bool CRPRendererOpenGLES::ConfigureInternal()
+{
   glGenBuffers(1, &m_mainIndexVBO);
   glGenBuffers(1, &m_mainVertexVBO);
   glGenBuffers(1, &m_blackbarsVertexVBO);
+
+  return true;
 }
 
-CRPRendererOpenGLES::~CRPRendererOpenGLES()
+void CRPRendererOpenGLES::DeinitializeInternal()
 {
   glDeleteBuffers(1, &m_mainIndexVBO);
   glDeleteBuffers(1, &m_mainVertexVBO);

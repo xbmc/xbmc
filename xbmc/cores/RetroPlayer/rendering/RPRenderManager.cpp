@@ -68,6 +68,8 @@ void CRPRenderManager::Deinitialize()
     buffer->Release();
   m_pendingBuffers.clear();
 
+  for (const auto &renderer : m_renderers)
+    renderer->Deinitialize();
   m_renderers.clear();
 
   m_state = RENDER_STATE::UNCONFIGURED;

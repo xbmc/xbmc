@@ -41,7 +41,12 @@ CRPRendererOpenGL::CRPRendererOpenGL(const CRenderSettings &renderSettings, CRen
 {
   // Initialize CRPRendererOpenGL
   m_clearColour = m_context.UseLimitedColor() ? (16.0f / 0xff) : 0.0f;
+}
 
+CRPRendererOpenGL::~CRPRendererOpenGL() = default;
+
+bool CRPRendererOpenGL::ConfigureInternal()
+{
   // Set up main screen VAO/VBOs
   glGenVertexArrays(1, &m_mainVAO);
   glBindVertexArray(m_mainVAO);
@@ -79,9 +84,11 @@ CRPRendererOpenGL::CRPRendererOpenGL(const CRenderSettings &renderSettings, CRen
   glBindVertexArray(0);
   glBindBuffer(GL_ARRAY_BUFFER, 0);
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+  return true;
 }
 
-CRPRendererOpenGL::~CRPRendererOpenGL()
+void CRPRendererOpenGL::DeinitializeInternal()
 {
   glDeleteBuffers(1, &m_mainIndexVBO);
   glDeleteBuffers(1, &m_mainVertexVBO);

@@ -63,6 +63,11 @@ bool CRPBaseRenderer::Configure(AVPixelFormat format)
   return m_bConfigured;
 }
 
+void CRPBaseRenderer::Deinitialize()
+{
+  void DeinitializeInternal();
+}
+
 void CRPBaseRenderer::FrameMove()
 {
   m_renderFrameCount++;

@@ -41,6 +41,7 @@ namespace RETRO
 
     // Player functions
     bool Configure(AVPixelFormat format);
+    void Deinitialize();
     void FrameMove();
     /*!
      * \brief Performs whatever necessary before rendering the frame
@@ -70,6 +71,7 @@ namespace RETRO
   protected:
     // Protected renderer interface
     virtual bool ConfigureInternal() { return true; }
+    virtual void DeinitializeInternal() { }
     virtual void RenderInternal(bool clear, uint8_t alpha) = 0;
     virtual void FlushInternal() { }
 

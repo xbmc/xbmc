@@ -49,6 +49,8 @@ namespace RETRO
 
   protected:
     // implementation of CRPBaseRenderer
+    bool ConfigureInternal() override;
+    void DeinitializeInternal() override;
     void RenderInternal(bool clear, uint8_t alpha) override;
     void FlushInternal() override;
 
