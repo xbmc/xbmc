@@ -171,6 +171,7 @@
 #include "XHandle.h"
 #include "XTimeUtils.h"
 #include "platform/posix/filesystem/PosixDirectory.h"
+#include "platform/posix/PlatformPosix.h"
 #endif
 
 #if defined(TARGET_ANDROID)
@@ -4105,6 +4106,14 @@ void CApplication::ProcessSlow()
   {
     CheckShutdown();
   }
+
+#if defined(TARGET_POSIX)
+  if (CPlatformPosix::TestShutdownFlag())
+  {
+    CLog::Log(LOGNOTICE, "Shutting down due to POSIX signal");
+    CApplicationMessenger::GetInstance().PostMsg(TMSG_SHUTDOWN);
+  }
+#endif
 
   // check if we should restart the player
   CheckDelayedPlayerRestart();
