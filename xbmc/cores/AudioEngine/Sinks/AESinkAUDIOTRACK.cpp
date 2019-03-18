@@ -877,6 +877,10 @@ void CAESinkAUDIOTRACK::EnumerateDevicesEx(AEDeviceInfoList &list, bool force)
   {
     UpdateAvailablePassthroughCapabilities();
   }
+  else
+  {
+    CLog::Log(LOGNOTICE, "Kodi detected a headphone - passthrough capabilities won't be queried!");
+  }
   list.push_back(m_info);
 }
 
