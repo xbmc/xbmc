@@ -52,6 +52,7 @@ class CEventLog;
 class CGUIComponent;
 class CAppInboundProtocol;
 class CSettingsComponent;
+class CDecoderFilterManager;
 
 namespace KODI
 {
@@ -127,6 +128,9 @@ public:
   static void RegisterAppPort(std::shared_ptr<CAppInboundProtocol> port);
   static void UnregisterAppPort();
 
+  static void RegisterDecoderFilterManager(CDecoderFilterManager* manager);
+  static CDecoderFilterManager* GetDecoderFilterManager();
+
 private:
   static std::shared_ptr<ANNOUNCEMENT::CAnnouncementManager> m_pAnnouncementManager;
   static CGUIComponent* m_pGUI;
@@ -134,4 +138,5 @@ private:
   static IAE* m_pActiveAE;
   static std::shared_ptr<CAppInboundProtocol> m_pAppPort;
   static CSettingsComponent* m_pSettingsComponent;
+  static CDecoderFilterManager* m_decoderFilterManager;
 };

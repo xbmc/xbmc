@@ -11,19 +11,10 @@
 #include <string.h>
 #include <float.h>
 
-#include "WinEventsAndroid.h"
-#include "OSScreenSaverAndroid.h"
-#include "ServiceBroker.h"
-#include "windowing/GraphicContext.h"
-#include "windowing/Resolution.h"
-#include "settings/DisplaySettings.h"
-#include "settings/Settings.h"
-#include "settings/SettingsComponent.h"
-#include "guilib/DispResource.h"
-#include "utils/log.h"
-#include "threads/SingleLock.h"
-#include "platform/android/activity/XBMCApp.h"
+#include <EGL/egl.h>
+#include <EGL/eglplatform.h>
 
+#include "addons/interfaces/platform/android/System.h"
 #include "cores/RetroPlayer/process/android/RPProcessInfoAndroid.h"
 #include "cores/RetroPlayer/rendering/VideoRenderers/RPRendererOpenGLES.h"
 #include "cores/VideoPlayer/DVDCodecs/Video/DVDVideoCodecAndroidMediaCodec.h"
@@ -31,13 +22,21 @@
 #include "cores/VideoPlayer/VideoRenderers/HwDecRender/RendererMediaCodec.h"
 #include "cores/VideoPlayer/Process/android/ProcessInfoAndroid.h"
 #include "cores/VideoPlayer/VideoRenderers/HwDecRender/RendererMediaCodecSurface.h"
+#include "guilib/DispResource.h"
+#include "OSScreenSaverAndroid.h"
 #include "platform/android/powermanagement/AndroidPowerSyscall.h"
-#include "addons/interfaces/platform/android/System.h"
-#include "platform/android/drm/MediaDrmCryptoSession.h"
-#include <androidjni/MediaCodecList.h>
-
-#include <EGL/egl.h>
-#include <EGL/eglplatform.h>
+#include "platform/android/media/drm/MediaDrmCryptoSession.h"
+#include "platform/android/media/decoderfilter/MediaCodecDecoderFilterManager.h"
+#include "platform/android/activity/XBMCApp.h"
+#include "ServiceBroker.h"
+#include "settings/DisplaySettings.h"
+#include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
+#include "threads/SingleLock.h"
+#include "utils/log.h"
+#include "windowing/GraphicContext.h"
+#include "windowing/Resolution.h"
+#include "WinEventsAndroid.h"
 
 using namespace KODI;
 
@@ -72,6 +71,9 @@ bool CWinSystemAndroid::InitWindowSystem()
 
   m_android = new CAndroidUtils();
 
+  m_decoderFilterManager = new(CMediaCodecDecoderFilterManager);
+  CServiceBroker::RegisterDecoderFilterManager(m_decoderFilterManager);
+
   CDVDVideoCodecAndroidMediaCodec::Register();
   CDVDAudioCodecAndroidMediaCodec::Register();
 
@@ -89,8 +91,13 @@ bool CWinSystemAndroid::InitWindowSystem()
 bool CWinSystemAndroid::DestroyWindowSystem()
 {
   CLog::Log(LOGNOTICE, "CWinSystemAndroid::%s", __FUNCTION__);
+
   delete m_android;
   m_android = nullptr;
+
+  CServiceBroker::RegisterDecoderFilterManager(nullptr);
+  delete m_decoderFilterManager;
+  m_decoderFilterManager = nullptr;
 
   return true;
 }
@@ -181,17 +188,6 @@ void CWinSystemAndroid::UpdateResolutions()
       CDisplaySettings::GetInstance().GetResolutionInfo(RES_DESKTOP) = resolutions[i];
     }
     res_index = (RESOLUTION)((int)res_index + 1);
-  }
-
-  unsigned int num_codecs = CJNIMediaCodecList::getCodecCount();
-  for (int i = 0; i < num_codecs; i++)
-  {
-    CJNIMediaCodecInfo codec_info = CJNIMediaCodecList::getCodecInfoAt(i);
-    if (codec_info.isEncoder())
-      continue;
-
-    std::string codecname = codec_info.getName();
-    CLog::Log(LOGNOTICE, "Mediacodec: %s", codecname.c_str());
   }
 }
 

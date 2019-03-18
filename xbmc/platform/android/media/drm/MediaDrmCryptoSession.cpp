@@ -24,9 +24,9 @@ using namespace XbmcCommons;
 class CharVecBuffer : public Buffer
 {
 public:
-  inline CharVecBuffer(const Buffer &buf) : Buffer(buf) {};
+  inline CharVecBuffer(const Buffer& buf) : Buffer(buf) {};
 
-  inline CharVecBuffer(const std::vector<char> &vec)
+  inline CharVecBuffer(const std::vector<char>& vec)
     : Buffer(vec.size())
   {
     memcpy(data(), vec.data(), vec.size());
@@ -44,7 +44,7 @@ void CMediaDrmCryptoSession::Register()
   CCryptoSession::RegisterInterface(CMediaDrmCryptoSession::Create);
 }
 
-CMediaDrmCryptoSession::CMediaDrmCryptoSession(const std::string &UUID, const std::string &cipherAlgo, const std::string &macAlgo)
+CMediaDrmCryptoSession::CMediaDrmCryptoSession(const std::string& UUID, const std::string& cipherAlgo, const std::string& macAlgo)
   : m_mediaDrm(nullptr)
   , m_cryptoSession(nullptr)
   , m_cipherAlgo(cipherAlgo)
@@ -91,14 +91,14 @@ CMediaDrmCryptoSession::~CMediaDrmCryptoSession()
   delete m_mediaDrm, m_mediaDrm = nullptr;
 }
 
-CCryptoSession* CMediaDrmCryptoSession::Create(const std::string &UUID, const std::string &cipherAlgo, const std::string &macAlgo)
+CCryptoSession* CMediaDrmCryptoSession::Create(const std::string& UUID, const std::string& cipherAlgo, const std::string& macAlgo)
 {
   CMediaDrmCryptoSession *res = nullptr;;
   try
   {
     res = new CMediaDrmCryptoSession(UUID, cipherAlgo, macAlgo);
   }
-  catch (std::runtime_error &e)
+  catch (std::runtime_error& e)
   {
     delete res, res = nullptr;
   }
@@ -108,10 +108,10 @@ CCryptoSession* CMediaDrmCryptoSession::Create(const std::string &UUID, const st
 /*****************/
 
 // Interface methods
-Buffer CMediaDrmCryptoSession::GetKeyRequest(const Buffer &init,
-  const std::string &mimeType,
+Buffer CMediaDrmCryptoSession::GetKeyRequest(const Buffer& init,
+  const std::string& mimeType,
   bool offlineKey,
-  const std::map<std::string, std::string> &parameters)
+  const std::map<std::string, std::string>& parameters)
 {
   if (m_mediaDrm && m_sessionId)
   {
@@ -124,7 +124,7 @@ Buffer CMediaDrmCryptoSession::GetKeyRequest(const Buffer &init,
 }
 
 
-std::string CMediaDrmCryptoSession::GetPropertyString(const std::string &name)
+std::string CMediaDrmCryptoSession::GetPropertyString(const std::string& name)
 {
   if (m_mediaDrm)
     return m_mediaDrm->getPropertyString(name);
@@ -133,7 +133,7 @@ std::string CMediaDrmCryptoSession::GetPropertyString(const std::string &name)
 }
 
 
-std::string CMediaDrmCryptoSession::ProvideKeyResponse(const Buffer &response)
+std::string CMediaDrmCryptoSession::ProvideKeyResponse(const Buffer& response)
 {
   if (m_mediaDrm)
   {
@@ -154,7 +154,7 @@ void CMediaDrmCryptoSession::RemoveKeys()
   }
 }
 
-void CMediaDrmCryptoSession::RestoreKeys(const std::string &keySetId)
+void CMediaDrmCryptoSession::RestoreKeys(const std::string& keySetId)
 {
   if (m_mediaDrm && keySetId != m_keySetId)
   {
@@ -164,14 +164,14 @@ void CMediaDrmCryptoSession::RestoreKeys(const std::string &keySetId)
   }
 }
 
-void CMediaDrmCryptoSession::SetPropertyString(const std::string &name, const std::string &value)
+void CMediaDrmCryptoSession::SetPropertyString(const std::string& name, const std::string& value)
 {
   if (m_mediaDrm)
     m_mediaDrm->setPropertyString(name, value);
 }
 
 // Crypto methods
-Buffer CMediaDrmCryptoSession::Decrypt(const Buffer &cipherKeyId, const Buffer &input, const Buffer &iv)
+Buffer CMediaDrmCryptoSession::Decrypt(const Buffer& cipherKeyId, const Buffer& input, const Buffer& iv)
 {
   if (m_cryptoSession)
     return CharVecBuffer(m_cryptoSession->decrypt(CharVecBuffer(cipherKeyId), CharVecBuffer(input), CharVecBuffer(iv)));
@@ -179,7 +179,7 @@ Buffer CMediaDrmCryptoSession::Decrypt(const Buffer &cipherKeyId, const Buffer &
   return Buffer();
 }
 
-Buffer CMediaDrmCryptoSession::Encrypt(const Buffer &cipherKeyId, const Buffer &input, const Buffer &iv)
+Buffer CMediaDrmCryptoSession::Encrypt(const Buffer& cipherKeyId, const Buffer& input, const Buffer& iv)
 {
   if (m_cryptoSession)
     return CharVecBuffer(m_cryptoSession->encrypt(CharVecBuffer(cipherKeyId), CharVecBuffer(input), CharVecBuffer(iv)));
@@ -187,7 +187,7 @@ Buffer CMediaDrmCryptoSession::Encrypt(const Buffer &cipherKeyId, const Buffer &
   return Buffer();
 }
 
-Buffer CMediaDrmCryptoSession::Sign(const Buffer &macKeyId, const Buffer &message)
+Buffer CMediaDrmCryptoSession::Sign(const Buffer& macKeyId, const Buffer& message)
 {
   if (m_cryptoSession)
     return CharVecBuffer(m_cryptoSession->sign(CharVecBuffer(macKeyId), CharVecBuffer(message)));
@@ -195,7 +195,7 @@ Buffer CMediaDrmCryptoSession::Sign(const Buffer &macKeyId, const Buffer &messag
   return Buffer();
 }
 
-bool CMediaDrmCryptoSession::Verify(const Buffer &macKeyId, const Buffer &message, const Buffer &signature)
+bool CMediaDrmCryptoSession::Verify(const Buffer& macKeyId, const Buffer& message, const Buffer& signature)
 {
   if (m_cryptoSession)
     return m_cryptoSession->verify(CharVecBuffer(macKeyId), CharVecBuffer(message), CharVecBuffer(signature));

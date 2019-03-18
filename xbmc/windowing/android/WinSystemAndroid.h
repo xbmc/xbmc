@@ -16,6 +16,7 @@
 #include "threads/Timer.h"
 #include "EGL/egl.h"
 
+class CDecoderFilterManager;
 class IDispResource;
 
 class CWinSystemAndroid : public CWinSystemBase, public ITimerCallback
@@ -74,4 +75,5 @@ protected:
 
   CCriticalSection m_resourceSection;
   std::vector<IDispResource*> m_resources;
+  CDecoderFilterManager *m_decoderFilterManager;
 };

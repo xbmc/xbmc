@@ -30,7 +30,6 @@ xbmc/input/keyboard/generic                     input/keyboard/generic
 xbmc/input/mouse                                input/mouse
 xbmc/input/mouse/generic                        input/mouse/generic
 xbmc/listproviders                              listproviders
-xbmc/media                                      media
 xbmc/messaging                                  messaging
 xbmc/messaging/helpers                          messagingHelpers
 xbmc/pictures                                   pictures

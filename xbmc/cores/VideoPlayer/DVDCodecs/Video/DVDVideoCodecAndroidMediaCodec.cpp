@@ -14,43 +14,43 @@
 
 #include "DVDVideoCodecAndroidMediaCodec.h"
 
+#include <cassert>
+#include <memory>
+
 #include <androidjni/ByteBuffer.h>
 #include <androidjni/MediaCodecList.h>
 #include <androidjni/MediaCodecInfo.h>
 #include <androidjni/Surface.h>
 #include <androidjni/SurfaceTexture.h>
+
+#include <GLES2/gl2.h>
+#include <GLES2/gl2ext.h>
+
 #include <media/NdkMediaCrypto.h>
 
 #include "Application.h"
-#include "ServiceBroker.h"
-#include "messaging/ApplicationMessenger.h"
-#include "cores/VideoPlayer/Interface/Addon/TimingConstants.h"
-
-#include "utils/BitstreamConverter.h"
-#include "utils/BitstreamWriter.h"
-#include "utils/CPUInfo.h"
-#include "utils/log.h"
-
 #include "DVDCodecs/DVDFactoryCodec.h"
 #include "platform/android/activity/XBMCApp.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderManager.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderFlags.h"
 #include "cores/VideoPlayer/Interface/Addon/DemuxCrypto.h"
+#include "cores/VideoPlayer/Interface/Addon/TimingConstants.h"
 #include "cores/VideoPlayer/Process/VideoBuffer.h"
+#include "media/decoderfilter/DecoderFilterManager.h"
+#include "messaging/ApplicationMessenger.h"
 #include "platform/android/activity/AndroidFeatures.h"
 #include "platform/android/activity/JNIXBMCSurfaceTextureOnFrameAvailableListener.h"
+#include "ServiceBroker.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "system.h"
-
+#include "utils/BitstreamConverter.h"
+#include "utils/BitstreamWriter.h"
+#include "utils/CPUInfo.h"
+#include "utils/log.h"
 #include "utils/TimeUtils.h"
 
-#include <GLES2/gl2.h>
-#include <GLES2/gl2ext.h>
-
-#include <cassert>
-#include <memory>
 
 #define XMEDIAFORMAT_KEY_ROTATION "rotation-degrees"
 #define XMEDIAFORMAT_KEY_SLICE "slice-height"
@@ -72,31 +72,6 @@ enum MEDIACODEC_STATES
   MEDIACODEC_STATE_ERROR,
   MEDIACODEC_STATE_STOPPED
 };
-
-static bool IsBlacklisted(const std::string &name)
-{
-  static const char *blacklisted_decoders[] = {
-    // No software decoders
-    "OMX.google",
-    // For Rockchip non-standard components
-    "AVCDecoder",
-    "AVCDecoder_FLASH",
-    "FLVDecoder",
-    "M2VDecoder",
-    "M4vH263Decoder",
-    "RVDecoder",
-    "VC1Decoder",
-    "VPXDecoder",
-    // End of Rockchip
-    NULL
-  };
-  for (const char **ptr = blacklisted_decoders; *ptr; ptr++)
-  {
-    if (!strnicmp(*ptr, name.c_str(), strlen(*ptr)))
-      return true;
-  }
-  return false;
-}
 
 static bool IsSupportedColorFormat(int color_format)
 {
@@ -407,11 +382,6 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
     CLog::Log(LOGERROR, "CDVDVideoCodecAndroidMediaCodec::Open - %s\n", "null size, cannot handle");
     goto FAIL;
   }
-  else if (hints.stills)
-  {
-    // Won't work reliably
-    goto FAIL;
-  }
   else if (hints.orientation && m_render_surface && CJNIBase::GetSDKVersion() < 23)
   {
     CLog::Log(LOGERROR, "CDVDVideoCodecAndroidMediaCodec::Open - %s\n", "Surface does not support orientation before API 23");
@@ -599,42 +569,7 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
   }
 
   if (m_hints.cryptoSession)
-  {
-    CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec::Open Initializing MediaCrypto");
-
-    const AMediaUUID *uuid(nullptr);
-    const AMediaUUID wvuuid = {0xED,0xEF,0x8B,0xA9,0x79,0xD6,0x4A,0xCE,0xA3,0xC8,0x27,0xDC,0xD5,0x1D,0x21,0xED};
-    const AMediaUUID pruuid = {0x9A,0x04,0xF0,0x79,0x98,0x40,0x42,0x86,0xAB,0x92,0xE6,0x5B,0xE0,0x88,0x5F,0x95};
-
-    if (m_hints.cryptoSession->keySystem == CRYPTO_SESSION_SYSTEM_WIDEVINE)
-      uuid = &wvuuid;
-    else if (m_hints.cryptoSession->keySystem == CRYPTO_SESSION_SYSTEM_PLAYREADY)
-      uuid = &pruuid;
-    else
-    {
-      CLog::Log(LOGERROR, "CDVDVideoCodecAndroidMediaCodec::Open Unsupported crypto-keysystem %u", m_hints.cryptoSession->keySystem);
-      goto FAIL;
-    }
-
-    m_crypto = AMediaCrypto_new(*uuid, m_hints.cryptoSession->sessionId, m_hints.cryptoSession->sessionIdSize);
-
-    if (!m_crypto)
-    {
-      CLog::Log(LOGERROR, "CDVDVideoCodecAndroidMediaCodec::Open: MediaCrypto creation failed");
-      goto FAIL;
-    }
     needSecureDecoder = AMediaCrypto_requiresSecureDecoderComponent(m_mime.c_str()) && (m_hints.cryptoSession->flags & DemuxCryptoSession::FLAG_SECURE_DECODER) != 0;
-  }
-
-  if (m_render_surface)
-  {
-    m_jnivideoview.reset(CJNIXBMCVideoView::createVideoView(this));
-    if (!m_jnivideoview || !m_jnivideoview->waitForSurface(2000))
-    {
-      CLog::Log(LOGERROR, "CDVDVideoCodecAndroidMediaCodec: VideoView creation failed!!");
-      goto FAIL;
-    }
-  }
 
   m_codec = nullptr;
   m_colorFormat = -1;
@@ -647,7 +582,7 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
       continue;
 
     m_codecname = codec_info.getName();
-    if (IsBlacklisted(m_codecname))
+    if (!CServiceBroker::GetDecoderFilterManager()->isValid(m_codecname, m_hints))
       continue;
 
     CLog::Log(LOGNOTICE, "CDVDVideoCodecAndroidMediaCodec::Open Testing codec:%s", m_codecname.c_str());
@@ -712,6 +647,43 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
   {
     CLog::Log(LOGERROR, "CDVDVideoCodecAndroidMediaCodec:: Failed to create Android MediaCodec");
     goto FAIL;
+  }
+
+  if (m_hints.cryptoSession)
+  {
+    CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec::Open Initializing MediaCrypto");
+
+    const AMediaUUID *uuid(nullptr);
+    const AMediaUUID wvuuid = {0xED,0xEF,0x8B,0xA9,0x79,0xD6,0x4A,0xCE,0xA3,0xC8,0x27,0xDC,0xD5,0x1D,0x21,0xED};
+    const AMediaUUID pruuid = {0x9A,0x04,0xF0,0x79,0x98,0x40,0x42,0x86,0xAB,0x92,0xE6,0x5B,0xE0,0x88,0x5F,0x95};
+
+    if (m_hints.cryptoSession->keySystem == CRYPTO_SESSION_SYSTEM_WIDEVINE)
+      uuid = &wvuuid;
+    else if (m_hints.cryptoSession->keySystem == CRYPTO_SESSION_SYSTEM_PLAYREADY)
+      uuid = &pruuid;
+    else
+    {
+      CLog::Log(LOGERROR, "CDVDVideoCodecAndroidMediaCodec::Open Unsupported crypto-keysystem %u", m_hints.cryptoSession->keySystem);
+      goto FAIL;
+    }
+
+    m_crypto = AMediaCrypto_new(*uuid, m_hints.cryptoSession->sessionId, m_hints.cryptoSession->sessionIdSize);
+
+    if (!m_crypto)
+    {
+      CLog::Log(LOGERROR, "CDVDVideoCodecAndroidMediaCodec::Open: MediaCrypto creation failed");
+      goto FAIL;
+    }
+  }
+
+  if (m_render_surface)
+  {
+    m_jnivideoview.reset(CJNIXBMCVideoView::createVideoView(this));
+    if (!m_jnivideoview || !m_jnivideoview->waitForSurface(2000))
+    {
+      CLog::Log(LOGERROR, "CDVDVideoCodecAndroidMediaCodec: VideoView creation failed!!");
+      goto FAIL;
+    }
   }
 
   // setup a YUV420P VideoPicture buffer.
