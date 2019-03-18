@@ -888,7 +888,6 @@ void CAESinkAUDIOTRACK::UpdateAvailablePassthroughCapabilities()
 {
   m_info.m_deviceType = AE_DEVTYPE_HDMI;
   m_info.m_wantsIECPassthrough = false;
-  m_info.m_dataFormats.push_back(AE_FMT_RAW);
   m_info.m_streamTypes.clear();
   if (CJNIAudioFormat::ENCODING_AC3 != -1)
   {
@@ -970,7 +969,6 @@ void CAESinkAUDIOTRACK::UpdateAvailablePassthroughCapabilities()
         bool supports_192khz = m_sink_sampleRates.find(192000) != m_sink_sampleRates.end();
         m_info.m_wantsIECPassthrough = true;
         m_info.m_streamTypes.clear();
-        m_info.m_dataFormats.push_back(AE_FMT_RAW);
         m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_AC3);
         m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTSHD_CORE);
         m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTS_1024);
@@ -993,6 +991,9 @@ void CAESinkAUDIOTRACK::UpdateAvailablePassthroughCapabilities()
       }
     }
   }
+  // enable passthrough if at least one PT stream is available
+  if (!m_info.m_streamTypes.empty())
+    m_info.m_dataFormats.push_back(AE_FMT_RAW);
 }
 
 void CAESinkAUDIOTRACK::UpdateAvailablePCMCapabilities()
