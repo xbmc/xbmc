@@ -66,6 +66,7 @@ private:
   void          SetVfmMap(const std::string &name, const std::string &map);
   int           DequeueBuffer();
   float         GetTimeSize();
+  unsigned int  GetDecoderVideoRate();
 
   DllLibAmCodec   *m_dll;
   bool             m_opened;
