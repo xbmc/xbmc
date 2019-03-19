@@ -16,10 +16,6 @@
 #include <cdio/mmc.h>
 #include <cdio/cd_types.h>
 
-#if defined(TARGET_WINDOWS)
-#pragma comment(lib, "libcdio.lib")
-#endif
-
 using namespace MEDIA_DETECT;
 
 std::shared_ptr<CLibcdio> CLibcdio::m_pInstance;
