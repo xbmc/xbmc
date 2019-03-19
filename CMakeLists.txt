@@ -140,9 +140,6 @@ if(NOT WIN32)
 else()
   list(APPEND required_deps D3DX11Effects)
 endif()
-if(CORE_SYSTEM_NAME STREQUAL android)
-  list(APPEND required_deps Zip)
-endif()
 
 # Optional dependencies. Keep in alphabetical order please
 set(optional_deps Alsa
