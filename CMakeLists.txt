@@ -136,9 +136,6 @@ set(required_deps ASS
                   TinyXML
                   ZLIB
                   ${PLATFORM_REQUIRED_DEPS})
-if(WIN32)
-  list(APPEND required_deps D3DX11Effects)
-endif()
 
 # Optional dependencies. Keep in alphabetical order please
 set(optional_deps Alsa
