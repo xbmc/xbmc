@@ -31,7 +31,7 @@
 #include "cores/VideoPlayer/Interface/Addon/TimingConstants.h"
 
 extern "C" {
-#include "libavutil/imgutils.h"
+#include <libavutil/imgutils.h>
 }
 
 #define VERBOSE 0

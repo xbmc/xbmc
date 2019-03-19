@@ -14,12 +14,12 @@
 
 extern "C"
 {
-#include "libavformat/avformat.h"
-#include "libavutil/imgutils.h"
-#include "libavcodec/avcodec.h"
-#include "libavutil/avutil.h"
-#include "libswscale/swscale.h"
-#include "libavutil/pixdesc.h"
+#include <libavformat/avformat.h>
+#include <libavutil/imgutils.h>
+#include <libavcodec/avcodec.h>
+#include <libavutil/avutil.h>
+#include <libswscale/swscale.h>
+#include <libavutil/pixdesc.h>
 }
 
 Frame::Frame(const Frame& src) :

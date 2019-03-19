@@ -24,12 +24,12 @@
 #include <memory>
 
 extern "C" {
-#include "libavutil/opt.h"
-#include "libavutil/mastering_display_metadata.h"
-#include "libavfilter/avfilter.h"
-#include "libavfilter/buffersink.h"
-#include "libavfilter/buffersrc.h"
-#include "libavutil/pixdesc.h"
+#include <libavutil/opt.h>
+#include <libavutil/mastering_display_metadata.h>
+#include <libavfilter/avfilter.h>
+#include <libavfilter/buffersink.h>
+#include <libavfilter/buffersrc.h>
+#include <libavutil/pixdesc.h>
 }
 
 #ifndef TARGET_POSIX

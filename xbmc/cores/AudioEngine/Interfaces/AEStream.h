@@ -12,7 +12,7 @@
 #include <stdint.h>
 
 extern "C" {
-#include "libavcodec/avcodec.h"
+#include <libavcodec/avcodec.h>
 }
 
 class IAudioCallback;

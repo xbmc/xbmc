@@ -14,8 +14,8 @@
 #include "cores/VideoPlayer/Process/VideoBuffer.h"
 
 extern "C" {
-#include "libavutil/frame.h"
-#include "libavutil/hwcontext_drm.h"
+#include <libavutil/frame.h>
+#include <libavutil/hwcontext_drm.h>
 }
 
 // Color enums is copied from linux include/drm/drm_color_mgmt.h (strangely not part of uapi)

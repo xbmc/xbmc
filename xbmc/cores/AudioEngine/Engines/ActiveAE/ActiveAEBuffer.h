@@ -15,8 +15,8 @@
 #include <memory>
 
 extern "C" {
-#include "libavutil/avutil.h"
-#include "libswresample/swresample.h"
+#include <libavutil/avutil.h>
+#include <libswresample/swresample.h>
 }
 
 namespace ActiveAE

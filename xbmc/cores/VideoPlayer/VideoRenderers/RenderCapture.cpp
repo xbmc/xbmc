@@ -21,7 +21,7 @@
 #endif
 
 extern "C" {
-#include "libavutil/mem.h"
+#include <libavutil/mem.h>
 }
 
 CRenderCaptureBase::CRenderCaptureBase()

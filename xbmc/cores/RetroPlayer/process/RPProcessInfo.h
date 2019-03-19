@@ -12,7 +12,7 @@
 #include "cores/GameSettings.h"
 #include "threads/CriticalSection.h"
 
-#include "libavutil/pixfmt.h"
+#include <libavutil/pixfmt.h>
 
 #include <memory>
 #include <string>

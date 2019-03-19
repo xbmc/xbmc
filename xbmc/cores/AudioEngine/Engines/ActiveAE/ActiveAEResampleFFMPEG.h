@@ -13,7 +13,7 @@
 #include "cores/AudioEngine/Interfaces/AEResample.h"
 
 extern "C" {
-#include "libavutil/samplefmt.h"
+#include <libavutil/samplefmt.h>
 }
 
 struct SwrContext;

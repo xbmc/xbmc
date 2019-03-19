@@ -11,7 +11,7 @@
 #include "IRetroPlayerStream.h"
 
 extern "C" {
-#include "libavutil/pixfmt.h"
+#include <libavutil/pixfmt.h>
 }
 
 namespace KODI

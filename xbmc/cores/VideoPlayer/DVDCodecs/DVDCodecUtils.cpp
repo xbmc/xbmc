@@ -12,7 +12,7 @@
 #include "Util.h"
 
 extern "C" {
-#include "libswscale/swscale.h"
+#include <libswscale/swscale.h>
 }
 
 bool CDVDCodecUtils::IsVP3CompatibleWidth(int width)

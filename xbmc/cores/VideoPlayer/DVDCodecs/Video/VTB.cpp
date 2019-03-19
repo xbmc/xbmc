@@ -20,7 +20,7 @@
 #include "ServiceBroker.h"
 
 extern "C" {
-#include "libavcodec/videotoolbox.h"
+#include <libavcodec/videotoolbox.h>
 }
 
 using namespace VTB;

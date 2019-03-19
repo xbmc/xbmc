@@ -9,7 +9,7 @@
 #pragma once
 
 extern "C" {
-#include "libavutil/pixfmt.h"
+#include <libavutil/pixfmt.h>
 }
 
 #include <memory>

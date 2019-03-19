@@ -14,7 +14,7 @@
 #include <algorithm>
 
 extern "C" {
-#include "libavcodec/avcodec.h"
+#include <libavcodec/avcodec.h>
 }
 
 #define TRUEHD_BUF_SIZE 61440

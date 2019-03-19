@@ -44,8 +44,8 @@
 #include <vector>
 
 extern "C" {
-#include "libavutil/avutil.h"
-#include "libavcodec/vdpau.h"
+#include <libavutil/avutil.h>
+#include <libavcodec/vdpau.h>
 }
 
 class CProcessInfo;

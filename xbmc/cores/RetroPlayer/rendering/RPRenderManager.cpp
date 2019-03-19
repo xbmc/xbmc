@@ -24,7 +24,7 @@
 #include "utils/log.h"
 
 extern "C" {
-#include "libswscale/swscale.h"
+#include <libswscale/swscale.h>
 }
 
 #include <algorithm>

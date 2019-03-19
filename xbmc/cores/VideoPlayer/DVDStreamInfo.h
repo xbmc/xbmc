@@ -11,7 +11,7 @@
 #include "DVDDemuxers/DVDDemux.h"
 
 extern "C" {
-#include "libavcodec/avcodec.h"
+#include <libavcodec/avcodec.h>
 }
 
 #define CODEC_FORCE_SOFTWARE 0x01

@@ -9,8 +9,8 @@
 #pragma once
 
 extern "C" {
-#include "libavfilter/avfilter.h"
-#include "libavutil/frame.h"
+#include <libavfilter/avfilter.h>
+#include <libavutil/frame.h>
 }
 
 struct SwrContext;

@@ -19,7 +19,7 @@
 #include "windowing/WinSystem.h"
 
 extern "C" {
-#include "libavutil/pixdesc.h"
+#include <libavutil/pixdesc.h>
 }
 
 #include <utility>

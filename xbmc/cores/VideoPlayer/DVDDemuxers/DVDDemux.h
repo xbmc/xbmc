@@ -28,7 +28,7 @@ namespace ADDON {
 #endif
 
 extern "C" {
-#include "libavcodec/avcodec.h"
+#include <libavcodec/avcodec.h>
 }
 
 #ifndef __GNUC__

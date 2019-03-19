@@ -12,7 +12,7 @@
 #include "cores/VideoPlayer/Process/ProcessInfo.h"
 
 extern "C" {
-#include "libavutil/mem.h"
+#include <libavutil/mem.h>
 }
 
 CDVDVideoPPFFmpeg::CDVDVideoPPFFmpeg(CProcessInfo &processInfo):

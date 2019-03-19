@@ -16,7 +16,7 @@
 #include "cores/AudioEngine/Utils/AEAudioFormat.h"
 
 extern "C" {
-#include "libavutil/samplefmt.h"
+#include <libavutil/samplefmt.h>
 }
 
 typedef std::pair<std::string, std::string> AEDevice;

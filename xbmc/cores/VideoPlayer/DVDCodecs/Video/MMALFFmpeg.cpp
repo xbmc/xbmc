@@ -18,7 +18,7 @@
 #include "settings/AdvancedSettings.h"
 
 extern "C" {
-#include "libavutil/imgutils.h"
+#include <libavutil/imgutils.h>
 }
 
 using namespace MMAL;

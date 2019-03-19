@@ -18,8 +18,8 @@
 #include "windowing/gbm/WinSystemGbm.h"
 
 extern "C" {
-#include "libavcodec/avcodec.h"
-#include "libavutil/pixdesc.h"
+#include <libavcodec/avcodec.h>
+#include <libavutil/pixdesc.h>
 }
 
 using namespace KODI::WINDOWING::GBM;

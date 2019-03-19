@@ -11,8 +11,8 @@
 #include "DVDOverlayCodec.h"
 
 extern "C" {
-#include "libavcodec/avcodec.h"
-#include "libavutil/avutil.h"
+#include <libavcodec/avcodec.h>
+#include <libavutil/avutil.h>
 }
 
 class CDVDOverlaySpu;

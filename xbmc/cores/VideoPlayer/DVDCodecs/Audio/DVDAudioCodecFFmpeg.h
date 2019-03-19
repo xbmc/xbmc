@@ -11,12 +11,12 @@
 #include "DVDAudioCodec.h"
 
 extern "C" {
-#include "libavcodec/avcodec.h"
-#include "libavformat/avformat.h"
-#include "libavutil/avutil.h"
-#include "libavutil/channel_layout.h"
-#include "libswresample/swresample.h"
-#include "libavutil/downmix_info.h"
+#include <libavcodec/avcodec.h>
+#include <libavformat/avformat.h>
+#include <libavutil/avutil.h>
+#include <libavutil/channel_layout.h>
+#include <libswresample/swresample.h>
+#include <libavutil/downmix_info.h>
 }
 
 class CProcessInfo;

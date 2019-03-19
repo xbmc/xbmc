@@ -15,9 +15,9 @@
 #include "platform/linux/RBP.h"
 
 extern "C" {
-#include "libavutil/channel_layout.h"
-#include "libavutil/opt.h"
-#include "libswresample/swresample.h"
+#include <libavutil/channel_layout.h>
+#include <libavutil/opt.h>
+#include <libswresample/swresample.h>
 }
 
 //#define DEBUG_VERBOSE

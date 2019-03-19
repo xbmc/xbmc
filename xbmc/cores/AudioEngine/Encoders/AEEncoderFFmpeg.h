@@ -11,7 +11,7 @@
 #include "cores/AudioEngine/Interfaces/AEEncoder.h"
 
 extern "C" {
-#include "libswresample/swresample.h"
+#include <libswresample/swresample.h>
 }
 
 /* ffmpeg re-defines this, so undef it to squash the warning */
