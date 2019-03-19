@@ -134,10 +134,9 @@ set(required_deps ASS
                   Sqlite3
                   TagLib
                   TinyXML
+                  ZLIB
                   ${PLATFORM_REQUIRED_DEPS})
-if(NOT WIN32)
-  list(APPEND required_deps ZLIB)
-else()
+if(WIN32)
   list(APPEND required_deps D3DX11Effects)
 endif()
 
