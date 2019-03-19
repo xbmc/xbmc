@@ -646,6 +646,12 @@ CMusicArtistInfo FromFileItem<CMusicArtistInfo>(const CFileItem &item)
   if (item.HasProperty("artist.genre"))
     info.GetArtist().genre = StringUtils::Split(item.GetProperty("artist.genre").asString(),
                                                 CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_musicItemSeparator);
+  if (item.HasProperty("artist.disambiguation"))
+    info.GetArtist().strDisambiguation = item.GetProperty("artist.disambiguation").asString();
+  if (item.HasProperty("artist.type"))
+    info.GetArtist().strType = item.GetProperty("artist.type").asString();
+  if (item.HasProperty("artist.gender"))
+    info.GetArtist().strGender = item.GetProperty("artist.gender").asString();
   if (item.HasProperty("artist.born"))
     info.GetArtist().strBorn = item.GetProperty("artist.born").asString();
 
@@ -768,6 +774,9 @@ void DetailsFromFileItem<CArtist>(const CFileItem &item, CArtist &artist)
 {
   artist.strArtist = item.GetLabel();
   artist.strMusicBrainzArtistID = FromString(item, "artist.musicbrainzid");
+  artist.strDisambiguation = FromString(item, "artist.disambiguation");
+  artist.strType = FromString(item, "artist.type");
+  artist.strGender = FromString(item, "artist.gender");
   artist.genre = FromArray(item, "artist.genre", 0);
   artist.styles = FromArray(item, "artist.styles", 0);
   artist.moods = FromArray(item, "artist.moods", 0);
@@ -1112,6 +1121,7 @@ std::vector<CMusicArtistInfo> CScraper::FindArtist(CCurlFile &fcurl, const std::
   //   <title>...</title>
   //   <year>...</year>
   //   <genre>...</genre>
+  //   <disambiguation>...</disambiguation>
   //   <url>...</url> (with the usual CScraperUrl decorations like post or spoof)
   //  </entity>
   //  ...
@@ -1152,6 +1162,7 @@ std::vector<CMusicArtistInfo> CScraper::FindArtist(CCurlFile &fcurl, const std::
         if (!genre.empty())
           ari.GetArtist().genre =
               StringUtils::Split(genre, CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_musicItemSeparator);
+        XMLUtils::GetString(pxeArtist, "disambiguation", ari.GetArtist().strDisambiguation);
         XMLUtils::GetString(pxeArtist, "year", ari.GetArtist().strBorn);
 
         vcari.push_back(ari);
