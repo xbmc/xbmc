@@ -16,13 +16,13 @@ void CPlatformPosix::Init()
   ms_signalFlag.test_and_set();
 }
 
-bool CPlatformPosix::TestShutdownFlag()
+bool CPlatformPosix::TestQuitFlag()
 {
   // Keep set, return true when it was cleared before
   return !ms_signalFlag.test_and_set();
 }
 
-void CPlatformPosix::RequestShutdown()
+void CPlatformPosix::RequestQuit()
 {
   ms_signalFlag.clear();
 }
