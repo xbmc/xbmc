@@ -1,10 +1,10 @@
 ---
-name: Roadmap suggestion
-about: Create a roadmap/todo suggestion item (Team Kodi members only!)
+name: Roadmap item (Team Kodi members only!)
+about: Create a roadmap/todo item
 
 ---
 <!--- Please fill out this template to the best of your ability. You can always edit this issue once you have created it. -->
-## Roadmap or todo suggestion
+## Roadmap or todo item
 **Detailed Description**
 <!--- Provide a detailed description of the change or addition you are proposing -->
 
@@ -29,4 +29,4 @@ Here are some relevant links or screenshots
 
 
 <!--- End of this issue -->
-*Note: Team Kodi will consider this item however we will not make any promises if it will be included.*
+*Note: Team Kodi is considering this item, but we are not making any promises if and when it will be included.*
