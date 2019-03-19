@@ -17,7 +17,7 @@ void CCryptoSession::RegisterInterface(GET_CRYPTO_SESSION_INTERFACE_FN fn)
   s_registeredInterfaces.push_back(fn);
 }
 
-CCryptoSession* CCryptoSession::GetCryptoSession(const std::string &UUID, const std::string &cipherAlgo, const std::string &macAlgo)
+CCryptoSession* CCryptoSession::GetCryptoSession(const std::string& UUID, const std::string& cipherAlgo, const std::string& macAlgo)
 {
   CCryptoSession* retVal = nullptr;
   for (auto fn : s_registeredInterfaces)

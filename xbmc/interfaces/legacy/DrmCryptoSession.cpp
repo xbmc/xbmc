@@ -7,7 +7,7 @@
  */
 
 #include "DrmCryptoSession.h"
-#include "drm/CryptoSession.h"
+#include "media/drm/CryptoSession.h"
 
 using namespace XbmcCommons;
 
