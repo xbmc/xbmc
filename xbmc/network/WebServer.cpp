@@ -34,14 +34,6 @@
 #include "utils/Variant.h"
 #include "XBDateTime.h"
 
-#ifdef TARGET_WINDOWS_DESKTOP
-#ifndef _DEBUG
-#pragma comment(lib, "libmicrohttpd.lib")
-#else  // _DEBUG
-#pragma comment(lib, "libmicrohttpd_d.lib")
-#endif // _DEBUG
-#endif // TARGET_WINDOWS_DESKTOP
-
 #define MAX_POST_BUFFER_SIZE 2048
 
 #define PAGE_FILE_NOT_FOUND "<html><head><title>File not found</title></head><body>File not found</body></html>"
