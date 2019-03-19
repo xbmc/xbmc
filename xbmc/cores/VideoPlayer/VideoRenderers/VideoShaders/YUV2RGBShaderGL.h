@@ -17,8 +17,8 @@
 #include <memory>
 
 extern "C" {
-#include "libavutil/pixfmt.h"
-#include "libavutil/mastering_display_metadata.h"
+#include <libavutil/pixfmt.h>
+#include <libavutil/mastering_display_metadata.h>
 }
 
 class CConvertMatrix;

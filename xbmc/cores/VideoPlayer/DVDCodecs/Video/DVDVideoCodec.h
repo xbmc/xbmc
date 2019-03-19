@@ -14,8 +14,8 @@
 #include "DVDResource.h"
 
 extern "C" {
-#include "libavcodec/avcodec.h"
-#include "libavutil/mastering_display_metadata.h"
+#include <libavcodec/avcodec.h>
+#include <libavutil/mastering_display_metadata.h>
 }
 
 #include <vector>

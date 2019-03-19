@@ -16,7 +16,7 @@
 #include <vector>
 
 extern "C" {
-#include "libavutil/pixfmt.h"
+#include <libavutil/pixfmt.h>
 }
 
 class CDVDVideoCodec;

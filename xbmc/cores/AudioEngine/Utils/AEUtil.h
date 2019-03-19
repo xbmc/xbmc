@@ -13,7 +13,7 @@
 #include <math.h>
 
 extern "C" {
-#include "libavutil/samplefmt.h"
+#include <libavutil/samplefmt.h>
 }
 
 #if defined(HAVE_SSE) && defined(__SSE__)

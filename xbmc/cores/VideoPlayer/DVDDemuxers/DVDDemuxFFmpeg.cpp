@@ -45,8 +45,8 @@
 #endif
 
 extern "C" {
-#include "libavutil/dict.h"
-#include "libavutil/opt.h"
+#include <libavutil/dict.h>
+#include <libavutil/opt.h>
 }
 
 

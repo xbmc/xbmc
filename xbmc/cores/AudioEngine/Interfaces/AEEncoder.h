@@ -11,7 +11,7 @@
 #include "cores/AudioEngine/Utils/AEAudioFormat.h"
 
 extern "C" {
-#include "libavcodec/avcodec.h"
+#include <libavcodec/avcodec.h>
 }
 
 /**

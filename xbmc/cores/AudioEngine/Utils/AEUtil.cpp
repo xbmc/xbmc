@@ -16,7 +16,7 @@
 #include <cassert>
 
 extern "C" {
-#include "libavutil/channel_layout.h"
+#include <libavutil/channel_layout.h>
 }
 
 /* declare the rng seed and initialize it */

@@ -14,8 +14,8 @@
 #include "guilib/Shader.h"
 
 extern "C" {
-#include "libavutil/mastering_display_metadata.h"
-#include "libavutil/pixfmt.h"
+#include <libavutil/mastering_display_metadata.h>
+#include <libavutil/pixfmt.h>
 }
 
 class CConvertMatrix;

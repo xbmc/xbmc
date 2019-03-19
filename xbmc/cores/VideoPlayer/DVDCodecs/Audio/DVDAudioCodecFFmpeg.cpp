@@ -17,7 +17,7 @@
 #include "cores/AudioEngine/Utils/AEUtil.h"
 
 extern "C" {
-#include "libavutil/opt.h"
+#include <libavutil/opt.h>
 }
 
 CDVDAudioCodecFFmpeg::CDVDAudioCodecFFmpeg(CProcessInfo &processInfo) : CDVDAudioCodec(processInfo)

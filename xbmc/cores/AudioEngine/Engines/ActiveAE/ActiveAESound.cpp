@@ -12,7 +12,7 @@
 #include "utils/log.h"
 
 extern "C" {
-#include "libavutil/avutil.h"
+#include <libavutil/avutil.h>
 }
 
 using namespace ActiveAE;

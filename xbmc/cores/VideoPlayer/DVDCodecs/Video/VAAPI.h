@@ -25,8 +25,8 @@
 #include "platform/linux/sse4/DllLibSSE4.h"
 
 extern "C" {
-#include "libavutil/avutil.h"
-#include "libavfilter/avfilter.h"
+#include <libavutil/avutil.h>
+#include <libavfilter/avfilter.h>
 }
 
 using namespace Actor;

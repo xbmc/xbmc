@@ -11,7 +11,7 @@
 #include <memory>
 #include <queue>
 #include "DVDCodecs/Video/DVDVideoCodecFFmpeg.h"
-#include "libavcodec/avcodec.h"
+#include <libavcodec/avcodec.h>
 #include "cores/VideoPlayer/VideoRenderers/HwDecRender/MMALRenderer.h"
 
 struct MMAL_BUFFER_HEADER_T;

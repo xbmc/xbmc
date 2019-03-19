@@ -25,7 +25,7 @@
 #endif
 
 extern "C" {
-#include "libswscale/swscale.h"
+#include <libswscale/swscale.h>
 }
 
 using namespace XFILE;

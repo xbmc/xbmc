@@ -23,8 +23,8 @@
 #include "threads/CriticalSection.h"
 
 extern "C" {
-#include "libavcodec/avcodec.h"
-#include "libavutil/avutil.h"
+#include <libavcodec/avcodec.h>
+#include <libavutil/avutil.h>
 }
 
 #define AUDIO_BUFFER_SECONDS 3

@@ -28,12 +28,12 @@
 #include "platform/linux/XMemUtils.h"
 
 extern "C" {
-#include "libavutil/avutil.h"
-#include "libavutil/hwcontext.h"
-#include "libavutil/hwcontext_vaapi.h"
-#include "libavutil/opt.h"
-#include "libavfilter/buffersink.h"
-#include "libavfilter/buffersrc.h"
+#include <libavutil/avutil.h>
+#include <libavutil/hwcontext.h>
+#include <libavutil/hwcontext_vaapi.h>
+#include <libavutil/opt.h>
+#include <libavfilter/buffersink.h>
+#include <libavfilter/buffersrc.h>
 }
 
 #include <va/va_vpp.h>

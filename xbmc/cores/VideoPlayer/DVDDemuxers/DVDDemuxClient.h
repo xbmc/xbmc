@@ -13,8 +13,8 @@
 #include <vector>
 
 extern "C" {
-#include "libavcodec/avcodec.h"
-#include "libavformat/avformat.h"
+#include <libavcodec/avcodec.h>
+#include <libavformat/avformat.h>
 }
 
 class CDVDDemuxClient : public CDVDDemux
