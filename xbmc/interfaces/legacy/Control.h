@@ -1282,13 +1282,39 @@ namespace XBMCAddon
       ///-----------------------------------------------------------------------
       /// Clear all ListItems in this control list.
       ///
+      /// @warning Calling `reset()` will destroy any `ListItem` objects in the
+      ///          `ControlList` if not hold by any other class. Make sure you
+      ///          you don't call `addItems()` with the previous `ListItem` references
+      ///          after calling `reset()`. If you need to preserve the `ListItem` objects after
+      ///          `reset()` make sure you store them as members of your `WindowXML` class (see examples).
+      ///
       ///
       ///-----------------------------------------------------------------------
       ///
-      /// **Example:**
+      /// **Examples:**
       /// ~~~~~~~~~~~~~{.py}
       /// ...
       /// cList.reset()
+      /// ...
+      /// ~~~~~~~~~~~~~
+      ///
+      /// The below example shows you how you can reset the `ControlList` but this time avoiding `ListItem` object
+      /// destruction. The example assumes `self` as a `WindowXMLDialog` instance containing a `ControlList`
+      /// with id = 800. The class preserves the `ListItem` objects in a class member variable.
+      ///
+      /// ~~~~~~~~~~~~~{.py}
+      /// ...
+      /// # Get all the ListItem objects in the control
+      /// self.list_control = self.getControl(800) # ControlList object
+      /// self.listitems = [self.list_control.getListItem(item) for item in range(0, self.list_control.size())]
+      /// # Reset the ControlList control
+      /// self.list_control.reset()
+      /// #
+      /// # do something with your ListItem objects here (e.g. sorting.)
+      /// # ...
+      /// #
+      /// # Add them again to the ControlList
+      /// self.list_control.addItems(self.listitems)
       /// ...
       /// ~~~~~~~~~~~~~
       ///
