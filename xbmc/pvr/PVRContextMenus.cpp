@@ -196,6 +196,10 @@ namespace PVR
       if (item.GetEPGInfoTag())
         return true;
 
+      const CPVRTimerInfoTagPtr timer(item.GetPVRTimerInfoTag());
+      if (timer && !URIUtils::PathEquals(item.GetPath(), CPVRTimersPath::PATH_ADDTIMER))
+        return timer->GetEpgInfoTag().get() != nullptr;
+
       const CPVRRecordingPtr recording(item.GetPVRRecordingInfoTag());
       if (recording)
         return !recording->IsDeleted();
