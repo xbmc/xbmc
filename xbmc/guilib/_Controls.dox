@@ -22,6 +22,7 @@ manual will explain each and every control in detail.
 - \subpage Panel_Container - used for a scrolling panel of items. Replaces the thumbnail panel.
 - \subpage Progress_Control - Used to show the progress of a particular operation.
 - \subpage RSS_feed_Control - used to display scrolling RSS feeds.
+- \subpage Ranges_Control - Used to show multiple range blocks.
 - \subpage Radio_button_control - a radio button control (as used for on/off settings).
 - \subpage Resize_Control - used to set the pixel ratio in Video Calibration.
 - \subpage Scroll_Bar_Control - used for a implementing a scroll bar.
