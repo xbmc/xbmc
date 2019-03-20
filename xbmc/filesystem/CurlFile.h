@@ -14,12 +14,9 @@
 #include <string>
 #include "utils/HttpHeader.h"
 
-namespace XCURL
-{
-  typedef void CURL_HANDLE;
-  typedef void CURLM;
-  struct curl_slist;
-}
+typedef void CURL_HANDLE;
+typedef void CURLM;
+struct curl_slist;
 
 namespace XFILE
 {
@@ -97,8 +94,8 @@ namespace XFILE
       public:
           CReadState();
           ~CReadState();
-          XCURL::CURL_HANDLE* m_easyHandle;
-          XCURL::CURLM* m_multiHandle;
+          CURL_HANDLE* m_easyHandle;
+          CURLM* m_multiHandle;
 
           CRingBuffer m_buffer; // our ringhold buffer
           unsigned int m_bufferSize;
@@ -121,8 +118,8 @@ namespace XFILE
           CHttpHeader m_httpheader;
           bool IsHeaderDone(void) { return m_httpheader.IsHeaderDone(); }
 
-          struct XCURL::curl_slist* m_curlHeaderList;
-          struct XCURL::curl_slist* m_curlAliasList;
+          curl_slist* m_curlHeaderList;
+          curl_slist* m_curlAliasList;
 
           size_t ReadCallback(char *buffer, size_t size, size_t nitems);
           size_t WriteCallback(char *buffer, size_t size, size_t nitems);
