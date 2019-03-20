@@ -514,7 +514,14 @@ void COverlayTextureGL::Render(SRenderState& state)
 
 #if defined(HAS_GL)
   CRenderSystemGL* renderSystem = dynamic_cast<CRenderSystemGL*>(CServiceBroker::GetRenderSystem());
-  renderSystem->EnableShader(SM_TEXTURE_LIM);
+
+  int glslMajor, glslMinor;
+  renderSystem->GetGLSLVersion(glslMajor, glslMinor);
+  if (glslMajor >= 2 || (glslMajor == 1 && glslMinor >= 50))
+    renderSystem->EnableShader(SM_TEXTURE_LIM);
+  else
+    renderSystem->EnableShader(SM_TEXTURE);
+
   GLint posLoc = renderSystem->ShaderGetPos();
   GLint tex0Loc = renderSystem->ShaderGetCoord0();
   GLint uniColLoc = renderSystem->ShaderGetUniCol();
