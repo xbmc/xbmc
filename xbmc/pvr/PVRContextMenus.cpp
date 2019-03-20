@@ -197,8 +197,10 @@ namespace PVR
         return true;
 
       const CPVRTimerInfoTagPtr timer(item.GetPVRTimerInfoTag());
-      if (timer && !URIUtils::PathEquals(item.GetPath(), CPVRTimersPath::PATH_ADDTIMER))
-        return timer->GetEpgInfoTag().get() != nullptr;
+      if (timer && ((!URIUtils::PathEquals(item.GetPath(), CPVRTimersPath::PATH_ADDTIMER) &&
+          timer->GetEpgInfoTag().get() != nullptr) ||
+          timer->GetTimerType()->IsEpgBased()))
+        return true;
 
       const CPVRRecordingPtr recording(item.GetPVRRecordingInfoTag());
       if (recording)

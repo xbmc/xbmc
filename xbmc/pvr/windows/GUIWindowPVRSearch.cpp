@@ -27,6 +27,7 @@
 #include "pvr/dialogs/GUIDialogPVRGuideSearch.h"
 #include "pvr/epg/EpgContainer.h"
 #include "pvr/epg/EpgSearchFilter.h"
+#include "pvr/timers/PVRTimerInfoTag.h"
 
 using namespace PVR;
 using namespace KODI::MESSAGING;
@@ -121,6 +122,10 @@ void CGUIWindowPVRSearchBase::SetItemToSearch(const CFileItemPtr &item)
     const CPVREpgInfoTagPtr epgTag(CPVRItem(item).GetEpgInfoTag());
     if (epgTag && !CServiceBroker::GetPVRManager().IsParentalLocked(epgTag))
       m_searchfilter->SetSearchPhrase(epgTag->Title());
+
+    const CPVRTimerInfoTagPtr timer(CPVRItem(item).GetTimerInfoTag());
+    if (timer && timer->GetTimerType()->IsEpgBased())
+      m_searchfilter->SetSearchPhrase(timer->EpgSearchString().empty() ? timer->Title() : timer->EpgSearchString());
   }
 
   m_bSearchConfirmed = true;

@@ -210,6 +210,7 @@ namespace PVR
     std::string GetDeletedNotificationText() const;
 
     const std::string& Title(void) const;
+    const std::string& EpgSearchString() const;
     const std::string& Summary(void) const;
     const std::string& Path(void) const;
 

@@ -1023,6 +1023,11 @@ const std::string& CPVRTimerInfoTag::Title(void) const
   return m_strTitle;
 }
 
+const std::string& CPVRTimerInfoTag::EpgSearchString() const
+{
+  return m_strEpgSearchString;
+}
+
 const std::string& CPVRTimerInfoTag::Summary(void) const
 {
   return m_strSummary;
