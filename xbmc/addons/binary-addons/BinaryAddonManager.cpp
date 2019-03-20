@@ -163,11 +163,12 @@ bool CBinaryAddonManager::AddAddonBaseEntry(BINARY_ADDON_LIST_ENTRY& entry)
 
 void CBinaryAddonManager::OnEvent(const AddonEvent& event)
 {
-  if (typeid(event) == typeid(AddonEvents::Enabled))
+  if (typeid(event) == typeid(AddonEvents::Enabled)) // also called on install
   {
+    InstalledChangeEvent();
     EnableEvent(event.id);
   }
-  else if (typeid(event) == typeid(AddonEvents::Disabled))
+  else if (typeid(event) == typeid(AddonEvents::Disabled)) // not called on uninstall
   {
     DisableEvent(event.id);
   }
