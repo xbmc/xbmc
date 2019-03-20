@@ -4108,10 +4108,10 @@ void CApplication::ProcessSlow()
   }
 
 #if defined(TARGET_POSIX)
-  if (CPlatformPosix::TestShutdownFlag())
+  if (CPlatformPosix::TestQuitFlag())
   {
-    CLog::Log(LOGNOTICE, "Shutting down due to POSIX signal");
-    CApplicationMessenger::GetInstance().PostMsg(TMSG_SHUTDOWN);
+    CLog::Log(LOGNOTICE, "Quitting due to POSIX signal");
+    CApplicationMessenger::GetInstance().PostMsg(TMSG_QUIT);
   }
 #endif
 

@@ -17,8 +17,8 @@ class CPlatformPosix : public CPlatform
 public:
   void Init() override;
 
-  static bool TestShutdownFlag();
-  static void RequestShutdown();
+  static bool TestQuitFlag();
+  static void RequestQuit();
 
 private:
   static std::atomic_flag ms_signalFlag;

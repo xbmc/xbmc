@@ -44,7 +44,7 @@ void XBMC_POSIX_HandleSignal(int sig)
 {
   // Setting an atomic flag is one of the only useful things that is permitted by POSIX
   // in signal handlers
-  CPlatformPosix::RequestShutdown();
+  CPlatformPosix::RequestQuit();
 }
 
 }
