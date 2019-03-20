@@ -206,7 +206,6 @@ bool CRepository::FetchChecksum(const std::string& url, std::string& checksum) n
 bool CRepository::FetchIndex(const DirInfo& repo, std::string const& digest, VECADDONS& addons) noexcept
 {
   XFILE::CCurlFile http;
-  http.SetAcceptEncoding("gzip");
 
   std::string response;
   if (!http.Get(repo.info, response))

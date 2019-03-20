@@ -185,9 +185,6 @@ bool CScraperUrl::Get(const SUrlEntry& scrURL, std::string& strHTML, XFILE::CCur
   http.SetReferer(scrURL.m_spoof);
   std::string strCachePath;
 
-  if (scrURL.m_isgz)
-    http.SetAcceptEncoding("gzip");
-
   if (!scrURL.m_cache.empty())
   {
     strCachePath = URIUtils::AddFileToFolder(CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_cachePath,
