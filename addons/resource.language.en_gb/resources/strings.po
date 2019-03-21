@@ -5338,6 +5338,7 @@ msgid "Now playing - Videos"
 msgstr ""
 
 #: xbmc/music/ContextMenus.h
+#: xbmc/music/infoscanner/MusicInfoScanner.cpp
 msgctxt "#10523"
 msgid "Album information"
 msgstr ""
@@ -13258,6 +13259,9 @@ msgctxt "#20445"
 msgid "Fanart"
 msgstr ""
 
+#. Ask user when refreshing music or video info if they want to use data from NFO file
+#: xbmc/music/infoscanner/MusicInfoScanner.cpp
+#: xbmc/video/jobs/VideoLibraryRefreshingJob.cpp
 msgctxt "#20446"
 msgid "Locally stored information found. Ignore and refresh from Internet?"
 msgstr ""
@@ -14390,6 +14394,7 @@ msgid "Select artist"
 msgstr ""
 
 #: xbmc/music/dialogs/GUIDialogMusicInfo.cpp
+#: xbmc/music/infoscanner/MusicInfoScanner.cpp
 #: xbmc/music/ContextMenus.h
 msgctxt "#21891"
 msgid "Artist information"
