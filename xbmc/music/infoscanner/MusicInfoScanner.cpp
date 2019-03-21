@@ -1794,9 +1794,11 @@ CMusicInfoScanner::DownloadArtistInfo(const CArtist& artist,
           {
             // set the label to artist
             CFileItem item(scraper.GetArtist(i).GetArtist());
-            std::string strTemp=scraper.GetArtist(i).GetArtist().strArtist;
+            std::string strTemp = scraper.GetArtist(i).GetArtist().strArtist;
             if (!scraper.GetArtist(i).GetArtist().strBorn.empty())
               strTemp += " ("+scraper.GetArtist(i).GetArtist().strBorn+")";
+            if (!scraper.GetArtist(i).GetArtist().strDisambiguation.empty())
+              strTemp += " - " + scraper.GetArtist(i).GetArtist().strDisambiguation;
             if (!scraper.GetArtist(i).GetArtist().genre.empty())
             {
               std::string genres = StringUtils::Join(scraper.GetArtist(i).GetArtist().genre, CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_musicItemSeparator);
