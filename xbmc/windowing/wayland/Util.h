@@ -22,7 +22,7 @@ namespace WAYLAND
 
 struct WaylandCPtrCompare
 {
-  bool operator()(wayland::proxy_t const& p1, wayland::proxy_t const& p2)
+  bool operator()(wayland::proxy_t const& p1, wayland::proxy_t const& p2) const
   {
     return p1.c_ptr() < p2.c_ptr();
   }
