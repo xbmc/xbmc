@@ -1289,8 +1289,11 @@ CGUIWindow* CGUIWindowManager::GetWindow(int id) const
 
 bool CGUIWindowManager::ProcessRenderLoop(bool renderOnly)
 {
+  bool renderGui = true;
+
   if (g_application.IsCurrentThread() && m_pCallback)
   {
+    renderGui = m_pCallback->GetRenderGUI();
     m_iNested++;
     if (!renderOnly)
       m_pCallback->Process();
@@ -1298,7 +1301,7 @@ bool CGUIWindowManager::ProcessRenderLoop(bool renderOnly)
     m_pCallback->Render();
     m_iNested--;
   }
-  if (g_application.m_bStop)
+  if (g_application.m_bStop || !renderGui)
     return false;
   else
     return true;
@@ -1670,8 +1673,10 @@ void CGUIWindowManager::CloseWindowSync(CGUIWindow *window, int nextWindowID /*=
   }
 
   window->Close(false, nextWindowID);
-  while (window->IsAnimating(ANIM_TYPE_WINDOW_CLOSE))
-    ProcessRenderLoop(true);
+
+  bool renderLoopProcessed = true;
+  while (window->IsAnimating(ANIM_TYPE_WINDOW_CLOSE) && renderLoopProcessed)
+    renderLoopProcessed = ProcessRenderLoop(true);
 }
 
 #ifdef _DEBUG

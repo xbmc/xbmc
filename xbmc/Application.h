@@ -318,7 +318,7 @@ public:
 
   bool SwitchToFullScreen(bool force = false);
 
-  bool GetRenderGUI() const { return m_renderGUI; };
+  bool GetRenderGUI() const override { return m_renderGUI; };
 
   bool SetLanguage(const std::string &strLanguage);
   bool LoadLanguage(bool reload);
