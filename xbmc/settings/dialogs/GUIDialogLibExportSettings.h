@@ -44,12 +44,17 @@ protected:
 
 private:
   void SetLabel2(const std::string &settingid, const std::string &label);
+  void SetLabel(const std::string &settingid, const std::string &label);
   void ToggleState(const std::string &settingid, bool enabled);
 
   using CGUIDialogSettingsManualBase::SetFocus;
   void SetFocus(const std::string &settingid);
   static int GetExportItemsFromSetting(SettingConstPtr setting);
+  void UpdateToggles();
+  void UpdateDescription();
 
   CLibExportSettings m_settings;
   bool m_destinationChecked = false;
+  std::shared_ptr<CSettingBool> m_settingNFO;
+  std::shared_ptr<CSettingBool> m_settingArt;
 };

@@ -51,6 +51,13 @@ bool CLibExportSettings::IsItemExported(ELIBEXPORTOPTIONS item) const
   return (m_itemstoexport & item);
 }
 
+bool CLibExportSettings::IsArtists() const
+{
+  return (m_itemstoexport & ELIBEXPORT_ALBUMARTISTS) ||
+         (m_itemstoexport & ELIBEXPORT_SONGARTISTS) ||
+         (m_itemstoexport & ELIBEXPORT_OTHERARTISTS);
+}
+
 std::vector<int> CLibExportSettings::GetExportItems() const
 {
   std::vector<int> values;
@@ -81,4 +88,9 @@ bool CLibExportSettings::IsSeparateFiles() const
 bool CLibExportSettings::IsToLibFolders() const
 {
   return (m_exporttype == ELIBEXPORT_TOLIBRARYFOLDER);
+}
+
+bool CLibExportSettings::IsArtistFoldersOnly() const
+{
+  return (m_exporttype == ELIBEXPORT_ARTISTFOLDERS);
 }

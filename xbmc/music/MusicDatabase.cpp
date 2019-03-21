@@ -9487,11 +9487,14 @@ void CMusicDatabase::ExportToXML(const CLibExportSettings& settings,  CGUIDialog
       !settings.IsItemExported(ELIBEXPORT_ALBUMS))
     return;
 
-  if (!settings.IsSingleFile() && settings.m_skipnfo && !settings.m_artwork)
+  // Exporting albums either art or NFO (or both) selected
+  if ((settings.IsToLibFolders() || settings.IsSeparateFiles()) &&
+       settings.m_skipnfo && !settings.m_artwork &&
+       settings.IsItemExported(ELIBEXPORT_ALBUMS))
     return;
 
   std::string strFolder;
-  if (!settings.IsToLibFolders())
+  if (settings.IsSingleFile() || settings.IsSeparateFiles())
   {
     // Exporting to single file or separate files in a specified location
     if (settings.m_strPath.empty())
@@ -9504,14 +9507,21 @@ void CMusicDatabase::ExportToXML(const CLibExportSettings& settings,  CGUIDialog
     if (strFolder.empty())
       return;
   }
-  else
+  else if (settings.IsArtistFoldersOnly() || (settings.IsToLibFolders() && settings.IsArtists()))
   {
-    // Separate files with artists to library folder and albums to music folders.
-    // Without an artist information folder can not export artist NFO files or images
+    // Exporting artist folders only, or artist NFO or art to library folders
+    // need Artist Information Folder defined. 
+    // (Album NFO and art goes to music folders)
     strFolder = CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(CSettings::SETTING_MUSICLIBRARY_ARTISTSFOLDER);
-    if (!settings.IsItemExported(ELIBEXPORT_ALBUMS) && strFolder.empty())
+    if (strFolder.empty())
       return;
   }
+
+  //
+  bool artistfoldersonly; 
+  artistfoldersonly = settings.IsArtistFoldersOnly() ||
+                      ((settings.IsToLibFolders() || settings.IsSeparateFiles()) && 
+                        settings.m_skipnfo && !settings.m_artwork);
 
   int iFailCount = 0;
   try
@@ -9525,15 +9535,15 @@ void CMusicDatabase::ExportToXML(const CLibExportSettings& settings,  CGUIDialog
     TiXmlDeclaration decl("1.0", "UTF-8", "yes");
     xmlDoc.InsertEndChild(decl);
     TiXmlNode *pMain = NULL;
-    if (!settings.IsSingleFile())
+    if ((settings.IsToLibFolders() || settings.IsSeparateFiles()) && !artistfoldersonly)
       pMain = &xmlDoc;
-    else
+    else if (settings.IsSingleFile())
     {
       TiXmlElement xmlMainElement("musicdb");
       pMain = xmlDoc.InsertEndChild(xmlMainElement);
     }
 
-    if (settings.IsItemExported(ELIBEXPORT_ALBUMS))
+    if (settings.IsItemExported(ELIBEXPORT_ALBUMS) && !artistfoldersonly)
     {
       // Find albums to export
       std::vector<int> albumIds;
@@ -9592,8 +9602,8 @@ void CMusicDatabase::ExportToXML(const CLibExportSettings& settings,  CGUIDialog
           else
           { // Save album.nfo and artwork to subfolder on export path
             // strPath = strFolder/<albumartist name>/<albumname>
-            // where <albumname> is either the same name as the album folder containing the music files (if unique)
-            // or is craeted using the album name
+            // where <albumname> is either the same name as the album folder
+            // containing the music files (if unique) or is created using the album name
             std::string strAlbumArtist;
             pathfound = GetArtistFolderName(album.GetAlbumArtist()[0], album.GetMusicBrainzAlbumArtistID()[0], strAlbumArtist);
             if (pathfound)
@@ -9674,9 +9684,7 @@ void CMusicDatabase::ExportToXML(const CLibExportSettings& settings,  CGUIDialog
       }
     }
 
-    if ((settings.IsItemExported(ELIBEXPORT_ALBUMARTISTS) ||
-         settings.IsItemExported(ELIBEXPORT_SONGARTISTS) ||
-        settings.IsItemExported(ELIBEXPORT_OTHERARTISTS)) && !strFolder.empty())
+    if ((settings.IsArtists() || artistfoldersonly) && !strFolder.empty())
     {
       // Find artists to export
       std::vector<int> artistIds;
@@ -9695,7 +9703,7 @@ void CMusicDatabase::ExportToXML(const CLibExportSettings& settings,  CGUIDialog
       else if (settings.IsItemExported(ELIBEXPORT_OTHERARTISTS))
         filter.AppendWhere("EXISTS (SELECT 1 FROM song_artist WHERE song_artist.idArtist = artist.idArtist AND song_artist.idRole > 1)", false);
 
-      if (!settings.m_unscraped)
+      if (!settings.m_unscraped && !artistfoldersonly)
         filter.AppendWhere("lastScraped IS NOT NULL", true);
 
       std::string strSQL = "SELECT idArtist FROM artist";
@@ -9716,7 +9724,7 @@ void CMusicDatabase::ExportToXML(const CLibExportSettings& settings,  CGUIDialog
       for (const auto &artistId : artistIds)
       {
         CArtist artist;
-        GetArtist(artistId, artist, true); // include discography
+        GetArtist(artistId, artist, !artistfoldersonly); // include discography when not folders only
         std::string strPath;
         std::map<std::string, std::string> artwork;
         if (settings.IsSingleFile())
@@ -9749,38 +9757,41 @@ void CMusicDatabase::ExportToXML(const CLibExportSettings& settings,  CGUIDialog
               __FUNCTION__, artist.strArtist.c_str(), strPath.c_str());
           else
           {
-            if (!settings.m_skipnfo)
+            if (!artistfoldersonly)
             {
-              artist.Save(pMain, "artist", strPath);
-              std::string nfoFile = URIUtils::AddFileToFolder(strPath, "artist.nfo");
-              if (settings.m_overwrite || !CFile::Exists(nfoFile))
+              if (!settings.m_skipnfo)
               {
-                if (!xmlDoc.SaveFile(nfoFile))
+                artist.Save(pMain, "artist", strPath);
+                std::string nfoFile = URIUtils::AddFileToFolder(strPath, "artist.nfo");
+                if (settings.m_overwrite || !CFile::Exists(nfoFile))
                 {
-                  CLog::Log(LOGERROR, "CMusicDatabase::%s: Artist nfo export failed! ('%s')", __FUNCTION__, nfoFile.c_str());
-                  CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error, g_localizeStrings.Get(20302), nfoFile);
-                  iFailCount++;
+                  if (!xmlDoc.SaveFile(nfoFile))
+                  {
+                    CLog::Log(LOGERROR, "CMusicDatabase::%s: Artist nfo export failed! ('%s')", __FUNCTION__, nfoFile.c_str());
+                    CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error, g_localizeStrings.Get(20302), nfoFile);
+                    iFailCount++;
+                  }
                 }
               }
-            }
-            if (settings.m_artwork)
-            {
-              std::string savedArtfile;
-              if (GetArtForItem(artist.idArtist, MediaTypeArtist, artwork))
+              if (settings.m_artwork)
               {
-                for (const auto &art : artwork)
+                std::string savedArtfile;
+                if (GetArtForItem(artist.idArtist, MediaTypeArtist, artwork))
                 {
-                  if (art.first == "thumb")
-                    savedArtfile = URIUtils::AddFileToFolder(strPath, "folder");
-                  else
-                    savedArtfile = URIUtils::AddFileToFolder(strPath, art.first);
-                  CTextureCache::GetInstance().Export(art.second, savedArtfile, settings.m_overwrite);
+                  for (const auto &art : artwork)
+                  {
+                    if (art.first == "thumb")
+                      savedArtfile = URIUtils::AddFileToFolder(strPath, "folder");
+                    else
+                      savedArtfile = URIUtils::AddFileToFolder(strPath, art.first);
+                    CTextureCache::GetInstance().Export(art.second, savedArtfile, settings.m_overwrite);
+                  }
                 }
               }
+              xmlDoc.Clear();
+              TiXmlDeclaration decl("1.0", "UTF-8", "yes");
+              xmlDoc.InsertEndChild(decl);
             }
-            xmlDoc.Clear();
-            TiXmlDeclaration decl("1.0", "UTF-8", "yes");
-            xmlDoc.InsertEndChild(decl);
           }
         }
         if ((current % 50) == 0 && progressDialog)
@@ -9802,12 +9813,9 @@ void CMusicDatabase::ExportToXML(const CLibExportSettings& settings,  CGUIDialog
       xmlDoc.SaveFile(xmlFile);
 
       CVariant data;
-      if (settings.IsSingleFile())
-      {
-        data["file"] = xmlFile;
-        if (iFailCount > 0)
-          data["failcount"] = iFailCount;
-      }
+      data["file"] = xmlFile;
+      if (iFailCount > 0)
+        data["failcount"] = iFailCount;
       CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::AudioLibrary, "xbmc", "OnExport", data);
     }
   }
