@@ -9643,10 +9643,19 @@ void CMusicDatabase::ExportToXML(const CLibExportSettings& settings,  CGUIDialog
             {
               // Save art in album folder
               // Note thumb resoluton may be lower than original when overwriting
-              std::string thumb = GetArtForItem(album.idAlbum, MediaTypeAlbum, "thumb");
-              std::string imagePath = URIUtils::AddFileToFolder(strPath, "folder.jpg");
-              if (!thumb.empty() && (settings.m_overwrite || !CFile::Exists(imagePath)))
-                CTextureCache::GetInstance().Export(thumb, imagePath);
+              std::map<std::string, std::string> artwork;
+              std::string savedArtfile;
+              if (GetArtForItem(album.idAlbum, MediaTypeAlbum, artwork))
+              {
+                for (const auto &art : artwork)
+                {
+                  if (art.first == "thumb")
+                    savedArtfile = URIUtils::AddFileToFolder(strPath, "folder");
+                  else
+                    savedArtfile = URIUtils::AddFileToFolder(strPath, art.first);
+                  CTextureCache::GetInstance().Export(art.second, savedArtfile, settings.m_overwrite);
+                }
+              }
             }
             xmlDoc.Clear();
             TiXmlDeclaration decl("1.0", "UTF-8", "yes");
@@ -9756,14 +9765,17 @@ void CMusicDatabase::ExportToXML(const CLibExportSettings& settings,  CGUIDialog
             }
             if (settings.m_artwork)
             {
+              std::string savedArtfile;
               if (GetArtForItem(artist.idArtist, MediaTypeArtist, artwork))
               {
-                std::string savedThumb = URIUtils::AddFileToFolder(strPath, "folder.jpg");
-                std::string savedFanart = URIUtils::AddFileToFolder(strPath, "fanart.jpg");
-                if (artwork.find("thumb") != artwork.end() && (settings.m_overwrite || !CFile::Exists(savedThumb)))
-                  CTextureCache::GetInstance().Export(artwork["thumb"], savedThumb);
-                if (artwork.find("fanart") != artwork.end() && (settings.m_overwrite || !CFile::Exists(savedFanart)))
-                  CTextureCache::GetInstance().Export(artwork["fanart"], savedFanart);
+                for (const auto &art : artwork)
+                {
+                  if (art.first == "thumb")
+                    savedArtfile = URIUtils::AddFileToFolder(strPath, "folder");
+                  else
+                    savedArtfile = URIUtils::AddFileToFolder(strPath, art.first);
+                  CTextureCache::GetInstance().Export(art.second, savedArtfile, settings.m_overwrite);
+                }
               }
             }
             xmlDoc.Clear();
