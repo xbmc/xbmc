@@ -106,8 +106,7 @@ linux-system-libs:
 	[ -f $(ADDON_DEPS_DIR)/lib/pkgconfig/libdrm.pc ] || ln -sf /usr/lib/$(HOST)/pkgconfig/libdrm.pc $(ADDON_DEPS_DIR)/lib/pkgconfig/libdrm.pc
 	[ -f $(ADDON_DEPS_DIR)/lib/pkgconfig/gl.pc ] || ln -sf /usr/lib/$(HOST)/pkgconfig/gl.pc $(ADDON_DEPS_DIR)/lib/pkgconfig/gl.pc
 	[ -f $(ADDON_DEPS_DIR)/lib/pkgconfig/glu.pc ] || ln -sf /usr/lib/$(HOST)/pkgconfig/glu.pc $(ADDON_DEPS_DIR)/lib/pkgconfig/glu.pc
-	[ -f $(ADDON_DEPS_DIR)/lib/libGL.so ] || \
-          (ln -sf /usr/lib/$(HOST)/mesa $(ADDON_DEPS_DIR)/lib/mesa && ln -sf $(ADDON_DEPS_DIR)/lib/mesa/libGL.so $(ADDON_DEPS_DIR)/lib/libGL.so)
+	[ -f $(ADDON_DEPS_DIR)/lib/libGL.so ] || ln -sf /usr/lib/$(HOST)/libGL.so $(ADDON_DEPS_DIR)/lib/libGL.so
 	[ -L $(ADDON_DEPS_DIR)/include/GL ] || ln -sf /usr/include/GL $(ADDON_DEPS_DIR)/include/GL
 	[ -f $(ADDON_DEPS_DIR)/lib/libm.so ] || ln -sf /usr/lib/$(HOST)/libm.so $(ADDON_DEPS_DIR)/lib/
 
