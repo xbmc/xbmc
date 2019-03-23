@@ -22,6 +22,7 @@
 #include "guilib/LocalizeStrings.h"
 #include "messaging/ApplicationMessenger.h"
 #include "settings/SettingAddon.h"
+#include "settings/SettingConditions.h"
 #include "settings/SettingControl.h"
 #include "settings/SettingDateTime.h"
 #include "settings/SettingPath.h"
@@ -391,6 +392,13 @@ void CAddonSettings::InitializeControls()
 
 void CAddonSettings::InitializeConditions()
 {
+  CSettingConditions::Initialize();
+
+  // add basic conditions
+  const std::set<std::string>& simpleConditions = CSettingConditions::GetSimpleConditions();
+  for (const auto& condition : simpleConditions)
+    GetSettingsManager()->AddCondition(condition);
+
   GetSettingsManager()->AddDynamicCondition("InfoBool", InfoBool);
 }
 
