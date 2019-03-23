@@ -1,6 +1,5 @@
 # parse version.txt and versions.h to get the version and API info
 include(${CORE_SOURCE_DIR}/cmake/scripts/common/Macros.cmake)
-include(${CORE_SOURCE_DIR}/cmake/scripts/common/Platform.cmake)
 core_find_versions()
 
 # in case we need to download something, set KODI_MIRROR to the default if not already set
