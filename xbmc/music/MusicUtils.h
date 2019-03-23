@@ -56,4 +56,11 @@ namespace MUSIC_UTILS
 \param userrating the userrating 0 = no rating, 1 to 10
 */
   void UpdateSongRatingJob(const CFileItemPtr pItem, int userrating);
+
+  /*! \brief Get the types of art for an artist or album that are to be
+  automatically fetched from local files during scanning
+  \param mediaType [in] artist or album
+  \return vector of art types that are to be fetched during scanning
+  */
+  std::vector<std::string> GetArtTypesToScan(const MediaType& mediaType);
 }

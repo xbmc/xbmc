@@ -10231,6 +10231,48 @@ bool CMusicDatabase::GetArtTypes(const MediaType &mediaType, std::vector<std::st
   return false;
 }
 
+std::vector<std::string> CMusicDatabase::GetAvailableArtTypesForItem(int mediaId,
+  const MediaType& mediaType)
+{
+  std::vector<std::string> result;
+  if (mediaType == MediaTypeArtist)
+  {
+    CArtist artist;
+    if (GetArtist(mediaId, artist))
+    {
+      //! @todo artwork: fanart stored separately, doesn't need to be
+      if (artist.fanart.GetNumFanarts())
+        result.push_back("fanart");
+
+      // all other images
+      for (const auto& urlEntry : artist.thumbURL.m_url)
+      {
+        std::string artType = urlEntry.m_aspect;
+        if (artType.empty())
+          artType = "thumb";
+        if (std::find(result.begin(), result.end(), artType) == result.end())
+          result.push_back(artType);
+      }
+    }
+  }
+  else if (mediaType == MediaTypeAlbum)
+  {
+    CAlbum album;
+    if (GetAlbum(mediaId, album))
+    {
+      for (const auto& urlEntry : album.thumbURL.m_url)
+      {
+        std::string artType = urlEntry.m_aspect;
+        if (artType.empty())
+          artType = "thumb";
+        if (std::find(result.begin(), result.end(), artType) == result.end())
+          result.push_back(artType);
+      }
+    }
+  }
+  return result;
+}
+
 bool CMusicDatabase::GetFilter(CDbUrl &musicUrl, Filter &filter, SortDescription &sorting)
 {
   if (!musicUrl.IsValid())

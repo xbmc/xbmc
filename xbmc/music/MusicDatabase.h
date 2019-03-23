@@ -596,6 +596,14 @@ public:
   */
   bool GetArtTypes(const MediaType &mediaType, std::vector<std::string> &artTypes);
 
+  /*! \brief Fetch the distinct types of available-but-unassigned art held in the
+  database for a specific media item.
+  \param mediaId the id in the media (artist/album) table.
+  \param mediaType the type of media, which corresponds to the table the item resides in (artist/album).
+  \return the types of art e.g. "thumb", "fanart", etc.
+  */
+  std::vector<std::string> GetAvailableArtTypesForItem(int mediaId, const MediaType& mediaType);
+
   /////////////////////////////////////////////////
   // Tag Scan Version
   /////////////////////////////////////////////////

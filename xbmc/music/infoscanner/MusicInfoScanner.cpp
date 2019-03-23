@@ -35,6 +35,7 @@
 #include "interfaces/AnnouncementManager.h"
 #include "music/MusicLibraryQueue.h"
 #include "music/MusicThumbLoader.h"
+#include "music/MusicUtils.h"
 #include "music/tags/MusicInfoTag.h"
 #include "music/tags/MusicInfoTagLoaderFactory.h"
 #include "MusicAlbumInfo.h"
@@ -1908,31 +1909,12 @@ void CMusicInfoScanner::ScannerWait(unsigned int milliseconds)
     XbmcThreads::ThreadSleep(milliseconds);
 }
 
-std::vector<std::string> CMusicInfoScanner::GetArtTypesToScan(const MediaType& mediaType)
-{
-  std::vector<std::string> arttypes;
-  // Get default types of art that are to be automatically fetched during scanning
-  if (mediaType == MediaTypeArtist)
-  {
-    arttypes = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_musicArtistExtraArt;
-    arttypes.emplace_back("thumb");
-    arttypes.emplace_back("fanart");
-  }
-  else if (mediaType == MediaTypeAlbum)
-  {
-    arttypes = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_musicAlbumExtraArt;
-    arttypes.emplace_back("thumb");
-  }
-
-  return arttypes;
-}
-
 std::vector<std::string> CMusicInfoScanner::GetMissingArtTypes(const MediaType& mediaType, const std::map<std::string, std::string>& art)
 {
   std::vector<std::string> missing;
   std::vector<std::string> arttypes;
   // Get default types of art that are automatically fetched during scanning
-  arttypes = GetArtTypesToScan(mediaType);
+  arttypes = MUSIC_UTILS::GetArtTypesToScan(mediaType);
 
   // Find the types which are missing from the given art
   if (art.empty())
@@ -2134,7 +2116,7 @@ void CMusicInfoScanner::SetDiscSetArtwork(CAlbum& album, const std::vector<std::
 
   // Get default types of art that are to be automatically fetched during scanning
   std::vector<std::string> arttypes;
-  arttypes = GetArtTypesToScan(MediaTypeAlbum);
+  arttypes = MUSIC_UTILS::GetArtTypesToScan(MediaTypeAlbum);
 
   // Check that there are art types other than thumb to process
   bool extratype = !CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_musicAlbumExtraArt.empty();

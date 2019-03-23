@@ -18,6 +18,9 @@
 #include "PlayListPlayer.h"
 #include "playlists/PlayList.h"
 #include "ServiceBroker.h"
+#include "settings/AdvancedSettings.h"
+#include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "utils/JobManager.h"
 
 using namespace MUSIC_INFO;
@@ -177,6 +180,63 @@ namespace MUSIC_UTILS
     CJobManager::GetInstance().AddJob(job, NULL);
   }
 
+  // Add art types required in Kodi
+  void AddHardCodedArtTypes(std::vector<std::string>& artTypes, const CMusicInfoTag& tag)
+  {
+    artTypes.emplace_back("thumb");
+    if (tag.GetType() == MediaTypeArtist)
+    {
+      artTypes.emplace_back("fanart");
+    }
+  }
+
+  // Add art types configured by the user
+  void AddExtendedArtTypes(std::vector<std::string>& artTypes, const CMusicInfoTag& tag)
+  {
+    for (const auto& artType : GetArtTypesToScan(tag.GetType()))
+    {
+      if (find(artTypes.begin(), artTypes.end(), artType) == artTypes.end())
+        artTypes.push_back(artType);
+    }
+  }
+
+  // Add art types currently assigned to to the media item
+  void AddCurrentArtTypes(std::vector<std::string>& artTypes, const CMusicInfoTag& tag,
+    CMusicDatabase& db)
+  {
+    std::map<std::string, std::string> currentArt;
+    db.GetArtForItem(tag.GetDatabaseId(), tag.GetType(), currentArt);
+    for (const auto& art : currentArt)
+    {
+      if (!art.second.empty() && find(artTypes.begin(), artTypes.end(), art.first) == artTypes.end())
+        artTypes.push_back(art.first);
+    }
+  }
+
+  // Add art types that exist for other media items of the same type
+  void AddMediaTypeArtTypes(std::vector<std::string>& artTypes, const CMusicInfoTag& tag,
+    CMusicDatabase& db)
+  {
+    std::vector<std::string> dbArtTypes;
+    db.GetArtTypes(tag.GetType(), dbArtTypes);
+    for (const auto& artType : dbArtTypes)
+    {
+      if (find(artTypes.begin(), artTypes.end(), artType) == artTypes.end())
+        artTypes.push_back(artType);
+    }
+  }
+
+  // Add art types from available but unassigned artwork for this media item
+  void AddAvailableArtTypes(std::vector<std::string>& artTypes, const CMusicInfoTag& tag,
+    CMusicDatabase& db)
+  {
+    for (const auto& artType : db.GetAvailableArtTypesForItem(tag.GetDatabaseId(), tag.GetType()))
+    {
+      if (find(artTypes.begin(), artTypes.end(), artType) == artTypes.end())
+        artTypes.push_back(artType);
+    }
+  }
+
   bool FillArtTypesList(CFileItem& musicitem, CFileItemList& artlist)
   {
     CMusicInfoTag &tag = *musicitem.GetMusicInfoTag();
@@ -186,33 +246,18 @@ namespace MUSIC_UTILS
       return false;
 
     artlist.Clear();
-    // Songs, albums and artists all  have thumbs by default
-    std::vector<std::string> artTypes = { "thumb" };
-    if (tag.GetType() == MediaTypeArtist)
-    {
-      artTypes.emplace_back("fanart");
-    }
 
     CMusicDatabase db;
     db.Open();
 
-    // Add in any stored art for this item that is non-empty.
-    std::map<std::string, std::string> currentArt;
-    db.GetArtForItem(tag.GetDatabaseId(), tag.GetType(), currentArt);
-    for (const auto art : currentArt)
-    {
-      if (!art.second.empty() && find(artTypes.begin(), artTypes.end(), art.first) == artTypes.end())
-        artTypes.push_back(art.first);
-    }
+    std::vector<std::string> artTypes;
 
-    // Add any art types that exist for other media items of the same type
-    std::vector<std::string> dbArtTypes;
-    db.GetArtTypes(tag.GetType(), dbArtTypes);
-    for (const auto it : dbArtTypes)
-    {
-      if (find(artTypes.begin(), artTypes.end(), it) == artTypes.end())
-        artTypes.push_back(it);
-    }
+    AddHardCodedArtTypes(artTypes, tag);
+    AddExtendedArtTypes(artTypes, tag);
+    AddCurrentArtTypes(artTypes, tag, db);
+    AddMediaTypeArtTypes(artTypes, tag, db);
+    AddAvailableArtTypes(artTypes, tag, db);
+
     db.Close();
 
     for (const auto type : artTypes)
@@ -304,5 +349,24 @@ namespace MUSIC_UTILS
     else
       job = new CSetSongRatingJob(pItem->GetPath(), userrating);
     CJobManager::GetInstance().AddJob(job, NULL);
+  }
+
+  std::vector<std::string> GetArtTypesToScan(const MediaType& mediaType)
+  {
+    std::vector<std::string> arttypes;
+    // Get default types of art that are to be automatically fetched during scanning
+    if (mediaType == MediaTypeArtist)
+    {
+      arttypes = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_musicArtistExtraArt;
+      arttypes.emplace_back("thumb");
+      arttypes.emplace_back("fanart");
+    }
+    else if (mediaType == MediaTypeAlbum)
+    {
+      arttypes = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_musicAlbumExtraArt;
+      arttypes.emplace_back("thumb");
+    }
+
+    return arttypes;
   }
 }
