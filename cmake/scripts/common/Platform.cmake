@@ -1,15 +1,6 @@
 if(NOT CORE_SYSTEM_NAME)
   string(TOLOWER ${CMAKE_SYSTEM_NAME} CORE_SYSTEM_NAME)
 endif()
-# Switch used path, if CORE_SOURCE_DIR is set use it (e.g. on addons build)
-# otherwise use the present source dir
-#
-# TODO: This should be refactored on v19 and the if usage removed!
-if(CORE_SOURCE_DIR)
-  set(PLATFORM_USED_SOURCE_DIR ${CORE_SOURCE_DIR})
-else()
-  set(PLATFORM_USED_SOURCE_DIR ${CMAKE_SOURCE_DIR})
-endif()
 
 if(CORE_SYSTEM_NAME STREQUAL linux OR CORE_SYSTEM_NAME STREQUAL freebsd)
   # Set default CORE_PLATFORM_NAME to X11
@@ -33,16 +24,14 @@ unset(_DEFAULT_PLATFORM)
 string(TOLOWER ${CORE_PLATFORM_NAME} CORE_PLATFORM_NAME_LC)
 
 list(APPEND final_message "Platform: ${CORE_PLATFORM_NAME}")
-if(EXISTS ${PLATFORM_USED_SOURCE_DIR}/cmake/platform/${CORE_SYSTEM_NAME}/${CORE_PLATFORM_NAME_LC}.cmake)
-  include(${PLATFORM_USED_SOURCE_DIR}/cmake/platform/${CORE_SYSTEM_NAME}/${CORE_PLATFORM_NAME_LC}.cmake)
+if(EXISTS ${CMAKE_SOURCE_DIR}/cmake/platform/${CORE_SYSTEM_NAME}/${CORE_PLATFORM_NAME_LC}.cmake)
+  include(${CMAKE_SOURCE_DIR}/cmake/platform/${CORE_SYSTEM_NAME}/${CORE_PLATFORM_NAME_LC}.cmake)
   if(ENABLE_APP_AUTONAME)
     set(APP_BINARY_SUFFIX "-${CORE_PLATFORM_NAME_LC}")
   endif()
 else()
-  file(GLOB _platformnames RELATIVE ${PLATFORM_USED_SOURCE_DIR}/cmake/platform/${CORE_SYSTEM_NAME}/
-                                    ${PLATFORM_USED_SOURCE_DIR}/cmake/platform/${CORE_SYSTEM_NAME}/*.cmake)
+  file(GLOB _platformnames RELATIVE ${CMAKE_SOURCE_DIR}/cmake/platform/${CORE_SYSTEM_NAME}/
+                                    ${CMAKE_SOURCE_DIR}/cmake/platform/${CORE_SYSTEM_NAME}/*.cmake)
   string(REPLACE ".cmake" " " _platformnames ${_platformnames})
   message(FATAL_ERROR "invalid CORE_PLATFORM_NAME: ${CORE_PLATFORM_NAME_LC}\nValid platforms: ${_platformnames}")
 endif()
-
-unset(PLATFORM_USED_SOURCE_DIR)
