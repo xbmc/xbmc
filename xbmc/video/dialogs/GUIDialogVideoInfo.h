@@ -33,7 +33,6 @@ public:
   const CFileItemList& CurrentDirectory() const { return *m_castList; };
   bool HasListItems() const override { return true; };
 
-  static std::string ChooseArtType(const CFileItem &item, std::map<std::string, std::string> &currentArt);
   static void AddItemPathToFileBrowserSources(VECSOURCES &sources, const CFileItem &item);
 
   static int ManageVideoItem(const CFileItemPtr &item);
@@ -103,4 +102,7 @@ protected:
   bool m_hasUpdatedThumb = false;
   bool m_hasUpdatedUserrating = false;
   int m_startUserrating = -1;
+
+private:
+  static std::string ChooseArtType(const CFileItem& item);
 };

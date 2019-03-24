@@ -4668,6 +4668,117 @@ bool CVideoDatabase::GetArtTypes(const MediaType &mediaType, std::vector<std::st
   return false;
 }
 
+namespace
+{
+std::vector<std::string> GetBasicItemAvailableArtTypes(const CVideoInfoTag& tag)
+{
+  std::vector<std::string> result;
+
+  //! @todo artwork: fanart stored separately, doesn't need to be
+  if (tag.m_fanart.GetNumFanarts() && std::find(result.cbegin(), result.cend(), "fanart") == result.cend())
+    result.push_back("fanart");
+
+  // all other images
+  for (const auto& urlEntry : tag.m_strPictureURL.m_url)
+  {
+    std::string artType = urlEntry.m_aspect;
+    if (artType.empty())
+      artType = tag.m_type == MediaTypeEpisode ? "thumb" : "poster";
+    if (urlEntry.m_type == CScraperUrl::URL_TYPE_GENERAL && // exclude season artwork for TV shows
+      !StringUtils::StartsWith(artType, "set.") && // exclude movie set artwork for movies
+      std::find(result.cbegin(), result.cend(), artType) == result.cend())
+    {
+      result.push_back(artType);
+    }
+  }
+  return result;
+}
+
+std::vector<std::string> GetSeasonAvailableArtTypes(int mediaId, CVideoDatabase& db)
+{
+  CVideoInfoTag tag;
+  db.GetSeasonInfo(mediaId, tag);
+
+  std::vector<std::string> result;
+
+  CVideoInfoTag sourceShow;
+  db.GetTvShowInfo("", sourceShow, tag.m_iIdShow);
+  for (const auto& urlEntry : sourceShow.m_strPictureURL.m_url)
+  {
+    std::string artType = urlEntry.m_aspect;
+    if (artType.empty())
+      artType = "poster";
+    if (urlEntry.m_type == CScraperUrl::URL_TYPE_SEASON && urlEntry.m_season == tag.m_iSeason &&
+      std::find(result.cbegin(), result.cend(), artType) == result.cend())
+    {
+      result.push_back(artType);
+    }
+  }
+  return result;
+}
+
+std::vector<std::string> GetMovieSetAvailableArtTypes(int mediaId, CVideoDatabase& db)
+{
+  std::vector<std::string> result;
+  CFileItemList items;
+  std::string baseDir = StringUtils::Format("videodb://movies/sets/%d", mediaId);
+  if (db.GetMoviesNav(baseDir, items))
+  {
+    for (const auto& item : items)
+    {
+      CVideoInfoTag* pTag = item->GetVideoInfoTag();
+      pTag->m_strPictureURL.Parse();
+      //! @todo artwork: fanart stored separately, doesn't need to be
+      pTag->m_fanart.Unpack();
+      if (pTag->m_fanart.GetNumFanarts() &&
+        std::find(result.cbegin(), result.cend(), "fanart") == result.cend())
+      {
+        result.push_back("fanart");
+      }
+
+      // all other images
+      for (const auto& urlEntry : pTag->m_strPictureURL.m_url)
+      {
+        std::string artType = urlEntry.m_aspect;
+        if (artType.empty())
+          artType = "poster";
+        else if (StringUtils::StartsWith(artType, "set."))
+          artType = artType.substr(4);
+
+        if (std::find(result.cbegin(), result.cend(), artType) == result.cend())
+          result.push_back(artType);
+      }
+    }
+  }
+  return result;
+}
+}
+
+std::vector<std::string> CVideoDatabase::GetAvailableArtTypesForItem(int mediaId,
+  const MediaType& mediaType)
+{
+  VIDEODB_CONTENT_TYPE dbType{VIDEODB_CONTENT_UNKNOWN};
+  if (mediaType == MediaTypeTvShow)
+    dbType = VIDEODB_CONTENT_TVSHOWS;
+  else if (mediaType == MediaTypeMovie)
+    dbType = VIDEODB_CONTENT_MOVIES;
+  else if (mediaType == MediaTypeEpisode)
+    dbType = VIDEODB_CONTENT_EPISODES;
+  else if (mediaType == MediaTypeMusicVideo)
+    dbType = VIDEODB_CONTENT_MUSICVIDEOS;
+
+  if (dbType != VIDEODB_CONTENT_UNKNOWN)
+  {
+    CVideoInfoTag tag = GetDetailsByTypeAndId(dbType, mediaId);
+    return GetBasicItemAvailableArtTypes(tag);
+  }
+  if (mediaType == MediaTypeSeason)
+    return GetSeasonAvailableArtTypes(mediaId, *this);
+  if (mediaType == MediaTypeVideoCollection)
+    return GetMovieSetAvailableArtTypes(mediaId, *this);
+  return {};
+}
+
 /// \brief GetStackTimes() obtains any saved video times for the stacked file
 /// \retval Returns true if the stack times exist, false otherwise.
 bool CVideoDatabase::GetStackTimes(const std::string &filePath, std::vector<uint64_t> &times)
