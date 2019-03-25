@@ -17,12 +17,12 @@
 #include <type_traits>
 #include <vector>
 
-/* put types of curl in namespace to avoid namespace pollution */
-namespace XCURL
-{
 #define CURL CURL_HANDLE
 #include <curl/curl.h>
 #undef CURL
+
+namespace XCURL
+{
 
 class DllLibCurl
 {
@@ -57,8 +57,8 @@ public:
   CURLMcode multi_timeout(CURLM* multi_handle, long* timeout);
   CURLMsg* multi_info_read(CURLM* multi_handle, int* msgs_in_queue);
   CURLMcode multi_cleanup(CURLM* handle);
-  struct curl_slist* slist_append(struct curl_slist* list, const char* to_append);
-  void slist_free_all(struct curl_slist* list);
+  curl_slist* slist_append(curl_slist* list, const char* to_append);
+  void slist_free_all(curl_slist* list);
   const char* easy_strerror(CURLcode code);
 };
 

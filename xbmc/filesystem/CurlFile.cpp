@@ -1819,7 +1819,7 @@ std::string CCurlFile::GetRedirectURL()
 std::string CCurlFile::GetInfoString(int infoType)
 {
   char* info{};
-  CURLcode result = g_curlInterface.easy_getinfo(m_state->m_easyHandle, static_cast<XCURL::CURLINFO> (infoType), &info);
+  CURLcode result = g_curlInterface.easy_getinfo(m_state->m_easyHandle, static_cast<CURLINFO> (infoType), &info);
   if (result != CURLE_OK)
   {
     CLog::Log(LOGERROR, "Info string request for type {} failed with result code {}", infoType, result);
@@ -1895,9 +1895,9 @@ bool CCurlFile::GetContentType(const CURL &url, std::string &content, const std:
 bool CCurlFile::GetCookies(const CURL &url, std::string &cookies)
 {
   std::string cookiesStr;
-  struct curl_slist*     curlCookies;
-  XCURL::CURL_HANDLE*    easyHandle;
-  XCURL::CURLM*          multiHandle;
+  curl_slist* curlCookies;
+  CURL_HANDLE* easyHandle;
+  CURLM* multiHandle;
 
   // get the cookies list
   g_curlInterface.easy_acquire(url.GetProtocol().c_str(),
@@ -1906,7 +1906,7 @@ bool CCurlFile::GetCookies(const CURL &url, std::string &cookies)
   if (CURLE_OK == g_curlInterface.easy_getinfo(easyHandle, CURLINFO_COOKIELIST, &curlCookies))
   {
     // iterate over each cookie and format it into an RFC 2109 formatted Set-Cookie string
-    struct curl_slist* curlCookieIter = curlCookies;
+    curl_slist* curlCookieIter = curlCookies;
     while(curlCookieIter)
     {
       // tokenize the CURL cookie string
