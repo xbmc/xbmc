@@ -4,13 +4,13 @@
 	<include>Animation_DialogPopupOpenClose</include>
 	<controls>
 		<control type="group">
-			<top>105</top>
+			<top>90</top>
 			<centerleft>50%</centerleft>
 			<width>1820</width>
 			<include>Animation_DialogPopupVisible</include>
 			<include content="DialogBackgroundCommons">
 				<param name="width" value="1820" />
-				<param name="height" value="870" />
+				<param name="height" value="900" />
 				<param name="header_label" value="" />
 				<param name="header_id" value="2" />
 			</include>
@@ -19,7 +19,7 @@
 				<left>29</left>
 				<top>80</top>
 				<width>400</width>
-				<height>750</height>
+				<height>685</height>
 				<itemgap>-25</itemgap>
 				<orientation>vertical</orientation>
 				<onleft>9000</onleft>
@@ -41,7 +41,7 @@
 				<left>410</left>
 				<top>80</top>
 				<width>1100</width>
-				<height>790</height>
+				<height>740</height>
 				<texture border="40">buttons/dialogbutton-nofo.png</texture>
 			</control>
 			<control type="grouplist" id="5">
@@ -49,11 +49,22 @@
 				<left>429</left>
 				<top>100</top>
 				<width>1060</width>
-				<height>750</height>
+				<height>700</height>
 				<onleft>3</onleft>
 				<onright>9000</onright>
 				<onup>5</onup>
 				<ondown>5</ondown>
+			</control>
+			<control type="textbox" id="6">
+				<description>description area</description>
+				<left>50</left>
+				<top>815</top>
+				<right>50</right>
+				<height>70</height>
+				<font>font12</font>
+				<align>justify</align>
+				<textcolor>button_focus</textcolor>
+				<autoscroll time="3000" delay="5000" repeat="5000">true</autoscroll>
 			</control>
 			<control type="button" id="7">
 				<description>Default Button</description>
