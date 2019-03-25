@@ -150,7 +150,13 @@ void CThread::StopThread(bool bWait /*= true*/)
   CSingleLock lock(m_CriticalSection);
   if (m_ThreadId && bWait && !IsCurrentThread(m_ThreadId))
   {
-    lock.Leave();
+    // We will leave the critical Section before WaitingForThreadExit.
+    // But we have to Reacquire it after the wait so that CThread::staticThread
+    // does not get removed its thread->m_CriticalSection before it can unlock
+    // it. As CThread::staticThread holds the lock already at this point when
+    // sending the term signal, StopThread will synchronize so that CThread-Object
+    // is not removed prior the staticThread is accessing its members
+    CSingleExit exit(m_CriticalSection);
     WaitForThreadExit(0xFFFFFFFF);
   }
 }
