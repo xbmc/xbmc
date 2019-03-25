@@ -2250,6 +2250,13 @@ void CAMLCodec::SetVideoRect(const CRect &SrcRect, const CRect &DestRect)
     SetVideoBrightness(brightness);
     m_brightness = brightness;
   }
+  // video rate adjustment.
+  unsigned int video_rate = GetDecoderVideoRate();
+  if (video_rate > 0 && video_rate != am_private->video_rate)
+  {
+    CLog::Log(LOGDEBUG, "CAMLCodec::SetVideoRect: decoder fps has changed, video_rate adjusted from %d to %d", am_private->video_rate, video_rate);
+    am_private->video_rate = video_rate;
+  }
 
   // video view mode
   int view_mode = m_processInfo.GetVideoSettings().m_ViewMode;
@@ -2394,4 +2401,11 @@ void CAMLCodec::SetVideoRate(int videoRate)
 {
   if (am_private)
     am_private->video_rate = videoRate;
+}
+
+unsigned int CAMLCodec::GetDecoderVideoRate()
+{
+  struct vdec_status vs;
+  m_dll->codec_get_vdec_state(&am_private->vcodec, &vs);
+  return static_cast<unsigned int>(0.5 + (static_cast<float>(UNIT_FREQ) / static_cast<float>(vs.fps)));
 }
