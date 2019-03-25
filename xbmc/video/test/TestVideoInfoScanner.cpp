@@ -25,6 +25,8 @@ typedef struct
 static const TestEntry TestData[] = {
   //season+episode
   {"foo.S02E03.mkv",   2, {3} },
+  {"foo.2x03.mkv",      2, {3} },
+  {"foo.2.03.mkv",      2, {3} },
   {"foo.203.mkv",      2, {3} },
   //episode only
   {"foo.Ep03.mkv",     1, {3} },
