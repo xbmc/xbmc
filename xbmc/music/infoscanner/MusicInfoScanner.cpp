@@ -18,6 +18,7 @@
 #include "dialogs/GUIDialogExtendedProgressBar.h"
 #include "dialogs/GUIDialogProgress.h"
 #include "dialogs/GUIDialogSelect.h"
+#include "dialogs/GUIDialogYesNo.h"
 #include "events/EventLog.h"
 #include "events/MediaLibraryEvent.h"
 #include "FileItem.h"
@@ -1439,6 +1440,7 @@ CMusicInfoScanner::DownloadAlbumInfo(const CAlbum& album,
   }
 
   // handle nfo files
+  bool existsNFO = false;
   std::string path = album.strPath;
   if (path.empty())
     m_musicDatabase.GetAlbumPath(album.idAlbum, path);
@@ -1446,7 +1448,14 @@ CMusicInfoScanner::DownloadAlbumInfo(const CAlbum& album,
   std::string strNfo = URIUtils::AddFileToFolder(path, "album.nfo");
   CInfoScanner::INFO_TYPE result = CInfoScanner::NO_NFO;
   CNfoFile nfoReader;
-  if (XFILE::CFile::Exists(strNfo))
+  existsNFO = XFILE::CFile::Exists(strNfo);
+  // When on GUI ask user if they want to ignore nfo and refresh from Internet  
+  if (existsNFO && pDialog && CGUIDialogYesNo::ShowAndGetInput(10523, 20446))
+  {
+    existsNFO = false;
+    CLog::Log(LOGDEBUG, "Ignoring nfo file: %s", CURL::GetRedacted(strNfo).c_str());
+  }
+  if (existsNFO)
   {
     CLog::Log(LOGDEBUG,"Found matching nfo file: %s", CURL::GetRedacted(strNfo).c_str());
     result = nfoReader.Create(strNfo, info);
@@ -1725,6 +1734,13 @@ CMusicInfoScanner::DownloadArtistInfo(const CArtist& artist,
     }
     else
       CLog::Log(LOGDEBUG, "%s not have path, nfo file not possible", artist.strArtist.c_str());
+  }
+
+  // When on GUI ask user if they want to ignore nfo and refresh from Internet  
+  if (existsNFO && pDialog && CGUIDialogYesNo::ShowAndGetInput(21891, 20446))
+  {
+    existsNFO = false;
+    CLog::Log(LOGDEBUG, "Ignoring nfo file: %s", CURL::GetRedacted(strNfo).c_str());
   }
 
   if (existsNFO)
