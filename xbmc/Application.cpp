@@ -3131,6 +3131,14 @@ void CApplication::OnPlayerCloseFile(const CFileItem &file, const CBookmark &boo
 
   if (CServiceBroker::GetSettingsComponent()->GetProfileManager()->GetCurrentProfile().canWriteDatabases())
   {
+    // Use parent folder for DVD/BD file structures
+    if (fileItem.IsOpticalMediaFile())
+    {
+      auto strFile = fileItem.GetLocalMetadataPath();
+      URIUtils::RemoveSlashAtEnd(strFile);
+      fileItem.SetPath(strFile);
+    }
+
     CSaveFileState::DoWork(fileItem, resumeBookmark, playCountUpdate);
   }
 }
