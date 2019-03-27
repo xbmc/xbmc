@@ -57,7 +57,7 @@ elif action == 'getdetails':
                      'tagline': 'Tag yo',
                      'duration': 110,
                      'mpaa': 'T',
-                     'trailer': '/home/akva//porn/bukkake.mkv',
+                     'trailer': '/home/akva/bunnies/unicorns.mkv',
                      'genre': ['Action', 'Comedy'],
                      'country': ['Norway', 'Sweden', 'China'],
                      'credits': ['None', 'Want', 'To Admit It'],
