@@ -94,8 +94,12 @@ const std::map<int, const char*> g_SqliteErrorStrings =
   X(SQLITE_IOERR_MMAP),
   X(SQLITE_IOERR_GETTEMPPATH),
   X(SQLITE_IOERR_CONVPATH),
+#if defined(SQLITE_IOERR_VNODE)
   X(SQLITE_IOERR_VNODE),
+#endif
+#if defined(SQLITE_IOERR_AUTH)
   X(SQLITE_IOERR_AUTH),
+#endif
 #if defined(SQLITE_IOERR_BEGIN_ATOMIC)
   X(SQLITE_IOERR_BEGIN_ATOMIC),
 #endif
