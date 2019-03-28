@@ -3152,19 +3152,8 @@ void CFFmpegPostproc::Flush()
 
 bool CFFmpegPostproc::UpdateDeintMethod(EINTERLACEMETHOD method)
 {
-  // switching between certain methods should be done without deinit/init
-  if (method != m_diMethod)
-    return false;
-
-  if (method == VS_INTERLACEMETHOD_DEINTERLACE)
-    return true;
-  else if (method == VS_INTERLACEMETHOD_RENDER_BOB)
-    return true;
-  else if (method == VS_INTERLACEMETHOD_NONE &&
-           !CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(SETTING_VIDEOPLAYER_PREFERVAAPIRENDER))
-    return true;
-
-  return false;
+  /// \todo switching between certain methods could be done without deinit/init
+  return (m_diMethod == method);
 }
 
 bool CFFmpegPostproc::DoesSync()
