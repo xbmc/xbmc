@@ -2626,6 +2626,7 @@ bool CVppPostproc::Filter(CVaapiProcessedPicture &outPic)
   pipelineParams->output_region = &outputRegion;
   pipelineParams->surface_region = &inputRegion;
   pipelineParams->output_background_color = 0xff000000;
+  pipelineParams->filter_flags = 0;
 
   VASurfaceID forwardRefs[32];
   VASurfaceID backwardRefs[32];
@@ -2663,11 +2664,6 @@ bool CVppPostproc::Filter(CVaapiProcessedPicture &outPic)
     {
       return false;
     }
-
-    if (m_vppMethod == VS_INTERLACEMETHOD_VAAPI_BOB)
-      pipelineParams->filter_flags = (flags & VA_DEINTERLACING_BOTTOM_FIELD) ? VA_BOTTOM_FIELD : VA_TOP_FIELD;
-    else
-      pipelineParams->filter_flags = 0;
 
     pipelineParams->filters = &m_filter;
     pipelineParams->num_filters = 1;
