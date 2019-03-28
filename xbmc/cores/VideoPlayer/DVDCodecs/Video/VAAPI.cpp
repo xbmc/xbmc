@@ -204,7 +204,7 @@ bool CVAAPIContext::CreateContext()
 #endif
 
   int major_version, minor_version;
-  if (!CheckSuccess(vaInitialize(m_display, &major_version, &minor_version)))
+  if (!CheckSuccess(vaInitialize(m_display, &major_version, &minor_version), "vaInitialize"))
   {
     vaTerminate(m_display);
     m_display = NULL;
@@ -225,7 +225,7 @@ void CVAAPIContext::DestroyContext()
 {
   delete[] m_profiles;
   if (m_display)
-    CheckSuccess(vaTerminate(m_display));
+    CheckSuccess(vaTerminate(m_display), "vaTerminate");
 
 #if VA_CHECK_VERSION(1, 0, 0)
   vaSetErrorCallback(m_display, nullptr, nullptr);
@@ -240,7 +240,7 @@ void CVAAPIContext::QueryCaps()
   int max_profiles = vaMaxNumProfiles(m_display);
   m_profiles = new VAProfile[max_profiles];
 
-  if (!CheckSuccess(vaQueryConfigProfiles(m_display, m_profiles, &m_profileCount)))
+  if (!CheckSuccess(vaQueryConfigProfiles(m_display, m_profiles, &m_profileCount), "vaQueryConfigProfiles"))
     return;
 
   for(int i = 0; i < m_profileCount; i++)
@@ -259,7 +259,7 @@ VAConfigAttrib CVAAPIContext::GetAttrib(VAProfile profile)
 
   VAConfigAttrib attrib;
   attrib.type = VAConfigAttribRTFormat;
-  CheckSuccess(vaGetConfigAttributes(m_display, profile, VAEntrypointVLD, &attrib, 1));
+  CheckSuccess(vaGetConfigAttributes(m_display, profile, VAEntrypointVLD, &attrib, 1), "vaGetConfigAttributes");
 
   return attrib;
 }
@@ -281,16 +281,16 @@ VAConfigID CVAAPIContext::CreateConfig(VAProfile profile, VAConfigAttrib attrib)
   CSingleLock lock(m_section);
 
   VAConfigID config = VA_INVALID_ID;
-  CheckSuccess(vaCreateConfig(m_display, profile, VAEntrypointVLD, &attrib, 1, &config));
+  CheckSuccess(vaCreateConfig(m_display, profile, VAEntrypointVLD, &attrib, 1, &config), "vaCreateConfig");
 
   return config;
 }
 
-bool CVAAPIContext::CheckSuccess(VAStatus status)
+bool CVAAPIContext::CheckSuccess(VAStatus status, const std::string& function)
 {
   if (status != VA_STATUS_SUCCESS)
   {
-    CLog::Log(LOGERROR, "VAAPI::%s error: %s", __FUNCTION__, vaErrorStr(status));
+    CLog::Log(LOGERROR, "VAAPI/context {} error: {} ({})", function, vaErrorStr(status), status);
     return false;
   }
   return true;
@@ -765,7 +765,7 @@ long CDecoder::Release()
     VASurfaceID surf;
     while((surf = m_videoSurfaces.RemoveNext(true)) != VA_INVALID_SURFACE)
     {
-      CheckSuccess(vaDestroySurfaces(m_vaapiConfig.dpy, &surf, 1));
+      CheckSuccess(vaDestroySurfaces(m_vaapiConfig.dpy, &surf, 1), "vaDestroySurfaces");
     }
   }
   return IHardwareDecoder::Release();
@@ -1069,11 +1069,11 @@ bool CDecoder::CanSkipDeint()
   return m_bufferStats.CanSkipDeint();
 }
 
-bool CDecoder::CheckSuccess(VAStatus status)
+bool CDecoder::CheckSuccess(VAStatus status, const std::string& function)
 {
   if (status != VA_STATUS_SUCCESS)
   {
-    CLog::Log(LOGERROR, "VAAPI::%s - error: %s", __FUNCTION__, vaErrorStr(status));
+    CLog::Log(LOGERROR, "VAAPI/decoder {} error: {} ({})", function, vaErrorStr(status), status);
     m_ErrorCount++;
 
     if(m_DisplayState == VAAPI_OPEN)
@@ -1121,13 +1121,10 @@ bool CDecoder::ConfigVAAPI()
 
   VASurfaceID surfaces[32];
   int nb_surfaces = m_vaapiConfig.maxReferences;
-  if (!CheckSuccess(vaCreateSurfaces(m_vaapiConfig.dpy,
-                                     format,
-                                     m_vaapiConfig.surfaceWidth,
-                                     m_vaapiConfig.surfaceHeight,
-                                     surfaces,
-                                     nb_surfaces,
-                                     attribs, 1)))
+  if (!CheckSuccess(
+      vaCreateSurfaces(m_vaapiConfig.dpy, format, m_vaapiConfig.surfaceWidth,
+          m_vaapiConfig.surfaceHeight, surfaces,
+          nb_surfaces, attribs, 1), "vaCreateSurfaces"))
   {
     return false;
   }
@@ -1186,13 +1183,13 @@ void CDecoder::FiniVAAPIOutput()
   VASurfaceID surf;
   while((surf = m_videoSurfaces.RemoveNext()) != VA_INVALID_SURFACE)
   {
-    CheckSuccess(vaDestroySurfaces(m_vaapiConfig.dpy, &surf, 1));
+    CheckSuccess(vaDestroySurfaces(m_vaapiConfig.dpy, &surf, 1), "vaDestroySurfaces");
   }
   m_videoSurfaces.Reset();
 
   // destroy vaapi config
   if (m_vaapiConfig.configId != VA_INVALID_ID)
-    CheckSuccess(vaDestroyConfig(m_vaapiConfig.dpy, m_vaapiConfig.configId));
+    CheckSuccess(vaDestroyConfig(m_vaapiConfig.dpy, m_vaapiConfig.configId), "vaDestroyConfig");
   m_vaapiConfig.configId = VA_INVALID_ID;
 }
 
@@ -2217,11 +2214,11 @@ void COutput::ReadyForDisposal(CPostproc *pp)
   }
 }
 
-bool COutput::CheckSuccess(VAStatus status)
+bool COutput::CheckSuccess(VAStatus status, const std::string& function)
 {
   if (status != VA_STATUS_SUCCESS)
   {
-    CLog::Log(LOGERROR, "VAAPI::%s - Error: %s(%d)", __FUNCTION__, vaErrorStr(status), status);
+    CLog::Log(LOGERROR, "VAAPI/output {} error: {} ({})", function, vaErrorStr(status), status);
     m_vaError = true;
     return false;
   }
@@ -2327,7 +2324,9 @@ bool CVppPostproc::PreInit(CVaapiConfig &config, SDiMethods *methods)
   m_config = config;
 
   // create config
-  if (!CheckSuccess(vaCreateConfig(m_config.dpy, VAProfileNone, VAEntrypointVideoProc, NULL, 0, &m_configId)))
+  if (!CheckSuccess(
+      vaCreateConfig(m_config.dpy, VAProfileNone, VAEntrypointVideoProc, NULL, 0, &m_configId),
+      "vaCreateConfig"))
   {
     CLog::Log(LOGDEBUG, LOGVIDEO, "CVppPostproc::PreInit  - VPP init failed in vaCreateConfig");
 
@@ -2350,13 +2349,10 @@ bool CVppPostproc::PreInit(CVaapiConfig &config, SDiMethods *methods)
     attrib->value.value.i = VA_FOURCC_P010;
   }
   int nb_surfaces = NUM_RENDER_PICS;
-  if (!CheckSuccess(vaCreateSurfaces(m_config.dpy,
-                                     format,
-                                     m_config.surfaceWidth,
-                                     m_config.surfaceHeight,
-                                     surfaces,
-                                     nb_surfaces,
-                                     attribs, 1)))
+  if (!CheckSuccess(
+      vaCreateSurfaces(m_config.dpy, format, m_config.surfaceWidth, m_config.surfaceHeight,
+          surfaces, nb_surfaces,
+          attribs, 1), "vaCreateSurfaces"))
   {
     CLog::Log(LOGDEBUG, LOGVIDEO, "CVppPostproc::PreInit  - VPP init failed in vaCreateSurfaces");
 
@@ -2368,14 +2364,10 @@ bool CVppPostproc::PreInit(CVaapiConfig &config, SDiMethods *methods)
   }
 
   // create vaapi decoder context
-  if (!CheckSuccess(vaCreateContext(m_config.dpy,
-                                    m_configId,
-                                    m_config.surfaceWidth,
-                                    m_config.surfaceHeight,
-                                    0,
-                                    surfaces,
-                                    nb_surfaces,
-                                    &m_contextId)))
+  if (!CheckSuccess(
+      vaCreateContext(m_config.dpy, m_configId, m_config.surfaceWidth, m_config.surfaceHeight, 0,
+          surfaces,
+          nb_surfaces, &m_contextId), "vaCreateContext"))
   {
     m_contextId = VA_INVALID_ID;
     CLog::Log(LOGDEBUG, LOGVIDEO, "CVppPostproc::PreInit  - VPP init failed in vaCreateContext");
@@ -2388,18 +2380,17 @@ bool CVppPostproc::PreInit(CVaapiConfig &config, SDiMethods *methods)
   VAProcFilterCapDeinterlacing deinterlacingCaps[VAProcDeinterlacingCount];
   unsigned int numDeinterlacingCaps = VAProcDeinterlacingCount;
 
-  if (!CheckSuccess(vaQueryVideoProcFilters(m_config.dpy, m_contextId, filters, &numFilters)))
+  if (!CheckSuccess(vaQueryVideoProcFilters(m_config.dpy, m_contextId, filters, &numFilters),
+      "vaQueryVideoProcFilters"))
   {
     CLog::Log(LOGDEBUG, LOGVIDEO, "CVppPostproc::PreInit  - VPP init failed in vaQueryVideoProcFilters");
 
     return false;
   }
 
-  if (!CheckSuccess(vaQueryVideoProcFilterCaps(m_config.dpy,
-                                               m_contextId,
-                                               VAProcFilterDeinterlacing,
-                                               deinterlacingCaps,
-                                               &numDeinterlacingCaps)))
+  if (!CheckSuccess(vaQueryVideoProcFilterCaps(m_config.dpy, m_contextId, VAProcFilterDeinterlacing,
+      deinterlacingCaps,
+      &numDeinterlacingCaps), "vaQueryVideoProcFilterCaps"))
   {
     CLog::Log(LOGDEBUG, LOGVIDEO, "CVppPostproc::PreInit  - VPP init failed in vaQueryVideoProcFilterCaps");
 
@@ -2458,7 +2449,7 @@ bool CVppPostproc::UpdateDeintMethod(EINTERLACEMETHOD method)
 
   if (m_filter != VA_INVALID_ID)
   {
-    CheckSuccess(vaDestroyBuffer(m_config.dpy, m_filter));
+    CheckSuccess(vaDestroyBuffer(m_config.dpy, m_filter), "vaDestroyBuffer");
     m_filter = VA_INVALID_ID;
   }
 
@@ -2491,17 +2482,17 @@ bool CVppPostproc::UpdateDeintMethod(EINTERLACEMETHOD method)
   filterparams.algorithm = vppMethod;
   filterparams.flags = 0;
 
-  if (!CheckSuccess(vaCreateBuffer(m_config.dpy, m_contextId,
-                    VAProcFilterParameterBufferType,
-                    sizeof(filterparams), 1, &filterparams, &m_filter)))
+  if (!CheckSuccess(vaCreateBuffer(m_config.dpy, m_contextId, VAProcFilterParameterBufferType,
+      sizeof(filterparams), 1,
+      &filterparams, &m_filter), "vaCreateBuffer"))
   {
     m_filter = VA_INVALID_ID;
     return false;
   }
 
   VAProcPipelineCaps pplCaps;
-  if (!CheckSuccess(vaQueryVideoProcPipelineCaps(m_config.dpy, m_contextId,
-                    &m_filter, 1, &pplCaps)))
+  if (!CheckSuccess(vaQueryVideoProcPipelineCaps(m_config.dpy, m_contextId, &m_filter, 1, &pplCaps),
+      "vaQueryVideoProcPipelineCaps"))
   {
     return false;
   }
@@ -2517,29 +2508,29 @@ void CVppPostproc::Dispose()
   // make sure surfaces are idle
   for (int i=0; i<m_videoSurfaces.Size(); i++)
   {
-    CheckSuccess(vaSyncSurface(m_config.dpy, m_videoSurfaces.GetAtIndex(i)));
+    CheckSuccess(vaSyncSurface(m_config.dpy, m_videoSurfaces.GetAtIndex(i)), "vaSyncSurface");
   }
 
   if (m_filter != VA_INVALID_ID)
   {
-    CheckSuccess(vaDestroyBuffer(m_config.dpy, m_filter));
+    CheckSuccess(vaDestroyBuffer(m_config.dpy, m_filter), "vaDestroyBuffer");
     m_filter = VA_INVALID_ID;
   }
   if (m_contextId != VA_INVALID_ID)
   {
-    CheckSuccess(vaDestroyContext(m_config.dpy, m_contextId));
+    CheckSuccess(vaDestroyContext(m_config.dpy, m_contextId), "vaDestroyContext");
     m_contextId = VA_INVALID_ID;
   }
   VASurfaceID surf;
   while((surf = m_videoSurfaces.RemoveNext()) != VA_INVALID_SURFACE)
   {
-    CheckSuccess(vaDestroySurfaces(m_config.dpy, &surf, 1));
+    CheckSuccess(vaDestroySurfaces(m_config.dpy, &surf, 1), "vaDestroySurface");
   }
   m_videoSurfaces.Reset();
 
   if (m_configId != VA_INVALID_ID)
   {
-    CheckSuccess(vaDestroyConfig(m_config.dpy, m_configId));
+    CheckSuccess(vaDestroyConfig(m_config.dpy, m_configId), "vaDestroyConfig");
     m_configId = VA_INVALID_ID;
   }
 
@@ -2610,18 +2601,18 @@ bool CVppPostproc::Filter(CVaapiProcessedPicture &outPic)
   VARectangle inputRegion;
   VARectangle outputRegion;
 
-  if (!CheckSuccess(vaBeginPicture(m_config.dpy, m_contextId, surf)))
+  if (!CheckSuccess(vaBeginPicture(m_config.dpy, m_contextId, surf), "vaBeginPicture"))
   {
     return false;
   }
 
-  if (!CheckSuccess(vaCreateBuffer(m_config.dpy, m_contextId,
-                    VAProcPipelineParameterBufferType,
-                    sizeof(VAProcPipelineParameterBuffer), 1, NULL, &pipelineBuf)))
+  if (!CheckSuccess(vaCreateBuffer(m_config.dpy, m_contextId, VAProcPipelineParameterBufferType,
+          sizeof(VAProcPipelineParameterBuffer), 1, NULL, &pipelineBuf), "vaCreateBuffer"))
   {
     return false;
   }
-  if (!CheckSuccess(vaMapBuffer(m_config.dpy, pipelineBuf, (void**)&pipelineParams)))
+  if (!CheckSuccess(vaMapBuffer(m_config.dpy, pipelineBuf, (void**) &pipelineParams),
+      "vaMapBuffer"))
   {
     return false;
   }
@@ -2663,12 +2654,12 @@ bool CVppPostproc::Filter(CVaapiProcessedPicture &outPic)
       else
         flags |= VA_DEINTERLACING_BOTTOM_FIELD;
     }
-    if (!CheckSuccess(vaMapBuffer(m_config.dpy, m_filter, (void**)&filterParams)))
+    if (!CheckSuccess(vaMapBuffer(m_config.dpy, m_filter, (void**) &filterParams), "vaMapBuffer"))
     {
       return false;
     }
     filterParams->flags = flags;
-    if (!CheckSuccess(vaUnmapBuffer(m_config.dpy, m_filter)))
+    if (!CheckSuccess(vaUnmapBuffer(m_config.dpy, m_filter), "vaUnmapBuffer"))
     {
       return false;
     }
@@ -2722,23 +2713,22 @@ bool CVppPostproc::Filter(CVaapiProcessedPicture &outPic)
   if (pipelineParams->surface == VA_INVALID_SURFACE)
     return false;
 
-  if (!CheckSuccess(vaUnmapBuffer(m_config.dpy, pipelineBuf)))
+  if (!CheckSuccess(vaUnmapBuffer(m_config.dpy, pipelineBuf), "vaUnmmapBuffer"))
   {
     return false;
   }
 
-  if (!CheckSuccess(vaRenderPicture(m_config.dpy, m_contextId,
-                                    &pipelineBuf, 1)))
+  if (!CheckSuccess(vaRenderPicture(m_config.dpy, m_contextId, &pipelineBuf, 1), "vaRenderPicture"))
   {
     return false;
   }
 
-  if (!CheckSuccess(vaEndPicture(m_config.dpy, m_contextId)))
+  if (!CheckSuccess(vaEndPicture(m_config.dpy, m_contextId), "vaEndPicture"))
   {
     return false;
   }
 
-  if (!CheckSuccess(vaDestroyBuffer(m_config.dpy, pipelineBuf)))
+  if (!CheckSuccess(vaDestroyBuffer(m_config.dpy, pipelineBuf), "vaDestroyBuffer"))
   {
     return false;
   }
@@ -2817,11 +2807,11 @@ void CVppPostproc::Discard(COutput *output, ReadyToDispose cb)
     (m_pOut->*m_cbDispose)(this);
 }
 
-bool CVppPostproc::CheckSuccess(VAStatus status)
+bool CVppPostproc::CheckSuccess(VAStatus status, const std::string& function)
 {
   if (status != VA_STATUS_SUCCESS)
   {
-    CLog::Log(LOGERROR, "VAAPI::%s - Error: %s(%d)", __FUNCTION__, vaErrorStr(status), status);
+    CLog::Log(LOGERROR, "VAAPI/vpp {} error: {} ({})", function, vaErrorStr(status), status);
     return false;
   }
   return true;
@@ -2884,7 +2874,7 @@ bool CFFmpegPostproc::PreInit(CVaapiConfig &config, SDiMethods *methods)
     use_filter = false;
   }
   if (image.image_id != VA_INVALID_ID)
-    CheckSuccess(vaDestroyImage(config.dpy,image.image_id));
+    CheckSuccess(vaDestroyImage(config.dpy, image.image_id), "vaDestroyImage");
 
   if (use_filter && !m_dllSSE4.Load())
   {
@@ -3015,13 +3005,13 @@ bool CFFmpegPostproc::AddPicture(CVaapiDecodedPicture &inPic)
   m_DVDPic.SetParams(inPic.DVDPic);
   bool result = false;
 
-  if (!CheckSuccess(vaSyncSurface(m_config.dpy, surf)))
+  if (!CheckSuccess(vaSyncSurface(m_config.dpy, surf), "vaSyncSurface"))
     goto error;
 
-  if (!CheckSuccess(vaDeriveImage(m_config.dpy, surf, &image)))
+  if (!CheckSuccess(vaDeriveImage(m_config.dpy, surf, &image), "vaDeriveImage"))
     goto error;
 
-  if (!CheckSuccess(vaMapBuffer(m_config.dpy, image.buf, (void**)&buf)))
+  if (!CheckSuccess(vaMapBuffer(m_config.dpy, image.buf, (void**) &buf), "vaMapBuffer"))
     goto error;
 
   m_pFilterFrameIn->format = AV_PIX_FMT_NV12;
@@ -3057,8 +3047,8 @@ bool CFFmpegPostproc::AddPicture(CVaapiDecodedPicture &inPic)
   m_pFilterFrameIn->data[3] = NULL;
   m_pFilterFrameIn->pkt_size = image.data_size;
 
-  CheckSuccess(vaUnmapBuffer(m_config.dpy, image.buf));
-  CheckSuccess(vaDestroyImage(m_config.dpy,image.image_id));
+  CheckSuccess(vaUnmapBuffer(m_config.dpy, image.buf), "vaUnmapBuffer");
+  CheckSuccess(vaDestroyImage(m_config.dpy, image.image_id), "vaDestroyImage");
 
   if (m_diMethod == VS_INTERLACEMETHOD_DEINTERLACE)
   {
@@ -3195,11 +3185,11 @@ void CFFmpegPostproc::Discard(COutput *output, ReadyToDispose cb)
     (m_pOut->*m_cbDispose)(this);
 }
 
-bool CFFmpegPostproc::CheckSuccess(VAStatus status)
+bool CFFmpegPostproc::CheckSuccess(VAStatus status, const std::string& function)
 {
   if (status != VA_STATUS_SUCCESS)
   {
-    CLog::Log(LOGERROR, "VAAPI - Error: %s(%d)", vaErrorStr(status), status);
+    CLog::Log(LOGERROR, "VAAPI/ffpp error: {} ({})", function, vaErrorStr(status), status);
     return false;
   }
   return true;

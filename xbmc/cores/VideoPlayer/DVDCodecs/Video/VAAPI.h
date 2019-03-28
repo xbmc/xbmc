@@ -264,7 +264,7 @@ protected:
   void Flush();
   void EnsureBufferPool();
   void ReleaseBufferPool(bool precleanup = false);
-  bool CheckSuccess(VAStatus status);
+  bool CheckSuccess(VAStatus status, const std::string& function);
   void ReadyForDisposal(CPostproc *pp);
   CEvent m_outMsgEvent;
   CEvent *m_inMsgEvent;
@@ -330,7 +330,7 @@ private:
   bool CreateContext();
   void DestroyContext();
   void QueryCaps();
-  bool CheckSuccess(VAStatus status);
+  bool CheckSuccess(VAStatus status, const std::string& function);
   bool IsValidDecoder(CDecoder *decoder);
   void SetValidDRMVaDisplayFromRenderNode();
   static CVAAPIContext *m_context;
@@ -396,7 +396,7 @@ protected:
   void FiniVAAPIOutput();
   void ReturnRenderPicture(CVaapiRenderPicture *renderPic);
   long ReleasePicReference();
-  bool CheckSuccess(VAStatus status);
+  bool CheckSuccess(VAStatus status, const std::string& function);
 
   enum EDisplayState
   { VAAPI_OPEN
@@ -498,7 +498,7 @@ public:
   bool UseVideoSurface() override;
   void Discard(COutput *output, ReadyToDispose cb) override;
 protected:
-  bool CheckSuccess(VAStatus status);
+  bool CheckSuccess(VAStatus status, const std::string& function);
   void Dispose();
   void Advance();
   VAConfigID m_configId;
@@ -533,7 +533,7 @@ public:
   bool UseVideoSurface() override;
   void Discard(COutput *output, ReadyToDispose cb) override;
 protected:
-  bool CheckSuccess(VAStatus status);
+  bool CheckSuccess(VAStatus status, const std::string& function);
   void Close();
   DllLibSSE4 m_dllSSE4;
   uint8_t *m_cache;
