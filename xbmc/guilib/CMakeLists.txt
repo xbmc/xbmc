@@ -134,9 +134,11 @@ set(HEADERS DDSImage.h
             GUIWrappingListContainer.h
             IAudioDeviceChangedCallback.h
             IDirtyRegionSolver.h
+            IGUIComponent.h
             IGUIContainer.h
             iimage.h
             imagefactory.h
+            IMsgHandler.h
             IMsgTargetCallback.h
             IRenderingCallback.h
             ISliderCallback.h
