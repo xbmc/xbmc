@@ -108,11 +108,4 @@ cross-platform logging system.
 #include "PltXbox360.h"
 #include "PltMediaConnect.h"
 
-#include "PltDownloader.h"
-#include "PltStreamPump.h"
-#include "PltFrameBuffer.h"
-#include "PltFrameServer.h"
-#include "PltFrameStream.h"
-#include "PltRingBufferStream.h"
-
 #endif /* _PLATINUM_H_ */
