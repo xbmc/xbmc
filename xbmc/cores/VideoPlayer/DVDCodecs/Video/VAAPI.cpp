@@ -1862,6 +1862,7 @@ bool COutput::Init()
   m_config.processInfo->SetDeinterlacingMethodDefault(EINTERLACEMETHOD::VS_INTERLACEMETHOD_VAAPI_BOB);
 
   m_vaError = false;
+  m_seenInterlaced = false;
 
   return true;
 }
@@ -1982,9 +1983,13 @@ void COutput::InitCycle()
 
   EINTERLACEMETHOD method = m_config.processInfo->GetVideoSettings().m_InterlaceMethod;
   bool interlaced = m_currentPicture.DVDPic.iFlags & DVP_FLAG_INTERLACED;
+  // Remember whether any interlaced frames were encountered already.
+  // If this is the case, the deinterlace method will never automatically be switched to NONE again in
+  // order to not change deint methods every few frames in PAFF streams.
+  m_seenInterlaced = m_seenInterlaced || interlaced;
 
   if (!(flags & DVD_CODEC_CTRL_NO_POSTPROC) &&
-      interlaced &&
+      m_seenInterlaced &&
       method != VS_INTERLACEMETHOD_NONE)
   {
     if (!m_config.processInfo->Supports(method))
