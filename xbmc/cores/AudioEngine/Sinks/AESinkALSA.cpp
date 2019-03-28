@@ -1153,10 +1153,14 @@ void CAESinkALSA::EnumerateDevicesEx(AEDeviceInfoList &list, bool force)
 
       /* Do not enumerate "default", it is already enumerated above. */
 
-      /* Do not enumerate the sysdefault or surroundXX devices, those are
-       * always accompanied with a "front" device and it is handled above
-       * as "@". The below devices will be automatically used if available
-       * for a "@" device. */
+      /* Do not enumerate the surroundXX devices, those are always accompanied
+       * with a "front" device and it is handled above as "@". The below
+       * devices plus sysdefault will be automatically used if available
+       * for a "@" device.
+       * sysdefault devices are enumerated as not all cards have front/surround
+       * devices. For cards with front/surround devices the sysdefault
+       * entry will be removed in a second pass after enumeration.
+       */
 
       /* Ubuntu has patched their alsa-lib so that "defaults.namehint.extended"
        * defaults to "on" instead of upstream "off", causing lots of unwanted
@@ -1165,7 +1169,6 @@ void CAESinkALSA::EnumerateDevicesEx(AEDeviceInfoList &list, bool force)
        * "plughw", "dsnoop"). */
 
       else if (baseName != "default"
-            && baseName != "sysdefault"
             && baseName != "surround40"
             && baseName != "surround41"
             && baseName != "surround50"
@@ -1198,6 +1201,32 @@ void CAESinkALSA::EnumerateDevicesEx(AEDeviceInfoList &list, bool force)
     /* Otherwise use the discovered name or (unlikely) "Default" */
     else if (list[0].m_displayName.empty())
       list[0].m_displayName = "Default";
+  }
+
+  /* cards with surround entries where sysdefault should be removed */
+  std::set<std::string> cardsWithSurround;
+
+  for (AEDeviceInfoList::iterator it1 = list.begin(); it1 != list.end(); ++it1)
+  {
+    std::string baseName = it1->m_deviceName.substr(0, it1->m_deviceName.find(':'));
+    std::string card = GetParamFromName(it1->m_deviceName, "CARD");
+    if (baseName == "@" && !card.empty())
+      cardsWithSurround.insert(card);
+  }
+
+  if (!cardsWithSurround.empty())
+  {
+    /* remove sysdefault entries where we already have a surround entry */
+    AEDeviceInfoList::iterator iter = list.begin();
+    while (iter != list.end())
+    {
+      std::string baseName = iter->m_deviceName.substr(0, iter->m_deviceName.find(':'));
+      std::string card = GetParamFromName(iter->m_deviceName, "CARD");
+      if (baseName == "sysdefault" && cardsWithSurround.find(card) != cardsWithSurround.end())
+        iter = list.erase(iter);
+      else
+        iter++;
+    }
   }
 
   /* lets check uniqueness, we may need to append DEV or CARD to DisplayName */
