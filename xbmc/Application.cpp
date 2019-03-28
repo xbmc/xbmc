@@ -671,6 +671,8 @@ bool CApplication::CreateGUI()
 
   m_pGUI.reset(new CGUIComponent());
   m_pGUI->Init();
+  m_pGUI->AddMsgTarget(this);
+  m_pGUI->AddMsgTarget(&g_fontManager);
 
   // Splash requires gui component!!
   CServiceBroker::GetRenderSystem()->ShowSplash("");
@@ -1313,9 +1315,6 @@ bool CApplication::LoadSkin(const std::string& skinID)
   CLog::Log(LOGDEBUG,"Load Skin XML: %.2fms", 1000.f * (end - start) / freq);
 
   CLog::Log(LOGINFO, "  initialize new skin...");
-  CServiceBroker::GetGUI()->GetWindowManager().AddMsgTarget(this);
-  CServiceBroker::GetGUI()->GetWindowManager().AddMsgTarget(&CServiceBroker::GetPlaylistPlayer());
-  CServiceBroker::GetGUI()->GetWindowManager().AddMsgTarget(&g_fontManager);
   CServiceBroker::GetGUI()->GetWindowManager().SetCallback(*this);
   //@todo should be done by GUIComponents
   CServiceBroker::GetGUI()->GetWindowManager().Initialize();

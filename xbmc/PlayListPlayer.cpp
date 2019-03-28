@@ -46,6 +46,10 @@ CPlayListPlayer::CPlayListPlayer(void)
     repeatState = REPEAT_NONE;
   m_iFailedSongs = 0;
   m_failedSongsStart = 0;
+
+  CGUIComponent *pGUI = CServiceBroker::GetGUI();
+  if (pGUI)
+    pGUI->AddMsgTarget(this);
 }
 
 CPlayListPlayer::~CPlayListPlayer(void)
