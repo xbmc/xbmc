@@ -150,7 +150,7 @@ using namespace PVR;
 using namespace PERIPHERALS;
 using namespace MESSAGING;
 
-CGUIWindowManager::CGUIWindowManager()
+CGUIWindowManager::CGUIWindowManager(CGUIComponent *gui) : m_pGUI(gui)
 {
   m_pCallback = nullptr;
   m_iNested = 0;
@@ -465,20 +465,13 @@ bool CGUIWindowManager::SendMessage(CGUIMessage& message)
 {
   bool handled = false;
 //  CLog::Log(LOGDEBUG,"SendMessage: mess=%d send=%d control=%d param1=%d", message.GetMessage(), message.GetSenderId(), message.GetControlId(), message.GetParam1());
-  // Send the message to all none window targets
-  for (int i = 0; i < int(m_vecMsgTargets.size()); i++)
-  {
-    IMsgTargetCallback* pMsgTarget = m_vecMsgTargets[i];
 
-    if (pMsgTarget)
-    {
-      if (pMsgTarget->OnMessage( message )) handled = true;
-    }
-  }
+  // Send the message to all none window targets
+  handled = m_pGUI->ProcessMsgHooks(message);
 
   //  A GUI_MSG_NOTIFY_ALL is send to any active modal dialog
   //  and all windows whether they are active or not
-  if (message.GetMessage()==GUI_MSG_NOTIFY_ALL)
+  if (message.GetMessage() == GUI_MSG_NOTIFY_ALL)
   {
     CSingleLock lock(CServiceBroker::GetWinSystem()->GetGfxContext());
 
@@ -554,8 +547,8 @@ bool CGUIWindowManager::SendMessage(CGUIMessage& message)
 bool CGUIWindowManager::SendMessage(CGUIMessage& message, int window)
 {
   if (window == 0)
-    // send to no specified windows.
     return SendMessage(message);
+
   CGUIWindow* pWindow = GetWindow(window);
   if(pWindow)
     return pWindow->OnMessage(message);
@@ -1331,8 +1324,6 @@ void CGUIWindowManager::DeInitialize()
   }
   UnloadNotOnDemandWindows();
 
-  m_vecMsgTargets.erase( m_vecMsgTargets.begin(), m_vecMsgTargets.end() );
-
   // destroy our custom windows...
   for (int i = 0; i < int(m_vecCustomWindows.size()); i++)
   {
@@ -1478,11 +1469,6 @@ int CGUIWindowManager::RemoveThreadMessageByMessageIds(int *pMessageIDList)
     }
   }
   return removedMsgCount;
-}
-
-void CGUIWindowManager::AddMsgTarget(IMsgTargetCallback* pMsgTarget)
-{
-  m_vecMsgTargets.emplace_back(pMsgTarget);
 }
 
 int CGUIWindowManager::GetActiveWindow() const

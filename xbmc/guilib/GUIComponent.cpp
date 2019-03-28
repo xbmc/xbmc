@@ -15,12 +15,13 @@
 #include "ServiceBroker.h"
 #include "StereoscopicsManager.h"
 #include "TextureManager.h"
+#include "GUIMessage.h"
 #include "URL.h"
 #include "dialogs/GUIDialogYesNo.h"
 
 CGUIComponent::CGUIComponent()
 {
-  m_pWindowManager.reset(new CGUIWindowManager());
+  m_pWindowManager.reset(new CGUIWindowManager(this));
   m_pTextureManager.reset(new CGUITextureManager());
   m_pLargeTextureManager.reset(new CGUILargeTextureManager());
   m_stereoscopicsManager.reset(new CStereoscopicsManager());
@@ -40,8 +41,7 @@ void CGUIComponent::Init()
   m_stereoscopicsManager->Initialize();
   m_guiInfoManager->Initialize();
 
-  //! @todo This is something we need to change
-  m_pWindowManager->AddMsgTarget(m_stereoscopicsManager.get());
+  AddMsgTarget(m_stereoscopicsManager.get());
 
   CServiceBroker::RegisterGUI(this);
 }
@@ -102,4 +102,22 @@ bool CGUIComponent::ConfirmDelete(std::string path)
       return true;
   }
   return false;
+}
+
+void CGUIComponent::AddMsgTarget(IMsgTargetCallback* pMsgTarget)
+{
+  if (std::find(m_msgTargets.begin(), m_msgTargets.end(), pMsgTarget) == m_msgTargets.end())
+    m_msgTargets.emplace_back(pMsgTarget);
+}
+
+bool CGUIComponent::ProcessMsgHooks(CGUIMessage& message)
+{
+  bool handled = false;
+
+  for (const auto& target : m_msgTargets)
+  {
+    if (target->OnMessage(message))
+      handled = true;
+  }
+  return handled;
 }
