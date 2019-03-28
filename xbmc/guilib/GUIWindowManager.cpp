@@ -24,6 +24,7 @@
 #include "input/Key.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
+#include "IMsgHandler.h"
 
 #include "windows/GUIWindowHome.h"
 #include "events/windows/GUIWindowEventLog.h"
@@ -150,7 +151,7 @@ using namespace PVR;
 using namespace PERIPHERALS;
 using namespace MESSAGING;
 
-CGUIWindowManager::CGUIWindowManager(CGUIComponent *gui) : m_pGUI(gui)
+CGUIWindowManager::CGUIWindowManager(IMsgHandler *gui) : m_pGUI(gui)
 {
   m_pCallback = nullptr;
   m_iNested = 0;

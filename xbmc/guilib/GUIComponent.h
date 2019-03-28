@@ -11,6 +11,7 @@
 #include <memory>
 #include <string>
 #include <vector>
+#include "IMsgHandler.h"
 
 class CGUIWindowManager;
 class CGUITextureManager;
@@ -22,9 +23,8 @@ class CGUIAudioManager;
 class IMsgTargetCallback;
 class CGUIMessage;
 
-class CGUIComponent
+class CGUIComponent : public IMsgHandler
 {
-  friend CGUIWindowManager;
 public:
   CGUIComponent();
   virtual ~CGUIComponent();
@@ -42,9 +42,10 @@ public:
   bool ConfirmDelete(std::string path);
 
   void AddMsgTarget(IMsgTargetCallback* pMsgTarget);
-
+  
+  bool ProcessMsgHooks(CGUIMessage& message) override;
+  
 protected:
-  bool ProcessMsgHooks(CGUIMessage& message);
 
   // members are pointers in order to avoid includes
   std::unique_ptr<CGUIWindowManager> m_pWindowManager;

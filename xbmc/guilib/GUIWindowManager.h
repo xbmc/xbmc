@@ -21,7 +21,7 @@
 
 class CGUIDialog;
 class CGUIMediaWindow;
-class CGUIComponent;
+class IMsgHandler;
 
 #ifdef TARGET_WINDOWS_STORE
 #pragma pack(push, 8)
@@ -50,7 +50,7 @@ class CGUIWindowManager : public KODI::MESSAGING::IMessageTarget
   friend CGUIDialog;
   friend CGUIMediaWindow;
 public:
-  CGUIWindowManager(CGUIComponent *gui);
+  CGUIWindowManager(IMsgHandler *gui);
   ~CGUIWindowManager() override;
   bool SendMessage(CGUIMessage& message);
   bool SendMessage(int message, int senderID, int destID, int param1 = 0, int param2 = 0);
@@ -247,7 +247,7 @@ private:
 
   bool HandleAction(const CAction &action) const;
 
-  CGUIComponent *m_pGUI = nullptr;
+  IMsgHandler *m_pGUI = nullptr;
   std::unordered_map<int, CGUIWindow*> m_mapWindows;
   std::vector<CGUIWindow*> m_vecCustomWindows;
   std::vector<CGUIWindow*> m_activeDialogs;
