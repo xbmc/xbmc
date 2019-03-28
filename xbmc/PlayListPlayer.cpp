@@ -47,7 +47,7 @@ CPlayListPlayer::CPlayListPlayer(void)
   m_iFailedSongs = 0;
   m_failedSongsStart = 0;
 
-  CGUIComponent *pGUI = CServiceBroker::GetGUI();
+  IGUIComponent *pGUI = CServiceBroker::GetGUI();
   if (pGUI)
     pGUI->AddMsgTarget(this);
 }

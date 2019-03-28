@@ -112,7 +112,7 @@ void CPVRGUIInfo::Stop(void)
   StopThread();
   CServiceBroker::GetPVRManager().UnregisterObserver(this);
 
-  CGUIComponent* gui = CServiceBroker::GetGUI();
+  IGUIComponent* gui = CServiceBroker::GetGUI();
   if (gui)
   {
     gui->GetInfoManager().UnregisterInfoProvider(this);
@@ -142,7 +142,7 @@ void CPVRGUIInfo::Process(void)
   {
     if (!m_bRegistered)
     {
-      CGUIComponent* gui = CServiceBroker::GetGUI();
+      IGUIComponent* gui = CServiceBroker::GetGUI();
       if (gui)
       {
         gui->GetInfoManager().RegisterInfoProvider(this);

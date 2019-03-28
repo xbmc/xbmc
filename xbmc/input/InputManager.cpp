@@ -679,7 +679,7 @@ bool CInputManager::AlwaysProcess(const CAction& action)
 bool CInputManager::ExecuteInputAction(const CAction &action)
 {
   bool bResult = false;
-  CGUIComponent* gui = CServiceBroker::GetGUI();
+  IGUIComponent* gui = CServiceBroker::GetGUI();
 
   // play sound before the action unless the button is held,
   // where we execute after the action as held actions aren't fired every time.

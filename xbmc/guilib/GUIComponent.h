@@ -12,6 +12,7 @@
 #include <string>
 #include <vector>
 #include "IMsgHandler.h"
+#include "IGUIComponent.h"
 
 class CGUIWindowManager;
 class CGUITextureManager;
@@ -23,25 +24,25 @@ class CGUIAudioManager;
 class IMsgTargetCallback;
 class CGUIMessage;
 
-class CGUIComponent : public IMsgHandler
+class CGUIComponent : public IMsgHandler, public IGUIComponent
 {
 public:
   CGUIComponent();
   virtual ~CGUIComponent();
-  void Init();
-  void Deinit();
+  void Init() override;
+  void Deinit() override;
 
-  CGUIWindowManager& GetWindowManager();
-  CGUITextureManager& GetTextureManager();
-  CGUILargeTextureManager& GetLargeTextureManager();
-  CStereoscopicsManager &GetStereoscopicsManager();
-  CGUIInfoManager &GetInfoManager();
-  CGUIColorManager &GetColorManager();
-  CGUIAudioManager &GetAudioManager();
+  CGUIWindowManager& GetWindowManager() override;
+  CGUITextureManager& GetTextureManager() override;
+  CGUILargeTextureManager& GetLargeTextureManager() override;
+  CStereoscopicsManager &GetStereoscopicsManager() override;
+  CGUIInfoManager &GetInfoManager() override;
+  CGUIColorManager &GetColorManager() override;
+  CGUIAudioManager &GetAudioManager() override;
 
-  bool ConfirmDelete(std::string path);
+  bool ConfirmDelete(std::string path) override;
 
-  void AddMsgTarget(IMsgTargetCallback* pMsgTarget);
+  void AddMsgTarget(IMsgTargetCallback* pMsgTarget) override;
   
   bool ProcessMsgHooks(CGUIMessage& message) override;
   

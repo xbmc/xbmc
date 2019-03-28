@@ -140,7 +140,7 @@ TiXmlElement *CLibraryDirectory::LoadXML(const std::string &xmlFile)
 
   // check the condition
   std::string condition = XMLUtils::GetAttribute(xml, "visible");
-  CGUIComponent* gui = CServiceBroker::GetGUI();
+  IGUIComponent* gui = CServiceBroker::GetGUI();
   if (condition.empty() || (gui && gui->GetInfoManager().EvaluateBool(condition)))
     return xml;
 

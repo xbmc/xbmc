@@ -324,7 +324,7 @@ bool CProfileManager::LoadProfile(unsigned int index)
 
   CServiceBroker::GetInputManager().SetMouseEnabled(settings->GetBool(CSettings::SETTING_INPUT_ENABLEMOUSE));
 
-  CGUIComponent* gui = CServiceBroker::GetGUI();
+  IGUIComponent* gui = CServiceBroker::GetGUI();
   if (gui)
   {
     CGUIInfoManager& infoMgr = gui->GetInfoManager();
@@ -499,7 +499,7 @@ bool CProfileManager::DeleteProfile(unsigned int index)
   item->m_bIsFolder = true;
   item->Select(true);
 
-  CGUIComponent *gui = CServiceBroker::GetGUI();
+  IGUIComponent *gui = CServiceBroker::GetGUI();
   if (gui && gui->ConfirmDelete(item->GetPath()))
     CFileUtils::DeleteItem(item);
 

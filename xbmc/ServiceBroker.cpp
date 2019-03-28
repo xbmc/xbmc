@@ -205,14 +205,14 @@ CEventLog& CServiceBroker::GetEventLog()
   return m_pSettingsComponent->GetProfileManager()->GetEventLog();
 }
 
-CGUIComponent* CServiceBroker::m_pGUI = nullptr;
+IGUIComponent* CServiceBroker::m_pGUI = nullptr;
 
-CGUIComponent* CServiceBroker::GetGUI()
+IGUIComponent* CServiceBroker::GetGUI()
 {
   return m_pGUI;
 }
 
-void CServiceBroker::RegisterGUI(CGUIComponent *gui)
+void CServiceBroker::RegisterGUI(IGUIComponent *gui)
 {
   m_pGUI = gui;
 }

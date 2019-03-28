@@ -49,7 +49,7 @@ class CWeatherManager;
 class CPlayerCoreFactory;
 class CDatabaseManager;
 class CEventLog;
-class CGUIComponent;
+class IGUIComponent;
 class CAppInboundProtocol;
 class CSettingsComponent;
 class CDecoderFilterManager;
@@ -107,8 +107,8 @@ public:
   static CDatabaseManager &GetDatabaseManager();
   static CEventLog &GetEventLog();
 
-  static CGUIComponent* GetGUI();
-  static void RegisterGUI(CGUIComponent *gui);
+  static IGUIComponent* GetGUI();
+  static void RegisterGUI(IGUIComponent *gui);
   static void UnregisterGUI();
 
   static void RegisterSettingsComponent(CSettingsComponent *settings);
@@ -133,7 +133,7 @@ public:
 
 private:
   static std::shared_ptr<ANNOUNCEMENT::CAnnouncementManager> m_pAnnouncementManager;
-  static CGUIComponent* m_pGUI;
+  static IGUIComponent* m_pGUI;
   static CWinSystemBase* m_pWinSystem;
   static IAE* m_pActiveAE;
   static std::shared_ptr<CAppInboundProtocol> m_pAppPort;

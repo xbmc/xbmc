@@ -30,7 +30,7 @@ bool CUISoundsResource::IsInUse() const
 
 void CUISoundsResource::OnPostInstall(bool update, bool modal)
 {
-  CGUIComponent* gui = CServiceBroker::GetGUI();
+  IGUIComponent* gui = CServiceBroker::GetGUI();
   if (IsInUse() && gui)
     gui->GetAudioManager().Load();
 }
