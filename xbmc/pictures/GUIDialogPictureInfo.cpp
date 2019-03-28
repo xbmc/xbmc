@@ -10,6 +10,7 @@
 #include "GUIInfoManager.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
+#include "guilib/GUIMessage.h"
 #include "FileItem.h"
 #include "ServiceBroker.h"
 #include "input/Key.h"

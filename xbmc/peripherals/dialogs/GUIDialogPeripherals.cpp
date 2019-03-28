@@ -11,6 +11,7 @@
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/WindowIDs.h"
+#include "guilib/GUIMessage.h"
 #include "messaging/helpers/DialogOKHelper.h"
 #include "messaging/ApplicationMessenger.h"
 #include "peripherals/Peripherals.h"

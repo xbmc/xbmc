@@ -14,6 +14,7 @@
 #include "dialogs/GUIDialogMediaSource.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
+#include "guilib/GUIMessage.h"
 #include "FileItem.h"
 #include "settings/MediaSourceSettings.h"
 #include "input/Key.h"

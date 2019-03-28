@@ -16,6 +16,7 @@
 #include "guilib/GUIDialog.h"
 #include "guilib/GUIControl.h"
 #include "guilib/GUIComponent.h"
+#include "guilib/GUIMessage.h"
 #include "guilib/GUIWindowManager.h" //! @todo Remove me
 #include "guilib/WindowIDs.h"
 #include "input/actions/Action.h"

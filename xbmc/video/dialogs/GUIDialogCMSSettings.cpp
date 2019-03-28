@@ -14,6 +14,7 @@
 #include "addons/Skin.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderManager.h"
 #include "filesystem/Directory.h"
+#include "guilib/GUIMessage.h"
 #include "guilib/GUIWindowManager.h"
 #include "profiles/ProfileManager.h"
 #include "settings/Settings.h"

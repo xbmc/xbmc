@@ -18,6 +18,7 @@
 #include "guilib/IGUIContainer.h"
 #include "guilib/LocalizeStrings.h"
 #include "guilib/WindowIDs.h"
+#include "guilib/GUIMessage.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 

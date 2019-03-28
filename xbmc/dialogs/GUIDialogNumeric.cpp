@@ -14,6 +14,7 @@
 #include "guilib/GUIComponent.h"
 #include "guilib/GUILabelControl.h"
 #include "guilib/GUIWindowManager.h"
+#include "guilib/GUIMessage.h"
 #include "input/XBMC_vkeys.h"
 #include "utils/Digest.h"
 #include "utils/StringUtils.h"

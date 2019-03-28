@@ -12,6 +12,7 @@
 #include "ServiceBroker.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
+#include "guilib/GUIMessage.h"
 
 /*! \brief Switch to a given weather location.
  *  \param params The parameters.

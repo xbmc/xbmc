@@ -12,6 +12,7 @@
 #include "addons/binary-addons/AddonDll.h"
 #include "guilib/GUIFadeLabelControl.h"
 #include "guilib/GUIWindowManager.h"
+#include "guilib/GUIMessage.h"
 #include "utils/log.h"
 
 extern "C"

@@ -10,6 +10,7 @@
 #include "ServiceBroker.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
+#include "guilib/GUIMessage.h"
 #include "input/WindowTranslator.h"
 #include "utils/StringUtils.h"
 

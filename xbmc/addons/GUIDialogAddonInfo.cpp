@@ -22,6 +22,7 @@
 #include "games/GameUtils.h"
 #include "guilib/LocalizeStrings.h"
 #include "guilib/GUIComponent.h"
+#include "guilib/GUIMessage.h"
 #include "guilib/GUIWindowManager.h"
 #include "input/Key.h"
 #include "messaging/helpers/DialogHelper.h"

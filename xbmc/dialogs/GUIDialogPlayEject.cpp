@@ -9,6 +9,7 @@
 #include "GUIDialogPlayEject.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
+#include "guilib/GUIMessage.h"
 #include "storage/MediaManager.h"
 #include "utils/log.h"
 #include "utils/Variant.h"

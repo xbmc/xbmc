@@ -18,6 +18,7 @@
 #include "guilib/GUIRadioButtonControl.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
+#include "guilib/GUIMessage.h"
 #include "input/Key.h"
 #include "threads/SingleLock.h"
 #include "utils/StringUtils.h"
