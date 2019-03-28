@@ -7,10 +7,13 @@ if(X_FOUND AND XRANDR_FOUND)
 endif()
 
 # WiiRemote
-if(ENABLE_EVENTCLIENTS AND BLUETOOTH_FOUND)
-  find_package(CWiid QUIET)
-  if(CWIID_FOUND)
-    add_subdirectory(${CMAKE_SOURCE_DIR}/tools/EventClients/Clients/WiiRemote build/WiiRemote)
+if(ENABLE_EVENTCLIENTS)
+  find_package(PythonInterp)
+  if(BLUETOOTH_FOUND)
+    find_package(CWiid QUIET)
+    if(CWIID_FOUND)
+      add_subdirectory(${CMAKE_SOURCE_DIR}/tools/EventClients/Clients/WiiRemote build/WiiRemote)
+    endif()
   endif()
 endif()
 
