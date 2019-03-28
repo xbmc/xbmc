@@ -2588,7 +2588,7 @@ bool CVppPostproc::Filter(CVaapiProcessedPicture &outPic)
 
   // skip deinterlacing cycle if requested
   if ((m_step == 1) &&
-      ((outPic.DVDPic.iFlags & DVD_CODEC_CTRL_SKIPDEINT) || (m_vppMethod == VS_INTERLACEMETHOD_NONE)))
+      ((outPic.DVDPic.iFlags & DVD_CODEC_CTRL_SKIPDEINT) || !(outPic.DVDPic.iFlags & DVP_FLAG_INTERLACED) || (m_vppMethod == VS_INTERLACEMETHOD_NONE)))
   {
     Advance();
     return false;
@@ -2643,17 +2643,21 @@ bool CVppPostproc::Filter(CVaapiProcessedPicture &outPic)
   if (m_vppMethod != VS_INTERLACEMETHOD_NONE)
   {
     unsigned int flags = 0;
-    if (it->DVDPic.iFlags & DVP_FLAG_TOP_FIELD_FIRST)
-      flags = 0;
-    else
-      flags = VA_DEINTERLACING_BOTTOM_FIELD_FIRST | VA_DEINTERLACING_BOTTOM_FIELD;
 
-    if (m_step)
+    if (it->DVDPic.iFlags & DVP_FLAG_INTERLACED)
     {
-      if (flags & VA_DEINTERLACING_BOTTOM_FIELD)
-        flags &= ~VA_DEINTERLACING_BOTTOM_FIELD;
+      if (it->DVDPic.iFlags & DVP_FLAG_TOP_FIELD_FIRST)
+        flags = 0;
       else
-        flags |= VA_DEINTERLACING_BOTTOM_FIELD;
+        flags = VA_DEINTERLACING_BOTTOM_FIELD_FIRST | VA_DEINTERLACING_BOTTOM_FIELD;
+
+      if (m_step)
+      {
+        if (flags & VA_DEINTERLACING_BOTTOM_FIELD)
+          flags &= ~VA_DEINTERLACING_BOTTOM_FIELD;
+        else
+          flags |= VA_DEINTERLACING_BOTTOM_FIELD;
+      }
     }
     if (!CheckSuccess(vaMapBuffer(m_config.dpy, m_filter, (void**) &filterParams), "vaMapBuffer"))
     {
