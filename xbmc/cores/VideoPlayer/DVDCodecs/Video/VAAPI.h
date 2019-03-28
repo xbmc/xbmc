@@ -264,7 +264,6 @@ protected:
   void Flush();
   void EnsureBufferPool();
   void ReleaseBufferPool(bool precleanup = false);
-  bool CheckSuccess(VAStatus status, const std::string& function);
   void ReadyForDisposal(CPostproc *pp);
   CEvent m_outMsgEvent;
   CEvent *m_inMsgEvent;
@@ -274,7 +273,6 @@ protected:
 
   // extended state variables for state machine
   int m_extTimeout;
-  bool m_vaError;
   /// \brief Whether at least one interlaced frame was encountered in the video stream (indicating that more interlaced frames could potentially follow)
   bool m_seenInterlaced;
   CVaapiConfig m_config;

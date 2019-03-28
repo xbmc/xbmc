@@ -1547,16 +1547,8 @@ void COutput::StateMachine(int signal, Protocol *port, Message *msg)
 
           // set initial number of
           EnsureBufferPool();
-          if (!m_vaError)
-          {
-            m_state = O_TOP_CONFIGURED_IDLE;
-            msg->Reply(COutputControlProtocol::ACC);
-          }
-          else
-          {
-            m_state = O_TOP_ERROR;
-            msg->Reply(COutputControlProtocol::ERROR);
-          }
+          m_state = O_TOP_CONFIGURED_IDLE;
+          msg->Reply(COutputControlProtocol::ACC);
           return;
         default:
           break;
@@ -1747,11 +1739,6 @@ void COutput::StateMachine(int signal, Protocol *port, Message *msg)
               m_dataPort.SendInMessage(COutputDataProtocol::PICTURE, &outPic, sizeof(outPic));
             }
             m_config.stats->DecProcessed();
-            if (m_vaError)
-            {
-              m_state = O_TOP_ERROR;
-              return;
-            }
           }
           m_state = O_TOP_CONFIGURED_IDLE;
           m_extTimeout = 0;
@@ -1861,7 +1848,6 @@ bool COutput::Init()
   m_config.processInfo->UpdateDeinterlacingMethods(deintMethods);
   m_config.processInfo->SetDeinterlacingMethodDefault(EINTERLACEMETHOD::VS_INTERLACEMETHOD_VAAPI_BOB);
 
-  m_vaError = false;
   m_seenInterlaced = false;
 
   return true;
@@ -2217,17 +2203,6 @@ void COutput::ReadyForDisposal(CPostproc *pp)
       break;
     }
   }
-}
-
-bool COutput::CheckSuccess(VAStatus status, const std::string& function)
-{
-  if (status != VA_STATUS_SUCCESS)
-  {
-    CLog::Log(LOGERROR, "VAAPI/output {} error: {} ({})", function, vaErrorStr(status), status);
-    m_vaError = true;
-    return false;
-  }
-  return true;
 }
 
 //-----------------------------------------------------------------------------
