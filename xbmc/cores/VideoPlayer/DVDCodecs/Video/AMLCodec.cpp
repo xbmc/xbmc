@@ -2405,7 +2405,13 @@ void CAMLCodec::SetVideoRate(int videoRate)
 
 unsigned int CAMLCodec::GetDecoderVideoRate()
 {
+  if (m_speed != DVD_PLAYSPEED_NORMAL || m_pollDevice < 0)
+    return 0;
+
   struct vdec_status vs;
   m_dll->codec_get_vdec_state(&am_private->vcodec, &vs);
-  return static_cast<unsigned int>(0.5 + (static_cast<float>(UNIT_FREQ) / static_cast<float>(vs.fps)));
+  if (vs.fps > 0)
+    return static_cast<unsigned int>(0.5 + (static_cast<float>(UNIT_FREQ) / static_cast<float>(vs.fps)));
+  else
+    return 0;
 }
