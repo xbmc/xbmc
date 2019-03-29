@@ -16,7 +16,7 @@
 
 extern "C"
 {
-#include "lib/cpluff/libcpluff/cpluff.h"
+#include <cpluff.h>
 }
 
 namespace ADDON
