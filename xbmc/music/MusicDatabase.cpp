@@ -20,6 +20,8 @@
 #include "dialogs/GUIDialogKaiToast.h"
 #include "dialogs/GUIDialogProgress.h"
 #include "dialogs/GUIDialogSelect.h"
+#include "events/EventLog.h"
+#include "events/NotificationEvent.h"
 #include "FileItem.h"
 #include "filesystem/Directory.h"
 #include "filesystem/DirectoryCache.h"
@@ -52,6 +54,7 @@
 #include "utils/FileUtils.h"
 #include "utils/LegacyPathTranslation.h"
 #include "utils/log.h"
+#include "utils/MathUtils.h"
 #include "utils/Random.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
@@ -9906,41 +9909,36 @@ bool CMusicDatabase::ExportSongHistory(TiXmlNode* pNode, CGUIDialogProgress* pro
   return false;
 }
 
-void CMusicDatabase::ImportFromXML(const std::string &xmlFile)
-{
-  CGUIDialogProgress *progress = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogProgress>(WINDOW_DIALOG_PROGRESS);
+void CMusicDatabase::ImportFromXML(const std::string& xmlFile, CGUIDialogProgress* progressDialog)
+{  
   try
   {
     if (NULL == m_pDB.get()) return;
     if (NULL == m_pDS.get()) return;
 
     CXBMCTinyXML xmlDoc;
-    if (!xmlDoc.LoadFile(xmlFile))
+    if (!xmlDoc.LoadFile(xmlFile) && progressDialog)
+    {
+      HELPERS::ShowOKDialogLines(CVariant{ 20197 }, CVariant{ 38354 }); //"Unable to read xml file"
       return;
+    }
 
     TiXmlElement *root = xmlDoc.RootElement();
     if (!root) return;
 
-    if (progress)
-    {
-      progress->SetHeading(CVariant{20197});
-      progress->SetLine(0, CVariant{649});
-      progress->SetLine(1, CVariant{330});
-      progress->SetLine(2, CVariant{""});
-      progress->SetPercentage(0);
-      progress->Open();
-      progress->ShowProgressBar(true);
-    }
-
     TiXmlElement *entry = root->FirstChildElement();
     int current = 0;
     int total = 0;
-    // first count the number of items...
+    int songtotal = 0;
+    // Count the number of artists, albums and songs
     while (entry)
     {
       if (strnicmp(entry->Value(), "artist", 6)==0 ||
           strnicmp(entry->Value(), "album", 5)==0)
         total++;
+      else if (strnicmp(entry->Value(), "song", 4) == 0)
+        songtotal++;
+
       entry = entry->NextSiblingElement();
     }
 
@@ -9988,20 +9986,24 @@ void CMusicDatabase::ImportFromXML(const std::string &xmlFile)
         current++;
       }
       entry = entry ->NextSiblingElement();
-      if (progress && total)
+      if (progressDialog && total)
       {
-        progress->SetPercentage(current * 100 / total);
-        progress->SetLine(2, CVariant{std::move(strTitle)});
-        progress->Progress();
-        if (progress->IsCanceled())
+        progressDialog->SetPercentage(current * 100 / total);
+        progressDialog->SetLine(2, CVariant{std::move(strTitle)});
+        progressDialog->Progress();
+        if (progressDialog->IsCanceled())
         {
-          progress->Close();
           RollbackTransaction();
           return;
         }
       }
     }
     CommitTransaction();
+
+    // Import song playback history <song> entries found
+    if (songtotal > 0)
+      if (!ImportSongHistory(xmlFile, songtotal, progressDialog))
+        return;
 
     CGUIComponent* gui = CServiceBroker::GetGUI();
     if (gui)
@@ -10012,8 +10014,306 @@ void CMusicDatabase::ImportFromXML(const std::string &xmlFile)
     CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
     RollbackTransaction();
   }
-  if (progress)
-    progress->Close();
+  if (progressDialog)
+    progressDialog->Close();
+}
+
+bool CMusicDatabase::ImportSongHistory(const std::string& xmlFile, const int total,  CGUIDialogProgress* progressDialog)
+{  
+  bool bHistSongExists = false;
+  try
+  {
+    CXBMCTinyXML xmlDoc;
+    if (!xmlDoc.LoadFile(xmlFile))
+      return false;
+
+    TiXmlElement* root = xmlDoc.RootElement();
+    if (!root) 
+      return false;
+
+    TiXmlElement* entry = root->FirstChildElement();
+    int current = 0;
+    
+    if (progressDialog)
+    {
+      progressDialog->SetLine(1, CVariant{38350}); //"Importing song playback history"
+      progressDialog->SetLine(2, CVariant{ "" });
+    }
+   
+    // As can be many songs do in db, not song at a time which would be slow
+    // Convert xml entries into a SQL bulk insert statement
+    std::string strSQL;    
+    entry = root->FirstChildElement();
+    while (entry)
+    {
+      std::string strArtistDisp;
+      std::string strTitle;
+      int iTrack;
+      std::string strFilename;
+      std::string strMusicBrainzTrackID;
+      std::string strAlbum;
+      std::string strMusicBrainzAlbumID;
+      std::string strAlbumArtistDisp;
+      int iTimesplayed;
+      std::string lastplayed;
+      int iUserrating = 0;
+      float fRating = 0.0;
+      int iVotes;
+      std::string strSQLSong;
+      if (strnicmp(entry->Value(), "song", 4) == 0)
+      {      
+        XMLUtils::GetString(entry, "artistdesc", strArtistDisp);
+        XMLUtils::GetString(entry, "title", strTitle);
+        XMLUtils::GetInt(entry, "track", iTrack);
+        XMLUtils::GetString(entry, "filename", strFilename);
+        XMLUtils::GetString(entry, "musicbrainztrackid", strMusicBrainzTrackID);
+        XMLUtils::GetString(entry, "albumtitle", strAlbum);
+        XMLUtils::GetString(entry, "musicbrainzalbumid", strMusicBrainzAlbumID);
+        XMLUtils::GetString(entry, "albumartistdesc", strAlbumArtistDisp);
+        XMLUtils::GetInt(entry, "timesplayed", iTimesplayed);
+        XMLUtils::GetString(entry, "lastplayed", lastplayed);
+        const TiXmlElement* rElement = entry->FirstChildElement("rating");
+        if (rElement)
+        {
+          float rating = 0;
+          float max_rating = 10;
+          XMLUtils::GetFloat(entry, "rating", rating);
+          if (rElement->QueryFloatAttribute("max", &max_rating) == TIXML_SUCCESS && max_rating >= 1)
+            rating *= (10.f / max_rating); // Normalise the value to between 0 and 10
+          if (rating > 10.f)
+            rating = 10.f;
+          fRating = rating;
+        }        
+        XMLUtils::GetInt(entry, "votes", iVotes);
+        const TiXmlElement* userrating = entry->FirstChildElement("userrating");
+        if (userrating)
+        {
+          float rating = 0;
+          float max_rating = 10;
+          XMLUtils::GetFloat(entry, "userrating", rating);
+          if (userrating->QueryFloatAttribute("max", &max_rating) == TIXML_SUCCESS && max_rating >= 1)
+            rating *= (10.f / max_rating); // Normalise the value to between 0 and 10
+          if (rating > 10.f)
+            rating = 10.f;
+          iUserrating = MathUtils::round_int(rating);
+        }
+
+        strSQLSong = PrepareSQL("(%d, %d, ", current + 1, iTrack);
+        strSQLSong += PrepareSQL("'%s', '%s', '%s', ", strArtistDisp.c_str(), strTitle.c_str(), strFilename.c_str());
+        if (strMusicBrainzTrackID.empty())
+          strSQLSong += PrepareSQL("NULL, ");
+        else
+          strSQLSong += PrepareSQL("'%s', ", strMusicBrainzTrackID.c_str());
+        strSQLSong += PrepareSQL("'%s', '%s', ", strAlbum.c_str(), strAlbumArtistDisp.c_str());
+        if (strMusicBrainzAlbumID.empty())
+          strSQLSong += PrepareSQL("NULL, ");
+        else
+          strSQLSong += PrepareSQL("'%s', ", strMusicBrainzAlbumID.c_str());
+        strSQLSong += PrepareSQL("%d, ", iTimesplayed);
+        if (lastplayed.empty())
+          strSQLSong += PrepareSQL("NULL, ");
+        else
+          strSQLSong += PrepareSQL("'%s', ", lastplayed.c_str());
+        strSQLSong += PrepareSQL("%.1f, %d, %d, -1, -1)", fRating, iVotes, iUserrating);
+
+        if (current > 0)
+          strSQLSong = ", " + strSQLSong;
+        strSQL += strSQLSong;
+        current++;
+      }
+
+      entry = entry->NextSiblingElement();
+
+      if ((current % 100) == 0 && progressDialog)
+      {
+        progressDialog->SetPercentage(current * 100 / total);
+        progressDialog->SetLine(3, CVariant{ std::move(strTitle) });
+        progressDialog->Progress();
+        if (progressDialog->IsCanceled())
+          return false;
+      }
+    }
+
+    CLog::Log(LOGINFO, "{0}: Create temporary HistSong table and insert {1} records", __FUNCTION__, total);
+    /* Can not use CREATE TEMPORARY TABLE as MySQL does not support updates of
+       song table using correlated subqueries to a temp table. An updatable join
+       to temp table would work in MySQL but SQLite not support updatable joins.
+    */
+    m_pDS->exec("CREATE TABLE HistSong ("
+      "idSongSrc INTEGER primary key, "
+      "strAlbum varchar(256), "
+      "strMusicBrainzAlbumID text, "
+      "strAlbumArtistDisp text, "
+      "strArtistDisp text, strTitle varchar(512), "
+      "iTrack INTEGER, strFileName text, strMusicBrainzTrackID text, "
+      "iTimesPlayed INTEGER, lastplayed varchar(20) default NULL, "
+      "rating FLOAT NOT NULL DEFAULT 0, votes INTEGER NOT NULL DEFAULT 0, "
+      "userrating INTEGER NOT NULL DEFAULT 0, "
+      "idAlbum INTEGER, idSong INTEGER)");
+    bHistSongExists = true;
+
+    strSQL = "INSERT INTO HistSong (idSongSrc, iTrack, strArtistDisp, strTitle, "
+      "strFileName, strMusicBrainzTrackID, "
+      "strAlbum, strAlbumArtistDisp, strMusicBrainzAlbumID, "
+      " iTimesPlayed, lastplayed, rating, votes, userrating, idAlbum, idSong) VALUES " + strSQL;
+    m_pDS->exec(strSQL);
+
+    if (progressDialog)
+    {
+      progressDialog->SetLine(2, CVariant{38351}); //"Matching data" 
+      progressDialog->SetLine(3, CVariant{ "" });
+      progressDialog->Progress();
+      if (progressDialog->IsCanceled())
+      {
+        m_pDS->exec("DROP TABLE HistSong");
+        return false;
+      }
+    }
+
+    BeginTransaction();
+    // Match albums first on mbid then artist string and album title, setting idAlbum 
+    strSQL = "UPDATE HistSong "
+      "SET idAlbum = (SELECT album.idAlbum FROM album "
+      "WHERE album.strMusicBrainzAlbumID = HistSong.strMusicBrainzAlbumID) "
+      "WHERE EXISTS(SELECT 1 FROM album "
+      "WHERE album.strMusicBrainzAlbumID = HistSong.strMusicBrainzAlbumID) AND idAlbum < 0";
+    m_pDS->exec(strSQL);
+
+    strSQL = "UPDATE HistSong "
+      "SET idAlbum = (SELECT album.idAlbum FROM album "
+      "WHERE HistSong.strAlbumArtistDisp = album.strArtistDisp AND HistSong.strAlbum = album.strAlbum) "
+      "WHERE EXISTS(SELECT 1 FROM album "
+      "WHERE HistSong.strAlbumArtistDisp = album.strArtistDisp AND HistSong.strAlbum = album.strAlbum)"
+      "AND idAlbum < 0";
+    m_pDS->exec(strSQL);
+    if (progressDialog)
+    {
+      progressDialog->Progress();
+      if (progressDialog->IsCanceled())
+      {
+        RollbackTransaction();
+        m_pDS->exec("DROP TABLE HistSong");
+        return false;
+      }
+    }
+
+    // Match songs on first on idAlbum, track and mbid, then idAlbum, track and title, setting idSong
+    strSQL = "UPDATE HistSong "
+      "SET idSong = (SELECT idsong FROM song "
+      "WHERE HistSong.idAlbum = song.idAlbum AND "
+      "HistSong.iTrack = song.iTrack AND "
+      "HistSong.strMusicBrainzTrackID = song.strMusicBrainzTrackID) "
+      "WHERE EXISTS(SELECT 1 FROM song "
+      "WHERE HistSong.idAlbum = song.idAlbum AND "
+      "HistSong.iTrack = song.iTrack AND "
+      "HistSong.strMusicBrainzTrackID = song.strMusicBrainzTrackID) AND idSong < 0";
+    m_pDS->exec(strSQL);
+
+    strSQL = "UPDATE HistSong "
+      "SET idSong = (SELECT idsong FROM song "
+      "WHERE HistSong.idAlbum = song.idAlbum AND "
+      "HistSong.iTrack = song.iTrack AND HistSong.strTitle = song.strTitle) "
+      "WHERE EXISTS(SELECT 1 FROM song "
+      "WHERE HistSong.idAlbum = song.idAlbum AND "
+      "HistSong.iTrack = song.iTrack AND HistSong.strTitle = song.strTitle) AND idSong < 0";
+    m_pDS->exec(strSQL);
+    CommitTransaction();
+    if (progressDialog)
+    {
+      progressDialog->Progress();
+      if (progressDialog->IsCanceled())
+      {
+        m_pDS->exec("DROP TABLE HistSong");
+        return false;
+      }
+    }
+
+    // Create an index to speed up the updates
+    m_pDS->exec("CREATE INDEX idxHistSong ON HistSong(idSong)");
+
+    // Log how many songs matched
+    int unmatched = static_cast<int>(strtol(GetSingleValue("SELECT COUNT(1) FROM HistSong WHERE idSong < 0", m_pDS).c_str(), nullptr, 10));
+    CLog::Log(LOGINFO, "{0}: Importing song history {1} of {2} songs matched", __FUNCTION__, total - unmatched,  total);
+
+    if (progressDialog)
+    {
+      progressDialog->SetLine(2, CVariant{38352}); //"Updating song playback history"
+      progressDialog->Progress();
+      if (progressDialog->IsCanceled())
+      {
+        m_pDS->exec("DROP TABLE HistSong"); // Drops index too
+        return false;
+      }
+    }
+
+    /* Update song table using the song ids we have matched. 
+      Use correlated subqueries as SQLite does not support updatable joins.
+      MySQL requires HistSong table not to be defined temporary for this. 
+    */
+    BeginTransaction();
+    // Times played and last played date(when count is greater)
+    strSQL = "UPDATE song SET iTimesPlayed = "
+      "(SELECT iTimesPlayed FROM HistSong WHERE HistSong.idSong = song.idSong), "
+      "lastplayed = "
+      "(SELECT lastplayed FROM HistSong WHERE HistSong.idSong = song.idSong) "
+      "WHERE  EXISTS(SELECT 1 FROM HistSong WHERE "
+      "HistSong.idSong = song.idSong AND HistSong.iTimesPlayed > song.iTimesPlayed)";
+    m_pDS->exec(strSQL);
+    
+    // User rating
+    strSQL = "UPDATE song SET userrating = "
+      "(SELECT userrating FROM HistSong WHERE HistSong.idSong = song.idSong) "
+      "WHERE  EXISTS(SELECT 1 FROM HistSong WHERE "
+      "HistSong.idSong = song.idSong AND HistSong.userrating > 0)";
+    m_pDS->exec(strSQL);
+    
+    // Rating and votes
+    strSQL = "UPDATE song SET rating = "
+      "(SELECT rating FROM HistSong WHERE HistSong.idSong = song.idSong), "
+      "votes = "
+      "(SELECT votes FROM HistSong WHERE HistSong.idSong = song.idSong) "
+      "WHERE  EXISTS(SELECT 1 FROM HistSong WHERE "
+      "HistSong.idSong = song.idSong AND HistSong.rating > 0)";
+    m_pDS->exec(strSQL);
+
+    if (progressDialog)
+    {
+      progressDialog->Progress();
+      if (progressDialog->IsCanceled())
+      {
+        RollbackTransaction();
+        m_pDS->exec("DROP TABLE HistSong");
+        return false;
+      }
+    }
+    CommitTransaction();
+
+    // Tidy up temp table (index also removed)
+    m_pDS->exec("DROP TABLE HistSong");
+    // Compact db to recover space as had to add/drop actual table
+    if (progressDialog)
+    {
+      progressDialog->SetLine(2, CVariant{ 331 });
+      progressDialog->Progress();
+    }
+    Compress(false);    
+
+    // Write event log entry
+    // "Importing song history {1} of {2} songs matched", total - unmatched, total)
+    std::string strLine = StringUtils::Format(g_localizeStrings.Get(38353).c_str(), total - unmatched, total);
+    CServiceBroker::GetEventLog().Add(
+      EventPtr(new CNotificationEvent(20197, strLine, EventLevel::Information)));
+
+    return true;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
+    RollbackTransaction();
+    if (bHistSongExists)
+      m_pDS->exec("DROP TABLE HistSong");
+  }
+  return false;
 }
 
 void CMusicDatabase::SetPropertiesFromArtist(CFileItem& item, const CArtist& artist)

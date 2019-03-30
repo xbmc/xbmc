@@ -44,6 +44,13 @@ public:
   void ExportLibrary(const CLibExportSettings& settings, bool showDialog = false);
 
   /*!
+  \brief Enqueue a music library import job.
+  \param[in] xmlFile    xml file to import
+  \param[in] showDialog Show a progress dialog while (asynchronously) exporting, otherwise export in synchronous
+  */
+  void ImportLibrary(const std::string& xmlFile, bool showDialog = false);
+
+  /*!
    \brief Enqueue a music library update job, scanning tags embedded in music files and optionally scraping additional data.
    \param[in] strDirectory Directory to scan or "" (empty string) for a global scan.
    \param[in] flags Flags for controlling the scanning process.  See xbmc/music/infoscanner/MusicInfoScanner.h for possible values.
