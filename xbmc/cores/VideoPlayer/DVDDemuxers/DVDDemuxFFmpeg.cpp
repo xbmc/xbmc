@@ -540,20 +540,28 @@ bool CDVDDemuxFFmpeg::Open(std::shared_ptr<CDVDInputStream> pInput, bool streami
       }
       else
       {
-        // skip programs without or empty audio/video streams
-        for (unsigned int i = 0; nProgram == UINT_MAX && i < m_pFormatContext->nb_programs; i++)
+        // select the program of the first audio or video stream packet found (FIFO)
+        AVStream *st;
+        unsigned int maxpkts = 25;
+        while (nProgram == UINT_MAX && maxpkts-- && (m_pkt.result = av_read_frame(m_pFormatContext, &m_pkt.pkt)) >= 0)
         {
-          for (unsigned int j = 0; j < m_pFormatContext->programs[i]->nb_stream_indexes; j++)
+          st = m_pFormatContext->streams[m_pkt.pkt.stream_index];
+          if (st->codecpar && (st->codecpar->codec_type == AVMEDIA_TYPE_VIDEO || st->codecpar->codec_type == AVMEDIA_TYPE_AUDIO))
           {
-            int idx = m_pFormatContext->programs[i]->stream_index[j];
-            AVStream *st = m_pFormatContext->streams[idx];
-            if ((st->codecpar->codec_type == AVMEDIA_TYPE_VIDEO && st->codec_info_nb_frames > 0) ||
-                (st->codecpar->codec_type == AVMEDIA_TYPE_AUDIO && st->codecpar->sample_rate > 0))
+            for (unsigned int i = 0; nProgram == UINT_MAX && i < m_pFormatContext->nb_programs; i++)
             {
-              nProgram = i;
-              break;
+              for (unsigned int j = 0; j < m_pFormatContext->programs[i]->nb_stream_indexes; j++)
+              {
+                if ((int)m_pFormatContext->programs[i]->stream_index[j] == m_pkt.pkt.stream_index)
+                {
+                  nProgram = i;
+                  break;
+                }
+              }
             }
           }
+          m_pkt.result = -1;
+          av_packet_unref(&m_pkt.pkt);
         }
       }
     }
