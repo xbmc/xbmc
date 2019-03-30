@@ -523,6 +523,14 @@
 							<thumb></thumb>
 							<visible>!String.IsEmpty(Skin.String(HomeAddonButton14))</visible>
 						</item>
+						<item>
+							<label>$INFO[system.addontitle(Skin.String(HomeAddonButton15))]</label>
+							<label2></label2>
+							<onclick>RunAddon($INFO[Skin.String(HomeAddonButton15)])</onclick>
+							<icon>$INFO[system.addonicon(Skin.String(HomeAddonButton15))]</icon>
+							<thumb></thumb>
+							<visible>!String.IsEmpty(Skin.String(HomeAddonButton15))</visible>
+						</item>
 					</content>
 				</control>
 			</control>
