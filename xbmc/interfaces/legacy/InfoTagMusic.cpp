@@ -127,6 +127,31 @@ namespace XBMCAddon
     {
       return infoTag->GetLyrics();
     }
+
+    String InfoTagMusic::getMusicBrainzTrackID()
+    {
+      return infoTag->GetMusicBrainzTrackID();
+    }
+
+    std::vector<String> InfoTagMusic::getMusicBrainzArtistID()
+    {
+      return infoTag->GetMusicBrainzArtistID();
+    }
+
+    String InfoTagMusic::getMusicBrainzAlbumID()
+    {
+      return infoTag->GetMusicBrainzAlbumID();
+    }
+
+    String InfoTagMusic::getMusicBrainzReleaseGroupID()
+    {
+      return infoTag->GetMusicBrainzReleaseGroupID();
+    }
+
+    std::vector<String> InfoTagMusic::getMusicBrainzAlbumArtistID()
+    {
+      return infoTag->GetMusicBrainzAlbumArtistID();
+    }
   }
 }
 
