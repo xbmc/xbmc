@@ -19,6 +19,7 @@
 #include "settings/lib/SettingsManager.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
+#include "view/ViewStateSettings.h"
 
 using namespace KODI::MESSAGING;
 
@@ -171,7 +172,7 @@ std::string CGUIDialogAddonSettings::GetSettingsLabel(std::shared_ptr<ISetting> 
 
 int CGUIDialogAddonSettings::GetSettingLevel() const
 {
-  return static_cast<int>(SettingLevel::Standard);
+  return static_cast<int>(CViewStateSettings::GetInstance().GetSettingLevel());
 }
 
 std::shared_ptr<CSettingSection> CGUIDialogAddonSettings::GetSection()
