@@ -144,7 +144,7 @@ TEST_F(TestZipFile, CorruptedFile)
   memset(&buf, 0, sizeof(buf));
   std::string reffilepath, strpathinzip, str;
   CFileItemList itemlist;
-  unsigned int size, i;
+  ssize_t size, i;
   int64_t count = 0;
 
   reffilepath = XBMC_REF_FILE_PATH("xbmc/filesystem/test/reffile.txt.zip");
@@ -192,7 +192,7 @@ TEST_F(TestZipFile, CorruptedFile)
       str = StringUtils::Format("%02X ", buf[i]);
       std::cout << str;
     }
-    while (i++ < sizeof(buf))
+    while (i++ < static_cast<ssize_t> (sizeof(buf)))
       std::cout << "   ";
     std::cout << " [";
     for (i = 0; i < size; i++)

@@ -137,7 +137,7 @@ TEST_F(TestRegExpLog, DumpOvector)
   CRegExp regex;
   std::string logfile, logstring;
   char buf[100];
-  unsigned int bytesread;
+  ssize_t bytesread;
   XFILE::CFile file;
 
   std::string appName = CCompileInfo::GetAppName();

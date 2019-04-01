@@ -52,7 +52,7 @@ TEST_F(TestFileFactory, Read)
 {
   XFILE::CFile file;
   std::string str;
-  unsigned int size, i;
+  ssize_t size, i;
   unsigned char buf[16];
   int64_t count = 0;
 
@@ -82,7 +82,7 @@ TEST_F(TestFileFactory, Read)
         str = StringUtils::Format("%02X ", buf[i]);
         std::cout << str;
       }
-      while (i++ < sizeof(buf))
+      while (i++ < static_cast<ssize_t> (sizeof(buf)))
         std::cout << "   ";
       std::cout << " [";
       for (i = 0; i < size; i++)
@@ -102,7 +102,7 @@ TEST_F(TestFileFactory, Write)
 {
   XFILE::CFile file, inputfile;
   std::string str;
-  unsigned int size, i;
+  size_t size, i;
   unsigned char buf[16];
   int64_t count = 0;
 

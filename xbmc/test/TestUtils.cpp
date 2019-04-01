@@ -134,7 +134,7 @@ XFILE::CFile *CXBMCTestUtils::CreateCorruptedFile(std::string const& strFileName
 {
   XFILE::CFile inputfile, *tmpfile = CreateTempFile(suffix);
   unsigned char buf[20], tmpchar;
-  unsigned int size, i;
+  ssize_t size, i;
 
   if (tmpfile && inputfile.Open(strFileName))
   {
