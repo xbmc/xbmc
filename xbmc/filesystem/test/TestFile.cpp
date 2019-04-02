@@ -17,10 +17,10 @@
 TEST(TestFile, Read)
 {
   const std::string newLine = CXBMCTestUtils::Instance().getNewLineCharacters();
-  const int size = 1616;
-  const int lines = 25;
-  int addPerLine = newLine.length() - 1;
-  int realSize = size + lines * addPerLine;
+  const size_t size = 1616;
+  const size_t lines = 25;
+  size_t addPerLine = newLine.length() - 1;
+  size_t realSize = size + lines * addPerLine;
 
   const std::string firstBuf  = "About" + newLine + "-----" + newLine + "XBMC is ";
   const std::string secondBuf = "an award-winning fre";
@@ -32,7 +32,7 @@ TEST(TestFile, Read)
   char buf[23];
   memset(buf, 0, sizeof(buf));
 
-  int currentPos;
+  size_t currentPos;
   ASSERT_TRUE(file.Open(
     XBMC_REF_FILE_PATH("/xbmc/filesystem/test/reffile.txt")));
   EXPECT_EQ(0, file.GetPosition());

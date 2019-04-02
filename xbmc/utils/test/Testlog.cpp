@@ -32,7 +32,7 @@ TEST_F(Testlog, Log)
 {
   std::string logfile, logstring;
   char buf[100];
-  unsigned int bytesread;
+  ssize_t bytesread;
   XFILE::CFile file;
   CRegExp regex;
 

@@ -329,7 +329,7 @@ TEST(TestStringUtils, RemoveCRLF)
 
 TEST(TestStringUtils, utf8_strlen)
 {
-  int ref, var;
+  size_t ref, var;
 
   ref = 9;
   var = StringUtils::utf8_strlen("ｔｅｓｔ＿ＵＴＦ８");
@@ -391,7 +391,7 @@ TEST(TestStringUtils, EmptyString)
 
 TEST(TestStringUtils, FindWords)
 {
-  int ref, var;
+  size_t ref, var;
 
   ref = 5;
   var = StringUtils::FindWords("test string", "string");
@@ -413,7 +413,7 @@ TEST(TestStringUtils, FindWords)
 
 TEST(TestStringUtils, FindWords_NonAscii)
 {
-  int ref, var;
+  size_t ref, var;
 
   ref = 6;
   var = StringUtils::FindWords("我的视频", "视频");
