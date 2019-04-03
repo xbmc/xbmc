@@ -3193,10 +3193,11 @@ std::string CFileItem::GetMovieName(bool bUseFolderNames /* = false */) const
       return title;
   }
 
-  std::string strMovieName = GetBaseMoviePath(bUseFolderNames);
-
-  if (URIUtils::IsStack(strMovieName))
-    strMovieName = CStackDirectory::GetStackedTitlePath(strMovieName);
+  std::string strMovieName;
+  if (URIUtils::IsStack(m_strPath))
+    strMovieName = CStackDirectory::GetStackedTitlePath(m_strPath);
+  else
+    strMovieName = GetBaseMoviePath(bUseFolderNames);
 
   URIUtils::RemoveSlashAtEnd(strMovieName);
 
