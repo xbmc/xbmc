@@ -32,8 +32,6 @@
   #include <net/if_types.h>
   #include <net/route.h>
   #include <netinet/if_ether.h>
-#else //IOS
-  #include "platform/darwin/osx/network/ioshacks.h"
 #endif
   #include <ifaddrs.h>
 #elif defined(TARGET_FREEBSD)
@@ -543,9 +541,7 @@ bool CNetworkLinux::PingHost(unsigned long remote_ip, unsigned int timeout_ms)
 #endif
 
   int status = -1;
-#if !defined (TARGET_DARWIN_IOS) // no system calls allowed since ios11
   status = system (cmd_line);
-#endif
   int result = WIFEXITED(status) ? WEXITSTATUS(status) : -1;
 
   // http://linux.about.com/od/commands/l/blcmdl8_ping.htm ;

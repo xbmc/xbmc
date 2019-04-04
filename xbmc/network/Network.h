@@ -178,6 +178,8 @@ public:
 #include "platform/win32/network/NetworkWin32.h"
 #elif defined(HAS_WIN10_NETWORK)
 #include "platform/win10/network/NetworkWin10.h"
+#elif defined(HAS_IOS_NETWORK)
+#include "platform/darwin/ios/network/NetworkIOS.h"
 #else
 using CNetwork = CNetworkBase;
 #endif

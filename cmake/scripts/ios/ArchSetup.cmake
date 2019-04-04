@@ -26,7 +26,7 @@ else()
 endif()
 
 # Additional SYSTEM_DEFINES
-list(APPEND SYSTEM_DEFINES -DHAS_LINUX_NETWORK -DHAS_ZEROCONF)
+list(APPEND SYSTEM_DEFINES -DHAS_IOS_NETWORK -DHAS_ZEROCONF)
 
 find_package(CXX11 REQUIRED)
 
@@ -38,7 +38,7 @@ list(APPEND DEPLIBS "-framework CoreFoundation" "-framework CoreVideo"
                     "-framework CFNetwork" "-framework CoreGraphics"
                     "-framework Foundation" "-framework UIKit"
                     "-framework CoreMedia" "-framework AVFoundation"
-                    "-framework VideoToolbox")
+                    "-framework VideoToolbox" "-lresolv")
 
 set(ENABLE_OPTICAL OFF CACHE BOOL "" FORCE)
 

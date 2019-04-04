@@ -12,7 +12,11 @@
 #if defined(TARGET_ANDROID)
 #include "platform/android/network/NetworkAndroid.h"
 #elif defined(TARGET_POSIX)
+#if defined(TARGET_DARWIN_IOS)
+#include "platform/darwin/ios/network/NetworkIOS.h"
+#else
 #include "platform/linux/network/NetworkLinux.h"
+#endif
 #endif
 #include "ServiceBroker.h"
 #include "FileItem.h"

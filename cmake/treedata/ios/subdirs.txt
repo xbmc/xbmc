@@ -1,5 +1,4 @@
 xbmc/platform/linux                   platform/linux
-xbmc/platform/linux/network           platform/linux/network
 xbmc/input/touch                      input/touch
 xbmc/input/touch/generic              input/touch/generic
 xbmc/platform/posix                   posix
@@ -7,6 +6,7 @@ xbmc/platform/posix/filesystem        platform/posix/filesystem
 xbmc/platform/posix/utils             platform/posix/utils
 xbmc/platform/darwin                  platform/darwin
 xbmc/platform/darwin/ios              platform/ios
+xbmc/platform/darwin/ios/network      platform/ios/network
 xbmc/platform/darwin/ios-common       platform/ios-common
 xbmc/platform/darwin/osx/network      platform/osx/network
 xbmc/platform/darwin/osx/peripherals  platform/osx/peripherals
