@@ -12,8 +12,6 @@
 #include "cores/VideoPlayer/DVDCodecs/Video/MMALFFmpeg.h"
 
 // Override for platform ports
-#if defined(TARGET_RASPBERRY_PI)
-
 using namespace MMAL;
 
 CProcessInfo* CProcessInfoPi::Create()
@@ -44,6 +42,3 @@ bool CProcessInfoPi::AllowDTSHDDecode()
     return false;
   return true;
 }
-
-#endif
-

@@ -10,7 +10,6 @@
 
 #include <string>
 
-#if defined(TARGET_WINDOWS)
 namespace KODI
 {
 namespace PLATFORM
@@ -61,4 +60,3 @@ std::wstring ToW(const std::string& str);
 }
 }
 }
-#endif

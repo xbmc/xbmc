@@ -8,8 +8,6 @@
 
 #pragma once
 
-#ifndef TARGET_WINDOWS
-
 #include <list>
 #include <string>
 #include <vector>
@@ -58,6 +56,3 @@ protected:
   static int m_objectTracker[10];
 
 };
-
-#endif
-

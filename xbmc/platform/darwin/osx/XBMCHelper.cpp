@@ -6,7 +6,6 @@
  *  See LICENSES/README.md for more information.
  */
 
-#if defined(__APPLE__) && !defined(__arm__) && !defined(__aarch64__)
 #include <fstream>
 #include <signal.h>
 #include <sstream>
@@ -515,4 +514,3 @@ static int GetBSDProcessList(kinfo_proc **procList, size_t *procCount)
   assert( (err == 0) == (*procList != NULL) );
   return err;
 }
-#endif

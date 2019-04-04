@@ -7,10 +7,7 @@
  *  See LICENSES/README.md for more information.
  */
 
-#if !defined(__arm__) && !defined(__aarch64__)
-
 #import <Cocoa/Cocoa.h>
 
 @interface XBMCDelegate : NSObject<NSApplicationDelegate>
 @end
-#endif

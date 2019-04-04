@@ -6,7 +6,6 @@
  *  See LICENSES/README.md for more information.
  */
 
-#if defined(TARGET_WINDOWS)
 #include <memory>
 
 #include "CharsetConverter.h"
@@ -58,4 +57,3 @@ std::wstring ToW(const std::string& str)
 }
 }
 }
-#endif

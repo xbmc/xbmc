@@ -8,8 +8,6 @@
 
 #pragma once
 
-#ifdef TARGET_WINDOWS_STORE
-
 #include <ppl.h>
 #include <ppltasks.h>
 
@@ -88,5 +86,3 @@ TResult Wait(const Concurrency::task<TResult>& asyncOp)
 
   return asyncOp.get();
 }
-
-#endif

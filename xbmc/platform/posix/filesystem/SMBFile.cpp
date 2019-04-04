@@ -54,10 +54,8 @@ bool CSMB::IsFirstInit = true;
 CSMB::CSMB()
 {
   m_context = NULL;
-#ifdef TARGET_POSIX
   m_OpenConnections = 0;
   m_IdleTimeout = 0;
-#endif
 }
 
 CSMB::~CSMB()

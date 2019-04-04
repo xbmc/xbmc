@@ -8,8 +8,6 @@
 
 #include "PlatformDefs.h"
 
-#ifdef TARGET_POSIX
-
 #include <stdio.h>
 #include <ctype.h>
 #include <errno.h>
@@ -23,5 +21,3 @@ void SetLastError(DWORD dwErrCode)
 {
   errno = dwErrCode;
 }
-
-#endif

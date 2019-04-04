@@ -1,6 +1,3 @@
-#ifndef GUI_DIALOG_ACCESS_POINTS
-#define GUI_DIALOG_ACCESS_POINTS
-
 /*
  *  Copyright (C) 2005-2018 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
@@ -37,5 +34,3 @@ private:
   bool m_wasItemSelected;
   CFileItemList *m_accessPoints;
 };
-
-#endif

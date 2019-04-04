@@ -8,7 +8,6 @@
 
 #pragma once
 
-#if defined(TARGET_DARWIN_OSX)
 #include <list>
 #include <vector>
 #include <string>
@@ -74,5 +73,3 @@ public:
 protected:
   AudioChannelLayout* m_pLayout;
 };
-
-#endif

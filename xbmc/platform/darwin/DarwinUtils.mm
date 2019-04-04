@@ -13,7 +13,6 @@
 #include "utils/URIUtils.h"
 #include "CompileInfo.h"
 
-#if defined(TARGET_DARWIN)
 #if defined(TARGET_DARWIN_IOS)
   #import <Foundation/Foundation.h>
   #import <UIKit/UIKit.h>
@@ -705,5 +704,3 @@ bool CDarwinUtils::CreateAliasShortcut(const std::string& fromPath, const std::s
 #endif
   return ret;
 }
-
-#endif

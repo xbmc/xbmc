@@ -6,7 +6,6 @@
  *  See LICENSES/README.md for more information.
  */
 
-#ifdef TARGET_WINDOWS
 #include "Win32File.h"
 #include "platform/win32/WIN32Util.h"
 #include "platform/win32/CharsetConverter.h"
@@ -758,5 +757,3 @@ int CWin32File::Stat(struct __stat64* statData)
 
   return 0;
 }
-
-#endif // TARGET_WINDOWS

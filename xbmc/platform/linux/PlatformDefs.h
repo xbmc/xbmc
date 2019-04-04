@@ -8,8 +8,6 @@
 
 #pragma once
 
-#ifdef TARGET_POSIX
-
 #ifndef _LARGEFILE64_SOURCE
 #define _LARGEFILE64_SOURCE
 #endif
@@ -46,7 +44,6 @@
 
 #include <sys/time.h>
 #include <time.h>
-#endif
 
 #if defined(__ppc__) || defined(__powerpc__)
 #define PIXEL_ASHIFT 0
@@ -89,8 +86,6 @@
 #ifndef PRIdS
 #define PRIdS "zd"
 #endif
-
-#ifdef TARGET_POSIX
 
 #define _fdopen fdopen
 #define _vsnprintf vsnprintf
@@ -273,6 +268,3 @@ typedef struct _MEMORYSTATUSEX
 
 #define FILE_READ_DATA   ( 0x0001 )
 #define FILE_WRITE_DATA  ( 0x0002 )
-
-#endif
-

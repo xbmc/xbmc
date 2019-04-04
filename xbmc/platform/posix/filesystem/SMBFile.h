@@ -45,11 +45,9 @@ public:
   DWORD ConvertUnixToNT(int error);
 private:
   SMBCCTX *m_context;
-#ifdef TARGET_POSIX
   int m_OpenConnections;
   unsigned int m_IdleTimeout;
   static bool IsFirstInit;
-#endif
 };
 
 extern CSMB smb;

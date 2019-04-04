@@ -11,7 +11,6 @@
 #include "filesystem/SpecialProtocol.h"
 #include "utils/StringUtils.h"
 
-#ifdef TARGET_POSIX
 #include "XHandle.h"
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -171,4 +170,3 @@ int _stat64(   const char *path,   struct __stat64 *buffer )
 
   return stat64(path, buffer);
 }
-#endif

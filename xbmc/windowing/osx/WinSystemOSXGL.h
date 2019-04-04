@@ -8,7 +8,6 @@
 
 #pragma once
 
-#if !defined(__arm__) && !defined(__aarch64__)
 #include "WinSystemOSX.h"
 #include "rendering/gl/RenderSystemGL.h"
 
@@ -27,6 +26,3 @@ protected:
   virtual void PresentRenderImpl(bool rendered) override;
   virtual void SetVSyncImpl(bool enable) override;
 };
-
-#endif
-

@@ -8,8 +8,6 @@
 
 #pragma once
 
-#ifdef TARGET_WINDOWS
-
 #include <windows.h>
 
 #define __STDC_FORMAT_MACROS
@@ -57,6 +55,3 @@ typedef intptr_t      ssize_t;
 #endif
 
 extern "C" char * strptime(const char *buf, const char *fmt, struct tm *tm);
-
-#endif // TARGET_WINDOWS
-
