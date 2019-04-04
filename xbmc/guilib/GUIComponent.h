@@ -29,8 +29,8 @@ class CGUIComponent : public IMsgHandler, public IGUIComponent
 public:
   CGUIComponent();
   virtual ~CGUIComponent();
-  void Init() override;
-  void Deinit() override;
+  void Init();
+  void Deinit();
 
   CGUIWindowManager& GetWindowManager() override;
   CGUITextureManager& GetTextureManager() override;

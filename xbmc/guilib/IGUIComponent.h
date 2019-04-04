@@ -23,9 +23,6 @@ class IGUIComponent
 {
 public:
 
-  virtual void Init() = 0;
-  virtual void Deinit() = 0;
-
   virtual CGUIWindowManager& GetWindowManager() = 0;
   virtual CGUITextureManager& GetTextureManager() = 0;
   virtual CGUILargeTextureManager& GetLargeTextureManager() = 0;
