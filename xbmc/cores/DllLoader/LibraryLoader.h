@@ -8,9 +8,6 @@
 
 #pragma once
 
-#ifndef LIBRARY_LOADER
-#define LIBRARY_LOADER
-
 #include <string>
 
 #ifdef TARGET_POSIX
@@ -47,5 +44,3 @@ private:
   std::string m_path;
   int   m_iRefCount;
 };
-
-#endif
