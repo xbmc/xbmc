@@ -5,7 +5,6 @@
  *  SPDX-License-Identifier: GPL-2.0-or-later
  *  See LICENSES/README.md for more information.
  */
-#if !defined(__arm__) && !defined(__aarch64__)
 #import <unistd.h>
 #import <sys/mount.h>
 
@@ -256,5 +255,3 @@ const char *Cocoa_Paste()
 
   return NULL;
 }
-
-#endif

@@ -41,8 +41,6 @@
 #include "WinKeyMap.h"
 #include "WinEventsWin32.h"
 
-#ifdef TARGET_WINDOWS
-
 using namespace KODI::MESSAGING;
 
 HWND g_hWnd = nullptr;
@@ -993,5 +991,3 @@ void CWinEventsWin32::OnGesture(HWND hWnd, LPARAM lParam)
   if(DX::Windowing()->PtrCloseGestureInfoHandle)
     DX::Windowing()->PtrCloseGestureInfoHandle(reinterpret_cast<HGESTUREINFO>(lParam));
 }
-
-#endif

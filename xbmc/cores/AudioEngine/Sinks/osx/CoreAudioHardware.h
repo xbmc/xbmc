@@ -8,8 +8,6 @@
 
 #pragma once
 
-#if defined(TARGET_DARWIN_OSX)
-
 #include "cores/AudioEngine/Sinks/osx/CoreAudioDevice.h"
 
 // There is only one AudioSystemObject instance system-side.
@@ -28,5 +26,3 @@ public:
   static void           GetOutputDeviceName(std::string &name);
   static UInt32         GetOutputDevices(CoreAudioDeviceList *pList);
 };
-
-#endif

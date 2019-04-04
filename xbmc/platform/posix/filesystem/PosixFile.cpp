@@ -6,8 +6,6 @@
  *  See LICENSES/README.md for more information.
  */
 
-#if defined(TARGET_POSIX)
-
 #include "PosixFile.h"
 #include "utils/AliasShortcutUtils.h"
 #include "URL.h"
@@ -341,5 +339,3 @@ int CPosixFile::Stat(struct __stat64* buffer)
 
   return fstat64(m_fd, buffer);
 }
-
-#endif // TARGET_POSIX

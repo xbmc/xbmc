@@ -31,8 +31,6 @@
  */
 #define IsLeapYear(y) ((!(y % 4)) ? (((!(y % 400)) && (y % 100)) ? 1 : 0) : 0)
 
-#ifdef TARGET_POSIX
-
 void WINAPI Sleep(uint32_t dwMilliSeconds)
 {
 #if _POSIX_PRIORITY_SCHEDULING
@@ -219,5 +217,3 @@ int TimeTToFileTime(time_t timeT, FILETIME* lpLocalFileTime) {
 
   return 1;
 }
-
-#endif

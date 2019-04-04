@@ -6,7 +6,6 @@
  *  See LICENSES/README.md for more information.
  */
 
-#if defined(TARGET_ANDROID)
 #include "AndroidAppDirectory.h"
 #include "platform/android/activity/XBMCApp.h"
 #include "FileItem.h"
@@ -64,5 +63,3 @@ bool CAndroidAppDirectory::GetDirectory(const CURL& url, CFileItemList &items)
   CLog::Log(LOGERROR, "CAndroidAppDirectory::GetDirectory Failed to open %s", url.Get().c_str());
   return false;
 }
-
-#endif
