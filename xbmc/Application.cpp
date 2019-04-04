@@ -671,6 +671,7 @@ bool CApplication::CreateGUI()
 
   m_pGUI = std::make_shared<CGUIComponent>();
   m_pGUI->Init();
+  CServiceBroker::RegisterGUI(m_pGUI);
   m_pGUI->AddMsgTarget(this);
   m_pGUI->AddMsgTarget(&g_fontManager);
 
@@ -2487,6 +2488,7 @@ bool CApplication::Cleanup()
 
     if (m_pGUI)
     {
+      CServiceBroker::UnregisterGUI();
       m_pGUI->Deinit();
       m_pGUI.reset();
     }

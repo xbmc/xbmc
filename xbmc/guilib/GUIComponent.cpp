@@ -42,14 +42,10 @@ void CGUIComponent::Init()
   m_guiInfoManager->Initialize();
 
   AddMsgTarget(m_stereoscopicsManager.get());
-
-  CServiceBroker::RegisterGUI(std::shared_ptr<IGUIComponent>(this));
 }
 
 void CGUIComponent::Deinit()
 {
-  CServiceBroker::UnregisterGUI();
-
   m_pWindowManager->DeInitialize();
 }
 
