@@ -211,7 +211,6 @@ bool CRendererVAAPI::UploadTexture(int index)
   }
 
   m_vaapiTextures[index]->Map(pic);
-  m_buffers[index].m_srcTextureBits = m_vaapiTextures[index]->GetBits();
 
   YuvImage &im = buf.image;
   CYuvPlane (&planes)[3] = buf.fields[0];

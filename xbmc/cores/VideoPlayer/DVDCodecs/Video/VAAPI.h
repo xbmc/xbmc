@@ -264,7 +264,6 @@ protected:
   void Flush();
   void EnsureBufferPool();
   void ReleaseBufferPool(bool precleanup = false);
-  bool CheckSuccess(VAStatus status);
   void ReadyForDisposal(CPostproc *pp);
   CEvent m_outMsgEvent;
   CEvent *m_inMsgEvent;
@@ -274,7 +273,8 @@ protected:
 
   // extended state variables for state machine
   int m_extTimeout;
-  bool m_vaError;
+  /// \brief Whether at least one interlaced frame was encountered in the video stream (indicating that more interlaced frames could potentially follow)
+  bool m_seenInterlaced;
   CVaapiConfig m_config;
   std::shared_ptr<CVaapiBufferPool> m_bufferPool;
   CVaapiDecodedPicture m_currentPicture;
@@ -330,7 +330,7 @@ private:
   bool CreateContext();
   void DestroyContext();
   void QueryCaps();
-  bool CheckSuccess(VAStatus status);
+  bool CheckSuccess(VAStatus status, const std::string& function);
   bool IsValidDecoder(CDecoder *decoder);
   void SetValidDRMVaDisplayFromRenderNode();
   static CVAAPIContext *m_context;
@@ -396,7 +396,7 @@ protected:
   void FiniVAAPIOutput();
   void ReturnRenderPicture(CVaapiRenderPicture *renderPic);
   long ReleasePicReference();
-  bool CheckSuccess(VAStatus status);
+  bool CheckSuccess(VAStatus status, const std::string& function);
 
   enum EDisplayState
   { VAAPI_OPEN
@@ -498,7 +498,7 @@ public:
   bool UseVideoSurface() override;
   void Discard(COutput *output, ReadyToDispose cb) override;
 protected:
-  bool CheckSuccess(VAStatus status);
+  bool CheckSuccess(VAStatus status, const std::string& function);
   void Dispose();
   void Advance();
   VAConfigID m_configId;
@@ -533,7 +533,7 @@ public:
   bool UseVideoSurface() override;
   void Discard(COutput *output, ReadyToDispose cb) override;
 protected:
-  bool CheckSuccess(VAStatus status);
+  bool CheckSuccess(VAStatus status, const std::string& function);
   void Close();
   DllLibSSE4 m_dllSSE4;
   uint8_t *m_cache;
