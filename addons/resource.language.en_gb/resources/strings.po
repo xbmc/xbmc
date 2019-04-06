@@ -564,6 +564,7 @@ msgstr ""
 #: xbmc/dialogs/GUIDialogSmartPlaylistRule.cpp
 #: xbmc/filesystem/MusicDatabaseDirectory/DirectoryNodeOverview.cpp
 #: xbmc/media/MediaTypes.cpp
+#: xbmc/settings/dialogs/GUIDialogLibExportSettings.cpp
 msgctxt "#134"
 msgid "Songs"
 msgstr ""
@@ -2986,12 +2987,12 @@ msgctxt "#648"
 msgid "Import video library"
 msgstr ""
 
-#: xbmc/music/MusicDatabase.cpp
+#. unused?
 msgctxt "#649"
 msgid "Importing"
 msgstr ""
 
-#: xbmc/music/MusicDatabase.cpp
+#. unused?
 msgctxt "#650"
 msgid "Exporting"
 msgstr ""
@@ -12393,6 +12394,7 @@ msgctxt "#20196"
 msgid "Export music library"
 msgstr ""
 
+#: xbmc/music/MusicDatabase.cpp
 #: system/settings/settings.xml
 msgctxt "#20197"
 msgid "Import music library"
@@ -21392,7 +21394,39 @@ msgctxt "#38339"
 msgid "How to apply information provider settings"
 msgstr ""
 
-#empty strings from id 38340 to 38999
+#empty strings from id 38340 to 38349
+
+#. Progress statement when importing music library is processing song playback history data
+#: xbmc/music/MusicDatabase.cpp
+msgctxt "#38350"
+msgid "Importing song playback history"
+msgstr ""
+
+#. Progress statement when importing music library - data matching phase
+#: xbmc/music/MusicDatabase.cpp
+msgctxt "#38351"
+msgid "Matching data"
+msgstr ""
+
+#. Progress statement when importing music library - song history being updated
+#: xbmc/music/MusicDatabase.cpp
+msgctxt "#38352"
+msgid "Updating songs"
+msgstr ""
+
+#. Notification of import success "Importing song history - <number of songs matched> updated out of <total songs in xml> imported songs"
+#: xbmc/music/MusicDatabase.cpp
+msgctxt "#38353"
+msgid "Importing song history - {0:d} updated out of {0:d} imported songs"
+msgstr ""
+
+#. Message when reading the user specified XML for import to library fails
+#: xbmc/music/MusicDatabase.cpp
+msgctxt "#38354"
+msgid "Unable to read xml file"
+msgstr ""
+
+#empty strings from id 38355 to 38999
 
 #: system/settings/settings.xml
 msgctxt "#39000"

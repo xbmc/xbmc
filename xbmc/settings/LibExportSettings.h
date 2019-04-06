@@ -30,7 +30,8 @@ enum ELIBEXPORTOPTIONS
   ELIBEXPORT_ARTWORK = 0x0100,
   ELIBEXPORT_NFOFILES = 0x0200,
   ELIBEXPORT_ACTORTHUMBS = 0x0400,
-  ELIBEXPORT_ARTISTFOLDERS = 0x0800
+  ELIBEXPORT_ARTISTFOLDERS = 0x0800,
+  ELIBEXPORT_SONGS = 0x1000
 };
 
 class CLibExportSettings
@@ -43,6 +44,7 @@ public:
   bool IsItemExported(ELIBEXPORTOPTIONS item) const;
   bool IsArtists() const;
   std::vector<int> GetExportItems() const;
+  std::vector<int> GetLimitedItems(int items) const;
   void ClearItems() { m_itemstoexport = 0; }
   void AddItem(ELIBEXPORTOPTIONS item) { m_itemstoexport += item; }
   unsigned int GetItemsToExport() { return m_itemstoexport; }
