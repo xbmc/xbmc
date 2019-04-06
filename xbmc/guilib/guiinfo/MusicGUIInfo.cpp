@@ -49,7 +49,7 @@ bool CMusicGUIInfo::InitCurrentItem(CFileItem *item)
     tag->SetLoaded(true);
 
     // find a thumb for this file.
-    if (item->IsInternetStream())
+    if (item->IsInternetStream() && !item->IsMusicDb())
     {
       if (!g_application.m_strPlayListFile.empty())
       {
