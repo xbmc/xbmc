@@ -620,7 +620,73 @@ void CGUIDialogVideoInfo::Play(bool resume)
   }
 }
 
-std::string CGUIDialogVideoInfo::ChooseArtType(const CFileItem &videoItem, std::map<std::string, std::string> &currentArt)
+namespace
+{
+// Add art types required in Kodi and configured by the user
+void AddHardCodedAndExtendedArtTypes(std::vector<std::string>& artTypes, const CVideoInfoTag& tag)
+{
+  for (const auto& artType : CVideoThumbLoader::GetArtTypes(tag.m_type))
+  {
+    if (find(artTypes.cbegin(), artTypes.cend(), artType) == artTypes.cend())
+      artTypes.emplace_back(artType);
+  }
+}
+
+// Add art types currently assigned to the media item
+void AddCurrentArtTypes(std::vector<std::string>& artTypes, const CVideoInfoTag& tag,
+  CVideoDatabase& db)
+{
+  std::map<std::string, std::string> currentArt;
+  db.GetArtForItem(tag.m_iDbId, tag.m_type, currentArt);
+  for (const auto& art : currentArt)
+  {
+    if (!art.second.empty() && find(artTypes.cbegin(), artTypes.cend(), art.first) == artTypes.cend())
+      artTypes.push_back(art.first);
+  }
+}
+
+// Add art types that exist for other media items of the same type
+void AddMediaTypeArtTypes(std::vector<std::string>& artTypes, const CVideoInfoTag& tag,
+  CVideoDatabase& db)
+{
+  std::vector<std::string> dbArtTypes;
+  db.GetArtTypes(tag.m_type, dbArtTypes);
+  for (const auto& artType : dbArtTypes)
+  {
+    if (find(artTypes.cbegin(), artTypes.cend(), artType) == artTypes.cend())
+      artTypes.push_back(artType);
+  }
+}
+
+// Add art types from available but unassigned artwork for this media item
+void AddAvailableArtTypes(std::vector<std::string>& artTypes, const CVideoInfoTag& tag,
+  CVideoDatabase& db)
+{
+  for (const auto& artType : db.GetAvailableArtTypesForItem(tag.m_iDbId, tag.m_type))
+  {
+    if (find(artTypes.cbegin(), artTypes.cend(), artType) == artTypes.cend())
+      artTypes.push_back(artType);
+  }
+}
+
+std::vector<std::string> GetArtTypesList(const CVideoInfoTag& tag)
+{
+  CVideoDatabase db;
+  db.Open();
+
+  std::vector<std::string> artTypes;
+
+  AddHardCodedAndExtendedArtTypes(artTypes, tag);
+  AddCurrentArtTypes(artTypes, tag, db);
+  AddMediaTypeArtTypes(artTypes, tag, db);
+  AddAvailableArtTypes(artTypes, tag, db);
+
+  db.Close();
+  return artTypes;
+}
+}
+
+std::string CGUIDialogVideoInfo::ChooseArtType(const CFileItem &videoItem)
 {
   // prompt for choice
   CGUIDialogSelect *dialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogSelect>(WINDOW_DIALOG_SELECT);
@@ -633,27 +699,7 @@ std::string CGUIDialogVideoInfo::ChooseArtType(const CFileItem &videoItem, std::
   dialog->SetUseDetails(true);
   dialog->EnableButton(true, 13516);
 
-  CVideoDatabase db;
-  db.Open();
-
-  std::vector<std::string> artTypes = CVideoThumbLoader::GetArtTypes(videoItem.GetVideoInfoTag()->m_type);
-
-  // add in any stored art for this item that is non-empty.
-  db.GetArtForItem(videoItem.GetVideoInfoTag()->m_iDbId, videoItem.GetVideoInfoTag()->m_type, currentArt);
-  for (CGUIListItem::ArtMap::iterator i = currentArt.begin(); i != currentArt.end(); ++i)
-  {
-    if (!i->second.empty() && find(artTypes.begin(), artTypes.end(), i->first) == artTypes.end())
-      artTypes.push_back(i->first);
-  }
-
-  // add any art types that exist for other media items of the same type
-  std::vector<std::string> dbArtTypes;
-  db.GetArtTypes(videoItem.GetVideoInfoTag()->m_type, dbArtTypes);
-  for (std::vector<std::string>::const_iterator it = dbArtTypes.begin(); it != dbArtTypes.end(); ++it)
-  {
-    if (find(artTypes.begin(), artTypes.end(), *it) == artTypes.end())
-      artTypes.push_back(*it);
-  }
+  std::vector<std::string> artTypes = GetArtTypesList(*videoItem.GetVideoInfoTag());
 
   for (std::vector<std::string>::const_iterator i = artTypes.begin(); i != artTypes.end(); ++i)
   {
@@ -693,8 +739,7 @@ std::string CGUIDialogVideoInfo::ChooseArtType(const CFileItem &videoItem, std::
 
 void CGUIDialogVideoInfo::OnGetArt()
 {
-  std::map<std::string, std::string> currentArt;
-  std::string type = ChooseArtType(*m_movieItem, currentArt);
+  std::string type = ChooseArtType(*m_movieItem);
   if (type.empty())
     return; // cancelled
 
@@ -714,10 +759,10 @@ void CGUIDialogVideoInfo::OnGetArt()
       item->SetLabel(g_localizeStrings.Get(13512));
       items.Add(item);
     }
-    else if ((type == "poster" || type == "banner") && currentArt.find("thumb") != currentArt.end())
+    else if ((type == "poster" || type == "banner") && m_movieItem->HasArt("thumb"))
     { // add the 'thumb' type in
       CFileItemPtr item(new CFileItem("thumb://Thumb", false));
-      item->SetArt("thumb", currentArt["thumb"]);
+      item->SetArt("thumb", m_movieItem->GetArt("thumb"));
       item->SetIconImage("DefaultPicture.png");
       item->SetLabel(g_localizeStrings.Get(13512));
       items.Add(item);
@@ -794,7 +839,7 @@ void CGUIDialogVideoInfo::OnGetArt()
         newThumb = thumbs[number];
       }
       else if (result == "thumb://Thumb")
-        newThumb = currentArt["thumb"];
+        newThumb = m_movieItem->GetArt("thumb");
       else if (result == "thumb://Local")
         newThumb = localThumb;
       else if (result == "thumb://Embedded")
@@ -1802,18 +1847,17 @@ bool CGUIDialogVideoInfo::ManageVideoItemArtwork(const CFileItemPtr &item, const
     currentThumb = videodb.GetArtForItem(item->GetVideoInfoTag()->m_iDbId, item->GetVideoInfoTag()->m_type, artType);
   else
   { // SEASON, SET
-    std::map<std::string, std::string> currentArt;
-    artType = ChooseArtType(*item, currentArt);
+    artType = ChooseArtType(*item);
     if (artType.empty())
       return false;
 
     if (artType == "fanart")
       return OnGetFanart(item);
 
-    if (currentArt.find(artType) != currentArt.end())
-      currentThumb = currentArt[artType];
-    else if ((artType == "poster" || artType == "banner") && currentArt.find("thumb") != currentArt.end())
-      currentThumb = currentArt["thumb"];
+    if (item->HasArt(artType))
+      currentThumb = item->GetArt(artType);
+    else if ((artType == "poster" || artType == "banner") && item->HasArt("thumb"))
+      currentThumb = item->GetArt("thumb");
   }
 
   if (!currentThumb.empty())
@@ -1954,6 +1998,8 @@ bool CGUIDialogVideoInfo::ManageVideoItemArtwork(const CFileItemPtr &item, const
     if (musicdb.Open())
       musicdb.SetArtForItem(idArtist, MediaTypeArtist, artType, result);
   }
+
+  item->SetArt(artType, result);
 
   CUtil::DeleteVideoDatabaseDirectoryCache();
   CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_REFRESH_THUMBS);
