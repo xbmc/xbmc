@@ -44,7 +44,7 @@ namespace XBMCAddon
     ///                             skins path to look in for the xml.
     ///                             (default='Default')
     /// @param defaultRes           [opt] string - default skins resolution.
-    ///                             (default='720p')
+    ///                             (1080i, 720p, ntsc16x9, ntsc, pal16x9 or pal. default='720p')
     /// @param isMedia              [opt] bool - if False, create a regular window.
     ///                             if True, create a mediawindow.
     ///                             (default=False)
@@ -62,7 +62,7 @@ namespace XBMCAddon
     /// **Example:**
     /// ~~~~~~~~~~~~~{.py}
     /// ..
-    /// win = xbmcgui.WindowXML('script-Lyrics-main.xml', xbmcaddon.Addon().getAddonInfo('path').decode('utf-8'), 'default', '1080p', False)
+    /// win = xbmcgui.WindowXML('script-Lyrics-main.xml', xbmcaddon.Addon().getAddonInfo('path').decode('utf-8'), 'default', '1080i', False)
     /// win.doModal()
     /// del win
     /// ..
@@ -483,7 +483,7 @@ namespace XBMCAddon
     ///                                 skins path to look in for the xml.
     ///                                 (default='Default')
     /// @param defaultRes               [opt] string - default skins resolution.
-    ///                                 (default='720p')
+    ///                                 (1080i, 720p, ntsc16x9, ntsc, pal16x9 or pal. default='720p')
     /// @throws Exception               if more then 200 windows are created.
     ///
     /// @note Skin folder structure is e.g. **resources/skins/Default/720p**
@@ -494,7 +494,7 @@ namespace XBMCAddon
     /// **Example:**
     /// ~~~~~~~~~~~~~{.py}
     /// ..
-    /// dialog = xbmcgui.WindowXMLDialog('script-Lyrics-main.xml', xbmcaddon.Addon().getAddonInfo('path').decode('utf-8'), 'default', '1080p')
+    /// dialog = xbmcgui.WindowXMLDialog('script-Lyrics-main.xml', xbmcaddon.Addon().getAddonInfo('path').decode('utf-8'), 'default', '1080i')
     /// dialog.doModal()
     /// del dialog
     /// ..
