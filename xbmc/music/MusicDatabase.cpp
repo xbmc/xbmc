@@ -9479,12 +9479,13 @@ std::string CMusicDatabase::GetItemById(const std::string &itemType, int id)
   return "";
 }
 
-void CMusicDatabase::ExportToXML(const CLibExportSettings& settings,  CGUIDialogProgress* progressDialog /*= NULL*/)
+void CMusicDatabase::ExportToXML(const CLibExportSettings& settings,  CGUIDialogProgress* progressDialog /*= nullptr*/)
 {
   if (!settings.IsItemExported(ELIBEXPORT_ALBUMARTISTS) &&
       !settings.IsItemExported(ELIBEXPORT_SONGARTISTS) &&
       !settings.IsItemExported(ELIBEXPORT_OTHERARTISTS) &&
-      !settings.IsItemExported(ELIBEXPORT_ALBUMS))
+      !settings.IsItemExported(ELIBEXPORT_ALBUMS) && 
+      !settings.IsItemExported(ELIBEXPORT_SONGS))
     return;
 
   // Exporting albums either art or NFO (or both) selected
@@ -9684,6 +9685,13 @@ void CMusicDatabase::ExportToXML(const CLibExportSettings& settings,  CGUIDialog
       }
     }
 
+    // Export song playback history to single file only
+    if (settings.IsSingleFile() && settings.IsItemExported(ELIBEXPORT_SONGS))
+    {
+      if (!ExportSongHistory(pMain, progressDialog))
+        return;
+    }
+
     if ((settings.IsArtists() || artistfoldersonly) && !strFolder.empty())
     {
       // Find artists to export
@@ -9828,8 +9836,74 @@ void CMusicDatabase::ExportToXML(const CLibExportSettings& settings,  CGUIDialog
   if (progressDialog)
     progressDialog->Close();
 
-  if (iFailCount > 0)
+  if (iFailCount > 0 && progressDialog)
     HELPERS::ShowOKDialogLines(CVariant{20196}, CVariant{StringUtils::Format(g_localizeStrings.Get(15011).c_str(), iFailCount)});
+}
+
+bool CMusicDatabase::ExportSongHistory(TiXmlNode* pNode, CGUIDialogProgress* progressDialog)
+{
+  try
+  {
+    // Export songs with some playback history
+    std::string strSQL = "SELECT idSong, song.idAlbum, "
+      "strAlbum, strMusicBrainzAlbumID, album.strArtistDisp AS strAlbumArtistDisp, "
+      "song.strArtistDisp, strTitle, iTrack, strFileName, strMusicBrainzTrackID, "
+      "iTimesPlayed, lastplayed, song.rating, song.votes, song.userrating "
+      "FROM song JOIN album on album.idAlbum = song.idAlbum "
+      "WHERE iTimesPlayed > 0 OR rating > 0 or userrating > 0";
+
+    CLog::Log(LOGDEBUG, "{0} - {1}", __FUNCTION__, strSQL.c_str());
+    m_pDS->query(strSQL);
+
+    int total = m_pDS->num_rows();
+    int current = 0;
+    while (!m_pDS->eof())
+    {
+      TiXmlElement songElement("song");
+      TiXmlNode* song = pNode->InsertEndChild(songElement);
+
+      XMLUtils::SetInt(song, "idsong", m_pDS->fv("idSong").get_asInt());
+      XMLUtils::SetString(song, "artistdesc", m_pDS->fv("strArtistDisp").get_asString());
+      XMLUtils::SetString(song, "title", m_pDS->fv("strTitle").get_asString());
+      XMLUtils::SetInt(song, "track", m_pDS->fv("iTrack").get_asInt());
+      XMLUtils::SetString(song, "filename", m_pDS->fv("strFilename").get_asString());
+      XMLUtils::SetString(song, "musicbrainztrackid", m_pDS->fv("strMusicBrainzTrackID").get_asString());
+      XMLUtils::SetInt(song, "idalbum", m_pDS->fv("idAlbum").get_asInt());
+      XMLUtils::SetString(song, "albumtitle", m_pDS->fv("strAlbum").get_asString());
+      XMLUtils::SetString(song, "musicbrainzalbumid", m_pDS->fv("strMusicBrainzAlbumID").get_asString());
+      XMLUtils::SetString(song, "albumartistdesc", m_pDS->fv("strAlbumArtistDisp").get_asString());
+      XMLUtils::SetInt(song, "timesplayed", m_pDS->fv("iTimesplayed").get_asInt());
+      XMLUtils::SetString(song, "lastplayed", m_pDS->fv("lastplayed").get_asString());
+      auto* rating = XMLUtils::SetString(song, "rating", StringUtils::FormatNumber(m_pDS->fv("rating").get_asFloat()));
+      if (rating)
+        rating->ToElement()->SetAttribute("max", 10);
+      XMLUtils::SetInt(song, "votes", m_pDS->fv("votes").get_asInt());
+      auto* userrating = XMLUtils::SetInt(song, "userrating", m_pDS->fv("userrating").get_asInt());
+      if (userrating)
+        userrating->ToElement()->SetAttribute("max", 10);
+
+      if ((current % 100) == 0 && progressDialog)
+      {
+        progressDialog->SetLine(1, CVariant{ m_pDS->fv("strAlbum").get_asString() });
+        progressDialog->SetPercentage(current * 100 / total);
+        if (progressDialog->IsCanceled())
+        {
+          m_pDS->close();
+          return false;
+        }
+      }
+      current++;
+
+      m_pDS->next();
+    }
+    m_pDS->close();
+    return true;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "{0} failed", __FUNCTION__);
+  }
+  return false;
 }
 
 void CMusicDatabase::ImportFromXML(const std::string &xmlFile)

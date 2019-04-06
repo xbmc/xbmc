@@ -564,6 +564,7 @@ msgstr ""
 #: xbmc/dialogs/GUIDialogSmartPlaylistRule.cpp
 #: xbmc/filesystem/MusicDatabaseDirectory/DirectoryNodeOverview.cpp
 #: xbmc/media/MediaTypes.cpp
+#: xbmc/settings/dialogs/GUIDialogLibExportSettings.cpp
 msgctxt "#134"
 msgid "Songs"
 msgstr ""

@@ -497,7 +497,8 @@ public:
   /////////////////////////////////////////////////
   // XML
   /////////////////////////////////////////////////
-  void ExportToXML(const CLibExportSettings& settings, CGUIDialogProgress* progressDialog = NULL);
+  void ExportToXML(const CLibExportSettings& settings, CGUIDialogProgress* progressDialog = nullptr);
+  bool ExportSongHistory(TiXmlNode* pNode, CGUIDialogProgress* progressDialog = nullptr);
   void ImportFromXML(const std::string &xmlFile);
 
   /////////////////////////////////////////////////

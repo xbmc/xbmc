@@ -258,10 +258,6 @@ void CGUIDialogLibExportSettings::SetupView()
   SET_CONTROL_LABEL(CONTROL_SETTINGS_OKAY_BUTTON, 38319);
   SET_CONTROL_LABEL(CONTROL_SETTINGS_CANCEL_BUTTON, 222);
 
-  if (m_settings.IsSeparateFiles())
-    ToggleState(CSettings::SETTING_MUSICLIBRARY_EXPORT_UNSCRAPED, !m_settings.m_skipnfo);
-  else if (m_settings.IsToLibFolders())
-    ToggleState(CSettings::SETTING_MUSICLIBRARY_EXPORT_UNSCRAPED, false);
   UpdateButtons();
   UpdateToggles();
   UpdateDescription();
@@ -360,31 +356,39 @@ void CGUIDialogLibExportSettings::InitializeSettings()
   entries.clear();
   if (!m_settings.IsArtistFoldersOnly())
     entries.push_back(std::make_pair(132, ELIBEXPORT_ALBUMS));  //ablums
+  if (m_settings.IsSingleFile())
+    entries.push_back(std::make_pair(134, ELIBEXPORT_SONGS));  //songs
   entries.push_back(std::make_pair(38043, ELIBEXPORT_ALBUMARTISTS)); //album artists
   entries.push_back(std::make_pair(38312, ELIBEXPORT_SONGARTISTS)); //song artists
   entries.push_back(std::make_pair(38313, ELIBEXPORT_OTHERARTISTS)); //other artists
+
+  std::vector<int> items;
   if (m_settings.IsArtistFoldersOnly())
   {
-    std::vector<int> artistitems; // Only artists, not albums
-    if (m_settings.IsItemExported(ELIBEXPORT_SONGARTISTS))
-      artistitems.emplace_back(ELIBEXPORT_SONGARTISTS);
-    if (m_settings.IsItemExported(ELIBEXPORT_OTHERARTISTS))
-      artistitems.emplace_back(ELIBEXPORT_OTHERARTISTS);
-    if (m_settings.IsItemExported(ELIBEXPORT_ALBUMARTISTS) || (artistitems.size() == 0))
-      artistitems.emplace_back(ELIBEXPORT_ALBUMARTISTS);
-    AddList(groupDetails, CSettings::SETTING_MUSICLIBRARY_EXPORT_ITEMS, 38306, SettingLevel::Basic, artistitems, entries, 133, 1);
+    // Only artists, not albums, at least album artists
+    items = m_settings.GetLimitedItems(ELIBEXPORT_ALBUMARTISTS + ELIBEXPORT_SONGARTISTS + ELIBEXPORT_OTHERARTISTS);
+    if (items.size() == 0)
+      items.emplace_back(ELIBEXPORT_ALBUMARTISTS);
+  }
+  else if (!m_settings.IsSingleFile())
+  {
+    // No songs unless single file export, at least album artists
+    items = m_settings.GetLimitedItems(ELIBEXPORT_ALBUMS + ELIBEXPORT_ALBUMARTISTS + ELIBEXPORT_SONGARTISTS + ELIBEXPORT_OTHERARTISTS);
+    if (items.size() == 0)
+      items.emplace_back(ELIBEXPORT_ALBUMARTISTS);
   }
   else
-  {
-    AddList(groupDetails, CSettings::SETTING_MUSICLIBRARY_EXPORT_ITEMS, 38306, SettingLevel::Basic, m_settings.GetExportItems(), entries, 133, 1);
+   items = m_settings.GetExportItems();
+  
+  AddList(groupDetails, CSettings::SETTING_MUSICLIBRARY_EXPORT_ITEMS, 38306, SettingLevel::Basic, items, entries, 133, 1);
 
-    if (!m_settings.IsSingleFile())
-    {
-      m_settingNFO = AddToggle(groupDetails, CSettings::SETTING_MUSICLIBRARY_EXPORT_SKIPNFO, 38309, SettingLevel::Basic, !m_settings.m_skipnfo);
+  if (m_settings.IsToLibFolders() || m_settings.IsSeparateFiles())
+  {
+    m_settingNFO = AddToggle(groupDetails, CSettings::SETTING_MUSICLIBRARY_EXPORT_SKIPNFO, 38309, SettingLevel::Basic, !m_settings.m_skipnfo);
+    if (m_settings.IsSeparateFiles())
       AddToggle(groupDetails, CSettings::SETTING_MUSICLIBRARY_EXPORT_UNSCRAPED, 38308, SettingLevel::Basic, m_settings.m_unscraped);
-      m_settingArt = AddToggle(groupDetails, CSettings::SETTING_MUSICLIBRARY_EXPORT_ARTWORK, 38307, SettingLevel::Basic, m_settings.m_artwork);
-      AddToggle(groupDetails, CSettings::SETTING_MUSICLIBRARY_EXPORT_OVERWRITE, 38311, SettingLevel::Basic, m_settings.m_overwrite);
-    }
+    m_settingArt = AddToggle(groupDetails, CSettings::SETTING_MUSICLIBRARY_EXPORT_ARTWORK, 38307, SettingLevel::Basic, m_settings.m_artwork);
+    AddToggle(groupDetails, CSettings::SETTING_MUSICLIBRARY_EXPORT_OVERWRITE, 38311, SettingLevel::Basic, m_settings.m_overwrite);
   }
 }
 

@@ -71,7 +71,26 @@ std::vector<int> CLibExportSettings::GetExportItems() const
     values.emplace_back(ELIBEXPORT_OTHERARTISTS);
   if (IsItemExported(ELIBEXPORT_ACTORTHUMBS))
     values.emplace_back(ELIBEXPORT_ACTORTHUMBS);
+  if (IsItemExported(ELIBEXPORT_SONGS))
+    values.emplace_back(ELIBEXPORT_SONGS);
+  return values;
+}
 
+std::vector<int> CLibExportSettings::GetLimitedItems(int items) const
+{
+  std::vector<int> values;
+  if (IsItemExported(ELIBEXPORT_ALBUMS) && (items & ELIBEXPORT_ALBUMS))
+    values.emplace_back(ELIBEXPORT_ALBUMS);
+  if (IsItemExported(ELIBEXPORT_ALBUMARTISTS) && (items & ELIBEXPORT_ALBUMARTISTS))
+    values.emplace_back(ELIBEXPORT_ALBUMARTISTS);
+  if (IsItemExported(ELIBEXPORT_SONGARTISTS) && (items & ELIBEXPORT_SONGARTISTS))
+    values.emplace_back(ELIBEXPORT_SONGARTISTS);
+  if (IsItemExported(ELIBEXPORT_OTHERARTISTS) && (items & ELIBEXPORT_OTHERARTISTS))
+    values.emplace_back(ELIBEXPORT_OTHERARTISTS);
+  if (IsItemExported(ELIBEXPORT_ACTORTHUMBS) && (items & ELIBEXPORT_ACTORTHUMBS))
+    values.emplace_back(ELIBEXPORT_ACTORTHUMBS);
+  if (IsItemExported(ELIBEXPORT_SONGS) && (items & ELIBEXPORT_SONGS))
+    values.emplace_back(ELIBEXPORT_SONGS);
   return values;
 }
 
