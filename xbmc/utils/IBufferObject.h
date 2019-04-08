@@ -16,9 +16,10 @@ public:
   virtual ~IBufferObject() = default;
 
   virtual bool CreateBufferObject(uint32_t format, uint32_t width, uint32_t height) = 0;
-  virtual void DestroyBufferObject() { }
+  virtual void DestroyBufferObject() = 0;
   virtual uint8_t *GetMemory() = 0;
-  virtual void ReleaseMemory() { }
-  virtual int GetFd() { return -1; }
+  virtual void ReleaseMemory() = 0;
+  virtual int GetFd() = 0;
   virtual uint32_t GetStride() = 0;
+  virtual uint64_t GetModifier() = 0;
 };

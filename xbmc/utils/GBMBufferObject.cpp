@@ -8,12 +8,23 @@
 
 #include "GBMBufferObject.h"
 
+#include "BufferObjectFactory.h"
 #include "ServiceBroker.h"
 #include "windowing/gbm/WinSystemGbmEGLContext.h"
 
 #include <gbm.h>
 
 using namespace KODI::WINDOWING::GBM;
+
+std::unique_ptr<CBufferObject> CGBMBufferObject::Create()
+{
+  return std::make_unique<CGBMBufferObject>();
+}
+
+void CGBMBufferObject::Register()
+{
+  CBufferObjectFactory::RegisterBufferObject(CGBMBufferObject::Create);
+}
 
 CGBMBufferObject::CGBMBufferObject()
 {
@@ -75,16 +86,6 @@ void CGBMBufferObject::ReleaseMemory()
     m_map_data = nullptr;
     m_map = nullptr;
   }
-}
-
-int CGBMBufferObject::GetFd()
-{
-  return m_fd;
-}
-
-uint32_t CGBMBufferObject::GetStride()
-{
-  return m_stride;
 }
 
 uint64_t CGBMBufferObject::GetModifier()
