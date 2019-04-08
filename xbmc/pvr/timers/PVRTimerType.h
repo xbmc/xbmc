@@ -35,10 +35,11 @@ namespace PVR
     static const std::vector<CPVRTimerTypePtr> GetAllTypes();
 
     /*!
-     * @brief Return the first available timer type.
+     * @brief Return the first available timer type from given client id.
+     * @param iClientId the PVR client id.
      * @return A timer type or NULL if none available.
      */
-    static const CPVRTimerTypePtr GetFirstAvailableType();
+    static const CPVRTimerTypePtr GetFirstAvailableType(int iClientId);
 
     /*!
      * @brief Create a timer type from given timer type id and client id.

@@ -26,10 +26,18 @@ const std::vector<CPVRTimerTypePtr> CPVRTimerType::GetAllTypes()
   return allTypes;
 }
 
-const CPVRTimerTypePtr CPVRTimerType::GetFirstAvailableType()
+const CPVRTimerTypePtr CPVRTimerType::GetFirstAvailableType(int iClientId)
 {
-  std::vector<CPVRTimerTypePtr> allTypes(GetAllTypes());
-  return allTypes.empty() ? CPVRTimerTypePtr() : *(allTypes.begin());
+  const CPVRClientPtr client = CServiceBroker::GetPVRManager().GetClient(iClientId);
+  if (client)
+  {
+    std::vector<CPVRTimerTypePtr> types;
+    if (client->GetTimerTypes(types) == PVR_ERROR_NO_ERROR && !types.empty())
+    {
+      return *(types.begin());
+    }
+  }
+  return {};
 }
 
 CPVRTimerTypePtr CPVRTimerType::CreateFromIds(unsigned int iTypeId, int iClientId)
@@ -49,7 +57,7 @@ CPVRTimerTypePtr CPVRTimerType::CreateFromIds(unsigned int iTypeId, int iClientI
   }
 
   CLog::LogF(LOGERROR, "Unable to resolve numeric timer type (%d, %d)", iTypeId, iClientId);
-  return CPVRTimerTypePtr();
+  return {};
 }
 
 CPVRTimerTypePtr CPVRTimerType::CreateFromAttributes(
@@ -71,7 +79,7 @@ CPVRTimerTypePtr CPVRTimerType::CreateFromAttributes(
   }
 
   CLog::LogF(LOGERROR, "Unable to resolve timer type (0x%x, 0x%x, %d)", iMustHaveAttr, iMustNotHaveAttr, iClientId);
-  return CPVRTimerTypePtr();
+  return {};
 }
 
 CPVRTimerType::CPVRTimerType() :
