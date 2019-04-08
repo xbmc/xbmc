@@ -127,11 +127,21 @@ bool CWinSystemAndroid::CreateNewWindow(const std::string& name,
     return true;
   }
 
+  if (m_dispResetState != RESET_NOTWAITING)
+  {
+    CLog::Log(LOGINFO, "CWinSystemAndroid::CreateNewWindow: cannot create window while resetting");
+    return false;
+  }
+
   m_stereo_mode = stereo_mode;
   m_bFullScreen = fullScreen;
 
   m_nativeWindow = CXBMCApp::GetNativeWindow(2000);
-
+  if (!m_nativeWindow)
+  {
+    CLog::Log(LOGERROR, "CWinSystemAndroid::CreateNewWindow: failed");
+    return false;
+  }
   m_android->SetNativeResolution(res);
 
   return true;
