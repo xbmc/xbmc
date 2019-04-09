@@ -401,7 +401,7 @@ bool CAddonCallbacksGUI::Window_Show(void *addonData, GUIHANDLE handle)
     return false;
 
   if (pAddonWindow->m_iOldWindowId != pAddonWindow->m_iWindowId && pAddonWindow->m_iWindowId != gui->GetWindowManager().GetActiveWindow())
-    pAddonWindow->m_iOldWindowId = CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow();
+    pAddonWindow->m_iOldWindowId = gui->GetWindowManager().GetActiveWindow();
 
   Lock();
   if (pAddonWindow->IsDialog())
@@ -613,7 +613,7 @@ void CAddonCallbacksGUI::Window_SetPropertyInt(void *addonData, GUIHANDLE handle
   }
 
   CGUIAddonWindow *pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
-  CGUIWindow      *pWindow      = CServiceBroker::GetGUI()->GetWindowManager().GetWindow(pAddonWindow->m_iWindowId);
+  CGUIWindow      *pWindow      = gui->GetWindowManager().GetWindow(pAddonWindow->m_iWindowId);
   if (!pWindow)
     return;
 
