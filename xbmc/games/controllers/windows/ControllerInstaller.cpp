@@ -32,7 +32,7 @@ CControllerInstaller::CControllerInstaller() :
 
 void CControllerInstaller::Process()
 {
-  IGUIComponent *gui = CServiceBroker::GetGUI();
+  auto gui = CServiceBroker::GetGUI();
   if (gui == nullptr)
     return;
 

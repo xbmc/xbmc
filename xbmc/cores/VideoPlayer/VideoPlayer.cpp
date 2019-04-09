@@ -3729,7 +3729,7 @@ bool CVideoPlayer::OpenVideoStream(CDVDStreamInfo& hint, bool reset)
 
   if (hint.stereo_mode.empty())
   {
-    IGUIComponent *gui = CServiceBroker::GetGUI();
+    auto gui = CServiceBroker::GetGUI();
     if (gui != nullptr)
     {
       const CStereoscopicsManager &stereoscopicsManager = gui->GetStereoscopicsManager();

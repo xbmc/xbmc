@@ -1470,7 +1470,7 @@ bool CGUIDialogVideoInfo::DeleteVideoItem(const CFileItemPtr &item, bool unavail
       if (item->IsStack())
         item->m_bIsFolder = true;
 
-      IGUIComponent *gui = CServiceBroker::GetGUI();
+      auto gui = CServiceBroker::GetGUI();
       if (gui && gui->ConfirmDelete(item->GetPath()))
         CFileUtils::DeleteItem(item);
     }

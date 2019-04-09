@@ -43,7 +43,7 @@ void CGUIComponent::Init()
 
   AddMsgTarget(m_stereoscopicsManager.get());
 
-  CServiceBroker::RegisterGUI(this);
+  CServiceBroker::RegisterGUI(std::shared_ptr<IGUIComponent>(this));
 }
 
 void CGUIComponent::Deinit()

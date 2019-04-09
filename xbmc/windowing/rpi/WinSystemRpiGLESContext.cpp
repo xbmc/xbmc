@@ -133,7 +133,7 @@ void CWinSystemRpiGLESContext::SetVSyncImpl(bool enable)
 
 void CWinSystemRpiGLESContext::PresentRenderImpl(bool rendered)
 {
-  CGUIComponent *gui = CServiceBroker::GetGUI();
+  auto gui = CServiceBroker::GetGUI();
   if (gui)
     CWinSystemRpi::SetVisible(gui->GetWindowManager().HasVisibleControls() || g_application.GetAppPlayer().IsRenderingGuiLayer());
 

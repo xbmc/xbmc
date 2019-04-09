@@ -791,7 +791,7 @@ void CDisplaySettings::SettingOptionsDispModeFiller(SettingConstPtr setting, std
 
 void CDisplaySettings::SettingOptionsStereoscopicModesFiller(SettingConstPtr setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data)
 {
-  IGUIComponent *gui = CServiceBroker::GetGUI();
+  auto gui = CServiceBroker::GetGUI();
   if (gui != nullptr)
   {
     const CStereoscopicsManager &stereoscopicsManager = gui->GetStereoscopicsManager();

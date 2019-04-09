@@ -377,7 +377,7 @@ protected:
 
   std::shared_ptr<ANNOUNCEMENT::CAnnouncementManager> m_pAnnouncementManager;
   std::unique_ptr<CSettingsComponent> m_pSettingsComponent;
-  std::unique_ptr<CGUIComponent> m_pGUI;
+  std::shared_ptr<CGUIComponent> m_pGUI;
   std::unique_ptr<CWinSystemBase> m_pWinSystem;
   std::unique_ptr<ActiveAE::CActiveAE> m_pActiveAE;
   std::shared_ptr<CAppInboundProtocol> m_pAppPort;

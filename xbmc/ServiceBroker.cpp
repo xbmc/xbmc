@@ -205,21 +205,20 @@ CEventLog& CServiceBroker::GetEventLog()
   return m_pSettingsComponent->GetProfileManager()->GetEventLog();
 }
 
-IGUIComponent* CServiceBroker::m_pGUI = nullptr;
-
-IGUIComponent* CServiceBroker::GetGUI()
+std::shared_ptr<IGUIComponent> CServiceBroker::m_pGUI;
+std::shared_ptr<IGUIComponent> CServiceBroker::GetGUI()
 {
   return m_pGUI;
 }
 
-void CServiceBroker::RegisterGUI(IGUIComponent *gui)
+void CServiceBroker::RegisterGUI(std::shared_ptr<IGUIComponent> gui)
 {
   m_pGUI = gui;
 }
 
 void CServiceBroker::UnregisterGUI()
 {
-  m_pGUI = nullptr;
+  m_pGUI.reset();
 }
 
 // audio

@@ -337,7 +337,7 @@ bool CEventServer::ExecuteNextAction()
           unsigned int actionID;
           CActionTranslator::TranslateString(actionEvent.actionName, actionID);
           CAction action(actionID, 1.0f, 0.0f, actionEvent.actionName);
-          IGUIComponent* gui = CServiceBroker::GetGUI();
+          auto gui = CServiceBroker::GetGUI();
           if (gui)
             gui->GetAudioManager().PlayActionSound(action);
 

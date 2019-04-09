@@ -107,8 +107,8 @@ public:
   static CDatabaseManager &GetDatabaseManager();
   static CEventLog &GetEventLog();
 
-  static IGUIComponent* GetGUI();
-  static void RegisterGUI(IGUIComponent *gui);
+  static std::shared_ptr<IGUIComponent> GetGUI();
+  static void RegisterGUI(std::shared_ptr<IGUIComponent> gui);
   static void UnregisterGUI();
 
   static void RegisterSettingsComponent(CSettingsComponent *settings);
@@ -133,7 +133,7 @@ public:
 
 private:
   static std::shared_ptr<ANNOUNCEMENT::CAnnouncementManager> m_pAnnouncementManager;
-  static IGUIComponent* m_pGUI;
+  static std::shared_ptr<IGUIComponent> m_pGUI;
   static CWinSystemBase* m_pWinSystem;
   static IAE* m_pActiveAE;
   static std::shared_ptr<CAppInboundProtocol> m_pAppPort;

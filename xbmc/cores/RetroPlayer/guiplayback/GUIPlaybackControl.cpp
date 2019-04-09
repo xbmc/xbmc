@@ -24,7 +24,7 @@ CGUIPlaybackControl::~CGUIPlaybackControl() = default;
 
 void CGUIPlaybackControl::FrameMove()
 {
-  IGUIComponent *gui = CServiceBroker::GetGUI();
+  auto gui = CServiceBroker::GetGUI();
   if (gui == nullptr)
     return;
 

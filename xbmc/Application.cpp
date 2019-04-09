@@ -669,7 +669,7 @@ bool CApplication::CreateGUI()
   if (sav_res)
     CDisplaySettings::GetInstance().SetCurrentResolution(RES_DESKTOP, true);
 
-  m_pGUI.reset(new CGUIComponent());
+  m_pGUI = std::make_shared<CGUIComponent>();
   m_pGUI->Init();
   m_pGUI->AddMsgTarget(this);
   m_pGUI->AddMsgTarget(&g_fontManager);
@@ -1376,7 +1376,7 @@ void CApplication::UnloadSkin(bool forReload /* = false */)
   else if (!m_saveSkinOnUnloading)
     m_saveSkinOnUnloading = true;
 
-  IGUIComponent *gui = CServiceBroker::GetGUI();
+  auto gui = CServiceBroker::GetGUI();
   if (gui)
   {
     gui->GetAudioManager().Enable(false);
@@ -1830,7 +1830,7 @@ bool CApplication::OnAction(const CAction &action)
       if (!m_appPlayer.IsPaused() && m_appPlayer.GetPlaySpeed() != 1)
         m_appPlayer.SetPlaySpeed(1);
 
-      IGUIComponent *gui = CServiceBroker::GetGUI();
+      auto gui = CServiceBroker::GetGUI();
       if (gui)
         gui->GetAudioManager().Enable(m_appPlayer.IsPaused());
       return true;
@@ -1893,7 +1893,7 @@ bool CApplication::OnAction(const CAction &action)
         // unpause, and set the playspeed back to normal
         m_appPlayer.Pause();
 
-        IGUIComponent *gui = CServiceBroker::GetGUI();
+        auto gui = CServiceBroker::GetGUI();
         if (gui)
           gui->GetAudioManager().Enable(m_appPlayer.IsPaused());
 
@@ -2626,7 +2626,7 @@ void CApplication::Stop(int exitCode)
     UnregisterActionListener(&m_appPlayer.GetSeekHandler());
     UnregisterActionListener(&CPlayerController::GetInstance());
 
-    IGUIComponent *gui = CServiceBroker::GetGUI();
+    auto gui = CServiceBroker::GetGUI();
     if (gui)
       gui->GetAudioManager().DeInitialize();
 
@@ -2965,7 +2965,7 @@ bool CApplication::PlayFile(CFileItem item, const std::string& player, bool bRes
   m_appPlayer.SetMute(m_muted);
 
 #if !defined(TARGET_POSIX)
-  IGUIComponent *gui = CServiceBroker::GetGUI();
+  auto gui = CServiceBroker::GetGUI();
   if (gui)
     gui->GetAudioManager().Enable(false);
 #endif
@@ -2980,7 +2980,7 @@ void CApplication::PlaybackCleanup()
 {
   if (!m_appPlayer.IsPlaying())
   {
-    IGUIComponent *gui = CServiceBroker::GetGUI();
+    auto gui = CServiceBroker::GetGUI();
     if (gui)
       CServiceBroker::GetGUI()->GetAudioManager().Enable(true);
     m_appPlayer.OpenNext(m_ServiceManager->GetPlayerCoreFactory());
@@ -3315,7 +3315,7 @@ bool CApplication::IsFullScreen()
 
 void CApplication::StopPlaying()
 {
-  IGUIComponent *gui = CServiceBroker::GetGUI();
+  auto gui = CServiceBroker::GetGUI();
 
   if (gui)
   {
@@ -4762,7 +4762,7 @@ void CApplication::SetRenderGUI(bool renderGUI)
 {
   if (renderGUI && ! m_renderGUI)
   {
-    IGUIComponent *gui = CServiceBroker::GetGUI();
+    auto gui = CServiceBroker::GetGUI();
     if (gui)
       CServiceBroker::GetGUI()->GetWindowManager().MarkDirty();
   }

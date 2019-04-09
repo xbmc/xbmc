@@ -271,7 +271,7 @@ public:
   {
     if (g_application.IsCurrentThread())
     {
-      IGUIComponent *gui = CServiceBroker::GetGUI();
+      auto gui = CServiceBroker::GetGUI();
       if (gui)
         m_dialog = gui->GetWindowManager().GetWindow<CGUIDialogProgress>(WINDOW_DIALOG_PROGRESS);
     }

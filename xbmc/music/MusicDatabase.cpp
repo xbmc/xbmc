@@ -9220,7 +9220,7 @@ bool CMusicDatabase::CommitTransaction()
 {
   if (CDatabase::CommitTransaction())
   { // number of items in the db has likely changed, so reset the infomanager cache
-    IGUIComponent* gui = CServiceBroker::GetGUI();
+    auto gui = CServiceBroker::GetGUI();
     if (gui)
     {
       gui->GetInfoManager().GetInfoProviders().GetLibraryInfoProvider().SetLibraryBool(LIBRARY_HAS_MUSIC, GetSongsCount() > 0);
@@ -10005,7 +10005,7 @@ void CMusicDatabase::ImportFromXML(const std::string& xmlFile, CGUIDialogProgres
       if (!ImportSongHistory(xmlFile, songtotal, progressDialog))
         return;
 
-    IGUIComponent* gui = CServiceBroker::GetGUI();
+    auto gui = CServiceBroker::GetGUI();
     if (gui)
       gui->GetInfoManager().GetInfoProviders().GetLibraryInfoProvider().ResetLibraryBools();
   }
