@@ -63,7 +63,9 @@ void Interface_GUIControlLabel::set_label(void* kodiBase, void* handle, const ch
 
   CGUIMessage msg(GUI_MSG_LABEL_SET, control->GetParentID(), control->GetID());
   msg.SetLabel(label);
-  CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg, control->GetParentID());
+  auto gui = CServiceBroker::GetGUI();
+  if (gui)
+    gui->GetWindowManager().SendThreadMessage(msg, control->GetParentID());
 }
 
 char* Interface_GUIControlLabel::get_label(void* kodiBase, void* handle)
