@@ -342,6 +342,9 @@ elseif(CORE_SYSTEM_NAME STREQUAL android)
 elseif(CORE_SYSTEM_NAME STREQUAL ios)
   set_target_properties(${APP_NAME_LC} PROPERTIES OUTPUT_NAME ${APP_NAME}
                                                   MACOSX_BUNDLE_INFO_PLIST ${CMAKE_SOURCE_DIR}/xbmc/platform/darwin/ios/Info.plist.in)
+elseif(CORE_SYSTEM_NAME STREQUAL tvos)
+  set_target_properties(${APP_NAME_LC} PROPERTIES OUTPUT_NAME ${APP_NAME}
+                                                  MACOSX_BUNDLE_INFO_PLIST ${CMAKE_SOURCE_DIR}/xbmc/platform/darwin/tvos/Info.plist.in)
 else()
   set_target_properties(${APP_NAME_LC} PROPERTIES SUFFIX ${APP_BINARY_SUFFIX})
 endif()
