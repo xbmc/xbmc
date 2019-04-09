@@ -498,10 +498,14 @@ bool CAddonDll::CheckAPIVersion(int type)
 
 bool CAddonDll::UpdateSettingInActiveDialog(const char* id, const std::string& value)
 {
-  if (!CServiceBroker::GetGUI()->GetWindowManager().IsWindowActive(WINDOW_DIALOG_ADDON_SETTINGS))
+  auto gui = CServiceBroker::GetGUI();
+  if (!gui)
     return false;
 
-  CGUIDialogAddonSettings* dialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogAddonSettings>(WINDOW_DIALOG_ADDON_SETTINGS);
+  if (!gui->GetWindowManager().IsWindowActive(WINDOW_DIALOG_ADDON_SETTINGS))
+    return false;
+
+  CGUIDialogAddonSettings* dialog = gui->GetWindowManager().GetWindow<CGUIDialogAddonSettings>(WINDOW_DIALOG_ADDON_SETTINGS);
   if (dialog->GetCurrentAddonID() != m_addonInfo.ID())
     return false;
 
@@ -510,7 +514,7 @@ bool CAddonDll::UpdateSettingInActiveDialog(const char* id, const std::string& v
   params.push_back(id);
   params.push_back(value);
   message.SetStringParams(params);
-  CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(message, WINDOW_DIALOG_ADDON_SETTINGS);
+  gui->GetWindowManager().SendThreadMessage(message, WINDOW_DIALOG_ADDON_SETTINGS);
 
   return true;
 }
