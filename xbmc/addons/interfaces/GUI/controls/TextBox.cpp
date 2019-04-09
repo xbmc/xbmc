@@ -65,7 +65,9 @@ void Interface_GUIControlTextBox::reset(void* kodiBase, void* handle)
   }
 
   CGUIMessage msg(GUI_MSG_LABEL_RESET, control->GetParentID(), control->GetID());
-  CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg, control->GetParentID());
+  auto gui = CServiceBroker::GetGUI();
+  if (gui)
+    gui->GetWindowManager().SendThreadMessage(msg, control->GetParentID());
 }
 
 void Interface_GUIControlTextBox::set_text(void* kodiBase, void* handle, const char* text)
@@ -81,7 +83,9 @@ void Interface_GUIControlTextBox::set_text(void* kodiBase, void* handle, const c
 
   CGUIMessage msg(GUI_MSG_LABEL_SET, control->GetParentID(), control->GetID());
   msg.SetLabel(text);
-  CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg, control->GetParentID());
+  auto gui = CServiceBroker::GetGUI();
+  if (gui)
+    gui->GetWindowManager().SendThreadMessage(msg, control->GetParentID());
 }
 
 char* Interface_GUIControlTextBox::get_text(void* kodiBase, void* handle)
