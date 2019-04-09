@@ -42,7 +42,11 @@ void Interface_GUIDialogTextViewer::open(void* kodiBase, const char *heading, co
     return;
   }
 
-  CGUIDialogTextViewer* dialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogTextViewer>(WINDOW_DIALOG_TEXT_VIEWER);
+  auto gui = CServiceBroker::GetGUI();
+  if (!gui)
+    return;
+  
+  CGUIDialogTextViewer* dialog = gui->GetWindowManager().GetWindow<CGUIDialogTextViewer>(WINDOW_DIALOG_TEXT_VIEWER);
   if (!heading || !text || !dialog)
   {
     CLog::Log(LOGERROR,
