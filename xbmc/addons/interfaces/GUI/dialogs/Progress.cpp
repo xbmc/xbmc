@@ -55,7 +55,11 @@ void* Interface_GUIDialogProgress::new_dialog(void* kodiBase)
     return nullptr;
   }
 
-  CGUIDialogProgress *dialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogProgress>(WINDOW_DIALOG_PROGRESS);
+  auto gui = CServiceBroker::GetGUI();
+  if (!gui)
+    return nullptr;
+  
+  CGUIDialogProgress *dialog = gui->GetWindowManager().GetWindow<CGUIDialogProgress>(WINDOW_DIALOG_PROGRESS);
   if (!dialog)
   {
     CLog::Log(LOGERROR,
