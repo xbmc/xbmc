@@ -605,6 +605,49 @@ bool CApplication::Create(const CAppParamParser &params)
   return true;
 }
 
+void CApplication::InitGuiComponent()
+{
+  DeinitGuiComponent();
+
+  m_pGUI = std::make_shared<CGUIComponent>();
+  m_pGUI->Init();
+  ActivateGuiComponent();
+
+  m_pGUI->AddMsgTarget(this);
+  m_pGUI->AddMsgTarget(&g_fontManager);
+}
+
+void CApplication::DeinitGuiComponent()
+{
+  if (m_pGUI)
+  {
+    DeactivateGuiComponent();
+    m_pGUI->Deinit();
+    m_pGUI.reset();
+  }
+}
+
+void CApplication::ActivateGuiComponent()
+{
+  CServiceBroker::RegisterGUI(m_pGUI);
+}
+
+void CApplication::DeactivateGuiComponent()
+{
+  CServiceBroker::UnregisterGUI();
+  
+  XbmcThreads::EndTime timer(1000);
+  while (m_pGUI.use_count() > 1)
+  {
+    Sleep(100);
+    if (timer.IsTimePast())
+    {
+      CLog::Log(LOGERROR, "CApplication::DeactivateGuiComponent - CGUIComponent still in use after deregistration.");
+      break;
+    }
+  }
+}
+
 bool CApplication::CreateGUI()
 {
   m_frameMoveGuard.lock();
@@ -669,11 +712,7 @@ bool CApplication::CreateGUI()
   if (sav_res)
     CDisplaySettings::GetInstance().SetCurrentResolution(RES_DESKTOP, true);
 
-  m_pGUI = std::make_shared<CGUIComponent>();
-  m_pGUI->Init();
-  CServiceBroker::RegisterGUI(m_pGUI);
-  m_pGUI->AddMsgTarget(this);
-  m_pGUI->AddMsgTarget(&g_fontManager);
+  InitGuiComponent();
 
   // Splash requires gui component!!
   CServiceBroker::GetRenderSystem()->ShowSplash("");
@@ -2486,12 +2525,7 @@ bool CApplication::Cleanup()
     while(1); // execution ends
 #endif
 
-    if (m_pGUI)
-    {
-      CServiceBroker::UnregisterGUI();
-      m_pGUI->Deinit();
-      m_pGUI.reset();
-    }
+    DeinitGuiComponent();
 
     if (winSystem)
     {

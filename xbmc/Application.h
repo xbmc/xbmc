@@ -479,6 +479,11 @@ private:
   CApplicationPlayer m_appPlayer;
   CEvent m_playerEvent;
   CApplicationStackHelper m_stackHelper;
+  
+  void InitGuiComponent();
+  void DeinitGuiComponent();
+  void ActivateGuiComponent();
+  void DeactivateGuiComponent();
 };
 
 XBMC_GLOBAL_REF(CApplication,g_application);
