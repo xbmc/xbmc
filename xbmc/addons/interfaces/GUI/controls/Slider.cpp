@@ -91,7 +91,9 @@ void Interface_GUIControlSlider::reset(void* kodiBase, void* handle)
   }
 
   CGUIMessage msg(GUI_MSG_LABEL_RESET, control->GetParentID(), control->GetID());
-  CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg, control->GetParentID());
+  auto gui = CServiceBroker::GetGUI();
+  if (gui)
+    gui->GetWindowManager().SendThreadMessage(msg, control->GetParentID());
 }
 
 char* Interface_GUIControlSlider::get_description(void* kodiBase, void* handle)
