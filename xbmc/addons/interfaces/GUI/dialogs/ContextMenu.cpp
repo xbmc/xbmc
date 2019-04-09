@@ -42,7 +42,11 @@ int Interface_GUIDialogContextMenu::open(void* kodiBase, const char *heading, co
     return -1;
   }
 
-  CGUIDialogContextMenu* dialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogContextMenu>(WINDOW_DIALOG_CONTEXT_MENU);
+  auto gui = CServiceBroker::GetGUI();
+  if (!gui)
+    return -1;
+  
+  CGUIDialogContextMenu* dialog = gui->GetWindowManager().GetWindow<CGUIDialogContextMenu>(WINDOW_DIALOG_CONTEXT_MENU);
   if (!heading || !entries || !dialog)
   {
     CLog::Log(LOGERROR,
