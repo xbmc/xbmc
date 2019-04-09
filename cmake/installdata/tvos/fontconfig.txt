@@ -1,0 +1,1 @@
+system/players/VideoPlayer/etc/*

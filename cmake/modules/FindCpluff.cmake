@@ -20,6 +20,9 @@ else()
   if(CORE_SYSTEM_NAME STREQUAL ios)
     set(cppflags "-arch ${CPU}")
   endif()
+  if(CORE_SYSTEM_NAME STREQUAL tvos)
+    set(cppflags "-arch ${CPU}")
+  endif()
 
   ExternalProject_Add(libcpluff SOURCE_DIR ${CMAKE_SOURCE_DIR}/lib/cpluff
                       BUILD_IN_SOURCE 1

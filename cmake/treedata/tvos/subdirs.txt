@@ -1,0 +1,17 @@
+xbmc/platform/linux                   platform/linux
+xbmc/platform/linux/network           platform/linux/network
+xbmc/input/touch                      input/touch
+xbmc/input/touch/generic              input/touch/generic
+xbmc/platform/posix                   posix
+xbmc/platform/posix/filesystem        platform/posix/filesystem
+xbmc/platform/posix/utils             platform/posix/utils
+xbmc/platform/darwin                  platform/darwin
+xbmc/platform/darwin/tvos             platform/tvos
+xbmc/platform/darwin/ios-common       platform/ios-common
+xbmc/platform/darwin/osx/network      platform/osx/network
+xbmc/platform/darwin/osx/peripherals  platform/osx/peripherals
+xbmc/platform/darwin/osx/powermanagement platform/darwin/osx/powermanagement
+xbmc/platform/darwin/osx/storage      platform/osx/storage
+xbmc/windowing/osx                    windowing/osx
+xbmc/cores/RetroPlayer/process/tvos    cores/RetroPlayer/process/tvos
+xbmc/cores/VideoPlayer/Process/tvos    cores/VideoPlayer/Process/tvos
