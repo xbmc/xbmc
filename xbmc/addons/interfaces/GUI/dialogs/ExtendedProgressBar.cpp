@@ -53,7 +53,11 @@ void* Interface_GUIDialogExtendedProgress::new_dialog(void* kodiBase, const char
   }
 
   // setup the progress dialog
-  CGUIDialogExtendedProgressBar* dialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogExtendedProgressBar>(WINDOW_DIALOG_EXT_PROGRESS);
+  auto gui = CServiceBroker::GetGUI();
+  if (!gui)
+    return nullptr;
+
+  CGUIDialogExtendedProgressBar* dialog = gui->GetWindowManager().GetWindow<CGUIDialogExtendedProgressBar>(WINDOW_DIALOG_EXT_PROGRESS);
   if (!title || !dialog)
   {
     CLog::Log(LOGERROR,
