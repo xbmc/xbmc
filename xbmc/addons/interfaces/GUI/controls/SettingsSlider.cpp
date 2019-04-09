@@ -92,7 +92,9 @@ void Interface_GUIControlSettingsSlider::set_text(void* kodiBase, void* handle, 
 
   CGUIMessage msg(GUI_MSG_LABEL_SET, control->GetParentID(), control->GetID());
   msg.SetLabel(text);
-  CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg, control->GetParentID());
+  auto gui = CServiceBroker::GetGUI();
+  if (gui)
+    gui->GetWindowManager().SendThreadMessage(msg, control->GetParentID());
 }
 
 void Interface_GUIControlSettingsSlider::reset(void* kodiBase, void* handle)
@@ -107,7 +109,9 @@ void Interface_GUIControlSettingsSlider::reset(void* kodiBase, void* handle)
   }
 
   CGUIMessage msg(GUI_MSG_LABEL_RESET, control->GetParentID(), control->GetID());
-  CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg, control->GetParentID());
+  auto gui = CServiceBroker::GetGUI();
+  if (gui)
+    gui->GetWindowManager().SendThreadMessage(msg, control->GetParentID());
 }
 
 void Interface_GUIControlSettingsSlider::set_int_range(void* kodiBase, void* handle, int start, int end)
