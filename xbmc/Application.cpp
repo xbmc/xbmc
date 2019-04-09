@@ -420,7 +420,7 @@ bool CApplication::Create(const CAppParamParser &params)
   CopyUserDataIfNeeded("special://masterprofile/", "Lircmap.xml");
 
   //! @todo - move to CPlatformXXX
-  #ifdef TARGET_DARWIN_IOS
+  #if defined(TARGET_DARWIN_IOS) || defined(TARGET_DARWIN_TVOS)
     CopyUserDataIfNeeded("special://masterprofile/", "iOS/sources.xml", "sources.xml");
   #endif
 

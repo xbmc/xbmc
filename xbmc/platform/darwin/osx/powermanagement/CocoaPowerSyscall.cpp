@@ -80,7 +80,7 @@ CCocoaPowerSyscall::CCocoaPowerSyscall()
   m_HasBattery = -1;
   m_BatteryPercent = 100;
   m_SentBatteryMessage = false;
-#if !defined(TARGET_DARWIN_IOS)
+#if !defined(TARGET_DARWIN_IOS) && !defined(TARGET_DARWIN_TVOS)
   m_power_source = NULL;
 #endif
   CreateOSPowerCallBacks();
@@ -95,7 +95,7 @@ CCocoaPowerSyscall::~CCocoaPowerSyscall()
 bool CCocoaPowerSyscall::Powerdown(void)
 {
   bool result;
-#if defined(TARGET_DARWIN_IOS)
+#if defined(TARGET_DARWIN_IOS) || defined(TARGET_DARWIN_TVOS)
   result = false;
 #else
   CLog::Log(LOGDEBUG, "CCocoaPowerSyscall::Powerdown");
@@ -112,7 +112,7 @@ bool CCocoaPowerSyscall::Powerdown(void)
 
 bool CCocoaPowerSyscall::Suspend(void)
 {
-#if defined(TARGET_DARWIN_IOS)
+#if defined(TARGET_DARWIN_IOS) || defined(TARGET_DARWIN_TVOS)
   return false;
 #else
   CLog::Log(LOGDEBUG, "CCocoaPowerSyscall::Suspend");
@@ -143,7 +143,7 @@ bool CCocoaPowerSyscall::Reboot(void)
 {
   bool result;
   CLog::Log(LOGDEBUG, "CCocoaPowerSyscall::Reboot");
-#if defined(TARGET_DARWIN_IOS)
+#if defined(TARGET_DARWIN_IOS) || defined(TARGET_DARWIN_TVOS)
   result = false;
 #else
   OSErr error = SendAppleEventToSystemProcess(kAERestart);
@@ -169,7 +169,7 @@ bool CCocoaPowerSyscall::CanPowerdown(void)
 bool CCocoaPowerSyscall::CanSuspend(void)
 {
   bool result;
-#if defined(TARGET_DARWIN_IOS)
+#if defined(TARGET_DARWIN_IOS) || defined(TARGET_DARWIN_TVOS)
   result = false;
 #else
   result =IOPMSleepEnabled();
@@ -197,7 +197,7 @@ bool CCocoaPowerSyscall::CanReboot(void)
 bool CCocoaPowerSyscall::HasBattery(void)
 {
   bool result;
-#if defined(TARGET_DARWIN_IOS)
+#if defined(TARGET_DARWIN_IOS) || defined(TARGET_DARWIN_TVOS)
   result = false;
 #else
   result = true;
@@ -254,7 +254,7 @@ bool CCocoaPowerSyscall::PumpPowerEvents(IPowerEventsCallback *callback)
 
 void CCocoaPowerSyscall::CreateOSPowerCallBacks(void)
 {
-#if !defined(TARGET_DARWIN_IOS)
+#if !defined(TARGET_DARWIN_IOS) && !defined(TARGET_DARWIN_TVOS)
   CCocoaAutoPool autopool;
   // we want sleep/wake notifications, register to receive system power notifications
   m_root_port = IORegisterForSystemPower(this, &m_notify_port, OSPowerCallBack, &m_notifier_object);
@@ -283,7 +283,7 @@ void CCocoaPowerSyscall::CreateOSPowerCallBacks(void)
 
 void CCocoaPowerSyscall::DeleteOSPowerCallBacks(void)
 {
-#if !defined(TARGET_DARWIN_IOS)
+#if !defined(TARGET_DARWIN_IOS) && !defined(TARGET_DARWIN_TVOS)
   CCocoaAutoPool autopool;
   // we no longer want sleep/wake notifications
   // remove the sleep notification port from the application runloop
@@ -311,7 +311,7 @@ void CCocoaPowerSyscall::DeleteOSPowerCallBacks(void)
 
 void CCocoaPowerSyscall::OSPowerCallBack(void *refcon, io_service_t service, natural_t msg_type, void *msg_arg)
 {
-#if !defined(TARGET_DARWIN_IOS)
+#if !defined(TARGET_DARWIN_IOS) && !defined(TARGET_DARWIN_TVOS)
   CCocoaAutoPool autopool;
   CCocoaPowerSyscall  *ctx;
 
@@ -352,7 +352,7 @@ void CCocoaPowerSyscall::OSPowerCallBack(void *refcon, io_service_t service, nat
 #endif
 }
 
-#if !defined(TARGET_DARWIN_IOS)
+#if !defined(TARGET_DARWIN_IOS) && !defined(TARGET_DARWIN_TVOS)
 static bool stringsAreEqual(CFStringRef a, CFStringRef b)
 {
 	if (a == nil || b == nil)
@@ -363,7 +363,7 @@ static bool stringsAreEqual(CFStringRef a, CFStringRef b)
 
 void CCocoaPowerSyscall::OSPowerSourceCallBack(void *refcon)
 {
-#if !defined(TARGET_DARWIN_IOS)
+#if !defined(TARGET_DARWIN_IOS) && !defined(TARGET_DARWIN_TVOS)
   // Called whenever any power source is added, removed, or changes.
   // When on battery, we get called periodically as battery level changes.
   CCocoaAutoPool autopool;

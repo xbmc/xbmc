@@ -36,7 +36,9 @@ typedef enum
   bool touchBeginSignaled;
   int  m_screenIdx;
 
+#ifdef TARGET_DARWIN_IOS
   UIInterfaceOrientation orientation;
+#endif
 
   bool m_isPlayingBeforeInactive;
   UIBackgroundTaskIdentifier m_bgTask;
@@ -70,7 +72,9 @@ typedef enum
 - (bool) presentFramebuffer;
 - (CGSize) getScreenSize;
 - (CGFloat) getScreenScale:(UIScreen *)screen;
+#ifdef TARGET_DARWIN_IOS
 - (UIInterfaceOrientation) getOrientation;
+#endif
 - (void) createGestureRecognizers;
 - (void) activateKeyboard:(UIView *)view;
 - (void) deactivateKeyboard:(UIView *)view;
@@ -83,7 +87,9 @@ typedef enum
 - (void) disableScreenSaver;
 - (void) enableScreenSaver;
 - (bool) changeScreen: (unsigned int)screenIdx withMode:(UIScreenMode *)mode;
+#ifdef TARGET_DARWIN_IOS
 - (void) activateScreen: (UIScreen *)screen withOrientation:(UIInterfaceOrientation)newOrientation;
+#endif
 - (id)   initWithFrame:(CGRect)frame withScreen:(UIScreen *)screen;
 - (void*) getEAGLContextObj;
 @end

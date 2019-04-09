@@ -10,7 +10,7 @@
 
 #if defined (TARGET_DARWIN)
 #include "powermanagement/IPowerSyscall.h"
-#if defined(TARGET_DARWIN_IOS)
+#if defined(TARGET_DARWIN_IOS) || defined(TARGET_DARWIN_TVOS)
 #include <pthread.h>
 typedef mach_port_t io_object_t;
 typedef io_object_t io_service_t;
