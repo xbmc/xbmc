@@ -44,7 +44,9 @@ CGUIWindowPVRChannelsBase::CGUIWindowPVRChannelsBase(bool bRadio, int id, const 
 
 CGUIWindowPVRChannelsBase::~CGUIWindowPVRChannelsBase()
 {
-  CServiceBroker::GetGUI()->GetInfoManager().UnregisterObserver(this);
+  auto gui = CServiceBroker::GetGUI();
+  if (gui)
+    gui->GetInfoManager().UnregisterObserver(this);
   CServiceBroker::GetPVRManager().EpgContainer().UnregisterObserver(this);
 }
 

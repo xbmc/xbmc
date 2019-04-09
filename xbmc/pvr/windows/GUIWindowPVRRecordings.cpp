@@ -42,7 +42,9 @@ CGUIWindowPVRRecordingsBase::CGUIWindowPVRRecordingsBase(bool bRadio, int id, co
 
 CGUIWindowPVRRecordingsBase::~CGUIWindowPVRRecordingsBase()
 {
-  CServiceBroker::GetGUI()->GetInfoManager().UnregisterObserver(this);
+  auto gui = CServiceBroker::GetGUI();
+  if (gui)
+    gui->GetInfoManager().UnregisterObserver(this);
 }
 
 void CGUIWindowPVRRecordingsBase::OnWindowLoaded()

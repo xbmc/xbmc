@@ -36,7 +36,9 @@ CGUIWindowPVRTimersBase::CGUIWindowPVRTimersBase(bool bRadio, int id, const std:
 
 CGUIWindowPVRTimersBase::~CGUIWindowPVRTimersBase()
 {
-  CServiceBroker::GetGUI()->GetInfoManager().UnregisterObserver(this);
+  auto gui = CServiceBroker::GetGUI();
+  if (gui)
+    gui->GetInfoManager().UnregisterObserver(this);
 }
 
 bool CGUIWindowPVRTimersBase::OnAction(const CAction &action)
