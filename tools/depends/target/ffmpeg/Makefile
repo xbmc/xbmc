@@ -53,6 +53,19 @@ ifeq ($(OS), ios)
   ffmpg_config += --disable-decoder=mpeg_xvmc --disable-crystalhd --enable-videotoolbox
   ffmpg_config += --target-os=darwin
 endif
+
+
+ifeq ($(OS), tvos)
+  ifneq ($(CPU), arm64)
+    ffmpg_config += --cpu=cortex-a8
+  else
+    ffmpg_config += --as="$(NATIVEPREFIX)/bin/gas-preprocessor.pl -arch aarch64 -- $(CC)"
+  endif
+  ffmpg_config += --yasmexe=$(NATIVEPREFIX)/bin/yasm
+  ffmpg_config += --disable-decoder=mpeg_xvmc --disable-crystalhd --enable-videotoolbox
+  ffmpg_config += --target-os=darwin
+endif
+
 ifeq ($(OS), osx)
   ffmpg_config += --disable-decoder=mpeg_xvmc --disable-crystalhd --enable-videotoolbox
   ffmpg_config += --target-os=darwin
@@ -81,6 +94,9 @@ $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 	CFLAGS="$(CFLAGS)" CXXFLAGS="$(CXXFLAGS)" CPPFLAGS="$(CPPFLAGS)" LDFLAGS="$(LDFLAGS)" \
 	./configure $(ffmpg_config)
 ifeq ($(OS), ios)
+	cd $(PLATFORM); sed -i -- 's/HAVE_CLOCK_GETTIME 1/HAVE_CLOCK_GETTIME 0/g' config.h
+endif
+ifeq ($(OS), tvos)
 	cd $(PLATFORM); sed -i -- 's/HAVE_CLOCK_GETTIME 1/HAVE_CLOCK_GETTIME 0/g' config.h
 endif
 

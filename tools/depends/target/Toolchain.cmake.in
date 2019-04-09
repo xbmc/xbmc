@@ -31,24 +31,48 @@ elseif(OS STREQUAL osx)
   set(CMAKE_SYSTEM_NAME Darwin)
   set(CORE_SYSTEM_NAME osx)
 elseif(OS STREQUAL ios)
-  set(CMAKE_SYSTEM_NAME Darwin)
-  set(CORE_SYSTEM_NAME ios)
+    set(CMAKE_SYSTEM_NAME Darwin)
+    set(CORE_SYSTEM_NAME ios)
+elseif(OS STREQUAL tvos)
+    set(CMAKE_SYSTEM_NAME Darwin)
+    set(CORE_SYSTEM_NAME tvos)
 endif()
 
 if(CORE_SYSTEM_NAME STREQUAL ios)
-  # Necessary to build the main Application (but not other dependencies)
-  # with Xcode (and a bundle with Makefiles) (https://cmake.org/Bug/view.php?id=15329)
-  if(NOT PROJECT_SOURCE_DIR MATCHES "tools/depends")
-    message(STATUS "Toolchain enabled IOS bundle for project ${PROJECT_NAME}")
-    set(CMAKE_MACOSX_BUNDLE YES)
-    set(CMAKE_XCODE_ATTRIBUTE_CODE_SIGNING_REQUIRED "NO")
+    # Necessary to build the main Application (but not other dependencies)
+    # with Xcode (and a bundle with Makefiles) (https://cmake.org/Bug/view.php?id=15329)
+    if(NOT PROJECT_SOURCE_DIR MATCHES "tools/depends")
+      message(STATUS "Toolchain enabled IOS bundle for project ${PROJECT_NAME}")
+      set(CMAKE_MACOSX_BUNDLE YES)
+      set(CMAKE_XCODE_ATTRIBUTE_CODE_SIGNING_REQUIRED "NO")
 
-    # set this to YES once we have a deployment target of at least iOS 6.0
-    set(CMAKE_XCODE_ATTRIBUTE_ENABLE_BITCODE "NO")
-  endif()
+      # set this to YES once we have a deployment target of at least iOS 6.0
+      set(CMAKE_XCODE_ATTRIBUTE_ENABLE_BITCODE "NO")
+    endif()
 endif()
 
-if(CORE_SYSTEM_NAME STREQUAL ios OR CORE_SYSTEM_NAME STREQUAL osx)
+if(CORE_SYSTEM_NAME STREQUAL tvos)
+    # Necessary to build the main Application (but not other dependencies)
+    # with Xcode (and a bundle with Makefiles) (https://cmake.org/Bug/view.php?id=15329)
+    if(NOT PROJECT_SOURCE_DIR MATCHES "tools/depends")
+      message(STATUS "Toolchain enabled TVOS bundle for project ${PROJECT_NAME}")
+      set(CMAKE_MACOSX_BUNDLE YES)
+      set(CMAKE_XCODE_ATTRIBUTE_CODE_SIGNING_REQUIRED "NO")
+      
+      # Need to set this attribute to "" in order to
+      # complety disable code signing
+      # see: https://gitlab.kitware.com/cmake/cmake/issues/19112
+      set(CMAKE_XCODE_ATTRIBUTE_CODE_SIGN_IDENTITY "")
+      
+      # So this one is not needed anymore
+      #set(CMAKE_TRY_COMPILE_TARGET_TYPE STATIC_LIBRARY)
+
+      # set this to YES once we have a deployment target of at least iOS 6.0
+      set(CMAKE_XCODE_ATTRIBUTE_ENABLE_BITCODE "YES")
+    endif()
+endif()
+
+if(CORE_SYSTEM_NAME STREQUAL ios OR CORE_SYSTEM_NAME STREQUAL tvos OR CORE_SYSTEM_NAME STREQUAL osx)    
   set(CMAKE_OSX_SYSROOT @use_sdk_path@)
 endif()
 set(CMAKE_SYSTEM_VERSION 1)

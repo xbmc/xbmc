@@ -21,6 +21,9 @@ endif
 ifeq ($(OS),ios)
 CONFIGURE_FLAGS=--disable-assembly
 endif
+ifeq ($(OS),tvos)
+CONFIGURE_FLAGS=--disable-assembly
+endif
 ifeq ($(OS),osx)
 CONFIGURE_FLAGS=--with-pic
 endif

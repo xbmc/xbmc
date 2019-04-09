@@ -18,7 +18,10 @@ endif
 
 ifeq (darwin, $(findstring darwin, $(HOST)))
 ifeq ($(OS),ios)
-PYTHON_O=$(abs_top_srcdir)/target/python27/$(PLATFORM)/Modules/python.o
+	PYTHON_O=$(abs_top_srcdir)/target/python27/$(PLATFORM)/Modules/python.o
+endif
+ifeq ($(OS),tvos)
+	PYTHON_O=$(abs_top_srcdir)/target/python27/$(PLATFORM)/Modules/python.o
 endif
 #ensure that only our target ldflags are passed to the python build
 LDSHARED:=$(CC) -bundle -undefined dynamic_lookup $(LDFLAGS)

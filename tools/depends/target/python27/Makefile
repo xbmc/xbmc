@@ -15,6 +15,10 @@ ifeq ($(OS),ios)
   HOSTPLATFORM=_PYTHON_HOST_PLATFORM="darwin"
   LINK_ICONV=-framework CoreFoundation -liconv
 endif
+ifeq ($(OS),tvos)
+  HOSTPLATFORM=_PYTHON_HOST_PLATFORM="darwin"
+  LINK_ICONV=-framework CoreFoundation -liconv
+endif
 
 # configuration settings
 CONFIGURE=OPT="$(CFLAGS)" \
@@ -43,6 +47,11 @@ $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 	cd $(PLATFORM); patch -p1 < ../no-abort.patch
 	cd $(PLATFORM); patch -p1 < ../android-nl_langinfo.patch
 ifeq ($(OS),ios)
+	cd $(PLATFORM); patch -p1 < ../make-fork-optional.patch
+	cd $(PLATFORM); patch -p1 < ../urllib.patch
+	cd $(PLATFORM); sed -ie 's|MACHDEP="unknown"|MACHDEP="darwin"|' configure.ac
+endif
+ifeq ($(OS),tvos)
 	cd $(PLATFORM); patch -p1 < ../make-fork-optional.patch
 	cd $(PLATFORM); patch -p1 < ../urllib.patch
 	cd $(PLATFORM); sed -ie 's|MACHDEP="unknown"|MACHDEP="darwin"|' configure.ac

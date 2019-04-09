@@ -20,6 +20,11 @@ if test "@platform_os@" = "ios" ; then
   export CCAS="--tag CC @prefix@/@tool_dir@/bin/gas-preprocessor.pl @CCACHE@ @CC@ -arch @use_cpu@"
 fi
 
+if test "@platform_os@" = "tvos" ; then
+  export AS="@prefix@/@tool_dir@/bin/gas-preprocessor.pl @CCACHE@ @CC@ -arch @use_cpu@"
+  export CCAS="--tag CC @prefix@/@tool_dir@/bin/gas-preprocessor.pl @CCACHE@ @CC@ -arch @use_cpu@"
+fi
+
 CFLAGS="@platform_cflags@ @platform_includes@ -isystem @prefix@/@deps_dir@/include $CFLAGS"
 LDFLAGS="-L@prefix@/@deps_dir@/lib -L@prefix@/@deps_dir@/lib64 @platform_ldflags@ $LDFLAGS"
 CXXFLAGS="@platform_cxxflags@ @platform_includes@ -isystem @prefix@/@deps_dir@/include $CXXFLAGS"
@@ -92,6 +97,16 @@ if test "${PACKAGE_NAME}" = "Samba" -a "@platform_os@" = "ios"; then
   samba_cv_HAVE_IFACE_GETIFADDRS=yes
 fi
 
+if test "${PACKAGE_NAME}" = "Samba" -a "@platform_os@" = "tvos"; then
+  # disable python support
+  export PYTHON_VER=0.0
+  if test "@use_cpu@" != "arm64"; then
+    # ios/osx-10.6 issue with collision of _MD5 exported from a system lib
+    export LDFLAGS="${LDFLAGS} -Wl,-unexported_symbol,_MD5* -lc"
+  fi
+  samba_cv_HAVE_IFACE_GETIFADDRS=yes
+fi
+
 if test "${PACKAGE_NAME}" = "Samba" -a "@platform_os@" = "osx"; then
   # disable python support
   export PYTHON_VER=0.0
@@ -147,6 +162,28 @@ fi
 
 
 if test "@platform_os@" = "ios"; then
+  # Xcode 8 + 10.11, clock_gettime and getentropy is present
+  # in 10.12 but will get wrongly detected if building on 10.11
+  ac_cv_search_clock_gettime=no
+  ac_cv_func_clock_gettime=no
+  ac_cv_func_getentropy=no
+
+  # tweaks for libffi
+  if test "${PACKAGE_NAME}" = "libffi" ; then
+    if test "@use_cpu@" = "arm64"; then
+      host_alias=aarch64-apple-darwin
+    fi
+  fi
+
+  # tweaks for flac
+  if test "${ac_unique_file}" = "src/flac/main.c" ; then
+    # compiler barfs if we use -O3/O2 for flac
+    export CFLAGS=`echo ${CFLAGS} | sed 's/-O3/-Os/'`
+    export CPPFLAGS=`echo ${CPPFLAGS} | sed 's/-O3/-Os/'`
+  fi
+fi
+
+if test "@platform_os@" = "tvos"; then
   # Xcode 8 + 10.11, clock_gettime and getentropy is present
   # in 10.12 but will get wrongly detected if building on 10.11
   ac_cv_search_clock_gettime=no

@@ -11,6 +11,10 @@ ifeq ($(OS),ios)
   CONFIGURE_FLAGS=-disable-assembler
 endif
 
+ifeq ($(OS),tvos)
+  CONFIGURE_FLAGS=-disable-assembler
+endif
+
 # configuration settings
 CONFIGURE=cp -f $(CONFIG_SUB) $(CONFIG_GUESS) .; \
           ./configure --prefix=$(PREFIX) --disable-shared --disable-openssl $(CONFIGURE_FLAGS)

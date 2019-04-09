@@ -27,6 +27,9 @@ endif
 ifeq ($(OS),ios)
   EXTRA_CFLAGS +=  -D__DARWIN__
 endif
+ifeq ($(OS),tvos)
+  EXTRA_CFLAGS +=  -D__DARWIN__
+endif
 
 RETRIEVE_TOOL := curl -Ls --create-dirs --retry 10 --retry-delay 3
 ARCHIVE_TOOL := tar --strip-components=1 -xf

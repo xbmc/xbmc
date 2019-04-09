@@ -28,9 +28,12 @@ endif
 
 ifeq ($(OS),ios)
   EXCLUDED_DEPENDS = libcec libusb
-  ifeq ($(TARGET_PLATFORM),appletvos)
-    DEPENDS += boblight
-  endif
+  DEPENDS += iosentitlements
+endif
+
+ifeq ($(OS),tvos)
+  EXCLUDED_DEPENDS = libcec libusb
+  DEPENDS += boblight
   DEPENDS += iosentitlements
 endif
 

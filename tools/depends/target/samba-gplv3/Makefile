@@ -8,11 +8,19 @@ SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
 
 ifeq ($(OS), ios)
-ifeq ($(CPU), arm64)
-# clang issue with optimizing out functions
-CONFIGURE_EXTRAS= --without-libmsrpc samba_cv_optimize_out_funcation_calls=no ac_cv_func_yp_get_default_domain=no
+	ifeq ($(CPU), arm64)
+	# clang issue with optimizing out functions
+	CONFIGURE_EXTRAS= --without-libmsrpc samba_cv_optimize_out_funcation_calls=no ac_cv_func_yp_get_default_domain=no
+	endif
 endif
+
+ifeq ($(OS), tvos)
+	ifeq ($(CPU), arm64)
+	# clang issue with optimizing out functions
+	CONFIGURE_EXTRAS= --without-libmsrpc samba_cv_optimize_out_funcation_calls=no ac_cv_func_yp_get_default_domain=no
+	endif
 endif
+
 
 CONFIGURE= cp -f $(CONFIG_SUB) $(CONFIG_GUESS) .; \
           ./configure --prefix=$(PREFIX) \
@@ -54,6 +62,10 @@ ifeq ($(OS),android)
 	cd $(PLATFORM); patch -p1 < ../samba_off64_t.patch
 endif
 ifeq ($(OS), ios)
+	cd $(PLATFORM); patch -p0 < ../no_fork_and_exec.patch
+	cd $(PLATFORM); patch -p0 < ../crt_extensions.patch
+endif
+ifeq ($(OS), tvos)
 	cd $(PLATFORM); patch -p0 < ../no_fork_and_exec.patch
 	cd $(PLATFORM); patch -p0 < ../crt_extensions.patch
 endif
