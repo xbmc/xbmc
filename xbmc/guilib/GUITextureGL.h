@@ -19,7 +19,10 @@ class CGUITextureGL : public CGUITextureBase
 {
 public:
   CGUITextureGL(float posX, float posY, float width, float height, const CTextureInfo& texture);
-  static void DrawQuad(const CRect &coords, UTILS::Color color, CBaseTexture *texture = NULL, const CRect *texCoords = NULL);
+  static void DrawQuad(const CRect& coords,
+                       UTILS::Color color,
+                       CTexture* texture = NULL,
+                       const CRect* texCoords = NULL);
 
 protected:
   void Begin(UTILS::Color color) override;

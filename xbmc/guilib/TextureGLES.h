@@ -19,5 +19,3 @@ public:
 
   void LoadToGPU() override;
 };
-
-using CTexture = CTextureGLES;

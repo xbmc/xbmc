@@ -22,5 +22,4 @@ public:
 private:
   bool m_isOglVersion3orNewer = false;
 };
-
-using CTexture = CTextureGL;
+w

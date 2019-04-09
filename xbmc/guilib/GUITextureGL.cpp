@@ -27,7 +27,7 @@ CGUITextureGL::CGUITextureGL(float posX, float posY, float width, float height, 
 
 void CGUITextureGL::Begin(UTILS::Color color)
 {
-  CBaseTexture* texture = m_texture.m_textures[m_currentFrame];
+  CTexture* texture = m_texture.m_textures[m_currentFrame];
   texture->LoadToGPU();
   if (m_diffuse.size())
     m_diffuse.m_textures[0]->LoadToGPU();
@@ -231,7 +231,10 @@ void CGUITextureGL::Draw(float *x, float *y, float *z, const CRect &texture, con
   }
 }
 
-void CGUITextureGL::DrawQuad(const CRect &rect, UTILS::Color color, CBaseTexture *texture, const CRect *texCoords)
+void CGUITextureGL::DrawQuad(const CRect& rect,
+                             UTILS::Color color,
+                             CTexture* texture,
+                             const CRect* texCoords)
 {
   CRenderSystemGL *renderSystem = dynamic_cast<CRenderSystemGL*>(CServiceBroker::GetRenderSystem());
   if (texture)

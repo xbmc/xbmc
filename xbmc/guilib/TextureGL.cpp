@@ -9,13 +9,17 @@
 #include "TextureGL.h"
 
 #include "ServiceBroker.h"
-#include "Texture.h"
 #include "guilib/TextureManager.h"
 #include "rendering/RenderSystem.h"
 #include "settings/AdvancedSettings.h"
 #include "utils/GLUtils.h"
 #include "utils/MemUtils.h"
 #include "utils/log.h"
+
+CTexture* CTexture::GetTexture(unsigned int width, unsigned int height, unsigned int format)
+{
+  return new CTextureGL(width, height, format);
+}
 
 CTextureGL::CTextureGL(unsigned int width, unsigned int height, unsigned int format)
   : CTextureGLBase(width, height, format)

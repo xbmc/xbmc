@@ -215,7 +215,7 @@ void CGUIFontTTFDX::ClearReference(CGUIFontTTFDX* font, CD3DBuffer* pBuffer)
     font->m_buffers.erase(it);
 }
 
-CBaseTexture* CGUIFontTTFDX::ReallocTexture(unsigned int& newHeight)
+CTexture* CGUIFontTTFDX::ReallocTexture(unsigned int& newHeight)
 {
   assert(newHeight != 0);
   assert(m_textureWidth != 0);

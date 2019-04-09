@@ -13,7 +13,7 @@
 #include "rendering/RenderSystem.h"
 
 CTextureGLBase::CTextureGLBase(unsigned int width, unsigned int height, unsigned int format)
-  : CBaseTexture(width, height, format)
+  : CTexture(width, height, format)
 {
   m_maxSize = CServiceBroker::GetRenderSystem()->GetMaxTextureSize();
 }

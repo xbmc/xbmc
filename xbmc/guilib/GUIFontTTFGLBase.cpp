@@ -82,11 +82,11 @@ void CGUIFontTTFGLBase::DestroyVertexBuffer(CVertexBuffer& buffer) const
   }
 }
 
-CBaseTexture* CGUIFontTTFGLBase::ReallocTexture(unsigned int& newHeight)
+CTexture* CGUIFontTTFGLBase::ReallocTexture(unsigned int& newHeight)
 {
-  newHeight = CBaseTexture::PadPow2(newHeight);
+  newHeight = CTexture::PadPow2(newHeight);
 
-  CBaseTexture* newTexture = new CTexture(m_textureWidth, newHeight, XB_FMT_A8);
+  CTexture* newTexture = CTexture::GetTexture(m_textureWidth, newHeight, XB_FMT_A8);
 
   if (!newTexture || newTexture->GetPixels() == NULL)
   {

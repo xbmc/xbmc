@@ -21,6 +21,8 @@ using namespace DirectX;
 
 #include <cstddef>
 
+#include "system_gl.h"
+
 using namespace KODI;
 using namespace RETRO;
 

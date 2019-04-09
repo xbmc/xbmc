@@ -30,7 +30,7 @@ public:
   void DestroyStaticVertexBuffers();
 
 protected:
-  CBaseTexture* ReallocTexture(unsigned int& newHeight) override;
+  CTexture* ReallocTexture(unsigned int& newHeight) override;
   bool CopyCharToTexture(FT_BitmapGlyph bitGlyph,
                          unsigned int x1,
                          unsigned int y1,

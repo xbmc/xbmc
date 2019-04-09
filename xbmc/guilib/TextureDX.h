@@ -14,16 +14,16 @@
 /************************************************************************/
 /*    CDXTexture                                                       */
 /************************************************************************/
-class CDXTexture : public CBaseTexture
+class CDXTexture : public CTexture
 {
 public:
   CDXTexture(unsigned int width = 0, unsigned int height = 0, unsigned int format = XB_FMT_UNKNOWN);
   virtual ~CDXTexture();
 
-  void CreateTextureObject();
-  void DestroyTextureObject();
-  virtual void LoadToGPU();
-  void BindToUnit(unsigned int unit);
+  void CreateTextureObject() override;
+  void DestroyTextureObject() overrde;
+  void LoadToGPU() override;
+  void BindToUnit(unsigned int unit) override;
 
   ID3D11Texture2D* GetTextureObject()
   {
@@ -39,5 +39,3 @@ private:
   CD3DTexture m_texture;
   DXGI_FORMAT GetFormat();
 };
-
-using CTexture = CDXTexture;

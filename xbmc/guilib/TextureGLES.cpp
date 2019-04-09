@@ -15,6 +15,11 @@
 #include "utils/MemUtils.h"
 #include "utils/log.h"
 
+CTexture* CTexture::GetTexture(unsigned int width, unsigned int height, unsigned int format)
+{
+  return new CTextureGLES(width, height, format);
+}
+
 CTextureGLES::CTextureGLES(unsigned int width, unsigned int height, unsigned int format)
   : CTextureGLBase(width, height, format)
 {

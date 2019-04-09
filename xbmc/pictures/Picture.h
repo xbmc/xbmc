@@ -14,7 +14,7 @@
 #include <string>
 #include <vector>
 
-class CBaseTexture;
+class CTexture;
 
 class CPicture
 {
@@ -28,22 +28,31 @@ public:
    */
   static bool CreateTiledThumb(const std::vector<std::string> &files, const std::string &thumb);
 
-  static bool ResizeTexture(const std::string &image, CBaseTexture *texture,
-    uint32_t &dest_width, uint32_t &dest_height, uint8_t* &result, size_t& result_size,
-    CPictureScalingAlgorithm::Algorithm scalingAlgorithm = CPictureScalingAlgorithm::NoAlgorithm);
+  static bool ResizeTexture(
+      const std::string& image,
+      CTexture* texture,
+      uint32_t& dest_width,
+      uint32_t& dest_height,
+      uint8_t*& result,
+      size_t& result_size,
+      CPictureScalingAlgorithm::Algorithm scalingAlgorithm = CPictureScalingAlgorithm::NoAlgorithm);
   static bool ResizeTexture(const std::string &image, uint8_t *pixels, uint32_t width, uint32_t height, uint32_t pitch,
     uint32_t &dest_width, uint32_t &dest_height, uint8_t* &result, size_t& result_size,
     CPictureScalingAlgorithm::Algorithm scalingAlgorithm = CPictureScalingAlgorithm::NoAlgorithm);
 
   /*! \brief Cache a texture, resizing, rotating and flipping as needed, and saving as a JPG or PNG
-   \param texture a pointer to a CBaseTexture
+   \param texture a pointer to a CTexture
    \param dest_width [in/out] maximum width in pixels of cached version - replaced with actual cached width
    \param dest_height [in/out] maximum height in pixels of cached version - replaced with actual cached height
    \param dest the output cache file
    \return true if successful, false otherwise
    */
-  static bool CacheTexture(CBaseTexture *texture, uint32_t &dest_width, uint32_t &dest_height, const std::string &dest,
-    CPictureScalingAlgorithm::Algorithm scalingAlgorithm = CPictureScalingAlgorithm::NoAlgorithm);
+  static bool CacheTexture(
+      CTexture* texture,
+      uint32_t& dest_width,
+      uint32_t& dest_height,
+      const std::string& dest,
+      CPictureScalingAlgorithm::Algorithm scalingAlgorithm = CPictureScalingAlgorithm::NoAlgorithm);
   static bool CacheTexture(uint8_t *pixels, uint32_t width, uint32_t height, uint32_t pitch, int orientation,
     uint32_t &dest_width, uint32_t &dest_height, const std::string &dest,
     CPictureScalingAlgorithm::Algorithm scalingAlgorithm = CPictureScalingAlgorithm::NoAlgorithm);
