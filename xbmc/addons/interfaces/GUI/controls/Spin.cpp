@@ -94,7 +94,9 @@ void Interface_GUIControlSpin::set_text(void* kodiBase, void* handle, const char
 
   CGUIMessage msg(GUI_MSG_LABEL_SET, control->GetParentID(), control->GetID());
   msg.SetLabel(text);
-  CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg, control->GetParentID());
+  auto gui = CServiceBroker::GetGUI();
+  if (gui)
+    gui->GetWindowManager().SendThreadMessage(msg, control->GetParentID());
 }
 
 void Interface_GUIControlSpin::reset(void* kodiBase, void* handle)
@@ -109,7 +111,9 @@ void Interface_GUIControlSpin::reset(void* kodiBase, void* handle)
   }
 
   CGUIMessage msg(GUI_MSG_LABEL_RESET, control->GetParentID(), control->GetID());
-  CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg, control->GetParentID());
+  auto gui = CServiceBroker::GetGUI();
+  if (gui)
+    gui->GetWindowManager().SendThreadMessage(msg, control->GetParentID());
 }
 
 void Interface_GUIControlSpin::set_type(void* kodiBase, void* handle, int type)
