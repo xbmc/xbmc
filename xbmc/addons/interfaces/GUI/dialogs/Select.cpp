@@ -44,7 +44,11 @@ int Interface_GUIDialogSelect::open(void* kodiBase, const char *heading, const c
     return -1;
   }
 
-  CGUIDialogSelect* dialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogSelect>(WINDOW_DIALOG_SELECT);
+  auto gui = CServiceBroker::GetGUI();
+  if (!gui)
+    return -1;
+  
+  CGUIDialogSelect* dialog = gui->GetWindowManager().GetWindow<CGUIDialogSelect>(WINDOW_DIALOG_SELECT);
   if (!heading || !entries || !dialog)
   {
     CLog::Log(LOGERROR,
@@ -81,7 +85,11 @@ bool Interface_GUIDialogSelect::open_multi_select(void* kodiBase, const char *he
     return false;
   }
 
-  CGUIDialogSelect* dialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogSelect>(WINDOW_DIALOG_SELECT);
+  auto gui = CServiceBroker::GetGUI();
+  if (!gui)
+    return false;
+  
+  CGUIDialogSelect* dialog = gui->GetWindowManager().GetWindow<CGUIDialogSelect>(WINDOW_DIALOG_SELECT);
   if (!heading || !entryIDs || !entryNames || !entriesSelected || !dialog)
   {
     CLog::Log(LOGERROR,
