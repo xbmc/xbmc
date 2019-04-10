@@ -279,23 +279,28 @@ void CLinuxRendererGLES::LoadPlane(CYuvPlane& plane, int type,
 
   glBindTexture(m_textureTarget, plane.id);
 
-  if (m_pixelStoreKey > 0)
+  bool pixelStoreChanged = false;
+  if (stride != static_cast<int>(width * bps))
   {
-    glPixelStorei(m_pixelStoreKey, stride);
-  }
-  else if (stride != static_cast<int>(width * bps))
-  {
-    unsigned char *src(static_cast<unsigned char*>(data)),
-                  *dst(m_planeBuffer);
+    if (m_pixelStoreKey > 0)
+    {
+      pixelStoreChanged = true;
+      glPixelStorei(m_pixelStoreKey, stride);
+    }
+    else
+    {
+      unsigned char *src(static_cast<unsigned char*>(data)),
+                    *dst(m_planeBuffer);
 
-    for (unsigned int y = 0; y < height; ++y, src += stride, dst += width * bpp)
-      memcpy(dst, src, width * bpp);
+      for (unsigned int y = 0; y < height; ++y, src += stride, dst += width * bpp)
+        memcpy(dst, src, width * bpp);
 
-    pixelData = m_planeBuffer;
+      pixelData = m_planeBuffer;
+    }
   }
   glTexSubImage2D(m_textureTarget, 0, 0, 0, width, height, type, GL_UNSIGNED_BYTE, pixelData);
 
-  if (m_pixelStoreKey > 0)
+  if (m_pixelStoreKey > 0 && pixelStoreChanged)
     glPixelStorei(m_pixelStoreKey, 0);
 
   // check if we need to load any border pixels
