@@ -16,15 +16,13 @@
 #include "GUITexture.h"
 #include "utils/Color.h"
 
-class CGUITextureD3D : public CGUITextureBase
+class CGUITextureD3D : public CGUITexture
 {
 public:
   CGUITextureD3D(float posX, float posY, float width, float height, const CTextureInfo& texture);
+  CGUITextureD3D(const CGUITexture& left);
+
   ~CGUITextureD3D();
-  static void DrawQuad(const CRect& coords,
-                       UTILS::Color color,
-                       CTexture* texture = NULL,
-                       const CRect* texCoords = NULL);
 
 protected:
   void Begin(UTILS::Color color) override;
@@ -39,5 +37,3 @@ protected:
 private:
   UTILS::Color       m_col;
 };
-
-using CGUITexture = CGUITextureD3D;

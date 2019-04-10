@@ -17,14 +17,11 @@
 
 class CRenderSystemGLES;
 
-class CGUITextureGLES : public CGUITextureBase
+class CGUITextureGLES : public CGUITexture
 {
 public:
   CGUITextureGLES(float posX, float posY, float width, float height, const CTextureInfo& texture);
-  static void DrawQuad(const CRect& coords,
-                       UTILS::Color color,
-                       CTexture* texture = NULL,
-                       const CRect* texCoords = NULL);
+  CGUITextureGLES(const CGUITexture& left);
 
 protected:
   void Begin(UTILS::Color color) override;
@@ -45,5 +42,3 @@ private:
   std::vector<GLushort> m_idx;
   CRenderSystemGLES *m_renderSystem;
 };
-
-using CGUITexture = CGUITextureGLES;

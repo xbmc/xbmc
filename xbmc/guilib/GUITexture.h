@@ -56,7 +56,7 @@ class CTextureInfo
 public:
   CTextureInfo();
   explicit CTextureInfo(const std::string &file);
-  CTextureInfo& operator=(const CTextureInfo& right) = default;
+  CTextureInfo& operator=(const CTextureInfo& right);
   bool       useLarge;
   CRect      border;          // scaled  - unneeded if we get rid of scale on load
   int        orientation;     // orientation of the texture (0 - 7 == EXIForientation - 1)
@@ -65,12 +65,20 @@ public:
   std::string filename;        // main texture file
 };
 
-class CGUITextureBase
+class CGUITexture
 {
 public:
-  CGUITextureBase(float posX, float posY, float width, float height, const CTextureInfo& texture);
-  CGUITextureBase(const CGUITextureBase &left);
-  virtual ~CGUITextureBase(void);
+  CGUITexture(float posX, float posY, float width, float height, const CTextureInfo& texture);
+  CGUITexture(const CGUITexture& left);
+  virtual ~CGUITexture(void);
+
+  static CGUITexture* GetTexture(const CGUITexture& left);
+  static CGUITexture* GetTexture(
+      float posX, float posY, float width, float height, const CTextureInfo& texture);
+  static void DrawQuad(const CRect& coords,
+                       UTILS::Color color,
+                       CTexture* texture = NULL,
+                       const CRect* texCoords = NULL);
 
   bool Process(unsigned int currentTime);
   void Render();
@@ -118,7 +126,8 @@ protected:
   virtual void Allocate() {}; ///< called after our textures have been allocated
   virtual void Free() {};     ///< called after our textures have been freed
   virtual void Begin(UTILS::Color color) {};
-  virtual void Draw(float *x, float *y, float *z, const CRect &texture, const CRect &diffuse, int orientation)=0;
+  virtual void Draw(
+      float* x, float* y, float* z, const CRect& texture, const CRect& diffuse, int orientation){};
   virtual void End() {};
 
   bool m_visible;
@@ -156,11 +165,3 @@ protected:
   CTextureArray m_diffuse;
   CTextureArray m_texture;
 };
-
-#if defined(HAS_GL)
-#include "GUITextureGL.h"
-#elif defined(HAS_GLES)
-#include "GUITextureGLES.h"
-#elif defined(HAS_DX)
-#include "GUITextureD3D.h"
-#endif

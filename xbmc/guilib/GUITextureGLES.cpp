@@ -19,9 +19,25 @@
 
 #include <cstddef>
 
+CGUITexture* CGUITexture::GetTexture(const CGUITexture& left)
+{
+  return new CGUITextureGLES(left);
+}
 
-CGUITextureGLES::CGUITextureGLES(float posX, float posY, float width, float height, const CTextureInfo &texture)
-: CGUITextureBase(posX, posY, width, height, texture)
+CGUITexture* CGUITexture::GetTexture(
+    float posX, float posY, float width, float height, const CTextureInfo& texture)
+{
+  return new CGUITextureGLES(posX, posY, width, height, texture);
+}
+
+CGUITextureGLES::CGUITextureGLES(
+    float posX, float posY, float width, float height, const CTextureInfo& texture)
+  : CGUITexture(posX, posY, width, height, texture)
+{
+  m_renderSystem = dynamic_cast<CRenderSystemGLES*>(CServiceBroker::GetRenderSystem());
+}
+
+CGUITextureGLES::CGUITextureGLES(const CGUITexture& left) : CGUITexture(left)
 {
   m_renderSystem = dynamic_cast<CRenderSystemGLES*>(CServiceBroker::GetRenderSystem());
 }
@@ -215,10 +231,10 @@ void CGUITextureGLES::Draw(float *x, float *y, float *z, const CRect &texture, c
   }
 }
 
-void CGUITextureGLES::DrawQuad(const CRect& rect,
-                               UTILS::Color color,
-                               CTexture* texture,
-                               const CRect* texCoords)
+void CGUITexture::DrawQuad(const CRect& rect,
+                           UTILS::Color color,
+                           CTexture* texture,
+                           const CRect* texCoords)
 {
   CRenderSystemGLES *renderSystem = dynamic_cast<CRenderSystemGLES*>(CServiceBroker::GetRenderSystem());
   if (texture)

@@ -17,8 +17,25 @@
 
 using namespace DirectX;
 
-CGUITextureD3D::CGUITextureD3D(float posX, float posY, float width, float height, const CTextureInfo &texture)
-: CGUITextureBase(posX, posY, width, height, texture)
+CGUITexture* CGUITexture::GetTexture(const CGUITexture& left)
+{
+  return new CGUITextureD3D(left);
+}
+
+CGUITexture* CGUITexture::GetTexture(
+    float posX, float posY, float width, float height, const CTextureInfo& texture)
+{
+  return new CGUITextureD3D(posX, posY, width, height, texture);
+}
+
+
+CGUITextureD3D::CGUITextureD3D(
+    float posX, float posY, float width, float height, const CTextureInfo& texture)
+  : CGUITexture(posX, posY, width, height, texture)
+{
+}
+
+CGUITextureD3D::CGUITextureD3D(const CGUITexture& left) : CGUITexture(left)
 {
 }
 
@@ -124,10 +141,10 @@ void CGUITextureD3D::Draw(float *x, float *y, float *z, const CRect &texture, co
   pGUIShader->DrawQuad(verts[0], verts[1], verts[2], verts[3]);
 }
 
-void CGUITextureD3D::DrawQuad(const CRect& rect,
-                              UTILS::Color color,
-                              CTexture* texture,
-                              const CRect* texCoords)
+void CGUITexture::DrawQuad(const CRect& rect,
+                           UTILS::Color color,
+                           CTexture* texture,
+                           const CRect* texCoords)
 {
   unsigned numViews = 0;
   ID3D11ShaderResourceView* views = nullptr;

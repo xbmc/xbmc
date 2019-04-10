@@ -32,7 +32,7 @@ public:
   CGUIResizeControl(int parentID, int controlID,
                     float posX, float posY, float width, float height,
                     const CTextureInfo& textureFocus, const CTextureInfo& textureNoFocus);
-
+  CGUIResizeControl(const CGUIResizeControl& left);
   ~CGUIResizeControl(void) override;
   CGUIResizeControl *Clone() const override { return new CGUIResizeControl(*this); };
 
@@ -57,8 +57,8 @@ protected:
   bool SetAlpha(unsigned char alpha);
   void UpdateSpeed(int nDirection);
   void Resize(float x, float y);
-  CGUITexture m_imgFocus;
-  CGUITexture m_imgNoFocus;
+  std::unique_ptr<CGUITexture> m_imgFocus;
+  std::unique_ptr<CGUITexture> m_imgNoFocus;
   unsigned int m_frameCounter;
   unsigned int m_lastMoveTime;
   int m_nDirection;

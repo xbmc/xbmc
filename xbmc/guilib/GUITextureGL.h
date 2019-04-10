@@ -11,18 +11,17 @@
 #include "GUITexture.h"
 #include "utils/Color.h"
 
+#include <vector>
+
 #include "system_gl.h"
 
 class CRenderSystemGL;
 
-class CGUITextureGL : public CGUITextureBase
+class CGUITextureGL : public CGUITexture
 {
 public:
   CGUITextureGL(float posX, float posY, float width, float height, const CTextureInfo& texture);
-  static void DrawQuad(const CRect& coords,
-                       UTILS::Color color,
-                       CTexture* texture = NULL,
-                       const CRect* texCoords = NULL);
+  CGUITextureGL(const CGUITexture& left);
 
 protected:
   void Begin(UTILS::Color color) override;
@@ -43,5 +42,3 @@ private:
   std::vector<GLushort> m_idx;
   CRenderSystemGL *m_renderSystem;
 };
-
-using CGUITexture = CGUITextureGL;

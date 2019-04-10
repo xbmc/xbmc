@@ -18,11 +18,28 @@
 
 #define BUFFER_OFFSET(i) ((char *)NULL + (i))
 
-CGUITextureGL::CGUITextureGL(float posX, float posY, float width, float height, const CTextureInfo &texture)
-: CGUITextureBase(posX, posY, width, height, texture)
+CGUITexture* CGUITexture::GetTexture(const CGUITexture& left)
 {
-  memset(m_col, 0, sizeof(m_col));
+  return new CGUITextureGL(left);
+}
+
+CGUITexture* CGUITexture::GetTexture(
+    float posX, float posY, float width, float height, const CTextureInfo& texture)
+{
+  return new CGUITextureGL(posX, posY, width, height, texture);
+}
+
+CGUITextureGL::CGUITextureGL(
+    float posX, float posY, float width, float height, const CTextureInfo& texture)
+  : CGUITexture(posX, posY, width, height, texture)
+{
   m_renderSystem = dynamic_cast<CRenderSystemGL*>(CServiceBroker::GetRenderSystem());
+}
+
+
+CGUITextureGL::CGUITextureGL(const CGUITexture& left) : CGUITexture(left)
+{
+  m_renderSystem = dynamic_cast<CRenderSystemGLES*>(CServiceBroker::GetRenderSystem());
 }
 
 void CGUITextureGL::Begin(UTILS::Color color)
@@ -231,10 +248,10 @@ void CGUITextureGL::Draw(float *x, float *y, float *z, const CRect &texture, con
   }
 }
 
-void CGUITextureGL::DrawQuad(const CRect& rect,
-                             UTILS::Color color,
-                             CTexture* texture,
-                             const CRect* texCoords)
+void CGUITexture::DrawQuad(const CRect& rect,
+                           UTILS::Color color,
+                           CTexture* texture,
+                           const CRect* texCoords)
 {
   CRenderSystemGL *renderSystem = dynamic_cast<CRenderSystemGL*>(CServiceBroker::GetRenderSystem());
   if (texture)

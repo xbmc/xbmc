@@ -30,6 +30,7 @@ public:
                        const CTextureInfo& barTexture, const CTextureInfo& barTextureFocus,
                        const CTextureInfo& nibTexture, const CTextureInfo& nibTextureFocus,
                        ORIENTATION orientation, bool showOnePage);
+  GUIScrollBarControl(const GUIScrollBarControl& left);
   ~GUIScrollBarControl(void) override;
   GUIScrollBarControl *Clone() const override { return new GUIScrollBarControl(*this); };
 
@@ -53,11 +54,11 @@ protected:
   bool Move(int iNumSteps);
   virtual void SetFromPosition(const CPoint &point);
 
-  CGUITexture m_guiBackground;
-  CGUITexture m_guiBarNoFocus;
-  CGUITexture m_guiBarFocus;
-  CGUITexture m_guiNibNoFocus;
-  CGUITexture m_guiNibFocus;
+  std::unique_ptr<CGUITexture> m_guiBackground;
+  std::unique_ptr<CGUITexture> m_guiBarNoFocus;
+  std::unique_ptr<CGUITexture> m_guiBarFocus;
+  std::unique_ptr<CGUITexture> m_guiNibNoFocus;
+  std::unique_ptr<CGUITexture> m_guiNibFocus;
 
   int m_numItems;
   int m_pageSize;

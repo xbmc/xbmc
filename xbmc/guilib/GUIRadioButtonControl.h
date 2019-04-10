@@ -30,7 +30,7 @@ public:
                          const CTextureInfo& radioOnFocus, const CTextureInfo& radioOnNoFocus,
                          const CTextureInfo& radioOffFocus, const CTextureInfo& radioOffNoFocus,
                          const CTextureInfo& radioOnDisabled, const CTextureInfo& radioOffDisabled);
-
+  CGUIRadioButtonControl(const CGUIRadioButtonControl& left);
   ~CGUIRadioButtonControl(void) override;
   CGUIRadioButtonControl *Clone() const override { return new CGUIRadioButtonControl(*this); };
 
@@ -51,12 +51,12 @@ public:
   bool IsSelected() const { return m_bSelected; };
 protected:
   bool UpdateColors() override;
-  CGUITexture m_imgRadioOnFocus;
-  CGUITexture m_imgRadioOnNoFocus;
-  CGUITexture m_imgRadioOffFocus;
-  CGUITexture m_imgRadioOffNoFocus;
-  CGUITexture m_imgRadioOnDisabled;
-  CGUITexture m_imgRadioOffDisabled;
+  std::unique_ptr<CGUITexture> m_imgRadioOnFocus;
+  std::unique_ptr<CGUITexture> m_imgRadioOnNoFocus;
+  std::unique_ptr<CGUITexture> m_imgRadioOffFocus;
+  std::unique_ptr<CGUITexture> m_imgRadioOffNoFocus;
+  std::unique_ptr<CGUITexture> m_imgRadioOnDisabled;
+  std::unique_ptr<CGUITexture> m_imgRadioOffDisabled;
   float m_radioPosX;
   float m_radioPosY;
   INFO::InfoPtr m_toggleSelect;

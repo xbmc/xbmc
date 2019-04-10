@@ -32,6 +32,7 @@ public:
                     const CTextureInfo& textureFocus, const CTextureInfo& textureNoFocus,
                     const CLabelInfo &label, bool wrapMultiline = false);
 
+  CGUIButtonControl(const CGUIButtonControl& left);
   ~CGUIButtonControl(void) override;
   CGUIButtonControl *Clone() const override { return new CGUIButtonControl(*this); };
 
@@ -78,8 +79,8 @@ protected:
   virtual void RenderText();
   virtual CGUILabel::COLOR GetTextColor() const;
 
-  CGUITexture m_imgFocus;
-  CGUITexture m_imgNoFocus;
+  std::unique_ptr<CGUITexture> m_imgFocus;
+  std::unique_ptr<CGUITexture> m_imgNoFocus;
   unsigned int  m_focusCounter;
   unsigned char m_alpha;
 

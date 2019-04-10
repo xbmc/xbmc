@@ -37,6 +37,7 @@ public:
                    float posX, float posY, float width, float height,
                    const CTextureInfo& textureFocus, const CTextureInfo& textureNoFocus);
 
+  CGUIMoverControl(const CGUIMoverControl& left);
   ~CGUIMoverControl(void) override;
   CGUIMoverControl *Clone() const override { return new CGUIMoverControl(*this); };
 
@@ -64,8 +65,8 @@ protected:
   bool SetAlpha(unsigned char alpha);
   void UpdateSpeed(int nDirection);
   void Move(int iX, int iY);
-  CGUITexture m_imgFocus;
-  CGUITexture m_imgNoFocus;
+  std::unique_ptr<CGUITexture> m_imgFocus;
+  std::unique_ptr<CGUITexture> m_imgNoFocus;
   unsigned int m_frameCounter;
   unsigned int m_lastMoveTime;
   int m_nDirection;

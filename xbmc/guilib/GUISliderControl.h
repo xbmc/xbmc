@@ -42,6 +42,7 @@ public:
   } RangeSelector;
 
   CGUISliderControl(int parentID, int controlID, float posX, float posY, float width, float height, const CTextureInfo& backGroundTexture, const CTextureInfo& mibTexture, const CTextureInfo& nibTextureFocus, int iType, ORIENTATION orientation);
+  CGUISliderControl(const CGUISliderControl& left);
   ~CGUISliderControl(void) override;
   CGUISliderControl *Clone() const override { return new CGUISliderControl(*this); };
 
@@ -56,7 +57,10 @@ public:
   virtual void SetRange(int iStart, int iEnd);
   virtual void SetFloatRange(float fStart, float fEnd);
   bool OnMessage(CGUIMessage& message) override;
-  bool ProcessSelector(CGUITexture &nib, unsigned int currentTime, float fScale, RangeSelector selector);
+  bool ProcessSelector(CGUITexture* nib,
+                       unsigned int currentTime,
+                       float fScale,
+                       RangeSelector selector);
   void SetRangeSelection(bool rangeSelection);
   bool GetRangeSelection() const { return m_rangeSelection; }
   void SetRangeSelector(RangeSelector selector);
@@ -90,11 +94,11 @@ protected:
    */
   void SendClick();
 
-  CGUITexture m_guiBackground;
-  CGUITexture m_guiSelectorLower;
-  CGUITexture m_guiSelectorUpper;
-  CGUITexture m_guiSelectorLowerFocus;
-  CGUITexture m_guiSelectorUpperFocus;
+  std::unique_ptr<CGUITexture> m_guiBackground;
+  std::unique_ptr<CGUITexture> m_guiSelectorLower;
+  std::unique_ptr<CGUITexture> m_guiSelectorUpper;
+  std::unique_ptr<CGUITexture> m_guiSelectorLowerFocus;
+  std::unique_ptr<CGUITexture> m_guiSelectorUpperFocus;
   int m_iType;
 
   bool m_rangeSelection;

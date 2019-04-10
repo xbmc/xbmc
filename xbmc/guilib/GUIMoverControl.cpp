@@ -15,10 +15,33 @@
 // time to reset accelerated cursors (digital movement)
 #define MOVE_TIME_OUT 500L
 
-CGUIMoverControl::CGUIMoverControl(int parentID, int controlID, float posX, float posY, float width, float height, const CTextureInfo& textureFocus, const CTextureInfo& textureNoFocus)
-    : CGUIControl(parentID, controlID, posX, posY, width, height)
-    , m_imgFocus(posX, posY, width, height, textureFocus)
-    , m_imgNoFocus(posX, posY, width, height, textureNoFocus)
+CGUIMoverControl::CGUIMoverControl(int parentID,
+                                   int controlID,
+                                   float posX,
+                                   float posY,
+                                   float width,
+                                   float height,
+                                   const CTextureInfo& textureFocus,
+                                   const CTextureInfo& textureNoFocus)
+  : CGUIControl(parentID, controlID, posX, posY, width, height),
+    m_imgFocus(CGUITexture::GetTexture(posX, posY, width, height, textureFocus)),
+    m_imgNoFocus(CGUITexture::GetTexture(posX, posY, width, height, textureNoFocus))
+{
+  m_frameCounter = 0;
+  m_lastMoveTime = 0;
+  m_fSpeed = 1.0;
+  m_fAnalogSpeed = 2.0f; //! @todo implement correct analog speed
+  m_fAcceleration = 0.2f; //! @todo implement correct computation of acceleration
+  m_fMaxSpeed = 10.0; //! @todo implement correct computation of maxspeed
+  ControlType = GUICONTROL_MOVER;
+  SetLimits(0, 0, 720, 576); // defaults
+  SetLocation(0, 0, false); // defaults
+}
+
+CGUIMoverControl::CGUIMoverControl(const CGUIMoverControl& left)
+  : CGUIControl(left),
+    m_imgFocus(CGUITexture::GetTexture(*left.m_imgFocus)),
+    m_imgNoFocus(CGUITexture::GetTexture(*left.m_imgFocus))
 {
   m_frameCounter = 0;
   m_lastMoveTime = 0;
@@ -37,11 +60,11 @@ void CGUIMoverControl::Process(unsigned int currentTime, CDirtyRegionList &dirty
 {
   if (m_bInvalidated)
   {
-    m_imgFocus.SetWidth(m_width);
-    m_imgFocus.SetHeight(m_height);
+    m_imgFocus->SetWidth(m_width);
+    m_imgFocus->SetHeight(m_height);
 
-    m_imgNoFocus.SetWidth(m_width);
-    m_imgNoFocus.SetHeight(m_height);
+    m_imgNoFocus->SetWidth(m_width);
+    m_imgNoFocus->SetHeight(m_height);
   }
   if (HasFocus())
   {
@@ -55,19 +78,19 @@ void CGUIMoverControl::Process(unsigned int currentTime, CDirtyRegionList &dirty
     alphaChannel += 192;
     if (SetAlpha( (unsigned char)alphaChannel ))
       MarkDirtyRegion();
-    m_imgFocus.SetVisible(true);
-    m_imgNoFocus.SetVisible(false);
+    m_imgFocus->SetVisible(true);
+    m_imgNoFocus->SetVisible(false);
     m_frameCounter++;
   }
   else
   {
     if (SetAlpha(0xff))
       MarkDirtyRegion();
-    m_imgFocus.SetVisible(false);
-    m_imgNoFocus.SetVisible(true);
+    m_imgFocus->SetVisible(false);
+    m_imgNoFocus->SetVisible(true);
   }
-  m_imgFocus.Process(currentTime);
-  m_imgNoFocus.Process(currentTime);
+  m_imgFocus->Process(currentTime);
+  m_imgNoFocus->Process(currentTime);
 
   CGUIControl::Process(currentTime, dirtyregions);
 }
@@ -75,8 +98,8 @@ void CGUIMoverControl::Process(unsigned int currentTime, CDirtyRegionList &dirty
 void CGUIMoverControl::Render()
 {
   // render both so the visibility settings cause the frame counter to resetcorrectly
-  m_imgFocus.Render();
-  m_imgNoFocus.Render();
+  m_imgFocus->Render();
+  m_imgNoFocus->Render();
   CGUIControl::Render();
 }
 
@@ -175,10 +198,10 @@ void CGUIMoverControl::AllocResources()
 {
   CGUIControl::AllocResources();
   m_frameCounter = 0;
-  m_imgFocus.AllocResources();
-  m_imgNoFocus.AllocResources();
-  float width = m_width ? m_width : m_imgFocus.GetWidth();
-  float height = m_height ? m_height : m_imgFocus.GetHeight();
+  m_imgFocus->AllocResources();
+  m_imgNoFocus->AllocResources();
+  float width = m_width ? m_width : m_imgFocus->GetWidth();
+  float height = m_height ? m_height : m_imgFocus->GetHeight();
   SetWidth(width);
   SetHeight(height);
 }
@@ -186,22 +209,22 @@ void CGUIMoverControl::AllocResources()
 void CGUIMoverControl::FreeResources(bool immediately)
 {
   CGUIControl::FreeResources(immediately);
-  m_imgFocus.FreeResources(immediately);
-  m_imgNoFocus.FreeResources(immediately);
+  m_imgFocus->FreeResources(immediately);
+  m_imgNoFocus->FreeResources(immediately);
 }
 
 void CGUIMoverControl::DynamicResourceAlloc(bool bOnOff)
 {
   CGUIControl::DynamicResourceAlloc(bOnOff);
-  m_imgFocus.DynamicResourceAlloc(bOnOff);
-  m_imgNoFocus.DynamicResourceAlloc(bOnOff);
+  m_imgFocus->DynamicResourceAlloc(bOnOff);
+  m_imgNoFocus->DynamicResourceAlloc(bOnOff);
 }
 
 void CGUIMoverControl::SetInvalid()
 {
   CGUIControl::SetInvalid();
-  m_imgFocus.SetInvalid();
-  m_imgNoFocus.SetInvalid();
+  m_imgFocus->SetInvalid();
+  m_imgNoFocus->SetInvalid();
 }
 
 void CGUIMoverControl::Move(int iX, int iY)
@@ -227,21 +250,20 @@ void CGUIMoverControl::SetLocation(int iLocX, int iLocY, bool bSetPosition)
 void CGUIMoverControl::SetPosition(float posX, float posY)
 {
   CGUIControl::SetPosition(posX, posY);
-  m_imgFocus.SetPosition(posX, posY);
-  m_imgNoFocus.SetPosition(posX, posY);
+  m_imgFocus->SetPosition(posX, posY);
+  m_imgNoFocus->SetPosition(posX, posY);
 }
 
 bool CGUIMoverControl::SetAlpha(unsigned char alpha)
 {
-  return m_imgFocus.SetAlpha(alpha) |
-         m_imgNoFocus.SetAlpha(alpha);
+  return m_imgFocus->SetAlpha(alpha) | m_imgNoFocus->SetAlpha(alpha);
 }
 
 bool CGUIMoverControl::UpdateColors()
 {
   bool changed = CGUIControl::UpdateColors();
-  changed |= m_imgFocus.SetDiffuseColor(m_diffuseColor);
-  changed |= m_imgNoFocus.SetDiffuseColor(m_diffuseColor);
+  changed |= m_imgFocus->SetDiffuseColor(m_diffuseColor);
+  changed |= m_imgNoFocus->SetDiffuseColor(m_diffuseColor);
 
   return changed;
 }
