@@ -5931,13 +5931,22 @@ const infomap fanart_labels[] =  {{ "color1",           FANART_COLOR1 },
 ///     @skinning_v18 **[New Infolabel]** \link Skin_Font `Skin.Font`\endlink
 ///     <p>
 ///   }
+///   \table_row3{   <b>`Skin.ID`</b>,
+///                  \anchor Skin_ID
+///                  _string_,
+///     @return the current skin ID.
+///     <p><hr>
+///     @skinning_v19 **[New Infolabel]** \link Skin_ID `Skin.ID`\endlink
+///     <p>
+///   }
 /// \table_end
 ///
 /// -----------------------------------------------------------------------------
 const infomap skin_labels[] =    {{ "currenttheme",      SKIN_THEME },
                                   { "currentcolourtheme",SKIN_COLOUR_THEME },
                                   { "aspectratio",       SKIN_ASPECT_RATIO},
-                                  { "font",              SKIN_FONT}};
+                                  { "font",              SKIN_FONT},
+                                  { "id",              SKIN_ID}};
 
 /// \page modules__infolabels_boolean_conditions
 /// \subsection modules__infolabels_boolean_conditions_Window Window

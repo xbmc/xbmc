@@ -73,6 +73,11 @@ bool CSkinGUIInfo::GetLabel(std::string& value, const CFileItem *item, int conte
       value = CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(CSettings::SETTING_LOOKANDFEEL_FONT);
       return true;
     }
+    case SKIN_ID:
+    {
+      value = CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(CSettings::SETTING_LOOKANDFEEL_SKIN);
+      return true;
+    }
   }
 
   return false;
