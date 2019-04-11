@@ -13,6 +13,28 @@
 
 #include <memory>
 
+// HDR structs copied from HDR patchset, should be removed before merge
+struct hdr_metadata_infoframe {
+	uint8_t eotf;
+	uint8_t metadata_type;
+	struct {
+		uint16_t x, y;
+		} display_primaries[3];
+	struct {
+		uint16_t x, y;
+		} white_point;
+	uint16_t max_display_mastering_luminance;
+	uint16_t min_display_mastering_luminance;
+	uint16_t max_cll;
+	uint16_t max_fall;
+};
+struct hdr_output_metadata {
+	uint32_t metadata_type;
+	union {
+		struct hdr_metadata_infoframe hdmi_metadata_type1;
+	};
+};
+
 namespace KODI
 {
 namespace WINDOWING
@@ -49,4 +71,7 @@ private:
 
   IVideoBufferDRMPRIME* m_buffer = nullptr;
   IVideoBufferDRMPRIME* m_prev_buffer = nullptr;
+
+  uint32_t m_hdr_blob_id = 0;
+  struct hdr_output_metadata m_hdr_metadata = {0};
 };
