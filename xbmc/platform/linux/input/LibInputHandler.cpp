@@ -12,6 +12,8 @@
 #include "LibInputPointer.h"
 #include "LibInputSettings.h"
 #include "LibInputTouch.h"
+#include "ServiceBroker.h"
+#include "interfaces/AnnouncementManager.h"
 #include "utils/log.h"
 
 #include <algorithm>
@@ -93,14 +95,35 @@ CLibInputHandler::CLibInputHandler() : CThread("libinput")
   m_pointer.reset(new CLibInputPointer());
   m_touch.reset(new CLibInputTouch());
   m_settings.reset(new CLibInputSettings(this));
+
+  CServiceBroker::GetAnnouncementManager()->AddAnnouncer(this);
 }
 
 CLibInputHandler::~CLibInputHandler()
 {
+  CServiceBroker::GetAnnouncementManager()->RemoveAnnouncer(this);
   StopThread();
 
   libinput_unref(m_li);
   udev_unref(m_udev);
+}
+
+void CLibInputHandler::Announce(ANNOUNCEMENT::AnnouncementFlag flag,
+                                const std::string& sender,
+                                const std::string& message,
+                                const CVariant& data)
+{
+  if (flag & (ANNOUNCEMENT::System))
+  {
+    if (message == "OnSleep")
+      libinput_suspend(m_li);
+    else if (message == "OnWake")
+    {
+      auto ret = libinput_resume(m_li);
+      if (ret < 0)
+        CLog::Log(LOGERROR, "CLibInputHandler::{} - failed to resume monitoring", __FUNCTION__);
+    }
+  }
 }
 
 bool CLibInputHandler::SetKeymap(const std::string& layout)
