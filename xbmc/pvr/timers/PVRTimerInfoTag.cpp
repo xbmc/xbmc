@@ -48,15 +48,8 @@ CPVRTimerInfoTag::CPVRTimerInfoTag(bool bRadio /* = false */) :
   const CPVRClientPtr client = CServiceBroker::GetPVRManager().GetClient(m_iClientId);
   if (client && client->GetClientCapabilities().SupportsTimers())
   {
-    // default to manual one-shot timer for given client
-    CPVRTimerTypePtr type(CPVRTimerType::CreateFromAttributes(
-      PVR_TIMER_TYPE_IS_MANUAL, PVR_TIMER_TYPE_IS_REPEATING | PVR_TIMER_TYPE_FORBIDS_NEW_INSTANCES, m_iClientId));
-
-    if (!type)
-    {
-      // last resort. default to first available type from any client.
-      type = CPVRTimerType::GetFirstAvailableType();
-    }
+    // default to first available type for given client
+    CPVRTimerTypePtr type = CPVRTimerType::GetFirstAvailableType(m_iClientId);
 
     if (type)
       SetTimerType(type);
