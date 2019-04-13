@@ -11,9 +11,6 @@
 #include "filesystem/SpecialProtocol.h"
 #include "guilib/GUIWindowManager.h"
 #include "utils/log.h"
-#if defined(TARGET_WINDOWS)
-#include "rendering/dx/DeviceResources.h"
-#endif
 
 namespace ADDON
 {
@@ -27,15 +24,11 @@ CVisualization::CVisualization(ADDON::BinaryAddonBasePtr addonBase, float x, flo
   m_profilePath = CSpecialProtocol::TranslatePath(Profile());
 
   m_struct = {{0}};
-#if defined(TARGET_WINDOWS)
-  m_struct.props.device = DX::DeviceResources::Get()->GetD3DContext();
-#else
-  m_struct.props.device = nullptr;
-#endif
   m_struct.props.x = static_cast<int>(x);
   m_struct.props.y = static_cast<int>(y);
   m_struct.props.width = static_cast<int>(w);
   m_struct.props.height = static_cast<int>(h);
+  m_struct.props.device = CServiceBroker::GetWinSystem()->GetHWContext();
   m_struct.props.pixelRatio = CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo().fPixelRatio;
   m_struct.props.name = m_name.c_str();
   m_struct.props.presets = m_presetsPath.c_str();
