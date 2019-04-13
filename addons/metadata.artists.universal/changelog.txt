@@ -1,3 +1,7 @@
+[B]4.3.0[/B]
+added: fetch disambiguation for GetArtistSearchResults
+
+
 [B]4.2.1[/B]
 fixed: dependency error
 

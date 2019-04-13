@@ -21,7 +21,7 @@ import platform
 import xbmc
 import xbmcgui
 import lib.common
-from lib.common import log, dialog_yesno, localise
+from lib.common import log, dialog_yesno, localise, waitForAbort
 from lib.common import upgrade_message as _upgrademessage
 from lib.common import upgrade_message2 as _upgrademessage2
 
@@ -39,7 +39,7 @@ class Main:
         linux = False
         packages = []
 
-        if monitor.waitForAbort(5):
+        if waitForAbort(5):
             sys.exit(0)
 
         if xbmc.getCondVisibility('System.Platform.Linux') and ADDON.getSetting("upgrade_apt") == 'true':

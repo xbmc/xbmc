@@ -27,8 +27,8 @@
 	</CreateArtistSearchUrl>
 	<GetArtistSearchResults dest="8">
 		<RegExp input="$$5" output="&lt;results sorted=&quot;yes&quot;&gt;\1&lt;/results&gt;" dest="8">
-			<RegExp input="$$1" output="&lt;entity&gt;&lt;title&gt;\2&lt;/title&gt;&lt;url cache=&quot;mb-\1-artist.xml&quot;&gt;$INFO[mbsite]/ws/2/artist/\1?inc=url-rels&lt;/url&gt;&lt;/entity&gt;" dest="9">
-				<expression repeat="yes" noclean="1">artist\sid=&quot;([^&quot;]*)&quot;(?:\stype=&quot;[^&quot;]*&quot;)*(?:\stype-id=&quot;[^&quot;]*&quot;)*?\s.*?score=&quot;[^&quot;]*&quot;&gt;&lt;name&gt;([^&lt;]*)&lt;/name&gt;(&lt;sort-name&gt;[^&lt;]*&lt;/sort-name&gt;)?</expression>
+			<RegExp input="$$1" output="&lt;entity&gt;&lt;title&gt;\2&lt;/title&gt;&lt;disambiguation&gt;\4&lt;/disambiguation&gt;&lt;url cache=&quot;mb-\1-artist.xml&quot;&gt;$INFO[mbsite]/ws/2/artist/\1?inc=url-rels&lt;/url&gt;&lt;/entity&gt;" dest="9">
+				<expression repeat="yes" noclean="1">artist\sid=&quot;([^&quot;]*)&quot;(?:\stype=&quot;[^&quot;]*&quot;)*(?:\stype-id=&quot;[^&quot;]*&quot;)*?\s.*?score=&quot;[^&quot;]*&quot;&gt;&lt;name&gt;([^&lt;]*)&lt;/name&gt;(&lt;sort-name&gt;[^&lt;]*&lt;/sort-name&gt;)?(?:&lt;gender&gt;[^&lt;]*&lt;/gender&gt;)*(?:&lt;country&gt;[^&lt;]*&lt;/country&gt;)*(?:&lt;area.*?&lt;/area&gt;)*(?:&lt;begin-area.*?&lt;/begin-area&gt;)*(?:&lt;disambiguation&gt;(.*?)&lt;/disambiguation&gt;)*</expression>
 			</RegExp>
 			<RegExp input="$$9" output="\1" dest="5">
 				<expression noclean="1">(.+)</expression>

@@ -1,3 +1,9 @@
+[B]3.1.0[/B]
+- Changed: re-use season files to reduce number of API calls for episode details
+- Added: small cache persistence
+- Added: support for Episode Groups using nfo files
+- Added: named seasons support
+
 [B]3.0.6[/B]
 - Fixed: show overview
 

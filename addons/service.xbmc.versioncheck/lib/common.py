@@ -33,6 +33,7 @@ else:
     ADDONPATH    = ADDON.getAddonInfo('path').decode('utf-8')
     ADDONPROFILE = xbmc.translatePath( ADDON.getAddonInfo('profile') ).decode('utf-8')
 ICON         = ADDON.getAddonInfo('icon')
+KODI_VERSION_MAJOR = int(xbmc.getInfoLabel('System.BuildVersion')[0:2])
 
 monitor = xbmc.Monitor()
 
@@ -173,15 +174,32 @@ def upgrade_message2( version_installed, version_available, version_stable, oldv
         log("Already notified one time for upgrading.")
 
 
+def abortRequested():
+    if KODI_VERSION_MAJOR > 13:
+        return monitor.abortRequested()
+    else:
+        return xbmc.abortRequested
+
+
+def waitForAbort(seconds):
+    if KODI_VERSION_MAJOR > 13:
+        return monitor.waitForAbort(seconds)
+    else:
+        for _ in range(0, seconds*1000/200):
+            if xbmc.abortRequested:
+                return True
+            xbmc.sleep(200)
+
+
 def wait_for_end_of_video():
     # Don't show notify while watching a video
-    while xbmc.Player().isPlayingVideo() and not monitor.abortRequested():
-        if monitor.waitForAbort(1):
+    while xbmc.Player().isPlayingVideo() and not abortRequested():
+        if waitForAbort(1):
             # Abort was requested while waiting. We should exit
             break
     i = 0
-    while i < 10 and not monitor.abortRequested():
-        if monitor.waitForAbort(1):
+    while i < 10 and not abortRequested():
+        if waitForAbort(1):
             # Abort was requested while waiting. We should exit
             break
         i += 1
