@@ -474,6 +474,7 @@ bool aml_set_native_resolution(const RESOLUTION_INFO &res, std::string framebuff
 {
   bool result = false;
 
+  aml_handle_display_stereo_mode(RENDER_STEREO_MODE_OFF);
   result = aml_set_display_resolution(res, framebuffer_name);
 
   aml_handle_scale(res);
@@ -531,8 +532,8 @@ bool aml_get_preferred_resolution(RESOLUTION_INFO *res)
   // check display/mode, it gets defaulted at boot
   if (!aml_get_native_resolution(res))
   {
-    // punt to 720p if we get nothing
-    aml_mode_to_resolution("720p", res);
+    // punt to 1080p if we get nothing
+    aml_mode_to_resolution("1080p", res);
   }
 
   return true;
