@@ -384,7 +384,7 @@
 			</RegExp>
 			<RegExp input="$$10" output="\1" dest="4">
 				<RegExp input="$$1" output="\1" dest="9">
-					<expression>&lt;td&gt;\(original\stitle\)[^&gt;]+&gt;[^&gt;]+&gt;([^&lt;]+)</expression>
+					<expression>name&quot;&gt;\s\(original\stitle\)[^&gt;]+&gt;[^&gt;]+&gt;([^&lt;]+)</expression>
 				</RegExp>
 				<RegExp input="$$1" output="\1" dest="9">
 					<expression>class="originalTitle"&gt;([^&lt;]*)</expression>
@@ -399,31 +399,31 @@
 					<expression>(.+)</expression>
 				</RegExp>
 				<RegExp input="$$1" output="\1" dest="11">
-					<expression clear="yes">&lt;td&gt;Hong Kong\s\(English[^&gt;]+&gt;[^&gt;]+&gt;([^&lt;]+)</expression>
+					<expression clear="yes">name&quot;&gt;Hong Kong\s\(English[^&gt;]+&gt;[^&gt;]+&gt;([^&lt;]+)</expression>
 				</RegExp>
 				<RegExp input="$$11" output="\1" dest="10">
 					<expression>(.+)</expression>
 				</RegExp>
 				<RegExp input="$$1" output="\1" dest="11">
-					<expression clear="yes">&lt;td&gt;Canada\s\(English[^&gt;]+&gt;[^&gt;]+&gt;([^&lt;]+)</expression>
+					<expression clear="yes">name&quot;&gt;Canada\s\(English[^&gt;]+&gt;[^&gt;]+&gt;([^&lt;]+)</expression>
 				</RegExp>
 				<RegExp input="$$11" output="\1" dest="10">
 					<expression>(.+)</expression>
 				</RegExp>
 				<RegExp input="$$1" output="\1" dest="11">
-					<expression clear="yes">&lt;td&gt;UK&lt;[^&gt;]+&gt;[^&gt;]+&gt;([^&lt;]+)</expression>
+					<expression clear="yes">name&quot;&gt;UK&lt;[^&gt;]+&gt;[^&gt;]+&gt;([^&lt;]+)</expression>
 				</RegExp>
 				<RegExp input="$$11" output="\1" dest="10">
 					<expression>(.+)</expression>
 				</RegExp>
 				<RegExp input="$$1" output="\1" dest="11">
-					<expression clear="yes">&lt;td&gt;World-wide\s\(English\stitle\)&lt;[^&gt;]+&gt;[^&gt;]+&gt;([^&lt;]+)</expression>
+					<expression clear="yes">name&quot;&gt;World-wide\s\(English\stitle\)&lt;[^&gt;]+&gt;[^&gt;]+&gt;([^&lt;]+)</expression>
 				</RegExp>
 				<RegExp input="$$11" output="\1" dest="10">
 					<expression>(.+)</expression>
 				</RegExp>
 				<RegExp input="$$1" output="\1" dest="11">
-					<expression clear="yes">&lt;td&gt;USA&lt;[^&gt;]+&gt;[^&gt;]+&gt;([^&lt;]+)</expression>
+					<expression clear="yes">name&quot;&gt;USA&lt;[^&gt;]+&gt;[^&gt;]+&gt;([^&lt;]+)</expression>
 				</RegExp>
 				<RegExp input="$$11" output="\1" dest="10">
 					<expression>(.+)</expression>
@@ -434,10 +434,10 @@
 				<expression>(.+)</expression>
 			</RegExp>
 			<RegExp input="$$1" output="\1" dest="4">
-				<expression>&lt;td&gt;$INFO[imdbakatitles][^&gt;]+&gt;[^&gt;]+&gt;([^&lt;]+)</expression>
+				<expression>name&quot;&gt;$INFO[imdbakatitles][^&gt;]+&gt;[^&gt;]+&gt;([^&lt;]+)</expression>
 			</RegExp>
 			<RegExp input="$$1" output="\1" dest="4">
-				<expression>&lt;td&gt;$INFO[imdbakatitles]&lt;[^&gt;]+&gt;[^&gt;]+&gt;([^&lt;]+)</expression>
+				<expression>name&quot;&gt;$INFO[imdbakatitles]&lt;[^&gt;]+&gt;[^&gt;]+&gt;([^&lt;]+)</expression>
 			</RegExp>
 			<RegExp input="$$4" output="\1" dest="2">
 				<expression>(.+)</expression>
