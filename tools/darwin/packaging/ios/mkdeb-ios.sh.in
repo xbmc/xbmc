@@ -83,16 +83,15 @@ mkdir -p $DIRNAME/$PACKAGE/DEBIAN
 if $ARM64; then
   echo "Package: $PACKAGE_ARM64"                  >  $DIRNAME/$PACKAGE/DEBIAN/control
   echo "Name: @APP_NAME@-iOS (64-bit)"            >> $DIRNAME/$PACKAGE/DEBIAN/control
-  echo "Depends: firmware (>= 7.0)"               >> $DIRNAME/$PACKAGE/DEBIAN/control
   echo "Pre-Depends: cy+cpu.arm64"                >> $DIRNAME/$PACKAGE/DEBIAN/control
   echo "Conflicts: $PACKAGE"                      >> $DIRNAME/$PACKAGE/DEBIAN/control
   echo "Replaces: $PACKAGE"                       >> $DIRNAME/$PACKAGE/DEBIAN/control
 else
   echo "Package: $PACKAGE"                        >  $DIRNAME/$PACKAGE/DEBIAN/control
   echo "Name: @APP_NAME@-iOS"                     >> $DIRNAME/$PACKAGE/DEBIAN/control
-  echo "Depends: firmware (>= 5.1)"               >> $DIRNAME/$PACKAGE/DEBIAN/control
 fi
 echo "Priority: Extra"                            >> $DIRNAME/$PACKAGE/DEBIAN/control
+echo "Depends: firmware (>= 9.0)"                 >> $DIRNAME/$PACKAGE/DEBIAN/control
 echo "Version: $VERSION-$REVISION"                >> $DIRNAME/$PACKAGE/DEBIAN/control
 echo "Architecture: iphoneos-arm"                 >> $DIRNAME/$PACKAGE/DEBIAN/control
 echo "Installed-Size: $SIZE"                      >> $DIRNAME/$PACKAGE/DEBIAN/control
