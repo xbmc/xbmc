@@ -207,11 +207,19 @@ void CWinSystemGbm::FlipPage(bool rendered, bool videoLayer)
     m_videoLayerBridge->Disable();
   }
 
-  struct gbm_bo *bo = m_GBM->LockFrontBuffer();
+  struct gbm_bo *bo = nullptr;
+
+  if (rendered)
+  {
+    bo = m_GBM->LockFrontBuffer();
+  }
 
   m_DRM->FlipPage(bo, rendered, videoLayer);
 
-  m_GBM->ReleaseBuffer();
+  if (rendered)
+  {
+    m_GBM->ReleaseBuffer();
+  }
 
   if (m_videoLayerBridge && !videoLayer)
   {
