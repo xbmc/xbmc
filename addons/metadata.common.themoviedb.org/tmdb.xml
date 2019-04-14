@@ -196,19 +196,19 @@
 				<RegExp input="$$1" output="\1" dest="7">
 					<expression clear="yes" noclean="1">&quot;posters&quot;:\[\{([^\]]*)</expression>
 				</RegExp>
-				<RegExp input="$$7" output="&lt;thumb aspect=&quot;set&quot; preview=&quot;$$20w500\1&quot;&gt;$$20original\1&lt;/thumb&gt;" dest="13">
+				<RegExp input="$$7" output="&lt;thumb aspect=&quot;set.poster&quot; preview=&quot;$$20w500\1&quot;&gt;$$20original\1&lt;/thumb&gt;" dest="13">
 					<expression repeat="yes" clear="yes" noclean="1">&quot;file_path&quot;:&quot;([^&quot;]*)[^:]*:[^:]*:&quot;$$10</expression>
 				</RegExp>
-				<RegExp input="$$7" output="&lt;thumb aspect=&quot;set&quot; preview=&quot;$$20w500\1&quot;&gt;$$20original\1&lt;/thumb&gt;" dest="13+">
+				<RegExp input="$$7" output="&lt;thumb aspect=&quot;set.poster&quot; preview=&quot;$$20w500\1&quot;&gt;$$20original\1&lt;/thumb&gt;" dest="13+">
 					<expression repeat="yes" noclean="1">&quot;file_path&quot;:&quot;([^&quot;]*)[^:]*:[^:]*:&quot;en</expression>
 				</RegExp>
-				<RegExp input="$$7" output="&lt;thumb aspect=&quot;set&quot; preview=&quot;$$20w500\1&quot;&gt;$$20original\1&lt;/thumb&gt;" dest="13+">
+				<RegExp input="$$7" output="&lt;thumb aspect=&quot;set.poster&quot; preview=&quot;$$20w500\1&quot;&gt;$$20original\1&lt;/thumb&gt;" dest="13+">
 					<expression repeat="yes" noclean="1">&quot;file_path&quot;:&quot;([^&quot;]*)[^:]*:[^:]*:null</expression>
 				</RegExp>
 				<RegExp input="$$1" output="\1" dest="7">
 					<expression clear="yes" noclean="1">&quot;backdrops&quot;:\[\{([^\]]*)</expression>
 				</RegExp>
-				<RegExp input="$$7" output="&lt;thumb aspect=&quot;setfanart&quot; preview=&quot;$$20w500\1&quot;&gt;$$20original\1&lt;/thumb&gt;" dest="14">
+				<RegExp input="$$7" output="&lt;thumb aspect=&quot;set.fanart&quot; preview=&quot;$$20w500\1&quot;&gt;$$20original\1&lt;/thumb&gt;" dest="14">
 					<expression clear="yes" repeat="yes" noclean="1">&quot;file_path&quot;:&quot;([^&quot;]*)</expression>
 				</RegExp>
 				<expression noclean="1" />
@@ -230,19 +230,19 @@
 				<RegExp input="$$1" output="\1" dest="7">
 					<expression clear="yes" noclean="1">&quot;posters&quot;:\[\{([^\]]*)</expression>
 				</RegExp>
-				<RegExp input="$$7" output="&lt;thumb aspect=&quot;set&quot; preview=&quot;$$20w500\1&quot;&gt;$$20original\1&lt;/thumb&gt;" dest="13">
+				<RegExp input="$$7" output="&lt;thumb aspect=&quot;set.poster&quot; preview=&quot;$$20w500\1&quot;&gt;$$20original\1&lt;/thumb&gt;" dest="13">
 					<expression repeat="yes" clear="yes" noclean="1">&quot;file_path&quot;:&quot;([^&quot;]*)[^:]*:[^:]*:&quot;$$10</expression>
 				</RegExp>
-				<RegExp input="$$7" output="&lt;thumb aspect=&quot;set&quot; preview=&quot;$$20w500\1&quot;&gt;$$20original\1&lt;/thumb&gt;" dest="13+">
+				<RegExp input="$$7" output="&lt;thumb aspect=&quot;set.poster&quot; preview=&quot;$$20w500\1&quot;&gt;$$20original\1&lt;/thumb&gt;" dest="13+">
 					<expression repeat="yes" noclean="1">&quot;file_path&quot;:&quot;([^&quot;]*)[^:]*:[^:]*:&quot;en</expression>
 				</RegExp>
-				<RegExp input="$$7" output="&lt;thumb aspect=&quot;set&quot; preview=&quot;$$20w500\1&quot;&gt;$$20original\1&lt;/thumb&gt;" dest="13+">
+				<RegExp input="$$7" output="&lt;thumb aspect=&quot;set.poster&quot; preview=&quot;$$20w500\1&quot;&gt;$$20original\1&lt;/thumb&gt;" dest="13+">
 					<expression repeat="yes" noclean="1">&quot;file_path&quot;:&quot;([^&quot;]*)[^:]*:[^:]*:null</expression>
 				</RegExp>
 				<RegExp input="$$1" output="\1" dest="7">
 					<expression clear="yes" noclean="1">&quot;backdrops&quot;:\[\{([^\]]*)</expression>
 				</RegExp>
-				<RegExp input="$$7" output="&lt;thumb aspect=&quot;setfanart&quot; preview=&quot;$$20w500\1&quot;&gt;$$20original\1&lt;/thumb&gt;" dest="14">
+				<RegExp input="$$7" output="&lt;thumb aspect=&quot;set.fanart&quot; preview=&quot;$$20w500\1&quot;&gt;$$20original\1&lt;/thumb&gt;" dest="14">
 					<expression clear="yes" repeat="yes" noclean="1">&quot;file_path&quot;:&quot;([^&quot;]*)</expression>
 				</RegExp>
 			<expression noclean="1" />
