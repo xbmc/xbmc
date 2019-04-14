@@ -22,7 +22,6 @@
 #include "windowing/GraphicContext.h"
 #include "settings/AdvancedSettings.h"
 #include <va/va_drm.h>
-#include <va/va_drmcommon.h>
 #include <drm_fourcc.h>
 #include "platform/linux/XTimeUtils.h"
 #include "platform/linux/XMemUtils.h"
@@ -1414,6 +1413,110 @@ void CVaapiRenderPicture::GetStrides(int(&strides)[YuvImage::MAX_PLANES])
   strides[1] = avFrame->linesize[1];
   strides[2] = avFrame->linesize[2];
 }
+
+#if VA_CHECK_VERSION(1, 1, 0)
+AVDRMFrameDescriptor* CVaapiRenderPicture::GetDescriptor() const
+{
+  if (!m_vaDesc || m_vaDesc->num_objects < 1)
+    return nullptr;
+
+  if (!m_drmDesc)
+    return nullptr;
+
+  m_drmDesc->nb_objects = m_vaDesc->num_objects;
+  for (uint32_t i = 0; i < m_vaDesc->num_objects; i++)
+  {
+    m_drmDesc->objects[i].fd = m_vaDesc->objects[i].fd;
+    m_drmDesc->objects[i].size = m_vaDesc->objects[i].size;
+    m_drmDesc->objects[i].format_modifier = m_vaDesc->objects[i].drm_format_modifier;
+  }
+
+  m_drmDesc->nb_layers = m_vaDesc->num_layers;
+  for (uint32_t i = 0; i < m_vaDesc->num_layers; i++)
+  {
+    m_drmDesc->layers[i].format = m_vaDesc->layers[i].drm_format;
+    m_drmDesc->layers[i].nb_planes = m_vaDesc->layers[i].num_planes;
+    for (uint32_t j = 0; j < m_vaDesc->layers[i].num_planes; j++)
+    {
+      m_drmDesc->layers[i].planes[j].object_index = m_vaDesc->layers[i].object_index[j];
+      m_drmDesc->layers[i].planes[j].offset = m_vaDesc->layers[i].offset[j];
+      m_drmDesc->layers[i].planes[j].pitch = m_vaDesc->layers[i].pitch[j];
+    }
+  }
+
+  return m_drmDesc.get();
+}
+
+int CVaapiRenderPicture::GetColorEncoding() const
+{
+  switch (DVDPic.color_space)
+  {
+  case AVCOL_SPC_BT2020_CL:
+  case AVCOL_SPC_BT2020_NCL:
+    return DRM_COLOR_YCBCR_BT2020;
+  case AVCOL_SPC_SMPTE170M:
+  case AVCOL_SPC_BT470BG:
+  case AVCOL_SPC_FCC:
+    return DRM_COLOR_YCBCR_BT601;
+  case AVCOL_SPC_BT709:
+    return DRM_COLOR_YCBCR_BT709;
+  case AVCOL_SPC_RESERVED:
+  case AVCOL_SPC_UNSPECIFIED:
+  default:
+    if (DVDPic.iWidth > 1024 || DVDPic.iHeight >= 600)
+      return DRM_COLOR_YCBCR_BT709;
+    else
+      return DRM_COLOR_YCBCR_BT601;
+  }
+}
+
+int CVaapiRenderPicture::GetColorRange() const
+{
+  switch (DVDPic.color_range)
+  {
+  case 1:
+    return DRM_COLOR_YCBCR_FULL_RANGE;
+  case 0:
+  default:
+    return DRM_COLOR_YCBCR_LIMITED_RANGE;
+  }
+}
+
+bool CVaapiRenderPicture::Map()
+{
+  m_vaDesc.reset(new VADRMPRIMESurfaceDescriptor);
+
+  auto status = vaExportSurfaceHandle(vadsp, procPic.videoSurface,
+                                      VA_SURFACE_ATTRIB_MEM_TYPE_DRM_PRIME_2,
+                                      VA_EXPORT_SURFACE_READ_ONLY | VA_EXPORT_SURFACE_COMPOSED_LAYERS,
+                                      m_vaDesc.get());
+
+  if (status != VA_STATUS_SUCCESS)
+  {
+    CLog::Log(LOGERROR, "CVaapiRenderPicture::{} - vaExportSurfaceHandle failed - Error: {} ({})", __FUNCTION__, vaErrorStr(status), status);
+    return false;
+  }
+
+  status = vaSyncSurface(vadsp, procPic.videoSurface);
+  if (status != VA_STATUS_SUCCESS)
+  {
+    CLog::Log(LOGERROR, "CVaapiRenderPicture::{} - vaSyncSurface - Error: {} ({})", __FUNCTION__, vaErrorStr(status), status);
+    return false;
+  }
+
+  m_drmDesc.reset(new AVDRMFrameDescriptor);
+
+  return true;
+}
+
+void CVaapiRenderPicture::Unmap()
+{
+  for (int object = 0; object < m_drmDesc->nb_objects; object++)
+  {
+    close(m_drmDesc->objects[object].fd);
+  }
+}
+#endif
 
 //-----------------------------------------------------------------------------
 // Output
