@@ -62,6 +62,36 @@ void CDRMAtomic::DrmAtomicCommit(int fb_id, int flags, bool rendered, bool video
     AddProperty(m_gui_plane, "CRTC_Y", 0);
     AddProperty(m_gui_plane, "CRTC_W", m_mode->hdisplay);
     AddProperty(m_gui_plane, "CRTC_H", m_mode->vdisplay);
+
+    if (videoLayer)
+    {
+      /*
+        114 alpha:
+          flags: range
+          values: 0 65535
+          value: 65535
+        115 pixel blend mode:
+          flags: enum
+          enums: None=2 Pre-multiplied=0 Coverage=1
+          value: 0
+      */
+      if (SupportsProperty(m_gui_plane, "alpha"))
+      {
+        AddProperty(m_gui_plane, "alpha", 0x7e7e);
+      }
+
+      if (SupportsProperty(m_gui_plane, "pixel blend mode"))
+      {
+        AddProperty(m_gui_plane, "pixel blend mode", 2);
+      }
+    }
+    else
+    {
+      if (SupportsProperty(m_gui_plane, "alpha"))
+      {
+        AddProperty(m_gui_plane, "alpha", 0xFFFF);
+      }
+    }
   }
   else if (videoLayer && !CServiceBroker::GetGUI()->GetWindowManager().HasVisibleControls())
   {
