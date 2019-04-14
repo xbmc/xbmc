@@ -448,12 +448,22 @@ VECADDONS CAddonMgr::GetAvailableUpdates()
 
   VECADDONS updates;
   VECADDONS installed;
+  VECADDONS all_addons;
   GetAddons(installed);
+  m_database.GetRepositoryContent(all_addons);
+  std::map<std::string, AddonPtr> last_versions;
+  for (const auto& addon : all_addons)
+  {
+	  const auto& latest_known = last_versions.find(addon->ID());
+	  if (latest_known == last_versions.end() || addon->Version() > latest_known->second->Version())
+		  last_versions.insert_or_assign(addon->ID(),std::move(addon));
+  }
+
   for (const auto& addon : installed)
   {
-    AddonPtr remote;
-    if (m_database.GetAddon(addon->ID(), remote) && remote->Version() > addon->Version())
-      updates.emplace_back(std::move(remote));
+	const auto& remote= last_versions.find(addon->ID());
+    if (remote!= last_versions.end() && remote->second->Version() > addon->Version())
+      updates.emplace_back(std::move(remote->second));
   }
   CLog::Log(LOGDEBUG, "CAddonMgr::GetAvailableUpdates took %i ms", XbmcThreads::SystemClockMillis() - start);
   return updates;
