@@ -723,7 +723,7 @@ bool CGUIMediaWindow::GetDirectory(const std::string &strDirectory, CFileItemLis
 
   // see if we can load a previously cached folder
   CFileItemList cachedItems(strDirectory);
-  if (!strDirectory.empty() && cachedItems.Load(GetID()))
+  if (!items.CacheToDiscNever() && !strDirectory.empty() && cachedItems.Load(GetID()))
   {
     items.Assign(cachedItems);
   }

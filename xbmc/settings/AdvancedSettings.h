@@ -251,6 +251,7 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     bool m_bMusicLibraryAllItemsOnBottom;
     bool m_bMusicLibraryCleanOnUpdate;
     bool m_bMusicLibraryArtistSortOnUpdate;
+    bool m_bMusicLibraryCacheSlowQueries;
     std::string m_strMusicLibraryAlbumFormat;
     bool m_prioritiseAPEv2tags;
     std::string m_musicItemSeparator;
@@ -264,6 +265,7 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     bool m_bVideoLibraryUseFastHash;
     bool m_bVideoLibraryExportAutoThumbs;
     bool m_bVideoLibraryImportWatchedState;
+    bool m_bVideoLibraryCacheSlowQueries;
     bool m_bVideoLibraryImportResumePoint;
     std::vector<std::string> m_videoEpisodeExtraArt;
     std::vector<std::string> m_videoTvShowExtraArt;

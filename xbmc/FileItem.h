@@ -708,6 +708,7 @@ public:
   void SetCacheToDisc(CACHE_TYPE cacheToDisc) { m_cacheToDisc = cacheToDisc; }
   bool CacheToDiscAlways() const { return m_cacheToDisc == CACHE_ALWAYS; }
   bool CacheToDiscIfSlow() const { return m_cacheToDisc == CACHE_IF_SLOW; }
+  bool CacheToDiscNever() const { return m_cacheToDisc == CACHE_NEVER; }
   /*! \brief remove a previously cached CFileItemList from the cache
 
    The file list may be cached based on which window we're viewing in, as different

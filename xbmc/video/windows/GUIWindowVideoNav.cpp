@@ -358,6 +358,12 @@ bool CGUIWindowVideoNav::GetDirectory(const std::string &strDirectory, CFileItem
   items.ClearArt();
   items.ClearProperties();
 
+  // check if caching of slow queries is disabled; the initial value is CACHE_IF_SLOW.
+  if (!CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_bVideoLibraryCacheSlowQueries)
+  {
+    items.SetCacheToDisc(CFileItemList::CACHE_NEVER);
+  }
+
   bool bResult = CGUIWindowVideoBase::GetDirectory(strDirectory, items);
   if (bResult)
   {
