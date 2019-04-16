@@ -9,7 +9,6 @@
 #include "WinVideoFilter.h"
 #include "ConvolutionKernels.h"
 #include "cores/VideoPlayer/VideoRenderers/VideoShaders/dither.h"
-#include "cores/VideoPlayer/VideoRenderers/WinRenderBuffer.h"
 #include "filesystem/File.h"
 #include "windowing/GraphicContext.h"
 #include "platform/win32/WIN32Util.h"
@@ -17,6 +16,7 @@
 #include "rendering/dx/DeviceResources.h"
 #include "Util.h"
 #include "utils/log.h"
+#include "VideoRenderers/windows/RendererBase.h"
 
 #include <DirectXPackedVector.h>
 #include <map>
@@ -26,27 +26,17 @@ using namespace Microsoft::WRL;
 
 //===================================================================
 
-CWinShader::~CWinShader()
+bool CWinShader::CreateVertexBuffer(unsigned int count, unsigned int size)
 {
-  if (m_effect.Get())
-    m_effect.Release();
-  if (m_vb.Get())
-    m_vb.Release();
-  if (m_ib.Get())
-    m_ib.Release();
-}
-
-bool CWinShader::CreateVertexBuffer(unsigned int vertCount, unsigned int vertSize)
-{
-  if (!m_vb.Create(D3D11_BIND_VERTEX_BUFFER, vertCount, vertSize, DXGI_FORMAT_UNKNOWN, D3D11_USAGE_DYNAMIC))
+  if (!m_vb.Create(D3D11_BIND_VERTEX_BUFFER, count, size, DXGI_FORMAT_UNKNOWN, D3D11_USAGE_DYNAMIC))
     return false;
 
   uint16_t id[4] = { 3, 0, 2, 1 };
   if (!m_ib.Create(D3D11_BIND_INDEX_BUFFER, ARRAYSIZE(id), sizeof(uint16_t), DXGI_FORMAT_R16_UINT, D3D11_USAGE_IMMUTABLE, id))
     return false;
 
-  m_vbsize = vertCount * vertSize;
-  m_vertsize = vertSize;
+  m_vbsize = count * size;
+  m_vertsize = size;
 
   return true;
 }
@@ -60,7 +50,8 @@ bool CWinShader::CreateInputLayout(D3D11_INPUT_ELEMENT_DESC *layout, unsigned nu
     return false;
   }
 
-  return S_OK == DX::DeviceResources::Get()->GetD3DDevice()->CreateInputLayout(layout, numElements, desc.pIAInputSignature, desc.IAInputSignatureSize, &m_inputLayout);
+  ComPtr<ID3D11Device> pDevice = DX::DeviceResources::Get()->GetD3DDevice();
+  return SUCCEEDED(pDevice->CreateInputLayout(layout, numElements, desc.pIAInputSignature, desc.IAInputSignatureSize, &m_inputLayout));
 }
 
 void CWinShader::SetTarget(CD3DTexture* target)
@@ -122,7 +113,7 @@ bool CWinShader::Execute(const std::vector<CD3DTexture*> &targets, unsigned int 
   if (!targets.empty())
     pContext->OMGetRenderTargets(1, &oldRT, nullptr);
 
-  UINT cPasses;
+  unsigned cPasses;
   if (!m_effect.Begin(&cPasses, 0))
   {
     CLog::LogF(LOGERROR, "failed to begin d3d effect");
@@ -138,7 +129,7 @@ bool CWinShader::Execute(const std::vector<CD3DTexture*> &targets, unsigned int 
   pContext->IASetInputLayout(m_inputLayout.Get());
   pContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 
-  for (UINT iPass = 0; iPass < cPasses; iPass++)
+  for (unsigned iPass = 0; iPass < cPasses; iPass++)
   {
     SetTarget(targets.size() > iPass ? targets.at(iPass) : nullptr);
     SetStepParams(iPass);
@@ -167,23 +158,18 @@ bool CWinShader::Execute(const std::vector<CD3DTexture*> &targets, unsigned int 
 
 //==================================================================================
 
-COutputShader::~COutputShader()
-{
-  m_clutSize = 0;
-}
-
 void COutputShader::ApplyEffectParameters(CD3DEffect &effect, unsigned sourceWidth, unsigned sourceHeight)
 {
-  if (m_useCLUT)
+  if (m_useLut)
   {
-    float clut_params[2] = { 0.0f, 0.0f };
-    if (HasCLUT())
+    float lut_params[2] = { 0.0f, 0.0f };
+    if (HasLUT())
     {
-      clut_params[0] = (m_clutSize - 1) / static_cast<float>(m_clutSize);
-      clut_params[1] = 0.5f / static_cast<float>(m_clutSize);
+      lut_params[0] = (m_lutSize - 1) / static_cast<float>(m_lutSize);
+      lut_params[1] = 0.5f / static_cast<float>(m_lutSize);
     };
-    effect.SetResources("m_CLUT", &m_pCLUTView, 1);
-    effect.SetFloatArray("m_CLUTParams", clut_params, 2);
+    effect.SetResources("m_LUT", &m_pLUTView, 1);
+    effect.SetFloatArray("m_LUTParams", lut_params, 2);
   }
   if (m_useDithering)
   {
@@ -211,7 +197,7 @@ void COutputShader::ApplyEffectParameters(CD3DEffect &effect, unsigned sourceWid
     param *= m_toneMappingParam;
 
     float coefs[3];
-    CConvertMatrix::GetRGBYuvCoefs(AVColorSpace::AVCOL_SPC_BT709, coefs);
+    CConvertMatrix::GetRGBYuvCoefs(AVCOL_SPC_BT709, coefs);
 
     effect.SetScalar("g_toneP1", param);
     effect.SetFloatArray("g_coefsDst", coefs, 3);
@@ -220,7 +206,7 @@ void COutputShader::ApplyEffectParameters(CD3DEffect &effect, unsigned sourceWid
 
 void COutputShader::GetDefines(DefinesMap& map) const
 {
-  if (m_useCLUT)
+  if (m_useLut)
   {
     map["KODI_3DLUT"] = "";
   }
@@ -234,13 +220,13 @@ void COutputShader::GetDefines(DefinesMap& map) const
   }
 }
 
-bool COutputShader::Create(bool useCLUT, bool useDithering, int ditherDepth, bool toneMapping)
+bool COutputShader::Create(bool useLUT, bool useDithering, int ditherDepth, bool toneMapping)
 {
-  m_useCLUT = useCLUT;
+  m_useLut = useLUT;
   m_ditherDepth = ditherDepth;
   m_toneMapping = toneMapping;
 
-  CWinShader::CreateVertexBuffer(4, sizeof(CUSTOMVERTEX));
+  CWinShader::CreateVertexBuffer(4, sizeof(Vertex));
 
   if (useDithering)
     CreateDitherView();
@@ -266,16 +252,16 @@ bool COutputShader::Create(bool useCLUT, bool useDithering, int ditherDepth, boo
   return CWinShader::CreateInputLayout(layout, ARRAYSIZE(layout));
 }
 
-void COutputShader::Render(CD3DTexture& sourceTexture, unsigned sourceWidth, unsigned sourceHeight, CRect sourceRect, const CPoint points[4]
-                         , CD3DTexture *target, unsigned range, float contrast, float brightness)
+void COutputShader::Render(CD3DTexture& sourceTexture, CRect sourceRect, const CPoint points[4]
+                         , CD3DTexture& target, unsigned range, float contrast, float brightness)
 {
-  PrepareParameters(sourceWidth, sourceHeight, sourceRect, points);
+  PrepareParameters(sourceTexture.GetWidth(), sourceTexture.GetHeight(), sourceRect, points);
   SetShaderParameters(sourceTexture, range, contrast, brightness);
-  Execute({ target }, 4);
+  Execute({ &target }, 4);
 }
 
-void COutputShader::Render(CD3DTexture &sourceTexture, unsigned sourceWidth, unsigned sourceHeight, CRect sourceRect, CRect destRect
-                         , CD3DTexture *target, unsigned range, float contrast, float brightness)
+void COutputShader::Render(CD3DTexture& sourceTexture, CRect sourceRect, CRect destRect
+                         , CD3DTexture& target, unsigned range, float contrast, float brightness)
 {
   CPoint points[] =
   {
@@ -284,13 +270,13 @@ void COutputShader::Render(CD3DTexture &sourceTexture, unsigned sourceWidth, uns
     { destRect.x2, destRect.y2 },
     { destRect.x1, destRect.y2 },
   };
-  Render(sourceTexture, sourceWidth, sourceHeight, sourceRect, points, target, range, contrast, brightness);
+  Render(sourceTexture, sourceRect, points, target, range, contrast, brightness);
 }
 
-void COutputShader::SetCLUT(int clutSize, ID3D11ShaderResourceView* pCLUTView)
+void COutputShader::SetLUT(int lutSize, ID3D11ShaderResourceView* pLUTView)
 {
-  m_clutSize = clutSize;
-  m_pCLUTView = pCLUTView;
+  m_lutSize = lutSize;
+  m_pLUTView = pLUTView;
 }
 
 void COutputShader::SetDisplayMetadata(bool hasDisplayMetadata, AVMasteringDisplayMetadata displayMetadata, bool hasLightMetadata, AVContentLightMetadata lightMetadata)
@@ -301,40 +287,40 @@ void COutputShader::SetDisplayMetadata(bool hasDisplayMetadata, AVMasteringDispl
   m_lightMetadata = lightMetadata;
 }
 
-bool COutputShader::CreateCLUTView(int clutSize, uint16_t* clutData, bool isRGB, ID3D11ShaderResourceView** ppCLUTView)
+bool COutputShader::CreateLUTView(int lutSize, uint16_t* lutData, bool isRGB, ID3D11ShaderResourceView** ppLUTView)
 {
-  if (!clutSize || !clutData)
+  if (!lutSize || !lutData)
     return false;
 
   uint16_t* cData;
   if (isRGB)
   {
     // repack data to RGBA
-    unsigned lutsamples = clutSize * clutSize * clutSize;
-    cData = reinterpret_cast<uint16_t*>(_aligned_malloc(lutsamples * sizeof(uint16_t) * 4, 16));
-    uint16_t* rgba = static_cast<uint16_t*>(cData);
-    for (unsigned i = 0; i < lutsamples - 1; ++i, rgba += 4, clutData += 3)
+    const unsigned samples = lutSize * lutSize * lutSize;
+    cData = reinterpret_cast<uint16_t*>(_aligned_malloc(samples * sizeof(uint16_t) * 4, 16));
+    auto rgba = static_cast<uint16_t*>(cData);
+    for (unsigned i = 0; i < samples - 1; ++i, rgba += 4, lutData += 3)
     {
-      *(uint64_t*)rgba = *(uint64_t*)clutData;
+      *reinterpret_cast<uint64_t*>(rgba) = *reinterpret_cast<uint64_t*>(lutData);
     }
     // and last one
-    rgba[0] = clutData[0]; rgba[1] = clutData[1]; rgba[2] = clutData[2]; rgba[3] = 0xFFFF;
+    rgba[0] = lutData[0]; rgba[1] = lutData[1]; rgba[2] = lutData[2]; rgba[3] = 0xFFFF;
   }
   else
-    cData = clutData;
+    cData = lutData;
 
   ComPtr<ID3D11Device> pDevice = DX::DeviceResources::Get()->GetD3DDevice();
   ComPtr<ID3D11DeviceContext> pContext = DX::DeviceResources::Get()->GetImmediateContext();
-  CD3D11_TEXTURE3D_DESC txDesc(DXGI_FORMAT_R16G16B16A16_UNORM, clutSize, clutSize, clutSize, 1,
+  CD3D11_TEXTURE3D_DESC txDesc(DXGI_FORMAT_R16G16B16A16_UNORM, lutSize, lutSize, lutSize, 1,
                                D3D11_BIND_SHADER_RESOURCE, D3D11_USAGE_IMMUTABLE);
 
-  ComPtr<ID3D11Texture3D> pCLUTTex;
+  ComPtr<ID3D11Texture3D> pLUTTex;
   D3D11_SUBRESOURCE_DATA texData;
   texData.pSysMem = cData;
-  texData.SysMemPitch = clutSize * sizeof(uint16_t) * 4;
-  texData.SysMemSlicePitch = texData.SysMemPitch * clutSize;
+  texData.SysMemPitch = lutSize * sizeof(uint16_t) * 4;
+  texData.SysMemSlicePitch = texData.SysMemPitch * lutSize;
 
-  HRESULT hr = pDevice->CreateTexture3D(&txDesc, &texData, pCLUTTex.GetAddressOf());
+  HRESULT hr = pDevice->CreateTexture3D(&txDesc, &texData, pLUTTex.GetAddressOf());
   if (isRGB)
     _aligned_free(cData);
 
@@ -344,9 +330,9 @@ bool COutputShader::CreateCLUTView(int clutSize, uint16_t* clutData, bool isRGB,
     return false;
   }
 
-  ComPtr<ID3D11ShaderResourceView> clutView;
+  ComPtr<ID3D11ShaderResourceView> lutView;
   CD3D11_SHADER_RESOURCE_VIEW_DESC srvDesc(D3D11_SRV_DIMENSION_TEXTURE3D, DXGI_FORMAT_R16G16B16A16_UNORM, 0, 1);
-  hr = pDevice->CreateShaderResourceView(pCLUTTex.Get(), &srvDesc, clutView.GetAddressOf());
+  hr = pDevice->CreateShaderResourceView(pLUTTex.Get(), &srvDesc, &lutView);
   pContext->Flush();
 
   if (FAILED(hr))
@@ -355,7 +341,7 @@ bool COutputShader::CreateCLUTView(int clutSize, uint16_t* clutData, bool isRGB,
     return false;
   }
 
-  *ppCLUTView = clutView.Detach();
+  *ppLUTView = lutView.Detach();
   return true;
 }
 
@@ -374,7 +360,7 @@ void COutputShader::PrepareParameters(unsigned sourceWidth, unsigned sourceHeigh
     for (int i = 0; i < 4; ++i)
       m_destPoints[i] = points[i];
 
-    CUSTOMVERTEX* v;
+    Vertex* v;
     CWinShader::LockVertexBuffer(reinterpret_cast<void**>(&v));
 
     v[0].x = m_destPoints[0].x;
@@ -410,7 +396,7 @@ void COutputShader::SetShaderParameters(CD3DTexture& sourceTexture, unsigned ran
   m_effect.SetTechnique("OUTPUT_T");
   m_effect.SetResources("g_Texture", sourceTexture.GetAddressOfSRV(), 1);
 
-  UINT numPorts = 1;
+  unsigned numPorts = 1;
   D3D11_VIEWPORT viewPort;
   DX::DeviceResources::Get()->GetD3DContext()->RSGetViewports(&numPorts, &viewPort);
   m_effect.SetFloatArray("g_viewPort", &viewPort.Width, 2);
@@ -454,34 +440,34 @@ void COutputShader::CreateDitherView()
 
 //==================================================================================
 
-bool CYUV2RGBShader::Create(EBufferFormat fmt, AVColorPrimaries dstPrimaries, AVColorPrimaries srcPrimaries, COutputShader *pCLUT)
+bool CYUV2RGBShader::Create(AVPixelFormat fmt, AVColorPrimaries dstPrimaries,
+                            AVColorPrimaries srcPrimaries, const std::shared_ptr<COutputShader>& pOutputShader)
 {
   m_format = fmt;
-  m_pOutShader = pCLUT;
+  m_pOutShader = pOutputShader;
 
   DefinesMap defines;
 
   switch (fmt)
   {
-  case BUFFER_FMT_YUV420P:
-  case BUFFER_FMT_YUV420P10:
-  case BUFFER_FMT_YUV420P16:
+  case AV_PIX_FMT_YUV420P:
+  case AV_PIX_FMT_YUV420P10:
+  case AV_PIX_FMT_YUV420P16:
     defines["XBMC_YV12"] = "";
     break;
-  case BUFFER_FMT_D3D11_BYPASS:
-  case BUFFER_FMT_D3D11_NV12:
-  case BUFFER_FMT_D3D11_P010:
-  case BUFFER_FMT_D3D11_P016:
-  case BUFFER_FMT_NV12:
+  case AV_PIX_FMT_D3D11VA_VLD:
+  case AV_PIX_FMT_NV12:
+  case AV_PIX_FMT_P010:
+  case AV_PIX_FMT_P016:
     defines["XBMC_NV12"] = "";
     // FL 9.x doesn't support DXGI_FORMAT_R8G8_UNORM, so we have to use SNORM and correct values in shader
     if (!DX::Windowing()->IsFormatSupport(DXGI_FORMAT_R8G8_UNORM, D3D11_FORMAT_SUPPORT_TEXTURE2D))
       defines["NV12_SNORM_UV"] = "";
     break;
-  case BUFFER_FMT_UYVY422:
+  case AV_PIX_FMT_UYVY422:
     defines["XBMC_UYVY"] = "";
     break;
-  case BUFFER_FMT_YUYV422:
+  case AV_PIX_FMT_YUYV422:
     defines["XBMC_YUY2"] = "";
     break;
   default:
@@ -502,7 +488,7 @@ bool CYUV2RGBShader::Create(EBufferFormat fmt, AVColorPrimaries dstPrimaries, AV
     return false;
   }
 
-  CWinShader::CreateVertexBuffer(4, sizeof(CUSTOMVERTEX));
+  CWinShader::CreateVertexBuffer(4, sizeof(Vertex));
   // Create input layout
   D3D11_INPUT_ELEMENT_DESC layout[] =
   {
@@ -522,19 +508,19 @@ bool CYUV2RGBShader::Create(EBufferFormat fmt, AVColorPrimaries dstPrimaries, AV
   return true;
 }
 
-void CYUV2RGBShader::Render(CRect sourceRect, CPoint dest[], CRenderBuffer* videoBuffer, CD3DTexture *target)
+void CYUV2RGBShader::Render(CRect sourceRect, CPoint dest[], CRenderBuffer* videoBuffer, CD3DTexture& target)
 {
   PrepareParameters(videoBuffer, sourceRect, dest);
   SetShaderParameters(videoBuffer);
-  Execute({ target }, 4);
+  Execute({ &target }, 4);
 }
 
-void CYUV2RGBShader::SetParams(float contrast, float black, bool limited)
+void CYUV2RGBShader::SetParams(float contrast, float black, bool limited) const
 {
   m_pConvMatrix->SetParams(contrast * 0.02f, black * 0.01f - 0.5f, limited);
 }
 
-void CYUV2RGBShader::SetColParams(AVColorSpace colSpace, int bits, bool limited, int textuteBits)
+void CYUV2RGBShader::SetColParams(AVColorSpace colSpace, int bits, bool limited, int texBits) const
 {
   if (colSpace == AVCOL_SPC_UNSPECIFIED)
   {
@@ -543,20 +529,7 @@ void CYUV2RGBShader::SetColParams(AVColorSpace colSpace, int bits, bool limited,
     else
       colSpace = AVCOL_SPC_BT470BG;
   }
-  m_pConvMatrix->SetColParams(colSpace, bits, limited, textuteBits);
-}
-
-CYUV2RGBShader::CYUV2RGBShader()
-  : m_sourceWidth(0)
-  , m_sourceHeight(0)
-  , m_format(BUFFER_FMT_NONE)
-  , m_pOutShader(nullptr)
-{
-  memset(&m_texSteps, 0, sizeof(m_texSteps));
-}
-
-CYUV2RGBShader::~CYUV2RGBShader()
-{
+  m_pConvMatrix->SetColParams(colSpace, bits, limited, texBits);
 }
 
 void CYUV2RGBShader::PrepareParameters(CRenderBuffer* videoBuffer, CRect sourceRect, CPoint dest[])
@@ -573,7 +546,7 @@ void CYUV2RGBShader::PrepareParameters(CRenderBuffer* videoBuffer, CRect sourceR
     m_sourceWidth = videoBuffer->GetWidth();
     m_sourceHeight = videoBuffer->GetHeight();
 
-    CUSTOMVERTEX* v;
+    Vertex* v;
     CWinShader::LockVertexBuffer(reinterpret_cast<void**>(&v));
 
     v[0].x = m_dest[0].x;
@@ -612,8 +585,8 @@ void CYUV2RGBShader::PrepareParameters(CRenderBuffer* videoBuffer, CRect sourceR
   }
 
   unsigned int texWidth = m_sourceWidth;
-  if ( m_format == BUFFER_FMT_UYVY422
-    || m_format == BUFFER_FMT_YUYV422)
+  if ( m_format == AV_PIX_FMT_UYVY422
+    || m_format == AV_PIX_FMT_YUYV422)
     texWidth = texWidth >> 1;
 
   m_texSteps[0] = 1.0f / texWidth;
@@ -624,9 +597,9 @@ void CYUV2RGBShader::SetShaderParameters(CRenderBuffer* videoBuffer)
 {
   m_effect.SetTechnique("YUV2RGB_T");
   ID3D11ShaderResourceView* ppSRView[3] = {};
-  for (unsigned i = 0, max_i = videoBuffer->GetActivePlanes(); i < max_i; i++)
+  for (unsigned i = 0, max_i = videoBuffer->GetViewCount(); i < max_i; i++)
     ppSRView[i] = reinterpret_cast<ID3D11ShaderResourceView*>(videoBuffer->GetView(i));
-  m_effect.SetResources("g_Texture", ppSRView, videoBuffer->GetActivePlanes());
+  m_effect.SetResources("g_Texture", ppSRView, videoBuffer->GetViewCount());
   m_effect.SetFloatArray("g_StepXY", m_texSteps, ARRAY_SIZE(m_texSteps));
 
   float yuvMat[4][4];
@@ -637,7 +610,7 @@ void CYUV2RGBShader::SetShaderParameters(CRenderBuffer* videoBuffer)
   if (m_pConvMatrix->GetPrimMat(primMat))
   {
     // looks like FX11 doesn't like 3x3 matrix, so used 4x4 for its happiness
-    float dxMat[4][4] = { 0 };
+    float dxMat[4][4] = {};
     dxMat[0][0] = primMat[0][0]; dxMat[0][1] = primMat[0][1]; dxMat[0][2] = primMat[0][2];
     dxMat[1][0] = primMat[1][0]; dxMat[1][1] = primMat[1][1]; dxMat[1][2] = primMat[1][2];
     dxMat[2][0] = primMat[2][0]; dxMat[2][1] = primMat[2][1]; dxMat[2][2] = primMat[2][2];
@@ -646,7 +619,7 @@ void CYUV2RGBShader::SetShaderParameters(CRenderBuffer* videoBuffer)
     m_effect.SetScalar("g_gammaDstInv", 1/m_pConvMatrix->GetGammaDst());
   }
 
-  UINT numPorts = 1;
+  unsigned numPorts = 1;
   D3D11_VIEWPORT viewPort;
   DX::DeviceResources::Get()->GetD3DContext()->RSGetViewports(&numPorts, &viewPort);
   m_effect.SetFloatArray("g_viewPort", &viewPort.Width, 2);
@@ -655,20 +628,6 @@ void CYUV2RGBShader::SetShaderParameters(CRenderBuffer* videoBuffer)
 }
 
 //==================================================================================
-
-CConvolutionShader::CConvolutionShader() : CWinShader()
-  , m_KernelFormat(DXGI_FORMAT_UNKNOWN)
-  , m_floattex(false)
-  , m_rgba(false)
-  , m_pOutShader(nullptr)
-{
-}
-
-CConvolutionShader::~CConvolutionShader()
-{
-  if(m_HQKernelTexture.Get())
-    m_HQKernelTexture.Release();
-}
 
 bool CConvolutionShader::ChooseKernelD3DFormat()
 {
@@ -699,40 +658,40 @@ bool CConvolutionShader::ChooseKernelD3DFormat()
 bool CConvolutionShader::CreateHQKernel(ESCALINGMETHOD method)
 {
   CConvolutionKernel kern(method, 256);
-  void *kernelVals;
-  int kernelValsSize;
+  void *kernel;
+  int kernelSize;
 
   if (m_floattex)
   {
-    float *rawVals = kern.GetFloatPixels();
-    HALF* float16Vals = new HALF[kern.GetSize() * 4];
+    float *data = kern.GetFloatPixels();
+    const auto float16 = new uint16_t[kern.GetSize() * 4];
 
-    XMConvertFloatToHalfStream(float16Vals, sizeof(HALF), rawVals, sizeof(float), kern.GetSize()*4);
+    XMConvertFloatToHalfStream(float16, sizeof(uint16_t), data, sizeof(float), kern.GetSize()*4);
 
-    kernelVals = float16Vals;
-    kernelValsSize = sizeof(HALF)*kern.GetSize() * 4;
+    kernel = float16;
+    kernelSize = sizeof(uint16_t)*kern.GetSize() * 4;
   }
   else
   {
-    kernelVals = kern.GetUint8Pixels();
-    kernelValsSize = sizeof(uint8_t)*kern.GetSize() * 4;
+    kernel = kern.GetUint8Pixels();
+    kernelSize = sizeof(uint8_t)*kern.GetSize() * 4;
   }
 
-  if (!m_HQKernelTexture.Create(kern.GetSize(), 1, 1, D3D11_USAGE_IMMUTABLE, m_KernelFormat, kernelVals, kernelValsSize))
+  if (!m_HQKernelTexture.Create(kern.GetSize(), 1, 1, D3D11_USAGE_IMMUTABLE, m_KernelFormat, kernel, kernelSize))
   {
     CLog::LogF(LOGERROR, "Failed to create kernel texture.");
     return false;
   }
 
   if (m_floattex)
-    delete[] (HALF*)kernelVals;
+    delete[] static_cast<uint16_t*>(kernel);
 
   return true;
 }
 //==================================================================================
-bool CConvolutionShader1Pass::Create(ESCALINGMETHOD method, COutputShader *pCLUT)
+bool CConvolutionShader1Pass::Create(ESCALINGMETHOD method, const std::shared_ptr<COutputShader>& pOutputShader)
 {
-  m_pOutShader = pCLUT;
+  m_pOutShader = pOutputShader;
 
   std::string effectString;
   switch(method)
@@ -758,7 +717,7 @@ bool CConvolutionShader1Pass::Create(ESCALINGMETHOD method, COutputShader *pCLUT
     return false;
   }
 
-  CWinShader::CreateVertexBuffer(4, sizeof(CUSTOMVERTEX));
+  CWinShader::CreateVertexBuffer(4, sizeof(Vertex));
 
   DefinesMap defines;
   if (m_floattex)
@@ -787,16 +746,19 @@ bool CConvolutionShader1Pass::Create(ESCALINGMETHOD method, COutputShader *pCLUT
   return CWinShader::CreateInputLayout(layout, ARRAYSIZE(layout));
 }
 
-void CConvolutionShader1Pass::Render(CD3DTexture &sourceTexture,
-                                     unsigned int sourceWidth, unsigned int sourceHeight,
-                                     unsigned int destWidth, unsigned int destHeight,
-                                     CRect sourceRect, CRect destRect, bool useLimitRange,
-                                     CD3DTexture *target)
+void CConvolutionShader1Pass::Render(CD3DTexture& sourceTexture, CD3DTexture& target,
+                                     CRect sourceRect, CRect destRect, bool useLimitRange)
 {
+  const unsigned int sourceWidth = sourceTexture.GetWidth();
+  const unsigned int sourceHeight = sourceTexture.GetHeight();
+
   PrepareParameters(sourceWidth, sourceHeight, sourceRect, destRect);
-  float texSteps[] = { 1.0f/(float)sourceWidth, 1.0f/(float)sourceHeight};
+  float texSteps[] = { 
+    1.0f / static_cast<float>(sourceWidth),
+    1.0f / static_cast<float>(sourceHeight)
+  };
   SetShaderParameters(sourceTexture, &texSteps[0], ARRAY_SIZE(texSteps), useLimitRange);
-  Execute({ target }, 4);
+  Execute({ &target }, 4);
 }
 
 void CConvolutionShader1Pass::PrepareParameters(unsigned int sourceWidth, unsigned int sourceHeight,
@@ -810,7 +772,7 @@ void CConvolutionShader1Pass::PrepareParameters(unsigned int sourceWidth, unsign
     m_sourceRect = sourceRect;
     m_destRect = destRect;
 
-    CUSTOMVERTEX* v;
+    Vertex* v;
     CWinShader::LockVertexBuffer(reinterpret_cast<void**>(&v));
 
     v[0].x = destRect.x1;
@@ -847,7 +809,7 @@ void CConvolutionShader1Pass::SetShaderParameters(CD3DTexture &sourceTexture, fl
   m_effect.SetTexture( "g_Texture",  sourceTexture ) ;
   m_effect.SetTexture( "g_KernelTexture", m_HQKernelTexture );
   m_effect.SetFloatArray("g_StepXY", texSteps, texStepsCount);
-  UINT numVP = 1;
+  unsigned numVP = 1;
   D3D11_VIEWPORT viewPort = {};
   DX::DeviceResources::Get()->GetD3DContext()->RSGetViewports(&numVP, &viewPort);
   m_effect.SetFloatArray("g_viewPort", &viewPort.Width, 2);
@@ -863,18 +825,9 @@ void CConvolutionShader1Pass::SetShaderParameters(CD3DTexture &sourceTexture, fl
 
 //==================================================================================
 
-CConvolutionShaderSeparable::CConvolutionShaderSeparable() : CConvolutionShader()
-  , m_IntermediateFormat(DXGI_FORMAT_UNKNOWN)
-  , m_sourceWidth(-1)
-  , m_sourceHeight(-1)
-  , m_destWidth(-1)
-  , m_destHeight(-1)
+bool CConvolutionShaderSeparable::Create(ESCALINGMETHOD method, const std::shared_ptr<COutputShader>& pOutputShader)
 {
-}
-
-bool CConvolutionShaderSeparable::Create(ESCALINGMETHOD method, COutputShader *pCLUT)
-{
-  m_pOutShader = pCLUT;
+  m_pOutShader = pOutputShader;
 
   std::string effectString;
   switch(method)
@@ -906,7 +859,7 @@ bool CConvolutionShaderSeparable::Create(ESCALINGMETHOD method, COutputShader *p
     return false;
   }
 
-  CWinShader::CreateVertexBuffer(8, sizeof(CUSTOMVERTEX));
+  CWinShader::CreateVertexBuffer(8, sizeof(Vertex));
 
   DefinesMap defines;
   if (m_floattex)
@@ -935,13 +888,16 @@ bool CConvolutionShaderSeparable::Create(ESCALINGMETHOD method, COutputShader *p
   return CWinShader::CreateInputLayout(layout, ARRAYSIZE(layout));
 }
 
-void CConvolutionShaderSeparable::Render(CD3DTexture &sourceTexture,
-                                         unsigned int sourceWidth, unsigned int sourceHeight,
-                                         unsigned int destWidth, unsigned int destHeight,
-                                         CRect sourceRect, CRect destRect, bool useLimitRange,
-                                         CD3DTexture *target)
+void CConvolutionShaderSeparable::Render(CD3DTexture& sourceTexture, CD3DTexture& target,
+                                         CRect sourceRect, CRect destRect, bool useLimitRange)
 {
-  if(m_destWidth != destWidth || m_sourceHeight != sourceHeight)
+  const unsigned int sourceWidth = sourceTexture.GetWidth();
+  const unsigned int sourceHeight = sourceTexture.GetHeight();
+
+  const unsigned int destWidth = target.GetWidth();
+  const unsigned int destHeight = target.GetHeight();
+
+    if(m_destWidth != destWidth || m_sourceHeight != sourceHeight)
     CreateIntermediateRenderTarget(destWidth, sourceHeight);
 
   PrepareParameters(sourceWidth, sourceHeight, destWidth, destHeight, sourceRect, destRect);
@@ -954,25 +910,18 @@ void CConvolutionShaderSeparable::Render(CD3DTexture &sourceTexture,
   };
   SetShaderParameters(sourceTexture, texSteps, 4, useLimitRange);
 
-  Execute({ &m_IntermediateTarget, target }, 4);
-
-  // we changed view port, so we need to restore our real viewport.
-  DX::Windowing()->RestoreViewPort();
-}
-
-CConvolutionShaderSeparable::~CConvolutionShaderSeparable()
-{
-  if (m_IntermediateTarget.Get())
-    m_IntermediateTarget.Release();
+  Execute({ &m_IntermediateTarget, &target }, 4);
 }
 
 bool CConvolutionShaderSeparable::ChooseIntermediateD3DFormat()
 {
-  D3D11_FORMAT_SUPPORT usage = D3D11_FORMAT_SUPPORT_RENDER_TARGET;
+  const D3D11_FORMAT_SUPPORT usage = D3D11_FORMAT_SUPPORT_RENDER_TARGET;
 
   // Need a float texture, as the output of the first pass can contain negative values.
-  if      (DX::Windowing()->IsFormatSupport(DXGI_FORMAT_R16G16B16A16_FLOAT, usage)) m_IntermediateFormat = DXGI_FORMAT_R16G16B16A16_FLOAT;
-  else if (DX::Windowing()->IsFormatSupport(DXGI_FORMAT_R32G32B32A32_FLOAT, usage)) m_IntermediateFormat = DXGI_FORMAT_R32G32B32A32_FLOAT;
+  if (DX::Windowing()->IsFormatSupport(DXGI_FORMAT_R16G16B16A16_FLOAT, usage)) 
+    m_IntermediateFormat = DXGI_FORMAT_R16G16B16A16_FLOAT;
+  else if (DX::Windowing()->IsFormatSupport(DXGI_FORMAT_R32G32B32A32_FLOAT, usage)) 
+    m_IntermediateFormat = DXGI_FORMAT_R32G32B32A32_FLOAT;
   else
   {
     CLog::LogF(LOGNOTICE, "no float format available for the intermediate render target");
@@ -980,7 +929,6 @@ bool CConvolutionShaderSeparable::ChooseIntermediateD3DFormat()
   }
 
   CLog::LogF(LOGDEBUG, "format %i", m_IntermediateFormat);
-
   return true;
 }
 
@@ -1006,8 +954,7 @@ bool CConvolutionShaderSeparable::ClearIntermediateRenderTarget()
 
 void CConvolutionShaderSeparable::PrepareParameters(unsigned int sourceWidth, unsigned int sourceHeight,
                                            unsigned int destWidth, unsigned int destHeight,
-                                           CRect sourceRect,
-                                           CRect destRect)
+                                           CRect sourceRect, CRect destRect)
 {
   if(m_sourceWidth != sourceWidth || m_sourceHeight != sourceHeight
   || m_destWidth != destWidth || m_destHeight != destHeight
@@ -1022,13 +969,13 @@ void CConvolutionShaderSeparable::PrepareParameters(unsigned int sourceWidth, un
     m_sourceRect = sourceRect;
     m_destRect = destRect;
 
-    CUSTOMVERTEX* v;
-    CWinShader::LockVertexBuffer((void**)&v);
+    Vertex* v;
+    CWinShader::LockVertexBuffer(reinterpret_cast<void**>(&v));
 
     // Alter rectangles the destination rectangle exceeds the intermediate target width when zooming and causes artifacts.
     // Work on the parameters rather than the members to avoid disturbing the parameter change detection the next time the function is called
-    CRect tgtRect(0, 0, static_cast<float>(destWidth), static_cast<float>(destHeight));
-    CWIN32Util::CropSource(sourceRect, destRect, tgtRect);
+    const CRect target(0, 0, static_cast<float>(destWidth), static_cast<float>(destHeight));
+    CWIN32Util::CropSource(sourceRect, destRect, target);
 
     // Manipulate the coordinates to work only on the active parts of the textures,
     // and therefore avoid the need to clear surfaces/render targets
@@ -1108,7 +1055,7 @@ void CConvolutionShaderSeparable::SetShaderParameters(CD3DTexture &sourceTexture
     m_pOutShader->ApplyEffectParameters(m_effect, sourceTexture.GetWidth(), sourceTexture.GetHeight());
 }
 
-void CConvolutionShaderSeparable::SetStepParams(UINT iPass)
+void CConvolutionShaderSeparable::SetStepParams(unsigned iPass)
 {
   ID3D11DeviceContext* pContext = DX::DeviceResources::Get()->GetD3DContext();
 

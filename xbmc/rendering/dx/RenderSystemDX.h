@@ -14,7 +14,6 @@
 #include "utils/Color.h"
 #include "rendering/RenderSystem.h"
 
-#include <vector>
 #include <wrl/client.h>
 
 enum PCI_Vendors
@@ -66,7 +65,7 @@ public:
   bool Interlaced() const { return m_interlaced; }
   bool IsFormatSupport(DXGI_FORMAT format, unsigned int usage) const;
   CRect GetBackBufferRect();
-  CD3DTexture* GetBackBuffer();
+  CD3DTexture& GetBackBuffer();
 
   void FlushGPU() const;
   void RequestDecodingTime();
@@ -76,10 +75,6 @@ public:
   // empty overrides
   bool IsExtSupported(const char* extension) const override { return false; };
   bool ResetRenderSystem(int width, int height) override { return true; };
-
-  std::vector<AVPixelFormat> m_processorFormats;
-  std::vector<AVPixelFormat> m_sharedFormats;
-  std::vector<AVPixelFormat> m_shaderFormats;
 
 protected:
   virtual void PresentRenderImpl(bool rendered) = 0;

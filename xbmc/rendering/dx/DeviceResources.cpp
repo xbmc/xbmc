@@ -167,11 +167,6 @@ void DX::DeviceResources::GetDisplayMode(DXGI_MODE_DESC* mode) const
 #endif
 }
 
-ID3D11RenderTargetView* DX::DeviceResources::GetBackBufferRTV()
-{
-  return m_backBufferTex.GetRenderTarget();
-}
-
 void DX::DeviceResources::SetViewPort(D3D11_VIEWPORT& viewPort) const
 {
   // convert logical viewport to real
@@ -1026,11 +1021,21 @@ bool DX::DeviceResources::IsStereoAvailable() const
 
 bool DX::DeviceResources::DoesTextureSharingWork()
 {
-  if (m_d3dFeatureLevel < D3D_FEATURE_LEVEL_10_0)
+  if (m_d3dFeatureLevel < D3D_FEATURE_LEVEL_10_0 ||
+    CSysInfo::GetWindowsDeviceFamily() != CSysInfo::Desktop)
     return false;
 
-  // @todo proper check in run-time
-  return CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_allowUseSeparateDeviceForDecoding;
+  if (!CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_allowUseSeparateDeviceForDecoding)
+  {
+    D3D11_FEATURE_DATA_D3D11_OPTIONS options;
+    if (SUCCEEDED(m_d3dDevice->CheckFeatureSupport(D3D11_FEATURE_D3D11_OPTIONS, &options, sizeof(options))))
+    {
+      CLog::LogF(LOGDEBUG, "extended sharing resource is{}supported", !!options.ExtendedResourceSharing ? " " : " not ");
+      return !!options.ExtendedResourceSharing;
+    }
+    return false;
+  }
+  return true;
 }
 
 #if defined(TARGET_WINDOWS_DESKTOP)
