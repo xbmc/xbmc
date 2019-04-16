@@ -456,17 +456,6 @@ std::vector<SBackend> CPVRClients::GetBackendProperties() const
   return backendProperties;
 }
 
-bool CPVRClients::SupportsTimers() const
-{
-  bool bReturn = false;
-  ForCreatedClients(__FUNCTION__, [&bReturn](const CPVRClientPtr &client) {
-    if (!bReturn)
-      bReturn = client->GetClientCapabilities().SupportsTimers();
-    return PVR_ERROR_NO_ERROR;
-  });
-  return bReturn;
-}
-
 bool CPVRClients::GetTimers(CPVRTimersContainer *timers, std::vector<int> &failedClients)
 {
   return ForCreatedClients(__FUNCTION__, [timers](const CPVRClientPtr &client) {

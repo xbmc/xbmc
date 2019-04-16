@@ -19,6 +19,7 @@
 #include "GUIPassword.h"
 #include "profiles/ProfileManager.h"
 #include "settings/lib/Setting.h"
+#include "settings/lib/SettingDefinitions.h"
 #include "settings/lib/SettingsManager.h"
 #include "settings/MediaSettings.h"
 #include "settings/Settings.h"
@@ -434,7 +435,7 @@ void CGUIDialogVideoSettings::AddVideoStreams(std::shared_ptr<CSettingGroup> gro
   AddList(group, settingId, 38031, SettingLevel::Basic, m_videoStream, VideoStreamsOptionFiller, 38031);
 }
 
-void CGUIDialogVideoSettings::VideoStreamsOptionFiller(std::shared_ptr<const CSetting> setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data)
+void CGUIDialogVideoSettings::VideoStreamsOptionFiller(std::shared_ptr<const CSetting> setting, std::vector<IntegerSettingOption> &list, int &current, void *data)
 {
   int videoStreamCount = g_application.GetAppPlayer().GetVideoStreamCount();
 
@@ -473,22 +474,22 @@ void CGUIDialogVideoSettings::VideoStreamsOptionFiller(std::shared_ptr<const CSe
 
     strItem += FormatFlags(info.flags);
     strItem += StringUtils::Format(" (%i/%i)", i + 1, videoStreamCount);
-    list.push_back(make_pair(strItem, i));
+    list.push_back(IntegerSettingOption(strItem, i));
   }
 
   if (list.empty())
   {
-    list.push_back(make_pair(g_localizeStrings.Get(231), -1));
+    list.push_back(IntegerSettingOption(g_localizeStrings.Get(231), -1));
     current = -1;
   }
 }
 
-void CGUIDialogVideoSettings::VideoOrientationFiller(std::shared_ptr<const CSetting> setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data)
+void CGUIDialogVideoSettings::VideoOrientationFiller(std::shared_ptr<const CSetting> setting, std::vector<IntegerSettingOption> &list, int &current, void *data)
 {
-  list.push_back(std::make_pair(g_localizeStrings.Get(687), 0));
-  list.push_back(std::make_pair(g_localizeStrings.Get(35229), 90));
-  list.push_back(std::make_pair(g_localizeStrings.Get(35230), 180));
-  list.push_back(std::make_pair(g_localizeStrings.Get(35231), 270));
+  list.push_back(IntegerSettingOption(g_localizeStrings.Get(687), 0));
+  list.push_back(IntegerSettingOption(g_localizeStrings.Get(35229), 90));
+  list.push_back(IntegerSettingOption(g_localizeStrings.Get(35230), 180));
+  list.push_back(IntegerSettingOption(g_localizeStrings.Get(35231), 270));
 }
 
 std::string CGUIDialogVideoSettings::FormatFlags(StreamFlags flags)

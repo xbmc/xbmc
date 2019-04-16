@@ -21,6 +21,7 @@
 #include "LangInfo.h"
 #include "log.h"
 #include "settings/lib/Setting.h"
+#include "settings/lib/SettingDefinitions.h"
 #include "settings/Settings.h"
 #include "utils/StringUtils.h"
 #include "utils/Utf8Utils.h"
@@ -844,12 +845,12 @@ bool CCharsetConverter::utf8logicalToVisualBiDi(const std::string& utf8StringSrc
   return CInnerConverter::stdConvert(Utf32ToUtf8, utf32flipped, utf8StringDst, failOnBadString);
 }
 
-void CCharsetConverter::SettingOptionsCharsetsFiller(SettingConstPtr setting, std::vector< std::pair<std::string, std::string> >& list, std::string& current, void *data)
+void CCharsetConverter::SettingOptionsCharsetsFiller(SettingConstPtr setting, std::vector<StringSettingOption>& list, std::string& current, void *data)
 {
   std::vector<std::string> vecCharsets = g_charsetConverter.getCharsetLabels();
   sort(vecCharsets.begin(), vecCharsets.end(), sortstringbyname());
 
-  list.push_back(make_pair(g_localizeStrings.Get(13278), "DEFAULT")); // "Default"
+  list.push_back(StringSettingOption(g_localizeStrings.Get(13278), "DEFAULT")); // "Default"
   for (int i = 0; i < (int) vecCharsets.size(); ++i)
-    list.push_back(make_pair(vecCharsets[i], g_charsetConverter.getCharsetNameByLabel(vecCharsets[i])));
+    list.push_back(StringSettingOption(vecCharsets[i], g_charsetConverter.getCharsetNameByLabel(vecCharsets[i])));
 }

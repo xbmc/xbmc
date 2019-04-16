@@ -137,11 +137,16 @@ CPVRManager::CPVRManager(void) :
     })
 {
   CServiceBroker::GetAnnouncementManager()->AddAnnouncer(this);
+  m_actionListener.Init(*this);
+
+  CLog::LogFC(LOGDEBUG, LOGPVR, "PVR Manager instance created");
 }
 
 CPVRManager::~CPVRManager(void)
 {
+  m_actionListener.Deinit(*this);
   CServiceBroker::GetAnnouncementManager()->RemoveAnnouncer(this);
+
   CLog::LogFC(LOGDEBUG, LOGPVR, "PVR Manager instance destroyed");
 }
 

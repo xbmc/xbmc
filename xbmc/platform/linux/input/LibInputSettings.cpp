@@ -11,6 +11,7 @@
 #include "LibInputHandler.h"
 #include "ServiceBroker.h"
 #include "settings/lib/Setting.h"
+#include "settings/lib/SettingDefinitions.h"
 #include "settings/lib/SettingsManager.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
@@ -20,7 +21,15 @@
 #include <algorithm>
 
 const std::string CLibInputSettings::SETTING_INPUT_LIBINPUTKEYBOARDLAYOUT = "input.libinputkeyboardlayout";
-static std::vector<std::pair<std::string, std::string>> layouts;
+static std::vector<StringSettingOption> layouts;
+
+namespace
+{
+  inline bool LayoutSort(const StringSettingOption& i, const StringSettingOption& j)
+  {
+    return (i.value > j.value);
+  }
+} // unnamed namespace
 
 CLibInputSettings::CLibInputSettings(CLibInputHandler *handler) :
   m_libInputHandler(handler)
@@ -89,12 +98,12 @@ CLibInputSettings::CLibInputSettings(CLibInputHandler *handler) :
     std::string layoutDescription = descriptionElement->GetText();
 
     if (!layout.empty() && !layoutDescription.empty())
-      layouts.emplace_back(std::make_pair(layoutDescription, layout));
+      layouts.emplace_back(StringSettingOption(layoutDescription, layout));
 
     layoutElement = layoutElement->NextSiblingElement();
   }
 
-  std::sort(layouts.begin(), layouts.end());
+  std::sort(layouts.begin(), layouts.end(), LayoutSort);
 }
 
 CLibInputSettings::~CLibInputSettings()
@@ -111,7 +120,7 @@ CLibInputSettings::~CLibInputSettings()
   settings->GetSettingsManager()->UnregisterCallback(this);
 }
 
-void CLibInputSettings::SettingOptionsKeyboardLayoutsFiller(std::shared_ptr<const CSetting> setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data)
+void CLibInputSettings::SettingOptionsKeyboardLayoutsFiller(std::shared_ptr<const CSetting> setting, std::vector<StringSettingOption> &list, std::string &current, void *data)
 {
   list = layouts;
 }

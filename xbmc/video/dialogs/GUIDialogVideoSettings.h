@@ -15,6 +15,8 @@
 #include "settings/dialogs/GUIDialogSettingsManualBase.h"
 #include "cores/VideoPlayer/Interface/StreamInfo.h"
 
+struct IntegerSettingOption;
+
 class CGUIDialogVideoSettings : public CGUIDialogSettingsManualBase
 {
 public:
@@ -27,9 +29,9 @@ protected:
   void OnSettingAction(std::shared_ptr<const CSetting> setting) override;
 
   void AddVideoStreams(std::shared_ptr<CSettingGroup> group, const std::string & settingId);
-  static void VideoStreamsOptionFiller(std::shared_ptr<const CSetting> setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data);
+  static void VideoStreamsOptionFiller(std::shared_ptr<const CSetting> setting, std::vector<IntegerSettingOption> &list, int &current, void *data);
 
-  static void VideoOrientationFiller(std::shared_ptr<const CSetting> setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data);
+  static void VideoOrientationFiller(std::shared_ptr<const CSetting> setting, std::vector<IntegerSettingOption> &list, int &current, void *data);
 
   static std::string FormatFlags(StreamFlags flags);
 

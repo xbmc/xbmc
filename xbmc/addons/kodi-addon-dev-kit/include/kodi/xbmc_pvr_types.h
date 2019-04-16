@@ -154,6 +154,7 @@ extern "C" {
   const unsigned int PVR_TIMER_TYPE_SUPPORTS_ANY_CHANNEL              = 0x01000000; /*!< @brief this type supports 'any channel', for example when defining a timer rule that should match any channel instaed of a particular channel */
   const unsigned int PVR_TIMER_TYPE_REQUIRES_EPG_SERIESLINK_ON_CREATE = 0x02000000; /*!< @brief this type should not appear on any create menus which don't provide an associated EPG tag with a series link */
   const unsigned int PVR_TIMER_TYPE_SUPPORTS_READONLY_DELETE          = 0x04000000; /*!< @brief this type allows deletion of an otherwise read-only timer */
+  const unsigned int PVR_TIMER_TYPE_IS_REMINDER                       = 0x08000000; /*!< @brief timers of this type do trigger a reminder if time is up by calling the Kodi callback 'ReminderNotification'. */
 
   /*!
    * @brief PVR timer weekdays (PVR_TIMER.iWeekdays values)

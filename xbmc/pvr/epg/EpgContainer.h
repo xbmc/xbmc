@@ -111,6 +111,12 @@ namespace PVR
     const CDateTime GetLastEPGDate(void);
 
     /*!
+     * @brief Get all EPGs.
+     * @return The EPGs.
+     */
+    std::vector<std::shared_ptr<CPVREpg>> GetAllEpgs() const;
+
+    /*!
      * @brief Get an EPG given its ID.
      * @param iEpgId The database ID of the table.
      * @return The EPG or nullptr if it wasn't found.

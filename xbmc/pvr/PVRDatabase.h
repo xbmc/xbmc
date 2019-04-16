@@ -22,6 +22,8 @@ namespace PVR
   class CPVRChannel;
   class CPVRChannelGroups;
   class CPVRClient;
+  class CPVRTimerInfoTag;
+  class CPVRTimers;
 
   /** The PVR database */
 
@@ -49,7 +51,7 @@ namespace PVR
      * @brief Get the minimal database version that is required to operate correctly.
      * @return The minimal database version.
      */
-    int GetSchemaVersion() const override { return 32; }
+    int GetSchemaVersion() const override { return 33; }
 
     /*!
      * @brief Get the default sqlite database filename.
@@ -165,23 +167,52 @@ namespace PVR
      */
     bool ResetEPG(void);
 
+    /*! @name Timer methods */
+    //@{
+
+    /*!
+     * @brief Get the timers.
+     * @param timers The container for the timers.
+     * @return The timers.
+     */
+    std::vector<std::shared_ptr<CPVRTimerInfoTag>> GetTimers(CPVRTimers& timers);
+
+    /*!
+     * @brief Add or update a timer entry in the database
+     * @param channel The timer to persist.
+     * @return True if persisted, false otherwise.
+     */
+    bool Persist(CPVRTimerInfoTag& timer);
+
+    /*!
+     * @brief Remove a timer from the database
+     * @param timer The timer to remove.
+     * @return True if the timer was removed, false otherwise.
+     */
+    bool Delete(const CPVRTimerInfoTag& timer);
+
+    /*!
+     * @brief Remove all timer entries from the database.
+     * @return True if all timer entries were removed, false otherwise.
+     */
+    bool DeleteTimers();
     //@}
 
     /*! @name Client methods */
     //@{
 
     /*!
-    * @brief Updates the last watched timestamp for the channel
-    * @param channel the channel
-    * @return whether the update was successful
-    */
+     * @brief Updates the last watched timestamp for the channel
+     * @param channel the channel
+     * @return whether the update was successful
+     */
     bool UpdateLastWatched(const CPVRChannel &channel);
 
     /*!
-    * @brief Updates the last watched timestamp for the channel group
-    * @param group the group
-    * @return whether the update was successful
-    */
+     * @brief Updates the last watched timestamp for the channel group
+     * @param group the group
+     * @return whether the update was successful
+     */
     bool UpdateLastWatched(const CPVRChannelGroup &group);
     //@}
 

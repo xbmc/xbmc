@@ -18,6 +18,8 @@
 #include "threads/CriticalSection.h"
 #include "utils/Stopwatch.h"
 
+struct IntegerSettingOption;
+
 enum SeekType
 {
   SEEK_TYPE_VIDEO = 0,
@@ -30,7 +32,7 @@ public:
   CSeekHandler() = default;
   ~CSeekHandler() override;
 
-  static void SettingOptionsSeekStepsFiller(std::shared_ptr<const CSetting> setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data);
+  static void SettingOptionsSeekStepsFiller(std::shared_ptr<const CSetting> setting, std::vector<IntegerSettingOption> &list, int &current, void *data);
 
   void OnSettingChanged(std::shared_ptr<const CSetting> setting) override;
   bool OnAction(const CAction &action) override;

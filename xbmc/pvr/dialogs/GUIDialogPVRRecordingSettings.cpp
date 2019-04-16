@@ -14,6 +14,7 @@
 #include "guilib/LocalizeStrings.h"
 #include "messaging/helpers/DialogHelper.h"
 #include "settings/lib/Setting.h"
+#include "settings/lib/SettingDefinitions.h"
 #include "settings/lib/SettingsManager.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
@@ -175,7 +176,7 @@ void CGUIDialogPVRRecordingSettings::Save()
 }
 
 void CGUIDialogPVRRecordingSettings::LifetimesFiller(
-  SettingConstPtr setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data)
+  SettingConstPtr setting, std::vector<IntegerSettingOption> &list, int &current, void *data)
 {
   CGUIDialogPVRRecordingSettings *pThis = static_cast<CGUIDialogPVRRecordingSettings*>(data);
   if (pThis)
@@ -184,14 +185,19 @@ void CGUIDialogPVRRecordingSettings::LifetimesFiller(
 
     const CPVRClientPtr client = CServiceBroker::GetPVRManager().GetClient(pThis->m_recording->ClientID());
     if (client)
-      client->GetClientCapabilities().GetRecordingsLifetimeValues(list);
+    {
+      std::vector<std::pair<std::string,int>> values;
+      client->GetClientCapabilities().GetRecordingsLifetimeValues(values);
+      for (const auto& value : values)
+        list.emplace_back(IntegerSettingOption(value.first, value.second));
+    }
 
     current = pThis->m_iLifetime;
 
     auto it = list.begin();
     while (it != list.end())
     {
-      if (it->second == current)
+      if (it->value == current)
         break; // value already in list
 
       ++it;
@@ -200,7 +206,7 @@ void CGUIDialogPVRRecordingSettings::LifetimesFiller(
     if (it == list.end())
     {
       // PVR backend supplied value is not in the list of predefined values. Insert it.
-      list.insert(it, std::make_pair(StringUtils::Format(g_localizeStrings.Get(17999).c_str(), current) /* %i days */, current));
+      list.insert(it, IntegerSettingOption(StringUtils::Format(g_localizeStrings.Get(17999).c_str(), current) /* %i days */, current));
     }
   }
   else

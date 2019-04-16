@@ -35,8 +35,26 @@
 						</control>
 						<control type="group">
 							<visible>!String.IsEmpty(ListItem.Date)</visible>
+							<control type="image">
+								<left>10</left>
+								<top>18</top>
+								<width>40</width>
+								<height>30</height>
+								<aspectratio align="left">keep</aspectratio>
+								<texture>icons/pvr/timers/recording.png</texture>
+								<visible>!ListItem.HasReminder</visible>
+							</control>
+							<control type="image">
+								<left>10</left>
+								<top>18</top>
+								<width>40</width>
+								<height>30</height>
+								<aspectratio align="left">keep</aspectratio>
+								<texture>icons/pvr/timers/bell.png</texture>
+								<visible>ListItem.HasReminder</visible>
+							</control>
 							<control type="label">
-								<left>30</left>
+								<left>50</left>
 								<top>10</top>
 								<right>30</right>
 								<height>30</height>
@@ -44,7 +62,7 @@
 								<label>$INFO[ListItem.ChannelName][COLOR grey]$INFO[ListItem.Label, - ][/COLOR]</label>
 							</control>
 							<control type="label">
-								<left>30</left>
+								<left>50</left>
 								<top>53</top>
 								<width>680</width>
 								<height>30</height>
@@ -95,8 +113,26 @@
 						</control>
 						<control type="group">
 							<visible>!String.IsEmpty(ListItem.Date)</visible>
+							<control type="image">
+								<left>10</left>
+								<top>18</top>
+								<width>40</width>
+								<height>30</height>
+								<aspectratio align="left">keep</aspectratio>
+								<texture>icons/pvr/timers/recording.png</texture>
+								<visible>!ListItem.HasReminder</visible>
+							</control>
+							<control type="image">
+								<left>10</left>
+								<top>18</top>
+								<width>40</width>
+								<height>30</height>
+								<aspectratio align="left">keep</aspectratio>
+								<texture>icons/pvr/timers/bell.png</texture>
+								<visible>ListItem.HasReminder</visible>
+							</control>
 							<control type="label">
-								<left>30</left>
+								<left>50</left>
 								<top>10</top>
 								<right>30</right>
 								<height>100</height>
@@ -104,7 +140,7 @@
 								<label>$INFO[ListItem.ChannelName]$INFO[ListItem.Label, - ]</label>
 							</control>
 							<control type="label">
-								<left>30</left>
+								<left>50</left>
 								<top>53</top>
 								<width>680</width>
 								<height>100</height>

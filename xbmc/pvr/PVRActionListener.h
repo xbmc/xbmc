@@ -14,7 +14,9 @@
 namespace PVR
 {
 
+class CPVRManager;
 enum class ChannelSwitchMode;
+enum class PVREvent;
 
 class CPVRActionListener : public IActionListener, public ISettingCallback
 {
@@ -22,12 +24,17 @@ public:
   CPVRActionListener();
   ~CPVRActionListener() override;
 
+  void Init(CPVRManager& mgr);
+  void Deinit(CPVRManager& mgr);
+
   // IActionListener implementation
   bool OnAction(const CAction &action) override;
 
   // ISettingCallback implementation
   void OnSettingChanged(std::shared_ptr<const CSetting> setting) override;
   void OnSettingAction(std::shared_ptr<const CSetting> setting) override;
+
+  void OnPVRManagerEvent(const PVREvent& event);
 
 private:
   CPVRActionListener(const CPVRActionListener&) = delete;

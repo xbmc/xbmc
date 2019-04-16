@@ -482,25 +482,6 @@ bool CPVRClient::GetAddonProperties(void)
           CLog::LogF(LOGERROR, "Invalid timer type supplied by add-on '%s'. Please contact the developer of this add-on: %s", GetFriendlyName().c_str(), Author().c_str());
           continue;
         }
-
-        if (strlen(types_array[i].strDescription) == 0)
-        {
-          int id;
-          if (types_array[i].iAttributes & PVR_TIMER_TYPE_IS_REPEATING)
-          {
-            id = (types_array[i].iAttributes & PVR_TIMER_TYPE_IS_MANUAL)
-                ? 822  // "Timer rule"
-                : 823; // "Timer rule (guide-based)"
-          }
-          else
-          {
-            id = (types_array[i].iAttributes & PVR_TIMER_TYPE_IS_MANUAL)
-                ? 820  // "One time"
-                : 821; // "One time (guide-based)
-          }
-          std::string descr(g_localizeStrings.Get(id));
-          strncpy(types_array[i].strDescription, descr.c_str(), sizeof(types_array[i].strDescription) - 1);
-        }
         timerTypes.emplace_back(CPVRTimerTypePtr(new CPVRTimerType(types_array[i], m_iClientId)));
       }
     }

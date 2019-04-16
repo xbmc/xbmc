@@ -15,6 +15,7 @@
 #include <map>
 
 class CSetting;
+struct StringSettingOption;
 
 class CLinuxTimezone : public ISettingCallback, public ISettingsHandler
 {
@@ -34,8 +35,8 @@ public:
    void SetTimezone(std::string timezone);
    int m_IsDST = 0;
 
-   static void SettingOptionsTimezoneCountriesFiller(std::shared_ptr<const CSetting> setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data);
-   static void SettingOptionsTimezonesFiller(std::shared_ptr<const CSetting> setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data);
+   static void SettingOptionsTimezoneCountriesFiller(std::shared_ptr<const CSetting> setting, std::vector<StringSettingOption> &list, std::string &current, void *data);
+   static void SettingOptionsTimezonesFiller(std::shared_ptr<const CSetting> setting, std::vector<StringSettingOption> &list, std::string &current, void *data);
 
 private:
    std::vector<std::string> m_counties;

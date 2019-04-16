@@ -23,6 +23,7 @@
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
 #include "settings/lib/Setting.h"
+#include "settings/lib/SettingDefinitions.h"
 #include "settings/Settings.h"
 #include "utils/CharsetConverter.h"
 #include "utils/LangCodeExpander.h"
@@ -170,10 +171,10 @@ static CSpeed::Unit StringToSpeedUnit(const std::string& speedUnit)
 
 struct SortLanguage
 {
-  bool operator()(const std::pair<std::string, std::string> &left, const std::pair<std::string, std::string> &right) const
+  bool operator()(const StringSettingOption &left, const StringSettingOption &right) const
   {
-    std::string strLeft = left.first;
-    std::string strRight = right.first;
+    std::string strLeft = left.label;
+    std::string strRight = right.label;
     StringUtils::ToLower(strLeft);
     StringUtils::ToLower(strRight);
 
@@ -1085,7 +1086,7 @@ std::string CLangInfo::PrepareTimeFormat(const std::string& timeFormat, bool use
   return preparedTimeFormat;
 }
 
-void CLangInfo::SettingOptionsLanguageNamesFiller(SettingConstPtr setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data)
+void CLangInfo::SettingOptionsLanguageNamesFiller(SettingConstPtr setting, std::vector<StringSettingOption> &list, std::string &current, void *data)
 {
   // find languages...
   ADDON::VECADDONS addons;
@@ -1098,7 +1099,7 @@ void CLangInfo::SettingOptionsLanguageNamesFiller(SettingConstPtr setting, std::
   sort(list.begin(), list.end(), SortLanguage());
 }
 
-void CLangInfo::SettingOptionsISO6391LanguagesFiller(SettingConstPtr setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data)
+void CLangInfo::SettingOptionsISO6391LanguagesFiller(SettingConstPtr setting, std::vector<StringSettingOption> &list, std::string &current, void *data)
 {
   // get a list of language names
   std::vector<std::string> languages = g_LangCodeExpander.GetLanguageNames(CLangCodeExpander::ISO_639_1, true);
@@ -1107,7 +1108,7 @@ void CLangInfo::SettingOptionsISO6391LanguagesFiller(SettingConstPtr setting, st
     list.emplace_back(language, language);
 }
 
-void CLangInfo::SettingOptionsAudioStreamLanguagesFiller(SettingConstPtr setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data)
+void CLangInfo::SettingOptionsAudioStreamLanguagesFiller(SettingConstPtr setting, std::vector<StringSettingOption> &list, std::string &current, void *data)
 {
   list.emplace_back(g_localizeStrings.Get(307), "mediadefault");
   list.emplace_back(g_localizeStrings.Get(308), "original");
@@ -1116,7 +1117,7 @@ void CLangInfo::SettingOptionsAudioStreamLanguagesFiller(SettingConstPtr setting
   AddLanguages(list);
 }
 
-void CLangInfo::SettingOptionsSubtitleStreamLanguagesFiller(SettingConstPtr setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data)
+void CLangInfo::SettingOptionsSubtitleStreamLanguagesFiller(SettingConstPtr setting, std::vector<StringSettingOption> &list, std::string &current, void *data)
 {
   list.emplace_back(g_localizeStrings.Get(231), "none");
   list.emplace_back(g_localizeStrings.Get(13207), "forced_only");
@@ -1126,7 +1127,7 @@ void CLangInfo::SettingOptionsSubtitleStreamLanguagesFiller(SettingConstPtr sett
   AddLanguages(list);
 }
 
-void CLangInfo::SettingOptionsSubtitleDownloadlanguagesFiller(SettingConstPtr setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data)
+void CLangInfo::SettingOptionsSubtitleDownloadlanguagesFiller(SettingConstPtr setting, std::vector<StringSettingOption> &list, std::string &current, void *data)
 {
   list.emplace_back(g_localizeStrings.Get(308), "original");
   list.emplace_back(g_localizeStrings.Get(309), "default");
@@ -1134,7 +1135,7 @@ void CLangInfo::SettingOptionsSubtitleDownloadlanguagesFiller(SettingConstPtr se
   AddLanguages(list);
 }
 
-void CLangInfo::SettingOptionsRegionsFiller(SettingConstPtr setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data)
+void CLangInfo::SettingOptionsRegionsFiller(SettingConstPtr setting, std::vector<StringSettingOption> &list, std::string &current, void *data)
 {
   std::vector<std::string> regions;
   g_langInfo.GetRegionNames(regions);
@@ -1157,14 +1158,14 @@ void CLangInfo::SettingOptionsRegionsFiller(SettingConstPtr setting, std::vector
     current = regions[0];
 }
 
-void CLangInfo::SettingOptionsShortDateFormatsFiller(SettingConstPtr setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data)
+void CLangInfo::SettingOptionsShortDateFormatsFiller(SettingConstPtr setting, std::vector<StringSettingOption> &list, std::string &current, void *data)
 {
   bool match = false;
   const std::string& shortDateFormatSetting = std::static_pointer_cast<const CSettingString>(setting)->GetValue();
 
   CDateTime now = CDateTime::GetCurrentDateTime();
 
-  list.push_back(std::make_pair(StringUtils::Format(g_localizeStrings.Get(20035).c_str(), now.GetAsLocalizedDate(g_langInfo.m_currentRegion->m_strDateFormatShort).c_str()), SETTING_REGIONAL_DEFAULT));
+  list.push_back(StringSettingOption(StringUtils::Format(g_localizeStrings.Get(20035).c_str(), now.GetAsLocalizedDate(g_langInfo.m_currentRegion->m_strDateFormatShort).c_str()), SETTING_REGIONAL_DEFAULT));
   if (shortDateFormatSetting == SETTING_REGIONAL_DEFAULT)
   {
     match = true;
@@ -1173,7 +1174,7 @@ void CLangInfo::SettingOptionsShortDateFormatsFiller(SettingConstPtr setting, st
 
   for (const std::string& shortDateFormat : shortDateFormats)
   {
-    list.push_back(std::make_pair(now.GetAsLocalizedDate(shortDateFormat), shortDateFormat));
+    list.push_back(StringSettingOption(now.GetAsLocalizedDate(shortDateFormat), shortDateFormat));
 
     if (!match && shortDateFormatSetting == shortDateFormat)
     {
@@ -1183,17 +1184,17 @@ void CLangInfo::SettingOptionsShortDateFormatsFiller(SettingConstPtr setting, st
   }
 
   if (!match && !list.empty())
-    current = list[0].second;
+    current = list[0].value;
 }
 
-void CLangInfo::SettingOptionsLongDateFormatsFiller(SettingConstPtr setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data)
+void CLangInfo::SettingOptionsLongDateFormatsFiller(SettingConstPtr setting, std::vector<StringSettingOption> &list, std::string &current, void *data)
 {
   bool match = false;
   const std::string& longDateFormatSetting = std::static_pointer_cast<const CSettingString>(setting)->GetValue();
 
   CDateTime now = CDateTime::GetCurrentDateTime();
 
-  list.push_back(std::make_pair(StringUtils::Format(g_localizeStrings.Get(20035).c_str(), now.GetAsLocalizedDate(g_langInfo.m_currentRegion->m_strDateFormatLong).c_str()), SETTING_REGIONAL_DEFAULT));
+  list.push_back(StringSettingOption(StringUtils::Format(g_localizeStrings.Get(20035).c_str(), now.GetAsLocalizedDate(g_langInfo.m_currentRegion->m_strDateFormatLong).c_str()), SETTING_REGIONAL_DEFAULT));
   if (longDateFormatSetting == SETTING_REGIONAL_DEFAULT)
   {
     match = true;
@@ -1202,7 +1203,7 @@ void CLangInfo::SettingOptionsLongDateFormatsFiller(SettingConstPtr setting, std
 
   for (const std::string& longDateFormat : longDateFormats)
   {
-    list.push_back(std::make_pair(now.GetAsLocalizedDate(longDateFormat), longDateFormat));
+    list.push_back(StringSettingOption(now.GetAsLocalizedDate(longDateFormat), longDateFormat));
 
     if (!match && longDateFormatSetting == longDateFormat)
     {
@@ -1212,10 +1213,10 @@ void CLangInfo::SettingOptionsLongDateFormatsFiller(SettingConstPtr setting, std
   }
 
   if (!match && !list.empty())
-    current = list[0].second;
+    current = list[0].value;
 }
 
-void CLangInfo::SettingOptionsTimeFormatsFiller(SettingConstPtr setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data)
+void CLangInfo::SettingOptionsTimeFormatsFiller(SettingConstPtr setting, std::vector<StringSettingOption> &list, std::string &current, void *data)
 {
   bool match = false;
   const std::string& timeFormatSetting = std::static_pointer_cast<const CSettingString>(setting)->GetValue();
@@ -1223,7 +1224,7 @@ void CLangInfo::SettingOptionsTimeFormatsFiller(SettingConstPtr setting, std::ve
   CDateTime now = CDateTime::GetCurrentDateTime();
   bool use24hourFormat = g_langInfo.Use24HourClock();
 
-  list.push_back(std::make_pair(StringUtils::Format(g_localizeStrings.Get(20035).c_str(), ToSettingTimeFormat(now, g_langInfo.m_currentRegion->m_strTimeFormat).c_str()), SETTING_REGIONAL_DEFAULT));
+  list.push_back(StringSettingOption(StringUtils::Format(g_localizeStrings.Get(20035).c_str(), ToSettingTimeFormat(now, g_langInfo.m_currentRegion->m_strTimeFormat).c_str()), SETTING_REGIONAL_DEFAULT));
   if (timeFormatSetting == SETTING_REGIONAL_DEFAULT)
   {
     match = true;
@@ -1232,14 +1233,14 @@ void CLangInfo::SettingOptionsTimeFormatsFiller(SettingConstPtr setting, std::ve
 
   if (use24hourFormat)
   {
-    list.push_back(std::make_pair(ToSettingTimeFormat(now, TIME_FORMAT_SINGLE_24), TIME_FORMAT_SINGLE_24));
+    list.push_back(StringSettingOption(ToSettingTimeFormat(now, TIME_FORMAT_SINGLE_24), TIME_FORMAT_SINGLE_24));
     if (timeFormatSetting == TIME_FORMAT_SINGLE_24)
     {
       current = TIME_FORMAT_SINGLE_24;
       match = true;
     }
 
-    list.push_back(std::make_pair(ToSettingTimeFormat(now, TIME_FORMAT_DOUBLE_24), TIME_FORMAT_DOUBLE_24));
+    list.push_back(StringSettingOption(ToSettingTimeFormat(now, TIME_FORMAT_DOUBLE_24), TIME_FORMAT_DOUBLE_24));
     if (timeFormatSetting == TIME_FORMAT_DOUBLE_24)
     {
       current = TIME_FORMAT_DOUBLE_24;
@@ -1248,14 +1249,14 @@ void CLangInfo::SettingOptionsTimeFormatsFiller(SettingConstPtr setting, std::ve
   }
   else
   {
-    list.push_back(std::make_pair(ToSettingTimeFormat(now, TIME_FORMAT_SINGLE_12), TIME_FORMAT_SINGLE_12));
+    list.push_back(StringSettingOption(ToSettingTimeFormat(now, TIME_FORMAT_SINGLE_12), TIME_FORMAT_SINGLE_12));
     if (timeFormatSetting == TIME_FORMAT_SINGLE_12)
     {
       current = TIME_FORMAT_SINGLE_12;
       match = true;
     }
 
-    list.push_back(std::make_pair(ToSettingTimeFormat(now, TIME_FORMAT_DOUBLE_12), TIME_FORMAT_DOUBLE_12));
+    list.push_back(StringSettingOption(ToSettingTimeFormat(now, TIME_FORMAT_DOUBLE_12), TIME_FORMAT_DOUBLE_12));
     if (timeFormatSetting == TIME_FORMAT_DOUBLE_12)
     {
       current = TIME_FORMAT_DOUBLE_12;
@@ -1263,7 +1264,7 @@ void CLangInfo::SettingOptionsTimeFormatsFiller(SettingConstPtr setting, std::ve
     }
 
     std::string timeFormatSingle12Meridiem = ToTimeFormat(false, true, true);
-    list.push_back(std::make_pair(ToSettingTimeFormat(now, timeFormatSingle12Meridiem), timeFormatSingle12Meridiem));
+    list.push_back(StringSettingOption(ToSettingTimeFormat(now, timeFormatSingle12Meridiem), timeFormatSingle12Meridiem));
     if (timeFormatSetting == timeFormatSingle12Meridiem)
     {
       current = timeFormatSingle12Meridiem;
@@ -1271,7 +1272,7 @@ void CLangInfo::SettingOptionsTimeFormatsFiller(SettingConstPtr setting, std::ve
     }
 
     std::string timeFormatDouble12Meridiem = ToTimeFormat(false, false, true);
-    list.push_back(std::make_pair(ToSettingTimeFormat(now, timeFormatDouble12Meridiem), timeFormatDouble12Meridiem));
+    list.push_back(StringSettingOption(ToSettingTimeFormat(now, timeFormatDouble12Meridiem), timeFormatDouble12Meridiem));
     if (timeFormatSetting == timeFormatDouble12Meridiem)
     {
       current = timeFormatDouble12Meridiem;
@@ -1280,31 +1281,31 @@ void CLangInfo::SettingOptionsTimeFormatsFiller(SettingConstPtr setting, std::ve
   }
 
   if (!match && !list.empty())
-    current = list[0].second;
+    current = list[0].value;
 }
 
-void CLangInfo::SettingOptions24HourClockFormatsFiller(SettingConstPtr setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data)
+void CLangInfo::SettingOptions24HourClockFormatsFiller(SettingConstPtr setting, std::vector<StringSettingOption> &list, std::string &current, void *data)
 {
   bool match = false;
   const std::string& clock24HourFormatSetting = std::static_pointer_cast<const CSettingString>(setting)->GetValue();
 
   // determine the 24-hour clock format of the regional setting
   int regionalClock24HourFormatLabel = DetermineUse24HourClockFromTimeFormat(g_langInfo.m_currentRegion->m_strTimeFormat) ? 12384 : 12383;
-  list.push_back(std::make_pair(StringUtils::Format(g_localizeStrings.Get(20035).c_str(), g_localizeStrings.Get(regionalClock24HourFormatLabel).c_str()), SETTING_REGIONAL_DEFAULT));
+  list.push_back(StringSettingOption(StringUtils::Format(g_localizeStrings.Get(20035).c_str(), g_localizeStrings.Get(regionalClock24HourFormatLabel).c_str()), SETTING_REGIONAL_DEFAULT));
   if (clock24HourFormatSetting == SETTING_REGIONAL_DEFAULT)
   {
     match = true;
     current = SETTING_REGIONAL_DEFAULT;
   }
 
-  list.push_back(std::make_pair(g_localizeStrings.Get(12383), TIME_FORMAT_12HOURS));
+  list.push_back(StringSettingOption(g_localizeStrings.Get(12383), TIME_FORMAT_12HOURS));
   if (clock24HourFormatSetting == TIME_FORMAT_12HOURS)
   {
     current = TIME_FORMAT_12HOURS;
     match = true;
   }
 
-  list.push_back(std::make_pair(g_localizeStrings.Get(12384), TIME_FORMAT_24HOURS));
+  list.push_back(StringSettingOption(g_localizeStrings.Get(12384), TIME_FORMAT_24HOURS));
   if (clock24HourFormatSetting == TIME_FORMAT_24HOURS)
   {
     current = TIME_FORMAT_24HOURS;
@@ -1312,15 +1313,15 @@ void CLangInfo::SettingOptions24HourClockFormatsFiller(SettingConstPtr setting, 
   }
 
   if (!match && !list.empty())
-    current = list[0].second;
+    current = list[0].value;
 }
 
-void CLangInfo::SettingOptionsTemperatureUnitsFiller(SettingConstPtr setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data)
+void CLangInfo::SettingOptionsTemperatureUnitsFiller(SettingConstPtr setting, std::vector<StringSettingOption> &list, std::string &current, void *data)
 {
   bool match = false;
   const std::string& temperatureUnitSetting = std::static_pointer_cast<const CSettingString>(setting)->GetValue();
 
-  list.push_back(std::make_pair(StringUtils::Format(g_localizeStrings.Get(20035).c_str(), GetTemperatureUnitString(g_langInfo.m_currentRegion->m_tempUnit).c_str()), SETTING_REGIONAL_DEFAULT));
+  list.push_back(StringSettingOption(StringUtils::Format(g_localizeStrings.Get(20035).c_str(), GetTemperatureUnitString(g_langInfo.m_currentRegion->m_tempUnit).c_str()), SETTING_REGIONAL_DEFAULT));
   if (temperatureUnitSetting == SETTING_REGIONAL_DEFAULT)
   {
     match = true;
@@ -1329,7 +1330,7 @@ void CLangInfo::SettingOptionsTemperatureUnitsFiller(SettingConstPtr setting, st
 
   for (const TemperatureInfo& info : temperatureInfo)
   {
-    list.push_back(std::make_pair(GetTemperatureUnitString(info.unit), info.name));
+    list.push_back(StringSettingOption(GetTemperatureUnitString(info.unit), info.name));
 
     if (!match && temperatureUnitSetting == info.name)
     {
@@ -1339,15 +1340,15 @@ void CLangInfo::SettingOptionsTemperatureUnitsFiller(SettingConstPtr setting, st
   }
 
   if (!match && !list.empty())
-    current = list[0].second;
+    current = list[0].value;
 }
 
-void CLangInfo::SettingOptionsSpeedUnitsFiller(SettingConstPtr setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data)
+void CLangInfo::SettingOptionsSpeedUnitsFiller(SettingConstPtr setting, std::vector<StringSettingOption> &list, std::string &current, void *data)
 {
   bool match = false;
   const std::string& speedUnitSetting = std::static_pointer_cast<const CSettingString>(setting)->GetValue();
 
-  list.push_back(std::make_pair(StringUtils::Format(g_localizeStrings.Get(20035).c_str(), GetSpeedUnitString(g_langInfo.m_currentRegion->m_speedUnit).c_str()), SETTING_REGIONAL_DEFAULT));
+  list.push_back(StringSettingOption(StringUtils::Format(g_localizeStrings.Get(20035).c_str(), GetSpeedUnitString(g_langInfo.m_currentRegion->m_speedUnit).c_str()), SETTING_REGIONAL_DEFAULT));
   if (speedUnitSetting == SETTING_REGIONAL_DEFAULT)
   {
     match = true;
@@ -1356,7 +1357,7 @@ void CLangInfo::SettingOptionsSpeedUnitsFiller(SettingConstPtr setting, std::vec
 
   for (const SpeedInfo& info : speedInfo)
   {
-    list.push_back(std::make_pair(GetSpeedUnitString(info.unit), info.name));
+    list.push_back(StringSettingOption(GetSpeedUnitString(info.unit), info.name));
 
     if (!match && speedUnitSetting == info.name)
     {
@@ -1366,18 +1367,18 @@ void CLangInfo::SettingOptionsSpeedUnitsFiller(SettingConstPtr setting, std::vec
   }
 
   if (!match && !list.empty())
-    current = list[0].second;
+    current = list[0].value;
 }
 
-void CLangInfo::AddLanguages(std::vector< std::pair<std::string, std::string> > &list)
+void CLangInfo::AddLanguages(std::vector<StringSettingOption> &list)
 {
   std::string dummy;
-  std::vector<std::pair<std::string, std::string>> languages;
+  std::vector<StringSettingOption> languages;
   SettingOptionsISO6391LanguagesFiller(NULL, languages, dummy, NULL);
   SettingOptionsLanguageNamesFiller(NULL, languages, dummy, NULL);
 
   // convert the vector to a set to remove duplicates
-  std::set<std::pair<std::string, std::string>, SortLanguage> tmp(
+  std::set<StringSettingOption, SortLanguage> tmp(
     languages.begin(), languages.end(), SortLanguage());
 
   list.reserve(list.size() + tmp.size());

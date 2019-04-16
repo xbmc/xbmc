@@ -23,6 +23,7 @@
 #include "profiles/ProfileManager.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/lib/Setting.h"
+#include "settings/lib/SettingDefinitions.h"
 #include "settings/lib/SettingsManager.h"
 #include "settings/MediaSettings.h"
 #include "settings/Settings.h"
@@ -301,7 +302,7 @@ bool CGUIDialogAudioSettings::IsPlayingPassthrough(const std::string &condition,
   return g_application.GetAppPlayer().IsPassthrough();
 }
 
-void CGUIDialogAudioSettings::AudioStreamsOptionFiller(SettingConstPtr setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data)
+void CGUIDialogAudioSettings::AudioStreamsOptionFiller(SettingConstPtr setting, std::vector<IntegerSettingOption> &list, int &current, void *data)
 {
   int audioStreamCount = g_application.GetAppPlayer().GetAudioStreamCount();
 
@@ -327,12 +328,12 @@ void CGUIDialogAudioSettings::AudioStreamsOptionFiller(SettingConstPtr setting, 
 
     strItem += FormatFlags(info.flags);
     strItem += StringUtils::Format(" (%i/%i)", i + 1, audioStreamCount);
-    list.push_back(make_pair(strItem, i));
+    list.push_back(IntegerSettingOption(strItem, i));
   }
 
   if (list.empty())
   {
-    list.push_back(make_pair(g_localizeStrings.Get(231), -1));
+    list.push_back(IntegerSettingOption(g_localizeStrings.Get(231), -1));
     current = -1;
   }
 }

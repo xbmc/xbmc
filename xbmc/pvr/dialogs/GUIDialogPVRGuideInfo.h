@@ -37,6 +37,7 @@ namespace PVR
     bool OnClickButtonPlay(CGUIMessage &message);
     bool OnClickButtonFind(CGUIMessage &message);
     bool OnClickButtonAddTimer(CGUIMessage &message);
+    bool OnClickButtonSetReminder(CGUIMessage& message);
 
     CPVREpgInfoTagPtr m_progItem;
   };
