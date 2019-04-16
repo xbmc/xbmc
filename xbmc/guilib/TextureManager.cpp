@@ -27,7 +27,7 @@
 #endif
 #if defined(TARGET_DARWIN_IOS)
 #include "ServiceBroker.h"
-#include "windowing/osx/WinSystemIOS.h" // for g_Windowing in CGUITextureManager::FreeUnusedTextures
+#include "windowing/ios/WinSystemIOS.h" // for g_Windowing in CGUITextureManager::FreeUnusedTextures
 #endif
 #include "FFmpegImage.h"
 

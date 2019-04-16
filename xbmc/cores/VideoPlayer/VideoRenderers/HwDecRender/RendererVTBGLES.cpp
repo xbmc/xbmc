@@ -14,7 +14,7 @@
 #include "utils/GLUtils.h"
 #include "cores/VideoPlayer/DVDCodecs/Video/VTB.h"
 #include "settings/MediaSettings.h"
-#include "windowing/osx/WinSystemIOS.h"
+#include "windowing/ios/WinSystemIOS.h"
 #include "platform/darwin/DarwinUtils.h"
 #include <CoreVideo/CVBuffer.h>
 #include <CoreVideo/CVPixelBuffer.h>

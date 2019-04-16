@@ -22,7 +22,7 @@
 #include "input/touch/generic/GenericTouchActionHandler.h"
 #include "guilib/GUIControl.h"
 #include "input/Key.h"
-#include "windowing/osx/WinSystemIOS.h"
+#include "windowing/ios/WinSystemIOS.h"
 #include "windowing/XBMC_events.h"
 #include "utils/log.h"
 #include "utils/TimeUtils.h"

@@ -10,6 +10,6 @@ xbmc/platform/darwin/ios              platform/ios
 xbmc/platform/darwin/ios-common       platform/ios-common
 xbmc/platform/darwin/network          platform/darwin/network
 xbmc/platform/darwin/storage          platform/storage
-xbmc/windowing/osx                    windowing/osx
+xbmc/windowing/ios                    windowing/ios
 xbmc/cores/RetroPlayer/process/ios    cores/RetroPlayer/process/ios
 xbmc/cores/VideoPlayer/Process/ios    cores/VideoPlayer/Process/ios
