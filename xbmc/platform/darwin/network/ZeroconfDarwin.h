@@ -21,11 +21,11 @@
   #include <CFNetwork/CFNetServices.h>
 #endif
 
-class CZeroconfOSX : public CZeroconf
+class CZeroconfDarwin : public CZeroconf
 {
 public:
-  CZeroconfOSX();
-  ~CZeroconfOSX();
+  CZeroconfDarwin();
+  ~CZeroconfDarwin();
 protected:
   //implement base CZeroConf interface
   bool doPublishService(const std::string& fcr_identifier,

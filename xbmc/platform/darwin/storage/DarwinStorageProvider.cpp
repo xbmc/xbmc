@@ -18,8 +18,8 @@
 #include <IOKit/storage/IOCDMedia.h>
 #include <IOKit/storage/IODVDMedia.h>
 #include "platform/darwin/DarwinUtils.h"
-#endif
 #include "platform/darwin/osx/CocoaInterface.h"
+#endif
 
 std::vector<std::pair<std::string, std::string>> CDarwinStorageProvider::m_mountsToNotify;
 std::vector<std::pair<std::string, std::string>> CDarwinStorageProvider::m_unmountsToNotify;

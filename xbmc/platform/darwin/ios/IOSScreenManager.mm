@@ -14,7 +14,7 @@
 #include "threads/Event.h"
 #include "Application.h"
 #include "windowing/WinSystem.h"
-#include "windowing/osx/WinSystemIOS.h"
+#include "windowing/ios/WinSystemIOS.h"
 #include "settings/DisplaySettings.h"
 #include "ServiceBroker.h"
 #include "cores/AudioEngine/Interfaces/AE.h"

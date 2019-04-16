@@ -41,7 +41,7 @@
 #elif defined(TARGET_DARWIN_OSX)
 #include "windowing/osx/WinSystemOSX.h"
 #elif defined(TARGET_DARWIN_IOS)
-#include "windowing/osx/WinSystemIOS.h"
+#include "windowing/ios/WinSystemIOS.h"
 #elif defined(HAVE_WAYLAND)
 #include "windowing/wayland/WinSystemWayland.h"
 #elif defined(TARGET_WINDOWS_DESKTOP)

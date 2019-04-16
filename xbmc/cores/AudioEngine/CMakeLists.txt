@@ -103,26 +103,26 @@ endif()
 
 if(CORE_SYSTEM_NAME STREQUAL osx)
   list(APPEND SOURCES Sinks/AESinkDARWINOSX.cpp
+                      Sinks/darwin/CoreAudioHelpers.cpp
                       Sinks/osx/AEDeviceEnumerationOSX.cpp
                       Sinks/osx/CoreAudioChannelLayout.cpp
                       Sinks/osx/CoreAudioDevice.cpp
                       Sinks/osx/CoreAudioHardware.cpp
-                      Sinks/osx/CoreAudioHelpers.cpp
                       Sinks/osx/CoreAudioStream.cpp)
   list(APPEND HEADERS Sinks/AESinkDARWINOSX.h
+                      Sinks/darwin/CoreAudioHelpers.h
                       Sinks/osx/AEDeviceEnumerationOSX.h
                       Sinks/osx/CoreAudioChannelLayout.h
                       Sinks/osx/CoreAudioDevice.h
                       Sinks/osx/CoreAudioHardware.h
-                      Sinks/osx/CoreAudioHelpers.h
                       Sinks/osx/CoreAudioStream.h)
 endif()
 
 if(CORE_SYSTEM_NAME STREQUAL ios)
   list(APPEND SOURCES Sinks/AESinkDARWINIOS.mm
-                      Sinks/osx/CoreAudioHelpers.cpp)
+                      Sinks/darwin/CoreAudioHelpers.cpp)
   list(APPEND HEADERS Sinks/AESinkDARWINIOS.h
-                      Sinks/osx/CoreAudioHelpers.h)
+                      Sinks/darwin/CoreAudioHelpers.h)
 endif()
 
 if(CORE_SYSTEM_NAME STREQUAL android)

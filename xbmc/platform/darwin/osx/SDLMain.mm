@@ -15,7 +15,7 @@
 #import "platform/darwin/osx/CocoaInterface.h"
 #import "PlatformDefs.h"
 #import "messaging/ApplicationMessenger.h"
-#import "platform/darwin/osx/storage/DarwinStorageProvider.h"
+#import "platform/darwin/storage/DarwinStorageProvider.h"
 
 #import "platform/darwin/osx/HotKeyController.h"
 

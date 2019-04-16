@@ -20,7 +20,7 @@
 #include "utils/URIUtils.h"
 #include "utils/StringUtils.h"
 #include "guilib/LocalizeStrings.h"
-#if defined(TARGET_DARWIN)
+#if defined(TARGET_DARWIN_OSX)
 #include "platform/darwin/osx/CocoaInterface.h"
 #endif
 #if defined(TARGET_WINDOWS_STORE)

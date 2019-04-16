@@ -25,11 +25,11 @@
 #endif
 
 //platform specific implementation of  zeroconfbrowser interface using native os x APIs
-class CZeroconfBrowserOSX : public CZeroconfBrowser
+class CZeroconfBrowserDarwin : public CZeroconfBrowser
 {
 public:
-  CZeroconfBrowserOSX();
-  ~CZeroconfBrowserOSX();
+  CZeroconfBrowserDarwin();
+  ~CZeroconfBrowserDarwin();
 
 private:
   ///implementation if CZeroconfBrowser interface

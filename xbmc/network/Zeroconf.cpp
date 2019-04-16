@@ -21,7 +21,7 @@
 #include "platform/linux/network/ZeroconfAvahi.h"
 #elif defined(TARGET_DARWIN)
 //on osx use the native implementation
-#include "platform/darwin/osx/network/ZeroconfOSX.h"
+#include "platform/darwin/network/ZeroconfDarwin.h"
 #elif defined(TARGET_ANDROID)
 #include "platform/android/network/ZeroconfAndroid.h"
 #elif defined(HAS_MDNS)
@@ -138,7 +138,7 @@ CZeroconf*  CZeroconf::GetInstance()
     smp_instance = new CZeroconfDummy;
 #else
 #if defined(TARGET_DARWIN)
-    smp_instance = new CZeroconfOSX;
+    smp_instance = new CZeroconfDarwin;
 #elif defined(HAS_AVAHI)
     smp_instance  = new CZeroconfAvahi;
 #elif defined(TARGET_ANDROID)

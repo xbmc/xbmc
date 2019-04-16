@@ -15,9 +15,6 @@
 #include "URL.h"
 #include "filesystem/File.h"
 #include "filesystem/CurlFile.h"
-#if defined(TARGET_DARWIN)
-#include "platform/darwin/osx/CocoaInterface.h"
-#endif
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
 #include "guilib/LocalizeStrings.h"

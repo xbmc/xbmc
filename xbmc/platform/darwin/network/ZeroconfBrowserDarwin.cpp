@@ -7,7 +7,7 @@
  */
 
 #include "ServiceBroker.h"
-#include "ZeroconfBrowserOSX.h"
+#include "ZeroconfBrowserDarwin.h"
 #include "GUIUserMessages.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
@@ -107,13 +107,13 @@ namespace
   }
 }
 
-CZeroconfBrowserOSX::CZeroconfBrowserOSX():m_runloop(0)
+CZeroconfBrowserDarwin::CZeroconfBrowserDarwin():m_runloop(0)
 {
   //acquire the main threads event loop
   m_runloop = CFRunLoopGetMain();
 }
 
-CZeroconfBrowserOSX::~CZeroconfBrowserOSX()
+CZeroconfBrowserDarwin::~CZeroconfBrowserDarwin()
 {
   CSingleLock lock(m_data_guard);
   //make sure there are no browsers anymore
@@ -121,7 +121,7 @@ CZeroconfBrowserOSX::~CZeroconfBrowserOSX()
     doRemoveServiceType(it->first);
 }
 
-void CZeroconfBrowserOSX::BrowserCallback(CFNetServiceBrowserRef browser, CFOptionFlags flags, CFTypeRef domainOrService, CFStreamError *error, void *info)
+void CZeroconfBrowserDarwin::BrowserCallback(CFNetServiceBrowserRef browser, CFOptionFlags flags, CFTypeRef domainOrService, CFStreamError *error, void *info)
 {
   assert(info);
 
@@ -132,7 +132,7 @@ void CZeroconfBrowserOSX::BrowserCallback(CFNetServiceBrowserRef browser, CFOpti
     CFNetServiceRef service = (CFNetServiceRef)domainOrService;
     assert(service);
     //get our instance
-    CZeroconfBrowserOSX* p_this = reinterpret_cast<CZeroconfBrowserOSX*>(info);
+    CZeroconfBrowserDarwin* p_this = reinterpret_cast<CZeroconfBrowserDarwin*>(info);
 
     //store the service
     std::string name, type, domain;
@@ -140,7 +140,7 @@ void CZeroconfBrowserOSX::BrowserCallback(CFNetServiceBrowserRef browser, CFOpti
         !CDarwinUtils::CFStringRefToUTF8String(CFNetServiceGetType(service), type) ||
         !CDarwinUtils::CFStringRefToUTF8String(CFNetServiceGetDomain(service), domain))
     {
-      CLog::Log(LOGWARNING, "CZeroconfBrowserOSX::BrowserCallback failed to convert service strings.");
+      CLog::Log(LOGWARNING, "CZeroconfBrowserDarwin::BrowserCallback failed to convert service strings.");
       return;
     }
 
@@ -148,13 +148,13 @@ void CZeroconfBrowserOSX::BrowserCallback(CFNetServiceBrowserRef browser, CFOpti
 
     if (flags & kCFNetServiceFlagRemove)
     {
-      CLog::Log(LOGDEBUG, "CZeroconfBrowserOSX::BrowserCallback service named: %s, type: %s, domain: %s disappeared",
+      CLog::Log(LOGDEBUG, "CZeroconfBrowserDarwin::BrowserCallback service named: %s, type: %s, domain: %s disappeared",
         s.GetName().c_str(), s.GetType().c_str(), s.GetDomain().c_str());
       p_this->removeDiscoveredService(browser, flags, s);
     }
     else
     {
-      CLog::Log(LOGDEBUG, "CZeroconfBrowserOSX::BrowserCallback found service named: %s, type: %s, domain: %s",
+      CLog::Log(LOGDEBUG, "CZeroconfBrowserDarwin::BrowserCallback found service named: %s, type: %s, domain: %s",
         s.GetName().c_str(), s.GetType().c_str(), s.GetDomain().c_str());
       p_this->addDiscoveredService(browser, flags, s);
     }
@@ -163,17 +163,17 @@ void CZeroconfBrowserOSX::BrowserCallback(CFNetServiceBrowserRef browser, CFOpti
       CGUIMessage message(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_PATH);
       message.SetStringParam("zeroconf://");
       CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(message);
-      CLog::Log(LOGDEBUG, "CZeroconfBrowserOSX::BrowserCallback sent gui update for path zeroconf://");
+      CLog::Log(LOGDEBUG, "CZeroconfBrowserDarwin::BrowserCallback sent gui update for path zeroconf://");
     }
   } else
   {
-    CLog::Log(LOGERROR, "CZeroconfBrowserOSX::BrowserCallback returned"
+    CLog::Log(LOGERROR, "CZeroconfBrowserDarwin::BrowserCallback returned"
       "(domain = %d, error = %" PRId64")", (int)error->domain, (int64_t)error->error);
   }
 }
 
 /// adds the service to list of found services
-void CZeroconfBrowserOSX::
+void CZeroconfBrowserDarwin::
 addDiscoveredService(CFNetServiceBrowserRef browser, CFOptionFlags flags, CZeroconfBrowser::ZeroconfService const &fcr_service)
 {
   CSingleLock lock(m_data_guard);
@@ -197,7 +197,7 @@ addDiscoveredService(CFNetServiceBrowserRef browser, CFOptionFlags flags, CZeroc
     ++serviceIt->second;
 }
 
-void CZeroconfBrowserOSX::
+void CZeroconfBrowserDarwin::
 removeDiscoveredService(CFNetServiceBrowserRef browser, CFOptionFlags flags, CZeroconfBrowser::ZeroconfService const &fcr_service)
 {
   CSingleLock lock(m_data_guard);
@@ -226,12 +226,12 @@ removeDiscoveredService(CFNetServiceBrowserRef browser, CFOptionFlags flags, CZe
 }
 
 
-bool CZeroconfBrowserOSX::doAddServiceType(const std::string& fcr_service_type)
+bool CZeroconfBrowserDarwin::doAddServiceType(const std::string& fcr_service_type)
 {
   CFNetServiceClientContext clientContext = { 0, this, NULL, NULL, NULL };
   CFStringRef domain = CFSTR("");
   CFNetServiceBrowserRef p_browser = CFNetServiceBrowserCreate(kCFAllocatorDefault,
-    CZeroconfBrowserOSX::BrowserCallback, &clientContext);
+    CZeroconfBrowserDarwin::BrowserCallback, &clientContext);
   assert(p_browser != NULL);
 
   //schedule the browser
@@ -261,7 +261,7 @@ bool CZeroconfBrowserOSX::doAddServiceType(const std::string& fcr_service_type)
   return result;
 }
 
-bool CZeroconfBrowserOSX::doRemoveServiceType(const std::string &fcr_service_type)
+bool CZeroconfBrowserDarwin::doRemoveServiceType(const std::string &fcr_service_type)
 {
   //search for this browser and remove it from the map
   CFNetServiceBrowserRef browser = 0;
@@ -293,7 +293,7 @@ bool CZeroconfBrowserOSX::doRemoveServiceType(const std::string &fcr_service_typ
   return true;
 }
 
-std::vector<CZeroconfBrowser::ZeroconfService> CZeroconfBrowserOSX::doGetFoundServices()
+std::vector<CZeroconfBrowser::ZeroconfService> CZeroconfBrowserDarwin::doGetFoundServices()
 {
   std::vector<CZeroconfBrowser::ZeroconfService> ret;
   CSingleLock lock(m_data_guard);
@@ -310,7 +310,7 @@ std::vector<CZeroconfBrowser::ZeroconfService> CZeroconfBrowserOSX::doGetFoundSe
   return ret;
 }
 
-bool CZeroconfBrowserOSX::doResolveService(CZeroconfBrowser::ZeroconfService &fr_service, double f_timeout)
+bool CZeroconfBrowserDarwin::doResolveService(CZeroconfBrowser::ZeroconfService &fr_service, double f_timeout)
 {
   bool ret = false;
   CFStringRef type = CFStringCreateWithCString(NULL, fr_service.GetType().c_str(), kCFStringEncodingUTF8);

@@ -15,7 +15,6 @@
 
 using namespace PERIPHERALS;
 
-#ifdef TARGET_DARWIN_OSX
 #include <IOKit/IOCFPlugIn.h>
 #include <IOKit/usb/IOUSBLib.h>
 #include <IOKit/hid/IOHIDLib.h>
@@ -28,14 +27,12 @@ typedef struct USBDevicePrivateData {
   io_object_t           notification;
   PeripheralScanResult  result;
 } USBDevicePrivateData;
-#endif
 
 CPeripheralBusUSB::CPeripheralBusUSB(CPeripherals& manager) :
     CPeripheralBus("PeripBusUSB", manager, PERIPHERAL_BUS_USB)
 {
   m_bNeedsPolling = false;
 
-#ifdef TARGET_DARWIN_OSX
   //set up the matching criteria for the devices we're interested in
   //interested in instances of class IOUSBDevice and its subclasses
   // match any usb device by not creating matching values in the dict
@@ -54,12 +51,10 @@ CPeripheralBusUSB::CPeripheralBusUSB(CPeripherals& manager) :
     //call the callback to 'arm' the notification
     DeviceAttachCallback(this, m_attach_iterator);
   }
-#endif
 }
 
 CPeripheralBusUSB::~CPeripheralBusUSB()
 {
-#ifdef TARGET_DARWIN_OSX
   if (m_notify_port)
   {
     // remove the sleep notification port from the application runloop
@@ -73,7 +68,6 @@ CPeripheralBusUSB::~CPeripheralBusUSB()
     IOObjectRelease(m_attach_iterator);
     m_attach_iterator = 0;
   }
-#endif
 }
 
 bool CPeripheralBusUSB::PerformDeviceScan(PeripheralScanResults &results)
@@ -82,7 +76,6 @@ bool CPeripheralBusUSB::PerformDeviceScan(PeripheralScanResults &results)
   return true;
 }
 
-#ifdef TARGET_DARWIN_OSX
 PeripheralType CPeripheralBusUSB::GetType(int iDeviceClass)
 {
   switch (iDeviceClass)
@@ -292,4 +285,3 @@ void CPeripheralBusUSB::DeviceAttachCallback(CPeripheralBusUSB* refCon, io_itera
   }
   refCon->ScanForDevices();
 }
-#endif
