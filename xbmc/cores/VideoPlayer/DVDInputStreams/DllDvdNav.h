@@ -222,6 +222,8 @@ public:
         { return ::dvdnav_set_state(self, save_state); }
     virtual dvdnav_status_t dvdnav_get_angle_info(dvdnav_t *self, int32_t *current_angle,int32_t *number_of_angles)
         { return ::dvdnav_get_angle_info(self, current_angle, number_of_angles); }
+    virtual dvdnav_status_t dvdnav_angle_change(dvdnav_t *self, int32_t angle)
+        { return ::dvdnav_angle_change(self, angle); }
     virtual dvdnav_status_t dvdnav_mouse_activate(dvdnav_t *self, pci_t *pci, int32_t x, int32_t y)
         { return ::dvdnav_mouse_activate(self, pci, x, y); }
     virtual dvdnav_status_t dvdnav_mouse_select(dvdnav_t *self, pci_t *pci, int32_t x, int32_t y)
@@ -232,8 +234,12 @@ public:
         { return ::dvdnav_get_serial_string(self, serial_str); }
     virtual uint32_t dvdnav_describe_title_chapters(dvdnav_t* self, uint32_t title, uint64_t** times, uint64_t* duration)
         { return ::dvdnav_describe_title_chapters(self, title, times, duration); }
+    virtual int64_t dvdnav_get_current_time(dvdnav_t* self)
+        { return ::dvdnav_get_current_time(self); }
     virtual void dvdnav_free(void* data)
         { return ::dvdnav_free(data); }
+    virtual int dvdnav_get_video_resolution(dvdnav_t* self, uint32_t* width, uint32_t* height)
+        { return ::dvdnav_get_video_resolution(self, width, height); }
 
     // DLL faking.
     virtual bool ResolveExports() { return true; }
