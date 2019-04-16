@@ -33,7 +33,9 @@
 
 #if defined(TARGET_DARWIN)
 #include "filesystem/SpecialProtocol.h"
+#if defined(TARGET_DARWIN_OSX)
 #include "platform/darwin/osx/CocoaInterface.h"
+#endif
 #endif
 
 using namespace ADDON;
