@@ -812,8 +812,11 @@ namespace VIDEO
 
       if (updateSeasonArt)
       {
-        CVideoInfoDownloader loader(scraper);
-        loader.GetArtwork(showInfo);
+        if (!item->IsPlugin() || scraper->ID() != "metadata.local")
+        {
+          CVideoInfoDownloader loader(scraper);
+          loader.GetArtwork(showInfo);
+        }
         GetSeasonThumbs(showInfo, seasonArt, CVideoThumbLoader::GetArtTypes(MediaTypeSeason), useLocal && !item->IsPlugin());
         for (std::map<int, std::map<std::string, std::string> >::const_iterator i = seasonArt.begin(); i != seasonArt.end(); ++i)
         {
