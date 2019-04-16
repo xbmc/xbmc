@@ -5616,12 +5616,7 @@ msgctxt "#12022"
 msgid "Resume from {0:s}"
 msgstr ""
 
-#. unused?
-msgctxt "#12023"
-msgid "Play from beginning"
-msgstr ""
-
-#empty strings from id 12024 to 12309
+#empty strings from id 12023 to 12309
 
 #: addons/skin.estuary/xml/DialogNumeric.xml
 #: addons/skin.estouchy/xml/DialogNumeric.xml
