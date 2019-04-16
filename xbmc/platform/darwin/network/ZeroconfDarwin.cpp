@@ -6,20 +6,20 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include "ZeroconfOSX.h"
+#include "ZeroconfDarwin.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 
 #include <string>
 #include <sstream>
 
-CZeroconfOSX::CZeroconfOSX():m_runloop(0)
+CZeroconfDarwin::CZeroconfDarwin():m_runloop(0)
 {
   //acquire the main threads event loop
   m_runloop = CFRunLoopGetMain();
 }
 
-CZeroconfOSX::~CZeroconfOSX()
+CZeroconfDarwin::~CZeroconfDarwin()
 {
   doStop();
 }
@@ -31,13 +31,13 @@ CFHashCode CFHashNullVersion (CFTypeRef cf)
 
 
 //methods to implement for concrete implementations
-bool CZeroconfOSX::doPublishService(const std::string& fcr_identifier,
+bool CZeroconfDarwin::doPublishService(const std::string& fcr_identifier,
                       const std::string& fcr_type,
                       const std::string& fcr_name,
                       unsigned int f_port,
                       const std::vector<std::pair<std::string, std::string> >& txt)
 {
-  CLog::Log(LOGDEBUG, "CZeroconfOSX::doPublishService identifier: %s type: %s name:%s port:%i", fcr_identifier.c_str(),
+  CLog::Log(LOGDEBUG, "CZeroconfDarwin::doPublishService identifier: %s type: %s name:%s port:%i", fcr_identifier.c_str(),
             fcr_type.c_str(), fcr_name.c_str(), f_port);
 
   CFStringRef name = CFStringCreateWithCString (NULL,
@@ -100,7 +100,7 @@ bool CZeroconfOSX::doPublishService(const std::string& fcr_identifier,
     CFNetServiceSetClient(netService, NULL, NULL);
     CFRelease(netService);
     netService = NULL;
-    CLog::Log(LOGERROR, "CZeroconfOSX::doPublishService CFNetServiceRegister returned "
+    CLog::Log(LOGERROR, "CZeroconfDarwin::doPublishService CFNetServiceRegister returned "
       "(domain = %d, error = %" PRId64")", (int)error.domain, (int64_t)error.error);
   } else
   {
@@ -111,7 +111,7 @@ bool CZeroconfOSX::doPublishService(const std::string& fcr_identifier,
   return result;
 }
 
-bool CZeroconfOSX::doForceReAnnounceService(const std::string& fcr_identifier)
+bool CZeroconfDarwin::doForceReAnnounceService(const std::string& fcr_identifier)
 {
   bool ret = false;
   CSingleLock lock(m_data_guard);
@@ -137,7 +137,7 @@ bool CZeroconfOSX::doForceReAnnounceService(const std::string& fcr_identifier)
 }
 
 
-bool CZeroconfOSX::doRemoveService(const std::string& fcr_ident)
+bool CZeroconfDarwin::doRemoveService(const std::string& fcr_ident)
 {
   CSingleLock lock(m_data_guard);
   tServiceMap::iterator it = m_services.find(fcr_ident);
@@ -150,7 +150,7 @@ bool CZeroconfOSX::doRemoveService(const std::string& fcr_ident)
     return false;
 }
 
-void CZeroconfOSX::doStop()
+void CZeroconfDarwin::doStop()
 {
   CSingleLock lock(m_data_guard);
   for(tServiceMap::iterator it = m_services.begin(); it != m_services.end(); ++it)
@@ -159,17 +159,17 @@ void CZeroconfOSX::doStop()
 }
 
 
-void CZeroconfOSX::registerCallback(CFNetServiceRef theService, CFStreamError* error, void* info)
+void CZeroconfDarwin::registerCallback(CFNetServiceRef theService, CFStreamError* error, void* info)
 {
   if (error->domain == kCFStreamErrorDomainNetServices)
   {
-    CZeroconfOSX* p_this = reinterpret_cast<CZeroconfOSX*>(info);
+    CZeroconfDarwin* p_this = reinterpret_cast<CZeroconfDarwin*>(info);
     switch(error->error) {
       case kCFNetServicesErrorCollision:
-        CLog::Log(LOGERROR, "CZeroconfOSX::registerCallback name collision occured");
+        CLog::Log(LOGERROR, "CZeroconfDarwin::registerCallback name collision occured");
         break;
       default:
-        CLog::Log(LOGERROR, "CZeroconfOSX::registerCallback returned "
+        CLog::Log(LOGERROR, "CZeroconfDarwin::registerCallback returned "
           "(domain = %d, error = %" PRId64")", (int)error->domain, (int64_t)error->error);
         break;
     }
@@ -187,7 +187,7 @@ void CZeroconfOSX::registerCallback(CFNetServiceRef theService, CFStreamError* e
   }
 }
 
-void CZeroconfOSX::cancelRegistration(CFNetServiceRef theService)
+void CZeroconfDarwin::cancelRegistration(CFNetServiceRef theService)
 {
   assert(theService != NULL);
   CFNetServiceUnscheduleFromRunLoop(theService, m_runloop, kCFRunLoopCommonModes);
