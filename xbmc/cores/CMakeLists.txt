@@ -3,6 +3,7 @@ set(SOURCES DataCacheCore.cpp
             VideoSettings.cpp)
 
 set(HEADERS DataCacheCore.h
+            Cut.h
             FFmpeg.h
             GameSettings.h
             IPlayer.h

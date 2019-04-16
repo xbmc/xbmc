@@ -11,27 +11,17 @@
 #include <string>
 #include <vector>
 
+namespace EDL
+{
+  struct Cut;
+}
+
 class CFileItem;
 
 class CEdl
 {
 public:
   CEdl();
-
-  typedef enum
-  {
-    CUT = 0,
-    MUTE = 1,
-    // SCENE = 2,
-    COMM_BREAK = 3
-  } Action;
-
-  struct Cut
-  {
-    int start; // ms
-    int end;   // ms
-    Action action;
-  };
 
   bool ReadEditDecisionLists(const CFileItem& fileItem, const float fFramesPerSecond, const int iHeight);
   void Clear();
@@ -43,8 +33,10 @@ public:
   int RemoveCutTime(int iSeek) const;
   double RestoreCutTime(double dClock) const;
 
-  bool InCut(int iSeek, Cut *pCut = NULL);
-  bool GetNearestCut(bool bPlus, const int iSeek, Cut *pCut) const;
+  const std::vector<EDL::Cut>& GetCutList() const { return m_vecCuts; }
+
+  bool InCut(int iSeek, EDL::Cut* pCut = nullptr);
+  bool GetNearestCut(bool bPlus, const int iSeek, EDL::Cut* pCut) const;
 
   int GetLastCutTime() const;
   void SetLastCutTime(const int iCutTime);
@@ -55,7 +47,7 @@ public:
 
 private:
   int m_iTotalCutTime; // ms
-  std::vector<Cut> m_vecCuts;
+  std::vector<EDL::Cut> m_vecCuts;
   std::vector<int> m_vecSceneMarkers;
   int m_lastCutTime;
 
@@ -65,7 +57,7 @@ private:
   bool ReadBeyondTV(const std::string& strMovie);
   bool ReadPvr(const CFileItem& fileItem);
 
-  bool AddCut(Cut& NewCut);
+  bool AddCut(EDL::Cut& NewCut);
   bool AddSceneMarker(const int sceneMarker);
 
   void MergeShortCommBreaks();

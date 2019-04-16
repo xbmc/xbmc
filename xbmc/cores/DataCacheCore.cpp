@@ -6,18 +6,23 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include "cores/DataCacheCore.h"
+#include "DataCacheCore.h"
+
+#include "cores/Cut.h"
 #include "threads/SingleLock.h"
 #include "ServiceBroker.h"
 
 CDataCacheCore::CDataCacheCore() :
   m_playerVideoInfo {},
   m_playerAudioInfo {},
+  m_contentInfo {},
   m_renderInfo {},
   m_stateInfo {}
 {
   m_hasAVInfoChanges = false;
 }
+
+CDataCacheCore::~CDataCacheCore() = default;
 
 CDataCacheCore& CDataCacheCore::GetInstance()
 {
@@ -26,14 +31,23 @@ CDataCacheCore& CDataCacheCore::GetInstance()
 
 void CDataCacheCore::Reset()
 {
-  CSingleLock lock(m_stateSection);
+  {
+    CSingleLock lock(m_stateSection);
 
-  m_stateInfo.m_speed = 1.0;
-  m_stateInfo.m_tempo = 1.0;
-  m_stateInfo.m_stateSeeking = false;
-  m_stateInfo.m_renderGuiLayer = false;
-  m_stateInfo.m_renderVideoLayer = false;
-  m_playerStateChanged = false;
+    m_stateInfo.m_speed = 1.0;
+    m_stateInfo.m_tempo = 1.0;
+    m_stateInfo.m_stateSeeking = false;
+    m_stateInfo.m_renderGuiLayer = false;
+    m_stateInfo.m_renderVideoLayer = false;
+    m_playerStateChanged = false;
+  }
+
+  {
+    CSingleLock lock(m_contentSection);
+
+    m_contentInfo.m_chapters.clear();
+    m_contentInfo.m_cutList.clear();
+  }
 }
 
 bool CDataCacheCore::HasAVInfoChanges()
@@ -228,6 +242,30 @@ int CDataCacheCore::GetAudioBitsPerSample()
   CSingleLock lock(m_audioPlayerSection);
 
   return m_playerAudioInfo.bitsPerSample;
+}
+
+void CDataCacheCore::SetCutList(const std::vector<EDL::Cut>& cutList)
+{
+  CSingleLock lock(m_contentSection);
+  m_contentInfo.m_cutList = cutList;
+}
+
+std::vector<EDL::Cut> CDataCacheCore::GetCutList() const
+{
+  CSingleLock lock(m_contentSection);
+  return m_contentInfo.m_cutList;
+}
+
+void CDataCacheCore::SetChapters(const std::vector<std::pair<std::string, int64_t>>& chapters)
+{
+  CSingleLock lock(m_contentSection);
+  m_contentInfo.m_chapters = chapters;
+}
+
+std::vector<std::pair<std::string, int64_t>> CDataCacheCore::GetChapters() const
+{
+  CSingleLock lock(m_contentSection);
+  return m_contentInfo.m_chapters;
 }
 
 void CDataCacheCore::SetRenderClockSync(bool enable)

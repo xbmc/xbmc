@@ -23,6 +23,7 @@
 #include "GUIProgressControl.h"
 #include "GUISliderControl.h"
 #include "GUIMoverControl.h"
+#include "GUIRangesControl.h"
 #include "GUIRenderingControl.h"
 #include "GUIResizeControl.h"
 #include "GUISpinControlEx.h"
@@ -96,7 +97,8 @@ static const ControlMapping controls[] =
     {"wraplist",          CGUIControl::GUICONTAINER_WRAPLIST},
     {"fixedlist",         CGUIControl::GUICONTAINER_FIXEDLIST},
     {"epggrid",           CGUIControl::GUICONTAINER_EPGGRID},
-    {"panel",             CGUIControl::GUICONTAINER_PANEL}};
+    {"panel",             CGUIControl::GUICONTAINER_PANEL},
+    {"ranges",            CGUIControl::GUICONTROL_RANGES}};
 
 CGUIControl::GUICONTROLTYPES CGUIControlFactory::TranslateControlType(const std::string &type)
 {
@@ -1292,6 +1294,14 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
         textureOverlay, bReveal);
 
       static_cast<CGUIProgressControl*>(control)->SetInfo(singleInfo, singleInfo2);
+    }
+    break;
+  case CGUIControl::GUICONTROL_RANGES:
+    {
+      control = new CGUIRangesControl(
+        parentID, id, posX, posY, width, height,
+        textureBackground, textureLeft, textureMid, textureRight,
+        textureOverlay, singleInfo);
     }
     break;
   case CGUIControl::GUICONTROL_IMAGE:
