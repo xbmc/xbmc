@@ -8,7 +8,7 @@
 
 #include "AEDeviceEnumerationOSX.h"
 #include "cores/AudioEngine/Sinks/osx/CoreAudioChannelLayout.h"
-#include "cores/AudioEngine/Sinks/osx/CoreAudioHelpers.h"
+#include "cores/AudioEngine/Sinks/darwin/CoreAudioHelpers.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"

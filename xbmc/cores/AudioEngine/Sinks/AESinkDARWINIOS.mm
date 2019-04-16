@@ -10,7 +10,7 @@
 #include "cores/AudioEngine/AESinkFactory.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
 #include "cores/AudioEngine/Utils/AERingBuffer.h"
-#include "cores/AudioEngine/Sinks/osx/CoreAudioHelpers.h"
+#include "cores/AudioEngine/Sinks/darwin/CoreAudioHelpers.h"
 #include "ServiceBroker.h"
 #include "platform/darwin/DarwinUtils.h"
 #include "utils/log.h"
