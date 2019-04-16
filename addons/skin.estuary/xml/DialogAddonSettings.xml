@@ -19,13 +19,13 @@
 				<left>29</left>
 				<top>80</top>
 				<width>400</width>
-				<height>685</height>
+				<height>590</height>
 				<itemgap>-25</itemgap>
 				<orientation>vertical</orientation>
 				<onleft>9000</onleft>
 				<onright>5</onright>
-				<onup>3</onup>
-				<ondown>3</ondown>
+				<onup>20</onup>
+				<ondown>20</ondown>
 			</control>
 			<control type="button" id="10">
 				<description>Default Category Button</description>
@@ -116,6 +116,30 @@
 					<param name="id" value="30" />
 					<param name="label" value="" />
 				</include>
+			</control>
+			<control type="radiobutton" id="20">
+				<left>29</left>
+				<top>700</top>
+				<width>390</width>
+				<height>120</height>
+				<font>font25_title</font>
+				<aligny>center</aligny>
+				<onclick>SettingsLevelChange</onclick>
+				<textoffsetx>100</textoffsetx>
+				<textoffsety>0</textoffsety>
+				<texturenofocus />
+				<radioposx>40</radioposx>
+				<radioposy>0</radioposy>
+				<radiowidth>40</radiowidth>
+				<radioheight>40</radioheight>
+				<onleft>9000</onleft>
+				<onright>5</onright>
+				<onup>3</onup>
+				<ondown>3</ondown>
+				<textureradioonfocus>icons/settings.png</textureradioonfocus>
+				<textureradioonnofocus>icons/settings.png</textureradioonnofocus>
+				<textureradioofffocus>icons/settings.png</textureradioofffocus>
+				<textureradiooffnofocus>icons/settings.png</textureradiooffnofocus>
 			</control>
 		</control>
 	</controls>

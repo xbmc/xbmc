@@ -190,6 +190,12 @@
 				<include>ButtonInfoDialogsCommonValues</include>
 				<label>409</label>
 			</control>
+			<control type="button" id="20">
+				<description>Level Button</description>
+				<width>200</width>
+				<include>ButtonInfoDialogsCommonValues</include>
+				<onclick>SettingsLevelChange</onclick>
+			</control>
 		</control>
 	</controls>
 </window>
