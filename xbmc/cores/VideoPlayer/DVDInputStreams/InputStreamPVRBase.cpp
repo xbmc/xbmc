@@ -217,6 +217,12 @@ void CInputStreamPVRBase::SetSpeed(int Speed)
     m_client->SetSpeed(Speed);
 }
 
+void CInputStreamPVRBase::FillBuffer(bool mode)
+{
+  if (m_client)
+    m_client->FillBuffer(mode);
+}
+
 bool CInputStreamPVRBase::SeekTime(double timems, bool backwards, double *startpts)
 {
   if (m_client)

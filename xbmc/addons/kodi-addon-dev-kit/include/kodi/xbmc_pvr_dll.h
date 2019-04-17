@@ -641,6 +641,13 @@ extern "C"
   void SetSpeed(int speed);
 
   /*!
+   * Notify the pvr addon/demuxer that Kodi wishes to fill demux queue
+   * @param mode The requested filling mode
+   * @remarks Optional, and only used if addon has its own demuxer.
+   */
+  void FillBuffer(bool mode);
+
+  /*!
    *  Get the hostname of the pvr backend server
    *  @return hostname as ip address or alias. If backend does not utilize a server, return empty string.
    */
@@ -753,6 +760,7 @@ extern "C"
     pClient->toAddon.CanSeekStream                  = CanSeekStream;
     pClient->toAddon.SeekTime                       = SeekTime;
     pClient->toAddon.SetSpeed                       = SetSpeed;
+    pClient->toAddon.FillBuffer                     = FillBuffer;
 
     pClient->toAddon.OpenRecordedStream             = OpenRecordedStream;
     pClient->toAddon.CloseRecordedStream            = CloseRecordedStream;

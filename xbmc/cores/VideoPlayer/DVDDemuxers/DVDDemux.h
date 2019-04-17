@@ -278,6 +278,11 @@ public:
   virtual void SetSpeed(int iSpeed) { }
 
   /*
+   * Let demuxer know if we want to fill demux queue
+   */
+  virtual void FillBuffer(bool mode) { }
+
+  /*
    * returns the total time in msec
    */
   virtual int GetStreamLength() { return 0; }

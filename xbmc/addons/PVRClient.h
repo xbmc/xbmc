@@ -706,6 +706,14 @@ namespace PVR
      */
     PVR_ERROR SetSpeed(int speed);
 
+    /*!
+     * @brief Notify the pvr addon/demuxer that Kodi wishes to fill demux queue
+     * @param mode for setting on/off
+     * @return PVR_ERROR_NO_ERROR on success, respective error code otherwise.
+     * @remarks Optional, and only used if addon has its own demuxer.
+     */
+    PVR_ERROR FillBuffer(bool mode);
+
     //@}
     /** @name PVR recording stream methods */
     //@{

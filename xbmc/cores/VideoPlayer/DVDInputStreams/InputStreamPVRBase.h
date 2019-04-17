@@ -58,6 +58,7 @@ public:
   std::vector<CDemuxStream*> GetStreams() const override;
   int GetNrOfStreams() const override;
   void SetSpeed(int iSpeed) override;
+  void FillBuffer(bool mode) override;
   bool SeekTime(double time, bool backward = false, double* startpts = NULL) override;
   void AbortDemux() override;
   void FlushDemux() override;

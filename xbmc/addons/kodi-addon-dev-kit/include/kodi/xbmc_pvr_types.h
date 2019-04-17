@@ -691,6 +691,7 @@ extern "C" {
     bool (__cdecl* CanSeekStream)(void);
     bool (__cdecl* SeekTime)(double, bool, double*);
     void (__cdecl* SetSpeed)(int);
+    void (__cdecl* FillBuffer)(bool);
     const char* (__cdecl* GetBackendHostname)(void);
     bool (__cdecl* IsTimeshifting)(void);
     bool (__cdecl* IsRealTimeStream)(void);

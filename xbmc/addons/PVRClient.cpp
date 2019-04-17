@@ -1306,6 +1306,14 @@ PVR_ERROR CPVRClient::SetSpeed(int speed)
   });
 }
 
+PVR_ERROR CPVRClient::FillBuffer(bool mode)
+{
+  return DoAddonCall(__FUNCTION__, [mode](const AddonInstance* addon) {
+    addon->FillBuffer(mode);
+    return PVR_ERROR_NO_ERROR;
+  });
+}
+
 PVR_ERROR CPVRClient::CanPauseStream(bool &bCanPause) const
 {
   bCanPause = false;
