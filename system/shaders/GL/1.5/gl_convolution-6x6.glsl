@@ -18,7 +18,7 @@ uniform sampler1D kernelTex;
 
 half3 weight(float pos)
 {
-#if (HAS_FLOAT_TEXTURE)
+#if defined(HAS_FLOAT_TEXTURE)
   return texture(kernelTex, pos).rgb;
 #else
   return texture(kernelTex, pos).rgb * 2.0 - 1.0;
