@@ -515,7 +515,14 @@ extern "C" {
     int             iGenreType;                                /*!< @brief (optional) genre type */
     int             iGenreSubType;                             /*!< @brief (optional) genre sub type */
     char            strSeriesLink[PVR_ADDON_URL_STRING_LENGTH]; /*!< @brief (optional) series link for this timer. If set for an epg-based timer rule, matching events will be found by checking strSeriesLink instead of strTitle (and bFullTextEpgSearch) */
-
+    char            strGenreDescription[PVR_ADDON_DESC_STRING_LENGTH]; /*!< @brief (optional) genre. Will be used only when iGenreType == EPG_GENRE_USE_STRING. Use EPG_STRING_TOKEN_SEPARATOR to separate different genres. */
+    char            strPlotOutline[PVR_ADDON_DESC_STRING_LENGTH];      /*!< @brief (optional) plot outline */
+    char            strPlot[PVR_ADDON_DESC_STRING_LENGTH];             /*!< @brief (optional) plot */
+    int             iYear;                                     /*!< @brief (optional) year */
+    int             iSeriesNumber;                             /*!< @brief (optional) series number */
+    int             iEpisodeNumber;                            /*!< @brief (optional) episode number */
+    int             iEpisodePartNumber;                        /*!< @brief (optional) episode part number */
+    
   } ATTRIBUTE_PACKED PVR_TIMER;
 
   /*!

@@ -371,6 +371,8 @@ namespace PVR
 
     std::string GetWeekdaysString() const;
     void UpdateEpgInfoTag(void);
+    bool HasFallbackEpgData() const;
+    CPVREpgInfoTagPtr CreateFallbackEpgInfoTag() const;
 
     static std::shared_ptr<CPVRTimerInfoTag> CreateFromEpg(const std::shared_ptr<CPVREpgInfoTag>& tag, bool bCreateRule, bool bCreateReminder, bool bReadOnly);
     static std::shared_ptr<CPVRTimerInfoTag> CreateFromDate(const std::shared_ptr<CPVRChannel>& channel, const CDateTime& start, int iDuration, bool bCreateReminder, bool bReadOnly);
@@ -389,6 +391,16 @@ namespace PVR
     unsigned int m_iRadioChildTimersConflictNOK = 0;
     unsigned int m_iRadioChildTimersRecording = 0;
     unsigned int m_iRadioChildTimersErrors = 0;
+
+    int         m_iGenreType;          /*!< @brief (optional) genre type */
+    int         m_iGenreSubType;       /*!< @brief (optional) genre sub type */
+    std::string m_strGenreDescription; /*!< @brief (optional) genre. Will be used only when iGenreType == EPG_GENRE_USE_STRING. Use EPG_STRING_TOKEN_SEPARATOR to separate different genres. */
+    std::string m_strPlotOutline;      /*!< @brief (optional) plot outline */
+    std::string m_strPlot;             /*!< @brief (optional) plot */
+    int         m_iYear;               /*!< @brief (optional) year */
+    int         m_iSeriesNumber;       /*!< @brief (optional) series number */
+    int         m_iEpisodeNumber;      /*!< @brief (optional) episode number */
+    int         m_iEpisodePartNumber;  /*!< @brief (optional) episode part number */
 
     mutable CPVREpgInfoTagPtr m_epgTag; /*!< epg info tag matching m_iEpgUid. */
     mutable CPVRChannelPtr m_channel;

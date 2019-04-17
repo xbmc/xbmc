@@ -99,6 +99,15 @@ CPVRTimerInfoTag::CPVRTimerInfoTag(const PVR_TIMER &timer, const CPVRChannelPtr 
   m_strSeriesLink(timer.strSeriesLink),
   m_StartTime(timer.startTime + CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_iPVRTimeCorrection),
   m_StopTime(timer.endTime + CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_iPVRTimeCorrection),
+  m_iGenreType(timer.iGenreType),
+  m_iGenreSubType(timer.iGenreSubType),
+  m_strGenreDescription(timer.strGenreDescription),
+  m_strPlotOutline(timer.strPlotOutline),
+  m_strPlot(timer.strPlot),
+  m_iYear(timer.iYear),
+  m_iSeriesNumber(timer.iSeriesNumber),
+  m_iEpisodeNumber(timer.iEpisodeNumber),
+  m_iEpisodePartNumber(timer.iEpisodePartNumber),
   m_channel(channel)
 {
   if (timer.firstDay)
@@ -195,6 +204,15 @@ bool CPVRTimerInfoTag::operator ==(const CPVRTimerInfoTag& right) const
           m_iTimerId            == right.m_iTimerId &&
           m_strSeriesLink       == right.m_strSeriesLink &&
           m_iEpgUid             == right.m_iEpgUid &&
+          m_iGenreType          == right.m_iGenreType &&
+          m_iGenreSubType       == right.m_iGenreSubType &&
+          m_strGenreDescription == right.m_strGenreDescription &&
+          m_strPlotOutline      == right.m_strPlotOutline &&
+          m_strPlot             == right.m_strPlot &&
+          m_iYear               == right.m_iYear &&
+          m_iSeriesNumber       == right.m_iSeriesNumber &&
+          m_iEpisodeNumber      == right.m_iEpisodeNumber &&
+          m_iEpisodePartNumber  == right.m_iEpisodePartNumber &&
           m_iTVChildTimersActive == right.m_iTVChildTimersActive &&
           m_iTVChildTimersConflictNOK == right.m_iTVChildTimersConflictNOK &&
           m_iTVChildTimersRecording == right.m_iTVChildTimersRecording &&
@@ -299,6 +317,16 @@ void CPVRTimerInfoTag::Serialize(CVariant &value) const
   value["maxrecordings"]     = m_iMaxRecordings;
   value["epguid"]            = m_iEpgUid;
   value["serieslink"]        = m_strSeriesLink;
+
+  value["genretype"]         = m_iGenreType;
+  value["genresubtype"]      = m_iGenreSubType;
+  value["genredescription"]  = m_strGenreDescription;
+  value["plotoutline"]       = m_strPlotOutline;
+  value["plot"]              = m_strPlot;
+  value["year"]              = m_iYear;
+  value["seriesnumber"]      = m_iSeriesNumber;
+  value["episodenumber"]     = m_iEpisodeNumber;
+  value["episodepartnumber"] = m_iEpisodePartNumber;
 }
 
 void CPVRTimerInfoTag::UpdateSummary(void)
@@ -586,6 +614,15 @@ bool CPVRTimerInfoTag::UpdateEntry(const CPVRTimerInfoTagPtr &tag)
   m_epgTag              = tag->m_epgTag;
   m_strSummary          = tag->m_strSummary;
   m_channel             = tag->m_channel;
+  m_iGenreType          = tag->m_iGenreType;
+  m_iGenreSubType       = tag->m_iGenreSubType;
+  m_strGenreDescription = tag->m_strGenreDescription;
+  m_strPlotOutline      = tag->m_strPlotOutline;
+  m_strPlot             = tag->m_strPlot;
+  m_iYear               = tag->m_iYear;
+  m_iSeriesNumber       = tag->m_iSeriesNumber;
+  m_iEpisodeNumber      = tag->m_iEpisodeNumber;
+  m_iEpisodePartNumber  = tag->m_iEpisodePartNumber;
 
   m_iTVChildTimersActive = tag->m_iTVChildTimersActive;
   m_iTVChildTimersConflictNOK = tag->m_iTVChildTimersConflictNOK;
@@ -1233,7 +1270,56 @@ CPVREpgInfoTagPtr CPVRTimerInfoTag::GetEpgInfoTag(bool bCreate /* = true */) con
       }
     }
   }
+
+  if (!m_epgTag && HasFallbackEpgData() && !IsTimerRule())
+  {
+    CPVRChannelPtr channel(m_channel);
+    if (!channel)
+    {
+      channel = CServiceBroker::GetPVRManager().ChannelGroups()->Get(m_bIsRadio)->GetGroupAll()->GetByUniqueID(m_iClientChannelUid, m_iClientId);
+
+      CSingleLock lock(m_critSection);
+      m_channel = channel;
+    }
+
+    if (channel)
+    {    
+      m_epgTag = CreateFallbackEpgInfoTag();
+    }
+  }  
   return m_epgTag;
+}
+
+bool CPVRTimerInfoTag::HasFallbackEpgData() const
+{
+  return !m_strPlotOutline.empty() || !m_strPlot.empty();
+}
+
+CPVREpgInfoTagPtr CPVRTimerInfoTag::CreateFallbackEpgInfoTag() const
+{
+  EPG_TAG tag = {0};
+  tag.strPlotOutline = m_strPlot.c_str();
+  tag.strPlot = m_strPlotOutline.c_str();
+  tag.strTitle = m_strTitle.c_str();
+  tag.iUniqueChannelId = m_iClientChannelUid;
+  tag.iUniqueBroadcastId = m_iEpgUid;
+  tag.iYear = m_iYear;
+  tag.iGenreType = m_iGenreType;
+  tag.iGenreSubType = m_iGenreSubType;
+  tag.strGenreDescription = m_strGenreDescription.c_str();
+  tag.iSeriesNumber = m_iSeriesNumber;
+  tag.iEpisodeNumber = m_iEpisodeNumber;
+  tag.iEpisodePartNumber = m_iEpisodePartNumber;
+
+  time_t startTime;
+  m_StartTime.GetAsTime(startTime);
+  tag.startTime = startTime;
+
+  time_t endTime;
+  m_StopTime.GetAsTime(endTime);
+  tag.endTime = endTime;
+
+  return std::make_shared<CPVREpgInfoTag>(tag, m_iClientId, nullptr, m_iEpgUid);
 }
 
 bool CPVRTimerInfoTag::HasChannel() const
