@@ -654,12 +654,6 @@ extern "C"
   const char* GetBackendHostname();
 
   /*!
-   *  Check if timeshift is active
-   *  @return true if timeshift is active
-   */
-  bool IsTimeshifting();
-
-  /*!
    *  Check for real-time streaming
    *  @return true if current stream is real-time
    */
@@ -775,7 +769,6 @@ extern "C"
 
     pClient->toAddon.GetBackendHostname             = GetBackendHostname;
 
-    pClient->toAddon.IsTimeshifting                 = IsTimeshifting;
     pClient->toAddon.IsRealTimeStream               = IsRealTimeStream;
 
     pClient->toAddon.SetEPGTimeFrame                = SetEPGTimeFrame;
