@@ -84,9 +84,7 @@ ConvolutionFilterShader::ConvolutionFilterShader(ESCALINGMETHOD method, bool str
   }
 
   if (m_floattex)
-    defines = "#define HAS_FLOAT_TEXTURE 1\n";
-  else
-    defines = "#define HAS_FLOAT_TEXTURE 0\n";
+    defines = "#define HAS_FLOAT_TEXTURE\n";
 
   //don't compile in stretch support when it's not needed
   if (stretch)
