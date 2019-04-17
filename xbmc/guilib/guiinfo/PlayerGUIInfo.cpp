@@ -625,7 +625,8 @@ std::string CPlayerGUIInfo::GetContentRanges(int iInfo) const
     for (const auto& range : ranges)
       values += StringUtils::Format("%.5f,%.5f,", range.first, range.second);
 
-    values.pop_back(); // remove trailing comma
+    if (!values.empty())
+      values.pop_back(); // remove trailing comma
   }
 
   return values;
