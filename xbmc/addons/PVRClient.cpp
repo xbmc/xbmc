@@ -591,25 +591,13 @@ PVR_ERROR CPVRClient::RenameChannel(const CPVRChannelPtr &channel)
   }, m_clientCapabilities.SupportsChannelSettings());
 }
 
-PVR_ERROR CPVRClient::GetEPGForChannel(const std::shared_ptr<CPVREpgChannelData>& channelData,
+PVR_ERROR CPVRClient::GetEPGForChannel(int iChannelUid,
                                        CPVREpg* epg,
                                        time_t start /* = 0 */,
                                        time_t end /* = 0 */,
                                        bool bSaveInDb /* = false */)
 {
-  return DoAddonCall(__FUNCTION__, [this, channelData, epg, start, end, bSaveInDb](const AddonInstance* addon) {
-
-    //! @todo PVR Addon API Change: Change GetEPGForChannel param from 'PVR_CHANNEL channel' to 'int iUniqueId'.
-    PVR_CHANNEL addonChannel = {0};
-
-    // mandatory
-    addonChannel.iUniqueId = channelData->UniqueClientChannelId();
-    addonChannel.bIsRadio = channelData->IsRadio();
-
-    // optional
-    strncpy(addonChannel.strChannelName, channelData->ChannelName().c_str(), sizeof(addonChannel.strChannelName) - 1);
-    strncpy(addonChannel.strIconPath, channelData->IconPath().c_str(), sizeof(addonChannel.strIconPath) - 1);
-    addonChannel.bIsHidden = channelData->IsHidden();
+  return DoAddonCall(__FUNCTION__, [this, iChannelUid, epg, start, end, bSaveInDb](const AddonInstance* addon) {
 
     ADDON_HANDLE_STRUCT handle;
     handle.callerAddress  = this;
@@ -619,7 +607,7 @@ PVR_ERROR CPVRClient::GetEPGForChannel(const std::shared_ptr<CPVREpgChannelData>
     int iPVRTimeCorrection = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_iPVRTimeCorrection;
 
     return addon->GetEPGForChannel(&handle,
-                                   addonChannel,
+                                   iChannelUid,
                                    start ? start - iPVRTimeCorrection : 0,
                                    end ? end - iPVRTimeCorrection : 0);
   }, m_clientCapabilities.SupportsEPG());

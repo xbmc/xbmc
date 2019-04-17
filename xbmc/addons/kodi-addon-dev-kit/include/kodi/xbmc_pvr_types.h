@@ -635,7 +635,7 @@ extern "C" {
     const char* (__cdecl* GetConnectionString)(void);
     PVR_ERROR (__cdecl* GetDriveSpace)(long long*, long long*);
     PVR_ERROR (__cdecl* MenuHook)(const PVR_MENUHOOK&, const PVR_MENUHOOK_DATA&);
-    PVR_ERROR (__cdecl* GetEPGForChannel)(ADDON_HANDLE, const PVR_CHANNEL&, time_t, time_t);
+    PVR_ERROR (__cdecl* GetEPGForChannel)(ADDON_HANDLE, int, time_t, time_t);
     PVR_ERROR (__cdecl* IsEPGTagRecordable)(const EPG_TAG*, bool*);
     PVR_ERROR (__cdecl* IsEPGTagPlayable)(const EPG_TAG*, bool*);
     PVR_ERROR (__cdecl* GetEPGTagEdl)(const EPG_TAG*, PVR_EDL_ENTRY[], int*);
