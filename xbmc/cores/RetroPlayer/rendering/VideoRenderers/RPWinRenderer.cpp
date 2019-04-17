@@ -228,7 +228,7 @@ bool CRPWinRenderer::ConfigureInternal()
 {
   CRenderSystemDX *renderingDx = static_cast<CRenderSystemDX*>(m_context.Rendering());
 
-  DXGI_FORMAT targetDxFormat = renderingDx->GetBackBuffer()->GetFormat();
+  DXGI_FORMAT targetDxFormat = renderingDx->GetBackBuffer().GetFormat();
 
   static_cast<CWinRenderBufferPool*>(m_bufferPool.get())->ConfigureDX(targetDxFormat);
 
@@ -265,7 +265,7 @@ bool CRPWinRenderer::SupportsScalingMethod(SCALINGMETHOD method)
   return false;
 }
 
-void CRPWinRenderer::Render(CD3DTexture *target)
+void CRPWinRenderer::Render(CD3DTexture& target)
 {
   const CPoint destPoints[4] = {
     m_rotatedDestCoords[0],
@@ -292,7 +292,7 @@ void CRPWinRenderer::Render(CD3DTexture *target)
       if (outputShader != nullptr)
       {
         outputShader->Render(*intermediateTarget,
-          m_sourceRect, destPoints, viewPort, target,
+          m_sourceRect, destPoints, viewPort, &target,
           m_context.UseLimitedColor() ? 1 : 0);
       }
     }

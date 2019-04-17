@@ -1027,6 +1027,7 @@ msgstr ""
 #: xbmc/peripherals/dialogs/GUIDialogPeripheralSettings.cpp
 #: xbmc/profiles/dialogs/GUIDialogLockSettings.cpp
 #: xbmc/profiles/dialogs/GUIDialogProfileSettings.cpp
+#: xbmc/pvr/PVRGUIActions.cpp
 #: xbmc/pvr/dialogs/GUIDialogPVRRecordingSettings.cpp
 #: xbmc/pvr/dialogs/GUIDialogPVRTimerSettings.cpp
 #: xbmc/settings/dialogs/GUIDialogContentSettings.cpp
@@ -1228,6 +1229,7 @@ msgstr ""
 
 #. Label for a context menu entry / button to start/schedule a recording
 #: xbmc/music/windows/GUIWindowMusicBase.cpp
+#: xbmc/pvr/PVRGUIActions.cpp
 #: xbmc/pvr/dialogs/GUIDialogPVRGuideInfo.cpp
 #: xbmc/pvr/windows/GUIWIndowPVRGuide.cpp
 #: xbmc/pvr/PVRContextMenus.cpp
@@ -3704,33 +3706,60 @@ msgctxt "#818"
 msgid "Max recordings"
 msgstr ""
 
-#empty string with id 819
+#. Representation of a one-time timer which has been scheduled by a timer rule.
+#: xbmc/pvr/timers/PVRTimers.cpp
+msgctxt "#819"
+msgid "One time (Scheduled by timer rule)"
+msgstr ""
 
 #. Representation of a one-time timer.
-#: xbmc/pvr/addons/PVRClient.cpp
+#: xbmc/pvr/timers/PVRTimerType.cpp
 msgctxt "#820"
 msgid "One time"
 msgstr ""
 
 #. Representation of an epg-based one-time timer.
-#: xbmc/pvr/addons/PVRClient.cpp
+#: xbmc/pvr/timers/PVRTimerType.cpp
 msgctxt "#821"
 msgid "One time (guide-based)"
 msgstr ""
 
 #. Representation of a timer rule
-#: xbmc/pvr/addons/PVRClient.cpp
+#: xbmc/pvr/timers/PVRTimerType.cpp
 msgctxt "#822"
 msgid "Timer rule"
 msgstr ""
 
 #. Representation of an epg-based timer rule.
-#: xbmc/pvr/addons/PVRClient.cpp
+#: xbmc/pvr/timers/PVRTimerType.cpp
 msgctxt "#823"
 msgid "Timer rule (guide-based)"
 msgstr ""
 
-#empty strings from id 824 to 827
+#. Complete prefixed representation of a reminder timer type.
+#: xbmc/pvr/timers/PVRTimerType.cpp
+msgctxt "#824"
+msgid "Reminder: {0:s}"
+msgstr ""
+
+#. Complete prefixed representation of a recording timer type.
+#: xbmc/pvr/timers/PVRTimerType.cpp
+msgctxt "#825"
+msgid "Recording: {0:s}"
+msgstr ""
+
+#. Label for a context menu entry to add a reminder timer
+#: addons/skin.estuary/xml/DialogPVRInfo.xml
+#: xbmc/pvr/PVRContextMenus.cpp
+msgctxt "#826"
+msgid "Set reminder"
+msgstr ""
+
+#. Label for a context menu entry to delete a reminder timer
+#: xbmc/pvr/PVRContextMenus.cpp
+msgctxt "#827"
+msgid "Delete reminder"
+msgstr ""
 
 #. Text for notification that a timer rule has been deleted
 #: xbmc/pvr/timers/PVRTimerInfoTag.cpp
@@ -3738,7 +3767,17 @@ msgctxt "#828"
 msgid "Timer rule deleted"
 msgstr ""
 
-#empty strings from id 829 to 830
+#. Label for a context menu entry to view a read-only reminder timer
+#: xbmc/pvr/PVRContextMenus.cpp
+msgctxt "#829"
+msgid "View reminder"
+msgstr ""
+
+#. Label for a context menu entry to edit a reminder timer
+#: xbmc/pvr/PVRContextMenus.cpp
+msgctxt "#830"
+msgid "Edit reminder"
+msgstr ""
 
 #. Weekday representation
 #: xbmc/pvr/timers/PVRTimerInfoTag.cpp
@@ -5577,12 +5616,7 @@ msgctxt "#12022"
 msgid "Resume from {0:s}"
 msgstr ""
 
-#. unused?
-msgctxt "#12023"
-msgid "Play from beginning"
-msgstr ""
-
-#empty strings from id 12024 to 12309
+#empty strings from id 12023 to 12309
 
 #: addons/skin.estuary/xml/DialogNumeric.xml
 #: addons/skin.estouchy/xml/DialogNumeric.xml
@@ -9304,7 +9338,6 @@ msgstr ""
 #: xbmc/pvr/dialogs/GUIDialogPVRGroupManager.cpp
 #: xbmc/pvr/dialogs/GUIDialogPVRGuideInfo.cpp
 #: xbmc/pvr/timers/PVRTimerInfoTag.cpp
-#: xbmc/pvr/windows/GUIWindowPVRTimersBase.cpp
 #: xbmc/pvr/PVRGUIActions.cpp
 #: xbmc/pvr/PVRManager.cpp
 #: xbmc/video/windows/GUIWindowVideoBase.cpp
@@ -9688,13 +9721,13 @@ msgstr ""
 #. error message displayed in case adding a timer failed because no suitable epg-based timer type could be found.
 #: xbmc/pvr/PVRGUIActions.cpp
 msgctxt "#19094"
-msgid "Timer creation failed. The PVR add-on does not support a suitable timer type."
+msgid "Timer creation failed. Unsupported timer type."
 msgstr ""
 
 #. error message displayed in case adding a timer rule failed because no suitable epg-based timer rule type could be found.
 #: xbmc/pvr/PVRGUIActions.cpp
 msgctxt "#19095"
-msgid "Timer rule creation failed. The PVR add-on does not support a suitable timer rule type."
+msgid "Timer rule creation failed. Unsupported timer type."
 msgstr ""
 
 #. label of a value for default epg event select action, where the action is choosen depending on whether the event is in the past, now or in the future
@@ -9760,14 +9793,14 @@ msgctxt "#19105"
 msgid "Please select a channel"
 msgstr ""
 
-#. part of timer information text (e.g. "Next timer on 10/10/2016 at 9:00 AM")
-#: xbmc/pvr/PVRGUIInfo.cpp
+#. part of timer information text (e.g. "Next recording on 10/10/2016 at 9:00 AM")
+#: xbmc/pvr/PVRGUITimerInfo.cpp
 msgctxt "#19106"
-msgid "Next timer on"
+msgid "Next recording on"
 msgstr ""
 
-#. part of timer information text (e.g. "Next timer on 10/10/2016 at 9:00 AM")
-#: xbmc/pvr/PVRGUIInfo.cpp
+#. part of timer information text (e.g. "Next recording on 10/10/2016 at 9:00 AM")
+#: xbmc/pvr/PVRGUITimerInfo.cpp
 #: xbmc/pvr/timers/PVRTimerInfoTag.cpp
 msgctxt "#19107"
 msgid "at"
@@ -10103,6 +10136,7 @@ msgstr ""
 
 #. Label for "switch to channel" button""
 #: addons/skin.estuary/xml/DialogPVRInfo.xml
+#: xbmc/pvr/PVRGUIActions.cpp
 #: xbmc/pvr/windows/GUIWIndowPVRGuide.cpp
 msgctxt "#19165"
 msgid "Switch"
@@ -10235,7 +10269,7 @@ msgstr ""
 #. message box text for pvr data reset confirmation
 #: xbmc/pvr/PVRManager.cpp
 msgctxt "#19186"
-msgid "All your TV related data (channels, groups, guide) will be cleared. Are you sure?"
+msgid "All your TV related data (channels, groups, guide, timers, clients) will be cleared. Are you sure?"
 msgstr ""
 
 #. progress dialog text shown while purging pvr data
@@ -10400,12 +10434,7 @@ msgctxt "#19214"
 msgid "Enter a valid URL for the new channel"
 msgstr ""
 
-#. message box text stating that a pvr backend does not support timers
-#: xbmc/pvr/timers/PVRGUIActions.cpp
-#: xbmc/pvr/windows/GUIWindowsPVRTimersBase.cpp
-msgctxt "#19215"
-msgid "The PVR backend does not support timers."
-msgstr ""
+#empty string with id 19215
 
 #. used by several skins
 msgctxt "#19216"
@@ -10928,13 +10957,61 @@ msgctxt "#19303"
 msgid "Close channel OSD after switching channels"
 msgstr ""
 
-#. Label for context menu entry to open settings dialog for a timer rule (read-only)
+#. label for context menu entry to open settings dialog for a timer rule (read-only)
 #: xbmc/pvr/PVRContextMenus.cpp
 msgctxt "#19304"
 msgid "View timer rule"
 msgstr ""
 
-#empty strings from id 19305 to 19498
+#. text for event log entry for logging auto deleted missed reminders
+#: xbmc/pvr/timers/PVRTimers.cpp
+msgctxt "#19305"
+msgid "Deleted missed PVR reminder for '{0:s}' on channel '{1:s}' at '{2:s}'"
+msgstr ""
+
+#. text for event log entry for logging auto deleted missed reminders
+#: xbmc/pvr/timers/PVRTimers.cpp
+msgctxt "#19306"
+msgid "Deleted missed PVR reminder for channel '{0:s}' at '{1:s}'"
+msgstr ""
+
+#. text for reminder announcement dialog
+#: xbmc/pvr/PVRGUIActions.cpp
+msgctxt "#19307"
+msgid "Reminder for [B]{0:s}[/B] on channel [B]{1:s}[/B] at [B]{2:s}[/B]."
+msgstr ""
+
+#. text for reminder announcement dialog
+#: xbmc/pvr/PVRGUIActions.cpp
+msgctxt "#19308"
+msgid "Reminder for channel [B]{0:s}[/B] at [B]{1:s}[/B]."
+msgstr ""
+
+#. additional text for reminder announcement dialog, used if a recording can be scheduled
+#: xbmc/pvr/timers/PVRGUIActions.cpp
+msgctxt "#19309"
+msgid "(Auto-close of this reminder will schedule a recording...)"
+msgstr ""
+
+#. text for event log entry for logging auto scheduled recordings for auto-closed reminders
+#: xbmc/pvr/timers/PVRGUIActions.cpp
+msgctxt "#19310"
+msgid "Scheduled recording for auto-closed PVR reminder for '{0:s}' on channel '{1:s}' at '{2:s}'"
+msgstr ""
+
+#. text for event log entry for logging auto scheduled recordings for auto-closed reminders
+#: xbmc/pvr/timers/PVRGUIActions.cpp
+msgctxt "#19311"
+msgid "Scheduled recording for auto-closed PVR reminder for channel '{0:s}' at '{1:s}'"
+msgstr ""
+
+#. heading for pvr reminder notification dialog
+#: xbmc/pvr/PVRGUIActions.cpp
+msgctxt "#19312"
+msgid "PVR reminder"
+msgstr ""
+
+#empty strings from id 19313 to 19498
 
 #. label for epg genre value
 #: xbmc/pvr/epg/Epg.cpp
@@ -11523,40 +11600,46 @@ msgctxt "#19687"
 msgid "Play recording"
 msgstr ""
 
-#empty strings from id 19688 to 19690
+#empty strings from id 19688 to 19689
+
+#. Text for shutdown confirmation dialog
+#: xbmc/pvr/PVRGUIActions.cpp
+msgctxt "#19690"
+msgid "PVR has scheduled a reminder for '{0:s}' on channel '{1:s}' in {2:s}."
+msgstr ""
 
 #. Text for shutdown confirmation dialog.
-#: xbmc/pvr/PVRManager.cpp
+#: xbmc/pvr/PVRGUIActions.cpp
 msgctxt "#19691"
 msgid "PVR is currently recording '{0:s}' on channel '{1:s}'."
 msgstr ""
 
 #. Text for shutdown confirmation dialog
-#: xbmc/pvr/PVRManager.cpp
+#: xbmc/pvr/PVRGUIActions.cpp
 msgctxt "#19692"
 msgid "PVR will start recording '{0:s}' on channel '{1:s}' in {2:s}."
 msgstr ""
 
 #. Text for shutdown confirmation dialog
-#: xbmc/pvr/PVRManager.cpp
+#: xbmc/pvr/PVRGUIActions.cpp
 msgctxt "#19693"
 msgid "Daily wakeup is due in {0:s}."
 msgstr ""
 
 #. Text for shutdown confirmation dialog
-#: xbmc/pvr/PVRManager.cpp
+#: xbmc/pvr/PVRGUIActions.cpp
 msgctxt "#19694"
 msgid "{0:d} minutes"
 msgstr ""
 
 #. Text for shutdown confirmation dialog
-#: xbmc/pvr/PVRManager.cpp
+#: xbmc/pvr/PVRGUIActions.cpp
 msgctxt "#19695"
 msgid "about a minute"
 msgstr ""
 
 #. Yes button label for shutdown confirmation dialog
-#: xbmc/pvr/PVRManager.cpp
+#: xbmc/pvr/PVRGUIActions.cpp
 msgctxt "#19696"
 msgid "Shutdown anyway"
 msgstr ""

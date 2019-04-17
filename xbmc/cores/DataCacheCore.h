@@ -10,12 +10,20 @@
 
 #include <atomic>
 #include <string>
+#include <vector>
+
 #include "threads/CriticalSection.h"
+
+namespace EDL
+{
+  struct Cut;
+}
 
 class CDataCacheCore
 {
 public:
   CDataCacheCore();
+  virtual ~CDataCacheCore();
   static CDataCacheCore& GetInstance();
   void Reset();
   bool HasAVInfoChanges();
@@ -50,6 +58,12 @@ public:
   int GetAudioSampleRate();
   void SetAudioBitsPerSample(int bitsPerSample);
   int GetAudioBitsPerSample();
+
+  // content info
+  void SetCutList(const std::vector<EDL::Cut>& cutList);
+  std::vector<EDL::Cut> GetCutList() const;
+  void SetChapters(const std::vector<std::pair<std::string, int64_t>>& chapters);
+  std::vector<std::pair<std::string, int64_t>> GetChapters() const;
 
   // render info
   void SetRenderClockSync(bool enabled);
@@ -137,6 +151,13 @@ protected:
     int sampleRate;
     int bitsPerSample;
   } m_playerAudioInfo;
+
+  mutable CCriticalSection m_contentSection;
+  struct SContentInfo
+  {
+    std::vector<EDL::Cut> m_cutList;
+    std::vector<std::pair<std::string, int64_t>> m_chapters; // name and position for chapters
+  } m_contentInfo;
 
   CCriticalSection m_renderSection;
   struct SRenderInfo

@@ -16,6 +16,7 @@
 #include "cores/VideoPlayer/Interface/StreamInfo.h"
 
 class CVariant;
+struct IntegerSettingOption;
 
 class CGUIDialogSubtitleSettings : public CGUIDialogSettingsManualBase
 {
@@ -54,7 +55,7 @@ private:
   std::vector<int> m_subtitleCapabilities;
   static std::string FormatFlags(StreamFlags flags);
 
-  static void SubtitleStreamsOptionFiller(std::shared_ptr<const CSetting> setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data);
+  static void SubtitleStreamsOptionFiller(std::shared_ptr<const CSetting> setting, std::vector<IntegerSettingOption> &list, int &current, void *data);
 
   static std::string SettingFormatterDelay(std::shared_ptr<const CSettingControlSlider> control, const CVariant &value, const CVariant &minimum, const CVariant &step, const CVariant &maximum);
 };

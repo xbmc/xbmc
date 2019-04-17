@@ -1117,7 +1117,8 @@
       "enum": [ "title", "plot", "plotoutline", "genre", "playcount",
                 "resume", "channel", "starttime","endtime", "runtime",
                 "lifetime", "icon", "art", "streamurl", "file",
-                "directory", "radio", "isdeleted", "epgeventid", "channeluid" ]
+                "directory", "radio", "isdeleted", "epgeventid", "channeluid",
+                "season", "episode", "showtitle" ]
     }
   },
   "PVR.Details.Recording": {
@@ -1143,7 +1144,10 @@
       "radio": { "type": "boolean" },
       "isdeleted": { "type": "boolean" },
       "epgeventid": { "type": "integer" },
-      "channeluid": { "type": "integer" }
+      "channeluid": { "type": "integer" },
+      "season": { "type": "integer" },
+      "episode": { "type": "integer" },
+      "showtitle": { "type": "string" }
     }
   },
   "Textures.Details.Size": {

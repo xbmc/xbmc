@@ -4,11 +4,11 @@ xbmc/platform/posix/utils             platform/posix/utils
 xbmc/platform/linux                   platform/linux
 xbmc/platform/linux/network           platform/linux/network
 xbmc/platform/darwin                  platform/darwin
+xbmc/platform/darwin/network          platform/darwin/network
 xbmc/platform/darwin/osx              platform/osx
-xbmc/platform/darwin/osx/network      platform/osx/network
 xbmc/platform/darwin/osx/peripherals  platform/osx/peripherals
 xbmc/platform/darwin/osx/powermanagement platform/darwin/osx/powermanagement
-xbmc/platform/darwin/osx/storage      platform/osx/storage
+xbmc/platform/darwin/storage          platform/storage
 xbmc/windowing/osx                    windowing/osx
 xbmc/cores/RetroPlayer/process/osx    cores/RetroPlayer/process/osx
 xbmc/cores/VideoPlayer/Process/osx    cores/VideoPlayer/Process/osx

@@ -26,6 +26,7 @@
 #include "pvr/PVRManager.h"
 #include "ServiceBroker.h"
 #include "settings/lib/Setting.h"
+#include "settings/lib/SettingDefinitions.h"
 #include "settings/lib/SettingsManager.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
@@ -262,19 +263,19 @@ void CPowerManager::RestorePlayerState()
   g_application.PlayFile(*m_lastPlayedFileItem, m_lastUsedPlayer);
 }
 
-void CPowerManager::SettingOptionsShutdownStatesFiller(SettingConstPtr setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data)
+void CPowerManager::SettingOptionsShutdownStatesFiller(SettingConstPtr setting, std::vector<IntegerSettingOption> &list, int &current, void *data)
 {
   if (CServiceBroker::GetPowerManager().CanPowerdown())
-    list.push_back(make_pair(g_localizeStrings.Get(13005), POWERSTATE_SHUTDOWN));
+    list.push_back(IntegerSettingOption(g_localizeStrings.Get(13005), POWERSTATE_SHUTDOWN));
   if (CServiceBroker::GetPowerManager().CanHibernate())
-    list.push_back(make_pair(g_localizeStrings.Get(13010), POWERSTATE_HIBERNATE));
+    list.push_back(IntegerSettingOption(g_localizeStrings.Get(13010), POWERSTATE_HIBERNATE));
   if (CServiceBroker::GetPowerManager().CanSuspend())
-    list.push_back(make_pair(g_localizeStrings.Get(13011), POWERSTATE_SUSPEND));
+    list.push_back(IntegerSettingOption(g_localizeStrings.Get(13011), POWERSTATE_SUSPEND));
   if (!g_application.IsStandAlone())
   {
-    list.push_back(make_pair(g_localizeStrings.Get(13009), POWERSTATE_QUIT));
+    list.push_back(IntegerSettingOption(g_localizeStrings.Get(13009), POWERSTATE_QUIT));
 #if !defined(TARGET_DARWIN_IOS)
-    list.push_back(make_pair(g_localizeStrings.Get(13014), POWERSTATE_MINIMIZE));
+    list.push_back(IntegerSettingOption(g_localizeStrings.Get(13014), POWERSTATE_MINIMIZE));
 #endif
   }
 }

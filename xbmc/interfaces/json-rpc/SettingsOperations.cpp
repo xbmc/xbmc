@@ -17,6 +17,7 @@
 #include "settings/SettingsComponent.h"
 #include "settings/SettingUtils.h"
 #include "settings/lib/Setting.h"
+#include "settings/lib/SettingDefinitions.h"
 #include "settings/lib/SettingSection.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/StringUtils.h"
@@ -503,8 +504,8 @@ bool CSettingsOperations::SerializeSettingInt(std::shared_ptr<const CSettingInt>
       for (IntegerSettingOptions::const_iterator itOption = options.begin(); itOption != options.end(); ++itOption)
       {
         CVariant varOption(CVariant::VariantTypeObject);
-        varOption["label"] = itOption->first;
-        varOption["value"] = itOption->second;
+        varOption["label"] = itOption->label;
+        varOption["value"] = itOption->value;
         obj["options"].push_back(varOption);
       }
       break;
@@ -517,8 +518,8 @@ bool CSettingsOperations::SerializeSettingInt(std::shared_ptr<const CSettingInt>
       for (IntegerSettingOptions::const_iterator itOption = options.begin(); itOption != options.end(); ++itOption)
       {
         CVariant varOption(CVariant::VariantTypeObject);
-        varOption["label"] = itOption->first;
-        varOption["value"] = itOption->second;
+        varOption["label"] = itOption->label;
+        varOption["value"] = itOption->value;
         obj["options"].push_back(varOption);
       }
       break;
@@ -583,8 +584,8 @@ bool CSettingsOperations::SerializeSettingString(std::shared_ptr<const CSettingS
       for (StringSettingOptions::const_iterator itOption = options.begin(); itOption != options.end(); ++itOption)
       {
         CVariant varOption(CVariant::VariantTypeObject);
-        varOption["label"] = itOption->first;
-        varOption["value"] = itOption->second;
+        varOption["label"] = itOption->label;
+        varOption["value"] = itOption->value;
         obj["options"].push_back(varOption);
       }
       break;
@@ -597,8 +598,8 @@ bool CSettingsOperations::SerializeSettingString(std::shared_ptr<const CSettingS
       for (StringSettingOptions::const_iterator itOption = options.begin(); itOption != options.end(); ++itOption)
       {
         CVariant varOption(CVariant::VariantTypeObject);
-        varOption["label"] = itOption->first;
-        varOption["value"] = itOption->second;
+        varOption["label"] = itOption->label;
+        varOption["value"] = itOption->value;
         obj["options"].push_back(varOption);
       }
       break;

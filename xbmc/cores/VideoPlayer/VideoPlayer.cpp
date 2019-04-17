@@ -32,6 +32,7 @@
 
 #include "utils/URIUtils.h"
 #include "GUIInfoManager.h"
+#include "cores/Cut.h"
 #include "cores/DataCacheCore.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
@@ -755,6 +756,7 @@ bool CVideoPlayer::CloseFile(bool reopen)
   }
 
   m_Edl.Clear();
+  CServiceBroker::GetDataCacheCore().SetCutList(m_Edl.GetCutList());
 
   m_HasVideo = false;
   m_HasAudio = false;
@@ -1296,7 +1298,7 @@ void CVideoPlayer::Prepare()
    * if there was a start time specified as part of the "Start from where last stopped" (aka
    * auto-resume) feature or if there is an EDL cut or commercial break that starts at time 0.
    */
-  CEdl::Cut cut;
+  EDL::Cut cut;
   int starttime = 0;
   if (m_playerOptions.starttime > 0 || m_playerOptions.startpercent > 0)
   {
@@ -1313,12 +1315,12 @@ void CVideoPlayer::Prepare()
   }
   else if (m_Edl.InCut(starttime, &cut))
   {
-    if (cut.action == CEdl::CUT)
+    if (cut.action == EDL::Action::CUT)
     {
       starttime = cut.end;
       CLog::Log(LOGDEBUG, "%s - Start position set to end of first cut: %d", __FUNCTION__, starttime);
     }
-    else if (cut.action == CEdl::COMM_BREAK)
+    else if (cut.action == EDL::Action::COMM_BREAK)
     {
       if (m_SkipCommercials)
       {
@@ -1717,10 +1719,10 @@ void CVideoPlayer::ProcessAudioData(CDemuxStream* pStream, DemuxPacket* pPacket)
   /*
    * If CheckSceneSkip() returns true then demux point is inside an EDL cut and the packets are dropped.
    */
-  CEdl::Cut cut;
+  EDL::Cut cut;
   if (CheckSceneSkip(m_CurrentAudio))
     drop = true;
-  else if (m_Edl.InCut(DVD_TIME_TO_MSEC(m_CurrentAudio.dts + m_offset_pts), &cut) && cut.action == CEdl::MUTE)
+  else if (m_Edl.InCut(DVD_TIME_TO_MSEC(m_CurrentAudio.dts + m_offset_pts), &cut) && cut.action == EDL::Action::MUTE)
   {
     drop = true;
   }
@@ -2364,8 +2366,8 @@ bool CVideoPlayer::CheckSceneSkip(CCurrentStream& current)
   if(current.inited == false)
     return false;
 
-  CEdl::Cut cut;
-  return m_Edl.InCut(DVD_TIME_TO_MSEC(current.dts + m_offset_pts), &cut) && cut.action == CEdl::CUT;
+  EDL::Cut cut;
+  return m_Edl.InCut(DVD_TIME_TO_MSEC(current.dts + m_offset_pts), &cut) && cut.action == EDL::Action::CUT;
 }
 
 void CVideoPlayer::CheckAutoSceneSkip()
@@ -2386,11 +2388,11 @@ void CVideoPlayer::CheckAutoSceneSkip()
 
   const int64_t clock = GetTime();
 
-  CEdl::Cut cut;
+  EDL::Cut cut;
   if (!m_Edl.InCut(clock, &cut))
     return;
 
-  if (cut.action == CEdl::CUT)
+  if (cut.action == EDL::Action::CUT)
   {
     if ((m_playSpeed > 0 && clock < cut.end - 1000) ||
         (m_playSpeed < 0 && clock < cut.start + 1000))
@@ -2412,7 +2414,7 @@ void CVideoPlayer::CheckAutoSceneSkip()
       m_messenger.Put(new CDVDMsgPlayerSeek(mode));
     }
   }
-  else if (cut.action == CEdl::COMM_BREAK)
+  else if (cut.action == EDL::Action::COMM_BREAK)
   {
     // marker for commbrak may be inaccurate. allow user to skip into break from the back
     if (m_playSpeed >= 0 && m_Edl.GetLastCutTime() != cut.start && clock < cut.end - 1000)
@@ -3775,6 +3777,7 @@ bool CVideoPlayer::OpenVideoStream(CDVDStreamInfo& hint, bool reset)
       float fFramesPerSecond = (float)m_CurrentVideo.hint.fpsrate / (float)m_CurrentVideo.hint.fpsscale;
       m_Edl.ReadEditDecisionLists(m_item, fFramesPerSecond, m_CurrentVideo.hint.height);
     }
+    CServiceBroker::GetDataCacheCore().SetCutList(m_Edl.GetCutList());
 
     static_cast<IDVDStreamPlayerVideo*>(player)->SetSpeed(m_streamPlayerSpeed);
     m_CurrentVideo.syncState = IDVDStreamPlayer::SYNC_STARTING;
@@ -4711,6 +4714,7 @@ void CVideoPlayer::UpdatePlayState(double timeout)
         state.chapters.push_back(make_pair(name, m_pDemuxer->GetChapterPos(i + 1)));
       }
     }
+    CServiceBroker::GetDataCacheCore().SetChapters(state.chapters);
 
     state.time = m_clock.GetClock(false) * 1000 / DVD_TIME_BASE;
     state.timeMax = m_pDemuxer->GetStreamLength();

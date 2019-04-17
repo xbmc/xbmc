@@ -11,7 +11,7 @@
 #include "utils/MathUtils.h"
 #include "cores/VideoPlayer/VideoReferenceClock.h"
 #include "windowing/GraphicContext.h"
-#include "windowing/osx/WinSystemIOS.h"
+#include "windowing/ios/WinSystemIOS.h"
 #include "utils/TimeUtils.h"
 
 bool CVideoSyncIos::Setup(PUPDATECLOCK func)

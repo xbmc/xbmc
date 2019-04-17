@@ -16,9 +16,7 @@
 CGUIDialogYesNo::CGUIDialogYesNo(int overrideId /* = -1 */)
     : CGUIDialogBoxBase(overrideId == -1 ? WINDOW_DIALOG_YES_NO : overrideId, "DialogConfirm.xml")
 {
-  m_bConfirmed = false;
-  m_bCanceled = false;
-  m_bCustom = false;
+  Reset();
 }
 
 CGUIDialogYesNo::~CGUIDialogYesNo() = default;
@@ -126,6 +124,26 @@ bool CGUIDialogYesNo::ShowAndGetInput(CVariant heading, CVariant text, bool &bCa
   return result == 1;
 }
 
+void CGUIDialogYesNo::Reset()
+{
+  m_bConfirmed = false;
+  m_bCanceled = false;
+  m_bCustom = false;
+  m_bAutoClosed = false;
+}
+
+int CGUIDialogYesNo::GetResult() const
+{
+  if (m_bCanceled)
+    return -1;
+  else if (m_bCustom)
+    return 2;
+  else if (IsConfirmed())
+    return 1;
+  else
+    return 0;
+}
+
 int CGUIDialogYesNo::ShowAndGetInput(CVariant heading, CVariant text, CVariant noLabel, CVariant yesLabel, CVariant customLabel, unsigned int autoCloseTime)
 {
   CGUIDialogYesNo *dialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogYesNo>(WINDOW_DIALOG_YES_NO);
@@ -144,14 +162,7 @@ int CGUIDialogYesNo::ShowAndGetInput(CVariant heading, CVariant text, CVariant n
 
   dialog->Open();
 
-  if (dialog->m_bCanceled)
-    return -1;
-  else if (dialog->m_bCustom)
-    return 2;
-  else if (dialog->IsConfirmed())
-    return 1;
-  else
-    return 0;
+  return dialog->GetResult();
 }
 
 int CGUIDialogYesNo::ShowAndGetInput(const KODI::MESSAGING::HELPERS::DialogYesNoMessage& options)
@@ -184,14 +195,7 @@ int CGUIDialogYesNo::ShowAndGetInput(const KODI::MESSAGING::HELPERS::DialogYesNo
 
   Open();
 
-  if (m_bCanceled)
-    return -1;
-  else if (m_bCustom)
-    return 2;
-  else if (IsConfirmed())
-    return 1;
-  else
-    return 0;
+  return GetResult();
 }
 
 int CGUIDialogYesNo::GetDefaultLabelID(int controlId) const

@@ -30,6 +30,7 @@
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "settings/lib/Setting.h"
+#include "settings/lib/SettingDefinitions.h"
 #include "settings/MediaSourceSettings.h"
 #include "settings/SettingAddon.h"
 #include "settings/SettingControl.h"
@@ -52,10 +53,13 @@ static std::string Localize(std::uint32_t code, ILocalizer* localizer)
 }
 
 template<typename TValueType>
-static CFileItemPtr GetFileItem(const std::string& label, const TValueType& value, const std::set<TValueType>& selectedValues)
+static CFileItemPtr GetFileItem(const std::string& label, const TValueType& value, const std::vector<std::pair<std::string,CVariant>>& properties, const std::set<TValueType>& selectedValues)
 {
   CFileItemPtr item(new CFileItem(label));
   item->SetProperty("value", value);
+
+  for (const auto& prop : properties)
+    item->SetProperty(prop.first, prop.second);
 
   if (selectedValues.find(value) != selectedValues.end())
     item->Select(true);
@@ -95,7 +99,7 @@ static bool GetIntegerOptions(SettingConstPtr setting, IntegerSettingOptions& op
     {
       const TranslatableIntegerSettingOptions& settingOptions = pSettingInt->GetTranslatableOptions();
       for (const auto& option : settingOptions)
-        options.push_back(std::make_pair(Localize(option.first, localizer), option.second));
+        options.push_back(IntegerSettingOption(Localize(option.first, localizer), option.second));
       break;
     }
 
@@ -127,7 +131,7 @@ static bool GetIntegerOptions(SettingConstPtr setting, IntegerSettingOptions& op
         else
           strLabel = StringUtils::Format(control->GetFormatString().c_str(), i);
 
-        options.push_back(std::make_pair(strLabel, i));
+        options.push_back(IntegerSettingOption(strLabel, i));
       }
 
       break;
@@ -169,7 +173,7 @@ static bool GetStringOptions(SettingConstPtr setting, StringSettingOptions& opti
     {
       const TranslatableStringSettingOptions& settingOptions = pSettingString->GetTranslatableOptions();
       for (const auto& option : settingOptions)
-        options.push_back(std::make_pair(Localize(option.first, localizer), option.second));
+        options.push_back(StringSettingOption(Localize(option.first, localizer), option.second));
       break;
     }
 
@@ -381,7 +385,7 @@ void CGUIControlSpinExSetting::FillControl()
 
       // add them to the spinner
       for (const auto& option : options)
-        m_pSpin->AddLabel(option.first, option.second);
+        m_pSpin->AddLabel(option.label, option.value);
 
       // and set the current value
       m_pSpin->SetStringValue(*selectedValues.begin());
@@ -399,7 +403,7 @@ void CGUIControlSpinExSetting::FillIntegerSettingControl()
 
   // add them to the spinner
   for (const auto& option : options)
-    m_pSpin->AddLabel(option.first, option.second);
+    m_pSpin->AddLabel(option.label, option.value);
 
   // and set the current value
   m_pSpin->SetValue(*selectedValues.begin());
@@ -558,7 +562,7 @@ bool CGUIControlListSetting::GetIntegerItems(SettingConstPtr setting, CFileItemL
 
   // turn them into CFileItems and add them to the item list
   for (const auto& option : options)
-    items.Add(GetFileItem(option.first, option.second, selectedValues));
+    items.Add(GetFileItem(option.label, option.value, option.properties, selectedValues));
 
   return true;
 }
@@ -573,7 +577,7 @@ bool CGUIControlListSetting::GetStringItems(SettingConstPtr setting, CFileItemLi
 
   // turn them into CFileItems and add them to the item list
   for (const auto& option : options)
-    items.Add(GetFileItem(option.first, option.second, selectedValues));
+    items.Add(GetFileItem(option.label, option.value, option.properties, selectedValues));
 
   return true;
 }

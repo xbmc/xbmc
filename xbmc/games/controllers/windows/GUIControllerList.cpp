@@ -59,7 +59,7 @@ bool CGUIControllerList::Initialize(void)
     m_controllerButton->SetVisible(false);
 
   CServiceBroker::GetAddonMgr().Events().Subscribe(this, &CGUIControllerList::OnEvent);
-  Refresh();
+  Refresh("");
 
   return m_controllerList != nullptr &&
          m_controllerButton != nullptr;
@@ -75,8 +75,17 @@ void CGUIControllerList::Deinitialize(void)
   m_controllerButton = nullptr;
 }
 
-bool CGUIControllerList::Refresh(void)
+bool CGUIControllerList::Refresh(const std::string& controllerId)
 {
+  // Focus specified controller after refresh
+  std::string focusController = controllerId;
+
+  if (focusController.empty() && m_focusedController >= 0)
+  {
+    // If controller ID wasn't provided, focus current controller
+    focusController = m_controllers[m_focusedController]->ID();
+  }
+
   if (!RefreshControllers())
     return false;
 
@@ -91,6 +100,12 @@ bool CGUIControllerList::Refresh(void)
 
       CGUIButtonControl* pButton = new CGUIControllerButton(*m_controllerButton, controller->Layout().Label(), buttonId++);
       m_controllerList->AddControl(pButton);
+
+      if (!focusController.empty() && controller->ID() == focusController)
+      {
+        CGUIMessage msg(GUI_MSG_SETFOCUS, m_guiWindow->GetID(), pButton->GetID());
+        m_guiWindow->OnMessage(msg);
+      }
 
       // Just in case
       if (buttonId >= MAX_CONTROLLER_COUNT)
@@ -146,11 +161,19 @@ void CGUIControllerList::ResetController(void)
 
 void CGUIControllerList::OnEvent(const ADDON::AddonEvent& event)
 {
-  if (typeid(event) == typeid(ADDON::AddonEvents::ReInstalled) ||
+  if (typeid(event) == typeid(ADDON::AddonEvents::Enabled) ||  // also called on install,
+      typeid(event) == typeid(ADDON::AddonEvents::Disabled) || // not called on uninstall
+      typeid(event) == typeid(ADDON::AddonEvents::ReInstalled) ||
       typeid(event) == typeid(ADDON::AddonEvents::UnInstalled))
   {
     using namespace MESSAGING;
     CGUIMessage msg(GUI_MSG_REFRESH_LIST, m_guiWindow->GetID(), CONTROL_CONTROLLER_LIST);
+
+    // Focus installed add-on
+    if (typeid(event) == typeid(ADDON::AddonEvents::Enabled) ||
+        typeid(event) == typeid(ADDON::AddonEvents::ReInstalled))
+      msg.SetStringParam(event.id);
+
     CApplicationMessenger::GetInstance().SendGUIMessage(msg, m_guiWindow->GetID());
   }
 }

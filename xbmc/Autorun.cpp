@@ -25,7 +25,8 @@
 #include "profiles/ProfileManager.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
-#include "xbmc/settings/lib/Setting.h"
+#include "settings/lib/Setting.h"
+#include "settings/lib/SettingDefinitions.h"
 #include "playlists/PlayList.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
@@ -517,11 +518,11 @@ bool CAutorun::CanResumePlayDVD(const std::string& path)
   return false;
 }
 
-void CAutorun::SettingOptionAudioCdActionsFiller(SettingConstPtr setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data)
+void CAutorun::SettingOptionAudioCdActionsFiller(SettingConstPtr setting, std::vector<IntegerSettingOption> &list, int &current, void *data)
 {
-  list.push_back(std::make_pair(g_localizeStrings.Get(16018), AUTOCD_NONE));
-  list.push_back(std::make_pair(g_localizeStrings.Get(14098), AUTOCD_PLAY));
+  list.push_back(IntegerSettingOption(g_localizeStrings.Get(16018), AUTOCD_NONE));
+  list.push_back(IntegerSettingOption(g_localizeStrings.Get(14098), AUTOCD_PLAY));
 #ifdef HAS_CDDA_RIPPER
-  list.push_back(std::make_pair(g_localizeStrings.Get(14096), AUTOCD_RIP));
+  list.push_back(IntegerSettingOption(g_localizeStrings.Get(14096), AUTOCD_RIP));
 #endif
 }

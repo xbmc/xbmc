@@ -21,6 +21,7 @@
 #define NUM_BUFFERS 6
 
 class CSetting;
+struct IntegerSettingOption;
 
 enum EFIELDSYNC
 {
@@ -84,7 +85,7 @@ public:
   void GetVideoRect(CRect &source, CRect &dest, CRect &view);
   float GetAspectRatio() const;
 
-  static void SettingOptionsRenderMethodsFiller(std::shared_ptr<const CSetting> setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data);
+  static void SettingOptionsRenderMethodsFiller(std::shared_ptr<const CSetting> setting, std::vector<IntegerSettingOption> &list, int &current, void *data);
 
   void SetVideoSettings(const CVideoSettings &settings);
 

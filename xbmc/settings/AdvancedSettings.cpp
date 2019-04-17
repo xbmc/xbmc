@@ -23,6 +23,7 @@
 #include "network/DNSNameCache.h"
 #include "profiles/ProfileManager.h"
 #include "settings/lib/Setting.h"
+#include "settings/lib/SettingDefinitions.h"
 #include "settings/lib/SettingsManager.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
@@ -1439,34 +1440,34 @@ bool CAdvancedSettings::CanLogComponent(int component) const
   return ((m_extraLogLevels & component) == component);
 }
 
-void CAdvancedSettings::SettingOptionsLoggingComponentsFiller(SettingConstPtr setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data)
+void CAdvancedSettings::SettingOptionsLoggingComponentsFiller(SettingConstPtr setting, std::vector<IntegerSettingOption> &list, int &current, void *data)
 {
-  list.push_back(std::make_pair(g_localizeStrings.Get(669), LOGSAMBA));
-  list.push_back(std::make_pair(g_localizeStrings.Get(670), LOGCURL));
-  list.push_back(std::make_pair(g_localizeStrings.Get(672), LOGFFMPEG));
-  list.push_back(std::make_pair(g_localizeStrings.Get(675), LOGJSONRPC));
-  list.push_back(std::make_pair(g_localizeStrings.Get(676), LOGAUDIO));
-  list.push_back(std::make_pair(g_localizeStrings.Get(680), LOGVIDEO));
-  list.push_back(std::make_pair(g_localizeStrings.Get(683), LOGAVTIMING));
-  list.push_back(std::make_pair(g_localizeStrings.Get(684), LOGWINDOWING));
-  list.push_back(std::make_pair(g_localizeStrings.Get(685), LOGPVR));
-  list.push_back(std::make_pair(g_localizeStrings.Get(686), LOGEPG));
+  list.push_back(IntegerSettingOption(g_localizeStrings.Get(669), LOGSAMBA));
+  list.push_back(IntegerSettingOption(g_localizeStrings.Get(670), LOGCURL));
+  list.push_back(IntegerSettingOption(g_localizeStrings.Get(672), LOGFFMPEG));
+  list.push_back(IntegerSettingOption(g_localizeStrings.Get(675), LOGJSONRPC));
+  list.push_back(IntegerSettingOption(g_localizeStrings.Get(676), LOGAUDIO));
+  list.push_back(IntegerSettingOption(g_localizeStrings.Get(680), LOGVIDEO));
+  list.push_back(IntegerSettingOption(g_localizeStrings.Get(683), LOGAVTIMING));
+  list.push_back(IntegerSettingOption(g_localizeStrings.Get(684), LOGWINDOWING));
+  list.push_back(IntegerSettingOption(g_localizeStrings.Get(685), LOGPVR));
+  list.push_back(IntegerSettingOption(g_localizeStrings.Get(686), LOGEPG));
 #ifdef HAS_DBUS
-  list.push_back(std::make_pair(g_localizeStrings.Get(674), LOGDBUS));
+  list.push_back(IntegerSettingOption(g_localizeStrings.Get(674), LOGDBUS));
 #endif
 #ifdef HAS_WEB_SERVER
-  list.push_back(std::make_pair(g_localizeStrings.Get(681), LOGWEBSERVER));
+  list.push_back(IntegerSettingOption(g_localizeStrings.Get(681), LOGWEBSERVER));
 #endif
 #ifdef HAS_AIRTUNES
-  list.push_back(std::make_pair(g_localizeStrings.Get(677), LOGAIRTUNES));
+  list.push_back(IntegerSettingOption(g_localizeStrings.Get(677), LOGAIRTUNES));
 #endif
 #ifdef HAS_UPNP
-  list.push_back(std::make_pair(g_localizeStrings.Get(678), LOGUPNP));
+  list.push_back(IntegerSettingOption(g_localizeStrings.Get(678), LOGUPNP));
 #endif
 #ifdef HAVE_LIBCEC
-  list.push_back(std::make_pair(g_localizeStrings.Get(679), LOGCEC));
+  list.push_back(IntegerSettingOption(g_localizeStrings.Get(679), LOGCEC));
 #endif
-  list.push_back(std::make_pair(g_localizeStrings.Get(682), LOGDATABASE));
+  list.push_back(IntegerSettingOption(g_localizeStrings.Get(682), LOGDATABASE));
 }
 
 void CAdvancedSettings::SetExtraLogLevel(const std::vector<CVariant> &components)

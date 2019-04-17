@@ -19,8 +19,8 @@
  */
 
 #if defined(KODI_3DLUT)
-float2    m_CLUTParams; // x- scale, y- offset
-texture3D m_CLUT;
+float2    m_LUTParams; // x- scale, y- offset
+texture3D m_LUT;
 
 SamplerState LutSampler : IMMUTABLE
 {
@@ -58,9 +58,9 @@ float4 output4(float4 color, float2 uv)
   color.rgb *= tonemap(luma) / luma;
 #endif
 #if defined(KODI_3DLUT)
-  half3 scale = m_CLUTParams.x;
-  half3 offset = m_CLUTParams.y;
-  float3 lutRGB = m_CLUT.Sample(LutSampler, color.rgb*scale + offset).rgb;
+  half3 scale = m_LUTParams.x;
+  half3 offset = m_LUTParams.y;
+  float3 lutRGB = m_LUT.Sample(LutSampler, color.rgb*scale + offset).rgb;
   color.rgb = scale.x ? lutRGB : color.rgb;
 #endif
 #if defined(KODI_DITHER)

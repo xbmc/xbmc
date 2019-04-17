@@ -8,16 +8,9 @@
 
 #pragma once
 
-#if defined (TARGET_DARWIN)
 #include "powermanagement/IPowerSyscall.h"
-#if defined(TARGET_DARWIN_IOS)
-#include <pthread.h>
-typedef mach_port_t io_object_t;
-typedef io_object_t io_service_t;
-#else
 #include <IOKit/pwr_mgt/IOPMLib.h>
 #include <IOKit/IOMessage.h>
-#endif
 
 class CCocoaPowerSyscall : public CPowerSyscallWithoutEvents
 {
@@ -56,12 +49,8 @@ private:
   int  m_BatteryPercent;
   bool m_SentBatteryMessage;
 
-#if defined(TARGET_DARWIN_OSX)
   io_connect_t m_root_port;             // a reference to the Root Power Domain IOService
   io_object_t  m_notifier_object;       // notifier object, used to deregister later
   IONotificationPortRef m_notify_port;  // notification port allocated by IORegisterForSystemPower
   CFRunLoopSourceRef m_power_source;
-#endif
 };
-#endif
-

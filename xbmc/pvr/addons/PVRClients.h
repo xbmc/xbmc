@@ -177,12 +177,6 @@ namespace PVR
     //@{
 
     /*!
-     * @brief Check whether there is at least one created client supporting timers.
-     * @return True if at least one created client supports timers, false otherwise.
-     */
-    bool SupportsTimers() const;
-
-    /*!
      * @brief Get all timers from all created clients
      * @param timers Store the timers in this container.
      * @param failedClients in case of errors will contain the ids of the clients for which the timers could not be obtained.

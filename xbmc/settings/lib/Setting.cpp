@@ -29,6 +29,18 @@ bool CheckSettingOptionsValidity(const TValue& value, const std::vector<std::pai
   return false;
 }
 
+template<typename TKey, typename TValue>
+bool CheckSettingOptionsValidity(const TValue& value, const std::vector<TKey>& options)
+{
+  for (auto it : options)
+  {
+    if (it.value == value)
+      return true;
+  }
+
+  return false;
+}
+
 CSetting::CSetting(const std::string &id, CSettingsManager *settingsManager /* = nullptr */)
   : ISetting(id, settingsManager)
 { }
@@ -923,8 +935,8 @@ IntegerSettingOptions CSettingInt::UpdateDynamicOptions()
   {
     for (size_t index = 0; index < options.size(); index++)
     {
-      if (options[index].first.compare(m_dynamicOptions[index].first) != 0 ||
-          options[index].second != m_dynamicOptions[index].second)
+      if (options[index].label.compare(m_dynamicOptions[index].label) != 0 ||
+          options[index].value != m_dynamicOptions[index].value)
       {
         changed = true;
         break;
@@ -1328,8 +1340,8 @@ StringSettingOptions CSettingString::UpdateDynamicOptions()
   {
     for (size_t index = 0; index < options.size(); index++)
     {
-      if (options[index].first.compare(m_dynamicOptions[index].first) != 0 ||
-          options[index].second.compare(m_dynamicOptions[index].second) != 0)
+      if (options[index].label.compare(m_dynamicOptions[index].label) != 0 ||
+          options[index].value.compare(m_dynamicOptions[index].value) != 0)
       {
         changed = true;
         break;

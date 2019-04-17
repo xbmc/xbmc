@@ -32,12 +32,14 @@
 #include "settings/Settings.h"
 #include "threads/IRunnable.h"
 #include "utils/StringUtils.h"
+#include "utils/SystemInfo.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 #include "video/VideoDatabase.h"
 
 #include "pvr/PVRDatabase.h"
 #include "pvr/PVRItem.h"
+#include "pvr/PVRJobs.h"
 #include "pvr/PVRManager.h"
 #include "messaging/helpers/DialogHelper.h"
 #include "messaging/helpers/DialogOKHelper.h"
@@ -268,12 +270,38 @@ namespace PVR
     return pDlgInfo->IsConfirmed();
   }
 
+  bool CPVRGUIActions::AddReminder(const std::shared_ptr<CFileItem>& item) const
+  {
+    const std::shared_ptr<CPVREpgInfoTag> epgTag = CPVRItem(item).GetEpgInfoTag();
+    if (!epgTag)
+    {
+      CLog::LogF(LOGERROR, "No epg tag!");
+      return false;
+    }
+
+    if (CServiceBroker::GetPVRManager().Timers()->GetTimerForEpgTag(epgTag))
+    {
+      HELPERS::ShowOKDialogText(CVariant{19033}, // "Information"
+                                CVariant{19034}); // "There is already a timer set for this event"
+      return false;
+    }
+
+    const std::shared_ptr<CPVRTimerInfoTag> newTimer = CPVRTimerInfoTag::CreateReminderFromEpg(epgTag);
+    if (!newTimer)
+    {
+      HELPERS::ShowOKDialogText(CVariant{19033}, // "Information"
+                                CVariant{19094}); // Timer creation failed. Unsupported timer type.
+      return false;
+    }
+
+    return AddTimer(newTimer);
+ }
+
   bool CPVRGUIActions::AddTimer(bool bRadio) const
   {
     const CPVRTimerInfoTagPtr newTimer(new CPVRTimerInfoTag(bRadio));
     if (ShowTimerSettings(newTimer))
     {
-      /* Add timer to backend */
       return AddTimer(newTimer);
     }
     return false;
@@ -281,15 +309,15 @@ namespace PVR
 
   bool CPVRGUIActions::AddTimer(const CFileItemPtr &item, bool bShowTimerSettings) const
   {
-    return AddTimer(item, false, bShowTimerSettings);
+    return AddTimer(item, false, bShowTimerSettings, false);
   }
 
-  bool CPVRGUIActions::AddTimerRule(const CFileItemPtr &item, bool bShowTimerSettings) const
+  bool CPVRGUIActions::AddTimerRule(const std::shared_ptr<CFileItem>& item, bool bShowTimerSettings, bool bFallbackToOneShotTimer) const
   {
-    return AddTimer(item, true, bShowTimerSettings);
+    return AddTimer(item, true, bShowTimerSettings, bFallbackToOneShotTimer);
   }
 
-  bool CPVRGUIActions::AddTimer(const CFileItemPtr &item, bool bCreateRule, bool bShowTimerSettings) const
+  bool CPVRGUIActions::AddTimer(const std::shared_ptr<CFileItem>& item, bool bCreateRule, bool bShowTimerSettings, bool bFallbackToOneShotTimer) const
   {
     const CPVRChannelPtr channel(CPVRItem(item).GetChannel());
     if (!channel)
@@ -312,18 +340,24 @@ namespace PVR
     CPVRTimerInfoTagPtr rule (bCreateRule ? CServiceBroker::GetPVRManager().Timers()->GetTimerRule(timer) : nullptr);
     if (timer || rule)
     {
-      HELPERS::ShowOKDialogText(CVariant{ 19033 }, CVariant{ 19034 }); // "Information", "There is already a timer set for this event"
+      HELPERS::ShowOKDialogText(CVariant{19033}, CVariant{19034}); // "Information", "There is already a timer set for this event"
       return false;
     }
 
     CPVRTimerInfoTagPtr newTimer(epgTag ? CPVRTimerInfoTag::CreateFromEpg(epgTag, bCreateRule) : CPVRTimerInfoTag::CreateInstantTimerTag(channel));
     if (!newTimer)
     {
-      HELPERS::ShowOKDialogText(CVariant{19033},
-                                    bCreateRule
-                                      ? CVariant{19095} // "Information", "Timer rule creation failed. The PVR add-on does not support a suitable timer rule type."
-                                      : CVariant{19094}); // "Information", "Timer creation failed. The PVR add-on does not support a suitable timer type."
-      return false;
+      if (bCreateRule && bFallbackToOneShotTimer)
+        newTimer = CPVRTimerInfoTag::CreateFromEpg(epgTag, false);
+
+      if (!newTimer)
+      {
+        HELPERS::ShowOKDialogText(CVariant{19033}, // "Information"
+                                  bCreateRule
+                                    ? CVariant{19095} // Timer rule creation failed. Unsupported timer type.
+                                    : CVariant{19094}); // Timer creation failed. Unsupported timer type.
+        return false;
+      }
     }
 
     if (bShowTimerSettings)
@@ -341,13 +375,6 @@ namespace PVR
     {
       CLog::LogF(LOGERROR, "No channel given");
       HELPERS::ShowOKDialogText(CVariant{257}, CVariant{19109}); // "Error", "Could not save the timer. Check the log for more information about this message."
-      return false;
-    }
-
-    const CPVRClientPtr client = CServiceBroker::GetPVRManager().GetClient(item->m_iClientId);
-    if (client && !client->GetClientCapabilities().SupportsTimers())
-    {
-      HELPERS::ShowOKDialogText(CVariant{19033}, CVariant{19215}); // "Information", "The PVR backend does not support timers."
       return false;
     }
 
@@ -1534,8 +1561,14 @@ namespace PVR
       pDlgProgress->SetPercentage(70);
       pDlgProgress->Progress();
 
-      pvrDatabase->DeleteClients();
+      /* delete all timers */
+      pvrDatabase->DeleteTimers();
       pDlgProgress->SetPercentage(80);
+      pDlgProgress->Progress();
+
+      /* delete all clients */
+      pvrDatabase->DeleteClients();
+      pDlgProgress->SetPercentage(90);
       pDlgProgress->Progress();
 
       /* delete all channel and recording settings */
@@ -1625,8 +1658,7 @@ namespace PVR
             }
             else
             {
-              // Next event is due to a local recording.
-
+              // Next event is due to a local recording or reminder.
               const CDateTime now(CDateTime::GetUTCDateTime());
               const CDateTime start(cause->StartAsUTC());
               const CDateTimeSpan prestart(0, 0, cause->MarginStart(), 0);
@@ -1647,7 +1679,9 @@ namespace PVR
                 dueStr = g_localizeStrings.Get(19695);
               }
 
-              text = StringUtils::Format(g_localizeStrings.Get(19692).c_str(), // "PVR will start recording...."
+              text = StringUtils::Format(cause->IsReminder()
+                                           ? g_localizeStrings.Get(19690).c_str() // "PVR has scheduled a reminder...."
+                                           : g_localizeStrings.Get(19692).c_str(), // "PVR will start recording...."
                                          cause->Title().c_str(),
                                          cause->ChannelName().c_str(),
                                          dueStr.c_str());
@@ -1712,7 +1746,7 @@ namespace PVR
     // soon recording on local backend?
     if (IsNextEventWithinBackendIdleTime())
     {
-      const std::shared_ptr<CPVRTimerInfoTag> timer = CServiceBroker::GetPVRManager().Timers()->GetNextActiveTimer();
+      const std::shared_ptr<CPVRTimerInfoTag> timer = CServiceBroker::GetPVRManager().Timers()->GetNextActiveTimer(false);
       if (!timer)
       {
         // Next event is due to automatic daily wakeup of PVR!
@@ -1744,6 +1778,54 @@ namespace PVR
     return false;
   }
 
+  namespace
+  {
+    std::string GetAnnouncerText(const std::shared_ptr<CPVRTimerInfoTag>& timer, int idEpg, int idNoEpg)
+    {
+      std::string text;
+      if (timer->IsEpgBased())
+      {
+        text = StringUtils::Format(g_localizeStrings.Get(idEpg),
+                                   timer->Title(), // tv show title
+                                   timer->ChannelName(),
+                                   timer->StartAsLocalTime().GetAsLocalizedDateTime(false, false));
+      }
+      else
+      {
+        text = StringUtils::Format(g_localizeStrings.Get(idNoEpg),
+                                   timer->ChannelName(),
+                                   timer->StartAsLocalTime().GetAsLocalizedDateTime(false, false));
+      }
+      return text;
+    }
+
+    void AddEventLogEntry(const std::shared_ptr<CPVRTimerInfoTag>& timer, int idEpg, int idNoEpg)
+    {
+      std::string name;
+      std::string icon;
+
+      const std::shared_ptr<CPVRClient> client = CServiceBroker::GetPVRManager().GetClient(timer->GetTimerType()->GetClientId());
+      if (client)
+      {
+        name = client->Name();
+        icon = client->Icon();
+      }
+      else
+      {
+        name = g_sysinfo.GetAppName();
+        icon = "special://xbmc/media/icon256x256.png";
+      }
+
+      CPVREventlogJob* job = new CPVREventlogJob;
+      job->AddEvent(false, // do not display a toast, only log event
+                    false, // info, no error
+                    name,
+                    GetAnnouncerText(timer, idEpg, idNoEpg),
+                    icon);
+      CJobManager::GetInstance().AddJob(job, nullptr);
+    }
+  } // unnamed namespace
+
   bool CPVRGUIActions::IsNextEventWithinBackendIdleTime(void) const
   {
     // timers going off soon?
@@ -1753,6 +1835,126 @@ namespace PVR
     const CDateTimeSpan delta(next - now);
 
     return (delta <= idle);
+  }
+
+  void CPVRGUIActions::AnnounceReminder(const std::shared_ptr<CPVRTimerInfoTag>& timer) const
+  {
+    if (!timer->IsReminder())
+    {
+      CLog::LogF(LOGERROR, "No reminder timer!");
+      return;
+    }
+
+    if (timer->EndAsUTC() < CDateTime::GetUTCDateTime())
+    {
+      // expired. timer end is in the past. write event log entry.
+      AddEventLogEntry(timer, 19305, 19306); // Deleted missed PVR reminder ...
+      return;
+    }
+
+    if (CServiceBroker::GetPVRManager().IsPlayingChannel(timer->Channel()))
+    {
+      // no need for an announcement. channel in question is already playing.
+      return;
+    }
+
+    // show the reminder dialog
+    CGUIDialogYesNo* dialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogYesNo>(WINDOW_DIALOG_YES_NO);
+    if (!dialog)
+      return;
+
+    dialog->Reset();
+    dialog->SetHeading(CVariant{19312}); // "PVR reminder"
+    dialog->SetAutoClose(10000);
+    dialog->SetChoice(0, CVariant{19165}); // no: "Switch"
+
+    std::string text = GetAnnouncerText(timer, 19307, 19308); // Reminder for ...
+
+    bool bCanRecord = false;
+    const CPVRClientPtr client = CServiceBroker::GetPVRManager().GetClient(timer->m_iClientId);
+    if (client && client->GetClientCapabilities().SupportsTimers())
+    {
+      bCanRecord = true;
+      dialog->SetChoice(1, CVariant{264}); // yes: "Record"
+      dialog->SetChoice(2, CVariant{222}); // custom: "Cancel"
+
+      text += "\n\n" + g_localizeStrings.Get(19309); // (Auto-close of this reminder will schedule a recording...)
+    }
+    else
+    {
+      dialog->SetChoice(1, CVariant{222}); // yes: "Cancel"
+    }
+    dialog->SetText(text);
+
+    dialog->Open();
+
+    int iResult = dialog->GetResult();
+    if (dialog->IsAutoClosed())
+    {
+      if (bCanRecord)
+        iResult = 1; // YES -> schedule recording
+      else
+        iResult = -1; // CANCELLED -> do nothing
+    }
+
+    switch (iResult)
+    {
+      case 0: // NO
+        // switch to channel
+        SwitchToChannel(std::make_shared<CFileItem>(timer->Channel()), false);
+        break;
+      case 1: // YES
+        if (bCanRecord)
+        {
+          std::shared_ptr<CPVRTimerInfoTag> newTimer;
+
+          std::shared_ptr<CPVREpgInfoTag> epgTag = timer->GetEpgInfoTag();
+          if (epgTag)
+          {
+            newTimer = CPVRTimerInfoTag::CreateFromEpg(epgTag, false);
+            if (newTimer)
+            {
+              // an epgtag can only have max one timer - we need to clear the reminder to be able to attach the recording timer
+              DeleteTimer(timer, false, false);
+            }
+          }
+          else
+          {
+            int iDuration = (timer->EndAsUTC() - timer->StartAsUTC()).GetSecondsTotal() / 60;
+            newTimer = CPVRTimerInfoTag::CreateTimerTag(timer->Channel(), timer->StartAsUTC(), iDuration);
+          }
+
+          if (newTimer)
+          {
+            // schedule recording
+            AddTimer(std::make_shared<CFileItem>(newTimer), false);
+          }
+
+          if (dialog->IsAutoClosed())
+          {
+            AddEventLogEntry(timer, 19310, 19311); // Scheduled recording for auto-closed PVR reminder ...
+          }
+        }
+        break;
+      default:
+        break;
+    }
+  }
+
+  void CPVRGUIActions::AnnounceReminders() const
+  {
+    // Prevent multiple yesno dialogs, all on same call stack, due to gui message processing while dialog is open.
+    if (m_bReminderAnnouncementRunning)
+      return;
+
+    m_bReminderAnnouncementRunning = true;
+    std::shared_ptr<CPVRTimerInfoTag> timer = CServiceBroker::GetPVRManager().Timers()->GetNextReminderToAnnnounce();
+    while (timer)
+    {
+      AnnounceReminder(timer);
+      timer = CServiceBroker::GetPVRManager().Timers()->GetNextReminderToAnnnounce();
+    }
+    m_bReminderAnnouncementRunning = false;
   }
 
   void CPVRGUIActions::SetSelectedItemPath(bool bRadio, const std::string &path)

@@ -13,7 +13,11 @@
 #include "dialogs/GUIDialogNumeric.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
+#include "guilib/WindowIDs.h"
 #include "input/Key.h"
+#include "input/actions/Action.h"
+#include "input/actions/ActionIDs.h"
+#include "messaging/ApplicationMessenger.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 
@@ -47,6 +51,27 @@ CPVRActionListener::~CPVRActionListener()
 {
   CServiceBroker::GetSettingsComponent()->GetSettings()->UnregisterCallback(this);
   g_application.UnregisterActionListener(this);
+}
+
+void CPVRActionListener::Init(CPVRManager& mgr)
+{
+  mgr.Events().Subscribe(this, &CPVRActionListener::OnPVRManagerEvent);
+}
+
+void CPVRActionListener::Deinit(CPVRManager& mgr)
+{
+  mgr.Events().Unsubscribe(this);
+}
+
+void CPVRActionListener::OnPVRManagerEvent(const PVREvent& event)
+{
+  if (event == PVREvent::AnnounceReminder)
+  {
+    // dispatch to GUI thread and handle the action there
+    KODI::MESSAGING::CApplicationMessenger::GetInstance().PostMsg(TMSG_GUI_ACTION, WINDOW_INVALID,
+                                                                  -1,
+                                                                  static_cast<void*>(new CAction(ACTION_PVR_ANNOUNCE_REMINDERS)));
+  }
 }
 
 ChannelSwitchMode CPVRActionListener::GetChannelSwitchMode(int iAction)
@@ -229,6 +254,12 @@ bool CPVRActionListener::OnAction(const CAction &action)
     case ACTION_RECORD:
     {
       CServiceBroker::GetPVRManager().GUIActions()->ToggleRecordingOnPlayingChannel();
+      return true;
+    }
+
+    case ACTION_PVR_ANNOUNCE_REMINDERS:
+    {
+      CServiceBroker::GetPVRManager().GUIActions()->AnnounceReminders();
       return true;
     }
   }

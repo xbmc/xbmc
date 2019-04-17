@@ -155,7 +155,7 @@ void CRenderSystemDX::CheckInterlacedStereoView()
       || RENDER_STEREO_MODE_CHECKERBOARD == stereoMode))
   {
     const auto outputSize = m_deviceResources->GetOutputSize();
-    DXGI_FORMAT texFormat = m_deviceResources->GetBackBuffer()->GetFormat();
+    DXGI_FORMAT texFormat = m_deviceResources->GetBackBuffer().GetFormat();
     if (!m_rightEyeTex.Create(outputSize.Width, outputSize.Height, 1, D3D11_USAGE_DEFAULT, texFormat))
     {
       CLog::Log(LOGERROR, "%s - Failed to create right eye buffer.", __FUNCTION__);
@@ -265,8 +265,7 @@ void CRenderSystemDX::PresentRender(bool rendered, bool videoLayer)
     auto m_pContext = m_deviceResources->GetD3DContext();
 
     // all views prepared, let's merge them before present
-    ID3D11RenderTargetView *const views[1] = { m_deviceResources->GetBackBufferRTV() };
-    m_pContext->OMSetRenderTargets(1, views, m_deviceResources->GetDSV());
+    m_pContext->OMSetRenderTargets(1, m_deviceResources->GetBackBuffer().GetAddressOfRTV(), m_deviceResources->GetDSV());
 
     auto outputSize = m_deviceResources->GetOutputSize();
     CRect destRect = { 0.0f, 0.0f, float(outputSize.Width), float(outputSize.Height) };
@@ -333,7 +332,7 @@ bool CRenderSystemDX::ClearBuffers(UTILS::Color color)
 
   float fColor[4];
   CD3DHelper::XMStoreColor(fColor, color);
-  ID3D11RenderTargetView* pRTView = m_deviceResources->GetBackBufferRTV();
+  ID3D11RenderTargetView* pRTView = m_deviceResources->GetBackBuffer().GetRenderTarget();
 
   if ( m_stereoMode != RENDER_STEREO_MODE_OFF
     && m_stereoMode != RENDER_STEREO_MODE_MONO)
@@ -594,8 +593,7 @@ void CRenderSystemDX::SetStereoMode(RENDER_STEREO_MODE mode, RENDER_STEREO_VIEW 
   {
     m_deviceResources->SetStereoIdx(m_stereoView == RENDER_STEREO_VIEW_RIGHT ? 1 : 0);
 
-    ID3D11RenderTargetView* const views[] = { m_deviceResources->GetBackBufferRTV() };
-    m_pContext->OMSetRenderTargets(1, views, m_deviceResources->GetDSV());
+    m_pContext->OMSetRenderTargets(1, m_deviceResources->GetBackBuffer().GetAddressOfRTV(), m_deviceResources->GetDSV());
   }
 
   auto m_pD3DDev = m_deviceResources->GetD3DDevice();
@@ -670,19 +668,17 @@ void CRenderSystemDX::SetAlphaBlendEnable(bool enable)
   m_BlendEnabled = enable;
 }
 
-CD3DTexture* CRenderSystemDX::GetBackBuffer()
+CD3DTexture& CRenderSystemDX::GetBackBuffer()
 {
   if (m_stereoView == RENDER_STEREO_VIEW_RIGHT && m_rightEyeTex.Get())
-    return &m_rightEyeTex;
+    return m_rightEyeTex;
 
   return m_deviceResources->GetBackBuffer();
 }
 
 void CRenderSystemDX::CheckDeviceCaps()
 {
-  HRESULT hr;
-
-  auto feature_level = m_deviceResources->GetDeviceFeatureLevel();
+  const auto feature_level = m_deviceResources->GetDeviceFeatureLevel();
   if (feature_level < D3D_FEATURE_LEVEL_9_3)
     m_maxTextureSize = D3D_FL9_1_REQ_TEXTURE2D_U_OR_V_DIMENSION;
   else if (feature_level < D3D_FEATURE_LEVEL_10_0)
@@ -692,96 +688,6 @@ void CRenderSystemDX::CheckDeviceCaps()
   else
     // 11_x and greater feature level. Limit this size to avoid memory overheads
     m_maxTextureSize = D3D11_REQ_TEXTURE2D_U_OR_V_DIMENSION >> 1;
-
-  m_processorFormats.clear();
-  m_sharedFormats.clear();
-  m_shaderFormats.clear();
-
-  // check video buffer caps
-  ComPtr<ID3D11Device> d3d11Dev(m_deviceResources->GetD3DDevice());
-  ComPtr<ID3D11DeviceContext> ctx(m_deviceResources->GetImmediateContext());
-  ComPtr<ID3D11VideoDevice> videoDev;
-  ComPtr<ID3D11VideoContext> videoCtx;
-  CD3D11_TEXTURE2D_DESC texDesc(DXGI_FORMAT_NV12, 1920, 1080, 1, 1, D3D11_BIND_DECODER, D3D11_USAGE_DEFAULT, 0);
-
-  if (SUCCEEDED(d3d11Dev.As(&videoDev)) && SUCCEEDED(ctx.As(&videoCtx)))
-  {
-    // VA decoding/rendering exists, let's check caps
-#ifdef _M_ARM
-    bool isNotArm = false;
-#else
-    // possible fast converting on x86/x64
-    bool isNotArm = true;
-#endif
-    // check renderer formats
-    texDesc.Usage = D3D11_USAGE_DYNAMIC;
-    texDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-    if (SUCCEEDED(d3d11Dev->CreateTexture2D(&texDesc, nullptr, nullptr)))
-    {
-      m_processorFormats.push_back(AV_PIX_FMT_NV12);
-      if (isNotArm)
-        m_processorFormats.push_back(AV_PIX_FMT_YUV420P);
-    }
-    texDesc.Format = DXGI_FORMAT_P010;
-    if (SUCCEEDED(d3d11Dev->CreateTexture2D(&texDesc, nullptr, nullptr)))
-    {
-      m_processorFormats.push_back(AV_PIX_FMT_P010);
-      if (isNotArm)
-        m_processorFormats.push_back(AV_PIX_FMT_YUV420P10);
-    }
-    texDesc.Format = DXGI_FORMAT_P016;
-    if (SUCCEEDED(hr = d3d11Dev->CreateTexture2D(&texDesc, nullptr, nullptr)))
-    {
-      m_processorFormats.push_back(AV_PIX_FMT_P016);
-      if (isNotArm)
-        m_processorFormats.push_back(AV_PIX_FMT_YUV420P16);
-    }
-
-    // check shared formats between d3d11va and shaders
-    texDesc.BindFlags |= D3D11_BIND_SHADER_RESOURCE;
-    texDesc.Format = DXGI_FORMAT_NV12;
-    if (SUCCEEDED(d3d11Dev->CreateTexture2D(&texDesc, nullptr, nullptr)))
-    {
-      m_sharedFormats.push_back(AV_PIX_FMT_NV12);
-      if (isNotArm)
-        m_sharedFormats.push_back(AV_PIX_FMT_YUV420P);
-    }
-    texDesc.Format = DXGI_FORMAT_P010;
-    if (SUCCEEDED(d3d11Dev->CreateTexture2D(&texDesc, nullptr, nullptr)))
-    {
-      m_sharedFormats.push_back(AV_PIX_FMT_P010);
-      if (isNotArm)
-        m_sharedFormats.push_back(AV_PIX_FMT_YUV420P10);
-    }
-    texDesc.Format = DXGI_FORMAT_P016;
-    if (SUCCEEDED(d3d11Dev->CreateTexture2D(&texDesc, nullptr, nullptr)))
-    {
-      m_sharedFormats.push_back(AV_PIX_FMT_P016);
-      if (isNotArm)
-        m_sharedFormats.push_back(AV_PIX_FMT_YUV420P16);
-    }
-  }
-
-  // common shader formats
-  texDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
-  texDesc.Format = DXGI_FORMAT_R8_UNORM;
-  if (SUCCEEDED(d3d11Dev->CreateTexture2D(&texDesc, nullptr, nullptr)))
-  {
-    m_shaderFormats.push_back(AV_PIX_FMT_YUV420P);
-    m_shaderFormats.push_back(AV_PIX_FMT_NV12);
-  }
-  texDesc.Format = DXGI_FORMAT_R16_UNORM;
-  if (SUCCEEDED(d3d11Dev->CreateTexture2D(&texDesc, nullptr, nullptr)))
-  {
-    m_shaderFormats.push_back(AV_PIX_FMT_YUV420P10);
-    m_shaderFormats.push_back(AV_PIX_FMT_YUV420P16);
-  }
-  texDesc.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
-  if (SUCCEEDED(d3d11Dev->CreateTexture2D(&texDesc, nullptr, nullptr)))
-  {
-    m_shaderFormats.push_back(AV_PIX_FMT_YUYV422);
-    m_shaderFormats.push_back(AV_PIX_FMT_UYVY422);
-  }
 }
 
 bool CRenderSystemDX::SupportsNPOT(bool dxt) const

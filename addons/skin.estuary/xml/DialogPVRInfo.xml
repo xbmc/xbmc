@@ -60,7 +60,7 @@
 					<itemgap>10</itemgap>
 					<align>center</align>
 					<orientation>horizontal</orientation>
-					<defaultcontrol>5</defaultcontrol>
+					<defaultcontrol always="true">5</defaultcontrol>
 					<onleft>9000</onleft>
 					<onright>9000</onright>
 					<onup>61</onup>
@@ -101,10 +101,17 @@
 					</include>
 					<include content="InfoDialogButton">
 						<param name="width" value="275" />
+						<param name="id" value="11" />
+						<param name="icon" value="icons/infodialogs/bell.png" />
+						<param name="label" value="$LOCALIZE[826]" />
+						<param name="visible" value="Window.IsActive(PVRGuideInfo)" />
+					</include>
+					<include content="InfoDialogButton">
+						<param name="width" value="275" />
 						<param name="id" value="4" />
 						<param name="icon" value="icons/infodialogs/similar.png" />
 						<param name="label" value="$LOCALIZE[19003]" />
-						<param name="visible" value="Window.IsActive(PVRGuideInfo)" />
+						<param name="visible" value="Window.IsActive(PVRGuideInfo) | Window.IsActive(PVRRecordingInfo)" />
 					</include>
 					<include content="InfoDialogButton">
 						<param name="width" value="275" />

@@ -15,6 +15,7 @@
 #include "PlayListPlayer.h"
 #include "ServiceBroker.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
+#include "cores/Cut.h"
 #include "cores/DataCacheCore.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIDialog.h"
@@ -158,7 +159,7 @@ bool CPlayerGUIInfo::InitCurrentItem(CFileItem *item)
 {
   if (item && g_application.GetAppPlayer().IsPlaying())
   {
-    CLog::Log(LOGDEBUG,"CPlayerGUIInfo::InitCurrentItem(%s)", CURL::GetRedacted(item->GetPath()).c_str());
+    CLog::Log(LOGDEBUG, "CPlayerGUIInfo::InitCurrentItem(%s)", CURL::GetRedacted(item->GetPath()).c_str());
     m_currentItem.reset(new CFileItem(*item));
   }
   else
@@ -292,6 +293,10 @@ bool CPlayerGUIInfo::GetLabel(std::string& value, const CFileItem *item, int con
         value = item->GetIconImage();
       if (fallback)
         *fallback = item->GetIconImage();
+      return true;
+    case PLAYER_CUTLIST:
+    case PLAYER_CHAPTERS:
+      value = GetContentRanges(info.m_info);
       return true;
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -585,4 +590,79 @@ bool CPlayerGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int context
   }
 
   return false;
+}
+
+std::string CPlayerGUIInfo::GetContentRanges(int iInfo) const
+{
+  std::string values;
+
+  CDataCacheCore& data = CServiceBroker::GetDataCacheCore();
+  std::vector<std::pair<float, float>> ranges;
+
+  time_t start;
+  int64_t current;
+  int64_t min;
+  int64_t max;
+  data.GetPlayTimes(start, current, min, max);
+
+  time_t duration = max - start * 1000;
+  if (duration > 0)
+  {
+    switch (iInfo)
+    {
+      case PLAYER_CUTLIST:
+        ranges = GetCutList(data, duration);
+        break;
+      case PLAYER_CHAPTERS:
+        ranges = GetChapters(data, duration);
+        break;
+      default:
+        CLog::Log(LOGERROR, "CPlayerGUIInfo::GetContentRanges(%i) - unhandled guiinfo", iInfo);
+        break;
+    }
+
+    // create csv string from ranges
+    for (const auto& range : ranges)
+      values += StringUtils::Format("%.5f,%.5f,", range.first, range.second);
+
+    if (!values.empty())
+      values.pop_back(); // remove trailing comma
+  }
+
+  return values;
+}
+
+std::vector<std::pair<float, float>> CPlayerGUIInfo::GetCutList(CDataCacheCore& data, time_t duration) const
+{
+  std::vector<std::pair<float, float>> ranges;
+
+  const std::vector<EDL::Cut> cuts = data.GetCutList();
+  for (const auto& cut : cuts)
+  {
+    if (cut.action != EDL::Action::CUT &&
+        cut.action != EDL::Action::COMM_BREAK)
+      continue;
+
+    float cutStart = cut.start * 100.0f / duration;
+    float cutEnd = cut.end * 100.0f / duration;
+    ranges.emplace_back(std::make_pair(cutStart, cutEnd));
+  }
+  return ranges;
+}
+
+std::vector<std::pair<float, float>> CPlayerGUIInfo::GetChapters(CDataCacheCore& data, time_t duration) const
+{
+  std::vector<std::pair<float, float>> ranges;
+
+  const std::vector<std::pair<std::string, int64_t>> chapters = data.GetChapters();
+  float lastMarker = 0.0f;
+  for (const auto& chapter : chapters)
+  {
+    float marker = chapter.second * 1000 * 100.0f / duration;
+    if (marker != 0)
+      ranges.emplace_back(std::make_pair(lastMarker, marker));
+
+    lastMarker = marker;
+  }
+  return ranges;
 }

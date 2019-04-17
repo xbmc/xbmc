@@ -118,7 +118,7 @@ namespace RETRO
     void RenderInternal(bool clear, uint8_t alpha) override;
 
   private:
-    void Render(CD3DTexture *target);
+    void Render(CD3DTexture& target);
   };
 }
 }

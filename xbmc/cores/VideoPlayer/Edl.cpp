@@ -7,6 +7,7 @@
  */
 
 #include "Edl.h"
+#include "cores/Cut.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "filesystem/File.h"
@@ -24,6 +25,7 @@
 #define VIDEOREDO_TAG_CUT "<Cut>"
 #define VIDEOREDO_TAG_SCENE "<SceneMarker "
 
+using namespace EDL;
 using namespace XFILE;
 
 CEdl::CEdl()
@@ -243,7 +245,7 @@ bool CEdl::ReadEdl(const std::string& strMovie, const float fFramesPerSecond)
     switch (iAction)
     {
     case 0:
-      cut.action = CUT;
+      cut.action = Action::CUT;
       if (!AddCut(cut))
       {
         CLog::Log(LOGWARNING, "%s - Error adding cut from line %i in EDL file: %s", __FUNCTION__,
@@ -252,7 +254,7 @@ bool CEdl::ReadEdl(const std::string& strMovie, const float fFramesPerSecond)
       }
       break;
     case 1:
-      cut.action = MUTE;
+      cut.action = Action::MUTE;
       if (!AddCut(cut))
       {
         CLog::Log(LOGWARNING, "%s - Error adding mute from line %i in EDL file: %s", __FUNCTION__,
@@ -269,7 +271,7 @@ bool CEdl::ReadEdl(const std::string& strMovie, const float fFramesPerSecond)
       }
       break;
     case 3:
-      cut.action = COMM_BREAK;
+      cut.action = Action::COMM_BREAK;
       if (!AddCut(cut))
       {
         CLog::Log(LOGWARNING, "%s - Error adding commercial break from line %i in EDL file: %s",
@@ -355,7 +357,7 @@ bool CEdl::ReadComskip(const std::string& strMovie, const float fFramesPerSecond
       Cut cut;
       cut.start = (int64_t)(dStartFrame / fFrameRate * 1000);
       cut.end = (int64_t)(dEndFrame / fFrameRate * 1000);
-      cut.action = COMM_BREAK;
+      cut.action = Action::COMM_BREAK;
       bValid = AddCut(cut);
     }
     else
@@ -432,7 +434,7 @@ bool CEdl::ReadVideoReDo(const std::string& strMovie)
         Cut cut;
         cut.start = (int64_t)(dStart / 10000);
         cut.end = (int64_t)(dEnd / 10000);
-        cut.action = CUT;
+        cut.action = Action::CUT;
         bValid = AddCut(cut);
       }
       else
@@ -528,7 +530,7 @@ bool CEdl::ReadBeyondTV(const std::string& strMovie)
       Cut cut;
       cut.start = (int64_t)(atof(pStart->FirstChild()->Value()) / 10000);
       cut.end = (int64_t)(atof(pEnd->FirstChild()->Value()) / 10000);
-      cut.action = COMM_BREAK;
+      cut.action = Action::COMM_BREAK;
       bValid = AddCut(cut);
     }
     else
@@ -594,10 +596,10 @@ bool CEdl::ReadPvr(const CFileItem &fileItem)
     switch (it->type)
     {
     case PVR_EDL_TYPE_CUT:
-      cut.action = CUT;
+      cut.action = Action::CUT;
       break;
     case PVR_EDL_TYPE_MUTE:
-      cut.action = MUTE;
+      cut.action = Action::MUTE;
       break;
     case PVR_EDL_TYPE_SCENE:
       if (!AddSceneMarker(cut.end))
@@ -606,7 +608,7 @@ bool CEdl::ReadPvr(const CFileItem &fileItem)
       }
       continue;
     case PVR_EDL_TYPE_COMBREAK:
-      cut.action = COMM_BREAK;
+      cut.action = Action::COMM_BREAK;
       break;
     default:
       CLog::Log(LOGINFO, "%s - Ignoring entry of unknown type: %d", __FUNCTION__, it->type);
@@ -632,11 +634,11 @@ bool CEdl::ReadPvr(const CFileItem &fileItem)
 
 bool CEdl::AddCut(Cut& cut)
 {
-  if (cut.action != CUT && cut.action != MUTE && cut.action != COMM_BREAK)
+  if (cut.action != Action::CUT && cut.action != Action::MUTE && cut.action != Action::COMM_BREAK)
   {
-    CLog::Log(LOGERROR, "%s - Not a CUT, MUTE, or COMM_BREAK! [%s - %s], %d", __FUNCTION__,
+    CLog::Log(LOGERROR, "%s - Not an Action::CUT, Action::MUTE, or Action::COMM_BREAK! [%s - %s], %d", __FUNCTION__,
               MillisecondsToTimeString(cut.start).c_str(), MillisecondsToTimeString(cut.end).c_str(),
-              cut.action);
+              static_cast<int>(cut.action));
     return false;
   }
 
@@ -644,7 +646,7 @@ bool CEdl::AddCut(Cut& cut)
   {
     CLog::Log(LOGERROR, "%s - Before start! [%s - %s], %d", __FUNCTION__,
               MillisecondsToTimeString(cut.start).c_str(), MillisecondsToTimeString(cut.end).c_str(),
-              cut.action);
+              static_cast<int>(cut.action));
     return false;
   }
 
@@ -652,7 +654,7 @@ bool CEdl::AddCut(Cut& cut)
   {
     CLog::Log(LOGERROR, "%s - Times are around the wrong way or the same! [%s - %s], %d", __FUNCTION__,
               MillisecondsToTimeString(cut.start).c_str(), MillisecondsToTimeString(cut.end).c_str(),
-              cut.action);
+              static_cast<int>(cut.action));
     return false;
   }
 
@@ -660,7 +662,7 @@ bool CEdl::AddCut(Cut& cut)
   {
     CLog::Log(LOGERROR, "%s - Start or end is in an existing cut! [%s - %s], %d", __FUNCTION__,
               MillisecondsToTimeString(cut.start).c_str(), MillisecondsToTimeString(cut.end).c_str(),
-              cut.action);
+              static_cast<int>(cut.action));
     return false;
   }
 
@@ -670,12 +672,12 @@ bool CEdl::AddCut(Cut& cut)
     {
       CLog::Log(LOGERROR, "%s - Cut surrounds an existing cut! [%s - %s], %d", __FUNCTION__,
                 MillisecondsToTimeString(cut.start).c_str(), MillisecondsToTimeString(cut.end).c_str(),
-                cut.action);
+                static_cast<int>(cut.action));
       return false;
     }
   }
 
-  if (cut.action == COMM_BREAK)
+  if (cut.action == Action::COMM_BREAK)
   {
     /*
      * Detection isn't perfect near the edges of commercial breaks so automatically wait for a bit at
@@ -698,7 +700,7 @@ bool CEdl::AddCut(Cut& cut)
   {
     CLog::Log(LOGDEBUG, "%s - Pushing new cut to back [%s - %s], %d", __FUNCTION__,
               MillisecondsToTimeString(cut.start).c_str(), MillisecondsToTimeString(cut.end).c_str(),
-              cut.action);
+              static_cast<int>(cut.action));
     m_vecCuts.push_back(cut);
   }
   else
@@ -710,14 +712,14 @@ bool CEdl::AddCut(Cut& cut)
       {
         CLog::Log(LOGDEBUG, "%s - Inserting new cut [%s - %s], %d", __FUNCTION__,
                   MillisecondsToTimeString(cut.start).c_str(), MillisecondsToTimeString(cut.end).c_str(),
-                  cut.action);
+                  static_cast<int>(cut.action));
         m_vecCuts.insert(pCurrentCut, cut);
         break;
       }
     }
   }
 
-  if (cut.action == CUT)
+  if (cut.action == Action::CUT)
     m_iTotalCutTime += cut.end - cut.start;
 
   return true;
@@ -727,7 +729,7 @@ bool CEdl::AddSceneMarker(const int iSceneMarker)
 {
   Cut cut;
 
-  if (InCut(iSceneMarker, &cut) && cut.action == CUT) // Only works for current cuts.
+  if (InCut(iSceneMarker, &cut) && cut.action == Action::CUT) // Only works for current cuts.
     return false;
 
   CLog::Log(LOGDEBUG, "%s - Inserting new scene marker: %s", __FUNCTION__,
@@ -760,7 +762,7 @@ int CEdl::RemoveCutTime(int iSeek) const
   int iCutTime = 0;
   for (int i = 0; i < (int)m_vecCuts.size(); i++)
   {
-    if (m_vecCuts[i].action == CUT)
+    if (m_vecCuts[i].action == Action::CUT)
     {
       if (iSeek >= m_vecCuts[i].start && iSeek <= m_vecCuts[i].end) // Inside cut
         iCutTime += iSeek - m_vecCuts[i].start - 1; // Decrease cut length by 1ms to jump over end boundary.
@@ -779,7 +781,7 @@ double CEdl::RestoreCutTime(double dClock) const
   double dSeek = dClock;
   for (int i = 0; i < (int)m_vecCuts.size(); i++)
   {
-    if (m_vecCuts[i].action == CUT && dSeek >= m_vecCuts[i].start)
+    if (m_vecCuts[i].action == Action::CUT && dSeek >= m_vecCuts[i].start)
       dSeek += static_cast<double>(m_vecCuts[i].end - m_vecCuts[i].start);
   }
 
@@ -801,13 +803,13 @@ std::string CEdl::GetInfo() const
     {
       switch (m_vecCuts[i].action)
       {
-      case CUT:
+      case Action::CUT:
         cutCount++;
         break;
-      case MUTE:
+      case Action::MUTE:
         muteCount++;
         break;
-      case COMM_BREAK:
+      case Action::COMM_BREAK:
         commBreakCount++;
         break;
       }
@@ -938,7 +940,7 @@ bool CEdl::GetNextSceneMarker(bool bPlus, const int iClock, int *iSceneMarker)
    * picked up when scene markers are added.
    */
   Cut cut;
-  if (bFound && InCut(*iSceneMarker, &cut) && cut.action == CUT)
+  if (bFound && InCut(*iSceneMarker, &cut) && cut.action == Action::CUT)
     *iSceneMarker = cut.end;
 
   return bFound;
@@ -960,7 +962,7 @@ void CEdl::MergeShortCommBreaks()
    * the algorithms below.
    */
   if (!m_vecCuts.empty()
-  &&  m_vecCuts[0].action == COMM_BREAK
+  &&  m_vecCuts[0].action == Action::COMM_BREAK
   && (m_vecCuts[0].end - m_vecCuts[0].start) < 5 * 1000) // 5 seconds
   {
     CLog::Log(LOGDEBUG, "%s - Removing short commercial break at start [%s - %s]. <5 seconds", __FUNCTION__,
@@ -973,12 +975,12 @@ void CEdl::MergeShortCommBreaks()
   {
     for (int i = 0; i < static_cast<int>(m_vecCuts.size()) - 1; i++)
     {
-      if ((m_vecCuts[i].action == COMM_BREAK && m_vecCuts[i + 1].action == COMM_BREAK)
+      if ((m_vecCuts[i].action == Action::COMM_BREAK && m_vecCuts[i + 1].action == Action::COMM_BREAK)
           &&  (m_vecCuts[i + 1].end - m_vecCuts[i].start < advancedSettings->m_iEdlMaxCommBreakLength * 1000) // s to ms
           &&  (m_vecCuts[i + 1].start - m_vecCuts[i].end < advancedSettings->m_iEdlMaxCommBreakGap * 1000)) // s to ms
       {
         Cut commBreak;
-        commBreak.action = COMM_BREAK;
+        commBreak.action = Action::COMM_BREAK;
         commBreak.start = m_vecCuts[i].start;
         commBreak.end = m_vecCuts[i + 1].end;
 
@@ -1004,7 +1006,7 @@ void CEdl::MergeShortCommBreaks()
      * the maximum commercial break length being triggered.
      */
     if (!m_vecCuts.empty()
-        &&  m_vecCuts[0].action == COMM_BREAK
+        &&  m_vecCuts[0].action == Action::COMM_BREAK
         &&  m_vecCuts[0].start < advancedSettings->m_iEdlMaxStartGap * 1000)
     {
       CLog::Log(LOGDEBUG, "%s - Expanding first commercial break back to start [%s - %s].", __FUNCTION__,
@@ -1017,7 +1019,7 @@ void CEdl::MergeShortCommBreaks()
      */
     for (int i = 0; i < static_cast<int>(m_vecCuts.size()); i++)
     {
-      if (m_vecCuts[i].action == COMM_BREAK
+      if (m_vecCuts[i].action == Action::COMM_BREAK
           &&  m_vecCuts[i].start > 0
           && (m_vecCuts[i].end - m_vecCuts[i].start) < advancedSettings->m_iEdlMinCommBreakLength * 1000)
       {
@@ -1036,7 +1038,7 @@ void CEdl::MergeShortCommBreaks()
    */
   for (int i = 0; i < (int)m_vecCuts.size(); i++)
   {
-    if (m_vecCuts[i].action == COMM_BREAK)
+    if (m_vecCuts[i].action == Action::COMM_BREAK)
     {
       if (m_vecCuts[i].start > 0) // Don't add a scene marker at the start.
         AddSceneMarker(m_vecCuts[i].start);

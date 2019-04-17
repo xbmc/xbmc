@@ -19,6 +19,7 @@ public:
 
   // specializations of CGUIControl
   bool OnMessage(CGUIMessage &message) override;
+  bool OnAction(const CAction& action) override;
 
   static bool ShowForAddon(const ADDON::AddonPtr &addon, bool saveToDisk = true);
   static void SaveAndClose();

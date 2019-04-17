@@ -18,6 +18,7 @@
 
 using namespace PVR;
 
+#define CONTROL_BTN_FIND 4
 #define CONTROL_BTN_OK  7
 #define CONTROL_BTN_PLAY_RECORDING  8
 
@@ -32,7 +33,9 @@ bool CGUIDialogPVRRecordingInfo::OnMessage(CGUIMessage& message)
   switch (message.GetMessage())
   {
     case GUI_MSG_CLICKED:
-      return OnClickButtonOK(message) || OnClickButtonPlay(message);
+      return OnClickButtonOK(message) ||
+             OnClickButtonPlay(message) ||
+             OnClickButtonFind(message);
   }
 
   return CGUIDialog::OnMessage(message);
@@ -61,6 +64,23 @@ bool CGUIDialogPVRRecordingInfo::OnClickButtonPlay(CGUIMessage &message)
 
     if (m_recordItem)
       CServiceBroker::GetPVRManager().GUIActions()->PlayRecording(m_recordItem, true /* check resume */);
+
+    bReturn = true;
+  }
+
+  return bReturn;
+}
+
+bool CGUIDialogPVRRecordingInfo::OnClickButtonFind(CGUIMessage& message)
+{
+  bool bReturn = false;
+
+  if (message.GetSenderId() == CONTROL_BTN_FIND)
+  {
+    Close();
+
+    if (m_recordItem)
+      CServiceBroker::GetPVRManager().GUIActions()->FindSimilar(m_recordItem);
 
     bReturn = true;
   }

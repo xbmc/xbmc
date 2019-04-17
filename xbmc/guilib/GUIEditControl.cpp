@@ -22,10 +22,6 @@
 #include "windowing/WinSystem.h"
 #include "GUIUserMessages.h"
 
-#if defined(TARGET_DARWIN)
-#include "platform/darwin/osx/CocoaInterface.h"
-#endif
-
 using namespace KODI::GUILIB;
 
 using KODI::UTILITY::CDigest;

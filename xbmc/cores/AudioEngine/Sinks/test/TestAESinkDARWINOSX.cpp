@@ -9,7 +9,7 @@
 #include "gtest/gtest.h"
 
 #include "cores/AudioEngine/Sinks/osx/CoreAudioHardware.h"
-#include "cores/AudioEngine/Sinks/osx/CoreAudioHelpers.h"
+#include "cores/AudioEngine/Sinks/darwin/CoreAudioHelpers.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
 #include "cores/AudioEngine/Sinks/osx/AEDeviceEnumerationOSX.h"
 #include <vector>

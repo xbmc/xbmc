@@ -434,6 +434,19 @@ void CPVREpgContainer::Process(void)
   PersistAll();
 }
 
+std::vector<std::shared_ptr<CPVREpg>> CPVREpgContainer::GetAllEpgs() const
+{
+  std::vector<std::shared_ptr<CPVREpg>> epgs;
+
+  CSingleLock lock(m_critSection);
+  for (const auto& epg : m_epgIdToEpgMap)
+  {
+    epgs.emplace_back(epg.second);
+  }
+
+  return epgs;
+}
+
 CPVREpgPtr CPVREpgContainer::GetById(int iEpgId) const
 {
   CPVREpgPtr retval;

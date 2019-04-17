@@ -19,6 +19,7 @@
 #include "utils/StringUtils.h"
 #include "XBDateTime.h"
 #include "settings/lib/Setting.h"
+#include "settings/lib/SettingDefinitions.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include <stdlib.h>
@@ -233,14 +234,14 @@ std::string CLinuxTimezone::GetOSConfiguredTimezone()
    return timezoneName;
 }
 
-void CLinuxTimezone::SettingOptionsTimezoneCountriesFiller(std::shared_ptr<const CSetting> setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data)
+void CLinuxTimezone::SettingOptionsTimezoneCountriesFiller(std::shared_ptr<const CSetting> setting, std::vector<StringSettingOption> &list, std::string &current, void *data)
 {
   std::vector<std::string> countries = g_timezone.GetCounties();
   for (unsigned int i = 0; i < countries.size(); i++)
-    list.push_back(std::make_pair(countries[i], countries[i]));
+    list.push_back(StringSettingOption(countries[i], countries[i]));
 }
 
-void CLinuxTimezone::SettingOptionsTimezonesFiller(std::shared_ptr<const CSetting> setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data)
+void CLinuxTimezone::SettingOptionsTimezonesFiller(std::shared_ptr<const CSetting> setting, std::vector<StringSettingOption> &list, std::string &current, void *data)
 {
   current = std::static_pointer_cast<const CSettingString>(setting)->GetValue();
   bool found = false;
@@ -250,7 +251,7 @@ void CLinuxTimezone::SettingOptionsTimezonesFiller(std::shared_ptr<const CSettin
     if (!found && StringUtils::EqualsNoCase(timezones[i], current))
       found = true;
 
-    list.push_back(std::make_pair(timezones[i], timezones[i]));
+    list.push_back(StringSettingOption(timezones[i], timezones[i]));
   }
 
   if (!found && !timezones.empty())

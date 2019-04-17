@@ -1153,6 +1153,24 @@ bool CPVRGUIInfo::GetListItemAndPlayerBool(const CFileItem *item, const CGUIInfo
         return true;
       }
       break;
+    case LISTITEM_HASREMINDER:
+      if (item->IsPVRChannel() || item->IsEPG() || item->IsPVRTimer())
+      {
+        const std::shared_ptr<CPVRTimerInfoTag> timer = CPVRItem(item).GetTimerInfoTag();
+        if (timer)
+          bValue = timer->IsReminder();
+        return true;
+      }
+      break;
+    case LISTITEM_HASREMINDERRULE:
+      if (item->IsPVRChannel() || item->IsEPG() || item->IsPVRTimer())
+      {
+        const std::shared_ptr<CPVRTimerInfoTag> timer = CPVRItem(item).GetTimerInfoTag();
+        if (timer)
+          bValue = timer->IsReminder() && (timer->GetTimerRuleId() != PVR_TIMER_NO_PARENT);
+        return true;
+      }
+      break;
     case LISTITEM_TIMERISACTIVE:
       if (item->IsPVRChannel() || item->IsEPG())
       {

@@ -27,6 +27,7 @@
 #include "profiles/ProfileManager.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/lib/Setting.h"
+#include "settings/lib/SettingDefinitions.h"
 #include "settings/lib/SettingsManager.h"
 #include "settings/MediaSettings.h"
 #include "settings/MediaSourceSettings.h"
@@ -307,7 +308,7 @@ void CGUIDialogSubtitleSettings::AddSubtitleStreams(std::shared_ptr<CSettingGrou
   m_subtitleStreamSetting = AddList(group, settingId, 462, SettingLevel::Basic, m_subtitleStream, SubtitleStreamsOptionFiller, 462);
 }
 
-void CGUIDialogSubtitleSettings::SubtitleStreamsOptionFiller(SettingConstPtr setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data)
+void CGUIDialogSubtitleSettings::SubtitleStreamsOptionFiller(SettingConstPtr setting, std::vector<IntegerSettingOption> &list, int &current, void *data)
 {
   int subtitleStreamCount = g_application.GetAppPlayer().GetSubtitleCount();
 
@@ -331,13 +332,13 @@ void CGUIDialogSubtitleSettings::SubtitleStreamsOptionFiller(SettingConstPtr set
     strItem += FormatFlags(info.flags);
     strItem += StringUtils::Format(" (%i/%i)", i + 1, subtitleStreamCount);
 
-    list.push_back(make_pair(strItem, i));
+    list.push_back(IntegerSettingOption(strItem, i));
   }
 
   // no subtitle streams - just add a "None" entry
   if (list.empty())
   {
-    list.push_back(make_pair(g_localizeStrings.Get(231), -1));
+    list.push_back(IntegerSettingOption(g_localizeStrings.Get(231), -1));
     current = -1;
   }
 }
