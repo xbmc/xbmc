@@ -9,7 +9,6 @@
 #include "guilib/GUIKeyboardFactory.h"
 #include "threads/Event.h"
 #include "Application.h"
-#include "platform/darwin/DarwinUtils.h"
 
 #import "IOSKeyboardView.h"
 #import "IOSScreenManager.h"
@@ -118,14 +117,8 @@ static CEvent keyboardFinishedEvent;
     CGSize headingSize = [_heading.text sizeWithAttributes: @{NSFontAttributeName: [UIFont systemFontOfSize:[UIFont systemFontSize]]}];
     headingW = MIN(self.bounds.size.width/2, headingSize.width+30);
   }
-  CGFloat kbHeight = _kbRect.size.height;
 
-  CGFloat y = kbHeight <= 0 ?
-    _textField.frame.origin.y :
-    MIN(self.bounds.size.height - kbHeight, self.bounds.size.height/5*3) - INPUT_BOX_HEIGHT - SPACE_BETWEEN_INPUT_AND_KEYBOARD;
-
-  if (CDarwinUtils::GetIOSVersion() >= 8.0)
-    y = _kbRect.origin.y - INPUT_BOX_HEIGHT - SPACE_BETWEEN_INPUT_AND_KEYBOARD;
+  CGFloat y = _kbRect.origin.y - INPUT_BOX_HEIGHT - SPACE_BETWEEN_INPUT_AND_KEYBOARD;
 
   _heading.frame = CGRectMake(0, y, headingW, INPUT_BOX_HEIGHT);
   _textField.frame = CGRectMake(headingW, y, self.bounds.size.width-headingW, INPUT_BOX_HEIGHT);

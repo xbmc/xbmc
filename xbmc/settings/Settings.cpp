@@ -27,9 +27,6 @@
 #if defined(TARGET_DARWIN_OSX)
 #include "platform/darwin/osx/XBMCHelper.h"
 #endif // defined(TARGET_DARWIN_OSX)
-#if defined(TARGET_DARWIN)
-#include "platform/darwin/DarwinUtils.h"
-#endif
 #if defined(TARGET_DARWIN_IOS)
 #include "SettingAddon.h"
 #endif
@@ -608,15 +605,12 @@ void CSettings::InitializeControls()
 void CSettings::InitializeVisibility()
 {
   // hide some settings if necessary
-#if defined(TARGET_DARWIN)
+#if defined(TARGET_DARWIN_IOS)
   std::shared_ptr<CSettingString> timezonecountry = std::static_pointer_cast<CSettingString>(GetSettingsManager()->GetSetting(CSettings::SETTING_LOCALE_TIMEZONECOUNTRY));
   std::shared_ptr<CSettingString> timezone = std::static_pointer_cast<CSettingString>(GetSettingsManager()->GetSetting(CSettings::SETTING_LOCALE_TIMEZONE));
 
-  if (CDarwinUtils::GetIOSVersion() >= 4.3)
-  {
-    timezonecountry->SetRequirementsMet(false);
-    timezone->SetRequirementsMet(false);
-  }
+  timezonecountry->SetRequirementsMet(false);
+  timezone->SetRequirementsMet(false);
 #endif
 }
 
