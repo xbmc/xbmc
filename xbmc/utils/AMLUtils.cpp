@@ -42,20 +42,6 @@ bool aml_present()
   return has_aml == 1;
 }
 
-bool aml_wired_present()
-{
-  static int has_wired = -1;
-  if (has_wired == -1)
-  {
-    std::string test;
-    if (SysfsUtils::GetString("/sys/class/net/eth0/operstate", test) != -1)
-      has_wired = 1;
-    else
-      has_wired = 0;
-  }
-  return has_wired == 1;
-}
-
 bool aml_permissions()
 {
   if (!aml_present())
@@ -331,18 +317,6 @@ int aml_axis_value(AML_DISPLAY_AXIS_PARAM param)
   return value[param];
 }
 
-bool aml_IsHdmiConnected()
-{
-  int hpd_state;
-  SysfsUtils::GetInt("/sys/class/amhdmitx/amhdmitx0/hpd_state", hpd_state);
-  if (hpd_state == 2)
-  {
-    return 1;
-  }
-
-  return 0;
-}
-
 bool aml_mode_to_resolution(const char *mode, RESOLUTION_INFO *res)
 {
   if (!res)
@@ -527,18 +501,6 @@ bool aml_probe_resolutions(std::vector<RESOLUTION_INFO> &resolutions)
   return resolutions.size() > 0;
 }
 
-bool aml_get_preferred_resolution(RESOLUTION_INFO *res)
-{
-  // check display/mode, it gets defaulted at boot
-  if (!aml_get_native_resolution(res))
-  {
-    // punt to 1080p if we get nothing
-    aml_mode_to_resolution("1080p", res);
-  }
-
-  return true;
-}
-
 bool aml_set_display_resolution(const RESOLUTION_INFO &res, std::string framebuffer_name)
 {
   std::string mode = res.strId.c_str();
@@ -565,27 +527,6 @@ bool aml_set_display_resolution(const RESOLUTION_INFO &res, std::string framebuf
   aml_set_framebuffer_resolution(res, framebuffer_name);
 
   return true;
-}
-
-void aml_setup_video_scaling(const char *mode)
-{
-  SysfsUtils::SetInt("/sys/class/graphics/fb0/blank",      1);
-  SysfsUtils::SetInt("/sys/class/graphics/fb0/free_scale", 0);
-  SysfsUtils::SetInt("/sys/class/graphics/fb1/free_scale", 0);
-  SysfsUtils::SetInt("/sys/class/ppmgr/ppscaler",          0);
-
-  if (strstr(mode, "1080"))
-  {
-    SysfsUtils::SetString("/sys/class/graphics/fb0/request2XScale", "8");
-    SysfsUtils::SetString("/sys/class/graphics/fb1/scale_axis",     "1280 720 1920 1080");
-    SysfsUtils::SetString("/sys/class/graphics/fb1/scale",          "0x10001");
-  }
-  else
-  {
-    SysfsUtils::SetString("/sys/class/graphics/fb0/request2XScale", "16 1280 720");
-  }
-
-  SysfsUtils::SetInt("/sys/class/graphics/fb0/blank", 0);
 }
 
 void aml_handle_scale(const RESOLUTION_INFO &res)

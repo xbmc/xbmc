@@ -43,7 +43,6 @@ enum AML_SUPPORT_H264_4K2K
 
 bool aml_present();
 bool aml_permissions();
-bool aml_wired_present();
 bool aml_support_hevc();
 bool aml_support_hevc_4k2k();
 bool aml_support_hevc_10bit();
@@ -51,14 +50,11 @@ AML_SUPPORT_H264_4K2K aml_support_h264_4k2k();
 bool aml_support_vp9();
 bool aml_has_frac_rate_policy();
 void aml_set_audio_passthrough(bool passthrough);
-bool aml_IsHdmiConnected();
 bool aml_mode_to_resolution(const char *mode, RESOLUTION_INFO *res);
 bool aml_get_native_resolution(RESOLUTION_INFO *res);
 bool aml_set_native_resolution(const RESOLUTION_INFO &res, std::string framebuffer_name, const int stereo_mode);
 bool aml_probe_resolutions(std::vector<RESOLUTION_INFO> &resolutions);
-bool aml_get_preferred_resolution(RESOLUTION_INFO *res);
 bool aml_set_display_resolution(const RESOLUTION_INFO &res, std::string framebuffer_name);
-void aml_setup_video_scaling(const char *mode);
 void aml_handle_scale(const RESOLUTION_INFO &res);
 void aml_handle_display_stereo_mode(const int stereo_mode);
 void aml_enable_freeScale(const RESOLUTION_INFO &res);
