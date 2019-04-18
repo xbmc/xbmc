@@ -153,6 +153,11 @@ public:
     return m_attributes.data();
   }
 
+  int Size() const
+  {
+    return m_writePosition;
+  }
+
 private:
   std::array<EGLint, AttributeCount * 2 + 1> m_attributes;
   int m_writePosition{};
