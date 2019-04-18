@@ -283,19 +283,6 @@ const char *CDarwinUtils::GetOSVersionString(void)
   return [[[NSProcessInfo processInfo] operatingSystemVersionString] UTF8String];
 }
 
-float CDarwinUtils::GetIOSVersion(void)
-{
-  CCocoaAutoPool pool;
-  float version;
-#if defined(TARGET_DARWIN_IOS)
-  version = [[[UIDevice currentDevice] systemVersion] floatValue];
-#else
-  version = 0.0f;
-#endif
-
-  return(version);
-}
-
 const char *CDarwinUtils::GetIOSVersionString(void)
 {
 #if defined(TARGET_DARWIN_IOS)

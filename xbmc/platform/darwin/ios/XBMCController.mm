@@ -32,7 +32,6 @@
 #include "TextureCache.h"
 #undef id
 #include <math.h>
-#include "platform/darwin/DarwinUtils.h"
 
 using namespace KODI::MESSAGING;
 
@@ -567,22 +566,19 @@ XBMCController *g_xbmcController;
 - (void)loadView
 {
   [super loadView];
-  if (CDarwinUtils::GetIOSVersion() >= 8.0)
-  {
-    self.view.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-    self.view.autoresizesSubviews = YES;
+  self.view.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+  self.view.autoresizesSubviews = YES;
 
-    m_glView = [[IOSEAGLView alloc] initWithFrame:self.view.bounds withScreen:[UIScreen mainScreen]];
-    [[IOSScreenManager sharedInstance] setView:m_glView];
-    [m_glView setMultipleTouchEnabled:YES];
+  m_glView = [[IOSEAGLView alloc] initWithFrame:self.view.bounds withScreen:[UIScreen mainScreen]];
+  [[IOSScreenManager sharedInstance] setView:m_glView];
+  [m_glView setMultipleTouchEnabled:YES];
 
-    /* Check if screen is Retina */
-    screenScale = [m_glView getScreenScale:[UIScreen mainScreen]];
+  /* Check if screen is Retina */
+  screenScale = [m_glView getScreenScale:[UIScreen mainScreen]];
 
-    [self.view addSubview: m_glView];
+  [self.view addSubview: m_glView];
 
-    [self createGestureRecognizers];
-  }
+  [self createGestureRecognizers];
 }
 //--------------------------------------------------------------
 -(void)viewDidLoad
