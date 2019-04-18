@@ -662,7 +662,6 @@ public:
     iFlags = kodiTag->Flags();
     iGenreType = kodiTag->GenreType();
     iGenreSubType = kodiTag->GenreSubType();
-    bNotify = kodiTag->Notify();
     strTitle = m_strTitle.c_str();
     strPlotOutline = m_strPlotOutline.c_str();
     strPlot = m_strPlot.c_str();
