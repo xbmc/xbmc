@@ -327,13 +327,9 @@ case $host in
           fi
 
           target_platform=appletvos
-
-          found_sdk_version=[`$use_xcodebuild -showsdks | grep $target_platform | sort | tail -n 1 | awk '{ print $2}'`]
-          use_sdk="${use_sdk:-$found_sdk_version}"
           platform_cflags+=" -fembed-bitcode"
           platform_cxxflags+=" -fembed-bitcode"
-          sdk_name=$target_platform$use_sdk
-          platform_min_version="$target_platform-version-min=9.0"
+          platform_min_version="$target_platform-version-min=11.0"
         else
           # setup which cpu to use
           if test "x$use_cpu" = "xauto"; then
@@ -341,21 +337,32 @@ case $host in
           fi
 
           target_platform=iphoneos
-
-          found_sdk_version=[`$use_xcodebuild -showsdks | grep $target_platform | sort | tail -n 1 | awk '{ print $2}'`]
-          use_sdk="${use_sdk:-$found_sdk_version}"
-          sdk_name=$target_platform$use_sdk
           platform_min_version="$target_platform-version-min=9.0"
         fi
-        case $use_sdk in
-          9.*);;
-          10.*);;
-          11.*);;
-          12.*);;
-            *)
-              AC_MSG_ERROR(error in configure of --with-sdk=$use_sdk)
-            ;;
-        esac
+
+        found_sdk_version=[`$use_xcodebuild -showsdks | grep $target_platform | sort | tail -n 1 | awk '{ print $2}'`]
+        use_sdk="${use_sdk:-$found_sdk_version}"
+        sdk_name=$target_platform$use_sdk
+
+        if test "$use_platform" = "tvos"; then
+          case $use_sdk in
+            11.*);;
+            12.*);;
+              *)
+                AC_MSG_ERROR(error in configure of --with-sdk=$use_sdk)
+              ;;
+          esac
+        else
+          case $use_sdk in
+            9.*);;
+            10.*);;
+            11.*);;
+            12.*);;
+              *)
+                AC_MSG_ERROR(error in configure of --with-sdk=$use_sdk)
+              ;;
+          esac
+        fi
 
         platform_os="ios"
 
@@ -419,6 +426,11 @@ case $use_platform in
      platform_cxxflags="-fPIC -mcpu=cortex-a53 -mfloat-abi=hard -mfpu=neon-fp-armv8 -mvectorize-with-neon-quad"
      platform_ldflags="-lpthread"
      ;;
+  tvos)
+    if test "$platform_os" != "ios"; then
+      AC_MSG_ERROR([$use_platform is only supported on the ios platform])
+    fi
+    ;;
   auto)
     ;;
   *)
@@ -686,6 +698,7 @@ if test "$platform_os" == "ios"; then
   fi
   cp -vf $simulator_sdk_path/usr/include/crt_externs.h $prefix/$deps_dir/include
 fi
+
 echo -e "use simulator:\t $use_simulator"
 
 if test "x$has_localeconv" == "xno" && test "$platform_os" == "android"; then
@@ -716,4 +729,3 @@ if test "$platform_os" == "android"; then
   echo -e "ndk-api-level:\t $use_ndk_api"
   echo -e "build-tools:\t $build_tools_path"
 fi
-
