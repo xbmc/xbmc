@@ -1,11 +1,11 @@
-xbmc/test                         test
 xbmc/addons/test                  test/addons
+xbmc/cores/AudioEngine/Sinks/test test/audioengine_sinks
 xbmc/filesystem/test              test/filesystem
 xbmc/interfaces/python/test       test/python
 xbmc/music/tags/test              test/music_tags
 xbmc/network/test                 test/network
 xbmc/playlists/test               test/playlists
+xbmc/test                         test
 xbmc/threads/test                 test/threads
 xbmc/utils/test                   test/utils
 xbmc/video/test                   test/video
-xbmc/cores/AudioEngine/Sinks/test test/audioengine_sinks

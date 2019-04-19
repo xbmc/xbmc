@@ -8,5 +8,5 @@ xbmc/cores/VideoPlayer/DVDInputStreams             cores/VideoPlayer/inputstream
 xbmc/cores/VideoPlayer/DVDSubtitles                cores/VideoPlayer/subtitles
 xbmc/cores/VideoPlayer/Process                     cores/VideoPlayer/process
 xbmc/cores/VideoPlayer/VideoRenderers              cores/VideoPlayer/videorenderers
-xbmc/cores/VideoPlayer/VideoRenderers/VideoShaders cores/VideoPlayer/videorenderers/shaders
 xbmc/cores/VideoPlayer/VideoRenderers/HwDecRender  cores/VideoPlayer/videorenderers/hwdec
+xbmc/cores/VideoPlayer/VideoRenderers/VideoShaders cores/VideoPlayer/videorenderers/shaders
