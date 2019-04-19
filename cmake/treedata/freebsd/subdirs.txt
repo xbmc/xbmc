@@ -1,6 +1,7 @@
-xbmc/platform/posix                 platform/posix
-xbmc/platform/posix/filesystem      platform/posix/filesystem
-xbmc/platform/posix/utils           platform/posix/utils
+xbmc/cores/RetroPlayer/process/rbpi cores/RetroPlayer/process/rbpi
+xbmc/cores/VideoPlayer/Process/rbpi cores/VideoPlayer/Process/rbpi
+xbmc/input/touch                    input/touch
+xbmc/input/touch/generic            input/touch/generic
 xbmc/platform/freebsd               platform/freebsd
 xbmc/platform/linux                 platform/linux
 xbmc/platform/linux/input           platform/linux/input
@@ -8,8 +9,7 @@ xbmc/platform/linux/network         platform/linux/network
 xbmc/platform/linux/peripherals     platform/linux/peripherals
 xbmc/platform/linux/powermanagement platform/linux/powermanagement
 xbmc/platform/linux/storage         platform/linux/storage
-xbmc/input/touch                    input/touch
-xbmc/input/touch/generic            input/touch/generic
-xbmc/cores/RetroPlayer/process/rbpi cores/RetroPlayer/process/rbpi
-xbmc/cores/VideoPlayer/Process/rbpi cores/VideoPlayer/Process/rbpi
+xbmc/platform/posix                 platform/posix
+xbmc/platform/posix/filesystem      platform/posix/filesystem
+xbmc/platform/posix/utils           platform/posix/utils
 xbmc/windowing/linux                windowing/linux
