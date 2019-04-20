@@ -117,22 +117,35 @@ drm_fb * CDRMUtils::DrmFbGetFromBo(struct gbm_bo *bo)
     CLog::Log(LOGDEBUG, "CDRMUtils::{} - using modifier: {:#x}", __FUNCTION__, modifiers[0]);
   }
 
-  auto ret = drmModeAddFB2WithModifiers(m_fd,
-                                        width,
-                                        height,
-                                        fb->format,
-                                        handles,
-                                        strides,
-                                        offsets,
-                                        modifiers,
-                                        &fb->fb_id,
-                                        flags);
+  int ret = drmModeAddFB2WithModifiers(m_fd,
+                                       width,
+                                       height,
+                                       fb->format,
+                                       handles,
+                                       strides,
+                                       offsets,
+                                       modifiers,
+                                       &fb->fb_id,
+                                       flags);
 
-  if(ret)
+  if(ret < 0)
   {
-    delete (fb);
-    CLog::Log(LOGDEBUG, "CDRMUtils::%s - failed to add framebuffer", __FUNCTION__);
-    return nullptr;
+    ret = drmModeAddFB2(m_fd,
+                        width,
+                        height,
+                        fb->format,
+                        handles,
+                        strides,
+                        offsets,
+                        &fb->fb_id,
+                        flags);
+
+    if (ret < 0)
+    {
+      delete (fb);
+      CLog::Log(LOGDEBUG, "CDRMUtils::{} - failed to add framebuffer: {} ({})", __FUNCTION__, strerror(errno), errno);
+      return nullptr;
+    }
   }
 
   gbm_bo_set_user_data(bo, fb, DrmFbDestroyCallback);
