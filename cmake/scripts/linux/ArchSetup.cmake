@@ -81,7 +81,6 @@ if(KODI_DEPENDSBUILD)
   set(CMAKE_BUILD_WITH_INSTALL_RPATH TRUE)
 endif()
 
-find_package(CXX11 REQUIRED)
 include(LDGOLD)
 
 include(CheckIncludeFiles)
