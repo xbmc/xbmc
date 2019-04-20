@@ -10,10 +10,12 @@
 
 #include "cores/VideoPlayer/VideoRenderers/RenderFactory.h"
 #include "ServiceBroker.h"
+#include "utils/EGLFence.h"
 #include "utils/log.h"
 #include "windowing/gbm/WinSystemGbmGLESContext.h"
 
 using namespace KODI::WINDOWING::GBM;
+using namespace KODI::UTILS::EGL;
 
 CRendererDRMPRIMEGLES::~CRendererDRMPRIMEGLES()
 {
@@ -43,13 +45,25 @@ bool CRendererDRMPRIMEGLES::Configure(const VideoPicture &picture, float fps, un
   for (auto &texture : m_DRMPRIMETextures)
     texture.Init(winSystem->GetEGLDisplay());
 
+  for (auto& fence : m_fences)
+  {
+    fence.reset(new CEGLFence(winSystem->GetEGLDisplay()));
+  }
+
   return CLinuxRendererGLES::Configure(picture, fps, orientation);
 }
 
 void CRendererDRMPRIMEGLES::ReleaseBuffer(int index)
 {
+  m_fences[index]->DestroyFence();
+
   m_DRMPRIMETextures[index].Unmap();
   CLinuxRendererGLES::ReleaseBuffer(index);
+}
+
+bool CRendererDRMPRIMEGLES::NeedBuffer(int index)
+{
+  return !m_fences[index]->IsSignaled();
 }
 
 bool CRendererDRMPRIMEGLES::CreateTexture(int index)
@@ -139,28 +153,44 @@ bool CRendererDRMPRIMEGLES::RenderHook(int index)
   {
     float x, y, z;
     float u1, v1;
-  } vertex[4];
+  };
+
+  std::array<PackedVertex, 4> vertex;
 
   GLint vertLoc = renderSystem->GUIShaderGetPos();
   GLint loc = renderSystem->GUIShaderGetCoord0();
 
-  for (unsigned int i = 0; i < 4; i++)
-  {
-    // Setup vertex position values
-    vertex[i].x = m_rotatedDestCoords[i].x;
-    vertex[i].y = m_rotatedDestCoords[i].y;
-    vertex[i].z = 0.0f;
-  }
+  // top left
+  vertex[0].x = m_rotatedDestCoords[0].x;
+  vertex[0].y = m_rotatedDestCoords[0].y;
+  vertex[0].z = 0.0f;
+  vertex[0].u1 = plane.rect.x1;
+  vertex[0].v1 = plane.rect.y1;
 
-  // Setup texture coordinates
-  vertex[0].u1 = vertex[3].u1 = plane.rect.x1;
-  vertex[0].v1 = vertex[1].v1 = plane.rect.y1;
-  vertex[1].u1 = vertex[2].u1 = plane.rect.x2;
-  vertex[2].v1 = vertex[3].v1 = plane.rect.y2;
+  // top right
+  vertex[1].x = m_rotatedDestCoords[1].x;
+  vertex[1].y = m_rotatedDestCoords[1].y;
+  vertex[1].z = 0.0f;
+  vertex[1].u1 = plane.rect.x2;
+  vertex[1].v1 = plane.rect.y1;
+
+  // bottom right
+  vertex[2].x = m_rotatedDestCoords[2].x;
+  vertex[2].y = m_rotatedDestCoords[2].y;
+  vertex[2].z = 0.0f;
+  vertex[2].u1 = plane.rect.x2;
+  vertex[2].v1 = plane.rect.y2;
+
+  // bottom left
+  vertex[3].x = m_rotatedDestCoords[3].x;
+  vertex[3].y = m_rotatedDestCoords[3].y;
+  vertex[3].z = 0.0f;
+  vertex[3].u1 = plane.rect.x1;
+  vertex[3].v1 = plane.rect.y2;;
 
   glGenBuffers(1, &vertexVBO);
   glBindBuffer(GL_ARRAY_BUFFER, vertexVBO);
-  glBufferData(GL_ARRAY_BUFFER, sizeof(PackedVertex)*4, &vertex[0], GL_STATIC_DRAW);
+  glBufferData(GL_ARRAY_BUFFER, sizeof(PackedVertex) * vertex.size(), vertex.data(), GL_STATIC_DRAW);
 
   glVertexAttribPointer(vertLoc, 3, GL_FLOAT, 0, sizeof(PackedVertex), reinterpret_cast<const GLvoid*>(offsetof(PackedVertex, x)));
   glVertexAttribPointer(loc, 2, GL_FLOAT, 0, sizeof(PackedVertex), reinterpret_cast<const GLvoid*>(offsetof(PackedVertex, u1)));
@@ -170,7 +200,7 @@ bool CRendererDRMPRIMEGLES::RenderHook(int index)
 
   glGenBuffers(1, &indexVBO);
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexVBO);
-  glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLubyte)*4, idx, GL_STATIC_DRAW);
+  glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLubyte) * 4, idx, GL_STATIC_DRAW);
 
   glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_BYTE, 0);
 
@@ -187,4 +217,35 @@ bool CRendererDRMPRIMEGLES::RenderHook(int index)
   glBindTexture(GL_TEXTURE_EXTERNAL_OES, 0);
 
   return true;
+}
+
+void CRendererDRMPRIMEGLES::AfterRenderHook(int index)
+{
+  m_fences[index]->CreateFence();
+}
+
+bool CRendererDRMPRIMEGLES::Supports(ERENDERFEATURE feature)
+{
+  switch (feature)
+  {
+  case RENDERFEATURE_STRETCH:
+  case RENDERFEATURE_ZOOM:
+  case RENDERFEATURE_VERTICAL_SHIFT:
+  case RENDERFEATURE_PIXEL_RATIO:
+  case RENDERFEATURE_ROTATION:
+    return true;
+  default:
+    return false;
+  }
+}
+
+bool CRendererDRMPRIMEGLES::Supports(ESCALINGMETHOD method)
+{
+  switch (method)
+  {
+  case VS_SCALINGMETHOD_LINEAR:
+    return true;
+  default:
+    return false;
+  }
 }
