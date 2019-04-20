@@ -109,10 +109,13 @@ drm_fb * CDRMUtils::DrmFbGetFromBo(struct gbm_bo *bo)
   memset(offsets, 0, 16);
 #endif
 
-  if (modifiers[0] == DRM_FORMAT_MOD_INVALID)
-    modifiers[0] = DRM_FORMAT_MOD_LINEAR;
+  uint32_t flags = 0;
 
-  CLog::Log(LOGDEBUG, "CDRMUtils::%s - using modifier: %lli", __FUNCTION__, modifiers[0]);
+  if (modifiers[0] && modifiers[0] != DRM_FORMAT_MOD_INVALID)
+  {
+    flags |= DRM_MODE_FB_MODIFIERS;
+    CLog::Log(LOGDEBUG, "CDRMUtils::{} - using modifier: {:#x}", __FUNCTION__, modifiers[0]);
+  }
 
   auto ret = drmModeAddFB2WithModifiers(m_fd,
                                         width,
@@ -123,7 +126,7 @@ drm_fb * CDRMUtils::DrmFbGetFromBo(struct gbm_bo *bo)
                                         offsets,
                                         modifiers,
                                         &fb->fb_id,
-                                        (modifiers[0] > 0) ? DRM_MODE_FB_MODIFIERS : 0);
+                                        flags);
 
   if(ret)
   {
