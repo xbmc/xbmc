@@ -20,7 +20,6 @@ set(APP_PREFIX ${prefix})
 set(APP_LIB_DIR ${libdir}/${APP_NAME_LC})
 set(APP_DATA_DIR ${datarootdir}/${APP_NAME_LC})
 set(APP_INCLUDE_DIR ${includedir}/${APP_NAME_LC})
-set(CXX11_SWITCH "-std=c++11")
 
 # Set XBMC_STANDALONE_SH_PULSE so we can insert PulseAudio block into kodi-standalone
 if(EXISTS ${CMAKE_SOURCE_DIR}/tools/Linux/kodi-standalone.sh.pulse)
