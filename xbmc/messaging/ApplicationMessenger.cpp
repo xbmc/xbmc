@@ -136,8 +136,15 @@ int CApplicationMessenger::SendMsg(ThreadMessage&& message, bool wait)
                  //  waitEvent ... just for such contingencies :)
   {
     // ensure the thread doesn't hold the graphics lock
-    CSingleExit exit(CServiceBroker::GetWinSystem()->GetGfxContext());
-    waitEvent->Wait();
+    CWinSystemBase* winSystem = CServiceBroker::GetWinSystem();
+    //! @todo This won't really help as winSystem can die every single
+    // moment on shutdown. A shared ptr would be a more valid solution
+    // depending on the design dependencies.
+    if (winSystem)
+    {
+      CSingleExit exit(winSystem->GetGfxContext());
+      waitEvent->Wait();
+    }
     return *result;
   }
 

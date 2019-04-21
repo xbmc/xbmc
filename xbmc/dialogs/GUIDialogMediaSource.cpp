@@ -417,12 +417,12 @@ void CGUIDialogMediaSource::OnPathBrowse(int item)
 
 void CGUIDialogMediaSource::OnPath(int item)
 {
-  if (item < 0 || item > m_paths->Size()) return;
-
-  if (m_name != CUtil::GetTitleFromPath(m_paths->Get(item)->GetPath()))
-    m_bNameChanged = true;
+  if (item < 0 || item >= m_paths->Size()) return;
 
   std::string path(m_paths->Get(item)->GetPath());
+  if (m_name != CUtil::GetTitleFromPath(path))
+    m_bNameChanged = true;
+
   CGUIKeyboardFactory::ShowAndGetInput(path, CVariant{ g_localizeStrings.Get(1021) }, false);
   m_paths->Get(item)->SetPath(path);
 
