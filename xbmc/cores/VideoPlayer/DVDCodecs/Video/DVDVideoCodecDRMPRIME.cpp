@@ -151,13 +151,6 @@ bool CDVDVideoCodecDRMPRIME::Open(CDVDStreamInfo& hints, CDVDCodecOptions& optio
     return false;
   }
 
-  if (m_pCodecContext->pix_fmt != AV_PIX_FMT_DRM_PRIME)
-  {
-    CLog::Log(LOGNOTICE, "CDVDVideoCodecDRMPRIME::%s - unexpected pix fmt %s", __FUNCTION__, av_get_pix_fmt_name(m_pCodecContext->pix_fmt));
-    avcodec_free_context(&m_pCodecContext);
-    return false;
-  }
-
   const char* pixFmtName = av_get_pix_fmt_name(m_pCodecContext->pix_fmt);
   m_processInfo.SetVideoPixelFormat(pixFmtName ? pixFmtName : "");
   m_processInfo.SetVideoDimensions(hints.width, hints.height);
@@ -282,9 +275,18 @@ CDVDVideoCodec::VCReturn CDVDVideoCodecDRMPRIME::GetPicture(VideoPicture* pVideo
 
   SetPictureParams(pVideoPicture);
 
-  CVideoBufferDRMPRIME* buffer = dynamic_cast<CVideoBufferDRMPRIME*>(m_videoBufferPool->Get());
-  buffer->SetRef(m_pFrame);
-  pVideoPicture->videoBuffer = buffer;
+  if (m_pFrame->format == AV_PIX_FMT_DRM_PRIME)
+  {
+    CVideoBufferDRMPRIME* buffer = dynamic_cast<CVideoBufferDRMPRIME*>(m_videoBufferPool->Get());
+    buffer->SetRef(m_pFrame);
+    pVideoPicture->videoBuffer = buffer;
+  }
+
+  if (!pVideoPicture->videoBuffer)
+  {
+    CLog::Log(LOGERROR, "CDVDVideoCodecDRMPRIME::{} - videoBuffer:nullptr format:{}", __FUNCTION__, av_get_pix_fmt_name(static_cast<AVPixelFormat>(m_pFrame->format)));
+    return VC_ERROR;
+  }
 
   return VC_PICTURE;
 }
