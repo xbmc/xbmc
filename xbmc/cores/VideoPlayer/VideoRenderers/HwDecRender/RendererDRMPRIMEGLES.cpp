@@ -101,7 +101,7 @@ bool CRendererDRMPRIMEGLES::UploadTexture(int index)
 
   IVideoBufferDRMPRIME* buffer = dynamic_cast<IVideoBufferDRMPRIME*>(buf.videoBuffer);
 
-  if (!buffer)
+  if (!buffer || !buffer->IsValid())
   {
     CLog::Log(LOGNOTICE, "CRendererDRMPRIMEGLES::%s - no buffer", __FUNCTION__);
     return false;

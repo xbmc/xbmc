@@ -78,6 +78,12 @@ int CVideoBufferDRMPRIME::GetColorRange() const
   }
 }
 
+bool CVideoBufferDRMPRIME::IsValid() const
+{
+  AVDRMFrameDescriptor* descriptor = GetDescriptor();
+  return descriptor && descriptor->nb_layers;
+}
+
 CVideoBufferPoolDRMPRIME::~CVideoBufferPoolDRMPRIME()
 {
   for (auto buf : m_all)
