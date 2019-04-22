@@ -8,7 +8,7 @@
 
 #include "VideoLayerBridgeDRMPRIME.h"
 
-#include "cores/VideoPlayer/DVDCodecs/Video/DVDVideoCodecDRMPRIME.h"
+#include "cores/VideoPlayer/Process/gbm/VideoBufferDRMPRIME.h"
 #include "utils/log.h"
 #include "windowing/gbm/DRMUtils.h"
 

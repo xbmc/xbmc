@@ -8,20 +8,21 @@
 
 #include "RendererDRMPRIME.h"
 
-#include "cores/VideoPlayer/DVDCodecs/Video/DVDVideoCodecDRMPRIME.h"
+#include "ServiceBroker.h"
+#include "cores/VideoPlayer/DVDCodecs/Video/DVDVideoCodec.h"
+#include "cores/VideoPlayer/Process/gbm/VideoBufferDRMPRIME.h"
 #include "cores/VideoPlayer/VideoRenderers/HwDecRender/VideoLayerBridgeDRMPRIME.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderCapture.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderFactory.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderFlags.h"
-#include "settings/lib/Setting.h"
 #include "settings/DisplaySettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
+#include "settings/lib/Setting.h"
 #include "utils/log.h"
+#include "windowing/GraphicContext.h"
 #include "windowing/gbm/DRMAtomic.h"
 #include "windowing/gbm/WinSystemGbm.h"
-#include "windowing/GraphicContext.h"
-#include "ServiceBroker.h"
 
 using namespace KODI::WINDOWING::GBM;
 

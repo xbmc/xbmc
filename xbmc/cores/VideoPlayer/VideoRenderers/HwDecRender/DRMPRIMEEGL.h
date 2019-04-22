@@ -8,8 +8,9 @@
 
 #pragma once
 
-#include "cores/VideoPlayer/DVDCodecs/Video/DVDVideoCodecDRMPRIME.h"
+#include "cores/VideoPlayer/Process/gbm/VideoBufferDRMPRIME.h"
 #include "utils/EGLImage.h"
+#include "utils/Geometry.h"
 
 #include "system_gl.h"
 
