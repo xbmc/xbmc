@@ -164,11 +164,7 @@ void CRendererDRMPRIME::RenderUpdate(int index, int index2, bool clear, unsigned
   }
 
   IVideoBufferDRMPRIME* buffer = dynamic_cast<IVideoBufferDRMPRIME*>(m_buffers[index].videoBuffer);
-  if (!buffer)
-    return;
-
-  AVDRMFrameDescriptor* descriptor = buffer->GetDescriptor();
-  if (!descriptor || !descriptor->nb_layers)
+  if (!buffer || !buffer->IsValid())
     return;
 
   if (!m_videoLayerBridge)

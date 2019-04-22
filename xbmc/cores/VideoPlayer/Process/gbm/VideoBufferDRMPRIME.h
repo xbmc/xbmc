@@ -47,6 +47,16 @@ public:
     return DRM_COLOR_YCBCR_LIMITED_RANGE;
   };
 
+  virtual bool IsValid() const
+  {
+    return true;
+  };
+  virtual bool Map()
+  {
+    return true;
+  };
+  virtual void Unmap() {};
+
   uint32_t m_fb_id = 0;
   uint32_t m_handles[AV_DRM_MAX_PLANES] = {};
 
@@ -76,6 +86,8 @@ public:
   }
   int GetColorEncoding() const override;
   int GetColorRange() const override;
+
+  bool IsValid() const override;
 
 protected:
   AVFrame* m_pFrame = nullptr;

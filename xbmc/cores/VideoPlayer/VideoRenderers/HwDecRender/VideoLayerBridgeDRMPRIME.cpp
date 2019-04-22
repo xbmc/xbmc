@@ -60,6 +60,9 @@ bool CVideoLayerBridgeDRMPRIME::Map(IVideoBufferDRMPRIME* buffer)
   if (buffer->m_fb_id)
     return true;
 
+  if (!buffer->Map())
+    return false;
+
   AVDRMFrameDescriptor* descriptor = buffer->GetDescriptor();
   uint32_t handles[4] = {0}, pitches[4] = {0}, offsets[4] = {0}, flags = 0;
   uint64_t modifier[4] = {0};
@@ -125,6 +128,8 @@ void CVideoLayerBridgeDRMPRIME::Unmap(IVideoBufferDRMPRIME* buffer)
       buffer->m_handles[i] = 0;
     }
   }
+
+  buffer->Unmap();
 }
 
 void CVideoLayerBridgeDRMPRIME::Configure(IVideoBufferDRMPRIME* buffer)
