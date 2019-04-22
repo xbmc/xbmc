@@ -1,5 +1,7 @@
-set(SOURCES ProcessInfoGBM.cpp)
+set(SOURCES ProcessInfoGBM.cpp
+            VideoBufferDRMPRIME.cpp)
 
-set(HEADERS ProcessInfoGBM.h)
+set(HEADERS ProcessInfoGBM.h
+            VideoBufferDRMPRIME.h)
 
 core_add_library(processGBM)
