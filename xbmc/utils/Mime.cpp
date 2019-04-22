@@ -382,6 +382,7 @@ const std::map<std::string, std::string> CMime::m_mimetypes =
       {"sv4cpio",   "application/x-sv4cpio"},
       {"sv4crc",    "application/x-sv4crc"},
       {"svf",       "image/vnd.dwg"},
+      {"svg",       "image/svg+xml"},
       {"svr",       "application/x-world"},
       {"swf",       "application/x-shockwave-flash"},
       {"t",         "application/x-troff"},
