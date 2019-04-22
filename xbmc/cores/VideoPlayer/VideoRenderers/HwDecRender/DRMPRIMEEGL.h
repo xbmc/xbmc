@@ -17,7 +17,7 @@
 class CDRMPRIMETexture
 {
 public:
-  bool Map(CVideoBufferDRMPRIME *buffer);
+  bool Map(IVideoBufferDRMPRIME* buffer);
   void Unmap();
   void Init(EGLDisplay eglDisplay);
 
@@ -25,7 +25,7 @@ public:
   CSizeInt GetTextureSize() { return { m_texWidth, m_texHeight }; }
 
 protected:
-  CVideoBufferDRMPRIME *m_primebuffer{nullptr};
+  IVideoBufferDRMPRIME* m_primebuffer{nullptr};
   std::unique_ptr<CEGLImage> m_eglImage;
 
   const GLenum m_textureTarget{GL_TEXTURE_EXTERNAL_OES};

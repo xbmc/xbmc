@@ -23,7 +23,7 @@ CRendererDRMPRIMEGLES::~CRendererDRMPRIMEGLES()
 
 CBaseRenderer* CRendererDRMPRIMEGLES::Create(CVideoBuffer* buffer)
 {
-  if (buffer && dynamic_cast<CVideoBufferDRMPRIME*>(buffer))
+  if (buffer && dynamic_cast<IVideoBufferDRMPRIME*>(buffer))
     return new CRendererDRMPRIMEGLES();
 
   return nullptr;
@@ -85,7 +85,7 @@ bool CRendererDRMPRIMEGLES::UploadTexture(int index)
 {
   CPictureBuffer &buf = m_buffers[index];
 
-  CVideoBufferDRMPRIME *buffer = dynamic_cast<CVideoBufferDRMPRIME*>(buf.videoBuffer);
+  IVideoBufferDRMPRIME* buffer = dynamic_cast<IVideoBufferDRMPRIME*>(buf.videoBuffer);
 
   if (!buffer)
   {

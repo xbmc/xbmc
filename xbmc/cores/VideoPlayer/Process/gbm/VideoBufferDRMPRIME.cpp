@@ -16,8 +16,13 @@ extern "C"
 #include <libavutil/pixdesc.h>
 }
 
-CVideoBufferDRMPRIME::CVideoBufferDRMPRIME(IVideoBufferPool& pool, int id)
+IVideoBufferDRMPRIME::IVideoBufferDRMPRIME(int id)
   : CVideoBuffer(id)
+{
+}
+
+CVideoBufferDRMPRIME::CVideoBufferDRMPRIME(IVideoBufferPool& pool, int id)
+  : IVideoBufferDRMPRIME(id)
 {
   m_pFrame = av_frame_alloc();
 }
