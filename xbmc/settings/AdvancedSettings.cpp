@@ -104,7 +104,7 @@ void CAdvancedSettings::Initialize(const CAppParamParser &params, CSettingsManag
   params.SetAdvancedSettings(*this);
 
   settingsMgr.RegisterSettingOptionsFiller("loggingcomponents", SettingOptionsLoggingComponentsFiller);
-  settingsMgr.RegisterSettingsHandler(this);
+  settingsMgr.RegisterSettingsHandler(this, true);
   std::set<std::string> settingSet;
   settingSet.insert(CSettings::SETTING_DEBUG_SHOWLOGINFO);
   settingSet.insert(CSettings::SETTING_DEBUG_EXTRALOGGING);
@@ -1050,10 +1050,10 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
     {
       std::string strFrom, strTo;
       TiXmlNode* pFrom = pSubstitute->FirstChild("from");
-      if (pFrom)
+      if (pFrom && !pFrom->NoChildren())
         strFrom = CSpecialProtocol::TranslatePath(pFrom->FirstChild()->Value()).c_str();
       TiXmlNode* pTo = pSubstitute->FirstChild("to");
-      if (pTo)
+      if (pTo && !pTo->NoChildren())
         strTo = pTo->FirstChild()->Value();
 
       if (!strFrom.empty() && !strTo.empty())

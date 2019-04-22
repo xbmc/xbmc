@@ -423,14 +423,19 @@ void CSettingsManager::RegisterSettingControl(const std::string &controlType, IS
     m_settingControlCreators.insert(std::make_pair(controlType, settingControlCreator));
 }
 
-void CSettingsManager::RegisterSettingsHandler(ISettingsHandler *settingsHandler)
+void CSettingsManager::RegisterSettingsHandler(ISettingsHandler *settingsHandler, bool bFront /* = false */)
 {
   if (settingsHandler == nullptr)
     return;
 
   CExclusiveLock lock(m_critical);
   if (find(m_settingsHandlers.begin(), m_settingsHandlers.end(), settingsHandler) == m_settingsHandlers.end())
-    m_settingsHandlers.push_back(settingsHandler);
+  {
+    if (bFront)
+      m_settingsHandlers.insert(m_settingsHandlers.begin(), settingsHandler);
+    else
+      m_settingsHandlers.emplace_back(settingsHandler);
+  }
 }
 
 void CSettingsManager::UnregisterSettingsHandler(ISettingsHandler *settingsHandler)
