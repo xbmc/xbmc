@@ -128,6 +128,7 @@ public:
   static const std::string SETTING_SUBTITLES_HEIGHT;
   static const std::string SETTING_SUBTITLES_STYLE;
   static const std::string SETTING_SUBTITLES_COLOR;
+  static const std::string SETTING_SUBTITLES_OPACITY;
   static const std::string SETTING_SUBTITLES_BGCOLOR;
   static const std::string SETTING_SUBTITLES_BGOPACITY;
   static const std::string SETTING_SUBTITLES_CHARSET;

@@ -165,6 +165,7 @@ const std::string CSettings::SETTING_SUBTITLES_FONT = "subtitles.font";
 const std::string CSettings::SETTING_SUBTITLES_HEIGHT = "subtitles.height";
 const std::string CSettings::SETTING_SUBTITLES_STYLE = "subtitles.style";
 const std::string CSettings::SETTING_SUBTITLES_COLOR = "subtitles.color";
+const std::string CSettings::SETTING_SUBTITLES_OPACITY = "subtitles.opacity";
 const std::string CSettings::SETTING_SUBTITLES_BGCOLOR = "subtitles.bgcolor";
 const std::string CSettings::SETTING_SUBTITLES_BGOPACITY = "subtitles.bgopacity";
 const std::string CSettings::SETTING_SUBTITLES_CHARSET = "subtitles.charset";
