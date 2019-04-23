@@ -103,7 +103,7 @@ void CAdvancedSettings::Initialize(const CAppParamParser &params, CSettingsManag
   params.SetAdvancedSettings(*this);
 
   settingsMgr.RegisterSettingOptionsFiller("loggingcomponents", SettingOptionsLoggingComponentsFiller);
-  settingsMgr.RegisterSettingsHandler(this);
+  settingsMgr.RegisterSettingsHandler(this, true);
   std::set<std::string> settingSet;
   settingSet.insert(CSettings::SETTING_DEBUG_SHOWLOGINFO);
   settingSet.insert(CSettings::SETTING_DEBUG_EXTRALOGGING);
