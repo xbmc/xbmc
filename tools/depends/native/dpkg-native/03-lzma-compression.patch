@@ -1,0 +1,11 @@
+--- a/dpkg-deb/main.c
++++ b/dpkg-deb/main.c
+@@ -195,7 +195,7 @@
+   if (compress_params.type == COMPRESSOR_TYPE_UNKNOWN)
+     badusage(_("unknown compression type '%s'!"), value);
+   if (compress_params.type == COMPRESSOR_TYPE_LZMA)
+-    badusage(_("obsolete compression type '%s'; use xz instead"), value);
++    warning(_("obsolete compression type '%s'; use xz instead"), value);
+   if (compress_params.type == COMPRESSOR_TYPE_BZIP2)
+     badusage(_("obsolete compression type '%s'; use xz or gzip instead"), value);
+ }

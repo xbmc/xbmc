@@ -40,6 +40,7 @@ all: native
 # Dependency layout for parallel builds
 autoconf-native: m4-native
 automake-native: autoconf-native
+dpkg-native: automake-native gettext-native libtool-native pkg-config-native tar-native
 flatbuffers-native: cmake-native
 libtool-native: automake-native
 libpng-native: zlib-native

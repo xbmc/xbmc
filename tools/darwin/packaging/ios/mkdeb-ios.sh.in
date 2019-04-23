@@ -133,7 +133,7 @@ echo Packaging $PACKAGE
 export COPYFILE_DISABLE=true
 export COPY_EXTENDED_ATTRIBUTES_DISABLE=true
 #
-${SUDO} dpkg-deb -bZ lzma $DIRNAME/$PACKAGE $DIRNAME/$ARCHIVE
+${SUDO} dpkg-deb -bZ lzma --no-uniform-compression $DIRNAME/$PACKAGE $DIRNAME/$ARCHIVE
 ${SUDO} chown 501:20 $DIRNAME/$ARCHIVE
 dpkg-deb --info $DIRNAME/$ARCHIVE
 dpkg-deb --contents $DIRNAME/$ARCHIVE

@@ -1,0 +1,10 @@
+--- a/configure.ac
++++ b/configure.ac
+@@ -74,7 +74,6 @@
+ DPKG_C_C99
+ AC_PROG_CXX
+ DPKG_CXX_CXX11
+-DPKG_PROG_PATCH
+ AC_CHECK_PROGS([DOXYGEN], [doxygen])
+ AC_CHECK_PROG([HAVE_DOT], [dot], [YES], [NO])
+ DPKG_PROG_PO4A
