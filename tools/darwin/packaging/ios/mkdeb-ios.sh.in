@@ -42,13 +42,6 @@ if [ ! -d $APP ]; then
   exit 1
 fi
 
-# also check for SIP (System Integrity Protection) here (via csrutil) - fakeroot et al are not working when it is enabled
-# fall back to oldschool sudo in that case
-if [ -f "${NATIVEPREFIX}/bin/fakeroot" -a "`csrutil status | grep enabled`"x == "x" ]; then
-  SUDO="${NATIVEPREFIX}/bin/fakeroot"
-elif [ -f "/usr/bin/sudo" ]; then
-  SUDO="/usr/bin/sudo"
-fi
 if [ -f "${NATIVEPREFIX}/bin/dpkg-deb" ]; then
   # make sure we pickup our tar, gnutar will fail when dpkg -i
   bin_path=$(cd ${NATIVEPREFIX}/bin; pwd)
@@ -75,8 +68,8 @@ $ARM64 && ARCHIVE=${PACKAGE_ARM64}_${VERSION}-${REVISION}_iphoneos-arm.deb
 SIZE="$(du -s -k ${APP} | awk '{print $1}')"
 
 echo Creating $PACKAGE package version $VERSION revision $REVISION
-${SUDO} rm -rf $DIRNAME/$PACKAGE
-${SUDO} rm -rf $DIRNAME/$ARCHIVE
+rm -rf $DIRNAME/$PACKAGE
+rm -rf $DIRNAME/$ARCHIVE
 
 # create debian control file.
 mkdir -p $DIRNAME/$PACKAGE/DEBIAN
@@ -123,9 +116,6 @@ find $DIRNAME/$PACKAGE/Applications/ -name '.git*' -exec rm -rf {} \;
 find $DIRNAME/$PACKAGE/Applications/ -name '.DS_Store'  -exec rm -rf {} \;
 find $DIRNAME/$PACKAGE/Applications/ -name '*.xcent'  -exec rm -rf {} \;
 
-# set ownership to root:root
-${SUDO} chown -R 0:0 $DIRNAME/$PACKAGE
-
 echo Packaging $PACKAGE
 # Tell tar, pax, etc. on Mac OS X 10.4+ not to archive
 # extended attributes (e.g. resource forks) to ._* archive members.
@@ -133,10 +123,9 @@ echo Packaging $PACKAGE
 export COPYFILE_DISABLE=true
 export COPY_EXTENDED_ATTRIBUTES_DISABLE=true
 #
-${SUDO} dpkg-deb -bZ lzma --no-uniform-compression $DIRNAME/$PACKAGE $DIRNAME/$ARCHIVE
-${SUDO} chown 501:20 $DIRNAME/$ARCHIVE
+dpkg-deb -bZ lzma --no-uniform-compression --root-owner-group $DIRNAME/$PACKAGE $DIRNAME/$ARCHIVE
 dpkg-deb --info $DIRNAME/$ARCHIVE
 dpkg-deb --contents $DIRNAME/$ARCHIVE
 
 # clean up by removing package dir
-${SUDO} rm -rf $DIRNAME/$PACKAGE
+rm -rf $DIRNAME/$PACKAGE
