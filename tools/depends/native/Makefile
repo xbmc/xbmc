@@ -14,7 +14,7 @@ NATIVE= m4-native gettext-native autoconf-native automake-native \
 
 
 ifeq ($(OS),ios)
-  NATIVE += dpkg-native xz-native tar-native fakeroot-native gen_entitlements-native ldid-native
+  NATIVE += dpkg-native xz-native tar-native gen_entitlements-native ldid-native
 endif
 
 ifeq ($(OS),osx)
@@ -40,6 +40,7 @@ all: native
 # Dependency layout for parallel builds
 autoconf-native: m4-native
 automake-native: autoconf-native
+dpkg-native: automake-native gettext-native libtool-native pkg-config-native tar-native
 flatbuffers-native: cmake-native
 libtool-native: automake-native
 libpng-native: zlib-native

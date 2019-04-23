@@ -1,17 +1,17 @@
 include ../../Makefile.include
 PREFIX=$(NATIVEPREFIX)
 PLATFORM=$(NATIVEPLATFORM)
-DEPS= ../../Makefile.include Makefile
+DEPS= ../../Makefile.include Makefile 01-no-gnu-patch.patch 02-perl-min-version.patch 03-lzma-compression.patch
 
 # lib name, version
 LIBNAME=dpkg
-VERSION=1.14.30
+VERSION=1.19.6
 SOURCE=$(LIBNAME)_$(VERSION)
-ARCHIVE=$(SOURCE).tar.gz
+ARCHIVE=$(SOURCE).tar.xz
 
 # configuration settings
-CONFIGURE=./configure --prefix=$(PREFIX) --enable-static --disable-shared \
-	  --disable-linker-optimisations --disable-nls --without-dselect --without-start-stop-daemon \
+CONFIGURE=./configure --prefix=$(PREFIX) --enable-static --disable-shared --disable-devel-docs \
+	  --disable-linker-optimizations --disable-nls --disable-dselect --disable-start-stop-daemon \
 	  ac_cv_header_libintl_h=no
 
 LIBDYLIB=$(PLATFORM)/dpkg-deb/dpkg-deb
@@ -24,6 +24,10 @@ $(TARBALLS_LOCATION)/$(ARCHIVE):
 $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 	rm -rf $(PLATFORM)/*; mkdir -p $(PLATFORM)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
+	cd $(PLATFORM); patch -p1 -i ../01-no-gnu-patch.patch
+	cd $(PLATFORM); patch -p1 -i ../02-perl-min-version.patch
+	cd $(PLATFORM); patch -p1 -i ../03-lzma-compression.patch
+	cd $(PLATFORM); $(AUTORECONF) -vif
 	cd $(PLATFORM); $(CONFIGURE)
 
 $(LIBDYLIB): $(PLATFORM)
