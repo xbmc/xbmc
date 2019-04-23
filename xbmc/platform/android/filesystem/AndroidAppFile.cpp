@@ -128,8 +128,15 @@ unsigned int CFileAndroidApp::ReadIcon(unsigned char** lpBuf, unsigned int* widt
 
   AndroidBitmapInfo info;
   AndroidBitmap_getInfo(env, bmp.get_raw(), &info);
+
   if (!info.width || !info.height)
     return 0;
+
+  if (info.stride != info.width * 4)
+  {
+    CLog::Log(LOGWARNING, "CFileAndroidApp::ReadIcon: Usupported icon format %d", info.format);
+    return 0;
+  }
 
   *width = info.width;
   *height = info.height;
