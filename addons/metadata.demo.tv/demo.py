@@ -56,7 +56,7 @@ elif action == 'getdetails':
                      'tagline': 'Tag yo',
                      'duration': 110,
                      'mpaa': 'T',
-                     'trailer': '/home/akva//porn/bukkake.mkv',
+                     'trailer': '/home/akva/fluffy/bunnies.mkv',
                      'genre': ['Action', 'Comedy'],
                      'country': ['Norway', 'Sweden', 'China'],
                      'credits': ['None', 'Want', 'To Admit It'],
@@ -67,7 +67,7 @@ elif action == 'getdetails':
                      'aired': '2007-01-01',
                      'status': 'Cancelled',
                      'episodeguide': '/path/to/show/guide',
-                     'tag': ['Porn', 'Umomz']
+                     'tag': ['Family', 'Mom <3']
                     })
         liz.setRating("imdb", 9, 100000, True )
         liz.setRating("tvdb", 8.9, 1000)
@@ -120,7 +120,7 @@ elif action == 'getepisodedetails':
                      'tagline': 'Tag yo',
                      'duration': 110,
                      'mpaa': 'T',
-                     'trailer': '/home/akva//porn/bukkake.mkv',
+                     'trailer': '/home/akva/fluffy/unicorns.mkv',
                      'genre': ['Action', 'Comedy'],
                      'country': ['Norway', 'Sweden', 'China'],
                      'credits': ['None', 'Want', 'To Admit It'],
@@ -129,7 +129,7 @@ elif action == 'getepisodedetails':
                      'dateadded': '2016-01-01',
                      'premiered': '2015-01-01',
                      'aired': '2007-01-01',
-                     'tag': ['Porn', 'Umomz']
+                     'tag': ['Family', 'Dad <3']
                     })
         liz.setRating("imdb", 9, 100000, True )
         liz.setRating("tvdb", 8.9, 1000)
@@ -157,7 +157,7 @@ elif action == 'getepisodedetails':
                      'tagline': 'Tag yo',
                      'duration': 110,
                      'mpaa': 'T',
-                     'trailer': '/home/akva//porn/bukkake.mkv',
+                     'trailer': '/home/akva/fluffy/puppies.mkv',
                      'genre': ['Action', 'Comedy'],
                      'country': ['Norway', 'Sweden', 'China'],
                      'credits': ['None', 'Want', 'To Admit It'],
@@ -166,7 +166,7 @@ elif action == 'getepisodedetails':
                      'dateadded': '2016-01-01',
                      'premiered': '2015-01-01',
                      'aired': '2007-01-01',
-                     'tag': ['Porn', 'Umomz']
+                     'tag': ['Something', 'Else']
                     })
         liz.setRating("imdb", 7, 25457, True )
         liz.setRating("tvdb", 8.1, 5478)
