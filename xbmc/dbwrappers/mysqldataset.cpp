@@ -1193,7 +1193,7 @@ void MysqlDatabase::mysqlVXPrintf(
         if( n>etBUFSIZE ){
           bufpt = zExtra = (char *)malloc(n);
           if( bufpt==0 ){
-            pAccum->mallocFailed = 1;
+            pAccum->mallocFailed = true;
             return;
           }
         }else{
@@ -1262,7 +1262,7 @@ bool MysqlDatabase::mysqlStrAccumAppend(StrAccum *p, const char *z, int N) {
     szNew += N + 1;
     if( szNew > p->mxAlloc ){
       mysqlStrAccumReset(p);
-      p->tooBig = 1;
+      p->tooBig = true;
       return false;
     }else{
       p->nAlloc = szNew;
@@ -1273,7 +1273,7 @@ bool MysqlDatabase::mysqlStrAccumAppend(StrAccum *p, const char *z, int N) {
       mysqlStrAccumReset(p);
       p->zText = zNew;
     }else{
-      p->mallocFailed = 1;
+      p->mallocFailed = true;
       mysqlStrAccumReset(p);
       return false;
     }
@@ -1306,7 +1306,7 @@ char * MysqlDatabase::mysqlStrAccumFinish(StrAccum *p){
       if( p->zText ){
         memcpy(p->zText, p->zBase, p->nChar+1);
       }else{
-        p->mallocFailed = 1;
+        p->mallocFailed = true;
       }
     }
   }
@@ -1331,8 +1331,8 @@ void MysqlDatabase::mysqlStrAccumInit(StrAccum *p, char *zBase, int n, int mx){
   p->nChar = 0;
   p->nAlloc = n;
   p->mxAlloc = mx;
-  p->tooBig = 0;
-  p->mallocFailed = 0;
+  p->tooBig = false;
+  p->mallocFailed = false;
 }
 
 /*

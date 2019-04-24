@@ -783,7 +783,7 @@ void CDVDRadioRDSData::ProcessUECP(const unsigned char *data, unsigned int len)
       else
       {
         //! crc16-check
-        unsigned short crc16 = crc16_ccitt(m_UECPData, m_UECPDataIndex-3, 1);
+        unsigned short crc16 = crc16_ccitt(m_UECPData, m_UECPDataIndex-3, true);
         if (crc16 != (m_UECPData[m_UECPDataIndex-2]<<8) + m_UECPData[m_UECPDataIndex-1])
         {
           CLog::Log(LOGERROR, "Radio UECP (RDS) Processor - Error(TS): wrong CRC # calc = %04x <> transmit = %02x%02x",

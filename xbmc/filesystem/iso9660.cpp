@@ -238,7 +238,7 @@ struct iso_dirtree *iso9660::ReadRecursiveDirFromSector( DWORD sector, const cha
 
   strcpy( m_lastpath->path, path );
 
-  while ( 1 )
+  while ( true )
   {
     if ( isodir.ucRecordLength )
       iso9660searchpointer += isodir.ucRecordLength;
@@ -325,7 +325,7 @@ struct iso_dirtree *iso9660::ReadRecursiveDirFromSector( DWORD sector, const cha
   iso9660searchpointer = 0;
   memcpy( &curr_dir, pCurr_dir_cache, sizeof(isodir) );
   memcpy( &isodir, pCurr_dir_cache, sizeof(isodir) );
-  while ( 1 )
+  while ( true )
   {
     if ( isodir.ucRecordLength )
       iso9660searchpointer += isodir.ucRecordLength;

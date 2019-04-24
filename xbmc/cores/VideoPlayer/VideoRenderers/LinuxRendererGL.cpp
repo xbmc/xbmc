@@ -2683,7 +2683,7 @@ bool CLinuxRendererGL::LoadCLUT()
 
   int clutSize, dataSize;
   if (!CColorManager::Get3dLutSize(CMS_DATA_FMT_RGB, &clutSize, &dataSize))
-    return 0;
+    return false;
 
   // allocate buffer
   m_CLUTsize = clutSize;

@@ -82,7 +82,7 @@ bool CPlayListPLS::Load(const std::string &strFile)
 
   // run through looking for the [playlist] marker.
   // if we find another http stream, then load it.
-  while (1)
+  while (true)
   {
     if ( !file.ReadString(szLine, sizeof(szLine) ) )
     {

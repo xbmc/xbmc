@@ -1346,11 +1346,11 @@ void CPeripheralCecAdapter::SetConfigurationFromSettings(void)
     ReadLogicalAddresses(GetSettingInt("standby_devices"), m_configuration.powerOffDevices);
 
   // read the boolean settings
-  m_bUseTVMenuLanguage                 = GetSettingBool("use_tv_menu_language") ? 1 : 0;
+  m_bUseTVMenuLanguage                 = GetSettingBool("use_tv_menu_language") ? true : false;
   m_configuration.bActivateSource      = GetSettingBool("activate_source") ? 1 : 0;
-  m_bPowerOffScreensaver               = GetSettingBool("cec_standby_screensaver") ? 1 : 0;
-  m_bPowerOnScreensaver                = GetSettingBool("cec_wake_screensaver") ? 1 : 0;
-  m_bSendInactiveSource                = GetSettingBool("send_inactive_source") ? 1 : 0;
+  m_bPowerOffScreensaver               = GetSettingBool("cec_standby_screensaver") ? true : false;
+  m_bPowerOnScreensaver                = GetSettingBool("cec_wake_screensaver") ? true : false;
+  m_bSendInactiveSource                = GetSettingBool("send_inactive_source") ? true : false;
   m_configuration.bAutoWakeAVR         = GetSettingBool("power_avr_on_as") ? 1 : 0;
 
   // read the mutually exclusive boolean settings

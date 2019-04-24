@@ -3569,7 +3569,7 @@ bool CMusicDatabase::LookupCDDBInfo(bool bRequery/*=false*/)
         pDlgSelect->Reset();
         pDlgSelect->SetHeading(CVariant{255});
         int i = 1;
-        while (1)
+        while (true)
         {
           std::string strTitle = cddb.getInexactTitle(i);
           if (strTitle == "") break;

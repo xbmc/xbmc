@@ -72,7 +72,7 @@ void CURL::Parse(const std::string& strURL1)
     // This should turn into zip://rar:///foo/bar.zip/alice.rar/bob.avi
     iPos = 0;
     bool is_apk = (strURL.find(".apk/", iPos) != std::string::npos);
-    while (1)
+    while (true)
     {
       if (is_apk)
         iPos = strURL.find(".apk/", iPos);

@@ -553,7 +553,7 @@ bool CTeletextDecoder::HandleAction(const CAction &action)
   if (m_RenderInfo.PageCatching)
   {
     m_txtCache->PageUpdate    = true;
-    m_RenderInfo.PageCatching = 0;
+    m_RenderInfo.PageCatching = false;
     return true;
   }
 

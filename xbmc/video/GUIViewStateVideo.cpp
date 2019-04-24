@@ -539,7 +539,7 @@ void CGUIViewStateVideoTVShows::SaveViewState()
 
 CGUIViewStateVideoEpisodes::CGUIViewStateVideoEpisodes(const CFileItemList& items) : CGUIViewStateWindowVideo(items)
 {
-  if (0)//params.GetSeason() > -1)
+  if (false)//params.GetSeason() > -1)
   {
     AddSortMethod(SortByEpisodeNumber, 20359, LABEL_MASKS("%E. %T","%R"));  // Episode. Title, Rating | empty, empty
     AddSortMethod(SortByRating, 563, LABEL_MASKS("%E. %T", "%R"));  // Episode. Title, Rating | empty, empty
