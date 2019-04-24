@@ -213,10 +213,10 @@ bool VideoPlayerCodec::Init(const CFileItem &file, unsigned int filecache)
   m_bCanSeek = false;
   if (m_pInputStream->Seek(0, SEEK_POSSIBLE))
   {
-    if (Seek(1))
+    if (m_pDemuxer->SeekTime(1, true))
     {
       // rewind stream to beginning
-      Seek(0);
+      m_pDemuxer->SeekTime(0, true);
       m_bCanSeek = true;
     }
     else
