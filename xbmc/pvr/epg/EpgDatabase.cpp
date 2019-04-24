@@ -87,7 +87,7 @@ void CPVREpgDatabase::CreateTables(void)
         "iFirstAired     integer, "
         "iParentalRating integer, "
         "iStarRating     integer, "
-        "bNotify         bool, "
+        "bNotify         bool, " // Unused. Could be removed, but beware: sqlite does not support 'ALTER TABLE x DROP COLUMN y'.
         "iSeriesId       integer, "
         "iEpisodeId      integer, "
         "iEpisodePart    integer, "
@@ -275,7 +275,6 @@ std::vector<std::shared_ptr<CPVREpgInfoTag>> CPVREpgDatabase::Get(const CPVREpg 
         newTag->m_genre              = newTag->Tokenize(m_pDS->fv("sGenre").get_asString());
         newTag->m_iParentalRating    = m_pDS->fv("iParentalRating").get_asInt();
         newTag->m_iStarRating        = m_pDS->fv("iStarRating").get_asInt();
-        newTag->m_bNotify            = m_pDS->fv("bNotify").get_asBool();
         newTag->m_iEpisodeNumber     = m_pDS->fv("iEpisodeId").get_asInt();
         newTag->m_iEpisodePart       = m_pDS->fv("iEpisodePart").get_asInt();
         newTag->m_strEpisodeName     = m_pDS->fv("sEpisodeName").get_asString().c_str();
@@ -390,7 +389,7 @@ int CPVREpgDatabase::Persist(const CPVREpgInfoTag &tag, bool bSingleUpdate /* = 
         tag.OriginalTitle().c_str(), tag.DeTokenize(tag.Cast()).c_str(), tag.DeTokenize(tag.Directors()).c_str(),
         tag.DeTokenize(tag.Writers()).c_str(), tag.Year(), tag.IMDBNumber().c_str(),
         tag.Icon().c_str(), tag.GenreType(), tag.GenreSubType(), strGenre.c_str(),
-        static_cast<unsigned int>(iFirstAired), tag.ParentalRating(), tag.StarRating(), tag.Notify(),
+        static_cast<unsigned int>(iFirstAired), tag.ParentalRating(), tag.StarRating(), false /* unused */,
         tag.SeriesNumber(), tag.EpisodeNumber(), tag.EpisodePart(), tag.EpisodeName().c_str(), tag.Flags(), tag.SeriesLink().c_str(),
         tag.UniqueBroadcastID());
   }
@@ -406,7 +405,7 @@ int CPVREpgDatabase::Persist(const CPVREpgInfoTag &tag, bool bSingleUpdate /* = 
         tag.OriginalTitle().c_str(), tag.DeTokenize(tag.Cast()).c_str(), tag.DeTokenize(tag.Directors()).c_str(),
         tag.DeTokenize(tag.Writers()).c_str(), tag.Year(), tag.IMDBNumber().c_str(),
         tag.Icon().c_str(), tag.GenreType(), tag.GenreSubType(), strGenre.c_str(),
-        static_cast<unsigned int>(iFirstAired), tag.ParentalRating(), tag.StarRating(), tag.Notify(),
+        static_cast<unsigned int>(iFirstAired), tag.ParentalRating(), tag.StarRating(), false /* unused */,
         tag.SeriesNumber(), tag.EpisodeNumber(), tag.EpisodePart(), tag.EpisodeName().c_str(), tag.Flags(), tag.SeriesLink().c_str(),
         tag.UniqueBroadcastID(), iBroadcastId);
   }

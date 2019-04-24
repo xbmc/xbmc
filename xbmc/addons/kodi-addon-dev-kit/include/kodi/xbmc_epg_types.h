@@ -100,7 +100,6 @@ extern "C" {
     time_t        firstAired;          /*!< @brief (optional) first aired in UTC */
     int           iParentalRating;     /*!< @brief (optional) parental rating */
     int           iStarRating;         /*!< @brief (optional) star rating */
-    bool          bNotify;             /*!< @brief (optional) notify the user when this event starts */
     int           iSeriesNumber;       /*!< @brief (optional) series number */
     int           iEpisodeNumber;      /*!< @brief (optional) episode number */
     int           iEpisodePartNumber;  /*!< @brief (optional) episode part number */

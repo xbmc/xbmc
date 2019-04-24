@@ -292,12 +292,6 @@ namespace PVR
     int StarRating(void) const;
 
     /*!
-     * @brief Notify on start if true.
-     * @return Notify on start.
-     */
-    bool Notify(void) const;
-
-    /*!
      * @brief The series number of this event.
      * @return The series number.
      */
@@ -435,7 +429,6 @@ namespace PVR
      */
     CDateTime GetCurrentPlayingTime(void) const;
 
-    bool                     m_bNotify = false;     /*!< notify on start */
     int                      m_iDatabaseID = -1;    /*!< database ID */
     int                      m_iGenreType = 0;      /*!< genre type */
     int                      m_iGenreSubType = 0;   /*!< genre subtype */

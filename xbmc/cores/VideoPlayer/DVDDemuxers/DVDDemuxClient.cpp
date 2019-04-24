@@ -631,6 +631,14 @@ void CDVDDemuxClient::SetSpeed (int speed)
   }
 }
 
+void CDVDDemuxClient::FillBuffer(bool mode)
+{
+  if (m_IDemux)
+  {
+    m_IDemux->FillBuffer(mode);
+  }
+}
+
 void CDVDDemuxClient::EnableStream(int id, bool enable)
 {
   if (m_IDemux)

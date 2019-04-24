@@ -401,14 +401,14 @@ namespace PVR
 
     /*!
      * @brief Request an EPG table for a channel from the client.
-     * @param channelData The data for the channel to get the EPG table for.
+     * @param iChannelUid The UID of the channel to get the EPG table for.
      * @param epg The table to write the data to.
      * @param start The start time to use.
      * @param end The end time to use.
      * @param bSaveInDb If true, tell the callback method to save any new entry in the database or not. see CAddonCallbacksPVR::PVRTransferEpgEntry()
      * @return PVR_ERROR_NO_ERROR if the table has been fetched successfully.
      */
-    PVR_ERROR GetEPGForChannel(const std::shared_ptr<CPVREpgChannelData>& channelData, CPVREpg* epg, time_t start = 0, time_t end = 0, bool bSaveInDb = false);
+    PVR_ERROR GetEPGForChannel(int iChannelUid, CPVREpg* epg, time_t start = 0, time_t end = 0, bool bSaveInDb = false);
 
     /*!
      * Tell the client the time frame to use when notifying epg events back to Kodi. The client might push epg events asynchronously
@@ -705,6 +705,14 @@ namespace PVR
      * @remarks Optional, and only used if addon has its own demuxer.
      */
     PVR_ERROR SetSpeed(int speed);
+
+    /*!
+     * @brief Notify the pvr addon/demuxer that Kodi wishes to fill demux queue
+     * @param mode for setting on/off
+     * @return PVR_ERROR_NO_ERROR on success, respective error code otherwise.
+     * @remarks Optional, and only used if addon has its own demuxer.
+     */
+    PVR_ERROR FillBuffer(bool mode);
 
     //@}
     /** @name PVR recording stream methods */

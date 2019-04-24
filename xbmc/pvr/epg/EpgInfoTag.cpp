@@ -41,8 +41,7 @@ CPVREpgInfoTag::CPVREpgInfoTag(const std::shared_ptr<CPVREpgChannelData>& channe
 }
 
 CPVREpgInfoTag::CPVREpgInfoTag(const EPG_TAG& data, int iClientId, const std::shared_ptr<CPVREpgChannelData>& channelData, int iEpgID)
-: m_bNotify(data.bNotify),
-  m_iParentalRating(data.iParentalRating),
+: m_iParentalRating(data.iParentalRating),
   m_iStarRating(data.iStarRating),
   m_iSeriesNumber(data.iSeriesNumber),
   m_iEpisodeNumber(data.iEpisodeNumber),
@@ -116,8 +115,7 @@ bool CPVREpgInfoTag::operator ==(const CPVREpgInfoTag& right) const
     return true;
 
   CSingleLock lock(m_critSection);
-  return (m_bNotify            == right.m_bNotify &&
-          m_iDatabaseID        == right.m_iDatabaseID &&
+  return (m_iDatabaseID        == right.m_iDatabaseID &&
           m_iGenreType         == right.m_iGenreType &&
           m_iGenreSubType      == right.m_iGenreSubType &&
           m_iParentalRating    == right.m_iParentalRating &&
@@ -468,11 +466,6 @@ int CPVREpgInfoTag::StarRating(void) const
   return m_iStarRating;
 }
 
-bool CPVREpgInfoTag::Notify(void) const
-{
-  return m_bNotify;
-}
-
 int CPVREpgInfoTag::SeriesNumber(void) const
 {
   return m_iSeriesNumber;
@@ -528,7 +521,6 @@ bool CPVREpgInfoTag::Update(const CPVREpgInfoTag &tag, bool bUpdateBroadcastId /
       m_firstAired         != tag.m_firstAired ||
       m_iParentalRating    != tag.m_iParentalRating ||
       m_iStarRating        != tag.m_iStarRating ||
-      m_bNotify            != tag.m_bNotify ||
       m_iEpisodeNumber     != tag.m_iEpisodeNumber ||
       m_iEpisodePart       != tag.m_iEpisodePart ||
       m_iSeriesNumber      != tag.m_iSeriesNumber ||
@@ -580,7 +572,6 @@ bool CPVREpgInfoTag::Update(const CPVREpgInfoTag &tag, bool bUpdateBroadcastId /
     m_firstAired         = tag.m_firstAired;
     m_iParentalRating    = tag.m_iParentalRating;
     m_iStarRating        = tag.m_iStarRating;
-    m_bNotify            = tag.m_bNotify;
     m_iEpisodeNumber     = tag.m_iEpisodeNumber;
     m_iEpisodePart       = tag.m_iEpisodePart;
     m_iSeriesNumber      = tag.m_iSeriesNumber;

@@ -128,6 +128,7 @@ public:
     virtual bool OpenStream(int iStreamId) { return false; };
     virtual int GetNrOfStreams() const = 0;
     virtual void SetSpeed(int iSpeed) = 0;
+    virtual void FillBuffer(bool mode) {};
     virtual bool SeekTime(double time, bool backward = false, double* startpts = NULL) = 0;
     virtual void AbortDemux() = 0;
     virtual void FlushDemux() = 0;

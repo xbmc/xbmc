@@ -1447,6 +1447,24 @@ void CVideoPlayer::Process()
     // make sure we run subtitle process here
     m_VideoPlayerSubtitle->Process(m_clock.GetClock() + m_State.time_offset - m_VideoPlayerVideo->GetSubtitleDelay(), m_State.time_offset);
 
+    // tell demuxer if we want to fill buffers
+    if (m_demuxerSpeed != DVD_PLAYSPEED_PAUSE)
+    {
+      int audioLevel = 90;
+      int videoLevel = 90;
+      bool fillBuffer = false;
+      if (m_CurrentAudio.id >= 0)
+        audioLevel = m_VideoPlayerAudio->GetLevel();
+      if (m_CurrentVideo.id >= 0)
+        videoLevel = m_processInfo->GetLevelVQ();
+      if (videoLevel < 85 && audioLevel < 85)
+      {
+        fillBuffer = true;
+      }
+      if (m_pDemuxer)
+        m_pDemuxer->FillBuffer(fillBuffer);
+    }
+
     // if the queues are full, no need to read more
     if ((!m_VideoPlayerAudio->AcceptsData() && m_CurrentAudio.id >= 0) ||
         (!m_VideoPlayerVideo->AcceptsData() && m_CurrentVideo.id >= 0))
@@ -1471,11 +1489,6 @@ void CVideoPlayer::Process()
         m_pDemuxer->SetSpeed(m_playSpeed);
       m_demuxerSpeed = m_playSpeed;
     }
-
-    // always yield to players if they have data levels > 50 percent
-    if((m_VideoPlayerAudio->GetLevel() > 50 || m_CurrentAudio.id < 0) &&
-       (m_processInfo->GetLevelVQ() > 50 || m_CurrentVideo.id < 0))
-      Sleep(0);
 
     DemuxPacket* pPacket = NULL;
     CDemuxStream *pStream = NULL;
@@ -3982,6 +3995,8 @@ void CVideoPlayer::FlushBuffers(double pts, bool accurate, bool sync)
   if(pts != DVD_NOPTS_VALUE && sync)
     m_clock.Discontinuity(pts);
   UpdatePlayState(0);
+
+  m_demuxerSpeed = DVD_PLAYSPEED_NORMAL;
 
   if (m_omxplayer_mode)
   {

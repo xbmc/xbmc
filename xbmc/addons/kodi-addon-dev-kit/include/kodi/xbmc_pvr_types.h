@@ -55,8 +55,8 @@ struct DemuxPacket;
 #define PVR_ADDON_TIMERTYPE_ARRAY_SIZE        32
 #define PVR_ADDON_TIMERTYPE_VALUES_ARRAY_SIZE 512
 #define PVR_ADDON_TIMERTYPE_VALUES_ARRAY_SIZE_SMALL 128
-#define PVR_ADDON_TIMERTYPE_STRING_LENGTH     64
-#define PVR_ADDON_ATTRIBUTE_DESC_LENGTH 64
+#define PVR_ADDON_TIMERTYPE_STRING_LENGTH     128
+#define PVR_ADDON_ATTRIBUTE_DESC_LENGTH       128
 #define PVR_ADDON_ATTRIBUTE_VALUES_ARRAY_SIZE 512
 #define PVR_ADDON_DESCRAMBLE_INFO_STRING_LENGTH 64
 
@@ -311,12 +311,10 @@ extern "C" {
     bool bSupportsRecordingsRename;     /*!< @brief true if the backend supports renaming recordings. */
     bool bSupportsRecordingsLifetimeChange; /*!< @brief true if the backend supports changing lifetime for recordings. */
     bool bSupportsDescrambleInfo;       /*!< @brief true if the backend supports descramble information for playing channels. */
+    bool bSupportsAsyncEPGTransfer;     /*!< @brief true if this addon-on supports asynchronous transfer of epg events to Kodi using the callback function EpgEventStateChange. */
 
     unsigned int iRecordingsLifetimesSize; /*!< @brief (required) Count of possible values for PVR_RECORDING.iLifetime. 0 means lifetime is not supported for recordings or no own value definition wanted, but to use Kodi defaults of 1..365. */
     PVR_ATTRIBUTE_INT_VALUE recordingsLifetimeValues[PVR_ADDON_ATTRIBUTE_VALUES_ARRAY_SIZE]; /*!< @brief (optional) Array containing the possible values for PVR_RECORDING.iLifetime. Must be filled if iLifetimesSize > 0 */
-
-    // TODO: cleanup: move this member up after the other bools with the next incompatible pvr addon api change.
-    bool bSupportsAsyncEPGTransfer;     /*!< @brief true if this addon-on supports asynchronous transfer of epg events to Kodi using the callback function EpgEventStateChange. */
   } ATTRIBUTE_PACKED PVR_ADDON_CAPABILITIES;
 
   /*!
@@ -403,6 +401,7 @@ extern "C" {
     unsigned int iEncryptionSystem;                                    /*!< @brief (optional) the encryption ID or CaID of this channel */
     char         strIconPath[PVR_ADDON_URL_STRING_LENGTH];             /*!< @brief (optional) path to the channel icon (if present) */
     bool         bIsHidden;                                            /*!< @brief (optional) true if this channel is marked as hidden */
+    bool         bHasArchive;                                          /*!< @brief (optional) true if this channel has a server-side back buffer */
   } ATTRIBUTE_PACKED PVR_CHANNEL;
 
   typedef struct PVR_CHANNEL_GROUP
@@ -635,7 +634,7 @@ extern "C" {
     const char* (__cdecl* GetConnectionString)(void);
     PVR_ERROR (__cdecl* GetDriveSpace)(long long*, long long*);
     PVR_ERROR (__cdecl* MenuHook)(const PVR_MENUHOOK&, const PVR_MENUHOOK_DATA&);
-    PVR_ERROR (__cdecl* GetEPGForChannel)(ADDON_HANDLE, const PVR_CHANNEL&, time_t, time_t);
+    PVR_ERROR (__cdecl* GetEPGForChannel)(ADDON_HANDLE, int, time_t, time_t);
     PVR_ERROR (__cdecl* IsEPGTagRecordable)(const EPG_TAG*, bool*);
     PVR_ERROR (__cdecl* IsEPGTagPlayable)(const EPG_TAG*, bool*);
     PVR_ERROR (__cdecl* GetEPGTagEdl)(const EPG_TAG*, PVR_EDL_ENTRY[], int*);
@@ -691,8 +690,8 @@ extern "C" {
     bool (__cdecl* CanSeekStream)(void);
     bool (__cdecl* SeekTime)(double, bool, double*);
     void (__cdecl* SetSpeed)(int);
+    void (__cdecl* FillBuffer)(bool);
     const char* (__cdecl* GetBackendHostname)(void);
-    bool (__cdecl* IsTimeshifting)(void);
     bool (__cdecl* IsRealTimeStream)(void);
     PVR_ERROR (__cdecl* SetEPGTimeFrame)(int);
     void (__cdecl* OnSystemSleep)(void);
