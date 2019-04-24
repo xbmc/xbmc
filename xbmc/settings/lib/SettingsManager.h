@@ -223,8 +223,9 @@ public:
    \brief Registers the given ISettingsHandler implementation.
 
    \param settingsHandler ISettingsHandler implementation
+   \param bFront If True, insert the handler in front of other registered handlers, insert at the end otherwise.
    */
-  void RegisterSettingsHandler(ISettingsHandler *settingsHandler);
+  void RegisterSettingsHandler(ISettingsHandler *settingsHandler, bool bFront = false);
   /*!
    \brief Unregisters the given ISettingsHandler implementation.
 
