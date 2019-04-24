@@ -679,6 +679,9 @@ bool CGUIWindowVideoBase::OnFileAction(int iItem, int action, std::string player
     if (!OnPlayStackPart(iItem))
       return false;
     break;
+  case SELECT_ACTION_QUEUE:
+    OnQueueItem(iItem);
+    return true;
   case SELECT_ACTION_PLAY:
   default:
     break;
