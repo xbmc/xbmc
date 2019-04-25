@@ -360,7 +360,15 @@ bool CVideoThumbLoader::LoadItemCached(CFileItem* pItem)
       !setting->FindIntInList(CSettings::VIDEOLIBRARY_THUMB_SHOW_UNWATCHED_EPISODE)
      )
   {
-    pItem->SetArt("thumb", "OverlaySpoiler.png");
+    // use fanart if available
+    if(pItem->HasArt("fanart"))
+    {
+      pItem->SetArt("thumb", pItem->GetArt("fanart"));
+    }
+    else
+    {
+      pItem->SetArt("thumb", "OverlaySpoiler.png");
+    }
   }
 
   m_videoDatabase->Close();
