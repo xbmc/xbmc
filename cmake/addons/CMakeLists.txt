@@ -80,6 +80,8 @@ if (CMAKE_SYSTEM_NAME STREQUAL WindowsStore)
                      -DCMAKE_SYSTEM_VERSION=${CMAKE_SYSTEM_VERSION})
 endif()
 
+include(${CORE_SOURCE_DIR}/cmake/scripts/common/CompilerSettings.cmake)
+
 set(BUILD_ARGS -DCMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}
                -DCMAKE_INSTALL_PREFIX:PATH=<INSTALL_DIR>
                -DPACKAGE_CONFIG_PATH=${ADDON_DEPENDS_PATH}/lib/pkgconfig
