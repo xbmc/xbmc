@@ -324,6 +324,7 @@
 				<right>0</right>
 				<top>0</top>
 				<bottom>0</bottom>
+				<onleft>610</onleft>
 				<width>12</width>
 				<orientation>vertical</orientation>
 				<texturesliderbackground />
