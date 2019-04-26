@@ -99,12 +99,11 @@ ConvolutionFilterShader::ConvolutionFilterShader(ESCALINGMETHOD method)
   if (m_floattex)
   {
     m_internalformat = GL_RGBA16F_EXT;
-    defines = "#define HAS_FLOAT_TEXTURE 1\n";
+    defines = "#define HAS_FLOAT_TEXTURE\n";
   }
   else
   {
     m_internalformat = GL_RGBA;
-    defines = "#define HAS_FLOAT_TEXTURE 0\n";
   }
 
   CLog::Log(LOGDEBUG, "GL: ConvolutionFilterShader: using %s defines:\n%s", shadername.c_str(), defines.c_str());
