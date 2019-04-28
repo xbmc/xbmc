@@ -39,6 +39,9 @@
 #if defined(TARGET_ANDROID)
 #include "platform/android/filesystem/AndroidAppFile.h"
 #endif
+#if defined(TARGET_DARWIN_TVOS)
+#include "platform/darwin/tvos/filesystem/TVOSFile.h"
+#endif // TARGET_DARWIN_TVOS
 #ifdef HAS_UPNP
 #include "UPnPFile.h"
 #endif
@@ -102,7 +105,14 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
   else if (url.IsProtocol("multipath")) return new CMultiPathFile();
   else if (url.IsProtocol("image")) return new CImageFile();
 #ifdef TARGET_POSIX
-  else if (url.IsProtocol("file") || url.GetProtocol().empty()) return new CPosixFile();
+  else if (url.IsProtocol("file") || url.GetProtocol().empty())
+  {
+#if defined(TARGET_DARWIN_TVOS)
+    if (CTVOSFile::WantsFile(url))
+      return new CTVOSFile();
+#endif
+    return new CPosixFile();
+  }
 #elif defined(TARGET_WINDOWS)
   else if (url.IsProtocol("file") || url.GetProtocol().empty())
   {

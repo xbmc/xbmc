@@ -15602,7 +15602,61 @@ msgctxt "#24152"
 msgid "The add-on is not compatible with this version of Kodi."
 msgstr ""
 
-#empty strings from id 24153 to 24990
+#: apple remote
+msgctxt "#24153"
+msgid "Enable to make the Siri remote match the normal Apple tvOS behavior"
+msgstr ""
+
+#: apple remote
+msgctxt "#24154"
+msgid "Idle remote handling after N seconds"
+msgstr ""
+
+#: apple remote
+msgctxt "#24155"
+msgid "After remote idles, the first tap/swipe received will wake it"
+msgstr ""
+
+#: apple remote
+msgctxt "#24156"
+msgid "30 Seconds"
+msgstr ""
+
+#: apple remote
+msgctxt "#24157"
+msgid "60 Seconds"
+msgstr ""
+
+#: apple remote
+msgctxt "#24158"
+msgid "90 Seconds"
+msgstr ""
+
+#: apple remote
+msgctxt "#24159"
+msgid "120 Seconds"
+msgstr ""
+
+#: apple remote
+msgctxt "#24160"
+msgid "Enable Siri remote timeout"
+msgstr ""
+
+#: apple remote
+msgctxt "#24161"
+msgid "Enable remote input timeout for tap/swipe"
+msgstr ""
+
+msgctxt "#24162"
+msgid "Use Kodi virtual keyboard"
+msgstr ""
+
+#: apple remote
+msgctxt "#24163"
+msgid "Match Apple tvOS Standard (Siri remote)"
+msgstr ""
+
+#empty strings from id 24164 to 24990
 
 #. Used as error message in add-on browser when add-on repository data could not be downloaded
 #: xbmc/filesystem/AddonsDirectory.cpp

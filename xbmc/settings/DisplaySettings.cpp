@@ -47,6 +47,9 @@
 #elif defined(TARGET_DARWIN_IOS)
 #define WIN_SYSTEM_CLASS CWinSystemIOS
 #include "windowing/ios/WinSystemIOS.h"
+#elif defined(TARGET_DARWIN_TVOS)
+#define WIN_SYSTEM_CLASS CWinSystemTVOS
+#include "windowing/tvos/WinSystemTVOS.h"
 #elif defined(HAVE_WAYLAND)
 #define WIN_SYSTEM_CLASS KODI::WINDOWING::WAYLAND::CWinSystemWayland
 #include "windowing/wayland/WinSystemWayland.h"

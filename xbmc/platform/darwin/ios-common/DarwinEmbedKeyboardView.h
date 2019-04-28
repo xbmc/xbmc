@@ -20,6 +20,7 @@
 @property(getter=isConfirmed) BOOL confirmed;
 @property(assign) CDarwinEmbedKeyboard* darwinEmbedKeyboard;
 @property(nonatomic, readonly) NSString* text;
+@property(nonatomic, assign, getter=isKeyboardVisible) bool keyboardVisible;
 
 - (void)setHeading:(NSString*)heading;
 - (void)setHidden:(BOOL)hidden;

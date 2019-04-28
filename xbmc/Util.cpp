@@ -1576,7 +1576,7 @@ void CUtil::InitRandomSeed()
   srand(seed);
 }
 
-#ifdef TARGET_POSIX
+#if defined(TARGET_POSIX) && !defined(TARGET_DARWIN_TVOS)
 bool CUtil::RunCommandLine(const std::string& cmdLine, bool waitExit)
 {
   std::vector<std::string> args = StringUtils::Split(cmdLine, ",");

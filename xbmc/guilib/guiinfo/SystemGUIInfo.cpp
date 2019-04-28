@@ -472,6 +472,13 @@ bool CSystemGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int context
       value = false;
 #endif
       return true;
+    case SYSTEM_PLATFORM_DARWIN_TVOS:
+#ifdef TARGET_DARWIN_TVOS
+      value = true;
+#else
+      value = false;
+#endif
+      return true;
     case SYSTEM_PLATFORM_ANDROID:
 #if defined(TARGET_ANDROID)
       value = true;

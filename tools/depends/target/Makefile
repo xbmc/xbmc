@@ -30,6 +30,7 @@ ifeq ($(OS),darwin_embedded)
   EXCLUDED_DEPENDS = libcec libusb
   ifeq ($(TARGET_PLATFORM),appletvos)
     DEPENDS += boblight
+    EXCLUDED_DEPENDS += libshairplay libplist
   endif
   DEPENDS += iosentitlements
 endif

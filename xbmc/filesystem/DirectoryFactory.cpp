@@ -53,6 +53,8 @@
 #include "PVRDirectory.h"
 #if defined(TARGET_ANDROID)
 #include "platform/android/filesystem/APKDirectory.h"
+#elif defined(TARGET_DARWIN_TVOS)
+#include "platform/darwin/tvos/filesystem/TVOSDirectory.h"
 #endif
 #include "XbtDirectory.h"
 #include "ZipDirectory.h"
@@ -107,7 +109,14 @@ IDirectory* CDirectoryFactory::Create(const CURL& url)
   }
 
 #ifdef TARGET_POSIX
-  if (url.GetProtocol().empty() || url.IsProtocol("file")) return new CPosixDirectory();
+  if (url.GetProtocol().empty() || url.IsProtocol("file"))
+  {
+#if defined(TARGET_DARWIN_TVOS)
+    if (CTVOSDirectory::WantsDirectory(url))
+      return new CTVOSDirectory();
+#endif
+    return new CPosixDirectory();
+  }
 #elif defined(TARGET_WINDOWS)
   if (url.GetProtocol().empty() || url.IsProtocol("file")) return new CWin32Directory();
 #else

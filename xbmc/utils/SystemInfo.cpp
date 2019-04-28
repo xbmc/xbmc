@@ -557,6 +557,8 @@ std::string CSysInfo::GetOsName(bool emptyIfUnknown /* = false*/)
     osName = GetKernelName(true); // FIXME: for FreeBSD OS name is a kernel name
 #elif defined(TARGET_DARWIN_IOS)
     osName = "iOS";
+#elif defined(TARGET_DARWIN_TVOS)
+    osName = "tvOS";
 #elif defined(TARGET_DARWIN_OSX)
     osName = "OS X";
 #elif defined (TARGET_ANDROID)
@@ -1058,8 +1060,18 @@ std::string CSysInfo::GetUserAgent()
       && iOSVersion.find_first_not_of('0', lastDotPos + 1) == std::string::npos)
     iOSVersion.erase(lastDotPos);
   StringUtils::Replace(iOSVersion, '.', '_');
-  if (iDev == "iPad" || iDev == "AppleTV")
-    result += "CPU OS ";
+  if (iDev == "AppleTV")
+  {
+    // check if it's ATV4 (AppleTV5,3) or later
+    auto modelMajorNumberEndPos = iDevStr.find_first_of(',', iDevStrDigit);
+    std::string s{iDevStr, iDevStrDigit, modelMajorNumberEndPos - iDevStrDigit};
+    if (stoi(s) >= 5)
+      result += "CPU TVOS";
+    else
+      result += "CPU OS";
+  }
+  else if (iDev == "iPad")
+    result += "CPU OS";
   else
     result += "CPU iPhone OS ";
   result += iOSVersion + " like Mac OS X";
@@ -1199,6 +1211,8 @@ std::string CSysInfo::GetBuildTargetPlatformName(void)
   return "OS X";
 #elif defined(TARGET_DARWIN_IOS)
   return "iOS";
+#elif defined(TARGET_DARWIN_TVOS)
+  return "tvOS";
 #elif defined(TARGET_FREEBSD)
   return "FreeBSD";
 #elif defined(TARGET_ANDROID)
@@ -1222,6 +1236,8 @@ std::string CSysInfo::GetBuildTargetPlatformVersion(void)
   return XSTR_MACRO(__MAC_OS_X_VERSION_MIN_REQUIRED);
 #elif defined(TARGET_DARWIN_IOS)
   return XSTR_MACRO(__IPHONE_OS_VERSION_MIN_REQUIRED);
+#elif defined(TARGET_DARWIN_TVOS)
+  return XSTR_MACRO(__TV_OS_VERSION_MIN_REQUIRED);
 #elif defined(TARGET_FREEBSD)
   return XSTR_MACRO(__FreeBSD_version);
 #elif defined(TARGET_ANDROID)

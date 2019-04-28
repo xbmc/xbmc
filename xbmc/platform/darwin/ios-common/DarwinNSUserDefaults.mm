@@ -6,23 +6,54 @@
  *  See LICENSES/README.md for more information.
  */
 
-#import "platform/darwin/DarwinNSUserDefaults.h"
+#import "DarwinNSUserDefaults.h"
 
 #import "filesystem/SpecialProtocol.h"
+#import "utils/URIUtils.h"
 #import "utils/log.h"
 
+#import "platform/darwin/ios-common/NSData+GZIP.h"
+#import "platform/darwin/tvos/filesystem/TVOSFileUtils.h"
+
+#import <string>
+
+#import <Foundation/NSData.h>
+#import <Foundation/NSDictionary.h>
 #import <Foundation/NSString.h>
 #import <Foundation/NSUserDefaults.h>
 
+static bool firstLookup = true;
 
-static bool translatePathIntoKey(const std::string &path, std::string &key)
+static bool translatePathIntoKey(const std::string& path, std::string& key)
 {
+  if (firstLookup)
+  {
+    NSDictionary<NSString*, id>* dict =
+        [[NSUserDefaults standardUserDefaults] dictionaryRepresentation];
+    NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
+    for (NSString* aKey in dict.allKeys)
+    {
+      // do something like a log:
+      if (![aKey hasPrefix:@"/userdata/"])
+        continue;
+
+      NSData* nsdata = [defaults dataForKey:aKey];
+      size_t size = nsdata.length;
+      CLog::Log(LOGNOTICE, "nsuserdefaults: %s with size %ld", aKey.UTF8String, size);
+    }
+    firstLookup = false;
+  }
   size_t pos;
   std::string translated_key = CSpecialProtocol::TranslatePath(path);
-  if ((pos = translated_key.find("Caches/userdata")) != std::string::npos)
+  std::string userDataDir =
+      URIUtils::AddFileToFolder(CTVOSFileUtils::GetUserHomeDirectory(), "userdata");
+  if (translated_key.find(userDataDir) != std::string::npos)
   {
-    key = translated_key.erase(0, pos);
-    return true;
+    if ((pos = translated_key.find("/userdata")) != std::string::npos)
+    {
+      key = translated_key.erase(0, pos);
+      return true;
+    }
   }
 
   return false;
@@ -33,16 +64,53 @@ bool CDarwinNSUserDefaults::Synchronize()
   return [[NSUserDefaults standardUserDefaults] synchronize] == YES;
 }
 
-bool CDarwinNSUserDefaults::GetKey(const std::string &key, std::string &value)
+void CDarwinNSUserDefaults::GetDirectoryContents(const std::string& path,
+                                                 std::vector<std::string>& contents)
+{
+  // tvos path adds /private/../..
+  // We need to strip this as GetUserHomeDirectory() doesnt have private in the path
+  std::string subpath = path;
+  const std::string& str_private = "/private";
+  size_t pos = subpath.find(str_private.c_str(), 0, str_private.length());
+
+  if (pos != std::string::npos)
+    subpath.erase(pos, str_private.length());
+
+  std::string userDataDir =
+      URIUtils::AddFileToFolder(CTVOSFileUtils::GetUserHomeDirectory(), "userdata");
+
+  if (subpath.find(userDataDir) == std::string::npos)
+    return;
+
+  NSDictionary<NSString*, id>* dict =
+      [[NSUserDefaults standardUserDefaults] dictionaryRepresentation];
+  for (NSString* aKey in dict.allKeys)
+  {
+    // do something like a log:
+    if (![aKey hasPrefix:@"/userdata/"])
+      continue;
+
+    std::string keypath = aKey.UTF8String;
+    std::string fullKeyPath =
+        URIUtils::AddFileToFolder(CTVOSFileUtils::GetUserHomeDirectory(), keypath);
+    std::string endingDirectory = URIUtils::GetDirectory(fullKeyPath);
+    if (subpath == endingDirectory)
+    {
+      contents.push_back(fullKeyPath);
+    }
+  }
+}
+
+bool CDarwinNSUserDefaults::GetKey(const std::string& key, std::string& value)
 {
   if (!key.empty())
   {
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    NSString *nsstring_key = [NSString stringWithUTF8String: key.c_str()];
-    NSString *nsstring_value = [defaults stringForKey:nsstring_key];
+    NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
+    NSString* nsstring_key = @(key.c_str());
+    NSString* nsstring_value = [defaults stringForKey:nsstring_key];
     if (nsstring_value)
     {
-      value = [nsstring_value UTF8String];
+      value = nsstring_value.UTF8String;
       if (!value.empty())
         return true;
     }
@@ -51,14 +119,47 @@ bool CDarwinNSUserDefaults::GetKey(const std::string &key, std::string &value)
   return false;
 }
 
-bool CDarwinNSUserDefaults::SetKey(const std::string &key, const std::string &value, bool synchronize)
+bool CDarwinNSUserDefaults::GetKeyData(const std::string& key, void* lpBuf, size_t& uiBufSize)
+{
+  if (key.empty())
+  {
+    uiBufSize = 0;
+    return false;
+  }
+
+  NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
+  NSString* nsstring_key = @(key.c_str());
+  NSData* nsdata = [defaults dataForKey:nsstring_key];
+  if (!nsdata)
+  {
+    uiBufSize = 0;
+    return false;
+  }
+
+  NSData* decompressed = nsdata;
+  if ([nsdata isGzippedData])
+    decompressed = [nsdata gunzippedData];
+
+  uiBufSize = decompressed.length;
+
+  // call was to get size of file
+  if (lpBuf == nullptr)
+    return true;
+
+  memcpy(lpBuf, decompressed.bytes, decompressed.length);
+  return true;
+}
+
+bool CDarwinNSUserDefaults::SetKey(const std::string& key,
+                                   const std::string& value,
+                                   bool synchronize)
 {
   if (!key.empty() && !value.empty())
   {
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
 
-    NSString *nsstring_key = [NSString stringWithUTF8String: key.c_str()];
-    NSString *nsstring_value = [NSString stringWithUTF8String: value.c_str()];
+    NSString* nsstring_key = @(key.c_str());
+    NSString* nsstring_value = @(value.c_str());
 
     [defaults setObject:nsstring_value forKey:nsstring_key];
     if (synchronize)
@@ -70,12 +171,37 @@ bool CDarwinNSUserDefaults::SetKey(const std::string &key, const std::string &va
   return false;
 }
 
-bool CDarwinNSUserDefaults::DeleteKey(const std::string &key, bool synchronize)
+bool CDarwinNSUserDefaults::SetKeyData(const std::string& key,
+                                       const void* lpBuf,
+                                       size_t uiBufSize,
+                                       bool synchronize)
+{
+  if (!key.empty() && lpBuf != nullptr && uiBufSize > 0)
+  {
+    NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
+    NSString* nsstring_key = @(key.c_str());
+    NSData* nsdata_value = [NSData dataWithBytes:lpBuf length:uiBufSize];
+
+    NSData* compressed = [nsdata_value gzippedData];
+    CLog::Log(LOGDEBUG, "NSUSerDefaults: compressed %s from %ld to %ld", key.c_str(), uiBufSize,
+              compressed.length);
+
+    [defaults setObject:compressed forKey:nsstring_key];
+    if (synchronize)
+      return [defaults synchronize] == YES;
+    else
+      return true;
+  }
+
+  return false;
+}
+
+bool CDarwinNSUserDefaults::DeleteKey(const std::string& key, bool synchronize)
 {
   if (!key.empty())
   {
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    NSString *nsstring_key = [NSString stringWithUTF8String: key.c_str()];
+    NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
+    NSString* nsstring_key = @(key.c_str());
     [defaults removeObjectForKey:nsstring_key];
     if (synchronize)
       return [defaults synchronize] == YES;
@@ -86,11 +212,11 @@ bool CDarwinNSUserDefaults::DeleteKey(const std::string &key, bool synchronize)
   return false;
 }
 
-bool CDarwinNSUserDefaults::KeyExists(const std::string &key)
+bool CDarwinNSUserDefaults::KeyExists(const std::string& key)
 {
   if (!key.empty())
   {
-    NSString *nsstring_key = [NSString stringWithUTF8String: key.c_str()];
+    NSString* nsstring_key = @(key.c_str());
     if ([[NSUserDefaults standardUserDefaults] objectForKey:nsstring_key])
       return true;
   }
@@ -98,7 +224,7 @@ bool CDarwinNSUserDefaults::KeyExists(const std::string &key)
   return false;
 }
 
-bool CDarwinNSUserDefaults::IsKeyFromPath(const std::string &path)
+bool CDarwinNSUserDefaults::IsKeyFromPath(const std::string& path)
 {
   std::string translated_key;
   if (translatePathIntoKey(path, translated_key) && !translated_key.empty())
@@ -110,7 +236,7 @@ bool CDarwinNSUserDefaults::IsKeyFromPath(const std::string &path)
   return false;
 }
 
-bool CDarwinNSUserDefaults::GetKeyFromPath(const std::string &path, std::string &value)
+bool CDarwinNSUserDefaults::GetKeyFromPath(const std::string& path, std::string& value)
 {
   std::string translated_key;
   if (translatePathIntoKey(path, translated_key) && !translated_key.empty())
@@ -119,7 +245,20 @@ bool CDarwinNSUserDefaults::GetKeyFromPath(const std::string &path, std::string 
   return false;
 }
 
-bool CDarwinNSUserDefaults::SetKeyFromPath(const std::string &path, const std::string &value, bool synchronize)
+bool CDarwinNSUserDefaults::GetKeyDataFromPath(const std::string& path,
+                                               void* lpBuf,
+                                               size_t& uiBufSize)
+{
+  std::string translated_key;
+  if (translatePathIntoKey(path, translated_key) && !translated_key.empty())
+    return CDarwinNSUserDefaults::GetKeyData(translated_key, lpBuf, uiBufSize);
+
+  return false;
+}
+
+bool CDarwinNSUserDefaults::SetKeyFromPath(const std::string& path,
+                                           const std::string& value,
+                                           bool synchronize)
 {
   std::string translated_key;
   if (translatePathIntoKey(path, translated_key) && !translated_key.empty() && !value.empty())
@@ -128,7 +267,19 @@ bool CDarwinNSUserDefaults::SetKeyFromPath(const std::string &path, const std::s
   return false;
 }
 
-bool CDarwinNSUserDefaults::DeleteKeyFromPath(const std::string &path, bool synchronize)
+bool CDarwinNSUserDefaults::SetKeyDataFromPath(const std::string& path,
+                                               const void* lpBuf,
+                                               size_t uiBufSize,
+                                               bool synchronize)
+{
+  std::string translated_key;
+  if (translatePathIntoKey(path, translated_key) && !translated_key.empty())
+    return CDarwinNSUserDefaults::SetKeyData(translated_key, lpBuf, uiBufSize, synchronize);
+
+  return false;
+}
+
+bool CDarwinNSUserDefaults::DeleteKeyFromPath(const std::string& path, bool synchronize)
 {
   std::string translated_key;
   if (translatePathIntoKey(path, translated_key) && !translated_key.empty())
@@ -137,7 +288,7 @@ bool CDarwinNSUserDefaults::DeleteKeyFromPath(const std::string &path, bool sync
   return false;
 }
 
-bool CDarwinNSUserDefaults::KeyFromPathExists(const std::string &path)
+bool CDarwinNSUserDefaults::KeyFromPathExists(const std::string& path)
 {
   std::string translated_key;
   if (translatePathIntoKey(path, translated_key) && !translated_key.empty())

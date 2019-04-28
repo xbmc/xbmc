@@ -1191,6 +1191,14 @@ const infomap weather[] =        {{ "isfetched",        WEATHER_IS_FETCHED },
 ///     @return **True** if Kodi is running on an IOS device.
 ///     <p>
 ///   }
+///   \table_row3{   <b>`System.Platform.TVOS`</b>,
+///                  \anchor System_PlatformTVOS
+///                  _boolean_,
+///     @return **True** if Kodi is running on a tvOS device.
+///     <p><hr>
+///     @skinning_v19 **[New Boolean Condition]** \link System_PlatformTVOS `System.Platform.TVOS`\endlink
+///     <p>
+///   }
 ///   \table_row3{   <b>`System.Platform.Darwin`</b>,
 ///                  \anchor System_PlatformDarwin
 ///                  _boolean_,
@@ -9213,6 +9221,8 @@ int CGUIInfoManager::TranslateSingleString(const std::string &strCondition, bool
         return SYSTEM_PLATFORM_DARWIN_OSX;
       else if (platform == "ios")
         return SYSTEM_PLATFORM_DARWIN_IOS;
+      else if (platform == "tvos")
+        return SYSTEM_PLATFORM_DARWIN_TVOS;
       else if (platform == "android")
         return SYSTEM_PLATFORM_ANDROID;
     }

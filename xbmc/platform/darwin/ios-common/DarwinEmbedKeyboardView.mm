@@ -13,7 +13,11 @@
 #include "threads/Event.h"
 #include "utils/log.h"
 
-#import "platform/darwin/ios/XBMCController.h"
+#if defined(TARGET_DARWIN_IOS)
+#include "platform/darwin/ios/XBMCController.h"
+#elif defined(TARGET_DARWIN_TVOS)
+#include "platform/darwin/tvos/XBMCController.h"
+#endif
 
 static CEvent keyboardFinishedEvent;
 
@@ -21,6 +25,7 @@ static CEvent keyboardFinishedEvent;
 
 @synthesize confirmed = m_confirmed;
 @synthesize darwinEmbedKeyboard = m_darwinEmbedKeyboard;
+@synthesize keyboardVisible = m_keyboardVisible;
 
 - (instancetype)initWithFrame:(CGRect)frame
 {
@@ -30,6 +35,7 @@ static CEvent keyboardFinishedEvent;
 
   m_canceled = nullptr;
   m_deactivated = NO;
+  m_keyboardVisible = false;
 
   auto textField = [UITextField new];
   textField.translatesAutoresizingMaskIntoConstraints = NO;
@@ -59,6 +65,13 @@ static CEvent keyboardFinishedEvent;
 - (BOOL)textFieldShouldReturn:(UITextField*)textField
 {
   m_confirmed = YES;
+  [textField resignFirstResponder];
+  return YES;
+}
+
+- (BOOL)textFieldShouldEndEditing:(UITextField*)textField
+{
+  CLog::Log(LOGDEBUG, "{}: keyboard IsShowing {}", __PRETTY_FUNCTION__, self.isKeyboardVisible);
   return YES;
 }
 
@@ -83,16 +96,12 @@ static CEvent keyboardFinishedEvent;
   // we are waiting on the user finishing the keyboard
   while (!keyboardFinishedEvent.WaitMSec(500))
   {
-    if (nullptr != m_canceled && *m_canceled)
-    {
-      [self deactivate];
-      m_canceled = nullptr;
-    }
   }
 }
 
 - (void)deactivate
 {
+  CLog::Log(LOGDEBUG, "{}: keyboard IsShowing {}", __PRETTY_FUNCTION__, self.isKeyboardVisible);
   m_deactivated = YES;
 
   // invalidate our callback object
@@ -125,12 +134,6 @@ static CEvent keyboardFinishedEvent;
     m_inputTextField.text = aText;
     [self textChanged:nil];
   });
-
-  if (closeKeyboard)
-  {
-    m_confirmed = YES;
-    [self deactivate];
-  }
 }
 
 - (void)setHeading:(NSString*)heading

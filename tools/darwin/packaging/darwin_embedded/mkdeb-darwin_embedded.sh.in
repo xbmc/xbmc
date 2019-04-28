@@ -10,15 +10,19 @@ DIRNAME=`dirname $0`
 DSYM_TARGET_DIR=/Users/Shared/xbmc-depends/dSyms
 DSYM_FILENAME=@APP_NAME@.app.dSYM
 ARM64=false
+PP_DEVICE=iOS
+if [ "@PLATFORM@" == "appletvos" ]; then
+  PP_DEVICE=tvOS
+fi
 
 if [ "${SWITCH#*debug}" != "${SWITCH}" ]; then
-  echo "Packaging Debug target for iOS"
-  APP="$DIRNAME/../../../../build/Debug-iphoneos/@APP_NAME@.app"
-  DSYM="$DIRNAME/../../../../build/Debug-iphoneos/$DSYM_FILENAME"
+  echo "Packaging Debug target for ${PP_DEVICE}"
+  APP="$DIRNAME/../../../../build/Debug-@PLATFORM@/@APP_NAME@.app"
+  DSYM="$DIRNAME/../../../../build/Debug-@PLATFORM@/$DSYM_FILENAME"
 elif [ "${SWITCH#*release}" != "${SWITCH}" ]; then
-  echo "Packaging Release target for iOS"
-  APP="$DIRNAME/../../../../build/Release-iphoneos/@APP_NAME@.app"
-  DSYM="$DIRNAME/../../../../build/Release-iphoneos/$DSYM_FILENAME"
+  echo "Packaging Release target for ${PP_DEVICE}"
+  APP="$DIRNAME/../../../../build/Release-@PLATFORM@/@APP_NAME@.app"
+  DSYM="$DIRNAME/../../../../build/Release-@PLATFORM@/$DSYM_FILENAME"
 else
   echo "You need to specify the build target"
   exit 1
@@ -48,7 +52,7 @@ if [ -f "${NATIVEPREFIX}/bin/dpkg-deb" ]; then
   export PATH=${bin_path}:${PATH}
 fi
 
-PACKAGE=org.xbmc.@APP_NAME_LC@-ios
+PACKAGE="@PLATFORM_BUNDLE_IDENTIFIER@"
 PACKAGE_ARM64="${PACKAGE}64"
 
 VERSION=@APP_VERSION_MAJOR@.@APP_VERSION_MINOR@
@@ -60,10 +64,10 @@ fi
 # customize revision string
 [ ! -z "$2" ] && REVISION="$2"
 
-ARCHIVE=${PACKAGE}_${VERSION}-${REVISION}_iphoneos-arm.deb
+ARCHIVE=${PACKAGE}_${VERSION}-${REVISION}_@PLATFORM@-arm.deb
 
 # package identifier for arm64
-$ARM64 && ARCHIVE=${PACKAGE_ARM64}_${VERSION}-${REVISION}_iphoneos-arm.deb
+$ARM64 && ARCHIVE=${PACKAGE_ARM64}_${VERSION}-${REVISION}_@PLATFORM@-arm.deb
 
 SIZE="$(du -s -k ${APP} | awk '{print $1}')"
 
@@ -75,22 +79,21 @@ rm -rf $DIRNAME/$ARCHIVE
 mkdir -p $DIRNAME/$PACKAGE/DEBIAN
 if $ARM64; then
   echo "Package: $PACKAGE_ARM64"                  >  $DIRNAME/$PACKAGE/DEBIAN/control
-  echo "Name: @APP_NAME@-iOS (64-bit)"            >> $DIRNAME/$PACKAGE/DEBIAN/control
+  echo "Name: @APP_NAME@-${PP_DEVICE} (64-bit)"   >> $DIRNAME/$PACKAGE/DEBIAN/control
   echo "Pre-Depends: cy+cpu.arm64"                >> $DIRNAME/$PACKAGE/DEBIAN/control
   echo "Conflicts: $PACKAGE"                      >> $DIRNAME/$PACKAGE/DEBIAN/control
   echo "Replaces: $PACKAGE"                       >> $DIRNAME/$PACKAGE/DEBIAN/control
 else
   echo "Package: $PACKAGE"                        >  $DIRNAME/$PACKAGE/DEBIAN/control
-  echo "Name: @APP_NAME@-iOS"                     >> $DIRNAME/$PACKAGE/DEBIAN/control
+  echo "Name: @APP_NAME@-${PP_DEVICE}"            >> $DIRNAME/$PACKAGE/DEBIAN/control
 fi
 echo "Priority: Extra"                            >> $DIRNAME/$PACKAGE/DEBIAN/control
-echo "Depends: firmware (>= @CMAKE_XCODE_ATTRIBUTE_IPHONEOS_DEPLOYMENT_TARGET@)" >> $DIRNAME/$PACKAGE/DEBIAN/control
 echo "Version: $VERSION-$REVISION"                >> $DIRNAME/$PACKAGE/DEBIAN/control
-echo "Architecture: iphoneos-arm"                 >> $DIRNAME/$PACKAGE/DEBIAN/control
+echo "Architecture: @CMAKE_SYSTEM_NAME@-@CPU@"                 >> $DIRNAME/$PACKAGE/DEBIAN/control
 echo "Installed-Size: $SIZE"                      >> $DIRNAME/$PACKAGE/DEBIAN/control
 echo "Description: @APP_NAME@ Entertainment Center for iOS" >> $DIRNAME/$PACKAGE/DEBIAN/control
-echo "Homepage: http://kodi.tv/"                 >> $DIRNAME/$PACKAGE/DEBIAN/control
-echo "Maintainer: Memphiz"                        >> $DIRNAME/$PACKAGE/DEBIAN/control
+echo "Homepage: @APP_WEBSITE@"                    >> $DIRNAME/$PACKAGE/DEBIAN/control
+echo "Maintainer: Memphiz et al."                 >> $DIRNAME/$PACKAGE/DEBIAN/control
 echo "Author: Team-@APP_NAME@"                    >> $DIRNAME/$PACKAGE/DEBIAN/control
 echo "Section: Multimedia"                        >> $DIRNAME/$PACKAGE/DEBIAN/control
 echo "Icon: file:///Applications/@APP_NAME@.app/AppIcon57x57.png" >> $DIRNAME/$PACKAGE/DEBIAN/control
@@ -103,7 +106,9 @@ chmod +x $DIRNAME/$PACKAGE/DEBIAN/prerm
 # postinst: nothing for now.
 echo "#!/bin/sh"                                  >  $DIRNAME/$PACKAGE/DEBIAN/postinst
 echo "chown -R mobile:mobile /Applications/@APP_NAME@.app" >> $DIRNAME/$PACKAGE/DEBIAN/postinst
-cat $DIRNAME/migrate_to_kodi.sh            >> $DIRNAME/$PACKAGE/DEBIAN/postinst
+if [ "@PLATFORM@" != "appletvos" ]; then
+  cat $DIRNAME/migrate_to_kodi.sh            >> $DIRNAME/$PACKAGE/DEBIAN/postinst
+fi
 echo "/usr/bin/uicache"                           >>  $DIRNAME/$PACKAGE/DEBIAN/postinst
 echo "echo 'finish:respringing ...'"              >>  $DIRNAME/$PACKAGE/DEBIAN/postinst
 chmod +x $DIRNAME/$PACKAGE/DEBIAN/postinst

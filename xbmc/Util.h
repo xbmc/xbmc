@@ -168,7 +168,7 @@ public:
   // return -1 on error, valid range is 1-3999
   static int TranslateRomanNumeral(const char* roman_numeral);
 
-#ifdef TARGET_POSIX
+#if defined(TARGET_POSIX) && !defined(TARGET_DARWIN_TVOS)
   //
   // Forks to execute a shell command.
   //
