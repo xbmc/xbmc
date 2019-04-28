@@ -9587,10 +9587,10 @@ msgctxt "#19071"
 msgid "Update interval"
 msgstr ""
 
-#. pvr settings "do not store epg data in local database" setting label
+#. pvr settings "store epg data in database" setting label
 #: system/settings/settings.xml
 msgctxt "#19072"
-msgid "Don't cache in local database"
+msgid "Store data in database"
 msgstr ""
 
 #. pvr settings "delay channel switch" setting label
@@ -18681,7 +18681,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36223"
-msgid "By default, the guide data is cached in a local database to speed up importing on startup."
+msgid "Activate to store epg data in a database. This may speedup importing epg data on startup."
 msgstr ""
 
 #: system/settings/settings.xml
