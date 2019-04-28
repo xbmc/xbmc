@@ -1,0 +1,11 @@
+WORKSPACE=${WORKSPACE:-$( cd $(dirname $0)/../../.. ; pwd -P )}
+XBMC_PLATFORM_DIR=tvos
+. $WORKSPACE/tools/buildsteps/defaultenv
+
+cd $WORKSPACE/build;make -j$BUILDTHREADS deb
+cd $WORKSPACE/build/tools/darwin/packaging/ios/
+
+#rename for upload
+#e.x. kodi-20130314-8c2fb31-Frodo-ios.deb
+UPLOAD_FILENAME="kodi-$(getBuildRevDateStr)-tvos.deb"
+mv *.deb $WORKSPACE/tools/darwin/packaging/ios/$UPLOAD_FILENAME
