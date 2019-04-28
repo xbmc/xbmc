@@ -1074,6 +1074,8 @@ bool CAddonMgr::PlatformSupportsAddon(const cp_plugin_info_t *plugin)
 #else
 #warning no architecture dependant platform tag
 #endif
+#elif defined(TARGET_DARWIN_TVOS)
+    "tvos-aarch64",
 #elif defined(TARGET_DARWIN_OSX)
     "osx",
 #if defined(__x86_64__)
@@ -1166,7 +1168,11 @@ std::string CAddonMgr::GetPlatformLibraryName(cp_cfg_element_t *base) const
 #elif defined(TARGET_WINDOWS_STORE)
   libraryName = GetExtValue(base, "@library_windowsstore");
 #elif defined(TARGET_DARWIN)
-#if defined(TARGET_DARWIN_IOS)
+#if defined(TARGET_DARWIN_TVOS)
+  libraryName = GetExtValue(base, "@library_tvos");
+  if (libraryName.empty())
+#endif
+#if !defined(TARGET_DARWIN_OSX)
   libraryName = GetExtValue(base, "@library_ios");
   if (libraryName.empty())
 #endif
