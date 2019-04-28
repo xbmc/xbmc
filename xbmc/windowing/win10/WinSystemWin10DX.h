@@ -25,6 +25,7 @@ public:
   void PresentRenderImpl(bool rendered) override;
   bool DPIChanged(WORD dpi, RECT windowRect) const override;
   bool DestroyRenderSystem() override;
+  void* GetHWContext() override { return m_deviceResources->GetD3DContext(); }
 
   void UninitHooks();
   void InitHooks(IDXGIOutput* pOutput);

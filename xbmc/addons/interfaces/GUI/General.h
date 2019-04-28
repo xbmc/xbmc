@@ -48,6 +48,7 @@ namespace ADDON
     static int get_video_resolution(void* kodiBase);
     static int get_current_window_dialog_id(void* kodiBase);
     static int get_current_window_id(void* kodiBase);
+    static void* get_hw_context(void* kodiBase);
     //@}
 
   private:

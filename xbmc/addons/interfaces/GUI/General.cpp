@@ -91,6 +91,7 @@ void Interface_GUIGeneral::Init(AddonGlobalInterface* addonInterface)
   addonInterface->toKodi->kodi_gui->general->get_video_resolution = get_video_resolution;
   addonInterface->toKodi->kodi_gui->general->get_current_window_dialog_id = get_current_window_dialog_id;
   addonInterface->toKodi->kodi_gui->general->get_current_window_id = get_current_window_id;
+  addonInterface->toKodi->kodi_gui->general->get_hw_context = get_hw_context;
 }
 
 void Interface_GUIGeneral::DeInit(AddonGlobalInterface* addonInterface)
@@ -211,6 +212,11 @@ int Interface_GUIGeneral::get_current_window_id(void* kodiBase)
 
   CSingleLock gl(CServiceBroker::GetWinSystem()->GetGfxContext());
   return CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow();
+}
+
+void* Interface_GUIGeneral::get_hw_context(void* kodiBase)
+{
+  return CServiceBroker::GetWinSystem()->GetHWContext();
 }
 
 //@}

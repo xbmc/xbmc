@@ -106,7 +106,7 @@ namespace gui
   /// **Example:**
   /// ~~~~~~~~~~~~~{.cpp}
   /// ..
-  /// int wid = kodi::gui::GetCurrentWindowDialogId()
+  /// int wid = kodi::gui::GetCurrentWindowDialogId();
   /// ..
   /// ~~~~~~~~~~~~~
   ///
@@ -130,7 +130,7 @@ namespace gui
   /// **Example:**
   /// ~~~~~~~~~~~~~{.cpp}
   /// ..
-  /// int wid = kodi::gui::GetCurrentWindowId()
+  /// int wid = kodi::gui::GetCurrentWindowId();
   /// ..
   /// ~~~~~~~~~~~~~
   ///
@@ -138,6 +138,36 @@ namespace gui
   {
     using namespace ::kodi::addon;
     return CAddonBase::m_interface->toKodi->kodi_gui->general->get_current_window_id(CAddonBase::m_interface->toKodi->kodiBase);
+  }
+  //--------------------------------------------------------------------------
+
+  //==========================================================================
+  ///
+  /// \ingroup cpp_kodi_gui
+  /// \brief To get hardware specific device context interface
+  ///
+  /// \return                        The currently active device context
+  ///
+  /// \warning This function is only be supported under Windows, on all other
+  /// OS it return `nullptr`!
+  ///
+  /// \note Returned Windows class pointer is `ID3D11DeviceContext1`.
+  ///
+  ///
+  ///-------------------------------------------------------------------------
+  ///
+  /// **Example:**
+  /// ~~~~~~~~~~~~~{.cpp}
+  /// #include <d3d11_1.h>
+  /// ..
+  /// ID3D11DeviceContext1* context = static_cast<ID3D11DeviceContext1*>(kodi::gui::GetHWContext());
+  /// ..
+  /// ~~~~~~~~~~~~~
+  ///
+  inline void* GetHWContext()
+  {
+    using namespace ::kodi::addon;
+    return CAddonBase::m_interface->toKodi->kodi_gui->general->get_hw_context(CAddonBase::m_interface->toKodi->kodiBase);
   }
   //--------------------------------------------------------------------------
 

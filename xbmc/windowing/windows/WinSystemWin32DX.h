@@ -30,6 +30,7 @@ public:
   bool DPIChanged(WORD dpi, RECT windowRect) const override;
   void SetWindow(HWND hWnd) const;
   bool DestroyRenderSystem() override;
+  void* GetHWContext() override { return m_deviceResources->GetD3DContext(); }
 
   void UninitHooks();
   void InitHooks(IDXGIOutput* pOutput);

@@ -139,6 +139,17 @@ public:
   // Access render system interface
   CGraphicContext& GetGfxContext();
 
+  /**
+   * Get OS specific hardware context
+   *
+   * \return OS specific context or nullptr if OS not have
+   *
+   * \note This function is currently only related to Windows with DirectX,
+   * all other OS where use GL returns nullptr.
+   * Returned Windows class pointer is ID3D11DeviceContext1.
+   */
+  virtual void* GetHWContext() { return nullptr; }
+
 protected:
   void UpdateDesktopResolution(RESOLUTION_INFO& newRes, const std::string &output, int width, int height, float refreshRate, uint32_t dwFlags);
   virtual std::unique_ptr<KODI::WINDOWING::IOSScreenSaver> GetOSScreenSaverImpl() { return nullptr; }

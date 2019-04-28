@@ -26,6 +26,7 @@ typedef struct AddonToKodiFuncTable_kodi_gui_general
   int (*get_video_resolution)(void* kodiBase);
   int (*get_current_window_dialog_id)(void* kodiBase);
   int (*get_current_window_id)(void* kodiBase);
+  void* (*get_hw_context)(void* kodiBase);
 } AddonToKodiFuncTable_kodi_gui_general;
 
 typedef struct AddonToKodiFuncTable_kodi_gui_control_button
