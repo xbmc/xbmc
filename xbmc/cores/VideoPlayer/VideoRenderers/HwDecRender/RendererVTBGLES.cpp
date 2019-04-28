@@ -14,7 +14,14 @@
 #include "utils/GLUtils.h"
 #include "cores/VideoPlayer/DVDCodecs/Video/VTB.h"
 #include "settings/MediaSettings.h"
+#if defined(TARGET_DARWIN_IOS)
 #include "windowing/ios/WinSystemIOS.h"
+#define WIN_SYSTEM_CLASS CWinSystemIOS
+#elif defined(TARGET_DARWIN_TVOS)
+#include "windowing/tvos/WinSystemTVOS.h"
+#define WIN_SYSTEM_CLASS CWinSystemTVOS
+#endif
+
 #include <CoreVideo/CVBuffer.h>
 #include <CoreVideo/CVPixelBuffer.h>
 #include <OpenGLES/ES2/glext.h>
@@ -37,7 +44,7 @@ bool CRendererVTB::Register()
 CRendererVTB::CRendererVTB()
 {
   m_textureCache = nullptr;
-  CWinSystemIOS* winSystem = dynamic_cast<CWinSystemIOS*>(CServiceBroker::GetWinSystem());
+  WIN_SYSTEM_CLASS *winSystem = dynamic_cast<WIN_SYSTEM_CLASS *>(CServiceBroker::GetWinSystem());
   m_glContext = winSystem->GetEAGLContextObj();
   CVReturn ret = CVOpenGLESTextureCacheCreate(kCFAllocatorDefault,
                                               NULL,
