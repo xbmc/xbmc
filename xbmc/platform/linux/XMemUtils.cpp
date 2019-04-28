@@ -80,7 +80,7 @@ void GlobalMemoryStatusEx(LPMEMORYSTATUSEX lpBuffer)
   if (host_statistics(stat_port, HOST_VM_INFO, (host_info_t)&vm_stat, &count) == 0)
   {
       // Find page size.
-#if defined(TARGET_DARWIN_IOS)
+#if defined(TARGET_DARWIN_EMBEDDED)
       // on ios with 64bit ARM CPU the page size is wrongly given as 16K
       // when using the sysctl approach. We can use the host_page_size
       // function instead which will give the proper 4k pagesize
