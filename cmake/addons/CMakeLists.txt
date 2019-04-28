@@ -123,6 +123,17 @@ if(CMAKE_TOOLCHAIN_FILE)
   message(STATUS ${BUILD_ARGS})
 endif()
 
+# used for addons where need special folders to store there content (if
+# not set the addon define it byself).
+# e.g. Google Chromium addon where his git bring:
+# - "unable to create file" ... "Filename too long"
+# see also WARNING by Windows on: https://bitbucket.org/chromiumembedded/cef/wiki/MasterBuildQuickStart
+if(THIRD_PARTY_PATH)
+  message(STATUS "Third party lib path specified")
+  message(STATUS ${THIRD_PARTY_PATH})
+  list(APPEND BUILD_ARGS -DTHIRD_PARTY_PATH=${THIRD_PARTY_PATH})
+endif()
+
 if(NOT ADDONS_TO_BUILD)
   set(ADDONS_TO_BUILD "all")
 else()
