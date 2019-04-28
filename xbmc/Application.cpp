@@ -3085,6 +3085,10 @@ void CApplication::OnPlayerCloseFile(const CFileItem &file, const CBookmark &boo
   bool playCountUpdate = false;
   float percent = 0.0f;
 
+  // Make sure we don't reset existing bookmark etc. on eg. player start failure
+  if (bookmark.timeInSeconds == 0.0f)
+    return;
+
   if (m_stackHelper.GetRegisteredStack(fileItem) != nullptr && m_stackHelper.GetRegisteredStackTotalTimeMs(fileItem) > 0)
   {
     // regular stack case: we have to save the bookmark on the stack
