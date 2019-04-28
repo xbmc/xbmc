@@ -3,7 +3,7 @@
        name="Dim"
        version="1.0.54"
        provider-name="Team Kodi">
-  <extension point="xbmc.ui.screensaver" library=""/>
+  <extension point="xbmc.ui.screensaver" library_@CORE_SYSTEM_NAME@="dummy.so"/>
   <extension point="xbmc.addon.metadata">
     <summary lang="af_ZA">Sluimerskerm wat jou skerm verdof</summary>
     <summary lang="am_ET">መመልከቻ ማዳኛ የ እርስዎን መመልከቻ ፈዘዝ ያደርገዋል </summary>
