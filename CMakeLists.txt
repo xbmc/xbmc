@@ -295,10 +295,17 @@ set_target_properties(lib${APP_NAME_LC} PROPERTIES PREFIX "")
 set(OTHER_FILES cmake/README.md)
 
 # Subdirs
+if(CORE_PLATFORM_NAME STREQUAL "tvos")
+  set(CORE_SYSTEM_NAME_ORIGNIAL ${CORE_SYSTEM_NAME})
+  set(CORE_SYSTEM_NAME "tvos")
+endif()
 core_add_subdirs_from_filelist(${CMAKE_SOURCE_DIR}/cmake/treedata/common/*.txt
                                ${CMAKE_SOURCE_DIR}/cmake/treedata/${CORE_SYSTEM_NAME}/*.txt)
 core_add_optional_subdirs_from_filelist(${CMAKE_SOURCE_DIR}/cmake/treedata/optional/common/*.txt
                                         ${CMAKE_SOURCE_DIR}/cmake/treedata/optional/${CORE_SYSTEM_NAME}/*.txt)
+if(CORE_PLATFORM_NAME STREQUAL "tvos")
+  set(CORE_SYSTEM_NAME ${CORE_SYSTEM_NAME_ORIGNIAL})
+endif()
 
 target_link_libraries(lib${APP_NAME_LC} PUBLIC ${core_DEPENDS} ${SYSTEM_LDFLAGS} ${DEPLIBS} ${CMAKE_DL_LIBS})
 set_target_properties(lib${APP_NAME_LC} PROPERTIES PROJECT_LABEL "xbmc")
@@ -337,7 +344,7 @@ elseif(CORE_SYSTEM_NAME STREQUAL android)
   # Nothing
 elseif(CORE_SYSTEM_NAME STREQUAL ios)
   set_target_properties(${APP_NAME_LC} PROPERTIES OUTPUT_NAME ${APP_NAME}
-                                                  MACOSX_BUNDLE_INFO_PLIST ${CMAKE_SOURCE_DIR}/xbmc/platform/darwin/ios/Info.plist.in)
+                                                  MACOSX_BUNDLE_INFO_PLIST ${PLATFORM_BUNDLE_INFO_PLIST})
 else()
   set_target_properties(${APP_NAME_LC} PROPERTIES SUFFIX ${APP_BINARY_SUFFIX})
 endif()
