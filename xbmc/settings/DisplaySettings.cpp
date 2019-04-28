@@ -43,6 +43,8 @@
 #include "windowing/osx/WinSystemOSX.h"
 #elif defined(TARGET_DARWIN_IOS)
 #include "windowing/ios/WinSystemIOS.h"
+#elif defined(TARGET_DARWIN_TVOS)
+#include "windowing/tvos/WinSystemTVOS.h"
 #elif defined(HAVE_WAYLAND)
 #include "windowing/wayland/WinSystemWayland.h"
 #elif defined(TARGET_WINDOWS_DESKTOP)
@@ -823,7 +825,7 @@ void CDisplaySettings::SettingOptionsPreferredStereoscopicViewModesFiller(Settin
 
 void CDisplaySettings::SettingOptionsMonitorsFiller(SettingConstPtr setting, std::vector<StringSettingOption> &list, std::string &current, void *data)
 {
-#if defined(HAVE_X11) || defined(TARGET_DARWIN_OSX) || defined(TARGET_DARWIN_IOS)
+#if defined(HAVE_X11) || defined(TARGET_DARWIN_OSX) || defined(TARGET_DARWIN_EMBEDDED)
   std::vector<std::string> monitors;
 
 #if defined(HAVE_X11)
@@ -832,6 +834,8 @@ void CDisplaySettings::SettingOptionsMonitorsFiller(SettingConstPtr setting, std
   CWinSystemOSX *winSystem = dynamic_cast<CWinSystemOSX*>(CServiceBroker::GetWinSystem());
 #elif defined(TARGET_DARWIN_IOS)
   CWinSystemIOS *winSystem = dynamic_cast<CWinSystemIOS*>(CServiceBroker::GetWinSystem());
+#elif defined(TARGET_DARWIN_TVOS)
+  CWinSystemTVOS *winSystem = dynamic_cast<CWinSystemTVOS*>(CServiceBroker::GetWinSystem());
 #endif
   winSystem->GetConnectedOutputs(&monitors);
   std::string currentMonitor = CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(CSettings::SETTING_VIDEOSCREEN_MONITOR);

@@ -311,6 +311,9 @@ void CSettingConditions::Initialize()
 #ifdef TARGET_DARWIN_IOS
   m_simpleConditions.insert("have_ios");
 #endif
+#ifdef TARGET_DARWIN_TVOS
+  m_simpleConditions.insert("have_tvos");
+#endif
 #ifdef HAS_LIBAMCODEC
   if (aml_present())
     m_simpleConditions.insert("have_amcodec");

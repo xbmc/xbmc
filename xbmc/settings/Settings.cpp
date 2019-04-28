@@ -27,7 +27,10 @@
 #if defined(TARGET_DARWIN_OSX)
 #include "platform/darwin/osx/XBMCHelper.h"
 #endif // defined(TARGET_DARWIN_OSX)
-#if defined(TARGET_DARWIN_IOS)
+#if defined(TARGET_DARWIN_TVOS)
+#include "platform/darwin/tvos/TVOSSettingsHandler.h"
+#endif // defined(TARGET_DARWIN_TVOS)
+#if defined(TARGET_DARWIN_EMBEDDED)
 #include "SettingAddon.h"
 #endif
 #if defined(TARGET_RASPBERRY_PI)
@@ -368,6 +371,9 @@ const std::string CSettings::SETTING_INPUT_CONTROLLERPOWEROFF = "input.controlle
 const std::string CSettings::SETTING_INPUT_APPLEREMOTEMODE = "input.appleremotemode";
 const std::string CSettings::SETTING_INPUT_APPLEREMOTEALWAYSON = "input.appleremotealwayson";
 const std::string CSettings::SETTING_INPUT_APPLEREMOTESEQUENCETIME = "input.appleremotesequencetime";
+const std::string CSettings::SETTING_INPUT_APPLESIRI = "input.applesiri";
+const std::string CSettings::SETTING_INPUT_APPLESIRITIMEOUT = "input.applesiritimeout";
+const std::string CSettings::SETTING_INPUT_APPLESIRITIMEOUTENABLED = "input.applesiritimeoutenabled";
 const std::string CSettings::SETTING_NETWORK_USEHTTPPROXY = "network.usehttpproxy";
 const std::string CSettings::SETTING_NETWORK_HTTPPROXYTYPE = "network.httpproxytype";
 const std::string CSettings::SETTING_NETWORK_HTTPPROXYSERVER = "network.httpproxyserver";
@@ -563,6 +569,9 @@ bool CSettings::InitializeDefinitions()
 #elif defined(TARGET_DARWIN_IOS)
   if (CFile::Exists(SETTINGS_XML_FOLDER "darwin_ios.xml") && !Initialize(SETTINGS_XML_FOLDER "darwin_ios.xml"))
     CLog::Log(LOGFATAL, "Unable to load ios-specific settings definitions");
+#elif defined(TARGET_DARWIN_TVOS)
+  if (CFile::Exists(SETTINGS_XML_FOLDER "darwin_tvos.xml") && !Initialize(SETTINGS_XML_FOLDER "darwin_tvos.xml"))
+    CLog::Log(LOGFATAL, "Unable to load tvos-specific settings definitions");
 #endif
 #endif
 
@@ -605,7 +614,7 @@ void CSettings::InitializeControls()
 void CSettings::InitializeVisibility()
 {
   // hide some settings if necessary
-#if defined(TARGET_DARWIN_IOS)
+#if defined(TARGET_DARWIN_EMBEDDED)
   std::shared_ptr<CSettingString> timezonecountry = std::static_pointer_cast<CSettingString>(GetSettingsManager()->GetSetting(CSettings::SETTING_LOCALE_TIMEZONECOUNTRY));
   std::shared_ptr<CSettingString> timezone = std::static_pointer_cast<CSettingString>(GetSettingsManager()->GetSetting(CSettings::SETTING_LOCALE_TIMEZONE));
 
@@ -916,6 +925,14 @@ void CSettings::InitializeISettingCallbacks()
   settingSet.insert(CSettings::SETTING_INPUT_APPLEREMOTEMODE);
   settingSet.insert(CSettings::SETTING_INPUT_APPLEREMOTEALWAYSON);
   GetSettingsManager()->RegisterCallback(&XBMCHelper::GetInstance(), settingSet);
+#endif
+
+#if defined(TARGET_DARWIN_TVOS)
+  settingSet.clear();
+  settingSet.insert(CSettings::SETTING_INPUT_APPLESIRI);
+  settingSet.insert(CSettings::SETTING_INPUT_APPLESIRITIMEOUT);
+  settingSet.insert(CSettings::SETTING_INPUT_APPLESIRITIMEOUTENABLED);
+  GetSettingsManager()->RegisterCallback(&CTVOSInputSettings::GetInstance(), settingSet);
 #endif
 
   settingSet.clear();
