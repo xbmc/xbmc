@@ -53,10 +53,7 @@ CRenderBufferPoolGuiTexture::CRenderBufferPoolGuiTexture(SCALINGMETHOD scalingMe
 
 bool CRenderBufferPoolGuiTexture::IsCompatible(const CRenderVideoSettings &renderSettings) const
 {
-  if (renderSettings.GetScalingMethod() != m_scalingMethod)
-    return false;
-
-  return true;
+  return renderSettings.GetScalingMethod() == m_scalingMethod;
 }
 
 IRenderBuffer *CRenderBufferPoolGuiTexture::CreateRenderBuffer(void *header /* = nullptr */)
@@ -73,15 +70,10 @@ CRPRendererGuiTexture::CRPRendererGuiTexture(const CRenderSettings &renderSettin
 
 bool CRPRendererGuiTexture::Supports(RENDERFEATURE feature) const
 {
-  if (feature == RENDERFEATURE::STRETCH         ||
-      feature == RENDERFEATURE::ZOOM            ||
-      feature == RENDERFEATURE::PIXEL_RATIO     ||
-      feature == RENDERFEATURE::ROTATION)
-  {
-    return true;
-  }
-
-  return false;
+  return feature == RENDERFEATURE::STRETCH         ||
+         feature == RENDERFEATURE::ZOOM            ||
+         feature == RENDERFEATURE::PIXEL_RATIO     ||
+         feature == RENDERFEATURE::ROTATION;
 }
 
 void CRPRendererGuiTexture::RenderInternal(bool clear, uint8_t alpha)

@@ -23,10 +23,7 @@ CRenderBufferPoolOpenGLES::CRenderBufferPoolOpenGLES(CRenderContext &context)
 
 bool CRenderBufferPoolOpenGLES::IsCompatible(const CRenderVideoSettings &renderSettings) const
 {
-  if (!CRPRendererOpenGLES::SupportsScalingMethod(renderSettings.GetScalingMethod()))
-    return false;
-
-  return true;
+  return CRPRendererOpenGLES::SupportsScalingMethod(renderSettings.GetScalingMethod());
 }
 
 IRenderBuffer *CRenderBufferPoolOpenGLES::CreateRenderBuffer(void *header /* = nullptr */)
