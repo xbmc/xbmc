@@ -33,18 +33,29 @@ elseif(OS STREQUAL osx)
 elseif(OS STREQUAL ios)
   set(CMAKE_SYSTEM_NAME Darwin)
   set(CORE_SYSTEM_NAME ios)
+  if(PLATFORM STREQUAL appletvos)
+    set(CORE_PLATFORM_NAME tvos)
+  endif()
 endif()
 
 if(CORE_SYSTEM_NAME STREQUAL ios)
   # Necessary to build the main Application (but not other dependencies)
   # with Xcode (and a bundle with Makefiles) (https://cmake.org/Bug/view.php?id=15329)
   if(NOT PROJECT_SOURCE_DIR MATCHES "tools/depends")
-    message(STATUS "Toolchain enabled IOS bundle for project ${PROJECT_NAME}")
     set(CMAKE_MACOSX_BUNDLE YES)
     set(CMAKE_XCODE_ATTRIBUTE_CODE_SIGNING_REQUIRED "NO")
-
-    # set this to YES once we have a deployment target of at least iOS 6.0
-    set(CMAKE_XCODE_ATTRIBUTE_ENABLE_BITCODE "NO")
+    # Need to set this attribute to "" in order to
+    # complety disable code signing
+    # see: https://gitlab.kitware.com/cmake/cmake/issues/19112
+    set(CMAKE_XCODE_ATTRIBUTE_CODE_SIGN_IDENTITY "")
+    if(PLATFORM STREQUAL appletvos)
+      message(STATUS "Toolchain enabled TVOS bundle for project ${PROJECT_NAME}")
+      set(CMAKE_XCODE_ATTRIBUTE_ENABLE_BITCODE "YES")
+    else()
+      message(STATUS "Toolchain enabled IOS bundle for project ${PROJECT_NAME}")
+      # set this to YES once we have a deployment target of at least iOS 6.0
+      set(CMAKE_XCODE_ATTRIBUTE_ENABLE_BITCODE "NO")
+    endif()
   endif()
 endif()
 
