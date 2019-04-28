@@ -393,6 +393,9 @@ protected:
 #if defined(TARGET_DARWIN_IOS)
   friend class CWinEventsIOS;
 #endif
+#if defined(TARGET_DARWIN_TVOS)
+  friend class CWinEventsTVOS;
+#endif
 #if defined(TARGET_ANDROID)
   friend class CWinEventsAndroid;
 #endif

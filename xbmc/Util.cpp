@@ -191,7 +191,7 @@ std::string GetHomePath(const std::string& strTarget, std::string strPath)
 }
 #endif
 #if defined(TARGET_DARWIN)
-#if !defined(TARGET_DARWIN_IOS)
+#if !defined(TARGET_DARWIN_EMBEDDED)
 bool IsDirectoryValidRoot(std::string path)
 {
   path += "/system/settings/settings.xml";
@@ -215,7 +215,7 @@ std::string GetHomePath(const std::string& strTarget, std::string strPath)
       for (int n = strlen(given_path) - 1; given_path[n] != '/'; n--)
         given_path[n] = '\0';
 
-#if defined(TARGET_DARWIN_IOS)
+#if defined(TARGET_DARWIN_EMBEDDED)
       strcat(given_path, "/AppData/AppHome/");
 #else
       // Assume local path inside application bundle.

@@ -9074,6 +9074,8 @@ int CGUIInfoManager::TranslateSingleString(const std::string &strCondition, bool
         return SYSTEM_PLATFORM_DARWIN_OSX;
       else if (platform == "ios")
         return SYSTEM_PLATFORM_DARWIN_IOS;
+      else if (platform == "tvos")
+        return SYSTEM_PLATFORM_DARWIN_TVOS;
       else if (platform == "android")
         return SYSTEM_PLATFORM_ANDROID;
     }
