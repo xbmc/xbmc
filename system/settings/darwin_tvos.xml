@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<settings>
+  <section id="interface">
+    <category id="screensaver">
+      <visible>false</visible>
+      <group id="1">
+        <setting id="screensaver.mode">
+          <default></default>
+        </setting>
+        <setting id="screensaver.usemusicvisinstead">
+            <default>false</default>
+        </setting>
+        <setting id="screensaver.usedimonpause">
+            <default>false</default>
+        </setting>
+      </group>
+    </category>
+    <category id="masterlock">
+        <visible>false</visible>
+    </category>
+    <category id="control">
+        <group id="1">
+            <setting id="input.peripherals">
+                <visible>false</visible>
+            </setting>
+        </group>
+        <group id="2">
+            <setting id="input.enablemouse">
+                <default>false</default>
+                <visible>false</visible>
+            </setting>
+            <setting id="input.controllerconfig">
+                <visible>false</visible>
+            </setting>
+            <setting id="input.appleremotemode">
+                <visible>false</visible>
+            </setting>
+            <setting id="input.appleremotesequencetime">
+                <visible>false</visible>
+            </setting>
+            <setting id="input.applesiri" type="boolean" label="24152" help="24153">
+                <level>1</level>
+                <default>false</default>
+                <control type="toggle" />
+            </setting>
+            <setting id="input.applesiritimeoutenabled" type="boolean" label="24160" help="24161">
+                <level>1</level>
+                <default>true</default>
+                <control type="toggle" />
+            </setting>
+            <setting id="input.applesiritimeout" type="integer" label="24154" help="24155">
+                <level>1</level>
+                <default>60</default>
+                <constraints>
+                    <options>
+                        <option label="24156">30</option>
+                        <option label="24157">60</option>
+                        <option label="24158">90</option>
+                        <option label="24159">120</option>
+                    </options>
+                </constraints>
+                <control type="list" format="integer" />
+                <dependencies>
+                    <dependency type="enable" setting="input.applesiritimeoutenabled">true</dependency>
+                </dependencies>
+            </setting>
+        </group>
+    </category>
+  </section>
+  <section id="player">
+    <category id="videoplayer">
+      <group id="3">
+        <setting id="videoplayer.hqscalers">
+          <visible>false</visible>
+        </setting>
+      </group>
+    </category>
+    <category id="discs">
+      <group id="3" label="620">
+        <visible>false</visible>
+      </group>
+    </category>
+  </section>
+  <section id="system">
+    <category id="display">
+      <group id="1">
+        <setting id="videoscreen.fakefullscreen">
+          <visible>false</visible>
+        </setting>
+        <setting id="videoscreen.blankdisplays">
+          <visible>false</visible>
+        </setting>
+        <setting id="videoscreen.resolution" type="integer" parent="videoscreen.screen" label="169" help="36352">
+          <visible>false</visible>
+        </setting>
+        <setting id="videoscreen.vsync" type="integer" label="13105" help="36356">
+          <default>2</default> <!-- VSYNC_ALWAYS -->
+          <visible>false</visible>
+        </setting>
+      </group>
+    </category>
+    <category id="audio">
+      <group id="1">
+        <setting id="audiooutput.audiodevice" type="string">
+          <default>Default</default>
+          <visible>false</visible>
+        </setting>
+      </group>
+      <group id="3">
+        <setting id="audiooutput.passthroughdevice" type="string">
+          <default>Default</default>
+          <visible>false</visible>
+        </setting>
+        <setting id="audiooutput.supportdtshdcpudecoding" type="boolean">
+            <default>false</default>
+            <visible>false</visible>
+        </setting>
+      </group>
+    </category>
+    <category id="powermanagement">
+        <group id="1">
+            <visible>false</visible>
+        </group>
+    </category>
+  </section>
+</settings>

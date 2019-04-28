@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- This file contains the mapping of keys (gamepad,remote and keyboard) to actions within XBMC -->
+<!-- The <global> section is a fall through - they will only be used if the button is not        -->
+<!-- used in the current window's section.  Note that there is only handling                     -->
+<!-- for a single action per button at this stage.                                               -->
+<!-- For joystick/gamepad configuration under linux/win32, see below as it differs from xbox     -->
+<!-- gamepads.                                                                                   -->
+
+<!-- The format is:                                                                              -->
+<!--    <device>                                                                                 -->
+<!--      <button id=""#>xbmc action</button>
+<!--    </device>                                                                                -->
+
+<!-- To map keys from other remotes using the RCA protocol, you may add <customcontroller name="SiriRemote"> blocks -->
+<!-- In this case, the tags used are <button id=""#> where # is the original button code (OBC) of the key -->
+<!-- You set it up by adding a <customcontroller name="SiriRemote"> block to the window or <global> section:        -->
+<!--    <customcontroller name="SiriRemote">                                                                        -->
+<!--       <button id="45">Stop</button>
+<!--    </customcontroller>                                                                       -->
+
+<!-- Note that the action can be a built-in function.                                            -->
+<!--            eg <button id="6">ActivateWindow(Favourites)</button>
+<!-- would bring up Favourites when the button with the id of 6 is press. In this case, "Menu"   -->
+
+<!--                                                                                             -->
+<!--  Button Ids:                                                                                -->
+<!--  'id' is the button ID used by SDL. The key ids recognized from your remote appears      -->
+<!--  in /var/log/syslog on the ATV2 for each button pressed and when debug mode is enabled      -->
+<!--  Use your log to discover and map custom buttons to actions.                                -->
+
+<keymap>
+  <global>
+    <customcontroller name="SiriRemote">
+      <!-- up --> <button id="1">Up</button>
+      <!-- down --> <button id="2">Down</button>
+      <!-- left --> <button id="3">Left</button>
+      <!-- right --> <button id="4">Right</button>
+      <!-- center --> <button id="5">Select</button>
+      <!-- menu -->      <button id="6">Back</button>
+      <!-- hold center --> <button id="7">ContextMenu</button>
+      <!-- swipe up --> <!-- <button id="8">FirstPage</button> -->
+      <!-- swipe down --> <!-- <button id="9">LastPage</button> -->
+      <!-- swipe left --> <!-- <button id="10">PageUp</button> -->
+      <!-- swipe right --> <!-- <button id="11">PageDown</button> -->
+      <!-- play/pause --> <button id="12">PlayPause</button>
+      <!-- ir play --> <button id="13">Play</button>
+      <!-- ir pause --> <button id="14">Pause</button>
+      <!-- ir stop --> <button id="15">Stop</button>
+      <!-- ir next track --> <button id="16">SkipNext</button>
+      <!-- ir prev track --> <button id="17">SkipPrevious</button>
+      <!-- ir fast forward --> <button id="18">FastForward</button>
+      <!-- ir rewind --> <button id="19">Rewind</button>
+    </customcontroller>
+  </global>
+  <Home>
+    <customcontroller name="SiriRemote">
+      <button id="6">FullScreen</button>
+    </customcontroller>
+  </Home>
+  <FullscreenVideo>
+    <customcontroller name="SiriRemote">
+      <button id="1">Up</button>
+      <button id="2">Down</button>
+      <button id="3">StepBack</button>
+      <button id="4">StepForward</button>
+      <button id="5">OSD</button>
+      <button id="6">Back</button>
+      <button id="7">Info</button>
+      <button id="8">AudioNextLanguage</button>
+      <button id="9">NextSubtitle</button>
+      <button id="10">CodecInfo</button>
+  </customcontroller>
+  </FullscreenVideo>
+  <FullscreenLiveTV>
+    <customcontroller name="SiriRemote">
+      <button id="1">Up</button>
+      <button id="2">Down</button>
+      <button id="3">StepBack</button>
+      <button id="4">StepForward</button>
+      <button id="5">OSD</button>
+      <button id="6">Back</button>
+      <button id="7">ActivateWindow(TVGuide)</button>
+      <button id="8">AudioNextLanguage</button>
+      <button id="9">NextSubtitle</button>
+      <button id="10">CodecInfo</button>
+    </customcontroller>
+  </FullscreenLiveTV>
+  <FullscreenRadio>
+    <customcontroller name="SiriRemote">
+      <button id="1">Up</button>
+      <button id="2">Down</button>
+      <button id="3">StepBack</button>
+      <button id="4">StepForward</button>
+      <button id="5">OSD</button>
+      <button id="6">Back</button>
+      <button id="10">CodecInfo</button>
+    </customcontroller>
+  </FullscreenRadio>
+  <Visualisation>
+    <customcontroller name="SiriRemote">
+      <button id="9">SkipPrevious</button>
+      <button id="8">SkipNext</button>
+      <button id="6">Fullscreen</button>
+      <button id="7">OSD</button>
+    </customcontroller>
+  </Visualisation>
+  <SlideShow>
+    <customcontroller name="SiriRemote">
+      <button id="1">ZoomIn</button>
+      <button id="2">ZoomOut</button>
+      <button id="3">PreviousPicture</button>
+      <button id="4">NextPicture</button>
+      <button id="6">Stop</button>
+      <button id="7">Info</button>
+    </customcontroller>
+  </SlideShow>
+  <ScreenCalibration>
+    <customcontroller name="SiriRemote">
+      <button id="5">NextCalibration</button>
+    </customcontroller>
+  </ScreenCalibration>
+  <VideoOSD>
+    <customcontroller name="SiriRemote">
+      <button id="7">Back</button>
+    </customcontroller>
+  </VideoOSD>
+  <VideoMenu>
+    <customcontroller name="SiriRemote">
+      <button id="5">Select</button>
+      <button id="7">OSD</button>
+    </customcontroller>
+  </VideoMenu>
+  <MyVideoLibrary>
+    <customcontroller name="SiriRemote">
+      <button id="7">Info</button>
+    </customcontroller>
+  </MyVideoLibrary>
+  <MyVideoFiles>
+    <customcontroller name="SiriRemote">
+      <button id="7">Info</button>
+    </customcontroller>
+  </MyVideoFiles>
+  <PictureInfo>
+    <customcontroller name="SiriRemote">
+      <button id="3">Left</button>
+      <button id="4">Right</button>
+    </customcontroller>
+  </PictureInfo>
+</keymap>
