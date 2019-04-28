@@ -42,10 +42,10 @@ if [ "${PLATFORM_NAME}" == "iphoneos" ] || [ "${PLATFORM_NAME}" == "appletvos" ]
         for i in $EGGS; do
           echo $i
           mkdir del
-          unzip $i -d del
-          find ./del/ -name "*.so" -type f |  xargs ${LDID} -S${IOS11_ENTITLEMENTS}
+          unzip -q $i -d del
+          find ./del/ -name "*.so" -type f | xargs ${LDID} -S${IOS11_ENTITLEMENTS}
           rm $i
-          cd del && zip -r $i ./* &&  cd ..
+          cd del && zip -qr $i ./* &&  cd ..
           rm -r ./del/
         done
   fi
@@ -84,10 +84,10 @@ if [ "${PLATFORM_NAME}" == "iphoneos" ] || [ "${PLATFORM_NAME}" == "appletvos" ]
     for i in $EGGS; do
       echo $i
       mkdir del
-      unzip $i -d del
+      unzip -q $i -d del
       codesign --deep -fvvv -s "${CODE_SIGN_IDENTITY_FOR_ITEMS}" -i "${BUNDLEID}" `find ./del/ -name "*.$binext" -type f` ./del/
       rm $i
-      cd del && zip -r $i ./* &&  cd ..
+      cd del && zip -qr $i ./* &&  cd ..
       rm -r ./del/
     done
   fi
