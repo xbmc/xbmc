@@ -426,6 +426,8 @@
 #define SYSTEM_CAN_REBOOT           753
 #define SYSTEM_MEDIA_AUDIO_CD       754
 
+#define SYSTEM_PLATFORM_DARWIN_TVOS 760
+
 #define SLIDESHOW_ISPAUSED          800
 #define SLIDESHOW_ISRANDOM          801
 #define SLIDESHOW_ISACTIVE          802

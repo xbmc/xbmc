@@ -10,7 +10,7 @@
 
 #include "IDirtyRegionSolver.h"
 
-#if defined(TARGET_DARWIN_IOS)
+#if defined(TARGET_DARWIN_EMBEDDED)
 #define DEFAULT_BUFFERING 4
 #else
 #define DEFAULT_BUFFERING 3

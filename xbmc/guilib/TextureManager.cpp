@@ -28,6 +28,9 @@
 #if defined(TARGET_DARWIN_IOS)
 #include "ServiceBroker.h"
 #include "windowing/ios/WinSystemIOS.h" // for g_Windowing in CGUITextureManager::FreeUnusedTextures
+#elif defined(TARGET_DARWIN_TVOS)
+#include "ServiceBroker.h"
+#include "windowing/tvos/WinSystemTVOS.h" // for g_Windowing in CGUITextureManager::FreeUnusedTextures
 #endif
 #include "FFmpegImage.h"
 
@@ -506,6 +509,9 @@ void CGUITextureManager::FreeUnusedTextures(unsigned int timeDelay)
   // sanity check before delete in that case.
 #if defined(TARGET_DARWIN_IOS)
     CWinSystemIOS* winSystem = dynamic_cast<CWinSystemIOS*>(CServiceBroker::GetWinSystem());
+    if (!winSystem->IsBackgrounded() || glIsTexture(m_unusedHwTextures[i]))
+#elif
+    CWinSystemTVOS* winSystem = dynamic_cast<CWinSystemTVOS*>(CServiceBroker::GetWinSystem());
     if (!winSystem->IsBackgrounded() || glIsTexture(m_unusedHwTextures[i]))
 #endif
       glDeleteTextures(1, (GLuint*) &m_unusedHwTextures[i]);

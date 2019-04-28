@@ -14,7 +14,7 @@
 #include "filesystem/File.h"
 #include "filesystem/ResourceFile.h"
 #include "filesystem/XbtFile.h"
-#if defined(TARGET_DARWIN_IOS)
+#if defined(TARGET_DARWIN_EMBEDDED)
 #include <ImageIO/ImageIO.h>
 #include "filesystem/File.h"
 #include "platform/darwin/DarwinUtils.h"
