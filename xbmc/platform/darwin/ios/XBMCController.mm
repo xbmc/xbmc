@@ -133,37 +133,9 @@ XBMCController *g_xbmcController;
 }
 // END OF UIKeyInput protocol
 
-// - iOS6 rotation API - will be called on iOS7 runtime!--------
-- (NSUInteger)supportedInterfaceOrientations
+- (UIInterfaceOrientationMask)supportedInterfaceOrientations
 {
-  //mask defines available as of ios6 sdk
-  //return UIInterfaceOrientationMaskLandscape;
-  return (1 << UIInterfaceOrientationLandscapeLeft) | (1 << UIInterfaceOrientationLandscapeRight);
-}
-// - old rotation API will be called on iOS6 and lower - removed in iOS7
--(BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
-{
-  //on external screens somehow the logic is rotated by 90°
-  //so we have to do this with our supported orientations then aswell
-  if([[IOSScreenManager sharedInstance] isExternalScreen])
-  {
-    if(interfaceOrientation == UIInterfaceOrientationPortrait)
-    {
-      return YES;
-    }
-  }
-  else//internal screen
-  {
-    if(interfaceOrientation == UIInterfaceOrientationLandscapeLeft)
-    {
-      return YES;
-    }
-    else if(interfaceOrientation == UIInterfaceOrientationLandscapeRight)
-    {
-      return YES;
-    }
-  }
-  return NO;
+  return UIInterfaceOrientationMaskLandscape;
 }
 //--------------------------------------------------------------
 - (UIInterfaceOrientation) getOrientation
