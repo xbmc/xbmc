@@ -241,7 +241,7 @@ CPVREpgInfoTagPtr CPVREpg::GetTagBetween(const CDateTime &beginTime, const CDate
     if (tag)
     {
       m_tags.insert(std::make_pair(tag->StartAsUTC(), tag));
-      UpdateEntry(tag, !CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_EPG_IGNOREDBFORCLIENT));
+      UpdateEntry(tag, CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_EPG_STOREEPGINDATABASE));
     }
   }
 
@@ -698,7 +698,7 @@ bool CPVREpg::LoadFromClients(time_t start, time_t end, bool bForceUpdate)
 
   const std::shared_ptr<CPVREpg> tmpEpg = std::make_shared<CPVREpg>(m_iEpgID, m_strName, m_strScraperName, m_channelData);
   if (tmpEpg->UpdateFromScraper(start, end, bForceUpdate))
-    bReturn = UpdateEntries(*tmpEpg, !CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_EPG_IGNOREDBFORCLIENT));
+    bReturn = UpdateEntries(*tmpEpg, CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_EPG_STOREEPGINDATABASE));
 
   return bReturn;
 }
