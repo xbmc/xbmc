@@ -73,6 +73,8 @@ public:
 protected:
   void Drain();
   void SetPictureParams(VideoPicture* pVideoPicture);
+  void UpdateProcessInfo(struct AVCodecContext* avctx, const enum AVPixelFormat fmt);
+  static enum AVPixelFormat GetFormat(struct AVCodecContext* avctx, const enum AVPixelFormat* fmt);
 
   std::string m_name;
   int m_codecControlFlags = 0;
