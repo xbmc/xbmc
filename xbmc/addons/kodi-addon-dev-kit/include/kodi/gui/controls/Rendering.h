@@ -10,6 +10,7 @@
 
 #include "../../AddonBase.h"
 #include "../Window.h"
+#include "../renderHelper.h"
 
 namespace kodi
 {
@@ -179,17 +180,23 @@ namespace controls
      */
     static bool OnCreateCB(void* cbhdl, int x, int y, int w, int h, void* device)
     {
+      static_cast<CRendering*>(cbhdl)->m_renderHelper = kodi::gui::GetRenderHelper();
       return static_cast<CRendering*>(cbhdl)->Create(x, y, w, h, device);
     }
 
     static void OnRenderCB(void* cbhdl)
     {
+      if (!static_cast<CRendering*>(cbhdl)->m_renderHelper)
+        return;
+      static_cast<CRendering*>(cbhdl)->m_renderHelper->Begin();
       static_cast<CRendering*>(cbhdl)->Render();
+      static_cast<CRendering*>(cbhdl)->m_renderHelper->End();
     }
 
     static void OnStopCB(void* cbhdl)
     {
       static_cast<CRendering*>(cbhdl)->Stop();
+      static_cast<CRendering*>(cbhdl)->m_renderHelper = nullptr;
     }
 
     static bool OnDirtyCB(void* cbhdl)
@@ -197,6 +204,7 @@ namespace controls
       return static_cast<CRendering*>(cbhdl)->Dirty();
     }
 
+    std::shared_ptr<kodi::gui::IRenderHelper> m_renderHelper;
   };
 
 } /* namespace controls */

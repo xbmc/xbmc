@@ -14,6 +14,7 @@
  */
 
 #include "../AddonBase.h"
+#include "../gui/renderHelper.h"
 
 namespace kodi { namespace addon { class CInstanceVisualization; }}
 
@@ -665,12 +666,14 @@ namespace addon
 
     inline static bool ADDON_Start(const AddonInstance_Visualization* addon, int channels, int samplesPerSec, int bitsPerSample, const char* songName)
     {
+      addon->toAddon.addonInstance->m_renderHelper = kodi::gui::GetRenderHelper();
       return addon->toAddon.addonInstance->Start(channels, samplesPerSec, bitsPerSample, songName);
     }
 
     inline static void ADDON_Stop(const AddonInstance_Visualization* addon)
     {
       addon->toAddon.addonInstance->Stop();
+      addon->toAddon.addonInstance->m_renderHelper = nullptr;
     }
 
     inline static void ADDON_AudioData(const AddonInstance_Visualization* addon, const float* audioData, int audioDataLength, float *freqData, int freqDataLength)
@@ -685,7 +688,11 @@ namespace addon
 
     inline static void ADDON_Render(const AddonInstance_Visualization* addon)
     {
+      if (!addon->toAddon.addonInstance->m_renderHelper)
+        return;
+      addon->toAddon.addonInstance->m_renderHelper->Begin();
       addon->toAddon.addonInstance->Render();
+      addon->toAddon.addonInstance->m_renderHelper->End();
     }
 
     inline static void ADDON_GetInfo(const AddonInstance_Visualization* addon, VIS_INFO *info)
@@ -745,6 +752,7 @@ namespace addon
       return addon->toAddon.addonInstance->IsLocked();
     }
 
+    std::shared_ptr<kodi::gui::IRenderHelper> m_renderHelper;
     bool m_presetLockedByUser = false;
     AddonInstance_Visualization* m_instanceData;
   };
