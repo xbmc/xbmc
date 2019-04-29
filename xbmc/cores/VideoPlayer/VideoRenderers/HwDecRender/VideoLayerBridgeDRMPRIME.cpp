@@ -157,11 +157,15 @@ void CVideoLayerBridgeDRMPRIME::Configure(IVideoBufferDRMPRIME* buffer)
   struct connector* connector = m_DRM->GetConnector();
   if (m_DRM->SupportsProperty(connector, "HDR_OUTPUT_METADATA"))
   {
+    CLog::Log(LOGDEBUG, "CVideoLayerBridgeDRMPRIME::{} - supports HDR_OUTPUT_METADATA", __FUNCTION__);
+
     m_hdr_metadata.metadata_type = HDMI_STATIC_METADATA_TYPE1;
     m_hdr_metadata.hdmi_metadata_type1 = {
       .eotf = buffer->GetEOTF(),
       .metadata_type = HDMI_STATIC_METADATA_TYPE1,
     };
+
+    CLog::Log(LOGDEBUG, "CVideoLayerBridgeDRMPRIME::{} - EOTF={}", __FUNCTION__, m_hdr_metadata.hdmi_metadata_type1.eotf);
 
     if (m_hdr_blob_id)
       drmModeDestroyPropertyBlob(m_DRM->GetFileDescriptor(), m_hdr_blob_id);
@@ -176,14 +180,23 @@ void CVideoLayerBridgeDRMPRIME::Configure(IVideoBufferDRMPRIME* buffer)
         {
           m_hdr_metadata.hdmi_metadata_type1.display_primaries[i].x = std::round(av_q2d(mdmd->display_primaries[i][0]) * 50000.0);
           m_hdr_metadata.hdmi_metadata_type1.display_primaries[i].y = std::round(av_q2d(mdmd->display_primaries[i][1]) * 50000.0);
+
+          CLog::Log(LOGDEBUG, "CVideoLayerBridgeDRMPRIME::{} - display_primaries[{}].x={}", __FUNCTION__, i, m_hdr_metadata.hdmi_metadata_type1.display_primaries[i].x);
+          CLog::Log(LOGDEBUG, "CVideoLayerBridgeDRMPRIME::{} - display_primaries[{}].y={}", __FUNCTION__, i, m_hdr_metadata.hdmi_metadata_type1.display_primaries[i].y);
         }
         m_hdr_metadata.hdmi_metadata_type1.white_point.x = std::round(av_q2d(mdmd->white_point[0]) * 50000.0);
         m_hdr_metadata.hdmi_metadata_type1.white_point.y = std::round(av_q2d(mdmd->white_point[1]) * 50000.0);
+
+        CLog::Log(LOGDEBUG, "CVideoLayerBridgeDRMPRIME::{} - white_point.x={}", __FUNCTION__, m_hdr_metadata.hdmi_metadata_type1.white_point.x);
+        CLog::Log(LOGDEBUG, "CVideoLayerBridgeDRMPRIME::{} - white_point.y={}", __FUNCTION__, m_hdr_metadata.hdmi_metadata_type1.white_point.y);
       }
       if (mdmd && mdmd->has_luminance)
       {
         m_hdr_metadata.hdmi_metadata_type1.max_display_mastering_luminance = std::round(av_q2d(mdmd->max_luminance));
         m_hdr_metadata.hdmi_metadata_type1.min_display_mastering_luminance = std::round(av_q2d(mdmd->min_luminance) * 10000.0);
+
+        CLog::Log(LOGDEBUG, "CVideoLayerBridgeDRMPRIME::{} - max_display_mastering_luminance={}", __FUNCTION__, m_hdr_metadata.hdmi_metadata_type1.max_display_mastering_luminance);
+        CLog::Log(LOGDEBUG, "CVideoLayerBridgeDRMPRIME::{} - min_display_mastering_luminance={}", __FUNCTION__, m_hdr_metadata.hdmi_metadata_type1.min_display_mastering_luminance);
       }
 
       AVContentLightMetadata* clmd = buffer->GetContentLightMetadata();
@@ -191,11 +204,14 @@ void CVideoLayerBridgeDRMPRIME::Configure(IVideoBufferDRMPRIME* buffer)
       {
         m_hdr_metadata.hdmi_metadata_type1.max_cll = clmd->MaxCLL;
         m_hdr_metadata.hdmi_metadata_type1.max_fall = clmd->MaxFALL;
+        CLog::Log(LOGDEBUG, "CVideoLayerBridgeDRMPRIME::{} - max_cll={}", __FUNCTION__, clmd->MaxCLL);
+        CLog::Log(LOGDEBUG, "CVideoLayerBridgeDRMPRIME::{} - max_fall={}", __FUNCTION__, clmd->MaxFALL);
       }
 
       drmModeCreatePropertyBlob(m_DRM->GetFileDescriptor(), &m_hdr_metadata, sizeof(m_hdr_metadata), &m_hdr_blob_id);
     }
 
+    CLog::Log(LOGDEBUG, "CVideoLayerBridgeDRMPRIME::{} - m_hdr_blob_id={}", __FUNCTION__, m_hdr_blob_id);
     m_DRM->AddProperty(connector, "HDR_OUTPUT_METADATA", m_hdr_blob_id);
     m_DRM->SetActive(true);
   }
