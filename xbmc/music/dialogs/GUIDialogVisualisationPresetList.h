@@ -26,6 +26,7 @@ protected:
   void OnSelect(int idx) override;
 
 private:
+  void ClearVisualisation();
   void SetVisualisation(CGUIVisualisationControl *addon);
   CGUIVisualisationControl* m_viz = nullptr;
 };
