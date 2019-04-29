@@ -9,6 +9,7 @@
 #pragma once
 
 #include "../AddonBase.h"
+#include "../gui/renderHelper.h"
 
 namespace kodi { namespace addon { class CInstanceScreensaver; }}
 
@@ -418,19 +419,35 @@ namespace addon
 
     inline static bool ADDON_Start(AddonInstance_Screensaver* instance)
     {
+      instance->toAddon.addonInstance->m_renderHelper = kodi::gui::GetRenderHelper();
       return instance->toAddon.addonInstance->Start();
     }
 
     inline static void ADDON_Stop(AddonInstance_Screensaver* instance)
     {
       instance->toAddon.addonInstance->Stop();
+      instance->toAddon.addonInstance->m_renderHelper = nullptr;
     }
 
     inline static void ADDON_Render(AddonInstance_Screensaver* instance)
     {
+      if (!instance->toAddon.addonInstance->m_renderHelper)
+        return;
+      instance->toAddon.addonInstance->m_renderHelper->Begin();
       instance->toAddon.addonInstance->Render();
+      instance->toAddon.addonInstance->m_renderHelper->End();
     }
 
+    /*
+     * Background render helper holds here and in addon base.
+     * In addon base also to have for the others, and stored here for the worst 
+     * case where this class is independent from base and base becomes closed
+     * before.
+     *
+     * This is on Kodi with GL unused and the calls to there are empty (no work)
+     * On Kodi with Direct X where angle is present becomes this used.
+     */
+    std::shared_ptr<kodi::gui::IRenderHelper> m_renderHelper;
     AddonInstance_Screensaver* m_instanceData;
   };
 

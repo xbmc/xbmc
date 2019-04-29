@@ -11,6 +11,7 @@
 #include <stdarg.h>     /* va_list, va_start, va_arg, va_end */
 #include <cstdlib>
 #include <cstring>
+#include <memory>
 #include <stdexcept>
 #include <string>
 #include <vector>
@@ -61,6 +62,7 @@
 
 namespace kodi { namespace addon { class CAddonBase; }}
 namespace kodi { namespace addon { class IAddonInstance; }}
+namespace kodi { namespace gui { struct IRenderHelper; }}
 
 extern "C" {
 
@@ -333,6 +335,9 @@ public:
   {
     return CreateInstance(instanceType, instanceID, instance, addonInstance);
   }
+
+  /* Background helper for GUI render systems, e.g. Screensaver or Visualization */
+  std::shared_ptr<kodi::gui::IRenderHelper> m_renderHelper;
 
   /* Global variables of class */
   static AddonGlobalInterface* m_interface; // Interface function table to hold addresses on add-on and from kodi

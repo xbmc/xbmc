@@ -11,6 +11,7 @@ xbmc/addons/kodi-addon-dev-kit/include/kodi/addon-instance addons_kodi-addon-dev
 xbmc/addons/kodi-addon-dev-kit/include/kodi/gui addons_kodi-addon-dev-kit_include_kodi_gui
 xbmc/addons/kodi-addon-dev-kit/include/kodi/gui/controls addons_kodi-addon-dev-kit_include_kodi_gui_controls
 xbmc/addons/kodi-addon-dev-kit/include/kodi/gui/dialogs addons_kodi-addon-dev-kit_include_kodi_gui_dialogs
+xbmc/addons/kodi-addon-dev-kit/include/kodi/gui/gl addons_kodi-addon-dev-kit_include_kodi_gui_gl
 xbmc/addons/kodi-addon-dev-kit/include/kodi/tools addons_kodi-addon-dev-kit_include_kodi_tools
 xbmc/addons/settings                            addons_settings
 xbmc/commons                                    commons
