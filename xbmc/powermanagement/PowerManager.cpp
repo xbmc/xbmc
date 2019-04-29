@@ -274,7 +274,7 @@ void CPowerManager::SettingOptionsShutdownStatesFiller(SettingConstPtr setting, 
   if (!g_application.IsStandAlone())
   {
     list.push_back(IntegerSettingOption(g_localizeStrings.Get(13009), POWERSTATE_QUIT));
-#if !defined(TARGET_DARWIN_IOS)
+#if !defined(TARGET_DARWIN_EMBEDDED)
     list.push_back(IntegerSettingOption(g_localizeStrings.Get(13014), POWERSTATE_MINIMIZE));
 #endif
   }
