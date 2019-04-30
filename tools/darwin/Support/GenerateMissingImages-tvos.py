@@ -22,7 +22,7 @@ def generateImage(contentsRelativeDir, isBaseImage1x, newWidth, newHeight):
 
 
 generateImage(sys.argv[3] + '.launchimage', True, 3840, 2160)
-generateImage(os.path.join(brandAssetsDir, 'topshelf.imageset'), True, 3840, 1440)
+generateImage(os.path.join(brandAssetsDir, 'topshelf_wide.imageset'), True, 4640, 1440)
 
 appIconSmall = os.path.join(brandAssetsDir, 'icon.imagestack')
 for i in xrange(1, 5):
