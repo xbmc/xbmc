@@ -10,11 +10,11 @@
 #include "threads/Event.h"
 #include "Application.h"
 
-#import "IOSKeyboardView.h"
-#import "IOSScreenManager.h"
-#import "XBMCController.h"
-#import "XBMCDebugHelpers.h"
-#include "IOSKeyboard.h"
+#import "platform/darwin/NSLogDebugHelpers.h"
+#import "platform/darwin/ios/IOSScreenManager.h"
+#import "platform/darwin/ios/XBMCController.h"
+#import "platform/darwin/ios-common/IOSKeyboard.h"
+#import "platform/darwin/ios-common/IOSKeyboardView.h"
 
 static CEvent keyboardFinishedEvent;
 

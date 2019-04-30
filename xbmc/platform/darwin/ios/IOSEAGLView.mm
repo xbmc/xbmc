@@ -31,7 +31,7 @@
 #import "platform/darwin/AutoPool.h"
 #import "platform/darwin/DarwinUtils.h"
 #import "platform/darwin/ios-common/AnnounceReceiver.h"
-#import "XBMCDebugHelpers.h"
+#import "platform/darwin/NSLogDebugHelpers.h"
 
 using namespace KODI::MESSAGING;
 

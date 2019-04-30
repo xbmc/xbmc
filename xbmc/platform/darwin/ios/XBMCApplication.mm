@@ -12,7 +12,7 @@
 #import "XBMCApplication.h"
 #import "XBMCController.h"
 #import "IOSScreenManager.h"
-#import "XBMCDebugHelpers.h"
+#import "platform/darwin/NSLogDebugHelpers.h"
 #import <objc/runtime.h>
 
 @implementation XBMCApplicationDelegate

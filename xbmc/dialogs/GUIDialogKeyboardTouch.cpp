@@ -8,7 +8,7 @@
 
 #include "GUIDialogKeyboardTouch.h"
 #if defined(TARGET_DARWIN_IOS)
-#include "platform/darwin/ios/IOSKeyboard.h"
+#include "platform/darwin/ios-common/IOSKeyboard.h"
 #endif
 
 CGUIDialogKeyboardTouch::CGUIDialogKeyboardTouch()
