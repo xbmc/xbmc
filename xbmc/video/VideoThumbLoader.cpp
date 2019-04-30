@@ -108,7 +108,7 @@ bool CThumbExtractor::DoWork()
     CTextureDetails details;
     details.file = CTextureCache::GetCacheFile(m_target) + ".jpg";
     result = CDVDFileInfo::ExtractThumb(m_item, details, m_fillStreamDetails ? &m_item.GetVideoInfoTag()->m_streamDetails : nullptr, m_pos);
-    if(result)
+    if (result)
     {
       CTextureCache::GetInstance().AddCachedTexture(m_target, details);
       m_item.SetProperty("HasAutoThumb", true);
@@ -361,7 +361,7 @@ bool CVideoThumbLoader::LoadItemCached(CFileItem* pItem)
      )
   {
     // use fanart if available
-    if(pItem->HasArt("fanart"))
+    if (pItem->HasArt("fanart"))
     {
       pItem->SetArt("thumb", pItem->GetArt("fanart"));
     }
