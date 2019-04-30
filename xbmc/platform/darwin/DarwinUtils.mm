@@ -314,64 +314,26 @@ const char *CDarwinUtils::GetOSXVersionString(void)
 #endif
 }
 
-int  CDarwinUtils::GetFrameworkPath(bool forPython, char* path, size_t *pathsize)
+std::string CDarwinUtils::GetFrameworkPath(bool forPython)
 {
   CCocoaAutoPool pool;
-  // see if we can figure out who we are
-  NSString *pathname;
-
-  path[0] = 0;
-  *pathsize = 0;
-
-  // 1) Kodi application running under IOS
-  pathname = [[NSBundle mainBundle] executablePath];
-  std::string appName = std::string(CCompileInfo::GetAppName()) + ".app/" + std::string(CCompileInfo::GetAppName());
-  if (pathname && strstr([pathname UTF8String], appName.c_str()))
+#if defined(TARGET_DARWIN_IOS)
+  return std::string{NSBundle.mainBundle.privateFrameworksPath.UTF8String};
+#elif defined(TARGET_DARWIN_OSX)
+  if ([NSBundle.mainBundle.executablePath containsString:@"Contents"])
   {
-    strcpy(path, [pathname UTF8String]);
-    // Move backwards to last "/"
-    for (int n=strlen(path)-1; path[n] != '/'; n--)
-      path[n] = '\0';
-    strcat(path, "Frameworks");
-    *pathsize = strlen(path);
-    //CLog::Log(LOGDEBUG, "DarwinFrameworkPath(c) -> %s", path);
-    return 0;
-  }
-
-  // 2) Kodi application running under OSX
-  pathname = [[NSBundle mainBundle] executablePath];
-  if (pathname && strstr([pathname UTF8String], "Contents"))
-  {
-    strcpy(path, [pathname UTF8String]);
     // ExecutablePath is <product>.app/Contents/MacOS/<executable>
-    char *lastSlash = strrchr(path, '/');
-    if (lastSlash)
-    {
-      *lastSlash = '\0';//remove /<executable>
-      lastSlash = strrchr(path, '/');
-      if (lastSlash)
-        *lastSlash = '\0';//remove /MacOS
-    }
-    strcat(path, "/Libraries");//add /Libraries
-    //we should have <product>.app/Contents/Libraries now
-    *pathsize = strlen(path);
-    //CLog::Log(LOGDEBUG, "DarwinFrameworkPath(d) -> %s", path);
-    return 0;
+    // we should have <product>.app/Contents/Libraries
+    return std::string{[[NSBundle.mainBundle.bundlePath stringByAppendingPathComponent:@"Contents"] stringByAppendingPathComponent:@"Libraries"].UTF8String};
   }
 
-  // e) Kodi OSX binary running under xcode or command-line
+  // Kodi OSX binary running under xcode or command-line
   // but only if it's not for python. In this case, let python
   // use it's internal compiled paths.
   if (!forPython)
-  {
-    strcpy(path, PREFIX_USR_PATH);
-    strcat(path, "/lib");
-    *pathsize = strlen(path);
-    //CLog::Log(LOGDEBUG, "DarwinFrameworkPath(e) -> %s", path);
-    return 0;
-  }
-
-  return -1;
+    return std::string{PREFIX_USR_PATH"/lib"};
+#endif
+  return std::string{};
 }
 
 int  CDarwinUtils::GetExecutablePath(char* path, size_t *pathsize)
