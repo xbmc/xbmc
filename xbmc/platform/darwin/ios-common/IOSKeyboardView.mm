@@ -10,7 +10,7 @@
 #include "threads/Event.h"
 #include "Application.h"
 
-#import "platform/darwin/ios/XBMCDebugHelpers.h"
+#import "platform/darwin/NSLogDebugHelpers.h"
 #import "platform/darwin/ios/IOSScreenManager.h"
 #import "platform/darwin/ios/XBMCController.h"
 #import "platform/darwin/ios-common/IOSKeyboard.h"
