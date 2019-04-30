@@ -7,7 +7,7 @@
  */
 
 #import <UIKit/UIKit.h>
-#include "IOSKeyboard.h"
+#include "platform/darwin/ios-common/IOSKeyboard.h"
 
 @interface KeyboardView : UIView <UITextFieldDelegate>
 {

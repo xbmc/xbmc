@@ -6,11 +6,11 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include "XBMCController.h"
-#include "IOSKeyboard.h"
-#include "IOSKeyboardView.h"
-#include "XBMCDebugHelpers.h"
 #include "platform/darwin/DarwinUtils.h"
+#include "platform/darwin/ios/XBMCDebugHelpers.h"
+#include "platform/darwin/ios/XBMCController.h"
+#include "platform/darwin/ios-common/IOSKeyboard.h"
+#include "platform/darwin/ios-common/IOSKeyboardView.h"
 
 #import "platform/darwin/AutoPool.h"
 
