@@ -519,7 +519,7 @@ bool CGUIWindowFileManager::Update(int iList, const std::string &strDirectory)
     pItem->SetLabelPreformatted(true);
     m_vecItems[iList]->Add(pItem);
 
-    #ifdef TARGET_DARWIN_IOS
+    #ifdef TARGET_DARWIN_EMBEDDED
       CFileItemPtr iItem(new CFileItem("special://envhome/Documents/Inbox", true));
       iItem->SetLabel("Inbox");
       iItem->SetArt("thumb", "DefaultFolder.png");
@@ -1290,7 +1290,7 @@ void CGUIWindowFileManager::SetInitialPath(const std::string &path)
       m_rootDir.GetSources(shares);
       int iIndex = CUtil::GetMatchingSource(strDestination, shares, bIsSourceName);
       if (iIndex > -1
-#if defined(TARGET_DARWIN_IOS)
+#if defined(TARGET_DARWIN_EMBEDDED)
           || URIUtils::PathHasParent(strDestination, "special://envhome/Documents/Inbox/")
 #endif
           || URIUtils::PathHasParent(strDestination, "special://profile/"))

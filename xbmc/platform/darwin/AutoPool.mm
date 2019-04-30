@@ -6,7 +6,7 @@
  *  See LICENSES/README.md for more information.
  */
 
-#if defined(TARGET_DARWIN_IOS)
+#if defined(TARGET_DARWIN_EMBEDDED)
   #import <Foundation/Foundation.h>
 #else
   #import <Cocoa/Cocoa.h>

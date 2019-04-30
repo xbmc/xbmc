@@ -13,7 +13,7 @@
 #include "utils/URIUtils.h"
 #include "CompileInfo.h"
 
-#if defined(TARGET_DARWIN_IOS)
+#if defined(TARGET_DARWIN_EMBEDDED)
   #import <Foundation/Foundation.h>
   #import <UIKit/UIKit.h>
   #import <mach/mach_host.h>
@@ -119,7 +119,7 @@ const char* CDarwinUtils::getIosPlatformString(void)
   static std::once_flag flag;
   std::call_once(flag, []
   {
-#if defined(TARGET_DARWIN_IOS)
+#if defined(TARGET_DARWIN_EMBEDDED)
     // Gets a string with the device model
     size_t size;
     sysctlbyname("hw.machine", NULL, &size, NULL, 0);
@@ -136,7 +136,7 @@ const char* CDarwinUtils::getIosPlatformString(void)
 enum iosPlatform getIosPlatform()
 {
   static enum iosPlatform eDev = iDeviceUnknown;
-#if defined(TARGET_DARWIN_IOS)
+#if defined(TARGET_DARWIN_EMBEDDED)
   static std::once_flag flag;
   std::call_once(flag, []
   {
@@ -285,7 +285,7 @@ const char *CDarwinUtils::GetOSVersionString(void)
 
 const char *CDarwinUtils::GetIOSVersionString(void)
 {
-#if defined(TARGET_DARWIN_IOS)
+#if defined(TARGET_DARWIN_EMBEDDED)
   static std::string iOSVersionString;
   static std::once_flag flag;
   std::call_once(flag, []
@@ -317,7 +317,7 @@ const char *CDarwinUtils::GetOSXVersionString(void)
 std::string CDarwinUtils::GetFrameworkPath(bool forPython)
 {
   CCocoaAutoPool pool;
-#if defined(TARGET_DARWIN_IOS)
+#if defined(TARGET_DARWIN_EMBEDDED)
   return std::string{NSBundle.mainBundle.privateFrameworksPath.UTF8String};
 #elif defined(TARGET_DARWIN_OSX)
   if ([NSBundle.mainBundle.executablePath containsString:@"Contents"])
@@ -532,7 +532,7 @@ const std::string& CDarwinUtils::GetManufacturer(void)
   static std::string manufName;
   if (manufName.empty())
   {
-#ifdef TARGET_DARWIN_IOS
+#ifdef TARGET_DARWIN_EMBEDDED
     // to avoid dlloading of IOIKit, hardcode return value
 	// until other than Apple devices with iOS will be released
     manufName = "Apple Inc.";

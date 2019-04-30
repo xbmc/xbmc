@@ -97,7 +97,7 @@ void CPeripherals::Initialise()
 {
   Clear();
 
-#if !defined(TARGET_DARWIN_IOS)
+#if !defined(TARGET_DARWIN_EMBEDDED)
   CDirectory::Create("special://profile/peripheral_data");
 
   /* load mappings from peripherals.xml */
