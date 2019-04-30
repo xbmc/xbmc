@@ -1612,11 +1612,6 @@ bool CLinuxRendererGLES::Supports(ERENDERFEATURE feature)
   return false;
 }
 
-bool CLinuxRendererGLES::SupportsMultiPassRendering()
-{
-  return true;
-}
-
 bool CLinuxRendererGLES::Supports(ESCALINGMETHOD method)
 {
   if(method == VS_SCALINGMETHOD_NEAREST ||

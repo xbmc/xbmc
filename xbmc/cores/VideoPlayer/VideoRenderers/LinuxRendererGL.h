@@ -88,7 +88,6 @@ public:
   bool ConfigChanged(const VideoPicture &picture) override;
 
   // Feature support
-  bool SupportsMultiPassRendering() override;
   bool Supports(ERENDERFEATURE feature) override;
   bool Supports(ESCALINGMETHOD method) override;
 

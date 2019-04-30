@@ -30,7 +30,6 @@ public:
   virtual void UnInit() override {};
   virtual void Update() override {};
   virtual void RenderUpdate(int index, int index2, bool clear, unsigned int flags, unsigned int alpha) override;
-  virtual bool SupportsMultiPassRendering()override { return false; };
 
   // Player functions
   virtual bool IsGuiLayer() override { return false; };

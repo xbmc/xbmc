@@ -69,7 +69,6 @@ public:
   virtual bool ConfigChanged(const VideoPicture &picture) = 0;
 
   // Feature support
-  virtual bool SupportsMultiPassRendering() = 0;
   virtual bool Supports(ERENDERFEATURE feature) { return false; };
   virtual bool Supports(ESCALINGMETHOD method) = 0;
 

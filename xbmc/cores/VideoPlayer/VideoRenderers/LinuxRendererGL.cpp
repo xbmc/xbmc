@@ -2581,11 +2581,6 @@ bool CLinuxRendererGL::Supports(ERENDERFEATURE feature)
   return false;
 }
 
-bool CLinuxRendererGL::SupportsMultiPassRendering()
-{
-  return m_renderSystem->IsExtSupported("GL_EXT_framebuffer_object");
-}
-
 bool CLinuxRendererGL::Supports(ESCALINGMETHOD method)
 {
   //nearest neighbor doesn't work on YUY2 and UYVY

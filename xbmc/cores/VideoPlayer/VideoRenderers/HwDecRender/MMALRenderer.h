@@ -148,7 +148,6 @@ public:
   virtual bool         IsPictureHW(const VideoPicture &picture) override { return false; };
   virtual CRenderInfo GetRenderInfo() override;
 
-  virtual bool         SupportsMultiPassRendering() override { return false; };
   virtual bool         Supports(ERENDERFEATURE feature) override;
   virtual bool         Supports(ESCALINGMETHOD method) override;
 
