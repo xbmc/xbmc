@@ -527,7 +527,7 @@
 						<orientation>vertical</orientation>
 						<pagecontrol>14010</pagecontrol>
 						<visible>Integer.IsGreater(Container(14100).NumItems,0) | Container(14100).IsUpdating</visible>
-						<itemlayout width="330" height="396">
+						<itemlayout width="330" height="401">
 							<control type="group">
 								<top>130</top>
 								<include content="InfoWallMusicLayout">
@@ -536,7 +536,7 @@
 								</include>
 							</control>
 						</itemlayout>
-						<focusedlayout width="330" height="396">
+						<focusedlayout width="330" height="401">
 							<control type="group">
 								<depth>DepthContentPopout</depth>
 								<top>130</top>
