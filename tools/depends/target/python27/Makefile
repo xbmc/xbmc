@@ -11,7 +11,7 @@ ARCHIVE=$(SOURCE).tar.xz
 ifeq ($(OS),osx)
   HOSTPLATFORM=_PYTHON_HOST_PLATFORM="darwin"
 endif
-ifeq ($(OS),ios)
+ifeq ($(OS),darwin_embedded)
   HOSTPLATFORM=_PYTHON_HOST_PLATFORM="darwin"
   LINK_ICONV=-framework CoreFoundation -liconv
 endif
@@ -42,7 +42,7 @@ $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 	cd $(PLATFORM); patch -p1 -i ../android-binmodule.patch
 	cd $(PLATFORM); patch -p1 -i ../no-abort.patch
 	cd $(PLATFORM); patch -p1 -i ../android-nl_langinfo.patch
-ifeq ($(OS),ios)
+ifeq ($(OS),darwin_embedded)
 	cd $(PLATFORM); patch -p1 -i ../make-fork-optional.patch
 	cd $(PLATFORM); patch -p1 -i ../urllib.patch
 	cd $(PLATFORM); sed -ie 's|MACHDEP="unknown"|MACHDEP="darwin"|' configure.ac

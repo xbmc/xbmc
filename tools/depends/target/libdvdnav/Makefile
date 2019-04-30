@@ -25,7 +25,7 @@ endif
 ifeq ($(OS),osx)
   EXTRA_CFLAGS +=  -D__DARWIN__
 endif
-ifeq ($(OS),ios)
+ifeq ($(OS),darwin_embedded)
   EXTRA_CFLAGS +=  -D__DARWIN__
 endif
 

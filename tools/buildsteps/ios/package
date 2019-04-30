@@ -3,7 +3,7 @@ XBMC_PLATFORM_DIR=ios
 . $WORKSPACE/tools/buildsteps/defaultenv
 
 cd $WORKSPACE/build;make -j$BUILDTHREADS deb
-cd $WORKSPACE/build/tools/darwin/packaging/ios/
+cd $WORKSPACE/build/tools/darwin/packaging/darwin_embedded/
 
 #rename for upload
 #e.x. kodi-20130314-8c2fb31-Frodo-ios.deb
@@ -13,4 +13,5 @@ then
 else
   UPLOAD_FILENAME="kodi-$(getBuildRevDateStr)-ios.deb"
 fi
+mkdir $WORKSPACE/tools/darwin/packaging/ios
 mv *.deb $WORKSPACE/tools/darwin/packaging/ios/$UPLOAD_FILENAME

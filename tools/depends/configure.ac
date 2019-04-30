@@ -364,7 +364,7 @@ case $host in
           esac
         fi
 
-        platform_os="ios"
+        platform_os="darwin_embedded"
 
         if [ ! test "x$use_cpu" = "xarm64" ]; then
           platform_cflags+=" -mcpu=cortex-a8 -mfpu=neon"
@@ -422,8 +422,8 @@ case $use_platform in
      platform_ldflags="-lpthread"
      ;;
   tvos)
-    if test "$platform_os" != "ios"; then
-      AC_MSG_ERROR([$use_platform is only supported on the ios platform])
+    if test "$platform_os" != "darwin_embedded"; then
+      AC_MSG_ERROR([$use_platform is only supported on the darwin_embedded platform])
     fi
     ;;
   auto)
@@ -563,13 +563,13 @@ if test "$platform_os" == "android"; then
 fi
 
 # darwin needs unzip/zip in Codesign.command
-if test "$platform_os" = "android" || test "$platform_os" = "osx" || test "$platform_os" = "ios"; then
+if test "$platform_os" = "android" || test "$platform_os" = "osx" || test "$platform_os" = "darwin_embedded"; then
   AC_CHECK_PROG(HAVE_UNZIP,unzip,"yes","no",)
   if test "x$HAVE_UNZIP" = "xno"; then
     AC_MSG_ERROR("Missing program: unzip")
   fi
 fi
-if test "$platform_os" = "osx" || test "$platform_os" = "ios"; then
+if test "$platform_os" = "osx" || test "$platform_os" = "darwin_embedded"; then
   AC_CHECK_PROG(HAVE_ZIP,zip,"yes","no",)
   if test "x$HAVE_ZIP" = "xno"; then
     AC_MSG_ERROR("Missing program: zip")
@@ -616,7 +616,7 @@ tmp_cxxflags=$(echo $cxx11_flags $platform_cxxflags | sed 's/-O@<:@123@:>@//g;s/
 release_cflags="-DNDEBUG=1"
 
 # newer xcode version accept -Og flag, but debugging doesn't work with it
-if test "$platform_os" = "osx" || test "$platform_os" = "ios"; then
+if test "$platform_os" = "osx" || test "$platform_os" = "darwin_embedded"; then
   debug_cflags="-g -D_DEBUG"
 else
   CFLAGS="$tmp_cflags -Og -g -D_DEBUG"
@@ -685,7 +685,7 @@ AC_SUBST(ffmpeg_options)
 
 AC_OUTPUT
 
-if test "$platform_os" == "ios"; then
+if test "$platform_os" == "darwin_embedded"; then
   if test "$use_platform" = "tvos"; then
     simulator_sdk_path=[`$use_xcodebuild -version -sdk appletvsimulator$use_sdk  | grep ^Path | awk '{ print $2}'`]
   else

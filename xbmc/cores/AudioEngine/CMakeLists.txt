@@ -118,7 +118,7 @@ if(CORE_SYSTEM_NAME STREQUAL osx)
                       Sinks/osx/CoreAudioStream.h)
 endif()
 
-if(CORE_SYSTEM_NAME STREQUAL ios)
+if(CORE_SYSTEM_NAME STREQUAL darwin_embedded)
   list(APPEND SOURCES Sinks/AESinkDARWINIOS.mm
                       Sinks/darwin/CoreAudioHelpers.cpp)
   list(APPEND HEADERS Sinks/AESinkDARWINIOS.h

@@ -7,7 +7,7 @@ VERSION=4.1.23
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
 
-ifeq ($(OS), ios)
+ifeq ($(OS), darwin_embedded)
 ifeq ($(CPU), arm64)
 # clang issue with optimizing out functions
 CONFIGURE_EXTRAS= --without-libmsrpc samba_cv_optimize_out_funcation_calls=no ac_cv_func_yp_get_default_domain=no
@@ -53,7 +53,7 @@ ifeq ($(OS),android)
 	cd $(PLATFORM); patch -p1 -i ../samba_android.patch
 	cd $(PLATFORM); patch -p1 -i ../samba_off64_t.patch
 endif
-ifeq ($(OS), ios)
+ifeq ($(OS), darwin_embedded)
 	cd $(PLATFORM); patch -p1 -i ../no_fork_and_exec.patch
 	cd $(PLATFORM); patch -p1 -i ../crt_extensions.patch
 endif

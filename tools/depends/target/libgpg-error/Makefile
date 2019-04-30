@@ -25,7 +25,7 @@ $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 	cd $(PLATFORM); $(CONFIGURE)
 
 $(LIBDYLIB): $(PLATFORM)
-ifeq ($(OS),ios)
+ifeq ($(OS),darwin_embedded)
 ifeq ($(CPU),arm64)
 	cp $(PLATFORM)/src/syscfg/lock-obj-pub.aarch64-apple-darwin.h $(PLATFORM)/src/syscfg/lock-obj-pub.arm-apple-darwin.h
 endif
