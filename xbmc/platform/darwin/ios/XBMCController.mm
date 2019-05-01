@@ -673,12 +673,6 @@ XBMCController *g_xbmcController;
   return screensize;
 }
 //--------------------------------------------------------------
-- (CGFloat) getScreenScale:(UIScreen *)screen
-{
-  return [m_glView getScreenScale:screen];
-}
-//--------------------------------------------------------------
-//--------------------------------------------------------------
 - (BOOL) recreateOnReselect
 {
   PRINT_SIGNATURE();
@@ -893,10 +887,7 @@ XBMCController *g_xbmcController;
 - (void)setIOSNowPlayingInfo:(NSDictionary *)info
 {
   self.nowPlayingInfo = info;
-  // MPNowPlayingInfoCenter is an ios5+ class, following code will work on ios5 even if compiled by xcode3
-  Class NowPlayingInfoCenter = NSClassFromString(@"MPNowPlayingInfoCenter");
-  if (NowPlayingInfoCenter)
-    [[NowPlayingInfoCenter defaultCenter] setNowPlayingInfo:self.nowPlayingInfo];
+  [[MPNowPlayingInfoCenter defaultCenter] setNowPlayingInfo:self.nowPlayingInfo];
 }
 //--------------------------------------------------------------
 - (void)onPlay:(NSDictionary *)item
@@ -923,36 +914,32 @@ XBMCController *g_xbmcController;
   if (genres && genres.count > 0)
     [dict setObject:[genres componentsJoinedByString:@" "] forKey:MPMediaItemPropertyGenre];
 
-  if (NSClassFromString(@"MPNowPlayingInfoCenter"))
+  NSString *thumb = [item objectForKey:@"thumb"];
+  if (thumb && thumb.length > 0)
   {
-    NSString *thumb = [item objectForKey:@"thumb"];
-    if (thumb && thumb.length > 0)
+    UIImage *image = [UIImage imageWithContentsOfFile:thumb];
+    if (image)
     {
-      UIImage *image = [UIImage imageWithContentsOfFile:thumb];
-      if (image)
+      MPMediaItemArtwork *mArt = [[MPMediaItemArtwork alloc] initWithImage:image];
+      if (mArt)
       {
-        MPMediaItemArtwork *mArt = [[MPMediaItemArtwork alloc] initWithImage:image];
-        if (mArt)
-        {
-          [dict setObject:mArt forKey:MPMediaItemPropertyArtwork];
-          [mArt release];
-        }
+        [dict setObject:mArt forKey:MPMediaItemPropertyArtwork];
+        [mArt release];
       }
     }
-    // these property keys are ios5+ only
-    NSNumber *elapsed = [item objectForKey:@"elapsed"];
-    if (elapsed)
-      [dict setObject:elapsed forKey:MPNowPlayingInfoPropertyElapsedPlaybackTime];
-    NSNumber *speed = [item objectForKey:@"speed"];
-    if (speed)
-      [dict setObject:speed forKey:MPNowPlayingInfoPropertyPlaybackRate];
-    NSNumber *current = [item objectForKey:@"current"];
-    if (current)
-      [dict setObject:current forKey:MPNowPlayingInfoPropertyPlaybackQueueIndex];
-    NSNumber *total = [item objectForKey:@"total"];
-    if (total)
-      [dict setObject:total forKey:MPNowPlayingInfoPropertyPlaybackQueueCount];
   }
+  NSNumber *elapsed = [item objectForKey:@"elapsed"];
+  if (elapsed)
+    [dict setObject:elapsed forKey:MPNowPlayingInfoPropertyElapsedPlaybackTime];
+  NSNumber *speed = [item objectForKey:@"speed"];
+  if (speed)
+    [dict setObject:speed forKey:MPNowPlayingInfoPropertyPlaybackRate];
+  NSNumber *current = [item objectForKey:@"current"];
+  if (current)
+    [dict setObject:current forKey:MPNowPlayingInfoPropertyPlaybackQueueIndex];
+  NSNumber *total = [item objectForKey:@"total"];
+  if (total)
+    [dict setObject:total forKey:MPNowPlayingInfoPropertyPlaybackQueueCount];
   /*
    other properties can be set:
    MPMediaItemPropertyAlbumTrackCount
@@ -976,18 +963,15 @@ XBMCController *g_xbmcController;
 - (void)OnSpeedChanged:(NSDictionary *)item
 {
   PRINT_SIGNATURE();
-  if (NSClassFromString(@"MPNowPlayingInfoCenter"))
-  {
-    NSMutableDictionary *info = [self.nowPlayingInfo mutableCopy];
-    NSNumber *elapsed = [item objectForKey:@"elapsed"];
-    if (elapsed)
-      [info setObject:elapsed forKey:MPNowPlayingInfoPropertyElapsedPlaybackTime];
-    NSNumber *speed = [item objectForKey:@"speed"];
-    if (speed)
-      [info setObject:speed forKey:MPNowPlayingInfoPropertyPlaybackRate];
+  NSMutableDictionary *info = [self.nowPlayingInfo mutableCopy];
+  NSNumber *elapsed = [item objectForKey:@"elapsed"];
+  if (elapsed)
+    [info setObject:elapsed forKey:MPNowPlayingInfoPropertyElapsedPlaybackTime];
+  NSNumber *speed = [item objectForKey:@"speed"];
+  if (speed)
+    [info setObject:speed forKey:MPNowPlayingInfoPropertyPlaybackRate];
 
-    [self setIOSNowPlayingInfo:info];
-  }
+  [self setIOSNowPlayingInfo:info];
 }
 //--------------------------------------------------------------
 - (void)onPause:(NSDictionary *)item

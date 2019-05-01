@@ -24,10 +24,7 @@ XBMCController *m_xbmcController;
 // - if both say OK - rotation is allowed
 - (NSUInteger)application:(UIApplication *)application supportedInterfaceOrientationsForWindow:(UIWindow *)window
 {
-  if ([[window rootViewController] respondsToSelector:@selector(supportedInterfaceOrientations)])
-    return [[window rootViewController] supportedInterfaceOrientations];
-  else
-    return (1 << UIInterfaceOrientationLandscapeRight) | (1 << UIInterfaceOrientationLandscapeLeft);
+  return [[window rootViewController] supportedInterfaceOrientations];
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application
