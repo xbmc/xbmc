@@ -1120,7 +1120,7 @@
                 "resume", "channel", "starttime","endtime", "runtime",
                 "lifetime", "icon", "art", "streamurl", "file",
                 "directory", "radio", "isdeleted", "epgeventid", "channeluid",
-                "season", "episode", "showtitle" ]
+                "season", "episode", "episodename" ]
     }
   },
   "PVR.Details.Recording": {
@@ -1149,7 +1149,7 @@
       "channeluid": { "type": "integer" },
       "season": { "type": "integer" },
       "episode": { "type": "integer" },
-      "showtitle": { "type": "string" }
+      "episodename": { "type": "string" }
     }
   },
   "Textures.Details.Size": {

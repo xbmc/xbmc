@@ -71,7 +71,7 @@ CPVRRecording::CPVRRecording(const PVR_RECORDING &recording, unsigned int iClien
 
   m_strRecordingId                 = recording.strRecordingId;
   m_strTitle                       = recording.strTitle;
-  m_strShowTitle                   = recording.strEpisodeName;
+  m_strEpisodeName                 = recording.strEpisodeName;
   m_iSeason                        = recording.iSeriesNumber;
   m_iEpisode                       = recording.iEpisodeNumber;
   if (recording.iYear > 0)
@@ -142,7 +142,7 @@ bool CPVRRecording::operator ==(const CPVRRecording& right) const
        m_strDirectory       == right.m_strDirectory &&
        m_strFileNameAndPath == right.m_strFileNameAndPath &&
        m_strTitle           == right.m_strTitle &&
-       m_strShowTitle       == right.m_strShowTitle &&
+       m_strEpisodeName     == right.m_strEpisodeName &&
        m_iSeason            == right.m_iSeason &&
        m_iEpisode           == right.m_iEpisode &&
        GetPremiered()       == right.GetPremiered() &&
@@ -180,6 +180,7 @@ void CPVRRecording::Serialize(CVariant& value) const
   value["channeluid"] = m_iChannelUid;
   value["radio"] = m_bRadio;
   value["genre"] = m_genre;
+  value["episodename"] = m_strEpisodeName;
 
   if (!value.isMember("art"))
     value["art"] = CVariant(CVariant::VariantTypeObject);
@@ -340,7 +341,7 @@ void CPVRRecording::Update(const CPVRRecording &tag)
   m_strRecordingId    = tag.m_strRecordingId;
   m_iClientId         = tag.m_iClientId;
   m_strTitle          = tag.m_strTitle;
-  m_strShowTitle      = tag.m_strShowTitle;
+  m_strEpisodeName    = tag.m_strEpisodeName;
   m_iSeason           = tag.m_iSeason;
   m_iEpisode          = tag.m_iEpisode;
   SetPremiered(tag.GetPremiered());
@@ -389,7 +390,7 @@ void CPVRRecording::Update(const CPVRRecording &tag)
     m_strTitle = strTitle;
     pos = strEpisode.find('-');
     strEpisode.erase(0, pos + 2);
-    m_strShowTitle = strEpisode;
+    m_strEpisodeName = strEpisode;
   }
 
   UpdatePath();
@@ -398,7 +399,7 @@ void CPVRRecording::Update(const CPVRRecording &tag)
 void CPVRRecording::UpdatePath(void)
 {
   m_strFileNameAndPath = CPVRRecordingsPath(
-    m_bIsDeleted, m_bRadio, m_strDirectory, m_strTitle, m_iSeason, m_iEpisode, GetYear(), m_strShowTitle, m_strChannelName, m_recordingTime, m_strRecordingId);
+    m_bIsDeleted, m_bRadio, m_strDirectory, m_strTitle, m_iSeason, m_iEpisode, GetYear(), m_strEpisodeName, m_strChannelName, m_recordingTime, m_strRecordingId);
 }
 
 const CDateTime &CPVRRecording::RecordingTimeAsLocalTime(void) const

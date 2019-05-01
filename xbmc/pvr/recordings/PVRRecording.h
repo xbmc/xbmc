@@ -69,6 +69,7 @@ namespace PVR
     std::string   m_strThumbnailPath; /*!< thumbnail path */
     std::string   m_strFanartPath;    /*!< fanart path */
     unsigned      m_iRecordingId;     /*!< id that won't change while xbmc is running */
+    std::string   m_strEpisodeName;   /*!< name of the episode */
 
     CPVRRecording(void);
     CPVRRecording(const PVR_RECORDING &recording, unsigned int iClientId);
@@ -267,7 +268,7 @@ namespace PVR
      * @brief Retrieve the recording Episode Name
      * @note Returns an empty string if no Episode Name was provided by the PVR client
      */
-    std::string EpisodeName(void) const { return m_strShowTitle; }
+    std::string EpisodeName(void) const { return m_strEpisodeName; }
 
     /*!
      * @brief check whether this recording is currently in progress

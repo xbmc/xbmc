@@ -273,7 +273,7 @@ void CPVRClient::WriteClientRecordingInfo(const CPVRRecording &xbmcRecording, PV
   addonRecording = {{0}};
   strncpy(addonRecording.strRecordingId, xbmcRecording.m_strRecordingId.c_str(), sizeof(addonRecording.strRecordingId) - 1);
   strncpy(addonRecording.strTitle, xbmcRecording.m_strTitle.c_str(), sizeof(addonRecording.strTitle) - 1);
-  strncpy(addonRecording.strEpisodeName, xbmcRecording.m_strShowTitle.c_str(), sizeof(addonRecording.strEpisodeName) - 1);
+  strncpy(addonRecording.strEpisodeName, xbmcRecording.m_strEpisodeName.c_str(), sizeof(addonRecording.strEpisodeName) - 1);
   addonRecording.iSeriesNumber = xbmcRecording.m_iSeason;
   addonRecording.iEpisodeNumber = xbmcRecording.m_iEpisode;
   addonRecording.iYear = xbmcRecording.GetYear();
