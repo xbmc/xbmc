@@ -173,7 +173,25 @@ void CResolutionUtils::FindResolutionFromWhitelist(float fps, int width, int hei
         (info.dwFlags & D3DPRESENTFLAG_MODEMASK) == (desktop_info.dwFlags & D3DPRESENTFLAG_MODEMASK) &&
         MathUtils::FloatEquals(info.fRefreshRate, fps * 2, 0.01f))
     {
-      CLog::Log(LOGDEBUG, "Matched fuzzy whitelisted Resolution %s (%d)", info.strMode.c_str(), i);
+      CLog::Log(LOGDEBUG, "Matched Desktop whitelisted Resolution %s (%d)", info.strMode.c_str(), i);
+      resolution = i;
+      return;
+    }
+  }
+
+  CLog::Log(LOGDEBUG, "No matching refreshrate found. Trying current resolution with 3:2 Pulldown");
+
+  for (const auto &mode : indexList)
+  {
+    auto i = CDisplaySettings::GetInstance().GetResFromString(mode.asString());
+    const RESOLUTION_INFO info = CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo(i);
+
+    // allow resolutions that are desktop resolution but have double the refresh rate
+    if (info.iScreenWidth == desktop_info.iScreenWidth &&
+        (info.dwFlags & D3DPRESENTFLAG_MODEMASK) == (desktop_info.dwFlags & D3DPRESENTFLAG_MODEMASK) &&
+        MathUtils::FloatEquals(info.fRefreshRate, fps * 2.5f, 0.01f))
+    {
+      CLog::Log(LOGDEBUG, "Matched 3:2 Pulldown whitelisted Resolution %s (%d)", info.strMode.c_str(), i);
       resolution = i;
       return;
     }
