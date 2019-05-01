@@ -70,8 +70,17 @@ CPVRRecording::CPVRRecording(const PVR_RECORDING &recording, unsigned int iClien
   Reset();
 
   m_strRecordingId                 = recording.strRecordingId;
-  m_strTitle                       = recording.strTitle;
-  m_strShowTitle                   = recording.strEpisodeName;
+  if (strlen(recording.strEpisodeName) == 0)
+  {
+    m_strTitle                     = recording.strTitle;
+  }
+  else
+  {
+    // If episodeName is set, strTitle contains showTitle
+    m_strTitle                     = recording.strEpisodeName;
+    m_strShowTitle                 = recording.strTitle;
+  }
+
   m_iSeason                        = recording.iSeriesNumber;
   m_iEpisode                       = recording.iEpisodeNumber;
   if (recording.iYear > 0)
