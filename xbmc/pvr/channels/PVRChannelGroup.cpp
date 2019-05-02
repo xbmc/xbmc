@@ -926,7 +926,7 @@ std::vector<std::shared_ptr<CPVREpgInfoTag>> CPVRChannelGroup::GetEPGAll(bool bI
     channel = (*it).channel;
     if (!channel->IsHidden())
     {
-      bool bEmpty = false;
+      bool bEmpty = true;
 
       CPVREpgPtr epg = channel->GetEPG();
       if (epg)
