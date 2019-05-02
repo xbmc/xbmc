@@ -29,6 +29,8 @@
 #import "AutoPool.h"
 #import "DarwinUtils.h"
 
+#include <mutex>
+
 
 enum iosPlatform
 {
@@ -114,24 +116,20 @@ enum iosPlatform
 const char* CDarwinUtils::getIosPlatformString(void)
 {
   static std::string iOSPlatformString;
-  if (iOSPlatformString.empty())
+  static std::once_flag flag;
+  std::call_once(flag, []
   {
 #if defined(TARGET_DARWIN_IOS)
     // Gets a string with the device model
     size_t size;
     sysctlbyname("hw.machine", NULL, &size, NULL, 0);
-    char *machine = new char[size];
+    char machine[size];
     if (sysctlbyname("hw.machine", machine, &size, NULL, 0) == 0 && machine[0])
-      iOSPlatformString.assign(machine, size -1);
-   else
+      iOSPlatformString.assign(machine, size-1);
+    else
 #endif
       iOSPlatformString = "unknown0,0";
-
-#if defined(TARGET_DARWIN_IOS)
-    delete [] machine;
-#endif
-  }
-
+  });
   return iOSPlatformString.c_str();
 }
 
@@ -139,7 +137,8 @@ enum iosPlatform getIosPlatform()
 {
   static enum iosPlatform eDev = iDeviceUnknown;
 #if defined(TARGET_DARWIN_IOS)
-  if (eDev == iDeviceUnknown)
+  static std::once_flag flag;
+  std::call_once(flag, []
   {
     std::string devStr(CDarwinUtils::getIosPlatformString());
 
@@ -231,49 +230,50 @@ enum iosPlatform getIosPlatform()
     else if (devStr == "AppleTV2,1") eDev = AppleTV2;
     else if (devStr == "AppleTV5,3") eDev = AppleTV4;
     else if (devStr == "AppleTV6,2") eDev = AppleTV4K;
-  }
+  });
 #endif
   return eDev;
 }
 
 bool CDarwinUtils::DeviceHasRetina(double &scale)
 {
-  static enum iosPlatform platform = iDeviceUnknown;
-
+  scale = 1.0; // no retina
 #if defined(TARGET_DARWIN_IOS)
-  if( platform == iDeviceUnknown )
+  static bool hasRetina;
+  static double _scale;
+  static std::once_flag flag;
+  std::call_once(flag, []
   {
-    platform = getIosPlatform();
-  }
+    iosPlatform platform = getIosPlatform();
+    hasRetina = platform >= iPhone4;
+
+    // see http://www.paintcodeapp.com/news/iphone-6-screens-demystified
+    if (hasRetina && platform < iPhone6Plus)
+      _scale = 2.0; // 2x render retina
+
+    if (platform >= iPhone6Plus)
+      _scale = 3.0; //3x render retina + downscale
+  });
+
+  scale = _scale;
+  return hasRetina;
+#else
+  return false;
 #endif
-  scale = 1.0; //no retina
-
-  // see http://www.paintcodeapp.com/news/iphone-6-screens-demystified
-  if (platform >= iPhone4 && platform < iPhone6Plus)
-  {
-    scale = 2.0; // 2x render retina
-  }
-
-  if (platform >= iPhone6Plus)
-  {
-    scale = 3.0; //3x render retina + downscale
-  }
-
-  return (platform >= iPhone4);
 }
 
 const char *CDarwinUtils::GetOSReleaseString(void)
 {
   static std::string osreleaseStr;
-  if (osreleaseStr.empty())
+  static std::once_flag flag;
+  std::call_once(flag, []
   {
     size_t size;
     sysctlbyname("kern.osrelease", NULL, &size, NULL, 0);
-    char *osrelease = new char[size];
+    char osrelease[size];
     sysctlbyname("kern.osrelease", osrelease, &size, NULL, 0);
-    osreleaseStr = osrelease;
-    delete [] osrelease;
-  }
+    osreleaseStr.assign(osrelease);
+  });
   return osreleaseStr.c_str();
 }
 
@@ -287,11 +287,11 @@ const char *CDarwinUtils::GetIOSVersionString(void)
 {
 #if defined(TARGET_DARWIN_IOS)
   static std::string iOSVersionString;
-  if (iOSVersionString.empty())
+  static std::once_flag flag;
+  std::call_once(flag, []
   {
-    CCocoaAutoPool pool;
-    iOSVersionString.assign((const char*)[[[UIDevice currentDevice] systemVersion] UTF8String]);
-  }
+    iOSVersionString.assign([[[UIDevice currentDevice] systemVersion] UTF8String]);
+  });
   return iOSVersionString.c_str();
 #else
   return "0.0";
@@ -302,13 +302,12 @@ const char *CDarwinUtils::GetOSXVersionString(void)
 {
 #if defined(TARGET_DARWIN_OSX)
   static std::string OSXVersionString;
-  if (OSXVersionString.empty())
+  static std::once_flag flag;
+  std::call_once(flag, []
   {
-    CCocoaAutoPool pool;
-    OSXVersionString.assign((const char*)[[[NSDictionary dictionaryWithContentsOfFile:
-                         @"/System/Library/CoreServices/SystemVersion.plist"] objectForKey:@"ProductVersion"] UTF8String]);
-  }
-
+    OSXVersionString.assign([[[NSDictionary dictionaryWithContentsOfFile:
+                               @"/System/Library/CoreServices/SystemVersion.plist"] objectForKey:@"ProductVersion"] UTF8String]);
+  });
   return OSXVersionString.c_str();
 #else
   return "0.0";
@@ -393,8 +392,9 @@ int  CDarwinUtils::GetExecutablePath(char* path, size_t *pathsize)
 
 const char* CDarwinUtils::GetAppRootFolder(void)
 {
-  static std::string rootFolder = "";
-  if ( rootFolder.length() == 0)
+  static std::string rootFolder;
+  static std::once_flag flag;
+  std::call_once(flag, []
   {
     if (IsIosSandboxed())
     {
@@ -407,29 +407,28 @@ const char* CDarwinUtils::GetAppRootFolder(void)
     {
       rootFolder = "Library/Preferences";
     }
-  }
+  });
   return rootFolder.c_str();
 }
 
 bool CDarwinUtils::IsIosSandboxed(void)
 {
-  static int ret = -1;
-  if (ret == -1)
+  static bool ret = false;
+  static std::once_flag flag;
+  std::call_once(flag, []
   {
     size_t path_size = 2*MAXPATHLEN;
-    char     given_path[2*MAXPATHLEN];
-    int      result = -1;
-    ret = 0;
+    char given_path[path_size];
     memset(given_path, 0x0, path_size);
     /* Get Application directory */
-    result = GetExecutablePath(given_path, &path_size);
+    int result = GetExecutablePath(given_path, &path_size);
     if (result == 0)
     {
-      // we re sandboxed if we are installed in /var/mobile/Applications
+      // we're sandboxed if we are installed in /var/mobile/Applications
       if (strlen("/var/mobile/Applications/") < path_size &&
         strncmp(given_path, "/var/mobile/Applications/", strlen("/var/mobile/Applications/")) == 0)
       {
-        ret = 1;
+        ret = true;
       }
 
       // since ios8 the sandbox filesystem has moved to container approach
@@ -437,18 +436,18 @@ bool CDarwinUtils::IsIosSandboxed(void)
       if (strlen("/var/mobile/Containers/Bundle/") < path_size &&
         strncmp(given_path, "/var/mobile/Containers/Bundle/", strlen("/var/mobile/Containers/Bundle/")) == 0)
       {
-        ret = 1;
+        ret = true;
       }
 
       // Some time after ios8, Apple decided to change this yet again
       if (strlen("/var/containers/Bundle/") < path_size &&
         strncmp(given_path, "/var/containers/Bundle/", strlen("/var/containers/Bundle/")) == 0)
       {
-        ret = 1;
+        ret = true;
       }
     }
-  }
-  return ret == 1;
+  });
+  return ret;
 }
 
 int CDarwinUtils::BatteryLevel(void)

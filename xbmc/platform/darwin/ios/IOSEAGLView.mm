@@ -104,13 +104,14 @@ using namespace KODI::MESSAGING;
   //ensure retina resolution on supported devices mainScreen
   //even on older iOS SDKs
   double screenScale = 1.0;
-  if (ret == 1.0 && screen == [UIScreen mainScreen] && CDarwinUtils::DeviceHasRetina(screenScale))
+  bool hasRetina = CDarwinUtils::DeviceHasRetina(screenScale);
+  if (ret == 1.0 && screen == [UIScreen mainScreen] && hasRetina)
   {
     ret = screenScale;//set scale factor from our static list in case older SDKs report 1.0
   }
 
   // fix for ip6 plus which seems to report 2.0 when not compiled with ios8 sdk
-  if (CDarwinUtils::DeviceHasRetina(screenScale) && screenScale == 3.0)
+  if (hasRetina && screenScale == 3.0)
   {
     ret = screenScale;
   }
