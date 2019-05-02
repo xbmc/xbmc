@@ -103,7 +103,7 @@ void CResolutionUtils::FindResolutionFromWhitelist(float fps, int width, int hei
 
   CLog::Log(LOGDEBUG, "Trying to find exact refresh rate");
 
-  for (const auto &mode : indexList)
+  for (const auto& mode : indexList)
   {
     auto i = CDisplaySettings::GetInstance().GetResFromString(mode.asString());
     const RESOLUTION_INFO info = CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo(i);
@@ -123,7 +123,7 @@ void CResolutionUtils::FindResolutionFromWhitelist(float fps, int width, int hei
 
   CLog::Log(LOGDEBUG, "No exact whitelisted resolution matched, trying double refresh rate");
 
-  for (const auto &mode : indexList)
+  for (const auto& mode : indexList)
   {
     auto i = CDisplaySettings::GetInstance().GetResFromString(mode.asString());
     const RESOLUTION_INFO info = CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo(i);
@@ -145,7 +145,7 @@ void CResolutionUtils::FindResolutionFromWhitelist(float fps, int width, int hei
 
   const RESOLUTION_INFO desktop_info = CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo(CDisplaySettings::GetInstance().GetCurrentResolution());
 
-  for (const auto &mode : indexList)
+  for (const auto& mode : indexList)
   {
     auto i = CDisplaySettings::GetInstance().GetResFromString(mode.asString());
     const RESOLUTION_INFO info = CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo(i);
@@ -163,7 +163,7 @@ void CResolutionUtils::FindResolutionFromWhitelist(float fps, int width, int hei
 
   CLog::Log(LOGDEBUG, "No larger whitelisted resolution matched, trying current resolution with double refreshrate");
 
-  for (const auto &mode : indexList)
+  for (const auto& mode : indexList)
   {
     auto i = CDisplaySettings::GetInstance().GetResFromString(mode.asString());
     const RESOLUTION_INFO info = CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo(i);
@@ -181,7 +181,7 @@ void CResolutionUtils::FindResolutionFromWhitelist(float fps, int width, int hei
 
   CLog::Log(LOGDEBUG, "No matching refreshrate found. Trying current resolution with 3:2 Pulldown");
 
-  for (const auto &mode : indexList)
+  for (const auto& mode : indexList)
   {
     auto i = CDisplaySettings::GetInstance().GetResFromString(mode.asString());
     const RESOLUTION_INFO info = CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo(i);
