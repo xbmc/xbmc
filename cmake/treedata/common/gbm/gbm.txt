@@ -1,0 +1,3 @@
+xbmc/cores/RetroPlayer/process/gbm cores/RetroPlayer/process/gbm
+xbmc/cores/VideoPlayer/Process/gbm cores/VideoPlayer/Process/gbm
+xbmc/windowing/gbm windowing/gbm
