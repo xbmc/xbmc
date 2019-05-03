@@ -163,13 +163,12 @@ void CResolutionUtils::FindResolutionFromWhitelist(float fps, int width, int hei
     }
   }
 
-  CLog::Log(LOGDEBUG, "No double refresh rate whitelisted resolution matched, trying current resolution");
+  CLog::Log(LOGDEBUG, "No 3:2 pullback refresh rate whitelisted resolution matched, trying current resolution");
 
   if (width <= curr.iScreenWidth
     && height <= curr.iScreenHeight
     && (MathUtils::FloatEquals(curr.fRefreshRate, fps, 0.01f)
-      || MathUtils::FloatEquals(curr.fRefreshRate, fps * 2, 0.01f)
-      || MathUtils::FloatEquals(curr.fRefreshRate, fps * 2.5f, 0.01f)))
+      || MathUtils::FloatEquals(curr.fRefreshRate, fps * 2, 0.01f)))
   {
     CLog::Log(LOGDEBUG, "Matched current Resolution %s (%d)", curr.strMode.c_str(), resolution);
     return;
