@@ -106,11 +106,3 @@ if(CMAKE_BUILD_TYPE STREQUAL Coverage)
   set(COVERAGE_DEPENDS "\${APP_NAME_LC}" "\${APP_NAME_LC}-test")
   set(COVERAGE_EXCLUDES */test/* lib/* */lib/*)
 endif()
-
-if(ENABLE_GBM)
-  set(ENABLE_VDPAU OFF CACHE BOOL "Disabling VDPAU" FORCE)
-endif()
-
-if(ENABLE_VDPAU)
-  set(ENABLE_GLX ON CACHE BOOL "Enabling GLX" FORCE)
-endif()

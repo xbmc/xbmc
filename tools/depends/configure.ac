@@ -251,7 +251,7 @@ case $host in
     optimize_flags="-O2"
     platform_cxxflags="$platform_cflags"
     platform_os="linux"
-    ffmpeg_options_default="--enable-vaapi --enable-vdpau --cpu=$use_cpu"
+    ffmpeg_options_default="--enable-vaapi --disable-vdpau --cpu=$use_cpu"
   ;;
   *darwin*)
     if test "x$prefix" = "xNONE"; then

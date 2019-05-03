@@ -296,9 +296,6 @@ void CSettingConditions::Initialize()
 #ifdef HAVE_LIBVA
   m_simpleConditions.insert("have_libva");
 #endif
-#ifdef HAVE_LIBVDPAU
-  m_simpleConditions.insert("have_libvdpau");
-#endif
 #ifdef TARGET_ANDROID
   m_simpleConditions.insert("has_mediacodec");
 #endif

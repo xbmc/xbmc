@@ -109,16 +109,6 @@ bool CWinSystemX11GLContext::IsExtSupported(const char* extension) const
   return m_pGLContext->IsExtSupported(extension);
 }
 
-XID CWinSystemX11GLContext::GetWindow() const
-{
-  return X11::GLXGetWindow(m_pGLContext);
-}
-
-void* CWinSystemX11GLContext::GetGlxContext() const
-{
-  return X11::GLXGetContext(m_pGLContext);
-}
-
 EGLDisplay CWinSystemX11GLContext::GetEGLDisplay() const
 {
   return static_cast<CGLContextEGL*>(m_pGLContext)->m_eglDisplay;
@@ -267,56 +257,28 @@ bool CWinSystemX11GLContext::RefreshGLContext(bool force)
   VIDEOPLAYER::CRendererFactory::ClearRenderer();
   CLinuxRendererGL::Register();
 
-  std::string gpuvendor;
-  const char* vend = (const char*) glGetString(GL_VENDOR);
-  if (vend)
-    gpuvendor = vend;
-  std::transform(gpuvendor.begin(), gpuvendor.end(), gpuvendor.begin(), ::tolower);
-  bool isNvidia = (gpuvendor.compare(0, 6, "nvidia") == 0);
-  bool isIntel = (gpuvendor.compare(0, 5, "intel") == 0);
   std::string gli = (getenv("KODI_GL_INTERFACE") != nullptr) ? getenv("KODI_GL_INTERFACE") : "";
 
-  if (gli != "GLX")
-  {
-    m_pGLContext = new CGLContextEGL(m_dpy);
-    success = m_pGLContext->Refresh(force, m_screen, m_glWindow, m_newGlContext);
-    if (success)
-    {
-      if (!isNvidia)
-      {
-        m_vaapiProxy.reset(X11::VaapiProxyCreate());
-        X11::VaapiProxyConfig(m_vaapiProxy.get(), GetDisplay(),
-                              static_cast<CGLContextEGL*>(m_pGLContext)->m_eglDisplay);
-        bool general = false;
-        bool deepColor = false;
-        X11::VAAPIRegisterRender(m_vaapiProxy.get(), general, deepColor);
-        if (general)
-        {
-          X11::VAAPIRegister(m_vaapiProxy.get(), deepColor);
-          return true;
-        }
-        if (isIntel || gli == "EGL")
-          return true;
-      }
-    }
-    else if (gli == "EGL_PB")
-    {
-      success = m_pGLContext->CreatePB();
-      if (success)
-        return true;
-    }
-  }
-
-  delete m_pGLContext;
-
-  // fallback for vdpau
-  m_pGLContext = X11::GLXContextCreate(m_dpy);
+  m_pGLContext = new CGLContextEGL(m_dpy);
   success = m_pGLContext->Refresh(force, m_screen, m_glWindow, m_newGlContext);
   if (success)
   {
-    X11::VDPAURegister();
-    X11::VDPAURegisterRender();
+    m_vaapiProxy.reset(X11::VaapiProxyCreate());
+    X11::VaapiProxyConfig(m_vaapiProxy.get(), GetDisplay(),
+                          static_cast<CGLContextEGL*>(m_pGLContext)->m_eglDisplay);
+    bool general = false;
+    bool deepColor = false;
+    X11::VAAPIRegisterRender(m_vaapiProxy.get(), general, deepColor);
+    if (general)
+    {
+      X11::VAAPIRegister(m_vaapiProxy.get(), deepColor);
+    }
   }
+  else if (gli == "EGL_PB")
+  {
+    success = m_pGLContext->CreatePB();
+  }
+
   return success;
 }
 
@@ -327,10 +289,6 @@ std::unique_ptr<CVideoSync> CWinSystemX11GLContext::GetVideoSync(void *clock)
   if (dynamic_cast<CGLContextEGL*>(m_pGLContext))
   {
     pVSync.reset(new CVideoSyncOML(clock, *this));
-  }
-  else
-  {
-    pVSync.reset(X11::GLXVideoSyncCreate(clock, *this));
   }
 
   return pVSync;

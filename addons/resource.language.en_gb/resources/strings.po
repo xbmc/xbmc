@@ -7077,12 +7077,7 @@ msgctxt "#13423"
 msgid "Remember for this path"
 msgstr ""
 
-#empty string with id 13424
-
-#: system/settings/settings.xml
-msgctxt "#13425"
-msgid "Allow hardware acceleration - VDPAU"
-msgstr ""
+#empty strings from id 13424 to 13425
 
 #: system/settings/settings.xml
 msgctxt "#13426"
@@ -7136,12 +7131,7 @@ msgctxt "#13435"
 msgid "Enable HQ scalers for scaling above"
 msgstr ""
 
-#empty string with id 13436
-
-#: system/settings/settings.xml
-msgctxt "#13437"
-msgid "Prefer VDPAU video mixer"
-msgstr ""
+#empty strings from id 13436 to 13437
 
 #: system/settings/settings.xml
 msgctxt "#13438"
@@ -7158,38 +7148,7 @@ msgctxt "#13440"
 msgid "Allow hardware acceleration - MediaCodec (Surface)"
 msgstr ""
 
-#: system/settings/settings.xml
-msgctxt "#13441"
-msgid "Use MPEG-2 VDPAU"
-msgstr ""
-
-#. Description of setting with label #13441 "Use MPEG-2 VDPAU"
-#: system/settings/settings.xml
-msgctxt "#13442"
-msgid "Enable this option to use hardware acceleration for MPEG-(1 / 2) codecs. If disabled the CPU will be used instead. Older Radeon Cards tend to segfault with this enabled."
-msgstr ""
-
-#: system/settings/settings.xml
-msgctxt "#13443"
-msgid "Use MPEG-4 VDPAU"
-msgstr ""
-
-#. Description of setting with label #13443 "Use MPEG-4 VDPAU"
-#: system/settings/settings.xml
-msgctxt "#13444"
-msgid "Enable this option to use hardware acceleration for the MPEG-4 codec. If disabled the CPU will be used instead. Some ION hardware has problems with this being enabled by default."
-msgstr ""
-
-#: system/settings/settings.xml
-msgctxt "#13445"
-msgid "Use VC-1 VDPAU"
-msgstr ""
-
-#. Description of setting with label #13445 "Use VC-1 VDPAU"
-#: system/settings/settings.xml
-msgctxt "#13446"
-msgid "Enable this option to use hardware acceleration for VC-1 based codecs. If disabled the CPU will be used instead. AMD hardware with VDPAU can't decode VC-1 Simple."
-msgstr ""
+#empty strings from id 36441 to 36446
 
 #: system/settings/settings.xml
 msgctxt "#13447"
@@ -18297,11 +18256,7 @@ msgctxt "#36154"
 msgid "Use high quality scalers when upscaling a video by at least this percentage. A value below 5% makes little sense as video is processed with high GPU load without any visible picture quality improvements."
 msgstr ""
 
-#. Description of setting with label #13425 "Allow hardware acceleration (VDPAU)"
-#: system/settings/settings.xml
-msgctxt "#36155"
-msgid "Enable VDPAU hardware decoding of video files, mainly used for NVIDIA graphics and in some circumstances AMD graphics."
-msgstr ""
+#empty string with id 36155
 
 #. Description of setting with label #13426 "Allow hardware acceleration (VAAPI)"
 #: system/settings/settings.xml
@@ -19775,11 +19730,7 @@ msgctxt "#36420"
 msgid "Look for external subtitles for videos provided by the UPnP server. This can cause extensive CPU, filesystem and network load."
 msgstr ""
 
-#. Description of setting with label #13437 "Prefer VDPAU Video Mixer"
-#: system/settings/settings.xml
-msgctxt "#36421"
-msgid "Bypassing VDPAU mixer saves resources on low power systems but slightly reduces picture quality."
-msgstr ""
+#empty string with id 36421
 
 #. Description of setting with label #13438 "Allow hardware acceleration (amcodec)"
 #: system/settings/settings.xml
@@ -21337,7 +21288,7 @@ msgctxt "#38309"
 msgid "Output information to NFO files"
 msgstr ""
 
-#. See #38309 when NFO and art export disabled so only artist folders 
+#. See #38309 when NFO and art export disabled so only artist folders
 #: xbmc/settings/dialogs/GUIDialogLibExportSettings.cpp
 msgctxt "#38310"
 msgid "Output information to NFO files (currently exporting artist folders only)"

@@ -41,7 +41,6 @@ public:
   uint64_t GetVblankTiming(uint64_t &msc, uint64_t &interval);
 
   XID GetWindow() const;
-  void* GetGlxContext() const;
   EGLDisplay GetEGLDisplay() const;
   EGLSurface GetEGLSurface() const;
   EGLContext GetEGLContext() const;

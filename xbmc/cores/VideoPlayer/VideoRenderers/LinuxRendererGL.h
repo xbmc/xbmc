@@ -128,8 +128,8 @@ protected:
   void RenderToFBO(int renderBuffer, int field, bool weave = false);
   void RenderFromFBO();
   void RenderSinglePass(int renderBuffer, int field); // single pass glsl renderer
-  void RenderRGB(int renderBuffer, int field);      // render using vdpau/vaapi hardware
-  void RenderProgressiveWeave(int renderBuffer, int field); // render using vdpau hardware
+  void RenderRGB(int renderBuffer, int field);
+  void RenderProgressiveWeave(int renderBuffer, int field);
 
   struct CYuvPlane;
   struct CPictureBuffer;

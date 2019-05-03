@@ -15,13 +15,6 @@ if(VAAPI_FOUND)
   list(APPEND HEADERS VaapiEGL.h)
 endif()
 
-if(VDPAU_FOUND)
-  list(APPEND SOURCES RendererVDPAU.cpp
-                      VdpauGL.cpp)
-  list(APPEND HEADERS RendererVDPAU.h
-                      VdpauGL.h)
-endif()
-
 if(CORE_SYSTEM_NAME STREQUAL osx)
   list(APPEND SOURCES RendererVTBGL.cpp)
   list(APPEND HEADERS RendererVTBGL.h)
@@ -62,8 +55,6 @@ if(CORE_PLATFORM_NAME_LC STREQUAL gbm)
   endif()
 endif()
 
-# we might want to build on linux systems
-# with ENABLE_VDPAU=OFF and ENABLE_VAAPI=OFF
 if(SOURCES)
   core_add_library(videorenderers_hwdec)
 endif()

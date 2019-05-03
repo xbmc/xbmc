@@ -45,9 +45,6 @@
 #define SETTING_VIDEO_TONEMAP_PARAM       "video.tonemapparam"
 #define SETTING_VIDEO_ORIENTATION         "video.orientation"
 
-#define SETTING_VIDEO_VDPAU_NOISE         "vdpau.noise"
-#define SETTING_VIDEO_VDPAU_SHARPNESS     "vdpau.sharpness"
-
 #define SETTING_VIDEO_INTERLACEMETHOD     "video.interlacemethod"
 #define SETTING_VIDEO_SCALINGMETHOD       "video.scalingmethod"
 
@@ -155,18 +152,6 @@ void CGUIDialogVideoSettings::OnSettingChanged(std::shared_ptr<const CSetting> s
   {
     CVideoSettings vs = g_application.GetAppPlayer().GetVideoSettings();
     vs.m_Gamma = static_cast<float>(std::static_pointer_cast<const CSettingInt>(setting)->GetValue());
-    g_application.GetAppPlayer().SetVideoSettings(vs);
-  }
-  else if (settingId == SETTING_VIDEO_VDPAU_NOISE)
-  {
-    CVideoSettings vs = g_application.GetAppPlayer().GetVideoSettings();
-    vs.m_NoiseReduction = static_cast<float>(std::static_pointer_cast<const CSettingNumber>(setting)->GetValue());
-    g_application.GetAppPlayer().SetVideoSettings(vs);
-  }
-  else if (settingId == SETTING_VIDEO_VDPAU_SHARPNESS)
-  {
-    CVideoSettings vs = g_application.GetAppPlayer().GetVideoSettings();
-    vs.m_Sharpness = static_cast<float>(std::static_pointer_cast<const CSettingNumber>(setting)->GetValue());
     g_application.GetAppPlayer().SetVideoSettings(vs);
   }
   else if (settingId == SETTING_VIDEO_TONEMAP_METHOD)
@@ -309,11 +294,6 @@ void CGUIDialogVideoSettings::InitializeSettings()
   entries.push_back(std::make_pair(16021, VS_INTERLACEMETHOD_RENDER_BOB));
   entries.push_back(std::make_pair(16020, VS_INTERLACEMETHOD_DEINTERLACE));
   entries.push_back(std::make_pair(16036, VS_INTERLACEMETHOD_DEINTERLACE_HALF));
-  entries.push_back(std::make_pair(16311, VS_INTERLACEMETHOD_VDPAU_TEMPORAL_SPATIAL));
-  entries.push_back(std::make_pair(16310, VS_INTERLACEMETHOD_VDPAU_TEMPORAL));
-  entries.push_back(std::make_pair(16325, VS_INTERLACEMETHOD_VDPAU_BOB));
-  entries.push_back(std::make_pair(16318, VS_INTERLACEMETHOD_VDPAU_TEMPORAL_SPATIAL_HALF));
-  entries.push_back(std::make_pair(16317, VS_INTERLACEMETHOD_VDPAU_TEMPORAL_HALF));
   entries.push_back(std::make_pair(16327, VS_INTERLACEMETHOD_VAAPI_BOB));
   entries.push_back(std::make_pair(16328, VS_INTERLACEMETHOD_VAAPI_MADI));
   entries.push_back(std::make_pair(16329, VS_INTERLACEMETHOD_VAAPI_MACI));
@@ -355,7 +335,6 @@ void CGUIDialogVideoSettings::InitializeSettings()
   entries.push_back(std::make_pair(16307, VS_SCALINGMETHOD_BICUBIC_SOFTWARE));
   entries.push_back(std::make_pair(16308, VS_SCALINGMETHOD_LANCZOS_SOFTWARE));
   entries.push_back(std::make_pair(16309, VS_SCALINGMETHOD_SINC_SOFTWARE));
-  entries.push_back(std::make_pair(13120, VS_SCALINGMETHOD_VDPAU_HARDWARE));
   entries.push_back(std::make_pair(16319, VS_SCALINGMETHOD_DXVA_HARDWARE));
   entries.push_back(std::make_pair(16316, VS_SCALINGMETHOD_AUTO));
 
@@ -393,10 +372,6 @@ void CGUIDialogVideoSettings::InitializeSettings()
     AddPercentageSlider(groupVideo, SETTING_VIDEO_CONTRAST, 465, SettingLevel::Basic, static_cast<int>(videoSettings.m_Contrast), 14047, 1, 465, usePopup);
   if (g_application.GetAppPlayer().Supports(RENDERFEATURE_GAMMA))
     AddPercentageSlider(groupVideo, SETTING_VIDEO_GAMMA, 466, SettingLevel::Basic, static_cast<int>(videoSettings.m_Gamma), 14047, 1, 466, usePopup);
-  if (g_application.GetAppPlayer().Supports(RENDERFEATURE_NOISE))
-    AddSlider(groupVideo, SETTING_VIDEO_VDPAU_NOISE, 16312, SettingLevel::Basic, videoSettings.m_NoiseReduction, "%2.2f", 0.0f, 0.01f, 1.0f, 16312, usePopup);
-  if (g_application.GetAppPlayer().Supports(RENDERFEATURE_SHARPNESS))
-    AddSlider(groupVideo, SETTING_VIDEO_VDPAU_SHARPNESS, 16313, SettingLevel::Basic, videoSettings.m_Sharpness, "%2.2f", -1.0f, 0.02f, 1.0f, 16313, usePopup);
   if (g_application.GetAppPlayer().Supports(RENDERFEATURE_NONLINSTRETCH))
     AddToggle(groupVideo, SETTING_VIDEO_NONLIN_STRETCH, 659, SettingLevel::Basic, videoSettings.m_CustomNonLinStretch);
 

@@ -18,11 +18,4 @@ set(HEADERS GLContext.h
             XRandR.h
             VideoSyncOML.h)
 
-if(GLX_FOUND)
-  list(APPEND SOURCES GLContextGLX.cpp
-                      VideoSyncGLX.cpp)
-  list(APPEND HEADERS GLContextGLX.h
-                      VideoSyncGLX.h)
-endif()
-
 core_add_library(windowing_X11)

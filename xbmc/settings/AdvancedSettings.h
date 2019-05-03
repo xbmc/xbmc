@@ -152,8 +152,6 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     std::vector<int> m_seekSteps;
     std::string m_videoPPFFmpegDeint;
     std::string m_videoPPFFmpegPostProc;
-    bool m_videoVDPAUtelecine;
-    bool m_videoVDPAUdeintSkipChromaHD;
     bool m_musicUseTimeSeeking;
     int m_musicTimeSeekForward;
     int m_musicTimeSeekBackward;
@@ -168,7 +166,6 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     float m_audioApplyDrc;
     bool m_useFfmpegVda;
 
-    int   m_videoVDPAUScaling;
     bool  m_videoVAAPIforced;
     float m_videoNonLinStretchRatio;
     bool  m_videoEnableHighQualityHwScalers;
