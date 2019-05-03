@@ -18,10 +18,7 @@ using namespace RETRO;
 
 bool CRenderBufferPoolOpenGL::IsCompatible(const CRenderVideoSettings &renderSettings) const
 {
-  if (!CRPRendererOpenGL::SupportsScalingMethod(renderSettings.GetScalingMethod()))
-    return false;
-
-  return true;
+  return CRPRendererOpenGL::SupportsScalingMethod(renderSettings.GetScalingMethod());
 }
 
 IRenderBuffer *CRenderBufferPoolOpenGL::CreateRenderBuffer(void *header /* = nullptr */)

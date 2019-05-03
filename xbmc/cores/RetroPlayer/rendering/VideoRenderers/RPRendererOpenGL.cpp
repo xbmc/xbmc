@@ -127,26 +127,16 @@ void CRPRendererOpenGL::FlushInternal()
 
 bool CRPRendererOpenGL::Supports(RENDERFEATURE feature) const
 {
-  if (feature == RENDERFEATURE::STRETCH         ||
-      feature == RENDERFEATURE::ZOOM            ||
-      feature == RENDERFEATURE::PIXEL_RATIO     ||
-      feature == RENDERFEATURE::ROTATION)
-  {
-    return true;
-  }
-
-  return false;
+  return feature == RENDERFEATURE::STRETCH         ||
+         feature == RENDERFEATURE::ZOOM            ||
+         feature == RENDERFEATURE::PIXEL_RATIO     ||
+         feature == RENDERFEATURE::ROTATION;
 }
 
 bool CRPRendererOpenGL::SupportsScalingMethod(SCALINGMETHOD method)
 {
-  if (method == SCALINGMETHOD::NEAREST ||
-      method == SCALINGMETHOD::LINEAR)
-  {
-    return true;
-  }
-
-  return false;
+  return method == SCALINGMETHOD::NEAREST ||
+         method == SCALINGMETHOD::LINEAR;
 }
 
 void CRPRendererOpenGL::ClearBackBuffer()
