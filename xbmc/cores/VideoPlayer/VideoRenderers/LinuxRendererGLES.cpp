@@ -93,8 +93,15 @@ bool CLinuxRendererGLES::ValidateRenderTarget()
     }
 
      // create the yuv textures
-    UpdateVideoFilter();
+    if (m_renderMethod & RENDER_GLSL)
+      UpdateVideoFilter();
+
     LoadShaders();
+
+    if (m_renderMethod < 0)
+    {
+      return false;
+    }
 
     for (int i = 0 ; i < m_NumYV12Buffers ; i++)
     {
@@ -467,6 +474,7 @@ void CLinuxRendererGLES::UpdateVideoFilter()
     if (!m_fbo.fbo.Initialize())
     {
       CLog::Log(LOGERROR, "GLES: Error initializing FBO");
+      return;
     }
 
     if (!m_fbo.fbo.CreateAndBindToTexture(GL_TEXTURE_2D, m_sourceWidth, m_sourceHeight, GL_RGBA))
@@ -524,7 +532,6 @@ void CLinuxRendererGLES::LoadShaders(int field)
   {
     ReleaseShaders();
 
-    // Try GLSL shaders if supported and user requested auto or GLSL.
     if (glCreateProgram())
     {
       // create regular scan shader
@@ -672,7 +679,7 @@ void CLinuxRendererGLES::Render(unsigned int flags, int index)
   {
     ;
   }
-  else
+  else if (m_renderMethod & RENDER_GLSL)
   {
     UpdateVideoFilter();
     RenderToFBO(index, m_currentField);

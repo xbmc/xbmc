@@ -46,14 +46,6 @@ enum RenderMethod
   RENDER_CUSTOM = 0x02,
 };
 
-enum RenderQuality
-{
-  RQ_LOW = 1,
-  RQ_SINGLEPASS,
-  RQ_MULTIPASS,
-  RQ_SOFTWARE
-};
-
 class CEvent;
 
 class CLinuxRendererGLES : public CBaseRenderer
@@ -141,7 +133,6 @@ protected:
   bool m_bValidated{false};
   GLenum m_textureTarget;
   int m_renderMethod{RENDER_GLSL};
-  RenderQuality m_renderQuality{RQ_SINGLEPASS};
 
   // Raw data used by renderer
   int m_currentField{FIELD_FULL};
