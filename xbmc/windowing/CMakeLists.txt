@@ -11,8 +11,4 @@ set(HEADERS GraphicContext.h
             XBMC_events.h
             VideoSync.h)
 
-if(CORE_PLATFORM_NAME_LC STREQUAL rbpi)
-  add_subdirectory(rpi)
-endif()
-
 core_add_library(windowing)
