@@ -205,7 +205,14 @@ bool CGUIDialogVideoInfo::OnMessage(CGUIMessage& message)
           if (iItem < 0 || iItem >= m_castList->Size())
             break;
           std::string strItem = m_castList->Get(iItem)->GetLabel();
-          OnSearch(strItem);
+          if (m_movieItem->GetVideoInfoTag()->m_type == MediaTypeVideoCollection)
+          {
+            SetMovie(m_castList->Get(iItem).get());
+            Close();
+            Open();
+          }
+          else
+            OnSearch(strItem);
         }
       }
     }
@@ -241,8 +248,8 @@ void CGUIDialogVideoInfo::OnInitWindow()
 
   CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_REFRESH, (profileManager->GetCurrentProfile().canWriteDatabases() || g_passwordManager.bMasterUser) && !StringUtils::StartsWithNoCase(m_movieItem->GetVideoInfoTag()->GetUniqueID(), "xx"));
   CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_GET_THUMB, (profileManager->GetCurrentProfile().canWriteDatabases() || g_passwordManager.bMasterUser) && !StringUtils::StartsWithNoCase(m_movieItem->GetVideoInfoTag()->GetUniqueID().c_str() + 2, "plugin"));
-  // Disable video user rating button for plugins as they don't have tables to save this
-  CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_USERRATING, !m_movieItem->IsPlugin());
+  // Disable video user rating button for plugins and sets as they don't have tables to save this
+  CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_USERRATING, !m_movieItem->IsPlugin() && m_movieItem->GetVideoInfoTag()->m_type != MediaTypeVideoCollection);
 
   VIDEODB_CONTENT_TYPE type = static_cast<VIDEODB_CONTENT_TYPE>(m_movieItem->GetVideoContentType());
   if (type == VIDEODB_CONTENT_TVSHOWS || type == VIDEODB_CONTENT_MOVIES)
@@ -320,6 +327,18 @@ void CGUIDialogVideoInfo::SetMovie(const CFileItem *item)
       item->SetIconImage("DefaultArtist.png");
       m_castList->Add(item);
     }
+  }
+  else if (type == MediaTypeVideoCollection)
+  {
+    CVideoDatabase database;
+    database.Open();
+    database.GetMoviesNav(m_movieItem->GetPath(), *m_castList, -1, -1, -1, -1, -1, -1,
+                          m_movieItem->GetVideoInfoTag()->m_set.id, -1,
+                          SortDescription(), VideoDbDetailsAll);
+    m_castList->Sort(SortBySortTitle, SortOrderDescending);
+    CVideoThumbLoader loader;
+    for (auto& item : *m_castList)
+      loader.LoadItem(item.get());
   }
   else
   { // movie/show/episode
@@ -403,6 +422,10 @@ void CGUIDialogVideoInfo::Update()
       if (!m_movieItem->GetVideoInfoTag()->m_artist.empty())
       {
         SET_CONTROL_LABEL(CONTROL_BTN_TRACKS, 133);
+      }
+      else if (m_movieItem->GetVideoInfoTag()->m_type == MediaTypeVideoCollection)
+      {
+        SET_CONTROL_LABEL(CONTROL_BTN_TRACKS, 20342);
       }
       else
       {
@@ -600,6 +623,14 @@ void CGUIDialogVideoInfo::Play(bool resume)
     return;
   }
 
+  if (m_movieItem->GetVideoInfoTag()->m_type == MediaTypeVideoCollection)
+  {
+    std::string strPath = StringUtils::Format("videodb://movies/sets/%i/?setid=%i",m_movieItem->GetVideoInfoTag()->m_iDbId,m_movieItem->GetVideoInfoTag()->m_iDbId);
+    Close();
+    CServiceBroker::GetGUI()->GetWindowManager().ActivateWindow(WINDOW_VIDEO_NAV,strPath);
+    return;
+  }
+
   CFileItem movie(*m_movieItem->GetVideoInfoTag());
   if (m_movieItem->GetVideoInfoTag()->m_strFileNameAndPath.empty())
     movie.SetPath(m_movieItem->GetPath());
@@ -739,6 +770,11 @@ std::string CGUIDialogVideoInfo::ChooseArtType(const CFileItem &videoItem)
 
 void CGUIDialogVideoInfo::OnGetArt()
 {
+  if (m_movieItem->GetVideoInfoTag()->m_type == MediaTypeVideoCollection)
+  {
+    ManageVideoItemArtwork(m_movieItem, m_movieItem->GetVideoInfoTag()->m_type);
+    return;
+  }
   std::string type = ChooseArtType(*m_movieItem);
   if (type.empty())
     return; // cancelled

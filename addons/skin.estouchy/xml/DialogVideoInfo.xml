@@ -681,7 +681,7 @@
 				<alttexturefocus>list_focus.png</alttexturefocus>
 				<alttexturenofocus>button_nofocus.png</alttexturenofocus>
 				<altlabel>1024</altlabel>
-				<usealttexture>Container.Content(TVShows)</usealttexture>
+				<usealttexture>Container.Content(TVShows) | Container.Content(Sets)</usealttexture>
 			</control>
 			<control type="button" id="5">
 				<description>Cast/Review</description>
