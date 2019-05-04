@@ -1,0 +1,3 @@
+xbmc/cores/RetroPlayer/process/X11 cores/RetroPlayer/process/X11
+xbmc/cores/VideoPlayer/Process/X11 cores/VideoPlayer/Process/X11
+xbmc/windowing/X11 windowing/X11

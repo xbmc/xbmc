@@ -1,2 +1,0 @@
-xbmc/cores/RetroPlayer/process/amlogic cores/RetroPlayer/process/amlogic # AML
-xbmc/windowing/amlogic windowing/amlogic # AML

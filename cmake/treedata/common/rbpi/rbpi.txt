@@ -1,0 +1,2 @@
+xbmc/cores/omxplayer cores/omxplayer
+xbmc/windowing/rpi   windowing/rpi

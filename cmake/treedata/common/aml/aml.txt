@@ -1,0 +1,2 @@
+xbmc/cores/RetroPlayer/process/amlogic cores/RetroPlayer/process/amlogic
+xbmc/windowing/amlogic windowing/amlogic
