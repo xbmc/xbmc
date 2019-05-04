@@ -159,6 +159,7 @@
  */
 #define GUI_MSG_SUBTITLE_DOWNLOADED  52
 
+#define GUI_MSG_UI_READY_PROFILE 53
 
 #define GUI_MSG_USER         1000
 

@@ -3703,7 +3703,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
         if (m_itemCurrentFile->IsOnDVD())
           StopPlaying();
       }
-      else if (message.GetParam1() == GUI_MSG_UI_READY)
+      else if (message.GetParam1() == GUI_MSG_UI_READY || message.GetParam1() == GUI_MSG_UI_READY_PROFILE)
       {
         // remove splash window
         CServiceBroker::GetGUI()->GetWindowManager().Delete(WINDOW_SPLASH);
@@ -3724,6 +3724,10 @@ bool CApplication::OnMessage(CGUIMessage& message)
         ShowAppMigrationMessage();
 
         m_bInitializing = false;
+
+        if (message.GetParam1() == GUI_MSG_UI_READY_PROFILE)
+          g_application.ReloadSkin(false);
+
       }
       else if (message.GetParam1() == GUI_MSG_UPDATE_ITEM && message.GetItem())
       {
