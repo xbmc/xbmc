@@ -21253,7 +21253,7 @@ msgctxt "#38309"
 msgid "Output information to NFO files"
 msgstr ""
 
-#. See #38309 when NFO and art export disabled so only artist folders 
+#. See #38309 when NFO and art export disabled so only artist folders
 #: xbmc/settings/dialogs/GUIDialogLibExportSettings.cpp
 msgctxt "#38310"
 msgid "Output information to NFO files (currently exporting artist folders only)"
