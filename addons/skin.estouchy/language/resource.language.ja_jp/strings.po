@@ -68,6 +68,10 @@ msgctxt "#31038"
 msgid "Login"
 msgstr "ログイン"
 
+msgctxt "#31043"
+msgid "PAUSED"
+msgstr "静止中"
+
 msgctxt "#31044"
 msgid "FAST FORWARD"
 msgstr "早送り"

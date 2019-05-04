@@ -96,6 +96,10 @@ msgctxt "#31039"
 msgid "Updated:"
 msgstr "Updated:"
 
+msgctxt "#31043"
+msgid "PAUSED"
+msgstr "PAUSED"
+
 msgctxt "#31044"
 msgid "FAST FORWARD"
 msgstr "FAST FORWARD"

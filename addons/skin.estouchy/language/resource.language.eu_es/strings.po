@@ -96,6 +96,10 @@ msgctxt "#31039"
 msgid "Updated:"
 msgstr "Eguneratua: "
 
+msgctxt "#31043"
+msgid "PAUSED"
+msgstr "PAUSATUA"
+
 msgctxt "#31044"
 msgid "FAST FORWARD"
 msgstr "BIZKOR AURRERATU"

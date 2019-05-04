@@ -72,6 +72,10 @@ msgctxt "#31039"
 msgid "Updated:"
 msgstr "ተሻሽሏል:"
 
+msgctxt "#31043"
+msgid "PAUSED"
+msgstr "ማቆሚያ"
+
 msgctxt "#31044"
 msgid "FAST FORWARD"
 msgstr "ወደ ፊት ማሳለፊያ"

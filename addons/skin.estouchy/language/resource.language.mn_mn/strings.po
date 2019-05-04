@@ -28,6 +28,10 @@ msgctxt "#31024"
 msgid "Page"
 msgstr "Хуудас"
 
+msgctxt "#31043"
+msgid "PAUSED"
+msgstr "ТҮР ЗОГСООСОН"
+
 msgctxt "#31044"
 msgid "FAST FORWARD"
 msgstr "УРАГШ ГҮЙЛГЭХ"

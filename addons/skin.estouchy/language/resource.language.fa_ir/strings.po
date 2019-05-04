@@ -40,6 +40,10 @@ msgctxt "#31038"
 msgid "Login"
 msgstr "ورود"
 
+msgctxt "#31043"
+msgid "PAUSED"
+msgstr "مکث شده"
+
 msgctxt "#31044"
 msgid "FAST FORWARD"
 msgstr "حرکت سریع به جلو"

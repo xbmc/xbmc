@@ -96,6 +96,10 @@ msgctxt "#31039"
 msgid "Updated:"
 msgstr "Ажурирано:"
 
+msgctxt "#31043"
+msgid "PAUSED"
+msgstr "ПАУЗИРАНО"
+
 msgctxt "#31044"
 msgid "FAST FORWARD"
 msgstr "ПРЕМОТАВАЊЕ УНАПРЕД"

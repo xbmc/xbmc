@@ -96,6 +96,10 @@ msgctxt "#31039"
 msgid "Updated:"
 msgstr "Ενημερωμένο:"
 
+msgctxt "#31043"
+msgid "PAUSED"
+msgstr "ΠΑΥΣΗ"
+
 msgctxt "#31044"
 msgid "FAST FORWARD"
 msgstr "ΠΡΟΩΘΗΣΗ"

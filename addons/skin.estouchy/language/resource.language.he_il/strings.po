@@ -96,6 +96,10 @@ msgctxt "#31039"
 msgid "Updated:"
 msgstr ":עודכן"
 
+msgctxt "#31043"
+msgid "PAUSED"
+msgstr "מושהה"
+
 msgctxt "#31044"
 msgid "FAST FORWARD"
 msgstr "הרצה קדימה"

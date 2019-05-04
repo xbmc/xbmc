@@ -76,6 +76,10 @@ msgctxt "#31038"
 msgid "Login"
 msgstr "Login"
 
+msgctxt "#31043"
+msgid "PAUSED"
+msgstr "ПРЫПЫНЕНА"
+
 msgctxt "#31044"
 msgid "FAST FORWARD"
 msgstr "FAST FORWARD"

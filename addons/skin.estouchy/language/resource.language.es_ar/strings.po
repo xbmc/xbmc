@@ -88,6 +88,10 @@ msgctxt "#31038"
 msgid "Login"
 msgstr "Ingresar"
 
+msgctxt "#31043"
+msgid "PAUSED"
+msgstr "PAUSADO"
+
 msgctxt "#31044"
 msgid "FAST FORWARD"
 msgstr "AVANCE RAPIDO"

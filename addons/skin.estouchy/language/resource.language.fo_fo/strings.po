@@ -36,6 +36,10 @@ msgctxt "#31024"
 msgid "Page"
 msgstr "Síða"
 
+msgctxt "#31043"
+msgid "PAUSED"
+msgstr "STEÐGUR"
+
 msgctxt "#31044"
 msgid "FAST FORWARD"
 msgstr "SKJÓTT FRAMM"

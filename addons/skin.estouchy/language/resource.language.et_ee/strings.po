@@ -68,6 +68,10 @@ msgctxt "#31038"
 msgid "Login"
 msgstr "Logi sisse"
 
+msgctxt "#31043"
+msgid "PAUSED"
+msgstr "PAUSIS"
+
 msgctxt "#31044"
 msgid "FAST FORWARD"
 msgstr "KIIRELT EDASI"

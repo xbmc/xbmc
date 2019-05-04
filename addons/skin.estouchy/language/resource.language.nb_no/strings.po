@@ -96,6 +96,10 @@ msgctxt "#31039"
 msgid "Updated:"
 msgstr "Oppdatert:"
 
+msgctxt "#31043"
+msgid "PAUSED"
+msgstr "PAUSE"
+
 msgctxt "#31044"
 msgid "FAST FORWARD"
 msgstr "Spol framover"

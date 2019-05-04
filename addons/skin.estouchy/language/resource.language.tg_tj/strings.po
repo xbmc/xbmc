@@ -40,6 +40,10 @@ msgctxt "#31038"
 msgid "Login"
 msgstr "Вуруд"
 
+msgctxt "#31043"
+msgid "PAUSED"
+msgstr "ТАВАҚҚУФШУДА"
+
 msgctxt "#31044"
 msgid "FAST FORWARD"
 msgstr "БАСУРЪАТ БА ПЕШ ГАРДОНИДАНИ РОҲЧА"

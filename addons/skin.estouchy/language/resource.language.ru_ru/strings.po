@@ -56,6 +56,10 @@ msgctxt "#31014"
 msgid "Episodes"
 msgstr "Серии"
 
+msgctxt "#31015"
+msgid "Player info"
+msgstr "Информация об игроке"
+
 msgctxt "#31016"
 msgid "Albums"
 msgstr "Альбомы"
@@ -95,6 +99,10 @@ msgstr "Логин"
 msgctxt "#31039"
 msgid "Updated:"
 msgstr "Обновлено:"
+
+msgctxt "#31043"
+msgid "PAUSED"
+msgstr "ПАУЗА"
 
 msgctxt "#31044"
 msgid "FAST FORWARD"

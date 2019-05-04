@@ -84,6 +84,10 @@ msgctxt "#31038"
 msgid "Login"
 msgstr "Pieteikšanās"
 
+msgctxt "#31043"
+msgid "PAUSED"
+msgstr "IEPAUZĒTS"
+
 msgctxt "#31044"
 msgid "FAST FORWARD"
 msgstr "TĪT UZ PRIEKŠU"
