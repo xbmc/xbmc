@@ -274,7 +274,7 @@ msgstr "Aktoreen zerrenda ez dago eskuragarri"
 
 msgctxt "#31080"
 msgid "Ends at"
-msgstr "Amaiera ordua:"
+msgstr "Amaiera ordua"
 
 msgctxt "#31082"
 msgid "Lyrics add-on"
