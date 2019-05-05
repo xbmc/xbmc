@@ -563,7 +563,7 @@ void CGUIWindowVideoBase::GetResumeItemOffset(const CFileItem *item, int64_t& st
   startoffset = 0;
   partNumber = 0;
 
-  if (!item->IsNFO() && !item->IsPlayList())
+  if (!item->IsNFO() && (!item->IsPlayList() || URIUtils::GetExtension(item->GetPath()) == ".strm" || URIUtils::GetExtension(item->GetDynPath()) == ".strm"))
   {
     if (item->GetCurrentResumeTimeAndPartNumber(startoffset, partNumber))
     {
