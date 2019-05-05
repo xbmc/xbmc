@@ -38,7 +38,6 @@ using namespace KODI::MESSAGING;
 using KODI::UTILITY::CDigest;
 using KODI::UTILITY::TypedDigest;
 
-using KODI::MESSAGING::HELPERS::DialogResponse;
 
 CRepository::ResolveResult CRepository::ResolvePathAndHash(const AddonPtr& addon) const
 {
