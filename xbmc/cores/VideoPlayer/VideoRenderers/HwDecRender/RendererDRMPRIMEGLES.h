@@ -68,14 +68,14 @@ public:
 
 private:
   void DrawBlackBars();
-  void Render(unsigned int flags, int index);
 
   AVColorPrimaries GetSrcPrimaries(AVColorPrimaries srcPrimaries,
                                    unsigned int width,
                                    unsigned int height);
-  void LoadShaders();
 
   bool m_reloadShaders;
+
+  EShaderFormat m_shaderFormat{SHADER_NONE};
 
   bool m_configured = false;
   float m_clearColour{0.0f};

@@ -95,8 +95,6 @@ bool CRendererDRMPRIMEGLES::Configure(const VideoPicture& picture,
 
   m_fullRange = !CServiceBroker::GetWinSystem()->UseLimitedColor();
 
-  LoadShaders();
-
   // Calculate the input frame aspect ratio.
   CalculateFrameAspectRatio(picture.iDisplayWidth, picture.iDisplayHeight);
   SetViewMode(m_videoSettings.m_ViewMode);
@@ -275,53 +273,6 @@ void CRendererDRMPRIMEGLES::RenderUpdate(
 
   ManageRenderArea();
 
-  if (clear)
-  {
-    if (alpha == 255)
-      DrawBlackBars();
-    else
-    {
-      glClearColor(m_clearColour, m_clearColour, m_clearColour, 0);
-      glClear(GL_COLOR_BUFFER_BIT);
-      glClearColor(0, 0, 0, 0);
-    }
-  }
-
-  if (alpha < 255)
-  {
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    m_progressiveShader->SetAlpha(alpha / 255.0f);
-  }
-  else
-  {
-    glDisable(GL_BLEND);
-    m_progressiveShader->SetAlpha(1.0f);
-  }
-
-  Render(flags, index);
-
-  VerifyGLState();
-  glEnable(GL_BLEND);
-}
-
-bool CRendererDRMPRIMEGLES::RenderCapture(CRenderCapture* capture)
-{
-  capture->BeginRender();
-  capture->EndRender();
-  return true;
-}
-
-bool CRendererDRMPRIMEGLES::ConfigChanged(const VideoPicture& picture)
-{
-  if (picture.videoBuffer->GetFormat() != m_format)
-    return true;
-
-  return false;
-}
-
-void CRendererDRMPRIMEGLES::Render(unsigned int flags, int index)
-{
   BUFFER& buf = m_buffers[index];
 
   CVideoBufferDRMPRIME* buffer = dynamic_cast<CVideoBufferDRMPRIME*>(buf.videoBuffer);
@@ -362,10 +313,80 @@ void CRendererDRMPRIMEGLES::Render(unsigned int flags, int index)
 
   m_toneMap = toneMap;
 
-  if (m_reloadShaders)
-    LoadShaders();
+  EShaderFormat shaderFormat = SHADER_NONE;
 
-  glBindTexture(GL_TEXTURE_EXTERNAL_OES, buf.texture->GetTexture());
+  if (buf.texture->GetTextureY() != 0)
+  {
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(buf.texture->GetTextureTarget(), buf.texture->GetTextureY());
+    CLog::Log(LOGDEBUG, LOGVIDEO, "CRendererDRMPRIMEGLES::{} - Y={}", __FUNCTION__,
+              buf.texture->GetTextureY());
+    shaderFormat = SHADER_OES;
+  }
+
+  if (buf.texture->GetTextureU() != 0)
+  {
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(buf.texture->GetTextureTarget(), buf.texture->GetTextureU());
+    CLog::Log(LOGDEBUG, LOGVIDEO, "CRendererDRMPRIMEGLES::{} - U={}", __FUNCTION__,
+              buf.texture->GetTextureU());
+    shaderFormat = SHADER_NV12;
+  }
+
+  if (buf.texture->GetTextureV() != 0)
+  {
+    glActiveTexture(GL_TEXTURE2);
+    glBindTexture(buf.texture->GetTextureTarget(), buf.texture->GetTextureV());
+    CLog::Log(LOGDEBUG, LOGVIDEO, "CRendererDRMPRIMEGLES::{} - V={}", __FUNCTION__,
+              buf.texture->GetTextureV());
+    shaderFormat = SHADER_YV12;
+  }
+
+  glActiveTexture(GL_TEXTURE0);
+
+  if (shaderFormat != m_shaderFormat)
+  {
+    m_reloadShaders = true;
+  }
+
+  m_shaderFormat = shaderFormat;
+
+  if (m_reloadShaders)
+  {
+    m_progressiveShader = std::make_unique<Shaders::YUV2RGBProgressiveShader>(
+        m_shaderFormat, AVColorPrimaries::AVCOL_PRI_BT709, m_srcPrimaries, m_toneMap);
+
+    m_progressiveShader->CompileAndLink();
+
+    m_reloadShaders = false;
+  }
+
+  if (clear)
+  {
+    if (alpha == 255)
+      DrawBlackBars();
+    else
+    {
+      glClearColor(m_clearColour, m_clearColour, m_clearColour, 0);
+      glClear(GL_COLOR_BUFFER_BIT);
+      glClearColor(0, 0, 0, 0);
+    }
+  }
+
+  if (alpha < 255)
+  {
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    m_progressiveShader->SetAlpha(alpha / 255.0f);
+  }
+  else
+  {
+    glDisable(GL_BLEND);
+    m_progressiveShader->SetAlpha(1.0f);
+  }
+
+  //! @todo
+  // buf.m_srcTextureBits = 10;
 
   m_progressiveShader->SetBlack(m_videoSettings.m_Brightness * 0.01f - 0.5f);
   m_progressiveShader->SetContrast(m_videoSettings.m_Contrast * 0.02f);
@@ -376,23 +397,28 @@ void CRendererDRMPRIMEGLES::Render(unsigned int flags, int index)
   m_progressiveShader->SetDisplayMetadata(buf.hasDisplayMetadata, buf.displayMetadata,
                                           buf.hasLightMetadata, buf.lightMetadata);
   m_progressiveShader->SetToneMapParam(m_videoSettings.m_ToneMapParam);
+  m_progressiveShader->SetConvertFullColorRange(m_fullRange);
 
   m_progressiveShader->SetMatrices(glMatrixProject.Get(), glMatrixModview.Get());
   m_progressiveShader->Enable();
 
-  GLubyte idx[4] = {0, 1, 3, 2}; // Determines order of triangle strip
+  GLubyte idx[4] = {0, 1, 3, 2};
   GLuint vertexVBO;
   GLuint indexVBO;
   struct PackedVertex
   {
     float x, y, z;
     float u1, v1;
+    float u2, v2;
+    float u3, v3;
   };
 
   std::array<PackedVertex, 4> vertex;
 
   GLint vertLoc = m_progressiveShader->GetVertexLoc();
-  GLint loc = m_progressiveShader->GetYcoordLoc();
+  GLint yloc = m_progressiveShader->GetYcoordLoc();
+  GLint uloc = m_progressiveShader->GetUcoordLoc();
+  GLint vloc = m_progressiveShader->GetVcoordLoc();
 
   // top left
   vertex[0].x = m_rotatedDestCoords[0].x;
@@ -400,6 +426,10 @@ void CRendererDRMPRIMEGLES::Render(unsigned int flags, int index)
   vertex[0].z = 0.0f;
   vertex[0].u1 = 0.0f;
   vertex[0].v1 = 0.0f;
+  vertex[0].u2 = 0.0f;
+  vertex[0].v2 = 0.0f;
+  vertex[0].u3 = 0.0f;
+  vertex[0].v3 = 0.0f;
 
   // top right
   vertex[1].x = m_rotatedDestCoords[1].x;
@@ -407,6 +437,10 @@ void CRendererDRMPRIMEGLES::Render(unsigned int flags, int index)
   vertex[1].z = 0.0f;
   vertex[1].u1 = 1.0f;
   vertex[1].v1 = 0.0f;
+  vertex[1].u2 = 1.0f;
+  vertex[1].v2 = 0.0f;
+  vertex[1].u3 = 1.0f;
+  vertex[1].v3 = 0.0f;
 
   // bottom right
   vertex[2].x = m_rotatedDestCoords[2].x;
@@ -414,6 +448,10 @@ void CRendererDRMPRIMEGLES::Render(unsigned int flags, int index)
   vertex[2].z = 0.0f;
   vertex[2].u1 = 1.0f;
   vertex[2].v1 = 1.0f;
+  vertex[2].u2 = 1.0f;
+  vertex[2].v2 = 1.0f;
+  vertex[2].u3 = 1.0f;
+  vertex[2].v3 = 1.0f;
 
   // bottom left
   vertex[3].x = m_rotatedDestCoords[3].x;
@@ -421,6 +459,10 @@ void CRendererDRMPRIMEGLES::Render(unsigned int flags, int index)
   vertex[3].z = 0.0f;
   vertex[3].u1 = 0.0f;
   vertex[3].v1 = 1.0f;
+  vertex[3].u2 = 0.0f;
+  vertex[3].v2 = 1.0f;
+  vertex[3].u3 = 0.0f;
+  vertex[3].v3 = 1.0f;
 
   glGenBuffers(1, &vertexVBO);
   glBindBuffer(GL_ARRAY_BUFFER, vertexVBO);
@@ -429,11 +471,25 @@ void CRendererDRMPRIMEGLES::Render(unsigned int flags, int index)
 
   glVertexAttribPointer(vertLoc, 3, GL_FLOAT, 0, sizeof(PackedVertex),
                         reinterpret_cast<const GLvoid*>(offsetof(PackedVertex, x)));
-  glVertexAttribPointer(loc, 2, GL_FLOAT, 0, sizeof(PackedVertex),
+  glVertexAttribPointer(yloc, 2, GL_FLOAT, 0, sizeof(PackedVertex),
                         reinterpret_cast<const GLvoid*>(offsetof(PackedVertex, u1)));
 
+  if (buf.texture->GetTextureU() != 0)
+    glVertexAttribPointer(uloc, 2, GL_FLOAT, 0, sizeof(PackedVertex),
+                          reinterpret_cast<const GLvoid*>(offsetof(PackedVertex, u2)));
+
+  if (buf.texture->GetTextureV() != 0)
+    glVertexAttribPointer(vloc, 2, GL_FLOAT, 0, sizeof(PackedVertex),
+                          reinterpret_cast<const GLvoid*>(offsetof(PackedVertex, u3)));
+
   glEnableVertexAttribArray(vertLoc);
-  glEnableVertexAttribArray(loc);
+  glEnableVertexAttribArray(yloc);
+
+  if (buf.texture->GetTextureU() != 0)
+    glEnableVertexAttribArray(uloc);
+
+  if (buf.texture->GetTextureV() != 0)
+    glEnableVertexAttribArray(vloc);
 
   glGenBuffers(1, &indexVBO);
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexVBO);
@@ -442,7 +498,13 @@ void CRendererDRMPRIMEGLES::Render(unsigned int flags, int index)
   glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_BYTE, 0);
 
   glDisableVertexAttribArray(vertLoc);
-  glDisableVertexAttribArray(loc);
+  glDisableVertexAttribArray(yloc);
+
+  if (buf.texture->GetTextureU() != 0)
+    glDisableVertexAttribArray(uloc);
+
+  if (buf.texture->GetTextureV() != 0)
+    glDisableVertexAttribArray(vloc);
 
   glBindBuffer(GL_ARRAY_BUFFER, 0);
   glDeleteBuffers(1, &vertexVBO);
@@ -451,9 +513,25 @@ void CRendererDRMPRIMEGLES::Render(unsigned int flags, int index)
 
   m_progressiveShader->Disable();
 
-  glBindTexture(GL_TEXTURE_EXTERNAL_OES, 0);
-
   buf.fence->CreateFence();
+
+  VerifyGLState();
+  glEnable(GL_BLEND);
+}
+
+bool CRendererDRMPRIMEGLES::RenderCapture(CRenderCapture* capture)
+{
+  capture->BeginRender();
+  capture->EndRender();
+  return true;
+}
+
+bool CRendererDRMPRIMEGLES::ConfigChanged(const VideoPicture& picture)
+{
+  if (picture.videoBuffer->GetFormat() != m_format)
+    return true;
+
+  return false;
 }
 
 bool CRendererDRMPRIMEGLES::Supports(ERENDERFEATURE feature)
@@ -465,6 +543,9 @@ bool CRendererDRMPRIMEGLES::Supports(ERENDERFEATURE feature)
     case RENDERFEATURE_VERTICAL_SHIFT:
     case RENDERFEATURE_PIXEL_RATIO:
     case RENDERFEATURE_ROTATION:
+    case RENDERFEATURE_BRIGHTNESS:
+    case RENDERFEATURE_CONTRAST:
+    case RENDERFEATURE_TONEMAP:
       return true;
     default:
       return false;
@@ -480,18 +561,6 @@ bool CRendererDRMPRIMEGLES::Supports(ESCALINGMETHOD method)
     default:
       return false;
   }
-}
-
-void CRendererDRMPRIMEGLES::LoadShaders()
-{
-  m_progressiveShader = std::make_unique<Shaders::YUV2RGBProgressiveShader>(
-      SHADER_OES, AVColorPrimaries::AVCOL_PRI_BT709, m_srcPrimaries, m_toneMap);
-
-  m_progressiveShader->CompileAndLink();
-
-  m_progressiveShader->SetConvertFullColorRange(m_fullRange);
-
-  m_reloadShaders = false;
 }
 
 AVColorPrimaries CRendererDRMPRIMEGLES::GetSrcPrimaries(AVColorPrimaries srcPrimaries,
