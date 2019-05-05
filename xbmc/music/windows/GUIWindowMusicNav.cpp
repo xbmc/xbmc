@@ -599,7 +599,7 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
         }
       }
 #endif
-      if (!inPlaylists && !m_vecItems->IsInternetStream() &&
+      if (!inPlaylists && (!m_vecItems->IsInternetStream() || m_vecItems->IsOnLAN()) &&
         !item->IsPath("add") && !item->IsParentFolder() &&
         !item->IsPlugin() &&
         !StringUtils::StartsWithNoCase(item->GetPath(), "addons://") &&

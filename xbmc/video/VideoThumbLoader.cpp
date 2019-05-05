@@ -88,7 +88,7 @@ bool CThumbExtractor::DoWork()
   ||  m_item.IsDVD()
   ||  m_item.IsDiscImage()
   ||  m_item.IsDVDFile(false, true)
-  ||  m_item.IsInternetStream()
+  ||  (m_item.IsInternetStream() && !m_item.IsOnLAN())
   ||  m_item.IsDiscStub()
   ||  m_item.IsPlayList())
     return false;

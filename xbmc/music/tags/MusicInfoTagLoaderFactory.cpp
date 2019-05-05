@@ -31,7 +31,7 @@ CMusicInfoTagLoaderFactory::~CMusicInfoTagLoaderFactory() = default;
 IMusicInfoTagLoader* CMusicInfoTagLoaderFactory::CreateLoader(const CFileItem& item)
 {
   // dont try to read the tags for streams & shoutcast
-  if (item.IsInternetStream())
+  if (item.IsInternetStream() && !item.IsOnLAN())
     return NULL;
 
   if (item.IsMusicDb())

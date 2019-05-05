@@ -1301,7 +1301,7 @@ bool CGUIWindowVideoBase::StackingAvailable(const CFileItemList &items)
 {
   CURL url(items.GetPath());
   return !(items.IsPlugin() || items.IsAddonsPath()  ||
-           items.IsRSS() || items.IsInternetStream() ||
+           items.IsRSS() || (items.IsInternetStream() && !items.IsOnLAN()) ||
            items.IsVideoDb() || url.IsProtocol("playlistvideo"));
 }
 

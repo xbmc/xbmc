@@ -73,7 +73,7 @@ void CMusicInfoLoader::OnLoaderStart()
 bool CMusicInfoLoader::LoadAdditionalTagInfo(CFileItem* pItem)
 {
   if (!pItem || (pItem->m_bIsFolder && !pItem->IsAudio()) ||
-      pItem->IsPlayList() || pItem->IsNFO() || pItem->IsInternetStream())
+      pItem->IsPlayList() || pItem->IsNFO() || (pItem->IsInternetStream() && !pItem->IsOnLAN()))
     return false;
 
   if (pItem->GetProperty("hasfullmusictag") == "true")
@@ -150,7 +150,7 @@ bool CMusicInfoLoader::LoadItemCached(CFileItem* pItem)
       pItem->IsPlayList() || pItem->IsSmartPlayList() ||
       StringUtils::StartsWithNoCase(pItem->GetPath(), "newplaylist://") ||
       StringUtils::StartsWithNoCase(pItem->GetPath(), "newsmartplaylist://") ||
-      pItem->IsNFO() || (pItem->IsInternetStream() && !pItem->IsMusicDb()))
+      pItem->IsNFO() || (pItem->IsInternetStream() && !pItem->IsOnLAN() && !pItem->IsMusicDb()))
     return false;
 
   // Get thumb for item
@@ -168,7 +168,7 @@ bool CMusicInfoLoader::LoadItemLookup(CFileItem* pItem)
       pItem->IsPlayList() || pItem->IsSmartPlayList() ||
       StringUtils::StartsWithNoCase(pItem->GetPath(), "newplaylist://") ||
       StringUtils::StartsWithNoCase(pItem->GetPath(), "newsmartplaylist://") ||
-      pItem->IsNFO() || (pItem->IsInternetStream() && !pItem->IsMusicDb()))
+      pItem->IsNFO() || (pItem->IsInternetStream() && !pItem->IsOnLAN() && !pItem->IsMusicDb()))
     return false;
 
   if (!pItem->HasMusicInfoTag() || !pItem->GetMusicInfoTag()->Loaded())

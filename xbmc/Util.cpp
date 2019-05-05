@@ -1994,7 +1994,7 @@ void CUtil::ScanForExternalSubtitles(const std::string& strMovie, std::vector<st
   unsigned int startTimer = XbmcThreads::SystemClockMillis();
 
   CFileItem item(strMovie, false);
-  if (item.IsInternetStream()
+  if ((item.IsInternetStream() && !item.IsOnLAN())
     || item.IsPlayList()
     || item.IsLiveTV()
     || !item.IsVideo())
@@ -2281,7 +2281,7 @@ std::string CUtil::GetVobSubIdxFromSub(const std::string& vobSub)
 void CUtil::ScanForExternalDemuxSub(const std::string& videoPath, std::vector<std::string>& vecSubtitles)
 {
   CFileItem item(videoPath, false);
-  if (item.IsInternetStream()
+  if ((item.IsInternetStream() && !item.IsOnLAN())
     || item.IsPlayList()
     || item.IsLiveTV()
     || item.IsPVR()
@@ -2305,7 +2305,7 @@ void CUtil::ScanForExternalDemuxSub(const std::string& videoPath, std::vector<st
 void CUtil::ScanForExternalAudio(const std::string& videoPath, std::vector<std::string>& vecAudio)
 {
   CFileItem item(videoPath, false);
-  if ( item.IsInternetStream()
+  if ((item.IsInternetStream() && !item.IsOnLAN())
    ||  item.IsPlayList()
    ||  item.IsLiveTV()
    ||  item.IsPVR()

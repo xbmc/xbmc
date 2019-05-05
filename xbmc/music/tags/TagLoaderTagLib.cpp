@@ -1108,7 +1108,7 @@ void CTagLoaderTagLib::AddArtistInstrument(CMusicInfoTag &tag, const std::vector
 bool CTagLoaderTagLib::Load(const std::string& strFileName, CMusicInfoTag& tag, const std::string& fallbackFileExtension, EmbeddedArt *art /* = NULL */)
 {
   // Dont try to read the tags for streams & shoutcast
-  if (URIUtils::IsInternetStream(strFileName))
+  if (URIUtils::IsInternetStream(strFileName) && !URIUtils::IsOnLAN(strFileName))
     return false;
 
   std::string strExtension = URIUtils::GetExtension(strFileName);

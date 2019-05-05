@@ -765,7 +765,7 @@ bool CFileItem::Exists(bool bUseCache /* = true */) const
 {
   if (m_strPath.empty()
    || IsPath("add")
-   || IsInternetStream()
+   || (IsInternetStream() && !IsOnLAN())
    || IsParentFolder()
    || IsVirtualDirectoryRoot()
    || IsPlugin()
@@ -1008,7 +1008,7 @@ bool CFileItem::IsFileFolder(EFileFolderType types) const
   EFileFolderType always_type = EFILEFOLDER_TYPE_ALWAYS;
 
   /* internet streams are not directly expanded */
-  if(IsInternetStream())
+  if(IsInternetStream() && !IsOnLAN())
     always_type = EFILEFOLDER_TYPE_ONCLICK;
 
   if(types & always_type)
@@ -2976,7 +2976,7 @@ std::string CFileItem::GetUserMusicThumb(bool alwaysCheckRemote /* = false */, b
    || StringUtils::StartsWithNoCase(m_strPath, "newsmartplaylist://")
    || StringUtils::StartsWithNoCase(m_strPath, "newplaylist://")
    || m_bIsShareOrDrive
-   || IsInternetStream()
+   || (IsInternetStream() && !IsOnLAN())
    || URIUtils::IsUPnP(m_strPath)
    || (URIUtils::IsFTP(m_strPath) && !CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_bFTPThumbs)
    || IsPlugin()
@@ -3068,7 +3068,7 @@ bool CFileItem::SkipLocalArt() const
        || StringUtils::StartsWithNoCase(m_strPath, "newsmartplaylist://")
        || StringUtils::StartsWithNoCase(m_strPath, "newplaylist://")
        || m_bIsShareOrDrive
-       || IsInternetStream()
+       || (IsInternetStream() && !IsOnLAN())
        || URIUtils::IsUPnP(m_strPath)
        || (URIUtils::IsFTP(m_strPath) && !CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_bFTPThumbs)
        || IsPlugin()
@@ -3264,7 +3264,7 @@ std::string CFileItem::GetLocalFanart() const
   }
 
   // no local fanart available for these
-  if (IsInternetStream()
+  if ((IsInternetStream() && !IsOnLAN())
    || URIUtils::IsUPnP(strFile)
    || URIUtils::IsBluray(strFile)
    || IsLiveTV()
@@ -3537,7 +3537,7 @@ std::string CFileItem::FindTrailer() const
   }
 
   // no local trailer available for these
-  if (IsInternetStream()
+  if ((IsInternetStream() && !IsOnLAN())
    || URIUtils::IsUPnP(strFile)
    || URIUtils::IsBluray(strFile)
    || IsLiveTV()
