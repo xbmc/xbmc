@@ -57,7 +57,6 @@
 					<animation effect="fade" start="100" end="0" time="200">Hidden</animation>
 					<animation effect="slide" end="6,0" time="300" tween="sine" easing="inout" condition="!Control.HasFocus(531)">conditional</animation>
 					<visible>Control.IsVisible(52) | Control.IsVisible(500) | Control.IsVisible(55) | Control.IsVisible(501) | Control.IsVisible(54)</visible>
-					<hitrect x="-20" y="0" w="80" bottom="0r" />
 				</control>
 			</control>
 			<control type="group">
