@@ -46,7 +46,6 @@ using namespace XFILE;
 using namespace MUSIC_INFO;
 using namespace MUSICDATABASEDIRECTORY;
 using namespace KODI::MESSAGING;
-using KODI::MESSAGING::HELPERS::DialogResponse;
 
 #define CONTROL_BTN_REFRESH      6
 #define CONTROL_USERRATING       7
