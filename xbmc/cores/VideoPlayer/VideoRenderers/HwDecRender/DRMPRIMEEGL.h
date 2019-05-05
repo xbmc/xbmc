@@ -12,6 +12,8 @@
 #include "utils/EGLImage.h"
 #include "utils/Geometry.h"
 
+#include <array>
+
 #include "system_gl.h"
 
 class CDRMPRIMETexture
@@ -25,15 +27,20 @@ public:
   void Unmap();
   void Init(EGLDisplay eglDisplay);
 
-  GLuint GetTexture() { return m_texture; }
+  GLenum GetTextureTarget() const { return m_textureTarget; }
+
+  GLuint GetTextureY() { return m_texture[0]; }
+  GLuint GetTextureU() { return m_texture[1]; }
+  GLuint GetTextureV() { return m_texture[2]; }
+
   CSizeInt GetTextureSize() { return {m_texWidth, m_texHeight}; }
 
 protected:
   CVideoBufferDRMPRIME* m_primebuffer{nullptr};
-  std::unique_ptr<CEGLImage> m_eglImage;
+  std::array<std::unique_ptr<CEGLImage>, 3> m_eglImage;
 
-  const GLenum m_textureTarget{GL_TEXTURE_EXTERNAL_OES};
-  GLuint m_texture{0};
+  GLenum m_textureTarget{GL_TEXTURE_EXTERNAL_OES};
+  std::array<GLuint, 3> m_texture{0};
   int m_texWidth{0};
   int m_texHeight{0};
 };
