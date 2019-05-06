@@ -168,10 +168,10 @@ JSONRPC_STATUS CFileOperations::GetFileDetails(const std::string &method, ITrans
   if (!URIUtils::IsPlugin(file))
   {
     if (!CFile::Exists(file))
-	  return InvalidParams;
+      return InvalidParams;
 
-	if (!CFileUtils::RemoteAccessAllowed(file))
-	  return InvalidParams;
+    if (!CFileUtils::RemoteAccessAllowed(file))
+      return InvalidParams;
   }
   std::string path;
   CFileItemList items;
@@ -184,7 +184,7 @@ JSONRPC_STATUS CFileOperations::GetFileDetails(const std::string &method, ITrans
       return InvalidParams;
     item = items.Get(file);
 
-	if (!URIUtils::IsUPnP(file))
+    if (!URIUtils::IsUPnP(file))
       FillFileItem(item, item, parameterObject["media"].asString(), parameterObject);
   }
   else
@@ -203,7 +203,7 @@ JSONRPC_STATUS CFileOperations::GetFileDetails(const std::string &method, ITrans
       }
       CURL n_url(o_file);
       url = n_url;
-	}
+    }
 
     if (!plugin.GetDirectory(url, items))
       return InvalidParams;
