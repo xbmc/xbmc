@@ -222,10 +222,7 @@ CBaseTexture *CTextureCacheJob::LoadImage(const std::string &image, unsigned int
 bool CTextureCacheJob::UpdateableURL(const std::string &url) const
 {
   // we don't constantly check online images
-  if (StringUtils::StartsWith(url, "http://") ||
-      StringUtils::StartsWith(url, "https://"))
-    return false;
-  return true;
+  return !(StringUtils::StartsWith(url, "http://") || StringUtils::StartsWith(url, "https://"));
 }
 
 std::string CTextureCacheJob::GetImageHash(const std::string &url)

@@ -115,12 +115,9 @@ void CPasswordManager::SaveAuthenticatedURL(const CURL &url, bool saveToProfile)
 
 bool CPasswordManager::IsURLSupported(const CURL &url)
 {
-  if ( url.IsProtocol("smb")
+  return url.IsProtocol("smb")
     || url.IsProtocol("nfs")
-    || url.IsProtocol("sftp"))
-    return true;
-
-  return false;
+    || url.IsProtocol("sftp");
 }
 
 void CPasswordManager::Clear()

@@ -101,7 +101,7 @@ unsigned int CControllerGrid::AddPorts(const ControllerPortVec &ports, Controlle
         // Add controller
         height = std::max(height, AddController(port, static_cast<unsigned int>(column.vertices.size()), column.vertices, grid));
 
-        if (bFirstPlayer == true)
+        if (bFirstPlayer)
         {
           bFirstPlayer = false;
 

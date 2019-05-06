@@ -448,7 +448,7 @@ void CExifParse::ProcessDir(const unsigned char* const DirStart,
       case TAG_DATETIME_DIGITIZED:
       case TAG_DATETIME:
       {
-        if (m_DateFound == false)
+        if (!m_DateFound)
         {
           // If we don't already have a DATETIME_ORIGINAL, use whatever
           // time fields we may have.
@@ -794,7 +794,7 @@ bool CExifParse::Process (const unsigned char* const ExifSection, const unsigned
   // First directory starts 16 bytes in.  All offset are relative to 8 bytes in.
   ProcessDir(ExifSection+8+FirstOffset, ExifSection+8, length-8, 0);
 
-  m_ExifInfo->ThumbnailAtEnd = m_ExifInfo->ThumbnailOffset >= m_LargestExifOffset ? true : false;
+  m_ExifInfo->ThumbnailAtEnd = m_ExifInfo->ThumbnailOffset >= m_LargestExifOffset;
 
   // Compute the CCD width, in millimeters.
   if (m_FocalPlaneXRes != 0)
