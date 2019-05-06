@@ -701,7 +701,8 @@ static void ParseThumbs(CScraperUrl &scurl,
     prefix << tag << i + 1;
     std::string url = FromString(item, prefix.str() + ".url");
     std::string aspect = FromString(item, prefix.str() + ".aspect");
-    scurl.AddElement(url, aspect);
+    std::string preview = FromString(item, prefix.str() + ".preview");
+    scurl.AddElement(url, aspect, preview);
   }
 }
 

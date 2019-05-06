@@ -798,6 +798,7 @@ namespace XBMCAddon
       ///
       /// @param url            string (image path url)
       /// @param art_type       string (image type)
+      /// @param preview        [opt] string (image preview path url)
       /// @param referrer       [opt] string (referrer url)
       /// @param cache          [opt] string (filename in cache)
       /// @param post           [opt] bool (use post to retrieve the image, default false)
@@ -807,6 +808,7 @@ namespace XBMCAddon
       ///
       ///-----------------------------------------------------------------------
       /// @python_v18 New function added.
+      /// @python_v19 New param added (preview).
       ///
       /// **Example:**
       /// ~~~~~~~~~~~~~{.py}
@@ -817,7 +819,7 @@ namespace XBMCAddon
       ///
       addAvailableArtwork(...);
 #else
-      void addAvailableArtwork(std::string url, std::string art_type = "", std::string referrer = "", std::string cache = "", bool post = false, bool isgz = false, int season = -1);
+      void addAvailableArtwork(std::string url, std::string art_type = "", std::string preview = "", std::string referrer = "", std::string cache = "", bool post = false, bool isgz = false, int season = -1);
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS

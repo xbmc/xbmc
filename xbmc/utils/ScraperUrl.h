@@ -45,7 +45,7 @@ public:
   bool ParseString(std::string); // copies by intention
   bool ParseElement(const TiXmlElement*);
   bool ParseEpisodeGuide(std::string strUrls); // copies by intention
-  void AddElement(std::string url, std::string aspect = "", std::string referrer = "", std::string cache = "", bool post = false, bool isgz = false, int season = -1);
+  void AddElement(std::string url, std::string aspect = "", std::string preview = "", std::string referrer = "", std::string cache = "", bool post = false, bool isgz = false, int season = -1);
 
   const SUrlEntry GetFirstThumb(const std::string &type = "") const;
   const SUrlEntry GetSeasonThumb(int season, const std::string &type = "") const;
