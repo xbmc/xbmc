@@ -16,11 +16,6 @@ extern "C"
 #include <libavutil/pixdesc.h>
 }
 
-IVideoBufferDRMPRIME::IVideoBufferDRMPRIME(int id)
-  : CVideoBuffer(id)
-{
-}
-
 CVideoBufferDRMPRIME::CVideoBufferDRMPRIME(IVideoBufferPool& pool, int id)
   : IVideoBufferDRMPRIME(id)
 {

@@ -61,7 +61,7 @@ public:
   uint32_t m_handles[AV_DRM_MAX_PLANES] = {};
 
 protected:
-  explicit IVideoBufferDRMPRIME(int id);
+  explicit IVideoBufferDRMPRIME(int id) : CVideoBuffer(id) { }
 };
 
 class CVideoBufferDRMPRIME : public IVideoBufferDRMPRIME

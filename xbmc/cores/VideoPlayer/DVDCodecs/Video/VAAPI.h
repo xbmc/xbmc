@@ -179,8 +179,6 @@ public:
   // IVideoBufferDRMPRIME
 #if VA_CHECK_VERSION(1, 1, 0)
   AVDRMFrameDescriptor* GetDescriptor() const override;
-  uint32_t GetWidth() const override { return DVDPic.iWidth; }
-  uint32_t GetHeight() const override { return DVDPic.iHeight; }
   int GetColorEncoding() const override;
   int GetColorRange() const override;
 
@@ -188,9 +186,9 @@ public:
   void Unmap() override;
 #else
   AVDRMFrameDescriptor* GetDescriptor() const override { return nullptr; }
+#endif
   uint32_t GetWidth() const override { return DVDPic.iWidth; }
   uint32_t GetHeight() const override { return DVDPic.iHeight; }
-#endif
 
   VideoPicture DVDPic;
   CVaapiProcessedPicture procPic;
