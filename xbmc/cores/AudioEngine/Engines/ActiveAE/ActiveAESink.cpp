@@ -172,10 +172,7 @@ bool CActiveAESink::SupportsFormat(const std::string &device, AEAudioFormat &for
           {
             AESampleRateList::iterator itt4;
             itt4 = find(info.m_sampleRates.begin(), info.m_sampleRates.end(), samplerate);
-            if (itt4 != info.m_sampleRates.end())
-              return true;
-            else
-              return false;
+            return itt4 != info.m_sampleRates.end();
           }
           else // format is not existent
           {

@@ -121,10 +121,7 @@ void CDbUrl::RemoveOption(const std::string &key)
 
 bool CDbUrl::validateOption(const std::string &key, const CVariant &value)
 {
-  if (key.empty())
-    return false;
-
-  return true;
+  return !key.empty();
 }
 
 void CDbUrl::updateOptions()

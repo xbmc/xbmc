@@ -640,7 +640,7 @@ void CActiveAE::StateMachine(int signal, Protocol *port, Message *msg)
         case CActiveAEControlProtocol::PAUSESTREAM:
           CActiveAEStream *stream;
           stream = *(CActiveAEStream**)msg->data;
-          if (stream->m_paused != true && m_streams.size() == 1)
+          if (!stream->m_paused && m_streams.size() == 1)
           {
             FlushEngine();
             streaming = false;
@@ -1716,12 +1716,9 @@ bool CActiveAE::NeedReconfigureBuffers()
   AEAudioFormat newFormat = GetInputFormat();
   ApplySettingsToFormat(newFormat, m_settings);
 
-  if (newFormat.m_dataFormat != m_sinkRequestFormat.m_dataFormat ||
+  return newFormat.m_dataFormat != m_sinkRequestFormat.m_dataFormat ||
       newFormat.m_channelLayout != m_sinkRequestFormat.m_channelLayout ||
-      newFormat.m_sampleRate != m_sinkRequestFormat.m_sampleRate)
-    return true;
-
-  return false;
+      newFormat.m_sampleRate != m_sinkRequestFormat.m_sampleRate;
 }
 
 bool CActiveAE::NeedReconfigureSink()
@@ -1733,12 +1730,9 @@ bool CActiveAE::NeedReconfigureSink()
   std::string driver;
   CAESinkFactory::ParseDevice(device, driver);
 
-  if (!CompareFormat(newFormat, m_sinkFormat) ||
+  return !CompareFormat(newFormat, m_sinkFormat) ||
       m_currDevice.compare(device) != 0 ||
-      m_settings.driver.compare(driver) != 0)
-    return true;
-
-  return false;
+      m_settings.driver.compare(driver) != 0;
 }
 
 bool CActiveAE::InitSink()
