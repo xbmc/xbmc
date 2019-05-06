@@ -13,6 +13,7 @@
 #include "ServiceBroker.h"
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"
+#include "filesystem/PluginDirectory.h"
 #include "FileItem.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/MediaSourceSettings.h"
@@ -164,21 +165,51 @@ JSONRPC_STATUS CFileOperations::GetDirectory(const std::string &method, ITranspo
 JSONRPC_STATUS CFileOperations::GetFileDetails(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   std::string file = parameterObject["file"].asString();
-  if (!CFile::Exists(file))
-    return InvalidParams;
+  if (!URIUtils::IsPlugin(file))
+  {
+    if (!CFile::Exists(file))
+	  return InvalidParams;
 
-  if (!CFileUtils::RemoteAccessAllowed(file))
-    return InvalidParams;
-
-  std::string path = URIUtils::GetDirectory(file);
-
+	if (!CFileUtils::RemoteAccessAllowed(file))
+	  return InvalidParams;
+  }
+  std::string path;
   CFileItemList items;
-  if (path.empty() || !CDirectory::GetDirectory(path, items, "", DIR_FLAG_DEFAULTS) || !items.Contains(file))
-    return InvalidParams;
+  CFileItemPtr item;
+  
+  if (!URIUtils::IsPlugin(file))
+  {
+    path = URIUtils::GetDirectory(file);
+    if (path.empty() || !CDirectory::GetDirectory(path, items, "", DIR_FLAG_DEFAULTS) || !items.Contains(file))
+      return InvalidParams;
+    item = items.Get(file);
 
-  CFileItemPtr item = items.Get(file);
-  if (!URIUtils::IsUPnP(file))
-    FillFileItem(item, item, parameterObject["media"].asString(), parameterObject);
+	if (!URIUtils::IsUPnP(file))
+      FillFileItem(item, item, parameterObject["media"].asString(), parameterObject);
+  }
+  else
+  {
+    CPluginDirectory plugin;
+    
+    CURL url(file);
+    // Support url like plugin://plugin.name/video-source-name/<file-id>/<command ex.play>
+    // those ending with file.extension/file-id instead of returning object execute playing
+    if (file.back() != '/')
+    {
+      std::string o_file = file;
+      while (o_file.back() != '/')
+      {
+        o_file.pop_back();
+      }
+      CURL n_url(o_file);
+      url = n_url;
+	}
+
+    if (!plugin.GetDirectory(url, items))
+      return InvalidParams;
+
+    item = items.Get(file);
+  }
 
   // Check if the "properties" list exists
   // and make sure it contains the "file"
