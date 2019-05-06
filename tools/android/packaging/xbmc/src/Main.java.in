@@ -21,308 +21,265 @@ import android.os.HandlerThread;
 import android.widget.RelativeLayout;
 
 import java.util.ArrayList;
+import java.util.List;
 
+import @APP_PACKAGE@.channels.model.Subscription;
+import @APP_PACKAGE@.channels.model.XBMCDatabase;
 import @APP_PACKAGE@.channels.util.TvUtil;
 
-public class Main extends NativeActivity implements Choreographer.FrameCallback
-{
-  private static final String TAG = "@APP_NAME@";
+public class Main extends NativeActivity implements Choreographer.FrameCallback {
+    private static final String TAG = "Kodi";
 
-  public static Main MainActivity = null;
-  public XBMCMainView mMainView = null;
+    public static Main MainActivity = null;
+    public XBMCMainView mMainView = null;
 
-  private XBMCSettingsContentObserver mSettingsContentObserver;
-  private XBMCInputDeviceListener mInputDeviceListener;
-  private XBMCJsonRPC mJsonRPC = null;
-  private View mDecorView = null;
-  private RelativeLayout mVideoLayout = null;
-  private Handler handler = new Handler();
+    private XBMCSettingsContentObserver mSettingsContentObserver;
+    private XBMCInputDeviceListener mInputDeviceListener;
+    private XBMCJsonRPC mJsonRPC = null;
+    private View mDecorView = null;
+    private RelativeLayout mVideoLayout = null;
+    private Handler handler = new Handler();
 
-  private class DelayedIntent
-  {
-    public Intent mIntent = null;
-    public int mDelay = 0;
+    private class DelayedIntent {
+        public Intent mIntent = null;
+        public int mDelay = 0;
 
-    public DelayedIntent(Intent intent, int delay) {
-      mIntent = intent;
-      mDelay = delay;
-    }
-  }
-  private ArrayList<DelayedIntent> mDelayedIntents = new ArrayList<DelayedIntent>();
-  private boolean mPaused = true;
-
-
-  native void _onNewIntent(Intent intent);
-
-  native void _onActivityResult(int requestCode, int resultCode, Intent resultData);
-
-  native void _doFrame(long frameTimeNanos);
-
-  native void _onVisibleBehindCanceled();
-
-  private Runnable leanbackUpdateRunnable = new Runnable()
-  {
-    @Override
-    public void run()
-    {
-      Log.d(TAG, "Updating recommendations");
-      new Thread()
-      {
-        public void run()
-        {
-          mJsonRPC.updateLeanback(Main.this);
+        public DelayedIntent(Intent intent, int delay) {
+            mIntent = intent;
+            mDelay = delay;
         }
-      }.start();
-      handler.postDelayed(this, XBMCProperties.getIntProperty("xbmc.leanbackrefresh", 60 * 60) * 1000);
-    }
-  };
-
-  public Main()
-  {
-    super();
-    MainActivity = this;
-  }
-
-  public Rect getDisplayRect()
-  {
-    Rect ret = new Rect();
-    ret.top = 0;
-    ret.left = 0;
-    ret.right = 0;
-    ret.bottom = 0;
-
-    try
-    {
-      ret.right = mDecorView.getRootView().getWidth();
-      ret.bottom = mDecorView.getRootView().getHeight();
-    }
-    catch (Exception e)
-    {
     }
 
-    return ret;
-  }
+    private ArrayList<DelayedIntent> mDelayedIntents = new ArrayList<DelayedIntent>();
+    private boolean mPaused = true;
 
-  public void registerMediaButtonEventReceiver()
-  {
-    AudioManager manager = (AudioManager) getSystemService(AUDIO_SERVICE);
-    manager.registerMediaButtonEventReceiver(new ComponentName(getPackageName(), XBMCBroadcastReceiver.class.getName()));
-  }
 
-  public void unregisterMediaButtonEventReceiver()
-  {
-    AudioManager manager = (AudioManager) getSystemService(AUDIO_SERVICE);
-    manager.unregisterMediaButtonEventReceiver(new ComponentName(getPackageName(), XBMCBroadcastReceiver.class.getName()));
-  }
+    native void _onNewIntent(Intent intent);
 
-  @Override
-  public void onCreate(Bundle savedInstanceState)
-  {
-    System.loadLibrary("@APP_NAME_LC@");
+    native void _onActivityResult(int requestCode, int resultCode, Intent resultData);
 
-    super.onCreate(savedInstanceState);
+    native void _doFrame(long frameTimeNanos);
 
-    setContentView(R.layout.activity_main);
-    setVolumeControlStream(AudioManager.STREAM_MUSIC);
+    native void _onVisibleBehindCanceled();
 
-    mSettingsContentObserver = new XBMCSettingsContentObserver(this, handler);
-    getApplicationContext().getContentResolver().registerContentObserver(android.provider.Settings.System.CONTENT_URI, true, mSettingsContentObserver);
-
-    // Delayed Intent
-    if (getIntent().getData() != null)
-    {
-      mDelayedIntents.add(new DelayedIntent(new Intent(getIntent()), 5000));
-      getIntent().setData(null);
-    }
-
-    if (getPackageManager().hasSystemFeature("android.software.leanback"))
-    {
-      if (Build.VERSION.SDK_INT >= VERSION_CODES.O)
-        TvUtil.scheduleSyncingChannel(this);
-      else
-      {
-        // Leanback
-        mJsonRPC = new XBMCJsonRPC();
-        handler.removeCallbacks(leanbackUpdateRunnable);
-        handler.postDelayed(leanbackUpdateRunnable, 30 * 1000);
-      }
-    }
-
-    // register the InputDeviceListener implementation
-    mInputDeviceListener = new XBMCInputDeviceListener();
-    InputManager manager = (InputManager) getSystemService(INPUT_SERVICE);
-    manager.registerInputDeviceListener(mInputDeviceListener, handler);
-
-    mDecorView = getWindow().getDecorView();
-    mDecorView.setBackground(null);
-    getWindow().takeSurface(null);
-    setContentView(R.layout.activity_main);
-    mVideoLayout = (RelativeLayout) findViewById(R.id.VideoLayout);
-
-    mMainView = new XBMCMainView(this);
-    RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
-    mMainView.setElevation(1);  // Always on Top
-    mVideoLayout.addView(mMainView, layoutParams);
-
-    mDecorView.setOnSystemUiVisibilityChangeListener(new View.OnSystemUiVisibilityChangeListener()
-    {
-      @Override
-      public void onSystemUiVisibilityChange(int visibility)
-      {
-        if ((visibility & View.SYSTEM_UI_FLAG_HIDE_NAVIGATION) == 0)
-        {
-          handler.post(new Runnable()
-          {
-            public void run()
-            {
-              if (android.os.Build.VERSION.SDK_INT >= 19)
-              {
-                // Immersive mode
-
-                // Constants from API > 17
-                final int API_SYSTEM_UI_FLAG_IMMERSIVE_STICKY = 0x00001000;
-
-                mDecorView.setSystemUiVisibility(
-                        View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                                | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                                | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                                | View.SYSTEM_UI_FLAG_FULLSCREEN
-                                | API_SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
-              }
-            }
-          });
-        }
-      }
-    });
-  }
-
-  @Override
-  protected void onNewIntent(Intent intent)
-  {
-    super.onNewIntent(intent);
-    // Delay until after Resume
-    if (mPaused)
-    {
-      Log.d("Main", "onNewIntent (delayed)");
-      mDelayedIntents.add(new DelayedIntent(new Intent(intent), 500));
-    }
-    else
-    {
-      Log.d("Main", "onNewIntent (immediate)");
-      _onNewIntent(intent);
-    }
-  }
-
-  @Override
-  public void onStart()
-  {
-    super.onStart();
-    mDecorView.setBackgroundColor(Color.TRANSPARENT);
-
-    Choreographer.getInstance().removeFrameCallback(this);
-    Choreographer.getInstance().postFrameCallback(this);
-  }
-
-  @Override
-  public void onResume()
-  {
-    super.onResume();
-
-    if (android.os.Build.VERSION.SDK_INT >= 19)
-    {
-      // Immersive mode
-
-      // Constants from API > 17
-      final int API_SYSTEM_UI_FLAG_IMMERSIVE_STICKY = 0x00001000;
-
-      mDecorView.setSystemUiVisibility(
-              View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                      | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                      | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                      | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                      | View.SYSTEM_UI_FLAG_FULLSCREEN
-                      | API_SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
-    }
-
-    // New intent ?
-    for (final DelayedIntent delayedIntent : mDelayedIntents)
-    {
-      handler.postDelayed(new Runnable()
-      {
+    private Runnable leanbackUpdateRunnable = new Runnable() {
         @Override
-        public void run()
-        {
-          try
-          {
-            _onNewIntent(delayedIntent.mIntent);
-          }
-          catch (UnsatisfiedLinkError e)
-          {
-            Log.e("Main", "Native not registered");
-          }
+        public void run() {
+            Log.d(TAG, "Updating recommendations");
+            new Thread() {
+                public void run() {
+                    mJsonRPC.updateLeanback(Main.this);
+                }
+            }.start();
+            handler.postDelayed(this, XBMCProperties.getIntProperty("xbmc.leanbackrefresh", 60 * 60) * 1000);
         }
-      }, delayedIntent.mDelay);
+    };
+
+    public Main() {
+        super();
+        MainActivity = this;
     }
-    mDelayedIntents.clear();
-    mPaused = false;
-  }
 
-  @Override
-  public void onPause()
-  {
-    super.onPause();
+    public Rect getDisplayRect() {
+        Rect ret = new Rect();
+        ret.top = 0;
+        ret.left = 0;
+        ret.right = 0;
+        ret.bottom = 0;
 
-    if (getPackageManager().hasSystemFeature("android.software.leanback") && Build.VERSION.SDK_INT >= VERSION_CODES.O)
-      TvUtil.scheduleSyncingChannel(this);
+        try {
+            ret.right = mDecorView.getRootView().getWidth();
+            ret.bottom = mDecorView.getRootView().getHeight();
+        } catch (Exception e) {
+        }
 
-    mPaused = true;
-  }
+        return ret;
+    }
 
-  @Override
-  public void onActivityResult(int requestCode, int resultCode,
-                               Intent resultData)
-  {
-    super.onActivityResult(requestCode, resultCode, resultData);
-    _onActivityResult(requestCode, resultCode, resultData);
-  }
+    public void registerMediaButtonEventReceiver() {
+        AudioManager manager = (AudioManager) getSystemService(AUDIO_SERVICE);
+        manager.registerMediaButtonEventReceiver(new ComponentName(getPackageName(), XBMCBroadcastReceiver.class.getName()));
+    }
 
-  @Override
-  public void onDestroy()
-  {
-    // unregister the InputDeviceListener implementation
-    InputManager manager = (InputManager) getSystemService(INPUT_SERVICE);
-    manager.unregisterInputDeviceListener(mInputDeviceListener);
+    public void unregisterMediaButtonEventReceiver() {
+        AudioManager manager = (AudioManager) getSystemService(AUDIO_SERVICE);
+        manager.unregisterMediaButtonEventReceiver(new ComponentName(getPackageName(), XBMCBroadcastReceiver.class.getName()));
+    }
 
-    getApplicationContext().getContentResolver().unregisterContentObserver(mSettingsContentObserver);
-    super.onDestroy();
-  }
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        System.loadLibrary("kodi");
 
-  @Override
-  public void onVisibleBehindCanceled()
-  {
-    _onVisibleBehindCanceled();
-    super.onVisibleBehindCanceled();
-  }
+        super.onCreate(savedInstanceState);
 
-  @Override
-  public void doFrame(long frameTimeNanos)
-  {
-    Choreographer.getInstance().postFrameCallback(this);
-    _doFrame(frameTimeNanos);
-  }
+        setContentView(R.layout.activity_main);
+        setVolumeControlStream(AudioManager.STREAM_MUSIC);
 
-  private native void _callNative(long funcAddr, long variantAddr);
+        mSettingsContentObserver = new XBMCSettingsContentObserver(this, handler);
+        getApplicationContext().getContentResolver().registerContentObserver(android.provider.Settings.System.CONTENT_URI, true, mSettingsContentObserver);
 
-  private void runNativeOnUiThread(final long funcAddr, final long variantAddr)
-  {
-    runOnUiThread(new Runnable()
-    {
-      @Override
-      public void run()
-      {
-        _callNative(funcAddr, variantAddr);
-      }
-    });
-  }
+        // Delayed Intent
+        if (getIntent().getData() != null) {
+            mDelayedIntents.add(new DelayedIntent(new Intent(getIntent()), 5000));
+            getIntent().setData(null);
+        }
+
+        // register the InputDeviceListener implementation
+        mInputDeviceListener = new XBMCInputDeviceListener();
+        InputManager manager = (InputManager) getSystemService(INPUT_SERVICE);
+        manager.registerInputDeviceListener(mInputDeviceListener, handler);
+
+        mDecorView = getWindow().getDecorView();
+        mDecorView.setBackground(null);
+        getWindow().takeSurface(null);
+        setContentView(R.layout.activity_main);
+        mVideoLayout = (RelativeLayout) findViewById(R.id.VideoLayout);
+
+        mMainView = new XBMCMainView(this);
+        RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
+        mMainView.setElevation(1);  // Always on Top
+        mVideoLayout.addView(mMainView, layoutParams);
+
+        mDecorView.setOnSystemUiVisibilityChangeListener(new View.OnSystemUiVisibilityChangeListener() {
+            @Override
+            public void onSystemUiVisibilityChange(int visibility) {
+                if ((visibility & View.SYSTEM_UI_FLAG_HIDE_NAVIGATION) == 0) {
+                    handler.post(new Runnable() {
+                        public void run() {
+                            if (android.os.Build.VERSION.SDK_INT >= 19) {
+                                // Immersive mode
+
+                                // Constants from API > 17
+                                final int API_SYSTEM_UI_FLAG_IMMERSIVE_STICKY = 0x00001000;
+
+                                mDecorView.setSystemUiVisibility(
+                                        View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                                                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                                                | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                                                | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                                                | View.SYSTEM_UI_FLAG_FULLSCREEN
+                                                | API_SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+                            }
+                        }
+                    });
+                }
+            }
+        });
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        // Delay until after Resume
+        if (mPaused) {
+            Log.d("Main", "onNewIntent (delayed)");
+            mDelayedIntents.add(new DelayedIntent(new Intent(intent), 500));
+        } else {
+            Log.d("Main", "onNewIntent (immediate)");
+            _onNewIntent(intent);
+        }
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        mDecorView.setBackgroundColor(Color.TRANSPARENT);
+
+        Choreographer.getInstance().removeFrameCallback(this);
+        Choreographer.getInstance().postFrameCallback(this);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        if (android.os.Build.VERSION.SDK_INT >= 19) {
+            // Immersive mode
+
+            // Constants from API > 17
+            final int API_SYSTEM_UI_FLAG_IMMERSIVE_STICKY = 0x00001000;
+
+            mDecorView.setSystemUiVisibility(
+                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                            | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                            | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                            | View.SYSTEM_UI_FLAG_FULLSCREEN
+                            | API_SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+        }
+
+        // New intent ?
+        for (final DelayedIntent delayedIntent : mDelayedIntents) {
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        _onNewIntent(delayedIntent.mIntent);
+                    } catch (UnsatisfiedLinkError e) {
+                        Log.e("Main", "Native not registered");
+                    }
+                }
+            }, delayedIntent.mDelay);
+        }
+        mDelayedIntents.clear();
+        mPaused = false;
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        if (getPackageManager().hasSystemFeature("android.software.leanback") && Build.VERSION.SDK_INT >= VERSION_CODES.O) {
+            TvUtil.scheduleSyncingChannel(this);
+            List<Subscription> subscriptions = XBMCDatabase.getSubscriptions(this);
+
+            for (Subscription sub: subscriptions) {
+                if (sub.isAddToPlayNext()) {
+                    TvUtil.scheduleSyncingProgramsForChannel(this, sub.getChannelId());
+                }
+            }
+        }
+
+        mPaused = true;
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode,
+                                 Intent resultData) {
+        super.onActivityResult(requestCode, resultCode, resultData);
+        _onActivityResult(requestCode, resultCode, resultData);
+    }
+
+    @Override
+    public void onDestroy() {
+        // unregister the InputDeviceListener implementation
+        InputManager manager = (InputManager) getSystemService(INPUT_SERVICE);
+        manager.unregisterInputDeviceListener(mInputDeviceListener);
+
+        getApplicationContext().getContentResolver().unregisterContentObserver(mSettingsContentObserver);
+        super.onDestroy();
+    }
+
+    @Override
+    public void onVisibleBehindCanceled() {
+        _onVisibleBehindCanceled();
+        super.onVisibleBehindCanceled();
+    }
+
+    @Override
+    public void doFrame(long frameTimeNanos) {
+        Choreographer.getInstance().postFrameCallback(this);
+        _doFrame(frameTimeNanos);
+    }
+
+    private native void _callNative(long funcAddr, long variantAddr);
+
+    private void runNativeOnUiThread(final long funcAddr, final long variantAddr) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                _callNative(funcAddr, variantAddr);
+            }
+        });
+    }
 }

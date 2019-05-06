@@ -8,26 +8,145 @@ import @APP_PACKAGE@.model.Media;
 
 public class Movie extends Media
 {
-  private String year;
-  private String plot;
+    private String year;
+    private String plot;
+    private double rating;
+    private int duration;
+    private int position;
+    private long lastPlayed;
+    private long releaseDate;
 
-  public String getYear()
-  {
-    return year;
-  }
+    private String posterImageUrl = null;
+    private String thumbnailImageUrl = null;
+    private String landscapeImageUrl = null;
+    private String fanartImageUrl = null;
 
-  public void setYear(String year)
-  {
-    this.year = year;
-  }
+    private boolean hasLandscapeArt;
 
-  public String getPlot()
-  {
-    return plot;
-  }
+    public String getYear()
+    {
+        return year;
+    }
 
-  public void setPlot(String plot)
-  {
-    this.plot = plot;
-  }
+    public void setYear(String year)
+    {
+        this.year = year;
+    }
+
+
+    public String getPlot()
+    {
+        return plot;
+    }
+
+    public void setPlot(String plot)
+    {
+        this.plot = plot;
+    }
+
+    public double getRating()
+    {
+        return rating;
+    }
+
+    public void setRating(double rating)
+    {
+        this.rating = rating;
+    }
+
+    public int getDuration()
+    {
+        return duration;
+    }
+
+    public void setDuration(int duration)
+    {
+        this.duration = duration;
+    }
+
+    public int getPosition() {
+        return position;
+    }
+
+    public void setPosition(int position) {
+        this.position = position;
+    }
+
+    public long getLastPlayed() {
+        return lastPlayed;
+    }
+
+    public void setLastPlayed(long lastPlayed) {
+        this.lastPlayed = lastPlayed;
+    }
+
+    public long getReleaseDate() {
+        return releaseDate;
+    }
+
+    public void setReleaseDate(long releaseDate) {
+        this.releaseDate = releaseDate;
+    }
+
+    public String getPosterImageUrl() {
+        return posterImageUrl;
+    }
+
+    public void setPosterImageUrl(String posterImageUrl) {
+        this.posterImageUrl = posterImageUrl;
+    }
+
+    public String getThumbnailImageUrl() {
+        return thumbnailImageUrl;
+    }
+
+    public void setThumbnailImageUrl(String thumbnailImageUrl) {
+        this.thumbnailImageUrl = thumbnailImageUrl;
+    }
+
+    public String getFanartImageUrl() {
+        return fanartImageUrl;
+    }
+
+    public void setFanartImageUrl(String fanartImageUrl) {
+        this.fanartImageUrl = fanartImageUrl;
+    }
+
+    public String getLandscapeImageUrl() {
+        return landscapeImageUrl;
+    }
+
+    public void setLandscapeImageUrl(String landscapeImageUrl) {
+        this.landscapeImageUrl = landscapeImageUrl;
+    }
+
+    public boolean isHasLandscapeArt() {
+        return hasLandscapeArt;
+    }
+
+    public boolean getHasLandscapeArt() {
+        return hasLandscapeArt;
+    }
+
+    public void setHasLandscapeArt(boolean hasLandscapeArt) {
+        this.hasLandscapeArt = hasLandscapeArt;
+    }
+
+    @Override
+    public String toString() {
+        return "Movie{" +
+                "year='" + year + '\'' +
+                ", plot='" + plot + '\'' +
+                ", rating=" + rating +
+                ", duration=" + duration +
+                ", position=" + position +
+                ", lastPlayed=" + lastPlayed +
+                ", posterImageUrl='" + posterImageUrl + '\'' +
+                ", thumbnailImageUrl='" + thumbnailImageUrl + '\'' +
+                ", landscapeImageUrl='" + landscapeImageUrl + '\'' +
+                ", fanartImageUrl='" + fanartImageUrl + '\'' +
+                ", hasLandscapeArt=" + hasLandscapeArt +
+                '}';
+    }
 }
+

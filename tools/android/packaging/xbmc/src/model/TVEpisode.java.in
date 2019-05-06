@@ -8,26 +8,178 @@ import @APP_PACKAGE@.model.Media;
 
 public class TVEpisode extends Media
 {
+
+  private String episodeTitle;
+  private String plot;
+  private long rating;
+  private String year;
+  private int runtime;
+  private int position;
+  private long lastPlayed;
+  private long releaseDate;
   private int season;
   private int episode;
 
-  public int getSeason()
-  {
+  private String posterImageUrl = null;
+  private String tvShowPosterImagerUrl = null;
+  private String thumbnailImageUrl = null;
+  private String landscapeImageUrl = null;
+  private String fanartImageUrl = null;
+
+  private boolean hasLandscapeArt;
+
+
+  public String getEpisodeTitle() {
+    return episodeTitle;
+  }
+
+  public void setEpisodeTitle(String episodeTitle) {
+    this.episodeTitle = episodeTitle;
+  }
+
+  public String getPlot() {
+    return plot;
+  }
+
+  public void setPlot(String plot) {
+    this.plot = plot;
+  }
+
+  public long getRating() {
+    return rating;
+  }
+
+  public void setRating(long rating) {
+    this.rating = rating;
+  }
+
+  public String getYear() {
+    return year;
+  }
+
+  public void setYear(String year) {
+    this.year = year;
+  }
+
+  public int getRuntime() {
+    return runtime;
+  }
+
+  public void setRuntime(int runtime) {
+    this.runtime = runtime;
+  }
+
+  public int getPosition() {
+    return position;
+  }
+
+  public void setPosition(int position) {
+    this.position = position;
+  }
+
+  public long getLastPlayed() {
+    return lastPlayed;
+  }
+
+  public void setLastPlayed(long lastPlayed) {
+    this.lastPlayed = lastPlayed;
+  }
+
+  public long getReleaseDate() {
+    return releaseDate;
+  }
+
+  public void setReleaseDate(long releaseDate) {
+    this.releaseDate = releaseDate;
+  }
+
+  public int getSeason() {
     return season;
   }
 
-  public void setSeason(int season)
-  {
+  public void setSeason(int season) {
     this.season = season;
   }
 
-  public int getEpisode()
-  {
+  public int getEpisode() {
     return episode;
   }
 
-  public void setEpisode(int episode)
-  {
+  public void setEpisode(int episode) {
     this.episode = episode;
+  }
+
+  public String getPosterImageUrl() {
+    return posterImageUrl;
+  }
+
+  public void setPosterImageUrl(String posterImageUrl) {
+    this.posterImageUrl = posterImageUrl;
+  }
+
+  public String getTvShowPosterImagerUrl() {
+    return tvShowPosterImagerUrl;
+  }
+
+  public void setTvShowPosterImagerUrl(String tvShowPosterImagerUrl) {
+    this.tvShowPosterImagerUrl = tvShowPosterImagerUrl;
+  }
+
+  public String getThumbnailImageUrl() {
+    return thumbnailImageUrl;
+  }
+
+  public void setThumbnailImageUrl(String thumbnailImageUrl) {
+    this.thumbnailImageUrl = thumbnailImageUrl;
+  }
+
+  public String getFanartImageUrl() {
+    return fanartImageUrl;
+  }
+
+  public void setFanartImageUrl(String fanartImageUrl) {
+    this.fanartImageUrl = fanartImageUrl;
+  }
+
+  public String getLandscapeImageUrl() {
+    return landscapeImageUrl;
+  }
+
+  public void setLandscapeImageUrl(String landscapeImageUrl) {
+    this.landscapeImageUrl = landscapeImageUrl;
+  }
+
+  public boolean isHasLandscapeArt() {
+    return hasLandscapeArt;
+  }
+
+  public boolean getHasLandscapeArt() {
+    return hasLandscapeArt;
+  }
+
+  public void setHasLandscapeArt(boolean hasLandscapeArt) {
+    this.hasLandscapeArt = hasLandscapeArt;
+  }
+
+  @Override
+  public String toString() {
+    return "TVEpisode{" +
+            "episodeTitle='" + episodeTitle + '\'' +
+            ", plot='" + plot + '\'' +
+            ", rating=" + rating +
+            ", year='" + year + '\'' +
+            ", runtime=" + runtime +
+            ", position=" + position +
+            ", lastPlayed=" + lastPlayed +
+            ", season=" + season +
+            ", episode=" + episode +
+            ", posterImageUrl='" + posterImageUrl + '\'' +
+            ", tvShowPosterImagerUrl='" + tvShowPosterImagerUrl + '\'' +
+            ", thumbnailImageUrl='" + thumbnailImageUrl + '\'' +
+            ", landscapeImageUrl='" + landscapeImageUrl + '\'' +
+            ", fanartImageUrl='" + fanartImageUrl + '\'' +
+            ", hasLandscapeArt=" + hasLandscapeArt +
+            ", mediaCategory='" + this.getCategory() + '\'' +
+            '}';
   }
 }

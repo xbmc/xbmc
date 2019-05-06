@@ -160,29 +160,19 @@ public class Media implements Serializable
   }
 
   @Override
-  public String toString()
-  {
-    return "Media{"
-            + "id="
-            + id
-            + ", programId='"
-            + programId
-            + '\''
-            + ", watchNextId='"
-            + watchNextId
-            + '\''
-            + ", title='"
-            + title
-            + '\''
-            + ", videoUrl='"
-            + videoUrl
-            + '\''
-            + ", backgroundImageUrl='"
-            + bgImageUrl
-            + '\''
-            + ", cardImageUrl='"
-            + cardImageUrl
-            + '\''
-            + '}';
+  public String toString() {
+    return "Media{" +
+            "id=" + id +
+            ", title='" + title + '\'' +
+            ", description='" + description + '\'' +
+            ", bgImageUrl='" + bgImageUrl + '\'' +
+            ", cardImageUrl='" + cardImageUrl + '\'' +
+            ", cardImageAspectRatio='" + cardImageAspectRatio + '\'' +
+            ", videoUrl='" + videoUrl + '\'' +
+            ", xbmcUrl='" + xbmcUrl + '\'' +
+            ", category='" + category + '\'' +
+            ", programId=" + programId +
+            ", watchNextId=" + watchNextId +
+            '}';
   }
 }

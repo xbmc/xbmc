@@ -3,14 +3,19 @@ package @APP_PACKAGE@;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.TimeZone;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 
+import android.annotation.SuppressLint;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -37,1226 +42,1236 @@ import @APP_PACKAGE@.content.XBMCFileContentProvider;
 import @APP_PACKAGE@.model.File;
 import @APP_PACKAGE@.model.Media;
 
-public class XBMCJsonRPC
-{
-  native String _requestJSON(String request);
+public class XBMCJsonRPC {
+    native String _requestJSON(String request);
 
-  public final static String APP_NAME = "@APP_NAME@ Search";
-  public final static String COLUMN_FULL_PATH = "COLUMN_FULL_PATH";
-  public final static String COLUMN_BASE_PATH = "COLUMN_BASE_PATH";
-  public final static String COLUMN_FILENAME = "COLUMN_FILENAME";
-  public final static String COLUMN_TITLE = "COLUMN_TITLE";
-  public final static String COLUMN_TAGLINE = "COLUMN_TAGLINE";
-  public final static String COLUMN_THUMB = "COLUMN_THUMB";
-  public final static String COLUMN_FANART = "COLUMN_FANART";
-  public final static String COLUMN_ID = "COLUMN_ID";
-  public final static String COLUMN_VIEW_PROGRESS = "COLUMN_VIEW_PROGRESS";
-  public final static String COLUMN_RECOMMENDATION_REASON = "COLUMN_RECOMMENDATION_REASON";
+    public final static String APP_NAME = "Kodi Search";
+    public final static String COLUMN_FULL_PATH = "COLUMN_FULL_PATH";
+    public final static String COLUMN_BASE_PATH = "COLUMN_BASE_PATH";
+    public final static String COLUMN_FILENAME = "COLUMN_FILENAME";
+    public final static String COLUMN_TITLE = "COLUMN_TITLE";
+    public final static String COLUMN_TAGLINE = "COLUMN_TAGLINE";
+    public final static String COLUMN_THUMB = "COLUMN_THUMB";
+    public final static String COLUMN_POSTER = "COLUMN_POSTER";
+    public final static String COLUMN_FANART = "COLUMN_FANART";
+    public final static String COLUMN_ID = "COLUMN_ID";
+    public final static String COLUMN_VIEW_PROGRESS = "COLUMN_VIEW_PROGRESS";
+    public final static String COLUMN_RECOMMENDATION_REASON = "COLUMN_RECOMMENDATION_REASON";
 
-  public final static String REQ_ID_MOVIES = "1";
-  public final static String REQ_ID_SHOWS = "2";
-  public final static String REQ_ID_ALBUMS = "3";
-  public final static String REQ_ID_ARTISTS = "4";
-  public final static String REQ_ID_MOVIES_ACTOR = "5";
-  public final static String REQ_ID_SHOWS_ACTOR = "6";
+    public final static String REQ_ID_MOVIES = "1";
+    public final static String REQ_ID_SHOWS = "2";
+    public final static String REQ_ID_ALBUMS = "3";
+    public final static String REQ_ID_ARTISTS = "4";
+    public final static String REQ_ID_MOVIES_ACTOR = "5";
+    public final static String REQ_ID_SHOWS_ACTOR = "6";
 
-  private final static int MAX_ITEMS = 20;
+    private final static int MAX_ITEMS = 20;
 
-  private static String TAG = "@APP_NAME@json";
+    private static String TAG = "Kodijson";
 
-  private String m_xbmc_web_url = "http://localhost:8080";
-  private java.util.HashSet<Integer> mRecomendationIds = new java.util.HashSet<Integer>();
+    private String m_xbmc_web_url = "http://localhost:8080";
+    private java.util.HashSet<Integer> mRecomendationIds = new java.util.HashSet<Integer>();
 
-  private int MAX_RECOMMENDATIONS = 3;
+    private int MAX_RECOMMENDATIONS = 3;
 
-  private String GET_VERSION =
-          "{ \"jsonrpc\": \"2.0\", \"method\": \"JSONRPC.Version\", \"id\": 1 }";
-  private String RECOMMENDATION_MOVIES_JSON =
-                  "{\"jsonrpc\": \"2.0\", \"method\": \"VideoLibrary.GetMovies\", "
-                  + "\"params\": { \"filter\": {\"field\": \"playcount\", \"operator\": \"is\", \"value\": \"0\"}, "
-                  + "\"limits\": { \"start\" : 0, \"end\": 10}, "
-                  + "\"properties\" : [\"imdbnumber\", \"title\", \"tagline\", \"thumbnail\", \"fanart\", \"year\", \"runtime\", \"file\", \"plot\"], "
-                  + "\"sort\": { \"order\": \"descending\", \"method\": \"random\", \"ignorearticle\": true } }, "
-                  + "\"id\": \"1\"}";
+    private String GET_VERSION =
+            "{ \"jsonrpc\": \"2.0\", \"method\": \"JSONRPC.Version\", \"id\": 1 }";
+    private String RECOMMENDATION_MOVIES_JSON =
+            "{\"jsonrpc\": \"2.0\", \"method\": \"VideoLibrary.GetMovies\", "
+                    + "\"params\": { \"filter\": {\"field\": \"playcount\", \"operator\": \"is\", \"value\": \"0\"}, "
+                    + "\"limits\": { \"start\" : 0, \"end\": 10}, "
+                    + "\"properties\" : [\"imdbnumber\", \"title\", \"tagline\", \"thumbnail\", \"fanart\", \"year\", \"runtime\", \"file\", \"plot\"], "
+                    + "\"sort\": { \"order\": \"descending\", \"method\": \"random\", \"ignorearticle\": true } }, "
+                    + "\"id\": \"1\"}";
 
-  private String RECOMMENDATIONS_SHOWS_JSON =
-                 "{\"jsonrpc\":\"2.0\",\"method\":\"VideoLibrary.GetTVShows\",\"params\":{\"filter\":{\"and\":[{\"field\":\"playcount\",\"operator\":\"is\",\"value\":\"0\"},{\"field\":\"plot\",\"operator\":\"isnot\",\"value\":\"\"}]},\"limits\":{\"start\":0,\"end\":10},\"properties\":[\"imdbnumber\",\"title\",\"plot\",\"thumbnail\",\"fanart\", \"studio\"],\"sort\":{\"order\":\"descending\",\"method\":\"lastplayed\",\"ignorearticle\":true}},\"id\":\"1\"}";
+    private String RECOMMENDATIONS_SHOWS_JSON =
+            "{\"jsonrpc\":\"2.0\",\"method\":\"VideoLibrary.GetTVShows\",\"params\":{\"filter\":{\"and\":[{\"field\":\"playcount\",\"operator\":\"is\",\"value\":\"0\"},{\"field\":\"plot\",\"operator\":\"isnot\",\"value\":\"\"}]},\"limits\":{\"start\":0,\"end\":10},\"properties\":[\"imdbnumber\",\"title\",\"plot\",\"thumbnail\",\"fanart\", \"studio\"],\"sort\":{\"order\":\"descending\",\"method\":\"lastplayed\",\"ignorearticle\":true}},\"id\":\"1\"}";
 
-  private String RECOMMENDATIONS_ALBUMS_JSON =
-                 "{\"jsonrpc\": \"2.0\", \"method\": \"AudioLibrary.GetAlbums\", \"params\": { \"limits\": { \"start\" : 0, \"end\": 3}, \"properties\" : [\"title\", \"displayartist\", \"thumbnail\", \"fanart\"], \"sort\": { \"order\": \"descending\", \"method\": \"random\", \"ignorearticle\": true } }, \"id\": \"1\"}";
+    private String RECOMMENDATIONS_ALBUMS_JSON =
+            "{\"jsonrpc\": \"2.0\", \"method\": \"AudioLibrary.GetAlbums\", \"params\": { \"limits\": { \"start\" : 0, \"end\": 3}, \"properties\" : [\"title\", \"displayartist\", \"thumbnail\", \"fanart\"], \"sort\": { \"order\": \"descending\", \"method\": \"random\", \"ignorearticle\": true } }, \"id\": \"1\"}";
 
-  private String SEARCH_MOVIES_JSON =
-                  "{\"jsonrpc\": \"2.0\", \"method\": \"VideoLibrary.GetMovies\", "
-                  + "\"params\": { \"filter\": {%s}, "
-                  + "\"limits\": { \"start\" : 0, \"end\": 10}, "
-                  + "\"properties\" : [\"imdbnumber\", \"title\", \"tagline\", \"thumbnail\", \"fanart\", \"year\", \"runtime\"], "
-                  + "\"sort\": { \"order\": \"ascending\", \"method\": \"title\", \"ignorearticle\": true } }, "
-                  + "\"id\": \"%s\"}";
+    private String SEARCH_MOVIES_JSON =
+            "{\"jsonrpc\": \"2.0\", \"method\": \"VideoLibrary.GetMovies\", "
+                    + "\"params\": { \"filter\": {%s}, "
+                    + "\"limits\": { \"start\" : 0, \"end\": 10}, "
+                    + "\"properties\" : [\"imdbnumber\", \"title\", \"tagline\", \"thumbnail\", \"fanart\", \"year\", \"runtime\"], "
+                    + "\"sort\": { \"order\": \"ascending\", \"method\": \"title\", \"ignorearticle\": true } }, "
+                    + "\"id\": \"%s\"}";
 
-  private String SEARCH_SHOWS_JSON =
-           "{\"jsonrpc\":\"2.0\",\"method\":\"VideoLibrary.GetTVShows\",\"params\":{\"filter\":{%s},\"limits\":{\"start\":0,\"end\":10},\"properties\":[\"imdbnumber\",\"title\",\"plot\",\"thumbnail\",\"fanart\",\"year\"],\"sort\":{\"order\":\"descending\",\"method\":\"lastplayed\",\"ignorearticle\":true}},\"id\":\"%s\"}";
+    private String SEARCH_SHOWS_JSON =
+            "{\"jsonrpc\":\"2.0\",\"method\":\"VideoLibrary.GetTVShows\",\"params\":{\"filter\":{%s},\"limits\":{\"start\":0,\"end\":10},\"properties\":[\"imdbnumber\",\"title\",\"plot\",\"thumbnail\",\"fanart\",\"year\"],\"sort\":{\"order\":\"descending\",\"method\":\"lastplayed\",\"ignorearticle\":true}},\"id\":\"%s\"}";
 
-  private String SEARCH_ALBUMS_JSON =
-                 "{\"jsonrpc\": \"2.0\", \"method\": \"AudioLibrary.GetAlbums\", \"params\": {\"filter\":{%s},\"limits\": { \"start\" : 0, \"end\": 10}, \"properties\" : [\"title\", \"displayartist\", \"thumbnail\", \"fanart\"], \"sort\": { \"order\": \"descending\", \"method\": \"dateadded\", \"ignorearticle\": true } }, \"id\": \"%s\"}";
+    private String SEARCH_ALBUMS_JSON =
+            "{\"jsonrpc\": \"2.0\", \"method\": \"AudioLibrary.GetAlbums\", \"params\": {\"filter\":{%s},\"limits\": { \"start\" : 0, \"end\": 10}, \"properties\" : [\"title\", \"displayartist\", \"thumbnail\", \"fanart\"], \"sort\": { \"order\": \"descending\", \"method\": \"dateadded\", \"ignorearticle\": true } }, \"id\": \"%s\"}";
 
-  private String SEARCH_ARTISTS_JSON =
-                 "{\"jsonrpc\": \"2.0\", \"method\": \"AudioLibrary.GetArtists\", \"params\": {\"filter\":{%s},\"limits\": { \"start\" : 0, \"end\": 10}, \"properties\" : [\"description\", \"thumbnail\", \"fanart\"], \"sort\": { \"order\": \"descending\", \"method\": \"dateadded\", \"ignorearticle\": true } }, \"id\": \"%s\"}";
+    private String SEARCH_ARTISTS_JSON =
+            "{\"jsonrpc\": \"2.0\", \"method\": \"AudioLibrary.GetArtists\", \"params\": {\"filter\":{%s},\"limits\": { \"start\" : 0, \"end\": 10}, \"properties\" : [\"description\", \"thumbnail\", \"fanart\"], \"sort\": { \"order\": \"descending\", \"method\": \"dateadded\", \"ignorearticle\": true } }, \"id\": \"%s\"}";
 
-  private String RETRIEVE_MOVIE_DETAILS =
-          "{ \"jsonrpc\": \"2.0\", \"method\": \"VideoLibrary.GetMovieDetails\", \"params\": { \"movieid\" : %s, \"properties\" : [\"imdbnumber\", \"title\", \"tagline\", \"thumbnail\", \"fanart\", \"year\", \"runtime\", \"file\", \"plot\", \"trailer\"] }, \"id\": \"%s\" }";
+    private String RETRIEVE_MOVIE_DETAILS =
+            "{ \"jsonrpc\": \"2.0\", \"method\": \"VideoLibrary.GetMovieDetails\", \"params\": { \"movieid\" : %s, \"properties\" : [\"title\", \"genre\", \"year\", \"rating\", \"director\", \"trailer\", \"tagline\", \"plot\", \"studio\", \"mpaa\", \"imdbnumber\", \"lastplayed\", \"runtime\", \"resume\", \"fanart\", \"thumbnail\", \"art\", \"file\"] }, \"id\": \"%s\" }";
 
-  private String RETRIEVE_EPISODE_DETAILS =
-          "{ \"jsonrpc\": \"2.0\", \"method\": \"VideoLibrary.GetEpisodeDetails\", \"params\": { \"episodeid\" : %s, \"properties\" : [\"title\", \"tvshowid\", \"showtitle\", \"season\", \"episode\", \"thumbnail\", \"fanart\", \"file\"] }, \"id\": \"%s\" }";
 
-  private String RETRIEVE_TVSHOW_DETAILS =
-          "{ \"jsonrpc\": \"2.0\", \"method\": \"VideoLibrary.GetTVShowDetails\", \"params\": { \"tvshowid\" : %s, \"properties\" : [\"title\", \"studio\", \"thumbnail\", \"fanart\"] }, \"id\": \"%s\" }";
+    private String RETRIEVE_EPISODE_DETAILS =
+            "{ \"jsonrpc\": \"2.0\", \"method\": \"VideoLibrary.GetEpisodeDetails\", \"params\": { \"episodeid\" : %s, \"properties\" : [\"title\", \"plot\", \"rating\", \"firstaired\", \"lastplayed\", \"runtime\", \"resume\", \"season\", \"episode\", \"showtitle\", \"tvshowid\", \"thumbnail\", \"fanart\", \"art\", \"file\"] }, \"id\": \"%s\" }";
 
-  private String RETRIEVE_ALBUM_DETAILS =
-          "{ \"jsonrpc\": \"2.0\", \"method\": \"AudioLibrary.GetAlbumDetails\", \"params\": { \"albumid\" : %s, \"properties\" : [\"title\", \"displayartist\", \"thumbnail\", \"fanart\",  \"artistid\"] }, \"id\": \"%s\" }";
+    private String RETRIEVE_TVSHOW_DETAILS =
+            "{ \"jsonrpc\": \"2.0\", \"method\": \"VideoLibrary.GetTVShowDetails\", \"params\": { \"tvshowid\" : %s, \"properties\" : [\"title\", \"genre\", \"imdbnumber\", \"mpaa\", \"rating\", \"season\", \"studio\", \"year\", \"plot\", \"thumbnail\", \"fanart\", \"art\"] }, \"id\": \"%s\" }";
 
-  private String RETRIEVE_SONG_DETAILS =
-          "{ \"jsonrpc\": \"2.0\", \"method\": \"AudioLibrary.GetSongDetails\", \"params\": { \"songid\" : %s, \"properties\" : [\"title\", \"displayartist\", \"thumbnail\", \"fanart\", \"albumid\", \"artistid\", \"file\"] }, \"id\": \"%s\" }";
+    private String RETRIEVE_ALBUM_DETAILS =
+            "{ \"jsonrpc\": \"2.0\", \"method\": \"AudioLibrary.GetAlbumDetails\", \"params\": { \"albumid\" : %s, \"properties\" : [\"title\", \"displayartist\", \"thumbnail\", \"fanart\",  \"artistid\"] }, \"id\": \"%s\" }";
 
-  private String RETRIEVE_MUSICVIDEO_DETAILS =
-          "{ \"jsonrpc\": \"2.0\", \"method\": \"VideoLibrary.GetMusicVideoDetails\", \"params\": { \"musicvideoid\" : %s, \"properties\" : [\"title\", \"artist\", \"thumbnail\", \"fanart\", \"file\"] }, \"id\": \"%s\" }";
+    private String RETRIEVE_SONG_DETAILS =
+            "{ \"jsonrpc\": \"2.0\", \"method\": \"AudioLibrary.GetSongDetails\", \"params\": { \"songid\" : %s, \"properties\" : [\"title\", \"displayartist\", \"thumbnail\", \"fanart\", \"albumid\", \"artistid\", \"file\"] }, \"id\": \"%s\" }";
 
-  private String RETRIEVE_FILE_ITEMS =
-          "{ \"jsonrpc\": \"2.0\", \"method\": \"Files.GetDirectory\", \"params\": { \"directory\" : \"%s\" }, \"id\": \"%s\" }";
+    private String RETRIEVE_MUSICVIDEO_DETAILS =
+            "{ \"jsonrpc\": \"2.0\", \"method\": \"VideoLibrary.GetMusicVideoDetails\", \"params\": { \"musicvideoid\" : %s, \"properties\" : [\"title\", \"artist\", \"thumbnail\", \"fanart\", \"file\"] }, \"id\": \"%s\" }";
 
-  private NotificationManager mNotificationManager;
+    private String RETRIEVE_FILE_ITEMS =
+            "{ \"jsonrpc\": \"2.0\", \"method\": \"Files.GetDirectory\", \"params\": { \"directory\" : \"%s\" }, \"id\": \"%s\" }";
 
-  public XBMCJsonRPC()
-  {
-    String jsonPort = XBMCProperties.getStringProperty("xbmc.jsonPort", "8080");
-    m_xbmc_web_url = "http://localhost:" + jsonPort;
-  }
+    private NotificationManager mNotificationManager;
 
-  public String request_string(String jsonRequest)
-  {
-    try
-    {
-      return _requestJSON(jsonRequest);
+    public XBMCJsonRPC() {
+        String jsonPort = XBMCProperties.getStringProperty("xbmc.jsonPort", "8080");
+        m_xbmc_web_url = "http://localhost:" + jsonPort;
     }
-    catch (Exception e)
-    {
-      Log.e(TAG, "Failed to read JSON");
-      e.printStackTrace();
-      return null;
-    }
-    catch (UnsatisfiedLinkError e)
-    {
-      Log.e(TAG, "_requestJSON: Not available");
-      return null;
-    }
-  }
 
-  public JsonObject request_object(String jsonRequest)
-  {
-    try
-    {
-      String stringResp = request_string(jsonRequest);
-      if (stringResp == null)
-        return null;
-
-      JsonParser parser = new JsonParser();
-      JsonElement element = parser.parse(stringResp);
-      JsonObject resp = element.getAsJsonObject();
-      return resp;
-    }
-    catch (Exception e)
-    {
-      Log.e(TAG, "Failed to parse JSON");
-      e.printStackTrace();
-      return null;
-    }
-  }
-
-  public JsonArray request_array(String jsonRequest)
-  {
-    try
-    {
-      String stringResp = request_string(jsonRequest);
-      if (stringResp == null)
-        return null;
-
-      JsonParser parser = new JsonParser();
-      JsonElement element = parser.parse(stringResp);
-      JsonArray resp = element.getAsJsonArray();
-      return resp;
-    }
-    catch (Exception e)
-    {
-      Log.e(TAG, "Failed to parse JSON");
-      e.printStackTrace();
-      return null;
-    }
-  }
-
-  public Bitmap getBitmap(Context ctx, String src)
-  {
-    try
-    {
-      ContentResolver resolver = ctx.getContentResolver();
-      InputStream input = resolver.openInputStream(XBMCFileContentProvider.buildUri(src));
-      Bitmap bitmap = BitmapFactory.decodeStream(input);
-      input.close();
-      return bitmap;
-    }
-    catch (Exception e)
-    {
-      e.printStackTrace();
-      return null;
-    }
-  }
-
-  public String getDownloadUrl(String src)
-  {
-    return src;
-  }
-
-  public boolean Ping()
-  {
-    try
-    {
-      JsonObject req = request_object(GET_VERSION);
-      if (req == null || !req.has("result"))
-        return false;
-    }
-    catch (Exception e)
-    {
-      return false;
-    }
-    return true;
-  }
-
-  public Cursor search(String query)
-  {
-      String[] menuCols = new String[] {
-              BaseColumns._ID,
-              COLUMN_TITLE,
-              COLUMN_TAGLINE,
-              COLUMN_THUMB,
-              COLUMN_FANART,
-      };
-      MatrixCursor mc = new MatrixCursor(menuCols);
-
-      try
-      {
-        JsonObject req = request_object(String.format(SEARCH_MOVIES_JSON, /*"\"operator\": \"contains\", \"field\": \"title\", \"value\": \"" + query + "\"", limit));*/
-        "\"or\": [" +
-        "{\"operator\": \"contains\", \"field\": \"title\", \"value\": \"" + query + "\"}," +
-        "{\"operator\": \"contains\", \"field\": \"originaltitle\", \"value\": \"" + query + "\"}," +
-        "{\"operator\": \"contains\", \"field\": \"set\", \"value\": \"" + query + "\"}," +
-        "{\"operator\": \"contains\", \"field\": \"actor\", \"value\": \"" + query + "\"}," +
-        "{\"operator\": \"contains\", \"field\": \"director\", \"value\": \"" + query + "\"}]"));
-
-        if (req == null || !req.has("result"))
-          return null;
-
-        JsonObject results = req.getAsJsonObject("result");
-        JsonArray movies = results.getAsJsonArray("movies");
-
-        for (int i = 0; i < movies.size(); ++i)
-        {
-          JsonObject movie = movies.get(i).getAsJsonObject();
-          mc.addRow(new Object[]{movie.get("movieid"), movie.get("title"), movie.get("tagline"), movie.get("thumbnail"), movie.get("fanart")});
+    public String request_string(String jsonRequest) {
+        try {
+            return _requestJSON(jsonRequest);
+        } catch (Exception e) {
+            Log.e(TAG, "Failed to read JSON");
+            e.printStackTrace();
+            return null;
+        } catch (UnsatisfiedLinkError e) {
+            Log.e(TAG, "_requestJSON: Not available");
+            return null;
         }
-      } catch (Exception e)
-      {
-        e.printStackTrace();
-        return null;
-      }
+    }
 
-      try
-      {
-        JsonObject req = request_object(String.format(SEARCH_SHOWS_JSON, /*"\"operator\": \"contains\", \"field\": \"title\", \"value\": \"" + query + "\"", limit));*/
-        "\"or\": [" +
-        "{\"operator\": \"contains\", \"field\": \"title\", \"value\": \"" + query + "\"}," +
-        "{\"operator\": \"contains\", \"field\": \"actor\", \"value\": \"" + query + "\"}," +
-        "{\"operator\": \"contains\", \"field\": \"director\", \"value\": \"" + query + "\"}]"));
+    public JsonObject request_object(String jsonRequest) {
+        try {
+            String stringResp = request_string(jsonRequest);
+            if (stringResp == null)
+                return null;
 
-        if (req == null || !req.has("result"))
-          return null;
-
-        JsonObject results = req.getAsJsonObject("result");
-        JsonArray tvshows = results.getAsJsonArray("tvshows");
-
-        for (int i = 0; i < tvshows.size(); ++i)
-        {
-          JsonObject tvshow = tvshows.get(i).getAsJsonObject();
-          mc.addRow(new Object[]{tvshow.get("movieid"), tvshow.get("title"), tvshow.get("plot"), tvshow.get("thumbnail"), tvshow.get("fanart")});
+            JsonParser parser = new JsonParser();
+            JsonElement element = parser.parse(stringResp);
+            JsonObject resp = element.getAsJsonObject();
+            return resp;
+        } catch (Exception e) {
+            Log.e(TAG, "Failed to parse JSON");
+            e.printStackTrace();
+            return null;
         }
-      } catch (Exception e)
-      {
-        e.printStackTrace();
-        return null;
-      }
+    }
 
-      return mc;
-  }
+    public JsonArray request_array(String jsonRequest) {
+        try {
+            String stringResp = request_string(jsonRequest);
+            if (stringResp == null)
+                return null;
 
-  public Cursor getSuggestions(String query, int limit)
-  {
-    //Log.d(TAG, "query: " + query);
+            JsonParser parser = new JsonParser();
+            JsonElement element = parser.parse(stringResp);
+            JsonArray resp = element.getAsJsonArray();
+            return resp;
+        } catch (Exception e) {
+            Log.e(TAG, "Failed to parse JSON");
+            e.printStackTrace();
+            return null;
+        }
+    }
 
-    int totCount = 0;
-    String[] menuCols = new String[]
-    {
-        BaseColumns._ID,
-        SearchManager.SUGGEST_COLUMN_TEXT_1,
-        SearchManager.SUGGEST_COLUMN_TEXT_2,
-        SearchManager.SUGGEST_COLUMN_ICON_1,
-        SearchManager.SUGGEST_COLUMN_RESULT_CARD_IMAGE,
-        SearchManager.SUGGEST_COLUMN_INTENT_ACTION,
-        SearchManager.SUGGEST_COLUMN_INTENT_DATA,
-        SearchManager.SUGGEST_COLUMN_VIDEO_WIDTH,
-        SearchManager.SUGGEST_COLUMN_VIDEO_HEIGHT,
-        SearchManager.SUGGEST_COLUMN_PRODUCTION_YEAR,
-        SearchManager.SUGGEST_COLUMN_DURATION,
-        SearchManager.SUGGEST_COLUMN_SHORTCUT_ID
-    };
-    MatrixCursor mc = new MatrixCursor(menuCols);
+    public Bitmap getBitmap(Context ctx, String src) {
+        try {
+            ContentResolver resolver = ctx.getContentResolver();
+            InputStream input = resolver.openInputStream(XBMCFileContentProvider.buildUri(src));
+            Bitmap bitmap = BitmapFactory.decodeStream(input);
+            input.close();
+            return bitmap;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 
-    String str_req = "[" +
-      String.format(SEARCH_MOVIES_JSON,
-        "\"or\": [" +
-        "{\"operator\": \"contains\", \"field\": \"title\", \"value\": \"" + query + "\"}," +
-        "{\"operator\": \"contains\", \"field\": \"originaltitle\", \"value\": \"" + query + "\"}," +
-        "{\"operator\": \"contains\", \"field\": \"set\", \"value\": \"" + query + "\"}]", REQ_ID_MOVIES) +
-      "," +
-      String.format(SEARCH_SHOWS_JSON,
-        "\"or\": [" +
-        "{\"operator\": \"contains\", \"field\": \"title\", \"value\": \"" + query + "\"}," +
-        "{\"operator\": \"contains\", \"field\": \"originaltitle\", \"value\": \"" + query + "\"}]", REQ_ID_SHOWS) +
-    "," +
-      String.format(SEARCH_ALBUMS_JSON,
-        "\"or\": [" +
-        "{\"operator\": \"contains\", \"field\": \"album\", \"value\": \"" + query + "\"}," +
-        "{\"operator\": \"contains\", \"field\": \"label\", \"value\": \"" + query + "\"}]", REQ_ID_ALBUMS) +
-    "," +
-      String.format(SEARCH_ARTISTS_JSON,
-        "\"operator\": \"contains\", \"field\": \"artist\", \"value\": \"" + query + "\"", REQ_ID_ARTISTS) +
-    "," +
-      String.format(SEARCH_MOVIES_JSON,
-        "\"or\": [" +
-         "{\"operator\": \"contains\", \"field\": \"actor\", \"value\": \"" + query + "\"}," +
-        "{\"operator\": \"contains\", \"field\": \"director\", \"value\": \"" + query + "\"}]", REQ_ID_MOVIES_ACTOR) +
-    "," +
-      String.format(SEARCH_SHOWS_JSON,
-        "\"or\": [" +
-        "{\"operator\": \"contains\", \"field\": \"actor\", \"value\": \"" + query + "\"}," +
-        "{\"operator\": \"contains\", \"field\": \"director\", \"value\": \"" + query + "\"}]", REQ_ID_SHOWS_ACTOR) +
-    "]";
+    public String getDownloadUrl(String src) {
+        return src;
+    }
 
-    JsonArray res_array = request_array(str_req);
-    if (res_array == null)
-      return null;
+    public boolean Ping() {
+        try {
+            JsonObject req = request_object(GET_VERSION);
+            if (req == null || !req.has("result"))
+                return false;
+        } catch (Exception e) {
+            return false;
+        }
+        return true;
+    }
 
-    int nb_movies = 0;
-    int nb_shows = 0;
-    for (int j = 0; j < res_array.size(); ++j)
-    {
-      String id;
-      JsonObject resp;
-      try
-      {
-        resp = res_array.get(j).getAsJsonObject();
-        if (resp == null)
-          continue;
+    public Cursor search(String query) {
+        String[] menuCols = new String[]{
+                BaseColumns._ID,
+                COLUMN_TITLE,
+                COLUMN_TAGLINE,
+                COLUMN_THUMB,
+                COLUMN_FANART,
+        };
+        MatrixCursor mc = new MatrixCursor(menuCols);
 
-        id = resp.get("id").getAsString();
-      }
-      catch (Exception e)
-      {
-        e.printStackTrace();
-        continue;
-      }
+        try {
+            JsonObject req = request_object(String.format(SEARCH_MOVIES_JSON, /*"\"operator\": \"contains\", \"field\": \"title\", \"value\": \"" + query + "\"", limit));*/
+                    "\"or\": [" +
+                            "{\"operator\": \"contains\", \"field\": \"title\", \"value\": \"" + query + "\"}," +
+                            "{\"operator\": \"contains\", \"field\": \"originaltitle\", \"value\": \"" + query + "\"}," +
+                            "{\"operator\": \"contains\", \"field\": \"set\", \"value\": \"" + query + "\"}," +
+                            "{\"operator\": \"contains\", \"field\": \"actor\", \"value\": \"" + query + "\"}," +
+                            "{\"operator\": \"contains\", \"field\": \"director\", \"value\": \"" + query + "\"}]"));
 
-      if (id.equals(REQ_ID_MOVIES) || ((nb_movies + nb_shows) < 3 && id.equals(REQ_ID_MOVIES_ACTOR)))
-      {
-        searchmovies: try
-        {
-          if (resp == null || !resp.has("result"))
-            break searchmovies;
-          JsonObject results = resp.getAsJsonObject("result");
-          if (results == null || !results.has("movies"))
-            break searchmovies;
-          JsonArray movies = results.get("movies").getAsJsonArray();
+            if (req == null || !req.has("result"))
+                return null;
 
-          for (int i = 0; i < movies.size() && totCount < limit; ++i)
-          {
-            JsonObject movie = movies.get(i).getAsJsonObject();
+            JsonObject results = req.getAsJsonObject("result");
+            JsonArray movies = results.getAsJsonArray("movies");
 
-            int rYear = 0;
-            long rDur = 0;
-            try
-            {
-              rYear = movie.get("year").getAsInt();
-              rDur = movie.get("runtime").getAsLong() * 1000;
+            for (int i = 0; i < movies.size(); ++i) {
+                JsonObject movie = movies.get(i).getAsJsonObject();
+                mc.addRow(new Object[]{movie.get("movieid"), movie.get("title"), movie.get("tagline"), movie.get("thumbnail"), movie.get("fanart")});
             }
-            catch (Exception e)
-            {
-              e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+
+        try {
+            JsonObject req = request_object(String.format(SEARCH_SHOWS_JSON, /*"\"operator\": \"contains\", \"field\": \"title\", \"value\": \"" + query + "\"", limit));*/
+                    "\"or\": [" +
+                            "{\"operator\": \"contains\", \"field\": \"title\", \"value\": \"" + query + "\"}," +
+                            "{\"operator\": \"contains\", \"field\": \"actor\", \"value\": \"" + query + "\"}," +
+                            "{\"operator\": \"contains\", \"field\": \"director\", \"value\": \"" + query + "\"}]"));
+
+            if (req == null || !req.has("result"))
+                return null;
+
+            JsonObject results = req.getAsJsonObject("result");
+            JsonArray tvshows = results.getAsJsonArray("tvshows");
+
+            for (int i = 0; i < tvshows.size(); ++i) {
+                JsonObject tvshow = tvshows.get(i).getAsJsonObject();
+                mc.addRow(new Object[]{tvshow.get("movieid"), tvshow.get("title"), tvshow.get("plot"), tvshow.get("thumbnail"), tvshow.get("fanart")});
             }
-            mc.addRow(new Object[]
-            {
-              movie.get("movieid").getAsString(),
-              movie.get("title").getAsString(),
-              movie.get("tagline").getAsString(),
-              XBMCFileContentProvider.buildUri(getDownloadUrl(movie.get("thumbnail").getAsString())).toString(),
-              XBMCFileContentProvider.buildUri(getDownloadUrl(movie.get("thumbnail").getAsString())).toString(),
-              Intent.ACTION_GET_CONTENT,
-              Uri.parse("videodb://movies/titles/" + movie.get("movieid").getAsString() + "?showinfo=true"),
-              0,
-              0,
-              rYear,
-              rDur,
-              -1
-            });
-            nb_movies++;
-            totCount++;
-          }
-        } catch (Exception e)
-        {
-          e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
         }
-      }
-      else if (id.equals(REQ_ID_SHOWS) || ((nb_movies + nb_shows) < 3 && id.equals(REQ_ID_SHOWS_ACTOR)))
-      {
-        searchtv: try
-        {
-          if(!resp.has("result"))
-            break searchtv;
-          JsonObject results = resp.getAsJsonObject("result");
-          if (results == null || !results.has("tvshows"))
-            break searchtv;
-          JsonArray tvshows = results.get("tvshows").getAsJsonArray();
 
-          for (int i = 0; i < tvshows.size() && totCount < limit; ++i)
-          {
-            JsonObject tvshow = tvshows.get(i).getAsJsonObject();
+        return mc;
+    }
 
-            int rYear = 0;
-            long rDur = 0;
-            try
-            {
-              rYear = tvshow.get("year").getAsInt();
+    public Cursor getSuggestions(String query, int limit) {
+        //Log.d(TAG, "query: " + query);
+
+        int totCount = 0;
+        String[] menuCols = new String[]
+                {
+                        BaseColumns._ID,
+                        SearchManager.SUGGEST_COLUMN_TEXT_1,
+                        SearchManager.SUGGEST_COLUMN_TEXT_2,
+                        SearchManager.SUGGEST_COLUMN_ICON_1,
+                        SearchManager.SUGGEST_COLUMN_RESULT_CARD_IMAGE,
+                        SearchManager.SUGGEST_COLUMN_INTENT_ACTION,
+                        SearchManager.SUGGEST_COLUMN_INTENT_DATA,
+                        SearchManager.SUGGEST_COLUMN_VIDEO_WIDTH,
+                        SearchManager.SUGGEST_COLUMN_VIDEO_HEIGHT,
+                        SearchManager.SUGGEST_COLUMN_PRODUCTION_YEAR,
+                        SearchManager.SUGGEST_COLUMN_DURATION,
+                        SearchManager.SUGGEST_COLUMN_SHORTCUT_ID
+                };
+        MatrixCursor mc = new MatrixCursor(menuCols);
+
+        String str_req = "[" +
+                String.format(SEARCH_MOVIES_JSON,
+                        "\"or\": [" +
+                                "{\"operator\": \"contains\", \"field\": \"title\", \"value\": \"" + query + "\"}," +
+                                "{\"operator\": \"contains\", \"field\": \"originaltitle\", \"value\": \"" + query + "\"}," +
+                                "{\"operator\": \"contains\", \"field\": \"set\", \"value\": \"" + query + "\"}]", REQ_ID_MOVIES) +
+                "," +
+                String.format(SEARCH_SHOWS_JSON,
+                        "\"or\": [" +
+                                "{\"operator\": \"contains\", \"field\": \"title\", \"value\": \"" + query + "\"}," +
+                                "{\"operator\": \"contains\", \"field\": \"originaltitle\", \"value\": \"" + query + "\"}]", REQ_ID_SHOWS) +
+                "," +
+                String.format(SEARCH_ALBUMS_JSON,
+                        "\"or\": [" +
+                                "{\"operator\": \"contains\", \"field\": \"album\", \"value\": \"" + query + "\"}," +
+                                "{\"operator\": \"contains\", \"field\": \"label\", \"value\": \"" + query + "\"}]", REQ_ID_ALBUMS) +
+                "," +
+                String.format(SEARCH_ARTISTS_JSON,
+                        "\"operator\": \"contains\", \"field\": \"artist\", \"value\": \"" + query + "\"", REQ_ID_ARTISTS) +
+                "," +
+                String.format(SEARCH_MOVIES_JSON,
+                        "\"or\": [" +
+                                "{\"operator\": \"contains\", \"field\": \"actor\", \"value\": \"" + query + "\"}," +
+                                "{\"operator\": \"contains\", \"field\": \"director\", \"value\": \"" + query + "\"}]", REQ_ID_MOVIES_ACTOR) +
+                "," +
+                String.format(SEARCH_SHOWS_JSON,
+                        "\"or\": [" +
+                                "{\"operator\": \"contains\", \"field\": \"actor\", \"value\": \"" + query + "\"}," +
+                                "{\"operator\": \"contains\", \"field\": \"director\", \"value\": \"" + query + "\"}]", REQ_ID_SHOWS_ACTOR) +
+                "]";
+
+        JsonArray res_array = request_array(str_req);
+        if (res_array == null)
+            return null;
+
+        int nb_movies = 0;
+        int nb_shows = 0;
+        for (int j = 0; j < res_array.size(); ++j) {
+            String id;
+            JsonObject resp;
+            try {
+                resp = res_array.get(j).getAsJsonObject();
+                if (resp == null)
+                    continue;
+
+                id = resp.get("id").getAsString();
+            } catch (Exception e) {
+                e.printStackTrace();
+                continue;
             }
-            catch (Exception e)
-            {
-              e.printStackTrace();
+
+            if (id.equals(REQ_ID_MOVIES) || ((nb_movies + nb_shows) < 3 && id.equals(REQ_ID_MOVIES_ACTOR))) {
+                searchmovies:
+                try {
+                    if (resp == null || !resp.has("result"))
+                        break searchmovies;
+                    JsonObject results = resp.getAsJsonObject("result");
+                    if (results == null || !results.has("movies"))
+                        break searchmovies;
+                    JsonArray movies = results.get("movies").getAsJsonArray();
+
+                    for (int i = 0; i < movies.size() && totCount < limit; ++i) {
+                        JsonObject movie = movies.get(i).getAsJsonObject();
+
+                        int rYear = 0;
+                        long rDur = 0;
+                        try {
+                            rYear = movie.get("year").getAsInt();
+                            rDur = movie.get("runtime").getAsLong() * 1000;
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        mc.addRow(new Object[]
+                                {
+                                        movie.get("movieid").getAsString(),
+                                        movie.get("title").getAsString(),
+                                        movie.get("tagline").getAsString(),
+                                        XBMCFileContentProvider.buildUri(getDownloadUrl(movie.get("thumbnail").getAsString())).toString(),
+                                        XBMCFileContentProvider.buildUri(getDownloadUrl(movie.get("thumbnail").getAsString())).toString(),
+                                        Intent.ACTION_GET_CONTENT,
+                                        Uri.parse("videodb://movies/titles/" + movie.get("movieid").getAsString() + "?showinfo=true"),
+                                        0,
+                                        0,
+                                        rYear,
+                                        rDur,
+                                        -1
+                                });
+                        nb_movies++;
+                        totCount++;
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            } else if (id.equals(REQ_ID_SHOWS) || ((nb_movies + nb_shows) < 3 && id.equals(REQ_ID_SHOWS_ACTOR))) {
+                searchtv:
+                try {
+                    if (!resp.has("result"))
+                        break searchtv;
+                    JsonObject results = resp.getAsJsonObject("result");
+                    if (results == null || !results.has("tvshows"))
+                        break searchtv;
+                    JsonArray tvshows = results.get("tvshows").getAsJsonArray();
+
+                    for (int i = 0; i < tvshows.size() && totCount < limit; ++i) {
+                        JsonObject tvshow = tvshows.get(i).getAsJsonObject();
+
+                        int rYear = 0;
+                        long rDur = 0;
+                        try {
+                            rYear = tvshow.get("year").getAsInt();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        mc.addRow(new Object[]
+                                {
+                                        tvshow.get("tvshowid").getAsString(),
+                                        tvshow.get("title").getAsString(),
+                                        tvshow.get("plot").getAsString(),
+                                        XBMCFileContentProvider.buildUri(getDownloadUrl(tvshow.get("thumbnail").getAsString())).toString(),
+                                        XBMCFileContentProvider.buildUri(getDownloadUrl(tvshow.get("thumbnail").getAsString())).toString(),
+                                        Intent.ACTION_GET_CONTENT,
+                                        Uri.parse("videodb://tvshows/titles/" + tvshow.get("tvshowid").getAsString() + "?showinfo=true"),
+                                        0,
+                                        0,
+                                        rYear,
+                                        45 * 60 * 1000,
+                                        -1
+                                });
+                        Log.d(TAG, "tvshow: " + tvshow.get("title").getAsString() + ", " + tvshow.get("year").getAsInt());
+                        nb_shows++;
+                        totCount++;
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            } else if (id.equals(REQ_ID_ALBUMS)) {
+                searchalbums:
+                try {
+                    if (!resp.has("result"))
+                        break searchalbums;
+                    JsonObject results = resp.getAsJsonObject("result");
+                    if (results == null || !results.has("albums"))
+                        break searchalbums;
+                    JsonArray albums = results.get("albums").getAsJsonArray();
+
+                    for (int i = 0; i < albums.size() && totCount < limit; ++i) {
+                        JsonObject album = albums.get(i).getAsJsonObject();
+                        mc.addRow(new Object[]
+                                {
+                                        album.get("albumid").getAsString(),
+                                        album.get("title").getAsString(),
+                                        album.get("displayartist").getAsString(),
+                                        XBMCFileContentProvider.buildUri(getDownloadUrl(album.get("thumbnail").getAsString())).toString(),
+                                        XBMCFileContentProvider.buildUri(getDownloadUrl(album.get("thumbnail").getAsString())).toString(),
+                                        Intent.ACTION_GET_CONTENT,
+                                        Uri.parse("musicdb://albums/" + album.get("albumid").getAsString() + "/"),
+                                        0,
+                                        0,
+                                        0,
+                                        0,
+                                        -1
+                                });
+                        totCount++;
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            } else if (id.equals(REQ_ID_ARTISTS)) {
+                searchartists:
+                try {
+                    if (!resp.has("result"))
+                        break searchartists;
+                    JsonObject results = resp.getAsJsonObject("result");
+                    if (results == null || !results.has("artists"))
+                        break searchartists;
+                    JsonArray artists = results.get("artists").getAsJsonArray();
+
+                    for (int i = 0; i < artists.size() && totCount < limit; ++i) {
+                        JsonObject artist = artists.get(i).getAsJsonObject();
+                        mc.addRow(new Object[]
+                                {
+                                        artist.get("artistid").getAsString(),
+                                        artist.get("artist").getAsString(),
+                                        artist.get("description").getAsString(),
+                                        XBMCFileContentProvider.buildUri(getDownloadUrl(artist.get("thumbnail").getAsString())).toString(),
+                                        XBMCFileContentProvider.buildUri(getDownloadUrl(artist.get("thumbnail").getAsString())).toString(),
+                                        Intent.ACTION_GET_CONTENT,
+                                        Uri.parse("musicdb://artists/" + artist.get("artistid").getAsString() + "/"),
+                                        0,
+                                        0,
+                                        0,
+                                        0,
+                                        -1
+                                });
+                        totCount++;
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
-            mc.addRow(new Object[]
-            {
-              tvshow.get("tvshowid").getAsString(),
-              tvshow.get("title").getAsString(),
-              tvshow.get("plot").getAsString(),
-              XBMCFileContentProvider.buildUri(getDownloadUrl(tvshow.get("thumbnail").getAsString())).toString(),
-              XBMCFileContentProvider.buildUri(getDownloadUrl(tvshow.get("thumbnail").getAsString())).toString(),
-              Intent.ACTION_GET_CONTENT,
-              Uri.parse("videodb://tvshows/titles/" + tvshow.get("tvshowid").getAsString() + "?showinfo=true"),
-              0,
-              0,
-              rYear,
-              45*60*1000,
-              -1
-            });
-            Log.d(TAG, "tvshow: " + tvshow.get("title").getAsString() + ", " + tvshow.get("year").getAsInt());
-            nb_shows++;
-            totCount++;
-          }
-        } catch (Exception e)
-        {
-          e.printStackTrace();
         }
-      }
-      else if (id.equals(REQ_ID_ALBUMS))
-      {
-        searchalbums: try
-        {
-          if (!resp.has("result"))
-            break searchalbums;
-          JsonObject results = resp.getAsJsonObject("result");
-          if (results == null || !results.has("albums"))
-            break searchalbums;
-          JsonArray albums = results.get("albums").getAsJsonArray();
 
-          for (int i = 0; i < albums.size() && totCount < limit; ++i)
-          {
-            JsonObject album = albums.get(i).getAsJsonObject();
-            mc.addRow(new Object[]
-            {
-              album.get("albumid").getAsString(),
-              album.get("title").getAsString(),
-              album.get("displayartist").getAsString(),
-              XBMCFileContentProvider.buildUri(getDownloadUrl(album.get("thumbnail").getAsString())).toString(),
-              XBMCFileContentProvider.buildUri(getDownloadUrl(album.get("thumbnail").getAsString())).toString(),
-              Intent.ACTION_GET_CONTENT,
-              Uri.parse("musicdb://albums/" + album.get("albumid").getAsString() + "/"),
-              0,
-              0,
-              0,
-              0,
-              -1
-            });
-            totCount++;
-          }
-        } catch (Exception e)
-        {
-          e.printStackTrace();
-        }
-      }
-      else if (id.equals(REQ_ID_ARTISTS))
-      {
-        searchartists: try
-        {
-          if (!resp.has("result"))
-            break searchartists;
-          JsonObject results = resp.getAsJsonObject("result");
-          if (results == null || !results.has("artists"))
-            break searchartists;
-          JsonArray artists = results.get("artists").getAsJsonArray();
-
-          for (int i = 0; i < artists.size() && totCount < limit; ++i)
-          {
-            JsonObject artist = artists.get(i).getAsJsonObject();
-            mc.addRow(new Object[]
-            {
-              artist.get("artistid").getAsString(),
-              artist.get("artist").getAsString(),
-              artist.get("description").getAsString(),
-              XBMCFileContentProvider.buildUri(getDownloadUrl(artist.get("thumbnail").getAsString())).toString(),
-              XBMCFileContentProvider.buildUri(getDownloadUrl(artist.get("thumbnail").getAsString())).toString(),
-              Intent.ACTION_GET_CONTENT,
-              Uri.parse("musicdb://artists/" + artist.get("artistid").getAsString() + "/"),
-              0,
-              0,
-              0,
-              0,
-              -1
-            });
-            totCount++;
-          }
-        } catch (Exception e)
-        {
-          e.printStackTrace();
-        }
-      }
+        return mc;
     }
 
-    return mc;
-  }
+    public void updateLeanback(Context ctx) {
+        if (mNotificationManager == null) {
+            mNotificationManager = (NotificationManager) ctx.getSystemService(Context.NOTIFICATION_SERVICE);
+        }
+        for (Integer id : mRecomendationIds)
+            mNotificationManager.cancel(id);
+        mRecomendationIds.clear();
 
-  public void updateLeanback(Context ctx)
-  {
-    if (mNotificationManager == null)
-    {
-      mNotificationManager = (NotificationManager) ctx.getSystemService(Context.NOTIFICATION_SERVICE);
-    }
-    for(Integer id : mRecomendationIds)
-      mNotificationManager.cancel(id);
-    mRecomendationIds.clear();
+        JsonObject rep = request_object(RECOMMENDATION_MOVIES_JSON);
+        if (rep != null && rep.has("result")) {
+            try {
+                JsonObject results = rep.getAsJsonObject("result");
+                JsonArray movies = results.get("movies").getAsJsonArray();
 
-    JsonObject rep = request_object(RECOMMENDATION_MOVIES_JSON);
-    if (rep != null && rep.has("result"))
-    {
-      try
-      {
-        JsonObject results = rep.getAsJsonObject("result");
-        JsonArray movies = results.get("movies").getAsJsonArray();
+                int count = 0;
+                for (int i = 0; i < movies.size() && count < MAX_RECOMMENDATIONS; ++i) {
+                    try {
+                        JsonObject movie = movies.get(i).getAsJsonObject();
+                        int id = movie.get("movieid").getAsInt() + 1000000;
 
-        int count = 0;
-        for (int i = 0; i < movies.size() && count < MAX_RECOMMENDATIONS; ++i)
-        {
-          try
-          {
-            JsonObject movie = movies.get(i).getAsJsonObject();
-            int id = movie.get("movieid").getAsInt() + 1000000;
+                        final XBMCRecommendationBuilder notificationBuilder = new XBMCRecommendationBuilder()
+                                .setContext(ctx)
+                                .setSmallIcon(R.drawable.notif_icon)
+                                .setId(id).setPriority(MAX_RECOMMENDATIONS - count)
+                                .setTitle(movie.get("title").getAsString())
+                                .setDescription(movie.get("plot").getAsString())
+                                .setIntent(buildPendingMovieIntent(ctx, movie));
 
-            final XBMCRecommendationBuilder notificationBuilder = new XBMCRecommendationBuilder()
-                    .setContext(ctx)
-                    .setSmallIcon(R.drawable.notif_icon)
-                    .setId(id).setPriority(MAX_RECOMMENDATIONS - count)
-                    .setTitle(movie.get("title").getAsString())
-                    .setDescription(movie.get("tagline").getAsString())
-                    .setIntent(buildPendingMovieIntent(ctx, movie));
-
-            if (movie.has("fanart") && !movie.get("fanart").getAsString().isEmpty())
-              notificationBuilder.setBackground(XBMCFileContentProvider.buildUri(
-                      getDownloadUrl(movie.get("fanart").getAsString())).toString());
-            if (movie.has("thumbnail") && !movie.get("thumbnail").getAsString().isEmpty())
-            {
-              Bitmap bitmap = getBitmap(ctx, movie.get("thumbnail").getAsString());
-              notificationBuilder.setBitmap(bitmap);
+                        if (movie.has("fanart") && !movie.get("fanart").getAsString().isEmpty())
+                            notificationBuilder.setBackground(XBMCFileContentProvider.buildUri(
+                                    getDownloadUrl(movie.get("fanart").getAsString())).toString());
+                        if (movie.has("thumbnail") && !movie.get("thumbnail").getAsString().isEmpty()) {
+                            Bitmap bitmap = getBitmap(ctx, movie.get("thumbnail").getAsString());
+                            notificationBuilder.setBitmap(bitmap);
+                        }
+                        Notification notification = notificationBuilder.build();
+                        mNotificationManager.notify(id, notification);
+                        mRecomendationIds.add(id);
+                        ++count;
+                    } catch (Exception e) {
+                        continue;
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-            Notification notification = notificationBuilder.build();
-            mNotificationManager.notify(id, notification);
-            mRecomendationIds.add(id);
-            ++count;
-          } catch (Exception e)
-          {
-            continue;
-          }
         }
-      } catch (Exception e)
-      {
-        e.printStackTrace();
-      }
-    }
 
-    rep = request_object(RECOMMENDATIONS_SHOWS_JSON);
-    if (rep != null && rep.has("result"))
-    {
-      try
-      {
-        JsonObject results = rep.getAsJsonObject("result");
-        JsonArray tvshows = results.get("tvshows").getAsJsonArray();
+        rep = request_object(RECOMMENDATIONS_SHOWS_JSON);
+        if (rep != null && rep.has("result")) {
+            try {
+                JsonObject results = rep.getAsJsonObject("result");
+                JsonArray tvshows = results.get("tvshows").getAsJsonArray();
 
-        int count = 0;
-        for (int i = 0; i < tvshows.size() && count < MAX_RECOMMENDATIONS; ++i)
-        {
-          try
-          {
-            JsonObject tvshow = tvshows.get(i).getAsJsonObject();
-            int id = tvshow.get("tvshowid").getAsInt() + 2000000;
+                int count = 0;
+                for (int i = 0; i < tvshows.size() && count < MAX_RECOMMENDATIONS; ++i) {
+                    try {
+                        JsonObject tvshow = tvshows.get(i).getAsJsonObject();
+                        int id = tvshow.get("tvshowid").getAsInt() + 2000000;
 
-            final XBMCRecommendationBuilder notificationBuilder = new XBMCRecommendationBuilder()
-                    .setContext(ctx)
-                    .setSmallIcon(R.drawable.notif_icon)
-                    .setId(id).setPriority(MAX_RECOMMENDATIONS - count)
-                    .setTitle(tvshow.get("title").getAsString())
-                    .setDescription(tvshow.get("plot").getAsString())
-                    .setIntent(buildPendingShowIntent(ctx, tvshow));
+                        final XBMCRecommendationBuilder notificationBuilder = new XBMCRecommendationBuilder()
+                                .setContext(ctx)
+                                .setSmallIcon(R.drawable.notif_icon)
+                                .setId(id).setPriority(MAX_RECOMMENDATIONS - count)
+                                .setTitle(tvshow.get("title").getAsString())
+                                .setDescription(tvshow.get("plot").getAsString())
+                                .setIntent(buildPendingShowIntent(ctx, tvshow));
 
-            if (tvshow.has("fanart") && !tvshow.get("fanart").getAsString().isEmpty())
-              notificationBuilder.setBackground(XBMCFileContentProvider.buildUri(
-                      getDownloadUrl(tvshow.get("fanart").getAsString())).toString());
-            if (tvshow.has("thumbnail") && !tvshow.get("thumbnail").getAsString().isEmpty())
-            {
-              Bitmap bitmap = getBitmap(ctx, tvshow.get("thumbnail").getAsString());
-              notificationBuilder.setBitmap(bitmap);
+                        if (tvshow.has("fanart") && !tvshow.get("fanart").getAsString().isEmpty())
+                            notificationBuilder.setBackground(XBMCFileContentProvider.buildUri(
+                                    getDownloadUrl(tvshow.get("fanart").getAsString())).toString());
+                        if (tvshow.has("thumbnail") && !tvshow.get("thumbnail").getAsString().isEmpty()) {
+                            Bitmap bitmap = getBitmap(ctx, tvshow.get("thumbnail").getAsString());
+                            notificationBuilder.setBitmap(bitmap);
+                        }
+                        Notification notification = notificationBuilder.build();
+                        mNotificationManager.notify(id, notification);
+                        mRecomendationIds.add(id);
+                        ++count;
+                    } catch (Exception e) {
+                        continue;
+                    }
+
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-            Notification notification = notificationBuilder.build();
-            mNotificationManager.notify(id, notification);
-            mRecomendationIds.add(id);
-            ++count;
-          } catch (Exception e)
-          {
-            continue;
-          }
-
         }
-      } catch (Exception e)
-      {
-        e.printStackTrace();
-      }
-    }
 
-    rep = request_object(RECOMMENDATIONS_ALBUMS_JSON);
-    if (rep != null && rep.has("result"))
-    {
-      try
-      {
-        JsonObject results = rep.getAsJsonObject("result");
-        JsonArray albums = results.get("albums").getAsJsonArray();
+        rep = request_object(RECOMMENDATIONS_ALBUMS_JSON);
+        if (rep != null && rep.has("result")) {
+            try {
+                JsonObject results = rep.getAsJsonObject("result");
+                JsonArray albums = results.get("albums").getAsJsonArray();
 
-        int count = 0;
-        for (int i = 0; i < albums.size() && count < MAX_RECOMMENDATIONS; ++i)
-        {
-          try
-          {
-            JsonObject album = albums.get(i).getAsJsonObject();
-            int id = album.get("albumid").getAsInt() + 3000000;
+                int count = 0;
+                for (int i = 0; i < albums.size() && count < MAX_RECOMMENDATIONS; ++i) {
+                    try {
+                        JsonObject album = albums.get(i).getAsJsonObject();
+                        int id = album.get("albumid").getAsInt() + 3000000;
 
-            final XBMCRecommendationBuilder notificationBuilder = new XBMCRecommendationBuilder()
-                    .setContext(ctx)
-                    .setSmallIcon(R.drawable.notif_icon)
-                    .setId(id).setPriority(MAX_RECOMMENDATIONS - count)
-                    .setTitle(album.get("title").getAsString())
-                    .setDescription(album.get("displayartist").getAsString())
-                    .setIntent(buildPendingAlbumIntent(ctx, album));
+                        final XBMCRecommendationBuilder notificationBuilder = new XBMCRecommendationBuilder()
+                                .setContext(ctx)
+                                .setSmallIcon(R.drawable.notif_icon)
+                                .setId(id).setPriority(MAX_RECOMMENDATIONS - count)
+                                .setTitle(album.get("title").getAsString())
+                                .setDescription(album.get("displayartist").getAsString())
+                                .setIntent(buildPendingAlbumIntent(ctx, album));
 
-            if (album.has("fanart") && !album.get("fanart").getAsString().isEmpty())
-              notificationBuilder.setBackground(XBMCFileContentProvider.buildUri(
-                      getDownloadUrl(album.get("fanart").getAsString())).toString());
-            if (album.has("thumbnail") && !album.get("thumbnail").getAsString().isEmpty())
-            {
-              Bitmap bitmap = getBitmap(ctx, album.get("thumbnail").getAsString());
-              notificationBuilder.setBitmap(bitmap);
+                        if (album.has("fanart") && !album.get("fanart").getAsString().isEmpty())
+                            notificationBuilder.setBackground(XBMCFileContentProvider.buildUri(
+                                    getDownloadUrl(album.get("fanart").getAsString())).toString());
+                        if (album.has("thumbnail") && !album.get("thumbnail").getAsString().isEmpty()) {
+                            Bitmap bitmap = getBitmap(ctx, album.get("thumbnail").getAsString());
+                            notificationBuilder.setBitmap(bitmap);
+                        }
+                        Notification notification = notificationBuilder.build();
+                        mNotificationManager.notify(id, notification);
+                        mRecomendationIds.add(id);
+                        ++count;
+                    } catch (Exception e) {
+                        continue;
+                    }
+
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-            Notification notification = notificationBuilder.build();
-            mNotificationManager.notify(id, notification);
-            mRecomendationIds.add(id);
-            ++count;
-          } catch (Exception e)
-          {
-            continue;
-          }
-
         }
-      } catch (Exception e)
-      {
-        e.printStackTrace();
-      }
+
     }
 
-  }
+    private PendingIntent buildPendingMovieIntent(Context ctx, JsonObject movie) {
+        try {
+            Intent detailsIntent = new Intent(ctx, Splash.class);
+            detailsIntent.setAction(Intent.ACTION_VIEW);
+            detailsIntent.setData(Uri.parse("videodb://movies/titles/" + movie.get("movieid").getAsString() + "?showinfo=true"));
+            //detailsIntent.putExtra(MovieDetailsActivity.MOVIE, movie);
+            //detailsIntent.putExtra(MovieDetailsActivity.NOTIFICATION_ID, id);
 
-  private PendingIntent buildPendingMovieIntent(Context ctx, JsonObject movie)
-  {
-    try
-    {
-      Intent detailsIntent = new Intent(ctx, Splash.class);
-      detailsIntent.setAction(Intent.ACTION_VIEW);
-      detailsIntent.setData(Uri.parse("videodb://movies/titles/" + movie.get("movieid").getAsString() + "?showinfo=true"));
-      //detailsIntent.putExtra(MovieDetailsActivity.MOVIE, movie);
-      //detailsIntent.putExtra(MovieDetailsActivity.NOTIFICATION_ID, id);
-
-      return PendingIntent.getActivity(ctx, 0, detailsIntent, PendingIntent.FLAG_CANCEL_CURRENT);
-    } catch (Exception e)
-    {
-      e.printStackTrace();
-      return null;
+            return PendingIntent.getActivity(ctx, 0, detailsIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
-  }
 
-  private PendingIntent buildPendingShowIntent(Context ctx, JsonObject tvshow)
-  {
-    try
-    {
-      Intent detailsIntent = new Intent(ctx, Splash.class);
-      detailsIntent.setAction(Intent.ACTION_GET_CONTENT);
-      detailsIntent.setData(Uri.parse("videodb://tvshows/titles/" + tvshow.get("tvshowid").getAsString() + "/"));
+    private PendingIntent buildPendingShowIntent(Context ctx, JsonObject tvshow) {
+        try {
+            Intent detailsIntent = new Intent(ctx, Splash.class);
+            detailsIntent.setAction(Intent.ACTION_GET_CONTENT);
+            detailsIntent.setData(Uri.parse("videodb://tvshows/titles/" + tvshow.get("tvshowid").getAsString() + "/"));
 
-      return PendingIntent.getActivity(ctx, 0, detailsIntent, PendingIntent.FLAG_CANCEL_CURRENT);
-    } catch (Exception e)
-    {
-      e.printStackTrace();
-      return null;
+            return PendingIntent.getActivity(ctx, 0, detailsIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
-  }
 
-  private PendingIntent buildPendingAlbumIntent(Context ctx, JsonObject album)
-  {
-    try
-    {
-      Intent detailsIntent = new Intent(ctx, Splash.class);
-      detailsIntent.setAction(Intent.ACTION_GET_CONTENT);
-      detailsIntent.setData(Uri.parse("musicdb://albums/" + album.get("albumid").getAsString() + "/"));
+    private PendingIntent buildPendingAlbumIntent(Context ctx, JsonObject album) {
+        try {
+            Intent detailsIntent = new Intent(ctx, Splash.class);
+            detailsIntent.setAction(Intent.ACTION_GET_CONTENT);
+            detailsIntent.setData(Uri.parse("musicdb://albums/" + album.get("albumid").getAsString() + "/"));
 
-      return PendingIntent.getActivity(ctx, 0, detailsIntent, PendingIntent.FLAG_CANCEL_CURRENT);
-    } catch (Exception e)
-    {
-      e.printStackTrace();
-      return null;
+            return PendingIntent.getActivity(ctx, 0, detailsIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
-  }
 
-  public List<File> getFiles(String url)
-  {
-    List<File> files = new ArrayList<File>();
+    public List<File> getFiles(String url) {
+        List<File> files = new ArrayList<File>();
 
-    try
-    {
-      JsonObject req = request_object(String.format(RETRIEVE_FILE_ITEMS, url, "1"));
+        try {
+            JsonObject req = request_object(String.format(RETRIEVE_FILE_ITEMS, url, "1"));
 
-      if (req == null || !req.has("result"))
+            if (req == null || !req.has("result"))
+                return files;
+
+            JsonObject results = req.getAsJsonObject("result");
+            if (!results.has("files"))
+                return files;
+
+            JsonArray filesA = results.get("files").getAsJsonArray();
+
+            for (int i = 0; i < filesA.size(); ++i) {
+                JsonObject fileO = filesA.get(i).getAsJsonObject();
+                Uri uri = Uri.parse(fileO.get("file").getAsString());
+                File file = File.createFile(fileO.get("label").getAsString(), fileO.get("filetype").getAsString(), XBMCFileContentProvider.buildUri(uri.toString()).toString());
+                if (fileO.has("id"))
+                    file.setId(fileO.get("id").getAsInt());
+                if (fileO.has("type") && !fileO.get("type").getAsString().equals("unknown"))
+                    file.setMediatype(fileO.get("type").getAsString());
+
+                Log.d(TAG, "getFiles: " + file.toString());
+                files.add(file);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         return files;
-
-      JsonObject results = req.getAsJsonObject("result");
-      if (!results.has("files"))
-        return files;
-
-      JsonArray filesA = results.get("files").getAsJsonArray();
-
-      for (int i = 0; i < filesA.size(); ++i)
-      {
-        JsonObject fileO = filesA.get(i).getAsJsonObject();
-        Uri uri = Uri.parse(fileO.get("file").getAsString());
-        File file = File.createFile(fileO.get("label").getAsString(), fileO.get("filetype").getAsString(), XBMCFileContentProvider.buildUri(uri.toString()).toString());
-        if (fileO.has("id"))
-          file.setId(fileO.get("id").getAsInt());
-        if (fileO.has("type") && !fileO.get("type").getAsString().equals("unknown"))
-          file.setMediatype(fileO.get("type").getAsString());
-        files.add(file);
-      }
-    } catch (Exception e)
-    {
-      e.printStackTrace();
     }
 
-    return files;
-  }
+    private Movie createMovieFromJson(Context ctx, JsonObject details) {
+        Movie med = new Movie();
 
-  private Movie createMovieFromJson(JsonObject details)
-  {
-    Movie med = new Movie();
+        try {
+            JsonObject art = details.getAsJsonObject("art");
+            med.setId(details.get("movieid").getAsInt());
+            med.setTitle(details.get("title").getAsString());
+            med.setDescription(details.get("tagline").getAsString());
+            med.setPlot(details.get("plot").getAsString());
+            med.setCategory(Media.MEDIA_TYPE_MOVIE);
+            med.setRating(details.get("rating").getAsDouble());
+            med.setYear(details.get("year").getAsString());
+            med.setDuration(details.get("runtime").getAsInt() * 1000);
+            med.setPosition(details.getAsJsonObject("resume").get("position").getAsInt() * 1000);
 
-    try
-    {
-      med.setId(details.get("movieid").getAsInt());
-      med.setTitle(details.get("title").getAsString());
-      med.setDescription(details.get("tagline").getAsString());
-      if (details.has("thumbnail") && !details.get("thumbnail").getAsString().isEmpty())
-      {
-        String url = getDownloadUrl(details.get("thumbnail").getAsString());
-        if (url != null && url != null && !url.isEmpty())
-          med.setCardImageUrl(XBMCFileContentProvider.buildUri(url).toString());
-      }
-      med.setCardImageAspectRatio("2:3");
-      if (details.has("fanart") && !details.get("fanart").getAsString().isEmpty())
-      {
-        String url = getDownloadUrl(details.get("fanart").getAsString());
-        if (url != null && url != null && !url.isEmpty())
-          med.setBackgroundImageUrl(XBMCFileContentProvider.buildUri(url).toString());
-      }
-      med.setXbmcUrl("videodb://movies/titles/" + details.get("movieid").getAsString() + "?showinfo=true");
+            long lastPlayed = dateToEpoch(details.get("lastplayed").getAsString());
+            Log.d(TAG, "createMovieFromJson: lastPlayed Movie: " + lastPlayed);
+            med.setLastPlayed(lastPlayed);
 
-      /*
-      if (details.has("trailer") && !details.get("trailer").getAsString().isEmpty())
-      {
-        String trailer_url = details.get("trailer").getAsString();
-        if (trailer_url.startsWith("plugin://plugin.video.youtube"))
-        {
-          Uri u = Uri.parse(trailer_url);
-          String videoid = u.getQueryParameter("videoid");
-          String yturl = Uri.parse(m_xbmc_web_url)
-                  .buildUpon()
-                  .appendPath("addons").appendPath("webinterface.youtube-dl")
-                  .appendQueryParameter("url", "http://www.youtube.com/watch?v=" + videoid)
-                  .build()
-                  .toString();
-          med.setVideoUrl(XBMCYTDLContentProvider.GetYTDLUri(yturl).toString());
-          Log.d(TAG, "createMovieFromJson: " + med.getVideoUrl());
+            Log.d(TAG, "createMovieFromJson: " + details.toString());
+
+            Bitmap bitmap = getBitmap(ctx, details.get("thumbnail").getAsString());
+            double width = bitmap.getWidth();
+            double height = bitmap.getHeight();
+
+            if (width / height > 1.0)
+                med.setHasLandscapeArt(true);
+            else
+                med.setHasLandscapeArt(false);
+
+            if (art.has("poster") && !art.get("poster").getAsString().isEmpty()) {
+                String url = getDownloadUrl(art.get("poster").getAsString());
+                if (url != null && url != null && !url.isEmpty()) {
+                    med.setCardImageUrl(XBMCFileContentProvider.buildUri(url).toString());
+                    med.setPosterImageUrl(XBMCFileContentProvider.buildUri(url).toString());
+                }
+            }
+
+            if (art.has("landscape") && !art.get("landscape").getAsString().isEmpty()) {
+                String url = getDownloadUrl(art.get("landscape").getAsString());
+                if (url != null && url != null && !url.isEmpty()) {
+                    med.setLandscapeImageUrl(XBMCFileContentProvider.buildUri(url).toString());
+                    med.setHasLandscapeArt(true);
+                }
+            }
+
+            if (art.has("thumb") && !art.get("thumb").getAsString().isEmpty()) {
+                String url = getDownloadUrl(art.get("thumb").getAsString());
+                if (url != null && url != null && !url.isEmpty()) {
+                    med.setThumbnailImageUrl(XBMCFileContentProvider.buildUri(url).toString());
+                }
+            }
+
+            if (art.has("fanart") && !art.get("fanart").getAsString().isEmpty()) {
+                String url = getDownloadUrl(art.get("fanart").getAsString());
+                if (url != null && url != null && !url.isEmpty()) {
+                    med.setFanartImageUrl(XBMCFileContentProvider.buildUri(url).toString());
+                }
+            }
+            med.setCardImageAspectRatio("2:3");
+            if (details.has("fanart") && !details.get("fanart").getAsString().isEmpty()) {
+                String url = getDownloadUrl(details.get("fanart").getAsString());
+                if (url != null && url != null && !url.isEmpty())
+                    med.setBackgroundImageUrl(XBMCFileContentProvider.buildUri(url).toString());
+            }
+            med.setXbmcUrl("videodb://movies/titles/" + details.get("movieid").getAsString() + "?showinfo=true");
+
+//      if (details.has("trailer") && !details.get("trailer").getAsString().isEmpty())
+//      {
+//        String trailer_url = details.get("trailer").getAsString();
+//        if (trailer_url.startsWith("plugin://plugin.video.youtube"))
+//        {
+//          Uri u = Uri.parse(trailer_url);
+//          String videoid = u.getQueryParameter("videoid");
+//          String yturl = Uri.parse(m_xbmc_web_url)
+//                  .buildUpon()
+//                  .appendPath("addons").appendPath("webinterface.youtube-dl")
+//                  .appendQueryParameter("url", "http://www.youtube.com/watch?v=" + videoid)
+//                  .build()
+//                  .toString();
+//          med.setVideoUrl("https://www.youtube.com/watch?v=nN2yBBSRC78");
+//          Log.d(TAG, "createMovieFromJson: " + med.getVideoUrl());
+//        }
+//        elseF
+//          med.setVideoUrl("https://www.youtube.com/watch?v=nN2yBBSRC78");
+//      }
+
+        } catch (Exception e) {
+            Log.d(TAG, "createMovieFromJson: exception: " + e.toString());
+            return null;
         }
-        else
-          med.setVideoUrl(trailer_url);
-      }
-      */
-      med.setCategory(Media.MEDIA_TYPE_MOVIE);
 
-      med.setYear(details.get("year").getAsString());
-      med.setPlot(details.get("plot").getAsString());
-    }
-    catch (Exception e)
-    {
-      return null;
+        return med;
     }
 
-    return med;
-  }
+    private TVShow createTVShowFromJson(Context ctx, JsonObject details) {
+        TVShow med = new TVShow();
 
-  private TVShow createTVShowFromJson(JsonObject details)
-  {
-    TVShow med = new TVShow();
+        try {
+            Log.d(TAG, "createTVShowFromJson: details: " + details.toString());
+            JsonObject art = details.getAsJsonObject("art");
 
-    try
-    {
-      med.setId(details.get("tvshowid").getAsInt());
-      med.setTitle(details.get("title").getAsString());
-      JsonArray ja = details.get("studio").getAsJsonArray();
-      if (ja.size() > 0)
-        med.setDescription(ja.get(0).getAsString());
-      if (details.has("thumbnail") && !details.get("thumbnail").getAsString().isEmpty())
-      {
-        String url = getDownloadUrl(details.get("thumbnail").getAsString());
-        if (url != null && !url.isEmpty())
-          med.setCardImageUrl(XBMCFileContentProvider.buildUri(url).toString());
-      }
-      med.setCardImageAspectRatio("2:3");
-      if (details.has("fanart") && !details.get("fanart").getAsString().isEmpty())
-      {
-        String url = getDownloadUrl(details.get("fanart").getAsString());
-        if (url != null && !url.isEmpty())
-          med.setBackgroundImageUrl(XBMCFileContentProvider.buildUri(url).toString());
-      }
-      med.setXbmcUrl("videodb://tvshows/titles/" + details.get("tvshowid").getAsInt() + "/");
-      med.setCategory(Media.MEDIA_TYPE_TVSHOW);
-    }
-    catch (Exception e)
-    {
-      return null;
-    }
+            med.setId(details.get("tvshowid").getAsInt());
+            med.setTitle(details.get("title").getAsString());
+            med.setYear(details.get("year").getAsInt());
+            med.setSeason(details.get("season").getAsInt());
+            med.setRating(details.get("rating").getAsLong());
+            med.setPlot(details.get("plot").getAsString());
 
-    return med;
-  }
+            if (art.has("poster") && !art.get("poster").getAsString().isEmpty()) {
+                String url = getDownloadUrl(art.get("poster").getAsString());
+                if (url != null && url != null && !url.isEmpty()) {
+                    med.setPosterImageUrl(XBMCFileContentProvider.buildUri(url).toString());
+                }
+            }
 
-  private TVEpisode createTVEpisodeFromJson(JsonObject details)
-  {
-    TVEpisode med = new TVEpisode();
+            if (art.has("thumb") && !art.get("thumb").getAsString().isEmpty()) {
+                String url = getDownloadUrl(art.get("thumb").getAsString());
+                if (url != null && url != null && !url.isEmpty()) {
+                    med.setThumbnailImageUrl(XBMCFileContentProvider.buildUri(url).toString());
+                    med.setCardImageUrl(XBMCFileContentProvider.buildUri(url).toString());
+                }
+            }
 
-    try
-    {
-      med.setId(details.get("episodeid").getAsInt());
-      med.setTitle(details.get("title").getAsString());
-      med.setDescription(details.get("showtitle").getAsString());
-      if (details.has("thumbnail") && !details.get("thumbnail").getAsString().isEmpty())
-      {
-        String url = getDownloadUrl(details.get("thumbnail").getAsString());
-        if (url != null && !url.isEmpty())
-          med.setCardImageUrl(XBMCFileContentProvider.buildUri(url).toString());
-      }
-      med.setCardImageAspectRatio("16:9");
-      if (details.has("fanart") && !details.get("fanart").getAsString().isEmpty())
-      {
-        String url = getDownloadUrl(details.get("fanart").getAsString());
-        if (url != null && !url.isEmpty())
-          med.setBackgroundImageUrl(XBMCFileContentProvider.buildUri(url).toString());
-      }
-      med.setXbmcUrl("videodb://tvshows/titles/" + details.get("tvshowid").getAsInt() + "/" + details.get("episodeid").getAsInt() + "?showinfo=true");
-/*
-      String url = getDownloadUrl(details.get("file").getAsString());
-      if (!url.isEmpty())
-        med.setVideoUrl(url);
-*/
-      med.setCategory(Media.MEDIA_TYPE_TVEPISODE);
+            if (details.has("thumbnail") && !details.get("thumbnail").getAsString().isEmpty()) {
+                Bitmap bitmap = getBitmap(ctx, details.get("thumbnail").getAsString());
+                double width = bitmap.getWidth();
+                double height = bitmap.getHeight();
 
-      med.setSeason(details.get("season").getAsInt());
-      med.setEpisode(details.get("episode").getAsInt());
-    }
-    catch (Exception e)
-    {
-      return null;
-    }
+                if (width / height > 1.0)
+                    med.setHasLandscapeArt(true);
+                else
+                    med.setHasLandscapeArt(false);
+            } else {
+                med.setHasLandscapeArt(false);
+            }
 
-    return med;
-  }
+            if (art.has("landscape") && !art.get("landscape").getAsString().isEmpty()) {
+                String url = getDownloadUrl(art.get("landscape").getAsString());
+                if (url != null && url != null && !url.isEmpty()) {
+                    med.setLandscapeImageUrl(XBMCFileContentProvider.buildUri(url).toString());
+                    med.setHasLandscapeArt(true);
+                    Bitmap bitmap = getBitmap(ctx, art.get("landscape").getAsString());
+                    double width = bitmap.getWidth();
+                    double height = bitmap.getHeight();
 
-  private Album createAlbumFromJson(JsonObject details)
-  {
-    Album med = new Album();
+                    if (width / height > 1.0)
+                        med.setHasLandscapeArt(true);
+                    else
+                        med.setHasLandscapeArt(false);
+                } else {
+                    med.setHasLandscapeArt(false);
+                }
+            }
 
-    try
-    {
-      med.setId(details.get("albumid").getAsInt());
-      med.setTitle(details.get("title").getAsString());
-      med.setDescription(details.get("displayartist").getAsString());
-      if (details.has("thumbnail") && !details.get("thumbnail").getAsString().isEmpty())
-      {
-        String url = getDownloadUrl(details.get("thumbnail").getAsString());
-        if (url != null && !url.isEmpty())
-          med.setCardImageUrl(XBMCFileContentProvider.buildUri(url).toString());
-      }
-      med.setCardImageAspectRatio("1:1");
-      if (details.has("fanart") && !details.get("fanart").getAsString().isEmpty())
-      {
-        String url = getDownloadUrl(details.get("fanart").getAsString());
-        if (url != null && !url.isEmpty())
-          med.setBackgroundImageUrl(XBMCFileContentProvider.buildUri(url).toString());
-      }
-      med.setXbmcUrl("musicdb://albums/" + details.get("albumid").getAsString() + "/");
-      med.setCategory(Media.MEDIA_TYPE_ALBUM);
-    }
-    catch (Exception e)
-    {
-      return null;
+                if (art.has("fanart") && !art.get("fanart").getAsString().isEmpty()) {
+                String url = getDownloadUrl(art.get("fanart").getAsString());
+                if (url != null && url != null && !url.isEmpty()) {
+                    med.setFanartImageUrl(XBMCFileContentProvider.buildUri(url).toString());
+                }
+            }
+            med.setCardImageAspectRatio("16:9");
+            if (details.has("fanart") && !details.get("fanart").getAsString().isEmpty()) {
+                String url = getDownloadUrl(details.get("fanart").getAsString());
+                if (url != null && !url.isEmpty())
+                    med.setBackgroundImageUrl(XBMCFileContentProvider.buildUri(url).toString());
+            }
+            med.setXbmcUrl("videodb://tvshows/titles/" + details.get("tvshowid").getAsInt() + "/");
+            med.setCategory(Media.MEDIA_TYPE_TVSHOW);
+        } catch (Exception e) {
+            return null;
+        }
+
+        return med;
     }
 
-    return med;
-  }
+    private TVEpisode createTVEpisodeFromJson(Context ctx, JsonObject details) {
+        TVEpisode med = new TVEpisode();
 
-  private Song createSongFromJson(JsonObject details)
-  {
-    Song med = new Song();
+        try {
 
-    try
-    {
-      med.setId(details.get("songid").getAsInt());
-      med.setTitle(details.get("title").getAsString());
-      med.setDescription(details.get("displayartist").getAsString());
-      if (details.has("thumbnail") && !details.get("thumbnail").getAsString().isEmpty())
-      {
-        String url = getDownloadUrl(details.get("thumbnail").getAsString());
-        if (url != null && !url.isEmpty())
-          med.setCardImageUrl(XBMCFileContentProvider.buildUri(url).toString());
-      }
-      med.setCardImageAspectRatio("1:1");
-      if (details.has("fanart") && !details.get("fanart").getAsString().isEmpty())
-      {
-        String url = getDownloadUrl(details.get("fanart").getAsString());
-        if (url != null && !url.isEmpty())
-          med.setBackgroundImageUrl(XBMCFileContentProvider.buildUri(url).toString());
-      }
+            med.setCategory(Media.MEDIA_TYPE_TVEPISODE);
+            med.setSeason(details.get("season").getAsInt());
+            med.setEpisode(details.get("episode").getAsInt());
+            med.setId(details.get("episodeid").getAsInt());
+            med.setTitle(details.get("title").getAsString());
+            med.setDescription(details.get("showtitle").getAsString());
+            med.setPlot(details.get("plot").getAsString());
+            med.setRating(details.get("rating").getAsLong());
+            med.setYear(details.get("firstaired").getAsString());
+            med.setRuntime(details.get("runtime").getAsInt() * 1000);
+            med.setPosition(details.getAsJsonObject("resume").get("position").getAsInt() * 1000);
 
-      String extension = "";
-      if (details.has("file") && !details.get("file").getAsString().isEmpty())
-      {
-        String file = details.get("file").getAsString();
-        extension = file.substring(file.lastIndexOf("."));
-      }
+            long lastPlayed = dateToEpoch(details.get("lastplayed").getAsString());
+            med.setLastPlayed(lastPlayed);
 
-      if (details.has("albumid") && !details.get("albumid").getAsString().isEmpty())
-        med.setXbmcUrl("musicdb://albums/" + details.get("albumid").getAsString() + "/" + details.get("songid").getAsInt() + extension);
-      else
-        med.setXbmcUrl("musicdb://songs/" + details.get("songid").getAsInt() + extension);
+            long releasedDateAsEpoch = dateToEpoch(med.getYear()+" 00:00:00");
+            med.setReleaseDate(releasedDateAsEpoch);
 
+            Log.d(TAG, "createTVEpisodeFromJson: " + details.toString());
+
+            JsonObject art = details.getAsJsonObject("art");
+            if (art.has("season.poster") && !art.get("season.poster").getAsString().isEmpty()) {
+                String url = getDownloadUrl(art.get("season.poster").getAsString());
+                if (url != null && url != null && !url.isEmpty()) {
+                    med.setPosterImageUrl(XBMCFileContentProvider.buildUri(url).toString());
+                    med.setCardImageUrl(XBMCFileContentProvider.buildUri(url).toString());
+                }
+            }
+
+            if (art.has("tvshow.poster") && !art.get("tvshow.poster").getAsString().isEmpty()) {
+                String url = getDownloadUrl(art.get("tvshow.poster").getAsString());
+                if (url != null && url != null && !url.isEmpty()) {
+                    med.setTvShowPosterImagerUrl(XBMCFileContentProvider.buildUri(url).toString());
+                }
+            }
+
+            if (art.has("tvshow.landscape") && !art.get("tvshow.landscape").getAsString().isEmpty()) {
+                String url = getDownloadUrl(art.get("tvshow.landscape").getAsString());
+                if (url != null && url != null && !url.isEmpty()) {
+                    med.setLandscapeImageUrl(XBMCFileContentProvider.buildUri(url).toString());
+                    med.setHasLandscapeArt(true);
+                }
+            }
+
+//            if (art.has("thumb") && !art.get("thumb").getAsString().isEmpty()) {
+//                String url = getDownloadUrl(art.get("thumb").getAsString());
+//                if (url != null && url != null && !url.isEmpty()) {
+//                    med.setThumbnailImageUrl(XBMCFileContentProvider.buildUri(url).toString());
+//                }
+//            }
+
+//            Bitmap bitmap = getBitmap(ctx, art.get("thumb").getAsString());
+//            double width = bitmap.getWidth();
+//            double height = bitmap.getHeight();
+//
+//            if (width / height > 1.0)
+//                med.setHasLandscapeArt(true);
+
+            med.setCardImageAspectRatio("2:3");
+            if (details.has("fanart") && !details.get("fanart").getAsString().isEmpty()) {
+                String url = getDownloadUrl(details.get("fanart").getAsString());
+                if (url != null && !url.isEmpty())
+                    med.setBackgroundImageUrl(XBMCFileContentProvider.buildUri(url).toString());
+            }
+            med.setXbmcUrl("videodb://tvshows/titles/" + details.get("tvshowid").getAsInt() + "/" + details.get("episodeid").getAsInt() + "?showinfo=true");
 /*
       String url = getDownloadUrl(details.get("file").getAsString());
       if (!url.isEmpty())
         med.setVideoUrl(url);
 */
 
-      med.setCategory(Media.MEDIA_TYPE_SONG);
+        } catch (Exception e) {
+            Log.d(TAG, "createTVEpisodeFromJson: exception: " + e.toString());
+            e.printStackTrace();
+            return null;
+        }
+        Log.d(TAG, "createTVEpisodeFromJson: returning :" + med.toString());
+        return med;
     }
-    catch (Exception e)
-    {
-      return null;
+
+    private Album createAlbumFromJson(JsonObject details) {
+        Album med = new Album();
+
+        try {
+            med.setId(details.get("albumid").getAsInt());
+            med.setTitle(details.get("title").getAsString());
+            med.setDescription(details.get("displayartist").getAsString());
+            if (details.has("thumbnail") && !details.get("thumbnail").getAsString().isEmpty()) {
+                String url = getDownloadUrl(details.get("thumbnail").getAsString());
+                if (url != null && !url.isEmpty())
+                    med.setCardImageUrl(XBMCFileContentProvider.buildUri(url).toString());
+            }
+            med.setCardImageAspectRatio("1:1");
+            if (details.has("fanart") && !details.get("fanart").getAsString().isEmpty()) {
+                String url = getDownloadUrl(details.get("fanart").getAsString());
+                if (url != null && !url.isEmpty())
+                    med.setBackgroundImageUrl(XBMCFileContentProvider.buildUri(url).toString());
+            }
+            med.setXbmcUrl("musicdb://albums/" + details.get("albumid").getAsString() + "/");
+            med.setCategory(Media.MEDIA_TYPE_ALBUM);
+        } catch (Exception e) {
+            return null;
+        }
+
+        return med;
     }
 
-    return med;
-  }
+    private Song createSongFromJson(JsonObject details) {
+        Song med = new Song();
 
-  private MusicVideo createMusicvideoFromJson(JsonObject details)
-  {
-    MusicVideo med = new MusicVideo();
+        try {
+            med.setId(details.get("songid").getAsInt());
+            med.setTitle(details.get("title").getAsString());
+            med.setDescription(details.get("displayartist").getAsString());
+            if (details.has("thumbnail") && !details.get("thumbnail").getAsString().isEmpty()) {
+                String url = getDownloadUrl(details.get("thumbnail").getAsString());
+                if (url != null && !url.isEmpty())
+                    med.setCardImageUrl(XBMCFileContentProvider.buildUri(url).toString());
+            }
+            med.setCardImageAspectRatio("1:1");
+            if (details.has("fanart") && !details.get("fanart").getAsString().isEmpty()) {
+                String url = getDownloadUrl(details.get("fanart").getAsString());
+                if (url != null && !url.isEmpty())
+                    med.setBackgroundImageUrl(XBMCFileContentProvider.buildUri(url).toString());
+            }
 
-    try
-    {
-      med.setId(details.get("musicvideoid").getAsInt());
-      med.setTitle(details.get("title").getAsString());
-      JsonArray ja = details.get("artist").getAsJsonArray();
-      if (ja.size() > 0)
-        med.setDescription(ja.get(0).getAsString());
-      if (details.has("thumbnail") && !details.get("thumbnail").getAsString().isEmpty())
-      {
-        String url = getDownloadUrl(details.get("thumbnail").getAsString());
-        if (url != null && !url.isEmpty())
-          med.setCardImageUrl(XBMCFileContentProvider.buildUri(url).toString());
-      }
-      med.setCardImageAspectRatio("1:1");
-      if (details.has("fanart") && !details.get("fanart").getAsString().isEmpty())
-      {
-        String url = getDownloadUrl(details.get("fanart").getAsString());
-        if (url != null && !url.isEmpty())
-          med.setBackgroundImageUrl(XBMCFileContentProvider.buildUri(url).toString());
-      }
+            String extension = "";
+            if (details.has("file") && !details.get("file").getAsString().isEmpty()) {
+                String file = details.get("file").getAsString();
+                extension = file.substring(file.lastIndexOf("."));
+            }
 
-      med.setXbmcUrl("videodb://musicvideos/titles/" + details.get("musicvideoid").getAsInt());
+            if (details.has("albumid") && !details.get("albumid").getAsString().isEmpty())
+                med.setXbmcUrl("musicdb://albums/" + details.get("albumid").getAsString() + "/" + details.get("songid").getAsInt() + extension);
+            else
+                med.setXbmcUrl("musicdb://songs/" + details.get("songid").getAsInt() + extension);
 
+/*
       String url = getDownloadUrl(details.get("file").getAsString());
-      if (url != null && !url.isEmpty())
-        med.setVideoUrl(XBMCFileContentProvider.buildUri(url).toString());
+      if (!url.isEmpty())
+        med.setVideoUrl(url);
+*/
 
-      med.setCategory(Media.MEDIA_TYPE_MUSICVIDEO);
-    }
-    catch (Exception e)
-    {
-      return null;
-    }
-
-    return med;
-  }
-
-  public List<Media> getSuggestions()
-  {
-    List<Media> medias = new ArrayList<Media>();
-
-    JsonObject rep = request_object(RECOMMENDATION_MOVIES_JSON);
-    if (rep != null && rep.has("result"))
-    {
-      try
-      {
-        JsonObject results = rep.getAsJsonObject("result");
-        if (results.has("movies"))
-        {
-          JsonArray movies = results.get("movies").getAsJsonArray();
-
-          int count = 0;
-          for (int i = 0; i < movies.size() && count < MAX_RECOMMENDATIONS; ++i)
-          {
-            try
-            {
-              JsonObject details = movies.get(i).getAsJsonObject();
-              Movie med = createMovieFromJson(details);
-              if (med != null)
-              {
-                medias.add(med);
-                ++count;
-              }
-            }
-            catch (Exception e)
-            {
-              continue;
-            }
-          }
+            med.setCategory(Media.MEDIA_TYPE_SONG);
+        } catch (Exception e) {
+            return null;
         }
-      } catch (Exception e)
-      {
-        e.printStackTrace();
-      }
+
+        return med;
     }
 
-    rep = request_object(RECOMMENDATIONS_SHOWS_JSON);
-    if (rep != null && rep.has("result"))
-    {
-      try
-      {
-        JsonObject results = rep.getAsJsonObject("result");
-        if (results.has("tvshows"))
-        {
-          JsonArray tvshows = results.get("tvshows").getAsJsonArray();
+    private MusicVideo createMusicvideoFromJson(JsonObject details) {
+        MusicVideo med = new MusicVideo();
 
-          int count = 0;
-          for (int i = 0; i < tvshows.size() && count < MAX_RECOMMENDATIONS; ++i)
-          {
-            try
-            {
-              JsonObject tvshow = tvshows.get(i).getAsJsonObject();
-              TVShow med = createTVShowFromJson(tvshow);
-              if (med != null)
-              {
-                medias.add(med);
-                ++count;
-              }
+        try {
+            med.setId(details.get("musicvideoid").getAsInt());
+            med.setTitle(details.get("title").getAsString());
+            JsonArray ja = details.get("artist").getAsJsonArray();
+            if (ja.size() > 0)
+                med.setDescription(ja.get(0).getAsString());
+            if (details.has("thumbnail") && !details.get("thumbnail").getAsString().isEmpty()) {
+                String url = getDownloadUrl(details.get("thumbnail").getAsString());
+                if (url != null && !url.isEmpty())
+                    med.setCardImageUrl(XBMCFileContentProvider.buildUri(url).toString());
             }
-            catch (Exception e)
-            {
-              continue;
+            med.setCardImageAspectRatio("1:1");
+            if (details.has("fanart") && !details.get("fanart").getAsString().isEmpty()) {
+                String url = getDownloadUrl(details.get("fanart").getAsString());
+                if (url != null && !url.isEmpty())
+                    med.setBackgroundImageUrl(XBMCFileContentProvider.buildUri(url).toString());
             }
-          }
+
+            med.setXbmcUrl("videodb://musicvideos/titles/" + details.get("musicvideoid").getAsInt());
+
+            String url = getDownloadUrl(details.get("file").getAsString());
+            if (url != null && !url.isEmpty())
+                med.setVideoUrl(XBMCFileContentProvider.buildUri(url).toString());
+
+            med.setCategory(Media.MEDIA_TYPE_MUSICVIDEO);
+        } catch (Exception e) {
+            return null;
         }
-      } catch (Exception e)
-      {
-        e.printStackTrace();
-      }
+
+        return med;
     }
 
-    rep = request_object(RECOMMENDATIONS_ALBUMS_JSON);
-    if (rep != null && rep.has("result"))
-    {
-      try
-      {
-        JsonObject results = rep.getAsJsonObject("result");
-        if (results.has("albums"))
-        {
-          JsonArray albums = results.get("albums").getAsJsonArray();
+    public List<Media> getSuggestions(Context ctx) {
+        List<Media> medias = new ArrayList<Media>();
 
-          int count = 0;
-          for (int i = 0; i < albums.size() && count < MAX_RECOMMENDATIONS; ++i)
-          {
-            try
-            {
-              JsonObject album = albums.get(i).getAsJsonObject();
-              Album med = createAlbumFromJson(album);
-              if (med != null)
-              {
-                medias.add(med);
-                ++count;
-              }
+        JsonObject rep = request_object(RECOMMENDATION_MOVIES_JSON);
+        if (rep != null && rep.has("result")) {
+            try {
+                JsonObject results = rep.getAsJsonObject("result");
+                if (results.has("movies")) {
+                    JsonArray movies = results.get("movies").getAsJsonArray();
+
+                    int count = 0;
+                    for (int i = 0; i < movies.size() && count < MAX_RECOMMENDATIONS; ++i) {
+                        try {
+                            JsonObject details = movies.get(i).getAsJsonObject();
+                            Movie med = createMovieFromJson(ctx, details);
+                            if (med != null) {
+                                medias.add(med);
+                                ++count;
+                            }
+                        } catch (Exception e) {
+                            continue;
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-            catch (Exception e)
-            {
-              continue;
-            }
-          }
         }
-      } catch (Exception e)
-      {
-        e.printStackTrace();
-      }
-    }
 
-    return medias;
-  }
+        rep = request_object(RECOMMENDATIONS_SHOWS_JSON);
+        if (rep != null && rep.has("result")) {
+            try {
+                JsonObject results = rep.getAsJsonObject("result");
+                if (results.has("tvshows")) {
+                    JsonArray tvshows = results.get("tvshows").getAsJsonArray();
 
-  public List<Media> getMedias(List<File> files)
-  {
-    List<Media> medias = new ArrayList<Media>();
+                    int count = 0;
+                    for (int i = 0; i < tvshows.size() && count < MAX_RECOMMENDATIONS; ++i) {
+                        try {
+                            JsonObject tvshow = tvshows.get(i).getAsJsonObject();
+                            TVShow med = createTVShowFromJson(ctx, tvshow);
+                            if (med != null) {
+                                medias.add(med);
+                                ++count;
+                            }
+                        } catch (Exception e) {
+                            continue;
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
 
-    try
-    {
-      int nbItems = 0;
-      String strReq = "[";
-      for (int i = 0; i < files.size()  && nbItems < MAX_ITEMS; ++i)
-      {
-        File file = files.get(i);
-        String mediaType = file.getMediatype();
-        long mediaId = file.getId();
-        if (mediaType.equals("movie"))
-          strReq += String.format(RETRIEVE_MOVIE_DETAILS, mediaId, String.valueOf(++nbItems));
-        else if (mediaType.equals("episode"))
-          strReq += String.format(RETRIEVE_EPISODE_DETAILS, mediaId, String.valueOf(++nbItems));
-        else if (mediaType.equals("tvshow"))
-          strReq += String.format(RETRIEVE_TVSHOW_DETAILS, mediaId, String.valueOf(++nbItems));
-        else if (mediaType.equals("album"))
-          strReq += String.format(RETRIEVE_ALBUM_DETAILS, mediaId, String.valueOf(++nbItems));
-        else if (mediaType.equals("song"))
-          strReq += String.format(RETRIEVE_SONG_DETAILS, mediaId, String.valueOf(++nbItems));
-        else if (mediaType.equals("musicvideo"))
-          strReq += String.format(RETRIEVE_MUSICVIDEO_DETAILS, mediaId, String.valueOf(++nbItems));
+        rep = request_object(RECOMMENDATIONS_ALBUMS_JSON);
+        if (rep != null && rep.has("result")) {
+            try {
+                JsonObject results = rep.getAsJsonObject("result");
+                if (results.has("albums")) {
+                    JsonArray albums = results.get("albums").getAsJsonArray();
 
-        if (i+1 < files.size()  && nbItems < MAX_ITEMS)
-          strReq += ",";
-      }
-      strReq += "]";
+                    int count = 0;
+                    for (int i = 0; i < albums.size() && count < MAX_RECOMMENDATIONS; ++i) {
+                        try {
+                            JsonObject album = albums.get(i).getAsJsonObject();
+                            Album med = createAlbumFromJson(album);
+                            if (med != null) {
+                                medias.add(med);
+                                ++count;
+                            }
+                        } catch (Exception e) {
+                            continue;
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
 
-      JsonArray reqBatch = request_array(strReq);
-      if (reqBatch == null)
         return medias;
-
-      nbItems = 0;
-      for (int i = 0; i < reqBatch.size(); ++i)
-      {
-        JsonObject req = reqBatch.get(i).getAsJsonObject();
-        if (req == null || !req.has("result"))
-          continue;
-
-        File file = files.get(i);
-        String mediaType = file.getMediatype();
-        if (mediaType.equals("movie"))
-        {
-          JsonObject details = req.getAsJsonObject("result").getAsJsonObject("moviedetails");
-          Movie med = createMovieFromJson(details);
-          if (med != null)
-          {
-            medias.add(med);
-            nbItems++;
-          }
-        }
-        else if (mediaType.equals("episode"))
-        {
-          JsonObject details = req.getAsJsonObject("result").getAsJsonObject("episodedetails");
-          TVEpisode med = createTVEpisodeFromJson(details);
-          if (med != null)
-          {
-            medias.add(med);
-            nbItems++;
-          }
-        }
-        else if (mediaType.equals("tvshow"))
-        {
-          JsonObject details = req.getAsJsonObject("result").getAsJsonObject("tvshowdetails");
-          TVShow med = createTVShowFromJson(details);
-          medias.add(med);
-          nbItems++;
-        }
-        else if (mediaType.equals("album"))
-        {
-          JsonObject details = req.getAsJsonObject("result").getAsJsonObject("albumdetails");
-          Album med = createAlbumFromJson(details);
-          medias.add(med);
-          nbItems++;
-        }
-        else if (mediaType.equals("song"))
-        {
-          JsonObject details = req.getAsJsonObject("result").getAsJsonObject("songdetails");
-          Song med = createSongFromJson(details);
-          medias.add(med);
-          nbItems++;
-        }
-        else if (mediaType.equals("musicvideo"))
-        {
-          JsonObject details = req.getAsJsonObject("result").getAsJsonObject("musicvideodetails");
-          MusicVideo med = createMusicvideoFromJson(details);
-          medias.add(med);
-          nbItems++;
-        }
-      }
-    } catch (Exception e)
-    {
-      e.printStackTrace();
     }
 
-    return medias;
-  }
+    public List<Media> getMedias(Context ctx, List<File> files) {
+        List<Media> medias = new ArrayList<Media>();
+
+        try {
+            int nbItems = 0;
+            String strReq = "[";
+            for (int i = 0; i < files.size() && nbItems < MAX_ITEMS; ++i) {
+                File file = files.get(i);
+                String mediaType = file.getMediatype();
+                long mediaId = file.getId();
+                if (mediaType.equals("movie"))
+                    strReq += String.format(RETRIEVE_MOVIE_DETAILS, mediaId, String.valueOf(++nbItems));
+                else if (mediaType.equals("episode"))
+                    strReq += String.format(RETRIEVE_EPISODE_DETAILS, mediaId, String.valueOf(++nbItems));
+                else if (mediaType.equals("tvshow"))
+                    strReq += String.format(RETRIEVE_TVSHOW_DETAILS, mediaId, String.valueOf(++nbItems));
+                else if (mediaType.equals("album"))
+                    strReq += String.format(RETRIEVE_ALBUM_DETAILS, mediaId, String.valueOf(++nbItems));
+                else if (mediaType.equals("song"))
+                    strReq += String.format(RETRIEVE_SONG_DETAILS, mediaId, String.valueOf(++nbItems));
+                else if (mediaType.equals("musicvideo"))
+                    strReq += String.format(RETRIEVE_MUSICVIDEO_DETAILS, mediaId, String.valueOf(++nbItems));
+
+                if (i + 1 < files.size() && nbItems < MAX_ITEMS)
+                    strReq += ",";
+            }
+            strReq += "]";
+            JsonArray reqBatch = request_array(strReq);
+            if (reqBatch == null)
+                return medias;
+
+            nbItems = 0;
+            String lastTitle = "";
+            long lowestRating = 0;
+            for (int i = 0; i < reqBatch.size(); ++i) {
+                JsonObject req = reqBatch.get(i).getAsJsonObject();
+                if (req == null || !req.has("result"))
+                    continue;
+
+                File file = files.get(i);
+                String mediaType = file.getMediatype();
+                Log.d(TAG, "getMedias: mediaType: " + mediaType);
+                if (mediaType.equals("movie")) {
+                    JsonObject details = req.getAsJsonObject("result").getAsJsonObject("moviedetails");
+
+                    Log.d(TAG, "getMedias: " + details.toString());
+
+                    Movie med = createMovieFromJson(ctx, details);
+                    if (med != null) {
+                        medias.add(med);
+                        nbItems++;
+                    }
+
+                } else if (mediaType.equals("episode")) {
+                    Log.d(TAG, "getMedias: getEpisode");
+                    JsonObject details = req.getAsJsonObject("result").getAsJsonObject("episodedetails");
+                    TVEpisode med = createTVEpisodeFromJson(ctx, details);
+
+                    if (med != null && med.getDescription().equals(lastTitle)) {
+                        if (med.getRating() < lowestRating) {
+                            medias.add(med);
+                            nbItems++;
+                        }
+                    } else if (med != null) {
+                        Log.d(TAG, "getMedias: tvshow is not null");
+                        medias.add(med);
+                        nbItems++;
+                    } else {
+                        Log.d(TAG, "getMedias: tvshow is null");
+                    }
+
+//                    Log.d(TAG, "getMedias: " + med.toString());
+//                    if (med != null) {
+//                        Log.d(TAG, "getMedias: tvshow is not null");
+//                        medias.add(med);
+//                        nbItems++;
+//                    } else {
+//                        Log.d(TAG, "getMedias: tvshow is null");
+//                    }
+
+                } else if (mediaType.equals("tvshow")) {
+                    JsonObject details = req.getAsJsonObject("result").getAsJsonObject("tvshowdetails");
+                    TVShow med = createTVShowFromJson(ctx, details);
+                    if (med != null) {
+                        medias.add(med);
+                        nbItems++;
+                    }
+                } else if (mediaType.equals("album")) {
+                    JsonObject details = req.getAsJsonObject("result").getAsJsonObject("albumdetails");
+                    Album med = createAlbumFromJson(details);
+                    medias.add(med);
+                    nbItems++;
+                } else if (mediaType.equals("song")) {
+                    JsonObject details = req.getAsJsonObject("result").getAsJsonObject("songdetails");
+                    Song med = createSongFromJson(details);
+                    medias.add(med);
+                    nbItems++;
+                } else if (mediaType.equals("musicvideo")) {
+                    JsonObject details = req.getAsJsonObject("result").getAsJsonObject("musicvideodetails");
+                    MusicVideo med = createMusicvideoFromJson(details);
+                    medias.add(med);
+                    nbItems++;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return medias;
+    }
+
+    private long dateToEpoch(String date) throws ParseException {
+        if (date.equals("")) {
+            return 0;
+        }
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        df.setTimeZone(TimeZone.getTimeZone("GMT-04:00"));
+        Date parsedDate = df.parse(date);
+        return parsedDate.getTime();
+    }
 }

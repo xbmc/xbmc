@@ -8,4 +8,146 @@ import @APP_PACKAGE@.model.Media;
 
 public class TVShow extends Media
 {
+    private String genre;
+    private String imdbNumber;
+    private String mpaa;
+    private double rating;
+    private int season;
+    private String studio;
+    private int year;
+    private String plot;
+
+    private String posterImageUrl = null;
+    private String thumbnailImageUrl = null;
+    private String landscapeImageUrl = null;
+    private String fanartImageUrl = null;
+
+    private boolean hasLandscapeArt;
+
+    public String getGenre() {
+        return genre;
+    }
+
+    public void setGenre(String genre) {
+        this.genre = genre;
+    }
+
+    public String getImdbNumber() {
+        return imdbNumber;
+    }
+
+    public void setImdbNumber(String imdbNumber) {
+        this.imdbNumber = imdbNumber;
+    }
+
+    public String getMpaa() {
+        return mpaa;
+    }
+
+    public void setMpaa(String mpaa) {
+        this.mpaa = mpaa;
+    }
+
+    public double getRating() {
+        return rating;
+    }
+
+    public void setRating(double rating) {
+        this.rating = rating;
+    }
+
+    public int getSeason() {
+        return season;
+    }
+
+    public void setSeason(int season) {
+        this.season = season;
+    }
+
+    public String getStudio() {
+        return studio;
+    }
+
+    public void setStudio(String studio) {
+        this.studio = studio;
+    }
+
+    public int getYear() {
+        return year;
+    }
+
+    public void setYear(int year) {
+        this.year = year;
+    }
+
+    public String getPlot() {
+        return plot;
+    }
+
+    public void setPlot(String plot) {
+        this.plot = plot;
+    }
+
+    public String getPosterImageUrl() {
+        return posterImageUrl;
+    }
+
+    public void setPosterImageUrl(String posterImageUrl) {
+        this.posterImageUrl = posterImageUrl;
+    }
+
+    public String getThumbnailImageUrl() {
+        return thumbnailImageUrl;
+    }
+
+    public void setThumbnailImageUrl(String thumbnailImageUrl) {
+        this.thumbnailImageUrl = thumbnailImageUrl;
+    }
+
+    public String getFanartImageUrl() {
+        return fanartImageUrl;
+    }
+
+    public void setFanartImageUrl(String fanartImageUrl) {
+        this.fanartImageUrl = fanartImageUrl;
+    }
+
+    public String getLandscapeImageUrl() {
+        return landscapeImageUrl;
+    }
+
+    public void setLandscapeImageUrl(String landscapeImageUrl) {
+        this.landscapeImageUrl = landscapeImageUrl;
+    }
+
+    public boolean isHasLandscapeArt() {
+        return hasLandscapeArt;
+    }
+
+    public boolean getHasLandscapeArt() {
+        return hasLandscapeArt;
+    }
+
+    public void setHasLandscapeArt(boolean hasLandscapeArt) {
+        this.hasLandscapeArt = hasLandscapeArt;
+    }
+
+    @Override
+    public String toString() {
+        return "TVShow{" +
+                "genre='" + genre + '\'' +
+                ", imdbNumber='" + imdbNumber + '\'' +
+                ", mpaa='" + mpaa + '\'' +
+                ", rating=" + rating +
+                ", season=" + season +
+                ", studio='" + studio + '\'' +
+                ", year=" + year +
+                ", plot='" + plot + '\'' +
+                ", posterImageUrl='" + posterImageUrl + '\'' +
+                ", thumbnailImageUrl='" + thumbnailImageUrl + '\'' +
+                ", landscapeImageUrl='" + landscapeImageUrl + '\'' +
+                ", fanartImageUrl='" + fanartImageUrl + '\'' +
+                ", hasLandscapeArt=" + hasLandscapeArt +
+                '}';
+    }
 }
