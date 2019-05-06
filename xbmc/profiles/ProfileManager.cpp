@@ -7,6 +7,7 @@
  */
 
 #include <algorithm>
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -494,7 +495,7 @@ bool CProfileManager::DeleteProfile(unsigned int index)
     m_settings->Save();
   }
 
-  CFileItemPtr item = CFileItemPtr(new CFileItem(URIUtils::AddFileToFolder(GetUserDataFolder(), strDirectory)));
+  CFileItemPtr item = std::make_shared<CFileItem>(URIUtils::AddFileToFolder(GetUserDataFolder(), strDirectory));
   item->SetPath(URIUtils::AddFileToFolder(GetUserDataFolder(), strDirectory + "/"));
   item->m_bIsFolder = true;
   item->Select(true);
