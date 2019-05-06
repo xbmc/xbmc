@@ -46,10 +46,6 @@ public:
   void ReleaseBuffer(int idx) override;
   bool NeedBuffer(int idx) override;
 
-  // Feature support
-  bool Supports(ERENDERFEATURE feature) override;
-  bool Supports(ESCALINGMETHOD method) override;
-
 protected:
   bool LoadShadersHook() override;
   bool RenderHook(int idx) override;

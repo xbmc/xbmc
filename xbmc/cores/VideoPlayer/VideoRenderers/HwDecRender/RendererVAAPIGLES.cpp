@@ -115,16 +115,6 @@ bool CRendererVAAPI::ConfigChanged(const VideoPicture &picture)
   return false;
 }
 
-bool CRendererVAAPI::Supports(ERENDERFEATURE feature)
-{
-  return CLinuxRendererGLES::Supports(feature);
-}
-
-bool CRendererVAAPI::Supports(ESCALINGMETHOD method)
-{
-  return CLinuxRendererGLES::Supports(method);
-}
-
 EShaderFormat CRendererVAAPI::GetShaderFormat()
 {
   EShaderFormat ret = SHADER_NONE;
