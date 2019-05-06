@@ -500,9 +500,8 @@ bool CPVRChannelGroups::AddGroup(const std::string &strName)
     if (!group)
     {
       // create a new group
-      group = CPVRChannelGroupPtr(new CPVRChannelGroup());
-      group->SetRadio(m_bRadio);
-      group->SetGroupName(strName);
+      group.reset(new CPVRChannelGroup(m_bRadio, CPVRChannelGroup::INVALID_GROUP_ID, strName, GetGroupAll()));
+
       m_groups.push_back(group);
       bPersist = true;
     }
