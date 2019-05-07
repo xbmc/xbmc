@@ -8,6 +8,7 @@
 
 #include "AppParamParser.h"
 #include "CompileInfo.h"
+#include "ServiceBroker.h"
 #include "platform/Environment.h"
 #include "platform/xbmc.h"
 #include "threads/Thread.h"

@@ -87,6 +87,9 @@ void CServiceManager::DeinitTesting()
 
 bool CServiceManager::InitStageOne()
 {
+  m_Platform.reset(CPlatform::CreateInstance());
+  m_Platform->Init();
+
 #ifdef HAS_PYTHON
   m_XBPython.reset(new XBPython());
   CScriptInvocationManager::GetInstance().RegisterLanguageInvocationHandler(m_XBPython.get(), ".py");
@@ -104,9 +107,6 @@ bool CServiceManager::InitStageTwo(const CAppParamParser &params, const std::str
 {
   // Initialize the addon database (must be before the addon manager is init'd)
   m_databaseManager.reset(new CDatabaseManager);
-
-  m_Platform.reset(CPlatform::CreateInstance());
-  m_Platform->Init();
 
   m_binaryAddonManager.reset(new ADDON::CBinaryAddonManager()); /* Need to constructed before, GetRunningInstance() of binary CAddonDll need to call them */
   m_addonMgr.reset(new ADDON::CAddonMgr());

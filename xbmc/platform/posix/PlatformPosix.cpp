@@ -12,6 +12,8 @@ std::atomic_flag CPlatformPosix::ms_signalFlag;
 
 void CPlatformPosix::Init()
 {
+  CPlatform::Init();
+
   // Initialize to "set" state
   ms_signalFlag.test_and_set();
 }

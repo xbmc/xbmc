@@ -300,7 +300,7 @@ std::string CSysInfoJob::GetBatteryLevel()
 double CSysInfoJob::GetCPUFrequency()
 {
 #if defined (TARGET_POSIX) || defined(TARGET_WINDOWS)
-  return double (g_cpuInfo.getCPUFrequency());
+  return double(CServiceBroker::GetCPUInfo()->GetCPUFrequency());
 #else
   return 0;
 #endif
@@ -487,39 +487,39 @@ bool CSysInfo::GetDiskSpace(std::string drive,int& iTotal, int& iTotalFree, int&
 
 std::string CSysInfo::GetCPUModel()
 {
-  return "CPU: " + g_cpuInfo.getCPUModel();
+  return "CPU: " + CServiceBroker::GetCPUInfo()->GetCPUModel();
 }
 
 std::string CSysInfo::GetCPUBogoMips()
 {
-  return "BogoMips: " + g_cpuInfo.getCPUBogoMips();
+  return "BogoMips: " + CServiceBroker::GetCPUInfo()->GetCPUBogoMips();
 }
 
 std::string CSysInfo::GetCPUSoC()
 {
-  if (!g_cpuInfo.getCPUSoC().empty())
-    return "SoC: " + g_cpuInfo.getCPUSoC();
+  if (!CServiceBroker::GetCPUInfo()->GetCPUSoC().empty())
+    return "SoC: " + CServiceBroker::GetCPUInfo()->GetCPUSoC();
   return "";
 }
 
 std::string CSysInfo::GetCPUHardware()
 {
-  return "Hardware: " + g_cpuInfo.getCPUHardware();
+  return "Hardware: " + CServiceBroker::GetCPUInfo()->GetCPUHardware();
 }
 
 std::string CSysInfo::GetCPURevision()
 {
-  return "Revision: " + g_cpuInfo.getCPURevision();
+  return "Revision: " + CServiceBroker::GetCPUInfo()->GetCPURevision();
 }
 
 std::string CSysInfo::GetCPUSerial()
 {
-  return "Serial: " + g_cpuInfo.getCPUSerial();
+  return "Serial: " + CServiceBroker::GetCPUInfo()->GetCPUSerial();
 }
 
 int CSysInfo::GetCPUCount()
 {
-  return g_cpuInfo.getCPUCount();
+  return CServiceBroker::GetCPUInfo()->GetCPUCount();
 }
 
 std::string CSysInfo::GetKernelName(bool emptyIfUnknown /*= false*/)

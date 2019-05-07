@@ -1,8 +1,10 @@
-set(SOURCES OptionalsReg.cpp
+set(SOURCES CPUInfoLinux.cpp
             MemUtils.cpp
+            OptionalsReg.cpp
             TimeUtils.cpp)
 
-set(HEADERS OptionalsReg.h
+set(HEADERS CPUInfoLinux.h
+            OptionalsReg.h
             PlatformConstants.h
             TimeUtils.h)
 
