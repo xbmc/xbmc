@@ -385,7 +385,7 @@ bool CCharsetConverter::CInnerConverter::convert(iconv_t type, int multiplier, c
   char*       outBufStart   = outBuf;     //where in out output buffer iconv() should start writing
 
   size_t returnV;
-  while(1)
+  while(true)
   {
     //iconv() will update inBufStart, inBytesAvail, outBufStart and outBytesAvail
     returnV = iconv(type, charPtrPtrAdapter(&inBufStart), &inBytesAvail, &outBufStart, &outBytesAvail);

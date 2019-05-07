@@ -723,7 +723,7 @@ void CScroller::ScrollTo(float endPos)
 {
   float delta = endPos - m_scrollValue;
     // if there is scrolling running in same direction - set resume point
-  m_hasResumePoint = m_delta != 0 && delta * m_delta > 0 && m_pTweener ? m_pTweener->HasResumePoint() : 0;
+  m_hasResumePoint = m_delta != 0 && delta * m_delta > 0 && m_pTweener ? m_pTweener->HasResumePoint() : false;
 
   m_delta = delta;
   m_startPosition = m_scrollValue;
