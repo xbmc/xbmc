@@ -18,88 +18,109 @@ import android.net.Uri;
 /**
  * Contains the data about a channel that will be displayed on the launcher.
  */
-public class Subscription
-{
-  private long channelId;
-  private String name;
-  private String uri;
-  private int channelLogo;
 
-  /**
-   * Constructor for Gson to use.
-   */
-  public Subscription()
-  {
-  }
+public class Subscription {
+    private long channelId;
+    private String name;
+    private String uri;
+    private int channelLogo;
+    private String category = null;
 
-  private Subscription(
-          String name, String uri, int channelLogo)
-  {
-    this.name = name;
-    this.uri = uri;
-    this.channelLogo = channelLogo;
-  }
+    private boolean addToPlayNext;
 
-  public static Subscription createSubscription(
-          String name, String uri, int channelLogo)
-  {
-    return new Subscription(name, uri, channelLogo);
-  }
+    public static final String SUBSCRIPTION_TYPE_ON_DECK = "On Deck";
+    public static final String SUBSCRIPTION_TYPE_CONTINUE_WATCHING = "Continue Watching";
+    public static final String SUBSCRIPTION_TYPE_REGULAR = "Regular";
 
-  public long getChannelId()
-  {
-    return channelId;
-  }
+    /**
+     * Constructor for Gson to use.
+     */
+    public Subscription() {
+    }
 
-  public void setChannelId(long channelId)
-  {
-    this.channelId = channelId;
-  }
+    private Subscription(
+            String name, String uri, int channelLogo) {
+        this.name = name;
+        this.uri = uri;
+        this.channelLogo = channelLogo;
+    }
 
-  public String getName()
-  {
-    return name;
-  }
+    public static Subscription createSubscription(
+            String name, String uri, int channelLogo) {
+        return new Subscription(name, uri, channelLogo);
+    }
 
-  public void setName(String name)
-  {
-    this.name = name;
-  }
+    public long getChannelId() {
+        return channelId;
+    }
 
-  public String getUri()
-  {
-    return uri;
-  }
+    public void setChannelId(long channelId) {
+        this.channelId = channelId;
+    }
 
-  public void setUri(String uri)
-  {
-    this.uri = uri;
-  }
+    public String getName() {
+        return name;
+    }
 
-  public int getChannelLogo()
-  {
-    return channelLogo;
-  }
+    public void setName(String name) {
+        this.name = name;
+    }
 
-  public void setChannelLogo(int channelLogo)
-  {
-    this.channelLogo = channelLogo;
-  }
+    public String getUri() {
+        return uri;
+    }
 
-  @Override
-  public boolean equals(Object o)
-  {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
+    public void setUri(String uri) {
+        this.uri = uri;
+    }
 
-    Subscription that = (Subscription) o;
+    public int getChannelLogo() {
+        return channelLogo;
+    }
 
-    return name != null ? name.equals(that.name) : that.name == null;
-  }
+    public void setChannelLogo(int channelLogo) {
+        this.channelLogo = channelLogo;
+    }
 
-  @Override
-  public int hashCode()
-  {
-    return name != null ? name.hashCode() : 0;
-  }
+    public boolean isAddToPlayNext() {
+        return addToPlayNext;
+    }
+
+    public void setAddToPlayNext(boolean addToPlayNext) {
+        this.addToPlayNext = addToPlayNext;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Subscription that = (Subscription) o;
+
+        return name != null ? name.equals(that.name) : that.name == null;
+    }
+
+    @Override
+    public int hashCode() {
+        return name != null ? name.hashCode() : 0;
+    }
+
+    @Override
+    public String toString() {
+        return "Subscription{" +
+                "channelId=" + channelId +
+                ", name='" + name + '\'' +
+                ", uri='" + uri + '\'' +
+                ", channelLogo=" + channelLogo +
+                ", addToPlayNext=" + addToPlayNext +
+                '}';
+    }
 }
