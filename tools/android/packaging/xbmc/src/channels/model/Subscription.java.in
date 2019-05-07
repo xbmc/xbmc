@@ -23,7 +23,6 @@ public class Subscription {
     private long channelId;
     private String name;
     private String uri;
-    private int channelLogo;
     private String category = null;
 
     private boolean addToPlayNext;
@@ -42,7 +41,6 @@ public class Subscription {
             String name, String uri, int channelLogo) {
         this.name = name;
         this.uri = uri;
-        this.channelLogo = channelLogo;
     }
 
     public static Subscription createSubscription(
@@ -72,14 +70,6 @@ public class Subscription {
 
     public void setUri(String uri) {
         this.uri = uri;
-    }
-
-    public int getChannelLogo() {
-        return channelLogo;
-    }
-
-    public void setChannelLogo(int channelLogo) {
-        this.channelLogo = channelLogo;
     }
 
     public boolean isAddToPlayNext() {
@@ -119,7 +109,6 @@ public class Subscription {
                 "channelId=" + channelId +
                 ", name='" + name + '\'' +
                 ", uri='" + uri + '\'' +
-                ", channelLogo=" + channelLogo +
                 ", addToPlayNext=" + addToPlayNext +
                 '}';
     }
