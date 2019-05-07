@@ -34,13 +34,13 @@
 
 using namespace PVR;
 
-CPVRChannelGroup::CPVRChannelGroup(void)
+CPVRChannelGroup::CPVRChannelGroup()
 {
   OnInit();
 }
 
 CPVRChannelGroup::CPVRChannelGroup(bool bRadio,
-                                   unsigned int iGroupId,
+                                   int iGroupId,
                                    const std::string& strGroupName,
                                    const std::shared_ptr<CPVRChannelGroup>& allChannelsGroup) :
     m_bRadio(bRadio),
@@ -773,11 +773,11 @@ bool CPVRChannelGroup::Persist(void)
   CSingleLock lock(m_critSection);
 
   /* only persist if the group has changes and is fully loaded or never has been saved before */
-  if (!HasChanges() || (!m_bLoaded && m_iGroupId != -1))
+  if (!HasChanges() || (!m_bLoaded && m_iGroupId != INVALID_GROUP_ID))
     return bReturn;
 
   // Mark newly created groups as loaded so future updates will also be persisted...
-  if (m_iGroupId == -1)
+  if (m_iGroupId == INVALID_GROUP_ID)
     m_bLoaded = true;
 
   if (database)
