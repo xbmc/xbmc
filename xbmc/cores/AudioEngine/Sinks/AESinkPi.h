@@ -11,7 +11,8 @@
 #include "cores/AudioEngine/Interfaces/AESink.h"
 #include "cores/AudioEngine/Utils/AEDeviceInfo.h"
 
-#include "cores/omxplayer/OMXAudio.h"
+#include "platform/linux/OMXCore.h"
+#include "platform/linux/XTimeUtils.h"
 
 class CAESinkPi : public IAESink
 {

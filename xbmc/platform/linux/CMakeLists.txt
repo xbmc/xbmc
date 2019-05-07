@@ -41,12 +41,10 @@ endif()
 
 if(CORE_PLATFORM_NAME_LC STREQUAL rbpi)
   list(APPEND SOURCES RBP.cpp
-                      OMXClock.cpp
                       OMXCore.cpp)
   list(APPEND HEADERS RBP.h
                       DllBCM.h
                       DllOMX.h
-                      OMXClock.h
                       OMXCore.h)
 endif()
 

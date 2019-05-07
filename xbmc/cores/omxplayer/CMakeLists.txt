@@ -1,18 +1,6 @@
-set(SOURCES OMXAudio.cpp
-            OMXAudioCodecOMX.cpp
-            OMXHelper.cpp
-            OMXImage.cpp
-            OMXPlayerAudio.cpp
-            OMXPlayerVideo.cpp
-            OMXVideo.cpp)
+set(SOURCES OMXImage.cpp)
 
-set(HEADERS OMXAudio.h
-            OMXAudioCodecOMX.h
-            OMXHelper.h
-            OMXImage.h
-            OMXPlayerAudio.h
-            OMXPlayerVideo.h
-            OMXVideo.h)
+set(HEADERS OMXImage.h)
 
 core_add_library(omxplayer)
 target_compile_definitions(${CORE_LIBRARY} PRIVATE -D__STDC_FORMAT_MACROS)

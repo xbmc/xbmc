@@ -24,6 +24,18 @@
 #define NUM_OMX_BUFFERS 2
 #define AUDIO_PLAYBUFFER (0.1) // 100ms
 
+#ifdef OMX_SKIP64BIT
+static inline OMX_TICKS ToOMXTime(int64_t pts)
+{
+  OMX_TICKS ticks;
+  ticks.nLowPart = pts;
+  ticks.nHighPart = pts >> 32;
+  return ticks;
+}
+#else
+#define ToOMXTime(x) (x)
+#endif
+
 static const unsigned int PassthroughSampleRates[] = { 8000, 11025, 16000, 22050, 24000, 32000, 44100, 48000, 88200, 96000, 176400, 192000 };
 
 CAEDeviceInfo CAESinkPi::m_info;
