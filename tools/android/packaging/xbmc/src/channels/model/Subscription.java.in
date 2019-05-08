@@ -23,6 +23,7 @@ public class Subscription {
     private long channelId;
     private String name;
     private String uri;
+    private int channelLogo;
     private String category = null;
 
     private boolean addToPlayNext;
@@ -41,6 +42,7 @@ public class Subscription {
             String name, String uri, int channelLogo) {
         this.name = name;
         this.uri = uri;
+        this.channelLogo = channelLogo;
     }
 
     public static Subscription createSubscription(
@@ -62,6 +64,14 @@ public class Subscription {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public int getChannelLogo() {
+        return channelLogo;
+    }
+
+    public void setChannelLogo(int channelLogo) {
+        this.channelLogo = channelLogo;
     }
 
     public String getUri() {
