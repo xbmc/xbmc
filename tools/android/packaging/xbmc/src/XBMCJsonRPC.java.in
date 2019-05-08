@@ -928,19 +928,19 @@ public class XBMCJsonRPC {
                 }
             }
 
-//            if (art.has("thumb") && !art.get("thumb").getAsString().isEmpty()) {
-//                String url = getDownloadUrl(art.get("thumb").getAsString());
-//                if (url != null && url != null && !url.isEmpty()) {
-//                    med.setThumbnailImageUrl(XBMCFileContentProvider.buildUri(url).toString());
-//                }
-//            }
+            if (art.has("thumb") && !art.get("thumb").getAsString().isEmpty()) {
+                String url = getDownloadUrl(art.get("thumb").getAsString());
+                if (url != null && url != null && !url.isEmpty()) {
+                    med.setThumbnailImageUrl(XBMCFileContentProvider.buildUri(url).toString());
+                }
+            }
 
-//            Bitmap bitmap = getBitmap(ctx, art.get("thumb").getAsString());
-//            double width = bitmap.getWidth();
-//            double height = bitmap.getHeight();
-//
-//            if (width / height > 1.0)
-//                med.setHasLandscapeArt(true);
+            Bitmap bitmap = getBitmap(ctx, art.get("thumb").getAsString());
+            double width = bitmap.getWidth();
+            double height = bitmap.getHeight();
+
+            if (width / height > 1.0)
+                med.setHasLandscapeArt(true);
 
             med.setCardImageAspectRatio("2:3");
             if (details.has("fanart") && !details.get("fanart").getAsString().isEmpty()) {

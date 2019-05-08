@@ -336,9 +336,12 @@ public class SyncProgramsJobService extends JobService {
                 TVShow tvShow = new TVShow();
                 tvShow = (TVShow) media;
                 builder.setType(TvContractCompat.PreviewProgramColumns.TYPE_TV_SERIES)
+                        .setDescription(tvShow.getPlot())
                         .setLongDescription(tvShow.getPlot());
 
-                Log.d(TAG, "buildProgram: tvshow.toString = " + tvShow.toString());
+                if (tvShow.getRating() > 0) {
+                    builder.setReviewRating(String.valueOf(tvShow.getRating() * 0.5));
+                }
 
                 if (tvShow.getHasLandscapeArt()) {
                     if (tvShow.getLandscapeImageUrl() != null) {
@@ -358,10 +361,6 @@ public class SyncProgramsJobService extends JobService {
                     }
                 }
 
-                int numberOfSeasons = tvShow.getSeason();
-                builder.setDescription(tvShow.getPlot())
-                        .setReviewRating(String.valueOf((double) tvShow.getRating() * 0.5));
-
             } else if (media.getCategory().equals(Media.MEDIA_TYPE_TVEPISODE)) {
                 TVEpisode tvEpisode = new TVEpisode();
                 tvEpisode = (TVEpisode) media;
@@ -369,10 +368,13 @@ public class SyncProgramsJobService extends JobService {
                         .setEpisodeTitle(tvEpisode.getEpisodeTitle())
                         .setEpisodeNumber(tvEpisode.getEpisode())
                         .setSeasonNumber(tvEpisode.getSeason())
-                        .setReviewRating(String.valueOf((double) tvEpisode.getRating() * 0.5))
                         .setDescription(tvEpisode.getPlot())
                         .setDurationMillis(tvEpisode.getRuntime())
                         .setReleaseDate(tvEpisode.getYear());
+
+                if (tvEpisode.getRating() > 0) {
+                    builder.setReviewRating(String.valueOf((double) tvEpisode.getRating() * 0.5));
+                }
 
                 if (tvEpisode.getHasLandscapeArt()) {
                     if (tvEpisode.getLandscapeImageUrl() != null && tvEpisode.getRating() >= 8.0) {
@@ -382,6 +384,11 @@ public class SyncProgramsJobService extends JobService {
                         builder.setPosterArtUri(Uri.parse(((TVEpisode) media).getThumbnailImageUrl()));
                         builder.setPosterArtAspectRatio(TvContractCompat.PreviewProgramColumns.ASPECT_RATIO_16_9);
                     } else if (tvEpisode.getPosterImageUrl() != null) {
+                        builder.setPosterArtUri(Uri.parse(((TVEpisode) media).getPosterImageUrl()));
+                        builder.setPosterArtAspectRatio(TvContractCompat.PreviewProgramColumns.ASPECT_RATIO_2_3);
+                    }
+                } else {
+                    if (tvEpisode.getPosterImageUrl() != null) {
                         builder.setPosterArtUri(Uri.parse(((TVEpisode) media).getPosterImageUrl()));
                         builder.setPosterArtAspectRatio(TvContractCompat.PreviewProgramColumns.ASPECT_RATIO_2_3);
                     }
