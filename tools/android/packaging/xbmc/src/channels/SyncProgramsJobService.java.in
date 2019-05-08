@@ -303,12 +303,15 @@ public class SyncProgramsJobService extends JobService {
                 movie = (Movie) media;
                 builder.setDescription(movie.getPlot())
                         .setReleaseDate(movie.getYear())
-                        .setReviewRating(String.valueOf(movie.getRating() * 0.5))
                         .setDurationMillis(movie.getDuration())
                         .setLastPlaybackPositionMillis(movie.getPosition())
                         .setType(TvContractCompat.PreviewProgramColumns.TYPE_MOVIE);
 
                 Log.d(TAG, "buildProgram: movie.toString = " + movie.toString());
+
+                if (movie.getRating() > 0) {
+                    builder.setReviewRating(String.valueOf(movie.getRating() * 0.5));
+                }
 
                 if (movie.getHasLandscapeArt()) {
                     if (movie.getLandscapeImageUrl() != null && movie.getRating() >= 8.5) {

@@ -1212,27 +1212,19 @@ public class XBMCJsonRPC {
                     JsonObject details = req.getAsJsonObject("result").getAsJsonObject("episodedetails");
                     TVEpisode med = createTVEpisodeFromJson(ctx, details);
 
-                    if (med != null && med.getDescription().equals(lastTitle)) {
-                        if (med.getRating() < lowestRating) {
-                            medias.add(med);
-                            nbItems++;
-                        }
-                    } else if (med != null) {
+//                    if (med != null && med.getDescription().equals(lastTitle)) {
+//                        if (med.getRating() < lowestRating) {
+//                            medias.add(med);
+//                            nbItems++;
+//                        }
+//                    } else
+                        if (med != null) {
                         Log.d(TAG, "getMedias: tvshow is not null");
                         medias.add(med);
                         nbItems++;
                     } else {
                         Log.d(TAG, "getMedias: tvshow is null");
                     }
-
-//                    Log.d(TAG, "getMedias: " + med.toString());
-//                    if (med != null) {
-//                        Log.d(TAG, "getMedias: tvshow is not null");
-//                        medias.add(med);
-//                        nbItems++;
-//                    } else {
-//                        Log.d(TAG, "getMedias: tvshow is null");
-//                    }
 
                 } else if (mediaType.equals("tvshow")) {
                     JsonObject details = req.getAsJsonObject("result").getAsJsonObject("tvshowdetails");
