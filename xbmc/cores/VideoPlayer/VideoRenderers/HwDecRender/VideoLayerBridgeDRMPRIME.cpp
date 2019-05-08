@@ -68,6 +68,17 @@ bool CVideoLayerBridgeDRMPRIME::Map(IVideoBufferDRMPRIME* buffer)
   uint64_t modifier[4] = {0};
   int ret;
 
+  // get drm format of the frame
+#if LIBAVUTIL_VERSION_INT >= AV_VERSION_INT(56, 27, 100)
+  uint32_t format = descriptor->format;
+#else
+  uint32_t format = 0;
+#endif
+  if (!format && descriptor->nb_layers == 1)
+    format = descriptor->layers[0].format;
+  if (!format)
+    return false;
+
   // convert Prime FD to GEM handle
   for (int object = 0; object < descriptor->nb_objects; object++)
   {
@@ -80,18 +91,21 @@ bool CVideoLayerBridgeDRMPRIME::Map(IVideoBufferDRMPRIME* buffer)
     }
   }
 
-  AVDRMLayerDescriptor* layer = &descriptor->layers[0];
-
-  for (int plane = 0; plane < layer->nb_planes; plane++)
+  int index = 0;
+  for (int i = 0; i < descriptor->nb_layers; i++)
   {
-    int object = layer->planes[plane].object_index;
-    uint32_t handle = buffer->m_handles[object];
-    if (handle && layer->planes[plane].pitch)
+    AVDRMLayerDescriptor* layer = &descriptor->layers[i];
+    for (int j = 0; j < layer->nb_planes; j++)
     {
-      handles[plane] = handle;
-      pitches[plane] = layer->planes[plane].pitch;
-      offsets[plane] = layer->planes[plane].offset;
-      modifier[plane] = descriptor->objects[object].format_modifier;
+      AVDRMPlaneDescriptor* plane = &layer->planes[j];
+      int object = plane->object_index;
+
+      handles[index] = buffer->m_handles[object];
+      pitches[index] = plane->pitch;
+      offsets[index] = plane->offset;
+      modifier[index] = descriptor->objects[object].format_modifier;
+
+      index++;
     }
   }
 
@@ -99,7 +113,7 @@ bool CVideoLayerBridgeDRMPRIME::Map(IVideoBufferDRMPRIME* buffer)
     flags = DRM_MODE_FB_MODIFIERS;
 
   // add the video frame FB
-  ret = drmModeAddFB2WithModifiers(m_DRM->GetFileDescriptor(), buffer->GetWidth(), buffer->GetHeight(), layer->format,
+  ret = drmModeAddFB2WithModifiers(m_DRM->GetFileDescriptor(), buffer->GetWidth(), buffer->GetHeight(), format,
                                    handles, pitches, offsets, modifier, &buffer->m_fb_id, flags);
   if (ret < 0)
   {
