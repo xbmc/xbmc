@@ -29,22 +29,42 @@ bool CDRMPRIMETexture::Map(IVideoBufferDRMPRIME* buffer)
   AVDRMFrameDescriptor* descriptor = buffer->GetDescriptor();
   if (descriptor && descriptor->nb_layers)
   {
-    AVDRMLayerDescriptor* layer = &descriptor->layers[0];
+    // get drm format of the frame
+#if LIBAVUTIL_VERSION_INT >= AV_VERSION_INT(56, 27, 100)
+    uint32_t format = descriptor->format;
+#else
+    uint32_t format = 0;
+#endif
+    if (!format && descriptor->nb_layers == 1)
+      format = descriptor->layers[0].format;
+    if (!format)
+      return false;
 
     std::array<CEGLImage::EglPlane, CEGLImage::MAX_NUM_PLANES> planes;
 
-    for (int i = 0; i < layer->nb_planes; i++)
+    int index = 0;
+    for (int i = 0; i < descriptor->nb_layers; i++)
     {
-      planes[i].fd = descriptor->objects[layer->planes[i].object_index].fd;
-      planes[i].offset = layer->planes[i].offset;
-      planes[i].pitch = layer->planes[i].pitch;
+      AVDRMLayerDescriptor* layer = &descriptor->layers[i];
+      for (int j = 0; j < layer->nb_planes; j++)
+      {
+        AVDRMPlaneDescriptor* plane = &layer->planes[j];
+        AVDRMObjectDescriptor* object = &descriptor->objects[plane->object_index];
+
+        planes[index].fd = object->fd;
+        planes[index].modifier = object->format_modifier;
+        planes[index].offset = plane->offset;
+        planes[index].pitch = plane->pitch;
+
+        index++;
+      }
     }
 
     CEGLImage::EglAttrs attribs;
 
     attribs.width = m_texWidth;
     attribs.height = m_texHeight;
-    attribs.format = layer->format;
+    attribs.format = format;
     attribs.colorSpace = GetColorSpace(buffer->GetColorEncoding());
     attribs.colorRange = GetColorRange(buffer->GetColorRange());
     attribs.planes = planes;
