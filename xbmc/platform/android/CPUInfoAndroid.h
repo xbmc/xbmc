@@ -11,7 +11,7 @@
 #include "utils/CPUInfo.h"
 #include "utils/Temperature.h"
 
-class CCPUInfoAndroid : public CCPUInfoLinux
+class CCPUInfoAndroid : public CCPUInfo
 {
 public:
   CCPUInfoAndroid();
