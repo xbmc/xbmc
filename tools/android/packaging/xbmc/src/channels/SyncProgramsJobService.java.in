@@ -199,43 +199,47 @@ public class SyncProgramsJobService extends JobService {
             Log.d(TAG, "createPrograms: mediasAdded: " + mediasAdded.toString() + "size: " + medias.size());
             for (Media media : medias) {
                 Log.d(TAG, "createPrograms: media in for lopp: " + media.toString());
-                if (isPlayNext) {
-                    Log.d(TAG, "createPrograms: before check");
-                    if (media.getCategory().equals(Media.MEDIA_TYPE_TVEPISODE)
-                            && category.equals(Subscription.SUBSCRIPTION_TYPE_ON_DECK)) {
-                        Log.d(TAG, "createPrograms: after check");
-                        TVEpisode tvEpisode = (TVEpisode) media;
-                        if (tvEpisode.getPosition() <= 60000) {
-                            WatchNextProgram watchNextProgram = buildWatchNextProgram(channelId, isPlayNext, media);
-                            Uri programUri =
-                                    getContentResolver()
-                                            .insert(
-                                                    TvContractCompat.WatchNextPrograms.CONTENT_URI,
-                                                    watchNextProgram.toContentValues());
-                            long programId = ContentUris.parseId(programUri);
-                            Log.d(TAG, "Inserted new program: " + programId);
-                            Log.d(TAG, "medias.size(): " + medias.size());
-                            media.setProgramId(programId);
-                            mediasAdded.add(media);
 
-                            Log.d(TAG, "createPrograms: " + media.toString());
-                        }
-
-                    } else {
-                        WatchNextProgram watchNextProgram = buildWatchNextProgram(channelId, isPlayNext, media);
-                        Uri programUri =
-                                getContentResolver()
-                                        .insert(
-                                                TvContractCompat.WatchNextPrograms.CONTENT_URI,
-                                                watchNextProgram.toContentValues());
-                        long programId = ContentUris.parseId(programUri);
-                        Log.d(TAG, "Inserted new program: " + programId);
-                        Log.d(TAG, "medias.size(): " + medias.size());
-                        media.setProgramId(programId);
-                        mediasAdded.add(media);
-                    }
-
-                } else {
+                /*
+                Paul dhaliwal specific code
+                 */
+//                if (isPlayNext) {
+//                    Log.d(TAG, "createPrograms: before check");
+//                    if (media.getCategory().equals(Media.MEDIA_TYPE_TVEPISODE)
+//                            && category.equals(Subscription.SUBSCRIPTION_TYPE_ON_DECK)) {
+//                        Log.d(TAG, "createPrograms: after check");
+//                        TVEpisode tvEpisode = (TVEpisode) media;
+//                        if (tvEpisode.getPosition() <= 60000) {
+//                            WatchNextProgram watchNextProgram = buildWatchNextProgram(channelId, isPlayNext, media);
+//                            Uri programUri =
+//                                    getContentResolver()
+//                                            .insert(
+//                                                    TvContractCompat.WatchNextPrograms.CONTENT_URI,
+//                                                    watchNextProgram.toContentValues());
+//                            long programId = ContentUris.parseId(programUri);
+//                            Log.d(TAG, "Inserted new program: " + programId);
+//                            Log.d(TAG, "medias.size(): " + medias.size());
+//                            media.setProgramId(programId);
+//                            mediasAdded.add(media);
+//
+//                            Log.d(TAG, "createPrograms: " + media.toString());
+//                        }
+//
+//                    } else {
+//                        WatchNextProgram watchNextProgram = buildWatchNextProgram(channelId, isPlayNext, media);
+//                        Uri programUri =
+//                                getContentResolver()
+//                                        .insert(
+//                                                TvContractCompat.WatchNextPrograms.CONTENT_URI,
+//                                                watchNextProgram.toContentValues());
+//                        long programId = ContentUris.parseId(programUri);
+//                        Log.d(TAG, "Inserted new program: " + programId);
+//                        Log.d(TAG, "medias.size(): " + medias.size());
+//                        media.setProgramId(programId);
+//                        mediasAdded.add(media);
+//                    }
+//
+//                } else {
                     PreviewProgram previewProgram = buildProgram(channelId, isPlayNext, media);
                     Uri programUri =
                             getContentResolver()
@@ -248,7 +252,7 @@ public class SyncProgramsJobService extends JobService {
                     Log.d(TAG, "medias.size(): " + medias.size());
                     media.setProgramId(programId);
                     mediasAdded.add(media);
-                }
+//                }
             }
             return mediasAdded;
         }
@@ -400,7 +404,6 @@ public class SyncProgramsJobService extends JobService {
                 builder.setType(TvContractCompat.PreviewProgramColumns.TYPE_TRACK);
             else if (media.getCategory().equals(Media.MEDIA_TYPE_MUSICVIDEO))
                 builder.setType(TvContractCompat.PreviewProgramColumns.TYPE_CLIP);
-
 
             if (!media.getCategory().equals(Media.MEDIA_TYPE_MOVIE)
                     && !media.getCategory().equals(Media.MEDIA_TYPE_TVEPISODE)

@@ -934,13 +934,13 @@ public class XBMCJsonRPC {
                     med.setThumbnailImageUrl(XBMCFileContentProvider.buildUri(url).toString());
                 }
             }
-
-            Bitmap bitmap = getBitmap(ctx, art.get("thumb").getAsString());
-            double width = bitmap.getWidth();
-            double height = bitmap.getHeight();
-
-            if (width / height > 1.0)
-                med.setHasLandscapeArt(true);
+//
+//            Bitmap bitmap = getBitmap(ctx, art.get("thumb").getAsString());
+//            double width = bitmap.getWidth();
+//            double height = bitmap.getHeight();
+//
+//            if (width / height > 1.0)
+//                med.setHasLandscapeArt(true);
 
             med.setCardImageAspectRatio("2:3");
             if (details.has("fanart") && !details.get("fanart").getAsString().isEmpty()) {
