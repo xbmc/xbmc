@@ -858,7 +858,7 @@ public class XBMCJsonRPC {
                 }
             }
 
-                if (art.has("fanart") && !art.get("fanart").getAsString().isEmpty()) {
+            if (art.has("fanart") && !art.get("fanart").getAsString().isEmpty()) {
                 String url = getDownloadUrl(art.get("fanart").getAsString());
                 if (url != null && url != null && !url.isEmpty()) {
                     med.setFanartImageUrl(XBMCFileContentProvider.buildUri(url).toString());
@@ -899,8 +899,10 @@ public class XBMCJsonRPC {
             long lastPlayed = dateToEpoch(details.get("lastplayed").getAsString());
             med.setLastPlayed(lastPlayed);
 
-            long releasedDateAsEpoch = dateToEpoch(med.getYear()+" 00:00:00");
-            med.setReleaseDate(releasedDateAsEpoch);
+            if (details.has("firstaired") && !details.get("firstaired").getAsString().isEmpty()) {
+                long releasedDateAsEpoch = dateToEpoch(med.getYear() + " 00:00:00");
+                med.setReleaseDate(releasedDateAsEpoch);
+            }
 
             Log.d(TAG, "createTVEpisodeFromJson: " + details.toString());
 
@@ -1186,8 +1188,6 @@ public class XBMCJsonRPC {
                 return medias;
 
             nbItems = 0;
-            String lastTitle = "";
-            long lowestRating = 0;
             for (int i = 0; i < reqBatch.size(); ++i) {
                 JsonObject req = reqBatch.get(i).getAsJsonObject();
                 if (req == null || !req.has("result"))
@@ -1198,9 +1198,6 @@ public class XBMCJsonRPC {
                 Log.d(TAG, "getMedias: mediaType: " + mediaType);
                 if (mediaType.equals("movie")) {
                     JsonObject details = req.getAsJsonObject("result").getAsJsonObject("moviedetails");
-
-                    Log.d(TAG, "getMedias: " + details.toString());
-
                     Movie med = createMovieFromJson(ctx, details);
                     if (med != null) {
                         medias.add(med);
@@ -1208,24 +1205,12 @@ public class XBMCJsonRPC {
                     }
 
                 } else if (mediaType.equals("episode")) {
-                    Log.d(TAG, "getMedias: getEpisode");
                     JsonObject details = req.getAsJsonObject("result").getAsJsonObject("episodedetails");
                     TVEpisode med = createTVEpisodeFromJson(ctx, details);
-
-//                    if (med != null && med.getDescription().equals(lastTitle)) {
-//                        if (med.getRating() < lowestRating) {
-//                            medias.add(med);
-//                            nbItems++;
-//                        }
-//                    } else
-                        if (med != null) {
-                        Log.d(TAG, "getMedias: tvshow is not null");
+                    if (med != null) {
                         medias.add(med);
                         nbItems++;
-                    } else {
-                        Log.d(TAG, "getMedias: tvshow is null");
                     }
-
                 } else if (mediaType.equals("tvshow")) {
                     JsonObject details = req.getAsJsonObject("result").getAsJsonObject("tvshowdetails");
                     TVShow med = createTVShowFromJson(ctx, details);
