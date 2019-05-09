@@ -97,10 +97,11 @@ public:
 
   static std::unique_ptr<CSkinInfo> FromExtension(const AddonInfoPtr& addonInfo, const cp_extension_t* ext);
 
+  explicit CSkinInfo(const AddonInfoPtr& addonInfo);
   //FIXME: CAddonCallbacksGUI/WindowXML hack
   explicit CSkinInfo(
       const AddonInfoPtr& addonInfo,
-      const RESOLUTION_INFO& resolution = RESOLUTION_INFO());
+      const RESOLUTION_INFO& resolution);
 
   CSkinInfo(
       const AddonInfoPtr& addonInfo,

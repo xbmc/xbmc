@@ -48,13 +48,33 @@ std::unique_ptr<CPluginSource> CPluginSource::FromExtension(const AddonInfoPtr& 
   return std::unique_ptr<CPluginSource>(p);
 }
 
-CPluginSource::CPluginSource(const AddonInfoPtr& addonInfo, TYPE addonType)
-  : CAddon(addonInfo, addonType)
+CPluginSource::CPluginSource(const AddonInfoPtr& addonInfo, TYPE addonType) : CAddon(addonInfo, addonType)
 {
-  std::string provides;
-  InfoMap::const_iterator i = m_addonInfo->ExtraInfo().find("provides");
-  if (i != m_addonInfo->ExtraInfo().end())
-    provides = i->second;
+  std::string provides = addonInfo->Type(addonType)->GetValue("provides").asString();
+  if (!provides.empty())
+    addonInfo->AddExtraInfo("provides", provides);
+  else
+  {
+    const auto& i = addonInfo->ExtraInfo().find("provides");
+    if (i != addonInfo->ExtraInfo().end())
+      provides = i->second;
+  }
+
+  for (auto values : addonInfo->Type(addonType)->GetValues())
+  {
+    if (values.first != "medialibraryscanpath")
+      continue;
+
+    std::string url = "plugin://" + ID() + '/';
+    std::string content = values.second.GetValue("medialibraryscanpath@content").asString();
+    std::string path = values.second.GetValue("medialibraryscanpath").asString();
+    if (!path.empty() && path.front() == '/')
+      path.erase(0, 1);
+    if (path.compare(0, url.size(), url))
+      path.insert(0, url);
+    m_mediaLibraryScanPaths[content].push_back(CURL(path).GetFileName());
+  }
+
   SetProvides(provides);
 }
 

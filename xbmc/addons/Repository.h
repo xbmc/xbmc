@@ -38,7 +38,7 @@ namespace ADDON
 
     static std::unique_ptr<CRepository> FromExtension(const AddonInfoPtr& addonInfo, const cp_extension_t* ext);
 
-    explicit CRepository(const AddonInfoPtr& addonInfo) : CAddon(addonInfo, ADDON_REPOSITORY) {};
+    explicit CRepository(const AddonInfoPtr& addonInfo);
     CRepository(const AddonInfoPtr& addonInfo, DirList dirs);
 
     enum FetchStatus
@@ -62,6 +62,7 @@ namespace ADDON
     static bool FetchIndex(const DirInfo& repo, std::string const& digest, VECADDONS& addons) noexcept;
 
     static DirInfo ParseDirConfiguration(cp_cfg_element_t* configuration);
+    static DirInfo ParseDirConfiguration(const CAddonExtensions& configuration);
 
     DirList m_dirs;
   };

@@ -17,6 +17,8 @@ namespace ADDON
 class CAddonBuilder
 {
 public:
+  static AddonPtr Generate(const AddonInfoPtr& info, TYPE type);
+
   std::shared_ptr<IAddon> Build();
   void SetId(std::string id) { m_addonInfo->m_id = std::move(id); }
   void SetName(std::string name) { m_addonInfo->m_name = std::move(name); }

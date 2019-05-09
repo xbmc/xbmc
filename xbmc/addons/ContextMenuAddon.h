@@ -26,12 +26,13 @@ namespace ADDON
   public:
     static std::unique_ptr<CContextMenuAddon> FromExtension(const AddonInfoPtr& addonInfo, const cp_extension_t* ext);
 
-    explicit CContextMenuAddon(const AddonInfoPtr& addonInfo) : CAddon(addonInfo, ADDON_CONTEXT_ITEM) {}
+    explicit CContextMenuAddon(const AddonInfoPtr& addonInfo);
     CContextMenuAddon(const AddonInfoPtr& addonInfo, std::vector<CContextMenuItem> items);
 
     const std::vector<CContextMenuItem>& GetItems() const { return m_items; };
 
   private:
+    void ParseMenu(const CAddonExtensions* elem, const std::string& parent, int& anonGroupCount);
     static void ParseMenu(const AddonInfoPtr& addonInfo, cp_cfg_element_t* elem, const std::string& parent,
         int& anonGroupCount, std::vector<CContextMenuItem>& items);
 

@@ -39,6 +39,8 @@ public:
   TYPE Type() const override { return m_addonInfo->MainType(); }
   TYPE FullType() const override { return Type(); }
   bool IsType(TYPE type) const override { return type == m_addonInfo->MainType(); }
+  const CAddonType* Type(TYPE type) const { return m_addonInfo->Type(type); }
+
   std::string ID() const override{ return m_addonInfo->ID(); }
   std::string Name() const override { return m_addonInfo->Name(); }
   bool IsInUse() const override{ return false; };

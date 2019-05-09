@@ -117,6 +117,66 @@ CLanguageResource::CLanguageResource(
     m_sortTokens(sortTokens)
 { }
 
+CLanguageResource::CLanguageResource(const AddonInfoPtr& addonInfo)
+  : CResource(addonInfo, ADDON_RESOURCE_LANGUAGE)
+{
+  // parse <extension> attributes
+  m_locale = CLocale::FromString(Type(ADDON_RESOURCE_LANGUAGE)->GetValue("@locale").asString());
+
+  // parse <charsets>
+  const CAddonExtensions* charsetsElement = Type(ADDON_RESOURCE_LANGUAGE)->GetElement("charsets");
+  if (charsetsElement != nullptr)
+  {
+    m_charsetGui = charsetsElement->GetValue("gui").asString();
+    m_forceUnicodeFont = charsetsElement->GetValue("gui@unicodefont").asBoolean();
+    m_charsetSubtitle = charsetsElement->GetValue("subtitle").asString();
+  }
+
+  // parse <dvd>
+  const CAddonExtensions* dvdElement = Type(ADDON_RESOURCE_LANGUAGE)->GetElement("dvd");
+  if (dvdElement != nullptr)
+  {
+    m_dvdLanguageMenu = dvdElement->GetValue("menu").asString();
+    m_dvdLanguageAudio = dvdElement->GetValue("audio").asString();
+    m_dvdLanguageSubtitle = dvdElement->GetValue("subtitle").asString();
+  }
+  // fall back to the language of the addon if a DVD language is not defined
+  if (m_dvdLanguageMenu.empty())
+    m_dvdLanguageMenu = m_locale.GetLanguageCode();
+  if (m_dvdLanguageAudio.empty())
+    m_dvdLanguageAudio = m_locale.GetLanguageCode();
+  if (m_dvdLanguageSubtitle.empty())
+    m_dvdLanguageSubtitle = m_locale.GetLanguageCode();
+
+  // parse <sorttokens>
+  const CAddonExtensions* sorttokensElement = Type(ADDON_RESOURCE_LANGUAGE)->GetElement("sorttokens");
+  if (sorttokensElement != nullptr)
+  {
+    /* First loop goes around rows e.g.
+     *   <token separators="'">L</token>
+     *   <token>Le</token>
+     *   ...
+     */
+    for (auto values : sorttokensElement->GetValues())
+    {
+      /* Second loop goes around the row parts, e.g.
+       *   separators = "'"
+       *   token = Le
+       */
+      std::string token = values.second.GetValue("token").asString();
+      std::string separators = values.second.GetValue("token@separators").asString();
+      if (!token.empty())
+      {
+        if (separators.empty())
+          separators = " ._";
+
+        for (auto separator : separators)
+          m_sortTokens.insert(token + separator);
+      }
+    }
+  }
+}
+
 bool CLanguageResource::IsInUse() const
 {
   return StringUtils::EqualsNoCase(CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(CSettings::SETTING_LOCALE_LANGUAGE), ID());

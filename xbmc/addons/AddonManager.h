@@ -23,6 +23,7 @@ namespace ADDON
 {
   typedef std::map<TYPE, VECADDONS> MAPADDONS;
   typedef std::map<TYPE, VECADDONS>::iterator IMAPADDONS;
+  typedef std::map<std::string, AddonInfoPtr> ADDON_INFO_LIST;
   typedef std::vector<cp_cfg_element_t*> ELEMENTS;
 
   /*!
@@ -278,6 +279,9 @@ namespace ADDON
     static bool Factory(const cp_plugin_info_t* plugin, TYPE type, CAddonBuilder& builder, bool ignoreExtensions = false, const CRepository::DirInfo& repo = {});
     static void FillCpluffMetadata(const cp_plugin_info_t* plugin, CAddonBuilder& builder, const CRepository::DirInfo& repo);
 
+    bool GetAddonInfos(AddonInfos& addonInfos, TYPE type);
+    const AddonInfoPtr GetAddonInfo(const std::string& id, TYPE type = ADDON_UNKNOWN);
+
   private:
     CAddonMgr& operator=(CAddonMgr const&) = delete;
     /* libcpluff */
@@ -293,6 +297,8 @@ namespace ADDON
     bool GetAddonsInternal(const TYPE &type, VECADDONS &addons, bool enabledOnly);
     bool EnableSingle(const std::string& id);
 
+    void FindAddons(ADDON_INFO_LIST& addonmap, const std::string& path);
+
     std::set<std::string> m_disabled;
     std::set<std::string> m_updateBlacklist;
     static std::map<TYPE, IAddonMgrCallback*> m_managers;
@@ -302,6 +308,7 @@ namespace ADDON
     CBlockingEventSource<AddonEvent> m_unloadEvents;
     std::set<std::string> m_systemAddons;
     std::set<std::string> m_optionalAddons;
+    ADDON_INFO_LIST m_installedAddons;
   };
 
 }; /* namespace ADDON */

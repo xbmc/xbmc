@@ -11,6 +11,7 @@
 #include "XBDateTime.h"
 #include "addons/AddonBuilder.h"
 #include "addons/AddonManager.h"
+#include "addons/addoninfo/AddonInfoBuilder.h"
 #include "dbwrappers/dataset.h"
 #include "filesystem/SpecialProtocol.h"
 #include "utils/JSONVariantParser.h"
@@ -72,6 +73,50 @@ static std::string SerializeMetadata(const IAddon& addon)
 }
 
 static void DeserializeMetadata(const std::string& document, CAddonBuilder& builder)
+{
+  CVariant variant;
+  if (!CJSONVariantParser::Parse(document, variant))
+    return;
+
+  builder.SetAuthor(variant["author"].asString());
+  builder.SetDisclaimer(variant["disclaimer"].asString());
+  builder.SetBroken(variant["broken"].asString());
+  builder.SetPackageSize(variant["size"].asUnsignedInteger());
+
+  builder.SetPath(variant["path"].asString());
+  builder.SetIcon(variant["icon"].asString());
+
+  std::map<std::string, std::string> art;
+  for (auto it = variant["art"].begin_map(); it != variant["art"].end_map(); ++it)
+    art.emplace(it->first, it->second.asString());
+  builder.SetArt(std::move(art));
+
+  std::vector<std::string> screenshots;
+  for (auto it = variant["screenshots"].begin_array(); it != variant["screenshots"].end_array(); ++it)
+    screenshots.push_back(it->asString());
+  builder.SetScreenshots(std::move(screenshots));
+
+  builder.SetType(CAddonInfo::TranslateType(variant["extensions"][0].asString()));
+
+  {
+    std::vector<DependencyInfo> deps;
+    for (auto it = variant["dependencies"].begin_array(); it != variant["dependencies"].end_array(); ++it)
+    {
+      deps.emplace_back(
+          (*it)["addonId"].asString(),
+          AddonVersion((*it)["version"].asString()),
+          (*it)["optional"].asBoolean());
+    }
+    builder.SetDependencies(std::move(deps));
+  }
+
+  InfoMap extraInfo;
+  for (auto it = variant["extrainfo"].begin_array(); it != variant["extrainfo"].end_array(); ++it)
+    extraInfo.emplace((*it)["key"].asString(), (*it)["value"].asString());
+  builder.SetExtrainfo(std::move(extraInfo));
+}
+
+static void DeserializeMetadata(const std::string& document, CAddonInfoBuilder::CFromDB& builder)
 {
   CVariant variant;
   if (!CJSONVariantParser::Parse(document, variant))
@@ -506,7 +551,7 @@ bool CAddonDatabase::FindByAddonId(const std::string& addonId, ADDON::VECADDONS&
     m_pDS->query(sql.c_str());
     while (!m_pDS->eof())
     {
-      CAddonBuilder builder;
+      CAddonInfoBuilder::CFromDB builder;
       builder.SetId(addonId);
       builder.SetVersion(AddonVersion(m_pDS->fv(0).get_asString()));
       builder.SetName(m_pDS->fv(1).get_asString());
@@ -516,7 +561,7 @@ bool CAddonDatabase::FindByAddonId(const std::string& addonId, ADDON::VECADDONS&
       builder.SetChangelog(m_pDS->fv(5).get_asString());
       builder.SetOrigin(m_pDS->fv(6).get_asString());
 
-      auto addon = builder.Build();
+      auto addon = CAddonBuilder::Generate(builder.get(), ADDON_UNKNOWN);
       if (addon)
         addons.push_back(std::move(addon));
       else
@@ -653,15 +698,17 @@ bool CAddonDatabase::GetAddon(int id, AddonPtr &addon)
     if (m_pDS2->eof())
       return false;
 
-    CAddonBuilder builder;
+    CAddonInfoBuilder::CFromDB builder;
     builder.SetId(m_pDS2->fv("addonID").get_asString());
     builder.SetVersion(AddonVersion(m_pDS2->fv("version").get_asString()));
     builder.SetName(m_pDS2->fv("name").get_asString());
     builder.SetSummary(m_pDS2->fv("summary").get_asString());
     builder.SetDescription(m_pDS2->fv("description").get_asString());
     DeserializeMetadata(m_pDS2->fv("metadata").get_asString(), builder);
-    addon = builder.Build();
+
+    addon = CAddonBuilder::Generate(builder.get(), ADDON_UNKNOWN);
     return addon != nullptr;
+
   }
   catch (...)
   {
@@ -740,7 +787,7 @@ bool CAddonDatabase::GetRepositoryContent(const std::string& id, VECADDONS& addo
         continue;
       }
 
-      CAddonBuilder builder;
+      CAddonInfoBuilder::CFromDB builder;
       builder.SetId(addonId);
       builder.SetVersion(version);
       builder.SetName(m_pDS->fv("name").get_asString());
@@ -748,7 +795,7 @@ bool CAddonDatabase::GetRepositoryContent(const std::string& id, VECADDONS& addo
       builder.SetDescription(m_pDS->fv("description").get_asString());
       DeserializeMetadata(m_pDS->fv("metadata").get_asString(), builder);
 
-      auto addon = builder.Build();
+      auto addon = CAddonBuilder::Generate(builder.get(), ADDON_UNKNOWN);
       if (addon)
       {
         if (!result.empty() && result.back()->ID() == addonId)
@@ -1142,5 +1189,31 @@ void CAddonDatabase::OnPostUnInstall(const std::string& addonId)
   catch (...)
   {
     CLog::Log(LOGERROR, "%s failed on addon %s", __FUNCTION__, addonId.c_str());
+  }
+}
+
+void CAddonDatabase::GetInstallData(const AddonInfoPtr& addon)
+{
+  try
+  {
+    if (nullptr == m_pDB.get())
+      return;
+    if (nullptr == m_pDS.get())
+      return;
+
+    m_pDS->query(PrepareSQL("SELECT * FROM installed WHERE addonID='%s'", addon->ID().c_str()));
+    if (!m_pDS->eof())
+    {
+      CAddonInfoBuilder::SetInstallData(addon,
+                                        CDateTime::FromDBDateTime(m_pDS->fv(3).get_asString()),
+                                        CDateTime::FromDBDateTime(m_pDS->fv(4).get_asString()),
+                                        CDateTime::FromDBDateTime(m_pDS->fv(5).get_asString()),
+                                        m_pDS->fv(6).get_asString());
+    }
+    m_pDS->close();
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "CAddonDatabase::{}: failed", __FUNCTION__);
   }
 }

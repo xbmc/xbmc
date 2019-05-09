@@ -138,6 +138,7 @@ public:
   bool SetOrigin(const std::string& addonId, const std::string& origin);
   bool SetLastUsed(const std::string& addonId, const CDateTime& dateTime);
 
+  void GetInstallData(const ADDON::AddonInfoPtr& addon);
 
 protected:
   void CreateTables() override;

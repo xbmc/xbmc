@@ -178,6 +178,40 @@ CRepository::CRepository(const AddonInfoPtr& addonInfo, DirList dirs)
   }
 }
 
+CRepository::CRepository(const AddonInfoPtr& addonInfo)
+  : CAddon(addonInfo, ADDON_REPOSITORY)
+{
+  DirList dirs;
+  AddonVersion version("0.0.0");
+  AddonInfoPtr addonver = CServiceBroker::GetAddonMgr().GetAddonInfo("xbmc.addon");
+  if (addonver)
+    version = addonver->Version();
+
+  for (auto element : Type(ADDON_REPOSITORY)->GetElements("dir"))
+  {
+    DirInfo dir = ParseDirConfiguration(element.second);
+    if (dir.version <= version)
+      m_dirs.push_back(std::move(dir));
+  }
+  if (!Type(ADDON_REPOSITORY)->GetValue("info").empty())
+  {
+    m_dirs.push_back(ParseDirConfiguration(*Type(ADDON_REPOSITORY)));
+  }
+
+  for (auto const& dir : m_dirs)
+  {
+    CURL datadir(dir.datadir);
+    if (datadir.IsProtocol("http"))
+    {
+      CLog::Log(LOGWARNING, "Repository {} uses plain HTTP for add-on downloads - this is insecure and will make your Kodi installation vulnerable to attacks if enabled!", Name());
+    }
+    else if (datadir.IsProtocol("https") && datadir.HasProtocolOption("verifypeer") && datadir.GetProtocolOption("verifypeer") == "false")
+    {
+      CLog::Log(LOGWARNING, "Repository {} disabled peer verification for add-on downloads - this is insecure and will make your Kodi installation vulnerable to attacks if enabled!", Name());
+    }
+  }
+}
+
 bool CRepository::FetchChecksum(const std::string& url, std::string& checksum) noexcept
 {
   CFile file;
@@ -270,6 +304,43 @@ CRepository::FetchStatus CRepository::FetchIfChanged(const std::string& oldCheck
     addons.insert(addons.end(), tmp.begin(), tmp.end());
   }
   return STATUS_OK;
+}
+
+CRepository::DirInfo CRepository::ParseDirConfiguration(const CAddonExtensions& configuration)
+{
+  DirInfo dir;
+  dir.checksum = configuration.GetValue("checksum").asString();
+  std::string checksumStr = configuration.GetValue("checksum@verify").asString();
+  if (!checksumStr.empty())
+  {
+    dir.checksumType = CDigest::TypeFromString(checksumStr);
+  }
+  dir.info = configuration.GetValue("info").asString();
+  dir.datadir = configuration.GetValue("datadir").asString();
+  dir.artdir = configuration.GetValue("artdir").asString();
+  if (dir.artdir.empty())
+  {
+    dir.artdir = dir.datadir;
+  }
+
+  std::string hashStr = configuration.GetValue("hashes").asString();
+  StringUtils::ToLower(hashStr);
+  if (hashStr == "true")
+  {
+    // Deprecated alias
+    hashStr = "md5";
+  }
+  if (!hashStr.empty() && hashStr != "false")
+  {
+    dir.hashType = CDigest::TypeFromString(hashStr);
+    if (dir.hashType == CDigest::Type::MD5)
+    {
+      CLog::Log(LOGWARNING, "CRepository::{}: Repository has MD5 hashes enabled - this hash function is broken and will only guard against unintentional data corruption", __FUNCTION__);
+    }
+  }
+
+  dir.version = AddonVersion{configuration.GetValue("@minversion").asString()};
+  return dir;
 }
 
 CRepositoryUpdateJob::CRepositoryUpdateJob(const RepositoryPtr& repo) : m_repo(repo) {}

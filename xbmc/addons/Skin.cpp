@@ -218,6 +218,43 @@ CSkinInfo::CSkinInfo(
   LoadStartupWindows(nullptr);
 }
 
+CSkinInfo::CSkinInfo(const AddonInfoPtr& addonInfo) : CAddon(addonInfo, ADDON_SKIN)
+{
+  for (auto values : Type(ADDON_SKIN)->GetValues())
+  {
+    if (values.first != "res")
+      continue;
+
+    int width = values.second.GetValue("res@width").asInteger();
+    int height = values.second.GetValue("res@height").asInteger();
+    bool defRes = values.second.GetValue("res@default").asBoolean();
+    std::string folder = values.second.GetValue("res@folder").asString();
+    std::string strAspect = values.second.GetValue("res@aspect").asString();
+    float aspect = 0;
+
+    std::vector<std::string> fracs = StringUtils::Split(strAspect, ':');
+    if (fracs.size() == 2)
+      aspect = (float)(atof(fracs[0].c_str())/atof(fracs[1].c_str()));
+    if (width > 0 && height > 0)
+    {
+      RESOLUTION_INFO res(width, height, aspect, folder);
+      res.strId = strAspect; // for skin usage, store aspect string in strId
+      if (defRes)
+        m_defaultRes = res;
+      m_resolutions.push_back(res);
+    }
+  }
+
+  m_effectsSlowDown = Type(ADDON_SKIN)->GetValue("@effectslowdown").asFloat();
+  if (m_effectsSlowDown == 0.0f)
+    m_effectsSlowDown = 1.f;
+
+  m_debugging = Type(ADDON_SKIN)->GetValue("@debugging").asBoolean();
+
+  m_settingsUpdateHandler.reset(new CSkinSettingUpdateHandler(*this));
+  LoadStartupWindows(nullptr);
+}
+
 CSkinInfo::~CSkinInfo() = default;
 
 struct closestRes

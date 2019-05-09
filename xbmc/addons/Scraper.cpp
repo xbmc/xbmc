@@ -160,7 +160,35 @@ CScraper::CScraper(const AddonInfoPtr& addonInfo, TYPE addonType)
     , m_requiressettings(false)
     , m_pathContent(CONTENT_NONE)
 {
-  m_isPython = URIUtils::GetExtension(LibPath()) == ".py";
+  m_requiressettings = addonInfo->Type(addonType)->GetValue("@requiressettings").asBoolean();
+
+  CDateTimeSpan persistence;
+  std::string tmp = addonInfo->Type(addonType)->GetValue("@cachepersistence").asString();
+  if (!tmp.empty())
+    m_persistence.SetFromTimeString(tmp);
+
+  switch (addonType)
+  {
+  case ADDON_SCRAPER_ALBUMS:
+    m_pathContent = CONTENT_ALBUMS;
+    break;
+  case ADDON_SCRAPER_ARTISTS:
+    m_pathContent = CONTENT_ARTISTS;
+    break;
+  case ADDON_SCRAPER_MOVIES:
+    m_pathContent = CONTENT_MOVIES;
+    break;
+  case ADDON_SCRAPER_MUSICVIDEOS:
+    m_pathContent = CONTENT_MUSICVIDEOS;
+    break;
+  case ADDON_SCRAPER_TVSHOWS:
+    m_pathContent = CONTENT_TVSHOWS;
+    break;
+  default:
+    break;
+  }
+
+  m_isPython = URIUtils::GetExtension(addonInfo->Type(addonType)->LibPath()) == ".py";
 }
 
 CScraper::CScraper(const AddonInfoPtr& addonInfo,

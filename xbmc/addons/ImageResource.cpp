@@ -29,6 +29,12 @@ CImageResource::CImageResource(const AddonInfoPtr& addonInfo, std::string type)
 {
 }
 
+CImageResource::CImageResource(const AddonInfoPtr& addonInfo)
+  : CResource(addonInfo, ADDON_RESOURCE_IMAGES)
+{
+  m_type = Type(ADDON_RESOURCE_IMAGES)->GetValue("@type").asString();
+}
+
 void CImageResource::OnPreUnInstall()
 {
   CURL xbtUrl;
