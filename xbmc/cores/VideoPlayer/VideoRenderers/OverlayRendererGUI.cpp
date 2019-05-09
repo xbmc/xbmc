@@ -49,12 +49,12 @@ CGUITextLayout* COverlayText::GetFontLayout(const std::string &font, int color, 
 	UTILS::Color bordercolor = UTILS::COLOR::BLACK;
 	if (opacity > 0 && opacity < 100)
 	{
-		fgcolor = ColorUtils::ChangeOpacity(fgcolor, opacity / 100.0f);
-		bordercolor = ColorUtils::ChangeOpacity(bordercolor, opacity / 100.0f);
+      fgcolor = ColorUtils::ChangeOpacity(fgcolor, opacity / 100.0f);
+      bordercolor = ColorUtils::ChangeOpacity(bordercolor, opacity / 100.0f);
 	}
 	else if (opacity == 0)
 	{
-		fgcolor = bordercolor = UTILS::COLOR::NONE;
+      fgcolor = bordercolor = UTILS::COLOR::NONE;
 	}
 
     // We scale based on PAL4x3 - this at least ensures all sizing is constant across resolutions.

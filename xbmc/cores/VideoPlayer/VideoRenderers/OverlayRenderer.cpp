@@ -189,7 +189,7 @@ void CRenderer::Render(int idx)
       
       text->PrepareRender(settings->GetString(CSettings::SETTING_SUBTITLES_FONT),
                           settings->GetInt(CSettings::SETTING_SUBTITLES_COLOR),
-		                  settings->GetInt(CSettings::SETTING_SUBTITLES_OPACITY),
+                          settings->GetInt(CSettings::SETTING_SUBTITLES_OPACITY),
                           settings->GetInt(CSettings::SETTING_SUBTITLES_HEIGHT),
                           settings->GetInt(CSettings::SETTING_SUBTITLES_STYLE),
                           m_font, m_fontBorder, bgcolor, m_rv);
