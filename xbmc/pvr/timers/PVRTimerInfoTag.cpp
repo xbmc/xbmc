@@ -1030,13 +1030,25 @@ CDateTime CPVRTimerInfoTag::ConvertLocalTimeToUTC(const CDateTime& local)
   local.GetAsTime(time);
 
   struct tm* tms;
+
+  // obtain dst flag for given datetime
+#ifdef HAVE_LOCALTIME_R
+  struct tm loc_buf;
+  tms = localtime_r(&time, &loc_buf);
+#else
+  tms = localtime(&time);
+#endif
+
+  int isdst = tms->tm_isdst;
+
 #ifdef HAVE_GMTIME_R
-  struct tm gbuf;
-  tms = gmtime_r(&time, &gbuf);
+  struct tm gm_buf;
+  tms = gmtime_r(&time, &gm_buf);
 #else
   tms = gmtime(&time);
 #endif
 
+  tms->tm_isdst = isdst;
   return CDateTime(mktime(tms));
 }
 
