@@ -17,15 +17,17 @@
 // pairs (where both description and value fields are of CStdString types).
 //--------------------------------------------------------------------------
 
+#include "JpegParse.h"
+
 #include "filesystem/File.h"
-#ifndef _LINUX
+
+#ifdef TARGET_WINDOWS
 #include <windows.h>
 #else
 #include <memory.h>
 #include <cstring>
 typedef unsigned char BYTE;
 #endif
-#include "JpegParse.h"
 
 #ifndef min
 #define min(a,b) (a)>(b)?(b):(a)
