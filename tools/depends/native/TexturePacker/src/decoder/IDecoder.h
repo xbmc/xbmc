@@ -46,12 +46,21 @@ class DecodedFrame
 class DecodedFrames
 {
   public:
-    DecodedFrames(): user(NULL) {}
+    DecodedFrames(): user(NULL), destroyFN(nullptr) {}
     std::vector<DecodedFrame> frameList;
     void     *user;         /* used internally*/
+    void (*destroyFN)(void *);
 
     void clear()
     {
+      for (auto f : frameList)
+      {
+        delete[] f.rgbaImage.pixels;
+      }
+      if (destroyFN)
+      {
+        destroyFN(user);
+      }
       frameList.clear();
       user = NULL;
     }
