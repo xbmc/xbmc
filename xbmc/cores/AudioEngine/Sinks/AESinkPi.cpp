@@ -61,9 +61,9 @@ void CAESinkPi::SetAudioDest()
   if ( m_omx_render.IsInitialized() )
   {
     if (m_output == AESINKPI_ANALOGUE)
-      strncpy((char *)audioDest.sName, "local", strlen("local"));
+      strncpy(reinterpret_cast<char*>(audioDest.sName), "local", strlen("local") + 1);
     else
-      strncpy((char *)audioDest.sName, "hdmi", strlen("hdmi"));
+      strncpy(reinterpret_cast<char*>(audioDest.sName), "hdmi", strlen("hdmi") + 1);
     omx_err = m_omx_render.SetConfig(OMX_IndexConfigBrcmAudioDestination, &audioDest);
     if (omx_err != OMX_ErrorNone)
       CLog::Log(LOGERROR, "%s::%s - m_omx_render.SetConfig omx_err(0x%08x)", CLASSNAME, __func__, omx_err);
@@ -71,9 +71,9 @@ void CAESinkPi::SetAudioDest()
   if ( m_omx_render_slave.IsInitialized() )
   {
     if (m_output != AESINKPI_ANALOGUE)
-      strncpy((char *)audioDest.sName, "local", strlen("local"));
+      strncpy(reinterpret_cast<char*>(audioDest.sName), "local", strlen("local") + 1);
     else
-      strncpy((char *)audioDest.sName, "hdmi", strlen("hdmi"));
+      strncpy(reinterpret_cast<char*>(audioDest.sName), "hdmi", strlen("hdmi") + 1);
     omx_err = m_omx_render_slave.SetConfig(OMX_IndexConfigBrcmAudioDestination, &audioDest);
     if (omx_err != OMX_ErrorNone)
       CLog::Log(LOGERROR, "%s::%s - m_omx_render_slave.SetConfig omx_err(0x%08x)", CLASSNAME, __func__, omx_err);
