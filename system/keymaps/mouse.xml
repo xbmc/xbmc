@@ -34,6 +34,7 @@
       <middleclick>middleclick</middleclick>
       <doubleclick id="0">doubleclick</doubleclick>
       <longclick id="0">contextmenu</longclick>
+      <longclick id="2">Menu</longclick>  <!-- access to the blade menu via long right-click -->
       <wheeldown>wheeldown</wheeldown>
       <wheelup>wheelup</wheelup>
       <mousedrag>mousedrag</mousedrag>
@@ -58,4 +59,9 @@
       <rightclick>Info</rightclick>
     </mouse>
   </FullscreenGame>
+  <contextmenu>  <!-- Give a way out of the context menu without actually having to select something.  -->
+    <mouse>
+      <rightclick>back</rightclick>
+    </mouse>
+  </contextmenu>
 </keymap>
