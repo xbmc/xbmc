@@ -97,3 +97,31 @@ std::string CDRMConnector::GetName()
 {
   return GetType() + "-" + std::to_string(m_connector->connector_type_id);
 }
+
+std::vector<uint8_t> CDRMConnector::GetEDID() const
+{
+  auto property = std::find_if(m_propsInfo.begin(), m_propsInfo.end(),
+                               [](auto& prop) { return prop->name == std::string_view("EDID"); });
+
+  if (property == m_propsInfo.end())
+  {
+    CLog::LogF(LOGDEBUG, "failed to find EDID property for connector: {}",
+               m_connector->connector_id);
+    return {};
+  }
+
+  uint64_t blob_id = m_props->prop_values[std::distance(m_propsInfo.begin(), property)];
+  if (blob_id == 0)
+    return {};
+
+  drmModePropertyBlobPtr blob = drmModeGetPropertyBlob(m_fd, blob_id);
+  if (!blob)
+    return {};
+
+  auto data = static_cast<uint8_t*>(blob->data);
+  auto edid = std::vector<uint8_t>(data, data + blob->length);
+
+  drmModeFreePropertyBlob(blob);
+
+  return edid;
+}
