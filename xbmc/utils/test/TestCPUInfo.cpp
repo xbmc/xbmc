@@ -17,7 +17,7 @@
 #include "settings/SettingsComponent.h"
 
 #ifdef TARGET_POSIX
-#include "../linux/XTimeUtils.h"
+#include "platform/posix/XTimeUtils.h"
 #endif
 
 #include "gtest/gtest.h"

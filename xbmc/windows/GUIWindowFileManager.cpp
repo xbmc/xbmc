@@ -52,7 +52,7 @@
 #include "URL.h"
 #include "platform/Filesystem.h"
 #ifdef TARGET_POSIX
-#include "platform/linux/XFileUtils.h"
+#include "platform/posix/XFileUtils.h"
 #endif
 
 using namespace XFILE;

@@ -37,7 +37,7 @@
 #endif
 
 #if defined(TARGET_POSIX)
-#include "platform/linux/PlatformDefs.h"
+#include "PlatformDefs.h"
 #endif
 
 CBuiltins::CBuiltins()

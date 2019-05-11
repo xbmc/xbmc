@@ -17,7 +17,7 @@
 #include "interfaces/generic/ScriptInvocationManager.h"
 #include "network/Network.h"
 #ifdef TARGET_POSIX
-#include "platform/linux/XTimeUtils.h"
+#include "platform/posix/XTimeUtils.h"
 #endif
 #include "ServiceBroker.h"
 #include "settings/lib/Setting.h"

@@ -11,7 +11,7 @@
 #include "IFile.h"
 #ifdef TARGET_POSIX
 #include "PlatformDefs.h"
-#include "ConvUtils.h"
+#include "platform/posix/ConvUtils.h"
 #endif
 #include "Util.h"
 #include "utils/log.h"

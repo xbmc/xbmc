@@ -15,7 +15,7 @@
 #include "events/NotificationEvent.h"
 #include "interfaces/AnnouncementManager.h"
 #ifdef TARGET_POSIX
-#include "platform/linux/XTimeUtils.h"
+#include "platform/posix/XTimeUtils.h"
 #endif
 
 #include "pvr/PVRGUIActions.h"

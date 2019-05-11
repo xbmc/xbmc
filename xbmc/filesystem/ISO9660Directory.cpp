@@ -14,7 +14,7 @@
 #include "URL.h"
 #include "FileItem.h"
 #ifdef TARGET_POSIX
-#include "platform/linux/XTimeUtils.h"
+#include "platform/posix/XTimeUtils.h"
 #endif
 #ifdef TARGET_WINDOWS
 #include "platform/win32/CharsetConverter.h"

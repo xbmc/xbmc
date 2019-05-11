@@ -36,7 +36,7 @@
 #include "dialogs/GUIDialogExtendedProgressBar.h"
 #include "URL.h"
 #ifdef TARGET_POSIX
-#include "platform/linux/XTimeUtils.h"
+#include "platform/posix/XTimeUtils.h"
 #endif
 
 #include <functional>

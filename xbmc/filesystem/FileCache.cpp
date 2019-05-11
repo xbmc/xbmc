@@ -20,7 +20,7 @@
 #include "settings/SettingsComponent.h"
 
 #if !defined(TARGET_WINDOWS)
-#include "platform/linux/ConvUtils.h"
+#include "platform/posix/ConvUtils.h"
 #endif
 
 #include <cassert>
@@ -28,7 +28,7 @@
 #include <memory>
 
 #ifdef TARGET_POSIX
-#include "platform/linux/ConvUtils.h"
+#include "platform/posix/ConvUtils.h"
 #endif
 
 using namespace XFILE;

@@ -16,7 +16,7 @@
 #include <EGL/egl.h>
 #include <unistd.h>
 
-#include "platform/linux/XTimeUtils.h"
+#include "platform/posix/XTimeUtils.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "windowing/GraphicContext.h"

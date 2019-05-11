@@ -40,8 +40,8 @@
 #include <signal.h>
 #ifdef TARGET_POSIX
 #include "PlatformDefs.h" // for __stat64
-#include "XFileUtils.h"
-#include "XTimeUtils.h"
+#include "platform/posix/XFileUtils.h"
+#include "platform/posix/XTimeUtils.h"
 #endif
 #include "ServiceBroker.h"
 #include "Util.h"

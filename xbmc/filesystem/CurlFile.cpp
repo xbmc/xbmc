@@ -25,9 +25,9 @@
 #ifdef TARGET_POSIX
 #include <errno.h>
 #include <inttypes.h>
-#include "../linux/XFileUtils.h"
-#include "../linux/XTimeUtils.h"
-#include "../linux/ConvUtils.h"
+#include "platform/posix/XFileUtils.h"
+#include "platform/posix/XTimeUtils.h"
+#include "platform/posix/ConvUtils.h"
 #endif
 
 #include "DllLibCurl.h"

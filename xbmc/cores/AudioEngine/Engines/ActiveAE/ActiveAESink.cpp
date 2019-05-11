@@ -21,7 +21,7 @@
 #include <algorithm>
 
 #ifdef TARGET_POSIX
-#include "platform/linux/XMemUtils.h"
+#include "platform/posix/XMemUtils.h"
 #endif
 
 using namespace AE;

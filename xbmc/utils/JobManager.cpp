@@ -13,7 +13,7 @@
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 #ifdef TARGET_POSIX
-#include "platform/linux/XTimeUtils.h"
+#include "platform/posix/XTimeUtils.h"
 #endif
 
 bool CJob::ShouldCancel(unsigned int progress, unsigned int total) const

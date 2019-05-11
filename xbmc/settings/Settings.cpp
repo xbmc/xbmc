@@ -20,7 +20,7 @@
 #include "GUIPassword.h"
 #include "input/KeyboardLayoutManager.h"
 #if defined(TARGET_POSIX)
-#include "platform/linux/LinuxTimezone.h"
+#include "platform/posix/LinuxTimezone.h"
 #endif // defined(TARGET_POSIX)
 #include "network/upnp/UPnPSettings.h"
 #include "network/WakeOnAccess.h"

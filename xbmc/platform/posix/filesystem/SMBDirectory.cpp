@@ -29,7 +29,7 @@
 #include "utils/URIUtils.h"
 #include "threads/SingleLock.h"
 #include "PasswordManager.h"
-#include "platform/linux/XTimeUtils.h"
+#include "platform/posix/XTimeUtils.h"
 
 #include <libsmbclient.h>
 

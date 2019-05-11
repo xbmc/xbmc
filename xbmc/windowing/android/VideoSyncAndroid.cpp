@@ -15,7 +15,7 @@
 #include "windowing/WinSystem.h"
 #include "windowing/GraphicContext.h"
 #include "utils/MathUtils.h"
-#include "platform/linux/XTimeUtils.h"
+#include "platform/posix/XTimeUtils.h"
 
 
 bool CVideoSyncAndroid::Setup(PUPDATECLOCK func)

@@ -24,7 +24,7 @@
 #ifdef TARGET_DARWIN_OSX
 #include "platform/darwin/osx/smc.h"
 #endif
-#include "platform/linux/LinuxResourceCounter.h"
+#include "platform/posix/LinuxResourceCounter.h"
 #endif
 
 #if defined(TARGET_FREEBSD)

@@ -22,7 +22,7 @@
 #include "utils/log.h"
 
 #ifdef TARGET_POSIX
-#include "platform/linux/XTimeUtils.h"
+#include "platform/posix/XTimeUtils.h"
 #endif
 
 using namespace XFILE;

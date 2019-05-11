@@ -21,7 +21,9 @@ typedef HANDLE PDH_HQUERY;
 typedef HANDLE PDH_HCOUNTER;
 #endif
 class CTemperature;
+#if defined(TARGET_DARWIN)
 class CLinuxResourceCounter;
+#endif
 
 #define CPU_FEATURE_MMX      1 << 0
 #define CPU_FEATURE_MMX2     1 << 1

@@ -31,7 +31,7 @@
 #include "Dialog.h"
 #include "ListItem.h"
 #ifdef TARGET_POSIX
-#include "platform/linux/XTimeUtils.h"
+#include "platform/posix/XTimeUtils.h"
 #endif
 
 using namespace KODI::MESSAGING;

@@ -35,7 +35,7 @@
 #include <stdio.h>
 #include <algorithm>
 #if defined(TARGET_DARWIN)
-#include "platform/linux/LinuxResourceCounter.h"
+#include "platform/posix/LinuxResourceCounter.h"
 #endif
 
 using namespace KODI::GUILIB;

@@ -10,7 +10,7 @@
 
 #include "guilib/GUIDialog.h"
 #ifdef TARGET_POSIX
-#include "platform/linux/LinuxResourceCounter.h"
+#include "platform/posix/LinuxResourceCounter.h"
 #endif
 
 class CGUITextLayout;

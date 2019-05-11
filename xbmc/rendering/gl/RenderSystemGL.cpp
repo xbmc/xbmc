@@ -19,7 +19,7 @@
 #include "utils/MathUtils.h"
 #include "utils/StringUtils.h"
 #ifdef TARGET_POSIX
-#include "platform/linux/XTimeUtils.h"
+#include "platform/posix/XTimeUtils.h"
 #endif
 
 CRenderSystemGL::CRenderSystemGL() : CRenderSystemBase()
