@@ -30,6 +30,7 @@
       <swipe direction="left">SwipeLeft</swipe>
       <swipe direction="left" pointers="2">Back</swipe>
       <swipe direction="right">SwipeRight</swipe>
+      <swipe direction="right" pointers="2">Menu</swipe>  <!-- Easier access to the side blade menu on touchscreens.  -->
       <swipe direction="up">SwipeUp</swipe>
       <swipe direction="down">SwipeDown</swipe>
       <swipe direction="up" pointers="3">SwitchPlayer</swipe>
