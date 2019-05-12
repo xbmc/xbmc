@@ -115,7 +115,7 @@ public:
 #if defined(TARGET_ANDROID)
 #include "platform/android/network/NetworkAndroid.h"
 #elif defined(HAS_LINUX_NETWORK)
-#include "platform/linux/network/NetworkLinux.h"
+#include "platform/posix/network/NetworkLinux.h"
 #elif defined(HAS_WIN32_NETWORK)
 #include "platform/win32/network/NetworkWin32.h"
 #elif defined(HAS_WIN10_NETWORK)
