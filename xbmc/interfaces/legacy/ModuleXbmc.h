@@ -247,7 +247,7 @@ namespace XBMCAddon
     ///                             localize.
     /// @return                     Localized 'unicode string'
     ///
-    /// @note See strings.xml in `\language\{yourlanguage}\` for which id
+    /// @note See strings.po in `\language\{yourlanguage}\` for which id
     ///        you need for a string.
     ///
     ///

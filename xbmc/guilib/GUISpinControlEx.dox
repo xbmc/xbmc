@@ -73,7 +73,7 @@ important, as `xml` tags are case-sensitive.
 | texturedown         | Specifies the image file which should be displayed for the down arrow when it is not focused. It is displayed to the right of the up arrow so that it's right edge is <b>`<textoffsetx>`</b> pixels away from the right edge of the control.
 | texturedownfocus    | Specifies the image file which should be displayed for the down arrow when it has focus.
 | texturedowndisabled | Specifies the image file which should be displayed for the up arrow when the button is disabled.
-| label               | Either a numeric reference into strings.xml (for localization), or a string that will be shown on the left of the control.
+| label               | Either a numeric reference into strings.po (for localization), or a string that will be shown on the left of the control.
 | font                | Font used for the controls label. From fonts.xml.
 | textcolor           | Color used for displaying the label. In **AARRGGBB** hex format, or a name from the [colour theme](http://kodi.wiki/view/Colour_Themes).
 | disabledcolor       | Color used for the label if the control is disabled. In **AARRGGBB** hex format, or a name from the [colour theme](http://kodi.wiki/view/Colour_Themes).

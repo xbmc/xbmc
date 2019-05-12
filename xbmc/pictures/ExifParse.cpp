@@ -117,7 +117,7 @@ const unsigned int BytesPerFormat[NUM_FORMATS] = { 1,1,2,4,8,1,1,2,4,8,4,8 };
 
 //--------------------------------------------------------------------------
 // Internationalisation string IDs. The enum order must match that in the
-// language file (e.g. 'language/English/strings.xml', and EXIF_PARSE_STRING_ID_BASE
+// language file (e.g. 'language/resource.language.en_gb/strings.po', and EXIF_PARSE_STRING_ID_BASE
 // must match the ID of the first Exif string in that file.
 #define EXIF_PARSE_STRING_ID_BASE       21800
 enum {

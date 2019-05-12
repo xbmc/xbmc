@@ -63,8 +63,8 @@ that each tag is lower case only. This is important, as xml tags are case-sensit
 | alttexturefocus   | Specifies the image file which should be displayed when the toggle button is in it's selected state. This texture replaces the <b>`<texturefocus>`</b> texture when the toggle button is selected.
 | alttexturenofocus | Specifies the image file which should be displayed when the button is in it's selected state but unfocused.
 | usealttexture     | Specifies the conditions under which the Alternative Textures should be shown. Some toggle button controls are handled by Kodi internally, but any extra ones that the skinner has can be controlled using this tag. See here for more information.
-| label             | The label used on the button. It can be a link into strings.xml, or an actual text label.
-| altlabel          | The alternate label used on the button. It can be a link into strings.xml, or an actual text label.
+| label             | The label used on the button. It can be a link into strings.po, or an actual text label.
+| altlabel          | The alternate label used on the button. It can be a link into strings.po, or an actual text label.
 | altclick          | The alternate action to perform when the button is pressed. Should be a built in function. See here for more information. You may have more than one <b>`<altclick>`</b> tag, and they'll be executed in sequence.
 | font              | Font used for the button label. From fonts.xml.
 | textcolor         | Color used for displaying the button label. In AARRGGBB hex format, or a name from the colour theme.

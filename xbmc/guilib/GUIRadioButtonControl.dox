@@ -70,7 +70,7 @@ important, as `xml` tags are case-sensitive.
 | textureradiooffnofocus  | Specifies the image file which should be displayed for the radio button portion when the button is off and unfocused.
 | textureradiooff         | A shortcut to set both of the above textures to the same image file.
 | textureradioondisabled  | Specifies the image file which should be displayed for the radio button portion when the button is off and disabled.
-| label                   | The label used on the button. It can be a link into strings.xml, or an actual text label.
+| label                   | The label used on the button. It can be a link into strings.po, or an actual text label.
 | label2                  | Optional. Will display an 'on' or 'off' label. Only available if you specify an empty radiowidth and radioheight.
 | font                    | Font used for the button label. From fonts.xml.
 | textcolor               | Color used for displaying the button label. In **AARRGGBB** hex format, or a name from the [colour theme](http://kodi.wiki/view/Colour_Themes).

@@ -37,7 +37,7 @@ namespace dbiplus
 #include <string>
 
 // return codes of Cleaning up the Database
-// numbers are strings from strings.xml
+// numbers are strings from strings.po
 #define ERROR_OK     317
 #define ERROR_CANCEL    0
 #define ERROR_DATABASE    315

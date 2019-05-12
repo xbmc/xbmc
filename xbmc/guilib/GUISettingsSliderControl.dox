@@ -60,7 +60,7 @@ important, as xml tags are case-sensitive.
 | texturebg             | Specifies the image file which should be displayed in the background of the slider portion of the control. Will be positioned so that the right edge is <b>`<textoffsetx>`</b> away from the right edge of the <b>`<texturefocus>`</b> image, and centered vertically.
 | textureslidernib      | Specifies the image file which should be displayed for the slider nib.
 | textureslidernibfocus | Specifies the image file which should be displayed for the slider nib when it has focus.
-| label                 | Either a numeric reference into strings.xml (for localization), or a string that will be shown on the left of the control.
+| label                 | Either a numeric reference into strings.po (for localization), or a string that will be shown on the left of the control.
 | font                  | Font used for the controls label. From fonts.xml.
 | textcolor             | Color used for displaying the label. In **AARRGGBB** hex format, or a name from the [colour theme](http://kodi.wiki/view/Colour_Themes).
 | disabledcolor         | Color used for the label if the control is disabled. In **AARRGGBB** hex format, or a name from the [colour theme](http://kodi.wiki/view/Colour_Themes).

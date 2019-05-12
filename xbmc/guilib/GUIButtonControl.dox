@@ -56,7 +56,7 @@ important, as xml tags are case-sensitive.
 |--------------:|:--------------------------------------------------------------|
 | texturefocus  | Specifies the image file which should be displayed when the button has focus. [See here for additional information about textures](http://kodi.wiki/view/Texture_Attributes).
 | texturenofocus| Specifies the image file which should be displayed when the button does not have focus.
-| label         | The label used on the button. It can be a link into <b>`strings.xml`</b>, or an actual text label.
+| label         | The label used on the button. It can be a link into <b>`strings.po`</b>, or an actual text label.
 | font          | Font used for the button label. From fonts.xml.
 | textcolor     | Color used for displaying the button label. In **AARRGGBB** hex format, or a name from the [colour theme](http://kodi.wiki/view/Colour_Themes).
 | focusedcolor  | Color used for the button label when the button has in focus. In **AARRGGBB** hex format or a name from the [colour theme](http://kodi.wiki/view/Colour_Themes).
