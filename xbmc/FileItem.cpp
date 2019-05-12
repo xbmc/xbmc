@@ -1310,7 +1310,7 @@ void CFileItem::FillInDefaultIcon()
   //   for .. folders the default picture for parent folder
   //   for other folders the defaultFolder.png
 
-  if (GetIconImage().empty())
+  if (GetArt("icon").empty())
   {
     if (!m_bIsFolder)
     {
@@ -1629,8 +1629,6 @@ void CFileItem::UpdateInfo(const CFileItem &item, bool replaceLabels /*=true*/)
     SetLabel2(item.GetLabel2());
   if (!item.GetArt().empty())
     SetArt(item.GetArt());
-  if (!item.GetIconImage().empty())
-    SetArt("icon", item.GetIconImage());
   AppendProperties(item);
 }
 

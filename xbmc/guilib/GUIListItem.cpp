@@ -151,14 +151,6 @@ bool CGUIListItem::HasArt(const std::string &type) const
   return !GetArt(type).empty();
 }
 
-const std::string& CGUIListItem::GetIconImage() const
-{
-  auto i = m_art.find("icon");
-  if (i != m_art.end())
-    return i->second;
-  return "";
-}
-
 void CGUIListItem::SetOverlayImage(GUIIconOverlay icon, bool bOnOff)
 {
   GUIIconOverlay newIcon = (bOnOff) ? GUIIconOverlay((int)(icon)+1) : icon;

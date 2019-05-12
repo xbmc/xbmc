@@ -390,7 +390,7 @@ bool CGUIDialogContextMenu::OnContextButton(const std::string &type, const CFile
       }
       // and add a "no thumb" entry as well
       CFileItemPtr nothumb(new CFileItem("thumb://None", false));
-      nothumb->SetArt("icon", item->GetIconImage());
+      nothumb->SetArt("icon", item->GetArt("icon"));
       nothumb->SetLabel(g_localizeStrings.Get(20018));
       items.Add(nothumb);
 

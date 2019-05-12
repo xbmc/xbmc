@@ -213,7 +213,7 @@ char* Interface_GUIListItem::get_icon_image(void* kodiBase, void* handle)
 
   char* ret;
   Interface_GUIGeneral::lock();
-  ret = strdup(item->get()->GetIconImage().c_str());
+  ret = strdup(item->get()->GetArt("icon").c_str());
   Interface_GUIGeneral::unlock();
   return ret;
 }
