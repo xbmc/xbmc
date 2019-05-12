@@ -22,14 +22,11 @@ class CNetworkWin10;
 class CNetworkInterfaceWin10 : public CNetworkInterface
 {
 public:
-  CNetworkInterfaceWin10(const PIP_ADAPTER_ADDRESSES adapter, ::IUnknown* winRTadapter);
+  CNetworkInterfaceWin10(const PIP_ADAPTER_ADDRESSES adapter);
   ~CNetworkInterfaceWin10(void);
-
-  virtual const std::string& GetName(void) const;
 
   virtual bool IsEnabled(void) const;
   virtual bool IsConnected(void) const;
-  bool IsWireless(void) const;
 
   virtual std::string GetMacAddress(void) const;
   virtual void GetMacAddressRaw(char rawMac[6]) const;
@@ -39,23 +36,9 @@ public:
   virtual std::string GetCurrentIPAddress() const;
   virtual std::string GetCurrentNetmask() const;
   virtual std::string GetCurrentDefaultGateway(void) const;
-  virtual std::string GetCurrentWirelessEssId(void) const;
-
-  virtual void GetSettings(NetworkAssignment& assignment, std::string& ipAddress
-                         , std::string& networkMask, std::string& defaultGateway
-                         , std::string& essId, std::string& key, EncMode& encryptionMode) const;
-  virtual void SetSettings(const NetworkAssignment& assignment, const std::string& ipAddress
-                         , const std::string& networkMask, const std::string& defaultGateway
-                         , const std::string& essId, const std::string& key, const EncMode& encryptionMode);
-
-  // Returns the list of access points in the area
-  virtual std::vector<NetworkAccessPoint> GetAccessPoints(void) const;
 
 private:
-  std::string m_adaptername;
   PIP_ADAPTER_ADDRESSES m_adapterAddr;
-  winrt::Windows::Networking::Connectivity::NetworkAdapter m_winRT = nullptr;
-  mutable winrt::Windows::Networking::Connectivity::ConnectionProfile m_profile = nullptr;
 };
 
 

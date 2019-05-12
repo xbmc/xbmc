@@ -100,9 +100,6 @@
 #include "pictures/GUIDialogPictureInfo.h"
 #include "addons/settings/GUIDialogAddonSettings.h"
 #include "addons/GUIDialogAddonInfo.h"
-#ifdef HAS_LINUX_NETWORK
-#include "network/GUIDialogAccessPoints.h"
-#endif
 
 /* PVR related include Files */
 #include "pvr/PVRManager.h"
@@ -227,9 +224,6 @@ void CGUIWindowManager::CreateWindows()
   Add(new CGUIDialogPictureInfo);
   Add(new CGUIDialogAddonInfo);
   Add(new CGUIDialogAddonSettings);
-#ifdef HAS_LINUX_NETWORK
-  Add(new CGUIDialogAccessPoints);
-#endif
 
   Add(new CGUIDialogLockSettings);
 
@@ -355,7 +349,6 @@ bool CGUIWindowManager::DestroyWindows()
     DestroyWindow(WINDOW_DIALOG_PICTURE_INFO);
     DestroyWindow(WINDOW_DIALOG_ADDON_INFO);
     DestroyWindow(WINDOW_DIALOG_ADDON_SETTINGS);
-    DestroyWindow(WINDOW_DIALOG_ACCESS_POINTS);
     DestroyWindow(WINDOW_DIALOG_SLIDER);
     DestroyWindow(WINDOW_DIALOG_MEDIA_FILTER);
     DestroyWindow(WINDOW_DIALOG_SUBTITLES);

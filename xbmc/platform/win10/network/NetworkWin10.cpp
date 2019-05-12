@@ -10,7 +10,6 @@
 #include "filesystem/SpecialProtocol.h"
 #include "platform/win10/AsyncHelpers.h"
 #include "platform/win32/WIN32Util.h"
-#include "platform/win32/CharsetConverter.h"
 #include "settings/Settings.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
@@ -56,29 +55,14 @@ typedef struct icmp_echo_reply {
 #endif //! IP_STATUS_BASE
 #include <Icmpapi.h>
 
-using namespace winrt::Windows::Networking;
 using namespace winrt::Windows::Networking::Connectivity;
-using namespace KODI::PLATFORM::WINDOWS;
 
-CNetworkInterfaceWin10::CNetworkInterfaceWin10(const PIP_ADAPTER_ADDRESSES address, IUnknown* winRTadapter)
+CNetworkInterfaceWin10::CNetworkInterfaceWin10(const PIP_ADAPTER_ADDRESSES address)
 {
   m_adapterAddr = address;
-  m_adaptername = address->AdapterName;
-  winrt::attach_abi(m_winRT, winRTadapter);
-  m_profile = nullptr;
 }
 
 CNetworkInterfaceWin10::~CNetworkInterfaceWin10(void) = default;
-
-const std::string& CNetworkInterfaceWin10::GetName(void) const
-{
-  return m_adaptername;
-}
-
-bool CNetworkInterfaceWin10::IsWireless() const
-{
-  return m_adapterAddr->IfType == IF_TYPE_IEEE80211;
-}
 
 bool CNetworkInterfaceWin10::IsEnabled() const
 {
@@ -108,84 +92,6 @@ bool CNetworkInterfaceWin10::GetHostMacAddress(unsigned long host, std::string& 
   mac = "";
   //! @todo implement raw ARP requests
   return false;
-}
-
-void CNetworkInterfaceWin10::GetSettings(NetworkAssignment& assignment, std::string& ipAddress
-                                       , std::string& networkMask, std::string& defaultGateway
-                                       , std::string& essId, std::string& key, EncMode& encryptionMode) const
-{
-  ipAddress = "0.0.0.0";
-  networkMask = "0.0.0.0";
-  defaultGateway = "0.0.0.0";
-  essId = "";
-  key = "";
-  encryptionMode = ENC_NONE;
-  assignment = NETWORK_DISABLED;
-
-  const ULONG flags = GAA_FLAG_INCLUDE_GATEWAYS | GAA_FLAG_INCLUDE_PREFIX;
-  ULONG ulOutBufLen;
-
-  if (GetAdaptersAddresses(AF_INET, flags, nullptr, nullptr, &ulOutBufLen) != ERROR_BUFFER_OVERFLOW)
-    return;
-
-  PIP_ADAPTER_ADDRESSES adapterAddresses = static_cast<PIP_ADAPTER_ADDRESSES>(malloc(ulOutBufLen));
-  if (adapterAddresses == nullptr)
-    return;
-
-  if (GetAdaptersAddresses(AF_INET, flags, nullptr, adapterAddresses, &ulOutBufLen) == NO_ERROR)
-  {
-    for (PIP_ADAPTER_ADDRESSES adapter = adapterAddresses; adapter; adapter = adapter->Next)
-    {
-      if (adapter->IfIndex != m_adapterAddr->IfIndex)
-        continue;
-
-      if (adapter->Dhcpv4Enabled)
-        assignment = NETWORK_DHCP;
-      else
-        assignment = NETWORK_STATIC;
-
-      PIP_ADAPTER_UNICAST_ADDRESS_LH address = m_adapterAddr->FirstUnicastAddress;
-      while (address)
-      {
-        if (address->Address.lpSockaddr->sa_family == AF_INET)
-        {
-          ipAddress = CNetworkBase::GetIpStr(address->Address.lpSockaddr);
-          networkMask = CNetworkBase::GetMaskByPrefixLength(address->OnLinkPrefixLength);
-
-          break;
-        }
-        address = address->Next;
-      }
-
-      PIP_ADAPTER_GATEWAY_ADDRESS_LH gwAddress = m_adapterAddr->FirstGatewayAddress;
-      while (gwAddress)
-      {
-        if (gwAddress->Address.lpSockaddr->sa_family == AF_INET)
-        {
-          defaultGateway = CNetworkBase::GetIpStr(gwAddress->Address.lpSockaddr);
-          break;
-        }
-        gwAddress = gwAddress->Next;
-      }
-
-      if (adapter->IfType == IF_TYPE_IEEE80211)
-      {
-        //! @todo get WLAN props
-      }
-      break;
-    }
-  }
-  free(adapterAddresses);
-}
-
-void CNetworkInterfaceWin10::SetSettings(const NetworkAssignment& assignment, const std::string& ipAddress, const std::string& networkMask, const std::string& defaultGateway, const std::string& essId, const std::string& key, const EncMode& encryptionMode)
-{
-}
-
-std::vector<NetworkAccessPoint> CNetworkInterfaceWin10::GetAccessPoints(void) const
-{
-  std::vector<NetworkAccessPoint> accessPoints;
-  return accessPoints;
 }
 
 std::string CNetworkInterfaceWin10::GetCurrentIPAddress(void) const
@@ -220,30 +126,6 @@ std::string CNetworkInterfaceWin10::GetCurrentNetmask(void) const
     }
     address = address->Next;
   }
-
-  return result;
-}
-
-std::string CNetworkInterfaceWin10::GetCurrentWirelessEssId(void) const
-{
-  std::string result = "";
-  if (!IsWireless() || !m_winRT)
-    return result;
-
-  if (IsConnected() && !m_profile)
-  {
-    m_profile = Wait(m_winRT.GetConnectedProfileAsync());
-  }
-
-  if (!m_profile)
-    return result;
-
-  if (!m_profile.IsWlanConnectionProfile())
-    return result;
-
-  auto ssid = m_profile.WlanConnectionProfileDetails().GetConnectedSsid();
-  if (!ssid.empty())
-    result = FromW(ssid.c_str());
 
   return result;
 }
@@ -353,7 +235,6 @@ void CNetworkWin10::queryInterfaceList()
 
   const ULONG flags = GAA_FLAG_INCLUDE_GATEWAYS | GAA_FLAG_INCLUDE_PREFIX;
   ULONG ulOutBufLen;
-  NetworkAdapter winRTAdapter = nullptr;
 
   if (GetAdaptersAddresses(AF_INET, flags, nullptr, nullptr, &ulOutBufLen) != ERROR_BUFFER_OVERFLOW)
     return;
@@ -369,9 +250,7 @@ void CNetworkWin10::queryInterfaceList()
       if (adapter->IfType == IF_TYPE_SOFTWARE_LOOPBACK)
         continue;
 
-      std::wstring name = ToW(adapter->AdapterName);
-      m_interfaces.push_back(new CNetworkInterfaceWin10(adapter, adapters[name]));
-      winRTAdapter = nullptr;
+      m_interfaces.push_back(new CNetworkInterfaceWin10(adapter));
     }
   }
 }

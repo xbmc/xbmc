@@ -15,55 +15,10 @@
 
 #include "PlatformDefs.h"
 
-enum EncMode { ENC_NONE = 0, ENC_WEP = 1, ENC_WPA = 2, ENC_WPA2 = 3 };
-enum NetworkAssignment { NETWORK_DASH = 0, NETWORK_DHCP = 1, NETWORK_STATIC = 2, NETWORK_DISABLED = 3 };
-
-class NetworkAccessPoint
-{
-public:
-    NetworkAccessPoint(const std::string &essId, const std::string &macAddress, int signalStrength, EncMode encryption, int channel = 0):
-      m_essId(essId),
-      m_macAddress(macAddress)
-    {
-      m_dBm            = signalStrength;
-      m_encryptionMode = encryption;
-      m_channel        = channel;
-   }
-
-   const std::string &getEssId() const { return m_essId; }
-   const std::string &getMacAddress() const { return m_macAddress; }
-   int getSignalStrength() const { return m_dBm; }
-   EncMode getEncryptionMode() const { return m_encryptionMode; }
-   int getChannel() const { return m_channel; }
-
-   /*!
-    \brief  Returns the quality, normalized as a percentage, of the network access point
-    \return The quality as an integer between 0 and 100
-    */
-   int getQuality() const;
-
-   /*!
-    \brief  Translates a 802.11a+g frequency into the corresponding channel
-    \param  frequency  The frequency of the channel in units of Hz
-    \return The channel as an integer between 1 and 14 (802.11b+g) or
-            between 36 and 165 (802.11a), or 0 if unknown.
-    */
-   static int FreqToChannel(float frequency);
-
-private:
-   std::string  m_essId;
-   std::string  m_macAddress;
-   int         m_dBm;
-   EncMode     m_encryptionMode;
-   int         m_channel;
-};
-
 class CNetworkInterface
 {
 public:
    virtual ~CNetworkInterface() = default;
-
-   virtual const std::string& GetName(void) const = 0;
 
    virtual bool IsEnabled(void) const = 0;
    virtual bool IsConnected(void) const = 0;
@@ -76,13 +31,6 @@ public:
    virtual std::string GetCurrentIPAddress() const = 0;
    virtual std::string GetCurrentNetmask() const = 0;
    virtual std::string GetCurrentDefaultGateway(void) const = 0;
-   virtual std::string GetCurrentWirelessEssId(void) const = 0;
-
-   // Returns the list of access points in the area
-   virtual std::vector<NetworkAccessPoint> GetAccessPoints(void) const = 0;
-
-   virtual void GetSettings(NetworkAssignment& assignment, std::string& ipAddress, std::string& networkMask, std::string& defaultGateway, std::string& essId, std::string& key, EncMode& encryptionMode) const = 0;
-   virtual void SetSettings(const NetworkAssignment& assignment, const std::string& ipAddress, const std::string& networkMask, const std::string& defaultGateway, const std::string& essId, const std::string& key, const EncMode& encryptionMode) = 0;
 };
 
 class CSettings;
@@ -109,7 +57,6 @@ public:
 
    // Return the list of interfaces
    virtual std::vector<CNetworkInterface*>& GetInterfaceList(void) = 0;
-   CNetworkInterface* GetInterfaceByName(const std::string& name);
 
    // Return the first interface which is active
    virtual CNetworkInterface* GetFirstConnectedInterface(void);
@@ -158,7 +105,7 @@ public:
    /*!
     \brief  convert prefix length of IPv4 address to IP mask representation
     \param  prefix length
-    \return 
+    \return
    */
    static std::string GetMaskByPrefixLength(uint8_t prefixLength);
 

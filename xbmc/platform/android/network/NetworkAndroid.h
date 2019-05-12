@@ -27,7 +27,6 @@ public:
 
   // CNetworkInterface interface
 public:
-  virtual const std::string& GetName() const override;
   virtual bool IsEnabled() const override;
   virtual bool IsConnected() const override;
   virtual std::string GetMacAddress() const override;
@@ -36,10 +35,6 @@ public:
   virtual std::string GetCurrentIPAddress() const override;
   virtual std::string GetCurrentNetmask() const override;
   virtual std::string GetCurrentDefaultGateway() const override;
-  virtual std::string GetCurrentWirelessEssId() const override;
-  virtual std::vector<NetworkAccessPoint> GetAccessPoints() const override;
-  virtual void GetSettings(NetworkAssignment& assignment, std::string& ipAddress, std::string& networkMask, std::string& defaultGateway, std::string& essId, std::string& key, EncMode& encryptionMode) const override;
-  virtual void SetSettings(const NetworkAssignment& assignment, const std::string& ipAddress, const std::string& networkMask, const std::string& defaultGateway, const std::string& essId, const std::string& key, const EncMode& encryptionMode) override;
 
   std::string GetHostName();
 

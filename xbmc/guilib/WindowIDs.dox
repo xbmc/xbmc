@@ -43,7 +43,7 @@ This page shows the window names, the window definition, the window ID and the s
 | PlayerControls          | WINDOW_DIALOG_PLAYER_CONTROLS        | 10114     | PlayerControls.xml                  |
 | SeekBar                 | WINDOW_DIALOG_SEEK_BAR               | 10115     | DialogSeekBar.xml                   |
 | PlayerProcessInfo       | WINDOW_DIALOG_PLAYER_PROCESS_INFO    | 10116     | DialogPlayerProcessInfo.xml         |
-| MusicOSD                | WINDOW_DIALOG_MUSIC_OSD              | 10120     | MusicOSD.xml                        |   
+| MusicOSD                | WINDOW_DIALOG_MUSIC_OSD              | 10120     | MusicOSD.xml                        |
 |                         | WINDOW_DIALOG_VIS_SETTINGS           | 10121     |                                     |
 | VisualisationPresetList | WINDOW_DIALOG_VIS_PRESET_LIST        | 10122     | DialogSelect.xml                    |
 | OSDVideoSettings        | WINDOW_DIALOG_VIDEO_OSD_SETTINGS     | 10123     | DialogSettings.xml                  |
@@ -63,7 +63,6 @@ This page shows the window names, the window definition, the window ID and the s
 | BusyDialog              | WINDOW_DIALOG_BUSY                   | 10138     | DialogBusy.xml                      |
 | PictureInfo             | WINDOW_DIALOG_PICTURE_INFO           | 10139     | DialogPictureInfo.xml               |
 | AddonSettings           | WINDOW_DIALOG_ADDON_SETTINGS         | 10140     | DialogAddonSettings.xml             |
-| AccessPoints            | WINDOW_DIALOG_ACCESS_POINTS          | 10141     | DialogAccessPoints.xml              |
 | FullscreenInfo          | WINDOW_DIALOG_FULLSCREEN_INFO        | 10142     | DialogFullScreenInfo.xml            |
 | SliderDialog            | WINDOW_DIALOG_SLIDER                 | 10145     | DialogSlider.xml                    |
 | AddonInformation        | WINDOW_DIALOG_ADDON_INFO             | 10146     | DialogAddonInfo.xml                 |
