@@ -186,11 +186,6 @@ void CGUIListItem::Select(bool bOnOff)
   m_bSelected = bOnOff;
 }
 
-bool CGUIListItem::HasIcon() const
-{
-  return (m_art.find("icon") != m_art.end());
-}
-
 bool CGUIListItem::HasOverlay() const
 {
   return (m_overlayIcon != CGUIListItem::ICON_OVERLAY_NONE);
