@@ -66,7 +66,7 @@ void* Interface_GUIListItem::create(void* kodiBase, const char* label, const cha
   if (label2)
     item->get()->SetLabel2(label2);
   if (icon_image)
-    item->get()->SetIconImage(icon_image);
+    item->get()->SetArt("icon", icon_image);
   if (path)
     item->get()->SetPath(path);
 
@@ -239,7 +239,7 @@ void Interface_GUIListItem::set_icon_image(void* kodiBase, void* handle, const c
   }
 
   Interface_GUIGeneral::lock();
-  item->get()->SetIconImage(image);
+  item->get()->SetArt("icon", image);
   Interface_GUIGeneral::unlock();
 }
 

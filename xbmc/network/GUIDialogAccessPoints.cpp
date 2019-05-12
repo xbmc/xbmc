@@ -92,7 +92,7 @@ void CGUIDialogAccessPoints::OnInitWindow()
       else if (q <= 100) item->SetArt("thumb", "ap-signal5.png");
 
       if (m_aps[i].getEncryptionMode() != ENC_NONE)
-         item->SetIconImage("ap-lock.png");
+        item->SetArt("icon", "ap-lock.png");
 
       m_accessPoints->Add(item);
   }

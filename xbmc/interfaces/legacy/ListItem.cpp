@@ -49,7 +49,7 @@ namespace XBMCAddon
       if (!label2.empty())
         item->SetLabel2( label2 );
       if (!iconImage.empty())
-        item->SetIconImage( iconImage );
+        item->SetArt("icon", iconImage);
       if (!thumbnailImage.empty())
         item->SetArt("thumb",  thumbnailImage );
       if (!path.empty())
@@ -107,15 +107,6 @@ namespace XBMCAddon
       }
     }
 
-    void ListItem::setIconImage(const String& iconImage)
-    {
-      if (!item) return;
-      {
-        XBMCAddonUtils::GuiLock lock(languageHook, m_offscreen);
-        item->SetIconImage(iconImage);
-      }
-    }
-
     void ListItem::setThumbnailImage(const String& thumbFilename)
     {
       if (!item) return;
@@ -134,10 +125,7 @@ namespace XBMCAddon
         {
           std::string artName = it.first;
           StringUtils::ToLower(artName);
-          if (artName == "icon")
-            item->SetIconImage(it.second);
-          else
-            item->SetArt(artName, it.second);
+          item->SetArt(artName, it.second);
         }
       }
     }

@@ -110,7 +110,6 @@ typedef struct CB_GUILib
   void (*ListItem_SetLabel)(void *addonData, GUIHANDLE handle, const char *label);
   const char* (*ListItem_GetLabel2)(void *addonData, GUIHANDLE handle);
   void (*ListItem_SetLabel2)(void *addonData, GUIHANDLE handle, const char *label);
-  void (*ListItem_SetIconImage)(void *addonData, GUIHANDLE handle, const char *image);
   void (*ListItem_SetThumbnailImage)(void *addonData, GUIHANDLE handle, const char *image);
   void (*ListItem_SetInfo)(void *addonData, GUIHANDLE handle, const char *info);
   void (*ListItem_SetProperty)(void *addonData, GUIHANDLE handle, const char *key, const char *value);
@@ -220,12 +219,6 @@ public:
   {
     if (m_controlHandle)
       m_cb->ListItem_SetLabel2(m_Handle->addonData, m_controlHandle, label);
-  }
-
-  void SetIconImage(const char *image)
-  {
-    if (m_controlHandle)
-      m_cb->ListItem_SetIconImage(m_Handle->addonData, m_controlHandle, image);
   }
 
   void SetThumbnailImage(const char *image)

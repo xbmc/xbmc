@@ -615,7 +615,7 @@ bool CGUIDialogFileBrowser::ShowAndGetImage(const CFileItemList &items, const VE
   {
     CFileItemPtr item(new CFileItem("image://Browse", false));
     item->SetLabel(g_localizeStrings.Get(20153));
-    item->SetIconImage("DefaultFolder.png");
+    item->SetArt("icon", "DefaultFolder.png");
     browser->m_vecItems->Add(item);
   }
   browser->SetHeading(heading);
@@ -734,7 +734,7 @@ bool CGUIDialogFileBrowser::ShowAndGetFile(const std::string &directory, const s
     CDirectory::GetDirectory(directory,*browser->m_vecItems, "", DIR_FLAG_DEFAULTS);
     CFileItemPtr item(new CFileItem("file://Browse", false));
     item->SetLabel(g_localizeStrings.Get(20153));
-    item->SetIconImage("DefaultFolder.png");
+    item->SetArt("icon", "DefaultFolder.png");
     browser->m_vecItems->Add(item);
     browser->m_singleList = true;
   }

@@ -148,6 +148,11 @@ web applications or frameworks for the Python programming language.
 
 /*!
 @page python_v19 Python API v19
+\python_removed_function{
+      setIconImage,
+      "",
+      <b>xbmcgui.Listitem().setIconImage(icon)</b> function was removed completely.
+}
 */
 /*!
 @page python_v18 Python API v18

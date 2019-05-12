@@ -45,7 +45,7 @@ bool CMusicDatabaseDirectory::GetDirectory(const CURL& url, CFileItemList &items
     {
       std::string strImage = GetIcon(item->GetPath());
       if (!strImage.empty() && CServiceBroker::GetGUI()->GetTextureManager().HasTexture(strImage))
-        item->SetIconImage(strImage);
+        item->SetArt("icon", strImage);
     }
   }
   items.SetLabel(pNode->GetLocalizedName());
