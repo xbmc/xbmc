@@ -31,8 +31,6 @@ namespace XBMCAddon
   {
     ListItem::ListItem(const String& label,
                        const String& label2,
-                       const String& iconImage,
-                       const String& thumbnailImage,
                        const String& path,
                        bool offscreen) :
       m_offscreen(offscreen)
@@ -48,10 +46,6 @@ namespace XBMCAddon
         item->SetLabel( label );
       if (!label2.empty())
         item->SetLabel2( label2 );
-      if (!iconImage.empty())
-        item->SetArt("icon", iconImage);
-      if (!thumbnailImage.empty())
-        item->SetArt("thumb",  thumbnailImage);
       if (!path.empty())
         item->SetPath(path);
     }

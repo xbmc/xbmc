@@ -52,13 +52,12 @@ namespace XBMCAddon
     ///
     /// @param label                [opt] string
     /// @param label2               [opt] string
-    /// @param iconImage            __Deprecated. Use setArt__
-    /// @param thumbnailImage       __Deprecated. Use setArt__
     /// @param path                 [opt] string
     ///
     ///
     ///-----------------------------------------------------------------------
     /// @python_v16 **iconImage** and **thumbnailImage** are deprecated. Use **setArt()**.
+    /// @python_v19 Removed **iconImage** and **thumbnailImage** arguments
     ///
     /// **Example:**
     /// ~~~~~~~~~~~~~{.py}
@@ -76,8 +75,6 @@ namespace XBMCAddon
 
       ListItem(const String& label = emptyString,
                const String& label2 = emptyString,
-               const String& iconImage = emptyString,
-               const String& thumbnailImage = emptyString,
                const String& path = emptyString,
                bool offscreen = false);
 
