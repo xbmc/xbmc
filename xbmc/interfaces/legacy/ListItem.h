@@ -199,18 +199,6 @@ namespace XBMCAddon
 #ifdef DOXYGEN_SHOULD_USE_THIS
       ///
       /// \ingroup python_xbmcgui_listitem
-      /// @brief \python_func{ setThumbnailImage(thumbFilename) }
-      ///-----------------------------------------------------------------------
-      /// @python_v16 Deprecated. Use **setArt()**.
-      ///
-      setThumbnailImage(...);
-#else
-      void setThumbnailImage(const String& thumbFilename);
-#endif
-
-#ifdef DOXYGEN_SHOULD_USE_THIS
-      ///
-      /// \ingroup python_xbmcgui_listitem
       /// @brief \python_func{ setArt(values) }
       ///-----------------------------------------------------------------------
       /// Sets the listitem's art

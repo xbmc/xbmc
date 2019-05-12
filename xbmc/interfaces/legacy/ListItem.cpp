@@ -51,7 +51,7 @@ namespace XBMCAddon
       if (!iconImage.empty())
         item->SetArt("icon", iconImage);
       if (!thumbnailImage.empty())
-        item->SetArt("thumb",  thumbnailImage );
+        item->SetArt("thumb",  thumbnailImage);
       if (!path.empty())
         item->SetPath(path);
     }
@@ -104,15 +104,6 @@ namespace XBMCAddon
       {
         XBMCAddonUtils::GuiLock lock(languageHook, m_offscreen);
         item->SetLabel2(label);
-      }
-    }
-
-    void ListItem::setThumbnailImage(const String& thumbFilename)
-    {
-      if (!item) return;
-      {
-        XBMCAddonUtils::GuiLock lock(languageHook, m_offscreen);
-        item->SetArt("thumb", thumbFilename);
       }
     }
 
