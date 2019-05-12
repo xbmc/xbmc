@@ -163,7 +163,7 @@ extern "C" intptr_t (*__stdcall dllGetProcAddress(HMODULE hModule, const char* f
     }
     else if( dll->IsSystemDll() )
     {
-      char ordinal[5];
+      char ordinal[6] = {};
       sprintf(ordinal, "%u", LOW_WORD(function));
       address = (void*)create_dummy_function(dll->GetName(), ordinal);
 

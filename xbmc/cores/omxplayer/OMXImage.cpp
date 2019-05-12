@@ -29,7 +29,7 @@
 #include <cassert>
 
 #ifdef _DEBUG
-#define CheckError() m_result = eglGetError(); if (m_result != EGL_SUCCESS) CLog::Log(LOGERROR, "EGL error in %s: %x",__FUNCTION__, m_result);
+#define CheckError() { GLint result = eglGetError(); if (result != EGL_SUCCESS) CLog::Log(LOGERROR, "EGL error in %s: %x", __FUNCTION__, result); }
 #else
 #define CheckError()
 #endif
@@ -257,7 +257,6 @@ bool COMXImage::AllocTextureInternal(EGLDisplay egl_display, EGLContext egl_cont
   tex->egl_image = eglCreateImageKHR(egl_display, egl_context, EGL_GL_TEXTURE_2D_KHR, (EGLClientBuffer)tex->texture, NULL);
   if (!tex->egl_image)
     CLog::Log(LOGDEBUG, "%s: eglCreateImageKHR failed to allocate", __func__);
-  GLint m_result;
   CheckError();
   return true;
 }
@@ -341,7 +340,6 @@ static bool ChooseConfig(EGLDisplay display, const EGLint *configAttrs, EGLConfi
   EGLBoolean eglStatus = true;
   EGLint     configCount = 0;
   EGLConfig* configList = NULL;
-  GLint m_result;
   // Find out how many configurations suit our needs
   eglStatus = eglChooseConfig(display, configAttrs, NULL, 0, &configCount);
   CheckError();
@@ -379,7 +377,6 @@ static bool ChooseConfig(EGLDisplay display, const EGLint *configAttrs, EGLConfi
 void COMXImage::CreateContext()
 {
   EGLConfig egl_config;
-  GLint m_result;
   CWinSystemRpiGLESContext *winsystem = static_cast<CWinSystemRpiGLESContext *>(CServiceBroker::GetWinSystem());
   EGLDisplay egl_display = winsystem->GetEGLDisplay();
 
