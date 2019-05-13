@@ -13,7 +13,7 @@
 #include "UDisksProvider.h"
 #include "UDisks2Provider.h"
 #endif
-#include "PosixMountProvider.h"
+#include "platform/posix/PosixMountProvider.h"
 
 IStorageProvider* IStorageProvider::CreateInstance()
 {

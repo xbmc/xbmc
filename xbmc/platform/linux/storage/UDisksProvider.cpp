@@ -6,6 +6,8 @@
  *  See LICENSES/README.md for more information.
  */
 #include "UDisksProvider.h"
+
+#include "platform/posix/PosixMountProvider.h"
 #include "ServiceBroker.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
@@ -13,7 +15,6 @@
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
-#include "PosixMountProvider.h"
 
 CUDiskDevice::CUDiskDevice(const char *DeviceKitUDI):
   m_DeviceKitUDI(DeviceKitUDI)

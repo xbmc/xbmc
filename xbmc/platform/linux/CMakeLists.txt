@@ -1,11 +1,9 @@
 set(SOURCES OptionalsReg.cpp
-            PosixMountProvider.cpp
             TimeUtils.cpp)
 
 set(HEADERS OptionalsReg.h
             PlatformConstants.h
             PlatformDefs.h
-            PosixMountProvider.h
             TimeUtils.h)
 
 if(ALSA_FOUND)
