@@ -7,7 +7,7 @@
  */
 
 #include "XTimeUtils.h"
-#include "LinuxTimezone.h"
+#include "PosixTimezone.h"
 
 #if defined(TARGET_DARWIN)
 #include "threads/Atomics.h"

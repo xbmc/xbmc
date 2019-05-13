@@ -17,10 +17,10 @@
 class CSetting;
 struct StringSettingOption;
 
-class CLinuxTimezone : public ISettingCallback, public ISettingsHandler
+class CPosixTimezone : public ISettingCallback, public ISettingsHandler
 {
 public:
-   CLinuxTimezone();
+   CPosixTimezone();
 
    void OnSettingChanged(std::shared_ptr<const CSetting> setting) override;
 
@@ -47,5 +47,5 @@ private:
    std::map<std::string, std::string> m_countriesByTimezoneName;
 };
 
-extern CLinuxTimezone g_timezone;
+extern CPosixTimezone g_timezone;
 

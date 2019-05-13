@@ -11,7 +11,7 @@
 #include "platform/android/bionic_supplement/bionic_supplement.h"
 #endif
 #include "PlatformDefs.h"
-#include "LinuxTimezone.h"
+#include "PosixTimezone.h"
 #include "utils/SystemInfo.h"
 
 #include "ServiceBroker.h"
@@ -26,7 +26,7 @@
 
 #include <algorithm>
 
-CLinuxTimezone::CLinuxTimezone()
+CPosixTimezone::CPosixTimezone()
 {
    char* line = NULL;
    size_t linelen = 0;
@@ -135,7 +135,7 @@ CLinuxTimezone::CLinuxTimezone()
    free(line);
 }
 
-void CLinuxTimezone::OnSettingChanged(std::shared_ptr<const CSetting> setting)
+void CPosixTimezone::OnSettingChanged(std::shared_ptr<const CSetting> setting)
 {
   if (setting == NULL)
     return;
@@ -155,23 +155,23 @@ void CLinuxTimezone::OnSettingChanged(std::shared_ptr<const CSetting> setting)
   }
 }
 
-void CLinuxTimezone::OnSettingsLoaded()
+void CPosixTimezone::OnSettingsLoaded()
 {
   SetTimezone(CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(CSettings::SETTING_LOCALE_TIMEZONE));
   CDateTime::ResetTimezoneBias();
 }
 
-std::vector<std::string> CLinuxTimezone::GetCounties()
+std::vector<std::string> CPosixTimezone::GetCounties()
 {
    return m_counties;
 }
 
-std::vector<std::string> CLinuxTimezone::GetTimezonesByCountry(const std::string& country)
+std::vector<std::string> CPosixTimezone::GetTimezonesByCountry(const std::string& country)
 {
    return m_timezonesByCountryCode[m_countryByName[country]];
 }
 
-std::string CLinuxTimezone::GetCountryByTimezone(const std::string& timezone)
+std::string CPosixTimezone::GetCountryByTimezone(const std::string& timezone)
 {
 #if defined(TARGET_DARWIN)
    return "?";
@@ -180,7 +180,7 @@ std::string CLinuxTimezone::GetCountryByTimezone(const std::string& timezone)
 #endif
 }
 
-void CLinuxTimezone::SetTimezone(std::string timezoneName)
+void CPosixTimezone::SetTimezone(std::string timezoneName)
 {
 #if !defined(TARGET_DARWIN)
   bool use_timezone = true;
@@ -197,7 +197,7 @@ void CLinuxTimezone::SetTimezone(std::string timezoneName)
   }
 }
 
-std::string CLinuxTimezone::GetOSConfiguredTimezone()
+std::string CPosixTimezone::GetOSConfiguredTimezone()
 {
    char timezoneName[255];
 
@@ -234,14 +234,14 @@ std::string CLinuxTimezone::GetOSConfiguredTimezone()
    return timezoneName;
 }
 
-void CLinuxTimezone::SettingOptionsTimezoneCountriesFiller(std::shared_ptr<const CSetting> setting, std::vector<StringSettingOption> &list, std::string &current, void *data)
+void CPosixTimezone::SettingOptionsTimezoneCountriesFiller(std::shared_ptr<const CSetting> setting, std::vector<StringSettingOption> &list, std::string &current, void *data)
 {
   std::vector<std::string> countries = g_timezone.GetCounties();
   for (unsigned int i = 0; i < countries.size(); i++)
     list.push_back(StringSettingOption(countries[i], countries[i]));
 }
 
-void CLinuxTimezone::SettingOptionsTimezonesFiller(std::shared_ptr<const CSetting> setting, std::vector<StringSettingOption> &list, std::string &current, void *data)
+void CPosixTimezone::SettingOptionsTimezonesFiller(std::shared_ptr<const CSetting> setting, std::vector<StringSettingOption> &list, std::string &current, void *data)
 {
   current = std::static_pointer_cast<const CSettingString>(setting)->GetValue();
   bool found = false;
@@ -258,4 +258,4 @@ void CLinuxTimezone::SettingOptionsTimezonesFiller(std::shared_ptr<const CSettin
     current = timezones[0];
 }
 
-CLinuxTimezone g_timezone;
+CPosixTimezone g_timezone;
