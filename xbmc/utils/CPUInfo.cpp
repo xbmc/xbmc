@@ -24,7 +24,7 @@
 #ifdef TARGET_DARWIN_OSX
 #include "platform/darwin/osx/smc.h"
 #endif
-#include "platform/posix/LinuxResourceCounter.h"
+#include "platform/posix/PosixResourceCounter.h"
 #endif
 
 #if defined(TARGET_FREEBSD)
@@ -116,7 +116,7 @@ CCPUInfo::CCPUInfo(void)
   m_cpuFeatures = 0;
 
 #if defined(TARGET_DARWIN)
-  m_pResourceCounter = new CLinuxResourceCounter();
+  m_pResourceCounter = new CPosixResourceCounter();
 
   size_t len = 4;
   std::string cpuVendor;

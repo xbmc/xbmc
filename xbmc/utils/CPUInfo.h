@@ -22,7 +22,7 @@ typedef HANDLE PDH_HCOUNTER;
 #endif
 class CTemperature;
 #if defined(TARGET_DARWIN)
-class CLinuxResourceCounter;
+class CPosixResourceCounter;
 #endif
 
 #define CPU_FEATURE_MMX      1 << 0
@@ -101,7 +101,7 @@ private:
   FILE* m_fCPUFreq;
   bool m_cpuInfoForFreq;
 #if defined(TARGET_DARWIN)
-  CLinuxResourceCounter *m_pResourceCounter;
+  CPosixResourceCounter *m_pResourceCounter;
 #endif
 #elif defined(TARGET_WINDOWS)
   PDH_HQUERY m_cpuQueryFreq;
