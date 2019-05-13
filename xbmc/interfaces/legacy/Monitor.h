@@ -44,7 +44,6 @@ namespace XBMCAddon
       {
 	XBMC_TRACE;
 	invokeCallback(new CallbackFunction<Monitor,const String>(this,&Monitor::onScanStarted,library));
-	invokeCallback(new CallbackFunction<Monitor,const String>(this,&Monitor::onDatabaseScanStarted,library));
       }
       inline void    OnScanFinished(const String &library)
       {
@@ -173,19 +172,6 @@ namespace XBMCAddon
       onScanFinished(...);
 #else
       virtual void onScanFinished(const String library) { XBMC_TRACE; }
-#endif
-
-#ifdef DOXYGEN_SHOULD_USE_THIS
-      ///
-      /// \ingroup python_monitor
-      /// @brief \python_func{ onDatabaseScanStarted(database) }
-      ///-----------------------------------------------------------------------
-      /// @python_v13 New function added.
-      /// @python_v14 Deprecated. Use **onScanStarted()**.
-      ///
-      onDatabaseScanStarted(...);
-#else
-      virtual void onDatabaseScanStarted(const String database) { XBMC_TRACE; }
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS

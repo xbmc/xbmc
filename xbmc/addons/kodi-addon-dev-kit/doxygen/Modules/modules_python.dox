@@ -153,6 +153,11 @@ web applications or frameworks for the Python programming language.
       "",
       <b>xbmc.monitor().onDatabaseUpdated()</b> function was removed completely.
 }
+\python_removed_function{
+      onDatabaseScanStarted,
+      "",
+      <b>xbmc.monitor().onDatabaseScanStarted()</b> function was removed completely.
+}
 */
 /*!
 @page python_v18 Python API v18
