@@ -25,7 +25,7 @@ public:
 
    bool IsEnabled(void) const override;
    bool IsConnected(void) const override;
-   bool IsWireless(void) const override;
+   bool IsWireless(void) const;
 
    std::string GetMacAddress(void) const override;
    void GetMacAddressRaw(char rawMac[6]) const override;
@@ -66,7 +66,6 @@ public:
 
    // Get/set the nameserver(s)
    std::vector<std::string> GetNameServers(void) override;
-   void SetNameServers(const std::vector<std::string>& nameServers) override;
 
    friend class CNetworkInterfaceLinux;
 

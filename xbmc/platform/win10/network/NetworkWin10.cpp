@@ -60,9 +60,8 @@ using namespace winrt::Windows::Networking;
 using namespace winrt::Windows::Networking::Connectivity;
 using namespace KODI::PLATFORM::WINDOWS;
 
-CNetworkInterfaceWin10::CNetworkInterfaceWin10(CNetworkWin10 * network, const PIP_ADAPTER_ADDRESSES address, IUnknown* winRTadapter)
+CNetworkInterfaceWin10::CNetworkInterfaceWin10(const PIP_ADAPTER_ADDRESSES address, IUnknown* winRTadapter)
 {
-  m_network = network;
   m_adapterAddr = address;
   m_adaptername = address->AdapterName;
   winrt::attach_abi(m_winRT, winRTadapter);
@@ -371,7 +370,7 @@ void CNetworkWin10::queryInterfaceList()
         continue;
 
       std::wstring name = ToW(adapter->AdapterName);
-      m_interfaces.push_back(new CNetworkInterfaceWin10(this, adapter, adapters[name]));
+      m_interfaces.push_back(new CNetworkInterfaceWin10(adapter, adapters[name]));
       winRTAdapter = nullptr;
     }
   }
@@ -404,11 +403,6 @@ std::vector<std::string> CNetworkWin10::GetNameServers(void)
   free(pInfo);
 
   return result;
-}
-
-void CNetworkWin10::SetNameServers(const std::vector<std::string>& nameServers)
-{
-  return;
 }
 
 bool CNetworkWin10::PingHost(unsigned long host, unsigned int timeout_ms /* = 2000 */)

@@ -72,17 +72,6 @@ bool CNetworkInterfaceAndroid::IsConnected() const
   return ni.isConnected();
 }
 
-bool CNetworkInterfaceAndroid::IsWireless() const
-{
-  CJNIConnectivityManager connman(CXBMCApp::getSystemService(CJNIContext::CONNECTIVITY_SERVICE));
-  CJNINetworkInfo ni = connman.getNetworkInfo(m_network);
-  if (!ni)
-    return false;
-
-  int type = ni.getType();
-  return !(type == CJNIConnectivityManager::TYPE_ETHERNET || type == CJNIConnectivityManager::TYPE_DUMMY);
-}
-
 std::string CNetworkInterfaceAndroid::GetMacAddress() const
 {
   auto interfaceMacAddrRaw = m_intf.getHardwareAddress();
@@ -332,11 +321,6 @@ std::vector<std::string> CNetworkAndroid::GetNameServers()
     return intf->GetNameServers();
 
   return std::vector<std::string>();
-}
-
-void CNetworkAndroid::SetNameServers(const std::vector<std::string>& nameServers)
-{
-  // Not implemented
 }
 
 bool CNetworkAndroid::PingHost(unsigned long remote_ip, unsigned int timeout_ms)

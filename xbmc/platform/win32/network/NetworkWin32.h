@@ -22,14 +22,14 @@ class CNetworkWin32;
 class CNetworkInterfaceWin32 : public CNetworkInterface
 {
 public:
-   CNetworkInterfaceWin32(CNetworkWin32* network, const IP_ADAPTER_ADDRESSES& adapter);
+   CNetworkInterfaceWin32(const IP_ADAPTER_ADDRESSES& adapter);
    ~CNetworkInterfaceWin32(void) override;
 
    const std::string& GetName(void) const override;
 
    bool IsEnabled(void) const override;
    bool IsConnected(void) const override;
-   bool IsWireless(void) const override;
+   bool IsWireless(void) const;
 
    std::string GetMacAddress(void) const override;
    void GetMacAddressRaw(char rawMac[6]) const override;
@@ -50,7 +50,6 @@ public:
 
 private:
    IP_ADAPTER_ADDRESSES m_adapter;
-   CNetworkWin32* m_network;
    std::string m_adaptername;
 };
 
@@ -70,7 +69,6 @@ public:
 
    // Get/set the nameserver(s)
    std::vector<std::string> GetNameServers(void) override;
-   void SetNameServers(const std::vector<std::string>& nameServers) override;
 
    friend class CNetworkInterfaceWin32;
 
