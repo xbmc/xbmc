@@ -8,13 +8,9 @@
 
 #include "PVRChannelGroupsContainer.h"
 
-#include "URL.h"
-#include "guilib/LocalizeStrings.h"
-#include "utils/StringUtils.h"
-#include "utils/URIUtils.h"
+#include "FileItem.h"
 #include "utils/log.h"
 
-#include "pvr/PVRManager.h"
 #include "pvr/epg/EpgInfoTag.h"
 
 using namespace PVR;
@@ -115,17 +111,6 @@ std::shared_ptr<CPVRChannel> CPVRChannelGroupsContainer::GetChannelForEpgTag(con
   return groups->GetGroupAll()->GetByUniqueID(epgTag->UniqueChannelID(), epgTag->ClientID());
 }
 
-bool CPVRChannelGroupsContainer::GetGroupsDirectory(CFileItemList *results, bool bRadio) const
-{
-  const CPVRChannelGroups *channelGroups = Get(bRadio);
-  if (channelGroups)
-  {
-    channelGroups->GetGroupList(results);
-    return true;
-  }
-  return false;
-}
-
 CFileItemPtr CPVRChannelGroupsContainer::GetByPath(const std::string &strPath) const
 {
   for (unsigned int bRadio = 0; bRadio <= 1; ++bRadio)
@@ -138,127 +123,6 @@ CFileItemPtr CPVRChannelGroupsContainer::GetByPath(const std::string &strPath) c
 
   CFileItemPtr retVal(new CFileItem);
   return retVal;
-}
-
-bool CPVRChannelGroupsContainer::GetDirectory(const std::string& strPath, CFileItemList &results) const
-{
-  std::string strBase(strPath);
-  URIUtils::RemoveSlashAtEnd(strBase);
-
-  /* get the filename from curl */
-  CURL url(strPath);
-  std::string fileName = url.GetFileName();
-  URIUtils::RemoveSlashAtEnd(fileName);
-
-  if (fileName == "channels")
-  {
-    CFileItemPtr item;
-
-    /* all tv channels */
-    item.reset(new CFileItem(strBase + "/tv/", true));
-    item->SetLabel(g_localizeStrings.Get(19020));
-    item->SetLabelPreformatted(true);
-    results.Add(item);
-
-    /* all radio channels */
-    item.reset(new CFileItem(strBase + "/radio/", true));
-    item->SetLabel(g_localizeStrings.Get(19021));
-    item->SetLabelPreformatted(true);
-    results.Add(item);
-
-    return true;
-  }
-  else if (fileName == "channels/tv")
-  {
-    return GetGroupsDirectory(&results, false);
-  }
-  else if (fileName == "channels/radio")
-  {
-    return GetGroupsDirectory(&results, true);
-  }
-  else if (StringUtils::StartsWith(fileName, "channels/tv/"))
-  {
-    std::string strGroupName(fileName.substr(12));
-    URIUtils::RemoveSlashAtEnd(strGroupName);
-
-    CPVRChannelGroupPtr group;
-    bool bShowHiddenChannels = StringUtils::EndsWithNoCase(fileName, ".hidden");
-    if (strGroupName == "*" || bShowHiddenChannels) // all channels
-      group = GetGroupAllTV();
-    else
-      group = GetTV()->GetByName(strGroupName);
-
-    if (group)
-    {
-      group->GetMembers(results, bShowHiddenChannels ? CPVRChannelGroup::Include::ONLY_HIDDEN : CPVRChannelGroup::Include::ONLY_VISIBLE);
-    }
-    else
-    {
-      CLog::LogF(LOGERROR, "Unable to obtain members of channel group '%s'", strGroupName.c_str());
-      return false;
-    }
-
-    FilterDirectory(url, results);
-    return true;
-  }
-  else if (StringUtils::StartsWith(fileName, "channels/radio/"))
-  {
-    std::string strGroupName(fileName.substr(15));
-    URIUtils::RemoveSlashAtEnd(strGroupName);
-
-    CPVRChannelGroupPtr group;
-    bool bShowHiddenChannels = StringUtils::EndsWithNoCase(fileName, ".hidden");
-    if (strGroupName == "*" || bShowHiddenChannels) // all channels
-      group = GetGroupAllRadio();
-    else
-      group = GetRadio()->GetByName(strGroupName);
-
-    if (group)
-    {
-      group->GetMembers(results, bShowHiddenChannels ? CPVRChannelGroup::Include::ONLY_HIDDEN : CPVRChannelGroup::Include::ONLY_VISIBLE);
-    }
-    else
-    {
-      CLog::LogF(LOGERROR, "Unable to obtain members of channel group '%s'", strGroupName.c_str());
-      return false;
-    }
-
-    FilterDirectory(url, results);
-    return true;
-  }
-
-  return false;
-}
-
-bool CPVRChannelGroupsContainer::FilterDirectory(const CURL &url, CFileItemList &results) const
-{
-  if (!results.IsEmpty())
-  {
-    if (url.HasOption("view"))
-    {
-      const std::string view(url.GetOption("view"));
-      if (view == "lastplayed")
-      {
-        // remove channels never played so far
-        for (int i = 0; i < results.Size(); ++i)
-        {
-          const CPVRChannelPtr channel(results.Get(i)->GetPVRChannelInfoTag());
-          time_t lastWatched = channel->LastWatched();
-          if (!lastWatched)
-          {
-            results.Remove(i);
-            --i;
-          }
-        }
-      }
-      else
-      {
-        CLog::LogF(LOGERROR, "Unsupported value '%s' for channel list URL parameter 'view'", view.c_str());
-        return false;
-      }
-    }
-  }
-  return true;
 }
 
 CPVRChannelGroupPtr CPVRChannelGroupsContainer::GetSelectedGroup(bool bRadio) const

@@ -23,7 +23,6 @@
 #include "pvr/timers/PVRTimerInfoTag.h"
 
 class CFileItem;
-class CFileItemList;
 typedef std::shared_ptr<CFileItem> CFileItemPtr;
 
 namespace PVR
@@ -121,9 +120,9 @@ namespace PVR
 
     /*!
      * Get all timers
-     * @param items The list to add the timers to
+     * @return The list of all timers
      */
-    void GetAll(CFileItemList& items) const;
+    std::vector<std::shared_ptr<CPVRTimerInfoTag>> GetAll() const;
 
     /*!
      * @return The amount of tv and radio timers that are active (states scheduled or recording)
@@ -188,14 +187,6 @@ namespace PVR
      * @return The amount of radio timers that are currently recording
      */
     int AmountActiveRadioRecordings(void) const;
-
-    /*!
-     * @brief Get all timers for the given path.
-     * @param strPath The vfs path to get the timers for.
-     * @param items The results.
-     * @return True when the path was valid, false otherwise.
-     */
-    bool GetDirectory(const std::string& strPath, CFileItemList &items) const;
 
     /*!
      * @brief Delete all timers on a channel.
@@ -284,8 +275,6 @@ namespace PVR
     bool UpdateEntries(const CPVRTimersContainer &timers, const std::vector<int> &failedClients);
     bool UpdateEntries(int iMaxNotificationDelay);
     std::shared_ptr<CPVRTimerInfoTag> UpdateEntry(const std::shared_ptr<CPVRTimerInfoTag>& timer);
-    bool GetRootDirectory(const CPVRTimersPath &path, CFileItemList &items) const;
-    bool GetSubDirectory(const CPVRTimersPath &path, CFileItemList &items) const;
 
     bool AddLocalTimer(const std::shared_ptr<CPVRTimerInfoTag>& tag, bool bNotify);
     bool DeleteLocalTimer(const std::shared_ptr<CPVRTimerInfoTag>& tag, bool bNotify);

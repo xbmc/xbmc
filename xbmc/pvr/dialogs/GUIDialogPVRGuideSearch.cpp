@@ -67,7 +67,7 @@ void CGUIDialogPVRGuideSearch::UpdateChannelSpin(void)
     group = CServiceBroker::GetPVRManager().ChannelGroups()->GetGroupAll(m_searchFilter->IsRadio());
 
   m_channelNumbersMap.clear();
-  const std::vector<PVRChannelGroupMember> groupMembers(group->GetMembers());
+  const std::vector<PVRChannelGroupMember> groupMembers(group->GetMembers(CPVRChannelGroup::Include::ONLY_VISIBLE));
   int iIndex = 0;
   int iSelectedChannel = EPG_SEARCH_UNSET;
   for (const auto& groupMember : groupMembers)

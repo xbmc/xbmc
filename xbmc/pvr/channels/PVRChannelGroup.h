@@ -314,12 +314,6 @@ namespace PVR
      */
     CPVRChannelPtr GetByChannelID(int iChannelID) const;
 
-    /*!
-     * Get the current members of this group
-     * @return The group members
-     */
-    PVR_CHANNEL_GROUP_SORTED_MEMBERS GetMembers(void) const;
-
     enum class Include
     {
       ALL,
@@ -328,12 +322,11 @@ namespace PVR
     };
 
     /*!
-     * @brief Get a filtered list of channels in this group.
-     * @param results The file list to store the results in.
-     * @param eFilter A filter to apply to the list.
-     * @return The amount of channels that were added to the list.
+     * @brief Get the current members of this group
+     * @param eFilter A filter to apply.
+     * @return The group members
      */
-    int GetMembers(CFileItemList &results, Include eFilter = Include::ONLY_VISIBLE) const;
+    std::vector<PVRChannelGroupMember> GetMembers(Include eFilter = Include::ALL) const;
 
     /*!
      * @brief Get the list of channel numbers in a group.
