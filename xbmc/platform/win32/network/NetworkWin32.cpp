@@ -27,10 +27,9 @@
 
 using namespace KODI::PLATFORM::WINDOWS;
 
-CNetworkInterfaceWin32::CNetworkInterfaceWin32(CNetworkWin32* network, const IP_ADAPTER_ADDRESSES& adapter)
+CNetworkInterfaceWin32::CNetworkInterfaceWin32(const IP_ADAPTER_ADDRESSES& adapter)
   : m_adaptername(adapter.AdapterName)
 {
-  m_network = network;
   m_adapter = adapter;
   g_charsetConverter.unknownToUTF8(m_adaptername);
 }
@@ -187,7 +186,7 @@ void CNetworkWin32::queryInterfaceList()
     {
       if (adapter->IfType == IF_TYPE_SOFTWARE_LOOPBACK || adapter->OperStatus != IF_OPER_STATUS::IfOperStatusUp)
         continue;
-      m_interfaces.push_back(new CNetworkInterfaceWin32(this, *adapter));
+      m_interfaces.push_back(new CNetworkInterfaceWin32(*adapter));
     }
   }
   else
@@ -225,11 +224,6 @@ std::vector<std::string> CNetworkWin32::GetNameServers(void)
   free(adapterAddresses);
 
   return result;
-}
-
-void CNetworkWin32::SetNameServers(const std::vector<std::string>& nameServers)
-{
-  return;
 }
 
 bool CNetworkWin32::PingHost(unsigned long host, unsigned int timeout_ms /* = 2000 */)

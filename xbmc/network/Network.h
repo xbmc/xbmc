@@ -67,7 +67,6 @@ public:
 
    virtual bool IsEnabled(void) const = 0;
    virtual bool IsConnected(void) const = 0;
-   virtual bool IsWireless(void) const = 0;
 
    virtual std::string GetMacAddress(void) const = 0;
    virtual void GetMacAddressRaw(char rawMac[6]) const = 0;
@@ -133,13 +132,9 @@ public:
 
    // Get/set the nameserver(s)
    virtual std::vector<std::string> GetNameServers(void) = 0;
-   virtual void SetNameServers(const std::vector<std::string>& nameServers) = 0;
 
    // callback from application controlled thread to handle any setup
    void NetworkMessage(EMESSAGE message, int param);
-
-   void StartServices();
-   void StopServices(bool bWait);
 
    static int ParseHex(char *str, unsigned char *addr);
 

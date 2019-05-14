@@ -30,7 +30,6 @@ public:
   virtual const std::string& GetName() const override;
   virtual bool IsEnabled() const override;
   virtual bool IsConnected() const override;
-  virtual bool IsWireless() const override;
   virtual std::string GetMacAddress() const override;
   virtual void GetMacAddressRaw(char rawMac[6]) const override;
   virtual bool GetHostMacAddress(unsigned long host_ip, std::string& mac) const override;
@@ -66,7 +65,6 @@ public:
   virtual std::vector<CNetworkInterface*>& GetInterfaceList() override;
   virtual CNetworkInterface* GetFirstConnectedInterface() override;
   virtual std::vector<std::string> GetNameServers() override;
-  virtual void SetNameServers(const std::vector<std::string>& nameServers) override;
 
   // Ping remote host
   using CNetworkBase::PingHost;

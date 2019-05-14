@@ -510,25 +510,6 @@ std::vector<std::string> CNetworkLinux::GetNameServers(void)
    return result;
 }
 
-void CNetworkLinux::SetNameServers(const std::vector<std::string>& nameServers)
-{
-#if !defined(TARGET_ANDROID)
-   FILE* fp = fopen("/etc/resolv.conf", "w");
-   if (fp != NULL)
-   {
-      for (unsigned int i = 0; i < nameServers.size(); i++)
-      {
-         fprintf(fp, "nameserver %s\n", nameServers[i].c_str());
-      }
-      fclose(fp);
-   }
-   else
-   {
-      //! @todo implement
-   }
-#endif
-}
-
 bool CNetworkLinux::PingHost(unsigned long remote_ip, unsigned int timeout_ms)
 {
   char cmd_line [64];
