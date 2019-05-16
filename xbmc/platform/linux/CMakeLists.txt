@@ -16,8 +16,6 @@ set(HEADERS ConvUtils.h
             PlatformConstants.h
             PlatformDefs.h
             PosixMountProvider.h
-            stat_utf8.h
-            stdio_utf8.h
             TimeUtils.h
             XFileUtils.h
             XHandle.h
