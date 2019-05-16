@@ -102,6 +102,7 @@ namespace PVR
 
     CCriticalSection m_critSection;
     bool m_bRadio;
+    std::atomic_bool m_bUpdating = {false};
 
   private:
     bool OpenChannelGroupSelectionDialog(void);

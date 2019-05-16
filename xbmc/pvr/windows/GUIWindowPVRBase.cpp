@@ -437,6 +437,14 @@ void CGUIWindowPVRBase::SetChannelGroup(CPVRChannelGroupPtr &&group, bool bUpdat
 
 bool CGUIWindowPVRBase::Update(const std::string &strDirectory, bool updateFilterPath /*= true*/)
 {
+  if (m_bUpdating)
+  {
+    // no concurrent updates
+    return false;
+  }
+
+  CUpdateGuard guard(m_bUpdating);
+
   if (!GetChannelGroup())
   {
     // no updates before fully initialized
