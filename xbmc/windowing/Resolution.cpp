@@ -70,6 +70,11 @@ RESOLUTION CResolutionUtils::ChooseBestResolution(float fps, int width, int heig
   return res;
 }
 
+static inline bool ModeSort(CVariant i, CVariant j)
+{
+  return (i < j);
+}
+
 void CResolutionUtils::FindResolutionFromWhitelist(float fps, int width, int height, bool is3D, RESOLUTION &resolution)
 {
   RESOLUTION_INFO curr = CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo(resolution);
@@ -102,6 +107,8 @@ void CResolutionUtils::FindResolutionFromWhitelist(float fps, int width, int hei
       }
     }
   }
+
+  std::sort(indexList.begin(), indexList.end(), ModeSort);
 
   CLog::Log(LOGDEBUG, "Trying to find exact refresh rate");
 
@@ -163,7 +170,8 @@ void CResolutionUtils::FindResolutionFromWhitelist(float fps, int width, int hei
     }
   }
 
-  CLog::Log(LOGDEBUG, "No 3:2 pullback refresh rate whitelisted resolution matched, trying current resolution");
+  CLog::Log(LOGDEBUG, "No 3:2 pullback whitelisted resolution matched, trying current resolution %s (%d)", 
+      curr.strMode.c_str(), resolution);
 
   if (width <= curr.iScreenWidth
     && height <= curr.iScreenHeight
@@ -174,9 +182,32 @@ void CResolutionUtils::FindResolutionFromWhitelist(float fps, int width, int hei
     return;
   }
 
-  CLog::Log(LOGDEBUG, "Current resolution doesn't match, trying default resolution");
+  /* Prefer upscaling at the correct framerate if available and specifically whitelisted 
+   * eg for displays with 2160p25/50 but no 1080p25/50
+   */
+  if (HasWhitelist())
+  {
+    CLog::Log(LOGDEBUG, "Current resolution doesn't match, trying higher resolutions");
+    for (const auto& mode : indexList)
+    {
+      auto i = CDisplaySettings::GetInstance().GetResFromString(mode.asString());
+      const RESOLUTION_INFO info = CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo(i);
+
+      // pick the lowest resolution that has a matching refresh rate
+      if ((info.iScreenHeight >= height || info.iScreenWidth >= width) &&
+          (info.dwFlags & D3DPRESENTFLAG_MODEMASK) == (curr.dwFlags & D3DPRESENTFLAG_MODEMASK) &&
+          MathUtils::FloatEquals(info.fRefreshRate, fps, 0.01f))
+      {
+        resolution = i;
+        CLog::Log(LOGDEBUG, "Matched fuzzy whitelisted Resolution %s (%d)", info.strMode.c_str(), i);
+        return;
+      }
+    }
+  }
 
   const RESOLUTION_INFO desktop_info = CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo(CDisplaySettings::GetInstance().GetCurrentResolution());
+
+  CLog::Log(LOGDEBUG, "Current resolution doesn't match, trying default resolution %s", desktop_info.strMode.c_str());
 
   for (const auto& mode : indexList)
   {
@@ -194,7 +225,7 @@ void CResolutionUtils::FindResolutionFromWhitelist(float fps, int width, int hei
     }
   }
 
-  CLog::Log(LOGDEBUG, "Default resolution doesn't provide reqired refreshrate, trying default resolution with double refreshrate");
+  CLog::Log(LOGDEBUG, "Default resolution doesn't provide required refreshrate, trying default resolution with double refreshrate");
 
   for (const auto& mode : indexList)
   {

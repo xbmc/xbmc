@@ -682,7 +682,7 @@ RESOLUTION CDisplaySettings::GetResolutionForScreen()
 
 static inline bool ModeSort(StringSettingOption i,StringSettingOption j)
 {
-  return (i.value > j.value);
+  return (i.value < j.value);
 }
 
 void CDisplaySettings::SettingOptionsModesFiller(std::shared_ptr<const CSetting> setting, std::vector<StringSettingOption> &list, std::string &current, void *data)
