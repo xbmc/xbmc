@@ -11,13 +11,11 @@
 #include "GUIControl.h"
 #include "addons/Visualization.h"
 #include "cores/AudioEngine/Interfaces/IAudioCallback.h"
-#include "utils/rfft.h"
 
 #include <string>
 #include <vector>
 #include <list>
 
-#define AUDIO_BUFFER_SIZE 512 // MUST BE A POWER OF 2!!!
 #define MAX_AUDIO_BUFFERS 16
 
 class CAudioBuffer
@@ -80,10 +78,7 @@ private:
 
   std::list<std::unique_ptr<CAudioBuffer>> m_vecBuffers;
   unsigned int m_numBuffers; /*!< Number of Audio buffers */
-  bool m_wantsFreq;
-  float m_freq[AUDIO_BUFFER_SIZE]; /*!< Frequency data */
   std::vector<std::string> m_presets; /*!< cached preset list */
-  std::unique_ptr<RFFT> m_transform;
 
   /* values set from "OnInitialize" IAudioCallback  */
   int m_channels;

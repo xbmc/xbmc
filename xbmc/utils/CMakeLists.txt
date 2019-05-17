@@ -43,7 +43,6 @@ set(SOURCES ActorProtocol.cpp
             POUtils.cpp
             RecentlyAddedJob.cpp
             RegExp.cpp
-            rfft.cpp
             RingBuffer.cpp
             RssManager.cpp
             RssReader.cpp
@@ -133,7 +132,6 @@ set(HEADERS ActorProtocol.h
             ProgressJob.h
             RecentlyAddedJob.h
             RegExp.h
-            rfft.h
             RingBuffer.h
             RssManager.h
             RssReader.h
