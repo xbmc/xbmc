@@ -330,6 +330,7 @@ protected:
   bool m_extDeferData;
   std::queue<time_t> m_extLastDeviceChange;
   bool m_isWinSysReg = false;
+  bool m_sinkIsGone = false;
 
   enum
   {

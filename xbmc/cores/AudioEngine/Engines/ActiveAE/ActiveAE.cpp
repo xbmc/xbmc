@@ -619,6 +619,7 @@ void CActiveAE::StateMachine(int signal, Protocol *port, Message *msg)
             CLog::Log(LOGWARNING,"CActiveAE - received %ld device change events within one second", m_extLastDeviceChange.size());
             return;
           }
+          m_sinkIsGone = true;
           m_extLastDeviceChange.push(now);
           UnconfigureSink();
           m_controlPort.PurgeOut(CActiveAEControlProtocol::DEVICECHANGE);
@@ -1143,7 +1144,8 @@ void CActiveAE::Configure(AEAudioFormat *desiredFmt)
       m_currDevice.compare(device) != 0 ||
       m_settings.driver.compare(driver) != 0)
   {
-    FlushEngine();
+    if (! m_sinkIsGone)
+      FlushEngine();
     if (!InitSink())
       return;
     m_settings.driver = driver;
@@ -1151,6 +1153,7 @@ void CActiveAE::Configure(AEAudioFormat *desiredFmt)
     initSink = true;
     m_stats.Reset(m_sinkFormat.m_sampleRate, m_mode == MODE_PCM);
     m_sink.m_controlPort.SendOutMessage(CSinkControlProtocol::VOLUME, &m_volume, sizeof(float));
+    m_sinkIsGone = false;
 
     if (m_sinkRequestFormat.m_dataFormat != AE_FMT_RAW)
     {
