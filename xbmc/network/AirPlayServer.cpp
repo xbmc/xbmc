@@ -14,7 +14,6 @@
 
 #include <netinet/in.h>
 #include <arpa/inet.h>
-#include "DllLibPlist.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "threads/SingleLock.h"
@@ -36,6 +35,8 @@
 #ifdef HAS_ZEROCONF
 #include "network/Zeroconf.h"
 #endif // HAS_ZEROCONF
+
+#include <plist/plist.h>
 
 using namespace KODI::MESSAGING;
 using KODI::UTILITY::CDigest;
@@ -455,7 +456,6 @@ CAirPlayServer::CTCPClient::CTCPClient()
   m_httpParser = new HttpParser();
 
   m_addrlen = sizeof(struct sockaddr_storage);
-  m_pLibPlist = new DllLibPlist();
 
   m_bAuthenticated = false;
   m_lastEvent = EVENT_NONE;
@@ -466,16 +466,10 @@ CAirPlayServer::CTCPClient::CTCPClient(const CTCPClient& client)
 {
   Copy(client);
   m_httpParser = new HttpParser();
-  m_pLibPlist = new DllLibPlist();
 }
 
 CAirPlayServer::CTCPClient::~CTCPClient()
 {
-  if (m_pLibPlist->IsLoaded())
-  {
-    m_pLibPlist->Unload();
-  }
-  delete m_pLibPlist;
   delete m_httpParser;
 }
 
@@ -483,7 +477,6 @@ CAirPlayServer::CTCPClient& CAirPlayServer::CTCPClient::operator=(const CTCPClie
 {
   Copy(client);
   m_httpParser = new HttpParser();
-  m_pLibPlist = new DllLibPlist();
   return *this;
 }
 
@@ -736,20 +729,11 @@ void CAirPlayServer::restoreVolume()
   }
 }
 
-void dumpPlist(DllLibPlist *pLibPlist, plist_t *dict)
-{
-  char *plist = NULL;
-  uint32_t len = 0;
-  pLibPlist->plist_to_xml(*dict,&plist, &len);
-  CLog::Log(LOGDEBUG, "AIRPLAY-DUMP: %s", plist);
-
-}
-
-std::string getStringFromPlist(DllLibPlist *pLibPlist,plist_t node)
+std::string getStringFromPlist(plist_t node)
 {
   std::string ret;
   char *tmpStr = nullptr;
-  pLibPlist->plist_get_string_val(node, &tmpStr);
+  plist_get_string_val(node, &tmpStr);
   ret = tmpStr;
   free(tmpStr);
   return ret;
@@ -872,70 +856,64 @@ int CAirPlayServer::CTCPClient::ProcessRequest( std::string& responseHeader,
     {
       CAirPlayServer::m_isPlaying++;
 
-      if (m_pLibPlist->Load())
+      const char* bodyChr = m_httpParser->getBody();
+
+      plist_t dict = NULL;
+      plist_from_bin(bodyChr, m_httpParser->getContentLength(), &dict);
+
+      if (plist_dict_get_size(dict))
       {
-        m_pLibPlist->EnableDelayedUnload(false);
-
-        const char* bodyChr = m_httpParser->getBody();
-
-        plist_t dict = NULL;
-        m_pLibPlist->plist_from_bin(bodyChr, m_httpParser->getContentLength(), &dict);
-
-        if (m_pLibPlist->plist_dict_get_size(dict))
+        plist_t tmpNode = plist_dict_get_item(dict, "Start-Position");
+        if (tmpNode)
         {
-          plist_t tmpNode = m_pLibPlist->plist_dict_get_item(dict, "Start-Position");
+          double tmpDouble = 0;
+          plist_get_real_val(tmpNode, &tmpDouble);
+          position = (float)tmpDouble;
+        }
+
+        tmpNode = plist_dict_get_item(dict, "Content-Location");
+        if (tmpNode)
+        {
+          location = getStringFromPlist(tmpNode);
+          tmpNode = NULL;
+        }
+
+        tmpNode = plist_dict_get_item(dict, "rate");
+        if (tmpNode)
+        {
+          double rate = 0;
+          plist_get_real_val(tmpNode, &rate);
+          if (rate == 0.0)
+          {
+            startPlayback = false;
+          }
+          tmpNode = NULL;
+        }
+
+        // in newer protocol versions the location is given
+        // via host and path where host is ip:port and path is /path/file.mov
+        if (location.empty())
+          tmpNode = plist_dict_get_item(dict, "host");
+        if (tmpNode)
+        {
+          location = "http://";
+          location += getStringFromPlist(tmpNode);
+
+          tmpNode = plist_dict_get_item(dict, "path");
           if (tmpNode)
           {
-            double tmpDouble = 0;
-            m_pLibPlist->plist_get_real_val(tmpNode, &tmpDouble);
-            position = (float)tmpDouble;
-          }
-
-          tmpNode = m_pLibPlist->plist_dict_get_item(dict, "Content-Location");
-          if (tmpNode)
-          {
-            location = getStringFromPlist(m_pLibPlist, tmpNode);
-            tmpNode = NULL;
-          }
-
-          tmpNode = m_pLibPlist->plist_dict_get_item(dict, "rate");
-          if (tmpNode)
-          {
-            double rate = 0;
-            m_pLibPlist->plist_get_real_val(tmpNode, &rate);
-            if (rate == 0.0)
-            {
-              startPlayback = false;
-            }
-            tmpNode = NULL;
-          }
-
-          // in newer protocol versions the location is given
-          // via host and path where host is ip:port and path is /path/file.mov
-          if (location.empty())
-              tmpNode = m_pLibPlist->plist_dict_get_item(dict, "host");
-          if (tmpNode)
-          {
-            location = "http://";
-            location += getStringFromPlist(m_pLibPlist, tmpNode);
-
-            tmpNode = m_pLibPlist->plist_dict_get_item(dict, "path");
-            if (tmpNode)
-            {
-              location += getStringFromPlist(m_pLibPlist, tmpNode);
-            }
-          }
-
-          if (dict)
-          {
-            m_pLibPlist->plist_free(dict);
+            location += getStringFromPlist(tmpNode);
           }
         }
-        else
+
+        if (dict)
         {
-          CLog::Log(LOGERROR, "Error parsing plist");
+          plist_free(dict);
         }
-        m_pLibPlist->Unload();
+      }
+      else
+      {
+        CLog::Log(LOGERROR, "Error parsing plist");
       }
     }
     else

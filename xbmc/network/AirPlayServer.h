@@ -19,7 +19,6 @@
 #include "utils/HttpParser.h"
 #include "interfaces/IAnnouncer.h"
 
-class DllLibPlist;
 class CVariant;
 
 #define AIRPLAY_SERVER_VERSION_STR "101.28"
@@ -83,7 +82,6 @@ private:
     void Copy(const CTCPClient& client);
 
     HttpParser* m_httpParser;
-    DllLibPlist *m_pLibPlist;//the lib
     bool m_bAuthenticated;
     int  m_lastEvent;
     std::string m_authNonce;

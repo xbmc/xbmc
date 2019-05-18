@@ -23,20 +23,13 @@ find_path(PLIST_INCLUDE_DIR plist/plist.h
 
 set(PLIST_VERSION ${PC_PLIST_VERSION})
 
-include(FindPackageHandleStandardArgs)
-if(NOT WIN32)
-  find_library(PLIST_LIBRARY NAMES plist
-                                   PATHS ${PC_PLIST_LIBDIR})
+find_library(PLIST_LIBRARY NAMES plist libplist
+                                 PATHS ${PC_PLIST_LIBDIR})
 
-  find_package_handle_standard_args(Plist
-                                    REQUIRED_VARS PLIST_LIBRARY PLIST_INCLUDE_DIR
-                                    VERSION_VAR PLIST_VERSION)
-else()
-  # Dynamically loaded DLL
-  find_package_handle_standard_args(Plist
-                                    REQUIRED_VARS PLIST_INCLUDE_DIR
-                                    VERSION_VAR PLIST_VERSION)
-endif()
+include(FindPackageHandleStandardArgs)
+find_package_handle_standard_args(Plist
+                                  REQUIRED_VARS PLIST_LIBRARY PLIST_INCLUDE_DIR
+                                  VERSION_VAR PLIST_VERSION)
 
 if(PLIST_FOUND)
   set(PLIST_LIBRARIES ${PLIST_LIBRARY})

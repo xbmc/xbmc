@@ -147,6 +147,7 @@ set(optional_deps Alsa
                   MDNS
                   MicroHttpd
                   NFS
+                  Plist
                   PulseAudio
                   Python
                   SmbClient
@@ -155,16 +156,12 @@ set(optional_deps Alsa
                   XSLT
                   ${PLATFORM_OPTIONAL_DEPS})
 
-# Optional, dyloaded deps. Keep in alphabetical order please
-set(dyload_optional Plist)
-
 # Required tools
 find_package(TexturePacker REQUIRED)
 find_package(JsonSchemaBuilder REQUIRED)
 
 # Check optional deps first, since their availability can influence required ones, e.g. ffmpeg
 core_optional_dep(${optional_deps})
-core_optional_dyload_dep(${dyload_optional})
 core_require_dep(${required_deps})
 
 if(ENABLE_MARIADBCLIENT AND NOT ENABLE_MARIADBCLIENT STREQUAL AUTO AND ENABLE_MYSQLCLIENT AND NOT ENABLE_MYSQLCLIENT STREQUAL AUTO)
