@@ -1,8 +1,7 @@
 if(HAVE_SSE4_1)
-  set(SOURCES CopyFrame.cpp)
-  set(HEADERS DllLibSSE4.h)
+  set(SOURCES SSE4.cpp)
+  set(HEADERS SSE4.h)
 
-  core_add_shared_library(sse4)
-  set_target_properties(sse4 PROPERTIES FOLDER lib)
-  target_compile_options(sse4 PRIVATE -msse4.1)
+  core_add_library(sse4)
+  target_compile_options(${CORE_LIBRARY} PRIVATE -msse4.1)
 endif()

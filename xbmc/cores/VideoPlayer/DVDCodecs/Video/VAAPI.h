@@ -22,7 +22,6 @@
 #include <memory>
 #include <vector>
 #include <va/va.h>
-#include "platform/linux/sse4/DllLibSSE4.h"
 
 extern "C" {
 #include <libavutil/avutil.h>
@@ -534,7 +533,6 @@ public:
 protected:
   bool CheckSuccess(VAStatus status, const std::string& function);
   void Close();
-  DllLibSSE4 m_dllSSE4;
   uint8_t *m_cache;
   AVFilterGraph* m_pFilterGraph;
   AVFilterContext* m_pFilterIn;

@@ -19,11 +19,16 @@
 #include "settings/SettingsComponent.h"
 #include "settings/lib/Setting.h"
 #include "threads/SingleLock.h"
+#include "utils/CPUInfo.h"
 #include "utils/MemUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/XTimeUtils.h"
 #include "utils/log.h"
 #include "windowing/GraphicContext.h"
+
+#if defined(SSE4_1_FOUND)
+#include "platform/linux/sse4/SSE4.h"
+#endif
 
 #include <drm_fourcc.h>
 #include <va/va_drm.h>
@@ -2826,7 +2831,6 @@ CFFmpegPostproc::~CFFmpegPostproc()
 {
   Close();
   KODI::MEMORY::AlignedFree(m_cache);
-  m_dllSSE4.Unload();
   av_frame_free(&m_pFilterFrameIn);
   av_frame_free(&m_pFilterFrameOut);
 }
@@ -2864,9 +2868,9 @@ bool CFFmpegPostproc::PreInit(CVaapiConfig &config, SDiMethods *methods)
   if (image.image_id != VA_INVALID_ID)
     CheckSuccess(vaDestroyImage(config.dpy, image.image_id), "vaDestroyImage");
 
-  if (use_filter && !m_dllSSE4.Load())
+  if (use_filter && (CServiceBroker::GetCPUInfo()->GetCPUFeatures() & CPU_FEATURE_SSE4))
   {
-    CLog::Log(LOGERROR,"VAAPI::SupportsFilter failed loading sse4 lib");
+    CLog::Log(LOGERROR, "VAAPI::SupportsFilter failed (cpu doesn't support sse4.1)");
     use_filter = false;
   }
 
@@ -3020,14 +3024,19 @@ bool CFFmpegPostproc::AddPicture(CVaapiDecodedPicture &inPic)
 
   av_frame_get_buffer(m_pFilterFrameIn, 64);
 
+#if defined(SSE4_1_FOUND)
   uint8_t *src, *dst;
+
   src = buf + image.offsets[0];
   dst = m_pFilterFrameIn->data[0];
-  m_dllSSE4.copy_frame(src, dst, m_cache, m_config.vidWidth, m_config.vidHeight, image.pitches[0]);
+
+  SSE4::copy_frame(src, dst, m_cache, m_config.vidWidth, m_config.vidHeight, image.pitches[0]);
 
   src = buf + image.offsets[1];
   dst = m_pFilterFrameIn->data[1];
-  m_dllSSE4.copy_frame(src, dst, m_cache, image.width, image.height/2, image.pitches[1]);
+
+  SSE4::copy_frame(src, dst, m_cache, image.width, image.height / 2, image.pitches[1]);
+#endif
 
   m_pFilterFrameIn->linesize[0] = image.pitches[0];
   m_pFilterFrameIn->linesize[1] = image.pitches[1];
