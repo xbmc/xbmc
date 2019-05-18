@@ -456,7 +456,7 @@ VECADDONS CAddonMgr::GetAvailableUpdates()
   {
 	  const auto& latest_known = last_versions.find(addon->ID());
 	  if (latest_known == last_versions.end() || addon->Version() > latest_known->second->Version())
-		  last_versions.insert_or_assign(addon->ID(),std::move(addon));
+		  last_versions[addon->ID()]=std::move(addon);
   }
 
   for (const auto& addon : installed)
