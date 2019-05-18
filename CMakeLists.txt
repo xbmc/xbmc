@@ -190,7 +190,7 @@ endif()
 if(ENABLE_AIRTUNES)
   find_package(Shairplay)
   if(SHAIRPLAY_FOUND)
-    core_require_dyload_dep(Shairplay)
+    core_require_dep(Shairplay)
   endif()
 endif()
 

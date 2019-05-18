@@ -40,8 +40,7 @@ endif()
 
 if(SHAIRPLAY_FOUND)
   list(APPEND SOURCES AirTunesServer.cpp)
-  list(APPEND HEADERS AirTunesServer.h
-                      DllLibShairplay.h)
+  list(APPEND HEADERS AirTunesServer.h)
 endif()
 
 if(MICROHTTPD_FOUND)

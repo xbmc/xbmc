@@ -8,8 +8,5 @@
 
 #pragma once
 
-/* libraries */
-#define DLL_PATH_LIBSHAIRPLAY  "special://xbmcbin/shairplay.dll"
-
 /* VideoPlayer */
 #define DLL_PATH_LIBDVDNAV     "special://xbmcbin/libdvdnav.dll"

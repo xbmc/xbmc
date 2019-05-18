@@ -386,25 +386,6 @@ function(core_require_dep)
   endforeach()
 endfunction()
 
-# add required dyloaded dependencies of main application
-# Arguments:
-#   dep_list One or many dependency specifications (see split_dependency_specification)
-#            for syntax). The dependency name is used uppercased as variable prefix.
-# On return:
-#   dependency added to ${SYSTEM_INCLUDES}, ${dep}_SONAME is set up
-function(core_require_dyload_dep)
-  foreach(depspec ${ARGN})
-    split_dependency_specification(${depspec} dep version)
-    find_package_with_ver(${dep} ${version} REQUIRED)
-    string(TOUPPER ${dep} depup)
-    list(APPEND SYSTEM_INCLUDES ${${depup}_INCLUDE_DIRS})
-    list(APPEND DEP_DEFINES ${${depup}_DEFINITIONS})
-    find_soname(${depup} REQUIRED)
-    export_dep()
-    set(${depup}_SONAME ${${depup}_SONAME} PARENT_SCOPE)
-  endforeach()
-endfunction()
-
 # helper macro for optional deps
 macro(setup_enable_switch)
   string(TOUPPER ${dep} depup)
