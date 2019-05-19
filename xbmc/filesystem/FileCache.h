@@ -22,10 +22,7 @@ namespace XFILE
   {
   public:
     explicit CFileCache(const unsigned int flags);
-    CFileCache(CCacheStrategy *pCache, bool bDeleteCache = true);
     ~CFileCache() override;
-
-    void SetCacheStrategy(CCacheStrategy *pCache, bool bDeleteCache = true);
 
     // CThread methods
     void Process() override;

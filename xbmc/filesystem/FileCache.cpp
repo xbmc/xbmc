@@ -102,25 +102,6 @@ CFileCache::CFileCache(const unsigned int flags)
 {
 }
 
-CFileCache::CFileCache(CCacheStrategy *pCache, bool bDeleteCache /* = true */)
-  : CThread("FileCacheStrategy")
-  , m_seekPossible(0)
-  , m_chunkSize(0)
-  , m_writeRate(0)
-  , m_writeRateActual(0)
-  , m_forwardCacheSize(0)
-  , m_forward(0)
-  , m_bFilling(false)
-  , m_bLowSpeedDetected(false)
-{
-  m_pCache = pCache;
-  m_bDeleteCache = bDeleteCache;
-  m_seekPos = 0;
-  m_readPos = 0;
-  m_writePos = 0;
-  m_nSeekResult = 0;
-}
-
 CFileCache::~CFileCache()
 {
   Close();
@@ -129,15 +110,6 @@ CFileCache::~CFileCache()
     delete m_pCache;
 
   m_pCache = NULL;
-}
-
-void CFileCache::SetCacheStrategy(CCacheStrategy *pCache, bool bDeleteCache /* = true */)
-{
-  if (m_bDeleteCache && m_pCache)
-    delete m_pCache;
-
-  m_pCache = pCache;
-  m_bDeleteCache = bDeleteCache;
 }
 
 IFile *CFileCache::GetFileImp()
