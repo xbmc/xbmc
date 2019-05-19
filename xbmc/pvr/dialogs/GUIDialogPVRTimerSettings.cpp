@@ -779,11 +779,11 @@ void CGUIDialogPVRTimerSettings::InitializeChannelsList()
   }
 
   // Add regular channels
-  CFileItemList channelsList;
-  CServiceBroker::GetPVRManager().ChannelGroups()->GetGroupAll(m_bIsRadio)->GetMembers(channelsList);
-  for (const auto& channelsEntry : channelsList)
+  const std::shared_ptr<CPVRChannelGroup> allGroup = CServiceBroker::GetPVRManager().ChannelGroups()->GetGroupAll(m_bIsRadio);
+  const std::vector<PVRChannelGroupMember> groupMembers = allGroup->GetMembers(CPVRChannelGroup::Include::ONLY_VISIBLE);
+  for (const auto& groupMember : groupMembers)
   {
-    const std::shared_ptr<CPVRChannel> channel = channelsEntry->GetPVRChannelInfoTag();
+    const std::shared_ptr<CPVRChannel> channel = groupMember.channel;
     const std::string channelDescription
       = StringUtils::Format("%s %s", channel->ChannelNumber().FormattedChannelNumber().c_str(), channel->ChannelName().c_str());
     m_channelEntries.insert({index, ChannelDescriptor(channel->UniqueID(), channel->ClientID(), channelDescription)});

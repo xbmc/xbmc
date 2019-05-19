@@ -166,7 +166,12 @@ void CGUIDialogPVRChannelsOSD::Update()
     const CPVRChannelGroupPtr group = pvrMgr.GetPlayingGroup(channel->IsRadio());
     if (group)
     {
-      group->GetMembers(*m_vecItems);
+      const std::vector<PVRChannelGroupMember> groupMembers = group->GetMembers(CPVRChannelGroup::Include::ONLY_VISIBLE);
+      for (const auto& groupMember : groupMembers)
+      {
+        m_vecItems->Add(std::make_shared<CFileItem>(groupMember.channel));
+      }
+
       m_viewControl.SetItems(*m_vecItems);
 
       if (!m_group)
