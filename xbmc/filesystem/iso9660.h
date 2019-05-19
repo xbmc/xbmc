@@ -145,6 +145,20 @@ struct iso_directories
 };
 #define MAX_ISO_FILES 30
 
+struct Win32FindData
+{
+  unsigned int fileAttributes;
+  FILETIME creationTime;
+  FILETIME lastAccessTime;
+  FILETIME lastWriteTime;
+  unsigned int fileSizeHigh;
+  unsigned int fileSizeLow;
+  unsigned int reserved0;
+  unsigned int reserved1;
+  char fileName[260];
+  char alternateFileName[14];
+};
+
 class iso9660
 {
 public:
@@ -165,8 +179,8 @@ public:
   iso9660( );
   virtual ~iso9660( );
 
-  HANDLE FindFirstFile9660(const char *szLocalFolder, WIN32_FIND_DATA *wfdFile );
-  int FindNextFile( HANDLE szLocalFolder, WIN32_FIND_DATA *wfdFile );
+  HANDLE FindFirstFile9660(const char* szLocalFolder, Win32FindData* wfdFile);
+  int FindNextFile(HANDLE szLocalFolder, Win32FindData* wfdFile);
   bool FindClose( HANDLE szLocalFolder );
   DWORD SetFilePointer(HANDLE hFile, long lDistanceToMove, long* lpDistanceToMoveHigh, DWORD dwMoveMethod );
   int64_t GetFileSize(HANDLE hFile);
