@@ -14,6 +14,7 @@
 #include "File.h"
 #include "threads/Thread.h"
 #include <atomic>
+#include <memory>
 
 namespace XFILE
 {
@@ -53,7 +54,7 @@ namespace XFILE
     }
 
   private:
-    CCacheStrategy *m_pCache;
+    std::unique_ptr<CCacheStrategy> m_pCache;
     bool m_bDeleteCache;
     int m_seekPossible;
     CFile m_source;

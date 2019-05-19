@@ -83,7 +83,6 @@ private:
 
 CFileCache::CFileCache(const unsigned int flags)
   : CThread("FileCache")
-  , m_pCache(NULL)
   , m_bDeleteCache(true)
   , m_seekPossible(0)
   , m_nSeekResult(0)
@@ -107,9 +106,7 @@ CFileCache::~CFileCache()
   Close();
 
   if (m_bDeleteCache && m_pCache)
-    delete m_pCache;
-
-  m_pCache = NULL;
+    m_pCache.reset();
 }
 
 IFile *CFileCache::GetFileImp()
@@ -150,7 +147,7 @@ bool CFileCache::Open(const CURL& url)
     if (CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_cacheMemSize == 0)
     {
       // Use cache on disk
-      m_pCache = new CSimpleFileCache();
+      m_pCache = std::unique_ptr<CSimpleFileCache>(new CSimpleFileCache()); // C++14 - Replace with std::make_unique
       m_forwardCacheSize = 0;
     }
     else
@@ -175,14 +172,14 @@ bool CFileCache::Open(const CURL& url)
         front /= 2;
         back /= 2;
       }
-      m_pCache = new CCircularCache(front, back);
+      m_pCache = std::unique_ptr<CCircularCache>(new CCircularCache(front, back)); // C++14 - Replace with std::make_unique
       m_forwardCacheSize = front;
     }
 
     if (m_flags & READ_MULTI_STREAM)
     {
       // If READ_MULTI_STREAM flag is set: Double buffering is required
-      m_pCache = new CDoubleCache(m_pCache);
+      m_pCache = std::unique_ptr<CDoubleCache>(new CDoubleCache(m_pCache.release())); // C++14 - Replace with std::make_unique
     }
   }
 
