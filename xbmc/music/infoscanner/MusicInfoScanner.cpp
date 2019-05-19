@@ -300,7 +300,7 @@ void CMusicInfoScanner::Start(const std::string& strDirectory, int flags)
   }
   else
   {
-    m_pathsToScan.insert(strDirectory);    
+    m_pathsToScan.insert(strDirectory);
     m_idSourcePath = m_musicDatabase.GetSourceFromPath(strDirectory);
   }
   m_musicDatabase.Close();
@@ -816,7 +816,7 @@ void CMusicInfoScanner::FileItemsToAlbums(CFileItemList& items, VECALBUMS& album
       {
         if (common[i] == VARIOUSARTISTS_MBID)
           /* Treat "various", "various artists" and the localized equivalent name as the same
-          album artist as the artist with Musicbrainz ID 89ad4ac3-39f7-470e-963a-56509c546377. 
+          album artist as the artist with Musicbrainz ID 89ad4ac3-39f7-470e-963a-56509c546377.
           If adding this artist for the first time then the name will be set to either the primary
           artist read from tags when 3a, or the localized value for "various artists" when not 3a.
           This means that tag values are no longer translated into the current langauge.
@@ -1260,8 +1260,8 @@ int CMusicInfoScanner::GetPathHash(const CFileItemList &items, std::string &hash
     const CFileItemPtr pItem = items[i];
     digest.Update(pItem->GetPath());
     digest.Update((unsigned char *)&pItem->m_dwSize, sizeof(pItem->m_dwSize));
-    FILETIME time = pItem->m_dateTime;
-    digest.Update((unsigned char *)&time, sizeof(FILETIME));
+    KODI::TIME::FileTime time = pItem->m_dateTime;
+    digest.Update((unsigned char*)&time, sizeof(KODI::TIME::FileTime));
     if (pItem->IsAudio() && !pItem->IsPlayList() && !pItem->IsNFO())
       count++;
   }
@@ -1476,7 +1476,7 @@ CMusicInfoScanner::DownloadAlbumInfo(const CAlbum& album,
   CInfoScanner::INFO_TYPE result = CInfoScanner::NO_NFO;
   CNfoFile nfoReader;
   existsNFO = XFILE::CFile::Exists(strNfo);
-  // When on GUI ask user if they want to ignore nfo and refresh from Internet  
+  // When on GUI ask user if they want to ignore nfo and refresh from Internet
   if (existsNFO && pDialog && CGUIDialogYesNo::ShowAndGetInput(10523, 20446))
   {
     existsNFO = false;
@@ -1763,7 +1763,7 @@ CMusicInfoScanner::DownloadArtistInfo(const CArtist& artist,
       CLog::Log(LOGDEBUG, "%s not have path, nfo file not possible", artist.strArtist.c_str());
   }
 
-  // When on GUI ask user if they want to ignore nfo and refresh from Internet  
+  // When on GUI ask user if they want to ignore nfo and refresh from Internet
   if (existsNFO && pDialog && CGUIDialogYesNo::ShowAndGetInput(21891, 20446))
   {
     existsNFO = false;

@@ -11,6 +11,7 @@
 #include "platform/win32/CharsetConverter.h"
 
 #include <FileAPI.h>
+#include <Windows.h>
 
 using KODI::PLATFORM::WINDOWS::FromW;
 
@@ -86,35 +87,82 @@ void GetLocalTime(SystemTime* systemTime)
   systemTime->milliseconds = time.wMilliseconds;
 }
 
-int FileTimeToLocalFileTime(const FILETIME* lpFileTime, LPFILETIME lpLocalFileTime)
+int FileTimeToLocalFileTime(const FileTime* fileTime, FileTime* localFileTime)
 {
-  return ::FileTimeToLocalFileTime(lpFileTime, lpLocalFileTime);
+  FILETIME file;
+  file.dwLowDateTime = fileTime->lowDateTime;
+  file.dwHighDateTime = fileTime->highDateTime;
+
+  FILETIME localFile;
+  int ret = ::FileTimeToLocalFileTime(&file, &localFile);
+
+  localFileTime->lowDateTime = localFile.dwLowDateTime;
+  localFileTime->highDateTime = localFile.dwHighDateTime;
+
+  return ret;
 }
 
-int SystemTimeToFileTime(const SystemTime* systemTime, LPFILETIME lpFileTime)
+int SystemTimeToFileTime(const SystemTime* systemTime, FileTime* fileTime)
 {
   SYSTEMTIME time;
-  KodiTimeToSystemTime(*systemTime, time);
-  return ::SystemTimeToFileTime(&time, lpFileTime);
+  time.wYear = systemTime->year;
+  time.wMonth = systemTime->month;
+  time.wDayOfWeek = systemTime->dayOfWeek;
+  time.wDay = systemTime->day;
+  time.wHour = systemTime->hour;
+  time.wMinute = systemTime->minute;
+  time.wSecond = systemTime->second;
+  time.wMilliseconds = systemTime->milliseconds;
+
+  FILETIME file;
+  int ret = ::SystemTimeToFileTime(&time, &file);
+
+  fileTime->lowDateTime = file.dwLowDateTime;
+  fileTime->highDateTime = file.dwHighDateTime;
+
+  return ret;
 }
 
-long CompareFileTime(const FILETIME* lpFileTime1, const FILETIME* lpFileTime2)
+long CompareFileTime(const FileTime* fileTime1, const FileTime* fileTime2)
 {
-  return ::CompareFileTime(lpFileTime1, lpFileTime2);
+  FILETIME file1;
+  file1.dwLowDateTime = fileTime1->lowDateTime;
+  file1.dwHighDateTime = fileTime1->highDateTime;
+
+  FILETIME file2;
+  file2.dwLowDateTime = fileTime2->lowDateTime;
+  file2.dwHighDateTime = fileTime2->highDateTime;
+
+  return ::CompareFileTime(&file1, &file2);
 }
 
-int FileTimeToSystemTime(const FILETIME* lpFileTime, SystemTime* systemTime)
+int FileTimeToSystemTime(const FileTime* fileTime, SystemTime* systemTime)
 {
+  FILETIME file;
+  file.dwLowDateTime = fileTime->lowDateTime;
+  file.dwHighDateTime = fileTime->highDateTime;
+
   SYSTEMTIME time;
-  int ret = ::FileTimeToSystemTime(lpFileTime, &time);
+  int ret = ::FileTimeToSystemTime(&file, &time);
   SystemTimeToKodiTime(time, *systemTime);
 
   return ret;
 }
 
-int LocalFileTimeToFileTime(const FILETIME* lpLocalFileTime, LPFILETIME lpFileTime)
+int LocalFileTimeToFileTime(const FileTime* localFileTime, FileTime* fileTime)
 {
-  return ::LocalFileTimeToFileTime(lpLocalFileTime, lpFileTime);
+  FILETIME localFile;
+  localFile.dwLowDateTime = localFileTime->lowDateTime;
+  localFile.dwHighDateTime = localFileTime->highDateTime;
+
+  FILETIME file;
+
+  int ret = ::LocalFileTimeToFileTime(&localFile, &file);
+
+  fileTime->lowDateTime = file.dwLowDateTime;
+  fileTime->highDateTime = file.dwHighDateTime;
+
+  return ret;
 }
 
 } // namespace TIME

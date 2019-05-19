@@ -157,7 +157,7 @@ bool CSMBDirectory::GetDirectory(const CURL& url, CFileItemList &items)
         }
       }
 
-      FILETIME fileTime, localTime;
+      KODI::TIME::FileTime fileTime, localTime;
       KODI::TIME::TimeTToFileTime(lTimeDate, &fileTime);
       KODI::TIME::FileTimeToLocalFileTime(&fileTime, &localTime);
 

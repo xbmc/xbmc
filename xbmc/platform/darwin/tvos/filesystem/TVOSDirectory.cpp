@@ -91,7 +91,7 @@ bool CTVOSDirectory::GetDirectory(const CURL& url, CFileItemList& items)
       if (tvOSFile.Stat(url2, &buffer) == 0)
       {
         // fake the datetime
-        FILETIME fileTime, localTime;
+        KODI::TIME::FileTime fileTime, localTime;
         KODI::TIME::TimeTToFileTime(buffer.st_mtime, &fileTime);
         KODI::TIME::FileTimeToLocalFileTime(&fileTime, &localTime);
         pItem->m_dateTime = localTime;

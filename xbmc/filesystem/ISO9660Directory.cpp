@@ -63,7 +63,7 @@ bool CISO9660Directory::GetDirectory(const CURL& url, CFileItemList &items)
   {
     if (wfd.fileName[0] != 0)
     {
-      if ((wfd.fileAttributes & FILE_ATTRIBUTE_DIRECTORY))
+      if ((wfd.fileAttributes & KODI_FILE_ATTRIBUTE_DIRECTORY))
       {
         std::string strDir = wfd.fileName;
         if (strDir != "." && strDir != "..")
@@ -73,7 +73,7 @@ bool CISO9660Directory::GetDirectory(const CURL& url, CFileItemList &items)
           URIUtils::AddSlashAtEnd(path);
           pItem->SetPath(path);
           pItem->m_bIsFolder = true;
-          FILETIME localTime;
+          KODI::TIME::FileTime localTime;
           KODI::TIME::FileTimeToLocalFileTime(&wfd.lastWriteTime, &localTime);
           pItem->m_dateTime=localTime;
           items.Add(pItem);
@@ -86,7 +86,7 @@ bool CISO9660Directory::GetDirectory(const CURL& url, CFileItemList &items)
         pItem->SetPath(strRoot + strDir);
         pItem->m_bIsFolder = false;
         pItem->m_dwSize = CUtil::ToInt64(wfd.fileSizeHigh, wfd.fileSizeLow);
-        FILETIME localTime;
+        KODI::TIME::FileTime localTime;
         KODI::TIME::FileTimeToLocalFileTime(&wfd.lastWriteTime, &localTime);
         pItem->m_dateTime=localTime;
         items.Add(pItem);

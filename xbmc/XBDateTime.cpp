@@ -32,14 +32,14 @@ static const char *MONTH_NAMES[] = { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "
 
 CDateTimeSpan::CDateTimeSpan()
 {
-  m_timeSpan.dwHighDateTime=0;
-  m_timeSpan.dwLowDateTime=0;
+  m_timeSpan.highDateTime = 0;
+  m_timeSpan.lowDateTime = 0;
 }
 
 CDateTimeSpan::CDateTimeSpan(const CDateTimeSpan& span)
 {
-  m_timeSpan.dwHighDateTime=span.m_timeSpan.dwHighDateTime;
-  m_timeSpan.dwLowDateTime=span.m_timeSpan.dwLowDateTime;
+  m_timeSpan.highDateTime = span.m_timeSpan.highDateTime;
+  m_timeSpan.lowDateTime = span.m_timeSpan.lowDateTime;
 }
 
 CDateTimeSpan::CDateTimeSpan(int day, int hour, int minute, int second)
@@ -143,14 +143,14 @@ const CDateTimeSpan& CDateTimeSpan::operator -=(const CDateTimeSpan& right)
 
 void CDateTimeSpan::ToULargeInt(ULARGE_INTEGER& time) const
 {
-  time.u.HighPart=m_timeSpan.dwHighDateTime;
-  time.u.LowPart=m_timeSpan.dwLowDateTime;
+  time.u.HighPart = m_timeSpan.highDateTime;
+  time.u.LowPart = m_timeSpan.lowDateTime;
 }
 
 void CDateTimeSpan::FromULargeInt(const ULARGE_INTEGER& time)
 {
-  m_timeSpan.dwHighDateTime=time.u.HighPart;
-  m_timeSpan.dwLowDateTime=time.u.LowPart;
+  m_timeSpan.highDateTime = time.u.HighPart;
+  m_timeSpan.lowDateTime = time.u.LowPart;
 }
 
 void CDateTimeSpan::SetDateTimeSpan(int day, int hour, int minute, int second)
@@ -245,11 +245,11 @@ CDateTime::CDateTime()
 
 CDateTime::CDateTime(const KODI::TIME::SystemTime& time)
 {
-  // we store internally as a FILETIME
+  // we store internally as a FileTime
   m_state = ToFileTime(time, m_time) ? valid : invalid;
 }
 
-CDateTime::CDateTime(const FILETIME &time)
+CDateTime::CDateTime(const KODI::TIME::FileTime& time)
 {
   m_time=time;
   SetValid(true);
@@ -299,7 +299,7 @@ const CDateTime& CDateTime::operator=(const KODI::TIME::SystemTime& right)
   return *this;
 }
 
-const CDateTime& CDateTime::operator =(const FILETIME& right)
+const CDateTime& CDateTime::operator=(const KODI::TIME::FileTime& right)
 {
   m_time=right;
   SetValid(true);
@@ -351,39 +351,39 @@ bool CDateTime::operator !=(const CDateTime& right) const
   return !operator ==(right);
 }
 
-bool CDateTime::operator >(const FILETIME& right) const
+bool CDateTime::operator>(const KODI::TIME::FileTime& right) const
 {
   return KODI::TIME::CompareFileTime(&m_time, &right) > 0;
 }
 
-bool CDateTime::operator >=(const FILETIME& right) const
+bool CDateTime::operator>=(const KODI::TIME::FileTime& right) const
 {
   return operator >(right) || operator ==(right);
 }
 
-bool CDateTime::operator <(const FILETIME& right) const
+bool CDateTime::operator<(const KODI::TIME::FileTime& right) const
 {
   return KODI::TIME::CompareFileTime(&m_time, &right) < 0;
 }
 
-bool CDateTime::operator <=(const FILETIME& right) const
+bool CDateTime::operator<=(const KODI::TIME::FileTime& right) const
 {
   return operator <(right) || operator ==(right);
 }
 
-bool CDateTime::operator ==(const FILETIME& right) const
+bool CDateTime::operator==(const KODI::TIME::FileTime& right) const
 {
   return KODI::TIME::CompareFileTime(&m_time, &right) == 0;
 }
 
-bool CDateTime::operator !=(const FILETIME& right) const
+bool CDateTime::operator!=(const KODI::TIME::FileTime& right) const
 {
   return !operator ==(right);
 }
 
 bool CDateTime::operator>(const KODI::TIME::SystemTime& right) const
 {
-  FILETIME time;
+  KODI::TIME::FileTime time;
   ToFileTime(right, time);
 
   return operator >(time);
@@ -396,7 +396,7 @@ bool CDateTime::operator>=(const KODI::TIME::SystemTime& right) const
 
 bool CDateTime::operator<(const KODI::TIME::SystemTime& right) const
 {
-  FILETIME time;
+  KODI::TIME::FileTime time;
   ToFileTime(right, time);
 
   return operator <(time);
@@ -409,7 +409,7 @@ bool CDateTime::operator<=(const KODI::TIME::SystemTime& right) const
 
 bool CDateTime::operator==(const KODI::TIME::SystemTime& right) const
 {
-  FILETIME time;
+  KODI::TIME::FileTime time;
   ToFileTime(right, time);
 
   return operator ==(time);
@@ -422,7 +422,7 @@ bool CDateTime::operator!=(const KODI::TIME::SystemTime& right) const
 
 bool CDateTime::operator >(const time_t& right) const
 {
-  FILETIME time;
+  KODI::TIME::FileTime time;
   ToFileTime(right, time);
 
   return operator >(time);
@@ -435,7 +435,7 @@ bool CDateTime::operator >=(const time_t& right) const
 
 bool CDateTime::operator <(const time_t& right) const
 {
-  FILETIME time;
+  KODI::TIME::FileTime time;
   ToFileTime(right, time);
 
   return operator <(time);
@@ -448,7 +448,7 @@ bool CDateTime::operator <=(const time_t& right) const
 
 bool CDateTime::operator ==(const time_t& right) const
 {
-  FILETIME time;
+  KODI::TIME::FileTime time;
   ToFileTime(right, time);
 
   return operator ==(time);
@@ -461,7 +461,7 @@ bool CDateTime::operator !=(const time_t& right) const
 
 bool CDateTime::operator >(const tm& right) const
 {
-  FILETIME time;
+  KODI::TIME::FileTime time;
   ToFileTime(right, time);
 
   return operator >(time);
@@ -474,7 +474,7 @@ bool CDateTime::operator >=(const tm& right) const
 
 bool CDateTime::operator <(const tm& right) const
 {
-  FILETIME time;
+  KODI::TIME::FileTime time;
   ToFileTime(right, time);
 
   return operator <(time);
@@ -487,7 +487,7 @@ bool CDateTime::operator <=(const tm& right) const
 
 bool CDateTime::operator ==(const tm& right) const
 {
-  FILETIME time;
+  KODI::TIME::FileTime time;
   ToFileTime(right, time);
 
   return operator ==(time);
@@ -582,7 +582,7 @@ CDateTimeSpan CDateTime::operator -(const CDateTime& right) const
   return left;
 }
 
-CDateTime::operator FILETIME() const
+CDateTime::operator KODI::TIME::FileTime() const
 {
   return m_time;
 }
@@ -630,25 +630,25 @@ bool CDateTime::IsValid() const
   return m_state==valid;
 }
 
-bool CDateTime::ToFileTime(const KODI::TIME::SystemTime& time, FILETIME& fileTime) const
+bool CDateTime::ToFileTime(const KODI::TIME::SystemTime& time, KODI::TIME::FileTime& fileTime) const
 {
-  return SystemTimeToFileTime(&time, &fileTime) == 1 &&
-         (fileTime.dwLowDateTime > 0 || fileTime.dwHighDateTime > 0);
+  return KODI::TIME::SystemTimeToFileTime(&time, &fileTime) == 1 &&
+         (fileTime.lowDateTime > 0 || fileTime.highDateTime > 0);
 }
 
-bool CDateTime::ToFileTime(const time_t& time, FILETIME& fileTime) const
+bool CDateTime::ToFileTime(const time_t& time, KODI::TIME::FileTime& fileTime) const
 {
   long long ll = time;
   ll *= 10000000ll;
   ll += 0x19DB1DED53E8000LL;
 
-  fileTime.dwLowDateTime  = (DWORD)(ll & 0xFFFFFFFF);
-  fileTime.dwHighDateTime = (DWORD)(ll >> 32);
+  fileTime.lowDateTime = (DWORD)(ll & 0xFFFFFFFF);
+  fileTime.highDateTime = (DWORD)(ll >> 32);
 
   return true;
 }
 
-bool CDateTime::ToFileTime(const tm& time, FILETIME& fileTime) const
+bool CDateTime::ToFileTime(const tm& time, KODI::TIME::FileTime& fileTime) const
 {
   KODI::TIME::SystemTime st = {0};
 
@@ -665,14 +665,14 @@ bool CDateTime::ToFileTime(const tm& time, FILETIME& fileTime) const
 
 void CDateTime::ToULargeInt(ULARGE_INTEGER& time) const
 {
-  time.u.HighPart=m_time.dwHighDateTime;
-  time.u.LowPart=m_time.dwLowDateTime;
+  time.u.HighPart = m_time.highDateTime;
+  time.u.LowPart = m_time.lowDateTime;
 }
 
 void CDateTime::FromULargeInt(const ULARGE_INTEGER& time)
 {
-  m_time.dwHighDateTime=time.u.HighPart;
-  m_time.dwLowDateTime=time.u.LowPart;
+  m_time.highDateTime = time.u.HighPart;
+  m_time.lowDateTime = time.u.LowPart;
 }
 
 bool CDateTime::SetFromDateString(const std::string &date)
@@ -811,7 +811,7 @@ void CDateTime::GetAsSystemTime(KODI::TIME::SystemTime& time) const
 #define UNIX_BASE_TIME 116444736000000000LL /* nanoseconds since epoch */
 void CDateTime::GetAsTime(time_t& time) const
 {
-  long long ll = (static_cast<long long>(m_time.dwHighDateTime) << 32) + m_time.dwLowDateTime;
+  long long ll = (static_cast<long long>(m_time.highDateTime) << 32) + m_time.lowDateTime;
   time=(time_t)((ll - UNIX_BASE_TIME) / 10000000);
 }
 
@@ -831,7 +831,7 @@ void CDateTime::GetAsTm(tm& time) const
   mktime(&time);
 }
 
-void CDateTime::GetAsTimeStamp(FILETIME& time) const
+void CDateTime::GetAsTimeStamp(KODI::TIME::FileTime& time) const
 {
   KODI::TIME::LocalFileTimeToFileTime(&m_time, &time);
 }

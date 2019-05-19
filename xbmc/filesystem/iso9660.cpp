@@ -642,7 +642,7 @@ HANDLE iso9660::FindFirstFile9660(const char* szLocalFolder, Win32FindData* wfdF
       wfdFile->fileName[sizeof(wfdFile->fileName) - 1] = '\0';
 
       if ( m_searchpointer->type == 2 )
-        wfdFile->fileAttributes |= FILE_ATTRIBUTE_DIRECTORY;
+        wfdFile->fileAttributes |= KODI_FILE_ATTRIBUTE_DIRECTORY;
 
       wfdFile->lastWriteTime = m_searchpointer->filetime;
       wfdFile->lastAccessTime = m_searchpointer->filetime;
@@ -669,7 +669,7 @@ int iso9660::FindNextFile(HANDLE szLocalFolder, Win32FindData* wfdFile)
     wfdFile->fileName[sizeof(wfdFile->fileName) - 1] = '\0';
 
     if ( m_searchpointer->type == 2 )
-      wfdFile->fileAttributes |= FILE_ATTRIBUTE_DIRECTORY;
+      wfdFile->fileAttributes |= KODI_FILE_ATTRIBUTE_DIRECTORY;
 
     wfdFile->lastWriteTime = m_searchpointer->filetime;
     wfdFile->lastAccessTime = m_searchpointer->filetime;
@@ -1036,7 +1036,7 @@ bool iso9660::IsScanned()
 }
 
 //************************************************************************************
-void iso9660::IsoDateTimeToFileTime(iso9660_Datetime* isoDateTime, FILETIME* filetime)
+void iso9660::IsoDateTimeToFileTime(iso9660_Datetime* isoDateTime, KODI::TIME::FileTime* filetime)
 {
   tm t = { 0 };
   t.tm_year=isoDateTime->year;
