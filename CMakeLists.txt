@@ -87,6 +87,10 @@ set(INCLUDES ${CMAKE_SOURCE_DIR}
              ${CMAKE_SOURCE_DIR}/xbmc/cores/VideoPlayer
              ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR})
 
+if (NOT PLATFORMDEFS_DIR STREQUAL "")
+  list(APPEND INCLUDES ${CMAKE_SOURCE_DIR}/xbmc/${PLATFORMDEFS_DIR})
+endif()
+
 find_package(PkgConfig)
 if(KODI_DEPENDSBUILD)
   if(PKG_CONFIG_EXECUTABLE)

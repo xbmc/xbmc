@@ -3,7 +3,6 @@ set(SOURCES OptionalsReg.cpp
 
 set(HEADERS OptionalsReg.h
             PlatformConstants.h
-            PlatformDefs.h
             TimeUtils.h)
 
 if(ALSA_FOUND)
