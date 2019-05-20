@@ -7,7 +7,7 @@
 ; -> ...
 ;PLEASE KEEP THIS LIST IN ALPHABETICAL ORDER!
 crossguid-fef89a4-win10-x64-v140.7z
-curl-7.59.0-win10-x64-v141.7z
+curl-7.61.1-win10-x64-v141.7z
 expat-2.2.0-win10-x64-v140.7z
 flatbuffers-1.9.0.7z
 fmt-3.0.1-win10-x64-v140.7z
@@ -27,8 +27,8 @@ libxml2-2.9.4-win10-x64-v141.7z
 libxslt-1.1.29-win10-x64-v140.7z
 lzo2-2.09-win10-x64-v140.7z
 mini_wdk-10.0.14393.0-win32.7z
-mysql-connector-c-6.1.9-win10-x64-v141.7z
-openssl-1.0.2o-win10-x64-v141.7z
+mariadb-connector-c-3.0.6-win10-x64-v141.7z
+openssl-1.1.1b-win10-x64-v141.7z
 pcre-8.40-win10-x64-v141.7z
 pillow-4.2.1-v1-win10-x64-v141.7z
 pycryptodome-3.4.7-v1-win10-x64-v140.7z
