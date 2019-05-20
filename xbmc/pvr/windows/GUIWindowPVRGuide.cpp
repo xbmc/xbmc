@@ -723,7 +723,7 @@ bool CGUIWindowPVRGuideBase::OpenDateSelectionDialog()
 {
   bool bReturn = false;
 
-  SYSTEMTIME date;
+  KODI::TIME::SystemTime date;
   CGUIEPGGridContainer* epgGridContainer = GetGridControl();
   epgGridContainer->GetSelectedDate().GetAsSystemTime(date);
 

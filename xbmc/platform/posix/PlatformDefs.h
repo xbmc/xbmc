@@ -120,35 +120,6 @@ typedef union _LARGE_INTEGER
   unsigned long long QuadPart;
 } ULARGE_INTEGER;
 
-// Date / Time
-
-typedef struct _SYSTEMTIME
-{
-  unsigned short wYear;
-  unsigned short wMonth;
-  unsigned short wDayOfWeek;
-  unsigned short wDay;
-  unsigned short wHour;
-  unsigned short wMinute;
-  unsigned short wSecond;
-  unsigned short wMilliseconds;
-} SYSTEMTIME, *PSYSTEMTIME, *LPSYSTEMTIME;
-
-typedef struct _TIME_ZONE_INFORMATION {
-  long Bias;
-  wchar_t StandardName[32];
-  SYSTEMTIME StandardDate;
-  long StandardBias;
-  wchar_t DaylightName[32];
-  SYSTEMTIME DaylightDate;
-  long DaylightBias;
-} TIME_ZONE_INFORMATION, *PTIME_ZONE_INFORMATION, *LPTIME_ZONE_INFORMATION;
-
-#define TIME_ZONE_ID_INVALID    ((DWORD)0xFFFFFFFF)
-#define TIME_ZONE_ID_UNKNOWN    0
-#define TIME_ZONE_ID_STANDARD   1
-#define TIME_ZONE_ID_DAYLIGHT   2
-
 // Network
 #define SOCKET_ERROR (-1)
 #define INVALID_SOCKET (~0)

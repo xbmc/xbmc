@@ -12,12 +12,12 @@
 #include "cores/VideoPlayer/VideoReferenceClock.h"
 #include "utils/MathUtils.h"
 #include "utils/TimeUtils.h"
+#include "utils/XTimeUtils.h"
 #include "utils/log.h"
 #include "windowing/GraphicContext.h"
 #include "windowing/WinSystem.h"
 
 #include "platform/android/activity/XBMCApp.h"
-#include "platform/posix/XTimeUtils.h"
 
 
 bool CVideoSyncAndroid::Setup(PUPDATECLOCK func)

@@ -7,25 +7,27 @@
  */
 
 #include "VAAPI.h"
-#include "ServiceBroker.h"
+
 #include "DVDVideoCodec.h"
+#include "ServiceBroker.h"
 #include "cores/VideoPlayer/DVDCodecs/DVDCodecUtils.h"
 #include "cores/VideoPlayer/DVDCodecs/DVDFactoryCodec.h"
 #include "cores/VideoPlayer/Interface/Addon/TimingConstants.h"
 #include "cores/VideoPlayer/Process/ProcessInfo.h"
-#include "utils/log.h"
-#include "utils/StringUtils.h"
-#include "threads/SingleLock.h"
+#include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "settings/lib/Setting.h"
+#include "threads/SingleLock.h"
+#include "utils/MemUtils.h"
+#include "utils/StringUtils.h"
+#include "utils/XTimeUtils.h"
+#include "utils/log.h"
 #include "windowing/GraphicContext.h"
-#include "settings/AdvancedSettings.h"
+
+#include <drm_fourcc.h>
 #include <va/va_drm.h>
 #include <va/va_drmcommon.h>
-#include <drm_fourcc.h>
-#include "platform/posix/XTimeUtils.h"
-#include "utils/MemUtils.h"
 
 extern "C" {
 #include <libavutil/avutil.h>
@@ -1004,7 +1006,7 @@ CDVDVideoCodec::VCReturn CDecoder::Check(AVCodecContext* avctx)
   {
     // if there is no other error, sleep for a short while
     // in order not to drain player's message queue
-    Sleep(10);
+    KODI::TIME::Sleep(10);
 
     return CDVDVideoCodec::VC_NOBUFFER;
   }

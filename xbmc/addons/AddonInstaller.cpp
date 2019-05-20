@@ -7,37 +7,36 @@
  */
 
 #include "AddonInstaller.h"
-#include "ServiceBroker.h"
-#include "events/EventLog.h"
-#include "events/AddonManagementEvent.h"
-#include "events/NotificationEvent.h"
-#include "utils/log.h"
-#include "utils/FileUtils.h"
-#include "utils/URIUtils.h"
-#include "utils/Variant.h"
-#include "Util.h"
+
+#include "FilesystemInstaller.h"
 #include "GUIPassword.h"
-#include "guilib/LocalizeStrings.h"
+#include "GUIUserMessages.h" // for callback
+#include "ServiceBroker.h"
+#include "URL.h"
+#include "Util.h"
+#include "addons/AddonManager.h"
+#include "addons/Repository.h"
+#include "dialogs/GUIDialogExtendedProgressBar.h"
+#include "events/AddonManagementEvent.h"
+#include "events/EventLog.h"
+#include "events/NotificationEvent.h"
+#include "favourites/FavouritesService.h"
 #include "filesystem/Directory.h"
+#include "guilib/GUIComponent.h"
+#include "guilib/GUIWindowManager.h" // for callback
+#include "guilib/LocalizeStrings.h"
+#include "messaging/helpers/DialogHelper.h"
+#include "messaging/helpers/DialogOKHelper.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
-#include "messaging/helpers/DialogHelper.h"
-#include "messaging/helpers/DialogOKHelper.h"
-#include "favourites/FavouritesService.h"
-#include "FilesystemInstaller.h"
+#include "utils/FileUtils.h"
 #include "utils/JobManager.h"
-#include "addons/AddonManager.h"
-#include "addons/Repository.h"
-#include "guilib/GUIComponent.h"
-#include "guilib/GUIWindowManager.h"      // for callback
-#include "GUIUserMessages.h"              // for callback
 #include "utils/StringUtils.h"
-#include "dialogs/GUIDialogExtendedProgressBar.h"
-#include "URL.h"
-#ifdef TARGET_POSIX
-#include "platform/posix/XTimeUtils.h"
-#endif
+#include "utils/URIUtils.h"
+#include "utils/Variant.h"
+#include "utils/XTimeUtils.h"
+#include "utils/log.h"
 
 #include <functional>
 
@@ -750,7 +749,7 @@ bool CAddonInstallJob::Install(const std::string &installFrom, const RepositoryP
         if (CAddonInstaller::GetInstance().HasJob(addonID))
         {
           while (CAddonInstaller::GetInstance().HasJob(addonID))
-            Sleep(50);
+            KODI::TIME::Sleep(50);
 
           if (!CServiceBroker::GetAddonMgr().IsAddonInstalled(addonID))
           {

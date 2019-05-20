@@ -296,7 +296,7 @@ void CGUIEditControl::OnClick()
     {
       CDateTime dateTime;
       dateTime.SetFromDBTime(utf8);
-      SYSTEMTIME time;
+      KODI::TIME::SystemTime time;
       dateTime.GetAsSystemTime(time);
       if (CGUIDialogNumeric::ShowAndGetTime(time, !m_inputHeading.empty() ? m_inputHeading : g_localizeStrings.Get(21420)))
       {
@@ -312,7 +312,7 @@ void CGUIEditControl::OnClick()
       dateTime.SetFromDBDate(utf8);
       if (dateTime < CDateTime(2000,1, 1, 0, 0, 0))
         dateTime = CDateTime(2000, 1, 1, 0, 0, 0);
-      SYSTEMTIME date;
+      KODI::TIME::SystemTime date;
       dateTime.GetAsSystemTime(date);
       if (CGUIDialogNumeric::ShowAndGetDate(date, !m_inputHeading.empty() ? m_inputHeading : g_localizeStrings.Get(21420)))
       {

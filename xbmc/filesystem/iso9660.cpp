@@ -28,16 +28,17 @@ ISO9660
 
 */
 #include "iso9660.h"
-#include "storage/IoSupport.h"
-#include "utils/CharsetConverter.h"
-#include "threads/SingleLock.h"
+
 #include "IFile.h"
+#include "storage/IoSupport.h"
+#include "threads/SingleLock.h"
+#include "utils/CharsetConverter.h"
+#include "utils/XTimeUtils.h"
 #include "utils/log.h"
 
 #ifndef TARGET_WINDOWS
 #include "storage/DetectDVDType.h"  // for MODE2_DATA_SIZE etc.
 #include "platform/posix/XFileUtils.h"
-#include "platform/posix/XTimeUtils.h"
 #else
 #include "platform/win32/CharsetConverter.h"
 #endif
@@ -1056,14 +1057,14 @@ void iso9660::IsoDateTimeToFileTime(iso9660_Datetime* isoDateTime, FILETIME* fil
   t.tm_isdst=-1;
   mktime(&t);
 
-  SYSTEMTIME time;
-  time.wYear=t.tm_year+1900;
-  time.wMonth=t.tm_mon+1;
-  time.wDayOfWeek=t.tm_wday;
-  time.wDay=t.tm_mday;
-  time.wHour=t.tm_hour;
-  time.wMinute=t.tm_min;
-  time.wSecond=t.tm_sec;
-  time.wMilliseconds=0;
-  SystemTimeToFileTime(&time, filetime);
+  KODI::TIME::SystemTime time;
+  time.year = t.tm_year + 1900;
+  time.month = t.tm_mon + 1;
+  time.dayOfWeek = t.tm_wday;
+  time.day = t.tm_mday;
+  time.hour = t.tm_hour;
+  time.minute = t.tm_min;
+  time.second = t.tm_sec;
+  time.milliseconds = 0;
+  KODI::TIME::SystemTimeToFileTime(&time, filetime);
 }

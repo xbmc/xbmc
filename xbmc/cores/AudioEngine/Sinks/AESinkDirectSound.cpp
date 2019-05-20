@@ -10,23 +10,31 @@
 
 
 #include "AESinkDirectSound.h"
+
 #include "cores/AudioEngine/AESinkFactory.h"
 #include "cores/AudioEngine/Sinks/windows/AESinkFactoryWin.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
-#include "platform/win32/CharsetConverter.h"
 #include "threads/SingleLock.h"
 #include "threads/SystemClock.h"
-#include "utils/log.h"
 #include "utils/StringUtils.h"
+#include "utils/XTimeUtils.h"
+#include "utils/log.h"
+
+#include "platform/win32/CharsetConverter.h"
 
 #include <algorithm>
-#include <Audioclient.h>
-#include <initguid.h>
 #include <list>
+
+#include <Audioclient.h>
 #include <Mmreg.h>
+#include <Rpc.h>
+#include <initguid.h>
+
+// include order is important here
+// clang-format off
 #include <mmdeviceapi.h>
 #include <Functiondiscoverykeys_devpkey.h>
-#include <Rpc.h>
+// clang-format on
 
 #pragma comment(lib, "Rpcrt4.lib")
 
@@ -331,7 +339,7 @@ unsigned int CAESinkDirectSound::AddPackets(uint8_t **data, unsigned int frames,
       return INT_MAX;
     else
     {
-      Sleep(total * 1000 / m_AvgBytesPerSec);
+      KODI::TIME::Sleep(total * 1000 / m_AvgBytesPerSec);
     }
   }
 

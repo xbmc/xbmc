@@ -7,18 +7,17 @@
  */
 
 #include "VideoSyncGLX.h"
-#include <sstream>
-#include <X11/extensions/Xrandr.h>
-#include "windowing/X11/WinSystemX11GLContext.h"
-#include "windowing/GraphicContext.h"
-#include "threads/SingleLock.h"
-#include "utils/log.h"
-#include "utils/TimeUtils.h"
-#include <string>
 
-#ifdef TARGET_POSIX
-#include "platform/posix/XTimeUtils.h"
-#endif
+#include "threads/SingleLock.h"
+#include "utils/TimeUtils.h"
+#include "utils/XTimeUtils.h"
+#include "utils/log.h"
+#include "windowing/GraphicContext.h"
+#include "windowing/X11/WinSystemX11GLContext.h"
+
+#include <sstream>
+
+#include <X11/extensions/Xrandr.h>
 
 Display* CVideoSyncGLX::m_Dpy = NULL;
 
@@ -215,7 +214,7 @@ void CVideoSyncGLX::Run(CEvent& stopEvent)
       }
 
       //sleep here so we don't busy spin when this constantly happens, for example when the display went to sleep
-      Sleep(1000);
+      KODI::TIME::Sleep(1000);
 
       CLog::Log(LOGDEBUG, "CVideoReferenceClock: Attaching glX context");
       ReturnV = glXMakeCurrent(m_Dpy, m_Window, m_Context);
@@ -234,7 +233,7 @@ void CVideoSyncGLX::Run(CEvent& stopEvent)
   m_lostEvent.Set();
   while(!stopEvent.Signaled() && m_displayLost && !m_displayReset)
   {
-    Sleep(10);
+    KODI::TIME::Sleep(10);
   }
 }
 

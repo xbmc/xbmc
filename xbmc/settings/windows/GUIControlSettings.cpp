@@ -685,7 +685,7 @@ bool CGUIControlButtonSetting::OnClick()
     {
       std::shared_ptr<CSettingDate> settingDate = std::static_pointer_cast<CSettingDate>(m_pSetting);
 
-      SYSTEMTIME systemdate;
+      KODI::TIME::SystemTime systemdate;
       settingDate->GetDate().GetAsSystemTime(systemdate);
       if (CGUIDialogNumeric::ShowAndGetDate(systemdate, Localize(buttonControl->GetHeading())))
         SetValid(settingDate->SetDate(CDateTime(systemdate)));
@@ -694,7 +694,7 @@ bool CGUIControlButtonSetting::OnClick()
     {
       std::shared_ptr<CSettingTime> settingTime = std::static_pointer_cast<CSettingTime>(m_pSetting);
 
-      SYSTEMTIME systemtime;
+      KODI::TIME::SystemTime systemtime;
       settingTime->GetTime().GetAsSystemTime(systemtime);
 
       if (CGUIDialogNumeric::ShowAndGetTime(systemtime, Localize(buttonControl->GetHeading())))

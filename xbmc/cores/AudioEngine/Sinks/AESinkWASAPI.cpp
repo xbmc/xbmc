@@ -13,6 +13,7 @@
 #include "cores/AudioEngine/Utils/AEUtil.h"
 #include "utils/StringUtils.h"
 #include "utils/TimeUtils.h"
+#include "utils/XTimeUtils.h"
 #include "utils/log.h"
 
 #include <algorithm>
@@ -931,7 +932,7 @@ void CAESinkWASAPI::Drain()
   AEDelayStatus status;
   GetDelay(status);
 
-  Sleep((DWORD)(status.GetDelay() * 500));
+  KODI::TIME::Sleep((DWORD)(status.GetDelay() * 500));
 
   if (m_running)
   {

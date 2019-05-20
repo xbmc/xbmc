@@ -42,9 +42,9 @@ struct iso9660_VolumeDescriptor
   DWORD dwPathTableLengthLE;     //132-135
   DWORD dwPathTableLengthBE;     //136-139
   DWORD wFirstPathTableStartSectorLE; //140-143
-  DWORD wSecondPathTableStartSectorLE; //144-147
+  DWORD secondPathTableStartSectorLE; //144-147
   DWORD wFirstPathTableStartSectorBE; //148-151
-  DWORD wSecondPathTableStartSectorBE; //152-155
+  DWORD secondPathTableStartSectorBE; //152-155
   unsigned char szRootDir[34];
   unsigned char szVolumeSetIdentifier[128];
   unsigned char szPublisherIdentifier[128];

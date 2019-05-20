@@ -8,26 +8,24 @@
 
 #include "WeatherJob.h"
 
+#include "GUIUserMessages.h"
+#include "LangInfo.h"
+#include "ServiceBroker.h"
 #include "addons/AddonManager.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
-#include "GUIUserMessages.h"
-#include "LangInfo.h"
 #include "interfaces/generic/ScriptInvocationManager.h"
 #include "network/Network.h"
-#ifdef TARGET_POSIX
-#include "platform/posix/XTimeUtils.h"
-#endif
-#include "ServiceBroker.h"
-#include "settings/lib/Setting.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
-#include "utils/log.h"
+#include "settings/lib/Setting.h"
 #include "utils/POUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
+#include "utils/XTimeUtils.h"
+#include "utils/log.h"
 
 #define LOCALIZED_TOKEN_FIRSTID    370
 #define LOCALIZED_TOKEN_LASTID     395
@@ -72,7 +70,7 @@ bool CWeatherJob::DoWork()
     {
       if (!CScriptInvocationManager::GetInstance().IsRunning(scriptId))
         break;
-      Sleep(100);
+      KODI::TIME::Sleep(100);
     }
 
     SetFromProperties();

@@ -1727,7 +1727,7 @@ bool CAddonCallbacksGUI::Dialog_Numeric_ShowAndVerifyInput(char &strPassword, un
 
 bool CAddonCallbacksGUI::Dialog_Numeric_ShowAndGetTime(tm &time, const char *strHeading)
 {
-  SYSTEMTIME systemTime;
+  KODI::TIME::SystemTime systemTime;
   CDateTime dateTime(time);
   dateTime.GetAsSystemTime(systemTime);
   if (CGUIDialogNumeric::ShowAndGetTime(systemTime, strHeading))
@@ -1741,7 +1741,7 @@ bool CAddonCallbacksGUI::Dialog_Numeric_ShowAndGetTime(tm &time, const char *str
 
 bool CAddonCallbacksGUI::Dialog_Numeric_ShowAndGetDate(tm &date, const char *strHeading)
 {
-  SYSTEMTIME systemTime;
+  KODI::TIME::SystemTime systemTime;
   CDateTime dateTime(date);
   dateTime.GetAsSystemTime(systemTime);
   if (CGUIDialogNumeric::ShowAndGetDate(systemTime, strHeading))

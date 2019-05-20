@@ -9,10 +9,9 @@
 #include "DRMUtils.h"
 
 #include "utils/StringUtils.h"
+#include "utils/XTimeUtils.h"
 #include "utils/log.h"
 #include "windowing/GraphicContext.h"
-
-#include "platform/posix/XTimeUtils.h"
 
 #include <errno.h>
 #include <stdint.h>
@@ -828,7 +827,7 @@ bool CDRMUtils::CheckConnector(int connector_id)
   {
     CLog::Log(LOGDEBUG, "CDRMUtils::%s - connector is disconnected", __FUNCTION__);
     retryCnt--;
-    Sleep(1000);
+    KODI::TIME::Sleep(1000);
     drmModeFreeConnector(connectorcheck.connector);
     connectorcheck.connector = drmModeGetConnector(m_fd, connector_id);
   }

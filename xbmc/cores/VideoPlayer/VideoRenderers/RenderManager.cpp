@@ -7,29 +7,25 @@
  */
 
 #include "RenderManager.h"
-#include "RenderFlags.h"
-#include "RenderFactory.h"
-#include "cores/VideoPlayer/Interface/Addon/TimingConstants.h"
-#include "windowing/GraphicContext.h"
-#include "utils/MathUtils.h"
-#include "threads/SingleLock.h"
-#include "utils/log.h"
-#include "utils/StringUtils.h"
-#include "windowing/WinSystem.h"
 
 #include "Application.h"
+#include "RenderCapture.h"
+#include "RenderFactory.h"
+#include "RenderFlags.h"
 #include "ServiceBroker.h"
+#include "cores/VideoPlayer/Interface/Addon/TimingConstants.h"
 #include "messaging/ApplicationMessenger.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/MediaSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
-
-#if defined(TARGET_POSIX)
-#include "platform/posix/XTimeUtils.h"
-#endif
-
-#include "RenderCapture.h"
+#include "threads/SingleLock.h"
+#include "utils/MathUtils.h"
+#include "utils/StringUtils.h"
+#include "utils/XTimeUtils.h"
+#include "utils/log.h"
+#include "windowing/GraphicContext.h"
+#include "windowing/WinSystem.h"
 
 /* to use the same as player */
 #include "../VideoPlayer/DVDClock.h"
@@ -654,7 +650,7 @@ void CRenderManager::RemoveCaptures()
       entry.second->GetEvent().Set();
     }
     CSingleExit lockexit(m_captCritSect);
-    Sleep(10);
+    KODI::TIME::Sleep(10);
   }
 
   for (auto entry : m_captures)

@@ -8,22 +8,22 @@
 
 #include "XRandR.h"
 
-#include <string.h>
-#include <sys/wait.h>
-#include "PlatformDefs.h"
-#include "utils/XBMCTinyXML.h"
-#include "utils/StringUtils.h"
-#include "utils/log.h"
-#include "threads/SystemClock.h"
 #include "CompileInfo.h"
+#include "threads/SystemClock.h"
+#include "utils/StringUtils.h"
+#include "utils/XBMCTinyXML.h"
+#include "utils/XTimeUtils.h"
+#include "utils/log.h"
+
+#include <string.h>
+
+#include <sys/wait.h>
+
+#include "PlatformDefs.h"
 
 #if defined(TARGET_FREEBSD)
 #include <sys/types.h>
 #include <sys/wait.h>
-#endif
-
-#ifdef TARGET_POSIX
-#include "platform/posix/XTimeUtils.h"
 #endif
 
 CXRandR::CXRandR(bool query)
@@ -210,7 +210,7 @@ bool CXRandR::TurnOnOutput(const std::string& name)
     if (output && output->h > 0)
       return true;
 
-    Sleep(200);
+    KODI::TIME::Sleep(200);
   }
 
   return false;

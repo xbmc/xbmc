@@ -6,20 +6,19 @@
  *  See LICENSES/README.md for more information.
  */
 
+#include "RenderSystemGLES.h"
+
 #include "guilib/DirtyRegion.h"
-#include "windowing/GraphicContext.h"
+#include "rendering/MatrixGL.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
-#include "RenderSystemGLES.h"
-#include "rendering/MatrixGL.h"
 #include "utils/GLUtils.h"
-#include "utils/log.h"
-#include "utils/TimeUtils.h"
-#include "utils/SystemInfo.h"
 #include "utils/MathUtils.h"
-#ifdef TARGET_POSIX
-#include "platform/posix/XTimeUtils.h"
-#endif
+#include "utils/SystemInfo.h"
+#include "utils/TimeUtils.h"
+#include "utils/XTimeUtils.h"
+#include "utils/log.h"
+#include "windowing/GraphicContext.h"
 
 #if defined(TARGET_LINUX)
 #include "utils/EGLUtils.h"
@@ -228,7 +227,7 @@ void CRenderSystemGLES::PresentRender(bool rendered, bool videoLayer)
 
   // if video is rendered to a separate layer, we should not block this thread
   if (!rendered && !videoLayer)
-    Sleep(40);
+    KODI::TIME::Sleep(40);
 }
 
 void CRenderSystemGLES::SetVSync(bool enable)

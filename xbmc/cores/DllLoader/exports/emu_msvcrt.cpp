@@ -41,23 +41,21 @@
 #ifdef TARGET_POSIX
 #include "PlatformDefs.h" // for __stat64
 #include "platform/posix/XFileUtils.h"
-#include "platform/posix/XTimeUtils.h"
 #endif
+#include "FileItem.h"
 #include "ServiceBroker.h"
-#include "Util.h"
-#include "filesystem/SpecialProtocol.h"
 #include "URL.h"
+#include "Util.h"
+#include "emu_dummy.h"
+#include "emu_msvcrt.h"
+#include "filesystem/Directory.h"
 #include "filesystem/File.h"
+#include "filesystem/SpecialProtocol.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
-#include "FileItem.h"
-#include "filesystem/Directory.h"
-
-#include "emu_msvcrt.h"
-#include "emu_dummy.h"
+#include "threads/SingleLock.h"
 #include "util/EmuFileWrapper.h"
 #include "utils/log.h"
-#include "threads/SingleLock.h"
 #ifndef TARGET_POSIX
 #include "utils/CharsetConverter.h"
 #include "utils/URIUtils.h"
@@ -67,6 +65,7 @@
 #endif
 #include "platform/Environment.h"
 #include "utils/StringUtils.h"
+#include "utils/XTimeUtils.h"
 
 #if defined(TARGET_WINDOWS)
 #include "platform/win32/CharsetConverter.h"
@@ -276,10 +275,7 @@ static void to_wfinddata64i32(_finddata64i32_t *data, _wfinddata64i32_t *wdata)
 
 extern "C"
 {
-  void dll_sleep(unsigned long imSec)
-  {
-    Sleep(imSec);
-  }
+  void dll_sleep(unsigned long imSec) { KODI::TIME::Sleep(imSec); }
 
   // FIXME, XXX, !!!!!!
   void dllReleaseAll( )

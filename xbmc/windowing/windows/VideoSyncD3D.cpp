@@ -13,6 +13,7 @@
 #include "rendering/dx/DeviceResources.h"
 #include "rendering/dx/RenderContext.h"
 #include "utils/StringUtils.h"
+#include "utils/XTimeUtils.h"
 #include "utils/log.h"
 #include "windowing/GraphicContext.h"
 
@@ -101,7 +102,7 @@ void CVideoSyncD3D::Run(CEvent& stopEvent)
   m_lostEvent.Set();
   while (!stopEvent.Signaled() && m_displayLost && !m_displayReset)
   {
-    Sleep(10);
+    KODI::TIME::Sleep(10);
   }
 }
 

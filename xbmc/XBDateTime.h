@@ -9,6 +9,7 @@
 #pragma once
 
 #include "utils/IArchivable.h"
+#include "utils/XTimeUtils.h"
 
 #include <string>
 
@@ -47,25 +48,30 @@
    - \link ListItem_NextDuration_format `ListItem.NextDuration(format)` \endlink
   <p>
  */
-enum TIME_FORMAT { TIME_FORMAT_GUESS       =  0, ///< usually used as the fallback value if the format value is empty
-                   TIME_FORMAT_SS          =  1, ///< <b>ss</b> - seconds only
-                   TIME_FORMAT_MM          =  2, ///< <b>mm</b> - minutes only (2-digit)
-                   TIME_FORMAT_MM_SS       =  3, ///< <b>mm:ss</b> - minutes and seconds
-                   TIME_FORMAT_HH          =  4, ///< <b>hh</b> - hours only (2-digit)
-                   TIME_FORMAT_HH_SS       =  5, ///< <b>hh:ss</b> - hours and seconds (this is not particularly useful)
-                   TIME_FORMAT_HH_MM       =  6, ///< <b>hh:mm</b> - hours and minutes
-                   TIME_FORMAT_HH_MM_SS    =  7, ///< <b>hh:mm:ss</b> - hours, minutes and seconds
-                   TIME_FORMAT_XX          =  8, ///<  <b>xx</b> - returns AM/PM for a 12-hour clock
-                   TIME_FORMAT_HH_MM_XX    = 14, ///< <b>hh:mm xx</b> - returns hours and minutes in a 12-hour clock format (AM/PM)
-                   TIME_FORMAT_HH_MM_SS_XX = 15, ///< <b>hh:mm:ss xx</b> - returns hours (2-digit), minutes and seconds in a 12-hour clock format (AM/PM) 
-                   TIME_FORMAT_H           = 16, ///< <b>h</b> - hours only (1-digit)
-                   TIME_FORMAT_H_MM_SS     = 19, ///< <b>hh:mm:ss</b> - hours, minutes and seconds
-                   TIME_FORMAT_H_MM_SS_XX  = 27, ///< <b>hh:mm:ss xx</b> - returns hours (1-digit), minutes and seconds in a 12-hour clock format (AM/PM) 
-                   TIME_FORMAT_SECS        = 32, ///<  <b>secs</b> - total time in seconds
-                   TIME_FORMAT_MINS        = 64, ///<  <b>mins</b> - total time in minutes
-                   TIME_FORMAT_HOURS       = 128, ///< <b>hours</b> - total time in hours
-                   TIME_FORMAT_M           = 256 ///< <b>m</b> - minutes only (1-digit)
-                   };
+enum TIME_FORMAT
+{
+  TIME_FORMAT_GUESS = 0, ///< usually used as the fallback value if the format value is empty
+  TIME_FORMAT_SS = 1, ///< <b>ss</b> - seconds only
+  TIME_FORMAT_MM = 2, ///< <b>mm</b> - minutes only (2-digit)
+  TIME_FORMAT_MM_SS = 3, ///< <b>mm:ss</b> - minutes and seconds
+  TIME_FORMAT_HH = 4, ///< <b>hh</b> - hours only (2-digit)
+  TIME_FORMAT_HH_SS = 5, ///< <b>hh:ss</b> - hours and seconds (this is not particularly useful)
+  TIME_FORMAT_HH_MM = 6, ///< <b>hh:mm</b> - hours and minutes
+  TIME_FORMAT_HH_MM_SS = 7, ///< <b>hh:mm:ss</b> - hours, minutes and seconds
+  TIME_FORMAT_XX = 8, ///<  <b>xx</b> - returns AM/PM for a 12-hour clock
+  TIME_FORMAT_HH_MM_XX =
+      14, ///< <b>hh:mm xx</b> - returns hours and minutes in a 12-hour clock format (AM/PM)
+  TIME_FORMAT_HH_MM_SS_XX =
+      15, ///< <b>hh:mm:ss xx</b> - returns hours (2-digit), minutes and seconds in a 12-hour clock format (AM/PM)
+  TIME_FORMAT_H = 16, ///< <b>h</b> - hours only (1-digit)
+  TIME_FORMAT_H_MM_SS = 19, ///< <b>hh:mm:ss</b> - hours, minutes and seconds
+  TIME_FORMAT_H_MM_SS_XX =
+      27, ///< <b>hh:mm:ss xx</b> - returns hours (1-digit), minutes and seconds in a 12-hour clock format (AM/PM)
+  TIME_FORMAT_SECS = 32, ///<  <b>secs</b> - total time in seconds
+  TIME_FORMAT_MINS = 64, ///<  <b>mins</b> - total time in minutes
+  TIME_FORMAT_HOURS = 128, ///< <b>hours</b> - total time in hours
+  TIME_FORMAT_M = 256 ///< <b>m</b> - minutes only (1-digit)
+};
 
 class CDateTime;
 
@@ -115,7 +121,7 @@ class CDateTime final : public IArchivable
 public:
   CDateTime();
   CDateTime(const CDateTime& time);
-  explicit CDateTime(const SYSTEMTIME& time);
+  explicit CDateTime(const KODI::TIME::SystemTime& time);
   explicit CDateTime(const FILETIME& time);
   explicit CDateTime(const time_t& time);
   explicit CDateTime(const tm& time);
@@ -135,7 +141,7 @@ public:
   static CDateTime FromUTCDateTime(const time_t &dateTime);
   static CDateTime FromRFC1123DateTime(const std::string &dateTime);
 
-  const CDateTime& operator =(const SYSTEMTIME& right);
+  const CDateTime& operator=(const KODI::TIME::SystemTime& right);
   const CDateTime& operator =(const FILETIME& right);
   const CDateTime& operator =(const time_t& right);
   const CDateTime& operator =(const tm& right);
@@ -154,12 +160,12 @@ public:
   bool operator ==(const FILETIME& right) const;
   bool operator !=(const FILETIME& right) const;
 
-  bool operator >(const SYSTEMTIME& right) const;
-  bool operator >=(const SYSTEMTIME& right) const;
-  bool operator <(const SYSTEMTIME& right) const;
-  bool operator <=(const SYSTEMTIME& right) const;
-  bool operator ==(const SYSTEMTIME& right) const;
-  bool operator !=(const SYSTEMTIME& right) const;
+  bool operator>(const KODI::TIME::SystemTime& right) const;
+  bool operator>=(const KODI::TIME::SystemTime& right) const;
+  bool operator<(const KODI::TIME::SystemTime& right) const;
+  bool operator<=(const KODI::TIME::SystemTime& right) const;
+  bool operator==(const KODI::TIME::SystemTime& right) const;
+  bool operator!=(const KODI::TIME::SystemTime& right) const;
 
   bool operator >(const time_t& right) const;
   bool operator >=(const time_t& right) const;
@@ -216,7 +222,7 @@ public:
    */
   bool SetFromDBDateTime(const std::string &dateTime);
 
-  void GetAsSystemTime(SYSTEMTIME& time) const;
+  void GetAsSystemTime(KODI::TIME::SystemTime& time) const;
   void GetAsTime(time_t& time) const;
   void GetAsTm(tm& time) const;
   void GetAsTimeStamp(FILETIME& time) const;
@@ -242,7 +248,7 @@ public:
   static CDateTimeSpan GetTimezoneBias(void);
 
 private:
-  bool ToFileTime(const SYSTEMTIME& time, FILETIME& fileTime) const;
+  bool ToFileTime(const KODI::TIME::SystemTime& time, FILETIME& fileTime) const;
   bool ToFileTime(const time_t& time, FILETIME& fileTime) const;
   bool ToFileTime(const tm& time, FILETIME& fileTime) const;
 
