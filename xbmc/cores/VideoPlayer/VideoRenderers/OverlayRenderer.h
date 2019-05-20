@@ -106,4 +106,6 @@ namespace OVERLAY {
     std::string m_font, m_fontBorder;
     std::string m_stereomode;
   };
+
+  extern const std::string SETTING_SUBTITLES_OPACITY;
 }

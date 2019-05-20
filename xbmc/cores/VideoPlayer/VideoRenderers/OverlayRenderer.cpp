@@ -33,6 +33,8 @@
 
 using namespace OVERLAY;
 
+const std::string OVERLAY::SETTING_SUBTITLES_OPACITY = "subtitles.opacity";
+
 static UTILS::Color bgcolors[5] = { UTILS::COLOR::BLACK,
   UTILS::COLOR::YELLOW,
   UTILS::COLOR::WHITE,
@@ -189,6 +191,7 @@ void CRenderer::Render(int idx)
       
       text->PrepareRender(settings->GetString(CSettings::SETTING_SUBTITLES_FONT),
                           settings->GetInt(CSettings::SETTING_SUBTITLES_COLOR),
+                          settings->GetInt(SETTING_SUBTITLES_OPACITY),
                           settings->GetInt(CSettings::SETTING_SUBTITLES_HEIGHT),
                           settings->GetInt(CSettings::SETTING_SUBTITLES_STYLE),
                           m_font, m_fontBorder, bgcolor, m_rv);

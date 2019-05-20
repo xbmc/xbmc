@@ -3398,7 +3398,11 @@ msgctxt "#751"
 msgid "Removing source"
 msgstr ""
 
-#empty strings from id 752 to 753
+msgctxt "#752"
+msgid "Opacity"
+msgstr ""
+
+#empty string with id 753
 
 msgctxt "#754"
 msgid "Add program link"
@@ -19076,7 +19080,13 @@ msgctxt "#36294"
 msgid "When sorting music items by artist use sortname e.g. Parton, Dolly rather than name."
 msgstr ""
 
-#empty strings from id 36295 to 36301
+#. Description of setting with label #752 "Opacity"
+#: system/settings/settings.xml
+msgctxt "#36295"
+msgid "Set the the subtitle opacity."
+msgstr ""
+
+#empty strings from id 36296 to 36301
 
 #: system/settings/settings.xml
 msgctxt "#36302"
