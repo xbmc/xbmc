@@ -4620,6 +4620,15 @@ const infomap container_str[]  = {{ "property",         CONTAINER_PROPERTY },
 ///     item in a container.
 ///     <p>
 ///   }
+///   \table_row3{   <b>`ListItem.FileNameNoExtension`</b>,
+///                  \anchor ListItem_FileName_No_Extension
+///                  _string_,
+///     @return The filename without extension of the currently selected
+///     item in a container.
+///     <p><hr>
+///     @skinning_v19 **[New Infolabel]** \link ListItem_FileName_No_Extension `ListItem.FileNameNoExtension`\endlink
+///     <p>
+///   }
 ///   \table_row3{   <b>`ListItem.Date`</b>,
 ///                  \anchor ListItem_Date
 ///                  _string_,
@@ -5700,6 +5709,7 @@ const infomap listitem_labels[]= {{ "thumb",            LISTITEM_THUMB },
                                   { "filename",         LISTITEM_FILENAME },
                                   { "filenameandpath",  LISTITEM_FILENAME_AND_PATH },
                                   { "fileextension",    LISTITEM_FILE_EXTENSION },
+                                  { "filenamenoextension",  LISTITEM_FILENAME_NO_EXTENSION },
                                   { "date",             LISTITEM_DATE },
                                   { "datetime",         LISTITEM_DATETIME },
                                   { "size",             LISTITEM_SIZE },
@@ -9720,12 +9730,17 @@ std::string CGUIInfoManager::GetMultiInfoItemLabel(const CFileItem *item, int co
         return item->GetLabel2();
       case LISTITEM_FILENAME:
       case LISTITEM_FILE_EXTENSION:
+      case LISTITEM_FILENAME_NO_EXTENSION:
       {
         std::string strFile = URIUtils::GetFileName(item->GetPath());
         if (info.m_info == LISTITEM_FILE_EXTENSION)
         {
           std::string strExtension = URIUtils::GetExtension(strFile);
           return StringUtils::TrimLeft(strExtension, ".");
+        }
+        else if (info.m_info == LISTITEM_FILENAME_NO_EXTENSION)
+        {
+          URIUtils::RemoveExtension(strFile);
         }
         return strFile;
       }
