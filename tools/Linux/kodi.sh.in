@@ -192,6 +192,12 @@ print_crash_report()
   echo "Crash report available at $FILE"
 }
 
+propagate_sigterm() {
+  kill -TERM "$CHILD" 2>/dev/null
+}
+
+trap propagate_sigterm TERM
+
 migrate_home
 
 if command_exists gdb; then
@@ -207,7 +213,9 @@ while [ $(( $LOOP )) = "1" ]
 do
   [ -f "${APPORT_CORE}" ] && rm -f "${APPORT_CORE}"
   LOOP=0
-  ${KODI_BINARY} $SAVED_ARGS
+  ${KODI_BINARY} $SAVED_ARGS &
+  CHILD=$!
+  wait "${CHILD}"
   RET=$?
   if [ $(( $RET == 65 )) = "1" ]
   then # User requested to restart app
