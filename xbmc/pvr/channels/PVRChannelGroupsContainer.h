@@ -12,8 +12,6 @@
 
 #include "pvr/channels/PVRChannelGroups.h"
 
-class CURL;
-
 namespace PVR
 {
   class CPVRChannelGroupsContainer
@@ -120,28 +118,11 @@ namespace PVR
     std::shared_ptr<CPVRChannel> GetChannelForEpgTag(const std::shared_ptr<CPVREpgInfoTag>& epgTag) const;
 
     /*!
-     * @brief Get the groups list for a directory.
-     * @param strBase The directory path.
-     * @param results The file list to store the results in.
-     * @param bRadio Get radio channels or tv channels.
-     * @return True if the list was filled successfully.
-     */
-    bool GetGroupsDirectory(CFileItemList *results, bool bRadio) const;
-
-    /*!
      * @brief Get a channel given it's path.
      * @param strPath The path.
      * @return The channel or NULL if it wasn't found.
      */
     CFileItemPtr GetByPath(const std::string &strPath) const;
-
-    /*!
-     * @brief Get the directory for a path.
-     * @param strPath The path.
-     * @param results The file list to store the results in.
-     * @return True if the directory was found, false if not.
-     */
-    bool GetDirectory(const std::string& strPath, CFileItemList &results) const;
 
     /*!
      * @brief Get the group that is currently selected in the UI.
@@ -205,8 +186,6 @@ namespace PVR
   private :
     CPVRChannelGroupsContainer& operator=(const CPVRChannelGroupsContainer&) = delete;
     CPVRChannelGroupsContainer(const CPVRChannelGroupsContainer&) = delete;
-
-    bool FilterDirectory(const CURL &url, CFileItemList &results) const;
 
     bool m_bLoaded = false;
   };

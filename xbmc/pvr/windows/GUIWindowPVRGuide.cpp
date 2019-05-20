@@ -623,7 +623,7 @@ bool CGUIWindowPVRGuideBase::RefreshTimelineItems()
         m_bFirstOpen = false;
 
         // very first open of the window. come up with some data very fast...
-        const std::vector<PVRChannelGroupMember> groupMembers = group->GetMembers();
+        const std::vector<PVRChannelGroupMember> groupMembers = group->GetMembers(CPVRChannelGroup::Include::ONLY_VISIBLE);
         for (const auto& groupMember : groupMembers)
         {
           // fake a channel without epg

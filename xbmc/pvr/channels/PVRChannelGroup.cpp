@@ -490,17 +490,13 @@ CFileItemPtr CPVRChannelGroup::GetPreviousChannel(const CPVRChannelPtr &channel)
   return retval;
 }
 
-PVR_CHANNEL_GROUP_SORTED_MEMBERS CPVRChannelGroup::GetMembers(void) const
+std::vector<PVRChannelGroupMember> CPVRChannelGroup::GetMembers(Include eFilter /* = Include::ALL */) const
 {
   CSingleLock lock(m_critSection);
-  return m_sortedMembers;
-}
+  if (eFilter == Include::ALL)
+    return m_sortedMembers;
 
-int CPVRChannelGroup::GetMembers(CFileItemList &results, Include eFilter /* = Include::ONLY_VISIBLE */) const
-{
-  int iOrigSize = results.Size();
-  CSingleLock lock(m_critSection);
-
+  std::vector<PVRChannelGroupMember> members;
   for (const auto& member : m_sortedMembers)
   {
     switch (eFilter)
@@ -517,10 +513,10 @@ int CPVRChannelGroup::GetMembers(CFileItemList &results, Include eFilter /* = In
         break;
     }
 
-    results.Add(std::make_shared<CFileItem>(member.channel));
+    members.emplace_back(member);
   }
 
-  return results.Size() - iOrigSize;
+  return members;
 }
 
 void CPVRChannelGroup::GetChannelNumbers(std::vector<std::string>& channelNumbers) const

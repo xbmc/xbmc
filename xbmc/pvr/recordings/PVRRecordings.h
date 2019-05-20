@@ -70,10 +70,10 @@ namespace PVR
      */
     bool ResetResumePoint(const CFileItemPtr item);
 
-    bool GetDirectory(const std::string& strPath, CFileItemList &items);
+    std::vector<std::shared_ptr<CPVRRecording>> GetAll() const;
+
     CFileItemPtr GetByPath(const std::string &path);
     CPVRRecordingPtr GetById(int iClientId, const std::string &strRecordingId) const;
-    void GetAll(CFileItemList &items, bool bDeleted = false);
     CFileItemPtr GetById(unsigned int iId) const;
 
     /*!
@@ -83,14 +83,16 @@ namespace PVR
      */
     CPVRRecordingPtr GetRecordingForEpgTag(const CPVREpgInfoTagPtr &epgTag) const;
 
-  private:
-    typedef std::map<CPVRRecordingUid, CPVRRecordingPtr> PVR_RECORDINGMAP;
-    typedef PVR_RECORDINGMAP::iterator PVR_RECORDINGMAP_ITR;
-    typedef PVR_RECORDINGMAP::const_iterator PVR_RECORDINGMAP_CITR;
+    /**
+     * @brief Get/Open the video database.
+     * @return A reference to the video database.
+     */
+    CVideoDatabase& GetVideoDatabase();
 
+  private:
     mutable CCriticalSection m_critSection;
     bool m_bIsUpdating = false;
-    PVR_RECORDINGMAP m_recordings;
+    std::map<CPVRRecordingUid, CPVRRecordingPtr> m_recordings;
     unsigned int m_iLastId = 0;
     std::unique_ptr<CVideoDatabase> m_database;
     bool m_bDeletedTVRecordings = false;
@@ -99,15 +101,6 @@ namespace PVR
     unsigned int m_iRadioRecordings = 0;
 
     void UpdateFromClients(void);
-    std::string TrimSlashes(const std::string &strOrig) const;
-    bool IsDirectoryMember(const std::string &strDirectory, const std::string &strEntryDirectory, bool bGrouped) const;
-    void GetSubDirectories(const CPVRRecordingsPath &recParentPath, CFileItemList *results);
-
-    /**
-     * @brief Get/Open the video database.
-     * @return A reference to the video database.
-     */
-    CVideoDatabase& GetVideoDatabase();
 
     /**
      * @brief recursively deletes all recordings in the specified directory

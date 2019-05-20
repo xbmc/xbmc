@@ -10,8 +10,6 @@
 
 #include "IDirectory.h"
 
-class CPVRSession;
-
 namespace XFILE {
 
 class CPVRDirectory
@@ -27,7 +25,7 @@ public:
   bool Exists(const CURL& url) override;
 
   static bool SupportsWriteFileOperations(const std::string& strPath);
-  static bool IsLiveTV(const std::string& strPath);
+
   static bool HasTVRecordings();
   static bool HasDeletedTVRecordings();
   static bool HasRadioRecordings();
