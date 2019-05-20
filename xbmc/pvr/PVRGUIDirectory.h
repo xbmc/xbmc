@@ -80,7 +80,7 @@ public:
 
 private:
 
-  bool FilterDirectory(CFileItemList &results) const;
+  bool FilterDirectory(CFileItemList& results) const;
 
   bool GetChannelGroupsDirectory(bool bRadio, CFileItemList& results) const;
   bool GetChannelsDirectory(CFileItemList& results) const;

@@ -136,86 +136,88 @@ bool CPVRGUIDirectory::HasDeletedRadioRecordings()
 
 namespace
 {
-  std::string TrimSlashes(const std::string& strOrig)
+
+std::string TrimSlashes(const std::string& strOrig)
+{
+  std::string strReturn = strOrig;
+  while (strReturn[0] == '/')
+    strReturn.erase(0, 1);
+
+  URIUtils::RemoveSlashAtEnd(strReturn);
+  return strReturn;
+}
+
+bool IsDirectoryMember(const std::string& strDirectory,
+                       const std::string& strEntryDirectory,
+                       bool bGrouped)
+{
+  const std::string strUseDirectory = TrimSlashes(strDirectory);
+  const std::string strUseEntryDirectory = TrimSlashes(strEntryDirectory);
+
+  // Case-insensitive comparison since sub folders are created with case-insensitive matching (GetSubDirectories)
+  if (bGrouped)
+    return StringUtils::EqualsNoCase(strUseDirectory, strUseEntryDirectory);
+  else
+    return StringUtils::StartsWithNoCase(strUseEntryDirectory, strUseDirectory);
+}
+
+void GetSubDirectories(const CPVRRecordingsPath& recParentPath,
+                       CVideoDatabase& videoDB,
+                       const std::vector<std::shared_ptr<CPVRRecording>>& recordings,
+                       CFileItemList& results)
+{
+  // Only active recordings are fetched to provide sub directories.
+  // Not applicable for deleted view which is supposed to be flattened.
+  std::set<std::shared_ptr<CFileItem>> unwatchedFolders;
+  bool bRadio = recParentPath.IsRadio();
+
+  for (const auto& recording : recordings)
   {
-    std::string strReturn = strOrig;
-    while (strReturn[0] == '/')
-      strReturn.erase(0, 1);
+    if (recording->IsDeleted())
+      continue;
 
-    URIUtils::RemoveSlashAtEnd(strReturn);
-    return strReturn;
-  }
+    if (recording->IsRadio() != bRadio)
+      continue;
 
-  bool IsDirectoryMember(const std::string& strDirectory,
-                         const std::string& strEntryDirectory,
-                         bool bGrouped)
-  {
-    const std::string strUseDirectory = TrimSlashes(strDirectory);
-    const std::string strUseEntryDirectory = TrimSlashes(strEntryDirectory);
+    const std::string strCurrent = recParentPath.GetUnescapedSubDirectoryPath(recording->m_strDirectory);
+    if (strCurrent.empty())
+      continue;
 
-    // Case-insensitive comparison since sub folders are created with case-insensitive matching (GetSubDirectories)
-    if (bGrouped)
-      return StringUtils::EqualsNoCase(strUseDirectory, strUseEntryDirectory);
-    else
-      return StringUtils::StartsWithNoCase(strUseEntryDirectory, strUseDirectory);
-  }
+    CPVRRecordingsPath recChildPath(recParentPath);
+    recChildPath.AppendSegment(strCurrent);
+    const std::string strFilePath = recChildPath;
 
-  void GetSubDirectories(const CPVRRecordingsPath& recParentPath,
-                         CVideoDatabase& videoDB,
-                         const std::vector<std::shared_ptr<CPVRRecording>>& recordings,
-                         CFileItemList& results)
-  {
-    // Only active recordings are fetched to provide sub directories.
-    // Not applicable for deleted view which is supposed to be flattened.
-    std::set<std::shared_ptr<CFileItem>> unwatchedFolders;
-    bool bRadio = recParentPath.IsRadio();
+    recording->UpdateMetadata(videoDB);
 
-    for (const auto& recording : recordings)
+    std::shared_ptr<CFileItem> item;
+    if (!results.Contains(strFilePath))
     {
-      if (recording->IsDeleted())
-        continue;
+      item.reset(new CFileItem(strCurrent, true));
+      item->SetPath(strFilePath);
+      item->SetLabel(strCurrent);
+      item->SetLabelPreformatted(true);
+      item->m_dateTime = recording->RecordingTimeAsLocalTime();
 
-      if (recording->IsRadio() != bRadio)
-        continue;
-
-      const std::string strCurrent = recParentPath.GetUnescapedSubDirectoryPath(recording->m_strDirectory);
-      if (strCurrent.empty())
-        continue;
-
-      CPVRRecordingsPath recChildPath(recParentPath);
-      recChildPath.AppendSegment(strCurrent);
-      const std::string strFilePath = recChildPath;
-
-      recording->UpdateMetadata(videoDB);
-
-      std::shared_ptr<CFileItem> item;
-      if (!results.Contains(strFilePath))
-      {
-        item.reset(new CFileItem(strCurrent, true));
-        item->SetPath(strFilePath);
-        item->SetLabel(strCurrent);
-        item->SetLabelPreformatted(true);
+      // Assume all folders are watched, we'll change the overlay later
+      item->SetOverlayImage(CGUIListItem::ICON_OVERLAY_WATCHED, false);
+      results.Add(item);
+    }
+    else
+    {
+      item = results.Get(strFilePath);
+      if (item->m_dateTime < recording->RecordingTimeAsLocalTime())
         item->m_dateTime = recording->RecordingTimeAsLocalTime();
-
-        // Assume all folders are watched, we'll change the overlay later
-        item->SetOverlayImage(CGUIListItem::ICON_OVERLAY_WATCHED, false);
-        results.Add(item);
-      }
-      else
-      {
-        item = results.Get(strFilePath);
-        if (item->m_dateTime < recording->RecordingTimeAsLocalTime())
-          item->m_dateTime = recording->RecordingTimeAsLocalTime();
-      }
-
-      if (recording->GetPlayCount() == 0)
-        unwatchedFolders.insert(item);
     }
 
-    // Change the watched overlay to unwatched for folders containing unwatched entries
-    for (auto& item : unwatchedFolders)
-      item->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, false);
+    if (recording->GetPlayCount() == 0)
+      unwatchedFolders.insert(item);
   }
+
+  // Change the watched overlay to unwatched for folders containing unwatched entries
+  for (auto& item : unwatchedFolders)
+    item->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, false);
+}
+
 } // unnamed namespace
 
 bool CPVRGUIDirectory::GetRecordingsDirectory(CFileItemList& results) const
@@ -419,65 +421,66 @@ bool CPVRGUIDirectory::GetChannelsDirectory(CFileItemList& results) const
 
 namespace
 {
-  bool GetTimersRootDirectory(const CPVRTimersPath& path,
-                              const std::vector<std::shared_ptr<CPVRTimerInfoTag>>& timers,
-                              CFileItemList& results)
+
+bool GetTimersRootDirectory(const CPVRTimersPath& path,
+                            const std::vector<std::shared_ptr<CPVRTimerInfoTag>>& timers,
+                            CFileItemList& results)
+{
+  std::shared_ptr<CFileItem> item(new CFileItem(CPVRTimersPath::PATH_ADDTIMER, false));
+  item->SetLabel(g_localizeStrings.Get(19026)); // "Add timer..."
+  item->SetLabelPreformatted(true);
+  item->SetSpecialSort(SortSpecialOnTop);
+  item->SetIconImage("DefaultTVShows.png");
+  results.Add(item);
+
+  bool bRadio = path.IsRadio();
+  bool bRules = path.IsRules();
+
+  bool bHideDisabled = CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_PVRTIMERS_HIDEDISABLEDTIMERS);
+
+  for (const auto& timer : timers)
   {
-    std::shared_ptr<CFileItem> item(new CFileItem(CPVRTimersPath::PATH_ADDTIMER, false));
-    item->SetLabel(g_localizeStrings.Get(19026)); // "Add timer..."
-    item->SetLabelPreformatted(true);
-    item->SetSpecialSort(SortSpecialOnTop);
-    item->SetIconImage("DefaultTVShows.png");
-    results.Add(item);
-
-    bool bRadio = path.IsRadio();
-    bool bRules = path.IsRules();
-
-    bool bHideDisabled = CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_PVRTIMERS_HIDEDISABLEDTIMERS);
-
-    for (const auto& timer : timers)
+    if ((bRadio == timer->m_bIsRadio || (bRules && timer->m_iClientChannelUid == PVR_TIMER_ANY_CHANNEL)) &&
+        (bRules == timer->IsTimerRule()) &&
+        (!bHideDisabled || (timer->m_state != PVR_TIMER_STATE_DISABLED)))
     {
-      if ((bRadio == timer->m_bIsRadio || (bRules && timer->m_iClientChannelUid == PVR_TIMER_ANY_CHANNEL)) &&
-          (bRules == timer->IsTimerRule()) &&
-          (!bHideDisabled || (timer->m_state != PVR_TIMER_STATE_DISABLED)))
-      {
-        item.reset(new CFileItem(timer));
-        const CPVRTimersPath timersPath(path.GetPath(), timer->m_iClientId, timer->m_iClientIndex);
-        item->SetPath(timersPath.GetPath());
-        results.Add(item);
-      }
+      item.reset(new CFileItem(timer));
+      const CPVRTimersPath timersPath(path.GetPath(), timer->m_iClientId, timer->m_iClientIndex);
+      item->SetPath(timersPath.GetPath());
+      results.Add(item);
     }
-    return true;
   }
+  return true;
+}
 
-  bool GetTimersSubDirectory(const CPVRTimersPath& path,
-                             const std::vector<std::shared_ptr<CPVRTimerInfoTag>>& timers,
-                             CFileItemList& results)
+bool GetTimersSubDirectory(const CPVRTimersPath& path,
+                           const std::vector<std::shared_ptr<CPVRTimerInfoTag>>& timers,
+                           CFileItemList& results)
+{
+  bool bRadio = path.IsRadio();
+  int iParentId = path.GetParentId();
+  int iClientId = path.GetClientId();
+
+  bool bHideDisabled = CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_PVRTIMERS_HIDEDISABLEDTIMERS);
+
+  std::shared_ptr<CFileItem> item;
+
+  for (const auto& timer : timers)
   {
-    bool bRadio = path.IsRadio();
-    int iParentId = path.GetParentId();
-    int iClientId = path.GetClientId();
-
-    bool bHideDisabled = CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_PVRTIMERS_HIDEDISABLEDTIMERS);
-
-    std::shared_ptr<CFileItem> item;
-
-    for (const auto& timer : timers)
+    if ((timer->m_bIsRadio == bRadio) &&
+        (timer->m_iParentClientIndex != PVR_TIMER_NO_PARENT) &&
+        (timer->m_iClientId == iClientId) &&
+        (timer->m_iParentClientIndex == iParentId) &&
+        (!bHideDisabled || (timer->m_state != PVR_TIMER_STATE_DISABLED)))
     {
-      if ((timer->m_bIsRadio == bRadio) &&
-          (timer->m_iParentClientIndex != PVR_TIMER_NO_PARENT) &&
-          (timer->m_iClientId == iClientId) &&
-          (timer->m_iParentClientIndex == iParentId) &&
-          (!bHideDisabled || (timer->m_state != PVR_TIMER_STATE_DISABLED)))
-      {
-        item.reset(new CFileItem(timer));
-        const CPVRTimersPath timersPath(path.GetPath(), timer->m_iClientId, timer->m_iClientIndex);
-        item->SetPath(timersPath.GetPath());
-        results.Add(item);
-      }
+      item.reset(new CFileItem(timer));
+      const CPVRTimersPath timersPath(path.GetPath(), timer->m_iClientId, timer->m_iClientIndex);
+      item->SetPath(timersPath.GetPath());
+      results.Add(item);
     }
-    return true;
   }
+  return true;
+}
 
 } // unnamed namespace
 
