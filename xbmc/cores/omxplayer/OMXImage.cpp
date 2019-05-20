@@ -11,7 +11,6 @@
 #include "ServiceBroker.h"
 #include "URL.h"
 #include "utils/log.h"
-#include "platform/posix/XMemUtils.h"
 
 #include <sys/time.h>
 #include <inttypes.h>

@@ -13,10 +13,7 @@
 #include "utils/GLUtils.h"
 #include "guilib/TextureManager.h"
 #include "settings/AdvancedSettings.h"
-#ifdef TARGET_POSIX
-#include "platform/posix/XMemUtils.h"
-#endif
-
+#include "utils/MemUtils.h"
 
 /************************************************************************/
 /*    CGLTexture                                                       */
@@ -203,7 +200,7 @@ void CGLTexture::LoadToGPU()
 
   if (!m_bCacheMemory)
   {
-    _aligned_free(m_pixels);
+    KODI::MEMORY::AlignedFree(m_pixels);
     m_pixels = NULL;
   }
 

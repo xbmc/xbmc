@@ -9,10 +9,7 @@
 #include "DVDDemuxUtils.h"
 #include "cores/VideoPlayer/Interface/Addon/DemuxCrypto.h"
 #include "utils/log.h"
-
-#ifdef TARGET_POSIX
-#include "platform/posix/XMemUtils.h"
-#endif
+#include "utils/MemUtils.h"
 
 extern "C" {
 #include <libavcodec/avcodec.h>
@@ -23,7 +20,7 @@ void CDVDDemuxUtils::FreeDemuxPacket(DemuxPacket* pPacket)
   if (pPacket)
   {
     if (pPacket->pData)
-      _aligned_free(pPacket->pData);
+      KODI::MEMORY::AlignedFree(pPacket->pData);
     if (pPacket->iSideDataElems)
     {
       AVPacket avPkt;
@@ -51,7 +48,7 @@ DemuxPacket* CDVDDemuxUtils::AllocateDemuxPacket(int iDataSize)
      * Note, if the first 23 bits of the additional bytes are not 0 then damaged
      * MPEG bitstreams could cause overread and segfault
      */
-    pPacket->pData =(uint8_t*)_aligned_malloc(iDataSize + AV_INPUT_BUFFER_PADDING_SIZE, 16);
+    pPacket->pData = static_cast<uint8_t*>(KODI::MEMORY::AlignedMalloc(iDataSize + AV_INPUT_BUFFER_PADDING_SIZE, 16));
     if (!pPacket->pData)
     {
       FreeDemuxPacket(pPacket);

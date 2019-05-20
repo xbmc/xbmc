@@ -5,6 +5,7 @@ set(SOURCES input/RemoteControlXbox.cpp
             ../win32/CharsetConverter.cpp
             ../win32/dxerr.cpp
             ../win32/Filesystem.cpp
+            ../win32/MemUtils.cpp
             ../win32/pch.cpp
             ../win32/WIN32Util.cpp)
 

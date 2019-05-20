@@ -21,15 +21,13 @@
 #include "filesystem/Directory.h"
 #include "filesystem/SpecialProtocol.h"
 #include "guilib/LocalizeStrings.h"
-#ifdef TARGET_POSIX
-#include "platform/posix/XMemUtils.h"
-#endif
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/CharsetConverter.h"
 #include "utils/Digest.h"
 #include "utils/log.h"
 #include "utils/LangCodeExpander.h"
+#include "utils/MemUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 
@@ -385,11 +383,10 @@ void Interface_General::get_free_mem(void* kodiBase, long* free, long* total, bo
     return;
   }
 
-  MEMORYSTATUSEX stat;
-  stat.dwLength = sizeof(MEMORYSTATUSEX);
-  GlobalMemoryStatusEx(&stat);
-  *free = static_cast<long>(stat.ullAvailPhys);
-  *total = static_cast<long>(stat.ullTotalPhys);
+  KODI::MEMORY::MemoryStatus stat;
+  KODI::MEMORY::GetMemoryStatus(&stat);
+  *free = static_cast<long>(stat.availPhys);
+  *total = static_cast<long>(stat.totalPhys);
   if (!as_bytes)
   {
     *free = *free / ( 1024 * 1024 );

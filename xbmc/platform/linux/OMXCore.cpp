@@ -15,10 +15,6 @@
 #include "platform/linux/RBP.h"
 #include <cassert>
 
-#ifdef TARGET_LINUX
-#include "platform/posix/XMemUtils.h"
-#endif
-
 //#define OMX_DEBUG_EVENTS
 //#define OMX_DEBUG_EVENTHANDLER
 

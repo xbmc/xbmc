@@ -1,5 +1,6 @@
 set(SOURCES CharsetConverter.cpp
             Environment.cpp
+            MemUtils.cpp
             MessagePrinter.cpp
             dxerr.cpp
             Filesystem.cpp

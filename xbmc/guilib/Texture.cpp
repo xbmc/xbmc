@@ -23,10 +23,8 @@
 #include "URL.h"
 #include "platform/android/filesystem/AndroidAppFile.h"
 #endif
-#ifdef TARGET_POSIX
-#include "platform/posix/XMemUtils.h"
-#endif
 #include "rendering/RenderSystem.h"
+#include "utils/MemUtils.h"
 
 /************************************************************************/
 /*                                                                      */
@@ -40,7 +38,7 @@ CBaseTexture::CBaseTexture(unsigned int width, unsigned int height, unsigned int
 
 CBaseTexture::~CBaseTexture()
 {
-  _aligned_free(m_pixels);
+  KODI::MEMORY::AlignedFree(m_pixels);
   m_pixels = NULL;
 }
 
@@ -94,12 +92,12 @@ void CBaseTexture::Allocate(unsigned int width, unsigned int height, unsigned in
   CLAMP(m_imageWidth, m_textureWidth);
   CLAMP(m_imageHeight, m_textureHeight);
 
-  _aligned_free(m_pixels);
+  KODI::MEMORY::AlignedFree(m_pixels);
   m_pixels = NULL;
   if (GetPitch() * GetRows() > 0)
   {
     size_t size = GetPitch() * GetRows();
-    m_pixels = (unsigned char*) _aligned_malloc(size, 32);
+    m_pixels = static_cast<unsigned char*>(KODI::MEMORY::AlignedMalloc(size, 32));
 
     if (m_pixels == nullptr)
     {
