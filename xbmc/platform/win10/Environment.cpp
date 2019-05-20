@@ -30,16 +30,16 @@
  */
 int CEnvironment::win_setenv(const std::string &name, const std::string &value /* = "" */, enum updateAction action /* = autoDetect */)
 {
-  std::wstring Wname = KODI::PLATFORM::WINDOWS::ToW(name);
-  if (Wname.empty() || name.find('=') != std::wstring::npos)
+  if (name.empty() || name.find('=') != std::string::npos)
     return -1;
   if ((action == addOnly || action == addOrUpdateOnly) && value.empty())
     return -1;
   if (action == addOnly && !getenv(name).empty())
     return 0;
 
-  std::wstring Wvalue = KODI::PLATFORM::WINDOWS::ToW(value);
   int retValue = 0;
+  const std::wstring Wname = KODI::PLATFORM::WINDOWS::ToW(name);
+  const std::wstring Wvalue = KODI::PLATFORM::WINDOWS::ToW(value);
 
   // Update process Environment used for current process and for future new child processes
   if (action == deleteVariable || value.empty())
@@ -47,6 +47,14 @@ int CEnvironment::win_setenv(const std::string &name, const std::string &value /
   else
     retValue += SetEnvironmentVariableW(Wname.c_str(), Wvalue.c_str()) ? 0 : 4; // 4 if failed
 
+  // Finally update our runtime Environment
+  std::wstring EnvString;
+  if (action == deleteVariable)
+    EnvString = Wname + L"=";
+  else
+    EnvString = Wname + L"=" + Wvalue;
+
+  retValue += _wputenv(EnvString.c_str()) == 0 ? 0 : 8;
   return retValue;
 }
 
@@ -55,12 +63,18 @@ std::string CEnvironment::win_getenv(const std::string &name)
   if (name.empty())
     return "";
 
-  uint32_t varSize = GetEnvironmentVariableA(name.c_str(), nullptr, 0);
+  const std::wstring Wname = KODI::PLATFORM::WINDOWS::ToW(name);
+  wchar_t* wStr = _wgetenv(Wname.c_str());
+  if (wStr)
+    return KODI::PLATFORM::WINDOWS::FromW(wStr);
+
+  const uint32_t varSize = GetEnvironmentVariableW(Wname.c_str(), nullptr, 0);
   if (varSize == 0)
     return ""; // Not found
 
-  std::string result(varSize, 0);
-  GetEnvironmentVariableA(name.c_str(), const_cast<char*>(result.c_str()), varSize);
+  const std::wstring result(varSize, 0);
+  if (GetEnvironmentVariableW(Wname.c_str(), const_cast<wchar_t*>(result.c_str()), varSize) != varSize - 1)
+    return "";
 
-  return result;
+  return KODI::PLATFORM::WINDOWS::FromW(result);
 }
