@@ -24,7 +24,7 @@ CPVRTimersPath::CPVRTimersPath(const std::string& strPath)
   Init(strPath);
 }
 
-CPVRTimersPath::CPVRTimersPath(const std::string& strPath, int iClientId, unsigned int iParentId)
+CPVRTimersPath::CPVRTimersPath(const std::string& strPath, int iClientId, int iParentId)
 {
   if (Init(strPath))
   {
@@ -76,7 +76,7 @@ bool CPVRTimersPath::Init(const std::string& strPath)
   else
   {
     m_iClientId = std::stoi(segments.at(4));
-    m_iParentId = std::stoul(segments.at(5));
+    m_iParentId = std::stoi(segments.at(5));
   }
 
   return m_bValid;
