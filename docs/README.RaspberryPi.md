@@ -13,6 +13,9 @@ If you're looking to build Kodi natively using **[Raspbian](https://www.raspberr
 4. **[Build tools and dependencies](#4-build-tools-and-dependencies)**
 5. **[Build Kodi](#5-build-kodi)**
 6. **[Docker](#6-docker)**
+7. **[Troubleshooting](#7-troubleshooting)**  
+  7.1. **[ImportError: No module named \_sysconfigdata\_nd](#71-importerror-no-module-named-_sysconfigdata_nd)**  
+  7.2. **[Errors connecting to any internet (TLS) service](#72-errors-connecting-to-any-internet-tls-service)**
 
 ## 1. Document conventions
 This guide assumes you are using `terminal`, also known as `console`, `command-line` or simply `cli`. Commands need to be run at the terminal, one at a time and in the provided order.
@@ -194,5 +197,38 @@ docker rm some-temp-container-name
 ```
 
 You should now have a file `kodi.tar.gz` in your current directory. Now you need to uncompress this file in the `$PREFIX` directory (as mentioned in the Dockerfile) of your Raspberry. Note that the archive contains multiple directories in its root, but only the `raspberry-pi2-release` (or `raspberry-pi-release`) is needed, so you can delete the others safely. If you encounter problems, please take a look at the [Troubleshooting](#7-troubleshooting) section below before filing an issue.
+
+**[back to top](#table-of-contents)**
+
+## 7. Troubleshooting
+
+### 7.1 ImportError: No module named \_sysconfigdata\_nd
+
+This is caused by an issue with a python package. The solution is to simply add a missing symlink so the library can be found, i.e.:
+
+```bash
+ln -s /usr/lib/python2.7/plat-arm-linux-gnueabihf/_sysconfigdata_nd.py /usr/lib/python2.7/
+```
+
+### 7.2 Errors connecting to any internet (TLS) service
+
+First, you should enable debug logging (instructions [here](https://kodi.wiki/view/Log_file)). Then you need to check the logs and find what the source of your problem is. If, when trying to access TLS services (e.g. when installing an addon), the connection fails and your log contains entries such as:
+
+```log
+# note that those logs appear when enabling component-specific logs -> libcurl
+2019-05-19 17:18:39.570 T:1854288832   DEBUG: Curl::Debug - TEXT: SSL certificate problem: unable to get local issuer certificate
+2019-05-19 17:18:39.570 T:1854288832   DEBUG: Curl::Debug - TEXT: Closing connection 0
+
+# this is part of the regular Kodi logs
+2019-05-19 17:18:39.570 T:1854288832   ERROR: CCurlFile::FillBuffer - Failed: Peer certificate cannot be authenticated with given CA certificates(60)
+```
+
+Then, you need to define the environment variable `SSL_CERT_FILE` so it points to your system's certificate file. Depending on how you start Kodi, putting this line in your in your `.profile` file should fix this issue:
+
+```bash
+export SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt
+```
+
+Note that you need to define this variable *before* starting Kodi. For example, if you start Kodi on startup through a crontab, your `.profile` will *not* be sourced.
 
 **[back to top](#table-of-contents)**
