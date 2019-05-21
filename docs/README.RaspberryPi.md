@@ -12,6 +12,7 @@ If you're looking to build Kodi natively using **[Raspbian](https://www.raspberr
   3.1. **[Get Raspberry Pi tools and firmware](#31-get-raspberry-pi-tools-and-firmware)**
 4. **[Build tools and dependencies](#4-build-tools-and-dependencies)**
 5. **[Build Kodi](#5-build-kodi)**
+6. **[Docker](#6-docker)**
 
 ## 1. Document conventions
 This guide assumes you are using `terminal`, also known as `console`, `command-line` or simply `cli`. Commands need to be run at the terminal, one at a time and in the provided order.
@@ -134,3 +135,64 @@ After the build process is finished, you can find the files ready to be installe
 **[back to top](#table-of-contents)**
 
 
+## 6. Docker
+
+If you encounter issues with the previous instructions, or if you don't have a proper system for cross-compiling Kodi, it's also possible to use a [Docker](https://www.docker.com/) image to perform the build. This method, although it should work just like the build instructions mentioned above, is **not** supported. Therefore, issues related specifically to Docker should **not** be opened.
+
+Here is an example Dockerfile, summarizing basically all the instructions described above (/!\ may not be up to date with the actual instructions!). **Please read the comments as they describe things you NEED to change and/or consider before building.**
+
+```Dockerfile
+# Change 'latest' to the officially supported version of Ubuntu for cross-compilation
+FROM ubuntu:latest
+
+RUN apt-get update && apt-get upgrade -y
+RUN apt-get -y install autoconf bison build-essential curl default-jdk gawk git gperf libcurl4-openssl-dev zlib1g-dev file
+
+# The 'HOME' variable doesn't really matter - it is only the location of the files within the image
+ARG HOME=/home/pi
+# This is the location kodi will be built for, that means you will have to put the built files in
+# this directory afterwards. It is important because many paths end up hardcoded during the build.
+ARG PREFIX=/opt/kodi
+
+RUN mkdir $PREFIX
+WORKDIR $HOME
+
+# Replace 'master' with whichever branch/tag you wish to build - be careful with nightly builds!
+RUN git clone -b master https://github.com/xbmc/xbmc kodi --depth 1
+RUN git clone https://github.com/raspberrypi/tools --depth=1
+RUN git clone https://github.com/raspberrypi/firmware --depth=1
+
+WORKDIR $HOME/kodi/tools/depends
+RUN ./bootstrap
+
+# Change this if you're building on a RPi1, as described above
+RUN ./configure --host=arm-linux-gnueabihf --prefix=$PREFIX --with-toolchain=$HOME/tools/arm-bcm2708/arm-rpi-4.9.3-linux-gnueabihf --with-firmware=$HOME/firmware --with-platform=raspberry-pi2 --disable-debug
+
+RUN make -j$(getconf _NPROCESSORS_ONLN)
+
+WORKDIR $HOME/kodi
+# This step builds all the binary addons.
+# Kodi - at its core - works fine without them, however they are used by many other addons.
+# Therefore, it is recommended to simply compile all of them.
+RUN make -j$(getconf _NPROCESSORS_ONLN) -C tools/depends/target/binary-addons
+RUN make -C tools/depends/target/cmakebuildsys
+
+WORKDIR $HOME/kodi/build
+RUN make -j$(getconf _NPROCESSORS_ONLN)
+
+RUN make install
+RUN tar zfc /kodi.tar.gz $PREFIX
+```
+
+You can then build the image, and afterwards retrieve the build files from a dummy container:
+
+```bash
+docker build -t kodi_build . 
+docker run --name some-temp-container-name kodi_build /bin/bash
+docker cp some-temp-container-name:/kodi.tar.gz ./
+docker rm some-temp-container-name
+```
+
+You should now have a file `kodi.tar.gz` in your current directory. Now you need to uncompress this file in the `$PREFIX` directory (as mentioned in the Dockerfile) of your Raspberry. Note that the archive contains multiple directories in its root, but only the `raspberry-pi2-release` (or `raspberry-pi-release`) is needed, so you can delete the others safely. If you encounter problems, please take a look at the [Troubleshooting](#7-troubleshooting) section below before filing an issue.
+
+**[back to top](#table-of-contents)**
