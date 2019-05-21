@@ -40,6 +40,8 @@ endif()
 # temp until further cleanup is done
 # add Raspberry Pi 2 and 3 specific flags
 if(CORE_PLATFORM_NAME_LC STREQUAL rbpi)
+  set(PLATFORM rbpi)
+  include(${CMAKE_SOURCE_DIR}/cmake/platform/${CORE_SYSTEM_NAME}/${CORE_PLATFORM_NAME_LC}.cmake)
   if(CPU MATCHES "cortex-a7")
     set(NEON_FLAGS "-fPIC -mcpu=cortex-a7 -mfloat-abi=hard -mfpu=neon-vfpv4 -mvectorize-with-neon-quad")
   elseif(CPU MATCHES "cortex-a53")
