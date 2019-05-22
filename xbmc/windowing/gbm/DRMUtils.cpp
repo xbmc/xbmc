@@ -595,9 +595,25 @@ bool CDRMUtils::InitDrm()
     auto ret = drmSetClientCap(m_fd, DRM_CLIENT_CAP_UNIVERSAL_PLANES, 1);
     if (ret)
     {
-      CLog::Log(LOGERROR, "CDRMUtils::%s - failed to set Universal planes capability: %s", __FUNCTION__, strerror(errno));
+      CLog::Log(LOGERROR, "CDRMUtils::{} - failed to set universal planes capability: {}", __FUNCTION__, strerror(errno));
       return false;
     }
+
+    ret = drmSetClientCap(m_fd, DRM_CLIENT_CAP_STEREO_3D, 1);
+    if (ret)
+    {
+      CLog::Log(LOGERROR, "CDRMUtils::{} - failed to set stereo 3d capability: {}", __FUNCTION__, strerror(errno));
+      return false;
+    }
+
+#if defined(DRM_CLIENT_CAP_ASPECT_RATIO)
+    ret = drmSetClientCap(m_fd, DRM_CLIENT_CAP_ASPECT_RATIO, 0);
+    if (ret)
+    {
+      CLog::Log(LOGERROR, "CDRMUtils::{} - failed to unset aspect ratio capability: {}", __FUNCTION__, strerror(errno));
+      return false;
+    }
+#endif
 
     if(!GetResources())
     {
