@@ -240,9 +240,6 @@ unsigned int CAEEncoderFFmpeg::GetFrames()
 
 int CAEEncoderFFmpeg::Encode(uint8_t *in, int in_size, uint8_t *out, int out_size)
 {
-  int got_output;
-  AVFrame *frame;
-
   if (!m_CodecCtx)
     return 0;
 
@@ -250,7 +247,7 @@ int CAEEncoderFFmpeg::Encode(uint8_t *in, int in_size, uint8_t *out, int out_siz
    * sadly, we have to alloc/dealloc it everytime since we have no guarantee the
    * data argument will be constant over iterated calls and the frame needs to
    * setup pointers inside data */
-  frame = av_frame_alloc();
+  AVFrame* frame = av_frame_alloc();
   if (!frame)
     return 0;
 
@@ -261,21 +258,30 @@ int CAEEncoderFFmpeg::Encode(uint8_t *in, int in_size, uint8_t *out, int out_siz
   avcodec_fill_audio_frame(frame, m_CodecCtx->channels, m_CodecCtx->sample_fmt,
                     in, in_size, 0);
 
+  /* encode it */
+  int ret = avcodec_send_frame(m_CodecCtx, frame);
+  if (ret < 0)
+  {
+    CLog::Log(LOGERROR, "CAEEncoderFFmpeg::{} - avcodec_send_frame failed: ({})", __FUNCTION__, ret);
+  }
+
+  /* free temporary data */
+  av_frame_free(&frame);
+
+  if (ret < 0)
+  {
+    return 0;
+  }
+
   /* initialize the output packet */
   av_init_packet(&m_Pkt);
   m_Pkt.size = out_size;
   m_Pkt.data = out;
 
-  /* encode it */
-  int ret = avcodec_encode_audio2(m_CodecCtx, &m_Pkt, frame, &got_output);
-
-  /* free temporary data */
-  av_frame_free(&frame);
-
-  if (ret < 0 || !got_output)
+  ret = avcodec_receive_packet(m_CodecCtx, &m_Pkt);
+  if (ret < 0)
   {
-    CLog::Log(LOGERROR, "CAEEncoderFFmpeg::Encode - Encoding failed");
-    return 0;
+    CLog::Log(LOGERROR, "CAEEncoderFFmpeg::{} - avcodec_receive_packet failed: ({})", __FUNCTION__, ret);
   }
 
   int size = m_Pkt.size;
