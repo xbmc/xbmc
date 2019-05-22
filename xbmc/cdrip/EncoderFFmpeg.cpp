@@ -92,7 +92,7 @@ bool CEncoderFFmpeg::Init(AddonToKodiFuncTable_AudioEncoder& callbacks)
   }
 
   /* set the stream's parameters */
-  m_CodecCtx                 = m_Stream->codec;
+  m_CodecCtx                 = avcodec_alloc_context3(codec);
   m_CodecCtx->codec_id       = codec->id;
   m_CodecCtx->codec_type     = AVMEDIA_TYPE_AUDIO;
   m_CodecCtx->bit_rate       = m_Format->bit_rate;
