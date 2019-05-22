@@ -306,12 +306,20 @@ bool CPVRGUIDirectory::FilterDirectory(CFileItemList& results) const
   return true;
 }
 
-bool CPVRGUIDirectory::GetChannelGroupsDirectory(bool bRadio, CFileItemList& results) const
+bool CPVRGUIDirectory::GetChannelGroupsDirectory(bool bRadio, bool bExcludeHidden, CFileItemList& results)
 {
   const CPVRChannelGroups* channelGroups = CServiceBroker::GetPVRManager().ChannelGroups()->Get(bRadio);
   if (channelGroups)
   {
-    channelGroups->GetGroupList(&results);
+    std::shared_ptr<CFileItem> item;
+    const std::vector<std::shared_ptr<CPVRChannelGroup>> groups = channelGroups->GetMembers(bExcludeHidden);
+    for (const auto& group : groups)
+    {
+      item = std::make_shared<CFileItem>(group->GetPath(), true);
+      item->m_strTitle = group->GroupName();
+      item->SetLabel(group->GroupName());
+      results.Add(item);
+    }
     return true;
   }
   return false;
@@ -345,11 +353,11 @@ bool CPVRGUIDirectory::GetChannelsDirectory(CFileItemList& results) const
   }
   else if (fileName == "channels/tv")
   {
-    return GetChannelGroupsDirectory(false, results);
+    return GetChannelGroupsDirectory(false, false, results);
   }
   else if (fileName == "channels/radio")
   {
-    return GetChannelGroupsDirectory(true, results);
+    return GetChannelGroupsDirectory(true, false, results);
   }
   else if (StringUtils::StartsWith(fileName, "channels/tv/"))
   {

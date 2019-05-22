@@ -396,27 +396,6 @@ std::vector<CPVRChannelGroupPtr> CPVRChannelGroups::GetMembers(bool bExcludeHidd
   return groups;
 }
 
-int CPVRChannelGroups::GetGroupList(CFileItemList* results, bool bExcludeHidden /* = false */) const
-{
-  int iReturn(0);
-
-  CSingleLock lock(m_critSection);
-  for (std::vector<CPVRChannelGroupPtr>::const_iterator it = m_groups.begin(); it != m_groups.end(); ++it)
-  {
-    // exclude hidden groups if desired
-    if (bExcludeHidden && (*it)->IsHidden())
-      continue;
-
-    CFileItemPtr group(new CFileItem((*it)->GetPath(), true));
-    group->m_strTitle = (*it)->GroupName();
-    group->SetLabel((*it)->GroupName());
-    results->Add(group);
-    ++iReturn;
-  }
-
-  return iReturn;
-}
-
 CPVRChannelGroupPtr CPVRChannelGroups::GetPreviousGroup(const CPVRChannelGroup &group) const
 {
   bool bReturnNext(false);
