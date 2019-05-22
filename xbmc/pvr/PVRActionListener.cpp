@@ -242,12 +242,12 @@ bool CPVRActionListener::OnAction(const CAction &action)
 
       const CPVRChannelPtr currentChannel = CServiceBroker::GetPVRManager().GetPlayingChannel();
       const CPVRChannelGroupPtr selectedGroup = CServiceBroker::GetPVRManager().ChannelGroups()->Get(currentChannel->IsRadio())->GetSelectedGroup();
-      const CFileItemPtr item(selectedGroup->GetByChannelNumber(CPVRChannelNumber(iChannelNumber, iSubChannelNumber)));
+      const std::shared_ptr<CPVRChannel> channel = selectedGroup->GetByChannelNumber(CPVRChannelNumber(iChannelNumber, iSubChannelNumber));
 
-      if (!item)
+      if (!channel)
         return false;
 
-      CServiceBroker::GetPVRManager().GUIActions()->SwitchToChannel(item, false);
+      CServiceBroker::GetPVRManager().GUIActions()->SwitchToChannel(std::make_shared<CFileItem>(channel), false);
       return true;
     }
 

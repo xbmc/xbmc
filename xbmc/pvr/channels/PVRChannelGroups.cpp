@@ -10,7 +10,6 @@
 
 #include <algorithm>
 
-#include "FileItem.h"
 #include "ServiceBroker.h"
 #include "URL.h"
 #include "settings/Settings.h"
@@ -122,7 +121,7 @@ void CPVRChannelGroups::SortGroups()
   }
 }
 
-CFileItemPtr CPVRChannelGroups::GetByPath(const std::string &strInPath) const
+std::shared_ptr<CPVRChannel> CPVRChannelGroups::GetByPath(const std::string& strInPath) const
 {
   std::string strPath = strInPath;
   URIUtils::RemoveSlashAtEnd(strPath);
@@ -141,13 +140,13 @@ CFileItemPtr CPVRChannelGroups::GetByPath(const std::string &strInPath) const
       {
         const CPVRChannelPtr channel = group->GetByUniqueID(atoi(split[1].c_str()), CServiceBroker::GetPVRManager().Clients()->GetClientId(split[0]));
         if (channel)
-          return CFileItemPtr(new CFileItem(channel));
+          return channel;
       }
     }
   }
 
   // no match
-  return CFileItemPtr(new CFileItem());
+  return {};
 }
 
 CPVRChannelGroupPtr CPVRChannelGroups::GetById(int iGroupId) const

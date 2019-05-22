@@ -182,20 +182,19 @@ std::vector<std::shared_ptr<CPVRRecording>> CPVRRecordings::GetAll() const
   return recordings;
 }
 
-CFileItemPtr CPVRRecordings::GetById(unsigned int iId) const
+std::shared_ptr<CPVRRecording> CPVRRecordings::GetById(unsigned int iId) const
 {
-  CFileItemPtr item;
   CSingleLock lock(m_critSection);
   for (const auto recording : m_recordings)
   {
     if (iId == recording.second->m_iRecordingId)
-      item = CFileItemPtr(new CFileItem(recording.second));
+      return recording.second;
   }
 
-  return item;
+  return {};
 }
 
-CFileItemPtr CPVRRecordings::GetByPath(const std::string &path)
+std::shared_ptr<CPVRRecording> CPVRRecordings::GetByPath(const std::string& path) const
 {
   CSingleLock lock(m_critSection);
 
@@ -213,13 +212,11 @@ CFileItemPtr CPVRRecordings::GetByPath(const std::string &path)
           bDeleted != current->IsDeleted() || bRadio != current->IsRadio())
         continue;
 
-      CFileItemPtr fileItem(new CFileItem(current));
-      return fileItem;
+      return current;
     }
   }
 
-  CFileItemPtr fileItem(new CFileItem);
-  return fileItem;
+  return {};
 }
 
 CPVRRecordingPtr CPVRRecordings::GetById(int iClientId, const std::string &strRecordingId) const

@@ -8,7 +8,6 @@
 
 #include "PVRChannelGroupsContainer.h"
 
-#include "FileItem.h"
 #include "utils/log.h"
 
 #include "pvr/epg/EpgInfoTag.h"
@@ -111,18 +110,13 @@ std::shared_ptr<CPVRChannel> CPVRChannelGroupsContainer::GetChannelForEpgTag(con
   return groups->GetGroupAll()->GetByUniqueID(epgTag->UniqueChannelID(), epgTag->ClientID());
 }
 
-CFileItemPtr CPVRChannelGroupsContainer::GetByPath(const std::string &strPath) const
+std::shared_ptr<CPVRChannel> CPVRChannelGroupsContainer::GetByPath(const std::string& strPath) const
 {
-  for (unsigned int bRadio = 0; bRadio <= 1; ++bRadio)
-  {
-    const CPVRChannelGroups *groups = Get(bRadio == 1);
-    CFileItemPtr retVal = groups->GetByPath(strPath);
-    if (retVal && retVal->HasPVRChannelInfoTag())
-      return retVal;
-  }
+  const std::shared_ptr<CPVRChannel> channel = m_groupsTV->GetByPath(strPath);
+  if (channel)
+    return channel;
 
-  CFileItemPtr retVal(new CFileItem);
-  return retVal;
+  return m_groupsRadio->GetByPath(strPath);
 }
 
 CPVRChannelGroupPtr CPVRChannelGroupsContainer::GetSelectedGroup(bool bRadio) const
@@ -158,13 +152,13 @@ void CPVRChannelGroupsContainer::SearchMissingChannelIcons(void) const
     channelgroupradio->SearchAndSetChannelIcons(true);
 }
 
-CFileItemPtr CPVRChannelGroupsContainer::GetLastPlayedChannel(void) const
+std::shared_ptr<CPVRChannel> CPVRChannelGroupsContainer::GetLastPlayedChannel() const
 {
-  CFileItemPtr channelTV = m_groupsTV->GetGroupAll()->GetLastPlayedChannel();
-  CFileItemPtr channelRadio = m_groupsRadio->GetGroupAll()->GetLastPlayedChannel();
+  const std::shared_ptr<CPVRChannel> channelTV = m_groupsTV->GetGroupAll()->GetLastPlayedChannel();
+  const std::shared_ptr<CPVRChannel> channelRadio = m_groupsRadio->GetGroupAll()->GetLastPlayedChannel();
 
   if (!channelTV ||
-      (channelRadio && channelRadio->GetPVRChannelInfoTag()->LastWatched() > channelTV->GetPVRChannelInfoTag()->LastWatched()))
+      (channelRadio && channelRadio->LastWatched() > channelTV->LastWatched()))
      return channelRadio;
 
   return channelTV;

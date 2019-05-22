@@ -473,7 +473,7 @@ namespace PVR
 
     bool DeleteTimerRule::Execute(const CFileItemPtr &item) const
     {
-      const CFileItemPtr parentTimer(CServiceBroker::GetPVRManager().Timers()->GetTimerRule(item));
+      const std::shared_ptr<CFileItem> parentTimer = CServiceBroker::GetPVRManager().GUIActions()->GetTimerRule(item);
       if (parentTimer)
         return CServiceBroker::GetPVRManager().GUIActions()->DeleteTimerRule(parentTimer);
 

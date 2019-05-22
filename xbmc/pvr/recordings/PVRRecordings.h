@@ -72,9 +72,9 @@ namespace PVR
 
     std::vector<std::shared_ptr<CPVRRecording>> GetAll() const;
 
-    CFileItemPtr GetByPath(const std::string &path);
+    std::shared_ptr<CPVRRecording> GetByPath(const std::string& path) const;
     CPVRRecordingPtr GetById(int iClientId, const std::string &strRecordingId) const;
-    CFileItemPtr GetById(unsigned int iId) const;
+    std::shared_ptr<CPVRRecording> GetById(unsigned int iId) const;
 
     /*!
      * @brief Get the recording for the given epg tag, if any.

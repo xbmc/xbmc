@@ -394,7 +394,7 @@ CPVRChannelPtr CPVRChannelGroup::GetByChannelEpgID(int iEpgID) const
   return retval;
 }
 
-CFileItemPtr CPVRChannelGroup::GetLastPlayedChannel(int iCurrentChannel /* = -1 */) const
+std::shared_ptr<CPVRChannel> CPVRChannelGroup::GetLastPlayedChannel(int iCurrentChannel /* = -1 */) const
 {
   CSingleLock lock(m_critSection);
 
@@ -411,7 +411,7 @@ CFileItemPtr CPVRChannelGroup::GetLastPlayedChannel(int iCurrentChannel /* = -1 
     }
   }
 
-  return CFileItemPtr(returnChannel ? new CFileItem(returnChannel) : nullptr);
+  return returnChannel;
 }
 
 CPVRChannelNumber CPVRChannelGroup::GetChannelNumber(const CPVRChannelPtr &channel) const
@@ -421,18 +421,17 @@ CPVRChannelNumber CPVRChannelGroup::GetChannelNumber(const CPVRChannelPtr &chann
   return member.channelNumber;
 }
 
-CFileItemPtr CPVRChannelGroup::GetByChannelNumber(const CPVRChannelNumber &channelNumber) const
+std::shared_ptr<CPVRChannel> CPVRChannelGroup::GetByChannelNumber(const CPVRChannelNumber& channelNumber) const
 {
-  CFileItemPtr retval;
   CSingleLock lock(m_critSection);
 
-  for (PVR_CHANNEL_GROUP_SORTED_MEMBERS::const_iterator it = m_sortedMembers.begin(); !retval && it != m_sortedMembers.end(); ++it)
+  for (const auto& groupMember : m_sortedMembers)
   {
-    if ((*it).channelNumber == channelNumber)
-      retval = CFileItemPtr(new CFileItem((*it).channel));
+    if (groupMember.channelNumber == channelNumber)
+      return groupMember.channel;
   }
 
-  return retval;
+  return {};
 }
 
 CFileItemPtr CPVRChannelGroup::GetNextChannel(const CPVRChannelPtr &channel) const

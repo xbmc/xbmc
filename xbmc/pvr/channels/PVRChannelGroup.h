@@ -22,8 +22,6 @@
 class CFileItem;
 typedef std::shared_ptr<CFileItem> CFileItemPtr;
 
-class CFileItemList;
-
 namespace PVR
 {
 #define PVR_GROUP_TYPE_DEFAULT      0
@@ -273,18 +271,18 @@ namespace PVR
     CPVRChannelPtr GetByChannelEpgID(int iEpgID) const;
 
     /*!
-     * @brief The channel that was played last that has a valid client or NULL if there was none.
+     * @brief Get the channel that was played last.
      * @param iCurrentChannel The channelid of the current channel that is playing, or -1 if none
-     * @return The requested channel.
+     * @return The requested channel or nullptr.
      */
-    CFileItemPtr GetLastPlayedChannel(int iCurrentChannel = -1) const;
+    std::shared_ptr<CPVRChannel> GetLastPlayedChannel(int iCurrentChannel = -1) const;
 
     /*!
      * @brief Get a channel given it's channel number.
      * @param channelNumber The channel number.
-     * @return The channel or NULL if it wasn't found.
+     * @return The channel or nullptr if it wasn't found.
      */
-    CFileItemPtr GetByChannelNumber(const CPVRChannelNumber &channelNumber) const;
+    std::shared_ptr<CPVRChannel> GetByChannelNumber(const CPVRChannelNumber& channelNumber) const;
 
     /*!
      * @brief Get the channel number in this group of the given channel.

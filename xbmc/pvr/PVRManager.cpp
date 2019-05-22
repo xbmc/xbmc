@@ -211,15 +211,15 @@ CPVRClientPtr CPVRManager::GetClient(const CFileItem &item) const
     iClientID = item.GetEPGInfoTag()->ClientID();
   else if (URIUtils::IsPVRChannel(item.GetPath()))
   {
-    const std::shared_ptr<CFileItem> channelItem = m_channelGroups->GetByPath(item.GetPath());
-    if (channelItem)
-      iClientID = channelItem->GetPVRChannelInfoTag()->ClientID();
+    const std::shared_ptr<CPVRChannel> channel = m_channelGroups->GetByPath(item.GetPath());
+    if (channel)
+      iClientID = channel->ClientID();
   }
   else if (URIUtils::IsPVRRecording(item.GetPath()))
   {
-    const std::shared_ptr<CFileItem> recordingItem = m_recordings->GetByPath(item.GetPath());
-    if (recordingItem)
-      iClientID = recordingItem->GetPVRRecordingInfoTag()->ClientID();
+    const std::shared_ptr<CPVRRecording> recording = m_recordings->GetByPath(item.GetPath());
+    if (recording)
+      iClientID = recording->ClientID();
   }
   return GetClient(iClientID);
 }

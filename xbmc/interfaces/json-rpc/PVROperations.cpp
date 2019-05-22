@@ -445,11 +445,11 @@ JSONRPC_STATUS CPVROperations::GetRecordingDetails(const std::string &method, IT
   if (!recordings)
     return FailedToExecute;
 
-  CFileItemPtr recording = recordings->GetById((int)parameterObject["recordingid"].asInteger());
+  const std::shared_ptr<CPVRRecording> recording = recordings->GetById(static_cast<int>(parameterObject["recordingid"].asInteger()));
   if (!recording)
     return InvalidParams;
 
-  HandleFileItem("recordingid", true, "recordingdetails", recording, parameterObject, parameterObject["properties"], result, false);
+  HandleFileItem("recordingid", true, "recordingdetails", std::make_shared<CFileItem>(recording), parameterObject, parameterObject["properties"], result, false);
 
   return OK;
 }

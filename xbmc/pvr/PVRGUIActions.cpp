@@ -732,11 +732,28 @@ namespace PVR
 
   bool CPVRGUIActions::EditTimerRule(const CFileItemPtr &item) const
   {
-    const CFileItemPtr parentTimer(CServiceBroker::GetPVRManager().Timers()->GetTimerRule(item));
+    const std::shared_ptr<CFileItem> parentTimer = GetTimerRule(item);
     if (parentTimer)
       return EditTimer(parentTimer);
 
     return false;
+  }
+
+  std::shared_ptr<CFileItem> CPVRGUIActions::GetTimerRule(const std::shared_ptr<CFileItem>& item) const
+  {
+    std::shared_ptr<CPVRTimerInfoTag> timer;
+    if (item && item->HasEPGInfoTag())
+      timer = CServiceBroker::GetPVRManager().Timers()->GetTimerForEpgTag(item->GetEPGInfoTag());
+    else if (item && item->HasPVRTimerInfoTag())
+      timer = item->GetPVRTimerInfoTag();
+
+    if (timer)
+    {
+      timer = CServiceBroker::GetPVRManager().Timers()->GetTimerRule(timer);
+      if (timer)
+        return std::make_shared<CFileItem>(timer);
+    }
+    return {};
   }
 
   bool CPVRGUIActions::RenameTimer(const CFileItemPtr &item) const
@@ -1225,7 +1242,7 @@ namespace PVR
 
   bool CPVRGUIActions::SwitchToChannel(PlaybackType type) const
   {
-    CFileItemPtr channel;
+    std::shared_ptr<CPVRChannel> channel;
     bool bIsRadio(false);
 
     // check if the desired PlaybackType is already playing,
@@ -1266,7 +1283,7 @@ namespace PVR
     // if we have a last played channel, start playback
     if (channel)
     {
-      return SwitchToChannel(channel, true);
+      return SwitchToChannel(std::make_shared<CFileItem>(channel), true);
     }
     else
     {
@@ -1304,10 +1321,10 @@ namespace PVR
     CPVRChannelGroupPtr group = playTV ? groups->GetGroupAllTV() : groups->GetGroupAllRadio();
 
     // get the last played channel or fallback to first channel
-    CFileItemPtr item(group->GetLastPlayedChannel());
-    if (item)
+    std::shared_ptr<CPVRChannel> channel = group->GetLastPlayedChannel();
+    if (channel)
     {
-      group = groups->GetLastPlayedGroup(item->GetPVRChannelInfoTag()->ChannelID());
+      group = groups->GetLastPlayedGroup(channel->ChannelID());
     }
     else
     {
@@ -1316,31 +1333,31 @@ namespace PVR
       if (channels.empty())
         return false;
 
-      item = std::make_shared<CFileItem>(channels.front().channel);
+      channel = channels.front().channel;
     }
 
-    CLog::Log(LOGNOTICE, "PVR is starting playback of channel '%s'", item->GetPVRChannelInfoTag()->ChannelName().c_str());
+    CLog::Log(LOGNOTICE, "PVR is starting playback of channel '%s'", channel->ChannelName().c_str());
     CServiceBroker::GetPVRManager().SetPlayingGroup(group);
-    return SwitchToChannel(item, true);
+    return SwitchToChannel(std::make_shared<CFileItem>(channel), true);
   }
 
   bool CPVRGUIActions::PlayMedia(const CFileItemPtr &item) const
   {
     CFileItemPtr pvrItem(item);
     if (URIUtils::IsPVRChannel(item->GetPath()) && !item->HasPVRChannelInfoTag())
-      pvrItem = CServiceBroker::GetPVRManager().ChannelGroups()->GetByPath(item->GetPath());
+      pvrItem = std::make_shared<CFileItem>(CServiceBroker::GetPVRManager().ChannelGroups()->GetByPath(item->GetPath()));
     else if (URIUtils::IsPVRRecording(item->GetPath()) && !item->HasPVRRecordingInfoTag())
-      pvrItem = CServiceBroker::GetPVRManager().Recordings()->GetByPath(item->GetPath());
+      pvrItem = std::make_shared<CFileItem>(CServiceBroker::GetPVRManager().Recordings()->GetByPath(item->GetPath()));
 
     bool bCheckResume = true;
     if (item->HasProperty("check_resume"))
       bCheckResume = item->GetProperty("check_resume").asBoolean();
 
-    if (pvrItem->HasPVRChannelInfoTag())
+    if (pvrItem && pvrItem->HasPVRChannelInfoTag())
     {
       return SwitchToChannel(pvrItem, bCheckResume);
     }
-    else if (pvrItem->HasPVRRecordingInfoTag())
+    else if (pvrItem && pvrItem->HasPVRRecordingInfoTag())
     {
       return PlayRecording(pvrItem, bCheckResume);
     }
@@ -2135,7 +2152,7 @@ namespace PVR
           // channel number present in playing group?
           bool bRadio = playingChannel->IsRadio();
           const CPVRChannelGroupPtr group = CServiceBroker::GetPVRManager().GetPlayingGroup(bRadio);
-          CFileItemPtr channel = group->GetByChannelNumber(channelNumber);
+          std::shared_ptr<CPVRChannel> channel = group->GetByChannelNumber(channelNumber);
 
           if (!channel)
           {
@@ -2178,10 +2195,10 @@ namespace PVR
         if (group)
         {
           CServiceBroker::GetPVRManager().SetPlayingGroup(group);
-          const CFileItemPtr channel(group->GetLastPlayedChannel(playingChannel->ChannelID()));
+          const std::shared_ptr<CPVRChannel> channel = group->GetLastPlayedChannel(playingChannel->ChannelID());
           if (channel)
           {
-            const CPVRChannelNumber channelNumber = channel->GetPVRChannelInfoTag()->ChannelNumber();
+            const CPVRChannelNumber channelNumber = channel->ChannelNumber();
             CApplicationMessenger::GetInstance().SendMsg(
               TMSG_GUI_ACTION, WINDOW_INVALID, -1,
               static_cast<void*>(new CAction(ACTION_CHANNEL_SWITCH,

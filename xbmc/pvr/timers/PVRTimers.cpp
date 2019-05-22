@@ -10,7 +10,6 @@
 
 #include <utility>
 
-#include "FileItem.h"
 #include "ServiceBroker.h"
 #include "addons/PVRClient.h"
 #include "settings/Settings.h"
@@ -1214,23 +1213,6 @@ CPVRTimerInfoTagPtr CPVRTimers::GetTimerRule(const CPVRTimerInfoTagPtr &timer) c
     }
   }
   return CPVRTimerInfoTagPtr();
-}
-
-CFileItemPtr CPVRTimers::GetTimerRule(const CFileItemPtr &item) const
-{
-  CPVRTimerInfoTagPtr timer;
-  if (item && item->HasEPGInfoTag())
-    timer = GetTimerForEpgTag(item->GetEPGInfoTag());
-  else if (item && item->HasPVRTimerInfoTag())
-    timer = item->GetPVRTimerInfoTag();
-
-  if (timer)
-  {
-    timer = GetTimerRule(timer);
-    if (timer)
-      return CFileItemPtr(new CFileItem(timer));
-  }
-  return CFileItemPtr();
 }
 
 void CPVRTimers::Notify(const Observable &obs, const ObservableMessage msg)

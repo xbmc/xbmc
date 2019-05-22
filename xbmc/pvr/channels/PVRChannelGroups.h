@@ -15,9 +15,6 @@
 
 #include "pvr/channels/PVRChannelGroup.h"
 
-class CFileItem;
-typedef std::shared_ptr<CFileItem> CFileItemPtr;
-
 namespace PVR
 {
   /** A container class for channel groups */
@@ -66,9 +63,9 @@ namespace PVR
     /*!
      * @brief Get a channel given it's path
      * @param strPath The path to the channel
-     * @return The channel, or an empty fileitem when not found
+     * @return The channel, or nullptr if not found
      */
-    CFileItemPtr GetByPath(const std::string &strPath) const;
+    std::shared_ptr<CPVRChannel> GetByPath(const std::string& strPath) const;
 
     /*!
      * @brief Get a pointer to a channel group given it's ID.

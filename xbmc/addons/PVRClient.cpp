@@ -1200,11 +1200,7 @@ PVR_ERROR CPVRClient::OpenLiveStream(const CFileItem& channelItem)
 {
   std::shared_ptr<CPVRChannel> channel = channelItem.GetPVRChannelInfoTag();
   if (!channel)
-  {
-    const std::shared_ptr<CFileItem> item = CServiceBroker::GetPVRManager().ChannelGroups()->GetByPath(channelItem.GetPath());
-    if (item)
-      channel = item->GetPVRChannelInfoTag();
-  }
+    channel = CServiceBroker::GetPVRManager().ChannelGroups()->GetByPath(channelItem.GetPath());
 
   if (!channel)
   {
@@ -1234,11 +1230,7 @@ PVR_ERROR CPVRClient::OpenRecordedStream(const CFileItem& recordingItem)
 {
   std::shared_ptr<CPVRRecording> recording = recordingItem.GetPVRRecordingInfoTag();
   if (!recording)
-  {
-    const std::shared_ptr<CFileItem> item = CServiceBroker::GetPVRManager().Recordings()->GetByPath(recordingItem.GetPath());
-    if (item)
-      recording = item->GetPVRRecordingInfoTag();
-  }
+    recording = CServiceBroker::GetPVRManager().Recordings()->GetByPath(recordingItem.GetPath());
 
   if (!recording)
   {
