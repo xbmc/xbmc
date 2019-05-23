@@ -260,17 +260,14 @@ int CAEEncoderFFmpeg::Encode(uint8_t *in, int in_size, uint8_t *out, int out_siz
 
   /* encode it */
   int ret = avcodec_send_frame(m_CodecCtx, frame);
-  if (ret < 0)
-  {
-    CLog::Log(LOGERROR, "CAEEncoderFFmpeg::{} - avcodec_send_frame failed: ({})", __FUNCTION__, ret);
-  }
 
   /* free temporary data */
   av_frame_free(&frame);
 
   if (ret < 0)
   {
-    return 0;
+    CLog::Log(LOGERROR, "CAEEncoderFFmpeg::{} - avcodec_send_frame failed: ({})", __FUNCTION__, ret);
+    return ret;
   }
 
   /* initialize the output packet */
@@ -278,19 +275,23 @@ int CAEEncoderFFmpeg::Encode(uint8_t *in, int in_size, uint8_t *out, int out_siz
   m_Pkt.size = out_size;
   m_Pkt.data = out;
 
-  ret = avcodec_receive_packet(m_CodecCtx, &m_Pkt);
-  if (ret < 0)
+  while (ret >= 0)
   {
-    CLog::Log(LOGERROR, "CAEEncoderFFmpeg::{} - avcodec_receive_packet failed: ({})", __FUNCTION__, ret);
+    ret = avcodec_receive_packet(m_CodecCtx, &m_Pkt);
+    if (ret == AVERROR(EAGAIN) || ret == AVERROR_EOF)
+      break;
+
+    else if (ret < 0)
+    {
+      CLog::Log(LOGERROR, "CAEEncoderFFmpeg::{} - avcodec_receive_packet failed: ({})", __FUNCTION__, ret);
+      return ret;
+    }
+
+    av_packet_unref(&m_Pkt);
   }
 
-  int size = m_Pkt.size;
-
-  /* free the packet */
-  av_packet_unref(&m_Pkt);
-
   /* return the number of frames used */
-  return size;
+  return m_Pkt.size;
 }
 
 
