@@ -229,7 +229,7 @@
     <joystick profile="game.controller.default">
       <a>Pause</a>
       <b>Stop</b>
-      <x>ActivateWindow(AddonSettings)</x>
+      <x>Addon.Default.OpenSettings(xbmc.player.musicviz)</x>
       <y>ActivateWindow(VisualisationPresetList)</y>
       <start>Info</start>
       <rightthumb>ActivateWindow(MusicOSD)</rightthumb>
