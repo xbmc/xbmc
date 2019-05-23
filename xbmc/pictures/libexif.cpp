@@ -1,14 +1,16 @@
 // libexif.cpp : Defines the entry point for the console application.
 //
 
-#ifndef _LINUX
+#include "libexif.h"
+
+#include "JpegParse.h"
+
+#ifdef TARGET_WINDOWS
 #include <windows.h>
 #else
 #include <memory.h>
 #include <cstring>
 #endif
-#include "JpegParse.h"
-#include "libexif.h"
 
 #ifdef __cplusplus
 extern "C" {

@@ -13,14 +13,18 @@
 //--------------------------------------------------------------------------
 //  Process IPTC data.
 //--------------------------------------------------------------------------
-#ifndef _LINUX
+
+#include "IptcParse.h"
+
+#include "ExifParse.h"
+
+#ifdef TARGET_WINDOWS
 #include <windows.h>
 #else
 #include <string.h>
 #endif
+
 #include <stdio.h>
-#include "IptcParse.h"
-#include "ExifParse.h"
 
 #ifndef min
 #define min(a,b) (a)>(b)?(b):(a)
