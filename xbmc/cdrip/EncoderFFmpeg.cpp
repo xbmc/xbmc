@@ -293,34 +293,30 @@ bool CEncoderFFmpeg::WriteFrame()
   if (ret < 0)
   {
     CLog::Log(LOGERROR, "CEncoderFFMmpeg::{} - avcodec_send_frame failed: ({})", __FUNCTION__, ret);
-  }
-
-  av_frame_free(&frame);
-
-  if (ret < 0)
     return false;
+  }
 
   av_init_packet(&m_Pkt);
   m_Pkt.data = nullptr;
   m_Pkt.size = 0;
 
-  ret = avcodec_receive_packet(m_CodecCtx, &m_Pkt);
-  if (ret < 0)
+  while (ret >= 0)
   {
-    CLog::Log(LOGERROR, "CEncoderFFMmpeg::{} - avcodec_receive_packet failed: ({})", __FUNCTION__, ret);
+    ret = avcodec_receive_packet(m_CodecCtx, &m_Pkt);
+    if (ret == AVERROR(EAGAIN) || ret == AVERROR_EOF)
+      break;
+
+    else if (ret < 0)
+    {
+      CLog::Log(LOGERROR, "CEncoderFFMmpeg::{} - avcodec_receive_packet failed: ({})", __FUNCTION__, ret);
+      return false;
+    }
+
+    av_write_frame(m_Format, &m_Pkt);
+    av_packet_unref(&m_Pkt);
   }
 
   m_BufferSize = 0;
-
-  ret = av_write_frame(m_Format, &m_Pkt);
-
-  av_packet_unref(&m_Pkt);
-
-  if (ret < 0)
-  {
-    CLog::Log(LOGERROR, "CEncoderFFMmpeg::WriteFrame - Failed to write the frame data");
-    return false;
-  }
 
   return true;
 }
