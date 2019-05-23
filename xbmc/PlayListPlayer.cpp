@@ -25,8 +25,10 @@
 #include "interfaces/AnnouncementManager.h"
 #include "input/Key.h"
 #include "URL.h"
+#include "utils/URIUtils.h"
 #include "messaging/ApplicationMessenger.h"
 #include "filesystem/VideoDatabaseFile.h"
+#include "filesystem/PluginDirectory.h"
 #include "messaging/helpers/DialogOKHelper.h"
 #include "ServiceBroker.h"
 
@@ -892,6 +894,12 @@ void PLAYLIST::CPlayListPlayer::OnApplicationMessage(KODI::MESSAGING::ThreadMess
         if (list->Size() == 1 && !(*list)[0]->IsPlayList())
         {
           CFileItemPtr item = (*list)[0];
+          // if the item is a plugin we need to resolve the URL to ensure the infotags are filled.
+          // resolve only for a maximum of 5 times to avoid deadlocks (plugin:// paths can resolve to plugin:// paths)
+          for (int i = 0; URIUtils::IsPlugin(item->GetDynPath()) && i < 5; ++i)
+          {
+            XFILE::CPluginDirectory::GetPluginResult(item->GetDynPath(), *item, true);
+          }
           if (item->IsAudio() || item->IsVideo())
             Play(item, pMsg->strParam);
           else
