@@ -58,14 +58,11 @@ bool CTextureCache::IsCachedImage(const std::string &url) const
 
   const std::shared_ptr<CProfileManager> profileManager = CServiceBroker::GetSettingsComponent()->GetProfileManager();
 
-  if (URIUtils::PathHasParent(url, "special://skin", true) ||
+  return URIUtils::PathHasParent(url, "special://skin", true) ||
       URIUtils::PathHasParent(url, "special://temp", true) ||
       URIUtils::PathHasParent(url, "resource://", true) ||
       URIUtils::PathHasParent(url, "androidapp://", true)   ||
-      URIUtils::PathHasParent(url, profileManager->GetThumbnailsFolder(), true))
-    return true;
-
-  return false;
+      URIUtils::PathHasParent(url, profileManager->GetThumbnailsFolder(), true);
 }
 
 bool CTextureCache::HasCachedImage(const std::string &url)

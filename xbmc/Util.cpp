@@ -515,10 +515,7 @@ bool CUtil::IsPVR(const std::string& strFile)
 
 bool CUtil::IsLiveTV(const std::string& strFile)
 {
-  if (StringUtils::StartsWithNoCase(strFile, "pvr://channels"))
-    return true;
-
-  return false;
+  return StringUtils::StartsWithNoCase(strFile, "pvr://channels");
 }
 
 bool CUtil::IsTVRecording(const std::string& strFile)
@@ -929,8 +926,7 @@ bool CUtil::CreateDirectoryEx(const std::string& strPath)
   }
 
   // was the final destination directory successfully created ?
-  if (!CDirectory::Exists(strPath)) return false;
-  return true;
+  return CDirectory::Exists(strPath);
 }
 
 std::string CUtil::MakeLegalFileName(const std::string &strFile, int LegalType)
@@ -1541,10 +1537,7 @@ bool CUtil::SupportsWriteFileOperations(const std::string& strPath)
 
 bool CUtil::SupportsReadFileOperations(const std::string& strPath)
 {
-  if (URIUtils::IsVideoDb(strPath))
-    return false;
-
-  return true;
+  return !URIUtils::IsVideoDb(strPath);
 }
 
 std::string CUtil::GetDefaultFolderThumb(const std::string &folderThumb)
