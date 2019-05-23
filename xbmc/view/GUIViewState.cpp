@@ -314,7 +314,7 @@ void CGUIViewState::AddSortMethod(SortDescription sortDescription, int buttonLab
 void CGUIViewState::SetCurrentSortMethod(int method)
 {
   SortBy sortBy = (SortBy)method;
-  if (sortBy < SortByNone || sortBy > SortByRandom)
+  if (sortBy < SortByNone || sortBy > SortByLastUsed)
     return; // invalid
 
   SetSortMethod(sortBy);
