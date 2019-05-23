@@ -137,10 +137,7 @@ public:
     }
 
     StringUtils::Trim(line);
-    if (!line.empty())
-      return true;
-    
-    return false;
+    return !line.empty();
   }
   bool ready() const override
   {

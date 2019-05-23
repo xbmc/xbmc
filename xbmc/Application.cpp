@@ -1135,10 +1135,7 @@ bool CApplication::OnSettingsSaving() const
   // don't save settings when we're busy stopping the application
   // a lot of screens try to save settings on deinit and deinit is
   // called for every screen when the application is stopping
-  if (m_bStop)
-    return false;
-
-  return true;
+  return !m_bStop;
 }
 
 void CApplication::ReloadSkin(bool confirm/*=false*/)
@@ -4216,7 +4213,7 @@ void CApplication::Restart(bool bSamePosition)
     return ;
 
   // do we want to return to the current position in the file
-  if (false == bSamePosition)
+  if (!bSamePosition)
   {
     // no, then just reopen the file and start at the beginning
     PlayFile(*m_itemCurrentFile, "", true);
