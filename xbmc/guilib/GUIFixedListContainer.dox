@@ -117,7 +117,7 @@ important, as xml tags are case-sensitive.
 
 | Tag           | Description                                                   |
 |--------------:|:--------------------------------------------------------------|
-| viewtype      | The type of view. Choices are list, icon, wide, wrap, biglist, bigicon, bigwide, bigwrap, info and biginfo. The label attribute indicates the label that will be used in the "View As" control within the GUI. It is localizable via **strings.xml**. *viewtype* has no effect on the view itself. It is used by kodi when switching skin to automatically select a view with a similar layout. Skinners should try to set viewtype to describe the layout as best as possible.
+| viewtype      | The type of view. Choices are list, icon, wide, wrap, biglist, bigicon, bigwide, bigwrap, info and biginfo. The label attribute indicates the label that will be used in the "View As" control within the GUI. It is localizable via **strings.po**. *viewtype* has no effect on the view itself. It is used by kodi when switching skin to automatically select a view with a similar layout. Skinners should try to set viewtype to describe the layout as best as possible.
 | orientation   | The orientation of the list. Defaults to vertical.
 | pagecontrol   | Used to set the <b>`<id>`</b> of the page control used to control this list.
 | scrolltime    | The time (in ms) to scroll from one item to another. By default, this is 200ms. The list will scroll smoothly from one item to another as needed. Set it to zero to disable the smooth scrolling. The scroll movement can be further adjusted by selecting one of the available [tween](http://kodi.wiki/view/Tweeners) methods.

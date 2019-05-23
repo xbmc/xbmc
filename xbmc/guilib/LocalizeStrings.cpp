@@ -18,50 +18,6 @@
 #include "utils/StringUtils.h"
 
 
-/*! \brief Tries to load ids and strings from a strings.xml file to the `strings` map..
- * It should only be called from the LoadStr2Mem function to try a PO file first.
- \param pathname The directory name, where we look for the strings file.
- \param strings [out] The resulting strings map.
- \param encoding Encoding of the strings.
- \param offset An offset value to place strings from the id value.
- \return false if no strings.xml file was loaded.
- */
-static bool LoadXML(const std::string &filename, std::map<uint32_t, LocStr>& strings,
-    std::string &encoding, uint32_t offset = 0)
-{
-  CXBMCTinyXML xmlDoc;
-  if (!xmlDoc.LoadFile(filename))
-  {
-    CLog::Log(LOGDEBUG, "unable to load %s: %s at line %d", filename.c_str(), xmlDoc.ErrorDesc(), xmlDoc.ErrorRow());
-    return false;
-  }
-
-  TiXmlElement* pRootElement = xmlDoc.RootElement();
-  if (!pRootElement || pRootElement->NoChildren() ||
-      pRootElement->ValueStr()!="strings")
-  {
-    CLog::Log(LOGERROR, "%s Doesn't contain <strings>", filename.c_str());
-    return false;
-  }
-
-  const auto originalSize = strings.size();
-  const TiXmlElement *pChild = pRootElement->FirstChildElement("string");
-  while (pChild)
-  {
-    // Load old style language file with id as attribute
-    const char* attrId=pChild->Attribute("id");
-    if (attrId && !pChild->NoChildren())
-    {
-      uint32_t id = atoi(attrId) + offset;
-      if (strings.find(id) == strings.end())
-        strings[id].strTranslated = pChild->FirstChild()->Value();
-    }
-    pChild = pChild->NextSiblingElement("string");
-  }
-  CLog::Log(LOGDEBUG, "LocalizeStrings: loaded %lu strings from file %s", strings.size() - originalSize, filename.c_str());
-  return true;
-}
-
 /*! \brief Tries to load ids and strings from a strings.po file to the `strings` map.
  * It should only be called from the LoadStr2Mem function to have a fallback.
  \param pathname The directory name, where we look for the strings file.
@@ -127,13 +83,12 @@ static bool LoadPO(const std::string &filename, std::map<uint32_t, LocStr>& stri
 }
 
 /*! \brief Loads language ids and strings to memory map `strings`.
- * It tries to load a strings.po file first. If doesn't exist, it loads a strings.xml file instead.
  \param pathname The directory name, where we look for the strings file.
  \param language We load the strings for this language. Fallback language is always English.
  \param strings [out] The resulting strings map.
  \param encoding Encoding of the strings. For PO files we only use utf-8.
  \param offset An offset value to place strings from the id value.
- \return false if no strings.po or strings.xml file was loaded.
+ \return false if no strings.po file was loaded.
  */
 static bool LoadStr2Mem(const std::string &pathname_in, const std::string &language,
     std::map<uint32_t, LocStr>& strings,  std::string &encoding, uint32_t offset = 0 )
@@ -155,10 +110,8 @@ static bool LoadStr2Mem(const std::string &pathname_in, const std::string &langu
   }
 
   bool useSourceLang = StringUtils::EqualsNoCase(language, LANGUAGE_DEFAULT) || StringUtils::EqualsNoCase(language, LANGUAGE_OLD_DEFAULT);
-  if (LoadPO(URIUtils::AddFileToFolder(pathname, "strings.po"), strings, encoding, offset, useSourceLang))
-    return true;
 
-  return LoadXML(URIUtils::AddFileToFolder(pathname, "strings.xml"), strings, encoding, offset);
+  return LoadPO(URIUtils::AddFileToFolder(pathname, "strings.po"), strings, encoding, offset, useSourceLang);
 }
 
 static bool LoadWithFallback(const std::string& path, const std::string& language, std::map<uint32_t, LocStr>& strings)

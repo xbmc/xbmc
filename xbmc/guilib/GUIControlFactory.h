@@ -70,7 +70,7 @@ public:
     <xmltag fallback="fallback_value">info_value</xmltag>
    where info_value may use $INFO[], $LOCALIZE[], $NUMBER[] etc.
    If either the fallback_value or info_value are natural numbers they are interpreted
-   as ids for lookup in strings.xml. The fallback attribute is optional.
+   as ids for lookup in strings.po. The fallback attribute is optional.
    \param element XML element to process
    \param infoLabel Returned infoLabel
    \param parentID The parent id
