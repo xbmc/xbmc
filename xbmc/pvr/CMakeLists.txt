@@ -8,6 +8,7 @@ set(SOURCES PVRActionListener.cpp
             PVRItem.cpp
             PVRChannelNumberInputHandler.cpp
             PVRJobs.cpp
+            PVRGUIChannelIconUpdater.cpp
             PVRGUIChannelNavigator.cpp
             PVRGUIDirectory.cpp
             PVRGUIProgressHandler.cpp
@@ -25,6 +26,7 @@ set(HEADERS PVRActionListener.h
             PVRTypes.h
             PVRChannelNumberInputHandler.h
             PVRJobs.h
+            PVRGUIChannelIconUpdater.h
             PVRGUIChannelNavigator.h
             PVRGUIDirectory.h
             PVRGUIProgressHandler.h

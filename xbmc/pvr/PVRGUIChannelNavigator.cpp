@@ -61,14 +61,10 @@ namespace PVR
       if (group)
       {
         CSingleLock lock(m_critSection);
-        const CFileItemPtr item = bNext
-          ? group->GetNextChannel(m_currentChannel)
-          : group->GetPreviousChannel(m_currentChannel);;
-        if (item)
-          return item->GetPVRChannelInfoTag();
+        return bNext ? group->GetNextChannel(m_currentChannel) : group->GetPreviousChannel(m_currentChannel);
       }
     }
-    return CPVRChannelPtr();
+    return {};
   }
 
   void CPVRGUIChannelNavigator::SelectChannel(const CPVRChannelPtr channel, ChannelSwitchMode eSwitchMode)

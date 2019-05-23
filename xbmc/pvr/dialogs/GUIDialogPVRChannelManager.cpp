@@ -749,16 +749,15 @@ bool CGUIDialogPVRChannelManager::PersistChannel(const CFileItemPtr &pItem, cons
   if (!pItem || !pItem->HasPVRChannelInfoTag() || !group)
     return false;
 
-  /* get values from the form */
-  bool bHidden              = !pItem->GetProperty("ActiveChannel").asBoolean();
-  bool bEPGEnabled          = pItem->GetProperty("UseEPG").asBoolean();
-  bool bParentalLocked      = pItem->GetProperty("ParentalLocked").asBoolean();
-  int iEPGSource            = (int)pItem->GetProperty("EPGSource").asInteger();
-  std::string strChannelName= pItem->GetProperty("Name").asString();
-  std::string strIconPath   = pItem->GetProperty("Icon").asString();
-  bool bUserSetIcon         = pItem->GetProperty("UserSetIcon").asBoolean();
-
-  return group->UpdateChannel(*pItem, bHidden, bEPGEnabled, bParentalLocked, iEPGSource, ++(*iChannelNumber), strChannelName, strIconPath, bUserSetIcon);
+  return group->UpdateChannel(pItem->GetPVRChannelInfoTag()->StorageId(),
+                              pItem->GetProperty("Name").asString(),
+                              pItem->GetProperty("Icon").asString(),
+                              static_cast<int>(pItem->GetProperty("EPGSource").asInteger()),
+                              ++(*iChannelNumber),
+                              !pItem->GetProperty("ActiveChannel").asBoolean(), // hidden
+                              pItem->GetProperty("UseEPG").asBoolean(),
+                              pItem->GetProperty("ParentalLocked").asBoolean(),
+                              pItem->GetProperty("UserSetIcon").asBoolean());
 }
 
 void CGUIDialogPVRChannelManager::SaveList(void)

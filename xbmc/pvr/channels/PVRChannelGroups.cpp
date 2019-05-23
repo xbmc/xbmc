@@ -12,6 +12,7 @@
 
 #include "ServiceBroker.h"
 #include "URL.h"
+#include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/StringUtils.h"
@@ -233,6 +234,13 @@ bool CPVRChannelGroups::Update(bool bChannelsOnly /* = false */)
       std::vector<std::shared_ptr<CPVRChannel>> channelsToRemove;
       bReturn = group->Update(channelsToRemove) && bReturn;
       RemoveFromAllGroups(channelsToRemove);
+    }
+
+    if (bReturn &&
+        group->IsInternalGroup() &&
+        CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_bPVRChannelIconsAutoScan)
+    {
+      CServiceBroker::GetPVRManager().TriggerSearchMissingChannelIcons(group);
     }
   }
 

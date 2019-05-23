@@ -19,6 +19,7 @@
 #endif
 
 #include "pvr/PVRGUIActions.h"
+#include "pvr/PVRGUIChannelIconUpdater.h"
 #include "pvr/PVRManager.h"
 #include "pvr/addons/PVRClients.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
@@ -96,9 +97,14 @@ bool CPVREventlogJob::DoWork()
   return true;
 }
 
+CPVRSearchMissingChannelIconsJob::CPVRSearchMissingChannelIconsJob(const std::vector<std::shared_ptr<CPVRChannelGroup>>& groups, bool bUpdateDb)
+: m_updater(new CPVRGUIChannelIconUpdater(groups, bUpdateDb))
+{
+}
+
 bool CPVRSearchMissingChannelIconsJob::DoWork(void)
 {
-  CServiceBroker::GetPVRManager().SearchMissingChannelIcons();
+  m_updater->SearchAndUpdateMissingChannelIcons();
   return true;
 }
 

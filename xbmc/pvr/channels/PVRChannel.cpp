@@ -10,7 +10,6 @@
 
 #include "ServiceBroker.h"
 #include "addons/PVRClient.h"
-#include "filesystem/File.h"
 #include "guilib/LocalizeStrings.h"
 #include "threads/SingleLock.h"
 #include "utils/StringUtils.h"
@@ -699,11 +698,6 @@ bool CPVRChannel::IsUserSetIcon(void) const
 {
   CSingleLock lock(m_critSection);
   return m_bIsUserSetIcon;
-}
-
-bool CPVRChannel::IsIconExists() const
-{
-  return XFILE::CFile::Exists(IconPath());
 }
 
 bool CPVRChannel::IsUserSetName() const

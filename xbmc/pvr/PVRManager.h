@@ -369,9 +369,15 @@ namespace PVR
     void TriggerChannelGroupsUpdate(void);
 
     /*!
-     * @brief Let the background thread search for missing channel icons.
+     * @brief Let the background thread search for all missing channel icons.
      */
     void TriggerSearchMissingChannelIcons(void);
+
+    /*!
+     * @brief Let the background thread search for missing channel icons for channels contained in the given group.
+     * @param group The channel group.
+     */
+    void TriggerSearchMissingChannelIcons(const std::shared_ptr<CPVRChannelGroup>& group);
 
     /*!
      * @brief Check whether names are still correct after the language settings changed.
@@ -407,11 +413,6 @@ namespace PVR
      * @return True if it's playing, false otherwise.
      */
     bool IsPlayingEpgTag(void) const;
-
-    /*!
-     * @brief Try to find missing channel icons automatically
-     */
-    void SearchMissingChannelIcons(void);
 
     /*!
      * @brief Check if parental lock is overridden at the given moment.

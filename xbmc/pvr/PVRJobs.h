@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include <memory>
 #include <vector>
 
 #include "FileItem.h"
@@ -157,14 +158,18 @@ namespace PVR
     bool DoWork() override;
   };
 
+  class CPVRGUIChannelIconUpdater;
+
   class CPVRSearchMissingChannelIconsJob : public CJob
   {
   public:
-    CPVRSearchMissingChannelIconsJob(void) = default;
+    CPVRSearchMissingChannelIconsJob(const std::vector<std::shared_ptr<CPVRChannelGroup>>& groups, bool bUpdateDb);
     ~CPVRSearchMissingChannelIconsJob() override = default;
     const char *GetType() const override { return "pvr-search-missing-channel-icons"; }
 
     bool DoWork() override;
+  private:
+    const std::unique_ptr<CPVRGUIChannelIconUpdater> m_updater;
   };
 
   class CPVRClientConnectionJob : public CJob

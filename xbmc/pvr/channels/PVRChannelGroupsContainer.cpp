@@ -139,19 +139,6 @@ CPVRChannelPtr CPVRChannelGroupsContainer::GetByUniqueID(int iUniqueChannelId, i
   return channel;
 }
 
-void CPVRChannelGroupsContainer::SearchMissingChannelIcons(void) const
-{
-  CLog::Log(LOGINFO, "Starting PVR channel icon search");
-
-  CPVRChannelGroupPtr channelgrouptv  = GetGroupAllTV();
-  CPVRChannelGroupPtr channelgroupradio = GetGroupAllRadio();
-
-  if (channelgrouptv)
-    channelgrouptv->SearchAndSetChannelIcons(true);
-  if (channelgroupradio)
-    channelgroupradio->SearchAndSetChannelIcons(true);
-}
-
 std::shared_ptr<CPVRChannel> CPVRChannelGroupsContainer::GetLastPlayedChannel() const
 {
   const std::shared_ptr<CPVRChannel> channelTV = m_groupsTV->GetGroupAll()->GetLastPlayedChannel();

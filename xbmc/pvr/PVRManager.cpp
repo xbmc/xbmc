@@ -949,12 +949,6 @@ bool CPVRManager::IsPlayingEpgTag(void) const
   return IsStarted() && m_playingEpgTag;
 }
 
-void CPVRManager::SearchMissingChannelIcons(void)
-{
-  if (IsStarted() && m_channelGroups)
-    m_channelGroups->SearchMissingChannelIcons();
-}
-
 bool CPVRManager::FillStreamFileItem(CFileItem &fileItem)
 {
   const CPVRClientPtr client = GetClient(fileItem);
@@ -995,10 +989,16 @@ void CPVRManager::TriggerChannelGroupsUpdate(void)
   m_pendingUpdates.AppendJob(new CPVRChannelGroupsUpdateJob());
 }
 
-void CPVRManager::TriggerSearchMissingChannelIcons(void)
+void CPVRManager::TriggerSearchMissingChannelIcons()
 {
   if (IsStarted())
-    CJobManager::GetInstance().AddJob(new CPVRSearchMissingChannelIconsJob(), NULL);
+    CJobManager::GetInstance().AddJob(new CPVRSearchMissingChannelIconsJob({m_channelGroups->GetGroupAllTV(), m_channelGroups->GetGroupAllRadio()}, true), nullptr);
+}
+
+void CPVRManager::TriggerSearchMissingChannelIcons(const std::shared_ptr<CPVRChannelGroup>& group)
+{
+  if (IsStarted())
+    CJobManager::GetInstance().AddJob(new CPVRSearchMissingChannelIconsJob({group}, false), nullptr);
 }
 
 void CPVRManager::ConnectionStateChange(CPVRClient *client, std::string connectString, PVR_CONNECTION_STATE state, std::string message)

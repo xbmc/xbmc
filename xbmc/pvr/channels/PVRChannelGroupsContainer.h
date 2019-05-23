@@ -140,11 +140,6 @@ namespace PVR
     CPVRChannelPtr GetByUniqueID(int iUniqueChannelId, int iClientID) const;
 
     /*!
-     * @brief Try to find missing channel icons automatically
-     */
-    void SearchMissingChannelIcons(void) const;
-
-    /*!
      * @brief Get the channel that was played last.
      * @return The requested channel or nullptr.
      */

@@ -13,7 +13,6 @@
 #include "ServiceBroker.h"
 #include "guilib/LocalizeStrings.h"
 #include "messaging/helpers/DialogOKHelper.h"
-#include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/Variant.h"
@@ -288,20 +287,13 @@ std::vector<CPVRChannelPtr> CPVRChannelGroupInternal::RemoveDeletedChannels(cons
 
 bool CPVRChannelGroupInternal::UpdateGroupEntries(const CPVRChannelGroup& channels, std::vector<std::shared_ptr<CPVRChannel>>& channelsToRemove)
 {
-  bool bReturn(false);
-
   if (CPVRChannelGroup::UpdateGroupEntries(channels, channelsToRemove))
   {
-    /* try to find channel icons */
-    if (CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_bPVRChannelIconsAutoScan)
-      SearchAndSetChannelIcons();
-
     Persist();
-
-    bReturn = true;
+    return true;
   }
 
-  return bReturn;
+  return false;
 }
 
 void CPVRChannelGroupInternal::CreateChannelEpg(const std::shared_ptr<CPVRChannel>& channel)
