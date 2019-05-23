@@ -400,7 +400,7 @@
 						</include>
 					</control>
 				</focusedlayout>
-				<itemlayout height="300" width="300" condition="Container.Content(episodes) | Container.Content(videos) | Container.Content(musicvideos)">
+				<itemlayout height="301" width="300" condition="Container.Content(episodes) | Container.Content(videos) | Container.Content(musicvideos)">
 					<control type="group">
 						<left>64</left>
 						<top>110</top>
@@ -410,7 +410,7 @@
 						</include>
 					</control>
 				</itemlayout>
-				<focusedlayout height="300" width="300" condition="Container.Content(episodes) | Container.Content(videos) | Container.Content(musicvideos)">
+				<focusedlayout height="301" width="300" condition="Container.Content(episodes) | Container.Content(videos) | Container.Content(musicvideos)">
 					<control type="group">
 						<depth>DepthContentPopout</depth>
 						<animation effect="zoom" start="100" end="110" time="200" tween="sine" easing="inout" center="220,250">Focus</animation>
@@ -442,14 +442,14 @@
 						</include>
 					</control>
 				</focusedlayout>
-				<itemlayout height="400" width="378" condition="Container.Content(images)">
+				<itemlayout height="401" width="378" condition="Container.Content(images)">
 					<control type="group">
 						<left>0</left>
 						<top>150</top>
 						<include>InfoWallPictureLayout</include>
 					</control>
 				</itemlayout>
-				<focusedlayout height="400" width="378" condition="Container.Content(images)">
+				<focusedlayout height="401" width="378" condition="Container.Content(images)">
 					<control type="group">
 						<depth>DepthContentPopout</depth>
 						<left>0</left>
