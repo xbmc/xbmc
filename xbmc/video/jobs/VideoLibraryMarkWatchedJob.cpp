@@ -67,8 +67,16 @@ bool CVideoLibraryMarkWatchedJob::Work(CVideoDatabase &db)
       continue;
 #endif
 
-    if (item->HasPVRRecordingInfoTag() && CServiceBroker::GetPVRManager().Recordings()->MarkWatched(item, m_mark))
+    if (item->HasPVRRecordingInfoTag() &&
+        CServiceBroker::GetPVRManager().Recordings()->MarkWatched(item->GetPVRRecordingInfoTag(), m_mark))
+    {
+      if (m_mark)
+        db.IncrementPlayCount(*item);
+      else
+        db.SetPlayCount(*item, 0);
+
       continue;
+    }
 
     markItems.push_back(item);
   }

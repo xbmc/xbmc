@@ -11,6 +11,7 @@
 #include "Application.h"
 #include "FileItem.h"
 #include "ServiceBroker.h"
+#include "Util.h"
 #include "addons/PVRClient.h"
 #include "addons/PVRClientMenuHooks.h"
 #include "cores/DataCacheCore.h"
@@ -101,26 +102,72 @@ namespace PVR
     explicit AsyncRenameRecording(const std::string &strNewName) : m_strNewName(strNewName) {}
 
   private:
-    bool DoRun(const CFileItemPtr &item) override { return CServiceBroker::GetPVRManager().Recordings()->RenameRecording(*item, m_strNewName); }
+    bool DoRun(const std::shared_ptr<CFileItem>& item) override
+    {
+      if (item->IsUsablePVRRecording())
+      {
+        return item->GetPVRRecordingInfoTag()->Rename(m_strNewName);
+      }
+      else
+      {
+        CLog::LogF(LOGERROR, "Cannot rename item '%s': no valid recording tag", item->GetPath().c_str());
+        return false;
+      }
+    }
     std::string m_strNewName;
   };
 
   class AsyncDeleteRecording : public AsyncRecordingAction
   {
   private:
-    bool DoRun(const CFileItemPtr &item) override { return CServiceBroker::GetPVRManager().Recordings()->Delete(*item); }
+    bool DoRun(const std::shared_ptr<CFileItem>& item) override
+    {
+      CFileItemList items;
+      if (item->m_bIsFolder)
+      {
+        CUtil::GetRecursiveListing(item->GetPath(), items, "", XFILE::DIR_FLAG_NO_FILE_INFO);
+      }
+      else
+      {
+        items.Add(item);
+      }
+
+      bool bReturn = true;
+      for (const auto& itemToDelete : items)
+      {
+        if (itemToDelete->IsUsablePVRRecording())
+          bReturn &= itemToDelete->GetPVRRecordingInfoTag()->Delete();
+        else
+          CLog::LogF(LOGERROR, "Cannot delete item '%s': no valid recording tag", itemToDelete->GetPath().c_str());
+      }
+      return bReturn;
+    }
   };
 
   class AsyncEmptyRecordingsTrash : public AsyncRecordingAction
   {
   private:
-    bool DoRun(const CFileItemPtr &item) override { return CServiceBroker::GetPVRManager().Recordings()->DeleteAllRecordingsFromTrash(); }
+    bool DoRun(const std::shared_ptr<CFileItem>& item) override
+    {
+      return CServiceBroker::GetPVRManager().Clients()->DeleteAllRecordingsFromTrash() == PVR_ERROR_NO_ERROR;
+    }
   };
 
   class AsyncUndeleteRecording : public AsyncRecordingAction
   {
   private:
-    bool DoRun(const CFileItemPtr &item) override { return CServiceBroker::GetPVRManager().Recordings()->Undelete(*item); }
+    bool DoRun(const std::shared_ptr<CFileItem>& item) override
+    {
+      if (item->IsDeletedPVRRecording())
+      {
+        return item->GetPVRRecordingInfoTag()->Undelete();
+      }
+      else
+      {
+        CLog::LogF(LOGERROR, "Cannot undelete item '%s': no valid recording tag", item->GetPath().c_str());
+        return false;
+      }
+    }
   };
 
   class AsyncSetRecordingPlayCount : public AsyncRecordingAction

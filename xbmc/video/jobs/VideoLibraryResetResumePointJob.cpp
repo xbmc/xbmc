@@ -62,7 +62,8 @@ bool CVideoLibraryResetResumePointJob::Work(CVideoDatabase &db)
       continue;
 #endif
 
-    if (item->HasPVRRecordingInfoTag() && CServiceBroker::GetPVRManager().Recordings()->ResetResumePoint(item))
+    if (item->HasPVRRecordingInfoTag() &&
+        CServiceBroker::GetPVRManager().Recordings()->ResetResumePoint(item->GetPVRRecordingInfoTag()))
       continue;
 
     resetItems.emplace_back(item);
