@@ -57,7 +57,6 @@
 using namespace XFILE;
 using namespace KODI::MESSAGING;
 
-DllLibShairplay *CAirTunesServer::m_pLibShairplay = NULL;
 CAirTunesServer *CAirTunesServer::ServerInstance = NULL;
 std::string CAirTunesServer::m_macAddress;
 std::string CAirTunesServer::m_metadata[3];
@@ -647,30 +646,23 @@ bool CAirTunesServer::IsRunning()
 
 bool CAirTunesServer::IsRAOPRunningInternal()
 {
-  if (m_pLibShairplay != nullptr && m_pRaop != nullptr)
+  if (m_pRaop)
   {
-    return m_pLibShairplay->raop_is_running(m_pRaop) != 0;
+    return raop_is_running(m_pRaop) != 0;
   }
+
   return false;
 }
 
-
 CAirTunesServer::CAirTunesServer(int port, bool nonlocal)
-: CThread("AirTunesActionThread"),
-  m_pRaop(nullptr)
+  : CThread("AirTunesActionThread")
 {
   m_port = port;
-  m_pLibShairplay = new DllLibShairplay();
-  m_pPipe         = new XFILE::CPipeFile;
+  m_pPipe = new XFILE::CPipeFile;
 }
 
 CAirTunesServer::~CAirTunesServer()
 {
-  if (m_pLibShairplay->IsLoaded())
-  {
-    m_pLibShairplay->Unload();
-  }
-  delete m_pLibShairplay;
   delete m_pPipe;
 }
 
@@ -696,45 +688,39 @@ bool CAirTunesServer::Initialize(const std::string &password)
 
   Deinitialize();
 
-  if (m_pLibShairplay->Load())
+  raop_callbacks_t ao = {};
+  ao.cls = m_pPipe;
+  ao.audio_init = AudioOutputFunctions::audio_init;
+  ao.audio_set_volume = AudioOutputFunctions::audio_set_volume;
+  ao.audio_set_metadata = AudioOutputFunctions::audio_set_metadata;
+  ao.audio_set_coverart = AudioOutputFunctions::audio_set_coverart;
+  ao.audio_process = AudioOutputFunctions::audio_process;
+  ao.audio_destroy = AudioOutputFunctions::audio_destroy;
+  ao.audio_remote_control_id = AudioOutputFunctions::audio_remote_control_id;
+  ao.audio_set_progress = AudioOutputFunctions::audio_set_progress;
+  m_pRaop = raop_init(1, &ao, RSA_KEY, nullptr); //1 - we handle one client at a time max
+
+  if (m_pRaop)
   {
+    char macAdr[6];
+    unsigned short port = (unsigned short)m_port;
 
-    raop_callbacks_t ao = {};
-    ao.cls                  = m_pPipe;
-    ao.audio_init           = AudioOutputFunctions::audio_init;
-    ao.audio_set_volume     = AudioOutputFunctions::audio_set_volume;
-    ao.audio_set_metadata   = AudioOutputFunctions::audio_set_metadata;
-    ao.audio_set_coverart   = AudioOutputFunctions::audio_set_coverart;
-    ao.audio_process        = AudioOutputFunctions::audio_process;
-    ao.audio_destroy        = AudioOutputFunctions::audio_destroy;
-    ao.audio_remote_control_id = AudioOutputFunctions::audio_remote_control_id;
-    ao.audio_set_progress   = AudioOutputFunctions::audio_set_progress;
-    m_pLibShairplay->EnableDelayedUnload(false);
-    m_pRaop = m_pLibShairplay->raop_init(1, &ao, RSA_KEY);//1 - we handle one client at a time max
-    ret = m_pRaop != NULL;
-
-    if(ret)
+    raop_set_log_level(m_pRaop, RAOP_LOG_WARNING);
+    if (CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->CanLogComponent(LOGAIRTUNES))
     {
-      char macAdr[6];
-      unsigned short port = (unsigned short)m_port;
-
-      m_pLibShairplay->raop_set_log_level(m_pRaop, RAOP_LOG_WARNING);
-      if(CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->CanLogComponent(LOGAIRTUNES))
-      {
-        m_pLibShairplay->raop_set_log_level(m_pRaop, RAOP_LOG_DEBUG);
-      }
-
-      m_pLibShairplay->raop_set_log_callback(m_pRaop, shairplay_log, NULL);
-
-      CNetworkInterface *net = CServiceBroker::GetNetwork().GetFirstConnectedInterface();
-
-      if (net)
-      {
-        net->GetMacAddressRaw(macAdr);
-      }
-
-      ret = m_pLibShairplay->raop_start(m_pRaop, &port, macAdr, 6, password.c_str()) >= 0;
+      raop_set_log_level(m_pRaop, RAOP_LOG_DEBUG);
     }
+
+    raop_set_log_callback(m_pRaop, shairplay_log, NULL);
+
+    CNetworkInterface* net = CServiceBroker::GetNetwork().GetFirstConnectedInterface();
+
+    if (net)
+    {
+      net->GetMacAddressRaw(macAdr);
+    }
+
+    ret = raop_start(m_pRaop, &port, macAdr, 6, password.c_str()) >= 0;
   }
   return ret;
 }
@@ -743,11 +729,10 @@ void CAirTunesServer::Deinitialize()
 {
   RegisterActionListener(false);
 
-  if (m_pLibShairplay && m_pLibShairplay->IsLoaded())
+  if (m_pRaop)
   {
-    m_pLibShairplay->raop_stop(m_pRaop);
-    m_pLibShairplay->raop_destroy(m_pRaop);
-    m_pLibShairplay->Unload();
+    raop_stop(m_pRaop);
+    raop_destroy(m_pRaop);
     m_pRaop = nullptr;
   }
 }

@@ -17,9 +17,6 @@
 //   We only keep @ARCH@ here to retain the same structure as *nix.
 // * foo.so will be renamed libfoo.so in the packaging stage
 
-#define DLL_PATH_LIBPLIST      "@PLIST_SONAME@"
-#define DLL_PATH_LIBSHAIRPLAY  "@SHAIRPLAY_SONAME@"
-
 /* VideoPlayer */
 #define DLL_PATH_LIBDVDNAV     "libdvdnav-@ARCH@.so"
 

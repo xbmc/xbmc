@@ -386,25 +386,6 @@ function(core_require_dep)
   endforeach()
 endfunction()
 
-# add required dyloaded dependencies of main application
-# Arguments:
-#   dep_list One or many dependency specifications (see split_dependency_specification)
-#            for syntax). The dependency name is used uppercased as variable prefix.
-# On return:
-#   dependency added to ${SYSTEM_INCLUDES}, ${dep}_SONAME is set up
-function(core_require_dyload_dep)
-  foreach(depspec ${ARGN})
-    split_dependency_specification(${depspec} dep version)
-    find_package_with_ver(${dep} ${version} REQUIRED)
-    string(TOUPPER ${dep} depup)
-    list(APPEND SYSTEM_INCLUDES ${${depup}_INCLUDE_DIRS})
-    list(APPEND DEP_DEFINES ${${depup}_DEFINITIONS})
-    find_soname(${depup} REQUIRED)
-    export_dep()
-    set(${depup}_SONAME ${${depup}_SONAME} PARENT_SCOPE)
-  endforeach()
-endfunction()
-
 # helper macro for optional deps
 macro(setup_enable_switch)
   string(TOUPPER ${dep} depup)
@@ -448,39 +429,6 @@ function(core_optional_dep)
     endif()
   endforeach()
   set(final_message ${final_message} PARENT_SCOPE)
-endfunction()
-
-# add optional dyloaded dependencies of main application
-# Arguments:
-#   dep_list One or many dependency specifications (see split_dependency_specification)
-#            for syntax). The dependency name is used uppercased as variable prefix.
-# On return:
-#   dependency optionally added to ${SYSTEM_INCLUDES}, ${DEP_DEFINES}, ${dep}_SONAME is set up
-function(core_optional_dyload_dep)
-  foreach(depspec ${ARGN})
-    set(_required False)
-    split_dependency_specification(${depspec} dep version)
-    setup_enable_switch()
-    if(${enable_switch} STREQUAL AUTO)
-      find_package_with_ver(${dep} ${version})
-    elseif(${${enable_switch}})
-      find_package_with_ver(${dep} ${version} REQUIRED)
-      set(_required True)
-    endif()
-
-    if(${depup}_FOUND)
-      list(APPEND SYSTEM_INCLUDES ${${depup}_INCLUDE_DIRS})
-      find_soname(${depup} REQUIRED)
-      list(APPEND DEP_DEFINES ${${depup}_DEFINITIONS})
-      set(final_message ${final_message} "${depup} enabled: Yes" PARENT_SCOPE)
-      export_dep()
-      set(${depup}_SONAME ${${depup}_SONAME} PARENT_SCOPE)
-    elseif(_required)
-      message(FATAL_ERROR "${depup} enabled but not found")
-    else()
-      set(final_message ${final_message} "${depup} enabled: No" PARENT_SCOPE)
-    endif()
-  endforeach()
 endfunction()
 
 function(core_file_read_filtered result filepattern)

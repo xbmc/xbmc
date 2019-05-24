@@ -33,14 +33,12 @@ endif()
 
 if(PLIST_FOUND)
   list(APPEND SOURCES AirPlayServer.cpp)
-  list(APPEND HEADERS AirPlayServer.h
-                      DllLibPlist.h)
+  list(APPEND HEADERS AirPlayServer.h)
 endif()
 
 if(SHAIRPLAY_FOUND)
   list(APPEND SOURCES AirTunesServer.cpp)
-  list(APPEND HEADERS AirTunesServer.h
-                      DllLibShairplay.h)
+  list(APPEND HEADERS AirTunesServer.h)
 endif()
 
 if(MICROHTTPD_FOUND)
