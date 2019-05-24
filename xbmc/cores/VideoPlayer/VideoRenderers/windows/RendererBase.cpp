@@ -123,6 +123,7 @@ void CRenderBuffer::QueueCopyFromGPU()
 CRendererBase::CRendererBase(CVideoSettings& videoSettings)
   : m_videoSettings(videoSettings)
 {
+  m_colorManager.reset(new CColorManager());
 }
 
 CRendererBase::~CRendererBase()
