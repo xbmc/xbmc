@@ -29,7 +29,7 @@ bool CGUIDialogVisualisationPresetList::OnMessage(CGUIMessage &message)
   switch (message.GetMessage())
   {
   case GUI_MSG_VISUALISATION_UNLOADING:
-    SetVisualisation(nullptr);
+    ClearVisualisation();
     break;
   }
   return CGUIDialogSelect::OnMessage(message);
@@ -41,11 +41,23 @@ void CGUIDialogVisualisationPresetList::OnSelect(int idx)
     m_viz->SetPreset(idx);
 }
 
+void CGUIDialogVisualisationPresetList::ClearVisualisation()
+{
+  m_viz = nullptr;
+  Reset();
+}
+
 void CGUIDialogVisualisationPresetList::SetVisualisation(CGUIVisualisationControl* vis)
 {
   m_viz = vis;
   Reset();
-  if (m_viz)
+  if (!m_viz)
+  { // No viz, but show something if this dialog activated
+    SetHeading(CVariant{ 10122 });
+    CFileItem item(g_localizeStrings.Get(13389));
+    Add(item);
+  }
+  else
   {
     SetUseDetails(false);
     SetMultiSelection(false);
@@ -61,6 +73,12 @@ void CGUIDialogVisualisationPresetList::SetVisualisation(CGUIVisualisationContro
       }
       SetSelected(m_viz->GetActivePreset());
     }
+    else
+    { // Viz does not have any presets
+      // "There are no presets available for this visualisation"
+      CFileItem item(g_localizeStrings.Get(13389));
+      Add(item);
+    }
   }
 }
 
@@ -68,13 +86,12 @@ void CGUIDialogVisualisationPresetList::OnInitWindow()
 {
   CGUIMessage msg(GUI_MSG_GET_VISUALISATION, 0, 0);
   CServiceBroker::GetGUI()->GetWindowManager().SendMessage(msg);
-  if (msg.GetPointer())
-    SetVisualisation(static_cast<CGUIVisualisationControl*>(msg.GetPointer()));
+  SetVisualisation(static_cast<CGUIVisualisationControl*>(msg.GetPointer()));
   CGUIDialogSelect::OnInitWindow();
 }
 
 void CGUIDialogVisualisationPresetList::OnDeinitWindow(int nextWindowID)
 {
-  SetVisualisation(nullptr);
+  ClearVisualisation();
   CGUIDialogSelect::OnDeinitWindow(nextWindowID);
 }

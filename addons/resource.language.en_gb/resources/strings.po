@@ -5097,6 +5097,7 @@ msgstr ""
 #empty string with id 10121
 
 #: xbmc/guilib/WindowIDs.h
+#: xbmc/music/dialogs/GUIDialogVisualisationPresetList.cpp
 msgctxt "#10122"
 msgid "Visualization preset list"
 msgstr ""
@@ -6879,8 +6880,9 @@ msgctxt "#13388"
 msgid "Preset"
 msgstr ""
 
+#: xbmc/music/dialogs/GUIDialogVisualisationPresetList.cpp
 msgctxt "#13389"
-msgid "There are no presets available\nfor this visualisation"
+msgid "There are no presets available for this visualisation"
 msgstr ""
 
 msgctxt "#13390"
@@ -6970,6 +6972,7 @@ msgctxt "#13406"
 msgid "Picture information"
 msgstr ""
 
+#: xbmc/music/dialogs/GUIDialogVisualisationPresetList.cpp
 msgctxt "#13407"
 msgid "{0:s} presets"
 msgstr ""
