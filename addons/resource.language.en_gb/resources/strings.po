@@ -3481,76 +3481,7 @@ msgctxt "#774"
 msgid "Slideshow folder"
 msgstr ""
 
-#: system/settings/settings.xml
-msgctxt "#775"
-msgid "Network interface"
-msgstr ""
-
-#: system/settings/settings.xml
-msgctxt "#776"
-msgid "Wireless network name (ESSID)"
-msgstr ""
-
-#: system/settings/settings.xml
-msgctxt "#777"
-msgid "Wireless password"
-msgstr ""
-
-#: system/settings/settings.xml
-msgctxt "#778"
-msgid "Wireless security"
-msgstr ""
-
-#: system/settings/settings.xml
-msgctxt "#779"
-msgid "Save and apply network interface settings"
-msgstr ""
-
-#: system/settings/settings.xml
-msgctxt "#780"
-msgid "No encryption"
-msgstr ""
-
-#: system/settings/settings.xml
-msgctxt "#781"
-msgid "WEP"
-msgstr ""
-
-#: system/settings/settings.xml
-msgctxt "#782"
-msgid "WPA"
-msgstr ""
-
-#: system/settings/settings.xml
-msgctxt "#783"
-msgid "WPA2"
-msgstr ""
-
-msgctxt "#784"
-msgid "Applying network interface settings. Please wait."
-msgstr ""
-
-msgctxt "#785"
-msgid "Network interface restarted successfully."
-msgstr ""
-
-msgctxt "#786"
-msgid "Network interface did not start successfully."
-msgstr ""
-
-#: system/settings/settings.xml
-msgctxt "#787"
-msgid "Interface disabled"
-msgstr ""
-
-msgctxt "#788"
-msgid "Network interface disabled successfully."
-msgstr ""
-
-#: xbmc/network/GUIDialogAccessPoints.cpp
-msgctxt "#789"
-msgid "Wireless network name (ESSID)"
-msgstr ""
+#empty strings from id 775 to 789
 
 #: system/settings/settings.xml
 msgctxt "#790"
@@ -4118,10 +4049,7 @@ msgctxt "#1046"
 msgid "Access points"
 msgstr ""
 
-#: xbmc/network/GUIDialogAccessPoints.cpp
-msgctxt "#1047"
-msgid "Other..."
-msgstr ""
+#empty string with id 1047
 
 #: system/settings/settings.xml
 msgctxt "#1048"
@@ -21342,7 +21270,7 @@ msgctxt "#38309"
 msgid "Output information to NFO files"
 msgstr ""
 
-#. See #38309 when NFO and art export disabled so only artist folders 
+#. See #38309 when NFO and art export disabled so only artist folders
 #: xbmc/settings/dialogs/GUIDialogLibExportSettings.cpp
 msgctxt "#38310"
 msgid "Output information to NFO files (currently exporting artist folders only)"

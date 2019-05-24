@@ -47,11 +47,6 @@ std::vector<std::string> CNetworkInterfaceAndroid::GetNameServers()
   return ret;
 }
 
-const std::string& CNetworkInterfaceAndroid::GetName() const
-{
-  return m_name;
-}
-
 bool CNetworkInterfaceAndroid::IsEnabled() const
 {
   CJNIConnectivityManager connman(CXBMCApp::getSystemService(CJNIContext::CONNECTIVITY_SERVICE));
@@ -208,43 +203,6 @@ std::string CNetworkInterfaceAndroid::GetCurrentDefaultGateway() const
     return StringUtils::Format("%u.%u.%u.%u", adr[0], adr[1], adr[2], adr[3]);
   }
   return "";
-}
-
-std::string CNetworkInterfaceAndroid::GetCurrentWirelessEssId() const
-{
-  std::string ret;
-
-  CJNIConnectivityManager connman(CXBMCApp::getSystemService(CJNIContext::CONNECTIVITY_SERVICE));
-  CJNINetworkInfo ni = connman.getNetworkInfo(m_network);
-  if (!ni)
-    return "";
-
-  if (ni.getType() == CJNIConnectivityManager::TYPE_WIFI)
-  {
-    CJNIWifiManager wm = CXBMCApp::getSystemService("wifi");
-    if (wm.isWifiEnabled())
-    {
-      CJNIWifiInfo wi = wm.getConnectionInfo();
-      ret = wi.getSSID();
-    }
-  }
-  return ret;
-}
-
-std::vector<NetworkAccessPoint> CNetworkInterfaceAndroid::GetAccessPoints() const
-{
-  // TODO
-  return std::vector<NetworkAccessPoint>();
-}
-
-void CNetworkInterfaceAndroid::GetSettings(NetworkAssignment& assignment, std::string& ipAddress, std::string& networkMask, std::string& defaultGateway, std::string& essId, std::string& key, EncMode& encryptionMode) const
-{
-  // Not implemented
-}
-
-void CNetworkInterfaceAndroid::SetSettings(const NetworkAssignment& assignment, const std::string& ipAddress, const std::string& networkMask, const std::string& defaultGateway, const std::string& essId, const std::string& key, const EncMode& encryptionMode)
-{
-  // Not implemented
 }
 
 std::string CNetworkInterfaceAndroid::GetHostName()

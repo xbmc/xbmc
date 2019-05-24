@@ -103,7 +103,6 @@ const CWindowTranslator::WindowMapByName CWindowTranslator::WindowMappingByName 
     { "busydialog"               , WINDOW_DIALOG_BUSY },
     { "busydialognocancel"       , WINDOW_DIALOG_BUSY_NOCANCEL },
     { "pictureinfo"              , WINDOW_DIALOG_PICTURE_INFO },
-    { "accesspoints"             , WINDOW_DIALOG_ACCESS_POINTS },
     { "fullscreeninfo"           , WINDOW_DIALOG_FULLSCREEN_INFO },
     { "sliderdialog"             , WINDOW_DIALOG_SLIDER },
     { "addoninformation"         , WINDOW_DIALOG_ADDON_INFO },
