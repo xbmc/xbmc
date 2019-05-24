@@ -208,10 +208,12 @@ bool CColorManager::GetVideo3dLut(int videoFlags, int *cmsToken, CMS_DATA_FORMAT
       cmsHTRANSFORM deviceLink =  cmsCreateTransform(sourceProfile, fmt, m_hProfile, fmt, INTENT_ABSOLUTE_COLORIMETRIC, 0);
 
       // sample the transformation
-      Create3dLut(deviceLink, format, clutSize, clutData);
+      if (deviceLink)
+        Create3dLut(deviceLink, format, clutSize, clutData);
 
       // free gamma curve, source profile and transformation
-      cmsDeleteTransform(deviceLink);
+      if (deviceLink)
+        cmsDeleteTransform(deviceLink);
       cmsCloseProfile(sourceProfile);
       cmsFreeToneCurve(gammaCurve);
     }
