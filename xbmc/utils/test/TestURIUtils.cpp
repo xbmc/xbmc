@@ -298,10 +298,19 @@ TEST_F(TestURIUtils, IsInRAR)
 
 TEST_F(TestURIUtils, IsInternetStream)
 {
-  CURL url1("http://path/to/file");
-  CURL url2("https://path/to/file");
+  CURL url1("http://internet.path/to/file");
+  CURL url2("https://internet.path/to/file");
+  CURL url3("davs://internet.path/to/file");
+  CURL url4("http://lan/to/file");
+  CURL url5("/path/to/file");
   EXPECT_TRUE(URIUtils::IsInternetStream(url1));
   EXPECT_TRUE(URIUtils::IsInternetStream(url2));
+  EXPECT_FALSE(URIUtils::IsInternetStream(url3));
+  EXPECT_TRUE(URIUtils::IsInternetStream(url3, true /* =strict */));
+  EXPECT_FALSE(URIUtils::IsInternetStream(url4));
+  EXPECT_TRUE(URIUtils::IsInternetStream(url4, true /* =strict */));
+  EXPECT_FALSE(URIUtils::IsInternetStream(url5));
+  EXPECT_FALSE(URIUtils::IsInternetStream(url5, true /* strict */));
 }
 
 TEST_F(TestURIUtils, IsInZIP)
