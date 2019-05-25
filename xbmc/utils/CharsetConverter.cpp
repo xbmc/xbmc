@@ -15,7 +15,7 @@
 #elif TARGET_FREEBSD
 #include "/usr/include/iconv.h"
 #endif
-#include <fribidi/fribidi.h>
+#include <fribidi.h>
 
 #include "guilib/LocalizeStrings.h"
 #include "LangInfo.h"
