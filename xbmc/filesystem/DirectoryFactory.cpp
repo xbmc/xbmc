@@ -46,7 +46,9 @@
 #endif
 #include "CDDADirectory.h"
 #include "PluginDirectory.h"
+#if defined(HAS_ISO9660PP)
 #include "ISO9660Directory.h"
+#endif
 #ifdef HAS_UPNP
 #include "UPnPDirectory.h"
 #endif
@@ -128,7 +130,9 @@ IDirectory* CDirectoryFactory::Create(const CURL& url)
 #if defined(HAS_DVD_DRIVE)
   if (url.IsProtocol("cdda")) return new CCDDADirectory();
 #endif
+#if defined(HAS_ISO9660PP)
   if (url.IsProtocol("iso9660")) return new CISO9660Directory();
+#endif
   if (url.IsProtocol("udf")) return new CUDFDirectory();
   if (url.IsProtocol("plugin")) return new CPluginDirectory();
 #if defined(TARGET_ANDROID)
