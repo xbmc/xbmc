@@ -337,13 +337,6 @@ namespace PVR
     CPVRChannelGroupPtr GetPlayingGroup(bool bRadio = false) const;
 
     /*!
-     * @brief Fill the file item for a recording, a channel or an epg tag with the properties required for playback. Values are obtained from the PVR backend.
-     * @param fileItem The file item to be filled. Item must contain either a pvr recording, a pvr channel or an epg tag.
-     * @return True if the stream properties have been set, false otherwiese.
-     */
-    bool FillStreamFileItem(CFileItem &fileItem);
-
-    /*!
      * @brief Let the background thread create epg tags for all channels.
      */
     void TriggerEpgsCreate(void);

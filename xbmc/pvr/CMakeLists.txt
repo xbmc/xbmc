@@ -13,7 +13,8 @@ set(SOURCES PVRActionListener.cpp
             PVRGUIDirectory.cpp
             PVRGUIProgressHandler.cpp
             PVRGUITimerInfo.cpp
-            PVRGUITimesInfo.cpp)
+            PVRGUITimesInfo.cpp
+            PVRStreamProperties.cpp)
 
 set(HEADERS PVRActionListener.h
             PVRDatabase.h
@@ -31,6 +32,7 @@ set(HEADERS PVRActionListener.h
             PVRGUIDirectory.h
             PVRGUIProgressHandler.h
             PVRGUITimerInfo.h
-            PVRGUITimesInfo.h)
+            PVRGUITimesInfo.h
+            PVRStreamProperties.h)
 
 core_add_library(pvr)

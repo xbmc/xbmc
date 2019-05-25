@@ -28,6 +28,8 @@
 #include "input/InputManager.h"
 #include "input/Key.h"
 #include "messaging/ApplicationMessenger.h"
+#include "messaging/helpers/DialogHelper.h"
+#include "messaging/helpers/DialogOKHelper.h"
 #include "network/Network.h"
 #include "settings/MediaSettings.h"
 #include "settings/Settings.h"
@@ -42,8 +44,7 @@
 #include "pvr/PVRItem.h"
 #include "pvr/PVRJobs.h"
 #include "pvr/PVRManager.h"
-#include "messaging/helpers/DialogHelper.h"
-#include "messaging/helpers/DialogOKHelper.h"
+#include "pvr/PVRStreamProperties.h"
 #include "pvr/addons/PVRClients.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/dialogs/GUIDialogPVRChannelGuide.h"
@@ -1175,7 +1176,35 @@ namespace PVR
   void CPVRGUIActions::StartPlayback(CFileItem *item, bool bFullscreen) const
   {
     // Obtain dynamic playback url and properties from the respective pvr client
-    CServiceBroker::GetPVRManager().FillStreamFileItem(*item);
+    const CPVRClientPtr client = CServiceBroker::GetPVRManager().GetClient(*item);
+    if (client)
+    {
+      CPVRStreamProperties props;
+
+      if (item->IsPVRChannel())
+        client->GetChannelStreamProperties(item->GetPVRChannelInfoTag(), props);
+      else if (item->IsPVRRecording())
+        client->GetRecordingStreamProperties(item->GetPVRRecordingInfoTag(), props);
+      else if (item->IsEPG())
+        client->GetEpgTagStreamProperties(item->GetEPGInfoTag(), props);
+
+      if (props.size())
+      {
+        const std::string url = props.GetStreamURL();
+        if (!url.empty())
+          item->SetDynPath(url);
+
+        const std::string mime = props.GetStreamMimeType();
+        if (!mime.empty())
+        {
+          item->SetMimeType(mime);
+          item->SetContentLookup(false);
+        }
+
+        for (const auto& prop : props)
+          item->SetProperty(prop.first, prop.second);
+      }
+    }
 
     CApplicationMessenger::GetInstance().PostMsg(TMSG_MEDIA_PLAY, 0, 0, static_cast<void*>(item));
     CheckAndSwitchToFullscreen(bFullscreen);
@@ -1547,7 +1576,7 @@ namespace PVR
 
       std::advance(selectedHook, selection);
     }
-    return selectedHook->first->CallMenuHook(selectedHook->second, CFileItemPtr()) == PVR_ERROR_NO_ERROR;
+    return selectedHook->first->CallSettingsMenuHook(selectedHook->second) == PVR_ERROR_NO_ERROR;
   }
 
   bool CPVRGUIActions::ResetPVRDatabase(bool bResetEPGOnly)

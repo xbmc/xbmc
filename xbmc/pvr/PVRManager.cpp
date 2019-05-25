@@ -949,21 +949,6 @@ bool CPVRManager::IsPlayingEpgTag(void) const
   return IsStarted() && m_playingEpgTag;
 }
 
-bool CPVRManager::FillStreamFileItem(CFileItem &fileItem)
-{
-  const CPVRClientPtr client = GetClient(fileItem);
-  if (client)
-  {
-    if (fileItem.IsPVRChannel())
-      return client->FillChannelStreamFileItem(fileItem) == PVR_ERROR_NO_ERROR;
-    else if (fileItem.IsPVRRecording())
-      return client->FillRecordingStreamFileItem(fileItem) == PVR_ERROR_NO_ERROR;
-    else if (fileItem.IsEPG())
-      return client->FillEpgTagStreamFileItem(fileItem) == PVR_ERROR_NO_ERROR;
-  }
-  return false;
-}
-
 void CPVRManager::TriggerEpgsCreate(void)
 {
   m_pendingUpdates.AppendJob(new CPVREpgsCreateJob());
