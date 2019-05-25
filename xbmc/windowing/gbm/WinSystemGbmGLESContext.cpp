@@ -19,7 +19,7 @@
 #include "cores/VideoPlayer/VideoRenderers/RenderFactory.h"
 
 #include "OptionalsReg.h"
-#include "platform/linux/XTimeUtils.h"
+#include "platform/posix/XTimeUtils.h"
 #include "utils/log.h"
 #include "WinSystemGbmGLESContext.h"
 

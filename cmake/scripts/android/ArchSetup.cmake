@@ -10,6 +10,7 @@ set(SYSTEM_DEFINES -D__STDC_CONSTANT_MACROS -D_LARGEFILE64_SOURCE
 set(CORE_MAIN_SOURCE ${CMAKE_SOURCE_DIR}/xbmc/platform/android/activity/XBMCApp.cpp)
 
 set(PLATFORM_DIR platform/linux)
+set(PLATFORMDEFS_DIR platform/posix)
 if(WITH_ARCH)
   set(ARCH ${WITH_ARCH})
 else()

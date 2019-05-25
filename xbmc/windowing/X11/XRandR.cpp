@@ -23,7 +23,7 @@
 #endif
 
 #ifdef TARGET_POSIX
-#include "platform/linux/XTimeUtils.h"
+#include "platform/posix/XTimeUtils.h"
 #endif
 
 CXRandR::CXRandR(bool query)

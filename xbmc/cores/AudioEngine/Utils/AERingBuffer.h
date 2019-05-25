@@ -18,7 +18,7 @@
 #include "utils/log.h"  //CLog
 #include <string.h>     //memset, memcpy
 #ifdef TARGET_POSIX
-#include "platform/linux/XMemUtils.h"
+#include "platform/posix/XMemUtils.h"
 #endif
 
 /**

@@ -11,7 +11,7 @@
 #include "XBTF.h"
 #include "guilib/imagefactory.h"
 #ifdef TARGET_POSIX
-#include "platform/linux/XMemUtils.h"
+#include "platform/posix/XMemUtils.h"
 #endif
 
 #pragma pack(1)

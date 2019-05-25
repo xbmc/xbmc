@@ -14,11 +14,11 @@
 
 #include <time.h>
 
-class CLinuxResourceCounter
+class CPosixResourceCounter
 {
 public:
-  CLinuxResourceCounter();
-  virtual ~CLinuxResourceCounter();
+  CPosixResourceCounter();
+  virtual ~CPosixResourceCounter();
 
   double GetCPUUsage();
   void   Reset();

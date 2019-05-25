@@ -1,7 +1,24 @@
-set(SOURCES Filesystem.cpp
+set(SOURCES ConvUtils.cpp
+            Filesystem.cpp
             MessagePrinter.cpp
-            PlatformPosix.cpp)
+            PlatformPosix.cpp
+            PosixMountProvider.cpp
+            PosixResourceCounter.cpp
+            PosixTimezone.cpp
+            XFileUtils.cpp
+            XHandle.cpp
+            XMemUtils.cpp
+            XTimeUtils.cpp)
 
-set(HEADERS PlatformPosix.h)
+set(HEADERS ConvUtils.h
+            PlatformDefs.h
+            PlatformPosix.h
+            PosixMountProvider.h
+            PosixResourceCounter.h
+            PosixTimezone.h
+            XFileUtils.h
+            XHandle.h
+            XMemUtils.h
+            XTimeUtils.h)
 
 core_add_library(platform_posix)

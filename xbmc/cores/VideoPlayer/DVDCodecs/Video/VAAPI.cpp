@@ -24,8 +24,8 @@
 #include <va/va_drm.h>
 #include <va/va_drmcommon.h>
 #include <drm_fourcc.h>
-#include "platform/linux/XTimeUtils.h"
-#include "platform/linux/XMemUtils.h"
+#include "platform/posix/XTimeUtils.h"
+#include "platform/posix/XMemUtils.h"
 
 extern "C" {
 #include <libavutil/avutil.h>

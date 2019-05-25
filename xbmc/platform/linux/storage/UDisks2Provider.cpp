@@ -8,8 +8,8 @@
 #include <algorithm>
 #include <functional>
 
-#include "PosixMountProvider.h"
 #include "guilib/LocalizeStrings.h"
+#include "platform/posix/PosixMountProvider.h"
 #include "ServiceBroker.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"

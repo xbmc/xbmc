@@ -21,7 +21,7 @@
 #include "platform/darwin/osx/smc.h"
 #endif
 #ifdef TARGET_POSIX
-#include "platform/linux/XMemUtils.h"
+#include "platform/posix/XMemUtils.h"
 #endif
 #include "powermanagement/PowerManager.h"
 #include "profiles/ProfileManager.h"

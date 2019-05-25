@@ -7,19 +7,19 @@
  */
 
 #include "PlatformDefs.h"
-#include "LinuxResourceCounter.h"
+#include "PosixResourceCounter.h"
 #include "utils/log.h"
 
 #include <errno.h>
 
-CLinuxResourceCounter::CLinuxResourceCounter()
+CPosixResourceCounter::CPosixResourceCounter()
 {
   Reset();
 }
 
-CLinuxResourceCounter::~CLinuxResourceCounter() = default;
+CPosixResourceCounter::~CPosixResourceCounter() = default;
 
-double CLinuxResourceCounter::GetCPUUsage()
+double CPosixResourceCounter::GetCPUUsage()
 {
   struct timeval tmNow;
   if (gettimeofday(&tmNow, NULL) == -1)
@@ -52,7 +52,7 @@ double CLinuxResourceCounter::GetCPUUsage()
   return m_dLastUsage;
 }
 
-void CLinuxResourceCounter::Reset()
+void CPosixResourceCounter::Reset()
 {
   if (gettimeofday(&m_tmLastCheck, NULL) == -1)
     CLog::Log(LOGERROR, "error %d in gettimeofday", errno);

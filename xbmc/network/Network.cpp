@@ -23,7 +23,7 @@
 #include "utils/CharsetConverter.h"
 #endif
 #ifdef TARGET_POSIX
-#include "platform/linux/XTimeUtils.h"
+#include "platform/posix/XTimeUtils.h"
 #endif
 #include "utils/StringUtils.h"
 

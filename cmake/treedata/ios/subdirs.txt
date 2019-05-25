@@ -8,8 +8,8 @@ xbmc/platform/darwin/ios-common       platform/ios-common
 xbmc/platform/darwin/network          platform/darwin/network
 xbmc/platform/darwin/storage          platform/storage
 xbmc/platform/linux                   platform/linux
-xbmc/platform/linux/network           platform/linux/network
 xbmc/platform/posix                   posix
 xbmc/platform/posix/filesystem        platform/posix/filesystem
+xbmc/platform/posix/network           platform/posix/network
 xbmc/platform/posix/utils             platform/posix/utils
 xbmc/windowing/ios                    windowing/ios

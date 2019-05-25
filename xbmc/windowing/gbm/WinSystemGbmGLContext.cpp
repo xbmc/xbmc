@@ -16,7 +16,7 @@
 #include "EGL/eglext.h"
 #include "WinSystemGbmGLContext.h"
 #include "OptionalsReg.h"
-#include "platform/linux/XTimeUtils.h"
+#include "platform/posix/XTimeUtils.h"
 #include "utils/log.h"
 
 using namespace KODI::WINDOWING::GBM;

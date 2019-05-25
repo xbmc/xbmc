@@ -18,7 +18,7 @@
 #include "utils/SystemInfo.h"
 #include "utils/MathUtils.h"
 #ifdef TARGET_POSIX
-#include "XTimeUtils.h"
+#include "platform/posix/XTimeUtils.h"
 #endif
 
 #if defined(TARGET_LINUX)

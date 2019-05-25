@@ -38,7 +38,7 @@
 #include "pictures/PictureThumbLoader.h"
 #include "PlayListPlayer.h"
 #ifdef TARGET_POSIX
-#include "platform/linux/XTimeUtils.h"
+#include "platform/posix/XTimeUtils.h"
 #endif
 #include <random>
 

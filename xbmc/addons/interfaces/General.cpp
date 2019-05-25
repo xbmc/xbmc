@@ -22,7 +22,7 @@
 #include "filesystem/SpecialProtocol.h"
 #include "guilib/LocalizeStrings.h"
 #ifdef TARGET_POSIX
-#include "platform/linux/XMemUtils.h"
+#include "platform/posix/XMemUtils.h"
 #endif
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"

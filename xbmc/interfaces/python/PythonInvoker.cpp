@@ -35,7 +35,7 @@
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #ifdef TARGET_POSIX
-#include "platform/linux/XTimeUtils.h"
+#include "platform/posix/XTimeUtils.h"
 #endif
 
 #ifdef TARGET_WINDOWS

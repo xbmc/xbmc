@@ -20,7 +20,7 @@
 #include "view/ViewState.h"
 
 #ifdef TARGET_POSIX
-#include "platform/linux/ConvUtils.h"
+#include "platform/posix/ConvUtils.h"
 #endif
 CViewDatabase::CViewDatabase(void) = default;
 
