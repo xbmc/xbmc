@@ -9255,7 +9255,8 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
 
     std::unique_ptr<Dataset> pDS2;
     pDS2.reset(m_pDB->CreateDataset());
-    if (NULL == pDS2) return;
+    if (!pDS2)
+      return;
 
     // if we're exporting to a single folder, we export thumbs as well
     std::string exportRoot = URIUtils::AddFileToFolder(path, "kodi_videodb_" + CDateTime::GetCurrentDateTime().GetAsDBDate());
@@ -9771,8 +9772,10 @@ void CVideoDatabase::ImportFromXML(const std::string &path)
   CGUIDialogProgress *progress=NULL;
   try
   {
-    if (NULL == m_pDB) return;
-    if (NULL == m_pDS) return;
+    if (!m_pDB)
+      return;
+    if (!m_pDS)
+      return;
 
     CXBMCTinyXML xmlDoc;
     if (!xmlDoc.LoadFile(URIUtils::AddFileToFolder(path, "videodb.xml")))
@@ -10026,7 +10029,7 @@ bool CVideoDatabase::SetSingleValue(VIDEODB_CONTENT_TYPE type, int dbId, int dbF
   std::string strSQL;
   try
   {
-    if (NULL == m_pDB || NULL == m_pDS)
+    if (!m_pDB || !m_pDS)
       return false;
 
     std::string strTable, strField;
@@ -10085,7 +10088,7 @@ bool CVideoDatabase::SetSingleValue(const std::string &table, const std::string 
   std::string sql;
   try
   {
-    if (NULL == m_pDB || NULL == m_pDS)
+    if (!m_pDB || !m_pDS)
       return false;
 
     sql = PrepareSQL("UPDATE %s SET %s='%s'", table.c_str(), fieldName.c_str(), strValue.c_str());
@@ -10422,8 +10425,10 @@ bool CVideoDatabase::SetVideoUserRating(int dbId, int rating, const MediaType& m
 {
   try
   {
-    if (NULL == m_pDB) return false;
-    if (NULL == m_pDS) return false;
+    if (!m_pDB)
+      return false;
+    if (!m_pDS)
+      return false;
 
     if (mediaType == MediaTypeNone)
       return false;
