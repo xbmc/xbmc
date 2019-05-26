@@ -13,6 +13,7 @@ endif()
 
 # Set CORE_BUILD_DIR
 set(CORE_BUILD_DIR build)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 message(STATUS "Source directory: ${CMAKE_SOURCE_DIR}")
 message(STATUS "Build directory: ${CMAKE_BINARY_DIR}")
