@@ -14,6 +14,7 @@
 #include "File.h"
 #include "threads/Thread.h"
 #include <atomic>
+#include <memory>
 
 namespace XFILE
 {
@@ -22,10 +23,7 @@ namespace XFILE
   {
   public:
     explicit CFileCache(const unsigned int flags);
-    CFileCache(CCacheStrategy *pCache, bool bDeleteCache = true);
     ~CFileCache() override;
-
-    void SetCacheStrategy(CCacheStrategy *pCache, bool bDeleteCache = true);
 
     // CThread methods
     void Process() override;
@@ -56,8 +54,7 @@ namespace XFILE
     }
 
   private:
-    CCacheStrategy *m_pCache;
-    bool m_bDeleteCache;
+    std::unique_ptr<CCacheStrategy> m_pCache;
     int m_seekPossible;
     CFile m_source;
     std::string m_sourcePath;
