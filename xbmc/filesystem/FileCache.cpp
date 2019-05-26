@@ -83,7 +83,6 @@ private:
 
 CFileCache::CFileCache(const unsigned int flags)
   : CThread("FileCache")
-  , m_bDeleteCache(true)
   , m_seekPossible(0)
   , m_nSeekResult(0)
   , m_seekPos(0)
@@ -104,9 +103,6 @@ CFileCache::CFileCache(const unsigned int flags)
 CFileCache::~CFileCache()
 {
   Close();
-
-  if (m_bDeleteCache && m_pCache)
-    m_pCache.reset();
 }
 
 IFile *CFileCache::GetFileImp()

@@ -55,7 +55,6 @@ namespace XFILE
 
   private:
     std::unique_ptr<CCacheStrategy> m_pCache;
-    bool m_bDeleteCache;
     int m_seekPossible;
     CFile m_source;
     std::string m_sourcePath;
