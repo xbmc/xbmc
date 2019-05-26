@@ -686,12 +686,6 @@ void CDatabase::RollbackTransaction()
   }
 }
 
-bool CDatabase::InTransaction()
-{
-  if (NULL != m_pDB.get()) return false;
-  return m_pDB->in_transaction();
-}
-
 bool CDatabase::CreateDatabase()
 {
   BeginTransaction();
