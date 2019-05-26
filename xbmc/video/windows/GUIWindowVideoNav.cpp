@@ -193,7 +193,7 @@ bool CGUIWindowVideoNav::OnMessage(CGUIMessage& message)
           }
 
           // Playlist directory is the root of the playlist window
-          if (m_guiState.get()) m_guiState->SetPlaylistDirectory("playlistvideo://");
+          if (m_guiState) m_guiState->SetPlaylistDirectory("playlistvideo://");
 
           return true;
         }

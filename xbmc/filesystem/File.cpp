@@ -327,7 +327,7 @@ bool CFile::Open(const CURL& file, const unsigned int flags)
         m_pFile = pRedirectEx->m_pNewFileImp;
         delete pRedirectEx;
 
-        if (pNewUrl.get())
+        if (pNewUrl)
         {
           CURL newAuthUrl(*pNewUrl);
           if (CPasswordManager::GetInstance().IsURLSupported(newAuthUrl) && newAuthUrl.GetUserName().empty())
@@ -455,9 +455,9 @@ bool CFile::Exists(const CURL& file, bool bUseCache /* = true */)
       std::unique_ptr<CURL> pNewUrl(pRedirectEx->m_pNewUrl);
       delete pRedirectEx;
 
-      if (pImp.get())
+      if (pImp)
       {
-        if (pNewUrl.get())
+        if (pNewUrl)
         {
           if (bUseCache)
           {
@@ -538,9 +538,9 @@ int CFile::Stat(const CURL& file, struct __stat64* buffer)
       std::unique_ptr<CURL> pNewUrl(pRedirectEx->m_pNewUrl);
       delete pRedirectEx;
 
-      if (pNewUrl.get())
+      if (pNewUrl)
       {
-        if (pImp.get())
+        if (pImp)
         {
           CURL newAuthUrl = *pNewUrl;
           if (CPasswordManager::GetInstance().IsURLSupported(newAuthUrl) && newAuthUrl.GetUserName().empty())

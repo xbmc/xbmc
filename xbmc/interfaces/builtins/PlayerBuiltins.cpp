@@ -449,7 +449,7 @@ static int PlayMedia(const std::vector<std::string>& params)
       }
 
       std::unique_ptr<CGUIViewState> state(CGUIViewState::GetViewState(containsVideo ? WINDOW_VIDEO_NAV : WINDOW_MUSIC_NAV, items));
-      if (state.get())
+      if (state)
         items.Sort(state->GetSortMethod());
       else
         items.Sort(SortByLabel, SortOrderAscending);

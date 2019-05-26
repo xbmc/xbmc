@@ -533,7 +533,7 @@ void CGUIWindowPictures::LoadPlayList(const std::string& strPlayList)
 {
   CLog::Log(LOGDEBUG,"CGUIWindowPictures::LoadPlayList()... converting playlist into slideshow: %s", strPlayList.c_str());
   std::unique_ptr<CPlayList> pPlayList (CPlayListFactory::Create(strPlayList));
-  if ( NULL != pPlayList.get())
+  if ( NULL != pPlayList)
   {
     if (!pPlayList->Load(strPlayList))
     {

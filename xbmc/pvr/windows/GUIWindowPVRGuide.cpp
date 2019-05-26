@@ -87,7 +87,7 @@ void CGUIWindowPVRGuideBase::ClearData()
 
 void CGUIWindowPVRGuideBase::OnInitWindow()
 {
-  if (m_guiState.get())
+  if (m_guiState)
     m_viewControl.SetCurrentView(m_guiState->GetViewAsControl(), false);
 
   if (InitChannelGroup()) // no channels -> lazy init
@@ -671,7 +671,7 @@ bool CGUIWindowPVRGuideBase::RefreshTimelineItems()
       if (endDate > maxFutureDate)
         endDate = maxFutureDate;
 
-      if (m_guiState.get())
+      if (m_guiState)
         timeline->Sort(m_guiState->GetSortMethod());
 
       // can be very expensive. never call with lock acquired.

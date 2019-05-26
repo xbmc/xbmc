@@ -573,7 +573,7 @@ CInfoScanner::INFO_RET CMusicInfoScanner::ScanTags(const CFileItemList& items,
     if (!tag.Loaded())
     {
       std::unique_ptr<IMusicInfoTagLoader> pLoader (CMusicInfoTagLoaderFactory::CreateLoader(*pItem));
-      if (NULL != pLoader.get())
+      if (NULL != pLoader)
         pLoader->Load(pItem->GetPath(), tag);
     }
 

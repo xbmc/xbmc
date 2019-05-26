@@ -399,7 +399,7 @@ void CGUIWindowMusicBase::OnQueueItem(int iItem, bool first)
     CServiceBroker::GetPlaylistPlayer().Add(playlist, queuedItems);
   if (CServiceBroker::GetPlaylistPlayer().GetPlaylist(playlist).size() && !g_application.GetAppPlayer().IsPlaying())
   {
-    if (m_guiState.get())
+    if (m_guiState)
       m_guiState->SetPlaylistDirectory("playlistmusic://");
 
     CServiceBroker::GetPlaylistPlayer().Reset();
@@ -459,7 +459,7 @@ void CGUIWindowMusicBase::AddItemToPlayList(const CFileItemPtr &pItem, CFileItem
     if (pItem->IsPlayList())
     {
       std::unique_ptr<CPlayList> pPlayList (CPlayListFactory::Create(*pItem));
-      if (pPlayList.get())
+      if (pPlayList)
       {
         // load it
         if (!pPlayList->Load(pItem->GetPath()))
@@ -801,7 +801,7 @@ void CGUIWindowMusicBase::LoadPlayList(const std::string& strPlayList)
   // load a playlist like .m3u, .pls
   // first get correct factory to load playlist
   std::unique_ptr<CPlayList> pPlayList (CPlayListFactory::Create(strPlayList));
-  if (pPlayList.get())
+  if (pPlayList)
   {
     // load it
     if (!pPlayList->Load(strPlayList))
@@ -814,7 +814,7 @@ void CGUIWindowMusicBase::LoadPlayList(const std::string& strPlayList)
   int iSize = pPlayList->size();
   if (g_application.ProcessAndStartPlaylist(strPlayList, *pPlayList, PLAYLIST_MUSIC))
   {
-    if (m_guiState.get())
+    if (m_guiState)
       m_guiState->SetPlaylistDirectory("playlistmusic://");
     // activate the playlist window if its not activated yet
     if (GetID() == CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() && iSize > 1)

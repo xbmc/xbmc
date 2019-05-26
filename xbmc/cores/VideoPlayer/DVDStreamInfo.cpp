@@ -112,7 +112,7 @@ bool CDVDStreamInfo::Equal(const CDVDStreamInfo& right, bool withextradata)
   // SUBTITLE
 
   // Crypto
-  if ((cryptoSession.get() == nullptr) != (right.cryptoSession.get() == nullptr))
+  if ((cryptoSession == nullptr) != (right.cryptoSession == nullptr))
     return false;
 
   if (cryptoSession && !(*cryptoSession.get() == *right.cryptoSession.get()))

@@ -425,7 +425,7 @@ bool CGUIWindowMusicPlayList::OnPlayMedia(int iItem, const std::string &player)
     int iPlaylist=m_guiState->GetPlaylist();
     if (iPlaylist!=PLAYLIST_NONE)
     {
-      if (m_guiState.get())
+      if (m_guiState)
         m_guiState->SetPlaylistDirectory(m_vecItems->GetPath());
 
       CServiceBroker::GetPlaylistPlayer().SetCurrentPlaylist( iPlaylist );

@@ -138,7 +138,7 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
           }
 
           // Playlist directory is the root of the playlist window
-          if (m_guiState.get()) m_guiState->SetPlaylistDirectory("playlistmusic://");
+          if (m_guiState) m_guiState->SetPlaylistDirectory("playlistmusic://");
 
           return true;
         }
@@ -838,7 +838,7 @@ bool CGUIWindowMusicNav::GetSongsFromPlayList(const std::string& strPlayList, CF
   CLog::Log(LOGDEBUG,"CGUIWindowMusicNav, opening playlist [%s]", strPlayList.c_str());
 
   std::unique_ptr<CPlayList> pPlayList (CPlayListFactory::Create(strPlayList));
-  if ( NULL != pPlayList.get())
+  if ( NULL != pPlayList)
   {
     // load it
     if (!pPlayList->Load(strPlayList))

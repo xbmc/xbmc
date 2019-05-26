@@ -451,7 +451,7 @@ bool CPlayList::Expand(int position)
 {
   CFileItemPtr item = m_vecItems[position];
   std::unique_ptr<CPlayList> playlist (CPlayListFactory::Create(*item.get()));
-  if (playlist.get() == nullptr)
+  if (playlist == nullptr)
     return false;
 
   std::string path = item->GetDynPath();

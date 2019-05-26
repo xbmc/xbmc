@@ -244,7 +244,7 @@ bool CDirectoryNode::GetChilds(CFileItemList& items)
   std::unique_ptr<CDirectoryNode> pNode(CDirectoryNode::CreateNode(GetChildType(), "", this));
 
   bool bSuccess=false;
-  if (pNode.get())
+  if (pNode)
   {
     pNode->m_options = m_options;
     bSuccess = pNode->GetContent(items);

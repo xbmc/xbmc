@@ -372,7 +372,7 @@ bool CPlayListASX::LoadData(std::istream& stream)
         if (!value.empty())
         { // found an entryref, let's try loading that url
           std::unique_ptr<CPlayList> playlist(CPlayListFactory::Create(value));
-          if (NULL != playlist.get())
+          if (NULL != playlist)
             if (playlist->Load(value))
               Add(*playlist);
         }

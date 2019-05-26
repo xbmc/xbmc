@@ -286,7 +286,7 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
         else
           viewMode = m_viewControl.GetNextViewMode();
 
-        if (m_guiState.get())
+        if (m_guiState)
           m_guiState->SaveViewAsControl(viewMode);
 
         UpdateButtons();
@@ -294,7 +294,7 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
       }
       else if (iControl == CONTROL_BTNSORTASC) // sort asc
       {
-        if (m_guiState.get())
+        if (m_guiState)
           m_guiState->SetNextSortOrder();
         UpdateFileList();
         return true;
@@ -485,7 +485,7 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
       else if (message.GetParam2())
         viewMode = m_viewControl.GetNextViewMode(message.GetParam2());
 
-      if (m_guiState.get())
+      if (m_guiState)
         m_guiState->SaveViewAsControl(viewMode);
       UpdateButtons();
       return true;
@@ -493,7 +493,7 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
     break;
   case GUI_MSG_CHANGE_SORT_METHOD:
     {
-      if (m_guiState.get())
+      if (m_guiState)
       {
         if (message.GetParam1())
           m_guiState->SetCurrentSortMethod(message.GetParam1());
@@ -506,7 +506,7 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
     break;
   case GUI_MSG_CHANGE_SORT_DIRECTION:
     {
-      if (m_guiState.get())
+      if (m_guiState)
         m_guiState->SetNextSortOrder();
       UpdateFileList();
       return true;
@@ -578,7 +578,7 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
  */
 void CGUIMediaWindow::UpdateButtons()
 {
-  if (m_guiState.get())
+  if (m_guiState)
   {
     // Update sorting controls
     if (m_guiState->GetSortOrder() == SortOrderNone)
@@ -628,7 +628,7 @@ void CGUIMediaWindow::SortItems(CFileItemList &items)
 {
   std::unique_ptr<CGUIViewState> guiState(CGUIViewState::GetViewState(GetID(), items));
 
-  if (guiState.get())
+  if (guiState)
   {
     SortDescription sorting = guiState->GetSortMethod();
     sorting.sortOrder = guiState->GetSortOrder();
@@ -692,7 +692,7 @@ void CGUIMediaWindow::FormatAndSort(CFileItemList &items)
 {
   std::unique_ptr<CGUIViewState> viewState(CGUIViewState::GetViewState(GetID(), items));
 
-  if (viewState.get())
+  if (viewState)
   {
     LABEL_MASKS labelMasks;
     viewState->GetSortMethodLabelMasks(labelMasks);
@@ -1529,7 +1529,7 @@ bool CGUIMediaWindow::OnPlayAndQueueMedia(const CFileItemPtr &item, std::string 
     }
 
     // Save current window and directory to know where the selected item was
-    if (m_guiState.get())
+    if (m_guiState)
       m_guiState->SetPlaylistDirectory(m_vecItems->GetPath());
 
     // figure out where we start playback
