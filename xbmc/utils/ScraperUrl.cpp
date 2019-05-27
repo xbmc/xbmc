@@ -139,7 +139,7 @@ const CScraperUrl::SUrlEntry CScraperUrl::GetFirstThumb(const std::string &type)
 {
   for (std::vector<SUrlEntry>::const_iterator iter=m_url.begin();iter != m_url.end();++iter)
   {
-    if (iter->m_type == URL_TYPE_GENERAL && (type.empty() || type == "thumb" || iter->m_aspect == type))
+    if (iter->m_type == URL_TYPE_GENERAL && (type.empty() || iter->m_aspect == type))
       return *iter;
   }
 
