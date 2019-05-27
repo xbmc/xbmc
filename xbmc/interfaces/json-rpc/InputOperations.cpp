@@ -20,21 +20,9 @@
 using namespace JSONRPC;
 using namespace KODI::MESSAGING;
 
-//! @todo the breakage of the screensaver should be refactored
-//! to one central super duper place for getting rid of
-//! 1 million dupes
-bool CInputOperations::handleScreenSaver()
-{
-  g_application.ResetScreenSaver();
-  if (g_application.WakeUpScreenSaverAndDPMS())
-    return true;
-
-  return false;
-}
-
 JSONRPC_STATUS CInputOperations::SendAction(int actionID, bool wakeScreensaver /* = true */, bool waitResult /* = false */)
 {
-  if(!wakeScreensaver || !handleScreenSaver())
+  if(!wakeScreensaver)
   {
     g_application.ResetSystemIdleTimer();
     CGUIComponent* gui = CServiceBroker::GetGUI();
@@ -46,13 +34,13 @@ JSONRPC_STATUS CInputOperations::SendAction(int actionID, bool wakeScreensaver /
     else
       CApplicationMessenger::GetInstance().PostMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(actionID)));
   }
+
   return ACK;
 }
 
 JSONRPC_STATUS CInputOperations::activateWindow(int windowID)
 {
-  if(!handleScreenSaver())
-    CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTIVATE_WINDOW, windowID, 0);
+  CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTIVATE_WINDOW, windowID, 0);
 
   return ACK;
 }

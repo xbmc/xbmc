@@ -88,7 +88,7 @@ static int ActivateWindow(const std::vector<std::string>& params2)
     // activate window only if window and path differ from the current active window
     if (iWindow != CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() || !bIsSameStartFolder)
     {
-      g_application.WakeUpScreenSaverAndDPMS();
+      CApplicationMessenger::GetInstance().PostMsg(TMSG_DEACTIVATESCREENSAVER);
       CServiceBroker::GetGUI()->GetWindowManager().ActivateWindow(iWindow, params, Replace);
       return 0;
     }
@@ -122,7 +122,7 @@ static int ActivateAndFocus(const std::vector<std::string>& params)
     if (iWindow != CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow())
     {
       // disable the screensaver
-      g_application.WakeUpScreenSaverAndDPMS();
+      CApplicationMessenger::GetInstance().PostMsg(TMSG_DEACTIVATESCREENSAVER);
       CServiceBroker::GetGUI()->GetWindowManager().ActivateWindow(iWindow, {}, Replace);
 
       unsigned int iPtr = 1;

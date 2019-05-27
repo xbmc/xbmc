@@ -39,6 +39,5 @@ namespace JSONRPC
 
   private:
     static JSONRPC_STATUS activateWindow(int windowID);
-    static bool        handleScreenSaver();
   };
 }

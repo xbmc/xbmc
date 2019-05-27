@@ -16,6 +16,7 @@
 #include "Application.h"
 #include "filesystem/MusicDatabaseFile.h"
 #include "FileItem.h"
+#include "messaging/ApplicationMessenger.h"
 #include "utils/RegExp.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
@@ -382,8 +383,8 @@ void CExternalPlayer::Process()
   }
 
   // We don't want to come back to an active screensaver
-  g_application.ResetScreenSaver();
-  g_application.WakeUpScreenSaverAndDPMS();
+  CApplicationMessenger::GetInstance().PostMsg(TMSG_RESETSCREENSAVERTIMER);
+  CApplicationMessenger::GetInstance().PostMsg(TMSG_DEACTIVATESCREENSAVER);
 
   if (!ret || (m_playOneStackItem && g_application.CurrentFileItem().IsStack()))
     m_callback.OnPlayBackStopped();

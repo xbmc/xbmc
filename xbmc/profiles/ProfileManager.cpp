@@ -31,6 +31,7 @@
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "input/InputManager.h"
+#include "messaging/ApplicationMessenger.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "settings/lib/SettingsManager.h"
@@ -73,6 +74,7 @@
 #define XML_PROFILE       "profile"
 
 using namespace XFILE;
+using namespace KODI::MESSAGING;
 
 static CProfile EmptyProfile;
 
@@ -451,7 +453,7 @@ void CProfileManager::LogOff()
 
   g_passwordManager.bMasterUser = false;
 
-  g_application.WakeUpScreenSaverAndDPMS();
+  CApplicationMessenger::GetInstance().PostMsg(TMSG_DEACTIVATESCREENSAVER);
   CServiceBroker::GetGUI()->GetWindowManager().ActivateWindow(WINDOW_LOGIN_SCREEN, {}, false);
 
   if (!CServiceBroker::GetNetwork().GetServices().StartEventServer()) // event server could be needed in some situations

@@ -14,6 +14,7 @@
 #include "input/Key.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
+#include "messaging/ApplicationMessenger.h"
 #include "windowing/WinSystem.h"
 
 #include "utils/log.h"
@@ -27,6 +28,8 @@
 #define MINIMUM_SPEED_FOR_INERTIA 100
 //maximum time between last movement and gesture end in ms to consider as moving
 #define MAXIMUM_DELAY_FOR_INERTIA 200
+
+using namespace KODI::MESSAGING;
 
 CInertialScrollingHandler::CInertialScrollingHandler()
 : m_iLastGesturePoint(CPoint(0,0))
@@ -50,11 +53,13 @@ bool CInertialScrollingHandler::CheckForInertialScrolling(const CAction* action)
   //reset screensaver during pan
   if( action->GetID() == ACTION_GESTURE_PAN )
   {
-    g_application.ResetScreenSaver();
+    CApplicationMessenger::GetInstance().PostMsg(TMSG_RESETSCREENSAVERTIMER);
+
     if (!m_bScrolling)
     {
       m_panPoints.emplace_back(CTimeUtils::GetFrameTime(), CVector{action->GetAmount(4), action->GetAmount(5)});
     }
+
     return false;
   }
 
@@ -79,8 +84,8 @@ bool CInertialScrollingHandler::CheckForInertialScrolling(const CAction* action)
     CServiceBroker::GetGUI()->GetWindowManager().SendMessage(message);
     m_bScrolling = false;
     //wakeup screensaver on pan begin
-    g_application.ResetScreenSaver();
-    g_application.WakeUpScreenSaverAndDPMS();
+    CApplicationMessenger::GetInstance().PostMsg(TMSG_RESETSCREENSAVERTIMER);
+    CApplicationMessenger::GetInstance().PostMsg(TMSG_DEACTIVATESCREENSAVER);
   }
   else if(action->GetID() == ACTION_GESTURE_END && !m_panPoints.empty()) //do we need to animate inertial scrolling?
   {

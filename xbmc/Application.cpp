@@ -71,7 +71,6 @@
 #include "playlists/PlayList.h"
 #include "profiles/ProfileManager.h"
 #include "windowing/WinSystem.h"
-#include "powermanagement/DPMSSupport.h"
 #include "powermanagement/PowerManager.h"
 #include "powermanagement/PowerTypes.h"
 #include "settings/Settings.h"
@@ -84,6 +83,7 @@
 #include "utils/CPUInfo.h"
 #include "utils/FileExtensionProvider.h"
 #include "utils/log.h"
+#include "utils/ScreenSaverUtils.h"
 #include "SeekHandler.h"
 #include "ServiceBroker.h"
 
@@ -301,9 +301,9 @@ void CApplication::HandlePortEvents()
         CApplicationMessenger::GetInstance().PostMsg(static_cast<uint32_t>(newEvent.user.code));
         break;
       case XBMC_SETFOCUS:
-        // Reset the screensaver
-        ResetScreenSaver();
-        WakeUpScreenSaverAndDPMS();
+        CApplicationMessenger::GetInstance().PostMsg(TMSG_RESETSCREENSAVERTIMER);
+        CApplicationMessenger::GetInstance().PostMsg(TMSG_DEACTIVATESCREENSAVER);
+
         // Send a mouse motion event with no dx,dy for getting the current guiitem selected
         OnAction(CAction(ACTION_MOUSE_MOVE, 0, static_cast<float>(newEvent.focus.x), static_cast<float>(newEvent.focus.y), 0, 0));
         break;
@@ -648,20 +648,6 @@ bool CApplication::CreateGUI()
     return false;
   }
 
-  // Set default screen saver mode
-  auto screensaverModeSetting = std::static_pointer_cast<CSettingString>(settings->GetSetting(CSettings::SETTING_SCREENSAVER_MODE));
-  // Can only set this after windowing has been initialized since it depends on it
-  if (CServiceBroker::GetWinSystem()->GetOSScreenSaver())
-  {
-    // If OS has a screen saver, use it by default
-    screensaverModeSetting->SetDefault("");
-  }
-  else
-  {
-    // If OS has no screen saver, use Kodi one by default
-    screensaverModeSetting->SetDefault("screensaver.xbmc.builtin.dim");
-  }
-
   if (sav_res)
     CDisplaySettings::GetInstance().SetCurrentResolution(RES_DESKTOP, true);
 
@@ -868,9 +854,7 @@ bool CApplication::Initialize()
 
   CLog::Log(LOGNOTICE, "initialize done");
 
-  CheckOSScreenSaverInhibitionSetting();
-  // reset our screensaver (starts timers etc.)
-  ResetScreenSaver();
+  CApplicationMessenger::GetInstance().PostMsg(TMSG_RESETSCREENSAVERTIMER);
 
   // if the user interfaces has been fully initialized let everyone know
   if (uiInitializationFinished)
@@ -1026,10 +1010,6 @@ void CApplication::OnSettingChanged(std::shared_ptr<const CSetting> setting)
     CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_WINDOW_RESIZE);
     CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg);
   }
-  else if (settingId == CSettings::SETTING_SCREENSAVER_MODE)
-  {
-    CheckOSScreenSaverInhibitionSetting();
-  }
   else if (settingId == CSettings::SETTING_VIDEOSCREEN_FAKEFULLSCREEN)
   {
     if (CServiceBroker::GetWinSystem()->GetGfxContext().IsFullScreenRoot())
@@ -1057,14 +1037,6 @@ void CApplication::OnSettingAction(std::shared_ptr<const CSetting> setting)
   const std::string &settingId = setting->GetId();
   if (settingId == CSettings::SETTING_LOOKANDFEEL_SKINSETTINGS)
     CServiceBroker::GetGUI()->GetWindowManager().ActivateWindow(WINDOW_SKIN_SETTINGS);
-  else if (settingId == CSettings::SETTING_SCREENSAVER_PREVIEW)
-    ActivateScreenSaver(true);
-  else if (settingId == CSettings::SETTING_SCREENSAVER_SETTINGS)
-  {
-    AddonPtr addon;
-    if (CServiceBroker::GetAddonMgr().GetAddon(CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(CSettings::SETTING_SCREENSAVER_MODE), addon, ADDON_SCREENSAVER))
-      CGUIDialogAddonSettings::ShowForAddon(addon);
-  }
   else if (settingId == CSettings::SETTING_AUDIOCDS_SETTINGS)
   {
     AddonPtr addon;
@@ -1503,7 +1475,7 @@ void CApplication::Render()
 
   if (!extPlayerActive && CServiceBroker::GetWinSystem()->GetGfxContext().IsFullScreenVideo() && !m_appPlayer.IsPausedPlayback())
   {
-    ResetScreenSaver();
+    CApplicationMessenger::GetInstance().PostMsg(TMSG_RESETSCREENSAVERTIMER);
   }
 
   if(!CServiceBroker::GetRenderSystem()->BeginRender())
@@ -2048,10 +2020,6 @@ void CApplication::OnApplicationMessage(ThreadMessage* pMsg)
     InhibitIdleShutdown(pMsg->param1 != 0);
     break;
 
-  case TMSG_ACTIVATESCREENSAVER:
-    ActivateScreenSaver();
-    break;
-
   case TMSG_VOLUME_SHOW:
   {
     CAction action(pMsg->param1);
@@ -2174,9 +2142,6 @@ void CApplication::OnApplicationMessage(ThreadMessage* pMsg)
     if (CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO)
       CServiceBroker::GetGUI()->GetWindowManager().PreviousWindow();
 
-    ResetScreenSaver();
-    WakeUpScreenSaverAndDPMS();
-
     if (CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() != WINDOW_SLIDESHOW)
       CServiceBroker::GetGUI()->GetWindowManager().ActivateWindow(WINDOW_SLIDESHOW);
     if (URIUtils::IsZIP(pMsg->strParam) || URIUtils::IsRAR(pMsg->strParam)) // actually a cbz/cbr
@@ -2235,15 +2200,11 @@ void CApplication::OnApplicationMessage(ThreadMessage* pMsg)
 
     if (CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() != WINDOW_SLIDESHOW)
     {
-      if (items.Size() == 0)
+      if (items.Size() > 0)
       {
-        CServiceBroker::GetSettingsComponent()->GetSettings()->SetString(CSettings::SETTING_SCREENSAVER_MODE, "screensaver.xbmc.builtin.dim");
-        ActivateScreenSaver();
-      }
-      else
         CServiceBroker::GetGUI()->GetWindowManager().ActivateWindow(WINDOW_SLIDESHOW);
+      }
     }
-
   }
   break;
 
@@ -2418,9 +2379,6 @@ bool CApplication::Cleanup()
     // unloading
     CScriptInvocationManager::GetInstance().Uninitialize();
 
-    m_globalScreensaverInhibitor.Release();
-    m_screensaverInhibitor.Release();
-
     CRenderSystemBase *renderSystem = CServiceBroker::GetRenderSystem();
     if (renderSystem)
       renderSystem->DestroyRenderSystem();
@@ -2529,9 +2487,6 @@ void CApplication::Stop(int exitCode)
     CVariant vExitCode(CVariant::VariantTypeObject);
     vExitCode["exitcode"] = exitCode;
     CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::System, "xbmc", "OnQuit", vExitCode);
-
-    // Abort any active screensaver
-    WakeUpScreenSaverAndDPMS();
 
     g_alarmClock.StopThread();
 
@@ -2983,22 +2938,6 @@ void CApplication::PlaybackCleanup()
 #endif
   }
 
-  if (!m_appPlayer.IsPlayingAudio() && CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist() == PLAYLIST_NONE && CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() == WINDOW_VISUALISATION)
-  {
-    CServiceBroker::GetSettingsComponent()->GetSettings()->Save();  // save vis settings
-    WakeUpScreenSaverAndDPMS();
-    CServiceBroker::GetGUI()->GetWindowManager().PreviousWindow();
-  }
-
-  // DVD ejected while playing in vis ?
-  if (!m_appPlayer.IsPlayingAudio() && (m_itemCurrentFile->IsCDDA() || m_itemCurrentFile->IsOnDVD()) && !g_mediaManager.IsDiscInDrive() && CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() == WINDOW_VISUALISATION)
-  {
-    // yes, disable vis
-    CServiceBroker::GetSettingsComponent()->GetSettings()->Save();    // save vis settings
-    WakeUpScreenSaverAndDPMS();
-    CServiceBroker::GetGUI()->GetWindowManager().PreviousWindow();
-  }
-
   if (!m_appPlayer.IsPlaying())
   {
     m_stackHelper.Clear();
@@ -3134,10 +3073,6 @@ void CApplication::OnPlayBackStopped()
 {
   CLog::LogF(LOGDEBUG, "CApplication::OnPlayBackStopped");
 
-#if defined(TARGET_DARWIN_IOS)
-  CDarwinUtils::EnableOSScreenSaver(true);
-#endif
-
   CServiceBroker::GetPVRManager().OnPlaybackStopped(m_itemCurrentFile);
 
   CVariant data(CVariant::VariantTypeObject);
@@ -3162,9 +3097,6 @@ void CApplication::OnPlayBackPaused()
 #ifdef HAS_PYTHON
   g_pythonParser.OnPlayBackPaused();
 #endif
-#if defined(TARGET_DARWIN_IOS)
-  CDarwinUtils::EnableOSScreenSaver(true);
-#endif
 
   CVariant param;
   param["player"]["speed"] = 0;
@@ -3176,10 +3108,6 @@ void CApplication::OnPlayBackResumed()
 {
 #ifdef HAS_PYTHON
   g_pythonParser.OnPlayBackResumed();
-#endif
-#if defined(TARGET_DARWIN_IOS)
-  if (m_appPlayer.IsPlayingVideo())
-    CDarwinUtils::EnableOSScreenSaver(false);
 #endif
 
   CVariant param;
@@ -3327,340 +3255,6 @@ void CApplication::ResetSystemIdleTimer()
 #if defined(TARGET_DARWIN_IOS)
   CDarwinUtils::ResetSystemIdleTimer();
 #endif
-}
-
-void CApplication::ResetScreenSaver()
-{
-  // reset our timers
-  m_shutdownTimer.StartZero();
-
-  // screen saver timer is reset only if we're not already in screensaver or
-  // DPMS mode
-  if ((!m_screensaverActive && m_iScreenSaveLock == 0) && !m_dpmsIsActive)
-    ResetScreenSaverTimer();
-}
-
-void CApplication::ResetScreenSaverTimer()
-{
-  m_screenSaverTimer.StartZero();
-}
-
-void CApplication::StopScreenSaverTimer()
-{
-  m_screenSaverTimer.Stop();
-}
-
-bool CApplication::ToggleDPMS(bool manual)
-{
-  auto winSystem = CServiceBroker::GetWinSystem();
-  if (!winSystem)
-    return false;
-
-  std::shared_ptr<CDPMSSupport> dpms = winSystem->GetDPMSManager();
-  if (!dpms)
-    return false;
-
-  if (manual || (m_dpmsIsManual == manual))
-  {
-    if (m_dpmsIsActive)
-    {
-      m_dpmsIsActive = false;
-      m_dpmsIsManual = false;
-      SetRenderGUI(true);
-      CheckOSScreenSaverInhibitionSetting();
-      CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::GUI, "xbmc", "OnDPMSDeactivated");
-      return dpms->DisablePowerSaving();
-    }
-    else
-    {
-      if (dpms->EnablePowerSaving(dpms->GetSupportedModes()[0]))
-      {
-        m_dpmsIsActive = true;
-        m_dpmsIsManual = manual;
-        SetRenderGUI(false);
-        CheckOSScreenSaverInhibitionSetting();
-        CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::GUI, "xbmc", "OnDPMSActivated");
-        return true;
-      }
-    }
-  }
-  return false;
-}
-
-bool CApplication::WakeUpScreenSaverAndDPMS(bool bPowerOffKeyPressed /* = false */)
-{
-  bool result = false;
-
-  // First reset DPMS, if active
-  if (m_dpmsIsActive)
-  {
-    if (m_dpmsIsManual)
-      return false;
-    //! @todo if screensaver lock is specified but screensaver is not active
-    //! (DPMS came first), activate screensaver now.
-    ToggleDPMS(false);
-    ResetScreenSaverTimer();
-    result = !m_screensaverActive || WakeUpScreenSaver(bPowerOffKeyPressed);
-  }
-  else if (m_screensaverActive)
-    result = WakeUpScreenSaver(bPowerOffKeyPressed);
-
-  if(result)
-  {
-    // allow listeners to ignore the deactivation if it precedes a powerdown/suspend etc
-    CVariant data(CVariant::VariantTypeObject);
-    data["shuttingdown"] = bPowerOffKeyPressed;
-    CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::GUI, "xbmc", "OnScreensaverDeactivated", data);
-  }
-
-  return result;
-}
-
-bool CApplication::WakeUpScreenSaver(bool bPowerOffKeyPressed /* = false */)
-{
-  if (m_iScreenSaveLock == 2)
-    return false;
-
-  // if Screen saver is active
-  if (m_screensaverActive && !m_screensaverIdInUse.empty())
-  {
-    if (m_iScreenSaveLock == 0)
-    {
-      const std::shared_ptr<CProfileManager> profileManager = CServiceBroker::GetSettingsComponent()->GetProfileManager();
-      if (profileManager->GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE &&
-          (profileManager->UsingLoginScreen() || CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_MASTERLOCK_STARTUPLOCK)) &&
-          profileManager->GetCurrentProfile().getLockMode() != LOCK_MODE_EVERYONE &&
-          m_screensaverIdInUse != "screensaver.xbmc.builtin.dim" && m_screensaverIdInUse != "screensaver.xbmc.builtin.black" && m_screensaverIdInUse != "visualization")
-      {
-        m_iScreenSaveLock = 2;
-        CGUIMessage msg(GUI_MSG_CHECK_LOCK,0,0);
-
-        CGUIWindow* pWindow = CServiceBroker::GetGUI()->GetWindowManager().GetWindow(WINDOW_SCREENSAVER);
-        if (pWindow)
-          pWindow->OnMessage(msg);
-      }
-    }
-    if (m_iScreenSaveLock == -1)
-    {
-      m_iScreenSaveLock = 0;
-      return true;
-    }
-
-    // disable screensaver
-    m_screensaverActive = false;
-    m_iScreenSaveLock = 0;
-    ResetScreenSaverTimer();
-
-    if (m_screensaverIdInUse == "visualization")
-    {
-      // we can just continue as usual from vis mode
-      return false;
-    }
-    else if (m_screensaverIdInUse == "screensaver.xbmc.builtin.dim" ||
-             m_screensaverIdInUse == "screensaver.xbmc.builtin.black" ||
-             m_screensaverIdInUse.empty())
-    {
-      return true;
-    }
-    else if (!m_screensaverIdInUse.empty())
-    { // we're in screensaver window
-      if (m_pythonScreenSaver)
-      {
-        // What sound does a python screensaver make?
-        #define SCRIPT_ALARM "sssssscreensaver"
-        #define SCRIPT_TIMEOUT 15 // seconds
-
-        /* FIXME: This is a hack but a proper fix is non-trivial. Basically this code
-        * makes sure the addon gets terminated after we've moved out of the screensaver window.
-        * If we don't do this, we may simply lockup.
-        */
-        g_alarmClock.Start(SCRIPT_ALARM, SCRIPT_TIMEOUT, "StopScript(" + m_pythonScreenSaver->LibPath() + ")", true, false);
-        m_pythonScreenSaver.reset();
-      }
-      if (CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() == WINDOW_SCREENSAVER)
-        CServiceBroker::GetGUI()->GetWindowManager().PreviousWindow();  // show the previous window
-      else if (CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() == WINDOW_SLIDESHOW)
-        CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION, WINDOW_SLIDESHOW, -1, static_cast<void*>(new CAction(ACTION_STOP)));
-    }
-    return true;
-  }
-  else
-    return false;
-}
-
-void CApplication::CheckOSScreenSaverInhibitionSetting()
-{
-  // Kodi screen saver overrides OS one: always inhibit OS screen saver then
-  // except when DPMS is active (inhibiting the screen saver then might also
-  // disable DPMS again)
-  if (!m_dpmsIsActive &&
-      !CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(CSettings::SETTING_SCREENSAVER_MODE).empty() &&
-      CServiceBroker::GetWinSystem()->GetOSScreenSaver())
-  {
-    if (!m_globalScreensaverInhibitor)
-    {
-      m_globalScreensaverInhibitor = CServiceBroker::GetWinSystem()->GetOSScreenSaver()->CreateInhibitor();
-    }
-  }
-  else if (m_globalScreensaverInhibitor)
-  {
-    m_globalScreensaverInhibitor.Release();
-  }
-}
-
-void CApplication::CheckScreenSaverAndDPMS()
-{
-  bool maybeScreensaver = true;
-  if (m_dpmsIsActive)
-    maybeScreensaver = false;
-  else if (m_screensaverActive)
-    maybeScreensaver = false;
-  else if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(CSettings::SETTING_SCREENSAVER_MODE).empty())
-    maybeScreensaver = false;
-
-  auto winSystem = CServiceBroker::GetWinSystem();
-  if (!winSystem)
-    return;
-
-  std::shared_ptr<CDPMSSupport> dpms = winSystem->GetDPMSManager();
-
-  bool maybeDPMS = true;
-  if (m_dpmsIsActive)
-    maybeDPMS = false;
-  else if (!dpms || !dpms->IsSupported())
-    maybeDPMS = false;
-  else if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_POWERMANAGEMENT_DISPLAYSOFF) <= 0)
-    maybeDPMS = false;
-
-  // whether the current state of the application should be regarded as active even when there is no
-  // explicit user activity such as input
-  bool haveIdleActivity = false;
-
-  // Are we playing a video and it is not paused?
-  if (m_appPlayer.IsPlayingVideo() && !m_appPlayer.IsPaused())
-    haveIdleActivity = true;
-
-  // Are we playing some music in fullscreen vis?
-  else if (m_appPlayer.IsPlayingAudio() &&
-           CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() == WINDOW_VISUALISATION &&
-           !CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(CSettings::SETTING_MUSICPLAYER_VISUALISATION).empty())
-  {
-    haveIdleActivity = true;
-  }
-
-  // Handle OS screen saver state
-  if (haveIdleActivity && CServiceBroker::GetWinSystem()->GetOSScreenSaver())
-  {
-    // Always inhibit OS screen saver during these kinds of activities
-    if (!m_screensaverInhibitor)
-    {
-      m_screensaverInhibitor = CServiceBroker::GetWinSystem()->GetOSScreenSaver()->CreateInhibitor();
-    }
-  }
-  else if (m_screensaverInhibitor)
-  {
-    m_screensaverInhibitor.Release();
-  }
-
-  // Has the screen saver window become active?
-  if (maybeScreensaver && CServiceBroker::GetGUI()->GetWindowManager().IsWindowActive(WINDOW_SCREENSAVER))
-  {
-    m_screensaverActive = true;
-    maybeScreensaver = false;
-  }
-
-  if (m_screensaverActive && haveIdleActivity)
-  {
-    WakeUpScreenSaverAndDPMS();
-    return;
-  }
-
-  if (!maybeScreensaver && !maybeDPMS) return;  // Nothing to do.
-
-  // See if we need to reset timer.
-  if (haveIdleActivity)
-  {
-    ResetScreenSaverTimer();
-    return;
-  }
-
-  float elapsed = m_screenSaverTimer.IsRunning() ? m_screenSaverTimer.GetElapsedSeconds() : 0.f;
-
-  // DPMS has priority (it makes the screensaver not needed)
-  if (maybeDPMS
-      && elapsed > CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_POWERMANAGEMENT_DISPLAYSOFF) * 60)
-  {
-    ToggleDPMS(false);
-    WakeUpScreenSaver();
-  }
-  else if (maybeScreensaver
-           && elapsed > CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_SCREENSAVER_TIME) * 60)
-  {
-    ActivateScreenSaver();
-  }
-}
-
-// activate the screensaver.
-// if forceType is true, we ignore the various conditions that can alter
-// the type of screensaver displayed
-void CApplication::ActivateScreenSaver(bool forceType /*= false */)
-{
-  const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
-  if (m_appPlayer.IsPlayingAudio() && settings->GetBool(CSettings::SETTING_SCREENSAVER_USEMUSICVISINSTEAD) &&
-      !settings->GetString(CSettings::SETTING_MUSICPLAYER_VISUALISATION).empty())
-  { // just activate the visualisation if user toggled the usemusicvisinstead option
-    CServiceBroker::GetGUI()->GetWindowManager().ActivateWindow(WINDOW_VISUALISATION);
-    return;
-  }
-
-  m_screensaverActive = true;
-  CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::GUI, "xbmc", "OnScreensaverActivated");
-
-  // disable screensaver lock from the login screen
-  m_iScreenSaveLock = CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() == WINDOW_LOGIN_SCREEN ? 1 : 0;
-
-  // set to Dim in the case of a dialog on screen or playing video
-  bool bUseDim = false;
-  if (!forceType)
-  {
-    if (CServiceBroker::GetGUI()->GetWindowManager().HasModalDialog(true))
-      bUseDim = true;
-    else if (m_appPlayer.IsPlayingVideo() && settings->GetBool(CSettings::SETTING_SCREENSAVER_USEDIMONPAUSE))
-      bUseDim = true;
-    else if (CServiceBroker::GetPVRManager().GUIActions()->IsRunningChannelScan())
-      bUseDim = true;
-  }
-
-  if (bUseDim)
-    m_screensaverIdInUse = "screensaver.xbmc.builtin.dim";
-  else // Get Screensaver Mode
-    m_screensaverIdInUse = settings->GetString(CSettings::SETTING_SCREENSAVER_MODE);
-
-  if (m_screensaverIdInUse == "screensaver.xbmc.builtin.dim" ||
-      m_screensaverIdInUse == "screensaver.xbmc.builtin.black")
-  {
-    return;
-  }
-  else if (m_screensaverIdInUse.empty())
-    return;
-  else if (CServiceBroker::GetAddonMgr().GetAddon(m_screensaverIdInUse, m_pythonScreenSaver, ADDON_SCREENSAVER))
-  {
-    std::string libPath = m_pythonScreenSaver->LibPath();
-    if (CScriptInvocationManager::GetInstance().HasLanguageInvoker(libPath))
-    {
-      CLog::Log(LOGDEBUG, "using python screensaver add-on %s", m_screensaverIdInUse.c_str());
-
-      // Don't allow a previously-scheduled alarm to kill our new screensaver
-      g_alarmClock.Stop(SCRIPT_ALARM, true);
-
-      if (!CScriptInvocationManager::GetInstance().Stop(libPath))
-        CScriptInvocationManager::GetInstance().ExecuteAsync(libPath, AddonPtr(new CAddon(dynamic_cast<ADDON::CAddon&>(*m_pythonScreenSaver))));
-      return;
-    }
-    m_pythonScreenSaver.reset();
-  }
-
-  CServiceBroker::GetGUI()->GetWindowManager().ActivateWindow(WINDOW_SCREENSAVER);
 }
 
 void CApplication::CheckShutdown()
@@ -4090,9 +3684,6 @@ void CApplication::ProcessSlow()
     CJobManager::GetInstance().UnPauseJobs();
   }
 
-  // Check if we need to activate the screensaver / DPMS.
-  CheckScreenSaverAndDPMS();
-
   // Check if we need to shutdown (if enabled).
 #if defined(TARGET_DARWIN)
   if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_POWERMANAGEMENT_SHUTDOWNTIME) &&
@@ -4159,8 +3750,8 @@ void CApplication::ProcessSlow()
   // if we don't render the gui there's no reason to start the screensaver.
   // that way the screensaver won't kick in if we maximize the XBMC window
   // after the screensaver start time.
-  if(!m_renderGUI)
-    ResetScreenSaverTimer();
+  if (!m_renderGUI)
+    CApplicationMessenger::GetInstance().PostMsg(TMSG_RESETSCREENSAVERTIMER);
 }
 
 // Global Idle Time in Seconds

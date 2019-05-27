@@ -8,6 +8,8 @@
 
 #include "DPMSSupport.h"
 
+#include "Application.h"
+#include "interfaces/AnnouncementManager.h"
 #include "ServiceBroker.h"
 #include "settings/lib/Setting.h"
 #include "settings/Settings.h"
@@ -42,3 +44,26 @@ bool CDPMSSupport::IsModeSupported(PowerSavingMode mode) const
 
   return false;
 }
+
+void CDPMSSupport::Deactivate()
+{
+  if (!m_active)
+    return;
+
+  CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::GUI, "xbmc", "OnDPMSDeactivated");
+  DisablePowerSaving();
+  g_application.SetRenderGUI(true);
+  m_active = false;
+}
+
+void CDPMSSupport::Activate()
+{
+  if (m_active)
+    return;
+
+  CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::GUI, "xbmc", "OnDPMSActivated");
+  EnablePowerSaving(GetSupportedModes().front());
+  g_application.SetRenderGUI(false);
+  m_active = true;
+}
+

@@ -393,9 +393,9 @@
 #define SYSTEM_BATTERY_LEVEL        714
 #define SYSTEM_IDLE_TIME            715
 #define SYSTEM_FRIENDLY_NAME        716
-#define SYSTEM_SCREENSAVER_ACTIVE   717
+// unused                           717
 #define SYSTEM_ADDON_VERSION        718
-#define SYSTEM_DPMS_ACTIVE          719
+// unused                           719
 
 #define LIBRARY_HAS_MUSIC           720
 #define LIBRARY_HAS_VIDEO           721

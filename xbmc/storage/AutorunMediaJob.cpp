@@ -13,8 +13,11 @@
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "dialogs/GUIDialogSelect.h"
+#include "messaging/ApplicationMessenger.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
+
+using namespace KODI::MESSAGING;
 
 CAutorunMediaJob::CAutorunMediaJob(const std::string &label, const std::string &path):
   m_path(path),
@@ -27,7 +30,7 @@ bool CAutorunMediaJob::DoWork()
   CGUIDialogSelect* pDialog= CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogSelect>(WINDOW_DIALOG_SELECT);
 
   // wake up and turn off the screensaver if it's active
-  g_application.WakeUpScreenSaverAndDPMS();
+  CApplicationMessenger::GetInstance().PostMsg(TMSG_DEACTIVATESCREENSAVER);
 
   pDialog->Reset();
   if (!m_label.empty())

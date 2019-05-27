@@ -336,7 +336,7 @@ void CXBMCApp::onGainFocus()
 {
   android_printf("%s: ", __PRETTY_FUNCTION__);
   m_hasFocus = true;
-  g_application.WakeUpScreenSaverAndDPMS();
+  CApplicationMessenger::GetInstance().PostMsg(TMSG_DEACTIVATESCREENSAVER);
 }
 
 void CXBMCApp::onLostFocus()
@@ -993,7 +993,7 @@ void CXBMCApp::onReceive(CJNIIntent intent)
   else if (action == "android.intent.action.DREAMING_STOPPED" || action == "android.intent.action.SCREEN_ON")
   {
     if (HasFocus())
-      g_application.WakeUpScreenSaverAndDPMS();
+      CApplicationMessenger::GetInstance().PostMsg(TMSG_DEACTIVATESCREENSAVER);
   }
   else if (action == "android.intent.action.HEADSET_PLUG" ||
     action == "android.bluetooth.a2dp.profile.action.CONNECTION_STATE_CHANGED")

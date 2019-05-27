@@ -14,6 +14,7 @@
 #include "messaging/ApplicationMessenger.h"
 #include "interfaces/AnnouncementManager.h"
 #include "network/Network.h"
+#include "powermanagement/DPMSSupport.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
@@ -23,6 +24,8 @@
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
+#include "windowing/WinSystem.h"
+
 #include <stdlib.h>
 
 using namespace KODI::MESSAGING;
@@ -119,12 +122,16 @@ static int ToggleDebug(const std::vector<std::string>& params)
   return 0;
 }
 
-/*! \brief Toggle DPMS state.
+/*! \brief Activate DPMS state.
  *  \param params (ignored)
  */
-static int ToggleDPMS(const std::vector<std::string>& params)
+static int ActivateDPMS(const std::vector<std::string>& params)
 {
-  g_application.ToggleDPMS(true);
+  auto winSystem = CServiceBroker::GetWinSystem();
+  if (!winSystem)
+    return -1;
+
+  winSystem->GetDPMSManager()->Activate();
 
   return 0;
 }
@@ -208,7 +215,7 @@ CBuiltins::CommandMap CApplicationBuiltins::GetOperations() const
            {"notifyall", {"Notify all connected clients", 2, NotifyAll}},
            {"setvolume", {"Set the current volume", 1, SetVolume}},
            {"toggledebug", {"Enables/disables debug mode", 0, ToggleDebug}},
-           {"toggledpms", {"Toggle DPMS mode manually", 0, ToggleDPMS}},
+           {"activatedpms", {"Activate DPMS mode manually", 0, ActivateDPMS}},
            {"wakeonlan", {"Sends the wake-up packet to the broadcast address for the specified MAC address", 1, WakeOnLAN}}
          };
 }

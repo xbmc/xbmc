@@ -15,6 +15,7 @@
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "GUIUserMessages.h"
+#include "messaging/ApplicationMessenger.h"
 #include "PartyModeManager.h"
 #include "PlayListPlayer.h"
 #include "SeekHandler.h"
@@ -36,6 +37,8 @@
 #ifdef HAS_DVD_DRIVE
 #include "Autorun.h"
 #endif
+
+using namespace KODI::MESSAGING;
 
 /*! \brief Clear current playlist
  *  \param params (ignored)
@@ -105,8 +108,8 @@ static int PlayOffset(const std::vector<std::string>& params)
  */
 static int PlayerControl(const std::vector<std::string>& params)
 {
-  g_application.ResetScreenSaver();
-  g_application.WakeUpScreenSaverAndDPMS();
+  CApplicationMessenger::GetInstance().PostMsg(TMSG_RESETSCREENSAVERTIMER);
+  CApplicationMessenger::GetInstance().PostMsg(TMSG_DEACTIVATESCREENSAVER);
 
   std::string paramlow(params[0]);
   StringUtils::ToLower(paramlow);
@@ -392,8 +395,8 @@ static int PlayMedia(const std::vector<std::string>& params)
     CServiceBroker::GetGUI()->GetWindowManager().PreviousWindow();
 
   // reset screensaver
-  g_application.ResetScreenSaver();
-  g_application.WakeUpScreenSaverAndDPMS();
+  CApplicationMessenger::GetInstance().PostMsg(TMSG_RESETSCREENSAVERTIMER);
+  CApplicationMessenger::GetInstance().PostMsg(TMSG_DEACTIVATESCREENSAVER);
 
   // ask if we need to check guisettings to resume
   bool askToResume = true;
@@ -527,7 +530,7 @@ static int Seek(const std::vector<std::string>& params)
 ///     <br>
 ///     | Control                 | Video playback behaviour               | Audio playback behaviour    | Added in    |
 ///     |:------------------------|:---------------------------------------|:----------------------------|:------------|
-///     | Play                    | Play/Pause                             | Play/Pause                  |             | 
+///     | Play                    | Play/Pause                             | Play/Pause                  |             |
 ///     | Stop                    | Stop                                   | Stop                        |             |
 ///     | Forward                 | Fast Forward                           | Fast Forward                |             |
 ///     | Rewind                  | Rewind                                 | Rewind                      |             |

@@ -525,7 +525,7 @@ void CPlayListPlayer::SetShuffle(int iPlaylist, bool bYesNo, bool bNotify /* = f
     }
   }
 
-  // its likely that the playlist changed   
+  // its likely that the playlist changed
   if (CServiceBroker::GetGUI() != nullptr)
   {
     CGUIMessage msg(GUI_MSG_PLAYLIST_CHANGED, 0, 0);
@@ -585,7 +585,7 @@ void CPlayListPlayer::SetRepeat(int iPlaylist, REPEAT_STATE state, bool bNotify 
     break;
   }
 
-  // its likely that the playlist changed   
+  // its likely that the playlist changed
   if (CServiceBroker::GetGUI() != nullptr)
   {
     CGUIMessage msg(GUI_MSG_PLAYLIST_CHANGED, 0, 0);
@@ -868,8 +868,8 @@ void PLAYLIST::CPlayListPlayer::OnApplicationMessage(KODI::MESSAGING::ThreadMess
       return;
     }
 
-    g_application.ResetScreenSaver();
-    g_application.WakeUpScreenSaverAndDPMS();
+    CApplicationMessenger::GetInstance().PostMsg(TMSG_RESETSCREENSAVERTIMER);
+    CApplicationMessenger::GetInstance().PostMsg(TMSG_DEACTIVATESCREENSAVER);
 
     //g_application.StopPlaying();
     // play file
@@ -954,8 +954,8 @@ void PLAYLIST::CPlayListPlayer::OnApplicationMessage(KODI::MESSAGING::ThreadMess
       (stopMusic && CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() == WINDOW_VISUALISATION))
       CServiceBroker::GetGUI()->GetWindowManager().PreviousWindow();
 
-    g_application.ResetScreenSaver();
-    g_application.WakeUpScreenSaverAndDPMS();
+    CApplicationMessenger::GetInstance().PostMsg(TMSG_RESETSCREENSAVERTIMER);
+    CApplicationMessenger::GetInstance().PostMsg(TMSG_DEACTIVATESCREENSAVER);
 
     // stop playing file
     if (g_application.GetAppPlayer().IsPlaying())
@@ -966,8 +966,8 @@ void PLAYLIST::CPlayListPlayer::OnApplicationMessage(KODI::MESSAGING::ThreadMess
   case TMSG_MEDIA_PAUSE:
     if (g_application.GetAppPlayer().HasPlayer())
     {
-      g_application.ResetScreenSaver();
-      g_application.WakeUpScreenSaverAndDPMS();
+      CApplicationMessenger::GetInstance().PostMsg(TMSG_RESETSCREENSAVERTIMER);
+      CApplicationMessenger::GetInstance().PostMsg(TMSG_DEACTIVATESCREENSAVER);
       g_application.GetAppPlayer().Pause();
     }
     break;
@@ -975,8 +975,8 @@ void PLAYLIST::CPlayListPlayer::OnApplicationMessage(KODI::MESSAGING::ThreadMess
   case TMSG_MEDIA_UNPAUSE:
     if (g_application.GetAppPlayer().IsPausedPlayback())
     {
-      g_application.ResetScreenSaver();
-      g_application.WakeUpScreenSaverAndDPMS();
+      CApplicationMessenger::GetInstance().PostMsg(TMSG_RESETSCREENSAVERTIMER);
+      CApplicationMessenger::GetInstance().PostMsg(TMSG_DEACTIVATESCREENSAVER);
       g_application.GetAppPlayer().Pause();
     }
     break;
@@ -984,8 +984,8 @@ void PLAYLIST::CPlayListPlayer::OnApplicationMessage(KODI::MESSAGING::ThreadMess
   case TMSG_MEDIA_PAUSE_IF_PLAYING:
     if (g_application.GetAppPlayer().IsPlaying() && !g_application.GetAppPlayer().IsPaused())
     {
-      g_application.ResetScreenSaver();
-      g_application.WakeUpScreenSaverAndDPMS();
+      CApplicationMessenger::GetInstance().PostMsg(TMSG_RESETSCREENSAVERTIMER);
+      CApplicationMessenger::GetInstance().PostMsg(TMSG_DEACTIVATESCREENSAVER);
       g_application.GetAppPlayer().Pause();
     }
     break;

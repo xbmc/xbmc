@@ -115,10 +115,9 @@ bool CInputManager::ProcessMouse(int windowId)
 
   // Reset the screensaver and idle timers
   g_application.ResetSystemIdleTimer();
-  g_application.ResetScreenSaver();
 
-  if (g_application.WakeUpScreenSaverAndDPMS())
-    return true;
+  CApplicationMessenger::GetInstance().PostMsg(TMSG_RESETSCREENSAVERTIMER);
+  CApplicationMessenger::GetInstance().PostMsg(TMSG_DEACTIVATESCREENSAVER);
 
   // Retrieve the corresponding action
   CKey key(mousekey, (unsigned int)0);
@@ -174,8 +173,7 @@ bool CInputManager::ProcessEventServer(int windowId, float frameTime)
   {
     // reset idle timers
     g_application.ResetSystemIdleTimer();
-    g_application.ResetScreenSaver();
-    g_application.WakeUpScreenSaverAndDPMS();
+    CApplicationMessenger::GetInstance().PostMsg(TMSG_RESETSCREENSAVERTIMER);
   }
 
   // now handle any buttons or axis
@@ -210,11 +208,8 @@ bool CInputManager::ProcessEventServer(int windowId, float frameTime)
         {
           // break screensaver
           g_application.ResetSystemIdleTimer();
-          g_application.ResetScreenSaver();
-
-          // in case we wokeup the screensaver or screen - eat that action...
-          if (g_application.WakeUpScreenSaverAndDPMS())
-            return true;
+          CApplicationMessenger::GetInstance().PostMsg(TMSG_RESETSCREENSAVERTIMER);
+          CApplicationMessenger::GetInstance().PostMsg(TMSG_DEACTIVATESCREENSAVER);
 
           m_Mouse.SetActive(false);
 
@@ -523,13 +518,12 @@ bool CInputManager::HandleKey(const CKey& key)
     }
   }
 
-  g_application.ResetScreenSaver();
+  CApplicationMessenger::GetInstance().PostMsg(TMSG_RESETSCREENSAVERTIMER);
 
-  // allow some keys to be processed while the screensaver is active
-  if (g_application.WakeUpScreenSaverAndDPMS(processKey) && !processKey)
+  // allow some keys to be processed while the screensaver is active]
+  if (!processKey)
   {
-    CLog::LogF(LOGDEBUG, "%s pressed, screen saver/dpms woken up", m_Keyboard.GetKeyName((int)key.GetButtonCode()).c_str());
-    return true;
+    CApplicationMessenger::GetInstance().PostMsg(TMSG_DEACTIVATESCREENSAVER);
   }
 
   if (iWin != WINDOW_FULLSCREEN_VIDEO &&

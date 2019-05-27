@@ -15,11 +15,9 @@ class CGUIWindowScreensaverDim : public CGUIDialog
 public:
   CGUIWindowScreensaverDim();
 
+  bool OnMessage(CGUIMessage& message) override;
   void Process(unsigned int currentTime, CDirtyRegionList &dirtyregions) override;
   void Render() override;
-
-protected:
-  void UpdateVisibility() override;
 
 private:
   float m_dimLevel = 100.0f;

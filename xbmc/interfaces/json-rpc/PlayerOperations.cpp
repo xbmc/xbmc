@@ -161,7 +161,7 @@ JSONRPC_STATUS CPlayerOperations::GetItem(const std::string &method, ITransportL
           // Fallback to item details held by GUI but ensure path unchanged
           //! @todo  remove this once there is no route to playback that updates
           // GUI item without also updating app item e.g. start playback of a
-          // non-library item via JSON 
+          // non-library item via JSON
           const CVideoInfoTag *currentVideoTag = CServiceBroker::GetGUI()->GetInfoManager().GetCurrentMovieTag();
           if (currentVideoTag != NULL)
           {
@@ -181,7 +181,7 @@ JSONRPC_STATUS CPlayerOperations::GetItem(const std::string &method, ITransportL
           // Fallback to item details held by GUI but ensure path unchanged
           //! @todo  remove this once there is no route to playback that updates
           // GUI item without also updating app item e.g. start playback of a
-          // non-library item via JSON 
+          // non-library item via JSON
           const MUSIC_INFO::CMusicInfoTag *currentMusicTag = CServiceBroker::GetGUI()->GetInfoManager().GetCurrentSongTag();
           if (currentMusicTag != NULL)
           {
@@ -515,13 +515,13 @@ std::string GetStringFromViewMode(ViewMode viewMode)
   {
     return p.second == viewMode;
   });
-  
+
   if (it != viewModes.end())
   {
     std::pair<std::string, ViewMode> value = *it;
     result = value.first;
   }
-  
+
   return result;
 }
 
@@ -538,7 +538,7 @@ void GetNewValueForViewModeParameter(const CVariant &parameter, float stepSize, 
     {
       stepSize *= -1;
     }
-    
+
     result += stepSize;
   }
 
@@ -581,7 +581,7 @@ JSONRPC_STATUS CPlayerOperations::SetViewMode(const std::string &method, ITransp
       GetNewValueForViewModeParameter(pixelRatio, 0.01f, 0.5f, 2.f, vs.m_CustomPixelRatio);
       jsonStatus = ACK;
     }
-    
+
     if (!verticalShift.isNull())
     {
       GetNewValueForViewModeParameter(verticalShift, -0.01f, -2.f, 2.f, vs.m_CustomVerticalShift);
@@ -608,7 +608,7 @@ JSONRPC_STATUS CPlayerOperations::SetViewMode(const std::string &method, ITransp
 JSONRPC_STATUS CPlayerOperations::GetViewMode(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   int mode = g_application.GetAppPlayer().GetVideoSettings().m_ViewMode;
-  
+
   result["viewmode"] = GetStringFromViewMode(static_cast<ViewMode>(mode));
 
   result["zoom"] = CDisplaySettings::GetInstance().GetZoomAmount();
@@ -1278,8 +1278,9 @@ JSONRPC_STATUS CPlayerOperations::StartSlideshow(const std::string& path, bool r
     params.push_back(firstPicturePath);
 
   // Reset screensaver when started from JSON only to avoid potential conflict with slideshow screensavers
-  g_application.ResetScreenSaver();
-  g_application.WakeUpScreenSaverAndDPMS();
+  CApplicationMessenger::GetInstance().PostMsg(TMSG_RESETSCREENSAVERTIMER);
+  CApplicationMessenger::GetInstance().PostMsg(TMSG_DEACTIVATESCREENSAVER);
+
   CGUIMessage msg(GUI_MSG_START_SLIDESHOW, 0, 0, flags);
   msg.SetStringParams(params);
   CApplicationMessenger::GetInstance().SendGUIMessage(msg, WINDOW_SLIDESHOW);

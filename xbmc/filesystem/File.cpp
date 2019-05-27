@@ -139,8 +139,6 @@ bool CFile::Copy(const CURL& url2, const CURL& dest, XFILE::IFileCallback* pCall
     float start = 0.0f;
     while (true)
     {
-      g_application.ResetScreenSaver();
-
       iRead = file.Read(buffer.get(), iBufferSize);
       if (iRead == 0) break;
       else if (iRead < 0)

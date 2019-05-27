@@ -369,9 +369,12 @@ void CGUIWindowSlideShow::Process(unsigned int currentTime, CDirtyRegionList &re
   const RESOLUTION_INFO res = CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo();
 
   // reset the screensaver if we're in a slideshow
-  // (unless we are the screensaver!)
-  if (m_bSlideShow && !m_bPause && !g_application.IsInScreenSaver())
-    g_application.ResetScreenSaver();
+  if (m_bSlideShow && !m_bPause)
+  {
+    CApplicationMessenger::GetInstance().PostMsg(TMSG_RESETSCREENSAVERTIMER);
+    CApplicationMessenger::GetInstance().PostMsg(TMSG_DEACTIVATESCREENSAVER);
+  }
+
   int iSlides = m_slides.size();
   if (!iSlides)
     return;

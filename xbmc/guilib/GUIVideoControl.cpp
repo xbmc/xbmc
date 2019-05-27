@@ -12,8 +12,11 @@
 #include "Application.h"
 #include "ServiceBroker.h"
 #include "input/Key.h"
+#include "messaging/ApplicationMessenger.h"
 #include "utils/Color.h"
 #include "WindowIDs.h"
+
+using namespace KODI::MESSAGING;
 
 CGUIVideoControl::CGUIVideoControl(int parentID, int controlID, float posX, float posY, float width, float height)
     : CGUIControl(parentID, controlID, posX, posY, width, height)
@@ -37,7 +40,7 @@ void CGUIVideoControl::Render()
   if (g_application.GetAppPlayer().IsRenderingVideo())
   {
     if (!g_application.GetAppPlayer().IsPausedPlayback())
-      g_application.ResetScreenSaver();
+      CApplicationMessenger::GetInstance().PostMsg(TMSG_RESETSCREENSAVERTIMER);
 
     CServiceBroker::GetWinSystem()->GetGfxContext().SetViewWindow(m_posX, m_posY, m_posX + m_width, m_posY + m_height);
     TransformMatrix mat;

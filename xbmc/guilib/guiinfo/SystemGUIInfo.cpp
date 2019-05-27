@@ -20,6 +20,7 @@
 #if defined(TARGET_DARWIN_OSX)
 #include "platform/darwin/osx/smc.h"
 #endif
+#include "powermanagement/DPMSSupport.h"
 #include "powermanagement/PowerManager.h"
 #include "profiles/ProfileManager.h"
 #include "settings/AdvancedSettings.h"
@@ -516,12 +517,6 @@ bool CSystemGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int context
       return true;
     case SYSTEM_CAN_REBOOT:
       value = CServiceBroker::GetPowerManager().CanReboot();
-      return true;
-    case SYSTEM_SCREENSAVER_ACTIVE:
-      value = g_application.IsInScreenSaver();
-      return true;
-    case SYSTEM_DPMS_ACTIVE:
-      value = g_application.IsDPMSActive();
       return true;
     case SYSTEM_HASLOCKS:
       value = CServiceBroker::GetSettingsComponent()->GetProfileManager()->GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE;

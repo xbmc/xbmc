@@ -1143,7 +1143,7 @@ void CPeripheralCecAdapter::CecSourceActivated(void *cbParam, const CEC::cec_log
 
   // wake up the screensaver, so the user doesn't switch to a black screen
   if (activated == 1)
-    g_application.WakeUpScreenSaverAndDPMS();
+    CApplicationMessenger::GetInstance().PostMsg(TMSG_DEACTIVATESCREENSAVER);
 
   if (adapter->GetSettingInt("pause_or_stop_playback_on_deactivate") != LOCALISED_ID_NONE)
   {

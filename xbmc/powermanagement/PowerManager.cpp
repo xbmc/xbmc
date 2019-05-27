@@ -22,6 +22,7 @@
 #include "guilib/LocalizeStrings.h"
 #include "interfaces/AnnouncementManager.h"
 #include "interfaces/builtins/Builtins.h"
+#include "messaging/ApplicationMessenger.h"
 #include "network/Network.h"
 #include "pvr/PVRManager.h"
 #include "ServiceBroker.h"
@@ -37,6 +38,8 @@
 #if defined(TARGET_WINDOWS_DESKTOP)
 extern HWND g_hWnd;
 #endif
+
+using namespace KODI::MESSAGING;
 
 CPowerManager::CPowerManager()
 {
@@ -182,7 +185,7 @@ void CPowerManager::OnSleep()
   StorePlayerState();
   g_application.StopPlaying();
   g_application.StopShutdownTimer();
-  g_application.StopScreenSaverTimer();
+  CApplicationMessenger::GetInstance().PostMsg(TMSG_STOPSCREENSAVERTIMER);
   g_application.CloseNetworkShares();
   CServiceBroker::GetActiveAE()->Suspend();
 }
@@ -208,8 +211,10 @@ void CPowerManager::OnWake()
     SetForegroundWindow(g_hWnd);
 #endif
   }
-  g_application.ResetScreenSaver();
 #endif
+
+  CApplicationMessenger::GetInstance().PostMsg(TMSG_RESETSCREENSAVERTIMER);
+  CApplicationMessenger::GetInstance().PostMsg(TMSG_DEACTIVATESCREENSAVER);
 
   CServiceBroker::GetActiveAE()->Resume();
   g_application.UpdateLibraries();

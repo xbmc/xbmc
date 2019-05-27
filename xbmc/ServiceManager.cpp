@@ -28,6 +28,7 @@
 #include "pvr/PVRManager.h"
 #include "network/Network.h"
 #include "utils/FileExtensionProvider.h"
+#include "utils/ScreenSaverUtils.h"
 #include "powermanagement/PowerManager.h"
 #include "weather/WeatherManager.h"
 #include "DatabaseManager.h"
@@ -177,6 +178,8 @@ bool CServiceManager::InitStageThree(const std::shared_ptr<CProfileManager>& pro
   m_PVRManager->Init();
 
   m_playerCoreFactory.reset(new CPlayerCoreFactory(*profileManager));
+
+  m_screenSaver.reset(new UTILS::CScreenSaverUtils);
 
   init_level = 3;
   return true;

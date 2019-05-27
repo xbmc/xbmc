@@ -445,13 +445,8 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
 
       CLog::LogFC(LOGDEBUG, LOGWINDOWING, "APPCOMMAND %d", appcmd);
 
-      // Reset the screen saver
-      g_application.ResetScreenSaver();
-
-      // If we were currently in the screen saver wake up and don't process the
-      // appcommand
-      if (g_application.WakeUpScreenSaverAndDPMS())
-        return true;
+      CApplicationMessenger::GetInstance().PostMsg(TMSG_RESETSCREENSAVERTIMER);
+      CApplicationMessenger::GetInstance().PostMsg(TMSG_DEACTIVATESCREENSAVER);
 
       // Retrieve the action associated with this appcommand from the mapping table
       CKey key(appcmd | KEY_APPCOMMAND, 0U);

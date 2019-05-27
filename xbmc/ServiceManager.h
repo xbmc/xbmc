@@ -63,6 +63,11 @@ namespace PERIPHERALS
   class CPeripherals;
 }
 
+namespace UTILS
+{
+  class CScreenSaverUtils;
+}
+
 class CInputManager;
 class CFileExtensionProvider;
 class CPlayerCoreFactory;
@@ -163,4 +168,5 @@ protected:
   std::unique_ptr<CWeatherManager> m_weatherManager;
   std::unique_ptr<CPlayerCoreFactory> m_playerCoreFactory;
   std::unique_ptr<CDatabaseManager> m_databaseManager;
+  std::unique_ptr<UTILS::CScreenSaverUtils> m_screenSaver;
 };

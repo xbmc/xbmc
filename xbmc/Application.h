@@ -35,7 +35,6 @@
 #include "powermanagement/WinIdleTimer.h"
 #endif
 #include "utils/Stopwatch.h"
-#include "windowing/OSScreenSaver.h"
 #include "windowing/XBMC_events.h"
 #include "threads/SystemClock.h"
 #include "threads/Thread.h"
@@ -199,15 +198,11 @@ public:
   void CheckShutdown();
   void InhibitIdleShutdown(bool inhibit);
   bool IsIdleShutdownInhibited() const;
-  // Checks whether the screensaver and / or DPMS should become active.
-  void CheckScreenSaverAndDPMS();
-  void ActivateScreenSaver(bool forceType = false);
   void CloseNetworkShares();
 
   void ShowAppMigrationMessage();
   void Process() override;
   void ProcessSlow();
-  void ResetScreenSaver();
   float GetVolume(bool percentage = true) const;
   void SetVolume(float iValue, bool isPercentage = true);
   bool IsMuted() const;
@@ -218,11 +213,7 @@ public:
   int GetSubtitleDelay();
   int GetAudioDelay();
   void ResetSystemIdleTimer();
-  void ResetScreenSaverTimer();
-  void StopScreenSaverTimer();
-  // Wakes up from the screensaver and / or DPMS. Returns true if woken up.
-  bool WakeUpScreenSaverAndDPMS(bool bPowerOffKeyPressed = false);
-  bool WakeUpScreenSaver(bool bPowerOffKeyPressed = false);
+
   /*!
    \brief Returns the total time in fractional seconds of the currently playing media
 
@@ -296,12 +287,6 @@ public:
   MEDIA_DETECT::CDetectDVDMedia m_DetectDVDType;
 #endif
 
-  inline bool IsInScreenSaver() { return m_screensaverActive; };
-  inline std::string ScreensaverIdInUse() { return m_screensaverIdInUse; }
-
-  inline bool IsDPMSActive() { return m_dpmsIsActive; };
-  int m_iScreenSaveLock = 0; // spiff: are we checking for a lock? if so, ignore the screensaver state, if -1 we have failed to input locks
-
   std::string m_strPlayListFile;
 
   int GlobalIdleTime();
@@ -313,7 +298,6 @@ public:
   bool IsAppFocused() const { return m_AppFocused; }
 
   void Minimize();
-  bool ToggleDPMS(bool manual);
 
   bool SwitchToFullScreen(bool force = false);
 
@@ -361,7 +345,6 @@ protected:
 
   bool LoadSkin(const std::string& skinID);
 
-  void CheckOSScreenSaverInhibitionSetting();
   void PlaybackCleanup();
 
   // inbound protocol
@@ -395,22 +378,12 @@ protected:
 #if defined(TARGET_ANDROID)
   friend class CWinEventsAndroid;
 #endif
-  // screensaver
-  bool m_screensaverActive = false;
-  std::string m_screensaverIdInUse;
-  ADDON::AddonPtr m_pythonScreenSaver; // @warning: Fallback for Python interface, for binaries not needed!
-  // OS screen saver inhibitor that is always active if user selected a Kodi screen saver
-  KODI::WINDOWING::COSScreenSaverInhibitor m_globalScreensaverInhibitor;
-  // Inhibitor that is active e.g. during video playback
-  KODI::WINDOWING::COSScreenSaverInhibitor m_screensaverInhibitor;
 
   // timer information
 #ifdef TARGET_WINDOWS
   CWinIdleTimer m_idleTimer;
-  CWinIdleTimer m_screenSaverTimer;
 #else
   CStopWatch m_idleTimer;
-  CStopWatch m_screenSaverTimer;
 #endif
   CStopWatch m_restartPlayerTimer;
   CStopWatch m_frameTime;
@@ -420,9 +393,6 @@ protected:
   XbmcThreads::EndTime m_guiRefreshTimer;
 
   bool m_bInhibitIdleShutdown = false;
-
-  bool m_dpmsIsActive = false;
-  bool m_dpmsIsManual = false;
 
   CFileItemPtr m_itemCurrentFile;
 
@@ -438,7 +408,6 @@ protected:
 
   bool m_bStandalone = false;
   bool m_bTestMode = false;
-  bool m_bSystemScreenSaverEnable = false;
 
   std::unique_ptr<MUSIC_INFO::CMusicInfoScanner> m_musicInfoScanner;
 

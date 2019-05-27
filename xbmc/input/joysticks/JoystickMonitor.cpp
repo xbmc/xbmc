@@ -10,12 +10,14 @@
 #include "Application.h"
 #include "games/controllers/ControllerIDs.h"
 #include "input/InputManager.h"
+#include "messaging/ApplicationMessenger.h"
 #include "ServiceBroker.h"
 
 #include <cmath>
 
 using namespace KODI;
 using namespace JOYSTICK;
+using namespace KODI::MESSAGING;
 
 #define AXIS_DEADZONE  0.05f
 
@@ -26,8 +28,7 @@ std::string CJoystickMonitor::ControllerID() const
 
 bool CJoystickMonitor::AcceptsInput(const FeatureName& feature) const
 {
-  // Only accept input when screen saver is active
-  return g_application.IsInScreenSaver();
+  return false; // todo: what is this for?
 }
 
 bool CJoystickMonitor::OnButtonPress(const FeatureName& feature, bool bPressed)
@@ -89,6 +90,8 @@ bool CJoystickMonitor::OnThrottleMotion(const FeatureName& feature, float positi
 bool CJoystickMonitor::ResetTimers(void)
 {
   g_application.ResetSystemIdleTimer();
-  g_application.ResetScreenSaver();
-  return g_application.WakeUpScreenSaverAndDPMS();
+  CApplicationMessenger::GetInstance().PostMsg(TMSG_RESETSCREENSAVERTIMER);
+  CApplicationMessenger::GetInstance().PostMsg(TMSG_DEACTIVATESCREENSAVER);
+
+  return true;
 }

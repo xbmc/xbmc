@@ -1058,12 +1058,6 @@ const infomap weather[] =        {{ "isfetched",        WEATHER_IS_FETCHED },
 ///     @return **True** if the exit button should be shown (configurable via advanced settings).
 ///     <p>
 ///   }
-///   \table_row3{   <b>`System.DPMSActive`</b>,
-///                  \anchor System_DPMSActive
-///                  _boolean_,
-///     @return **True** if DPMS (VESA Display Power Management Signaling) mode is active.
-///     <p>
-///   }
 ///   \table_row3{   <b>`System.IsStandalone`</b>,
 ///                  \anchor System_IsStandalone
 ///                  _boolean_,
@@ -1213,13 +1207,7 @@ const infomap weather[] =        {{ "isfetched",        WEATHER_IS_FETCHED },
 ///                  _boolean_,
 ///     @return **True** if Kodi can reboot the system.
 ///     <p>
-///   }
-///   \table_row3{   <b>`System.ScreenSaverActive`</b>,
-///                  \anchor System_ScreenSaverActive
-///                  _boolean_,
-///     @return **True** if ScreenSaver is active.
-///     <p>
-///   }
+///   }`
 ///   \table_row3{   <b>`System.IsInhibit`</b>,
 ///                  \anchor System_IsInhibit
 ///                  _boolean_,
@@ -1626,8 +1614,6 @@ const infomap system_labels[] =  {{ "hasnetwork",       SYSTEM_ETHERNET_LINK_ACT
                                   { "cansuspend",       SYSTEM_CAN_SUSPEND },
                                   { "canhibernate",     SYSTEM_CAN_HIBERNATE },
                                   { "canreboot",        SYSTEM_CAN_REBOOT },
-                                  { "screensaveractive",SYSTEM_SCREENSAVER_ACTIVE },
-                                  { "dpmsactive",       SYSTEM_DPMS_ACTIVE },
                                   { "cputemperature",   SYSTEM_CPU_TEMPERATURE },     // labels from here
                                   { "cpuusage",         SYSTEM_CPU_USAGE },
                                   { "gputemperature",   SYSTEM_GPU_TEMPERATURE },

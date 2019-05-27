@@ -30,6 +30,11 @@ public:
   CDPMSSupport();
   virtual ~CDPMSSupport() = default;
 
+  void Deactivate();
+  void Activate();
+
+  bool IsActive() { return m_active; }
+
   // Whether power-saving is supported on this screen.
   bool IsSupported() const { return !m_supportedModes.empty(); }
 
@@ -52,5 +57,6 @@ public:
   virtual bool DisablePowerSaving() = 0;
 
 protected:
+  bool m_active{false};
   std::vector<PowerSavingMode> m_supportedModes;
 };

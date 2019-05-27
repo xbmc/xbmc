@@ -51,6 +51,7 @@ set(SOURCES ActorProtocol.cpp
             SaveFileStateJob.cpp
             ScraperParser.cpp
             ScraperUrl.cpp
+            ScreenSaverUtils.cpp
             Screenshot.cpp
             SortUtils.cpp
             Speed.cpp
@@ -142,6 +143,7 @@ set(HEADERS ActorProtocol.h
             ScopeGuard.h
             ScraperParser.h
             ScraperUrl.h
+            ScreenSaverUtils.h
             Screenshot.h
             SortUtils.h
             Speed.h
