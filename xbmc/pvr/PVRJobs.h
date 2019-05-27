@@ -11,7 +11,6 @@
 #include <memory>
 #include <vector>
 
-#include "FileItem.h"
 #include "addons/PVRClient.h"
 #include "addons/kodi-addon-dev-kit/include/kodi/xbmc_pvr_types.h"
 #include "utils/JobManager.h"

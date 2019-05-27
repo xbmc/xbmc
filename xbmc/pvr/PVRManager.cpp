@@ -850,7 +850,7 @@ void CPVRManager::OnPlaybackStarted(const CFileItemPtr item)
   }
 
   m_guiActions->OnPlaybackStarted(item);
-  m_epgContainer.OnPlaybackStarted(item);
+  m_epgContainer.OnPlaybackStarted();
 }
 
 void CPVRManager::OnPlaybackStopped(const CFileItemPtr item)
@@ -899,7 +899,7 @@ void CPVRManager::OnPlaybackStopped(const CFileItemPtr item)
   }
 
   m_guiActions->OnPlaybackStopped(item);
-  m_epgContainer.OnPlaybackStopped(item);
+  m_epgContainer.OnPlaybackStopped();
 }
 
 void CPVRManager::OnPlaybackEnded(const CFileItemPtr item)

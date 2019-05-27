@@ -13,7 +13,6 @@
 #include <string>
 #include <vector>
 
-#include "FileItem.h"
 #include "addons/kodi-addon-dev-kit/include/kodi/xbmc_pvr_types.h"
 #include "interfaces/IAnnouncer.h"
 #include "threads/Event.h"
@@ -303,19 +302,19 @@ namespace PVR
      * @brief Inform PVR manager that playback of an item just started.
      * @param item The item that started to play.
      */
-    void OnPlaybackStarted(const CFileItemPtr item);
+    void OnPlaybackStarted(const std::shared_ptr<CFileItem> item);
 
     /*!
      * @brief Inform PVR manager that playback of an item was stopped due to user interaction.
      * @param item The item that stopped to play.
      */
-    void OnPlaybackStopped(const CFileItemPtr item);
+    void OnPlaybackStopped(const std::shared_ptr<CFileItem> item);
 
     /*!
      * @brief Inform PVR manager that playback of an item has stopped without user interaction.
      * @param item The item that ended to play.
      */
-    void OnPlaybackEnded(const CFileItemPtr item);
+    void OnPlaybackEnded(const std::shared_ptr<CFileItem> item);
 
     /*!
      * @brief Check whether there are active recordings.

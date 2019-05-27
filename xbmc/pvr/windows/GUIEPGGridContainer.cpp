@@ -10,6 +10,7 @@
 
 #include <tinyxml.h>
 
+#include "FileItem.h"
 #include "GUIInfoManager.h"
 #include "guilib/guiinfo/GUIInfoLabels.h"
 #include "guilib/DirtyRegion.h"
