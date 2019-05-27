@@ -49,16 +49,13 @@ namespace XBMCAddon
     CallbackQueue::iterator iter = g_callQueue.begin();
     while (iter != g_callQueue.end())
     {
-      AddonClass::Ref<AsyncCallbackMessage> cur(*iter);
+      if ((*iter)->handler.get() == this) // then this message is because of me
       {
-        if (cur->handler.get() == this) // then this message is because of me
-        {
-          g_callQueue.erase(iter);
-          iter = g_callQueue.begin();
-        }
-        else
-          ++iter;
+        g_callQueue.erase(iter);
+        iter = g_callQueue.begin();
       }
+      else
+        ++iter;
     }
   }
 
