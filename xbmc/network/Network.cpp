@@ -163,17 +163,19 @@ bool CNetworkBase::IsLocalHost(const std::string& hostname)
 
 CNetworkInterface* CNetworkBase::GetFirstConnectedInterface()
 {
-   std::vector<CNetworkInterface*>& ifaces = GetInterfaceList();
-   std::vector<CNetworkInterface*>::const_iterator iter = ifaces.begin();
-   while (iter != ifaces.end())
-   {
-      CNetworkInterface* iface = *iter;
-      if (iface && iface->IsConnected())
-         return iface;
-      ++iter;
-   }
+  CNetworkInterface* fallbackInterface = nullptr;
+  for (CNetworkInterface* iface : GetInterfaceList())
+  {
+    if (iface && iface->IsConnected())
+    {
+      if (!iface->GetCurrentDefaultGateway().empty())
+        return iface;
+      else if (fallbackInterface == nullptr)
+        fallbackInterface = iface;
+    }
+  }
 
-   return NULL;
+  return fallbackInterface;
 }
 
 bool CNetworkBase::HasInterfaceForIP(unsigned long address)
