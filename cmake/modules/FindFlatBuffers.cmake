@@ -11,7 +11,7 @@
 
 if(ENABLE_INTERNAL_FLATBUFFERS)
   include(ExternalProject)
-  file(STRINGS ${CMAKE_SOURCE_DIR}/tools/depends/native/flatbuffers-native/Makefile VER REGEX "^[ ]*VERSION[ ]*=.+$")
+  file(STRINGS ${CMAKE_SOURCE_DIR}/tools/depends/native/flatbuffers/Makefile VER REGEX "^[ ]*VERSION[ ]*=.+$")
   string(REGEX REPLACE "^[ ]*VERSION[ ]*=[ ]*" "" FLATBUFFERS_VER "${VER}")
 
   # Allow user to override the download URL with a local tarball
@@ -43,7 +43,7 @@ if(ENABLE_INTERNAL_FLATBUFFERS)
                                  -DFLATBUFFERS_BUILD_GRPCTEST=OFF
                                  -DFLATBUFFERS_BUILD_SHAREDLIB=OFF
                                  "${EXTRA_ARGS}"
-                      PATCH_COMMAND patch -p1 < ${CORE_SOURCE_DIR}/tools/depends/native/flatbuffers-native/0001-Fix-compiler-warning.patch
+                      PATCH_COMMAND patch -p1 < ${CORE_SOURCE_DIR}/tools/depends/native/flatbuffers/0001-Fix-compiler-warning.patch
                       BUILD_BYPRODUCTS ${FLATBUFFERS_FLATC_EXECUTABLE})
   set_target_properties(flatbuffers PROPERTIES FOLDER "External Projects"
                                     INTERFACE_INCLUDE_DIRECTORIES ${FLATBUFFERS_INCLUDE_DIR})
