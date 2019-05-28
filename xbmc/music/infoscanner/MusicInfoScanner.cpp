@@ -1659,7 +1659,7 @@ void CMusicInfoScanner::GetAlbumArtwork(long id, const CAlbum &album)
         (StringUtils::StartsWith(artURL, "image://") &&
          CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_MUSICLIBRARY_PREFERONLINEALBUMART)))
     {
-      std::string thumb = CScraperUrl::GetThumbURL(album.thumbURL.GetFirstThumb());
+      std::string thumb = CScraperUrl::GetThumbURL(album.thumbURL.GetFirstThumb("thumb"));
       if (!thumb.empty())
       {
         CTextureCache::GetInstance().BackgroundCacheImage(thumb);
@@ -1998,16 +1998,13 @@ bool CMusicInfoScanner::SetArtistArtwork(CArtist& artist, const std::vector<std:
         }
       }
     }
-    // No local art, use first from scraped lists.
+    // No local art, use first of that type from scraped lists.
     // Fanart has own list. Art type is encoded into the scraper XML held in
-    // thumbURL as optional "aspect=" field. Type "thumb" or "" returns URLs for
-    // all types of art including those without aspect. Those URL without aspect
-    // are also returned for all other type values.
+    // thumbURL as optional "aspect=" field. Those URL without aspect are also
+    // returned for all other type values.
     if (strArt.empty())
     {
-      if (type == "thumb")
-        strArt = CScraperUrl::GetThumbURL(artist.thumbURL.GetFirstThumb());
-      else if (type == "fanart")
+      if (type == "fanart")
         strArt = artist.fanart.GetImageURL();
       else
         strArt = CScraperUrl::GetThumbURL(artist.thumbURL.GetFirstThumb(type));
@@ -2091,19 +2088,15 @@ bool CMusicInfoScanner::SetAlbumArtwork(CAlbum& album, std::vector<std::string>&
         }
       }
     }
-    // No local art, use first from scraped list.
-    // Art type is encoded into the scraper XML held in thumbURL as optional
-    // "aspect=" field. Type "thumb" or "" returns URLs for all types of art
-    // including those without aspect. Those URL without aspect are also
-    // returned for all other type values.
+    // No local art, use first of that type from scraped list.
+    // Art type is encoded into the scraper XML held in thumbURL as
+    // optional "aspect=" field. Those URL without aspect are also returned for
+    // all other type values.
     // Historically albums do not have fanart, so there is no special handling
     // of scraper results for it (unlike artist).
     if (strArt.empty())
     {
-      if (type == "thumb")
-        strArt = CScraperUrl::GetThumbURL(album.thumbURL.GetFirstThumb());
-      else
-        strArt = CScraperUrl::GetThumbURL(album.thumbURL.GetFirstThumb(type));
+      strArt = CScraperUrl::GetThumbURL(album.thumbURL.GetFirstThumb(type));
     }
     // Add art to album and library
     if (!strArt.empty())
