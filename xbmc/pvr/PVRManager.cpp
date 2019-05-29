@@ -650,10 +650,10 @@ bool CPVRManager::IsPlayingEpgTag(const CPVREpgInfoTagPtr &epgTag) const
   return bReturn;
 }
 
-bool CPVRManager::MatchPlayingChannel(int iClientID, int iUniqueChannelID) const
+bool CPVRManager::IsPlayingChannel(int iClientID, int iUniqueChannelID) const
 {
   if (m_playingChannel)
-    return m_playingChannel->ClientID() == iClientID && m_playingChannel->UniqueID() == iUniqueChannelID;
+    return m_playingClientId == iClientID && m_iplayingChannelUniqueID == iUniqueChannelID;
 
   return false;
 }
@@ -686,7 +686,7 @@ int CPVRManager::GetPlayingClientID(void) const
 bool CPVRManager::IsRecordingOnPlayingChannel(void) const
 {
   const CPVRChannelPtr currentChannel = GetPlayingChannel();
-  return currentChannel && CServiceBroker::GetPVRManager().Timers()->IsRecordingOnChannel(*currentChannel);
+  return currentChannel && m_timers && m_timers->IsRecordingOnChannel(*currentChannel);
 }
 
 bool CPVRManager::CanRecordOnPlayingChannel(void) const
@@ -799,6 +799,7 @@ void CPVRManager::OnPlaybackStarted(const CFileItemPtr item)
   m_playingRecording.reset();
   m_playingEpgTag.reset();
   m_playingClientId = -1;
+  m_iplayingChannelUniqueID = -1;
   m_strPlayingClientName.clear();
 
   if (item->HasPVRChannelInfoTag())
@@ -807,6 +808,7 @@ void CPVRManager::OnPlaybackStarted(const CFileItemPtr item)
 
     m_playingChannel = channel;
     m_playingClientId = m_playingChannel->ClientID();
+    m_iplayingChannelUniqueID = m_playingChannel->UniqueID();
 
     SetPlayingGroup(channel);
 
@@ -878,18 +880,21 @@ void CPVRManager::OnPlaybackStopped(const CFileItemPtr item)
 
     m_playingChannel.reset();
     m_playingClientId = -1;
+    m_iplayingChannelUniqueID = -1;
     m_strPlayingClientName.clear();
   }
   else if (item->HasPVRRecordingInfoTag() && item->GetPVRRecordingInfoTag() == m_playingRecording)
   {
     m_playingRecording.reset();
     m_playingClientId = -1;
+    m_iplayingChannelUniqueID = -1;
     m_strPlayingClientName.clear();
   }
   else if (item->HasEPGInfoTag() && item->GetEPGInfoTag() == m_playingEpgTag)
   {
     m_playingEpgTag.reset();
     m_playingClientId = -1;
+    m_iplayingChannelUniqueID = -1;
     m_strPlayingClientName.clear();
   }
 

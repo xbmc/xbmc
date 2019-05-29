@@ -245,7 +245,7 @@ namespace PVR
      * @param iUniqueChannelID The channel uid.
      * @return True on match, false if there is no match or no channel is playing.
      */
-    bool MatchPlayingChannel(int iClientID, int iUniqueChannelID) const;
+    bool IsPlayingChannel(int iClientID, int iUniqueChannelID) const;
 
     /*!
      * @brief Return the channel that is currently playing.
@@ -560,6 +560,7 @@ namespace PVR
     CPVREpgInfoTagPtr m_playingEpgTag;
     std::string m_strPlayingClientName;
     int m_playingClientId = -1;
+    int m_iplayingChannelUniqueID = -1;
 
     class CLastWatchedUpdateTimer;
     std::unique_ptr<CLastWatchedUpdateTimer> m_lastWatchedUpdateTimer;
