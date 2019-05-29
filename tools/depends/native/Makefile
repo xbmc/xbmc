@@ -4,32 +4,32 @@ ifneq ($(shell test -f $(NATIVEPREFIX)/share/config.site && echo 1),1)
   $(error Error: $(NATIVEPREFIX)/share/config.site  is missing. Please reconfigure depends to generate it)
 endif
 
-NATIVE= m4-native gettext-native autoconf-native automake-native \
-        libtool-native pkg-config-native yasm-native cmake-native \
-        gas-preprocessor-native python27-native zlib-native \
-        pcre-native swig-native \
-        libpng-native libjpeg-turbo-native liblzo2-native giflib-native \
-        distribute-native distutilscross-native JsonSchemaBuilder TexturePacker \
-        flatbuffers-native
+NATIVE= m4 gettext autoconf automake \
+        libtool pkg-config yasm cmake \
+        gas-preprocessor python27 zlib \
+        pcre swig \
+        libpng libjpeg-turbo liblzo2 giflib \
+        distribute distutilscross JsonSchemaBuilder TexturePacker \
+        flatbuffers
 
 
 ifeq ($(OS),ios)
-  NATIVE += dpkg-native xz-native tar-native gen_entitlements-native ldid-native
+  NATIVE += dpkg xz tar gen_entitlements ldid
 endif
 
 ifeq ($(OS),osx)
-  NATIVE += xz-native tar-native
+  NATIVE += xz tar
 endif
 
 ifeq ($(OS),linux)
   ifeq ($(TARGET_PLATFORM),$(filter $(TARGET_PLATFORM),raspberry-pi aml gbm))
-    NATIVE += meson-native ninja-native python3-native
+    NATIVE += meson ninja python3
   endif
 endif
 
 ifeq ($(TARGET_PLATFORM),wayland)
-  NATIVE += expat-native wayland-scanner-native waylandpp-scanner-native
-  EXPAT = expat-native
+  NATIVE += expat wayland-scanner waylandpp-scanner
+  EXPAT = expat
 endif
 
 .PHONY: $(NATIVE) native
@@ -38,27 +38,27 @@ all: native
 	@echo "Dependencies built successfully."
 
 # Dependency layout for parallel builds
-autoconf-native: m4-native
-automake-native: autoconf-native
-dpkg-native: automake-native gettext-native libtool-native pkg-config-native tar-native
-flatbuffers-native: cmake-native
-libtool-native: automake-native
-libpng-native: zlib-native
-meson-native: python3-native
-ninja-native: python3-native
-swig-native: pcre-native
-distribute-native: python27-native
-distutilscross-native: python27-native distribute-native
-tar-native: xz-native automake-native
-python27-native: zlib-native
-python3-native: $(EXPAT) zlib-native
-wayland-scanner-native: expat-native
-waylandpp-scanner-native: cmake-native
+autoconf: m4
+automake: autoconf
+dpkg: automake gettext libtool pkg-config tar
+flatbuffers: cmake
+libtool: automake
+libpng: zlib
+meson: python3
+ninja: python3
+swig: pcre
+distribute: python27
+distutilscross: python27 distribute
+tar: xz automake
+python27: zlib
+python3: $(EXPAT) zlib
+wayland-scanner: expat
+waylandpp-scanner: cmake
 
 #liblzo2 has stale packaged automake files that cause borked host/build detection
-liblzo2-native: automake-native
-JsonSchemaBuilder: automake-native
-TexturePacker: automake-native pkg-config-native libpng-native liblzo2-native giflib-native libjpeg-turbo-native
+liblzo2: automake
+JsonSchemaBuilder: automake
+TexturePacker: automake pkg-config libpng liblzo2 giflib libjpeg-turbo
 
 native: $(NATIVE)
 $(NATIVE):
