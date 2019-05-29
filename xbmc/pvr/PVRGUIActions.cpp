@@ -11,6 +11,7 @@
 #include "Application.h"
 #include "FileItem.h"
 #include "ServiceBroker.h"
+#include "Util.h"
 #include "addons/PVRClient.h"
 #include "addons/PVRClientMenuHooks.h"
 #include "cores/DataCacheCore.h"
@@ -27,6 +28,8 @@
 #include "input/InputManager.h"
 #include "input/Key.h"
 #include "messaging/ApplicationMessenger.h"
+#include "messaging/helpers/DialogHelper.h"
+#include "messaging/helpers/DialogOKHelper.h"
 #include "network/Network.h"
 #include "settings/MediaSettings.h"
 #include "settings/Settings.h"
@@ -41,8 +44,7 @@
 #include "pvr/PVRItem.h"
 #include "pvr/PVRJobs.h"
 #include "pvr/PVRManager.h"
-#include "messaging/helpers/DialogHelper.h"
-#include "messaging/helpers/DialogOKHelper.h"
+#include "pvr/PVRStreamProperties.h"
 #include "pvr/addons/PVRClients.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/dialogs/GUIDialogPVRChannelGuide.h"
@@ -101,26 +103,72 @@ namespace PVR
     explicit AsyncRenameRecording(const std::string &strNewName) : m_strNewName(strNewName) {}
 
   private:
-    bool DoRun(const CFileItemPtr &item) override { return CServiceBroker::GetPVRManager().Recordings()->RenameRecording(*item, m_strNewName); }
+    bool DoRun(const std::shared_ptr<CFileItem>& item) override
+    {
+      if (item->IsUsablePVRRecording())
+      {
+        return item->GetPVRRecordingInfoTag()->Rename(m_strNewName);
+      }
+      else
+      {
+        CLog::LogF(LOGERROR, "Cannot rename item '%s': no valid recording tag", item->GetPath().c_str());
+        return false;
+      }
+    }
     std::string m_strNewName;
   };
 
   class AsyncDeleteRecording : public AsyncRecordingAction
   {
   private:
-    bool DoRun(const CFileItemPtr &item) override { return CServiceBroker::GetPVRManager().Recordings()->Delete(*item); }
+    bool DoRun(const std::shared_ptr<CFileItem>& item) override
+    {
+      CFileItemList items;
+      if (item->m_bIsFolder)
+      {
+        CUtil::GetRecursiveListing(item->GetPath(), items, "", XFILE::DIR_FLAG_NO_FILE_INFO);
+      }
+      else
+      {
+        items.Add(item);
+      }
+
+      bool bReturn = true;
+      for (const auto& itemToDelete : items)
+      {
+        if (itemToDelete->IsUsablePVRRecording())
+          bReturn &= itemToDelete->GetPVRRecordingInfoTag()->Delete();
+        else
+          CLog::LogF(LOGERROR, "Cannot delete item '%s': no valid recording tag", itemToDelete->GetPath().c_str());
+      }
+      return bReturn;
+    }
   };
 
   class AsyncEmptyRecordingsTrash : public AsyncRecordingAction
   {
   private:
-    bool DoRun(const CFileItemPtr &item) override { return CServiceBroker::GetPVRManager().Recordings()->DeleteAllRecordingsFromTrash(); }
+    bool DoRun(const std::shared_ptr<CFileItem>& item) override
+    {
+      return CServiceBroker::GetPVRManager().Clients()->DeleteAllRecordingsFromTrash() == PVR_ERROR_NO_ERROR;
+    }
   };
 
   class AsyncUndeleteRecording : public AsyncRecordingAction
   {
   private:
-    bool DoRun(const CFileItemPtr &item) override { return CServiceBroker::GetPVRManager().Recordings()->Undelete(*item); }
+    bool DoRun(const std::shared_ptr<CFileItem>& item) override
+    {
+      if (item->IsDeletedPVRRecording())
+      {
+        return item->GetPVRRecordingInfoTag()->Undelete();
+      }
+      else
+      {
+        CLog::LogF(LOGERROR, "Cannot undelete item '%s': no valid recording tag", item->GetPath().c_str());
+        return false;
+      }
+    }
   };
 
   class AsyncSetRecordingPlayCount : public AsyncRecordingAction
@@ -732,11 +780,28 @@ namespace PVR
 
   bool CPVRGUIActions::EditTimerRule(const CFileItemPtr &item) const
   {
-    const CFileItemPtr parentTimer(CServiceBroker::GetPVRManager().Timers()->GetTimerRule(item));
+    const std::shared_ptr<CFileItem> parentTimer = GetTimerRule(item);
     if (parentTimer)
       return EditTimer(parentTimer);
 
     return false;
+  }
+
+  std::shared_ptr<CFileItem> CPVRGUIActions::GetTimerRule(const std::shared_ptr<CFileItem>& item) const
+  {
+    std::shared_ptr<CPVRTimerInfoTag> timer;
+    if (item && item->HasEPGInfoTag())
+      timer = CServiceBroker::GetPVRManager().Timers()->GetTimerForEpgTag(item->GetEPGInfoTag());
+    else if (item && item->HasPVRTimerInfoTag())
+      timer = item->GetPVRTimerInfoTag();
+
+    if (timer)
+    {
+      timer = CServiceBroker::GetPVRManager().Timers()->GetTimerRule(timer);
+      if (timer)
+        return std::make_shared<CFileItem>(timer);
+    }
+    return {};
   }
 
   bool CPVRGUIActions::RenameTimer(const CFileItemPtr &item) const
@@ -1111,7 +1176,35 @@ namespace PVR
   void CPVRGUIActions::StartPlayback(CFileItem *item, bool bFullscreen) const
   {
     // Obtain dynamic playback url and properties from the respective pvr client
-    CServiceBroker::GetPVRManager().FillStreamFileItem(*item);
+    const CPVRClientPtr client = CServiceBroker::GetPVRManager().GetClient(*item);
+    if (client)
+    {
+      CPVRStreamProperties props;
+
+      if (item->IsPVRChannel())
+        client->GetChannelStreamProperties(item->GetPVRChannelInfoTag(), props);
+      else if (item->IsPVRRecording())
+        client->GetRecordingStreamProperties(item->GetPVRRecordingInfoTag(), props);
+      else if (item->IsEPG())
+        client->GetEpgTagStreamProperties(item->GetEPGInfoTag(), props);
+
+      if (props.size())
+      {
+        const std::string url = props.GetStreamURL();
+        if (!url.empty())
+          item->SetDynPath(url);
+
+        const std::string mime = props.GetStreamMimeType();
+        if (!mime.empty())
+        {
+          item->SetMimeType(mime);
+          item->SetContentLookup(false);
+        }
+
+        for (const auto& prop : props)
+          item->SetProperty(prop.first, prop.second);
+      }
+    }
 
     CApplicationMessenger::GetInstance().PostMsg(TMSG_MEDIA_PLAY, 0, 0, static_cast<void*>(item));
     CheckAndSwitchToFullscreen(bFullscreen);
@@ -1225,7 +1318,7 @@ namespace PVR
 
   bool CPVRGUIActions::SwitchToChannel(PlaybackType type) const
   {
-    CFileItemPtr channel;
+    std::shared_ptr<CPVRChannel> channel;
     bool bIsRadio(false);
 
     // check if the desired PlaybackType is already playing,
@@ -1266,7 +1359,7 @@ namespace PVR
     // if we have a last played channel, start playback
     if (channel)
     {
-      return SwitchToChannel(channel, true);
+      return SwitchToChannel(std::make_shared<CFileItem>(channel), true);
     }
     else
     {
@@ -1304,10 +1397,10 @@ namespace PVR
     CPVRChannelGroupPtr group = playTV ? groups->GetGroupAllTV() : groups->GetGroupAllRadio();
 
     // get the last played channel or fallback to first channel
-    CFileItemPtr item(group->GetLastPlayedChannel());
-    if (item)
+    std::shared_ptr<CPVRChannel> channel = group->GetLastPlayedChannel();
+    if (channel)
     {
-      group = groups->GetLastPlayedGroup(item->GetPVRChannelInfoTag()->ChannelID());
+      group = groups->GetLastPlayedGroup(channel->ChannelID());
     }
     else
     {
@@ -1316,31 +1409,31 @@ namespace PVR
       if (channels.empty())
         return false;
 
-      item = std::make_shared<CFileItem>(channels.front().channel);
+      channel = channels.front().channel;
     }
 
-    CLog::Log(LOGNOTICE, "PVR is starting playback of channel '%s'", item->GetPVRChannelInfoTag()->ChannelName().c_str());
+    CLog::Log(LOGNOTICE, "PVR is starting playback of channel '%s'", channel->ChannelName().c_str());
     CServiceBroker::GetPVRManager().SetPlayingGroup(group);
-    return SwitchToChannel(item, true);
+    return SwitchToChannel(std::make_shared<CFileItem>(channel), true);
   }
 
   bool CPVRGUIActions::PlayMedia(const CFileItemPtr &item) const
   {
     CFileItemPtr pvrItem(item);
     if (URIUtils::IsPVRChannel(item->GetPath()) && !item->HasPVRChannelInfoTag())
-      pvrItem = CServiceBroker::GetPVRManager().ChannelGroups()->GetByPath(item->GetPath());
+      pvrItem = std::make_shared<CFileItem>(CServiceBroker::GetPVRManager().ChannelGroups()->GetByPath(item->GetPath()));
     else if (URIUtils::IsPVRRecording(item->GetPath()) && !item->HasPVRRecordingInfoTag())
-      pvrItem = CServiceBroker::GetPVRManager().Recordings()->GetByPath(item->GetPath());
+      pvrItem = std::make_shared<CFileItem>(CServiceBroker::GetPVRManager().Recordings()->GetByPath(item->GetPath()));
 
     bool bCheckResume = true;
     if (item->HasProperty("check_resume"))
       bCheckResume = item->GetProperty("check_resume").asBoolean();
 
-    if (pvrItem->HasPVRChannelInfoTag())
+    if (pvrItem && pvrItem->HasPVRChannelInfoTag())
     {
       return SwitchToChannel(pvrItem, bCheckResume);
     }
-    else if (pvrItem->HasPVRRecordingInfoTag())
+    else if (pvrItem && pvrItem->HasPVRRecordingInfoTag())
     {
       return PlayRecording(pvrItem, bCheckResume);
     }
@@ -1483,7 +1576,7 @@ namespace PVR
 
       std::advance(selectedHook, selection);
     }
-    return selectedHook->first->CallMenuHook(selectedHook->second, CFileItemPtr()) == PVR_ERROR_NO_ERROR;
+    return selectedHook->first->CallSettingsMenuHook(selectedHook->second) == PVR_ERROR_NO_ERROR;
   }
 
   bool CPVRGUIActions::ResetPVRDatabase(bool bResetEPGOnly)
@@ -2135,7 +2228,7 @@ namespace PVR
           // channel number present in playing group?
           bool bRadio = playingChannel->IsRadio();
           const CPVRChannelGroupPtr group = CServiceBroker::GetPVRManager().GetPlayingGroup(bRadio);
-          CFileItemPtr channel = group->GetByChannelNumber(channelNumber);
+          std::shared_ptr<CPVRChannel> channel = group->GetByChannelNumber(channelNumber);
 
           if (!channel)
           {
@@ -2178,10 +2271,10 @@ namespace PVR
         if (group)
         {
           CServiceBroker::GetPVRManager().SetPlayingGroup(group);
-          const CFileItemPtr channel(group->GetLastPlayedChannel(playingChannel->ChannelID()));
+          const std::shared_ptr<CPVRChannel> channel = group->GetLastPlayedChannel(playingChannel->ChannelID());
           if (channel)
           {
-            const CPVRChannelNumber channelNumber = channel->GetPVRChannelInfoTag()->ChannelNumber();
+            const CPVRChannelNumber channelNumber = channel->ChannelNumber();
             CApplicationMessenger::GetInstance().SendMsg(
               TMSG_GUI_ACTION, WINDOW_INVALID, -1,
               static_cast<void*>(new CAction(ACTION_CHANNEL_SWITCH,

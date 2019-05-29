@@ -166,11 +166,6 @@ namespace PVR
     bool IsUserSetIcon(void) const;
 
     /*!
-     * @return True if the channel icon path exists
-     */
-    bool IsIconExists(void) const;
-
-    /*!
      * @return whether the user has changed the channel name through the GUI
      */
     bool IsUserSetName(void) const;

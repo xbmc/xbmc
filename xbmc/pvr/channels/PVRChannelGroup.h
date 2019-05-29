@@ -19,11 +19,6 @@
 #include "pvr/PVRTypes.h"
 #include "pvr/channels/PVRChannel.h"
 
-class CFileItem;
-typedef std::shared_ptr<CFileItem> CFileItemPtr;
-
-class CFileItemList;
-
 namespace PVR
 {
 #define PVR_GROUP_TYPE_DEFAULT      0
@@ -123,12 +118,6 @@ namespace PVR
      * @param channelNumber The new channel number.
      */
     bool SetChannelNumber(const CPVRChannelPtr &channel, const CPVRChannelNumber &channelNumber);
-
-    /*!
-     * @brief Search missing channel icons for all known channels.
-     * @param bUpdateDb If true, update the changed values in the database.
-     */
-    void SearchAndSetChannelIcons(bool bUpdateDb = false);
 
     /*!
      * @brief Remove a channel from this container.
@@ -273,18 +262,18 @@ namespace PVR
     CPVRChannelPtr GetByChannelEpgID(int iEpgID) const;
 
     /*!
-     * @brief The channel that was played last that has a valid client or NULL if there was none.
+     * @brief Get the channel that was played last.
      * @param iCurrentChannel The channelid of the current channel that is playing, or -1 if none
-     * @return The requested channel.
+     * @return The requested channel or nullptr.
      */
-    CFileItemPtr GetLastPlayedChannel(int iCurrentChannel = -1) const;
+    std::shared_ptr<CPVRChannel> GetLastPlayedChannel(int iCurrentChannel = -1) const;
 
     /*!
      * @brief Get a channel given it's channel number.
      * @param channelNumber The channel number.
-     * @return The channel or NULL if it wasn't found.
+     * @return The channel or nullptr if it wasn't found.
      */
-    CFileItemPtr GetByChannelNumber(const CPVRChannelNumber &channelNumber) const;
+    std::shared_ptr<CPVRChannel> GetByChannelNumber(const CPVRChannelNumber& channelNumber) const;
 
     /*!
      * @brief Get the channel number in this group of the given channel.
@@ -296,16 +285,16 @@ namespace PVR
     /*!
      * @brief Get the next channel in this group.
      * @param channel The current channel.
-     * @return The channel or NULL if it wasn't found.
+     * @return The channel or nullptr if it wasn't found.
      */
-    CFileItemPtr GetNextChannel(const CPVRChannelPtr &channel) const;
+    std::shared_ptr<CPVRChannel> GetNextChannel(const std::shared_ptr<CPVRChannel>& channel) const;
 
     /*!
      * @brief Get the previous channel in this group.
      * @param channel The current channel.
-     * @return The channel or NULL if it wasn't found.
+     * @return The channel or nullptr if it wasn't found.
      */
-    CFileItemPtr GetPreviousChannel(const CPVRChannelPtr &channel) const;
+    std::shared_ptr<CPVRChannel> GetPreviousChannel(const std::shared_ptr<CPVRChannel>& channel) const;
 
     /*!
      * @brief Get a channel given it's channel ID.
@@ -387,7 +376,28 @@ namespace PVR
      */
     CDateTime GetLastEPGDate(void) const;
 
-    bool UpdateChannel(const CFileItem &channel, bool bHidden, bool bEPGEnabled, bool bParentalLocked, int iEPGSource, int iChannelNumber, const std::string &strChannelName, const std::string &strIconPath, bool bUserSetIcon = false);
+    /*!
+     * @brief Update a channel group member with given data.
+     * @param storageId The storage id of the channel.
+     * @param strChannelName The channel name to set.
+     * @param strIconPath The icon path to set.
+     * @param iEPGSource The EPG id.
+     * @param iChannelNumber The channel number to set.
+     * @param bHidden Set/Remove hidden flag for the channel group member identified by storage id.
+     * @param bEPGEnabled Set/Remove EPG enabled flag for the channel group member identified by storage id.
+     * @param bParentalLocked Set/Remove parental locked flag for the channel group member identified by storage id.
+     * @param bUserSetIcon Set/Remove user set icon flag for the channel group member identified by storage id.
+     * @return True on success, false otherwise.
+     */
+    bool UpdateChannel(const std::pair<int, int>& storageId,
+                       const std::string& strChannelName,
+                       const std::string& strIconPath,
+                       int iEPGSource,
+                       int iChannelNumber,
+                       bool bHidden,
+                       bool bEPGEnabled,
+                       bool bParentalLocked,
+                       bool bUserSetIcon);
 
     /*!
      * @brief Get a channel given the channel number on the client.

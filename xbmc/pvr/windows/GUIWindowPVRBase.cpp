@@ -24,6 +24,7 @@
 #include "utils/log.h"
 
 #include "pvr/PVRGUIActions.h"
+#include "pvr/PVRGUIDirectory.h"
 #include "pvr/PVRManager.h"
 #include "pvr/addons/PVRClients.h"
 #include "pvr/channels/PVRChannelGroup.h"
@@ -62,14 +63,9 @@ bool CGUIPVRChannelGroupsSelector::Initialize(CGUIWindow* parent, bool bRadio)
   {
     m_control = control;
     m_channelGroups = CServiceBroker::GetPVRManager().ChannelGroups()->Get(bRadio)->GetMembers(true);
+
     CFileItemList channelGroupItems;
-    for (const auto& group : m_channelGroups)
-    {
-      CFileItemPtr item(new CFileItem(group->GetPath(), true));
-      item->m_strTitle = group->GroupName();
-      item->SetLabel(group->GroupName());
-      channelGroupItems.Add(item);
-    }
+    CPVRGUIDirectory::GetChannelGroupsDirectory(bRadio, true, channelGroupItems);
 
     CGUIMessage msg(GUI_MSG_LABEL_BIND, m_control->GetID(), CONTROL_LSTCHANNELGROUPS, 0, 0, &channelGroupItems);
     m_control->OnMessage(msg);
@@ -360,7 +356,7 @@ bool CGUIWindowPVRBase::OpenChannelGroupSelectionDialog(void)
     return false;
 
   CFileItemList options;
-  CServiceBroker::GetPVRManager().ChannelGroups()->Get(m_bRadio)->GetGroupList(&options, true);
+  CPVRGUIDirectory::GetChannelGroupsDirectory(m_bRadio, true, options);
 
   dialog->Reset();
   dialog->SetHeading(CVariant{g_localizeStrings.Get(19146)});

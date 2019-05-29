@@ -8,9 +8,9 @@
 
 #pragma once
 
+#include <memory>
 #include <vector>
 
-#include "FileItem.h"
 #include "addons/PVRClient.h"
 #include "addons/kodi-addon-dev-kit/include/kodi/xbmc_pvr_types.h"
 #include "utils/JobManager.h"
@@ -157,14 +157,18 @@ namespace PVR
     bool DoWork() override;
   };
 
+  class CPVRGUIChannelIconUpdater;
+
   class CPVRSearchMissingChannelIconsJob : public CJob
   {
   public:
-    CPVRSearchMissingChannelIconsJob(void) = default;
+    CPVRSearchMissingChannelIconsJob(const std::vector<std::shared_ptr<CPVRChannelGroup>>& groups, bool bUpdateDb);
     ~CPVRSearchMissingChannelIconsJob() override = default;
     const char *GetType() const override { return "pvr-search-missing-channel-icons"; }
 
     bool DoWork() override;
+  private:
+    const std::unique_ptr<CPVRGUIChannelIconUpdater> m_updater;
   };
 
   class CPVRClientConnectionJob : public CJob

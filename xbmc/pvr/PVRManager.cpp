@@ -211,15 +211,15 @@ CPVRClientPtr CPVRManager::GetClient(const CFileItem &item) const
     iClientID = item.GetEPGInfoTag()->ClientID();
   else if (URIUtils::IsPVRChannel(item.GetPath()))
   {
-    const std::shared_ptr<CFileItem> channelItem = m_channelGroups->GetByPath(item.GetPath());
-    if (channelItem)
-      iClientID = channelItem->GetPVRChannelInfoTag()->ClientID();
+    const std::shared_ptr<CPVRChannel> channel = m_channelGroups->GetByPath(item.GetPath());
+    if (channel)
+      iClientID = channel->ClientID();
   }
   else if (URIUtils::IsPVRRecording(item.GetPath()))
   {
-    const std::shared_ptr<CFileItem> recordingItem = m_recordings->GetByPath(item.GetPath());
-    if (recordingItem)
-      iClientID = recordingItem->GetPVRRecordingInfoTag()->ClientID();
+    const std::shared_ptr<CPVRRecording> recording = m_recordings->GetByPath(item.GetPath());
+    if (recording)
+      iClientID = recording->ClientID();
   }
   return GetClient(iClientID);
 }
@@ -850,7 +850,7 @@ void CPVRManager::OnPlaybackStarted(const CFileItemPtr item)
   }
 
   m_guiActions->OnPlaybackStarted(item);
-  m_epgContainer.OnPlaybackStarted(item);
+  m_epgContainer.OnPlaybackStarted();
 }
 
 void CPVRManager::OnPlaybackStopped(const CFileItemPtr item)
@@ -899,7 +899,7 @@ void CPVRManager::OnPlaybackStopped(const CFileItemPtr item)
   }
 
   m_guiActions->OnPlaybackStopped(item);
-  m_epgContainer.OnPlaybackStopped(item);
+  m_epgContainer.OnPlaybackStopped();
 }
 
 void CPVRManager::OnPlaybackEnded(const CFileItemPtr item)
@@ -949,27 +949,6 @@ bool CPVRManager::IsPlayingEpgTag(void) const
   return IsStarted() && m_playingEpgTag;
 }
 
-void CPVRManager::SearchMissingChannelIcons(void)
-{
-  if (IsStarted() && m_channelGroups)
-    m_channelGroups->SearchMissingChannelIcons();
-}
-
-bool CPVRManager::FillStreamFileItem(CFileItem &fileItem)
-{
-  const CPVRClientPtr client = GetClient(fileItem);
-  if (client)
-  {
-    if (fileItem.IsPVRChannel())
-      return client->FillChannelStreamFileItem(fileItem) == PVR_ERROR_NO_ERROR;
-    else if (fileItem.IsPVRRecording())
-      return client->FillRecordingStreamFileItem(fileItem) == PVR_ERROR_NO_ERROR;
-    else if (fileItem.IsEPG())
-      return client->FillEpgTagStreamFileItem(fileItem) == PVR_ERROR_NO_ERROR;
-  }
-  return false;
-}
-
 void CPVRManager::TriggerEpgsCreate(void)
 {
   m_pendingUpdates.AppendJob(new CPVREpgsCreateJob());
@@ -995,10 +974,16 @@ void CPVRManager::TriggerChannelGroupsUpdate(void)
   m_pendingUpdates.AppendJob(new CPVRChannelGroupsUpdateJob());
 }
 
-void CPVRManager::TriggerSearchMissingChannelIcons(void)
+void CPVRManager::TriggerSearchMissingChannelIcons()
 {
   if (IsStarted())
-    CJobManager::GetInstance().AddJob(new CPVRSearchMissingChannelIconsJob(), NULL);
+    CJobManager::GetInstance().AddJob(new CPVRSearchMissingChannelIconsJob({m_channelGroups->GetGroupAllTV(), m_channelGroups->GetGroupAllRadio()}, true), nullptr);
+}
+
+void CPVRManager::TriggerSearchMissingChannelIcons(const std::shared_ptr<CPVRChannelGroup>& group)
+{
+  if (IsStarted())
+    CJobManager::GetInstance().AddJob(new CPVRSearchMissingChannelIconsJob({group}, false), nullptr);
 }
 
 void CPVRManager::ConnectionStateChange(CPVRClient *client, std::string connectString, PVR_CONNECTION_STATE state, std::string message)

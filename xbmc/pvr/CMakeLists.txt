@@ -8,11 +8,13 @@ set(SOURCES PVRActionListener.cpp
             PVRItem.cpp
             PVRChannelNumberInputHandler.cpp
             PVRJobs.cpp
+            PVRGUIChannelIconUpdater.cpp
             PVRGUIChannelNavigator.cpp
             PVRGUIDirectory.cpp
             PVRGUIProgressHandler.cpp
             PVRGUITimerInfo.cpp
-            PVRGUITimesInfo.cpp)
+            PVRGUITimesInfo.cpp
+            PVRStreamProperties.cpp)
 
 set(HEADERS PVRActionListener.h
             PVRDatabase.h
@@ -25,10 +27,12 @@ set(HEADERS PVRActionListener.h
             PVRTypes.h
             PVRChannelNumberInputHandler.h
             PVRJobs.h
+            PVRGUIChannelIconUpdater.h
             PVRGUIChannelNavigator.h
             PVRGUIDirectory.h
             PVRGUIProgressHandler.h
             PVRGUITimerInfo.h
-            PVRGUITimesInfo.h)
+            PVRGUITimesInfo.h
+            PVRStreamProperties.h)
 
 core_add_library(pvr)

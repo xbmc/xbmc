@@ -23,8 +23,6 @@
 #include "pvr/epg/Epg.h"
 #include "pvr/epg/EpgDatabase.h"
 
-class CFileItem;
-
 namespace PVR
 {
   class CPVREpgChannelData;
@@ -185,15 +183,13 @@ namespace PVR
 
     /*!
      * @brief Inform the epg container that playback of an item just started.
-     * @param item The item that started to play.
      */
-    void OnPlaybackStarted(const std::shared_ptr<CFileItem>& item);
+    void OnPlaybackStarted();
 
     /*!
      * @brief Inform the epg container that playback of an item was stopped due to user interaction.
-     * @param item The item that stopped to play.
      */
-    void OnPlaybackStopped(const std::shared_ptr<CFileItem>& item);
+    void OnPlaybackStopped();
 
   private:
     /*!

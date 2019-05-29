@@ -13,7 +13,6 @@
 #include <string>
 #include <vector>
 
-#include "FileItem.h"
 #include "addons/kodi-addon-dev-kit/include/kodi/xbmc_pvr_types.h"
 #include "interfaces/IAnnouncer.h"
 #include "threads/Event.h"
@@ -303,19 +302,19 @@ namespace PVR
      * @brief Inform PVR manager that playback of an item just started.
      * @param item The item that started to play.
      */
-    void OnPlaybackStarted(const CFileItemPtr item);
+    void OnPlaybackStarted(const std::shared_ptr<CFileItem> item);
 
     /*!
      * @brief Inform PVR manager that playback of an item was stopped due to user interaction.
      * @param item The item that stopped to play.
      */
-    void OnPlaybackStopped(const CFileItemPtr item);
+    void OnPlaybackStopped(const std::shared_ptr<CFileItem> item);
 
     /*!
      * @brief Inform PVR manager that playback of an item has stopped without user interaction.
      * @param item The item that ended to play.
      */
-    void OnPlaybackEnded(const CFileItemPtr item);
+    void OnPlaybackEnded(const std::shared_ptr<CFileItem> item);
 
     /*!
      * @brief Check whether there are active recordings.
@@ -335,13 +334,6 @@ namespace PVR
      * @return The current group or the group containing all channels if it's not set.
      */
     CPVRChannelGroupPtr GetPlayingGroup(bool bRadio = false) const;
-
-    /*!
-     * @brief Fill the file item for a recording, a channel or an epg tag with the properties required for playback. Values are obtained from the PVR backend.
-     * @param fileItem The file item to be filled. Item must contain either a pvr recording, a pvr channel or an epg tag.
-     * @return True if the stream properties have been set, false otherwiese.
-     */
-    bool FillStreamFileItem(CFileItem &fileItem);
 
     /*!
      * @brief Let the background thread create epg tags for all channels.
@@ -369,9 +361,15 @@ namespace PVR
     void TriggerChannelGroupsUpdate(void);
 
     /*!
-     * @brief Let the background thread search for missing channel icons.
+     * @brief Let the background thread search for all missing channel icons.
      */
     void TriggerSearchMissingChannelIcons(void);
+
+    /*!
+     * @brief Let the background thread search for missing channel icons for channels contained in the given group.
+     * @param group The channel group.
+     */
+    void TriggerSearchMissingChannelIcons(const std::shared_ptr<CPVRChannelGroup>& group);
 
     /*!
      * @brief Check whether names are still correct after the language settings changed.
@@ -407,11 +405,6 @@ namespace PVR
      * @return True if it's playing, false otherwise.
      */
     bool IsPlayingEpgTag(void) const;
-
-    /*!
-     * @brief Try to find missing channel icons automatically
-     */
-    void SearchMissingChannelIcons(void);
 
     /*!
      * @brief Check if parental lock is overridden at the given moment.

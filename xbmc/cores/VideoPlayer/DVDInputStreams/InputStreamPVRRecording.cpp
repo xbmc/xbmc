@@ -8,8 +8,13 @@
 
 #include "InputStreamPVRRecording.h"
 
+#include "ServiceBroker.h"
 #include "addons/PVRClient.h"
+#include "pvr/PVRManager.h"
+#include "pvr/recordings/PVRRecordings.h"
 #include "utils/log.h"
+
+using namespace PVR;
 
 CInputStreamPVRRecording::CInputStreamPVRRecording(IVideoPlayer* pPlayer, const CFileItem& fileitem)
   : CInputStreamPVRBase(pPlayer, fileitem)
@@ -23,7 +28,14 @@ CInputStreamPVRRecording::~CInputStreamPVRRecording()
 
 bool CInputStreamPVRRecording::OpenPVRStream()
 {
-  if (m_client && (m_client->OpenRecordedStream(m_item) == PVR_ERROR_NO_ERROR))
+  std::shared_ptr<CPVRRecording> recording = m_item.GetPVRRecordingInfoTag();
+  if (!recording)
+    recording = CServiceBroker::GetPVRManager().Recordings()->GetByPath(m_item.GetPath());
+
+  if (!recording)
+    CLog::Log(LOGERROR, "CInputStreamPVRRecording - %s - unable to obtain recording instance for recording %s", __FUNCTION__, m_item.GetPath().c_str());
+
+  if (recording && m_client && (m_client->OpenRecordedStream(recording) == PVR_ERROR_NO_ERROR))
   {
     CLog::Log(LOGDEBUG, "CInputStreamPVRRecording - %s - opened recording stream %s", __FUNCTION__, m_item.GetPath().c_str());
     return true;

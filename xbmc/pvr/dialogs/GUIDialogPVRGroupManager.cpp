@@ -21,6 +21,7 @@
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
 
+#include "pvr/PVRGUIDirectory.h"
 #include "pvr/PVRManager.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 
@@ -364,8 +365,9 @@ void CGUIDialogPVRGroupManager::Update()
 
   Clear();
 
-  /* get the groups list */
-  CServiceBroker::GetPVRManager().ChannelGroups()->Get(m_bIsRadio)->GetGroupList(m_channelGroups);
+  // get the groups list
+  CPVRGUIDirectory::GetChannelGroupsDirectory(m_bIsRadio, false, *m_channelGroups);
+
   m_viewChannelGroups.SetItems(*m_channelGroups);
   m_viewChannelGroups.SetSelectedItem(m_iSelectedChannelGroup);
 

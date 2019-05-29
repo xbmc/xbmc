@@ -8,7 +8,6 @@
 
 #include "EpgSearchFilter.h"
 
-#include "FileItem.h"
 #include "ServiceBroker.h"
 #include "addons/kodi-addon-dev-kit/include/kodi/xbmc_pvr_types.h"
 #include "utils/TextSearch.h"

@@ -22,10 +22,11 @@
 namespace PVR
 {
   class CPVRChannelGroups;
-  class CPVREpgChannelData;
-  class CPVRTimersContainer;
   class CPVRClientMenuHook;
   class CPVRClientMenuHooks;
+  class CPVREpgChannelData;
+  class CPVRStreamProperties;
+  class CPVRTimersContainer;
 
   class CPVRClient;
   typedef std::shared_ptr<CPVRClient> CPVRClientPtr;
@@ -389,11 +390,12 @@ namespace PVR
     PVR_ERROR IsPlayable(const CConstPVREpgInfoTagPtr &tag, bool &bIsPlayable) const;
 
     /*!
-     * @brief Fill the file item for an epg tag with the properties required for playback. Values are obtained from the PVR backend.
-     * @param fileItem The file item to be filled.
+     * @brief Fill the given container with the properties required for playback of the given EPG tag. Values are obtained from the PVR backend.
+     * @param tag The EPG tag.
+     * @param props The container to be filled with the stream properties.
      * @return PVR_ERROR_NO_ERROR on success, respective error code otherwise.
      */
-    PVR_ERROR FillEpgTagStreamFileItem(CFileItem &fileItem);
+    PVR_ERROR GetEpgTagStreamProperties(const std::shared_ptr<CPVREpgInfoTag>& tag, CPVRStreamProperties& props);
 
     //@}
     /** @name PVR EPG methods */
@@ -609,10 +611,10 @@ namespace PVR
 
     /*!
      * @brief Open a live stream on the server.
-     * @param channelItem The channel to stream.
+     * @param channel The channel to stream.
      * @return PVR_ERROR_NO_ERROR on success, respective error code otherwise.
      */
-    PVR_ERROR OpenLiveStream(const CFileItem& channelItem);
+    PVR_ERROR OpenLiveStream(const std::shared_ptr<CPVRChannel>& channel);
 
     /*!
      * @brief Close an open live stream.
@@ -667,11 +669,12 @@ namespace PVR
     PVR_ERROR GetDescrambleInfo(PVR_DESCRAMBLE_INFO &descrambleinfo) const;
 
     /*!
-     * @brief Fill the file item for a channel with the properties required for playback. Values are obtained from the PVR backend.
-     * @param fileItem The file item to be filled.
+     * @brief Fill the given container with the properties required for playback of the given channel. Values are obtained from the PVR backend.
+     * @param channel The channel.
+     * @param props The container to be filled with the stream properties.
      * @return PVR_ERROR_NO_ERROR on success, respective error code otherwise.
      */
-    PVR_ERROR FillChannelStreamFileItem(CFileItem &fileItem);
+    PVR_ERROR GetChannelStreamProperties(const std::shared_ptr<CPVRChannel>& channel, CPVRStreamProperties& props);
 
     /*!
      * @brief Check whether PVR backend supports pausing the currently playing stream
@@ -719,10 +722,10 @@ namespace PVR
 
     /*!
      * @brief Open a recording on the server.
-     * @param recordingItem The recording to open.
+     * @param recording The recording to open.
      * @return PVR_ERROR_NO_ERROR on success, respective error code otherwise.
      */
-    PVR_ERROR OpenRecordedStream(const CFileItem& recordingItem);
+    PVR_ERROR OpenRecordedStream(const std::shared_ptr<CPVRRecording>& recording);
 
     /*!
      * @brief Close an open recording stream.
@@ -756,11 +759,12 @@ namespace PVR
     PVR_ERROR GetRecordedStreamLength(int64_t &iLength);
 
     /*!
-     * @brief Fill the file item for a recording with the properties required for playback. Values are obtained from the PVR backend.
-     * @param fileItem The file item to be filled.
+     * @brief Fill the given container with the properties required for playback of the given recording. Values are obtained from the PVR backend.
+     * @param recording The recording.
+     * @param props The container to be filled with the stream properties.
      * @return PVR_ERROR_NO_ERROR on success, respective error code otherwise.
      */
-    PVR_ERROR FillRecordingStreamFileItem(CFileItem &fileItem);
+    PVR_ERROR GetRecordingStreamProperties(const std::shared_ptr<CPVRRecording>& recording, CPVRStreamProperties& props);
 
     //@}
     /** @name PVR demultiplexer methods */
@@ -815,17 +819,49 @@ namespace PVR
 
     /*!
      * @brief Get the client's menu hooks.
-     * @return The hooks. Guaranteed never to be null.
+     * @return The hooks. Guaranteed never to be nullptr.
      */
     std::shared_ptr<CPVRClientMenuHooks> GetMenuHooks();
 
     /*!
-     * @brief Call one of the menu hooks of the client.
+     * @brief Call one of the EPG tag menu hooks of the client.
      * @param hook The hook to call.
-     * @param item The item associated with the hook to be called.
+     * @param tag The EPG tag associated with the hook to be called.
      * @return PVR_ERROR_NO_ERROR on success, respective error code otherwise.
      */
-    PVR_ERROR CallMenuHook(const CPVRClientMenuHook &hook, const CFileItemPtr &item);
+    PVR_ERROR CallEpgTagMenuHook(const CPVRClientMenuHook& hook, const std::shared_ptr<CPVREpgInfoTag>& tag);
+
+    /*!
+     * @brief Call one of the channel menu hooks of the client.
+     * @param hook The hook to call.
+     * @param tag The channel associated with the hook to be called.
+     * @return PVR_ERROR_NO_ERROR on success, respective error code otherwise.
+     */
+    PVR_ERROR CallChannelMenuHook(const CPVRClientMenuHook& hook, const std::shared_ptr<CPVRChannel>& channel);
+
+    /*!
+     * @brief Call one of the recording menu hooks of the client.
+     * @param hook The hook to call.
+     * @param tag The recording associated with the hook to be called.
+     * @param bDeleted True, if the recording is deleted (trashed), false otherwise
+     * @return PVR_ERROR_NO_ERROR on success, respective error code otherwise.
+     */
+    PVR_ERROR CallRecordingMenuHook(const CPVRClientMenuHook& hook, const std::shared_ptr<CPVRRecording>& recording, bool bDeleted);
+
+    /*!
+     * @brief Call one of the timer menu hooks of the client.
+     * @param hook The hook to call.
+     * @param tag The timer associated with the hook to be called.
+     * @return PVR_ERROR_NO_ERROR on success, respective error code otherwise.
+     */
+    PVR_ERROR CallTimerMenuHook(const CPVRClientMenuHook& hook, const std::shared_ptr<CPVRTimerInfoTag>& timer);
+
+    /*!
+     * @brief Call one of the settings menu hooks of the client.
+     * @param hook The hook to call.
+     * @return PVR_ERROR_NO_ERROR on success, respective error code otherwise.
+     */
+    PVR_ERROR CallSettingsMenuHook(const CPVRClientMenuHook& hook);
 
     /*!
      * @brief Propagate power management events to this add-on
@@ -896,12 +932,12 @@ namespace PVR
     static void WriteClientChannelInfo(const CPVRChannelPtr &xbmcChannel, PVR_CHANNEL &addonChannel);
 
     /*!
-     * @brief Write the given addon properties to the properties of the given file item.
+     * @brief Write the given addon properties to the given properties container.
      * @param properties Pointer to an array of addon properties.
      * @param iPropertyCount The number of properties contained in the addon properties array.
-     * @param fileItem The item the addon properties shall be written to.
+     * @param props The container the addon properties shall be written to.
      */
-    static void WriteFileItemProperties(const PVR_NAMED_VALUE *properties, unsigned int iPropertyCount, CFileItem &fileItem);
+    static void WriteStreamProperties(const PVR_NAMED_VALUE *properties, unsigned int iPropertyCount, CPVRStreamProperties& props);
 
     /*!
      * @brief Whether a channel can be played by this add-on

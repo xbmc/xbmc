@@ -15,10 +15,6 @@
 
 #include "pvr/channels/PVRChannelGroup.h"
 
-class CFileItem;
-typedef std::shared_ptr<CFileItem> CFileItemPtr;
-class CFileItemList;
-
 namespace PVR
 {
   /** A container class for channel groups */
@@ -67,9 +63,9 @@ namespace PVR
     /*!
      * @brief Get a channel given it's path
      * @param strPath The path to the channel
-     * @return The channel, or an empty fileitem when not found
+     * @return The channel, or nullptr if not found
      */
-    CFileItemPtr GetByPath(const std::string &strPath) const;
+    std::shared_ptr<CPVRChannel> GetByPath(const std::string& strPath) const;
 
     /*!
      * @brief Get a pointer to a channel group given it's ID.
@@ -123,14 +119,6 @@ namespace PVR
      * @return The amount of items that were added.
      */
     std::vector<CPVRChannelGroupPtr> GetMembers(bool bExcludeHidden = false) const;
-
-    /*!
-     * @brief Get the list of groups.
-     * @param results The file list to store the results in.
-     * @param bExcludeHidden Decides whether to filter hidden groups
-     * @return The amount of items that were added.
-     */
-    int GetGroupList(CFileItemList* results, bool bExcludeHidden = false) const;
 
     /*!
      * @brief Get the previous group in this container.

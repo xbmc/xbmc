@@ -148,6 +148,13 @@ namespace PVR
     bool EditTimerRule(const CFileItemPtr &item) const;
 
     /*!
+     * @brief Get the timer rule for a given timer
+     * @param item containg an item to query the timer rule for. item must be a timer or an epg tag.
+     * @return The timer rule item, or nullptr if none was found.
+     */
+    std::shared_ptr<CFileItem> GetTimerRule(const std::shared_ptr<CFileItem>& item) const;
+
+    /*!
      * @brief Rename a timer, showing a text input dialog.
      * @param item containing a timer to rename.
      * @return true, if the timer was renamed successfully, false otherwise.

@@ -862,13 +862,13 @@ int CPVREpgContainer::GetFutureDaysToDisplay() const
   return m_settings.GetIntValue(CSettings::SETTING_EPG_FUTURE_DAYSTODISPLAY);
 }
 
-void CPVREpgContainer::OnPlaybackStarted(const CFileItemPtr &item)
+void CPVREpgContainer::OnPlaybackStarted()
 {
   CSingleLock lock(m_critSection);
   m_bPlaying = true;
 }
 
-void CPVREpgContainer::OnPlaybackStopped(const CFileItemPtr &item)
+void CPVREpgContainer::OnPlaybackStopped()
 {
   CSingleLock lock(m_critSection);
   m_bPlaying = false;

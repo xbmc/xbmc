@@ -120,9 +120,9 @@ namespace PVR
     /*!
      * @brief Get a channel given it's path.
      * @param strPath The path.
-     * @return The channel or NULL if it wasn't found.
+     * @return The channel or nullptr if it wasn't found.
      */
-    CFileItemPtr GetByPath(const std::string &strPath) const;
+    std::shared_ptr<CPVRChannel> GetByPath(const std::string& strPath) const;
 
     /*!
      * @brief Get the group that is currently selected in the UI.
@@ -140,15 +140,10 @@ namespace PVR
     CPVRChannelPtr GetByUniqueID(int iUniqueChannelId, int iClientID) const;
 
     /*!
-     * @brief Try to find missing channel icons automatically
+     * @brief Get the channel that was played last.
+     * @return The requested channel or nullptr.
      */
-    void SearchMissingChannelIcons(void) const;
-
-    /*!
-     * @brief The channel that was played last that has a valid client or NULL if there was none.
-     * @return The requested channel.
-     */
-    CFileItemPtr GetLastPlayedChannel(void) const;
+    std::shared_ptr<CPVRChannel> GetLastPlayedChannel() const;
 
     /*!
      * @brief The group that was played last and optionally contains the given channel.

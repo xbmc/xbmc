@@ -8,8 +8,13 @@
 
 #include "InputStreamPVRChannel.h"
 
+#include "ServiceBroker.h"
 #include "addons/PVRClient.h"
+#include "pvr/PVRManager.h"
+#include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "utils/log.h"
+
+using namespace PVR;
 
 CInputStreamPVRChannel::CInputStreamPVRChannel(IVideoPlayer* pPlayer, const CFileItem& fileitem)
   : CInputStreamPVRBase(pPlayer, fileitem),
@@ -32,7 +37,14 @@ CDVDInputStream::IDemux* CInputStreamPVRChannel::GetIDemux()
 
 bool CInputStreamPVRChannel::OpenPVRStream()
 {
-  if (m_client && (m_client->OpenLiveStream(m_item) == PVR_ERROR_NO_ERROR))
+  std::shared_ptr<CPVRChannel> channel = m_item.GetPVRChannelInfoTag();
+  if (!channel)
+    channel = CServiceBroker::GetPVRManager().ChannelGroups()->GetByPath(m_item.GetPath());
+
+  if (!channel)
+    CLog::Log(LOGERROR, "CInputStreamPVRChannel - %s - unable to obtain channel instance for channel %s", __FUNCTION__, m_item.GetPath().c_str());
+
+  if (channel && m_client && (m_client->OpenLiveStream(channel) == PVR_ERROR_NO_ERROR))
   {
     m_bDemuxActive = m_client->GetClientCapabilities().HandlesDemuxing();
     CLog::Log(LOGDEBUG, "CInputStreamPVRChannel - %s - opened channel stream %s", __FUNCTION__, m_item.GetPath().c_str());
