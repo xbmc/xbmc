@@ -33,6 +33,9 @@ bool CWinSystemBase::InitWindowSystem()
 {
   UpdateResolutions();
   CDisplaySettings::GetInstance().ApplyCalibrations();
+
+  CResolutionUtils::PrintWhitelist();
+
   return true;
 }
 
