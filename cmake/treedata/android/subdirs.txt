@@ -3,6 +3,7 @@ xbmc/cores/VideoPlayer/Process/android      cores/VideoPlayer/Process/android
 xbmc/input/touch                            input/touch
 xbmc/input/touch/generic                    input/touch/generic
 xbmc/media/decoderfilter                    media/decoderfilter
+xbmc/platform/android                       platform/android
 xbmc/platform/android/activity              platform/android/activity
 xbmc/platform/android/bionic_supplement     platform/android/bionicsupplement
 xbmc/platform/android/filesystem            platform/android/filesystem

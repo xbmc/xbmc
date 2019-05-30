@@ -1,4 +1,5 @@
 set(SOURCES OptionalsReg.cpp
+            MemUtils.cpp
             TimeUtils.cpp)
 
 set(HEADERS OptionalsReg.h

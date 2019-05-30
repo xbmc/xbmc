@@ -2,6 +2,7 @@ set(SOURCES AutoPool.mm
             DarwinUtils.mm
             DarwinNSUserDefaults.mm
             DictionaryUtils.mm
+            MemUtils.cpp
             PlatformDarwin.cpp)
 
 set(HEADERS AutoPool.h

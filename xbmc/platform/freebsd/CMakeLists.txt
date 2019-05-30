@@ -1,4 +1,5 @@
-set(SOURCES ../linux/OptionalsReg.cpp
+set(SOURCES MemUtils.cpp
+            ../linux/OptionalsReg.cpp
             ../linux/TimeUtils.cpp)
 
 set(HEADERS ../linux/OptionalsReg.h
