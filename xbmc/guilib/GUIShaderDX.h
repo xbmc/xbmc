@@ -9,6 +9,7 @@
 #pragma once
 
 #include "utils/Geometry.h"
+#include "utils/MemUtils.h"
 #include "Texture.h"
 #include "D3DResource.h"
 
@@ -75,7 +76,7 @@ public:
   // need to use aligned allocation bacause we use XMMATRIX in structures.
   void* operator new (size_t size)
   {
-    void* ptr = _aligned_malloc(size, __alignof(CGUIShaderDX));
+    void* ptr = KODI::MEMORY::AlignedMalloc(size, __alignof(CGUIShaderDX));
     if (!ptr)
       throw std::bad_alloc();
     return ptr;
@@ -83,7 +84,7 @@ public:
   // free aligned memory.
   void operator delete (void* ptr)
   {
-    _aligned_free(ptr);
+    KODI::MEMORY::AlignedFree(ptr);
   }
 
 private:

@@ -10,9 +10,6 @@
 
 #include "XBTF.h"
 #include "guilib/imagefactory.h"
-#ifdef TARGET_POSIX
-#include "platform/posix/XMemUtils.h"
-#endif
 
 #pragma pack(1)
 struct COLOR {unsigned char b,g,r,x;};	// Windows GDI expects 4bytes per color

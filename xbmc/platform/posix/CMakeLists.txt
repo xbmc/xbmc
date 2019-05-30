@@ -1,5 +1,6 @@
 set(SOURCES ConvUtils.cpp
             Filesystem.cpp
+            MemUtils.cpp
             MessagePrinter.cpp
             PlatformPosix.cpp
             PosixMountProvider.cpp
@@ -7,7 +8,6 @@ set(SOURCES ConvUtils.cpp
             PosixTimezone.cpp
             XFileUtils.cpp
             XHandle.cpp
-            XMemUtils.cpp
             XTimeUtils.cpp)
 
 set(HEADERS ConvUtils.h
@@ -18,7 +18,6 @@ set(HEADERS ConvUtils.h
             PosixTimezone.h
             XFileUtils.h
             XHandle.h
-            XMemUtils.h
             XTimeUtils.h)
 
 core_add_library(platform_posix)

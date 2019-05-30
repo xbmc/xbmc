@@ -1,7 +1,3 @@
-#include <stdlib.h>
-#include <stdio.h>
-#include <unistd.h>
-
 /*
  *  Copyright (C) 2005-2018 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
@@ -10,8 +6,23 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include "XMemUtils.h"
-#include "Util.h"
+#include "utils/MemUtils.h"
+
+#include <array>
+#include <cstring>
+#include <stdlib.h>
+#include <stdio.h>
+#include <unistd.h>
+
+#include <sys/types.h>
+
+#if !defined(TARGET_ANDROID)
+#include <sys/sysctl.h>
+#endif
+
+#if defined(TARGET_LINUX)
+#include <sys/sysinfo.h>
+#endif
 
 #if defined(TARGET_DARWIN)
 #include <mach/mach.h>
@@ -20,11 +31,16 @@
 #undef ALIGN
 #define ALIGN(value, alignment) (((value)+(alignment-1))&~(alignment-1))
 
+namespace KODI
+{
+namespace MEMORY
+{
+
 // aligned memory allocation.
 // in order to do so - we alloc extra space and store the original allocation in it (so that we can free later on).
 // the returned address will be the nearest aligned address within the space allocated.
-void *_aligned_malloc(size_t s, size_t alignTo) {
-
+void* AlignedMalloc(size_t s, size_t alignTo)
+{
   char *pFull = (char*)malloc(s + alignTo + sizeof(char *));
   char *pAligned = (char *)ALIGN(((unsigned long)pFull + sizeof(char *)), alignTo);
 
@@ -33,7 +49,8 @@ void *_aligned_malloc(size_t s, size_t alignTo) {
   return(pAligned);
 }
 
-void _aligned_free(void *p) {
+void AlignedFree(void* p)
+{
   if (!p)
     return;
 
@@ -41,36 +58,43 @@ void _aligned_free(void *p) {
   free(pFull);
 }
 
-#if defined(TARGET_POSIX) && !defined(TARGET_DARWIN) && !defined(TARGET_FREEBSD)
-static FILE* procMeminfoFP = NULL;
-#endif
-
-void GlobalMemoryStatusEx(LPMEMORYSTATUSEX lpBuffer)
+void GetMemoryStatus(MemoryStatus* buffer)
 {
-  if (!lpBuffer)
+  if (!buffer)
     return;
 
-  memset(lpBuffer, 0, sizeof(MEMORYSTATUSEX));
-  lpBuffer->dwLength = sizeof(MEMORYSTATUSEX);
+  std::memset(buffer, 0, sizeof(MemoryStatus));
 
 #if defined(TARGET_DARWIN)
   uint64_t physmem;
   size_t len = sizeof physmem;
-  int mib[2] = { CTL_HW, HW_MEMSIZE };
-  size_t miblen = ARRAY_SIZE(mib);
+
+#if defined(__apple_build_version__) && __apple_build_version__ < 10000000
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wmissing-braces"
+#endif
+  std::array<int, 2> mib =
+  {
+    CTL_HW,
+    HW_MEMSIZE,
+  };
+#if defined(__apple_build_version__) && __apple_build_version__ < 10000000
+#pragma clang diagnostic pop
+#endif
 
   // Total physical memory.
-  if (sysctl(mib, miblen, &physmem, &len, NULL, 0) == 0 && len == sizeof (physmem))
-      lpBuffer->ullTotalPhys = physmem;
+  if (sysctl(mib.data(), mib.size(), &physmem, &len, NULL, 0) == 0 && len == sizeof (physmem))
+    buffer->totalPhys = physmem;
 
   // Virtual memory.
-  mib[0] = CTL_VM; mib[1] = VM_SWAPUSAGE;
+  mib[0] = CTL_VM;
+  mib[1] = VM_SWAPUSAGE;
   struct xsw_usage swap;
   len = sizeof(struct xsw_usage);
-  if (sysctl(mib, miblen, &swap, &len, NULL, 0) == 0)
+  if (sysctl(mib.data(), mib.size(), &swap, &len, NULL, 0) == 0)
   {
-      lpBuffer->ullAvailPageFile = swap.xsu_avail;
-      lpBuffer->ullTotalVirtual = lpBuffer->ullTotalPhys + swap.xsu_total;
+      buffer->availPageFile = swap.xsu_avail;
+      buffer->totalVirtual = buffer->totalPhys + swap.xsu_total;
   }
 
   // In use.
@@ -89,15 +113,16 @@ void GlobalMemoryStatusEx(LPMEMORYSTATUSEX lpBuffer)
       host_page_size(stat_port, &pageSize);
 #else
       int pageSize;
-      mib[0] = CTL_HW; mib[1] = HW_PAGESIZE;
+      mib[0] = CTL_HW;
+      mib[1] = HW_PAGESIZE;
       len = sizeof(int);
-      if (sysctl(mib, miblen, &pageSize, &len, NULL, 0) == 0)
+      if (sysctl(mib.data(), mib.size(), &pageSize, &len, NULL, 0) == 0)
 #endif
       {
           uint64_t used = (vm_stat.active_count + vm_stat.inactive_count + vm_stat.wire_count) * pageSize;
 
-          lpBuffer->ullAvailPhys = lpBuffer->ullTotalPhys - used;
-          lpBuffer->ullAvailVirtual  = lpBuffer->ullAvailPhys; // FIXME.
+          buffer->availPhys = buffer->totalPhys - used;
+          buffer->availVirtual  = buffer->availPhys; // FIXME.
       }
   }
 #elif defined(TARGET_FREEBSD)
@@ -108,8 +133,8 @@ void GlobalMemoryStatusEx(LPMEMORYSTATUSEX lpBuffer)
   /* physmem */
   len = sizeof(physmem);
   if (sysctlbyname("hw.physmem", &physmem, &len, NULL, 0) == 0) {
-    lpBuffer->ullTotalPhys = physmem;
-    lpBuffer->ullTotalVirtual = physmem;
+    buffer->totalPhys = physmem;
+    buffer->totalVirtual = physmem;
   }
   /* pagesize */
   len = sizeof(pagesize);
@@ -129,48 +154,22 @@ void GlobalMemoryStatusEx(LPMEMORYSTATUSEX lpBuffer)
     mem_free *= pagesize;
 
   /* mem_avail = mem_inactive + mem_cache + mem_free */
-  lpBuffer->ullAvailPhys = mem_inactive + mem_cache + mem_free;
-  lpBuffer->ullAvailVirtual = mem_inactive + mem_cache + mem_free;
+  buffer->availPhys = mem_inactive + mem_cache + mem_free;
+  buffer->availVirtual = mem_inactive + mem_cache + mem_free;
 
   if (sysctlbyname("vm.stats.vm.v_swappgsout", &swap_free, &len, NULL, 0) == 0)
-    lpBuffer->ullAvailPageFile = swap_free * pagesize;
+    buffer->availPageFile = swap_free * pagesize;
 #else
   struct sysinfo info;
-  char name[32];
-  unsigned val;
-  if (!procMeminfoFP && (procMeminfoFP = fopen("/proc/meminfo", "r")) == NULL)
-    sysinfo(&info);
-  else
-  {
-    memset(&info, 0, sizeof(struct sysinfo));
-    info.mem_unit = 4096;
-    while (fscanf(procMeminfoFP, "%31s %u%*[^\n]\n", name, &val) != EOF)
-    {
-      if (strncmp("MemTotal:", name, 9) == 0)
-        info.totalram = val/4;
-      else if (strncmp("MemFree:", name, 8) == 0)
-        info.freeram = val/4;
-      else if (strncmp("Buffers:", name, 8) == 0)
-        info.bufferram += val/4;
-      else if (strncmp("Cached:", name, 7) == 0)
-        info.bufferram += val/4;
-      else if (strncmp("SwapTotal:", name, 10) == 0)
-        info.totalswap = val/4;
-      else if (strncmp("SwapFree:", name, 9) == 0)
-        info.freeswap = val/4;
-      else if (strncmp("HighTotal:", name, 10) == 0)
-        info.totalhigh = val/4;
-      else if (strncmp("HighFree:", name, 9) == 0)
-        info.freehigh = val/4;
-    }
-    rewind(procMeminfoFP);
-    fflush(procMeminfoFP);
-  }
-  lpBuffer->dwLength        = sizeof(MEMORYSTATUSEX);
-  lpBuffer->ullAvailPageFile = (info.freeswap * info.mem_unit);
-  lpBuffer->ullAvailPhys     = ((info.freeram + info.bufferram) * info.mem_unit);
-  lpBuffer->ullAvailVirtual  = ((info.freeram + info.bufferram) * info.mem_unit);
-  lpBuffer->ullTotalPhys     = (info.totalram * info.mem_unit);
-  lpBuffer->ullTotalVirtual  = (info.totalram * info.mem_unit);
+  sysinfo(&info);
+
+  buffer->availPageFile = (info.freeswap * info.mem_unit);
+  buffer->availPhys = ((info.freeram + info.bufferram) * info.mem_unit);
+  buffer->availVirtual = ((info.freeram + info.bufferram) * info.mem_unit);
+  buffer->totalPhys = (info.totalram * info.mem_unit);
+  buffer->totalVirtual = (info.totalram * info.mem_unit);
 #endif
+}
+
+}
 }

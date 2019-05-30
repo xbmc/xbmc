@@ -224,20 +224,6 @@ typedef struct _WIN32_FIND_DATA
 #define _S_IFDIR  S_IFDIR
 #define MAX_PATH PATH_MAX
 
-// Memory
-typedef struct _MEMORYSTATUSEX
-{
-  DWORD dwLength;
-  DWORD dwMemoryLoad;
-
-  uint64_t ullTotalPhys;
-  uint64_t ullAvailPhys;
-  uint64_t ullTotalPageFile;
-  uint64_t ullAvailPageFile;
-  uint64_t ullTotalVirtual;
-  uint64_t ullAvailVirtual;
-} MEMORYSTATUSEX, *LPMEMORYSTATUSEX;
-
 // CreateFile defines
 #define FILE_FLAG_NO_BUFFERING          0x20000000
 #define FILE_FLAG_DELETE_ON_CLOSE       0x04000000

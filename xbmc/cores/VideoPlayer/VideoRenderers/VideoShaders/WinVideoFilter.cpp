@@ -16,6 +16,7 @@
 #include "rendering/dx/DeviceResources.h"
 #include "Util.h"
 #include "utils/log.h"
+#include "utils/MemUtils.h"
 #include "VideoRenderers/windows/RendererBase.h"
 
 #include <DirectXPackedVector.h>
@@ -297,7 +298,7 @@ bool COutputShader::CreateLUTView(int lutSize, uint16_t* lutData, bool isRGB, ID
   {
     // repack data to RGBA
     const unsigned samples = lutSize * lutSize * lutSize;
-    cData = reinterpret_cast<uint16_t*>(_aligned_malloc(samples * sizeof(uint16_t) * 4, 16));
+    cData = reinterpret_cast<uint16_t*>(KODI::MEMORY::AlignedMalloc(samples * sizeof(uint16_t) * 4, 16));
     auto rgba = static_cast<uint16_t*>(cData);
     for (unsigned i = 0; i < samples - 1; ++i, rgba += 4, lutData += 3)
     {
@@ -322,7 +323,7 @@ bool COutputShader::CreateLUTView(int lutSize, uint16_t* lutData, bool isRGB, ID
 
   HRESULT hr = pDevice->CreateTexture3D(&txDesc, &texData, pLUTTex.GetAddressOf());
   if (isRGB)
-    _aligned_free(cData);
+    KODI::MEMORY::AlignedFree(cData);
 
   if (FAILED(hr))
   {

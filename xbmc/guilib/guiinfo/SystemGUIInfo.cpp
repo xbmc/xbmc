@@ -20,9 +20,6 @@
 #if defined(TARGET_DARWIN_OSX)
 #include "platform/darwin/osx/smc.h"
 #endif
-#ifdef TARGET_POSIX
-#include "platform/posix/XMemUtils.h"
-#endif
 #include "powermanagement/PowerManager.h"
 #include "profiles/ProfileManager.h"
 #include "settings/AdvancedSettings.h"
@@ -33,6 +30,7 @@
 #include "storage/MediaManager.h"
 #include "utils/AlarmClock.h"
 #include "utils/CPUInfo.h"
+#include "utils/MemUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/SystemInfo.h"
 #include "utils/TimeUtils.h"
@@ -203,22 +201,21 @@ bool CSystemGUIInfo::GetLabel(std::string& value, const CFileItem *item, int con
     case SYSTEM_USED_MEMORY_PERCENT:
     case SYSTEM_TOTAL_MEMORY:
     {
-      MEMORYSTATUSEX stat;
-      stat.dwLength = sizeof(MEMORYSTATUSEX);
-      GlobalMemoryStatusEx(&stat);
-      int iMemPercentFree = 100 - static_cast<int>(100.0f * (stat.ullTotalPhys - stat.ullAvailPhys) / stat.ullTotalPhys + 0.5f);
+      KODI::MEMORY::MemoryStatus stat;
+      KODI::MEMORY::GetMemoryStatus(&stat);
+      int iMemPercentFree = 100 - static_cast<int>(100.0f * (stat.totalPhys - stat.availPhys) / stat.totalPhys + 0.5f);
       int iMemPercentUsed = 100 - iMemPercentFree;
 
       if (info.m_info == SYSTEM_FREE_MEMORY)
-        value = StringUtils::Format("%uMB", static_cast<unsigned int>(stat.ullAvailPhys / MB));
+        value = StringUtils::Format("%uMB", static_cast<unsigned int>(stat.availPhys / MB));
       else if (info.m_info == SYSTEM_FREE_MEMORY_PERCENT)
         value = StringUtils::Format("%i%%", iMemPercentFree);
       else if (info.m_info == SYSTEM_USED_MEMORY)
-        value = StringUtils::Format("%uMB", static_cast<unsigned int>((stat.ullTotalPhys - stat.ullAvailPhys) / MB));
+        value = StringUtils::Format("%uMB", static_cast<unsigned int>((stat.totalPhys - stat.availPhys) / MB));
       else if (info.m_info == SYSTEM_USED_MEMORY_PERCENT)
         value = StringUtils::Format("%i%%", iMemPercentUsed);
       else if (info.m_info == SYSTEM_TOTAL_MEMORY)
-        value = StringUtils::Format("%uMB", static_cast<unsigned int>(stat.ullTotalPhys / MB));
+        value = StringUtils::Format("%uMB", static_cast<unsigned int>(stat.totalPhys / MB));
       return true;
     }
     case SYSTEM_SCREEN_MODE:
@@ -385,10 +382,9 @@ bool CSystemGUIInfo::GetInt(int& value, const CGUIListItem *gitem, int contextWi
     case SYSTEM_FREE_MEMORY:
     case SYSTEM_USED_MEMORY:
     {
-      MEMORYSTATUSEX stat;
-      stat.dwLength = sizeof(MEMORYSTATUSEX);
-      GlobalMemoryStatusEx(&stat);
-      int memPercentUsed = static_cast<int>(100.0f * (stat.ullTotalPhys - stat.ullAvailPhys) / stat.ullTotalPhys + 0.5f);
+      KODI::MEMORY::MemoryStatus stat;
+      KODI::MEMORY::GetMemoryStatus(&stat);
+      int memPercentUsed = static_cast<int>(100.0f * (stat.totalPhys - stat.availPhys) / stat.totalPhys + 0.5f);
       if (info.m_info == SYSTEM_FREE_MEMORY)
         value = 100 - memPercentUsed;
       else

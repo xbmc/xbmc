@@ -126,6 +126,7 @@ set(HEADERS ActorProtocol.h
             Locale.h
             log.h
             MathUtils.h
+            MemUtils.h
             Mime.h
             Observer.h
             params_check_macros.h
