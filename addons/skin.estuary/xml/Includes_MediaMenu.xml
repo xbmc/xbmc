@@ -365,11 +365,7 @@
 				<visible>Control.IsEnabled(4)</visible>
 				<onclick>SendClick(4)</onclick>
 			</control>
-			<control type="button" id="8">
-				<include>MediaMenuItemsCommon</include>
-				<label>$LOCALIZE[137]</label>
-				<visible>Window.IsVisible(Videos) | Window.IsVisible(Music)</visible>
-			</control>
+			<include condition="Window.IsVisible(Videos) | Window.IsVisible(Music)">MediaMenuSearchButton</include>
 			<control type="button" id="19">
 				<visible>Container.CanFilter + !Container.CanFilterAdvanced</visible>
 				<include>MediaMenuItemsCommon</include>
@@ -384,6 +380,12 @@
 				<onclick>Filter</onclick>
 			</control>
 		</definition>
+	</include>
+	<include name="MediaMenuSearchButton">
+		<control type="button" id="8">
+			<include>MediaMenuItemsCommon</include>
+			<label>$LOCALIZE[137]</label>
+		</control>
 	</include>
 	<include name="MediaMenuMouseOverlay">
 		<control type="button" id="6130">
