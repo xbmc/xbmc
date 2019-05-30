@@ -815,6 +815,19 @@ void CAddonMgr::FindAddons(ADDON_INFO_LIST& addonmap, const std::string& path)
         AddonInfoPtr addonInfo = CAddonInfoBuilder::Generate(path);
         if (addonInfo)
         {
+          const auto& it = addonmap.find(addonInfo->ID());
+          if (it != addonmap.end())
+          {
+            if (it->second->Version() > addonInfo->Version())
+            {
+              CLog::Log(LOGWARNING, "CAddonMgr::{}: Addon '{}' already present with higher version {} at '{}' - other version {} at '{}' will be ignored",
+                           __FUNCTION__, addonInfo->ID(), it->second->Version().asString(), it->second->Path(), addonInfo->Version().asString(), addonInfo->Path());
+              continue;
+            }
+            CLog::Log(LOGDEBUG, "CAddonMgr::{}: Addon '{}' already present with version {} at '{}' replaced with version {} at '{}'",
+                         __FUNCTION__, addonInfo->ID(), it->second->Version().asString(), it->second->Path(), addonInfo->Version().asString(), addonInfo->Path());
+          }
+
           addonmap[addonInfo->ID()] = addonInfo;
         }
       }
