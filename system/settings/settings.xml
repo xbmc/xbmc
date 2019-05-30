@@ -553,6 +553,7 @@
               <option label="765">5</option> <!-- Cyan -->
               <option label="766">6</option> <!-- Light grey -->
               <option label="767">7</option> <!-- Grey -->
+              <option label="768">8</option> <!-- Dark Grey -->
             </options>
           </constraints>
           <dependencies>
