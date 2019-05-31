@@ -1,3 +1,11 @@
+This is a kodi branch to display rich metadata through Android TV's Channels
+
+Video preview:
+
+https://www.youtube.com/watch?v=Lcz5V_s6uCA
+
+Information on Kodi in general:
+
 ![Kodi Logo](docs/resources/banner.png)
 
 <p align="center">
