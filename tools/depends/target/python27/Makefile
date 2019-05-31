@@ -45,6 +45,7 @@ $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 ifeq ($(OS),ios)
 	cd $(PLATFORM); patch -p1 < ../make-fork-optional.patch
 	cd $(PLATFORM); patch -p1 < ../urllib.patch
+	cd $(PLATFORM); patch -p1 < ../python_register.patch
 	cd $(PLATFORM); sed -ie 's|MACHDEP="unknown"|MACHDEP="darwin"|' configure.ac
 endif
 	cp modules.setup $(PLATFORM)/Modules/Setup.dist

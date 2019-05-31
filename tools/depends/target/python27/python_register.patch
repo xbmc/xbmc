@@ -1,0 +1,53 @@
+--- a/Include/stringobject.h
++++ b/Include/stringobject.h
+@@ -170,9 +170,9 @@ PyAPI_FUNC(PyObject*) PyString_AsDecoded
+    cause an exception).  */
+ 
+ PyAPI_FUNC(int) PyString_AsStringAndSize(
+-    register PyObject *obj,	/* string or Unicode object */
+-    register char **s,		/* pointer to buffer variable */
+-    register Py_ssize_t *len	/* pointer to length variable or NULL
++    PyObject *obj,	/* string or Unicode object */
++    char **s,		/* pointer to buffer variable */
++    Py_ssize_t *len	/* pointer to length variable or NULL
+ 				   (only possible for 0-terminated
+ 				   strings) */
+     );
+--- a/Include/unicodeobject.h
++++ b/Include/unicodeobject.h
+@@ -531,7 +531,7 @@ PyAPI_FUNC(int) PyUnicode_Resize(
+ */
+ 
+ PyAPI_FUNC(PyObject*) PyUnicode_FromEncodedObject(
+-    register PyObject *obj,     /* Object */
++    PyObject *obj,     /* Object */
+     const char *encoding,       /* encoding */
+     const char *errors          /* error handling */
+     );
+@@ -550,7 +550,7 @@ PyAPI_FUNC(PyObject*) PyUnicode_FromEnco
+ */
+ 
+ PyAPI_FUNC(PyObject*) PyUnicode_FromObject(
+-    register PyObject *obj      /* Object */
++    PyObject *obj      /* Object */
+     );
+ 
+ PyAPI_FUNC(PyObject *) PyUnicode_FromFormatV(const char*, va_list);
+@@ -572,7 +572,7 @@ PyAPI_FUNC(PyObject *) _PyUnicode_Format
+    The buffer is copied into the new object. */
+ 
+ PyAPI_FUNC(PyObject*) PyUnicode_FromWideChar(
+-    register const wchar_t *w,  /* wchar_t buffer */
++    const wchar_t *w,  /* wchar_t buffer */
+     Py_ssize_t size             /* size of buffer */
+     );
+ 
+@@ -590,7 +590,7 @@ PyAPI_FUNC(PyObject*) PyUnicode_FromWide
+ 
+ PyAPI_FUNC(Py_ssize_t) PyUnicode_AsWideChar(
+     PyUnicodeObject *unicode,   /* Unicode object */
+-    register wchar_t *w,        /* wchar_t buffer */
++    wchar_t *w,        /* wchar_t buffer */
+     Py_ssize_t size             /* size of buffer */
+     );
+ 
