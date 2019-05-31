@@ -375,7 +375,7 @@ case $host in
         platform_cflags+=" -Wno-error=implicit-function-declaration"
         optimize_flags="-O3"
         use_sdk_path=[`$use_xcodebuild -version -sdk $sdk_name | grep ^Path | awk '{ print $2}'`]
-        platform_ldflags+=" -L$use_sdk_path/usr/lib/system"
+        platform_ldflags+=" -L$use_sdk_path/usr/lib"
         platform_cxxflags+=" $cpu_flags"
       ;;
     esac
