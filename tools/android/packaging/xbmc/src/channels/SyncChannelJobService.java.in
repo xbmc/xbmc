@@ -152,42 +152,34 @@ public class SyncChannelJobService extends JobService {
 
 
 
-            Subscription sub = Subscription.createSubscription(mContext.getString(R.string.suggestion_channel), "", R.drawable.channel_icon_main);
-            freshsubscriptions.add(sub);
-            if (subscriptions.size() == 0)  // First-run: Add default channel
-            {
-                long channelId = TvUtil.createChannel(mContext, sub);
-                sub.setChannelId(channelId);
-                subscriptions.add(sub);
-
-                TvContractCompat.requestChannelBrowsable(mContext, channelId);
-            }
-
-            for (File file : playlistsContent) {
-                int channelLogo;
-                if (file.getName().toLowerCase().contains("movies")) {
-                    Log.d(TAG, "doInBackground: movie icon");
-                    channelLogo = R.drawable.channel_icon_movies;
-                } else if (file.getName().toLowerCase().contains("tv")
-                        || file.getName().toLowerCase().contains("episodes")) {
-                    channelLogo = R.drawable.channel_icon_tv;
-                    Log.d(TAG, "doInBackground: tv icon");
-                } else {
-                    channelLogo = R.drawable.channel_icon_main;
-                    Log.d(TAG, "doInBackground: main icon");
-                }
-                sub = Subscription.createSubscription(file.getName(), file.getUri(), channelLogo);
-
-                int subidx = subscriptions.indexOf(sub);
-                if (subidx == -1) {
+            Subscription sub = Subscription.createSubscription(mContext.getString(R.string.suggestion_channel), "", R.drawable.ic_recommendation_80dp);
+                  freshsubscriptions.add(sub);
+                  if (subscriptions.size() == 0)  // First-run: Add default channel
+                  {
                     long channelId = TvUtil.createChannel(mContext, sub);
                     sub.setChannelId(channelId);
                     subscriptions.add(sub);
-                } else
-                    sub.setChannelId(subscriptions.get(subidx).getChannelId());
 
-                freshsubscriptions.add(sub);
-            }
+                    TvContractCompat.requestChannelBrowsable(mContext, channelId);
+                  }
+
+                  for (File file : playlistsContent)
+                  {
+                    sub = Subscription.createSubscription(file.getName(), file.getUri(), R.drawable.ic_recommendation_80dp);
+
+                    int subidx = subscriptions.indexOf(sub);
+                    if (subidx == -1)
+                    {
+                      long channelId = TvUtil.createChannel(mContext, sub);
+                      sub.setChannelId(channelId);
+                      subscriptions.add(sub);
+                    }
+                    else
+                      sub.setChannelId(subscriptions.get(subidx).getChannelId());
+
+                    freshsubscriptions.add(sub);
+                  }
+
 
             // Kick off a job to update default programs.
             // The program job should verify if the channel is visible before updating programs.
