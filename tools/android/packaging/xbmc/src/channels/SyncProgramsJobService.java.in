@@ -170,7 +170,7 @@ public class SyncProgramsJobService extends JobService {
                         Log.d(TAG, "Suggestion channel is browsable: " + channelId);
 
                         deletePrograms(channelId, medias);
-                        medias = createPrograms(channelId, category, isPlayNext, jsonrpc.getSuggestions(ctx));
+                        medias = createPrograms(channelId, category, jsonrpc.getSuggestions(ctx));
                     } else {
                         Log.d(TAG, "Channel is browsable: " + channelId);
 
@@ -182,10 +182,8 @@ public class SyncProgramsJobService extends JobService {
                         for (Media media : mediasToCreate) {
                             Log.d(TAG, "syncPrograms: media.toString: " + media.toString());
                         }
-                        if (isPlayNext) {
-                            Collections.reverse(mediasToCreate);
-                        }
-                        medias = createPrograms(channelId, category, isPlayNext, mediasToCreate);
+
+                        medias = createPrograms(channelId, category, mediasToCreate);
                     }
                     jsonrpc = null;
                 }
@@ -193,16 +191,12 @@ public class SyncProgramsJobService extends JobService {
             }
         }
 
-        private List<Media> createPrograms(long channelId, String category, boolean isPlayNext, List<Media> medias) {
+        private List<Media> createPrograms(long channelId, String category, List<Media> medias) {
             Log.d(TAG, "createPrograms: starts");
             List<Media> mediasAdded = new ArrayList<>(medias.size());
             Log.d(TAG, "createPrograms: mediasAdded: " + mediasAdded.toString() + "size: " + medias.size());
             for (Media media : medias) {
                 Log.d(TAG, "createPrograms: media in for lopp: " + media.toString());
-
-                /*
-                Paul dhaliwal specific code
-                 */
 //                if (isPlayNext) {
 //                    Log.d(TAG, "createPrograms: before check");
 //                    if (media.getCategory().equals(Media.MEDIA_TYPE_TVEPISODE)
@@ -240,19 +234,19 @@ public class SyncProgramsJobService extends JobService {
 //                    }
 //
 //                } else {
-                    PreviewProgram previewProgram = buildProgram(channelId, isPlayNext, media);
-                    Uri programUri =
-                            getContentResolver()
-                                    .insert(
-                                            TvContractCompat.PreviewPrograms.CONTENT_URI,
-                                            previewProgram.toContentValues());
-                    long programId = ContentUris.parseId(programUri);
-                    Log.d(TAG, "Inserted new program: " + programId);
-                    Log.d(TAG, "Inserted new program: " + media.toString());
-                    Log.d(TAG, "medias.size(): " + medias.size());
-                    media.setProgramId(programId);
-                    mediasAdded.add(media);
-//                }
+                PreviewProgram previewProgram = buildProgram(channelId, media);
+                Uri programUri =
+                        getContentResolver()
+                                .insert(
+                                        TvContractCompat.PreviewPrograms.CONTENT_URI,
+                                        previewProgram.toContentValues());
+                long programId = ContentUris.parseId(programUri);
+                Log.d(TAG, "Inserted new program: " + programId);
+                Log.d(TAG, "Inserted new program: " + media.toString());
+                Log.d(TAG, "medias.size(): " + medias.size());
+                media.setProgramId(programId);
+                mediasAdded.add(media);
+
             }
             return mediasAdded;
         }
@@ -291,7 +285,7 @@ public class SyncProgramsJobService extends JobService {
         }
 
         @NonNull
-        private PreviewProgram buildProgram(long channelId, boolean isPlayNext, Media media) {
+        private PreviewProgram buildProgram(long channelId, Media media) {
             Log.d(TAG, "buildProgram: starts");
             Intent detailsIntent = new Intent(mContext, Splash.class);
             detailsIntent.setAction(Intent.ACTION_GET_CONTENT);
@@ -314,7 +308,9 @@ public class SyncProgramsJobService extends JobService {
                 Log.d(TAG, "buildProgram: movie.toString = " + movie.toString());
 
                 if (movie.getRating() > 0) {
-                    builder.setReviewRating(String.valueOf(movie.getRating() * 0.5));
+                    builder.setReviewRating(String.valueOf(movie.getRating() * 0.5))
+                            .setReviewRatingStyle(TvContractCompat.Programs.REVIEW_RATING_STYLE_STARS);
+
                 }
 
                 if (movie.getHasLandscapeArt()) {
@@ -340,11 +336,15 @@ public class SyncProgramsJobService extends JobService {
                 TVShow tvShow = new TVShow();
                 tvShow = (TVShow) media;
                 builder.setType(TvContractCompat.PreviewProgramColumns.TYPE_TV_SERIES)
-                        .setDescription(tvShow.getPlot())
-                        .setLongDescription(tvShow.getPlot());
+                        .setLongDescription(tvShow.getPlot())
+                        .setDescription(tvShow.getPlot());
+
+                Log.d(TAG, "buildProgram: tvshow.toString = " + tvShow.toString());
 
                 if (tvShow.getRating() > 0) {
-                    builder.setReviewRating(String.valueOf(tvShow.getRating() * 0.5));
+                    builder.setReviewRating(String.valueOf(tvShow.getRating() * 0.5))
+                            .setReviewRatingStyle(TvContractCompat.Programs.REVIEW_RATING_STYLE_STARS);
+
                 }
 
                 if (tvShow.getHasLandscapeArt()) {
@@ -365,6 +365,8 @@ public class SyncProgramsJobService extends JobService {
                     }
                 }
 
+                int numberOfSeasons = tvShow.getSeason();
+
             } else if (media.getCategory().equals(Media.MEDIA_TYPE_TVEPISODE)) {
                 TVEpisode tvEpisode = new TVEpisode();
                 tvEpisode = (TVEpisode) media;
@@ -377,8 +379,11 @@ public class SyncProgramsJobService extends JobService {
                         .setReleaseDate(tvEpisode.getYear());
 
                 if (tvEpisode.getRating() > 0) {
-                    builder.setReviewRating(String.valueOf((double) tvEpisode.getRating() * 0.5));
+                    builder.setReviewRating(String.valueOf(tvEpisode.getRating() * 0.5))
+                            .setReviewRatingStyle(TvContractCompat.Programs.REVIEW_RATING_STYLE_STARS);
                 }
+
+                Log.d(TAG, "buildProgram: tvEpisode.toString = " + tvEpisode.toString());
 
                 if (tvEpisode.getHasLandscapeArt()) {
                     if (tvEpisode.getLandscapeImageUrl() != null && tvEpisode.getRating() >= 8.0) {
@@ -394,151 +399,11 @@ public class SyncProgramsJobService extends JobService {
                 } else {
                     if (tvEpisode.getPosterImageUrl() != null) {
                         builder.setPosterArtUri(Uri.parse(((TVEpisode) media).getPosterImageUrl()));
-                        builder.setPosterArtAspectRatio(TvContractCompat.PreviewProgramColumns.ASPECT_RATIO_2_3);
-                    }
-                }
-
-            } else if (media.getCategory().equals(Media.MEDIA_TYPE_ALBUM))
-                builder.setType(TvContractCompat.PreviewProgramColumns.TYPE_ALBUM);
-            else if (media.getCategory().equals(Media.MEDIA_TYPE_SONG))
-                builder.setType(TvContractCompat.PreviewProgramColumns.TYPE_TRACK);
-            else if (media.getCategory().equals(Media.MEDIA_TYPE_MUSICVIDEO))
-                builder.setType(TvContractCompat.PreviewProgramColumns.TYPE_CLIP);
-
-            if (!media.getCategory().equals(Media.MEDIA_TYPE_MOVIE)
-                    && !media.getCategory().equals(Media.MEDIA_TYPE_TVEPISODE)
-                    && !media.getCategory().equals(Media.MEDIA_TYPE_TVSHOW)) {
-                if (media.getCardImageUrl() != null) {
-                    builder.setPosterArtUri(Uri.parse(media.getCardImageUrl()));
-                    if (media.getCardImageAspectRatio().equals("2:3"))
-                        builder.setPosterArtAspectRatio(TvContractCompat.PreviewProgramColumns.ASPECT_RATIO_2_3);
-                    else if (media.getCardImageAspectRatio().equals("1:1"))
-                        builder.setPosterArtAspectRatio(TvContractCompat.PreviewProgramColumns.ASPECT_RATIO_1_1);
-                    else
-                        builder.setPosterArtAspectRatio(TvContractCompat.PreviewProgramColumns.ASPECT_RATIO_16_9);
-                } else if (media.getBackgroundImageUrl() != null) {
-                    builder.setPosterArtUri(Uri.parse(media.getBackgroundImageUrl()));
-                    builder.setPosterArtAspectRatio(TvContractCompat.PreviewProgramColumns.ASPECT_RATIO_16_9);
-                }
-                if (media.getVideoUrl() != null)
-                    builder.setPreviewVideoUri(Uri.parse(media.getVideoUrl()));
-            }
-
-            return builder.build();
-        }
-
-        @NonNull
-        private WatchNextProgram buildWatchNextProgram(long channelId, boolean isPlayNext, Media media) {
-            Log.d(TAG, "buildWatchNextProgram: starts");
-            Intent detailsIntent = new Intent(mContext, Splash.class);
-            detailsIntent.setAction(Intent.ACTION_GET_CONTENT);
-            detailsIntent.setData(Uri.parse(media.getXbmcUrl()));
-
-            WatchNextProgram.Builder builder = new WatchNextProgram.Builder();
-            builder.setTitle(media.getTitle())
-                    .setIntent(detailsIntent);
-
-            if (media.getCategory().equals(Media.MEDIA_TYPE_MOVIE)) {
-                Movie movie = new Movie();
-                movie = (Movie) media;
-                builder.setWatchNextType(TvContractCompat.WatchNextPrograms.WATCH_NEXT_TYPE_CONTINUE)
-                        .setLastEngagementTimeUtcMillis(movie.getLastPlayed())
-                        .setDescription(movie.getPlot())
-                        .setReleaseDate(movie.getYear())
-                        .setReviewRating(String.valueOf(movie.getRating() * 0.5))
-                        .setDurationMillis(movie.getDuration())
-                        .setLastPlaybackPositionMillis(movie.getPosition())
-                        .setType(TvContractCompat.PreviewProgramColumns.TYPE_MOVIE);
-
-                Log.d(TAG, "buildWatchNextProgram: movie.toString = " + movie.toString());
-
-                if (movie.getHasLandscapeArt()) {
-                    if (movie.getLandscapeImageUrl() != null && movie.getRating() >= 8.5) {
-                        builder.setPosterArtUri(Uri.parse(((Movie) media).getLandscapeImageUrl()));
-                        builder.setPosterArtAspectRatio(TvContractCompat.PreviewProgramColumns.ASPECT_RATIO_16_9);
-                    } else if (movie.getThumbnailImageUrl() != null && movie.getRating() >= 8.5) {
-                        builder.setPosterArtUri(Uri.parse(((Movie) media).getThumbnailImageUrl()));
-                        builder.setPosterArtAspectRatio(TvContractCompat.PreviewProgramColumns.ASPECT_RATIO_16_9);
-                    } else if (movie.getPosterImageUrl() != null) {
-                        builder.setPosterArtUri(Uri.parse(((Movie) media).getPosterImageUrl()));
-                        builder.setPosterArtAspectRatio(TvContractCompat.PreviewProgramColumns.ASPECT_RATIO_2_3);
-                    }
-
-                } else {
-                    if (movie.getPosterImageUrl() != null) {
-                        builder.setPosterArtUri(Uri.parse(((Movie) media).getPosterImageUrl()));
-                        builder.setPosterArtAspectRatio(TvContractCompat.PreviewProgramColumns.ASPECT_RATIO_2_3);
-                    }
-                }
-
-//            } else if (media.getCategory().equals(Media.MEDIA_TYPE_TVSHOW)) {
-//                TVShow tvShow = new TVShow();
-//                tvShow = (TVShow) media;
-//                builder.setType(TvContractCompat.PreviewProgramColumns.TYPE_TV_SERIES)
-//                        .setLongDescription(tvShow.getPlot());
-//
-//                Log.d(TAG, "buildProgram: tvshow.toString = " + tvShow.toString());
-//
-//                if (tvShow.getHasLandscapeArt()) {
-//                    if (tvShow.getLandscapeImageUrl() != null) {
-//                        builder.setPosterArtUri(Uri.parse(((TVShow) media).getLandscapeImageUrl()));
-//                        builder.setPosterArtAspectRatio(TvContractCompat.PreviewProgramColumns.ASPECT_RATIO_16_9);
-//                    } else if (tvShow.getThumbnailImageUrl() != null) {
-//                        builder.setPosterArtUri(Uri.parse(((TVShow) media).getThumbnailImageUrl()));
-//                        builder.setPosterArtAspectRatio(TvContractCompat.PreviewProgramColumns.ASPECT_RATIO_16_9);
-//                    } else if (tvShow.getPosterImageUrl() != null) {
-//                        builder.setPosterArtUri(Uri.parse(((TVShow) media).getPosterImageUrl()));
-//                        builder.setPosterArtAspectRatio(TvContractCompat.PreviewProgramColumns.ASPECT_RATIO_2_3);
-//                    }
-//                } else {
-//                    if (tvShow.getPosterImageUrl() != null) {
-//                        builder.setPosterArtUri(Uri.parse(((TVShow) media).getPosterImageUrl()));
-//                        builder.setPosterArtAspectRatio(TvContractCompat.PreviewProgramColumns.ASPECT_RATIO_2_3);
-//                    }
-//                }
-//
-//                int numberOfSeasons = tvShow.getSeason();
-//                builder.setDescription(tvShow.getPlot())
-//                        .setReviewRating(String.valueOf((double) tvShow.getRating() * 0.5));
-
-            } else if (media.getCategory().equals(Media.MEDIA_TYPE_TVEPISODE)) {
-                TVEpisode tvEpisode = new TVEpisode();
-                tvEpisode = (TVEpisode) media;
-                builder.setType(TvContractCompat.PreviewProgramColumns.TYPE_TV_EPISODE)
-                        .setLastEngagementTimeUtcMillis(tvEpisode.getLastPlayed())
-                        .setEpisodeTitle(tvEpisode.getEpisodeTitle())
-                        .setEpisodeNumber(tvEpisode.getEpisode())
-                        .setSeasonNumber(tvEpisode.getSeason())
-                        .setReviewRating(String.valueOf((double) tvEpisode.getRating() * 0.5))
-                        .setDescription(tvEpisode.getPlot())
-                        .setDurationMillis(tvEpisode.getRuntime())
-                        .setLastPlaybackPositionMillis(tvEpisode.getPosition())
-                        .setReleaseDate(tvEpisode.getYear());
-
-                if (tvEpisode.getPosition() < 60000) {
-                    builder.setWatchNextType(TvContractCompat.WatchNextPrograms.WATCH_NEXT_TYPE_NEXT);
-                    builder.setLastEngagementTimeUtcMillis(tvEpisode.getReleaseDate());
-                } else {
-                    builder.setWatchNextType(TvContractCompat.WatchNextPrograms.WATCH_NEXT_TYPE_CONTINUE);
-                }
-
-                if (tvEpisode.getHasLandscapeArt()) {
-                    if (tvEpisode.getLandscapeImageUrl() != null && tvEpisode.getRating() >= 8.0) {
-                        builder.setPosterArtUri(Uri.parse(((TVEpisode) media).getLandscapeImageUrl()));
-                        builder.setPosterArtAspectRatio(TvContractCompat.PreviewProgramColumns.ASPECT_RATIO_16_9);
-                    } else if (tvEpisode.getThumbnailImageUrl() != null && tvEpisode.getRating() >= 8.0) {
-                        builder.setPosterArtUri(Uri.parse(((TVEpisode) media).getThumbnailImageUrl()));
-                        builder.setPosterArtAspectRatio(TvContractCompat.PreviewProgramColumns.ASPECT_RATIO_16_9);
-                    } else if (tvEpisode.getPosterImageUrl() != null) {
+                    } else if (tvEpisode.getTvShowPosterImagerUrl() != null) {
                         builder.setPosterArtUri(Uri.parse(((TVEpisode) media).getTvShowPosterImagerUrl()));
-                        builder.setPosterArtAspectRatio(TvContractCompat.PreviewProgramColumns.ASPECT_RATIO_2_3);
                     }
+                    builder.setPosterArtAspectRatio(TvContractCompat.PreviewProgramColumns.ASPECT_RATIO_2_3);
 
-                    if (tvEpisode.getPosition() < 60000) {
-                        builder.setWatchNextType(TvContractCompat.WatchNextPrograms.WATCH_NEXT_TYPE_NEXT);
-                    } else {
-                        builder.setWatchNextType(TvContractCompat.WatchNextPrograms.WATCH_NEXT_TYPE_CONTINUE);
-                    }
                 }
 
             } else if (media.getCategory().equals(Media.MEDIA_TYPE_ALBUM))
