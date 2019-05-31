@@ -130,9 +130,7 @@ public class SyncChannelJobService extends JobService {
 
       /*
       paul dhaliwal specific mods
-
-      adds favourites as channels
-       */
+            adds favourites as channels
 
             try (Cursor cursor =
                          mContext.getContentResolver()
@@ -149,44 +147,36 @@ public class SyncChannelJobService extends JobService {
 
                 }
             }
+       */
 
-            Subscription sub = Subscription.createSubscription(mContext.getString(R.string.suggestion_channel), "", R.drawable.ic_recommendation_80dp);
-                 freshsubscriptions.add(sub);
-                 if (subscriptions.size() == 0)  // First-run: Add default channel
-                 {
-                   long channelId = TvUtil.createChannel(mContext, sub);
-                   sub.setChannelId(channelId);
-                   subscriptions.add(sub);
 
-                   TvContractCompat.requestChannelBrowsable(mContext, channelId);
-                 }
 
-                 for (File file : playlistsContent)
-                 {
-                   sub = Subscription.createSubscription(file.getName(), file.getUri(), R.drawable.ic_recommendation_80dp);
 
-        /*
-         paul dhaliwal specific mods
-         Checks to see if subscriptions have On Deck names so we can add them to Play Next
-         */
-                if (sub.getName().equals("On Deck Movies ") ||
-                        sub.getName().equals("On Deck TV Shows ") ||
-                        sub.getName().equals("Continue Watching")) {
-                    sub.setAddToPlayNext(true);
-                    Log.d(TAG, "doInBackground: sub.toString: " + sub.toString());
+            Subscription sub = Subscription.createSubscription(mContext.getString(R.string.suggestion_channel), "", R.drawable.channel_icon_main);
+            freshsubscriptions.add(sub);
+            if (subscriptions.size() == 0)  // First-run: Add default channel
+            {
+                long channelId = TvUtil.createChannel(mContext, sub);
+                sub.setChannelId(channelId);
+                subscriptions.add(sub);
+
+                TvContractCompat.requestChannelBrowsable(mContext, channelId);
+            }
+
+            for (File file : playlistsContent) {
+                int channelLogo;
+                if (file.getName().toLowerCase().contains("movies")) {
+                    Log.d(TAG, "doInBackground: movie icon");
+                    channelLogo = R.drawable.channel_icon_movies;
+                } else if (file.getName().toLowerCase().contains("tv")
+                        || file.getName().toLowerCase().contains("episodes")) {
+                    channelLogo = R.drawable.channel_icon_tv;
+                    Log.d(TAG, "doInBackground: tv icon");
+                } else {
+                    channelLogo = R.drawable.channel_icon_main;
+                    Log.d(TAG, "doInBackground: main icon");
                 }
-
-                switch (sub.getName()) {
-                    case "On Deck TV Shows ":
-                        sub.setCategory(Subscription.SUBSCRIPTION_TYPE_ON_DECK);
-                        break;
-                    case "Continue Watching":
-                        sub.setCategory(Subscription.SUBSCRIPTION_TYPE_CONTINUE_WATCHING);
-                        break;
-                    default:
-                        sub.setCategory(Subscription.SUBSCRIPTION_TYPE_REGULAR);
-                        break;
-                }
+                sub = Subscription.createSubscription(file.getName(), file.getUri(), channelLogo);
 
                 int subidx = subscriptions.indexOf(sub);
                 if (subidx == -1) {
