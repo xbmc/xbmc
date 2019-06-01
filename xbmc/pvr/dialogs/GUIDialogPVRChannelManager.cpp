@@ -370,7 +370,7 @@ bool CGUIDialogPVRChannelManager::OnClickButtonChannelLogo(CGUIMessage& message)
     share1.strName = g_localizeStrings.Get(19066);
     shares.push_back(share1);
   }
-  g_mediaManager.GetLocalDrives(shares);
+  CServiceBroker::GetMediaManager().GetLocalDrives(shares);
   if (!CGUIDialogFileBrowser::ShowAndGetImage(items, shares, g_localizeStrings.Get(19285), strThumb, NULL, 19285))
     return false;
 

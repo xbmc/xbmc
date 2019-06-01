@@ -38,7 +38,7 @@ bool CSourcesDirectory::GetDirectory(const CURL& url, CFileItemList &items)
     return false;
 
   sources = *sourcesFromType;
-  g_mediaManager.GetRemovableDrives(sources);
+  CServiceBroker::GetMediaManager().GetRemovableDrives(sources);
 
   return GetDirectory(sources, items);
 }

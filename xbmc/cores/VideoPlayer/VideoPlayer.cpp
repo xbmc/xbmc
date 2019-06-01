@@ -756,7 +756,7 @@ bool CVideoPlayer::OpenInputStream()
   if (URIUtils::IsProtocol(filename, "dvd") ||
       StringUtils::EqualsNoCase(filename, "iso9660://video_ts/video_ts.ifo"))
   {
-    m_item.SetPath(g_mediaManager.TranslateDevicePath(""));
+    m_item.SetPath(CServiceBroker::GetMediaManager().TranslateDevicePath(""));
   }
 
   m_pInputStream = CDVDFactoryInputStream::CreateInputStream(this, m_item, true);

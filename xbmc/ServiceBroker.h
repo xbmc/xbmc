@@ -53,6 +53,7 @@ class CGUIComponent;
 class CAppInboundProtocol;
 class CSettingsComponent;
 class CDecoderFilterManager;
+class CMediaManager;
 
 namespace KODI
 {
@@ -106,6 +107,7 @@ public:
   static CPlayerCoreFactory &GetPlayerCoreFactory();
   static CDatabaseManager &GetDatabaseManager();
   static CEventLog &GetEventLog();
+  static CMediaManager& GetMediaManager();
 
   static CGUIComponent* GetGUI();
   static void RegisterGUI(CGUIComponent *gui);

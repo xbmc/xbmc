@@ -149,7 +149,8 @@ bool CFileUtils::RemoteAccessAllowed(const std::string &strPath)
   }  
   // Check auto-mounted sources
   VECSOURCES sources;
-  g_mediaManager.GetRemovableDrives(sources);   // Sources returned allways have m_allowsharing = true
+  CServiceBroker::GetMediaManager().GetRemovableDrives(
+      sources); // Sources returned allways have m_allowsharing = true
   //! @todo Make sharing of auto-mounted sources user configurable
   int sourceIndex = CUtil::GetMatchingSource(realPath, sources, isSource);
   if (sourceIndex >= 0 && sourceIndex < static_cast<int>(sources.size()) && 

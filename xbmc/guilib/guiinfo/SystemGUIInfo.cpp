@@ -232,7 +232,7 @@ bool CSystemGUIInfo::GetLabel(std::string& value, const CFileItem *item, int con
       return true;
 #ifdef HAS_DVD_DRIVE
     case SYSTEM_DVD_LABEL:
-      value = g_mediaManager.GetDiskLabel();
+      value = CServiceBroker::GetMediaManager().GetDiskLabel();
       return true;
 #endif
     case SYSTEM_ALARM_POS:
@@ -482,13 +482,13 @@ bool CSystemGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int context
 #endif
       return true;
     case SYSTEM_MEDIA_DVD:
-      value = g_mediaManager.IsDiscInDrive();
+      value = CServiceBroker::GetMediaManager().IsDiscInDrive();
       return true;
     case SYSTEM_MEDIA_AUDIO_CD:
     #ifdef HAS_DVD_DRIVE
-      if (g_mediaManager.IsDiscInDrive())
+      if (CServiceBroker::GetMediaManager().IsDiscInDrive())
       {
-        MEDIA_DETECT::CCdInfo *pCdInfo = g_mediaManager.GetCdInfo();
+        MEDIA_DETECT::CCdInfo* pCdInfo = CServiceBroker::GetMediaManager().GetCdInfo();
         value = pCdInfo && (pCdInfo->IsAudio(1) || pCdInfo->IsCDExtra(1) || pCdInfo->IsMixedMode(1));
       }
       else
@@ -499,10 +499,10 @@ bool CSystemGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int context
       return true;
 #ifdef HAS_DVD_DRIVE
     case SYSTEM_DVDREADY:
-      value = g_mediaManager.GetDriveStatus() != DRIVE_NOT_READY;
+      value = CServiceBroker::GetMediaManager().GetDriveStatus() != DRIVE_NOT_READY;
       return true;
     case SYSTEM_TRAYOPEN:
-      value = g_mediaManager.GetDriveStatus() == DRIVE_OPEN;
+      value = CServiceBroker::GetMediaManager().GetDriveStatus() == DRIVE_OPEN;
       return true;
 #endif
     case SYSTEM_CAN_POWERDOWN:

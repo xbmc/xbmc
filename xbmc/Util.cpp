@@ -602,7 +602,7 @@ bool CUtil::GetDirectoryName(const std::string& strFileName, std::string& strDes
 
 void CUtil::GetDVDDriveIcon(const std::string& strPath, std::string& strIcon)
 {
-  if (!g_mediaManager.IsDiscInDrive(strPath))
+  if (!CServiceBroker::GetMediaManager().IsDiscInDrive(strPath))
   {
     strIcon = "DefaultDVDEmpty.png";
     return ;
@@ -625,7 +625,7 @@ void CUtil::GetDVDDriveIcon(const std::string& strPath, std::string& strIcon)
   if ( URIUtils::IsISO9660(strPath) )
   {
 #ifdef HAS_DVD_DRIVE
-    CCdInfo* pInfo = g_mediaManager.GetCdInfo();
+    CCdInfo* pInfo = CServiceBroker::GetMediaManager().GetCdInfo();
     if ( pInfo != NULL && pInfo->IsVideoCd( 1 ) )
     {
       strIcon = "DefaultVCD.png";

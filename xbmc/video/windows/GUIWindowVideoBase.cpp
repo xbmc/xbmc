@@ -125,7 +125,8 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
       if (iControl == CONTROL_PLAY_DVD)
       {
         // play movie...
-        MEDIA_DETECT::CAutorun::PlayDiscAskResume(g_mediaManager.TranslateDevicePath(""));
+        MEDIA_DETECT::CAutorun::PlayDiscAskResume(
+            CServiceBroker::GetMediaManager().TranslateDevicePath(""));
       }
       else
 #endif

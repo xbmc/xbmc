@@ -77,9 +77,9 @@ static int ExportLibrary(const std::vector<std::string>& params)
     iHeading = 20196;
   std::string path;
   VECSOURCES shares;
-  g_mediaManager.GetLocalDrives(shares);
-  g_mediaManager.GetNetworkLocations(shares);
-  g_mediaManager.GetRemovableDrives(shares);
+  CServiceBroker::GetMediaManager().GetLocalDrives(shares);
+  CServiceBroker::GetMediaManager().GetNetworkLocations(shares);
+  CServiceBroker::GetMediaManager().GetRemovableDrives(shares);
   bool singleFile;
   bool thumbs=false;
   bool actorThumbs=false;

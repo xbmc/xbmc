@@ -221,14 +221,14 @@ namespace XBMCAddon
       VECSOURCES localShares;
       if (!shares)
       {
-        g_mediaManager.GetLocalDrives(localShares);
+        CServiceBroker::GetMediaManager().GetLocalDrives(localShares);
         if (strcmpi(s_shares.c_str(), "local") != 0)
-          g_mediaManager.GetNetworkLocations(localShares);
+          CServiceBroker::GetMediaManager().GetNetworkLocations(localShares);
       }
       else // always append local drives
       {
         localShares = *shares;
-        g_mediaManager.GetLocalDrives(localShares);
+        CServiceBroker::GetMediaManager().GetLocalDrives(localShares);
       }
 
       if (useFileDirectories && !maskparam.empty())
@@ -256,14 +256,14 @@ namespace XBMCAddon
       VECSOURCES localShares;
       if (!shares)
       {
-        g_mediaManager.GetLocalDrives(localShares);
+        CServiceBroker::GetMediaManager().GetLocalDrives(localShares);
         if (strcmpi(s_shares.c_str(), "local") != 0)
-          g_mediaManager.GetNetworkLocations(localShares);
+          CServiceBroker::GetMediaManager().GetNetworkLocations(localShares);
       }
       else // always append local drives
       {
         localShares = *shares;
-        g_mediaManager.GetLocalDrives(localShares);
+        CServiceBroker::GetMediaManager().GetLocalDrives(localShares);
       }
 
       if (useFileDirectories && !lmask.empty())

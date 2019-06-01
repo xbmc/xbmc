@@ -773,7 +773,7 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
                   CMediaSource share;
                   share.strPath = strdrive;
                   share.strName = share.strPath;
-                  g_mediaManager.RemoveAutoSource(share);
+                  CServiceBroker::GetMediaManager().RemoveAutoSource(share);
                 }
               }
               else

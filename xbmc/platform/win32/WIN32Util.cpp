@@ -7,21 +7,25 @@
  */
 
 #include "WIN32Util.h"
-#include "Util.h"
-#include "utils/URIUtils.h"
-#include "storage/cdioSupport.h"
-#include <PowrProf.h>
-#include "WindowHelper.h"
+
 #include "Application.h"
+#include "CompileInfo.h"
+#include "ServiceBroker.h"
+#include "Util.h"
+#include "WindowHelper.h"
+#include "guilib/LocalizeStrings.h"
 #include "my_ntddscsi.h"
 #include "storage/MediaManager.h"
-#include "guilib/LocalizeStrings.h"
+#include "storage/cdioSupport.h"
 #include "utils/CharsetConverter.h"
-#include "utils/log.h"
-#include "utils/SystemInfo.h"
 #include "utils/StringUtils.h"
-#include "CompileInfo.h"
+#include "utils/SystemInfo.h"
+#include "utils/URIUtils.h"
+#include "utils/log.h"
+
 #include "platform/win32/CharsetConverter.h"
+
+#include <PowrProf.h>
 
 #ifdef TARGET_WINDOWS_DESKTOP
 #include <cassert>
@@ -502,7 +506,7 @@ HRESULT CWIN32Util::ToggleTray(const char cDriveLetter)
   char cDL = cDriveLetter;
   if( !cDL )
   {
-    std::string dvdDevice = g_mediaManager.TranslateDevicePath("");
+    std::string dvdDevice = CServiceBroker::GetMediaManager().TranslateDevicePath("");
     if(dvdDevice == "")
       return S_FALSE;
     cDL = dvdDevice[0];
@@ -526,7 +530,7 @@ HRESULT CWIN32Util::ToggleTray(const char cDriveLetter)
     CMediaSource share;
     share.strPath = StringUtils::Format("%c:", cDL);
     share.strName = share.strPath;
-    g_mediaManager.RemoveAutoSource(share);
+    CServiceBroker::GetMediaManager().RemoveAutoSource(share);
   }
   CloseHandle(hDrive);
   return bRet? S_OK : S_FALSE;
@@ -538,7 +542,7 @@ HRESULT CWIN32Util::EjectTray(const char cDriveLetter)
   char cDL = cDriveLetter;
   if( !cDL )
   {
-    std::string dvdDevice = g_mediaManager.TranslateDevicePath("");
+    std::string dvdDevice = CServiceBroker::GetMediaManager().TranslateDevicePath("");
     if(dvdDevice.empty())
       return S_FALSE;
     cDL = dvdDevice[0];
@@ -557,7 +561,7 @@ HRESULT CWIN32Util::CloseTray(const char cDriveLetter)
   char cDL = cDriveLetter;
   if( !cDL )
   {
-    std::string dvdDevice = g_mediaManager.TranslateDevicePath("");
+    std::string dvdDevice = CServiceBroker::GetMediaManager().TranslateDevicePath("");
     if(dvdDevice.empty())
       return S_FALSE;
     cDL = dvdDevice[0];

@@ -75,7 +75,7 @@ std::shared_ptr<CDVDInputStream> CDVDFactoryInputStream::CreateInputStream(IVide
   }
 
 #ifdef HAS_DVD_DRIVE
-  if(file.compare(g_mediaManager.TranslateDevicePath("")) == 0)
+  if (file.compare(CServiceBroker::GetMediaManager().TranslateDevicePath("")) == 0)
   {
 #ifdef HAVE_LIBBLURAY
     if(XFILE::CFile::Exists(URIUtils::AddFileToFolder(file, "BDMV", "index.bdmv"))

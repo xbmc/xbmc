@@ -105,7 +105,7 @@ void CGUIWindowSystemInfo::FrameMove()
   {
     SET_CONTROL_LABEL(40, g_localizeStrings.Get(20155));
     if (m_diskUsage.empty())
-      m_diskUsage = g_mediaManager.GetDiskUsage();
+      m_diskUsage = CServiceBroker::GetMediaManager().GetDiskUsage();
 
     for (size_t d = 0; d < m_diskUsage.size(); d++)
     {

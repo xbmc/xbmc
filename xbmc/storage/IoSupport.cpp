@@ -51,6 +51,7 @@
 #include "platform/posix/XHandle.h"
 #include "platform/posix/XFileUtils.h"
 #endif
+#include "ServiceBroker.h"
 
 #ifdef HAS_DVD_DRIVE
 using namespace MEDIA_DETECT;
@@ -69,7 +70,8 @@ HANDLE CIoSupport::OpenCDROM()
   hDevice->fd = fd;
   hDevice->m_bCDROM = true;
 #elif defined(TARGET_WINDOWS)
-  auto filename = KODI::PLATFORM::WINDOWS::ToW(g_mediaManager.TranslateDevicePath("", true));
+  auto filename =
+      KODI::PLATFORM::WINDOWS::ToW(CServiceBroker::GetMediaManager().TranslateDevicePath("", true));
   hDevice = CreateFile(filename.c_str(), GENERIC_READ, FILE_SHARE_READ,
                        nullptr, OPEN_EXISTING,
                        FILE_FLAG_RANDOM_ACCESS, nullptr );

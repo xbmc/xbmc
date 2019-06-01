@@ -7,6 +7,7 @@
  */
 #include "Win10StorageProvider.h"
 
+#include "ServiceBroker.h"
 #include "filesystem/SpecialProtocol.h"
 #include "guilib/LocalizeStrings.h"
 #include "storage/MediaManager.h"
@@ -47,7 +48,7 @@ void CStorageProvider::Initialize()
   VECSOURCES vShare;
   GetDrivesByType(vShare, DVD_DRIVES);
   if (!vShare.empty())
-    g_mediaManager.SetHasOpticalDrive(true);
+    CServiceBroker::GetMediaManager().SetHasOpticalDrive(true);
   else
     CLog::Log(LOGDEBUG, "%s: No optical drive found.", __FUNCTION__);
 

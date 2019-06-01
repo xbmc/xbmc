@@ -208,9 +208,9 @@ void CGUIDialogInfoProviderSettings::OnSettingAction(std::shared_ptr<const CSett
   else if (settingId == CSettings::SETTING_MUSICLIBRARY_ARTISTSFOLDER)
   {
     VECSOURCES shares;
-    g_mediaManager.GetLocalDrives(shares);
-    g_mediaManager.GetNetworkLocations(shares);
-    g_mediaManager.GetRemovableDrives(shares);
+    CServiceBroker::GetMediaManager().GetLocalDrives(shares);
+    CServiceBroker::GetMediaManager().GetNetworkLocations(shares);
+    CServiceBroker::GetMediaManager().GetRemovableDrives(shares);
     std::string strDirectory = m_strArtistInfoPath;
     if (!strDirectory.empty())
     {
