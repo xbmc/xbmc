@@ -209,7 +209,9 @@ namespace PVR
       CSettings::SETTING_PVRPARENTAL_PIN,
       CSettings::SETTING_PVRPARENTAL_ENABLED,
       CSettings::SETTING_PVRPOWERMANAGEMENT_DAILYWAKEUPTIME,
-      CSettings::SETTING_PVRPOWERMANAGEMENT_BACKENDIDLETIME
+      CSettings::SETTING_PVRPOWERMANAGEMENT_BACKENDIDLETIME,
+      CSettings::SETTING_PVRREMINDERS_AUTOCLOSEDELAY,
+      CSettings::SETTING_PVRREMINDERS_AUTORECORD
     })
   {
   }
@@ -1958,7 +1960,7 @@ namespace PVR
 
     dialog->Reset();
     dialog->SetHeading(CVariant{19312}); // "PVR reminder"
-    dialog->SetAutoClose(10000);
+    dialog->SetAutoClose(m_settings.GetIntValue(CSettings::SETTING_PVRREMINDERS_AUTOCLOSEDELAY) * 1000);
     dialog->SetChoice(0, CVariant{19165}); // no: "Switch"
 
     std::string text = GetAnnouncerText(timer, 19307, 19308); // Reminder for ...
@@ -1971,7 +1973,8 @@ namespace PVR
       dialog->SetChoice(1, CVariant{264}); // yes: "Record"
       dialog->SetChoice(2, CVariant{222}); // custom: "Cancel"
 
-      text += "\n\n" + g_localizeStrings.Get(19309); // (Auto-close of this reminder will schedule a recording...)
+      if (m_settings.GetBoolValue(CSettings::SETTING_PVRREMINDERS_AUTORECORD))
+        text += "\n\n" + g_localizeStrings.Get(19309); // (Auto-close of this reminder will schedule a recording...)
     }
     else
     {
@@ -1984,7 +1987,7 @@ namespace PVR
     int iResult = dialog->GetResult();
     if (dialog->IsAutoClosed())
     {
-      if (bCanRecord)
+      if (bCanRecord && m_settings.GetBoolValue(CSettings::SETTING_PVRREMINDERS_AUTORECORD))
         iResult = 1; // YES -> schedule recording
       else
         iResult = -1; // CANCELLED -> do nothing

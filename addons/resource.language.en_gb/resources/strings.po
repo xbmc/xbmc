@@ -10361,7 +10361,11 @@ msgctxt "#19214"
 msgid "Enter a valid URL for the new channel"
 msgstr ""
 
-#empty string with id 19215
+#. pvr settings "reminders" category label
+#: system/settings/settings.xml
+msgctxt "#19215"
+msgid "Reminders"
+msgstr ""
 
 #. used by several skins
 msgctxt "#19216"
@@ -10938,7 +10942,19 @@ msgctxt "#19312"
 msgid "PVR reminder"
 msgstr ""
 
-#empty strings from id 19313 to 19498
+#. pvr settings "reminder auto close delay" setting label
+#: system/settings/settings.xml
+msgctxt "#19313"
+msgid "Automatically close reminder popup after"
+msgstr ""
+
+#. pvr settings "schedule recording on reminder auto-close" setting label
+#: system/settings/settings.xml
+msgctxt "#19314"
+msgid "Schedule recording when auto-closing the reminder popup"
+msgstr ""
+
+#empty strings from id 19315 to 19498
 
 #. label for epg genre value
 #: xbmc/pvr/epg/Epg.cpp
@@ -18660,7 +18676,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36233"
-msgid "This category contains the default recording duration settings."
+msgid "This category contains settings for recordings."
 msgstr ""
 
 #: system/settings/settings.xml
@@ -19014,7 +19030,22 @@ msgctxt "#36295"
 msgid "Set the the subtitle opacity."
 msgstr ""
 
-#empty strings from id 36296 to 36301
+#: system/settings/settings.xml
+msgctxt "#36296"
+msgid "This category contains settings for reminders."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36297"
+msgid "Choose a time in seconds after which PVR reminder popups will be automatically closed."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36298"
+msgid "If enabled, a recording for the programme to remind will be scheduled when auto-closing the reminder popup, if supported by the PVR add-on and backend."
+msgstr ""
+
+#empty strings from id 36299 to 36301
 
 #: system/settings/settings.xml
 msgctxt "#36302"
