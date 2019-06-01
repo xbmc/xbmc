@@ -56,7 +56,9 @@
 #include "PluginFile.h"
 #include "SpecialProtocolFile.h"
 #include "MultiPathFile.h"
+#if defined(HAS_UDF)
 #include "UDFFile.h"
+#endif
 #include "ImageFile.h"
 #include "ResourceFile.h"
 #include "URL.h"
@@ -134,7 +136,10 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
   else if (url.IsProtocol("iso9660"))
     return new CISO9660File();
 #endif
-  else if(url.IsProtocol("udf")) return new CUDFFile();
+#if defined(HAS_UDF)
+  else if(url.IsProtocol("udf"))
+    return new CUDFFile();
+#endif
 #if defined(TARGET_ANDROID)
   else if (url.IsProtocol("androidapp")) return new CFileAndroidApp();
 #endif

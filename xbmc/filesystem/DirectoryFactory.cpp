@@ -25,7 +25,9 @@
 #include "FTPDirectory.h"
 #include "HTTPDirectory.h"
 #include "DAVDirectory.h"
+#if defined(HAS_UDF)
 #include "UDFDirectory.h"
+#endif
 #include "utils/log.h"
 #include "network/WakeOnAccess.h"
 
@@ -133,7 +135,9 @@ IDirectory* CDirectoryFactory::Create(const CURL& url)
 #if defined(HAS_ISO9660PP)
   if (url.IsProtocol("iso9660")) return new CISO9660Directory();
 #endif
+#if defined(HAS_UDF)
   if (url.IsProtocol("udf")) return new CUDFDirectory();
+#endif
   if (url.IsProtocol("plugin")) return new CPluginDirectory();
 #if defined(TARGET_ANDROID)
   if (url.IsProtocol("apk")) return new CAPKDirectory();

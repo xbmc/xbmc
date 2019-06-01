@@ -154,6 +154,7 @@ set(optional_deps Alsa
                   SmbClient
                   Sndio
                   UDEV
+                  Udf
                   XSLT
                   ${PLATFORM_OPTIONAL_DEPS})
 

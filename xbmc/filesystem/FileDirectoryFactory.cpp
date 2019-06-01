@@ -11,6 +11,9 @@
 #if defined(HAS_ISO9660PP)
 #include "ISO9660Directory.h"
 #endif
+#if defined(HAS_UDF)
+#include "UDFDirectory.h"
+#endif
 #include "RSSDirectory.h"
 #include "UDFDirectory.h"
 #include "utils/URIUtils.h"
@@ -116,6 +119,7 @@ IFileDirectory* CFileDirectoryFactory::Create(const CURL& url, CFileItem* pItem,
   if (pItem->IsRSS())
     return new CRSSDirectory();
 
+
   if (pItem->IsDiscImage())
   {
 #if defined(HAS_ISO9660PP)
@@ -126,7 +130,11 @@ IFileDirectory* CFileDirectoryFactory::Create(const CURL& url, CFileItem* pItem,
     delete iso;
 #endif
 
+#if defined(HAS_UDF)
     return new CUDFDirectory();
+#endif
+
+    return nullptr;
   }
 
 #if defined(TARGET_ANDROID)
