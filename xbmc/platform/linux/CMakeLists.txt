@@ -28,8 +28,4 @@ if(CORE_PLATFORM_NAME_LC STREQUAL rbpi)
                       OMXCore.h)
 endif()
 
-if(HAVE_SSE4_1)
-  add_subdirectory(sse4)
-endif()
-
 core_add_library(linuxsupport)
