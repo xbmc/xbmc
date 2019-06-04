@@ -595,7 +595,7 @@ bool XBPython::OnScriptInitialized(ILanguageInvoker *invoker)
     // lock already exists and we need to lock it as PyEval_InitThreads
     // would not do that in that case.
     if (PyEval_ThreadsInitialized() && !PyGILState_Check())
-      PyEval_AcquireLock();
+      PyEval_RestoreThread((PyThreadState*)m_mainThreadState);
     else
       PyEval_InitThreads();
     const wchar_t* python_argv[1] = { L"" };

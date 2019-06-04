@@ -391,7 +391,7 @@ bool CPythonInvoker::execute(const std::string &script, const std::vector<std::w
 
   // set stopped event - this allows ::stop to run and kill remaining threads
   // this event has to be fired without holding m_critical
-  // also the GIL (PyEval_AcquireLock) must not be held
+  // also the GIL (PyEval_RestoreThread) must not be held
   // if not obeyed there is still no deadlock because ::stop waits with timeout (smart one!)
   m_stoppedEvent.Set();
 
@@ -399,7 +399,7 @@ bool CPythonInvoker::execute(const std::string &script, const std::vector<std::w
     m_threadState = NULL;
   }
 
-  PyEval_AcquireThread(state);
+  PyEval_RestoreThread(state);
 
   onDeinitialization();
 
@@ -474,7 +474,7 @@ bool CPythonInvoker::stop(bool abort)
 
   if (m_threadState != NULL)
   {
-    PyEval_AcquireLock();
+    PyEval_RestoreThread((PyThreadState*)m_threadState);
     PyThreadState* old = PyThreadState_Swap((PyThreadState*)m_threadState);
 
     //tell xbmc.Monitor to call onAbortRequested()
@@ -516,7 +516,7 @@ bool CPythonInvoker::stop(bool abort)
     {
       // grabbing the PyLock while holding the m_critical is asking for a deadlock
       CSingleExit ex2(m_critical);
-      PyEval_AcquireLock();
+      PyEval_RestoreThread((PyThreadState*)m_threadState);
     }
 
     // Since we released the m_critical it's possible that the state is cleaned up
