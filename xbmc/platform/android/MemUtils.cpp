@@ -8,6 +8,8 @@
 
 #include "utils/MemUtils.h"
 
+#include "platform/android/activity/XBMCApp.h"
+
 #include <stdlib.h>
 
 namespace KODI
@@ -32,6 +34,15 @@ void GetMemoryStatus(MemoryStatus* buffer)
 {
   if (!buffer)
     return;
+
+  long availMem, totalMem;
+
+  if (CXBMCApp::get()->GetMemoryInfo(availMem, totalMem))
+  {
+    buffer = {};
+    buffer->totalPhys = totalMem;
+    buffer->availPhys = availMem;
+  }
 }
 
 }

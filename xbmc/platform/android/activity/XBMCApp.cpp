@@ -21,6 +21,7 @@
 #include <android/native_window.h>
 #include <android/native_window_jni.h>
 
+#include <androidjni/ActivityManager.h>
 #include <androidjni/ApplicationInfo.h>
 #include <androidjni/BitmapFactory.h>
 #include <androidjni/BroadcastReceiver.h>
@@ -359,6 +360,7 @@ void CXBMCApp::Initialize()
 {
   CServiceBroker::GetAnnouncementManager()->AddAnnouncer(CXBMCApp::get());
   runNativeOnUiThread(RegisterDisplayListener, nullptr);
+  m_activityManager.reset(new CJNIActivityManager(getSystemService(CJNIContext::ACTIVITY_SERVICE)));
 }
 
 void CXBMCApp::Deinitialize()
@@ -1239,6 +1241,27 @@ float CXBMCApp::GetFrameLatencyMs()
 bool CXBMCApp::WaitVSync(unsigned int milliSeconds)
 {
   return m_vsyncEvent.WaitMSec(milliSeconds);
+}
+
+bool CXBMCApp::GetMemoryInfo(long& availMem, long& totalMem)
+{
+  if (m_activityManager)
+  {
+    CJNIActivityManager::MemoryInfo info;
+    m_activityManager->getMemoryInfo(info);
+    if (xbmc_jnienv()->ExceptionCheck())
+    {
+      xbmc_jnienv()->ExceptionClear();
+      return false;
+    }
+
+    availMem = info.availMem();
+    totalMem = info.totalMem();
+
+    return true;
+  }
+
+  return false;
 }
 
 void CXBMCApp::SetupEnv()
