@@ -18,12 +18,8 @@
 
 namespace PVR
 {
-  class CPVRChannelGroup;
-  class CPVRChannel;
   class CPVRChannelGroups;
   class CPVRClient;
-  class CPVRTimerInfoTag;
-  class CPVRTimers;
 
   /** The PVR database */
 

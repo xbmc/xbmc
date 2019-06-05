@@ -16,7 +16,9 @@
 #include "utils/log.h"
 
 #include "pvr/PVRManager.h"
+#include "pvr/channels/PVRChannel.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
+#include "pvr/epg/Epg.h"
 #include "pvr/epg/EpgChannelData.h"
 #include "pvr/epg/EpgInfoTag.h"
 

@@ -9,12 +9,15 @@
 #pragma once
 
 #include <map>
+#include <memory>
+#include <set>
 #include <string>
-#include <utility>
 
 #include "settings/lib/ISettingCallback.h"
 #include "settings/lib/ISettingsHandler.h"
-#include "settings/lib/Setting.h"
+#include "threads/CriticalSection.h"
+
+class CSetting;
 
 struct IntegerSettingOption;
 

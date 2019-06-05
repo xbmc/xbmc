@@ -10,19 +10,25 @@
 
 #include <map>
 #include <memory>
+#include <string>
+#include <vector>
 
-#include "video/VideoDatabase.h"
+#include "threads/CriticalSection.h"
 
 #include "pvr/PVRTypes.h"
-#include "pvr/recordings/PVRRecording.h"
+
+class CVideoDatabase;
 
 namespace PVR
 {
+  class CPVRRecording;
+  class CPVRRecordingUid;
   class CPVRRecordingsPath;
 
   class CPVRRecordings
   {
   public:
+    CPVRRecordings();
     virtual ~CPVRRecordings(void);
 
     /*!

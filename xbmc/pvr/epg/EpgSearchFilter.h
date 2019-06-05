@@ -21,6 +21,8 @@ namespace PVR
 {
   #define EPG_SEARCH_UNSET (-1)
 
+  class CPVREpgInfoTag;
+
   /** Filter to apply with on a CPVREpgInfoTag */
 
   class CPVREpgSearchFilter

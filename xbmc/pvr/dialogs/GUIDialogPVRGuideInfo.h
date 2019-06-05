@@ -12,6 +12,8 @@
 
 #include "pvr/PVRTypes.h"
 
+class CGUIMessage;
+
 namespace PVR
 {
   class CGUIDialogPVRGuideInfo : public CGUIDialog

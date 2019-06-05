@@ -8,6 +8,9 @@
 
 #pragma once
 
+#include <memory>
+#include <vector>
+
 #include "dbwrappers/Database.h"
 #include "threads/CriticalSection.h"
 

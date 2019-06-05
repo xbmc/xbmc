@@ -8,16 +8,23 @@
 
 #pragma once
 
+#include <memory>
 #include <string>
 #include <vector>
 
 #include "XBDateTime.h"
+#include "guilib/DirtyRegion.h"
 #include "guilib/GUIControl.h"
 #include "guilib/GUIListItemLayout.h"
+#include "guilib/GUITexture.h"
 #include "guilib/IGUIContainer.h"
+#include "threads/CriticalSection.h"
+#include "utils/Geometry.h"
 
 class CFileItem;
 class CFileItemList;
+class CGUIListItem;
+class CGUIListItemLayout;
 
 namespace PVR
 {

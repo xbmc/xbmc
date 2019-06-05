@@ -11,7 +11,6 @@
 #include <utility>
 
 #include "addons/PVRClient.h"
-#include "addons/kodi-addon-dev-kit/include/kodi/xbmc_epg_types.h"
 #include "ServiceBroker.h"
 #include "guilib/LocalizeStrings.h"
 #include "settings/AdvancedSettings.h"
@@ -23,6 +22,7 @@
 #include "pvr/PVRManager.h"
 #include "pvr/epg/EpgChannelData.h"
 #include "pvr/epg/EpgDatabase.h"
+#include "pvr/epg/EpgInfoTag.h"
 
 using namespace PVR;
 

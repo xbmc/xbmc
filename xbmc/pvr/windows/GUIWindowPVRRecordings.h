@@ -8,11 +8,16 @@
 
 #pragma once
 
+#include <string>
+
+#include "dialogs/GUIDialogContextMenu.h"
 #include "video/VideoThumbLoader.h"
 #include "video/VideoDatabase.h"
 
 #include "pvr/PVRSettings.h"
 #include "pvr/windows/GUIWindowPVRBase.h"
+
+class CFileItem;
 
 namespace PVR
 {

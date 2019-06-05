@@ -23,6 +23,8 @@
 
 #include "pvr/PVRGUIDirectory.h"
 #include "pvr/PVRManager.h"
+#include "pvr/channels/PVRChannel.h"
+#include "pvr/channels/PVRChannelGroups.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 
 using namespace KODI::MESSAGING;

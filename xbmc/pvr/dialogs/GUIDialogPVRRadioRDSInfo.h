@@ -8,6 +8,8 @@
 
 #pragma once
 
+#include <string>
+
 #include "guilib/GUIDialog.h"
 
 class CGUISpinControl;

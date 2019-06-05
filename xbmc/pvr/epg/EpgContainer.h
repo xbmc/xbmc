@@ -11,23 +11,28 @@
 #include <list>
 #include <map>
 #include <memory>
+#include <string>
 #include <utility>
+#include <vector>
 
 #include "XBDateTime.h"
+#include "addons/kodi-addon-dev-kit/include/kodi/xbmc_pvr_types.h"
 #include "threads/CriticalSection.h"
+#include "threads/Event.h"
 #include "threads/Thread.h"
 #include "utils/Observer.h"
 
 #include "pvr/PVRSettings.h"
 #include "pvr/PVRTypes.h"
-#include "pvr/epg/Epg.h"
-#include "pvr/epg/EpgDatabase.h"
 
 namespace PVR
 {
-  class CPVREpgChannelData;
   class CEpgUpdateRequest;
   class CEpgTagStateChange;
+  class CPVREpg;
+  class CPVREpgChannelData;
+  class CPVREpgDatabase;
+  class CPVREpgInfoTag;
 
   class CPVREpgContainer : public Observer, public Observable, private CThread
   {

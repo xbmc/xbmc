@@ -10,6 +10,8 @@
 
 #include "utils/log.h"
 
+#include "pvr/channels/PVRChannel.h"
+#include "pvr/channels/PVRChannelGroups.h"
 #include "pvr/epg/EpgInfoTag.h"
 
 using namespace PVR;

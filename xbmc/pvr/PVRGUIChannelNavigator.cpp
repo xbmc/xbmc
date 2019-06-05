@@ -8,6 +8,7 @@
 
 #include "PVRGUIChannelNavigator.h"
 
+#include "FileItem.h"
 #include "GUIInfoManager.h"
 #include "ServiceBroker.h"
 #include "guilib/GUIComponent.h"

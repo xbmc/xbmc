@@ -8,8 +8,12 @@
 
 #pragma once
 
+#include <atomic>
 #include <memory>
+#include <string>
 
+#include "threads/CriticalSection.h"
+#include "threads/SystemClock.h"
 #include "utils/Observer.h"
 #include "windows/GUIMediaWindow.h"
 

@@ -10,6 +10,8 @@
 
 #include "view/GUIViewState.h"
 
+class CFileItemList;
+
 namespace PVR
 {
   class CGUIViewStatePVR : public CGUIViewState

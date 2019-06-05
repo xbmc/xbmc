@@ -18,8 +18,10 @@
 
 #include "pvr/PVRDatabase.h"
 #include "pvr/PVRManager.h"
+#include "pvr/epg/Epg.h"
 #include "pvr/epg/EpgChannelData.h"
 #include "pvr/epg/EpgContainer.h"
+#include "pvr/epg/EpgInfoTag.h"
 
 using namespace PVR;
 

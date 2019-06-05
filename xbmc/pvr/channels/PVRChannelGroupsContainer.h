@@ -10,10 +10,14 @@
 
 #include "threads/CriticalSection.h"
 
-#include "pvr/channels/PVRChannelGroups.h"
+#include "pvr/PVRTypes.h"
 
 namespace PVR
 {
+  class CPVRChannel;
+  class CPVRChannelGroups;
+  class CPVREpgInfoTag;
+
   class CPVRChannelGroupsContainer
   {
   public:

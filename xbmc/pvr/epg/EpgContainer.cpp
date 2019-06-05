@@ -22,7 +22,8 @@
 #include "pvr/PVRGUIProgressHandler.h"
 #include "pvr/epg/Epg.h"
 #include "pvr/epg/EpgChannelData.h"
-#include "pvr/epg/EpgSearchFilter.h"
+#include "pvr/epg/EpgDatabase.h"
+#include "pvr/epg/EpgInfoTag.h"
 
 namespace PVR
 {

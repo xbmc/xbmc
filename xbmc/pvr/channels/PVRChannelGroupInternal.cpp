@@ -21,6 +21,7 @@
 #include "pvr/PVRDatabase.h"
 #include "pvr/PVRManager.h"
 #include "pvr/addons/PVRClients.h"
+#include "pvr/channels/PVRChannel.h"
 #include "pvr/epg/EpgContainer.h"
 
 using namespace PVR;

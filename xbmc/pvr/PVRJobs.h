@@ -9,16 +9,18 @@
 #pragma once
 
 #include <memory>
+#include <string>
 #include <vector>
 
-#include "addons/PVRClient.h"
 #include "addons/kodi-addon-dev-kit/include/kodi/xbmc_pvr_types.h"
-#include "utils/JobManager.h"
-
-#include "pvr/PVRTypes.h"
+#include "threads/SystemClock.h"
+#include "utils/Job.h"
 
 namespace PVR
 {
+  class CPVRChannelGroup;
+  class CPVRClient;
+
   class CPVRPlayChannelOnStartupJob : public CJob
   {
   public:

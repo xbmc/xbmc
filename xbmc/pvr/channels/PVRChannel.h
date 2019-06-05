@@ -22,11 +22,10 @@
 #include "pvr/channels/PVRChannelNumber.h"
 #include "pvr/PVRTypes.h"
 
-class CVariant;
-
 namespace PVR
 {
   class CPVREpg;
+  class CPVREpgInfoTag;
   class CPVRRadioRDSInfoTag;
 
   /** PVR Channel class */

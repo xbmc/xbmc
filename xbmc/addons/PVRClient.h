@@ -12,6 +12,7 @@
 #include <functional>
 #include <memory>
 #include <string>
+#include <utility>
 #include <vector>
 
 #include "addons/binary-addons/AddonDll.h"
@@ -24,7 +25,6 @@ namespace PVR
   class CPVRChannelGroups;
   class CPVRClientMenuHook;
   class CPVRClientMenuHooks;
-  class CPVREpgChannelData;
   class CPVRStreamProperties;
   class CPVRTimersContainer;
 

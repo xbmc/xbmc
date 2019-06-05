@@ -8,22 +8,10 @@
 
 #pragma once
 
-/*
- * DESCRIPTION:
- *
- * CPVRTimerInfoTag is part of the PVRManager to support scheduled recordings.
- *
- * The timer information tag holds data about current programmed timers for
- * the PVRManager. It is possible to create timers directly based upon
- * a EPG entry by giving the EPG information tag or as instant timer
- * on currently tuned channel, or give a blank tag to modify later.
- *
- * The filename inside the tag is for reference only and gives the index
- * number of the tag reported by the PVR backend and can not be played!
- */
+#include <memory>
+#include <string>
 
 #include "XBDateTime.h"
-#include "addons/kodi-addon-dev-kit/include/kodi/xbmc_pvr_types.h"
 #include "threads/CriticalSection.h"
 #include "threads/SystemClock.h"
 #include "utils/ISerializable.h"
@@ -31,10 +19,13 @@
 #include "pvr/PVRTypes.h"
 #include "pvr/timers/PVRTimerType.h"
 
-class CVariant;
+struct PVR_TIMER;
 
 namespace PVR
 {
+  class CPVRChannel;
+  class CPVREpgInfoTag;
+
   enum class TimerOperationResult
   {
     OK = 0,

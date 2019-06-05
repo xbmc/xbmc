@@ -9,6 +9,7 @@
 #pragma once
 
 #include <map>
+#include <string>
 
 #include "XBDateTime.h"
 #include "guilib/GUIDialog.h"

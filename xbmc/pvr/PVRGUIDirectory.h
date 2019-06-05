@@ -8,6 +8,8 @@
 
 #pragma once
 
+#include <string>
+
 #include "URL.h"
 
 class CFileItemList;
