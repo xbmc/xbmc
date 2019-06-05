@@ -521,6 +521,7 @@ void CSelectionStreams::Update(std::shared_ptr<CDVDInputStream> input, CDVDDemux
         s.height = vstream->iHeight;
         s.stereo_mode = vstream->stereo_mode;
         s.bitrate = vstream->iBitRate;
+        s.aspect_ratio = vstream->fAspect;
       }
       if(stream->type == STREAM_AUDIO)
       {
