@@ -2067,6 +2067,10 @@ void CApplication::OnApplicationMessage(ThreadMessage* pMsg)
     InhibitIdleShutdown(pMsg->param1 != 0);
     break;
 
+  case TMSG_INHIBITSCREENSAVER:
+    InhibitScreenSaver(pMsg->param1 != 0);
+    break;
+
   case TMSG_ACTIVATESCREENSAVER:
     ActivateScreenSaver();
     break;
@@ -3541,6 +3545,10 @@ void CApplication::CheckScreenSaverAndDPMS()
   // explicit user activity such as input
   bool haveIdleActivity = false;
 
+  // When inhibit screensaver is enabled prevent screensaver from kicking in
+  if (m_bInhibitScreenSaver)
+    haveIdleActivity = true;
+
   // Are we playing a video and it is not paused?
   if (m_appPlayer.IsPlayingVideo() && !m_appPlayer.IsPaused())
     haveIdleActivity = true;
@@ -3666,6 +3674,16 @@ void CApplication::ActivateScreenSaver(bool forceType /*= false */)
   }
 
   CServiceBroker::GetGUI()->GetWindowManager().ActivateWindow(WINDOW_SCREENSAVER);
+}
+
+void CApplication::InhibitScreenSaver(bool inhibit)
+{
+  m_bInhibitScreenSaver = inhibit;
+}
+
+bool CApplication::IsScreenSaverInhibited() const
+{
+  return m_bInhibitScreenSaver;
 }
 
 void CApplication::CheckShutdown()

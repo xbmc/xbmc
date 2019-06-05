@@ -200,6 +200,8 @@ public:
   void CheckShutdown();
   void InhibitIdleShutdown(bool inhibit);
   bool IsIdleShutdownInhibited() const;
+  void InhibitScreenSaver(bool inhibit);
+  bool IsScreenSaverInhibited() const;
   // Checks whether the screensaver and / or DPMS should become active.
   void CheckScreenSaverAndDPMS();
   void ActivateScreenSaver(bool forceType = false);
@@ -421,6 +423,7 @@ protected:
   XbmcThreads::EndTime m_guiRefreshTimer;
 
   bool m_bInhibitIdleShutdown = false;
+  bool m_bInhibitScreenSaver = false;
 
   std::unique_ptr<DPMSSupport> m_dpms;
   bool m_dpmsIsActive = false;

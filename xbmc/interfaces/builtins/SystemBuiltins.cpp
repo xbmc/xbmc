@@ -110,6 +110,18 @@ static int Screensaver(const std::vector<std::string>& params)
   return 0;
 }
 
+/*! \brief Inhibit screensaver.
+ *  \param params The parameters.
+ *  \details params[0] = "true" to inhibit screensaver (optional).
+ */
+static int InhibitScreenSaver(const std::vector<std::string>& params)
+{
+  bool inhibit = (params.size() == 1 && StringUtils::EqualsNoCase(params[0], "true"));
+  CApplicationMessenger::GetInstance().PostMsg(TMSG_INHIBITSCREENSAVER, inhibit);
+
+  return 0;
+}
+
 /*! \brief Shutdown system.
  *  \param params (ignored)
  */
@@ -146,6 +158,12 @@ static int Suspend(const std::vector<std::string>& params)
 ///     <b>`ActivateScreensaver`</b>
 ///     ,
 ///     Starts the screensaver
+///   }
+///   \table_row2_l{
+///     <b>`InhibitScreensaver(yesNo)`</b>
+///     ,
+///     Inhibit the screensaver
+///     @param[in] yesNo   value with "true" or "false" to inhibit or allow screensaver (leaving empty defaults to false)
 ///   }
 ///   \table_row2_l{
 ///     <b>`Hibernate`</b>
@@ -224,6 +242,7 @@ CBuiltins::CommandMap CSystemBuiltins::GetOperations() const
            {"activatescreensaver", {"Activate Screensaver", 0, Screensaver}},
            {"hibernate",           {"Hibernates the system", 0, Hibernate}},
            {"inhibitidleshutdown", {"Inhibit idle shutdown", 0, InhibitIdle}},
+           {"inhibitscreensaver",  {"Inhibit Screensaver", 0, InhibitScreenSaver}},
            {"minimize",            {"Minimize Kodi", 0, Minimize}},
            {"powerdown",           {"Powerdown system", 0, Powerdown}},
            {"quit",                {"Quit Kodi", 0, Quit}},
