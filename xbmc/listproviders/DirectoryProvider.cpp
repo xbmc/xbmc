@@ -232,7 +232,11 @@ void CDirectoryProvider::Announce(ANNOUNCEMENT::AnnouncementFlag flag, const cha
          (std::find(m_itemTypes.begin(), m_itemTypes.end(), InfoTagType::AUDIO) == m_itemTypes.end())))
       return;
 
-    if (flag & ANNOUNCEMENT::Player)
+    if ((flag & ANNOUNCEMENT::Player) &&
+        ((CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() == WINDOW_SLIDESHOW) ||
+         (CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO) ||
+         (CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() == WINDOW_SLIDESHOW) ||
+         (CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() == WINDOW_FULLSCREEN_GAME)))
     {
       if (strcmp(message, "OnPlay") == 0 ||
           strcmp(message, "OnResume") == 0 ||
