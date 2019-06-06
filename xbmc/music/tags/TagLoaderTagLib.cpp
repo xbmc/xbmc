@@ -571,7 +571,7 @@ bool CTagLoaderTagLib::ParseTag(APE::Tag *ape, EmbeddedArt *art, CMusicInfoTag& 
       // The image data follows a null byte, which can optionally be preceded by a filename
       const uint offset = tdata.find('\0') + 1;
       ByteVector bv(tdata.data() + offset, tdata.size() - offset);
-      // Determine mimetype from file signature
+      // Infer the mimetype
       std::string mime{};
       if (bv.startsWith("\xFF\xD8\xFF"))
         mime = "image/jpeg";
@@ -581,7 +581,7 @@ bool CTagLoaderTagLib::ParseTag(APE::Tag *ape, EmbeddedArt *art, CMusicInfoTag& 
         mime = "image/gif";
       else if (bv.startsWith("\x42\x4D"))
         mime = "image/bmp";
-      if ((offset > 0) && (offset < tdata.size()) && (mime.size() > 0)) {
+      if ((offset > 0) && (offset <= tdata.size()) && (mime.size() > 0)) {
         tag.SetCoverArtInfo(bv.size(), mime);
         if (art)
           art->Set(reinterpret_cast<const uint8_t *>(bv.data()), bv.size(), mime);
