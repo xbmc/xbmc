@@ -9,6 +9,7 @@
 #include "PVRTimersPath.h"
 
 #include <cstdlib>
+#include <string>
 #include <vector>
 
 #include "utils/StringUtils.h"

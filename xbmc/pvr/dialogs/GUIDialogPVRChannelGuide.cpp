@@ -8,6 +8,9 @@
 
 #include "GUIDialogPVRChannelGuide.h"
 
+#include <memory>
+#include <vector>
+
 #include "FileItem.h"
 #include "ServiceBroker.h"
 

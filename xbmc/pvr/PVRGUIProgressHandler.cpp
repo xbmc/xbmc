@@ -10,6 +10,7 @@
 
 #include <algorithm>
 #include <cmath>
+#include <string>
 
 #include "ServiceBroker.h"
 #include "dialogs/GUIDialogExtendedProgressBar.h"

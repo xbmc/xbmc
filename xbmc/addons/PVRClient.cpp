@@ -8,9 +8,10 @@
 
 #include "PVRClient.h"
 
-#include <algorithm>
-#include <cmath>
+#include <map>
 #include <memory>
+#include <string>
+#include <utility>
 
 extern "C" {
 #include <libavcodec/avcodec.h>
@@ -34,11 +35,11 @@ extern "C" {
 #include "pvr/PVRStreamProperties.h"
 #include "pvr/addons/PVRClients.h"
 #include "pvr/channels/PVRChannel.h"
+#include "pvr/channels/PVRChannelGroup.h"
 #include "pvr/channels/PVRChannelGroupInternal.h"
 #include "pvr/channels/PVRChannelGroups.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/epg/Epg.h"
-#include "pvr/epg/EpgChannelData.h"
 #include "pvr/epg/EpgContainer.h"
 #include "pvr/epg/EpgInfoTag.h"
 #include "pvr/recordings/PVRRecording.h"

@@ -8,10 +8,12 @@
 
 #include "Epg.h"
 
+#include <memory>
 #include <utility>
+#include <vector>
 
-#include "addons/PVRClient.h"
 #include "ServiceBroker.h"
+#include "addons/PVRClient.h"
 #include "guilib/LocalizeStrings.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"

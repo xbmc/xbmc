@@ -9,11 +9,12 @@
 #include "PVRGUITimesInfo.h"
 
 #include <cmath>
+#include <ctime>
+#include <memory>
 
 #include "ServiceBroker.h"
 #include "cores/DataCacheCore.h"
 #include "settings/AdvancedSettings.h"
-#include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "threads/SingleLock.h"
 #include "utils/StringUtils.h"

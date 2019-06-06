@@ -8,30 +8,21 @@
 
 #include "GUIDialogPVRGuideInfo.h"
 
-#include <utility>
+#include <memory>
 
-#include "Application.h"
+#include "FileItem.h"
 #include "ServiceBroker.h"
 #include "addons/PVRClient.h"
-#include "dialogs/GUIDialogYesNo.h"
-#include "guilib/GUIWindowManager.h"
-#include "guilib/LocalizeStrings.h"
-#include "messaging/ApplicationMessenger.h"
-#include "messaging/helpers/DialogOKHelper.h"
-#include "utils/StringUtils.h"
-#include "utils/Variant.h"
+#include "guilib/GUIMessage.h"
 
 #include "pvr/PVRGUIActions.h"
 #include "pvr/PVRManager.h"
-#include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/epg/EpgInfoTag.h"
 #include "pvr/recordings/PVRRecordings.h"
 #include "pvr/timers/PVRTimerInfoTag.h"
 #include "pvr/timers/PVRTimers.h"
-#include "pvr/windows/GUIWindowPVRSearch.h"
 
 using namespace PVR;
-using namespace KODI::MESSAGING;
 
 #define CONTROL_BTN_FIND                4
 #define CONTROL_BTN_SWITCH              5

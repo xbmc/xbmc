@@ -8,12 +8,18 @@
 
 #include "GUIWindowPVRSearch.h"
 
+#include <algorithm>
+#include <memory>
+#include <vector>
+
+#include "FileItem.h"
 #include "ServiceBroker.h"
 #include "dialogs/GUIDialogBusy.h"
 #include "guilib/GUIComponent.h"
+#include "guilib/GUIMessage.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
-#include "input/Key.h"
+#include "input/actions/ActionIDs.h"
 #include "messaging/helpers/DialogOKHelper.h"
 #include "threads/IRunnable.h"
 #include "utils/URIUtils.h"
@@ -22,8 +28,6 @@
 #include "pvr/PVRGUIActions.h"
 #include "pvr/PVRItem.h"
 #include "pvr/PVRManager.h"
-#include "pvr/addons/PVRClients.h"
-#include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/dialogs/GUIDialogPVRGuideSearch.h"
 #include "pvr/epg/EpgContainer.h"
 #include "pvr/epg/EpgInfoTag.h"

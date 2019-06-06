@@ -10,15 +10,19 @@
 
 #include <tinyxml.h>
 
+#include <algorithm>
+#include <memory>
+#include <string>
+#include <utility>
+
 #include "FileItem.h"
-#include "GUIInfoManager.h"
 #include "guilib/guiinfo/GUIInfoLabels.h"
 #include "guilib/DirtyRegion.h"
-#include "guilib/GUIControlFactory.h"
-#include "guilib/GUIListItem.h"
 #include "guilib/GUIMessage.h"
 #include "guilib/GUIAction.h"
 #include "input/Key.h"
+#include "input/actions/Action.h"
+#include "input/actions/ActionIDs.h"
 #include "utils/MathUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"

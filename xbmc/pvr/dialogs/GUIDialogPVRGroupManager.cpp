@@ -6,6 +6,10 @@
  *  See LICENSES/README.md for more information.
  */
 
+#include <memory>
+#include <string>
+#include <vector>
+
 #include "GUIDialogPVRGroupManager.h"
 
 #include "FileItem.h"
@@ -13,10 +17,11 @@
 #include "dialogs/GUIDialogYesNo.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIKeyboardFactory.h"
+#include "guilib/GUIMessage.h"
 #include "guilib/GUIRadioButtonControl.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
-#include "input/Key.h"
+#include "input/actions/ActionIDs.h"
 #include "messaging/helpers//DialogOKHelper.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
@@ -190,7 +195,7 @@ bool CGUIDialogPVRGroupManager::ActionButtonUngroupedChannels(CGUIMessage &messa
   if (m_viewUngroupedChannels.HasControl(iControl))   // list/thumb control
   {
     m_iSelectedUngroupedChannel = m_viewUngroupedChannels.GetSelectedItem();
-    int iAction     = message.GetParam1();
+    int iAction = message.GetParam1();
 
     if (iAction == ACTION_SELECT_ITEM || iAction == ACTION_MOUSE_LEFT_CLICK)
     {

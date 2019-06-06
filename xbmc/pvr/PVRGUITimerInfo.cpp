@@ -8,7 +8,10 @@
 
 #include "PVRGUITimerInfo.h"
 
-#include "FileItem.h"
+#include <memory>
+#include <string>
+#include <vector>
+
 #include "ServiceBroker.h"
 #include "guilib/LocalizeStrings.h"
 #include "settings/AdvancedSettings.h"

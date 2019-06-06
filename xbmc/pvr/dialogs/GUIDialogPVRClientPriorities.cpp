@@ -10,11 +10,11 @@
 #include "guilib/GUIMessage.h"
 
 #include <cstdlib>
+#include <memory>
 
 #include "ServiceBroker.h"
 #include "settings/lib/Setting.h"
 #include "utils/StringUtils.h"
-#include "utils/Variant.h"
 #include "utils/log.h"
 
 #include "pvr/PVRManager.h"

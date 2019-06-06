@@ -8,13 +8,13 @@
 
 #include "PVRChannelGroupInternal.h"
 
+#include <string>
 #include <utility>
+#include <vector>
 
 #include "ServiceBroker.h"
 #include "guilib/LocalizeStrings.h"
 #include "messaging/helpers/DialogOKHelper.h"
-#include "settings/Settings.h"
-#include "settings/SettingsComponent.h"
 #include "utils/Variant.h"
 #include "utils/log.h"
 

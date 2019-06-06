@@ -8,6 +8,9 @@
 
 #include "PVRRecordingsPath.h"
 
+#include <string>
+#include <vector>
+
 #include "URL.h"
 #include "utils/RegExp.h"
 #include "utils/StringUtils.h"

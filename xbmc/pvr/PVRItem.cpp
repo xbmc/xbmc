@@ -8,6 +8,8 @@
 
 #include "PVRItem.h"
 
+#include <memory>
+
 #include "FileItem.h"
 #include "ServiceBroker.h"
 #include "utils/log.h"

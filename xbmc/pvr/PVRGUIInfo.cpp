@@ -10,15 +10,17 @@
 
 #include <cmath>
 #include <ctime>
+#include <memory>
+#include <string>
+#include <vector>
 
 #include "Application.h"
 #include "GUIInfoManager.h"
 #include "ServiceBroker.h"
 #include "guilib/GUIComponent.h"
-#include "guilib/LocalizeStrings.h"
 #include "guilib/GUIWindowManager.h"
+#include "guilib/LocalizeStrings.h"
 #include "guilib/guiinfo/GUIInfo.h"
-#include "guilib/guiinfo/GUIInfoHelper.h"
 #include "guilib/guiinfo/GUIInfoLabels.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"

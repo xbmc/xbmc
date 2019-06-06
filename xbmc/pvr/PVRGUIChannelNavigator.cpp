@@ -14,7 +14,8 @@
 #include "guilib/GUIComponent.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
-#include "settings/lib/SettingsManager.h"
+#include "threads/SingleLock.h"
+#include "utils/JobManager.h"
 
 #include "pvr/PVRGUIActions.h"
 #include "pvr/PVRJobs.h"

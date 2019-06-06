@@ -8,14 +8,18 @@
 
 #include "GUIDialogPVRRecordingSettings.h"
 
+#include <memory>
+#include <string>
+#include <utility>
+#include <vector>
+
 #include "ServiceBroker.h"
 #include "addons/PVRClient.h"
 #include "guilib/GUIMessage.h"
 #include "guilib/LocalizeStrings.h"
 #include "messaging/helpers/DialogHelper.h"
+#include "settings/dialogs/GUIDialogSettingsBase.h"
 #include "settings/lib/Setting.h"
-#include "settings/lib/SettingDefinitions.h"
-#include "settings/lib/SettingsManager.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
 #include "utils/log.h"
@@ -24,7 +28,7 @@
 #include "pvr/recordings/PVRRecording.h"
 
 using namespace PVR;
-using namespace KODI::MESSAGING::HELPERS;
+using namespace KODI::MESSAGING;
 
 #define SETTING_RECORDING_NAME "recording.name"
 #define SETTING_RECORDING_PLAYCOUNT "recording.playcount"
@@ -127,9 +131,9 @@ bool CGUIDialogPVRRecordingSettings::OnSettingChanging(std::shared_ptr<const CSe
     int iNewLifetime = std::static_pointer_cast<const CSettingInt>(setting)->GetValue();
     if (m_recording->WillBeExpiredWithNewLifetime(iNewLifetime))
     {
-      if (ShowYesNoDialogText(CVariant{19068}, // "Recording settings"
-                              StringUtils::Format(g_localizeStrings.Get(19147).c_str(), iNewLifetime)) // "Setting the lieftime..."
-            != DialogResponse::YES)
+      if (HELPERS::ShowYesNoDialogText(CVariant{19068}, // "Recording settings"
+                                       StringUtils::Format(g_localizeStrings.Get(19147).c_str(), iNewLifetime)) // "Setting the lieftime..."
+          != HELPERS::DialogResponse::YES)
         return false;
     }
   }

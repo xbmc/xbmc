@@ -9,6 +9,8 @@
 #include "PVRGUIChannelIconUpdater.h"
 
 #include <map>
+#include <string>
+#include <vector>
 
 #include "FileItem.h"
 #include "ServiceBroker.h"

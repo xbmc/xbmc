@@ -8,12 +8,17 @@
 
 #include "EpgInfoTag.h"
 
+#include <memory>
+#include <string>
+#include <vector>
+
 #include "ServiceBroker.h"
 #include "addons/PVRClient.h"
 #include "addons/kodi-addon-dev-kit/include/kodi/xbmc_pvr_types.h"
 #include "cores/DataCacheCore.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
+#include "threads/SingleLock.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
 #include "utils/log.h"

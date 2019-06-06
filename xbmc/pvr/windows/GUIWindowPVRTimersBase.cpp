@@ -8,25 +8,26 @@
 
 #include "GUIWindowPVRTimersBase.h"
 
+#include <memory>
+#include <string>
+
+#include "FileItem.h"
 #include "GUIInfoManager.h"
 #include "ServiceBroker.h"
-#include "guilib/GUIMessage.h"
 #include "guilib/GUIComponent.h"
-#include "input/Key.h"
-#include "messaging/helpers/DialogOKHelper.h"
+#include "guilib/GUIMessage.h"
+#include "input/actions/Action.h"
+#include "input/actions/ActionIDs.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/URIUtils.h"
-#include "utils/Variant.h"
 
 #include "pvr/PVRGUIActions.h"
 #include "pvr/PVRManager.h"
-#include "pvr/addons/PVRClients.h"
 #include "pvr/timers/PVRTimerInfoTag.h"
 #include "pvr/timers/PVRTimersPath.h"
 
 using namespace PVR;
-using namespace KODI::MESSAGING;
 
 CGUIWindowPVRTimersBase::CGUIWindowPVRTimersBase(bool bRadio, int id, const std::string &xmlFile) :
   CGUIWindowPVRBase(bRadio, id, xmlFile)

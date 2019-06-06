@@ -9,9 +9,11 @@
 #include "PVRChannelGroups.h"
 
 #include <algorithm>
+#include <memory>
+#include <string>
+#include <vector>
 
 #include "ServiceBroker.h"
-#include "URL.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"

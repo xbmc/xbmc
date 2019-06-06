@@ -8,11 +8,15 @@
 
 #include "PVRSettings.h"
 
+#include <memory>
+#include <set>
+#include <string>
+#include <utility>
+
 #include "ServiceBroker.h"
 #include "guilib/LocalizeStrings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
-#include "settings/lib/SettingDefinitions.h"
 #include "settings/lib/SettingsManager.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"

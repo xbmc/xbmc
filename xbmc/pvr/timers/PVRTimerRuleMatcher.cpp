@@ -8,8 +8,8 @@
 
 #include "PVRTimerRuleMatcher.h"
 
+#include "XBDateTime.h"
 #include "utils/RegExp.h"
-#include "utils/log.h"
 
 #include "pvr/epg/EpgInfoTag.h"
 #include "pvr/timers/PVRTimerInfoTag.h"

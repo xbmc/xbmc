@@ -6,16 +6,22 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include <iterator>
-
 #include "GUIWindowPVRGuide.h"
 
-#include "ContextMenuManager.h"
+#include <memory>
+#include <utility>
+#include <vector>
+
+#include "FileItem.h"
 #include "GUIUserMessages.h"
 #include "ServiceBroker.h"
 #include "dialogs/GUIDialogBusy.h"
+#include "dialogs/GUIDialogContextMenu.h"
 #include "dialogs/GUIDialogNumeric.h"
-#include "input/Key.h"
+#include "guilib/GUIMessage.h"
+#include "guilib/LocalizeStrings.h"
+#include "input/actions/Action.h"
+#include "input/actions/ActionIDs.h"
 #include "messaging/ApplicationMessenger.h"
 #include "messaging/helpers/DialogHelper.h"
 #include "settings/Settings.h"

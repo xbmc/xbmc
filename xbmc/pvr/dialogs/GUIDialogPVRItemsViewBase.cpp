@@ -8,6 +8,8 @@
 
 #include "GUIDialogPVRItemsViewBase.h"
 
+#include <utility>
+
 #include "ContextMenuManager.h"
 #include "FileItem.h"
 #include "ServiceBroker.h"

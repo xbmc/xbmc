@@ -8,7 +8,10 @@
 
 #include "GUIDialogPVRChannelManager.h"
 
+#include <memory>
+#include <string>
 #include <utility>
+#include <vector>
 
 #include "FileItem.h"
 #include "GUIPassword.h"
@@ -19,11 +22,12 @@
 #include "dialogs/GUIDialogSelect.h"
 #include "dialogs/GUIDialogYesNo.h"
 #include "guilib/GUIComponent.h"
-#include "guilib/GUIKeyboardFactory.h"
 #include "guilib/GUIEditControl.h"
+#include "guilib/GUIMessage.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
-#include "input/Key.h"
+#include "input/actions/Action.h"
+#include "input/actions/ActionIDs.h"
 #include "messaging/helpers/DialogOKHelper.h"
 #include "profiles/ProfileManager.h"
 #include "settings/Settings.h"

@@ -9,6 +9,8 @@
 #include "GUIEPGGridContainerModel.h"
 
 #include <cmath>
+#include <memory>
+#include <vector>
 
 #include "FileItem.h"
 #include "ServiceBroker.h"
@@ -21,9 +23,6 @@
 #include "pvr/epg/Epg.h"
 #include "pvr/epg/EpgChannelData.h"
 #include "pvr/epg/EpgInfoTag.h"
-
-class CGUIListItem;
-typedef std::shared_ptr<CGUIListItem> CGUIListItemPtr;
 
 using namespace PVR;
 
@@ -349,7 +348,7 @@ void CGUIEPGGridContainerModel::FreeProgrammeMemory(int channel, int keepStart, 
     if (keepStart > 0 && keepStart < m_blocks)
     {
       // if item exist and block is not part of visible item
-      CGUIListItemPtr last(m_gridIndex[channel][keepStart].item);
+      std::shared_ptr<CGUIListItem> last = m_gridIndex[channel][keepStart].item;
       for (int i = keepStart - 1; i > 0; --i)
       {
         if (m_gridIndex[channel][i].item && m_gridIndex[channel][i].item != last)
@@ -365,7 +364,7 @@ void CGUIEPGGridContainerModel::FreeProgrammeMemory(int channel, int keepStart, 
 
     if (keepEnd > 0 && keepEnd < m_blocks)
     {
-      CGUIListItemPtr last(m_gridIndex[channel][keepEnd].item);
+      std::shared_ptr<CGUIListItem> last = m_gridIndex[channel][keepEnd].item;
       for (int i = keepEnd + 1; i < m_blocks; ++i)
       {
         // if item exist and block is not part of visible item

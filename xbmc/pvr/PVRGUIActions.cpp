@@ -8,6 +8,13 @@
 
 #include "PVRGUIActions.h"
 
+#include <iterator>
+#include <map>
+#include <memory>
+#include <string>
+#include <utility>
+#include <vector>
+
 #include "Application.h"
 #include "FileItem.h"
 #include "ServiceBroker.h"
@@ -21,12 +28,12 @@
 #include "dialogs/GUIDialogProgress.h"
 #include "dialogs/GUIDialogSelect.h"
 #include "dialogs/GUIDialogYesNo.h"
+#include "filesystem/IDirectory.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIKeyboardFactory.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
-#include "input/InputManager.h"
-#include "input/Key.h"
+#include "guilib/WindowIDs.h"
 #include "messaging/ApplicationMessenger.h"
 #include "messaging/helpers/DialogHelper.h"
 #include "messaging/helpers/DialogOKHelper.h"
@@ -34,9 +41,11 @@
 #include "settings/MediaSettings.h"
 #include "settings/Settings.h"
 #include "threads/IRunnable.h"
+#include "threads/SingleLock.h"
 #include "utils/StringUtils.h"
 #include "utils/SystemInfo.h"
 #include "utils/URIUtils.h"
+#include "utils/Variant.h"
 #include "utils/log.h"
 #include "video/VideoDatabase.h"
 
@@ -1293,13 +1302,13 @@ namespace PVR
       {
         bool bCancel(false);
         bool bPlayRecording = CGUIDialogYesNo::ShowAndGetInput(CVariant{19687}, // "Play recording"
-                                                       CVariant{""},
-                                                       CVariant{12021}, // "Play from beginning"
-                                                       CVariant{recording->m_strTitle},
-                                                       bCancel,
-                                                       CVariant{19000}, // "Switch to channel"
-                                                       CVariant{19687}, // "Play recording"
-                                                       0); // no autoclose
+                                                               CVariant{""},
+                                                               CVariant{12021}, // "Play from beginning"
+                                                               CVariant{recording->m_strTitle},
+                                                               bCancel,
+                                                               CVariant{19000}, // "Switch to channel"
+                                                               CVariant{19687}, // "Play recording"
+                                                               0); // no autoclose
         if (bCancel)
           return false;
 

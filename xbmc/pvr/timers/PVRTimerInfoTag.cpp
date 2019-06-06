@@ -9,6 +9,8 @@
 #include "PVRTimerInfoTag.h"
 
 #include <ctime>
+#include <memory>
+#include <string>
 
 #include "ServiceBroker.h"
 #include "addons/PVRClient.h"

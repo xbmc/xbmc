@@ -8,7 +8,11 @@
 
 #include "PVRClients.h"
 
+#include <functional>
+#include <memory>
+#include <string>
 #include <utility>
+#include <vector>
 
 #include "ServiceBroker.h"
 #include "addons/BinaryAddonCache.h"

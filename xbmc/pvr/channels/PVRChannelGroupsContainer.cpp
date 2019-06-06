@@ -8,6 +8,9 @@
 
 #include "PVRChannelGroupsContainer.h"
 
+#include <memory>
+
+#include "threads/SingleLock.h"
 #include "utils/log.h"
 
 #include "pvr/channels/PVRChannel.h"

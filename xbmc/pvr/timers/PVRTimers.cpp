@@ -8,7 +8,12 @@
 
 #include "PVRTimers.h"
 
+#include <algorithm>
+#include <map>
+#include <memory>
+#include <string>
 #include <utility>
+#include <vector>
 
 #include "ServiceBroker.h"
 #include "addons/PVRClient.h"

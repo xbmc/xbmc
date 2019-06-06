@@ -6,9 +6,13 @@
  *  See LICENSES/README.md for more information.
  */
 
+#include <memory>
+#include <string>
+
 #include "PVRChannel.h"
 
 #include "ServiceBroker.h"
+#include "XBDateTime.h"
 #include "addons/PVRClient.h"
 #include "guilib/LocalizeStrings.h"
 #include "threads/SingleLock.h"

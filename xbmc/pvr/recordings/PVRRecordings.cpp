@@ -8,7 +8,9 @@
 
 #include "PVRRecordings.h"
 
+#include <memory>
 #include <utility>
+#include <vector>
 
 #include "ServiceBroker.h"
 #include "threads/SingleLock.h"
@@ -18,7 +20,6 @@
 
 #include "pvr/PVRManager.h"
 #include "pvr/addons/PVRClients.h"
-#include "pvr/epg/EpgContainer.h"
 #include "pvr/epg/EpgInfoTag.h"
 #include "pvr/recordings/PVRRecording.h"
 #include "pvr/recordings/PVRRecordingsPath.h"
