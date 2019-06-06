@@ -7078,10 +7078,7 @@ msgctxt "#13437"
 msgid "Prefer VDPAU video mixer"
 msgstr ""
 
-#: system/settings/settings.xml
-msgctxt "#13438"
-msgid "Allow hardware acceleration - amcodec"
-msgstr ""
+#empty string with id 13438
 
 #: system/settings/settings.xml
 msgctxt "#13439"
@@ -19745,13 +19742,7 @@ msgctxt "#36421"
 msgid "Bypassing VDPAU mixer saves resources on low power systems but slightly reduces picture quality."
 msgstr ""
 
-#. Description of setting with label #13438 "Allow hardware acceleration (amcodec)"
-#: system/settings/settings.xml
-msgctxt "#36422"
-msgid "Enable hardware video decode using Amlogic decoder."
-msgstr ""
-
-#empty string with id 36423
+#empty strings from id 36422 to 36423
 
 #: system/settings/settings.xml
 msgctxt "#36424"
@@ -21474,27 +21465,7 @@ msgctxt "#38354"
 msgid "Unable to read xml file"
 msgstr ""
 
-#empty strings from id 38355 to 38999
-
-#: system/settings/settings.xml
-msgctxt "#39000"
-msgid "HD and up"
-msgstr ""
-
-#: system/settings/settings.xml
-msgctxt "#39001"
-msgid "Accelerate MPEG2"
-msgstr ""
-
-#: system/settings/settings.xml
-msgctxt "#39002"
-msgid "Accelerate MPEG4"
-msgstr ""
-
-#: system/settings/settings.xml
-msgctxt "#39003"
-msgid "Accelerate h264"
-msgstr ""
+#empty strings from id 38355 to 39003
 
 #. Description of category "Library" with label #14202
 #: system/settings/settings.xml

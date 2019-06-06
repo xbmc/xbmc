@@ -50,9 +50,6 @@ void CRPRenderManager::Deinitialize()
 {
   CLog::Log(LOGDEBUG, "RetroPlayer[RENDER]: Deinitializing render manager");
 
-  // Required to reset Amlogic chip to default state
-  m_processInfo.ConfigureRenderSystem(AV_PIX_FMT_NONE);
-
   for (auto &pixelScaler : m_scalers)
   {
     if (pixelScaler.second != nullptr)
@@ -229,8 +226,6 @@ void CRPRenderManager::FrameMove()
 
     if (m_state == RENDER_STATE::CONFIGURING)
     {
-      m_processInfo.ConfigureRenderSystem(m_format);
-
       m_state = RENDER_STATE::CONFIGURED;
 
       CLog::Log(LOGINFO, "RetroPlayer[RENDER]: Renderer configured on first frame");

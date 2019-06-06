@@ -26,9 +26,6 @@
 #include "profiles/ProfileManager.h"
 #include "settings/SettingAddon.h"
 #include "settings/SettingsComponent.h"
-#if defined(HAS_LIBAMCODEC)
-#include "utils/AMLUtils.h"
-#endif // defined(HAS_LIBAMCODEC)
 #include "utils/StringUtils.h"
 #if defined(TARGET_DARWIN_OSX)
 #include "platform/darwin/DarwinUtils.h"
@@ -307,10 +304,6 @@ void CSettingConditions::Initialize()
 #endif
 #ifdef TARGET_DARWIN_IOS
   m_simpleConditions.insert("have_ios");
-#endif
-#ifdef HAS_LIBAMCODEC
-  if (aml_present())
-    m_simpleConditions.insert("have_amcodec");
 #endif
 #if defined(TARGET_WINDOWS)
   m_simpleConditions.insert("has_dx");

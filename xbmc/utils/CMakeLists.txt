@@ -186,16 +186,6 @@ if(NOT CORE_SYSTEM_NAME STREQUAL windows AND NOT CORE_SYSTEM_NAME STREQUAL windo
   list(APPEND HEADERS GLUtils.h)
 endif()
 
-if(CORE_SYSTEM_NAME STREQUAL android OR AML_FOUND)
-  list(APPEND SOURCES AMLUtils.cpp)
-  list(APPEND HEADERS AMLUtils.h)
-endif()
-
-if(AML_FOUND)
-  list(APPEND HEADERS ScreenshotAML.cpp)
-  list(APPEND HEADERS ScreenshotAML.h)
-endif()
-
 if(CORE_PLATFORM_NAME_LC STREQUAL gbm)
   list(APPEND SOURCES EGLImage.cpp)
   list(APPEND HEADERS EGLImage.h)
