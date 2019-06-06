@@ -565,6 +565,28 @@ bool CTagLoaderTagLib::ParseTag(APE::Tag *ape, EmbeddedArt *art, CMusicInfoTag& 
       tag.SetMusicBrainzTrackID(it->second.toString().to8Bit(true));
     else if (it->first == "MUSICBRAINZ_ALBUMTYPE")
       SetReleaseType(tag, StringListToVectorString(it->second.toStringList()));
+    else if (it->first == "COVER ART (FRONT)")
+    {
+      TagLib::ByteVector tdata = it->second.binaryData();
+      // The image data follows a null byte, which can optionally be preceded by a filename
+      const uint offset = tdata.find('\0') + 1;
+      ByteVector bv(tdata.data() + offset, tdata.size() - offset);
+      // Determine mimetype from file signature
+      std::string mime{};
+      if (bv.startsWith("\xFF\xD8\xFF"))
+        mime = "image/jpeg";
+      else if (bv.startsWith("\x89\x50\x4E\x47"))
+        mime = "image/png";
+      else if (bv.startsWith("\x47\x49\x46\x38"))
+        mime = "image/gif";
+      else if (bv.startsWith("\x42\x4D"))
+        mime = "image/bmp";
+      if ((offset > 0) && (offset < tdata.size()) && (mime.size() > 0)) {
+        tag.SetCoverArtInfo(bv.size(), mime);
+        if (art)
+          art->Set(reinterpret_cast<const uint8_t *>(bv.data()), bv.size(), mime);
+      }
+    }
     else if (CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_logLevel == LOG_LEVEL_MAX)
       CLog::Log(LOGDEBUG, "unrecognized APE tag: %s", it->first.toCString(true));
   }
