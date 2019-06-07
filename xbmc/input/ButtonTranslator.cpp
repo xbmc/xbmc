@@ -100,7 +100,6 @@ bool CButtonTranslator::Load()
       }
 
       // Load mappings for any HID devices we have connected
-      std::list<std::string>::iterator it;
       for (const auto& device : m_deviceList)
       {
         std::string devicedir = dir;

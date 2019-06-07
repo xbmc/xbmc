@@ -72,13 +72,12 @@ bool CKeyboardLayout::Load(const TiXmlElement* element)
       StringUtils::ToLower(modifiers);
 
       std::vector<std::string> variants = StringUtils::Split(modifiers, ",");
-      for (std::vector<std::string>::const_iterator itv = variants.begin(); itv != variants.end(); ++itv)
+      for (const auto& itv : variants)
       {
         unsigned int iKeys = ModifierKeyNone;
-        std::vector<std::string> keys = StringUtils::Split(*itv, "+");
-        for (std::vector<std::string>::const_iterator it = keys.begin(); it != keys.end(); ++it)
+        std::vector<std::string> keys = StringUtils::Split(itv, "+");
+        for (const std::string& strKey : keys)
         {
-          std::string strKey = *it;
           if (strKey == "shift")
             iKeys |= ModifierKeyShift;
           else if (strKey == "symbol")
@@ -99,8 +98,8 @@ bool CKeyboardLayout::Load(const TiXmlElement* element)
         std::vector<std::string> chars = BreakCharacters(strRow);
         if (!modifierKeysSet.empty())
         {
-          for (std::set<unsigned int>::const_iterator it = modifierKeysSet.begin(); it != modifierKeysSet.end(); ++it)
-            m_keyboards[*it].push_back(chars);
+          for (const auto& it : modifierKeysSet)
+            m_keyboards[it].push_back(chars);
         }
         else
           m_keyboards[ModifierKeyNone].push_back(chars);
@@ -158,9 +157,9 @@ std::vector<std::string> CKeyboardLayout::BreakCharacters(const std::string &cha
   std::vector<std::string> result;
   // break into utf8 characters
   std::u32string chars32 = g_charsetConverter.utf8ToUtf32(chars);
-  for (std::u32string::const_iterator it = chars32.begin(); it != chars32.end(); ++it)
+  for (const auto& it : chars32)
   {
-    std::u32string char32(1, *it);
+    std::u32string char32(1, it);
     result.push_back(g_charsetConverter.utf32ToUtf8(char32));
   }
 
