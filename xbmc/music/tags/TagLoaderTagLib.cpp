@@ -581,10 +581,11 @@ bool CTagLoaderTagLib::ParseTag(APE::Tag *ape, EmbeddedArt *art, CMusicInfoTag& 
         mime = "image/gif";
       else if (bv.startsWith("\x42\x4D"))
         mime = "image/bmp";
-      if ((offset > 0) && (offset <= tdata.size()) && (mime.size() > 0)) {
+      if ((offset > 0) && (offset <= tdata.size()) && (mime.size() > 0))
+      {
         tag.SetCoverArtInfo(bv.size(), mime);
         if (art)
-          art->Set(reinterpret_cast<const uint8_t *>(bv.data()), bv.size(), mime);
+          art->Set(reinterpret_cast<const uint8_t*>(bv.data()), bv.size(), mime);
       }
     }
     else if (CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_logLevel == LOG_LEVEL_MAX)
