@@ -262,22 +262,21 @@ void CAirPlayServer::AnnounceToClients(int state)
 {
   CSingleLock lock (m_connectionLock);
 
-  std::vector<CTCPClient>::iterator it;
-  for (it = m_connections.begin(); it != m_connections.end(); ++it)
+  for (auto& it : m_connections)
   {
     std::string reverseHeader;
     std::string reverseBody;
     std::string response;
     int reverseSocket = INVALID_SOCKET;
-    it->ComposeReverseEvent(reverseHeader, reverseBody, state);
+    it.ComposeReverseEvent(reverseHeader, reverseBody, state);
 
     // Send event status per reverse http socket (play, loading, paused)
     // if we have a reverse header and a reverse socket
-    if (!reverseHeader.empty() && m_reverseSockets.find(it->m_sessionId) != m_reverseSockets.end())
+    if (!reverseHeader.empty() && m_reverseSockets.find(it.m_sessionId) != m_reverseSockets.end())
     {
       //search the reverse socket to this sessionid
       response = StringUtils::Format("POST /event HTTP/1.1\r\n");
-      reverseSocket = m_reverseSockets[it->m_sessionId]; //that is our reverse socket
+      reverseSocket = m_reverseSockets[it.m_sessionId]; //that is our reverse socket
       response += reverseHeader;
     }
     response += "\r\n";
@@ -289,7 +288,7 @@ void CAirPlayServer::AnnounceToClients(int state)
 
     // don't send it to the connection object
     // the reverse socket itself belongs to
-    if (reverseSocket != INVALID_SOCKET && reverseSocket != it->m_socket)
+    if (reverseSocket != INVALID_SOCKET && reverseSocket != it.m_socket)
     {
       send(reverseSocket, response.c_str(), response.size(), 0);//send the event status on the eventSocket
     }
@@ -630,11 +629,11 @@ std::string calcResponse(const std::string& username,
 std::string getFieldFromString(const std::string &str, const char* field)
 {
   std::vector<std::string> tmpAr1 = StringUtils::Split(str, ",");
-  for(std::vector<std::string>::const_iterator i = tmpAr1.begin(); i != tmpAr1.end(); ++i)
+  for (const auto& i : tmpAr1)
   {
-    if (i->find(field) != std::string::npos)
+    if (i.find(field) != std::string::npos)
     {
-      std::vector<std::string> tmpAr2 = StringUtils::Split(*i, "=");
+      std::vector<std::string> tmpAr2 = StringUtils::Split(i, "=");
       if (tmpAr2.size() == 2)
       {
         StringUtils::Replace(tmpAr2[1], "\"", "");//remove quotes

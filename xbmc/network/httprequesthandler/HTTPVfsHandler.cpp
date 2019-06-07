@@ -47,15 +47,18 @@ CHTTPVfsHandler::CHTTPVfsHandler(const HTTPRequest &request)
           if (sources == NULL)
             continue;
 
-          for (VECSOURCES::const_iterator source = sources->begin(); source != sources->end() && !accessible; ++source)
+          for (const auto& source : *sources)
           {
+            if (accessible)
+              break;
+
             // don't allow access to locked / disabled sharing sources
-            if (source->m_iHasLock == 2 || !source->m_allowSharing)
+            if (source.m_iHasLock == 2 || !source.m_allowSharing)
               continue;
 
-            for (std::vector<std::string>::const_iterator path = source->vecPaths.begin(); path != source->vecPaths.end(); ++path)
+            for (const auto& path : source.vecPaths)
             {
-              std::string realSourcePath = URIUtils::GetRealPath(*path);
+              std::string realSourcePath = URIUtils::GetRealPath(path);
               if (URIUtils::PathHasParent(realPath, realSourcePath, true))
               {
                 accessible = true;

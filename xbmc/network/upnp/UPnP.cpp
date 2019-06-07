@@ -303,8 +303,8 @@ public:
 
   ~CMediaController() override
   {
-    for (std::set<std::string>::const_iterator itRenderer = m_registeredRenderers.begin(); itRenderer != m_registeredRenderers.end(); ++itRenderer)
-      unregisterRenderer(*itRenderer);
+    for (const auto& itRenderer : m_registeredRenderers)
+      unregisterRenderer(itRenderer);
     m_registeredRenderers.clear();
   }
 

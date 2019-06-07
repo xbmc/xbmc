@@ -185,10 +185,11 @@ void CHTTPPythonWsgiInvoker::executeScript(void *fp, const std::string &script, 
     cgiEnvironment = createCgiEnvironment(m_request, m_addon);
     // and turn it into a python dictionary
     pyEnviron = PyDict_New();
-    for (std::map<std::string, std::string>::const_iterator cgiEnv = cgiEnvironment.begin(); cgiEnv != cgiEnvironment.end(); ++cgiEnv)
+    for (const auto& cgiEnv : cgiEnvironment)
     {
-      PyObject* pyEnvEntry = PyString_FromStringAndSize(cgiEnv->second.c_str(), cgiEnv->second.size());
-      PyDict_SetItemString(pyEnviron, cgiEnv->first.c_str(), pyEnvEntry);
+      PyObject* pyEnvEntry =
+          PyString_FromStringAndSize(cgiEnv.second.c_str(), cgiEnv.second.size());
+      PyDict_SetItemString(pyEnviron, cgiEnv.first.c_str(), pyEnvEntry);
       Py_DECREF(pyEnvEntry);
     }
 

@@ -63,8 +63,8 @@ void CZeroconfBrowser::Start()
   if(m_started)
     return;
   m_started = true;
-  for(tServices::const_iterator it = m_services.begin(); it != m_services.end(); ++it)
-    doAddServiceType(*it);
+  for (const auto& it : m_services)
+    doAddServiceType(it);
 }
 
 void CZeroconfBrowser::Stop()
@@ -72,8 +72,8 @@ void CZeroconfBrowser::Stop()
   CSingleLock lock(*mp_crit_sec);
   if(!m_started)
     return;
-  for(tServices::iterator it = m_services.begin(); it != m_services.end(); ++it)
-    RemoveServiceType(*it);
+  for (const auto& it : m_services)
+    RemoveServiceType(it);
   m_started = false;
 }
 
@@ -210,9 +210,10 @@ void CZeroconfBrowser::ZeroconfService::SetTxtRecords(const tTxtRecordMap& txt_r
   m_txtrecords_map = txt_records;
 
   CLog::Log(LOGDEBUG,"CZeroconfBrowser: dump txt-records");
-  for(tTxtRecordMap::const_iterator it = m_txtrecords_map.begin(); it != m_txtrecords_map.end(); ++it)
+  for (const auto& it : m_txtrecords_map)
   {
-    CLog::Log(LOGDEBUG,"CZeroconfBrowser:  key: %s value: %s",it->first.c_str(), it->second.c_str());
+    CLog::Log(LOGDEBUG, "CZeroconfBrowser:  key: %s value: %s", it.first.c_str(),
+              it.second.c_str());
   }
 }
 
