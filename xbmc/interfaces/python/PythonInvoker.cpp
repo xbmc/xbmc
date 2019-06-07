@@ -72,13 +72,13 @@ static const std::string getListOfAddonClassesAsString(XBMCAddon::AddonClass::Re
   CSingleLock l(*(languageHook.get()));
   std::set<XBMCAddon::AddonClass*>& acs = languageHook->GetRegisteredAddonClasses();
   bool firstTime = true;
-  for (std::set<XBMCAddon::AddonClass*>::iterator iter = acs.begin(); iter != acs.end(); ++iter)
+  for (const auto& iter : acs)
   {
     if (!firstTime)
       message += ",";
     else
       firstTime = false;
-    message += (*iter)->GetClassname();
+    message += iter->GetClassname();
   }
 
   return message;
@@ -193,8 +193,8 @@ bool CPythonInvoker::execute(const std::string &script, const std::vector<std::s
     {
       std::set<std::string> paths;
       getAddonModuleDeps(m_addon, paths);
-      for (std::set<std::string>::const_iterator it = paths.begin(); it != paths.end(); ++it)
-        addPath(*it);
+      for (const auto& it : paths)
+        addPath(it);
     }
     else
     { // for backwards compatibility.
@@ -649,10 +649,11 @@ const char* CPythonInvoker::getInitializationScript() const
 
 void CPythonInvoker::initializeModules(const std::map<std::string, PythonModuleInitialization> &modules)
 {
-  for (std::map<std::string, PythonModuleInitialization>::const_iterator module = modules.begin(); module != modules.end(); ++module)
+  for (const auto& module : modules)
   {
-    if (!initializeModule(module->second))
-      CLog::Log(LOGWARNING, "CPythonInvoker(%d, %s): unable to initialize python module \"%s\"", GetId(), m_sourceFile.c_str(), module->first.c_str());
+    if (!initializeModule(module.second))
+      CLog::Log(LOGWARNING, "CPythonInvoker(%d, %s): unable to initialize python module \"%s\"",
+                GetId(), m_sourceFile.c_str(), module.first.c_str());
   }
 }
 

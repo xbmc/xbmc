@@ -55,8 +55,8 @@ void CScriptInvocationManager::Process()
   }
 
   // remove the finished scripts from the script path map as well
-  for (std::vector<LanguageInvokerThread>::const_iterator it = tempList.begin(); it != tempList.end(); ++it)
-    m_scriptPaths.erase(it->script);
+  for (const auto& it : tempList)
+    m_scriptPaths.erase(it.script);
 
   // we can leave the lock now
   lock.Leave();
@@ -66,8 +66,8 @@ void CScriptInvocationManager::Process()
   tempList.clear();
 
   // let the invocation handlers do their processing
-  for (LanguageInvocationHandlerMap::iterator it = m_invocationHandlers.begin(); it != m_invocationHandlers.end(); ++it)
-    it->second->Process();
+  for (auto& it : m_invocationHandlers)
+    it.second->Process();
 }
 
 void CScriptInvocationManager::Uninitialize()
@@ -82,8 +82,8 @@ void CScriptInvocationManager::Uninitialize()
 
   // make sure all scripts are done
   std::vector<LanguageInvokerThread> tempList;
-  for (LanguageInvokerThreadMap::iterator script = m_scripts.begin(); script != m_scripts.end(); ++script)
-    tempList.push_back(script->second);
+  for (const auto& script : m_scripts)
+    tempList.push_back(script.second);
 
   m_scripts.clear();
   m_scriptPaths.clear();
@@ -94,10 +94,10 @@ void CScriptInvocationManager::Uninitialize()
   // finally stop and remove the finished threads but we do it outside of any
   // locks in case of any callbacks from the stop or destruction logic of
   // CLanguageInvokerThread or the ILanguageInvoker implementation
-  for (std::vector<LanguageInvokerThread>::iterator it = tempList.begin(); it != tempList.end(); ++it)
+  for (auto& it : tempList)
   {
-    if (!it->done)
-      it->thread->Stop(true);
+    if (!it.done)
+      it.thread->Stop(true);
   }
 
   lock.Enter();
@@ -105,8 +105,8 @@ void CScriptInvocationManager::Uninitialize()
   tempList.clear();
 
   // uninitialize all invocation handlers and then remove them
-  for (LanguageInvocationHandlerMap::iterator it = m_invocationHandlers.begin(); it != m_invocationHandlers.end(); ++it)
-    it->second->Uninitialize();
+  for (auto& it : m_invocationHandlers)
+    it.second->Uninitialize();
 
   m_invocationHandlers.clear();
 }
@@ -128,9 +128,9 @@ void CScriptInvocationManager::RegisterLanguageInvocationHandler(ILanguageInvoca
   m_invocationHandlers.insert(std::make_pair(extension, invocationHandler));
 
   bool known = false;
-  for (std::map<std::string, ILanguageInvocationHandler*>::const_iterator it = m_invocationHandlers.begin(); it != m_invocationHandlers.end(); ++it)
+  for (const auto& it : m_invocationHandlers)
   {
-    if (it->second == invocationHandler)
+    if (it.second == invocationHandler)
     {
       known = true;
       break;
@@ -147,8 +147,8 @@ void CScriptInvocationManager::RegisterLanguageInvocationHandler(ILanguageInvoca
   if (invocationHandler == NULL || extensions.empty())
     return;
 
-  for (std::set<std::string>::const_iterator extension = extensions.begin(); extension != extensions.end(); ++extension)
-    RegisterLanguageInvocationHandler(invocationHandler, *extension);
+  for (const auto& extension : extensions)
+    RegisterLanguageInvocationHandler(invocationHandler, extension);
 }
 
 void CScriptInvocationManager::UnregisterLanguageInvocationHandler(ILanguageInvocationHandler *invocationHandler)

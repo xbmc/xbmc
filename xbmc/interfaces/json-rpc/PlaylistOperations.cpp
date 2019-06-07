@@ -284,25 +284,25 @@ bool CPlaylistOperations::HandleItemsParameter(int playlistid, const CVariant &i
     vecItems.push_back(itemParam);
 
   bool success = false;
-  for (std::vector<CVariant>::iterator itemIt = vecItems.begin(); itemIt != vecItems.end(); ++itemIt)
+  for (auto& itemIt : vecItems)
   {
-    if (!CheckMediaParameter(playlistid, *itemIt))
+    if (!CheckMediaParameter(playlistid, itemIt))
       continue;
 
     switch (playlistid)
     {
     case PLAYLIST_VIDEO:
-      (*itemIt)["media"] = "video";
+      itemIt["media"] = "video";
       break;
     case PLAYLIST_MUSIC:
-      (*itemIt)["media"] = "music";
+      itemIt["media"] = "music";
       break;
     case PLAYLIST_PICTURE:
-      (*itemIt)["media"] = "pictures";
+      itemIt["media"] = "pictures";
       break;
     }
 
-    success |= FillFileItemList(*itemIt, items);
+    success |= FillFileItemList(itemIt, items);
   }
 
   return success;
