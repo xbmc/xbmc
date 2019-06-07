@@ -44,16 +44,16 @@
 
 void CContextButtons::Add(unsigned int button, const std::string &label)
 {
-  for (const_iterator i = begin(); i != end(); ++i)
-    if (i->first == button)
+  for (const auto& i : *this)
+    if (i.first == button)
       return; // already have this button
   push_back(std::pair<unsigned int, std::string>(button, label));
 }
 
 void CContextButtons::Add(unsigned int button, int label)
 {
-  for (const_iterator i = begin(); i != end(); ++i)
-    if (i->first == button)
+  for (const auto& i : *this)
+    if (i.first == button)
       return; // already have added this button
   push_back(std::pair<unsigned int, std::string>(button, g_localizeStrings.Get(label)));
 }
