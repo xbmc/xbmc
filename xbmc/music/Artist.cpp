@@ -212,18 +212,18 @@ bool CArtist::Save(TiXmlNode *node, const std::string &tag, const std::string& s
   }
 
   // Discography
-  for (std::vector<std::pair<std::string,std::string> >::const_iterator it = discography.begin(); it != discography.end(); ++it)
+  for (const auto& it : discography)
   {
     // add a <album> tag
     TiXmlElement cast("album");
     TiXmlNode *node = artist->InsertEndChild(cast);
     TiXmlElement title("title");
     TiXmlNode *titleNode = node->InsertEndChild(title);
-    TiXmlText name(it->first);
+    TiXmlText name(it.first);
     titleNode->InsertEndChild(name);
     TiXmlElement year("year");
     TiXmlNode *yearNode = node->InsertEndChild(year);
-    TiXmlText name2(it->second);
+    TiXmlText name2(it.second);
     yearNode->InsertEndChild(name2);
   }
 
