@@ -8,16 +8,14 @@
 
 #include "PVRDatabase.h"
 
-#include <cstdlib>
-#include <map>
-#include <memory>
-#include <string>
-#include <utility>
-#include <vector>
-
 #include "ServiceBroker.h"
 #include "addons/PVRClient.h"
 #include "dbwrappers/dataset.h"
+#include "pvr/channels/PVRChannel.h"
+#include "pvr/channels/PVRChannelGroup.h"
+#include "pvr/channels/PVRChannelGroups.h"
+#include "pvr/timers/PVRTimerInfoTag.h"
+#include "pvr/timers/PVRTimerType.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
@@ -25,11 +23,12 @@
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 
-#include "pvr/channels/PVRChannel.h"
-#include "pvr/channels/PVRChannelGroup.h"
-#include "pvr/channels/PVRChannelGroups.h"
-#include "pvr/timers/PVRTimerInfoTag.h"
-#include "pvr/timers/PVRTimerType.h"
+#include <cstdlib>
+#include <map>
+#include <memory>
+#include <string>
+#include <utility>
+#include <vector>
 
 using namespace dbiplus;
 using namespace PVR;

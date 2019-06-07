@@ -8,13 +8,12 @@
 
 #pragma once
 
+#include "pvr/PVRTypes.h"
+#include "settings/dialogs/GUIDialogSettingsManualBase.h"
+
 #include <memory>
 #include <string>
 #include <vector>
-
-#include "settings/dialogs/GUIDialogSettingsManualBase.h"
-
-#include "pvr/PVRTypes.h"
 
 class CFileItem;
 class CSetting;

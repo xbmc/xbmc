@@ -8,16 +8,11 @@
 
 #include "PVRContextMenus.h"
 
-#include <memory>
-#include <string>
-
 #include "ContextMenuItem.h"
 #include "ServiceBroker.h"
 #include "addons/PVRClient.h"
 #include "addons/PVRClientMenuHooks.h"
 #include "guilib/LocalizeStrings.h"
-#include "utils/URIUtils.h"
-
 #include "pvr/PVRGUIActions.h"
 #include "pvr/PVRManager.h"
 #include "pvr/channels/PVRChannel.h"
@@ -28,6 +23,10 @@
 #include "pvr/timers/PVRTimerInfoTag.h"
 #include "pvr/timers/PVRTimers.h"
 #include "pvr/timers/PVRTimersPath.h"
+#include "utils/URIUtils.h"
+
+#include <memory>
+#include <string>
 
 namespace PVR
 {

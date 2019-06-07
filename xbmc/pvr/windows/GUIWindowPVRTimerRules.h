@@ -8,9 +8,9 @@
 
 #pragma once
 
-#include <string>
-
 #include "pvr/windows/GUIWindowPVRTimersBase.h"
+
+#include <string>
 
 namespace PVR
 {

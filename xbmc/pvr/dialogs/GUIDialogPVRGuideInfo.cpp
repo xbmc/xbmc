@@ -8,19 +8,18 @@
 
 #include "GUIDialogPVRGuideInfo.h"
 
-#include <memory>
-
 #include "FileItem.h"
 #include "ServiceBroker.h"
 #include "addons/PVRClient.h"
 #include "guilib/GUIMessage.h"
-
 #include "pvr/PVRGUIActions.h"
 #include "pvr/PVRManager.h"
 #include "pvr/epg/EpgInfoTag.h"
 #include "pvr/recordings/PVRRecordings.h"
 #include "pvr/timers/PVRTimerInfoTag.h"
 #include "pvr/timers/PVRTimers.h"
+
+#include <memory>
 
 using namespace PVR;
 

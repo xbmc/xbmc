@@ -8,13 +8,12 @@
 
 #pragma once
 
-#include <vector>
-#include <string>
-
+#include "pvr/channels/PVRChannelNumber.h"
 #include "threads/CriticalSection.h"
 #include "threads/Timer.h"
 
-#include "pvr/channels/PVRChannelNumber.h"
+#include <string>
+#include <vector>
 
 namespace PVR
 {

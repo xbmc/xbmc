@@ -24,16 +24,15 @@
  *
  */
 
-#include <memory>
-#include <string>
-#include <vector>
-
 #include "XBDateTime.h"
+#include "pvr/PVRTypes.h"
 #include "threads/SystemClock.h"
 #include "video/Bookmark.h"
 #include "video/VideoInfoTag.h"
 
-#include "pvr/PVRTypes.h"
+#include <memory>
+#include <string>
+#include <vector>
 
 class CVideoDatabase;
 

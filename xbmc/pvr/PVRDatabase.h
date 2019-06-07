@@ -8,13 +8,12 @@
 
 #pragma once
 
-#include <map>
-#include <vector>
-
 #include "dbwrappers/Database.h"
+#include "pvr/PVRTypes.h"
 #include "threads/CriticalSection.h"
 
-#include "pvr/PVRTypes.h"
+#include <map>
+#include <vector>
 
 namespace PVR
 {

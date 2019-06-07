@@ -8,15 +8,14 @@
 
 #pragma once
 
-#include <memory>
-#include <string>
-#include <vector>
-
+#include "pvr/PVRTypes.h"
+#include "pvr/channels/PVRChannelGroup.h"
 #include "threads/CriticalSection.h"
 #include "threads/SingleLock.h"
 
-#include "pvr/PVRTypes.h"
-#include "pvr/channels/PVRChannelGroup.h"
+#include <memory>
+#include <string>
+#include <vector>
 
 namespace PVR
 {

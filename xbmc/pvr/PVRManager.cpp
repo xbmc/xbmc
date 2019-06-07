@@ -8,28 +8,16 @@
 
 #include "PVRManager.h"
 
-#include <memory>
-#include <string>
-#include <utility>
-#include <vector>
-
 #include "ServiceBroker.h"
 #include "addons/PVRClient.h"
 #include "guilib/LocalizeStrings.h"
 #include "interfaces/AnnouncementManager.h"
 #include "messaging/ApplicationMessenger.h"
-#include "settings/Settings.h"
-#include "utils/JobManager.h"
-#include "utils/Stopwatch.h"
-#include "utils/StringUtils.h"
-#include "utils/URIUtils.h"
-#include "utils/log.h"
-
 #include "pvr/PVRDatabase.h"
 #include "pvr/PVRGUIActions.h"
 #include "pvr/PVRGUIInfo.h"
-#include "pvr/PVRJobs.h"
 #include "pvr/PVRGUIProgressHandler.h"
+#include "pvr/PVRJobs.h"
 #include "pvr/addons/PVRClients.h"
 #include "pvr/channels/PVRChannel.h"
 #include "pvr/channels/PVRChannelGroup.h"
@@ -41,6 +29,17 @@
 #include "pvr/recordings/PVRRecordings.h"
 #include "pvr/timers/PVRTimerInfoTag.h"
 #include "pvr/timers/PVRTimers.h"
+#include "settings/Settings.h"
+#include "utils/JobManager.h"
+#include "utils/Stopwatch.h"
+#include "utils/StringUtils.h"
+#include "utils/URIUtils.h"
+#include "utils/log.h"
+
+#include <memory>
+#include <string>
+#include <utility>
+#include <vector>
 
 using namespace PVR;
 using namespace KODI::MESSAGING;

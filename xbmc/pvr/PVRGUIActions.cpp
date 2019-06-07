@@ -8,13 +8,6 @@
 
 #include "PVRGUIActions.h"
 
-#include <iterator>
-#include <map>
-#include <memory>
-#include <string>
-#include <utility>
-#include <vector>
-
 #include "Application.h"
 #include "FileItem.h"
 #include "ServiceBroker.h"
@@ -38,17 +31,6 @@
 #include "messaging/helpers/DialogHelper.h"
 #include "messaging/helpers/DialogOKHelper.h"
 #include "network/Network.h"
-#include "settings/MediaSettings.h"
-#include "settings/Settings.h"
-#include "threads/IRunnable.h"
-#include "threads/SingleLock.h"
-#include "utils/StringUtils.h"
-#include "utils/SystemInfo.h"
-#include "utils/URIUtils.h"
-#include "utils/Variant.h"
-#include "utils/log.h"
-#include "video/VideoDatabase.h"
-
 #include "pvr/PVRDatabase.h"
 #include "pvr/PVRItem.h"
 #include "pvr/PVRJobs.h"
@@ -73,6 +55,23 @@
 #include "pvr/timers/PVRTimerInfoTag.h"
 #include "pvr/timers/PVRTimers.h"
 #include "pvr/windows/GUIWindowPVRSearch.h"
+#include "settings/MediaSettings.h"
+#include "settings/Settings.h"
+#include "threads/IRunnable.h"
+#include "threads/SingleLock.h"
+#include "utils/StringUtils.h"
+#include "utils/SystemInfo.h"
+#include "utils/URIUtils.h"
+#include "utils/Variant.h"
+#include "utils/log.h"
+#include "video/VideoDatabase.h"
+
+#include <iterator>
+#include <map>
+#include <memory>
+#include <string>
+#include <utility>
+#include <vector>
 
 using namespace KODI::MESSAGING;
 

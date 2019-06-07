@@ -8,14 +8,13 @@
 
 #pragma once
 
+#include "pvr/PVRTypes.h"
+#include "threads/CriticalSection.h"
+
 #include <map>
 #include <memory>
 #include <string>
 #include <vector>
-
-#include "threads/CriticalSection.h"
-
-#include "pvr/PVRTypes.h"
 
 class CVideoDatabase;
 

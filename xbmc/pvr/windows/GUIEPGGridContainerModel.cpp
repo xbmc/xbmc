@@ -8,21 +8,20 @@
 
 #include "GUIEPGGridContainerModel.h"
 
-#include <cmath>
-#include <memory>
-#include <vector>
-
 #include "FileItem.h"
 #include "ServiceBroker.h"
-#include "utils/Variant.h"
-#include "utils/log.h"
-
 #include "pvr/PVRManager.h"
 #include "pvr/channels/PVRChannel.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/epg/Epg.h"
 #include "pvr/epg/EpgChannelData.h"
 #include "pvr/epg/EpgInfoTag.h"
+#include "utils/Variant.h"
+#include "utils/log.h"
+
+#include <cmath>
+#include <memory>
+#include <vector>
 
 using namespace PVR;
 

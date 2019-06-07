@@ -8,13 +8,13 @@
 
 #pragma once
 
-#include <memory>
-#include <string>
-#include <vector>
-
 #include "addons/kodi-addon-dev-kit/include/kodi/xbmc_pvr_types.h"
 #include "threads/SystemClock.h"
 #include "utils/Job.h"
+
+#include <memory>
+#include <string>
+#include <vector>
 
 namespace PVR
 {

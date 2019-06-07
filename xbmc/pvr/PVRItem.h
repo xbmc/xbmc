@@ -8,9 +8,9 @@
 
 #pragma once
 
-#include <memory>
-
 #include "pvr/PVRTypes.h"
+
+#include <memory>
 
 class CFileItem;
 

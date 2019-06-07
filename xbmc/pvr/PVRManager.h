@@ -8,22 +8,21 @@
 
 #pragma once
 
-#include <memory>
-#include <string>
-#include <vector>
-
 #include "addons/kodi-addon-dev-kit/include/kodi/xbmc_pvr_types.h"
 #include "interfaces/IAnnouncer.h"
+#include "pvr/PVRActionListener.h"
+#include "pvr/PVRSettings.h"
+#include "pvr/PVRTypes.h"
+#include "pvr/epg/EpgContainer.h"
 #include "threads/CriticalSection.h"
 #include "threads/Event.h"
 #include "threads/Thread.h"
 #include "utils/EventStream.h"
 #include "utils/Observer.h"
 
-#include "pvr/PVRActionListener.h"
-#include "pvr/PVRSettings.h"
-#include "pvr/PVRTypes.h"
-#include "pvr/epg/EpgContainer.h"
+#include <memory>
+#include <string>
+#include <vector>
 
 class CFileItem;
 class CJob;

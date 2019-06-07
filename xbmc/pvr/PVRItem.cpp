@@ -8,12 +8,8 @@
 
 #include "PVRItem.h"
 
-#include <memory>
-
 #include "FileItem.h"
 #include "ServiceBroker.h"
-#include "utils/log.h"
-
 #include "pvr/PVRManager.h"
 #include "pvr/channels/PVRChannel.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
@@ -22,6 +18,9 @@
 #include "pvr/recordings/PVRRecordings.h"
 #include "pvr/timers/PVRTimerInfoTag.h"
 #include "pvr/timers/PVRTimers.h"
+#include "utils/log.h"
+
+#include <memory>
 
 namespace PVR
 {

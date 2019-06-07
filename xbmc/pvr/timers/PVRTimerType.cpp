@@ -8,19 +8,18 @@
 
 #include "PVRTimerType.h"
 
+#include "ServiceBroker.h"
+#include "addons/PVRClient.h"
+#include "guilib/LocalizeStrings.h"
+#include "pvr/PVRManager.h"
+#include "pvr/addons/PVRClients.h"
+#include "utils/StringUtils.h"
+#include "utils/log.h"
+
 #include <memory>
 #include <string>
 #include <utility>
 #include <vector>
-
-#include "ServiceBroker.h"
-#include "addons/PVRClient.h"
-#include "guilib/LocalizeStrings.h"
-#include "utils/StringUtils.h"
-#include "utils/log.h"
-
-#include "pvr/PVRManager.h"
-#include "pvr/addons/PVRClients.h"
 
 using namespace PVR;
 

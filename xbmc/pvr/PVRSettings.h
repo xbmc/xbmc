@@ -8,14 +8,15 @@
 
 #pragma once
 
+#include "settings/lib/ISettingCallback.h"
+#include "settings/lib/ISettingsHandler.h"
+#include "threads/CriticalSection.h"
+
 #include <map>
 #include <memory>
 #include <set>
 #include <string>
-
-#include "settings/lib/ISettingCallback.h"
-#include "settings/lib/ISettingsHandler.h"
-#include "threads/CriticalSection.h"
+#include <vector>
 
 class CSetting;
 

@@ -8,15 +8,15 @@
 
 #include "PVRChannelNumberInputHandler.h"
 
-#include <algorithm>
-#include <cstdlib>
-#include <string>
-
 #include "ServiceBroker.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
 #include "threads/SingleLock.h"
 #include "utils/StringUtils.h"
+
+#include <algorithm>
+#include <cstdlib>
+#include <string>
 
 namespace PVR
 {

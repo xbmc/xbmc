@@ -8,10 +8,11 @@
 
 #pragma once
 
+#include "DVDInputStream.h"
+
 #include <map>
 #include <memory>
 #include <vector>
-#include "DVDInputStream.h"
 
 class CFileItem;
 class IDemux;

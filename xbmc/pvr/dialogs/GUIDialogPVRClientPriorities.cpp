@@ -7,17 +7,16 @@
  */
 
 #include "GUIDialogPVRClientPriorities.h"
-#include "guilib/GUIMessage.h"
-
-#include <cstdlib>
-#include <memory>
 
 #include "ServiceBroker.h"
+#include "guilib/GUIMessage.h"
+#include "pvr/PVRManager.h"
 #include "settings/lib/Setting.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 
-#include "pvr/PVRManager.h"
+#include <cstdlib>
+#include <memory>
 
 using namespace PVR;
 

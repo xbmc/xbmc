@@ -8,10 +8,6 @@
 
 #include "PVRRadioRDSInfoTag.h"
 
-#include <algorithm>
-#include <string>
-#include <utility>
-
 #include "GUIUserMessages.h"
 #include "ServiceBroker.h"
 #include "guilib/GUIComponent.h"
@@ -22,6 +18,10 @@
 #include "utils/CharsetConverter.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
+
+#include <algorithm>
+#include <string>
+#include <utility>
 
 using namespace PVR;
 

@@ -6,26 +6,25 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include <memory>
-#include <string>
-
 #include "PVRChannel.h"
 
 #include "ServiceBroker.h"
 #include "XBDateTime.h"
 #include "addons/PVRClient.h"
 #include "guilib/LocalizeStrings.h"
-#include "threads/SingleLock.h"
-#include "utils/StringUtils.h"
-#include "utils/Variant.h"
-#include "utils/log.h"
-
 #include "pvr/PVRDatabase.h"
 #include "pvr/PVRManager.h"
 #include "pvr/epg/Epg.h"
 #include "pvr/epg/EpgChannelData.h"
 #include "pvr/epg/EpgContainer.h"
 #include "pvr/epg/EpgInfoTag.h"
+#include "threads/SingleLock.h"
+#include "utils/StringUtils.h"
+#include "utils/Variant.h"
+#include "utils/log.h"
+
+#include <memory>
+#include <string>
 
 using namespace PVR;
 

@@ -8,10 +8,6 @@
 
 #include "GUIWindowPVRSearch.h"
 
-#include <algorithm>
-#include <memory>
-#include <vector>
-
 #include "FileItem.h"
 #include "ServiceBroker.h"
 #include "dialogs/GUIDialogBusy.h"
@@ -21,10 +17,6 @@
 #include "guilib/LocalizeStrings.h"
 #include "input/actions/ActionIDs.h"
 #include "messaging/helpers/DialogOKHelper.h"
-#include "threads/IRunnable.h"
-#include "utils/URIUtils.h"
-#include "utils/Variant.h"
-
 #include "pvr/PVRGUIActions.h"
 #include "pvr/PVRItem.h"
 #include "pvr/PVRManager.h"
@@ -33,6 +25,13 @@
 #include "pvr/epg/EpgInfoTag.h"
 #include "pvr/epg/EpgSearchFilter.h"
 #include "pvr/recordings/PVRRecording.h"
+#include "threads/IRunnable.h"
+#include "utils/URIUtils.h"
+#include "utils/Variant.h"
+
+#include <algorithm>
+#include <memory>
+#include <vector>
 
 using namespace PVR;
 using namespace KODI::MESSAGING;

@@ -6,10 +6,6 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include <memory>
-#include <string>
-#include <vector>
-
 #include "GUIDialogPVRGroupManager.h"
 
 #include "FileItem.h"
@@ -23,14 +19,17 @@
 #include "guilib/LocalizeStrings.h"
 #include "input/actions/ActionIDs.h"
 #include "messaging/helpers//DialogOKHelper.h"
-#include "utils/StringUtils.h"
-#include "utils/Variant.h"
-
 #include "pvr/PVRGUIDirectory.h"
 #include "pvr/PVRManager.h"
 #include "pvr/channels/PVRChannel.h"
 #include "pvr/channels/PVRChannelGroups.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
+#include "utils/StringUtils.h"
+#include "utils/Variant.h"
+
+#include <memory>
+#include <string>
+#include <vector>
 
 using namespace KODI::MESSAGING;
 using namespace PVR;

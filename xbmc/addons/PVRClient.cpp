@@ -8,15 +8,6 @@
 
 #include "PVRClient.h"
 
-#include <map>
-#include <memory>
-#include <string>
-#include <utility>
-
-extern "C" {
-#include <libavcodec/avcodec.h>
-}
-
 #include "ServiceBroker.h"
 #include "addons/PVRClientMenuHooks.h"
 #include "cores/VideoPlayer/DVDDemuxers/DVDDemuxUtils.h"
@@ -25,11 +16,6 @@ extern "C" {
 #include "events/NotificationEvent.h"
 #include "filesystem/SpecialProtocol.h"
 #include "guilib/LocalizeStrings.h"
-#include "settings/AdvancedSettings.h"
-#include "settings/SettingsComponent.h"
-#include "utils/StringUtils.h"
-#include "utils/log.h"
-
 #include "pvr/PVRDatabase.h"
 #include "pvr/PVRManager.h"
 #include "pvr/PVRStreamProperties.h"
@@ -47,6 +33,20 @@ extern "C" {
 #include "pvr/timers/PVRTimerInfoTag.h"
 #include "pvr/timers/PVRTimerType.h"
 #include "pvr/timers/PVRTimers.h"
+#include "settings/AdvancedSettings.h"
+#include "settings/SettingsComponent.h"
+#include "utils/StringUtils.h"
+#include "utils/log.h"
+
+#include <map>
+#include <memory>
+#include <string>
+#include <utility>
+
+extern "C"
+{
+#include <libavcodec/avcodec.h>
+}
 
 using namespace ADDON;
 

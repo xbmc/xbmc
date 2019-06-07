@@ -8,19 +8,8 @@
 
 #include "PVRTimers.h"
 
-#include <algorithm>
-#include <map>
-#include <memory>
-#include <string>
-#include <utility>
-#include <vector>
-
 #include "ServiceBroker.h"
 #include "addons/PVRClient.h"
-#include "settings/Settings.h"
-#include "threads/SingleLock.h"
-#include "utils/log.h"
-
 #include "pvr/PVRDatabase.h"
 #include "pvr/PVRJobs.h"
 #include "pvr/PVRManager.h"
@@ -31,6 +20,16 @@
 #include "pvr/epg/EpgInfoTag.h"
 #include "pvr/timers/PVRTimerInfoTag.h"
 #include "pvr/timers/PVRTimerRuleMatcher.h"
+#include "settings/Settings.h"
+#include "threads/SingleLock.h"
+#include "utils/log.h"
+
+#include <algorithm>
+#include <map>
+#include <memory>
+#include <string>
+#include <utility>
+#include <vector>
 
 using namespace PVR;
 

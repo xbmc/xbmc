@@ -8,9 +8,6 @@
 
 #include "PVRActionListener.h"
 
-#include <memory>
-#include <string>
-
 #include "Application.h"
 #include "ServiceBroker.h"
 #include "dialogs/GUIDialogNumeric.h"
@@ -20,10 +17,6 @@
 #include "input/actions/Action.h"
 #include "input/actions/ActionIDs.h"
 #include "messaging/ApplicationMessenger.h"
-#include "settings/Settings.h"
-#include "settings/SettingsComponent.h"
-#include "settings/lib/Setting.h"
-
 #include "pvr/PVRGUIActions.h"
 #include "pvr/PVRManager.h"
 #include "pvr/addons/PVRClients.h"
@@ -31,6 +24,12 @@
 #include "pvr/channels/PVRChannelGroup.h"
 #include "pvr/channels/PVRChannelGroups.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
+#include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
+#include "settings/lib/Setting.h"
+
+#include <memory>
+#include <string>
 
 namespace PVR
 {

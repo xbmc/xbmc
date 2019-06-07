@@ -8,9 +8,9 @@
 
 #pragma once
 
-#include <memory>
-
 #include "pvr/windows/GUIWindowPVRBase.h"
+
+#include <memory>
 
 class CFileItem;
 

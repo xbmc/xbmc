@@ -8,13 +8,12 @@
 
 #pragma once
 
-#include <map>
-#include <string>
-
 #include "XBDateTime.h"
 #include "guilib/GUIDialog.h"
-
 #include "pvr/channels/PVRChannelNumber.h"
+
+#include <map>
+#include <string>
 
 namespace PVR
 {

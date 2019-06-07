@@ -8,22 +8,21 @@
 
 #include "GUIDialogPVRGuideSearch.h"
 
-#include <string>
-#include <utility>
-#include <vector>
-
 #include "ServiceBroker.h"
-#include "guilib/GUIMessage.h"
 #include "guilib/GUIEditControl.h"
+#include "guilib/GUIMessage.h"
 #include "guilib/LocalizeStrings.h"
-#include "utils/StringUtils.h"
-
 #include "pvr/PVRManager.h"
 #include "pvr/channels/PVRChannel.h"
 #include "pvr/channels/PVRChannelGroup.h"
 #include "pvr/channels/PVRChannelGroups.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/epg/EpgSearchFilter.h"
+#include "utils/StringUtils.h"
+
+#include <string>
+#include <utility>
+#include <vector>
 
 using namespace PVR;
 

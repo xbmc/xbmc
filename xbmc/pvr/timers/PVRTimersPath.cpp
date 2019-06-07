@@ -8,12 +8,12 @@
 
 #include "PVRTimersPath.h"
 
+#include "utils/StringUtils.h"
+#include "utils/URIUtils.h"
+
 #include <cstdlib>
 #include <string>
 #include <vector>
-
-#include "utils/StringUtils.h"
-#include "utils/URIUtils.h"
 
 using namespace PVR;
 

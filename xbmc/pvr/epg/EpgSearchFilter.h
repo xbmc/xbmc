@@ -8,14 +8,13 @@
 
 #pragma once
 
+#include "XBDateTime.h"
+#include "pvr/PVRTypes.h"
+#include "pvr/channels/PVRChannelNumber.h"
+
 #include <memory>
 #include <string>
 #include <vector>
-
-#include "XBDateTime.h"
-
-#include "pvr/PVRTypes.h"
-#include "pvr/channels/PVRChannelNumber.h"
 
 namespace PVR
 {

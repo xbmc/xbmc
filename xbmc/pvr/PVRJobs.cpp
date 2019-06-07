@@ -15,7 +15,6 @@
 #ifdef TARGET_POSIX
 #include "platform/posix/XTimeUtils.h"
 #endif
-
 #include "pvr/PVRGUIActions.h"
 #include "pvr/PVRGUIChannelIconUpdater.h"
 #include "pvr/PVRManager.h"

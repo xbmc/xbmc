@@ -9,7 +9,6 @@
 #pragma once
 
 #include "guilib/GUIDialog.h"
-
 #include "pvr/PVRTypes.h"
 
 class CGUIMessage;

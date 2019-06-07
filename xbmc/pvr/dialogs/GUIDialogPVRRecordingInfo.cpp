@@ -11,7 +11,6 @@
 #include "FileItem.h"
 #include "ServiceBroker.h"
 #include "guilib/GUIMessage.h"
-
 #include "pvr/PVRGUIActions.h"
 #include "pvr/PVRManager.h"
 

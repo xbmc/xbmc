@@ -8,11 +8,11 @@
 
 #pragma once
 
-#include <memory>
-#include <vector>
-
 #include "dbwrappers/Database.h"
 #include "threads/CriticalSection.h"
+
+#include <memory>
+#include <vector>
 
 class CDateTime;
 

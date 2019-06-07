@@ -8,11 +8,11 @@
 
 #pragma once
 
+#include "threads/CriticalSection.h"
+
 #include <memory>
 #include <string>
 #include <vector>
-
-#include "threads/CriticalSection.h"
 
 namespace PVR
 {

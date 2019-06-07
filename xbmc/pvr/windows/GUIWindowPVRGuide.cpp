@@ -8,10 +8,6 @@
 
 #include "GUIWindowPVRGuide.h"
 
-#include <memory>
-#include <utility>
-#include <vector>
-
 #include "FileItem.h"
 #include "GUIUserMessages.h"
 #include "ServiceBroker.h"
@@ -24,11 +20,6 @@
 #include "input/actions/ActionIDs.h"
 #include "messaging/ApplicationMessenger.h"
 #include "messaging/helpers/DialogHelper.h"
-#include "settings/Settings.h"
-#include "settings/SettingsComponent.h"
-#include "threads/SingleLock.h"
-#include "view/GUIViewState.h"
-
 #include "pvr/PVRGUIActions.h"
 #include "pvr/PVRManager.h"
 #include "pvr/channels/PVRChannel.h"
@@ -40,6 +31,14 @@
 #include "pvr/recordings/PVRRecordings.h"
 #include "pvr/timers/PVRTimers.h"
 #include "pvr/windows/GUIEPGGridContainer.h"
+#include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
+#include "threads/SingleLock.h"
+#include "view/GUIViewState.h"
+
+#include <memory>
+#include <utility>
+#include <vector>
 
 using namespace KODI::MESSAGING;
 using namespace PVR;

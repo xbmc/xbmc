@@ -8,12 +8,11 @@
 
 #pragma once
 
+#include "dialogs/GUIDialogContextMenu.h"
+#include "pvr/windows/GUIWindowPVRBase.h"
+
 #include <memory>
 #include <string>
-
-#include "dialogs/GUIDialogContextMenu.h"
-
-#include "pvr/windows/GUIWindowPVRBase.h"
 
 class CFileItem;
 

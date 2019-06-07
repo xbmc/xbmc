@@ -14,7 +14,6 @@
 #include "guilib/GUISpinControl.h"
 #include "guilib/GUITextBox.h"
 #include "guilib/LocalizeStrings.h"
-
 #include "pvr/PVRManager.h"
 #include "pvr/channels/PVRChannel.h"
 #include "pvr/channels/PVRRadioRDSInfoTag.h"

@@ -8,21 +8,10 @@
 
 #include "PVRRecording.h"
 
-#include <memory>
-#include <string>
-#include <vector>
-
 #include "ServiceBroker.h"
 #include "addons/PVRClient.h"
 #include "addons/kodi-addon-dev-kit/include/kodi/xbmc_pvr_types.h"
 #include "guilib/LocalizeStrings.h"
-#include "settings/AdvancedSettings.h"
-#include "settings/SettingsComponent.h"
-#include "utils/StringUtils.h"
-#include "utils/Variant.h"
-#include "utils/log.h"
-#include "video/VideoDatabase.h"
-
 #include "pvr/PVRManager.h"
 #include "pvr/channels/PVRChannel.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
@@ -30,6 +19,16 @@
 #include "pvr/recordings/PVRRecordingsPath.h"
 #include "pvr/timers/PVRTimerInfoTag.h"
 #include "pvr/timers/PVRTimers.h"
+#include "settings/AdvancedSettings.h"
+#include "settings/SettingsComponent.h"
+#include "utils/StringUtils.h"
+#include "utils/Variant.h"
+#include "utils/log.h"
+#include "video/VideoDatabase.h"
+
+#include <memory>
+#include <string>
+#include <vector>
 
 using namespace PVR;
 

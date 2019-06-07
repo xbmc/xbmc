@@ -8,12 +8,11 @@
 
 #include "PVRChannelGroups.h"
 
-#include <algorithm>
-#include <memory>
-#include <string>
-#include <vector>
-
 #include "ServiceBroker.h"
+#include "pvr/PVRDatabase.h"
+#include "pvr/PVRManager.h"
+#include "pvr/addons/PVRClients.h"
+#include "pvr/channels/PVRChannelGroupInternal.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
@@ -21,10 +20,10 @@
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 
-#include "pvr/PVRDatabase.h"
-#include "pvr/PVRManager.h"
-#include "pvr/addons/PVRClients.h"
-#include "pvr/channels/PVRChannelGroupInternal.h"
+#include <algorithm>
+#include <memory>
+#include <string>
+#include <vector>
 
 using namespace PVR;
 

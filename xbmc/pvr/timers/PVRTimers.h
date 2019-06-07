@@ -8,17 +8,16 @@
 
 #pragma once
 
+#include "XBDateTime.h"
+#include "pvr/PVRSettings.h"
+#include "pvr/PVRTypes.h"
+#include "threads/Thread.h"
+#include "utils/Observer.h"
+
 #include <map>
 #include <memory>
 #include <queue>
 #include <vector>
-
-#include "XBDateTime.h"
-#include "threads/Thread.h"
-#include "utils/Observer.h"
-
-#include "pvr/PVRSettings.h"
-#include "pvr/PVRTypes.h"
 
 namespace PVR
 {

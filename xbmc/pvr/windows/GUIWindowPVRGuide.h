@@ -8,15 +8,14 @@
 
 #pragma once
 
-#include <atomic>
-#include <memory>
-#include <string>
-
+#include "pvr/PVRChannelNumberInputHandler.h"
+#include "pvr/windows/GUIWindowPVRBase.h"
 #include "threads/Event.h"
 #include "threads/Thread.h"
 
-#include "pvr/PVRChannelNumberInputHandler.h"
-#include "pvr/windows/GUIWindowPVRBase.h"
+#include <atomic>
+#include <memory>
+#include <string>
 
 class CFileItemList;
 class CGUIMessage;

@@ -8,21 +8,20 @@
 
 #include "PVRClients.h"
 
+#include "ServiceBroker.h"
+#include "addons/BinaryAddonCache.h"
+#include "guilib/LocalizeStrings.h"
+#include "messaging/ApplicationMessenger.h"
+#include "pvr/PVRJobs.h"
+#include "pvr/PVRManager.h"
+#include "pvr/channels/PVRChannelGroupInternal.h"
+#include "utils/log.h"
+
 #include <functional>
 #include <memory>
 #include <string>
 #include <utility>
 #include <vector>
-
-#include "ServiceBroker.h"
-#include "addons/BinaryAddonCache.h"
-#include "guilib/LocalizeStrings.h"
-#include "messaging/ApplicationMessenger.h"
-#include "utils/log.h"
-
-#include "pvr/PVRJobs.h"
-#include "pvr/PVRManager.h"
-#include "pvr/channels/PVRChannelGroupInternal.h"
 
 using namespace ADDON;
 using namespace PVR;

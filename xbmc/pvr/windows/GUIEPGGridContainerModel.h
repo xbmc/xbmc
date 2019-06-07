@@ -8,12 +8,11 @@
 
 #pragma once
 
+#include "XBDateTime.h"
+#include "pvr/PVRTypes.h"
+
 #include <memory>
 #include <vector>
-
-#include "XBDateTime.h"
-
-#include "pvr/PVRTypes.h"
 
 class CFileItem;
 class CFileItemList;

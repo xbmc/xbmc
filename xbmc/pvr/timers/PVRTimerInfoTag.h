@@ -8,16 +8,15 @@
 
 #pragma once
 
-#include <memory>
-#include <string>
-
 #include "XBDateTime.h"
+#include "pvr/PVRTypes.h"
+#include "pvr/timers/PVRTimerType.h"
 #include "threads/CriticalSection.h"
 #include "threads/SystemClock.h"
 #include "utils/ISerializable.h"
 
-#include "pvr/PVRTypes.h"
-#include "pvr/timers/PVRTimerType.h"
+#include <memory>
+#include <string>
 
 struct PVR_TIMER;
 

@@ -12,15 +12,14 @@
 #include "GUIInfoManager.h"
 #include "ServiceBroker.h"
 #include "guilib/GUIComponent.h"
-#include "settings/Settings.h"
-#include "settings/SettingsComponent.h"
-#include "threads/SingleLock.h"
-#include "utils/JobManager.h"
-
 #include "pvr/PVRGUIActions.h"
 #include "pvr/PVRJobs.h"
 #include "pvr/PVRManager.h"
 #include "pvr/channels/PVRChannelGroup.h"
+#include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
+#include "threads/SingleLock.h"
+#include "utils/JobManager.h"
 
 namespace PVR
 {

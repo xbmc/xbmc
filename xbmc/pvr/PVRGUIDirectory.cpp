@@ -8,20 +8,9 @@
 
 #include "PVRGUIDirectory.h"
 
-#include <memory>
-#include <set>
-#include <string>
-#include <vector>
-
 #include "FileItem.h"
 #include "ServiceBroker.h"
 #include "guilib/LocalizeStrings.h"
-#include "settings/Settings.h"
-#include "settings/SettingsComponent.h"
-#include "utils/StringUtils.h"
-#include "utils/URIUtils.h"
-#include "utils/log.h"
-
 #include "pvr/PVRManager.h"
 #include "pvr/channels/PVRChannel.h"
 #include "pvr/channels/PVRChannelGroup.h"
@@ -33,6 +22,16 @@
 #include "pvr/timers/PVRTimerInfoTag.h"
 #include "pvr/timers/PVRTimers.h"
 #include "pvr/timers/PVRTimersPath.h"
+#include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
+#include "utils/StringUtils.h"
+#include "utils/URIUtils.h"
+#include "utils/log.h"
+
+#include <memory>
+#include <set>
+#include <string>
+#include <vector>
 
 using namespace PVR;
 

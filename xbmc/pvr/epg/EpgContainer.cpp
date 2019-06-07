@@ -8,25 +8,24 @@
 
 #include "EpgContainer.h"
 
-#include <memory>
-#include <utility>
-#include <vector>
-
 #include "ServiceBroker.h"
 #include "guilib/LocalizeStrings.h"
+#include "pvr/PVRGUIProgressHandler.h"
+#include "pvr/PVRManager.h"
+#include "pvr/epg/Epg.h"
+#include "pvr/epg/EpgChannelData.h"
+#include "pvr/epg/EpgContainer.h"
+#include "pvr/epg/EpgDatabase.h"
+#include "pvr/epg/EpgInfoTag.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 
-#include "pvr/PVRManager.h"
-#include "pvr/PVRGUIProgressHandler.h"
-#include "pvr/epg/Epg.h"
-#include "pvr/epg/EpgChannelData.h"
-#include "pvr/epg/EpgContainer.h"
-#include "pvr/epg/EpgDatabase.h"
-#include "pvr/epg/EpgInfoTag.h"
+#include <memory>
+#include <utility>
+#include <vector>
 
 namespace PVR
 {

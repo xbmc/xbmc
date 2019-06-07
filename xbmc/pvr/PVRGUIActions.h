@@ -8,16 +8,15 @@
 
 #pragma once
 
-#include <memory>
-#include <string>
-#include <vector>
-
-#include "threads/CriticalSection.h"
-
 #include "pvr/PVRChannelNumberInputHandler.h"
 #include "pvr/PVRGUIChannelNavigator.h"
 #include "pvr/PVRSettings.h"
 #include "pvr/PVRTypes.h"
+#include "threads/CriticalSection.h"
+
+#include <memory>
+#include <string>
+#include <vector>
 
 class CFileItem;
 

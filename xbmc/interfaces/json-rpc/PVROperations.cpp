@@ -9,7 +9,6 @@
 #include "PVROperations.h"
 
 #include "ServiceBroker.h"
-
 #include "pvr/PVRGUIActions.h"
 #include "pvr/PVRManager.h"
 #include "pvr/channels/PVRChannel.h"

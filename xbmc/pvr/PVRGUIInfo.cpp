@@ -8,12 +8,6 @@
 
 #include "PVRGUIInfo.h"
 
-#include <cmath>
-#include <ctime>
-#include <memory>
-#include <string>
-#include <vector>
-
 #include "Application.h"
 #include "GUIInfoManager.h"
 #include "ServiceBroker.h"
@@ -22,12 +16,6 @@
 #include "guilib/LocalizeStrings.h"
 #include "guilib/guiinfo/GUIInfo.h"
 #include "guilib/guiinfo/GUIInfoLabels.h"
-#include "settings/AdvancedSettings.h"
-#include "settings/Settings.h"
-#include "settings/SettingsComponent.h"
-#include "threads/SingleLock.h"
-#include "utils/StringUtils.h"
-
 #include "pvr/PVRGUIActions.h"
 #include "pvr/PVRItem.h"
 #include "pvr/PVRManager.h"
@@ -41,6 +29,17 @@
 #include "pvr/recordings/PVRRecordings.h"
 #include "pvr/timers/PVRTimerInfoTag.h"
 #include "pvr/timers/PVRTimers.h"
+#include "settings/AdvancedSettings.h"
+#include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
+#include "threads/SingleLock.h"
+#include "utils/StringUtils.h"
+
+#include <cmath>
+#include <ctime>
+#include <memory>
+#include <string>
+#include <vector>
 
 using namespace PVR;
 using namespace KODI::GUILIB::GUIINFO;

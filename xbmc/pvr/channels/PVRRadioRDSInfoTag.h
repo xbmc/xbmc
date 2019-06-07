@@ -8,12 +8,12 @@
 
 #pragma once
 
-#include <deque>
-#include <string>
-
 #include "threads/CriticalSection.h"
 #include "utils/IArchivable.h"
 #include "utils/ISerializable.h"
+
+#include <deque>
+#include <string>
 
 namespace PVR
 {

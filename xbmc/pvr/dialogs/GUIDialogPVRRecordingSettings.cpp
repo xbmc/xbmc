@@ -8,24 +8,23 @@
 
 #include "GUIDialogPVRRecordingSettings.h"
 
-#include <memory>
-#include <string>
-#include <utility>
-#include <vector>
-
 #include "ServiceBroker.h"
 #include "addons/PVRClient.h"
 #include "guilib/GUIMessage.h"
 #include "guilib/LocalizeStrings.h"
 #include "messaging/helpers/DialogHelper.h"
+#include "pvr/PVRManager.h"
+#include "pvr/recordings/PVRRecording.h"
 #include "settings/dialogs/GUIDialogSettingsBase.h"
 #include "settings/lib/Setting.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
 #include "utils/log.h"
 
-#include "pvr/PVRManager.h"
-#include "pvr/recordings/PVRRecording.h"
+#include <memory>
+#include <string>
+#include <utility>
+#include <vector>
 
 using namespace PVR;
 using namespace KODI::MESSAGING;

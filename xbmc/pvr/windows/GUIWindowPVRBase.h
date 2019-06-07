@@ -8,16 +8,15 @@
 
 #pragma once
 
-#include <atomic>
-#include <memory>
-#include <string>
-
+#include "pvr/PVRTypes.h"
 #include "threads/CriticalSection.h"
 #include "threads/SystemClock.h"
 #include "utils/Observer.h"
 #include "windows/GUIMediaWindow.h"
 
-#include "pvr/PVRTypes.h"
+#include <atomic>
+#include <memory>
+#include <string>
 
 #define CONTROL_BTNVIEWASICONS            2
 #define CONTROL_BTNSORTBY                 3

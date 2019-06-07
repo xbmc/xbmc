@@ -8,14 +8,13 @@
 
 #pragma once
 
-#include <memory>
-#include <vector>
-
 #include "dialogs/GUIDialogContextMenu.h"
 #include "guilib/GUIDialog.h"
+#include "pvr/PVRTypes.h"
 #include "view/GUIViewControl.h"
 
-#include "pvr/PVRTypes.h"
+#include <memory>
+#include <vector>
 
 class CAction;
 class CFileItemList;

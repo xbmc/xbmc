@@ -8,14 +8,14 @@
 
 #pragma once
 
-#include <memory>
-#include <string>
-#include <vector>
-
 #include "XBDateTime.h"
 #include "threads/CriticalSection.h"
 #include "utils/ISerializable.h"
 #include "utils/ISortable.h"
+
+#include <memory>
+#include <string>
+#include <vector>
 
 struct EPG_TAG;
 struct PVR_EDL_ENTRY;

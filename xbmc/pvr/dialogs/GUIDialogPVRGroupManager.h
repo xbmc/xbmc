@@ -9,9 +9,8 @@
 #pragma once
 
 #include "guilib/GUIDialog.h"
-#include "view/GUIViewControl.h"
-
 #include "pvr/PVRTypes.h"
+#include "view/GUIViewControl.h"
 
 class CFileItemList;
 class CGUIMessage;

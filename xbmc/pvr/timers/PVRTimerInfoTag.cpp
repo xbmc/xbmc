@@ -8,21 +8,9 @@
 
 #include "PVRTimerInfoTag.h"
 
-#include <ctime>
-#include <memory>
-#include <string>
-
 #include "ServiceBroker.h"
 #include "addons/PVRClient.h"
 #include "guilib/LocalizeStrings.h"
-#include "settings/AdvancedSettings.h"
-#include "settings/Settings.h"
-#include "settings/SettingsComponent.h"
-#include "utils/StringUtils.h"
-#include "utils/URIUtils.h"
-#include "utils/Variant.h"
-#include "utils/log.h"
-
 #include "pvr/PVRDatabase.h"
 #include "pvr/PVRManager.h"
 #include "pvr/addons/PVRClients.h"
@@ -32,6 +20,17 @@
 #include "pvr/epg/Epg.h"
 #include "pvr/epg/EpgInfoTag.h"
 #include "pvr/timers/PVRTimersPath.h"
+#include "settings/AdvancedSettings.h"
+#include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
+#include "utils/StringUtils.h"
+#include "utils/URIUtils.h"
+#include "utils/Variant.h"
+#include "utils/log.h"
+
+#include <ctime>
+#include <memory>
+#include <string>
 
 using namespace PVR;
 

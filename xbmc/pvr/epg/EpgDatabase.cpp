@@ -8,20 +8,19 @@
 
 #include "EpgDatabase.h"
 
-#include <cstdlib>
-#include <memory>
-#include <string>
-#include <vector>
-
 #include "ServiceBroker.h"
 #include "dbwrappers/dataset.h"
+#include "pvr/epg/Epg.h"
+#include "pvr/epg/EpgInfoTag.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 
-#include "pvr/epg/Epg.h"
-#include "pvr/epg/EpgInfoTag.h"
+#include <cstdlib>
+#include <memory>
+#include <string>
+#include <vector>
 
 using namespace dbiplus;
 using namespace PVR;
