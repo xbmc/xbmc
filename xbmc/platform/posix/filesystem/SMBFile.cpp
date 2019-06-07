@@ -258,12 +258,11 @@ std::string CSMB::URLEncode(const CURL &url)
 
   /* okey sadly since a slash is an invalid name we have to tokenize */
   std::vector<std::string> parts;
-  std::vector<std::string>::iterator it;
   StringUtils::Tokenize(url.GetFileName(), parts, "/");
-  for( it = parts.begin(); it != parts.end(); ++it )
+  for (const std::string& it : parts)
   {
     flat += "/";
-    flat += URLEncode((*it));
+    flat += URLEncode((it));
   }
 
   /* okey options should go here, thou current samba doesn't support any */

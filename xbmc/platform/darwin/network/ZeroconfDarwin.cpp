@@ -70,16 +70,10 @@ bool CZeroconfDarwin::doPublishService(const std::string& fcr_identifier,
     //txt map to dictionary
     CFDataRef txtData = NULL;
     CFMutableDictionaryRef txtDict = CFDictionaryCreateMutable(NULL, 0, &key_cb, &kCFTypeDictionaryValueCallBacks);
-    for(std::vector<std::pair<std::string, std::string> >::const_iterator it = txt.begin(); it != txt.end(); ++it)
+    for (const auto& it : txt)
     {
-      CFStringRef key = CFStringCreateWithCString (NULL,
-                                                   it->first.c_str(),
-                                                   kCFStringEncodingUTF8
-                                                  );
-      CFDataRef value = CFDataCreate              ( NULL,
-                                                    (UInt8 *)it->second.c_str(),
-                                                    strlen(it->second.c_str())
-                                                  );
+      CFStringRef key = CFStringCreateWithCString(NULL, it.first.c_str(), kCFStringEncodingUTF8);
+      CFDataRef value = CFDataCreate(NULL, (UInt8*)it.second.c_str(), strlen(it.second.c_str()));
 
       CFDictionaryAddValue(txtDict,key, value);
       CFRelease(key);
@@ -154,8 +148,8 @@ bool CZeroconfDarwin::doRemoveService(const std::string& fcr_ident)
 void CZeroconfDarwin::doStop()
 {
   CSingleLock lock(m_data_guard);
-  for(tServiceMap::iterator it = m_services.begin(); it != m_services.end(); ++it)
-    cancelRegistration(it->second);
+  for (const auto& it : m_services)
+    cancelRegistration(it.second);
   m_services.clear();
 }
 
@@ -177,7 +171,8 @@ void CZeroconfDarwin::registerCallback(CFNetServiceRef theService, CFStreamError
     p_this->cancelRegistration(theService);
     //remove it
     CSingleLock lock(p_this->m_data_guard);
-    for(tServiceMap::iterator it = p_this->m_services.begin(); it != p_this->m_services.end(); ++it)
+    for (tServiceMap::iterator it = p_this->m_services.begin(); it != p_this->m_services.end();
+         ++it)
     {
       if(it->second == theService)
       {

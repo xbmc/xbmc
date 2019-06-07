@@ -29,8 +29,8 @@ CZeroconfBrowserAndroid::~CZeroconfBrowserAndroid()
 {
   CSingleLock lock(m_data_guard);
   //make sure there are no browsers anymore
-  for(tBrowserMap::iterator it = m_service_browsers.begin(); it != m_service_browsers.end(); ++it )
-    doRemoveServiceType(it->first);
+  for (const auto& it : m_service_browsers)
+    doRemoveServiceType(it.first);
 }
 
 bool CZeroconfBrowserAndroid::doAddServiceType(const std::string& fcr_service_type)
@@ -89,13 +89,12 @@ std::vector<CZeroconfBrowser::ZeroconfService> CZeroconfBrowserAndroid::doGetFou
 {
   std::vector<CZeroconfBrowser::ZeroconfService> ret;
   CSingleLock lock(m_data_guard);
-  for(tDiscoveredServicesMap::const_iterator it = m_discovered_services.begin();
-      it != m_discovered_services.end(); ++it)
+  for (const auto& it : m_discovered_services)
   {
-    const std::vector<std::pair<CZeroconfBrowser::ZeroconfService, unsigned int> >& services = it->second;
-    for(unsigned int i = 0; i < services.size(); ++i)
+    const auto& services = it.second;
+    for (const auto& service : services)
     {
-      ret.push_back(services[i].first);
+      ret.push_back(service.first);
     }
   }
   return ret;

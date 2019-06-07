@@ -186,10 +186,8 @@ CUDisksProvider::CUDisksProvider()
 
 CUDisksProvider::~CUDisksProvider()
 {
-  DeviceMap::iterator itr;
-
-  for (itr = m_AvailableDevices.begin(); itr != m_AvailableDevices.end(); ++itr)
-    delete m_AvailableDevices[itr->first];
+  for (auto& itr : m_AvailableDevices)
+    delete itr.second;
 
   m_AvailableDevices.clear();
 }
@@ -208,13 +206,12 @@ void CUDisksProvider::Initialize()
 
 bool CUDisksProvider::Eject(const std::string& mountpath)
 {
-  DeviceMap::iterator itr;
   std::string path(mountpath);
   URIUtils::RemoveSlashAtEnd(path);
 
-  for (itr = m_AvailableDevices.begin(); itr != m_AvailableDevices.end(); ++itr)
+  for (auto& itr : m_AvailableDevices)
   {
-    CUDiskDevice *device = itr->second;
+    CUDiskDevice* device = itr.second;
     if (device->m_MountPath == path)
       return device->UnMount();
   }
@@ -353,11 +350,9 @@ std::vector<std::string> CUDisksProvider::EnumerateDisks()
 
 void CUDisksProvider::GetDisks(VECSOURCES& devices, bool EnumerateRemovable)
 {
-  DeviceMap::iterator itr;
-
-  for (itr = m_AvailableDevices.begin(); itr != m_AvailableDevices.end(); ++itr)
+  for (auto& itr : m_AvailableDevices)
   {
-    CUDiskDevice *device = itr->second;
+    CUDiskDevice* device = itr.second;
     if (device && device->IsApproved() && device->m_isSystemInternal != EnumerateRemovable)
       devices.push_back(device->ToMediaShare());
   }

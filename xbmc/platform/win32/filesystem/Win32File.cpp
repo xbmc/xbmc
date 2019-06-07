@@ -599,9 +599,9 @@ int CWin32File::Stat(const CURL& url, struct __stat64* statData)
         }
       }
       const wchar_t* const fileExtC = fileExt.c_str();
-      for (std::vector<std::wstring>::const_iterator it = listExts.cbegin(); it != listExts.cend(); ++it)
+      for (const auto& it : listExts)
       {
-        if (_wcsicmp(fileExtC, it->c_str()) == 0)
+        if (_wcsicmp(fileExtC, it.c_str()) == 0)
         {
           statData->st_mode |= _S_IEXEC; // file can be executed
           break;
@@ -740,9 +740,9 @@ int CWin32File::Stat(struct __stat64* statData)
         }
       }
       const wchar_t* const fileExtC = fileExt.c_str();
-      for (std::vector<std::wstring>::const_iterator it = listExts.cbegin(); it != listExts.cend(); ++it)
+      for (const auto& it : listExts)
       {
-        if (_wcsicmp(fileExtC, it->c_str()) == 0)
+        if (_wcsicmp(fileExtC, it.c_str()) == 0)
         {
           statData->st_mode |= _S_IEXEC; // file can be executed
           break;
