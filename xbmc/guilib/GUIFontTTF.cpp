@@ -422,12 +422,12 @@ void CGUIFontTTFBase::DrawTextInternal(float x, float y, const std::vector<UTILS
       // first compute the size of the text to render in both characters and pixels
       unsigned int numSpaces = 0;
       float linePixels = 0;
-      for (vecText::const_iterator pos = text.begin(); pos != text.end(); ++pos)
+      for (const auto& pos : text)
       {
-        Character *ch = GetCharacter(*pos);
+        Character* ch = GetCharacter(pos);
         if (ch)
         {
-          if ((*pos & 0xffff) == L' ')
+          if ((pos & 0xffff) == L' ')
             numSpaces +=  1;
           linePixels += ch->advance;
         }
@@ -444,9 +444,9 @@ void CGUIFontTTFBase::DrawTextInternal(float x, float y, const std::vector<UTILS
     std::queue<Character> characters;
     if (alignment & XBFONT_TRUNCATED)
       GetCharacter(L'.');
-    for (vecText::const_iterator pos = text.begin(); pos != text.end(); ++pos)
+    for (const auto& pos : text)
     {
-      Character *ch = GetCharacter(*pos);
+      Character* ch = GetCharacter(pos);
       if (!ch)
       {
         Character null = { 0 };
@@ -462,11 +462,11 @@ void CGUIFontTTFBase::DrawTextInternal(float x, float y, const std::vector<UTILS
     }
     cursorX = 0;
 
-    for (vecText::const_iterator pos = text.begin(); pos != text.end(); ++pos)
+    for (const auto& pos : text)
     {
       // If starting text on a new line, determine justification effects
       // Get the current letter in the CStdString
-      UTILS::Color color = (*pos & 0xff0000) >> 16;
+      UTILS::Color color = (pos & 0xff0000) >> 16;
       if (color >= colors.size())
         color = 0;
       color = colors[color];
@@ -504,7 +504,7 @@ void CGUIFontTTFBase::DrawTextInternal(float x, float y, const std::vector<UTILS
       RenderCharacter(startX + cursorX, startY, ch, color, !scrolling, *tempVertices);
       if ( alignment & XBFONT_JUSTIFIED )
       {
-        if ((*pos & 0xffff) == L' ')
+        if ((pos & 0xffff) == L' ')
           cursorX += ch->advance + spacePerSpaceCharacter;
         else
           cursorX += ch->advance;

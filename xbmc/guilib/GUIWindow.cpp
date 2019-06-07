@@ -909,9 +909,9 @@ void CGUIWindow::SaveControlStates()
 
 void CGUIWindow::RestoreControlStates()
 {
-  for (std::vector<CControlState>::iterator it = m_controlStates.begin(); it != m_controlStates.end(); ++it)
+  for (const auto& it : m_controlStates)
   {
-    CGUIMessage message(GUI_MSG_ITEM_SELECT, GetID(), (*it).m_id, (*it).m_data);
+    CGUIMessage message(GUI_MSG_ITEM_SELECT, GetID(), it.m_id, it.m_data);
     OnMessage(message);
   }
   int focusControl = (!m_defaultAlways && m_lastControlID) ? m_lastControlID : m_defaultControl;
@@ -1073,9 +1073,9 @@ void CGUIWindow::SetID(int id)
 
 bool CGUIWindow::HasID(int controlID) const
 {
-  for (std::vector<int>::const_iterator it = m_idRange.begin(); it != m_idRange.end() ; ++it)
+  for (const auto& it : m_idRange)
   {
-    if (controlID == *it)
+    if (controlID == it)
       return true;
   }
   return false;

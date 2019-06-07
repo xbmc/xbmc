@@ -68,9 +68,8 @@ void CGUITextLayout::Render(float x, float y, float angle, UTILS::Color color, U
     alignment &= ~XBFONT_CENTER_Y;
   }
   m_font->Begin();
-  for (std::vector<CGUIString>::iterator i = m_lines.begin(); i != m_lines.end(); ++i)
+  for (const auto& string : m_lines)
   {
-    const CGUIString &string = *i;
     uint32_t align = alignment;
     if (align & XBFONT_JUSTIFIED && string.m_carriageReturn)
       align &= ~XBFONT_JUSTIFIED;
@@ -124,9 +123,8 @@ void CGUITextLayout::RenderScrolling(float x, float y, float angle, UTILS::Color
   //       any difference to the smoothness of scrolling though which will be
   //       jumpy with this sort of thing.  It's not exactly a well used situation
   //       though, so this hack is probably OK.
-  for (std::vector<CGUIString>::iterator i = m_lines.begin(); i != m_lines.end(); ++i)
+  for (const auto& string : m_lines)
   {
-    const CGUIString &string = *i;
     m_font->DrawScrollingText(x, y, m_colors, shadowColor, string.m_text, alignment, maxWidth, scrollInfo);
     y += m_font->GetLineHeight();
   }
@@ -156,9 +154,8 @@ void CGUITextLayout::RenderOutline(float x, float y, UTILS::Color color, UTILS::
     // adjust so the baselines of the fonts align
     float by = y + m_font->GetTextBaseLine() - m_borderFont->GetTextBaseLine();
     m_borderFont->Begin();
-    for (std::vector<CGUIString>::iterator i = m_lines.begin(); i != m_lines.end(); ++i)
+    for (const auto& string : m_lines)
     {
-      const CGUIString &string = *i;
       uint32_t align = alignment;
       if (align & XBFONT_JUSTIFIED && string.m_carriageReturn)
         align &= ~XBFONT_JUSTIFIED;
@@ -188,9 +185,8 @@ void CGUITextLayout::RenderOutline(float x, float y, UTILS::Color color, UTILS::
     m_colors[0] = color;
 
   m_font->Begin();
-  for (std::vector<CGUIString>::iterator i = m_lines.begin(); i != m_lines.end(); ++i)
+  for (const auto& string : m_lines)
   {
-    const CGUIString &string = *i;
     uint32_t align = alignment;
     if (align & XBFONT_JUSTIFIED && string.m_carriageReturn)
       align &= ~XBFONT_JUSTIFIED;
@@ -272,9 +268,9 @@ void CGUITextLayout::BidiTransform(std::vector<CGUIString> &lines, bool forceLTR
 
     character_t sectionStyle = 0xffff0000; // impossible to achieve
     std::wstring sectionText;
-    for (vecText::iterator it = line.m_text.begin(); it != line.m_text.end(); ++it)
+    for (const auto& it : line.m_text)
     {
-      character_t style = *it & 0xffff0000;
+      character_t style = it & 0xffff0000;
       if (style != sectionStyle)
       {
         if (!sectionText.empty())
@@ -286,7 +282,7 @@ void CGUITextLayout::BidiTransform(std::vector<CGUIString> &lines, bool forceLTR
         sectionStyle = style;
         sectionText.clear();
       }
-      sectionText.push_back( (wchar_t)(*it & 0xffff) );
+      sectionText.push_back((wchar_t)(it & 0xffff));
     }
 
     // handle the last section
@@ -600,9 +596,8 @@ void CGUITextLayout::CalcTextExtent()
   m_textHeight = 0;
   if (!m_font) return;
 
-  for (std::vector<CGUIString>::iterator i = m_lines.begin(); i != m_lines.end(); ++i)
+  for (const auto& string : m_lines)
   {
-    const CGUIString &string = *i;
     float w = m_font->GetTextWidth(string.m_text);
     if (w > m_textWidth)
       m_textWidth = w;
@@ -613,8 +608,8 @@ void CGUITextLayout::CalcTextExtent()
 unsigned int CGUITextLayout::GetTextLength() const
 {
   unsigned int length = 0;
-  for (std::vector<CGUIString>::const_iterator i = m_lines.begin(); i != m_lines.end(); ++i)
-    length += i->m_text.size();
+  for (const auto& string : m_lines)
+    length += string.m_text.size();
   return length;
 }
 
