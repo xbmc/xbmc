@@ -490,16 +490,17 @@ CAddonButtonMap::DriverMap CAddonButtonMap::CreateLookupTable(const FeatureMap& 
 
   DriverMap driverMap;
 
-  for (FeatureMap::const_iterator it = features.begin(); it != features.end(); ++it)
+  for (const auto& it : features)
   {
-    const kodi::addon::JoystickFeature& feature = it->second;
+    const kodi::addon::JoystickFeature& feature = it.second;
 
     switch (feature.Type())
     {
       case JOYSTICK_FEATURE_TYPE_SCALAR:
       case JOYSTICK_FEATURE_TYPE_KEY:
       {
-        driverMap[CPeripheralAddonTranslator::TranslatePrimitive(feature.Primitive(JOYSTICK_SCALAR_PRIMITIVE))] = it->first;
+        driverMap[CPeripheralAddonTranslator::TranslatePrimitive(
+            feature.Primitive(JOYSTICK_SCALAR_PRIMITIVE))] = it.first;
         break;
       }
 
@@ -513,7 +514,8 @@ CAddonButtonMap::DriverMap CAddonButtonMap::CreateLookupTable(const FeatureMap& 
         };
 
         for (auto primitive : primitives)
-          driverMap[CPeripheralAddonTranslator::TranslatePrimitive(feature.Primitive(primitive))] = it->first;
+          driverMap[CPeripheralAddonTranslator::TranslatePrimitive(feature.Primitive(primitive))] =
+              it.first;
         break;
       }
 
@@ -528,11 +530,11 @@ CAddonButtonMap::DriverMap CAddonButtonMap::CreateLookupTable(const FeatureMap& 
         for (auto primitive : primitives)
         {
           CDriverPrimitive translatedPrimitive = CPeripheralAddonTranslator::TranslatePrimitive(feature.Primitive(primitive));
-          driverMap[translatedPrimitive] = it->first;
+          driverMap[translatedPrimitive] = it.first;
 
           // Map opposite semiaxis
           CDriverPrimitive oppositePrimitive = CDriverPrimitive(translatedPrimitive.Index(), 0, translatedPrimitive.SemiAxisDirection() * -1, 1);
-          driverMap[oppositePrimitive] = it->first;
+          driverMap[oppositePrimitive] = it.first;
         }
         break;
       }
@@ -545,7 +547,8 @@ CAddonButtonMap::DriverMap CAddonButtonMap::CreateLookupTable(const FeatureMap& 
         };
 
         for (auto primitive : primitives)
-          driverMap[CPeripheralAddonTranslator::TranslatePrimitive(feature.Primitive(primitive))] = it->first;
+          driverMap[CPeripheralAddonTranslator::TranslatePrimitive(feature.Primitive(primitive))] =
+              it.first;
         break;
       }
 
@@ -557,7 +560,8 @@ CAddonButtonMap::DriverMap CAddonButtonMap::CreateLookupTable(const FeatureMap& 
         };
 
         for (auto primitive : primitives)
-          driverMap[CPeripheralAddonTranslator::TranslatePrimitive(feature.Primitive(primitive))] = it->first;
+          driverMap[CPeripheralAddonTranslator::TranslatePrimitive(feature.Primitive(primitive))] =
+              it.first;
         break;
       }
 
@@ -571,7 +575,8 @@ CAddonButtonMap::DriverMap CAddonButtonMap::CreateLookupTable(const FeatureMap& 
         };
 
         for (auto primitive : primitives)
-          driverMap[CPeripheralAddonTranslator::TranslatePrimitive(feature.Primitive(primitive))] = it->first;
+          driverMap[CPeripheralAddonTranslator::TranslatePrimitive(feature.Primitive(primitive))] =
+              it.first;
         break;
       }
 
