@@ -64,9 +64,14 @@ CDVDDemux* CDVDFactoryDemuxer::CreateDemuxer(std::shared_ptr<CDVDInputStream> pI
   bool streaminfo = true; /* Look for streams before playback */
   if (pInputStream->IsStreamType(DVDSTREAM_TYPE_PVRMANAGER))
   {
-    /* Don't parse the streaminfo for some cases of streams to reduce the channel switch time */
-    bool useFastswitch = URIUtils::IsUsingFastSwitch(pInputStream->GetFileName());
-    streaminfo = !useFastswitch;
+    // Only skip parsing of streaminfo if a PID is not supplied. If it is we need to parse it so the right PID can be selected in DVDDemuxFFmpeg.
+    const CVariant programProp(pInputStream->GetProperty("program"));
+    if (programProp.isNull())
+    {
+      /* Don't parse the streaminfo for some cases of streams to reduce the channel switch time */
+      bool useFastswitch = URIUtils::IsUsingFastSwitch(pInputStream->GetFileName());
+      streaminfo = !useFastswitch;
+    }
   }
 
   if (pInputStream->IsStreamType(DVDSTREAM_TYPE_FFMPEG))
