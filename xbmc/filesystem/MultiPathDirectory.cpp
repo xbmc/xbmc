@@ -225,8 +225,8 @@ std::string CMultiPathDirectory::ConstructMultiPath(const std::vector<std::strin
 std::string CMultiPathDirectory::ConstructMultiPath(const std::set<std::string> &setPaths)
 {
   std::string newPath = "multipath://";
-  for (std::set<std::string>::const_iterator path = setPaths.begin(); path != setPaths.end(); ++path)
-    AddToMultiPath(newPath, *path);
+  for (const std::string& path : setPaths)
+    AddToMultiPath(newPath, path);
 
   return newPath;
 }

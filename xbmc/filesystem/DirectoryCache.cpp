@@ -208,10 +208,8 @@ void CDirectoryCache::Clear()
 
 void CDirectoryCache::InitCache(std::set<std::string>& dirs)
 {
-  std::set<std::string>::iterator it;
-  for (it = dirs.begin(); it != dirs.end(); ++it)
+  for (const std::string& strDir : dirs)
   {
-    const std::string& strDir = *it;
     CFileItemList items;
     CDirectory::GetDirectory(strDir, items, "", DIR_FLAG_NO_FILE_DIRS);
     items.Clear();

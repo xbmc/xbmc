@@ -641,10 +641,9 @@ void CCurlFile::SetRequestHeaders(CReadState* state)
     state->m_curlHeaderList = NULL;
   }
 
-  MAPHTTPHEADERS::iterator it;
-  for(it = m_requestheaders.begin(); it != m_requestheaders.end(); it++)
+  for (const auto& it : m_requestheaders)
   {
-    std::string buffer = it->first + ": " + it->second;
+    std::string buffer = it.first + ": " + it.second;
     state->m_curlHeaderList = g_curlInterface.slist_append(state->m_curlHeaderList, buffer.c_str());
   }
 
@@ -776,11 +775,11 @@ void CCurlFile::ParseAndCorrectUrl(CURL &url2)
     if (!options.empty())
     {
       // set xbmc headers
-      for (std::map<std::string,std::string>::const_iterator it = options.begin(); it != options.end(); ++it)
+      for (const auto& it : options)
       {
-        std::string name = it->first;
+        std::string name = it.first;
         StringUtils::ToLower(name);
-        const std::string &value = it->second;
+        const std::string& value = it.second;
 
         if (name == "auth")
         {
@@ -818,7 +817,7 @@ void CCurlFile::ParseAndCorrectUrl(CURL &url2)
         }
         else if (name == "active-remote")// needed for DACP!
         {
-          SetRequestHeader(it->first, value);
+          SetRequestHeader(it.first, value);
         }
         else if (name == "customrequest")
         {
@@ -833,16 +832,24 @@ void CCurlFile::ParseAndCorrectUrl(CURL &url2)
         {
           if (name.length() > 0 && name[0] == '!')
           {
-            SetRequestHeader(it->first.substr(1), value);
-            CLog::Log(LOGDEBUG, "CurlFile::ParseAndCorrectUrl() adding custom header option '%s: ***********'", it->first.substr(1).c_str());
+            SetRequestHeader(it.first.substr(1), value);
+            CLog::Log(
+                LOGDEBUG,
+                "CurlFile::ParseAndCorrectUrl() adding custom header option '%s: ***********'",
+                it.first.substr(1).c_str());
           }
           else
           {
-            SetRequestHeader(it->first, value);
+            SetRequestHeader(it.first, value);
             if (name == "authorization")
-              CLog::Log(LOGDEBUG, "CurlFile::ParseAndCorrectUrl() adding custom header option '%s: ***********'", it->first.c_str());
+              CLog::Log(
+                  LOGDEBUG,
+                  "CurlFile::ParseAndCorrectUrl() adding custom header option '%s: ***********'",
+                  it.first.c_str());
             else
-              CLog::Log(LOGDEBUG, "CurlFile::ParseAndCorrectUrl() adding custom header option '%s: %s'", it->first.c_str(), value.c_str());
+              CLog::Log(LOGDEBUG,
+                        "CurlFile::ParseAndCorrectUrl() adding custom header option '%s: %s'",
+                        it.first.c_str(), value.c_str());
           }
         }
       }

@@ -51,24 +51,23 @@ bool CNFSDirectory::GetDirectoryFromExportList(const std::string& strPath, CFile
   CURL url(strPath);
   std::string nonConstStrPath(strPath);
   std::list<std::string> exportList=gNfsConnection.GetExportList(url);
-  std::list<std::string>::iterator it;
 
-  for(it=exportList.begin();it!=exportList.end();++it)
+  for (const std::string& it : exportList)
   {
-      std::string currentExport(*it);
-      URIUtils::RemoveSlashAtEnd(nonConstStrPath);
+    std::string currentExport(it);
+    URIUtils::RemoveSlashAtEnd(nonConstStrPath);
 
-      CFileItemPtr pItem(new CFileItem(currentExport));
-      std::string path(nonConstStrPath + currentExport);
-      URIUtils::AddSlashAtEnd(path);
-      pItem->SetPath(path);
-      pItem->m_dateTime=0;
+    CFileItemPtr pItem(new CFileItem(currentExport));
+    std::string path(nonConstStrPath + currentExport);
+    URIUtils::AddSlashAtEnd(path);
+    pItem->SetPath(path);
+    pItem->m_dateTime = 0;
 
-      pItem->m_bIsFolder = true;
-      items.Add(pItem);
+    pItem->m_bIsFolder = true;
+    items.Add(pItem);
   }
 
-  return exportList.empty()? false : true;
+  return exportList.empty() ? false : true;
 }
 
 bool CNFSDirectory::GetServerList(CFileItemList &items)

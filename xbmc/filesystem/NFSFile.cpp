@@ -107,9 +107,9 @@ void CNfsConnection::clearMembers()
 void CNfsConnection::destroyOpenContexts()
 {
   CSingleLock lock(openContextLock);
-  for(tOpenContextMap::iterator it = m_openContextMap.begin();it!=m_openContextMap.end();++it)
+  for (auto& it : m_openContextMap)
   {
-    nfs_destroy_context(it->second.pContext);
+    nfs_destroy_context(it.second.pContext);
   }
   m_openContextMap.clear();
 }
@@ -120,8 +120,8 @@ void CNfsConnection::destroyContext(const std::string &exportName)
   tOpenContextMap::iterator it = m_openContextMap.find(exportName.c_str());
   if (it != m_openContextMap.end())
   {
-      nfs_destroy_context(it->second.pContext);
-      m_openContextMap.erase(it);
+    nfs_destroy_context(it->second.pContext);
+    m_openContextMap.erase(it);
   }
 }
 
@@ -131,7 +131,7 @@ struct nfs_context *CNfsConnection::getContextFromMap(const std::string &exportn
   CSingleLock lock(openContextLock);
 
   tOpenContextMap::iterator it = m_openContextMap.find(exportname.c_str());
-  if(it != m_openContextMap.end())
+  if (it != m_openContextMap.end())
   {
     //check if context has timed out already
     uint64_t now = XbmcThreads::SystemClockMillis();
@@ -224,22 +224,19 @@ bool CNfsConnection::splitUrlIntoExportAndPath(const CURL& url,std::string &expo
         path = "/" + path;
       }
 
-      std::list<std::string>::iterator it;
-
-      for(it=exportList.begin();it!=exportList.end();++it)
+      for (const std::string& it : exportList)
       {
         //if path starts with the current export path
-        if(URIUtils::PathHasParent(path, *it))
+        if (URIUtils::PathHasParent(path, it))
         {
           /* It's possible that PathHasParent() may not find the correct match first/
            * As an example, if /path/ & and /path/sub/ are exported, but
            * the user specifies the path /path/subdir/ (from /path/ export).
            * If the path is longer than the exportpath, make sure / is next.
            */
-          if( (path.length() > (*it).length()) &&
-              (path[(*it).length()] != '/') && (*it) != "/")
+          if ((path.length() > it.length()) && (path[it.length()] != '/') && it != "/")
             continue;
-          exportPath = *it;
+          exportPath = it;
           //handle special case where root is exported
           //in that case we don't want to strip off to
           //much from the path
@@ -343,17 +340,17 @@ void CNfsConnection::CheckIfIdle()
   {
     CSingleLock lock(keepAliveLock);
     //handle keep alive on opened files
-    for( tFileKeepAliveMap::iterator it = m_KeepAliveTimeouts.begin();it!=m_KeepAliveTimeouts.end();++it)
+    for (auto& it : m_KeepAliveTimeouts)
     {
-      if(it->second.refreshCounter > 0)
+      if (it.second.refreshCounter > 0)
       {
-        it->second.refreshCounter--;
+        it.second.refreshCounter--;
       }
       else
       {
-        keepAlive(it->second.exportPath, it->first);
+        keepAlive(it.second.exportPath, it.first);
         //reset timeout
-        resetKeepAlive(it->second.exportPath, it->first);
+        resetKeepAlive(it.second.exportPath, it.first);
       }
     }
   }

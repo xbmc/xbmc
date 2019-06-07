@@ -422,9 +422,9 @@ static void ParseItem(CFileItem* item, SResources& resources, TiXmlElement* root
 
 static bool FindMime(SResources resources, std::string mime)
 {
-  for(SResources::iterator it = resources.begin(); it != resources.end(); it++)
+  for (const auto& it : resources)
   {
-    if(StringUtils::StartsWithNoCase(it->mime, mime))
+    if (StringUtils::StartsWithNoCase(it.mime, mime))
       return true;
   }
   return false;
