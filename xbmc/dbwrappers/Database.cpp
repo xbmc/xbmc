@@ -312,9 +312,9 @@ bool CDatabase::CommitMultipleExecute()
 {
   m_multipleExecute = false;
   BeginTransaction();
-  for (std::vector<std::string>::const_iterator i = m_multipleQueries.begin(); i != m_multipleQueries.end(); ++i)
+  for (const auto& i : m_multipleQueries)
   {
-    if (!ExecuteQuery(*i))
+    if (!ExecuteQuery(i))
     {
       RollbackTransaction();
       return false;
