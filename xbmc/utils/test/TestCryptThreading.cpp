@@ -7,6 +7,7 @@
  */
 
 #include "utils/CryptThreading.h"
+#if (OPENSSL_VERSION_NUMBER < 0x10100000L)
 
 #include "gtest/gtest.h"
 
@@ -15,3 +16,4 @@ TEST(TestCryptThreadingInitializer, General)
   std::cout << "g_cryptThreadingInitializer address: " <<
     testing::PrintToString(&g_cryptThreadingInitializer) << "\n";
 }
+#endif
