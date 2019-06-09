@@ -24,7 +24,7 @@ public:
   static const char *GetOSVersionString(void);
   static const char *GetIOSVersionString(void);
   static const char *GetOSXVersionString(void);
-  static int         GetFrameworkPath(bool forPython, char* path, size_t *pathsize);
+  static std::string GetFrameworkPath(bool forPython);
   static int         GetExecutablePath(char* path, size_t *pathsize);
   static const char *GetAppRootFolder(void);
   static bool        IsIosSandboxed(void);

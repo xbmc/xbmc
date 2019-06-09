@@ -94,23 +94,12 @@ static CEvent screenChangeEvent;
     if(toExternal)//changing the external screen might need some time ...
     {
       //deactivate any overscan compensation when switching to external screens
-      if([newScreen respondsToSelector:@selector(overscanCompensation)])
-      {
-        //since iOS5.0 tvout has an default overscan compensation and property
-        //we need to switch it off here so that the tv can handle any
-        //needed overscan compensation (else on tvs without "just scan" option
-        //we might end up with black borders.
-        //Beside that in Apples documentation to setOverscanCompensation
-        //the parameter enum is lacking the UIScreenOverscanCompensationNone value.
-        //Someone on stackoverflow figured out that value 3 is for turning it off
-        //(though there is no enum value for it).
-        [newScreen setOverscanCompensation:(UIScreenOverscanCompensation)3];
-        CLog::Log(LOGDEBUG, "[IOSScreenManager] Disabling overscancompensation.");
-      }
-      else
-      {
-        CLog::Log(LOGDEBUG, "[IOSScreenManager] Disabling overscancompensation not supported on this iOS version.");
-      }
+      //tvout has a default overscan compensation and property
+      //we need to switch it off here so that the tv can handle any
+      //needed overscan compensation (else on tvs without "just scan" option
+      //we might end up with black borders.
+      [newScreen setOverscanCompensation:UIScreenOverscanCompensationNone];
+      CLog::Log(LOGDEBUG, "[IOSScreenManager] Disabling overscancompensation.");
 
       [[IOSScreenManager sharedInstance] fadeFromBlack:timeSwitchingToExternalSecs];
     }
