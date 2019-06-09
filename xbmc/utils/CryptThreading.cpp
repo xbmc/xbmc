@@ -75,4 +75,8 @@ CCriticalSection* CryptThreadingInitializer::GetLock(int index)
   return curlock.get();
 }
 
+unsigned long CryptThreadingInitializer::GetCurrentCryptThreadId() {
+  return GetCryptThreadId();
+}
+
 #endif

@@ -29,6 +29,11 @@ public:
 
   CCriticalSection* GetLock(int index);
 
+  /**
+   * This is so testing can reach the thread id generation.
+   */
+  unsigned long GetCurrentCryptThreadId();
+
 private:
   CryptThreadingInitializer(const CryptThreadingInitializer &rhs) = delete;
   CryptThreadingInitializer& operator=(const CryptThreadingInitializer&) = delete;
