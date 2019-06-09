@@ -8,14 +8,15 @@
 
 #include "PVRGUIProgressHandler.h"
 
-#include <algorithm>
-#include <cmath>
-
 #include "ServiceBroker.h"
 #include "dialogs/GUIDialogExtendedProgressBar.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/WindowIDs.h"
+
+#include <algorithm>
+#include <cmath>
+#include <string>
 
 namespace PVR
 {

@@ -8,20 +8,19 @@
 
 #pragma once
 
-#include <memory>
-
 #include "pvr/PVRTypes.h"
 
+#include <memory>
+
 class CFileItem;
-typedef std::shared_ptr<CFileItem> CFileItemPtr;
 
 namespace PVR
 {
   class CPVRItem
   {
   public:
-    explicit CPVRItem(const CFileItemPtr &item) : m_item(item.get()) {}
-    explicit CPVRItem(const CFileItem *item) : m_item(item) {}
+    explicit CPVRItem(const std::shared_ptr<CFileItem>& item) : m_item(item.get()) {}
+    explicit CPVRItem(const CFileItem* item) : m_item(item) {}
 
     CPVREpgInfoTagPtr GetEpgInfoTag() const;
     CPVREpgInfoTagPtr GetNextEpgInfoTag() const;

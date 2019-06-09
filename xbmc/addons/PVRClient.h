@@ -8,23 +8,22 @@
 
 #pragma once
 
+#include "addons/binary-addons/AddonDll.h"
+#include "addons/kodi-addon-dev-kit/include/kodi/xbmc_pvr_types.h"
+#include "pvr/PVRTypes.h"
+
 #include <atomic>
 #include <functional>
 #include <memory>
 #include <string>
+#include <utility>
 #include <vector>
-
-#include "addons/binary-addons/AddonDll.h"
-#include "addons/kodi-addon-dev-kit/include/kodi/xbmc_pvr_types.h"
-
-#include "pvr/PVRTypes.h"
 
 namespace PVR
 {
   class CPVRChannelGroups;
   class CPVRClientMenuHook;
   class CPVRClientMenuHooks;
-  class CPVREpgChannelData;
   class CPVRStreamProperties;
   class CPVRTimersContainer;
 

@@ -8,16 +8,19 @@
 
 #pragma once
 
+#include "XBDateTime.h"
+#include "pvr/PVRTypes.h"
+#include "pvr/channels/PVRChannelNumber.h"
+#include "settings/lib/ISettingCallback.h"
+#include "utils/Observer.h"
+
 #include <map>
 #include <memory>
+#include <string>
 #include <utility>
 #include <vector>
 
-#include "XBDateTime.h"
-#include "settings/lib/ISettingCallback.h"
-
-#include "pvr/PVRTypes.h"
-#include "pvr/channels/PVRChannel.h"
+struct PVR_CHANNEL_GROUP;
 
 namespace PVR
 {

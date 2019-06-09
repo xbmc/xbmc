@@ -8,8 +8,11 @@
 
 #pragma once
 
+#include "dialogs/GUIDialogContextMenu.h"
 #include "pvr/PVRChannelNumberInputHandler.h"
 #include "pvr/windows/GUIWindowPVRBase.h"
+
+#include <string>
 
 namespace PVR
 {

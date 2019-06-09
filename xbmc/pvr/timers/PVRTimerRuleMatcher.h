@@ -8,9 +8,9 @@
 
 #pragma once
 
-#include <memory>
-
 #include "XBDateTime.h"
+
+#include <memory>
 
 class CRegExp;
 

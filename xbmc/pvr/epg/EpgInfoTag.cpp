@@ -12,25 +12,34 @@
 #include "addons/PVRClient.h"
 #include "addons/kodi-addon-dev-kit/include/kodi/xbmc_pvr_types.h"
 #include "cores/DataCacheCore.h"
+#include "pvr/PVRManager.h"
+#include "pvr/epg/Epg.h"
+#include "pvr/epg/EpgChannelData.h"
+#include "pvr/epg/EpgDatabase.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
+#include "threads/SingleLock.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
 #include "utils/log.h"
 
-#include "pvr/PVRManager.h"
-#include "pvr/epg/EpgChannelData.h"
-#include "pvr/epg/EpgDatabase.h"
+#include <memory>
+#include <string>
+#include <vector>
 
 using namespace PVR;
 
 CPVREpgInfoTag::CPVREpgInfoTag()
-: m_channelData(new CPVREpgChannelData)
+: m_iUniqueBroadcastID(EPG_TAG_INVALID_UID),
+  m_iFlags(EPG_TAG_FLAG_UNDEFINED),
+  m_channelData(new CPVREpgChannelData)
 {
 }
 
 CPVREpgInfoTag::CPVREpgInfoTag(const std::shared_ptr<CPVREpgChannelData>& channelData, int iEpgID)
-: m_iEpgID(iEpgID)
+: m_iUniqueBroadcastID(EPG_TAG_INVALID_UID),
+  m_iFlags(EPG_TAG_FLAG_UNDEFINED),
+  m_iEpgID(iEpgID)
 {
   if (channelData)
     m_channelData = channelData;

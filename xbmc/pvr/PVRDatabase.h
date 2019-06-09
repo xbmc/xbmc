@@ -8,22 +8,17 @@
 
 #pragma once
 
+#include "dbwrappers/Database.h"
+#include "pvr/PVRTypes.h"
+#include "threads/CriticalSection.h"
+
 #include <map>
 #include <vector>
 
-#include "dbwrappers/Database.h"
-#include "threads/CriticalSection.h"
-
-#include "pvr/PVRTypes.h"
-
 namespace PVR
 {
-  class CPVRChannelGroup;
-  class CPVRChannel;
   class CPVRChannelGroups;
   class CPVRClient;
-  class CPVRTimerInfoTag;
-  class CPVRTimers;
 
   /** The PVR database */
 

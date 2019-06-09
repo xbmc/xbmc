@@ -10,10 +10,12 @@
 
 #include "FileItem.h"
 #include "ServiceBroker.h"
-
 #include "pvr/PVRManager.h"
 #include "pvr/channels/PVRChannel.h"
 #include "pvr/epg/EpgInfoTag.h"
+
+#include <memory>
+#include <vector>
 
 using namespace PVR;
 

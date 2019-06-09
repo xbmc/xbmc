@@ -8,15 +8,16 @@
 
 #pragma once
 
-#include <string>
-
-#include "settings/SettingConditions.h"
-#include "settings/dialogs/GUIDialogSettingsManualBase.h"
-#include "settings/lib/SettingDependency.h"
-
 #include "pvr/PVRTypes.h"
+#include "settings/dialogs/GUIDialogSettingsManualBase.h"
 
+#include <memory>
+#include <string>
+#include <vector>
+
+class CFileItem;
 class CSetting;
+
 struct IntegerSettingOption;
 
 namespace PVR

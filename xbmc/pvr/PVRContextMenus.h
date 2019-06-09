@@ -8,10 +8,10 @@
 
 #pragma once
 
+#include "utils/EventStream.h"
+
 #include <memory>
 #include <vector>
-
-#include "utils/EventStream.h"
 
 class IContextMenuItem;
 

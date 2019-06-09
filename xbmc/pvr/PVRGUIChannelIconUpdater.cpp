@@ -8,23 +8,24 @@
 
 #include "PVRGUIChannelIconUpdater.h"
 
-#include <map>
-
 #include "FileItem.h"
 #include "ServiceBroker.h"
 #include "Util.h"
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"
 #include "guilib/LocalizeStrings.h"
+#include "pvr/PVRGUIProgressHandler.h"
+#include "pvr/channels/PVRChannel.h"
+#include "pvr/channels/PVRChannelGroup.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 
-#include "pvr/PVRGUIProgressHandler.h"
-#include "pvr/channels/PVRChannel.h"
-#include "pvr/channels/PVRChannelGroup.h"
+#include <map>
+#include <string>
+#include <vector>
 
 using namespace PVR;
 

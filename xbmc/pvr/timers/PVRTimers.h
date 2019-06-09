@@ -8,22 +8,22 @@
 
 #pragma once
 
+#include "XBDateTime.h"
+#include "pvr/PVRSettings.h"
+#include "pvr/PVRTypes.h"
+#include "threads/Thread.h"
+#include "utils/Observer.h"
+
 #include <map>
 #include <memory>
 #include <queue>
 #include <vector>
 
-#include "XBDateTime.h"
-#include "addons/kodi-addon-dev-kit/include/kodi/xbmc_pvr_types.h"
-#include "threads/Thread.h"
-#include "utils/Observer.h"
-
-#include "pvr/PVRSettings.h"
-#include "pvr/PVRTypes.h"
-#include "pvr/timers/PVRTimerInfoTag.h"
-
 namespace PVR
 {
+  enum class TimerOperationResult;
+
+  class CPVRTimerInfoTag;
   class CPVRTimersPath;
 
   class CPVRTimersContainer

@@ -8,17 +8,22 @@
 
 #pragma once
 
-#include <vector>
-
-#include "addons/PVRClient.h"
 #include "dialogs/GUIDialogContextMenu.h"
 #include "guilib/GUIDialog.h"
+#include "pvr/PVRTypes.h"
 #include "view/GUIViewControl.h"
 
-#include "pvr/channels/PVRChannelGroup.h"
+#include <memory>
+#include <vector>
+
+class CAction;
+class CFileItemList;
+class CGUIMessage;
 
 namespace PVR
 {
+  class CPVRClient;
+
   class CGUIDialogPVRChannelManager : public CGUIDialog
   {
   public:
@@ -73,6 +78,6 @@ namespace PVR
     CFileItemList* m_channelItems;
     CGUIViewControl m_viewControl;
 
-    std::vector<CPVRClientPtr> m_clientsWithSettingsList;
+    std::vector<std::shared_ptr<CPVRClient>> m_clientsWithSettingsList;
   };
 }

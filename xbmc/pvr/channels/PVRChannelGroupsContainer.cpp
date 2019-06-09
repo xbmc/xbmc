@@ -8,9 +8,13 @@
 
 #include "PVRChannelGroupsContainer.h"
 
+#include "pvr/channels/PVRChannel.h"
+#include "pvr/channels/PVRChannelGroups.h"
+#include "pvr/epg/EpgInfoTag.h"
+#include "threads/SingleLock.h"
 #include "utils/log.h"
 
-#include "pvr/epg/EpgInfoTag.h"
+#include <memory>
 
 using namespace PVR;
 

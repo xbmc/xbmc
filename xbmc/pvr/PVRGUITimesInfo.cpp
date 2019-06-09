@@ -8,18 +8,21 @@
 
 #include "PVRGUITimesInfo.h"
 
-#include <cmath>
-
 #include "ServiceBroker.h"
 #include "cores/DataCacheCore.h"
+#include "pvr/PVRManager.h"
+#include "pvr/channels/PVRChannel.h"
+#include "pvr/channels/PVRChannelGroupsContainer.h"
+#include "pvr/epg/EpgInfoTag.h"
+#include "pvr/recordings/PVRRecording.h"
 #include "settings/AdvancedSettings.h"
-#include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "threads/SingleLock.h"
 #include "utils/StringUtils.h"
 
-#include "pvr/PVRManager.h"
-#include "pvr/channels/PVRChannelGroupsContainer.h"
+#include <cmath>
+#include <ctime>
+#include <memory>
 
 using namespace PVR;
 

@@ -10,12 +10,11 @@
 
 #include "FileItem.h"
 #include "ServiceBroker.h"
+#include "pvr/recordings/PVRRecordingsPath.h"
+#include "pvr/timers/PVRTimersPath.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "view/ViewStateSettings.h"
-
-#include "pvr/recordings/PVRRecordingsPath.h"
-#include "pvr/timers/PVRTimersPath.h"
 
 using namespace PVR;
 

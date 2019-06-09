@@ -8,15 +8,14 @@
 
 #pragma once
 
-#include <map>
-
+#include "pvr/PVRChannelNumberInputHandler.h"
+#include "pvr/PVRTypes.h"
+#include "pvr/dialogs/GUIDialogPVRItemsViewBase.h"
+#include "threads/SystemClock.h"
 #include "utils/Observer.h"
 
-#include "pvr/PVRTypes.h"
-#include "pvr/PVRChannelNumberInputHandler.h"
-#include "pvr/dialogs/GUIDialogPVRItemsViewBase.h"
-
-class CFileItemList;
+#include <map>
+#include <string>
 
 namespace PVR
 {

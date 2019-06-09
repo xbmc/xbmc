@@ -13,6 +13,9 @@
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 
+#include <string>
+#include <vector>
+
 using namespace PVR;
 
 const std::string CPVRRecordingsPath::PATH_RECORDINGS               = "pvr://recordings/";

@@ -9,11 +9,11 @@
 #pragma once
 
 #include "guilib/GUIDialog.h"
+#include "pvr/PVRTypes.h"
 #include "view/GUIViewControl.h"
 
-#include "pvr/channels/PVRChannelGroup.h"
-
 class CFileItemList;
+class CGUIMessage;
 
 namespace PVR
 {

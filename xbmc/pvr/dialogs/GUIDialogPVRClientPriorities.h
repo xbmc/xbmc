@@ -8,13 +8,11 @@
 
 #pragma once
 
-#include <map>
-
+#include "pvr/addons/PVRClients.h"
 #include "settings/dialogs/GUIDialogSettingsManualBase.h"
 
-#include "pvr/addons/PVRClients.h"
-
-class CSetting;
+#include <map>
+#include <string>
 
 namespace PVR
 {

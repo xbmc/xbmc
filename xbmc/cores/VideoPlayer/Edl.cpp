@@ -7,18 +7,21 @@
  */
 
 #include "Edl.h"
+
+#include "FileItem.h"
+#include "PlatformDefs.h"
+#include "ServiceBroker.h"
 #include "cores/Cut.h"
-#include "utils/StringUtils.h"
-#include "utils/URIUtils.h"
 #include "filesystem/File.h"
+#include "pvr/PVRManager.h"
+#include "pvr/epg/EpgInfoTag.h"
+#include "pvr/recordings/PVRRecording.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
-#include "utils/log.h"
+#include "utils/StringUtils.h"
+#include "utils/URIUtils.h"
 #include "utils/XBMCTinyXML.h"
-#include "PlatformDefs.h"
-#include "pvr/recordings/PVRRecordings.h"
-#include "pvr/PVRManager.h"
-#include "ServiceBroker.h"
+#include "utils/log.h"
 
 #define COMSKIP_HEADER "FILE PROCESSING COMPLETE"
 #define VIDEOREDO_HEADER "<Version>2"

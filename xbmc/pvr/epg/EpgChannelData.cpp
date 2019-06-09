@@ -9,7 +9,6 @@
 #include "EpgChannelData.h"
 
 #include "XBDateTime.h"
-
 #include "pvr/channels/PVRChannel.h"
 
 using namespace PVR;

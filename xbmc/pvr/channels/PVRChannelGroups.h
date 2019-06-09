@@ -8,15 +8,19 @@
 
 #pragma once
 
-#include <vector>
-
+#include "pvr/PVRTypes.h"
+#include "pvr/channels/PVRChannelGroup.h"
 #include "threads/CriticalSection.h"
 #include "threads/SingleLock.h"
 
-#include "pvr/channels/PVRChannelGroup.h"
+#include <memory>
+#include <string>
+#include <vector>
 
 namespace PVR
 {
+  class CPVRChannel;
+
   /** A container class for channel groups */
 
   class CPVRChannelGroups

@@ -8,13 +8,17 @@
 
 #pragma once
 
-#include <map>
-#include <string>
-#include <utility>
-
 #include "settings/lib/ISettingCallback.h"
 #include "settings/lib/ISettingsHandler.h"
-#include "settings/lib/Setting.h"
+#include "threads/CriticalSection.h"
+
+#include <map>
+#include <memory>
+#include <set>
+#include <string>
+#include <vector>
+
+class CSetting;
 
 struct IntegerSettingOption;
 

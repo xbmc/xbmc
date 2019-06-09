@@ -8,11 +8,18 @@
 
 #pragma once
 
+#include "pvr/PVRTypes.h"
 #include "pvr/channels/PVRChannelGroup.h"
+
+#include <memory>
+#include <vector>
 
 namespace PVR
 {
   enum class PVREvent;
+
+  class CPVRChannel;
+  class CPVRChannelNumber;
 
   class CPVRChannelGroupInternal : public CPVRChannelGroup
   {

@@ -8,12 +8,11 @@
 
 #pragma once
 
-#include <memory>
-
 #include "pvr/windows/GUIWindowPVRBase.h"
 
+#include <memory>
+
 class CFileItem;
-typedef std::shared_ptr<CFileItem> CFileItemPtr;
 
 namespace PVR
 {
@@ -29,8 +28,8 @@ namespace PVR
     void UpdateButtons(void) override;
 
   private:
-    bool ActionShowTimer(const CFileItemPtr &item);
+    bool ActionShowTimer(const std::shared_ptr<CFileItem>& item);
 
-    CFileItemPtr m_currentFileItem;
+    std::shared_ptr<CFileItem> m_currentFileItem;
   };
 }

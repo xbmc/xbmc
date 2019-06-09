@@ -8,16 +8,12 @@
 
 #include "GUIDialogPVRRadioRDSInfo.h"
 
-#include "FileItem.h"
 #include "GUIUserMessages.h"
 #include "ServiceBroker.h"
 #include "guilib/GUIMessage.h"
 #include "guilib/GUISpinControl.h"
 #include "guilib/GUITextBox.h"
-#include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
-#include "messaging/ApplicationMessenger.h"
-
 #include "pvr/PVRManager.h"
 #include "pvr/channels/PVRChannel.h"
 #include "pvr/channels/PVRRadioRDSInfoTag.h"

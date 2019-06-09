@@ -8,23 +8,20 @@
 
 #pragma once
 
+#include "XBDateTime.h"
+#include "pvr/PVRTypes.h"
+
 #include <memory>
 #include <vector>
 
-#include "XBDateTime.h"
-
-#include "pvr/PVRTypes.h"
-
 class CFileItem;
-typedef std::shared_ptr<CFileItem> CFileItemPtr;
-
 class CFileItemList;
 
 namespace PVR
 {
   struct GridItem
   {
-    CFileItemPtr item;
+    std::shared_ptr<CFileItem> item;
     float originWidth = 0.0f;
     float width = 0.0f;
     int progIndex = -1;
@@ -49,21 +46,21 @@ namespace PVR
     void FreeProgrammeMemory(int channel, int keepStart, int keepEnd);
     void FreeRulerMemory(int keepStart, int keepEnd);
 
-    CFileItemPtr GetProgrammeItem(int iIndex) const { return m_programmeItems[iIndex]; }
+    std::shared_ptr<CFileItem> GetProgrammeItem(int iIndex) const { return m_programmeItems[iIndex]; }
     bool HasProgrammeItems() const { return !m_programmeItems.empty(); }
     int ProgrammeItemsSize() const { return static_cast<int>(m_programmeItems.size()); }
 
-    CFileItemPtr GetChannelItem(int iIndex) const { return m_channelItems[iIndex]; }
+    std::shared_ptr<CFileItem> GetChannelItem(int iIndex) const { return m_channelItems[iIndex]; }
     bool HasChannelItems() const { return !m_channelItems.empty(); }
     int ChannelItemsSize() const { return static_cast<int>(m_channelItems.size()); }
 
-    CFileItemPtr GetRulerItem(int iIndex) const { return m_rulerItems[iIndex]; }
+    std::shared_ptr<CFileItem> GetRulerItem(int iIndex) const { return m_rulerItems[iIndex]; }
     int RulerItemsSize() const { return static_cast<int>(m_rulerItems.size()); }
 
     int GetBlockCount() const { return m_blocks; }
     bool HasGridItems() const { return !m_gridIndex.empty(); }
     GridItem *GetGridItemPtr(int iChannel, int iBlock) { return &m_gridIndex[iChannel][iBlock]; }
-    CFileItemPtr GetGridItem(int iChannel, int iBlock) const { return m_gridIndex[iChannel][iBlock].item; }
+    std::shared_ptr<CFileItem> GetGridItem(int iChannel, int iBlock) const { return m_gridIndex[iChannel][iBlock].item; }
     float GetGridItemWidth(int iChannel, int iBlock) const { return m_gridIndex[iChannel][iBlock].width; }
     float GetGridItemOriginWidth(int iChannel, int iBlock) const { return m_gridIndex[iChannel][iBlock].originWidth; }
     int GetGridItemIndex(int iChannel, int iBlock) const { return m_gridIndex[iChannel][iBlock].progIndex; }
@@ -95,9 +92,9 @@ namespace PVR
     CDateTime m_gridStart;
     CDateTime m_gridEnd;
 
-    std::vector<CFileItemPtr> m_programmeItems;
-    std::vector<CFileItemPtr> m_channelItems;
-    std::vector<CFileItemPtr> m_rulerItems;
+    std::vector<std::shared_ptr<CFileItem>> m_programmeItems;
+    std::vector<std::shared_ptr<CFileItem>> m_channelItems;
+    std::vector<std::shared_ptr<CFileItem>> m_rulerItems;
     std::vector<ItemsPtr> m_epgItemsPtr;
     std::vector<std::vector<GridItem> > m_gridIndex;
 

@@ -8,20 +8,20 @@
 
 #pragma once
 
-#include <atomic>
-#include <string>
-#include <vector>
-
 #include "addons/kodi-addon-dev-kit/include/kodi/xbmc_pvr_types.h"
 #include "guilib/guiinfo/GUIInfoProvider.h"
+#include "pvr/PVRGUITimerInfo.h"
+#include "pvr/PVRGUITimesInfo.h"
+#include "pvr/addons/PVRClients.h"
 #include "threads/CriticalSection.h"
 #include "threads/Thread.h"
 #include "utils/Observer.h"
 
-#include "pvr/PVRGUITimerInfo.h"
-#include "pvr/PVRGUITimesInfo.h"
-#include "pvr/PVRTypes.h"
-#include "pvr/addons/PVRClients.h"
+#include <atomic>
+#include <string>
+#include <vector>
+
+class CFileItem;
 
 namespace KODI
 {

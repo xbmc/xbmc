@@ -10,6 +10,8 @@
 
 #include "URL.h"
 
+#include <string>
+
 class CFileItemList;
 
 namespace PVR

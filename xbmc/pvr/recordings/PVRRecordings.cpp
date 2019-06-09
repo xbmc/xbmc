@@ -8,21 +8,24 @@
 
 #include "PVRRecordings.h"
 
-#include <utility>
-
 #include "ServiceBroker.h"
+#include "pvr/PVRManager.h"
+#include "pvr/addons/PVRClients.h"
+#include "pvr/epg/EpgInfoTag.h"
+#include "pvr/recordings/PVRRecording.h"
+#include "pvr/recordings/PVRRecordingsPath.h"
 #include "threads/SingleLock.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 #include "video/VideoDatabase.h"
 
-#include "pvr/PVRManager.h"
-#include "pvr/addons/PVRClients.h"
-#include "pvr/epg/EpgContainer.h"
-#include "pvr/epg/EpgInfoTag.h"
-#include "pvr/recordings/PVRRecordingsPath.h"
+#include <memory>
+#include <utility>
+#include <vector>
 
 using namespace PVR;
+
+CPVRRecordings::CPVRRecordings() = default;
 
 CPVRRecordings::~CPVRRecordings()
 {

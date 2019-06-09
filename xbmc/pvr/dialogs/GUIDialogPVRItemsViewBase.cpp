@@ -14,10 +14,11 @@
 #include "dialogs/GUIDialogContextMenu.h"
 #include "input/actions/Action.h"
 #include "input/actions/ActionIDs.h"
-#include "view/ViewState.h"
-
 #include "pvr/PVRGUIActions.h"
 #include "pvr/PVRManager.h"
+#include "view/ViewState.h"
+
+#include <utility>
 
 #define CONTROL_LIST 11
 

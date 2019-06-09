@@ -8,20 +8,22 @@
 
 #pragma once
 
-#include <map>
-#include <string>
-#include <vector>
-
+#include "XBDateTime.h"
+#include "addons/kodi-addon-dev-kit/include/kodi/xbmc_pvr_types.h"
+#include "pvr/PVRTypes.h"
 #include "threads/CriticalSection.h"
 #include "utils/Observer.h"
 
-#include "pvr/PVRTypes.h"
-#include "pvr/epg/EpgInfoTag.h"
+#include <map>
+#include <memory>
+#include <string>
+#include <vector>
 
-/** EPG container for CPVREpgInfoTag instances */
 namespace PVR
 {
   class CPVREpgChannelData;
+  class CPVREpgDatabase;
+  class CPVREpgInfoTag;
 
   class CPVREpg : public Observable
   {

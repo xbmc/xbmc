@@ -8,19 +8,19 @@
 
 #include "EpgDatabase.h"
 
-#include <cstdlib>
-
 #include "ServiceBroker.h"
-#include "addons/kodi-addon-dev-kit/include/kodi/xbmc_pvr_types.h"
 #include "dbwrappers/dataset.h"
+#include "pvr/epg/Epg.h"
+#include "pvr/epg/EpgInfoTag.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
-#include "utils/StringUtils.h"
 
-#include "pvr/epg/Epg.h"
-#include "pvr/epg/EpgInfoTag.h"
+#include <cstdlib>
+#include <memory>
+#include <string>
+#include <vector>
 
 using namespace dbiplus;
 using namespace PVR;
@@ -430,6 +430,6 @@ int CPVREpgDatabase::GetLastEPGId(void)
   std::string strQuery = PrepareSQL("SELECT MAX(idEpg) FROM epg");
   std::string strValue = GetSingleValue(strQuery);
   if (!strValue.empty())
-    return atoi(strValue.c_str());
+    return std::atoi(strValue.c_str());
   return 0;
 }

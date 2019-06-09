@@ -21,31 +21,25 @@
 #include "dialogs/GUIDialogProgress.h"
 #include "dialogs/GUIDialogSelect.h"
 #include "dialogs/GUIDialogYesNo.h"
+#include "filesystem/IDirectory.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIKeyboardFactory.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
-#include "input/InputManager.h"
-#include "input/Key.h"
+#include "guilib/WindowIDs.h"
 #include "messaging/ApplicationMessenger.h"
 #include "messaging/helpers/DialogHelper.h"
 #include "messaging/helpers/DialogOKHelper.h"
 #include "network/Network.h"
-#include "settings/MediaSettings.h"
-#include "settings/Settings.h"
-#include "threads/IRunnable.h"
-#include "utils/StringUtils.h"
-#include "utils/SystemInfo.h"
-#include "utils/URIUtils.h"
-#include "utils/log.h"
-#include "video/VideoDatabase.h"
-
 #include "pvr/PVRDatabase.h"
 #include "pvr/PVRItem.h"
 #include "pvr/PVRJobs.h"
 #include "pvr/PVRManager.h"
 #include "pvr/PVRStreamProperties.h"
 #include "pvr/addons/PVRClients.h"
+#include "pvr/channels/PVRChannel.h"
+#include "pvr/channels/PVRChannelGroup.h"
+#include "pvr/channels/PVRChannelGroups.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/dialogs/GUIDialogPVRChannelGuide.h"
 #include "pvr/dialogs/GUIDialogPVRGuideInfo.h"
@@ -53,11 +47,31 @@
 #include "pvr/dialogs/GUIDialogPVRRecordingSettings.h"
 #include "pvr/dialogs/GUIDialogPVRTimerSettings.h"
 #include "pvr/epg/EpgContainer.h"
+#include "pvr/epg/EpgDatabase.h"
 #include "pvr/epg/EpgInfoTag.h"
+#include "pvr/recordings/PVRRecording.h"
 #include "pvr/recordings/PVRRecordings.h"
 #include "pvr/recordings/PVRRecordingsPath.h"
+#include "pvr/timers/PVRTimerInfoTag.h"
 #include "pvr/timers/PVRTimers.h"
 #include "pvr/windows/GUIWindowPVRSearch.h"
+#include "settings/MediaSettings.h"
+#include "settings/Settings.h"
+#include "threads/IRunnable.h"
+#include "threads/SingleLock.h"
+#include "utils/StringUtils.h"
+#include "utils/SystemInfo.h"
+#include "utils/URIUtils.h"
+#include "utils/Variant.h"
+#include "utils/log.h"
+#include "video/VideoDatabase.h"
+
+#include <iterator>
+#include <map>
+#include <memory>
+#include <string>
+#include <utility>
+#include <vector>
 
 using namespace KODI::MESSAGING;
 
@@ -1287,13 +1301,13 @@ namespace PVR
       {
         bool bCancel(false);
         bool bPlayRecording = CGUIDialogYesNo::ShowAndGetInput(CVariant{19687}, // "Play recording"
-                                                       CVariant{""},
-                                                       CVariant{12021}, // "Play from beginning"
-                                                       CVariant{recording->m_strTitle},
-                                                       bCancel,
-                                                       CVariant{19000}, // "Switch to channel"
-                                                       CVariant{19687}, // "Play recording"
-                                                       0); // no autoclose
+                                                               CVariant{""},
+                                                               CVariant{12021}, // "Play from beginning"
+                                                               CVariant{recording->m_strTitle},
+                                                               bCancel,
+                                                               CVariant{19000}, // "Switch to channel"
+                                                               CVariant{19687}, // "Play recording"
+                                                               0); // no autoclose
         if (bCancel)
           return false;
 

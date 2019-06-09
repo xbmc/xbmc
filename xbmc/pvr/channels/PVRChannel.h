@@ -8,25 +8,23 @@
 
 #pragma once
 
-#include <memory>
-#include <string>
-#include <utility>
-#include <vector>
-
 #include "addons/kodi-addon-dev-kit/include/kodi/xbmc_pvr_types.h"
+#include "pvr/PVRTypes.h"
+#include "pvr/channels/PVRChannelNumber.h"
 #include "threads/CriticalSection.h"
 #include "utils/ISerializable.h"
 #include "utils/ISortable.h"
 #include "utils/Observer.h"
 
-#include "pvr/channels/PVRChannelNumber.h"
-#include "pvr/PVRTypes.h"
-
-class CVariant;
+#include <memory>
+#include <string>
+#include <utility>
+#include <vector>
 
 namespace PVR
 {
   class CPVREpg;
+  class CPVREpgInfoTag;
   class CPVRRadioRDSInfoTag;
 
   /** PVR Channel class */

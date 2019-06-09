@@ -24,21 +24,25 @@
  *
  */
 
+#include "XBDateTime.h"
+#include "pvr/PVRTypes.h"
+#include "threads/SystemClock.h"
+#include "video/Bookmark.h"
+#include "video/VideoInfoTag.h"
+
+#include <memory>
 #include <string>
 #include <vector>
 
-#include "XBDateTime.h"
-#include "addons/kodi-addon-dev-kit/include/kodi/xbmc_pvr_types.h"
-#include "threads/SystemClock.h"
-#include "video/VideoInfoTag.h"
-
-#include "pvr/PVRTypes.h"
-
 class CVideoDatabase;
-class CVariant;
+
+struct PVR_EDL_ENTRY;
+struct PVR_RECORDING;
 
 namespace PVR
 {
+  class CPVRTimerInfoTag;
+
   /*!
    * @brief Representation of a CPVRRecording unique ID.
    */

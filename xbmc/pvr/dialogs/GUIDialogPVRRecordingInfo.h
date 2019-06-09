@@ -10,6 +10,9 @@
 
 #include "guilib/GUIDialog.h"
 
+class CFileItem;
+class CGUIMessage;
+
 namespace PVR
 {
   class CGUIDialogPVRRecordingInfo : public CGUIDialog

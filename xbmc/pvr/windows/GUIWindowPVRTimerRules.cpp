@@ -9,14 +9,13 @@
 #include "GUIWindowPVRTimerRules.h"
 
 #include "FileItem.h"
-#include "utils/URIUtils.h"
-
 #include "pvr/timers/PVRTimersPath.h"
+#include "utils/URIUtils.h"
 
 using namespace PVR;
 
-CGUIWindowPVRTVTimerRules::CGUIWindowPVRTVTimerRules() :
-  CGUIWindowPVRTimersBase(false, WINDOW_TV_TIMER_RULES, "MyPVRTimers.xml")
+CGUIWindowPVRTVTimerRules::CGUIWindowPVRTVTimerRules()
+: CGUIWindowPVRTimersBase(false, WINDOW_TV_TIMER_RULES, "MyPVRTimers.xml")
 {
 }
 
@@ -26,8 +25,8 @@ std::string CGUIWindowPVRTVTimerRules::GetDirectoryPath()
   return URIUtils::PathHasParent(m_vecItems->GetPath(), basePath) ? m_vecItems->GetPath() : basePath;
 }
 
-CGUIWindowPVRRadioTimerRules::CGUIWindowPVRRadioTimerRules() :
-CGUIWindowPVRTimersBase(true, WINDOW_RADIO_TIMER_RULES, "MyPVRTimers.xml")
+CGUIWindowPVRRadioTimerRules::CGUIWindowPVRRadioTimerRules()
+: CGUIWindowPVRTimersBase(true, WINDOW_RADIO_TIMER_RULES, "MyPVRTimers.xml")
 {
 }
 

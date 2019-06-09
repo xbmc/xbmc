@@ -8,19 +8,20 @@
 
 #pragma once
 
-#include <map>
-#include <string>
-#include <utility>
-#include <vector>
-
 #include "addons/kodi-addon-dev-kit/include/kodi/xbmc_pvr_types.h" // PVR_CHANNEL_INVALID_UID
+#include "pvr/PVRTypes.h"
 #include "settings/SettingConditions.h"
 #include "settings/dialogs/GUIDialogSettingsManualBase.h"
 #include "settings/lib/SettingDependency.h"
 
-#include "pvr/PVRTypes.h"
+#include <map>
+#include <memory>
+#include <string>
+#include <vector>
 
+class CDateTime;
 class CSetting;
+
 struct IntegerSettingOption;
 
 namespace PVR

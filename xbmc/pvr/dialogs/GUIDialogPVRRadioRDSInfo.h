@@ -10,6 +10,8 @@
 
 #include "guilib/GUIDialog.h"
 
+#include <string>
+
 class CGUISpinControl;
 class CGUITextBox;
 
