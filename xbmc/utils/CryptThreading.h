@@ -8,6 +8,11 @@
 
 #pragma once
 
+#include <openssl/crypto.h>
+
+//! @todo - once we're at OpenSSL 1.1 this class and its .cpp file should be deleted.
+#if (OPENSSL_VERSION_NUMBER < 0x10100000L)
+
 #include <memory>
 #include <vector>
 #include "utils/GlobalsHandling.h"
@@ -31,3 +36,5 @@ private:
 
 XBMC_GLOBAL_REF(CryptThreadingInitializer,g_cryptThreadingInitializer);
 #define g_cryptThreadingInitializer XBMC_GLOBAL_USE(CryptThreadingInitializer)
+
+#endif
