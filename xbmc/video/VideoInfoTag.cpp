@@ -1545,7 +1545,7 @@ std::vector<std::string> CVideoInfoTag::Trim(std::vector<std::string>&& items)
   std::for_each(items.begin(), items.end(), [](std::string &str){
     str = StringUtils::Trim(str);
   });
-  return items;
+  return std::move(items);
 }
 
 int CVideoInfoTag::GetPlayCount() const
