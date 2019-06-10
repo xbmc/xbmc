@@ -47,7 +47,7 @@ void CDAVDirectory::ParseResponse(const TiXmlElement *pElement, CFileItem &item)
     else
     if (CDAVCommon::ValueWithoutNamespace(pResponseChild, "propstat"))
     {
-      if (CDAVCommon::GetStatusTag(pResponseChild->ToElement()) == "HTTP/1.1 200 OK")
+      if (CDAVCommon::GetStatusTag(pResponseChild->ToElement()).find("200 OK") != std::string::npos)
       {
         /* Iterate propstat children elements */
         for (pPropstatChild = pResponseChild->FirstChild(); pPropstatChild != 0; pPropstatChild = pPropstatChild->NextSibling())

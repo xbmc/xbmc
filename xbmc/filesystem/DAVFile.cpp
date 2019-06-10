@@ -74,7 +74,7 @@ bool CDAVFile::Execute(const CURL& url)
       {
         std::string sRetCode = CDAVCommon::GetStatusTag(pChild->ToElement());
         CRegExp rxCode;
-        rxCode.RegComp("HTTP/1\\.1\\s(\\d+)\\s.*");
+        rxCode.RegComp("HTTP/.+\\s(\\d+)\\s.*");
         if (rxCode.RegFind(sRetCode) >= 0)
         {
           if (rxCode.GetSubCount())
