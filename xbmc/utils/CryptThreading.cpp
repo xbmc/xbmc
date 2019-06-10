@@ -30,7 +30,8 @@ void lock_callback(int mode, int type, const char* file, int line)
     getlock(type)->unlock();
 }
 
-unsigned long GetCryptThreadId() {
+unsigned long GetCryptThreadId()
+{
   static std::atomic<unsigned long> tidSequence{0};
   static thread_local unsigned long tidTl{0};
 
@@ -75,7 +76,8 @@ CCriticalSection* CryptThreadingInitializer::GetLock(int index)
   return curlock.get();
 }
 
-unsigned long CryptThreadingInitializer::GetCurrentCryptThreadId() {
+unsigned long CryptThreadingInitializer::GetCurrentCryptThreadId()
+{
   return GetCryptThreadId();
 }
 

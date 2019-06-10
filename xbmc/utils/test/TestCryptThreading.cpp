@@ -38,17 +38,17 @@ TEST(TestCryptThreadingInitializer, ProducesValidThreadIds)
   for (int i = 0; i < PVTID_NUM_THREADS; i++)
   {
     testThreads[i] = std::thread([&gatheredIds, &gatheredIdsMutex, &threadsWaiting, &gate]() {
-        threadsWaiting++;
+      threadsWaiting++;
 
-        while (!gate);
+      while (!gate);
 
-        unsigned long myTid = g_cryptThreadingInitializer.GetCurrentCryptThreadId();
+      unsigned long myTid = g_cryptThreadingInitializer.GetCurrentCryptThreadId();
 
-        {
-          CSingleLock gatheredIdsLock(gatheredIdsMutex);
-          gatheredIds.push_back(myTid);
-        }
-      });        
+      {
+        CSingleLock gatheredIdsLock(gatheredIdsMutex);
+        gatheredIds.push_back(myTid);
+      }
+    });        
   }
 
   gate = true;
