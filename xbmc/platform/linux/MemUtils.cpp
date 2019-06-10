@@ -9,8 +9,7 @@
 #include "utils/MemUtils.h"
 
 #include <cstdlib>
-
-#include <sys/sysinfo.h>
+#include <fstream>
 
 namespace KODI
 {
@@ -35,11 +34,35 @@ void GetMemoryStatus(MemoryStatus* buffer)
   if (!buffer)
     return;
 
-  struct sysinfo info;
-  sysinfo(&info);
+  std::ifstream file("/proc/meminfo");
 
-  buffer->availPhys = ((info.freeram + info.bufferram) * info.mem_unit);
-  buffer->totalPhys = (info.totalram * info.mem_unit);
+  if (!file.is_open())
+    return;
+
+  uint64_t buffers;
+  uint64_t cached;
+  uint64_t free;
+  uint64_t total;
+  uint64_t reclaimable;
+
+  std::string token;
+
+  while (file >> token)
+  {
+    if (token == "Buffers:")
+      file >> buffers;
+    if (token == "Cached:")
+      file >> cached;
+    if (token == "MemFree:")
+      file >> free;
+    if (token == "MemTotal:")
+      file >> total;
+    if (token == "SReclaimable:")
+      file >> reclaimable;
+  }
+
+  buffer->totalPhys = total * 1024;
+  buffer->availPhys = (free + cached + reclaimable + buffers) * 1024;
 }
 
 }
