@@ -50,7 +50,6 @@ void GetMemoryStatus(MemoryStatus* buffer)
   if (sysctlbyname("hw.physmem", &physmem, &len, NULL, 0) == 0)
   {
     buffer->totalPhys = physmem;
-    buffer->totalVirtual = physmem;
   }
 
   /* pagesize */
@@ -79,11 +78,6 @@ void GetMemoryStatus(MemoryStatus* buffer)
 
   /* mem_avail = mem_inactive + mem_cache + mem_free */
   buffer->availPhys = mem_inactive + mem_cache + mem_free;
-  buffer->availVirtual = mem_inactive + mem_cache + mem_free;
-
-  size_t swap_free = 0;
-  if (sysctlbyname("vm.stats.vm.v_swappgsout", &swap_free, &len, NULL, 0) == 0)
-    buffer->availPageFile = swap_free * pagesize;
 }
 
 }

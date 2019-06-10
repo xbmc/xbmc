@@ -62,44 +62,31 @@ void GetMemoryStatus(MemoryStatus* buffer)
   if (sysctl(mib.data(), mib.size(), &physmem, &len, nullptr, 0) == 0 && len == sizeof(physmem))
     buffer->totalPhys = physmem;
 
-  // Virtual memory.
-  mib[0] = CTL_VM;
-  mib[1] = VM_SWAPUSAGE;
-  struct xsw_usage swap;
-  len = sizeof(struct xsw_usage);
-  if (sysctl(mib.data(), mib.size(), &swap, &len, NULL, 0) == 0)
-  {
-      buffer->availPageFile = swap.xsu_avail;
-      buffer->totalVirtual = buffer->totalPhys + swap.xsu_total;
-  }
-
   // In use.
   mach_port_t stat_port = mach_host_self();
   vm_statistics_data_t vm_stat;
   mach_msg_type_number_t count = sizeof(vm_stat) / sizeof(natural_t);
   if (host_statistics(stat_port, HOST_VM_INFO, reinterpret_cast<host_info_t>(&vm_stat), &count) == 0)
   {
-      // Find page size.
+    // Find page size.
 #if defined(TARGET_DARWIN_IOS)
-      // on ios with 64bit ARM CPU the page size is wrongly given as 16K
-      // when using the sysctl approach. We can use the host_page_size
-      // function instead which will give the proper 4k pagesize
-      // on both 32 and 64 bit ARM CPUs
-      vm_size_t pageSize;
-      host_page_size(stat_port, &pageSize);
+    // on ios with 64bit ARM CPU the page size is wrongly given as 16K
+    // when using the sysctl approach. We can use the host_page_size
+    // function instead which will give the proper 4k pagesize
+    // on both 32 and 64 bit ARM CPUs
+    vm_size_t pageSize;
+    host_page_size(stat_port, &pageSize);
 #else
-      int pageSize;
-      mib[0] = CTL_HW;
-      mib[1] = HW_PAGESIZE;
-      len = sizeof(int);
-      if (sysctl(mib.data(), mib.size(), &pageSize, &len, nullptr, 0) == 0)
+    int pageSize;
+    mib[0] = CTL_HW;
+    mib[1] = HW_PAGESIZE;
+    len = sizeof(int);
+    if (sysctl(mib.data(), mib.size(), &pageSize, &len, nullptr, 0) == 0)
 #endif
-      {
-          uint64_t used = (vm_stat.active_count + vm_stat.inactive_count + vm_stat.wire_count) * pageSize;
-
-          buffer->availPhys = buffer->totalPhys - used;
-          buffer->availVirtual  = buffer->availPhys; // FIXME.
-      }
+    {
+      uint64_t used = (vm_stat.active_count + vm_stat.inactive_count + vm_stat.wire_count) * pageSize;
+      buffer->availPhys = buffer->totalPhys - used;
+    }
   }
 }
 

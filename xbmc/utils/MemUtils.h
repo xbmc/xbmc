@@ -21,10 +21,6 @@ struct MemoryStatus
 
   uint64_t totalPhys;
   uint64_t availPhys;
-  uint64_t totalPageFile;
-  uint64_t availPageFile;
-  uint64_t totalVirtual;
-  uint64_t availVirtual;
 };
 
 void* AlignedMalloc(size_t s, size_t alignTo);

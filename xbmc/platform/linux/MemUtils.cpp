@@ -38,11 +38,8 @@ void GetMemoryStatus(MemoryStatus* buffer)
   struct sysinfo info;
   sysinfo(&info);
 
-  buffer->availPageFile = (info.freeswap * info.mem_unit);
   buffer->availPhys = ((info.freeram + info.bufferram) * info.mem_unit);
-  buffer->availVirtual = ((info.freeram + info.bufferram) * info.mem_unit);
   buffer->totalPhys = (info.totalram * info.mem_unit);
-  buffer->totalVirtual = (info.totalram * info.mem_unit);
 }
 
 }

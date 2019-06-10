@@ -32,13 +32,8 @@ void GetMemoryStatus(MemoryStatus* buffer)
   memory.dwLength = sizeof(memory);
   GlobalMemoryStatusEx(&memory);
 
-  buffer->memoryLoad = memory.dwMemoryLoad;
   buffer->totalPhys = memory.ullTotalPhys;
   buffer->availPhys = memory.ullAvailPhys;
-  buffer->totalPageFile = memory.ullTotalPageFile;
-  buffer->availPageFile = memory.ullAvailPageFile;
-  buffer->totalVirtual = memory.ullTotalVirtual;
-  buffer->availVirtual = memory.ullAvailVirtual;
 }
 
 }
