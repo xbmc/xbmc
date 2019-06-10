@@ -8,6 +8,11 @@
 
 #pragma once
 
+#include <openssl/crypto.h>
+
+//! @todo - once we're at OpenSSL 1.1 this class and its .cpp file should be deleted.
+#if (OPENSSL_VERSION_NUMBER < 0x10100000L)
+
 #include <memory>
 #include <vector>
 #include "utils/GlobalsHandling.h"
@@ -24,6 +29,11 @@ public:
 
   CCriticalSection* GetLock(int index);
 
+  /**
+   * This is so testing can reach the thread id generation.
+   */
+  unsigned long GetCurrentCryptThreadId();
+
 private:
   CryptThreadingInitializer(const CryptThreadingInitializer &rhs) = delete;
   CryptThreadingInitializer& operator=(const CryptThreadingInitializer&) = delete;
@@ -31,3 +41,5 @@ private:
 
 XBMC_GLOBAL_REF(CryptThreadingInitializer,g_cryptThreadingInitializer);
 #define g_cryptThreadingInitializer XBMC_GLOBAL_USE(CryptThreadingInitializer)
+
+#endif
