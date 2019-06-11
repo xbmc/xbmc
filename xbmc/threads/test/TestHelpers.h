@@ -75,12 +75,12 @@ public:
 
   void join()
   {
-    cthread->WaitForThreadExit((unsigned int)-1);
+    cthread->Join(static_cast<unsigned int>(-1));
   }
 
   bool timed_join(unsigned int millis)
   {
-    return cthread->WaitForThreadExit(millis);
+    return cthread->Join(millis);
   }
 };
 

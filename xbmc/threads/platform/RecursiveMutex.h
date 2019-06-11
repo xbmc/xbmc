@@ -14,7 +14,6 @@
 #include <pthread.h>
 namespace XbmcThreads
 {
-  // forward declare in preparation for the friend declaration
   class CRecursiveMutex
   {
     pthread_mutex_t m_mutex;

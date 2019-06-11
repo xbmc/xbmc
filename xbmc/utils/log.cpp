@@ -206,7 +206,7 @@ bool CLog::WriteLogString(int logLevel, const std::string& logString)
                                   minute,
                                   second,
                                   static_cast<int>(millisecond),
-                                  (uint64_t)CThread::GetDisplayThreadId(CThread::GetCurrentThreadId()),
+                                  static_cast<uint64_t>(CThread::GetCurrentThreadNativeHandle()),
                                   levelNames[logLevel]) + strData;
 
   return g_logState.m_platform.WriteStringToLog(strData);
