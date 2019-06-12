@@ -146,6 +146,7 @@ set(optional_deps Alsa
                   CAP
                   CCache
                   CEC
+                  ClangFormat
                   DBus
                   LCMS2
                   LircClient
