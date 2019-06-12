@@ -17,6 +17,7 @@
 #include "OptionalsReg.h"
 #include "platform/linux/OptionalsReg.h"
 #include "windowing/GraphicContext.h"
+#include "GBMDPMSSupport.h"
 #include "platform/linux/powermanagement/LinuxPowerSyscall.h"
 #include "settings/DisplaySettings.h"
 #include "utils/log.h"
@@ -66,6 +67,7 @@ CWinSystemGbm::CWinSystemGbm() :
     }
   }
 
+  m_dpms = std::make_shared<CGBMDPMSSupport>();
   CLinuxPowerSyscall::Register();
   m_lirc.reset(OPTIONALS::LircRegister());
   m_libinput->Start();

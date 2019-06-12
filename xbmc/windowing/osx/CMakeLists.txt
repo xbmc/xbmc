@@ -1,10 +1,12 @@
-set(SOURCES OSScreenSaverOSX.cpp
+set(SOURCES CocoaDPMSSupport.cpp
+            OSScreenSaverOSX.cpp
             WinEventsOSX.mm
             WinEventsSDL.cpp
             WinSystemOSX.mm
             WinSystemOSXGL.mm
             VideoSyncOsx.cpp)
-set(HEADERS OSScreenSaverOSX.h
+set(HEADERS CocoaDPMSSupport.h
+            OSScreenSaverOSX.h
             WinEventsOSX.h
             WinEventsSDL.h
             WinSystemOSX.h

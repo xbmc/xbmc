@@ -6,7 +6,8 @@ set(SOURCES GLContextEGL.cpp
             WinSystemX11.cpp
             WinSystemX11GLContext.cpp
             XRandR.cpp
-            VideoSyncOML.cpp)
+            VideoSyncOML.cpp
+            X11DPMSSupport.cpp)
 
 set(HEADERS GLContext.h
             GLContextEGL.h
@@ -16,7 +17,8 @@ set(HEADERS GLContext.h
             WinSystemX11.h
             WinSystemX11GLContext.h
             XRandR.h
-            VideoSyncOML.h)
+            VideoSyncOML.h
+            X11DPMSSupport.h)
 
 if(GLX_FOUND)
   list(APPEND SOURCES GLContextGLX.cpp

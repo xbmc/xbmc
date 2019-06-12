@@ -252,7 +252,6 @@ void CServiceBroker::UnregisterAppPort()
   m_pAppPort.reset();
 }
 
-
 CDecoderFilterManager* CServiceBroker::m_decoderFilterManager = nullptr;
 void CServiceBroker::RegisterDecoderFilterManager(CDecoderFilterManager* manager)
 {

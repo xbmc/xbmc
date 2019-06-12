@@ -29,6 +29,7 @@
 
 #include "OptionalsReg.h"
 #include "platform/linux/OptionalsReg.h"
+#include "X11DPMSSupport.h"
 
 using namespace KODI;
 
@@ -260,6 +261,7 @@ bool CWinSystemX11GLContext::RefreshGLContext(bool force)
     return success;
   }
 
+  m_dpms = std::make_shared<CX11DPMSSupport>();
   VIDEOPLAYER::CProcessInfoX11::Register();
   RETRO::CRPProcessInfoX11::Register();
   RETRO::CRPProcessInfoX11::RegisterRendererFactory(new RETRO::CRendererFactoryOpenGL);
