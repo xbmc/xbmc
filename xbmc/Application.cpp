@@ -3527,11 +3527,8 @@ void CApplication::CheckScreenSaverAndDPMS()
   bool maybeDPMS = true;
   if (m_dpmsIsActive)
     maybeDPMS = false;
-  else if (dpms)
-  {
-    if (!dpms->IsSupported())
-      maybeDPMS = false;
-  }
+  else if (!dpms || !dpms->IsSupported())
+    maybeDPMS = false;
   else if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_POWERMANAGEMENT_DISPLAYSOFF) <= 0)
     maybeDPMS = false;
 
