@@ -8,8 +8,9 @@
 
 #include "utils/MemUtils.h"
 
-#include <malloc.h>
-#include <windows.h>
+#include "platform/android/activity/XBMCApp.h"
+
+#include <stdlib.h>
 
 namespace KODI
 {
@@ -18,22 +19,30 @@ namespace MEMORY
 
 void* AlignedMalloc(size_t s, size_t alignTo)
 {
-  return _aligned_malloc(s, alignTo);
+  void* p;
+  posix_memalign(&p, alignTo, s);
+
+  return p;
 }
 
 void AlignedFree(void* p)
 {
-  _aligned_free(p);
+  free(p);
 }
 
 void GetMemoryStatus(MemoryStatus* buffer)
 {
-  MEMORYSTATUSEX memory;
-  memory.dwLength = sizeof(memory);
-  GlobalMemoryStatusEx(&memory);
+  if (!buffer)
+    return;
 
-  buffer->totalPhys = memory.ullTotalPhys;
-  buffer->availPhys = memory.ullAvailPhys;
+  long availMem, totalMem;
+
+  if (CXBMCApp::get()->GetMemoryInfo(availMem, totalMem))
+  {
+    buffer = {};
+    buffer->totalPhys = totalMem;
+    buffer->availPhys = availMem;
+  }
 }
 
 }

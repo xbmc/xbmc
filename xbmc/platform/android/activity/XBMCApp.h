@@ -43,6 +43,8 @@ class CVariant;
 class IInputDeviceCallbacks;
 class IInputDeviceEventHandler;
 class CVideoSyncAndroid;
+class CJNIActivityManager;
+
 typedef struct _JNIEnv JNIEnv;
 
 struct androidIcon
@@ -197,6 +199,7 @@ public:
   bool getVideosurfaceInUse();
   void setVideosurfaceInUse(bool videosurfaceInUse);
 
+  bool GetMemoryInfo(long& availMem, long& totalMem);
 protected:
   // limit who can access Volume
   friend class CAESinkAUDIOTRACK;
@@ -246,6 +249,8 @@ private:
   static CVideoSyncAndroid* m_syncImpl;
   static CEvent m_vsyncEvent;
   static CEvent m_displayChangeEvent;
+
+  std::unique_ptr<CJNIActivityManager> m_activityManager;
 
   void XBMC_Pause(bool pause);
   void XBMC_Stop();

@@ -1,6 +1,5 @@
 set(SOURCES ConvUtils.cpp
             Filesystem.cpp
-            MemUtils.cpp
             MessagePrinter.cpp
             PlatformPosix.cpp
             PosixMountProvider.cpp
