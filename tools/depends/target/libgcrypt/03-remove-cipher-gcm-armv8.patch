@@ -1,5 +1,5 @@
---- cipher/Makefile.am.orig	2017-10-11 11:32:12.196210815 +0200
-+++ cipher/Makefile.am	2017-10-11 11:32:54.668210405 +0200
+--- a/cipher/Makefile.am
++++ b/cipher/Makefile.am
 @@ -43,7 +43,6 @@
  cipher.c cipher-internal.h \
  cipher-cbc.c cipher-cfb.c cipher-ofb.c cipher-ctr.c cipher-aeswrap.c \

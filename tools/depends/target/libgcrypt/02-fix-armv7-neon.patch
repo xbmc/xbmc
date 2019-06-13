@@ -1,5 +1,5 @@
---- configure.ac.orig	2017-10-11 11:20:51.572217383 +0200
-+++ configure.ac	2017-10-11 11:23:40.384215754 +0200
+--- a/configure.ac
++++ b/configure.ac
 @@ -2083,10 +2083,6 @@
        arm*-*-*)
           # Build with the assembly implementation

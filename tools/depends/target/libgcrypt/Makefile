@@ -32,12 +32,12 @@ $(TARBALLS_LOCATION)/$(ARCHIVE):
 $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 	rm -rf $(PLATFORM)/*; mkdir -p $(PLATFORM)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
-	cd $(PLATFORM); patch -p0 < ../01-gcrypt-android-select.patch
-	cd $(PLATFORM); patch -p0 < ../02-fix-armv7-neon.patch
+	cd $(PLATFORM); patch -p1 -i ../01-gcrypt-android-select.patch
+	cd $(PLATFORM); patch -p1 -i ../02-fix-armv7-neon.patch
 ifneq ($(findstring arm64, $(CPU)), arm64)
-	cd $(PLATFORM); patch -p0 < ../03-remove-cipher-gcm-armv8.patch
+	cd $(PLATFORM); patch -p1 -i ../03-remove-cipher-gcm-armv8.patch
 endif
-	cd $(PLATFORM); patch -p0 < ../04-fix-o-flag-munging.patch
+	cd $(PLATFORM); patch -p1 -i ../04-fix-o-flag-munging.patch
 	# do not build the tests or docs
 	sed -ie "s|doc tests||" "$(PLATFORM)/Makefile.am"
 	sed -ie "s|\$$(doc) tests||" "$(PLATFORM)/Makefile.am"
