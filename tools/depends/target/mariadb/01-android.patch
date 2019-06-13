@@ -50,7 +50,7 @@
  
 --- a/libmariadb/CMakeLists.txt
 +++ b/libmariadb/CMakeLists.txt
-@@ -291,7 +291,6 @@ ELSE()
+@@ -291,7 +291,6 @@
    IF(ICONV_INCLUDE_DIR)
       INCLUDE_DIRECTORIES(BEFORE ${ICONV_INCLUDE_DIR}) 
    ENDIF()
