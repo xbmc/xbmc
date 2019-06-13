@@ -27,7 +27,7 @@ $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 	cd $(PLATFORM); ./bootstrap
 	cd $(PLATFORM); $(CONFIGURE)
 ifeq ($(TARGET_PLATFORM),appletvos)
-	cd $(PLATFORM); patch -p0 < ../tvos.patch
+	cd $(PLATFORM); patch -p1 -i ../tvos.patch
 endif
 
 $(LIBDYLIB): $(PLATFORM)
