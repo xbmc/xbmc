@@ -1,5 +1,5 @@
---- src/video/quartz/SDL_QuartzVideo.h	2012-01-19 07:30:06.000000000 +0100
-+++ src/video/quartz/SDL_QuartzVideo.h	2013-10-30 16:35:02.000000000 +0100
+--- a/src/video/quartz/SDL_QuartzVideo.h
++++ b/src/video/quartz/SDL_QuartzVideo.h
 @@ -91,7 +91,9 @@
      CGDirectDisplayID  display;            /* 0 == main display (only support single display) */
      const void         *mode;              /* current mode of the display */
