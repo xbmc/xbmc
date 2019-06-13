@@ -46,16 +46,16 @@ $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 	rm -rf $(PLATFORM); mkdir -p $(PLATFORM)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
 	cd $(PLATFORM); patch -p1 -i ../autotools41.patch
-	cd $(PLATFORM); patch -p0 -i ../configureEndian.patch
+	cd $(PLATFORM); patch -p1 -i ../configureEndian.patch
 	cd $(PLATFORM); chmod +x source3/autogen.sh source3/script/*.sh librpc/build_idl.sh
 	cd $(PLATFORM)/source3; ./autogen.sh
 ifeq ($(OS),android)
-	cd $(PLATFORM); patch -p0 < ../samba_android.patch
-	cd $(PLATFORM); patch -p1 < ../samba_off64_t.patch
+	cd $(PLATFORM); patch -p1 -i ../samba_android.patch
+	cd $(PLATFORM); patch -p1 -i ../samba_off64_t.patch
 endif
 ifeq ($(OS), ios)
-	cd $(PLATFORM); patch -p0 < ../no_fork_and_exec.patch
-	cd $(PLATFORM); patch -p0 < ../crt_extensions.patch
+	cd $(PLATFORM); patch -p1 -i ../no_fork_and_exec.patch
+	cd $(PLATFORM); patch -p1 -i ../crt_extensions.patch
 endif
 ifeq (darwin, $(findstring darwin, $(HOST)))
 	sed -ie "s|ifndef HAVE_CLOCK_GETTIME|if !defined(HAVE_CLOCK_GETTIME) \&\& !defined(CLOCK_REALTIME)|" "$(PLATFORM)/lib/replace/system/time.h"

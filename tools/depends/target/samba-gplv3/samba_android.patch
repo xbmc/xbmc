@@ -1,5 +1,24 @@
---- lib/replace/system/network.h
-+++ lib/replace/system/network.h
+--- a/lib/addns/dnsquery.c
++++ b/lib/addns/dnsquery.c
+@@ -41,6 +41,16 @@
+ 
+ #define MAX_DNS_PACKET_SIZE 0xffff
+ 
++#if defined(ANDROID)
++#  define NS_HFIXEDSZ   12
++#  define C_IN          1
++#  define T_A           1
++#  define ns_t_srv      33
++#  define ns_t_aaaa     28
++#  define NS_PACKETSZ	512
++#  define T_NS          2
++#endif
++
+ #ifdef NS_HFIXEDSZ	/* Bind 8/9 interface */
+ #if !defined(C_IN)	/* AIX 5.3 already defines C_IN */
+ #  define C_IN		ns_c_in
+--- a/lib/replace/system/network.h
++++ b/lib/replace/system/network.h
 @@ -128,7 +128,7 @@
  struct hostent *rep_gethostbyname(const char *name);
  #endif
@@ -9,9 +28,8 @@
  #include <ifaddrs.h>
  #endif
  
-diff -ru lib/util/charset/iconv.c lib/util/charset/iconv.c
---- lib/util/charset/iconv.c	2013-01-29 09:49:31.000000000 +0100
-+++ lib/util/charset/iconv.c	2015-03-28 08:30:53.191217266 +0100
+--- a/lib/util/charset/iconv.c
++++ b/lib/util/charset/iconv.c
 @@ -24,6 +24,11 @@
  #include "system/filesys.h"
  #include "charset_proto.h"
@@ -27,7 +45,7 @@ diff -ru lib/util/charset/iconv.c lib/util/charset/iconv.c
 @@ -546,6 +551,19 @@
  	return 0;
  }
-
+ 
 +#if defined(ANDROID)
 +void swab(const void *from, void*to, ssize_t n)
 +{
@@ -44,9 +62,8 @@ diff -ru lib/util/charset/iconv.c lib/util/charset/iconv.c
  static size_t iconv_swab(void *cd, const char **inbuf, size_t *inbytesleft,
  			 char **outbuf, size_t *outbytesleft)
  {
-diff -ru lib/util/util_pw.c lib/util/util_pw.c
---- lib/util/util_pw.c	2013-01-29 09:49:31.000000000 +0100
-+++ lib/util/util_pw.c	2015-03-28 08:30:53.843217274 +0100
+--- a/lib/util/util_pw.c
++++ b/lib/util/util_pw.c
 @@ -40,7 +40,9 @@
  	ret->pw_passwd = talloc_strdup(ret, from->pw_passwd);
  	ret->pw_uid = from->pw_uid;
@@ -57,9 +74,8 @@ diff -ru lib/util/util_pw.c lib/util/util_pw.c
  	ret->pw_dir = talloc_strdup(ret, from->pw_dir);
  	ret->pw_shell = talloc_strdup(ret, from->pw_shell);
  
-diff -ru nsswitch/libwbclient/wbc_pwd.c nsswitch/libwbclient/wbc_pwd.c
---- nsswitch/libwbclient/wbc_pwd.c	2013-01-29 09:49:31.000000000 +0100
-+++ nsswitch/libwbclient/wbc_pwd.c	2015-03-28 08:30:53.847217275 +0100
+--- a/nsswitch/libwbclient/wbc_pwd.c
++++ b/nsswitch/libwbclient/wbc_pwd.c
 @@ -45,7 +45,9 @@
  	struct passwd *pw = (struct passwd *)ptr;
  	free(pw->pw_name);
@@ -83,9 +99,8 @@ diff -ru nsswitch/libwbclient/wbc_pwd.c nsswitch/libwbclient/wbc_pwd.c
  	pw->pw_shell = strdup(p->pw_shell);
  	if (pw->pw_shell == NULL) {
  		goto fail;
-diff -ru nsswitch/libwbclient/wbc_sid.c nsswitch/libwbclient/wbc_sid.c
---- nsswitch/libwbclient/wbc_sid.c	2013-01-29 09:49:31.000000000 +0100
-+++ nsswitch/libwbclient/wbc_sid.c	2015-03-28 08:30:53.847217275 +0100
+--- a/nsswitch/libwbclient/wbc_sid.c
++++ b/nsswitch/libwbclient/wbc_sid.c
 @@ -957,9 +957,11 @@
  
  		wbcFreeMemory(name);
@@ -98,8 +113,8 @@ diff -ru nsswitch/libwbclient/wbc_sid.c nsswitch/libwbclient/wbc_sid.c
  	}
  
  	wbc_status = WBC_ERR_SUCCESS;
---- nsswitch/winbind_struct_protocol.h
-+++ nsswitch/winbind_struct_protocol.h
+--- a/nsswitch/winbind_struct_protocol.h
++++ b/nsswitch/winbind_struct_protocol.h
 @@ -186,6 +186,10 @@
  	WINBINDD_NUM_CMDS
  };
@@ -111,10 +126,32 @@ diff -ru nsswitch/libwbclient/wbc_sid.c nsswitch/libwbclient/wbc_sid.c
  typedef struct winbindd_pw {
  	fstring pw_name;
  	fstring pw_passwd;
-diff -ru source3/configure source3/configure
---- source3/configure	2013-01-29 10:21:59.000000000 +0100
-+++ source3/configure	2015-03-28 08:43:34.903227582 +0100
-@@ -22424,7 +22424,7 @@
+--- a/source3/Makefile.in
++++ b/source3/Makefile.in
+@@ -2427,8 +2427,6 @@
+ 		@SONAMEFLAG@`basename $@`
+ 
+ $(LIBSMBCLIENT_SHARED_TARGET): $(LIBSMBCLIENT_SHARED_TARGET_SONAME)
+-	@rm -f $@
+-	@ln -s `basename $(LIBSMBCLIENT_SHARED_TARGET_SONAME)` $@
+ 
+ $(LIBSMBCLIENT_STATIC_TARGET): $(BINARY_PREREQS) $(LIBSMBCLIENT_OBJ1)
+ 	@echo Linking non-shared library $@
+@@ -2445,11 +2443,6 @@
+ installlibsmbclient:: installdirs libsmbclient
+ 	@$(SHELL) $(srcdir)/script/installdirs.sh $(INSTALLPERMS_BIN) $(DESTDIR) $(LIBDIR)
+ 	-$(INSTALLLIBCMD_SH) $(LIBSMBCLIENT_SHARED_TARGET_SONAME) $(DESTDIR)$(LIBDIR)
+-	@rm -f $(DESTDIR)$(LIBDIR)/`basename $(LIBSMBCLIENT_SHARED_TARGET)`
+-	-if test -r $(LIBSMBCLIENT_SHARED_TARGET_SONAME) ; then \
+-		ln -f -s `basename $(LIBSMBCLIENT_SHARED_TARGET_SONAME)` \
+-			$(DESTDIR)$(LIBDIR)/`basename $(LIBSMBCLIENT_SHARED_TARGET)` ; \
+-	fi
+ 	-$(INSTALLLIBCMD_A) $(LIBSMBCLIENT_STATIC_TARGET) $(DESTDIR)$(LIBDIR)
+ 	@$(SHELL) $(srcdir)/script/installdirs.sh $(INSTALLPERMS_BIN) $(DESTDIR) ${prefix}/include
+ 	-$(INSTALLCMD) -m $(INSTALLPERMS_DATA) $(LIBSMBCLIENT_HEADERS) $(DESTDIR)${prefix}/include
+--- a/source3/configure
++++ b/source3/configure
+@@ -22426,7 +22426,7 @@
  LIBSMBCLIENT_SOVER=0
  LIBSMBCLIENT_FULLVER=$LIBSMBCLIENT_SOVER
  
@@ -123,7 +160,7 @@ diff -ru source3/configure source3/configure
  LIBSMBCLIENT_SHARED_TARGET_FULLVER=$LIBSMBCLIENT_SHARED_TARGET.$LIBSMBCLIENT_FULLVER
  
  
-@@ -37580,19 +37580,19 @@
+@@ -37582,19 +37582,19 @@
  if test "x$ac_cv_lib_pthread_pthread_attr_init" = xyes; then :
  
  	     PTHREAD_CFLAGS="-D_REENTRANT -D_POSIX_PTHREAD_SEMANTICS"
@@ -147,7 +184,7 @@ diff -ru source3/configure source3/configure
  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
  /* end confdefs.h.  */
  
-@@ -37625,7 +37625,7 @@
+@@ -37627,7 +37627,7 @@
  if test "x$ac_cv_lib_pthreads_pthread_attr_init" = xyes; then :
  
  	     PTHREAD_CFLAGS="-D_THREAD_SAFE"
@@ -156,9 +193,8 @@ diff -ru source3/configure source3/configure
  fi
  
  fi
-diff -ru source3/lib/dumpcore.c source3/lib/dumpcore.c
---- source3/lib/dumpcore.c
-+++ source3/lib/dumpcore.c
+--- a/source3/lib/dumpcore.c
++++ b/source3/lib/dumpcore.c
 @@ -320,7 +320,7 @@
  	umask(~(0700));
  	dbgflush();
@@ -168,52 +204,8 @@ diff -ru source3/lib/dumpcore.c source3/lib/dumpcore.c
  	/* On Linux we lose the ability to dump core when we change our user
  	 * ID. We know how to dump core safely, so let's make sure we have our
  	 * dumpable flag set.
-diff -ru lib/addns/dnsquery.c lib/addns/dnsquery.c
---- lib/addns/dnsquery.c
-+++ lib/addns/dnsquery.c
-@@ -41,6 +41,16 @@
- 
- #define MAX_DNS_PACKET_SIZE 0xffff
- 
-+#if defined(ANDROID)
-+#  define NS_HFIXEDSZ   12
-+#  define C_IN          1
-+#  define T_A           1
-+#  define ns_t_srv      33
-+#  define ns_t_aaaa     28
-+#  define NS_PACKETSZ	512
-+#  define T_NS          2
-+#endif
-+
- #ifdef NS_HFIXEDSZ	/* Bind 8/9 interface */
- #if !defined(C_IN)	/* AIX 5.3 already defines C_IN */
- #  define C_IN		ns_c_in
-diff -ru source3/passdb/passdb.c source3/passdb/passdb.c
---- source3/Makefile.in
-+++ source3/Makefile.in
-@@ -2426,8 +2426,6 @@
- 		@SONAMEFLAG@`basename $@`
- 
- $(LIBSMBCLIENT_SHARED_TARGET): $(LIBSMBCLIENT_SHARED_TARGET_SONAME)
--	@rm -f $@
--	@ln -s `basename $(LIBSMBCLIENT_SHARED_TARGET_SONAME)` $@
- 
- $(LIBSMBCLIENT_STATIC_TARGET): $(BINARY_PREREQS) $(LIBSMBCLIENT_OBJ1)
- 	@echo Linking non-shared library $@
-@@ -2444,11 +2442,6 @@
- installlibsmbclient:: installdirs libsmbclient
- 	@$(SHELL) $(srcdir)/script/installdirs.sh $(INSTALLPERMS_BIN) $(DESTDIR) $(LIBDIR)
- 	-$(INSTALLLIBCMD_SH) $(LIBSMBCLIENT_SHARED_TARGET_SONAME) $(DESTDIR)$(LIBDIR)
--	@rm -f $(DESTDIR)$(LIBDIR)/`basename $(LIBSMBCLIENT_SHARED_TARGET)`
--	-if test -r $(LIBSMBCLIENT_SHARED_TARGET_SONAME) ; then \
--		ln -f -s `basename $(LIBSMBCLIENT_SHARED_TARGET_SONAME)` \
--			$(DESTDIR)$(LIBDIR)/`basename $(LIBSMBCLIENT_SHARED_TARGET)` ; \
--	fi
- 	-$(INSTALLLIBCMD_A) $(LIBSMBCLIENT_STATIC_TARGET) $(DESTDIR)$(LIBDIR)
- 	@$(SHELL) $(srcdir)/script/installdirs.sh $(INSTALLPERMS_BIN) $(DESTDIR) ${prefix}/include
- 	-$(INSTALLCMD) -m $(INSTALLPERMS_DATA) $(LIBSMBCLIENT_HEADERS) $(DESTDIR)${prefix}/include
---- source3/passdb/passdb.c	2013-01-29 09:49:31.000000000 +0100
-+++ source3/passdb/passdb.c	2015-03-28 08:30:54.543217284 +0100
+--- a/source3/passdb/passdb.c
++++ b/source3/passdb/passdb.c
 @@ -163,6 +163,7 @@
  
  	fullname = NULL;
@@ -237,9 +229,8 @@ diff -ru source3/passdb/passdb.c source3/passdb/passdb.c
  	}
  	TALLOC_FREE(fullname);
  
-diff -ru source3/passdb/pdb_interface.c source3/passdb/pdb_interface.c
---- source3/passdb/pdb_interface.c	2013-01-29 09:49:31.000000000 +0100
-+++ source3/passdb/pdb_interface.c	2015-03-28 08:30:54.547217284 +0100
+--- a/source3/passdb/pdb_interface.c
++++ b/source3/passdb/pdb_interface.c
 @@ -1570,6 +1570,7 @@
  	}
  
