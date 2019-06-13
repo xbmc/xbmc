@@ -33,18 +33,18 @@ $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 	echo $(NATIVEPREFIX)
 	rm -rf $(PLATFORM)/*; mkdir -p $(PLATFORM)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
-	cd $(PLATFORM); patch -p1 < ../crosscompile.patch
-	cd $(PLATFORM); patch -p1 < ../setup.patch
-	cd $(PLATFORM); patch -p1 < ../fix-datetime.patch
-	cd $(PLATFORM); patch -p1 < ../android.patch
-	cd $(PLATFORM); patch -p1 < ../no-export-path.patch
-	cd $(PLATFORM); patch -p1 < ../fix-ffi.patch
-	cd $(PLATFORM); patch -p1 < ../android-binmodule.patch
-	cd $(PLATFORM); patch -p1 < ../no-abort.patch
-	cd $(PLATFORM); patch -p1 < ../android-nl_langinfo.patch
+	cd $(PLATFORM); patch -p1 -i ../crosscompile.patch
+	cd $(PLATFORM); patch -p1 -i ../setup.patch
+	cd $(PLATFORM); patch -p1 -i ../fix-datetime.patch
+	cd $(PLATFORM); patch -p1 -i ../android.patch
+	cd $(PLATFORM); patch -p1 -i ../no-export-path.patch
+	cd $(PLATFORM); patch -p1 -i ../fix-ffi.patch
+	cd $(PLATFORM); patch -p1 -i ../android-binmodule.patch
+	cd $(PLATFORM); patch -p1 -i ../no-abort.patch
+	cd $(PLATFORM); patch -p1 -i ../android-nl_langinfo.patch
 ifeq ($(OS),ios)
-	cd $(PLATFORM); patch -p1 < ../make-fork-optional.patch
-	cd $(PLATFORM); patch -p1 < ../urllib.patch
+	cd $(PLATFORM); patch -p1 -i ../make-fork-optional.patch
+	cd $(PLATFORM); patch -p1 -i ../urllib.patch
 	cd $(PLATFORM); sed -ie 's|MACHDEP="unknown"|MACHDEP="darwin"|' configure.ac
 endif
 	cp modules.setup $(PLATFORM)/Modules/Setup.dist
