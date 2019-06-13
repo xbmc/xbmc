@@ -26,7 +26,7 @@ $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
 # seems MAP_POPULATE is broken on aarch64
 ifneq ($(OS),android)
-	cd $(PLATFORM); patch -p1 < ../sqlite3.c.patch
+	cd $(PLATFORM); patch -p1 -i ../sqlite3.c.patch
 endif
 	# do not build the program sqlite3
 	sed -ie "s|bin_PROGRAMS = sqlite3||" "$(PLATFORM)/Makefile.am";
