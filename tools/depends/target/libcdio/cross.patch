@@ -1,5 +1,5 @@
---- configure.ac	2013-03-10 19:25:36.396466337 -0400
-+++ configure.ac	2013-03-10 19:24:34.906466376 -0400
+--- a/configure.ac
++++ b/configure.ac
 @@ -269,37 +269,6 @@
  fi
  dnl empty_array_size
