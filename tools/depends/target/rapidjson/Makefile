@@ -42,7 +42,7 @@ endif
 	rm -rf $(PLATFORM); mkdir -p $(PLATFORM)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
 	cd $(PLATFORM); rm -rf build; mkdir -p build
-	cd $(PLATFORM); patch -p1 < ../0001-remove_custom_cxx_flags.patch
+	cd $(PLATFORM); patch -p1 -i ../0001-remove_custom_cxx_flags.patch
 	cd $(PLATFORM)/build; $(CMAKE) $(CMAKE_OPTIONS) ..
 
 .installed-$(PLATFORM): $(PLATFORM)
