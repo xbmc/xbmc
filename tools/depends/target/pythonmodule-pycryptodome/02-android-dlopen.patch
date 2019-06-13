@@ -1,5 +1,5 @@
---- lib/Crypto/Util/_raw_api_o.py	2017-01-19 07:49:10.126996702 +0100
-+++ lib/Crypto/Util/_raw_api.py	2017-01-19 11:16:23.126321052 +0100
+--- a/lib/Crypto/Util/_raw_api.py
++++ b/lib/Crypto/Util/_raw_api.py
 @@ -101,11 +101,14 @@
      def load_lib(name, cdecl):
          import platform
