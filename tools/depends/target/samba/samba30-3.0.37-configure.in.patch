@@ -1,6 +1,6 @@
---- samba-3.0.25borig/source/configure.in	2007-05-23 08:29:20.000000000 -0700
-+++ samba3025bfinal/source/configure.in	2007-07-24 12:15:13.000000000 -0700
-@@ -1374,31 +1374,40 @@
+--- a/source/configure.in
++++ b/source/configure.in
+@@ -1388,31 +1388,40 @@
  #
  case "$host_os" in
      *linux*)
@@ -24,12 +24,26 @@
 -       int libc_minor = __GLIBC_MINOR__;
 +                            int libc_major = __GLIBC__;
 +                            int libc_minor = __GLIBC_MINOR__;
-+
+ 
+-       if (libc_major < 2)
+-              exit(1);
+-       if ((libc_major == 2) && (libc_minor <= 3))
+-              exit(1);
 +                            if (libc_major < 2)
 +                                   return 1;
 +                            if ((libc_major == 2) && (libc_minor <= 3))
 +                                   return 1;
-+#endif
+ #endif
+-       exit(0);
+-}
+-], [linux_getgrouplist_ok=yes], [linux_getgrouplist_ok=no])
+-       if test x"$linux_getgrouplist_ok" = x"yes"; then
+-          AC_DEFINE(HAVE_GETGROUPLIST, 1, [Have good getgrouplist])
+-       fi
+-       ;;
+-    *)
+-       AC_CHECK_FUNCS(getgrouplist)
+-       ;;
 +                            return 0;
 +                     }
 +
@@ -43,22 +57,7 @@
 +           AC_DEFINE(HAVE_GETGROUPLIST, 1, [Have good getgrouplist])
 +        fi
 +
- 
--       if (libc_major < 2)
--              exit(1);
--       if ((libc_major == 2) && (libc_minor <= 3))
--              exit(1);
--#endif
--       exit(0);
--}
--], [linux_getgrouplist_ok=yes], [linux_getgrouplist_ok=no])
--       if test x"$linux_getgrouplist_ok" = x"yes"; then
--          AC_DEFINE(HAVE_GETGROUPLIST, 1, [Have good getgrouplist])
--       fi
--       ;;
--    *)
--       AC_CHECK_FUNCS(getgrouplist)
--       ;;
++
  esac
  
  #
