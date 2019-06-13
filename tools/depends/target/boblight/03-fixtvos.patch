@@ -1,30 +1,5 @@
-diff -uPr appletvos9.0_arm64-target/src/util/daemonize.cpp works/src/util/daemonize.cpp
---- src/util/daemonize.cpp	2015-12-18 18:20:26.000000000 +0100
-+++ src/util/daemonize.cpp	2015-12-13 16:15:19.000000000 +0100
-@@ -25,7 +25,7 @@
- void Daemonize()
- {
-   //fork a child process
--  pid_t pid = fork();
-+  pid_t pid = -1;//fork();
-   if (pid == -1)
-     fprintf(stderr, "fork(): %s", GetErrno().c_str());
-   else if (pid > 0)
-diff -uPr appletvos9.0_arm64-target/src/util/tcpsocket.cpp works/src/util/tcpsocket.cpp
---- src/util/tcpsocket.cpp	2014-11-27 19:26:33.000000000 +0100
-+++ src/util/tcpsocket.cpp	2015-12-18 18:19:24.000000000 +0100
-@@ -31,8 +31,6 @@
- #include "tcpsocket.h"
- #include "misc.h"
- 
--using namespace std;
--
- void CTcpData::SetData(uint8_t* data, int size, bool append)
- {
-   CopyData(reinterpret_cast<char*>(data), size, append);
-diff -uPr appletvos9.0_arm64-target/src/device/deviceltbl.cpp works/src/device/deviceltbl.cpp
---- src/device/deviceltbl.cpp	2014-11-27 19:26:33.000000000 +0100
-+++ src/device/deviceltbl.cpp	2015-12-13 16:14:49.000000000 +0100
+--- a/src/device/deviceltbl.cpp
++++ b/src/device/deviceltbl.cpp
 @@ -51,7 +51,7 @@
  
  bool CDeviceLtbl::WriteOutput()
@@ -43,3 +18,25 @@ diff -uPr appletvos9.0_arm64-target/src/device/deviceltbl.cpp works/src/device/d
  
    if (m_isopened)
      return true; //nothing to do here
+--- a/src/util/daemonize.cpp
++++ b/src/util/daemonize.cpp
+@@ -25,7 +25,7 @@
+ void Daemonize()
+ {
+   //fork a child process
+-  pid_t pid = fork();
++  pid_t pid = -1;//fork();
+   if (pid == -1)
+     fprintf(stderr, "fork(): %s", GetErrno().c_str());
+   else if (pid > 0)
+--- a/src/util/tcpsocket.cpp
++++ b/src/util/tcpsocket.cpp
+@@ -31,8 +31,6 @@
+ #include "tcpsocket.h"
+ #include "misc.h"
+ 
+-using namespace std;
+-
+ void CTcpData::SetData(uint8_t* data, int size, bool append)
+ {
+   CopyData(reinterpret_cast<char*>(data), size, append);
