@@ -6,6 +6,7 @@
  *  See LICENSES/README.md for more information.
  */
 
+#include "test/MtTestUtils.h"
 #include "utils/JobManager.h"
 #include "utils/Job.h"
 
@@ -16,17 +17,26 @@
 #include "platform/posix/XTimeUtils.h"
 #endif
 
-std::atomic<bool> cancelled(false);
+using namespace ConditionPoll;
 
 class DummyJob : public CJob
 {
 public:
+  std::atomic<bool> lingerAtWork{true};
+  std::atomic<bool> started{false};
+  std::atomic<bool> finished{false};
+  std::atomic<bool> wasCanceled{false};
+
   bool DoWork() override
   {
-    Sleep(100);
-    if (ShouldCancel(0,0))
-      cancelled = true;
+    started = true;
+    while (lingerAtWork)
+      std::this_thread::yield();
 
+    if (ShouldCancel(0,0))
+      wasCanceled = true;
+
+    finished = true;
     return true;
   }
 };
@@ -55,12 +65,23 @@ TEST_F(TestJobManager, AddJob)
 TEST_F(TestJobManager, CancelJob)
 {
   unsigned int id;
-  CJob* job = new DummyJob();
+  DummyJob* job = new DummyJob();
   id = CJobManager::GetInstance().AddJob(job, NULL);
-  Sleep(50);
+
+  // wait for the worker thread to be entered
+  ASSERT_TRUE(poll([job]() -> bool { return job->started; }));
+
+  // cancel the job
   CJobManager::GetInstance().CancelJob(id);
-  Sleep(100);
-  EXPECT_TRUE(cancelled);
+
+  // let the worker thread continue
+  job->lingerAtWork = false;
+
+  // make sure the job finished.
+  ASSERT_TRUE(poll([job]() -> bool { return job->finished; }));
+
+  // ... and that it was canceled.
+  EXPECT_TRUE(job->wasCanceled);
 }
 
 namespace
