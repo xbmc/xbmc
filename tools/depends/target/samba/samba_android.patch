@@ -1,6 +1,5 @@
-diff -ruN source/lib/fault.c source/lib/fault.c
---- source/lib/fault.c	2009-09-30 08:21:56.000000000 -0400
-+++ source/lib/fault.c	2013-01-14 20:14:16.393077102 -0500
+--- a/source/lib/fault.c
++++ b/source/lib/fault.c
 @@ -136,7 +136,7 @@
  #endif
  #endif
@@ -10,9 +9,8 @@ diff -ruN source/lib/fault.c source/lib/fault.c
  	/* On Linux we lose the ability to dump core when we change our user
  	 * ID. We know how to dump core safely, so let's make sure we have our
  	 * dumpable flag set.
-diff -ruN source/lib/iconv.c source/lib/iconv.c
---- source/lib/iconv.c	2009-09-30 08:21:56.000000000 -0400
-+++ source/lib/iconv.c	2013-01-14 20:33:18.813076383 -0500
+--- a/source/lib/iconv.c
++++ b/source/lib/iconv.c
 @@ -20,7 +20,10 @@
  */
  
@@ -45,9 +43,8 @@ diff -ruN source/lib/iconv.c source/lib/iconv.c
  static size_t iconv_swab(void *cd, const char **inbuf, size_t *inbytesleft,
  			 char **outbuf, size_t *outbytesleft)
  {
-diff -ruN source/lib/replace/system/passwd.h source/lib/replace/system/passwd.h
---- source/lib/replace/system/passwd.h	2009-09-30 08:21:56.000000000 -0400
-+++ source/lib/replace/system/passwd.h	2013-01-14 20:21:58.013076811 -0500
+--- a/source/lib/replace/system/passwd.h
++++ b/source/lib/replace/system/passwd.h
 @@ -62,6 +62,8 @@
  
  #ifdef REPLACE_GETPASS
@@ -57,16 +54,14 @@ diff -ruN source/lib/replace/system/passwd.h source/lib/replace/system/passwd.h
  #endif
  
  #ifndef NGROUPS_MAX
-diff -ruN source/lib/system.c source/lib/system.c
---- source/lib/system.c	2009-09-30 08:21:56.000000000 -0400
-+++ source/lib/system.c	2013-01-14 20:27:18.453076610 -0500
+--- a/source/lib/system.c
++++ b/source/lib/system.c
 @@ -476,7 +476,10 @@
  #if defined(HAVE_EXPLICIT_LARGEFILE_SUPPORT) && defined(HAVE_SEEKDIR64)
  	seekdir64(dirp, offset);
  #else
--	seekdir(dirp, offset);
 +#if !defined(ANDROID)
-+	seekdir(dirp, offset);
+ 	seekdir(dirp, offset);
 +#endif
 +	return;
  #endif
@@ -140,9 +135,8 @@ diff -ruN source/lib/system.c source/lib/system.c
  	unix_to_unicode(retval.pw_dir, pwret->pw_dir, sizeof(retval.pw_dir));
  	unix_to_unicode(retval.pw_shell, pwret->pw_shell, sizeof(retval.pw_shell));
  
-diff -ruN source/lib/util_pw.c source/lib/util_pw.c
---- source/lib/util_pw.c	2009-09-30 08:21:56.000000000 -0400
-+++ source/lib/util_pw.c	2013-01-14 20:17:49.293076968 -0500
+--- a/source/lib/util_pw.c
++++ b/source/lib/util_pw.c
 @@ -32,7 +32,9 @@
  	ret->pw_passwd = talloc_strdup(ret, from->pw_passwd);
  	ret->pw_uid = from->pw_uid;
@@ -153,9 +147,8 @@ diff -ruN source/lib/util_pw.c source/lib/util_pw.c
  	ret->pw_dir = talloc_strdup(ret, from->pw_dir);
  	ret->pw_shell = talloc_strdup(ret, from->pw_shell);
  	return ret;
-diff -ruN source/libads/dns.c source/libads/dns.c
---- source/libads/dns.c	2009-09-30 08:21:56.000000000 -0400
-+++ source/libads/dns.c	2013-01-14 20:14:16.393077102 -0500
+--- a/source/libads/dns.c
++++ b/source/libads/dns.c
 @@ -38,6 +38,15 @@
  
  #define MAX_DNS_PACKET_SIZE 0xffff
@@ -172,9 +165,8 @@ diff -ruN source/libads/dns.c source/libads/dns.c
  #ifdef NS_HFIXEDSZ	/* Bind 8/9 interface */
  #if !defined(C_IN)	/* AIX 5.3 already defines C_IN */
  #  define C_IN		ns_c_in
-diff -ruN source/passdb/passdb.c source/passdb/passdb.c
---- source/passdb/passdb.c	2009-09-30 08:21:56.000000000 -0400
-+++ source/passdb/passdb.c	2013-01-14 20:18:18.533076949 -0500
+--- a/source/passdb/passdb.c
++++ b/source/passdb/passdb.c
 @@ -143,7 +143,9 @@
  	/* Basic properties based upon the Unix account information */
  	
@@ -185,9 +177,8 @@ diff -ruN source/passdb/passdb.c source/passdb/passdb.c
  	pdb_set_domain (user, get_global_sam_name(), PDB_DEFAULT);
  #if 0
  	/* This can lead to a primary group of S-1-22-2-XX which 
-diff -ruN source/passdb/pdb_interface.c source/passdb/pdb_interface.c
---- source/passdb/pdb_interface.c	2009-09-30 08:21:56.000000000 -0400
-+++ source/passdb/pdb_interface.c	2013-01-14 20:14:16.393077102 -0500
+--- a/source/passdb/pdb_interface.c
++++ b/source/passdb/pdb_interface.c
 @@ -1380,8 +1380,8 @@
  	}
  

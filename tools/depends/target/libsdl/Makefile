@@ -23,10 +23,10 @@ $(TARBALLS_LOCATION)/$(ARCHIVE):
 $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 	rm -rf $(PLATFORM); mkdir -p $(PLATFORM)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
-	cd $(PLATFORM); patch -p0 < ../01-SDL_SetWidthHeight.patch
-	cd $(PLATFORM); patch -p0 < ../02-OSX_interpretKeyEvents.patch
-	cd $(PLATFORM); patch -p0 < ../03-mavericks-compile.patch
-	cd $(PLATFORM); patch -p0 < ../04-fix_external_screen_crash.patch
+	cd $(PLATFORM); patch -p1 -i ../01-SDL_SetWidthHeight.patch
+	cd $(PLATFORM); patch -p1 -i ../02-OSX_interpretKeyEvents.patch
+	cd $(PLATFORM); patch -p1 -i ../03-mavericks-compile.patch
+	cd $(PLATFORM); patch -p1 -i ../04-fix_external_screen_crash.patch
 	cd $(PLATFORM); ./autogen.sh
 	cd $(PLATFORM); $(CONFIGURE)
 

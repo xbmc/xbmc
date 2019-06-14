@@ -42,7 +42,7 @@ $(TARBALLS_LOCATION)/$(ARCHIVE):
 $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 	rm -rf $(PLATFORM)/*; mkdir -p $(PLATFORM)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
-	cd $(PLATFORM); patch -p1 < ../0001-Fix-compiler-warning.patch
+	cd $(PLATFORM); patch -p1 -i ../0001-Fix-compiler-warning.patch
 	mkdir -p $(BUILDDIR)
 	cd $(BUILDDIR); $(CMAKE) $(CMAKE_OPTIONS) ..
 

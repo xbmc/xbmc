@@ -7,11 +7,9 @@ Subject: [PATCH] Remove the CMake check for Boost I missed out on.
  ConfigureChecks.cmake | 7 -------
  1 file changed, 7 deletions(-)
 
-diff --git a/ConfigureChecks.cmake b/ConfigureChecks.cmake
-index f69b438..e39d97b 100644
 --- a/ConfigureChecks.cmake
 +++ b/ConfigureChecks.cmake
-@@ -34,13 +34,6 @@ if(NOT ${SIZEOF_DOUBLE} EQUAL 8)
+@@ -34,13 +34,6 @@
    message(FATAL_ERROR "TagLib requires that double is 64-bit wide.")
  endif()
  

@@ -1,12 +1,6 @@
----
- include/flatbuffers/util.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/include/flatbuffers/util.h b/include/flatbuffers/util.h
-index e654010..7cadd0b 100644
 --- a/include/flatbuffers/util.h
 +++ b/include/flatbuffers/util.h
-@@ -321,7 +321,7 @@ inline int FromUTF8(const char **in) {
+@@ -321,7 +321,7 @@
        break;
      }
    }
@@ -15,4 +9,3 @@ index e654010..7cadd0b 100644
    if (!len) return *(*in)++;
    // UTF-8 encoded values with a length are between 2 and 4 bytes.
    if (len < 2 || len > 4) { return -1; }
--- 

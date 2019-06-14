@@ -1,6 +1,5 @@
-diff -r -u samba-3.0.37-clean/source/libsmb/asn1.c samba-3.0.37/source/libsmb/asn1.c
---- samba-3.0.37-clean/source/libsmb/asn1.c	2009-09-30 05:21:56.000000000 -0700
-+++ samba-3.0.37/source/libsmb/asn1.c	2010-11-18 12:40:06.981517350 -0800
+--- a/source/libsmb/asn1.c
++++ b/source/libsmb/asn1.c
 @@ -261,6 +261,36 @@
  	return asn1_read(data, v, 1);
  }
@@ -38,9 +37,8 @@ diff -r -u samba-3.0.37-clean/source/libsmb/asn1.c samba-3.0.37/source/libsmb/as
  /* start reading a nested asn1 structure */
  BOOL asn1_start_tag(ASN1_DATA *data, uint8 tag)
  {
-diff -r -u samba-3.0.37-clean/source/libsmb/clispnego.c samba-3.0.37/source/libsmb/clispnego.c
---- samba-3.0.37-clean/source/libsmb/clispnego.c	2009-09-30 05:21:56.000000000 -0700
-+++ samba-3.0.37/source/libsmb/clispnego.c	2010-11-18 12:52:54.833518134 -0800
+--- a/source/libsmb/clispnego.c
++++ b/source/libsmb/clispnego.c
 @@ -135,9 +135,16 @@
  
  	asn1_start_tag(&data,ASN1_APPLICATION(0));

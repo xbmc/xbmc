@@ -1,8 +1,6 @@
-diff --git a/CMakeLists.txt b/CMakeLists.txt
-index ceda71b..efb259e 100644
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
-@@ -50,7 +50,6 @@ if(CCACHE_FOUND)
+@@ -50,7 +50,6 @@
  endif(CCACHE_FOUND)
  
  if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
@@ -10,7 +8,7 @@ index ceda71b..efb259e 100644
      if (RAPIDJSON_BUILD_CXX11)
          if (CMAKE_CXX_COMPILER_VERSION VERSION_LESS "4.7.0")
              set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
-@@ -73,7 +72,6 @@ if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
+@@ -73,7 +72,6 @@
          endif()
      endif()
  elseif (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
@@ -18,7 +16,7 @@ index ceda71b..efb259e 100644
      if (RAPIDJSON_BUILD_CXX11)
          set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
      endif()
-@@ -88,7 +86,6 @@ elseif (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+@@ -88,7 +86,6 @@
          endif()
      endif()
  elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
@@ -26,4 +24,3 @@ index ceda71b..efb259e 100644
      set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /EHsc")
  endif()
  
-

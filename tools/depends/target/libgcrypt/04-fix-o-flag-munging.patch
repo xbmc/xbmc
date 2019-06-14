@@ -1,5 +1,5 @@
---- random/Makefile.am.orig	2017-10-27 12:01:31.000000000 +0200
-+++ random/Makefile.am	2017-10-27 12:01:44.000000000 +0200
+--- a/random/Makefile.am
++++ b/random/Makefile.am
 @@ -55,7 +55,7 @@
  
  # The rndjent module needs to be compiled without optimization.  */

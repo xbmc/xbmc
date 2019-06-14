@@ -1,6 +1,6 @@
---- src/video/quartz/SDL_QuartzEvents.m	2009-10-13 07:07:14.000000000 +0800
-+++ src/video/quartz/SDL_QuartzEvents.m	2013-08-03 09:12:27.000000000 +0800
-@@ -280,7 +280,11 @@
+--- a/src/video/quartz/SDL_QuartzEvents.m
++++ b/src/video/quartz/SDL_QuartzEvents.m
+@@ -345,7 +345,11 @@
          the scancode/keysym.
      */
      if (SDL_TranslateUNICODE && state == SDL_PRESSED) {

@@ -1,5 +1,5 @@
---- setup.py.orig	2015-10-01 22:39:00.000000000 +0200
-+++ setup.py	2015-10-25 12:28:22.023743244 +0100
+--- a/setup.py
++++ b/setup.py
 @@ -156,6 +156,16 @@
  
          _add_directory(include_dirs, "libImaging")
@@ -17,7 +17,7 @@
          #
          # add configured kits
  
-@@ -187,10 +196,11 @@
+@@ -187,10 +197,11 @@
                  for d in os.environ[k].split(os.path.pathsep):
                      _add_directory(library_dirs, d)
  
@@ -30,7 +30,7 @@
  
          #
          # add platform directories
-@@ -202,14 +212,14 @@
+@@ -202,14 +213,14 @@
  
          elif sys.platform == "darwin":
              # attempt to make sure we pick freetype2 over other versions
@@ -51,7 +51,7 @@
  
              # if Homebrew is installed, use its lib and include directories
              import subprocess
-@@ -234,15 +244,15 @@
+@@ -234,15 +245,15 @@
                  _add_directory(library_dirs, os.path.join(ft_prefix, 'lib'))
                  _add_directory(
                      include_dirs, os.path.join(ft_prefix, 'include'))
@@ -71,7 +71,7 @@
                  # 32 bit build on 64 bit machine.
                  _add_directory(library_dirs, "/usr/lib/i386-linux-gnu")
              else:
-@@ -252,43 +262,43 @@
+@@ -252,43 +263,43 @@
                          continue
  
                      if platform_ in ["x86_64", "64bit"]:
@@ -138,7 +138,7 @@
                          break
                  else:
                      raise ValueError(
-@@ -297,18 +307,18 @@
+@@ -297,18 +308,18 @@
              # XXX Kludge. Above /\ we brute force support multiarch. Here we
              # try Barry's more general approach. Afterward, something should
              # work ;-)
@@ -153,21 +153,20 @@
 -        elif sys.platform.startswith("netbsd"):
 -            _add_directory(library_dirs, "/usr/pkg/lib")
 -            _add_directory(include_dirs, "/usr/pkg/include")
--
--        elif sys.platform.startswith("sunos5"):
--                    _add_directory(library_dirs, "/opt/local/lib")
--                    _add_directory(include_dirs, "/opt/local/include")
 +        #elif sys.platform.startswith("netbsd"):
 +            #_add_directory(library_dirs, "/usr/pkg/lib")
 +            #_add_directory(include_dirs, "/usr/pkg/include")
-+
+ 
+-        elif sys.platform.startswith("sunos5"):
+-                    _add_directory(library_dirs, "/opt/local/lib")
+-                    _add_directory(include_dirs, "/opt/local/include")
 +        #elif sys.platform.startswith("sunos5"):
 +                    #_add_directory(library_dirs, "/opt/local/lib")
 +                    #_add_directory(include_dirs, "/opt/local/include")
  
          # FIXME: check /opt/stuff directories here?
  
-@@ -350,11 +360,11 @@
+@@ -350,11 +361,11 @@
                  _add_directory(include_dirs, tcl_dir)
  
          # standard locations
@@ -183,7 +182,7 @@
  
          # on Windows, look for the OpenJPEG libraries in the location that
          # the official installer puts them
-@@ -389,12 +399,7 @@
+@@ -389,12 +400,7 @@
          feature = self.feature
  
          if feature.want('zlib'):
@@ -197,7 +196,7 @@
  
          if feature.want('jpeg'):
              if _find_include_file(self, "jpeglib.h"):
-@@ -552,7 +557,7 @@
+@@ -552,7 +558,7 @@
  
          if feature.freetype:
              exts.append(Extension(

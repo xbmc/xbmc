@@ -8,11 +8,9 @@ This looks for an ID3v2 tag until reaching the first valid MPEG frame in O(n) ti
  taglib/mpeg/mpegfile.cpp | 45 +++++++++++++++++++++++++++++----------------
  1 file changed, 29 insertions(+), 16 deletions(-)
 
-diff --git a/taglib/mpeg/mpegfile.cpp b/taglib/mpeg/mpegfile.cpp
-index af7253f..c634eeb 100644
 --- a/taglib/mpeg/mpegfile.cpp
 +++ b/taglib/mpeg/mpegfile.cpp
-@@ -488,28 +488,41 @@ long MPEG::File::findID3v2()
+@@ -488,28 +488,41 @@
    const ByteVector headerID = ID3v2::Header::fileIdentifier();
  
    seek(0);

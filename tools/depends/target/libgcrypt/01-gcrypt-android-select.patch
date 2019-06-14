@@ -1,5 +1,5 @@
---- src/gcrypt.h.in	2007-12-03 03:48:19.000000000 -0500
-+++ src/gcrypt.h.in	2013-01-21 00:31:48.772740461 -0500
+--- a/src/gcrypt.h.in
++++ b/src/gcrypt.h.in
 @@ -47,6 +47,10 @@
  
  @FALLBACK_SOCKLEN_T@

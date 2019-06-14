@@ -1,5 +1,5 @@
---- configure	2012-05-02 06:17:08.000000000 +0200
-+++ configure.new	2017-04-26 18:42:06.000000000 +0200
+--- a/configure
++++ b/configure
 @@ -241,12 +241,7 @@
               SHAREDLIBV=libz.$VER$shared_ext
               SHAREDLIBM=libz.$VER1$shared_ext

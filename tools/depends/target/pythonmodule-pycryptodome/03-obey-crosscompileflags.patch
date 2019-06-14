@@ -1,5 +1,5 @@
---- setup.py.orig	2017-10-27 15:26:56.000000000 +0200
-+++ setup.py	2017-10-27 15:28:34.000000000 +0200
+--- a/setup.py
++++ b/setup.py
 @@ -266,6 +266,16 @@
          # Disable any assembly in libtomcrypt files
          self.compiler.define_macro("LTC_NO_ASM")
