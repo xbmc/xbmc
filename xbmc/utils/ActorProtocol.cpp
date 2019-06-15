@@ -28,7 +28,7 @@ void Message::Release()
   if (data != buffer)
     delete [] data;
 
-  payloadObj.release();
+  payloadObj.reset();
 
   // delete event in case of sync message
   delete event;
