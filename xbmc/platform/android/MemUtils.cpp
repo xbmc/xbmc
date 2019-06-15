@@ -39,7 +39,7 @@ void GetMemoryStatus(MemoryStatus* buffer)
 
   if (CXBMCApp::get()->GetMemoryInfo(availMem, totalMem))
   {
-    buffer = {};
+    *buffer = {};
     buffer->totalPhys = totalMem;
     buffer->availPhys = availMem;
   }
