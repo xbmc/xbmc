@@ -62,8 +62,18 @@ void CThread::Create(bool bAutoDelete)
 {
   if (m_thread != nullptr)
   {
-    CLog::Log(LOGERROR, "%s - fatal error creating thread %s - old thread id not null", __FUNCTION__, m_ThreadName.c_str());
-    exit(1);
+    // if the thread exited on it's own, without a call to StopThread, then we can get here
+    // incorrectly. We should be able to determine this by checking the promise.
+    std::future_status stat = m_future.wait_for(std::chrono::milliseconds(0));
+    // a status of 'ready' means the future contains the value so the thread has exited
+    // since the thread can't exit without setting the future.
+    if (stat == std::future_status::ready) // this is an indication the thread has exited.
+      StopThread(true);  // so let's just clean up
+    else
+    { // otherwise we have a problem.
+      CLog::Log(LOGERROR, "%s - fatal error creating thread %s - old thread id not null", __FUNCTION__, m_ThreadName.c_str());
+      exit(1);
+    }
   }
   m_iLastTime = XbmcThreads::SystemClockMillis() * 10000ULL;
   m_iLastUsage = 0;
@@ -143,8 +153,6 @@ void CThread::Create(bool bAutoDelete)
         }
         else
           CLog::Log(LOGDEBUG,"Thread %s %s terminating", name.c_str(), id.c_str());
-
-        promise.set_value(true);
       }
       catch (const std::exception& e)
       {
@@ -154,6 +162,8 @@ void CThread::Create(bool bAutoDelete)
       {
         CLog::Log(LOGDEBUG,"Thread Terminating with Exception");
       }
+
+      promise.set_value(true);
     }, this, std::move(prom));
   } // let the lambda proceed
 
@@ -162,7 +172,17 @@ void CThread::Create(bool bAutoDelete)
 
 bool CThread::IsRunning() const
 {
-  return m_thread != nullptr;
+  if (m_thread != nullptr) {
+    // it's possible that the thread exited on it's own without a call to StopThread. If so then
+    // the promise should be fulfilled.
+    std::future_status stat = m_future.wait_for(std::chrono::milliseconds(0));
+    // a status of 'ready' means the future contains the value so the thread has exited
+    // since the thread can't exit without setting the future.
+    if (stat == std::future_status::ready) // this is an indication the thread has exited.
+      return false;
+    return true; // otherwise the thread is still active.
+  } else
+    return false;
 }
 
 bool CThread::IsAutoDelete() const
