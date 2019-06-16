@@ -35,11 +35,18 @@ DerivePointerAlignment: false
 DisableFormat:   false
 ExperimentalAutoDetectBinPacking: false
 ForEachMacros:   [ foreach, Q_FOREACH, BOOST_FOREACH ]
+IncludeBlocks: Regroup
 IncludeCategories:
-  - Regex:           '^"(llvm|llvm-c|clang|clang-c)/'
+  - Regex:           '(["/]PlatformDefs|"(system|system_gl))\.h"'
+    Priority:        5
+  - Regex:           '"platform/[^/]+/'
     Priority:        2
-  - Regex:           '^(<|"(gtest|isl|json)/)'
+  - Regex:           '^<[a-z0-9_]+>$'
     Priority:        3
+  - Regex:           '^<(assert|complex|ctype|errno|fenv|float|inttypes|iso646|limits|locale|math|setjmp|signal|stdalign|stdarg|stdatomic|stdbool|stddef|stdint|stdio|stdlib|stdnoreturn|string|tgmath|threads|time|uchar|wchar|wctype)\.h>$'
+    Priority:        3
+  - Regex:           '^<'
+    Priority:        4
   - Regex:           '.*'
     Priority:        1
 IncludeIsMainRegex: '$'
