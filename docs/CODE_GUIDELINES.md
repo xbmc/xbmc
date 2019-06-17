@@ -366,35 +366,37 @@ static void test();
 **[back to top](#table-of-contents)**
 
 ## 7. Headers
-Included header files have to be sorted alphabetically to prevent duplicates and allow better overview, with an empty line clearly separating sections.
+Included header files have to be sorted (case sensitive) alphabetically to prevent duplicates and allow better overview, with an empty line clearly separating sections.
 
 Header order has to be:
 * Own header file
-* Other Kodi includes
+* Other Kodi includes (platform independent)
+* Other Kodi includes (platform specific)
 * C and C++ system files
 * Other libraries' header files
+* special Kodi headers (PlatformDefs.h, system.h and system_gl.h)
 
 ```cpp
 #include "PVRManager.h"
 
+#include "Application.h"
+#include "ServiceBroker.h"
 #include "addons/AddonInstaller.h"
 #include "dialogs/GUIDialogExtendedProgressBar.h"
-#include "messaging/helpers/DialogHelper.h"
 #include "messaging/ApplicationMessenger.h"
 #include "messaging/ThreadMessage.h"
-#include "music/tags/MusicInfoTag.h"
+#include "messaging/helpers/DialogHelper.h"
 #include "music/MusicDatabase.h"
+#include "music/tags/MusicInfoTag.h"
 #include "network/Network.h"
 #include "pvr/addons/PVRClients.h"
 #include "pvr/channels/PVRChannel.h"
 #include "settings/Settings.h"
 #include "threads/SingleLock.h"
 #include "utils/JobManager.h"
-#include "utils/log.h"
 #include "utils/Variant.h"
+#include "utils/log.h"
 #include "video/VideoDatabase.h"
-#include "Application.h"
-#include "ServiceBroker.h"
 
 #include <cassert>
 #include <utility>
@@ -402,7 +404,7 @@ Header order has to be:
 #include <libavutil/pixfmt.h>
 ```
 
-Place directories before files. If the headers aren't sorted, either do your best to match the existing order, or precede your commit with an alphabetization commit.
+If the headers aren't sorted, either do your best to match the existing order, or precede your commit with an alphabetization commit.
 
 If possible, avoid including headers in another header. Instead, you can forward-declare the class and use a `std::unique_ptr` (or similar):
 
