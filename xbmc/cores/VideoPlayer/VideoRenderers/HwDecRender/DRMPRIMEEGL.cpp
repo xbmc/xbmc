@@ -15,10 +15,13 @@ void CDRMPRIMETexture::Init(EGLDisplay eglDisplay)
   m_eglImage.reset(new CEGLImage(eglDisplay));
 }
 
-bool CDRMPRIMETexture::Map(CVideoBufferDRMPRIME *buffer)
+bool CDRMPRIMETexture::Map(IVideoBufferDRMPRIME* buffer)
 {
   if (m_primebuffer)
     return true;
+
+  if (!buffer->Map())
+    return false;
 
   m_texWidth = buffer->GetWidth();
   m_texHeight = buffer->GetHeight();
@@ -73,6 +76,8 @@ void CDRMPRIMETexture::Unmap()
   m_eglImage->DestroyImage();
 
   glDeleteTextures(1, &m_texture);
+
+  m_primebuffer->Unmap();
 
   m_primebuffer->Release();
   m_primebuffer = nullptr;
