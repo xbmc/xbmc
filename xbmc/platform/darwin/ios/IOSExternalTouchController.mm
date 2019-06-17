@@ -103,6 +103,11 @@ const CGFloat timeFadeSecs                    = 2.0;
   return self;
 }
 //--------------------------------------------------------------
+- (UIInterfaceOrientationMask)supportedInterfaceOrientations
+{
+  return UIInterfaceOrientationMaskLandscape;
+}
+//--------------------------------------------------------------
 - (void)startSleepTimer
 {
   NSDate *fireDate = [NSDate dateWithTimeIntervalSinceNow:touchScreenDimTimeoutSecs];
