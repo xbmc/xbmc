@@ -1418,6 +1418,12 @@ void CXBMCApp::onDisplayAdded(int displayId)
 void CXBMCApp::onDisplayChanged(int displayId)
 {
   CLog::Log(LOGDEBUG, "CXBMCApp::%s: id: %d", __FUNCTION__, displayId);
+
+  // Update display modes
+  CWinSystemAndroid* winSystemAndroid = dynamic_cast<CWinSystemAndroid*>(CServiceBroker::GetWinSystem());
+  if (winSystemAndroid)
+    winSystemAndroid->UpdateDisplayModes();
+
   m_displayChangeEvent.Set();
   android_printf("%s: ", __PRETTY_FUNCTION__);
 }
