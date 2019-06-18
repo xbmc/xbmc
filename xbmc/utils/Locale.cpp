@@ -175,6 +175,28 @@ std::string CLocale::FindBestMatch(const std::set<std::string>& locales) const
   return bestMatch;
 }
 
+std::string CLocale::FindBestMatch(const std::unordered_map<std::string, std::string>& locales) const
+{
+  std::string bestMatch = "";
+  int bestMatchRank = -1;
+
+  for (auto const& locale : locales)
+  {
+    // check if there is an exact match
+    if (Equals(locale.first))
+      return locale.first;
+
+    int matchRank = GetMatchRank(locale.first);
+    if (matchRank > bestMatchRank)
+    {
+      bestMatchRank = matchRank;
+      bestMatch = locale.first;
+    }
+  }
+
+  return bestMatch;
+}
+
 bool CLocale::CheckValidity(const std::string& language, const std::string& territory, const std::string& codeset, const std::string& modifier)
 {
   static_cast<void>(territory);

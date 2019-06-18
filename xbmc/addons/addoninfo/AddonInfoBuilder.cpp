@@ -215,77 +215,17 @@ bool CAddonInfoBuilder::ParseXML(const AddonInfoPtr& addon, const TiXmlElement* 
       /*
        * Parse addon.xml "<summary lang="..">...</summary>"
        */
-      const char* strSummary = nullptr;
-      for (const TiXmlElement* element = child->FirstChildElement("summary"); element != nullptr; element = element->NextSiblingElement("summary"))
-      {
-        cstring = element->Attribute("lang");
-        if (cstring != nullptr)
-        {
-          std::string lang = cstring;
-          if (g_langInfo.GetLocale().Matches(lang))
-          {
-            strSummary = element->GetText();
-            break;
-          }
-          else if (lang == "en" || lang == "en_GB" || strSummary == nullptr)
-          {
-            strSummary = element->GetText();
-          }
-        }
-        else
-          strSummary = element->GetText();
-      }
-      addon->m_summary = strSummary ? strSummary : "";
+      GetTextList(child, "summary", addon->m_summary);
 
       /*
        * Parse addon.xml "<description lang="..">...</description>"
        */
-      const char* strDescription = nullptr;
-      for (const TiXmlElement* element = child->FirstChildElement("description"); element != nullptr; element = element->NextSiblingElement("description"))
-      {
-        cstring = element->Attribute("lang");
-        if (cstring != nullptr)
-        {
-          std::string lang = cstring;
-          if (g_langInfo.GetLocale().Matches(lang))
-          {
-            strDescription = element->GetText();
-            break;
-          }
-          else if (lang == "en" || lang == "en_GB" || strDescription == nullptr)
-          {
-            strDescription = element->GetText();
-          }
-        }
-        else
-          strDescription = element->GetText();
-      }
-      addon->m_description = strDescription ? strDescription : "";
+      GetTextList(child, "description", addon->m_description);
 
       /*
        * Parse addon.xml "<disclaimer lang="..">...</disclaimer>"
        */
-      const char* strDisclaimer = nullptr;
-      for (const TiXmlElement* element = child->FirstChildElement("disclaimer"); element != nullptr; element = element->NextSiblingElement("disclaimer"))
-      {
-        cstring = element->Attribute("lang");
-        if (cstring != nullptr)
-        {
-          std::string lang = cstring;
-          if (g_langInfo.GetLocale().Matches(lang))
-          {
-            strDisclaimer = element->GetText();
-            break;
-          }
-          else if (lang == "en" || lang == "en_GB" || strDisclaimer == nullptr)
-          {
-            strDisclaimer = element->GetText();
-          }
-        }
-        else
-          strDisclaimer = element->GetText();
-      }
-      addon->m_disclaimer = strDisclaimer ? strDisclaimer : "";
+      GetTextList(child, "disclaimer", addon->m_disclaimer);
 
       /*
        * Parse addon.xml "<assets>...</assets>"
@@ -390,24 +330,7 @@ bool CAddonInfoBuilder::ParseXML(const AddonInfoPtr& addon, const TiXmlElement* 
         addon->m_packageSize = StringUtils::ToUint64(element->GetText(), 0);
 
       /* Parse addon.xml "<news lang="..">...</news>" */
-      const char* strChangelog = nullptr;
-      element = child->FirstChildElement("news");
-      while (element)
-      {
-        const char* lang = element->Attribute("lang");
-        if (lang != nullptr && g_langInfo.GetLocale().Matches(lang))
-        {
-          strChangelog = element->GetText();
-          break;
-        }
-        else if (lang == nullptr || strcmp(lang, "en") == 0 || strcmp(lang, "en_GB") == 0)
-        {
-          strChangelog = element->GetText();
-        }
-
-        element = element->NextSiblingElement("news");
-      }
-      addon->m_changelog = strChangelog ? strChangelog : "";
+      GetTextList(child, "news", addon->m_changelog);
     }
     else
     {
@@ -570,6 +493,31 @@ bool CAddonInfoBuilder::ParseXMLExtension(CAddonExtensions& addonExt, const TiXm
   }
 
   return true;
+}
+
+bool CAddonInfoBuilder::GetTextList(const TiXmlElement* element, const std::string& tag, std::unordered_map<std::string, std::string>& translatedValues)
+{
+  if (!element)
+    return false;
+
+  translatedValues.clear();
+
+  for (const TiXmlElement* child = element->FirstChildElement(tag); child != nullptr; child = child->NextSiblingElement(tag))
+  {
+    const char* lang = child->Attribute("lang");
+    const char* text = child->GetText();
+    if (lang != nullptr)
+    {
+      if (strcmp(lang, "no") == 0)
+        translatedValues.insert(std::make_pair("nb_NO", text != nullptr ? text : ""));
+      else
+        translatedValues.insert(std::make_pair(lang, text != nullptr ? text : ""));
+    }
+    else
+      translatedValues.insert(std::make_pair("en_GB", text != nullptr ? text : ""));
+  }
+
+  return !translatedValues.empty();
 }
 
 const char* CAddonInfoBuilder::GetPlatformLibraryName(const TiXmlElement* element)

@@ -8,6 +8,7 @@
 
 #include "AddonInfo.h"
 
+#include "LangInfo.h"
 #include "guilib/LocalizeStrings.h"
 
 namespace ADDON
@@ -177,6 +178,24 @@ bool CAddonInfo::ProvidesSeveralSubContents() const
 bool CAddonInfo::MeetsVersion(const AddonVersion &version) const
 {
   return m_minversion <= version && version <= m_version;
+}
+
+const std::string& CAddonInfo::GetTranslatedText(const std::unordered_map<std::string, std::string>& locales) const
+{
+  if (locales.size() == 1)
+    return locales.begin()->second;
+  else if (locales.empty())
+    return StringUtils::Empty;
+
+  // find the language from the list that matches the current locale best
+  std::string matchingLanguage = g_langInfo.GetLocale().FindBestMatch(locales);
+  if (matchingLanguage.empty())
+    matchingLanguage = "en_GB";
+
+  auto const& translatedValue = locales.find(matchingLanguage);
+  if (translatedValue != locales.end())
+    return translatedValue->second;
+  return StringUtils::Empty;
 }
 
 } /* namespace ADDON */

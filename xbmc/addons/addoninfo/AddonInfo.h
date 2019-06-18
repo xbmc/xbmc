@@ -15,6 +15,7 @@
 #include <map>
 #include <memory>
 #include <string>
+#include <unordered_map>
 #include <vector>
 
 namespace ADDON
@@ -77,8 +78,8 @@ public:
   const AddonVersion& MinVersion() const { return m_minversion; }
   const std::string& Name() const { return m_name; }
   const std::string& License() const { return m_license; }
-  const std::string& Summary() const { return m_summary; }
-  const std::string& Description() const { return m_description; }
+  const std::string& Summary() const { return GetTranslatedText(m_summary); }
+  const std::string& Description() const { return GetTranslatedText(m_description); }
   const std::string& LibName() const { return m_libname; }
   const std::string& Author() const { return m_author; }
   const std::string& Source() const { return m_source; }
@@ -86,11 +87,11 @@ public:
   const std::string& Forum() const { return m_forum; }
   const std::string& EMail() const { return m_email; }
   const std::string& Path() const { return m_path; }
-  const std::string& ChangeLog() const { return m_changelog; }
+  const std::string& ChangeLog() const { return GetTranslatedText(m_changelog); }
   const std::string& Icon() const { return m_icon; }
   const ArtMap& Art() const { return m_art; }
   const std::vector<std::string>& Screenshots() const { return m_screenshots; }
-  const std::string& Disclaimer() const { return m_disclaimer; }
+  const std::string& Disclaimer() const { return GetTranslatedText(m_disclaimer); }
   const std::vector<DependencyInfo>& GetDependencies() const { return m_dependencies; }
   const std::string& Broken() const { return m_broken; }
   const std::string& Origin() const { return m_origin; }
@@ -123,19 +124,19 @@ private:
   AddonVersion m_minversion{"0.0.0"};
   std::string m_name;
   std::string m_license;
-  std::string m_summary;
-  std::string m_description;
+  std::unordered_map<std::string, std::string> m_summary;
+  std::unordered_map<std::string, std::string> m_description;
   std::string m_author;
   std::string m_source;
   std::string m_website;
   std::string m_forum;
   std::string m_email;
   std::string m_path;
-  std::string m_changelog;
+  std::unordered_map<std::string, std::string> m_changelog;
   std::string m_icon;
   ArtMap m_art;
   std::vector<std::string> m_screenshots;
-  std::string m_disclaimer;
+  std::unordered_map<std::string, std::string> m_disclaimer;
   std::vector<DependencyInfo> m_dependencies;
   std::string m_broken;
   CDateTime m_installDate;
@@ -146,6 +147,8 @@ private:
   std::string m_libname;
   InfoMap m_extrainfo;
   std::vector<std::string> m_platforms;
+
+  const std::string& GetTranslatedText(const std::unordered_map<std::string, std::string>& locales) const;
 };
 
 } /* namespace ADDON */
