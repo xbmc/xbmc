@@ -37,6 +37,8 @@ public:
 
   void SetHDMIState(bool connected);
 
+  void UpdateDisplayModes();
+
   bool HasCursor() override { return false; };
 
   bool Hide() override;

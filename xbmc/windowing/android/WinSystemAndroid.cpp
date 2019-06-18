@@ -129,7 +129,7 @@ bool CWinSystemAndroid::CreateNewWindow(const std::string& name,
 
   if (m_dispResetState != RESET_NOTWAITING)
   {
-    CLog::Log(LOGINFO, "CWinSystemAndroid::CreateNewWindow: cannot create window while resetting");
+    CLog::Log(LOGERROR, "CWinSystemAndroid::CreateNewWindow: cannot create window while resetting");
     return false;
   }
 
@@ -242,6 +242,11 @@ void CWinSystemAndroid::SetHDMIState(bool connected)
     for (auto resource : m_resources)
       resource->OnLostDisplay();
   }
+}
+
+void CWinSystemAndroid::UpdateDisplayModes()
+{
+  m_android->UpdateDisplayModes();
 }
 
 bool CWinSystemAndroid::Hide()
