@@ -157,47 +157,58 @@ bool CWinSystemAndroid::DestroyWindow()
 
 void CWinSystemAndroid::UpdateResolutions()
 {
+  UpdateResolutions(true);
+}
+
+void CWinSystemAndroid::UpdateResolutions(bool bUpdateDesktopRes)
+{
   CWinSystemBase::UpdateResolutions();
 
-  RESOLUTION_INFO resDesktop, curDisplay;
   std::vector<RESOLUTION_INFO> resolutions;
-
   if (!m_android->ProbeResolutions(resolutions) || resolutions.empty())
   {
     CLog::Log(LOGWARNING, "CWinSystemAndroid::%s failed.", __FUNCTION__);
   }
 
-  /* ProbeResolutions includes already all resolutions.
-   * Only get desktop resolution so we can replace xbmc's desktop res
-   */
-  if (m_android->GetNativeResolution(&curDisplay))
+  const RESOLUTION_INFO resWindow = CDisplaySettings::GetInstance().GetResolutionInfo(RES_WINDOW);
+
+  RESOLUTION_INFO resDesktop;
+  if (bUpdateDesktopRes)
   {
-    resDesktop = curDisplay;
+    // ProbeResolutions includes already all resolutions.
+    // Only get desktop resolution so we can replace Kodi's desktop res.
+    RESOLUTION_INFO curDisplay;
+    if (m_android->GetNativeResolution(&curDisplay))
+      resDesktop = curDisplay;
+  }
+  else
+  {
+    // Do not replace Kodi's desktop res, just update the data.
+    resDesktop = CDisplaySettings::GetInstance().GetResolutionInfo(RES_DESKTOP);
   }
 
-  RESOLUTION res_index  = RES_CUSTOM;
+  CDisplaySettings::GetInstance().ClearCustomResolutions();
 
-  for (size_t i = 0; i < resolutions.size(); i++)
+  for (auto& res : resolutions)
   {
-    // if this is a new setting,
-    // create a new empty setting to fill in.
-    while ((int)CDisplaySettings::GetInstance().ResolutionInfoSize() <= res_index)
+    CServiceBroker::GetWinSystem()->GetGfxContext().ResetOverscan(res);
+    CDisplaySettings::GetInstance().AddResolutionInfo(res);
+
+    if (resDesktop.iScreenWidth == res.iScreenWidth &&
+        resDesktop.iScreenHeight == res.iScreenHeight &&
+        (resDesktop.dwFlags & D3DPRESENTFLAG_MODEMASK) == (res.dwFlags & D3DPRESENTFLAG_MODEMASK) &&
+        std::fabs(resDesktop.fRefreshRate - res.fRefreshRate) < FLT_EPSILON)
     {
-      RESOLUTION_INFO res;
-      CDisplaySettings::GetInstance().AddResolutionInfo(res);
+      CDisplaySettings::GetInstance().GetResolutionInfo(RES_DESKTOP) = res;
     }
 
-    CServiceBroker::GetWinSystem()->GetGfxContext().ResetOverscan(resolutions[i]);
-    CDisplaySettings::GetInstance().GetResolutionInfo(res_index) = resolutions[i];
-
-    if (resDesktop.iScreenWidth == resolutions[i].iScreenWidth &&
-       resDesktop.iScreenHeight == resolutions[i].iScreenHeight &&
-       (resDesktop.dwFlags & D3DPRESENTFLAG_MODEMASK) == (resolutions[i].dwFlags & D3DPRESENTFLAG_MODEMASK) &&
-       fabs(resDesktop.fRefreshRate - resolutions[i].fRefreshRate) < FLT_EPSILON)
+    if (resWindow.iScreenWidth == res.iScreenWidth &&
+        resWindow.iScreenHeight == res.iScreenHeight &&
+        (resWindow.dwFlags & D3DPRESENTFLAG_MODEMASK) == (res.dwFlags & D3DPRESENTFLAG_MODEMASK) &&
+        std::fabs(resWindow.fRefreshRate - res.fRefreshRate) < FLT_EPSILON)
     {
-      CDisplaySettings::GetInstance().GetResolutionInfo(RES_DESKTOP) = resolutions[i];
+      CDisplaySettings::GetInstance().GetResolutionInfo(RES_WINDOW) = res;
     }
-    res_index = (RESOLUTION)((int)res_index + 1);
   }
 }
 
@@ -246,7 +257,14 @@ void CWinSystemAndroid::SetHDMIState(bool connected)
 
 void CWinSystemAndroid::UpdateDisplayModes()
 {
+  // re-fetch display modes
   m_android->UpdateDisplayModes();
+
+  if (m_nativeWindow)
+  {
+    // update display settings
+    UpdateResolutions(false);
+  }
 }
 
 bool CWinSystemAndroid::Hide()

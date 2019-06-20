@@ -78,4 +78,7 @@ protected:
   CCriticalSection m_resourceSection;
   std::vector<IDispResource*> m_resources;
   CDecoderFilterManager *m_decoderFilterManager;
+
+private:
+  void UpdateResolutions(bool bUpdateDesktopRes);
 };
