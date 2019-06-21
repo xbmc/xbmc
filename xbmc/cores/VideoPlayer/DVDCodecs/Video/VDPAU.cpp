@@ -531,7 +531,6 @@ bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, const enum A
   }
   m_vdpauConfig.numRenderBuffers = 5;
   m_vdpauConfig.timeOpened = CurrentHostCounter();
-  m_decoderThread = CThread::GetCurrentThreadId();
 
   if (!CVDPAUContext::EnsureContext(&m_vdpauConfig.context))
     return false;

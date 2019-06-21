@@ -99,7 +99,7 @@ int CApplicationMessenger::SendMsg(ThreadMessage&& message, bool wait)
     message.result = std::make_shared<int>(-1);
     // check that we're not being called from our application thread, else we'll be waiting
     // forever!
-    if (!CThread::IsCurrentThread(m_guiThreadId))
+    if (m_guiThreadId != CThread::GetCurrentThreadId())
     {
       message.waitEvent.reset(new CEvent(true));
       waitEvent = message.waitEvent;

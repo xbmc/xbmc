@@ -55,7 +55,7 @@ CAddonStatusHandler::CAddonStatusHandler(const std::string &addonID, ADDON_STATU
   }
   else
   {
-    Create(true, THREAD_MINSTACKSIZE);
+    Create(true);
   }
 }
 

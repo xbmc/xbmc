@@ -10,18 +10,5 @@
 
 #include <windows.h>
 
-
-struct threadOpaque
-{
-  HANDLE handle;
-};
-
-typedef DWORD ThreadIdentifier;
-typedef threadOpaque ThreadOpaque;
-#define THREADFUNC unsigned __stdcall
-
-namespace XbmcThreads
-{
-  inline static void ThreadSleep(unsigned int millis) { Sleep(millis); }
-}
+typedef HANDLE ThreadLwpId;
 

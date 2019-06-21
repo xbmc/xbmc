@@ -120,7 +120,7 @@ void CMusicInfoScraper::LoadArtistInfo()
 
 bool CMusicInfoScraper::Completed()
 {
-  return WaitForThreadExit(10);
+  return Join(10);
 }
 
 bool CMusicInfoScraper::Succeeded()

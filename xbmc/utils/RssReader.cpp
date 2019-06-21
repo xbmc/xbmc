@@ -92,7 +92,7 @@ void CRssReader::AddToQueue(int iAdd)
   {
     StopThread();
     m_bIsRunning = true;
-    CThread::Create(false, THREAD_MINSTACKSIZE);
+    CThread::Create(false);
   }
 }
 
