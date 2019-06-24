@@ -339,6 +339,7 @@ bool CSkinInfo::LoadStartupWindows(const cp_extension_t *ext)
   m_startupWindows.emplace_back(WINDOW_FILES, "7");
   m_startupWindows.emplace_back(WINDOW_SETTINGS_MENU, "5");
   m_startupWindows.emplace_back(WINDOW_WEATHER, "8");
+  m_startupWindows.emplace_back(WINDOW_DIALOG_FAVOURITES, "10134");
   return true;
 }
 
