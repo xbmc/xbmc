@@ -5,7 +5,7 @@ DEPS= ../../Makefile.include Makefile
 
 # app name, version
 APPNAME=xz
-VERSION=5.0.5
+VERSION=5.2.4
 SOURCE=$(APPNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.bz2
 
