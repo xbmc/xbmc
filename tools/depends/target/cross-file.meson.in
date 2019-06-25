@@ -7,7 +7,7 @@ pkgconfig = '@prefix@/@tool_dir@/bin/pkg-config'
 
 [properties]
 cargs = ['@platform_cflags@', '@platform_includes@', '-isystem @prefix@/@deps_dir@/include']
-c_link_args = ['-L@prefix@/@deps_dir@/lib', '-L@prefix@/@deps_dir@/lib64', '@platform_ldflags@']
+c_link_args = ['-L@prefix@/@deps_dir@/lib -L@prefix@/@deps_dir@/lib64 @platform_ldflags@']
 
 [host_machine]
 system = ''
