@@ -5,7 +5,7 @@ DEPS= ../../Makefile.include Makefile visibility.patch
 
 # lib name, version
 LIBNAME=zlib
-VERSION=1.2.7
+VERSION=1.2.11
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
 # configuration settings
