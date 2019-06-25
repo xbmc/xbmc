@@ -6,7 +6,7 @@ DEPS= ../../Makefile.include Makefile
 # lib name, version
 # lib name, version
 LIBNAME=pkg-config
-VERSION=0.28
+VERSION=0.29.2
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
 
