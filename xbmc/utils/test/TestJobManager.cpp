@@ -41,6 +41,15 @@ public:
   }
 };
 
+class ReallyDumbJob : public CJob
+{
+public:
+  bool DoWork() override
+  {
+    return true;
+  }
+};
+
 class TestJobManager : public testing::Test
 {
 protected:
@@ -58,7 +67,7 @@ protected:
 
 TEST_F(TestJobManager, AddJob)
 {
-  CJob* job = new DummyJob();
+  CJob* job = new ReallyDumbJob();
   CJobManager::GetInstance().AddJob(job, NULL);
 }
 
