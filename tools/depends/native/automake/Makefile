@@ -4,7 +4,7 @@ DEPS= ../../Makefile.include Makefile
 
 # lib name, version
 LIBNAME=automake
-VERSION=1.15.1
+VERSION=1.16.1
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
 
