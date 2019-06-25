@@ -94,7 +94,7 @@ then
 fi
 
 # make osx environment aware of the selected xcode app
-DEVELOPER_DIR=/Applications/$XCODE_APP/Contents/Developer
+export DEVELOPER_DIR=/Applications/$XCODE_APP/Contents/Developer
 
 if [ "$Configuration" == "Default" ]
 then
