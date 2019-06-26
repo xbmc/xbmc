@@ -608,10 +608,9 @@ bool CDRMUtils::InitDrm()
 
 #if defined(DRM_CLIENT_CAP_ASPECT_RATIO)
     ret = drmSetClientCap(m_fd, DRM_CLIENT_CAP_ASPECT_RATIO, 0);
-    if (ret)
+    if (ret != 0)
     {
-      CLog::Log(LOGERROR, "CDRMUtils::{} - failed to unset aspect ratio capability: {}", __FUNCTION__, strerror(errno));
-      return false;
+      CLog::Log(LOGERROR, "CDRMUtils::{} - aspect ratio capability is not supported: {}", __FUNCTION__, strerror(errno));
     }
 #endif
 
