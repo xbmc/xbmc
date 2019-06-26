@@ -221,7 +221,7 @@ void CPVREpgInfoTag::ToSortable(SortItem& sortable, Field field) const
 
 CDateTime CPVREpgInfoTag::GetCurrentPlayingTime() const
 {
-  if (CServiceBroker::GetPVRManager().MatchPlayingChannel(ClientID(), UniqueChannelID()))
+  if (CServiceBroker::GetPVRManager().IsPlayingChannel(ClientID(), UniqueChannelID()))
   {
     // start time valid?
     time_t startTime = CServiceBroker::GetDataCacheCore().GetStartTime();
