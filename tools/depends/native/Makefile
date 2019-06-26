@@ -23,7 +23,7 @@ endif
 
 ifeq ($(OS),linux)
   ifeq ($(TARGET_PLATFORM),$(filter $(TARGET_PLATFORM),raspberry-pi gbm))
-    NATIVE += meson ninja python3
+    NATIVE += libffi meson ninja python3 setuptools
   endif
 endif
 
@@ -44,14 +44,15 @@ dpkg: automake gettext libtool pkg-config tar
 flatbuffers: cmake
 libtool: automake
 libpng: zlib
-meson: python3
+meson: python3 setuptools
 ninja: python3
 swig: pcre
 distribute: python27
 distutilscross: python27 distribute
 tar: xz automake
 python27: zlib
-python3: $(EXPAT) zlib
+python3: $(EXPAT) libffi pkg-config zlib
+setuptools: python3
 wayland-scanner: expat
 waylandpp-scanner: cmake
 

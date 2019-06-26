@@ -5,7 +5,7 @@ DEPS= ../../Makefile.include Makefile 01-no-gnu-patch.patch 02-perl-min-version.
 
 # lib name, version
 LIBNAME=dpkg
-VERSION=1.19.6
+VERSION=1.19.7
 SOURCE=$(LIBNAME)_$(VERSION)
 ARCHIVE=$(SOURCE).tar.xz
 

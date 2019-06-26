@@ -4,11 +4,11 @@ DEPS= ../../Makefile.include Makefile
 
 # lib name, version
 LIBNAME=Python
-VERSION=3.6.4
+VERSION=3.7.3
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.xz
 
-CONFIGURE=./configure --prefix=$(NATIVEPREFIX) --disable-shared --disable-framework --without-ensurepip --without-pymalloc
+CONFIGURE=./configure --prefix=$(NATIVEPREFIX) --disable-shared --disable-framework --without-ensurepip --without-pymalloc --with-system-ffi
 ifeq ($(TARGET_PLATFORM),wayland)
   CONFIGURE += --with-system-expat
 endif
