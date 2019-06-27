@@ -171,6 +171,11 @@ if test "@platform_os@" = "ios"; then
   fi
 fi
 
+# Python3 build for appletvos
+if test "@target_platform@" = "appletvos"
+  ac_cv_func_sigaltstack=no
+fi
+
 #Fix for older, broken android toolchains
 if test "${PACKAGE_NAME}" = "FreeType" -a "@platform_os@" = "android"; then
   CFLAGS="$CFLAGS -std=gnu99"
