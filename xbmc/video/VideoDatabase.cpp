@@ -5907,7 +5907,7 @@ void CVideoDatabase::EraseVideoSettings(const CFileItem &item)
   {
     std::string sql = PrepareSQL("DELETE FROM settings WHERE idFile=%i", idFile);
 
-    CLog::Log(LOGINFO, "Deleting settings information for files %s", item.GetPath().c_str());
+    CLog::Log(LOGINFO, "Deleting settings information for files %s", CURL::GetRedacted(item.GetPath()).c_str());
     m_pDS->exec(sql);
   }
   catch (...)
