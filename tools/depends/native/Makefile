@@ -50,7 +50,6 @@ swig: pcre
 distribute: python3
 distutilscross: python3 distribute
 tar: xz automake
-python27: zlib
 python3: $(EXPAT) libffi pkg-config zlib
 setuptools: python3
 wayland-scanner: expat
