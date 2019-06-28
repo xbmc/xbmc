@@ -37,6 +37,8 @@ public:
 
   void SetHDMIState(bool connected);
 
+  void UpdateDisplayModes();
+
   bool HasCursor() override { return false; };
 
   bool Hide() override;
@@ -76,4 +78,7 @@ protected:
   CCriticalSection m_resourceSection;
   std::vector<IDispResource*> m_resources;
   CDecoderFilterManager *m_decoderFilterManager;
+
+private:
+  void UpdateResolutions(bool bUpdateDesktopRes);
 };

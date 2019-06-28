@@ -8,26 +8,21 @@
 
 #pragma once
 
+#include "IScreenshotSurface.h"
+
+#include <functional>
+#include <memory>
 #include <string>
-
-class CScreenshotSurface
-{
-
-public:
-  int            m_width;
-  int            m_height;
-  int            m_stride;
-  unsigned char* m_buffer;
-
-  CScreenshotSurface(void);
-  ~CScreenshotSurface();
-  bool capture( void );
-};
+#include <vector>
 
 class CScreenShot
 {
-
 public:
+  static void Register(std::function<std::unique_ptr<IScreenshotSurface>()> createFunc);
+
   static void TakeScreenshot();
   static void TakeScreenshot(const std::string &filename, bool sync);
+
+private:
+  static std::vector<std::function<std::unique_ptr<IScreenshotSurface>()>> m_screenShotSurfaces;
 };

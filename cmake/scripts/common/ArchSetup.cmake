@@ -95,7 +95,7 @@ endif()
 include(${CMAKE_SOURCE_DIR}/cmake/scripts/${CORE_SYSTEM_NAME}/ArchSetup.cmake)
 
 message(STATUS "Core system type: ${CORE_SYSTEM_NAME}")
-message(STATUS "Platform: ${PLATFORM}")
+message(STATUS "Platform: ${CORE_PLATFORM_NAME}")
 message(STATUS "CPU: ${CPU}, ARCH: ${ARCH}")
 message(STATUS "Cross-Compiling: ${CMAKE_CROSSCOMPILING}")
 message(STATUS "Execute build artefacts on host: ${CORE_HOST_IS_TARGET}")

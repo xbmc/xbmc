@@ -15,6 +15,7 @@
 #include "cores/RetroPlayer/rendering/VideoRenderers/RPRendererOpenGLES.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderFactory.h"
 #include "cores/VideoPlayer/VideoRenderers/LinuxRendererGLES.h"
+#include "rendering/gles/ScreenshotSurfaceGLES.h"
 #include "utils/log.h"
 
 using namespace KODI::WINDOWING::WAYLAND;
@@ -44,6 +45,8 @@ bool CWinSystemWaylandEGLContextGLES::InitWindowSystem()
   {
     ::WAYLAND::VAAPIRegister(m_vaapiProxy.get(), deepColor);
   }
+
+  CScreenshotSurfaceGLES::Register();
 
   return true;
 }

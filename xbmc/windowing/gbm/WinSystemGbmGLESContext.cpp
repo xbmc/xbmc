@@ -20,6 +20,7 @@
 
 #include "OptionalsReg.h"
 #include "platform/posix/XTimeUtils.h"
+#include "rendering/gles/ScreenshotSurfaceGLES.h"
 #include "utils/log.h"
 #include "WinSystemGbmGLESContext.h"
 
@@ -67,6 +68,8 @@ bool CWinSystemGbmGLESContext::InitWindowSystem()
   CRendererDRMPRIME::Register();
   CDVDVideoCodecDRMPRIME::Register();
   VIDEOPLAYER::CProcessInfoGBM::Register();
+
+  CScreenshotSurfaceGLES::Register();
 
   return true;
 }

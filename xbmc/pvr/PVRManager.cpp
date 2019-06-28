@@ -697,6 +697,11 @@ bool CPVRManager::IsRecordingOnPlayingChannel(void) const
   return currentChannel && m_timers && m_timers->IsRecordingOnChannel(*currentChannel);
 }
 
+bool CPVRManager::IsPlayingActiveRecording() const
+{
+  return IsStarted() && m_playingRecording ? m_playingRecording->IsInProgress() : false;
+}
+
 bool CPVRManager::CanRecordOnPlayingChannel(void) const
 {
   const CPVRChannelPtr currentChannel = GetPlayingChannel();

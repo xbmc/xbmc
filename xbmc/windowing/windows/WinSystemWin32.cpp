@@ -18,6 +18,7 @@
 #include "platform/win32/CharsetConverter.h"
 #include "platform/win32/input/IRServerSuite.h"
 #include "platform/win32/powermanagement/Win32PowerSyscall.h"
+#include "rendering/dx/ScreenshotSurfaceWindows.h"
 #include "resource.h"
 #include "ServiceBroker.h"
 #include "settings/AdvancedSettings.h"
@@ -69,6 +70,8 @@ CWinSystemWin32::CWinSystemWin32()
   CAESinkDirectSound::Register();
   CAESinkWASAPI::Register();
   CWin32PowerSyscall::Register();
+  CScreenshotSurfaceWindows::Register();
+
   if (CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_bScanIRServer)
   {
     m_irss.reset(new CIRServerSuite());

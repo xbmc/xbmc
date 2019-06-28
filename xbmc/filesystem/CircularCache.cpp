@@ -24,7 +24,7 @@ CCircularCache::CCircularCache(size_t front, size_t back)
  , m_size(front + back)
  , m_size_back(back)
 #ifdef TARGET_WINDOWS
- , m_handle(INVALID_HANDLE_VALUE)
+ , m_handle(NULL)
 #endif
 {
 }
@@ -44,7 +44,7 @@ int CCircularCache::Open()
 #else
   m_buf = new uint8_t[m_size];
 #endif
-  if(m_buf == 0)
+  if (m_buf == NULL)
     return CACHE_RC_ERROR;
   m_beg = 0;
   m_end = 0;
@@ -55,9 +55,11 @@ int CCircularCache::Open()
 void CCircularCache::Close()
 {
 #ifdef TARGET_WINDOWS
-  UnmapViewOfFile(m_buf);
-  CloseHandle(m_handle);
-  m_handle = INVALID_HANDLE_VALUE;
+  if (m_buf != NULL)
+    UnmapViewOfFile(m_buf);
+  if (m_handle != NULL)
+    CloseHandle(m_handle);
+  m_handle = NULL;
 #else
   delete[] m_buf;
 #endif
@@ -118,6 +120,9 @@ int CCircularCache::WriteToCache(const char *buf, size_t len)
   if(len == 0)
     return 0;
 
+  if (m_buf == NULL)
+    return 0;
+
   // write the data
   memcpy(m_buf + pos, buf, len);
   m_end += len;
@@ -156,6 +161,9 @@ int CCircularCache::ReadFromCache(char *buf, size_t len)
     len = avail;
 
   if(len == 0)
+    return 0;
+
+  if (m_buf == NULL)
     return 0;
 
   memcpy(buf, m_buf + pos, len);

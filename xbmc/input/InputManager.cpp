@@ -234,6 +234,7 @@ bool CInputManager::ProcessEventServer(int windowId, float frameTime)
       if (wKeyID & ES_FLAG_UNICODE)
       {
         key = CKey(0u, 0u, static_cast<wchar_t>(wKeyID & ~ES_FLAG_UNICODE), 0, 0, 0, 0);
+        key.SetFromService(true);
         return OnKey(key);
       }
 
@@ -467,7 +468,8 @@ bool CInputManager::OnKey(const CKey& key)
     }
     else
     {
-      if (!m_buttonTranslator->HasLongpressMapping(CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindowOrDialog(), key))
+      // Event server keyboard dont give normal key up and key down so dont process for long press if that is source
+      if (key.GetFromService() || !m_buttonTranslator->HasLongpressMapping(CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindowOrDialog(), key))
       {
         m_LastKey.Reset();
         bHandled = HandleKey(key);
