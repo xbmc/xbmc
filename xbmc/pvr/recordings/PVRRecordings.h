@@ -83,12 +83,6 @@ namespace PVR
      */
     CPVRRecordingPtr GetRecordingForEpgTag(const CPVREpgInfoTagPtr &epgTag) const;
 
-    /**
-     * @brief Get/Open the video database.
-     * @return A reference to the video database.
-     */
-    CVideoDatabase& GetVideoDatabase();
-
   private:
     mutable CCriticalSection m_critSection;
     bool m_bIsUpdating = false;
@@ -101,6 +95,12 @@ namespace PVR
     unsigned int m_iRadioRecordings = 0;
 
     void UpdateFromClients(void);
+
+    /*!
+     * @brief Get/Open the video database.
+     * @return A reference to the video database.
+     */
+    CVideoDatabase& GetVideoDatabase();
 
     /**
      * @brief recursively deletes all recordings in the specified directory
