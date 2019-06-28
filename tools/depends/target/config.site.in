@@ -172,7 +172,7 @@ if test "@platform_os@" = "ios"; then
 fi
 
 # Python3 build for appletvos
-if test "@target_platform@" = "appletvos"
+if test "@target_platform@" = "appletvos"; then
   ac_cv_func_sigaltstack=no
 fi
 
