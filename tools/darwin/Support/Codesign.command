@@ -33,9 +33,9 @@ if [ "${PLATFORM_NAME}" == "iphoneos" ] || [ "${PLATFORM_NAME}" == "appletvos" ]
 
   #do fake sign - needed for jailbroken ios5.1 devices for some reason
   if [ -f ${LDID} ]; then
-    find ${BUILT_PRODUCTS_DIR}/${WRAPPER_NAME}/ -name "*.dylib" | xargs ${LDID} -S${IOS11_ENTITLEMENTS}
-    find ${BUILT_PRODUCTS_DIR}/${WRAPPER_NAME}/ -name "*.so" | xargs ${LDID} -S${IOS11_ENTITLEMENTS}
-    ${LDID} -S${IOS11_ENTITLEMENTS} ${BUILT_PRODUCTS_DIR}/${WRAPPER_NAME}/${APP_NAME}
+    find ${BUILT_PRODUCTS_DIR}/${EXECUTABLE_FOLDER_PATH}/ -name "*.dylib" | xargs ${LDID} -S${IOS11_ENTITLEMENTS}
+    find ${BUILT_PRODUCTS_DIR}/${EXECUTABLE_FOLDER_PATH}/ -name "*.so" | xargs ${LDID} -S${IOS11_ENTITLEMENTS}
+    ${LDID} -S${IOS11_ENTITLEMENTS} ${BUILT_PRODUCTS_DIR}/${EXECUTABLE_FOLDER_PATH}/${EXECUTABLE_NAME}
     
     #repackage python eggs
     EGGS=`find ${CODESIGNING_FOLDER_PATH} -name "*.egg" -type f`
@@ -67,8 +67,8 @@ if [ "${PLATFORM_NAME}" == "iphoneos" ] || [ "${PLATFORM_NAME}" == "appletvos" ]
  fi
  echo "${CODE_SIGN_IDENTITY_FOR_ITEMS}"
 
-  ${GEN_ENTITLEMENTS} "${BUNDLEID}" "${BUILT_PRODUCTS_DIR}/${WRAPPER_NAME}/${PROJECT_NAME}.xcent";
-  codesign -v -f -s "${CODE_SIGN_IDENTITY_FOR_ITEMS}" --entitlements "${BUILT_PRODUCTS_DIR}/${WRAPPER_NAME}/${PROJECT_NAME}.xcent" "${BUILT_PRODUCTS_DIR}/${WRAPPER_NAME}/"
+  ${GEN_ENTITLEMENTS} "${BUNDLEID}" "${BUILT_PRODUCTS_DIR}/${EXECUTABLE_FOLDER_PATH}/${EXECUTABLE_NAME}.xcent";
+  codesign -v -f -s "${CODE_SIGN_IDENTITY_FOR_ITEMS}" --entitlements "${BUILT_PRODUCTS_DIR}/${EXECUTABLE_FOLDER_PATH}/${EXECUTABLE_NAME}.xcent" "${BUILT_PRODUCTS_DIR}/${EXECUTABLE_FOLDER_PATH}/"
 
   #if user has set a code_sign_identity different from iPhone Developer we do a real codesign (for deployment on non-jailbroken devices)
   if ! [ -z "${CODE_SIGN_IDENTITY}" ] && [ "${CODE_SIGN_IDENTITY}" == "iPhone Developer" ] && [ "${CODE_SIGN_IDENTITY}" != "Don't Code Sign"  ]; then

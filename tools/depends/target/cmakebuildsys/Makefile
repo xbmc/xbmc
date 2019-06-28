@@ -10,13 +10,21 @@ ifeq ($(Configuration),)
   endif
 endif
 
+ifeq ($(OS),darwin_embedded)
+  CMAKE_BUILD_ARGUMENTS = -G Xcode
+else ifeq ($(GEN),Xcode)
+  CMAKE_BUILD_ARGUMENTS = -G Xcode
+else
+  CMAKE_BUILD_ARGUMENTS = -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=$(Configuration)
+endif
+
 ifeq ($(BUILD_DIR),)
   BUILD_DIR=$(CMAKE_SOURCE_DIR)/build
 endif
 
 all:
 	mkdir -p $(BUILD_DIR)
-	cd $(BUILD_DIR); $(CMAKE) -DCMAKE_BUILD_TYPE=$(Configuration) -DENABLE_INTERNAL_CROSSGUID=OFF -DENABLE_INTERNAL_FFMPEG=OFF $(CMAKE_EXTRA_ARGUMENTS) $(CMAKE_SOURCE_DIR)
+	cd $(BUILD_DIR); $(CMAKE) $(CMAKE_BUILD_ARGUMENTS) -DENABLE_INTERNAL_CROSSGUID=OFF -DENABLE_INTERNAL_FFMPEG=OFF $(CMAKE_EXTRA_ARGUMENTS) $(CMAKE_SOURCE_DIR)
 
 kodi:
 	$(MAKE) -C $(BUILD_DIR)

@@ -151,6 +151,17 @@ Create an out-of-source build directory:
 ```
 mkdir $HOME/kodi-build
 ```
+Generate Xcode project as per configure command in **[Configure and build tools and dependencies](#4-configure-and-build-tools-and-dependencies)**:
+```
+make -C tools/depends/target/cmakebuildsys BUILD_DIR=$HOME/kodi-build GEN=Xcode
+```
+
+**TIP:** BUILD_DIR can be omitted, and project will be created in $HOME/kodi/build
+Change all relevant paths onwards if omitted.
+
+Additional cmake arguments can be supplied via the CMAKE_EXTRA_ARGUMENTS command line variable
+
+**Alternatively**
 
 Change to build directory:
 ```
@@ -181,10 +192,15 @@ ls -l /Users/Shared/xbmc-depends
 ### 6.2. Build with xcodebuild
 Alternatively, you can also build via Xcode from the command-line with `xcodebuild`, triggered by CMake:
 
-Change to build directory:
+Build Kodi:
 ```
 cd $HOME/kodi-build
+xcodebuild -config "Debug" -jobs $(getconf _NPROCESSORS_ONLN)
 ```
+
+**TIP:** You can specify Release instead of Debug as -config parameter.
+
+**Alternatively**
 
 Build Kodi:
 ```
@@ -244,6 +260,11 @@ $HOME/kodi/build/kodi.bin
 ## 8. Package
 CMake generates a target called `dmg` which will package Kodi ready for distribution. After Kodi has been built, the target can be triggered by selecting it in Xcode active scheme or manually running
 
+```
+cd $HOME/kodi-build
+xcodebuild -target dmg
+````
+**OR**
 ```
 cd $HOME/kodi-build/build
 /Users/Shared/xbmc-depends/x86_64-darwin17.5.0-native/bin/cmake --build . --target "dmg" --config "Debug"

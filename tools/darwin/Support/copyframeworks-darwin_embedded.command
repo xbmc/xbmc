@@ -49,24 +49,23 @@ function check_xbmc_dylib_depends
 
 EXTERNAL_LIBS=$XBMC_DEPENDS
 
-TARGET_NAME=$PRODUCT_NAME.$WRAPPER_EXTENSION
-TARGET_CONTENTS=$TARGET_BUILD_DIR/$TARGET_NAME
+TARGET_BINARY=$TARGET_BUILD_DIR/$EXECUTABLE_PATH
+TARGET_CONTENTS=$TARGET_BUILD_DIR/$FULL_PRODUCT_NAME
+TARGET_FRAMEWORKS=$TARGET_BUILD_DIR/$FRAMEWORKS_FOLDER_PATH
 
-TARGET_BINARY=$TARGET_CONTENTS/$APP_NAME
-TARGET_FRAMEWORKS=$TARGET_CONTENTS/Frameworks
 DYLIB_NAMEPATH=@executable_path/Frameworks
 XBMC_HOME=$TARGET_CONTENTS/AppData/AppHome
 
 mkdir -p "$TARGET_CONTENTS"
 mkdir -p "$TARGET_CONTENTS/AppData/AppHome"
 # start clean so we don't keep old dylibs
-rm -rf "$TARGET_CONTENTS/Frameworks"
-mkdir -p "$TARGET_CONTENTS/Frameworks"
+rm -rf "$TARGET_FRAMEWORKS"
+mkdir -p "$TARGET_FRAMEWORKS"
 
-echo "Package $TARGET_NAME"
+echo "Package $FULL_PRODUCT_NAME"
 
 # Copy all of XBMC's dylib dependencies and rename their locations to inside the Framework
-echo "Checking $TARGET_NAME for dylib dependencies"
+echo "Checking $FULL_PRODUCT_NAME for dylib dependencies"
 for a in $(otool -L "$TARGET_BINARY"  | grep "$EXTERNAL_LIBS\|$DYLIB_NAMEPATH" | awk ' { print $1 } ') ; do
   echo "    Packaging $a"
   cp -f "$EXTERNAL_LIBS/lib/$(basename $a)" "$TARGET_FRAMEWORKS/"
@@ -75,7 +74,7 @@ for a in $(otool -L "$TARGET_BINARY"  | grep "$EXTERNAL_LIBS\|$DYLIB_NAMEPATH" |
 done
 
 echo "Package $EXTERNAL_LIBS/lib/python2.7"
-mkdir -p "$TARGET_CONTENTS/Frameworks/lib"
+mkdir -p "$TARGET_FRAMEWORKS/lib"
 PYTHONSYNC="rsync -aq --exclude .DS_Store --exclude *.a --exclude *.exe --exclude test --exclude tests"
 ${PYTHONSYNC} "$EXTERNAL_LIBS/lib/python2.7" "$TARGET_FRAMEWORKS/lib/"
 rm -rf "$TARGET_FRAMEWORKS/lib/python2.7/config"
@@ -90,11 +89,11 @@ echo "Checking addons *.so for dylib dependencies"
 check_xbmc_dylib_depends "$XBMC_HOME"/addons "*.so"
 
 echo "Checking xbmc/DllPaths_generated.h for dylib dependencies"
-for a in $(grep .dylib "$SRCROOT"/xbmc/DllPaths_generated.h | awk '{print $3}' | sed s/\"//g) ; do
+for a in $(grep .dylib "$BUILD_ROOT"/xbmc/DllPaths_generated.h | awk '{print $3}' | sed s/\"//g) ; do
   check_dyloaded_depends $a
 done
 
-echo "Checking $TARGET_NAME/Frameworks for missing dylib dependencies"
+echo "Checking $TARGET_FRAMEWORKS for missing dylib dependencies"
 REWIND="1"
 while [ $REWIND = "1" ]
 do
