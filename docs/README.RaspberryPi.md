@@ -120,6 +120,12 @@ cd $HOME/kodi
 make -C tools/depends/target/cmakebuildsys
 ```
 
+**TIP:** BUILD_DIR can be provided as an argument to cmakebuildsys. This allows you to provide an alternate build location. Change all paths onwards as required if BUILD_DIR option used.
+```
+mkdir $HOME/kodi-build
+make -C tools/depends/target/cmakebuildsys BUILD_DIR=$HOME/kodi-build
+```
+
 Build Kodi:
 ```
 cd $HOME/kodi/build

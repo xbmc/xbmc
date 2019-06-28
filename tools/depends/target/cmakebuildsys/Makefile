@@ -10,7 +10,9 @@ ifeq ($(Configuration),)
   endif
 endif
 
-BUILD_DIR=$(CMAKE_SOURCE_DIR)/build
+ifeq ($(BUILD_DIR),)
+  BUILD_DIR=$(CMAKE_SOURCE_DIR)/build
+endif
 
 all:
 	mkdir -p $(BUILD_DIR)
