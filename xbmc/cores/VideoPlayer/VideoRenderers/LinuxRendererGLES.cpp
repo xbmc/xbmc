@@ -289,11 +289,18 @@ void CLinuxRendererGLES::LoadPlane(CYuvPlane& plane, int type,
     }
     else
     {
+      size_t planeSize = width * height * bps;
+      if (m_planeBufferSize < planeSize)
+      {
+        m_planeBuffer = static_cast<unsigned char*>(realloc(m_planeBuffer, planeSize));
+        m_planeBufferSize = planeSize;
+      }
+
       unsigned char *src(static_cast<unsigned char*>(data)),
                     *dst(m_planeBuffer);
 
-      for (unsigned int y = 0; y < height; ++y, src += stride, dst += width * bpp)
-        memcpy(dst, src, width * bpp);
+      for (unsigned int y = 0; y < height; ++y, src += stride, dst += width * bps)
+        memcpy(dst, src, width * bps);
 
       pixelData = m_planeBuffer;
     }
@@ -1292,11 +1299,9 @@ bool CLinuxRendererGLES::CreateYV12Texture(int index)
   im.planesize[1] = im.stride[1] * (im.height >> im.cshift_y);
   im.planesize[2] = im.stride[2] * (im.height >> im.cshift_y);
 
-  m_planeBuffer = static_cast<unsigned char*>(realloc(m_planeBuffer, m_sourceHeight * m_sourceWidth * im.bpp));
-
   for (int i = 0; i < 3; i++)
   {
-    im.plane[i] = new uint8_t[im.planesize[i]];
+    im.plane[i] = nullptr; // will be set in UploadTexture()
   }
 
   for(int f = 0; f < MAX_FIELDS; f++)
@@ -1459,7 +1464,7 @@ bool CLinuxRendererGLES::CreateNV12Texture(int index)
 
   for (int i = 0; i < 2; i++)
   {
-    im.plane[i] = new uint8_t[im.planesize[i]];
+    im.plane[i] = nullptr; // will be set in UploadTexture()
   }
 
   for(int f = 0; f < MAX_FIELDS; f++)
