@@ -16,7 +16,6 @@ Kodi uses CMake as its building system but instructions are highly dependent on 
   <a href="README.Linux.md" title="Linux"><img src="resources/linux.svg" height="78"></a>
   <a href="README.macOS.md" title="macOS"><img src="resources/macos.svg" height="78"></a>
   <a href="README.openSUSE.md" title="openSUSE"><img src="resources/opensuse.svg" height="78"></a>
-  <a href="README.RaspberryPi.md" title="Raspberry Pi"><img src="resources/raspberrypi.svg" height="78"></a>
   <a href="README.tvOS.md" title="tvOS"><img src="resources/tvos.svg" height="78"></a>
   <a href="README.Ubuntu.md" title="Ubuntu"><img src="resources/ubuntu.svg" height="78"></a>
   <a href="README.Windows.md" title="Windows"><img src="resources/windows.svg" height="78"></a>

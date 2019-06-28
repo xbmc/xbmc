@@ -100,33 +100,7 @@ class CRenderCaptureBase
     bool m_asyncChecked;
 };
 
-#if defined(TARGET_RASPBERRY_PI)
-#include "platform/linux/RBP.h"
-
-class CRenderCaptureDispmanX : public CRenderCaptureBase
-{
-  public:
-    CRenderCaptureDispmanX();
-    ~CRenderCaptureDispmanX();
-
-    int   GetCaptureFormat();
-
-    void  BeginRender();
-    void  EndRender();
-    void  ReadOut();
-
-    void* GetRenderBuffer();
-};
-
-//used instead of typedef CRenderCaptureGL CRenderCapture
-//since C++ doesn't allow you to forward declare a typedef
-class CRenderCapture : public CRenderCaptureDispmanX
-{
-  public:
-    CRenderCapture() {};
-};
-
-#elif defined(HAS_GL) || defined(HAS_GLES)
+#if defined(HAS_GL) || defined(HAS_GLES)
 #include "system_gl.h"
 
 class CRenderCaptureGL : public CRenderCaptureBase

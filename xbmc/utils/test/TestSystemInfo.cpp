@@ -239,10 +239,6 @@ TEST_F(TestSystemInfo, GetUserAgent)
 #endif // defined(TARGET_LINUX)
 #endif // defined(TARGET_POSIX)
 
-#ifdef TARGET_RASPBERRY_PI
-  EXPECT_NE(std::string::npos, g_sysinfo.GetUserAgent().find(" XBMC_HW_RaspberryPi/")) << "'GetUserAgent()' must contain ' XBMC_HW_RaspberryPi/'";
-#endif // TARGET_RASPBERRY_PI
-
   EXPECT_NE(std::string::npos, g_sysinfo.GetUserAgent().find(" App_Bitness/")) << "'GetUserAgent()' must contain ' App_Bitness/'";
   EXPECT_NE(std::string::npos, g_sysinfo.GetUserAgent().find(" Version/")) << "'GetUserAgent()' must contain ' Version/'";
 }

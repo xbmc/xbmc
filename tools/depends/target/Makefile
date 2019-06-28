@@ -61,24 +61,19 @@ endif
 WAYLANDPP_DEPS=
 ALSA_LIB=
 ifeq ($(OS),linux)
-  DEPENDS += dbus libuuid
-  # not for raspberry pi or gbm
-  ifeq (,$(filter $(TARGET_PLATFORM),raspberry-pi gbm))
-    DEPENDS += linux-system-libs
-    WAYLANDPP_DEPS += linux-system-libs
-  endif
-  DEPENDS += alsa-lib
+  DEPENDS += dbus libuuid alsa-lib
   ALSA_LIB = alsa-lib
   LIBUUID = libuuid
-  ifeq ($(TARGET_PLATFORM),$(filter $(TARGET_PLATFORM),raspberry-pi gbm))
-    DEPENDS += libxkbcommon libinput libudev libevdev mtdev
-  endif
+
   ifeq ($(TARGET_PLATFORM),gbm)
-    DEPENDS += libdrm mesa
+    DEPENDS += libxkbcommon libinput libudev libevdev mtdev libdrm mesa
     ifeq ($(CPU),x86_64)
       DEPENDS += libva
       LIBVA = libva
     endif
+  else
+    DEPENDS += linux-system-libs
+    WAYLANDPP_DEPS += linux-system-libs
   endif
 endif
 

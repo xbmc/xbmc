@@ -28,7 +28,6 @@ enum PeripheralBusType
   PERIPHERAL_BUS_UNKNOWN = 0,
   PERIPHERAL_BUS_USB,
   PERIPHERAL_BUS_PCI,
-  PERIPHERAL_BUS_RPI,
   PERIPHERAL_BUS_CEC,
   PERIPHERAL_BUS_ADDON,
 #ifdef TARGET_ANDROID
@@ -183,8 +182,6 @@ public:
         return "usb";
       case PERIPHERAL_BUS_PCI:
         return "pci";
-      case PERIPHERAL_BUS_RPI:
-        return "rpi";
       case PERIPHERAL_BUS_CEC:
         return "cec";
       case PERIPHERAL_BUS_ADDON:
@@ -213,8 +210,6 @@ public:
       return PERIPHERAL_BUS_USB;
     else if (strTypeLowerCase == "pci")
       return PERIPHERAL_BUS_PCI;
-    else if (strTypeLowerCase == "rpi")
-      return PERIPHERAL_BUS_RPI;
     else if (strTypeLowerCase == "cec")
       return PERIPHERAL_BUS_CEC;
     else if (strTypeLowerCase == "addon")

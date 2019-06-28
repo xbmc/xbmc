@@ -451,16 +451,9 @@ bool CApplication::Create(const CAppParamParser &params)
 #else
   buildType = "Unknown";
 #endif
-  std::string specialVersion;
 
-  //! @todo - move to CPlatformXXX
-#if defined(TARGET_RASPBERRY_PI)
-  specialVersion = " (version for Raspberry Pi)";
-//#elif defined(some_ID) // uncomment for special version/fork
-//  specialVersion = " (version for XXXX)";
-#endif
-  CLog::Log(LOGINFO, "Using %s %s x%d build%s", buildType.c_str(), CSysInfo::GetAppName().c_str(),
-            g_sysinfo.GetXbmcBitness(), specialVersion.c_str());
+  CLog::Log(LOGINFO, "Using %s %s x%d", buildType.c_str(), CSysInfo::GetAppName().c_str(),
+            g_sysinfo.GetXbmcBitness());
   CLog::Log(
       LOGINFO, "%s compiled %s by %s for %s %s %d-bit %s (%s)", CSysInfo::GetAppName().c_str(),
       CSysInfo::GetBuildDate(), g_sysinfo.GetUsedCompilerNameAndVer().c_str(),
@@ -2447,7 +2440,8 @@ void CApplication::FrameMove(bool processEvents, bool processGUI)
   if (processGUI && m_renderGUI)
   {
     m_skipGuiRender = false;
-#if defined(TARGET_RASPBERRY_PI)
+
+    /*! @todo look into the possibility to use this for GBM
     int fps = 0;
 
     // This code reduces rendering fps of the GUI layer when playing videos in fullscreen mode
@@ -2459,7 +2453,7 @@ void CApplication::FrameMove(bool processEvents, bool processGUI)
     unsigned int frameTime = now - m_lastRenderTime;
     if (fps > 0 && frameTime * fps < 1000)
       m_skipGuiRender = true;
-#endif
+    */
 
     if (CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_guiSmartRedraw && m_guiRefreshTimer.IsTimePast())
     {

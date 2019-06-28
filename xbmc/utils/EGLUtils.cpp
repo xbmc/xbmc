@@ -21,19 +21,6 @@
 
 namespace
 {
-//! @todo remove when Raspberry Pi updates their EGL headers
-#ifndef EGL_NO_CONFIG_KHR
-#define EGL_NO_CONFIG_KHR static_cast<EGLConfig>(0)
-#endif
-#ifndef EGL_CONTEXT_PRIORITY_LEVEL_IMG
-#define EGL_CONTEXT_PRIORITY_LEVEL_IMG 0x3100
-#endif
-#ifndef EGL_CONTEXT_PRIORITY_HIGH_IMG
-#define EGL_CONTEXT_PRIORITY_HIGH_IMG 0x3101
-#endif
-#ifndef EGL_CONTEXT_PRIORITY_MEDIUM_IMG
-#define EGL_CONTEXT_PRIORITY_MEDIUM_IMG 0x3102
-#endif
 
 #define X(VAL) std::make_pair(VAL, #VAL)
 std::map<EGLint, const char*> eglAttributes =
@@ -97,21 +84,21 @@ std::map<EGLenum, const char*> eglErrors =
 
 std::map<EGLint, const char*> eglErrorType =
 {
-//! @todo remove when Raspberry Pi updates their EGL headers
-#if !defined(TARGET_RASPBERRY_PI)
   X(EGL_DEBUG_MSG_CRITICAL_KHR),
   X(EGL_DEBUG_MSG_ERROR_KHR),
   X(EGL_DEBUG_MSG_WARN_KHR),
   X(EGL_DEBUG_MSG_INFO_KHR),
-#endif
 };
 #undef X
 
 } // namespace
 
-//! @todo remove when Raspberry Pi updates their EGL headers
-#if !defined(TARGET_RASPBERRY_PI)
-void EglErrorCallback(EGLenum error, const char* command, EGLint messageType, EGLLabelKHR threadLabel, EGLLabelKHR objectLabel, const char* message)
+void EglErrorCallback(EGLenum error,
+                      const char* command,
+                      EGLint messageType,
+                      EGLLabelKHR threadLabel,
+                      EGLLabelKHR objectLabel,
+                      const char* message)
 {
   std::string errorStr;
   std::string typeStr;
@@ -130,7 +117,6 @@ void EglErrorCallback(EGLenum error, const char* command, EGLint messageType, EG
 
   CLog::Log(LOGDEBUG, "EGL Debugging:\nError: {}\nCommand: {}\nType: {}\nMessage: {}", errorStr, command, typeStr, message);
 }
-#endif
 
 std::set<std::string> CEGLUtils::GetClientExtensions()
 {
@@ -185,8 +171,6 @@ void CEGLUtils::Log(int logLevel, const std::string& what)
 CEGLContextUtils::CEGLContextUtils(EGLenum platform, std::string const& platformExtension)
 : m_platform{platform}
 {
-//! @todo remove when Raspberry Pi updates their EGL headers
-#if !defined(TARGET_RASPBERRY_PI)
   if (CEGLUtils::HasClientExtension("EGL_KHR_debug"))
   {
     auto eglDebugMessageControl = CEGLUtils::GetRequiredProcAddress<PFNEGLDEBUGMESSAGECONTROLKHRPROC>("eglDebugMessageControlKHR");
@@ -199,7 +183,6 @@ CEGLContextUtils::CEGLContextUtils(EGLenum platform, std::string const& platform
 
     eglDebugMessageControl(EglErrorCallback, eglDebugAttribs);
   }
-#endif
 
   m_platformSupported = CEGLUtils::HasClientExtension("EGL_EXT_platform_base") && CEGLUtils::HasClientExtension(platformExtension);
 }
@@ -414,14 +397,11 @@ bool CEGLContextUtils::CreateContext(CEGLAttributesVec contextAttribs)
   if (CEGLUtils::HasExtension(m_eglDisplay, "EGL_IMG_context_priority"))
     contextAttribs.Add({{EGL_CONTEXT_PRIORITY_LEVEL_IMG, EGL_CONTEXT_PRIORITY_HIGH_IMG}});
 
-//! @todo remove when Raspberry Pi updates their EGL headers
-#if !defined(TARGET_RASPBERRY_PI)
   if (CEGLUtils::HasExtension(m_eglDisplay, "EGL_KHR_create_context") &&
       CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_openGlDebugging)
   {
     contextAttribs.Add({{EGL_CONTEXT_FLAGS_KHR, EGL_CONTEXT_OPENGL_DEBUG_BIT_KHR}});
   }
-#endif
 
   m_eglContext = eglCreateContext(m_eglDisplay, eglConfig,
                                   EGL_NO_CONTEXT, contextAttribs.Get());

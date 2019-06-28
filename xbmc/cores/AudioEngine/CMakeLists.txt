@@ -51,7 +51,7 @@ if(ALSA_FOUND)
                       Utils/AEELDParser.cpp)
   list(APPEND HEADERS Sinks/AESinkALSA.h
                       Utils/AEELDParser.h)
-                      
+
   if(NOT CORE_PLATFORM_NAME_LC STREQUAL x11)
     list(APPEND SOURCES Sinks/alsa/ALSAHControlMonitor.cpp)
     list(APPEND HEADERS Sinks/alsa/ALSAHControlMonitor.h)
@@ -92,13 +92,6 @@ if(CORE_SYSTEM_NAME MATCHES windows)
                         Sinks/windows/AESinkFactoryWin32.cpp)
     list(APPEND SOURCES Sinks/AESinkDirectSound.h)
   endif()
-endif()
-
-if(CORE_PLATFORM_NAME_LC STREQUAL rbpi)
-  list(APPEND SOURCES Engines/ActiveAE/ActiveAEResamplePi.cpp
-                      Sinks/AESinkPi.cpp)
-  list(APPEND HEADERS Engines/ActiveAE/ActiveAEResamplePi.h
-                      Sinks/AESinkPi.h)
 endif()
 
 if(CORE_SYSTEM_NAME STREQUAL osx)

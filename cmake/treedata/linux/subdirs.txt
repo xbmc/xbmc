@@ -1,5 +1,3 @@
-xbmc/cores/RetroPlayer/process/rbpi cores/RetroPlayer/process/rbpi
-xbmc/cores/VideoPlayer/Process/rbpi cores/VideoPlayer/Process/rbpi
 xbmc/input/touch                    input/touch
 xbmc/input/touch/generic            input/touch/generic
 xbmc/platform/linux                 platform/linux
