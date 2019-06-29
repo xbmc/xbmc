@@ -429,7 +429,7 @@ static int PlayMedia(const std::vector<std::string>& params)
     if ( CGUIWindowVideoBase::ShowResumeMenu(item) == false )
       return false;
   }
-  if (item.m_bIsFolder || item.IsPlayList() || item.IsSmartPlayList())
+  if (item.m_bIsFolder)
   {
     CFileItemList items;
     std::string extensions = CServiceBroker::GetFileExtensionProvider().GetVideoExtensions() + "|" + CServiceBroker::GetFileExtensionProvider().GetMusicExtensions();
@@ -471,7 +471,7 @@ static int PlayMedia(const std::vector<std::string>& params)
       return 0;
     }
   }
-  if (item.IsAudio() || item.IsVideo())
+  if ((item.IsAudio() || item.IsVideo()) && !item.IsPlayList() && !item.IsSmartPlayList())
     CServiceBroker::GetPlaylistPlayer().Play(std::make_shared<CFileItem>(item), "");
   else
     g_application.PlayMedia(item, "", PLAYLIST_NONE);
