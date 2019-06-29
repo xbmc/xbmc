@@ -254,6 +254,7 @@ void CPVRRecordings::UpdateFromClient(const CPVRRecordingPtr &tag)
   {
     newTag = CPVRRecordingPtr(new CPVRRecording);
     newTag->Update(*tag);
+    newTag->UpdateMetadata(GetVideoDatabase());
     newTag->m_iRecordingId = ++m_iLastId;
     m_recordings.insert(std::make_pair(CPVRRecordingUid(newTag->m_iClientId, newTag->m_strRecordingId), newTag));
     if (newTag->IsRadio())
@@ -301,6 +302,8 @@ CPVRRecordingPtr CPVRRecordings::GetRecordingForEpgTag(const CPVREpgInfoTagPtr &
 bool CPVRRecordings::ChangeRecordingsPlayCount(const CFileItemPtr &item, int count)
 {
   bool bResult = false;
+
+  CSingleLock lock(m_critSection);
 
   CVideoDatabase& db = GetVideoDatabase();
   if (db.IsOpen())
@@ -378,6 +381,8 @@ bool CPVRRecordings::ResetResumePoint(const CFileItemPtr item)
   const CPVRRecordingPtr recording = item->GetPVRRecordingInfoTag();
   if (recording)
   {
+    CSingleLock lock(m_critSection);
+
     CVideoDatabase& db = GetVideoDatabase();
     if (db.IsOpen())
     {

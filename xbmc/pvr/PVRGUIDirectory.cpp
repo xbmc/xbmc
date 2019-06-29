@@ -162,7 +162,6 @@ bool IsDirectoryMember(const std::string& strDirectory,
 }
 
 void GetSubDirectories(const CPVRRecordingsPath& recParentPath,
-                       CVideoDatabase& videoDB,
                        const std::vector<std::shared_ptr<CPVRRecording>>& recordings,
                        CFileItemList& results)
 {
@@ -186,8 +185,6 @@ void GetSubDirectories(const CPVRRecordingsPath& recParentPath,
     CPVRRecordingsPath recChildPath(recParentPath);
     recChildPath.AppendSegment(strCurrent);
     const std::string strFilePath = recChildPath;
-
-    recording->UpdateMetadata(videoDB);
 
     std::shared_ptr<CFileItem> item;
     if (!results.Contains(strFilePath))
@@ -223,9 +220,7 @@ void GetSubDirectories(const CPVRRecordingsPath& recParentPath,
 bool CPVRGUIDirectory::GetRecordingsDirectory(CFileItemList& results) const
 {
   bool bGrouped = false;
-  const std::shared_ptr<CPVRRecordings> recs = CServiceBroker::GetPVRManager().Recordings();
-  const std::vector<std::shared_ptr<CPVRRecording>> recordings = recs->GetAll();
-  CVideoDatabase& videoDB = recs->GetVideoDatabase();
+  const std::vector<std::shared_ptr<CPVRRecording>> recordings = CServiceBroker::GetPVRManager().Recordings()->GetAll();
 
   if (m_url.HasOption("view"))
   {
@@ -252,7 +247,7 @@ bool CPVRGUIDirectory::GetRecordingsDirectory(CFileItemList& results) const
     // Deleted view is always flatten. So only for an active view
     const std::string strDirectory = recPath.GetUnescapedDirectoryPath();
     if (!recPath.IsDeleted() && bGrouped)
-      GetSubDirectories(recPath, videoDB, recordings, results);
+      GetSubDirectories(recPath, recordings, results);
 
     // get all files of the current directory or recursively all files starting at the current directory if in flatten mode
     std::shared_ptr<CFileItem> item;
@@ -263,8 +258,6 @@ bool CPVRGUIDirectory::GetRecordingsDirectory(CFileItemList& results) const
           recording->IsRadio() != recPath.IsRadio() ||
           !IsDirectoryMember(strDirectory, recording->m_strDirectory, bGrouped))
         continue;
-
-      recording->UpdateMetadata(videoDB);
 
       item = std::make_shared<CFileItem>(recording);
       item->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, recording->GetPlayCount() > 0);
