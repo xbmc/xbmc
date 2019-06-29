@@ -421,6 +421,14 @@ case $use_platform in
      platform_cxxflags="-fPIC -mcpu=cortex-a53 -mfloat-abi=hard -mfpu=neon-fp-armv8 -mvectorize-with-neon-quad"
      platform_ldflags="-lpthread"
      ;;
+  raspberry-pi4)
+     target_platform=raspberry-pi
+     use_cpu=cortex-a72
+     ffmpeg_options_default="--cpu=cortex-a72"
+     platform_cflags="-fPIC -mcpu=cortex-a72 -mfloat-abi=hard -mfpu=neon-fp-armv8 -mvectorize-with-neon-quad"
+     platform_cxxflags="-fPIC -mcpu=cortex-a72 -mfloat-abi=hard -mfpu=neon-fp-armv8 -mvectorize-with-neon-quad"
+     platform_ldflags="-lpthread"
+     ;;
   tvos)
     if test "$platform_os" != "ios"; then
       AC_MSG_ERROR([$use_platform is only supported on the ios platform])
