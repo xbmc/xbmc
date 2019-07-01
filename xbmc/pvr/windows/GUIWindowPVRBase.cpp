@@ -389,7 +389,20 @@ bool CGUIWindowPVRBase::OpenChannelGroupSelectionDialog(void)
 
 bool CGUIWindowPVRBase::InitChannelGroup()
 {
-  CPVRChannelGroupPtr group(CServiceBroker::GetPVRManager().GetPlayingGroup(m_bRadio));
+  std::shared_ptr<CPVRChannelGroup> group;
+  if (m_channelGroupPath.empty())
+  {
+    group = CServiceBroker::GetPVRManager().GetPlayingGroup(m_bRadio);
+  }
+  else
+  {
+    group = CServiceBroker::GetPVRManager().ChannelGroups()->Get(m_bRadio)->GetGroupByPath(m_channelGroupPath);
+    if (group)
+      CServiceBroker::GetPVRManager().SetPlayingGroup(group);
+    else
+      CLog::LogF(LOGERROR, "Found no %s channel group with path '%s'!", m_bRadio ? "radio" : "TV", m_vecItems->GetPath().c_str());
+  }
+
   if (group)
   {
     CSingleLock lock(m_critSection);
