@@ -17,6 +17,7 @@
 #include "WinSystemGbmGLContext.h"
 #include "OptionalsReg.h"
 #include "platform/posix/XTimeUtils.h"
+#include "rendering/gl/ScreenshotSurfaceGL.h"
 #include "utils/log.h"
 
 using namespace KODI::WINDOWING::GBM;
@@ -53,6 +54,8 @@ bool CWinSystemGbmGLContext::InitWindowSystem()
   {
     VAAPIRegister(m_vaapiProxy.get(), deepColor);
   }
+
+  CScreenshotSurfaceGL::Register();
 
   return true;
 }

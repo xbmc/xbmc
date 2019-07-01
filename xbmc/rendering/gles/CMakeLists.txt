@@ -1,9 +1,11 @@
 if(OPENGLES_FOUND)
   set(SOURCES RenderSystemGLES.cpp
+              ScreenshotSurfaceGLES.cpp
               ../MatrixGL.cpp
               GLESShader.cpp)
 
   set(HEADERS RenderSystemGLES.h
+              ScreenshotSurfaceGLES.h
               ../MatrixGL.h
               GLESShader.h)
 

@@ -11,6 +11,8 @@
 #include "WinSystemRpiGLESContext.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
+#include "platform/linux/ScreenshotSurfaceRBP.h"
+#include "rendering/gles/ScreenshotSurfaceGLES.h"
 #include "ServiceBroker.h"
 #include "utils/log.h"
 #include "cores/RetroPlayer/process/rbpi/RPProcessInfoPi.h"
@@ -69,6 +71,8 @@ bool CWinSystemRpiGLESContext::InitWindowSystem()
   MMAL::CMMALVideo::Register();
   VIDEOPLAYER::CRendererFactory::ClearRenderer();
   MMAL::CMMALRenderer::Register();
+  CScreenshotSurfaceGLES::Register();
+  CScreenshotSurfaceRBP::Register();
 
   return true;
 }

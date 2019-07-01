@@ -18,6 +18,7 @@
 #include "cores/VideoPlayer/VideoRenderers/RenderFactory.h"
 #include "cores/VideoPlayer/VideoRenderers/LinuxRendererGLES.h"
 #include "cores/VideoPlayer/VideoRenderers/HwDecRender/RendererVTBGLES.h"
+#include "rendering/gles/ScreenshotSurfaceGLES.h"
 #include "utils/log.h"
 #include "filesystem/SpecialProtocol.h"
 #include "settings/DisplaySettings.h"
@@ -148,6 +149,7 @@ bool CWinSystemIOS::CreateNewWindow(const std::string& name, bool fullScreen, RE
   VIDEOPLAYER::CProcessInfoIOS::Register();
   RETRO::CRPProcessInfoIOS::Register();
   RETRO::CRPProcessInfoIOS::RegisterRendererFactory(new RETRO::CRendererFactoryOpenGLES);
+  CScreenshotSurfaceGLES::Register();
 
   return true;
 }

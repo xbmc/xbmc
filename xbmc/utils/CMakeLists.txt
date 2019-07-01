@@ -113,6 +113,7 @@ set(HEADERS ActorProtocol.h
             ILocalizer.h
             InfoLoader.h
             IRssObserver.h
+            IScreenshotSurface.h
             ISerializable.h
             ISortable.h
             IXmlDeserializable.h

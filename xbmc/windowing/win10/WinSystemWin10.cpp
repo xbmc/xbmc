@@ -16,6 +16,7 @@
 #include "platform/win32/CharsetConverter.h"
 #include "rendering/dx/DirectXHelper.h"
 #include "rendering/dx/RenderContext.h"
+#include "rendering/dx/ScreenshotSurfaceWindows.h"
 #include "ServiceBroker.h"
 #include "settings/DisplaySettings.h"
 #include "settings/Settings.h"
@@ -58,6 +59,8 @@ CWinSystemWin10::CWinSystemWin10()
 
   AE::CAESinkFactory::ClearSinks();
   CAESinkXAudio::Register();
+  CScreenshotSurfaceWindows::Register();
+
   if (CSysInfo::GetWindowsDeviceFamily() == CSysInfo::WindowsDeviceFamily::Desktop)
   {
     CAESinkWASAPI::Register();
