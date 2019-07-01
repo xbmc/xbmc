@@ -260,6 +260,9 @@ You can find a complete list of available binary add-ons **[here](https://github
 Exemplary, to install `pvr.iptvsimple`, follow below steps.
 For other addons, simply adapt the repository based on the information found in the `.txt` associated with the respective addon **[here](https://github.com/xbmc/repo-binary-addons)**
 
+Some addons may have further dependencies. You must install all needed dependencies of a addon.
+Needed dependencies can be found by checking the depends folder and it's subdirs of the respective addons.
+
 ```
 cd ~/src
 git clone https://github.com/kodi-pvr/pvr.iptvsimple.git
