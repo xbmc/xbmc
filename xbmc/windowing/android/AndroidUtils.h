@@ -24,6 +24,7 @@ public:
   virtual bool  GetNativeResolution(RESOLUTION_INFO *res) const;
   virtual bool  SetNativeResolution(const RESOLUTION_INFO &res);
   virtual bool  ProbeResolutions(std::vector<RESOLUTION_INFO> &resolutions);
+  virtual bool UpdateDisplayModes();
 
   // Implementation of ISettingCallback
   static const std::string SETTING_LIMITGUI;

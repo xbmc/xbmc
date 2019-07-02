@@ -87,7 +87,7 @@ static std::string ModeFlagsToString(unsigned int flags, bool identifier)
 
 CDisplaySettings::CDisplaySettings()
 {
-  m_resolutions.insert(m_resolutions.begin(), RES_CUSTOM, RESOLUTION_INFO());
+  m_resolutions.resize(RES_CUSTOM);
 
   m_zoomAmount = 1.0f;
   m_pixelRatio = 1.0f;
@@ -218,6 +218,7 @@ void CDisplaySettings::Clear()
   CSingleLock lock(m_critical);
   m_calibrations.clear();
   m_resolutions.clear();
+  m_resolutions.resize(RES_CUSTOM);
 
   m_zoomAmount = 1.0f;
   m_pixelRatio = 1.0f;
