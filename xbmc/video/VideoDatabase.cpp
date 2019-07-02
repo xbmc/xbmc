@@ -3621,7 +3621,7 @@ int CVideoDatabase::GetDbId(const std::string &query)
 
 void CVideoDatabase::DeleteStreamDetails(int idFile)
 {
-    m_pDS->exec(PrepareSQL("delete from streamdetails where idFile=%i", idFile));
+  m_pDS->exec(PrepareSQL("DELETE FROM streamdetails WHERE idFile = %i", idFile));
 }
 
 void CVideoDatabase::DeleteSet(int idSet)
