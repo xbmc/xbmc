@@ -1005,14 +1005,6 @@ bool URIUtils::IsInternetStream(const CURL& url, bool bStrictCheck /* = false */
       url.IsProtocol("sftp"))
     return bStrictCheck;
 
-  if (url.IsProtocol("http") || url.IsProtocol("https"))
-  {
-    if (IsOnLAN(url.Get()))
-      return bStrictCheck;
-    else
-      return true;
-  }
-
   std::string protocol = url.GetTranslatedProtocol();
   if (CURL::IsProtocolEqual(protocol, "http")  || CURL::IsProtocolEqual(protocol, "https")  ||
       CURL::IsProtocolEqual(protocol, "tcp")   || CURL::IsProtocolEqual(protocol, "udp")    ||
