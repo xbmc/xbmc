@@ -239,7 +239,7 @@ bool CAndroidUtils::GetNativeResolution(RESOLUTION_INFO *res) const
 
 bool CAndroidUtils::SetNativeResolution(const RESOLUTION_INFO &res)
 {
-  CLog::Log(LOGDEBUG, "CAndroidUtils: SetNativeResolution: %s: %dx%d %dx%d@%f", res.strId.c_str(), res.iWidth, res.iHeight, res.iScreenWidth, res.iScreenHeight, res.fRefreshRate);
+  CLog::Log(LOGNOTICE, "CAndroidUtils: SetNativeResolution: %s: %dx%d %dx%d@%f", res.strId.c_str(), res.iWidth, res.iHeight, res.iScreenWidth, res.iScreenHeight, res.fRefreshRate);
 
   if (s_hasModeApi)
   {
@@ -312,6 +312,12 @@ bool CAndroidUtils::ProbeResolutions(std::vector<RESOLUTION_INFO> &resolutions)
     return true;
   }
   return false;
+}
+
+bool CAndroidUtils::UpdateDisplayModes()
+{
+  fetchDisplayModes();
+  return true;
 }
 
 void  CAndroidUtils::OnSettingChanged(std::shared_ptr<const CSetting> setting)
