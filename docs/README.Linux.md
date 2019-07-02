@@ -235,17 +235,27 @@ sudo make -j$(getconf _NPROCESSORS_ONLN) -C tools/depends/target/binary-addons P
 
 ### 5.2. Out-of-tree building of binary add-ons
 
-First build the the platform add-on, required to be able to build and install other add-ons:
+You can find a complete list of available binary add-ons **[here](https://github.com/xbmc/repo-binary-addons)**.
+Exemplary, to install `pvr.demo`, follow below steps.
+For other addons, simply adapt the repository based on the information found in the `.txt` associated with the respective addon **[here](https://github.com/xbmc/repo-binary-addons)**
+
+Some addons have dependencies.
+You must install all required dependencies of an addon before installing the addon.
+Required dependencies can be found by checking the depends folder and it's subdirs of the respective addons.
+
+For example, a number of addons require the the platform and kodi-platform add-ons.
+Below we demonstrate how to build these two.
+First, the platform addon:
 
 ```
 cd ~/src/
-git clone https://github.com/Pulse-Eight/platform.git
+git clone https://github.com/xbmc/platform.git
 cd ~/src/platform/
 cmake -DCMAKE_INSTALL_PREFIX=/usr/local
 make && make install
 ```
 
-Then build the kodi-platform add-on, required to be able to build and install other add-ons:
+Then the kodi-platform add-on:
 
 ```
 cd ~/src/
@@ -255,18 +265,12 @@ cmake -DCMAKE_INSTALL_PREFIX=/usr/local
 make && make install
 ```
 
-Then install any other addons.
-You can find a complete list of available binary add-ons **[here](https://github.com/xbmc/repo-binary-addons)**.
-Exemplary, to install `pvr.iptvsimple`, follow below steps.
-For other addons, simply adapt the repository based on the information found in the `.txt` associated with the respective addon **[here](https://github.com/xbmc/repo-binary-addons)**
-
-Some addons may have further dependencies. You must install all needed dependencies of a addon.
-Needed dependencies can be found by checking the depends folder and it's subdirs of the respective addons.
+Finally, to install prv.demo
 
 ```
 cd ~/src
-git clone https://github.com/kodi-pvr/pvr.iptvsimple.git
-cd ~/src/pvr.iptvsimple/
+git clone https://github.com/kodi-pvr/pvr.demo.git
+cd ~/src/pvr.demo/
 cmake -DCMAKE_INSTALL_PREFIX=/usr/local
 make && make install
 ```
