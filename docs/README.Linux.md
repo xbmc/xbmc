@@ -241,9 +241,12 @@ For other addons, simply adapt the repository based on the information found in 
 
 Some addons have dependencies.
 You must install all required dependencies of an addon before installing the addon.
-Required dependencies can be found by checking the depends folder and it's subdirs of the respective addons.
+Required dependencies can be found by checking the `depends` folder and
+it's subdirectories in the repository of the respective addons.
 
-For example, a number of addons require the the platform and kodi-platform add-ons.
+A number of addons require the the `p8-platform` and `kodi-platform` add-ons.
+Note that dependencies on `p8-platform` and `kodi-platform` are typically not declared in the `depends` folder.
+They are only declared in the `CMakeLists.txt` file of the respective addon (e.g. via `find_package(p8-platform REQUIRED)`).
 Below we demonstrate how to build these two.
 First, the platform addon:
 
@@ -265,7 +268,7 @@ cmake -DCMAKE_INSTALL_PREFIX=/usr/local
 make && make install
 ```
 
-Finally, to install prv.demo
+Finally, to install pvr.demo
 
 ```
 cd ~/src
