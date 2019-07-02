@@ -46,6 +46,7 @@ endif
 ifeq ($(OS), ios)
   ifneq ($(CPU), arm64)
     ffmpg_config += --cpu=cortex-a8
+    ffmpg_config += --as="$(NATIVEPREFIX)/bin/gas-preprocessor.pl -- $(CC)"
   else
     ffmpg_config += --as="$(NATIVEPREFIX)/bin/gas-preprocessor.pl -arch aarch64 -- $(CC)"
   endif
