@@ -134,6 +134,7 @@ namespace PVR
     bool                            m_bHasRadioChannels;
     bool                            m_bCanRecordPlayingChannel;
     bool                            m_bIsRecordingPlayingChannel;
+    bool                            m_bIsPlayingActiveRecording;
     std::string                     m_strPlayingTVGroup;
     std::string                     m_strPlayingRadioGroup;
 
