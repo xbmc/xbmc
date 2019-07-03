@@ -84,7 +84,7 @@
 					</include>
 				</control>
 				<control type="group">
-					<visible>PVR.IsRecordingPlayingChannel + !Player.ChannelPreviewActive</visible>
+					<visible>[PVR.IsRecordingPlayingChannel + !Player.ChannelPreviewActive] | PVR.IsPlayingActiveRecording</visible>
 					<control type="image">
 						<top>100</top>
 						<left>20</left>

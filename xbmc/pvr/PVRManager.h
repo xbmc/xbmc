@@ -285,6 +285,12 @@ namespace PVR
     bool IsRecordingOnPlayingChannel(void) const;
 
     /*!
+     * @brief Check if an active recording is playing.
+     * @return True if an in-progress (active) recording is playing, false otherwise.
+     */
+    bool IsPlayingActiveRecording() const;
+
+    /*!
      * @brief Check whether the currently playing channel can be recorded.
      * @return True if there is a playing channel that can be recorded, false otherwise.
      */

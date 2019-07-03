@@ -6758,6 +6758,14 @@ const infomap playlist[] =       {{ "length",           PLAYLIST_LENGTH },
 ///     the old `Player.Recording` infolabel.
 ///     <p>
 ///   }
+///   \table_row3{   <b>`PVR.IsPlayingActiveRecording`</b>,
+///                  \anchor PVR_IsPlayingActiveRecording
+///                  _boolean_,
+///     @return **True** if PVR is currently playing an in progress recording.
+///     <p><hr>
+///     @skinning_v19 **[New Infolabel]** \link PVR_IsPlayingActiveRecording `PVR.IsPlayingActiveRecording`\endlink
+///     <p>
+///   }
 ///   \table_row3{   <b>`PVR.TimeshiftProgressPlayPos`</b>,
 ///                  \anchor PVR_TimeshiftProgressPlayPos
 ///                  _integer_,
@@ -6878,6 +6886,7 @@ const infomap pvr[] =            {{ "isrecording",              PVR_IS_RECORDING
                                   { "channelnumberinput",         PVR_CHANNEL_NUMBER_INPUT },
                                   { "canrecordplayingchannel",    PVR_CAN_RECORD_PLAYING_CHANNEL },
                                   { "isrecordingplayingchannel",  PVR_IS_RECORDING_PLAYING_CHANNEL },
+                                  { "isplayingactiverecording",   PVR_IS_PLAYING_ACTIVE_RECORDING },
                                   { "timeshiftprogressplaypos",   PVR_TIMESHIFT_PROGRESS_PLAY_POS },
                                   { "timeshiftprogressepgstart",  PVR_TIMESHIFT_PROGRESS_EPG_START },
                                   { "timeshiftprogressepgend",    PVR_TIMESHIFT_PROGRESS_EPG_END },
