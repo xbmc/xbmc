@@ -22,6 +22,7 @@
 #include "music/dialogs/GUIDialogMusicInfo.h"
 #include "music/MusicThumbLoader.h"
 #include "pictures/PictureThumbLoader.h"
+#include "pvr/PVRThumbLoader.h"
 #include "pvr/PVRManager.h"
 #include "pvr/dialogs/GUIDialogPVRGuideInfo.h"
 #include "pvr/dialogs/GUIDialogPVRRecordingInfo.h"
@@ -109,6 +110,11 @@ public:
     {
       initThumbLoader<CPictureThumbLoader>(InfoTagType::PICTURE);
       return m_thumbloaders[InfoTagType::PICTURE];
+    }
+    if (item->IsPVRChannelGroup())
+    {
+      initThumbLoader<CPVRThumbLoader>(InfoTagType::PVR);
+      return m_thumbloaders[InfoTagType::PVR];
     }
     initThumbLoader<CProgramThumbLoader>(InfoTagType::PROGRAM);
     return m_thumbloaders[InfoTagType::PROGRAM];
@@ -298,7 +304,8 @@ void CDirectoryProvider::OnPVRManagerEvent(const PVR::PVREvent& event)
         event == PVR::PVREvent::ManagerError ||
         event == PVR::PVREvent::ManagerInterrupted ||
         event == PVR::PVREvent::RecordingsInvalidated ||
-        event == PVR::PVREvent::TimersInvalidated)
+        event == PVR::PVREvent::TimersInvalidated ||
+        event == PVR::PVREvent::ChannelGroupsInvalidated)
       m_updateState = INVALIDATED;
   }
 }

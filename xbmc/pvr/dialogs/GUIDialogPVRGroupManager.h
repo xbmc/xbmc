@@ -9,6 +9,7 @@
 #pragma once
 
 #include "guilib/GUIDialog.h"
+#include "pvr/PVRThumbLoader.h"
 #include "pvr/PVRTypes.h"
 #include "view/GUIViewControl.h"
 
@@ -34,6 +35,7 @@ namespace PVR
 
   private:
     void Clear();
+    void ClearSelectedGroupsThumbnail();
     void Update();
     bool PersistChanges(void);
     bool CancelChanges(void);
@@ -46,6 +48,7 @@ namespace PVR
     bool ActionButtonChannelGroups(CGUIMessage &message);
     bool ActionButtonHideGroup(CGUIMessage &message);
     bool ActionButtonToggleRadioTV(CGUIMessage &message);
+    bool ActionButtonRecreateThumbnail(CGUIMessage& message);
     bool OnMessageClick(CGUIMessage &message);
 
     CPVRChannelGroupPtr m_selectedGroup;
@@ -62,5 +65,7 @@ namespace PVR
     CGUIViewControl   m_viewUngroupedChannels;
     CGUIViewControl   m_viewGroupMembers;
     CGUIViewControl   m_viewChannelGroups;
+
+    CPVRThumbLoader m_thumbLoader;
   };
 }

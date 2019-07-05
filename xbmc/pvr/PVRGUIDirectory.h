@@ -89,11 +89,15 @@ public:
    */
   static bool GetChannelGroupsDirectory(bool bRadio, bool bExcludeHidden, CFileItemList& results);
 
-private:
-
-  bool FilterDirectory(CFileItemList& results) const;
-
+  /*!
+   * @brief Get the list of channels.
+   * @param results The file list to store the results in.
+   * @return True on success, false otherwise..
+   */
   bool GetChannelsDirectory(CFileItemList& results) const;
+
+private:
+  bool FilterDirectory(CFileItemList& results) const;
   bool GetTimersDirectory(CFileItemList& results) const;
   bool GetRecordingsDirectory(CFileItemList& results) const;
 

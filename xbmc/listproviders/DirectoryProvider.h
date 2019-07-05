@@ -31,7 +31,8 @@ enum class InfoTagType
   VIDEO,
   AUDIO,
   PICTURE,
-  PROGRAM
+  PROGRAM,
+  PVR,
 };
 
 class CDirectoryProvider :
