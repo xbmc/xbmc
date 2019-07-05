@@ -514,6 +514,11 @@ CAEStreamInfo::DataType VideoPlayerCodec::GetPassthroughStreamType(AVCodecID cod
       format.m_streamInfo.m_sampleRate = samplerate;
       break;
 
+    case AV_CODEC_ID_TRUEHD:
+      format.m_streamInfo.m_type = CAEStreamInfo::STREAM_TYPE_TRUEHD;
+      format.m_streamInfo.m_sampleRate = samplerate;
+      break;
+
     default:
       format.m_streamInfo.m_type = CAEStreamInfo::STREAM_TYPE_NULL;
   }
