@@ -36,7 +36,6 @@ namespace PVR
     void Clear();
     void Update();
     bool PersistChanges(void);
-    bool CancelChanges(void);
     bool ActionButtonOk(CGUIMessage &message);
     bool ActionButtonNewGroup(CGUIMessage &message);
     bool ActionButtonDeleteGroup(CGUIMessage &message);

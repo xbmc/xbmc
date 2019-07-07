@@ -78,12 +78,6 @@ bool CGUIDialogPVRGroupManager::PersistChanges(void)
   return CServiceBroker::GetPVRManager().ChannelGroups()->Get(m_bIsRadio)->PersistAll();
 }
 
-bool CGUIDialogPVRGroupManager::CancelChanges(void)
-{
-  //! @todo
-  return false;
-}
-
 bool CGUIDialogPVRGroupManager::ActionButtonOk(CGUIMessage &message)
 {
   bool bReturn = false;
