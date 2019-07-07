@@ -130,7 +130,7 @@ std::shared_ptr<CPVRChannel> CPVRChannelGroups::GetByPath(const std::string& str
   std::string strCheckPath;
 
   CSingleLock lock(m_critSection);
-  for (const auto& group: m_groups)
+  for (const auto& group : m_groups)
   {
     // check if the path matches
     strCheckPath = group->GetPath();
@@ -175,6 +175,22 @@ std::vector<CPVRChannelGroupPtr> CPVRChannelGroups::GetGroupsByChannel(const CPV
       groups.push_back(group);
   }
   return groups;
+}
+
+std::shared_ptr<CPVRChannelGroup> CPVRChannelGroups::GetGroupByPath(const std::string& strInPath) const
+{
+  // group paths returned by CPVRChannelGroup::GetPath() are always terminated by a "/"
+  std::string strPath = strInPath;
+  if (!strPath.empty() && strPath[strPath.size() - 1] != '/')
+    strPath += '/';
+
+  CSingleLock lock(m_critSection);
+  for (const auto& group : m_groups)
+  {
+    if (group->GetPath() == strPath)
+      return group;
+  }
+  return {};
 }
 
 CPVRChannelGroupPtr CPVRChannelGroups::GetByName(const std::string &strName) const

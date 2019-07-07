@@ -11,6 +11,7 @@
 	</include>
 	<include name="CategoryLabel">
 		<param name="visible">true</param>
+		<param name="item_treshold">0</param>
 		<definition>
 			<control type="label" id="$PARAM[list_id]666">
 				<left>55</left>
@@ -20,7 +21,7 @@
 				<label>$PARAM[label]</label>
 				<shadowcolor>text_shadow</shadowcolor>
 				<visible>$PARAM[visible]</visible>
-				<visible>Integer.IsGreater(Container($PARAM[list_id]).NumItems,0) | Container($PARAM[list_id]).IsUpdating</visible>
+				<visible>Integer.IsGreater(Container($PARAM[list_id]).NumItems,$PARAM[item_treshold]) | Container($PARAM[list_id]).IsUpdating</visible>
 			</control>
 		</definition>
 	</include>
@@ -454,6 +455,7 @@
 		</content>
 	</include>
 	<include name="WidgetListChannels">
+		<param name="item_treshold">0</param>
 		<param name="item_limit">15</param>
 		<param name="icon">$INFO[ListItem.Icon]</param>
 		<param name="label">$INFO[ListItem.Label]</param>
@@ -462,10 +464,12 @@
 			<include content="CategoryLabel">
 				<param name="label">$PARAM[widget_header]</param>
 				<param name="list_id" value="$PARAM[list_id]"/>
+				<param name="item_treshold" value="$PARAM[item_treshold]"/>
 			</include>
 			<include content="BusyListSpinner">
 				<param name="list_id" value="$PARAM[list_id]"/>
 				<param name="posy" value="200"/>
+				<param name="item_treshold" value="$PARAM[item_treshold]"/>
 			</include>
 			<control type="panel" id="$PARAM[list_id]">
 				<left>0</left>
@@ -475,7 +479,7 @@
 				<include content="WidgetListCommon">
 					<param name="list_id" value="$PARAM[list_id]"/>
 				</include>
-				<visible>Integer.IsGreater(Container($PARAM[list_id]).NumItems,0) | Container($PARAM[list_id]).IsUpdating</visible>
+				<visible>Integer.IsGreater(Container($PARAM[list_id]).NumItems,$PARAM[item_treshold]) | Container($PARAM[list_id]).IsUpdating</visible>
 				<itemlayout width="310" height="500">
 					<control type="group">
 						<left>70</left>
@@ -910,11 +914,12 @@
 	<include name="BusyListSpinner">
 		<param name="posy">160</param>
 		<param name="visible">true</param>
+		<param name="item_treshold">0</param>
 		<definition>
 			<control type="group" id="$PARAM[list_id]599">
 				<height>160</height>
 				<left>180</left>
-				<visible>Container($PARAM[list_id]).IsUpdating + !Integer.IsGreater(Container($PARAM[list_id]).NumItems,0)</visible>
+				<visible>Container($PARAM[list_id]).IsUpdating + !Integer.IsGreater(Container($PARAM[list_id]).NumItems,$PARAM[item_treshold])</visible>
 				<visible>$PARAM[visible]</visible>
 				<control type="image">
 					<top>$PARAM[posy]</top>

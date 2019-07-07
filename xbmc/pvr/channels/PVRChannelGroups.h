@@ -65,14 +65,14 @@ namespace PVR
     bool UpdateFromClient(const CPVRChannelGroup &group) { return Update(group, true); }
 
     /*!
-     * @brief Get a channel given it's path
+     * @brief Get a channel given its path
      * @param strPath The path to the channel
      * @return The channel, or nullptr if not found
      */
     std::shared_ptr<CPVRChannel> GetByPath(const std::string& strPath) const;
 
     /*!
-     * @brief Get a pointer to a channel group given it's ID.
+     * @brief Get a pointer to a channel group given its ID.
      * @param iGroupId The ID of the group.
      * @return The group or NULL if it wasn't found.
      */
@@ -87,7 +87,14 @@ namespace PVR
     std::vector<CPVRChannelGroupPtr> GetGroupsByChannel(const CPVRChannelPtr &channel, bool bExcludeHidden = false) const;
 
     /*!
-     * @brief Get a group given it's name.
+     * @brief Get a channel group given its path
+     * @param strPath The path to the channel group
+     * @return The channel group, or nullptr if not found
+     */
+    std::shared_ptr<CPVRChannelGroup> GetGroupByPath(const std::string& strPath) const;
+
+    /*!
+     * @brief Get a group given its name.
      * @param strName The name.
      * @return The group or NULL if it wasn't found.
      */

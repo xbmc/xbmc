@@ -104,6 +104,7 @@ namespace PVR
     void UnregisterObservers(void);
 
     CCriticalSection m_critSection;
+    std::string m_channelGroupPath;
     bool m_bRadio;
     std::atomic_bool m_bUpdating = {false};
 
