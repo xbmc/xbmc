@@ -17,6 +17,7 @@
 #include "guilib/GUIRadioButtonControl.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
+#include "input/actions/Action.h"
 #include "input/actions/ActionIDs.h"
 #include "messaging/helpers//DialogOKHelper.h"
 #include "pvr/PVRGUIDirectory.h"
@@ -50,9 +51,6 @@ using namespace PVR;
 CGUIDialogPVRGroupManager::CGUIDialogPVRGroupManager() :
     CGUIDialog(WINDOW_DIALOG_PVR_GROUP_MANAGER, "DialogPVRGroupManager.xml")
 {
-  m_iSelectedUngroupedChannel = 0;
-  m_iSelectedGroupMember = 0;
-  m_iSelectedChannelGroup = 0;
   m_ungroupedChannels = new CFileItemList;
   m_groupMembers      = new CFileItemList;
   m_channelGroups     = new CFileItemList;
@@ -317,10 +315,59 @@ bool CGUIDialogPVRGroupManager::OnMessage(CGUIMessage& message)
   return CGUIDialog::OnMessage(message);
 }
 
+bool CGUIDialogPVRGroupManager::OnActionMove(const CAction& action)
+{
+  bool bReturn = false;
+  int iActionId = action.GetID();
+
+  if (GetFocusedControlID() == CONTROL_LIST_CHANNEL_GROUPS)
+  {
+    if (iActionId == ACTION_MOUSE_MOVE)
+    {
+      int iSelected = m_viewChannelGroups.GetSelectedItem();
+      if (m_iSelectedChannelGroup < iSelected)
+      {
+        iActionId = ACTION_MOVE_DOWN;
+      }
+      else if (m_iSelectedChannelGroup > iSelected)
+      {
+        iActionId = ACTION_MOVE_UP;
+      }
+      else
+      {
+        return bReturn;
+      }
+    }
+
+    if (iActionId == ACTION_MOVE_DOWN || iActionId == ACTION_MOVE_UP ||
+        iActionId == ACTION_PAGE_DOWN || iActionId == ACTION_PAGE_UP ||
+        iActionId == ACTION_FIRST_PAGE || iActionId == ACTION_LAST_PAGE)
+    {
+      CGUIDialog::OnAction(action);
+      int iSelected = m_viewChannelGroups.GetSelectedItem();
+
+      bReturn = true;
+      if (iSelected != m_iSelectedChannelGroup)
+      {
+        m_iSelectedChannelGroup = iSelected;
+        Update();
+      }
+    }
+  }
+
+  return bReturn;
+}
+
+bool CGUIDialogPVRGroupManager::OnAction(const CAction& action)
+{
+  return OnActionMove(action) ||
+         CGUIDialog::OnAction(action);
+}
+
 void CGUIDialogPVRGroupManager::OnInitWindow()
 {
   CGUIDialog::OnInitWindow();
-  m_iSelectedUngroupedChannel  = 0;
+  m_iSelectedUngroupedChannel = 0;
   m_iSelectedGroupMember = 0;
   m_iSelectedChannelGroup = 0;
   Update();
