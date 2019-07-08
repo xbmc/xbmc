@@ -15,6 +15,8 @@ Several distribution **[specific build guides](README.md)** are available.
   4.1. **[Configure build](#41-configure-build)**  
   4.2. **[Build](#42-build)**
 5. **[Build binary add-ons](#5-build-binary-add-ons)**
+  5.1. **[In-tree building of binary add-ons](#51-in-tree-building-of-binary-add-ons)**  
+  5.2. **[Out-of-tree building of binary add-ons](#52-out-of-tree-building-of-binary-add-ons)**
 6. **[Run Kodi](#6-run-kodi)**
 7. **[Uninstall Kodi](#7-uninstall-kodi)**
 8. **[Test suite](#8-test-suite)**
@@ -199,6 +201,13 @@ sudo make install DESTDIR=$HOME/kodi
 ## 5. Build binary add-ons
 You can find a complete list of available binary add-ons **[here](https://github.com/xbmc/repo-binary-addons)**.
 
+In the following, two approaches to building binary add-ons are described.
+While the workflow of in-tree building is more automated,
+it is only supported as long as `-DCMAKE_INSTALL_PREFIX=/usr/local` is not changed from it's default of `/usr/local`.
+Thus when changing `DCMAKE_INSTALL_PREFIX`, you must follow the out-of-tree building instructions.
+
+### 5.1. In-tree building of binary add-ons
+
 Change to Kodi's source code directory:
 ```
 cd $HOME/kodi
@@ -222,6 +231,54 @@ sudo make -j$(getconf _NPROCESSORS_ONLN) -C tools/depends/target/binary-addons P
 **NOTE:** `PREFIX=/usr/local` should match Kodi's `-DCMAKE_INSTALL_PREFIX=` prefix used in **[section 4.1](#41-configure-build)**.
 
 **[back to top](#table-of-contents)**
+
+
+### 5.2. Out-of-tree building of binary add-ons
+
+You can find a complete list of available binary add-ons **[here](https://github.com/xbmc/repo-binary-addons)**.
+Exemplary, to install `pvr.demo`, follow below steps.
+For other addons, simply adapt the repository based on the information found in the `.txt` associated with the respective addon **[here](https://github.com/xbmc/repo-binary-addons)**
+
+Some addons have dependencies.
+You must install all required dependencies of an addon before installing the addon.
+Required dependencies can be found by checking the `depends` folder and
+it's subdirectories in the repository of the respective addons.
+
+A number of addons require the the `p8-platform` and `kodi-platform` add-ons.
+Note that dependencies on `p8-platform` and `kodi-platform` are typically not declared in the `depends` folder.
+They are only declared in the `CMakeLists.txt` file of the respective addon (e.g. via `find_package(p8-platform REQUIRED)`).
+Below we demonstrate how to build these two.
+First, the platform addon:
+
+```
+cd ~/src/
+git clone https://github.com/xbmc/platform.git
+cd ~/src/platform/
+cmake -DCMAKE_INSTALL_PREFIX=/usr/local
+make && make install
+```
+
+Then the kodi-platform add-on:
+
+```
+cd ~/src/
+git clone https://github.com/xbmc/kodi-platform.git
+cd ~/src/kodi-platform/
+cmake -DCMAKE_INSTALL_PREFIX=/usr/local
+make && make install
+```
+
+Finally, to install pvr.demo
+
+```
+cd ~/src
+git clone https://github.com/kodi-pvr/pvr.demo.git
+cd ~/src/pvr.demo/
+cmake -DCMAKE_INSTALL_PREFIX=/usr/local
+make && make install
+```
+
+**NOTE:** `-DCMAKE_INSTALL_PREFIX=` should match Kodi's `-DCMAKE_INSTALL_PREFIX=` prefix used in **[section 4.1](#41-configure-build)**.
 
 ## 6. Run Kodi
 If you chose to install Kodi using `/usr` or `/usr/local` as the `-DCMAKE_INSTALL_PREFIX=`, you can just issue *kodi* in a terminal session.
