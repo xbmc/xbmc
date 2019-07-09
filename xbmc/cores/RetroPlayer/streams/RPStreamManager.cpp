@@ -9,8 +9,6 @@
 #include "RPStreamManager.h"
 #include "IRetroPlayerStream.h"
 #include "RetroPlayerAudio.h"
-//#include "RetroPlayerHardwareBuffer.h" //! @todo
-//#include "RetroPlayerSoftwareBuffer.h" //! @todo
 #include "RetroPlayerVideo.h"
 
 using namespace KODI;
