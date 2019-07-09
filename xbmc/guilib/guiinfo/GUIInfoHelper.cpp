@@ -14,12 +14,11 @@
 #include "guilib/GUIWindowManager.h"
 #include "guilib/IGUIContainer.h"
 #include "guilib/LocalizeStrings.h"
+#include "guilib/guiinfo/GUIInfoLabels.h"
 #include "playlists/PlayList.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "windows/GUIMediaWindow.h"
-
-#include "guilib/guiinfo/GUIInfoLabels.h"
 
 namespace KODI
 {

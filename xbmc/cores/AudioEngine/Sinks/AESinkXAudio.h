@@ -8,17 +8,18 @@
 
 #pragma once
 
-#include <stdint.h>
-#include <mmdeviceapi.h>
 #include "cores/AudioEngine/Interfaces/AESink.h"
 #include "cores/AudioEngine/Utils/AEDeviceInfo.h"
-#include <wrl/implements.h>
-#include <ppltasks.h>
 
-#include <xaudio2.h>
-#include <xaudio2fx.h>
+#include <stdint.h>
+
+#include <mmdeviceapi.h>
+#include <ppltasks.h>
+#include <wrl/implements.h>
 #include <x3daudio.h>
 #include <xapofx.h>
+#include <xaudio2.h>
+#include <xaudio2fx.h>
 #pragma comment(lib,"xaudio2.lib")
 
 class CAESinkXAudio : public IAESink

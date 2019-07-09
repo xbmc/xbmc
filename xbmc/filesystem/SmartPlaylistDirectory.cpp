@@ -6,9 +6,8 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include <math.h>
-
 #include "SmartPlaylistDirectory.h"
+
 #include "FileItem.h"
 #include "ServiceBroker.h"
 #include "filesystem/Directory.h"
@@ -22,6 +21,8 @@
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "video/VideoDatabase.h"
+
+#include <math.h>
 
 #define PROPERTY_PATH_DB            "path.db"
 #define PROPERTY_SORT_ORDER         "sort.order"

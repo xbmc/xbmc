@@ -6,9 +6,9 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include <stdio.h>
-
 #include "HttpResponse.h"
+
+#include <stdio.h>
 
 #define SPACE     " "
 #define SEPARATOR ": "

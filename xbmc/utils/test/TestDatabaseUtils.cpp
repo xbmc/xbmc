@@ -6,12 +6,12 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include "utils/DatabaseUtils.h"
-#include "video/VideoDatabase.h"
-#include "music/MusicDatabase.h"
 #include "dbwrappers/qry_dat.h"
-#include "utils/Variant.h"
+#include "music/MusicDatabase.h"
+#include "utils/DatabaseUtils.h"
 #include "utils/StringUtils.h"
+#include "utils/Variant.h"
+#include "video/VideoDatabase.h"
 
 #include <gtest/gtest.h>
 

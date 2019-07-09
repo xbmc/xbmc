@@ -8,8 +8,7 @@
 
 #include "AlarmClock.h"
 
-#include <utility>
-
+#include "ServiceBroker.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "events/EventLog.h"
 #include "events/NotificationEvent.h"
@@ -18,7 +17,8 @@
 #include "messaging/ApplicationMessenger.h"
 #include "threads/SingleLock.h"
 #include "utils/StringUtils.h"
-#include "ServiceBroker.h"
+
+#include <utility>
 
 using namespace KODI::MESSAGING;
 

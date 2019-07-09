@@ -7,6 +7,7 @@
  */
 
 #include "AddonButtonMap.h"
+
 #include "PeripheralAddonTranslator.h"
 #include "input/joysticks/JoystickUtils.h"
 #include "peripherals/devices/Peripheral.h"

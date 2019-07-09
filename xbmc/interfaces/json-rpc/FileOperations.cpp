@@ -7,21 +7,22 @@
  */
 
 #include "FileOperations.h"
-#include "VideoLibrary.h"
+
 #include "AudioLibrary.h"
+#include "FileItem.h"
 #include "MediaSource.h"
 #include "ServiceBroker.h"
+#include "URL.h"
+#include "Util.h"
+#include "VideoLibrary.h"
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"
-#include "FileItem.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/MediaSourceSettings.h"
 #include "settings/SettingsComponent.h"
-#include "Util.h"
-#include "URL.h"
 #include "utils/FileExtensionProvider.h"
-#include "utils/URIUtils.h"
 #include "utils/FileUtils.h"
+#include "utils/URIUtils.h"
 #include "utils/Variant.h"
 #include "video/VideoDatabase.h"
 

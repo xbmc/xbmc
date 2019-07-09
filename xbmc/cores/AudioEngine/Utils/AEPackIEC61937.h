@@ -8,8 +8,8 @@
 
 #pragma once
 
-#include <stdint.h>
 #include <list>
+#include <stdint.h>
 
 #define MAX_IEC61937_PACKET  61440
 #define IEC61937_DATA_OFFSET 8

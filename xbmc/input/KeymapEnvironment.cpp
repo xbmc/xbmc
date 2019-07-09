@@ -7,6 +7,7 @@
  */
 
 #include "KeymapEnvironment.h"
+
 #include "WindowTranslator.h"
 
 int CKeymapEnvironment::GetFallthrough(int windowId) const

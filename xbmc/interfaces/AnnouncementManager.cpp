@@ -7,17 +7,19 @@
  */
 
 #include "AnnouncementManager.h"
-#include "threads/SingleLock.h"
-#include <stdio.h>
-#include "utils/log.h"
-#include "utils/Variant.h"
-#include "utils/StringUtils.h"
+
 #include "FileItem.h"
-#include "music/tags/MusicInfoTag.h"
-#include "music/MusicDatabase.h"
-#include "video/VideoDatabase.h"
-#include "pvr/channels/PVRChannel.h"
 #include "PlayListPlayer.h"
+#include "music/MusicDatabase.h"
+#include "music/tags/MusicInfoTag.h"
+#include "pvr/channels/PVRChannel.h"
+#include "threads/SingleLock.h"
+#include "utils/StringUtils.h"
+#include "utils/Variant.h"
+#include "utils/log.h"
+#include "video/VideoDatabase.h"
+
+#include <stdio.h>
 
 #define LOOKUP_PROPERTY "database-lookup"
 

@@ -15,8 +15,9 @@
  *    James Willcox <jwillcox@mozilla.com>
  */
 
-#include "DllGraphicBuffer.h"
 #include "GraphicBuffer.h"
+
+#include "DllGraphicBuffer.h"
 #include "XBMCApp.h"
 #include "utils/log.h"
 

@@ -8,12 +8,12 @@
 
 #pragma once
 
+#include "utils/Variant.h"
+
 #include <memory>
 #include <string>
 #include <utility>
 #include <vector>
-
-#include "utils/Variant.h"
 
 #define SETTING_XML_ROOT "settings"
 #define SETTING_XML_ROOT_VERSION "version"

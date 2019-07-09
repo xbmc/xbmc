@@ -8,15 +8,15 @@
 
 #pragma once
 
+#include "XBDateTime.h"
+#include "addons/Addon.h"
+#include "utils/ScraperParser.h"
+#include "utils/ScraperUrl.h"
+#include "video/Episode.h"
+
 #include <memory>
 #include <string>
 #include <vector>
-
-#include "addons/Addon.h"
-#include "XBDateTime.h"
-#include "utils/ScraperUrl.h"
-#include "utils/ScraperParser.h"
-#include "video/Episode.h"
 
 class CAlbum;
 class CArtist;

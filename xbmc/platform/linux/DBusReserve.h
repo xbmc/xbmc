@@ -8,10 +8,10 @@
 
 #pragma once
 
+#include "DBusUtil.h"
+
 #include <string>
 #include <vector>
-
-#include "DBusUtil.h"
 
 class CDBusReserve
 {

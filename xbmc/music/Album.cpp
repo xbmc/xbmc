@@ -7,15 +7,16 @@
  */
 
 #include "Album.h"
+
+#include "FileItem.h"
+#include "ServiceBroker.h"
 #include "music/tags/MusicInfoTag.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
-#include "utils/StringUtils.h"
-#include "utils/log.h"
-#include "utils/XMLUtils.h"
 #include "utils/MathUtils.h"
-#include "FileItem.h"
-#include "ServiceBroker.h"
+#include "utils/StringUtils.h"
+#include "utils/XMLUtils.h"
+#include "utils/log.h"
 
 #include <algorithm>
 

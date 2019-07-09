@@ -8,8 +8,8 @@
 
 #pragma once
 
-#include "utils/JobManager.h"
 #include "ThumbLoader.h"
+#include "utils/JobManager.h"
 
 class CPictureThumbLoader : public CThumbLoader, public CJobQueue
 {

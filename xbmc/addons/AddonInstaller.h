@@ -8,15 +8,15 @@
 
 #pragma once
 
-#include <string>
-#include <utility>
-#include <vector>
-
 #include "addons/Addon.h"
 #include "addons/Repository.h"
 #include "threads/Event.h"
 #include "utils/FileOperationJob.h"
 #include "utils/Stopwatch.h"
+
+#include <string>
+#include <utility>
+#include <vector>
 
 class CAddonDatabase;
 

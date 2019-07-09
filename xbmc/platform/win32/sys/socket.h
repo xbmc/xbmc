@@ -8,8 +8,8 @@
 
 #pragma once
 
-#include <Winsock2.h>
 #include <WS2tcpip.h>
+#include <Winsock2.h>
 #include <ws2bth.h>
 
 #ifndef SHUT_RDWR

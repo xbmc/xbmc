@@ -8,10 +8,6 @@
 
 #pragma once
 
-#include <map>
-#include <memory>
-#include <string>
-
 #include "addons/IAddon.h"
 #include "settings/SettingControl.h"
 #include "settings/SettingCreator.h"
@@ -19,6 +15,10 @@
 #include "settings/lib/ISettingCallback.h"
 #include "settings/lib/SettingDependency.h"
 #include "settings/lib/SettingSection.h"
+
+#include <map>
+#include <memory>
+#include <string>
 
 class CXBMCTinyXML;
 struct StringSettingOption;

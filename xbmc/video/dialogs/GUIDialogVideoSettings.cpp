@@ -8,29 +8,29 @@
 
 #include "GUIDialogVideoSettings.h"
 
-#include <utility>
-
+#include "Application.h"
+#include "GUIPassword.h"
 #include "ServiceBroker.h"
 #include "addons/Skin.h"
 #include "dialogs/GUIDialogYesNo.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
-#include "GUIPassword.h"
 #include "profiles/ProfileManager.h"
-#include "settings/lib/Setting.h"
-#include "settings/lib/SettingDefinitions.h"
-#include "settings/lib/SettingsManager.h"
 #include "settings/MediaSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
-#include "utils/log.h"
-#include "utils/Variant.h"
-#include "video/VideoDatabase.h"
-#include "Application.h"
+#include "settings/lib/Setting.h"
+#include "settings/lib/SettingDefinitions.h"
+#include "settings/lib/SettingsManager.h"
 #include "utils/LangCodeExpander.h"
 #include "utils/StringUtils.h"
+#include "utils/Variant.h"
+#include "utils/log.h"
+#include "video/VideoDatabase.h"
 #include "video/ViewModeSettings.h"
+
+#include <utility>
 
 #define SETTING_VIDEO_VIEW_MODE           "video.viewmode"
 #define SETTING_VIDEO_ZOOM                "video.zoom"

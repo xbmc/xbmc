@@ -6,6 +6,7 @@
  *  See LICENSES/README.md for more information.
  */
 #include "powermanagement/WinIdleTimer.h"
+
 #include "Application.h"
 
 void CWinIdleTimer::StartZero()

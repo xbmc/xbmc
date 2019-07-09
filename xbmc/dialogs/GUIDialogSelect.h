@@ -8,11 +8,11 @@
 
 #pragma once
 
-#include <string>
-#include <vector>
-
 #include "GUIDialogBoxBase.h"
 #include "view/GUIViewControl.h"
+
+#include <string>
+#include <vector>
 
 class CFileItem;
 class CFileItemList;

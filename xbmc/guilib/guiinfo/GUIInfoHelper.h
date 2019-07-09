@@ -8,10 +8,10 @@
 
 #pragma once
 
+#include "PlayListPlayer.h"
+
 #include <memory>
 #include <string>
-
-#include "PlayListPlayer.h"
 
 class CFileItem;
 

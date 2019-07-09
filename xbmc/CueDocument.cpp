@@ -40,21 +40,21 @@
 //
 ////////////////////////////////////////////////////////////////////////////////////
 
-#include <cstdlib>
-
 #include "CueDocument.h"
-#include "ServiceBroker.h"
-#include "utils/log.h"
-#include "utils/URIUtils.h"
-#include "utils/StringUtils.h"
-#include "utils/CharsetConverter.h"
-#include "filesystem/File.h"
-#include "filesystem/Directory.h"
+
 #include "FileItem.h"
+#include "ServiceBroker.h"
+#include "Util.h"
+#include "filesystem/Directory.h"
+#include "filesystem/File.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
-#include "Util.h"
+#include "utils/CharsetConverter.h"
+#include "utils/StringUtils.h"
+#include "utils/URIUtils.h"
+#include "utils/log.h"
 
+#include <cstdlib>
 #include <set>
 
 using namespace XFILE;

@@ -8,11 +8,11 @@
 
 #include "JSONVariantWriter.h"
 
+#include "utils/Variant.h"
+
 #include <rapidjson/prettywriter.h>
 #include <rapidjson/stringbuffer.h>
 #include <rapidjson/writer.h>
-
-#include "utils/Variant.h"
 
 template<class TWriter>
 bool InternalWrite(TWriter& writer, const CVariant &value)

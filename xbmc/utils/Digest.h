@@ -8,14 +8,14 @@
 
 #pragma once
 
-#include <openssl/evp.h>
+#include "StringUtils.h"
 
 #include <iostream>
 #include <memory>
 #include <stdexcept>
 #include <string>
 
-#include "StringUtils.h"
+#include <openssl/evp.h>
 
 namespace KODI
 {

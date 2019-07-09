@@ -7,6 +7,7 @@
  */
 
 #include "BitstreamStats.h"
+
 #include "utils/TimeUtils.h"
 
 int64_t BitstreamStats::m_tmFreq;

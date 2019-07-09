@@ -11,9 +11,10 @@
 #include "cores/AudioEngine/Interfaces/AESink.h"
 #include "cores/AudioEngine/Utils/AEDeviceInfo.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
+#include "threads/CriticalSection.h"
+
 #include <pulse/pulseaudio.h>
 #include <pulse/simple.h>
-#include "threads/CriticalSection.h"
 
 class CAESinkPULSE : public IAESink
 {

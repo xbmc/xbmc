@@ -8,11 +8,11 @@
 
 #pragma once
 
+#include "cores/AudioEngine/Sinks/osx/CoreAudioStream.h"
+
 #include <list>
 #include <string>
 #include <vector>
-
-#include "cores/AudioEngine/Sinks/osx/CoreAudioStream.h"
 
 #include <CoreAudio/CoreAudio.h>
 

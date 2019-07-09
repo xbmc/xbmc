@@ -8,15 +8,15 @@
 
 #pragma once
 
-#include <map>
-#include <memory>
-#include <string>
-#include <vector>
-
 #include "addons/IAddon.h"
 #include "settings/dialogs/GUIDialogSettingsManagerBase.h"
 #include "settings/lib/SettingDefinitions.h"
 #include "settings/lib/SettingLevel.h"
+
+#include <map>
+#include <memory>
+#include <string>
+#include <vector>
 
 class CSetting;
 class CSettingAction;

@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include<string>
+#include <string>
 
 class CFileItemList;
 

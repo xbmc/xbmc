@@ -7,20 +7,21 @@
  */
 
 #include "PeripheralJoystick.h"
+
+#include "Application.h"
 #include "games/controllers/ControllerIDs.h"
-#include "input/joysticks/interfaces/IDriverHandler.h"
-#include "input/joysticks/keymaps/KeymapHandling.h"
+#include "input/InputManager.h"
 #include "input/joysticks/DeadzoneFilter.h"
 #include "input/joysticks/JoystickMonitor.h"
 #include "input/joysticks/JoystickTranslator.h"
 #include "input/joysticks/RumbleGenerator.h"
-#include "input/InputManager.h"
+#include "input/joysticks/interfaces/IDriverHandler.h"
+#include "input/joysticks/keymaps/KeymapHandling.h"
 #include "peripherals/Peripherals.h"
 #include "peripherals/addons/AddonButtonMap.h"
 #include "peripherals/bus/virtual/PeripheralBusAddon.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
-#include "Application.h"
 
 #include <algorithm>
 

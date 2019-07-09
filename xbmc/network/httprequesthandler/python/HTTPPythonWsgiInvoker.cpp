@@ -8,15 +8,15 @@
 
 #include "HTTPPythonWsgiInvoker.h"
 
-#include <utility>
-
+#include "URL.h"
 #include "addons/Webinterface.h"
 #include "interfaces/legacy/wsgi/WsgiErrorStream.h"
 #include "interfaces/legacy/wsgi/WsgiInputStream.h"
 #include "interfaces/legacy/wsgi/WsgiResponse.h"
 #include "interfaces/python/swig.h"
-#include "URL.h"
 #include "utils/URIUtils.h"
+
+#include <utility>
 
 #define MODULE      "xbmc"
 

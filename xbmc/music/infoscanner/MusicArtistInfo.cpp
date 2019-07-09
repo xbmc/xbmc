@@ -7,6 +7,7 @@
  */
 
 #include "MusicArtistInfo.h"
+
 #include "addons/Scraper.h"
 
 using namespace XFILE;

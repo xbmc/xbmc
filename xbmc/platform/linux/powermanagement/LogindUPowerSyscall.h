@@ -9,8 +9,8 @@
 
 #pragma once
 
-#include "powermanagement/IPowerSyscall.h"
 #include "DBusUtil.h"
+#include "powermanagement/IPowerSyscall.h"
 
 class CLogindUPowerSyscall : public CAbstractPowerSyscall
 {

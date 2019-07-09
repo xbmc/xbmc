@@ -12,8 +12,8 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#include "IFile.h"
 #include "CurlFile.h"
+#include "IFile.h"
 #include "music/tags/MusicInfoTag.h"
 #include "threads/Thread.h"
 

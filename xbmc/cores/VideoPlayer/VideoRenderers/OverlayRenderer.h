@@ -9,11 +9,11 @@
 
 #pragma once
 
-#include "threads/CriticalSection.h"
 #include "BaseRenderer.h"
+#include "threads/CriticalSection.h"
 
-#include <vector>
 #include <map>
+#include <vector>
 
 class CDVDOverlay;
 class CDVDOverlayImage;

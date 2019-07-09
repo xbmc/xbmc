@@ -7,6 +7,7 @@
  */
 
 #include "InfoBool.h"
+
 #include "utils/StringUtils.h"
 
 namespace INFO

@@ -9,8 +9,10 @@
 #pragma once
 
 #include "utils/IArchivable.h"
-#include "PlatformDefs.h"
+
 #include <string>
+
+#include "PlatformDefs.h"
 
 /*! \brief TIME_FORMAT enum/bitmask used for formatting time strings
  Note the use of bitmasking, e.g.

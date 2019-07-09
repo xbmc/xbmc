@@ -8,10 +8,11 @@
 
 #pragma once
 
-#include "PlatformDefs.h"
 #include "cores/VideoPlayer/DVDDemuxers/DVDDemux.h"
 
 #include <string>
+
+#include "PlatformDefs.h"
 
 // VC_ messages, messages can be combined
 #define OC_ERROR    0x00000001  // an error occured, no other messages will be returned

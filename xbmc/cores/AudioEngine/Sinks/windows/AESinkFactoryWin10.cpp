@@ -6,15 +6,16 @@
  *  See LICENSES/README.md for more information.
  */
 #include "AESinkFactoryWin.h"
+#include "utils/log.h"
+
 #include "platform/win10/AsyncHelpers.h"
 #include "platform/win32/CharsetConverter.h"
-#include "utils/log.h"
 
 #include <mmdeviceapi.h>
 #include <mmreg.h>
 #include <winrt/Windows.Devices.Enumeration.h>
-#include <winrt/Windows.Media.Devices.h>
 #include <winrt/Windows.Media.Devices.Core.h>
+#include <winrt/Windows.Media.Devices.h>
 
 using namespace winrt::Windows::Devices::Enumeration;
 using namespace winrt::Windows::Media::Devices;

@@ -8,14 +8,14 @@
 
 #pragma once
 
-#include <string>
-#include <vector>
-#include "utils/BitstreamStats.h"
-#include "filesystem/IFileTypes.h"
-
 #include "FileItem.h"
 #include "URL.h"
+#include "filesystem/IFileTypes.h"
+#include "utils/BitstreamStats.h"
 #include "utils/Geometry.h"
+
+#include <string>
+#include <vector>
 
 enum DVDStreamType
 {

@@ -7,6 +7,8 @@
  */
 
 #include "PeripheralBusAddon.h"
+
+#include "ServiceBroker.h"
 #include "addons/AddonManager.h"
 #include "addons/binary-addons/BinaryAddonManager.h"
 #include "messaging/helpers/DialogHelper.h"
@@ -15,7 +17,6 @@
 #include "peripherals/devices/PeripheralJoystick.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
-#include "ServiceBroker.h"
 
 #include <algorithm>
 #include <memory>

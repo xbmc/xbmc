@@ -6,10 +6,11 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include "LanguageHook.h"
 #include "swig.h"
-#include "utils/StringUtils.h"
+
+#include "LanguageHook.h"
 #include "interfaces/legacy/AddonString.h"
+#include "utils/StringUtils.h"
 
 #include <string>
 

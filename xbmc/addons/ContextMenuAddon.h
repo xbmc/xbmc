@@ -8,13 +8,13 @@
 
 #pragma once
 
+#include "Addon.h"
+#include "ContextMenuItem.h"
+
 #include <list>
 #include <memory>
 #include <string>
 #include <vector>
-
-#include "Addon.h"
-#include "ContextMenuItem.h"
 
 typedef struct cp_cfg_element_t cp_cfg_element_t;
 

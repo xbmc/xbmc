@@ -10,8 +10,8 @@
 
 #include <array>
 #include <set>
-#include <string>
 #include <stdexcept>
+#include <string>
 #include <vector>
 
 #include <EGL/egl.h>

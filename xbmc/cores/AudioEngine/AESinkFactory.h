@@ -8,12 +8,13 @@
 
 #pragma once
 
-#include <stdint.h>
-#include <map>
-#include <string>
-#include <vector>
 #include "Utils/AEAudioFormat.h"
 #include "Utils/AEDeviceInfo.h"
+
+#include <map>
+#include <stdint.h>
+#include <string>
+#include <vector>
 
 class IAESink;
 

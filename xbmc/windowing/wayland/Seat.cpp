@@ -8,12 +8,14 @@
 
 #include "Seat.h"
 
-#include <cassert>
-#include <unistd.h>
+#include "utils/log.h"
 
 #include "platform/posix/utils/FileHandle.h"
 #include "platform/posix/utils/Mmap.h"
-#include "utils/log.h"
+
+#include <cassert>
+
+#include <unistd.h>
 
 using namespace KODI::WINDOWING::WAYLAND;
 using namespace std::placeholders;

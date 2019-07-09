@@ -7,9 +7,9 @@
  */
 
 #include "RadioButton.h"
-#include "addons/kodi-addon-dev-kit/include/kodi/gui/controls/RadioButton.h"
 
 #include "addons/binary-addons/AddonDll.h"
+#include "addons/kodi-addon-dev-kit/include/kodi/gui/controls/RadioButton.h"
 #include "guilib/GUIRadioButtonControl.h"
 #include "utils/log.h"
 

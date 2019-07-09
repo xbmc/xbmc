@@ -7,15 +7,16 @@
  */
 
 #include "GUIDialogGamepad.h"
+
 #include "ServiceBroker.h"
+#include "guilib/GUIAudioManager.h"
+#include "guilib/GUIComponent.h"
+#include "guilib/GUIWindowManager.h"
+#include "guilib/LocalizeStrings.h"
+#include "input/Key.h"
+#include "messaging/helpers/DialogOKHelper.h"
 #include "utils/Digest.h"
 #include "utils/StringUtils.h"
-#include "guilib/GUIComponent.h"
-#include "guilib/GUIAudioManager.h"
-#include "guilib/GUIWindowManager.h"
-#include "input/Key.h"
-#include "guilib/LocalizeStrings.h"
-#include "messaging/helpers/DialogOKHelper.h"
 #include "utils/Variant.h"
 
 #include <utility>

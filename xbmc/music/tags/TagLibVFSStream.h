@@ -9,6 +9,7 @@
 #pragma once
 
 #include "filesystem/File.h"
+
 #include <taglib/tiostream.h>
 
 namespace MUSIC_INFO

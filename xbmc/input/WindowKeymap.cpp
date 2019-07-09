@@ -7,6 +7,7 @@
  */
 
 #include "WindowKeymap.h"
+
 #include "WindowTranslator.h"
 
 using namespace KODI;

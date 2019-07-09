@@ -1,4 +1,4 @@
- /*
+/*
  *  Copyright (C) 2005-2018 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
@@ -9,10 +9,10 @@
 #include "WindowDialog.h"
 
 #include "ServiceBroker.h"
+#include "WindowInterceptor.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindow.h"
 #include "guilib/GUIWindowManager.h"
-#include "WindowInterceptor.h"
 
 namespace XBMCAddon
 {

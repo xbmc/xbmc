@@ -8,13 +8,13 @@
 
 #pragma once
 
+#include "input/XBMC_keysym.h"
+
 #include <cstdint>
 #include <memory>
 #include <vector>
 
 #include <xkbcommon/xkbcommon.h>
-
-#include "input/XBMC_keysym.h"
 
 namespace KODI
 {

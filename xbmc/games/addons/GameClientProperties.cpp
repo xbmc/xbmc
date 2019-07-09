@@ -7,18 +7,19 @@
  */
 
 #include "GameClientProperties.h"
+
 #include "GameClient.h"
 #include "ServiceBroker.h"
-#include "addons/IAddon.h"
 #include "addons/AddonManager.h"
 #include "addons/GameResource.h"
+#include "addons/IAddon.h"
 #include "dialogs/GUIDialogYesNo.h"
 #include "filesystem/Directory.h"
 #include "filesystem/SpecialProtocol.h"
 #include "guilib/LocalizeStrings.h"
 #include "messaging/helpers/DialogOKHelper.h"
-#include "utils/log.h"
 #include "utils/Variant.h"
+#include "utils/log.h"
 
 #include <cstring>
 

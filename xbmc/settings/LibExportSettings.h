@@ -12,8 +12,9 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#include <string>
 #include "settings/lib/Setting.h"
+
+#include <string>
 
 // Enumeration of library export options (possibly OR'd together)
 enum ELIBEXPORTOPTIONS

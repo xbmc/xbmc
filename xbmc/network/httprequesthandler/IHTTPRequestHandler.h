@@ -8,19 +8,19 @@
 
 #pragma once
 
-#include <sys/types.h>
-#include <sys/select.h>
-#include <sys/socket.h>
+#include "utils/HttpRangeUtils.h"
+
+#include <map>
+#include <stdint.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdio.h>
-#include <stdint.h>
-#include <map>
 #include <string>
 
 #include <microhttpd.h>
-
-#include "utils/HttpRangeUtils.h"
+#include <sys/select.h>
+#include <sys/socket.h>
+#include <sys/types.h>
 
 class CDateTime;
 class CWebServer;

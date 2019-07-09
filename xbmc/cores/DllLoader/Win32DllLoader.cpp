@@ -7,16 +7,17 @@
  */
 
 #include "Win32DllLoader.h"
+
 #include "DllLoader.h"
 #include "DllLoaderContainer.h"
-#include "utils/log.h"
-#include "utils/StringUtils.h"
-#include "filesystem/SpecialProtocol.h"
-#include "platform/win32/CharsetConverter.h"
-
-#include "dll_tracker_library.h"
 #include "dll_tracker_file.h"
+#include "dll_tracker_library.h"
 #include "exports/emu_msvcrt.h"
+#include "filesystem/SpecialProtocol.h"
+#include "utils/StringUtils.h"
+#include "utils/log.h"
+
+#include "platform/win32/CharsetConverter.h"
 
 #include <limits>
 

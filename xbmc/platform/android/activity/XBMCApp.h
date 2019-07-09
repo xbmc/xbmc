@@ -8,24 +8,6 @@
 
 #pragma once
 
-#include <math.h>
-#include <pthread.h>
-#include <string>
-#include <vector>
-#include <map>
-#include <memory>
-
-#include <android/native_activity.h>
-
-#include <androidjni/Activity.h>
-#include <androidjni/AudioManager.h>
-#include <androidjni/BroadcastReceiver.h>
-#include <androidjni/SurfaceHolder.h>
-#include <androidjni/View.h>
-
-#include "threads/Event.h"
-#include "interfaces/IAnnouncer.h"
-
 #include "IActivityHandler.h"
 #include "IInputHandler.h"
 #include "JNIMainActivity.h"
@@ -33,8 +15,24 @@
 #include "JNIXBMCDisplayManagerDisplayListener.h"
 #include "JNIXBMCMainView.h"
 #include "JNIXBMCMediaSession.h"
+#include "interfaces/IAnnouncer.h"
 #include "platform/xbmc.h"
+#include "threads/Event.h"
 #include "utils/Geometry.h"
+
+#include <map>
+#include <math.h>
+#include <memory>
+#include <string>
+#include <vector>
+
+#include <android/native_activity.h>
+#include <androidjni/Activity.h>
+#include <androidjni/AudioManager.h>
+#include <androidjni/BroadcastReceiver.h>
+#include <androidjni/SurfaceHolder.h>
+#include <androidjni/View.h>
+#include <pthread.h>
 
 // forward declares
 class CJNIWakeLock;

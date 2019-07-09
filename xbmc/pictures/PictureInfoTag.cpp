@@ -7,11 +7,12 @@
  */
 
 #include "PictureInfoTag.h"
+
 #include "guilib/guiinfo/GUIInfoLabels.h"
-#include "utils/Variant.h"
+#include "utils/Archive.h"
 #include "utils/CharsetConverter.h"
 #include "utils/StringUtils.h"
-#include "utils/Archive.h"
+#include "utils/Variant.h"
 
 #include <algorithm>
 #include <vector>

@@ -8,21 +8,20 @@
 
 #include "guilib/guiinfo/PicturesGUIInfo.h"
 
-#include <map>
-
 #include "FileItem.h"
 #include "ServiceBroker.h"
 #include "URL.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
+#include "guilib/guiinfo/GUIInfo.h"
+#include "guilib/guiinfo/GUIInfoLabels.h"
 #include "pictures/GUIWindowSlideShow.h"
 #include "pictures/PictureInfoTag.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 
-#include "guilib/guiinfo/GUIInfo.h"
-#include "guilib/guiinfo/GUIInfoLabels.h"
+#include <map>
 
 using namespace KODI::GUILIB::GUIINFO;
 

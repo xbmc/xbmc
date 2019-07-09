@@ -7,16 +7,17 @@
  */
 
 #include "ReversiblePlayback.h"
+
+#include "ServiceBroker.h"
 #include "cores/RetroPlayer/savestates/ISavestate.h"
 #include "cores/RetroPlayer/savestates/SavestateDatabase.h"
 #include "cores/RetroPlayer/streams/memory/DeltaPairMemoryStream.h"
-#include "games/addons/GameClient.h"
 #include "games/GameServices.h"
 #include "games/GameSettings.h"
+#include "games/addons/GameClient.h"
 #include "threads/SingleLock.h"
 #include "utils/MathUtils.h"
 #include "utils/URIUtils.h"
-#include "ServiceBroker.h"
 
 #include <algorithm>
 

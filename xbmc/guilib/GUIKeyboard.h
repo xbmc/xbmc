@@ -8,8 +8,9 @@
 
 #pragma once
 
-#include <string>
 #include "threads/Timer.h"
+
+#include <string>
 
 class CGUIKeyboard;
 enum FILTERING { FILTERING_NONE = 0, FILTERING_CURRENT, FILTERING_SEARCH };

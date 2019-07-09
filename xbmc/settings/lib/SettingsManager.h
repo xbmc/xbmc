@@ -8,10 +8,6 @@
 
 #pragma once
 
-#include <map>
-#include <set>
-#include <vector>
-
 #include "ISettingCallback.h"
 #include "ISettingControlCreator.h"
 #include "ISettingCreator.h"
@@ -22,6 +18,10 @@
 #include "SettingDefinitions.h"
 #include "SettingDependency.h"
 #include "threads/SharedSection.h"
+
+#include <map>
+#include <set>
+#include <vector>
 
 class CSettingCategory;
 class CSettingGroup;

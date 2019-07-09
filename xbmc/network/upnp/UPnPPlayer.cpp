@@ -6,32 +6,33 @@
  *  SPDX-License-Identifier: GPL-2.0-or-later
  *  See LICENSES/README.md for more information.
  */
-#include <Platinum/Source/Platinum/Platinum.h>
-#include <Platinum/Source/Devices/MediaRenderer/PltMediaController.h>
-#include <Platinum/Source/Devices/MediaServer/PltDidl.h>
-
-#include "ServiceBroker.h"
 #include "UPnPPlayer.h"
+
+#include "Application.h"
+#include "FileItem.h"
+#include "GUIInfoManager.h"
+#include "ServiceBroker.h"
+#include "ThumbLoader.h"
 #include "UPnP.h"
 #include "UPnPInternal.h"
-#include "FileItem.h"
-#include "threads/Event.h"
-#include "utils/log.h"
-#include "utils/TimeUtils.h"
-#include "utils/Variant.h"
-#include "GUIInfoManager.h"
-#include "guilib/GUIComponent.h"
-#include "ThumbLoader.h"
-#include "video/VideoThumbLoader.h"
-#include "music/MusicThumbLoader.h"
-#include "messaging/ApplicationMessenger.h"
-#include "messaging/helpers/DialogHelper.h"
-#include "Application.h"
 #include "cores/DataCacheCore.h"
 #include "dialogs/GUIDialogBusy.h"
+#include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "input/Key.h"
+#include "messaging/ApplicationMessenger.h"
+#include "messaging/helpers/DialogHelper.h"
+#include "music/MusicThumbLoader.h"
+#include "threads/Event.h"
+#include "utils/TimeUtils.h"
+#include "utils/Variant.h"
+#include "utils/log.h"
+#include "video/VideoThumbLoader.h"
 #include "windowing/WinSystem.h"
+
+#include <Platinum/Source/Devices/MediaRenderer/PltMediaController.h>
+#include <Platinum/Source/Devices/MediaServer/PltDidl.h>
+#include <Platinum/Source/Platinum/Platinum.h>
 
 using namespace KODI::MESSAGING;
 

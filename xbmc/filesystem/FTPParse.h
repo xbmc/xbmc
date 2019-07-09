@@ -8,9 +8,9 @@
 
 #pragma once
 
-#include <string>
 #include <ctime>
 #include <stdint.h>
+#include <string>
 
 class CFTPParse
 {

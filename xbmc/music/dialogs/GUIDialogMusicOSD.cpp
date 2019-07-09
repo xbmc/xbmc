@@ -7,15 +7,16 @@
  */
 
 #include "GUIDialogMusicOSD.h"
+
+#include "GUIUserMessages.h"
+#include "ServiceBroker.h"
 #include "addons/GUIWindowAddonBrowser.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
-#include "GUIUserMessages.h"
-#include "input/Key.h"
 #include "input/InputManager.h"
+#include "input/Key.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
-#include "ServiceBroker.h"
 
 #define CONTROL_VIS_BUTTON       500
 #define CONTROL_LOCK_BUTTON      501

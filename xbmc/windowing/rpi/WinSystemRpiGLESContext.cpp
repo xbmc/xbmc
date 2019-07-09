@@ -6,22 +6,24 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include "Application.h"
-#include "VideoSyncPi.h"
 #include "WinSystemRpiGLESContext.h"
-#include "guilib/GUIComponent.h"
-#include "guilib/GUIWindowManager.h"
-#include "platform/linux/ScreenshotSurfaceRBP.h"
-#include "rendering/gles/ScreenshotSurfaceGLES.h"
+
+#include "Application.h"
 #include "ServiceBroker.h"
-#include "utils/log.h"
+#include "VideoSyncPi.h"
 #include "cores/RetroPlayer/process/rbpi/RPProcessInfoPi.h"
 #include "cores/RetroPlayer/rendering/VideoRenderers/RPRendererOpenGLES.h"
 #include "cores/VideoPlayer/DVDCodecs/DVDFactoryCodec.h"
-#include "cores/VideoPlayer/DVDCodecs/Video/MMALFFmpeg.h"
 #include "cores/VideoPlayer/DVDCodecs/Video/MMALCodec.h"
-#include "cores/VideoPlayer/VideoRenderers/RenderFactory.h"
+#include "cores/VideoPlayer/DVDCodecs/Video/MMALFFmpeg.h"
 #include "cores/VideoPlayer/Process/rbpi/ProcessInfoPi.h"
+#include "cores/VideoPlayer/VideoRenderers/RenderFactory.h"
+#include "guilib/GUIComponent.h"
+#include "guilib/GUIWindowManager.h"
+#include "rendering/gles/ScreenshotSurfaceGLES.h"
+#include "utils/log.h"
+
+#include "platform/linux/ScreenshotSurfaceRBP.h"
 
 using namespace KODI;
 

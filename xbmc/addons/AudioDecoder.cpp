@@ -7,9 +7,9 @@
 
 #include "AudioDecoder.h"
 
+#include "cores/AudioEngine/Utils/AEUtil.h"
 #include "music/tags/MusicInfoTag.h"
 #include "music/tags/TagLoaderTagLib.h"
-#include "cores/AudioEngine/Utils/AEUtil.h"
 
 namespace ADDON
 {

@@ -7,6 +7,7 @@
  */
 
 #include "PeripheralDisk.h"
+
 #include "guilib/LocalizeStrings.h"
 
 using namespace PERIPHERALS;

@@ -7,6 +7,7 @@
  */
 
 #include "GUILabelControl.h"
+
 #include "GUIMessage.h"
 #include "utils/CharsetConverter.h"
 #include "utils/Color.h"

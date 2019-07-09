@@ -8,15 +8,15 @@
 
 #pragma once
 
+#include "XBDateTime.h"
+#include "utils/Fanart.h"
+#include "utils/ScraperUrl.h"
+#include "utils/StringUtils.h"
+
 #include <map>
 #include <string>
 #include <utility>
 #include <vector>
-
-#include "utils/StringUtils.h"
-#include "utils/Fanart.h"
-#include "utils/ScraperUrl.h"
-#include "XBDateTime.h"
 
 class TiXmlNode;
 class CAlbum;

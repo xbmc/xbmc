@@ -7,6 +7,7 @@
  */
 
 #include "GUIControllerButton.h"
+
 #include "games/controllers/windows/GUIControllerDefines.h"
 
 using namespace KODI;

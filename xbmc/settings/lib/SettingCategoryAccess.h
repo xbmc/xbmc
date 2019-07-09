@@ -8,10 +8,10 @@
 
 #pragma once
 
+#include "SettingConditions.h"
+
 #include <set>
 #include <string>
-
-#include "SettingConditions.h"
 
 class CSettingCategoryAccessCondition : public CSettingConditionItem
 {

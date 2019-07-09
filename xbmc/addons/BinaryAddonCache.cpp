@@ -7,6 +7,7 @@
  */
 
 #include "BinaryAddonCache.h"
+
 #include "AddonManager.h"
 #include "ServiceBroker.h"
 #include "threads/SingleLock.h"

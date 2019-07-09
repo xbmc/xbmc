@@ -7,15 +7,16 @@
  */
 
 #include "IRTranslator.h"
+
 #include "ServiceBroker.h"
 #include "filesystem/File.h"
 #include "input/remote/IRRemote.h"
 #include "profiles/ProfileManager.h"
 #include "settings/SettingsComponent.h"
-#include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/XBMCTinyXML.h"
+#include "utils/log.h"
 
 #include <stdlib.h>
 #include <vector>

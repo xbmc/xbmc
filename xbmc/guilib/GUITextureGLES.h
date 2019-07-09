@@ -9,10 +9,11 @@
 #pragma once
 
 #include "GUITexture.h"
+#include "utils/Color.h"
+
+#include <vector>
 
 #include "system_gl.h"
-#include <vector>
-#include "utils/Color.h"
 
 struct PackedVertex
 {

@@ -6,10 +6,11 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include <android/input.h>
-
 #include "AndroidJoyStick.h"
+
 #include "platform/android/activity/XBMCApp.h"
+
+#include <android/input.h>
 
 bool CAndroidJoyStick::onJoyStickEvent(AInputEvent* event)
 {

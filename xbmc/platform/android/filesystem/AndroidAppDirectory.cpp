@@ -7,15 +7,18 @@
  */
 
 #include "AndroidAppDirectory.h"
-#include "platform/android/activity/XBMCApp.h"
-#include "FileItem.h"
-#include "filesystem/File.h"
-#include "utils/URIUtils.h"
-#include <vector>
-#include "utils/log.h"
-#include "utils/StringUtils.h"
-#include "URL.h"
+
 #include "CompileInfo.h"
+#include "FileItem.h"
+#include "URL.h"
+#include "filesystem/File.h"
+#include "utils/StringUtils.h"
+#include "utils/URIUtils.h"
+#include "utils/log.h"
+
+#include "platform/android/activity/XBMCApp.h"
+
+#include <vector>
 
 using namespace XFILE;
 

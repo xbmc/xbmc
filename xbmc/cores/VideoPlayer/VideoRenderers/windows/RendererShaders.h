@@ -7,12 +7,13 @@
  */
 #pragma once
 
-#include "RendererHQ.h"
 #include "Process/VideoBuffer.h"
+#include "RendererHQ.h"
+
+#include <map>
 
 #include <d3d11.h>
 #include <libavutil/pixfmt.h>
-#include <map>
 
 #define PLANE_Y 0
 #define PLANE_U 1

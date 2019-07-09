@@ -8,8 +8,8 @@
 
 #pragma once
 
-#include "utils/ProgressJob.h"
 #include "music/jobs/MusicLibraryJob.h"
+#include "utils/ProgressJob.h"
 
 /*!
  \brief Combined base implementation of a music library job with a progress bar.

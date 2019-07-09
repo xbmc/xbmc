@@ -1,7 +1,8 @@
 #pragma once
 
-#include "IptcParse.h"
 #include "ExifParse.h"
+#include "IptcParse.h"
+
 #include <stdio.h>
 
 //--------------------------------------------------------------------------

@@ -7,15 +7,16 @@
  */
 
 #include "LocalizeStrings.h"
+
 #include "addons/LanguageResource.h"
-#include "utils/CharsetConverter.h"
-#include "utils/log.h"
-#include "filesystem/SpecialProtocol.h"
-#include "utils/URIUtils.h"
-#include "utils/POUtils.h"
 #include "filesystem/Directory.h"
+#include "filesystem/SpecialProtocol.h"
 #include "threads/SharedSection.h"
+#include "utils/CharsetConverter.h"
+#include "utils/POUtils.h"
 #include "utils/StringUtils.h"
+#include "utils/URIUtils.h"
+#include "utils/log.h"
 
 
 /*! \brief Tries to load ids and strings from a strings.po file to the `strings` map.

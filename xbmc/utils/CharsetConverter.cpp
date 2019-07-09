@@ -8,19 +8,19 @@
 
 #include "CharsetConverter.h"
 
-#include <algorithm>
-
-#include <iconv.h>
-#include <fribidi.h>
-
-#include "guilib/LocalizeStrings.h"
 #include "LangInfo.h"
+#include "guilib/LocalizeStrings.h"
 #include "log.h"
+#include "settings/Settings.h"
 #include "settings/lib/Setting.h"
 #include "settings/lib/SettingDefinitions.h"
-#include "settings/Settings.h"
 #include "utils/StringUtils.h"
 #include "utils/Utf8Utils.h"
+
+#include <algorithm>
+
+#include <fribidi.h>
+#include <iconv.h>
 
 #ifdef WORDS_BIGENDIAN
   #define ENDIAN_SUFFIX "BE"

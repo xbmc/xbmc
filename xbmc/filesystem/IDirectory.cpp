@@ -7,12 +7,13 @@
  */
 
 #include "IDirectory.h"
+
+#include "PasswordManager.h"
+#include "URL.h"
 #include "guilib/GUIKeyboardFactory.h"
 #include "messaging/helpers/DialogOKHelper.h"
-#include "URL.h"
-#include "PasswordManager.h"
-#include "utils/URIUtils.h"
 #include "utils/StringUtils.h"
+#include "utils/URIUtils.h"
 
 using namespace KODI::MESSAGING;
 using namespace XFILE;

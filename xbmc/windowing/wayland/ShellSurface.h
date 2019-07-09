@@ -8,12 +8,12 @@
 
 #pragma once
 
+#include "utils/Geometry.h"
+
 #include <bitset>
 #include <cstdint>
 
 #include <wayland-client.hpp>
-
-#include "utils/Geometry.h"
 
 namespace KODI
 {

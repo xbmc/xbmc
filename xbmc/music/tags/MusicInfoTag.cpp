@@ -7,14 +7,15 @@
  */
 
 #include "MusicInfoTag.h"
-#include "music/Artist.h"
-#include "utils/StringUtils.h"
-#include "guilib/LocalizeStrings.h"
+
 #include "ServiceBroker.h"
+#include "guilib/LocalizeStrings.h"
+#include "music/Artist.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
-#include "utils/Variant.h"
 #include "utils/Archive.h"
+#include "utils/StringUtils.h"
+#include "utils/Variant.h"
 
 #include <algorithm>
 

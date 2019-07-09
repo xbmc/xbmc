@@ -6,24 +6,25 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include <string.h>
-
 #include "JSONRPC.h"
+
+#include "ServiceBroker.h"
 #include "ServiceDescription.h"
+#include "TextureDatabase.h"
 #include "addons/Addon.h"
 #include "addons/IAddon.h"
 #include "dbwrappers/DatabaseQuery.h"
-#include "input/actions/ActionTranslator.h"
 #include "input/WindowTranslator.h"
+#include "input/actions/ActionTranslator.h"
 #include "interfaces/AnnouncementManager.h"
 #include "playlists/SmartPlayList.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
-#include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
-#include "ServiceBroker.h"
-#include "TextureDatabase.h"
+#include "utils/log.h"
+
+#include <string.h>
 
 using namespace JSONRPC;
 

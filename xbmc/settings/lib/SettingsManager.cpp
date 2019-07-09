@@ -8,15 +8,15 @@
 
 #include "SettingsManager.h"
 
-#include <algorithm>
-#include <utility>
-
+#include "Setting.h"
 #include "SettingDefinitions.h"
 #include "SettingSection.h"
-#include "Setting.h"
-#include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/XBMCTinyXML.h"
+#include "utils/log.h"
+
+#include <algorithm>
+#include <utility>
 
 const uint32_t CSettingsManager::Version = 2;
 const uint32_t CSettingsManager::MinimumSupportedVersion = 0;

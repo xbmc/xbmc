@@ -8,8 +8,8 @@
 
 #include "Win32DPMSSupport.h"
 
-#include "rendering/dx/RenderContext.h"
 #include "ServiceBroker.h"
+#include "rendering/dx/RenderContext.h"
 #include "utils/log.h"
 #include "windowing/GraphicContext.h"
 #include "windowing/windows/WinSystemWin32.h"

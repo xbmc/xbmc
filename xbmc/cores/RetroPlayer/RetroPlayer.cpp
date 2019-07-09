@@ -7,8 +7,12 @@
  */
 
 #include "RetroPlayer.h"
+
+#include "FileItem.h"
 #include "RetroPlayerAutoSave.h"
 #include "RetroPlayerInput.h"
+#include "ServiceBroker.h"
+#include "URL.h"
 #include "addons/AddonManager.h"
 #include "cores/DataCacheCore.h"
 #include "cores/IPlayerCallback.h"
@@ -23,12 +27,12 @@
 #include "cores/RetroPlayer/savestates/SavestateDatabase.h"
 #include "cores/RetroPlayer/streams/RPStreamManager.h"
 #include "dialogs/GUIDialogYesNo.h"
-#include "games/addons/input/GameClientInput.h"
-#include "games/addons/GameClient.h"
-#include "games/tags/GameInfoTag.h"
 #include "games/GameServices.h"
 #include "games/GameSettings.h"
 #include "games/GameUtils.h"
+#include "games/addons/GameClient.h"
+#include "games/addons/input/GameClientInput.h"
+#include "games/tags/GameInfoTag.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
@@ -39,12 +43,9 @@
 #include "settings/MediaSettings.h"
 #include "threads/SingleLock.h"
 #include "utils/JobManager.h"
-#include "utils/log.h"
 #include "utils/MathUtils.h"
 #include "utils/StringUtils.h"
-#include "FileItem.h"
-#include "ServiceBroker.h"
-#include "URL.h"
+#include "utils/log.h"
 #include "windowing/WinSystem.h"
 
 using namespace KODI;

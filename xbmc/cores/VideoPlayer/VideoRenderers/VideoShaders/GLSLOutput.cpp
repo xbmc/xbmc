@@ -8,11 +8,12 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include "system_gl.h"
+#include "GLSLOutput.h"
+
+#include "dither.h"
 #include "utils/log.h"
 
-#include "GLSLOutput.h"
-#include "dither.h"
+#include "system_gl.h"
 
 using namespace Shaders;
 

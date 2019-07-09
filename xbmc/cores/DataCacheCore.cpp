@@ -8,9 +8,9 @@
 
 #include "DataCacheCore.h"
 
+#include "ServiceBroker.h"
 #include "cores/Cut.h"
 #include "threads/SingleLock.h"
-#include "ServiceBroker.h"
 
 CDataCacheCore::CDataCacheCore() :
   m_playerVideoInfo {},

@@ -7,22 +7,23 @@
  */
 
 #include "GUIWindowMusicPlaylistEditor.h"
+
+#include "Autorun.h"
+#include "FileItem.h"
+#include "GUIUserMessages.h"
 #include "ServiceBroker.h"
 #include "Util.h"
-#include "utils/URIUtils.h"
-#include "utils/StringUtils.h"
-#include "utils/Variant.h"
-#include "Autorun.h"
 #include "dialogs/GUIDialogFileBrowser.h"
 #include "filesystem/PlaylistFileDirectory.h"
-#include "playlists/PlayListM3U.h"
 #include "guilib/GUIKeyboardFactory.h"
-#include "FileItem.h"
+#include "guilib/LocalizeStrings.h"
+#include "input/Key.h"
+#include "playlists/PlayListM3U.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
-#include "GUIUserMessages.h"
-#include "input/Key.h"
-#include "guilib/LocalizeStrings.h"
+#include "utils/StringUtils.h"
+#include "utils/URIUtils.h"
+#include "utils/Variant.h"
 
 #define CONTROL_LABELFILES        12
 

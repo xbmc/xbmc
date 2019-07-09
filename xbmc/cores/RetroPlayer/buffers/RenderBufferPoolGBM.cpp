@@ -7,6 +7,7 @@
  */
 
 #include "RenderBufferPoolGBM.h"
+
 #include "RenderBufferGBM.h"
 #include "cores/RetroPlayer/rendering/VideoRenderers/RPRendererGBM.h"
 

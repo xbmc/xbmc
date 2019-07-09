@@ -8,14 +8,14 @@
 
 #include "XkbcommonKeymap.h"
 
+#include "Application.h"
+#include "Util.h"
+#include "utils/log.h"
+
 #include <iostream>
 #include <sstream>
 #include <stdexcept>
 #include <vector>
-
-#include "Application.h"
-#include "Util.h"
-#include "utils/log.h"
 
 using namespace KODI::WINDOWING::WAYLAND;
 

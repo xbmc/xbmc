@@ -8,16 +8,16 @@
 
 #pragma once
 
+#include "InputProcessorKeyboard.h"
+#include "InputProcessorPointer.h"
+#include "InputProcessorTouch.h"
+#include "Seat.h"
+
 #include <cstdint>
 #include <map>
 #include <memory>
 
 #include <wayland-client-protocol.hpp>
-
-#include "InputProcessorKeyboard.h"
-#include "InputProcessorPointer.h"
-#include "InputProcessorTouch.h"
-#include "Seat.h"
 
 namespace KODI
 {

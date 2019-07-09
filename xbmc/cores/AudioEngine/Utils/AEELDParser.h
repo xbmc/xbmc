@@ -8,8 +8,8 @@
 
 #pragma once
 
-#include <stdint.h>
 #include <cstring>
+#include <stdint.h>
 
 class CAEDeviceInfo;
 

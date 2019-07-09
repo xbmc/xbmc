@@ -7,16 +7,19 @@
  */
 
 #include "RendererVTBGL.h"
+
 #include "../RenderFactory.h"
 #include "ServiceBroker.h"
 #include "cores/VideoPlayer/DVDCodecs/Video/DVDVideoCodec.h"
 #include "cores/VideoPlayer/DVDCodecs/Video/VTB.h"
 #include "utils/log.h"
-#include "platform/darwin/osx/CocoaInterface.h"
-#include <CoreVideo/CoreVideo.h>
-#include <OpenGL/CGLIOSurface.h>
 #include "windowing/WinSystem.h"
 #include "windowing/osx/WinSystemOSX.h"
+
+#include "platform/darwin/osx/CocoaInterface.h"
+
+#include <CoreVideo/CoreVideo.h>
+#include <OpenGL/CGLIOSurface.h>
 
 CBaseRenderer* CRendererVTB::Create(CVideoBuffer *buffer)
 {

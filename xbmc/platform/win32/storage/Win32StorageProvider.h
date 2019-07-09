@@ -8,10 +8,11 @@
 
 #pragma once
 
-#include <vector>
-
 #include "storage/IStorageProvider.h"
 #include "utils/Job.h"
+
+#include <vector>
+
 #include <Cfgmgr32.h>
 
 enum Drive_Types

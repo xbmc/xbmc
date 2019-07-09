@@ -7,11 +7,12 @@
  */
 
 #include "PictureInfoLoader.h"
+
+#include "FileItem.h"
 #include "PictureInfoTag.h"
 #include "ServiceBroker.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
-#include "FileItem.h"
 
 CPictureInfoLoader::CPictureInfoLoader()
 {

@@ -9,8 +9,8 @@
 #pragma once
 
 #include <stdint.h>
-#include <time.h>
 #include <string>
+#include <time.h>
 
 class CDateTime;
 

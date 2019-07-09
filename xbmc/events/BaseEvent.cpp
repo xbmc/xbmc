@@ -6,11 +6,12 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include <chrono>
-
 #include "BaseEvent.h"
+
 #include "guilib/LocalizeStrings.h"
 #include "utils/StringUtils.h"
+
+#include <chrono>
 
 CBaseEvent::CBaseEvent(const std::string& identifier, const CVariant& label, const CVariant& description, EventLevel level /* = EventLevel::Information */)
   : m_level(level),

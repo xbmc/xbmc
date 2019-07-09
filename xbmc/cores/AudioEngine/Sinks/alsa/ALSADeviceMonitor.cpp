@@ -6,13 +6,15 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include <libudev.h>
-
-#include "cores/AudioEngine/Engines/ActiveAE/ActiveAE.h"
 #include "ALSADeviceMonitor.h"
-#include "platform/linux/FDEventMonitor.h"
-#include "utils/log.h"
+
 #include "ServiceBroker.h"
+#include "cores/AudioEngine/Engines/ActiveAE/ActiveAE.h"
+#include "utils/log.h"
+
+#include "platform/linux/FDEventMonitor.h"
+
+#include <libudev.h>
 
 CALSADeviceMonitor::CALSADeviceMonitor() :
   m_udev(NULL),

@@ -8,11 +8,11 @@
 
 #include "VideoTagLoaderFFmpeg.h"
 
-#include "addons/Scraper.h"
 #include "FileItem.h"
+#include "NfoFile.h"
+#include "addons/Scraper.h"
 #include "cores/FFmpeg.h"
 #include "filesystem/File.h"
-#include "NfoFile.h"
 #include "utils/StringUtils.h"
 #include "video/VideoInfoTag.h"
 

@@ -7,19 +7,20 @@
  */
 
 #include "LibraryDirectory.h"
+
 #include "Directory.h"
-#include "playlists/SmartPlayList.h"
-#include "profiles/ProfileManager.h"
+#include "File.h"
+#include "FileItem.h"
+#include "GUIInfoManager.h"
 #include "SmartPlaylistDirectory.h"
-#include "utils/URIUtils.h"
-#include "utils/StringUtils.h"
-#include "utils/XMLUtils.h"
+#include "URL.h"
 #include "guilib/GUIControlFactory.h" // for label parsing
 #include "guilib/TextureManager.h"
-#include "FileItem.h"
-#include "File.h"
-#include "URL.h"
-#include "GUIInfoManager.h"
+#include "playlists/SmartPlayList.h"
+#include "profiles/ProfileManager.h"
+#include "utils/StringUtils.h"
+#include "utils/URIUtils.h"
+#include "utils/XMLUtils.h"
 #include "utils/log.h"
 
 using namespace XFILE;

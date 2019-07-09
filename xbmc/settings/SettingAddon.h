@@ -8,8 +8,8 @@
 
 #pragma once
 
-#include "settings/lib/Setting.h"
 #include "addons/IAddon.h"
+#include "settings/lib/Setting.h"
 
 class CSettingAddon : public CSettingString
 {

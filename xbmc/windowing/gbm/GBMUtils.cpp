@@ -7,6 +7,7 @@
  */
 
 #include "GBMUtils.h"
+
 #include "utils/log.h"
 
 using namespace KODI::WINDOWING::GBM;

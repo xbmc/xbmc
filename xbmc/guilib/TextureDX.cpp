@@ -7,8 +7,9 @@
  */
 
 #include "TextureDX.h"
-#include "utils/log.h"
+
 #include "utils/MemUtils.h"
+#include "utils/log.h"
 
 /************************************************************************/
 /*    CDXTexture                                                       */

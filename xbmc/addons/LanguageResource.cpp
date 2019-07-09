@@ -6,16 +6,17 @@
  *  See LICENSES/README.md for more information.
  */
 #include "LanguageResource.h"
+
 #include "LangInfo.h"
 #include "ServiceBroker.h"
+#include "Skin.h"
 #include "addons/AddonManager.h"
 #include "guilib/GUIWindowManager.h"
+#include "messaging/helpers/DialogHelper.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
-#include "messaging/helpers/DialogHelper.h"
-#include "Skin.h"
 
 using namespace KODI::MESSAGING;
 

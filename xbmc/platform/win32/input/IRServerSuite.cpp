@@ -7,13 +7,15 @@
  */
 
 #include "IRServerSuite.h"
+
 #include "AppInboundProtocol.h"
 #include "IrssMessage.h"
-#include "platform/win32/CharsetConverter.h"
+#include "ServiceBroker.h"
 #include "profiles/ProfileManager.h"
 #include "settings/SettingsComponent.h"
 #include "utils/log.h"
-#include "ServiceBroker.h"
+
+#include "platform/win32/CharsetConverter.h"
 
 #include <WS2tcpip.h>
 

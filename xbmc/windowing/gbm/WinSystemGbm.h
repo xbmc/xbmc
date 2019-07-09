@@ -8,15 +8,16 @@
 
 #pragma once
 
-#include <gbm.h>
-#include <EGL/egl.h>
-
-#include "platform/linux/input/LibInputHandler.h"
-#include "platform/linux/OptionalsReg.h"
-#include "threads/CriticalSection.h"
-#include "windowing/WinSystem.h"
 #include "DRMUtils.h"
 #include "VideoLayerBridge.h"
+#include "threads/CriticalSection.h"
+#include "windowing/WinSystem.h"
+
+#include "platform/linux/OptionalsReg.h"
+#include "platform/linux/input/LibInputHandler.h"
+
+#include <EGL/egl.h>
+#include <gbm.h>
 
 class IDispResource;
 

@@ -8,20 +8,20 @@
 
 #include "VideoLibraryQueue.h"
 
-#include <utility>
-
+#include "GUIUserMessages.h"
 #include "ServiceBroker.h"
+#include "Util.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
-#include "GUIUserMessages.h"
 #include "threads/SingleLock.h"
-#include "Util.h"
 #include "video/jobs/VideoLibraryCleaningJob.h"
 #include "video/jobs/VideoLibraryJob.h"
 #include "video/jobs/VideoLibraryMarkWatchedJob.h"
 #include "video/jobs/VideoLibraryRefreshingJob.h"
 #include "video/jobs/VideoLibraryResetResumePointJob.h"
 #include "video/jobs/VideoLibraryScanningJob.h"
+
+#include <utility>
 
 CVideoLibraryQueue::CVideoLibraryQueue()
   : CJobQueue(false, 1, CJob::PRIORITY_LOW),

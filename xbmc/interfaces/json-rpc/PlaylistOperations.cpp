@@ -7,10 +7,11 @@
  */
 
 #include "PlaylistOperations.h"
+
+#include "GUIUserMessages.h"
 #include "PlayListPlayer.h"
 #include "guilib/GUIWindowManager.h"
 #include "input/Key.h"
-#include "GUIUserMessages.h"
 #include "messaging/ApplicationMessenger.h"
 #include "pictures/GUIWindowSlideShow.h"
 #include "pictures/PictureInfoTag.h"

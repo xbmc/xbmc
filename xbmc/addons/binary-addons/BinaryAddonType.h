@@ -9,11 +9,10 @@
 #pragma once
 
 #include "BinaryAddonExtensions.h"
-
 #include "addons/AddonInfo.h"
 
-#include <string>
 #include <set>
+#include <string>
 
 class TiXmlElement;
 

@@ -8,8 +8,9 @@
 
 #include "ScreenshotSurfaceRBP.h"
 
-#include "platform/linux/RBP.h"
 #include "utils/Screenshot.h"
+
+#include "platform/linux/RBP.h"
 
 void CScreenshotSurfaceRBP::Register()
 {

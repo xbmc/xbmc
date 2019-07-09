@@ -7,9 +7,10 @@
  */
 
 #include "PeripheralNyxboard.h"
+
+#include "Application.h"
 #include "PeripheralHID.h"
 #include "utils/log.h"
-#include "Application.h"
 
 using namespace PERIPHERALS;
 

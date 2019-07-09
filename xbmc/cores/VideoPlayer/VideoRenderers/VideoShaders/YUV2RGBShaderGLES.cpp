@@ -7,15 +7,16 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include "../RenderFlags.h"
 #include "YUV2RGBShaderGLES.h"
+
+#include "../RenderFlags.h"
 #include "ConversionMatrix.h"
 #include "settings/AdvancedSettings.h"
-#include "utils/log.h"
 #include "utils/GLUtils.h"
+#include "utils/log.h"
 
-#include <string>
 #include <sstream>
+#include <string>
 
 using namespace Shaders;
 

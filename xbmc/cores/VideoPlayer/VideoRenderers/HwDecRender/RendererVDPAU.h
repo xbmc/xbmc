@@ -8,8 +8,8 @@
 
 #pragma once
 
-#include "cores/VideoPlayer/VideoRenderers/LinuxRendererGL.h"
 #include "VdpauGL.h"
+#include "cores/VideoPlayer/VideoRenderers/LinuxRendererGL.h"
 
 class CRendererVDPAU : public CLinuxRendererGL
 {

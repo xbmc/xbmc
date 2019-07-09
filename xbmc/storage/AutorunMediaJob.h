@@ -8,8 +8,9 @@
 
 #pragma once
 
-#include <string>
 #include "utils/Job.h"
+
+#include <string>
 
 class CAutorunMediaJob : public CJob
 {

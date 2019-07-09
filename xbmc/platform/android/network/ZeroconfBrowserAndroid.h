@@ -9,13 +9,13 @@
 #pragma once
 
 #include "network/ZeroconfBrowser.h"
-
-#include <androidjni/NsdManager.h>
-#include <androidjni/NsdServiceInfo.h>
+#include "threads/Event.h"
 
 #include "platform/android/activity/JNIXBMCNsdManagerDiscoveryListener.h"
 #include "platform/android/activity/JNIXBMCNsdManagerResolveListener.h"
-#include "threads/Event.h"
+
+#include <androidjni/NsdManager.h>
+#include <androidjni/NsdServiceInfo.h>
 
 class CZeroconfBrowserAndroid;
 

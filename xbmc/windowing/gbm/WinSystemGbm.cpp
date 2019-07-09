@@ -7,25 +7,26 @@
  */
 
 #include "WinSystemGbm.h"
+
+#include "DRMAtomic.h"
+#include "DRMLegacy.h"
+#include "GBMDPMSSupport.h"
+#include "OffScreenModeSetting.h"
+#include "OptionalsReg.h"
 #include "ServiceBroker.h"
+#include "messaging/ApplicationMessenger.h"
 #include "settings/DisplaySettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "settings/lib/Setting.h"
-#include <string.h>
-
-#include "OptionalsReg.h"
-#include "platform/linux/OptionalsReg.h"
-#include "windowing/GraphicContext.h"
-#include "GBMDPMSSupport.h"
-#include "platform/linux/powermanagement/LinuxPowerSyscall.h"
-#include "settings/DisplaySettings.h"
-#include "utils/log.h"
 #include "utils/StringUtils.h"
-#include "DRMAtomic.h"
-#include "DRMLegacy.h"
-#include "OffScreenModeSetting.h"
-#include "messaging/ApplicationMessenger.h"
+#include "utils/log.h"
+#include "windowing/GraphicContext.h"
+
+#include "platform/linux/OptionalsReg.h"
+#include "platform/linux/powermanagement/LinuxPowerSyscall.h"
+
+#include <string.h>
 
 using namespace KODI::WINDOWING::GBM;
 

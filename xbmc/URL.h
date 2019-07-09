@@ -8,9 +8,10 @@
 
 #pragma once
 
+#include "utils/UrlOptions.h"
+
 #include <stdlib.h>
 #include <string>
-#include "utils/UrlOptions.h"
 
 #ifdef TARGET_WINDOWS
 #undef SetPort // WIN32INCLUDES this is defined as SetPortA in WinSpool.h which is being included _somewhere_

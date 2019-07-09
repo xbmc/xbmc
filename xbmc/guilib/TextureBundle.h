@@ -8,9 +8,10 @@
 
 #pragma once
 
+#include "TextureBundleXBT.h"
+
 #include <string>
 #include <vector>
-#include "TextureBundleXBT.h"
 
 class CTextureBundle
 {

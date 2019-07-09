@@ -7,16 +7,17 @@
  */
 
 #include "AddonInputHandling.h"
+
 #include "input/joysticks/generic/DriverReceiving.h"
 #include "input/joysticks/generic/InputHandling.h"
-#include "input/joysticks/interfaces/IInputHandler.h"
 #include "input/joysticks/interfaces/IDriverReceiver.h"
+#include "input/joysticks/interfaces/IInputHandler.h"
 #include "input/keyboard/generic/KeyboardInputHandling.h"
 #include "input/keyboard/interfaces/IKeyboardInputHandler.h"
 #include "input/mouse/generic/MouseInputHandling.h"
 #include "input/mouse/interfaces/IMouseInputHandler.h"
-#include "peripherals/addons/AddonButtonMap.h"
 #include "peripherals/Peripherals.h"
+#include "peripherals/addons/AddonButtonMap.h"
 #include "utils/log.h"
 
 using namespace KODI;

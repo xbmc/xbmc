@@ -6,6 +6,7 @@
  *  See LICENSES/README.md for more information.
  */
 #include "AESinkFactoryWin.h"
+
 #include "utils/log.h"
 
 #define ERRTOSTR(err) case err: return #err

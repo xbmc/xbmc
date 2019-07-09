@@ -8,12 +8,12 @@
 
 #pragma once
 
-#include <string>
-#include <vector>
-
 #include "ISetting.h"
 #include "Setting.h"
 #include "SettingCategoryAccess.h"
+
+#include <string>
+#include <vector>
 
 class CSettingsManager;
 

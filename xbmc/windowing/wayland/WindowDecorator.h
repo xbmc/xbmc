@@ -8,22 +8,23 @@
 
 #pragma once
 
+#include "Connection.h"
+#include "Registry.h"
+#include "Seat.h"
+#include "ShellSurface.h"
+#include "Util.h"
+#include "WindowDecorationHandler.h"
+#include "threads/CriticalSection.h"
+#include "utils/Geometry.h"
+
+#include "platform/posix/utils/SharedMemory.h"
+
 #include <array>
 #include <memory>
 #include <set>
 
 #include <wayland-client-protocol.hpp>
 #include <wayland-cursor.hpp>
-
-#include "Connection.h"
-#include "Registry.h"
-#include "Seat.h"
-#include "ShellSurface.h"
-#include "threads/CriticalSection.h"
-#include "Util.h"
-#include "utils/Geometry.h"
-#include "platform/posix/utils/SharedMemory.h"
-#include "WindowDecorationHandler.h"
 
 namespace KODI
 {

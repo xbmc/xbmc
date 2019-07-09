@@ -8,13 +8,15 @@
 
 #pragma once
 
-#include "windowing/VideoSync.h"
-#include "system_gl.h"
-#include <X11/X.h>
-#include <X11/Xlib.h>
-#include <GL/glx.h>
 #include "guilib/DispResource.h"
 #include "threads/Event.h"
+#include "windowing/VideoSync.h"
+
+#include <GL/glx.h>
+#include <X11/X.h>
+#include <X11/Xlib.h>
+
+#include "system_gl.h"
 
 class CWinSystemX11GLContext;
 

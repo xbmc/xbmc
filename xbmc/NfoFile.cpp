@@ -10,17 +10,18 @@
 //////////////////////////////////////////////////////////////////////
 
 #include "NfoFile.h"
+
+#include "FileItem.h"
 #include "ServiceBroker.h"
-#include "video/VideoInfoDownloader.h"
 #include "addons/AddonManager.h"
 #include "addons/AddonSystemSettings.h"
 #include "filesystem/File.h"
-#include "FileItem.h"
 #include "music/Album.h"
 #include "music/Artist.h"
+#include "video/VideoInfoDownloader.h"
 
-#include <vector>
 #include <string>
+#include <vector>
 
 using namespace XFILE;
 using namespace ADDON;

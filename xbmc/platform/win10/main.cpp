@@ -7,6 +7,7 @@
  */
 
 #include "pch.h"
+
 #include "platform/win10/Win10App.h"
 
 int __stdcall WinMain(HINSTANCE, HINSTANCE, PCSTR, int)

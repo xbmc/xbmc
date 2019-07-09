@@ -10,9 +10,9 @@
 
 #include "cores/RetroPlayer/buffers/BaseRenderBuffer.h"
 
-#include "system_gl.h"
-
 #include <memory>
+
+#include "system_gl.h"
 
 class CEGLImage;
 class CGBMBufferObject;

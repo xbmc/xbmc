@@ -6,30 +6,25 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include "utils/log.h"
-
 #include "DVDFactoryCodec.h"
-#include "Video/AddonVideoCodec.h"
-#include "Video/DVDVideoCodec.h"
+
 #include "Audio/DVDAudioCodec.h"
-#include "Overlay/DVDOverlayCodec.h"
-#include "cores/VideoPlayer/DVDCodecs/DVDCodecs.h"
-
-#include "addons/AddonProvider.h"
-
-#include "Video/DVDVideoCodecFFmpeg.h"
-
 #include "Audio/DVDAudioCodecFFmpeg.h"
 #include "Audio/DVDAudioCodecPassthrough.h"
-#include "Overlay/DVDOverlayCodecSSA.h"
-#include "Overlay/DVDOverlayCodecText.h"
-#include "Overlay/DVDOverlayCodecTX3G.h"
-#include "Overlay/DVDOverlayCodecFFmpeg.h"
-
-
 #include "DVDStreamInfo.h"
+#include "Overlay/DVDOverlayCodec.h"
+#include "Overlay/DVDOverlayCodecFFmpeg.h"
+#include "Overlay/DVDOverlayCodecSSA.h"
+#include "Overlay/DVDOverlayCodecTX3G.h"
+#include "Overlay/DVDOverlayCodecText.h"
+#include "Video/AddonVideoCodec.h"
+#include "Video/DVDVideoCodec.h"
+#include "Video/DVDVideoCodecFFmpeg.h"
+#include "addons/AddonProvider.h"
+#include "cores/VideoPlayer/DVDCodecs/DVDCodecs.h"
 #include "threads/SingleLock.h"
 #include "utils/StringUtils.h"
+#include "utils/log.h"
 
 
 //------------------------------------------------------------------------------

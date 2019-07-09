@@ -9,7 +9,6 @@
 #include "Edl.h"
 
 #include "FileItem.h"
-#include "PlatformDefs.h"
 #include "ServiceBroker.h"
 #include "cores/Cut.h"
 #include "filesystem/File.h"
@@ -22,6 +21,8 @@
 #include "utils/URIUtils.h"
 #include "utils/XBMCTinyXML.h"
 #include "utils/log.h"
+
+#include "PlatformDefs.h"
 
 #define COMSKIP_HEADER "FILE PROCESSING COMPLETE"
 #define VIDEOREDO_HEADER "<Version>2"

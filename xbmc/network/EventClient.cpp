@@ -6,25 +6,26 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include "threads/SystemClock.h"
-
 #include "EventClient.h"
+
 #include "EventPacket.h"
-#include "threads/SingleLock.h"
+#include "ServiceBroker.h"
+#include "dialogs/GUIDialogKaiToast.h"
+#include "filesystem/File.h"
+#include "guilib/LocalizeStrings.h"
 #include "input/GamepadTranslator.h"
 #include "input/IRTranslator.h"
+#include "input/Key.h"
 #include "input/KeyboardTranslator.h"
+#include "threads/SingleLock.h"
+#include "threads/SystemClock.h"
+#include "utils/StringUtils.h"
+#include "utils/TimeUtils.h"
+#include "utils/log.h"
+#include "windowing/GraphicContext.h"
+
 #include <map>
 #include <queue>
-#include "filesystem/File.h"
-#include "utils/log.h"
-#include "utils/TimeUtils.h"
-#include "dialogs/GUIDialogKaiToast.h"
-#include "windowing/GraphicContext.h"
-#include "input/Key.h"
-#include "guilib/LocalizeStrings.h"
-#include "utils/StringUtils.h"
-#include "ServiceBroker.h"
 
 using namespace EVENTCLIENT;
 using namespace EVENTPACKET;

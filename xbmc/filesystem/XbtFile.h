@@ -8,12 +8,12 @@
 
 #pragma once
 
-#include <vector>
-
 #include "IFile.h"
 #include "URL.h"
 #include "guilib/XBTF.h"
 #include "guilib/XBTFReader.h"
+
+#include <vector>
 
 namespace XFILE
 {

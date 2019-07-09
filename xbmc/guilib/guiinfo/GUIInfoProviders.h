@@ -8,12 +8,9 @@
 
 #pragma once
 
-#include <string>
-#include <vector>
-
 #include "guilib/guiinfo/AddonsGUIInfo.h"
-#include "guilib/guiinfo/GamesGUIInfo.h"
 #include "guilib/guiinfo/GUIControlsGUIInfo.h"
+#include "guilib/guiinfo/GamesGUIInfo.h"
 #include "guilib/guiinfo/LibraryGUIInfo.h"
 #include "guilib/guiinfo/MusicGUIInfo.h"
 #include "guilib/guiinfo/PicturesGUIInfo.h"
@@ -23,6 +20,9 @@
 #include "guilib/guiinfo/VideoGUIInfo.h"
 #include "guilib/guiinfo/VisualisationGUIInfo.h"
 #include "guilib/guiinfo/WeatherGUIInfo.h"
+
+#include <string>
+#include <vector>
 
 class CFileItem;
 class CGUIListItem;

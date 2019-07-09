@@ -8,11 +8,11 @@
 
 #pragma once
 
-#include <set>
-
+#include "FileItem.h"
 #include "JSONRPC.h"
 #include "JSONUtils.h"
-#include "FileItem.h"
+
+#include <set>
 
 class CThumbLoader;
 class CVariant;

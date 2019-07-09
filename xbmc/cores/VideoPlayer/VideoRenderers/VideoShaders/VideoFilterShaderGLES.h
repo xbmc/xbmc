@@ -8,11 +8,10 @@
 
 #pragma once
 
-#include "system_gl.h"
-
-
-#include "guilib/Shader.h"
 #include "cores/VideoSettings.h"
+#include "guilib/Shader.h"
+
+#include "system_gl.h"
 
 namespace Shaders {
 

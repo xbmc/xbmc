@@ -1,4 +1,4 @@
- /*
+/*
  *  Copyright (C) 2010-2018 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
@@ -8,18 +8,19 @@
 
 #include "AESinkAUDIOTRACK.h"
 
+#include "cores/AudioEngine/AESinkFactory.h"
+#include "cores/AudioEngine/Utils/AEUtil.h"
+#include "settings/Settings.h"
+#include "utils/StringUtils.h"
+#include "utils/TimeUtils.h"
+#include "utils/log.h"
+
+#include "platform/android/activity/XBMCApp.h"
+
 #include <androidjni/AudioFormat.h>
 #include <androidjni/AudioManager.h>
 #include <androidjni/AudioTrack.h>
 #include <androidjni/Build.h>
-
-#include "cores/AudioEngine/Utils/AEUtil.h"
-#include "cores/AudioEngine/AESinkFactory.h"
-#include "platform/android/activity/XBMCApp.h"
-#include "settings/Settings.h"
-#include "utils/log.h"
-#include "utils/StringUtils.h"
-#include "utils/TimeUtils.h"
 
 // This is an alternative to the linear weighted delay smoothing
 // advantages: only one history value needs to be stored

@@ -8,9 +8,9 @@
 
 #pragma once
 
-#include <SDL/SDL_events.h>
-
 #include "windowing/WinEvents.h"
+
+#include <SDL/SDL_events.h>
 
 class CWinEventsSDL : public IWinEvents
 {

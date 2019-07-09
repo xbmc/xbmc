@@ -7,6 +7,7 @@
  */
 
 #include "MusicLibraryScanningJob.h"
+
 #include "music/MusicDatabase.h"
 
 CMusicLibraryScanningJob::CMusicLibraryScanningJob(const std::string& directory, int flags, bool showProgress /* = true */)

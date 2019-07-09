@@ -6,14 +6,18 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include "Application.h"
-#include "ServiceBroker.h"
 #include "GUIDialogSubtitles.h"
+
+#include "Application.h"
 #include "LangInfo.h"
+#include "ServiceBroker.h"
+#include "URL.h"
+#include "Util.h"
 #include "addons/AddonManager.h"
 #include "cores/IPlayer.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "filesystem/AddonsDirectory.h"
+#include "filesystem/Directory.h"
 #include "filesystem/File.h"
 #include "filesystem/SpecialProtocol.h"
 #include "filesystem/StackDirectory.h"
@@ -26,14 +30,11 @@
 #include "settings/lib/Setting.h"
 #include "utils/JobManager.h"
 #include "utils/LangCodeExpander.h"
-#include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
-#include "URL.h"
-#include "Util.h"
+#include "utils/log.h"
 #include "video/VideoDatabase.h"
-#include "filesystem/Directory.h"
 
 using namespace ADDON;
 using namespace XFILE;

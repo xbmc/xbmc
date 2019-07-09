@@ -8,15 +8,16 @@
 
 #pragma once
 
-#include <string>
-#include <vector>
-#include "addons/AddonEvents.h"
 #include "IListProvider.h"
+#include "addons/AddonEvents.h"
 #include "favourites/FavouritesService.h"
 #include "guilib/GUIStaticItem.h"
-#include "utils/Job.h"
-#include "threads/CriticalSection.h"
 #include "interfaces/IAnnouncer.h"
+#include "threads/CriticalSection.h"
+#include "utils/Job.h"
+
+#include <string>
+#include <vector>
 
 class TiXmlElement;
 class CVariant;

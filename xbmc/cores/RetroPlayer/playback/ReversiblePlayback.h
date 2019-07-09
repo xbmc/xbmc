@@ -8,8 +8,8 @@
 
 #pragma once
 
-#include "IPlayback.h"
 #include "GameLoop.h"
+#include "IPlayback.h"
 #include "threads/CriticalSection.h"
 #include "utils/Observer.h"
 

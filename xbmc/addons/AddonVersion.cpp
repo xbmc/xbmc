@@ -6,14 +6,15 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
-#include <ctype.h>
-
 #include "AddonVersion.h"
-#include "utils/log.h"
+
 #include "utils/StringUtils.h"
+#include "utils/log.h"
+
+#include <ctype.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 namespace {
 // Add-on versions are used e.g. in file names and should

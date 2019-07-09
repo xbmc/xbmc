@@ -22,8 +22,8 @@
 
 #pragma once
 
-#include <cstring>		/* for memcpy() */
 #include <cstdint>
+#include <cstring> /* for memcpy() */
 
 struct MD5Context
 {

@@ -8,21 +8,22 @@
 
 #include "SeatSelection.h"
 
-#include <poll.h>
-#include <unistd.h>
+#include "Connection.h"
+#include "Registry.h"
+#include "WinEventsWayland.h"
+#include "threads/SingleLock.h"
+#include "utils/StringUtils.h"
+#include "utils/log.h"
+
+#include "platform/posix/utils/FileHandle.h"
 
 #include <cerrno>
 #include <chrono>
 #include <cstring>
 #include <system_error>
 
-#include "Connection.h"
-#include "Registry.h"
-#include "threads/SingleLock.h"
-#include "utils/log.h"
-#include "platform/posix/utils/FileHandle.h"
-#include "utils/StringUtils.h"
-#include "WinEventsWayland.h"
+#include <poll.h>
+#include <unistd.h>
 
 using namespace KODI::UTILS::POSIX;
 using namespace KODI::WINDOWING::WAYLAND;

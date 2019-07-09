@@ -7,17 +7,18 @@
  */
 
 #include "DatabaseManager.h"
-#include "utils/log.h"
-#include "addons/AddonDatabase.h"
-#include "view/ViewDatabase.h"
+
+#include "ServiceBroker.h"
 #include "TextureDatabase.h"
+#include "addons/AddonDatabase.h"
 #include "music/MusicDatabase.h"
-#include "video/VideoDatabase.h"
 #include "pvr/PVRDatabase.h"
 #include "pvr/epg/EpgDatabase.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
-#include "ServiceBroker.h"
+#include "utils/log.h"
+#include "video/VideoDatabase.h"
+#include "view/ViewDatabase.h"
 
 using namespace PVR;
 

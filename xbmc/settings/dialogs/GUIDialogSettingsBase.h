@@ -8,14 +8,14 @@
 
 #pragma once
 
-#include <set>
-#include <vector>
-
 #include "guilib/GUIDialog.h"
 #include "settings/SettingControl.h"
 #include "settings/lib/ISettingCallback.h"
 #include "threads/Timer.h"
 #include "utils/ILocalizer.h"
+
+#include <set>
+#include <vector>
 
 #define CONTROL_SETTINGS_LABEL          2
 #define CONTROL_SETTINGS_DESCRIPTION    6

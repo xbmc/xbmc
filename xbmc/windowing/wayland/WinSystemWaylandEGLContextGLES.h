@@ -8,8 +8,8 @@
 
 #pragma once
 
-#include "rendering/gles/RenderSystemGLES.h"
 #include "WinSystemWaylandEGLContext.h"
+#include "rendering/gles/RenderSystemGLES.h"
 
 class CVaapiProxy;
 

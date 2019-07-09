@@ -6,18 +6,20 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include <stdint.h>
-#include <limits.h>
-#include <cassert>
-
 #include "AESinkPi.h"
+
 #include "ServiceBroker.h"
 #include "cores/AudioEngine/AESinkFactory.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
-#include "utils/log.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
+#include "utils/log.h"
+
 #include "platform/linux/RBP.h"
+
+#include <cassert>
+#include <limits.h>
+#include <stdint.h>
 
 #define CLASSNAME "CAESinkPi"
 

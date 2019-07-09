@@ -6,13 +6,15 @@
  *  See LICENSES/README.md for more information.
  */
 
-#import <UIKit/UIKit.h>
-#import <AVFoundation/AVAudioSession.h>
-
 #import "XBMCApplication.h"
-#import "XBMCController.h"
+
 #import "IOSScreenManager.h"
+#import "XBMCController.h"
+
 #import "platform/darwin/NSLogDebugHelpers.h"
+
+#import <AVFoundation/AVAudioSession.h>
+#import <UIKit/UIKit.h>
 #import <objc/runtime.h>
 
 @implementation XBMCApplicationDelegate

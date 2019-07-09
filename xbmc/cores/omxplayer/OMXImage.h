@@ -9,16 +9,15 @@
 #pragma once
 
 #include "OMXCore.h"
-
-#include <IL/OMX_Video.h>
-
 #include "filesystem/File.h"
 #include "guilib/XBTF.h"
+#include "threads/Thread.h"
 
-#include "system_gl.h"
 #include <EGL/egl.h>
 #include <EGL/eglext.h>
-#include "threads/Thread.h"
+#include <IL/OMX_Video.h>
+
+#include "system_gl.h"
 
 class COMXImageFile;
 

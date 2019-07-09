@@ -7,15 +7,16 @@
  */
 
 #include "GUIViewStateWindowGames.h"
+
+#include "FileItem.h"
 #include "games/GameUtils.h"
-#include "windowing/GraphicContext.h" // include before ViewState.h
 #include "guilib/LocalizeStrings.h"
 #include "guilib/WindowIDs.h"
 #include "settings/MediaSourceSettings.h"
 #include "utils/StringUtils.h"
 #include "view/ViewState.h"
 #include "view/ViewStateSettings.h"
-#include "FileItem.h"
+#include "windowing/GraphicContext.h" // include before ViewState.h
 
 #include <assert.h>
 #include <set>

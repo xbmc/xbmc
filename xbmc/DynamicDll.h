@@ -8,9 +8,10 @@
 
 #pragma once
 
-#include "cores/DllLoader/LibraryLoader.h"
-#include <string>
 #include "DllPaths.h"
+#include "cores/DllLoader/LibraryLoader.h"
+
+#include <string>
 
 ///////////////////////////////////////////////////////////
 //

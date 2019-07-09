@@ -7,6 +7,7 @@
  */
 
 #include "RenderBufferManager.h"
+
 #include "IRenderBufferPool.h"
 #include "cores/RetroPlayer/process/RPProcessInfo.h"
 #include "cores/RetroPlayer/rendering/RenderVideoSettings.h"

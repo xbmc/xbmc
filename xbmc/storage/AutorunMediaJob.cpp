@@ -6,13 +6,14 @@
  *  See LICENSES/README.md for more information.
  */
 #include "AutorunMediaJob.h"
+
 #include "Application.h"
 #include "ServiceBroker.h"
-#include "interfaces/builtins/Builtins.h"
+#include "dialogs/GUIDialogSelect.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
-#include "dialogs/GUIDialogSelect.h"
+#include "interfaces/builtins/Builtins.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
 

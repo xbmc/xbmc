@@ -8,12 +8,12 @@
 
 #pragma once
 
+#include "TextureCacheJob.h"
+#include "dbwrappers/Database.h"
+#include "dbwrappers/DatabaseQuery.h"
+
 #include <string>
 #include <vector>
-
-#include "dbwrappers/Database.h"
-#include "TextureCacheJob.h"
-#include "dbwrappers/DatabaseQuery.h"
 
 class CVariant;
 

@@ -6,20 +6,21 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include "threads/SystemClock.h"
 #include "MultiPathDirectory.h"
+
 #include "Directory.h"
+#include "FileItem.h"
 #include "ServiceBroker.h"
-#include "Util.h"
 #include "URL.h"
+#include "Util.h"
+#include "dialogs/GUIDialogProgress.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
-#include "dialogs/GUIDialogProgress.h"
-#include "FileItem.h"
+#include "threads/SystemClock.h"
 #include "utils/StringUtils.h"
-#include "utils/log.h"
-#include "utils/Variant.h"
 #include "utils/URIUtils.h"
+#include "utils/Variant.h"
+#include "utils/log.h"
 
 using namespace XFILE;
 

@@ -8,9 +8,9 @@
 
 #pragma once
 
-#include <vector>
-
 #include "settings/lib/Setting.h"
+
+#include <vector>
 
 class CSettingPath : public CSettingString
 {

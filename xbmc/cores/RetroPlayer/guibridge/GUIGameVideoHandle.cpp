@@ -7,6 +7,7 @@
  */
 
 #include "GUIGameVideoHandle.h"
+
 #include "GUIGameRenderManager.h"
 
 using namespace KODI;

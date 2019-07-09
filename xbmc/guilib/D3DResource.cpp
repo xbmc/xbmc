@@ -6,12 +6,13 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include "filesystem/File.h"
 #include "D3DResource.h"
+
 #include "GUIShaderDX.h"
-#include "utils/log.h"
+#include "filesystem/File.h"
 #include "rendering/dx/DeviceResources.h"
 #include "rendering/dx/RenderContext.h"
+#include "utils/log.h"
 
 #include <d3dcompiler.h>
 

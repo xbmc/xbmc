@@ -7,6 +7,12 @@
  */
 
 #include "General.h"
+
+#include "ListItem.h"
+#include "ServiceBroker.h"
+#include "Window.h"
+#include "addons/binary-addons/AddonDll.h"
+#include "addons/kodi-addon-dev-kit/include/kodi/gui/General.h"
 #include "controls/Button.h"
 #include "controls/Edit.h"
 #include "controls/FadeLabel.h"
@@ -29,12 +35,6 @@
 #include "dialogs/Select.h"
 #include "dialogs/TextViewer.h"
 #include "dialogs/YesNo.h"
-#include "ListItem.h"
-#include "Window.h"
-#include "addons/kodi-addon-dev-kit/include/kodi/gui/General.h"
-
-#include "ServiceBroker.h"
-#include "addons/binary-addons/AddonDll.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "utils/log.h"

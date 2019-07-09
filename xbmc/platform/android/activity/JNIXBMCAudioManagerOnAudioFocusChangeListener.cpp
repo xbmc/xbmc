@@ -7,11 +7,12 @@
  */
 
 #include "JNIXBMCAudioManagerOnAudioFocusChangeListener.h"
-#include <androidjni/jutils-details.hpp>
 
-#include <androidjni/Context.h>
 #include "CompileInfo.h"
 #include "XBMCApp.h"
+
+#include <androidjni/Context.h>
+#include <androidjni/jutils-details.hpp>
 
 using namespace jni;
 

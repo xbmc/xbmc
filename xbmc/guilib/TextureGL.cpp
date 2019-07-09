@@ -8,12 +8,12 @@
 
 #include "ServiceBroker.h"
 #include "Texture.h"
-#include "rendering/RenderSystem.h"
-#include "utils/log.h"
-#include "utils/GLUtils.h"
 #include "guilib/TextureManager.h"
+#include "rendering/RenderSystem.h"
 #include "settings/AdvancedSettings.h"
+#include "utils/GLUtils.h"
 #include "utils/MemUtils.h"
+#include "utils/log.h"
 
 /************************************************************************/
 /*    CGLTexture                                                       */

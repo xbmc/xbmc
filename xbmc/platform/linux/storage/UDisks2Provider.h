@@ -8,11 +8,11 @@
 
 #pragma once
 
+#include "DBusUtil.h"
+#include "storage/IStorageProvider.h"
+
 #include <string>
 #include <vector>
-
-#include "storage/IStorageProvider.h"
-#include "DBusUtil.h"
 
 class CUDisks2Provider : public IStorageProvider
 {

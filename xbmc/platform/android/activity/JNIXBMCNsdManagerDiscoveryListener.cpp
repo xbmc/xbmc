@@ -8,12 +8,12 @@
 
 #include "JNIXBMCNsdManagerDiscoveryListener.h"
 
-#include <androidjni/jutils-details.hpp>
-#include <androidjni/Context.h>
-#include <androidjni/NsdServiceInfo.h>
-
 #include "CompileInfo.h"
 #include "utils/log.h"
+
+#include <androidjni/Context.h>
+#include <androidjni/NsdServiceInfo.h>
+#include <androidjni/jutils-details.hpp>
 
 using namespace jni;
 

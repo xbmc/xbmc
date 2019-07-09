@@ -6,18 +6,19 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include <string>
-#include <sstream>
-
 #include "WebSocketV8.h"
+
 #include "WebSocket.h"
 #include "utils/Base64.h"
 #include "utils/Digest.h"
 #include "utils/EndianSwap.h"
 #include "utils/HttpParser.h"
 #include "utils/HttpResponse.h"
-#include "utils/log.h"
 #include "utils/StringUtils.h"
+#include "utils/log.h"
+
+#include <sstream>
+#include <string>
 
 using KODI::UTILITY::CDigest;
 

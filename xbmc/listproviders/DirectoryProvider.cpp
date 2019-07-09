@@ -8,36 +8,37 @@
 
 #include "DirectoryProvider.h"
 
-#include <memory>
-#include <utility>
-#include "ServiceBroker.h"
-#include "addons/GUIDialogAddonInfo.h"
 #include "ContextMenuManager.h"
 #include "FileItem.h"
-#include "filesystem/Directory.h"
+#include "ServiceBroker.h"
+#include "addons/GUIDialogAddonInfo.h"
 #include "favourites/FavouritesService.h"
+#include "filesystem/Directory.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "interfaces/AnnouncementManager.h"
-#include "music/dialogs/GUIDialogMusicInfo.h"
 #include "music/MusicThumbLoader.h"
+#include "music/dialogs/GUIDialogMusicInfo.h"
 #include "pictures/PictureThumbLoader.h"
-#include "pvr/PVRThumbLoader.h"
 #include "pvr/PVRManager.h"
+#include "pvr/PVRThumbLoader.h"
 #include "pvr/dialogs/GUIDialogPVRGuideInfo.h"
 #include "pvr/dialogs/GUIDialogPVRRecordingInfo.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "threads/SingleLock.h"
 #include "utils/JobManager.h"
-#include "utils/log.h"
 #include "utils/SortUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
 #include "utils/XMLUtils.h"
+#include "utils/log.h"
 #include "video/VideoThumbLoader.h"
 #include "video/dialogs/GUIDialogVideoInfo.h"
 #include "video/windows/GUIWindowVideoBase.h"
+
+#include <memory>
+#include <utility>
 
 using namespace XFILE;
 using namespace KODI::MESSAGING;

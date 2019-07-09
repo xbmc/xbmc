@@ -6,10 +6,11 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include "utils/StringUtils.h"
+#include "input/XBMC_keytable.h"
+
 #include "input/XBMC_keysym.h"
 #include "input/XBMC_vkeys.h"
-#include "input/XBMC_keytable.h"
+#include "utils/StringUtils.h"
 
 // The array of XBMCKEYTABLEs used in XBMC.
 // scancode, sym, unicode, ascii, vkey, keyname

@@ -8,8 +8,9 @@
 
 #pragma once
 
-#include "utils/EGLUtils.h"
 #include "WinSystemGbm.h"
+#include "utils/EGLUtils.h"
+
 #include <memory>
 
 namespace KODI

@@ -7,18 +7,19 @@
  */
 
 #include "GUIWindowPrograms.h"
-#include "Util.h"
-#include "GUIPassword.h"
-#include "addons/GUIDialogAddonInfo.h"
+
 #include "Autorun.h"
+#include "FileItem.h"
+#include "GUIPassword.h"
+#include "ServiceBroker.h"
+#include "Util.h"
+#include "addons/GUIDialogAddonInfo.h"
 #include "dialogs/GUIDialogMediaSource.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
-#include "FileItem.h"
-#include "settings/MediaSourceSettings.h"
 #include "input/Key.h"
+#include "settings/MediaSourceSettings.h"
 #include "utils/StringUtils.h"
-#include "ServiceBroker.h"
 
 #define CONTROL_BTNVIEWASICONS 2
 #define CONTROL_BTNSORTBY      3

@@ -8,10 +8,10 @@
 
 #include "AndroidFeatures.h"
 
-#include <cpu-features.h>
-#include <androidjni/JNIThreading.h>
-
 #include "utils/log.h"
+
+#include <androidjni/JNIThreading.h>
+#include <cpu-features.h>
 
 bool CAndroidFeatures::HasNeon()
 {

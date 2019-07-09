@@ -8,11 +8,11 @@
 
 #include "JNIXBMCNsdManagerResolveListener.h"
 
-#include <androidjni/jutils-details.hpp>
+#include "CompileInfo.h"
+
 #include <androidjni/Context.h>
 #include <androidjni/NsdServiceInfo.h>
-
-#include "CompileInfo.h"
+#include <androidjni/jutils-details.hpp>
 
 using namespace jni;
 

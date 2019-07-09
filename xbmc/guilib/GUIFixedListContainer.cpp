@@ -7,6 +7,7 @@
  */
 
 #include "GUIFixedListContainer.h"
+
 #include "GUIListItemLayout.h"
 #include "input/Key.h"
 

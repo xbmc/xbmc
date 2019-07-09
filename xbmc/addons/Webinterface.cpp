@@ -7,11 +7,12 @@
  */
 
 #include "Webinterface.h"
+
 #include "ServiceBroker.h"
 #include "addons/AddonManager.h"
-#include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
+#include "utils/log.h"
 
 using namespace ADDON;
 

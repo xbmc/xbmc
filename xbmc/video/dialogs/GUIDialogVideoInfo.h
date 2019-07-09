@@ -8,9 +8,9 @@
 
 #pragma once
 
-#include "guilib/GUIDialog.h"
 #include "FileItem.h"
 #include "MediaSource.h"
+#include "guilib/GUIDialog.h"
 
 class CVideoDatabase;
 

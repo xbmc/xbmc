@@ -8,8 +8,8 @@
 
 #pragma once
 
-#include "cores/IPlayer.h"
 #include "../ProcessInfo.h"
+#include "cores/IPlayer.h"
 
 namespace VIDEOPLAYER
 {

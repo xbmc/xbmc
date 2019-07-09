@@ -7,16 +7,17 @@
  */
 
 #include "GUIGameControl.h"
+
+#include "Application.h"
 #include "GUIRenderSettings.h"
+#include "ServiceBroker.h"
+#include "cores/RetroPlayer/RetroPlayerUtils.h"
 #include "cores/RetroPlayer/guibridge/GUIGameRenderManager.h"
 #include "cores/RetroPlayer/guibridge/GUIRenderHandle.h"
-#include "cores/RetroPlayer/RetroPlayerUtils.h"
 #include "settings/GameSettings.h"
 #include "settings/MediaSettings.h"
 #include "utils/Geometry.h"
 #include "utils/StringUtils.h"
-#include "Application.h"
-#include "ServiceBroker.h"
 
 #include <sstream>
 

@@ -8,13 +8,14 @@
 
 #pragma once
 
-#include <stdint.h>
 #include "cores/AudioEngine/Interfaces/AESink.h"
 #include "cores/AudioEngine/Utils/AEDeviceInfo.h"
 #include "threads/CriticalSection.h"
 
-#include <mmsystem.h>
-#include <DSound.h>
+#include <stdint.h>
+
+#include <mmsystem.h> /* Microsoft can't write standalone headers */
+#include <DSound.h> /* Microsoft can't write standalone headers */
 #include <wrl/client.h>
 
 class CAESinkDirectSound : public IAESink

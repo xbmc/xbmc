@@ -7,10 +7,12 @@
  */
 
 #include "PeripheralBusUSBLibUSB.h"
+
 #include "peripherals/Peripherals.h"
-#include <usb.h>
-#include "utils/log.h"
 #include "utils/StringUtils.h"
+#include "utils/log.h"
+
+#include <usb.h>
 
 using namespace PERIPHERALS;
 

@@ -8,9 +8,9 @@
 
 #pragma once
 
-#include <gtest/gtest.h>
-
 #include "threads/Thread.h"
+
+#include <gtest/gtest.h>
 
 #define MILLIS(x) x
 

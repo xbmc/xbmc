@@ -8,11 +8,12 @@
 
 #pragma once
 
-#include <map>
-#include <vector>
+#include "FileItem.h"
 #include "ThumbLoader.h"
 #include "utils/JobManager.h"
-#include "FileItem.h"
+
+#include <map>
+#include <vector>
 
 class CStreamDetails;
 class CVideoDatabase;

@@ -15,13 +15,15 @@
 // by Bobbin007 in 2003
 //  CD-Text support by Mog - Oct 2004
 
-#include "PlatformDefs.h" // for ssize_t typedef
+#include "threads/CriticalSection.h"
+
+#include <map>
+#include <memory>
+#include <string>
+
+#include "PlatformDefs.h" // for ssize_t typedef, used by cdio
 
 #include <cdio/cdio.h>
-#include "threads/CriticalSection.h"
-#include <memory>
-#include <map>
-#include <string>
 
 namespace MEDIA_DETECT
 {

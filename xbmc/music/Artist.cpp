@@ -7,10 +7,11 @@
  */
 
 #include "Artist.h"
-#include "utils/XMLUtils.h"
+
 #include "ServiceBroker.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
+#include "utils/XMLUtils.h"
 
 #include <algorithm>
 

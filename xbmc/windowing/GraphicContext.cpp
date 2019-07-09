@@ -7,22 +7,23 @@
  */
 
 #include "GraphicContext.h"
-#include "WinSystem.h"
+
 #include "Application.h"
 #include "ServiceBroker.h"
-#include "messaging/ApplicationMessenger.h"
-#include "settings/AdvancedSettings.h"
-#include "settings/DisplaySettings.h"
-#include "settings/lib/Setting.h"
-#include "settings/Settings.h"
-#include "settings/SettingsComponent.h"
-#include "utils/log.h"
-#include "rendering/RenderSystem.h"
-#include "input/InputManager.h"
-#include "guilib/gui3d.h"
+#include "WinSystem.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/TextureManager.h"
+#include "guilib/gui3d.h"
+#include "input/InputManager.h"
+#include "messaging/ApplicationMessenger.h"
+#include "rendering/RenderSystem.h"
+#include "settings/AdvancedSettings.h"
+#include "settings/DisplaySettings.h"
+#include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
+#include "settings/lib/Setting.h"
+#include "utils/log.h"
 
 using namespace KODI::MESSAGING;
 

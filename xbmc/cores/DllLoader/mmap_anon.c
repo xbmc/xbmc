@@ -6,15 +6,16 @@
  *  See LICENSES/README.md for more information.
  */
 
- /**
+/**
  * \file mmap_anon.c
  * \brief Provide a compatible anonymous space mapping function
  */
 
 #include <stdio.h>
-#include <unistd.h>
+
 #include <fcntl.h>
 #include <sys/mman.h>
+#include <unistd.h>
 
 #if defined(MAP_ANON) && !defined(MAP_ANONYMOUS)
 #define MAP_ANONYMOUS MAP_ANON

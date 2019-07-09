@@ -8,35 +8,35 @@
 
 #include "VideoThumbLoader.h"
 
-#include <algorithm>
-#include <cstdlib>
-#include <utility>
-
-#include "cores/VideoPlayer/DVDFileInfo.h"
 #include "FileItem.h"
+#include "GUIUserMessages.h"
 #include "ServiceBroker.h"
+#include "TextureCache.h"
+#include "URL.h"
+#include "cores/VideoPlayer/DVDFileInfo.h"
+#include "cores/VideoSettings.h"
 #include "filesystem/Directory.h"
 #include "filesystem/DirectoryCache.h"
 #include "filesystem/StackDirectory.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/StereoscopicsManager.h"
-#include "GUIUserMessages.h"
 #include "music/MusicDatabase.h"
 #include "settings/AdvancedSettings.h"
-#include "settings/lib/Setting.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
-#include "cores/VideoSettings.h"
-#include "TextureCache.h"
-#include "URL.h"
-#include "utils/log.h"
+#include "settings/lib/Setting.h"
 #include "utils/EmbeddedArt.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
-#include "video/tags/VideoInfoTagLoaderFactory.h"
+#include "utils/log.h"
 #include "video/VideoDatabase.h"
 #include "video/VideoInfoTag.h"
+#include "video/tags/VideoInfoTagLoaderFactory.h"
+
+#include <algorithm>
+#include <cstdlib>
+#include <utility>
 
 using namespace XFILE;
 using namespace VIDEO;

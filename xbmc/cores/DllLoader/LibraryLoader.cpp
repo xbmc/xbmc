@@ -7,9 +7,11 @@
  */
 
 #include "LibraryLoader.h"
-#include <string.h>
-#include <stdlib.h>
+
 #include "utils/log.h"
+
+#include <stdlib.h>
+#include <string.h>
 
 LibraryLoader::LibraryLoader(const std::string& libraryFile):
   m_fileName(libraryFile)

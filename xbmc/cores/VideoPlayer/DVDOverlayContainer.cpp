@@ -7,6 +7,7 @@
  */
 
 #include "DVDOverlayContainer.h"
+
 #include "DVDInputStreams/DVDInputStreamNavigator.h"
 #include "threads/SingleLock.h"
 

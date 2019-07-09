@@ -9,6 +9,7 @@
 #pragma once
 
 #include "GUIKeyboard.h"
+
 #include <string>
 
 class CVariant;

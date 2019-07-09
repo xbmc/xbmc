@@ -8,14 +8,13 @@
 
 #include "GUIDialogSmartPlaylistEditor.h"
 
-#include <utility>
-
 #include "FileItem.h"
-#include "ServiceBroker.h"
-#include "filesystem/File.h"
 #include "GUIDialogContextMenu.h"
-#include "GUIDialogSmartPlaylistRule.h"
 #include "GUIDialogSelect.h"
+#include "GUIDialogSmartPlaylistRule.h"
+#include "ServiceBroker.h"
+#include "Util.h"
+#include "filesystem/File.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIKeyboardFactory.h"
 #include "guilib/GUIWindowManager.h"
@@ -24,11 +23,12 @@
 #include "profiles/ProfileManager.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
-#include "Util.h"
 #include "utils/SortUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
+
+#include <utility>
 
 #define CONTROL_HEADING         2
 #define CONTROL_RULE_LIST       10

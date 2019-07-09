@@ -7,6 +7,7 @@
  */
 
 #include "PeripheralMouse.h"
+
 #include "input/InputManager.h"
 #include "peripherals/Peripherals.h"
 #include "threads/SingleLock.h"

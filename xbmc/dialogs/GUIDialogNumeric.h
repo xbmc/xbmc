@@ -8,9 +8,11 @@
 
 #pragma once
 
-#include <cstdint>
-#include "PlatformDefs.h"
 #include "guilib/GUIDialog.h"
+
+#include <cstdint>
+
+#include "PlatformDefs.h"
 
 enum class InputVerificationResult
 {

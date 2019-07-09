@@ -8,12 +8,12 @@
 
 #pragma once
 
-#include <set>
-#include <string>
-
 #include "addons/Skin.h"
 #include "settings/lib/ISubSettings.h"
 #include "threads/CriticalSection.h"
+
+#include <set>
+#include <string>
 
 class TiXmlNode;
 

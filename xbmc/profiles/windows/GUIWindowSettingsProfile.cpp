@@ -7,24 +7,25 @@
  */
 
 #include "GUIWindowSettingsProfile.h"
-#include "windows/GUIWindowFileManager.h"
-#include "profiles/Profile.h"
-#include "profiles/ProfileManager.h"
+
+#include "FileItem.h"
+#include "ServiceBroker.h"
 #include "dialogs/GUIDialogContextMenu.h"
 #include "dialogs/GUIDialogSelect.h"
-#include "profiles/dialogs/GUIDialogProfileSettings.h"
-#include "messaging/ApplicationMessenger.h"
-#include "utils/URIUtils.h"
+#include "filesystem/Directory.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIMessage.h"
 #include "guilib/GUIWindowManager.h"
-#include "filesystem/Directory.h"
-#include "FileItem.h"
-#include "ServiceBroker.h"
-#include "input/Key.h"
 #include "guilib/LocalizeStrings.h"
+#include "input/Key.h"
+#include "messaging/ApplicationMessenger.h"
+#include "profiles/Profile.h"
+#include "profiles/ProfileManager.h"
+#include "profiles/dialogs/GUIDialogProfileSettings.h"
 #include "settings/SettingsComponent.h"
+#include "utils/URIUtils.h"
 #include "utils/Variant.h"
+#include "windows/GUIWindowFileManager.h"
 
 using namespace KODI;
 using namespace XFILE;

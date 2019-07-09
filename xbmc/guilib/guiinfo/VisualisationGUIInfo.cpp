@@ -14,12 +14,11 @@
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIVisualisationControl.h"
 #include "guilib/GUIWindowManager.h"
+#include "guilib/guiinfo/GUIInfo.h"
+#include "guilib/guiinfo/GUIInfoLabels.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/URIUtils.h"
-
-#include "guilib/guiinfo/GUIInfo.h"
-#include "guilib/guiinfo/GUIInfoLabels.h"
 
 using namespace KODI::GUILIB::GUIINFO;
 

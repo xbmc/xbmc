@@ -7,13 +7,15 @@
  */
 
 #include "VideoSyncPi.h"
+
 #include "ServiceBroker.h"
-#include "windowing/GraphicContext.h"
-#include "windowing/WinSystem.h"
+#include "threads/Thread.h"
 #include "utils/TimeUtils.h"
 #include "utils/log.h"
+#include "windowing/GraphicContext.h"
+#include "windowing/WinSystem.h"
+
 #include "platform/linux/RBP.h"
-#include "threads/Thread.h"
 
 bool CVideoSyncPi::Setup(PUPDATECLOCK func)
 {

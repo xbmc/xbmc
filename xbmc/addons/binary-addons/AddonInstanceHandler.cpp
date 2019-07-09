@@ -7,10 +7,10 @@
  */
 
 #include "AddonInstanceHandler.h"
-#include "BinaryAddonBase.h"
 
-#include "utils/log.h"
+#include "BinaryAddonBase.h"
 #include "utils/StringUtils.h"
+#include "utils/log.h"
 
 namespace ADDON
 {

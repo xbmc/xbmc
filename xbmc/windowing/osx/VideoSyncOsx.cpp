@@ -6,16 +6,19 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include "utils/log.h"
 #include "VideoSyncOsx.h"
+
 #include "ServiceBroker.h"
 #include "utils/MathUtils.h"
-#include "windowing/GraphicContext.h"
 #include "utils/TimeUtils.h"
+#include "utils/log.h"
+#include "windowing/GraphicContext.h"
 #include "windowing/WinSystem.h"
-#include <QuartzCore/CVDisplayLink.h>
-#include <CoreVideo/CVHostTime.h>
+
 #include "platform/darwin/osx/CocoaInterface.h"
+
+#include <CoreVideo/CVHostTime.h>
+#include <QuartzCore/CVDisplayLink.h>
 #include <unistd.h>
 
 bool CVideoSyncOsx::Setup(PUPDATECLOCK func)

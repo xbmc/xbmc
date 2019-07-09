@@ -8,23 +8,23 @@
 
 #include "RssManager.h"
 
-#include <utility>
-
+#include "ServiceBroker.h"
 #include "addons/AddonInstaller.h"
 #include "addons/AddonManager.h"
-#include "ServiceBroker.h"
 #include "filesystem/File.h"
 #include "interfaces/builtins/Builtins.h"
 #include "messaging/helpers/DialogHelper.h"
 #include "profiles/ProfileManager.h"
-#include "settings/lib/Setting.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
+#include "settings/lib/Setting.h"
 #include "threads/SingleLock.h"
-#include "utils/log.h"
 #include "utils/RssReader.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
+#include "utils/log.h"
+
+#include <utility>
 
 using namespace XFILE;
 using namespace KODI::MESSAGING;

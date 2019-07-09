@@ -7,10 +7,11 @@
  */
 
 #include "PictureBuiltins.h"
+
+#include "GUIUserMessages.h"
 #include "ServiceBroker.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
-#include "GUIUserMessages.h"
 #include "utils/StringUtils.h"
 
 /*! \brief Show a picture.

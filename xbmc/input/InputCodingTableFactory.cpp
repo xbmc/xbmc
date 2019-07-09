@@ -7,6 +7,7 @@
  */
 
 #include "InputCodingTableFactory.h"
+
 #include "InputCodingTableBaiduPY.h"
 #include "InputCodingTableBasePY.h"
 #include "InputCodingTableKorean.h"

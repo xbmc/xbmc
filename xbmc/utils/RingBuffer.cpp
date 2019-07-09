@@ -7,11 +7,12 @@
  */
 
 #include "RingBuffer.h"
+
 #include "threads/SingleLock.h"
 
-#include <cstring>
-#include <cstdlib>
 #include <algorithm>
+#include <cstdlib>
+#include <cstring>
 
 /* Constructor */
 CRingBuffer::CRingBuffer()

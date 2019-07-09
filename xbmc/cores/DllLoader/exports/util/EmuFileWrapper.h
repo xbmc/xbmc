@@ -8,9 +8,9 @@
 
 #pragma once
 
-#include <stdio.h>
-
 #include "threads/CriticalSection.h"
+
+#include <stdio.h>
 
 #if defined(TARGET_POSIX) && !defined(TARGET_DARWIN) && !defined(TARGET_FREEBSD) && !defined(TARGET_ANDROID) && !defined(__UCLIBC__)
 #define _file _fileno

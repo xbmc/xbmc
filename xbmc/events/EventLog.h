@@ -8,12 +8,12 @@
 
 #pragma once
 
+#include "events/IEvent.h"
+#include "threads/CriticalSection.h"
+
 #include <map>
 #include <string>
 #include <vector>
-
-#include "events/IEvent.h"
-#include "threads/CriticalSection.h"
 
 #define NOTIFICATION_DISPLAY_TIME 5000
 #define NOTIFICATION_MESSAGE_TIME 1000

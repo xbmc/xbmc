@@ -7,6 +7,7 @@
  */
 
 #include "GameClientHardware.h"
+
 #include "games/addons/GameClient.h"
 #include "utils/log.h"
 

@@ -7,6 +7,7 @@
  */
 
 #include "GameClientSubsystem.h"
+
 #include "GameClient.h"
 #include "GameClientProperties.h"
 #include "addons/kodi-addon-dev-kit/include/kodi/kodi_game_types.h"

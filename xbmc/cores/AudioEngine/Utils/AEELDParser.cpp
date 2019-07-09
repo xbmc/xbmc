@@ -7,13 +7,14 @@
  */
 
 #include "AEELDParser.h"
+
 #include "AEDeviceInfo.h"
 #include "utils/EndianSwap.h"
-#include <string.h>
+
 #include <algorithm>
 #include <functional>
-
 #include <stdio.h>
+#include <string.h>
 
 #define GRAB_BITS(buf, byte, lowbit, bits) ((buf[byte] >> (lowbit)) & ((1 << (bits)) - 1))
 

@@ -8,10 +8,10 @@
 
 #pragma once
 
+#include "network/httprequesthandler/IHTTPRequestHandler.h"
+
 #include <stdint.h>
 #include <string>
-
-#include "network/httprequesthandler/IHTTPRequestHandler.h"
 
 class HTTPRequestHandlerUtils
 {

@@ -7,9 +7,11 @@
  */
 
 #include "ControllerTopology.h"
+
 #include "ControllerDefinitions.h"
-#include "utils/log.h"
 #include "utils/XMLUtils.h"
+#include "utils/log.h"
+
 #include <algorithm>
 
 using namespace KODI;

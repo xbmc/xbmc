@@ -8,8 +8,8 @@
 
 #pragma once
 
-#include <string>
 #include <stdint.h>
+#include <string>
 
 class Crc32
 {

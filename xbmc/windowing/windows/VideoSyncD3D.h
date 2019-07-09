@@ -8,9 +8,9 @@
 
 #pragma once
 
-#include "windowing/VideoSync.h"
 #include "guilib/DispResource.h"
 #include "threads/Event.h"
+#include "windowing/VideoSync.h"
 
 class CVideoSyncD3D : public CVideoSync, IDispResource
 {

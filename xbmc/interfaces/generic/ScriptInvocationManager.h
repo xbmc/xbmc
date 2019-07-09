@@ -8,14 +8,14 @@
 
 #pragma once
 
+#include "addons/IAddon.h"
+#include "interfaces/generic/ILanguageInvoker.h"
+#include "threads/CriticalSection.h"
+
 #include <map>
 #include <memory>
 #include <set>
 #include <vector>
-
-#include "addons/IAddon.h"
-#include "interfaces/generic/ILanguageInvoker.h"
-#include "threads/CriticalSection.h"
 
 class CLanguageInvokerThread;
 typedef std::shared_ptr<CLanguageInvokerThread> CLanguageInvokerThreadPtr;

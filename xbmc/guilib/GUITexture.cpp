@@ -7,11 +7,12 @@
  */
 
 #include "GUITexture.h"
-#include "windowing/GraphicContext.h"
-#include "TextureManager.h"
+
 #include "GUILargeTextureManager.h"
+#include "TextureManager.h"
 #include "utils/MathUtils.h"
 #include "utils/StringUtils.h"
+#include "windowing/GraphicContext.h"
 
 CTextureInfo::CTextureInfo()
 {

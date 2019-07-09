@@ -7,13 +7,14 @@
  */
 
 #include "GUIViewStateAddonBrowser.h"
+
 #include "FileItem.h"
 #include "filesystem/File.h"
-#include "windowing/GraphicContext.h"
 #include "guilib/WindowIDs.h"
-#include "view/ViewState.h"
-#include "utils/URIUtils.h"
 #include "utils/StringUtils.h"
+#include "utils/URIUtils.h"
+#include "view/ViewState.h"
+#include "windowing/GraphicContext.h"
 
 using namespace XFILE;
 using namespace ADDON;

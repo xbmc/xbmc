@@ -7,14 +7,15 @@
  */
 
 #include "GUIWindowVisualisation.h"
+
 #include "Application.h"
-#include "ServiceBroker.h"
-#include "music/dialogs/GUIDialogMusicOSD.h"
-#include "GUIUserMessages.h"
 #include "GUIInfoManager.h"
+#include "GUIUserMessages.h"
+#include "ServiceBroker.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "input/Key.h"
+#include "music/dialogs/GUIDialogMusicOSD.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"

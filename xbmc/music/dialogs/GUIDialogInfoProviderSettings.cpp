@@ -8,34 +8,33 @@
 
 #include "GUIDialogInfoProviderSettings.h"
 
+#include "ServiceBroker.h"
+#include "Util.h"
+#include "addons/AddonSystemSettings.h"
+#include "addons/GUIWindowAddonBrowser.h"
+#include "addons/settings/GUIDialogAddonSettings.h"
+#include "dialogs/GUIDialogFileBrowser.h"
+#include "dialogs/GUIDialogKaiToast.h"
+#include "filesystem/AddonsDirectory.h"
+#include "filesystem/Directory.h"
+#include "guilib/GUIComponent.h"
+#include "guilib/GUIWindowManager.h"
+#include "guilib/LocalizeStrings.h"
+#include "interfaces/builtins/Builtins.h"
+#include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
+#include "settings/lib/Setting.h"
+#include "settings/windows/GUIControlSettings.h"
+#include "storage/MediaManager.h"
+#include "utils/URIUtils.h"
+#include "utils/log.h"
+
+#include <limits.h>
 #include <map>
 #include <memory>
 #include <string>
 #include <utility>
 #include <vector>
-
-#include <limits.h>
-
-#include "addons/AddonSystemSettings.h"
-#include "addons/settings/GUIDialogAddonSettings.h"
-#include "addons/GUIWindowAddonBrowser.h"
-#include "filesystem/AddonsDirectory.h"
-#include "filesystem/Directory.h"
-#include "dialogs/GUIDialogFileBrowser.h"
-#include "dialogs/GUIDialogKaiToast.h"
-#include "guilib/GUIComponent.h"
-#include "guilib/GUIWindowManager.h"
-#include "guilib/LocalizeStrings.h"
-#include "interfaces/builtins/Builtins.h"
-#include "ServiceBroker.h"
-#include "settings/lib/Setting.h"
-#include "settings/Settings.h"
-#include "settings/SettingsComponent.h"
-#include "settings/windows/GUIControlSettings.h"
-#include "storage/MediaManager.h"
-#include "Util.h"
-#include "utils/log.h"
-#include "utils/URIUtils.h"
 
 using namespace ADDON;
 

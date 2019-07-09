@@ -8,10 +8,10 @@
 
 #pragma once
 
-#include "AndroidTouch.h"
+#include "AndroidJoyStick.h"
 #include "AndroidKey.h"
 #include "AndroidMouse.h"
-#include "AndroidJoyStick.h"
+#include "AndroidTouch.h"
 
 class IInputHandler
 : public CAndroidKey

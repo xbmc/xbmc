@@ -8,12 +8,11 @@
 
 #pragma once
 
-#include <string>
-#include <vector>
+#include "utils/IXmlDeserializable.h"
 
 #include <memory>
-
-#include "utils/IXmlDeserializable.h"
+#include <string>
+#include <vector>
 
 typedef enum {
   BooleanLogicOperationOr = 0,

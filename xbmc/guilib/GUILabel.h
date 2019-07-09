@@ -13,9 +13,9 @@
 \brief
 */
 
+#include "GUIFont.h"
 #include "GUITextLayout.h"
 #include "guiinfo/GUIInfoColor.h"
-#include "GUIFont.h"
 #include "utils/Color.h"
 #include "utils/Geometry.h"
 

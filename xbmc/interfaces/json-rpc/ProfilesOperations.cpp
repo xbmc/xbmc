@@ -7,14 +7,15 @@
  */
 
 #include "ProfilesOperations.h"
-#include "messaging/ApplicationMessenger.h"
-#include "guilib/LocalizeStrings.h"
+
 #include "GUIPassword.h"
+#include "ServiceBroker.h"
+#include "guilib/LocalizeStrings.h"
+#include "messaging/ApplicationMessenger.h"
 #include "profiles/ProfileManager.h"
 #include "settings/SettingsComponent.h"
 #include "utils/Digest.h"
 #include "utils/Variant.h"
-#include "ServiceBroker.h"
 
 using namespace JSONRPC;
 using namespace KODI::MESSAGING;

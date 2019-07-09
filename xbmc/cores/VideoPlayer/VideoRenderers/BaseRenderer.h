@@ -8,14 +8,14 @@
 
 #pragma once
 
-#include <utility>
-#include <vector>
-
 #include "RenderInfo.h"
-#include "utils/Geometry.h"
 #include "VideoShaders/ShaderFormats.h"
 #include "cores/IPlayer.h"
 #include "cores/VideoPlayer/Process/VideoBuffer.h"
+#include "utils/Geometry.h"
+
+#include <utility>
+#include <vector>
 
 #define MAX_FIELDS 3
 #define NUM_BUFFERS 6

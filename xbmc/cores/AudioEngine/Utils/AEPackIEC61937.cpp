@@ -6,9 +6,9 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include <cassert>
 #include "AEPackIEC61937.h"
 
+#include <cassert>
 #include <string.h>
 
 #define IEC61937_PREAMBLE1  0xF872

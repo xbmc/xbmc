@@ -7,21 +7,22 @@
  */
 
 #include "GUIOperations.h"
+
 #include "Application.h"
-#include "ServiceBroker.h"
-#include "messaging/ApplicationMessenger.h"
 #include "GUIInfoManager.h"
+#include "ServiceBroker.h"
+#include "addons/AddonManager.h"
+#include "dialogs/GUIDialogKaiToast.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
+#include "guilib/StereoscopicsManager.h"
 #include "input/Key.h"
 #include "input/WindowTranslator.h"
-#include "dialogs/GUIDialogKaiToast.h"
-#include "addons/AddonManager.h"
+#include "messaging/ApplicationMessenger.h"
+#include "rendering/RenderSystem.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/Variant.h"
-#include "guilib/StereoscopicsManager.h"
-#include "rendering/RenderSystem.h"
 
 using namespace JSONRPC;
 using namespace ADDON;

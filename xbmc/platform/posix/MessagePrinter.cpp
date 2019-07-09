@@ -7,6 +7,7 @@
  */
 
 #include "platform/MessagePrinter.h"
+
 #include "CompileInfo.h"
 
 #include <stdio.h>

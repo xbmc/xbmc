@@ -10,6 +10,7 @@
 
 #include "cores/AudioEngine/Sinks/darwin/CoreAudioHelpers.h"
 #include "utils/log.h"
+
 #include "platform/darwin/DarwinUtils.h"
 
 bool CCoreAudioHardware::GetAutoHogMode()

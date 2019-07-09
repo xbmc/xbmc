@@ -7,14 +7,13 @@
  */
 
 #include "GUIFont.h"
+
 #include "GUIFontTTF.h"
-#include "windowing/GraphicContext.h"
-
 #include "threads/SingleLock.h"
-#include "utils/TimeUtils.h"
-#include "utils/MathUtils.h"
-
 #include "utils/CharsetConverter.h"
+#include "utils/MathUtils.h"
+#include "utils/TimeUtils.h"
+#include "windowing/GraphicContext.h"
 
 #define ROUND(x) (float)(MathUtils::round_int(x))
 

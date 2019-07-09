@@ -7,11 +7,14 @@
  */
 
 #include "CoreAudioDevice.h"
-#include "cores/AudioEngine/Sinks/darwin/CoreAudioHelpers.h"
+
 #include "CoreAudioChannelLayout.h"
 #include "CoreAudioHardware.h"
+#include "cores/AudioEngine/Sinks/darwin/CoreAudioHelpers.h"
 #include "utils/log.h"
+
 #include "platform/darwin/DarwinUtils.h"
+
 #include <unistd.h>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

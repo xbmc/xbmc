@@ -9,11 +9,12 @@
 #pragma once
 
 #include "threads/Event.h"
-#include <CoreAudio/CoreAudio.h>
-#include <IOKit/audio/IOAudioTypes.h>
 
 #include <list>
 #include <vector>
+
+#include <CoreAudio/CoreAudio.h>
+#include <IOKit/audio/IOAudioTypes.h>
 
 
 typedef std::vector<AudioStreamID> AudioStreamIdList;

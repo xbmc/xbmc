@@ -7,17 +7,18 @@
  */
 
 #include "LibInputHandler.h"
+
 #include "LibInputKeyboard.h"
 #include "LibInputPointer.h"
 #include "LibInputSettings.h"
 #include "LibInputTouch.h"
-
 #include "utils/log.h"
 
 #include <algorithm>
+#include <string.h>
+
 #include <fcntl.h>
 #include <linux/input.h>
-#include <string.h>
 #include <sys/epoll.h>
 #include <sys/ioctl.h>
 #include <unistd.h>

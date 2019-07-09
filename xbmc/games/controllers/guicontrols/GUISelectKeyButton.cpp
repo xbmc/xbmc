@@ -7,6 +7,7 @@
  */
 
 #include "GUISelectKeyButton.h"
+
 #include "guilib/LocalizeStrings.h"
 
 #include <string>

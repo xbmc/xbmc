@@ -8,8 +8,8 @@
 
 #pragma once
 
-#include "guilib/GUIDialog.h"
 #include "FileItem.h"
+#include "guilib/GUIDialog.h"
 #include "threads/Event.h"
 
 class CGUIDialogSongInfo :

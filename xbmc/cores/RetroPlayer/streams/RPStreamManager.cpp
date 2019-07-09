@@ -7,6 +7,7 @@
  */
 
 #include "RPStreamManager.h"
+
 #include "IRetroPlayerStream.h"
 #include "RetroPlayerAudio.h"
 #include "RetroPlayerVideo.h"

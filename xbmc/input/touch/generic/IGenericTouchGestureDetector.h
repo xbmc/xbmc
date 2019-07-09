@@ -8,10 +8,10 @@
 
 #pragma once
 
-#include <array>
-
 #include "input/touch/ITouchInputHandling.h"
 #include "input/touch/TouchTypes.h"
+
+#include <array>
 
 /*!
  * \ingroup touch_generic

@@ -7,27 +7,27 @@
  */
 #include "BlurayDirectory.h"
 
-#include "filesystem/BlurayCallback.h"
-#include "utils/log.h"
-#include "utils/URIUtils.h"
-#include "utils/StringUtils.h"
-#include "URL.h"
+#include "File.h"
 #include "FileItem.h"
 #include "LangInfo.h"
-#include "video/VideoInfoTag.h"
+#include "URL.h"
+#include "filesystem/BlurayCallback.h"
 #include "guilib/LocalizeStrings.h"
+#include "utils/LangCodeExpander.h"
+#include "utils/RegExp.h"
+#include "utils/StringUtils.h"
+#include "utils/URIUtils.h"
+#include "utils/log.h"
+#include "video/VideoInfoTag.h"
 
-#include <cassert>
 #include <array>
+#include <cassert>
 #include <climits>
 #include <stdlib.h>
 #include <string>
-#include "utils/LangCodeExpander.h"
-#include "File.h"
-#include "utils/RegExp.h"
 
-#include <libbluray/bluray.h>
 #include <libbluray/bluray-version.h>
+#include <libbluray/bluray.h>
 #include <libbluray/filesystem.h>
 #include <libbluray/log_control.h>
 

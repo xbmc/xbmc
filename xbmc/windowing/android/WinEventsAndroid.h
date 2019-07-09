@@ -8,15 +8,15 @@
 
 #pragma once
 
-#include <list>
-#include <queue>
-#include <vector>
-#include <string>
-
+#include "threads/CriticalSection.h"
 #include "threads/Event.h"
 #include "threads/Thread.h"
-#include "threads/CriticalSection.h"
 #include "windowing/WinEvents.h"
+
+#include <list>
+#include <queue>
+#include <string>
+#include <vector>
 
 class CWinEventsAndroid : public IWinEvents, public CThread
 {

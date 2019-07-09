@@ -7,6 +7,7 @@
  */
 
 #include "SettingsBase.h"
+
 #include "settings/SettingUtils.h"
 #include "settings/lib/Setting.h"
 #include "settings/lib/SettingsManager.h"

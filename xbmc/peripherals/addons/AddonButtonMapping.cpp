@@ -7,10 +7,11 @@
  */
 
 #include "AddonButtonMapping.h"
+
 #include "input/joysticks/generic/ButtonMapping.h"
 #include "input/joysticks/interfaces/IButtonMapper.h"
-#include "peripherals/addons/AddonButtonMap.h"
 #include "peripherals/Peripherals.h"
+#include "peripherals/addons/AddonButtonMap.h"
 #include "utils/log.h"
 
 using namespace KODI;

@@ -6,25 +6,26 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include <jni.h>
-#include <sys/stat.h>
+#include "AndroidAppFile.h"
+
+#include "URL.h"
+#include "Util.h"
+#include "utils/URIUtils.h"
+#include "utils/log.h"
+
+#include "platform/android/activity/XBMCApp.h"
 
 #include <android/bitmap.h>
 #include <androidjni/Bitmap.h>
-#include <androidjni/Drawable.h>
 #include <androidjni/BitmapDrawable.h>
 #include <androidjni/Build.h>
 #include <androidjni/Context.h>
 #include <androidjni/DisplayMetrics.h>
+#include <androidjni/Drawable.h>
 #include <androidjni/PackageManager.h>
 #include <androidjni/Resources.h>
-
-#include "AndroidAppFile.h"
-#include "platform/android/activity/XBMCApp.h"
-#include "Util.h"
-#include "URL.h"
-#include "utils/log.h"
-#include "utils/URIUtils.h"
+#include <jni.h>
+#include <sys/stat.h>
 using namespace XFILE;
 
 CFileAndroidApp::CFileAndroidApp(void)

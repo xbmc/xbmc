@@ -5,41 +5,42 @@
  *  SPDX-License-Identifier: GPL-2.0-or-later
  *  See LICENSES/README.md for more information.
  */
-#include <Platinum/Source/Platinum/Platinum.h>
-
 #include "UPnPServer.h"
-#include "UPnPInternal.h"
+
 #include "Application.h"
+#include "GUIUserMessages.h"
 #include "ServiceBroker.h"
-#include "view/GUIViewState.h"
-#include "video/VideoThumbLoader.h"
-#include "music/Artist.h"
-#include "music/MusicThumbLoader.h"
-#include "interfaces/AnnouncementManager.h"
+#include "TextureDatabase.h"
+#include "UPnPInternal.h"
+#include "Util.h"
 #include "filesystem/Directory.h"
 #include "filesystem/MusicDatabaseDirectory.h"
 #include "filesystem/SpecialProtocol.h"
 #include "filesystem/VideoDatabaseDirectory.h"
 #include "guilib/GUIComponent.h"
-#include "guilib/WindowIDs.h"
+#include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
+#include "guilib/WindowIDs.h"
+#include "interfaces/AnnouncementManager.h"
+#include "music/Artist.h"
+#include "music/MusicDatabase.h"
+#include "music/MusicThumbLoader.h"
 #include "music/tags/MusicInfoTag.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/Digest.h"
 #include "utils/FileExtensionProvider.h"
-#include "utils/log.h"
+#include "utils/FileUtils.h"
 #include "utils/SortUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
-#include "Util.h"
-#include "music/MusicDatabase.h"
+#include "utils/log.h"
 #include "video/VideoDatabase.h"
-#include "guilib/GUIWindowManager.h"
-#include "GUIUserMessages.h"
-#include "utils/FileUtils.h"
-#include "TextureDatabase.h"
+#include "video/VideoThumbLoader.h"
+#include "view/GUIViewState.h"
+
+#include <Platinum/Source/Platinum/Platinum.h>
 
 NPT_SET_LOCAL_LOGGER("xbmc.upnp.server")
 

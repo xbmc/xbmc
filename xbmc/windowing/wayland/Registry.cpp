@@ -8,10 +8,10 @@
 
 #include "Registry.h"
 
-#include <wayland-client-protocol.h>
-
-#include "utils/log.h"
 #include "WinEventsWayland.h"
+#include "utils/log.h"
+
+#include <wayland-client-protocol.h>
 
 using namespace KODI::WINDOWING::WAYLAND;
 

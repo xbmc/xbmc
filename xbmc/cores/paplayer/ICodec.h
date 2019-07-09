@@ -8,10 +8,9 @@
 
 #pragma once
 
+#include "cores/AudioEngine/Utils/AEAudioFormat.h"
 #include "filesystem/File.h"
 #include "music/tags/MusicInfoTag.h"
-
-#include "cores/AudioEngine/Utils/AEAudioFormat.h"
 
 #include <string>
 

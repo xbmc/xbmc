@@ -6,10 +6,8 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include <string>
-#include <vector>
-
 #include "GUIDialogSettingsManualBase.h"
+
 #include "settings/SettingAddon.h"
 #include "settings/SettingDateTime.h"
 #include "settings/SettingPath.h"
@@ -19,6 +17,9 @@
 #include "settings/lib/SettingsManager.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
+
+#include <string>
+#include <vector>
 
 CGUIDialogSettingsManualBase::CGUIDialogSettingsManualBase(int windowId, const std::string &xmlFile)
   : CGUIDialogSettingsManagerBase(windowId, xmlFile)

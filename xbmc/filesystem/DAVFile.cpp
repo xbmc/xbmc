@@ -9,11 +9,11 @@
 #include "DAVFile.h"
 
 #include "DAVCommon.h"
-#include "URL.h"
-#include "utils/log.h"
 #include "DllLibCurl.h"
-#include "utils/XBMCTinyXML.h"
+#include "URL.h"
 #include "utils/RegExp.h"
+#include "utils/XBMCTinyXML.h"
+#include "utils/log.h"
 
 using namespace XFILE;
 using namespace XCURL;

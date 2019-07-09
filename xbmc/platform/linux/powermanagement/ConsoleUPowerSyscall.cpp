@@ -7,6 +7,7 @@
  */
 
 #include "ConsoleUPowerSyscall.h"
+
 #include "utils/log.h"
 
 CConsoleUPowerSyscall::CConsoleUPowerSyscall()

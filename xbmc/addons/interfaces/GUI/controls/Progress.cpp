@@ -7,9 +7,9 @@
  */
 
 #include "Progress.h"
-#include "addons/kodi-addon-dev-kit/include/kodi/gui/controls/Progress.h"
 
 #include "addons/binary-addons/AddonDll.h"
+#include "addons/kodi-addon-dev-kit/include/kodi/gui/controls/Progress.h"
 #include "guilib/GUIProgressControl.h"
 #include "guilib/GUIWindowManager.h"
 #include "utils/log.h"

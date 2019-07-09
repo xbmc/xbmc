@@ -9,21 +9,20 @@
 
 #include "NetworkAndroid.h"
 
+#include "utils/StringUtils.h"
+#include "utils/log.h"
+
+#include "platform/android/activity/XBMCApp.h"
+
 #include <androidjni/ConnectivityManager.h>
 #include <androidjni/InetAddress.h>
 #include <androidjni/LinkAddress.h>
 #include <androidjni/RouteInfo.h>
-#include <androidjni/WifiManager.h>
 #include <androidjni/WifiInfo.h>
-
-#include "platform/android/activity/XBMCApp.h"
-
-#include "utils/StringUtils.h"
-#include "utils/log.h"
-
+#include <androidjni/WifiManager.h>
+#include <arpa/inet.h>
 #include <net/if_arp.h>
 #include <netinet/in.h>
-#include <arpa/inet.h>
 #include <sys/wait.h>
 
 CNetworkInterfaceAndroid::CNetworkInterfaceAndroid(CJNINetwork network, CJNILinkProperties lp, CJNINetworkInterface intf)

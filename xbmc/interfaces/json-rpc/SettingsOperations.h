@@ -8,10 +8,10 @@
 
 #pragma once
 
-#include <vector>
-
 #include "JSONRPC.h"
 #include "settings/lib/SettingLevel.h"
+
+#include <vector>
 
 class CVariant;
 class ISetting;

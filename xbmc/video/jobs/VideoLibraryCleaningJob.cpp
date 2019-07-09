@@ -7,6 +7,7 @@
  */
 
 #include "VideoLibraryCleaningJob.h"
+
 #include "dialogs/GUIDialogExtendedProgressBar.h"
 #include "video/VideoDatabase.h"
 

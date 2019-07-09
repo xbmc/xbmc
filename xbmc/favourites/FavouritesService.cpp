@@ -7,19 +7,20 @@
  */
 
 #include "FavouritesService.h"
-#include "ServiceBroker.h"
-#include "filesystem/File.h"
-#include "Util.h"
+
 #include "FileItem.h"
-#include "utils/XBMCTinyXML.h"
-#include "utils/log.h"
-#include "utils/StringUtils.h"
-#include "utils/URIUtils.h"
+#include "ServiceBroker.h"
+#include "URL.h"
+#include "Util.h"
+#include "filesystem/File.h"
+#include "music/tags/MusicInfoTag.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
+#include "utils/StringUtils.h"
+#include "utils/URIUtils.h"
+#include "utils/XBMCTinyXML.h"
+#include "utils/log.h"
 #include "video/VideoInfoTag.h"
-#include "music/tags/MusicInfoTag.h"
-#include "URL.h"
 
 
 static bool LoadFromFile(const std::string& strPath, CFileItemList& items)

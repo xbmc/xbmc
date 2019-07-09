@@ -8,9 +8,10 @@
 
 #pragma once
 
-#include <string>
-#include <stdint.h>
 #include "addons/kodi-addon-dev-kit/include/kodi/addon-instance/AudioEncoder.h"
+
+#include <stdint.h>
+#include <string>
 
 class IEncoder
 {

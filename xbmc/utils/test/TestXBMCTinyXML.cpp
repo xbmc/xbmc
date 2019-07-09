@@ -6,9 +6,9 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include "utils/XBMCTinyXML.h"
-#include "utils/StringUtils.h"
 #include "test/TestUtils.h"
+#include "utils/StringUtils.h"
+#include "utils/XBMCTinyXML.h"
 
 #include <gtest/gtest.h>
 

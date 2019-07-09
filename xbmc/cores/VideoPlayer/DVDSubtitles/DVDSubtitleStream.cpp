@@ -6,18 +6,19 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include <cstring>
-#include <memory>
-
 #include "DVDSubtitleStream.h"
+
 #include "DVDInputStreams/DVDFactoryInputStream.h"
 #include "DVDInputStreams/DVDInputStream.h"
-#include "utils/CharsetConverter.h"
-#include "utils/Utf8Utils.h"
-#include "utils/CharsetDetection.h"
 #include "filesystem/File.h"
-#include "utils/log.h"
+#include "utils/CharsetConverter.h"
+#include "utils/CharsetDetection.h"
 #include "utils/URIUtils.h"
+#include "utils/Utf8Utils.h"
+#include "utils/log.h"
+
+#include <cstring>
+#include <memory>
 
 
 CDVDSubtitleStream::CDVDSubtitleStream() = default;

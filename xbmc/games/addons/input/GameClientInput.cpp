@@ -7,6 +7,7 @@
  */
 
 #include "GameClientInput.h"
+
 #include "GameClientController.h"
 #include "GameClientHardware.h"
 #include "GameClientJoystick.h"
@@ -14,18 +15,18 @@
 #include "GameClientMouse.h"
 #include "GameClientPort.h"
 #include "GameClientTopology.h"
+#include "ServiceBroker.h"
 #include "addons/kodi-addon-dev-kit/include/kodi/kodi_game_types.h"
+#include "games/GameServices.h"
 #include "games/addons/GameClient.h"
 #include "games/addons/GameClientCallbacks.h"
 #include "games/controllers/Controller.h"
 #include "games/controllers/ControllerTopology.h"
-#include "games/GameServices.h"
 #include "input/joysticks/JoystickTypes.h"
 #include "peripherals/EventLockHandle.h"
 #include "peripherals/Peripherals.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
-#include "ServiceBroker.h"
 
 #include <algorithm>
 

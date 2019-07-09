@@ -8,8 +8,8 @@
 
 #pragma once
 
-#include "events/UniqueEvent.h"
 #include "addons/IAddon.h"
+#include "events/UniqueEvent.h"
 
 class CAddonEvent : public CUniqueEvent
 {

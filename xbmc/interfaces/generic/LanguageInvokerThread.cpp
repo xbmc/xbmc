@@ -7,6 +7,7 @@
  */
 
 #include "LanguageInvokerThread.h"
+
 #include "ScriptInvocationManager.h"
 
 CLanguageInvokerThread::CLanguageInvokerThread(LanguageInvokerPtr invoker, CScriptInvocationManager *invocationManager, bool reuseable)

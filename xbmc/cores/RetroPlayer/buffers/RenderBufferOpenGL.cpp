@@ -7,6 +7,7 @@
  */
 
 #include "RenderBufferOpenGL.h"
+
 #include "cores/RetroPlayer/rendering/RenderContext.h"
 
 using namespace KODI;

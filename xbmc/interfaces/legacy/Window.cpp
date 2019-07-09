@@ -1,4 +1,4 @@
- /*
+/*
  *  Copyright (C) 2005-2018 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
@@ -7,17 +7,18 @@
  */
 
 #include "Window.h"
+
+#include "Application.h"
+#include "ServiceBroker.h"
+#include "WindowException.h"
 #include "WindowInterceptor.h"
-#include "guilib/GUIComponent.h"
 #include "guilib/GUIButtonControl.h"
+#include "guilib/GUIComponent.h"
 #include "guilib/GUIEditControl.h"
 #include "guilib/GUIRadioButtonControl.h"
 #include "guilib/GUIWindowManager.h"
-#include "Application.h"
-#include "ServiceBroker.h"
 #include "messaging/ApplicationMessenger.h"
 #include "utils/Variant.h"
-#include "WindowException.h"
 
 using namespace KODI::MESSAGING;
 

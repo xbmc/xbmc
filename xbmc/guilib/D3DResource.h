@@ -8,13 +8,14 @@
 
 #pragma once
 
+#include "GUIColorManager.h"
 #include "utils/Color.h"
 #include "utils/Geometry.h"
-#include "GUIColorManager.h"
 
 #include <map>
-#include <d3dx11effect.h>
+
 #include <DirectXMath.h>
+#include <d3dx11effect.h>
 #include <wrl/client.h>
 
 #define KODI_COMMONSHADER_INPUT_RESOURCE_SLOT_COUNT 4

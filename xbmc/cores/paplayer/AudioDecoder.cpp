@@ -7,15 +7,17 @@
  */
 
 #include "AudioDecoder.h"
-#include "CodecFactory.h"
+
 #include "Application.h"
-#include "settings/Settings.h"
-#include "settings/SettingsComponent.h"
+#include "CodecFactory.h"
 #include "FileItem.h"
 #include "ServiceBroker.h"
 #include "music/tags/MusicInfoTag.h"
+#include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
+
 #include <math.h>
 
 CAudioDecoder::CAudioDecoder()

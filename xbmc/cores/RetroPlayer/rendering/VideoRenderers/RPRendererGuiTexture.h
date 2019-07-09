@@ -9,9 +9,9 @@
 #pragma once
 
 #include "RPBaseRenderer.h"
+#include "cores/GameSettings.h"
 #include "cores/RetroPlayer/buffers/BaseRenderBufferPool.h"
 #include "cores/RetroPlayer/process/RPProcessInfo.h"
-#include "cores/GameSettings.h"
 
 namespace KODI
 {

@@ -8,10 +8,10 @@
 
 #pragma once
 
-#include <map>
-
-#include "settings/dialogs/GUIDialogSettingsManualBase.h"
 #include "settings/LibExportSettings.h"
+#include "settings/dialogs/GUIDialogSettingsManualBase.h"
+
+#include <map>
 
 class CGUIDialogLibExportSettings : public CGUIDialogSettingsManualBase
 {

@@ -7,9 +7,10 @@
  */
 
 #include "guilib/guiinfo/GUIInfoBool.h"
-#include "guilib/GUIComponent.h"
+
 #include "GUIInfoManager.h"
 #include "ServiceBroker.h"
+#include "guilib/GUIComponent.h"
 
 using namespace KODI::GUILIB::GUIINFO;
 

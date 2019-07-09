@@ -13,11 +13,11 @@
 \brief
 */
 
-#include <vector>
-
 #include "GUIControl.h"
 #include "GUILabel.h"
 #include "guilib/guiinfo/GUIInfoLabel.h"
+
+#include <vector>
 
 /*!
  \ingroup controls

@@ -7,9 +7,10 @@
  */
 
 #include "AddonSystemSettings.h"
+
 #include "ServiceBroker.h"
-#include "addons/AddonManager.h"
 #include "addons/AddonInstaller.h"
+#include "addons/AddonManager.h"
 #include "addons/RepositoryUpdater.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"

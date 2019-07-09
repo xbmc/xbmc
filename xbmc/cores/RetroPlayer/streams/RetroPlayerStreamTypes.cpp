@@ -7,6 +7,7 @@
  */
 
 #include "RetroPlayerStreamTypes.h"
+
 #include "IRetroPlayerStream.h"
 
 using namespace KODI;

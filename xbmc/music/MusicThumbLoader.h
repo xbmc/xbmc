@@ -8,8 +8,9 @@
 
 #pragma once
 
-#include <map>
 #include "ThumbLoader.h"
+
+#include <map>
 
 class CFileItem;
 class CMusicDatabase;

@@ -7,11 +7,12 @@
  */
 
 #include "MouseTranslator.h"
+
 #include "MouseStat.h"
 #include "input/Key.h"
-#include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/XBMCTinyXML.h"
+#include "utils/log.h"
 
 #include <map>
 #include <string>

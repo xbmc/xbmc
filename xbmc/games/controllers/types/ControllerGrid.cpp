@@ -7,6 +7,7 @@
  */
 
 #include "ControllerGrid.h"
+
 #include "games/controllers/Controller.h"
 #include "utils/log.h"
 

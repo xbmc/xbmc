@@ -8,8 +8,9 @@
 
 #pragma once
 
-#include <map>
 #include "AddonString.h"
+
+#include <map>
 
 namespace XBMCAddon
 {

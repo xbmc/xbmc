@@ -8,12 +8,12 @@
 
 #pragma once
 
-#include "threads/IRunnable.h"
 #include "IProgressCallback.h"
 #include "threads/CriticalSection.h"
+#include "threads/IRunnable.h"
 
-#include <vector>
 #include <memory>
+#include <vector>
 
 class CFileItem; typedef std::shared_ptr<CFileItem> CFileItemPtr;
 class CFileItemList;

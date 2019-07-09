@@ -6,16 +6,16 @@
  *  See LICENSES/README.md for more information.
  */
 
+#include "FileItem.h"
 #include "ServiceBroker.h"
+#include "URL.h"
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"
-#include "utils/StringUtils.h"
-#include "utils/URIUtils.h"
-#include "FileItem.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "test/TestUtils.h"
-#include "URL.h"
+#include "utils/StringUtils.h"
+#include "utils/URIUtils.h"
 
 #include <errno.h>
 

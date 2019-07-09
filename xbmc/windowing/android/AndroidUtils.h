@@ -8,13 +8,13 @@
 
 #pragma once
 
+#include "settings/lib/ISettingCallback.h"
+#include "windowing/Resolution.h"
+
 #include <string>
 #include <vector>
 
 #include <androidjni/Display.h>
-
-#include "settings/lib/ISettingCallback.h"
-#include "windowing/Resolution.h"
 
 class CAndroidUtils : public ISettingCallback
 {

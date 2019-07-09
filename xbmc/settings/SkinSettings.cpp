@@ -6,10 +6,8 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include <memory>
-#include <string>
-
 #include "SkinSettings.h"
+
 #include "GUIInfoManager.h"
 #include "ServiceBroker.h"
 #include "addons/Skin.h"
@@ -17,9 +15,12 @@
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "threads/SingleLock.h"
-#include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/XBMCTinyXML.h"
+#include "utils/log.h"
+
+#include <memory>
+#include <string>
 
 #define XML_SKINSETTINGS  "skinsettings"
 

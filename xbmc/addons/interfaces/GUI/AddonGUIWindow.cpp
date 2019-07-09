@@ -17,8 +17,8 @@
 #include "guilib/TextureManager.h"
 #include "input/Key.h"
 #include "messaging/ApplicationMessenger.h"
-#include "utils/log.h"
 #include "utils/URIUtils.h"
+#include "utils/log.h"
 
 #define CONTROL_BTNVIEWASICONS  2
 #define CONTROL_BTNSORTBY       3

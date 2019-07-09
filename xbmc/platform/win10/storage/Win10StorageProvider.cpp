@@ -6,15 +6,17 @@
  *  See LICENSES/README.md for more information.
  */
 #include "Win10StorageProvider.h"
-#include "guilib/LocalizeStrings.h"
+
 #include "filesystem/SpecialProtocol.h"
+#include "guilib/LocalizeStrings.h"
+#include "storage/MediaManager.h"
+#include "utils/JobManager.h"
+#include "utils/StringUtils.h"
+#include "utils/log.h"
+
 #include "platform/win10/AsyncHelpers.h"
 #include "platform/win10/filesystem/WinLibraryDirectory.h"
 #include "platform/win32/CharsetConverter.h"
-#include "storage/MediaManager.h"
-#include "utils/JobManager.h"
-#include "utils/log.h"
-#include "utils/StringUtils.h"
 
 #include <winrt/Windows.Devices.Enumeration.h>
 #include <winrt/Windows.Foundation.Collections.h>

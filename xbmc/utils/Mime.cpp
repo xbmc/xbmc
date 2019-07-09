@@ -6,16 +6,17 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include <algorithm>
-
 #include "Mime.h"
+
 #include "FileItem.h"
 #include "URIUtils.h"
-#include "music/tags/MusicInfoTag.h"
-#include "video/VideoInfoTag.h"
 #include "URL.h"
-#include "utils/StringUtils.h"
 #include "filesystem/CurlFile.h"
+#include "music/tags/MusicInfoTag.h"
+#include "utils/StringUtils.h"
+#include "video/VideoInfoTag.h"
+
+#include <algorithm>
 
 const std::map<std::string, std::string> CMime::m_mimetypes = 
     {{{"3dm",       "x-world/x-3dmf"},

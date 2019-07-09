@@ -8,9 +8,12 @@
 
 #include "SkinBuiltins.h"
 
-#include "ServiceBroker.h"
-#include "addons/GUIWindowAddonBrowser.h"
 #include "Application.h"
+#include "MediaSource.h"
+#include "ServiceBroker.h"
+#include "URL.h"
+#include "Util.h"
+#include "addons/GUIWindowAddonBrowser.h"
 #include "dialogs/GUIDialogFileBrowser.h"
 #include "dialogs/GUIDialogNumeric.h"
 #include "dialogs/GUIDialogSelect.h"
@@ -18,15 +21,12 @@
 #include "guilib/GUIKeyboardFactory.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
-#include "MediaSource.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "settings/SkinSettings.h"
 #include "storage/MediaManager.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
-#include "Util.h"
-#include "URL.h"
 
 using namespace ADDON;
 

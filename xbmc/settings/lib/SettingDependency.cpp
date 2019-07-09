@@ -6,19 +6,19 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include <memory>
-#include <set>
-#include <string>
-
-#include <stdlib.h>
-
 #include "SettingDependency.h"
+
 #include "Setting.h"
 #include "SettingDefinitions.h"
 #include "SettingsManager.h"
-#include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/XBMCTinyXML.h"
+#include "utils/log.h"
+
+#include <memory>
+#include <set>
+#include <stdlib.h>
+#include <string>
 
 CSettingDependencyCondition::CSettingDependencyCondition(CSettingsManager *settingsManager /* = nullptr */)
   : CSettingConditionItem(settingsManager)

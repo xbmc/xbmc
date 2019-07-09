@@ -7,6 +7,7 @@
  */
 
 #include "GUIListGroup.h"
+
 #include "GUIListLabel.h"
 #include "utils/log.h"
 

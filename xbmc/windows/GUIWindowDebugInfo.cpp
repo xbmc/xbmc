@@ -7,25 +7,26 @@
  */
 
 #include "GUIWindowDebugInfo.h"
-#include "settings/AdvancedSettings.h"
-#include "settings/SettingsComponent.h"
-#include "addons/Skin.h"
-#include "utils/CPUInfo.h"
-#include "utils/log.h"
+
 #include "CompileInfo.h"
+#include "GUIInfoManager.h"
+#include "ServiceBroker.h"
+#include "addons/Skin.h"
 #include "filesystem/SpecialProtocol.h"
-#include "input/WindowTranslator.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIControlFactory.h"
+#include "guilib/GUIControlProfiler.h"
 #include "guilib/GUIFontManager.h"
 #include "guilib/GUITextLayout.h"
 #include "guilib/GUIWindowManager.h"
-#include "guilib/GUIControlProfiler.h"
-#include "GUIInfoManager.h"
-#include "ServiceBroker.h"
+#include "input/WindowTranslator.h"
+#include "settings/AdvancedSettings.h"
+#include "settings/SettingsComponent.h"
+#include "utils/CPUInfo.h"
 #include "utils/MemUtils.h"
-#include "utils/Variant.h"
 #include "utils/StringUtils.h"
+#include "utils/Variant.h"
+#include "utils/log.h"
 
 CGUIWindowDebugInfo::CGUIWindowDebugInfo(void)
   : CGUIDialog(WINDOW_DEBUG_INFO, "", DialogModalityType::MODELESS)

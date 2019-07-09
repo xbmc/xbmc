@@ -7,6 +7,7 @@
  */
 
 #include "DirectoryNodeGrouped.h"
+
 #include "QueryParams.h"
 #include "video/VideoDatabase.h"
 #include "video/VideoDbUrl.h"

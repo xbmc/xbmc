@@ -7,6 +7,7 @@
  */
 
 #include "ServiceBroker.h"
+
 #include "Application.h"
 #include "profiles/ProfileManager.h"
 #include "settings/SettingsComponent.h"

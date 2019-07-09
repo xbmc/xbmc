@@ -7,6 +7,7 @@
  */
 
 #include "SettingDateTime.h"
+
 #include "XBDateTime.h"
 
 CSettingDate::CSettingDate(const std::string &id, CSettingsManager *settingsManager /* = NULL */)

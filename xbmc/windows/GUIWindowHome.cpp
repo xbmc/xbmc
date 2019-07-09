@@ -7,20 +7,21 @@
  */
 
 #include "GUIWindowHome.h"
-#include "input/Key.h"
-#include "guilib/WindowIDs.h"
-#include "utils/JobManager.h"
-#include "utils/RecentlyAddedJob.h"
-#include "interfaces/AnnouncementManager.h"
-#include "utils/log.h"
-#include "settings/AdvancedSettings.h"
-#include "settings/SettingsComponent.h"
-#include "utils/Variant.h"
-#include "guilib/GUIComponent.h"
-#include "guilib/GUIWindowManager.h"
+
 #include "Application.h"
 #include "ServiceBroker.h"
+#include "guilib/GUIComponent.h"
+#include "guilib/GUIWindowManager.h"
+#include "guilib/WindowIDs.h"
+#include "input/Key.h"
+#include "interfaces/AnnouncementManager.h"
+#include "settings/AdvancedSettings.h"
+#include "settings/SettingsComponent.h"
+#include "utils/JobManager.h"
+#include "utils/RecentlyAddedJob.h"
 #include "utils/StringUtils.h"
+#include "utils/Variant.h"
+#include "utils/log.h"
 
 CGUIWindowHome::CGUIWindowHome(void) : CGUIWindow(WINDOW_HOME, "Home.xml")
 {

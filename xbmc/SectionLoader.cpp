@@ -6,13 +6,14 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include "threads/SystemClock.h"
 #include "SectionLoader.h"
+
 #include "cores/DllLoader/DllLoaderContainer.h"
 #include "threads/SingleLock.h"
-#include "utils/log.h"
-#include "utils/StringUtils.h"
+#include "threads/SystemClock.h"
 #include "utils/GlobalsHandling.h"
+#include "utils/StringUtils.h"
+#include "utils/log.h"
 
 #define g_sectionLoader XBMC_GLOBAL_USE(CSectionLoader)
 

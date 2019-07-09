@@ -7,17 +7,18 @@
  */
 
 #include "GUIViewStatePictures.h"
+
 #include "FileItem.h"
 #include "ServiceBroker.h"
-#include "view/ViewState.h"
-#include "settings/MediaSourceSettings.h"
-#include "settings/Settings.h"
-#include "settings/SettingsComponent.h"
 #include "filesystem/Directory.h"
 #include "guilib/LocalizeStrings.h"
 #include "guilib/WindowIDs.h"
-#include "view/ViewStateSettings.h"
+#include "settings/MediaSourceSettings.h"
+#include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "utils/FileExtensionProvider.h"
+#include "view/ViewState.h"
+#include "view/ViewStateSettings.h"
 
 using namespace XFILE;
 using namespace ADDON;

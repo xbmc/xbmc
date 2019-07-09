@@ -7,13 +7,15 @@
  */
 
 #include "InfoExpression.h"
-#include <stack>
-#include "utils/log.h"
+
 #include "GUIInfoManager.h"
-#include "guilib/GUIComponent.h"
 #include "ServiceBroker.h"
+#include "guilib/GUIComponent.h"
+#include "utils/log.h"
+
 #include <list>
 #include <memory>
+#include <stack>
 
 using namespace INFO;
 

@@ -7,24 +7,25 @@
  */
 
 #include "GUIDialogSmartPlaylistRule.h"
-#include "ServiceBroker.h"
-#include "GUIDialogFileBrowser.h"
-#include "music/MusicDatabase.h"
-#include "video/VideoDatabase.h"
-#include "guilib/GUIWindowManager.h"
-#include "GUIDialogSelect.h"
-#include "filesystem/Directory.h"
+
 #include "FileItem.h"
+#include "GUIDialogFileBrowser.h"
+#include "GUIDialogSelect.h"
+#include "ServiceBroker.h"
+#include "filesystem/Directory.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIEditControl.h"
+#include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
+#include "music/MusicDatabase.h"
 #include "settings/MediaSourceSettings.h"
+#include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "storage/MediaManager.h"
 #include "utils/LabelFormatter.h"
 #include "utils/StringUtils.h"
-#include "settings/Settings.h"
-#include "settings/SettingsComponent.h"
 #include "utils/Variant.h"
+#include "video/VideoDatabase.h"
 
 #include <utility>
 

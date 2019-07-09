@@ -6,14 +6,15 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include <vector>
-
 #include "SettingControl.h"
+
 #include "settings/lib/SettingDefinitions.h"
-#include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/XBMCTinyXML.h"
 #include "utils/XMLUtils.h"
+#include "utils/log.h"
+
+#include <vector>
 
 const char* SHOW_ADDONS_ALL = "all";
 const char* SHOW_ADDONS_INSTALLED = "installed";

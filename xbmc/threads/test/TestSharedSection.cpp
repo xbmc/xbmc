@@ -6,10 +6,10 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include "threads/SharedSection.h"
-#include "threads/SingleLock.h"
 #include "threads/Event.h"
 #include "threads/IRunnable.h"
+#include "threads/SharedSection.h"
+#include "threads/SingleLock.h"
 #include "threads/test/TestHelpers.h"
 
 #include <stdio.h>

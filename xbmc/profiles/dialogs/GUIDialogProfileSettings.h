@@ -8,10 +8,10 @@
 
 #pragma once
 
-#include <string>
-
 #include "profiles/Profile.h"
 #include "settings/dialogs/GUIDialogSettingsManualBase.h"
+
+#include <string>
 
 class CGUIDialogProfileSettings : public CGUIDialogSettingsManualBase
 {

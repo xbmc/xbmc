@@ -7,7 +7,9 @@
  */
 
 #include "AEStreamInfo.h"
+
 #include "utils/log.h"
+
 #include <algorithm>
 #include <string.h>
 

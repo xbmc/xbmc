@@ -8,9 +8,8 @@
 
 #pragma once
 
-#include <androidjni/JNIBase.h>
-
 #include <androidjni/Intent.h>
+#include <androidjni/JNIBase.h>
 #include <androidjni/MediaMetadata.h>
 #include <androidjni/PlaybackState.h>
 

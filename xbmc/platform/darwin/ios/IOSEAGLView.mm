@@ -6,32 +6,33 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include <sys/resource.h>
+#import "IOSEAGLView.h"
+
+#include "AppInboundProtocol.h"
+#include "AppParamParser.h"
+#include "Application.h"
+#import "IOSScreenManager.h"
+#include "ServiceBroker.h"
+#include "Util.h"
+#import "XBMCController.h"
+#include "messaging/ApplicationMessenger.h"
+#include "settings/AdvancedSettings.h"
+#include "settings/SettingsComponent.h"
+#include "utils/TimeUtils.h"
+#include "utils/log.h"
+
+#import "platform/darwin/AutoPool.h"
+#import "platform/darwin/DarwinUtils.h"
+#import "platform/darwin/NSLogDebugHelpers.h"
+#import "platform/darwin/ios-common/AnnounceReceiver.h"
+
 #include <signal.h>
 #include <stdio.h>
 
-#include "settings/AdvancedSettings.h"
-#include "settings/SettingsComponent.h"
-#include "Application.h"
-#include "AppInboundProtocol.h"
-#include "ServiceBroker.h"
-#include "messaging/ApplicationMessenger.h"
-#include "utils/log.h"
-#include "utils/TimeUtils.h"
-#include "Util.h"
-#include "AppParamParser.h"
-
-#import <QuartzCore/QuartzCore.h>
-
 #import <OpenGLES/ES2/gl.h>
 #import <OpenGLES/ES2/glext.h>
-#import "IOSEAGLView.h"
-#import "XBMCController.h"
-#import "IOSScreenManager.h"
-#import "platform/darwin/AutoPool.h"
-#import "platform/darwin/DarwinUtils.h"
-#import "platform/darwin/ios-common/AnnounceReceiver.h"
-#import "platform/darwin/NSLogDebugHelpers.h"
+#import <QuartzCore/QuartzCore.h>
+#include <sys/resource.h>
 
 using namespace KODI::MESSAGING;
 

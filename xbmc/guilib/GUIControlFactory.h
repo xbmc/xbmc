@@ -13,11 +13,11 @@
 \brief
 */
 
-#include <string>
-#include <vector>
-
 #include "GUIControl.h"
 #include "utils/Color.h"
+
+#include <string>
+#include <vector>
 
 class CTextureInfo; // forward
 class CAspectRatio;

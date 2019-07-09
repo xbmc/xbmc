@@ -8,11 +8,11 @@
 
 #import "OSXTextInputResponder.h"
 
-#include "guilib/GUIWindowManager.h"
 #include "GUIUserMessages.h"
-#include "utils/log.h"
-#include "messaging/ApplicationMessenger.h"
+#include "guilib/GUIWindowManager.h"
 #include "input/Key.h"
+#include "messaging/ApplicationMessenger.h"
+#include "utils/log.h"
 
 using namespace KODI::MESSAGING;
 

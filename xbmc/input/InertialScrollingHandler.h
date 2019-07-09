@@ -8,10 +8,10 @@
 
 #pragma once
 
-#include <deque>
-
 #include "utils/Geometry.h"
 #include "utils/Vector.h"
+
+#include <deque>
 
 class CApplication;
 class CAction;

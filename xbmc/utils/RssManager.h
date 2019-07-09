@@ -8,14 +8,13 @@
 
 #pragma once
 
-#include <map>
-#include <vector>
-#include <string>
-
-#include "threads/CriticalSection.h"
-
 #include "settings/lib/ISettingCallback.h"
 #include "settings/lib/ISettingsHandler.h"
+#include "threads/CriticalSection.h"
+
+#include <map>
+#include <string>
+#include <vector>
 
 class CRssReader;
 class IRssObserver;

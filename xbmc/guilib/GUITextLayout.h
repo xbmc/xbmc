@@ -8,11 +8,11 @@
 
 #pragma once
 
-#include <string>
-#include <stdint.h>
-#include <vector>
-
 #include "utils/Color.h"
+
+#include <stdint.h>
+#include <string>
+#include <vector>
 
 #ifdef __GNUC__
 // under gcc, inline will only take place if optimizations are applied (-O). this will force inline even without optimizations.

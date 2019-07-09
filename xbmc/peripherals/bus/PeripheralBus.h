@@ -8,11 +8,11 @@
 
 #pragma once
 
-#include <memory>
-#include <vector>
-
 #include "peripherals/PeripheralTypes.h"
 #include "threads/Thread.h"
+
+#include <memory>
+#include <vector>
 
 class CFileItemList;
 

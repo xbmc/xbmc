@@ -9,6 +9,7 @@
 #pragma once
 
 #include "addons/Resource.h"
+
 #include <memory>
 
 namespace ADDON

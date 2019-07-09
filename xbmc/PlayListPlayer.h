@@ -8,9 +8,10 @@
 
 #pragma once
 
+#include "ServiceBroker.h"
 #include "guilib/IMsgTargetCallback.h"
 #include "messaging/IMessageTarget.h"
-#include "ServiceBroker.h"
+
 #include <memory>
 
 #define PLAYLIST_NONE    -1

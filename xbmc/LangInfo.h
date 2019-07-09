@@ -8,6 +8,13 @@
 
 #pragma once
 
+#include "settings/lib/ISettingCallback.h"
+#include "settings/lib/ISettingsHandler.h"
+#include "utils/GlobalsHandling.h"
+#include "utils/Locale.h"
+#include "utils/Speed.h"
+#include "utils/Temperature.h"
+
 #include <locale>
 #include <map>
 #include <memory>
@@ -15,13 +22,6 @@
 #include <string>
 #include <utility>
 #include <vector>
-
-#include "settings/lib/ISettingCallback.h"
-#include "settings/lib/ISettingsHandler.h"
-#include "utils/GlobalsHandling.h"
-#include "utils/Locale.h"
-#include "utils/Speed.h"
-#include "utils/Temperature.h"
 
 #ifdef TARGET_WINDOWS
 #ifdef GetDateFormat

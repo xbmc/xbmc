@@ -8,8 +8,9 @@
 
 #pragma once
 
-#include "PlatformDefs.h"
 #include "XHandlePublic.h"
+
+#include "PlatformDefs.h"
 
 int WriteFile(HANDLE hFile, const void * lpBuffer, DWORD nNumberOfBytesToWrite,  unsigned int* lpNumberOfBytesWritten, void* lpOverlapped);
 int ReadFile( HANDLE hFile, void* lpBuffer, DWORD nNumberOfBytesToRead, unsigned int* lpNumberOfBytesRead, void* unsupportedlpOverlapped);

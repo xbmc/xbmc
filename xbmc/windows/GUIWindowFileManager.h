@@ -8,14 +8,14 @@
 
 #pragma once
 
+#include "filesystem/DirectoryHistory.h"
+#include "filesystem/VirtualDirectory.h"
+#include "guilib/GUIWindow.h"
+#include "utils/JobManager.h"
+
 #include <atomic>
 #include <string>
 #include <vector>
-
-#include "guilib/GUIWindow.h"
-#include "filesystem/VirtualDirectory.h"
-#include "filesystem/DirectoryHistory.h"
-#include "utils/JobManager.h"
 
 class CFileItem;
 class CFileItemList;

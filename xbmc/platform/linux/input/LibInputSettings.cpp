@@ -10,13 +10,13 @@
 
 #include "LibInputHandler.h"
 #include "ServiceBroker.h"
+#include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "settings/lib/Setting.h"
 #include "settings/lib/SettingDefinitions.h"
 #include "settings/lib/SettingsManager.h"
-#include "settings/Settings.h"
-#include "settings/SettingsComponent.h"
-#include "utils/log.h"
 #include "utils/XBMCTinyXML.h"
+#include "utils/log.h"
 
 #include <algorithm>
 

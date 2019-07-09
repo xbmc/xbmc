@@ -6,10 +6,9 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include "utils/FileUtils.h"
 #include "filesystem/File.h"
-
 #include "test/TestUtils.h"
+#include "utils/FileUtils.h"
 
 #include <gtest/gtest.h>
 

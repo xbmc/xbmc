@@ -8,18 +8,18 @@
 
 #pragma once
 
-#include <map>
-#include <memory>
-#include <set>
-#include <string>
-#include <vector>
-
 #include "guilib/guiinfo/GUIInfoProviders.h"
 #include "interfaces/info/InfoBool.h"
 #include "interfaces/info/SkinVariable.h"
 #include "messaging/IMessageTarget.h"
 #include "threads/CriticalSection.h"
 #include "utils/Observer.h"
+
+#include <map>
+#include <memory>
+#include <set>
+#include <string>
+#include <vector>
 
 class CFileItem;
 class CVideoInfoTag;

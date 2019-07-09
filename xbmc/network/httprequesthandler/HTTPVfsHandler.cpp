@@ -7,6 +7,7 @@
  */
 
 #include "HTTPVfsHandler.h"
+
 #include "MediaSource.h"
 #include "URL.h"
 #include "filesystem/File.h"

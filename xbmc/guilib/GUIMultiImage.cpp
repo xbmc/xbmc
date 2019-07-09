@@ -7,19 +7,20 @@
  */
 
 #include "GUIMultiImage.h"
+
+#include "FileItem.h"
 #include "GUIMessage.h"
 #include "ServiceBroker.h"
-#include "TextureManager.h"
-#include "filesystem/Directory.h"
-#include "utils/URIUtils.h"
-#include "utils/JobManager.h"
-#include "FileItem.h"
-#include "input/Key.h"
 #include "TextureCache.h"
+#include "TextureManager.h"
 #include "WindowIDs.h"
+#include "filesystem/Directory.h"
+#include "input/Key.h"
 #include "utils/FileExtensionProvider.h"
+#include "utils/JobManager.h"
 #include "utils/Random.h"
 #include "utils/StringUtils.h"
+#include "utils/URIUtils.h"
 
 using namespace KODI::GUILIB;
 using namespace XFILE;

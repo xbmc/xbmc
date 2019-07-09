@@ -8,9 +8,9 @@
 
 #pragma once
 
-#include <cstdint>
-
 #include "../OSScreenSaver.h"
+
+#include <cstdint>
 
 namespace KODI
 {

@@ -7,10 +7,11 @@
  */
 
 #include "GLESShader.h"
+
 #include "ServiceBroker.h"
-#include "utils/log.h"
-#include "rendering/RenderSystem.h"
 #include "rendering/MatrixGL.h"
+#include "rendering/RenderSystem.h"
+#include "utils/log.h"
 #include "windowing/GraphicContext.h"
 
 using namespace Shaders;

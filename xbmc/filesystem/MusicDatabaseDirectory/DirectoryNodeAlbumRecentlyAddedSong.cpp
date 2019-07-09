@@ -7,6 +7,7 @@
  */
 
 #include "DirectoryNodeAlbumRecentlyAddedSong.h"
+
 #include "music/MusicDatabase.h"
 
 using namespace XFILE::MUSICDATABASEDIRECTORY;

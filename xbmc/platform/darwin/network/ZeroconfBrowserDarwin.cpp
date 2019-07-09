@@ -6,14 +6,16 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include "ServiceBroker.h"
 #include "ZeroconfBrowserDarwin.h"
+
 #include "GUIUserMessages.h"
+#include "ServiceBroker.h"
 #include "guilib/GUIComponent.h"
-#include "guilib/GUIWindowManager.h"
 #include "guilib/GUIMessage.h"
+#include "guilib/GUIWindowManager.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
+
 #include "platform/darwin/DarwinUtils.h"
 
 #include <arpa/inet.h>

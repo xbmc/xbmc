@@ -8,32 +8,32 @@
 
 #include "GUIControllerList.h"
 
-#include <algorithm>
-#include <assert.h>
-#include <iterator>
-
 #include "GUIControllerDefines.h"
 #include "GUIControllerWindow.h"
 #include "GUIFeatureList.h"
+#include "ServiceBroker.h"
 #include "addons/AddonManager.h"
 #include "dialogs/GUIDialogYesNo.h"
-#include "games/addons/input/GameClientInput.h"
+#include "games/GameServices.h"
 #include "games/addons/GameClient.h"
-#include "games/controllers/types/ControllerTree.h"
+#include "games/addons/input/GameClientInput.h"
 #include "games/controllers/Controller.h"
 #include "games/controllers/ControllerIDs.h"
 #include "games/controllers/ControllerLayout.h"
 #include "games/controllers/guicontrols/GUIControllerButton.h"
 #include "games/controllers/guicontrols/GUIGameController.h"
-#include "games/GameServices.h"
-#include "guilib/GUIMessage.h"
+#include "games/controllers/types/ControllerTree.h"
 #include "guilib/GUIButtonControl.h"
 #include "guilib/GUIControlGroupList.h"
+#include "guilib/GUIMessage.h"
 #include "guilib/GUIWindow.h"
 #include "messaging/ApplicationMessenger.h"
 #include "peripherals/Peripherals.h"
 #include "utils/StringUtils.h"
-#include "ServiceBroker.h"
+
+#include <algorithm>
+#include <assert.h>
+#include <iterator>
 
 using namespace KODI;
 using namespace ADDON;

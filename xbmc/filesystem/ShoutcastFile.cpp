@@ -12,14 +12,16 @@
 //////////////////////////////////////////////////////////////////////
 
 #include "ShoutcastFile.h"
-#include "guilib/GUIWindowManager.h"
-#include "URL.h"
-#include "utils/RegExp.h"
-#include "utils/HTMLUtil.h"
-#include "utils/CharsetConverter.h"
-#include "messaging/ApplicationMessenger.h"
+
 #include "FileCache.h"
 #include "FileItem.h"
+#include "URL.h"
+#include "guilib/GUIWindowManager.h"
+#include "messaging/ApplicationMessenger.h"
+#include "utils/CharsetConverter.h"
+#include "utils/HTMLUtil.h"
+#include "utils/RegExp.h"
+
 #include <climits>
 
 using namespace XFILE;

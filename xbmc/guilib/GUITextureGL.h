@@ -8,10 +8,10 @@
 
 #pragma once
 
-#include "system_gl.h"
-
 #include "GUITexture.h"
 #include "utils/Color.h"
+
+#include "system_gl.h"
 
 class CRenderSystemGL;
 

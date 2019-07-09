@@ -7,6 +7,8 @@
  */
 
 #include "GUIDialogSelectGameClient.h"
+
+#include "ServiceBroker.h"
 #include "addons/AddonInstaller.h"
 #include "addons/AddonManager.h"
 #include "cores/RetroPlayer/savestates/ISavestate.h"
@@ -19,10 +21,9 @@
 #include "guilib/LocalizeStrings.h"
 #include "guilib/WindowIDs.h"
 #include "messaging/helpers/DialogOKHelper.h"
-#include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
-#include "ServiceBroker.h"
+#include "utils/log.h"
 
 using namespace KODI;
 using namespace KODI::MESSAGING;

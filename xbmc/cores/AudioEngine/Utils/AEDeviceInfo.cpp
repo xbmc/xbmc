@@ -6,9 +6,11 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include <sstream>
 #include "AEDeviceInfo.h"
+
 #include "AEUtil.h"
+
+#include <sstream>
 
 CAEDeviceInfo::operator std::string()
 {

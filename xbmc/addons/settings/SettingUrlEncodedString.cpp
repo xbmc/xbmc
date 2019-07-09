@@ -7,6 +7,7 @@
  */
 
 #include "SettingUrlEncodedString.h"
+
 #include "URL.h"
 #include "settings/lib/SettingsManager.h"
 

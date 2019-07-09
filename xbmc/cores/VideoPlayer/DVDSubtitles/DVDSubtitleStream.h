@@ -10,8 +10,8 @@
 
 #include "utils/auto_buffer.h"
 
-#include <string>
 #include <sstream>
+#include <string>
 
 class CDVDInputStream;
 

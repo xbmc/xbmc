@@ -6,13 +6,13 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include "threads/SingleLock.h"
-#include "utils/log.h"
-#include "cores/AudioEngine/Utils/AEUtil.h"
-#include "cores/AudioEngine/AEResampleFactory.h"
+#include "ActiveAEStream.h"
 
 #include "ActiveAE.h"
-#include "ActiveAEStream.h"
+#include "cores/AudioEngine/AEResampleFactory.h"
+#include "cores/AudioEngine/Utils/AEUtil.h"
+#include "threads/SingleLock.h"
+#include "utils/log.h"
 
 using namespace ActiveAE;
 

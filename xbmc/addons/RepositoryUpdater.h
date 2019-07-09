@@ -8,13 +8,14 @@
 
 #pragma once
 
+#include "XBDateTime.h"
 #include "addons/AddonEvents.h"
 #include "addons/Repository.h"
 #include "settings/lib/ISettingCallback.h"
 #include "threads/CriticalSection.h"
 #include "threads/Timer.h"
 #include "utils/EventStream.h"
-#include "XBDateTime.h"
+
 #include <vector>
 
 namespace ADDON

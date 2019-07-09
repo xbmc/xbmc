@@ -6,9 +6,8 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include "utils/ScraperParser.h"
-
 #include "test/TestUtils.h"
+#include "utils/ScraperParser.h"
 
 #include <gtest/gtest.h>
 

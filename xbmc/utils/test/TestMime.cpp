@@ -6,8 +6,8 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include "utils/Mime.h"
 #include "FileItem.h"
+#include "utils/Mime.h"
 
 #include <gtest/gtest.h>
 

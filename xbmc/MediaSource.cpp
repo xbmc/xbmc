@@ -7,11 +7,12 @@
  */
 
 #include "MediaSource.h"
-#include "Util.h"
+
 #include "URL.h"
+#include "Util.h"
 #include "filesystem/MultiPathDirectory.h"
-#include "utils/URIUtils.h"
 #include "utils/StringUtils.h"
+#include "utils/URIUtils.h"
 
 using namespace XFILE;
 

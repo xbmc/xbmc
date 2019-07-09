@@ -13,11 +13,11 @@
 \brief
 */
 
-#include <vector>
-
 #include "GUIControl.h"
-#include "GUITexture.h"
 #include "GUILabel.h"
+#include "GUITexture.h"
+
+#include <vector>
 
 #define SPIN_CONTROL_TYPE_INT    1
 #define SPIN_CONTROL_TYPE_FLOAT  2

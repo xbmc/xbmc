@@ -8,10 +8,10 @@
 
 #include "WsgiResponse.h"
 
-#include <utility>
-
-#include "utils/log.h"
 #include "utils/StringUtils.h"
+#include "utils/log.h"
+
+#include <utility>
 
 
 namespace XBMCAddon

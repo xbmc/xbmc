@@ -8,11 +8,11 @@
 
 #pragma once
 
-#include "utils/ISerializable.h"
-#include "utils/ISortable.h"
-#include "utils/IArchivable.h"
 #include "XBDateTime.h"
 #include "libexif.h"
+#include "utils/IArchivable.h"
+#include "utils/ISerializable.h"
+#include "utils/ISortable.h"
 
 #include <string>
 

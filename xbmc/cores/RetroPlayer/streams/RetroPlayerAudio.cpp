@@ -7,6 +7,8 @@
  */
 
 #include "RetroPlayerAudio.h"
+
+#include "ServiceBroker.h"
 #include "cores/AudioEngine/Interfaces/AE.h"
 #include "cores/AudioEngine/Interfaces/AEStream.h"
 #include "cores/AudioEngine/Utils/AEChannelInfo.h"
@@ -14,7 +16,6 @@
 #include "cores/RetroPlayer/audio/AudioTranslator.h"
 #include "cores/RetroPlayer/process/RPProcessInfo.h"
 #include "utils/log.h"
-#include "ServiceBroker.h"
 
 #include <cmath>
 

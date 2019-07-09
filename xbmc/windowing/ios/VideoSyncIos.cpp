@@ -6,13 +6,14 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include "utils/log.h"
 #include "VideoSyncIos.h"
-#include "utils/MathUtils.h"
+
 #include "cores/VideoPlayer/VideoReferenceClock.h"
+#include "utils/MathUtils.h"
+#include "utils/TimeUtils.h"
+#include "utils/log.h"
 #include "windowing/GraphicContext.h"
 #include "windowing/ios/WinSystemIOS.h"
-#include "utils/TimeUtils.h"
 
 bool CVideoSyncIos::Setup(PUPDATECLOCK func)
 {

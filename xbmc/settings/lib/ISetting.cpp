@@ -6,12 +6,13 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include <string>
-
 #include "ISetting.h"
+
 #include "SettingDefinitions.h"
 #include "utils/XBMCTinyXML.h"
 #include "utils/XMLUtils.h"
+
+#include <string>
 
 ISetting::ISetting(const std::string &id, CSettingsManager *settingsManager /* = nullptr */)
   : m_id(id)

@@ -6,8 +6,10 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include <string.h>
 #include "utils/HttpHeader.h"
+
+#include <string.h>
+
 #include <gtest/gtest.h>
 
 #define CHECK_CNT_TYPE_NAME "Content-Type"

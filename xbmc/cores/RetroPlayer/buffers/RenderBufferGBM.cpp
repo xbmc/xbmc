@@ -7,6 +7,7 @@
  */
 
 #include "RenderBufferGBM.h"
+
 #include "ServiceBroker.h"
 #include "utils/EGLImage.h"
 #include "utils/GBMBufferObject.h"

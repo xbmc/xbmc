@@ -20,11 +20,11 @@
 
 #pragma once
 
-#include <vector>
-#include <string>
-#include <cstdio>
-
 #include "guilib/XBTF.h"
+
+#include <cstdio>
+#include <string>
+#include <vector>
 
 class CXBTFWriter : public CXBTFBase
 {

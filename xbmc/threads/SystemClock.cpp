@@ -6,10 +6,11 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include <stdint.h>
-
 #include "SystemClock.h"
+
 #include "utils/TimeUtils.h"
+
+#include <stdint.h>
 
 namespace XbmcThreads
 {

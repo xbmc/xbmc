@@ -8,14 +8,14 @@
 
 #pragma once
 
-#include <memory>
-#include <stdint.h>
-#include <vector>
-
 #include "profiles/Profile.h"
 #include "settings/lib/ISettingCallback.h"
 #include "settings/lib/ISettingsHandler.h"
 #include "threads/CriticalSection.h"
+
+#include <memory>
+#include <stdint.h>
+#include <vector>
 
 class CEventLog;
 class CEventLogManager;

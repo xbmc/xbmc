@@ -7,6 +7,7 @@
  */
 
 #include "ProcessInfo.h"
+
 #include "ServiceBroker.h"
 #include "cores/DataCacheCore.h"
 #include "settings/AdvancedSettings.h"

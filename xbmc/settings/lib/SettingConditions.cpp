@@ -7,6 +7,7 @@
  */
 
 #include "SettingConditions.h"
+
 #include "SettingDefinitions.h"
 #include "SettingsManager.h"
 #include "utils/StringUtils.h"

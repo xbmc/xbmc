@@ -7,10 +7,11 @@
  */
 
 #include "GUIViewStateEventLog.h"
+
 #include "FileItem.h"
-#include "windowing/GraphicContext.h"
 #include "guilib/WindowIDs.h"
 #include "view/ViewState.h"
+#include "windowing/GraphicContext.h"
 
 CGUIViewStateEventLog::CGUIViewStateEventLog(const CFileItemList& items) : CGUIViewState(items)
 {

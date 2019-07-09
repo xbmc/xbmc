@@ -8,11 +8,11 @@
 
 #pragma once
 
-#include <string>
-#include <vector>
-
 #include "FileItem.h"
 #include "PlayerCoreFactory.h"
+
+#include <string>
+#include <vector>
 
 class CRegExp;
 class TiXmlElement;

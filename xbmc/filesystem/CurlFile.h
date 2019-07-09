@@ -9,10 +9,11 @@
 #pragma once
 
 #include "IFile.h"
+#include "utils/HttpHeader.h"
 #include "utils/RingBuffer.h"
+
 #include <map>
 #include <string>
-#include "utils/HttpHeader.h"
 
 typedef void CURL_HANDLE;
 typedef void CURLM;

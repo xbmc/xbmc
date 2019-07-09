@@ -6,11 +6,12 @@
  *  See LICENSES/README.md for more information.
  */
 
+#include "WinSystemWin10DX.h"
+
 #include "input/touch/generic/GenericTouchActionHandler.h"
 #include "input/touch/generic/GenericTouchInputHandler.h"
 #include "rendering/dx/DirectXHelper.h"
 #include "utils/log.h"
-#include "WinSystemWin10DX.h"
 
 std::unique_ptr<CWinSystemBase> CWinSystemBase::CreateWinSystem()
 {

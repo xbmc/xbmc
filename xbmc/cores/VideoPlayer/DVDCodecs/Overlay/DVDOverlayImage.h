@@ -8,10 +8,12 @@
 
 #pragma once
 
-#include "PlatformDefs.h"
 #include "DVDOverlay.h"
-#include <string.h>
+
 #include <stdlib.h>
+#include <string.h>
+
+#include "PlatformDefs.h"
 
 class CDVDOverlayImage : public CDVDOverlay
 {

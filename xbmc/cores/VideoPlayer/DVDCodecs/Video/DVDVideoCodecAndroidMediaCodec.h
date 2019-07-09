@@ -8,24 +8,24 @@
 
 #pragma once
 
-#include <deque>
-#include <vector>
-#include <memory>
-#include <atomic>
-
-#include <androidjni/Surface.h>
-
-#include "DVDVideoCodec.h"
 #include "DVDStreamInfo.h"
-#include "platform/android/activity/JNIXBMCVideoView.h"
-#include "threads/Thread.h"
-#include "threads/SingleLock.h"
-#include "utils/Geometry.h"
+#include "DVDVideoCodec.h"
 #include "cores/VideoPlayer/Process/VideoBuffer.h"
+#include "threads/SingleLock.h"
+#include "threads/Thread.h"
+#include "utils/Geometry.h"
 
-#include <media/NdkMediaCodec.h>
+#include "platform/android/activity/JNIXBMCVideoView.h"
+
+#include <atomic>
+#include <deque>
+#include <memory>
+#include <vector>
+
 #include <android/native_window.h>
 #include <android/native_window_jni.h>
+#include <androidjni/Surface.h>
+#include <media/NdkMediaCodec.h>
 
 class CJNISurface;
 class CJNISurfaceTexture;

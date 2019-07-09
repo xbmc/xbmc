@@ -7,6 +7,7 @@
  */
 
 #include "DVDSubtitleParserSSA.h"
+
 #include "DVDCodecs/Overlay/DVDOverlaySSA.h"
 #include "cores/VideoPlayer/Interface/Addon/TimingConstants.h"
 #include "utils/log.h"

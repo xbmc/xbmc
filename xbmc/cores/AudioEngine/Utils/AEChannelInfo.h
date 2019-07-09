@@ -8,11 +8,11 @@
 
 #pragma once
 
-#include <stdint.h>
-#include <vector>
-#include <string>
-
 #include "AEChannelData.h"
+
+#include <stdint.h>
+#include <string>
+#include <vector>
 
 class CHelper_libKODI_audioengine;
 

@@ -8,9 +8,9 @@
 
 #include "OSScreenSaverIdleInhibitUnstableV1.h"
 
-#include <cassert>
-
 #include "Registry.h"
+
+#include <cassert>
 
 using namespace KODI::WINDOWING::WAYLAND;
 

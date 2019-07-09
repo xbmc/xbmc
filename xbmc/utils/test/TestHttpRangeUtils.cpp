@@ -6,9 +6,9 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include <gtest/gtest.h>
-
 #include "utils/HttpRangeUtils.h"
+
+#include <gtest/gtest.h>
 
 #define RANGES_START  "bytes="
 

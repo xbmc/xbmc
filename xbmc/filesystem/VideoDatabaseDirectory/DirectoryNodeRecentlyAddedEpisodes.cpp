@@ -7,6 +7,7 @@
  */
 
 #include "DirectoryNodeRecentlyAddedEpisodes.h"
+
 #include "video/VideoDatabase.h"
 
 using namespace XFILE::VIDEODATABASEDIRECTORY;

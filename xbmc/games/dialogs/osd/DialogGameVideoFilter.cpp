@@ -7,6 +7,7 @@
  */
 
 #include "DialogGameVideoFilter.h"
+
 #include "cores/RetroPlayer/guibridge/GUIGameVideoHandle.h"
 #include "cores/RetroPlayer/rendering/RenderVideoSettings.h"
 #include "guilib/LocalizeStrings.h"

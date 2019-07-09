@@ -8,25 +8,25 @@
 
 #include "AndroidStorageProvider.h"
 
-#include <cstdlib>
+#include "Util.h"
+#include "filesystem/Directory.h"
+#include "filesystem/File.h"
+#include "guilib/LocalizeStrings.h"
+#include "utils/RegExp.h"
+#include "utils/StringUtils.h"
+#include "utils/URIUtils.h"
+#include "utils/log.h"
+
+#include "platform/android/activity/XBMCApp.h"
+
 #include <cstdio>
+#include <cstdlib>
 #include <cstring>
 #include <map>
 
 #include <androidjni/Context.h>
-#include <androidjni/StorageManager.h>
 #include <androidjni/Environment.h>
-
-#include "filesystem/Directory.h"
-#include "filesystem/File.h"
-#include "guilib/LocalizeStrings.h"
-#include "platform/android/activity/XBMCApp.h"
-
-#include "Util.h"
-#include "utils/log.h"
-#include "utils/RegExp.h"
-#include "utils/StringUtils.h"
-#include "utils/URIUtils.h"
+#include <androidjni/StorageManager.h>
 
 static const char * typeWL[] = { "vfat", "exfat", "sdcardfs", "fuse", "ntfs", "fat32", "ext3", "ext4", "esdfs" };
 static const char * mountWL[] = { "/mnt", "/Removable", "/storage" };

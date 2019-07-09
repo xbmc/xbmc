@@ -7,9 +7,10 @@
  */
 
 #include "UPnPFile.h"
-#include "UPnPDirectory.h"
+
 #include "FileFactory.h"
 #include "FileItem.h"
+#include "UPnPDirectory.h"
 #include "URL.h"
 
 using namespace XFILE;

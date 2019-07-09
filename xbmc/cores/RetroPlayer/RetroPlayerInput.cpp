@@ -7,6 +7,7 @@
  */
 
 #include "RetroPlayerInput.h"
+
 #include "peripherals/EventPollHandle.h"
 #include "peripherals/Peripherals.h"
 #include "utils/log.h"

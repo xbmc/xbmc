@@ -9,6 +9,7 @@
 #pragma once
 
 #include "filesystem/IFile.h"
+
 #include <string>
 
 typedef void* HANDLE; // forward declaration

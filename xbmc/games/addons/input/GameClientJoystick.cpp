@@ -7,6 +7,7 @@
  */
 
 #include "GameClientJoystick.h"
+
 #include "GameClientInput.h"
 #include "games/addons/GameClient.h"
 #include "games/controllers/Controller.h"

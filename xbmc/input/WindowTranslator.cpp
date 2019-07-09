@@ -7,13 +7,14 @@
  */
 
 #include "WindowTranslator.h"
+
 #include "Application.h"
+#include "ServiceBroker.h"
 #include "guilib/WindowIDs.h"
 #include "pvr/PVRGUIActions.h"
 #include "pvr/PVRManager.h"
-#include "ServiceBroker.h"
-#include "utils/log.h"
 #include "utils/StringUtils.h"
+#include "utils/log.h"
 
 #include <algorithm>
 #include <cstring>

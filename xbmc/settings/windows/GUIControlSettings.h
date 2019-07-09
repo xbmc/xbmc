@@ -8,13 +8,13 @@
 
 #pragma once
 
-#include <stdlib.h>
-#include <functional>
-#include <memory>
-#include <string>
-
 #include "guilib/ISliderCallback.h"
 #include "utils/ILocalizer.h"
+
+#include <functional>
+#include <memory>
+#include <stdlib.h>
+#include <string>
 
 class CGUIControl;
 class CGUIImage;

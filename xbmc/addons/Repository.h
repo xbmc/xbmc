@@ -8,13 +8,13 @@
 
 #pragma once
 
-#include <memory>
-#include <string>
-#include <vector>
-
 #include "Addon.h"
 #include "utils/Digest.h"
 #include "utils/ProgressJob.h"
+
+#include <memory>
+#include <string>
+#include <vector>
 
 struct cp_cfg_element_t;
 

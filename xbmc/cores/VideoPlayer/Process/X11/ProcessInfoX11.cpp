@@ -7,6 +7,7 @@
  */
 
 #include "ProcessInfoX11.h"
+
 #include "threads/SingleLock.h"
 
 using namespace VIDEOPLAYER;

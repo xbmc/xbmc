@@ -7,9 +7,10 @@
  */
 
 #include "RetroPlayerVideo.h"
+
 #include "cores/RetroPlayer/process/RPProcessInfo.h"
-#include "cores/RetroPlayer/rendering/RenderTranslator.h"
 #include "cores/RetroPlayer/rendering/RPRenderManager.h"
+#include "cores/RetroPlayer/rendering/RenderTranslator.h"
 #include "utils/log.h"
 
 using namespace KODI;

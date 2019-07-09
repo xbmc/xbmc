@@ -7,6 +7,7 @@
  */
 
 #include "RenderFactory.h"
+
 #include "threads/SingleLock.h"
 
 using namespace VIDEOPLAYER;

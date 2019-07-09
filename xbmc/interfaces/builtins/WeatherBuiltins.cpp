@@ -6,12 +6,13 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include <stdlib.h>
-
 #include "WeatherBuiltins.h"
+
 #include "ServiceBroker.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
+
+#include <stdlib.h>
 
 /*! \brief Switch to a given weather location.
  *  \param params The parameters.

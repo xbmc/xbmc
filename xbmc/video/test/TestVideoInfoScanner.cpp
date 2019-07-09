@@ -6,8 +6,9 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include "video/VideoInfoScanner.h"
 #include "FileItem.h"
+#include "video/VideoInfoScanner.h"
+
 #include <gtest/gtest.h>
 
 using namespace VIDEO;

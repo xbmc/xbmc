@@ -6,17 +6,18 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include "threads/SystemClock.h"
 #include "GUIDialogCache.h"
+
 #include "ServiceBroker.h"
-#include "messaging/ApplicationMessenger.h"
+#include "dialogs/GUIDialogProgress.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
-#include "dialogs/GUIDialogProgress.h"
 #include "guilib/LocalizeStrings.h"
-#include "utils/log.h"
+#include "messaging/ApplicationMessenger.h"
 #include "threads/SingleLock.h"
+#include "threads/SystemClock.h"
 #include "utils/Variant.h"
+#include "utils/log.h"
 
 
 using namespace KODI::MESSAGING;

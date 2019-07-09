@@ -6,17 +6,18 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include "Directory.h"
 #include "DirectoryCache.h"
+
+#include "Directory.h"
 #include "FileItem.h"
-#include "threads/SingleLock.h"
-#include "utils/log.h"
-#include "utils/URIUtils.h"
-#include "utils/StringUtils.h"
 #include "URL.h"
-#include <climits>
+#include "threads/SingleLock.h"
+#include "utils/StringUtils.h"
+#include "utils/URIUtils.h"
+#include "utils/log.h"
 
 #include <algorithm>
+#include <climits>
 
 // Maximum number of directories to keep in our cache
 #define MAX_CACHED_DIRS 50

@@ -9,8 +9,8 @@
 #pragma once
 
 #include "games/addons/GameClientSubsystem.h"
-#include "games/controllers/types/ControllerTree.h"
 #include "games/controllers/ControllerTypes.h"
+#include "games/controllers/types/ControllerTree.h"
 #include "peripherals/PeripheralTypes.h"
 #include "utils/Observer.h"
 

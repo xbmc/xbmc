@@ -8,9 +8,9 @@
 
 #pragma once
 
+#include <memory>
 #include <string>
 #include <vector>
-#include <memory>
 
 class CGUIControl;
 class CGUIListItem; typedef std::shared_ptr<CGUIListItem> CGUIListItemPtr;

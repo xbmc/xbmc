@@ -6,8 +6,9 @@
  *  See LICENSES/README.md for more information.
  */
 
-#import <UIKit/UIKit.h>
 #include "platform/darwin/ios-common/IOSKeyboard.h"
+
+#import <UIKit/UIKit.h>
 
 @interface KeyboardView : UIView <UITextFieldDelegate>
 {

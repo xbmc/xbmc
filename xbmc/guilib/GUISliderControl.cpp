@@ -6,15 +6,16 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include "ServiceBroker.h"
-#include "GUIComponent.h"
 #include "GUISliderControl.h"
+
+#include "GUIComponent.h"
 #include "GUIInfoManager.h"
+#include "GUIWindowManager.h"
+#include "ServiceBroker.h"
+#include "guilib/guiinfo/GUIInfoLabels.h"
 #include "input/Key.h"
 #include "utils/MathUtils.h"
 #include "utils/StringUtils.h"
-#include "guilib/guiinfo/GUIInfoLabels.h"
-#include "GUIWindowManager.h"
 
 static const SliderAction actions[] = {
   {"seek",     "PlayerControl(SeekPercentage(%2f))", PLAYER_PROGRESS,                 false},

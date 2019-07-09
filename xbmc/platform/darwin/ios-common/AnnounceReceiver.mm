@@ -6,21 +6,22 @@
  *  See LICENSES/README.md for more information.
  */
 
-#import <UIKit/UIKit.h>
+#import "platform/darwin/ios-common/AnnounceReceiver.h"
 
 #import "Application.h"
 #import "FileItem.h"
-#import "music/tags/MusicInfoTag.h"
-#import "music/MusicDatabase.h"
+#include "PlayListPlayer.h"
+#include "ServiceBroker.h"
 #import "TextureCache.h"
 #import "filesystem/SpecialProtocol.h"
-#include "PlayListPlayer.h"
+#import "music/MusicDatabase.h"
+#import "music/tags/MusicInfoTag.h"
 #import "playlists/PlayList.h"
-
-#import "platform/darwin/ios-common/AnnounceReceiver.h"
-#import "platform/darwin/ios/XBMCController.h"
 #import "utils/Variant.h"
-#include "ServiceBroker.h"
+
+#import "platform/darwin/ios/XBMCController.h"
+
+#import <UIKit/UIKit.h>
 
 id objectFromVariant(const CVariant &data);
 

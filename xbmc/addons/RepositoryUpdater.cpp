@@ -7,6 +7,7 @@
  */
 
 #include "RepositoryUpdater.h"
+
 #include "Application.h"
 #include "ServiceBroker.h"
 #include "addons/AddonInstaller.h"
@@ -25,6 +26,7 @@
 #include "threads/SingleLock.h"
 #include "utils/JobManager.h"
 #include "utils/log.h"
+
 #include <algorithm>
 #include <iterator>
 #include <vector>

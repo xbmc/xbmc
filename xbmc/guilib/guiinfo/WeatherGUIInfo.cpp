@@ -11,14 +11,13 @@
 #include "FileItem.h"
 #include "LangInfo.h"
 #include "ServiceBroker.h"
+#include "guilib/guiinfo/GUIInfo.h"
+#include "guilib/guiinfo/GUIInfoLabels.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "weather/WeatherManager.h"
-
-#include "guilib/guiinfo/GUIInfo.h"
-#include "guilib/guiinfo/GUIInfoLabels.h"
 
 using namespace KODI::GUILIB::GUIINFO;
 

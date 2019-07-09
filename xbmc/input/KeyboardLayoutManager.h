@@ -8,12 +8,12 @@
 
 #pragma once
 
+#include "input/KeyboardLayout.h"
+
 #include <map>
 #include <string>
 #include <utility>
 #include <vector>
-
-#include "input/KeyboardLayout.h"
 
 class CSetting;
 struct StringSettingOption;

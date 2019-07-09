@@ -11,9 +11,10 @@
 #include "DVDResource.h"
 #include "FileItem.h"
 #include "cores/IPlayer.h"
+
 #include <atomic>
-#include <string>
 #include <string.h>
+#include <string>
 
 struct DemuxPacket;
 

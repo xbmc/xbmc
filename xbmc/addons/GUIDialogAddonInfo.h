@@ -8,12 +8,12 @@
 
 #pragma once
 
+#include "addons/IAddon.h"
+#include "guilib/GUIDialog.h"
+
 #include <string>
 #include <utility>
 #include <vector>
-
-#include "guilib/GUIDialog.h"
-#include "addons/IAddon.h"
 
 class CGUIDialogAddonInfo : public CGUIDialog
 {

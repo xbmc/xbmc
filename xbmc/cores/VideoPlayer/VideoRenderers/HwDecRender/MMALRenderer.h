@@ -8,19 +8,19 @@
 
 #pragma once
 
+#include "../BaseRenderer.h"
+#include "../RenderCapture.h"
+#include "../RenderFlags.h"
+#include "cores/VideoPlayer/DVDStreamInfo.h"
+#include "cores/VideoSettings.h"
+#include "threads/IRunnable.h"
+#include "threads/Thread.h"
+#include "utils/Geometry.h"
+#include "windowing/GraphicContext.h"
+
 #include <vector>
 
 #include <interface/mmal/mmal.h>
-
-#include "windowing/GraphicContext.h"
-#include "../RenderFlags.h"
-#include "../BaseRenderer.h"
-#include "../RenderCapture.h"
-#include "cores/VideoSettings.h"
-#include "cores/VideoPlayer/DVDStreamInfo.h"
-#include "threads/Thread.h"
-#include "threads/IRunnable.h"
-#include "utils/Geometry.h"
 
 // worst case number of buffers. 12 for decoder. 8 for multi-threading in ffmpeg. NUM_BUFFERS for renderer.
 // Note, generally these won't necessarily result in allocated pictures

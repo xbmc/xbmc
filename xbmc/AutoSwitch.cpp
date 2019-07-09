@@ -7,6 +7,7 @@
  */
 
 #include "AutoSwitch.h"
+
 #include "FileItem.h"
 #include "ServiceBroker.h"
 #include "guilib/GUIComponent.h"

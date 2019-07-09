@@ -8,13 +8,13 @@
 
 #include "VideoSyncWpPresentation.h"
 
+#include "settings/AdvancedSettings.h"
+#include "utils/TimeUtils.h"
+#include "utils/log.h"
+#include "windowing/wayland/WinSystemWayland.h"
+
 #include <cinttypes>
 #include <functional>
-
-#include "utils/log.h"
-#include "utils/TimeUtils.h"
-#include "settings/AdvancedSettings.h"
-#include "windowing/wayland/WinSystemWayland.h"
 
 using namespace KODI::WINDOWING::WAYLAND;
 using namespace std::placeholders;

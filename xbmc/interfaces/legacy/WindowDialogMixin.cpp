@@ -1,4 +1,4 @@
- /*
+/*
  *  Copyright (C) 2005-2018 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
@@ -7,12 +7,12 @@
  */
 
 #include "WindowDialogMixin.h"
-#include "WindowInterceptor.h"
 
 #include "ServiceBroker.h"
-#include "messaging/ApplicationMessenger.h"
+#include "WindowInterceptor.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
+#include "messaging/ApplicationMessenger.h"
 
 using namespace KODI::MESSAGING;
 

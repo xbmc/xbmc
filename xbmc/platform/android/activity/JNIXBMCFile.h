@@ -8,11 +8,11 @@
 
 #pragma once
 
-#include <androidjni/JNIBase.h>
-
 #include "filesystem/File.h"
 
 #include <memory>
+
+#include <androidjni/JNIBase.h>
 
 namespace jni
 {

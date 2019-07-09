@@ -7,6 +7,7 @@
  */
 
 #include "System.h"
+
 #include "CompileInfo.h"
 #include "addons/binary-addons/AddonDll.h"
 #include "addons/kodi-addon-dev-kit/include/kodi/platform/android/System.h"

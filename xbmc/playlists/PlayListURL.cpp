@@ -7,9 +7,10 @@
  */
 
 #include "PlayListURL.h"
+
 #include "filesystem/File.h"
-#include "utils/URIUtils.h"
 #include "utils/StringUtils.h"
+#include "utils/URIUtils.h"
 
 using namespace PLAYLIST;
 using namespace XFILE;

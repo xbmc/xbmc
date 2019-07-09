@@ -6,9 +6,8 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include "utils/POUtils.h"
-
 #include "test/TestUtils.h"
+#include "utils/POUtils.h"
 
 #include <gtest/gtest.h>
 

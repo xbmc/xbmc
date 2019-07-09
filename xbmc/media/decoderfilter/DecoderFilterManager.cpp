@@ -7,20 +7,20 @@
  */
 
 
- /**
+/**
  * \file media\hwdecoder\DecoderFilterManager.cpp
  * \brief Implements CDecoderFilterManager class.
  *
  */
 
 #include "DecoderFilterManager.h"
-#include "cores/VideoPlayer/DVDStreamInfo.h"
 
+#include "Util.h"
+#include "cores/VideoPlayer/DVDStreamInfo.h"
 #include "filesystem/File.h"
 #include "threads/SingleLock.h"
-#include "utils/log.h"
 #include "utils/XMLUtils.h"
-#include "Util.h"
+#include "utils/log.h"
 
 static const char* TAG_ROOT = "decoderfilter";
 static const char* TAG_FILTER = "filter";

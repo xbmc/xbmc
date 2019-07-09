@@ -7,9 +7,10 @@
  */
 
 #include "DirectoryHistory.h"
-#include "utils/log.h"
+
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
+#include "utils/log.h"
 
 #include <algorithm>
 

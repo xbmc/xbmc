@@ -12,8 +12,8 @@
 #include "MusicAlbumInfo.h"
 #include "MusicInfoScraper.h"
 #include "music/MusicDatabase.h"
-#include "threads/Thread.h"
 #include "threads/IRunnable.h"
+#include "threads/Thread.h"
 
 class CAlbum;
 class CArtist;

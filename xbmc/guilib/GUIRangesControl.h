@@ -13,11 +13,11 @@
 \brief
 */
 
-#include <utility>
-#include <vector>
-
 #include "GUIControl.h"
 #include "GUITexture.h"
+
+#include <utility>
+#include <vector>
 
 /*!
  \ingroup controls

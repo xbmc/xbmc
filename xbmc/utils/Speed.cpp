@@ -6,11 +6,12 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include <assert.h>
-
 #include "Speed.h"
+
 #include "utils/Archive.h"
 #include "utils/StringUtils.h"
+
+#include <assert.h>
 
 CSpeed::CSpeed()
 {

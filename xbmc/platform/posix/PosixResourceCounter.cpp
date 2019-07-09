@@ -6,11 +6,13 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include "PlatformDefs.h"
 #include "PosixResourceCounter.h"
+
 #include "utils/log.h"
 
 #include <errno.h>
+
+#include "PlatformDefs.h"
 
 CPosixResourceCounter::CPosixResourceCounter()
 {

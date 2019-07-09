@@ -7,15 +7,16 @@
  */
 
 #include "FavouritesOperations.h"
-#include "favourites/FavouritesService.h"
-#include "input/WindowTranslator.h"
+
+#include "ServiceBroker.h"
 #include "URL.h"
-#include "utils/StringUtils.h"
 #include "Util.h"
+#include "favourites/FavouritesService.h"
+#include "guilib/WindowIDs.h"
+#include "input/WindowTranslator.h"
+#include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
-#include "guilib/WindowIDs.h"
-#include "ServiceBroker.h"
 
 #include <vector>
 

@@ -10,11 +10,12 @@
 
 #include "IrssMessage.h"
 #include "input/IRTranslator.h"
-#include "threads/Thread.h"
 #include "threads/Event.h"
+#include "threads/Thread.h"
+
+#include <string>
 
 #include <winsock2.h>
-#include <string>
 
 class CIRServerSuite : public CThread
 {

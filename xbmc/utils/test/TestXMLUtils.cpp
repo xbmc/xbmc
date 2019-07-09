@@ -6,9 +6,9 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include "utils/XMLUtils.h"
-#include "utils/StringUtils.h"
 #include "XBDateTime.h"
+#include "utils/StringUtils.h"
+#include "utils/XMLUtils.h"
 
 #include <gtest/gtest.h>
 

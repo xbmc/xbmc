@@ -7,6 +7,7 @@
  */
 
 #include "MusicLibraryCleaningJob.h"
+
 #include "dialogs/GUIDialogProgress.h"
 #include "music/MusicDatabase.h"
 

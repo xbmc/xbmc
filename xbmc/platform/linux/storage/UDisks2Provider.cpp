@@ -5,19 +5,20 @@
  *  SPDX-License-Identifier: GPL-2.0-or-later
  *  See LICENSES/README.md for more information.
  */
-#include <algorithm>
-#include <functional>
+#include "UDisks2Provider.h"
 
-#include "guilib/LocalizeStrings.h"
-#include "platform/posix/PosixMountProvider.h"
 #include "ServiceBroker.h"
+#include "guilib/LocalizeStrings.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
-#include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
+#include "utils/log.h"
 
-#include "UDisks2Provider.h"
+#include "platform/posix/PosixMountProvider.h"
+
+#include <algorithm>
+#include <functional>
 
 #define BOOL2SZ(b) ((b) ? "true" : "false")
 

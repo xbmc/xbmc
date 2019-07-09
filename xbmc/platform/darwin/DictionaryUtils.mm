@@ -6,8 +6,9 @@
  *  See LICENSES/README.md for more information.
  */
 
-#import <CoreFoundation/CFString.h>
 #import "platform/darwin/DictionaryUtils.h"
+
+#import <CoreFoundation/CFString.h>
 
 
 //------------------------------------------------------------------------------------------

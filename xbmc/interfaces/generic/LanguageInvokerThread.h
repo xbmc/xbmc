@@ -8,11 +8,11 @@
 
 #pragma once
 
-#include <string>
-#include <vector>
-
 #include "interfaces/generic/ILanguageInvoker.h"
 #include "threads/Thread.h"
+
+#include <string>
+#include <vector>
 
 class CScriptInvocationManager;
 

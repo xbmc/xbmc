@@ -7,16 +7,17 @@
  */
 
 #include "GUIDialogTeletext.h"
-#include "utils/log.h"
+
 #include "Application.h"
 #include "ServiceBroker.h"
-#include "guilib/GUITexture.h"
-#include "guilib/Texture.h"
-#include "guilib/LocalizeStrings.h"
 #include "dialogs/GUIDialogKaiToast.h"
+#include "guilib/GUITexture.h"
+#include "guilib/LocalizeStrings.h"
+#include "guilib/Texture.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/Color.h"
+#include "utils/log.h"
 
 static int teletextFadeAmount = 0;
 

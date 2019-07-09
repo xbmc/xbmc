@@ -7,6 +7,7 @@
  */
 
 #include "HTTPJsonRpcHandler.h"
+
 #include "URL.h"
 #include "filesystem/File.h"
 #include "interfaces/json-rpc/JSONRPC.h"
@@ -15,8 +16,8 @@
 #include "network/WebServer.h"
 #include "network/httprequesthandler/HTTPRequestHandlerUtils.h"
 #include "utils/JSONVariantWriter.h"
-#include "utils/log.h"
 #include "utils/Variant.h"
+#include "utils/log.h"
 
 #define MAX_HTTP_POST_SIZE 65536
 

@@ -7,12 +7,14 @@
  */
 
 #include "MouseStat.h"
+
+#include "ServiceBroker.h"
 #include "input/Key.h"
 #include "utils/TimeUtils.h"
-#include "ServiceBroker.h"
 #include "windowing/WinSystem.h"
-#include <cstring>
+
 #include <algorithm>
+#include <cstring>
 
 CMouseStat::CMouseStat()
 {

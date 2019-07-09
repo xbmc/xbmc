@@ -13,9 +13,9 @@
 \brief
 */
 
-#include "GUITextLayout.h"
 #include "GUIControl.h"
 #include "GUILabel.h"
+#include "GUITextLayout.h"
 #include "guilib/guiinfo/GUIInfoLabel.h"
 
 /*!

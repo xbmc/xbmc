@@ -6,16 +6,18 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include <stdlib.h>
 #include "StackDirectory.h"
-#include "utils/log.h"
-#include "utils/URIUtils.h"
+
 #include "FileItem.h"
-#include "utils/StringUtils.h"
+#include "ServiceBroker.h"
+#include "URL.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
-#include "URL.h"
-#include "ServiceBroker.h"
+#include "utils/StringUtils.h"
+#include "utils/URIUtils.h"
+#include "utils/log.h"
+
+#include <stdlib.h>
 
 namespace XFILE
 {

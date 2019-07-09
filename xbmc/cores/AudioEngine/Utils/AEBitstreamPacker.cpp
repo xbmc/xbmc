@@ -7,12 +7,14 @@
  */
 
 #include "AEBitstreamPacker.h"
+
 #include "AEPackIEC61937.h"
 #include "AEStreamInfo.h"
-#include <stdint.h>
-#include <stddef.h>
-#include <string.h>
 #include "utils/log.h"
+
+#include <stddef.h>
+#include <stdint.h>
+#include <string.h>
 
 #define BURST_HEADER_SIZE       8
 #define TRUEHD_FRAME_OFFSET     2560

@@ -6,8 +6,9 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include "Registry.h"
 #include "ShellSurfaceWlShell.h"
+
+#include "Registry.h"
 
 #include <cmath>
 

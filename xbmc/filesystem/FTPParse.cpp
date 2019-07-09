@@ -6,9 +6,11 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include <pcrecpp.h>
-#include <cmath>
 #include "FTPParse.h"
+
+#include <cmath>
+
+#include <pcrecpp.h>
 
 CFTPParse::CFTPParse()
 {

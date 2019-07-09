@@ -8,21 +8,21 @@
 
 #include "MusicLibraryQueue.h"
 
-#include <utility>
-
+#include "GUIUserMessages.h"
 #include "ServiceBroker.h"
+#include "Util.h"
 #include "dialogs/GUIDialogProgress.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
-#include "GUIUserMessages.h"
 #include "music/jobs/MusicLibraryCleaningJob.h"
 #include "music/jobs/MusicLibraryExportJob.h"
 #include "music/jobs/MusicLibraryImportJob.h"
-#include "music/jobs/MusicLibraryScanningJob.h"
 #include "music/jobs/MusicLibraryJob.h"
+#include "music/jobs/MusicLibraryScanningJob.h"
 #include "threads/SingleLock.h"
-#include "Util.h"
 #include "utils/Variant.h"
+
+#include <utility>
 
 CMusicLibraryQueue::CMusicLibraryQueue()
   : CJobQueue(false, 1, CJob::PRIORITY_LOW),

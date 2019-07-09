@@ -7,6 +7,7 @@
  */
 
 #include "PeripheralBusApplication.h"
+
 #include "ServiceBroker.h"
 #include "guilib/LocalizeStrings.h"
 #include "settings/Settings.h"

@@ -8,11 +8,11 @@
 
 #pragma once
 
-#include "filesystem/File.h"
-#include "AddonString.h"
 #include "AddonClass.h"
+#include "AddonString.h"
 #include "LanguageHook.h"
 #include "commons/Buffer.h"
+#include "filesystem/File.h"
 
 #include <algorithm>
 

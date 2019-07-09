@@ -9,9 +9,9 @@
 #pragma once
 
 #include "IConfigurationWindow.h"
+#include "games/GameTypes.h"
 #include "games/controllers/ControllerFeature.h"
 #include "games/controllers/ControllerTypes.h"
-#include "games/GameTypes.h"
 #include "input/joysticks/JoystickTypes.h"
 
 class CGUIButtonControl;

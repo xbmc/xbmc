@@ -8,8 +8,9 @@
 
 #pragma once
 
-#include <vector>
 #include "storage/IStorageProvider.h"
+
+#include <vector>
 
 class CLinuxStorageProvider : public IStorageProvider
 {

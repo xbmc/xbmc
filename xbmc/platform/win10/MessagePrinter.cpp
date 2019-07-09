@@ -7,12 +7,14 @@
  */
 
 #include "platform/MessagePrinter.h"
+
 #include "CompileInfo.h"
-#include "utils/log.h"
-#include "platform/win32/CharsetConverter.h"
 #include "rendering/dx/DeviceResources.h"
 #include "rendering/dx/RenderContext.h"
+#include "utils/log.h"
 #include "windowing/win10/WinSystemWin10DX.h"
+
+#include "platform/win32/CharsetConverter.h"
 
 #include <winrt/Windows.ApplicationModel.Core.h>
 #include <winrt/Windows.UI.Popups.h>

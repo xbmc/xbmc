@@ -7,6 +7,7 @@
  */
 
 #include "VideoTagLoaderPlugin.h"
+
 #include "FileItem.h"
 #include "URL.h"
 #include "filesystem/PluginDirectory.h"

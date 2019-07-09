@@ -7,15 +7,15 @@
  */
 
 #include "Select.h"
-#include "addons/kodi-addon-dev-kit/include/kodi/gui/dialogs/Select.h"
 
+#include "ServiceBroker.h"
 #include "addons/binary-addons/AddonDll.h"
+#include "addons/kodi-addon-dev-kit/include/kodi/gui/dialogs/Select.h"
 #include "dialogs/GUIDialogSelect.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
-#include "utils/log.h"
 #include "utils/Variant.h"
-#include "ServiceBroker.h"
+#include "utils/log.h"
 
 namespace ADDON
 {

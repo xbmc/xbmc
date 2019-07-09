@@ -8,12 +8,12 @@
 
 #pragma once
 
-#include <wayland-client-protocol.hpp>
+#include "threads/CriticalSection.h"
 
 #include <string>
 #include <vector>
 
-#include "threads/CriticalSection.h"
+#include <wayland-client-protocol.hpp>
 
 namespace KODI
 {

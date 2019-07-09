@@ -8,8 +8,8 @@
 
 #include "LibInputTouch.h"
 
-#include "input/touch/generic/GenericTouchActionHandler.h"
 #include "ServiceBroker.h"
+#include "input/touch/generic/GenericTouchActionHandler.h"
 #include "utils/log.h"
 #include "windowing/GraphicContext.h"
 

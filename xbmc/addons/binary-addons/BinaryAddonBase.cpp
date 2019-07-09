@@ -7,13 +7,13 @@
  */
 
 #include "BinaryAddonBase.h"
-#include "AddonDll.h"
 
+#include "AddonDll.h"
 #include "filesystem/SpecialProtocol.h"
 #include "threads/SingleLock.h"
-#include "utils/log.h"
 #include "utils/URIUtils.h"
 #include "utils/XMLUtils.h"
+#include "utils/log.h"
 
 using namespace ADDON;
 

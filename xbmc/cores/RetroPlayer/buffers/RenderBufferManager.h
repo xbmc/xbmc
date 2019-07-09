@@ -8,8 +8,8 @@
 
 #pragma once
 
-#include "cores/RetroPlayer/RetroPlayerTypes.h"
 #include "cores/GameSettings.h"
+#include "cores/RetroPlayer/RetroPlayerTypes.h"
 #include "threads/CriticalSection.h"
 
 #include <memory>

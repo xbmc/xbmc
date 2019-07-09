@@ -8,12 +8,12 @@
 
 #pragma once
 
+#include "FileItemHandler.h"
+#include "JSONRPC.h"
+
 #include <set>
 #include <string>
 #include <vector>
-
-#include "JSONRPC.h"
-#include "FileItemHandler.h"
 
 class CMusicDatabase;
 class CVariant;

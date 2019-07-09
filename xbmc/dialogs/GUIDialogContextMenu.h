@@ -8,11 +8,11 @@
 
 #pragma once
 
+#include "guilib/GUIDialog.h"
+
 #include <string>
 #include <utility>
 #include <vector>
-
-#include "guilib/GUIDialog.h"
 
 
 class CMediaSource;

@@ -8,11 +8,11 @@
 
 #pragma once
 
-#include <vector>
-
+#include "MediaSource.h"
 #include "utils/LabelFormatter.h"
 #include "utils/SortUtils.h"
-#include "MediaSource.h"
+
+#include <vector>
 
 class CViewState; // forward
 class CFileItemList;

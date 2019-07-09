@@ -10,9 +10,10 @@
 
 #include "settings/lib/ISettingCallback.h"
 #include "settings/lib/ISettingsHandler.h"
+
+#include <map>
 #include <string>
 #include <vector>
-#include <map>
 
 class CSetting;
 struct StringSettingOption;

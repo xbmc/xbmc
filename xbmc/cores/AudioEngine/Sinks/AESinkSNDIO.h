@@ -10,10 +10,11 @@
 
 #include "cores/AudioEngine/Interfaces/AESink.h"
 #include "cores/AudioEngine/Utils/AEDeviceInfo.h"
-#include <stdint.h>
-#include <sndio.h>
-
 #include "threads/CriticalSection.h"
+
+#include <stdint.h>
+
+#include <sndio.h>
 
 class CAESinkSNDIO : public IAESink
 {

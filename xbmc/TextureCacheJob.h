@@ -8,12 +8,12 @@
 
 #pragma once
 
+#include "pictures/PictureScalingAlgorithm.h"
+#include "utils/Job.h"
+
 #include <stdint.h>
 #include <string>
 #include <vector>
-
-#include "pictures/PictureScalingAlgorithm.h"
-#include "utils/Job.h"
 
 class CBaseTexture;
 

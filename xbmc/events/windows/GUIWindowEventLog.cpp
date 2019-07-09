@@ -7,6 +7,7 @@
  */
 
 #include "GUIWindowEventLog.h"
+
 #include "FileItem.h"
 #include "GUIUserMessages.h"
 #include "ServiceBroker.h"

@@ -7,6 +7,7 @@
  */
 
 #include "JoystickUtils.h"
+
 #include "JoystickTranslator.h"
 #include "utils/StringUtils.h"
 

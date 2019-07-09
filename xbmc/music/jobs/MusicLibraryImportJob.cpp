@@ -7,6 +7,7 @@
 */
 
 #include "MusicLibraryImportJob.h"
+
 #include "dialogs/GUIDialogProgress.h"
 #include "music/MusicDatabase.h"
 

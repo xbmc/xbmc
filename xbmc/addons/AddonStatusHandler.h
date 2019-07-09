@@ -8,10 +8,11 @@
 
 #pragma once
 
-#include "threads/Thread.h"
 #include "IAddon.h"
 #include "addons/kodi-addon-dev-kit/include/kodi/xbmc_addon_types.h"
 #include "threads/CriticalSection.h"
+#include "threads/Thread.h"
+
 #include <string>
 
 namespace ADDON

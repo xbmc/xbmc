@@ -8,7 +8,6 @@
 
 #include "threads/Event.h"
 #include "threads/IRunnable.h"
-
 #include "threads/test/TestHelpers.h"
 
 #include <memory>

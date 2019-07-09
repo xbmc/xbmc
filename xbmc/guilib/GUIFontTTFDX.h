@@ -15,8 +15,10 @@
 
 #include "D3DResource.h"
 #include "GUIFontTTF.h"
+
 #include <list>
 #include <vector>
+
 #include <wrl/client.h>
 
 #define ELEMENT_ARRAY_MAX_CHAR_INDEX (2000)

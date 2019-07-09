@@ -7,9 +7,10 @@
  */
 
 #include "ThumbLoader.h"
-#include "filesystem/File.h"
+
 #include "FileItem.h"
 #include "TextureCache.h"
+#include "filesystem/File.h"
 
 using namespace XFILE;
 

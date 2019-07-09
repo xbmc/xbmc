@@ -8,9 +8,9 @@
 
 #pragma once
 
-#include <vector>
-
 #include "IDirectory.h"
+
+#include <vector>
 
 class CMediaSource;
 typedef std::vector<CMediaSource> VECSOURCES;

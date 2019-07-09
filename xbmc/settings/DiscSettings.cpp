@@ -6,18 +6,19 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include <string>
-
 #include "DiscSettings.h"
+
 #include "Settings.h"
-#include "lib/Setting.h"
 #include "dialogs/GUIDialogKaiToast.h"
-#include "utils/log.h"
+#include "lib/Setting.h"
 #include "messaging/helpers/DialogOKHelper.h"
 #include "utils/Variant.h"
+#include "utils/log.h"
 
-#include <libbluray/bluray.h>
+#include <string>
+
 #include <libbluray/bluray-version.h>
+#include <libbluray/bluray.h>
 
 using namespace KODI::MESSAGING;
 

@@ -7,12 +7,11 @@
  */
 
 #include "Texture.h"
-#include "utils/log.h"
-#include "utils/GLUtils.h"
-#include "guilib/TextureManager.h"
-#include "utils/URIUtils.h"
-
 #include "cores/omxplayer/OMXImage.h"
+#include "guilib/TextureManager.h"
+#include "utils/GLUtils.h"
+#include "utils/URIUtils.h"
+#include "utils/log.h"
 
 /************************************************************************/
 /*    CPiTexture                                                       */

@@ -8,10 +8,10 @@
 
 #pragma once
 
+#include "input/touch/ITouchInputHandling.h"
+
 #include <atomic>
 #include <stdint.h>
-
-#include "input/touch/ITouchInputHandling.h"
 
 /*!
  * \ingroup touch

@@ -8,13 +8,13 @@
 
 #pragma once
 
+#include "interfaces/info/InfoBool.h"
+
 #include <map>
 #include <set>
 #include <string>
 #include <utility>
 #include <vector>
-
-#include "interfaces/info/InfoBool.h"
 
 // forward definitions
 class TiXmlElement;

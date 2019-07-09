@@ -6,10 +6,11 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include <algorithm>
-
 #include "Timer.h"
+
 #include "SystemClock.h"
+
+#include <algorithm>
 
 CTimer::CTimer(std::function<void()> const& callback)
   : CThread("Timer"),

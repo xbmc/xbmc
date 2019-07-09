@@ -6,19 +6,20 @@
  *  See LICENSES/README.md for more information.
  */
 #include "AddonStatusHandler.h"
+
 #include "ServiceBroker.h"
 #include "addons/AddonManager.h"
 #include "addons/settings/GUIDialogAddonSettings.h"
-#include "threads/SingleLock.h"
-#include "messaging/ApplicationMessenger.h"
+#include "dialogs/GUIDialogKaiToast.h"
+#include "dialogs/GUIDialogYesNo.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
-#include "dialogs/GUIDialogYesNo.h"
-#include "dialogs/GUIDialogKaiToast.h"
+#include "messaging/ApplicationMessenger.h"
 #include "messaging/helpers/DialogOKHelper.h"
-#include "utils/log.h"
+#include "threads/SingleLock.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
+#include "utils/log.h"
 
 using namespace KODI::MESSAGING;
 

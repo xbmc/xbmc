@@ -7,15 +7,15 @@
  */
 
 #include "Addon.h"
-#include "LanguageHook.h"
 
+#include "GUIUserMessages.h"
+#include "LanguageHook.h"
 #include "ServiceBroker.h"
 #include "addons/AddonManager.h"
 #include "addons/settings/GUIDialogAddonSettings.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
-#include "GUIUserMessages.h"
 #include "utils/StringUtils.h"
 
 using namespace ADDON;

@@ -8,9 +8,8 @@
 
 #pragma once
 
-#include "swighelper.h"
-
 #include "guilib/GUIEditControl.h"
+#include "swighelper.h"
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 namespace XBMCAddon

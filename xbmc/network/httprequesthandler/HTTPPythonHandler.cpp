@@ -7,19 +7,20 @@
  */
 
 #include "HTTPPythonHandler.h"
+
 #include "URL.h"
 #include "addons/Webinterface.h"
+#include "filesystem/File.h"
 #include "interfaces/generic/ScriptInvocationManager.h"
 #include "interfaces/python/XBPython.h"
-#include "filesystem/File.h"
 #include "network/WebServer.h"
 #include "network/httprequesthandler/HTTPRequestHandlerUtils.h"
 #include "network/httprequesthandler/HTTPWebinterfaceHandler.h"
 #include "network/httprequesthandler/python/HTTPPythonInvoker.h"
 #include "network/httprequesthandler/python/HTTPPythonWsgiInvoker.h"
-#include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
+#include "utils/log.h"
 
 #define MAX_STRING_POST_SIZE 20000
 

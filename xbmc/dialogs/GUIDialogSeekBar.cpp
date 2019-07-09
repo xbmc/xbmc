@@ -6,14 +6,15 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include <math.h>
-
 #include "GUIDialogSeekBar.h"
+
 #include "Application.h"
 #include "GUIInfoManager.h"
-#include "guilib/GUIComponent.h"
 #include "SeekHandler.h"
+#include "guilib/GUIComponent.h"
 #include "guilib/guiinfo/GUIInfoLabels.h"
+
+#include <math.h>
 
 #define POPUP_SEEK_PROGRESS           401
 #define POPUP_SEEK_EPG_EVENT_PROGRESS 402

@@ -6,15 +6,17 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include "utils/log.h"
-#include "ServiceBroker.h"
 #include "VideoSyncAndroid.h"
+
+#include "ServiceBroker.h"
 #include "cores/VideoPlayer/VideoReferenceClock.h"
-#include "utils/TimeUtils.h"
-#include "platform/android/activity/XBMCApp.h"
-#include "windowing/WinSystem.h"
-#include "windowing/GraphicContext.h"
 #include "utils/MathUtils.h"
+#include "utils/TimeUtils.h"
+#include "utils/log.h"
+#include "windowing/GraphicContext.h"
+#include "windowing/WinSystem.h"
+
+#include "platform/android/activity/XBMCApp.h"
 #include "platform/posix/XTimeUtils.h"
 
 

@@ -6,13 +6,14 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include "threads/SystemClock.h"
 #include "MusicSearchDirectory.h"
-#include "music/MusicDatabase.h"
-#include "URL.h"
+
 #include "FileItem.h"
-#include "utils/log.h"
+#include "URL.h"
 #include "guilib/LocalizeStrings.h"
+#include "music/MusicDatabase.h"
+#include "threads/SystemClock.h"
+#include "utils/log.h"
 
 using namespace XFILE;
 

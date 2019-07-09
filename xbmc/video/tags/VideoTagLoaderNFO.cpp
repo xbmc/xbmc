@@ -7,15 +7,16 @@
  */
 
 #include "VideoTagLoaderNFO.h"
+
 #include "FileItem.h"
+#include "NfoFile.h"
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"
 #include "filesystem/StackDirectory.h"
-#include "NfoFile.h"
-#include "video/VideoInfoTag.h"
-#include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
+#include "utils/log.h"
+#include "video/VideoInfoTag.h"
 
 using namespace XFILE;
 

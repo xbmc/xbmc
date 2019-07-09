@@ -6,7 +6,9 @@
  *  See LICENSES/README.md for more information.
  */
 #include "powermanagement/WinIdleTimer.h"
+
 #include "Application.h"
+
 #include <winrt/Windows.System.Display.h>
 
 using namespace winrt::Windows::ApplicationModel::Core;

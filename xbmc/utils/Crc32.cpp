@@ -7,6 +7,7 @@
  */
 
 #include "Crc32.h"
+
 #include "utils/StringUtils.h"
 
 uint32_t  crc_tab[256] =

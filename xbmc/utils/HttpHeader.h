@@ -8,9 +8,9 @@
 
 #pragma once
 
+#include <string>
 #include <utility>
 #include <vector>
-#include <string>
 
 class CHttpHeader
 {

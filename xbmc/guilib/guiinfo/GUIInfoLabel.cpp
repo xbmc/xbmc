@@ -7,8 +7,9 @@
  */
 
 #include "guilib/guiinfo/GUIInfoLabel.h"
-#include "GUIInfoManager.h"
+
 #include "FileItem.h"
+#include "GUIInfoManager.h"
 #include "addons/Skin.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIListItem.h"

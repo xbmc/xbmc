@@ -7,8 +7,9 @@
  */
 
 #include "EventLoop.h"
-#include "XBMCApp.h"
+
 #include "AndroidExtra.h"
+#include "XBMCApp.h"
 
 #include <dlfcn.h>
 

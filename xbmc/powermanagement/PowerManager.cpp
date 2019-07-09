@@ -8,11 +8,8 @@
 
 #include "PowerManager.h"
 
-#include <list>
-#include <memory>
-
-#include "PowerTypes.h"
 #include "Application.h"
+#include "PowerTypes.h"
 #include "ServiceBroker.h"
 #include "cores/AudioEngine/Interfaces/AE.h"
 #include "dialogs/GUIDialogBusy.h"
@@ -24,15 +21,17 @@
 #include "interfaces/builtins/Builtins.h"
 #include "network/Network.h"
 #include "pvr/PVRManager.h"
-#include "ServiceBroker.h"
+#include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "settings/lib/Setting.h"
 #include "settings/lib/SettingDefinitions.h"
 #include "settings/lib/SettingsManager.h"
-#include "settings/Settings.h"
-#include "settings/SettingsComponent.h"
 #include "utils/log.h"
 #include "weather/WeatherManager.h"
 #include "windowing/WinSystem.h"
+
+#include <list>
+#include <memory>
 
 #if defined(TARGET_WINDOWS_DESKTOP)
 extern HWND g_hWnd;

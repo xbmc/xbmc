@@ -7,9 +7,10 @@
  */
 
 #include "GUIToggleButtonControl.h"
-#include "GUIWindowManager.h"
+
 #include "GUIDialog.h"
 #include "GUIInfoManager.h"
+#include "GUIWindowManager.h"
 #include "input/Key.h"
 
 CGUIToggleButtonControl::CGUIToggleButtonControl(int parentID, int controlID, float posX, float posY, float width, float height, const CTextureInfo& textureFocus, const CTextureInfo& textureNoFocus, const CTextureInfo& altTextureFocus, const CTextureInfo& altTextureNoFocus, const CLabelInfo &labelInfo, bool wrapMultiLine)

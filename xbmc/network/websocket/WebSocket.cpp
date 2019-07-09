@@ -6,14 +6,15 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include <string>
-#include <sstream>
-
 #include "WebSocket.h"
+
 #include "utils/EndianSwap.h"
-#include "utils/log.h"
 #include "utils/HttpParser.h"
 #include "utils/StringUtils.h"
+#include "utils/log.h"
+
+#include <sstream>
+#include <string>
 
 #define MASK_FIN      0x80
 #define MASK_RSV1     0x40

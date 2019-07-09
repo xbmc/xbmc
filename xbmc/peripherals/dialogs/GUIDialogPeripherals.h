@@ -8,10 +8,10 @@
 
 #pragma once
 
+#include "FileItem.h"
 #include "dialogs/GUIDialogSelect.h"
 #include "threads/CriticalSection.h"
 #include "utils/Observer.h"
-#include "FileItem.h"
 
 namespace PERIPHERALS
 {

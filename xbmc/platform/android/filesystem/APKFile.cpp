@@ -12,9 +12,10 @@
 //////////////////////////////////////////////////////////////////////
 
 #include "APKFile.h"
-#include "utils/log.h"
+
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
+#include "utils/log.h"
 
 #include <zip.h>
 

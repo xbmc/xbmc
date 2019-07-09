@@ -9,10 +9,10 @@
 #pragma once
 
 #include "DeviceResources.h"
+#include "rendering/RenderSystem.h"
 #include "threads/Condition.h"
 #include "threads/CriticalSection.h"
 #include "utils/Color.h"
-#include "rendering/RenderSystem.h"
 
 #include <wrl/client.h>
 

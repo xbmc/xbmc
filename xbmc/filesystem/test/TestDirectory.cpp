@@ -6,12 +6,12 @@
  *  See LICENSES/README.md for more information.
  */
 
+#include "FileItem.h"
 #include "filesystem/Directory.h"
 #include "filesystem/IDirectory.h"
 #include "filesystem/SpecialProtocol.h"
-#include "FileItem.h"
-#include "utils/URIUtils.h"
 #include "test/TestUtils.h"
+#include "utils/URIUtils.h"
 
 #include <gtest/gtest.h>
 

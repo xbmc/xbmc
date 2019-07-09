@@ -6,14 +6,13 @@
  *  See LICENSES/README.md for more information.
  */
 
+#include "FileItem.h"
 #include "ServiceBroker.h"
-#include "utils/LabelFormatter.h"
 #include "filesystem/File.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
-#include "FileItem.h"
-
 #include "test/TestUtils.h"
+#include "utils/LabelFormatter.h"
 
 #include <gtest/gtest.h>
 

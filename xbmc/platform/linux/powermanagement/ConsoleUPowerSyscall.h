@@ -8,8 +8,8 @@
 
 #pragma once
 
-#include "UPowerSyscall.h"
 #include "DBusUtil.h"
+#include "UPowerSyscall.h"
 
 class CConsoleUPowerSyscall : public CUPowerSyscall
 {

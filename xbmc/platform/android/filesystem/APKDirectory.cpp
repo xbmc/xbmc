@@ -7,12 +7,13 @@
  */
 
 #include "APKDirectory.h"
+
 #include "APKFile.h"
 #include "FileItem.h"
 #include "utils/CharsetConverter.h"
-#include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
+#include "utils/log.h"
 
 #include <zip.h>
 

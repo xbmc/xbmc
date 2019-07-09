@@ -8,14 +8,13 @@
 
 #pragma once
 
+#include "XBDateTime.h"
 #include "guilib/guiinfo/GUIInfoProvider.h"
 
 #include <atomic>
 #include <memory>
 #include <utility>
 #include <vector>
-
-#include "XBDateTime.h"
 
 class CDataCacheCore;
 

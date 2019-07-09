@@ -7,6 +7,7 @@
  */
 
 #include "GUIGameRenderManager.h"
+
 #include "GUIGameSettingsHandle.h"
 #include "GUIGameVideoHandle.h"
 #include "GUIRenderHandle.h"

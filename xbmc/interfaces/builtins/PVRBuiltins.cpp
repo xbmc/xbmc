@@ -8,18 +8,17 @@
 
 #include "PVRBuiltins.h"
 
-#include <algorithm>
-#include <cstdlib>
-
 #include "Application.h"
-#include "guilib/GUIComponent.h"
 #include "GUIInfoManager.h"
 #include "ServiceBroker.h"
+#include "guilib/GUIComponent.h"
 #include "guilib/guiinfo/GUIInfoLabels.h"
-#include "utils/log.h"
-
 #include "pvr/PVRGUIActions.h"
 #include "pvr/PVRManager.h"
+#include "utils/log.h"
+
+#include <algorithm>
+#include <cstdlib>
 
 /*! \brief Search for missing channel icons
  *   \param params (ignored)

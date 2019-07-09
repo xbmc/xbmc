@@ -6,8 +6,9 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include "GUIAudioManager.h"
 #include "GUIComponent.h"
+
+#include "GUIAudioManager.h"
 #include "GUIColorManager.h"
 #include "GUIInfoManager.h"
 #include "GUILargeTextureManager.h"

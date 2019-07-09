@@ -7,12 +7,13 @@
  */
 
 #include "DVDOverlayCodecFFmpeg.h"
+
 #include "DVDOverlayImage.h"
 #include "DVDStreamInfo.h"
-#include "cores/VideoPlayer/Interface/Addon/TimingConstants.h"
 #include "cores/VideoPlayer/Interface/Addon/DemuxPacket.h"
-#include "utils/log.h"
+#include "cores/VideoPlayer/Interface/Addon/TimingConstants.h"
 #include "utils/EndianSwap.h"
+#include "utils/log.h"
 #include "windowing/GraphicContext.h"
 
 CDVDOverlayCodecFFmpeg::CDVDOverlayCodecFFmpeg() : CDVDOverlayCodec("FFmpeg Subtitle Decoder")

@@ -8,11 +8,12 @@
 
 #pragma once
 
-#include <utility>
-#include <Platinum/Source/Devices/MediaConnect/PltMediaConnect.h>
-
 #include "FileItem.h"
 #include "interfaces/IAnnouncer.h"
+
+#include <utility>
+
+#include <Platinum/Source/Devices/MediaConnect/PltMediaConnect.h>
 
 class CVariant;
 class CThumbLoader;

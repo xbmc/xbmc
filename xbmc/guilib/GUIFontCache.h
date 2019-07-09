@@ -13,17 +13,16 @@
 \brief
 */
 
-#include <cstddef>
-#include <cstring>
-#include <stdint.h>
-
-#include <algorithm>
-#include <vector>
-#include <memory>
-#include <cassert>
-
 #include "utils/Color.h"
 #include "utils/TransformMatrix.h"
+
+#include <algorithm>
+#include <cassert>
+#include <cstddef>
+#include <cstring>
+#include <memory>
+#include <stdint.h>
+#include <vector>
 
 #define FONT_CACHE_TIME_LIMIT (1000)
 #define FONT_CACHE_DIST_LIMIT (0.01f)

@@ -8,10 +8,10 @@
 
 #pragma once
 
-#include <memory>
-
-#include "cores/VideoPlayer/VideoRenderers/LinuxRendererGL.h"
 #include "VaapiEGL.h"
+#include "cores/VideoPlayer/VideoRenderers/LinuxRendererGL.h"
+
+#include <memory>
 
 namespace VAAPI
 {

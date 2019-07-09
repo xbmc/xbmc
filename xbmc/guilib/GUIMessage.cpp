@@ -7,6 +7,7 @@
  */
 
 #include "GUIMessage.h"
+
 #include "LocalizeStrings.h"
 
 std::string CGUIMessage::empty_string;

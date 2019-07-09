@@ -6,13 +6,15 @@
  *  See LICENSES/README.md for more information.
  */
 #include "Win32StorageProvider.h"
-#include "guilib/LocalizeStrings.h"
+
 #include "filesystem/SpecialProtocol.h"
-#include "platform/win32/CharsetConverter.h"
+#include "guilib/LocalizeStrings.h"
 #include "storage/MediaManager.h"
 #include "utils/JobManager.h"
-#include "utils/log.h"
 #include "utils/StringUtils.h"
+#include "utils/log.h"
+
+#include "platform/win32/CharsetConverter.h"
 
 #include <SetupAPI.h>
 #include <ShlObj.h>

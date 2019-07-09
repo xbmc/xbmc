@@ -8,10 +8,10 @@
 
 #pragma once
 
-#include <string>
-
 #include "music/infoscanner/MusicInfoScanner.h"
 #include "music/jobs/MusicLibraryJob.h"
+
+#include <string>
 
 /*!
  \brief Music library job implementation for scanning items.

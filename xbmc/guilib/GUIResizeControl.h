@@ -13,8 +13,8 @@
 \brief
 */
 
-#include "GUITexture.h"
 #include "GUIControl.h"
+#include "GUITexture.h"
 
 #define DIRECTION_NONE 0
 #define DIRECTION_UP 1

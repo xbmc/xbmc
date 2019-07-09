@@ -8,8 +8,8 @@
 
 #include "ModuleXbmcplugin.h"
 
-#include "filesystem/PluginDirectory.h"
 #include "FileItem.h"
+#include "filesystem/PluginDirectory.h"
 
 namespace XBMCAddon
 {

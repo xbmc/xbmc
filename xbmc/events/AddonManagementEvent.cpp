@@ -7,6 +7,7 @@
  */
 
 #include "AddonManagementEvent.h"
+
 #include "addons/GUIDialogAddonInfo.h"
 #include "filesystem/AddonsDirectory.h"
 #include "guilib/LocalizeStrings.h"

@@ -13,13 +13,13 @@
 \brief
 */
 
+#include "utils/Color.h"
+
 #include <assert.h>
 #include <math.h>
-#include <string>
 #include <stdint.h>
+#include <string>
 #include <vector>
-
-#include "utils/Color.h"
 
 typedef uint32_t character_t;
 typedef std::vector<character_t> vecText;

@@ -8,9 +8,9 @@
 
 #pragma once
 
-#include "system_gl.h"
-
 #include <stack>
+
+#include "system_gl.h"
 
 class TransformMatrix;
 

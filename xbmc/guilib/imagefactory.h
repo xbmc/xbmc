@@ -8,9 +8,9 @@
 
 #pragma once
 
+#include "URL.h"
 #include "iimage.h"
 #include "threads/CriticalSection.h"
-#include "URL.h"
 
 class ImageFactory
 {

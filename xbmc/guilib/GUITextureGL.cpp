@@ -7,12 +7,13 @@
  */
 
 #include "GUITextureGL.h"
+
 #include "ServiceBroker.h"
 #include "Texture.h"
-#include "utils/log.h"
+#include "rendering/gl/RenderSystemGL.h"
 #include "utils/GLUtils.h"
 #include "utils/Geometry.h"
-#include "rendering/gl/RenderSystemGL.h"
+#include "utils/log.h"
 #include "windowing/WinSystem.h"
 
 #define BUFFER_OFFSET(i) ((char *)NULL + (i))

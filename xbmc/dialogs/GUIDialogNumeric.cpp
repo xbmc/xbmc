@@ -8,20 +8,20 @@
 
 #include "GUIDialogNumeric.h"
 
-#include <cassert>
-
 #include "ServiceBroker.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUILabelControl.h"
 #include "guilib/GUIWindowManager.h"
+#include "guilib/LocalizeStrings.h"
+#include "input/Key.h"
 #include "input/XBMC_vkeys.h"
+#include "interfaces/AnnouncementManager.h"
+#include "messaging/helpers/DialogOKHelper.h"
 #include "utils/Digest.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
-#include "input/Key.h"
-#include "guilib/LocalizeStrings.h"
-#include "interfaces/AnnouncementManager.h"
-#include "messaging/helpers/DialogOKHelper.h"
+
+#include <cassert>
 
 #define CONTROL_HEADING_LABEL  1
 #define CONTROL_INPUT_LABEL    4

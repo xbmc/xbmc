@@ -8,8 +8,8 @@
 
 #pragma once
 
-#include "input/joysticks/interfaces/IInputReceiver.h"
 #include "input/joysticks/JoystickTypes.h"
+#include "input/joysticks/interfaces/IInputReceiver.h"
 
 #include <map>
 

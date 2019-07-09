@@ -10,7 +10,6 @@
 
 #include "AddonClass.h"
 #include "CallbackHandler.h"
-
 #include "threads/Event.h"
 
 /**

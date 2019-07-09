@@ -8,14 +8,15 @@
 
 #pragma once
 
+#include "settings/lib/ISettingCallback.h"
+#include "threads/CriticalSection.h"
+#include "threads/SystemClock.h"
+#include "utils/Stopwatch.h"
+#include "windowing/WinSystem.h"
+
 #include <string>
 #include <vector>
 
-#include "windowing/WinSystem.h"
-#include "utils/Stopwatch.h"
-#include "threads/CriticalSection.h"
-#include "threads/SystemClock.h"
-#include "settings/lib/ISettingCallback.h"
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 

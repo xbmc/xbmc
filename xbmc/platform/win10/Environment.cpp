@@ -12,6 +12,7 @@
  */
 
 #include "platform/Environment.h"
+
 #include "platform/win32/CharsetConverter.h"
 
 // --------------------- Internal Function ---------------------

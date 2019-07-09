@@ -8,12 +8,12 @@
 
 #pragma once
 
+#include "input/joysticks/DriverPrimitive.h"
 #include "input/joysticks/interfaces/IButtonMapCallback.h"
 #include "input/joysticks/interfaces/IDriverHandler.h"
-#include "input/joysticks/DriverPrimitive.h"
 #include "input/keyboard/interfaces/IKeyboardDriverHandler.h"
-#include "input/mouse/interfaces/IMouseDriverHandler.h"
 #include "input/mouse/MouseTypes.h"
+#include "input/mouse/interfaces/IMouseDriverHandler.h"
 
 #include <map>
 #include <memory>

@@ -7,18 +7,19 @@
  */
 
 #include "Win32File.h"
-#include "platform/win32/WIN32Util.h"
-#include "platform/win32/CharsetConverter.h"
-#include "utils/log.h"
+
 #include "utils/auto_buffer.h"
+#include "utils/log.h"
+
+#include "platform/win32/CharsetConverter.h"
+#include "platform/win32/WIN32Util.h"
+
+#include <cassert>
+#include <wchar.h>
 
 #include <Windows.h>
-
-#include <sys/stat.h>
-
 #include <intsafe.h>
-#include <wchar.h>
-#include <cassert>
+#include <sys/stat.h>
 
 
 using namespace XFILE;

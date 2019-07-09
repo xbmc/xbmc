@@ -7,9 +7,10 @@
  */
 
 #include "PipeFile.h"
-#include "threads/SingleLock.h"
+
 #include "PipesManager.h"
 #include "URL.h"
+#include "threads/SingleLock.h"
 
 using namespace XFILE;
 

@@ -8,8 +8,8 @@
 
 #pragma once
 
-#import <CoreFoundation/CFNumber.h>
 #import <CoreFoundation/CFDictionary.h>
+#import <CoreFoundation/CFNumber.h>
 
 Boolean   GetDictionaryBoolean(CFDictionaryRef theDict, const void* key);
 long      GetDictionaryLong(CFDictionaryRef theDict, const void* key);

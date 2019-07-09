@@ -7,23 +7,24 @@
  */
 
 #include "GameWindowFullScreen.h"
+
+#include "Application.h" //! @todo Remove me
+#include "ApplicationPlayer.h" //! @todo Remove me
+#include "GUIInfoManager.h" //! @todo Remove me
 #include "GameWindowFullScreenText.h"
+#include "ServiceBroker.h"
 #include "cores/RetroPlayer/guibridge/GUIGameRenderManager.h"
 #include "cores/RetroPlayer/guibridge/GUIRenderHandle.h"
-#include "windowing/GraphicContext.h" //! @todo Remove me
 #include "games/GameServices.h"
 #include "games/GameSettings.h"
-#include "guilib/GUIDialog.h"
-#include "guilib/GUIControl.h"
 #include "guilib/GUIComponent.h"
+#include "guilib/GUIControl.h"
+#include "guilib/GUIDialog.h"
 #include "guilib/GUIWindowManager.h" //! @todo Remove me
 #include "guilib/WindowIDs.h"
 #include "input/actions/Action.h"
 #include "input/actions/ActionIDs.h"
-#include "Application.h" //! @todo Remove me
-#include "ApplicationPlayer.h" //! @todo Remove me
-#include "GUIInfoManager.h" //! @todo Remove me
-#include "ServiceBroker.h"
+#include "windowing/GraphicContext.h" //! @todo Remove me
 
 using namespace KODI;
 using namespace KODI::GUILIB;

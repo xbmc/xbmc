@@ -8,11 +8,12 @@
 
 #pragma once
 
+#include "ServiceBroker.h"
 #include "cores/AudioEngine/Engines/ActiveAE/ActiveAE.h"
+#include "utils/log.h"
+
 #include "platform/win32/CharsetConverter.h"
 #include "platform/win32/powermanagement/Win32PowerSyscall.h"
-#include "ServiceBroker.h"
-#include "utils/log.h"
 
 #include <mmdeviceapi.h>
 #include <wrl/client.h>

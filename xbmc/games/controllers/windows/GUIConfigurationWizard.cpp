@@ -7,20 +7,21 @@
  */
 
 #include "GUIConfigurationWizard.h"
-#include "games/controllers/dialogs/GUIDialogAxisDetection.h"
-#include "games/controllers/guicontrols/GUIFeatureButton.h"
+
+#include "ServiceBroker.h"
 #include "games/controllers/Controller.h"
 #include "games/controllers/ControllerFeature.h"
+#include "games/controllers/dialogs/GUIDialogAxisDetection.h"
+#include "games/controllers/guicontrols/GUIFeatureButton.h"
+#include "input/IKeymap.h"
+#include "input/InputManager.h"
+#include "input/joysticks/JoystickUtils.h"
 #include "input/joysticks/interfaces/IButtonMap.h"
 #include "input/joysticks/interfaces/IButtonMapCallback.h"
-#include "input/joysticks/JoystickUtils.h"
 #include "input/keyboard/KeymapActionMap.h"
-#include "input/InputManager.h"
-#include "input/IKeymap.h"
 #include "peripherals/Peripherals.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
-#include "ServiceBroker.h"
 
 using namespace KODI;
 using namespace GAME;

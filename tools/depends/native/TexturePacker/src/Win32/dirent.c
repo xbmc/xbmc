@@ -17,11 +17,12 @@
     But that said, if there are any problems please get in touch.
 */
 
-#include <dirent.h>
 #include <errno.h>
-#include <io.h> /* _findfirst and _findnext set errno iff they return -1 */
 #include <stdlib.h>
 #include <string.h>
+
+#include <dirent.h>
+#include <io.h> /* _findfirst and _findnext set errno iff they return -1 */
 
 #ifdef __cplusplus
 extern "C"

@@ -7,11 +7,12 @@
  */
 
 #include "VideoInfoTagLoaderFactory.h"
+
+#include "FileItem.h"
+#include "ServiceBroker.h"
 #include "VideoTagLoaderFFmpeg.h"
 #include "VideoTagLoaderNFO.h"
 #include "VideoTagLoaderPlugin.h"
-#include "FileItem.h"
-#include "ServiceBroker.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 

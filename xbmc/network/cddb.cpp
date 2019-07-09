@@ -6,24 +6,26 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include <taglib/id3v1genres.h>
 #include "cddb.h"
+
 #include "CompileInfo.h"
-#include "network/DNSNameCache.h"
 #include "ServiceBroker.h"
+#include "filesystem/File.h"
+#include "network/DNSNameCache.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
-#include "utils/StringUtils.h"
-#include "utils/URIUtils.h"
-#include "filesystem/File.h"
 #include "utils/CharsetConverter.h"
-#include "utils/log.h"
+#include "utils/StringUtils.h"
 #include "utils/SystemInfo.h"
+#include "utils/URIUtils.h"
+#include "utils/log.h"
 
 #include <memory>
-#include <sys/socket.h>
-#include <netinet/in.h>
+
 #include <netdb.h>
+#include <netinet/in.h>
+#include <sys/socket.h>
+#include <taglib/id3v1genres.h>
 
 using namespace MEDIA_DETECT;
 using namespace CDDB;

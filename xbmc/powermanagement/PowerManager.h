@@ -8,12 +8,12 @@
 
 #pragma once
 
+#include "IPowerSyscall.h"
+
 #include <memory>
 #include <string>
 #include <utility>
 #include <vector>
-
-#include "IPowerSyscall.h"
 
 class CFileItem;
 class CSetting;

@@ -8,10 +8,10 @@
 
 #pragma once
 
-#include <vector>
-
 #include "IListProvider.h"
 #include "guilib/GUIStaticItem.h"
+
+#include <vector>
 
 class CStaticListProvider : public IListProvider
 {

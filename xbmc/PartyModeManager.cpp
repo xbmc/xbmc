@@ -8,31 +8,31 @@
 
 #include "PartyModeManager.h"
 
-#include <algorithm>
-
 #include "Application.h"
-#include "dialogs/GUIDialogProgress.h"
 #include "FileItem.h"
+#include "GUIUserMessages.h"
+#include "PlayListPlayer.h"
+#include "ServiceBroker.h"
+#include "dialogs/GUIDialogProgress.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
-#include "GUIUserMessages.h"
 #include "interfaces/AnnouncementManager.h"
 #include "messaging/helpers/DialogOKHelper.h"
 #include "music/MusicDatabase.h"
 #include "music/tags/MusicInfoTag.h"
-#include "PlayListPlayer.h"
 #include "playlists/PlayList.h"
 #include "playlists/SmartPlayList.h"
 #include "profiles/ProfileManager.h"
 #include "settings/SettingsComponent.h"
 #include "threads/SystemClock.h"
-#include "utils/log.h"
 #include "utils/Random.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
+#include "utils/log.h"
 #include "video/VideoDatabase.h"
 #include "video/VideoInfoTag.h"
-#include "ServiceBroker.h"
+
+#include <algorithm>
 
 using namespace KODI::MESSAGING;
 using namespace PLAYLIST;

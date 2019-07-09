@@ -8,8 +8,9 @@
 
 #pragma once
 
-#include <string>
 #include "utils/JobManager.h"
+
+#include <string>
 
 class CFileItem;
 

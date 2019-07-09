@@ -7,6 +7,7 @@
  */
 
 #include "VC1BitstreamParser.h"
+
 #include "BitstreamReader.h"
 
 enum

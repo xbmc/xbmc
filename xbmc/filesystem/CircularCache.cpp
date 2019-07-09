@@ -6,11 +6,12 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include <algorithm>
-#include "threads/SystemClock.h"
-#include "threads/SingleLock.h"
 #include "CircularCache.h"
 
+#include "threads/SingleLock.h"
+#include "threads/SystemClock.h"
+
+#include <algorithm>
 #include <string.h>
 
 using namespace XFILE;

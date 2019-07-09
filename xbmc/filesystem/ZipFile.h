@@ -8,10 +8,11 @@
 
 #pragma once
 
-#include "IFile.h"
-#include <zlib.h>
 #include "File.h"
+#include "IFile.h"
 #include "ZipManager.h"
+
+#include <zlib.h>
 
 namespace XFILE
 {

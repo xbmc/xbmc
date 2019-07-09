@@ -8,8 +8,8 @@
 
 #pragma once
 
-#include "video/VideoInfoTag.h"
 #include "AddonClass.h"
+#include "video/VideoInfoTag.h"
 
 namespace XBMCAddon
 {

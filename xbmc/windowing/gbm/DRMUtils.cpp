@@ -6,22 +6,24 @@
  *  See LICENSES/README.md for more information.
  */
 
+#include "DRMUtils.h"
+
+#include "utils/StringUtils.h"
+#include "utils/log.h"
+#include "windowing/GraphicContext.h"
+
+#include "platform/posix/XTimeUtils.h"
+
 #include <errno.h>
-#include <fcntl.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <drm_mode.h>
+
 #include <EGL/egl.h>
+#include <drm_mode.h>
+#include <fcntl.h>
 #include <unistd.h>
-
-#include "platform/posix/XTimeUtils.h"
-#include "utils/log.h"
-#include "utils/StringUtils.h"
-#include "windowing/GraphicContext.h"
-
-#include "DRMUtils.h"
 
 using namespace KODI::WINDOWING::GBM;
 

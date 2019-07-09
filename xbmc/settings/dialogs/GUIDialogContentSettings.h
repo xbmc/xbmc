@@ -8,10 +8,10 @@
 
 #pragma once
 
-#include <map>
-
 #include "addons/Scraper.h"
 #include "settings/dialogs/GUIDialogSettingsManualBase.h"
+
+#include <map>
 
 namespace VIDEO
 {

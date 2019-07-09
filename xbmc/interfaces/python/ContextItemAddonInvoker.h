@@ -8,8 +8,9 @@
 
 #pragma once
 
-#include <memory>
 #include "interfaces/python/AddonPythonInvoker.h"
+
+#include <memory>
 
 class CFileItem;
 typedef std::shared_ptr<CFileItem> CFileItemPtr;

@@ -9,6 +9,7 @@
 #pragma once
 
 #include "IFileDirectory.h"
+
 #include <string>
 
 class CFileItem;

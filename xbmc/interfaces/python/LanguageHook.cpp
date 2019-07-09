@@ -8,11 +8,11 @@
 
 
 #include "LanguageHook.h"
-#include "CallbackHandler.h"
-#include "XBPython.h"
 
-#include "interfaces/legacy/AddonUtils.h"
+#include "CallbackHandler.h"
 #include "PyContext.h"
+#include "XBPython.h"
+#include "interfaces/legacy/AddonUtils.h"
 
 namespace XBMCAddon
 {

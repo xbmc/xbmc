@@ -7,6 +7,7 @@
  */
 
 #include "GUIGameController.h"
+
 #include "games/controllers/Controller.h"
 #include "games/controllers/ControllerLayout.h"
 #include "threads/SingleLock.h"

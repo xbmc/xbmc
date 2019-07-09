@@ -7,6 +7,7 @@
  */
 
 #include "GameLoop.h"
+
 #include "threads/SystemClock.h"
 
 #include <cmath>

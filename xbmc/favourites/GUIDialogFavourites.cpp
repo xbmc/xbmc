@@ -7,19 +7,20 @@
  */
 
 #include "GUIDialogFavourites.h"
+
+#include "ContextMenuManager.h"
+#include "FileItem.h"
+#include "ServiceBroker.h"
 #include "dialogs/GUIDialogContextMenu.h"
 #include "dialogs/GUIDialogFileBrowser.h"
-#include "ServiceBroker.h"
 #include "favourites/FavouritesService.h"
 #include "filesystem/Directory.h"
 #include "guilib/GUIComponent.h"
-#include "guilib/GUIWindowManager.h"
 #include "guilib/GUIKeyboardFactory.h"
-#include "input/Key.h"
-#include "FileItem.h"
+#include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
+#include "input/Key.h"
 #include "storage/MediaManager.h"
-#include "ContextMenuManager.h"
 #include "utils/Variant.h"
 
 using namespace XFILE;

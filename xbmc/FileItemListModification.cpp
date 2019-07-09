@@ -8,8 +8,8 @@
 
 #include "FileItemListModification.h"
 
-#include "playlists/SmartPlaylistFileItemListModifier.h"
 #include "music/windows/MusicFileItemListModifier.h"
+#include "playlists/SmartPlaylistFileItemListModifier.h"
 #include "video/windows/VideoFileItemListModifier.h"
 
 CFileItemListModification::CFileItemListModification()

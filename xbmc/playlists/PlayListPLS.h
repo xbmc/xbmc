@@ -8,10 +8,10 @@
 
 #pragma once
 
+#include "PlayList.h"
+
 #include <string>
 #include <vector>
-
-#include "PlayList.h"
 
 namespace PLAYLIST
 {

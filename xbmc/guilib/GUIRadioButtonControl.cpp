@@ -7,6 +7,7 @@
  */
 
 #include "GUIRadioButtonControl.h"
+
 #include "GUIInfoManager.h"
 #include "LocalizeStrings.h"
 #include "input/Key.h"

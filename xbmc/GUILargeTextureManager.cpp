@@ -6,15 +6,16 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include "threads/SystemClock.h"
 #include "GUILargeTextureManager.h"
+
+#include "TextureCache.h"
 #include "guilib/Texture.h"
 #include "threads/SingleLock.h"
-#include "utils/TimeUtils.h"
+#include "threads/SystemClock.h"
 #include "utils/JobManager.h"
-#include "windowing/GraphicContext.h"
+#include "utils/TimeUtils.h"
 #include "utils/log.h"
-#include "TextureCache.h"
+#include "windowing/GraphicContext.h"
 
 #include <cassert>
 

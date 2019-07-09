@@ -7,12 +7,13 @@
  */
 
 #include "GUIDialogSlider.h"
+
+#include "ServiceBroker.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUISliderControl.h"
 #include "guilib/GUIWindowManager.h"
-#include "input/Key.h"
 #include "guilib/LocalizeStrings.h"
-#include "ServiceBroker.h"
+#include "input/Key.h"
 
 #define CONTROL_HEADING 10
 #define CONTROL_SLIDER  11

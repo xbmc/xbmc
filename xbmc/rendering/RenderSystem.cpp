@@ -7,12 +7,13 @@
  */
 
 #include "RenderSystem.h"
+
+#include "Util.h"
+#include "guilib/GUIFontManager.h"
 #include "guilib/GUIImage.h"
 #include "guilib/GUILabelControl.h"
-#include "guilib/GUIFontManager.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
-#include "Util.h"
 
 CRenderSystemBase::CRenderSystemBase()
 {

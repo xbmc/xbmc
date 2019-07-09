@@ -7,23 +7,23 @@
  */
 
 #include "GUIViewStateMusic.h"
+
+#include "FileItem.h"
 #include "PlayListPlayer.h"
 #include "ServiceBroker.h"
+#include "filesystem/Directory.h"
+#include "filesystem/MusicDatabaseDirectory.h"
+#include "filesystem/VideoDatabaseDirectory.h"
+#include "guilib/LocalizeStrings.h"
+#include "guilib/WindowIDs.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/MediaSourceSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
-#include "FileItem.h"
-#include "guilib/WindowIDs.h"
-#include "guilib/LocalizeStrings.h"
 #include "utils/FileExtensionProvider.h"
-#include "utils/log.h"
 #include "utils/SortUtils.h"
+#include "utils/log.h"
 #include "view/ViewStateSettings.h"
-
-#include "filesystem/Directory.h"
-#include "filesystem/MusicDatabaseDirectory.h"
-#include "filesystem/VideoDatabaseDirectory.h"
 
 using namespace XFILE;
 using namespace MUSICDATABASEDIRECTORY;

@@ -6,11 +6,8 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include <set>
-#include <string>
-#include <vector>
-
 #include "GUIDialogSettingsBase.h"
+
 #include "GUIUserMessages.h"
 #include "ServiceBroker.h"
 #include "dialogs/GUIDialogYesNo.h"
@@ -24,13 +21,17 @@
 #include "guilib/GUISpinControlEx.h"
 #include "guilib/GUIToggleButtonControl.h"
 #include "guilib/GUIWindowManager.h"
-#include "input/Key.h"
 #include "guilib/LocalizeStrings.h"
+#include "input/Key.h"
 #include "settings/SettingControl.h"
 #include "settings/lib/SettingSection.h"
 #include "settings/windows/GUIControlSettings.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
+
+#include <set>
+#include <string>
+#include <vector>
 
 #if defined(TARGET_WINDOWS) // disable 4355: 'this' used in base member initializer list
 #pragma warning(push)

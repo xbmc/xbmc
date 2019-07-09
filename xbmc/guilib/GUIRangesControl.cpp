@@ -8,10 +8,10 @@
 
 #include "GUIRangesControl.h"
 
-#include "utils/StringUtils.h"
-#include "utils/log.h"
 #include "GUIInfoManager.h"
 #include "ServiceBroker.h"
+#include "utils/StringUtils.h"
+#include "utils/log.h"
 
 #include <cmath>
 

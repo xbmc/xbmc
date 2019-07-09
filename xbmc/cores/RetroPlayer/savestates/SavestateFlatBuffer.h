@@ -10,9 +10,9 @@
 
 #include "ISavestate.h"
 
-#include <flatbuffers/flatbuffers.h>
-
 #include <memory>
+
+#include <flatbuffers/flatbuffers.h>
 
 namespace flatbuffers
 {

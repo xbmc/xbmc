@@ -8,16 +8,16 @@
 
 #pragma once
 
-#include <map>
-#include <string>
-#include <utility>
-#include <vector>
-
 #include "dbwrappers/Database.h"
 #include "dbwrappers/DatabaseQuery.h"
 #include "settings/dialogs/GUIDialogSettingsManualBase.h"
 #include "settings/lib/SettingType.h"
 #include "utils/DatabaseUtils.h"
+
+#include <map>
+#include <string>
+#include <utility>
+#include <vector>
 
 class CDbUrl;
 class CSetting;

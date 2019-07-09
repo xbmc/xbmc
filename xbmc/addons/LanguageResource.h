@@ -8,10 +8,10 @@
 
 #pragma once
 
-#include <set>
-
 #include "addons/Resource.h"
 #include "utils/Locale.h"
+
+#include <set>
 
 namespace ADDON
 {

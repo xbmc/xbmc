@@ -8,9 +8,9 @@
 
 #pragma once
 
-#include <memory>
-
 #include "guilib/GUIWindow.h"
+
+#include <memory>
 
 class CGUITextLayout;
 class CGUIImage;

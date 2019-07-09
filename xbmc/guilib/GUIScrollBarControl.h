@@ -13,8 +13,8 @@
 \brief
 */
 
-#include "GUITexture.h"
 #include "GUIControl.h"
+#include "GUITexture.h"
 
 /*!
  \ingroup controls

@@ -6,11 +6,12 @@
  *  See LICENSES/README.md for more information.
  */
 
+#include "ILanguageInvoker.h"
+
+#include "interfaces/generic/ILanguageInvocationHandler.h"
+
 #include <string>
 #include <vector>
-
-#include "ILanguageInvoker.h"
-#include "interfaces/generic/ILanguageInvocationHandler.h"
 
 ILanguageInvoker::ILanguageInvoker(ILanguageInvocationHandler *invocationHandler)
   : m_id(-1),

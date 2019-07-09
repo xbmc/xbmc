@@ -11,9 +11,11 @@
  */
 
 #include "dataset.h"
+
 #include "utils/log.h"
-#include <cstring>
+
 #include <algorithm>
+#include <cstring>
 
 #ifndef __GNUC__
 #pragma warning (disable:4800)

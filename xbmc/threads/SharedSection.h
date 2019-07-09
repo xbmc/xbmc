@@ -9,8 +9,8 @@
 #pragma once
 
 #include "threads/Condition.h"
-#include "threads/SingleLock.h"
 #include "threads/Helpers.h"
+#include "threads/SingleLock.h"
 
 /**
  * A CSharedSection is a mutex that satisfies the Shared Lockable concept (see Lockables.h).

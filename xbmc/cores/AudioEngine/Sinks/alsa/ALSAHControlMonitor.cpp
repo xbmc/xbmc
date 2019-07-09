@@ -6,11 +6,13 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include "cores/AudioEngine/Engines/ActiveAE/ActiveAE.h"
 #include "ALSAHControlMonitor.h"
-#include "platform/linux/FDEventMonitor.h"
-#include "utils/log.h"
+
 #include "ServiceBroker.h"
+#include "cores/AudioEngine/Engines/ActiveAE/ActiveAE.h"
+#include "utils/log.h"
+
+#include "platform/linux/FDEventMonitor.h"
 
 CALSAHControlMonitor::CALSAHControlMonitor() = default;
 

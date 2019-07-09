@@ -6,10 +6,11 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include <map>
-
 #include "HTTPRequestHandlerUtils.h"
+
 #include "utils/StringUtils.h"
+
+#include <map>
 
 std::string HTTPRequestHandlerUtils::GetRequestHeaderValue(struct MHD_Connection *connection, enum MHD_ValueKind kind, const std::string &key)
 {

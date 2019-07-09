@@ -11,13 +11,12 @@
 #include <array>
 #include <cstdlib>
 #include <cstring>
-
 #include <stdio.h>
-#include <unistd.h>
 
 #include <mach/mach.h>
 #include <sys/sysctl.h>
 #include <sys/types.h>
+#include <unistd.h>
 
 namespace KODI
 {

@@ -8,15 +8,15 @@
 
 #pragma once
 
-#include "DVDInputStream.h"
-#include "DVDDemuxers/DVDDemux.h"
-#include "../IVideoPlayer.h"
 #include "../DVDCodecs/Overlay/DVDOverlaySpu.h"
-#include <string>
+#include "../IVideoPlayer.h"
+#include "DVDDemuxers/DVDDemux.h"
+#include "DVDInputStream.h"
+#include "DVDInputStreamFile.h"
+#include "DllDvdNav.h"
 #include "utils/Geometry.h"
 
-#include "DllDvdNav.h"
-#include "DVDInputStreamFile.h"
+#include <string>
 
 #define DVD_VIDEO_BLOCKSIZE         DVD_VIDEO_LB_LEN // 2048 bytes
 

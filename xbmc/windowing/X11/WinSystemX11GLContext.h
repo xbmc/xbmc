@@ -9,11 +9,13 @@
 #pragma once
 
 #include "WinSystemX11.h"
+#include "rendering/gl/RenderSystemGL.h"
+
+#include "platform/linux/OptionalsReg.h"
+
+#include <memory>
 
 #include <EGL/egl.h>
-#include "rendering/gl/RenderSystemGL.h"
-#include "platform/linux/OptionalsReg.h"
-#include <memory>
 
 class CGLContext;
 class CVaapiProxy;

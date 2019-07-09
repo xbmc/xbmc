@@ -8,15 +8,15 @@
 
 #pragma once
 
-#include <map>
-#include <string>
-
 #include "ViewState.h"
 #include "events/IEvent.h"
-#include "windowing/GraphicContext.h"
 #include "settings/lib/ISubSettings.h"
 #include "settings/lib/Setting.h"
 #include "threads/CriticalSection.h"
+#include "windowing/GraphicContext.h"
+
+#include <map>
+#include <string>
 
 class TiXmlNode;
 

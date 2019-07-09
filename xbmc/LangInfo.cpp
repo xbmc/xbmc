@@ -8,31 +8,31 @@
 
 #include "LangInfo.h"
 
-#include <stdexcept>
-#include <algorithm>
-
+#include "Application.h"
+#include "ServiceBroker.h"
 #include "addons/AddonInstaller.h"
 #include "addons/AddonManager.h"
 #include "addons/LanguageResource.h"
 #include "addons/RepositoryUpdater.h"
-#include "Application.h"
-#include "ServiceBroker.h"
 #include "guilib/LocalizeStrings.h"
 #include "messaging/ApplicationMessenger.h"
 #include "pvr/PVRManager.h"
 #include "settings/AdvancedSettings.h"
+#include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "settings/lib/Setting.h"
 #include "settings/lib/SettingDefinitions.h"
-#include "settings/Settings.h"
 #include "utils/CharsetConverter.h"
 #include "utils/LangCodeExpander.h"
-#include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/XBMCTinyXML.h"
 #include "utils/XMLUtils.h"
+#include "utils/log.h"
 #include "weather/WeatherManager.h"
+
+#include <algorithm>
+#include <stdexcept>
 
 using namespace PVR;
 using namespace KODI::MESSAGING;

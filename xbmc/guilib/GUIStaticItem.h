@@ -13,13 +13,13 @@
  \brief
  */
 
-#include <utility>
-#include <vector>
-
+#include "FileItem.h"
 #include "GUIAction.h"
 #include "guilib/guiinfo/GUIInfoLabel.h"
 #include "interfaces/info/InfoBool.h"
-#include "FileItem.h"
+
+#include <utility>
+#include <vector>
 
 class TiXmlElement;
 

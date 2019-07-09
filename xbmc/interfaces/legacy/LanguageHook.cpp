@@ -7,6 +7,7 @@
  */
 
 #include "LanguageHook.h"
+
 #include "utils/GlobalsHandling.h"
 
 namespace XBMCAddon

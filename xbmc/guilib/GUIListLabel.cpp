@@ -7,8 +7,10 @@
  */
 
 #include "GUIListLabel.h"
-#include <limits>
+
 #include "addons/Skin.h"
+
+#include <limits>
 
 using namespace KODI::GUILIB;
 

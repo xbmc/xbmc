@@ -6,8 +6,8 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include "utils/Stopwatch.h"
 #include "threads/Thread.h"
+#include "utils/Stopwatch.h"
 
 #include <gtest/gtest.h>
 

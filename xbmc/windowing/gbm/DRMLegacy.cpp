@@ -6,22 +6,23 @@
  *  See LICENSES/README.md for more information.
  */
 
+#include "DRMLegacy.h"
+
+#include "guilib/gui3d.h"
+#include "settings/Settings.h"
+#include "utils/log.h"
+
 #include <errno.h>
-#include <fcntl.h>
-#include <poll.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <drm_mode.h>
+
 #include <EGL/egl.h>
+#include <drm_mode.h>
+#include <fcntl.h>
+#include <poll.h>
 #include <unistd.h>
-
-#include "guilib/gui3d.h"
-#include "utils/log.h"
-#include "settings/Settings.h"
-
-#include "DRMLegacy.h"
 
 using namespace KODI::WINDOWING::GBM;
 

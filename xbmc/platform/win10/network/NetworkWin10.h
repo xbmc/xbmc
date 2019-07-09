@@ -9,12 +9,13 @@
 #pragma once
 
 #include "network/Network.h"
-#include "utils/stopwatch.h"
 #include "threads/CriticalSection.h"
+#include "utils/stopwatch.h"
 
-#include <IPTypes.h>
 #include <string>
 #include <vector>
+
+#include <IPTypes.h>
 #include <winrt/Windows.Networking.Connectivity.h>
 
 class CNetworkWin10;

@@ -8,13 +8,13 @@
 
 #pragma once
 
+#include "DBusMessage.h"
+#include "utils/Variant.h"
+
 #include <memory>
 #include <string>
 
 #include <dbus/dbus.h>
-
-#include "DBusMessage.h"
-#include "utils/Variant.h"
 
 class CDBusUtil
 {

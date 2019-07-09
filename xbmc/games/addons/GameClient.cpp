@@ -7,19 +7,23 @@
  */
 
 #include "GameClient.h"
+
+#include "FileItem.h"
 #include "GameClientCallbacks.h"
 #include "GameClientInGameSaves.h"
 #include "GameClientProperties.h"
 #include "GameClientTranslator.h"
+#include "ServiceBroker.h"
+#include "URL.h"
 #include "addons/AddonManager.h"
 #include "addons/BinaryAddonCache.h"
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"
 #include "filesystem/SpecialProtocol.h"
+#include "games/GameServices.h"
 #include "games/addons/input/GameClientInput.h"
 #include "games/addons/streams/GameClientStreams.h"
 #include "games/addons/streams/IGameClientStream.h"
-#include "games/GameServices.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "guilib/WindowIDs.h"
@@ -28,12 +32,9 @@
 #include "messaging/ApplicationMessenger.h"
 #include "messaging/helpers/DialogOKHelper.h"
 #include "threads/SingleLock.h"
-#include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
-#include "FileItem.h"
-#include "ServiceBroker.h"
-#include "URL.h"
+#include "utils/log.h"
 
 #include <algorithm>
 #include <cstring>

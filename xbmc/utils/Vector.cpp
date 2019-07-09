@@ -6,9 +6,9 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include <math.h>
-
 #include "Vector.h"
+
+#include <math.h>
 
 CVector& CVector::operator+=(const CVector &other)
 {

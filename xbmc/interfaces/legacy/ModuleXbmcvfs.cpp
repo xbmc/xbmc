@@ -7,13 +7,14 @@
  */
 
 #include "ModuleXbmcvfs.h"
+
 #include "LanguageHook.h"
-#include "filesystem/File.h"
-#include "filesystem/Directory.h"
-#include "utils/FileUtils.h"
-#include "utils/URIUtils.h"
 #include "URL.h"
 #include "Util.h"
+#include "filesystem/Directory.h"
+#include "filesystem/File.h"
+#include "utils/FileUtils.h"
+#include "utils/URIUtils.h"
 
 namespace XBMCAddon
 {

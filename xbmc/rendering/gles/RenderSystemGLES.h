@@ -8,12 +8,13 @@
 
 #pragma once
 
-#include "system_gl.h"
+#include "GLESShader.h"
 #include "rendering/RenderSystem.h"
 #include "utils/Color.h"
-#include "GLESShader.h"
 
 #include <array>
+
+#include "system_gl.h"
 
 enum ESHADERMETHOD
 {

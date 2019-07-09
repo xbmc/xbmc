@@ -9,18 +9,19 @@
 #include "RendererMediaCodecSurface.h"
 
 #include "../RenderCapture.h"
+#include "../RenderFactory.h"
 #include "../RenderFlags.h"
-#include "windowing/GraphicContext.h"
+#include "DVDCodecs/Video/DVDVideoCodecAndroidMediaCodec.h"
 #include "rendering/RenderSystem.h"
 #include "settings/MediaSettings.h"
-#include "platform/android/activity/XBMCApp.h"
-#include "DVDCodecs/Video/DVDVideoCodecAndroidMediaCodec.h"
-#include "utils/log.h"
 #include "utils/TimeUtils.h"
-#include "../RenderFactory.h"
+#include "utils/log.h"
+#include "windowing/GraphicContext.h"
 
-#include <thread>
+#include "platform/android/activity/XBMCApp.h"
+
 #include <chrono>
+#include <thread>
 
 CRendererMediaCodecSurface::CRendererMediaCodecSurface()
 {

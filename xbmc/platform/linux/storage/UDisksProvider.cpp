@@ -7,14 +7,15 @@
  */
 #include "UDisksProvider.h"
 
-#include "platform/posix/PosixMountProvider.h"
 #include "ServiceBroker.h"
+#include "guilib/LocalizeStrings.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
-#include "guilib/LocalizeStrings.h"
-#include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
+#include "utils/log.h"
+
+#include "platform/posix/PosixMountProvider.h"
 
 CUDiskDevice::CUDiskDevice(const char *DeviceKitUDI):
   m_DeviceKitUDI(DeviceKitUDI)

@@ -7,17 +7,19 @@
  *  See LICENSES/README.md for more information.
  */
 
-#import <SDL/SDL.h>
 #import "SDLMain.h"
+
+#import "messaging/ApplicationMessenger.h"
+
+#import "platform/darwin/osx/CocoaInterface.h"
+#import "platform/darwin/osx/HotKeyController.h"
+#import "platform/darwin/storage/DarwinStorageProvider.h"
+
+#import <SDL/SDL.h>
 #import <sys/param.h> /* for MAXPATHLEN */
 #import <unistd.h>
 
-#import "platform/darwin/osx/CocoaInterface.h"
 #import "PlatformDefs.h"
-#import "messaging/ApplicationMessenger.h"
-#import "platform/darwin/storage/DarwinStorageProvider.h"
-
-#import "platform/darwin/osx/HotKeyController.h"
 
 // For some reason, Apple removed setAppleMenu from the headers in 10.4,
 // but the method still is there and works. To avoid warnings, we declare

@@ -6,11 +6,13 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include "system_gl.h"
+#include "GLContextGLX.h"
+
+#include "utils/log.h"
 
 #include <GL/glx.h>
-#include "GLContextGLX.h"
-#include "utils/log.h"
+
+#include "system_gl.h"
 
 CGLContextGLX::CGLContextGLX(Display *dpy) : CGLContext(dpy)
 {

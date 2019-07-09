@@ -7,6 +7,7 @@
  */
 
 #include "BaseRenderBufferPool.h"
+
 #include "IRenderBuffer.h"
 #include "cores/RetroPlayer/rendering/VideoRenderers/RPBaseRenderer.h"
 #include "threads/SingleLock.h"

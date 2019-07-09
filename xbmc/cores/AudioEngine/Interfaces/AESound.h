@@ -8,8 +8,9 @@
 
 #pragma once
 
-#include <string>
 #include "cores/AudioEngine/Utils/AEAudioFormat.h"
+
+#include <string>
 
 class IAESound
 {

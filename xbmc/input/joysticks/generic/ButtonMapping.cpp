@@ -7,20 +7,21 @@
  */
 
 #include "ButtonMapping.h"
+
+#include "ServiceBroker.h"
 #include "games/controllers/Controller.h"
 #include "games/controllers/ControllerFeature.h"
 #include "games/controllers/ControllerManager.h"
-#include "input/joysticks/interfaces/IButtonMap.h"
-#include "input/joysticks/interfaces/IButtonMapper.h"
+#include "input/IKeymap.h"
+#include "input/InputTranslator.h"
+#include "input/Key.h"
 #include "input/joysticks/DriverPrimitive.h"
 #include "input/joysticks/JoystickTranslator.h"
 #include "input/joysticks/JoystickUtils.h"
-#include "input/InputTranslator.h"
-#include "input/IKeymap.h"
-#include "input/Key.h"
+#include "input/joysticks/interfaces/IButtonMap.h"
+#include "input/joysticks/interfaces/IButtonMapper.h"
 #include "threads/SystemClock.h"
 #include "utils/log.h"
-#include "ServiceBroker.h"
 
 #include <algorithm>
 #include <assert.h>

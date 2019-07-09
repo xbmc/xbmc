@@ -7,14 +7,16 @@
  */
 
 #include "cdioSupport.h"
+
+#include "platform/Environment.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
-#include "platform/Environment.h"
+
+#include <cdio/cd_types.h>
 #include <cdio/cdio.h>
 #include <cdio/logging.h>
-#include <cdio/util.h>
 #include <cdio/mmc.h>
-#include <cdio/cd_types.h>
+#include <cdio/util.h>
 
 using namespace MEDIA_DETECT;
 

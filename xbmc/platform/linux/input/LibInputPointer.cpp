@@ -9,14 +9,15 @@
 #include "LibInputPointer.h"
 
 #include "AppInboundProtocol.h"
-#include "input/mouse/MouseStat.h"
 #include "ServiceBroker.h"
+#include "input/mouse/MouseStat.h"
 #include "utils/log.h"
 #include "windowing/GraphicContext.h"
 
 #include <algorithm>
-#include <linux/input.h>
 #include <string.h>
+
+#include <linux/input.h>
 
 void CLibInputPointer::ProcessButton(libinput_event_pointer *e)
 {

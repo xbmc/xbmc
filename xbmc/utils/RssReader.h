@@ -8,14 +8,15 @@
 
 #pragma once
 
-#include <list>
-#include <string>
-#include <vector>
-
 #include "threads/CriticalSection.h"
 #include "threads/Thread.h"
 #include "utils/IRssObserver.h"
 #include "utils/XBMCTinyXML.h"
+
+#include <list>
+#include <string>
+#include <vector>
+
 #include "PlatformDefs.h"
 
 class CRssReader : public CThread

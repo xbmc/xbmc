@@ -17,8 +17,9 @@
 
 #pragma once
 
-#include <stdint.h>
 #include "guilib/XBTF.h"
+
+#include <stdint.h>
 
 class DllGraphicBuffer;
 

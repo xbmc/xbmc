@@ -7,6 +7,7 @@
  */
 
 #include "EmbeddedArt.h"
+
 #include "Archive.h"
 
 EmbeddedArtInfo::EmbeddedArtInfo(size_t size,

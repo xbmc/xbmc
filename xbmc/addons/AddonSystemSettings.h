@@ -10,6 +10,7 @@
 
 #include "addons/IAddon.h"
 #include "settings/lib/ISettingCallback.h"
+
 #include <functional>
 #include <string>
 

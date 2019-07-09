@@ -8,10 +8,10 @@
 
 #pragma once
 
-#include <memory>
-
 #include "addons/Addon.h"
 #include "utils/URIUtils.h"
+
+#include <memory>
 
 namespace ADDON
 {

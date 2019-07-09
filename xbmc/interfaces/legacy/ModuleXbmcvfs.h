@@ -10,6 +10,7 @@
 
 #include "AddonString.h"
 #include "Tuple.h"
+
 #include <vector>
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS

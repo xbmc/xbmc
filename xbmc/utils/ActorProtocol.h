@@ -11,8 +11,8 @@
 #include "threads/CriticalSection.h"
 
 #include <cstddef>
-#include <queue>
 #include <memory>
+#include <queue>
 #include <string>
 
 class CEvent;

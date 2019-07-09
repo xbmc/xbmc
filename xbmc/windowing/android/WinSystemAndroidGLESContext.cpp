@@ -6,10 +6,12 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include "VideoSyncAndroid.h"
 #include "WinSystemAndroidGLESContext.h"
-#include "utils/log.h"
+
+#include "VideoSyncAndroid.h"
 #include "threads/SingleLock.h"
+#include "utils/log.h"
+
 #include "platform/android/activity/XBMCApp.h"
 
 std::unique_ptr<CWinSystemBase> CWinSystemBase::CreateWinSystem()

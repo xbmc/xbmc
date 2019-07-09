@@ -7,13 +7,14 @@
  */
 
 #include "TextureDatabase.h"
-#include "utils/log.h"
+
+#include "URL.h"
 #include "XBDateTime.h"
 #include "dbwrappers/dataset.h"
-#include "URL.h"
+#include "utils/DatabaseUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
-#include "utils/DatabaseUtils.h"
+#include "utils/log.h"
 
 enum TextureField
 {

@@ -7,18 +7,19 @@
  */
 
 #include "TextureCache.h"
+
+#include "ServiceBroker.h"
 #include "TextureCacheJob.h"
+#include "URL.h"
 #include "filesystem/File.h"
 #include "profiles/ProfileManager.h"
-#include "threads/SingleLock.h"
-#include "utils/Crc32.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
-#include "utils/log.h"
-#include "utils/URIUtils.h"
+#include "threads/SingleLock.h"
+#include "utils/Crc32.h"
 #include "utils/StringUtils.h"
-#include "URL.h"
-#include "ServiceBroker.h"
+#include "utils/URIUtils.h"
+#include "utils/log.h"
 
 using namespace XFILE;
 

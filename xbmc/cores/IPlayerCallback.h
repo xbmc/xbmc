@@ -8,8 +8,9 @@
 
 #pragma once
 
-#include <stdint.h>
 #include "VideoSettings.h"
+
+#include <stdint.h>
 
 class CFileItem;
 class CBookmark;

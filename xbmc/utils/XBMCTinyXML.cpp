@@ -7,13 +7,14 @@
  */
 
 #include "XBMCTinyXML.h"
-#include "filesystem/File.h"
-#include "utils/StringUtils.h"
-#include "utils/CharsetConverter.h"
-#include "utils/CharsetDetection.h"
-#include "utils/Utf8Utils.h"
+
 #include "LangInfo.h"
 #include "RegExp.h"
+#include "filesystem/File.h"
+#include "utils/CharsetConverter.h"
+#include "utils/CharsetDetection.h"
+#include "utils/StringUtils.h"
+#include "utils/Utf8Utils.h"
 #include "utils/log.h"
 
 #define MAX_ENTITY_LENGTH 8 // size of largest entity "&#xNNNN;"

@@ -7,6 +7,9 @@
  */
 
 #include "ControllerInstaller.h"
+
+#include "FileItem.h"
+#include "ServiceBroker.h"
 #include "addons/Addon.h"
 #include "addons/AddonInstaller.h"
 #include "addons/AddonManager.h"
@@ -17,10 +20,8 @@
 #include "guilib/LocalizeStrings.h"
 #include "guilib/WindowIDs.h"
 #include "messaging/helpers/DialogOKHelper.h"
-#include "utils/log.h"
 #include "utils/StringUtils.h"
-#include "FileItem.h"
-#include "ServiceBroker.h"
+#include "utils/log.h"
 
 using namespace KODI;
 using namespace GAME;

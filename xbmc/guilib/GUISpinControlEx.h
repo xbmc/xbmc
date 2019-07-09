@@ -13,8 +13,8 @@
 \brief
 */
 
-#include "GUISpinControl.h"
 #include "GUIButtonControl.h"
+#include "GUISpinControl.h"
 
 /*!
  \ingroup controls

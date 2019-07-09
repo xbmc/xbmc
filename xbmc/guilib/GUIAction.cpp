@@ -7,11 +7,12 @@
  */
 
 #include "GUIAction.h"
-#include "utils/StringUtils.h"
-#include "GUIWindowManager.h"
-#include "GUIInfoManager.h"
+
 #include "GUIComponent.h"
+#include "GUIInfoManager.h"
+#include "GUIWindowManager.h"
 #include "ServiceBroker.h"
+#include "utils/StringUtils.h"
 
 CGUIAction::CGUIAction(int controlID)
 {

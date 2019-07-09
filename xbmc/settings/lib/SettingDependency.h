@@ -8,12 +8,12 @@
 
 #pragma once
 
+#include "SettingConditions.h"
+#include "utils/BooleanLogic.h"
+
 #include <list>
 #include <set>
 #include <string>
-
-#include "SettingConditions.h"
-#include "utils/BooleanLogic.h"
 
 enum class SettingDependencyType {
   Unknown = 0,

@@ -7,11 +7,12 @@
  */
 
 #include "MusicFileDirectory.h"
+
 #include "FileItem.h"
-#include "guilib/LocalizeStrings.h"
-#include "utils/URIUtils.h"
-#include "utils/StringUtils.h"
 #include "URL.h"
+#include "guilib/LocalizeStrings.h"
+#include "utils/StringUtils.h"
+#include "utils/URIUtils.h"
 
 using namespace MUSIC_INFO;
 using namespace XFILE;

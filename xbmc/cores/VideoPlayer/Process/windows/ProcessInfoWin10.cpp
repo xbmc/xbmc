@@ -7,7 +7,9 @@
  */
 
 #include "ProcessInfoWin10.h"
+
 #include "cores/VideoPlayer/Process/ProcessInfo.h"
+
 #include <set>
 
 using namespace VIDEOPLAYER;

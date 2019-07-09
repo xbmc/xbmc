@@ -6,27 +6,27 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include "cores/VideoPlayer/DVDCodecs/Video/DVDVideoCodecDRMPRIME.h"
-#include "cores/VideoPlayer/VideoRenderers/HwDecRender/RendererDRMPRIME.h"
-#include "cores/VideoPlayer/VideoRenderers/HwDecRender/RendererDRMPRIMEGLES.h"
+#include "WinSystemGbmGLESContext.h"
 
+#include "OptionalsReg.h"
 #include "cores/RetroPlayer/process/gbm/RPProcessInfoGbm.h"
 #include "cores/RetroPlayer/rendering/VideoRenderers/RPRendererGBM.h"
 #include "cores/RetroPlayer/rendering/VideoRenderers/RPRendererOpenGLES.h"
 #include "cores/VideoPlayer/DVDCodecs/DVDFactoryCodec.h"
+#include "cores/VideoPlayer/DVDCodecs/Video/DVDVideoCodecDRMPRIME.h"
 #include "cores/VideoPlayer/Process/gbm/ProcessInfoGBM.h"
+#include "cores/VideoPlayer/VideoRenderers/HwDecRender/RendererDRMPRIME.h"
+#include "cores/VideoPlayer/VideoRenderers/HwDecRender/RendererDRMPRIMEGLES.h"
 #include "cores/VideoPlayer/VideoRenderers/LinuxRendererGLES.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderFactory.h"
-
-#include "OptionalsReg.h"
-#include "platform/posix/XTimeUtils.h"
 #include "rendering/gles/ScreenshotSurfaceGLES.h"
 #include "utils/log.h"
-#include "WinSystemGbmGLESContext.h"
 
-#include <gbm.h>
+#include "platform/posix/XTimeUtils.h"
+
 #include <EGL/egl.h>
 #include <EGL/eglext.h>
+#include <gbm.h>
 
 using namespace KODI::WINDOWING::GBM;
 

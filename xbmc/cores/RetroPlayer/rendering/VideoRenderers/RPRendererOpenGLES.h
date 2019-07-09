@@ -9,16 +9,16 @@
 #pragma once
 
 #include "RPBaseRenderer.h"
-#include "cores/RetroPlayer/buffers/video/RenderBufferSysMem.h"
-#include "cores/RetroPlayer/buffers/BaseRenderBufferPool.h"
-#include "cores/RetroPlayer/process/RPProcessInfo.h"
 #include "cores/GameSettings.h"
-
-#include "system_gl.h"
+#include "cores/RetroPlayer/buffers/BaseRenderBufferPool.h"
+#include "cores/RetroPlayer/buffers/video/RenderBufferSysMem.h"
+#include "cores/RetroPlayer/process/RPProcessInfo.h"
 
 #include <atomic>
 #include <stdint.h>
 #include <vector>
+
+#include "system_gl.h"
 
 namespace KODI
 {

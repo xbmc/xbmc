@@ -8,10 +8,11 @@
 
 #pragma once
 
-#include <map>
-#include <string>
-#include <stdint.h>
 #include "threads/CriticalSection.h"
+
+#include <map>
+#include <stdint.h>
+#include <string>
 
 class CURL;
 

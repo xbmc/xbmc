@@ -7,20 +7,21 @@
  */
 
 #include "GUIEditControl.h"
+
+#include "GUIKeyboardFactory.h"
+#include "GUIUserMessages.h"
 #include "GUIWindowManager.h"
+#include "LocalizeStrings.h"
 #include "ServiceBroker.h"
+#include "XBDateTime.h"
+#include "dialogs/GUIDialogNumeric.h"
+#include "input/Key.h"
+#include "input/XBMC_vkeys.h"
 #include "utils/CharsetConverter.h"
 #include "utils/Color.h"
 #include "utils/Digest.h"
 #include "utils/Variant.h"
-#include "GUIKeyboardFactory.h"
-#include "dialogs/GUIDialogNumeric.h"
-#include "input/XBMC_vkeys.h"
-#include "input/Key.h"
-#include "LocalizeStrings.h"
-#include "XBDateTime.h"
 #include "windowing/WinSystem.h"
-#include "GUIUserMessages.h"
 
 using namespace KODI::GUILIB;
 

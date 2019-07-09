@@ -7,6 +7,7 @@
  */
 
 #include "RPBaseRenderer.h"
+
 #include "cores/RetroPlayer/buffers/IRenderBuffer.h"
 #include "cores/RetroPlayer/buffers/IRenderBufferPool.h"
 #include "cores/RetroPlayer/rendering/RenderContext.h"

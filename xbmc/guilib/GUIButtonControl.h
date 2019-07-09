@@ -13,13 +13,12 @@
 \brief
 */
 
+#include "GUIAction.h"
+#include "GUIControl.h"
+#include "GUILabel.h"
+#include "GUITexture.h"
 #include "guilib/guiinfo/GUIInfoLabel.h"
 #include "utils/Color.h"
-
-#include "GUITexture.h"
-#include "GUILabel.h"
-#include "GUIControl.h"
-#include "GUIAction.h"
 
 /*!
  \ingroup controls

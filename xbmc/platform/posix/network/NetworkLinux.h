@@ -8,10 +8,11 @@
 
 #pragma once
 
+#include "network/Network.h"
+
+#include <cstdio>
 #include <string>
 #include <vector>
-#include <cstdio>
-#include "network/Network.h"
 
 class CNetworkLinux;
 

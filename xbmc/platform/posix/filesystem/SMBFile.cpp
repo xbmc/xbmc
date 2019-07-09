@@ -11,21 +11,23 @@
 //////////////////////////////////////////////////////////////////////
 
 #include "SMBFile.h"
+
 #include "PasswordManager.h"
-#include "ServiceBroker.h"
 #include "SMBDirectory.h"
-#include <libsmbclient.h>
+#include "ServiceBroker.h"
+#include "Util.h"
+#include "commons/Exception.h"
 #include "filesystem/SpecialProtocol.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "threads/SingleLock.h"
-#include "utils/log.h"
-#include "Util.h"
 #include "utils/StringUtils.h"
-#include "utils/URIUtils.h"
 #include "utils/TimeUtils.h"
-#include "commons/Exception.h"
+#include "utils/URIUtils.h"
+#include "utils/log.h"
+
+#include <libsmbclient.h>
 
 using namespace XFILE;
 

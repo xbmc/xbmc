@@ -8,25 +8,24 @@
 
 #include "GUIDialogNetworkSetup.h"
 
-#include <utility>
-
+#include "ServiceBroker.h"
+#include "URL.h"
 #include "addons/AddonManager.h"
 #include "addons/VFSEntry.h"
 #include "addons/binary-addons/BinaryAddonBase.h"
-#include "ServiceBroker.h"
-
 #include "dialogs/GUIDialogFileBrowser.h"
-#include "messaging/helpers/DialogOKHelper.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIEditControl.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
+#include "messaging/helpers/DialogOKHelper.h"
 #include "settings/lib/Setting.h"
 #include "settings/windows/GUIControlSettings.h"
-#include "URL.h"
-#include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
+#include "utils/log.h"
+
+#include <utility>
 
 
 using namespace ADDON;

@@ -6,9 +6,10 @@
  *  See LICENSES/README.md for more information.
  */
 #include "DBusMessage.h"
+
 #include "DBusUtil.h"
-#include "utils/log.h"
 #include "settings/AdvancedSettings.h"
+#include "utils/log.h"
 
 CDBusMessage::CDBusMessage(const char *destination, const char *object, const char *interface, const char *method)
 {

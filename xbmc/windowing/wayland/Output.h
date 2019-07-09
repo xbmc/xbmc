@@ -8,16 +8,16 @@
 
 #pragma once
 
+#include "threads/CriticalSection.h"
+#include "threads/SingleLock.h"
+#include "utils/Geometry.h"
+
 #include <atomic>
 #include <cstdint>
 #include <set>
 #include <tuple>
 
 #include <wayland-client-protocol.hpp>
-
-#include "threads/CriticalSection.h"
-#include "threads/SingleLock.h"
-#include "utils/Geometry.h"
 
 namespace KODI
 {

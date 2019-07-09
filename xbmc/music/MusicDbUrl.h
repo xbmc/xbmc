@@ -8,9 +8,9 @@
 
 #pragma once
 
-#include <string>
-
 #include "DbUrl.h"
+
+#include <string>
 
 class CVariant;
 

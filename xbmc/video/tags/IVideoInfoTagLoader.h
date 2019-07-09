@@ -10,6 +10,7 @@
 
 #include "InfoScanner.h"
 #include "addons/Scraper.h"
+
 #include <string>
 
 class CFileItem;

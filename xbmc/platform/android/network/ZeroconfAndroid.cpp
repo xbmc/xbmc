@@ -8,10 +8,10 @@
 
 #include "ZeroconfAndroid.h"
 
-#include <androidjni/Context.h>
+#include "threads/SingleLock.h"
 #include "utils/log.h"
 
-#include "threads/SingleLock.h"
+#include <androidjni/Context.h>
 
 CZeroconfAndroid::CZeroconfAndroid()
 {

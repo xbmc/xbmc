@@ -8,26 +8,26 @@
 
 #include "SeekHandler.h"
 
-#include <cmath>
-#include <stdlib.h>
-
 #include "Application.h"
-#include "cores/DataCacheCore.h"
 #include "FileItem.h"
+#include "ServiceBroker.h"
+#include "cores/DataCacheCore.h"
 #include "guilib/GUIComponent.h"
-#include "windowing/GraphicContext.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
-#include "ServiceBroker.h"
 #include "settings/AdvancedSettings.h"
+#include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "settings/lib/Setting.h"
 #include "settings/lib/SettingDefinitions.h"
-#include "settings/Settings.h"
-#include "utils/log.h"
 #include "utils/MathUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
+#include "utils/log.h"
+#include "windowing/GraphicContext.h"
+
+#include <cmath>
+#include <stdlib.h>
 
 CSeekHandler::~CSeekHandler()
 {

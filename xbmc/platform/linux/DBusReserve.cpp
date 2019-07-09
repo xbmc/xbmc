@@ -7,12 +7,13 @@
  */
 #include "DBusReserve.h"
 
-#include <dbus/dbus.h>
-#include <climits>
-#include <algorithm>
-
-#include "utils/log.h"
 #include "DBusUtil.h"
+#include "utils/log.h"
+
+#include <algorithm>
+#include <climits>
+
+#include <dbus/dbus.h>
 
 /* This implements the code to exclusively acquire                  *
  * a device on the system describe at:                              *

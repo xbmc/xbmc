@@ -8,8 +8,8 @@
 
 #pragma once
 
-#include <vector>
 #include <string>
+#include <vector>
 
 class CCriticalSection;
 

@@ -7,8 +7,9 @@
  */
 
 #include "RenderFlags.h"
-#include <string>
+
 #include <map>
+#include <string>
 
 unsigned int GetFlagsColorMatrix(unsigned int color_matrix, unsigned width, unsigned height)
 {

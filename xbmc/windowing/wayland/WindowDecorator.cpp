@@ -8,17 +8,17 @@
 
 #include "WindowDecorator.h"
 
+#include "Util.h"
+#include "threads/SingleLock.h"
+#include "utils/EndianSwap.h"
+#include "utils/log.h"
+
 #include <algorithm>
 #include <cassert>
 #include <cmath>
 #include <vector>
 
 #include <linux/input-event-codes.h>
-
-#include "threads/SingleLock.h"
-#include "Util.h"
-#include "utils/EndianSwap.h"
-#include "utils/log.h"
 
 using namespace KODI::UTILS::POSIX;
 using namespace KODI::WINDOWING::WAYLAND;

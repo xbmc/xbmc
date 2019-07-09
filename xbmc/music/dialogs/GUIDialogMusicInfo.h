@@ -8,12 +8,12 @@
 
 #pragma once
 
-#include "guilib/GUIDialog.h"
-#include "music/Song.h"
-#include "music/Artist.h"
-#include "music/Album.h"
 #include "FileItem.h"
 #include "MediaSource.h"
+#include "guilib/GUIDialog.h"
+#include "music/Album.h"
+#include "music/Artist.h"
+#include "music/Song.h"
 #include "threads/Event.h"
 
 class CFileItem;

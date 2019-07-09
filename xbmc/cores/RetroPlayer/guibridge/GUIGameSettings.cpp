@@ -7,6 +7,7 @@
  */
 
 #include "GUIGameSettings.h"
+
 #include "cores/RetroPlayer/process/RPProcessInfo.h"
 #include "cores/RetroPlayer/rendering/RenderContext.h"
 #include "settings/GameSettings.h"

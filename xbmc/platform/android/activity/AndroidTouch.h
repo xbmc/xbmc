@@ -8,8 +8,9 @@
 
 #pragma once
 
-#include <android/input.h>
 #include <math.h>
+
+#include <android/input.h>
 
 class CAndroidTouch
 {

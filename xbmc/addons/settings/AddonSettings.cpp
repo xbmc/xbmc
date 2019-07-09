@@ -6,10 +6,8 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include <algorithm>
-#include <vector>
-
 #include "AddonSettings.h"
+
 #include "FileItem.h"
 #include "GUIInfoManager.h"
 #include "LangInfo.h"
@@ -32,11 +30,14 @@
 #include "settings/lib/SettingsManager.h"
 #include "threads/SingleLock.h"
 #include "utils/FileExtensionProvider.h"
-#include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/XBMCTinyXML.h"
 #include "utils/XMLUtils.h"
+#include "utils/log.h"
+
+#include <algorithm>
+#include <vector>
 
 static const std::string OldSettingValuesSeparator = "|";
 

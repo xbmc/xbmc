@@ -8,9 +8,10 @@
 
 #pragma once
 
-#include "threads/Thread.h"
-#include "threads/CriticalSection.h"
 #include "input/IRTranslator.h"
+#include "threads/CriticalSection.h"
+#include "threads/Thread.h"
+
 #include <string>
 
 class CLirc : CThread

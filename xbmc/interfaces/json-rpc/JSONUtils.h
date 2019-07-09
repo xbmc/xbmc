@@ -8,18 +8,18 @@
 
 #pragma once
 
-#include <string.h>
-#include <stdlib.h>
-#include <vector>
-
 #include "JSONRPCUtils.h"
 #include "XBDateTime.h"
-#include "utils/SortUtils.h"
 #include "playlists/SmartPlayList.h"
-#include "utils/JSONVariantWriter.h"
 #include "utils/JSONVariantParser.h"
+#include "utils/JSONVariantWriter.h"
+#include "utils/SortUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
+
+#include <stdlib.h>
+#include <string.h>
+#include <vector>
 
 namespace JSONRPC
 {

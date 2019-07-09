@@ -8,12 +8,12 @@
 
 #pragma once
 
-#include <string>
-#include <vector>
-
-#include "windowing/WinSystem.h"
 #include "rendering/gles/RenderSystemGLES.h"
 #include "threads/CriticalSection.h"
+#include "windowing/WinSystem.h"
+
+#include <string>
+#include <vector>
 
 class IDispResource;
 class CVideoSyncIos;

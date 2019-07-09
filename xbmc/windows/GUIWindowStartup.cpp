@@ -7,11 +7,12 @@
  */
 
 #include "GUIWindowStartup.h"
+
 #include "ServiceBroker.h"
-#include "input/Key.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/WindowIDs.h"
+#include "input/Key.h"
 
 CGUIWindowStartup::CGUIWindowStartup(void)
     : CGUIWindow(WINDOW_STARTUP_ANIM, "Startup.xml")

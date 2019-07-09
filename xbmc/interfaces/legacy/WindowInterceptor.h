@@ -1,4 +1,4 @@
- /*
+/*
  *  Copyright (C) 2005-2018 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
@@ -8,8 +8,8 @@
 
 #pragma once
 
-#include "guilib/GUIWindow.h"
 #include "Window.h"
+#include "guilib/GUIWindow.h"
 
 namespace XBMCAddon
 {

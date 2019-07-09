@@ -7,8 +7,9 @@
  */
 
 #include "ImageFile.h"
-#include "URL.h"
+
 #include "TextureCache.h"
+#include "URL.h"
 
 using namespace XFILE;
 

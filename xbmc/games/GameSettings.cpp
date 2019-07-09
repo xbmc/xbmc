@@ -7,10 +7,11 @@
  */
 
 #include "GameSettings.h"
+
 #include "ServiceBroker.h"
-#include "settings/lib/Setting.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
+#include "settings/lib/Setting.h"
 
 #include <algorithm>
 

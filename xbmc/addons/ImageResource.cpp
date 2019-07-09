@@ -6,8 +6,9 @@
  *  See LICENSES/README.md for more information.
  */
 #include "ImageResource.h"
-#include "URL.h"
+
 #include "ServiceBroker.h"
+#include "URL.h"
 #include "addons/AddonManager.h"
 #include "filesystem/File.h"
 #include "filesystem/XbtManager.h"

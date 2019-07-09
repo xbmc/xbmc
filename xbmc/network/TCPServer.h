@@ -8,16 +8,18 @@
 
 #pragma once
 
-#include <vector>
-#include <sys/socket.h>
-
-#include "PlatformDefs.h"
 #include "interfaces/json-rpc/IClient.h"
 #include "interfaces/json-rpc/IJSONRPCAnnouncer.h"
 #include "interfaces/json-rpc/ITransportLayer.h"
 #include "threads/CriticalSection.h"
 #include "threads/Thread.h"
 #include "websocket/WebSocket.h"
+
+#include <vector>
+
+#include <sys/socket.h>
+
+#include "PlatformDefs.h"
 
 class CVariant;
 

@@ -5,33 +5,34 @@
  *  SPDX-License-Identifier: GPL-2.0-or-later
  *  See LICENSES/README.md for more information.
  */
-#include <Platinum/Source/Platinum/Platinum.h>
-
 #include "UPnPInternal.h"
+
+#include "FileItem.h"
+#include "ServiceBroker.h"
+#include "TextureDatabase.h"
+#include "ThumbLoader.h"
 #include "UPnP.h"
 #include "UPnPServer.h"
-#include "ServiceBroker.h"
 #include "URL.h"
 #include "Util.h"
+#include "filesystem/File.h"
+#include "filesystem/MusicDatabaseDirectory.h"
+#include "filesystem/StackDirectory.h"
+#include "filesystem/VideoDatabaseDirectory.h"
+#include "music/MusicDatabase.h"
+#include "music/tags/MusicInfoTag.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
-#include "utils/log.h"
+#include "utils/LangCodeExpander.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
-#include "FileItem.h"
-#include "filesystem/File.h"
-#include "filesystem/StackDirectory.h"
-#include "filesystem/MusicDatabaseDirectory.h"
-#include "filesystem/VideoDatabaseDirectory.h"
+#include "utils/log.h"
 #include "video/VideoInfoTag.h"
-#include "music/MusicDatabase.h"
-#include "music/tags/MusicInfoTag.h"
-#include "TextureDatabase.h"
-#include "ThumbLoader.h"
-#include "utils/LangCodeExpander.h"
 
 #include <algorithm>
+
+#include <Platinum/Source/Platinum/Platinum.h>
 
 using namespace MUSIC_INFO;
 using namespace XFILE;

@@ -13,10 +13,11 @@
  * @brief This class acts as container for stereoscopic related functions
  */
 
-#include <stdlib.h>
-#include "settings/lib/ISettingCallback.h"
 #include "guilib/IMsgTargetCallback.h"
 #include "rendering/RenderSystemTypes.h"
+#include "settings/lib/ISettingCallback.h"
+
+#include <stdlib.h>
 
 class CAction;
 class CDataCacheCore;

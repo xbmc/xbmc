@@ -7,6 +7,7 @@
  */
 
 #include "HttpHeader.h"
+
 #include "utils/StringUtils.h"
 
 // header white space characters according to RFC 2616

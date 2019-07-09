@@ -7,6 +7,7 @@
  */
 
 #include "Port.h"
+
 #include "InputSink.h"
 #include "games/addons/GameClient.h"
 #include "guilib/WindowIDs.h"

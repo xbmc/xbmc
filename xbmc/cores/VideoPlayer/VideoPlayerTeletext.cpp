@@ -7,11 +7,12 @@
  */
 
 #include "VideoPlayerTeletext.h"
-#include "cores/VideoPlayer/Interface/Addon/TimingConstants.h"
+
 #include "DVDStreamInfo.h"
 #include "cores/VideoPlayer/Interface/Addon/DemuxPacket.h"
-#include "utils/log.h"
+#include "cores/VideoPlayer/Interface/Addon/TimingConstants.h"
 #include "threads/SingleLock.h"
+#include "utils/log.h"
 
 const uint8_t rev_lut[32] =
 {

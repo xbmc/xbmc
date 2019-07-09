@@ -6,12 +6,12 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include "cores/VideoPlayer/DVDCodecs/DVDFactoryCodec.h"
-#include "cores/VideoPlayer/VideoRenderers/RenderFactory.h"
+#include "WinSystemGbmEGLContext.h"
 
 #include "OptionalsReg.h"
+#include "cores/VideoPlayer/DVDCodecs/DVDFactoryCodec.h"
+#include "cores/VideoPlayer/VideoRenderers/RenderFactory.h"
 #include "utils/log.h"
-#include "WinSystemGbmEGLContext.h"
 
 using namespace KODI::WINDOWING::GBM;
 

@@ -7,13 +7,14 @@
  */
 
 #include "GUIDialogPlayEject.h"
+
+#include "ServiceBroker.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "storage/MediaManager.h"
-#include "utils/log.h"
 #include "utils/Variant.h"
 #include "utils/XMLUtils.h"
-#include "ServiceBroker.h"
+#include "utils/log.h"
 
 #include <utility>
 

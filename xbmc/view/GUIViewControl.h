@@ -8,9 +8,10 @@
 
 #pragma once
 
+#include "windowing/GraphicContext.h" // for VIEW_TYPE
+
 #include <string>
 #include <vector>
-#include "windowing/GraphicContext.h" // for VIEW_TYPE
 
 class CGUIControl;
 class CFileItemList;

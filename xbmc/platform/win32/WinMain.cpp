@@ -8,20 +8,20 @@
 
 #include "AppParamParser.h"
 #include "CompileInfo.h"
+#include "platform/Environment.h"
+#include "platform/xbmc.h"
 #include "threads/Thread.h"
 #include "threads/platform/win/Win32Exception.h"
-#include "platform/win32/CharsetConverter.h"
-#include "platform/xbmc.h"
 #include "utils/CPUInfo.h"
-#include "platform/Environment.h"
 #include "utils/CharsetConverter.h" // Required to initialize converters before usage
 
+#include "platform/win32/CharsetConverter.h"
 
+#include <Objbase.h>
+#include <WinSock2.h>
 #include <dbghelp.h>
 #include <mmsystem.h>
-#include <Objbase.h>
 #include <shellapi.h>
-#include <WinSock2.h>
 
 
 // Minidump creation function

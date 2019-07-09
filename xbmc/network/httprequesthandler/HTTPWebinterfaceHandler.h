@@ -8,10 +8,10 @@
 
 #pragma once
 
-#include <string>
-
 #include "addons/IAddon.h"
 #include "network/httprequesthandler/HTTPFileHandler.h"
+
+#include <string>
 
 class CHTTPWebinterfaceHandler : public CHTTPFileHandler
 {

@@ -6,15 +6,16 @@
  *  See LICENSES/README.md for more information.
  */
 
+#import "platform/darwin/ios-common/IOSKeyboardView.h"
+
+#include "Application.h"
 #include "guilib/GUIKeyboardFactory.h"
 #include "threads/Event.h"
-#include "Application.h"
 
 #import "platform/darwin/NSLogDebugHelpers.h"
+#import "platform/darwin/ios-common/IOSKeyboard.h"
 #import "platform/darwin/ios/IOSScreenManager.h"
 #import "platform/darwin/ios/XBMCController.h"
-#import "platform/darwin/ios-common/IOSKeyboard.h"
-#import "platform/darwin/ios-common/IOSKeyboardView.h"
 
 static CEvent keyboardFinishedEvent;
 

@@ -7,10 +7,11 @@
  */
 
 #include "JoystickEasterEgg.h"
+
 #include "ServiceBroker.h"
-#include "games/controllers/ControllerIDs.h"
 #include "games/GameServices.h"
 #include "games/GameSettings.h"
+#include "games/controllers/ControllerIDs.h"
 #include "guilib/GUIAudioManager.h"
 #include "guilib/WindowIDs.h"
 

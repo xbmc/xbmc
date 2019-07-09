@@ -8,16 +8,15 @@
 
 #include "Archive.h"
 
-#include <cstdint>
-#include <cstring>
-
-#include <algorithm>
-#include <stdexcept>
-
-#include "filesystem/File.h"
 #include "IArchivable.h"
+#include "filesystem/File.h"
 #include "utils/Variant.h"
 #include "utils/log.h"
+
+#include <algorithm>
+#include <cstdint>
+#include <cstring>
+#include <stdexcept>
 
 #ifdef __GNUC__
 #pragma GCC diagnostic ignored "-Wlong-long"

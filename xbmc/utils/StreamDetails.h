@@ -8,11 +8,12 @@
 
 #pragma once
 
-#include "utils/IArchivable.h"
 #include "ISerializable.h"
+#include "utils/IArchivable.h"
+
+#include <memory>
 #include <string>
 #include <vector>
-#include <memory>
 
 class CStreamDetails;
 class CVariant;

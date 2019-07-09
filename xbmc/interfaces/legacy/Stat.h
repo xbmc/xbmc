@@ -8,9 +8,9 @@
 
 #pragma once
 
-#include "filesystem/File.h"
 #include "AddonClass.h"
 #include "LanguageHook.h"
+#include "filesystem/File.h"
 
 namespace XBMCAddon
 {

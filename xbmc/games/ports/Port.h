@@ -8,8 +8,8 @@
 
 #pragma once
 
-#include "input/joysticks/interfaces/IInputHandler.h"
 #include "input/KeymapEnvironment.h"
+#include "input/joysticks/interfaces/IInputHandler.h"
 
 #include <memory>
 

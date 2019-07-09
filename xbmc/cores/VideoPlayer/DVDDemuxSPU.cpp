@@ -6,15 +6,14 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include <stdlib.h>
-
 #include "DVDDemuxSPU.h"
 
-#include <locale.h>
-
-#include "cores/VideoPlayer/Interface/Addon/TimingConstants.h"
 #include "DVDCodecs/Overlay/DVDOverlaySpu.h"
+#include "cores/VideoPlayer/Interface/Addon/TimingConstants.h"
 #include "utils/log.h"
+
+#include <locale.h>
+#include <stdlib.h>
 
 #undef ALIGN
 #define ALIGN(value, alignment) (((value)+((alignment)-1))&~((alignment)-1))

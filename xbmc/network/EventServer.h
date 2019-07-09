@@ -8,11 +8,11 @@
 
 #pragma once
 
-#include "threads/Thread.h"
-#include "Socket.h"
 #include "EventClient.h"
+#include "Socket.h"
 #include "threads/CriticalSection.h"
 #include "threads/SingleLock.h"
+#include "threads/Thread.h"
 
 #include <atomic>
 #include <map>

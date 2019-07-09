@@ -8,11 +8,11 @@
 
 #pragma once
 
+#include "storage/IStorageProvider.h"
+
 #include <string>
 #include <utility>
 #include <vector>
-
-#include "storage/IStorageProvider.h"
 
 class CDarwinStorageProvider : public IStorageProvider
 {

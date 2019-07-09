@@ -9,9 +9,9 @@
 #pragma once
 
 #include "RetroPlayerAutoSave.h"
+#include "cores/IPlayer.h"
 #include "cores/RetroPlayer/guibridge/IGameCallback.h"
 #include "cores/RetroPlayer/playback/IPlaybackControl.h"
-#include "cores/IPlayer.h"
 #include "games/GameTypes.h"
 #include "guilib/DispResource.h"
 #include "threads/CriticalSection.h"

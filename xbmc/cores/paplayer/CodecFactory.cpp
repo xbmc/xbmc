@@ -7,12 +7,13 @@
  */
 
 #include "CodecFactory.h"
+
+#include "ServiceBroker.h"
 #include "URL.h"
 #include "VideoPlayerCodec.h"
-#include "utils/StringUtils.h"
 #include "addons/AudioDecoder.h"
 #include "addons/binary-addons/BinaryAddonBase.h"
-#include "ServiceBroker.h"
+#include "utils/StringUtils.h"
 
 using namespace ADDON;
 

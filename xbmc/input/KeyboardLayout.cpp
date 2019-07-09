@@ -6,16 +6,17 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include <algorithm>
-#include <set>
-
 #include "KeyboardLayout.h"
+
+#include "InputCodingTableFactory.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/CharsetConverter.h"
-#include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/XBMCTinyXML.h"
-#include "InputCodingTableFactory.h"
+#include "utils/log.h"
+
+#include <algorithm>
+#include <set>
 
 CKeyboardLayout::CKeyboardLayout()
 {

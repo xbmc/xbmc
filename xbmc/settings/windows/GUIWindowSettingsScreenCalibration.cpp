@@ -7,21 +7,22 @@
  */
 
 #include "GUIWindowSettingsScreenCalibration.h"
-#include "guilib/GUIMoverControl.h"
-#include "guilib/GUIResizeControl.h"
+
 #include "Application.h"
 #include "ServiceBroker.h"
+#include "dialogs/GUIDialogYesNo.h"
+#include "guilib/GUIComponent.h"
+#include "guilib/GUIMoverControl.h"
+#include "guilib/GUIResizeControl.h"
+#include "guilib/GUIWindowManager.h"
+#include "guilib/LocalizeStrings.h"
+#include "input/Key.h"
 #include "settings/DisplaySettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
-#include "guilib/GUIComponent.h"
-#include "guilib/GUIWindowManager.h"
-#include "dialogs/GUIDialogYesNo.h"
-#include "input/Key.h"
-#include "guilib/LocalizeStrings.h"
-#include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
+#include "utils/log.h"
 #include "windowing/WinSystem.h"
 
 #include <string>

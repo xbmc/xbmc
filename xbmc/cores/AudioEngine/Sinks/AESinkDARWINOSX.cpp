@@ -6,17 +6,18 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include "cores/AudioEngine/AESinkFactory.h"
 #include "cores/AudioEngine/Sinks/AESinkDARWINOSX.h"
-#include "cores/AudioEngine/Utils/AERingBuffer.h"
+
+#include "ServiceBroker.h"
+#include "cores/AudioEngine/AESinkFactory.h"
 #include "cores/AudioEngine/Sinks/darwin/CoreAudioHelpers.h"
-#include "cores/AudioEngine/Sinks/osx/CoreAudioHardware.h"
 #include "cores/AudioEngine/Sinks/osx/AEDeviceEnumerationOSX.h"
-#include "utils/log.h"
+#include "cores/AudioEngine/Sinks/osx/CoreAudioHardware.h"
+#include "cores/AudioEngine/Utils/AERingBuffer.h"
+#include "utils/MemUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/TimeUtils.h"
-#include "utils/MemUtils.h"
-#include "ServiceBroker.h"
+#include "utils/log.h"
 
 
 static void EnumerateDevices(CADeviceList &list)

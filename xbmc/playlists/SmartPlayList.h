@@ -8,14 +8,14 @@
 
 #pragma once
 
-#include <set>
-#include <string>
-#include <vector>
-#include <memory>
-
 #include "dbwrappers/DatabaseQuery.h"
 #include "utils/SortUtils.h"
 #include "utils/XBMCTinyXML.h"
+
+#include <memory>
+#include <set>
+#include <string>
+#include <vector>
 
 class CURL;
 class CVariant;

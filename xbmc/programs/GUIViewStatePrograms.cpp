@@ -7,16 +7,17 @@
  */
 
 #include "GUIViewStatePrograms.h"
+
 #include "FileItem.h"
 #include "ServiceBroker.h"
-#include "view/ViewState.h"
-#include "settings/MediaSourceSettings.h"
 #include "filesystem/Directory.h"
 #include "guilib/LocalizeStrings.h"
 #include "guilib/TextureManager.h"
 #include "guilib/WindowIDs.h"
+#include "settings/MediaSourceSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
+#include "view/ViewState.h"
 #include "view/ViewStateSettings.h"
 
 using namespace XFILE;

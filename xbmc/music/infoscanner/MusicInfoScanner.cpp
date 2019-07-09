@@ -8,10 +8,15 @@
 
 #include "MusicInfoScanner.h"
 
-#include <algorithm>
-#include <utility>
-
+#include "FileItem.h"
+#include "GUIInfoManager.h"
+#include "GUIUserMessages.h"
+#include "MusicAlbumInfo.h"
+#include "MusicInfoScraper.h"
+#include "NfoFile.h"
 #include "ServiceBroker.h"
+#include "TextureCache.h"
+#include "Util.h"
 #include "addons/AddonManager.h"
 #include "addons/AddonSystemSettings.h"
 #include "addons/Scraper.h"
@@ -21,39 +26,34 @@
 #include "dialogs/GUIDialogYesNo.h"
 #include "events/EventLog.h"
 #include "events/MediaLibraryEvent.h"
-#include "FileItem.h"
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"
 #include "filesystem/MusicDatabaseDirectory.h"
 #include "filesystem/MusicDatabaseDirectory/DirectoryNode.h"
 #include "filesystem/SmartPlaylistDirectory.h"
-#include "GUIInfoManager.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIKeyboardFactory.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
-#include "GUIUserMessages.h"
 #include "interfaces/AnnouncementManager.h"
 #include "music/MusicLibraryQueue.h"
 #include "music/MusicThumbLoader.h"
 #include "music/MusicUtils.h"
 #include "music/tags/MusicInfoTag.h"
 #include "music/tags/MusicInfoTagLoaderFactory.h"
-#include "MusicAlbumInfo.h"
-#include "MusicInfoScraper.h"
-#include "NfoFile.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
-#include "TextureCache.h"
 #include "threads/SystemClock.h"
-#include "Util.h"
 #include "utils/Digest.h"
 #include "utils/FileExtensionProvider.h"
-#include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
+#include "utils/log.h"
+
+#include <algorithm>
+#include <utility>
 
 using namespace MUSIC_INFO;
 using namespace XFILE;

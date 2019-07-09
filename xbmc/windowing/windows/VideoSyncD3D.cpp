@@ -6,14 +6,15 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include "utils/log.h"
-#include "Utils/TimeUtils.h"
+#include "VideoSyncD3D.h"
+
 #include "Utils/MathUtils.h"
+#include "Utils/TimeUtils.h"
 #include "rendering/dx/DeviceResources.h"
 #include "rendering/dx/RenderContext.h"
-#include "VideoSyncD3D.h"
-#include "windowing/GraphicContext.h"
 #include "utils/StringUtils.h"
+#include "utils/log.h"
+#include "windowing/GraphicContext.h"
 
 void CVideoSyncD3D::OnLostDisplay()
 {

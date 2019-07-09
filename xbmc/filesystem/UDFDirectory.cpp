@@ -9,10 +9,11 @@
  *  See LICENSES/README.md for more information.
  */
 #include "UDFDirectory.h"
-#include "udf25.h"
-#include "Util.h"
-#include "URL.h"
+
 #include "FileItem.h"
+#include "URL.h"
+#include "Util.h"
+#include "udf25.h"
 #include "utils/URIUtils.h"
 
 using namespace XFILE;

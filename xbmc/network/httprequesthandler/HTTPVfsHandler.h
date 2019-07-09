@@ -8,9 +8,9 @@
 
 #pragma once
 
-#include <string>
-
 #include "network/httprequesthandler/HTTPFileHandler.h"
+
+#include <string>
 
 class CHTTPVfsHandler : public CHTTPFileHandler
 {

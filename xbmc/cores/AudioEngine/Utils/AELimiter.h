@@ -8,8 +8,9 @@
 
 #pragma once
 
-#include <algorithm>
 #include "AEAudioFormat.h"
+
+#include <algorithm>
 
 class CAELimiter
 {

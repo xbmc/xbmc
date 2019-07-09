@@ -9,6 +9,7 @@
 #pragma once
 
 #include "GUIControl.h"
+
 #include <memory>
 
 typedef std::shared_ptr<CGUIListItem> CGUIListItemPtr;

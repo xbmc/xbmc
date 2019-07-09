@@ -12,6 +12,7 @@
 #include "cores/IPlayer.h"
 #include "guilib/DispResource.h"
 #include "threads/SystemClock.h"
+
 #include <string>
 
 class PLT_MediaController;

@@ -7,16 +7,17 @@
  */
 
 #include "GUIDialog.h"
+
+#include "Application.h"
 #include "GUIComponent.h"
-#include "GUIWindowManager.h"
 #include "GUIControlFactory.h"
 #include "GUILabelControl.h"
+#include "GUIWindowManager.h"
+#include "ServiceBroker.h"
+#include "input/Key.h"
+#include "messaging/ApplicationMessenger.h"
 #include "threads/SingleLock.h"
 #include "utils/TimeUtils.h"
-#include "Application.h"
-#include "ServiceBroker.h"
-#include "messaging/ApplicationMessenger.h"
-#include "input/Key.h"
 
 using namespace KODI::MESSAGING;
 

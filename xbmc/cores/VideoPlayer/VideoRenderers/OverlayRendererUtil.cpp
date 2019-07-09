@@ -7,13 +7,14 @@
  */
 
 #include "OverlayRendererUtil.h"
+
 #include "ServiceBroker.h"
 #include "cores/VideoPlayer/DVDCodecs/Overlay/DVDOverlayImage.h"
-#include "cores/VideoPlayer/DVDCodecs/Overlay/DVDOverlaySpu.h"
 #include "cores/VideoPlayer/DVDCodecs/Overlay/DVDOverlaySSA.h"
-#include "windowing/GraphicContext.h"
+#include "cores/VideoPlayer/DVDCodecs/Overlay/DVDOverlaySpu.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
+#include "windowing/GraphicContext.h"
 
 namespace OVERLAY {
 

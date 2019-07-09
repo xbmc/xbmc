@@ -8,22 +8,23 @@
 
 
 #include "GUIDialogSimpleMenu.h"
+
+#include "GUIDialogSelect.h"
 #include "ServiceBroker.h"
+#include "URL.h"
 #include "dialogs/GUIDialogBusy.h"
+#include "filesystem/Directory.h"
+#include "filesystem/File.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
-#include "GUIDialogSelect.h"
 #include "settings/DiscSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
-#include "utils/URIUtils.h"
-#include "filesystem/Directory.h"
-#include "filesystem/File.h"
 #include "threads/IRunnable.h"
+#include "utils/URIUtils.h"
+#include "utils/Variant.h"
 #include "utils/log.h"
 #include "video/VideoInfoTag.h"
-#include "URL.h"
-#include "utils/Variant.h"
 
 namespace
 {

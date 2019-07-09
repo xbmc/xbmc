@@ -8,12 +8,12 @@
 
 #pragma once
 
+#include "FileItemHandler.h"
+#include "JSONRPC.h"
+#include "utils/DatabaseUtils.h"
+
 #include <string>
 #include <vector>
-
-#include "utils/DatabaseUtils.h"
-#include "JSONRPC.h"
-#include "FileItemHandler.h"
 
 class CVideoDatabase;
 class CVariant;

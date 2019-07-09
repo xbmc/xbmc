@@ -7,10 +7,11 @@
  */
 
 #include "GUITextLayout.h"
-#include "GUIFont.h"
+
+#include "GUIColorManager.h"
 #include "GUIComponent.h"
 #include "GUIControl.h"
-#include "GUIColorManager.h"
+#include "GUIFont.h"
 #include "utils/CharsetConverter.h"
 #include "utils/StringUtils.h"
 

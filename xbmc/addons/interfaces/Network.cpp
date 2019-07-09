@@ -8,13 +8,12 @@
 
 #include "Network.h"
 
-#include "addons/kodi-addon-dev-kit/include/kodi/Network.h"
-
+#include "ServiceBroker.h"
 #include "URL.h"
 #include "addons/binary-addons/AddonDll.h"
+#include "addons/kodi-addon-dev-kit/include/kodi/Network.h"
 #include "network/DNSNameCache.h"
 #include "network/Network.h"
-#include "ServiceBroker.h"
 #include "utils/log.h"
 
 using namespace kodi; // addon-dev-kit namespace

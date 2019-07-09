@@ -7,16 +7,16 @@
  */
 
 #include "WinSystemWaylandEGLContextGL.h"
+
 #include "OptionalsReg.h"
-
-#include <EGL/egl.h>
-#include <EGL/eglext.h>
-
 #include "cores/RetroPlayer/process/RPProcessInfo.h"
 #include "cores/RetroPlayer/rendering/VideoRenderers/RPRendererOpenGL.h"
 #include "cores/VideoPlayer/VideoRenderers/LinuxRendererGL.h"
 #include "rendering/gl/ScreenshotSurfaceGL.h"
 #include "utils/log.h"
+
+#include <EGL/egl.h>
+#include <EGL/eglext.h>
 
 using namespace KODI::WINDOWING::WAYLAND;
 

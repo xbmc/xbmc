@@ -7,7 +7,9 @@
  */
 
 #include "platform/MessagePrinter.h"
+
 #include "CompileInfo.h"
+
 #include "platform/win32/CharsetConverter.h"
 
 #include <windows.h>

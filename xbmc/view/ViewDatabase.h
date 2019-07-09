@@ -9,6 +9,7 @@
 #pragma once
 
 #include "dbwrappers/Database.h"
+
 #include <string>
 
 class CViewState;

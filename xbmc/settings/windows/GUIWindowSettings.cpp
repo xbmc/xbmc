@@ -7,6 +7,7 @@
  */
 
 #include "GUIWindowSettings.h"
+
 #include "guilib/WindowIDs.h"
 
 CGUIWindowSettings::CGUIWindowSettings(void)

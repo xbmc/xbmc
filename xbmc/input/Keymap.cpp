@@ -7,6 +7,7 @@
  */
 
 #include "Keymap.h"
+
 #include "IKeymapEnvironment.h"
 
 using namespace KODI;

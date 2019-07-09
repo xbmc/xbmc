@@ -8,29 +8,29 @@
 
 #include "Repository.h"
 
-#include <iterator>
-#include <tuple>
-#include <utility>
-
+#include "FileItem.h"
 #include "ServiceBroker.h"
+#include "TextureDatabase.h"
+#include "URL.h"
 #include "addons/AddonDatabase.h"
 #include "addons/AddonInstaller.h"
 #include "addons/AddonManager.h"
 #include "addons/RepositoryUpdater.h"
-#include "FileItem.h"
 #include "filesystem/CurlFile.h"
 #include "filesystem/File.h"
 #include "filesystem/ZipFile.h"
 #include "messaging/helpers/DialogHelper.h"
-#include "TextureDatabase.h"
-#include "URL.h"
 #include "utils/Base64.h"
 #include "utils/Digest.h"
-#include "utils/log.h"
 #include "utils/Mime.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/XBMCTinyXML.h"
+#include "utils/log.h"
+
+#include <iterator>
+#include <tuple>
+#include <utility>
 
 using namespace XFILE;
 using namespace ADDON;

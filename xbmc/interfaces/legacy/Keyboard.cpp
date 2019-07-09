@@ -7,11 +7,11 @@
  */
 
 #include "Keyboard.h"
-#include "LanguageHook.h"
 
+#include "LanguageHook.h"
 #include "guilib/GUIKeyboardFactory.h"
-#include "utils/Variant.h"
 #include "messaging/ApplicationMessenger.h"
+#include "utils/Variant.h"
 
 using namespace KODI::MESSAGING;
 

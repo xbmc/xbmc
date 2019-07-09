@@ -8,9 +8,9 @@
 
 #pragma once
 
-#include <vector>
-
 #include "GUIControl.h"
+
+#include <vector>
 
 class CGUIControlProfiler;
 class TiXmlElement;

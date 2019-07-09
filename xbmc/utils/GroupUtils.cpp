@@ -8,15 +8,15 @@
 
 #include "GroupUtils.h"
 
-#include <map>
-#include <set>
-
 #include "FileItem.h"
 #include "filesystem/MultiPathDirectory.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "video/VideoDbUrl.h"
 #include "video/VideoInfoTag.h"
+
+#include <map>
+#include <set>
 
 using SetMap = std::map<int, std::set<CFileItemPtr> >;
 

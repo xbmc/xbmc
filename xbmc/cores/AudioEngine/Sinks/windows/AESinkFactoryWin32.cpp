@@ -6,11 +6,13 @@
  *  See LICENSES/README.md for more information.
  */
 #include "AESinkFactoryWin.h"
-#include "platform/win32/CharsetConverter.h"
-#include "utils/log.h"
 #include "utils/StringUtils.h"
+#include "utils/log.h"
+
+#include "platform/win32/CharsetConverter.h"
 
 #include <algorithm>
+
 #include <mmdeviceapi.h>
 #include <wrl/client.h>
 

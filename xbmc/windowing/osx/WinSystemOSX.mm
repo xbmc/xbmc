@@ -7,13 +7,13 @@
  */
 
 #include "WinSystemOSX.h"
-#include "WinEventsOSX.h"
-#include "VideoSyncOsx.h"
-#include "OSScreenSaverOSX.h"
+
 #include "AppInboundProtocol.h"
-#include "ServiceBroker.h"
-#include "messaging/ApplicationMessenger.h"
 #include "CompileInfo.h"
+#include "OSScreenSaverOSX.h"
+#include "ServiceBroker.h"
+#include "VideoSyncOsx.h"
+#include "WinEventsOSX.h"
 #include "cores/AudioEngine/AESinkFactory.h"
 #include "cores/AudioEngine/Sinks/AESinkDARWINOSX.h"
 #include "cores/RetroPlayer/process/osx/RPProcessInfoOSX.h"
@@ -21,38 +21,38 @@
 #include "cores/VideoPlayer/DVDCodecs/DVDFactoryCodec.h"
 #include "cores/VideoPlayer/DVDCodecs/Video/VTB.h"
 #include "cores/VideoPlayer/Process/osx/ProcessInfoOSX.h"
-#include "cores/VideoPlayer/VideoRenderers/RenderFactory.h"
-#include "cores/VideoPlayer/VideoRenderers/LinuxRendererGL.h"
 #include "cores/VideoPlayer/VideoRenderers/HwDecRender/RendererVTBGL.h"
+#include "cores/VideoPlayer/VideoRenderers/LinuxRendererGL.h"
+#include "cores/VideoPlayer/VideoRenderers/RenderFactory.h"
 #include "guilib/DispResource.h"
 #include "guilib/GUIWindowManager.h"
+#include "input/KeyboardStat.h"
+#include "messaging/ApplicationMessenger.h"
 #include "rendering/gl/ScreenshotSurfaceGL.h"
-#include "platform/darwin/osx/powermanagement/CocoaPowerSyscall.h"
 #include "settings/DisplaySettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
-#include "settings/DisplaySettings.h"
-#include "input/KeyboardStat.h"
 #include "threads/SingleLock.h"
-#include "utils/log.h"
 #include "utils/StringUtils.h"
-#include "platform/darwin/osx/XBMCHelper.h"
 #include "utils/SystemInfo.h"
-#include "platform/darwin/osx/CocoaInterface.h"
-#include "platform/darwin/DictionaryUtils.h"
-#include "platform/darwin/DarwinUtils.h"
+#include "utils/log.h"
 #include "windowing/osx/CocoaDPMSSupport.h"
+
+#include "platform/darwin/DarwinUtils.h"
+#include "platform/darwin/DictionaryUtils.h"
+#include "platform/darwin/osx/CocoaInterface.h"
+#import "platform/darwin/osx/OSXTextInputResponder.h"
+#include "platform/darwin/osx/XBMCHelper.h"
+#include "platform/darwin/osx/powermanagement/CocoaPowerSyscall.h"
 
 #include <cstdlib>
 #include <signal.h>
 
-#import <SDL/SDL.h>
-
 #import <Cocoa/Cocoa.h>
-#import <QuartzCore/QuartzCore.h>
-#import <IOKit/pwr_mgt/IOPMLib.h>
 #import <IOKit/graphics/IOGraphicsLib.h>
-#import "platform/darwin/osx/OSXTextInputResponder.h"
+#import <IOKit/pwr_mgt/IOPMLib.h>
+#import <QuartzCore/QuartzCore.h>
+#import <SDL/SDL.h>
 
 // turn off deprecated warning spew.
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"

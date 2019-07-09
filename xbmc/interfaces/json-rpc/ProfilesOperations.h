@@ -8,8 +8,8 @@
 
 #pragma once
 
-#include "JSONRPC.h"
 #include "FileItemHandler.h"
+#include "JSONRPC.h"
 
 class CVariant;
 

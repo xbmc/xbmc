@@ -8,12 +8,6 @@
 
 #include "GUIInfoManager.h"
 
-#include <algorithm>
-#include <cmath>
-#include <functional>
-#include <iterator>
-#include <memory>
-
 #include "Application.h"
 #include "FileItem.h"
 #include "ServiceBroker.h"
@@ -33,6 +27,12 @@
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
+
+#include <algorithm>
+#include <cmath>
+#include <functional>
+#include <iterator>
+#include <memory>
 
 using namespace KODI::GUILIB;
 using namespace KODI::GUILIB::GUIINFO;

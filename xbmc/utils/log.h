@@ -8,11 +8,11 @@
 
 #pragma once
 
-#include <string>
-#include <utility>
-
 #include "commons/ilog.h"
 #include "utils/StringUtils.h"
+
+#include <string>
+#include <utility>
 
 
 class CLog

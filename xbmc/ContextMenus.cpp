@@ -6,8 +6,9 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include "storage/MediaManager.h"
 #include "ContextMenus.h"
+
+#include "storage/MediaManager.h"
 
 
 namespace CONTEXTMENU

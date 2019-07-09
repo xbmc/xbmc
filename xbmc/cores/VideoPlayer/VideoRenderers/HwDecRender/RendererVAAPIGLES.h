@@ -8,8 +8,8 @@
 
 #pragma once
 
-#include "cores/VideoPlayer/VideoRenderers/LinuxRendererGLES.h"
 #include "VaapiEGL.h"
+#include "cores/VideoPlayer/VideoRenderers/LinuxRendererGLES.h"
 
 #include <array>
 #include <memory>

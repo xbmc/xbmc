@@ -8,9 +8,9 @@
 
 #pragma once
 
-#include <string>
-
 #include "IFileItemListModifier.h"
+
+#include <string>
 
 class CSmartPlaylistFileItemListModifier : public IFileItemListModifier
 {

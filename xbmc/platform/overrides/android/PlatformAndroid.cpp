@@ -7,8 +7,10 @@
  */
 
 #include "PlatformAndroid.h"
-#include <stdlib.h>
+
 #include "filesystem/SpecialProtocol.h"
+
+#include <stdlib.h>
 
 CPlatform* CPlatform::CreateInstance()
 {

@@ -15,6 +15,9 @@
 #include "URL.h"
 #include "Util.h"
 #include "guilib/LocalizeStrings.h"
+#include "guilib/guiinfo/GUIInfo.h"
+#include "guilib/guiinfo/GUIInfoHelper.h"
+#include "guilib/guiinfo/GUIInfoLabels.h"
 #include "music/MusicInfoLoader.h"
 #include "music/MusicThumbLoader.h"
 #include "music/tags/MusicInfoTag.h"
@@ -23,10 +26,6 @@
 #include "settings/SettingsComponent.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
-
-#include "guilib/guiinfo/GUIInfo.h"
-#include "guilib/guiinfo/GUIInfoHelper.h"
-#include "guilib/guiinfo/GUIInfoLabels.h"
 
 using namespace KODI::GUILIB;
 using namespace KODI::GUILIB::GUIINFO;

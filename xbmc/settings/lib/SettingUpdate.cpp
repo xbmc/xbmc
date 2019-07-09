@@ -7,10 +7,11 @@
  */
 
 #include "SettingUpdate.h"
+
 #include "SettingDefinitions.h"
-#include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/XBMCTinyXML.h"
+#include "utils/log.h"
 
 bool CSettingUpdate::Deserialize(const TiXmlNode *node)
 {
