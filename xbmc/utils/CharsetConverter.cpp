@@ -10,11 +10,7 @@
 
 #include <algorithm>
 
-#ifndef TARGET_FREEBSD
 #include <iconv.h>
-#elif TARGET_FREEBSD
-#include "/usr/include/iconv.h"
-#endif
 #include <fribidi.h>
 
 #include "guilib/LocalizeStrings.h"
