@@ -8,8 +8,8 @@
 
 #pragma once
 
-#include "xbmc/windowing/WinEvents.h"
-#include "xbmc/windowing/X11/WinSystemX11.h"
+#include "windowing/WinEvents.h"
+#include "windowing/X11/WinSystemX11.h"
 #include <X11/Xlib.h>
 #include "threads/SystemClock.h"
 

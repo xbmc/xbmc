@@ -9,7 +9,7 @@
 #include "URL.h"
 #include "TextureDatabase.h"
 
-#include "gtest/gtest.h"
+#include <gtest/gtest.h>
 
 using ::testing::ValuesIn;
 

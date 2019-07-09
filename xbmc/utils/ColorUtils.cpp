@@ -8,7 +8,7 @@
 
 #include "Color.h"
 #include "ColorUtils.h"
-#include "math.h"
+#include <math.h>
 
 UTILS::Color ColorUtils::ChangeOpacity(const UTILS::Color color, const float opacity)
 {

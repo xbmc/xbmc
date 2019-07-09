@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include "easyhook/easyhook.h"
+#include <easyhook/easyhook.h>
 #include "rendering/dx/RenderSystemDX.h"
 #include "windowing/windows/WinSystemWin32.h"
 

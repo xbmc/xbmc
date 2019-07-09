@@ -9,7 +9,7 @@
 #include "utils/Mime.h"
 #include "FileItem.h"
 
-#include "gtest/gtest.h"
+#include <gtest/gtest.h>
 
 TEST(TestMime, GetMimeType_string)
 {

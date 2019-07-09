@@ -8,7 +8,7 @@
 
 #include "utils/AlarmClock.h"
 
-#include "gtest/gtest.h"
+#include <gtest/gtest.h>
 
 TEST(TestAlarmClock, General)
 {

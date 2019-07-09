@@ -8,7 +8,7 @@
 
 #include "utils/Digest.h"
 
-#include "gtest/gtest.h"
+#include <gtest/gtest.h>
 
 using KODI::UTILITY::CDigest;
 using KODI::UTILITY::TypedDigest;

@@ -9,7 +9,7 @@
 /** @todo gtest/gtest.h needs to come in before utils/RegExp.h.
  * Investigate why.
  */
-#include "gtest/gtest.h"
+#include <gtest/gtest.h>
 
 #include "utils/RegExp.h"
 #include "utils/log.h"

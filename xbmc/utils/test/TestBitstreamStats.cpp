@@ -9,7 +9,7 @@
 #include "threads/Thread.h"
 #include "utils/BitstreamStats.h"
 
-#include "gtest/gtest.h"
+#include <gtest/gtest.h>
 
 #define BITS (256 * 8)
 #define BYTES (256)

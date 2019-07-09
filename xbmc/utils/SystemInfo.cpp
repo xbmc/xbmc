@@ -30,7 +30,7 @@
 #include "utils/log.h"
 
 #ifdef TARGET_WINDOWS
-#include "dwmapi.h"
+#include <dwmapi.h>
 #include "utils/CharsetConverter.h"
 #include <VersionHelpers.h>
 

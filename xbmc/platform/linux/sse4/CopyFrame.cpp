@@ -6,7 +6,7 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include "smmintrin.h"
+#include <smmintrin.h>
 
 #define CACHED_BUFFER_SIZE 4096
 

@@ -8,7 +8,7 @@
 
 #include "video/VideoInfoScanner.h"
 #include "FileItem.h"
-#include "gtest/gtest.h"
+#include <gtest/gtest.h>
 
 using namespace VIDEO;
 using ::testing::Test;

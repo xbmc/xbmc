@@ -15,7 +15,7 @@
 #include "peripherals/addons/PeripheralAddonTranslator.h"
 #include "peripherals/devices/PeripheralJoystick.h"
 #include "platform/android/activity/XBMCApp.h"
-#include "androidjni/View.h"
+#include <androidjni/View.h>
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"

@@ -8,7 +8,7 @@
 
 #include "ZeroconfBrowserAvahi.h"
 
-#include <utils/log.h>
+#include "utils/log.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/GUIMessage.h"

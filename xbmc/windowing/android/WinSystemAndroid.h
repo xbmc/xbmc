@@ -14,7 +14,7 @@
 #include "threads/CriticalSection.h"
 #include "windowing/WinSystem.h"
 #include "threads/Timer.h"
-#include "EGL/egl.h"
+#include <EGL/egl.h>
 
 class CDecoderFilterManager;
 class IDispResource;

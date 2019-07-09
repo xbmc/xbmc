@@ -9,7 +9,7 @@
 #include "utils/Stopwatch.h"
 #include "threads/Thread.h"
 
-#include "gtest/gtest.h"
+#include <gtest/gtest.h>
 
 class CTestStopWatchThread : public CThread
 {

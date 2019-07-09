@@ -6,7 +6,7 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include "gtest/gtest.h"
+#include <gtest/gtest.h>
 
 #include "TestBasicEnvironment.h"
 #include "TestUtils.h"

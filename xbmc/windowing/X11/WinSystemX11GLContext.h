@@ -10,7 +10,7 @@
 
 #include "WinSystemX11.h"
 
-#include "EGL/egl.h"
+#include <EGL/egl.h>
 #include "rendering/gl/RenderSystemGL.h"
 #include "platform/linux/OptionalsReg.h"
 #include <memory>

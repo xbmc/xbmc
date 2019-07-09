@@ -10,7 +10,7 @@
 #include "Util.h"
 #include "utils/URIUtils.h"
 #include "storage/cdioSupport.h"
-#include "PowrProf.h"
+#include <PowrProf.h>
 #include "WindowHelper.h"
 #include "Application.h"
 #include "my_ntddscsi.h"

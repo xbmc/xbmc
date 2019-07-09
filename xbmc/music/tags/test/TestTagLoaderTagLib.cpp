@@ -6,7 +6,7 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include "gtest/gtest.h"
+#include <gtest/gtest.h>
 #include "music/tags/TagLoaderTagLib.h"
 #include "music/tags/MusicInfoTag.h"
 #include <taglib/tpropertymap.h>

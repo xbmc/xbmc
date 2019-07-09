@@ -21,7 +21,7 @@
 
 #include <unistd.h> //gethostname
 
-#include <utils/log.h>
+#include "utils/log.h"
 
 ///helper RAII-struct to block event loop for modifications
 struct ScopedEventLoopBlock

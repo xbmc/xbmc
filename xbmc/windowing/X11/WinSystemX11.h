@@ -16,8 +16,8 @@
 #include "threads/CriticalSection.h"
 #include "threads/SystemClock.h"
 #include "settings/lib/ISettingCallback.h"
-#include "X11/Xlib.h"
-#include "X11/Xutil.h"
+#include <X11/Xlib.h>
+#include <X11/Xutil.h>
 
 class IDispResource;
 class CWinEventsX11;

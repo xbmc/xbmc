@@ -23,7 +23,7 @@
 #include "settings/SettingsComponent.h"
 #include "music/MusicThumbLoader.h"
 #include "video/VideoThumbLoader.h"
-#include "xbmc/settings/Settings.h"
+#include "settings/Settings.h"
 
 #define NUM_ITEMS 10
 

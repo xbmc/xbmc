@@ -11,7 +11,7 @@
 #include "utils/log.h"
 #include "threads/SingleLock.h"
 #include "cores/VideoPlayer/Interface/Addon/TimingConstants.h"
-#include "math.h"
+#include <math.h>
 
 CDVDMessageQueue::CDVDMessageQueue(const std::string &owner) : m_hEvent(true), m_owner(owner)
 {

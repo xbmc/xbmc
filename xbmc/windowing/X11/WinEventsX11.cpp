@@ -6,16 +6,16 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include "xbmc/windowing/WinEvents.h"
+#include "windowing/WinEvents.h"
 #include "WinEventsX11.h"
 #include "Application.h"
 #include "AppInboundProtocol.h"
 #include "messaging/ApplicationMessenger.h"
 #include <X11/Xlib.h>
 #include <X11/extensions/Xrandr.h>
-#include "xbmc/windowing/X11/WinSystemX11.h"
-#include "X11/keysymdef.h"
-#include "X11/XF86keysym.h"
+#include "windowing/X11/WinSystemX11.h"
+#include <X11/keysymdef.h>
+#include <X11/XF86keysym.h>
 #include "utils/log.h"
 #include "utils/CharsetConverter.h"
 #include "guilib/GUIComponent.h"

@@ -8,7 +8,7 @@
 
 #include <string.h>
 #include "utils/HttpHeader.h"
-#include "gtest/gtest.h"
+#include <gtest/gtest.h>
 
 #define CHECK_CNT_TYPE_NAME "Content-Type"
 #define CHECK_CONTENT_TYPE_HTML "text/html"

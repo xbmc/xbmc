@@ -19,7 +19,7 @@
 
 #include <errno.h>
 
-#include "gtest/gtest.h"
+#include <gtest/gtest.h>
 
 class TestZipFile : public testing::Test
 {

@@ -19,7 +19,7 @@
  */
 
 #include "PNGDecoder.h"
-#include "png.h"
+#include <png.h>
 #include "SimpleFS.h"
 
 #ifndef png_jmpbuf

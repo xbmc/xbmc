@@ -8,7 +8,8 @@
 
 #pragma once
 
-#include "xbmc/guilib/Shader.h"
+#include "guilib/Shader.h"
+
 #include <string>
 
 class CGLESShader : public Shaders::CGLSLShaderProgram

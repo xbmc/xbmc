@@ -5,7 +5,7 @@
  *  SPDX-License-Identifier: GPL-2.0-or-later
  *  See LICENSES/README.md for more information.
  */
-#include "limits.h"
+#include <limits.h>
 #include "TagLibVFSStream.h"
 #include "filesystem/File.h"
 #include <taglib/tiostream.h>

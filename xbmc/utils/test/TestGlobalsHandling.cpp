@@ -8,7 +8,7 @@
 
 #include "utils/test/TestGlobalsHandlingPattern1.h"
 
-#include "gtest/gtest.h"
+#include <gtest/gtest.h>
 
 using namespace xbmcutil;
 using namespace test;

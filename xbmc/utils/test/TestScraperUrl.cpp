@@ -8,7 +8,7 @@
 
 #include "utils/ScraperUrl.h"
 
-#include "gtest/gtest.h"
+#include <gtest/gtest.h>
 
 TEST(TestScraperUrl, General)
 {

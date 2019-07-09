@@ -6,7 +6,7 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include "gtest/gtest.h"
+#include <gtest/gtest.h>
 
 #include "cores/AudioEngine/Sinks/osx/CoreAudioHardware.h"
 #include "cores/AudioEngine/Sinks/darwin/CoreAudioHelpers.h"

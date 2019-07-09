@@ -13,7 +13,7 @@
 #include "utils/URIUtils.h"
 #include "test/TestUtils.h"
 
-#include "gtest/gtest.h"
+#include <gtest/gtest.h>
 
 TEST(TestDirectory, General)
 {

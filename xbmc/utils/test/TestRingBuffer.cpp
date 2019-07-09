@@ -8,7 +8,7 @@
 
 #include "utils/RingBuffer.h"
 
-#include "gtest/gtest.h"
+#include <gtest/gtest.h>
 
 TEST(TestRingBuffer, General)
 {

@@ -8,7 +8,8 @@
 
 #include "addons/AddonBuilder.h"
 #include "addons/LanguageResource.h"
-#include "gtest/gtest.h"
+
+#include <gtest/gtest.h>
 
 using namespace ADDON;
 

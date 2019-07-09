@@ -15,7 +15,7 @@
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 
-#include "gtest/gtest.h"
+#include <gtest/gtest.h>
 
 using ::testing::Test;
 using ::testing::WithParamInterface;

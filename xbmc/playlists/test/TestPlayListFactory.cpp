@@ -14,7 +14,7 @@
 #include "test/TestUtils.h"
 #include "URL.h"
 
-#include "gtest/gtest.h"
+#include <gtest/gtest.h>
 
 using namespace PLAYLIST;
 

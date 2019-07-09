@@ -21,7 +21,7 @@
 #include "guilib/GUIWindowManager.h"
 #include "GUIUserMessages.h"
 #include "music/MusicDatabase.h"
-#include "xbmc/music/tags/MusicInfoTag.h"
+#include "music/tags/MusicInfoTag.h"
 #include "Application.h"
 #include "ServiceBroker.h"
 #include "FileItem.h"

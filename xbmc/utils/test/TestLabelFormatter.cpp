@@ -15,7 +15,7 @@
 
 #include "test/TestUtils.h"
 
-#include "gtest/gtest.h"
+#include <gtest/gtest.h>
 
 /* Set default settings used by CLabelFormatter. */
 class TestLabelFormatter : public testing::Test

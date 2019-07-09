@@ -10,7 +10,7 @@
 #include "utils/StringUtils.h"
 #include "test/TestUtils.h"
 
-#include "gtest/gtest.h"
+#include <gtest/gtest.h>
 
 TEST(TestXBMCTinyXML, ParseFromString)
 {

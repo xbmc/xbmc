@@ -8,7 +8,7 @@
 
 #include "guilib/guiinfo/VideoGUIInfo.h"
 
-#include "math.h"
+#include <math.h>
 
 #include "Application.h"
 #include "FileItem.h"

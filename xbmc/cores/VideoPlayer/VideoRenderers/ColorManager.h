@@ -9,7 +9,7 @@
 #pragma once
 
 #if defined(HAVE_LCMS2)
-#include "lcms2.h"
+#include <lcms2.h>
 #endif
 
 #include <string>

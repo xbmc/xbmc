@@ -27,7 +27,7 @@
 #include "utils/SystemInfo.h"
 #include "utils/Variant.h"
 #include "windowing/windows/WinKeyMap.h"
-#include "xbmc/GUIUserMessages.h"
+#include "GUIUserMessages.h"
 
 #include <winrt/Windows.Devices.Input.h>
 

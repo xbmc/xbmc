@@ -8,7 +8,7 @@
 
 #include <utility>
 
-#include "gtest/gtest.h"
+#include <gtest/gtest.h>
 
 #include "filesystem/MultiPathDirectory.h"
 #include "ServiceBroker.h"

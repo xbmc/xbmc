@@ -9,7 +9,7 @@
 #include "utils/UrlOptions.h"
 #include "utils/Variant.h"
 
-#include "gtest/gtest.h"
+#include <gtest/gtest.h>
 
 TEST(TestUrlOptions, Clear)
 {

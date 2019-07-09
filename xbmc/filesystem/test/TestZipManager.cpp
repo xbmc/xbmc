@@ -9,7 +9,7 @@
 #include "filesystem/ZipManager.h"
 #include "utils/RegExp.h"
 
-#include "gtest/gtest.h"
+#include <gtest/gtest.h>
 
 TEST(TestZipManager, PathTraversal)
 {

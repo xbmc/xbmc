@@ -41,7 +41,7 @@
 #define __STDC_LIMIT_MACROS
 #endif
 #ifdef TARGET_POSIX
-#include "stdint.h"
+#include <stdint.h>
 #endif
 
 extern "C" {

@@ -10,7 +10,7 @@
 #include "utils/StringUtils.h"
 #include "XBDateTime.h"
 
-#include "gtest/gtest.h"
+#include <gtest/gtest.h>
 
 TEST(TestXMLUtils, GetHex)
 {

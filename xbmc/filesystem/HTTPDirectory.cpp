@@ -19,7 +19,7 @@
 #include "utils/log.h"
 #include "utils/URIUtils.h"
 #include "utils/HTMLUtil.h"
-#include "climits"
+#include <climits>
 
 using namespace XFILE;
 

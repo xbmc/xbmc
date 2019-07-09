@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include "gtest/gtest.h"
+#include <gtest/gtest.h>
 
 #include "threads/Thread.h"
 

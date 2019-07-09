@@ -14,7 +14,7 @@
 #include "test/TestUtils.h"
 #include "utils/StringUtils.h"
 
-#include "gtest/gtest.h"
+#include <gtest/gtest.h>
 
 class TestFileFactory : public testing::Test
 {

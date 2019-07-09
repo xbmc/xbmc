@@ -12,7 +12,7 @@
 #include <string>
 #include <errno.h>
 
-#include "gtest/gtest.h"
+#include <gtest/gtest.h>
 
 TEST(TestFile, Read)
 {

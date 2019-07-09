@@ -13,7 +13,7 @@
 
 #include "AndroidJoystickState.h"
 #include "AndroidJoystickTranslator.h"
-#include "androidjni/View.h"
+#include <androidjni/View.h>
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"

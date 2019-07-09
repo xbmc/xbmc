@@ -9,7 +9,7 @@
 #pragma once
 
 #include "platform/linux/RBP.h"
-#include "EGL/egl.h"
+#include <EGL/egl.h>
 #include <bcm_host.h>
 #include "windowing/Resolution.h"
 
