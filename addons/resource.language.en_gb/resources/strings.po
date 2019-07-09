@@ -21719,3 +21719,15 @@ msgstr ""
 msgctxt "#39116"
 msgid "Episode plot"
 msgstr ""
+
+#. Header for warning notification during video playback
+#: xbmc/interfaces/builtins/LibraryBuiltins.cpp
+msgctxt "#39117"
+msgid "Clean video library"
+msgstr ""
+
+#. Message for warning notification during video playback
+#: xbmc/interfaces/builtins/LibraryBuiltins.cpp
+msgctxt "#39118"
+msgid "Not possible during video playback"
+msgstr ""

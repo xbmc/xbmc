@@ -11,6 +11,7 @@
 #include "Application.h"
 #include "ServiceBroker.h"
 #include "dialogs/GUIDialogFileBrowser.h"
+#include "dialogs/GUIDialogKaiToast.h"
 #include "dialogs/GUIDialogYesNo.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/LocalizeStrings.h"
@@ -41,13 +42,20 @@ static int CleanLibrary(const std::vector<std::string>& params)
                      || StringUtils::EqualsNoCase(params[0], "tvshows")
                      || StringUtils::EqualsNoCase(params[0], "musicvideos"))
   {
-    if (!g_application.IsVideoScanning())
+    if (g_application.IsVideoScanning())
+    {
+      CLog::Log(LOGERROR, "CleanLibrary is not possible while scanning or cleaning");
+    }
+    else if (g_application.GetAppPlayer().IsPlayingVideo())
+    {
+      CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Warning, g_localizeStrings.Get(39117), g_localizeStrings.Get(39118));
+      CLog::Log(LOGERROR, "CleanLibrary is not possible while playing video");
+    }
+    else
     {
       const std::string content = (params.empty() || params[0] == "video") ? "" : params[0];
       g_application.StartVideoCleanup(userInitiated, content);
     }
-    else
-      CLog::Log(LOGERROR, "CleanLibrary is not possible while scanning or cleaning");
   }
   else if (StringUtils::EqualsNoCase(params[0], "music"))
   {
