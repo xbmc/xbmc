@@ -24,6 +24,7 @@ namespace PVR
     CGUIDialogPVRGroupManager(void);
     ~CGUIDialogPVRGroupManager(void) override;
     bool OnMessage(CGUIMessage& message) override;
+    bool OnAction(const CAction& action) override;
     void OnWindowLoaded() override;
     void OnWindowUnload() override;
 
@@ -38,7 +39,6 @@ namespace PVR
     void ClearSelectedGroupsThumbnail();
     void Update();
     bool PersistChanges(void);
-    bool CancelChanges(void);
     bool ActionButtonOk(CGUIMessage &message);
     bool ActionButtonNewGroup(CGUIMessage &message);
     bool ActionButtonDeleteGroup(CGUIMessage &message);
@@ -50,13 +50,14 @@ namespace PVR
     bool ActionButtonToggleRadioTV(CGUIMessage &message);
     bool ActionButtonRecreateThumbnail(CGUIMessage& message);
     bool OnMessageClick(CGUIMessage &message);
+    bool OnActionMove(const CAction& action);
 
     CPVRChannelGroupPtr m_selectedGroup;
     bool              m_bIsRadio;
 
-    unsigned int      m_iSelectedUngroupedChannel;
-    unsigned int      m_iSelectedGroupMember;
-    unsigned int      m_iSelectedChannelGroup;
+    int m_iSelectedUngroupedChannel = 0;
+    int m_iSelectedGroupMember = 0;
+    int m_iSelectedChannelGroup = 0;
 
     CFileItemList *   m_ungroupedChannels;
     CFileItemList *   m_groupMembers;
