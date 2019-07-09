@@ -11,6 +11,8 @@
 
 #include "utils/GLUtils.h"
 
+#include <string>
+
 namespace Shaders
 {
   class GLSLOutput

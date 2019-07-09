@@ -9,6 +9,8 @@
 #pragma once
 
 #include "DVDDemux.h"
+#include "DVDInputStreams/DVDInputStream.h"
+
 #include <map>
 #include <vector>
 

@@ -8,6 +8,11 @@
 
 #pragma once
 
+#include <stdint.h>
+#include <stdio.h>
+
+#include "PlatformDefs.h"
+
 #ifdef TARGET_POSIX
 #define _onexit_t void*
 #endif

@@ -8,10 +8,15 @@
 
 #pragma once
 
+#include "cores/AudioEngine/Engines/ActiveAE/ActiveAE.h"
+#include "cores/AudioEngine/Engines/ActiveAE/ActiveAEBuffer.h"
 #include "cores/AudioEngine/Interfaces/AEStream.h"
 #include "cores/AudioEngine/Utils/AEAudioFormat.h"
 #include "cores/AudioEngine/Utils/AELimiter.h"
+#include "threads/Event.h"
+
 #include <atomic>
+#include <deque>
 
 namespace ActiveAE
 {

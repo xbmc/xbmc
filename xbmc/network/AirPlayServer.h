@@ -11,6 +11,8 @@
 
 #pragma once
 
+#include "network/Network.h"
+
 #include <map>
 #include <vector>
 #include <sys/socket.h>

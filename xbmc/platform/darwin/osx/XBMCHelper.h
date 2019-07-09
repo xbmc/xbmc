@@ -10,6 +10,8 @@
 
 #include "settings/lib/ISettingCallback.h"
 
+#include <string>
+
 enum AppleRemoteOptions
 {
   APPLE_REMOTE_DISABLED    = 0,

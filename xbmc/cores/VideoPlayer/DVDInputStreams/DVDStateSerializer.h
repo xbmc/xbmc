@@ -8,6 +8,10 @@
 
 #pragma once
 
+#include "DllDvdNav.h"
+
+#include <string>
+
 class CDVDStateSerializer
 {
 public:
