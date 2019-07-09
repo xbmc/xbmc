@@ -56,6 +56,13 @@
 					<font>font25_title</font>
 					<label>$LOCALIZE[31046]</label>
 				</control>
+				<control type="button" id="35">
+					<description>Regenerate Group Thumbnail</description>
+					<width>370</width>
+					<include>SettingsItemCommon</include>
+					<font>font25_title</font>
+					<label>$LOCALIZE[13315]</label>
+				</control>
 				<control type="togglebutton" id="34">
 					<description>TV/Radio toggle</description>
 					<width>370</width>
@@ -73,6 +80,16 @@
 					<label>$LOCALIZE[186]</label>
 				</control>
 			</control>
+			<control type="image">
+				<left>85</left>
+				<bottom>30</bottom>
+				<width>200</width>
+				<height>200</height>
+				<texture>$INFO[Container(13).ListItem.Icon]</texture>
+				<bordertexture colordiffuse="border_alpha">colors/black.png</bordertexture>
+				<bordersize>2</bordersize>
+				<aspectratio>keep</aspectratio>
+			</control>
 			<control type="group">
 				<left>350</left>
 				<top>80</top>
@@ -85,7 +102,6 @@
 					<label>$LOCALIZE[31089]: [COLOR white]$INFO[Container(13).NumItems][/COLOR]</label>
 					<align>center</align>
 					<aligny>center</aligny>
-					<font>font12</font>
 					<textcolor>button_focus</textcolor>
 				</control>
 				<control type="image">
@@ -106,10 +122,56 @@
 					<onright>73</onright>
 					<pagecontrol>73</pagecontrol>
 					<scrolltime>200</scrolltime>
-					<include content="DefaultSimpleListLayout">
-						<param name="width" value="320" />
-						<param name="list_id" value="13" />
-					</include>
+					<itemlayout width="320" height="70">
+						<control type="label">
+							<left>20</left>
+							<right>70</right>
+							<height>70</height>
+							<aligny>center</aligny>
+							<font>font27</font>
+							<textcolor>grey</textcolor>
+							<label>$INFO[ListItem.Label]</label>
+						</control>
+						<control type="image">
+							<width>60</width>
+							<height>60</height>
+							<right>5</right>
+							<top>5</top>
+							<texture>$INFO[ListItem.Icon]</texture>
+							<bordertexture colordiffuse="border_alpha">colors/black.png</bordertexture>
+							<bordersize>2</bordersize>
+							<aspectratio>keep</aspectratio>
+						</control>
+					</itemlayout>
+					<focusedlayout width="320" height="70">
+						<control type="image">
+							<left>0</left>
+							<top>0</top>
+							<right>0</right>
+							<bottom>0</bottom>
+							<texture colordiffuse="button_focus">lists/focus.png</texture>
+							<visible>Control.HasFocus(13)</visible>
+						</control>
+						<control type="label">
+							<left>20</left>
+							<right>70</right>
+							<height>70</height>
+							<aligny>center</aligny>
+							<font>font27</font>
+							<label>$INFO[ListItem.Label]</label>
+							<scroll>true</scroll>
+						</control>
+						<control type="image">
+							<width>60</width>
+							<height>60</height>
+							<right>5</right>
+							<top>5</top>
+							<texture>$INFO[ListItem.Icon]</texture>
+							<bordertexture colordiffuse="border_alpha">colors/black.png</bordertexture>
+							<bordersize>2</bordersize>
+							<aspectratio>keep</aspectratio>
+						</control>
+					</focusedlayout>
 				</control>
 				<control type="scrollbar" id="73">
 					<left>340</left>

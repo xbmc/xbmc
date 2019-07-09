@@ -223,6 +223,7 @@ public:
   bool IsVideoDb() const;
   bool IsEPG() const;
   bool IsPVRChannel() const;
+  bool IsPVRChannelGroup() const;
   bool IsPVRRecording() const;
   bool IsUsablePVRRecording() const;
   bool IsDeletedPVRRecording() const;

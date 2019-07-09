@@ -49,7 +49,10 @@ namespace PVR
 
     // Timer events
     TimersInvalidated,
-    AnnounceReminder
+    AnnounceReminder,
+
+    // Channel events
+    ChannelGroupsInvalidated,
   };
 
   class CPVRManagerJobQueue

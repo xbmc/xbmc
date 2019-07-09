@@ -849,6 +849,13 @@ bool CFileItem::IsPVRChannel() const
   return HasPVRChannelInfoTag();
 }
 
+bool CFileItem::IsPVRChannelGroup() const
+{
+  return !StringUtils::EndsWithNoCase(m_strPath, ".pvr") &&
+         (StringUtils::StartsWithNoCase(m_strPath, "pvr://channels/tv/") ||
+          StringUtils::StartsWithNoCase(m_strPath, "pvr://channels/radio/"));
+}
+
 bool CFileItem::IsPVRRecording() const
 {
   return HasPVRRecordingInfoTag();
