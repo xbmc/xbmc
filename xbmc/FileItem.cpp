@@ -1253,7 +1253,7 @@ bool CFileItem::IsURL() const
 
 bool CFileItem::IsPVR() const
 {
-  return CUtil::IsPVR(m_strPath);
+  return URIUtils::IsPVR(m_strPath);
 }
 
 bool CFileItem::IsLiveTV() const
@@ -3202,7 +3202,7 @@ std::string CFileItem::GetMovieName(bool bUseFolderNames /* = false */) const
 
   if (m_pvrRecordingInfoTag)
     return m_pvrRecordingInfoTag->m_strTitle;
-  else if (CUtil::IsTVRecording(m_strPath))
+  else if (URIUtils::IsPVRRecording(m_strPath))
   {
     std::string title = CPVRRecording::GetTitleFromURL(m_strPath);
     if (!title.empty())

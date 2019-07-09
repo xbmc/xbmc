@@ -951,6 +951,14 @@ bool URIUtils::IsTCP(const std::string& strFile)
   return IsProtocol(strFile, "tcp");
 }
 
+bool URIUtils::IsPVR(const std::string& strFile)
+{
+  if (IsStack(strFile))
+    return IsPVR(CStackDirectory::GetFirstStackedFile(strFile));
+
+  return IsProtocol(strFile, "pvr");
+}
+
 bool URIUtils::IsPVRChannel(const std::string& strFile)
 {
   if (IsStack(strFile))
@@ -1029,7 +1037,8 @@ bool URIUtils::IsLiveTV(const std::string& strFile)
   std::string strFileWithoutSlash(strFile);
   RemoveSlashAtEnd(strFileWithoutSlash);
 
-  if (StringUtils::EndsWithNoCase(strFileWithoutSlash, ".pvr") && !StringUtils::StartsWith(strFileWithoutSlash, "pvr://recordings"))
+  if (StringUtils::EndsWithNoCase(strFileWithoutSlash, ".pvr") &&
+      !StringUtils::StartsWith(strFileWithoutSlash, "pvr://recordings"))
     return true;
 
   return false;
