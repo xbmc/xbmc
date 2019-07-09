@@ -275,9 +275,9 @@ namespace PVR
 
     /*!
      * @brief Update the channel path
-     * @param groupPath The new path of the group this channel belongs to
+     * @param channelGroup The (new) name of the group this channel belongs to
      */
-    void UpdatePath(const std::string& groupPath);
+    void UpdatePath(const std::string& channelGroup);
 
     /*!
      * @return Storage id for this channel in CPVRChannelGroup

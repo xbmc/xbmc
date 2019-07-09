@@ -13,6 +13,7 @@
 #include "filesystem/SpecialProtocol.h"
 #include "filesystem/StackDirectory.h"
 #include "network/DNSNameCache.h"
+#include "pvr/channels/PVRChannelsPath.h"
 #include "settings/AdvancedSettings.h"
 #include "URL.h"
 #include "utils/FileExtensionProvider.h"
@@ -29,6 +30,7 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 
+using namespace PVR;
 using namespace XFILE;
 
 const CAdvancedSettings* URIUtils::m_advancedSettings = nullptr;
@@ -964,7 +966,15 @@ bool URIUtils::IsPVRChannel(const std::string& strFile)
   if (IsStack(strFile))
     return IsPVRChannel(CStackDirectory::GetFirstStackedFile(strFile));
 
-  return StringUtils::StartsWithNoCase(strFile, "pvr://channels");
+  return IsProtocol(strFile, "pvr") && CPVRChannelsPath(strFile).IsChannel();
+}
+
+bool URIUtils::IsPVRChannelGroup(const std::string& strFile)
+{
+  if (IsStack(strFile))
+    return IsPVRChannelGroup(CStackDirectory::GetFirstStackedFile(strFile));
+
+  return IsProtocol(strFile, "pvr") && CPVRChannelsPath(strFile).IsChannelGroup();
 }
 
 bool URIUtils::IsPVRGuideItem(const std::string& strFile)

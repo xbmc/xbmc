@@ -170,7 +170,7 @@ bool CGUIDialogPVRGroupManager::ActionButtonRenameGroup(CGUIMessage &message)
       if (!strGroupName.empty())
       {
         ClearSelectedGroupsThumbnail();
-        m_selectedGroup->SetGroupName(strGroupName, true);
+        m_selectedGroup->SetGroupName(strGroupName);
         Update();
       }
     }

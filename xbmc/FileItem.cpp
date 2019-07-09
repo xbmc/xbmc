@@ -851,9 +851,7 @@ bool CFileItem::IsPVRChannel() const
 
 bool CFileItem::IsPVRChannelGroup() const
 {
-  return !StringUtils::EndsWithNoCase(m_strPath, ".pvr") &&
-         (StringUtils::StartsWithNoCase(m_strPath, "pvr://channels/tv/") ||
-          StringUtils::StartsWithNoCase(m_strPath, "pvr://channels/radio/"));
+  return URIUtils::IsPVRChannelGroup(m_strPath);
 }
 
 bool CFileItem::IsPVRRecording() const
