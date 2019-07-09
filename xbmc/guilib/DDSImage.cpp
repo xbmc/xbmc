@@ -12,12 +12,8 @@
 #include "utils/log.h"
 #include <string.h>
 
-#ifndef NO_XBMC_FILESYSTEM
 #include "filesystem/File.h"
 using namespace XFILE;
-#else
-#include "SimpleFS.h"
-#endif
 
 CDDSImage::CDDSImage()
 {

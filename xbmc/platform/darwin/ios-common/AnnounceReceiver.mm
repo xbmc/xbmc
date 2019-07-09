@@ -18,11 +18,7 @@
 #import "playlists/PlayList.h"
 
 #import "platform/darwin/ios-common/AnnounceReceiver.h"
-#if defined(TARGET_DARWIN_TVOS)
-#import "platform/darwin/tvos/MainController.h"
-#else
 #import "platform/darwin/ios/XBMCController.h"
-#endif
 #import "utils/Variant.h"
 #include "ServiceBroker.h"
 
