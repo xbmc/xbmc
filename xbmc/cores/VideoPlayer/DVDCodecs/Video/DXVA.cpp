@@ -841,6 +841,7 @@ CDecoder::CDecoder(CProcessInfo& processInfo)
 {
   m_event.Set();
   m_context          = static_cast<AVD3D11VAContext*>(calloc(1, sizeof(AVD3D11VAContext)));
+  m_context->context_mutex = INVALID_HANDLE_VALUE;
   m_context->cfg     = reinterpret_cast<D3D11_VIDEO_DECODER_CONFIG*>(calloc(1, sizeof(D3D11_VIDEO_DECODER_CONFIG)));
   m_context->surface = reinterpret_cast<ID3D11VideoDecoderOutputView**>(calloc(32, sizeof(ID3D11VideoDecoderOutputView*)));
   m_bufferPool.reset();
