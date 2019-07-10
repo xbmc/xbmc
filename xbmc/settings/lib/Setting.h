@@ -8,11 +8,6 @@
 
 #pragma once
 
-#include <memory>
-#include <set>
-#include <string>
-#include <vector>
-
 #include "ISetting.h"
 #include "ISettingCallback.h"
 #include "ISettingControl.h"
@@ -22,6 +17,11 @@
 #include "SettingType.h"
 #include "SettingUpdate.h"
 #include "threads/SharedSection.h"
+
+#include <memory>
+#include <set>
+#include <string>
+#include <vector>
 
 enum class SettingOptionsType {
   Unknown = 0,

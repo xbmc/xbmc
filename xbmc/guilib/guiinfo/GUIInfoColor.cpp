@@ -7,12 +7,13 @@
  */
 
 #include "guilib/guiinfo/GUIInfoColor.h"
+
 #include "GUIInfoManager.h"
+#include "ServiceBroker.h"
 #include "addons/Skin.h"
 #include "guilib/GUIColorManager.h"
 #include "guilib/GUIComponent.h"
 #include "utils/StringUtils.h"
-#include "ServiceBroker.h"
 
 using namespace KODI::GUILIB::GUIINFO;
 

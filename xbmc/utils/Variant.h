@@ -9,9 +9,9 @@
 #pragma once
 
 #include <map>
-#include <vector>
-#include <string>
 #include <stdint.h>
+#include <string>
+#include <vector>
 #include <wchar.h>
 
 int64_t str2int64(const std::string &str, int64_t fallback = 0);

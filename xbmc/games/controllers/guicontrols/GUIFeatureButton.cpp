@@ -7,6 +7,7 @@
  */
 
 #include "GUIFeatureButton.h"
+
 #include "games/controllers/windows/GUIControllerDefines.h"
 #include "guilib/GUIMessage.h"
 #include "guilib/WindowIDs.h"

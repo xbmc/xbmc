@@ -6,12 +6,14 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include <cmath>
 #include "GUIDialogExtendedProgressBar.h"
+
 #include "guilib/GUIMessage.h"
 #include "guilib/GUIProgressControl.h"
 #include "threads/SingleLock.h"
 #include "threads/SystemClock.h"
+
+#include <cmath>
 
 #define CONTROL_LABELHEADER       30
 #define CONTROL_LABELTITLE        31

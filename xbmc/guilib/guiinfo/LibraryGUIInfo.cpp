@@ -9,12 +9,11 @@
 #include "guilib/guiinfo/LibraryGUIInfo.h"
 
 #include "Application.h"
+#include "guilib/guiinfo/GUIInfo.h"
+#include "guilib/guiinfo/GUIInfoLabels.h"
 #include "music/MusicDatabase.h"
 #include "utils/StringUtils.h"
 #include "video/VideoDatabase.h"
-
-#include "guilib/guiinfo/GUIInfo.h"
-#include "guilib/guiinfo/GUIInfoLabels.h"
 
 using namespace KODI::GUILIB::GUIINFO;
 

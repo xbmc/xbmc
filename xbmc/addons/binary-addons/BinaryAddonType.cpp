@@ -7,11 +7,11 @@
  */
 
 #include "BinaryAddonType.h"
-#include "BinaryAddonBase.h"
 
-#include "utils/log.h"
+#include "BinaryAddonBase.h"
 #include "utils/URIUtils.h"
 #include "utils/XMLUtils.h"
+#include "utils/log.h"
 
 using namespace ADDON;
 

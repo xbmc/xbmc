@@ -8,12 +8,12 @@
 
 #pragma once
 
-#include <vector>
-
-#include "Tuple.h"
 #include "AddonString.h"
 #include "ListItem.h"
+#include "Tuple.h"
 #include "swighelper.h"
+
+#include <vector>
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 namespace XBMCAddon

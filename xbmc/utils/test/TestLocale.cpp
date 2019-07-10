@@ -6,10 +6,10 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include <gtest/gtest.h>
-
 #include "utils/Locale.h"
 #include "utils/StringUtils.h"
+
+#include <gtest/gtest.h>
 
 static const std::string TerritorySeparator = "_";
 static const std::string CodesetSeparator = ".";

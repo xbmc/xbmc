@@ -6,13 +6,14 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include "gtest/gtest.h"
-
-#include "cores/AudioEngine/Sinks/osx/CoreAudioHardware.h"
 #include "cores/AudioEngine/Sinks/darwin/CoreAudioHelpers.h"
-#include "cores/AudioEngine/Utils/AEUtil.h"
 #include "cores/AudioEngine/Sinks/osx/AEDeviceEnumerationOSX.h"
+#include "cores/AudioEngine/Sinks/osx/CoreAudioHardware.h"
+#include "cores/AudioEngine/Utils/AEUtil.h"
+
 #include <vector>
+
+#include <gtest/gtest.h>
 
 std::vector<AudioStreamBasicDescription> stereoFormatsWithPassthrough;
 std::vector<AudioStreamBasicDescription> stereoFormatsWithoutPassthrough;

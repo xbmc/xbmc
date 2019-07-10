@@ -20,11 +20,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <stdarg.h>
-#ifdef TARGET_WINDOWS
-#include "win32-dirent.h"
-#else
 #include <dirent.h>
-#endif
 #include <dlfcn.h>
 
 #if defined(TARGET_DARWIN) || defined(TARGET_FREEBSD) || defined(TARGET_ANDROID)

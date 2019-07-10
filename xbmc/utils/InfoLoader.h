@@ -9,6 +9,7 @@
 #pragma once
 
 #include "Job.h"
+
 #include <string>
 
 class CInfoLoader : public IJobCallback

@@ -8,12 +8,12 @@
 
 #pragma once
 
+#include "settings/lib/ISettingCallback.h"
+#include "utils/GlobalsHandling.h"
+
 #include <string>
 #include <utility>
 #include <vector>
-
-#include "settings/lib/ISettingCallback.h"
-#include "utils/GlobalsHandling.h"
 
 class CSetting;
 struct StringSettingOption;

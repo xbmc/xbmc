@@ -7,8 +7,9 @@
  */
 
 #include "MusicDatabaseFile.h"
-#include "music/MusicDatabase.h"
+
 #include "URL.h"
+#include "music/MusicDatabase.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 

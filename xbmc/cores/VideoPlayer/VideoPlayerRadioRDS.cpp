@@ -18,18 +18,20 @@
  * not required.
  */
 
+#include "VideoPlayerRadioRDS.h"
+
 #include "Application.h"
-#include "cores/VideoPlayer/Interface/Addon/TimingConstants.h"
-#include "DVDStreamInfo.h"
-#include "GUIInfoManager.h"
-#include "GUIUserMessages.h"
-#include "ServiceBroker.h"
 #include "DVDCodecs/DVDCodecs.h"
 #include "DVDCodecs/Video/DVDVideoCodecFFmpeg.h"
 #include "DVDDemuxers/DVDDemuxUtils.h"
 #include "DVDDemuxers/DVDFactoryDemuxer.h"
 #include "DVDInputStreams/DVDInputStream.h"
+#include "DVDStreamInfo.h"
+#include "GUIInfoManager.h"
+#include "GUIUserMessages.h"
+#include "ServiceBroker.h"
 #include "cores/FFmpeg.h"
+#include "cores/VideoPlayer/Interface/Addon/TimingConstants.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
@@ -45,8 +47,6 @@
 #include "utils/CharsetConverter.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
-
-#include "VideoPlayerRadioRDS.h"
 
 using namespace XFILE;
 using namespace PVR;

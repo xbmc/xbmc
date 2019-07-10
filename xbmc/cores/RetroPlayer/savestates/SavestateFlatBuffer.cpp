@@ -7,9 +7,9 @@
  */
 
 #include "SavestateFlatBuffer.h"
-#include "utils/log.h"
 
 #include "savestate_generated.h"
+#include "utils/log.h"
 
 using namespace KODI;
 using namespace RETRO;

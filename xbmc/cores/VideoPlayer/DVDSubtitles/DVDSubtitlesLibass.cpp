@@ -8,16 +8,16 @@
 
 #include "DVDSubtitlesLibass.h"
 
-#include "cores/VideoPlayer/Interface/Addon/TimingConstants.h"
 #include "ServiceBroker.h"
+#include "cores/VideoPlayer/Interface/Addon/TimingConstants.h"
 #include "filesystem/File.h"
 #include "filesystem/SpecialProtocol.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
-#include "utils/log.h"
-#include "utils/URIUtils.h"
-#include "utils/StringUtils.h"
 #include "threads/SingleLock.h"
+#include "utils/StringUtils.h"
+#include "utils/URIUtils.h"
+#include "utils/log.h"
 #include "windowing/GraphicContext.h"
 
 static void libass_log(int level, const char *fmt, va_list args, void *data)

@@ -9,8 +9,8 @@
 #pragma once
 
 #include "cores/AudioEngine/Interfaces/AESink.h"
-#include "cores/AudioEngine/Utils/AEDeviceInfo.h"
 #include "cores/AudioEngine/Sinks/osx/CoreAudioDevice.h"
+#include "cores/AudioEngine/Utils/AEDeviceInfo.h"
 
 class AERingBuffer;
 struct AEDelayStatus;

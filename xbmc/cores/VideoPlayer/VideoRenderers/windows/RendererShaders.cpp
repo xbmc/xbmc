@@ -7,6 +7,7 @@
  */
 
 #include "RendererShaders.h"
+
 #include "DVDCodecs/Video/DXVA.h"
 #include "rendering/dx/RenderContext.h"
 #include "utils/CPUInfo.h"

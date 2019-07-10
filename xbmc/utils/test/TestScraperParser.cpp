@@ -6,11 +6,10 @@
  *  See LICENSES/README.md for more information.
  */
 
+#include "test/TestUtils.h"
 #include "utils/ScraperParser.h"
 
-#include "test/TestUtils.h"
-
-#include "gtest/gtest.h"
+#include <gtest/gtest.h>
 
 TEST(TestScraperParser, General)
 {

@@ -8,17 +8,16 @@
 
 #pragma once
 
-#include <vector>
-
+#include "Alternative.h"
+#include "ListItem.h"
+#include "Tuple.h"
 #include "guilib/GUIControl.h"
 #include "guilib/GUIFont.h"
 #include "input/Key.h"
+#include "swighelper.h"
 #include "utils/Color.h"
 
-#include "Alternative.h"
-#include "Tuple.h"
-#include "ListItem.h"
-#include "swighelper.h"
+#include <vector>
 
 
 // hardcoded offsets for button controls (and controls that use button controls)

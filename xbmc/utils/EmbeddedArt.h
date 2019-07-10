@@ -8,11 +8,11 @@
 
 #pragma once
 
+#include "IArchivable.h"
+
 #include <stdint.h>
 #include <string>
 #include <vector>
-
-#include "IArchivable.h"
 
 class EmbeddedArtInfo : public IArchivable
 {

@@ -8,10 +8,10 @@
 
 #pragma once
 
-#include "IClient.h"
-#include "ITransportLayer.h"
 #include "FileItem.h"
 #include "GUIUserMessages.h"
+#include "IClient.h"
+#include "ITransportLayer.h"
 #include "ServiceBroker.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"

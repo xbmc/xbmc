@@ -17,8 +17,8 @@
 #include "utils/Geometry.h"
 
 #ifdef HAS_DX
-#include "DirectXMath.h"
-#include "DirectXPackedVector.h"
+#include <DirectXMath.h>
+#include <DirectXPackedVector.h>
 
 using namespace DirectX;
 using namespace DirectX::PackedVector;

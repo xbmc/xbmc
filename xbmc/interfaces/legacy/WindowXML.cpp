@@ -1,4 +1,4 @@
- /*
+/*
  *  Copyright (C) 2005-2018 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
@@ -9,16 +9,16 @@
 #include "WindowXML.h"
 
 #include "ServiceBroker.h"
+#include "WindowException.h"
 #include "WindowInterceptor.h"
+#include "addons/Addon.h"
+#include "addons/Skin.h"
+#include "filesystem/File.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/TextureManager.h"
-#include "addons/Skin.h"
-#include "filesystem/File.h"
-#include "utils/URIUtils.h"
 #include "utils/StringUtils.h"
-#include "addons/Addon.h"
-#include "WindowException.h"
+#include "utils/URIUtils.h"
 
 // These #defs are for WindowXML
 #define CONTROL_BTNVIEWASICONS  2

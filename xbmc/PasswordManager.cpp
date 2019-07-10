@@ -7,15 +7,16 @@
  */
 
 #include "PasswordManager.h"
+
+#include "ServiceBroker.h"
+#include "URL.h"
+#include "filesystem/File.h"
 #include "profiles/ProfileManager.h"
 #include "profiles/dialogs/GUIDialogLockSettings.h"
-#include "URL.h"
-#include "utils/XMLUtils.h"
 #include "settings/SettingsComponent.h"
 #include "threads/SingleLock.h"
+#include "utils/XMLUtils.h"
 #include "utils/log.h"
-#include "filesystem/File.h"
-#include "ServiceBroker.h"
 
 CPasswordManager &CPasswordManager::GetInstance()
 {

@@ -7,6 +7,7 @@
  */
 
 #include "PeripheralAddonTranslator.h"
+
 #include "games/controllers/ControllerTranslator.h"
 #include "input/joysticks/JoystickUtils.h"
 

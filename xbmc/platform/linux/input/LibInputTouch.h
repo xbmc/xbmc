@@ -11,8 +11,9 @@
 #include "input/touch/generic/GenericTouchInputHandler.h"
 #include "utils/Geometry.h"
 
-#include <libinput.h>
 #include <vector>
+
+#include <libinput.h>
 
 struct libinput_event_touch;
 struct libinput_device;

@@ -7,6 +7,7 @@
  */
 
 #include "GameClientStreamAudio.h"
+
 #include "cores/RetroPlayer/streams/RetroPlayerAudio.h"
 #include "games/addons/GameClientTranslator.h"
 #include "utils/log.h"

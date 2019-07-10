@@ -8,13 +8,13 @@
 
 #pragma once
 
-#include <list>
-#include <memory>
-
 #include "DVDAudioCodec.h"
 #include "cores/AudioEngine/Utils/AEAudioFormat.h"
-#include "cores/AudioEngine/Utils/AEStreamInfo.h"
 #include "cores/AudioEngine/Utils/AEBitstreamPacker.h"
+#include "cores/AudioEngine/Utils/AEStreamInfo.h"
+
+#include <list>
+#include <memory>
 
 class CProcessInfo;
 

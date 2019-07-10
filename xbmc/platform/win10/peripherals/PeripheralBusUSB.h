@@ -9,6 +9,7 @@
 #pragma once
 
 #include "peripherals/bus/PeripheralBus.h"
+
 #include <setupapi.h> //needed for GUID
 
 namespace PERIPHERALS

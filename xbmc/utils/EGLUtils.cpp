@@ -7,17 +7,17 @@
  */
 
 #include "EGLUtils.h"
-#include "log.h"
 
+#include "ServiceBroker.h"
 #include "StringUtils.h"
 #include "guilib/IDirtyRegionSolver.h"
-#include "ServiceBroker.h"
+#include "log.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
 
-#include <EGL/eglext.h>
-
 #include <map>
+
+#include <EGL/eglext.h>
 
 namespace
 {

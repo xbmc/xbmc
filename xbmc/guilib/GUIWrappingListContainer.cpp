@@ -7,9 +7,10 @@
  */
 
 #include "GUIWrappingListContainer.h"
+
+#include "FileItem.h"
 #include "GUIListItemLayout.h"
 #include "GUIMessage.h"
-#include "FileItem.h"
 #include "input/Key.h"
 
 CGUIWrappingListContainer::CGUIWrappingListContainer(int parentID, int controlID, float posX, float posY, float width, float height, ORIENTATION orientation, const CScroller& scroller, int preloadItems, int fixedPosition)

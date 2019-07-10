@@ -8,12 +8,12 @@
 
 #pragma once
 
+#include "ServiceBroker.h"
+#include "Util.h"
 #include "input/XBMC_keysym.h"
 #include "input/XBMC_vkeys.h"
-#include "ServiceBroker.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
-#include "Util.h"
 
 namespace KODI
 {

@@ -6,10 +6,11 @@
  *  See LICENSES/README.md for more information.
  */
 #include "Service.h"
+
 #include "AddonManager.h"
 #include "interfaces/generic/ScriptInvocationManager.h"
-#include "utils/log.h"
 #include "utils/StringUtils.h"
+#include "utils/log.h"
 
 
 namespace ADDON

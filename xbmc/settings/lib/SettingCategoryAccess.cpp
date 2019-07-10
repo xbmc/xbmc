@@ -7,6 +7,7 @@
  */
 
 #include "SettingCategoryAccess.h"
+
 #include "SettingConditions.h"
 #include "SettingsManager.h"
 

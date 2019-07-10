@@ -7,14 +7,13 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include "playlists/PlayListFactory.h"
-
+#include "URL.h"
 #include "playlists/PlayList.h"
+#include "playlists/PlayListFactory.h"
 #include "playlists/PlayListXSPF.h"
 #include "test/TestUtils.h"
-#include "URL.h"
 
-#include "gtest/gtest.h"
+#include <gtest/gtest.h>
 
 using namespace PLAYLIST;
 

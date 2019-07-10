@@ -7,15 +7,16 @@
  */
 
 #include "GUIDialogButtonCapture.h"
+
+#include "ServiceBroker.h"
 #include "games/controllers/ControllerIDs.h"
-#include "input/actions/ActionIDs.h"
-#include "input/joysticks/interfaces/IButtonMap.h"
-#include "input/joysticks/JoystickUtils.h"
 #include "input/IKeymap.h"
+#include "input/actions/ActionIDs.h"
+#include "input/joysticks/JoystickUtils.h"
+#include "input/joysticks/interfaces/IButtonMap.h"
 #include "messaging/helpers/DialogOKHelper.h"
 #include "peripherals/Peripherals.h"
 #include "utils/Variant.h"
-#include "ServiceBroker.h"
 
 #include <algorithm>
 #include <iterator>

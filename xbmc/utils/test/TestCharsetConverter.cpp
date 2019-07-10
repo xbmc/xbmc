@@ -12,7 +12,7 @@
 #include "utils/CharsetConverter.h"
 #include "utils/Utf8Utils.h"
 
-#include "gtest/gtest.h"
+#include <gtest/gtest.h>
 
 #if 0
 static const uint16_t refutf16LE1[] = { 0xff54, 0xff45, 0xff53, 0xff54,

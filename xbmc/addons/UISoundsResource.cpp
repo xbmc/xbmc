@@ -6,6 +6,7 @@
  *  See LICENSES/README.md for more information.
  */
 #include "UISoundsResource.h"
+
 #include "ServiceBroker.h"
 #include "guilib/GUIAudioManager.h"
 #include "settings/Settings.h"

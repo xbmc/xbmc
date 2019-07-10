@@ -6,20 +6,20 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include <sstream>
-
 #include "ActiveAESink.h"
-#include "cores/AudioEngine/Utils/AEUtil.h"
-#include "cores/AudioEngine/Utils/AEStreamInfo.h"
-#include "cores/AudioEngine/Utils/AEBitstreamPacker.h"
-#include "utils/EndianSwap.h"
+
 #include "ActiveAE.h"
 #include "cores/AudioEngine/AEResampleFactory.h"
-#include "utils/log.h"
+#include "cores/AudioEngine/Utils/AEBitstreamPacker.h"
+#include "cores/AudioEngine/Utils/AEStreamInfo.h"
+#include "cores/AudioEngine/Utils/AEUtil.h"
+#include "utils/EndianSwap.h"
 #include "utils/MemUtils.h"
+#include "utils/log.h"
 
-#include <new> // for std::bad_alloc
 #include <algorithm>
+#include <new> // for std::bad_alloc
+#include <sstream>
 
 using namespace AE;
 using namespace ActiveAE;

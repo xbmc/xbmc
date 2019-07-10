@@ -8,10 +8,10 @@
 
 #pragma once
 
-#include "gtest/gtest.h"
-
 #include <memory>
 #include <string>
+
+#include <gtest/gtest.h>
 
 class CSettings;
 class CSettingsComponent;

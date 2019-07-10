@@ -6,32 +6,32 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include <map>
-#include <memory>
-#include <string>
-#include <utility>
-#include <vector>
-
-#include <limits.h>
-
 #include "GUIDialogLibExportSettings.h"
+
+#include "ServiceBroker.h"
+#include "Util.h"
 #include "dialogs/GUIDialogFileBrowser.h"
+#include "filesystem/Directory.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "messaging/helpers/DialogHelper.h"
 #include "messaging/helpers/DialogOKHelper.h"
-#include "ServiceBroker.h"
 #include "settings/SettingUtils.h"
-#include "settings/lib/Setting.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
+#include "settings/lib/Setting.h"
 #include "settings/windows/GUIControlSettings.h"
 #include "storage/MediaManager.h"
-#include "Util.h"
-#include "utils/log.h"
 #include "utils/URIUtils.h"
-#include "filesystem/Directory.h"
+#include "utils/log.h"
+
+#include <limits.h>
+#include <map>
+#include <memory>
+#include <string>
+#include <utility>
+#include <vector>
 
 using namespace ADDON;
 using namespace KODI::MESSAGING;

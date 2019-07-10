@@ -8,13 +8,12 @@
 
 #pragma once
 
-#include <stdint.h>
-
-#include <map>
-#include <string>
-
 #include "XBDateTime.h"
 #include "network/httprequesthandler/IHTTPRequestHandler.h"
+
+#include <map>
+#include <stdint.h>
+#include <string>
 
 typedef struct HTTPPythonRequest
 {

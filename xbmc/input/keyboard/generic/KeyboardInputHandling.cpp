@@ -7,10 +7,11 @@
  */
 
 #include "KeyboardInputHandling.h"
-#include "input/joysticks/interfaces/IButtonMap.h"
-#include "input/joysticks/DriverPrimitive.h"
-#include "input/keyboard/interfaces/IKeyboardInputHandler.h"
+
 #include "input/XBMC_keysym.h"
+#include "input/joysticks/DriverPrimitive.h"
+#include "input/joysticks/interfaces/IButtonMap.h"
+#include "input/keyboard/interfaces/IKeyboardInputHandler.h"
 
 using namespace KODI;
 using namespace KEYBOARD;

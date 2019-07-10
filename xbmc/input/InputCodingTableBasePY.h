@@ -9,6 +9,7 @@
 #pragma once
 
 #include "InputCodingTable.h"
+
 #include <map>
 #include <string>
 #include <vector>

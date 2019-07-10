@@ -8,11 +8,11 @@
 
 #pragma once
 
-#include <string>
-#include <vector>
-
 #include "pictures/PictureScalingAlgorithm.h"
 #include "utils/Job.h"
+
+#include <string>
+#include <vector>
 
 class CBaseTexture;
 

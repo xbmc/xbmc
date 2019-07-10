@@ -8,11 +8,11 @@
 
 #include "XbtManager.h"
 
-#include <utility>
-
+#include "URL.h"
 #include "guilib/XBTF.h"
 #include "guilib/XBTFReader.h"
-#include "URL.h"
+
+#include <utility>
 
 namespace XFILE
 {

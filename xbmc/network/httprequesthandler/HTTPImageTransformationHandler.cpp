@@ -6,9 +6,8 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include <map>
-
 #include "HTTPImageTransformationHandler.h"
+
 #include "TextureCacheJob.h"
 #include "URL.h"
 #include "filesystem/ImageFile.h"
@@ -17,6 +16,8 @@
 #include "utils/Mime.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
+
+#include <map>
 
 #define TRANSFORMATION_OPTION_WIDTH             "width"
 #define TRANSFORMATION_OPTION_HEIGHT            "height"

@@ -8,14 +8,14 @@
 
 #include "FileExtensionProvider.h"
 
-#include <string>
-#include <vector>
-
 #include "ServiceBroker.h"
 #include "addons/AddonManager.h"
 #include "addons/binary-addons/BinaryAddonBase.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
+
+#include <string>
+#include <vector>
 
 using namespace ADDON;
 

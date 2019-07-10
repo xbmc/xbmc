@@ -8,6 +8,8 @@
 
 #pragma once
 
+#include <string>
+
 class CWebSocket;
 
 class CWebSocketManager

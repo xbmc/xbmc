@@ -8,13 +8,13 @@
 
 #include "GUIListItem.h"
 
-#include <utility>
-
 #include "GUIListItemLayout.h"
 #include "utils/Archive.h"
 #include "utils/CharsetConverter.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
+
+#include <utility>
 
 bool CGUIListItem::icompare::operator()(const std::string &s1, const std::string &s2) const
 {

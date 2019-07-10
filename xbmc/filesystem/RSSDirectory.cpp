@@ -8,25 +8,25 @@
 
 #include "RSSDirectory.h"
 
-#include <climits>
-#include <utility>
-
 #include "CurlFile.h"
 #include "FileItem.h"
 #include "ServiceBroker.h"
+#include "URL.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "threads/SingleLock.h"
-#include "URL.h"
 #include "utils/FileExtensionProvider.h"
 #include "utils/HTMLUtil.h"
-#include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/XBMCTinyXML.h"
 #include "utils/XMLUtils.h"
+#include "utils/log.h"
 #include "video/VideoInfoTag.h"
+
+#include <climits>
+#include <utility>
 
 using namespace XFILE;
 using namespace MUSIC_INFO;

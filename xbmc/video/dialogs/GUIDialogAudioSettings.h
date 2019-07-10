@@ -8,12 +8,12 @@
 
 #pragma once
 
+#include "cores/VideoPlayer/Interface/StreamInfo.h"
+#include "settings/dialogs/GUIDialogSettingsManualBase.h"
+
 #include <string>
 #include <utility>
 #include <vector>
-
-#include "settings/dialogs/GUIDialogSettingsManualBase.h"
-#include "cores/VideoPlayer/Interface/StreamInfo.h"
 
 class CVariant;
 struct IntegerSettingOption;

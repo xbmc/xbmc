@@ -8,9 +8,8 @@
 
 #pragma once
 
-#include <time.h>
-
 #include <cstdint>
+#include <time.h>
 
 namespace KODI
 {

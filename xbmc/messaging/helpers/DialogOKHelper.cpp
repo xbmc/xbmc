@@ -7,6 +7,7 @@
  */
 
 #include "DialogOKHelper.h"
+
 #include "messaging/ApplicationMessenger.h"
 
 namespace KODI

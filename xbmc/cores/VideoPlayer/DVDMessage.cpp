@@ -6,14 +6,16 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include <algorithm>
-#include "threads/SystemClock.h"
 #include "DVDMessage.h"
+
 #include "DVDDemuxers/DVDDemuxUtils.h"
-#include "threads/CriticalSection.h"
 #include "threads/Condition.h"
+#include "threads/CriticalSection.h"
+#include "threads/SystemClock.h"
 #include "utils/MathUtils.h"
 #include "utils/log.h"
+
+#include <algorithm>
 
 class CDVDMsgGeneralSynchronizePriv
 {

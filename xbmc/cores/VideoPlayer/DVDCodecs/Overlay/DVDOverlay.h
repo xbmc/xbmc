@@ -9,8 +9,8 @@
 #pragma once
 
 #include <assert.h>
-#include <vector>
 #include <atomic>
+#include <vector>
 
 enum DVDOverlayType
 {

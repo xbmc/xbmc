@@ -7,14 +7,15 @@
  */
 
 #include "GUIDialogVisualisationPresetList.h"
+
+#include "FileItem.h"
+#include "GUIUserMessages.h"
 #include "ServiceBroker.h"
 #include "guilib/GUIComponent.h"
-#include "guilib/GUIWindowManager.h"
 #include "guilib/GUIVisualisationControl.h"
-#include "GUIUserMessages.h"
-#include "FileItem.h"
-#include "input/Key.h"
+#include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
+#include "input/Key.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
 

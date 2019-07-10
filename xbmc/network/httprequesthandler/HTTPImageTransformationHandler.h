@@ -8,11 +8,11 @@
 
 #pragma once
 
-#include <stdint.h>
-#include <string>
-
 #include "XBDateTime.h"
 #include "network/httprequesthandler/IHTTPRequestHandler.h"
+
+#include <stdint.h>
+#include <string>
 
 class CHTTPImageTransformationHandler : public IHTTPRequestHandler
 {

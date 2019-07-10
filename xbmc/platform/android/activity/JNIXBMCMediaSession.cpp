@@ -8,17 +8,16 @@
 
 #include "JNIXBMCMediaSession.h"
 
-#include <androidjni/jutils-details.hpp>
-#include <androidjni/Context.h>
-
+#include "AndroidKey.h"
+#include "Application.h"
 #include "CompileInfo.h"
 #include "XBMCApp.h"
-#include "Application.h"
-#include "messaging/ApplicationMessenger.h"
 #include "input/Key.h"
+#include "messaging/ApplicationMessenger.h"
 
-#include "AndroidKey.h"
+#include <androidjni/Context.h>
 #include <androidjni/KeyEvent.h>
+#include <androidjni/jutils-details.hpp>
 
 using namespace jni;
 

@@ -6,11 +6,11 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include "PlatformDefs.h"
-
-#include <stdio.h>
 #include <ctype.h>
 #include <errno.h>
+#include <stdio.h>
+
+#include "PlatformDefs.h"
 
 DWORD GetLastError()
 {

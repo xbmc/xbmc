@@ -7,12 +7,13 @@
  */
 
 #include "GUIStaticItem.h"
-#include "utils/XMLUtils.h"
+
 #include "GUIControlFactory.h"
 #include "GUIInfoManager.h"
 #include "guilib/GUIComponent.h"
-#include "utils/Variant.h"
 #include "utils/StringUtils.h"
+#include "utils/Variant.h"
+#include "utils/XMLUtils.h"
 
 using namespace KODI::GUILIB;
 

@@ -9,7 +9,6 @@
 #pragma once
 
 #include <androidjni/JNIBase.h>
-
 #include <androidjni/SurfaceTexture.h>
 
 class CJNIXBMCSurfaceTextureOnFrameAvailableListener : public CJNISurfaceTextureOnFrameAvailableListener, public CJNIInterfaceImplem<CJNIXBMCSurfaceTextureOnFrameAvailableListener>

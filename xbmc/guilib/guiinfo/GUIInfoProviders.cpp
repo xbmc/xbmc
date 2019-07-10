@@ -7,6 +7,7 @@
  */
 
 #include "guilib/guiinfo/GUIInfoProviders.h"
+
 #include "guilib/guiinfo/IGUIInfoProvider.h"
 
 #include <algorithm>

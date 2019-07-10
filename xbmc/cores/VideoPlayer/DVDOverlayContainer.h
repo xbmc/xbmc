@@ -8,10 +8,10 @@
 
 #pragma once
 
-#include <memory>
-
 #include "DVDCodecs/Overlay/DVDOverlay.h"
 #include "threads/CriticalSection.h"
+
+#include <memory>
 
 class CDVDInputStreamNavigator;
 class CDVDDemuxSPU;

@@ -11,6 +11,7 @@
 #include "Addon.h"
 #include "AddonEvents.h"
 #include "threads/CriticalSection.h"
+
 #include <map>
 #include <vector>
 

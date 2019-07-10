@@ -7,6 +7,7 @@
  */
 
 #include "AppInboundProtocol.h"
+
 #include "Application.h"
 
 CAppInboundProtocol::CAppInboundProtocol(CApplication &app) : m_pApp(app)

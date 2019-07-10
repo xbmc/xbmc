@@ -7,25 +7,26 @@
  */
 
 #include "SaveFileStateJob.h"
-#include "network/upnp/UPnP.h"
+
+#include "Application.h"
+#include "FileItem.h"
+#include "GUIUserMessages.h"
+#include "ServiceBroker.h"
 #include "StringUtils.h"
-#include "utils/Variant.h"
 #include "URIUtils.h"
 #include "URL.h"
-#include "log.h"
-#include "video/VideoDatabase.h"
-#include "interfaces/AnnouncementManager.h"
 #include "Util.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIMessage.h"
 #include "guilib/GUIWindowManager.h"
-#include "GUIUserMessages.h"
+#include "interfaces/AnnouncementManager.h"
+#include "log.h"
 #include "music/MusicDatabase.h"
-#include "xbmc/music/tags/MusicInfoTag.h"
-#include "Application.h"
-#include "ServiceBroker.h"
-#include "FileItem.h"
+#include "music/tags/MusicInfoTag.h"
+#include "network/upnp/UPnP.h"
+#include "utils/Variant.h"
 #include "video/Bookmark.h"
+#include "video/VideoDatabase.h"
 
 void CSaveFileState::DoWork(CFileItem& item,
                             CBookmark& bookmark,

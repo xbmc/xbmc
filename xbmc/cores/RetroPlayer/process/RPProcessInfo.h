@@ -8,15 +8,15 @@
 
 #pragma once
 
-#include "cores/RetroPlayer/RetroPlayerTypes.h"
 #include "cores/GameSettings.h"
+#include "cores/RetroPlayer/RetroPlayerTypes.h"
 #include "threads/CriticalSection.h"
-
-#include <libavutil/pixfmt.h>
 
 #include <memory>
 #include <string>
 #include <vector>
+
+#include <libavutil/pixfmt.h>
 
 class CDataCacheCore;
 

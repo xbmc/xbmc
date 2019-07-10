@@ -8,8 +8,8 @@
 
 #pragma once
 
-#include "powermanagement/IPowerSyscall.h"
 #include "DBusUtil.h"
+#include "powermanagement/IPowerSyscall.h"
 
 #include <list>
 #include <string>

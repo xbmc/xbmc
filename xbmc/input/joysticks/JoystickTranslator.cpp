@@ -7,6 +7,7 @@
  */
 
 #include "JoystickTranslator.h"
+
 #include "guilib/LocalizeStrings.h"
 #include "input/joysticks/DriverPrimitive.h"
 #include "utils/StringUtils.h"

@@ -11,8 +11,8 @@
 
 #include <string>
 #include <sstream>
-#include <threads/SingleLock.h>
-#include <utils/log.h>
+#include "threads/SingleLock.h"
+#include "utils/log.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "guilib/LocalizeStrings.h"
 #if defined(TARGET_WINDOWS)

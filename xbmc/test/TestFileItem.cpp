@@ -8,14 +8,14 @@
 
 #include "AppParamParser.h"
 #include "FileItem.h"
-#include "URL.h"
 #include "ServiceBroker.h"
-#include "settings/lib/SettingsManager.h"
+#include "URL.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
+#include "settings/lib/SettingsManager.h"
 
-#include "gtest/gtest.h"
+#include <gtest/gtest.h>
 
 using ::testing::Test;
 using ::testing::WithParamInterface;

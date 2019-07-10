@@ -13,13 +13,13 @@
 \brief
 */
 
+#include "GUIAction.h"
+#include "IGUIContainer.h"
+#include "utils/Stopwatch.h"
+
+#include <list>
 #include <utility>
 #include <vector>
-#include <list>
-
-#include "IGUIContainer.h"
-#include "GUIAction.h"
-#include "utils/Stopwatch.h"
 
 /*!
  \ingroup controls

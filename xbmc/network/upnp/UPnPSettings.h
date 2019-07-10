@@ -8,10 +8,10 @@
 
 #pragma once
 
-#include <string>
-
 #include "settings/lib/ISettingsHandler.h"
 #include "threads/CriticalSection.h"
+
+#include <string>
 
 class CUPnPSettings : public ISettingsHandler
 {

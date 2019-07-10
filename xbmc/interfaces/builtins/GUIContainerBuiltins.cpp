@@ -7,10 +7,11 @@
  */
 
 #include "GUIContainerBuiltins.h"
+
+#include "GUIUserMessages.h"
 #include "ServiceBroker.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
-#include "GUIUserMessages.h"
 #include "utils/StringUtils.h"
 
 /*! \brief Change sort method.

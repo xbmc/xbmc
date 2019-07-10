@@ -8,16 +8,16 @@
 
 #pragma once
 
-#include <map>
-#include <string>
-
 #include "cores/VideoSettings.h"
+#include "settings/GameSettings.h"
+#include "settings/LibExportSettings.h"
 #include "settings/lib/ISettingCallback.h"
 #include "settings/lib/ISettingsHandler.h"
 #include "settings/lib/ISubSettings.h"
-#include "settings/GameSettings.h"
-#include "settings/LibExportSettings.h"
 #include "threads/CriticalSection.h"
+
+#include <map>
+#include <string>
 
 #define VOLUME_DRC_MINIMUM 0    // 0dB
 #define VOLUME_DRC_MAXIMUM 6000 // 60dB

@@ -7,25 +7,26 @@
  */
 
 #include "AudioLibrary.h"
-#include "music/MusicDatabase.h"
+
 #include "FileItem.h"
 #include "ServiceBroker.h"
+#include "TextureDatabase.h"
 #include "Util.h"
+#include "filesystem/Directory.h"
+#include "messaging/ApplicationMessenger.h"
+#include "music/Album.h"
+#include "music/Artist.h"
+#include "music/MusicDatabase.h"
+#include "music/MusicThumbLoader.h"
+#include "music/Song.h"
+#include "music/tags/MusicInfoTag.h"
+#include "settings/AdvancedSettings.h"
+#include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "utils/SortUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
-#include "music/tags/MusicInfoTag.h"
-#include "music/Artist.h"
-#include "music/Album.h"
-#include "music/MusicThumbLoader.h"
-#include "music/Song.h"
-#include "messaging/ApplicationMessenger.h"
-#include "filesystem/Directory.h"
-#include "settings/AdvancedSettings.h"
-#include "settings/Settings.h"
-#include "settings/SettingsComponent.h"
-#include "TextureDatabase.h"
 
 using namespace MUSIC_INFO;
 using namespace JSONRPC;

@@ -13,7 +13,7 @@
 #include "PlatformDefs.h"
 #include "utils/XBMCTinyXML.h"
 #include "utils/StringUtils.h"
-#include "../xbmc/utils/log.h"
+#include "utils/log.h"
 #include "threads/SystemClock.h"
 #include "CompileInfo.h"
 

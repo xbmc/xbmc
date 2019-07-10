@@ -8,12 +8,12 @@
 
 #pragma once
 
-#include <map>
-#include <set>
-
 #include "FileItem.h"
 #include "threads/CriticalSection.h"
 #include "utils/JobManager.h"
+
+#include <map>
+#include <set>
 
 class CGUIDialogProgressBarHandle;
 class CVideoLibraryJob;

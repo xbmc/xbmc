@@ -8,13 +8,14 @@
 
 #pragma once
 
+#include "SlideShowPicture.h"
+#include "guilib/GUIDialog.h"
+#include "threads/Event.h"
+#include "threads/Thread.h"
+#include "utils/SortUtils.h"
+
 #include <memory>
 #include <set>
-#include "guilib/GUIDialog.h"
-#include "threads/Thread.h"
-#include "threads/Event.h"
-#include "SlideShowPicture.h"
-#include "utils/SortUtils.h"
 
 class CFileItemList;
 class CVariant;

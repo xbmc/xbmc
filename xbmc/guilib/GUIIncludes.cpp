@@ -7,15 +7,16 @@
  */
 
 #include "GUIIncludes.h"
-#include "addons/Skin.h"
+
 #include "GUIInfoManager.h"
-#include "guilib/guiinfo/GUIInfoLabel.h"
+#include "addons/Skin.h"
 #include "guilib/GUIComponent.h"
-#include "utils/log.h"
+#include "guilib/guiinfo/GUIInfoLabel.h"
+#include "interfaces/info/SkinVariable.h"
+#include "utils/StringUtils.h"
 #include "utils/XBMCTinyXML.h"
 #include "utils/XMLUtils.h"
-#include "utils/StringUtils.h"
-#include "interfaces/info/SkinVariable.h"
+#include "utils/log.h"
 
 using namespace KODI::GUILIB;
 

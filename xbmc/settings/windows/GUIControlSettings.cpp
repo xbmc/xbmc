@@ -8,10 +8,9 @@
 
 #include "GUIControlSettings.h"
 
-#include <set>
-#include <utility>
-
+#include "FileItem.h"
 #include "ServiceBroker.h"
+#include "Util.h"
 #include "addons/AddonManager.h"
 #include "addons/GUIWindowAddonBrowser.h"
 #include "addons/settings/SettingUrlEncodedString.h"
@@ -19,7 +18,6 @@
 #include "dialogs/GUIDialogNumeric.h"
 #include "dialogs/GUIDialogSelect.h"
 #include "dialogs/GUIDialogSlider.h"
-#include "FileItem.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIEditControl.h"
 #include "guilib/GUIImage.h"
@@ -29,18 +27,20 @@
 #include "guilib/GUISpinControlEx.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
-#include "settings/lib/Setting.h"
-#include "settings/lib/SettingDefinitions.h"
 #include "settings/MediaSourceSettings.h"
 #include "settings/SettingAddon.h"
 #include "settings/SettingControl.h"
 #include "settings/SettingDateTime.h"
 #include "settings/SettingPath.h"
 #include "settings/SettingUtils.h"
+#include "settings/lib/Setting.h"
+#include "settings/lib/SettingDefinitions.h"
 #include "storage/MediaManager.h"
-#include "Util.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
+
+#include <set>
+#include <utility>
 
 using namespace ADDON;
 

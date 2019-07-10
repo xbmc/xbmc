@@ -8,30 +8,30 @@
 
 #include "GUIDialogProfileSettings.h"
 
-#include <utility>
-
+#include "FileItem.h"
+#include "GUIPassword.h"
+#include "ServiceBroker.h"
+#include "Util.h"
 #include "dialogs/GUIDialogFileBrowser.h"
 #include "dialogs/GUIDialogYesNo.h"
-#include "FileItem.h"
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIKeyboardFactory.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
-#include "GUIPassword.h"
-#include "profiles/dialogs/GUIDialogLockSettings.h"
 #include "profiles/ProfileManager.h"
-#include "settings/lib/Setting.h"
+#include "profiles/dialogs/GUIDialogLockSettings.h"
 #include "settings/SettingsComponent.h"
+#include "settings/lib/Setting.h"
 #include "settings/windows/GUIControlSettings.h"
 #include "storage/MediaManager.h"
-#include "Util.h"
-#include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
-#include "ServiceBroker.h"
+#include "utils/log.h"
+
+#include <utility>
 
 #define SETTING_PROFILE_NAME          "profile.name"
 #define SETTING_PROFILE_IMAGE         "profile.image"

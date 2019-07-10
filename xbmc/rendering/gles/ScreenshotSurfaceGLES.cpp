@@ -8,16 +8,16 @@
 
 #include "ScreenshotSurfaceGLES.h"
 
+#include "ServiceBroker.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
-#include "ServiceBroker.h"
 #include "threads/SingleLock.h"
 #include "utils/Screenshot.h"
 #include "windowing/GraphicContext.h"
 
-#include "system_gl.h"
-
 #include <vector>
+
+#include "system_gl.h"
 
 void CScreenshotSurfaceGLES::Register()
 {

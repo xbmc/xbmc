@@ -6,14 +6,16 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include <math.h>
-#include <sys/time.h>
-
 #include "OMXCore.h"
+
 #include "utils/log.h"
 
 #include "platform/linux/RBP.h"
+
 #include <cassert>
+#include <math.h>
+
+#include <sys/time.h>
 
 //#define OMX_DEBUG_EVENTS
 //#define OMX_DEBUG_EVENTHANDLER

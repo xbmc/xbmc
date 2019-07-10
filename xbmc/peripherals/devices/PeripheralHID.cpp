@@ -7,10 +7,11 @@
  */
 
 #include "PeripheralHID.h"
-#include "utils/log.h"
+
 #include "guilib/LocalizeStrings.h"
 #include "input/InputManager.h"
 #include "peripherals/Peripherals.h"
+#include "utils/log.h"
 
 using namespace PERIPHERALS;
 

@@ -8,10 +8,10 @@
 
 #pragma once
 
-#include "windows/GUIMediaWindow.h"
-#include "video/VideoDatabase.h"
 #include "PlayListPlayer.h"
+#include "video/VideoDatabase.h"
 #include "video/VideoThumbLoader.h"
+#include "windows/GUIMediaWindow.h"
 
 enum VideoSelectAction
 {

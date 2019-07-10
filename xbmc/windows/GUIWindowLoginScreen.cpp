@@ -7,6 +7,7 @@
  */
 
 #include "GUIWindowLoginScreen.h"
+
 #include "FileItem.h"
 #include "GUIPassword.h"
 #include "ServiceBroker.h"

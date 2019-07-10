@@ -7,6 +7,7 @@
  */
 
 #include "Win10PowerSyscall.h"
+
 #include <winrt/Windows.Devices.Power.h>
 
 using namespace winrt::Windows::Devices::Power;

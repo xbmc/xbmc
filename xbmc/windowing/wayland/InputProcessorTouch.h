@@ -8,13 +8,13 @@
 
 #pragma once
 
+#include "Seat.h"
+#include "input/touch/ITouchInputHandler.h"
+
 #include <cstdint>
 #include <map>
 
 #include <wayland-client-protocol.hpp>
-
-#include "input/touch/ITouchInputHandler.h"
-#include "Seat.h"
 
 namespace KODI
 {

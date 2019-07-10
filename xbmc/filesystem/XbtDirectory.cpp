@@ -6,14 +6,15 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include <stdio.h>
-
 #include "XbtDirectory.h"
+
 #include "FileItem.h"
 #include "URL.h"
 #include "filesystem/Directorization.h"
 #include "filesystem/XbtManager.h"
 #include "guilib/XBTF.h"
+
+#include <stdio.h>
 
 namespace XFILE
 {

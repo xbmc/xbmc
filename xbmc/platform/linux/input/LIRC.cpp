@@ -7,14 +7,16 @@
  */
 
 #include "LIRC.h"
+
 #include "AppInboundProtocol.h"
 #include "ServiceBroker.h"
 #include "profiles/ProfileManager.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/log.h"
-#include <lirc/lirc_client.h>
+
 #include <fcntl.h>
+#include <lirc/lirc_client.h>
 #include <sys/socket.h>
 #include <sys/un.h>
 

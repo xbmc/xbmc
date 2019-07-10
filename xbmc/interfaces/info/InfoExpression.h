@@ -8,10 +8,11 @@
 
 #pragma once
 
-#include <vector>
+#include "InfoBool.h"
+
 #include <list>
 #include <stack>
-#include "InfoBool.h"
+#include <vector>
 
 class CGUIListItem;
 

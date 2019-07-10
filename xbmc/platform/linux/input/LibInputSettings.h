@@ -6,9 +6,9 @@
  *  See LICENSES/README.md for more information.
  */
 
+#include "settings/Settings.h"
 #include "settings/lib/ISettingCallback.h"
 #include "settings/lib/ISettingsHandler.h"
-#include "settings/Settings.h"
 
 #include <memory>
 #include <vector>

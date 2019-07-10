@@ -7,6 +7,7 @@
  */
 
 #include "Action.h"
+
 #include "ActionIDs.h"
 #include "ActionTranslator.h"
 #include "input/Key.h"

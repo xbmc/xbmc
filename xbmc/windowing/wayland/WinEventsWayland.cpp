@@ -8,22 +8,22 @@
 
 #include "WinEventsWayland.h"
 
-#include <unistd.h>
-#include <sys/poll.h>
-
-#include <exception>
-#include <memory>
-#include <system_error>
-
-#include <wayland-client.hpp>
-
 #include "AppInboundProtocol.h"
 #include "ServiceBroker.h"
 #include "threads/CriticalSection.h"
 #include "threads/SingleLock.h"
 #include "threads/Thread.h"
 #include "utils/log.h"
+
 #include "platform/posix/utils/FileHandle.h"
+
+#include <exception>
+#include <memory>
+#include <system_error>
+
+#include <sys/poll.h>
+#include <unistd.h>
+#include <wayland-client.hpp>
 
 using namespace KODI::UTILS::POSIX;
 using namespace KODI::WINDOWING::WAYLAND;

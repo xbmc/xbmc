@@ -13,11 +13,12 @@
 \brief
 */
 
-#include "utils/ISerializable.h"
-#include "XBDateTime.h"
-#include "utils/EmbeddedArt.h"
-#include "music/tags/ReplayGain.h"
 #include "Artist.h"
+#include "XBDateTime.h"
+#include "music/tags/ReplayGain.h"
+#include "utils/EmbeddedArt.h"
+#include "utils/ISerializable.h"
+
 #include <map>
 #include <string>
 #include <vector>

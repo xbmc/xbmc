@@ -8,14 +8,14 @@
 
 #include "ViewStateSettings.h"
 
-#include <cstring>
-#include <utility>
-
 #include "threads/SingleLock.h"
-#include "utils/log.h"
 #include "utils/SortUtils.h"
 #include "utils/XBMCTinyXML.h"
 #include "utils/XMLUtils.h"
+#include "utils/log.h"
+
+#include <cstring>
+#include <utility>
 
 #define XML_VIEWSTATESETTINGS       "viewstates"
 #define XML_VIEWMODE                "viewmode"

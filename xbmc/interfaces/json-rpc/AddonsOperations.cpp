@@ -7,14 +7,15 @@
  */
 
 #include "AddonsOperations.h"
+
 #include "JSONUtils.h"
 #include "ServiceBroker.h"
-#include "addons/AddonManager.h"
-#include "addons/AddonDatabase.h"
-#include "addons/PluginSource.h"
-#include "messaging/ApplicationMessenger.h"
 #include "TextureCache.h"
+#include "addons/AddonDatabase.h"
+#include "addons/AddonManager.h"
+#include "addons/PluginSource.h"
 #include "filesystem/File.h"
+#include "messaging/ApplicationMessenger.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
 

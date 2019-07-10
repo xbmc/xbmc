@@ -7,12 +7,13 @@
  */
 
 #include "imagefactory.h"
-#include "guilib/FFmpegImage.h"
+
+#include "ServiceBroker.h"
 #include "addons/ImageDecoder.h"
 #include "addons/binary-addons/BinaryAddonBase.h"
+#include "guilib/FFmpegImage.h"
 #include "utils/Mime.h"
 #include "utils/StringUtils.h"
-#include "ServiceBroker.h"
 
 #include <algorithm>
 

@@ -8,17 +8,17 @@
 
 #pragma once
 
-#include <list>
-#include <utility>
-#include <unordered_map>
-#include <vector>
-
 #include "DirtyRegionTracker.h"
-#include "guilib/WindowIDs.h"
 #include "GUIWindow.h"
 #include "IMsgTargetCallback.h"
 #include "IWindowManagerCallback.h"
+#include "guilib/WindowIDs.h"
 #include "messaging/IMessageTarget.h"
+
+#include <list>
+#include <unordered_map>
+#include <utility>
+#include <vector>
 
 class CGUIDialog;
 class CGUIMediaWindow;

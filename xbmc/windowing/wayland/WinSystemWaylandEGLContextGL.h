@@ -8,8 +8,8 @@
 
 #pragma once
 
-#include "rendering/gl/RenderSystemGL.h"
 #include "WinSystemWaylandEGLContext.h"
+#include "rendering/gl/RenderSystemGL.h"
 
 class CVaapiProxy;
 

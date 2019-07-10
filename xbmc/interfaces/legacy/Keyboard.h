@@ -9,8 +9,8 @@
 #pragma once
 
 #include "AddonClass.h"
-#include "Exception.h"
 #include "AddonString.h"
+#include "Exception.h"
 
 class CGUIDialogKeyboardGeneric;
 

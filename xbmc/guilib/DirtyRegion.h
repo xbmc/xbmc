@@ -9,6 +9,7 @@
 #pragma once
 
 #include "utils/Geometry.h"
+
 #include <vector>
 
 class CDirtyRegion : public CRect

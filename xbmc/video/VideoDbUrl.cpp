@@ -7,6 +7,7 @@
  */
 
 #include "VideoDbUrl.h"
+
 #include "filesystem/VideoDatabaseDirectory.h"
 #include "playlists/SmartPlayList.h"
 #include "utils/StringUtils.h"

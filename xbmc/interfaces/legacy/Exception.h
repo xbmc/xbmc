@@ -8,8 +8,8 @@
 
 #pragma once
 
-#include "utils/log.h"
 #include "commons/Exception.h"
+#include "utils/log.h"
 
 #ifndef SWIG
 namespace XBMCAddon

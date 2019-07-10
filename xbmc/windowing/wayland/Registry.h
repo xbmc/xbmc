@@ -8,13 +8,13 @@
 
 #pragma once
 
+#include "Connection.h"
+
 #include <cstdint>
 #include <functional>
 #include <map>
 
 #include <wayland-client-protocol.hpp>
-
-#include "Connection.h"
 
 namespace KODI
 {

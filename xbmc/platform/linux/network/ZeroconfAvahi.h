@@ -8,13 +8,13 @@
 
 #pragma once
 
-#include <memory>
-#include <map>
-#include <vector>
-#include <string>
 #include "network/Zeroconf.h"
 
+#include <map>
 #include <memory>
+#include <string>
+#include <vector>
+
 #include <avahi-client/client.h>
 #include <avahi-client/publish.h>
 #include <avahi-common/defs.h>

@@ -7,8 +7,9 @@
  */
 
 #include "input/keyboard/KeyboardEasterEgg.h"
-#include "input/joysticks/JoystickEasterEgg.h"
+
 #include "input/Key.h"
+#include "input/joysticks/JoystickEasterEgg.h"
 
 using namespace KODI;
 using namespace KEYBOARD;

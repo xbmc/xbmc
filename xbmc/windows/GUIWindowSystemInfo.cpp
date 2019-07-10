@@ -7,17 +7,18 @@
  */
 
 #include "GUIWindowSystemInfo.h"
+
 #include "GUIInfoManager.h"
-#include "guilib/GUIMessage.h"
-#include "guilib/GUIComponent.h"
-#include "guilib/WindowIDs.h"
-#include "guilib/LocalizeStrings.h"
-#include "pvr/PVRManager.h"
-#include "utils/SystemInfo.h"
-#include "utils/StringUtils.h"
-#include "storage/MediaManager.h"
-#include "guilib/guiinfo/GUIInfoLabels.h"
 #include "ServiceBroker.h"
+#include "guilib/GUIComponent.h"
+#include "guilib/GUIMessage.h"
+#include "guilib/LocalizeStrings.h"
+#include "guilib/WindowIDs.h"
+#include "guilib/guiinfo/GUIInfoLabels.h"
+#include "pvr/PVRManager.h"
+#include "storage/MediaManager.h"
+#include "utils/StringUtils.h"
+#include "utils/SystemInfo.h"
 
 #define CONTROL_TB_POLICY   30
 #define CONTROL_BT_STORAGE  94

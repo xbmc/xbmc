@@ -7,11 +7,12 @@
  */
 
 #include "DirectoryNodeSeasons.h"
-#include "QueryParams.h"
-#include "video/VideoDatabase.h"
+
 #include "FileItem.h"
+#include "QueryParams.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/StringUtils.h"
+#include "video/VideoDatabase.h"
 
 using namespace XFILE::VIDEODATABASEDIRECTORY;
 

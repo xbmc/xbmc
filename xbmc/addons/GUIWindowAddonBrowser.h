@@ -8,13 +8,14 @@
 
 #pragma once
 
-#include <string>
-#include <vector>
 #include "Addon.h"
 #include "AddonEvents.h"
 #include "RepositoryUpdater.h"
 #include "ThumbLoader.h"
 #include "windows/GUIMediaWindow.h"
+
+#include <string>
+#include <vector>
 
 
 class CFileItem;

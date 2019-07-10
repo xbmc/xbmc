@@ -8,9 +8,9 @@
 
 #pragma once
 
-#include <unistd.h>
-
 #include "utils/ScopeGuard.h"
+
+#include <unistd.h>
 
 namespace KODI
 {

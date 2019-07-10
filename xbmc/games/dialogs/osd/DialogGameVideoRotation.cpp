@@ -7,12 +7,13 @@
  */
 
 #include "DialogGameVideoRotation.h"
+
+#include "FileItem.h"
 #include "guilib/LocalizeStrings.h"
 #include "guilib/WindowIDs.h"
 #include "settings/GameSettings.h"
 #include "settings/MediaSettings.h"
 #include "utils/Variant.h"
-#include "FileItem.h"
 
 using namespace KODI;
 using namespace GAME;

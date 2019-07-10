@@ -8,11 +8,11 @@
 
 #pragma once
 
+#include "storage/IStorageProvider.h"
+
 #include <set>
 #include <string>
 #include <vector>
-
-#include "storage/IStorageProvider.h"
 
 class CAndroidStorageProvider : public IStorageProvider
 {

@@ -8,9 +8,9 @@
 
 #pragma once
 
-#include <string>
-
 #include "utils/IArchivable.h"
+
+#include <string>
 
 class CSpeed : public IArchivable
 {

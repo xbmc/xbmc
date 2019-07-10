@@ -8,10 +8,10 @@
 
 #pragma once
 
-#include <cstdint>
-
 #include "Signals.h"
 #include "windowing/VideoSync.h"
+
+#include <cstdint>
 
 namespace KODI
 {

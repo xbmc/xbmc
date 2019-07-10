@@ -8,13 +8,13 @@
 
 #include "RendererMediaCodec.h"
 
+#include "../RenderFactory.h"
 #include "DVDCodecs/Video/DVDVideoCodecAndroidMediaCodec.h"
-#include "utils/log.h"
-#include "utils/GLUtils.h"
-#include "settings/MediaSettings.h"
 #include "ServiceBroker.h"
 #include "rendering/gles/RenderSystemGLES.h"
-#include "../RenderFactory.h"
+#include "settings/MediaSettings.h"
+#include "utils/GLUtils.h"
+#include "utils/log.h"
 
 #if defined(EGL_KHR_reusable_sync) && !defined(EGL_EGLEXT_PROTOTYPES)
 static PFNEGLCREATESYNCKHRPROC eglCreateSyncKHR;

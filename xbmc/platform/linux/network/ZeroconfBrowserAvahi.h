@@ -8,18 +8,18 @@
 
 #pragma once
 
-#include <memory>
-#include <map>
-#include <vector>
-
 #include "network/ZeroconfBrowser.h"
-#include "threads/Thread.h"
 #include "threads/CriticalSection.h"
+#include "threads/Thread.h"
+
+#include <map>
+#include <memory>
+#include <vector>
 
 #include <avahi-client/client.h>
 #include <avahi-client/lookup.h>
-#include <avahi-common/thread-watch.h>
 #include <avahi-common/defs.h>
+#include <avahi-common/thread-watch.h>
 
 //platform specific implementation of  zeroconfbrowser interface using avahi
 class CZeroconfBrowserAvahi : public CZeroconfBrowser

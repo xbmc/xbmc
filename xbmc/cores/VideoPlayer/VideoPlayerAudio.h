@@ -8,9 +8,6 @@
 
 #pragma once
 
-#include <list>
-#include <utility>
-
 #include "AudioSinkAE.h"
 #include "DVDClock.h"
 #include "DVDMessageQueue.h"
@@ -19,6 +16,9 @@
 #include "cores/VideoPlayer/Interface/Addon/TimingConstants.h"
 #include "threads/Thread.h"
 #include "utils/BitstreamStats.h"
+
+#include <list>
+#include <utility>
 
 
 class CVideoPlayer;

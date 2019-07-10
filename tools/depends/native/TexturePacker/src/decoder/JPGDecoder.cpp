@@ -19,8 +19,10 @@
  */
 
 #include "JPGDecoder.h"
-#include "jpeglib.h"
+
 #include "SimpleFS.h"
+
+#include <jpeglib.h>
 
 bool JPGDecoder::CanDecode(const std::string &filename)
 {

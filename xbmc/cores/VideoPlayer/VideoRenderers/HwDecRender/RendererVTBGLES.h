@@ -9,6 +9,7 @@
 #pragma once
 
 #include "cores/VideoPlayer/VideoRenderers/LinuxRendererGLES.h"
+
 #include <CoreVideo/CVOpenGLESTextureCache.h>
 
 class CRendererVTB : public CLinuxRendererGLES

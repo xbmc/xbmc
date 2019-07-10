@@ -8,9 +8,9 @@
 
 #pragma once
 
-#include <map>
-
 #include "SortUtils.h"
+
+#include <map>
 
 class ISortable
 {

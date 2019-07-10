@@ -7,9 +7,11 @@
  */
 
 #include "AndroidTouch.h"
-#include "platform/android/activity/XBMCApp.h"
+
 #include "input/touch/generic/GenericTouchActionHandler.h"
 #include "input/touch/generic/GenericTouchInputHandler.h"
+
+#include "platform/android/activity/XBMCApp.h"
 
 CAndroidTouch::CAndroidTouch() : m_dpi(160)
 {

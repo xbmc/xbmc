@@ -7,6 +7,7 @@
  */
 
 #include "RendererSoftware.h"
+
 #include "DVDCodecs/Video/DVDVideoCodec.h"
 #include "rendering/dx/DeviceResources.h"
 #include "rendering/dx/RenderContext.h"

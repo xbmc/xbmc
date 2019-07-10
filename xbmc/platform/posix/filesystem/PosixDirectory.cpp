@@ -7,13 +7,15 @@
  */
 
 #include "PosixDirectory.h"
+
+#include "FileItem.h"
+#include "URL.h"
 #include "utils/AliasShortcutUtils.h"
 #include "utils/CharsetConverter.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
-#include "FileItem.h"
+
 #include "platform/posix/XTimeUtils.h"
-#include "URL.h"
 
 #include <dirent.h>
 #include <sys/stat.h>

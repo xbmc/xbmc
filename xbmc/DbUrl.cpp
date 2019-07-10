@@ -7,6 +7,7 @@
  */
 
 #include "DbUrl.h"
+
 #include "utils/URIUtils.h"
 
 CDbUrl::CDbUrl()

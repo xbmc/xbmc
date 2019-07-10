@@ -7,12 +7,13 @@
  */
 
 // python.h should always be included first before any other includes
+#include "ContextItemAddonInvoker.h"
+
+#include "interfaces/python/swig.h"
+#include "utils/log.h"
+
 #include <Python.h>
 #include <osdefs.h>
-
-#include "ContextItemAddonInvoker.h"
-#include "utils/log.h"
-#include "interfaces/python/swig.h"
 
 
 CContextItemAddonInvoker::CContextItemAddonInvoker(

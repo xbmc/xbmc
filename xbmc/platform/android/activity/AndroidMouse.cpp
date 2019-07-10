@@ -7,12 +7,13 @@
  */
 
 #include "AndroidMouse.h"
+
 #include "AndroidExtra.h"
-#include "XBMCApp.h"
 #include "AppInboundProtocol.h"
+#include "ServiceBroker.h"
+#include "XBMCApp.h"
 #include "guilib/GUIWindowManager.h"
 #include "input/mouse/MouseStat.h"
-#include "ServiceBroker.h"
 #include "windowing/android/WinSystemAndroid.h"
 
 //#define DEBUG_VERBOSE

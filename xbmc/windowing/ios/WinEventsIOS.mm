@@ -6,14 +6,16 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include <list>
 #include "WinEventsIOS.h"
+
+#include "AppInboundProtocol.h"
+#include "guilib/GUIWindowManager.h"
 #include "input/InputManager.h"
 #include "input/XBMC_vkeys.h"
-#include "AppInboundProtocol.h"
 #include "threads/CriticalSection.h"
-#include "guilib/GUIWindowManager.h"
 #include "utils/log.h"
+
+#include <list>
 
 static CCriticalSection g_inputCond;
 

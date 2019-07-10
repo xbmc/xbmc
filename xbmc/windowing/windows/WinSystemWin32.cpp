@@ -7,7 +7,11 @@
  */
 
 #include "WinSystemWin32.h"
+
 #include "Application.h"
+#include "ServiceBroker.h"
+#include "VideoSyncD3D.h"
+#include "WinEventsWin32.h"
 #include "cores/AudioEngine/AESinkFactory.h"
 #include "cores/AudioEngine/Sinks/AESinkDirectSound.h"
 #include "cores/AudioEngine/Sinks/AESinkWASAPI.h"
@@ -15,25 +19,24 @@
 #include "filesystem/SpecialProtocol.h"
 #include "messaging/ApplicationMessenger.h"
 #include "platform/Environment.h"
-#include "platform/win32/CharsetConverter.h"
-#include "platform/win32/input/IRServerSuite.h"
-#include "platform/win32/powermanagement/Win32PowerSyscall.h"
 #include "rendering/dx/ScreenshotSurfaceWindows.h"
 #include "resource.h"
-#include "ServiceBroker.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/DisplaySettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "threads/SingleLock.h"
-#include "utils/log.h"
 #include "utils/SystemInfo.h"
-#include "VideoSyncD3D.h"
+#include "utils/log.h"
 #include "windowing/GraphicContext.h"
 #include "windowing/windows/Win32DPMSSupport.h"
-#include "WinEventsWin32.h"
+
+#include "platform/win32/CharsetConverter.h"
+#include "platform/win32/input/IRServerSuite.h"
+#include "platform/win32/powermanagement/Win32PowerSyscall.h"
 
 #include <algorithm>
+
 #include <tpcshrd.h>
 
 CWinSystemWin32::CWinSystemWin32()

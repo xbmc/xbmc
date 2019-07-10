@@ -7,11 +7,12 @@
  */
 
 #include "JoystickMapper.h"
+
+#include "input/WindowKeymap.h"
 #include "input/actions/ActionIDs.h"
 #include "input/actions/ActionTranslator.h"
 #include "input/joysticks/JoystickTranslator.h"
 #include "input/joysticks/JoystickUtils.h"
-#include "input/WindowKeymap.h"
 #include "utils/StringUtils.h"
 #include "utils/XBMCTinyXML.h"
 

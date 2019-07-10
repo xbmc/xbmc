@@ -8,10 +8,10 @@
 
 #pragma once
 
-#include <functional>
-
 #include "Event.h"
 #include "Thread.h"
+
+#include <functional>
 
 class ITimerCallback
 {

@@ -7,6 +7,7 @@
  */
 
 #include "EventScanner.h"
+
 #include "IEventScannerCallback.h"
 #include "threads/SingleLock.h"
 #include "threads/SystemClock.h"

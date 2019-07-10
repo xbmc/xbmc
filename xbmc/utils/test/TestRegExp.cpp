@@ -9,14 +9,14 @@
 /** @todo gtest/gtest.h needs to come in before utils/RegExp.h.
  * Investigate why.
  */
-#include "gtest/gtest.h"
-
-#include "utils/RegExp.h"
-#include "utils/log.h"
+#include "CompileInfo.h"
 #include "filesystem/File.h"
 #include "filesystem/SpecialProtocol.h"
+#include "utils/RegExp.h"
 #include "utils/StringUtils.h"
-#include "CompileInfo.h"
+#include "utils/log.h"
+
+#include <gtest/gtest.h>
 
 TEST(TestRegExp, RegFind)
 {

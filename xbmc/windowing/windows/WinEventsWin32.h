@@ -8,8 +8,8 @@
 
 #pragma once
 
-#include "windowing/WinEvents.h"
 #include "input/touch/TouchTypes.h"
+#include "windowing/WinEvents.h"
 
 class CGenericTouchSwipeDetector;
 

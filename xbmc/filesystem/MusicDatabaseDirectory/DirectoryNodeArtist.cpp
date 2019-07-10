@@ -7,8 +7,9 @@
  */
 
 #include "DirectoryNodeArtist.h"
-#include "ServiceBroker.h"
+
 #include "QueryParams.h"
+#include "ServiceBroker.h"
 #include "guilib/LocalizeStrings.h"
 #include "music/MusicDatabase.h"
 #include "settings/Settings.h"

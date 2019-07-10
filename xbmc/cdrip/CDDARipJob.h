@@ -8,8 +8,8 @@
 
 #pragma once
 
-#include "utils/Job.h"
 #include "music/tags/MusicInfoTag.h"
+#include "utils/Job.h"
 
 class CEncoder;
 

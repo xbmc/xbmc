@@ -9,8 +9,8 @@
 #pragma once
 
 #include "FeatureHandling.h"
-#include "input/joysticks/interfaces/IDriverHandler.h"
 #include "input/joysticks/JoystickTypes.h"
+#include "input/joysticks/interfaces/IDriverHandler.h"
 
 #include <map>
 

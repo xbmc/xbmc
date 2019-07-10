@@ -7,6 +7,7 @@
  */
 
 #include "RenderBufferPoolOpenGL.h"
+
 #include "RenderBufferOpenGL.h"
 #include "cores/RetroPlayer/rendering/RenderContext.h"
 #include "cores/RetroPlayer/rendering/RenderVideoSettings.h"

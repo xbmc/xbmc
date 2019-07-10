@@ -7,19 +7,19 @@
  */
 
 #include "GUIControl.h"
-#include "GUIMessage.h"
-#include "GUIAction.h"
 
-#include "GUIInfoManager.h"
-#include "utils/log.h"
+#include "GUIAction.h"
 #include "GUIComponent.h"
-#include "GUIWindowManager.h"
 #include "GUIControlProfiler.h"
+#include "GUIInfoManager.h"
+#include "GUIMessage.h"
 #include "GUITexture.h"
-#include "input/mouse/MouseStat.h"
+#include "GUIWindowManager.h"
+#include "ServiceBroker.h"
 #include "input/InputManager.h"
 #include "input/Key.h"
-#include "ServiceBroker.h"
+#include "input/mouse/MouseStat.h"
+#include "utils/log.h"
 
 using namespace KODI::GUILIB;
 

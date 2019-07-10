@@ -15,33 +15,32 @@
 
 #include "DVDAudioCodecAndroidMediaCodec.h"
 
-#include "DVDCodecs/DVDCodecs.h"
-#include "DVDCodecs/DVDFactoryCodec.h"
 #include "DVDAudioCodecFFmpeg.h"
 #include "DVDAudioCodecPassthrough.h"
-
-#include "utils/log.h"
-#include "settings/AdvancedSettings.h"
-#include "settings/SettingsComponent.h"
+#include "DVDCodecs/DVDCodecs.h"
+#include "DVDCodecs/DVDFactoryCodec.h"
+#include "ServiceBroker.h"
 #include "cores/AudioEngine/Interfaces/AE.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
 #include "cores/VideoPlayer/Interface/Addon/DemuxCrypto.h"
-#include "ServiceBroker.h"
+#include "settings/AdvancedSettings.h"
+#include "settings/SettingsComponent.h"
+#include "utils/StringUtils.h"
+#include "utils/log.h"
+
+#include "platform/android/activity/AndroidFeatures.h"
+
+#include <cassert>
 
 #include <androidjni/ByteBuffer.h>
 #include <androidjni/MediaCodec.h>
+#include <androidjni/MediaCodecCryptoInfo.h>
+#include <androidjni/MediaCodecInfo.h>
+#include <androidjni/MediaCodecList.h>
 #include <androidjni/MediaCrypto.h>
 #include <androidjni/MediaFormat.h>
-#include <androidjni/MediaCodecList.h>
-#include <androidjni/MediaCodecInfo.h>
-#include <androidjni/MediaCodecCryptoInfo.h>
-#include "platform/android/activity/AndroidFeatures.h"
-#include <androidjni/UUID.h>
 #include <androidjni/Surface.h>
-
-#include "utils/StringUtils.h"
-
-#include <cassert>
+#include <androidjni/UUID.h>
 
 static const AEChannel KnownChannels[] = { AE_CH_FL, AE_CH_FR, AE_CH_FC, AE_CH_LFE, AE_CH_SL, AE_CH_SR, AE_CH_BL, AE_CH_BR, AE_CH_BC, AE_CH_BLOC, AE_CH_BROC, AE_CH_NULL };
 

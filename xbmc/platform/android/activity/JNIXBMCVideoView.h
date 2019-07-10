@@ -8,15 +8,14 @@
 
 #pragma once
 
-#include <androidjni/JNIBase.h>
+#include "threads/Event.h"
+#include "utils/Geometry.h"
 
 #include <androidjni/Context.h>
+#include <androidjni/JNIBase.h>
 #include <androidjni/Rect.h>
 #include <androidjni/Surface.h>
 #include <androidjni/SurfaceHolder.h>
-
-#include "threads/Event.h"
-#include "utils/Geometry.h"
 
 class CJNIXBMCVideoView : virtual public CJNIBase, public CJNISurfaceHolderCallback, public CJNIInterfaceImplem<CJNIXBMCVideoView>
 {

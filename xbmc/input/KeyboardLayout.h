@@ -8,11 +8,11 @@
 
 #pragma once
 
+#include "InputCodingTable.h"
+
 #include <map>
 #include <string>
 #include <vector>
-
-#include "InputCodingTable.h"
 
 class TiXmlElement;
 

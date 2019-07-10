@@ -7,6 +7,7 @@
  */
 
 #include "emu_dummy.h"
+
 #include "utils/log.h"
 
 extern "C" void not_implement( const char* debuginfo)

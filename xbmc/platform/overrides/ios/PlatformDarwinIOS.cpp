@@ -6,9 +6,11 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include "platform/darwin/PlatformDarwin.h"
-#include <stdlib.h>
 #include "filesystem/SpecialProtocol.h"
+
+#include "platform/darwin/PlatformDarwin.h"
+
+#include <stdlib.h>
 
 CPlatform* CPlatform::CreateInstance()
 {

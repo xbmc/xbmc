@@ -9,8 +9,8 @@
 #pragma once
 
 #include <list>
-#include <vector>
 #include <string>
+#include <vector>
 
 #include <CoreAudio/CoreAudio.h>
 

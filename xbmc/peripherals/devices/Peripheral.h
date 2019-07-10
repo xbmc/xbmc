@@ -8,16 +8,16 @@
 
 #pragma once
 
-#include <map>
-#include <set>
-#include <string>
-#include <vector>
-
+#include "XBDateTime.h"
 #include "input/joysticks/interfaces/IInputProvider.h"
 #include "input/keyboard/interfaces/IKeyboardInputProvider.h"
 #include "input/mouse/interfaces/IMouseInputProvider.h"
 #include "peripherals/PeripheralTypes.h"
-#include "XBDateTime.h"
+
+#include <map>
+#include <set>
+#include <string>
+#include <vector>
 
 class TiXmlDocument;
 class CSetting;

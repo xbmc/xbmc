@@ -7,18 +7,19 @@
  */
 
 #include "GUIDialogPeripherals.h"
+
+#include "FileItem.h"
+#include "ServiceBroker.h"
 #include "dialogs/GUIDialogSelect.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/WindowIDs.h"
-#include "messaging/helpers/DialogOKHelper.h"
 #include "messaging/ApplicationMessenger.h"
+#include "messaging/helpers/DialogOKHelper.h"
 #include "peripherals/Peripherals.h"
 #include "peripherals/dialogs/GUIDialogPeripheralSettings.h"
 #include "threads/SingleLock.h"
 #include "utils/Variant.h"
-#include "FileItem.h"
-#include "ServiceBroker.h"
 
 using namespace KODI;
 using namespace PERIPHERALS;

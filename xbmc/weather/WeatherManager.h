@@ -8,8 +8,8 @@
 
 #pragma once
 
-#include "utils/InfoLoader.h"
 #include "settings/lib/ISettingCallback.h"
+#include "utils/InfoLoader.h"
 
 #include <string>
 

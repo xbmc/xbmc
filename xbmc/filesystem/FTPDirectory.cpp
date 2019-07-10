@@ -7,14 +7,16 @@
  */
 
 #include "FTPDirectory.h"
-#include "FTPParse.h"
-#include "URL.h"
-#include "utils/URIUtils.h"
+
 #include "CurlFile.h"
+#include "FTPParse.h"
 #include "FileItem.h"
-#include "utils/StringUtils.h"
+#include "URL.h"
 #include "utils/CharsetConverter.h"
-#include "climits"
+#include "utils/StringUtils.h"
+#include "utils/URIUtils.h"
+
+#include <climits>
 
 using namespace XFILE;
 

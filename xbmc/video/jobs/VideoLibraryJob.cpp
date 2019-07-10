@@ -7,6 +7,7 @@
  */
 
 #include "VideoLibraryJob.h"
+
 #include "video/VideoDatabase.h"
 
 CVideoLibraryJob::CVideoLibraryJob() = default;

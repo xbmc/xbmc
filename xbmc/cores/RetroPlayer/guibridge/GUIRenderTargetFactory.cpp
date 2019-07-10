@@ -7,6 +7,7 @@
  */
 
 #include "GUIRenderTargetFactory.h"
+
 #include "GUIRenderTarget.h"
 
 using namespace KODI;

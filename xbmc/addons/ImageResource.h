@@ -8,9 +8,9 @@
 
 #pragma once
 
-#include <string>
-
 #include "addons/Resource.h"
+
+#include <string>
 
 class CURL;
 

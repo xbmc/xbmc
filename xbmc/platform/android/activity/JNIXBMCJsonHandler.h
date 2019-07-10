@@ -8,10 +8,10 @@
 
 #pragma once
 
-#include <androidjni/JNIBase.h>
-
 #include "interfaces/json-rpc/IClient.h"
 #include "interfaces/json-rpc/ITransportLayer.h"
+
+#include <androidjni/JNIBase.h>
 
 namespace jni
 {

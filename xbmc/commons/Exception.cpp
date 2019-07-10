@@ -7,6 +7,7 @@
  */
 
 #include "Exception.h"
+
 #include "utils/log.h"
 
 namespace XbmcCommons

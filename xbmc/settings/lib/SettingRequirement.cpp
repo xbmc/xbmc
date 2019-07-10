@@ -7,6 +7,7 @@
  */
 
 #include "SettingRequirement.h"
+
 #include "SettingsManager.h"
 
 bool CSettingRequirementCondition::Check() const

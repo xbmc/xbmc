@@ -13,12 +13,13 @@
 \brief
 */
 
-#include <map>
-#include <vector>
 #include "Artist.h"
 #include "Song.h"
 #include "XBDateTime.h"
 #include "utils/ScraperUrl.h"
+
+#include <map>
+#include <vector>
 
 class TiXmlNode;
 class CFileItem;

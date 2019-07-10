@@ -7,6 +7,7 @@
  */
 
 #include "GUIDialogFullScreenInfo.h"
+
 #include "input/Key.h"
 
 CGUIDialogFullScreenInfo::CGUIDialogFullScreenInfo(void)

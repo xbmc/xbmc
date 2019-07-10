@@ -29,16 +29,16 @@ namespace GUIINFO
 class CGUIInfoColor
 {
 public:
-  constexpr CGUIInfoColor(UTILS::Color color = 0):m_color(color) {}
+  constexpr CGUIInfoColor(::UTILS::Color color = 0):m_color(color) {}
 
-  constexpr operator UTILS::Color() const { return m_color; };
+  constexpr operator ::UTILS::Color() const { return m_color; };
 
   bool Update();
   void Parse(const std::string &label, int context);
 
 private:
   int m_info = 0;
-  UTILS::Color m_color;
+  ::UTILS::Color m_color;
 };
 
 } // namespace GUIINFO

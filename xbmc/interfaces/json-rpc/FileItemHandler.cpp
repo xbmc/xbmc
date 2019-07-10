@@ -6,31 +6,32 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include <map>
-#include <string.h>
-
 #include "FileItemHandler.h"
+
 #include "AudioLibrary.h"
-#include "VideoLibrary.h"
 #include "FileOperations.h"
-#include "utils/SortUtils.h"
-#include "utils/URIUtils.h"
-#include "utils/ISerializable.h"
-#include "utils/Variant.h"
-#include "video/VideoInfoTag.h"
-#include "music/tags/MusicInfoTag.h"
-#include "pictures/PictureInfoTag.h"
-#include "video/VideoDatabase.h"
+#include "TextureDatabase.h"
+#include "Util.h"
+#include "VideoLibrary.h"
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"
-#include "TextureDatabase.h"
-#include "video/VideoThumbLoader.h"
 #include "music/MusicThumbLoader.h"
-#include "Util.h"
+#include "music/tags/MusicInfoTag.h"
+#include "pictures/PictureInfoTag.h"
 #include "pvr/channels/PVRChannel.h"
 #include "pvr/epg/EpgInfoTag.h"
 #include "pvr/recordings/PVRRecording.h"
 #include "pvr/timers/PVRTimerInfoTag.h"
+#include "utils/ISerializable.h"
+#include "utils/SortUtils.h"
+#include "utils/URIUtils.h"
+#include "utils/Variant.h"
+#include "video/VideoDatabase.h"
+#include "video/VideoInfoTag.h"
+#include "video/VideoThumbLoader.h"
+
+#include <map>
+#include <string.h>
 
 using namespace MUSIC_INFO;
 using namespace JSONRPC;

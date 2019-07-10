@@ -7,11 +7,12 @@
  */
 
 #include "KeyboardTranslator.h"
+
 #include "Key.h"
 #include "XBMC_keytable.h"
-#include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/XBMCTinyXML.h"
+#include "utils/log.h"
 
 #include <string>
 #include <vector>

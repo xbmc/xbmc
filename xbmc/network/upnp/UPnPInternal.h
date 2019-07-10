@@ -8,12 +8,13 @@
 
 #pragma once
 
-#include <Neptune/Source/Core/NptTypes.h>
+#include "FileItem.h"
+
+#include <string>
+
 #include <Neptune/Source/Core/NptReferences.h>
 #include <Neptune/Source/Core/NptStrings.h>
-
-#include "FileItem.h"
-#include <string>
+#include <Neptune/Source/Core/NptTypes.h>
 
 class CUPnPServer;
 class CFileItem;

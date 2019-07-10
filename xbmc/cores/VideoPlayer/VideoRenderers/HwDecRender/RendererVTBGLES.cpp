@@ -7,14 +7,16 @@
  */
 
 #include "RendererVTBGLES.h"
+
 #include "../RenderFactory.h"
 #include "ServiceBroker.h"
 #include "cores/IPlayer.h"
-#include "utils/log.h"
-#include "utils/GLUtils.h"
 #include "cores/VideoPlayer/DVDCodecs/Video/VTB.h"
 #include "settings/MediaSettings.h"
+#include "utils/GLUtils.h"
+#include "utils/log.h"
 #include "windowing/ios/WinSystemIOS.h"
+
 #include <CoreVideo/CVBuffer.h>
 #include <CoreVideo/CVPixelBuffer.h>
 #include <OpenGLES/ES2/glext.h>

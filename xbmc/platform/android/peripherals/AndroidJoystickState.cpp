@@ -6,17 +6,18 @@
  *  See LICENSES/README.md for more information.
  */
 
+#include "AndroidJoystickState.h"
+
+#include "AndroidJoystickTranslator.h"
+#include "threads/SingleLock.h"
+#include "utils/StringUtils.h"
+#include "utils/log.h"
+
 #include <algorithm>
 #include <utility>
 
 #include <android/input.h>
-
-#include "AndroidJoystickState.h"
-#include "AndroidJoystickTranslator.h"
-#include "androidjni/View.h"
-#include "threads/SingleLock.h"
-#include "utils/log.h"
-#include "utils/StringUtils.h"
+#include <androidjni/View.h>
 
 using namespace PERIPHERALS;
 

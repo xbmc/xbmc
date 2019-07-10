@@ -8,8 +8,8 @@
 
 #pragma once
 
-#include "cores/VideoPlayer/VideoRenderers/VideoShaders/WinVideoFilter.h"
 #include "cores/GameSettings.h"
+#include "cores/VideoPlayer/VideoRenderers/VideoShaders/WinVideoFilter.h"
 
 namespace KODI
 {

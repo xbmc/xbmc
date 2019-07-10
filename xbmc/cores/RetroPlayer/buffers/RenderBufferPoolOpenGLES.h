@@ -8,8 +8,9 @@
 
 #pragma once
 
-#include "IRenderBuffer.h"
 #include "BaseRenderBufferPool.h"
+#include "IRenderBuffer.h"
+
 #include "system_gl.h"
 
 namespace KODI

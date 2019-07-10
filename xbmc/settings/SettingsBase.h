@@ -8,12 +8,12 @@
 
 #pragma once
 
+#include "settings/lib/ISettingCallback.h"
+#include "threads/CriticalSection.h"
+
 #include <set>
 #include <string>
 #include <vector>
-
-#include "settings/lib/ISettingCallback.h"
-#include "threads/CriticalSection.h"
 
 class CSetting;
 class CSettingSection;

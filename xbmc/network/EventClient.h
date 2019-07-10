@@ -8,13 +8,13 @@
 
 #pragma once
 
-#include "ServiceBroker.h"
-#include "threads/Thread.h"
-#include "threads/CriticalSection.h"
-#include "Socket.h"
 #include "EventPacket.h"
+#include "ServiceBroker.h"
+#include "Socket.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
+#include "threads/CriticalSection.h"
+#include "threads/Thread.h"
 
 #include <list>
 #include <map>

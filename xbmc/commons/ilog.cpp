@@ -7,6 +7,7 @@
  */
 
 #include "commons/ilog.h"
+
 #include "utils/StringUtils.h"
 
 namespace XbmcCommons

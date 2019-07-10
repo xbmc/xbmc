@@ -25,19 +25,20 @@
  * and part of the server code for randr.
  */
 
+#include <math.h>
+#include <stdarg.h>
+#include <stdint.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#include <X11/Xatom.h>
 #include <X11/Xlib.h>
 #include <X11/Xlibint.h>
 #include <X11/Xproto.h>
-#include <X11/Xatom.h>
 #include <X11/extensions/Xrandr.h>
-#include <X11/extensions/Xrender.h>	/* we share subpixel information */
+#include <X11/extensions/Xrender.h> /* we share subpixel information */
 #include <strings.h>
-#include <string.h>
-#include <stdlib.h>
-#include <stdarg.h>
-#include <stdint.h>
-#include <math.h>
 
 #ifndef _X_NORETURN
 #if defined(__GNUC__) && ((__GNUC__ * 100 + __GNUC_MINOR__) >= 205)

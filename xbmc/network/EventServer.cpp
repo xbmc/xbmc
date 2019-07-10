@@ -7,20 +7,21 @@
  */
 
 #include "EventServer.h"
+
+#include "Application.h"
 #include "EventClient.h"
 #include "EventPacket.h"
+#include "ServiceBroker.h"
 #include "Socket.h"
+#include "Util.h"
 #include "Zeroconf.h"
 #include "guilib/GUIAudioManager.h"
-#include "input/actions/ActionTranslator.h"
 #include "input/Key.h"
+#include "input/actions/ActionTranslator.h"
 #include "interfaces/builtins/Builtins.h"
 #include "threads/SingleLock.h"
-#include "utils/log.h"
 #include "utils/SystemInfo.h"
-#include "Application.h"
-#include "ServiceBroker.h"
-#include "Util.h"
+#include "utils/log.h"
 
 #include <cassert>
 #include <map>

@@ -8,11 +8,11 @@
 
 #include "InputProcessorPointer.h"
 
+#include "input/mouse/MouseStat.h"
+
 #include <cmath>
 
 #include <linux/input-event-codes.h>
-
-#include "input/mouse/MouseStat.h"
 
 using namespace KODI::WINDOWING::WAYLAND;
 

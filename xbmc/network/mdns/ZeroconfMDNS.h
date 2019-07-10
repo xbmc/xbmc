@@ -10,13 +10,14 @@
 
 #include "network/Zeroconf.h"
 #include "threads/CriticalSection.h"
-#include <dns_sd.h>
 #include "threads/Thread.h"
 
 #include <memory>
 #include <string>
 #include <utility>
 #include <vector>
+
+#include <dns_sd.h>
 
 class CZeroconfMDNS : public CZeroconf,public CThread
 {

@@ -8,12 +8,12 @@
 
 #pragma once
 
+#include "guilib/GUIDialog.h"
+#include "guilib/GUIKeyboard.h"
+#include "input/KeyboardLayout.h"
+
 #include <string>
 #include <vector>
-
-#include "guilib/GUIKeyboard.h"
-#include "guilib/GUIDialog.h"
-#include "input/KeyboardLayout.h"
 
 class CGUIFont;
 

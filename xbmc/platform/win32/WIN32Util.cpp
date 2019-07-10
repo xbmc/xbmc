@@ -10,7 +10,7 @@
 #include "Util.h"
 #include "utils/URIUtils.h"
 #include "storage/cdioSupport.h"
-#include "PowrProf.h"
+#include <PowrProf.h>
 #include "WindowHelper.h"
 #include "Application.h"
 #include "my_ntddscsi.h"
@@ -626,36 +626,21 @@ extern "C" {
  *  Heavily optimised by David Laight
  */
 
-  #if !defined(TARGET_WINDOWS)
-  #include <sys/cdefs.h>
-  #endif
-
   #if defined(LIBC_SCCS) && !defined(lint)
   __RCSID("$NetBSD: strptime.c,v 1.25 2005/11/29 03:12:00 christos Exp $");
   #endif
 
-  #if !defined(TARGET_WINDOWS)
-  #include "namespace.h"
-  #include <sys/localedef.h>
-  #else
   typedef unsigned char u_char;
   typedef unsigned int uint;
-  #endif
   #include <ctype.h>
   #include <locale.h>
   #include <string.h>
   #include <time.h>
-  #if !defined(TARGET_WINDOWS)
-  #include <tzfile.h>
-  #endif
 
   #ifdef __weak_alias
   __weak_alias(strptime,_strptime)
   #endif
 
-  #if !defined(TARGET_WINDOWS)
-  #define  _ctloc(x)    (_CurrentTimeLocale->x)
-  #else
   #define _ctloc(x)   (x)
   const char *abday[] = {
     "Sun", "Mon", "Tue", "Wed",
@@ -683,7 +668,6 @@ extern "C" {
   #define TM_YEAR_BASE 1900
   #define __UNCONST(x) ((char *)(((const char *)(x) - (const char *)0) + (char *)0))
 
-  #endif
   /*
    * We do not implement alternate representations. However, we always
    * check whether a given modifier is allowed for a certain conversion.

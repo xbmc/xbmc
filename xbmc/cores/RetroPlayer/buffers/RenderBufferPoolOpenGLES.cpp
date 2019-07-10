@@ -7,6 +7,7 @@
  */
 
 #include "RenderBufferPoolOpenGLES.h"
+
 #include "RenderBufferOpenGLES.h"
 #include "cores/RetroPlayer/rendering/RenderContext.h"
 #include "cores/RetroPlayer/rendering/RenderVideoSettings.h"

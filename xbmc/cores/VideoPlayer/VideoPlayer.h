@@ -8,26 +8,27 @@
 
 #pragma once
 
-#include <atomic>
-#include <memory>
-#include <utility>
-#include <vector>
-#include "cores/IPlayer.h"
-#include "cores/VideoPlayer/VideoRenderers/RenderManager.h"
-#include "threads/Thread.h"
-#include "IVideoPlayer.h"
-#include "DVDMessageQueue.h"
 #include "DVDClock.h"
-#include "cores/VideoPlayer/Interface/Addon/TimingConstants.h"
-#include "VideoPlayerVideo.h"
-#include "VideoPlayerSubtitle.h"
-#include "VideoPlayerTeletext.h"
-#include "VideoPlayerRadioRDS.h"
+#include "DVDMessageQueue.h"
 #include "Edl.h"
 #include "FileItem.h"
-#include "threads/SystemClock.h"
+#include "IVideoPlayer.h"
+#include "VideoPlayerRadioRDS.h"
+#include "VideoPlayerSubtitle.h"
+#include "VideoPlayerTeletext.h"
+#include "VideoPlayerVideo.h"
+#include "cores/IPlayer.h"
+#include "cores/VideoPlayer/Interface/Addon/TimingConstants.h"
+#include "cores/VideoPlayer/VideoRenderers/RenderManager.h"
 #include "guilib/DispResource.h"
+#include "threads/SystemClock.h"
+#include "threads/Thread.h"
+
+#include <atomic>
+#include <memory>
 #include <unordered_map>
+#include <utility>
+#include <vector>
 
 struct SPlayerState
 {

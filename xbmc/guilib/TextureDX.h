@@ -8,8 +8,8 @@
 
 #pragma once
 
-#include "Texture.h"
 #include "D3DResource.h"
+#include "Texture.h"
 
 /************************************************************************/
 /*    CDXTexture                                                       */

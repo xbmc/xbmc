@@ -6,17 +6,18 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include "ServiceBroker.h"
 #include "SourcesDirectory.h"
-#include "utils/URIUtils.h"
+
+#include "File.h"
+#include "FileItem.h"
+#include "ServiceBroker.h"
 #include "URL.h"
 #include "Util.h"
-#include "FileItem.h"
-#include "File.h"
+#include "guilib/TextureManager.h"
 #include "profiles/ProfileManager.h"
 #include "settings/MediaSourceSettings.h"
-#include "guilib/TextureManager.h"
 #include "storage/MediaManager.h"
+#include "utils/URIUtils.h"
 
 using namespace XFILE;
 

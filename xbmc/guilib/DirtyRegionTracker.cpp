@@ -7,12 +7,14 @@
  */
 
 #include "DirtyRegionTracker.h"
+
+#include "DirtyRegionSolvers.h"
+#include "ServiceBroker.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/log.h"
+
 #include <stdio.h>
-#include "DirtyRegionSolvers.h"
-#include "ServiceBroker.h"
 
 CDirtyRegionTracker::CDirtyRegionTracker(int buffering)
 {

@@ -9,10 +9,11 @@
 #include "OSScreenSaverFreedesktop.h"
 
 #include "guilib/LocalizeStrings.h"
+#include "utils/log.h"
+
 #include "platform/linux/DBusMessage.h"
 #include "platform/linux/DBusUtil.h"
 #include "platform/linux/PlatformConstants.h"
-#include "utils/log.h"
 
 using namespace KODI::WINDOWING::LINUX;
 

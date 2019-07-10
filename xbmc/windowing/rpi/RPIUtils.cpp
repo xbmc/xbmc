@@ -8,19 +8,21 @@
 
 #include "RPIUtils.h"
 
-#include <math.h>
 #include "ServiceBroker.h"
-#include "utils/log.h"
+#include "guilib/StereoscopicsManager.h"
 #include "guilib/gui3d.h"
-#include "platform/linux/DllBCM.h"
-#include "platform/linux/RBP.h"
-#include "utils/StringUtils.h"
+#include "rendering/RenderSystem.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
+#include "utils/StringUtils.h"
+#include "utils/log.h"
 #include "windowing/GraphicContext.h"
-#include "guilib/StereoscopicsManager.h"
-#include "rendering/RenderSystem.h"
+
+#include "platform/linux/DllBCM.h"
+#include "platform/linux/RBP.h"
+
 #include <cassert>
+#include <math.h>
 
 #ifndef __VIDEOCORE4__
 #define __VIDEOCORE4__

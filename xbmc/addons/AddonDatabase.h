@@ -8,13 +8,13 @@
 
 #pragma once
 
-#include <string>
-#include <vector>
-
+#include "AddonBuilder.h"
+#include "FileItem.h"
 #include "addons/Addon.h"
 #include "dbwrappers/Database.h"
-#include "FileItem.h"
-#include "AddonBuilder.h"
+
+#include <string>
+#include <vector>
 
 class CAddonDatabase : public CDatabase
 {

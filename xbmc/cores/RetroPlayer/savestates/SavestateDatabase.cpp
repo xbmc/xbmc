@@ -1,4 +1,4 @@
- /*
+/*
  *  Copyright (C) 2012-2018 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
@@ -7,11 +7,12 @@
  */
 
 #include "SavestateDatabase.h"
+
 #include "SavestateFlatBuffer.h"
 #include "SavestateUtils.h"
+#include "URL.h"
 #include "filesystem/File.h"
 #include "utils/log.h"
-#include "URL.h"
 
 using namespace KODI;
 using namespace RETRO;

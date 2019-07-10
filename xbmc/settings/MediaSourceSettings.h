@@ -8,10 +8,10 @@
 
 #pragma once
 
-#include <string>
-
 #include "MediaSource.h"
 #include "settings/lib/ISettingsHandler.h"
+
+#include <string>
 
 class CProfileManager;
 class TiXmlNode;

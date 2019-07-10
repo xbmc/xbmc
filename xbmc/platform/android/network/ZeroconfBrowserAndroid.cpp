@@ -8,19 +8,17 @@
 
 #include "ZeroconfBrowserAndroid.h"
 
-#include <androidjni/jutils-details.hpp>
-#include <androidjni/Context.h>
-
+#include "GUIUserMessages.h"
+#include "ServiceBroker.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIMessage.h"
 #include "guilib/GUIWindowManager.h"
-#include "GUIUserMessages.h"
 #include "network/DNSNameCache.h"
-#include "ServiceBroker.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
-#include "threads/SingleLock.h"
-#include "utils/log.h"
+
+#include <androidjni/Context.h>
+#include <androidjni/jutils-details.hpp>
 
 CZeroconfBrowserAndroid::CZeroconfBrowserAndroid()
 {

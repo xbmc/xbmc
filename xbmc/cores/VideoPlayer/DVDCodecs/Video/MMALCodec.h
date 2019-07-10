@@ -8,20 +8,21 @@
 
 #pragma once
 
-#include "cores/VideoPlayer/DVDStreamInfo.h"
 #include "DVDVideoCodec.h"
-#include "threads/Event.h"
-#include "xbmc/cores/VideoSettings.h"
-
-#include <queue>
-#include <semaphore.h>
-#include <memory>
-#include <string>
-#include "utils/Geometry.h"
-#include "rendering/RenderSystem.h"
+#include "cores/VideoPlayer/DVDResource.h"
+#include "cores/VideoPlayer/DVDStreamInfo.h"
 #include "cores/VideoPlayer/VideoRenderers/BaseRenderer.h"
 #include "cores/VideoPlayer/VideoRenderers/HwDecRender/MMALRenderer.h"
-#include "cores/VideoPlayer/DVDResource.h"
+#include "cores/VideoSettings.h"
+#include "rendering/RenderSystem.h"
+#include "threads/Event.h"
+#include "utils/Geometry.h"
+
+#include <memory>
+#include <queue>
+#include <string>
+
+#include <semaphore.h>
 
 namespace MMAL {
 

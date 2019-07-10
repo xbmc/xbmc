@@ -7,13 +7,14 @@
  */
 
 #include "PlayListXML.h"
-#include "filesystem/File.h"
+
 #include "Util.h"
-#include "utils/log.h"
+#include "filesystem/File.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
-#include "utils/XMLUtils.h"
 #include "utils/Variant.h"
+#include "utils/XMLUtils.h"
+#include "utils/log.h"
 
 using namespace PLAYLIST;
 using namespace XFILE;

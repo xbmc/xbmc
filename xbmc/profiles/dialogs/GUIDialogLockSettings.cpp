@@ -8,9 +8,8 @@
 
 #include "GUIDialogLockSettings.h"
 
-#include <utility>
-
 #include "ServiceBroker.h"
+#include "URL.h"
 #include "dialogs/GUIDialogGamepad.h"
 #include "dialogs/GUIDialogNumeric.h"
 #include "dialogs/GUIDialogSelect.h"
@@ -21,9 +20,10 @@
 #include "settings/lib/Setting.h"
 #include "settings/lib/SettingSection.h"
 #include "settings/windows/GUIControlSettings.h"
-#include "URL.h"
-#include "utils/log.h"
 #include "utils/StringUtils.h"
+#include "utils/log.h"
+
+#include <utility>
 
 #define SETTING_USERNAME            "user.name"
 #define SETTING_PASSWORD            "user.password"

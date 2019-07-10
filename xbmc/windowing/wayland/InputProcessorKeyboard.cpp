@@ -8,10 +8,10 @@
 
 #include "InputProcessorKeyboard.h"
 
+#include "utils/log.h"
+
 #include <cassert>
 #include <limits>
-
-#include "utils/log.h"
 
 using namespace KODI::WINDOWING::WAYLAND;
 

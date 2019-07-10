@@ -8,11 +8,12 @@
 
 #pragma once
 
-#include <stdio.h>
-#include <time.h>
-#include <string>
-#include <map>
 #include "threads/SystemClock.h"
+
+#include <map>
+#include <stdio.h>
+#include <string>
+#include <time.h>
 
 #ifdef TARGET_WINDOWS
 // avoid inclusion of <windows.h> and others

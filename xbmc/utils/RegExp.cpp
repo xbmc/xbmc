@@ -6,13 +6,15 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include <stdlib.h>
-#include <string.h>
-#include <algorithm>
 #include "RegExp.h"
+
 #include "log.h"
 #include "utils/StringUtils.h"
 #include "utils/Utf8Utils.h"
+
+#include <algorithm>
+#include <stdlib.h>
+#include <string.h>
 
 using namespace PCRE;
 

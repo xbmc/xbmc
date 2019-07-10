@@ -7,10 +7,11 @@
  */
 
 #include "DialogHelper.h"
+
 #include "messaging/ApplicationMessenger.h"
 
-#include <utility>
 #include <cassert>
+#include <utility>
 
 namespace KODI
 {

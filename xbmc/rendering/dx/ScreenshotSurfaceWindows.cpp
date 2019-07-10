@@ -8,13 +8,13 @@
 
 #include "ScreenshotSurfaceWindows.h"
 
+#include "ServiceBroker.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "rendering/dx/DeviceResources.h"
-#include "ServiceBroker.h"
 #include "threads/SingleLock.h"
-#include "utils/log.h"
 #include "utils/Screenshot.h"
+#include "utils/log.h"
 #include "windowing/GraphicContext.h"
 
 #include <wrl/client.h>

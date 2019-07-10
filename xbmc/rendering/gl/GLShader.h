@@ -9,6 +9,7 @@
 #pragma once
 
 #include "guilib/Shader.h"
+
 #include <string>
 
 class CGLShader : public Shaders::CGLSLShaderProgram

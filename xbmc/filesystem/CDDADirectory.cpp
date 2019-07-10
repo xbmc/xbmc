@@ -7,9 +7,10 @@
  */
 
 #include "CDDADirectory.h"
-#include "music/MusicDatabase.h"
-#include "FileItem.h"
+
 #include "File.h"
+#include "FileItem.h"
+#include "music/MusicDatabase.h"
 #include "storage/MediaManager.h"
 #include "utils/StringUtils.h"
 

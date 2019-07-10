@@ -7,15 +7,16 @@
  */
 
 #include "VisibleEffect.h"
+
+#include "GUIControlFactory.h"
 #include "GUIInfoManager.h"
-#include "guilib/GUIComponent.h"
-#include "utils/log.h"
-#include "addons/Skin.h" // for the effect time adjustments
-#include "utils/StringUtils.h"
 #include "Tween.h"
+#include "addons/Skin.h" // for the effect time adjustments
+#include "guilib/GUIComponent.h"
+#include "utils/StringUtils.h"
 #include "utils/XBMCTinyXML.h"
 #include "utils/XMLUtils.h"
-#include "GUIControlFactory.h"
+#include "utils/log.h"
 
 CAnimEffect::CAnimEffect(const TiXmlElement *node, EFFECT_TYPE effect)
 {

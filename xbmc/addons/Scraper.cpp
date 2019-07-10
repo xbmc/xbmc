@@ -7,6 +7,7 @@
  */
 
 #include "Scraper.h"
+
 #include "AddonManager.h"
 #include "FileItem.h"
 #include "ServiceBroker.h"
@@ -34,8 +35,9 @@
 #include "video/VideoDatabase.h"
 
 #include <algorithm>
-#include <fstrcmp.h>
 #include <sstream>
+
+#include <fstrcmp.h>
 
 using namespace XFILE;
 using namespace MUSIC_GRABBER;

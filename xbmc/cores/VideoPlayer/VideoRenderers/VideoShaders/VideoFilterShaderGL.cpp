@@ -7,15 +7,16 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include <string>
-#include <math.h>
-
 #include "VideoFilterShaderGL.h"
-#include "ServiceBroker.h"
-#include "utils/log.h"
-#include "utils/GLUtils.h"
+
 #include "ConvolutionKernels.h"
+#include "ServiceBroker.h"
 #include "rendering/RenderSystem.h"
+#include "utils/GLUtils.h"
+#include "utils/log.h"
+
+#include <math.h>
+#include <string>
 
 #define TEXTARGET GL_TEXTURE_1D
 

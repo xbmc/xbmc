@@ -7,6 +7,7 @@
  */
 
 #include "ApplicationOperations.h"
+
 #include "Application.h"
 #include "CompileInfo.h"
 #include "GUIInfoManager.h"
@@ -15,9 +16,10 @@
 #include "Util.h"
 #include "input/Key.h"
 #include "messaging/ApplicationMessenger.h"
-#include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
+#include "utils/log.h"
+
 #include <string.h>
 
 using namespace JSONRPC;

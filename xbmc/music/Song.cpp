@@ -7,14 +7,15 @@
  */
 
 #include "Song.h"
-#include "music/tags/MusicInfoTag.h"
-#include "utils/Variant.h"
-#include "utils/StringUtils.h"
-#include "utils/log.h"
+
 #include "FileItem.h"
 #include "ServiceBroker.h"
+#include "music/tags/MusicInfoTag.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
+#include "utils/StringUtils.h"
+#include "utils/Variant.h"
+#include "utils/log.h"
 
 using namespace MUSIC_INFO;
 

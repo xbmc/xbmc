@@ -8,15 +8,15 @@
 
 #pragma once
 
-#include <memory>
-#include <string>
-#include <vector>
-
+#include "SeekHandler.h"
+#include "cores/IPlayer.h"
 #include "threads/CriticalSection.h"
 #include "threads/SystemClock.h"
 #include "windowing/Resolution.h"
-#include "cores/IPlayer.h"
-#include "SeekHandler.h"
+
+#include <memory>
+#include <string>
+#include <vector>
 
 class CAction;
 class CPlayerCoreFactory;

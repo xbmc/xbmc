@@ -7,20 +7,22 @@
  */
 
 #include "DVDOverlayCodecTX3G.h"
+
+#include "DVDCodecs/DVDCodecs.h"
 #include "DVDOverlayText.h"
 #include "DVDStreamInfo.h"
-#include "DVDCodecs/DVDCodecs.h"
-#include "cores/VideoPlayer/Interface/Addon/DemuxPacket.h"
 #include "ServiceBroker.h"
+#include "cores/VideoPlayer/Interface/Addon/DemuxPacket.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
-#include "utils/log.h"
+#include "utils/RegExp.h"
 #include "utils/StringUtils.h"
 #include "utils/auto_buffer.h"
-#include "utils/RegExp.h"
-#include "system.h"
+#include "utils/log.h"
 
 #include <cstddef>
+
+#include "system.h"
 
 // 3GPP/TX3G (aka MPEG-4 Timed Text) Subtitle support
 // 3GPP -> 3rd Generation Partnership Program

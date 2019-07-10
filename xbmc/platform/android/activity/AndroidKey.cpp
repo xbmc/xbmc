@@ -8,13 +8,13 @@
 
 #include "AndroidKey.h"
 
-#include <androidjni/KeyCharacterMap.h>
-
 #include "AndroidExtra.h"
+#include "ServiceBroker.h"
 #include "XBMCApp.h"
 #include "input/Key.h"
-#include "ServiceBroker.h"
 #include "windowing/android/WinSystemAndroid.h"
+
+#include <androidjni/KeyCharacterMap.h>
 
 
 typedef struct {

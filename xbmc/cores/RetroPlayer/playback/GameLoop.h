@@ -8,10 +8,10 @@
 
 #pragma once
 
-#include <atomic>
-
 #include "threads/Event.h"
 #include "threads/Thread.h"
+
+#include <atomic>
 
 namespace KODI
 {

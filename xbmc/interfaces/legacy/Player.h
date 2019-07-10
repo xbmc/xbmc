@@ -8,21 +8,19 @@
 
 #pragma once
 
-#include <vector>
-
-#include "ListItem.h"
-#include "PlayList.h"
-#include "InfoTagVideo.h"
-#include "Exception.h"
+#include "AddonCallback.h"
 #include "AddonString.h"
+#include "Alternative.h"
+#include "Exception.h"
 #include "InfoTagMusic.h"
 #include "InfoTagRadioRDS.h"
-#include "AddonCallback.h"
-#include "Alternative.h"
-
+#include "InfoTagVideo.h"
+#include "ListItem.h"
+#include "PlayList.h"
+#include "cores/IPlayerCallback.h"
 #include "swighelper.h"
 
-#include "cores/IPlayerCallback.h"
+#include <vector>
 
 namespace XBMCAddon
 {

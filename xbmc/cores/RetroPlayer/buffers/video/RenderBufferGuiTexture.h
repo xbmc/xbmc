@@ -8,8 +8,8 @@
 
 #pragma once
 
-#include "cores/RetroPlayer/buffers/BaseRenderBuffer.h"
 #include "cores/GameSettings.h"
+#include "cores/RetroPlayer/buffers/BaseRenderBuffer.h"
 #include "guilib/Texture.h"
 #include "guilib/TextureFormats.h"
 

@@ -7,6 +7,7 @@
  */
 
 #include "GUIRenderTarget.h"
+
 #include "cores/RetroPlayer/guicontrols/GUIGameControl.h"
 #include "cores/RetroPlayer/guiwindows/GameWindowFullScreen.h"
 #include "cores/RetroPlayer/rendering/IRenderManager.h"

@@ -6,10 +6,13 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include <interface/mmal/util/mmal_default_components.h>
 #include "ProcessInfoPi.h"
-#include "platform/linux/RBP.h"
+
 #include "cores/VideoPlayer/DVDCodecs/Video/MMALFFmpeg.h"
+
+#include "platform/linux/RBP.h"
+
+#include <interface/mmal/util/mmal_default_components.h>
 
 // Override for platform ports
 using namespace MMAL;

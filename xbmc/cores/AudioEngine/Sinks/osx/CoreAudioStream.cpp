@@ -7,8 +7,8 @@
  */
 
 #include "CoreAudioStream.h"
-#include "CoreAudioDevice.h"
 
+#include "CoreAudioDevice.h"
 #include "cores/AudioEngine/Sinks/darwin/CoreAudioHelpers.h"
 #include "utils/log.h"
 

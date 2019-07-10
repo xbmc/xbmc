@@ -8,12 +8,12 @@
 
 #include "GLUtils.h"
 
-#include "log.h"
 #include "ServiceBroker.h"
-#include "settings/AdvancedSettings.h"
-#include "settings/SettingsComponent.h"
+#include "log.h"
 #include "rendering/MatrixGL.h"
 #include "rendering/RenderSystem.h"
+#include "settings/AdvancedSettings.h"
+#include "settings/SettingsComponent.h"
 #include "utils/StringUtils.h"
 
 #include <map>

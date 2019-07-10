@@ -8,13 +8,12 @@
 
 #pragma once
 
+#include "XBTF.h"
+
 #include <memory>
+#include <stdint.h>
 #include <string>
 #include <vector>
-
-#include <stdint.h>
-
-#include "XBTF.h"
 
 class CXBTFReader : public CXBTFBase
 {

@@ -8,8 +8,8 @@
 
 #include "ViewModeSettings.h"
 
-#include "guilib/LocalizeStrings.h"
 #include "cores/VideoSettings.h"
+#include "guilib/LocalizeStrings.h"
 #include "settings/lib/SettingDefinitions.h"
 
 struct ViewModeProperties

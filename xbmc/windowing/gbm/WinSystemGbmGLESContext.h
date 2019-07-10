@@ -8,9 +8,10 @@
 
 #pragma once
 
-#include "utils/EGLUtils.h"
-#include "rendering/gles/RenderSystemGLES.h"
 #include "WinSystemGbmEGLContext.h"
+#include "rendering/gles/RenderSystemGLES.h"
+#include "utils/EGLUtils.h"
+
 #include <memory>
 
 class CVaapiProxy;

@@ -7,12 +7,13 @@
  */
 
 #include "RendererDXVA.h"
+
 #include "DVDCodecs/Video/DVDVideoCodec.h"
-#include "rendering/dx/RenderContext.h"
 #include "VideoRenderers/BaseRenderer.h"
+#include "WIN32Util.h"
+#include "rendering/dx/RenderContext.h"
 #include "utils/log.h"
 #include "utils/memcpy_sse2.h"
-#include "WIN32Util.h"
 #include "windowing/GraphicContext.h"
 
 #include <ppl.h>

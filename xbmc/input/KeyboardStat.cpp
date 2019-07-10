@@ -12,14 +12,15 @@
 //#define DEBUG_KEYBOARD_GETCHAR
 
 #include "KeyboardStat.h"
-#include "windowing/XBMC_events.h"
+
+#include "ServiceBroker.h"
 #include "input/XBMC_keytable.h"
 #include "input/XBMC_vkeys.h"
 #include "peripherals/Peripherals.h"
 #include "peripherals/devices/PeripheralHID.h"
 #include "threads/SystemClock.h"
 #include "utils/log.h"
-#include "ServiceBroker.h"
+#include "windowing/XBMC_events.h"
 
 #define HOLD_THRESHOLD 250
 

@@ -7,6 +7,7 @@
  */
 
 #include "platform/Filesystem.h"
+
 #include "platform/win32/CharsetConverter.h"
 
 #include <Windows.h>

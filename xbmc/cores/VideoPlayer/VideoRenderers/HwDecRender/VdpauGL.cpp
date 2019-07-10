@@ -7,9 +7,11 @@
  */
 
 #include "VdpauGL.h"
-#include <GL/glx.h>
+
 #include "cores/VideoPlayer/DVDCodecs/Video/VDPAU.h"
 #include "utils/log.h"
+
+#include <GL/glx.h>
 
 using namespace VDPAU;
 

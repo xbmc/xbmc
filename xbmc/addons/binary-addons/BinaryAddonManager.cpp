@@ -7,12 +7,12 @@
  */
 
 #include "BinaryAddonManager.h"
-#include "BinaryAddonBase.h"
 
+#include "BinaryAddonBase.h"
 #include "ServiceBroker.h"
 #include "addons/AddonManager.h"
-#include "filesystem/SpecialProtocol.h"
 #include "filesystem/Directory.h"
+#include "filesystem/SpecialProtocol.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 

@@ -14,14 +14,16 @@
 //
 //////////////////////////////////////////////////////////////////////
 
+#include "IFileTypes.h"
+#include "URL.h"
+#include "utils/auto_buffer.h"
+
 #include <iostream>
 #include <stdio.h>
 #include <string>
 #include <vector>
-#include "utils/auto_buffer.h"
-#include "IFileTypes.h"
+
 #include "PlatformDefs.h"
-#include "URL.h"
 
 class BitstreamStats;
 

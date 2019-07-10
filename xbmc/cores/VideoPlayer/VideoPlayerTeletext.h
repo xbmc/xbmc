@@ -8,10 +8,10 @@
 
 #pragma once
 
-#include "threads/Thread.h"
 #include "DVDMessageQueue.h"
-#include "video/TeletextDefines.h"
 #include "IVideoPlayer.h"
+#include "threads/Thread.h"
+#include "video/TeletextDefines.h"
 
 class CDVDStreamInfo;
 

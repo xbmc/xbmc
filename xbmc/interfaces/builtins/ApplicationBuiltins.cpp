@@ -11,18 +11,19 @@
 #include "Application.h"
 #include "ServiceBroker.h"
 #include "filesystem/ZipManager.h"
-#include "messaging/ApplicationMessenger.h"
 #include "interfaces/AnnouncementManager.h"
+#include "messaging/ApplicationMessenger.h"
 #include "network/Network.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/FileOperationJob.h"
 #include "utils/JSONVariantParser.h"
-#include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
+#include "utils/log.h"
+
 #include <stdlib.h>
 
 using namespace KODI::MESSAGING;

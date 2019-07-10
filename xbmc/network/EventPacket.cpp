@@ -7,6 +7,7 @@
  */
 
 #include "EventPacket.h"
+
 #include "Socket.h"
 #include "utils/log.h"
 

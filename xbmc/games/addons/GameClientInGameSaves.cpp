@@ -10,12 +10,12 @@
 
 #include "GameClient.h"
 #include "GameClientTranslator.h"
-#include "filesystem/File.h"
+#include "ServiceBroker.h"
 #include "filesystem/Directory.h"
+#include "filesystem/File.h"
 #include "games/GameServices.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
-#include "ServiceBroker.h"
 
 #include <assert.h>
 

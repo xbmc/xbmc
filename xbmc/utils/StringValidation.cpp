@@ -7,6 +7,7 @@
  */
 
 #include "StringValidation.h"
+
 #include "utils/StringUtils.h"
 
 bool StringValidation::IsInteger(const std::string &input, void *data)

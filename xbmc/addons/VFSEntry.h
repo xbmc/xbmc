@@ -10,8 +10,8 @@
 #include "addons/binary-addons/AddonDll.h"
 #include "addons/binary-addons/AddonInstanceHandler.h"
 #include "addons/kodi-addon-dev-kit/include/kodi/addon-instance/VFS.h"
-#include "filesystem/IFile.h"
 #include "filesystem/IDirectory.h"
+#include "filesystem/IFile.h"
 #include "filesystem/IFileDirectory.h"
 
 namespace ADDON

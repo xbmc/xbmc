@@ -8,8 +8,8 @@
 
 #pragma once
 
-#include "input/keyboard/interfaces/IKeyboardDriverHandler.h"
 #include "input/XBMC_vkeys.h"
+#include "input/keyboard/interfaces/IKeyboardDriverHandler.h"
 
 #include <vector>
 

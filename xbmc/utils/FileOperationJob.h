@@ -8,12 +8,12 @@
 
 #pragma once
 
-#include <string>
-#include <vector>
-
 #include "FileItem.h"
 #include "filesystem/File.h"
 #include "utils/ProgressJob.h"
+
+#include <string>
+#include <vector>
 
 class CFileOperationJob : public CProgressJob
 {

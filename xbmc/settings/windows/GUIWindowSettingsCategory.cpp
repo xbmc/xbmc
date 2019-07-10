@@ -6,9 +6,8 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include <string>
-
 #include "GUIWindowSettingsCategory.h"
+
 #include "GUIPassword.h"
 #include "GUIUserMessages.h"
 #include "ServiceBroker.h"
@@ -20,6 +19,8 @@
 #include "settings/windows/GUIControlSettings.h"
 #include "utils/log.h"
 #include "view/ViewStateSettings.h"
+
+#include <string>
 
 #define SETTINGS_SYSTEM                 WINDOW_SETTINGS_SYSTEM - WINDOW_SETTINGS_START
 #define SETTINGS_SERVICE                WINDOW_SETTINGS_SERVICE - WINDOW_SETTINGS_START

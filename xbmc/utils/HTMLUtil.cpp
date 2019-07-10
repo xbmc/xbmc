@@ -7,7 +7,9 @@
  */
 
 #include "HTMLUtil.h"
+
 #include "utils/StringUtils.h"
+
 #include <wctype.h>
 
 using namespace HTML;

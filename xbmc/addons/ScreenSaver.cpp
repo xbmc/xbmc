@@ -7,10 +7,11 @@
  */
 
 #include "ScreenSaver.h"
+
 #include "filesystem/SpecialProtocol.h"
+#include "utils/log.h"
 #include "windowing/GraphicContext.h"
 #include "windowing/WinSystem.h"
-#include "utils/log.h"
 
 namespace ADDON
 {

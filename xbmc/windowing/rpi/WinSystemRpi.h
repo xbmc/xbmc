@@ -9,13 +9,15 @@
 #pragma once
 
 #include "RPIUtils.h"
-#include "platform/linux/input/LibInputHandler.h"
-#include "platform/linux/OptionalsReg.h"
 #include "rendering/gles/RenderSystemGLES.h"
 #include "threads/CriticalSection.h"
-#include "windowing/WinSystem.h"
 #include "threads/SystemClock.h"
-#include "EGL/egl.h"
+#include "windowing/WinSystem.h"
+
+#include "platform/linux/OptionalsReg.h"
+#include "platform/linux/input/LibInputHandler.h"
+
+#include <EGL/egl.h>
 
 class IDispResource;
 

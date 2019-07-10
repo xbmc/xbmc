@@ -8,11 +8,11 @@
 
 #pragma once
 
+#include "addons/IAddon.h"
+
 #include <memory>
 #include <string>
 #include <vector>
-
-#include "addons/IAddon.h"
 
 class CLanguageInvokerThread;
 class ILanguageInvocationHandler;

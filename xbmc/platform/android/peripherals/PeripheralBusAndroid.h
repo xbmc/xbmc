@@ -8,17 +8,18 @@
 
 #pragma once
 
+#include "peripherals/PeripheralTypes.h"
+#include "peripherals/bus/PeripheralBus.h"
+#include "threads/CriticalSection.h"
+
+#include "platform/android/activity/IInputDeviceCallbacks.h"
+#include "platform/android/activity/IInputDeviceEventHandler.h"
+#include "platform/android/peripherals/AndroidJoystickState.h"
+
 #include <memory>
 #include <string>
 #include <utility>
 #include <vector>
-
-#include "peripherals/PeripheralTypes.h"
-#include "peripherals/bus/PeripheralBus.h"
-#include "platform/android/peripherals/AndroidJoystickState.h"
-#include "platform/android/activity/IInputDeviceCallbacks.h"
-#include "platform/android/activity/IInputDeviceEventHandler.h"
-#include "threads/CriticalSection.h"
 
 class CJNIViewInputDevice;
 

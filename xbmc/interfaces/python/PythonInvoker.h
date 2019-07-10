@@ -8,15 +8,15 @@
 
 #pragma once
 
+#include "interfaces/generic/ILanguageInvoker.h"
+#include "interfaces/legacy/Addon.h"
+#include "interfaces/python/LanguageHook.h"
+#include "threads/CriticalSection.h"
+#include "threads/Event.h"
+
 #include <map>
 #include <string>
 #include <vector>
-
-#include "interfaces/generic/ILanguageInvoker.h"
-#include "interfaces/python/LanguageHook.h"
-#include "interfaces/legacy/Addon.h"
-#include "threads/CriticalSection.h"
-#include "threads/Event.h"
 
 struct _ts;
 

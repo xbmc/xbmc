@@ -7,7 +7,9 @@
  */
 
 #include "ReplayGain.h"
+
 #include "utils/StringUtils.h"
+
 #include <stdlib.h>
 
 static bool TypeIsValid(ReplayGain::Type aType)

@@ -7,9 +7,10 @@
  */
 
 #include "MusicInfoTagLoaderFFmpeg.h"
+
 #include "MusicInfoTag.h"
-#include "filesystem/File.h"
 #include "cores/FFmpeg.h"
+#include "filesystem/File.h"
 #include "utils/StringUtils.h"
 
 using namespace MUSIC_INFO;

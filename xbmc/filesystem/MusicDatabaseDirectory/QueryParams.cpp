@@ -7,6 +7,7 @@
  */
 
 #include "QueryParams.h"
+
 #include <stdlib.h>
 
 using namespace XFILE::MUSICDATABASEDIRECTORY;

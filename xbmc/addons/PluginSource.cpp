@@ -8,12 +8,12 @@
 
 #include "PluginSource.h"
 
-#include <utility>
-
 #include "AddonManager.h"
 #include "ServiceBroker.h"
-#include "utils/StringUtils.h"
 #include "URL.h"
+#include "utils/StringUtils.h"
+
+#include <utility>
 
 namespace ADDON
 {

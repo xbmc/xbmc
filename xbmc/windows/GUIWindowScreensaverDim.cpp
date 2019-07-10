@@ -11,9 +11,9 @@
 #include "Application.h"
 #include "ServiceBroker.h"
 #include "addons/binary-addons/AddonDll.h"
+#include "guilib/GUITexture.h"
 #include "utils/Color.h"
 #include "windowing/GraphicContext.h"
-#include "guilib/GUITexture.h"
 
 CGUIWindowScreensaverDim::CGUIWindowScreensaverDim(void)
   : CGUIDialog(WINDOW_SCREENSAVER_DIM, "", DialogModalityType::MODELESS)

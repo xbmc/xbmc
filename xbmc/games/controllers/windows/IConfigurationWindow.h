@@ -9,8 +9,8 @@
 #pragma once
 
 #include "games/controllers/ControllerTypes.h"
-#include "input/joysticks/JoystickTypes.h"
 #include "input/InputTypes.h"
+#include "input/joysticks/JoystickTypes.h"
 
 #include <string>
 #include <vector>

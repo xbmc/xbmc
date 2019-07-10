@@ -6,15 +6,16 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include <sstream>
-
 #include "DatabaseUtils.h"
+
 #include "dbwrappers/dataset.h"
 #include "music/MusicDatabase.h"
-#include "utils/log.h"
-#include "utils/Variant.h"
 #include "utils/StringUtils.h"
+#include "utils/Variant.h"
+#include "utils/log.h"
 #include "video/VideoDatabase.h"
+
+#include <sstream>
 
 MediaType DatabaseUtils::MediaTypeFromVideoContentType(int videoContentType)
 {

@@ -6,10 +6,11 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include "DVDDemuxUtils.h"
-#include "cores/VideoPlayer/Interface/Addon/TimingConstants.h"
 #include "DVDDemuxCC.h"
+
+#include "DVDDemuxUtils.h"
 #include "cores/VideoPlayer/DVDCodecs/Overlay/contrib/cc_decoder708.h"
+#include "cores/VideoPlayer/Interface/Addon/TimingConstants.h"
 
 #include <algorithm>
 

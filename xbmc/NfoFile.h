@@ -12,10 +12,10 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#include <string>
-
-#include "addons/Scraper.h"
 #include "InfoScanner.h"
+#include "addons/Scraper.h"
+
+#include <string>
 
 class CNfoFile
 {

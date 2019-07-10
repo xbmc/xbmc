@@ -6,12 +6,13 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include <cstdlib>
-
 #include "PosixMountProvider.h"
+
 #include "utils/RegExp.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
+
+#include <cstdlib>
 
 CPosixMountProvider::CPosixMountProvider()
 {

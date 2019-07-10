@@ -8,9 +8,9 @@
 
 #pragma once
 
+#include "cores/GameSettings.h"
 #include "cores/RetroPlayer/guibridge/IGUIRenderSettings.h"
 #include "cores/RetroPlayer/rendering/RenderSettings.h"
-#include "cores/GameSettings.h"
 #include "threads/CriticalSection.h"
 #include "utils/Geometry.h"
 

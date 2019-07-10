@@ -7,8 +7,10 @@
  */
 
 #include "Encoder.h"
+
 #include "filesystem/File.h"
 #include "utils/log.h"
+
 #include <string.h>
 
 CEncoder::CEncoder(std::shared_ptr<IEncoder> encoder)

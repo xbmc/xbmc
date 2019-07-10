@@ -7,12 +7,13 @@
  */
 
 #include "UPnPSettings.h"
+
 #include "filesystem/File.h"
 #include "threads/SingleLock.h"
-#include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/XBMCTinyXML.h"
 #include "utils/XMLUtils.h"
+#include "utils/log.h"
 
 #define XML_UPNP          "upnpserver"
 #define XML_SERVER_UUID   "UUID"

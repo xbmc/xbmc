@@ -7,6 +7,7 @@
  */
 
 #include "MusicLibraryJob.h"
+
 #include "music/MusicDatabase.h"
 
 CMusicLibraryJob::CMusicLibraryJob() = default;

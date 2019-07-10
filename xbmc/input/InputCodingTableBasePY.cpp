@@ -6,13 +6,15 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include <stdlib.h>
-#include "ServiceBroker.h"
 #include "InputCodingTableBasePY.h"
-#include "utils/CharsetConverter.h"
+
+#include "ServiceBroker.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIMessage.h"
 #include "guilib/GUIWindowManager.h"
+#include "utils/CharsetConverter.h"
+
+#include <stdlib.h>
 
 static std::map<std::string, std::wstring> codemap =
 {

@@ -12,6 +12,7 @@
 #include "JobManager.h"
 #include "threads/CriticalSection.h"
 #include "threads/SingleLock.h"
+
 #include <algorithm>
 #include <memory>
 #include <vector>

@@ -8,11 +8,11 @@
 
 #pragma once
 
-#include "DVDOverlayContainer.h"
-#include "DVDSubtitles/DVDFactorySubtitle.h"
-#include "DVDStreamInfo.h"
-#include "DVDMessageQueue.h"
 #include "DVDDemuxSPU.h"
+#include "DVDMessageQueue.h"
+#include "DVDOverlayContainer.h"
+#include "DVDStreamInfo.h"
+#include "DVDSubtitles/DVDFactorySubtitle.h"
 #include "IVideoPlayer.h"
 
 class CDVDInputStream;

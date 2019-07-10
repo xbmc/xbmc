@@ -7,19 +7,19 @@
  */
 
 #include "GUIDialogPeripheralSettings.h"
-#include "guilib/GUIMessage.h"
 
-#include <utility>
-
+#include "FileItem.h"
+#include "ServiceBroker.h"
 #include "addons/Skin.h"
 #include "dialogs/GUIDialogYesNo.h"
-#include "FileItem.h"
+#include "guilib/GUIMessage.h"
 #include "peripherals/Peripherals.h"
 #include "settings/lib/Setting.h"
 #include "settings/lib/SettingSection.h"
-#include "utils/log.h"
 #include "utils/Variant.h"
-#include "ServiceBroker.h"
+#include "utils/log.h"
+
+#include <utility>
 
 using namespace PERIPHERALS;
 

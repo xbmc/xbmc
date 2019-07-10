@@ -8,9 +8,9 @@
 
 #pragma once
 
-#include <vector>
-
 #include "interfaces/legacy/AddonClass.h"
+
+#include <vector>
 
 struct HTTPPythonRequest;
 

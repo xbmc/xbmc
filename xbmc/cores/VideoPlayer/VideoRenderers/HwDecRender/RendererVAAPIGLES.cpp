@@ -7,14 +7,15 @@
  */
 
 #include "RendererVAAPIGLES.h"
+
 #include "../RenderFactory.h"
-#include "cores/VideoPlayer/DVDCodecs/Video/VAAPI.h"
 #include "cores/VideoPlayer/DVDCodecs/DVDCodecUtils.h"
-#include "settings/Settings.h"
+#include "cores/VideoPlayer/DVDCodecs/Video/VAAPI.h"
 #include "settings/AdvancedSettings.h"
+#include "settings/Settings.h"
 #include "utils/EGLFence.h"
-#include "utils/log.h"
 #include "utils/GLUtils.h"
+#include "utils/log.h"
 
 using namespace VAAPI;
 using namespace KODI::UTILS::EGL;

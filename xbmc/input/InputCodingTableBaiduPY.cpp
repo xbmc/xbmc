@@ -8,16 +8,16 @@
 
 #include "InputCodingTableBaiduPY.h"
 
-#include <stdlib.h>
-#include <utility>
-
 #include "ServiceBroker.h"
 #include "filesystem/CurlFile.h"
-#include "utils/StringUtils.h"
-#include "utils/RegExp.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIMessage.h"
 #include "guilib/GUIWindowManager.h"
+#include "utils/RegExp.h"
+#include "utils/StringUtils.h"
+
+#include <stdlib.h>
+#include <utility>
 
 CInputCodingTableBaiduPY::CInputCodingTableBaiduPY(const std::string& strUrl) :
   CThread("BaiduPYApi"),

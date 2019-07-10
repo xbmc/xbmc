@@ -7,20 +7,21 @@
  */
 
 #include "WinEventsSDL.h"
-#include "Application.h"
+
 #include "AppInboundProtocol.h"
-#include "ServiceBroker.h"
-#include "messaging/ApplicationMessenger.h"
+#include "Application.h"
 #include "GUIUserMessages.h"
-#include "settings/DisplaySettings.h"
+#include "ServiceBroker.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
-#include "input/mouse/MouseStat.h"
-#include "input/Key.h"
 #include "input/InputManager.h"
+#include "input/Key.h"
+#include "input/mouse/MouseStat.h"
+#include "messaging/ApplicationMessenger.h"
+#include "settings/DisplaySettings.h"
 #include "windowing/WinSystem.h"
+
 #include "platform/darwin/osx/CocoaInterface.h"
-#include "ServiceBroker.h"
 
 using namespace KODI::MESSAGING;
 

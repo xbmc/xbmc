@@ -8,11 +8,11 @@
 
 #pragma once
 
+#include "IDirectory.h"
+
 #include <set>
 #include <string>
 #include <vector>
-
-#include "IDirectory.h"
 
 namespace XFILE
 {

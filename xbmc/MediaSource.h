@@ -8,9 +8,10 @@
 
 #pragma once
 
+#include "LockType.h"
+
 #include <string>
 #include <vector>
-#include "LockType.h"
 
 /*!
 \ingroup windows

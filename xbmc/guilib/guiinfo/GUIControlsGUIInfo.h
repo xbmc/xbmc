@@ -8,8 +8,8 @@
 
 #pragma once
 
-#include "guilib/guiinfo/GUIInfoProvider.h"
 #include "guilib/WindowIDs.h"
+#include "guilib/guiinfo/GUIInfoProvider.h"
 
 #include <map>
 

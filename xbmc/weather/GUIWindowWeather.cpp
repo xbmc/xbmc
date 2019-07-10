@@ -8,16 +8,16 @@
 
 #include "GUIWindowWeather.h"
 
-#include <utility>
-
-#include "guilib/WindowIDs.h"
 #include "GUIUserMessages.h"
 #include "LangInfo.h"
 #include "ServiceBroker.h"
+#include "guilib/WindowIDs.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
 #include "weather/WeatherManager.h"
+
+#include <utility>
 
 using namespace ADDON;
 

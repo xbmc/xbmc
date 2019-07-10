@@ -6,9 +6,11 @@
  *  See LICENSES/README.md for more information.
  */
 
+#include "DVDStateSerializer.h"
+
 #include "DllDvdNav.h"
 #include "utils/XBMCTinyXML.h"
-#include "DVDStateSerializer.h"
+
 #include <sstream>
 
 bool CDVDStateSerializer::test( const dvd_state_t *state  )

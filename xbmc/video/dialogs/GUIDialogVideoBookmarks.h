@@ -9,9 +9,9 @@
 #pragma once
 
 #include "guilib/GUIDialog.h"
-#include "view/GUIViewControl.h"
-#include "video/VideoDatabase.h"
 #include "utils/JobManager.h"
+#include "video/VideoDatabase.h"
+#include "view/GUIViewControl.h"
 
 class CFileItemList;
 

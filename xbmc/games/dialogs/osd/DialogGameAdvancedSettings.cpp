@@ -7,13 +7,14 @@
  */
 
 #include "DialogGameAdvancedSettings.h"
-#include "addons/settings/GUIDialogAddonSettings.h"
+
+#include "ServiceBroker.h"
 #include "addons/AddonManager.h"
+#include "addons/settings/GUIDialogAddonSettings.h"
 #include "cores/RetroPlayer/guibridge/GUIGameRenderManager.h"
 #include "cores/RetroPlayer/guibridge/GUIGameSettingsHandle.h"
 #include "guilib/GUIMessage.h"
 #include "guilib/WindowIDs.h"
-#include "ServiceBroker.h"
 
 using namespace KODI;
 using namespace GAME;

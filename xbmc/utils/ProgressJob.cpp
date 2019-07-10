@@ -6,15 +6,16 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include <math.h>
-
 #include "ProgressJob.h"
+
 #include "ServiceBroker.h"
-#include "dialogs/GUIDialogProgress.h"
 #include "dialogs/GUIDialogExtendedProgressBar.h"
+#include "dialogs/GUIDialogProgress.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "utils/Variant.h"
+
+#include <math.h>
 
 CProgressJob::CProgressJob()
   : m_progress(NULL),

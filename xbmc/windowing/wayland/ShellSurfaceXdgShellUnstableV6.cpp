@@ -8,8 +8,8 @@
 
 #include "ShellSurfaceXdgShellUnstableV6.h"
 
-#include "messaging/ApplicationMessenger.h"
 #include "Registry.h"
+#include "messaging/ApplicationMessenger.h"
 
 using namespace KODI::WINDOWING::WAYLAND;
 

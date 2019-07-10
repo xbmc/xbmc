@@ -11,12 +11,15 @@
 
 #pragma once
 
+#include "threads/CriticalSection.h"
+#include "threads/Thread.h"
+
 #include <string>
 #include <vector>
-#include "threads/Thread.h"
-#include "threads/CriticalSection.h"
-#include <sys/socket.h>
+
 #include <netinet/in.h>
+#include <sys/socket.h>
+
 #include "PlatformDefs.h"
 
 class CUdpClient : CThread

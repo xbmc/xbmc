@@ -6,12 +6,13 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include "cores/VideoPlayer/VideoRenderers/ColorManager.h"
-#include "FileItem.h"
 #include "GUIDialogCMSSettings.h"
+
+#include "FileItem.h"
 #include "GUIPassword.h"
 #include "ServiceBroker.h"
 #include "addons/Skin.h"
+#include "cores/VideoPlayer/VideoRenderers/ColorManager.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderManager.h"
 #include "filesystem/Directory.h"
 #include "guilib/GUIWindowManager.h"
@@ -21,10 +22,10 @@
 #include "settings/lib/Setting.h"
 #include "settings/lib/SettingDefinitions.h"
 #include "settings/lib/SettingsManager.h"
-#include "utils/log.h"
 #include "utils/URIUtils.h"
-#include "video/VideoDatabase.h"
 #include "utils/Variant.h"
+#include "utils/log.h"
+#include "video/VideoDatabase.h"
 
 #include <vector>
 

@@ -7,19 +7,20 @@
  */
 
 #include "FileOperationJob.h"
+
+#include "ServiceBroker.h"
 #include "URL.h"
 #include "Util.h"
 #include "dialogs/GUIDialogExtendedProgressBar.h"
-#include "guilib/GUIComponent.h"
-#include "guilib/LocalizeStrings.h"
-#include "guilib/GUIWindowManager.h"
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"
 #include "filesystem/FileDirectoryFactory.h"
-#include "utils/log.h"
+#include "guilib/GUIComponent.h"
+#include "guilib/GUIWindowManager.h"
+#include "guilib/LocalizeStrings.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
-#include "ServiceBroker.h"
+#include "utils/log.h"
 
 using namespace XFILE;
 

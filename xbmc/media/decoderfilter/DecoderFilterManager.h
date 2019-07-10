@@ -13,11 +13,11 @@
  * \brief Declares CDecoderFilterManager which gives control about how / when to use platform decoder.
  *
  */
-#include <string>
+#include "threads/CriticalSection.h"
+
 #include <cinttypes>
 #include <set>
-
-#include "threads/CriticalSection.h"
+#include <string>
 
 class TiXmlNode;
 class CDVDStreamInfo;

@@ -6,8 +6,9 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include "guilib/Texture.h"
 #include "WinSystemOSXGL.h"
+
+#include "guilib/Texture.h"
 #include "rendering/gl/RenderSystemGL.h"
 
 

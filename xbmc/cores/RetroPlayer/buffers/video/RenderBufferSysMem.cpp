@@ -7,6 +7,7 @@
  */
 
 #include "RenderBufferSysMem.h"
+
 #include "cores/RetroPlayer/rendering/RenderTranslator.h"
 
 using namespace KODI;

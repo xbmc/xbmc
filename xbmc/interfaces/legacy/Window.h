@@ -8,14 +8,13 @@
 
 #pragma once
 
+#include "AddonCallback.h"
+#include "AddonString.h"
+#include "Control.h"
+#include "swighelper.h"
+
 #include <limits.h>
 #include <vector>
-
-#include "AddonCallback.h"
-#include "Control.h"
-#include "AddonString.h"
-
-#include "swighelper.h"
 
 namespace XBMCAddon
 {

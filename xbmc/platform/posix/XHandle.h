@@ -8,14 +8,15 @@
 
 #pragma once
 
+#include "XHandlePublic.h"
+#include "threads/Condition.h"
+#include "threads/CriticalSection.h"
+
 #include <list>
 #include <string>
 #include <vector>
 
 #include "PlatformDefs.h"
-#include "XHandlePublic.h"
-#include "threads/Condition.h"
-#include "threads/CriticalSection.h"
 
 struct CXHandle {
 

@@ -8,18 +8,18 @@
 
 #include "RBP.h"
 
-#include <assert.h>
 #include "ServiceBroker.h"
+#include "cores/omxplayer/OMXImage.h"
+#include "rpi/rpi_user_vcsm.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
+#include "utils/TimeUtils.h"
 #include "utils/log.h"
 
-#include "cores/omxplayer/OMXImage.h"
-#include <interface/mmal/mmal.h>
+#include <assert.h>
 
+#include <interface/mmal/mmal.h>
 #include <sys/ioctl.h>
-#include "rpi/rpi_user_vcsm.h"
-#include "utils/TimeUtils.h"
 
 #define MAJOR_NUM 100
 #define IOCTL_MBOX_PROPERTY _IOWR(MAJOR_NUM, 0, char *)

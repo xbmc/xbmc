@@ -7,9 +7,10 @@
  */
 
 #include "PeripheralImon.h"
-#include "utils/log.h"
-#include "settings/Settings.h"
+
 #include "input/InputManager.h"
+#include "settings/Settings.h"
+#include "utils/log.h"
 
 using namespace PERIPHERALS;
 

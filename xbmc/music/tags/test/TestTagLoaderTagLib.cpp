@@ -6,17 +6,18 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include "gtest/gtest.h"
-#include "music/tags/TagLoaderTagLib.h"
 #include "music/tags/MusicInfoTag.h"
-#include <taglib/tpropertymap.h>
+#include "music/tags/TagLoaderTagLib.h"
+
+#include <gtest/gtest.h>
+#include <taglib/apetag.h>
+#include <taglib/asftag.h>
+#include <taglib/id3v1genres.h>
 #include <taglib/id3v1tag.h>
 #include <taglib/id3v2tag.h>
-#include <taglib/apetag.h>
-#include <taglib/xiphcomment.h>
-#include <taglib/id3v1genres.h>
-#include <taglib/asftag.h>
 #include <taglib/mp4tag.h>
+#include <taglib/tpropertymap.h>
+#include <taglib/xiphcomment.h>
 
 using namespace TagLib;
 using namespace MUSIC_INFO;

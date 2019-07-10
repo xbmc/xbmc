@@ -6,8 +6,9 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include "Application.h"
 #include "GUIDialogBoxBase.h"
+
+#include "Application.h"
 #include "guilib/LocalizeStrings.h"
 #include "threads/SingleLock.h"
 #include "utils/StringUtils.h"

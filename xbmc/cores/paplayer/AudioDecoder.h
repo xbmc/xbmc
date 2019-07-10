@@ -9,9 +9,9 @@
 #pragma once
 
 #include "ICodec.h"
+#include "cores/AudioEngine/Utils/AEChannelInfo.h"
 #include "threads/CriticalSection.h"
 #include "utils/RingBuffer.h"
-#include "cores/AudioEngine/Utils/AEChannelInfo.h"
 
 class CFileItem;
 

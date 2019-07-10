@@ -7,10 +7,11 @@
  */
 
 #include "InputHandling.h"
-#include "input/joysticks/dialogs/GUIDialogNewJoystick.h"
-#include "input/joysticks/interfaces/IButtonMap.h"
+
 #include "input/joysticks/DriverPrimitive.h"
 #include "input/joysticks/JoystickUtils.h"
+#include "input/joysticks/dialogs/GUIDialogNewJoystick.h"
+#include "input/joysticks/interfaces/IButtonMap.h"
 #include "utils/log.h"
 
 #include <array>

@@ -8,10 +8,10 @@
 
 #pragma once
 
+#include "input/joysticks/JoystickTypes.h"
 #include "input/joysticks/interfaces/IButtonSequence.h"
 #include "input/joysticks/interfaces/IInputHandler.h"
 #include "input/joysticks/interfaces/IKeymapHandler.h"
-#include "input/joysticks/JoystickTypes.h"
 
 #include <map>
 #include <memory>

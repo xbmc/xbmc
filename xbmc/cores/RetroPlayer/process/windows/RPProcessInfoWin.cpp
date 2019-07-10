@@ -7,6 +7,7 @@
  */
 
 #include "RPProcessInfoWin.h"
+
 #include "cores/RetroPlayer/rendering/VideoRenderers/RPWinRenderer.h"
 
 using namespace KODI;

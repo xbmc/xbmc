@@ -7,6 +7,7 @@
  */
 
 #include "GUIImage.h"
+
 #include "GUIMessage.h"
 #include "utils/log.h"
 

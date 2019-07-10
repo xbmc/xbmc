@@ -8,9 +8,9 @@
 
 #pragma once
 
-#include <set>
-
 #include "music/jobs/MusicLibraryProgressJob.h"
+
+#include <set>
 
 /*!
  \brief Music library job implementation for cleaning the video library.

@@ -9,7 +9,6 @@
 #pragma once
 
 #include "cores/VideoPlayer/Interface/StreamInfo.h"
-
 #include "guilib/guiinfo/IGUIInfoProvider.h"
 
 namespace KODI

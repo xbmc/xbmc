@@ -8,11 +8,11 @@
 
 #pragma once
 
+#include <time.h>
+
+#include <sys/resource.h>
 #include <sys/time.h>
 #include <sys/times.h>
-#include <sys/resource.h>
-
-#include <time.h>
 
 class CPosixResourceCounter
 {

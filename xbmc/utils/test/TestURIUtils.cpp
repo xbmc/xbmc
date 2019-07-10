@@ -6,16 +6,16 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include <utility>
-
-#include "gtest/gtest.h"
-
-#include "filesystem/MultiPathDirectory.h"
 #include "ServiceBroker.h"
+#include "URL.h"
+#include "filesystem/MultiPathDirectory.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
-#include "URL.h"
 #include "utils/URIUtils.h"
+
+#include <utility>
+
+#include <gtest/gtest.h>
 
 using namespace XFILE;
 

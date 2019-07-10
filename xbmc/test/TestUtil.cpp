@@ -8,7 +8,7 @@
 
 #include "Util.h"
 
-#include "gtest/gtest.h"
+#include <gtest/gtest.h>
 
 TEST(TestUtil, GetQualifiedFilename)
 {

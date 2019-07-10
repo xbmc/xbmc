@@ -7,15 +7,15 @@
  */
 
 #include "FileBrowser.h"
-#include "addons/kodi-addon-dev-kit/include/kodi/gui/dialogs/FileBrowser.h"
 
 #include "URL.h"
 #include "addons/binary-addons/AddonDll.h"
+#include "addons/kodi-addon-dev-kit/include/kodi/gui/dialogs/FileBrowser.h"
 #include "dialogs/GUIDialogFileBrowser.h"
 #include "settings/MediaSourceSettings.h"
 #include "storage/MediaManager.h"
-#include "utils/log.h"
 #include "utils/URIUtils.h"
+#include "utils/log.h"
 
 extern "C"
 {

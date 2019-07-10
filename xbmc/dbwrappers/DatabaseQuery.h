@@ -8,10 +8,10 @@
 
 #pragma once
 
+#include <memory>
 #include <set>
 #include <string>
 #include <vector>
-#include <memory>
 
 #define DATABASEQUERY_RULE_VALUE_SEPARATOR  " / "
 

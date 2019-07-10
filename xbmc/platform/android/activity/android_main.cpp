@@ -6,29 +6,29 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include <stdlib.h>
-#include <errno.h>
-
-#include <android_native_app_glue.h>
-
-#include <androidjni/SurfaceTexture.h>
-
 #include "CompileInfo.h"
 #include "EventLoop.h"
+#include "XBMCApp.h"
+#include "utils/StringUtils.h"
+
 #include "platform/android/activity/JNIMainActivity.h"
-#include "platform/android/activity/JNIXBMCMainView.h"
-#include "platform/android/activity/JNIXBMCVideoView.h"
 #include "platform/android/activity/JNIXBMCAudioManagerOnAudioFocusChangeListener.h"
-#include "platform/android/activity/JNIXBMCSurfaceTextureOnFrameAvailableListener.h"
-#include "platform/android/activity/JNIXBMCNsdManagerDiscoveryListener.h"
+#include "platform/android/activity/JNIXBMCDisplayManagerDisplayListener.h"
+#include "platform/android/activity/JNIXBMCFile.h"
+#include "platform/android/activity/JNIXBMCJsonHandler.h"
+#include "platform/android/activity/JNIXBMCMainView.h"
 #include "platform/android/activity/JNIXBMCMediaSession.h"
+#include "platform/android/activity/JNIXBMCNsdManagerDiscoveryListener.h"
 #include "platform/android/activity/JNIXBMCNsdManagerRegistrationListener.h"
 #include "platform/android/activity/JNIXBMCNsdManagerResolveListener.h"
-#include "platform/android/activity/JNIXBMCJsonHandler.h"
-#include "platform/android/activity/JNIXBMCFile.h"
-#include "platform/android/activity/JNIXBMCDisplayManagerDisplayListener.h"
-#include "utils/StringUtils.h"
-#include "XBMCApp.h"
+#include "platform/android/activity/JNIXBMCSurfaceTextureOnFrameAvailableListener.h"
+#include "platform/android/activity/JNIXBMCVideoView.h"
+
+#include <errno.h>
+#include <stdlib.h>
+
+#include <android_native_app_glue.h>
+#include <androidjni/SurfaceTexture.h>
 
 
 // redirect stdout / stderr to logcat

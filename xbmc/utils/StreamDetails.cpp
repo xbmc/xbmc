@@ -6,14 +6,16 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include <math.h>
 #include "StreamDetails.h"
-#include "StreamUtils.h"
-#include "utils/Variant.h"
+
 #include "LangInfo.h"
-#include "utils/LangCodeExpander.h"
-#include "utils/Archive.h"
+#include "StreamUtils.h"
 #include "cores/VideoPlayer/Interface/StreamInfo.h"
+#include "utils/Archive.h"
+#include "utils/LangCodeExpander.h"
+#include "utils/Variant.h"
+
+#include <math.h>
 
 const float VIDEOASPECT_EPSILON = 0.025f;
 

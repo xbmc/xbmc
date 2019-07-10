@@ -8,8 +8,8 @@
 
 #pragma once
 
-#include "utils/CharsetConverter.h" // Required to initialize converters before usage
 #include "rendering/dx/DeviceResources.h"
+#include "utils/CharsetConverter.h" // Required to initialize converters before usage
 
 struct XBMC_keysym;
 

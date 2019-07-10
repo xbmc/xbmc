@@ -7,23 +7,24 @@
  */
 
 #include "GUIBaseContainer.h"
+
+#include "FileItem.h"
+#include "GUIInfoManager.h"
 #include "GUIListItemLayout.h"
 #include "GUIMessage.h"
 #include "ServiceBroker.h"
-#include "utils/CharsetConverter.h"
-#include "GUIInfoManager.h"
-#include "utils/TimeUtils.h"
-#include "utils/log.h"
-#include "utils/SortUtils.h"
-#include "utils/StringUtils.h"
-#include "FileItem.h"
+#include "guilib/guiinfo/GUIInfoLabels.h"
 #include "input/Key.h"
-#include "utils/MathUtils.h"
-#include "utils/XBMCTinyXML.h"
 #include "listproviders/IListProvider.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
-#include "guilib/guiinfo/GUIInfoLabels.h"
+#include "utils/CharsetConverter.h"
+#include "utils/MathUtils.h"
+#include "utils/SortUtils.h"
+#include "utils/StringUtils.h"
+#include "utils/TimeUtils.h"
+#include "utils/XBMCTinyXML.h"
+#include "utils/log.h"
 
 #define HOLD_TIME_START 100
 #define HOLD_TIME_END   3000

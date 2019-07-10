@@ -9,6 +9,7 @@
 #pragma once
 
 #include "FileItem.h"
+
 #include <memory>
 #include <string>
 #include <vector>

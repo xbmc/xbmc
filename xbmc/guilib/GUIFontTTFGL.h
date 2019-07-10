@@ -8,10 +8,11 @@
 
 #pragma once
 
+#include "GUIFontTTF.h"
+
 #include <string>
 #include <vector>
 
-#include "GUIFontTTF.h"
 #include "system_gl.h"
 
 class CGUIFontTTFGL : public CGUIFontTTFBase

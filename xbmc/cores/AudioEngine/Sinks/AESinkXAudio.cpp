@@ -7,25 +7,28 @@
  */
 
 #include "AESinkXAudio.h"
+
 #include "ServiceBroker.h"
 #include "cores/AudioEngine/AESinkFactory.h"
 #include "cores/AudioEngine/Sinks/windows/AESinkFactoryWin.h"
 #include "cores/AudioEngine/Utils/AEDeviceInfo.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
-#include "platform/win32/CharsetConverter.h"
-#include "platform/win10/AsyncHelpers.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
-#include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/TimeUtils.h"
+#include "utils/log.h"
+
+#include "platform/win10/AsyncHelpers.h"
+#include "platform/win32/CharsetConverter.h"
 
 #include <algorithm>
+#include <stdint.h>
+
 #include <ksmedia.h>
 #include <mfapi.h>
 #include <mmdeviceapi.h>
 #include <mmreg.h>
-#include <stdint.h>
 #include <wrl/implements.h>
 
 using namespace Microsoft::WRL;

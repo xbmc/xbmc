@@ -29,7 +29,7 @@
 #include "cores/DataCacheCore.h"
 #if defined(TARGET_WINDOWS)
   #include "utils/CharsetConverter.h"
-  #include "Windows.h"
+  #include <Windows.h>
 #endif
 #if defined(TARGET_ANDROID)
   #include "platform/android/activity/XBMCApp.h"

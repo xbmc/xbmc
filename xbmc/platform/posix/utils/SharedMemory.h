@@ -8,10 +8,10 @@
 
 #pragma once
 
-#include <memory>
-
 #include "FileHandle.h"
 #include "Mmap.h"
+
+#include <memory>
 
 namespace KODI
 {

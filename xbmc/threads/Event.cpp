@@ -8,10 +8,10 @@
  *  See LICENSES/README.md for more information.
  */
 
+#include "Event.h"
+
 #include <algorithm>
 #include <limits>
-
-#include "Event.h"
 
 void CEvent::addGroup(XbmcThreads::CEventGroup* group)
 {

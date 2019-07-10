@@ -8,8 +8,8 @@
 
 #pragma once
 
-#include "SettingsLock.h"
 #include "LockType.h"
+#include "SettingsLock.h"
 
 #include <string>
 #include <vector>

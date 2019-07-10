@@ -7,6 +7,7 @@
  */
 
 #include "BaseRenderBuffer.h"
+
 #include "IRenderBufferPool.h"
 
 using namespace KODI;

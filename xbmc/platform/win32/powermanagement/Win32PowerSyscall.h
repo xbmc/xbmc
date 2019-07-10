@@ -12,6 +12,7 @@
 #include "powermanagement/PowerTypes.h"
 #include "threads/Event.h"
 #include "threads/Thread.h"
+
 #include <atomic>
 
 class CWin32PowerStateWorker : public CThread

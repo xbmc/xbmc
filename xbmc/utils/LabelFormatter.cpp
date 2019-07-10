@@ -6,25 +6,25 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include <cstdlib>
-
 #include "LabelFormatter.h"
+
+#include "FileItem.h"
+#include "RegExp.h"
 #include "ServiceBroker.h"
+#include "StringUtils.h"
+#include "URIUtils.h"
+#include "Util.h"
+#include "Variant.h"
+#include "guilib/LocalizeStrings.h"
+#include "music/tags/MusicInfoTag.h"
+#include "pictures/PictureInfoTag.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
-#include "RegExp.h"
-#include "Util.h"
 #include "video/VideoInfoTag.h"
-#include "music/tags/MusicInfoTag.h"
-#include "pictures/PictureInfoTag.h"
-#include "FileItem.h"
-#include "StringUtils.h"
-#include "URIUtils.h"
-#include "guilib/LocalizeStrings.h"
-#include "Variant.h"
 
 #include <cassert>
+#include <cstdlib>
 
 using namespace MUSIC_INFO;
 

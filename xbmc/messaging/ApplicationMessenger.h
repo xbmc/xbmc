@@ -9,8 +9,8 @@
 #pragma once
 
 #include "guilib/WindowIDs.h"
-#include "threads/Thread.h"
 #include "messaging/ThreadMessage.h"
+#include "threads/Thread.h"
 
 #include <map>
 #include <memory>

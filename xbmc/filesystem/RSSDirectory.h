@@ -8,8 +8,8 @@
 
 #pragma once
 
-#include "IFileDirectory.h"
 #include "FileItem.h"
+#include "IFileDirectory.h"
 
 namespace XFILE
 {

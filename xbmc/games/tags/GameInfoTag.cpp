@@ -7,6 +7,7 @@
  */
 
 #include "GameInfoTag.h"
+
 #include "utils/Archive.h"
 #include "utils/Variant.h"
 

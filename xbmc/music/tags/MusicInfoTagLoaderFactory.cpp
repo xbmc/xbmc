@@ -7,18 +7,18 @@
  */
 
 #include "MusicInfoTagLoaderFactory.h"
-#include "TagLoaderTagLib.h"
+
+#include "FileItem.h"
 #include "MusicInfoTagLoaderCDDA.h"
-#include "MusicInfoTagLoaderShn.h"
 #include "MusicInfoTagLoaderDatabase.h"
 #include "MusicInfoTagLoaderFFmpeg.h"
+#include "MusicInfoTagLoaderShn.h"
+#include "ServiceBroker.h"
+#include "TagLoaderTagLib.h"
+#include "addons/AudioDecoder.h"
+#include "addons/binary-addons/BinaryAddonBase.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
-#include "FileItem.h"
-#include "ServiceBroker.h"
-
-#include "addons/binary-addons/BinaryAddonBase.h"
-#include "addons/AudioDecoder.h"
 
 using namespace ADDON;
 

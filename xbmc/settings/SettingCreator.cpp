@@ -7,6 +7,7 @@
  */
 
 #include "SettingCreator.h"
+
 #include "settings/SettingAddon.h"
 #include "settings/SettingDateTime.h"
 #include "settings/SettingPath.h"

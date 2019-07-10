@@ -13,8 +13,8 @@
 #include "interfaces/json-rpc/JSONServiceDescription.h"
 #include "interfaces/json-rpc/JSONUtils.h"
 
-#include <androidjni/jutils-details.hpp>
 #include <androidjni/Context.h>
+#include <androidjni/jutils-details.hpp>
 
 using namespace jni;
 

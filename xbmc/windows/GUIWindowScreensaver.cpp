@@ -7,8 +7,9 @@
  */
 
 #include "GUIWindowScreensaver.h"
-#include "GUIPassword.h"
+
 #include "Application.h"
+#include "GUIPassword.h"
 #include "GUIUserMessages.h"
 #include "ServiceBroker.h"
 #include "addons/ScreenSaver.h"

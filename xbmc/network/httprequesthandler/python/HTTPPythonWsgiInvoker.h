@@ -8,12 +8,12 @@
 
 #pragma once
 
-#include <map>
-#include <string>
-
 #include "interfaces/python/PythonInvoker.h"
 #include "network/httprequesthandler/python/HTTPPythonInvoker.h"
 #include "network/httprequesthandler/python/HTTPPythonRequest.h"
+
+#include <map>
+#include <string>
 
 namespace XBMCAddon
 {

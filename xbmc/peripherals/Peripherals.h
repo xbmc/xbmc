@@ -8,9 +8,6 @@
 
 #pragma once
 
-#include <memory>
-#include <vector>
-
 #include "IEventScannerCallback.h"
 #include "bus/PeripheralBus.h"
 #include "devices/Peripheral.h"
@@ -20,6 +17,9 @@
 #include "threads/CriticalSection.h"
 #include "threads/Thread.h"
 #include "utils/Observer.h"
+
+#include <memory>
+#include <vector>
 
 class CFileItemList;
 class CInputManager;

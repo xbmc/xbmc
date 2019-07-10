@@ -7,21 +7,22 @@
  */
 
 #include "ContextMenuManager.h"
+
 #include "ContextMenuItem.h"
+#include "ContextMenus.h"
+#include "ServiceBroker.h"
 #include "addons/Addon.h"
 #include "addons/ContextMenuAddon.h"
 #include "addons/ContextMenus.h"
 #include "addons/IAddon.h"
+#include "dialogs/GUIDialogContextMenu.h"
 #include "favourites/ContextMenus.h"
 #include "music/ContextMenus.h"
 #include "pvr/PVRContextMenus.h"
-#include "video/ContextMenus.h"
 #include "utils/log.h"
-#include "ServiceBroker.h"
+#include "video/ContextMenus.h"
 
 #include <iterator>
-#include "ContextMenus.h"
-#include "dialogs/GUIDialogContextMenu.h"
 
 using namespace ADDON;
 using namespace PVR;

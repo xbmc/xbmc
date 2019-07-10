@@ -6,15 +6,16 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include <string>
-
 #include "WebSocketManager.h"
+
 #include "WebSocket.h"
-#include "WebSocketV8.h"
 #include "WebSocketV13.h"
+#include "WebSocketV8.h"
 #include "utils/HttpParser.h"
 #include "utils/HttpResponse.h"
 #include "utils/log.h"
+
+#include <string>
 
 #define WS_HTTP_METHOD          "GET"
 #define WS_HTTP_TAG             "HTTP/"

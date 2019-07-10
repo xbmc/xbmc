@@ -8,8 +8,8 @@
 
 #pragma once
 
-#include "addons/AddonInfo.h"
 #include "addons/AddonEvents.h"
+#include "addons/AddonInfo.h"
 #include "settings/AdvancedSettings.h"
 
 namespace ADDON

@@ -6,22 +6,23 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include "PlatformDefs.h"
 #include "ZeroconfAvahi.h"
 
-#include <string>
+#include "utils/log.h"
+
+#include <cassert>
 #include <iostream>
 #include <sstream>
-#include <cassert>
+#include <string>
+
 #include <avahi-client/client.h>
-#include <avahi-common/thread-watch.h>
 #include <avahi-common/alternative.h>
 #include <avahi-common/error.h>
 #include <avahi-common/malloc.h>
-
+#include <avahi-common/thread-watch.h>
 #include <unistd.h> //gethostname
 
-#include <utils/log.h>
+#include "PlatformDefs.h"
 
 ///helper RAII-struct to block event loop for modifications
 struct ScopedEventLoopBlock

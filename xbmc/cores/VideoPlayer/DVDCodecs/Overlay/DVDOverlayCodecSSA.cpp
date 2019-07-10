@@ -7,15 +7,16 @@
  */
 
 #include "DVDOverlayCodecSSA.h"
-#include <memory>
 
+#include "DVDCodecs/DVDCodecs.h"
 #include "DVDOverlaySSA.h"
 #include "DVDStreamInfo.h"
-#include "DVDCodecs/DVDCodecs.h"
-#include "cores/VideoPlayer/Interface/Addon/TimingConstants.h"
-#include "cores/VideoPlayer/Interface/Addon/DemuxPacket.h"
 #include "Util.h"
+#include "cores/VideoPlayer/Interface/Addon/DemuxPacket.h"
+#include "cores/VideoPlayer/Interface/Addon/TimingConstants.h"
 #include "utils/StringUtils.h"
+
+#include <memory>
 
 
 CDVDOverlayCodecSSA::CDVDOverlayCodecSSA() : CDVDOverlayCodec("SSA Subtitle Decoder")

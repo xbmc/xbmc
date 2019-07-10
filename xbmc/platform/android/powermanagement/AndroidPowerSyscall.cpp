@@ -7,6 +7,7 @@
  */
 
 #include "AndroidPowerSyscall.h"
+
 #include "platform/android/activity/XBMCApp.h"
 
 IPowerSyscall* CAndroidPowerSyscall::CreateInstance()

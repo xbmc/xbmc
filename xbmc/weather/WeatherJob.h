@@ -8,10 +8,10 @@
 
 #pragma once
 
-#include <string>
-#include <map>
-
 #include "WeatherManager.h"
+
+#include <map>
+#include <string>
 
 class CWeatherJob : public CJob
 {

@@ -8,7 +8,7 @@
 
 #include "utils/LangCodeExpander.h"
 
-#include "gtest/gtest.h"
+#include <gtest/gtest.h>
 
 TEST(TestLangCodeExpander, ConvertISO6391ToISO6392B)
 {

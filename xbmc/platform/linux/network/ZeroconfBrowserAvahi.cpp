@@ -8,14 +8,15 @@
 
 #include "ZeroconfBrowserAvahi.h"
 
-#include <utils/log.h>
-#include "guilib/GUIComponent.h"
-#include "guilib/GUIWindowManager.h"
-#include "guilib/GUIMessage.h"
-#include "ServiceBroker.h"
 #include "GUIUserMessages.h"
-#include <avahi-common/malloc.h>
+#include "ServiceBroker.h"
+#include "guilib/GUIComponent.h"
+#include "guilib/GUIMessage.h"
+#include "guilib/GUIWindowManager.h"
+#include "utils/log.h"
+
 #include <avahi-common/error.h>
+#include <avahi-common/malloc.h>
 namespace
 {
 ///helper RAII-struct to block event loop for modifications

@@ -7,6 +7,7 @@
  */
 
 #include "OffScreenModeSetting.h"
+
 #include "utils/log.h"
 
 using namespace KODI::WINDOWING::GBM;

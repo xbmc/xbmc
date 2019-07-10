@@ -8,10 +8,10 @@
 
 #pragma once
 
-#include <string>
-
 #include "FileItem.h"
 #include "video/jobs/VideoLibraryProgressJob.h"
+
+#include <string>
 
 /*!
  \brief Video library job implementation for refreshing a single item.

@@ -8,13 +8,13 @@
 
 #pragma once
 
+#include "utils/Job.h"
+
 #include <atomic>
 #include <map>
 #include <string>
 #include <utility>
 #include <vector>
-
-#include "utils/Job.h"
 
 class CCriticalSection;
 /// this class provides support for zeroconf

@@ -7,20 +7,23 @@
  */
 
 #include "WinVideoFilter.h"
+
 #include "ConvolutionKernels.h"
+#include "Util.h"
+#include "VideoRenderers/windows/RendererBase.h"
 #include "cores/VideoPlayer/VideoRenderers/VideoShaders/dither.h"
 #include "filesystem/File.h"
-#include "windowing/GraphicContext.h"
-#include "platform/win32/WIN32Util.h"
-#include "rendering/dx/RenderContext.h"
 #include "rendering/dx/DeviceResources.h"
-#include "Util.h"
-#include "utils/log.h"
+#include "rendering/dx/RenderContext.h"
 #include "utils/MemUtils.h"
-#include "VideoRenderers/windows/RendererBase.h"
+#include "utils/log.h"
+#include "windowing/GraphicContext.h"
+
+#include "platform/win32/WIN32Util.h"
+
+#include <map>
 
 #include <DirectXPackedVector.h>
-#include <map>
 
 using namespace DirectX::PackedVector;
 using namespace Microsoft::WRL;

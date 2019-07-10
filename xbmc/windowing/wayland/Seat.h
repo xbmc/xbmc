@@ -8,12 +8,12 @@
 
 #pragma once
 
+#include "SeatSelection.h"
+
 #include <cstdint>
 #include <set>
 
 #include <wayland-client-protocol.hpp>
-
-#include "SeatSelection.h"
 
 namespace KODI
 {

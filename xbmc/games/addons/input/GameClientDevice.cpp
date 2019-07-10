@@ -6,14 +6,15 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include "GameClientPort.h"
 #include "GameClientDevice.h"
+
+#include "GameClientPort.h"
+#include "ServiceBroker.h"
 #include "addons/kodi-addon-dev-kit/include/kodi/kodi_game_types.h"
+#include "games/GameServices.h"
 #include "games/controllers/Controller.h"
 #include "games/controllers/ControllerTopology.h"
-#include "games/GameServices.h"
 #include "utils/StringUtils.h"
-#include "ServiceBroker.h"
 
 #include <algorithm>
 

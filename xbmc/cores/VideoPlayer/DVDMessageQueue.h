@@ -9,12 +9,13 @@
 #pragma once
 
 #include "DVDMessage.h"
-#include <atomic>
-#include <string>
-#include <list>
-#include <algorithm>
 #include "threads/CriticalSection.h"
 #include "threads/Event.h"
+
+#include <algorithm>
+#include <atomic>
+#include <list>
+#include <string>
 
 struct DVDMessageListItem
 {

@@ -7,9 +7,10 @@
  */
 
 #include "WsgiErrorStream.h"
+
 #include "network/httprequesthandler/python/HTTPPythonRequest.h"
-#include "utils/log.h"
 #include "utils/StringUtils.h"
+#include "utils/log.h"
 
 namespace XBMCAddon
 {

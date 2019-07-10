@@ -8,7 +8,7 @@
 
 #include "addons/AddonVersion.h"
 
-#include "gtest/gtest.h"
+#include <gtest/gtest.h>
 
 using namespace ADDON;
 

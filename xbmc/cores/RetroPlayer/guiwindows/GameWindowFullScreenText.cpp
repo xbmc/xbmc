@@ -7,9 +7,10 @@
  */
 
 #include "GameWindowFullScreenText.h"
-#include "video/windows/GUIWindowFullScreenDefines.h"
+
 #include "guilib/GUIMessage.h"
 #include "guilib/GUIWindow.h"
+#include "video/windows/GUIWindowFullScreenDefines.h"
 
 using namespace KODI;
 using namespace RETRO;

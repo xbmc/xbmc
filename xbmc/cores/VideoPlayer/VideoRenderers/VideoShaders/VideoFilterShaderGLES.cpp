@@ -7,15 +7,16 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include <string>
-#include <math.h>
-
 #include "VideoFilterShaderGLES.h"
-#include "ServiceBroker.h"
-#include "utils/log.h"
-#include "utils/GLUtils.h"
+
 #include "ConvolutionKernels.h"
+#include "ServiceBroker.h"
 #include "rendering/gles/RenderSystemGLES.h"
+#include "utils/GLUtils.h"
+#include "utils/log.h"
+
+#include <math.h>
+#include <string>
 
 using namespace Shaders;
 

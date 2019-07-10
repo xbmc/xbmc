@@ -10,6 +10,7 @@
 
 #include "guilib/GUIDialog.h"
 #include "guilib/GUIKeyboard.h"
+
 #include <atomic>
 #include <memory>
 

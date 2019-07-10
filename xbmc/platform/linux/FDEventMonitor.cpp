@@ -6,13 +6,14 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include <poll.h>
-#include <sys/eventfd.h>
-#include <errno.h>
+#include "FDEventMonitor.h"
 
 #include "utils/log.h"
 
-#include "FDEventMonitor.h"
+#include <errno.h>
+
+#include <poll.h>
+#include <sys/eventfd.h>
 
 CFDEventMonitor::CFDEventMonitor() :
   CThread("FDEventMonitor")

@@ -8,13 +8,13 @@
 
 #pragma once
 
-#include <vector>
-#include <string>
-#include <memory>
-
 #include "IPlayerCallback.h"
-#include "VideoSettings.h"
 #include "Interface/StreamInfo.h"
+#include "VideoSettings.h"
+
+#include <memory>
+#include <string>
+#include <vector>
 
 #define CURRENT_STREAM -1
 #define CAPTUREFLAG_CONTINUOUS  0x01 //after a render is done, render a new one immediately

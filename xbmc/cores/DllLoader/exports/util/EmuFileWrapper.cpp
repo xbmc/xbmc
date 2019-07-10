@@ -7,6 +7,7 @@
  */
 
 #include "EmuFileWrapper.h"
+
 #include "filesystem/File.h"
 #include "threads/SingleLock.h"
 

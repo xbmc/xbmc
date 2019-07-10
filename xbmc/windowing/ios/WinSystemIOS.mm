@@ -6,41 +6,42 @@
  *  See LICENSES/README.md for more information.
  */
 
+#include "WinSystemIOS.h"
+
 #include "VideoSyncIos.h"
 #include "WinEventsIOS.h"
-#include "WinSystemIOS.h"
 #include "cores/AudioEngine/Sinks/AESinkDARWINIOS.h"
 #include "cores/RetroPlayer/process/ios/RPProcessInfoIOS.h"
 #include "cores/RetroPlayer/rendering/VideoRenderers/RPRendererOpenGLES.h"
 #include "cores/VideoPlayer/DVDCodecs/DVDFactoryCodec.h"
 #include "cores/VideoPlayer/DVDCodecs/Video/VTB.h"
 #include "cores/VideoPlayer/Process/ios/ProcessInfoIOS.h"
-#include "cores/VideoPlayer/VideoRenderers/RenderFactory.h"
-#include "cores/VideoPlayer/VideoRenderers/LinuxRendererGLES.h"
 #include "cores/VideoPlayer/VideoRenderers/HwDecRender/RendererVTBGLES.h"
-#include "rendering/gles/ScreenshotSurfaceGLES.h"
-#include "utils/log.h"
+#include "cores/VideoPlayer/VideoRenderers/LinuxRendererGLES.h"
+#include "cores/VideoPlayer/VideoRenderers/RenderFactory.h"
 #include "filesystem/SpecialProtocol.h"
-#include "settings/DisplaySettings.h"
-#include "windowing/GraphicContext.h"
-#include "messaging/ApplicationMessenger.h"
-#include "guilib/Texture.h"
-#include "utils/StringUtils.h"
 #include "guilib/DispResource.h"
+#include "guilib/Texture.h"
+#include "messaging/ApplicationMessenger.h"
+#include "rendering/gles/ScreenshotSurfaceGLES.h"
+#include "settings/DisplaySettings.h"
+#include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "threads/SingleLock.h"
-#include "VideoSyncIos.h"
+#include "utils/StringUtils.h"
+#include "utils/log.h"
+#include "windowing/GraphicContext.h"
+
+#include "platform/darwin/DarwinUtils.h"
+#import "platform/darwin/ios/IOSScreenManager.h"
+#import "platform/darwin/ios/XBMCController.h"
+
 #include <vector>
 
 #import <Foundation/Foundation.h>
 #import <OpenGLES/ES2/gl.h>
 #import <OpenGLES/ES2/glext.h>
 #import <QuartzCore/CADisplayLink.h>
-
-#import "platform/darwin/ios/XBMCController.h"
-#import "platform/darwin/ios/IOSScreenManager.h"
-#include "platform/darwin/DarwinUtils.h"
-#include "settings/Settings.h"
-#include "settings/SettingsComponent.h"
 #import <dlfcn.h>
 
 #define CONST_TOUCHSCREEN "Touchscreen"

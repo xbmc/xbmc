@@ -8,7 +8,7 @@
 
 #include "utils/StreamUtils.h"
 
-#include "gtest/gtest.h"
+#include <gtest/gtest.h>
 
 TEST(TestStreamUtils, General)
 {

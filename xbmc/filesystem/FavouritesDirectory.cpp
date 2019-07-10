@@ -7,11 +7,12 @@
  */
 
 #include "FavouritesDirectory.h"
-#include "favourites/FavouritesService.h"
-#include "File.h"
+
 #include "Directory.h"
-#include "profiles/ProfileManager.h"
+#include "File.h"
 #include "ServiceBroker.h"
+#include "favourites/FavouritesService.h"
+#include "profiles/ProfileManager.h"
 #include "utils/URIUtils.h"
 
 namespace XFILE

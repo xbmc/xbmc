@@ -8,7 +8,7 @@
 
 #include "utils/MathUtils.h"
 
-#include "gtest/gtest.h"
+#include <gtest/gtest.h>
 
 TEST(TestMathUtils, round_int)
 {

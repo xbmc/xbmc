@@ -5,26 +5,25 @@
  *  SPDX-License-Identifier: GPL-2.0-or-later
  *  See LICENSES/README.md for more information.
  */
-#import <unistd.h>
-#import <sys/mount.h>
+#import "CocoaInterface.h"
 
-#include "utils/log.h"
 #include "CompileInfo.h"
+#import "DllPaths_generated.h"
 #include "ServiceBroker.h"
+#include "utils/log.h"
 #include "windowing/osx/WinSystemOSX.h"
 
+#import "platform/darwin/AutoPool.h"
+
+#import <AudioToolbox/AudioToolbox.h>
+#import <AudioUnit/AudioUnit.h>
 #import <Cocoa/Cocoa.h>
-#import <QuartzCore/QuartzCore.h>
+#import <CoreServices/CoreServices.h>
 #import <OpenGL/OpenGL.h>
 #import <OpenGL/gl.h>
-#import <AudioUnit/AudioUnit.h>
-#import <AudioToolbox/AudioToolbox.h>
-#import <CoreServices/CoreServices.h>
-
-#import "CocoaInterface.h"
-#import "DllPaths_generated.h"
-
-#import "platform/darwin/AutoPool.h"
+#import <QuartzCore/QuartzCore.h>
+#import <sys/mount.h>
+#import <unistd.h>
 
 
 //display link for display management

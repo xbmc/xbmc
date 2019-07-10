@@ -6,22 +6,24 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include <android/input.h>
-#include <android/keycodes.h>
-
 #include "PeripheralBusAndroid.h"
+
 #include "AndroidJoystickTranslator.h"
 #include "input/joysticks/JoystickTypes.h"
 #include "peripherals/addons/PeripheralAddonTranslator.h"
 #include "peripherals/devices/PeripheralJoystick.h"
-#include "platform/android/activity/XBMCApp.h"
-#include "androidjni/View.h"
 #include "threads/SingleLock.h"
-#include "utils/log.h"
 #include "utils/StringUtils.h"
+#include "utils/log.h"
+
+#include "platform/android/activity/XBMCApp.h"
 
 #include <algorithm>
 #include <numeric>
+
+#include <android/input.h>
+#include <android/keycodes.h>
+#include <androidjni/View.h>
 
 using namespace KODI;
 using namespace PERIPHERALS;

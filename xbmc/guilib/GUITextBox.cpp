@@ -7,13 +7,14 @@
  */
 
 #include "GUITextBox.h"
+
 #include "GUIInfoManager.h"
 #include "GUIMessage.h"
 #include "guilib/GUIComponent.h"
-#include "utils/XBMCTinyXML.h"
+#include "guilib/guiinfo/GUIInfoLabels.h"
 #include "utils/MathUtils.h"
 #include "utils/StringUtils.h"
-#include "guilib/guiinfo/GUIInfoLabels.h"
+#include "utils/XBMCTinyXML.h"
 
 #include <algorithm>
 

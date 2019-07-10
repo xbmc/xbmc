@@ -7,14 +7,15 @@
  */
 
 #include "RendererBase.h"
+
 #include "DVDCodecs/Video/DVDVideoCodec.h"
 #include "DVDCodecs/Video/DXVA.h"
 #include "Process/VideoBuffer.h"
-#include "rendering/dx/RenderContext.h"
-#include "utils/log.h"
-#include "utils/MemUtils.h"
-#include "VideoRenderers/RenderFlags.h"
 #include "VideoRenderers/BaseRenderer.h"
+#include "VideoRenderers/RenderFlags.h"
+#include "rendering/dx/RenderContext.h"
+#include "utils/MemUtils.h"
+#include "utils/log.h"
 #include "windowing/GraphicContext.h"
 
 using namespace Microsoft::WRL;

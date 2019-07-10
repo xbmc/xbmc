@@ -6,10 +6,12 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include <windows.h>
-#include <process.h>
-#include "platform/win32/WIN32Util.h"
 #include "utils/log.h"
+
+#include "platform/win32/WIN32Util.h"
+
+#include <process.h>
+#include <windows.h>
 
 void CThread::SetThreadInfo()
 {

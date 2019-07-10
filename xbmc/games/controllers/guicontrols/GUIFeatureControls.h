@@ -8,8 +8,8 @@
 
 #pragma once
 
-#include "guilib/GUILabelControl.h"
 #include "guilib/GUIImage.h"
+#include "guilib/GUILabelControl.h"
 
 #include <string>
 

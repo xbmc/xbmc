@@ -6,23 +6,24 @@
  *  See LICENSES/README.md for more information.
  */
 
+#include "PlayListPLS.h"
+
+#include "PlayListFactory.h"
+#include "Util.h"
+#include "filesystem/File.h"
+#include "music/tags/MusicInfoTag.h"
+#include "utils/CharsetConverter.h"
+#include "utils/StringUtils.h"
+#include "utils/URIUtils.h"
+#include "utils/XBMCTinyXML.h"
+#include "utils/XMLUtils.h"
+#include "utils/log.h"
+#include "video/VideoInfoTag.h"
+
 #include <iostream>
 #include <memory>
 #include <string>
 #include <vector>
-
-#include "PlayListPLS.h"
-#include "PlayListFactory.h"
-#include "Util.h"
-#include "utils/StringUtils.h"
-#include "filesystem/File.h"
-#include "video/VideoInfoTag.h"
-#include "music/tags/MusicInfoTag.h"
-#include "utils/CharsetConverter.h"
-#include "utils/log.h"
-#include "utils/URIUtils.h"
-#include "utils/XBMCTinyXML.h"
-#include "utils/XMLUtils.h"
 
 using namespace XFILE;
 using namespace PLAYLIST;

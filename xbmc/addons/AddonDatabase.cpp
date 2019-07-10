@@ -8,20 +8,20 @@
 
 #include "AddonDatabase.h"
 
-#include <algorithm>
-#include <iterator>
-#include <utility>
-
+#include "XBDateTime.h"
 #include "addons/AddonBuilder.h"
 #include "addons/AddonManager.h"
 #include "dbwrappers/dataset.h"
 #include "filesystem/SpecialProtocol.h"
 #include "utils/JSONVariantParser.h"
 #include "utils/JSONVariantWriter.h"
-#include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
-#include "XBDateTime.h"
+#include "utils/log.h"
+
+#include <algorithm>
+#include <iterator>
+#include <utility>
 
 using namespace ADDON;
 

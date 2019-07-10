@@ -8,12 +8,13 @@
 
 #pragma once
 
+#include "TextureDatabase.h"
+#include "threads/Event.h"
+#include "utils/JobManager.h"
+
 #include <set>
 #include <string>
 #include <vector>
-#include "utils/JobManager.h"
-#include "TextureDatabase.h"
-#include "threads/Event.h"
 
 class CURL;
 class CBaseTexture;

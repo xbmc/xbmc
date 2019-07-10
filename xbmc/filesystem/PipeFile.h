@@ -14,12 +14,12 @@
 //
 //////////////////////////////////////////////////////////////////////
 
+#include "IFile.h"
+#include "PipesManager.h"
+#include "threads/CriticalSection.h"
+
 #include <string>
 #include <vector>
-
-#include "IFile.h"
-#include "threads/CriticalSection.h"
-#include "PipesManager.h"
 
 namespace XFILE
 {

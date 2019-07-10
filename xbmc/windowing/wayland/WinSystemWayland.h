@@ -8,30 +8,30 @@
 
 #pragma once
 
-#include <time.h>
+#include "Connection.h"
+#include "Output.h"
+#include "Seat.h"
+#include "SeatInputProcessing.h"
+#include "ShellSurface.h"
+#include "Signals.h"
+#include "WindowDecorationHandler.h"
+#include "threads/CriticalSection.h"
+#include "threads/Event.h"
+#include "utils/ActorProtocol.h"
+#include "windowing/WinSystem.h"
+
+#include "platform/linux/OptionalsReg.h"
 
 #include <atomic>
 #include <ctime>
 #include <list>
 #include <map>
 #include <set>
+#include <time.h>
 
 #include <wayland-client.hpp>
 #include <wayland-cursor.hpp>
 #include <wayland-extra-protocols.hpp>
-
-#include "Connection.h"
-#include "Output.h"
-#include "Seat.h"
-#include "SeatInputProcessing.h"
-#include "Signals.h"
-#include "ShellSurface.h"
-#include "platform/linux/OptionalsReg.h"
-#include "threads/CriticalSection.h"
-#include "threads/Event.h"
-#include "utils/ActorProtocol.h"
-#include "WindowDecorationHandler.h"
-#include "windowing/WinSystem.h"
 
 class IDispResource;
 

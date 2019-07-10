@@ -8,10 +8,11 @@
 
 #pragma once
 
+#include "threads/CriticalSection.h"
+
 #include <atomic>
 #include <map>
 #include <string>
-#include "threads/CriticalSection.h"
 
 class CDatabase;
 class DatabaseSettings;

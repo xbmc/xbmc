@@ -8,9 +8,9 @@
 
 #pragma once
 
-#include "filesystem/IDirectory.h"
-#include "SMBFile.h"
 #include "MediaSource.h"
+#include "SMBFile.h"
+#include "filesystem/IDirectory.h"
 
 namespace XFILE
 {

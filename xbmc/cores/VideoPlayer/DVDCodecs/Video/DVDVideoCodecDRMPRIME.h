@@ -8,10 +8,11 @@
 
 #pragma once
 
-#include <memory>
-#include "cores/VideoPlayer/DVDStreamInfo.h"
 #include "cores/VideoPlayer/DVDCodecs/Video/DVDVideoCodec.h"
+#include "cores/VideoPlayer/DVDStreamInfo.h"
 #include "cores/VideoPlayer/Process/VideoBuffer.h"
+
+#include <memory>
 
 class CDVDVideoCodecDRMPRIME
   : public CDVDVideoCodec

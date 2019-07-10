@@ -7,27 +7,28 @@
  */
 
 #include "PlayerController.h"
+
+#include "Application.h"
 #include "ServiceBroker.h"
+#include "cores/IPlayer.h"
+#include "cores/VideoPlayer/VideoRenderers/OverlayRendererGUI.h"
+#include "dialogs/GUIDialogKaiToast.h"
 #include "dialogs/GUIDialogSelect.h"
 #include "dialogs/GUIDialogSlider.h"
+#include "guilib/GUIComponent.h"
+#include "guilib/GUISliderControl.h"
+#include "guilib/GUIWindowManager.h"
+#include "guilib/LocalizeStrings.h"
+#include "input/Key.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/DisplaySettings.h"
 #include "settings/MediaSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
-#include "cores/IPlayer.h"
-#include "input/Key.h"
-#include "guilib/GUIComponent.h"
-#include "guilib/LocalizeStrings.h"
-#include "guilib/GUISliderControl.h"
-#include "guilib/GUIWindowManager.h"
-#include "dialogs/GUIDialogKaiToast.h"
-#include "video/dialogs/GUIDialogAudioSettings.h"
-#include "cores/VideoPlayer/VideoRenderers/OverlayRendererGUI.h"
-#include "Application.h"
 #include "utils/LangCodeExpander.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
+#include "video/dialogs/GUIDialogAudioSettings.h"
 
 CPlayerController::~CPlayerController() = default;
 

@@ -9,7 +9,6 @@
 #pragma once
 
 #include <androidjni/JNIBase.h>
-
 #include <androidjni/NsdManager.h>
 
 namespace jni

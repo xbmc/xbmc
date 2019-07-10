@@ -8,13 +8,13 @@
 
 #pragma once
 
-#include <set>
-#include <string>
-#include <vector>
-
 #include "InfoScanner.h"
 #include "VideoDatabase.h"
 #include "addons/Scraper.h"
+
+#include <set>
+#include <string>
+#include <vector>
 
 class CRegExp;
 class CFileItem;

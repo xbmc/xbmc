@@ -6,10 +6,10 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include "URL.h"
 #include "TextureDatabase.h"
+#include "URL.h"
 
-#include "gtest/gtest.h"
+#include <gtest/gtest.h>
 
 using ::testing::ValuesIn;
 

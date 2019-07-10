@@ -13,7 +13,7 @@
 #elif defined(TARGET_WINDOWS_STORE)
 #include "windowing/win10/WinSystemWin10DX.h"
 #endif
-#include "xbmc/ServiceBroker.h"
+#include "ServiceBroker.h"
 
 namespace DX
 {

@@ -7,6 +7,7 @@
  */
 
 #include "ControllerTranslator.h"
+
 #include "ControllerDefinitions.h"
 
 using namespace KODI;

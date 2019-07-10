@@ -10,6 +10,7 @@
 
 #include "settings/lib/ISettingCallback.h"
 #include "threads/CriticalSection.h"
+
 #include <atomic>
 #include <memory>
 #include <string>

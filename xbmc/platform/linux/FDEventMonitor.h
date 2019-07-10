@@ -11,9 +11,11 @@
 #include "threads/CriticalSection.h"
 #include "threads/Thread.h"
 #include "utils/GlobalsHandling.h"
+
 #include <map>
-#include <sys/epoll.h>
 #include <vector>
+
+#include <sys/epoll.h>
 
 /**
  * Monitor a file descriptor with callback on poll() events.

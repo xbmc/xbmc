@@ -6,14 +6,15 @@
  */
 
 #include "AudioBookFileDirectory.h"
-#include "filesystem/File.h"
+
 #include "FileItem.h"
-#include "utils/StringUtils.h"
-#include "music/tags/MusicInfoTag.h"
 #include "TextureDatabase.h"
-#include "guilib/LocalizeStrings.h"
 #include "URL.h"
 #include "Util.h"
+#include "filesystem/File.h"
+#include "guilib/LocalizeStrings.h"
+#include "music/tags/MusicInfoTag.h"
+#include "utils/StringUtils.h"
 
 using namespace XFILE;
 

@@ -9,6 +9,7 @@
 #pragma once
 
 #include "threads/CriticalSection.h"
+
 #include <atomic>
 #include <vector>
 

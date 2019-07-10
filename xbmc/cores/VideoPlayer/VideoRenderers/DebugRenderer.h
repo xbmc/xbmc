@@ -9,6 +9,7 @@
 #pragma once
 
 #include "OverlayRenderer.h"
+
 #include <string>
 
 class CDVDOverlayText;

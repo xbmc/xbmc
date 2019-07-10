@@ -9,7 +9,6 @@
 #pragma once
 
 #include "guilib/guiinfo/GUIInfoProvider.h"
-
 #include "utils/Temperature.h"
 
 namespace KODI

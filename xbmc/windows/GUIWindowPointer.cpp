@@ -7,9 +7,10 @@
  */
 
 #include "GUIWindowPointer.h"
-#include "input/mouse/MouseStat.h"
-#include "input/InputManager.h"
+
 #include "ServiceBroker.h"
+#include "input/InputManager.h"
+#include "input/mouse/MouseStat.h"
 #include "windowing/WinSystem.h"
 
 #define ID_POINTER 10

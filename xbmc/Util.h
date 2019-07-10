@@ -8,13 +8,14 @@
 
 #pragma once
 
-#include <climits>
-#include <cmath>
-#include <vector>
-#include <string.h>
-#include <stdint.h>
 #include "MediaSource.h" // Definition of VECSOURCES
 #include "utils/Digest.h"
+
+#include <climits>
+#include <cmath>
+#include <stdint.h>
+#include <string.h>
+#include <vector>
 
 #define ARRAY_SIZE(X)         (sizeof(X)/sizeof((X)[0]))
 

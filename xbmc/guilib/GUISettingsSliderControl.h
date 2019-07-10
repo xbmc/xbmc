@@ -13,8 +13,8 @@
 \brief
 */
 
-#include "GUISliderControl.h"
 #include "GUIButtonControl.h"
+#include "GUISliderControl.h"
 
 /*!
  \ingroup controls

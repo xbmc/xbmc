@@ -6,18 +6,22 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include "PlatformDefs.h"
 #include "NetworkWin32.h"
-#include "platform/win32/WIN32Util.h"
-#include "utils/log.h"
+
 #include "threads/SingleLock.h"
 #include "utils/StringUtils.h"
+#include "utils/log.h"
+
+#include "platform/win32/WIN32Util.h"
 
 #include <errno.h>
-#include <iphlpapi.h>
+
 #include <IcmpAPI.h>
-#include <netinet/in.h>
 #include <Mstcpip.h>
+#include <iphlpapi.h>
+#include <netinet/in.h>
+
+#include "PlatformDefs.h"
 
 #pragma comment(lib, "Ntdll.lib")
 

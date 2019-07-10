@@ -8,11 +8,11 @@
 
 #pragma once
 
+#include "ContextMenuItem.h"
+#include "addons/ContextMenuAddon.h"
+
 #include <utility>
 #include <vector>
-
-#include "addons/ContextMenuAddon.h"
-#include "ContextMenuItem.h"
 
 namespace PVR
 {

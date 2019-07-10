@@ -20,7 +20,7 @@
 
 #include "DllBCM.h"
 #include "OMXCore.h"
-#include "xbmc/utils/CPUInfo.h"
+#include "utils/CPUInfo.h"
 #include "threads/CriticalSection.h"
 #include "threads/Event.h"
 

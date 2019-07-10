@@ -6,13 +6,14 @@
  */
 
 #include "VFSEntry.h"
+
+#include "ServiceBroker.h"
 #include "URL.h"
 #include "addons/binary-addons/BinaryAddonBase.h"
 #include "addons/binary-addons/BinaryAddonManager.h"
-#include "ServiceBroker.h"
 #include "network/ZeroconfBrowser.h"
-#include "utils/log.h"
 #include "utils/StringUtils.h"
+#include "utils/log.h"
 
 namespace ADDON
 {

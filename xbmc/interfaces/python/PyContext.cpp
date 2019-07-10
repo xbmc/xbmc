@@ -6,10 +6,11 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include <Python.h>
-
 #include "PyContext.h"
+
 #include "utils/log.h"
+
+#include <Python.h>
 
 namespace XBMCAddon
 {

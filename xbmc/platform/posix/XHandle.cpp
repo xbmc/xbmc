@@ -7,8 +7,9 @@
  */
 
 #include "XHandle.h"
-#include "utils/log.h"
+
 #include "threads/SingleLock.h"
+#include "utils/log.h"
 
 #include <cassert>
 

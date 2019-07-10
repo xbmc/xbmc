@@ -13,13 +13,13 @@
 \brief
 */
 
-#include <utility>
-#include <vector>
-
-#include "windowing/GraphicContext.h"
 #include "IMsgTargetCallback.h"
 #include "utils/Color.h"
 #include "utils/GlobalsHandling.h"
+#include "windowing/GraphicContext.h"
+
+#include <utility>
+#include <vector>
 
 // Forward
 class CGUIFont;

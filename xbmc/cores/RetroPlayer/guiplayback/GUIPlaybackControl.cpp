@@ -7,10 +7,11 @@
  */
 
 #include "GUIPlaybackControl.h"
+
+#include "ServiceBroker.h"
 #include "games/dialogs/osd/DialogGameOSD.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
-#include "ServiceBroker.h"
 
 using namespace KODI;
 using namespace RETRO;

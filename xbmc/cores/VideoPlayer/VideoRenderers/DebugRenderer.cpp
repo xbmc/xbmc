@@ -8,6 +8,7 @@
 
 
 #include "DebugRenderer.h"
+
 #include "OverlayRendererGUI.h"
 #include "cores/VideoPlayer/DVDCodecs/Overlay/DVDOverlayText.h"
 #include "windowing/GraphicContext.h"

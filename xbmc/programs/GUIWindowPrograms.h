@@ -8,9 +8,9 @@
 
 #pragma once
 
-#include "windows/GUIMediaWindow.h"
-#include "dialogs/GUIDialogProgress.h"
 #include "ThumbLoader.h"
+#include "dialogs/GUIDialogProgress.h"
+#include "windows/GUIMediaWindow.h"
 
 class CGUIWindowPrograms :
       public CGUIMediaWindow, public IBackgroundLoaderObserver

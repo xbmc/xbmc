@@ -8,13 +8,13 @@
 
 #pragma once
 
+#include "ServiceBroker.h"
 #include "cores/IPlayerCallback.h"
+#include "interfaces/IAnnouncer.h"
+#include "interfaces/generic/ILanguageInvocationHandler.h"
 #include "threads/CriticalSection.h"
 #include "threads/Event.h"
 #include "threads/Thread.h"
-#include "interfaces/IAnnouncer.h"
-#include "interfaces/generic/ILanguageInvocationHandler.h"
-#include "ServiceBroker.h"
 
 #include <memory>
 #include <vector>

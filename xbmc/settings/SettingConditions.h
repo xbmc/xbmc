@@ -8,10 +8,10 @@
 
 #pragma once
 
+#include "settings/lib/SettingConditions.h"
+
 #include <set>
 #include <string>
-
-#include "settings/lib/SettingConditions.h"
 
 class CProfile;
 class CProfileManager;

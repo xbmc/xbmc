@@ -7,8 +7,9 @@
  */
 
 #include "StaticProvider.h"
-#include "utils/XMLUtils.h"
+
 #include "utils/TimeUtils.h"
+#include "utils/XMLUtils.h"
 
 CStaticListProvider::CStaticListProvider(const TiXmlElement *element, int parentID)
 : IListProvider(parentID),

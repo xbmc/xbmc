@@ -8,8 +8,8 @@
 
 #pragma once
 
-#include <string>
 #include <memory>
+#include <string>
 #include <vector>
 
 class IInputCodingTable

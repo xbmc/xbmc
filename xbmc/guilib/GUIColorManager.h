@@ -18,10 +18,10 @@
  \brief
  */
 
+#include "utils/Color.h"
+
 #include <map>
 #include <string>
-
-#include "utils/Color.h"
 
 class CXBMCTinyXML;
 

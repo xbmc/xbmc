@@ -7,10 +7,11 @@
  */
 
 #include "ActionTranslator.h"
+
 #include "ActionIDs.h"
 #include "interfaces/builtins/Builtins.h"
-#include "utils/log.h"
 #include "utils/StringUtils.h"
+#include "utils/log.h"
 
 #include <map>
 

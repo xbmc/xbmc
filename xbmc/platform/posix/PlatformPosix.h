@@ -8,9 +8,9 @@
 
 #pragma once
 
-#include <atomic>
-
 #include "platform/Platform.h"
+
+#include <atomic>
 
 class CPlatformPosix : public CPlatform
 {

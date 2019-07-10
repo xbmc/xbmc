@@ -8,10 +8,10 @@
 
 #pragma once
 
-#include <wayland-extra-protocols.hpp>
-
-#include "Connection.h"
 #include "../OSScreenSaver.h"
+#include "Connection.h"
+
+#include <wayland-extra-protocols.hpp>
 
 namespace KODI
 {

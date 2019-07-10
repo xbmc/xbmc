@@ -6,8 +6,9 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include <algorithm>
 #include "Monitor.h"
+
+#include <algorithm>
 #include <math.h>
 
 namespace XBMCAddon

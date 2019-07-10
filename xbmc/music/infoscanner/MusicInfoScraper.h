@@ -8,12 +8,12 @@
 
 #pragma once
 
-#include <vector>
-
 #include "MusicAlbumInfo.h"
 #include "MusicArtistInfo.h"
 #include "addons/Scraper.h"
 #include "threads/Thread.h"
+
+#include <vector>
 
 namespace XFILE
 {

@@ -8,8 +8,8 @@
 
 #pragma once
 
-#include "guilib/GUIDialog.h"
 #include "favourites/FavouritesService.h"
+#include "guilib/GUIDialog.h"
 
 class CFileItem;
 class CFileItemList;

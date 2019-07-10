@@ -6,13 +6,14 @@
  *  See LICENSES/README.md for more information.
  */
 #include "FilesystemInstaller.h"
+
 #include "FileItem.h"
 #include "filesystem/Directory.h"
 #include "filesystem/SpecialProtocol.h"
-#include "utils/log.h"
 #include "utils/FileOperationJob.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
+#include "utils/log.h"
 
 using namespace XFILE;
 

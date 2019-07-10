@@ -8,14 +8,14 @@
 
 #pragma once
 
-#include <set>
-
 #include "EventLockHandle.h"
 #include "EventPollHandle.h"
 #include "PeripheralTypes.h"
 #include "threads/CriticalSection.h"
 #include "threads/Event.h"
 #include "threads/Thread.h"
+
+#include <set>
 
 namespace PERIPHERALS
 {

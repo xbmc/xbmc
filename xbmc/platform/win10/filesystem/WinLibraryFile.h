@@ -9,6 +9,7 @@
 #pragma once
 
 #include "filesystem/IFile.h"
+
 #include <winrt/Windows.Storage.AccessCache.h>
 
 namespace XFILE

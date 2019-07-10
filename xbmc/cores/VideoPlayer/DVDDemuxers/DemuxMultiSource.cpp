@@ -6,13 +6,14 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include "cores/VideoPlayer/Interface/Addon/TimingConstants.h"
 #include "DemuxMultiSource.h"
+
 #include "DVDDemuxUtils.h"
 #include "DVDFactoryDemuxer.h"
 #include "DVDInputStreams/DVDInputStream.h"
-#include "utils/log.h"
 #include "Util.h"
+#include "cores/VideoPlayer/Interface/Addon/TimingConstants.h"
+#include "utils/log.h"
 
 
 CDemuxMultiSource::CDemuxMultiSource() = default;

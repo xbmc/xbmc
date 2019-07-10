@@ -8,20 +8,19 @@
 
 #include "Screenshot.h"
 
+#include "ServiceBroker.h"
+#include "URL.h"
+#include "Util.h"
 #include "filesystem/File.h"
 #include "guilib/LocalizeStrings.h"
 #include "pictures/Picture.h"
-#include "ServiceBroker.h"
 #include "settings/SettingPath.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "settings/windows/GUIControlSettings.h"
-
-#include "URL.h"
-#include "Util.h"
 #include "utils/JobManager.h"
-#include "utils/log.h"
 #include "utils/URIUtils.h"
+#include "utils/log.h"
 
 using namespace XFILE;
 

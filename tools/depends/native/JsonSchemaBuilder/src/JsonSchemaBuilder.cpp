@@ -21,8 +21,8 @@
 
 #include <fstream>
 #include <iostream>
-#include <string>
 #include <regex>
+#include <string>
 
 void print_version(std::ifstream &in, std::ofstream &out)
 {

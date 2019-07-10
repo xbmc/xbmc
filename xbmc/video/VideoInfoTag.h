@@ -8,15 +8,16 @@
 
 #pragma once
 
-#include <string>
-#include <vector>
+#include "XBDateTime.h"
 #include "utils/EmbeddedArt.h"
 #include "utils/Fanart.h"
 #include "utils/ISortable.h"
 #include "utils/ScraperUrl.h"
 #include "utils/StreamDetails.h"
 #include "video/Bookmark.h"
-#include "XBDateTime.h"
+
+#include <string>
+#include <vector>
 
 class CArchive;
 class TiXmlNode;

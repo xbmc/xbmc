@@ -9,9 +9,9 @@
 #include "DPMSSupport.h"
 
 #include "ServiceBroker.h"
-#include "settings/lib/Setting.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
+#include "settings/lib/Setting.h"
 #include "utils/log.h"
 
 #include <array>

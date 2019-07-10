@@ -9,10 +9,10 @@
 
 #include "PlayListXSPF.h"
 
-#include "utils/log.h"
+#include "URL.h"
 #include "utils/URIUtils.h"
 #include "utils/XBMCTinyXML.h"
-#include "URL.h"
+#include "utils/log.h"
 
 using namespace PLAYLIST;
 

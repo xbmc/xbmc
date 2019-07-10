@@ -8,8 +8,6 @@
 
 #include "GUIViewControl.h"
 
-#include <utility>
-
 #include "FileItem.h"
 #include "GUIInfoManager.h"
 #include "ServiceBroker.h"
@@ -20,6 +18,8 @@
 #include "guilib/WindowIDs.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
+
+#include <utility>
 
 CGUIViewControl::CGUIViewControl(void)
 {

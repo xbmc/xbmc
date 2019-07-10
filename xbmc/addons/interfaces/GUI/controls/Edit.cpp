@@ -7,9 +7,9 @@
  */
 
 #include "Edit.h"
-#include "addons/kodi-addon-dev-kit/include/kodi/gui/controls/Edit.h"
 
 #include "addons/binary-addons/AddonDll.h"
+#include "addons/kodi-addon-dev-kit/include/kodi/gui/controls/Edit.h"
 #include "guilib/GUIEditControl.h"
 #include "guilib/GUIWindowManager.h"
 #include "utils/log.h"

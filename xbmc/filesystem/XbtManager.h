@@ -8,12 +8,12 @@
 
 #pragma once
 
+#include "guilib/XBTFReader.h"
+
 #include <map>
 #include <memory>
 #include <string>
 #include <vector>
-
-#include "guilib/XBTFReader.h"
 
 class CURL;
 class CXBTFFile;

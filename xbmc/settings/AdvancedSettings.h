@@ -8,14 +8,14 @@
 
 #pragma once
 
+#include "pictures/PictureScalingAlgorithm.h"
+#include "settings/lib/ISettingCallback.h"
+#include "settings/lib/ISettingsHandler.h"
+
 #include <set>
 #include <string>
 #include <utility>
 #include <vector>
-
-#include "pictures/PictureScalingAlgorithm.h"
-#include "settings/lib/ISettingCallback.h"
-#include "settings/lib/ISettingsHandler.h"
 
 #define CACHE_BUFFER_MODE_INTERNET      0
 #define CACHE_BUFFER_MODE_ALL           1

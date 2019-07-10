@@ -7,11 +7,13 @@
  */
 
 #include "CallbackHandler.h"
+
 #include "AddonUtils.h"
-#include "threads/SingleLock.h"
-#include <vector>
 #include "commons/Exception.h"
+#include "threads/SingleLock.h"
 #include "utils/log.h"
+
+#include <vector>
 
 namespace XBMCAddon
 {

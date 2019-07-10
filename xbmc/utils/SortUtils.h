@@ -8,14 +8,14 @@
 
 #pragma once
 
+#include "DatabaseUtils.h"
+#include "LabelFormatter.h"
+#include "SortFileItem.h"
+
 #include <map>
 #include <memory>
 #include <string>
 #include <vector>
-
-#include "DatabaseUtils.h"
-#include "SortFileItem.h"
-#include "LabelFormatter.h"
 
 typedef enum {
   SortOrderNone = 0,

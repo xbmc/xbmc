@@ -6,9 +6,9 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include <memory>
-
 #include "CharsetConverter.h"
+
+#include <memory>
 namespace KODI
 {
 namespace PLATFORM

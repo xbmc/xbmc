@@ -7,19 +7,22 @@
  */
 
 #include "PosixFile.h"
-#include "utils/AliasShortcutUtils.h"
+
 #include "URL.h"
-#include "utils/log.h"
 #include "filesystem/File.h"
-#include <sys/stat.h>
-#include <fcntl.h>
-#include <unistd.h>
-#include <string>
-#include <assert.h>
-#include <limits.h>
+#include "utils/AliasShortcutUtils.h"
+#include "utils/log.h"
+
 #include <algorithm>
-#include <sys/ioctl.h>
+#include <assert.h>
 #include <errno.h>
+#include <limits.h>
+#include <string>
+
+#include <fcntl.h>
+#include <sys/ioctl.h>
+#include <sys/stat.h>
+#include <unistd.h>
 
 using namespace XFILE;
 

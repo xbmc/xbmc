@@ -8,8 +8,8 @@
 
 #pragma once
 
-#include "music/tags/MusicInfoTag.h"
 #include "AddonClass.h"
+#include "music/tags/MusicInfoTag.h"
 
 namespace XBMCAddon
 {

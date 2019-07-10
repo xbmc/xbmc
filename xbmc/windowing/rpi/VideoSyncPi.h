@@ -8,8 +8,8 @@
 
 #pragma once
 
-#include "windowing/VideoSync.h"
 #include "guilib/DispResource.h"
+#include "windowing/VideoSync.h"
 
 class CVideoSyncPi : public CVideoSync, IDispResource
 {

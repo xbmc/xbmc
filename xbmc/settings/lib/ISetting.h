@@ -8,9 +8,9 @@
 
 #pragma once
 
-#include <string>
-
 #include "SettingRequirement.h"
+
+#include <string>
 
 class CSettingsManager;
 class TiXmlNode;

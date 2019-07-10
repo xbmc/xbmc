@@ -11,13 +11,12 @@
 
 #include "addons/Addon.h"
 #include "addons/PVRClient.h"
-#include "games/addons/GameClient.h"
-
 #include "addons/interfaces/Addon/AddonCallbacksAddon.h"
 #include "addons/interfaces/GUI/AddonCallbacksGUI.h"
-#include "addons/interfaces/GUI/Window.h"
 #include "addons/interfaces/GUI/AddonGUIWindow.h"
+#include "addons/interfaces/GUI/Window.h"
 #include "filesystem/SpecialProtocol.h"
+#include "games/addons/GameClient.h"
 #include "messaging/ApplicationMessenger.h"
 #include "peripherals/addons/PeripheralAddon.h"
 #include "utils/log.h"

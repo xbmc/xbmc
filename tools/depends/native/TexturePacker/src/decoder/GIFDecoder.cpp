@@ -18,9 +18,11 @@
  *
  */
 
-#include <cstring>
 #include "GIFDecoder.h"
+
 #include "GifHelper.h"
+
+#include <cstring>
 
 // returns true for gif files, otherwise returns false
 bool GIFDecoder::CanDecode(const std::string &filename)

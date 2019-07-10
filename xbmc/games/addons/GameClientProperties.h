@@ -8,8 +8,8 @@
 
 #pragma once
 
-#include "addons/kodi-addon-dev-kit/include/kodi/kodi_game_types.h"
 #include "addons/Addon.h"
+#include "addons/kodi-addon-dev-kit/include/kodi/kodi_game_types.h"
 #include "games/GameTypes.h"
 
 #include <string>

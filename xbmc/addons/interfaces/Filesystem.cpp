@@ -6,19 +6,19 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include <vector>
-
 #include "Filesystem.h"
-#include "addons/kodi-addon-dev-kit/include/kodi/Filesystem.h"
 
 #include "Util.h"
 #include "addons/binary-addons/AddonDll.h"
-#include "filesystem/File.h"
+#include "addons/kodi-addon-dev-kit/include/kodi/Filesystem.h"
 #include "filesystem/Directory.h"
+#include "filesystem/File.h"
 #include "filesystem/SpecialProtocol.h"
 #include "utils/Crc32.h"
-#include "utils/log.h"
 #include "utils/StringUtils.h"
+#include "utils/log.h"
+
+#include <vector>
 
 using namespace kodi; // addon-dev-kit namespace
 using namespace XFILE;

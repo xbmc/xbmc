@@ -7,8 +7,9 @@
  */
 
 #include "GUIDialogVolumeBar.h"
-#include "IGUIVolumeBarCallback.h"
+
 #include "Application.h"
+#include "IGUIVolumeBarCallback.h"
 #include "input/Key.h"
 #include "threads/SingleLock.h"
 

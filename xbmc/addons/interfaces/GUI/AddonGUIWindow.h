@@ -9,9 +9,8 @@
 #pragma once
 
 #include "addons/kodi-addon-dev-kit/include/kodi/libKODI_guilib.h"
-
-#include "windows/GUIMediaWindow.h"
 #include "threads/Event.h"
+#include "windows/GUIMediaWindow.h"
 
 namespace ADDON
 {

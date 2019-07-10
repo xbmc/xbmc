@@ -8,10 +8,10 @@
 
 #pragma once
 
+#include "IFileDirectory.h"
+
 #include <map>
 #include <string>
-
-#include "IFileDirectory.h"
 
 class CXBTFFile;
 

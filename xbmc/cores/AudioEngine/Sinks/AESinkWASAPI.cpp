@@ -7,17 +7,19 @@
  */
 
 #include "AESinkWASAPI.h"
-#include <Audioclient.h>
-#include <stdint.h>
-#include <algorithm>
 
 #include "cores/AudioEngine/AESinkFactory.h"
-#include "cores/AudioEngine/Utils/AEUtil.h"
-#include "utils/log.h"
-#include "utils/TimeUtils.h"
 #include "cores/AudioEngine/Utils/AEDeviceInfo.h"
-#include <Mmreg.h>
+#include "cores/AudioEngine/Utils/AEUtil.h"
 #include "utils/StringUtils.h"
+#include "utils/TimeUtils.h"
+#include "utils/log.h"
+
+#include <algorithm>
+#include <stdint.h>
+
+#include <Audioclient.h>
+#include <Mmreg.h>
 
 #ifdef TARGET_WINDOWS_DESKTOP
 #  pragma comment(lib, "Avrt.lib")

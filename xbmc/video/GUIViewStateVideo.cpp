@@ -7,20 +7,21 @@
  */
 
 #include "GUIViewStateVideo.h"
+
+#include "FileItem.h"
 #include "PlayListPlayer.h"
 #include "ServiceBroker.h"
-#include "filesystem/VideoDatabaseDirectory.h"
-#include "filesystem/Directory.h"
 #include "VideoDatabase.h"
+#include "filesystem/Directory.h"
+#include "filesystem/VideoDatabaseDirectory.h"
+#include "guilib/WindowIDs.h"
 #include "settings/MediaSettings.h"
 #include "settings/MediaSourceSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
-#include "FileItem.h"
-#include "guilib/WindowIDs.h"
-#include "view/ViewStateSettings.h"
 #include "utils/FileExtensionProvider.h"
 #include "utils/SortUtils.h"
+#include "view/ViewStateSettings.h"
 
 using namespace XFILE;
 using namespace VIDEODATABASEDIRECTORY;

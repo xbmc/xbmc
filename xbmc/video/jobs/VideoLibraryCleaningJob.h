@@ -8,9 +8,9 @@
 
 #pragma once
 
-#include <set>
-
 #include "video/jobs/VideoLibraryProgressJob.h"
+
+#include <set>
 
 class CGUIDialogProgressBarHandle;
 

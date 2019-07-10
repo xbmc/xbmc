@@ -11,11 +11,10 @@
 #include <array>
 #include <cstdlib>
 #include <cstring>
-
 #include <stdio.h>
-#include <unistd.h>
 
-#include <sys/sysctl.h>
+#include <unistd.h> /* FreeBSD can't write standalone headers */
+#include <sys/sysctl.h> /* FreeBSD can't write standalone headers */
 #include <sys/types.h>
 
 namespace KODI

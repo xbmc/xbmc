@@ -19,6 +19,7 @@
  */
 
 #include "GameClientController.h"
+
 #include "GameClientInput.h"
 #include "games/controllers/Controller.h"
 #include "games/controllers/ControllerFeature.h"

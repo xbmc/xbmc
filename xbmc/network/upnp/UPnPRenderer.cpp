@@ -5,33 +5,34 @@
  *  SPDX-License-Identifier: GPL-2.0-or-later
  *  See LICENSES/README.md for more information.
  */
-#include <Platinum/Source/Platinum/Platinum.h>
-
-#include "network/Network.h"
 #include "UPnPRenderer.h"
-#include "UPnP.h"
-#include "UPnPInternal.h"
+
 #include "Application.h"
-#include "messaging/ApplicationMessenger.h"
 #include "FileItem.h"
-#include "ServiceBroker.h"
-#include "filesystem/SpecialProtocol.h"
 #include "GUIInfoManager.h"
-#include "guilib/GUIComponent.h"
-#include "guilib/GUIWindowManager.h"
-#include "input/Key.h"
-#include "pictures/GUIWindowSlideShow.h"
-#include "pictures/PictureInfoTag.h"
-#include "interfaces/AnnouncementManager.h"
+#include "GUIUserMessages.h"
 #include "PlayListPlayer.h"
+#include "ServiceBroker.h"
 #include "TextureDatabase.h"
 #include "ThumbLoader.h"
+#include "UPnP.h"
+#include "UPnPInternal.h"
 #include "URL.h"
+#include "filesystem/SpecialProtocol.h"
+#include "guilib/GUIComponent.h"
+#include "guilib/GUIWindowManager.h"
+#include "guilib/guiinfo/GUIInfoLabels.h"
+#include "input/Key.h"
+#include "interfaces/AnnouncementManager.h"
+#include "messaging/ApplicationMessenger.h"
+#include "network/Network.h"
+#include "pictures/GUIWindowSlideShow.h"
+#include "pictures/PictureInfoTag.h"
+#include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
-#include "utils/StringUtils.h"
-#include "GUIUserMessages.h"
-#include "guilib/guiinfo/GUIInfoLabels.h"
+
+#include <Platinum/Source/Platinum/Platinum.h>
 
 NPT_SET_LOCAL_LOGGER("xbmc.upnp.renderer")
 

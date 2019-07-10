@@ -6,10 +6,11 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include <stdint.h>
-#include <vector>
 #include "GUIFontTTF.h"
 #include "windowing/GraphicContext.h"
+
+#include <stdint.h>
+#include <vector>
 
 template<class Position, class Value>
 class CGUIFontCacheImpl

@@ -11,8 +11,8 @@
 #include "threads/SingleLock.h"
 #include "threads/SystemClock.h"
 
-#include <condition_variable>
 #include <chrono>
+#include <condition_variable>
 
 namespace XbmcThreads
 {

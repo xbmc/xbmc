@@ -7,13 +7,15 @@
  */
 
 #include "cores/FFmpeg.h"
+
 #include "ServiceBroker.h"
-#include "utils/log.h"
-#include "threads/CriticalSection.h"
-#include "utils/StringUtils.h"
-#include "threads/Thread.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
+#include "threads/CriticalSection.h"
+#include "threads/Thread.h"
+#include "utils/StringUtils.h"
+#include "utils/log.h"
+
 #include <map>
 
 static thread_local CFFmpegLog* CFFmpegLogTls;

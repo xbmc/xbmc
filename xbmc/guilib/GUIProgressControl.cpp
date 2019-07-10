@@ -7,6 +7,7 @@
  */
 
 #include "GUIProgressControl.h"
+
 #include "GUIInfoManager.h"
 #include "GUIListItem.h"
 #include "GUIMessage.h"

@@ -8,14 +8,15 @@
 
 #pragma once
 
+#include "network/Network.h"
+#include "threads/CriticalSection.h"
+#include "utils/stopwatch.h"
+
 #include <string>
 #include <vector>
-#include "network/Network.h"
-#include "utils/stopwatch.h"
-#include "threads/CriticalSection.h"
 
-#include <ws2ipdef.h>
-#include <Iphlpapi.h>
+#include <ws2ipdef.h> /* Microsoft can't write standalone headers */
+#include <Iphlpapi.h> /* Microsoft can't write standalone headers */
 
 class CNetworkWin32;
 

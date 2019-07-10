@@ -1,8 +1,9 @@
 #pragma once
 
-#include "IptcParse.h"
 #include "ExifParse.h"
-#include "stdio.h"
+#include "IptcParse.h"
+
+#include <stdio.h>
 
 //--------------------------------------------------------------------------
 // JPEG markers consist of one or more 0xFF bytes, followed by a marker

@@ -13,10 +13,9 @@
 #include "addons/Addon.h"
 #include "addons/AddonManager.h"
 #include "guilib/LocalizeStrings.h"
-#include "utils/StringUtils.h"
-
 #include "guilib/guiinfo/GUIInfo.h"
 #include "guilib/guiinfo/GUIInfoLabels.h"
+#include "utils/StringUtils.h"
 
 using namespace KODI::GUILIB::GUIINFO;
 

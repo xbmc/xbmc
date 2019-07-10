@@ -7,20 +7,21 @@
  */
 
 #include "Player.h"
+
+#include "AddonUtils.h"
+#include "Application.h"
+#include "GUIInfoManager.h"
+#include "GUIUserMessages.h"
 #include "ListItem.h"
 #include "PlayList.h"
 #include "PlayListPlayer.h"
-#include "settings/MediaSettings.h"
-#include "Application.h"
 #include "ServiceBroker.h"
-#include "messaging/ApplicationMessenger.h"
-#include "GUIInfoManager.h"
-#include "GUIUserMessages.h"
+#include "cores/IPlayer.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
-#include "AddonUtils.h"
+#include "messaging/ApplicationMessenger.h"
+#include "settings/MediaSettings.h"
 #include "utils/log.h"
-#include "cores/IPlayer.h"
 
 using namespace KODI::MESSAGING;
 

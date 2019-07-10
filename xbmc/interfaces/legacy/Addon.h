@@ -8,11 +8,10 @@
 
 #pragma once
 
-#include "addons/IAddon.h"
-
-#include "AddonString.h"
 #include "AddonClass.h"
+#include "AddonString.h"
 #include "Exception.h"
+#include "addons/IAddon.h"
 
 namespace XBMCAddon
 {

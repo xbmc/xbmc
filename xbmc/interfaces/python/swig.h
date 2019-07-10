@@ -8,14 +8,15 @@
 
 #pragma once
 
-#include <Python.h>
-#include <string>
-#include <stdint.h>
-
-#include "interfaces/legacy/Exception.h"
 #include "interfaces/legacy/AddonClass.h"
+#include "interfaces/legacy/Exception.h"
 #include "interfaces/legacy/Window.h"
+
+#include <stdint.h>
+#include <string>
 #include <typeindex>
+
+#include <Python.h>
 
 namespace PythonBindings
 {

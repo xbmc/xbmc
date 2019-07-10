@@ -10,32 +10,34 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include <set>
-#include <Platinum/Source/Platinum/Platinum.h>
-
 #include "UPnP.h"
+
+#include "FileItem.h"
+#include "GUIUserMessages.h"
+#include "ServiceBroker.h"
 #include "UPnPInternal.h"
 #include "UPnPRenderer.h"
 #include "UPnPServer.h"
 #include "UPnPSettings.h"
-#include "utils/URIUtils.h"
-#include "ServiceBroker.h"
+#include "URL.h"
+#include "Util.h"
+#include "cores/playercorefactory/PlayerCoreFactory.h"
+#include "guilib/GUIComponent.h"
+#include "guilib/GUIWindowManager.h"
 #include "messaging/ApplicationMessenger.h"
 #include "network/Network.h"
-#include "utils/log.h"
-#include "URL.h"
-#include "cores/playercorefactory/PlayerCoreFactory.h"
 #include "profiles/ProfileManager.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
-#include "GUIUserMessages.h"
-#include "FileItem.h"
-#include "guilib/GUIComponent.h"
-#include "guilib/GUIWindowManager.h"
-#include "utils/TimeUtils.h"
-#include "video/VideoInfoTag.h"
-#include "Util.h"
 #include "utils/SystemInfo.h"
+#include "utils/TimeUtils.h"
+#include "utils/URIUtils.h"
+#include "utils/log.h"
+#include "video/VideoInfoTag.h"
+
+#include <set>
+
+#include <Platinum/Source/Platinum/Platinum.h>
 
 using namespace UPNP;
 using namespace KODI::MESSAGING;

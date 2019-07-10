@@ -7,10 +7,11 @@
  */
 
 #include "AEChannelInfo.h"
+
 #include <algorithm>
+#include <assert.h>
 #include <limits>
 #include <string.h>
-#include <assert.h>
 
 CAEChannelInfo::CAEChannelInfo()
 {

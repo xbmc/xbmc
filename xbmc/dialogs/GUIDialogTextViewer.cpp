@@ -7,15 +7,16 @@
  */
 
 #include "GUIDialogTextViewer.h"
+
 #include "GUIUserMessages.h"
+#include "ServiceBroker.h"
 #include "filesystem/File.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "input/actions/Action.h"
 #include "input/actions/ActionIDs.h"
-#include "utils/log.h"
 #include "utils/URIUtils.h"
-#include "ServiceBroker.h"
+#include "utils/log.h"
 
 using namespace XFILE;
 

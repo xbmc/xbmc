@@ -8,24 +8,26 @@
 
 #include "OMXImage.h"
 
+#include "Application.h"
 #include "ServiceBroker.h"
 #include "URL.h"
-#include "utils/log.h"
-
-#include <sys/time.h>
-#include <inttypes.h>
-#include "windowing/GraphicContext.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/DisplaySettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
-#include "platform/linux/RBP.h"
 #include "utils/URIUtils.h"
+#include "utils/log.h"
+#include "windowing/GraphicContext.h"
 #include "windowing/WinSystem.h"
 #include "windowing/rpi/WinSystemRpiGLESContext.h"
-#include "Application.h"
+
+#include "platform/linux/RBP.h"
+
 #include <algorithm>
 #include <cassert>
+#include <inttypes.h>
+
+#include <sys/time.h>
 
 #ifdef _DEBUG
 #define CheckError() { GLint result = eglGetError(); if (result != EGL_SUCCESS) CLog::Log(LOGERROR, "EGL error in %s: %x", __FUNCTION__, result); }

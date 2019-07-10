@@ -7,11 +7,12 @@
  */
 
 #include "SettingAddon.h"
+
 #include "addons/Addon.h"
 #include "settings/lib/SettingsManager.h"
-#include "utils/log.h"
 #include "utils/XBMCTinyXML.h"
 #include "utils/XMLUtils.h"
+#include "utils/log.h"
 
 CSettingAddon::CSettingAddon(const std::string &id, CSettingsManager *settingsManager /* = nullptr */)
   : CSettingString(id, settingsManager)

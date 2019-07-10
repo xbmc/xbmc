@@ -8,13 +8,14 @@
 
 #pragma once
 
-#include <stdint.h>
-#include <mmdeviceapi.h>
-#include <Audioclient.h>
 #include "cores/AudioEngine/Interfaces/AESink.h"
 #include "cores/AudioEngine/Sinks/windows/AESinkFactoryWin.h"
 #include "cores/AudioEngine/Utils/AEDeviceInfo.h"
 
+#include <stdint.h>
+
+#include <Audioclient.h>
+#include <mmdeviceapi.h>
 #include <wrl/client.h>
 
 class CAESinkWASAPI : public IAESink

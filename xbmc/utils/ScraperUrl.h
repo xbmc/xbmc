@@ -8,9 +8,9 @@
 
 #pragma once
 
-#include <vector>
 #include <map>
 #include <string>
+#include <vector>
 
 class TiXmlElement;
 namespace XFILE { class CCurlFile; }

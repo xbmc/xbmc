@@ -7,14 +7,15 @@
  */
 
 #include "DialogGameStretchMode.h"
-#include "cores/RetroPlayer/guibridge/GUIGameVideoHandle.h"
+
+#include "FileItem.h"
 #include "cores/RetroPlayer/RetroPlayerUtils.h"
+#include "cores/RetroPlayer/guibridge/GUIGameVideoHandle.h"
 #include "guilib/LocalizeStrings.h"
 #include "guilib/WindowIDs.h"
 #include "settings/GameSettings.h"
 #include "settings/MediaSettings.h"
 #include "utils/Variant.h"
-#include "FileItem.h"
 
 using namespace KODI;
 using namespace GAME;

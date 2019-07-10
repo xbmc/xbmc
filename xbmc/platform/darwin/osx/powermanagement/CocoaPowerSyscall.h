@@ -9,8 +9,9 @@
 #pragma once
 
 #include "powermanagement/IPowerSyscall.h"
-#include <IOKit/pwr_mgt/IOPMLib.h>
+
 #include <IOKit/IOMessage.h>
+#include <IOKit/pwr_mgt/IOPMLib.h>
 
 class CCocoaPowerSyscall : public CPowerSyscallWithoutEvents
 {

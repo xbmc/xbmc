@@ -7,6 +7,7 @@
  */
 
 #include "DirectoryNodeSong.h"
+
 #include "QueryParams.h"
 #include "music/MusicDatabase.h"
 

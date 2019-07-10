@@ -8,7 +8,7 @@
 
 #include "utils/EndianSwap.h"
 
-#include "gtest/gtest.h"
+#include <gtest/gtest.h>
 
 TEST(TestEndianSwap, Endian_Swap16)
 {

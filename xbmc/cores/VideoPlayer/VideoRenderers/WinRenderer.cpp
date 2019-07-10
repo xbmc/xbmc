@@ -7,6 +7,7 @@
  */
 
 #include "WinRenderer.h"
+
 #include "RenderCapture.h"
 #include "RenderFactory.h"
 #include "RenderFlags.h"
@@ -14,11 +15,11 @@
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/log.h"
-#include "windows/RendererDXVA.h"
-#include "windows/RendererSoftware.h"
-#include "windows/RendererShaders.h"
 #include "windowing/GraphicContext.h"
 #include "windowing/WinSystem.h"
+#include "windows/RendererDXVA.h"
+#include "windows/RendererShaders.h"
+#include "windows/RendererSoftware.h"
 
 struct render_details
 {

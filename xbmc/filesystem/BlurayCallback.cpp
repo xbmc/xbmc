@@ -11,8 +11,8 @@
 #include "FileItem.h"
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"
-#include "utils/log.h"
 #include "utils/URIUtils.h"
+#include "utils/log.h"
 
 using namespace XFILE;
 

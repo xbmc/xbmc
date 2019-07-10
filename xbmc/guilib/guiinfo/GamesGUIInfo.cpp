@@ -12,13 +12,12 @@
 #include "Util.h"
 #include "cores/RetroPlayer/RetroPlayerUtils.h"
 #include "games/tags/GameInfoTag.h"
+#include "guilib/guiinfo/GUIInfo.h"
+#include "guilib/guiinfo/GUIInfoLabels.h"
 #include "settings/MediaSettings.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
 #include "utils/log.h"
-
-#include "guilib/guiinfo/GUIInfo.h"
-#include "guilib/guiinfo/GUIInfoLabels.h"
 
 using namespace KODI::GUILIB::GUIINFO;
 using namespace KODI::GAME;

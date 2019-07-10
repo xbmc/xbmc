@@ -7,9 +7,10 @@
  */
 
 #include "utils/StringUtils.h"
+
 #include <algorithm>
 
-#include "gtest/gtest.h"
+#include <gtest/gtest.h>
 
 TEST(TestStringUtils, Format)
 {

@@ -18,17 +18,19 @@
 */
 
 #include "SMBDirectory.h"
+
+#include "FileItem.h"
+#include "PasswordManager.h"
+#include "ServiceBroker.h"
 #include "Util.h"
 #include "guilib/LocalizeStrings.h"
-#include "FileItem.h"
-#include "ServiceBroker.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
-#include "utils/StringUtils.h"
-#include "utils/log.h"
-#include "utils/URIUtils.h"
 #include "threads/SingleLock.h"
-#include "PasswordManager.h"
+#include "utils/StringUtils.h"
+#include "utils/URIUtils.h"
+#include "utils/log.h"
+
 #include "platform/posix/XTimeUtils.h"
 
 #include <libsmbclient.h>

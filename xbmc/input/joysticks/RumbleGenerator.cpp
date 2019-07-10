@@ -7,11 +7,12 @@
  */
 
 #include "RumbleGenerator.h"
+
+#include "ServiceBroker.h"
 #include "games/controllers/Controller.h"
 #include "games/controllers/ControllerIDs.h"
 #include "games/controllers/ControllerManager.h"
 #include "input/joysticks/interfaces/IInputReceiver.h"
-#include "ServiceBroker.h"
 
 #include <algorithm>
 

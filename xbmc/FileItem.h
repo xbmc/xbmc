@@ -13,22 +13,22 @@
  \brief
  */
 
-#include <map>
-#include <memory>
-#include <string>
-#include <utility>
-#include <vector>
-
+#include "LockType.h"
+#include "XBDateTime.h"
 #include "addons/IAddon.h"
 #include "guilib/GUIListItem.h"
-#include "LockType.h"
 #include "pvr/PVRTypes.h"
 #include "threads/CriticalSection.h"
 #include "utils/IArchivable.h"
 #include "utils/ISerializable.h"
 #include "utils/ISortable.h"
 #include "utils/SortUtils.h"
-#include "XBDateTime.h"
+
+#include <map>
+#include <memory>
+#include <string>
+#include <utility>
+#include <vector>
 
 namespace MUSIC_INFO
 {

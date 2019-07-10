@@ -7,17 +7,18 @@
  */
 
 #include "MusicUtils.h"
+
 #include "Application.h"
+#include "PlayListPlayer.h"
+#include "ServiceBroker.h"
 #include "dialogs/GUIDialogSelect.h"
-#include "guilib/GUIKeyboardFactory.h"
 #include "guilib/GUIComponent.h"
+#include "guilib/GUIKeyboardFactory.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "music/MusicDatabase.h"
 #include "music/tags/MusicInfoTag.h"
-#include "PlayListPlayer.h"
 #include "playlists/PlayList.h"
-#include "ServiceBroker.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"

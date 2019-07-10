@@ -8,8 +8,9 @@
 
 #pragma once
 
-#include <string>
 #include "FileItem.h"
+
+#include <string>
 
 class CFileUtils
 {

@@ -12,13 +12,14 @@
 
 #pragma once
 
+#include "qry_dat.h"
+
 #include <cstdio>
 #include <list>
 #include <map>
+#include <stdarg.h>
 #include <string>
 #include <vector>
-#include "qry_dat.h"
-#include <stdarg.h>
 
 namespace dbiplus {
 class Dataset;		// forward declaration of class Dataset

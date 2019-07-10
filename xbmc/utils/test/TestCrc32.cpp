@@ -8,7 +8,7 @@
 
 #include "utils/Crc32.h"
 
-#include "gtest/gtest.h"
+#include <gtest/gtest.h>
 
 static const char refdata[] = "abcdefghijklmnopqrstuvwxyz"
                               "ABCDEFGHIJKLMNOPQRSTUVWXYZ"

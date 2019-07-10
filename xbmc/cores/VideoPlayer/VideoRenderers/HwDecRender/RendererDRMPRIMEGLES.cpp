@@ -8,8 +8,8 @@
 
 #include "RendererDRMPRIMEGLES.h"
 
-#include "cores/VideoPlayer/VideoRenderers/RenderFactory.h"
 #include "ServiceBroker.h"
+#include "cores/VideoPlayer/VideoRenderers/RenderFactory.h"
 #include "utils/EGLFence.h"
 #include "utils/log.h"
 #include "windowing/gbm/WinSystemGbmGLESContext.h"

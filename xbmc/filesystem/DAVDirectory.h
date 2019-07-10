@@ -8,9 +8,9 @@
 
 #pragma once
 
+#include "FileItem.h"
 #include "IDirectory.h"
 #include "utils/XBMCTinyXML.h"
-#include "FileItem.h"
 
 namespace XFILE
 {

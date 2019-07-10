@@ -7,13 +7,15 @@
  */
 
 #include "dll.h"
+
 #include "DllLoader.h"
 #include "DllLoaderContainer.h"
 #include "dll_tracker.h"
 #include "dll_util.h"
-#include <climits>
 #include "filesystem/SpecialProtocol.h"
 #include "utils/log.h"
+
+#include <climits>
 
 #define DEFAULT_DLLPATH "special://xbmc/system/players/mplayer/codecs/"
 #define HIGH_WORD(a) ((uintptr_t)(a) >> 16)

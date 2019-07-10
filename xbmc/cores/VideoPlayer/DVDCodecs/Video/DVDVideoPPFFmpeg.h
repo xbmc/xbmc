@@ -9,6 +9,7 @@
 #pragma once
 
 #include "DVDVideoCodec.h"
+
 #include <string>
 
 class CProcessInfo;

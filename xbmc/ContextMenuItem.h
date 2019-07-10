@@ -8,12 +8,12 @@
 
 #pragma once
 
-#include <map>
-
-#include "addons/IAddon.h"
 #include "addons/AddonManager.h"
+#include "addons/IAddon.h"
 #include "addons/settings/GUIDialogAddonSettings.h"
 #include "guilib/LocalizeStrings.h"
+
+#include <map>
 
 namespace ADDON
 {

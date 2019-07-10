@@ -7,8 +7,9 @@
  */
 
 #include "MusicInfoScraper.h"
-#include "utils/log.h"
+
 #include "filesystem/CurlFile.h"
+#include "utils/log.h"
 
 using namespace MUSIC_GRABBER;
 using namespace ADDON;

@@ -6,13 +6,15 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include <algorithm>
 #include "CharsetDetection.h"
+
+#include "LangInfo.h"
 #include "utils/CharsetConverter.h"
 #include "utils/StringUtils.h"
 #include "utils/Utf8Utils.h"
-#include "LangInfo.h"
 #include "utils/log.h"
+
+#include <algorithm>
 
 /* XML declaration can be virtually any size (with many-many whitespaces)
  * but for in real world we don't need to process megabytes of data

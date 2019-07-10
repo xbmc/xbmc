@@ -7,6 +7,7 @@
  */
 
 #include "GUIDialogSettingsManagerBase.h"
+
 #include "settings/lib/SettingsManager.h"
 
 #include <cassert>

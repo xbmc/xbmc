@@ -10,6 +10,7 @@
 
 #include "InfoLoader.h"
 #include "settings/lib/ISubSettings.h"
+
 #include <string>
 
 #define KB  (1024)          // 1 KiloByte (1KB)   1024 Byte (2^10 Byte)

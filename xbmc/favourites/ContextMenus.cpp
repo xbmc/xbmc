@@ -6,12 +6,12 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include "FileItem.h"
-#include "ServiceBroker.h"
-#include "GUIDialogFavourites.h"
-#include "utils/URIUtils.h"
-
 #include "ContextMenus.h"
+
+#include "FileItem.h"
+#include "GUIDialogFavourites.h"
+#include "ServiceBroker.h"
+#include "utils/URIUtils.h"
 
 
 namespace CONTEXTMENU

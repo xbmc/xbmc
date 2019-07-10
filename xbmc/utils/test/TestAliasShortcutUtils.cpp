@@ -13,7 +13,7 @@
 #if defined(TARGET_DARWIN_OSX)
 #include "platform/darwin/DarwinUtils.h"
 #endif
-#include "gtest/gtest.h"
+#include <gtest/gtest.h>
 
 TEST(TestAliasShortcutUtils, IsAliasShortcut)
 {

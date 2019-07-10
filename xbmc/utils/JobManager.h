@@ -8,12 +8,13 @@
 
 #pragma once
 
-#include <queue>
-#include <vector>
-#include <string>
+#include "Job.h"
 #include "threads/CriticalSection.h"
 #include "threads/Thread.h"
-#include "Job.h"
+
+#include <queue>
+#include <string>
+#include <vector>
 
 class CJobManager;
 

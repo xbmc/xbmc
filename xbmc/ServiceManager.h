@@ -8,8 +8,9 @@
 
 #pragma once
 
-#include <memory>
 #include "platform/Platform.h"
+
+#include <memory>
 
 class CAppParamParser;
 

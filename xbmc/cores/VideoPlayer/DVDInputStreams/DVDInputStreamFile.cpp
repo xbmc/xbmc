@@ -7,13 +7,14 @@
  */
 
 #include "DVDInputStreamFile.h"
+
 #include "ServiceBroker.h"
 #include "filesystem/File.h"
 #include "filesystem/IFile.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
-#include "utils/log.h"
 #include "utils/URIUtils.h"
+#include "utils/log.h"
 
 using namespace XFILE;
 

@@ -9,12 +9,12 @@
 #pragma once
 
 #include "network/Zeroconf.h"
+#include "threads/CriticalSection.h"
+
+#include "platform/android/activity/JNIXBMCNsdManagerRegistrationListener.h"
 
 #include <androidjni/NsdManager.h>
 #include <androidjni/NsdServiceInfo.h>
-
-#include "threads/CriticalSection.h"
-#include "platform/android/activity/JNIXBMCNsdManagerRegistrationListener.h"
 
 class CZeroconfAndroid : public CZeroconf
 {

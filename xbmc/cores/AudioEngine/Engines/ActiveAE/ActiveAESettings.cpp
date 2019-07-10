@@ -9,16 +9,16 @@
 
 #include "ActiveAESettings.h"
 
-#include "utils/StringUtils.h"
+#include "ServiceBroker.h"
+#include "cores/AudioEngine/Engines/ActiveAE/ActiveAE.h"
+#include "cores/AudioEngine/Interfaces/AE.h"
+#include "guilib/LocalizeStrings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
-#include "ServiceBroker.h"
-#include "guilib/LocalizeStrings.h"
-#include "cores/AudioEngine/Interfaces/AE.h"
-#include "cores/AudioEngine/Engines/ActiveAE/ActiveAE.h"
 #include "settings/lib/SettingDefinitions.h"
 #include "settings/lib/SettingsManager.h"
 #include "threads/SingleLock.h"
+#include "utils/StringUtils.h"
 
 namespace ActiveAE
 {

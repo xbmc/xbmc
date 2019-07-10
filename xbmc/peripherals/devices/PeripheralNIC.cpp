@@ -7,6 +7,7 @@
  */
 
 #include "PeripheralNIC.h"
+
 #include "guilib/LocalizeStrings.h"
 
 using namespace PERIPHERALS;

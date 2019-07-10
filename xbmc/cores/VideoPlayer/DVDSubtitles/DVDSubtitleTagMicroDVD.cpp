@@ -7,6 +7,7 @@
  */
 
 #include "DVDSubtitleTagMicroDVD.h"
+
 #include "DVDCodecs/Overlay/DVDOverlayText.h"
 #include "utils/StringUtils.h"
 

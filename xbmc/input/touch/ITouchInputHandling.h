@@ -8,9 +8,9 @@
 
 #pragma once
 
-#include <stdlib.h>
-
 #include "input/touch/ITouchActionHandler.h"
+
+#include <stdlib.h>
 
 /*!
  * \ingroup touch

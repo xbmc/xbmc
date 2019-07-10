@@ -7,7 +7,9 @@
  */
 
 #include "DirtyRegionSolvers.h"
+
 #include "windowing/GraphicContext.h"
+
 #include <stdio.h>
 
 void CUnionDirtyRegionSolver::Solve(const CDirtyRegionList &input, CDirtyRegionList &output)

@@ -8,9 +8,10 @@
 
 #pragma once
 
+#include "threads/CriticalSection.h"
+
 #include <string>
 #include <vector>
-#include "threads/CriticalSection.h"
 
 //  forward
 class LibraryLoader;

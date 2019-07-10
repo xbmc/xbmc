@@ -10,6 +10,7 @@
 
 #include "OverlayRenderer.h"
 #include "utils/Color.h"
+
 #include <string>
 
 enum SubtitleAlign

@@ -8,14 +8,13 @@
 
 #pragma once
 
-#include <list>
-#include <vector>
-#include <utility>
-
+#include "GUIComponent.h"
 #include "TextureBundle.h"
 #include "threads/CriticalSection.h"
 
-#include "GUIComponent.h"
+#include <list>
+#include <utility>
+#include <vector>
 
 /************************************************************************/
 /*                                                                      */

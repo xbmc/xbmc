@@ -8,11 +8,11 @@
 
 #pragma once
 
+#include "FileItem.h"
+
 #include <memory>
 #include <string>
 #include <vector>
-
-#include "FileItem.h"
 
 class CDVDInputStream;
 class IVideoPlayer;

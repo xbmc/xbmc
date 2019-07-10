@@ -8,8 +8,8 @@
 
 #pragma once
 
-#include "input/mouse/interfaces/IMouseDriverHandler.h"
 #include "input/mouse/MouseTypes.h"
+#include "input/mouse/interfaces/IMouseDriverHandler.h"
 
 namespace KODI
 {

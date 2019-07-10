@@ -11,11 +11,11 @@
 #include "network/Network.h"
 #include "threads/CriticalSection.h"
 
+#include <androidjni/LinkProperties.h>
 #include <androidjni/Network.h>
 #include <androidjni/NetworkInfo.h>
-#include <androidjni/LinkProperties.h>
-#include <androidjni/RouteInfo.h>
 #include <androidjni/NetworkInterface.h>
+#include <androidjni/RouteInfo.h>
 
 class CNetworkAndroid;
 

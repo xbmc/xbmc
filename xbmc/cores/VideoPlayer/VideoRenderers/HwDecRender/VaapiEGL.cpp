@@ -9,10 +9,11 @@
 #include "VaapiEGL.h"
 
 #include "cores/VideoPlayer/DVDCodecs/Video/VAAPI.h"
-#include <va/va_drmcommon.h>
-#include <drm_fourcc.h>
-#include "utils/log.h"
 #include "utils/EGLUtils.h"
+#include "utils/log.h"
+
+#include <drm_fourcc.h>
+#include <va/va_drmcommon.h>
 
 #define HAVE_VAEXPORTSURFACHEHANDLE VA_CHECK_VERSION(1, 1, 0)
 

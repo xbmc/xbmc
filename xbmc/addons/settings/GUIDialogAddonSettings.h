@@ -8,8 +8,8 @@
 
 #pragma once
 
-#include "settings/dialogs/GUIDialogSettingsManagerBase.h"
 #include "addons/IAddon.h"
+#include "settings/dialogs/GUIDialogSettingsManagerBase.h"
 
 class CGUIDialogAddonSettings : public CGUIDialogSettingsManagerBase
 {

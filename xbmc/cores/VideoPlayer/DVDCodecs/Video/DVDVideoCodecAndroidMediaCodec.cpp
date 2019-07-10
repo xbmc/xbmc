@@ -14,42 +14,42 @@
 
 #include "DVDVideoCodecAndroidMediaCodec.h"
 
-#include <cassert>
-#include <memory>
-
-#include <androidjni/ByteBuffer.h>
-#include <androidjni/MediaCodecList.h>
-#include <androidjni/MediaCodecInfo.h>
-#include <androidjni/Surface.h>
-#include <androidjni/SurfaceTexture.h>
-
-#include <GLES2/gl2.h>
-#include <GLES2/gl2ext.h>
-
-#include <media/NdkMediaCrypto.h>
-
 #include "Application.h"
 #include "DVDCodecs/DVDFactoryCodec.h"
-#include "platform/android/activity/XBMCApp.h"
-#include "cores/VideoPlayer/VideoRenderers/RenderManager.h"
-#include "cores/VideoPlayer/VideoRenderers/RenderFlags.h"
+#include "ServiceBroker.h"
 #include "cores/VideoPlayer/Interface/Addon/DemuxCrypto.h"
 #include "cores/VideoPlayer/Interface/Addon/TimingConstants.h"
 #include "cores/VideoPlayer/Process/VideoBuffer.h"
+#include "cores/VideoPlayer/VideoRenderers/RenderFlags.h"
+#include "cores/VideoPlayer/VideoRenderers/RenderManager.h"
 #include "media/decoderfilter/DecoderFilterManager.h"
 #include "messaging/ApplicationMessenger.h"
-#include "platform/android/activity/AndroidFeatures.h"
-#include "platform/android/activity/JNIXBMCSurfaceTextureOnFrameAvailableListener.h"
-#include "ServiceBroker.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
-#include "system.h"
 #include "utils/BitstreamConverter.h"
 #include "utils/BitstreamWriter.h"
 #include "utils/CPUInfo.h"
-#include "utils/log.h"
 #include "utils/TimeUtils.h"
+#include "utils/log.h"
+
+#include "platform/android/activity/AndroidFeatures.h"
+#include "platform/android/activity/JNIXBMCSurfaceTextureOnFrameAvailableListener.h"
+#include "platform/android/activity/XBMCApp.h"
+
+#include <cassert>
+#include <memory>
+
+#include <GLES2/gl2.h>
+#include <GLES2/gl2ext.h>
+#include <androidjni/ByteBuffer.h>
+#include <androidjni/MediaCodecInfo.h>
+#include <androidjni/MediaCodecList.h>
+#include <androidjni/Surface.h>
+#include <androidjni/SurfaceTexture.h>
+#include <media/NdkMediaCrypto.h>
+
+#include "system.h"
 
 
 #define XMEDIAFORMAT_KEY_ROTATION "rotation-degrees"

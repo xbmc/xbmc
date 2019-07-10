@@ -6,16 +6,15 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include "gtest/gtest.h"
-
 #include "TestBasicEnvironment.h"
 #include "TestUtils.h"
-
-#include "threads/Thread.h"
 #include "commons/ilog.h"
+#include "threads/Thread.h"
 
 #include <cstdio>
 #include <cstdlib>
+
+#include <gtest/gtest.h>
 
 int main(int argc, char **argv)
 {

@@ -8,9 +8,9 @@
 
 #pragma once
 
-#include "utils/EGLUtils.h"
-#include "rendering/gles/RenderSystemGLES.h"
 #include "WinSystemRpi.h"
+#include "rendering/gles/RenderSystemGLES.h"
+#include "utils/EGLUtils.h"
 
 class CWinSystemRpiGLESContext : public CWinSystemRpi, public CRenderSystemGLES
 {

@@ -8,19 +8,19 @@
 
 #pragma once
 
+#include "AddonClass.h"
+#include "AddonString.h"
+#include "Alternative.h"
+#include "Dictionary.h"
+#include "FileItem.h"
+#include "InfoTagMusic.h"
+#include "InfoTagVideo.h"
+#include "ListItem.h"
+#include "Tuple.h"
+#include "commons/Exception.h"
+
 #include <map>
 #include <vector>
-
-#include "AddonClass.h"
-#include "Tuple.h"
-#include "Dictionary.h"
-#include "Alternative.h"
-#include "ListItem.h"
-#include "FileItem.h"
-#include "AddonString.h"
-#include "commons/Exception.h"
-#include "InfoTagVideo.h"
-#include "InfoTagMusic.h"
 
 
 namespace XBMCAddon

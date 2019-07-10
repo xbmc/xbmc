@@ -10,10 +10,11 @@
 
 #include "threads/Thread.h"
 
-#include <libinput.h>
-#include <libudev.h>
 #include <memory>
 #include <vector>
+
+#include <libinput.h>
+#include <libudev.h>
 
 class CLibInputKeyboard;
 class CLibInputPointer;

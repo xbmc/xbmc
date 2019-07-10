@@ -6,6 +6,7 @@
  *  See LICENSES/README.md for more information.
  */
 #include "DVDOverlayCodec.h"
+
 #include "cores/VideoPlayer/Interface/Addon/DemuxPacket.h"
 #include "cores/VideoPlayer/Interface/Addon/TimingConstants.h"
 

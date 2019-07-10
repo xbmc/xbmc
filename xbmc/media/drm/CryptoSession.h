@@ -8,12 +8,12 @@
 
 #pragma once
 
-#include <string>
-#include <vector>
+#include "commons/Buffer.h"
+
 #include <map>
 #include <stdint.h>
-
-#include "commons/Buffer.h"
+#include <string>
+#include <vector>
 
 namespace DRM
 {

@@ -7,6 +7,7 @@
  */
 
 #include "GameClientTopology.h"
+
 #include "GameClientDevice.h"
 #include "GameClientPort.h"
 #include "games/controllers/Controller.h"

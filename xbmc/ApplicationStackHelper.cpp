@@ -7,14 +7,15 @@
  */
 
 #include "ApplicationStackHelper.h"
+
 #include "ApplicationPlayer.h"
+#include "Util.h"
 #include "cores/VideoPlayer/DVDFileInfo.h"
 #include "filesystem/StackDirectory.h"
-#include "utils/log.h"
-#include "utils/URIUtils.h"
-#include "video/VideoDatabase.h"
 #include "threads/SingleLock.h"
-#include "Util.h"
+#include "utils/URIUtils.h"
+#include "utils/log.h"
+#include "video/VideoDatabase.h"
 
 using namespace XFILE;
 

@@ -7,6 +7,7 @@
  */
 
 #include "EventLogManager.h"
+
 #include "EventLog.h"
 #include "threads/SingleLock.h"
 

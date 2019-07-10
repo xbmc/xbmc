@@ -8,11 +8,13 @@
  *  SPDX-License-Identifier: GPL-2.0-or-later
  *  See LICENSES/README.md for more information.
  */
+#include "udf25.h"
+
+#include "File.h"
+#include "utils/log.h"
+
 #include <stdio.h>
 #include <stdlib.h>
-#include "utils/log.h"
-#include "udf25.h"
-#include "File.h"
 
 /* For direct data access, LSB first */
 #define GETN1(p) ((uint8_t)data[p])

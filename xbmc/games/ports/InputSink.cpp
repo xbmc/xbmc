@@ -7,6 +7,7 @@
  */
 
 #include "InputSink.h"
+
 #include "games/controllers/ControllerIDs.h"
 
 using namespace KODI;

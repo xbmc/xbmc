@@ -8,15 +8,14 @@
 
 #include "DVDFactoryDemuxer.h"
 
-#include "DVDInputStreams/DVDInputStream.h"
-
-#include "DVDDemuxFFmpeg.h"
 #include "DVDDemuxBXA.h"
 #include "DVDDemuxCDDA.h"
 #include "DVDDemuxClient.h"
+#include "DVDDemuxFFmpeg.h"
+#include "DVDInputStreams/DVDInputStream.h"
 #include "DemuxMultiSource.h"
-#include "utils/log.h"
 #include "utils/URIUtils.h"
+#include "utils/log.h"
 
 CDVDDemux* CDVDFactoryDemuxer::CreateDemuxer(std::shared_ptr<CDVDInputStream> pInputStream, bool fileinfo)
 {

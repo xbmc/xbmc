@@ -8,14 +8,14 @@
 
 #pragma once
 
+#include "addons/Addon.h"
+#include "guilib/GUIIncludes.h" // needed for the GUIInclude member
+#include "windowing/GraphicContext.h" // needed for the RESOLUTION members
+
 #include <map>
 #include <set>
-#include <vector>
 #include <utility>
-
-#include "addons/Addon.h"
-#include "windowing/GraphicContext.h" // needed for the RESOLUTION members
-#include "guilib/GUIIncludes.h"    // needed for the GUIInclude member
+#include <vector>
 
 #define CREDIT_LINE_LENGTH 50
 

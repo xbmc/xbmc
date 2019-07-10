@@ -8,11 +8,11 @@
 
 #pragma once
 
+#include "settings/lib/Setting.h"
+
 #include <string>
 #include <utility>
 #include <vector>
-
-#include "settings/lib/Setting.h"
 
 struct IntegerSettingOption;
 

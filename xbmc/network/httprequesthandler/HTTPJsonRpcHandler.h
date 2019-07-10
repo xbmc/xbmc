@@ -8,11 +8,11 @@
 
 #pragma once
 
-#include <string>
-
 #include "interfaces/json-rpc/IClient.h"
 #include "interfaces/json-rpc/ITransportLayer.h"
 #include "network/httprequesthandler/IHTTPRequestHandler.h"
+
+#include <string>
 
 class CHTTPJsonRpcHandler : public IHTTPRequestHandler
 {

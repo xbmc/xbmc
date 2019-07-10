@@ -11,13 +11,16 @@
 
 #pragma once
 
+#include "interfaces/IAnnouncer.h"
+#include "network/Network.h"
+#include "threads/CriticalSection.h"
+#include "threads/Thread.h"
+#include "utils/HttpParser.h"
+
 #include <map>
 #include <vector>
+
 #include <sys/socket.h>
-#include "threads/Thread.h"
-#include "threads/CriticalSection.h"
-#include "utils/HttpParser.h"
-#include "interfaces/IAnnouncer.h"
 
 class CVariant;
 

@@ -1,4 +1,4 @@
- /*
+/*
  *  Copyright (C) 2005-2018 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
@@ -8,13 +8,13 @@
 
 #pragma once
 
+#include "Window.h"
+#include "WindowDialogMixin.h"
+#include "swighelper.h"
+#include "windows/GUIMediaWindow.h"
+
 #include <limits.h>
 #include <vector>
-
-#include "Window.h"
-#include "windows/GUIMediaWindow.h"
-#include "swighelper.h"
-#include "WindowDialogMixin.h"
 
 namespace XBMCAddon
 {

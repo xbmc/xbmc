@@ -7,14 +7,14 @@
  */
 
 #include "Label.h"
-#include "addons/kodi-addon-dev-kit/include/kodi/gui/controls/Label.h"
 
+#include "ServiceBroker.h"
 #include "addons/binary-addons/AddonDll.h"
-#include "guilib/GUILabelControl.h"
+#include "addons/kodi-addon-dev-kit/include/kodi/gui/controls/Label.h"
 #include "guilib/GUIComponent.h"
+#include "guilib/GUILabelControl.h"
 #include "guilib/GUIWindowManager.h"
 #include "utils/log.h"
-#include "ServiceBroker.h"
 
 extern "C"
 {

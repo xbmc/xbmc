@@ -7,6 +7,7 @@
  */
 
 #include "CallbackHandler.h"
+
 #include "LanguageHook.h"
 
 namespace XBMCAddon

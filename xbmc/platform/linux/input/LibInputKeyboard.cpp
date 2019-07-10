@@ -16,10 +16,11 @@
 #include "utils/log.h"
 
 #include <algorithm>
-#include <fcntl.h>
-#include <linux/input.h>
 #include <map>
 #include <string.h>
+
+#include <fcntl.h>
+#include <linux/input.h>
 #include <sys/ioctl.h>
 #include <unistd.h>
 #include <xkbcommon/xkbcommon-keysyms.h>

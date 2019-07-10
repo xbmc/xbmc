@@ -7,9 +7,10 @@
  */
 
 #include "GUIControlProfiler.h"
-#include "utils/XBMCTinyXML.h"
-#include "utils/TimeUtils.h"
+
 #include "utils/StringUtils.h"
+#include "utils/TimeUtils.h"
+#include "utils/XBMCTinyXML.h"
 
 bool CGUIControlProfiler::m_bIsRunning = false;
 

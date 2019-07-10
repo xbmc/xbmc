@@ -6,10 +6,12 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include <dlfcn.h>
 #include "SoLoader.h"
+
 #include "filesystem/SpecialProtocol.h"
 #include "utils/log.h"
+
+#include <dlfcn.h>
 
 SoLoader::SoLoader(const std::string &so, bool bGlobal) : LibraryLoader(so)
 {

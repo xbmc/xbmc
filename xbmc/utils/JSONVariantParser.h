@@ -8,9 +8,9 @@
 
 #pragma once
 
-#include <string>
-
 #include "utils/Variant.h"
+
+#include <string>
 
 class CJSONVariantParser
 {

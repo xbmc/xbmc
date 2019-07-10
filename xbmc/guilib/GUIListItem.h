@@ -14,8 +14,8 @@
 */
 
 #include <map>
-#include <string>
 #include <memory>
+#include <string>
 
 //  Forward
 class CGUIListItemLayout;

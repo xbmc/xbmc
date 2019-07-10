@@ -7,10 +7,11 @@
  */
 
 #include "JNIXBMCSurfaceTextureOnFrameAvailableListener.h"
-#include <androidjni/jutils-details.hpp>
+
+#include "CompileInfo.h"
 
 #include <androidjni/Context.h>
-#include "CompileInfo.h"
+#include <androidjni/jutils-details.hpp>
 
 using namespace jni;
 

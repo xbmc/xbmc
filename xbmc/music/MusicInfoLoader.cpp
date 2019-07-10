@@ -7,22 +7,23 @@
  */
 
 #include "MusicInfoLoader.h"
-#include "ServiceBroker.h"
+
+#include "Album.h"
+#include "Artist.h"
+#include "FileItem.h"
 #include "MusicDatabase.h"
-#include "music/tags/MusicInfoTagLoaderFactory.h"
+#include "MusicThumbLoader.h"
+#include "ServiceBroker.h"
+#include "filesystem/File.h"
 #include "filesystem/MusicDatabaseDirectory/DirectoryNode.h"
 #include "filesystem/MusicDatabaseDirectory/QueryParams.h"
-#include "utils/URIUtils.h"
 #include "music/tags/MusicInfoTag.h"
-#include "filesystem/File.h"
+#include "music/tags/MusicInfoTagLoaderFactory.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
-#include "FileItem.h"
-#include "utils/log.h"
 #include "utils/Archive.h"
-#include "Artist.h"
-#include "Album.h"
-#include "MusicThumbLoader.h"
+#include "utils/URIUtils.h"
+#include "utils/log.h"
 
 using namespace XFILE;
 using namespace MUSIC_INFO;

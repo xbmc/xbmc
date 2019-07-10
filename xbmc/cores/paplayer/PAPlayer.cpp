@@ -7,23 +7,23 @@
  */
 
 #include "PAPlayer.h"
+
 #include "CodecFactory.h"
 #include "ServiceBroker.h"
+#include "Util.h"
+#include "cores/AudioEngine/Interfaces/AE.h"
+#include "cores/AudioEngine/Interfaces/AEStream.h"
+#include "cores/AudioEngine/Utils/AEStreamData.h"
+#include "cores/AudioEngine/Utils/AEUtil.h"
+#include "cores/DataCacheCore.h"
+#include "cores/VideoPlayer/Process/ProcessInfo.h"
+#include "music/tags/MusicInfoTag.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
-#include "music/tags/MusicInfoTag.h"
-#include "utils/log.h"
 #include "utils/JobManager.h"
+#include "utils/log.h"
 #include "video/Bookmark.h"
-
-#include "cores/AudioEngine/Interfaces/AE.h"
-#include "cores/AudioEngine/Utils/AEUtil.h"
-#include "cores/AudioEngine/Utils/AEStreamData.h"
-#include "cores/AudioEngine/Interfaces/AEStream.h"
-#include "cores/DataCacheCore.h"
-#include "cores/VideoPlayer/Process/ProcessInfo.h"
-#include "Util.h"
 
 #define TIME_TO_CACHE_NEXT_FILE 5000 /* 5 seconds before end of song, start caching the next song */
 #define FAST_XFADE_TIME           80 /* 80 milliseconds */

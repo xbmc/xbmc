@@ -8,10 +8,11 @@
 
 #pragma once
 
-#include <vector>
-#include <map>
 #include "IListProvider.h"
 #include "threads/CriticalSection.h"
+
+#include <map>
+#include <vector>
 
 typedef std::shared_ptr<IListProvider> IListProviderPtr;
 

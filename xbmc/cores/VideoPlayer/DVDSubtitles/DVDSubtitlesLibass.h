@@ -13,7 +13,7 @@
 
 #include <ass/ass.h>
 
- /** Wrapper for Libass **/
+/** Wrapper for Libass **/
 
 class CDVDSubtitlesLibass : public IDVDResourceCounted<CDVDSubtitlesLibass>
 {

@@ -10,6 +10,8 @@
 
 #include "WebSocket.h"
 
+#include <string>
+
 class CWebSocketV8 : public CWebSocket
 {
 public:

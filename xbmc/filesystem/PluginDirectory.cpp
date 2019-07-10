@@ -6,29 +6,30 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include "Application.h"
-#include "threads/SystemClock.h"
 #include "PluginDirectory.h"
+
+#include "Application.h"
+#include "FileItem.h"
 #include "ServiceBroker.h"
-#include "addons/AddonManager.h"
+#include "URL.h"
 #include "addons/AddonInstaller.h"
+#include "addons/AddonManager.h"
 #include "addons/IAddon.h"
 #include "addons/PluginSource.h"
-#include "interfaces/generic/ScriptInvocationManager.h"
-#include "threads/SingleLock.h"
-#include "guilib/GUIComponent.h"
-#include "guilib/GUIWindowManager.h"
 #include "dialogs/GUIDialogBusy.h"
 #include "dialogs/GUIDialogProgress.h"
+#include "guilib/GUIComponent.h"
+#include "guilib/GUIWindowManager.h"
+#include "interfaces/generic/ScriptInvocationManager.h"
+#include "messaging/ApplicationMessenger.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
-#include "FileItem.h"
-#include "video/VideoInfoTag.h"
-#include "utils/log.h"
+#include "threads/SingleLock.h"
+#include "threads/SystemClock.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
-#include "messaging/ApplicationMessenger.h"
-#include "URL.h"
+#include "utils/log.h"
+#include "video/VideoInfoTag.h"
 
 using namespace XFILE;
 using namespace ADDON;

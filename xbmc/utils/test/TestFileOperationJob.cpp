@@ -6,14 +6,13 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include "utils/FileOperationJob.h"
-#include "filesystem/File.h"
 #include "filesystem/Directory.h"
+#include "filesystem/File.h"
+#include "test/TestUtils.h"
+#include "utils/FileOperationJob.h"
 #include "utils/URIUtils.h"
 
-#include "test/TestUtils.h"
-
-#include "gtest/gtest.h"
+#include <gtest/gtest.h>
 
 TEST(TestFileOperationJob, ActionCopy)
 {

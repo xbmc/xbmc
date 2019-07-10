@@ -9,7 +9,8 @@
 #pragma once
 
 #include "GLContext.h"
-#include "GL/glx.h"
+
+#include <GL/glx.h>
 
 class CGLContextGLX : public CGLContext
 {

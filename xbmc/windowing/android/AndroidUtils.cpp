@@ -5,34 +5,31 @@
  *  SPDX-License-Identifier: GPL-2.0-or-later
  *  See LICENSES/README.md for more information.
  */
+#include "AndroidUtils.h"
+
+#include "ServiceBroker.h"
+#include "settings/DisplaySettings.h"
+#include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
+#include "settings/lib/SettingsManager.h"
+#include "utils/StringUtils.h"
+#include "utils/SysfsUtils.h"
+#include "utils/log.h"
+#include "windowing/GraphicContext.h"
+
+#include "platform/android/activity/XBMCApp.h"
+
+#include <cmath>
 #include <stdlib.h>
 
-#include <androidjni/SystemProperties.h>
+#include <EGL/egl.h>
+#include <androidjni/Build.h>
 #include <androidjni/Display.h>
+#include <androidjni/System.h>
+#include <androidjni/SystemProperties.h>
 #include <androidjni/View.h>
 #include <androidjni/Window.h>
 #include <androidjni/WindowManager.h>
-#include <androidjni/Build.h>
-#include <androidjni/System.h>
-
-#include <EGL/egl.h>
-
-#include <cmath>
-
-#include "AndroidUtils.h"
-
-#include "windowing/GraphicContext.h"
-#include "utils/log.h"
-
-#include "settings/Settings.h"
-#include "settings/DisplaySettings.h"
-#include "settings/SettingsComponent.h"
-#include "settings/lib/SettingsManager.h"
-
-#include "ServiceBroker.h"
-#include "utils/StringUtils.h"
-#include "utils/SysfsUtils.h"
-#include "platform/android/activity/XBMCApp.h"
 
 static bool s_hasModeApi = false;
 static std::vector<RESOLUTION_INFO> s_res_displayModes;

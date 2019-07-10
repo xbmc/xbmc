@@ -7,16 +7,19 @@
  */
 
 #include "WinLibraryFile.h"
+
+#include "URL.h"
 #include "WinLibraryDirectory.h"
+#include "utils/StringUtils.h"
+#include "utils/URIUtils.h"
+#include "utils/log.h"
+
 #include "platform/win10/AsyncHelpers.h"
 #include "platform/win32/CharsetConverter.h"
 #include "platform/win32/WIN32Util.h"
-#include "utils/log.h"
-#include "utils/StringUtils.h"
-#include "utils/URIUtils.h"
-#include "URL.h"
 
 #include <string>
+
 #include <robuffer.h>
 #include <winrt/Windows.Foundation.Collections.h>
 #include <winrt/Windows.Security.Cryptography.h>

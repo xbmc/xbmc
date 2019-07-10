@@ -8,11 +8,12 @@
 
 #pragma once
 
-#include "threads/Thread.h"
+#include "Episode.h"
 #include "VideoInfoTag.h"
 #include "addons/Scraper.h"
-#include "Episode.h"
 #include "filesystem/CurlFile.h"
+#include "threads/Thread.h"
+
 #include <string>
 #include <vector>
 

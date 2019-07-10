@@ -13,10 +13,11 @@
 #include "cores/RetroPlayer/buffers/video/RenderBufferSysMem.h"
 #include "cores/RetroPlayer/process/RPProcessInfo.h"
 
-#include <dxgi.h>
 #include <memory>
 #include <stdint.h>
 #include <vector>
+
+#include <dxgi.h>
 
 class CD3DTexture;
 struct SwsContext;

@@ -7,13 +7,14 @@
  */
 
 #include "DialogGameOSD.h"
+
 #include "DialogGameOSDHelp.h"
+#include "ServiceBroker.h"
 #include "games/GameServices.h"
 #include "games/GameSettings.h"
 #include "guilib/WindowIDs.h"
 #include "input/actions/Action.h"
 #include "input/actions/ActionIDs.h"
-#include "ServiceBroker.h"
 
 using namespace KODI;
 using namespace GAME;

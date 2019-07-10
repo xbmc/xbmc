@@ -7,6 +7,7 @@
  */
 
 #include "ProcessInfoOSX.h"
+
 #include "cores/VideoPlayer/Process/ProcessInfo.h"
 #include "threads/SingleLock.h"
 

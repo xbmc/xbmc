@@ -8,12 +8,12 @@
 
 #pragma once
 
+#include "threads/Condition.h"
+#include "threads/SingleLock.h"
+
 #include <initializer_list>
 #include <memory>
 #include <vector>
-
-#include "threads/Condition.h"
-#include "threads/SingleLock.h"
 
 // forward declare the CEventGroup
 namespace XbmcThreads

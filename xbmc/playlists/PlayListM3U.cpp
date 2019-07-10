@@ -7,14 +7,16 @@
  */
 
 #include "PlayListM3U.h"
-#include "filesystem/File.h"
+
 #include "URL.h"
 #include "Util.h"
-#include "utils/CharsetConverter.h"
-#include "utils/log.h"
-#include "utils/URIUtils.h"
-#include "video/VideoInfoTag.h"
+#include "filesystem/File.h"
 #include "music/tags/MusicInfoTag.h"
+#include "utils/CharsetConverter.h"
+#include "utils/URIUtils.h"
+#include "utils/log.h"
+#include "video/VideoInfoTag.h"
+
 #include <inttypes.h>
 
 using namespace PLAYLIST;

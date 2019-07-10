@@ -7,6 +7,7 @@
  */
 
 #include "DatabaseQuery.h"
+
 #include "Database.h"
 #include "XBDateTime.h"
 #include "guilib/LocalizeStrings.h"

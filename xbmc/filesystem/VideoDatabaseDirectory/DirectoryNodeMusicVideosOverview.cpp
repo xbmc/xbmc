@@ -7,10 +7,11 @@
  */
 
 #include "DirectoryNodeMusicVideosOverview.h"
+
 #include "FileItem.h"
 #include "guilib/LocalizeStrings.h"
-#include "video/VideoDbUrl.h"
 #include "utils/StringUtils.h"
+#include "video/VideoDbUrl.h"
 
 using namespace XFILE::VIDEODATABASEDIRECTORY;
 

@@ -8,13 +8,13 @@
 
 #include "ApplicationMessenger.h"
 
-#include <memory>
-#include <utility>
-
-#include "windowing/GraphicContext.h"
 #include "guilib/GUIMessage.h"
 #include "messaging/IMessageTarget.h"
 #include "threads/SingleLock.h"
+#include "windowing/GraphicContext.h"
+
+#include <memory>
+#include <utility>
 
 namespace KODI
 {

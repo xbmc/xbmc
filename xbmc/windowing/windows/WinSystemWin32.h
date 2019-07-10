@@ -12,6 +12,7 @@
 #include "threads/CriticalSection.h"
 #include "threads/SystemClock.h"
 #include "windowing/WinSystem.h"
+
 #include <vector>
 
 static const DWORD WINDOWED_STYLE = WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN;

@@ -10,9 +10,9 @@
 
 #include "cores/AudioEngine/Interfaces/AESink.h"
 #include "cores/AudioEngine/Utils/AEDeviceInfo.h"
-#include <stdint.h>
-
 #include "threads/CriticalSection.h"
+
+#include <stdint.h>
 
 class CAESinkOSS : public IAESink
 {

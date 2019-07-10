@@ -7,15 +7,16 @@
  */
 
 #include "VirtualDirectory.h"
+
+#include "Directory.h"
 #include "DirectoryFactory.h"
+#include "FileItem.h"
+#include "SourcesDirectory.h"
 #include "URL.h"
 #include "Util.h"
-#include "utils/URIUtils.h"
-#include "utils/StringUtils.h"
-#include "Directory.h"
-#include "SourcesDirectory.h"
 #include "storage/MediaManager.h"
-#include "FileItem.h"
+#include "utils/StringUtils.h"
+#include "utils/URIUtils.h"
 
 using namespace XFILE;
 

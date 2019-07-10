@@ -6,14 +6,15 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include <algorithm>
-
 #include "SettingSection.h"
+
 #include "SettingDefinitions.h"
 #include "SettingsManager.h"
-#include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/XBMCTinyXML.h"
+#include "utils/log.h"
+
+#include <algorithm>
 
 template<class T> void addISetting(const TiXmlNode *node, const T &item, std::vector<T> &items)
 {

@@ -6,13 +6,14 @@
  *  See LICENSES/README.md for more information.
  */
 #include "AESinkPULSE.h"
-#include "utils/log.h"
-#include "Util.h"
-#include "guilib/LocalizeStrings.h"
+
 #include "Application.h"
-#include "cores/AudioEngine/AESinkFactory.h"
 #include "ServiceBroker.h"
+#include "Util.h"
+#include "cores/AudioEngine/AESinkFactory.h"
+#include "guilib/LocalizeStrings.h"
 #include "utils/StringUtils.h"
+#include "utils/log.h"
 
 static const char *ContextStateToString(pa_context_state s)
 {

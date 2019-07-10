@@ -7,9 +7,10 @@
  */
 
 #include "MouseInputHandling.h"
+
+#include "input/InputTranslator.h"
 #include "input/joysticks/interfaces/IButtonMap.h"
 #include "input/mouse/interfaces/IMouseInputHandler.h"
-#include "input/InputTranslator.h"
 
 using namespace KODI;
 using namespace MOUSE;

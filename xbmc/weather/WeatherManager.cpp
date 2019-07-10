@@ -8,22 +8,22 @@
 
 #include "WeatherManager.h"
 
+#include "LangInfo.h"
+#include "ServiceBroker.h"
+#include "WeatherJob.h"
 #include "addons/AddonManager.h"
 #include "addons/settings/GUIDialogAddonSettings.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/WindowIDs.h"
-#include "LangInfo.h"
-#include "ServiceBroker.h"
-#include "settings/lib/Setting.h"
-#include "settings/lib/SettingsManager.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
+#include "settings/lib/Setting.h"
+#include "settings/lib/SettingsManager.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
-#include "utils/XMLUtils.h"
 #include "utils/Variant.h"
-#include "WeatherJob.h"
+#include "utils/XMLUtils.h"
 
 using namespace ADDON;
 

@@ -7,15 +7,16 @@
  */
 
 #include "Resolution.h"
+
 #include "GraphicContext.h"
-#include "utils/Variant.h"
-#include "utils/log.h"
-#include "utils/MathUtils.h"
+#include "ServiceBroker.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/DisplaySettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
-#include "ServiceBroker.h"
+#include "utils/MathUtils.h"
+#include "utils/Variant.h"
+#include "utils/log.h"
 
 #include <cstdlib>
 

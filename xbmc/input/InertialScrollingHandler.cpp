@@ -8,15 +8,15 @@
 
 
 #include "InertialScrollingHandler.h"
+
 #include "Application.h"
 #include "ServiceBroker.h"
-#include "utils/TimeUtils.h"
-#include "input/Key.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
-#include "windowing/WinSystem.h"
-
+#include "input/Key.h"
+#include "utils/TimeUtils.h"
 #include "utils/log.h"
+#include "windowing/WinSystem.h"
 
 #include <cmath>
 #include <numeric>

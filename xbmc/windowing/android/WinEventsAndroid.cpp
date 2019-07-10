@@ -9,11 +9,11 @@
 #include "WinEventsAndroid.h"
 
 #include "AppInboundProtocol.h"
+#include "ServiceBroker.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "input/InputManager.h"
 #include "input/XBMC_vkeys.h"
-#include "ServiceBroker.h"
 #include "utils/log.h"
 
 #define ALMOST_ZERO 0.125f

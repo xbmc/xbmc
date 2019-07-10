@@ -7,6 +7,7 @@
  */
 
 #include "UPowerSyscall.h"
+
 #include "utils/log.h"
 
 CUPowerSource::CUPowerSource(const char *powerSource)

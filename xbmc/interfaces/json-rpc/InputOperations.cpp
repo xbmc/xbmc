@@ -7,14 +7,15 @@
  */
 
 #include "InputOperations.h"
+
 #include "Application.h"
-#include "messaging/ApplicationMessenger.h"
 #include "guilib/GUIAudioManager.h"
+#include "guilib/GUIKeyboardFactory.h"
 #include "guilib/GUIWindow.h"
 #include "guilib/GUIWindowManager.h"
-#include "guilib/GUIKeyboardFactory.h"
-#include "input/actions/ActionTranslator.h"
 #include "input/Key.h"
+#include "input/actions/ActionTranslator.h"
+#include "messaging/ApplicationMessenger.h"
 #include "utils/Variant.h"
 
 using namespace JSONRPC;

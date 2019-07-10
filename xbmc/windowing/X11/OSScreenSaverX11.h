@@ -8,10 +8,10 @@
 
 #pragma once
 
-#include <X11/Xlib.h>
-
 #include "../OSScreenSaver.h"
 #include "threads/Timer.h"
+
+#include <X11/Xlib.h>
 
 class COSScreenSaverX11 : public KODI::WINDOWING::IOSScreenSaver
 {

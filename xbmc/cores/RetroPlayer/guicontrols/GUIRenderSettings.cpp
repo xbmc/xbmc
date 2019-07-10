@@ -7,6 +7,7 @@
  */
 
 #include "GUIRenderSettings.h"
+
 #include "GUIGameControl.h"
 #include "threads/SingleLock.h"
 

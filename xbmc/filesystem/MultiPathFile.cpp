@@ -7,9 +7,10 @@
  */
 
 #include "MultiPathFile.h"
+
 #include "MultiPathDirectory.h"
-#include "utils/URIUtils.h"
 #include "URL.h"
+#include "utils/URIUtils.h"
 
 using namespace XFILE;
 

@@ -7,10 +7,11 @@
  */
 
 #include "PlaylistFileDirectory.h"
-#include "playlists/PlayListFactory.h"
+
 #include "File.h"
 #include "URL.h"
 #include "playlists/PlayList.h"
+#include "playlists/PlayListFactory.h"
 
 using namespace PLAYLIST;
 

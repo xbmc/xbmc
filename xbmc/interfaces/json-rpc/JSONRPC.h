@@ -8,13 +8,13 @@
 
 #pragma once
 
+#include "JSONRPCUtils.h"
+#include "JSONServiceDescription.h"
+
 #include <iostream>
 #include <map>
 #include <stdio.h>
 #include <string>
-
-#include "JSONRPCUtils.h"
-#include "JSONServiceDescription.h"
 
 class CVariant;
 

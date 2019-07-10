@@ -6,14 +6,15 @@
  *  See LICENSES/README.md for more information.
  */
 #include "VideoReferenceClock.h"
+
 #include "ServiceBroker.h"
-#include "utils/MathUtils.h"
-#include "utils/log.h"
-#include "utils/TimeUtils.h"
-#include "threads/SingleLock.h"
-#include "windowing/GraphicContext.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
+#include "threads/SingleLock.h"
+#include "utils/MathUtils.h"
+#include "utils/TimeUtils.h"
+#include "utils/log.h"
+#include "windowing/GraphicContext.h"
 #include "windowing/VideoSync.h"
 #include "windowing/WinSystem.h"
 

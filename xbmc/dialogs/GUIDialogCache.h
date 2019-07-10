@@ -9,8 +9,9 @@
 #pragma once
 
 #include "filesystem/File.h"
-#include "threads/Thread.h"
 #include "threads/SystemClock.h"
+#include "threads/Thread.h"
+
 #include <string>
 
 class CGUIDialogProgress;

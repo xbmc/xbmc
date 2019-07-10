@@ -8,8 +8,8 @@
 
 #pragma once
 
-#include "windows/GUIMediaWindow.h"
 #include "PictureThumbLoader.h"
+#include "windows/GUIMediaWindow.h"
 
 class CGUIDialogProgress;
 

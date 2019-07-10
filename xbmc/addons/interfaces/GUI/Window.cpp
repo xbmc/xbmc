@@ -8,15 +8,14 @@
 
 #include "addons/kodi-addon-dev-kit/include/kodi/gui/Window.h"
 
-#include "Window.h"
-#include "General.h"
-#include "controls/Rendering.h"
-
 #include "Application.h"
 #include "FileItem.h"
+#include "General.h"
 #include "ServiceBroker.h"
-#include "addons/binary-addons/AddonDll.h"
+#include "Window.h"
 #include "addons/Skin.h"
+#include "addons/binary-addons/AddonDll.h"
+#include "controls/Rendering.h"
 #include "filesystem/File.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIRenderingControl.h"
@@ -24,10 +23,10 @@
 #include "guilib/TextureManager.h"
 #include "input/Key.h"
 #include "messaging/ApplicationMessenger.h"
-#include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
+#include "utils/log.h"
 
 using namespace ADDON;
 using namespace KODI::MESSAGING;

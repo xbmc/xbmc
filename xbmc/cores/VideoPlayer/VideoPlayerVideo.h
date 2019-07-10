@@ -8,16 +8,17 @@
 
 #pragma once
 
-#include "threads/Thread.h"
-#include "IVideoPlayer.h"
-#include "DVDMessageQueue.h"
-#include "DVDStreamInfo.h"
-#include "DVDCodecs/Video/DVDVideoCodec.h"
 #include "DVDClock.h"
+#include "DVDCodecs/Video/DVDVideoCodec.h"
+#include "DVDMessageQueue.h"
 #include "DVDOverlayContainer.h"
+#include "DVDStreamInfo.h"
+#include "IVideoPlayer.h"
 #include "PTSTracker.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderManager.h"
+#include "threads/Thread.h"
 #include "utils/BitstreamStats.h"
+
 #include <atomic>
 
 #define DROP_DROPPED 1

@@ -8,7 +8,7 @@
 
 #include "utils/HTMLUtil.h"
 
-#include "gtest/gtest.h"
+#include <gtest/gtest.h>
 
 TEST(TestHTMLUtil, RemoveTags)
 {

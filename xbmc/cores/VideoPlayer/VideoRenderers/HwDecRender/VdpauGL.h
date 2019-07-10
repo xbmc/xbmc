@@ -8,6 +8,11 @@
 
 #pragma once
 
+// always define GL_GLEXT_PROTOTYPES before include gl headers
+#if !defined(GL_GLEXT_PROTOTYPES)
+#define GL_GLEXT_PROTOTYPES
+#endif
+
 #include <GL/gl.h>
 #include <GL/glext.h>
 

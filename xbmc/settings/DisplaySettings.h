@@ -8,16 +8,16 @@
 
 #pragma once
 
-#include <map>
-#include <set>
-#include <utility>
-#include <vector>
-
-#include "windowing/Resolution.h"
 #include "settings/lib/ISettingCallback.h"
 #include "settings/lib/ISubSettings.h"
 #include "threads/CriticalSection.h"
 #include "utils/Observer.h"
+#include "windowing/Resolution.h"
+
+#include <map>
+#include <set>
+#include <utility>
+#include <vector>
 
 class TiXmlNode;
 struct IntegerSettingOption;

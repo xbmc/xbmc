@@ -7,6 +7,7 @@
  */
 
 #include "GUICardinalFeatureButton.h"
+
 #include "guilib/LocalizeStrings.h"
 
 #include <string>

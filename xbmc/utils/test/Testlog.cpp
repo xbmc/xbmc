@@ -6,17 +6,17 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include <stdlib.h>
-#include "utils/log.h"
-#include "utils/RegExp.h"
+#include "CompileInfo.h"
 #include "filesystem/File.h"
 #include "filesystem/SpecialProtocol.h"
-#include "utils/StringUtils.h"
-#include "CompileInfo.h"
-
 #include "test/TestUtils.h"
+#include "utils/RegExp.h"
+#include "utils/StringUtils.h"
+#include "utils/log.h"
 
-#include "gtest/gtest.h"
+#include <stdlib.h>
+
+#include <gtest/gtest.h>
 
 class Testlog : public testing::Test
 {

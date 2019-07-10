@@ -7,12 +7,13 @@
  */
 
 #include "GUITextureGLES.h"
-#include "Texture.h"
+
 #include "ServiceBroker.h"
-#include "utils/log.h"
+#include "Texture.h"
+#include "rendering/gles/RenderSystemGLES.h"
 #include "utils/GLUtils.h"
 #include "utils/MathUtils.h"
-#include "rendering/gles/RenderSystemGLES.h"
+#include "utils/log.h"
 #include "windowing/GraphicContext.h"
 #include "windowing/WinSystem.h"
 

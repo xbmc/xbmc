@@ -13,7 +13,7 @@
 #include "platform/win32/CharsetConverter.h"
 #endif
 
-#include "gtest/gtest.h"
+#include <gtest/gtest.h>
 
 class TestSystemInfo : public testing::Test
 {

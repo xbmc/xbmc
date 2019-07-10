@@ -7,21 +7,22 @@
  */
 
 #include "GUIAudioManager.h"
+
 #include "ServiceBroker.h"
-#include "input/actions/ActionIDs.h"
-#include "input/actions/ActionTranslator.h"
-#include "input/Key.h"
-#include "input/WindowTranslator.h"
-#include "settings/lib/Setting.h"
-#include "settings/Settings.h"
-#include "settings/SettingsComponent.h"
-#include "threads/SingleLock.h"
-#include "utils/URIUtils.h"
-#include "utils/XBMCTinyXML.h"
-#include "filesystem/Directory.h"
 #include "addons/AddonManager.h"
 #include "addons/Skin.h"
 #include "cores/AudioEngine/Interfaces/AE.h"
+#include "filesystem/Directory.h"
+#include "input/Key.h"
+#include "input/WindowTranslator.h"
+#include "input/actions/ActionIDs.h"
+#include "input/actions/ActionTranslator.h"
+#include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
+#include "settings/lib/Setting.h"
+#include "threads/SingleLock.h"
+#include "utils/URIUtils.h"
+#include "utils/XBMCTinyXML.h"
 #include "utils/log.h"
 
 CGUIAudioManager::CGUIAudioManager()

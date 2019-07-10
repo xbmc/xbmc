@@ -8,11 +8,10 @@
 
 #pragma once
 
-#include "playlists/PlayList.h"
 #include "AddonClass.h"
 #include "Exception.h"
-
 #include "ListItem.h"
+#include "playlists/PlayList.h"
 
 namespace XBMCAddon
 {

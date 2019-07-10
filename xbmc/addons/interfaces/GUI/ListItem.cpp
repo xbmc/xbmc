@@ -7,14 +7,14 @@
  */
 
 #include "ListItem.h"
-#include "General.h"
 
 #include "FileItem.h"
+#include "General.h"
 #include "addons/binary-addons/AddonDll.h"
 #include "addons/kodi-addon-dev-kit/include/kodi/gui/ListItem.h"
-#include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
+#include "utils/log.h"
 
 using namespace kodi; // addon-dev-kit namespace
 using namespace kodi::gui; // addon-dev-kit namespace

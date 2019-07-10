@@ -6,6 +6,7 @@
  *  See LICENSES/README.md for more information.
  */
 #include "DBusUtil.h"
+
 #include "utils/log.h"
 
 CVariant CDBusUtil::GetVariant(const char *destination, const char *object, const char *interface, const char *property)

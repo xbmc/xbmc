@@ -7,10 +7,11 @@
  */
 
 #include "GUIDialogOK.h"
+
 #include "ServiceBroker.h"
 #include "guilib/GUIComponent.h"
-#include "guilib/GUIWindowManager.h"
 #include "guilib/GUIMessage.h"
+#include "guilib/GUIWindowManager.h"
 #include "utils/Variant.h"
 
 CGUIDialogOK::CGUIDialogOK(void)

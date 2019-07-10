@@ -8,10 +8,11 @@
 
 #pragma once
 
-#include <string>
-#include <vector>
 #include "guilib/guiinfo/GUIInfoLabel.h"
 #include "interfaces/info/InfoBool.h"
+
+#include <string>
+#include <vector>
 
 class TiXmlElement;
 

@@ -7,8 +7,9 @@
  */
 
 #include "LegacyPathTranslation.h"
-#include "utils/StringUtils.h"
+
 #include "URL.h"
+#include "utils/StringUtils.h"
 
 typedef struct Translator {
   const char *legacyPath;

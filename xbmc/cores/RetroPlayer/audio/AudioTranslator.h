@@ -8,8 +8,8 @@
 
 #pragma once
 
-#include "cores/RetroPlayer/streams/RetroPlayerStreamTypes.h"
 #include "cores/AudioEngine/Utils/AEChannelData.h"
+#include "cores/RetroPlayer/streams/RetroPlayerStreamTypes.h"
 
 namespace KODI
 {

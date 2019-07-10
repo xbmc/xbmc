@@ -7,12 +7,13 @@
  */
 
 #include "Digest.h"
-#include "StringUtils.h"
 
-#include <openssl/evp.h>
+#include "StringUtils.h"
 
 #include <array>
 #include <stdexcept>
+
+#include <openssl/evp.h>
 
 namespace KODI
 {

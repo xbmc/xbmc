@@ -11,20 +11,21 @@
 
 #pragma once
 
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
+#include "filesystem/PipeFile.h"
+#include "interfaces/IActionListener.h"
+#include "interfaces/IAnnouncer.h"
+#include "threads/CriticalSection.h"
+#include "threads/Thread.h"
+
+#include <list>
 #include <string>
 #include <vector>
-#include <list>
-#include "threads/Thread.h"
-#include "threads/CriticalSection.h"
-#include "filesystem/PipeFile.h"
-#include "interfaces/IAnnouncer.h"
-#include "interfaces/IActionListener.h"
 
+#include <arpa/inet.h>
+#include <netinet/in.h>
 #include <shairplay/raop.h>
+#include <sys/socket.h>
+#include <sys/types.h>
 
 class CDACP;
 class CVariant;

@@ -7,16 +7,18 @@
  */
 
 #include "VideoPlayerSubtitle.h"
-#include "DVDCodecs/Overlay/DVDOverlay.h"
-#include "DVDCodecs/Overlay/DVDOverlaySpu.h"
-#include "DVDCodecs/Overlay/DVDOverlayCodec.h"
-#include "DVDSubtitles/DVDSubtitleParser.h"
+
 #include "DVDCodecs/DVDFactoryCodec.h"
+#include "DVDCodecs/Overlay/DVDOverlay.h"
+#include "DVDCodecs/Overlay/DVDOverlayCodec.h"
+#include "DVDCodecs/Overlay/DVDOverlaySpu.h"
+#include "DVDSubtitles/DVDSubtitleParser.h"
 #include "cores/VideoPlayer/Interface/Addon/DemuxPacket.h"
 #include "cores/VideoPlayer/Interface/Addon/TimingConstants.h"
-#include "utils/log.h"
-#include "system.h"
 #include "threads/SingleLock.h"
+#include "utils/log.h"
+
+#include "system.h"
 
 CVideoPlayerSubtitle::CVideoPlayerSubtitle(CDVDOverlayContainer* pOverlayContainer, CProcessInfo &processInfo)
 : IDVDStreamPlayer(processInfo)

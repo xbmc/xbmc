@@ -8,9 +8,10 @@
 
 #pragma once
 
-#include "system.h" // for SAFE_RELEASE
-#include "DVDOverlay.h"
 #include "../../DVDSubtitles/DVDSubtitlesLibass.h"
+#include "DVDOverlay.h"
+
+#include "system.h" // for SAFE_RELEASE
 
 class CDVDOverlaySSA : public CDVDOverlay
 {

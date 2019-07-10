@@ -9,9 +9,8 @@
 #pragma once
 
 #include "ICodec.h"
-
-#include "cores/VideoPlayer/DVDDemuxers/DVDDemux.h"
 #include "cores/VideoPlayer/DVDCodecs/Audio/DVDAudioCodec.h"
+#include "cores/VideoPlayer/DVDDemuxers/DVDDemux.h"
 #include "cores/VideoPlayer/DVDInputStreams/DVDInputStream.h"
 
 namespace ActiveAE

@@ -13,9 +13,9 @@
 #include "cores/AudioEngine/Interfaces/IAudioCallback.h"
 #include "utils/rfft.h"
 
+#include <list>
 #include <string>
 #include <vector>
-#include <list>
 
 #define AUDIO_BUFFER_SIZE 512 // MUST BE A POWER OF 2!!!
 #define MAX_AUDIO_BUFFERS 16

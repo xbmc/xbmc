@@ -7,23 +7,24 @@
  */
 
 #include "Directory.h"
+
+#include "Application.h"
+#include "DirectoryCache.h"
 #include "DirectoryFactory.h"
 #include "FileDirectoryFactory.h"
-#include "ServiceBroker.h"
-#include "commons/Exception.h"
 #include "FileItem.h"
-#include "DirectoryCache.h"
+#include "PasswordManager.h"
+#include "ServiceBroker.h"
+#include "URL.h"
+#include "commons/Exception.h"
+#include "dialogs/GUIDialogBusy.h"
+#include "guilib/GUIWindowManager.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
-#include "utils/log.h"
 #include "utils/Job.h"
 #include "utils/JobManager.h"
-#include "Application.h"
-#include "guilib/GUIWindowManager.h"
-#include "dialogs/GUIDialogBusy.h"
 #include "utils/URIUtils.h"
-#include "URL.h"
-#include "PasswordManager.h"
+#include "utils/log.h"
 
 using namespace XFILE;
 

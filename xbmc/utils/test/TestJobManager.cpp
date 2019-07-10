@@ -10,7 +10,7 @@
 #include "utils/JobManager.h"
 #include "utils/Job.h"
 
-#include "gtest/gtest.h"
+#include <gtest/gtest.h>
 #include <atomic>
 
 #ifdef TARGET_POSIX

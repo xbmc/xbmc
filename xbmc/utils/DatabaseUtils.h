@@ -8,13 +8,13 @@
 
 #pragma once
 
+#include "media/MediaType.h"
+
 #include <map>
 #include <memory>
 #include <set>
 #include <string>
 #include <vector>
-
-#include "media/MediaType.h"
 
 class CVariant;
 

@@ -8,9 +8,9 @@
 
 #pragma once
 
+#include <memory>
 #include <string.h>
 #include <string>
-#include <memory>
 
 namespace XbmcCommons
 {

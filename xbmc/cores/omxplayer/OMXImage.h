@@ -9,21 +9,15 @@
 #pragma once
 
 #include "OMXCore.h"
-
-#include <IL/OMX_Video.h>
-
-#if defined(STANDALONE)
-#define XB_FMT_A8R8G8B8 1
-#include "File.h"
-#else
 #include "filesystem/File.h"
 #include "guilib/XBTF.h"
-#endif
+#include "threads/Thread.h"
 
-#include "system_gl.h"
 #include <EGL/egl.h>
 #include <EGL/eglext.h>
-#include "threads/Thread.h"
+#include <IL/OMX_Video.h>
+
+#include "system_gl.h"
 
 class COMXImageFile;
 

@@ -13,9 +13,9 @@
 \brief
 */
 
-#include <vector>
-
 #include "GUIControlLookup.h"
+
+#include <vector>
 
 /*!
  \ingroup controls

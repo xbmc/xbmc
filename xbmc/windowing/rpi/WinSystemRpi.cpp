@@ -8,22 +8,23 @@
 
 #include "WinSystemRpi.h"
 
-#include <string.h>
-#include <float.h>
-
-#include "platform/linux/DllBCM.h"
-#include "platform/linux/RBP.h"
 #include "ServiceBroker.h"
-#include "windowing/GraphicContext.h"
-#include "windowing/Resolution.h"
+#include "cores/AudioEngine/AESinkFactory.h"
+#include "cores/AudioEngine/Sinks/AESinkPi.h"
+#include "guilib/DispResource.h"
 #include "settings/DisplaySettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
-#include "guilib/DispResource.h"
 #include "utils/log.h"
-#include "cores/AudioEngine/AESinkFactory.h"
-#include "cores/AudioEngine/Sinks/AESinkPi.h"
+#include "windowing/GraphicContext.h"
+#include "windowing/Resolution.h"
+
+#include "platform/linux/DllBCM.h"
+#include "platform/linux/RBP.h"
 #include "platform/linux/powermanagement/LinuxPowerSyscall.h"
+
+#include <float.h>
+#include <string.h>
 
 #include <EGL/egl.h>
 #include <EGL/eglplatform.h>

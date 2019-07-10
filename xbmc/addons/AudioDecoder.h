@@ -11,8 +11,8 @@
 #include "addons/binary-addons/BinaryAddonBase.h"
 #include "addons/kodi-addon-dev-kit/include/kodi/addon-instance/AudioDecoder.h"
 #include "cores/paplayer/ICodec.h"
-#include "music/tags/ImusicInfoTagLoader.h"
 #include "filesystem/MusicFileDirectory.h"
+#include "music/tags/ImusicInfoTagLoader.h"
 
 namespace MUSIC_INFO
 {

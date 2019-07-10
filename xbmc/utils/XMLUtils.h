@@ -8,10 +8,11 @@
 
 #pragma once
 
-#include <string>
-#include <stdint.h>
-#include <vector>
 #include "utils/XBMCTinyXML.h"
+
+#include <stdint.h>
+#include <string>
+#include <vector>
 
 class CDateTime;
 

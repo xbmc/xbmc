@@ -8,8 +8,8 @@
 
 #pragma once
 
-#include "games/controllers/types/ControllerTree.h"
 #include "games/GameTypes.h"
+#include "games/controllers/types/ControllerTree.h"
 
 #include <memory>
 

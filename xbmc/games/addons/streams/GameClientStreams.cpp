@@ -7,6 +7,7 @@
  */
 
 #include "GameClientStreams.h"
+
 #include "GameClientStreamAudio.h"
 #include "GameClientStreamSwFramebuffer.h"
 #include "GameClientStreamVideo.h"

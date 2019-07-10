@@ -8,9 +8,9 @@
 
 #pragma once
 
-#include <Platinum/Source/Devices/MediaRenderer/PltMediaRenderer.h>
-
 #include "interfaces/IAnnouncer.h"
+
+#include <Platinum/Source/Devices/MediaRenderer/PltMediaRenderer.h>
 
 class CVariant;
 

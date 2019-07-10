@@ -6,18 +6,15 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include <algorithm>
 #include "DDSImage.h"
-#include "XBTF.h"
-#include "utils/log.h"
-#include <string.h>
 
-#ifndef NO_XBMC_FILESYSTEM
+#include "XBTF.h"
 #include "filesystem/File.h"
+#include "utils/log.h"
+
+#include <algorithm>
+#include <string.h>
 using namespace XFILE;
-#else
-#include "SimpleFS.h"
-#endif
 
 CDDSImage::CDDSImage()
 {

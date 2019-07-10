@@ -8,11 +8,11 @@
 
 #pragma once
 
+#include "threads/CriticalSection.h"
+
 #include <atomic>
 #include <string>
 #include <vector>
-
-#include "threads/CriticalSection.h"
 
 namespace EDL
 {

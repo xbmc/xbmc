@@ -6,10 +6,11 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include <sys/stat.h>
-
 #include "OverrideFile.h"
+
 #include "URL.h"
+
+#include <sys/stat.h>
 
 using namespace XFILE;
 

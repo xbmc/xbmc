@@ -9,8 +9,8 @@
 #pragma once
 
 #include "Peripheral.h"
-#include "input/joysticks/interfaces/IDriverReceiver.h"
 #include "input/joysticks/JoystickTypes.h"
+#include "input/joysticks/interfaces/IDriverReceiver.h"
 #include "threads/CriticalSection.h"
 
 #include <memory>

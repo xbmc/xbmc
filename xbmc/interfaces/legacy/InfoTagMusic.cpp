@@ -7,10 +7,11 @@
  */
 
 #include "InfoTagMusic.h"
+
 #include "ServiceBroker.h"
-#include "utils/StringUtils.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
+#include "utils/StringUtils.h"
 
 namespace XBMCAddon
 {

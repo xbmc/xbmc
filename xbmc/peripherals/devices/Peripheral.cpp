@@ -8,23 +8,23 @@
 
 #include "Peripheral.h"
 
-#include <utility>
-
+#include "Util.h"
+#include "filesystem/File.h"
 #include "guilib/LocalizeStrings.h"
 #include "input/joysticks/interfaces/IInputHandler.h"
-#include "peripherals/addons/PeripheralAddon.h"
-#include "peripherals/bus/virtual/PeripheralBusAddon.h"
 #include "peripherals/Peripherals.h"
-#include "settings/lib/Setting.h"
 #include "peripherals/addons/AddonButtonMapping.h"
 #include "peripherals/addons/AddonInputHandling.h"
+#include "peripherals/addons/PeripheralAddon.h"
 #include "peripherals/bus/PeripheralBus.h"
-#include "utils/log.h"
+#include "peripherals/bus/virtual/PeripheralBusAddon.h"
+#include "settings/lib/Setting.h"
 #include "utils/StringUtils.h"
 #include "utils/XBMCTinyXML.h"
 #include "utils/XMLUtils.h"
-#include "Util.h"
-#include "filesystem/File.h"
+#include "utils/log.h"
+
+#include <utility>
 
 using namespace KODI;
 using namespace JOYSTICK;

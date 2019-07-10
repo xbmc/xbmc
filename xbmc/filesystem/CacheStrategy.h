@@ -8,9 +8,10 @@
 
 #pragma once
 
+#include "threads/Event.h"
+
 #include <stdint.h>
 #include <string>
-#include "threads/Event.h"
 
 namespace XFILE {
 

@@ -7,12 +7,13 @@
  */
 
 #include "GUIDialogBusy.h"
+
 #include "ServiceBroker.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIProgressControl.h"
 #include "guilib/GUIWindowManager.h"
-#include "threads/Thread.h"
 #include "threads/IRunnable.h"
+#include "threads/Thread.h"
 
 #define PROGRESS_CONTROL 10
 

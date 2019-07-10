@@ -8,11 +8,11 @@
 
 #pragma once
 
-#include <android/input.h>
-
 #include <stdint.h>
 #include <string>
 #include <vector>
+
+#include <android/input.h>
 
 class CAndroidKey
 {

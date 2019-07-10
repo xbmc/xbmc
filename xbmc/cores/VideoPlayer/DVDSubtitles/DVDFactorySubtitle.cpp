@@ -8,13 +8,13 @@
 
 #include "DVDFactorySubtitle.h"
 
-#include "DVDSubtitleStream.h"
-#include "DVDSubtitleParserSubrip.h"
-#include "DVDSubtitleParserMicroDVD.h"
 #include "DVDSubtitleParserMPL2.h"
-#include "DVDSubtitleParserSami.h"
+#include "DVDSubtitleParserMicroDVD.h"
 #include "DVDSubtitleParserSSA.h"
+#include "DVDSubtitleParserSami.h"
+#include "DVDSubtitleParserSubrip.h"
 #include "DVDSubtitleParserVplayer.h"
+#include "DVDSubtitleStream.h"
 
 #include <cstring>
 #include <memory>

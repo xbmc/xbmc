@@ -7,11 +7,12 @@
  */
 
 #include "GUIDialogMediaFilter.h"
+
 #include "DbUrl.h"
 #include "FileItem.h"
 #include "GUIUserMessages.h"
-#include "XBDateTime.h"
 #include "ServiceBroker.h"
+#include "XBDateTime.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
@@ -22,10 +23,10 @@
 #include "settings/lib/Setting.h"
 #include "settings/lib/SettingDefinitions.h"
 #include "settings/windows/GUIControlSettings.h"
-#include "utils/log.h"
 #include "utils/SortUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
+#include "utils/log.h"
 #include "video/VideoDatabase.h"
 #include "video/VideoDbUrl.h"
 

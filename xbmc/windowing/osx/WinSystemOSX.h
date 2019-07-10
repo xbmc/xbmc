@@ -8,12 +8,12 @@
 
 #pragma once
 
-#include <string>
-#include <vector>
-
-#include "windowing/WinSystem.h"
 #include "threads/CriticalSection.h"
 #include "threads/Timer.h"
+#include "windowing/WinSystem.h"
+
+#include <string>
+#include <vector>
 
 typedef struct SDL_Surface SDL_Surface;
 

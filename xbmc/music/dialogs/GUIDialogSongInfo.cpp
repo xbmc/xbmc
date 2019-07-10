@@ -7,27 +7,28 @@
  */
 
 #include "GUIDialogSongInfo.h"
+
+#include "GUIDialogMusicInfo.h"
+#include "GUIPassword.h"
+#include "GUIUserMessages.h"
+#include "ServiceBroker.h"
+#include "TextureCache.h"
+#include "Util.h"
 #include "dialogs/GUIDialogBusy.h"
 #include "dialogs/GUIDialogFileBrowser.h"
 #include "filesystem/File.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
-#include "GUIDialogMusicInfo.h"
-#include "GUIUserMessages.h"
-#include "GUIPassword.h"
 #include "input/Key.h"
 #include "music/MusicDatabase.h"
 #include "music/MusicUtils.h"
 #include "music/tags/MusicInfoTag.h"
 #include "music/windows/GUIWindowMusicBase.h"
 #include "profiles/ProfileManager.h"
-#include "ServiceBroker.h"
 #include "settings/MediaSourceSettings.h"
 #include "settings/SettingsComponent.h"
 #include "storage/MediaManager.h"
-#include "TextureCache.h"
-#include "Util.h"
 
 using namespace XFILE;
 

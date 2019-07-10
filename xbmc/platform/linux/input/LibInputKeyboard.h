@@ -11,9 +11,10 @@
 #include "threads/Timer.h"
 #include "windowing/XBMC_events.h"
 
-#include <libinput.h>
 #include <map>
 #include <vector>
+
+#include <libinput.h>
 #include <xkbcommon/xkbcommon.h>
 
 class CLibInputKeyboard

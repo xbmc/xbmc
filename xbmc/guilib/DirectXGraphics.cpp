@@ -7,6 +7,7 @@
  */
 
 #include "DirectXGraphics.h"
+
 #include "Texture.h"
 #include "XBTF.h"
 

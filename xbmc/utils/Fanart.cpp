@@ -6,14 +6,15 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include <algorithm>
-#include <functional>
-
 #include "Fanart.h"
+
+#include "StringUtils.h"
+#include "URIUtils.h"
 #include "utils/XBMCTinyXML.h"
 #include "utils/XMLUtils.h"
-#include "URIUtils.h"
-#include "StringUtils.h"
+
+#include <algorithm>
+#include <functional>
 
 const unsigned int CFanart::max_fanart_colors=3;
 

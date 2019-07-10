@@ -10,7 +10,6 @@
 
 #include "AddonInstanceHandler.h"
 #include "BinaryAddonType.h"
-
 #include "addons/AddonInfo.h"
 #include "threads/CriticalSection.h"
 

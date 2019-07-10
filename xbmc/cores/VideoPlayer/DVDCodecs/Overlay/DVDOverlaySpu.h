@@ -9,8 +9,9 @@
 #pragma once
 
 #include "DVDOverlay.h"
-#include <string.h>
+
 #include <stdint.h>
+#include <string.h>
 
 class CDVDOverlaySpu : public CDVDOverlay
 {

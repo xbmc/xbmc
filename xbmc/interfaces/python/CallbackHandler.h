@@ -8,9 +8,9 @@
 
 #pragma once
 
-#include <Python.h>
-
 #include "interfaces/legacy/CallbackHandler.h"
+
+#include <Python.h>
 
 namespace XBMCAddon
 {

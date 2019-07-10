@@ -13,9 +13,9 @@
 
 /* Include file for SDL keyboard event handling */
 
-#include <stdint.h>
-
 #include "XBMC_keysym.h"
+
+#include <stdint.h>
 
 /* Keysym structure
    - The scancode is hardware dependent, and should not be used by general

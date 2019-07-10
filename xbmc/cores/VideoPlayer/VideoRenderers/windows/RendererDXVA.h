@@ -10,9 +10,10 @@
 #include "RendererHQ.h"
 #include "VideoRenderers/HwDecRender/DXVAHD.h"
 
+#include <map>
+
 #include <d3d11.h>
 #include <libavutil/pixfmt.h>
-#include <map>
 
 enum RenderMethod;
 

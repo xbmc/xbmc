@@ -7,11 +7,12 @@
  */
 
 #include "SpecialProtocolDirectory.h"
-#include "SpecialProtocol.h"
+
 #include "Directory.h"
-#include "utils/URIUtils.h"
 #include "FileItem.h"
+#include "SpecialProtocol.h"
 #include "URL.h"
+#include "utils/URIUtils.h"
 
 using namespace XFILE;
 

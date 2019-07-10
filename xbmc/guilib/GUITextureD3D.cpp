@@ -10,8 +10,8 @@
 
 #include "D3DResource.h"
 #include "GUIShaderDX.h"
-#include "rendering/dx/RenderContext.h"
 #include "Texture.h"
+#include "rendering/dx/RenderContext.h"
 
 #include <DirectXMath.h>
 

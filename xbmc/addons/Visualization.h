@@ -8,8 +8,8 @@
 
 #pragma once
 
-#include "addons/kodi-addon-dev-kit/include/kodi/addon-instance/Visualization.h"
 #include "addons/binary-addons/AddonInstanceHandler.h"
+#include "addons/kodi-addon-dev-kit/include/kodi/addon-instance/Visualization.h"
 
 namespace ADDON
 {

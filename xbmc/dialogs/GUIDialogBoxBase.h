@@ -8,10 +8,10 @@
 
 #pragma once
 
-#include <vector>
-
 #include "guilib/GUIDialog.h"
 #include "threads/CriticalSection.h"
+
+#include <vector>
 
 #define CONTROL_CHOICES_START  10
 #define CONTROL_NO_BUTTON      CONTROL_CHOICES_START

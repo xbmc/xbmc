@@ -9,6 +9,7 @@
 #pragma once
 
 #include "BackgroundInfoLoader.h"
+
 #include <string>
 
 class CTextureDatabase;

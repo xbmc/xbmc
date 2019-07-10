@@ -8,9 +8,9 @@
 
 #pragma once
 
-#include <string>
-
 #include "network/httprequesthandler/IHTTPRequestHandler.h"
+
+#include <string>
 
 class CHTTPWebinterfaceAddonsHandler : public IHTTPRequestHandler
 {

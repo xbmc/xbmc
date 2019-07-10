@@ -8,14 +8,15 @@
 
 #include "MediaDrmCryptoSession.h"
 
-#include <androidjni/MediaDrm.h>
-#include <androidjni/UUID.h>
-#include <stdexcept>
-
 #include "filesystem/File.h"
+#include "utils/Base64.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
-#include "utils/Base64.h"
+
+#include <stdexcept>
+
+#include <androidjni/MediaDrm.h>
+#include <androidjni/UUID.h>
 
 using namespace DRM;
 using namespace XbmcCommons;

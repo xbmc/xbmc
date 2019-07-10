@@ -7,27 +7,28 @@
  */
 
 #include "GUIPassword.h"
+
+#include "FileItem.h"
 #include "GUIUserMessages.h"
 #include "ServiceBroker.h"
-#include "messaging/ApplicationMessenger.h"
+#include "Util.h"
 #include "dialogs/GUIDialogGamepad.h"
+#include "dialogs/GUIDialogNumeric.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIKeyboardFactory.h"
-#include "dialogs/GUIDialogNumeric.h"
+#include "guilib/GUIWindowManager.h"
+#include "guilib/LocalizeStrings.h"
+#include "messaging/ApplicationMessenger.h"
+#include "messaging/helpers/DialogOKHelper.h"
 #include "profiles/ProfileManager.h"
 #include "profiles/dialogs/GUIDialogLockSettings.h"
 #include "profiles/dialogs/GUIDialogProfileSettings.h"
-#include "Util.h"
 #include "settings/MediaSourceSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
-#include "guilib/GUIWindowManager.h"
-#include "FileItem.h"
-#include "guilib/LocalizeStrings.h"
-#include "messaging/helpers/DialogOKHelper.h"
 #include "utils/StringUtils.h"
-#include "view/ViewStateSettings.h"
 #include "utils/Variant.h"
+#include "view/ViewStateSettings.h"
 
 #include <utility>
 

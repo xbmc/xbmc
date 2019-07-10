@@ -8,15 +8,15 @@
 
 #pragma once
 
-#include <string>
-#include <utility>
-#include <vector>
-
 #include "FileItem.h"
 #include "URL.h"
 #include "utils/CharsetConverter.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
+
+#include <string>
+#include <utility>
+#include <vector>
 
 namespace XFILE
 {

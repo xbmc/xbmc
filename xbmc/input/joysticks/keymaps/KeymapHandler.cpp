@@ -7,15 +7,16 @@
  */
 
 #include "KeymapHandler.h"
+
 #include "KeyHandler.h"
 #include "games/controllers/Controller.h"
-#include "input/joysticks/interfaces/IKeyHandler.h"
-#include "input/joysticks/JoystickEasterEgg.h"
-#include "input/joysticks/JoystickTranslator.h"
-#include "input/joysticks/JoystickUtils.h"
 #include "input/IKeymap.h"
 #include "input/IKeymapEnvironment.h"
 #include "input/InputTranslator.h"
+#include "input/joysticks/JoystickEasterEgg.h"
+#include "input/joysticks/JoystickTranslator.h"
+#include "input/joysticks/JoystickUtils.h"
+#include "input/joysticks/interfaces/IKeyHandler.h"
 
 #include <algorithm>
 #include <assert.h>

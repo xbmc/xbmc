@@ -8,10 +8,10 @@
 
 #pragma once
 
+#include "D3DResource.h"
+#include "Texture.h"
 #include "utils/Geometry.h"
 #include "utils/MemUtils.h"
-#include "Texture.h"
-#include "D3DResource.h"
 
 #include <DirectXMath.h>
 #include <wrl/client.h>

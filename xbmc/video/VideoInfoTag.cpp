@@ -7,20 +7,21 @@
  */
 
 #include "VideoInfoTag.h"
-#include "utils/XMLUtils.h"
-#include "guilib/LocalizeStrings.h"
+
 #include "ServiceBroker.h"
+#include "TextureDatabase.h"
+#include "guilib/LocalizeStrings.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
-#include "utils/log.h"
+#include "utils/Archive.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
-#include "utils/Archive.h"
-#include "TextureDatabase.h"
+#include "utils/XMLUtils.h"
+#include "utils/log.h"
 
 #include <algorithm>
-#include <string>
 #include <sstream>
+#include <string>
 #include <vector>
 
 void CVideoInfoTag::Reset()

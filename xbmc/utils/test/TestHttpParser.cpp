@@ -8,7 +8,7 @@
 
 #include "utils/HttpParser.h"
 
-#include "gtest/gtest.h"
+#include <gtest/gtest.h>
 
 TEST(TestHttpParser, General)
 {

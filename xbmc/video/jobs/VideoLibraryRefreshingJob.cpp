@@ -7,6 +7,7 @@
  */
 
 #include "VideoLibraryRefreshingJob.h"
+
 #include "ServiceBroker.h"
 #include "TextureDatabase.h"
 #include "addons/Scraper.h"
@@ -19,9 +20,9 @@
 #include "guilib/LocalizeStrings.h"
 #include "media/MediaType.h"
 #include "messaging/helpers/DialogOKHelper.h"
-#include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
+#include "utils/log.h"
 #include "video/VideoDatabase.h"
 #include "video/VideoInfoDownloader.h"
 #include "video/VideoInfoScanner.h"

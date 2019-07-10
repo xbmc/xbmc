@@ -9,6 +9,7 @@
 #pragma once
 
 #include "cores/AudioEngine/Interfaces/AEResample.h"
+
 #include "platform/linux/OMXCore.h"
 
 namespace ActiveAE

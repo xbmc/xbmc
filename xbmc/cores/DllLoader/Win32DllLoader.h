@@ -8,9 +8,9 @@
 
 #pragma once
 
-#include <vector>
-
 #include "LibraryLoader.h"
+
+#include <vector>
 
 class Win32DllLoader : public LibraryLoader
 {

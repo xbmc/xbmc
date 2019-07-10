@@ -9,6 +9,7 @@
 #pragma once
 
 #include <string>
+
 #include <libxslt/xslt.h>
 #include <libxslt/xsltutils.h>
 

@@ -7,13 +7,14 @@
  */
 
 #include "PeripheralBus.h"
+
+#include "FileItem.h"
 #include "guilib/LocalizeStrings.h"
 #include "peripherals/Peripherals.h"
 #include "peripherals/devices/Peripheral.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
 #include "utils/log.h"
-#include "FileItem.h"
 
 using namespace PERIPHERALS;
 

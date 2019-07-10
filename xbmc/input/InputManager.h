@@ -8,20 +8,20 @@
 
 #pragma once
 
-#include <map>
-#include <memory>
-#include <string>
-#include <vector>
-
-#include "windowing/XBMC_events.h"
-#include "input/actions/Action.h"
-#include "input/mouse/interfaces/IMouseInputProvider.h"
-#include "input/mouse/MouseStat.h"
 #include "input/KeyboardStat.h"
+#include "input/actions/Action.h"
+#include "input/mouse/MouseStat.h"
+#include "input/mouse/interfaces/IMouseInputProvider.h"
 #include "interfaces/IActionListener.h"
 #include "settings/lib/ISettingCallback.h"
 #include "threads/CriticalSection.h"
 #include "utils/Observer.h"
+#include "windowing/XBMC_events.h"
+
+#include <map>
+#include <memory>
+#include <string>
+#include <vector>
 
 class CAppParamParser;
 class CButtonTranslator;

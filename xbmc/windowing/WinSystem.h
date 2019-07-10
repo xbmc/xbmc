@@ -9,10 +9,11 @@
 #pragma once
 
 #include "OSScreenSaver.h"
+#include "Resolution.h"
 #include "VideoSync.h"
 #include "WinEvents.h"
 #include "guilib/DispResource.h"
-#include "Resolution.h"
+
 #include <memory>
 #include <vector>
 

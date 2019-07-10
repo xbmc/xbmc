@@ -7,6 +7,7 @@
  */
 
 #include "GUIFeatureFactory.h"
+
 #include "GUICardinalFeatureButton.h"
 #include "GUIScalarFeatureButton.h"
 #include "GUISelectKeyButton.h"

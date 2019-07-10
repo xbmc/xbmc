@@ -7,6 +7,7 @@
  */
 
 #include "TextSearch.h"
+
 #include "StringUtils.h"
 
 CTextSearch::CTextSearch(const std::string &strSearchTerms, bool bCaseSensitive /* = false */, TextSearchDefault defaultSearchMode /* = SEARCH_DEFAULT_OR */)

@@ -92,7 +92,7 @@ void X11::VAAPIRegisterRender(CVaapiProxy *winSystem, bool &general, bool &deepC
 //-----------------------------------------------------------------------------
 
 #ifdef HAS_GLX
-#include "GL/glx.h"
+#include <GL/glx.h>
 #include "VideoSyncGLX.h"
 #include "GLContextGLX.h"
 

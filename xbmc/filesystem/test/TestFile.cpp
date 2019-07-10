@@ -9,10 +9,10 @@
 #include "filesystem/File.h"
 #include "test/TestUtils.h"
 
-#include <string>
 #include <errno.h>
+#include <string>
 
-#include "gtest/gtest.h"
+#include <gtest/gtest.h>
 
 TEST(TestFile, Read)
 {

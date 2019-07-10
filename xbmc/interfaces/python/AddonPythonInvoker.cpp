@@ -7,12 +7,12 @@
  */
 
 // python.h should always be included first before any other includes
-#include <Python.h>
-#include <osdefs.h>
-
 #include "AddonPythonInvoker.h"
 
 #include <utility>
+
+#include <Python.h>
+#include <osdefs.h>
 
 #define MODULE "xbmc"
 

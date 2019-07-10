@@ -20,7 +20,7 @@
 
 #pragma once
 
-#include "gif_lib.h"
+#include <gif_lib.h>
 #ifndef CONTINUE_EXT_FUNC_CODE
 #define CONTINUE_EXT_FUNC_CODE 0
 #endif

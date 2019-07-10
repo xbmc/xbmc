@@ -7,17 +7,18 @@
  */
 
 #include "MusicDatabaseDirectory.h"
-#include "utils/URIUtils.h"
-#include "MusicDatabaseDirectory/QueryParams.h"
-#include "music/MusicDatabase.h"
-#include "filesystem/File.h"
+
 #include "FileItem.h"
-#include "utils/Crc32.h"
+#include "MusicDatabaseDirectory/QueryParams.h"
 #include "ServiceBroker.h"
-#include "guilib/TextureManager.h"
+#include "filesystem/File.h"
 #include "guilib/LocalizeStrings.h"
+#include "guilib/TextureManager.h"
+#include "music/MusicDatabase.h"
+#include "utils/Crc32.h"
 #include "utils/LegacyPathTranslation.h"
 #include "utils/StringUtils.h"
+#include "utils/URIUtils.h"
 
 using namespace XFILE;
 using namespace MUSICDATABASEDIRECTORY;

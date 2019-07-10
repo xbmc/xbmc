@@ -7,11 +7,12 @@
  */
 
 #include "ZeroconfDarwin.h"
+
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 
-#include <string>
 #include <sstream>
+#include <string>
 
 CZeroconfDarwin::CZeroconfDarwin():m_runloop(0)
 {

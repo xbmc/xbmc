@@ -8,18 +8,18 @@
 
 #include "ProfileBuiltins.h"
 
-#include "addons/AddonManager.h"
-#include "messaging/ApplicationMessenger.h"
-#include "dialogs/GUIDialogKaiToast.h"
-#include "guilib/GUIComponent.h"
-#include "guilib/LocalizeStrings.h"
-#include "guilib/GUIWindowManager.h"
 #include "GUIPassword.h"
 #include "GUIUserMessages.h"
-#include "profiles/ProfileManager.h"
 #include "ServiceBroker.h"
-#include "settings/SettingsComponent.h"
 #include "Util.h"
+#include "addons/AddonManager.h"
+#include "dialogs/GUIDialogKaiToast.h"
+#include "guilib/GUIComponent.h"
+#include "guilib/GUIWindowManager.h"
+#include "guilib/LocalizeStrings.h"
+#include "messaging/ApplicationMessenger.h"
+#include "profiles/ProfileManager.h"
+#include "settings/SettingsComponent.h"
 #include "utils/StringUtils.h"
 
 using namespace KODI::MESSAGING;

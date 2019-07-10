@@ -8,10 +8,10 @@
 
 #pragma once
 
-#include <string>
-
 #include "video/VideoInfoScanner.h"
 #include "video/jobs/VideoLibraryJob.h"
+
+#include <string>
 
 /*!
  \brief Video library job implementation for scanning items.

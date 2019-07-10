@@ -8,12 +8,12 @@
 
 #pragma once
 
+#include "FileItem.h"
+#include "XBDateTime.h"
+#include "utils/ScraperUrl.h"
+
 #include <string>
 #include <vector>
-
-#include "FileItem.h"
-#include "utils/ScraperUrl.h"
-#include "XBDateTime.h"
 
 // single episode information
 namespace VIDEO

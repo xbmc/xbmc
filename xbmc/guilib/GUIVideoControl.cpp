@@ -6,14 +6,15 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include "GUIComponent.h"
 #include "GUIVideoControl.h"
-#include "GUIWindowManager.h"
+
 #include "Application.h"
+#include "GUIComponent.h"
+#include "GUIWindowManager.h"
 #include "ServiceBroker.h"
+#include "WindowIDs.h"
 #include "input/Key.h"
 #include "utils/Color.h"
-#include "WindowIDs.h"
 
 CGUIVideoControl::CGUIVideoControl(int parentID, int controlID, float posX, float posY, float width, float height)
     : CGUIControl(parentID, controlID, posX, posY, width, height)

@@ -8,10 +8,11 @@
 
 #pragma once
 
-#include <string>
 #include "guilib/GUIDialog.h"
 #include "threads/CriticalSection.h"
 #include "utils/JobManager.h"
+
+#include <string>
 
 enum SUBTITLE_STORAGEMODE
 {

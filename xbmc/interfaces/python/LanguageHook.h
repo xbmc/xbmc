@@ -8,13 +8,13 @@
 
 #pragma once
 
-#include <Python.h>
-
 #include "interfaces/legacy/LanguageHook.h"
 #include "threads/Event.h"
 
-#include <set>
 #include <map>
+#include <set>
+
+#include <Python.h>
 
 namespace XBMCAddon
 {

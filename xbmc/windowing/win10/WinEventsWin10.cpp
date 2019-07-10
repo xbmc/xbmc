@@ -7,8 +7,11 @@
  */
 
 #include "WinEventsWin10.h"
-#include "Application.h"
+
 #include "AppInboundProtocol.h"
+#include "Application.h"
+#include "GUIUserMessages.h"
+#include "ServiceBroker.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "input/actions/Action.h"
@@ -17,17 +20,16 @@
 #include "input/touch/generic/GenericTouchInputHandler.h"
 #include "interfaces/AnnouncementManager.h"
 #include "messaging/ApplicationMessenger.h"
-#include "platform/win10/input/RemoteControlXbox.h"
 #include "rendering/dx/DeviceResources.h"
 #include "rendering/dx/RenderContext.h"
-#include "ServiceBroker.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
-#include "utils/log.h"
 #include "utils/SystemInfo.h"
 #include "utils/Variant.h"
+#include "utils/log.h"
 #include "windowing/windows/WinKeyMap.h"
-#include "xbmc/GUIUserMessages.h"
+
+#include "platform/win10/input/RemoteControlXbox.h"
 
 #include <winrt/Windows.Devices.Input.h>
 

@@ -8,11 +8,11 @@
 
 #pragma once
 
-#include <string>
-
 #include "settings/SettingControl.h"
 #include "settings/SettingCreator.h"
 #include "settings/SettingsBase.h"
+
+#include <string>
 
 class CSettingList;
 class TiXmlNode;

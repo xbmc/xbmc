@@ -7,6 +7,7 @@
  */
 
 #include "DVDInputStreamStack.h"
+
 #include "FileItem.h"
 #include "filesystem/File.h"
 #include "filesystem/StackDirectory.h"

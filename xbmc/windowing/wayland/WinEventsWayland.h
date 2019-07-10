@@ -8,10 +8,10 @@
 
 #pragma once
 
-#include <queue>
-
-#include "threads/CriticalSection.h"
 #include "../WinEvents.h"
+#include "threads/CriticalSection.h"
+
+#include <queue>
 
 namespace wayland
 {

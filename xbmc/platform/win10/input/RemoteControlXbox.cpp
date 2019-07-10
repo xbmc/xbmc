@@ -7,9 +7,10 @@
  */
 
 #include "RemoteControlXbox.h"
+
 #include "AppInboundProtocol.h"
-#include "input/remote/IRRemote.h"
 #include "ServiceBroker.h"
+#include "input/remote/IRRemote.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
 #include "threads/SystemClock.h"

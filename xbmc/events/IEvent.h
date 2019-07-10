@@ -8,10 +8,10 @@
 
 #pragma once
 
+#include "utils/ISortable.h"
+
 #include <memory>
 #include <string>
-
-#include "utils/ISortable.h"
 
 class CDateTime;
 

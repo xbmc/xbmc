@@ -12,8 +12,10 @@
 
 #pragma once
 
-#include <stdio.h>
 #include "dataset.h"
+
+#include <stdio.h>
+
 #include <sqlite3.h>
 
 namespace dbiplus {

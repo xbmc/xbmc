@@ -7,29 +7,29 @@
  */
 
 #include "GUIWindow.h"
+
+#include "Application.h"
+#include "GUIAudioManager.h"
 #include "GUIComponent.h"
-#include "GUIWindowManager.h"
-#include "input/Key.h"
 #include "GUIControlFactory.h"
 #include "GUIControlGroup.h"
 #include "GUIControlProfiler.h"
-
-#include "addons/Skin.h"
 #include "GUIInfoManager.h"
-#include "utils/log.h"
-#include "threads/SingleLock.h"
-#include "utils/TimeUtils.h"
-#include "input/WindowTranslator.h"
-#include "utils/XMLUtils.h"
-#include "GUIAudioManager.h"
-#include "Application.h"
+#include "GUIWindowManager.h"
 #include "ServiceBroker.h"
+#include "addons/Skin.h"
+#include "input/Key.h"
+#include "input/WindowTranslator.h"
 #include "messaging/ApplicationMessenger.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
+#include "threads/SingleLock.h"
 #include "utils/Color.h"
-#include "utils/Variant.h"
 #include "utils/StringUtils.h"
+#include "utils/TimeUtils.h"
+#include "utils/Variant.h"
+#include "utils/XMLUtils.h"
+#include "utils/log.h"
 
 using namespace KODI::MESSAGING;
 

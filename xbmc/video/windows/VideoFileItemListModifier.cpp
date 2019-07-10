@@ -6,15 +6,16 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include "FileItem.h"
 #include "VideoFileItemListModifier.h"
+
+#include "FileItem.h"
 #include "ServiceBroker.h"
+#include "filesystem/VideoDatabaseDirectory/DirectoryNode.h"
+#include "guilib/LocalizeStrings.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "video/VideoDatabase.h"
-#include "filesystem/VideoDatabaseDirectory/DirectoryNode.h"
-#include "guilib/LocalizeStrings.h"
 #include "video/VideoDbUrl.h"
 
 using namespace XFILE::VIDEODATABASEDIRECTORY;

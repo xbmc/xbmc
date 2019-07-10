@@ -8,14 +8,14 @@
 
 #include "DirectoryNodeOverview.h"
 
-#include <utility>
-
 #include "FileItem.h"
 #include "ServiceBroker.h"
 #include "guilib/LocalizeStrings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "video/VideoDatabase.h"
+
+#include <utility>
 
 using namespace XFILE::VIDEODATABASEDIRECTORY;
 

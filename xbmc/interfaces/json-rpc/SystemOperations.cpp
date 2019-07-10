@@ -7,11 +7,12 @@
  */
 
 #include "SystemOperations.h"
-#include "messaging/ApplicationMessenger.h"
-#include "interfaces/builtins/Builtins.h"
-#include "utils/Variant.h"
-#include "powermanagement/PowerManager.h"
+
 #include "ServiceBroker.h"
+#include "interfaces/builtins/Builtins.h"
+#include "messaging/ApplicationMessenger.h"
+#include "powermanagement/PowerManager.h"
+#include "utils/Variant.h"
 
 using namespace JSONRPC;
 using namespace KODI::MESSAGING;

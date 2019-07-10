@@ -7,12 +7,13 @@
  */
 
 #include "ControllerFeature.h"
+
 #include "Controller.h"
 #include "ControllerDefinitions.h"
 #include "ControllerTranslator.h"
 #include "guilib/LocalizeStrings.h"
-#include "utils/log.h"
 #include "utils/XMLUtils.h"
+#include "utils/log.h"
 
 #include <sstream>
 

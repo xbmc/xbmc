@@ -9,8 +9,8 @@
 #pragma once
 
 #include "JoystickTypes.h"
-#include "input/mouse/MouseTypes.h"
 #include "input/keyboard/KeyboardTypes.h"
+#include "input/mouse/MouseTypes.h"
 
 #include <stdint.h>
 

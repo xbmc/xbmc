@@ -7,6 +7,7 @@
  */
 
 #include "ResourceDirectory.h"
+
 #include "FileItem.h"
 #include "URL.h"
 #include "filesystem/Directory.h"

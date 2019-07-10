@@ -7,11 +7,12 @@
  */
 
 #include "CustomControllerTranslator.h"
+
 #include "WindowTranslator.h" //! @todo
 #include "input/actions/ActionIDs.h"
 #include "input/actions/ActionTranslator.h"
-#include "utils/log.h"
 #include "utils/XBMCTinyXML.h"
+#include "utils/log.h"
 
 void CCustomControllerTranslator::MapActions(int windowID, const TiXmlNode *pCustomController)
 {

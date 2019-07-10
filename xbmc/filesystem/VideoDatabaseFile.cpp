@@ -7,6 +7,7 @@
  */
 
 #include "VideoDatabaseFile.h"
+
 #include "URL.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"

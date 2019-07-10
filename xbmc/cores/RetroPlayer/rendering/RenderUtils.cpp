@@ -7,6 +7,7 @@
  */
 
 #include "RenderUtils.h"
+
 #include "utils/MathUtils.h"
 
 #include <cmath>

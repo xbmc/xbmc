@@ -8,14 +8,13 @@
 
 #include "General.h"
 
-#include "addons/kodi-addon-dev-kit/include/kodi/General.h"
-
-#include "LangInfo.h"
 #include "Application.h"
 #include "CompileInfo.h"
+#include "LangInfo.h"
 #include "ServiceBroker.h"
 #include "addons/binary-addons/AddonDll.h"
 #include "addons/binary-addons/BinaryAddonManager.h"
+#include "addons/kodi-addon-dev-kit/include/kodi/General.h"
 #include "addons/settings/GUIDialogAddonSettings.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "filesystem/Directory.h"
@@ -25,11 +24,11 @@
 #include "settings/SettingsComponent.h"
 #include "utils/CharsetConverter.h"
 #include "utils/Digest.h"
-#include "utils/log.h"
 #include "utils/LangCodeExpander.h"
 #include "utils/MemUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
+#include "utils/log.h"
 
 #include <string.h>
 

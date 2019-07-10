@@ -8,9 +8,9 @@
 
 #pragma once
 
+#include "AddonClass.h"
 #include "pvr/PVRTypes.h"
 #include "pvr/channels/PVRRadioRDSInfoTag.h"
-#include "AddonClass.h"
 
 namespace XBMCAddon
 {

@@ -8,8 +8,8 @@
 
 #pragma once
 
-#include "utils/EGLUtils.h"
 #include "WinSystemWayland.h"
+#include "utils/EGLUtils.h"
 
 #include <wayland-egl.hpp>
 

@@ -19,8 +19,10 @@
  */
 
 #include "PNGDecoder.h"
-#include "png.h"
+
 #include "SimpleFS.h"
+
+#include <png.h>
 
 #ifndef png_jmpbuf
 #  define png_jmpbuf(png_ptr) ((png_ptr)->jmpbuf)

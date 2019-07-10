@@ -9,6 +9,7 @@
 #pragma once
 
 #include <string>
+
 #include <winrt/Windows.Media.h>
 
 class CRemoteControlXbox

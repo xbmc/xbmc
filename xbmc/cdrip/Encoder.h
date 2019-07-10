@@ -9,10 +9,11 @@
 #pragma once
 
 #include "IEncoder.h"
-#include <string>
+
+#include <memory>
 #include <stdint.h>
 #include <stdio.h>
-#include <memory>
+#include <string>
 
 #define WRITEBUFFER_SIZE 131072 // 128k buffer
 

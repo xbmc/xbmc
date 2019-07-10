@@ -7,6 +7,7 @@
  */
 
 #include "Locale.h"
+
 #include "utils/StringUtils.h"
 
 const CLocale CLocale::Empty;

@@ -8,8 +8,9 @@
 
 #pragma once
 
-#include "windowing/VideoSync.h"
 #include "guilib/DispResource.h"
+#include "windowing/VideoSync.h"
+
 #include <atomic>
 
 class CWinSystemX11GLContext;

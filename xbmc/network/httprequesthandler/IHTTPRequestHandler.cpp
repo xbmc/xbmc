@@ -6,13 +6,14 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include <limits>
-#include <utility>
-
 #include "IHTTPRequestHandler.h"
+
 #include "network/WebServer.h"
 #include "network/httprequesthandler/HTTPRequestHandlerUtils.h"
 #include "utils/StringUtils.h"
+
+#include <limits>
+#include <utility>
 
 static const std::string HTTPMethodHead = "HEAD";
 static const std::string HTTPMethodGet = "GET";

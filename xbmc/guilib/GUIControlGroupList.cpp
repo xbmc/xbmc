@@ -7,13 +7,14 @@
  */
 
 #include "GUIControlGroupList.h"
-#include "GUIMessage.h"
+
 #include "GUIAction.h"
-#include "input/Key.h"
-#include "guilib/guiinfo/GUIInfoLabels.h"
 #include "GUIControlProfiler.h"
-#include "utils/StringUtils.h"
 #include "GUIFont.h" // for XBFONT_* definitions
+#include "GUIMessage.h"
+#include "guilib/guiinfo/GUIInfoLabels.h"
+#include "input/Key.h"
+#include "utils/StringUtils.h"
 
 CGUIControlGroupList::CGUIControlGroupList(int parentID, int controlID, float posX, float posY, float width, float height, float itemGap, int pageControl, ORIENTATION orientation, bool useControlPositions, uint32_t alignment, const CScroller& scroller)
 : CGUIControlGroup(parentID, controlID, posX, posY, width, height)

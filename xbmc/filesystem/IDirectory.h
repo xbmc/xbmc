@@ -8,8 +8,9 @@
 
 #pragma once
 
-#include <string>
 #include "utils/Variant.h"
+
+#include <string>
 
 class CFileItemList;
 class CProfileManager;

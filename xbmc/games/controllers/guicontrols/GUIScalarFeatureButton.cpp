@@ -7,6 +7,7 @@
  */
 
 #include "GUIScalarFeatureButton.h"
+
 #include "guilib/LocalizeStrings.h"
 
 #include <string>

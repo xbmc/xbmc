@@ -7,13 +7,15 @@
  */
 
 #include "Win32SMBFile.h"
-#include "Win32SMBDirectory.h"
+
 #include "URL.h"
+#include "Win32SMBDirectory.h"
+
 #include "platform/win32/WIN32Util.h"
 
-#include <Windows.h>
-
 #include <cassert>
+
+#include <Windows.h>
 
 using namespace XFILE;
 

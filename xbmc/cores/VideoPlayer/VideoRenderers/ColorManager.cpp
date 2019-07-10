@@ -6,17 +6,18 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include <math.h>
-#include <vector>
-
 #include "ColorManager.h"
+
 #include "ServiceBroker.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderFlags.h"
 #include "filesystem/File.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
-#include "utils/log.h"
 #include "utils/TimeUtils.h"
+#include "utils/log.h"
+
+#include <math.h>
+#include <vector>
 
 using namespace XFILE;
 

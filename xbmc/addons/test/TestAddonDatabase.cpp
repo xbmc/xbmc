@@ -10,8 +10,9 @@
 #include "filesystem/SpecialProtocol.h"
 #include "settings/AdvancedSettings.h"
 
-#include "gtest/gtest.h"
 #include <set>
+
+#include <gtest/gtest.h>
 
 using namespace ADDON;
 

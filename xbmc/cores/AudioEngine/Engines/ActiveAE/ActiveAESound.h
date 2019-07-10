@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include "cores/AudioEngine/Engines/ActiveAE/ActiveAEBuffer.h"
 #include "cores/AudioEngine/Interfaces/AESound.h"
 #include "filesystem/File.h"
 

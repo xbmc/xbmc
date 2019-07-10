@@ -7,6 +7,7 @@
  */
 
 #include "GUIScrollBarControl.h"
+
 #include "GUIMessage.h"
 #include "input/Key.h"
 #include "utils/StringUtils.h"

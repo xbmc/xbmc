@@ -6,13 +6,14 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include <string>
-
 #include "SmartPlaylistFileItemListModifier.h"
+
 #include "FileItem.h"
 #include "URL.h"
 #include "playlists/SmartPlayList.h"
 #include "utils/StringUtils.h"
+
+#include <string>
 
 #define URL_OPTION_XSP              "xsp"
 #define PROPERTY_SORT_ORDER         "sort.order"

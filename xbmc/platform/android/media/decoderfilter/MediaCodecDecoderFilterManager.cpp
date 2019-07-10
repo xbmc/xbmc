@@ -7,15 +7,17 @@
  */
 
 
- /**
+/**
  * \file media\hwdecoder\DecoderFilterManager.cpp
  * \brief Implements CDecoderFilterManager class.
  *
  */
 
 #include "MediaCodecDecoderFilterManager.h"
-#include <androidjni/MediaCodecList.h>
+
 #include "utils/log.h"
+
+#include <androidjni/MediaCodecList.h>
 
 
 CMediaCodecDecoderFilterManager::CMediaCodecDecoderFilterManager()

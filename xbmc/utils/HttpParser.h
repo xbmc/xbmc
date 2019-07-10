@@ -14,9 +14,9 @@
 #pragma once
 
 #include <stdlib.h>
-#include <vector>
-#include <string>
 #include <string.h>
+#include <string>
+#include <vector>
 
 // A class to incrementally parse an HTTP header as it comes in. It
 // lets you know when it has received all required bytes, as specified

@@ -7,6 +7,7 @@
  */
 
 #include "DirectoryNodeInProgressTvShows.h"
+
 #include "video/VideoDatabase.h"
 
 using namespace XFILE::VIDEODATABASEDIRECTORY;

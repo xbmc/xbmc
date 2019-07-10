@@ -9,12 +9,12 @@
 #pragma once
 
 #include "../DVDCodecs/Overlay/DVDOverlay.h"
-#include "DVDSubtitleStream.h"
 #include "DVDSubtitleLineCollection.h"
+#include "DVDSubtitleStream.h"
 
 #include <memory>
-#include <string>
 #include <stdio.h>
+#include <string>
 
 class CDVDStreamInfo;
 

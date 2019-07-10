@@ -8,9 +8,10 @@
 
 #pragma once
 
-#include "easyhook/easyhook.h"
 #include "rendering/dx/RenderSystemDX.h"
 #include "windowing/windows/WinSystemWin32.h"
+
+#include <easyhook/easyhook.h>
 
 struct D3D10DDIARG_CREATERESOURCE;
 

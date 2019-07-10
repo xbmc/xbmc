@@ -12,11 +12,11 @@
 
 #pragma once
 
-#include <map>
-#include <vector>
 #include <iostream>
-#include <string>
+#include <map>
 #include <stdint.h>
+#include <string>
+#include <vector>
 
 namespace dbiplus {
 

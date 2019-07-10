@@ -12,7 +12,7 @@
 #ifndef __STDC_LIMIT_MACROS
 #define __STDC_LIMIT_MACROS
 #endif
-#include "stdint.h"
+#include <stdint.h>
 
 #include "EncoderFFmpeg.h"
 #include "ServiceBroker.h"

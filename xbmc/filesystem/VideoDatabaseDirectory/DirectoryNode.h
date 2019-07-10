@@ -9,6 +9,7 @@
 #pragma once
 
 #include "utils/UrlOptions.h"
+
 #include <string>
 
 class CFileItemList;

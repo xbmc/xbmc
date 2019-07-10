@@ -8,8 +8,9 @@
 
 #pragma once
 
-#include <string>
 #include "utils/Geometry.h"
+
+#include <string>
 
 template <typename T> class CRectGen;
 typedef CRectGen<float>  CRect;

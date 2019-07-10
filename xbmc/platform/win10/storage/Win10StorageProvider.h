@@ -8,12 +8,12 @@
 
 #pragma once
 
+#include "storage/IStorageProvider.h"
+#include "utils/Job.h"
+
 #include <atomic>
 #include <string>
 #include <vector>
-
-#include "storage/IStorageProvider.h"
-#include "utils/Job.h"
 
 class CStorageProvider : public ::IStorageProvider
 {

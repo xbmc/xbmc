@@ -7,14 +7,15 @@
  */
 
 #include "GUIDialogVideoOSD.h"
+
 #include "Application.h"
 #include "GUIUserMessages.h"
+#include "ServiceBroker.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/WindowIDs.h"
-#include "input/actions/ActionIDs.h"
 #include "input/InputManager.h"
-#include "ServiceBroker.h"
+#include "input/actions/ActionIDs.h"
 
 using namespace PVR;
 

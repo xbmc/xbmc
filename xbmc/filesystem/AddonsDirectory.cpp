@@ -6,29 +6,31 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include <array>
-#include <algorithm>
-#include <functional>
-#include <set>
 #include "AddonsDirectory.h"
-#include "ServiceBroker.h"
-#include "addons/AddonDatabase.h"
-#include "addons/AddonSystemSettings.h"
-#include "guilib/LocalizeStrings.h"
-#include "interfaces/generic/ScriptInvocationManager.h"
+
 #include "FileItem.h"
+#include "ServiceBroker.h"
+#include "URL.h"
+#include "addons/AddonDatabase.h"
 #include "addons/AddonInstaller.h"
+#include "addons/AddonSystemSettings.h"
 #include "addons/PluginSource.h"
 #include "addons/RepositoryUpdater.h"
-#include "games/addons/GameClient.h"
 #include "games/GameUtils.h"
+#include "games/addons/GameClient.h"
+#include "guilib/LocalizeStrings.h"
 #include "guilib/TextureManager.h"
+#include "interfaces/generic/ScriptInvocationManager.h"
 #include "messaging/helpers/DialogOKHelper.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
-#include "utils/URIUtils.h"
 #include "utils/StringUtils.h"
-#include "URL.h"
+#include "utils/URIUtils.h"
+
+#include <algorithm>
+#include <array>
+#include <functional>
+#include <set>
 
 using namespace KODI;
 using namespace ADDON;

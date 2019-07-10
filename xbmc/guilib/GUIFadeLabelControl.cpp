@@ -7,6 +7,7 @@
  */
 
 #include "GUIFadeLabelControl.h"
+
 #include "GUIMessage.h"
 #include "utils/Random.h"
 

@@ -20,7 +20,7 @@
 #include "platform/posix/XTimeUtils.h"
 #endif
 
-#include "gtest/gtest.h"
+#include <gtest/gtest.h>
 
 TEST(TestCPUInfo, getUsedPercentage)
 {

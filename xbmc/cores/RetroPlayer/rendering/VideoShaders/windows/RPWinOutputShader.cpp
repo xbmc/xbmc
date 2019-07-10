@@ -6,6 +6,7 @@
  *  See LICENSES/README.md for more information.
  */
 #include "RPWinOutputShader.h"
+
 #include "utils/log.h"
 
 using namespace KODI;

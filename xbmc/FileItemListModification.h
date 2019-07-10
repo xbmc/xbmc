@@ -8,9 +8,9 @@
 
 #pragma once
 
-#include <set>
-
 #include "IFileItemListModifier.h"
+
+#include <set>
 
 class CFileItemListModification : public IFileItemListModifier
 {

@@ -7,6 +7,7 @@
  */
 
 #include "PipesManager.h"
+
 #include "threads/SingleLock.h"
 #include "utils/StringUtils.h"
 
