@@ -636,6 +636,7 @@ CVideoPlayer::CVideoPlayer(IPlayerCallback& callback)
 
   m_displayLost = false;
   m_error = false;
+  m_bCloseRequest = false;
   CServiceBroker::GetWinSystem()->Register(this);
 }
 
@@ -675,6 +676,7 @@ bool CVideoPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options
   m_processInfo->SetPlayTimes(0,0,0,0);
   m_bAbortRequest = false;
   m_error = false;
+  m_bCloseRequest = false;
   m_renderManager.PreInit();
 
   Create();
@@ -691,6 +693,7 @@ bool CVideoPlayer::CloseFile(bool reopen)
 
   // set the abort request so that other threads can finish up
   m_bAbortRequest = true;
+  m_bCloseRequest = true;
 
   // tell demuxer to abort
   if(m_pDemuxer)
@@ -2443,9 +2446,9 @@ void CVideoPlayer::OnExit()
   m_bStop = true;
 
   bool error = m_error;
-  bool abort = m_bAbortRequest;
+  bool close = m_bCloseRequest;
   m_outboundEvents->Submit([=]() {
-    if (abort)
+    if (close)
       cb->OnPlayBackStopped();
     else if (error)
       cb->OnPlayBackError();

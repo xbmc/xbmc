@@ -443,6 +443,7 @@ protected:
   CPlayerOptions m_playerOptions;
   bool m_bAbortRequest;
   bool m_error;
+  bool m_bCloseRequest;
 
   ECacheState  m_caching;
   XbmcThreads::EndTime m_cachingTimer;
