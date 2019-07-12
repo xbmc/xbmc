@@ -44,6 +44,8 @@ bool CRenderSystemGL::InitRenderSystem()
     m_RenderVersion = ver;
   }
 
+  CLog::Log(LOGNOTICE, "CRenderSystemGL::%s - Version: %s, Major: %d, Minor: %d", __FUNCTION__, ver, m_RenderVersionMajor, m_RenderVersionMinor);
+
   m_RenderExtensions  = " ";
   if (m_RenderVersionMajor > 3 ||
       (m_RenderVersionMajor == 3 && m_RenderVersionMinor >= 2))
@@ -105,11 +107,6 @@ bool CRenderSystemGL::InitRenderSystem()
 
   InitialiseShaders();
 
-  if (IsExtSupported("GL_ARB_texture_non_power_of_two"))
-    m_supportsNPOT = true;
-  else
-    m_supportsNPOT = false;
-
   return true;
 }
 
@@ -161,28 +158,28 @@ bool CRenderSystemGL::ResetRenderSystem(int width, int height)
     ResetGLErrors();
 
     GLint maxtex;
-    glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS_ARB, &maxtex);
+    glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &maxtex);
 
     //some sanity checks
     GLenum error = glGetError();
     if (error != GL_NO_ERROR)
     {
-      CLog::Log(LOGERROR, "ResetRenderSystem() GL_MAX_TEXTURE_IMAGE_UNITS_ARB returned error %i", (int)error);
+      CLog::Log(LOGERROR, "ResetRenderSystem() GL_MAX_TEXTURE_IMAGE_UNITS returned error %i", (int)error);
       maxtex = 3;
     }
     else if (maxtex < 1 || maxtex > 32)
     {
-      CLog::Log(LOGERROR, "ResetRenderSystem() GL_MAX_TEXTURE_IMAGE_UNITS_ARB returned invalid value %i", (int)maxtex);
+      CLog::Log(LOGERROR, "ResetRenderSystem() GL_MAX_TEXTURE_IMAGE_UNITS returned invalid value %i", (int)maxtex);
       maxtex = 3;
     }
 
     //reset texture matrix for all textures
     for (GLint i = 0; i < maxtex; i++)
     {
-      glActiveTextureARB(GL_TEXTURE0 + i);
+      glActiveTexture(GL_TEXTURE0 + i);
       glMatrixTexture.Load();
     }
-    glActiveTextureARB(GL_TEXTURE0);
+    glActiveTexture(GL_TEXTURE0);
   }
 
   glBlendFunc(GL_SRC_ALPHA, GL_ONE);
@@ -277,7 +274,7 @@ bool CRenderSystemGL::IsExtSupported(const char* extension) const
 
 bool CRenderSystemGL::SupportsNPOT(bool dxt) const
 {
-  return m_supportsNPOT;
+  return true;
 }
 
 void CRenderSystemGL::PresentRender(bool rendered, bool videoLayer)

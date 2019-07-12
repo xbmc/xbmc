@@ -160,7 +160,7 @@ void CRenderCaptureGL::BeginRender()
   if (m_asyncSupported)
   {
     if (!m_pbo)
-      glGenBuffersARB(1, &m_pbo);
+      glGenBuffers(1, &m_pbo);
 
     if (UseOcclusionQuery() && m_occlusionQuerySupported)
     {
@@ -276,8 +276,8 @@ void CRenderCaptureGL::PboToBuffer()
     SetState(CAPTURESTATE_FAILED);
   }
 
-  glUnmapBufferARB(GL_PIXEL_PACK_BUFFER);
-  glBindBufferARB(GL_PIXEL_PACK_BUFFER, 0);
+  glUnmapBuffer(GL_PIXEL_PACK_BUFFER);
+  glBindBuffer(GL_PIXEL_PACK_BUFFER, 0);
 #endif
 }
 

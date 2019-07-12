@@ -15,6 +15,7 @@
 
 #include "threads/Event.h"
 
+
 enum ECAPTURESTATE
 {
   CAPTURESTATE_WORKING,
