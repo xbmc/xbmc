@@ -97,87 +97,6 @@ CRepository::ResolveResult CRepository::ResolvePathAndHash(const AddonPtr& addon
   return {location, hash};
 }
 
-CRepository::DirInfo CRepository::ParseDirConfiguration(cp_cfg_element_t* configuration)
-{
-  auto const& mgr = CServiceBroker::GetAddonMgr();
-  DirInfo dir;
-  dir.checksum = mgr.GetExtValue(configuration, "checksum");
-  std::string checksumStr = mgr.GetExtValue(configuration, "checksum@verify");
-  if (!checksumStr.empty())
-  {
-    dir.checksumType = CDigest::TypeFromString(checksumStr);
-  }
-  dir.info = mgr.GetExtValue(configuration, "info");
-  dir.datadir = mgr.GetExtValue(configuration, "datadir");
-  dir.artdir = mgr.GetExtValue(configuration, "artdir");
-  if (dir.artdir.empty())
-  {
-    dir.artdir = dir.datadir;
-  }
-
-  std::string hashStr = mgr.GetExtValue(configuration, "hashes");
-  StringUtils::ToLower(hashStr);
-  if (hashStr == "true")
-  {
-    // Deprecated alias
-    hashStr = "md5";
-  }
-  if (!hashStr.empty() && hashStr != "false")
-  {
-    dir.hashType = CDigest::TypeFromString(hashStr);
-    if (dir.hashType == CDigest::Type::MD5)
-    {
-      CLog::Log(LOGWARNING, "Repository has MD5 hashes enabled - this hash function is broken and will only guard against unintentional data corruption");
-    }
-  }
-
-  dir.version = AddonVersion{mgr.GetExtValue(configuration, "@minversion")};
-  return dir;
-}
-
-std::unique_ptr<CRepository> CRepository::FromExtension(const AddonInfoPtr& addonInfo, const cp_extension_t* ext)
-{
-  DirList dirs;
-  AddonVersion version("0.0.0");
-  AddonPtr addonver;
-  if (CServiceBroker::GetAddonMgr().GetAddon("xbmc.addon", addonver))
-    version = addonver->Version();
-  for (size_t i = 0; i < ext->configuration->num_children; ++i)
-  {
-    cp_cfg_element_t* element = &ext->configuration->children[i];
-    if(element->name && strcmp(element->name, "dir") == 0)
-    {
-      DirInfo dir = ParseDirConfiguration(element);
-      if (dir.version <= version)
-      {
-        dirs.push_back(std::move(dir));
-      }
-    }
-  }
-  if (!CServiceBroker::GetAddonMgr().GetExtValue(ext->configuration, "info").empty())
-  {
-    dirs.push_back(ParseDirConfiguration(ext->configuration));
-  }
-  return std::unique_ptr<CRepository>(new CRepository(addonInfo, std::move(dirs)));
-}
-
-CRepository::CRepository(const AddonInfoPtr& addonInfo, DirList dirs)
-    : CAddon(addonInfo, ADDON_REPOSITORY), m_dirs(std::move(dirs))
-{
-  for (auto const& dir : m_dirs)
-  {
-    CURL datadir(dir.datadir);
-    if (datadir.IsProtocol("http"))
-    {
-      CLog::Log(LOGWARNING, "Repository add-on {} uses plain HTTP for add-on downloads in path {} - this is insecure and will make your Kodi installation vulnerable to attacks if enabled!", ID(), datadir.GetRedacted());
-    }
-    else if (datadir.IsProtocol("https") && datadir.HasProtocolOption("verifypeer") && datadir.GetProtocolOption("verifypeer") == "false")
-    {
-      CLog::Log(LOGWARNING, "Repository add-on {} disabled peer verification for add-on downloads in path {} - this is insecure and will make your Kodi installation vulnerable to attacks if enabled!", ID(), datadir.GetRedacted());
-    }
-  }
-}
-
 CRepository::CRepository(const AddonInfoPtr& addonInfo)
   : CAddon(addonInfo, ADDON_REPOSITORY)
 {
@@ -203,11 +122,11 @@ CRepository::CRepository(const AddonInfoPtr& addonInfo)
     CURL datadir(dir.datadir);
     if (datadir.IsProtocol("http"))
     {
-      CLog::Log(LOGWARNING, "Repository {} uses plain HTTP for add-on downloads - this is insecure and will make your Kodi installation vulnerable to attacks if enabled!", Name());
+      CLog::Log(LOGWARNING, "Repository add-on {} uses plain HTTP for add-on downloads in path {} - this is insecure and will make your Kodi installation vulnerable to attacks if enabled!", ID(), datadir.GetRedacted());
     }
     else if (datadir.IsProtocol("https") && datadir.HasProtocolOption("verifypeer") && datadir.GetProtocolOption("verifypeer") == "false")
     {
-      CLog::Log(LOGWARNING, "Repository {} disabled peer verification for add-on downloads - this is insecure and will make your Kodi installation vulnerable to attacks if enabled!", Name());
+      CLog::Log(LOGWARNING, "Repository add-on {} disabled peer verification for add-on downloads in path {} - this is insecure and will make your Kodi installation vulnerable to attacks if enabled!", ID(), datadir.GetRedacted());
     }
   }
 }

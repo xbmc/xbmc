@@ -21,10 +21,7 @@ namespace ADDON
 class CImageResource : public CResource
 {
 public:
-  static std::unique_ptr<CImageResource> FromExtension(const AddonInfoPtr& addonInfo, const cp_extension_t* ext);
-
   explicit CImageResource(const AddonInfoPtr& addonInfo);
-  CImageResource(const AddonInfoPtr& addonInfo, std::string type);
 
   void OnPreUnInstall() override;
 

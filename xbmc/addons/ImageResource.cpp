@@ -18,17 +18,6 @@
 namespace ADDON
 {
 
-std::unique_ptr<CImageResource> CImageResource::FromExtension(const AddonInfoPtr& addonInfo, const cp_extension_t* ext)
-{
-  std::string type = CServiceBroker::GetAddonMgr().GetExtValue(ext->configuration, "@type");
-  return std::unique_ptr<CImageResource>(new CImageResource(addonInfo, std::move(type)));
-}
-
-CImageResource::CImageResource(const AddonInfoPtr& addonInfo, std::string type)
-    : CResource(addonInfo, ADDON_RESOURCE_IMAGES), m_type(std::move(type))
-{
-}
-
 CImageResource::CImageResource(const AddonInfoPtr& addonInfo)
   : CResource(addonInfo, ADDON_RESOURCE_IMAGES)
 {

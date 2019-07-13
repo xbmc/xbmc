@@ -21,10 +21,7 @@ public:
 
   enum Content { UNKNOWN, AUDIO, IMAGE, EXECUTABLE, VIDEO, GAME };
 
-  static std::unique_ptr<CPluginSource> FromExtension(const AddonInfoPtr& addonInfo, const cp_extension_t* ext);
-
   explicit CPluginSource(const AddonInfoPtr& addonInfo, TYPE addonType);
-  CPluginSource(const AddonInfoPtr& addonInfo, const std::string& provides);
 
   TYPE FullType() const override;
   bool IsType(TYPE type) const override;

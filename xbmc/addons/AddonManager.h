@@ -14,17 +14,11 @@
 #include "threads/CriticalSection.h"
 #include "utils/EventStream.h"
 
-extern "C"
-{
-#include "lib/cpluff/libcpluff/cpluff.h"
-}
-
 namespace ADDON
 {
   typedef std::map<TYPE, VECADDONS> MAPADDONS;
   typedef std::map<TYPE, VECADDONS>::iterator IMAPADDONS;
   typedef std::map<std::string, AddonInfoPtr> ADDON_INFO_LIST;
-  typedef std::vector<cp_cfg_element_t*> ELEMENTS;
 
   /*!
    * @brief The value binaryAddonList use a tuple in following construct:
@@ -148,7 +142,6 @@ namespace ADDON
     /*! Returns true if there is any addon with available updates, otherwise false */
     bool HasAvailableUpdates();
 
-    std::string GetTranslatedString(const cp_cfg_element_t *root, const char *tag);
     static AddonPtr AddonFromProps(const AddonInfoPtr& addonInfo);
 
     /*! \brief Checks for new / updated add-ons
@@ -217,39 +210,6 @@ namespace ADDON
 
     void UpdateLastUsed(const std::string& id);
 
-    /* libcpluff */
-    std::string GetExtValue(cp_cfg_element_t *base, const char *path) const;
-
-    /*! \brief Retrieve an element from a given configuration element
-     \param base the base configuration element.
-     \param path the path to the configuration element from the base element.
-     \return a pointer to the retrieved element if it was found, nullptr otherwise
-     */
-    cp_cfg_element_t *GetExtElement(cp_cfg_element_t *base, const char *path);
-
-    /*! \brief Retrieve a vector of repeated elements from a given configuration element
-     \param base the base configuration element.
-     \param path the path to the configuration element from the base element.
-     \param result [out] returned list of elements.
-     \return true if the configuration element is present and the list of elements is non-empty
-     */
-    bool GetExtElements(cp_cfg_element_t *base, const char *path, ELEMENTS &result);
-
-    /*! \brief Retrieve a list of strings from a given configuration element
-     Assumes the configuration element or attribute contains a whitespace separated list of values (eg xs:list schema).
-     \param base the base configuration element.
-     \param path the path to the configuration element or attribute from the base element.
-     \param result [out] returned list of strings.
-     \return true if the configuration element is present and the list of strings is non-empty
-     */
-    bool GetExtList(cp_cfg_element_t *base, const char *path, std::vector<std::string> &result) const;
-
-    const cp_extension_t *GetExtension(const cp_plugin_info_t *props, const char *extension) const;
-
-    /*! \brief Retrieves the platform-specific library name from the given configuration element
-     */
-    std::string GetPlatformLibraryName(cp_cfg_element_t *base) const;
-
     /*! \brief Load the addon in the given path
      This loads the addon using c-pluff which parses the addon descriptor file.
      \param path folder that contains the addon.
@@ -275,24 +235,13 @@ namespace ADDON
      */
     std::vector<DependencyInfo> GetDepsRecursive(const std::string& id);
 
-    static AddonPtr Factory(const cp_plugin_info_t* plugin, TYPE type);
-    static bool Factory(const cp_plugin_info_t* plugin, TYPE type, CAddonBuilder& builder, bool ignoreExtensions = false, const CRepository::DirInfo& repo = {});
-    static void FillCpluffMetadata(const cp_plugin_info_t* plugin, CAddonBuilder& builder, const CRepository::DirInfo& repo);
-
     bool GetAddonInfos(AddonInfos& addonInfos, TYPE type);
     const AddonInfoPtr GetAddonInfo(const std::string& id, TYPE type = ADDON_UNKNOWN);
 
   private:
     CAddonMgr& operator=(CAddonMgr const&) = delete;
-    /* libcpluff */
-    cp_context_t *m_cp_context = nullptr;
-    VECADDONS    m_updateableAddons;
 
-    /*! \brief Check whether this addon is supported on the current platform
-     \param info the plugin descriptor
-     \return true if the addon is supported, false otherwise.
-     */
-    static bool PlatformSupportsAddon(const cp_plugin_info_t *info);
+    VECADDONS m_updateableAddons;
 
     bool GetAddonsInternal(const TYPE &type, VECADDONS &addons, bool enabledOnly);
     bool EnableSingle(const std::string& id);

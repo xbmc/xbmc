@@ -1,6 +1,0 @@
-<?xml version="1.0"?>
-<plugin id="chainmissingdep">
-	<requires>
-		<import plugin="missingdep"/>
-	</requires>
-</plugin>

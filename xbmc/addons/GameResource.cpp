@@ -16,8 +16,3 @@ CGameResource::CGameResource(const AddonInfoPtr& addonInfo) :
   CResource(addonInfo, ADDON_RESOURCE_GAMES)
 {
 }
-
-std::unique_ptr<CGameResource> CGameResource::FromExtension(const AddonInfoPtr& addonInfo, const cp_extension_t* ext)
-{
-  return std::unique_ptr<CGameResource>(new CGameResource(addonInfo));
-}

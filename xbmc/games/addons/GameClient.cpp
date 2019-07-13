@@ -77,26 +77,6 @@ namespace
 
 // --- CGameClient -------------------------------------------------------------
 
-std::unique_ptr<CGameClient> CGameClient::FromExtension(const ADDON::AddonInfoPtr& addonInfo, const cp_extension_t* ext)
-{
-  using namespace ADDON;
-
-  static const std::vector<std::string> properties = {
-      GAME_PROPERTY_EXTENSIONS,
-      GAME_PROPERTY_SUPPORTS_VFS,
-      GAME_PROPERTY_SUPPORTS_STANDALONE,
-  };
-
-  for (const auto& property : properties)
-  {
-    std::string strProperty = CServiceBroker::GetAddonMgr().GetExtValue(ext->configuration, property.c_str());
-    if (!strProperty.empty())
-      addonInfo->AddExtraInfo(property, strProperty);
-  }
-
-  return std::unique_ptr<CGameClient>(new CGameClient(addonInfo));
-}
-
 CGameClient::CGameClient(const ADDON::AddonInfoPtr& addonInfo) :
   CAddonDll(addonInfo, ADDON::ADDON_GAMEDLL),
   m_subsystems(CGameClientSubsystem::CreateSubsystems(*this, m_struct, m_critSection)),

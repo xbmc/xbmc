@@ -1,6 +1,0 @@
-<?xml version="1.0"?>
-<plugin id="chain2">
-	<requires>
-		<import plugin="chain3"/>
-	</requires>
-</plugin>

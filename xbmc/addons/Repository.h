@@ -16,8 +16,6 @@
 #include <string>
 #include <vector>
 
-struct cp_cfg_element_t;
-
 namespace ADDON
 {
   class CRepository : public CAddon
@@ -36,10 +34,7 @@ namespace ADDON
 
     typedef std::vector<DirInfo> DirList;
 
-    static std::unique_ptr<CRepository> FromExtension(const AddonInfoPtr& addonInfo, const cp_extension_t* ext);
-
     explicit CRepository(const AddonInfoPtr& addonInfo);
-    CRepository(const AddonInfoPtr& addonInfo, DirList dirs);
 
     enum FetchStatus
     {
@@ -61,7 +56,6 @@ namespace ADDON
     static bool FetchChecksum(const std::string& url, std::string& checksum) noexcept;
     static bool FetchIndex(const DirInfo& repo, std::string const& digest, VECADDONS& addons) noexcept;
 
-    static DirInfo ParseDirConfiguration(cp_cfg_element_t* configuration);
     static DirInfo ParseDirConfiguration(const CAddonExtensions& configuration);
 
     DirList m_dirs;

@@ -17,9 +17,6 @@ namespace ADDON
 class CFontResource : public CResource
 {
 public:
-  static std::unique_ptr<CFontResource> FromExtension(const AddonInfoPtr& addonInfo,
-                                                      const cp_extension_t* ext);
-
   explicit CFontResource(const AddonInfoPtr& addonInfo) : CResource(addonInfo, ADDON_RESOURCE_FONT) {}
 
   //! \brief Check whether file is allowed or not (no filters here).

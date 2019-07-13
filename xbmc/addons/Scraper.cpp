@@ -117,43 +117,6 @@ static void CheckScraperError(const TiXmlElement *pxeRoot)
   throw CScraperError(sTitle, sMessage);
 }
 
-std::unique_ptr<CScraper> CScraper::FromExtension(const AddonInfoPtr& addonInfo, const cp_extension_t *ext)
-{
-  bool requiressettings =
-      CServiceBroker::GetAddonMgr().GetExtValue(ext->configuration, "@requiressettings") == "true";
-
-  CDateTimeSpan persistence;
-  std::string tmp =
-      CServiceBroker::GetAddonMgr().GetExtValue(ext->configuration, "@cachepersistence");
-  if (!tmp.empty())
-    persistence.SetFromTimeString(tmp);
-
-  CONTENT_TYPE pathContent(CONTENT_NONE);
-  switch (addonInfo->MainType())
-  {
-  case ADDON_SCRAPER_ALBUMS:
-    pathContent = CONTENT_ALBUMS;
-    break;
-  case ADDON_SCRAPER_ARTISTS:
-    pathContent = CONTENT_ARTISTS;
-    break;
-  case ADDON_SCRAPER_MOVIES:
-    pathContent = CONTENT_MOVIES;
-    break;
-  case ADDON_SCRAPER_MUSICVIDEOS:
-    pathContent = CONTENT_MUSICVIDEOS;
-    break;
-  case ADDON_SCRAPER_TVSHOWS:
-    pathContent = CONTENT_TVSHOWS;
-    break;
-  default:
-    break;
-  }
-
-  return std::unique_ptr<CScraper>(
-      new CScraper(addonInfo, requiressettings, persistence, pathContent));
-}
-
 CScraper::CScraper(const AddonInfoPtr& addonInfo, TYPE addonType)
     : CAddon(addonInfo, addonType)
     , m_fLoaded(false)
@@ -189,19 +152,6 @@ CScraper::CScraper(const AddonInfoPtr& addonInfo, TYPE addonType)
   }
 
   m_isPython = URIUtils::GetExtension(addonInfo->Type(addonType)->LibPath()) == ".py";
-}
-
-CScraper::CScraper(const AddonInfoPtr& addonInfo,
-                   bool requiressettings,
-                   CDateTimeSpan persistence,
-                   CONTENT_TYPE pathContent)
-    : CAddon(addonInfo, ADDON_UNKNOWN)
-    , m_fLoaded(false)
-    , m_requiressettings(requiressettings)
-    , m_persistence(persistence)
-    , m_pathContent(pathContent)
-{
-  m_isPython = URIUtils::GetExtension(LibPath()) == ".py";
 }
 
 bool CScraper::Supports(const CONTENT_TYPE &content) const

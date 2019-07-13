@@ -21,8 +21,6 @@ public:
   explicit CGameResource(const AddonInfoPtr& addonInfo);
   ~CGameResource() override = default;
 
-  static std::unique_ptr<CGameResource> FromExtension(const AddonInfoPtr& addonInfo, const cp_extension_t* ext);
-
   // implementation of CResource
   bool IsAllowed(const std::string& file) const override { return true; }
 };

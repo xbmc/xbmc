@@ -18,36 +18,6 @@
 namespace ADDON
 {
 
-std::unique_ptr<CPluginSource> CPluginSource::FromExtension(const AddonInfoPtr& addonInfo, const cp_extension_t* ext)
-{
-  std::string provides = CServiceBroker::GetAddonMgr().GetExtValue(ext->configuration, "provides");
-  if (!provides.empty())
-    addonInfo->AddExtraInfo("provides", provides);
-  CPluginSource* p = new CPluginSource(addonInfo, provides);
-
-  ELEMENTS elements;
-  if (CServiceBroker::GetAddonMgr().GetExtElements(ext->configuration, "medialibraryscanpath", elements))
-  {
-    std::string url = "plugin://" + p->ID() + '/';
-    for (const auto& elem : elements)
-    {
-      std::string content = CServiceBroker::GetAddonMgr().GetExtValue(elem, "@content");
-      if (content.empty())
-        continue;
-      std::string path;
-      if (elem->value)
-        path.assign(elem->value);
-      if (!path.empty() && path.front() == '/')
-        path.erase(0, 1);
-      if (path.compare(0, url.size(), url))
-        path.insert(0, url);
-      p->m_mediaLibraryScanPaths[content].push_back(CURL(path).GetFileName());
-    }
-  }
-
-  return std::unique_ptr<CPluginSource>(p);
-}
-
 CPluginSource::CPluginSource(const AddonInfoPtr& addonInfo, TYPE addonType) : CAddon(addonInfo, addonType)
 {
   std::string provides = addonInfo->Type(addonType)->GetValue("provides").asString();
@@ -75,12 +45,6 @@ CPluginSource::CPluginSource(const AddonInfoPtr& addonInfo, TYPE addonType) : CA
     m_mediaLibraryScanPaths[content].push_back(CURL(path).GetFileName());
   }
 
-  SetProvides(provides);
-}
-
-CPluginSource::CPluginSource(const AddonInfoPtr& addonInfo, const std::string& provides)
-  : CAddon(addonInfo, ADDON_PLUGIN)
-{
   SetProvides(provides);
 }
 

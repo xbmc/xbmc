@@ -113,7 +113,6 @@ public:
   //@}
 
 private:
-  friend class ADDON::CAddonBuilder;
   friend class CAddonInfoBuilder;
 
   std::string m_id;

@@ -43,8 +43,6 @@ class IGameInputCallback;
 class CGameClient : public ADDON::CAddonDll
 {
 public:
-  static std::unique_ptr<CGameClient> FromExtension(const ADDON::AddonInfoPtr& addonInfo, const cp_extension_t* ext);
-
   explicit CGameClient(const ADDON::AddonInfoPtr& addonInfo);
 
   virtual ~CGameClient(void);

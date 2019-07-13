@@ -55,11 +55,6 @@ struct FeatureTypeEqual
 
 const ControllerPtr CController::EmptyPtr;
 
-std::unique_ptr<CController> CController::FromExtension(const ADDON::AddonInfoPtr& addonInfo, const cp_extension_t* ext)
-{
-  return std::unique_ptr<CController>(new CController(addonInfo));
-}
-
 CController::CController(const ADDON::AddonInfoPtr& addonInfo) :
   CAddon(addonInfo, ADDON::ADDON_GAME_CONTROLLER),
   m_layout(new CControllerLayout)

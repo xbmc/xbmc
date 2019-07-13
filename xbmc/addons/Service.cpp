@@ -16,11 +16,6 @@
 namespace ADDON
 {
 
-std::unique_ptr<CService> CService::FromExtension(const AddonInfoPtr& addonInfo, const cp_extension_t* ext)
-{
-  return std::unique_ptr<CService>(new CService(addonInfo));
-}
-
 CServiceAddonManager::CServiceAddonManager(CAddonMgr& addonMgr) :
     m_addonMgr(addonMgr)
 {

@@ -143,54 +143,6 @@ bool CSkinSettingBool::SerializeSetting(TiXmlElement* element) const
   return true;
 }
 
-std::unique_ptr<CSkinInfo> CSkinInfo::FromExtension(const AddonInfoPtr& addonInfo, const cp_extension_t* ext)
-{
-  RESOLUTION_INFO defaultRes = RESOLUTION_INFO();
-  std::vector<RESOLUTION_INFO> resolutions;
-
-  ELEMENTS elements;
-  if (CServiceBroker::GetAddonMgr().GetExtElements(ext->configuration, "res", elements))
-  {
-    for (ELEMENTS::iterator i = elements.begin(); i != elements.end(); ++i)
-    {
-      int width = atoi(CServiceBroker::GetAddonMgr().GetExtValue(*i, "@width").c_str());
-      int height = atoi(CServiceBroker::GetAddonMgr().GetExtValue(*i, "@height").c_str());
-      bool defRes = CServiceBroker::GetAddonMgr().GetExtValue(*i, "@default") == "true";
-      std::string folder = CServiceBroker::GetAddonMgr().GetExtValue(*i, "@folder");
-      float aspect = 0;
-      std::string strAspect = CServiceBroker::GetAddonMgr().GetExtValue(*i, "@aspect");
-      std::vector<std::string> fracs = StringUtils::Split(strAspect, ':');
-      if (fracs.size() == 2)
-        aspect = (float)(atof(fracs[0].c_str())/atof(fracs[1].c_str()));
-      if (width > 0 && height > 0)
-      {
-        RESOLUTION_INFO res(width, height, aspect, folder);
-        res.strId = strAspect; // for skin usage, store aspect string in strId
-        if (defRes)
-          defaultRes = res;
-        resolutions.push_back(res);
-      }
-    }
-  }
-  else
-  { // no resolutions specified -> backward compatibility
-    std::string defaultWide = CServiceBroker::GetAddonMgr().GetExtValue(ext->configuration, "@defaultwideresolution");
-    if (defaultWide.empty())
-      defaultWide = CServiceBroker::GetAddonMgr().GetExtValue(ext->configuration, "@defaultresolution");
-    TranslateResolution(defaultWide, defaultRes);
-  }
-
-  float effectsSlowDown(1.f);
-  std::string str = CServiceBroker::GetAddonMgr().GetExtValue(ext->configuration, "@effectslowdown");
-  if (!str.empty())
-    effectsSlowDown = (float)atof(str.c_str());
-
-  bool debugging = CServiceBroker::GetAddonMgr().GetExtValue(ext->configuration, "@debugging") == "true";
-
-  return std::unique_ptr<CSkinInfo>(new CSkinInfo(addonInfo, defaultRes, resolutions,
-      effectsSlowDown, debugging));
-}
-
 CSkinInfo::CSkinInfo(
     const AddonInfoPtr& addonInfo,
     const RESOLUTION_INFO& resolution /* = RESOLUTION_INFO() */)
@@ -201,22 +153,6 @@ CSkinInfo::CSkinInfo(
   {
     m_settingsUpdateHandler.reset(new CSkinSettingUpdateHandler(*this));
   }
-
-CSkinInfo::CSkinInfo(
-    const AddonInfoPtr& addonInfo,
-    const RESOLUTION_INFO& resolution,
-    const std::vector<RESOLUTION_INFO>& resolutions,
-    float effectsSlowDown,
-    bool debugging)
-    : CAddon(addonInfo, ADDON_SKIN),
-      m_defaultRes(resolution),
-      m_resolutions(resolutions),
-      m_effectsSlowDown(effectsSlowDown),
-      m_debugging(debugging)
-{
-  m_settingsUpdateHandler.reset(new CSkinSettingUpdateHandler(*this));
-  LoadStartupWindows(nullptr);
-}
 
 CSkinInfo::CSkinInfo(const AddonInfoPtr& addonInfo) : CAddon(addonInfo, ADDON_SKIN)
 {
@@ -252,7 +188,7 @@ CSkinInfo::CSkinInfo(const AddonInfoPtr& addonInfo) : CAddon(addonInfo, ADDON_SK
   m_debugging = Type(ADDON_SKIN)->GetValue("@debugging").asBoolean();
 
   m_settingsUpdateHandler.reset(new CSkinSettingUpdateHandler(*this));
-  LoadStartupWindows(nullptr);
+  LoadStartupWindows(addonInfo);
 }
 
 CSkinInfo::~CSkinInfo() = default;
@@ -361,7 +297,7 @@ int CSkinInfo::GetStartWindow() const
   return m_startupWindows[0].m_id;
 }
 
-bool CSkinInfo::LoadStartupWindows(const cp_extension_t *ext)
+bool CSkinInfo::LoadStartupWindows(const AddonInfoPtr& addonInfo)
 {
   m_startupWindows.clear();
   m_startupWindows.emplace_back(WINDOW_HOME, "513");
