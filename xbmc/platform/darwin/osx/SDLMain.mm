@@ -13,7 +13,7 @@
 
 #import "platform/darwin/osx/CocoaInterface.h"
 #import "platform/darwin/osx/HotKeyController.h"
-#import "platform/darwin/storage/DarwinStorageProvider.h"
+#import "platform/darwin/osx/storage/OSXStorageProvider.h"
 
 #import <SDL/SDL.h>
 #import <sys/param.h> /* for MAXPATHLEN */
@@ -402,7 +402,7 @@ static void setupWindowMenu(void)
     NSString* volumePath = [note.userInfo objectForKey:@"NSDevicePath"];
     const char* path = [volumePath UTF8String];
 
-    CDarwinStorageProvider::VolumeMountNotification(label, path);
+    COSXStorageProvider::VolumeMountNotification(label, path);
   }
 }
 
@@ -417,7 +417,7 @@ static void setupWindowMenu(void)
     NSString* volumePath = [note.userInfo objectForKey:@"NSDevicePath"];
     const char* path = [volumePath UTF8String];
 
-    CDarwinStorageProvider::VolumeUnmountNotification(label, path);
+    COSXStorageProvider::VolumeUnmountNotification(label, path);
   }
 }
 

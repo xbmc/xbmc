@@ -2,8 +2,8 @@ xbmc/input/touch                      input/touch
 xbmc/input/touch/generic              input/touch/generic
 xbmc/platform/darwin                  platform/darwin
 xbmc/platform/darwin/ios-common       platform/ios-common
+xbmc/platform/darwin/ios-common/storage platform/ios-common/storage
 xbmc/platform/darwin/network          platform/darwin/network
-xbmc/platform/darwin/storage          platform/storage
 xbmc/platform/posix                   posix
 xbmc/platform/posix/filesystem        platform/posix/filesystem
 xbmc/platform/posix/network           platform/posix/network
