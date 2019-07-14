@@ -70,7 +70,7 @@
 	<key>UIStatusBarHidden</key>
 	<true/>
 	<key>MinimumOSVersion</key>
-	<string>5.1</string>
+	<string>@CMAKE_XCODE_ATTRIBUTE_IPHONEOS_DEPLOYMENT_TARGET@</string>
 	<key>UILaunchImages</key>
 	<array>
 		<dict>
