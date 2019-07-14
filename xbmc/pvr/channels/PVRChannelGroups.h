@@ -69,7 +69,7 @@ namespace PVR
      * @param strPath The path to the channel
      * @return The channel, or nullptr if not found
      */
-    std::shared_ptr<CPVRChannel> GetByPath(const std::string& strPath) const;
+    std::shared_ptr<CPVRChannel> GetByPath(const CPVRChannelsPath& path) const;
 
     /*!
      * @brief Get a pointer to a channel group given its ID.

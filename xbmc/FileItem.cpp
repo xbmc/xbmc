@@ -851,9 +851,7 @@ bool CFileItem::IsPVRChannel() const
 
 bool CFileItem::IsPVRChannelGroup() const
 {
-  return !StringUtils::EndsWithNoCase(m_strPath, ".pvr") &&
-         (StringUtils::StartsWithNoCase(m_strPath, "pvr://channels/tv/") ||
-          StringUtils::StartsWithNoCase(m_strPath, "pvr://channels/radio/"));
+  return URIUtils::IsPVRChannelGroup(m_strPath);
 }
 
 bool CFileItem::IsPVRRecording() const
@@ -1253,7 +1251,7 @@ bool CFileItem::IsURL() const
 
 bool CFileItem::IsPVR() const
 {
-  return CUtil::IsPVR(m_strPath);
+  return URIUtils::IsPVR(m_strPath);
 }
 
 bool CFileItem::IsLiveTV() const
@@ -3202,7 +3200,7 @@ std::string CFileItem::GetMovieName(bool bUseFolderNames /* = false */) const
 
   if (m_pvrRecordingInfoTag)
     return m_pvrRecordingInfoTag->m_strTitle;
-  else if (CUtil::IsTVRecording(m_strPath))
+  else if (URIUtils::IsPVRRecording(m_strPath))
   {
     std::string title = CPVRRecording::GetTitleFromURL(m_strPath);
     if (!title.empty())

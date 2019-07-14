@@ -16,6 +16,7 @@
 #include "pvr/channels/PVRChannelGroup.h"
 #include "pvr/channels/PVRChannelGroups.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
+#include "pvr/channels/PVRChannelsPath.h"
 #include "pvr/recordings/PVRRecording.h"
 #include "pvr/recordings/PVRRecordings.h"
 #include "pvr/recordings/PVRRecordingsPath.h"
@@ -69,17 +70,17 @@ bool CPVRGUIDirectory::GetDirectory(CFileItemList& results) const
       std::shared_ptr<CFileItem> item;
 
       item.reset(new CFileItem(base + "channels/", true));
-      item->SetLabel(g_localizeStrings.Get(19019));
+      item->SetLabel(g_localizeStrings.Get(19019)); // Channels
       item->SetLabelPreformatted(true);
       results.Add(item);
 
       item.reset(new CFileItem(base + "recordings/active/", true));
-      item->SetLabel(g_localizeStrings.Get(19017)); // TV Recordings
+      item->SetLabel(g_localizeStrings.Get(19017)); // Recordings
       item->SetLabelPreformatted(true);
       results.Add(item);
 
       item.reset(new CFileItem(base + "recordings/deleted/", true));
-      item->SetLabel(g_localizeStrings.Get(19108)); // Deleted TV Recordings
+      item->SetLabel(g_localizeStrings.Get(19184)); // Deleted recordings
       item->SetLabelPreformatted(true);
       results.Add(item);
 
@@ -327,103 +328,67 @@ bool CPVRGUIDirectory::GetChannelGroupsDirectory(bool bRadio, bool bExcludeHidde
 
 bool CPVRGUIDirectory::GetChannelsDirectory(CFileItemList& results) const
 {
-  std::string base = m_url.Get();
-  URIUtils::RemoveSlashAtEnd(base);
-
-  std::string fileName = m_url.GetFileName();
-  URIUtils::RemoveSlashAtEnd(fileName);
-
-  if (fileName == "channels")
+  const CPVRChannelsPath path(m_url.GetWithoutOptions());
+  if (path.IsValid())
   {
-    std::shared_ptr<CFileItem> item;
-
-    // all tv channels
-    item.reset(new CFileItem(base + "/tv/", true));
-    item->SetLabel(g_localizeStrings.Get(19020));
-    item->SetLabelPreformatted(true);
-    results.Add(item);
-
-    // all radio channels
-    item.reset(new CFileItem(base + "/radio/", true));
-    item->SetLabel(g_localizeStrings.Get(19021));
-    item->SetLabelPreformatted(true);
-    results.Add(item);
-
-    return true;
-  }
-  else if (fileName == "channels/tv")
-  {
-    return GetChannelGroupsDirectory(false, false, results);
-  }
-  else if (fileName == "channels/radio")
-  {
-    return GetChannelGroupsDirectory(true, false, results);
-  }
-  else if (StringUtils::StartsWith(fileName, "channels/tv/"))
-  {
-    std::string strGroupName = fileName.substr(12);
-    URIUtils::RemoveSlashAtEnd(strGroupName);
-
-    std::shared_ptr<CPVRChannelGroup> group;
-    bool bShowHiddenChannels = StringUtils::EndsWithNoCase(fileName, ".hidden");
-    if (bShowHiddenChannels || strGroupName == "*") // all channels
-      group = CServiceBroker::GetPVRManager().ChannelGroups()->GetGroupAllTV();
-    else
-      group = CServiceBroker::GetPVRManager().ChannelGroups()->GetTV()->GetByName(strGroupName);
-
-    if (group)
+    if (path.IsEmpty())
     {
-      const std::vector<PVRChannelGroupMember> groupMembers = group->GetMembers();
-      for (const auto& groupMember : groupMembers)
+      std::shared_ptr<CFileItem> item;
+
+      // all tv channels
+      item.reset(new CFileItem(CPVRChannelsPath::PATH_TV_CHANNELS, true));
+      item->SetLabel(g_localizeStrings.Get(19020)); // TV
+      item->SetLabelPreformatted(true);
+      results.Add(item);
+
+      // all radio channels
+      item.reset(new CFileItem(CPVRChannelsPath::PATH_RADIO_CHANNELS, true));
+      item->SetLabel(g_localizeStrings.Get(19021)); // Radio
+      item->SetLabelPreformatted(true);
+      results.Add(item);
+
+      return true;
+    }
+    else if (path.IsChannelsRoot())
+    {
+      return GetChannelGroupsDirectory(path.IsRadio(), false, results);
+    }
+    else if (path.IsChannelGroup())
+    {
+      const std::string& strGroupName = path.GetGroupName();
+      bool bShowHiddenChannels = path.IsHiddenChannelGroup();
+
+      std::shared_ptr<CPVRChannelGroup> group;
+      if (bShowHiddenChannels || strGroupName == "*") // all channels
       {
-        if (bShowHiddenChannels != groupMember.channel->IsHidden())
-          continue;
-
-        results.Add(std::make_shared<CFileItem>(groupMember.channel));
+        group = CServiceBroker::GetPVRManager().ChannelGroups()->GetGroupAll(path.IsRadio());
       }
-    }
-    else
-    {
-      CLog::LogF(LOGERROR, "Unable to obtain members of channel group '%s'", strGroupName.c_str());
-      return false;
-    }
-
-    FilterDirectory(results);
-    return true;
-  }
-  else if (StringUtils::StartsWith(fileName, "channels/radio/"))
-  {
-    std::string strGroupName = fileName.substr(15);
-    URIUtils::RemoveSlashAtEnd(strGroupName);
-
-    std::shared_ptr<CPVRChannelGroup> group;
-    bool bShowHiddenChannels = StringUtils::EndsWithNoCase(fileName, ".hidden");
-    if (bShowHiddenChannels || strGroupName == "*") // all channels
-      group = CServiceBroker::GetPVRManager().ChannelGroups()->GetGroupAllRadio();
-    else
-      group = CServiceBroker::GetPVRManager().ChannelGroups()->GetRadio()->GetByName(strGroupName);
-
-    if (group)
-    {
-      const std::vector<PVRChannelGroupMember> groupMembers = group->GetMembers();
-      for (const auto& groupMember : groupMembers)
+      else
       {
-        if (bShowHiddenChannels != groupMember.channel->IsHidden())
-          continue;
-
-        results.Add(std::make_shared<CFileItem>(groupMember.channel));
+        group = CServiceBroker::GetPVRManager().ChannelGroups()->Get(path.IsRadio())->GetByName(strGroupName);
       }
-    }
-    else
-    {
-      CLog::LogF(LOGERROR, "Unable to obtain members of channel group '%s'", strGroupName.c_str());
-      return false;
-    }
 
-    FilterDirectory(results);
-    return true;
+      if (group)
+      {
+        const std::vector<PVRChannelGroupMember> groupMembers = group->GetMembers();
+        for (const auto& groupMember : groupMembers)
+        {
+          if (bShowHiddenChannels != groupMember.channel->IsHidden())
+            continue;
+
+          results.Add(std::make_shared<CFileItem>(groupMember.channel));
+        }
+      }
+      else
+      {
+        CLog::LogF(LOGERROR, "Unable to obtain members of channel group '%s'", strGroupName.c_str());
+        return false;
+      }
+
+      FilterDirectory(results);
+      return true;
+    }
   }
-
   return false;
 }
 

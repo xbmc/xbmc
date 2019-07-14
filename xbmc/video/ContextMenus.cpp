@@ -10,7 +10,7 @@
 
 #include "Application.h"
 #include "Autorun.h"
-#include "Util.h"
+#include "utils/URIUtils.h"
 #include "video/dialogs/GUIDialogVideoInfo.h"
 #include "video/windows/GUIWindowVideoBase.h"
 
@@ -65,7 +65,7 @@ bool CMarkWatched::IsVisible(const CFileItem& item) const
     else if (item.GetProperty("IsVideoFolder").asBoolean())
       return true;
     else
-      return CUtil::IsTVRecording(item.GetPath());
+      return URIUtils::IsPVRRecording(item.GetPath());
   }
   else if (!item.HasVideoInfoTag())
     return false;
@@ -91,7 +91,7 @@ bool CMarkUnWatched::IsVisible(const CFileItem& item) const
     else if (item.GetProperty("IsVideoFolder").asBoolean())
       return true;
     else
-      return CUtil::IsTVRecording(item.GetPath());
+      return URIUtils::IsPVRRecording(item.GetPath());
   }
   else if (!item.HasVideoInfoTag())
     return false;

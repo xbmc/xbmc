@@ -27,6 +27,7 @@
 #include "pvr/channels/PVRChannel.h"
 #include "pvr/channels/PVRChannelGroup.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
+#include "pvr/channels/PVRChannelsPath.h"
 #include "pvr/dialogs/GUIDialogPVRChannelManager.h"
 #include "pvr/dialogs/GUIDialogPVRGroupManager.h"
 #include "pvr/epg/Epg.h"
@@ -351,8 +352,7 @@ CGUIWindowPVRTVChannels::CGUIWindowPVRTVChannels()
 
 std::string CGUIWindowPVRTVChannels::GetDirectoryPath()
 {
-  return StringUtils::Format("pvr://channels/tv/%s/",
-                             m_bShowHiddenChannels ? ".hidden" : GetChannelGroup()->GroupName().c_str());
+  return CPVRChannelsPath(false, m_bShowHiddenChannels, GetChannelGroup()->GroupName());
 }
 
 CGUIWindowPVRRadioChannels::CGUIWindowPVRRadioChannels()
@@ -362,6 +362,5 @@ CGUIWindowPVRRadioChannels::CGUIWindowPVRRadioChannels()
 
 std::string CGUIWindowPVRRadioChannels::GetDirectoryPath()
 {
-  return StringUtils::Format("pvr://channels/radio/%s/",
-                             m_bShowHiddenChannels ? ".hidden" : GetChannelGroup()->GroupName().c_str());
+  return CPVRChannelsPath(true, m_bShowHiddenChannels, GetChannelGroup()->GroupName());
 }

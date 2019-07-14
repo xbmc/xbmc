@@ -4,7 +4,8 @@ set(SOURCES PVRChannel.cpp
             PVRChannelGroups.cpp
             PVRChannelGroupsContainer.cpp
             PVRChannelNumber.cpp
-            PVRRadioRDSInfoTag.cpp)
+            PVRRadioRDSInfoTag.cpp
+            PVRChannelsPath.cpp)
 
 set(HEADERS PVRChannel.h
             PVRChannelGroup.h
@@ -12,6 +13,7 @@ set(HEADERS PVRChannel.h
             PVRChannelGroups.h
             PVRChannelGroupsContainer.h
             PVRChannelNumber.h
-            PVRRadioRDSInfoTag.h)
+            PVRRadioRDSInfoTag.h
+            PVRChannelsPath.h)
 
 core_add_library(pvr_channels)

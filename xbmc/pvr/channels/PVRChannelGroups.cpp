@@ -13,6 +13,7 @@
 #include "pvr/PVRManager.h"
 #include "pvr/addons/PVRClients.h"
 #include "pvr/channels/PVRChannelGroupInternal.h"
+#include "pvr/channels/PVRChannelsPath.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
@@ -77,13 +78,12 @@ bool CPVRChannelGroups::Update(const CPVRChannelGroup &group, bool bUpdateFromCl
     {
       // create a new group if none was found. Copy the properties immediately
       // so the group doesn't get flagged as "changed" further down.
-      updateGroup.reset(new CPVRChannelGroup(group.IsRadio(), group.GroupID(), group.GroupName(), GetGroupAll()));
+      updateGroup.reset(new CPVRChannelGroup(CPVRChannelsPath(group.IsRadio(), group.GroupName()), group.GroupID(), GetGroupAll()));
       m_groups.push_back(updateGroup);
     }
 
-    updateGroup->SetRadio(group.IsRadio());
+    updateGroup->SetPath(group.GetPath());
     updateGroup->SetGroupID(group.GroupID());
-    updateGroup->SetGroupName(group.GroupName());
     updateGroup->SetGroupType(group.GroupType());
     updateGroup->SetPosition(group.GetPosition());
 
@@ -123,31 +123,16 @@ void CPVRChannelGroups::SortGroups()
   }
 }
 
-std::shared_ptr<CPVRChannel> CPVRChannelGroups::GetByPath(const std::string& strInPath) const
+std::shared_ptr<CPVRChannel> CPVRChannelGroups::GetByPath(const CPVRChannelsPath& path) const
 {
-  std::string strPath = strInPath;
-  URIUtils::RemoveSlashAtEnd(strPath);
-  std::string strCheckPath;
-
-  CSingleLock lock(m_critSection);
-  for (const auto& group : m_groups)
+  if (path.IsChannel())
   {
-    // check if the path matches
-    strCheckPath = group->GetPath();
-    if (URIUtils::PathHasParent(strPath, strCheckPath))
-    {
-      strPath.erase(0, strCheckPath.size());
-      std::vector<std::string> split(StringUtils::Split(strPath, '_', 2));
-      if (split.size() == 2)
-      {
-        const CPVRChannelPtr channel = group->GetByUniqueID(atoi(split[1].c_str()), CServiceBroker::GetPVRManager().Clients()->GetClientId(split[0]));
-        if (channel)
-          return channel;
-      }
-    }
+    const std::shared_ptr<CPVRChannelGroup> group = GetByName(path.GetGroupName());
+    if (group)
+      return group->GetByUniqueID(path.GetChannelUID(),
+                                  CServiceBroker::GetPVRManager().Clients()->GetClientId(path.GetClientID()));
   }
 
-  // no match
   return {};
 }
 
@@ -179,16 +164,15 @@ std::vector<CPVRChannelGroupPtr> CPVRChannelGroups::GetGroupsByChannel(const CPV
 
 std::shared_ptr<CPVRChannelGroup> CPVRChannelGroups::GetGroupByPath(const std::string& strInPath) const
 {
-  // group paths returned by CPVRChannelGroup::GetPath() are always terminated by a "/"
-  std::string strPath = strInPath;
-  if (!strPath.empty() && strPath[strPath.size() - 1] != '/')
-    strPath += '/';
-
-  CSingleLock lock(m_critSection);
-  for (const auto& group : m_groups)
+  const CPVRChannelsPath path(strInPath);
+  if (path.IsChannelGroup())
   {
-    if (group->GetPath() == strPath)
-      return group;
+    CSingleLock lock(m_critSection);
+    for (const auto& group : m_groups)
+    {
+      if (group->GetPath() == path)
+        return group;
+    }
   }
   return {};
 }
@@ -503,7 +487,7 @@ bool CPVRChannelGroups::AddGroup(const std::string &strName)
     if (!group)
     {
       // create a new group
-      group.reset(new CPVRChannelGroup(m_bRadio, CPVRChannelGroup::INVALID_GROUP_ID, strName, GetGroupAll()));
+      group.reset(new CPVRChannelGroup(CPVRChannelsPath(m_bRadio, strName), CPVRChannelGroup::INVALID_GROUP_ID, GetGroupAll()));
 
       m_groups.push_back(group);
       bPersist = true;

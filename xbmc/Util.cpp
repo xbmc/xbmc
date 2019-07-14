@@ -508,21 +508,6 @@ std::string CUtil::GetHomePath(std::string strTarget)
   return ::GetHomePath(strTarget, strPath);
 }
 
-bool CUtil::IsPVR(const std::string& strFile)
-{
-  return StringUtils::StartsWithNoCase(strFile, "pvr:");
-}
-
-bool CUtil::IsLiveTV(const std::string& strFile)
-{
-  return StringUtils::StartsWithNoCase(strFile, "pvr://channels");
-}
-
-bool CUtil::IsTVRecording(const std::string& strFile)
-{
-  return StringUtils::StartsWithNoCase(strFile, "pvr://recording");
-}
-
 bool CUtil::IsPicture(const std::string& strFile)
 {
   return URIUtils::HasExtension(strFile,
@@ -1509,7 +1494,7 @@ bool CUtil::SupportsWriteFileOperations(const std::string& strPath)
     return true;
   if (URIUtils::IsSmb(strPath))
     return true;
-  if (CUtil::IsTVRecording(strPath))
+  if (URIUtils::IsPVRRecording(strPath))
     return CPVRDirectory::SupportsWriteFileOperations(strPath);
   if (URIUtils::IsNfs(strPath))
     return true;

@@ -5,6 +5,7 @@ xbmc/interfaces/python/test       test/python
 xbmc/music/tags/test              test/music_tags
 xbmc/network/test                 test/network
 xbmc/playlists/test               test/playlists
+xbmc/pvr/channels/test            test/pvrchannels
 xbmc/test                         test
 xbmc/threads/test                 test/threads
 xbmc/utils/test                   test/utils

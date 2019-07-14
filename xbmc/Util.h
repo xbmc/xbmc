@@ -49,10 +49,6 @@ public:
   static void GetQualifiedFilename(const std::string &strBasePath, std::string &strFilename);
   static void RunShortcut(const char* szPath);
   static std::string GetHomePath(std::string strTarget = "KODI_HOME"); // default target is "KODI_HOME"
-  static bool IsPVR(const std::string& strFile);
-  static bool IsHTSP(const std::string& strFile);
-  static bool IsLiveTV(const std::string& strFile);
-  static bool IsTVRecording(const std::string& strFile);
   static bool ExcludeFileOrFolder(const std::string& strFileOrFolder, const std::vector<std::string>& regexps);
   static void GetFileAndProtocol(const std::string& strURL, std::string& strDir);
   static int GetDVDIfoTitle(const std::string& strPathFile);

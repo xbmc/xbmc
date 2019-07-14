@@ -152,7 +152,9 @@ public:
   static bool IsAndroidApp(const std::string& strFile);
   static bool IsLibraryFolder(const std::string& strFile);
   static bool IsLibraryContent(const std::string& strFile);
+  static bool IsPVR(const std::string& strFile);
   static bool IsPVRChannel(const std::string& strFile);
+  static bool IsPVRChannelGroup(const std::string& strFile);
   static bool IsPVRGuideItem(const std::string& strFile);
   static bool IsUsingFastSwitch(const std::string& strFile);
 

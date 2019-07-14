@@ -14,6 +14,7 @@
 #include "guilib/LocalizeStrings.h"
 #include "pvr/PVRDatabase.h"
 #include "pvr/PVRManager.h"
+#include "pvr/channels/PVRChannelsPath.h"
 #include "pvr/epg/Epg.h"
 #include "pvr/epg/EpgChannelData.h"
 #include "pvr/epg/EpgContainer.h"
@@ -414,16 +415,13 @@ bool CPVRChannel::SetClientID(int iClientId)
   return false;
 }
 
-void CPVRChannel::UpdatePath(const std::string& groupPath)
+void CPVRChannel::UpdatePath(const std::string& channelGroup)
 {
   const CPVRClientPtr client = CServiceBroker::GetPVRManager().GetClient(m_iClientId);
   if (client)
   {
     CSingleLock lock(m_critSection);
-    const std::string strFileNameAndPath = StringUtils::Format("%s%s_%d.pvr",
-                                                               groupPath,
-                                                               client->ID().c_str(),
-                                                               m_iUniqueId);
+    const std::string strFileNameAndPath = CPVRChannelsPath(m_bIsRadio, channelGroup, client->ID(), m_iUniqueId);
     if (m_strFileNameAndPath != strFileNameAndPath)
     {
       m_strFileNameAndPath = strFileNameAndPath;

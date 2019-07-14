@@ -9133,7 +9133,7 @@ msgstr ""
 #: addons/skin.estuary/xml/Home.xml
 #: addons/skin.estuary/xml/Variables.xml
 #: xbmc/dialogs/GUIDialogMediaSource.cpp
-#: xbmc/filesystem/PVRDirectory.cpp
+#: xbmc/pvr/PVRGUIDirectory.cpp
 msgctxt "#19017"
 msgid "Recordings"
 msgstr ""
@@ -9150,6 +9150,7 @@ msgstr ""
 #: addons/skin.estuary/xml/DialogPVRChannelsOSD.xml
 #: addons/skin.estuary/xml/Variables.xml
 #: addons/skin.estuary/xml/Home.xml
+#: xbmc/pvr/PVRGUIDirectory.cpp
 #: xbmc/windows/GUIWindowSystemInfo.cpp
 msgctxt "#19019"
 msgid "Channels"
@@ -9159,8 +9160,8 @@ msgstr ""
 #: addons/skin.estuary/xml/Home.xml
 #: addons/skin.estuary/xml/SkinSettings.xml:
 #: addons/skin.estuary/xml/Variables.xml
-#: xbmc/pvr/channels/PVRChannelGroupsContainer.cpp
 #: xbmc/pvr/PVRGUIActions.cpp
+#: xbmc/pvr/PVRGUIDirectory.cpp
 msgctxt "#19020"
 msgid "TV"
 msgstr ""
@@ -9169,8 +9170,8 @@ msgstr ""
 #: addons/skin.estuary/xml/Home.xml
 #: addons/skin.estuary/xml/SkinSettings.xml
 #: addons/skin.estuary/xml/Variables.xml
-#: xbmc/pvr/channels/PVRChannelGroupsContainer.cpp
 #: xbmc/pvr/PVRGUIActions.cpp
+#: xbmc/pvr/PVRGUIDirectory.cpp
 msgctxt "#19021"
 msgid "Radio"
 msgstr ""
@@ -9206,7 +9207,7 @@ msgstr ""
 
 #. label for "add timer..." list item used in pvr timers / timer rules window
 #: xbmc/pvr/timers/PVRTimerInfoTag.cpp
-#: xbmc/pvr/timers/PVRTimers.cpp
+#: xbmc/pvr/PVRGUIDirectory.cpp
 msgctxt "#19026"
 msgid "Add timer..."
 msgstr ""
@@ -10180,6 +10181,7 @@ msgstr ""
 #. label for "deleted recordings" data source in media source window
 #: addons/skin.estuary/xml/Includes_MediaMenu.xml
 #: xbmc/dialogs/GUIDialogMediaSource.cpp
+#: xbmc/pvr/PVRGUIDirectory.cpp
 msgctxt "#19184"
 msgid "Deleted recordings"
 msgstr ""
