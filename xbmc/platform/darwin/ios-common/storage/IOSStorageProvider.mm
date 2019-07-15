@@ -37,5 +37,19 @@ void CIOSStorageProvider::GetLocalDrives(VECSOURCES& localDrives)
 
 std::vector<std::string> CIOSStorageProvider::GetDiskUsage()
 {
-  return {};
+  std::vector<std::string> result;
+  auto fileSystemAttributes = [NSFileManager.defaultManager attributesOfFileSystemForPath:@"/"
+                                                                                    error:nil];
+
+  auto formatter = [NSByteCountFormatter new];
+  formatter.includesActualByteCount = YES;
+  formatter.zeroPadsFractionDigits = YES;
+
+  for (const auto& pair :
+       {std::make_pair(NSFileSystemFreeSize, 160), std::make_pair(NSFileSystemSize, 20161)})
+    if (auto sizeStr = [formatter stringForObjectValue:fileSystemAttributes[pair.first]])
+      result.push_back(
+          StringUtils::Format("{}: {}", g_localizeStrings.Get(pair.second), sizeStr.UTF8String));
+
+  return result;
 }
