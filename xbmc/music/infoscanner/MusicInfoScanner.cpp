@@ -123,9 +123,9 @@ void CMusicInfoScanner::Process()
       m_needsCleanup = false;
 
       bool commit = true;
-      for (std::set<std::string>::const_iterator it = m_pathsToScan.begin(); it != m_pathsToScan.end(); ++it)
+      for (const auto& it : m_pathsToScan)
       {
-        if (!CDirectory::Exists(*it) && !m_bClean)
+        if (!CDirectory::Exists(it) && !m_bClean)
         {
           /*
            * Note that this will skip scanning (if m_bClean is disabled) if the directory really
@@ -133,14 +133,15 @@ void CMusicInfoScanner::Process()
            * and cleans out all songs under that path as its first step before re-adding files, if
            * the entire source is offline we totally empty the music database in one go.
            */
-          CLog::Log(LOGWARNING, "%s directory '%s' does not exist - skipping scan.", __FUNCTION__, it->c_str());
-          m_seenPaths.insert(*it);
+          CLog::Log(LOGWARNING, "%s directory '%s' does not exist - skipping scan.", __FUNCTION__,
+                    it.c_str());
+          m_seenPaths.insert(it);
           continue;
         }
 
         // Clear list of albums added by this scan
         m_albumsAdded.clear();
-        bool scancomplete = DoScan(*it);
+        bool scancomplete = DoScan(it);
         if (scancomplete)
         {
           if (m_albumsAdded.size() > 0)
@@ -656,9 +657,9 @@ void CMusicInfoScanner::FileItemsToAlbums(CFileItemList& items, VECALBUMS& album
    In the case where the album artist is unknown, we use the primary artist
    (i.e. first artist from each song).
    */
-  for (std::map<std::string, VECSONGS>::iterator songsByAlbumName = songsByAlbumNames.begin(); songsByAlbumName != songsByAlbumNames.end(); ++songsByAlbumName)
+  for (auto& songsByAlbumName : songsByAlbumNames)
   {
-    VECSONGS &songs = songsByAlbumName->second;
+    VECSONGS& songs = songsByAlbumName.second;
     // sort the songs by tracknumber to identify duplicate track numbers
     sort(songs.begin(), songs.end(), SortSongsByTrack);
 
@@ -701,7 +702,8 @@ void CMusicInfoScanner::FileItemsToAlbums(CFileItemList& items, VECALBUMS& album
     3b. we have at least two primary artists and no album artist specified.
     */
     std::string various = g_localizeStrings.Get(340); // Various Artists
-    bool compilation = !songsByAlbumName->first.empty() && (isCompilation || !tracksOverlap); // 1+2b+2a
+    bool compilation =
+        !songsByAlbumName.first.empty() && (isCompilation || !tracksOverlap); // 1+2b+2a
     if (artists.size() == 1)
     {
       std::string artist = artists.begin()->first; StringUtils::ToLower(artist);
@@ -716,13 +718,16 @@ void CMusicInfoScanner::FileItemsToAlbums(CFileItemList& items, VECALBUMS& album
     //Such a compilation album is stored with the localized value for "various artists" as the album artist
     if (compilation)
     {
-      CLog::Log(LOGDEBUG, "Album '%s' is a compilation as there's no overlapping tracks and %s", songsByAlbumName->first.c_str(), hasAlbumArtist ? "the album artist is 'Various'" : "there is more than one unique artist");
+      CLog::Log(LOGDEBUG, "Album '%s' is a compilation as there's no overlapping tracks and %s",
+                songsByAlbumName.first.c_str(),
+                hasAlbumArtist ? "the album artist is 'Various'"
+                               : "there is more than one unique artist");
       artists.clear();
       std::vector<std::string> va; va.push_back(various);
-      for (VECSONGS::iterator song = songs.begin(); song != songs.end(); ++song)
+      for (auto& song : songs)
       {
-        song->SetAlbumArtist(va);
-        artists[various].push_back(&(*song));
+        song.SetAlbumArtist(va);
+        artists[various].push_back(&song);
       }
     }
 
@@ -735,23 +740,25 @@ void CMusicInfoScanner::FileItemsToAlbums(CFileItemList& items, VECALBUMS& album
     Such an anthology compilation will not have been caught by the previous tests as it fails 3a and 3b.
     The album artist can be determined just like any normal album.
     */
-    if (!compilation && !songsByAlbumName->first.empty() && isCompilation)
+    if (!compilation && !songsByAlbumName.first.empty() && isCompilation)
     {
       compilation = true;
-      CLog::Log(LOGDEBUG, "Album '%s' is a compilation as all songs are marked as part of a compilation", songsByAlbumName->first.c_str());
+      CLog::Log(LOGDEBUG,
+                "Album '%s' is a compilation as all songs are marked as part of a compilation",
+                songsByAlbumName.first.c_str());
     }
 
     /*
      Step 3: Find the common albumartist for each song and assign
      albumartist to those tracks that don't have it set.
      */
-    for (std::map<std::string, std::vector<CSong *> >::iterator j = artists.begin(); j != artists.end(); ++j)
+    for (auto& j : artists)
     {
       /*
        Find the common artist(s) for these songs. Take from albumartist tag when present, or use artist tag.
        When from albumartist tag also check albumartistsort tag and take first non-empty value
       */
-      std::vector<CSong *> &artistSongs = j->second;
+      std::vector<CSong*>& artistSongs = j.second;
       std::vector<std::string> common;
       std::string albumartistsort;
       if (artistSongs.front()->GetAlbumArtist().empty())
@@ -786,7 +793,7 @@ void CMusicInfoScanner::FileItemsToAlbums(CFileItemList& items, VECALBUMS& album
        and add to the album vector
        */
       CAlbum album;
-      album.strAlbum = songsByAlbumName->first;
+      album.strAlbum = songsByAlbumName.first;
 
       //Split the albumartist sort string to try and get sort names for individual artists
       std::vector<std::string> sortnames = StringUtils::Split(albumartistsort, CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_musicItemSeparator);
@@ -803,18 +810,18 @@ void CMusicInfoScanner::FileItemsToAlbums(CFileItemList& items, VECALBUMS& album
           album.artistCredits.back().SetSortName(StringUtils::Trim(sortnames[i]));
       }
       album.bCompilation = compilation;
-      for (std::vector<CSong *>::iterator k = artistSongs.begin(); k != artistSongs.end(); ++k)
+      for (auto& k : artistSongs)
       {
-        if ((*k)->GetAlbumArtist().empty())
-          (*k)->SetAlbumArtist(common);
+        if (k->GetAlbumArtist().empty())
+          k->SetAlbumArtist(common);
         //! @todo in future we may wish to union up the genres, for now we assume they're the same
-        album.genre = (*k)->genre;
-        album.strArtistSort = (*k)->GetAlbumArtistSort();
+        album.genre = k->genre;
+        album.strArtistSort = k->GetAlbumArtistSort();
         //       in addition, we may want to use year as discriminating for albums
-        album.iYear = (*k)->iYear;
-        album.strLabel = (*k)->strRecordLabel;
-        album.strType = (*k)->strAlbumType;
-        album.songs.push_back(**k);
+        album.iYear = k->iYear;
+        album.strLabel = k->strRecordLabel;
+        album.strType = k->strAlbumType;
+        album.songs.push_back(*k);
       }
       albums.push_back(album);
     }
@@ -894,20 +901,20 @@ int CMusicInfoScanner::RetrieveMusicInfo(const std::string& strDirectory, CFileI
   int numAdded = 0;
 
   // Add all albums to the library, and hence any new song or album artists or other contributors
-  for (VECALBUMS::iterator album = albums.begin(); album != albums.end(); ++album)
+  for (auto& album : albums)
   {
     if (m_bStop)
       break;
 
     // mark albums without a title as singles
-    if (album->strAlbum.empty())
-      album->releaseType = CAlbum::Single;
+    if (album.strAlbum.empty())
+      album.releaseType = CAlbum::Single;
 
-    album->strPath = strDirectory;
-    m_musicDatabase.AddAlbum(*album, m_idSourcePath);
-    m_albumsAdded.insert(album->idAlbum);
+    album.strPath = strDirectory;
+    m_musicDatabase.AddAlbum(album, m_idSourcePath);
+    m_albumsAdded.insert(album.idAlbum);
 
-    numAdded += album->songs.size();
+    numAdded += album.songs.size();
   }
   return numAdded;
 }
@@ -1037,10 +1044,8 @@ void CMusicInfoScanner::FindArtForAlbums(VECALBUMS &albums, const std::string &p
     if (!albumArt.empty())
       albums[0].art["thumb"] = albumArt;
   }
-  for (VECALBUMS::iterator i = albums.begin(); i != albums.end(); ++i)
+  for (auto& album : albums)
   {
-    CAlbum &album = *i;
-
     if (albums.size() != 1)
       albumArt = "";
 
@@ -1052,9 +1057,8 @@ void CMusicInfoScanner::FindArtForAlbums(VECALBUMS &albums, const std::string &p
      */
     bool singleArt = true;
     CSong *art = NULL;
-    for (VECSONGS::iterator k = album.songs.begin(); k != album.songs.end(); ++k)
+    for (auto& song : album.songs)
     {
-      CSong &song = *k;
       if (song.HasArt())
       {
         if (art && !art->ArtMatches(song))
@@ -1084,15 +1088,15 @@ void CMusicInfoScanner::FindArtForAlbums(VECALBUMS &albums, const std::string &p
 
     if (singleArt)
     { //if singleArt then we can clear the artwork for all songs
-      for (VECSONGS::iterator k = album.songs.begin(); k != album.songs.end(); ++k)
-        k->strThumb.clear();
+      for (auto& k : album.songs)
+        k.strThumb.clear();
     }
     else
     { // more than one piece of art was found for these songs, so cache per song
-      for (VECSONGS::iterator k = album.songs.begin(); k != album.songs.end(); ++k)
+      for (auto& k : album.songs)
       {
-        if (k->strThumb.empty() && !k->embeddedArt.Empty())
-          k->strThumb = CTextureUtils::GetWrappedImageURL(k->strFileName, "music");
+        if (k.strThumb.empty() && !k.embeddedArt.Empty())
+          k.strThumb = CTextureUtils::GetWrappedImageURL(k.strFileName, "music");
       }
     }
   }
@@ -2210,9 +2214,9 @@ void CMusicInfoScanner::SetDiscSetArtwork(CAlbum& album, const std::vector<std::
 void CMusicInfoScanner::Run()
 {
   int count = 0;
-  for (std::set<std::string>::iterator it = m_pathsToScan.begin(); it != m_pathsToScan.end() && !m_bStop; ++it)
+  for (auto& it : m_pathsToScan)
   {
-    count+=CountFilesRecursively(*it);
+    count += CountFilesRecursively(it);
   }
   m_itemCount = count;
 }

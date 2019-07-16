@@ -1095,8 +1095,8 @@ void CGUIWindowManager::Process(unsigned int currentTime)
       pWindow->DoProcess(currentTime, m_dirtyregions);
   }
 
-  for (CDirtyRegionList::iterator itr = m_dirtyregions.begin(); itr != m_dirtyregions.end(); ++itr)
-    m_tracker.MarkDirtyRegion(*itr);
+  for (auto& itr : m_dirtyregions)
+    m_tracker.MarkDirtyRegion(itr);
 }
 
 void CGUIWindowManager::MarkDirty()
@@ -1181,12 +1181,12 @@ bool CGUIWindowManager::Render()
   }
   else
   {
-    for (CDirtyRegionList::const_iterator i = dirtyRegions.begin(); i != dirtyRegions.end(); ++i)
+    for (const auto& i : dirtyRegions)
     {
-      if (i->IsEmpty())
+      if (i.IsEmpty())
         continue;
 
-      CServiceBroker::GetWinSystem()->GetGfxContext().SetScissors(*i);
+      CServiceBroker::GetWinSystem()->GetGfxContext().SetScissors(i);
       RenderPass();
       hasRendered = true;
     }
@@ -1197,10 +1197,10 @@ bool CGUIWindowManager::Render()
   {
     CServiceBroker::GetWinSystem()->GetGfxContext().SetRenderingResolution(CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo(), false);
     const CDirtyRegionList &markedRegions  = m_tracker.GetMarkedRegions();
-    for (CDirtyRegionList::const_iterator i = markedRegions.begin(); i != markedRegions.end(); ++i)
-      CGUITexture::DrawQuad(*i, 0x0fff0000);
-    for (CDirtyRegionList::const_iterator i = dirtyRegions.begin(); i != dirtyRegions.end(); ++i)
-      CGUITexture::DrawQuad(*i, 0x4c00ff00);
+    for (const auto& i : markedRegions)
+      CGUITexture::DrawQuad(i, 0x0fff0000);
+    for (const auto& i : dirtyRegions)
+      CGUITexture::DrawQuad(i, 0x4c00ff00);
   }
 
   return hasRendered;

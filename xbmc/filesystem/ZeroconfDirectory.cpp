@@ -154,22 +154,22 @@ bool CZeroconfDirectory::GetDirectory(const CURL& url, CFileItemList &items)
   if(path.empty())
   {
     std::vector<CZeroconfBrowser::ZeroconfService> found_services = CZeroconfBrowser::GetInstance()->GetFoundServices();
-    for(std::vector<CZeroconfBrowser::ZeroconfService>::iterator it = found_services.begin(); it != found_services.end(); ++it)
+    for (auto& it : found_services)
     {
       //only use discovered services we can connect to through directory
       std::string tmp;
-      if(GetXBMCProtocol(it->GetType(), tmp))
+      if (GetXBMCProtocol(it.GetType(), tmp))
       {
         CFileItemPtr item(new CFileItem("", true));
         CURL url;
         url.SetProtocol("zeroconf");
-        std::string service_path(CURL::Encode(CZeroconfBrowser::ZeroconfService::toPath(*it)));
+        std::string service_path(CURL::Encode(CZeroconfBrowser::ZeroconfService::toPath(it)));
         url.SetFileName(service_path);
         item->SetPath(url.Get());
 
         //now do the formatting
-        std::string protocol = GetHumanReadableProtocol(it->GetType());
-        item->SetLabel(it->GetName() + " (" + protocol  + ")");
+        std::string protocol = GetHumanReadableProtocol(it.GetType());
+        item->SetLabel(it.GetName() + " (" + protocol + ")");
         item->SetLabelPreformatted(true);
         //just set the default folder icon
         item->FillInDefaultIcon();

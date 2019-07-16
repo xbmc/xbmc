@@ -149,10 +149,10 @@ bool CGUIDialogMediaFilter::OnMessage(CGUIMessage& message)
         m_filter->Reset();
         m_filter->SetType(m_mediaType);
 
-        for (std::map<std::string, Filter>::iterator filter = m_filters.begin(); filter != m_filters.end(); filter++)
+        for (auto& filter : m_filters)
         {
-          filter->second.rule = NULL;
-          filter->second.setting->Reset();
+          filter.second.rule = nullptr;
+          filter.second.setting->Reset();
         }
 
         TriggerFilter();
@@ -260,8 +260,8 @@ void CGUIDialogMediaFilter::OnSettingChanged(std::shared_ptr<const CSetting> set
         filter.rule = AddRule(filter.field, filter.ruleOperator);
 
       filter.rule->m_parameter.clear();
-      for (std::vector<CVariant>::const_iterator itValue = values.begin(); itValue != values.end(); ++itValue)
-        filter.rule->m_parameter.push_back(itValue->asString());
+      for (const auto& itValue : values)
+        filter.rule->m_parameter.push_back(itValue.asString());
     }
     else
       remove = true;
@@ -401,11 +401,11 @@ void CGUIDialogMediaFilter::InitializeSettings()
     Filter filter = f;
 
     // check the smartplaylist if it contains a matching rule
-    for (CDatabaseQueryRules::iterator rule = m_filter->m_ruleCombination.m_rules.begin(); rule != m_filter->m_ruleCombination.m_rules.end(); rule++)
+    for (auto& rule : m_filter->m_ruleCombination.m_rules)
     {
-      if ((*rule)->m_field == filter.field)
+      if (rule->m_field == filter.field)
       {
-        filter.rule = (CSmartPlaylistRule *)rule->get();
+        filter.rule = static_cast<CSmartPlaylistRule*>(rule.get());
         handledRules++;
         break;
       }
@@ -578,22 +578,22 @@ bool CGUIDialogMediaFilter::SetPath(const std::string &path)
 
 void CGUIDialogMediaFilter::UpdateControls()
 {
-  for (std::map<std::string, Filter>::iterator itFilter = m_filters.begin(); itFilter != m_filters.end(); itFilter++)
+  for (const auto& itFilter : m_filters)
   {
-    if (itFilter->second.controlType != "list")
+    if (itFilter.second.controlType != "list")
       continue;
 
     std::vector<std::string> items;
-    int size = GetItems(itFilter->second, items, true);
+    int size = GetItems(itFilter.second, items, true);
 
-    std::string label = g_localizeStrings.Get(itFilter->second.label);
-    BaseSettingControlPtr control = GetSettingControl(itFilter->second.setting->GetId());
+    std::string label = g_localizeStrings.Get(itFilter.second.label);
+    BaseSettingControlPtr control = GetSettingControl(itFilter.second.setting->GetId());
     if (control == NULL)
       continue;
 
     if (size <= 0 ||
-       (size == 1 && itFilter->second.field != FieldSet && itFilter->second.field != FieldTag))
-       CONTROL_DISABLE(control->GetID());
+        (size == 1 && itFilter.second.field != FieldSet && itFilter.second.field != FieldTag))
+      CONTROL_DISABLE(control->GetID());
     else
     {
       CONTROL_ENABLE(control->GetID());
@@ -750,8 +750,8 @@ void CGUIDialogMediaFilter::GetStringListOptions(SettingConstPtr setting, std::v
   if (mediaFilter->GetItems(itFilter->second, items, false) <= 0)
     return;
 
-  for (std::vector<std::string>::const_iterator item = items.begin(); item != items.end(); ++item)
-    list.push_back(StringSettingOption(*item, *item));
+  for (const auto& item : items)
+    list.push_back(StringSettingOption(item, item));
 }
 
 void CGUIDialogMediaFilter::GetRange(const Filter &filter, int &min, int &interval, int &max)

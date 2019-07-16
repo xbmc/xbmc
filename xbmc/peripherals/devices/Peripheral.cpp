@@ -201,13 +201,13 @@ bool CPeripheral::IsMultiFunctional(void) const
 std::vector<std::shared_ptr<CSetting>> CPeripheral::GetSettings(void) const
 {
   std::vector<PeripheralDeviceSetting> tmpSettings;
-  for (std::map<std::string, PeripheralDeviceSetting>::const_iterator it = m_settings.begin(); it != m_settings.end(); ++it)
-    tmpSettings.push_back(it->second);
+  for (const auto& it : m_settings)
+    tmpSettings.push_back(it.second);
   sort(tmpSettings.begin(), tmpSettings.end(), SortBySettingsOrder());
 
   std::vector<std::shared_ptr<CSetting>> settings;
-  for (std::vector<PeripheralDeviceSetting>::const_iterator it = tmpSettings.begin(); it != tmpSettings.end(); ++it)
-    settings.push_back(it->m_setting);
+  for (const auto& it : tmpSettings)
+    settings.push_back(it.m_setting);
   return settings;
 }
 
@@ -460,37 +460,41 @@ void CPeripheral::PersistSettings(bool bExiting /* = false */)
   CXBMCTinyXML doc;
   TiXmlElement node("settings");
   doc.InsertEndChild(node);
-  for (std::map<std::string, PeripheralDeviceSetting>::const_iterator itr = m_settings.begin(); itr != m_settings.end(); ++itr)
+  for (const auto& itr : m_settings)
   {
     TiXmlElement nodeSetting("setting");
-    nodeSetting.SetAttribute("id", itr->first.c_str());
+    nodeSetting.SetAttribute("id", itr.first.c_str());
     std::string strValue;
-    switch ((*itr).second.m_setting->GetType())
+    switch (itr.second.m_setting->GetType())
     {
     case SettingType::String:
       {
-        std::shared_ptr<CSettingString> stringSetting = std::static_pointer_cast<CSettingString>((*itr).second.m_setting);
+        std::shared_ptr<CSettingString> stringSetting =
+            std::static_pointer_cast<CSettingString>(itr.second.m_setting);
         if (stringSetting)
           strValue = stringSetting->GetValue();
       }
       break;
     case SettingType::Integer:
       {
-        std::shared_ptr<CSettingInt> intSetting = std::static_pointer_cast<CSettingInt>((*itr).second.m_setting);
+        std::shared_ptr<CSettingInt> intSetting =
+            std::static_pointer_cast<CSettingInt>(itr.second.m_setting);
         if (intSetting)
           strValue = StringUtils::Format("%d", intSetting->GetValue());
       }
       break;
     case SettingType::Number:
       {
-        std::shared_ptr<CSettingNumber> floatSetting = std::static_pointer_cast<CSettingNumber>((*itr).second.m_setting);
+        std::shared_ptr<CSettingNumber> floatSetting =
+            std::static_pointer_cast<CSettingNumber>(itr.second.m_setting);
         if (floatSetting)
           strValue = StringUtils::Format("%.2f", floatSetting->GetValue());
       }
       break;
     case SettingType::Boolean:
       {
-        std::shared_ptr<CSettingBool> boolSetting = std::static_pointer_cast<CSettingBool>((*itr).second.m_setting);
+        std::shared_ptr<CSettingBool> boolSetting =
+            std::static_pointer_cast<CSettingBool>(itr.second.m_setting);
         if (boolSetting)
           strValue = StringUtils::Format("%d", boolSetting->GetValue() ? 1:0);
       }
@@ -506,8 +510,8 @@ void CPeripheral::PersistSettings(bool bExiting /* = false */)
 
   if (!bExiting)
   {
-    for (std::set<std::string>::const_iterator it = m_changedSettings.begin(); it != m_changedSettings.end(); ++it)
-      OnSettingChanged(*it);
+    for (const auto& it : m_changedSettings)
+      OnSettingChanged(it);
   }
   m_changedSettings.clear();
 }

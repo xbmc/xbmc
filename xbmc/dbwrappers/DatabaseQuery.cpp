@@ -156,10 +156,10 @@ bool CDatabaseQueryRule::Save(TiXmlNode *parent) const
   rule.SetAttribute("field", TranslateField(m_field).c_str());
   rule.SetAttribute("operator", TranslateOperator(m_operator).c_str());
 
-  for (std::vector<std::string>::const_iterator it = m_parameter.begin(); it != m_parameter.end(); ++it)
+  for (const auto& it : m_parameter)
   {
     TiXmlElement value("value");
-    TiXmlText text(*it);
+    TiXmlText text(it);
     value.InsertEndChild(text);
     rule.InsertEndChild(value);
   }
@@ -237,11 +237,11 @@ std::string CDatabaseQueryRule::FormatParameter(const std::string &operatorStrin
   if (GetFieldType(m_field) == TEXTIN_FIELD)
   {
     std::vector<std::string> split = StringUtils::Split(param, ',');
-    for (std::vector<std::string>::iterator itIn = split.begin(); itIn != split.end(); ++itIn)
+    for (std::string& itIn : split)
     {
       if (!parameter.empty())
         parameter += ",";
-      parameter += db.PrepareSQL("'%s'", StringUtils::Trim(*itIn).c_str());
+      parameter += db.PrepareSQL("'%s'", StringUtils::Trim(itIn).c_str());
     }
     parameter = " IN (" + parameter + ")";
   }
@@ -419,12 +419,12 @@ std::string CDatabaseQueryRuleCombination::GetWhereClause(const CDatabase &db, c
   }
 
   // translate the rules into SQL
-  for (CDatabaseQueryRules::const_iterator it = m_rules.begin(); it != m_rules.end(); ++it)
+  for (const auto& it : m_rules)
   {
     if (!rule.empty())
       rule += m_type == CombinationAnd ? " AND " : " OR ";
     rule += "(";
-    std::string currentRule = (*it)->GetWhereClause(db, strType);
+    std::string currentRule = it->GetWhereClause(db, strType);
     // if we don't get a rule, we add '1' or '0' so the query is still valid and doesn't fail
     if (currentRule.empty())
       currentRule = m_type == CombinationAnd ? "'1'" : "'0'";
@@ -483,8 +483,8 @@ bool CDatabaseQueryRuleCombination::Load(const CVariant &obj, const IDatabaseQue
 
 bool CDatabaseQueryRuleCombination::Save(TiXmlNode *parent) const
 {
-  for (CDatabaseQueryRules::const_iterator it = m_rules.begin(); it != m_rules.end(); ++it)
-    (*it)->Save(parent);
+  for (const auto& it : m_rules)
+    it->Save(parent);
   return true;
 }
 
@@ -496,20 +496,20 @@ bool CDatabaseQueryRuleCombination::Save(CVariant &obj) const
   CVariant comboArray(CVariant::VariantTypeArray);
   if (!m_combinations.empty())
   {
-    for (CDatabaseQueryRuleCombinations::const_iterator combo = m_combinations.begin(); combo != m_combinations.end(); ++combo)
+    for (const auto& combo : m_combinations)
     {
       CVariant comboObj(CVariant::VariantTypeObject);
-      if ((*combo)->Save(comboObj))
+      if (combo->Save(comboObj))
         comboArray.push_back(comboObj);
     }
 
   }
   if (!m_rules.empty())
   {
-    for (CDatabaseQueryRules::const_iterator rule = m_rules.begin(); rule != m_rules.end(); ++rule)
+    for (const auto& rule : m_rules)
     {
       CVariant ruleObj(CVariant::VariantTypeObject);
-      if ((*rule)->Save(ruleObj))
+      if (rule->Save(ruleObj))
         comboArray.push_back(ruleObj);
     }
   }

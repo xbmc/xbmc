@@ -34,13 +34,11 @@ namespace XBMCAddon
                            int totalItems)
     {
       CFileItemList fitems;
-      for (std::vector<Tuple<String,const XBMCAddon::xbmcgui::ListItem*,bool> >::const_iterator item = items.begin();
-           item < items.end(); ++item )
+      for (const auto& item : items)
       {
-        const Tuple<String,const XBMCAddon::xbmcgui::ListItem*,bool>* pItem = &(*item);
-        const String& url = pItem->first();
-        const XBMCAddon::xbmcgui::ListItem *pListItem = pItem->second();
-        bool bIsFolder = pItem->GetNumValuesSet() > 2 ? pItem->third() : false;
+        const String& url = item.first();
+        const XBMCAddon::xbmcgui::ListItem* pListItem = item.second();
+        bool bIsFolder = item.GetNumValuesSet() > 2 ? item.third() : false;
         pListItem->item->SetPath(url);
         pListItem->item->m_bIsFolder = bIsFolder;
         fitems.Add(pListItem->item);

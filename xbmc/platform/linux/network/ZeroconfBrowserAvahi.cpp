@@ -135,8 +135,8 @@ std::vector<CZeroconfBrowser::ZeroconfService> CZeroconfBrowserAvahi::doGetFound
   std::vector<CZeroconfBrowser::ZeroconfService> ret;
   ScopedEventLoopBlock lock ( mp_poll );
   ret.reserve ( m_discovered_services.size() );
-  for ( tDiscoveredServices::iterator it = m_discovered_services.begin(); it != m_discovered_services.end(); ++it )
-    ret.push_back ( it->first );
+  for (const auto& it : m_discovered_services)
+    ret.push_back(it.first);
   return ret;
 }
 
@@ -182,10 +182,10 @@ void CZeroconfBrowserAvahi::clientCallback ( AvahiClient* fp_client, AvahiClient
     case AVAHI_CLIENT_S_RUNNING:
       {
         CLog::Log ( LOGDEBUG, "CZeroconfBrowserAvahi::clientCallback: client is up and running" );
-        for ( tBrowserMap::iterator it = p_instance->m_browsers.begin(); it != p_instance->m_browsers.end(); ++it )
+        for (auto& it : p_instance->m_browsers)
         {
-          assert ( !it->second );
-          it->second = createServiceBrowser ( it->first, fp_client, fp_data );
+          assert(!it.second);
+          it.second = createServiceBrowser(it.first, fp_client, fp_data);
         }
         break;
       }
@@ -196,8 +196,8 @@ void CZeroconfBrowserAvahi::clientCallback ( AvahiClient* fp_client, AvahiClient
       avahi_client_free ( fp_client );
       p_instance->mp_client = 0;
       //freeing the client also frees all groups and browsers, pointers are undefined afterwards, so fix that now
-      for ( tBrowserMap::iterator it = p_instance->m_browsers.begin(); it != p_instance->m_browsers.end(); ++it )
-        it->second = ( AvahiServiceBrowser* ) 0;
+      for (auto& it : p_instance->m_browsers)
+        it.second = (AvahiServiceBrowser*)0;
       //clean the list of discovered services and update gui (if someone is interested)
       p_instance->m_discovered_services.clear();
       CGUIMessage message ( GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_PATH );

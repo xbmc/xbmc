@@ -619,20 +619,24 @@ void SqliteDataset::make_query(StringList &_sql) {
   if (autocommit) db->start_transaction();
 
 
-  for (std::list<std::string>::iterator i =_sql.begin(); i!=_sql.end(); ++i) {
-  query = *i;
-  char* err=NULL;
-  Dataset::parse_sql(query);
-  if (db->setErr(sqlite3_exec(this->handle(),query.c_str(),NULL,NULL,&err),query.c_str())!=SQLITE_OK) {
-    std::string message = db->getErrorMsg();
-    if (err) {
-      message.append(" (");
-      message.append(err);
-      message.append(")");
-      sqlite3_free(err);
+  for (const std::string& i : _sql)
+  {
+    query = i;
+    char* err = NULL;
+    Dataset::parse_sql(query);
+    if (db->setErr(sqlite3_exec(this->handle(), query.c_str(), NULL, NULL, &err), query.c_str()) !=
+        SQLITE_OK)
+    {
+      std::string message = db->getErrorMsg();
+      if (err)
+      {
+        message.append(" (");
+        message.append(err);
+        message.append(")");
+        sqlite3_free(err);
+      }
+      throw DbErrors("%s", message.c_str());
     }
-    throw DbErrors("%s", message.c_str());
-  }
   } // end of for
 
 

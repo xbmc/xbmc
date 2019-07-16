@@ -659,10 +659,10 @@ void CAnimation::Create(const TiXmlElement *node, const CRect &rect, int context
   // compute the minimum delay and maximum length
   m_delay = 0xffffffff;
   unsigned int total = 0;
-  for (std::vector<CAnimEffect*>::const_iterator i = m_effects.begin(); i != m_effects.end(); ++i)
+  for (const auto& i : m_effects)
   {
-    m_delay = std::min(m_delay, (*i)->GetDelay());
-    total   = std::max(total, (*i)->GetLength());
+    m_delay = std::min(m_delay, i->GetDelay());
+    total = std::max(total, i->GetLength());
   }
   m_length = total - m_delay;
 }

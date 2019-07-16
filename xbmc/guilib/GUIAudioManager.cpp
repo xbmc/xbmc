@@ -84,15 +84,17 @@ void CGUIAudioManager::DeInitialize()
 void CGUIAudioManager::Stop()
 {
   CSingleLock lock(m_cs);
-  for (windowSoundMap::iterator it = m_windowSoundMap.begin(); it != m_windowSoundMap.end(); ++it)
+  for (auto& it : m_windowSoundMap)
   {
-    if (it->second.initSound  ) it->second.initSound  ->Stop();
-    if (it->second.deInitSound) it->second.deInitSound->Stop();
+    if (it.second.initSound)
+      it.second.initSound->Stop();
+    if (it.second.deInitSound)
+      it.second.deInitSound->Stop();
   }
 
-  for (pythonSoundsMap::iterator it = m_pythonSounds.begin(); it != m_pythonSounds.end(); ++it)
+  for (auto& it : m_pythonSounds)
   {
-    IAESound* sound = it->second;
+    IAESound* sound = it.second;
     sound->Stop();
   }
 }
@@ -421,29 +423,26 @@ void CGUIAudioManager::SetVolume(float level)
   CSingleLock lock(m_cs);
 
   {
-    actionSoundMap::iterator it = m_actionSoundMap.begin();
-    while (it!=m_actionSoundMap.end())
+    for (auto& it : m_actionSoundMap)
     {
-      if (it->second)
-        it->second->SetVolume(level);
-      ++it;
+      if (it.second)
+        it.second->SetVolume(level);
     }
   }
 
-  for(windowSoundMap::iterator it = m_windowSoundMap.begin(); it != m_windowSoundMap.end(); ++it)
+  for (auto& it : m_windowSoundMap)
   {
-    if (it->second.initSound  ) it->second.initSound  ->SetVolume(level);
-    if (it->second.deInitSound) it->second.deInitSound->SetVolume(level);
+    if (it.second.initSound)
+      it.second.initSound->SetVolume(level);
+    if (it.second.deInitSound)
+      it.second.deInitSound->SetVolume(level);
   }
 
   {
-    pythonSoundsMap::iterator it = m_pythonSounds.begin();
-    while (it != m_pythonSounds.end())
+    for (auto& it : m_pythonSounds)
     {
-      if (it->second)
-        it->second->SetVolume(level);
-
-      ++it;
+      if (it.second)
+        it.second->SetVolume(level);
     }
   }
 }

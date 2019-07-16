@@ -745,9 +745,9 @@ namespace XBMCAddon
 
         TiXmlElement pNode("animation");
         std::vector<std::string> attrs = StringUtils::Split(cAttr, " ");
-        for (std::vector<std::string>::const_iterator i = attrs.begin(); i != attrs.end(); ++i)
+        for (const auto& i : attrs)
         {
-          std::vector<std::string> attrs2 = StringUtils::Split(*i, "=");
+          std::vector<std::string> attrs2 = StringUtils::Split(i, "=");
           if (attrs2.size() == 2)
             pNode.SetAttribute(attrs2[0], attrs2[1]);
         }
@@ -1163,8 +1163,8 @@ namespace XBMCAddon
     {
       XBMC_TRACE;
 
-      for (std::vector<Alternative<String, const XBMCAddon::xbmcgui::ListItem* > >::const_iterator iter = items.begin(); iter != items.end(); ++iter)
-        addItem(*iter,false);
+      for (const auto& iter : items)
+        addItem(iter, false);
       sendLabelBind(vecItems.size());
     }
 

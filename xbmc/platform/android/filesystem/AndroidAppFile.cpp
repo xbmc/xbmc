@@ -46,12 +46,12 @@ bool CFileAndroidApp::Open(const CURL& url)
   m_packageName = m_packageName.substr(0, m_packageName.size() - 4);
 
   std::vector<androidPackage> applications = CXBMCApp::GetApplications();
-  for(std::vector<androidPackage>::iterator i = applications.begin(); i != applications.end(); ++i)
+  for (const auto& i : applications)
   {
-    if ((*i).packageName == m_packageName)
+    if (i.packageName == m_packageName)
     {
-      m_packageLabel = i->packageLabel;
-      m_icon         = i->icon;
+      m_packageLabel = i.packageLabel;
+      m_icon = i.icon;
       return true;
     }
   }
@@ -65,9 +65,9 @@ bool CFileAndroidApp::Exists(const CURL& url)
   appname = appname.substr(0, appname.size() - 4);
 
   std::vector<androidPackage> applications = CXBMCApp::GetApplications();
-  for(std::vector<androidPackage>::iterator i = applications.begin(); i != applications.end(); ++i)
+  for (const auto& i : applications)
   {
-    if ((*i).packageName == appname)
+    if (i.packageName == appname)
       return true;
   }
 

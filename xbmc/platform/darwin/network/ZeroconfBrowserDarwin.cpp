@@ -119,8 +119,8 @@ CZeroconfBrowserDarwin::~CZeroconfBrowserDarwin()
 {
   CSingleLock lock(m_data_guard);
   //make sure there are no browsers anymore
-  for(tBrowserMap::iterator it = m_service_browsers.begin(); it != m_service_browsers.end(); ++it )
-    doRemoveServiceType(it->first);
+  for (const auto& it : m_service_browsers)
+    doRemoveServiceType(it.first);
 }
 
 void CZeroconfBrowserDarwin::BrowserCallback(CFNetServiceBrowserRef browser, CFOptionFlags flags, CFTypeRef domainOrService, CFStreamError *error, void *info)
@@ -299,10 +299,9 @@ std::vector<CZeroconfBrowser::ZeroconfService> CZeroconfBrowserDarwin::doGetFoun
 {
   std::vector<CZeroconfBrowser::ZeroconfService> ret;
   CSingleLock lock(m_data_guard);
-  for(tDiscoveredServicesMap::const_iterator it = m_discovered_services.begin();
-      it != m_discovered_services.end(); ++it)
+  for (const auto& it : m_discovered_services)
   {
-    const std::vector<std::pair<CZeroconfBrowser::ZeroconfService, unsigned int> >& services = it->second;
+    const auto& services = it.second;
     for(unsigned int i = 0; i < services.size(); ++i)
     {
       ret.push_back(services[i].first);

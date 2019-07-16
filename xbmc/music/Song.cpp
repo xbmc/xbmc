@@ -269,9 +269,9 @@ const std::vector<std::string> CSong::GetArtist() const
 {
   //Get artist names as vector from artist credits
   std::vector<std::string> songartists;
-  for (VECARTISTCREDITS::const_iterator artistCredit = artistCredits.begin(); artistCredit != artistCredits.end(); ++artistCredit)
+  for (const auto& artistCredit : artistCredits)
   {
-    songartists.push_back(artistCredit->GetArtist());
+    songartists.push_back(artistCredit.GetArtist());
   }
   //When artist credits have not been populated attempt to build an artist vector from the description string
   //This is a temporary fix, in the longer term other areas should query the song_artist table and populate
@@ -301,9 +301,9 @@ const std::vector<std::string> CSong::GetMusicBrainzArtistID() const
 {
   //Get artist MusicBrainz IDs as vector from artist credits
   std::vector<std::string> musicBrainzID;
-  for (VECARTISTCREDITS::const_iterator artistCredit = artistCredits.begin(); artistCredit != artistCredits.end(); ++artistCredit)
+  for (const auto& artistCredit : artistCredits)
   {
-    musicBrainzID.push_back(artistCredit->GetMusicBrainzArtistID());
+    musicBrainzID.push_back(artistCredit.GetMusicBrainzArtistID());
   }
   return musicBrainzID;
 }
@@ -315,8 +315,8 @@ const std::string CSong::GetArtistString() const
   if (!strArtistDesc.empty())
     return strArtistDesc;
   std::vector<std::string> artistvector;
-  for (VECARTISTCREDITS::const_iterator i = artistCredits.begin(); i != artistCredits.end(); ++i)
-    artistvector.push_back(i->GetArtist());
+  for (const auto& i : artistCredits)
+    artistvector.push_back(i.GetArtist());
   std::string artistString;
   if (!artistvector.empty())
     artistString = StringUtils::Join(artistvector, CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_musicItemSeparator);
@@ -327,8 +327,8 @@ const std::vector<int> CSong::GetArtistIDArray() const
 {
   // Get song artist IDs for json rpc
   std::vector<int> artistids;
-  for (VECARTISTCREDITS::const_iterator artistCredit = artistCredits.begin(); artistCredit != artistCredits.end(); ++artistCredit)
-    artistids.push_back(artistCredit->GetArtistId());
+  for (const auto& artistCredit : artistCredits)
+    artistids.push_back(artistCredit.GetArtistId());
   return artistids;
 }
 

@@ -198,9 +198,8 @@ bool CZipManager::GetZipList(const CURL& url, std::vector<SZipEntry>& items)
   }
 
   /* go through list and figure out file header lengths */
-  for(std::vector<SZipEntry>::iterator it = items.begin(); it != items.end(); ++it)
+  for (auto& ze : items)
   {
-    SZipEntry& ze = *it;
     // Go to the local file header to get the extra field length
     // !! local header extra field length != central file header extra field length !!
     mFile.Seek(ze.lhdrOffset+28,SEEK_SET);
@@ -234,11 +233,11 @@ bool CZipManager::GetZipEntry(const CURL& url, SZipEntry& item)
   }
 
   std::string strFileName = url.GetFileName();
-  for (std::vector<SZipEntry>::iterator it2=items.begin();it2 != items.end();++it2)
+  for (const auto& it2 : items)
   {
-    if (std::string(it2->name) == strFileName)
+    if (std::string(it2.name) == strFileName)
     {
-      item = *it2;
+      item = it2;
       return true;
     }
   }
@@ -256,11 +255,11 @@ bool CZipManager::ExtractArchive(const CURL& archive, const std::string& strPath
   std::vector<SZipEntry> entry;
   CURL url = URIUtils::CreateArchivePath("zip", archive);
   GetZipList(url, entry);
-  for (std::vector<SZipEntry>::iterator it=entry.begin();it != entry.end();++it)
+  for (const auto& it : entry)
   {
-    if (it->name[strlen(it->name)-1] == '/') // skip dirs
+    if (it.name[strlen(it.name) - 1] == '/') // skip dirs
       continue;
-    std::string strFilePath(it->name);
+    std::string strFilePath(it.name);
 
     CURL zipPath = URIUtils::CreateArchivePath("zip", archive, strFilePath);
     const CURL pathToUrl(strPath + strFilePath);

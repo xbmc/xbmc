@@ -94,10 +94,8 @@ bool CGUIControllerList::Refresh(const std::string& controllerId)
   if (m_controllerList)
   {
     unsigned int buttonId = 0;
-    for (ControllerVector::const_iterator it = m_controllers.begin(); it != m_controllers.end(); ++it)
+    for (const auto& controller : m_controllers)
     {
-      const ControllerPtr& controller = *it;
-
       CGUIButtonControl* pButton = new CGUIControllerButton(*m_controllerButton, controller->Layout().Label(), buttonId++);
       m_controllerList->AddControl(pButton);
 

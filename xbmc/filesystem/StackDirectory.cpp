@@ -33,10 +33,10 @@ namespace XFILE
     if (!GetPaths(pathToUrl, files))
       return false;   // error in path
 
-    for (std::vector<std::string>::const_iterator i = files.begin(); i != files.end(); ++i)
+    for (const std::string& i : files)
     {
-      CFileItemPtr item(new CFileItem(*i));
-      item->SetPath(*i);
+      CFileItemPtr item(new CFileItem(i));
+      item->SetPath(i);
       item->m_bIsFolder = false;
       items.Add(item);
     }
@@ -175,8 +175,8 @@ namespace XFILE
       return false;
 
     // because " , " is used as a separator any "," in the real paths are double escaped
-    for (std::vector<std::string>::iterator itPath = vecPaths.begin(); itPath != vecPaths.end(); ++itPath)
-      StringUtils::Replace(*itPath, ",,", ",");
+    for (std::string& itPath : vecPaths)
+      StringUtils::Replace(itPath, ",,", ",");
 
     return true;
   }

@@ -410,8 +410,8 @@ int CWebServer::FinalizeRequest(const std::shared_ptr<IHTTPRequestHandler>& hand
     handler->AddResponseHeader(MHD_HTTP_HEADER_CONTENT_LENGTH, StringUtils::Format("%" PRIu64, responseDetails.totalLength));
 
   // add all headers set by the request handler
-  for (std::multimap<std::string, std::string>::const_iterator it = responseDetails.headers.begin(); it != responseDetails.headers.end(); ++it)
-    AddHeader(response, it->first, it->second);
+  for (const auto& it : responseDetails.headers)
+    AddHeader(response, it.first, it.second);
 
   return SendResponse(request, responseStatus, response);
 }
@@ -636,17 +636,17 @@ int CWebServer::CreateRangedMemoryDownloadResponse(const std::shared_ptr<IHTTPRe
   // extract all the valid ranges and calculate their total length
   uint64_t firstRangePosition = 0;
   HttpResponseRanges ranges;
-  for (HttpResponseRanges::const_iterator range = responseRanges.begin(); range != responseRanges.end(); ++range)
+  for (const auto& range : responseRanges)
   {
     // ignore invalid ranges
-    if (!range->IsValid())
+    if (!range.IsValid())
       continue;
 
     // determine the first range position
     if (ranges.empty())
-      firstRangePosition = range->GetFirstPosition();
+      firstRangePosition = range.GetFirstPosition();
 
-    ranges.push_back(*range);
+    ranges.push_back(range);
   }
 
   if (ranges.empty())

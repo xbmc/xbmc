@@ -122,13 +122,14 @@ void MysqlDatabase::configure_connection() {
         std::string column = row[0];
         std::vector<std::string> split = StringUtils::Split(column, ',');
 
-        for (std::vector<std::string>::iterator itIn = split.begin(); itIn != split.end(); ++itIn)
+        for (std::string& itIn : split)
         {
-          if (StringUtils::Trim(*itIn) == "derived_merge=on")
+          if (StringUtils::Trim(itIn) == "derived_merge=on")
           {
             strcpy(sqlcmd, "SET SESSION optimizer_switch = 'derived_merge=off'");
             if ((ret = mysql_real_query(conn, sqlcmd, strlen(sqlcmd))) != MYSQL_OK)
-              throw DbErrors("Can't set optimizer_switch = '%s': '%s' (%d)", StringUtils::Trim(*itIn).c_str(), db.c_str(), ret);
+              throw DbErrors("Can't set optimizer_switch = '%s': '%s' (%d)",
+                             StringUtils::Trim(itIn).c_str(), db.c_str(), ret);
             break;
           }
         }
@@ -1390,9 +1391,9 @@ void MysqlDataset::make_query(StringList &_sql) {
   {
     if (autocommit) db->start_transaction();
 
-    for (std::list<std::string>::iterator i =_sql.begin(); i!=_sql.end(); ++i)
+    for (const std::string& i : _sql)
     {
-      query = *i;
+      query = i;
       Dataset::parse_sql(query);
       if ((static_cast<MysqlDatabase*>(db)->query_with_reconnect(query.c_str())) != MYSQL_OK)
       {

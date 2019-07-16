@@ -1029,12 +1029,12 @@ void CTagLoaderTagLib::SetGenre(CMusicInfoTag &tag, const std::vector<std::strin
    a number is specified, thus this workaround.
    */
   std::vector<std::string> genres;
-  for (std::vector<std::string>::const_iterator i = values.begin(); i != values.end(); ++i)
+  for (const std::string& i : values)
   {
-    std::string genre = *i;
+    std::string genre = i;
     if (StringUtils::IsNaturalNumber(genre))
     {
-      int number = strtol(i->c_str(), nullptr, 10);
+      int number = strtol(i.c_str(), nullptr, 10);
       if (number >= 0 && number < 256)
         genre = ID3v1::genre(number).to8Bit(true);
     }

@@ -759,15 +759,15 @@ bool CD3DEffect::CreateEffect()
 
   std::vector<D3D_SHADER_MACRO> definemacros;
 
-  for( DefinesMap::const_iterator it = m_defines.begin(); it != m_defines.end(); ++it )
-	{
+  for (const auto& it : m_defines)
+  {
     D3D_SHADER_MACRO m;
-		m.Name = it->first.c_str();
-    if (it->second.empty())
+    m.Name = it.first.c_str();
+    if (it.second.empty())
       m.Definition = nullptr;
     else
-		  m.Definition = it->second.c_str();
-		definemacros.push_back( m );
+      m.Definition = it.second.c_str();
+                definemacros.push_back( m );
 	}
 
   definemacros.push_back(D3D_SHADER_MACRO());

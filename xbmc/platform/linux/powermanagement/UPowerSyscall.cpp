@@ -127,14 +127,13 @@ int CUPowerSyscall::BatteryLevel()
   double       subCapacity    = 0;
   double       batteryLevel   = 0;
 
-  std::list<CUPowerSource>::iterator itr;
-  for (itr = m_powerSources.begin(); itr != m_powerSources.end(); ++itr)
+  for (auto& itr : m_powerSources)
   {
-    itr->Update();
-    if(itr->IsRechargeable())
+    itr.Update();
+    if (itr.IsRechargeable())
     {
       nBatteryCount++;
-      subCapacity += itr->BatteryLevel();
+      subCapacity += itr.BatteryLevel();
     }
   }
 

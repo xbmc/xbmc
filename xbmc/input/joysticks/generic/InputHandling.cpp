@@ -80,8 +80,8 @@ bool CInputHandling::OnAxisMotion(unsigned int axisIndex, float position, int ce
 
 void CInputHandling::ProcessAxisMotions(void)
 {
-  for (std::map<FeatureName, FeaturePtr>::iterator it = m_features.begin(); it != m_features.end(); ++it)
-    it->second->ProcessMotions();
+  for (auto& it : m_features)
+    it.second->ProcessMotions();
 }
 
 bool CInputHandling::OnDigitalMotion(const CDriverPrimitive& source, bool bPressed)

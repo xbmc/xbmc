@@ -66,10 +66,10 @@ CGUIStaticItem::CGUIStaticItem(const CFileItem &item)
 
 void CGUIStaticItem::UpdateProperties(int contextWindow)
 {
-  for (InfoVector::const_iterator i = m_info.begin(); i != m_info.end(); ++i)
+  for (const auto& i : m_info)
   {
-    const GUIINFO::CGUIInfoLabel &info = i->first;
-    const std::string &name = i->second;
+    const GUIINFO::CGUIInfoLabel& info = i.first;
+    const std::string& name = i.second;
     bool preferTexture = strnicmp("label", name.c_str(), 5) != 0;
     std::string value(info.GetLabel(contextWindow, preferTexture));
     if (StringUtils::EqualsNoCase(name, "label"))

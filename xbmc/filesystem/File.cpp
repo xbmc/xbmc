@@ -111,9 +111,9 @@ bool CFile::Copy(const CURL& url2, const CURL& dest, XFILE::IFileCallback* pCall
           else if (strDirectory[0] == pathsep[0])
             strCurrPath += pathsep;
 
-          for (std::vector<std::string>::iterator iter = tokens.begin(); iter != tokens.end(); ++iter)
+          for (const std::string& iter : tokens)
           {
-            strCurrPath += *iter + pathsep;
+            strCurrPath += iter + pathsep;
             CDirectory::Create(strCurrPath);
           }
         }

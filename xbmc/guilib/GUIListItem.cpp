@@ -122,8 +122,8 @@ void CGUIListItem::ClearArt()
 
 void CGUIListItem::AppendArt(const ArtMap &art, const std::string &prefix)
 {
-  for (ArtMap::const_iterator i = art.begin(); i != art.end(); ++i)
-    SetArt(prefix.empty() ? i->first : prefix + '.' + i->first, i->second);
+  for (const auto& i : art)
+    SetArt(prefix.empty() ? i.first : prefix + '.' + i.first, i.second);
 }
 
 std::string CGUIListItem::GetArt(const std::string &type) const
@@ -244,22 +244,22 @@ void CGUIListItem::Archive(CArchive &ar)
     ar << m_bSelected;
     ar << m_overlayIcon;
     ar << (int)m_mapProperties.size();
-    for (PropertyMap::const_iterator it = m_mapProperties.begin(); it != m_mapProperties.end(); ++it)
+    for (const auto& it : m_mapProperties)
     {
-      ar << it->first;
-      ar << it->second;
+      ar << it.first;
+      ar << it.second;
     }
     ar << (int)m_art.size();
-    for (ArtMap::const_iterator i = m_art.begin(); i != m_art.end(); ++i)
+    for (const auto& i : m_art)
     {
-      ar << i->first;
-      ar << i->second;
+      ar << i.first;
+      ar << i.second;
     }
     ar << (int)m_artFallbacks.size();
-    for (ArtMap::const_iterator i = m_artFallbacks.begin(); i != m_artFallbacks.end(); ++i)
+    for (const auto& i : m_artFallbacks)
     {
-      ar << i->first;
-      ar << i->second;
+      ar << i.first;
+      ar << i.second;
     }
   }
   else
@@ -313,12 +313,12 @@ void CGUIListItem::Serialize(CVariant &value)
   value["strIcon"] = m_strIcon;
   value["selected"] = m_bSelected;
 
-  for (PropertyMap::const_iterator it = m_mapProperties.begin(); it != m_mapProperties.end(); ++it)
+  for (const auto& it : m_mapProperties)
   {
-    value["properties"][it->first] = it->second;
+    value["properties"][it.first] = it.second;
   }
-  for (ArtMap::const_iterator it = m_art.begin(); it != m_art.end(); ++it)
-    value["art"][it->first] = it->second;
+  for (const auto& it : m_art)
+    value["art"][it.first] = it.second;
 }
 
 void CGUIListItem::FreeIcons()
@@ -439,6 +439,6 @@ void CGUIListItem::IncrementProperty(const std::string &strKey, double dVal)
 
 void CGUIListItem::AppendProperties(const CGUIListItem &item)
 {
-  for (PropertyMap::const_iterator i = item.m_mapProperties.begin(); i != item.m_mapProperties.end(); ++i)
-    SetProperty(i->first, i->second);
+  for (const auto& i : item.m_mapProperties)
+    SetProperty(i.first, i.second);
 }

@@ -804,12 +804,12 @@ void CMusicInfoTag::Archive(CArchive& ar)
     ar << m_dateAdded;
     ar << m_strComment;
     ar << (int)m_musicRoles.size();
-    for (VECMUSICROLES::const_iterator credit = m_musicRoles.begin(); credit != m_musicRoles.end(); ++credit)
+    for (const auto& credit : m_musicRoles)
     {
-      ar << credit->GetRoleId();
-      ar << credit->GetRoleDesc();
-      ar << credit->GetArtist();
-      ar << credit->GetArtistId();
+      ar << credit.GetRoleId();
+      ar << credit.GetRoleDesc();
+      ar << credit.GetArtist();
+      ar << credit.GetArtistId();
     }
     ar << m_strMood;
     ar << m_strRecordLabel;
@@ -973,7 +973,7 @@ void CMusicInfoTag::AddArtistRole(const std::string& Role, const std::vector<std
   {
     CMusicRole ArtistCredit(Role, Trim(artists.at(index)));
     //Prevent duplicate entries
-    VECMUSICROLES::iterator credit = find(m_musicRoles.begin(), m_musicRoles.end(), ArtistCredit);
+    auto credit = find(m_musicRoles.begin(), m_musicRoles.end(), ArtistCredit);
     if (credit == m_musicRoles.end())
       m_musicRoles.push_back(ArtistCredit);
   }
@@ -988,10 +988,10 @@ void CMusicInfoTag::AppendArtistRole(const CMusicRole& ArtistRole)
 const std::string CMusicInfoTag::GetArtistStringForRole(const std::string& strRole) const
 {
   std::vector<std::string> artistvector;
-  for (VECMUSICROLES::const_iterator credit = m_musicRoles.begin(); credit != m_musicRoles.end(); ++credit)
+  for (const auto& credit : m_musicRoles)
   {
-    if (StringUtils::EqualsNoCase(credit->GetRoleDesc(), strRole))
-      artistvector.push_back(credit->GetArtist());
+    if (StringUtils::EqualsNoCase(credit.GetRoleDesc(), strRole))
+      artistvector.push_back(credit.GetArtist());
   }
   return StringUtils::Join(artistvector, CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_musicItemSeparator);
 }
@@ -999,9 +999,9 @@ const std::string CMusicInfoTag::GetArtistStringForRole(const std::string& strRo
 const std::string CMusicInfoTag::GetContributorsText() const
 {
   std::string strLabel;
-  for (VECMUSICROLES::const_iterator credit = m_musicRoles.begin(); credit != m_musicRoles.end(); ++credit)
+  for (const auto& credit : m_musicRoles)
   {
-    strLabel += StringUtils::Format("%s\n", credit->GetArtist().c_str());
+    strLabel += StringUtils::Format("%s\n", credit.GetArtist().c_str());
   }
   return StringUtils::TrimRight(strLabel, "\n");
 }
@@ -1009,9 +1009,10 @@ const std::string CMusicInfoTag::GetContributorsText() const
 const std::string CMusicInfoTag::GetContributorsAndRolesText() const
 {
   std::string strLabel;
-  for (VECMUSICROLES::const_iterator credit = m_musicRoles.begin(); credit != m_musicRoles.end(); ++credit)
+  for (const auto& credit : m_musicRoles)
   {
-    strLabel += StringUtils::Format("%s - %s\n", credit->GetRoleDesc().c_str(), credit->GetArtist().c_str());
+    strLabel +=
+        StringUtils::Format("%s - %s\n", credit.GetRoleDesc().c_str(), credit.GetArtist().c_str());
   }
   return StringUtils::TrimRight(strLabel, "\n");
 }

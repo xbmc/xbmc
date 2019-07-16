@@ -35,23 +35,23 @@ JSONRPC_STATUS CSettingsOperations::GetSections(const std::string &method, ITran
 
   // apply the level filter
   SettingSectionList allSections = CServiceBroker::GetSettingsComponent()->GetSettings()->GetSections();
-  for (SettingSectionList::const_iterator itSection = allSections.begin(); itSection != allSections.end(); ++itSection)
+  for (const auto& itSection : allSections)
   {
-    SettingCategoryList categories = (*itSection)->GetCategories(level);
+    SettingCategoryList categories = itSection->GetCategories(level);
     if (categories.empty())
       continue;
 
     CVariant varSection(CVariant::VariantTypeObject);
-    if (!SerializeSettingSection(*itSection, varSection))
+    if (!SerializeSettingSection(itSection, varSection))
       continue;
 
     if (listCategories)
     {
       varSection["categories"] = CVariant(CVariant::VariantTypeArray);
-      for (SettingCategoryList::const_iterator itCategory = categories.begin(); itCategory != categories.end(); ++itCategory)
+      for (const auto& itCategory : categories)
       {
         CVariant varCategory(CVariant::VariantTypeObject);
-        if (!SerializeSettingCategory(*itCategory, varCategory))
+        if (!SerializeSettingCategory(itCategory, varCategory))
           continue;
 
         varSection["categories"].push_back(varCategory);
@@ -84,34 +84,34 @@ JSONRPC_STATUS CSettingsOperations::GetCategories(const std::string &method, ITr
 
   result["categories"] = CVariant(CVariant::VariantTypeArray);
 
-  for (std::vector<SettingSectionPtr>::const_iterator itSection = sections.begin(); itSection != sections.end(); ++itSection)
+  for (const auto& itSection : sections)
   {
-    SettingCategoryList categories = (*itSection)->GetCategories(level);
-    for (SettingCategoryList::const_iterator itCategory = categories.begin(); itCategory != categories.end(); ++itCategory)
+    SettingCategoryList categories = itSection->GetCategories(level);
+    for (const auto& itCategory : categories)
     {
       CVariant varCategory(CVariant::VariantTypeObject);
-      if (!SerializeSettingCategory(*itCategory, varCategory))
+      if (!SerializeSettingCategory(itCategory, varCategory))
         continue;
 
       if (listSettings)
       {
         varCategory["groups"] = CVariant(CVariant::VariantTypeArray);
 
-        SettingGroupList groups = (*itCategory)->GetGroups(level);
-        for (SettingGroupList::const_iterator itGroup = groups.begin(); itGroup != groups.end(); ++itGroup)
+        SettingGroupList groups = itCategory->GetGroups(level);
+        for (const auto& itGroup : groups)
         {
           CVariant varGroup(CVariant::VariantTypeObject);
-          if (!SerializeSettingGroup(*itGroup, varGroup))
+          if (!SerializeSettingGroup(itGroup, varGroup))
             continue;
 
           varGroup["settings"] = CVariant(CVariant::VariantTypeArray);
-          SettingList settings = (*itGroup)->GetSettings(level);
-          for (SettingList::const_iterator itSetting = settings.begin(); itSetting != settings.end(); ++itSetting)
+          SettingList settings = itGroup->GetSettings(level);
+          for (const auto& itSetting : settings)
           {
-            if ((*itSetting)->IsVisible())
+            if (itSetting->IsVisible())
             {
               CVariant varSetting(CVariant::VariantTypeObject);
-              if (!SerializeSetting(*itSetting, varSetting))
+              if (!SerializeSetting(itSetting, varSetting))
                 continue;
 
               varGroup["settings"].push_back(varSetting);
@@ -156,24 +156,24 @@ JSONRPC_STATUS CSettingsOperations::GetSettings(const std::string &method, ITran
 
   result["settings"] = CVariant(CVariant::VariantTypeArray);
 
-  for (std::vector<SettingSectionPtr>::const_iterator itSection = sections.begin(); itSection != sections.end(); ++itSection)
+  for (const auto& itSection : sections)
   {
-    SettingCategoryList categories = (*itSection)->GetCategories(level);
+    SettingCategoryList categories = itSection->GetCategories(level);
     bool found = !doFilter;
-    for (SettingCategoryList::const_iterator itCategory = categories.begin(); itCategory != categories.end(); ++itCategory)
+    for (const auto& itCategory : categories)
     {
-      if (!doFilter || StringUtils::EqualsNoCase((*itCategory)->GetId(), strCategory))
+      if (!doFilter || StringUtils::EqualsNoCase(itCategory->GetId(), strCategory))
       {
-        SettingGroupList groups = (*itCategory)->GetGroups(level);
-        for (SettingGroupList::const_iterator itGroup = groups.begin(); itGroup != groups.end(); ++itGroup)
+        SettingGroupList groups = itCategory->GetGroups(level);
+        for (const auto& itGroup : groups)
         {
-          SettingList settings = (*itGroup)->GetSettings(level);
-          for (SettingList::const_iterator itSetting = settings.begin(); itSetting != settings.end(); ++itSetting)
+          SettingList settings = itGroup->GetSettings(level);
+          for (const auto& itSetting : settings)
           {
-            if ((*itSetting)->IsVisible())
+            if (itSetting->IsVisible())
             {
               CVariant varSetting(CVariant::VariantTypeObject);
-              if (!SerializeSetting(*itSetting, varSetting))
+              if (!SerializeSetting(itSetting, varSetting))
                 continue;
 
               result["settings"].push_back(varSetting);
@@ -488,11 +488,11 @@ bool CSettingsOperations::SerializeSettingInt(std::shared_ptr<const CSettingInt>
     {
       obj["options"] = CVariant(CVariant::VariantTypeArray);
       const TranslatableIntegerSettingOptions& options = setting->GetTranslatableOptions();
-      for (TranslatableIntegerSettingOptions::const_iterator itOption = options.begin(); itOption != options.end(); ++itOption)
+      for (const auto& itOption : options)
       {
         CVariant varOption(CVariant::VariantTypeObject);
-        varOption["label"] = g_localizeStrings.Get(itOption->first);
-        varOption["value"] = itOption->second;
+        varOption["label"] = g_localizeStrings.Get(itOption.first);
+        varOption["value"] = itOption.second;
         obj["options"].push_back(varOption);
       }
       break;
@@ -502,11 +502,11 @@ bool CSettingsOperations::SerializeSettingInt(std::shared_ptr<const CSettingInt>
     {
       obj["options"] = CVariant(CVariant::VariantTypeArray);
       const IntegerSettingOptions& options = setting->GetOptions();
-      for (IntegerSettingOptions::const_iterator itOption = options.begin(); itOption != options.end(); ++itOption)
+      for (const auto& itOption : options)
       {
         CVariant varOption(CVariant::VariantTypeObject);
-        varOption["label"] = itOption->label;
-        varOption["value"] = itOption->value;
+        varOption["label"] = itOption.label;
+        varOption["value"] = itOption.value;
         obj["options"].push_back(varOption);
       }
       break;
@@ -516,11 +516,11 @@ bool CSettingsOperations::SerializeSettingInt(std::shared_ptr<const CSettingInt>
     {
       obj["options"] = CVariant(CVariant::VariantTypeArray);
       IntegerSettingOptions options = std::const_pointer_cast<CSettingInt>(setting)->UpdateDynamicOptions();
-      for (IntegerSettingOptions::const_iterator itOption = options.begin(); itOption != options.end(); ++itOption)
+      for (const auto& itOption : options)
       {
         CVariant varOption(CVariant::VariantTypeObject);
-        varOption["label"] = itOption->label;
-        varOption["value"] = itOption->value;
+        varOption["label"] = itOption.label;
+        varOption["value"] = itOption.value;
         obj["options"].push_back(varOption);
       }
       break;
@@ -568,11 +568,11 @@ bool CSettingsOperations::SerializeSettingString(std::shared_ptr<const CSettingS
     {
       obj["options"] = CVariant(CVariant::VariantTypeArray);
       const TranslatableStringSettingOptions& options = setting->GetTranslatableOptions();
-      for (TranslatableStringSettingOptions::const_iterator itOption = options.begin(); itOption != options.end(); ++itOption)
+      for (const auto& itOption : options)
       {
         CVariant varOption(CVariant::VariantTypeObject);
-        varOption["label"] = g_localizeStrings.Get(itOption->first);
-        varOption["value"] = itOption->second;
+        varOption["label"] = g_localizeStrings.Get(itOption.first);
+        varOption["value"] = itOption.second;
         obj["options"].push_back(varOption);
       }
       break;
@@ -582,11 +582,11 @@ bool CSettingsOperations::SerializeSettingString(std::shared_ptr<const CSettingS
     {
       obj["options"] = CVariant(CVariant::VariantTypeArray);
       const StringSettingOptions& options = setting->GetOptions();
-      for (StringSettingOptions::const_iterator itOption = options.begin(); itOption != options.end(); ++itOption)
+      for (const auto& itOption : options)
       {
         CVariant varOption(CVariant::VariantTypeObject);
-        varOption["label"] = itOption->label;
-        varOption["value"] = itOption->value;
+        varOption["label"] = itOption.label;
+        varOption["value"] = itOption.value;
         obj["options"].push_back(varOption);
       }
       break;
@@ -596,11 +596,11 @@ bool CSettingsOperations::SerializeSettingString(std::shared_ptr<const CSettingS
     {
       obj["options"] = CVariant(CVariant::VariantTypeArray);
       StringSettingOptions options = std::const_pointer_cast<CSettingString>(setting)->UpdateDynamicOptions();
-      for (StringSettingOptions::const_iterator itOption = options.begin(); itOption != options.end(); ++itOption)
+      for (const auto& itOption : options)
       {
         CVariant varOption(CVariant::VariantTypeObject);
-        varOption["label"] = itOption->label;
-        varOption["value"] = itOption->value;
+        varOption["label"] = itOption.label;
+        varOption["value"] = itOption.value;
         obj["options"].push_back(varOption);
       }
       break;
@@ -779,6 +779,6 @@ bool CSettingsOperations::SerializeSettingControl(std::shared_ptr<const ISetting
 void CSettingsOperations::SerializeSettingListValues(const std::vector<CVariant> &values, CVariant &obj)
 {
   obj = CVariant(CVariant::VariantTypeArray);
-  for (std::vector<CVariant>::const_iterator itValue = values.begin(); itValue != values.end(); ++itValue)
-    obj.push_back(*itValue);
+  for (const auto& itValue : values)
+    obj.push_back(itValue);
 }

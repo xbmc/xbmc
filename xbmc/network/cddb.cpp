@@ -505,9 +505,8 @@ void Xcddb::parseData(const char *buffer)
   }
 
   // parse keywords
-  for (std::list<std::string>::const_iterator it = keywordsOrder.begin(); it != keywordsOrder.end(); ++it)
+  for (const std::string& strKeyword : keywordsOrder)
   {
-    std::string strKeyword = *it;
     std::string strValue = keywords[strKeyword];
 
     //! @todo STRING_CLEANUP

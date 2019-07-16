@@ -267,8 +267,8 @@ PopulateObjectFromTag(CVideoInfoTag&         tag,
         if (tag.m_type == MediaTypeMusicVideo) {
           object.m_ObjectClass.type = "object.item.videoItem.musicVideoClip";
           object.m_Creator = StringUtils::Join(tag.m_artist, CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoItemSeparator).c_str();
-          for (std::vector<std::string>::const_iterator itArtist = tag.m_artist.begin(); itArtist != tag.m_artist.end(); ++itArtist)
-              object.m_People.artists.Add(itArtist->c_str());
+          for (const auto& itArtist : tag.m_artist)
+            object.m_People.artists.Add(itArtist.c_str());
           object.m_Affiliation.album = tag.m_strAlbum.c_str();
           object.m_Title = tag.m_strTitle.c_str();
           object.m_Date = tag.GetPremiered().GetAsW3CDate().c_str();
@@ -595,13 +595,18 @@ BuildObject(CFileItem&                    item,
             object->m_ExtraInfo.album_arts.Add(art);
         }
 
-        for (CGUIListItem::ArtMap::const_iterator itArtwork = item.GetArt().begin(); itArtwork != item.GetArt().end(); ++itArtwork) {
-            if (!itArtwork->first.empty() && !itArtwork->second.empty()) {
-                std::string wrappedUrl = CTextureUtils::GetWrappedImageURL(itArtwork->second);
-                object->m_XbmcInfo.artwork.Add(itArtwork->first.c_str(),
-                  upnp_server->BuildSafeResourceUri(rooturi, (*ips.GetFirstItem()).ToString(), wrappedUrl.c_str()));
-                upnp_server->AddSafeResourceUri(object, rooturi, ips, wrappedUrl.c_str(), ("xbmc.org:*:" + itArtwork->first + ":*").c_str());
-            }
+        for (const auto& itArtwork : item.GetArt())
+        {
+          if (!itArtwork.first.empty() && !itArtwork.second.empty())
+          {
+            std::string wrappedUrl = CTextureUtils::GetWrappedImageURL(itArtwork.second);
+            object->m_XbmcInfo.artwork.Add(
+                itArtwork.first.c_str(),
+                upnp_server->BuildSafeResourceUri(rooturi, (*ips.GetFirstItem()).ToString(),
+                                                  wrappedUrl.c_str()));
+            upnp_server->AddSafeResourceUri(object, rooturi, ips, wrappedUrl.c_str(),
+                                            ("xbmc.org:*:" + itArtwork.first + ":*").c_str());
+          }
         }
     }
 

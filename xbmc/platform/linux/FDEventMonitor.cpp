@@ -192,10 +192,9 @@ void CFDEventMonitor::UpdatePollDescs()
   m_monitoredFDbyPollDescs.clear();
   m_pollDescs.clear();
 
-  for (std::map<int, MonitoredFD>::iterator it = m_monitoredFDs.begin();
-       it != m_monitoredFDs.end(); ++it)
+  for (const auto& it : m_monitoredFDs)
   {
-    AddPollDesc(it->first, it->second.fd, it->second.events);
+    AddPollDesc(it.first, it.second.fd, it.second.events);
   }
 }
 

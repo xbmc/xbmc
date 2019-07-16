@@ -105,11 +105,11 @@ void CTCPServer::Process()
     struct timeval  to     = {1, 0};
     FD_ZERO(&rfds);
 
-    for (std::vector<SOCKET>::iterator it = m_servers.begin(); it != m_servers.end(); ++it)
+    for (auto& it : m_servers)
     {
-      FD_SET(*it, &rfds);
-      if ((intptr_t)*it > (intptr_t)max_fd)
-        max_fd = *it;
+      FD_SET(it, &rfds);
+      if ((intptr_t)it > (intptr_t)max_fd)
+        max_fd = it;
     }
 
     for (unsigned int i = 0; i < m_connections.size(); i++)
@@ -175,13 +175,14 @@ void CTCPServer::Process()
         }
       }
 
-      for (std::vector<SOCKET>::iterator it = m_servers.begin(); it != m_servers.end(); ++it)
+      for (auto& it : m_servers)
       {
-        if (FD_ISSET(*it, &rfds))
+        if (FD_ISSET(it, &rfds))
         {
           CLog::Log(LOGDEBUG, "JSONRPC Server: New connection detected");
           CTCPClient *newconnection = new CTCPClient();
-          newconnection->m_socket = accept(*it, (sockaddr*)&newconnection->m_cliaddr, &newconnection->m_addrlen);
+          newconnection->m_socket =
+              accept(it, (sockaddr*)&newconnection->m_cliaddr, &newconnection->m_addrlen);
 
           if (newconnection->m_socket == INVALID_SOCKET)
           {
