@@ -352,6 +352,8 @@
 #define INTEGER_GREATER_OR_EQUAL    452
 #define INTEGER_LESS_THAN           453
 #define INTEGER_LESS_OR_EQUAL       454
+#define INTEGER_EVEN                455
+#define INTEGER_ODD                 456
 
 #define SKIN_BOOL                   600
 #define SKIN_STRING                 601
