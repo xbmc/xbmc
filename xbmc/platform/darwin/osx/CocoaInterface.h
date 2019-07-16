@@ -8,8 +8,6 @@
 
 #pragma once
 
-#include "platform/darwin/AutoPool.h"
-
 #include <string>
 
 #ifdef __cplusplus
