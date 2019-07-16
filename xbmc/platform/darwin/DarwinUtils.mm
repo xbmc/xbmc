@@ -486,9 +486,10 @@ const std::string& CDarwinUtils::GetManufacturer(void)
         CFTypeRef manufacturer = IORegistryEntryCreateCFProperty(servExpDev, CFSTR("manufacturer"), kCFAllocatorDefault, 0);
         if (manufacturer)
         {
-          if (CFGetTypeID(manufacturer) == CFStringGetTypeID())
-            manufName = (const char*)[[NSString stringWithString:(NSString *)manufacturer] UTF8String];
-          else if (CFGetTypeID(manufacturer) == CFDataGetTypeID())
+          auto typeId = CFGetTypeID(manufacturer);
+          if (typeId == CFStringGetTypeID())
+            manufName = static_cast<const char*>([NSString stringWithString:(__bridge NSString*)manufacturer].UTF8String);
+          else if (typeId == CFDataGetTypeID())
           {
             manufName.assign((const char*)CFDataGetBytePtr((CFDataRef)manufacturer), CFDataGetLength((CFDataRef)manufacturer));
             if (!manufName.empty() && manufName[manufName.length() - 1] == 0)

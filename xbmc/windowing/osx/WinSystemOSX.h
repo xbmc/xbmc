@@ -19,6 +19,10 @@ typedef struct SDL_Surface SDL_Surface;
 
 class IDispResource;
 class CWinEventsOSX;
+class CWinSystemOSXImpl;
+#ifdef __OBJC__
+@class NSOpenGLContext;
+#endif
 
 class CWinSystemOSX : public CWinSystemBase, public ITimerCallback
 {
@@ -36,7 +40,6 @@ public:
   virtual bool CreateNewWindow(const std::string& name, bool fullScreen, RESOLUTION_INFO& res) override;
   virtual bool DestroyWindow() override;
   virtual bool ResizeWindow(int newWidth, int newHeight, int newLeft, int newTop) override;
-  bool         ResizeWindowInternal(int newWidth, int newHeight, int newLeft, int newTop, void *additional);
   virtual bool SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays) override;
   virtual void UpdateResolutions() override;
   virtual void NotifyAppFocusChange(bool bGaining) override;
@@ -63,7 +66,11 @@ public:
   void        StopLostDeviceTimer();
 
   void* GetCGLContextObj();
+#ifdef __OBJC__
+  NSOpenGLContext* GetNSOpenGLContext();
+#else
   void* GetNSOpenGLContext();
+#endif
   void GetConnectedOutputs(std::vector<std::string> *outputs);
 
   // winevents override
@@ -73,8 +80,6 @@ protected:
   virtual std::unique_ptr<KODI::WINDOWING::IOSScreenSaver> GetOSScreenSaverImpl() override;
 
   void  HandlePossibleRefreshrateChange();
-  void* CreateWindowedContext(void* shareCtx);
-  void* CreateFullScreenContext(int screen_index, void* shareCtx);
   void  GetScreenResolution(int* w, int* h, double* fps, int screenIdx);
   void  EnableVSync(bool enable);
   bool  SwitchToVideoMode(int width, int height, double refreshrate);
@@ -84,8 +89,7 @@ protected:
   void  StartTextInput();
   void  StopTextInput();
 
-  void* m_glContext;
-  static void* m_lastOwnedContext;
+  std::unique_ptr<CWinSystemOSXImpl> m_impl;
   SDL_Surface* m_SDLSurface;
   CWinEventsOSX *m_osx_events;
   bool                         m_obscured;
@@ -93,9 +97,6 @@ protected:
 
   bool                         m_movedToOtherScreen;
   int                          m_lastDisplayNr;
-  void                        *m_windowDidMove;
-  void                        *m_windowDidReSize;
-  void                        *m_windowChangedScreen;
   double                       m_refreshRate;
 
   CCriticalSection             m_resourceSection;

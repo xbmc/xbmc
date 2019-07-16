@@ -34,7 +34,7 @@ CGDirectDisplayID Cocoa_GetDisplayIDFromScreen(NSScreen *screen);
 NSOpenGLContext* Cocoa_GL_GetCurrentContext(void)
 {
   CWinSystemOSX *winSystem = dynamic_cast<CWinSystemOSX*>(CServiceBroker::GetWinSystem());
-  return (NSOpenGLContext *)winSystem->GetNSOpenGLContext();
+  return winSystem->GetNSOpenGLContext();
 }
 
 uint32_t Cocoa_GL_GetCurrentDisplayID(void)
@@ -128,7 +128,6 @@ void Cocoa_DoAppleScript(const char* scriptSource)
   NSAppleScript* scriptObject = [[NSAppleScript alloc] initWithSource:
     [NSString stringWithUTF8String:scriptSource]];
   returnDescriptor = [scriptObject executeAndReturnError: &errorDict];
-  [scriptObject release];
 }
 
 void Cocoa_DoAppleScriptFile(const char* filePath)
@@ -166,7 +165,6 @@ void Cocoa_DoAppleScriptFile(const char* filePath)
 
   NSAppleScript* appleScript = [[NSAppleScript alloc] initWithContentsOfURL:[NSURL fileURLWithPath:scriptFile] error:nil];
   [appleScript executeAndReturnError:nil];
-  [appleScript release];
 }
 
 char* Cocoa_MountPoint2DeviceName(char *path)
