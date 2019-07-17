@@ -69,7 +69,7 @@ static const TypeMapping types[] =
  *
  */
 
-std::string CAddonInfo::TranslateType(ADDON::TYPE type, bool pretty/*=false*/)
+std::string CAddonInfo::TranslateType(ADDON::TYPE type, bool pretty /*= false*/)
 {
   for (const TypeMapping& map : types)
   {
@@ -126,6 +126,52 @@ CAddonInfo::CAddonInfo(std::string id, TYPE type)
     m_mainType(type)
 {
 
+}
+
+const CAddonType* CAddonInfo::Type(TYPE type) const
+{
+  static CAddonType dummy;
+
+  if (!m_types.empty())
+  {
+    if (type == ADDON_UNKNOWN)
+      return &m_types[0];
+
+    for (auto& addonType : m_types)
+    {
+      if (addonType.Type() == type)
+        return &addonType;
+    }
+  }
+
+  return &dummy;
+}
+
+bool CAddonInfo::IsType(TYPE type, bool mainOnly /*= false*/) const
+{
+  return (m_mainType == type || ProvidesSubContent(type, mainOnly ? m_mainType : ADDON_UNKNOWN));
+}
+
+bool CAddonInfo::ProvidesSubContent(const TYPE& content, const TYPE& mainType /*= ADDON_UNKNOWN*/) const
+{
+  if (content == ADDON_UNKNOWN)
+    return false;
+
+  for (const auto& addonType : m_types)
+  {
+    if ((mainType == ADDON_UNKNOWN || addonType.Type() == mainType) && addonType.ProvidesSubContent(content))
+      return true;
+  }
+
+  return false;
+}
+
+bool CAddonInfo::ProvidesSeveralSubContents() const
+{
+  int contents = 0;
+  for (const auto& addonType : m_types)
+    contents += addonType.ProvidedSubContents();
+  return contents > 0 ? true : false;
 }
 
 bool CAddonInfo::MeetsVersion(const AddonVersion &version) const
