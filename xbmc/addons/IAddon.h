@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include "AddonInfo.h"
+#include "addons/addoninfo/AddonInfo.h"
 
 #include <memory>
 #include <set>
