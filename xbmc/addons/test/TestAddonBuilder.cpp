@@ -8,6 +8,7 @@
 
 #include "addons/AddonBuilder.h"
 #include "addons/LanguageResource.h"
+#include "addons/addoninfo/AddonInfoBuilder.h"
 
 #include <gtest/gtest.h>
 
@@ -17,36 +18,32 @@ using namespace ADDON;
 class TestAddonBuilder : public ::testing::Test
 {
 protected:
-  CAddonBuilder builder;
-
-  void SetUp() override
-  {
-    builder.SetId("foo.bar");
-    builder.SetVersion(AddonVersion("1.2.3"));
-  }
+  TestAddonBuilder() = default;
 };
 
-TEST_F(TestAddonBuilder, ShouldFailWhenIdIsNotSet)
+TEST_F(TestAddonBuilder, ShouldFailWhenEmpty)
 {
-  CAddonBuilder builder;
-  builder.SetId("");
-  EXPECT_EQ(nullptr, builder.Build());
+  EXPECT_EQ(nullptr, CAddonBuilder::Generate(nullptr, ADDON_UNKNOWN));
 }
 
 TEST_F(TestAddonBuilder, ShouldBuildDependencyAddons)
 {
   std::vector<DependencyInfo> deps;
   deps.emplace_back("a", AddonVersion("1.0.0"), false);
+
+  CAddonInfoBuilder::CFromDB builder;
+  builder.SetId("aa");
   builder.SetDependencies(deps);
   builder.SetType(ADDON_UNKNOWN);
-  builder.SetExtPoint(nullptr);
-  auto addon = builder.Build();
+  AddonPtr addon = CAddonBuilder::Generate(builder.get(), ADDON_UNKNOWN);
   EXPECT_EQ(deps, addon->GetDependencies());
 }
 
 TEST_F(TestAddonBuilder, ShouldReturnDerivedType)
 {
+  CAddonInfoBuilder::CFromDB builder;
+  builder.SetId("aa");
   builder.SetType(ADDON_RESOURCE_LANGUAGE);
-  auto addon = std::dynamic_pointer_cast<CLanguageResource>(builder.Build());
+  auto addon = std::dynamic_pointer_cast<CLanguageResource>(CAddonBuilder::Generate(builder.get(), ADDON_UNKNOWN));
   EXPECT_NE(nullptr, addon);
 }
