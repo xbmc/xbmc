@@ -11,7 +11,7 @@ CWD=$(shell pwd)
 HOSTPYTHONDIR=$(CWD)/$(PLATFORM)/hostpython
 BASE_URL=https://www.python.org/ftp/python/$(VERSION)
 
-CONFIGURE=./configure --prefix=$(NATIVEPREFIX) --disable-shared --disable-framework --without-pymalloc
+CONFIGURE=./configure --prefix=$(NATIVEPREFIX) --disable-shared --disable-framework --without-ensurepip --without-pymalloc --with-system-ffi
 ifeq ($(TARGET_PLATFORM),wayland)
   CONFIGURE += --with-system-expat
 endif
