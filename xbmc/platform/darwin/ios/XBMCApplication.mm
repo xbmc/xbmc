@@ -18,7 +18,9 @@
 #import <objc/runtime.h>
 
 @implementation XBMCApplicationDelegate
-XBMCController *m_xbmcController;
+{
+  XBMCController* m_xbmcController;
+}
 
 // - iOS6 rotation API - will be called on iOS7 runtime!--------
 // - on iOS7 first application is asked for supported orientation
@@ -119,14 +121,6 @@ XBMCController *m_xbmcController;
   }
 }
 
-- (void)dealloc
-{
-  [self registerScreenNotifications:NO];
-  [m_xbmcController stopAnimation];
-  [m_xbmcController release];
-
-  [super dealloc];
-}
 @end
 
 //---------------- HOOK FOR BT KEYBOARD CURSORS KEYS START----------------
@@ -177,7 +171,7 @@ static void XBMCsendEvent(id _self, SEL _cmd, UIEvent *event)
     // a GSEventRecord among other things
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
-    NSInteger *eventMem = (NSInteger *)[event performSelector:@selector(_gsEvent)];
+    NSInteger* eventMem = nullptr;
 #pragma clang diagnostic pop
 
     if (eventMem)
@@ -216,7 +210,7 @@ __attribute__((constructor)) static void HookKeyboard(void)
     LOG(@"Detected 32bit system!!!");
 #endif
 
-  NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
+  @autoreleasepool
   {
     // Hook into handleKeyUIEvent: to get keyboard events.
 #pragma clang diagnostic push
@@ -227,7 +221,6 @@ __attribute__((constructor)) static void HookKeyboard(void)
       ELOG(@"HookKeyboard: Couldn't hook handleKeyUIEvent - cursor keys on btkeyboards won't work!");
 #pragma clang diagnostic pop
   }
-  [pool release];
 }
 //---------------- HOOK FOR BT KEYBOARD CURSORS KEYS END----------------
 
@@ -237,27 +230,25 @@ static void SigPipeHandler(int s)
 }
 
 int main(int argc, char *argv[]) {
-  NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
-  int retVal = 0;
-
-  signal(SIGPIPE, SigPipeHandler);
-
-  @try
+  @autoreleasepool
   {
-    retVal = UIApplicationMain(argc,argv,@"UIApplication",@"XBMCApplicationDelegate");
-    //UIApplicationMain(argc, argv, nil, nil);
-  }
-  @catch (id theException)
-  {
-    ELOG(@"%@", theException);
-  }
-  @finally
-  {
-    ILOG(@"This always happens.");
-  }
+    int retVal = 0;
 
-  [pool release];
+    signal(SIGPIPE, SigPipeHandler);
 
-  return retVal;
+    @try
+    {
+      retVal = UIApplicationMain(argc, argv, nil, NSStringFromClass(XBMCApplicationDelegate.class));
+    }
+    @catch (id theException)
+    {
+      ELOG(@"%@", theException);
+    }
+    @finally
+    {
+      ILOG(@"This always happens.");
+    }
 
+    return retVal;
+  }
 }

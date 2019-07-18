@@ -37,7 +37,7 @@ static CEvent keyboardFinishedEvent;
   }
   else
   {
-    [self initWithFrameInternal];
+    self = [self initWithFrameInternal];
   }
   return self;
 }
@@ -349,10 +349,4 @@ static CEvent keyboardFinishedEvent;
   _canceled = cancelFlag;
 }
 
-- (void) dealloc
-{
-  PRINT_SIGNATURE();
-  self.text = nil;
-  [super dealloc];
-}
 @end

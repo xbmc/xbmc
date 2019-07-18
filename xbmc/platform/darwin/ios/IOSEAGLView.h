@@ -33,7 +33,7 @@
   BOOL pause;
   NSConditionLock* animationThreadLock;
   NSThread* animationThread;
-  UIScreen *currentScreen;
+  UIScreen* __weak currentScreen;
 
   BOOL framebufferResizeRequested;
 }
@@ -41,7 +41,7 @@
 @property (readonly, nonatomic, getter=isXBMCAlive) BOOL xbmcAlive;
 @property (readonly, nonatomic, getter=isReadyToRun) BOOL readyToRun;
 @property (readonly, nonatomic, getter=isPause) BOOL pause;
-@property (readonly, getter=getCurrentScreen) UIScreen *currentScreen;
+@property(weak, readonly, getter=getCurrentScreen) UIScreen* currentScreen;
 @property (readonly, getter=getCurrentEAGLContext) EAGLContext *context;
 @property BOOL framebufferResizeRequested;
 
