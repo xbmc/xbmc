@@ -47,12 +47,8 @@ set(CMAKE_XCODE_ATTRIBUTE_INLINES_ARE_PRIVATE_EXTERN OFF)
 set(CMAKE_XCODE_ATTRIBUTE_GCC_SYMBOLS_PRIVATE_EXTERN OFF)
 set(CMAKE_XCODE_ATTRIBUTE_COPY_PHASE_STRIP OFF)
 
-if(CMAKE_GENERATOR STREQUAL Xcode)
-  set(CMAKE_XCODE_ATTRIBUTE_CLANG_ENABLE_OBJC_ARC YES)
-else()
-  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fobjc-arc")
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fobjc-arc")
-endif()
+include(cmake/scripts/darwin/Macros.cmake)
+enable_arc()
 
 # Xcode strips dead code by default which breaks wrapping
 set(CMAKE_XCODE_ATTRIBUTE_DEAD_CODE_STRIPPING OFF)
