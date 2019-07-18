@@ -20,7 +20,7 @@ function(core_link_library lib wraplib)
 
     # iOS: EFFECTIVE_PLATFORM_NAME is not resolved
     # http://public.kitware.com/pipermail/cmake/2016-March/063049.html
-    if(CORE_SYSTEM_NAME STREQUAL ios AND CMAKE_GENERATOR STREQUAL Xcode)
+    if(CORE_SYSTEM_NAME STREQUAL darwin_embedded AND CMAKE_GENERATOR STREQUAL Xcode)
       get_target_property(dir ${lib} BINARY_DIR)
       set(link_lib ${dir}/${CORE_BUILD_CONFIG}/${CMAKE_STATIC_LIBRARY_PREFIX}${lib}${CMAKE_STATIC_LIBRARY_SUFFIX})
     endif()

@@ -27,7 +27,7 @@ if(CORE_SYSTEM_NAME STREQUAL osx)
   list(APPEND HEADERS RendererVTBGL.h)
 endif()
 
-if(CORE_SYSTEM_NAME STREQUAL ios)
+if(CORE_SYSTEM_NAME STREQUAL darwin_embedded)
   list(APPEND SOURCES RendererVTBGLES.cpp)
   list(APPEND HEADERS RendererVTBGLES.h)
 endif()

@@ -40,7 +40,7 @@ $(LIBDYLIB): $(PLATFORM)
 	$(MAKE) -C $(PLATFORM)
 
 .installed-$(PLATFORM): $(LIBDYLIB)
-ifeq ($(OS),ios)
+ifeq ($(OS),darwin_embedded)
 ifeq ($(TARGET_PLATFORM),appletvos)
 	#deploy into source tree for tvos - we distribute libboblight with the bundle...
 	cp $(PLATFORM)/src/.libs/libboblight.0.dylib $(CMAKE_SOURCE_DIR)/system/libboblight-tvos.0.dylib

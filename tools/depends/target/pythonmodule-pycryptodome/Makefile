@@ -16,7 +16,7 @@ CROSSFLAGS=PYTHONXCPREFIX="$(PREFIX)" CC="$(CC) $(CFLAGS)" LDSHARED="$(CC) -shar
 endif
 
 ifeq (darwin, $(findstring darwin, $(HOST)))
-ifeq ($(OS),ios)
+ifeq ($(OS),darwin_embedded)
 PYTHON_O=$(abs_top_srcdir)/target/python27/$(PLATFORM)/Modules/python.o
 endif
 #ensure that only our target ldflags are passed to the python build

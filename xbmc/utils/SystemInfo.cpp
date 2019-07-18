@@ -639,7 +639,7 @@ std::string CSysInfo::GetOsVersion(void)
 
 #if defined(TARGET_WINDOWS) || defined(TARGET_FREEBSD)
   osVersion = GetKernelVersion(); // FIXME: for Win32 and FreeBSD OS version is a kernel version
-#elif defined(TARGET_DARWIN_IOS)
+#elif defined(TARGET_DARWIN_EMBEDDED)
   osVersion = CDarwinUtils::GetIOSVersionString();
 #elif defined(TARGET_DARWIN_OSX)
   osVersion = CDarwinUtils::GetOSXVersionString();
@@ -731,7 +731,7 @@ std::string CSysInfo::GetOsPrettyNameWithVersion(void)
     osNameVer.append(" unknown");
 #elif defined(TARGET_WINDOWS_STORE)
   osNameVer = GetKernelName() + " " + GetOsVersion();
-#elif defined(TARGET_FREEBSD) || defined(TARGET_DARWIN_IOS) || defined(TARGET_DARWIN_OSX)
+#elif defined(TARGET_FREEBSD) || defined(TARGET_DARWIN_EMBEDDED) || defined(TARGET_DARWIN_OSX)
   osNameVer = GetOsName() + " " + GetOsVersion();
 #elif defined(TARGET_ANDROID)
   osNameVer = GetOsName() + " " + GetOsVersion() + " API level " +   StringUtils::Format("%d", CJNIBuild::SDK_INT);
@@ -807,7 +807,7 @@ std::string CSysInfo::GetModelName(void)
     char deviceCStr[PROP_VALUE_MAX];
     int propLen = __system_property_get("ro.product.model", deviceCStr);
     modelName.assign(deviceCStr, (propLen > 0 && propLen <= PROP_VALUE_MAX) ? propLen : 0);
-#elif defined(TARGET_DARWIN_IOS)
+#elif defined(TARGET_DARWIN_EMBEDDED)
     modelName = CDarwinUtils::getIosPlatformString();
 #elif defined(TARGET_DARWIN_OSX)
     size_t nameLen = 0; // 'nameLen' should include terminating null
@@ -928,7 +928,7 @@ int CSysInfo::GetKernelBitness(void)
       if (IsWow64Process(GetCurrentProcess(), &isWow64) && isWow64) // fallback
         kernelBitness = 64;
     }
-#elif defined(TARGET_DARWIN_IOS)
+#elif defined(TARGET_DARWIN_EMBEDDED)
     // Note: OS X return x86 CPU type without CPU_ARCH_ABI64 flag
     const NXArchInfo* archInfo = NXGetLocalArchInfo();
     if (archInfo)
@@ -1099,7 +1099,7 @@ std::string CSysInfo::GetUserAgent()
       result.append("; ARM");
   }
 #elif defined(TARGET_DARWIN)
-#if defined(TARGET_DARWIN_IOS)
+#if defined(TARGET_DARWIN_EMBEDDED)
   std::string iDevStr(GetModelName()); // device model name with number of model version
   size_t iDevStrDigit = iDevStr.find_first_of("0123456789");
   std::string iDev(iDevStr, 0, iDevStrDigit);  // device model name without number
@@ -1181,7 +1181,7 @@ std::string CSysInfo::GetUserAgent()
 
 #ifdef TARGET_RASPBERRY_PI
   result += " HW_RaspberryPi/1.0";
-#elif defined (TARGET_DARWIN_IOS)
+#elif defined (TARGET_DARWIN_EMBEDDED)
   std::string iDevVer;
   if (iDevStrDigit == std::string::npos)
     iDevVer = "0.0";

@@ -26,7 +26,7 @@ else
   DEPENDS+=samba libcdio
 endif
 
-ifeq ($(OS),ios)
+ifeq ($(OS),darwin_embedded)
   EXCLUDED_DEPENDS = libcec libusb
   ifeq ($(TARGET_PLATFORM),appletvos)
     DEPENDS += boblight

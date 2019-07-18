@@ -7,7 +7,7 @@ VERSION=3.2
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
 
-ifeq ($(OS),ios)
+ifeq ($(OS),darwin_embedded)
   CONFIGURE_FLAGS=-disable-assembler
 endif
 

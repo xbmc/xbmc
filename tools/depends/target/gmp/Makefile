@@ -18,7 +18,7 @@ ifeq ($(OS),linux)
   endif
 endif
 
-ifeq ($(OS),ios)
+ifeq ($(OS),darwin_embedded)
 CONFIGURE_FLAGS=--disable-assembly
 endif
 ifeq ($(OS),osx)

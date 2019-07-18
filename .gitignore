@@ -305,11 +305,10 @@ cmake_install.cmake
 # /tools/darwin/
 /tools/darwin/Configurations/App.xcconfig
 /tools/darwin/Configurations/Common.xcconfig
-/tools/darwin/packaging/ios/mkdeb-ios.sh
-/tools/darwin/packaging/atv2/mkdeb-atv2.sh
+/tools/darwin/packaging/darwin_embedded/mkdeb-darwin_embedded.sh
 /tools/darwin/packaging/osx/mkdmg-osx.sh
 /tools/darwin/packaging/osx/VolumeIcon.icns
-/tools/darwin/packaging/migrate_to_kodi_ios.sh
+/tools/darwin/packaging/darwin_embedded/migrate_to_kodi.sh
 /tools/darwin/packaging/seatbeltunlock/mkdeb-seatbeltunlock.sh
 /tools/darwin/runtime/XBMCHelper
 

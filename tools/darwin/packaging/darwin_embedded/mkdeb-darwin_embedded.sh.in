@@ -103,7 +103,7 @@ chmod +x $DIRNAME/$PACKAGE/DEBIAN/prerm
 # postinst: nothing for now.
 echo "#!/bin/sh"                                  >  $DIRNAME/$PACKAGE/DEBIAN/postinst
 echo "chown -R mobile:mobile /Applications/@APP_NAME@.app" >> $DIRNAME/$PACKAGE/DEBIAN/postinst
-cat $DIRNAME/../migrate_to_kodi_ios.sh            >> $DIRNAME/$PACKAGE/DEBIAN/postinst
+cat $DIRNAME/migrate_to_kodi.sh            >> $DIRNAME/$PACKAGE/DEBIAN/postinst
 echo "/usr/bin/uicache"                           >>  $DIRNAME/$PACKAGE/DEBIAN/postinst
 echo "echo 'finish:respringing ...'"              >>  $DIRNAME/$PACKAGE/DEBIAN/postinst
 chmod +x $DIRNAME/$PACKAGE/DEBIAN/postinst

@@ -30,7 +30,7 @@ GUID_PLATFORM_DEFINE=GUID_LIBUUID
 ifeq ($(OS),osx)
 	GUID_PLATFORM_DEFINE=GUID_CFUUID
 endif
-ifeq ($(OS),ios)
+ifeq ($(OS),darwin_embedded)
 	GUID_PLATFORM_DEFINE=GUID_CFUUID
 endif
 

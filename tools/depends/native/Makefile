@@ -13,7 +13,7 @@ NATIVE= m4 gettext autoconf automake \
         flatbuffers
 
 
-ifeq ($(OS),ios)
+ifeq ($(OS),darwin_embedded)
   NATIVE += dpkg xz tar gen_entitlements ldid
 endif
 

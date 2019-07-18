@@ -18,7 +18,7 @@ if(PKG_CONFIG_FOUND)
   pkg_check_modules(PC_OPENGLES ${_brcmprefix}glesv2 QUIET)
 endif()
 
-if(NOT CORE_SYSTEM_NAME STREQUAL ios)
+if(NOT CORE_SYSTEM_NAME STREQUAL darwin_embedded)
   find_path(OPENGLES_INCLUDE_DIR GLES2/gl2.h
                                  PATHS ${PC_OPENGLES_INCLUDEDIR})
   find_library(OPENGLES_gl_LIBRARY NAMES ${_brcmprefix}GLESv2

@@ -15,7 +15,7 @@ STRIP="@STRIP@"
 RANLIB="@RANLIB@"
 OBJDUMP="@OBJDUMP@"
 
-if test "@platform_os@" = "ios" ; then
+if test "@platform_os@" = "darwin_embedded" ; then
   export AS="@prefix@/@tool_dir@/bin/gas-preprocessor.pl @CC@ -arch @use_cpu@"
   export CCAS="--tag CC @prefix@/@tool_dir@/bin/gas-preprocessor.pl @CC@ -arch @use_cpu@"
 fi
@@ -70,7 +70,7 @@ ac_cv_file__proc_sys_kernel_core_pattern=no
 samba_cv_SYSCONF_SC_NPROCESSORS_ONLN=no
 libreplace_cv_HAVE_GETADDRINFO=no
 
-if test "${PACKAGE_NAME}" = "Samba" -a "@platform_os@" = "ios"; then
+if test "${PACKAGE_NAME}" = "Samba" -a "@platform_os@" = "darwin_embedded"; then
   # disable python support
   export PYTHON_VER=0.0
   # ios/osx-10.6 issue with collision of _MD5 exported from a system lib
@@ -125,7 +125,7 @@ if test "@platform_os@" = "osx" ; then
 fi
 
 
-if test "@platform_os@" = "ios"; then
+if test "@platform_os@" = "darwin_embedded"; then
   # Xcode 8 + 10.11, clock_gettime getentropy is present
   # in 10.12 but will get wrongly detected if building on 10.11
   ac_cv_search_clock_gettime=no
