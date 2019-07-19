@@ -97,7 +97,6 @@ namespace XBMCAddon
      *  better way to do this, this is how I need to retrieve it.
      */
     virtual String GetAddonId() { return emptyString; }
-    virtual String GetAddonVersion() { return emptyString; }
     virtual long GetInvokerId() { return -1; }
 
     virtual void RegisterPlayerCallback(IPlayerCallback* player) = 0;

@@ -45,7 +45,6 @@ namespace ADDON
     const CBinaryAddonType* Type(TYPE type) const;
 
     const AddonVersion& Version() const { return m_addonInfo.Version(); }
-    const AddonVersion& MinVersion() const { return m_addonInfo.MinVersion(); }
     const std::string& Name() const { return m_addonInfo.Name(); }
     const std::string& Summary() const { return m_addonInfo.Summary(); }
     const std::string& Description() const { return m_addonInfo.Description(); }
@@ -57,8 +56,6 @@ namespace ADDON
 
     bool ProvidesSubContent(const TYPE& content, const TYPE& mainType = ADDON_UNKNOWN) const;
     bool ProvidesSeveralSubContents() const;
-
-    bool MeetsVersion(const AddonVersion &version) const;
 
     AddonDllPtr GetAddon(const IAddonInstanceHandler* handler);
     void ReleaseAddon(const IAddonInstanceHandler* handler);

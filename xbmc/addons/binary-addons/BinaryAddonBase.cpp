@@ -66,11 +66,6 @@ bool CBinaryAddonBase::ProvidesSeveralSubContents() const
   return (contents > 0);
 }
 
-bool CBinaryAddonBase::MeetsVersion(const AddonVersion &version) const
-{
-  return m_addonInfo.MinVersion() <= version && version <= m_addonInfo.Version();
-}
-
 AddonDllPtr CBinaryAddonBase::GetAddon(const IAddonInstanceHandler* handler)
 {
   if (handler == nullptr)

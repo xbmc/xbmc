@@ -360,16 +360,6 @@ std::string CAddon::LibPath() const
   return URIUtils::AddFileToFolder(m_addonInfo.Path(), m_addonInfo.LibName());
 }
 
-AddonVersion CAddon::GetDependencyVersion(const std::string &dependencyID) const
-{
-  const auto& deps = GetDependencies();
-  auto it = std::find_if(deps.begin(), deps.end(), [&](const DependencyInfo& other) { return other.id == dependencyID; });
-
-  if (it != deps.end())
-    return it->requiredVersion;
-  return AddonVersion("0.0.0");
-}
-
 void OnPreInstall(const AddonPtr& addon)
 {
   //Fallback to the pre-install callback in the addon.

@@ -43,7 +43,6 @@ public:
   std::string Name() const override { return m_addonInfo.Name(); }
   bool IsInUse() const override{ return false; };
   AddonVersion Version() const override { return m_addonInfo.Version(); }
-  AddonVersion MinVersion() const override { return m_addonInfo.MinVersion(); }
   std::string Summary() const override { return m_addonInfo.Summary(); }
   std::string Description() const override { return m_addonInfo.Description(); }
   std::string Path() const override { return m_addonInfo.Path(); }
@@ -168,12 +167,6 @@ public:
   bool GetSettingString(const std::string& key, std::string& value) override;
 
   CAddonSettings* GetSettings() const override;
-
-  /*! \brief get the required version of a dependency.
-   \param dependencyID the addon ID of the dependency.
-   \return the version this addon requires.
-   */
-  AddonVersion GetDependencyVersion(const std::string &dependencyID) const override;
 
   /*! \brief return whether or not this addon satisfies the given version requirements
    \param version the version to meet.

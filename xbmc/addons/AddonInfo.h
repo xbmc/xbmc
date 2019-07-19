@@ -111,7 +111,6 @@ namespace ADDON
     const std::string& ID() const { return m_id; }
     TYPE MainType() const { return m_mainType; }
     const AddonVersion& Version() const { return m_version; }
-    const AddonVersion& MinVersion() const { return m_minversion; }
     const std::string& Name() const { return m_name; }
     const std::string& License() const { return m_license; }
     const std::string& Summary() const { return m_summary; }

@@ -26,8 +26,6 @@ namespace XBMCAddon
   {
     String Addon::getDefaultId() { return languageHook == NULL ? emptyString : languageHook->GetAddonId(); }
 
-    String Addon::getAddonVersion() { return languageHook == NULL ? emptyString : languageHook->GetAddonVersion(); }
-
     bool Addon::UpdateSettingInActiveDialog(const char* id, const String& value)
     {
       ADDON::AddonPtr addon(pAddon);

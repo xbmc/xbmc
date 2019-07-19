@@ -60,7 +60,6 @@ namespace XBMCAddon
       XBMCAddon::CallbackHandler* GetCallbackHandler() override;
 
       String GetAddonId() override;
-      String GetAddonVersion() override;
       long GetInvokerId() override;
 
       void RegisterPlayerCallback(IPlayerCallback* player) override;

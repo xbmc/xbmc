@@ -61,8 +61,6 @@ namespace XBMCAddon
 
       String getDefaultId();
 
-      String getAddonVersion();
-
       bool UpdateSettingInActiveDialog(const char* id, const String& value);
 
     public:

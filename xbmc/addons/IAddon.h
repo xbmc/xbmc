@@ -40,7 +40,6 @@ namespace ADDON
     virtual std::string Name() const =0;
     virtual bool IsInUse() const =0;
     virtual AddonVersion Version() const =0;
-    virtual AddonVersion MinVersion() const =0;
     virtual std::string Summary() const =0;
     virtual std::string Description() const =0;
     virtual std::string Path() const =0;
@@ -75,7 +74,6 @@ namespace ADDON
     virtual CAddonSettings* GetSettings() const =0;
     virtual const std::vector<DependencyInfo>& GetDependencies() const =0;
     virtual const std::vector<DependencyInfo>& GetApiDependencies() const =0;
-    virtual AddonVersion GetDependencyVersion(const std::string &dependencyID) const =0;
     virtual bool MeetsVersion(const AddonVersion &version) const =0;
     virtual bool ReloadSettings() =0;
     virtual AddonPtr GetRunningInstance() const=0;
