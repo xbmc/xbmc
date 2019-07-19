@@ -161,7 +161,6 @@ add_bundle_file(${SMBCLIENT_LIBRARY} ${libdir} "")
 # Main targets from Makefile.in
 if(CPU MATCHES i686)
   set(CPU x86)
-  set(ARCH x86)
 endif()
 foreach(target apk obb apk-unsigned apk-obb apk-obb-unsigned apk-noobb apk-clean apk-sign)
   add_custom_target(${target}
@@ -170,7 +169,6 @@ foreach(target apk obb apk-unsigned apk-obb apk-obb-unsigned apk-noobb apk-clean
               CMAKE_SOURCE_DIR=${CMAKE_SOURCE_DIR}
               CC=${CMAKE_C_COMPILER}
               CPU=${CPU}
-              ARCH=${ARCH}
               HOST=${HOST}
               TOOLCHAIN=${TOOLCHAIN}
               PREFIX=${prefix}
