@@ -30,14 +30,10 @@ endif
 #arm and x86
 ifeq ($(findstring x86,$(CPU)),x86)
   ARCH=x86
-  CPU=x86
-endif
-ifeq ($(findstring arm64,$(CPU)),arm64)
+else ifeq ($(findstring arm64,$(CPU)),arm64)
   ARCH=arm64
-  CPU=arm64-v8a
 else ifeq ($(findstring arm,$(CPU)),arm)
   ARCH=arm
-  CPU=armeabi-v7a
 endif
 
 # libc++
