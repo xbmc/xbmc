@@ -36,7 +36,7 @@ AC_ARG_ENABLE([ccache],
 
 AC_ARG_WITH([toolchain],
   [AS_HELP_STRING([--with-toolchain],
-  [specify path to toolchain. Required for android. Defaults to xcode root for darwin, /usr for linux])],
+  [specify path to toolchain. Auto set for android. Defaults to xcode root for darwin, /usr for linux])],
   [use_toolchain=$withval])
 
 AC_ARG_WITH([platform],
@@ -160,12 +160,14 @@ case $build in
   ;;
   x86_64*-linux-gnu*|x86_64-*-linux-uclibc*)
     build_os="linux"
+    android_toolchain_name="linux-x86_64"
   ;;
   *darwin*)
     build_os="osx"
     native_platform_min_version=-mmacosx-version-min=`sw_vers | grep ProductVersion | sed -E "s/.*:.*(10\..*)\.?.*/\1/"`
     use_xcodepath=`xcode-select -print-path`
     use_build_toolchain=$use_xcodepath
+    android_toolchain_name="darwin-x86_64"
   ;;
   *)
     AC_MSG_ERROR(unsupported native build platform: $build)
@@ -194,6 +196,15 @@ platform_cxx=g++
 
 case $host in
   *-*linux-android*)
+    use_toolchain="${use_toolchain:-$use_ndk_path/toolchains/llvm/prebuilt/$android_toolchain_name}"
+    platform_cc=$use_host$use_ndk_api-clang
+    platform_cxx=$use_host$use_ndk_api-clang++
+    case $host in
+      arm*-*linux-android*)
+        platform_cc=armv7a-linux-androideabi$use_ndk_api-clang
+        platform_cxx=armv7a-linux-androideabi$use_ndk_api-clang++
+    esac
+  ;;
   *darwin*)
     use_toolchain="${use_xcodepath}/Toolchains/XcodeDefault.xctoolchain"
     platform_cc=clang

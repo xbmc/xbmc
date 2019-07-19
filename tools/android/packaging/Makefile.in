@@ -37,11 +37,7 @@ else ifeq ($(findstring arm,$(CPU)),arm)
 endif
 
 # libc++
-STLLIB=$(TOOLCHAIN)/$(HOST)/lib/libc++_shared.so
-# https://android.googlesource.com/platform/ndk/+/fe0fe5dc32682d1811d32492c3055becb512c147/build/tools/make_standalone_toolchain.py#308
-ifeq ($(findstring armeabi-v7a,$(CPU)),armeabi-v7a)
-  STLLIB=$(TOOLCHAIN)/$(HOST)/lib/armv7-a/libc++_shared.so
-endif
+STLLIB=$(TOOLCHAIN)/sysroot/usr/lib/$(HOST)/libc++_shared.so
 
 GDBPATH=$(NDKROOT)/prebuilt/android-$(ARCH)/gdbserver/gdbserver
 
