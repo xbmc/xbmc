@@ -16,6 +16,7 @@
 #include "ServiceBroker.h"
 #include "messaging/ApplicationMessenger.h"
 #include "addons/AddonManager.h"
+#include "addons/APIVersions.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "filesystem/File.h"
 #include "filesystem/SpecialProtocol.h"
@@ -607,7 +608,7 @@ void CPythonInvoker::onPythonModuleInitialization(void* moduleDict)
   PyObject *pyaddonid = PyString_FromString(m_addon->ID().c_str());
   PyDict_SetItemString(moduleDictionary, "__xbmcaddonid__", pyaddonid);
 
-  ADDON::AddonVersion version = m_addon->GetDependencyVersion("xbmc.python");
+  ADDON::AddonVersion version = CServiceBroker::GetAddonMgr().GetAPIVersion("xbmc.python")->version;
   PyObject *pyxbmcapiversion = PyString_FromString(version.asString().c_str());
   PyDict_SetItemString(moduleDictionary, "__xbmcapiversion__", pyxbmcapiversion);
 
