@@ -9,7 +9,6 @@
 #include "platform/darwin/ios-common/IOSKeyboard.h"
 
 #import "platform/darwin/AutoPool.h"
-#include "platform/darwin/DarwinUtils.h"
 #include "platform/darwin/NSLogDebugHelpers.h"
 #include "platform/darwin/ios-common/IOSKeyboardView.h"
 #include "platform/darwin/ios/XBMCController.h"

@@ -27,9 +27,6 @@
 #include "settings/SettingAddon.h"
 #include "settings/SettingsComponent.h"
 #include "utils/StringUtils.h"
-#if defined(TARGET_DARWIN_OSX)
-#include "platform/darwin/DarwinUtils.h"
-#endif// defined(TARGET_DARWIN_OSX)
 #include "windowing/WinSystem.h"
 
 bool AddonHasSettings(const std::string &condition, const std::string &value, SettingConstPtr setting, void *data)
