@@ -27,7 +27,6 @@ public:
   static int         GetExecutablePath(char* path, size_t *pathsize);
   static const char *GetAppRootFolder(void);
   static bool        IsIosSandboxed(void);
-  static int         BatteryLevel(void);
   static void        SetScheduling(bool realtime);
   static void        PrintDebugString(std::string debugString);
   static bool        CFStringRefToString(CFStringRef source, std::string& destination);

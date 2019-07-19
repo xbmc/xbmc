@@ -21,8 +21,6 @@ typedef unsigned char BYTE;
   #include <IOKit/ps/IOPSKeys.h>
   #include <ApplicationServices/ApplicationServices.h>
 
-#include "platform/darwin/DarwinUtils.h"
-
 #include "platform/darwin/osx/CocoaInterface.h"
 
 IPowerSyscall* CCocoaPowerSyscall::CreateInstance()
@@ -185,7 +183,29 @@ bool CCocoaPowerSyscall::HasBattery(void)
 
 int CCocoaPowerSyscall::BatteryLevel(void)
 {
-  return CDarwinUtils::BatteryLevel();
+  double batteryLevel = 0;
+  CFTypeRef powerSourceInfo = IOPSCopyPowerSourcesInfo();
+  CFArrayRef powerSources = IOPSCopyPowerSourcesList(powerSourceInfo);
+
+  for (CFIndex i = 0; i < CFArrayGetCount(powerSources); i++)
+  {
+    CFDictionaryRef powerSource = IOPSGetPowerSourceDescription(powerSourceInfo, CFArrayGetValueAtIndex(powerSources, i));
+    if (!powerSource)
+      break;
+
+    int curLevel = 0;
+    const void* powerSourceVal = CFDictionaryGetValue(powerSource, CFSTR(kIOPSCurrentCapacityKey));
+    CFNumberGetValue(static_cast<CFNumberRef>(powerSourceVal), kCFNumberSInt32Type, &curLevel);
+
+    int maxLevel = 0;
+    powerSourceVal = CFDictionaryGetValue(powerSource, CFSTR(kIOPSMaxCapacityKey));
+    CFNumberGetValue(static_cast<CFNumberRef>(powerSourceVal), kCFNumberSInt32Type, &maxLevel);
+
+    batteryLevel = static_cast<double>(curLevel) / static_cast<double>(maxLevel);
+  }
+  CFRelease(powerSources);
+  CFRelease(powerSourceInfo);
+  return batteryLevel * 100;
 }
 
 bool CCocoaPowerSyscall::PumpPowerEvents(IPowerEventsCallback *callback)
