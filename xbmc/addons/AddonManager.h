@@ -10,6 +10,7 @@
 
 #include "Addon.h"
 #include "AddonDatabase.h"
+#include "APIVersions.h"
 #include "Repository.h"
 #include "threads/CriticalSection.h"
 #include "utils/EventStream.h"
@@ -63,7 +64,8 @@ namespace ADDON
     bool Init();
     void DeInit();
 
-    CAddonMgr() = default;
+    CAddonMgr();
+    explicit CAddonMgr(std::vector<APIVersion> apiVersions);
     CAddonMgr(const CAddonMgr&) = delete;
     virtual ~CAddonMgr();
 
@@ -268,6 +270,8 @@ namespace ADDON
 
     bool ServicesHasStarted() const;
 
+    const APIVersion* const GetAPIVersion(const std::string& apiId) const;
+
     bool IsCompatible(const IAddon& addon);
 
     /*! \brief Recursively get dependencies for an add-on
@@ -283,6 +287,7 @@ namespace ADDON
     /* libcpluff */
     cp_context_t *m_cp_context = nullptr;
     VECADDONS    m_updateableAddons;
+    const std::vector<APIVersion> m_apiVersions;
 
     /*! \brief Check whether this addon is supported on the current platform
      \param info the plugin descriptor

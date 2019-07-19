@@ -126,6 +126,7 @@ namespace ADDON
     const std::vector<std::string>& Screenshots() const { return m_screenshots; }
     const std::string& Disclaimer() const { return m_disclaimer; }
     const std::vector<DependencyInfo>& GetDependencies() const { return m_dependencies; }
+    const std::vector<DependencyInfo>& GetApiDependencies() const { return m_apiDependencies; }
     const std::string& Broken() const { return m_broken; }
     const CDateTime& InstallDate() const { return m_installDate; }
     const CDateTime& LastUpdated() const { return m_lastUpdated; }
@@ -166,6 +167,7 @@ namespace ADDON
     std::vector<std::string> m_screenshots;
     std::string m_disclaimer;
     std::vector<DependencyInfo> m_dependencies;
+    std::vector<DependencyInfo> m_apiDependencies;
     std::string m_broken;
     CDateTime m_installDate;
     CDateTime m_lastUpdated;

@@ -2,22 +2,6 @@ addons/audioencoder.kodi.builtin.aac/*
 addons/audioencoder.kodi.builtin.wma/*
 addons/game.controller.default/*
 addons/game.controller.snes/*
-addons/kodi.audiodecoder/*
-addons/kodi.game/*
-addons/kodi.imagedecoder/*
-addons/kodi.inputstream/*
-addons/kodi.peripheral/*
-addons/kodi.resource/*
-addons/xbmc.addon/metadata.xsd
-addons/xbmc.addon/repository.xsd
-addons/xbmc.audioencoder/*
-addons/xbmc.codec/*
-addons/xbmc.core/*
-addons/xbmc.gui/*
-addons/xbmc.metadata/*
-addons/xbmc.pvr/*
-addons/xbmc.python/*
-addons/xbmc.webinterface/*
 addons/repository.xbmc.org/*
 addons/webinterface.default/*
 addons/screensaver.xbmc.builtin.dim/*
@@ -41,4 +25,3 @@ addons/metadata.common.theaudiodb.com/*
 addons/metadata.common.themoviedb.org/*
 addons/metadata.themoviedb.org/*
 addons/metadata.tvshows.themoviedb.org/*
-addons/kodi.vfs/*

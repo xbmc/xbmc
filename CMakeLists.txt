@@ -207,8 +207,7 @@ endif()
 # find all folders containing addon.xml.in
 # used to define ADDON_XML_OUTPUTS, ADDON_XML_DEPENDS and ADDON_INSTALL_DATA
 # Function defined in ./cmake/scripts/common/Macros.cmake
-set(outputFilterRegex "addons/xbmc.json")
-find_addon_xml_in_files(${outputFilterRegex})
+find_addon_xml_in_files()
 
 # Compile Info
 add_custom_command(OUTPUT ${CORE_BUILD_DIR}/xbmc/CompileInfo.cpp

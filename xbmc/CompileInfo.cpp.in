@@ -70,3 +70,13 @@ std::string CCompileInfo::GetBuildDate()
   }
   return "1970-01-01";
 }
+
+const char* CCompileInfo::GetAddonApiVersion()
+{
+  return "@APP_ADDON_API@";
+}
+
+const char* CCompileInfo::GetJsonRpcVersion()
+{
+  return "@JSONRPC_VERSION@";
+}

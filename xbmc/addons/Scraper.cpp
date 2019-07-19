@@ -363,11 +363,6 @@ bool CScraper::Load()
     auto itr = deps.begin();
     while (itr != deps.end())
     {
-      if (itr->id == "xbmc.metadata")
-      {
-        ++itr;
-        continue;
-      }
       AddonPtr dep;
 
       bool bOptional = itr->optional;

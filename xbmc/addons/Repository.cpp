@@ -12,6 +12,7 @@
 #include "ServiceBroker.h"
 #include "TextureDatabase.h"
 #include "URL.h"
+#include "addons/APIVersions.h"
 #include "addons/AddonDatabase.h"
 #include "addons/AddonInstaller.h"
 #include "addons/AddonManager.h"
@@ -139,9 +140,9 @@ std::unique_ptr<CRepository> CRepository::FromExtension(CAddonInfo addonInfo, co
 {
   DirList dirs;
   AddonVersion version("0.0.0");
-  AddonPtr addonver;
-  if (CServiceBroker::GetAddonMgr().GetAddon("xbmc.addon", addonver))
-    version = addonver->Version();
+  if (auto api = CServiceBroker::GetAddonMgr().GetAPIVersion("xbmc.addon"))
+    version = api->version;
+
   for (size_t i = 0; i < ext->configuration->num_children; ++i)
   {
     cp_cfg_element_t* element = &ext->configuration->children[i];

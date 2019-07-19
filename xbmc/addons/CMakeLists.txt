@@ -47,6 +47,7 @@ set(HEADERS Addon.h
             AddonStatusHandler.h
             AddonSystemSettings.h
             AddonVersion.h
+            APIVersions.h
             AudioDecoder.h
             AudioEncoder.h
             ContextMenuAddon.h

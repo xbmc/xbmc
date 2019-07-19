@@ -57,6 +57,16 @@ static std::string SerializeMetadata(const IAddon& addon)
     variant["dependencies"].push_back(std::move(info));
   }
 
+  variant["apiDependencies"] = CVariant(CVariant::VariantTypeArray);
+  for (const auto& dep : addon.GetApiDependencies())
+  {
+    CVariant info(CVariant::VariantTypeObject);
+    info["addonId"] = dep.id;
+    info["version"] = dep.requiredVersion.asString();
+    info["optional"] = dep.optional;
+    variant["apiDependencies"].push_back(std::move(info));
+  }
+
   variant["extrainfo"] = CVariant(CVariant::VariantTypeArray);
   for (const auto& kv : addon.ExtraInfo())
   {
@@ -108,6 +118,17 @@ static void DeserializeMetadata(const std::string& document, CAddonBuilder& buil
     }
     builder.SetDependencies(std::move(deps));
   }
+  {
+    std::vector<DependencyInfo> deps;
+    for (auto it = variant["apiDependencies"].begin_array(); it != variant["apiDependencies"].end_array(); ++it)
+    {
+      deps.emplace_back(
+          (*it)["addonId"].asString(),
+          AddonVersion((*it)["version"].asString()),
+          (*it)["optional"].asBoolean());
+    }
+    builder.SetApiDependencies(std::move(deps));
+  }
 
   InfoMap extraInfo;
   for (auto it = variant["extrainfo"].begin_array(); it != variant["extrainfo"].end_array(); ++it)
@@ -131,7 +152,7 @@ int CAddonDatabase::GetMinSchemaVersion() const
 
 int CAddonDatabase::GetSchemaVersion() const
 {
-  return 27;
+  return 28;
 }
 
 void CAddonDatabase::CreateTables()
@@ -301,6 +322,13 @@ void CAddonDatabase::UpdateTables(int version)
   if (version < 27)
   {
     m_pDS->exec("ALTER TABLE addons ADD news TEXT NOT NULL DEFAULT ''");
+  }
+  if (version < 28)
+  {
+    // Json schema change
+    m_pDS->exec("DELETE FROM addonlinkrepo");
+    m_pDS->exec("DELETE FROM repo");
+    m_pDS->exec("DELETE FROM addons");
   }
 }
 

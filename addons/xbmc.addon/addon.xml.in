@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<addon id="xbmc.addon" version="@APP_ADDON_API@" provider-name="Team XBMC">
-  <backwards-compatibility abi="12.0"/>
-  <requires>
-    <import addon="xbmc.core" version="0.1.0"/>
-  </requires>
-  <extension-point id="metadata" schema="metadata.xsd"/>
-  <extension-point id="repository" schema="repository.xsd"/>
-</addon>

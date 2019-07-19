@@ -307,6 +307,9 @@ bool CAddonInstaller::CheckDependencies(const AddonPtr &addon,
   if (!database.Open())
     return false;
 
+  if (!CServiceBroker::GetAddonMgr().IsCompatible(*addon))
+    return false;
+
   for (const auto& it : addon->GetDependencies())
   {
     const std::string &addonID = it.id;

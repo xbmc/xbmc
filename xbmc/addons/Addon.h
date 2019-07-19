@@ -63,6 +63,7 @@ public:
   uint64_t PackageSize() const override { return m_addonInfo.PackageSize(); }
   const InfoMap& ExtraInfo() const override { return m_addonInfo.ExtraInfo(); }
   const std::vector<DependencyInfo>& GetDependencies() const override { return m_addonInfo.GetDependencies(); }
+  const std::vector<DependencyInfo>& GetApiDependencies() const override { return m_addonInfo.GetApiDependencies(); }
 
   std::string FanArt() const override
   {

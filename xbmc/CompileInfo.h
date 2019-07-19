@@ -22,4 +22,6 @@ public:
   static const char* GetSCMID();   // Git Revision
   static const char* GetCopyrightYears();
   static std::string GetBuildDate();
+  static const char* GetAddonApiVersion();
+  static const char* GetJsonRpcVersion();
 };

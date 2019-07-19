@@ -21,7 +21,7 @@ namespace {
 // not have too much freedom in their accepted characters
 // Things that should be allowed: e.g. 0.1.0~beta3+git010cab3
 // Note that all of these characters are url-safe
-const std::string VALID_ADDON_VERSION_CHARACTERS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.+_@~";
+constexpr char VALID_ADDON_VERSION_CHARACTERS[] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.+_@~";
 }
 
 namespace ADDON

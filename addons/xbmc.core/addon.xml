@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<addon id="xbmc.core" version="0.1.0" provider-name="Team Kodi">
-  <backwards-compatibility abi="0.1"/>
-  <requires>
-    <c-pluff version="0.1"/>
-  </requires>
-</addon>

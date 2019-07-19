@@ -8,6 +8,7 @@
 
 #include "AddonManager.h"
 
+#include "APIVersions.h"
 #include "LangInfo.h"
 #include "ServiceBroker.h"
 #include "events/AddonManagementEvent.h"
@@ -37,6 +38,7 @@ namespace {
 // Note that all of these characters are url-safe
 const std::string VALID_ADDON_IDENTIFIER_CHARACTERS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.-_@!$";
 }
+
 
 /**********************************************************
  * CAddonMgr
@@ -127,6 +129,7 @@ void CAddonMgr::FillCpluffMetadata(const cp_plugin_info_t* plugin, CAddonBuilder
     builder.SetAuthor(plugin->provider_name);
 
   {
+    std::vector<DependencyInfo> apiDependencies;
     std::vector<DependencyInfo> dependencies;
     for (unsigned int i = 0; i < plugin->num_imports; ++i)
     {
@@ -134,9 +137,14 @@ void CAddonMgr::FillCpluffMetadata(const cp_plugin_info_t* plugin, CAddonBuilder
       {
         std::string id(plugin->imports[i].plugin_id);
         AddonVersion version(plugin->imports[i].version ? plugin->imports[i].version : "0.0.0");
-        dependencies.emplace_back(id, version, plugin->imports[i].optional != 0);
+
+        if (StringUtils::StartsWith(id, "xbmc.") || StringUtils::StartsWith(id, "kodi."))
+          apiDependencies.emplace_back(id, version, plugin->imports[i].optional != 0);
+        else
+          dependencies.emplace_back(id, version, plugin->imports[i].optional != 0);
       }
     }
+    builder.SetApiDependencies(std::move(apiDependencies));
     builder.SetDependencies(std::move(dependencies));
   }
 
@@ -280,6 +288,14 @@ static bool LoadManifest(std::set<std::string>& system, std::set<std::string>& o
   }
   return true;
 }
+
+CAddonMgr::CAddonMgr()
+  : m_apiVersions(API_VERSIONS.begin(), API_VERSIONS.end())
+{ }
+
+CAddonMgr::CAddonMgr(std::vector<APIVersion> apiVersions)
+  : m_apiVersions(std::move(apiVersions))
+{ }
 
 CAddonMgr::~CAddonMgr()
 {
@@ -1274,23 +1290,30 @@ bool CAddonMgr::AddonsFromRepoXML(const CRepository::DirInfo& repo, const std::s
   return true;
 }
 
+const APIVersion* const CAddonMgr::GetAPIVersion(const std::string& apiId) const
+{
+  for (const APIVersion& apiVersion : m_apiVersions)
+  {
+    if (apiVersion.id == apiId)
+      return &apiVersion;
+  }
+  return nullptr;
+}
+
 bool CAddonMgr::IsCompatible(const IAddon& addon)
 {
-  for (const auto& dependency : addon.GetDependencies())
+  for (const auto& dependency : addon.GetApiDependencies())
   {
-    if (!dependency.optional)
-    {
-      // Intentionally only check the xbmc.* and kodi.* magic dependencies. Everything else will
-      // not be missing anyway, unless addon was installed in an unsupported way.
-      if (StringUtils::StartsWith(dependency.id, "xbmc.") ||
-          StringUtils::StartsWith(dependency.id, "kodi."))
-      {
-        AddonPtr addon;
-        bool haveAddon = GetAddon(dependency.id, addon);
-        if (!haveAddon || !addon->MeetsVersion(dependency.requiredVersion))
-          return false;
-      }
-    }
+    auto api = std::find_if(m_apiVersions.begin(), m_apiVersions.end(),
+        [&](const APIVersion& v){ return v.id == dependency.id; });
+    if (api == m_apiVersions.end())
+      return false;
+
+    if (dependency.requiredVersion > api->version)
+      return false;
+
+    if (dependency.requiredVersion < api->backwardsCompatibility)
+      return false;
   }
   return true;
 }
@@ -1310,9 +1333,6 @@ std::vector<DependencyInfo> CAddonMgr::GetDepsRecursive(const std::string& id)
   {
     auto current_dep = *toProcess.begin();
     toProcess.erase(toProcess.begin());
-    if (StringUtils::StartsWith(current_dep.id, "xbmc.") ||
-        StringUtils::StartsWith(current_dep.id, "kodi."))
-      continue;
 
     auto added_it = std::find_if(added.begin(), added.end(), [&](const DependencyInfo& d){ return d.id == current_dep.id;});
     if (added_it != added.end())
