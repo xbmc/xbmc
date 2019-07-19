@@ -639,10 +639,8 @@ std::string CSysInfo::GetOsVersion(void)
 
 #if defined(TARGET_WINDOWS) || defined(TARGET_FREEBSD)
   osVersion = GetKernelVersion(); // FIXME: for Win32 and FreeBSD OS version is a kernel version
-#elif defined(TARGET_DARWIN_EMBEDDED)
-  osVersion = CDarwinUtils::GetIOSVersionString();
-#elif defined(TARGET_DARWIN_OSX)
-  osVersion = CDarwinUtils::GetOSXVersionString();
+#elif defined(TARGET_DARWIN)
+  osVersion = CDarwinUtils::GetVersionString();
 #elif defined(TARGET_ANDROID)
   char versionCStr[PROP_VALUE_MAX];
   int propLen = __system_property_get("ro.build.version.release", versionCStr);

@@ -283,35 +283,23 @@ const char *CDarwinUtils::GetOSVersionString(void)
   return [[[NSProcessInfo processInfo] operatingSystemVersionString] UTF8String];
 }
 
-const char *CDarwinUtils::GetIOSVersionString(void)
+const char* CDarwinUtils::GetVersionString()
 {
+  static std::string versionString;
+  static std::once_flag flag;
 #if defined(TARGET_DARWIN_EMBEDDED)
-  static std::string iOSVersionString;
-  static std::once_flag flag;
   std::call_once(flag, []
   {
-    iOSVersionString.assign([[[UIDevice currentDevice] systemVersion] UTF8String]);
+    versionString.assign([[[UIDevice currentDevice] systemVersion] UTF8String]);
   });
-  return iOSVersionString.c_str();
 #else
-  return "0.0";
-#endif
-}
-
-const char *CDarwinUtils::GetOSXVersionString(void)
-{
-#if defined(TARGET_DARWIN_OSX)
-  static std::string OSXVersionString;
-  static std::once_flag flag;
   std::call_once(flag, []
   {
-    OSXVersionString.assign([[[NSDictionary dictionaryWithContentsOfFile:
-                               @"/System/Library/CoreServices/SystemVersion.plist"] objectForKey:@"ProductVersion"] UTF8String]);
+    versionString.assign([[[NSDictionary dictionaryWithContentsOfFile:
+                            @"/System/Library/CoreServices/SystemVersion.plist"] objectForKey:@"ProductVersion"] UTF8String]);
   });
-  return OSXVersionString.c_str();
-#else
-  return "0.0";
 #endif
+  return versionString.c_str();
 }
 
 std::string CDarwinUtils::GetFrameworkPath(bool forPython)

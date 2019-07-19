@@ -22,8 +22,7 @@ public:
   static bool        DeviceHasRetina(double &scale);
   static const char *GetOSReleaseString(void);
   static const char *GetOSVersionString(void);
-  static const char *GetIOSVersionString(void);
-  static const char *GetOSXVersionString(void);
+  static const char* GetVersionString();
   static std::string GetFrameworkPath(bool forPython);
   static int         GetExecutablePath(char* path, size_t *pathsize);
   static const char *GetAppRootFolder(void);
