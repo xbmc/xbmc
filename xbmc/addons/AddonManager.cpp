@@ -644,15 +644,6 @@ bool CAddonMgr::GetAddonsInternal(const TYPE &type, VECADDONS &addons, bool enab
         continue;
       }
 
-      //FIXME: hack for skipping special dependency addons (xbmc.python etc.).
-      //Will break if any extension point is added to them
-      cp_extension_t *props = GetFirstExtPoint(cp_addon, type);
-      if (props == nullptr)
-      {
-        cp_release_info(m_cp_context, cp_addon);
-        continue;
-      }
-
       AddonPtr addon;
       if (Factory(cp_addon, type, builder))
         addon = builder.Build();
