@@ -448,11 +448,6 @@ int CDarwinUtils::BatteryLevel(void)
   return batteryLevel * 100;
 }
 
-void CDarwinUtils::EnableOSScreenSaver(bool enable)
-{
-
-}
-
 void CDarwinUtils::ResetSystemIdleTimer()
 {
 
