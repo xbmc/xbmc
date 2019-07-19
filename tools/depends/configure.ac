@@ -36,7 +36,7 @@ AC_ARG_ENABLE([ccache],
 
 AC_ARG_WITH([toolchain],
   [AS_HELP_STRING([--with-toolchain],
-  [specify path to toolchain. Required for android. Defaults to xcode root for darwin, /usr for linux])],
+  [specify path to toolchain. Auto set for android. Defaults to xcode root for darwin, /usr for linux])],
   [use_toolchain=$withval])
 
 AC_ARG_WITH([platform],
@@ -116,24 +116,6 @@ AC_ARG_WITH([ffmpeg-options],
   [ffmpeg_options=default])
 
 
-OLD_PATH="${PATH}"
-if test -n "$use_toolchain"; then
-  PATH="${use_toolchain}/bin:${use_toolchain}/usr/bin:$PATH"
-  case $host in
-    arm*-*linux-android*|aarch64*-*linux-android*)
-      COMPILER_LIST="clang++ gcc g++"
-    ;;
-    *)
-      COMPILER_LIST=""
-    ;;
-  esac
-fi
-AC_PROG_CXX([$COMPILER_LIST])
-AX_CXX_COMPILE_STDCXX_11([noext],[mandatory])
-c11_flags=$(echo "$CFLAGS" | sed 's/-O@<:@123@:>@//g;s/-g //g;s/ //g')
-cxx11_flags=$(echo "$CXXFLAGS" | sed 's/-O@<:@123@:>@//g;s/-g //g;s/ //g')
-PATH="${OLD_PATH}"
-
 if test "$use_ccache" = "yes"; then
   AC_CHECK_PROG(HAVE_CCACHE,ccache,"yes","no",)
   if test "x$HAVE_CCACHE" = "xno" ; then
@@ -169,9 +151,6 @@ deps_dir=$use_host-$build_type
 tool_dir=$build_cpu-$build_os-native
 cross_compiling="yes"
 
-platform_cc=gcc
-platform_cxx=g++
-
 case $build in
   arm*-*-linux-gnu*|arm*-*-linux-uclibc*)
     build_os="linux"
@@ -181,20 +160,82 @@ case $build in
   ;;
   x86_64*-linux-gnu*|x86_64-*-linux-uclibc*)
     build_os="linux"
+    android_toolchain_name="linux-x86_64"
   ;;
   *darwin*)
     build_os="osx"
     native_platform_min_version=-mmacosx-version-min=`sw_vers | grep ProductVersion | sed -E "s/.*:.*(10\..*)\.?.*/\1/"`
+    use_xcodepath=`xcode-select -print-path`
+    use_build_toolchain=$use_xcodepath
+    android_toolchain_name="darwin-x86_64"
   ;;
   *)
     AC_MSG_ERROR(unsupported native build platform: $build)
 esac
 
+if test -n $use_build_toolchain; then
+  PATH_FOR_BUILD=$use_build_toolchain:$use_build_toolchain/usr/bin:$use_toolchain/bin:$PATH
+else
+  PATH_FOR_BUILD=$PATH
+fi
+
+AC_PATH_PROG([RANLIB_FOR_BUILD], [ranlib], ranlib, $PATH_FOR_BUILD)
+AC_PATH_PROG([LD_FOR_BUILD], [ld], ld, $PATH_FOR_BUILD)
+AC_PATH_PROG([AR_FOR_BUILD], [ar], ar, $PATH_FOR_BUILD)
+AC_PATH_PROG([READELF_FOR_BUILD], [readelf], readelf, $PATH_FOR_BUILD)
+AC_PATH_PROG([STRIP_FOR_BUILD], [strip], strip, $PATH_FOR_BUILD)
+AC_PATH_PROG([AS_FOR_BUILD], [as], as, $PATH_FOR_BUILD)
+AC_PATH_PROG([NM_FOR_BUILD], [nm], nm, $PATH_FOR_BUILD)
+AC_PATH_PROG([OBJDUMP_FOR_BUILD], [objdump], objdump, $PATH_FOR_BUILD)
+AC_PATH_PROG([CC_FOR_BUILD],[gcc llvm-gcc $platform_cc], gcc, $PATH_FOR_BUILD)
+AC_PATH_PROG([CXX_FOR_BUILD],[g++ llvm-g++ $platform_cxx], g++, $PATH_FOR_BUILD)
+
+
+platform_cc=gcc
+platform_cxx=g++
 
 case $host in
   *-*linux-android*)
+    use_toolchain="${use_toolchain:-$use_ndk_path/toolchains/llvm/prebuilt/$android_toolchain_name}"
+    platform_cc=$use_host$use_ndk_api-clang
+    platform_cxx=$use_host$use_ndk_api-clang++
+    case $host in
+      arm*-*linux-android*)
+        platform_cc=armv7a-linux-androideabi$use_ndk_api-clang
+        platform_cxx=armv7a-linux-androideabi$use_ndk_api-clang++
+    esac
+  ;;
+  *darwin*)
+    use_toolchain="${use_xcodepath}/Toolchains/XcodeDefault.xctoolchain"
     platform_cc=clang
     platform_cxx=clang++
+esac
+
+if test -n $use_build_toolchain; then
+  PATH_FOR_HOST=$use_toolchain:$use_toolchain/usr/bin:$use_toolchain/bin:$PATH
+else
+  PATH_FOR_HOST=$PATH
+fi
+
+AC_PATH_TOOL([RANLIB], [ranlib],, $PATH_FOR_HOST)
+AC_PATH_TOOL([LD], [ld],, $PATH_FOR_HOST)
+AC_PATH_TOOL([AR], [ar],, $PATH_FOR_HOST)
+AC_PATH_TOOL([READELF], [readelf],, $PATH_FOR_HOST)
+AC_PATH_TOOL([STRIP], [strip],, $PATH_FOR_HOST)
+AC_PATH_TOOL([AS], [as],, $PATH_FOR_HOST)
+AC_PATH_TOOL([NM], [nm],, $PATH_FOR_HOST)
+AC_PATH_TOOL([OBJDUMP], [objdump],, $PATH_FOR_HOST)
+AC_PATH_TOOL([CC],[$platform_cc],,$PATH_FOR_HOST)
+AC_PATH_TOOL([CXX],[$platform_cxx],,$PATH_FOR_HOST)
+AC_PROG_CPP
+
+AX_CXX_COMPILE_STDCXX_11([noext],[mandatory])
+c11_flags=$(echo "$CFLAGS" | sed 's/-O@<:@123@:>@//g;s/-g //g;s/ //g')
+cxx11_flags=$(echo "$CXXFLAGS" | sed 's/-O@<:@123@:>@//g;s/-g //g;s/ //g')
+
+
+case $host in
+  *-*linux-android*)
     deps_dir="$use_host-$use_ndk_api-$build_type"
     platform_cflags="-DANDROID -D__ANDROID_API__=$use_ndk_api -fexceptions -funwind-tables -fstack-protector-strong -no-canonical-prefixes -fPIC -DPIC"
     optimize_flags="-Os"
@@ -258,17 +299,12 @@ case $host in
       prefix=/Users/Shared/xbmc-depends
     fi
 
-    use_xcodepath=`xcode-select -print-path`
     use_xcodebuild=$use_xcodepath/usr/bin/xcodebuild
     AC_MSG_RESULT(found xcodebuild at $use_xcodebuild)
-    use_build_toolchain=$use_xcodepath
-    use_toolchain="${use_xcodepath}/Toolchains/XcodeDefault.xctoolchain"
 
     # darwin builds are always cross
     cross_compiling="yes"
 
-    platform_cc=clang
-    platform_cxx=clang++
     platform_cflags="-fheinous-gnu-extensions -no-cpp-precomp"
     platform_ldflags="-Wl,-search_paths_first"
     platform_cxxflags="-no-cpp-precomp"
@@ -461,42 +497,7 @@ fi
 XBMC_SETUP_ARCH_DEFINES()
 
 
-if test -n $use_build_toolchain; then
-  PATH_FOR_HOST=$use_toolchain:$use_toolchain/usr/bin:$use_toolchain/bin:$PATH
-else
-  PATH_FOR_HOST=$PATH
-fi
-if test -n $use_build_toolchain; then
-  PATH_FOR_BUILD=$use_build_toolchain:$use_build_toolchain/usr/bin:$use_toolchain/bin:$PATH
-else
-  PATH_FOR_BUILD=$PATH
-fi
-
-AC_PATH_TOOL([RANLIB], [ranlib],, $PATH_FOR_HOST)
-AC_PATH_TOOL([LD], [ld],, $PATH_FOR_HOST)
-AC_PATH_TOOL([AR], [ar],, $PATH_FOR_HOST)
-AC_PATH_TOOL([READELF], [readelf],, $PATH_FOR_HOST)
-AC_PATH_TOOL([STRIP], [strip],, $PATH_FOR_HOST)
-AC_PATH_TOOL([AS], [as],, $PATH_FOR_HOST)
-AC_PATH_TOOL([NM], [nm],, $PATH_FOR_HOST)
-AC_PATH_TOOL([OBJDUMP], [objdump],, $PATH_FOR_HOST)
-AC_PATH_TOOL([CC],[$platform_cc],,$PATH_FOR_HOST)
-AC_PATH_TOOL([CXX],[$platform_cxx],,$PATH_FOR_HOST)
-AC_PROG_CPP
-
-AC_PATH_PROG([RANLIB_FOR_BUILD], [ranlib], ranlib, $PATH_FOR_BUILD)
-AC_PATH_PROG([LD_FOR_BUILD], [ld], ld, $PATH_FOR_BUILD)
-AC_PATH_PROG([AR_FOR_BUILD], [ar], ar, $PATH_FOR_BUILD)
-AC_PATH_PROG([READELF_FOR_BUILD], [readelf], readelf, $PATH_FOR_BUILD)
-AC_PATH_PROG([STRIP_FOR_BUILD], [strip], strip, $PATH_FOR_BUILD)
-AC_PATH_PROG([AS_FOR_BUILD], [as], as, $PATH_FOR_BUILD)
-AC_PATH_PROG([NM_FOR_BUILD], [nm], nm, $PATH_FOR_BUILD)
-AC_PATH_PROG([OBJDUMP_FOR_BUILD], [objdump], objdump, $PATH_FOR_BUILD)
-AC_PATH_PROG([CC_FOR_BUILD],[gcc llvm-gcc $platform_cc], gcc, $PATH_FOR_BUILD)
-AC_PATH_PROG([CXX_FOR_BUILD],[g++ llvm-g++ $platform_cxx], g++, $PATH_FOR_BUILD)
-
 AC_SEARCH_LIBS([iconv_open],iconv, link_iconv=$ac_cv_search_iconv_open, link_iconv=-liconv; AC_MSG_WARN("No iconv support in toolchain. Will build libiconv."); need_libiconv=1)
-AC_TRY_LINK([#include <locale.h>],[struct lconv* test=localeconv();], has_localeconv=yes, AC_MSG_WARN("No localeconv support in toolchain. Using replacement."); has_localeconv=no)
 
 if test "$link_iconv" = "none required"; then
   link_iconv=
@@ -695,10 +696,6 @@ if test "$platform_os" == "darwin_embedded"; then
 fi
 
 echo -e "use simulator:\t $use_simulator"
-
-if test "x$has_localeconv" == "xno" && test "$platform_os" == "android"; then
-  cp -vf target/android-libc-replacements/locale.h $prefix/$deps_dir/include/
-fi
 
 cp -vf target/config.site $prefix/$deps_dir/share
 cp -vf target/config-binaddons.site $prefix/$tool_dir/share

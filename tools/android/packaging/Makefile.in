@@ -25,47 +25,21 @@ ifneq ($(strip $(SIGN_KEYPASS)),)
 SIGN_KEYPASS_OPT=-keypass $(SIGN_KEYPASS)
 endif
 
-X86OVERRIDES=XBMC_OVERRIDE_HOST=i686-android-linux XBMC_OVERRIDE_TOOLCHAIN=$(XBMC_X86_TOOLCHAIN)
-ARMOVERRIDES=XBMC_OVERRIDE_HOST=arm-linux-androideabi XBMC_OVERRIDE_TOOLCHAIN=$(XBMC_ARM_TOOLCHAIN)
-
 #this fixes a android ndk fuckup where the paths to
 #prebuilt stuff follow different name schemes for
 #arm and x86
-ifeq ($(findstring i686,$(CPU)),i686)
+ifeq ($(findstring x86,$(CPU)),x86)
   ARCH=x86
-  CPU=x86
-endif
-ifeq ($(findstring arm64,$(CPU)),arm64)
+else ifeq ($(findstring arm64,$(CPU)),arm64)
   ARCH=arm64
-  CPU=arm64-v8a
 else ifeq ($(findstring arm,$(CPU)),arm)
   ARCH=arm
-  CPU=armeabi-v7a
 endif
 
 # libc++
-STLLIB=$(TOOLCHAIN)/$(HOST)/lib/libc++_shared.so
-# https://android.googlesource.com/platform/ndk/+/fe0fe5dc32682d1811d32492c3055becb512c147/build/tools/make_standalone_toolchain.py#308
-ifeq ($(findstring armeabi-v7a,$(CPU)),armeabi-v7a)
-  STLLIB=$(TOOLCHAIN)/$(HOST)/lib/armv7-a/libc++_shared.so
-endif
+STLLIB=$(TOOLCHAIN)/sysroot/usr/lib/$(HOST)/libc++_shared.so
 
-#older ndk x86
-GDBPATH=$(NDKROOT)/toolchains/$(ARCH)-$(GCC_VERSION)/prebuilt/gdbserver
-
-ifneq ($(shell test -f $(GDBPATH) && echo 1),1)
-#older ndk arm
-GDBPATH=$(NDKROOT)/toolchains/$(HOST)-$(GCC_VERSION)/prebuilt/gdbserver
-endif
-
-ifneq ($(shell test -f $(GDBPATH) && echo 1),1)
-#vanilla ndk >= 8
 GDBPATH=$(NDKROOT)/prebuilt/android-$(ARCH)/gdbserver/gdbserver
-endif
-
-ifeq ($(ARCH),aarch64)
-GDBPATH=$(NDKROOT)/prebuilt/android-arm64/gdbserver/gdbserver
-endif
 
 # check for java 1.8
 JAVA8=$(shell java -version 2>&1 | grep -q '1.8.[0-9]' && echo yes)

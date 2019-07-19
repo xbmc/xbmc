@@ -2,10 +2,8 @@ WORKSPACE=${WORKSPACE:-$( cd $(dirname $0)/../../.. ; pwd -P )}
 XBMC_PLATFORM_DIR=android
 . $WORKSPACE/tools/buildsteps/defaultenv
 
-NDK_ARCH=x86
-#the following paths must exist on the slave and use the defined scheme here!
+#the following path must exist on the slave and use the defined scheme here!
 NDK_PATH=$ANDROID_DEV_ROOT/android-ndk-r$NDK_VERSION
-TOOLCHAIN=$ANDROID_DEV_ROOT/android-toolchain-$NDK_ARCH-$NDK_API-r$NDK_VERSION
 
 if [ "$(pathChanged $WORKSPACE/tools/depends)" == "1" ]
 then
@@ -15,6 +13,5 @@ then
     --with-sdk-path=$SDK_PATH \
     --with-ndk-path=$NDK_PATH \
     $(if [ "$NDK_API" != "Default" ]; then echo --with-ndk-api=$NDK_API;fi) \
-    --with-toolchain=$TOOLCHAIN \
     --prefix=$XBMC_DEPENDS_ROOT $DEBUG_SWITCH
 fi

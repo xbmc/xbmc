@@ -49,7 +49,7 @@ public:
 private:
   CAddonSystemSettings();
   CAddonSystemSettings(const CAddonSystemSettings&) = default;
-  CAddonSystemSettings& operator=(const CAddonSystemSettings&) = default;
+  CAddonSystemSettings& operator=(const CAddonSystemSettings&) = delete;
   CAddonSystemSettings(CAddonSystemSettings&&);
   CAddonSystemSettings& operator=(CAddonSystemSettings&&);
   ~CAddonSystemSettings() override = default;
