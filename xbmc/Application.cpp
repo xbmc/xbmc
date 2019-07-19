@@ -3313,9 +3313,6 @@ void CApplication::ResetSystemIdleTimer()
 {
   // reset system idle timer
   m_idleTimer.StartZero();
-#if defined(TARGET_DARWIN_EMBEDDED)
-  CDarwinUtils::ResetSystemIdleTimer();
-#endif
 }
 
 void CApplication::ResetScreenSaver()

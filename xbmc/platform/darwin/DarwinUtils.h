@@ -30,7 +30,6 @@ public:
   static bool        IsIosSandboxed(void);
   static bool        HasVideoToolboxDecoder(void);
   static int         BatteryLevel(void);
-  static void        ResetSystemIdleTimer();
   static void        SetScheduling(bool realtime);
   static void        PrintDebugString(std::string debugString);
   static bool        CFStringRefToString(CFStringRef source, std::string& destination);

@@ -448,11 +448,6 @@ int CDarwinUtils::BatteryLevel(void)
   return batteryLevel * 100;
 }
 
-void CDarwinUtils::ResetSystemIdleTimer()
-{
-
-}
-
 void CDarwinUtils::SetScheduling(bool realtime)
 {
   int policy;
