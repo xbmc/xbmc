@@ -487,7 +487,6 @@ XBMC_SETUP_ARCH_DEFINES()
 
 
 AC_SEARCH_LIBS([iconv_open],iconv, link_iconv=$ac_cv_search_iconv_open, link_iconv=-liconv; AC_MSG_WARN("No iconv support in toolchain. Will build libiconv."); need_libiconv=1)
-AC_TRY_LINK([#include <locale.h>],[struct lconv* test=localeconv();], has_localeconv=yes, AC_MSG_WARN("No localeconv support in toolchain. Using replacement."); has_localeconv=no)
 
 if test "$link_iconv" = "none required"; then
   link_iconv=
@@ -686,10 +685,6 @@ if test "$platform_os" == "darwin_embedded"; then
 fi
 
 echo -e "use simulator:\t $use_simulator"
-
-if test "x$has_localeconv" == "xno" && test "$platform_os" == "android"; then
-  cp -vf target/android-libc-replacements/locale.h $prefix/$deps_dir/include/
-fi
 
 cp -vf target/config.site $prefix/$deps_dir/share
 cp -vf target/config-binaddons.site $prefix/$tool_dir/share
