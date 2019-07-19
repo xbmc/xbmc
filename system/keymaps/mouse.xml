@@ -38,6 +38,7 @@
       <wheeldown>wheeldown</wheeldown>
       <wheelup>wheelup</wheelup>
       <mousedrag>mousedrag</mousedrag>
+      <mousedragend>mousedragend</mousedragend>
       <mousemove>mousemove</mousemove>
     </mouse>
   </global>
