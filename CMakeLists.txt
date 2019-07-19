@@ -117,7 +117,6 @@ endforeach()
 # Required dependencies. Keep in alphabetical order please
 set(required_deps ASS
                   Cdio
-                  Cpluff
                   CrossGUID
                   Curl
                   FFMPEG
@@ -287,7 +286,7 @@ elseif(CORE_SYSTEM_NAME STREQUAL android)
                  ${CORE_BUILD_DIR}/DllPaths_generated_android.h @ONLY)
 endif()
 
-set(GLOBAL_TARGET_DEPS libcpluff ffmpeg dvdnav crossguid fmt fstrcmp flatbuffers ${PLATFORM_GLOBAL_TARGET_DEPS})
+set(GLOBAL_TARGET_DEPS ffmpeg dvdnav crossguid fmt fstrcmp flatbuffers ${PLATFORM_GLOBAL_TARGET_DEPS})
 
 # main library (used for main binary and tests)
 add_library(lib${APP_NAME_LC} STATIC $<TARGET_OBJECTS:compileinfo>)

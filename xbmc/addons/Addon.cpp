@@ -36,13 +36,14 @@ using XFILE::CFile;
 namespace ADDON
 {
 
-CAddon::CAddon(CAddonInfo addonInfo)
-  : m_addonInfo(std::move(addonInfo))
+CAddon::CAddon(const AddonInfoPtr& addonInfo, TYPE addonType)
+  : m_addonInfo(addonInfo)
   , m_userSettingsPath()
   , m_loadSettingsFailed(false)
   , m_hasUserSettings(false)
-  , m_profilePath(StringUtils::Format("special://profile/addon_data/%s/", m_addonInfo.ID().c_str()))
+  , m_profilePath(StringUtils::Format("special://profile/addon_data/%s/", m_addonInfo->ID().c_str()))
   , m_settings(nullptr)
+  , m_type(addonType == ADDON_UNKNOWN ? addonInfo->MainType() : addonType)
 {
   m_userSettingsPath = URIUtils::AddFileToFolder(m_profilePath, "settings.xml");
 }
@@ -81,7 +82,7 @@ bool CAddon::LoadSettings(bool bForce, bool loadUserSettings /* = true */)
     GetSettings()->Uninitialize();
 
   // load the settings definition XML file
-  auto addonSettingsDefinitionFile = URIUtils::AddFileToFolder(m_addonInfo.Path(), "resources", "settings.xml");
+  auto addonSettingsDefinitionFile = URIUtils::AddFileToFolder(m_addonInfo->Path(), "resources", "settings.xml");
   CXBMCTinyXML addonSettingsDefinitionDoc;
   if (!addonSettingsDefinitionDoc.LoadFile(addonSettingsDefinitionFile))
   {
@@ -355,9 +356,16 @@ CAddonSettings* CAddon::GetSettings() const
 
 std::string CAddon::LibPath() const
 {
-  if (m_addonInfo.LibName().empty())
-    return "";
-  return URIUtils::AddFileToFolder(m_addonInfo.Path(), m_addonInfo.LibName());
+  // Get library related to given type on construction
+  std::string libName = m_addonInfo->Type(m_type)->LibName();
+  if (libName.empty())
+  {
+    // If not present fallback to master library
+    libName = m_addonInfo->LibName();
+    if (libName.empty())
+      return "";
+  }
+  return URIUtils::AddFileToFolder(m_addonInfo->Path(), libName);
 }
 
 AddonVersion CAddon::GetDependencyVersion(const std::string &dependencyID) const

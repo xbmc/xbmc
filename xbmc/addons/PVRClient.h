@@ -213,7 +213,7 @@ namespace PVR
   class CPVRClient : public ADDON::CAddonDll
   {
   public:
-    explicit CPVRClient(ADDON::CAddonInfo addonInfo);
+    explicit CPVRClient(const ADDON::AddonInfoPtr& addonInfo);
     ~CPVRClient(void) override;
 
     void OnPreInstall() override;

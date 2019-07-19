@@ -18,10 +18,8 @@ namespace ADDON
 class CGameResource : public CResource
 {
 public:
-  explicit CGameResource(CAddonInfo addonInfo);
+  explicit CGameResource(const AddonInfoPtr& addonInfo);
   ~CGameResource() override = default;
-
-  static std::unique_ptr<CGameResource> FromExtension(CAddonInfo addonInfo, const cp_extension_t* ext);
 
   // implementation of CResource
   bool IsAllowed(const std::string& file) const override { return true; }

@@ -24,11 +24,6 @@ using namespace KODI::MESSAGING;
 namespace ADDON
 {
 
-std::unique_ptr<CFontResource> CFontResource::FromExtension(CAddonInfo addonInfo, const cp_extension_t* ext)
-{
-  return std::unique_ptr<CFontResource>(new CFontResource(std::move(addonInfo)));
-}
-
 void CFontResource::OnPostInstall(bool update, bool modal)
 {
   std::string skin = CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(CSettings::SETTING_LOOKANDFEEL_SKIN);

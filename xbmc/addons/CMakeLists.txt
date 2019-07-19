@@ -2,7 +2,6 @@ set(SOURCES Addon.cpp
             AddonBuilder.cpp
             BinaryAddonCache.cpp
             AddonDatabase.cpp
-            AddonInfo.cpp
             AddonInstaller.cpp
             AddonManager.cpp
             AddonStatusHandler.cpp
@@ -40,7 +39,6 @@ set(HEADERS Addon.h
             AddonEvents.h
             BinaryAddonCache.h
             AddonDatabase.h
-            AddonInfo.h
             AddonInstaller.h
             AddonManager.h
             AddonProvider.h

@@ -10,6 +10,7 @@
 
 #include "addons/AddonStatusHandler.h"
 #include "GUIUserMessages.h"
+#include "addons/binary-addons/BinaryAddonBase.h"
 #include "addons/settings/AddonSettings.h"
 #include "addons/settings/GUIDialogAddonSettings.h"
 #include "events/EventLog.h"
@@ -41,8 +42,8 @@ namespace ADDON
 
 std::vector<ADDON_GET_INTERFACE_FN> CAddonDll::s_registeredInterfaces;
 
-CAddonDll::CAddonDll(CAddonInfo addonInfo, BinaryAddonBasePtr addonBase)
-  : CAddon(std::move(addonInfo)),
+CAddonDll::CAddonDll(const AddonInfoPtr& addonInfo, BinaryAddonBasePtr addonBase)
+  : CAddon(addonInfo, addonBase->MainType()),
     m_pHelpers(nullptr),
     m_binaryAddonBase(addonBase),
     m_pDll(nullptr),
@@ -51,8 +52,8 @@ CAddonDll::CAddonDll(CAddonInfo addonInfo, BinaryAddonBasePtr addonBase)
 {
 }
 
-CAddonDll::CAddonDll(CAddonInfo addonInfo)
-  : CAddon(std::move(addonInfo)),
+CAddonDll::CAddonDll(const AddonInfoPtr& addonInfo, TYPE addonType)
+  : CAddon(addonInfo, addonType),
     m_pHelpers(nullptr),
     m_binaryAddonBase(nullptr),
     m_pDll(nullptr),
@@ -503,7 +504,7 @@ bool CAddonDll::UpdateSettingInActiveDialog(const char* id, const std::string& v
     return false;
 
   CGUIDialogAddonSettings* dialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogAddonSettings>(WINDOW_DIALOG_ADDON_SETTINGS);
-  if (dialog->GetCurrentAddonID() != m_addonInfo.ID())
+  if (dialog->GetCurrentAddonID() != m_addonInfo->ID())
     return false;
 
   CGUIMessage message(GUI_MSG_SETTING_UPDATED, 0, 0);

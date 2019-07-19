@@ -77,61 +77,29 @@ namespace
 
 // --- CGameClient -------------------------------------------------------------
 
-std::unique_ptr<CGameClient> CGameClient::FromExtension(ADDON::CAddonInfo addonInfo, const cp_extension_t* ext)
-{
-  using namespace ADDON;
-
-  static const std::vector<std::string> properties = {
-      GAME_PROPERTY_EXTENSIONS,
-      GAME_PROPERTY_SUPPORTS_VFS,
-      GAME_PROPERTY_SUPPORTS_STANDALONE,
-  };
-
-  for (const auto& property : properties)
-  {
-    std::string strProperty = CServiceBroker::GetAddonMgr().GetExtValue(ext->configuration, property.c_str());
-    if (!strProperty.empty())
-      addonInfo.AddExtraInfo(property, strProperty);
-  }
-
-  return std::unique_ptr<CGameClient>(new CGameClient(std::move(addonInfo)));
-}
-
-CGameClient::CGameClient(ADDON::CAddonInfo addonInfo) :
-  CAddonDll(std::move(addonInfo)),
+CGameClient::CGameClient(const ADDON::AddonInfoPtr& addonInfo) :
+  CAddonDll(addonInfo, ADDON::ADDON_GAMEDLL),
   m_subsystems(CGameClientSubsystem::CreateSubsystems(*this, m_struct, m_critSection)),
-  m_bSupportsVFS(false),
-  m_bSupportsStandalone(false),
   m_bSupportsAllExtensions(false),
   m_bIsPlaying(false),
   m_serializeSize(0),
   m_region(GAME_REGION_UNKNOWN)
 {
-  const ADDON::InfoMap& extraInfo = m_addonInfo.ExtraInfo();
-  ADDON::InfoMap::const_iterator it;
+  using namespace ADDON;
 
-  it = extraInfo.find(GAME_PROPERTY_EXTENSIONS);
-  if (it != extraInfo.end())
+  std::vector<std::string> extensions = StringUtils::Split(Type(ADDON_GAMEDLL)->GetValue(GAME_PROPERTY_EXTENSIONS).asString(), EXTENSION_SEPARATOR);
+  std::transform(extensions.begin(), extensions.end(),
+                 std::inserter(m_extensions, m_extensions.begin()), NormalizeExtension);
+
+  // Check for wildcard extension
+  if (m_extensions.find(EXTENSION_WILDCARD) != m_extensions.end())
   {
-    std::vector<std::string> extensions = StringUtils::Split(it->second, EXTENSION_SEPARATOR);
-    std::transform(extensions.begin(), extensions.end(),
-      std::inserter(m_extensions, m_extensions.begin()), NormalizeExtension);
-
-    // Check for wildcard extension
-    if (m_extensions.find(EXTENSION_WILDCARD) != m_extensions.end())
-    {
-      m_bSupportsAllExtensions = true;
-      m_extensions.clear();
-    }
+    m_bSupportsAllExtensions = true;
+    m_extensions.clear();
   }
 
-  it = extraInfo.find(GAME_PROPERTY_SUPPORTS_VFS);
-  if (it != extraInfo.end())
-    m_bSupportsVFS = (it->second == "true");
-
-  it = extraInfo.find(GAME_PROPERTY_SUPPORTS_STANDALONE);
-  if (it != extraInfo.end())
-    m_bSupportsStandalone = (it->second == "true");
+  m_bSupportsVFS = addonInfo->Type(ADDON_GAMEDLL)->GetValue(GAME_PROPERTY_SUPPORTS_VFS).asBoolean();
+  m_bSupportsStandalone = addonInfo->Type(ADDON_GAMEDLL)->GetValue(GAME_PROPERTY_SUPPORTS_STANDALONE).asBoolean();
 }
 
 CGameClient::~CGameClient(void)

@@ -19,7 +19,7 @@ using namespace ADDON;
 
 bool CBinaryAddonBase::Create()
 {
-  std::string path = CSpecialProtocol::TranslatePath(m_addonInfo.Path());
+  std::string path = CSpecialProtocol::TranslatePath(m_addonInfo->Path());
 
   StringUtils::TrimRight(path, "/\\");
 
@@ -41,7 +41,7 @@ bool CBinaryAddonBase::Create()
 
 bool CBinaryAddonBase::IsType(TYPE type) const
 {
-  return (m_addonInfo.MainType() == type || ProvidesSubContent(type));
+  return (m_addonInfo->MainType() == type || ProvidesSubContent(type));
 }
 
 bool CBinaryAddonBase::ProvidesSubContent(const TYPE& content, const TYPE& mainType/* = ADDON_UNKNOWN*/) const
@@ -68,7 +68,7 @@ bool CBinaryAddonBase::ProvidesSeveralSubContents() const
 
 bool CBinaryAddonBase::MeetsVersion(const AddonVersion &version) const
 {
-  return m_addonInfo.MinVersion() <= version && version <= m_addonInfo.Version();
+  return m_addonInfo->MinVersion() <= version && version <= m_addonInfo->Version();
 }
 
 AddonDllPtr CBinaryAddonBase::GetAddon(const IAddonInstanceHandler* handler)
@@ -172,8 +172,8 @@ bool CBinaryAddonBase::LoadAddonXML(const TiXmlElement* baseElement, const std::
   if (m_types.empty())
     m_types.push_back(CBinaryAddonType(ADDON_UNKNOWN, this, nullptr));
 
-  m_addonInfo.SetMainType(m_types[0].Type());
-  m_addonInfo.SetLibName(m_types[0].LibName());
+  m_addonInfo->SetMainType(m_types[0].Type());
+  m_addonInfo->SetLibName(m_types[0].LibName());
 
   return true;
 }

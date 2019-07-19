@@ -9,7 +9,7 @@
 #pragma once
 
 #include "BinaryAddonExtensions.h"
-#include "addons/AddonInfo.h"
+#include "addons/addoninfo/AddonInfo.h"
 
 #include <set>
 #include <string>

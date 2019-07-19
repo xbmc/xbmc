@@ -16,28 +16,23 @@
 
 using namespace ADDON;
 
-std::unique_ptr<CWebinterface> CWebinterface::FromExtension(CAddonInfo addonInfo, const cp_extension_t* ext)
+CWebinterface::CWebinterface(const AddonInfoPtr& addonInfo)
+  : CAddon(addonInfo, ADDON_WEB_INTERFACE),
+    m_type(WebinterfaceTypeStatic),
+    m_entryPoint(WEBINTERFACE_DEFAULT_ENTRY_POINT)
 {
   // determine the type of the webinterface
-  WebinterfaceType type(WebinterfaceTypeStatic);
-  std::string webinterfaceType = CServiceBroker::GetAddonMgr().GetExtValue(ext->configuration, "@type");
-  if (StringUtils::EqualsNoCase(webinterfaceType.c_str(), "wsgi"))
-    type = WebinterfaceTypeWsgi;
-  else if (!webinterfaceType.empty() && !StringUtils::EqualsNoCase(webinterfaceType.c_str(), "static") && !StringUtils::EqualsNoCase(webinterfaceType.c_str(), "html"))
-    CLog::Log(LOGWARNING, "Webinterface addon \"%s\" has specified an unsupported type \"%s\"", addonInfo.ID().c_str(), webinterfaceType.c_str());
+  std::string webinterfaceType = Type(ADDON_WEB_INTERFACE)->GetValue("@type").asString();
+  if (StringUtils::EqualsNoCase(webinterfaceType, "wsgi"))
+    m_type = WebinterfaceTypeWsgi;
+  else if (!webinterfaceType.empty() && !StringUtils::EqualsNoCase(webinterfaceType, "static") && !StringUtils::EqualsNoCase(webinterfaceType, "html"))
+    CLog::Log(LOGWARNING, "CWebinterface::{}: Addon \"{}\" has specified an unsupported type \"{}\"", ID(), webinterfaceType);
 
   // determine the entry point of the webinterface
-  std::string entryPoint(WEBINTERFACE_DEFAULT_ENTRY_POINT);
-  std::string entry = CServiceBroker::GetAddonMgr().GetExtValue(ext->configuration, "@entry");
+  std::string entry = Type(ADDON_WEB_INTERFACE)->GetValue("@entry").asString();
   if (!entry.empty())
-    entryPoint = entry;
-
-  return std::unique_ptr<CWebinterface>(new CWebinterface(std::move(addonInfo), type, entryPoint));
+    m_entryPoint = entry;
 }
-
-CWebinterface::CWebinterface(ADDON::CAddonInfo addonInfo, WebinterfaceType type,
-    const std::string &entryPoint) : CAddon(std::move(addonInfo)), m_type(type), m_entryPoint(entryPoint)
-{ }
 
 std::string CWebinterface::GetEntryPoint(const std::string &path) const
 {

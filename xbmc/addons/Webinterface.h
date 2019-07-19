@@ -23,13 +23,7 @@ namespace ADDON
   class CWebinterface : public CAddon
   {
   public:
-    static std::unique_ptr<CWebinterface> FromExtension(CAddonInfo addonInfo, const cp_extension_t* ext);
-
-    explicit CWebinterface(CAddonInfo addonInfo)
-        : CAddon(std::move(addonInfo)),
-          m_type(WebinterfaceTypeStatic),
-          m_entryPoint(WEBINTERFACE_DEFAULT_ENTRY_POINT) {}
-    CWebinterface(ADDON::CAddonInfo addonInfo, WebinterfaceType type, const std::string &entryPoint);
+    explicit CWebinterface(const AddonInfoPtr& addonInfo);
 
     WebinterfaceType GetType() const { return m_type; }
     const std::string& EntryPoint() const { return m_entryPoint; }

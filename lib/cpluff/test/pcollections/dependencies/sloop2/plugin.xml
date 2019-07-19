@@ -1,6 +1,0 @@
-<?xml version="1.0"?>
-<plugin id="sloop2">
-	<requires>
-		<import plugin="sloop1"/>
-	</requires>
-</plugin>

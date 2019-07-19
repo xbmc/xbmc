@@ -132,12 +132,11 @@ public:
                      const std::set<std::string>& system,
                      const std::set<std::string>& optional);
 
-  void GetInstalled(std::vector<ADDON::CAddonBuilder>& addons);
-
   bool SetLastUpdated(const std::string& addonId, const CDateTime& dateTime);
   bool SetOrigin(const std::string& addonId, const std::string& origin);
   bool SetLastUsed(const std::string& addonId, const CDateTime& dateTime);
 
+  void GetInstallData(const ADDON::AddonInfoPtr& addon);
 
 protected:
   void CreateTables() override;

@@ -112,7 +112,7 @@ const EXT_VALUES& CBinaryAddonExtensions::GetValues() const
 
 const CBinaryAddonExtensions* CBinaryAddonExtensions::GetElement(const std::string& id) const
 {
-  for (EXT_ELEMENTS::const_iterator it = m_children.begin(); it != m_children.end(); ++it)
+  for (EXT_BIN_ELEMENTS::const_iterator it = m_children.begin(); it != m_children.end(); ++it)
   {
     if (it->first == id)
       return &it->second;
@@ -121,12 +121,12 @@ const CBinaryAddonExtensions* CBinaryAddonExtensions::GetElement(const std::stri
   return nullptr;
 }
 
-const EXT_ELEMENTS CBinaryAddonExtensions::GetElements(const std::string& id) const
+const EXT_BIN_ELEMENTS CBinaryAddonExtensions::GetElements(const std::string& id) const
 {
   if (id.empty())
     return m_children;
 
-  EXT_ELEMENTS children;
+  EXT_BIN_ELEMENTS children;
   for (auto child : m_children)
   {
     if (child.first == id)
