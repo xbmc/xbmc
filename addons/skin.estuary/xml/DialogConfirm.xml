@@ -4,7 +4,7 @@
 	<depth>DepthDialog+</depth>
 	<controls>
 		<control type="group">
-			<height>390</height>
+			<height>400</height>
 			<centertop>50%</centertop>
 			<centerleft>50%</centerleft>
 			<width>915</width>
@@ -23,16 +23,16 @@
 				<autoscroll time="3000" delay="4000" repeat="5000">true</autoscroll>
 			</control>
 			<control type="progress" id="20">
-				<left>45</left>
-				<top>252</top>
-				<width>825</width>
+				<left>30</left>
+				<top>262</top>
+				<width>855</width>
 				<height>24</height>
 				<info>System.Progressbar</info>
 			</control>
 			<control type="grouplist" id="9000">
 				<orientation>horizontal</orientation>
 				<left>0</left>
-				<top>280</top>
+				<top>290</top>
 				<width>915</width>
 				<align>center</align>
 				<include content="DefaultDialogButton">
