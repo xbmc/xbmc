@@ -233,6 +233,7 @@ else()
       set(LIBDVD_TARGET_DIR dlls)
     endif()
     copy_file_to_buildtree(${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/libdvd/bin/libdvdnav.dll DIRECTORY ${LIBDVD_TARGET_DIR})
+    add_dependencies(export-files dvdnav)
   endif()
 
   set(LIBDVD_INCLUDE_DIRS ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/libdvd/include)
