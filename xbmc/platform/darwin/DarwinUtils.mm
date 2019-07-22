@@ -22,8 +22,6 @@
   #import <Cocoa/Cocoa.h>
   #import <CoreFoundation/CoreFoundation.h>
   #import <IOKit/IOKitLib.h>
-  #import <IOKit/ps/IOPowerSources.h>
-  #import <IOKit/ps/IOPSKeys.h>
 #endif
 
 #import "AutoPool.h"
@@ -283,35 +281,23 @@ const char *CDarwinUtils::GetOSVersionString(void)
   return [[[NSProcessInfo processInfo] operatingSystemVersionString] UTF8String];
 }
 
-const char *CDarwinUtils::GetIOSVersionString(void)
+const char* CDarwinUtils::GetVersionString()
 {
+  static std::string versionString;
+  static std::once_flag flag;
 #if defined(TARGET_DARWIN_EMBEDDED)
-  static std::string iOSVersionString;
-  static std::once_flag flag;
   std::call_once(flag, []
   {
-    iOSVersionString.assign([[[UIDevice currentDevice] systemVersion] UTF8String]);
+    versionString.assign([[[UIDevice currentDevice] systemVersion] UTF8String]);
   });
-  return iOSVersionString.c_str();
 #else
-  return "0.0";
-#endif
-}
-
-const char *CDarwinUtils::GetOSXVersionString(void)
-{
-#if defined(TARGET_DARWIN_OSX)
-  static std::string OSXVersionString;
-  static std::once_flag flag;
   std::call_once(flag, []
   {
-    OSXVersionString.assign([[[NSDictionary dictionaryWithContentsOfFile:
-                               @"/System/Library/CoreServices/SystemVersion.plist"] objectForKey:@"ProductVersion"] UTF8String]);
+    versionString.assign([[[NSDictionary dictionaryWithContentsOfFile:
+                            @"/System/Library/CoreServices/SystemVersion.plist"] objectForKey:@"ProductVersion"] UTF8String]);
   });
-  return OSXVersionString.c_str();
-#else
-  return "0.0";
 #endif
+  return versionString.c_str();
 }
 
 std::string CDarwinUtils::GetFrameworkPath(bool forPython)
@@ -410,52 +396,6 @@ bool CDarwinUtils::IsIosSandboxed(void)
     }
   });
   return ret;
-}
-
-int CDarwinUtils::BatteryLevel(void)
-{
-  float batteryLevel = 0;
-#if defined(TARGET_DARWIN_IOS)
-  batteryLevel = [[UIDevice currentDevice] batteryLevel];
-#else
-  CFTypeRef powerSourceInfo = IOPSCopyPowerSourcesInfo();
-  CFArrayRef powerSources = IOPSCopyPowerSourcesList(powerSourceInfo);
-
-  CFDictionaryRef powerSource = NULL;
-  const void *powerSourceVal;
-
-  for (int i = 0 ; i < CFArrayGetCount(powerSources) ; i++)
-  {
-    powerSource = IOPSGetPowerSourceDescription(powerSourceInfo, CFArrayGetValueAtIndex(powerSources, i));
-    if (!powerSource) break;
-
-    powerSourceVal = (CFStringRef)CFDictionaryGetValue(powerSource, CFSTR(kIOPSNameKey));
-
-    int curLevel = 0;
-    int maxLevel = 0;
-
-    powerSourceVal = CFDictionaryGetValue(powerSource, CFSTR(kIOPSCurrentCapacityKey));
-    CFNumberGetValue((CFNumberRef)powerSourceVal, kCFNumberSInt32Type, &curLevel);
-
-    powerSourceVal = CFDictionaryGetValue(powerSource, CFSTR(kIOPSMaxCapacityKey));
-    CFNumberGetValue((CFNumberRef)powerSourceVal, kCFNumberSInt32Type, &maxLevel);
-
-    batteryLevel = (double)curLevel/(double)maxLevel;
-  }
-  CFRelease(powerSources);
-  CFRelease(powerSourceInfo);
-#endif
-  return batteryLevel * 100;
-}
-
-void CDarwinUtils::EnableOSScreenSaver(bool enable)
-{
-
-}
-
-void CDarwinUtils::ResetSystemIdleTimer()
-{
-
 }
 
 void CDarwinUtils::SetScheduling(bool realtime)

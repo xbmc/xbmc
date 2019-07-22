@@ -22,16 +22,11 @@ public:
   static bool        DeviceHasRetina(double &scale);
   static const char *GetOSReleaseString(void);
   static const char *GetOSVersionString(void);
-  static const char *GetIOSVersionString(void);
-  static const char *GetOSXVersionString(void);
+  static const char* GetVersionString();
   static std::string GetFrameworkPath(bool forPython);
   static int         GetExecutablePath(char* path, size_t *pathsize);
   static const char *GetAppRootFolder(void);
   static bool        IsIosSandboxed(void);
-  static bool        HasVideoToolboxDecoder(void);
-  static int         BatteryLevel(void);
-  static void        EnableOSScreenSaver(bool enable);
-  static void        ResetSystemIdleTimer();
   static void        SetScheduling(bool realtime);
   static void        PrintDebugString(std::string debugString);
   static bool        CFStringRefToString(CFStringRef source, std::string& destination);

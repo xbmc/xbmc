@@ -3134,10 +3134,6 @@ void CApplication::OnPlayBackStopped()
 {
   CLog::LogF(LOGDEBUG, "CApplication::OnPlayBackStopped");
 
-#if defined(TARGET_DARWIN_EMBEDDED)
-  CDarwinUtils::EnableOSScreenSaver(true);
-#endif
-
   CServiceBroker::GetPVRManager().OnPlaybackStopped(m_itemCurrentFile);
 
   CVariant data(CVariant::VariantTypeObject);
@@ -3162,9 +3158,6 @@ void CApplication::OnPlayBackPaused()
 #ifdef HAS_PYTHON
   g_pythonParser.OnPlayBackPaused();
 #endif
-#if defined(TARGET_DARWIN_EMBEDDED)
-  CDarwinUtils::EnableOSScreenSaver(true);
-#endif
 
   CVariant param;
   param["player"]["speed"] = 0;
@@ -3176,10 +3169,6 @@ void CApplication::OnPlayBackResumed()
 {
 #ifdef HAS_PYTHON
   g_pythonParser.OnPlayBackResumed();
-#endif
-#if defined(TARGET_DARWIN_EMBEDDED)
-  if (m_appPlayer.IsPlayingVideo())
-    CDarwinUtils::EnableOSScreenSaver(false);
 #endif
 
   CVariant param;
@@ -3324,9 +3313,6 @@ void CApplication::ResetSystemIdleTimer()
 {
   // reset system idle timer
   m_idleTimer.StartZero();
-#if defined(TARGET_DARWIN_EMBEDDED)
-  CDarwinUtils::ResetSystemIdleTimer();
-#endif
 }
 
 void CApplication::ResetScreenSaver()

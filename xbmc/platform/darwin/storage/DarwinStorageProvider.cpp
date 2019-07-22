@@ -17,7 +17,6 @@
 #include <DiskArbitration/DiskArbitration.h>
 #include <IOKit/storage/IOCDMedia.h>
 #include <IOKit/storage/IODVDMedia.h>
-#include "platform/darwin/DarwinUtils.h"
 #include "platform/darwin/osx/CocoaInterface.h"
 #endif
 

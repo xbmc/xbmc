@@ -18,8 +18,6 @@
 #include "utils/log.h"
 #include "windowing/WinSystem.h"
 
-#include "platform/darwin/DarwinUtils.h"
-
 #include <sstream>
 
 #include <AudioToolbox/AudioToolbox.h>

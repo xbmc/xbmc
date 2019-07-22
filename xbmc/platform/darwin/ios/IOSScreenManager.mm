@@ -20,8 +20,6 @@
 #include "windowing/WinSystem.h"
 #include "windowing/ios/WinSystemIOS.h"
 
-#include "platform/darwin/DarwinUtils.h"
-
 #include <signal.h>
 
 #import <Foundation/Foundation.h>

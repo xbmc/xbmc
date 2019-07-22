@@ -32,7 +32,6 @@
 #include "utils/log.h"
 #include "windowing/GraphicContext.h"
 
-#include "platform/darwin/DarwinUtils.h"
 #import "platform/darwin/ios/IOSScreenManager.h"
 #import "platform/darwin/ios/XBMCController.h"
 

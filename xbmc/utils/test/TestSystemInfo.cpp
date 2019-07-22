@@ -238,13 +238,6 @@ TEST_F(TestSystemInfo, GetUserAgent)
   EXPECT_NE(std::string::npos, g_sysinfo.GetUserAgent().find(" Version/")) << "'GetUserAgent()' must contain ' Version/'";
 }
 
-#ifndef TARGET_DARWIN
-TEST_F(TestSystemInfo, HasVideoToolBoxDecoder)
-{
-  EXPECT_FALSE(g_sysinfo.HasVideoToolBoxDecoder()) << "'HasVideoToolBoxDecoder()' must return 'false'";
-}
-#endif
-
 TEST_F(TestSystemInfo, GetBuildTargetPlatformName)
 {
   EXPECT_EQ(std::string::npos, g_sysinfo.GetBuildTargetPlatformName().find("Unknown")) << "'GetBuildTargetPlatformName()' must not contain 'Unknown', actual value: '" << g_sysinfo.GetBuildTargetPlatformName() << "'";

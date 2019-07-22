@@ -824,7 +824,7 @@ void CDisplaySettings::SettingOptionsPreferredStereoscopicViewModesFiller(Settin
 
 void CDisplaySettings::SettingOptionsMonitorsFiller(SettingConstPtr setting, std::vector<StringSettingOption> &list, std::string &current, void *data)
 {
-#if defined(HAVE_X11) || defined(TARGET_DARWIN_OSX) || defined(TARGET_DARWIN_EMBEDDED)
+#if defined(HAVE_X11) || defined(TARGET_DARWIN)
   std::vector<std::string> monitors;
 
 #if defined(HAVE_X11)

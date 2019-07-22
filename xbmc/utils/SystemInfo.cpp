@@ -639,10 +639,8 @@ std::string CSysInfo::GetOsVersion(void)
 
 #if defined(TARGET_WINDOWS) || defined(TARGET_FREEBSD)
   osVersion = GetKernelVersion(); // FIXME: for Win32 and FreeBSD OS version is a kernel version
-#elif defined(TARGET_DARWIN_EMBEDDED)
-  osVersion = CDarwinUtils::GetIOSVersionString();
-#elif defined(TARGET_DARWIN_OSX)
-  osVersion = CDarwinUtils::GetOSXVersionString();
+#elif defined(TARGET_DARWIN)
+  osVersion = CDarwinUtils::GetVersionString();
 #elif defined(TARGET_ANDROID)
   char versionCStr[PROP_VALUE_MAX];
   int propLen = __system_property_get("ro.build.version.release", versionCStr);
@@ -731,7 +729,7 @@ std::string CSysInfo::GetOsPrettyNameWithVersion(void)
     osNameVer.append(" unknown");
 #elif defined(TARGET_WINDOWS_STORE)
   osNameVer = GetKernelName() + " " + GetOsVersion();
-#elif defined(TARGET_FREEBSD) || defined(TARGET_DARWIN_EMBEDDED) || defined(TARGET_DARWIN_OSX)
+#elif defined(TARGET_FREEBSD) || defined(TARGET_DARWIN)
   osNameVer = GetOsName() + " " + GetOsVersion();
 #elif defined(TARGET_ANDROID)
   osNameVer = GetOsName() + " " + GetOsVersion() + " API level " +   StringUtils::Format("%d", CJNIBuild::SDK_INT);
@@ -1245,15 +1243,6 @@ std::string CSysInfo::GetVersion()
 std::string CSysInfo::GetBuildDate()
 {
   return CCompileInfo::GetBuildDate();
-}
-
-bool CSysInfo::HasVideoToolBoxDecoder()
-{
-#if defined(HAVE_VIDEOTOOLBOXDECODER)
-  return CDarwinUtils::HasVideoToolboxDecoder();
-#else
-  return false;
-#endif
 }
 
 std::string CSysInfo::GetBuildTargetPlatformName(void)

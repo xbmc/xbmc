@@ -36,10 +36,6 @@
 #include "utils/Variant.h"
 #include "utils/XMLUtils.h"
 
-#if defined(TARGET_DARWIN_EMBEDDED)
-#include "platform/darwin/DarwinUtils.h"
-#endif
-
 using namespace ADDON;
 using namespace XFILE;
 
