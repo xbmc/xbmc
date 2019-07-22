@@ -33,12 +33,6 @@ CPVRChannelGroupInternal::CPVRChannelGroupInternal(bool bRadio)
   m_iGroupType = PVR_GROUP_TYPE_INTERNAL;
 }
 
-CPVRChannelGroupInternal::CPVRChannelGroupInternal(const CPVRChannelGroup &group) :
-    CPVRChannelGroup(group),
-    m_iHiddenChannels(group.GetNumHiddenChannels())
-{
-}
-
 CPVRChannelGroupInternal::~CPVRChannelGroupInternal(void)
 {
   Unload();

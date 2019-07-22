@@ -55,27 +55,6 @@ CPVRChannelGroup::CPVRChannelGroup(const PVR_CHANNEL_GROUP& group,
   OnInit();
 }
 
-CPVRChannelGroup::CPVRChannelGroup(const CPVRChannelGroup& group)
-  : m_iGroupType(group.m_iGroupType)
-  , m_iGroupId(group.m_iGroupId)
-  , m_bLoaded(group.m_bLoaded)
-  , m_bChanged(group.m_bChanged)
-  , m_bUsingBackendChannelOrder(group.m_bUsingBackendChannelOrder)
-  , m_bUsingBackendChannelNumbers(group.m_bUsingBackendChannelNumbers)
-  , m_bPreventSortAndRenumber(group.m_bPreventSortAndRenumber)
-  , m_iLastWatched(group.m_iLastWatched)
-  , m_bHidden(group.m_bHidden)
-  , m_iPosition(group.m_iPosition)
-  , m_sortedMembers(group.m_sortedMembers)
-  , m_members(group.m_members)
-  , m_failedClientsForChannels(group.m_failedClientsForChannels)
-  , m_failedClientsForChannelGroupMembers(group.m_failedClientsForChannelGroupMembers)
-  , m_allChannelsGroup(group.m_allChannelsGroup)
-  , m_path(group.m_path)
-{
-  OnInit();
-}
-
 CPVRChannelGroup::~CPVRChannelGroup(void)
 {
   CServiceBroker::GetSettingsComponent()->GetSettings()->UnregisterCallback(this);

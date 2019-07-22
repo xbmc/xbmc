@@ -30,8 +30,6 @@ namespace PVR
      */
     explicit CPVRChannelGroupInternal(bool bRadio);
 
-    explicit CPVRChannelGroupInternal(const CPVRChannelGroup &group);
-
     ~CPVRChannelGroupInternal(void) override;
 
     /**
