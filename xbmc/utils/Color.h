@@ -27,5 +27,6 @@ namespace COLOR
   static const Color BRIGHTGREEN = 0xFF00FF00;
   static const Color YELLOWGREEN = 0xFFCCFF00;
   static const Color CYAN = 0xFF00FFFF;
+  static const Color DARKGREY = 0xFF808080;
 } // namespace COLOR
 } // namespace UTILS

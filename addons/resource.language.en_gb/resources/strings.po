@@ -3458,8 +3458,12 @@ msgctxt "#767"
 msgid "Grey"
 msgstr ""
 
-#empty strings from id 768 to 769
-#strings 768 and 769 reserved for more subtitle colours
+msgctxt "#768"
+msgid "Dark Grey"
+msgstr ""
+
+#empty string id 769
+#string 769 reserved for more subtitle colours
 
 msgctxt "#770"
 msgid "Error {0:d}: share not available"
