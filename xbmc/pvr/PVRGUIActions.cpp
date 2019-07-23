@@ -66,10 +66,12 @@
 #include "utils/log.h"
 #include "video/VideoDatabase.h"
 
+#include <chrono>
 #include <iterator>
 #include <map>
 #include <memory>
 #include <string>
+#include <thread>
 #include <utility>
 #include <vector>
 
@@ -1968,14 +1970,14 @@ namespace PVR
     }
 
     // show the reminder dialog
-    CGUIDialogYesNo* dialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogYesNo>(WINDOW_DIALOG_YES_NO);
+    CGUIDialogProgress* dialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogProgress>(WINDOW_DIALOG_PROGRESS);
     if (!dialog)
       return;
 
     dialog->Reset();
+
     dialog->SetHeading(CVariant{19312}); // "PVR reminder"
-    dialog->SetAutoClose(m_settings.GetIntValue(CSettings::SETTING_PVRREMINDERS_AUTOCLOSEDELAY) * 1000);
-    dialog->SetChoice(0, CVariant{19165}); // no: "Switch"
+    dialog->ShowChoice(0, CVariant{19165}); // "Switch"
 
     std::string text = GetAnnouncerText(timer, 19307, 19308); // Reminder for ...
 
@@ -1984,36 +1986,57 @@ namespace PVR
     if (client && client->GetClientCapabilities().SupportsTimers())
     {
       bCanRecord = true;
-      dialog->SetChoice(1, CVariant{264}); // yes: "Record"
-      dialog->SetChoice(2, CVariant{222}); // custom: "Cancel"
+      dialog->ShowChoice(1, CVariant{264}); // "Record"
+      dialog->ShowChoice(2, CVariant{222}); // "Cancel"
 
       if (m_settings.GetBoolValue(CSettings::SETTING_PVRREMINDERS_AUTORECORD))
         text += "\n\n" + g_localizeStrings.Get(19309); // (Auto-close of this reminder will schedule a recording...)
     }
     else
     {
-      dialog->SetChoice(1, CVariant{222}); // yes: "Cancel"
+      dialog->ShowChoice(1, CVariant{222}); // "Cancel"
     }
+
     dialog->SetText(text);
+    dialog->SetPercentage(100);
 
     dialog->Open();
 
-    int iResult = dialog->GetResult();
-    if (dialog->IsAutoClosed())
+    int result = CGUIDialogProgress::CHOICE_NONE;
+
+    static constexpr int PROGRESS_TIMESLICE_MILLISECS = 50;
+
+    const int iWait = m_settings.GetIntValue(CSettings::SETTING_PVRREMINDERS_AUTOCLOSEDELAY) * 1000;
+    int iRemaining = iWait;
+    while (iRemaining > 0)
     {
-      if (bCanRecord && m_settings.GetBoolValue(CSettings::SETTING_PVRREMINDERS_AUTORECORD))
-        iResult = 1; // YES -> schedule recording
-      else
-        iResult = -1; // CANCELLED -> do nothing
+      result = dialog->GetChoice();
+      if (result != CGUIDialogProgress::CHOICE_NONE)
+        break;
+
+      std::this_thread::sleep_for(std::chrono::milliseconds(PROGRESS_TIMESLICE_MILLISECS));
+
+      iRemaining -= PROGRESS_TIMESLICE_MILLISECS;
+      dialog->SetPercentage(iRemaining * 100 / iWait);
+      dialog->Progress();
     }
 
-    switch (iResult)
+    dialog->Close();
+
+    if (iRemaining <= 0) // auto-closed?
     {
-      case 0: // NO
-        // switch to channel
+      if (bCanRecord && m_settings.GetBoolValue(CSettings::SETTING_PVRREMINDERS_AUTORECORD))
+        result = 1; // -> schedule recording
+      else
+        result = CGUIDialogProgress::CHOICE_CANCELED; // -> do nothing
+    }
+
+    switch (result)
+    {
+      case 0:
         SwitchToChannel(std::make_shared<CFileItem>(timer->Channel()), false);
         break;
-      case 1: // YES
+      case 1:
         if (bCanRecord)
         {
           std::shared_ptr<CPVRTimerInfoTag> newTimer;
@@ -2040,7 +2063,7 @@ namespace PVR
             AddTimer(std::make_shared<CFileItem>(newTimer), false);
           }
 
-          if (dialog->IsAutoClosed())
+          if (iRemaining <= 0) // auto-closed?
           {
             AddEventLogEntry(timer, 19310, 19311); // Scheduled recording for auto-closed PVR reminder ...
           }

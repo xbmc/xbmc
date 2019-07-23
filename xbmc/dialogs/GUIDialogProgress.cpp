@@ -28,12 +28,14 @@ CGUIDialogProgress::~CGUIDialogProgress(void) = default;
 void CGUIDialogProgress::Reset()
 {
   CSingleLock lock(m_section);
-  m_bCanceled = false;
   m_iCurrent = 0;
   m_iMax = 0;
   m_percentage = 0;
   m_showProgress = true;
   m_bCanCancel = true;
+  m_iChoice = CHOICE_NONE;
+  m_supportedChoices = {};
+
   SetInvalid();
 }
 
@@ -42,6 +44,21 @@ void CGUIDialogProgress::SetCanCancel(bool bCanCancel)
   CSingleLock lock(m_section);
   m_bCanCancel = bCanCancel;
   SetInvalid();
+}
+
+void CGUIDialogProgress::ShowChoice(int iChoice, const CVariant& label)
+{
+  if (iChoice >= 0 && iChoice < DIALOG_MAX_CHOICES)
+  {
+    m_supportedChoices[iChoice] = true;
+    SetChoice(iChoice, label);
+    SetInvalid();
+  }
+}
+
+int CGUIDialogProgress::GetChoice() const
+{
+  return m_iChoice;
 }
 
 void CGUIDialogProgress::Open(const std::string &param /* = "" */)
@@ -87,13 +104,24 @@ bool CGUIDialogProgress::OnMessage(CGUIMessage& message)
   case GUI_MSG_CLICKED:
     {
       int iControl = message.GetSenderId();
-      if (iControl == CONTROL_NO_BUTTON && m_bCanCancel && !m_bCanceled)
+      if (iControl >= CONTROL_CHOICES_START && iControl < (CONTROL_CHOICES_START + DIALOG_MAX_CHOICES))
       {
-        std::string strHeading = m_strHeading;
-        strHeading.append(" : ");
-        strHeading.append(g_localizeStrings.Get(16024));
-        CGUIDialogBoxBase::SetHeading(CVariant{strHeading});
-        m_bCanceled = true;
+        // special handling for choice 0 mapped to cancel button
+        if (m_bCanCancel && !m_supportedChoices[0] && (iControl == CONTROL_CHOICES_START))
+        {
+          if (m_iChoice != CHOICE_CANCELED)
+          {
+            std::string strHeading = m_strHeading;
+            strHeading.append(" : ");
+            strHeading.append(g_localizeStrings.Get(16024));
+            CGUIDialogBoxBase::SetHeading(CVariant{strHeading});
+            m_iChoice = CHOICE_CANCELED;
+          }
+        }
+        else
+        {
+          m_iChoice = iControl - CONTROL_CHOICES_START;
+        }
         return true;
       }
     }
@@ -105,11 +133,11 @@ bool CGUIDialogProgress::OnMessage(CGUIMessage& message)
 bool CGUIDialogProgress::OnBack(int actionID)
 {
   if (m_bCanCancel)
-  {
-    m_bCanceled = true;
-    return true;
-  }
-  return false;
+    m_iChoice = CHOICE_CANCELED;
+  else
+    m_iChoice = CHOICE_NONE;
+
+  return true;
 }
 
 void CGUIDialogProgress::OnWindowLoaded()
@@ -152,7 +180,7 @@ void CGUIDialogProgress::SetProgressAdvance(int nSteps/*=1*/)
 
 bool CGUIDialogProgress::Abort()
 {
-  return m_active ? m_bCanceled : false;
+  return m_active ? IsCanceled() : false;
 }
 
 void CGUIDialogProgress::ShowProgressBar(bool bOnOff)
@@ -165,59 +193,87 @@ void CGUIDialogProgress::ShowProgressBar(bool bOnOff)
 bool CGUIDialogProgress::Wait(int progresstime /*= 10*/)
 {
   CEvent m_done;
-  while (!m_done.WaitMSec(progresstime) && m_active && !m_bCanceled)
+  while (!m_done.WaitMSec(progresstime) && m_active && !IsCanceled())
     Progress();
 
-  return !m_bCanceled;
+  return !IsCanceled();
 }
 
 bool CGUIDialogProgress::WaitOnEvent(CEvent& event)
 {
   while (!event.WaitMSec(1))
   {
-    if (m_bCanceled)
+    if (IsCanceled())
       return false;
 
     Progress();
   }
 
-  return !m_bCanceled;
+  return !IsCanceled();
+}
+
+void CGUIDialogProgress::UpdateControls()
+{
+  // take a copy to save holding the lock for too long
+  bool bShowProgress;
+  bool bShowCancel;
+  std::array<bool, DIALOG_MAX_CHOICES> choices;
+  {
+    CSingleLock lock(m_section);
+    bShowProgress = m_showProgress;
+    bShowCancel = m_bCanCancel;
+    choices = m_supportedChoices;
+  }
+
+  if (bShowProgress)
+    SET_CONTROL_VISIBLE(CONTROL_PROGRESS_BAR);
+  else
+    SET_CONTROL_HIDDEN(CONTROL_PROGRESS_BAR);
+
+  // special handling for choice 0 mapped to cancel button
+  if (bShowCancel)
+    SET_CONTROL_VISIBLE(CONTROL_CHOICES_START);
+  else
+    SET_CONTROL_HIDDEN(CONTROL_CHOICES_START);
+
+  for (int i = 0; i < DIALOG_MAX_CHOICES; ++i)
+  {
+    if (choices[i])
+      SET_CONTROL_VISIBLE(CONTROL_CHOICES_START + i);
+    else
+      SET_CONTROL_HIDDEN(CONTROL_CHOICES_START + i);
+  }
 }
 
 void CGUIDialogProgress::Process(unsigned int currentTime, CDirtyRegionList &dirtyregions)
 {
   if (m_bInvalidated)
-  { // take a copy to save holding the lock for too long
-    bool showProgress, showCancel;
-    {
-      CSingleLock lock(m_section);
-      showProgress = m_showProgress;
-      showCancel   = m_bCanCancel;
-    }
-    if (showProgress)
-      SET_CONTROL_VISIBLE(CONTROL_PROGRESS_BAR);
-    else
-      SET_CONTROL_HIDDEN(CONTROL_PROGRESS_BAR);
-    if (showCancel)
-      SET_CONTROL_VISIBLE(CONTROL_NO_BUTTON);
-    else
-      SET_CONTROL_HIDDEN(CONTROL_NO_BUTTON);
-  }
+    UpdateControls();
+
   CGUIDialogBoxBase::Process(currentTime, dirtyregions);
 }
 
 void CGUIDialogProgress::OnInitWindow()
 {
-  SET_CONTROL_HIDDEN(CONTROL_YES_BUTTON);
-  SET_CONTROL_HIDDEN(CONTROL_CUSTOM_BUTTON);
-  SET_CONTROL_FOCUS(CONTROL_NO_BUTTON, 0);
+  UpdateControls();
+
+  for (int i = 0; i < DIALOG_MAX_CHOICES; ++i)
+  {
+    if (m_supportedChoices[i])
+    {
+      SET_CONTROL_FOCUS(CONTROL_CHOICES_START + i, 0);
+      break;
+    }
+  }
 
   CGUIDialogBoxBase::OnInitWindow();
 }
 
 int CGUIDialogProgress::GetDefaultLabelID(int controlId) const
 {
-  if (controlId == CONTROL_NO_BUTTON)
-    return 222;
+  // special handling for choice 0 mapped to cancel button
+  if (m_bCanCancel && !m_supportedChoices[0] && (controlId == CONTROL_CHOICES_START))
+    return 222; // Cancel
+
   return CGUIDialogBoxBase::GetDefaultLabelID(controlId);
 }
