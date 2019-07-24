@@ -789,7 +789,6 @@ public:
   void ExportActorThumbs(const std::string &path, const CVideoInfoTag& tag, bool singleFiles, bool overwrite=false);
   void ImportFromXML(const std::string &path);
   void DumpToDummyFiles(const std::string &path);
-  bool ImportArtFromXML(const TiXmlNode *node, std::map<std::string, std::string> &artwork);
 
   // smart playlists and main retrieval work in these functions
   bool GetMoviesByWhere(const std::string& strBaseDir, const Filter &filter, CFileItemList& items, const SortDescription &sortDescription = SortDescription(), int getDetails = VideoDbDetailsNone);
