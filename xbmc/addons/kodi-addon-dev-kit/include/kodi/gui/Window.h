@@ -205,6 +205,36 @@ namespace gui
     //==========================================================================
     ///
     /// \ingroup cpp_kodi_gui_CWindow
+    /// @brief To set the visibility on given control id
+    ///
+    /// @param[in] controlId            Control id where visibility is changed
+    /// @param[in] visible              Boolean value with `true` for visible, `false` for hidden
+    ///
+    ///
+    void SetControlVisible(int controlId, bool visible)
+    {
+      m_interface->kodi_gui->window->set_control_visible(m_interface->kodiBase, m_controlHandle, controlId, visible);
+    }
+    //--------------------------------------------------------------------------
+
+    //==========================================================================
+    ///
+    /// \ingroup cpp_kodi_gui_CWindow
+    /// @brief To set the selection on given control id
+    ///
+    /// @param[in] controlId            Control id where selection is changed
+    /// @param[in] selected             Boolean value with `true` for selected, `false` for not
+    ///
+    ///
+    void SetControlSelected(int controlId, bool selected)
+    {
+      m_interface->kodi_gui->window->set_control_selected(m_interface->kodiBase, m_controlHandle, controlId, selected);
+    }
+    //--------------------------------------------------------------------------
+
+    //==========================================================================
+    ///
+    /// \ingroup cpp_kodi_gui_CWindow
     /// @brief Sets a window property, similar to an infolabel.
     ///
     /// @param[in] key                  string - property name.
@@ -705,7 +735,7 @@ namespace gui
     /// ..
     /// ~~~~~~~~~~~~~
     ///
-    virtual bool OnAction(int actionId)
+    virtual bool OnAction(int actionId, uint32_t buttoncode, wchar_t unicode)
     {
       switch (actionId)
       {
@@ -811,7 +841,7 @@ namespace gui
       bool (*CBOnInit)            (GUIHANDLE cbhdl),
       bool (*CBOnFocus)           (GUIHANDLE cbhdl, int controlId),
       bool (*CBOnClick)           (GUIHANDLE cbhdl, int controlId),
-      bool (*CBOnAction)          (GUIHANDLE cbhdl, int actionId),
+      bool (*CBOnAction)          (GUIHANDLE cbhdl, int actionId, uint32_t buttoncode, wchar_t unicode),
       void (*CBGetContextButtons) (GUIHANDLE cbhdl, int itemNumber, gui_context_menu_pair* buttons, unsigned int* size) = nullptr,
       bool (*CBOnContextButton)   (GUIHANDLE cbhdl, int itemNumber, unsigned int button) = nullptr)
     {
@@ -845,9 +875,9 @@ namespace gui
       return static_cast<CWindow*>(cbhdl)->OnClick(controlId);
     }
 
-    static bool CBOnAction(GUIHANDLE cbhdl, int actionId)
+    static bool CBOnAction(GUIHANDLE cbhdl, int actionId, uint32_t buttoncode, wchar_t unicode)
     {
-      return static_cast<CWindow*>(cbhdl)->OnAction(actionId);
+      return static_cast<CWindow*>(cbhdl)->OnAction(actionId, buttoncode, unicode);
     }
 
     static void CBGetContextButtons(GUIHANDLE cbhdl, int itemNumber, gui_context_menu_pair* buttons, unsigned int* size)

@@ -54,7 +54,7 @@ namespace ADDON
                               bool (*CBInit)(void*),
                               bool (*CBFocus)(void*, int),
                               bool (*CBClick)(void*, int),
-                              bool (*CBOnAction)(void*, int),
+                              bool (*CBOnAction)(void*, int, uint32_t, wchar_t),
                               void (*CBGetContextButtons)(void* , int, gui_context_menu_pair*, unsigned int*),
                               bool (*CBOnContextButton)(void*, int, unsigned int));
     static bool show(void* kodiBase, void* handle);
@@ -65,6 +65,8 @@ namespace ADDON
     static bool set_focus_id(void* kodiBase, void* handle, int control_id);
     static int get_focus_id(void* kodiBase, void* handle);
     static void set_control_label(void* kodiBase, void* handle, int control_id, const char* label);
+    static void set_control_visible(void* kodiBase, void* handle, int control_id, bool visible);
+    static void set_control_selected(void* kodiBase, void* handle, int control_id, bool selected);
 
     /* Window property functions */
     static void set_property(void* kodiBase, void* handle, const char* key, const char* value);
@@ -153,7 +155,7 @@ namespace ADDON
     bool (*CBOnInit)(void* cbhdl);
     bool (*CBOnFocus)(void* cbhdl, int controlId);
     bool (*CBOnClick)(void* cbhdl, int controlId);
-    bool (*CBOnAction)(void* cbhdl, int actionId);
+    bool (*CBOnAction)(void* cbhdl, int actionId, uint32_t buttoncode, wchar_t unicode);
     void (*CBGetContextButtons)(void* cbhdl, int itemNumber, gui_context_menu_pair* buttons, unsigned int* size);
     bool (*CBOnContextButton)(void* cbhdl, int itemNumber, unsigned int button);
 
