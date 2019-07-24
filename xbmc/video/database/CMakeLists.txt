@@ -9,6 +9,7 @@ set(SOURCES VideoDatabase.cpp
             VideoDatabaseSeasons.cpp
             VideoDatabaseSets.cpp
             VideoDatabaseSettings.cpp
+            VideoDatabaseStreamDetails.cpp
             VideoDatabaseTags.cpp)
 
 set(HEADERS VideoDatabase.h)
