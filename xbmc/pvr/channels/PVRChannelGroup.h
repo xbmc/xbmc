@@ -77,12 +77,6 @@ namespace PVR
      */
     CPVRChannelGroup(const PVR_CHANNEL_GROUP& group, const std::shared_ptr<CPVRChannelGroup>& allChannelsGroup);
 
-    /*!
-     * @brief Copy constructor
-     * @param group Source group
-     */
-    CPVRChannelGroup(const CPVRChannelGroup &group);
-
     ~CPVRChannelGroup(void) override;
 
     bool operator ==(const CPVRChannelGroup &right) const;

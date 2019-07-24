@@ -27,15 +27,10 @@ using namespace PVR;
 using namespace KODI::MESSAGING;
 
 CPVRChannelGroupInternal::CPVRChannelGroupInternal(bool bRadio)
-: CPVRChannelGroup(CPVRChannelsPath(bRadio, g_localizeStrings.Get(19287)), PVR_GROUP_TYPE_INTERNAL)
-,  m_iHiddenChannels(0)
+  : CPVRChannelGroup(CPVRChannelsPath(bRadio, g_localizeStrings.Get(19287)))
+  , m_iHiddenChannels(0)
 {
-}
-
-CPVRChannelGroupInternal::CPVRChannelGroupInternal(const CPVRChannelGroup &group) :
-    CPVRChannelGroup(group),
-    m_iHiddenChannels(group.GetNumHiddenChannels())
-{
+  m_iGroupType = PVR_GROUP_TYPE_INTERNAL;
 }
 
 CPVRChannelGroupInternal::~CPVRChannelGroupInternal(void)
