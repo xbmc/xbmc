@@ -1,4 +1,5 @@
 set(SOURCES VideoDatabase.cpp
+            VideoDatabaseBookmarks.cpp
             VideoDatabaseExportImport.cpp
             VideoDatabaseMovies.cpp
             VideoDatabaseMusicVideos.cpp
