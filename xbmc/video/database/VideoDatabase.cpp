@@ -1368,41 +1368,6 @@ int CVideoDatabase::AddUniqueIDs(int mediaId, const char *mediaType, const CVide
   return uniqueid;
 }
 
-int CVideoDatabase::AddSet(const std::string& strSet, const std::string& strOverview /* = "" */)
-{
-  if (strSet.empty())
-    return -1;
-
-  try
-  {
-    if (m_pDB.get() == nullptr || m_pDS.get() == nullptr)
-      return -1;
-
-    std::string strSQL = PrepareSQL("SELECT idSet FROM sets WHERE strSet LIKE '%s'", strSet.c_str());
-    m_pDS->query(strSQL);
-    if (m_pDS->num_rows() == 0)
-    {
-      m_pDS->close();
-      strSQL = PrepareSQL("INSERT INTO sets (idSet, strSet, strOverview) VALUES(NULL, '%s', '%s')", strSet.c_str(), strOverview.c_str());
-      m_pDS->exec(strSQL);
-      int id = static_cast<int>(m_pDS->lastinsertid());
-      return id;
-    }
-    else
-    {
-      int id = m_pDS->fv("idSet").get_asInt();
-      m_pDS->close();
-      return id;
-    }
-  }
-  catch (...)
-  {
-    CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, strSet.c_str());
-  }
-
-  return -1;
-}
-
 int CVideoDatabase::AddTag(const std::string& name)
 {
   if (name.empty())
@@ -1837,31 +1802,6 @@ bool CVideoDatabase::GetEpisodeInfo(const std::string& strFilenameAndPath, CVide
   return false;
 }
 
-bool CVideoDatabase::GetSetInfo(int idSet, CVideoInfoTag& details)
-{
-  try
-  {
-    if (idSet < 0)
-      return false;
-
-    Filter filter;
-    filter.where = PrepareSQL("sets.idSet=%d", idSet);
-    CFileItemList items;
-    if (!GetSetsByWhere("videodb://movies/sets/", filter, items) ||
-        items.Size() != 1 ||
-        !items[0]->HasVideoInfoTag())
-      return false;
-
-    details = *(items[0]->GetVideoInfoTag());
-    return !details.IsEmpty();
-  }
-  catch (...)
-  {
-    CLog::Log(LOGERROR, "%s (%d) failed", __FUNCTION__, idSet);
-  }
-  return false;
-}
-
 bool CVideoDatabase::GetFileInfo(const std::string& strFilenameAndPath, CVideoInfoTag& details, int idFile /* = -1 */)
 {
   try
@@ -1981,41 +1921,6 @@ int CVideoDatabase::SetDetailsForItem(int id, const MediaType& mediaType, CVideo
   else if (mediaType == MediaTypeMusicVideo)
     return SetDetailsForMusicVideo(details.GetPath(), details, artwork, id);
 
-  return -1;
-}
-
-int CVideoDatabase::SetDetailsForMovieSet(const CVideoInfoTag& details, const std::map<std::string, std::string> &artwork, int idSet /* = -1 */)
-{
-  if (details.m_strTitle.empty())
-    return -1;
-
-  try
-  {
-    BeginTransaction();
-    if (idSet < 0)
-    {
-      idSet = AddSet(details.m_strTitle, details.m_strPlot);
-      if (idSet < 0)
-      {
-        RollbackTransaction();
-        return -1;
-      }
-    }
-
-    SetArtForItem(idSet, MediaTypeVideoCollection, artwork);
-
-    // and insert the new row
-    std::string sql = PrepareSQL("UPDATE sets SET strSet='%s', strOverview='%s' WHERE idSet=%i", details.m_strTitle.c_str(), details.m_strPlot.c_str(), idSet);
-    m_pDS->exec(sql);
-    CommitTransaction();
-
-    return idSet;
-  }
-  catch (...)
-  {
-    CLog::Log(LOGERROR, "%s (%i) failed", __FUNCTION__, idSet);
-  }
-  RollbackTransaction();
   return -1;
 }
 
@@ -2887,38 +2792,6 @@ int CVideoDatabase::GetDbId(const std::string &query)
 void CVideoDatabase::DeleteStreamDetails(int idFile)
 {
   m_pDS->exec(PrepareSQL("DELETE FROM streamdetails WHERE idFile = %i", idFile));
-}
-
-void CVideoDatabase::DeleteSet(int idSet)
-{
-  try
-  {
-    if (NULL == m_pDB.get()) return ;
-    if (NULL == m_pDS.get()) return ;
-
-    std::string strSQL;
-    strSQL=PrepareSQL("delete from sets where idSet = %i", idSet);
-    m_pDS->exec(strSQL);
-    strSQL=PrepareSQL("update movie set idSet = null where idSet = %i", idSet);
-    m_pDS->exec(strSQL);
-  }
-  catch (...)
-  {
-    CLog::Log(LOGERROR, "%s (%i) failed", __FUNCTION__, idSet);
-  }
-}
-
-void CVideoDatabase::ClearMovieSet(int idMovie)
-{
-  SetMovieSet(idMovie, -1);
-}
-
-void CVideoDatabase::SetMovieSet(int idMovie, int idSet)
-{
-  if (idSet >= 0)
-    ExecuteQuery(PrepareSQL("update movie set idSet = %i where idMovie = %i", idSet, idMovie));
-  else
-    ExecuteQuery(PrepareSQL("update movie set idSet = null where idMovie = %i", idMovie));
 }
 
 void CVideoDatabase::DeleteTag(int idTag, VIDEODB_CONTENT_TYPE mediaType)
@@ -4949,51 +4822,6 @@ bool CVideoDatabase::GetTagsNav(const std::string& strBaseDir, CFileItemList& it
   return GetNavCommon(strBaseDir, items, "tag", idContent, filter, countOnly);
 }
 
-bool CVideoDatabase::GetSetsNav(const std::string& strBaseDir, CFileItemList& items, int idContent /* = -1 */, const Filter &filter /* = Filter() */, bool ignoreSingleMovieSets /* = false */)
-{
-  if (idContent != VIDEODB_CONTENT_MOVIES)
-    return false;
-
-  return GetSetsByWhere(strBaseDir, filter, items, ignoreSingleMovieSets);
-}
-
-bool CVideoDatabase::GetSetsByWhere(const std::string& strBaseDir, const Filter &filter, CFileItemList& items, bool ignoreSingleMovieSets /* = false */)
-{
-  try
-  {
-    if (NULL == m_pDB.get()) return false;
-    if (NULL == m_pDS.get()) return false;
-
-    CVideoDbUrl videoUrl;
-    if (!videoUrl.FromString(strBaseDir))
-      return false;
-
-    Filter setFilter = filter;
-    setFilter.join += " JOIN sets ON movie_view.idSet = sets.idSet";
-    if (!setFilter.order.empty())
-      setFilter.order += ",";
-    setFilter.order += "sets.idSet";
-
-    if (!GetMoviesByWhere(strBaseDir, setFilter, items))
-      return false;
-
-    CFileItemList sets;
-    GroupAttribute groupingAttributes = ignoreSingleMovieSets ? GroupAttributeIgnoreSingleItems : GroupAttributeNone;
-    if (!GroupUtils::Group(GroupBySet, strBaseDir, items, sets, groupingAttributes))
-      return false;
-
-    items.ClearItems();
-    items.Append(sets);
-
-    return true;
-  }
-  catch (...)
-  {
-    CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
-  }
-  return false;
-}
-
 bool CVideoDatabase::GetWritersNav(const std::string& strBaseDir, CFileItemList& items, int idContent /* = -1 */, const Filter &filter /* = Filter() */, bool countOnly /* = false */)
 {
   return GetPeopleNav(strBaseDir, items, "writer", idContent, filter, countOnly);
@@ -5990,11 +5818,6 @@ std::string CVideoDatabase::GetCountryById(int id)
   return GetSingleValue("country", "name", PrepareSQL("country_id=%i", id));
 }
 
-std::string CVideoDatabase::GetSetById(int id)
-{
-  return GetSingleValue("sets", "strSet", PrepareSQL("idSet=%i", id));
-}
-
 std::string CVideoDatabase::GetTagById(int id)
 {
   return GetSingleValue("tag", "name", PrepareSQL("tag_id = %i", id));
@@ -6013,28 +5836,6 @@ std::string CVideoDatabase::GetStudioById(int id)
 std::string CVideoDatabase::GetTvShowTitleById(int id)
 {
   return GetSingleValue("tvshow", PrepareSQL("c%02d", VIDEODB_ID_TV_TITLE), PrepareSQL("idShow=%i", id));
-}
-
-bool CVideoDatabase::HasSets() const
-{
-  try
-  {
-    if (NULL == m_pDB.get()) return false;
-    if (NULL == m_pDS.get()) return false;
-
-    m_pDS->query("SELECT movie_view.idSet,COUNT(1) AS c FROM movie_view "
-                 "JOIN sets ON sets.idSet = movie_view.idSet "
-                 "GROUP BY movie_view.idSet HAVING c>1");
-
-    bool bResult = (m_pDS->num_rows() > 0);
-    m_pDS->close();
-    return bResult;
-  }
-  catch (...)
-  {
-    CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
-  }
-  return false;
 }
 
 int CVideoDatabase::GetTvShowForEpisode(int idEpisode)
