@@ -11,7 +11,8 @@ set(SOURCES VideoDatabase.cpp
             VideoDatabaseSets.cpp
             VideoDatabaseSettings.cpp
             VideoDatabaseStreamDetails.cpp
-            VideoDatabaseTags.cpp)
+            VideoDatabaseTags.cpp
+            VideoDatabaseTvShows.cpp)
 
 set(HEADERS VideoDatabase.h)
 
