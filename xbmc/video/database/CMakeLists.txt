@@ -1,4 +1,5 @@
-set(SOURCES VideoDatabase.cpp)
+set(SOURCES VideoDatabase.cpp
+            VideoDatabaseSettings.cpp)
 
 set(HEADERS VideoDatabase.h)
 
