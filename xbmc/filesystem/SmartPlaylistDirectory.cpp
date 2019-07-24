@@ -20,7 +20,7 @@
 #include "utils/SortUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
-#include "video/VideoDatabase.h"
+#include "video/database/VideoDatabase.h"
 
 #include <math.h>
 

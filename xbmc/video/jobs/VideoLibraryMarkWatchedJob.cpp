@@ -21,7 +21,7 @@
 #include "settings/SettingsComponent.h"
 #include "ServiceBroker.h"
 #include "utils/URIUtils.h"
-#include "video/VideoDatabase.h"
+#include "video/database/VideoDatabase.h"
 
 CVideoLibraryMarkWatchedJob::CVideoLibraryMarkWatchedJob(const CFileItemPtr &item, bool mark)
   : m_item(item),

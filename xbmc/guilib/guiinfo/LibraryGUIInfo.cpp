@@ -13,7 +13,7 @@
 #include "guilib/guiinfo/GUIInfoLabels.h"
 #include "music/MusicDatabase.h"
 #include "utils/StringUtils.h"
-#include "video/VideoDatabase.h"
+#include "video/database/VideoDatabase.h"
 
 using namespace KODI::GUILIB::GUIINFO;
 

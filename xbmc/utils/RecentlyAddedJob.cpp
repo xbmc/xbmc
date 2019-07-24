@@ -22,7 +22,7 @@
 #include "settings/SettingsComponent.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
-#include "video/VideoDatabase.h"
+#include "video/database/VideoDatabase.h"
 #include "video/VideoInfoTag.h"
 #include "video/VideoThumbLoader.h"
 

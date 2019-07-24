@@ -24,7 +24,7 @@
 #include "utils/FileUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
-#include "video/VideoDatabase.h"
+#include "video/database/VideoDatabase.h"
 
 using namespace XFILE;
 using namespace JSONRPC;

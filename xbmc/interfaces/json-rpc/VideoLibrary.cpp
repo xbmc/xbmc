@@ -15,7 +15,7 @@
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
-#include "video/VideoDatabase.h"
+#include "video/database/VideoDatabase.h"
 #include "video/VideoLibraryQueue.h"
 
 using namespace JSONRPC;

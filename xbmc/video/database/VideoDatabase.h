@@ -8,12 +8,12 @@
 
 #pragma once
 
-#include "Bookmark.h"
-#include "VideoInfoTag.h"
 #include "addons/Scraper.h"
 #include "dbwrappers/Database.h"
 #include "utils/SortUtils.h"
+#include "video/Bookmark.h"
 #include "video/VideoDbUrl.h"
+#include "video/VideoInfoTag.h"
 
 #include <memory>
 #include <set>

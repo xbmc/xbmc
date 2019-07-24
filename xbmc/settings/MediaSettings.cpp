@@ -28,7 +28,7 @@
 #include "utils/XBMCTinyXML.h"
 #include "utils/XMLUtils.h"
 #include "utils/log.h"
-#include "video/VideoDatabase.h"
+#include "video/database/VideoDatabase.h"
 
 #include <limits.h>
 #include <string>

@@ -20,7 +20,7 @@
 #include "utils/LegacyPathTranslation.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
-#include "video/VideoDatabase.h"
+#include "video/database/VideoDatabase.h"
 
 using namespace XFILE;
 using namespace VIDEODATABASEDIRECTORY;

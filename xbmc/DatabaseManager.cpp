@@ -17,7 +17,7 @@
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/log.h"
-#include "video/VideoDatabase.h"
+#include "video/database/VideoDatabase.h"
 #include "view/ViewDatabase.h"
 
 using namespace PVR;

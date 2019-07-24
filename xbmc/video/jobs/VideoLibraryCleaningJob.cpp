@@ -9,7 +9,7 @@
 #include "VideoLibraryCleaningJob.h"
 
 #include "dialogs/GUIDialogExtendedProgressBar.h"
-#include "video/VideoDatabase.h"
+#include "video/database/VideoDatabase.h"
 
 CVideoLibraryCleaningJob::CVideoLibraryCleaningJob(const std::set<int>& paths /* = std::set<int>() */, bool showDialog /* = false */)
   : CVideoLibraryProgressJob(NULL),

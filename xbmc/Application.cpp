@@ -84,6 +84,7 @@
 #include "utils/CPUInfo.h"
 #include "utils/FileExtensionProvider.h"
 #include "utils/log.h"
+#include "video/database/VideoDatabase.h"
 #include "SeekHandler.h"
 #include "ServiceBroker.h"
 

@@ -29,7 +29,7 @@
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
 #include "utils/log.h"
-#include "video/VideoDatabase.h"
+#include "video/database/VideoDatabase.h"
 #include "video/VideoInfoTag.h"
 
 #include <algorithm>

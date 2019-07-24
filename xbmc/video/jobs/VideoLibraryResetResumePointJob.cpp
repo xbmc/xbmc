@@ -22,7 +22,7 @@
 #include "pvr/recordings/PVRRecordings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/URIUtils.h"
-#include "video/VideoDatabase.h"
+#include "video/database/VideoDatabase.h"
 
 CVideoLibraryResetResumePointJob::CVideoLibraryResetResumePointJob(const CFileItemPtr item)
   : m_item(item)

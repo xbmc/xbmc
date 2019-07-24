@@ -11,7 +11,7 @@
 #include "utils/DatabaseUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
-#include "video/VideoDatabase.h"
+#include "video/database/VideoDatabase.h"
 
 #include <gtest/gtest.h>
 

@@ -8,7 +8,7 @@
 
 #include "VideoLibraryScanningJob.h"
 
-#include "video/VideoDatabase.h"
+#include "video/database/VideoDatabase.h"
 
 CVideoLibraryScanningJob::CVideoLibraryScanningJob(const std::string& directory, bool scanAll /* = false */, bool showProgress /* = true */)
   : m_scanner(),

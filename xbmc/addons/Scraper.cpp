@@ -32,7 +32,7 @@
 #include "utils/URIUtils.h"
 #include "utils/XMLUtils.h"
 #include "utils/log.h"
-#include "video/VideoDatabase.h"
+#include "video/database/VideoDatabase.h"
 
 #include <algorithm>
 #include <sstream>

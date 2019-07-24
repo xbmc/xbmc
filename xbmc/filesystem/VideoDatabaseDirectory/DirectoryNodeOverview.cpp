@@ -13,7 +13,7 @@
 #include "guilib/LocalizeStrings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
-#include "video/VideoDatabase.h"
+#include "video/database/VideoDatabase.h"
 
 #include <utility>
 

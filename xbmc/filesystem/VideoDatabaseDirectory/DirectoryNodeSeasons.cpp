@@ -12,7 +12,7 @@
 #include "QueryParams.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/StringUtils.h"
-#include "video/VideoDatabase.h"
+#include "video/database/VideoDatabase.h"
 
 using namespace XFILE::VIDEODATABASEDIRECTORY;
 

@@ -25,7 +25,7 @@
 #include "utils/LabelFormatter.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
-#include "video/VideoDatabase.h"
+#include "video/database/VideoDatabase.h"
 
 #include <utility>
 

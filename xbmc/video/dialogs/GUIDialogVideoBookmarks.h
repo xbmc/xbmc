@@ -10,7 +10,7 @@
 
 #include "guilib/GUIDialog.h"
 #include "utils/JobManager.h"
-#include "video/VideoDatabase.h"
+#include "video/database/VideoDatabase.h"
 #include "view/GUIViewControl.h"
 
 class CFileItemList;

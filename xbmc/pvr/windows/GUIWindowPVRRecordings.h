@@ -11,7 +11,7 @@
 #include "dialogs/GUIDialogContextMenu.h"
 #include "pvr/PVRSettings.h"
 #include "pvr/windows/GUIWindowPVRBase.h"
-#include "video/VideoDatabase.h"
+#include "video/database/VideoDatabase.h"
 #include "video/VideoThumbLoader.h"
 
 #include <string>

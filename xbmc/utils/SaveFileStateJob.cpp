@@ -26,7 +26,7 @@
 #include "network/upnp/UPnP.h"
 #include "utils/Variant.h"
 #include "video/Bookmark.h"
-#include "video/VideoDatabase.h"
+#include "video/database/VideoDatabase.h"
 
 void CSaveFileState::DoWork(CFileItem& item,
                             CBookmark& bookmark,

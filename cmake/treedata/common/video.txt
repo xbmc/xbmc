@@ -1,4 +1,5 @@
 xbmc/video           video
+xbmc/video/database  video/database
 xbmc/video/dialogs   video/dialogs
 xbmc/video/jobs      video/jobs
 xbmc/video/tags      video/tags

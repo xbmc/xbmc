@@ -34,7 +34,7 @@
 #include "pvr/recordings/PVRRecordings.h"
 #include "settings/DisplaySettings.h"
 #include "utils/Variant.h"
-#include "video/VideoDatabase.h"
+#include "video/database/VideoDatabase.h"
 
 #include <map>
 #include <tuple>

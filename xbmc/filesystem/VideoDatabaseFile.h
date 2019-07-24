@@ -9,7 +9,7 @@
 #pragma once
 
 #include "filesystem/OverrideFile.h"
-#include "video/VideoDatabase.h"
+#include "video/database/VideoDatabase.h"
 
 namespace XFILE
 {

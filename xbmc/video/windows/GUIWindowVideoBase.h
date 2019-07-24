@@ -9,7 +9,7 @@
 #pragma once
 
 #include "PlayListPlayer.h"
-#include "video/VideoDatabase.h"
+#include "video/database/VideoDatabase.h"
 #include "video/VideoThumbLoader.h"
 #include "windows/GUIMediaWindow.h"
 

@@ -9,7 +9,7 @@
 #pragma once
 
 #include "InfoScanner.h"
-#include "VideoDatabase.h"
+#include "video/database/VideoDatabase.h"
 #include "addons/Scraper.h"
 
 #include <set>
