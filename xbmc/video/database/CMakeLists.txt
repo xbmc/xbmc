@@ -4,6 +4,7 @@ set(SOURCES VideoDatabase.cpp
             VideoDatabaseMovies.cpp
             VideoDatabaseMusicVideos.cpp
             VideoDatabaseRatings.cpp
+            VideoDatabaseSeasons.cpp
             VideoDatabaseSets.cpp
             VideoDatabaseSettings.cpp
             VideoDatabaseTags.cpp)
