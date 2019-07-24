@@ -3,8 +3,9 @@ set(SOURCES VideoDatabase.cpp
             VideoDatabaseExportImport.cpp
             VideoDatabaseMovies.cpp
             VideoDatabaseMusicVideos.cpp
+            VideoDatabaseSets.cpp
             VideoDatabaseSettings.cpp
-            VideoDatabaseSets.cpp)
+            VideoDatabaseTags.cpp)
 
 set(HEADERS VideoDatabase.h)
 
