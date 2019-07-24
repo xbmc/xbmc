@@ -6,6 +6,7 @@ set(SOURCES VideoDatabase.cpp
             VideoDatabaseExportImport.cpp
             VideoDatabaseMovies.cpp
             VideoDatabaseMusicVideos.cpp
+            VideoDatabasePaths.cpp
             VideoDatabasePeople.cpp
             VideoDatabasePlayCount.cpp
             VideoDatabaseRatings.cpp
