@@ -271,6 +271,9 @@ bool CDVDDemuxFFmpeg::Open(std::shared_ptr<CDVDInputStream> pInput, bool streami
         return false;
       }
       av_dict_free(&options);
+      avformat_close_input(&m_pFormatContext);
+      m_pFormatContext = avformat_alloc_context();
+      m_pFormatContext->interrupt_callback = int_cb;
       m_pFormatContext->flags &= ~AVFMT_FLAG_PRIV_OPT;
       AVDictionary* options = GetFFMpegOptionsFromInput();
       av_dict_set_int(&options, "load_all_variants", 0, AV_OPT_SEARCH_CHILDREN);
