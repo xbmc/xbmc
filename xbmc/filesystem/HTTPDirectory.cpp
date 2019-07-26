@@ -105,10 +105,13 @@ bool CHTTPDirectory::GetDirectory(const CURL& url, CFileItemList &items)
         strLinkOptions = strLinkBase.substr(pos);
         strLinkBase.erase(pos);
       }
-      std::string strLinkTemp = strLinkBase;
+      std::string strLinkBaseTemp = strLinkBase;
 
-      URIUtils::RemoveSlashAtEnd(strLinkTemp);
-      strLinkTemp = CURL::Decode(strLinkTemp);
+      URIUtils::RemoveSlashAtEnd(strLinkBaseTemp);
+
+      /* Depending on the http server used, link is URL encoded, since there's no easy way to detect this
+       * check by simply trying and comparing current link against its name */
+      std::string strLinkTemp = CURL::Decode(strLinkBaseTemp);
       if (fileCharset.empty())
         g_charsetConverter.unknownToUTF8(strLinkTemp);
       g_charsetConverter.utf8ToW(strLinkTemp, wLink, false);
@@ -118,6 +121,21 @@ bool CHTTPDirectory::GetDirectory(const CURL& url, CFileItemList &items)
       if (StringUtils::EndsWith(strNameTemp, "..>") &&
           StringUtils::StartsWith(strLinkTemp, strNameTemp.substr(0, strNameTemp.length() - 3)))
         strName = strNameTemp = strLinkTemp;
+
+      // If no match, try without URL decoding
+      if (strNameTemp != strLinkTemp)
+      {
+        strLinkTemp = strLinkBaseTemp;
+        if (fileCharset.empty())
+          g_charsetConverter.unknownToUTF8(strLinkTemp);
+        g_charsetConverter.utf8ToW(strLinkTemp, wLink, false);
+        HTML::CHTMLUtil::ConvertHTMLToW(wLink, wConverted);
+        g_charsetConverter.wToUTF8(wConverted, strLinkTemp);
+
+        if (StringUtils::EndsWith(strNameTemp, "..>") &&
+            StringUtils::StartsWith(strLinkTemp, strNameTemp.substr(0, strNameTemp.length() - 3)))
+          strName = strNameTemp = strLinkTemp;
+      }
 
       // we detect http directory items by its display name and its stripped link
       // if same, we consider it as a valid item.
