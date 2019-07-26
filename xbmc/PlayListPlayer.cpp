@@ -898,7 +898,8 @@ void PLAYLIST::CPlayListPlayer::OnApplicationMessage(KODI::MESSAGING::ThreadMess
           // resolve only for a maximum of 5 times to avoid deadlocks (plugin:// paths can resolve to plugin:// paths)
           for (int i = 0; URIUtils::IsPlugin(item->GetDynPath()) && i < 5; ++i)
           {
-            XFILE::CPluginDirectory::GetPluginResult(item->GetDynPath(), *item, true);
+            if (!XFILE::CPluginDirectory::GetPluginResult(item->GetDynPath(), *item, true))
+              return;
           }
           if (item->IsAudio() || item->IsVideo())
             Play(item, pMsg->strParam);
