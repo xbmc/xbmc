@@ -32,17 +32,15 @@ namespace ADDON
   public:
     explicit CBinaryAddonBase(const AddonInfoPtr& addonInfo) : m_addonInfo(addonInfo) { }
 
-    bool Create();
-
     const std::string& ID() const { return m_addonInfo->ID(); }
     const std::string& Path() const { return m_addonInfo->Path(); }
 
     TYPE MainType() const { return m_addonInfo->MainType(); }
     const std::string& MainLibName() const { return m_addonInfo->LibName(); }
 
-    bool IsType(TYPE type) const;
-    const std::vector<CBinaryAddonType>& Types() const { return m_types; }
-    const CBinaryAddonType* Type(TYPE type) const;
+    bool IsType(TYPE type) const { return m_addonInfo->IsType(type); }
+    const std::vector<CAddonType>& Types() const { return m_addonInfo->Types(); }
+    const CAddonType* Type(TYPE type) const { return m_addonInfo->Type(type); }
 
     const AddonVersion& Version() const { return m_addonInfo->Version(); }
     const AddonVersion& MinVersion() const { return m_addonInfo->MinVersion(); }
@@ -55,10 +53,7 @@ namespace ADDON
     const ArtMap& Art() const { return m_addonInfo->Art(); }
     const std::string& Disclaimer() const { return m_addonInfo->Disclaimer(); }
 
-    bool ProvidesSubContent(const TYPE& content, const TYPE& mainType = ADDON_UNKNOWN) const;
-    bool ProvidesSeveralSubContents() const;
-
-    bool MeetsVersion(const AddonVersion &version) const;
+    bool MeetsVersion(const AddonVersion& version) const { return m_addonInfo->MeetsVersion(version); }
 
     AddonDllPtr GetAddon(const IAddonInstanceHandler* handler);
     void ReleaseAddon(const IAddonInstanceHandler* handler);
@@ -66,8 +61,6 @@ namespace ADDON
     AddonDllPtr GetActiveAddon();
 
   private:
-    bool LoadAddonXML(const TiXmlElement* element, const std::string& addonPath);
-
     AddonInfoPtr m_addonInfo;
     std::vector<CBinaryAddonType> m_types;
 

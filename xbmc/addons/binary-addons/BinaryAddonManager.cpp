@@ -149,12 +149,6 @@ AddonPtr CBinaryAddonManager::GetRunningAddon(const std::string& addonId) const
 bool CBinaryAddonManager::AddAddonBaseEntry(BINARY_ADDON_LIST_ENTRY& entry)
 {
   BinaryAddonBasePtr base = std::make_shared<CBinaryAddonBase>(entry.second);
-  if (!base->Create())
-  {
-    CLog::Log(LOGERROR, "CBinaryAddonManager::%s: Failed to create base for '%s' and addon not usable", __FUNCTION__, base->ID().c_str());
-    return false;
-  }
-
   m_installedAddons[base->ID()] = base;
   if (entry.first)
     m_enabledAddons[base->ID()] = base;
