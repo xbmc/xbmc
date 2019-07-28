@@ -9,15 +9,12 @@
 #pragma once
 
 #include "AddonInstanceHandler.h"
-#include "BinaryAddonType.h"
 #include "addons/addoninfo/AddonInfo.h"
 #include "threads/CriticalSection.h"
 
 #include <memory>
 #include <string>
 #include <unordered_set>
-
-class TiXmlElement;
 
 namespace ADDON
 {
@@ -62,7 +59,6 @@ namespace ADDON
 
   private:
     AddonInfoPtr m_addonInfo;
-    std::vector<CBinaryAddonType> m_types;
 
     CCriticalSection m_critSection;
     AddonDllPtr m_activeAddon;
