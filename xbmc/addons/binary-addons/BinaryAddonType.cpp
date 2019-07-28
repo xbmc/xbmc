@@ -66,11 +66,11 @@ const char* CBinaryAddonType::GetPlatformLibraryName(const TiXmlElement* element
 #elif defined(TARGET_WINDOWS_STORE)
   libraryName = element->Attribute("library_windowsstore");
 #elif defined(TARGET_DARWIN)
-#if defined(TARGET_DARWIN_IOS)
-  libraryName = element->Attribute("library_ios");
-  if (libraryName == nullptr)
-#endif
+#if defined(TARGET_DARWIN_EMBEDDED)
+  libraryName = element->Attribute("library_darwin_embedded");
+#else
   libraryName = element->Attribute("library_osx");
+#endif
 #endif
 
   return libraryName;
