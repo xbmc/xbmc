@@ -387,7 +387,7 @@ void CPluginDirectory::AddSortMethod(int handle, SORT_METHOD sortMethod, const s
       }
     case SORT_METHOD_EPISODE:
       {
-        dir->m_listItems->AddSortMethod(SortByEpisodeNumber, 20359, LABEL_MASKS("%E. %T","%R"));
+        dir->m_listItems->AddSortMethod(SortByEpisodeNumber, 20359, LABEL_MASKS("%H. %T", "%R"));
         break;
       }
     case SORT_METHOD_PRODUCTIONCODE:
