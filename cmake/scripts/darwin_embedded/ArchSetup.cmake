@@ -57,6 +57,8 @@ enable_arc()
 # Xcode strips dead code by default which breaks wrapping
 set(CMAKE_XCODE_ATTRIBUTE_DEAD_CODE_STRIPPING OFF)
 
+option(ENABLE_XCODE_ADDONBUILD "Enable Xcode automatic addon building?" OFF)
+
 # Unify output directories for iOS/tvOS packaging scripts
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CORE_BUILD_DIR}/${CORE_BUILD_CONFIG})
 foreach(OUTPUTCONFIG ${CMAKE_CONFIGURATION_TYPES})
