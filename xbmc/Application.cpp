@@ -3737,7 +3737,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
         CServiceBroker::GetGUI()->GetWindowManager().Delete(WINDOW_SPLASH);
 
         // show the volumebar if the volume is muted
-        if (IsMuted() || GetVolume(false) <= VOLUME_MINIMUM)
+        if (IsMuted() || GetVolumeRatio() <= VOLUME_MINIMUM)
           ShowVolumeBar();
 
         if (!m_incompatibleAddons.empty())
@@ -4349,21 +4349,21 @@ void CApplication::SetHardwareVolume(float hardwareVolume)
     ae->SetVolume(hardwareVolume);
 }
 
-float CApplication::GetVolume(bool percentage /* = true */) const
+float CApplication::GetVolumePercent() const
 {
-  if (percentage)
-  {
-    // converts the hardware volume to a percentage
-    return m_volumeLevel * 100.0f;
-  }
+  // converts the hardware volume to a percentage
+  return m_volumeLevel * 100.0f;
+}
 
+float CApplication::GetVolumeRatio() const
+{
   return m_volumeLevel;
 }
 
 void CApplication::VolumeChanged()
 {
   CVariant data(CVariant::VariantTypeObject);
-  data["volume"] = GetVolume();
+  data["volume"] = GetVolumePercent();
   data["muted"] = m_muted;
   CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Application, "xbmc", "OnVolumeChanged", data);
 

@@ -931,7 +931,7 @@ unsigned int CDVDRadioRDSData::DecodeTA_TP(uint8_t *msgElement)
   {
     CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Warning, g_localizeStrings.Get(19021), g_localizeStrings.Get(29930));
     m_TA_TP_TrafficAdvisory = true;
-    m_TA_TP_TrafficVolume = g_application.GetVolume();
+    m_TA_TP_TrafficVolume = g_application.GetVolumePercent();
     float trafAdvVol = (float)CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt("pvrplayback.trafficadvisoryvolume");
     if (trafAdvVol)
       g_application.SetVolume(m_TA_TP_TrafficVolume+trafAdvVol);

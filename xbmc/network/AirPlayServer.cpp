@@ -714,7 +714,7 @@ void CAirPlayServer::backupVolume()
   CSingleLock lock(ServerInstanceLock);
 
   if (ServerInstance && ServerInstance->m_origVolume == -1)
-    ServerInstance->m_origVolume = (int)g_application.GetVolume();
+    ServerInstance->m_origVolume = (int)g_application.GetVolumePercent();
 }
 
 void CAirPlayServer::restoreVolume()
@@ -824,7 +824,7 @@ int CAirPlayServer::CTCPClient::ProcessRequest( std::string& responseHeader,
       }
       else if (volume >= 0 && volume <= 1)
       {
-        float oldVolume = g_application.GetVolume();
+        float oldVolume = g_application.GetVolumePercent();
         volume *= 100;
         if(oldVolume != volume && CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_SERVICES_AIRPLAYVOLUMECONTROL))
         {
