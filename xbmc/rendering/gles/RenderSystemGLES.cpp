@@ -477,6 +477,14 @@ void CRenderSystemGLES::InitialiseShaders()
       CLog::Log(LOGERROR, "GUI Shader gles_shader_rgba_bob_oes.frag - compile and link failed");
     }
   }
+
+  m_pShader[SM_TEXTURE_NOALPHA].reset(new CGLESShader("gles_shader_texture_noalpha.frag", defines));
+  if (!m_pShader[SM_TEXTURE_NOALPHA]->CompileAndLink())
+  {
+    m_pShader[SM_TEXTURE_NOALPHA]->Free();
+    m_pShader[SM_TEXTURE_NOALPHA].reset();
+    CLog::Log(LOGERROR, "GUI Shader gles_shader_texture_noalpha.frag - compile and link failed");
+  }
 }
 
 void CRenderSystemGLES::ReleaseShaders()
@@ -524,6 +532,10 @@ void CRenderSystemGLES::ReleaseShaders()
   if (m_pShader[SM_TEXTURE_RGBA_BOB_OES])
     m_pShader[SM_TEXTURE_RGBA_BOB_OES]->Free();
   m_pShader[SM_TEXTURE_RGBA_BOB_OES].reset();
+
+  if (m_pShader[SM_TEXTURE_NOALPHA])
+    m_pShader[SM_TEXTURE_NOALPHA]->Free();
+  m_pShader[SM_TEXTURE_NOALPHA].reset();
 }
 
 void CRenderSystemGLES::EnableGUIShader(ESHADERMETHOD method)
