@@ -255,7 +255,7 @@ void CRPRendererOpenGLES::Render(uint8_t alpha)
   glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
   glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
-  m_context.EnableGUIShader(GL_SHADER_METHOD::TEXTURE);
+  m_context.EnableGUIShader(GL_SHADER_METHOD::TEXTURE_NOALPHA);
 
   GLubyte colour[4];
   GLubyte idx[4] = {0, 1, 3, 2}; // Determines order of triangle strip
