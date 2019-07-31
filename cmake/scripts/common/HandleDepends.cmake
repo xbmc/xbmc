@@ -175,7 +175,7 @@ function(add_addon_depends addon searchpath)
                                   "${INSTALL_COMMAND}")
 
         if(CMAKE_VERSION VERSION_GREATER 3.5.9)
-          list(APPEND EXTERNALPROJECT_SETUP GIT_SHALLOW 1)
+          list(APPEND EXTERNALPROJECT_SETUP GIT_SHALLOW "")
         endif()
 
         # if there's an url defined we need to pass that to externalproject_add()
