@@ -189,10 +189,27 @@ void CGUIControllerWindow::OnEvent(const ADDON::CRepositoryUpdater::RepositoryUp
   UpdateButtons();
 }
 
+void CGUIControllerWindow::OnEvent(const ADDON::AddonEvent& event)
+{
+  using namespace ADDON;
+
+  if (typeid(event) == typeid(AddonEvents::Enabled) || // also called on install,
+      typeid(event) == typeid(AddonEvents::Disabled) || // not called on uninstall
+      typeid(event) == typeid(AddonEvents::UnInstalled) ||
+      typeid(event) == typeid(AddonEvents::ReInstalled))
+  {
+    if (CServiceBroker::GetAddonMgr().HasType(event.id, ADDON_GAME_CONTROLLER))
+    {
+      UpdateButtons();
+    }
+  }
+}
+
 void CGUIControllerWindow::OnInitWindow(void)
 {
   // subscribe to events
   CServiceBroker::GetRepositoryUpdater().Events().Subscribe(this, &CGUIControllerWindow::OnEvent);
+  CServiceBroker::GetAddonMgr().Events().Subscribe(this, &CGUIControllerWindow::OnEvent);
   // Get active game add-on
   GameClientPtr gameClient;
   {
@@ -241,6 +258,7 @@ void CGUIControllerWindow::OnInitWindow(void)
 void CGUIControllerWindow::OnDeinitWindow(int nextWindowID)
 {
   CServiceBroker::GetRepositoryUpdater().Events().Unsubscribe(this);
+  CServiceBroker::GetAddonMgr().Events().Unsubscribe(this);
 
   if (m_controllerList)
   {
