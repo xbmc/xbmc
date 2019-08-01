@@ -326,19 +326,22 @@ namespace vfs
     /// @ingroup cpp_kodi_vfs_CDirEntry
     /// @brief Constructor for VFS directory entry
     ///
-    /// @param[in] label   [opt] Name to use for entry
-    /// @param[in] path    [opt] Used path of the entry
-    /// @param[in] folder  [opt] If set entry used as folder
-    /// @param[in] size    [opt] If used as file, his size defined there
+    /// @param[in] label    [opt] Name to use for entry
+    /// @param[in] path     [opt] Used path of the entry
+    /// @param[in] folder   [opt] If set entry used as folder
+    /// @param[in] size     [opt] If used as file, his size defined there
+    /// @param[in] dateTime [opt] Date time of the entry
     ///
     CDirEntry(const std::string& label = "",
               const std::string& path = "",
               bool folder = false,
-              int64_t size = -1) :
+              int64_t size = -1,
+              time_t dateTime = 0):
       m_label(label),
       m_path(path),
       m_folder(folder),
-      m_size(size)
+      m_size(size),
+      m_dateTime(dateTime)
     {
     }
     //----------------------------------------------------------------------------

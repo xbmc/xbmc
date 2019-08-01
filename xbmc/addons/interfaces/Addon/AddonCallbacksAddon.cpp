@@ -612,6 +612,7 @@ static void CFileItemListToVFSDirEntries(VFSDirEntry* entries,
     entries[i].path = strdup(items[i]->GetPath().c_str());
     entries[i].size = items[i]->m_dwSize;
     entries[i].folder = items[i]->m_bIsFolder;
+    items[i]->m_dateTime.GetAsTime(entries[i].date_time);
   }
 }
 
