@@ -207,9 +207,6 @@ void CGUIControllerWindow::OnEvent(const ADDON::AddonEvent& event)
 
 void CGUIControllerWindow::OnInitWindow(void)
 {
-  // subscribe to events
-  CServiceBroker::GetRepositoryUpdater().Events().Subscribe(this, &CGUIControllerWindow::OnEvent);
-  CServiceBroker::GetAddonMgr().Events().Subscribe(this, &CGUIControllerWindow::OnEvent);
   // Get active game add-on
   GameClientPtr gameClient;
   {
@@ -253,6 +250,10 @@ void CGUIControllerWindow::OnInitWindow(void)
   CServiceBroker::GetPeripherals().EnableButtonMapping();
 
   UpdateButtons();
+
+  // subscribe to events
+  CServiceBroker::GetRepositoryUpdater().Events().Subscribe(this, &CGUIControllerWindow::OnEvent);
+  CServiceBroker::GetAddonMgr().Events().Subscribe(this, &CGUIControllerWindow::OnEvent);
 }
 
 void CGUIControllerWindow::OnDeinitWindow(int nextWindowID)
