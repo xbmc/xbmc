@@ -484,7 +484,7 @@ TEST(TestEvent, GroupTimedWait)
   EXPECT_TRUE(w3.result == NULL);
 
   // this should end given the wait is for only 50 millis
-  EXPECT_TRUE(waitThread3.timed_join(MILLIS(100)));
+  EXPECT_TRUE(waitThread3.timed_join(MILLIS(200)));
 
   EXPECT_TRUE(!w3.waiting);
   EXPECT_TRUE(w3.result == NULL);
