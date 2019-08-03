@@ -41,7 +41,6 @@ CShoutcastFile::CShoutcastFile() :
 
 CShoutcastFile::~CShoutcastFile()
 {
-  StopThread();
   Close();
 }
 
@@ -176,7 +175,7 @@ void CShoutcastFile::ReadTruncated(char* buf2, int size)
 
 int CShoutcastFile::IoControl(EIoControl control, void* payload)
 {
-  if (control == IOCTRL_SET_CACHE)
+  if (control == IOCTRL_SET_CACHE && m_cacheReader == nullptr)
   {
     m_cacheReader = (CFileCache*)payload;
     Create();
