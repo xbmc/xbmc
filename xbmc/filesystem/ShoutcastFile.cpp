@@ -79,7 +79,6 @@ bool CShoutcastFile::Open(const CURL& url)
   m_buffer = new char[16*255];
   m_tagPos = 1;
   m_tagChange.Set();
-  Create();
 
   return result;
 }
@@ -178,16 +177,16 @@ void CShoutcastFile::ReadTruncated(char* buf2, int size)
 int CShoutcastFile::IoControl(EIoControl control, void* payload)
 {
   if (control == IOCTRL_SET_CACHE)
+  {
     m_cacheReader = (CFileCache*)payload;
+    Create();
+  }
 
   return IFile::IoControl(control, payload);
 }
 
 void CShoutcastFile::Process()
 {
-  if (!m_cacheReader)
-    return;
-
   while (!m_bStop)
   {
     if (m_tagChange.WaitMSec(500))
