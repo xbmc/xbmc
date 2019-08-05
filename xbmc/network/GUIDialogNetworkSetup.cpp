@@ -446,10 +446,14 @@ void CGUIDialogNetworkSetup::UpdateAvailableProtocols()
     {
       const auto& info = addon->GetProtocolInfo();
       if (!addon->GetProtocolInfo().type.empty())
+      {
+        // only use first protocol
+        auto prots = StringUtils::Split(info.type, "|");
         m_protocols.emplace_back(Protocol{ info.supportPath, info.supportUsername,
           info.supportPassword, info.supportPort,
           info.supportBrowsing, info.defaultPort,
-          info.type, info.label });
+          prots.front(), info.label });
+      }
     }
   }
   // internals
