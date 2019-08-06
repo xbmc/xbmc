@@ -17,6 +17,96 @@
 
 using namespace ADDON;
 
+const std::string& CBinaryAddonBase::ID() const
+{
+  return m_addonInfo->ID();
+}
+
+const std::string& CBinaryAddonBase::Path() const
+{
+  return m_addonInfo->Path();
+}
+
+TYPE CBinaryAddonBase::MainType() const
+{
+  return m_addonInfo->MainType();
+}
+
+const std::string& CBinaryAddonBase::MainLibName() const
+{
+  return m_addonInfo->LibName();
+}
+
+bool CBinaryAddonBase::IsType(TYPE type) const
+{
+  return m_addonInfo->IsType(type);
+}
+
+const std::vector<CAddonType>& CBinaryAddonBase::Types() const
+{
+  return m_addonInfo->Types();
+}
+
+const CAddonType* CBinaryAddonBase::Type(TYPE type) const
+{
+  return m_addonInfo->Type(type);
+}
+
+const AddonVersion& CBinaryAddonBase::Version() const
+{
+  return m_addonInfo->Version();
+}
+
+const AddonVersion& CBinaryAddonBase::MinVersion() const
+{
+  return m_addonInfo->MinVersion();
+}
+
+const std::string& CBinaryAddonBase::Name() const
+{
+  return m_addonInfo->Name();
+}
+
+const std::string& CBinaryAddonBase::Summary() const
+{
+  return m_addonInfo->Summary();
+}
+
+const std::string& CBinaryAddonBase::Description() const
+{
+  return m_addonInfo->Description();
+}
+
+const std::string& CBinaryAddonBase::Author() const
+{
+  return m_addonInfo->Author();
+}
+
+const std::string& CBinaryAddonBase::ChangeLog() const
+{
+  return m_addonInfo->ChangeLog();
+}
+
+const std::string& CBinaryAddonBase::Icon() const
+{
+  return m_addonInfo->Icon();
+}
+
+const ArtMap& CBinaryAddonBase::Art() const
+{
+  return m_addonInfo->Art();
+}
+
+const std::string& CBinaryAddonBase::Disclaimer() const
+{
+  return m_addonInfo->Disclaimer();
+}
+
+bool CBinaryAddonBase::MeetsVersion(const AddonVersion& version) const
+{
+  return m_addonInfo->MeetsVersion(version);
+}
+
 AddonDllPtr CBinaryAddonBase::GetAddon(const IAddonInstanceHandler* handler)
 {
   if (handler == nullptr)

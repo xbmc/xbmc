@@ -29,28 +29,28 @@ namespace ADDON
   public:
     explicit CBinaryAddonBase(const AddonInfoPtr& addonInfo) : m_addonInfo(addonInfo) { }
 
-    const std::string& ID() const { return m_addonInfo->ID(); }
-    const std::string& Path() const { return m_addonInfo->Path(); }
+    const std::string& ID() const;
+    const std::string& Path() const;
 
-    TYPE MainType() const { return m_addonInfo->MainType(); }
-    const std::string& MainLibName() const { return m_addonInfo->LibName(); }
+    TYPE MainType() const;
+    const std::string& MainLibName() const;
 
-    bool IsType(TYPE type) const { return m_addonInfo->IsType(type); }
-    const std::vector<CAddonType>& Types() const { return m_addonInfo->Types(); }
-    const CAddonType* Type(TYPE type) const { return m_addonInfo->Type(type); }
+    bool IsType(TYPE type) const;
+    const std::vector<CAddonType>& Types() const;
+    const CAddonType* Type(TYPE type) const;
 
-    const AddonVersion& Version() const { return m_addonInfo->Version(); }
-    const AddonVersion& MinVersion() const { return m_addonInfo->MinVersion(); }
-    const std::string& Name() const { return m_addonInfo->Name(); }
-    const std::string& Summary() const { return m_addonInfo->Summary(); }
-    const std::string& Description() const { return m_addonInfo->Description(); }
-    const std::string& Author() const { return m_addonInfo->Author(); }
-    const std::string& ChangeLog() const { return m_addonInfo->ChangeLog(); }
-    const std::string& Icon() const { return m_addonInfo->Icon(); }
-    const ArtMap& Art() const { return m_addonInfo->Art(); }
-    const std::string& Disclaimer() const { return m_addonInfo->Disclaimer(); }
+    const AddonVersion& Version() const;
+    const AddonVersion& MinVersion() const;
+    const std::string& Name() const;
+    const std::string& Summary() const;
+    const std::string& Description() const;
+    const std::string& Author() const;
+    const std::string& ChangeLog() const;
+    const std::string& Icon() const;
+    const ArtMap& Art() const;
+    const std::string& Disclaimer() const;
 
-    bool MeetsVersion(const AddonVersion& version) const { return m_addonInfo->MeetsVersion(version); }
+    bool MeetsVersion(const AddonVersion& version) const;
 
     AddonDllPtr GetAddon(const IAddonInstanceHandler* handler);
     void ReleaseAddon(const IAddonInstanceHandler* handler);
