@@ -124,7 +124,6 @@ public:
   void Select(bool bOnOff);
   bool IsSelected() const;
 
-  bool HasIcon() const;
   bool HasOverlay() const;
   virtual bool IsFileItem() const { return false; };
 
