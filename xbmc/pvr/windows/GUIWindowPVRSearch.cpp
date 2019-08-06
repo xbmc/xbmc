@@ -156,7 +156,7 @@ void CGUIWindowPVRSearchBase::OnPrepareFileItems(CFileItemList &items)
     item->SetLabel(g_localizeStrings.Get(19140)); // "Search..."
     item->SetLabelPreformatted(true);
     item->SetSpecialSort(SortSpecialOnTop);
-    item->SetIconImage("DefaultTVShows.png");
+    item->SetArt("icon", "DefaultTVShows.png");
     items.Add(item);
   }
 }

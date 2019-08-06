@@ -127,7 +127,7 @@ CFileItemPtr CBlurayDirectory::GetTitle(const BLURAY_TITLE_INFO* title, const st
   chap = StringUtils::Format(g_localizeStrings.Get(25007).c_str(), title->chapter_count, StringUtils::SecondsToTimeString(duration).c_str());
   item->SetLabel2(chap);
   item->m_dwSize = 0;
-  item->SetIconImage("DefaultVideo.png");
+  item->SetArt("icon", "DefaultVideo.png");
   for(unsigned int i = 0; i < title->clip_count; ++i)
     item->m_dwSize += title->clips[i].pkt_count * 192;
 
@@ -188,7 +188,7 @@ void CBlurayDirectory::GetRoot(CFileItemList &items)
     item->SetPath(path.Get());
     item->m_bIsFolder = true;
     item->SetLabel(g_localizeStrings.Get(25002) /* All titles */);
-    item->SetIconImage("DefaultVideoPlaylists.png");
+    item->SetArt("icon", "DefaultVideoPlaylists.png");
     items.Add(item);
 
     const BLURAY_DISC_INFO* disc_info = bd_get_disc_info(m_bd);
@@ -203,7 +203,7 @@ void CBlurayDirectory::GetRoot(CFileItemList &items)
     item->SetPath(path.Get());
     item->m_bIsFolder = false;
     item->SetLabel(g_localizeStrings.Get(25003) /* Menus */);
-    item->SetIconImage("DefaultProgram.png");
+    item->SetArt("icon", "DefaultProgram.png");
     items.Add(item);
 }
 

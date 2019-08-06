@@ -239,7 +239,7 @@ bool CGUIWindowSettingsProfile::GetAutoLoginProfileChoice(int &iProfile)
   CFileItemList items;
   CFileItemPtr item(new CFileItem());
   item->SetLabel(g_localizeStrings.Get(37014)); // Last used profile
-  item->SetIconImage("DefaultUser.png");
+  item->SetArt("icon", "DefaultUser.png");
   items.Add(item);
 
   for (unsigned int i = 0; i < profileManager->GetNumberOfProfiles(); i++)
@@ -251,7 +251,7 @@ bool CGUIWindowSettingsProfile::GetAutoLoginProfileChoice(int &iProfile)
     std::string thumb = profile->getThumb();
     if (thumb.empty())
       thumb = "DefaultUser.png";
-    item->SetIconImage(thumb);
+    item->SetArt("icon", thumb);
     items.Add(item);
   }
 

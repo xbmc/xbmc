@@ -612,21 +612,21 @@ static void RootDirectory(CFileItemList& items)
   {
     CFileItemPtr item(new CFileItem("addons://user/", true));
     item->SetLabel(g_localizeStrings.Get(24998));
-    item->SetIconImage("DefaultAddonsInstalled.png");
+    item->SetArt("icon", "DefaultAddonsInstalled.png");
     items.Add(item);
   }
   if (CServiceBroker::GetAddonMgr().HasAvailableUpdates())
   {
     CFileItemPtr item(new CFileItem("addons://outdated/", true));
     item->SetLabel(g_localizeStrings.Get(24043));
-    item->SetIconImage("DefaultAddonsUpdates.png");
+    item->SetArt("icon", "DefaultAddonsUpdates.png");
     items.Add(item);
   }
   if (CAddonInstaller::GetInstance().IsDownloading())
   {
     CFileItemPtr item(new CFileItem("addons://downloading/", true));
     item->SetLabel(g_localizeStrings.Get(24067));
-    item->SetIconImage("DefaultNetwork.png");
+    item->SetArt("icon", "DefaultNetwork.png");
     items.Add(item);
   }
   if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_ADDONS_AUTOUPDATES) == ADDON::AUTO_UPDATES_ON
@@ -634,26 +634,26 @@ static void RootDirectory(CFileItemList& items)
   {
     CFileItemPtr item(new CFileItem("addons://recently_updated/", true));
     item->SetLabel(g_localizeStrings.Get(24004));
-    item->SetIconImage("DefaultAddonsRecentlyUpdated.png");
+    item->SetArt("icon", "DefaultAddonsRecentlyUpdated.png");
     items.Add(item);
   }
   if (CServiceBroker::GetAddonMgr().HasAddons(ADDON_REPOSITORY))
   {
     CFileItemPtr item(new CFileItem("addons://repos/", true));
     item->SetLabel(g_localizeStrings.Get(24033));
-    item->SetIconImage("DefaultAddonsRepo.png");
+    item->SetArt("icon", "DefaultAddonsRepo.png");
     items.Add(item);
   }
   {
     CFileItemPtr item(new CFileItem("addons://install/", false));
     item->SetLabel(g_localizeStrings.Get(24041));
-    item->SetIconImage("DefaultAddonsZip.png");
+    item->SetArt("icon", "DefaultAddonsZip.png");
     items.Add(item);
   }
   {
     CFileItemPtr item(new CFileItem("addons://search/", true));
     item->SetLabel(g_localizeStrings.Get(137));
-    item->SetIconImage("DefaultAddonsSearch.png");
+    item->SetArt("icon", "DefaultAddonsSearch.png");
     items.Add(item);
   }
 }
@@ -823,7 +823,7 @@ CFileItemPtr CAddonsDirectory::FileItemFromAddon(const AddonPtr &addon,
   item->SetLabel(strLabel);
   item->SetArt(addon->Art());
   item->SetArt("thumb", addon->Icon());
-  item->SetIconImage("DefaultAddon.png");
+  item->SetArt("icon", "DefaultAddon.png");
 
   //! @todo fix hacks that depends on these
   item->SetProperty("Addon.ID", addon->ID());

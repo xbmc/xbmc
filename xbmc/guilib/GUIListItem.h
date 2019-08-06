@@ -61,7 +61,6 @@ public:
   void SetLabel2(const std::string& strLabel);
   const std::string& GetLabel2() const;
 
-  void SetIconImage(const std::string& strIcon);
   const std::string& GetIconImage() const;
 
   void SetOverlayImage(GUIIconOverlay icon, bool bOnOff=false);

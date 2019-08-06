@@ -151,14 +151,6 @@ bool CGUIListItem::HasArt(const std::string &type) const
   return !GetArt(type).empty();
 }
 
-void CGUIListItem::SetIconImage(const std::string& strIcon)
-{
-  if (m_strIcon == strIcon)
-    return;
-  m_strIcon = strIcon;
-  SetInvalid();
-}
-
 const std::string& CGUIListItem::GetIconImage() const
 {
   return m_strIcon;

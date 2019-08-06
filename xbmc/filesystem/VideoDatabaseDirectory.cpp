@@ -47,7 +47,7 @@ bool CVideoDatabaseDirectory::GetDirectory(const CURL& url, CFileItemList &items
     {
       std::string strImage = GetIcon(item->GetPath());
       if (!strImage.empty() && CServiceBroker::GetGUI()->GetTextureManager().HasTexture(strImage))
-        item->SetIconImage(strImage);
+        item->SetArt("icon", strImage);
     }
     if (item->GetVideoInfoTag())
     {

@@ -87,7 +87,7 @@ bool CSourcesDirectory::GetDirectory(const VECSOURCES &sources, CFileItemList &i
     else
       strIcon = "DefaultHardDisk.png";
 
-    pItem->SetIconImage(strIcon);
+    pItem->SetArt("icon", strIcon);
     if (share.m_iHasLock == 2 && m_profileManager->GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE)
       pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_LOCKED);
     else
