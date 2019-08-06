@@ -10,7 +10,7 @@
 
 //==============================================================================
 ///
-/// \defgroup cpp_kodi_gui_gl Kodi OpenGL helpers
+/// \defgroup cpp_kodi_gui_gl OpenGL helpers
 /// \ingroup cpp_kodi_gui
 /// \brief Auxiliary functions for Open GL
 ///
@@ -31,7 +31,8 @@
 ///
 /// Following \ref GL_TYPE_STRING define can be used, for example, to manage 
 /// different folders for GL and GLES and make the selection easier.
-/// This are on OpenGL **"`GL`"** and on Open GL|ES **"`GLES`"**.
+/// This are on OpenGL <b>"GL"</b> and on Open GL|ES <b>"GLES"</b>.
+///
 /// **Example:**
 /// ~~~~~~~~~~~~~~~~~{.cpp}
 /// kodi::GetAddonPath("resources/shaders/" GL_TYPE_STRING "/frag.glsl");
@@ -42,6 +43,7 @@
 ///
 /// In addition, \ref BUFFER_OFFSET is declared in it which can be used to give an 
 /// offset on the array to GL.
+///
 /// **Example:**
 /// ~~~~~~~~~~~~~~~~~{.cpp}
 /// const struct PackedVertex {
