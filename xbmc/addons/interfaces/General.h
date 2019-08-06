@@ -12,6 +12,7 @@ extern "C"
 {
 
 struct AddonGlobalInterface;
+struct AddonKeyboardKeyTable;
 
 namespace ADDON
 {
@@ -52,6 +53,8 @@ namespace ADDON
     static void get_free_mem(void* kodiInstance, long* free, long* total, bool as_bytes);
     static int  get_global_idle_time(void* kodiBase);
     static char* get_current_skin_id(void* kodiBase);
+    static bool change_keyboard_layout(void* kodiBase, char** layout_name);
+    static bool get_keyboard_layout(void* kodiBase, char** layout_name, int modifier_key, AddonKeyboardKeyTable* c_layout);
     static void kodi_version(void* kodiBase, char** compile_name, int* major, int* minor, char** revision, char** tag, char** tagversion);
     //@}
   };

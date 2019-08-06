@@ -200,6 +200,8 @@ typedef struct AddonToKodiFuncTable_kodi_gui_dialogFileBrowser
   void (*clear_file_list)(void* kodiBase, char*** file_list, unsigned int entries);
 } AddonToKodiFuncTable_kodi_gui_dialogFileBrowser;
 
+// typedef void (*char_callback_t) (CGUIKeyboard *ref, const std::string &typedString);
+
 typedef struct AddonToKodiFuncTable_kodi_gui_dialogKeyboard
 {
   bool (*show_and_get_input_with_head)(void* kodiBase, const char* text_in, char** text_out, const char* heading, bool allow_empty_result, bool hiddenInput, unsigned int auto_close_ms);
@@ -302,12 +304,12 @@ typedef struct AddonToKodiFuncTable_kodi_gui_window
   void* (*create)(void* kodiBase, const char* xml_filename, const char* default_skin, bool as_dialog, bool is_media);
   void (*destroy)(void* kodiBase, void* handle);
   void (*set_callbacks)(void* kodiBase, void* handle, void* clienthandle,
-       bool (*)(void* handle),
-       bool (*)(void* handle, int),
-       bool (*)(void* handle, int),
-       bool (*)(void* handle, int),
-       void (*)(void* handle, int, gui_context_menu_pair*, unsigned int*),
-       bool (*)(void* handle, int, unsigned int));
+        bool (*CBInit)(void*),
+        bool (*CBFocus)(void*, int),
+        bool (*CBClick)(void*, int),
+        bool (*CBOnAction)(void*, int, uint32_t, wchar_t),
+        void (*CBGetContextButtons)(void*, int, gui_context_menu_pair*, unsigned int*),
+        bool (*CBOnContextButton)(void*, int, unsigned int));
   bool (*show)(void* kodiBase, void* handle);
   bool (*close)(void* kodiBase, void* handle);
   bool (*do_modal)(void* kodiBase, void* handle);
@@ -316,6 +318,8 @@ typedef struct AddonToKodiFuncTable_kodi_gui_window
   bool (*set_focus_id)(void* kodiBase, void* handle, int control_id);
   int (*get_focus_id)(void* kodiBase, void* handle);
   void (*set_control_label)(void* kodiBase, void* handle, int control_id, const char* label);
+  void (*set_control_visible)(void* kodiBase, void* handle, int control_id, bool visible);
+  void (*set_control_selected)(void* kodiBase, void* handle, int control_id, bool selected);
 
   /* Window property functions */
   void (*set_property)(void* kodiBase, void* handle, const char* key, const char* value);
