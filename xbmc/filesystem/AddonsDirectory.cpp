@@ -615,6 +615,12 @@ static void RootDirectory(CFileItemList& items)
     item->SetArt("icon", "DefaultAddonsInstalled.png");
     items.Add(item);
   }
+  {
+    const std::shared_ptr<CFileItem> item = std::make_shared<CFileItem>("addons://check_for_updates/", false);
+    item->SetLabel(g_localizeStrings.Get(24034));
+    item->SetArt("icon", "DefaultAddonRepository.png");
+    items.Add(item);
+  }
   if (CServiceBroker::GetAddonMgr().HasAvailableUpdates())
   {
     CFileItemPtr item(new CFileItem("addons://outdated/", true));

@@ -198,7 +198,9 @@ std::string CFavouritesService::GetExecutePath(const CFileItem &item, const std:
   {
     CURL url(item.GetPath());
     if (url.GetHostName() == "install")
-      execute = "installfromzip";
+      execute = "InstallFromZip";
+    else if (url.GetHostName() == "check_for_updates")
+      execute = "UpdateAddonRepos(showProgress)";
     else
       execute = StringUtils::Format("RunAddon(%s)", url.GetFileName().c_str());
   }

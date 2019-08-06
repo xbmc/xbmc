@@ -203,6 +203,11 @@ bool CGUIWindowAddonBrowser::OnClick(int iItem, const std::string &player)
     InstallFromZip();
     return true;
   }
+  if (item->GetPath() == "addons://check_for_updates/")
+  {
+    CServiceBroker::GetRepositoryUpdater().CheckForUpdates(true);
+    return true;
+  }
   if (item->GetPath() == "addons://update_all/")
   {
     UpdateAddons updater;
