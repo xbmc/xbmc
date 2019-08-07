@@ -213,6 +213,18 @@ bool CAddonInfoBuilder::ParseXML(const AddonInfoPtr& addon, const TiXmlElement* 
     if (point == "kodi.addon.metadata" || point == "xbmc.addon.metadata")
     {
       /*
+       * Parse addon.xml "<path">...</path>" (special related to repository path),
+       * do first and if present override the default. Also set assetBasePath to
+       * find screenshots and icons.
+       */
+      element = child->FirstChildElement("path");
+      if (element && element->GetText() != nullptr && !repo.datadir.empty())
+      {
+        addon->m_path = URIUtils::AddFileToFolder(repo.datadir, element->GetText());
+        assetBasePath = URIUtils::GetDirectory(URIUtils::AddFileToFolder(repo.artdir, element->GetText()));
+      }
+
+      /*
        * Parse addon.xml "<summary lang="..">...</summary>"
        */
       GetTextList(child, "summary", addon->m_summary);
