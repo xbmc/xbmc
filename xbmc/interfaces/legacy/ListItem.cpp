@@ -51,7 +51,7 @@ namespace XBMCAddon
       if (!iconImage.empty())
         CLog::Log(LOGWARNING, "Using iconImage in ListItem constructor results in NOP. Use setArt.");
       if (!thumbnailImage.empty())
-        item->SetArt("thumb",  thumbnailImage );
+        CLog::Log(LOGWARNING, "Using thumbnailImage in ListItem constructor results in NOP. Use setArt.");
       if (!path.empty())
         item->SetPath(path);
     }
@@ -114,11 +114,7 @@ namespace XBMCAddon
 
     void ListItem::setThumbnailImage(const String& thumbFilename)
     {
-      if (!item) return;
-      {
-        XBMCAddonUtils::GuiLock lock(languageHook, m_offscreen);
-        item->SetArt("thumb", thumbFilename);
-      }
+      CLog::Log(LOGWARNING, "setThumbnailImage results in NOP. Use setArt.");
     }
 
     void ListItem::setArt(const Properties& dictionary)

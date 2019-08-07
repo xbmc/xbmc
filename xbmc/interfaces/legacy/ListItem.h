@@ -218,6 +218,10 @@ namespace XBMCAddon
       /// @brief \python_func{ setThumbnailImage(thumbFilename) }
       ///-----------------------------------------------------------------------
       /// @python_v16 Deprecated. Use **setArt()**.
+      /// @python_v19 setThumbnailImage results in nop and will be removed in future
+      /// versions. Use **setArt()**.
+      ///
+      /// @todo Remove in future kodi versions
       ///
       setThumbnailImage(...);
 #else
