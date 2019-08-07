@@ -165,7 +165,8 @@ bool CGUIControllerWindow::OnMessage(CGUIMessage& message)
 
       if (controlId == CONTROL_CONTROLLER_LIST)
       {
-        if (m_controllerList && m_controllerList->Refresh())
+        const std::string controllerId = message.GetStringParam();
+        if (m_controllerList && m_controllerList->Refresh(controllerId))
         {
           CGUIDialog::OnMessage(message);
           bHandled = true;

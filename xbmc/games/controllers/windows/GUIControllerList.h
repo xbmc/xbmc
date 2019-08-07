@@ -35,7 +35,7 @@ namespace GAME
     // implementation of IControllerList
     virtual bool Initialize(void) override;
     virtual void Deinitialize(void) override;
-    virtual bool Refresh(void) override;
+    virtual bool Refresh(const std::string& controllerId) override;
     virtual void OnFocus(unsigned int controllerIndex) override;
     virtual void OnSelect(unsigned int controllerIndex) override;
     virtual int GetFocusedController() const override { return m_focusedController; }
