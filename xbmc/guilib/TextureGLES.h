@@ -31,7 +31,10 @@ struct TextureSwizzle
 class CGLESTexture : public CTexture
 {
 public:
-  CGLESTexture(unsigned int width = 0, unsigned int height = 0, XB_FMT format = XB_FMT_A8R8G8B8);
+  CGLESTexture(unsigned int width = 0,
+               unsigned int height = 0,
+               XB_FMT format = XB_FMT_A8R8G8B8,
+               GLuint texture = 0);
   ~CGLESTexture() override;
 
   // Implementation of CTexture
