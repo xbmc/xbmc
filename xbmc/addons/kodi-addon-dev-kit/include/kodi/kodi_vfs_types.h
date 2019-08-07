@@ -39,7 +39,7 @@ extern "C"
     char* label;             //!< item label
     char* title;             //!< item title
     char* path;              //!< item path
-    int num_props;           //!< Number of properties attached to item
+    unsigned int num_props;  //!< Number of properties attached to item
     VFSProperty* properties; //!< Properties
     time_t date_time;        //!< file creation date & time
     bool folder;             //!< Item is a folder
