@@ -512,8 +512,23 @@ bool CPluginDirectory::WaitOnScriptResult(const std::string &scriptPath, int scr
         if (!progress->WaitOnEvent(m_fetchComplete))
           m_cancelled = true;
       }
-      else if (!CGUIDialogBusy::WaitOnEvent(m_fetchComplete, 200))
-        m_cancelled = true;
+      else
+      {
+        CGUIDialogBusy* dialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogBusy>(WINDOW_DIALOG_BUSY);
+        if (dialog && !dialog->IsDialogRunning())
+        {
+          if (!CGUIDialogBusy::WaitOnEvent(m_fetchComplete, 200))
+            m_cancelled = true;
+        }
+        else
+        {
+          while (!m_fetchComplete.WaitMSec(1))
+          {
+            if (!ProcessRenderLoop(false))
+              break;
+          }
+        }
+      }
 
       scriptObs.Abort();
     }
@@ -542,6 +557,11 @@ bool CPluginDirectory::WaitOnScriptResult(const std::string &scriptPath, int scr
   }
 
   return !m_cancelled && m_success;
+}
+
+bool CPluginDirectory::ProcessRenderLoop(bool renderOnly)
+{
+  return CServiceBroker::GetGUI()->GetWindowManager().ProcessRenderLoop(renderOnly);
 }
 
 void CPluginDirectory::SetResolvedUrl(int handle, bool success, const CFileItem *resultItem)

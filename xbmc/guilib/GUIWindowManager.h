@@ -214,6 +214,9 @@ public:
 #ifdef _DEBUG
   void DumpTextureUse();
 #endif
+
+  bool ProcessRenderLoop(bool renderOnly);
+
 private:
   void RenderPass() const;
 
@@ -243,8 +246,6 @@ private:
    * \param force True to ignore checks which refuses opening the window, otherwise false
    */
   void ActivateWindow_Internal(int windowID, const std::vector<std::string> &params, bool swappingWindows, bool force = false);
-
-  bool ProcessRenderLoop(bool renderOnly);
 
   bool HandleAction(const CAction &action) const;
 
