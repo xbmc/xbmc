@@ -403,7 +403,7 @@ bool GetTimersRootDirectory(const CPVRTimersPath& path,
   item->SetLabel(g_localizeStrings.Get(19026)); // "Add timer..."
   item->SetLabelPreformatted(true);
   item->SetSpecialSort(SortSpecialOnTop);
-  item->SetIconImage("DefaultTVShows.png");
+  item->SetArt("icon", "DefaultTVShows.png");
   results.Add(item);
 
   bool bRadio = path.IsRadio();

@@ -9768,14 +9768,14 @@ std::string CGUIInfoManager::GetMultiInfoItemLabel(const CFileItem *item, int co
       case LISTITEM_PROGRAM_COUNT:
         return StringUtils::Format("%i", item->m_iprogramCount);
       case LISTITEM_ACTUAL_ICON:
-        return item->GetIconImage();
+        return item->GetArt("icon");
       case LISTITEM_ICON:
       {
         std::string strThumb = item->GetArt("thumb");
         if (strThumb.empty())
-          strThumb = item->GetIconImage();
+          strThumb = item->GetArt("icon");
         if (fallback)
-          *fallback = item->GetIconImage();
+          *fallback = item->GetArt("icon");
         return strThumb;
       }
       case LISTITEM_ART:

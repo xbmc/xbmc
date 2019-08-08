@@ -202,7 +202,7 @@ void CPictureThumbLoader::ProcessFoldersAndArchives(CFileItem *pItem)
             {
               ProcessFoldersAndArchives(item.get());
               pItem->SetArt("thumb", items[i]->GetArt("thumb"));
-              pItem->SetIconImage(items[i]->GetIconImage());
+              pItem->SetArt("icon", items[i]->GetArt("icon"));
               return;
             }
           }

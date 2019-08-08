@@ -346,7 +346,7 @@ void CGUIDialogSongInfo::OnGetArt()
     // Add item for current artwork, could a fallback from album/artist
     CFileItemPtr item(new CFileItem("thumb://Current", false));
     item->SetArt("thumb", m_song->GetArt(type));
-    item->SetIconImage("DefaultPicture.png");
+    item->SetArt("icon", "DefaultPicture.png");
     item->SetLabel(g_localizeStrings.Get(13512));  //! @todo: label fallback art so user knows?
     items.Add(item);
   }
@@ -357,7 +357,7 @@ void CGUIDialogSongInfo::OnGetArt()
     {
       CFileItemPtr item(new CFileItem("thumb://Thumb", false));
       item->SetArt("thumb", m_song->GetArt("thumb"));
-      item->SetIconImage("DefaultAlbumCover.png");
+      item->SetArt("icon", "DefaultAlbumCover.png");
       item->SetLabel(g_localizeStrings.Get(21371));
       items.Add(item);
     }

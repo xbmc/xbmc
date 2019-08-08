@@ -356,7 +356,7 @@ bool CGUIDialogPVRChannelManager::OnClickButtonChannelLogo(CGUIMessage &message)
 
   // and add a "no thumb" entry as well
   CFileItemPtr nothumb(new CFileItem("thumb://None", false));
-  nothumb->SetIconImage(pItem->GetIconImage());
+  nothumb->SetArt("icon", pItem->GetArt("icon"));
   nothumb->SetLabel(g_localizeStrings.Get(19283));
   items.Add(nothumb);
 

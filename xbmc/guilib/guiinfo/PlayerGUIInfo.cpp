@@ -289,9 +289,9 @@ bool CPlayerGUIInfo::GetLabel(std::string& value, const CFileItem *item, int con
     case PLAYER_ICON:
       value = item->GetArt("thumb");
       if (value.empty())
-        value = item->GetIconImage();
+        value = item->GetArt("icon");
       if (fallback)
-        *fallback = item->GetIconImage();
+        *fallback = item->GetArt("icon");
       return true;
     case PLAYER_CUTLIST:
     case PLAYER_CHAPTERS:

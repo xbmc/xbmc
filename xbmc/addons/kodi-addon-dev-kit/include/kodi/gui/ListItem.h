@@ -188,43 +188,6 @@ namespace gui
     //==========================================================================
     ///
     /// \ingroup cpp_kodi_gui_CListItem
-    /// @brief To get current icon image of entry
-    ///
-    /// @return The current icon image path (if present)
-    ///
-    std::string GetIconImage()
-    {
-      std::string image;
-      char* ret = m_interface->kodi_gui->listItem->get_icon_image(m_interface->kodiBase, m_controlHandle);
-      if (ret != nullptr)
-      {
-        if (std::strlen(ret))
-          image = ret;
-        m_interface->free_string(m_interface->kodiBase, ret);
-      }
-      return image;
-    }
-    //--------------------------------------------------------------------------
-
-    //==========================================================================
-    ///
-    /// \ingroup cpp_kodi_gui_CListItem
-    /// @brief To set icon image of entry
-    ///
-    /// @param image                    The image to use for.
-    ///
-    /// @note Alternative can be \ref SetArt used
-    ///
-    ///
-    void SetIconImage(const std::string& image)
-    {
-      m_interface->kodi_gui->listItem->set_icon_image(m_interface->kodiBase, m_controlHandle, image.c_str());
-    }
-    //--------------------------------------------------------------------------
-
-    //==========================================================================
-    ///
-    /// \ingroup cpp_kodi_gui_CListItem
     /// @brief Sets the listitem's art
     ///
     /// @param[in] type                 Type of Art to set

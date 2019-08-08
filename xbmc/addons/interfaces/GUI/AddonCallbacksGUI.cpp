@@ -122,8 +122,6 @@ CAddonCallbacksGUI::CAddonCallbacksGUI(CAddon* addon)
   m_callbacks->ListItem_SetLabel              = CAddonCallbacksGUI::ListItem_SetLabel;
   m_callbacks->ListItem_GetLabel2             = CAddonCallbacksGUI::ListItem_GetLabel2;
   m_callbacks->ListItem_SetLabel2             = CAddonCallbacksGUI::ListItem_SetLabel2;
-  m_callbacks->ListItem_SetIconImage          = CAddonCallbacksGUI::ListItem_SetIconImage;
-  m_callbacks->ListItem_SetThumbnailImage     = CAddonCallbacksGUI::ListItem_SetThumbnailImage;
   m_callbacks->ListItem_SetInfo               = CAddonCallbacksGUI::ListItem_SetInfo;
   m_callbacks->ListItem_SetProperty           = CAddonCallbacksGUI::ListItem_SetProperty;
   m_callbacks->ListItem_GetProperty           = CAddonCallbacksGUI::ListItem_GetProperty;
@@ -1495,7 +1493,7 @@ GUIHANDLE CAddonCallbacksGUI::ListItem_Create(void *addonData, const char *label
   if (label2)
     pItem->SetLabel2(label2);
   if (iconImage)
-    pItem->SetIconImage(iconImage);
+    pItem->SetArt("icon", iconImage);
   if (thumbnailImage)
     pItem->SetArt("thumb", thumbnailImage);
   if (path)
@@ -1545,24 +1543,6 @@ void CAddonCallbacksGUI::ListItem_SetLabel2(void *addonData, GUIHANDLE handle, c
     return;
 
   static_cast<CFileItem*>(handle)->SetLabel2(label);
-}
-
-void CAddonCallbacksGUI::ListItem_SetIconImage(void *addonData, GUIHANDLE handle, const char *image)
-{
-  CAddonInterfaces* helper = (CAddonInterfaces*) addonData;
-  if (!helper || !handle)
-    return;
-
-  static_cast<CFileItem*>(handle)->SetIconImage(image);
-}
-
-void CAddonCallbacksGUI::ListItem_SetThumbnailImage(void *addonData, GUIHANDLE handle, const char *image)
-{
-  CAddonInterfaces* helper = (CAddonInterfaces*) addonData;
-  if (!helper || !handle)
-    return;
-
-  static_cast<CFileItem*>(handle)->SetArt("thumb", image);
 }
 
 void CAddonCallbacksGUI::ListItem_SetInfo(void *addonData, GUIHANDLE handle, const char *info)

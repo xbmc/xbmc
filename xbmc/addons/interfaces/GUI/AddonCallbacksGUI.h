@@ -121,8 +121,6 @@ public:
   static void         ListItem_SetLabel(void *addonData, GUIHANDLE handle, const char *label);
   static const char * ListItem_GetLabel2(void *addonData, GUIHANDLE handle);
   static void         ListItem_SetLabel2(void *addonData, GUIHANDLE handle, const char *label);
-  static void         ListItem_SetIconImage(void *addonData, GUIHANDLE handle, const char *image);
-  static void         ListItem_SetThumbnailImage(void *addonData, GUIHANDLE handle, const char *image);
   static void         ListItem_SetInfo(void *addonData, GUIHANDLE handle, const char *info);
   static void         ListItem_SetProperty(void *addonData, GUIHANDLE handle, const char *key, const char *value);
   static const char * ListItem_GetProperty(void *addonData, GUIHANDLE handle, const char *key);

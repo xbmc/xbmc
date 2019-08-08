@@ -164,14 +164,14 @@ CFileItem::CFileItem(const CPVREpgInfoTagPtr& tag)
   m_dateTime = tag->StartAsLocalTime();
 
   if (!tag->Icon().empty())
-    SetIconImage(tag->Icon());
+    SetArt("icon", tag->Icon());
   else
   {
     const std::shared_ptr<CPVRChannel> channel = CServiceBroker::GetPVRManager().ChannelGroups()->GetChannelForEpgTag(tag);
     if (channel)
     {
       if (!channel->IconPath().empty())
-        SetIconImage(channel->IconPath());
+        SetArt("icon", channel->IconPath());
 
       FillMusicInfoTag(channel, tag);
     }
@@ -192,11 +192,11 @@ CFileItem::CFileItem(const CPVRChannelPtr& channel)
   SetLabel(channel->ChannelName());
 
   if (!channel->IconPath().empty())
-    SetIconImage(channel->IconPath());
+    SetArt("icon", channel->IconPath());
   else if (channel->IsRadio())
-    SetIconImage("DefaultAudio.png");
+    SetArt("icon", "DefaultAudio.png");
   else
-    SetIconImage("DefaultTVShows.png");
+    SetArt("icon", "DefaultTVShows.png");
 
   SetProperty("channelid", channel->ChannelID());
   SetProperty("path", channel->Path());
@@ -219,7 +219,6 @@ CFileItem::CFileItem(const CPVRRecordingPtr& record)
   // Set art
   if (!record->m_strIconPath.empty())
   {
-    SetIconImage(record->m_strIconPath);
     SetArt("icon", record->m_strIconPath);
   }
 
@@ -243,7 +242,7 @@ CFileItem::CFileItem(const CPVRTimerInfoTagPtr& timer)
   m_dateTime = timer->StartAsLocalTime();
 
   if (!timer->ChannelIcon().empty())
-    SetIconImage(timer->ChannelIcon());
+    SetArt("icon", timer->ChannelIcon());
 
   FillInMimeType(false);
 }
@@ -363,7 +362,7 @@ CFileItem::CFileItem(const EventPtr& eventLogEntry)
   SetLabel(eventLogEntry->GetLabel());
   m_dateTime = eventLogEntry->GetDateTime();
   if (!eventLogEntry->GetIcon().empty())
-    SetIconImage(eventLogEntry->GetIcon());
+    SetArt("icon", eventLogEntry->GetIcon());
 }
 
 CFileItem::~CFileItem(void)
@@ -1317,7 +1316,7 @@ void CFileItem::FillInDefaultIcon()
   //   for .. folders the default picture for parent folder
   //   for other folders the defaultFolder.png
 
-  if (GetIconImage().empty())
+  if (GetArt("icon").empty())
   {
     if (!m_bIsFolder)
     {
@@ -1329,75 +1328,75 @@ void CFileItem::FillInDefaultIcon()
       if (IsPVRChannel())
       {
         if (GetPVRChannelInfoTag()->IsRadio())
-          SetIconImage("DefaultAudio.png");
+          SetArt("icon", "DefaultAudio.png");
         else
-          SetIconImage("DefaultTVShows.png");
+          SetArt("icon", "DefaultTVShows.png");
       }
       else if ( IsLiveTV() )
       {
         // Live TV Channel
-        SetIconImage("DefaultTVShows.png");
+        SetArt("icon", "DefaultTVShows.png");
       }
       else if ( URIUtils::IsArchive(m_strPath) )
       { // archive
-        SetIconImage("DefaultFile.png");
+        SetArt("icon", "DefaultFile.png");
       }
       else if ( IsUsablePVRRecording() )
       {
         // PVR recording
-        SetIconImage("DefaultVideo.png");
+        SetArt("icon", "DefaultVideo.png");
       }
       else if ( IsDeletedPVRRecording() )
       {
         // PVR deleted recording
-        SetIconImage("DefaultVideoDeleted.png");
+        SetArt("icon", "DefaultVideoDeleted.png");
       }
       else if ( IsAudio() )
       {
         // audio
-        SetIconImage("DefaultAudio.png");
+        SetArt("icon", "DefaultAudio.png");
       }
       else if ( IsVideo() )
       {
         // video
-        SetIconImage("DefaultVideo.png");
+        SetArt("icon", "DefaultVideo.png");
       }
       else if (IsPVRTimer())
       {
-        SetIconImage("DefaultVideo.png");
+        SetArt("icon", "DefaultVideo.png");
       }
       else if ( IsPicture() )
       {
         // picture
-        SetIconImage("DefaultPicture.png");
+        SetArt("icon", "DefaultPicture.png");
       }
       else if ( IsPlayList() || IsSmartPlayList())
       {
-        SetIconImage("DefaultPlaylist.png");
+        SetArt("icon", "DefaultPlaylist.png");
       }
       else if ( IsPythonScript() )
       {
-        SetIconImage("DefaultScript.png");
+        SetArt("icon", "DefaultScript.png");
       }
       else
       {
         // default icon for unknown file type
-        SetIconImage("DefaultFile.png");
+        SetArt("icon", "DefaultFile.png");
       }
     }
     else
     {
       if ( IsPlayList() || IsSmartPlayList())
       {
-        SetIconImage("DefaultPlaylist.png");
+        SetArt("icon", "DefaultPlaylist.png");
       }
       else if (IsParentFolder())
       {
-        SetIconImage("DefaultFolderBack.png");
+        SetArt("icon", "DefaultFolderBack.png");
       }
       else
       {
-        SetIconImage("DefaultFolder.png");
+        SetArt("icon", "DefaultFolder.png");
       }
     }
   }
@@ -1636,8 +1635,6 @@ void CFileItem::UpdateInfo(const CFileItem &item, bool replaceLabels /*=true*/)
     SetLabel2(item.GetLabel2());
   if (!item.GetArt().empty())
     SetArt(item.GetArt());
-  if (!item.GetIconImage().empty())
-    SetIconImage(item.GetIconImage());
   AppendProperties(item);
 }
 

@@ -278,8 +278,6 @@ typedef struct AddonToKodiFuncTable_kodi_gui_listItem
   void (*set_label)(void* kodiBase, void* handle, const char* label);
   char* (*get_label2)(void* kodiBase, void* handle);
   void (*set_label2)(void* kodiBase, void* handle, const char* label);
-  char* (*get_icon_image)(void* kodiBase, void* handle);
-  void (*set_icon_image)(void* kodiBase, void* handle, const char* image);
   char* (*get_art)(void* kodiBase, void* handle, const char* type);
   void (*set_art)(void* kodiBase, void* handle, const char* type, const char* image);
   char* (*get_path)(void* kodiBase, void* handle);

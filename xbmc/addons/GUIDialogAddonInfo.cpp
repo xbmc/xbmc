@@ -228,13 +228,13 @@ int CGUIDialogAddonInfo::AskForVersion(std::vector<std::pair<AddonVersion, std::
     if (versionInfo.second == LOCAL_CACHE)
     {
       item.SetLabel2(g_localizeStrings.Get(24095));
-      item.SetIconImage("DefaultAddonRepository.png");
+      item.SetArt("icon", "DefaultAddonRepository.png");
       dialog->Add(item);
     }
     else if (CServiceBroker::GetAddonMgr().GetAddon(versionInfo.second, repo, ADDON_REPOSITORY))
     {
       item.SetLabel2(repo->Name());
-      item.SetIconImage(repo->Icon());
+      item.SetArt("icon", repo->Icon());
       dialog->Add(item);
     }
   }
@@ -497,7 +497,7 @@ bool CGUIDialogAddonInfo::ShowDependencyList(const std::vector<ADDON::Dependency
                                           g_localizeStrings.Get(39018).c_str());
 
       item->SetLabel2(str.str());
-      item->SetIconImage(info_addon->Icon());
+      item->SetArt("icon", info_addon->Icon());
       item->SetProperty("addon_id", it.id);
       items.Add(item);
     }

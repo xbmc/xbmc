@@ -241,7 +241,7 @@ bool CGUIDialogFavourites::ChooseAndSetNewThumbnail(const CFileItemPtr &item)
   }
 
   const CFileItemPtr none(std::make_shared<CFileItem>("thumb://None", false));
-  none->SetIconImage(item->GetIconImage());
+  none->SetArt("icon", item->GetArt("icon"));
   none->SetLabel(g_localizeStrings.Get(20018)); // No thumb
   prefilledItems.Add(none);
 

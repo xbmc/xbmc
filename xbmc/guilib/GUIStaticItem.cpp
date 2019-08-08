@@ -36,7 +36,7 @@ CGUIStaticItem::CGUIStaticItem(const TiXmlElement *item, int parentID) : CFileIt
   SetLabel(label.GetLabel(parentID));
   SetLabel2(label2.GetLabel(parentID));
   SetArt("thumb", thumb.GetLabel(parentID, true));
-  SetIconImage(icon.GetLabel(parentID, true));
+  SetArt("icon", icon.GetLabel(parentID, true));
   if (!label.IsConstant())  m_info.push_back(std::make_pair(label, "label"));
   if (!label2.IsConstant()) m_info.push_back(std::make_pair(label2, "label2"));
   if (!thumb.IsConstant())  m_info.push_back(std::make_pair(thumb, "thumb"));
@@ -79,7 +79,7 @@ void CGUIStaticItem::UpdateProperties(int contextWindow)
     else if (StringUtils::EqualsNoCase(name, "thumb"))
       SetArt("thumb", value);
     else if (StringUtils::EqualsNoCase(name, "icon"))
-      SetIconImage(value);
+      SetArt("icon", value);
     else
       SetProperty(name, value.c_str());
   }

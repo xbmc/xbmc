@@ -108,7 +108,7 @@ std::string CPVRThumbLoader::CreateChannelGroupThumb(const CFileItem& channelGro
     std::vector<std::string> channelIcons;
     for (const auto& channel : channels)
     {
-      const std::string& icon = channel->GetIconImage();
+      const std::string& icon = channel->GetArt("icon");
       if (!icon.empty())
         channelIcons.emplace_back(icon);
 

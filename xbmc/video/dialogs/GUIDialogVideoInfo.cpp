@@ -325,7 +325,7 @@ void CGUIDialogVideoInfo::SetMovie(const CFileItem *item)
       CFileItemPtr item(new CFileItem(*it));
       if (!thumb.empty())
         item->SetArt("thumb", thumb);
-      item->SetIconImage("DefaultArtist.png");
+      item->SetArt("icon", "DefaultArtist.png");
       m_castList->Add(item);
     }
   }
@@ -357,7 +357,7 @@ void CGUIDialogVideoInfo::SetMovie(const CFileItem *item)
           CTextureCache::GetInstance().BackgroundCacheImage(thumb);
         }
       }
-      item->SetIconImage("DefaultActor.png");
+      item->SetArt("icon", "DefaultActor.png");
       item->SetLabel(it->strName);
       item->SetLabel2(it->strRole);
       m_castList->Add(item);
@@ -789,7 +789,7 @@ void CGUIDialogVideoInfo::OnGetArt()
     {
       CFileItemPtr item(new CFileItem("thumb://Current", false));
       item->SetArt("thumb", m_movieItem->GetArt(type));
-      item->SetIconImage("DefaultPicture.png");
+      item->SetArt("icon", "DefaultPicture.png");
       item->SetLabel(g_localizeStrings.Get(13512));
       items.Add(item);
     }
@@ -797,7 +797,7 @@ void CGUIDialogVideoInfo::OnGetArt()
     { // add the 'thumb' type in
       CFileItemPtr item(new CFileItem("thumb://Thumb", false));
       item->SetArt("thumb", m_movieItem->GetArt("thumb"));
-      item->SetIconImage("DefaultPicture.png");
+      item->SetArt("icon", "DefaultPicture.png");
       item->SetLabel(g_localizeStrings.Get(13512));
       items.Add(item);
     }
@@ -832,7 +832,7 @@ void CGUIDialogVideoInfo::OnGetArt()
       std::string strItemPath = StringUtils::Format("thumb://Remote%i", i);
       CFileItemPtr item(new CFileItem(strItemPath, false));
       item->SetArt("thumb", thumbs[i]);
-      item->SetIconImage("DefaultPicture.png");
+      item->SetArt("icon", "DefaultPicture.png");
       item->SetLabel(g_localizeStrings.Get(13513));
 
       //! @todo Do we need to clear the cached image?
@@ -845,7 +845,7 @@ void CGUIDialogVideoInfo::OnGetArt()
     {
       CFileItemPtr item(new CFileItem("thumb://Local", false));
       item->SetArt("thumb", localThumb);
-      item->SetIconImage("DefaultPicture.png");
+      item->SetArt("icon", "DefaultPicture.png");
       item->SetLabel(g_localizeStrings.Get(13514));
       items.Add(item);
     }
@@ -854,7 +854,7 @@ void CGUIDialogVideoInfo::OnGetArt()
       // which is probably the IMDb thumb.  These could be wrong, so allow the user
       // to delete the incorrect thumb
       CFileItemPtr item(new CFileItem("thumb://None", false));
-      item->SetIconImage("DefaultPicture.png");
+      item->SetArt("icon", "DefaultPicture.png");
       item->SetLabel(g_localizeStrings.Get(13515));
       items.Add(item);
     }
@@ -920,7 +920,7 @@ void CGUIDialogVideoInfo::OnGetFanart()
   {
     CFileItemPtr itemCurrent(new CFileItem("fanart://Current",false));
     itemCurrent->SetArt("thumb", m_movieItem->GetArt("fanart"));
-    itemCurrent->SetIconImage("DefaultPicture.png");
+    itemCurrent->SetArt("icon", "DefaultPicture.png");
     itemCurrent->SetLabel(g_localizeStrings.Get(20440));
     items.Add(itemCurrent);
   }
@@ -954,7 +954,7 @@ void CGUIDialogVideoInfo::OnGetFanart()
     CFileItemPtr item(new CFileItem(strItemPath, false));
     std::string thumb = m_movieItem->GetVideoInfoTag()->m_fanart.GetPreviewURL(i);
     item->SetArt("thumb", CTextureUtils::GetWrappedThumbURL(thumb));
-    item->SetIconImage("DefaultPicture.png");
+    item->SetArt("icon", "DefaultPicture.png");
     item->SetLabel(g_localizeStrings.Get(20441));
 
     //! @todo Do we need to clear the cached image?
@@ -968,7 +968,7 @@ void CGUIDialogVideoInfo::OnGetFanart()
   {
     CFileItemPtr itemLocal(new CFileItem("fanart://Local",false));
     itemLocal->SetArt("thumb", strLocal);
-    itemLocal->SetIconImage("DefaultPicture.png");
+    itemLocal->SetArt("icon", "DefaultPicture.png");
     itemLocal->SetLabel(g_localizeStrings.Get(20438));
 
     //! @todo Do we need to clear the cached image?
@@ -978,7 +978,7 @@ void CGUIDialogVideoInfo::OnGetFanart()
   else
   {
     CFileItemPtr itemNone(new CFileItem("fanart://None", false));
-    itemNone->SetIconImage("DefaultPicture.png");
+    itemNone->SetArt("icon", "DefaultPicture.png");
     itemNone->SetLabel(g_localizeStrings.Get(20439));
     items.Add(itemNone);
   }
@@ -1901,7 +1901,7 @@ bool CGUIDialogVideoInfo::ManageVideoItemArtwork(const CFileItemPtr &item, const
     item->SetLabel(g_localizeStrings.Get(13512));
     items.Add(item);
   }
-  noneitem->SetIconImage("DefaultFolder.png");
+  noneitem->SetArt("icon", "DefaultFolder.png");
   noneitem->SetLabel(g_localizeStrings.Get(13515));
 
   bool local = false;
@@ -1941,7 +1941,7 @@ bool CGUIDialogVideoInfo::ManageVideoItemArtwork(const CFileItemPtr &item, const
     {
       CFileItemPtr item(new CFileItem(StringUtils::Format("thumb://Remote{0}", i), false));
       item->SetArt("thumb", thumbs[i]);
-      item->SetIconImage("DefaultPicture.png");
+      item->SetArt("icon", "DefaultPicture.png");
       item->SetLabel(g_localizeStrings.Get(13513));
       items.Add(item);
 
@@ -1962,11 +1962,11 @@ bool CGUIDialogVideoInfo::ManageVideoItemArtwork(const CFileItemPtr &item, const
         local = true;
       }
       else
-        noneitem->SetIconImage("DefaultActor.png");
+        noneitem->SetArt("icon", "DefaultActor.png");
     }
 
     if (type == MediaTypeVideoCollection)
-      noneitem->SetIconImage("DefaultVideo.png");
+      noneitem->SetArt("icon", "DefaultVideo.png");
   }
   else
   {
@@ -1994,7 +1994,7 @@ bool CGUIDialogVideoInfo::ManageVideoItemArtwork(const CFileItemPtr &item, const
       local = true;
     }
     else
-      noneitem->SetIconImage("DefaultArtist.png");
+      noneitem->SetArt("icon", "DefaultArtist.png");
   }
 
   if (!local)
@@ -2194,7 +2194,7 @@ bool CGUIDialogVideoInfo::OnGetFanart(const CFileItemPtr &videoItem)
       {
         CFileItemPtr item(new CFileItem(StringUtils::Format("fanart://Remote{0}", iFanart++), false));
         item->SetArt("thumb", fanart);
-        item->SetIconImage("DefaultPicture.png");
+        item->SetArt("icon", "DefaultPicture.png");
         item->SetLabel(g_localizeStrings.Get(20441)); // "Remote fanart"
         items.Add(item);
       }
@@ -2210,7 +2210,7 @@ bool CGUIDialogVideoInfo::OnGetFanart(const CFileItemPtr &videoItem)
           CFileItemPtr item(new CFileItem(strItemPath, false));
           std::string thumb = movies[i]->GetVideoInfoTag()->m_fanart.GetPreviewURL(j);
           item->SetArt("thumb", CTextureUtils::GetWrappedThumbURL(thumb));
-          item->SetIconImage("DefaultPicture.png");
+          item->SetArt("icon", "DefaultPicture.png");
           item->SetLabel(g_localizeStrings.Get(20441));
           thumbs.push_back(movies[i]->GetVideoInfoTag()->m_fanart.GetImageURL(j));
 
@@ -2223,7 +2223,7 @@ bool CGUIDialogVideoInfo::OnGetFanart(const CFileItemPtr &videoItem)
   // add the none option
   {
     CFileItemPtr itemNone(new CFileItem("fanart://None", false));
-    itemNone->SetIconImage("DefaultVideo.png");
+    itemNone->SetArt("icon", "DefaultVideo.png");
     itemNone->SetLabel(g_localizeStrings.Get(20439));
     items.Add(itemNone);
   }

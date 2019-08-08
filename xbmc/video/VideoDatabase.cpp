@@ -6363,9 +6363,9 @@ bool CVideoDatabase::GetActorsNav(const std::string& strBaseDir, CFileItemList& 
     {
       CFileItemPtr pItem = items[i];
       if (idContent == VIDEODB_CONTENT_MUSICVIDEOS)
-        pItem->SetIconImage("DefaultArtist.png");
+        pItem->SetArt("icon", "DefaultArtist.png");
       else
-        pItem->SetIconImage("DefaultActor.png");
+        pItem->SetArt("icon", "DefaultActor.png");
     }
     return true;
   }

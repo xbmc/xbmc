@@ -151,19 +151,6 @@ bool CGUIListItem::HasArt(const std::string &type) const
   return !GetArt(type).empty();
 }
 
-void CGUIListItem::SetIconImage(const std::string& strIcon)
-{
-  if (m_strIcon == strIcon)
-    return;
-  m_strIcon = strIcon;
-  SetInvalid();
-}
-
-const std::string& CGUIListItem::GetIconImage() const
-{
-  return m_strIcon;
-}
-
 void CGUIListItem::SetOverlayImage(GUIIconOverlay icon, bool bOnOff)
 {
   GUIIconOverlay newIcon = (bOnOff) ? GUIIconOverlay((int)(icon)+1) : icon;
@@ -199,11 +186,6 @@ void CGUIListItem::Select(bool bOnOff)
   m_bSelected = bOnOff;
 }
 
-bool CGUIListItem::HasIcon() const
-{
-  return (m_strIcon.size() != 0);
-}
-
 bool CGUIListItem::HasOverlay() const
 {
   return (m_overlayIcon != CGUIListItem::ICON_OVERLAY_NONE);
@@ -222,7 +204,6 @@ CGUIListItem& CGUIListItem::operator =(const CGUIListItem& item)
   m_sortLabel = item.m_sortLabel;
   FreeMemory();
   m_bSelected = item.m_bSelected;
-  m_strIcon = item.m_strIcon;
   m_overlayIcon = item.m_overlayIcon;
   m_bIsFolder = item.m_bIsFolder;
   m_mapProperties = item.m_mapProperties;
@@ -240,7 +221,6 @@ void CGUIListItem::Archive(CArchive &ar)
     ar << m_strLabel;
     ar << m_strLabel2;
     ar << m_sortLabel;
-    ar << m_strIcon;
     ar << m_bSelected;
     ar << m_overlayIcon;
     ar << (int)m_mapProperties.size();
@@ -268,7 +248,6 @@ void CGUIListItem::Archive(CArchive &ar)
     ar >> m_strLabel;
     ar >> m_strLabel2;
     ar >> m_sortLabel;
-    ar >> m_strIcon;
     ar >> m_bSelected;
 
     int overlayIcon;
@@ -310,7 +289,6 @@ void CGUIListItem::Serialize(CVariant &value)
   value["strLabel"] = m_strLabel;
   value["strLabel2"] = m_strLabel2;
   value["sortLabel"] = m_sortLabel;
-  value["strIcon"] = m_strIcon;
   value["selected"] = m_bSelected;
 
   for (const auto& it : m_mapProperties)
@@ -325,7 +303,6 @@ void CGUIListItem::FreeIcons()
 {
   FreeMemory();
   ClearArt();
-  m_strIcon = "";
   SetInvalid();
 }
 

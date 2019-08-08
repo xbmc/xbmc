@@ -303,7 +303,7 @@ void CPeripheralBus::GetDirectory(const std::string &strPath, CFileItemList &ite
 
     peripheralFile->SetProperty("version", strVersion);
     peripheralFile->SetLabel2(strDetails);
-    peripheralFile->SetIconImage("DefaultAddon.png");
+    peripheralFile->SetArt("icon", "DefaultAddon.png");
     items.Add(peripheralFile);
   }
 }
