@@ -230,19 +230,21 @@ void CGUIDialogProgress::UpdateControls()
   else
     SET_CONTROL_HIDDEN(CONTROL_PROGRESS_BAR);
 
-  // special handling for choice 0 mapped to cancel button
-  if (bShowCancel)
-    SET_CONTROL_VISIBLE(CONTROL_CHOICES_START);
-  else
-    SET_CONTROL_HIDDEN(CONTROL_CHOICES_START);
-
+  bool bAllHidden = true;
   for (int i = 0; i < DIALOG_MAX_CHOICES; ++i)
   {
     if (choices[i])
+    {
+      bAllHidden = false;
       SET_CONTROL_VISIBLE(CONTROL_CHOICES_START + i);
+    }
     else
       SET_CONTROL_HIDDEN(CONTROL_CHOICES_START + i);
   }
+
+  // special handling for choice 0 mapped to cancel button
+  if (bShowCancel && bAllHidden)
+    SET_CONTROL_VISIBLE(CONTROL_CHOICES_START);
 }
 
 void CGUIDialogProgress::Process(unsigned int currentTime, CDirtyRegionList &dirtyregions)
@@ -257,14 +259,20 @@ void CGUIDialogProgress::OnInitWindow()
 {
   UpdateControls();
 
+  bool bNoFocus = true;
   for (int i = 0; i < DIALOG_MAX_CHOICES; ++i)
   {
     if (m_supportedChoices[i])
     {
+      bNoFocus = false;
       SET_CONTROL_FOCUS(CONTROL_CHOICES_START + i, 0);
       break;
     }
   }
+
+  // special handling for choice 0 mapped to cancel button
+  if (m_bCanCancel && bNoFocus)
+    SET_CONTROL_FOCUS(CONTROL_CHOICES_START,0 );
 
   CGUIDialogBoxBase::OnInitWindow();
 }
