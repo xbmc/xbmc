@@ -58,6 +58,7 @@ extern "C"
     const char* password;
     const char* redacted;
     const char* sharename;
+    const char* protocol;
   };
 
   struct VFSCallbacks
