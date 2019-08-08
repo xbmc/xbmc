@@ -317,7 +317,7 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
 {
   if (hints.cryptoSession)
   {
-    CLog::Log(LOGERROR,"CDVDVideoCodecFFmpeg::Open() CryptoSessions unsuppoted!");
+    CLog::Log(LOGERROR,"CDVDVideoCodecFFmpeg::Open() CryptoSessions unsupported!");
     return false;
   }
 
