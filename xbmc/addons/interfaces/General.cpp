@@ -55,10 +55,10 @@ void Interface_General::Init(AddonGlobalInterface* addonInterface)
   addonInterface->toKodi->kodi->get_region = get_region;
   addonInterface->toKodi->kodi->get_free_mem = get_free_mem;
   addonInterface->toKodi->kodi->get_global_idle_time = get_global_idle_time;
+  addonInterface->toKodi->kodi->kodi_version = kodi_version;
   addonInterface->toKodi->kodi->get_current_skin_id = get_current_skin_id;
   addonInterface->toKodi->kodi->get_keyboard_layout = get_keyboard_layout;
   addonInterface->toKodi->kodi->change_keyboard_layout = change_keyboard_layout;
-  addonInterface->toKodi->kodi->kodi_version = kodi_version;
 }
 
 void Interface_General::DeInit(AddonGlobalInterface* addonInterface)
@@ -409,6 +409,47 @@ int Interface_General::get_global_idle_time(void* kodiBase)
   return g_application.GlobalIdleTime();
 }
 
+void Interface_General::kodi_version(void* kodiBase, char** compile_name, int* major, int* minor, char** revision, char** tag, char** tagversion)
+{
+  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
+  if (addon == nullptr || compile_name == nullptr || major == nullptr || minor == nullptr ||
+     revision == nullptr || tag == nullptr || tagversion == nullptr)
+  {
+    CLog::Log(LOGERROR,
+              "Interface_General::%s - invalid data (addon='%p', compile_name='%p', major='%p', "
+              "minor='%p', revision='%p', tag='%p', tagversion='%p')",
+              __FUNCTION__, kodiBase, static_cast<void*>(compile_name), static_cast<void*>(major),
+              static_cast<void*>(minor), static_cast<void*>(revision), static_cast<void*>(tag),
+              static_cast<void*>(tagversion));
+    return;
+  }
+    
+  *compile_name = strdup(CCompileInfo::GetAppName());
+  *major = CCompileInfo::GetMajor();
+  *minor = CCompileInfo::GetMinor();
+  *revision = strdup(CCompileInfo::GetSCMID());
+  std::string tagStr = CCompileInfo::GetSuffix();
+  if (StringUtils::StartsWithNoCase(tagStr, "alpha"))
+  {
+    *tag = strdup("alpha");
+    *tagversion = strdup(StringUtils::Mid(tagStr, 5).c_str());
+  }
+  else if (StringUtils::StartsWithNoCase(tagStr, "beta"))
+  {
+    *tag = strdup("beta");
+    *tagversion = strdup(StringUtils::Mid(tagStr, 4).c_str());
+  }
+  else if (StringUtils::StartsWithNoCase(tagStr, "rc"))
+  {
+    *tag = strdup("releasecandidate");
+    *tagversion = strdup(StringUtils::Mid(tagStr, 2).c_str());
+  }
+  else if (tagStr.empty())
+    *tag = strdup("stable");
+  else
+    *tag = strdup("prealpha");
+}
+
 char* Interface_General::get_current_skin_id(void* kodiBase)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
@@ -493,47 +534,6 @@ bool Interface_General::change_keyboard_layout(void* kodiBase, char** layout_nam
 
   *layout_name = strdup(layout.GetName().c_str());
   return true;
-}
-
-void Interface_General::kodi_version(void* kodiBase, char** compile_name, int* major, int* minor, char** revision, char** tag, char** tagversion)
-{
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  if (addon == nullptr || compile_name == nullptr || major == nullptr || minor == nullptr ||
-     revision == nullptr || tag == nullptr || tagversion == nullptr)
-  {
-    CLog::Log(LOGERROR,
-              "Interface_General::%s - invalid data (addon='%p', compile_name='%p', major='%p', "
-              "minor='%p', revision='%p', tag='%p', tagversion='%p')",
-              __FUNCTION__, kodiBase, static_cast<void*>(compile_name), static_cast<void*>(major),
-              static_cast<void*>(minor), static_cast<void*>(revision), static_cast<void*>(tag),
-              static_cast<void*>(tagversion));
-    return;
-  }
-
-  *compile_name = strdup(CCompileInfo::GetAppName());
-  *major = CCompileInfo::GetMajor();
-  *minor = CCompileInfo::GetMinor();
-  *revision = strdup(CCompileInfo::GetSCMID());
-  std::string tagStr = CCompileInfo::GetSuffix();
-  if (StringUtils::StartsWithNoCase(tagStr, "alpha"))
-  {
-    *tag = strdup("alpha");
-    *tagversion = strdup(StringUtils::Mid(tagStr, 5).c_str());
-  }
-  else if (StringUtils::StartsWithNoCase(tagStr, "beta"))
-  {
-    *tag = strdup("beta");
-    *tagversion = strdup(StringUtils::Mid(tagStr, 4).c_str());
-  }
-  else if (StringUtils::StartsWithNoCase(tagStr, "rc"))
-  {
-    *tag = strdup("releasecandidate");
-    *tagversion = strdup(StringUtils::Mid(tagStr, 2).c_str());
-  }
-  else if (tagStr.empty())
-    *tag = strdup("stable");
-  else
-    *tag = strdup("prealpha");
 }
 
 } /* namespace ADDON */

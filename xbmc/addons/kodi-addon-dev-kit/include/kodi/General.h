@@ -58,9 +58,9 @@ typedef struct AddonToKodiFuncTable_kodi
   void (*get_free_mem)(void* kodiBase, long* free, long* total, bool as_bytes);
   int  (*get_global_idle_time)(void* kodiBase);
   void (*kodi_version)(void* kodiBase, char** compile_name, int* major, int* minor, char** revision, char** tag, char** tagversion);
+  char* (*get_current_skin_id)(void* kodiBase);
   bool (*get_keyboard_layout)(void* kodiBase, char** layout_name, int modifier_key, AddonKeyboardKeyTable* layout);
   bool (*change_keyboard_layout)(void* kodiBase, char** layout_name);
-  char* (*get_current_skin_id)(void* kodiBase);
 } AddonToKodiFuncTable_kodi;
 
 //==============================================================================

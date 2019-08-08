@@ -30,8 +30,8 @@
  * overview.
  */
 
-#define ADDON_GLOBAL_VERSION_MAIN                     "1.0.15"
-#define ADDON_GLOBAL_VERSION_MAIN_MIN                 "1.0.15"
+#define ADDON_GLOBAL_VERSION_MAIN                     "1.1.0"
+#define ADDON_GLOBAL_VERSION_MAIN_MIN                 "1.0.12"
 #define ADDON_GLOBAL_VERSION_MAIN_XML_ID              "kodi.binary.global.main"
 #define ADDON_GLOBAL_VERSION_MAIN_DEPENDS             "AddonBase.h" \
                                                       "xbmc_addon_dll.h" \
@@ -50,8 +50,8 @@
 #define ADDON_GLOBAL_VERSION_GUI_DEPENDS              "libKODI_guilib.h" \
                                                       "gui/"
 
-#define ADDON_GLOBAL_VERSION_AUDIOENGINE              "1.0.3"
-#define ADDON_GLOBAL_VERSION_AUDIOENGINE_MIN          "1.0.3"
+#define ADDON_GLOBAL_VERSION_AUDIOENGINE              "1.0.2"
+#define ADDON_GLOBAL_VERSION_AUDIOENGINE_MIN          "1.0.2"
 #define ADDON_GLOBAL_VERSION_AUDIOENGINE_XML_ID       "kodi.binary.global.audioengine"
 #define ADDON_GLOBAL_VERSION_AUDIOENGINE_DEPENDS      "AudioEngine.h"
 
