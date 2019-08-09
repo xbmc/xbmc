@@ -9,7 +9,7 @@ NATIVE= m4 gettext autoconf automake \
         gas-preprocessor python27 zlib \
         pcre swig \
         libpng libjpeg-turbo liblzo2 giflib \
-        distribute distutilscross JsonSchemaBuilder TexturePacker \
+        setuptools distutilscross JsonSchemaBuilder TexturePacker \
         flatbuffers
 
 
@@ -47,11 +47,11 @@ libpng: zlib
 meson: python3 setuptools3
 ninja: python3
 swig: pcre
-distribute: python27
-distutilscross: python27 distribute
+distutilscross: python27 setuptools
 tar: xz automake
 python27: zlib
 python3: $(EXPAT) libffi pkg-config zlib
+setuptools: python27
 setuptools3: python3
 wayland-scanner: expat
 waylandpp-scanner: cmake

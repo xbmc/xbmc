@@ -1,5 +1,5 @@
 include ../../Makefile.include
-DEPS= ../../Makefile.include Makefile 01-nosetuptool.patch 02-android-dlopen.patch 03-obey-crosscompileflags.patch
+DEPS= ../../Makefile.include Makefile 01-android-dlopen.patch 02-obey-crosscompileflags.patch
 
 VERSION.TXT := $(CMAKE_SOURCE_DIR)/version.txt
 APP_NAME=$(shell awk '/APP_NAME/ {print tolower($$2)}' $(VERSION.TXT))
@@ -37,11 +37,10 @@ $(TARBALLS_LOCATION)/$(ARCHIVE):
 $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 	rm -rf $(PLATFORM)/*; mkdir -p $(PLATFORM)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
-	cd $(PLATFORM); patch -p1 -i ../01-nosetuptool.patch
 ifeq ($(OS),android)
-	cd $(PLATFORM); patch -p1 -i ../02-android-dlopen.patch
+	cd $(PLATFORM); patch -p1 -i ../01-android-dlopen.patch
 endif
-	cd $(PLATFORM); patch -p1 -i ../03-obey-crosscompileflags.patch
+	cd $(PLATFORM); patch -p1 -i ../02-obey-crosscompileflags.patch
 
 $(LIBDYLIB): $(PLATFORM)
 	mkdir -p $(PLATFORM)/output
