@@ -56,8 +56,7 @@ bool CMusicThumbLoader::LoadItemCached(CFileItem* pItem)
   if (pItem->m_bIsShareOrDrive)
     return false;
 
-  if (pItem->HasMusicInfoTag() && (pItem->GetArt().empty() ||
-    (pItem->GetArt().size() == 1 && pItem->HasArt("thumb"))))
+  if (pItem->HasMusicInfoTag() && !pItem->HasArt("thumb"))
   {
     if (FillLibraryArt(*pItem))
       return true;
@@ -66,7 +65,7 @@ bool CMusicThumbLoader::LoadItemCached(CFileItem* pItem)
       return false; // No fallback
   }
 
-  if (pItem->HasVideoInfoTag() && pItem->GetArt().empty())
+  if (pItem->HasVideoInfoTag() && !pItem->HasArt("thumb"))
   { // music video
     CVideoThumbLoader loader;
     if (loader.LoadItemCached(pItem))
