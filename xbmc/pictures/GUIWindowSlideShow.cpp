@@ -509,13 +509,9 @@ void CGUIWindowSlideShow::Process(unsigned int currentTime, CDirtyRegionList &re
     }
   }
 
-  if (m_slides.at(m_iCurrentSlide)->IsVideo() &&
-      m_iVideoSlide != m_iCurrentSlide)
-  {
-    if (!PlayVideo())
-      return;
+  bool bPlayVideo = m_slides.at(m_iCurrentSlide)->IsVideo() && m_iVideoSlide != m_iCurrentSlide;
+  if (bPlayVideo)
     bSlideShow = false;
-  }
 
   // render the current image
   if (m_Image[m_iCurrentPic].IsLoaded())
@@ -603,6 +599,8 @@ void CGUIWindowSlideShow::Process(unsigned int currentTime, CDirtyRegionList &re
       }
       m_iCurrentSlide = m_iNextSlide;
       m_iNextSlide    = GetNextSlide();
+
+      bPlayVideo = m_slides.at(m_iCurrentSlide)->IsVideo() && m_iVideoSlide != m_iCurrentSlide;
     }
     AnnouncePlayerPlay(m_slides.at(m_iCurrentSlide));
 
@@ -610,6 +608,9 @@ void CGUIWindowSlideShow::Process(unsigned int currentTime, CDirtyRegionList &re
     m_fZoom = 1.0f;
     m_fRotate = 0.0f;
   }
+
+  if (bPlayVideo && !PlayVideo())
+      return;
 
   if (m_Image[m_iCurrentPic].IsLoaded())
     CServiceBroker::GetGUI()->GetInfoManager().GetInfoProviders().GetPicturesInfoProvider().SetCurrentSlide(m_slides.at(m_iCurrentSlide).get());
