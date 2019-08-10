@@ -95,7 +95,7 @@ bool CFileItemHandler::GetField(const std::string &field, const CVariant &info, 
 
     if (field == "art")
     {
-      if (thumbLoader != NULL && item->GetArt().size() <= 0 && !fetchedArt &&
+      if (thumbLoader && !fetchedArt &&
         ((item->HasVideoInfoTag() && item->GetVideoInfoTag()->m_iDbId > -1) || (item->HasMusicInfoTag() && item->GetMusicInfoTag()->GetDatabaseId() > -1)))
       {
         thumbLoader->FillLibraryArt(*item);
