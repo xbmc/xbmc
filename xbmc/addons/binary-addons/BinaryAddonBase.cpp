@@ -17,58 +17,94 @@
 
 using namespace ADDON;
 
-bool CBinaryAddonBase::Create()
+const std::string& CBinaryAddonBase::ID() const
 {
-  std::string path = CSpecialProtocol::TranslatePath(m_addonInfo->Path());
+  return m_addonInfo->ID();
+}
 
-  StringUtils::TrimRight(path, "/\\");
+const std::string& CBinaryAddonBase::Path() const
+{
+  return m_addonInfo->Path();
+}
 
-  auto addonXmlPath = URIUtils::AddFileToFolder(path, "addon.xml");
+TYPE CBinaryAddonBase::MainType() const
+{
+  return m_addonInfo->MainType();
+}
 
-  CXBMCTinyXML xmlDoc;
-  if (!xmlDoc.LoadFile(addonXmlPath))
-  {
-    CLog::Log(LOGERROR, "CBinaryAddonBase::%s: Unable to load '%s', Line %d\n%s",
-                                               __FUNCTION__,
-                                               path.c_str(),
-                                               xmlDoc.ErrorRow(),
-                                               xmlDoc.ErrorDesc());
-    return false;
-  }
-
-  return LoadAddonXML(xmlDoc.RootElement(), path);
+const std::string& CBinaryAddonBase::MainLibName() const
+{
+  return m_addonInfo->LibName();
 }
 
 bool CBinaryAddonBase::IsType(TYPE type) const
 {
-  return (m_addonInfo->MainType() == type || ProvidesSubContent(type));
+  return m_addonInfo->IsType(type);
 }
 
-bool CBinaryAddonBase::ProvidesSubContent(const TYPE& content, const TYPE& mainType/* = ADDON_UNKNOWN*/) const
+const std::vector<CAddonType>& CBinaryAddonBase::Types() const
 {
-  if (content == ADDON_UNKNOWN)
-    return false;
-
-  for (auto addonType : m_types)
-  {
-    if ((mainType == ADDON_UNKNOWN || addonType.Type() == mainType) && addonType.ProvidesSubContent(content))
-      return true;
-  }
-
-  return false;
+  return m_addonInfo->Types();
 }
 
-bool CBinaryAddonBase::ProvidesSeveralSubContents() const
+const CAddonType* CBinaryAddonBase::Type(TYPE type) const
 {
-  int contents = 0;
-  for (auto addonType : m_types)
-    contents += addonType.ProvidedSubContents();
-  return (contents > 0);
+  return m_addonInfo->Type(type);
 }
 
-bool CBinaryAddonBase::MeetsVersion(const AddonVersion &version) const
+const AddonVersion& CBinaryAddonBase::Version() const
 {
-  return m_addonInfo->MinVersion() <= version && version <= m_addonInfo->Version();
+  return m_addonInfo->Version();
+}
+
+const AddonVersion& CBinaryAddonBase::MinVersion() const
+{
+  return m_addonInfo->MinVersion();
+}
+
+const std::string& CBinaryAddonBase::Name() const
+{
+  return m_addonInfo->Name();
+}
+
+const std::string& CBinaryAddonBase::Summary() const
+{
+  return m_addonInfo->Summary();
+}
+
+const std::string& CBinaryAddonBase::Description() const
+{
+  return m_addonInfo->Description();
+}
+
+const std::string& CBinaryAddonBase::Author() const
+{
+  return m_addonInfo->Author();
+}
+
+const std::string& CBinaryAddonBase::ChangeLog() const
+{
+  return m_addonInfo->ChangeLog();
+}
+
+const std::string& CBinaryAddonBase::Icon() const
+{
+  return m_addonInfo->Icon();
+}
+
+const ArtMap& CBinaryAddonBase::Art() const
+{
+  return m_addonInfo->Art();
+}
+
+const std::string& CBinaryAddonBase::Disclaimer() const
+{
+  return m_addonInfo->Disclaimer();
+}
+
+bool CBinaryAddonBase::MeetsVersion(const AddonVersion& version) const
+{
+  return m_addonInfo->MeetsVersion(version);
 }
 
 AddonDllPtr CBinaryAddonBase::GetAddon(const IAddonInstanceHandler* handler)
@@ -120,60 +156,3 @@ AddonDllPtr CBinaryAddonBase::GetActiveAddon()
   return m_activeAddon;
 }
 
-const CBinaryAddonType* CBinaryAddonBase::Type(TYPE type) const
-{
-  if (type == ADDON_UNKNOWN)
-    return &m_types[0];
-
-  for (auto& addonType : m_types)
-  {
-    if (addonType.Type() == type)
-      return &addonType;
-  }
-  return nullptr;
-}
-
-bool CBinaryAddonBase::LoadAddonXML(const TiXmlElement* baseElement, const std::string& addonPath)
-{
-  if (!StringUtils::EqualsNoCase(baseElement->Value(), "addon"))
-  {
-    CLog::Log(LOGERROR, "CBinaryAddonBase::%s: file from '%s' doesnt contain <addon>", __FUNCTION__, addonPath.c_str());
-    return false;
-  }
-
-  /*
-   * Parse addon.xml:
-   * <extension>
-   *   ...
-   * </extension>
-   */
-  for (const TiXmlElement* child = baseElement->FirstChildElement("extension"); child != nullptr; child = child->NextSiblingElement("extension"))
-  {
-    const char* cstring = child->Attribute("point");
-    std::string point = cstring ? cstring : "";
-
-    if (point != "kodi.addon.metadata" && point != "xbmc.addon.metadata")
-    {
-      TYPE type = CAddonInfo::TranslateType(point);
-      if (type == ADDON_UNKNOWN || type >= ADDON_MAX)
-      {
-        CLog::Log(LOGERROR, "CBinaryAddonBase::%s: file '%s' doesn't contain a valid add-on type name (%s)", __FUNCTION__, addonPath.c_str(), point.c_str());
-        return false;
-      }
-
-      m_types.push_back(CBinaryAddonType(type, this, child));
-    }
-  }
-
-  /*
-   * If nothing is defined in addon.xml set this as unknown to have minimum one
-   * instance type present.
-   */
-  if (m_types.empty())
-    m_types.push_back(CBinaryAddonType(ADDON_UNKNOWN, this, nullptr));
-
-  m_addonInfo->SetMainType(m_types[0].Type());
-  m_addonInfo->SetLibName(m_types[0].LibName());
-
-  return true;
-}
