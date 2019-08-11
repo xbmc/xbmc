@@ -273,6 +273,14 @@
 		<value condition="Control.HasFocus(8)">$INFO[ListItem.LastPlayed,$LOCALIZE[568]: ]</value>
 		<value condition="Control.HasFocus(6)">$INFO[ListItem.FileNameAndPath]</value>
 	</variable>
+	<variable name="PictureInfoMainLabelVar">
+		<value condition="Window.IsActive(Slideshow)">$INFO[SlideShow.Filename]</value>
+		<value>$INFO[ListItem.Label]</value>
+	</variable>
+	<variable name="PictureInfoSubLabelVar">
+		<value condition="Window.IsActive(Slideshow)">$INFO[SlideShow.EXIFtime]</value>
+		<value>$INFO[ListItem.PictureDateTime]</value>
+	</variable>
 	<variable name="NowPlayingBreadcrumbsVar">
 		<value condition="VideoPlayer.Content(livetv)">$INFO[VideoPlayer.Title]</value>
 		<value condition="VideoPlayer.Content(episodes) + !String.IsEmpty(Player.Art(tvshow.clearlogo))">$INFO[VideoPlayer.Season,[COLOR button_focus]S,[/COLOR]]$INFO[VideoPlayer.Episode,[COLOR button_focus]E,: [/COLOR]]$INFO[VideoPlayer.Title]</value>
