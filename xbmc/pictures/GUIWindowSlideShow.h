@@ -57,6 +57,7 @@ public:
   EVENT_RESULT OnMouseEvent(const CPoint &point, const CMouseEvent &event) override;
   bool OnAction(const CAction &action) override;
   void Render() override;
+  void RenderEx() override;
   void Process(unsigned int currentTime, CDirtyRegionList &regions) override;
   void OnDeinitWindow(int nextWindowID) override;
 

@@ -630,14 +630,30 @@ void CGUIWindowSlideShow::Render()
   if (m_slides.empty())
     return;
 
-  CServiceBroker::GetWinSystem()->GetGfxContext().Clear(0xff000000);
+  CGraphicContext& gfxCtx = CServiceBroker::GetWinSystem()->GetGfxContext();
+  gfxCtx.Clear(0xff000000);
 
   if (m_slides.at(m_iCurrentSlide)->IsVideo())
   {
-    CServiceBroker::GetWinSystem()->GetGfxContext().SetViewWindow(0, 0, m_coordsRes.iWidth, m_coordsRes.iHeight);
-    CServiceBroker::GetWinSystem()->GetGfxContext().SetRenderingResolution(CServiceBroker::GetWinSystem()->GetGfxContext().GetVideoResolution(), false);
-    g_application.GetAppPlayer().Render(true, 255);
-    CServiceBroker::GetWinSystem()->GetGfxContext().SetRenderingResolution(m_coordsRes, m_needsScaling);
+    gfxCtx.SetViewWindow(0, 0, m_coordsRes.iWidth, m_coordsRes.iHeight);
+    gfxCtx.SetRenderingResolution(gfxCtx.GetVideoResolution(), false);
+
+    if (g_application.GetAppPlayer().IsRenderingVideoLayer())
+    {
+      const CRect old = gfxCtx.GetScissors();
+      CRect region = GetRenderRegion();
+      region.Intersect(old);
+      gfxCtx.SetScissors(region);
+      gfxCtx.Clear(0);
+      gfxCtx.SetScissors(old);
+    }
+    else
+    {
+      const UTILS::Color alpha = gfxCtx.MergeAlpha(0xff000000) >> 24;
+      g_application.GetAppPlayer().Render(false, alpha);
+    }
+
+    gfxCtx.SetRenderingResolution(m_coordsRes, m_needsScaling);
   }
   else
   {
@@ -650,6 +666,14 @@ void CGUIWindowSlideShow::Render()
 
   RenderErrorMessage();
   CGUIWindow::Render();
+}
+
+void CGUIWindowSlideShow::RenderEx()
+{
+  if (m_slides.at(m_iCurrentSlide)->IsVideo())
+    g_application.GetAppPlayer().Render(false, 255, false);
+
+  CGUIWindow::RenderEx();
 }
 
 int CGUIWindowSlideShow::GetNextSlide()
