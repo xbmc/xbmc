@@ -34,19 +34,23 @@ msgstr "シネマモード"
 
 msgctxt "#31004"
 msgid "Change mode"
-msgstr "モードを変更"
+msgstr "モード変更"
 
 msgctxt "#31005"
 msgid "Watch as 2D"
-msgstr "2D で観る"
+msgstr "2Dで観る"
 
 msgctxt "#31006"
 msgid "Random movies"
-msgstr "ランダムの映画"
+msgstr "ランダムムービー"
 
 msgctxt "#31007"
 msgid "Unwatched movies"
-msgstr "未視聴の映画"
+msgstr "未視聴な映画"
+
+msgctxt "#31008"
+msgid "Enable category widgets"
+msgstr "カテゴリーウィジェット有効"
 
 msgctxt "#31009"
 msgid "Download icons"
@@ -54,7 +58,7 @@ msgstr "ダウンロードアイコン"
 
 msgctxt "#31010"
 msgid "In progress movies"
-msgstr "進行中の映画"
+msgstr "進行中のムービー"
 
 msgctxt "#31011"
 msgid "Most played albums"
@@ -70,7 +74,7 @@ msgstr "ランダムアーティスト"
 
 msgctxt "#31014"
 msgid "Unplayed albums"
-msgstr "未再生アルバム"
+msgstr "再生していないアルバム"
 
 msgctxt "#31015"
 msgid "Recent recordings"
@@ -108,9 +112,17 @@ msgctxt "#31023"
 msgid "Viewtype"
 msgstr "表示タイプ"
 
+msgctxt "#31024"
+msgid "Choose rating to display for media items"
+msgstr "メディアアイテムへ表示する評価を選択"
+
 msgctxt "#31025"
 msgid "No favourites found. You can add any item from media views to this list by using the context menu."
 msgstr "お気に入りは見つかりませんでした。メディアビューでコンテキストメニューを使用してこのリストにアイテムを追加できます。"
+
+msgctxt "#31026"
+msgid "Timeshift"
+msgstr "タイムシフト"
 
 msgctxt "#31028"
 msgid "Show fanart"
@@ -119,6 +131,10 @@ msgstr "ファンアートを見る"
 msgctxt "#31029"
 msgid "Last logged in"
 msgstr "最終ログイン"
+
+msgctxt "#31030"
+msgid "System memory usage"
+msgstr "システムメモリ使用量"
 
 msgctxt "#31031"
 msgid "Version info"
@@ -154,7 +170,7 @@ msgstr "早送り"
 
 msgctxt "#31041"
 msgid "Camera manufacturer"
-msgstr "カメラのメーカー"
+msgstr "カメラメーカー"
 
 msgctxt "#31042"
 msgid "Playlist options"
@@ -166,7 +182,7 @@ msgstr "タイプとルールを指定してスマートプレイリストを作
 
 msgctxt "#31044"
 msgid "Add group"
-msgstr "グループの追加"
+msgstr "グループ追加"
 
 msgctxt "#31045"
 msgid "Rename group"
@@ -174,7 +190,7 @@ msgstr "グループの名称変更"
 
 msgctxt "#31046"
 msgid "Delete group"
-msgstr "グループの削除"
+msgstr "グループ削除"
 
 msgctxt "#31048"
 msgid "Available"
@@ -186,15 +202,15 @@ msgstr "[B]決定[/B]を押して停止"
 
 msgctxt "#31052"
 msgid "filtered"
-msgstr "フィルタ済"
+msgstr "フィルター済み"
 
 msgctxt "#31053"
 msgid "Arial based"
-msgstr "Arial ベース"
+msgstr "Arialベース"
 
 msgctxt "#31054"
 msgid "Press [B]Left[/B] to rewind, or [B]Right[/B] to fast-forward"
-msgstr "[B]左[/B]を押して早戻し、または[B]右[/B]で早送り"
+msgstr "[B]左[/B]を押して巻き戻し、または[B]右[/B]で早送り"
 
 msgctxt "#31056"
 msgid "Go to playlist"
@@ -211,6 +227,10 @@ msgstr "スタートアップ時に自動ログイン"
 msgctxt "#31061"
 msgid "Main menu items"
 msgstr "メインメニューアイテム"
+
+msgctxt "#31062"
+msgid "Choose weather fanart pack"
+msgstr "天気のファンアートパック選択"
 
 msgctxt "#31063"
 msgid "Sections"
@@ -230,7 +250,7 @@ msgstr "イベントログ"
 
 msgctxt "#31068"
 msgid "Choose presets"
-msgstr "プリセットを選択"
+msgstr "プリセット選択"
 
 msgctxt "#31069"
 msgid "Last Updated"
@@ -238,7 +258,7 @@ msgstr "最終更新時刻"
 
 msgctxt "#31071"
 msgid "by"
-msgstr "by"
+msgstr "で"
 
 msgctxt "#31072"
 msgid "Power Options"
@@ -266,7 +286,7 @@ msgstr "歌詞アドオン設定"
 
 msgctxt "#31084"
 msgid "Visualisation settings"
-msgstr "ビジュアライザー設定"
+msgstr "ビジュアライザ設定"
 
 msgctxt "#31089"
 msgid "Available groups"
@@ -286,11 +306,11 @@ msgstr "トップバーに天気予報を表示"
 
 msgctxt "#31095"
 msgid "Use slide animations"
-msgstr "スライドアニメーションを使用"
+msgstr "スライドアニメーション使用"
 
 msgctxt "#31096"
 msgid "Local subtitle available"
-msgstr "ローカルの字幕を利用できます"
+msgstr "ローカルの字幕が利用可能"
 
 msgctxt "#31097"
 msgid "Channel options"
@@ -298,11 +318,15 @@ msgstr "チャンネルオプション"
 
 msgctxt "#31098"
 msgid "Select your Kodi user profile[CR]to login and continue"
-msgstr "Kodi ユーザープロファイルを選択して[CR]ログインしてください"
+msgstr "Kodiユーザープロファイルを選択して[CR]ログインしてください"
+
+msgctxt "#31099"
+msgid "IconWall"
+msgstr "アイコン壁紙"
 
 msgctxt "#31100"
 msgid "Shift"
-msgstr "Shift"
+msgstr "シフト"
 
 msgctxt "#31101"
 msgid "InfoWall"
@@ -314,7 +338,7 @@ msgstr "ウォール"
 
 msgctxt "#31103"
 msgid "Enter text here..."
-msgstr "テキストを入力..."
+msgstr "テキスト入力..."
 
 msgctxt "#31104"
 msgid "Your library is currently empty. In order to populate it with your personal media, enter \"Files\" section, add a media source and configure it. After the source has been added and indexed you will be able to browse your library."
@@ -338,11 +362,11 @@ msgstr "ファイルセクションに入る"
 
 msgctxt "#31111"
 msgid "View your personal pictures or download one of the many image add-ons from the official repository."
-msgstr "個人的な写真を表示またはオフィシャルリポジトリから画像アドオンをダウンロードする。"
+msgstr "個人的な写真を表示またはオフィシャルリポジトリから画像アドオンをダウンロード。"
 
 msgctxt "#31112"
 msgid "Toggle audio stream"
-msgstr "オーディオストリーム切替"
+msgstr "オーディオストリームをトグル"
 
 msgctxt "#31113"
 msgid "Search local library"
@@ -350,11 +374,11 @@ msgstr "ローカルライブラリ検索"
 
 msgctxt "#31114"
 msgid "Search YouTube"
-msgstr "YouTubeを検索"
+msgstr "YouTube検索"
 
 msgctxt "#31115"
 msgid "Search TheMovieDB"
-msgstr "TheMovieDBを検索"
+msgstr "TheMovieDB検索"
 
 msgctxt "#31116"
 msgid "Remove this main menu item"
@@ -362,7 +386,7 @@ msgstr "メインメニューから消去"
 
 msgctxt "#31117"
 msgid "Edit nodes"
-msgstr "ノードを編集"
+msgstr "ノード編集"
 
 msgctxt "#31118"
 msgid "Enter add-on browser"
@@ -402,7 +426,7 @@ msgstr "決定を押してあらすじを読む"
 
 msgctxt "#31127"
 msgid "Show icons"
-msgstr "アイコンを表示"
+msgstr "アイコン表示"
 
 msgctxt "#31128"
 msgid "Contributors"
@@ -410,20 +434,144 @@ msgstr "協力者"
 
 msgctxt "#31129"
 msgid "General settings applying to all areas of the skin."
-msgstr "このスキンのすべてのエリアに一般設定を適用する"
+msgstr "このスキンのすべての範囲に一般設定を適用する。"
 
 msgctxt "#31130"
 msgid "Main menu-related settings: Configure the home screen to your likings."
-msgstr "メインメニュー関連設定: 好きなようにホームスクリーンを設定できます。"
+msgstr "メインメニュー関連設定: 好きなようにホーム画面を設定できます。"
+
+msgctxt "#31131"
+msgid "Choose skin fanart pack"
+msgstr "スキンのファンアートパック選択"
+
+msgctxt "#31132"
+msgid "Select Program"
+msgstr "プログラム選択"
+
+msgctxt "#31133"
+msgid "Select Resolution"
+msgstr "解像度選択"
 
 msgctxt "#31134"
 msgid "Remaining"
 msgstr "残り"
 
+msgctxt "#31136"
+msgid "Click here to see latest changes..."
+msgstr "ここをクリックして最近の変更を見る..."
+
+msgctxt "#31137"
+msgid "PVR info"
+msgstr "PVR詳細"
+
+msgctxt "#31138"
+msgid "Player process info"
+msgstr "プレイヤーのプロセス詳細"
+
+msgctxt "#31139"
+msgid "Video decoder"
+msgstr "ビデオデコーダー"
+
+msgctxt "#31140"
+msgid "Pixel format"
+msgstr "ピクセル形式"
+
+msgctxt "#31141"
+msgid "Changes for version"
+msgstr "バージョン変更"
+
+msgctxt "#31142"
+msgid "Play speed"
+msgstr "再生速度"
+
+msgctxt "#31143"
+msgid "You did not set up PVR yet. In order to use PVR, choose a PVR client addon and configure it. Please visit http://kodi.wiki/view/PVR to learn more."
+msgstr "まだPVRを設定していません。PVRを使用するには、PVRクライアントアドオンを選択して設定します。詳細については、http://kodi.wiki/view/PVR をご覧ください。"
+
 msgctxt "#31144"
 msgid "Enter add-on browser"
 msgstr "アドオンブラウザー"
 
+msgctxt "#31145"
+msgid "Search add-ons"
+msgstr "アドオン選択"
+
+msgctxt "#31148"
+msgid "Categories"
+msgstr "カテゴリー"
+
+msgctxt "#31149"
+msgid "Select genre fanart pack"
+msgstr "ジャンルのファンアートパック選択"
+
+msgctxt "#31150"
+msgid "Repository"
+msgstr "リポジトリ"
+
+msgctxt "#31151"
+msgid "Unwatched music videos"
+msgstr "未視聴なミュージックビデオ"
+
+msgctxt "#31152"
+msgid "Random music videos"
+msgstr "ランダムミュージックビデオ"
+
+msgctxt "#31153"
+msgid "You do not have any add-ons of this type installed. Enter the add-on browser to download add-ons created by our community."
+msgstr "この種類のアドオンはインストールされていません。アドオンブラウザを使用して、私たちのコミュニティによって作成されたアドオンをダウンロードしてください。"
+
+msgctxt "#31154"
+msgid "Press OK to switch between locations"
+msgstr "OKを押して場所を切り替える"
+
+msgctxt "#31155"
+msgid "No bookmarks created yet."
+msgstr "ブックマークをまだ作成していません。"
+
+msgctxt "#31156"
+msgid "Choose background pattern"
+msgstr "背景のパターン選択"
+
+msgctxt "#31157"
+msgid "Edit categories"
+msgstr "カテゴリー編集"
+
+msgctxt "#31158"
+msgid "Touch mode"
+msgstr "タッチモード"
+
+msgctxt "#31159"
+msgid "Artwork"
+msgstr "アートワーク"
+
+msgctxt "#31160"
+msgid "Show media flags"
+msgstr "メディアのフラグを表示"
+
+msgctxt "#31161"
+msgid "Numeric pad"
+msgstr "テンキー"
+
+msgctxt "#31162"
+msgid "Play your personal games or download one of the many game add-ons from the official repository."
+msgstr "ゲームで遊ぶ、[CR]もしくは公式レポジトリからたくさんあるゲームのアドオンをダウンロードしてみる。"
+
+msgctxt "#31163"
+msgid "Show Fanart background"
+msgstr "背景にファンアートを表示"
+
+msgctxt "#31164"
+msgid "Choose kind of profile identification"
+msgstr "プロファイルの確認と種類を選択"
+
 msgctxt "#31165"
 msgid "Profile name"
 msgstr "プロファイル名"
+
+msgctxt "#31166"
+msgid "Profile avatar"
+msgstr "プロファイルアバター"
+
+msgctxt "#31167"
+msgid "Animate background"
+msgstr "アニメーション背景"

@@ -48,6 +48,10 @@ msgctxt "#31007"
 msgid "Unwatched movies"
 msgstr "Filmes não vistos"
 
+msgctxt "#31008"
+msgid "Enable category widgets"
+msgstr "Ativar widgets de categorias"
+
 msgctxt "#31009"
 msgid "Download icons"
 msgstr "Descarregar ícones"
@@ -107,6 +111,10 @@ msgstr "Ordenar por"
 msgctxt "#31023"
 msgid "Viewtype"
 msgstr "Tipo de visualização"
+
+msgctxt "#31024"
+msgid "Choose rating to display for media items"
+msgstr "Escolher classificação a mostrar nos itens de média"
 
 msgctxt "#31025"
 msgid "No favourites found. You can add any item from media views to this list by using the context menu."
@@ -219,6 +227,10 @@ msgstr "Iniciar sessão ao arrancar"
 msgctxt "#31061"
 msgid "Main menu items"
 msgstr "Itens do menu principal"
+
+msgctxt "#31062"
+msgid "Choose weather fanart pack"
+msgstr "Escolher o pacote de fanart de meteorologia"
 
 msgctxt "#31063"
 msgid "Sections"
@@ -354,7 +366,7 @@ msgstr "Ver as suas imagens pessoais ou descarregar um dos vários add-ons de im
 
 msgctxt "#31112"
 msgid "Toggle audio stream"
-msgstr "Comutar a transmissão de áudio"
+msgstr "Comutar a emissão de áudio"
 
 msgctxt "#31113"
 msgid "Search local library"
@@ -428,6 +440,10 @@ msgctxt "#31130"
 msgid "Main menu-related settings: Configure the home screen to your likings."
 msgstr "Definições do menu principal: Configure o ecrã inicial ao seu gosto."
 
+msgctxt "#31131"
+msgid "Choose skin fanart pack"
+msgstr "Escolher pacote de fanart do tema"
+
 msgctxt "#31132"
 msgid "Select Program"
 msgstr "Seleccione Programa"
@@ -468,6 +484,10 @@ msgctxt "#31142"
 msgid "Play speed"
 msgstr "Velocidade de reprodução"
 
+msgctxt "#31143"
+msgid "You did not set up PVR yet. In order to use PVR, choose a PVR client addon and configure it. Please visit http://kodi.wiki/view/PVR to learn more."
+msgstr "Ainda não configurou o PVR. Para usar o PVR, escolha um add-on cliente de PVR e configure-o. Por favor visite http://kodi.wiki/view/PVR para saber mais."
+
 msgctxt "#31144"
 msgid "Enter add-on browser"
 msgstr "Entrar no navegador de add-ons"
@@ -480,6 +500,10 @@ msgctxt "#31148"
 msgid "Categories"
 msgstr "Categorias"
 
+msgctxt "#31149"
+msgid "Select genre fanart pack"
+msgstr "Escolher o pacote de fanart do género"
+
 msgctxt "#31150"
 msgid "Repository"
 msgstr "Repositório"
@@ -491,6 +515,10 @@ msgstr "Vídeos de música não vistos"
 msgctxt "#31152"
 msgid "Random music videos"
 msgstr "Vídeos de música aleatórios"
+
+msgctxt "#31153"
+msgid "You do not have any add-ons of this type installed. Enter the add-on browser to download add-ons created by our community."
+msgstr "Não existem add-ons deste tipo instalados. Entre no navegador de add-ons para descarregar add-ons criados pela nossa comunidade."
 
 msgctxt "#31154"
 msgid "Press OK to switch between locations"
@@ -512,6 +540,38 @@ msgctxt "#31158"
 msgid "Touch mode"
 msgstr "Modo de toque"
 
+msgctxt "#31159"
+msgid "Artwork"
+msgstr "Imagens"
+
+msgctxt "#31160"
+msgid "Show media flags"
+msgstr "Mostrar emblemas de média"
+
+msgctxt "#31161"
+msgid "Numeric pad"
+msgstr "Teclado numérico"
+
+msgctxt "#31162"
+msgid "Play your personal games or download one of the many game add-ons from the official repository."
+msgstr "Jogue os seus jogos pessoais ou descarregue um dos vários add-ons de jogos presentes no repositório oficial."
+
+msgctxt "#31163"
+msgid "Show Fanart background"
+msgstr "Mostrar fundo de fanart"
+
+msgctxt "#31164"
+msgid "Choose kind of profile identification"
+msgstr "Escolha tipo de identificação do perfil"
+
 msgctxt "#31165"
 msgid "Profile name"
 msgstr "Nome do perfil"
+
+msgctxt "#31166"
+msgid "Profile avatar"
+msgstr "Avatar do perfil"
+
+msgctxt "#31167"
+msgid "Animate background"
+msgstr "Fundo animado"

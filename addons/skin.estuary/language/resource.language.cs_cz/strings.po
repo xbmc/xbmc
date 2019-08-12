@@ -526,7 +526,7 @@ msgstr "Stiskněte OK pro přepnutí mezi umístěními"
 
 msgctxt "#31155"
 msgid "No bookmarks created yet."
-msgstr "Zatím nebyly vytvořeny žádné záložky"
+msgstr "Zatím nebyly vytvořeny žádné záložky."
 
 msgctxt "#31156"
 msgid "Choose background pattern"
@@ -542,7 +542,7 @@ msgstr "Dotykový režim"
 
 msgctxt "#31159"
 msgid "Artwork"
-msgstr "Umělecké dílo"
+msgstr "Obrázek"
 
 msgctxt "#31160"
 msgid "Show media flags"
