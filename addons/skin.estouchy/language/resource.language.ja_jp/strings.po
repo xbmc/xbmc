@@ -30,11 +30,11 @@ msgstr "Caps[CR]Lock"
 
 msgctxt "#31005"
 msgid "Visualization Options"
-msgstr "ビジュアライザーオプション"
+msgstr "ビジュアライザオプション"
 
 msgctxt "#31006"
 msgid "Visualization Presets"
-msgstr "ビジュアライザーのプリセット"
+msgstr "ビジュアライザプリセット"
 
 msgctxt "#31007"
 msgid "Context Menu"
@@ -44,6 +44,10 @@ msgctxt "#31009"
 msgid "Working..."
 msgstr "処理中..."
 
+msgctxt "#31011"
+msgid "Recent"
+msgstr "最近"
+
 msgctxt "#31013"
 msgid "Movies"
 msgstr "映画"
@@ -52,9 +56,33 @@ msgctxt "#31014"
 msgid "Episodes"
 msgstr "エピソード"
 
+msgctxt "#31015"
+msgid "Player info"
+msgstr "プレイヤー詳細"
+
 msgctxt "#31016"
 msgid "Albums"
 msgstr "アルバム"
+
+msgctxt "#31017"
+msgid "PVR info"
+msgstr "PVR詳細"
+
+msgctxt "#31018"
+msgid "Player process info"
+msgstr "プレイヤーのプロセス詳細"
+
+msgctxt "#31019"
+msgid "Video decoder"
+msgstr "ビデオデコーダー"
+
+msgctxt "#31020"
+msgid "Pixel format"
+msgstr "ピクセルの形式"
+
+msgctxt "#31021"
+msgid "System memory usage"
+msgstr "システムメモリ使用量"
 
 msgctxt "#31024"
 msgid "Page"
@@ -68,6 +96,10 @@ msgctxt "#31038"
 msgid "Login"
 msgstr "ログイン"
 
+msgctxt "#31039"
+msgid "Updated:"
+msgstr "更新:"
+
 msgctxt "#31043"
 msgid "PAUSED"
 msgstr "静止中"
@@ -80,17 +112,21 @@ msgctxt "#31045"
 msgid "REWIND"
 msgstr "巻戻し"
 
+msgctxt "#31046"
+msgid "Play speed"
+msgstr "再生速度"
+
 msgctxt "#31049"
 msgid "End Time"
 msgstr "終了時間"
 
 msgctxt "#31050"
 msgid "Sort: Ascending"
-msgstr "ソート: 昇順"
+msgstr "並べ替え: 昇順"
 
 msgctxt "#31051"
 msgid "Sort: Descending"
-msgstr "ソート: 降順"
+msgstr "並べ替え: 降順"
 
 msgctxt "#31055"
 msgid "Open playlist"
@@ -98,7 +134,7 @@ msgstr "プレイリストを開く"
 
 msgctxt "#31056"
 msgid "Save playlist"
-msgstr "プレイリストを保存"
+msgstr "プレイリスト保存"
 
 msgctxt "#31057"
 msgid "Close playlist"
@@ -106,7 +142,7 @@ msgstr "プレイリストを閉じる"
 
 msgctxt "#31058"
 msgid "System music files"
-msgstr "システム音楽ファイル"
+msgstr "システムミュージックファイル"
 
 msgctxt "#31059"
 msgid "Current playlist"
@@ -118,7 +154,7 @@ msgstr "戻る"
 
 msgctxt "#31201"
 msgid "Location"
-msgstr "地域"
+msgstr "場所"
 
 msgctxt "#31202"
 msgid "View"
@@ -134,7 +170,11 @@ msgstr "最終更新時刻"
 
 msgctxt "#31303"
 msgid "Data provider"
-msgstr "気象データ提供元"
+msgstr "気象データプロバイダー"
+
+msgctxt "#31309"
+msgid "System Memory Used:"
+msgstr "システムメモリ使用量:"
 
 msgctxt "#31320"
 msgid "Last Logged In"
@@ -150,7 +190,7 @@ msgstr "ビデオメニュー"
 
 msgctxt "#31356"
 msgid "Download Subtitles"
-msgstr "字幕をダウンロード"
+msgstr "字幕ダウンロード"
 
 msgctxt "#31358"
 msgid "Teletext"
@@ -158,19 +198,59 @@ msgstr "文字多重放送"
 
 msgctxt "#31390"
 msgid "Skin default"
-msgstr "スキンのデフォルト"
+msgstr "スキンデフォルト"
 
 msgctxt "#31391"
 msgid "Arial based"
-msgstr "Arial ベース"
+msgstr "Arialベース"
 
 msgctxt "#31400"
 msgid "Change the skin · Set language and region · Change file listing options · Set up a screensaver"
 msgstr "スキン変更 · 言語と地域の設定 · ファイルリストオプション · スクリーンセーバー設定"
 
+msgctxt "#31405"
+msgid "Configure & manage media sharing services · Configure & manage the weather service"
+msgstr "設定 & メディア共有サービス · 設定 & 天気予報サービス"
+
+msgctxt "#31406"
+msgid "Configure display · Configure audio · Configure internet access · Configure power saving· Configure logging"
+msgstr "設定の表示 · オーディオの設定 · インターネット アクセスの設定 · 省電力の設定· ログの設定"
+
+msgctxt "#31407"
+msgid "Manage your installed add-ons · Browse for and install add-ons from kodi.tv · Modify add-on settings"
+msgstr "インストールしたアドオンの管理 · kodi.tvからインストールしたアドオンの閲覧 · アドオンの変更と設定"
+
+msgctxt "#31408"
+msgid "Configure actions that can be used during playback · Configure how media content is played"
+msgstr "再生中に使用できるアクションを設定する · メディアコンテンツの再生方法を設定"
+
+msgctxt "#31409"
+msgid "Configure library sources · Show the media lists display content · Configure how library lists are navigated"
+msgstr "ライブラリソースの設定 · メディアリストの表示内容の表示 · ライブラリリストの移動方法の設定"
+
+msgctxt "#31410"
+msgid "Configure skin · Configure region · Configure control · Configure screensaver · Configure master lock"
+msgstr "設定 スキン · 設定 地域 · 設定 コントロール · 設定 スクリーンセーバー · 設定 マスターロック"
+
+msgctxt "#31411"
+msgid "Configure your profiles · Set locking options · Enable login screen"
+msgstr "設定 あなたのプロファイル · セット ロックオプション · 有効 ログインスクリーン"
+
+msgctxt "#31412"
+msgid "Display system information · Hardware statistics · Check storage availability · View network configuration"
+msgstr "システム情報を表示 · ハードウェアの使用量 · ストレージの利用可能量 · ネットワークの設定を表示"
+
 msgctxt "#31421"
 msgid "Select your Kodi user Profile[CR]to login and continue"
-msgstr "Kodi ユーザープロファイルを選択して[CR]ログインしてください"
+msgstr "Kodiユーザープロファイルを選択して[CR]ログインしてください"
+
+msgctxt "#31548"
+msgid "Home menu"
+msgstr "ホームメニュー"
+
+msgctxt "#31549"
+msgid "Home Add-ons"
+msgstr "ホームアドオン"
 
 msgctxt "#31550"
 msgid "Backgrounds"
@@ -180,9 +260,37 @@ msgctxt "#31551"
 msgid "Add-on Shortcut"
 msgstr "アドオンショートカット"
 
+msgctxt "#31552"
+msgid "SYNC"
+msgstr "同期"
+
+msgctxt "#31553"
+msgid "Use Custom Background"
+msgstr "カスタムバックグラウンドを使用"
+
+msgctxt "#31554"
+msgid "Background:"
+msgstr "背景:"
+
+msgctxt "#31555"
+msgid "Configure TV settings · Change full screen info · Manage EPG data settings"
+msgstr "設定 TV設定 · 変更 全画面時の詳細 · 管理 EPG データ設定"
+
 msgctxt "#31556"
 msgid "Live TV"
 msgstr "ライブTV"
+
+msgctxt "#31557"
+msgid "Hide video background"
+msgstr "背景のビデオを隠す"
+
+msgctxt "#31558"
+msgid "Hide visualization background"
+msgstr "背景のビジュアライザを隠す"
+
+msgctxt "#31559"
+msgid "Channel settings"
+msgstr "チャンネルの設定"
 
 msgctxt "#31560"
 msgid "Available groups"
@@ -190,12 +298,40 @@ msgstr "利用可能なグループ"
 
 msgctxt "#31561"
 msgid "Add Group"
-msgstr "グループの追加"
+msgstr "グループ追加"
 
 msgctxt "#31562"
 msgid "Rename Group"
-msgstr "グループの名称変更"
+msgstr "グループ名称変更"
 
 msgctxt "#31563"
 msgid "Delete Group"
-msgstr "グループの削除"
+msgstr "グループ削除"
+
+msgctxt "#31564"
+msgid "Show hidden"
+msgstr "表示しない"
+
+msgctxt "#31565"
+msgid "Show deleted"
+msgstr "表示を削除しました"
+
+msgctxt "#31900"
+msgid "First Run"
+msgstr "初回起動時"
+
+msgctxt "#31901"
+msgid "There are two things to know about navigating Estouchy"
+msgstr "Estouchyの操作で2つ知っておくべきことがあります"
+
+msgctxt "#31902"
+msgid "The Kodi logo functions as a 'HOME' button. Whenever you touch it, you will be taken back to the home screen."
+msgstr "Kodiのロゴは 'ホーム' ボタンになっています。どんなときでもタッチすればホーム画面に戻ってこられます。"
+
+msgctxt "#31903"
+msgid "When you are playing audio or video, the item title will appear at the top of the screen. Touching it will take you to the fullscreen visualization or video window."
+msgstr "オーディオかビデオの再生中、トップ画面にアイテムのタイトルを表示します。タッチして全画面でビジュアライザやビオデ画面も。"
+
+msgctxt "#31904"
+msgid "Now Playing Title..."
+msgstr "現在再生中のタイトル..."

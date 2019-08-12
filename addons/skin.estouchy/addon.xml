@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<addon id="skin.estouchy" version="2.0.24" name="Estouchy" provider-name="Team Kodi">
+<addon id="skin.estouchy" version="2.0.25" name="Estouchy" provider-name="Team Kodi">
 	<requires>
 		<import addon="xbmc.gui" version="5.14.0"/>
 	</requires>
@@ -33,6 +33,7 @@
 		<summary lang="hu_HU">Felület érintőképernyős eszközöknek</summary>
 		<summary lang="is_IS">Skinn fyrir tæki með snertiskjá</summary>
 		<summary lang="it_IT">Skin per dispositivi touchscreen</summary>
+		<summary lang="ja_JP">スキンはタッチスクリーンデバイス向けです</summary>
 		<summary lang="ko_KR">터치 스크린 기기를 위한 스킨</summary>
 		<summary lang="lt_LT">Teminė išvaizda liečiamiesiems įrenginiams</summary>
 		<summary lang="lv_LV">Apvalks skārienekrāna ierīcēm</summary>
@@ -77,6 +78,7 @@
 		<description lang="hu_HU">Egy érintőképernyős eszközökre, például táblagépekre és okostelefonokra tervezett felület</description>
 		<description lang="is_IS">Skinn sem er hannað til notkunar á tækjum með snertiskjá, eins og til dæmis spjaldtölvum og snjallsímum.</description>
 		<description lang="it_IT">Skin progettata per essere usata su dispositivi touchscreen come tablet e smartphone</description>
+		<description lang="ja_JP">スキンのデザインは、タッチスクリーンデバイスであるタブレットやスマホなどでの使用を想定されています</description>
 		<description lang="ko_KR">태블릿이나 스마트폰과 같은 터치 스크린 기기에서 사용할 수 있게 디자인한 스킨</description>
 		<description lang="lt_LT">Teminė išvaizda pritaikyta naudojimui įrenginiuose su liečiamaisiais ekranais, tokiuose kaip planšetiniai kompiuteriai ar išmanieji telefonai</description>
 		<description lang="ms_MY">Kulit direka untuk digunakan pada peranti berskrin sentuh seperti tablet dan telefon pintar</description>
