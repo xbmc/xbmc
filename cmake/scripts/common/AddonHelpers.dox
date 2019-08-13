@@ -1,0 +1,59 @@
+/*!
+\addtogroup cpp_cmake
+
+Kodi which uses it as a library for its binary addons has a special build
+system for this.
+
+To implement this, a CMake macro brought by Kodi is used, this is
+"build_addon (...)". This processes various definitions passed by the addon to
+process the construction.
+
+
+--------------------------------------------------------------------------------
+
+<b>Here a minmal example of the for addon used CMakeLists.txt:</b>
+
+~~~~~~~~~~~~~{.cmake}
+cmake_minimum_required(VERSION 3.5)
+project(example.addon)
+
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${PROJECT_SOURCE_DIR})
+
+find_package(Kodi REQUIRED)
+
+include_directories(${KODI_INCLUDE_DIR}
+
+set(DEPLIBS ) # Here empty
+set(EXAMPLE_SOURCES src/main.cpp)
+set(EXAMPLE_HEADERS src/main.h)
+
+build_addon((example.addon EXAMPLE DEPLIBS)
+
+include(CPack)
+~~~~~~~~~~~~~
+
+
+--------------------------------------------------------------------------------
+
+This is a list of special variables that can be passed to the macro.
+The parts defined with "*" must be given the second name given to the macro.
+
+Here to define the necessary creation and installation files on addon CMakeLists.txt:
+| Name                        | Description
+|-----------------------------|-------------------------------------------------
+| *_SOURCES                   | List of source code files to be complicated.
+| *_HEADERS                   | List of used source code header files.
+| *_CUSTOM_BINARY             | For special cases where an already created library from an external source is inserted, the <b>"* _SOURCES"</b> and <b>"* _HEADERS"</b> are unused in this case.<br>This is currently used primarily on game addons.
+| *_CUSTOM_DATA               | To add additional required data from a folder, which are stored in the shared folder of the addon.<br>With a "/" at the end of the content given to the folder is used, without the folder itself.
+| *_ADDITIONAL_BINARY         | In case the additional library has to be installed for the addon, the path or CMake name can be given here.
+| *_ADDITIONAL_BINARY_EXE     | In case you need to addon an additional application you can give the path or CMake name, it will be in the same folder as the addon library.<br>The mode bits are set there as EXE.
+| *_ADDITIONAL_BINARY_DIRS    | To add complete folders additionally to folders containing the addon library.<br>With a "/" at the end of the content given to the folder is used, without the folder itself.
+
+External creation Options, given by `-D...`:
+| Name                        | Description
+|-----------------------------|-------------------------------------------------
+| PACKAGE_ZIP                 | To create a package as a ZIP file. This is also used to install locally addon together.<br>Default is OFF.
+| PACKAGE_TGZ                 | To create a package as a TGZ file.<br>Default is OFF.
+| BUILD_SHARED_LIBS           | To define if addon library is shared or static.<br>Default is ON to have shared.
+| USE_LTO                     | Use link time optimization.<br>Default is OFF.
+*/

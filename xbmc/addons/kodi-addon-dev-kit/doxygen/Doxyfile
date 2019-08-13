@@ -827,6 +827,7 @@ INPUT                  = main.txt \
                          Modules/modules_cpp.dox \
                          Modules/modules_python.dox \
                          Skin/skin.dox \
+                         ../../../../cmake/scripts/common/AddonHelpers.dox \
                          ../../../guilib/GUIRenderingControl.dox \
                          ../../../guilib/GUIButtonControl.dox \
                          ../../../guilib/GUIEditControl.dox \

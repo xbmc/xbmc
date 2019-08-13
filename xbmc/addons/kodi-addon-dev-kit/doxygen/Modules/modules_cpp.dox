@@ -8,6 +8,11 @@
        \endhtmlonly
 */
 /*!
+\defgroup cpp_cmake CMake addon creation structure
+\ingroup cpp
+\brief **CMake help macros to create addon for Kodi**
+*/
+/*!
 \defgroup cpp_kodi Interface - kodi
 \ingroup cpp
 \brief **General addon interface functions**
