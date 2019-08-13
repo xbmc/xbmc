@@ -51,8 +51,8 @@ typedef enum
 @property bool touchBeginSignaled;
 @property int  m_screenIdx;
 @property CGSize screensize;
-@property (nonatomic, retain) NSTimer *m_networkAutoSuspendTimer;
-@property (nonatomic, retain) NSDictionary *nowPlayingInfo;
+@property(nonatomic, strong) NSTimer* m_networkAutoSuspendTimer;
+@property(nonatomic, strong) NSDictionary* nowPlayingInfo;
 @property bool nativeKeyboardActive;
 
 // message from which our instance is obtained
@@ -84,7 +84,7 @@ typedef enum
 - (bool) changeScreen: (unsigned int)screenIdx withMode:(UIScreenMode *)mode;
 - (void) activateScreen: (UIScreen *)screen withOrientation:(UIInterfaceOrientation)newOrientation;
 - (id)   initWithFrame:(CGRect)frame withScreen:(UIScreen *)screen;
-- (void*) getEAGLContextObj;
+- (CVEAGLContext)getEAGLContextObj;
 @end
 
 extern XBMCController *g_xbmcController;

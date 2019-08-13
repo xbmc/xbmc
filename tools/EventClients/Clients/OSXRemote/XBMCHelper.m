@@ -38,7 +38,6 @@
         NSLog(@"Error! Candelair driver installation necessary. XBMCHelper won't function properly!");
         NSLog(@"Due to an issue in the OS version you are running, an additional driver needs to be installed before XBMC(Helper) can reliably access the remote.");
         NSLog(@"See http://www.candelair.com/download/ for details");
-        [super dealloc];
         return nil;
       }
       else
@@ -56,7 +55,6 @@
           ELOG(@"Failed to start remote control.");
           //setup failed, cleanup
           [remote setDelegate:nil];
-          [super dealloc];
           return nil;
         }
       }
@@ -70,11 +68,6 @@
   [remote stopRemoteControl];
   if( [remote delegate] == self)
     [remote setDelegate:nil];
-  [mp_wrapper release];
-  [mp_app_path release];
-  [mp_home_path release];
-
-  [super dealloc];
 }
 
 //----------------------------------------------------------------------------
@@ -87,7 +80,6 @@
 
 //----------------------------------------------------------------------------
 - (void) disconnect{
-  [mp_wrapper release];
   mp_wrapper = nil;
 }
 
@@ -100,16 +92,14 @@
 //----------------------------------------------------------------------------
 - (void) setApplicationPath:(NSString*) fp_app_path{
   if (mp_app_path != fp_app_path) {
-    [mp_app_path release];
-    mp_app_path = [[fp_app_path stringByStandardizingPath] retain];
+    mp_app_path = [fp_app_path stringByStandardizingPath];
   }
 }
 
 //----------------------------------------------------------------------------
 - (void) setApplicationHome:(NSString*) fp_home_path{
   if (mp_home_path != fp_home_path) {
-    [mp_home_path release];
-    mp_home_path = [[fp_home_path stringByStandardizingPath] retain];
+    mp_home_path = [fp_home_path stringByStandardizingPath];
   }
 }
 

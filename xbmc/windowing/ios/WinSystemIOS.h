@@ -15,6 +15,8 @@
 #include <string>
 #include <vector>
 
+#include <CoreVideo/CVOpenGLESTextureCache.h>
+
 class IDispResource;
 class CVideoSyncIos;
 struct CADisplayLinkWrapper;
@@ -61,7 +63,7 @@ public:
   void DeinitDisplayLink(void);
   void OnAppFocusChange(bool focus);
   bool IsBackgrounded() const { return m_bIsBackgrounded; }
-  void* GetEAGLContextObj();
+  CVEAGLContext GetEAGLContextObj();
   void GetConnectedOutputs(std::vector<std::string> *outputs);
   void MoveToTouchscreen();
 

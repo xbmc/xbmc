@@ -102,10 +102,6 @@ static void setupApplicationMenu(void)
 
   // Tell the application object that this is now the application menu
   [NSApp setAppleMenu:appleMenu];
-
-  // Finally give up our references to the objects
-  [appleMenu release];
-  [menuItem release];
 }
 
 // Create a window menu
@@ -120,23 +116,19 @@ static void setupWindowMenu(void)
   // "Full/Windowed Toggle" item
   menuItem = [[NSMenuItem alloc] initWithTitle:@"Full/Windowed Toggle" action:@selector(fullScreenToggle:) keyEquivalent:@"f"];
   [windowMenu addItem:menuItem];
-  [menuItem release];
 
   // "Full/Windowed Toggle" item
   menuItem = [[NSMenuItem alloc] initWithTitle:@"Float on Top" action:@selector(floatOnTopToggle:) keyEquivalent:@"t"];
   [windowMenu addItem:menuItem];
-  [menuItem release];
 
   // "Minimize" item
   menuItem = [[NSMenuItem alloc] initWithTitle:@"Minimize" action:@selector(performMiniaturize:) keyEquivalent:@"m"];
   [windowMenu addItem:menuItem];
-  [menuItem release];
 
   // "Title Bar" item
   menuItem = [[NSMenuItem alloc] initWithTitle:@"Title Bar" action:@selector(titlebarToggle:) keyEquivalent:@""];
   [windowMenu addItem:menuItem];
   [menuItem setState: true];
-  [menuItem release];
 
   // Put menu into the menubar
   windowMenuItem = [[NSMenuItem alloc] initWithTitle:@"Window" action:nil keyEquivalent:@""];
@@ -145,10 +137,6 @@ static void setupWindowMenu(void)
 
   // Tell the application object that this is now the window menu
   [NSApp setWindowsMenu:windowMenu];
-
-  // Finally give up our references to the objects
-  [windowMenu release];
-  [windowMenuItem release];
 }
 
 @interface XBMCApplication : NSApplication
@@ -272,9 +260,10 @@ static void setupWindowMenu(void)
 // is not required anymore, who knows ?
 - (void) kickstartMultiThreaded:(id)arg
 {
-  NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-  // empty
-  [pool release];
+  @autoreleasepool
+  {
+    // empty
+  }
 }
 
 // Called after the internal event loop has started running.
@@ -405,31 +394,31 @@ static void setupWindowMenu(void)
 - (void) deviceDidMountNotification:(NSNotification *) note
 {
   // calling into c++ code, need to use autorelease pools
-  NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
+  @autoreleasepool
+  {
+    NSString* volumeLabel = [note.userInfo objectForKey:@"NSWorkspaceVolumeLocalizedNameKey"];
+    const char* label = [volumeLabel UTF8String];
 
-  NSString* volumeLabel = [note.userInfo objectForKey:@"NSWorkspaceVolumeLocalizedNameKey"];
-  const char* label = [volumeLabel UTF8String];
+    NSString* volumePath = [note.userInfo objectForKey:@"NSDevicePath"];
+    const char* path = [volumePath UTF8String];
 
-  NSString* volumePath = [note.userInfo objectForKey:@"NSDevicePath"];
-  const char* path = [volumePath UTF8String];
-
-  CDarwinStorageProvider::VolumeMountNotification(label, path);
-  [pool release];
+    CDarwinStorageProvider::VolumeMountNotification(label, path);
+  }
 }
 
 - (void) deviceDidUnMountNotification:(NSNotification *) note
 {
   // calling into c++ code, need to use autorelease pools
-  NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
+  @autoreleasepool
+  {
+    NSString* volumeLabel = [note.userInfo objectForKey:@"NSWorkspaceVolumeLocalizedNameKey"];
+    const char* label = [volumeLabel UTF8String];
 
-  NSString* volumeLabel = [note.userInfo objectForKey:@"NSWorkspaceVolumeLocalizedNameKey"];
-  const char* label = [volumeLabel UTF8String];
+    NSString* volumePath = [note.userInfo objectForKey:@"NSDevicePath"];
+    const char* path = [volumePath UTF8String];
 
-  NSString* volumePath = [note.userInfo objectForKey:@"NSDevicePath"];
-  const char* path = [volumePath UTF8String];
-
-  CDarwinStorageProvider::VolumeUnmountNotification(label, path);
-  [pool release];
+    CDarwinStorageProvider::VolumeUnmountNotification(label, path);
+  }
 }
 
 static void keyPress(SDLKey key)
@@ -505,67 +494,70 @@ static void keyPress(SDLKey key)
 /* Main entry point to executable - should *not* be SDL_main! */
 int main(int argc, char *argv[])
 {
-  NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-  XBMCDelegate *xbmc_delegate;
-
-  // Block SIGPIPE
-  // SIGPIPE repeatably kills us, turn it off
+  @autoreleasepool
   {
-    sigset_t set;
-    sigemptyset(&set);
-    sigaddset(&set, SIGPIPE);
-    sigprocmask(SIG_BLOCK, &set, NULL);
-  }
+    XBMCDelegate* xbmc_delegate;
 
-  /* Copy the arguments into a global variable */
-  /* This is passed if we are launched by double-clicking */
-  if ( argc >= 2 && strncmp (argv[1], "-psn", 4) == 0 ) {
-    gArgv = (char **) SDL_malloc(sizeof (char *) * 2);
-    gArgv[0] = argv[0];
-    gArgv[1] = NULL;
-    gArgc = 1;
-  } else {
-    gArgc = argc;
-    gArgv = (char **) SDL_malloc(sizeof (char *) * (argc+1));
-    for (int i = 0; i <= argc; i++)
+    // Block SIGPIPE
+    // SIGPIPE repeatably kills us, turn it off
+    {
+      sigset_t set;
+      sigemptyset(&set);
+      sigaddset(&set, SIGPIPE);
+      sigprocmask(SIG_BLOCK, &set, NULL);
+    }
+
+    /* Copy the arguments into a global variable */
+    /* This is passed if we are launched by double-clicking */
+    if (argc >= 2 && strncmp(argv[1], "-psn", 4) == 0)
+    {
+      gArgv = (char**)SDL_malloc(sizeof(char*) * 2);
+      gArgv[0] = argv[0];
+      gArgv[1] = NULL;
+      gArgc = 1;
+    }
+    else
+    {
+      gArgc = argc;
+      gArgv = (char**)SDL_malloc(sizeof(char*) * (argc + 1));
+      for (int i = 0; i <= argc; i++)
         gArgv[i] = argv[i];
-  }
+    }
 
-  // Ensure the application object is initialised
-  [XBMCApplication sharedApplication];
+    // Ensure the application object is initialised
+    [XBMCApplication sharedApplication];
 
 #ifdef SDL_USE_CPS
-  {
-    CPSProcessSerNum PSN;
-    /* Tell the dock about us */
-    if (!CPSGetCurrentProcess(&PSN))
-      if (!CPSEnableForegroundOperation(&PSN,0x03,0x3C,0x2C,0x1103))
-        if (!CPSSetFrontProcess(&PSN))
-          [XBMCApplication sharedApplication];
-  }
+    {
+      CPSProcessSerNum PSN;
+      /* Tell the dock about us */
+      if (!CPSGetCurrentProcess(&PSN))
+        if (!CPSEnableForegroundOperation(&PSN, 0x03, 0x3C, 0x2C, 0x1103))
+          if (!CPSSetFrontProcess(&PSN))
+            [XBMCApplication sharedApplication];
+    }
 #endif
 
-  // Set up the menubars
-  [NSApp setMainMenu:[[NSMenu alloc] init]];
-  setupApplicationMenu();
-  setupWindowMenu();
+    // Set up the menubars
+    [NSApp setMainMenu:[[NSMenu alloc] init]];
+    setupApplicationMenu();
+    setupWindowMenu();
 
-  // Create XBMCDelegate and make it the app delegate
-  xbmc_delegate = [[XBMCDelegate alloc] init];
-  [[NSApplication sharedApplication] setDelegate:xbmc_delegate];
+    // Create XBMCDelegate and make it the app delegate
+    xbmc_delegate = [[XBMCDelegate alloc] init];
+    [[NSApplication sharedApplication] setDelegate:xbmc_delegate];
 
-  // Start the main event loop
-  [NSApp run];
+    // Start the main event loop
+    [NSApp run];
 
-  // call SDL_main which calls our real main in xbmc.cpp
-  // see http://lists.libsdl.org/pipermail/sdl-libsdl.org/2008-September/066542.html
-  int status;
-  status = SDL_main(gArgc, gArgv);
-  SDL_Quit();
+    // call SDL_main which calls our real main in xbmc.cpp
+    // see http://lists.libsdl.org/pipermail/sdl-libsdl.org/2008-September/066542.html
+    int status;
+    status = SDL_main(gArgc, gArgv);
+    SDL_Quit();
 
-  [xbmc_delegate applicationWillTerminate:NULL];
-  [xbmc_delegate release];
-  [pool release];
+    [xbmc_delegate applicationWillTerminate:NULL];
 
-  return status;
+    return status;
+  }
 }

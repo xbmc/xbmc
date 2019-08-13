@@ -10,10 +10,12 @@
 
 #include "guilib/GUIKeyboard.h"
 
+class CIOSKeyboardImpl;
+
 class CIOSKeyboard : public CGUIKeyboard
 {
   public:
-    CIOSKeyboard():m_pCharCallback(nullptr),m_bCanceled(false){}
+    CIOSKeyboard();
     virtual bool ShowAndGetInput(char_callback_t pCallback, const std::string &initialString, std::string &typedString, const std::string &heading, bool bHiddenInput);
     virtual void Cancel();
     void fireCallback(const std::string &str);
@@ -23,4 +25,5 @@ class CIOSKeyboard : public CGUIKeyboard
   private:
     char_callback_t m_pCharCallback;
     bool m_bCanceled;
+    std::unique_ptr<CIOSKeyboardImpl> m_impl;
 };

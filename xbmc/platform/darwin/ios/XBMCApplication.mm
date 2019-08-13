@@ -14,11 +14,11 @@
 #import "platform/darwin/NSLogDebugHelpers.h"
 
 #import <AVFoundation/AVAudioSession.h>
-#import <UIKit/UIKit.h>
-#import <objc/runtime.h>
 
 @implementation XBMCApplicationDelegate
-XBMCController *m_xbmcController;
+{
+  XBMCController* m_xbmcController;
+}
 
 // - iOS6 rotation API - will be called on iOS7 runtime!--------
 // - on iOS7 first application is asked for supported orientation
@@ -119,117 +119,49 @@ XBMCController *m_xbmcController;
   }
 }
 
-- (void)dealloc
+- (NSArray<UIKeyCommand*>*)keyCommands
 {
-  [self registerScreenNotifications:NO];
-  [m_xbmcController stopAnimation];
-  [m_xbmcController release];
-
-  [super dealloc];
+  @autoreleasepool
+  {
+    return @[
+      [UIKeyCommand keyCommandWithInput:UIKeyInputUpArrow
+                          modifierFlags:kNilOptions
+                                 action:@selector(upPressed)],
+      [UIKeyCommand keyCommandWithInput:UIKeyInputDownArrow
+                          modifierFlags:kNilOptions
+                                 action:@selector(downPressed)],
+      [UIKeyCommand keyCommandWithInput:UIKeyInputLeftArrow
+                          modifierFlags:kNilOptions
+                                 action:@selector(leftPressed)],
+      [UIKeyCommand keyCommandWithInput:UIKeyInputRightArrow
+                          modifierFlags:kNilOptions
+                                 action:@selector(rightPressed)]
+    ];
+  }
 }
+
+- (void)upPressed
+{
+  [g_xbmcController sendKey:XBMCK_UP];
+}
+
+- (void)downPressed
+{
+  [g_xbmcController sendKey:XBMCK_DOWN];
+}
+
+- (void)leftPressed
+{
+  [g_xbmcController sendKey:XBMCK_LEFT];
+}
+
+- (void)rightPressed
+{
+  [g_xbmcController sendKey:XBMCK_RIGHT];
+}
+
 @end
 
-//---------------- HOOK FOR BT KEYBOARD CURSORS KEYS START----------------
-#define GSEVENT_TYPE 2
-#define GSEVENT_FLAGS 12
-#define GSEVENTKEY_KEYCODE_32_BIT 17
-#define GSEVENTKEY_KEYCODE_64_BIT 13
-#define GSEVENT_TYPE_KEYUP 11
-
-static UniChar kGKKeyboardDirectionRight = 79;
-static UniChar kGKKeyboardDirectionLeft = 80;
-static UniChar kGKKeyboardDirectionDown = 81;
-static UniChar kGKKeyboardDirectionUp = 82;
-
-// pointer to the original hooked method
-static void (*UIApplication$sendEvent$Orig)(id, SEL, UIEvent*);
-
-void handleKeyCode(UniChar keyCode)
-{
-  XBMCKey key = XBMCK_UNKNOWN;
-  //LOG(@"%s: tmp key %x", __PRETTY_FUNCTION__, keyCode);
-  if      (keyCode == kGKKeyboardDirectionRight)
-    key = XBMCK_RIGHT;
-  else if (keyCode == kGKKeyboardDirectionLeft)
-    key = XBMCK_LEFT;
-  else if (keyCode == kGKKeyboardDirectionDown)
-    key = XBMCK_DOWN;
-  else if (keyCode == kGKKeyboardDirectionUp)
-    key = XBMCK_UP;
-  else
-  {
-    //LOG(@"%s: tmp key unsupported :(", __PRETTY_FUNCTION__);
-    return; // not supported by us - return...
-  }
-
-  [g_xbmcController sendKey:key];
-}
-
-static void XBMCsendEvent(id _self, SEL _cmd, UIEvent *event)
-{
-  // call super implementation
-  UIApplication$sendEvent$Orig(_self, _cmd, event);
-
-  if ([event respondsToSelector:@selector(_gsEvent)])
-  {
-    // Key events come in form of UIInternalEvents.
-    // They contain a GSEvent object which contains
-    // a GSEventRecord among other things
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Warc-performSelector-leaks"
-    NSInteger *eventMem = (NSInteger *)[event performSelector:@selector(_gsEvent)];
-#pragma clang diagnostic pop
-
-    if (eventMem)
-    {
-      // So far we got a GSEvent :)
-      NSInteger eventType = eventMem[GSEVENT_TYPE];
-      if (eventType == GSEVENT_TYPE_KEYUP)
-      {
-        // support 32 and 64bit arm here...
-#if TARGET_RT_64_BIT
-        int idx = GSEVENTKEY_KEYCODE_64_BIT;
-#else
-        int idx = GSEVENTKEY_KEYCODE_32_BIT;
-#endif
-
-        // Now we got a GSEventKey!
-
-        // Read flags from GSEvent
-        // for modifier keys if we want to use them somehow at a later time
-        //int eventFlags = eventMem[GSEVENT_FLAGS];
-        // Read keycode from GSEventKey
-        UniChar tmp = (UniChar)eventMem[idx];
-        handleKeyCode(tmp);
-      }
-    }
-  }
-}
-
-// implicitly called constructor for hooking into handleKeyUIEvent
-// this one hooks us into the keyboard events
-__attribute__((constructor)) static void HookKeyboard(void)
-{
-#if TARGET_RT_64_BIT
-    LOG(@"Detected 64bit system!!!");
-#else
-    LOG(@"Detected 32bit system!!!");
-#endif
-
-  NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
-  {
-    // Hook into handleKeyUIEvent: to get keyboard events.
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wundeclared-selector"
-    if ([UIApplication instancesRespondToSelector:@selector(handleKeyUIEvent:)])
-      *(IMP*)&UIApplication$sendEvent$Orig = method_setImplementation(class_getInstanceMethod(UIApplication.class, @selector(handleKeyUIEvent:)), (IMP)&XBMCsendEvent);
-    else
-      ELOG(@"HookKeyboard: Couldn't hook handleKeyUIEvent - cursor keys on btkeyboards won't work!");
-#pragma clang diagnostic pop
-  }
-  [pool release];
-}
-//---------------- HOOK FOR BT KEYBOARD CURSORS KEYS END----------------
 
 static void SigPipeHandler(int s)
 {
@@ -237,27 +169,25 @@ static void SigPipeHandler(int s)
 }
 
 int main(int argc, char *argv[]) {
-  NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
-  int retVal = 0;
-
-  signal(SIGPIPE, SigPipeHandler);
-
-  @try
+  @autoreleasepool
   {
-    retVal = UIApplicationMain(argc,argv,@"UIApplication",@"XBMCApplicationDelegate");
-    //UIApplicationMain(argc, argv, nil, nil);
-  }
-  @catch (id theException)
-  {
-    ELOG(@"%@", theException);
-  }
-  @finally
-  {
-    ILOG(@"This always happens.");
-  }
+    int retVal = 0;
 
-  [pool release];
+    signal(SIGPIPE, SigPipeHandler);
 
-  return retVal;
+    @try
+    {
+      retVal = UIApplicationMain(argc, argv, nil, NSStringFromClass(XBMCApplicationDelegate.class));
+    }
+    @catch (id theException)
+    {
+      ELOG(@"%@", theException);
+    }
+    @finally
+    {
+      ILOG(@"This always happens.");
+    }
 
+    return retVal;
+  }
 }

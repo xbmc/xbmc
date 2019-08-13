@@ -6,9 +6,7 @@
  *  See LICENSES/README.md for more information.
  */
 
-#import <AVFoundation/AVFoundation.h>
 #import <UIKit/UIKit.h>
 
-@interface XBMCApplicationDelegate : NSObject <UIApplicationDelegate> {
-}
+@interface XBMCApplicationDelegate : UIResponder <UIApplicationDelegate>
 @end

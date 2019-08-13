@@ -23,7 +23,7 @@
   CGRect _kbRect;
 }
 
-@property (nonatomic, retain) NSMutableString *text;
+@property(nonatomic, strong) NSMutableString* text;
 @property (getter = isConfirmed) BOOL _confirmed;
 @property (assign, setter = registerKeyboard:) CIOSKeyboard *_iosKeyboard;
 @property CGRect _frame;

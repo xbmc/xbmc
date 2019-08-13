@@ -37,3 +37,6 @@ list(APPEND DEPLIBS "-framework DiskArbitration" "-framework IOKit"
 
 set(CMAKE_OSX_DEPLOYMENT_TARGET 10.9)
 set(CMAKE_XCODE_ATTRIBUTE_CLANG_LINK_OBJC_RUNTIME OFF)
+
+include(cmake/scripts/darwin/Macros.cmake)
+enable_arc()

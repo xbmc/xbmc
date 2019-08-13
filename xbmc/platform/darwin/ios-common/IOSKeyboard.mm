@@ -8,64 +8,74 @@
 
 #include "platform/darwin/ios-common/IOSKeyboard.h"
 
-#import "platform/darwin/AutoPool.h"
 #include "platform/darwin/NSLogDebugHelpers.h"
 #include "platform/darwin/ios-common/IOSKeyboardView.h"
 #include "platform/darwin/ios/XBMCController.h"
 
-KeyboardView *g_pIosKeyboard = nil;
+class CIOSKeyboardImpl
+{
+public:
+  KeyboardView* g_pIosKeyboard = nil;
+};
+
+CIOSKeyboard::CIOSKeyboard()
+  : CGUIKeyboard()
+  , m_pCharCallback{nullptr}
+  , m_bCanceled{false}
+  , m_impl{new CIOSKeyboardImpl}
+{
+}
 
 bool CIOSKeyboard::ShowAndGetInput(char_callback_t pCallback, const std::string &initialString, std::string &typedString, const std::string &heading, bool bHiddenInput)
 {
   // we are in xbmc main thread or python module thread.
-
-  CCocoaAutoPool pool;
-
-  @synchronized([KeyboardView class])
+  @autoreleasepool
   {
-    // in case twice open keyboard.
-    if (g_pIosKeyboard)
-      return false;
+    @synchronized([KeyboardView class])
+    {
+      // in case twice open keyboard.
+      if (m_impl->g_pIosKeyboard)
+        return false;
 
-    // assume we are only drawn on the mainscreen ever!
-    UIScreen *pCurrentScreen = [UIScreen mainScreen];
-    CGRect keyboardFrame = CGRectMake(0, 0, pCurrentScreen.bounds.size.width, pCurrentScreen.bounds.size.height);
-//    LOG(@"kb: kb frame: %@", NSStringFromCGRect(keyboardFrame));
+      // assume we are only drawn on the mainscreen ever!
+      UIScreen* pCurrentScreen = [UIScreen mainScreen];
+      CGRect keyboardFrame =
+          CGRectMake(0, 0, pCurrentScreen.bounds.size.width, pCurrentScreen.bounds.size.height);
 
-    //create the keyboardview
-    g_pIosKeyboard = [[KeyboardView alloc] initWithFrame:keyboardFrame];
-    if (!g_pIosKeyboard)
-      return false;
+      //create the keyboardview
+      m_impl->g_pIosKeyboard = [[KeyboardView alloc] initWithFrame:keyboardFrame];
+      if (!m_impl->g_pIosKeyboard)
+        return false;
 
-    // inform the controller that the native keyboard is active
-    // basically as long as g_pIosKeyboard exists...
-    [g_xbmcController nativeKeyboardActive:true];
+      // inform the controller that the native keyboard is active
+      // basically as long as m_impl->g_pIosKeyboard exists...
+      [g_xbmcController nativeKeyboardActive:true];
+    }
+
+    m_pCharCallback = pCallback;
+
+    // init keyboard stuff
+    SetTextToKeyboard(initialString);
+    [m_impl->g_pIosKeyboard setHidden:bHiddenInput];
+    [m_impl->g_pIosKeyboard setHeading:[NSString stringWithUTF8String:heading.c_str()]];
+    [m_impl->g_pIosKeyboard registerKeyboard:this]; // for calling back
+    bool confirmed = false;
+    if (!m_bCanceled)
+    {
+      [m_impl->g_pIosKeyboard setCancelFlag:&m_bCanceled];
+      [m_impl->g_pIosKeyboard activate]; // blocks and shows keyboard
+      // user is done - get resulted text and confirmation
+      confirmed = m_impl->g_pIosKeyboard.isConfirmed;
+      if (confirmed)
+        typedString = [m_impl->g_pIosKeyboard.text UTF8String];
+    }
+    @synchronized([KeyboardView class])
+    {
+      m_impl->g_pIosKeyboard = nil;
+      [g_xbmcController nativeKeyboardActive:false];
+    }
+    return confirmed;
   }
-
-  m_pCharCallback = pCallback;
-
-  // init keyboard stuff
-  SetTextToKeyboard(initialString);
-  [g_pIosKeyboard setHidden:bHiddenInput];
-  [g_pIosKeyboard setHeading:[NSString stringWithUTF8String:heading.c_str()]];
-  [g_pIosKeyboard registerKeyboard:this]; // for calling back
-  bool confirmed = false;
-  if (!m_bCanceled)
-  {
-    [g_pIosKeyboard setCancelFlag:&m_bCanceled];
-    [g_pIosKeyboard activate]; // blocks and shows keyboard
-    // user is done - get resulted text and confirmation
-    confirmed = g_pIosKeyboard.isConfirmed;
-    if (confirmed)
-      typedString = [g_pIosKeyboard.text UTF8String];
-  }
-  [g_pIosKeyboard release]; // bye bye native keyboard
-  @synchronized([KeyboardView class])
-  {
-    g_pIosKeyboard = nil;
-    [g_xbmcController nativeKeyboardActive:false];
-  }
-  return confirmed;
 }
 
 void CIOSKeyboard::Cancel()
@@ -75,9 +85,10 @@ void CIOSKeyboard::Cancel()
 
 bool CIOSKeyboard::SetTextToKeyboard(const std::string &text, bool closeKeyboard /* = false */)
 {
-  if (!g_pIosKeyboard)
+  if (!m_impl->g_pIosKeyboard)
     return false;
-  [g_pIosKeyboard setKeyboardText:[NSString stringWithUTF8String:text.c_str()] closeKeyboard:closeKeyboard?YES:NO];
+  [m_impl->g_pIosKeyboard setKeyboardText:[NSString stringWithUTF8String:text.c_str()]
+                            closeKeyboard:closeKeyboard ? YES : NO];
   return true;
 }
 

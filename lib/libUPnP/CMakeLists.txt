@@ -80,6 +80,7 @@ if(NOT CORE_SYSTEM_NAME STREQUAL windows AND NOT CORE_SYSTEM_NAME STREQUAL windo
                       Neptune/Source/System/Bsd/NptBsdNetwork.cpp)
   if(APPLE)
     list(APPEND SOURCES Neptune/Source/System/Apple/NptAppleAutoreleasePool.mm)
+    set_property(SOURCE Neptune/Source/System/Apple/NptAppleAutoreleasePool.mm APPEND_STRING PROPERTY COMPILE_OPTIONS "-fno-objc-arc")
   else()
     list(APPEND SOURCES Neptune/Source/System/Null/NptNullAutoreleasePool.cpp)
   endif()

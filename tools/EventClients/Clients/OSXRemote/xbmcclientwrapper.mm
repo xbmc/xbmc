@@ -424,7 +424,6 @@ void XBMCClientWrapperImpl::populateMultiRemoteModeMap(){
 
 - (void)dealloc{
   delete mp_impl;
-	[super dealloc];
 }
 
 -(void) handleEvent:(eATVClientEvent) f_event{

@@ -125,7 +125,6 @@ static CEvent screenChangeEvent;
   if([self willSwitchToInternal:screenIdx] && _externalTouchController != nil)
   {
     _lastTouchControllerOrientation = [[UIApplication sharedApplication] statusBarOrientation];
-    [_externalTouchController release];
     _externalTouchController = nil;
   }
 
@@ -223,15 +222,6 @@ static CEvent screenChangeEvent;
   {
     winSystem->UpdateResolutions();
   }
-}
-//--------------------------------------------------------------
-- (void) dealloc
-{
-  if(_externalTouchController != nil )
-  {
-    [_externalTouchController release];
-  }
-  [super dealloc];
 }
 //--------------------------------------------------------------
 + (id) sharedInstance

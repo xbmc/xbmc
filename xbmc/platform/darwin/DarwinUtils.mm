@@ -24,7 +24,6 @@
   #import <IOKit/IOKitLib.h>
 #endif
 
-#import "AutoPool.h"
 #import "DarwinUtils.h"
 
 #include <mutex>
@@ -277,8 +276,10 @@ const char *CDarwinUtils::GetOSReleaseString(void)
 
 const char *CDarwinUtils::GetOSVersionString(void)
 {
-  CCocoaAutoPool pool;
-  return [[[NSProcessInfo processInfo] operatingSystemVersionString] UTF8String];
+  @autoreleasepool
+  {
+    return [[[NSProcessInfo processInfo] operatingSystemVersionString] UTF8String];
+  }
 }
 
 const char* CDarwinUtils::GetVersionString()
@@ -302,38 +303,40 @@ const char* CDarwinUtils::GetVersionString()
 
 std::string CDarwinUtils::GetFrameworkPath(bool forPython)
 {
-  CCocoaAutoPool pool;
-#if defined(TARGET_DARWIN_EMBEDDED)
-  return std::string{NSBundle.mainBundle.privateFrameworksPath.UTF8String};
-#elif defined(TARGET_DARWIN_OSX)
-  if ([NSBundle.mainBundle.executablePath containsString:@"Contents"])
+  @autoreleasepool
   {
-    // ExecutablePath is <product>.app/Contents/MacOS/<executable>
-    // we should have <product>.app/Contents/Libraries
-    return std::string{[[NSBundle.mainBundle.bundlePath stringByAppendingPathComponent:@"Contents"] stringByAppendingPathComponent:@"Libraries"].UTF8String};
+    auto mainBundle = NSBundle.mainBundle;
+#if defined(TARGET_DARWIN_EMBEDDED)
+    return std::string{mainBundle.privateFrameworksPath.UTF8String};
+#else
+    if ([mainBundle.executablePath containsString:@"Contents"])
+    {
+      // ExecutablePath is <product>.app/Contents/MacOS/<executable>
+      // we should have <product>.app/Contents/Libraries
+      return std::string{[[mainBundle.bundlePath stringByAppendingPathComponent:@"Contents"]
+                             stringByAppendingPathComponent:@"Libraries"]
+                             .UTF8String};
+    }
+#endif
   }
 
   // Kodi OSX binary running under xcode or command-line
   // but only if it's not for python. In this case, let python
   // use it's internal compiled paths.
+#if defined(TARGET_DARWIN_OSX)
   if (!forPython)
     return std::string{PREFIX_USR_PATH"/lib"};
-#endif
   return std::string{};
+#endif
 }
 
 int  CDarwinUtils::GetExecutablePath(char* path, size_t *pathsize)
 {
-  CCocoaAutoPool pool;
-  // see if we can figure out who we are
-  NSString *pathname;
-
-  // 1) Kodi application running under IOS
-  // 2) Kodi application running under OSX
-  pathname = [[NSBundle mainBundle] executablePath];
-  strcpy(path, [pathname UTF8String]);
+  @autoreleasepool
+  {
+    strcpy(path, NSBundle.mainBundle.executablePath.UTF8String);
+  }
   *pathsize = strlen(path);
-  //CLog::Log(LOGDEBUG, "DarwinExecutablePath(b/c) -> %s", path);
 
   return 0;
 }
@@ -486,9 +489,10 @@ const std::string& CDarwinUtils::GetManufacturer(void)
         CFTypeRef manufacturer = IORegistryEntryCreateCFProperty(servExpDev, CFSTR("manufacturer"), kCFAllocatorDefault, 0);
         if (manufacturer)
         {
-          if (CFGetTypeID(manufacturer) == CFStringGetTypeID())
-            manufName = (const char*)[[NSString stringWithString:(NSString *)manufacturer] UTF8String];
-          else if (CFGetTypeID(manufacturer) == CFDataGetTypeID())
+          auto typeId = CFGetTypeID(manufacturer);
+          if (typeId == CFStringGetTypeID())
+            manufName = static_cast<const char*>([NSString stringWithString:(__bridge NSString*)manufacturer].UTF8String);
+          else if (typeId == CFDataGetTypeID())
           {
             manufName.assign((const char*)CFDataGetBytePtr((CFDataRef)manufacturer), CFDataGetLength((CFDataRef)manufacturer));
             if (!manufName.empty() && manufName[manufName.length() - 1] == 0)
@@ -509,31 +513,27 @@ bool CDarwinUtils::IsAliasShortcut(const std::string& path, bool isdirectory)
   bool ret = false;
 
 #if defined(TARGET_DARWIN_OSX)
-  CCocoaAutoPool pool;
-
-  NSURL *nsUrl;
-  if (isdirectory)
+  @autoreleasepool
   {
-    std::string cleanpath = path;
-    URIUtils::RemoveSlashAtEnd(cleanpath);
-    NSString *nsPath = [NSString stringWithUTF8String:cleanpath.c_str()];
-    nsUrl = [NSURL fileURLWithPath:nsPath isDirectory:TRUE];
-  }
-  else
-  {
-    NSString *nsPath = [NSString stringWithUTF8String:path.c_str()];
-    nsUrl = [NSURL fileURLWithPath:nsPath isDirectory:FALSE];
-  }
-
-  NSNumber* wasAliased = nil;
-
-  if (nsUrl != nil)
-  {
-    NSError *error = nil;
-
-    if ([nsUrl getResourceValue:&wasAliased forKey:NSURLIsAliasFileKey error:&error])
+    NSURL* nsUrl;
+    if (isdirectory)
     {
-      ret = [wasAliased boolValue];
+      std::string cleanpath = path;
+      URIUtils::RemoveSlashAtEnd(cleanpath);
+      NSString* nsPath = [NSString stringWithUTF8String:cleanpath.c_str()];
+      nsUrl = [NSURL fileURLWithPath:nsPath isDirectory:YES];
+    }
+    else
+    {
+      NSString* nsPath = [NSString stringWithUTF8String:path.c_str()];
+      nsUrl = [NSURL fileURLWithPath:nsPath isDirectory:NO];
+    }
+
+    if (nsUrl != nil)
+    {
+      NSNumber* wasAliased;
+      if ([nsUrl getResourceValue:&wasAliased forKey:NSURLIsAliasFileKey error:nil])
+        ret = [wasAliased boolValue];
     }
   }
 #endif

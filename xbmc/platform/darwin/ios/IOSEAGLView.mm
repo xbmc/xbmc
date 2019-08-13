@@ -21,7 +21,6 @@
 #include "utils/TimeUtils.h"
 #include "utils/log.h"
 
-#import "platform/darwin/AutoPool.h"
 #import "platform/darwin/DarwinUtils.h"
 #import "platform/darwin/NSLogDebugHelpers.h"
 #import "platform/darwin/ios-common/AnnounceReceiver.h"
@@ -164,7 +163,6 @@ using namespace KODI::MESSAGING;
       ELOG(@"Failed to set ES context current");
 
     self.context = aContext;
-    [aContext release];
 
     animating = FALSE;
     xbmcAlive = FALSE;
@@ -182,9 +180,6 @@ using namespace KODI::MESSAGING;
 {
   //PRINT_SIGNATURE();
   [self deleteFramebuffer];
-  [context release];
-
-  [super dealloc];
 }
 
 //--------------------------------------------------------------
@@ -200,8 +195,7 @@ using namespace KODI::MESSAGING;
   {
     [self deleteFramebuffer];
 
-    [context release];
-    context = [newContext retain];
+    context = newContext;
 
     [EAGLContext setCurrentContext:nil];
   }
@@ -357,80 +351,82 @@ using namespace KODI::MESSAGING;
 //--------------------------------------------------------------
 - (void) runAnimation:(id) arg
 {
-  CCocoaAutoPool outerpool;
+  @autoreleasepool
+  {
+    [[NSThread currentThread] setName:@"XBMC_Run"];
 
-  [[NSThread currentThread] setName:@"XBMC_Run"];
+    // set up some xbmc specific relationships
+    readyToRun = true;
 
-  // set up some xbmc specific relationships
-  readyToRun = true;
+    // signal we are alive
+    NSConditionLock* myLock = arg;
+    [myLock lock];
 
-  // signal we are alive
-  NSConditionLock* myLock = arg;
-  [myLock lock];
-
-  CAppParamParser appParamParser;
-  #ifdef _DEBUG
+    CAppParamParser appParamParser;
+#ifdef _DEBUG
     appParamParser.m_logLevel = LOG_LEVEL_DEBUG;
-  #else
+#else
     appParamParser.m_logLevel = LOG_LEVEL_NORMAL;
-  #endif
+#endif
 
-  // Prevent child processes from becoming zombies on exit if not waited upon. See also Util::Command
-  struct sigaction sa;
-  memset(&sa, 0, sizeof(sa));
-  sa.sa_flags = SA_NOCLDWAIT;
-  sa.sa_handler = SIG_IGN;
-  sigaction(SIGCHLD, &sa, NULL);
+    // Prevent child processes from becoming zombies on exit if not waited upon. See also Util::Command
+    struct sigaction sa;
+    memset(&sa, 0, sizeof(sa));
+    sa.sa_flags = SA_NOCLDWAIT;
+    sa.sa_handler = SIG_IGN;
+    sigaction(SIGCHLD, &sa, NULL);
 
-  setlocale(LC_NUMERIC, "C");
+    setlocale(LC_NUMERIC, "C");
 
-  g_application.Preflight();
-  if (!g_application.Create(appParamParser))
-  {
-    readyToRun = false;
-    ELOG(@"%sUnable to create application", __PRETTY_FUNCTION__);
-  }
-
-  CAnnounceReceiver::GetInstance()->Initialize();
-
-  if (!g_application.CreateGUI())
-  {
-    readyToRun = false;
-    ELOG(@"%sUnable to create GUI", __PRETTY_FUNCTION__);
-  }
-
-  if (!g_application.Initialize())
-  {
-    readyToRun = false;
-    ELOG(@"%sUnable to initialize application", __PRETTY_FUNCTION__);
-  }
-
-  if (readyToRun)
-  {
-    CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_startFullScreen = true;
-    CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_canWindowed = false;
-    xbmcAlive = TRUE;
-    try
+    g_application.Preflight();
+    if (!g_application.Create(appParamParser))
     {
-      CCocoaAutoPool innerpool;
-      g_application.Run(CAppParamParser());
+      readyToRun = false;
+      ELOG(@"%sUnable to create application", __PRETTY_FUNCTION__);
     }
-    catch(...)
+
+    CAnnounceReceiver::GetInstance()->Initialize();
+
+    if (!g_application.CreateGUI())
     {
-      ELOG(@"%sException caught on main loop. Exiting", __PRETTY_FUNCTION__);
+      readyToRun = false;
+      ELOG(@"%sUnable to create GUI", __PRETTY_FUNCTION__);
     }
+
+    if (!g_application.Initialize())
+    {
+      readyToRun = false;
+      ELOG(@"%sUnable to initialize application", __PRETTY_FUNCTION__);
+    }
+
+    if (readyToRun)
+    {
+      CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_startFullScreen = true;
+      CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_canWindowed = false;
+      xbmcAlive = TRUE;
+      try
+      {
+        @autoreleasepool
+        {
+          g_application.Run(CAppParamParser());
+        }
+      }
+      catch (...)
+      {
+        ELOG(@"%sException caught on main loop. Exiting", __PRETTY_FUNCTION__);
+      }
+    }
+
+    // signal we are dead
+    [myLock unlockWithCondition:TRUE];
+
+    // grrr, xbmc does not shutdown properly and leaves
+    // several classes in an indeterminate state, we must exit and
+    // reload Lowtide/AppleTV, boo.
+    [g_xbmcController enableScreenSaver];
+    [g_xbmcController enableSystemSleep];
+    exit(0);
   }
-
-  // signal we are dead
-  [myLock unlockWithCondition:TRUE];
-
-  // grrr, xbmc does not shutdown properly and leaves
-  // several classes in an indeterminate state, we must exit and
-  // reload Lowtide/AppleTV, boo.
-  [g_xbmcController enableScreenSaver];
-  [g_xbmcController enableSystemSleep];
-  //[g_xbmcController applicationDidExit];
-  exit(0);
 }
 //--------------------------------------------------------------
 @end

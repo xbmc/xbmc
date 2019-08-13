@@ -113,18 +113,15 @@ void CVideoSyncOsx::VblankHandler(int64_t nowtime, uint32_t timebase)
 // Called by the Core Video Display Link whenever it's appropriate to render a frame.
 static CVReturn DisplayLinkCallBack(CVDisplayLinkRef displayLink, const CVTimeStamp* inNow, const CVTimeStamp* inOutputTime, CVOptionFlags flagsIn, CVOptionFlags* flagsOut, void* displayLinkContext)
 {
-  // Create an autorelease pool (necessary to call into non-Obj-C code from Obj-C code)
-  void* pool = Cocoa_Create_AutoReleasePool();
+  @autoreleasepool
+  {
+    CVideoSyncOsx* VideoSyncOsx = reinterpret_cast<CVideoSyncOsx*>(displayLinkContext);
 
-  CVideoSyncOsx *VideoSyncOsx = reinterpret_cast<CVideoSyncOsx*>(displayLinkContext);
-
-  if (inOutputTime->flags & kCVTimeStampHostTimeValid)
-    VideoSyncOsx->VblankHandler(inOutputTime->hostTime, CVGetHostClockFrequency());
-  else
-    VideoSyncOsx->VblankHandler(CVGetCurrentHostTime(), CVGetHostClockFrequency());
-
-  // Destroy the autorelease pool
-  Cocoa_Destroy_AutoReleasePool(pool);
+    if (inOutputTime->flags & kCVTimeStampHostTimeValid)
+      VideoSyncOsx->VblankHandler(inOutputTime->hostTime, CVGetHostClockFrequency());
+    else
+      VideoSyncOsx->VblankHandler(CVGetCurrentHostTime(), CVGetHostClockFrequency());
+  }
 
   return kCVReturnSuccess;
 }

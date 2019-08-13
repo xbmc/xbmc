@@ -47,6 +47,9 @@ set(CMAKE_XCODE_ATTRIBUTE_INLINES_ARE_PRIVATE_EXTERN OFF)
 set(CMAKE_XCODE_ATTRIBUTE_GCC_SYMBOLS_PRIVATE_EXTERN OFF)
 set(CMAKE_XCODE_ATTRIBUTE_COPY_PHASE_STRIP OFF)
 
+include(cmake/scripts/darwin/Macros.cmake)
+enable_arc()
+
 # Xcode strips dead code by default which breaks wrapping
 set(CMAKE_XCODE_ATTRIBUTE_DEAD_CODE_STRIPPING OFF)
 

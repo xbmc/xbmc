@@ -49,7 +49,6 @@ using namespace KODI::MESSAGING;
 #import "IOSScreenManager.h"
 #import "XBMCApplication.h"
 #import "platform/darwin/NSLogDebugHelpers.h"
-#import "platform/darwin/AutoPool.h"
 
 XBMCController *g_xbmcController;
 
@@ -178,7 +177,6 @@ XBMCController *g_xbmcController;
   swipe.direction = direction;
   swipe.delegate = self;
   [m_glView addGestureRecognizer:swipe];
-  [swipe release];
 }
 //--------------------------------------------------------------
 - (void)addTapGesture:(NSUInteger)numTouches
@@ -191,7 +189,6 @@ XBMCController *g_xbmcController;
   tapGesture.numberOfTouchesRequired = numTouches;
 
   [m_glView addGestureRecognizer:tapGesture];
-  [tapGesture release];
 }
 //--------------------------------------------------------------
 - (void)createGestureRecognizers
@@ -214,7 +211,6 @@ XBMCController *g_xbmcController;
   singleFingerSingleLongTap.delaysTouchesBegan = NO;
   singleFingerSingleLongTap.delaysTouchesEnded = NO;
   [m_glView addGestureRecognizer:singleFingerSingleLongTap];
-  [singleFingerSingleLongTap release];
 
   //triple finger swipe left
   [self addSwipeGesture:UISwipeGestureRecognizerDirectionLeft numTouches:3];
@@ -259,7 +255,6 @@ XBMCController *g_xbmcController;
   pan.delaysTouchesBegan = NO;
   pan.maximumNumberOfTouches = 1;
   [m_glView addGestureRecognizer:pan];
-  [pan release];
 
   //for zoom gesture
   UIPinchGestureRecognizer *pinch = [[UIPinchGestureRecognizer alloc]
@@ -268,7 +263,6 @@ XBMCController *g_xbmcController;
   pinch.delaysTouchesBegan = NO;
   pinch.delegate = self;
   [m_glView addGestureRecognizer:pinch];
-  [pinch release];
 
   //for rotate gesture
   UIRotationGestureRecognizer *rotate = [[UIRotationGestureRecognizer alloc]
@@ -277,7 +271,6 @@ XBMCController *g_xbmcController;
   rotate.delaysTouchesBegan = NO;
   rotate.delegate = self;
   [m_glView addGestureRecognizer:rotate];
-  [rotate release];
 }
 //--------------------------------------------------------------
 - (void) activateKeyboard:(UIView *)view
@@ -565,15 +558,11 @@ XBMCController *g_xbmcController;
   [self enableNetworkAutoSuspend:nil];
 
   [m_glView stopAnimation];
-  [m_glView release];
-  [m_window release];
 
   NSNotificationCenter *center;
   // take us off the default center for our app
   center = [NSNotificationCenter defaultCenter];
   [center removeObserver: self];
-
-  [super dealloc];
 }
 //--------------------------------------------------------------
 - (void)viewWillAppear:(BOOL)animated
@@ -628,7 +617,7 @@ XBMCController *g_xbmcController;
   // which would be shown whenever this UIResponder
   // becomes the first responder (which is always the case!)
   // caused by implementing the UIKeyInput protocol
-  return [[[UIView alloc] initWithFrame:CGRectZero] autorelease];
+  return [[UIView alloc] initWithFrame:CGRectZero];
 }
 //--------------------------------------------------------------
 - (BOOL) canBecomeFirstResponder
@@ -924,7 +913,6 @@ XBMCController *g_xbmcController;
       if (mArt)
       {
         [dict setObject:mArt forKey:MPMediaItemPropertyArtwork];
-        [mArt release];
       }
     }
   }
@@ -954,7 +942,6 @@ XBMCController *g_xbmcController;
    */
 
   [self setIOSNowPlayingInfo:dict];
-  [dict release];
 
   m_playbackState = IOS_PLAYBACK_PLAYING;
   [self disableNetworkAutoSuspend];
@@ -1016,7 +1003,7 @@ XBMCController *g_xbmcController;
 //  LOG(@"userInfo: %@", [notification userInfo]);
 }
 
-- (void*) getEAGLContextObj
+- (CVEAGLContext)getEAGLContextObj
 {
   return [m_glView getCurrentEAGLContext];
 }
