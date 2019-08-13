@@ -199,7 +199,7 @@ public:
   /// @brief Class constructor
   ///
   /// @param[in] instance The addon instance class handler given by Kodi
-  ///                     at \ref CMyAddon::CreateInstance
+  ///                     at \ref kodi::addon::CAddonBase::CreateInstance(...)
   ///
   explicit CInstanceAudioDecoder(KODI_HANDLE instance)
     : IAddonInstance(ADDON_INSTANCE_AUDIODECODER)
