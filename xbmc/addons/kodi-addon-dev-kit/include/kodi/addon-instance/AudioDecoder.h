@@ -69,15 +69,138 @@ namespace kodi
 namespace addon
 {
 
+//==============================================================================
+///
+/// \addtogroup cpp_kodi_addon_audiodecoder
+/// @brief \cpp_class{ kodi::addon::CInstanceAudioDecoder }
+/// **Audio decoder add-on instance**
+///
+/// For audio decoders as binary add-ons. This class implements a way to handle
+/// special types of audio files.
+///
+/// The add-on handles loading of the source file and outputting the audio stream
+/// for consumption by the player.
+///
+/// The addon.xml defines the capabilities of this add-on.
+///
+/// @note The option to have multiple instances is possible with audio-decoder
+/// add-ons. This is useful, since some playback engines are riddled by global
+/// variables, making decoding of multiple streams using the same instance
+/// impossible.
+///
+///
+/// ----------------------------------------------------------------------------
+///
+/// **Here's an example on addon.xml:**
+/// ~~~~~~~~~~~~~{.xml}
+///   <extension
+///     point="kodi.audiodecoder"
+///     name="2sf"
+///     extension=".2sf|.mini2sf"
+///     tags="true"
+///     library_@PLATFORM@="@LIBRARY_FILENAME@"/>
+/// ~~~~~~~~~~~~~
+///
+/// Description to audio decoder related addon.xml values:
+/// | Name                          | Description
+/// |:------------------------------|----------------------------------------
+/// | <b>`point`</b>                | Addon type specification<br>At all addon types and for this kind always <b>"kodi.audiodecoder"</b>.
+/// | <b>`library_@PLATFORM@`</b>   | Sets the used library name, which is automatically set by cmake at addon build.
+/// | <b>`name`</b>                 | The name of the decoder used in Kodi for display.
+/// | <b>`extension`</b>            | The file extensions / styles supported by this addon.
+/// | <b>`tags`</b>                 | Boolean to point out that addon can bring own information to replayed file, if <b>`false`</b> only the file name is used as info.<br>If <b>`true`</b>, \ref CInstanceAudioDecoder::ReadTag is used and must be implemented.
+///
+/// --------------------------------------------------------------------------
+///
+/// **Here is a code example how this addon is used:**
+///
+/// ~~~~~~~~~~~~~{.cpp}
+/// #include <kodi/addon-instance/AudioDecoder.h>
+///
+/// class CMyAudioDecoder : public ::kodi::addon::CInstanceAudioDecoder
+/// {
+/// public:
+///   CMyAudioDecoder(KODI_HANDLE instance);
+///
+///   bool Init(const std::string& filename, unsigned int filecache,
+///             int& channels, int& samplerate,
+///             int& bitspersample, int64_t& totaltime,
+///             int& bitrate, AEDataFormat& format,
+///             std::vector<AEChannel>& channellist) override;
+///   int ReadPCM(uint8_t* buffer, int size, int& actualsize) override;
+/// };
+///
+/// CMyAudioDecoder::CMyAudioDecoder(KODI_HANDLE instance)
+///   : CInstanceAudioDecoder(instance)
+/// {
+///   ...
+/// }
+///
+/// bool CMyAudioDecoder::Init(const std::string& filename, unsigned int filecache,
+///                            int& channels, int& samplerate,
+///                            int& bitspersample, int64_t& totaltime,
+///                            int& bitrate, AEDataFormat& format,
+///                            std::vector<AEChannel>& channellist)
+/// {
+///   ...
+///   return true;
+/// }
+///
+/// int CMyAudioDecoder::ReadPCM(uint8_t* buffer, int size, int& actualsize)
+/// {
+///   ...
+///   return 0;
+/// }
+///
+///
+/// /*----------------------------------------------------------------------*/
+///
+/// class CMyAddon : public ::kodi::addon::CAddonBase
+/// {
+/// public:
+///   CMyAddon() { }
+///   ADDON_STATUS CreateInstance(int instanceType,
+///                               std::string instanceID,
+///                               KODI_HANDLE instance,
+///                               KODI_HANDLE& addonInstance) override;
+/// };
+///
+/// /* If you use only one instance in your add-on, can be instanceType and
+///  * instanceID ignored */
+/// ADDON_STATUS CMyAddon::CreateInstance(int instanceType,
+///                                       std::string instanceID,
+///                                       KODI_HANDLE instance,
+///                                       KODI_HANDLE& addonInstance)
+/// {
+///   if (instanceType == ADDON_INSTANCE_AUDIODECODER)
+///   {
+///     kodi::Log(ADDON_LOG_NOTICE, "Creating my audio decoder");
+///     addonInstance = new CMyAudioDecoder(instance);
+///     return ADDON_STATUS_OK;
+///   }
+///   else if (...)
+///   {
+///     ...
+///   }
+///   return ADDON_STATUS_UNKNOWN;
+/// }
+///
+/// ADDONCREATOR(CMyAddon)
+/// ~~~~~~~~~~~~~
+///
+/// The destruction of the example class `CMyAudioDecoder` is called from
+/// Kodi's header. Manually deleting the add-on instance is not required.
+///
 class CInstanceAudioDecoder : public IAddonInstance
 {
 public:
   //==========================================================================
+  /// @ingroup cpp_kodi_addon_audiodecoder
   /// @brief Class constructor
   ///
-  /// @param[in] instance             The from Kodi given instance given be
-  ///                                 add-on CreateInstance call with instance
-  ///                                 id ADDON_INSTANCE_AUDIODECODER.
+  /// @param[in] instance The addon instance class handler given by Kodi
+  ///                     at \ref CMyAddon::CreateInstance
+  ///
   explicit CInstanceAudioDecoder(KODI_HANDLE instance)
     : IAddonInstance(ADDON_INSTANCE_AUDIODECODER)
   {
