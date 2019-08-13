@@ -17333,7 +17333,7 @@ msgctxt "#35170"
 msgid "Press a key ({1:d})"
 msgstr ""
 
-#. Name of mouse connected to the computer
+#. Name of mouse connected to the device
 #: xbmc/peripherals/bus/virtual/PeripheralBusApplication.cpp
 msgctxt "#35171"
 msgid "Mouse"
@@ -19235,7 +19235,7 @@ msgstr ""
 #. Description of setting with label #791 "Allow remote control from programs on this system"
 #: system/settings/settings.xml
 msgctxt "#36334"
-msgid "Allow programs on this computer to control this application via the web interface or the JSON-RPC interface protocol."
+msgid "Allow programs on this device to control this application via the web interface or the JSON-RPC interface protocol."
 msgstr ""
 
 #. Description of setting with label #792 "Port"
