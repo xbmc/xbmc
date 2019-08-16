@@ -284,7 +284,7 @@ bool CWinSystemX11GLContext::RefreshGLContext(bool force)
 
   if (gli != "GLX")
   {
-    m_pGLContext = new CGLContextEGL(m_dpy);
+    m_pGLContext = new CGLContextEGL(m_dpy, EGL_OPENGL_API);
     success = m_pGLContext->Refresh(force, m_screen, m_glWindow, m_newGlContext);
     if (success)
     {
