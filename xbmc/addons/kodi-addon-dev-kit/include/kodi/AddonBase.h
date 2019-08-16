@@ -73,24 +73,28 @@ typedef void* KODI_HANDLE;
 
 //==============================================================================
 ///
+/// @ingroup cpp_kodi_addon_addonbase
+/// @brief Return value of functions in \ref kodi::addon::CAddonBase and
+/// associated classes
+///
 typedef enum ADDON_STATUS
 {
-  ///
+  /// For everything OK and no error
   ADDON_STATUS_OK,
 
-  ///
+  /// A needed connection was lost
   ADDON_STATUS_LOST_CONNECTION,
 
-  ///
+  /// Addon needs a restart inside Kodi
   ADDON_STATUS_NEED_RESTART,
 
-  ///
+  /// Necessary settings are not yet set
   ADDON_STATUS_NEED_SETTINGS,
 
-  ///
+  /// Unknown and incomprehensible error
   ADDON_STATUS_UNKNOWN,
 
-  /// permanent failure, like failing to resolve methods
+  /// Permanent failure, like failing to resolve methods
   ADDON_STATUS_PERMANENT_FAILURE,
 
   /* internal used return error if function becomes not used from child on
@@ -289,6 +293,7 @@ private:
 //==============================================================================
 namespace kodi {
 namespace addon {
+
 /// Add-on main instance class.
 class ATTRIBUTE_HIDDEN CAddonBase
 {
@@ -313,6 +318,59 @@ public:
 
   virtual ADDON_STATUS SetSetting(const std::string& settingName, const CSettingValue& settingValue) { return ADDON_STATUS_UNKNOWN; }
 
+  //==========================================================================
+  /// @ingroup cpp_kodi_addon_addonbase
+  /// @brief Instance created
+  ///
+  /// @param[in] instanceType   The requested type of required instance, see \ref ADDON_TYPE.
+  /// @param[in] instanceID     An individual identification key string given by Kodi.
+  /// @param[in] instance       The instance handler used by Kodi must be passed
+  ///                           to the classes created here. See in the example.
+  /// @param[out] addonInstance The pointer to instance class created in addon.
+  ///                           Needed to be able to identify them on calls.
+  /// @return                   \ref ADDON_STATUS_OK if correct, for possible errors
+  ///                           see \ref ADDON_STATUS
+  ///
+  ///
+  /// --------------------------------------------------------------------------
+  ///
+  /// **Here is a code example how this is used:**
+  ///
+  /// ~~~~~~~~~~~~~{.cpp}
+  /// #include <kodi/AddonBase.h>
+  ///
+  /// ...
+  ///
+  /// /* If you use only one instance in your add-on, can be instanceType and
+  ///  * instanceID ignored */
+  /// ADDON_STATUS CMyAddon::CreateInstance(int instanceType,
+  ///                                       std::string instanceID,
+  ///                                       KODI_HANDLE instance,
+  ///                                       KODI_HANDLE& addonInstance)
+  /// {
+  ///   if (instanceType == ADDON_INSTANCE_SCREENSAVER)
+  ///   {
+  ///     kodi::Log(ADDON_LOG_NOTICE, "Creating my Screensaver");
+  ///     addonInstance = new CMyScreensaver(instance);
+  ///     return ADDON_STATUS_OK;
+  ///   }
+  ///   else if (instanceType == ADDON_INSTANCE_VISUALIZATION)
+  ///   {
+  ///     kodi::Log(ADDON_LOG_NOTICE, "Creating my Visualization");
+  ///     addonInstance = new CMyVisualization(instance);
+  ///     return ADDON_STATUS_OK;
+  ///   }
+  ///   else if (...)
+  ///   {
+  ///     ...
+  ///   }
+  ///   return ADDON_STATUS_UNKNOWN;
+  /// }
+  ///
+  /// ...
+  ///
+  /// ~~~~~~~~~~~~~
+  ///
   virtual ADDON_STATUS CreateInstance(int instanceType, std::string instanceID, KODI_HANDLE instance, KODI_HANDLE& addonInstance)
   {
     /* The handling below is intended for the case of the add-on only one
@@ -330,6 +388,7 @@ public:
 
     return ADDON_STATUS_UNKNOWN;
   }
+  //--------------------------------------------------------------------------
 
   virtual ADDON_STATUS CreateInstanceEx(int instanceType, std::string instanceID, KODI_HANDLE instance, KODI_HANDLE& addonInstance, const std::string &version)
   {
