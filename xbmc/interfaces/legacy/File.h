@@ -38,11 +38,20 @@ namespace XBMCAddon
     ///
     ///
     ///--------------------------------------------------------------------------
+    /// @python_v19 Added context manager support
     ///
     /// **Example:**
     /// ~~~~~~~~~~~~~{.py}
     /// ..
     /// f = xbmcvfs.File(file, 'w')
+    /// ..
+    /// ~~~~~~~~~~~~~
+    ///
+    /// **Example (v19 and up):**
+    /// ~~~~~~~~~~~~~{.py}
+    /// ..
+    /// with xbmcvfs.File(file, 'w') as f:
+    ///   ..
     /// ..
     /// ~~~~~~~~~~~~~
     //
@@ -60,6 +69,11 @@ namespace XBMCAddon
       }
 
       inline ~File() override { delete file; }
+
+#if !defined(DOXYGEN_SHOULD_USE_THIS)
+      inline File* __enter__() { return this; };
+      inline void __exit__() { close(); };
+#endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
       ///
@@ -81,6 +95,14 @@ namespace XBMCAddon
       /// f = xbmcvfs.File(file)
       /// b = f.read()
       /// f.close()
+      /// ..
+      /// ~~~~~~~~~~~~~
+      ///
+      /// **Example (v19 and up):**
+      /// ~~~~~~~~~~~~~{.py}
+      /// ..
+      /// with xbmcvfs.File(file) as file:
+      ///   b = f.read()
       /// ..
       /// ~~~~~~~~~~~~~
       ///
@@ -116,6 +138,14 @@ namespace XBMCAddon
       /// ..
       /// ~~~~~~~~~~~~~
       ///
+      /// **Example (v19 and up):**
+      /// ~~~~~~~~~~~~~{.py}
+      /// ..
+      /// with xbmcvfs.File(file) as f:
+      ///   b = f.readBytes()
+      /// ..
+      /// ~~~~~~~~~~~~~
+      ///
       readBytes(...);
 #else
       XbmcCommons::Buffer readBytes(unsigned long numBytes = 0);
@@ -143,6 +173,14 @@ namespace XBMCAddon
       /// ..
       /// ~~~~~~~~~~~~~
       ///
+      /// **Example (v19 and up):**
+      /// ~~~~~~~~~~~~~{.py}
+      /// ..
+      /// whith xbmcvfs.File(file, 'w') as f:
+      ///   result = f.write(buffer)
+      /// ..
+      /// ~~~~~~~~~~~~~
+      ///
       write(...);
 #else
       bool write(XbmcCommons::Buffer& buffer);
@@ -166,6 +204,14 @@ namespace XBMCAddon
       /// f = xbmcvfs.File(file)
       /// s = f.size()
       /// f.close()
+      /// ..
+      /// ~~~~~~~~~~~~~
+      ///
+      /// **Example (v19 and up):**
+      /// ~~~~~~~~~~~~~{.py}
+      /// ..
+      /// with xbmcvfs.File(file) as f:
+      ///   s = f.size()
       /// ..
       /// ~~~~~~~~~~~~~
       ///
@@ -198,6 +244,14 @@ namespace XBMCAddon
       /// ..
       /// ~~~~~~~~~~~~~
       ///
+      /// **Example (v19 and up):**
+      /// ~~~~~~~~~~~~~{.py}
+      /// ..
+      /// with xbmcvfs.File(file) as f:
+      ///   result = f.seek(8129, 0)
+      /// ..
+      /// ~~~~~~~~~~~~~
+      ///
       seek(...);
 #else
       inline long long seek(long long seekBytes, int iWhence = SEEK_SET) { DelayedCallGuard dg(languageHook); return file->Seek(seekBytes,iWhence); }
@@ -225,6 +279,14 @@ namespace XBMCAddon
       /// ..
       /// ~~~~~~~~~~~~~
       ///
+      /// **Example (v19 and up):**
+      /// ~~~~~~~~~~~~~{.py}
+      /// ..
+      /// with xbmcvfs.File(file) as f:
+      ///   s = f.tell()
+      /// ..
+      /// ~~~~~~~~~~~~~
+      ///
       tell();
 #else
       inline long long tell() { DelayedCallGuard dg(languageHook); return file->GetPosition(); }
@@ -245,6 +307,14 @@ namespace XBMCAddon
       /// ..
       /// f = xbmcvfs.File(file)
       /// f.close()
+      /// ..
+      /// ~~~~~~~~~~~~~
+      ///
+      /// **Example (v19 and up):**
+      /// ~~~~~~~~~~~~~{.py}
+      /// ..
+      /// with xbmcvfs.File(file) as f:
+      ///   ..
       /// ..
       /// ~~~~~~~~~~~~~
       ///
