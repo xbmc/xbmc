@@ -28,7 +28,6 @@
 #include "dialogs/GUIDialogMediaFilter.h"
 #include "dialogs/GUIDialogProgress.h"
 #include "dialogs/GUIDialogSmartPlaylistEditor.h"
-#include "favourites/FavouritesService.h"
 #include "filesystem/File.h"
 #include "filesystem/DirectoryFactory.h"
 #include "filesystem/FileDirectoryFactory.h"
@@ -1785,18 +1784,6 @@ void CGUIMediaWindow::GetContextButtons(int itemNumber, CContextButtons &buttons
   if (!item || item->IsParentFolder())
     return;
 
-  //! @todo FAVOURITES Conditions on masterlock and localisation
-  if (!item->IsParentFolder() && !item->IsPath("add") && !item->IsPath("newplaylist://") &&
-      !URIUtils::IsProtocol(item->GetPath(), "newsmartplaylist") && !URIUtils::IsProtocol(item->GetPath(), "newtag") &&
-      !URIUtils::IsProtocol(item->GetPath(), "musicsearch") &&
-      !StringUtils::StartsWith(item->GetPath(), "pvr://guide/") && !StringUtils::StartsWith(item->GetPath(), "pvr://timers/"))
-  {
-    if (CServiceBroker::GetFavouritesService().IsFavourited(*item.get(), GetID()))
-      buttons.Add(CONTEXT_BUTTON_ADD_FAVOURITE, 14077);     // Remove Favourite
-    else
-      buttons.Add(CONTEXT_BUTTON_ADD_FAVOURITE, 14076);     // Add To Favourites;
-  }
-
   if (item->IsFileFolder(EFILEFOLDER_MASK_ONBROWSE))
     buttons.Add(CONTEXT_BUTTON_BROWSE_INTO, 37015);
 
@@ -1806,12 +1793,6 @@ bool CGUIMediaWindow::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 {
   switch (button)
   {
-  case CONTEXT_BUTTON_ADD_FAVOURITE:
-    {
-      CFileItemPtr item = m_vecItems->Get(itemNumber);
-      CServiceBroker::GetFavouritesService().AddOrRemove(*item.get(), GetID());
-      return true;
-    }
   case CONTEXT_BUTTON_BROWSE_INTO:
     {
       CFileItemPtr item = m_vecItems->Get(itemNumber);

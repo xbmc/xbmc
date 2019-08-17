@@ -356,6 +356,19 @@ void CDirectoryProvider::OnJobComplete(unsigned int jobID, bool success, CJob *j
   m_jobID = 0;
 }
 
+std::string CDirectoryProvider::GetTarget(const CFileItem& item) const
+{
+  std::string target = item.GetProperty("node.target").asString();
+
+  CSingleLock lock(m_section);
+  if (target.empty())
+    target = m_currentTarget;
+  if (target.empty())
+    target = m_target.GetLabel(m_parentID, false);
+
+  return target;
+}
+
 bool CDirectoryProvider::OnClick(const CGUIListItemPtr &item)
 {
   CFileItem fileItem(*std::static_pointer_cast<CFileItem>(item));
@@ -365,18 +378,11 @@ bool CDirectoryProvider::OnClick(const CGUIListItemPtr &item)
       && OnInfo(item))
     return true;
 
-  std::string target = fileItem.GetProperty("node.target").asString();
-  {
-    CSingleLock lock(m_section);
-    if (target.empty())
-      target = m_currentTarget;
-    if (target.empty())
-      target = m_target.GetLabel(m_parentID, false);
-    if (fileItem.HasProperty("node.target_url"))
-      fileItem.SetPath(fileItem.GetProperty("node.target_url").asString());
-  }
+  if (fileItem.HasProperty("node.target_url"))
+    fileItem.SetPath(fileItem.GetProperty("node.target_url").asString());
+
   // grab the execute string
-  std::string execute = CServiceBroker::GetFavouritesService().GetExecutePath(fileItem, target);
+  std::string execute = CServiceBroker::GetFavouritesService().GetExecutePath(fileItem, GetTarget(fileItem));
   if (!execute.empty())
   {
     CGUIMessage message(GUI_MSG_EXECUTE, 0, 0);
@@ -427,6 +433,11 @@ bool CDirectoryProvider::OnInfo(const CGUIListItemPtr& item)
 bool CDirectoryProvider::OnContextMenu(const CGUIListItemPtr& item)
 {
   auto fileItem = std::static_pointer_cast<CFileItem>(item);
+
+  const std::string target = GetTarget(*fileItem);
+  if (!target.empty())
+    fileItem->SetProperty("targetwindow", target);
+
   return CONTEXTMENU::ShowFor(fileItem);
 }
 
