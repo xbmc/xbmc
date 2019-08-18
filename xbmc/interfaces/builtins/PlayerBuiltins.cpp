@@ -429,11 +429,14 @@ static int PlayMedia(const std::vector<std::string>& params)
     if ( CGUIWindowVideoBase::ShowResumeMenu(item) == false )
       return false;
   }
-  if (item.m_bIsFolder)
+  if (item.m_bIsFolder || item.IsPlayList())
   {
     CFileItemList items;
     std::string extensions = CServiceBroker::GetFileExtensionProvider().GetVideoExtensions() + "|" + CServiceBroker::GetFileExtensionProvider().GetMusicExtensions();
-    XFILE::CDirectory::GetDirectory(item.GetPath(), items, extensions, XFILE::DIR_FLAG_DEFAULTS);
+    if (item.IsPlayList())
+      CUtil::GetRecursiveListing(item.GetPath(), items, extensions, XFILE::DIR_FLAG_DEFAULTS);
+    else
+      XFILE::CDirectory::GetDirectory(item.GetPath(), items, extensions, XFILE::DIR_FLAG_DEFAULTS);
 
     if (!items.IsEmpty()) // fall through on non expandable playlist
     {
@@ -471,7 +474,7 @@ static int PlayMedia(const std::vector<std::string>& params)
       return 0;
     }
   }
-  if ((item.IsAudio() || item.IsVideo()) && !item.IsPlayList() && !item.IsSmartPlayList())
+  if ((item.IsAudio() || item.IsVideo()) && !item.IsSmartPlayList())
     CServiceBroker::GetPlaylistPlayer().Play(std::make_shared<CFileItem>(item), "");
   else
     g_application.PlayMedia(item, "", PLAYLIST_NONE);

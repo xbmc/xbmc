@@ -2648,7 +2648,11 @@ bool CApplication::PlayMedia(CFileItem& item, const std::string &player, int iPl
       smartpl.OpenAndReadName(item.GetURL());
       CPlayList playlist;
       playlist.Add(items);
-      return ProcessAndStartPlaylist(smartpl.GetName(), playlist, (smartpl.GetType() == "songs" || smartpl.GetType() == "albums") ? PLAYLIST_MUSIC:PLAYLIST_VIDEO);
+      int iPlaylist = PLAYLIST_VIDEO;
+      if (smartpl.GetType() == "songs" || smartpl.GetType() == "albums" ||
+        smartpl.GetType() == "artists")
+        iPlaylist = PLAYLIST_MUSIC;
+      return ProcessAndStartPlaylist(smartpl.GetName(), playlist, iPlaylist);
     }
   }
   else if (item.IsPlayList() || item.IsInternetStream())
