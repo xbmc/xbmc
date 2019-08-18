@@ -56,7 +56,7 @@ bool CMusicThumbLoader::LoadItemCached(CFileItem* pItem)
   if (pItem->m_bIsShareOrDrive)
     return false;
 
-  if (pItem->HasMusicInfoTag() && !pItem->HasArt("thumb"))
+  if (pItem->HasMusicInfoTag() && !pItem->GetProperty("libraryartfilled").asBoolean())
   {
     if (FillLibraryArt(*pItem))
       return true;
@@ -322,6 +322,7 @@ bool CMusicThumbLoader::FillLibraryArt(CFileItem &item)
     item.AppendArt(artmap);
   }
 
+  item.SetProperty("libraryartfilled", true);
   return artfound;
 }
 
