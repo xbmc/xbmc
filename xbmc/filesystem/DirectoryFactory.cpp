@@ -91,9 +91,20 @@ IDirectory* CDirectoryFactory::Create(const CURL& url)
     return NULL;
 
   CFileItem item(url.Get(), true);
-  IFileDirectory* pDir=CFileDirectoryFactory::Create(url, &item);
+  IFileDirectory* pDir = CFileDirectoryFactory::Create(url, &item);
   if (pDir)
     return pDir;
+
+  if (!url.GetProtocol().empty() && CServiceBroker::IsBinaryAddonCacheUp())
+  {
+    for (const auto& vfsAddon : CServiceBroker::GetVFSAddonCache().GetAddonInstances())
+    {
+      auto prots = StringUtils::Split(vfsAddon->GetProtocols(), "|");
+
+      if (vfsAddon->HasDirectories() && std::find(prots.begin(), prots.end(), url.GetProtocol()) != prots.end())
+        return new CVFSEntryIDirectoryWrapper(vfsAddon);
+    }
+  }
 
 #ifdef TARGET_POSIX
   if (url.GetProtocol().empty() || url.IsProtocol("file")) return new CPosixDirectory();
@@ -160,15 +171,6 @@ IDirectory* CDirectoryFactory::Create(const CURL& url)
 
   if (url.IsProtocol("pvr"))
     return new CPVRDirectory();
-
-  if (!url.GetProtocol().empty() && CServiceBroker::IsBinaryAddonCacheUp())
-  {
-    for (const auto& vfsAddon : CServiceBroker::GetVFSAddonCache().GetAddonInstances())
-    {
-      if (vfsAddon->HasDirectories() && vfsAddon->GetProtocols().find(url.GetProtocol()) != std::string::npos)
-        return new CVFSEntryIDirectoryWrapper(vfsAddon);
-    }
-  }
 
   CLog::Log(LOGWARNING, "%s - unsupported protocol(%s) in %s", __FUNCTION__, url.GetProtocol().c_str(), url.GetRedacted().c_str() );
   return NULL;
