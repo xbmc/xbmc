@@ -16,7 +16,6 @@
 #include "Util.h"
 #include "cores/playercorefactory/PlayerCoreFactory.h"
 #include "dialogs/GUIDialogSmartPlaylistEditor.h"
-#include "favourites/FavouritesService.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIKeyboardFactory.h"
 #include "guilib/GUIWindowManager.h"
@@ -524,10 +523,6 @@ void CGUIWindowMusicPlayList::GetContextButtons(int itemNumber, CContextButtons 
       if (players.size() > 1)
         buttons.Add(CONTEXT_BUTTON_PLAY_WITH, 15213); // Play With...
 
-      if (CServiceBroker::GetFavouritesService().IsFavourited(*item.get(), GetID()))
-        buttons.Add(CONTEXT_BUTTON_ADD_FAVOURITE, 14077);     // Remove Favourite
-      else
-        buttons.Add(CONTEXT_BUTTON_ADD_FAVOURITE, 14076);     // Add To Favourites;
       if (itemNumber > (g_partyModeManager.IsEnabled() ? 1 : 0))
         buttons.Add(CONTEXT_BUTTON_MOVE_ITEM_UP, 13332);
       if (itemNumber + 1 < m_vecItems->Size())
@@ -591,13 +586,6 @@ bool CGUIWindowMusicPlayList::OnContextButton(int itemNumber, CONTEXT_BUTTON but
   case CONTEXT_BUTTON_DELETE:
     RemovePlayListItem(itemNumber);
     return true;
-
-  case CONTEXT_BUTTON_ADD_FAVOURITE:
-    {
-      CFileItemPtr item = m_vecItems->Get(itemNumber);
-      CServiceBroker::GetFavouritesService().AddOrRemove(*item.get(), GetID());
-      return true;
-    }
 
   case CONTEXT_BUTTON_CANCEL_PARTYMODE:
     g_partyModeManager.Disable();

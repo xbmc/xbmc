@@ -86,4 +86,5 @@ private:
   void OnAddonEvent(const ADDON::AddonEvent& event);
   void OnPVRManagerEvent(const PVR::PVREvent& event);
   void OnFavouritesEvent(const CFavouritesService::FavouritesUpdated& event);
+  std::string GetTarget(const CFileItem& item) const;
 };
