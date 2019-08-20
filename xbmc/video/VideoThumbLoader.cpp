@@ -318,7 +318,7 @@ bool CVideoThumbLoader::LoadItemCached(CFileItem* pItem)
   }
 
   // video db items normally have info in the database
-  if (pItem->HasVideoInfoTag() && !pItem->HasArt("thumb"))
+  if (pItem->HasVideoInfoTag() && !pItem->GetProperty("libraryartfilled").asBoolean())
   {
     FillLibraryArt(*pItem);
 
@@ -557,6 +557,7 @@ bool CVideoThumbLoader::FillLibraryArt(CFileItem &item)
     }
     m_videoDatabase->Close();
   }
+  item.SetProperty("libraryartfilled", true);
   return !item.GetArt().empty();
 }
 
