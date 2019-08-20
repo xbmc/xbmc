@@ -8,6 +8,7 @@
 
 #include "GUIPanelContainer.h"
 
+#include "FileItem.h"
 #include "GUIListItemLayout.h"
 #include "GUIMessage.h"
 #include "guilib/guiinfo/GUIInfoLabels.h"
@@ -61,6 +62,7 @@ void CGUIPanelContainer::Process(unsigned int currentTime, CDirtyRegionList &dir
     if (current >= 0)
     {
       CGUIListItemPtr item = m_items[current];
+      item->SetCurrentItem(current + 1);
       bool focused = (current == GetOffset() * m_itemsPerRow + GetCursor()) && m_bHasFocus;
 
       if (m_orientation == VERTICAL)

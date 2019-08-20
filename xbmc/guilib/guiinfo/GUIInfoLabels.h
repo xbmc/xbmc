@@ -352,6 +352,8 @@
 #define INTEGER_GREATER_OR_EQUAL    452
 #define INTEGER_LESS_THAN           453
 #define INTEGER_LESS_OR_EQUAL       454
+#define INTEGER_EVEN                455
+#define INTEGER_ODD                 456
 
 #define SKIN_BOOL                   600
 #define SKIN_STRING                 601
@@ -874,6 +876,7 @@
 #define LISTITEM_HASARCHIVE         (LISTITEM_START + 185)
 #define LISTITEM_ISPLAYABLE         (LISTITEM_START + 186)
 #define LISTITEM_FILENAME_NO_EXTENSION (LISTITEM_START + 187)
+#define LISTITEM_CURRENTITEM        (LISTITEM_START + 188)
 
 #define LISTITEM_END                (LISTITEM_START + 2500)
 

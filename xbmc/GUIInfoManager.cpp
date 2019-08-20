@@ -274,6 +274,26 @@ const infomap string_bools[] =   {{ "isempty",          STRING_IS_EMPTY },
 ///     @skinning_v17 **[New Boolean Condition]** \link Integer_IsLessOrEqual `Integer.IsLessOrEqual(info\,number)`\endlink
 ///     <p>
 ///   }
+///   \table_row3{   <b>`Integer.IsEven(info)`</b>,
+///                  \anchor Integer_IsEven
+///                  _boolean_,
+///     @return **True** if the value of the infolabel is odd
+///     @param info - infolabel
+///     @note **Example:** `Integer.IsEven(ListItem.CurrentItem)`
+///     <p><hr>
+///     @skinning_v19 **[New Boolean Condition]** \link Integer_IsEven `Integer.IsEven(info)`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`Integer.IsOdd(info)`</b>,
+///                  \anchor Integer_IsOdd
+///                  _boolean_,
+///     @return **True** if the value of the infolabel is odd
+///     @param info - infolabel
+///     @note **Example:** `Integer.IsOdd(ListItem.CurrentItem)`
+///     <p><hr>
+///     @skinning_v19 **[New Boolean Condition]** \link Integer_IsOdd `Integer.IsOdd(info)`\endlink
+///     <p>
+///   }
 /// \table_end
 ///
 /// -----------------------------------------------------------------------------
@@ -283,7 +303,9 @@ const infomap integer_bools[] =  {{ "isequal",          INTEGER_IS_EQUAL },
                                   { "isgreater",        INTEGER_GREATER_THAN },
                                   { "isgreaterorequal", INTEGER_GREATER_OR_EQUAL },
                                   { "isless",           INTEGER_LESS_THAN },
-                                  { "islessorequal",    INTEGER_LESS_OR_EQUAL }};
+                                  { "islessorequal",    INTEGER_LESS_OR_EQUAL },
+                                  { "iseven",           INTEGER_EVEN },
+                                  { "isodd",            INTEGER_ODD }};
 
 
 /// \page modules__infolabels_boolean_conditions
@@ -5687,6 +5709,14 @@ const infomap container_str[]  = {{ "property",         CONTAINER_PROPERTY },
 ///     @return The parental rating of the list item (PVR).
 ///     <p>
 ///   }
+///   \table_row3{   <b>`ListItem.CurrentItem`</b>,
+///                  \anchor ListItem_CurrentItem
+///                  _string_,
+///     @return The current index of the item in a container starting at 1.
+///     <p><hr>
+///     @skinning_v19 **[New Infolabel]** \link ListItem_CurrentItem `ListItem.CurrentItem`\endlink
+///     <p>
+///   }
 /// \table_end
 ///
 /// -----------------------------------------------------------------------------
@@ -5877,7 +5907,8 @@ const infomap listitem_labels[]= {{ "thumb",            LISTITEM_THUMB },
                                   { "expirationtime",   LISTITEM_EXPIRATION_TIME },
                                   { "art",              LISTITEM_ART },
                                   { "property",         LISTITEM_PROPERTY },
-                                  { "parentalrating",   LISTITEM_PARENTAL_RATING }
+                                  { "parentalrating",   LISTITEM_PARENTAL_RATING },
+                                  { "currentitem",      LISTITEM_CURRENTITEM }
 };
 
 /// \page modules__infolabels_boolean_conditions
@@ -9435,6 +9466,8 @@ bool CGUIInfoManager::GetMultiInfoBool(const CGUIInfo &info, int contextWindow, 
       case INTEGER_GREATER_OR_EQUAL:
       case INTEGER_LESS_THAN:
       case INTEGER_LESS_OR_EQUAL:
+      case INTEGER_EVEN:
+      case INTEGER_ODD:
         {
           int integer = 0;
           if (!GetInt(integer, info.GetData1(), contextWindow, item))
@@ -9464,6 +9497,10 @@ bool CGUIInfoManager::GetMultiInfoBool(const CGUIInfo &info, int contextWindow, 
             bReturn = integer < info.GetData2();
           else if (condition == INTEGER_LESS_OR_EQUAL)
             bReturn = integer <= info.GetData2();
+          else if (condition == INTEGER_EVEN)
+            bReturn = integer % 2 == 0;
+          else if (condition == INTEGER_ODD)
+            bReturn = integer % 2 != 0;
         }
         break;
       case STRING_STARTS_WITH:
@@ -9825,6 +9862,8 @@ std::string CGUIInfoManager::GetMultiInfoItemLabel(const CFileItem *item, int co
           return item->m_dateTime.GetAsLocalizedDate(true);
         break;
       }
+      case LISTITEM_CURRENTITEM:
+        return std::to_string(item->GetCurrentItem());
     }
   }
 

@@ -32,6 +32,7 @@ CGUIListItem::CGUIListItem(void)
   m_bIsFolder = false;
   m_bSelected = false;
   m_overlayIcon = ICON_OVERLAY_NONE;
+  m_currentItem = 1;
 }
 
 CGUIListItem::CGUIListItem(const std::string& strLabel):
@@ -41,6 +42,7 @@ CGUIListItem::CGUIListItem(const std::string& strLabel):
   SetSortLabel(strLabel);
   m_bSelected = false;
   m_overlayIcon = ICON_OVERLAY_NONE;
+  m_currentItem = 1;
 }
 
 CGUIListItem::~CGUIListItem(void)
@@ -418,4 +420,14 @@ void CGUIListItem::AppendProperties(const CGUIListItem &item)
 {
   for (const auto& i : item.m_mapProperties)
     SetProperty(i.first, i.second);
+}
+
+void CGUIListItem::SetCurrentItem(unsigned int position)
+{
+  m_currentItem = position;
+}
+
+unsigned int CGUIListItem::GetCurrentItem() const
+{
+  return m_currentItem;
 }
