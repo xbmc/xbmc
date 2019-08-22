@@ -21,6 +21,14 @@ void CWindowKeymap::MapAction(int windowId, const std::string &keyName, JOYSTICK
   auto &actionGroup = m_windowKeymap[windowId][keyName];
 
   actionGroup.windowId = windowId;
+  auto it = actionGroup.actions.begin();
+  while (it != actionGroup.actions.end())
+  {
+    if (it->holdTimeMs == action.holdTimeMs && it->hotkeys == action.hotkeys)
+      it = actionGroup.actions.erase(it);
+    else
+      it++;
+  }
   actionGroup.actions.insert(std::move(action));
 }
 
