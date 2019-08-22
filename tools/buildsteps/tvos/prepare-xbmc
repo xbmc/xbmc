@@ -1,5 +1,5 @@
 WORKSPACE=${WORKSPACE:-$( cd $(dirname $0)/../../.. ; pwd -P )}
-XBMC_PLATFORM_DIR=osx64
+XBMC_PLATFORM_DIR=tvos
 . $WORKSPACE/tools/buildsteps/defaultenv
 
 #build binary addons before building xbmc...
