@@ -1,6 +1,6 @@
 include ../../Makefile.include
 DEPS= ../../Makefile.include Makefile apple.patch crosscompile.patch android.patch \
-       fix-datetime.patch modules.setup make-fork-optional.patch android-nl_langinfo.patch
+       fix-datetime.patch modules.setup darwin_embedded.patch android-nl_langinfo.patch
 
 # lib name, version
 LIBNAME=Python
@@ -41,7 +41,7 @@ $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 	cd $(PLATFORM); patch -p1 -i ../android-nl_langinfo.patch
 	cd $(PLATFORM); patch -p1 -i ../apple.patch
 ifeq ($(OS),darwin_embedded)
-	cd $(PLATFORM); patch -p1 -i ../make-fork-optional.patch
+	cd $(PLATFORM); patch -p1 -i ../darwin_embedded.patch
 endif
 	cp modules.setup $(PLATFORM)/Modules/Setup.dist
 
@@ -51,9 +51,6 @@ ifeq ($(OS),android)
 	cd $(PLATFORM); sed -ie 's|_locale _localemodule.c   -lintl|#_locale _localemodule.c   -lintl $(LINK_ICONV)|' Modules/Setup.dist
 else
 	cd $(PLATFORM); sed -ie 's|_locale _localemodule.c   -lintl|_locale _localemodule.c   -lintl $(LINK_ICONV)|' Modules/Setup.dist
-endif
-ifeq ($(OS),darwin_embedded)
-	cd $(PLATFORM); sed -ie 's|_posixsubprocess _posixsubprocess.c|#_posixsubprocess _posixsubprocess.c|' Modules/Setup.dist
 endif
 ifeq ($(OS),osx)
 	echo "_scproxy \$$(srcdir)/Modules/_scproxy.c -framework SystemConfiguration -framework CoreFoundation" >> $(PLATFORM)/Modules/Setup.dist
