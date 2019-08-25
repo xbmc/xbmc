@@ -44,12 +44,22 @@ endforeach()
 target_sources(${APP_NAME_LC} PRIVATE ${CMAKE_SOURCE_DIR}/xbmc/platform/darwin/ios/English.lproj/InfoPlist.strings)
 set_source_files_properties(${CMAKE_SOURCE_DIR}/xbmc/platform/darwin/ios/English.lproj/InfoPlist.strings PROPERTIES MACOSX_PACKAGE_LOCATION "./English.lproj")
 
-# Options for code signing propagated as env vars to Codesign.command via Xcode
-set(CODE_SIGN_IDENTITY "" CACHE STRING "Code Sign Identity")
-if(CODE_SIGN_IDENTITY)
-  set_target_properties(${APP_NAME_LC} PROPERTIES XCODE_ATTRIBUTE_CODE_SIGNING_REQUIRED TRUE
-                                                  XCODE_ATTRIBUTE_CODE_SIGN_IDENTITY ${CODE_SIGN_IDENTITY})
+# setup code signing
+
+# dev team ID / identity (certificate)
+set(DEVELOPMENT_TEAM "" CACHE STRING "Development Team")
+set(CODE_SIGN_IDENTITY $<IF:$<BOOL:${DEVELOPMENT_TEAM}>,iPhone\ Developer,> CACHE STRING "Code Sign Identity")
+
+# app provisioning profile
+set(CODE_SIGN_STYLE_APP Automatic)
+set(PROVISIONING_PROFILE_APP "" CACHE STRING "Provisioning profile name for the Kodi app")
+if(PROVISIONING_PROFILE_APP)
+  set(CODE_SIGN_STYLE_APP Manual)
 endif()
+set_target_properties(${APP_NAME_LC} PROPERTIES XCODE_ATTRIBUTE_CODE_SIGN_IDENTITY "${CODE_SIGN_IDENTITY}"
+                                                XCODE_ATTRIBUTE_CODE_SIGN_STYLE ${CODE_SIGN_STYLE_APP}
+                                                XCODE_ATTRIBUTE_DEVELOPMENT_TEAM "${DEVELOPMENT_TEAM}"
+                                                XCODE_ATTRIBUTE_PROVISIONING_PROFILE_SPECIFIER "${PROVISIONING_PROFILE_APP}")
 
 add_custom_command(TARGET ${APP_NAME_LC} POST_BUILD
     # TODO: Remove in sync with CopyRootFiles-darwin_embedded expecting the ".bin" file
