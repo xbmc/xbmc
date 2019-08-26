@@ -23,7 +23,7 @@ using namespace KODI::MESSAGING;
 static int Exec(const std::vector<std::string>& params)
 {
   CApplicationMessenger::GetInstance().PostMsg(TMSG_MINIMIZE);
-  CApplicationMessenger::GetInstance().PostMsg(TMSG_EXECUTE_OS, Wait, -1, nullptr, params[0]);
+  CApplicationMessenger::GetInstance().PostMsg(TMSG_EXECUTE_OS, Wait, -1, nullptr, params[0], params);
 
   return 0;
 }

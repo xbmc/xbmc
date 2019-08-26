@@ -1575,10 +1575,8 @@ void CUtil::InitRandomSeed()
 }
 
 #ifdef TARGET_POSIX
-bool CUtil::RunCommandLine(const std::string& cmdLine, bool waitExit)
+bool CUtil::RunCommandLine(const std::vector<std::string> args, bool waitExit)
 {
-  std::vector<std::string> args = StringUtils::Split(cmdLine, ",");
-
   // Strip quotes and whitespace around the arguments, or exec will fail.
   // This allows the python invocation to be written more naturally with any amount of whitespace around the args.
   // But it's still limited, for example quotes inside the strings are not expanded, etc.
@@ -1632,6 +1630,8 @@ bool CUtil::Command(const std::vector<std::string>& arrArgs, bool waitExit)
       memset(args, 0, (sizeof(char *) * (arrArgs.size() + 3)));
       for (size_t i=0; i<arrArgs.size(); i++)
         args[i] = const_cast<char *>(arrArgs[i].c_str());
+      args[arrArgs.size()] = NULL;
+
       execvp(args[0], args);
     }
   }

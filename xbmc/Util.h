@@ -177,7 +177,7 @@ public:
   //
   // Forks to execute an unparsed shell command line.
   //
-  static bool RunCommandLine(const std::string& cmdLine, bool waitExit = false);
+  static bool RunCommandLine(const std::vector<std::string> argArray, bool waitExit);
 #endif
   static std::string ResolveExecutablePath();
   static std::string GetFrameworksPath(bool forPython = false);
