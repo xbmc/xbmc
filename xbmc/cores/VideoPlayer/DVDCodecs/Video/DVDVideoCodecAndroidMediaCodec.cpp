@@ -52,13 +52,17 @@
 #include "system.h"
 
 
-#define XMEDIAFORMAT_KEY_ROTATION "rotation-degrees"
-#define XMEDIAFORMAT_KEY_SLICE "slice-height"
-#define XMEDIAFORMAT_KEY_CROP_LEFT "crop-left"
-#define XMEDIAFORMAT_KEY_CROP_RIGHT "crop-right"
-#define XMEDIAFORMAT_KEY_CROP_TOP "crop-top"
-#define XMEDIAFORMAT_KEY_CROP_BOTTOM "crop-bottom"
-#define XMEDIAFORMAT_KEY_TUNNELED_PLAYBACK "feature-tunneled-playback"
+static const char* XMEDIAFORMAT_KEY_ROTATION = "rotation-degrees";
+static const char* XMEDIAFORMAT_KEY_SLICE = "slice-height";
+static const char* XMEDIAFORMAT_KEY_CROP_LEFT = "crop-left";
+static const char* XMEDIAFORMAT_KEY_CROP_RIGHT = "crop-right";
+static const char* XMEDIAFORMAT_KEY_CROP_TOP = "crop-top";
+static const char* XMEDIAFORMAT_KEY_CROP_BOTTOM = "crop-bottom";
+static const char* XMEDIAFORMAT_KEY_TUNNELED_PLAYBACK = "feature-tunneled-playback";
+static const char* XMEDIAFORMAT_KEY_COLOR_STANDARD = "color-standard";
+static const char* XMEDIAFORMAT_KEY_COLOR_RANGE = "color-range";
+static const char* XMEDIAFORMAT_KEY_COLOR_TRANSFER = "color-transfer";
+static const char* XMEDIAFORMAT_KEY_HDR_STATIC_INFO = "hdr-static-info";
 
 using namespace KODI::MESSAGING;
 
@@ -391,6 +395,9 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
            !CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_VIDEOPLAYER_USEMEDIACODECSURFACE))
     goto FAIL;
 
+  CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec::Open hints: Width %d x Height %d, Fpsrate %d / Fpsscale %d, CodecID %d, Level %d, Profile %d, PTS_invalid %d, Tag %d, Extradata-Size: %d\n",
+    hints.width, hints.height, hints.fpsrate, hints.fpsscale, hints.codec, hints.level, hints.profile, hints.ptsinvalid, hints.codec_tag, hints.extrasize);
+
   m_render_surface = CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_VIDEOPLAYER_USEMEDIACODECSURFACE);
   m_state = MEDIACODEC_STATE_UNINITIALIZED;
   m_noPictureLoop = 0;
@@ -399,15 +406,6 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
   m_indexInputBuffer = -1;
   m_dtsShift = DVD_NOPTS_VALUE;
   m_useDTSforPTS = false;
-
-  CLog::Log(LOGDEBUG, LOGVIDEO, "CDVDVideoCodecAndroidMediaCodec::Open hints: fpsrate %d / fpsscale %d\n", m_hints.fpsrate, m_hints.fpsscale);
-  CLog::Log(LOGDEBUG, LOGVIDEO, "CDVDVideoCodecAndroidMediaCodec::Open hints: CodecID %d \n", m_hints.codec);
-  CLog::Log(LOGDEBUG, LOGVIDEO, "CDVDVideoCodecAndroidMediaCodec::Open hints: StreamType %d \n", m_hints.type);
-  CLog::Log(LOGDEBUG, LOGVIDEO, "CDVDVideoCodecAndroidMediaCodec::Open hints: Level %d \n", m_hints.level);
-  CLog::Log(LOGDEBUG, LOGVIDEO, "CDVDVideoCodecAndroidMediaCodec::Open hints: Profile %d \n", m_hints.profile);
-  CLog::Log(LOGDEBUG, LOGVIDEO, "CDVDVideoCodecAndroidMediaCodec::Open hints: PTS_invalid %d \n", m_hints.ptsinvalid);
-  CLog::Log(LOGDEBUG, LOGVIDEO, "CDVDVideoCodecAndroidMediaCodec::Open hints: Tag %d \n", m_hints.codec_tag);
-  CLog::Log(LOGDEBUG, LOGVIDEO, "CDVDVideoCodecAndroidMediaCodec::Open hints: %dx%d \n", m_hints.width,  m_hints.height);
 
   switch(m_hints.codec)
   {
@@ -1103,6 +1101,30 @@ void CDVDVideoCodecAndroidMediaCodec::InjectExtraData(AMediaFormat* mediaformat)
     AMediaFormat_setBuffer(mediaformat, "csd-0", src_ptr, size);
   }
 }
+std::vector<uint8_t> CDVDVideoCodecAndroidMediaCodec::GetHDRStaticMetadata()
+{
+  std::vector<uint8_t> metadata;
+  if (m_hints.masteringMetadata && m_hints.contentLightMetadata)
+  {
+    static const double MAX_CHROMATICITY = 5000;
+    metadata.resize(25);
+    metadata[0] = 0;
+    short* data = reinterpret_cast<short*>(&metadata[1]);
+    data[0] = static_cast<short>(av_q2d(m_hints.masteringMetadata->display_primaries[0][0]) * MAX_CHROMATICITY + 0.5);
+    data[1] = static_cast<short>(av_q2d(m_hints.masteringMetadata->display_primaries[1][1]) * MAX_CHROMATICITY + 0.5);
+    data[2] = static_cast<short>(av_q2d(m_hints.masteringMetadata->display_primaries[1][0]) * MAX_CHROMATICITY + 0.5);
+    data[3] = static_cast<short>(av_q2d(m_hints.masteringMetadata->display_primaries[2][1]) * MAX_CHROMATICITY + 0.5);
+    data[4] = static_cast<short>(av_q2d(m_hints.masteringMetadata->display_primaries[2][0]) * MAX_CHROMATICITY + 0.5);
+    data[5] = static_cast<short>(av_q2d(m_hints.masteringMetadata->display_primaries[0][1]) * MAX_CHROMATICITY + 0.5);
+    data[6] = static_cast<short>(av_q2d(m_hints.masteringMetadata->white_point[0]) * MAX_CHROMATICITY + 0.5);
+    data[7] = static_cast<short>(av_q2d(m_hints.masteringMetadata->white_point[1]) * MAX_CHROMATICITY + 0.5);
+    data[8] = static_cast<short>(av_q2d(m_hints.masteringMetadata->max_luminance) + 0.5);
+    data[9] = static_cast<short>(av_q2d(m_hints.masteringMetadata->min_luminance) + 0.5);
+    data[10] = static_cast<short>(m_hints.contentLightMetadata->MaxCLL);
+    data[11] = static_cast<short>(m_hints.contentLightMetadata->MaxFALL);
+  }
+  return metadata;
+}
 
 bool CDVDVideoCodecAndroidMediaCodec::ConfigureMediaCodec(void)
 {
@@ -1121,6 +1143,48 @@ bool CDVDVideoCodecAndroidMediaCodec::ConfigureMediaCodec(void)
     AMediaFormat_setInt32(mediaformat, XMEDIAFORMAT_KEY_TUNNELED_PLAYBACK, 0);
   }
 
+  if (CJNIBase::GetSDKVersion() >= 24)
+  {
+    if (m_hints.colorRange != AVCOL_RANGE_UNSPECIFIED)
+      AMediaFormat_setInt32(mediaformat, XMEDIAFORMAT_KEY_COLOR_RANGE, m_hints.colorRange);
+
+    if (m_hints.colorPrimaries != AVCOL_PRI_UNSPECIFIED)
+    {
+      switch (m_hints.colorPrimaries)
+      {
+      case AVCOL_PRI_BT709:
+        AMediaFormat_setInt32(mediaformat, XMEDIAFORMAT_KEY_COLOR_STANDARD, 1);
+        break;
+      case AVCOL_PRI_BT2020:
+        AMediaFormat_setInt32(mediaformat, XMEDIAFORMAT_KEY_COLOR_STANDARD, 6);
+        break;
+      default:; // do nothing
+      }
+    }
+
+    if (m_hints.colorTransferCharacteristic != AVCOL_TRC_UNSPECIFIED)
+    {
+      switch (m_hints.colorTransferCharacteristic)
+      {
+      case AVCOL_TRC_LINEAR:
+        AMediaFormat_setInt32(mediaformat, XMEDIAFORMAT_KEY_COLOR_TRANSFER, 1); // COLOR_TRANSFER_LINEAR
+        break;
+      case AVCOL_TRC_SMPTE170M:
+        AMediaFormat_setInt32(mediaformat, XMEDIAFORMAT_KEY_COLOR_TRANSFER, 3); // COLOR_TRANSFER_SDR_VIDEO
+        break;
+      case AVCOL_TRC_SMPTE2084:
+        AMediaFormat_setInt32(mediaformat, XMEDIAFORMAT_KEY_COLOR_TRANSFER, 6); // COLOR_TRANSFER_ST2084
+        break;
+      case AVCOL_TRC_ARIB_STD_B67:
+        AMediaFormat_setInt32(mediaformat, XMEDIAFORMAT_KEY_COLOR_TRANSFER, 7); // COLOR_TRANSFER_HLG
+        break;
+      default:; // do nothing
+      }
+    }
+    std::vector<uint8_t> hdr_static_data = GetHDRStaticMetadata();
+    if (!hdr_static_data.empty())
+      AMediaFormat_setBuffer(mediaformat, XMEDIAFORMAT_KEY_HDR_STATIC_INFO, hdr_static_data.data(), hdr_static_data.size());
+  }
 
   // handle codec extradata
   InjectExtraData(mediaformat);

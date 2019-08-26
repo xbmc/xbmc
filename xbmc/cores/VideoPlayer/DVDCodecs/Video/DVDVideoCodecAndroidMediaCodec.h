@@ -40,21 +40,23 @@ struct DemuxCryptoInfo;
 struct mpeg2_sequence;
 
 
-typedef struct amc_demux {
-  uint8_t  *pData;
-  int       iSize;
-  double    dts;
-  double    pts;
+typedef struct amc_demux
+{
+  uint8_t* pData;
+  int iSize;
+  double dts;
+  double pts;
 } amc_demux;
 
 struct CMediaCodec
 {
-  CMediaCodec(const char *name);
+  CMediaCodec(const char* name);
   virtual ~CMediaCodec();
 
-  AMediaCodec *codec() const { return m_codec; };
+  AMediaCodec* codec() const { return m_codec; };
+
 private:
-  AMediaCodec *m_codec;
+  AMediaCodec* m_codec;
 };
 
 class CMediaCodecVideoBufferPool;
@@ -62,29 +64,33 @@ class CMediaCodecVideoBufferPool;
 class CMediaCodecVideoBuffer : public CVideoBuffer
 {
 public:
-  CMediaCodecVideoBuffer(int id) : CVideoBuffer(id) {};
-  virtual ~CMediaCodecVideoBuffer() {};
+  CMediaCodecVideoBuffer(int id)
+    : CVideoBuffer(id){};
+  virtual ~CMediaCodecVideoBuffer(){};
 
-  void Set(int internalId, int textureId,
-   std::shared_ptr<CJNISurfaceTexture> surfaceTexture,
-   std::shared_ptr<CDVDMediaCodecOnFrameAvailable> frameAvailable,
-   std::shared_ptr<CJNIXBMCVideoView> videoView);
+  void Set(int internalId,
+           int textureId,
+           std::shared_ptr<CJNISurfaceTexture> surfaceTexture,
+           std::shared_ptr<CDVDMediaCodecOnFrameAvailable> frameAvailable,
+           std::shared_ptr<CJNIXBMCVideoView> videoView);
 
   // meat and potatoes
-  bool                WaitForFrame(int millis);
+  bool WaitForFrame(int millis);
   // MediaCodec related
-  void                ReleaseOutputBuffer(bool render, int64_t displayTime, CMediaCodecVideoBufferPool* pool = nullptr);
+  void ReleaseOutputBuffer(bool render,
+                           int64_t displayTime,
+                           CMediaCodecVideoBufferPool* pool = nullptr);
   // SurfaceTexture released
-  int                 GetBufferId() const;
-  int                 GetTextureId() const;
-  void                GetTransformMatrix(float *textureMatrix);
-  void                UpdateTexImage();
-  void                RenderUpdate(const CRect &DestRect, int64_t displayTime);
-  bool                HasSurfaceTexture() const { return m_surfacetexture.operator bool(); };
+  int GetBufferId() const;
+  int GetTextureId() const;
+  void GetTransformMatrix(float* textureMatrix);
+  void UpdateTexImage();
+  void RenderUpdate(const CRect& DestRect, int64_t displayTime);
+  bool HasSurfaceTexture() const { return m_surfacetexture.operator bool(); };
 
 private:
-  int                 m_bufferId = -1;
-  unsigned int        m_textureId = 0;
+  int m_bufferId = -1;
+  unsigned int m_textureId = 0;
   // shared_ptr bits, shared between
   // CDVDVideoCodecAndroidMediaCodec and LinuxRenderGLES.
   std::shared_ptr<CJNISurfaceTexture> m_surfacetexture;
@@ -95,7 +101,8 @@ private:
 class CMediaCodecVideoBufferPool : public IVideoBufferPool
 {
 public:
-  CMediaCodecVideoBufferPool(std::shared_ptr<CMediaCodec> mediaCodec) : m_codec(mediaCodec) {};
+  CMediaCodecVideoBufferPool(std::shared_ptr<CMediaCodec> mediaCodec)
+    : m_codec(mediaCodec){};
 
   virtual ~CMediaCodecVideoBufferPool();
 
@@ -107,7 +114,8 @@ public:
   void ReleaseMediaCodecBuffers();
 
 private:
-  CCriticalSection m_criticalSection;;
+  CCriticalSection m_criticalSection;
+  ;
   std::shared_ptr<CMediaCodec> m_codec;
 
   std::vector<CMediaCodecVideoBuffer*> m_videoBuffers;
@@ -117,55 +125,56 @@ private:
 class CDVDVideoCodecAndroidMediaCodec : public CDVDVideoCodec, public CJNISurfaceHolderCallback
 {
 public:
-  CDVDVideoCodecAndroidMediaCodec(CProcessInfo &processInfo, bool surface_render = false);
+  CDVDVideoCodecAndroidMediaCodec(CProcessInfo& processInfo, bool surface_render = false);
   virtual ~CDVDVideoCodecAndroidMediaCodec();
 
   // registration
-  static CDVDVideoCodec* Create(CProcessInfo &processInfo);
+  static CDVDVideoCodec* Create(CProcessInfo& processInfo);
   static bool Register();
 
   // required overrides
-  virtual bool Open(CDVDStreamInfo &hints, CDVDCodecOptions &options) override;
-  virtual bool AddData(const DemuxPacket &packet) override;
+  virtual bool Open(CDVDStreamInfo& hints, CDVDCodecOptions& options) override;
+  virtual bool AddData(const DemuxPacket& packet) override;
   virtual void Reset() override;
-  virtual bool Reconfigure(CDVDStreamInfo &hints) override;
+  virtual bool Reconfigure(CDVDStreamInfo& hints) override;
   virtual VCReturn GetPicture(VideoPicture* pVideoPicture) override;
   virtual const char* GetName() override { return m_formatname.c_str(); };
   virtual void SetCodecControl(int flags) override;
   virtual unsigned GetAllowedReferences() override;
 
 protected:
-  void            Dispose();
-  void            FlushInternal(void);
-  void            SignalEndOfStream();
-  void            InjectExtraData(AMediaFormat* mediaformat);
-  bool            ConfigureMediaCodec(void);
-  int             GetOutputPicture(void);
-  void            ConfigureOutputFormat(AMediaFormat* mediaformat);
-  void            UpdateFpsDuration();
+  void Dispose();
+  void FlushInternal(void);
+  void SignalEndOfStream();
+  void InjectExtraData(AMediaFormat* mediaformat);
+  std::vector<uint8_t> GetHDRStaticMetadata();
+  bool ConfigureMediaCodec(void);
+  int GetOutputPicture(void);
+  void ConfigureOutputFormat(AMediaFormat* mediaformat);
+  void UpdateFpsDuration();
 
   // surface handling functions
-  static void     CallbackInitSurfaceTexture(void*);
-  void            InitSurfaceTexture(void);
-  void            ReleaseSurfaceTexture(void);
+  static void CallbackInitSurfaceTexture(void*);
+  void InitSurfaceTexture(void);
+  void ReleaseSurfaceTexture(void);
 
-  CDVDStreamInfo  m_hints;
-  std::string     m_mime;
-  std::string     m_codecname;
-  int             m_colorFormat;
-  std::string     m_formatname;
-  bool            m_opened;
-  int             m_codecControlFlags;
-  int             m_state;
-  int             m_noPictureLoop;
+  CDVDStreamInfo m_hints;
+  std::string m_mime;
+  std::string m_codecname;
+  int m_colorFormat;
+  std::string m_formatname;
+  bool m_opened;
+  int m_codecControlFlags;
+  int m_state;
+  int m_noPictureLoop;
 
   std::shared_ptr<CJNIXBMCVideoView> m_jnivideoview;
-  CJNISurface*    m_jnisurface;
-  CJNISurface     m_jnivideosurface;
-  AMediaCrypto   *m_crypto;
-  unsigned int    m_textureId;
+  CJNISurface* m_jnisurface;
+  CJNISurface m_jnivideosurface;
+  AMediaCrypto* m_crypto;
+  unsigned int m_textureId;
   std::shared_ptr<CMediaCodec> m_codec;
-  ANativeWindow*  m_surface;
+  ANativeWindow* m_surface;
   std::shared_ptr<CJNISurfaceTexture> m_surfaceTexture;
   std::shared_ptr<CDVDMediaCodecOnFrameAvailable> m_frameAvailable;
 
@@ -179,15 +188,15 @@ protected:
 
   static std::atomic<bool> m_InstanceGuard;
 
-  CBitstreamConverter *m_bitstream;
+  CBitstreamConverter* m_bitstream;
   VideoPicture m_videobuffer;
 
-  int             m_indexInputBuffer;
-  bool            m_render_surface;
-  mpeg2_sequence  *m_mpeg2_sequence;
-  int             m_src_offset[4];
-  int             m_src_stride[4];
-  bool            m_useDTSforPTS;
+  int m_indexInputBuffer;
+  bool m_render_surface;
+  mpeg2_sequence* m_mpeg2_sequence;
+  int m_src_offset[4];
+  int m_src_stride[4];
+  bool m_useDTSforPTS;
 
   // CJNISurfaceHolderCallback interface
 public:
