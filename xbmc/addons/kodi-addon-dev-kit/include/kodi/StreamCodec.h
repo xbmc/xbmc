@@ -18,5 +18,9 @@ enum STREAMCODEC_PROFILE
   H264CodecProfileHigh,
   H264CodecProfileHigh10,
   H264CodecProfileHigh422,
-  H264CodecProfileHigh444Predictive
+  H264CodecProfileHigh444Predictive,
+  VP9CodecProfile0 = 20,
+  VP9CodecProfile1,
+  VP9CodecProfile2,
+  VP9CodecProfile3,
 };

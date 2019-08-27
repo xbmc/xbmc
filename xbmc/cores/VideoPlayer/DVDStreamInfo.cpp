@@ -55,6 +55,12 @@ void CDVDStreamInfo::Clear()
   ptsinvalid = false;
   forced_aspect = false;
   bitsperpixel = 0;
+  colorSpace = AVCOL_SPC_UNSPECIFIED;
+  colorRange = AVCOL_RANGE_UNSPECIFIED;
+  colorPrimaries = AVCOL_PRI_UNSPECIFIED;
+  colorTransferCharacteristic = AVCOL_TRC_UNSPECIFIED;
+  masteringMetadata = nullptr;
+  contentLightMetadata = nullptr;
   stereo_mode.clear();
 
   channels   = 0;
@@ -98,7 +104,47 @@ bool CDVDStreamInfo::Equal(const CDVDStreamInfo& right, bool withextradata)
   ||  forced_aspect != right.forced_aspect
   ||  bitsperpixel != right.bitsperpixel
   ||  vfr      != right.vfr
+  ||  colorSpace != right.colorSpace
+  ||  colorRange != right.colorRange
+  ||  colorPrimaries != right.colorPrimaries
+  ||  colorTransferCharacteristic != right.colorTransferCharacteristic
   ||  stereo_mode != right.stereo_mode ) return false;
+
+  if (masteringMetadata && right.masteringMetadata)
+  {
+    if (masteringMetadata->has_luminance != right.masteringMetadata->has_luminance
+      || masteringMetadata->has_primaries != right.masteringMetadata->has_primaries)
+      return false;
+
+    if (masteringMetadata->has_primaries)
+    {
+      for (unsigned int i(0); i < 3; ++i)
+        for (unsigned int j(0); j < 2; ++j)
+          if (av_cmp_q(masteringMetadata->display_primaries[i][j], right.masteringMetadata->display_primaries[i][j]))
+            return false;
+      for (unsigned int i(0); i < 2; ++i)
+        if (av_cmp_q(masteringMetadata->white_point[i], right.masteringMetadata->white_point[i]))
+          return false;
+    }
+
+    if (masteringMetadata->has_luminance)
+    {
+      if (av_cmp_q(masteringMetadata->min_luminance, right.masteringMetadata->min_luminance)
+      || av_cmp_q(masteringMetadata->max_luminance, right.masteringMetadata->max_luminance))
+        return false;
+    }
+  }
+  else if (masteringMetadata || right.masteringMetadata)
+    return false;
+
+  if (contentLightMetadata && right.contentLightMetadata)
+  {
+    if (contentLightMetadata->MaxCLL != right.contentLightMetadata->MaxCLL
+    || contentLightMetadata->MaxFALL != right.contentLightMetadata->MaxFALL)
+      return false;
+  }
+  else if (contentLightMetadata || right.contentLightMetadata)
+    return false;
 
   // AUDIO
   if( channels      != right.channels
@@ -175,6 +221,12 @@ void CDVDStreamInfo::Assign(const CDVDStreamInfo& right, bool withextradata)
   bitsperpixel = right.bitsperpixel;
   vfr = right.vfr;
   codecOptions = right.codecOptions;
+  colorSpace = right.colorSpace;
+  colorRange = right.colorRange;
+  colorPrimaries = right.colorPrimaries;
+  colorTransferCharacteristic = right.colorTransferCharacteristic;
+  masteringMetadata = right.masteringMetadata;
+  contentLightMetadata = right.contentLightMetadata;
   stereo_mode = right.stereo_mode;
 
   // AUDIO
@@ -236,6 +288,12 @@ void CDVDStreamInfo::Assign(const CDemuxStream& right, bool withextradata)
     forced_aspect = stream->bForcedAspect;
     orientation = stream->iOrientation;
     bitsperpixel = stream->iBitsPerPixel;
+    colorSpace = stream->colorSpace;
+    colorRange = stream->colorRange;
+    colorPrimaries = stream->colorPrimaries;
+    colorTransferCharacteristic = stream->colorTransferCharacteristic;
+    masteringMetadata = stream->masteringMetaData;
+    contentLightMetadata = stream->contentLightMetaData;
     stereo_mode = stream->stereo_mode;
   }
   else if (right.type == STREAM_SUBTITLE)

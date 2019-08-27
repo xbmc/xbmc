@@ -437,6 +437,13 @@ void CDVDDemuxClient::SetStreamProps(CDemuxStream *stream, std::map<int, std::sh
       for (unsigned int j=0; j<source->ExtraSize; j++)
         streamVideo->ExtraData[j] = source->ExtraData[j];
     }
+    streamVideo->colorPrimaries = source->colorPrimaries;
+    streamVideo->colorRange = source->colorRange;
+    streamVideo->colorSpace = source->colorSpace;
+    streamVideo->colorTransferCharacteristic = source->colorTransferCharacteristic;
+    streamVideo->masteringMetaData = source->masteringMetaData;
+    streamVideo->contentLightMetaData = source->contentLightMetaData;
+
     streamVideo->m_parser_split = true;
     streamVideo->changes++;
     map[stream->uniqueId] = streamVideo;
@@ -529,7 +536,7 @@ void CDVDDemuxClient::SetStreamProps(CDemuxStream *stream, std::map<int, std::sh
 
   // only update profile / level if we create a new stream
   // existing streams may be corrected by ParsePacket
-  if (!currentStream)
+  if (!currentStream || !CodecHasExtraData(stream->codec))
   {
     toStream->profile = stream->profile;
     toStream->level = stream->level;
