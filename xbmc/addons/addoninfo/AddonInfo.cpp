@@ -11,6 +11,8 @@
 #include "LangInfo.h"
 #include "guilib/LocalizeStrings.h"
 
+#include <algorithm>
+
 namespace ADDON
 {
 
@@ -178,6 +180,17 @@ bool CAddonInfo::ProvidesSeveralSubContents() const
 bool CAddonInfo::MeetsVersion(const AddonVersion &version) const
 {
   return m_minversion <= version && version <= m_version;
+}
+
+const AddonVersion& CAddonInfo::DependencyVersion(const std::string& dependencyID) const
+{
+  auto it = std::find_if(m_dependencies.begin(), m_dependencies.end(), [&](const DependencyInfo& other) { return other.id == dependencyID; });
+
+  if (it != m_dependencies.end())
+    return it->requiredVersion;
+
+  static AddonVersion emptyVersion("0.0.0");
+  return emptyVersion;
 }
 
 const std::string& CAddonInfo::GetTranslatedText(const std::unordered_map<std::string, std::string>& locales) const

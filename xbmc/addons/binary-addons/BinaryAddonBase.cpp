@@ -62,6 +62,11 @@ const AddonVersion& CBinaryAddonBase::MinVersion() const
   return m_addonInfo->MinVersion();
 }
 
+const AddonVersion& CBinaryAddonBase::DependencyVersion(const std::string& dependencyID) const
+{
+  return m_addonInfo->DependencyVersion(dependencyID);
+}
+
 const std::string& CBinaryAddonBase::Name() const
 {
   return m_addonInfo->Name();
