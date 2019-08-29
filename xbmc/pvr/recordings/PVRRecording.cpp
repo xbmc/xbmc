@@ -367,7 +367,7 @@ void CPVRRecording::Update(const CPVRRecording &tag)
   CVideoInfoTag::SetResumePoint(tag.GetLocalResumePoint());
   SetDuration(tag.GetDuration());
 
-  if (m_iGenreType == EPG_GENRE_USE_STRING)
+  if (m_iGenreType == EPG_GENRE_USE_STRING || m_iGenreSubType == EPG_GENRE_USE_STRING)
   {
     /* No type/subtype. Use the provided description */
     m_genre = tag.m_genre;
@@ -504,7 +504,7 @@ void CPVRRecording::SetGenre(int iGenreType, int iGenreSubType, const std::strin
   m_iGenreType = iGenreType;
   m_iGenreSubType = iGenreSubType;
 
-  if ((iGenreType == EPG_GENRE_USE_STRING) && !strGenre.empty())
+  if ((iGenreType == EPG_GENRE_USE_STRING || iGenreSubType == EPG_GENRE_USE_STRING) && !strGenre.empty())
   {
     /* Type and sub type are not given. Use the provided genre description if available. */
     m_genre = StringUtils::Split(strGenre, CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoItemSeparator);
