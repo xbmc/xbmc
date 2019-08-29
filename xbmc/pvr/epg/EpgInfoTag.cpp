@@ -424,7 +424,7 @@ void CPVREpgInfoTag::SetGenre(int iGenreType, int iGenreSubType, const char* str
   {
     m_iGenreType    = iGenreType;
     m_iGenreSubType = iGenreSubType;
-    if ((iGenreType == EPG_GENRE_USE_STRING) && (strGenre != NULL) && (strlen(strGenre) > 0))
+    if ((iGenreType == EPG_GENRE_USE_STRING || iGenreSubType == EPG_GENRE_USE_STRING) && (strGenre != NULL) && (strlen(strGenre) > 0))
     {
       /* Type and sub type are not given. No EPG color coding possible
        * Use the provided genre description as backup. */
@@ -568,7 +568,7 @@ bool CPVREpgInfoTag::Update(const CPVREpgInfoTag &tag, bool bUpdateBroadcastId /
     m_iFlags             = tag.m_iFlags;
     m_strSeriesLink      = tag.m_strSeriesLink;
 
-    if (m_iGenreType == EPG_GENRE_USE_STRING)
+    if (m_iGenreType == EPG_GENRE_USE_STRING || m_iGenreSubType == EPG_GENRE_USE_STRING)
     {
       /* No type/subtype. Use the provided description */
       m_genre            = tag.m_genre;

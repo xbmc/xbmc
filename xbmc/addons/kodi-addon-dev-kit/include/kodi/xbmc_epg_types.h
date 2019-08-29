@@ -45,7 +45,7 @@
 #define EPG_EVENT_CONTENTMASK_USERDEFINED              0xF0
 //@}
 
-/* Set EPGTAG.iGenreType to EPG_GENRE_USE_STRING to transfer genre strings to Kodi */
+/* Set EPGTAG.iGenreType or EPGTAG.iGenreSubType to EPG_GENRE_USE_STRING to transfer genre strings to Kodi */
 #define EPG_GENRE_USE_STRING                           0x100
 
 /* Separator to use in strings containing different tokens, for example writers, directors, actors of an event. */
@@ -96,7 +96,7 @@ extern "C" {
     const char *  strIconPath;         /*!< @brief (optional) icon path */
     int           iGenreType;          /*!< @brief (optional) genre type */
     int           iGenreSubType;       /*!< @brief (optional) genre sub type */
-    const char *  strGenreDescription; /*!< @brief (optional) genre. Will be used only when iGenreType == EPG_GENRE_USE_STRING. Use EPG_STRING_TOKEN_SEPARATOR to separate different genres. */
+    const char *  strGenreDescription; /*!< @brief (optional) genre. Will be used only when iGenreType == EPG_GENRE_USE_STRING or iGenreSubType == EPG_GENRE_USE_STRING. Use EPG_STRING_TOKEN_SEPARATOR to separate different genres. */
     time_t        firstAired;          /*!< @brief (optional) first aired in UTC */
     int           iParentalRating;     /*!< @brief (optional) parental rating */
     int           iStarRating;         /*!< @brief (optional) star rating */
