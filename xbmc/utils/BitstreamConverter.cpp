@@ -678,6 +678,7 @@ bool CBitstreamConverter::BitstreamConvertInitAVC(void *in_extradata, int in_ext
   uint16_t unit_size;
   uint32_t total_size = 0;
   uint8_t *out = NULL, unit_nb, sps_done = 0, sps_seen = 0, pps_seen = 0;
+  uint8_t mvc_done = 0;
   const uint8_t *extradata = (uint8_t*)in_extradata + 4;
   static const uint8_t nalu_header[4] = {0, 0, 0, 1};
 
@@ -725,6 +726,18 @@ pps:
       unit_nb = *extradata++;   // number of pps unit(s)
       if (unit_nb)
         pps_seen = 1;
+    }
+
+    if (!unit_nb && !mvc_done++)
+    {
+      if (in_extrasize - total_size > 14 && memcmp(extradata + 8, "mvcC", 4) == 0)
+      {
+        // start over; take SPS and PPS from the mvcC atom
+        extradata += 12 + 5; // skip over mvcC atom header
+        unit_nb = *extradata++ & 0x1f;  // number of sps unit(s)
+        sps_done = 0;
+        pps_seen = 0;
+      }
     }
   }
 
