@@ -41,6 +41,7 @@ namespace ADDON
 
     const AddonVersion& Version() const;
     const AddonVersion& MinVersion() const;
+    const AddonVersion& DependencyVersion(const std::string& dependencyID) const;
     const std::string& Name() const;
     const std::string& Summary() const;
     const std::string& Description() const;

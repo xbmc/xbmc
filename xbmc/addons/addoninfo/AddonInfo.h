@@ -76,6 +76,7 @@ public:
 
   const AddonVersion& Version() const { return m_version; }
   const AddonVersion& MinVersion() const { return m_minversion; }
+  const AddonVersion& DependencyVersion(const std::string& dependencyID) const;
   const std::string& Name() const { return m_name; }
   const std::string& License() const { return m_license; }
   const std::string& Summary() const { return GetTranslatedText(m_summary); }
