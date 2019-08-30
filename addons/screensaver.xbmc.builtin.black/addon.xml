@@ -3,7 +3,7 @@
        name="Black"
        version="1.0.32"
        provider-name="Team Kodi">
-  <extension point="xbmc.ui.screensaver" library_@CORE_SYSTEM_NAME@="dummy.so"/>
+  <extension point="xbmc.ui.screensaver" library="dummy.so"/>
   <extension point="xbmc.addon.metadata">
     <summary lang="af_ZA">Sluimerskerm wat jou skerm swart maak.</summary>
     <summary lang="am_ET">መመልከቻ ማዳኛ የእርስዎን መመልከቻ ጥቁር ያደርገዋል </summary>
