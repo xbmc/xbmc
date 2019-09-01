@@ -961,6 +961,9 @@ void CDVDVideoCodecAndroidMediaCodec::Reset()
     m_videobuffer.pts = DVD_NOPTS_VALUE;
 
     m_indexInputBuffer = -1;
+
+    if (m_bitstream)
+      m_bitstream->ResetStartDecode();
   }
 }
 
