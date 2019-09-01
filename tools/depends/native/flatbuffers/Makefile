@@ -5,12 +5,11 @@ DEPS=../../Makefile.include Makefile
 
 # lib name, version
 LIBNAME=flatbuffers
-VERSION=1.9.0
+VERSION=1.11.0
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
-BASE_URL=http://mirrors.kodi.tv/build-deps/sources
 
-APP=$(PLATFORM)/flatc
+APP=$(PLATFORM)/build-cmake/flatc
 
 # Only this package uses CMake for build on native at the moment,
 # so there is no separate toolchain file. Still we have to unset
@@ -42,7 +41,6 @@ $(TARBALLS_LOCATION)/$(ARCHIVE):
 $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 	rm -rf $(PLATFORM)/*; mkdir -p $(PLATFORM)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
-	cd $(PLATFORM); patch -p1 -i ../0001-Fix-compiler-warning.patch
 	mkdir -p $(BUILDDIR)
 	cd $(BUILDDIR); $(CMAKE) $(CMAKE_OPTIONS) ..
 
