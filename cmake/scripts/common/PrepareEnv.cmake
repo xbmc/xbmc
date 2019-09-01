@@ -34,6 +34,14 @@ endif()
 
 set(PLATFORM_TAG ${CORE_SYSTEM_NAME})
 
+# The CPU variable is given either by ./tools/depends or by the
+# ./cmake/scripts/common/ArchSetup.cmake (which refers to the Kodi building
+# itself). However, this file is only used by addons, so CPU can not always
+# be defined, so in this case, if empty, the base CPU will be used.
+if(NOT CPU)
+  set(CPU ${CMAKE_SYSTEM_PROCESSOR})
+endif()
+
 if(CORE_SYSTEM_NAME STREQUAL android)
   if (CPU MATCHES "v7a")
     set(PLATFORM_TAG ${PLATFORM_TAG}-armv7)
