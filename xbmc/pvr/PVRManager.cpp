@@ -299,8 +299,6 @@ void CPVRManager::Start()
   // lock here (m_startStopMutex), which only gets hold while starting/restarting pvr manager.
   Stop();
 
-  CSingleLock lock(m_critSection);
-
   if (!m_addons->HasCreatedClients())
     return;
 
@@ -338,8 +336,6 @@ void CPVRManager::Stop(void)
   StopThread();
 
   SetState(ManagerStateInterrupted);
-
-  CSingleLock lock(m_critSection);
 
   UnloadComponents();
   m_database->Close();
