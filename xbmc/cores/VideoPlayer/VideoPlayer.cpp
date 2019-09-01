@@ -439,6 +439,7 @@ void CSelectionStreams::Update(std::shared_ptr<CDVDInputStream> input, CDVDDemux
       s.id       = i;
       s.flags    = StreamFlags::FLAG_NONE;
       s.filename = filename;
+      s.demuxerId = -1;
 
       AudioStreamInfo info = nav->GetAudioStreamInfo(i);
       s.name     = info.name;
@@ -457,6 +458,7 @@ void CSelectionStreams::Update(std::shared_ptr<CDVDInputStream> input, CDVDDemux
       s.id       = i;
       s.filename = filename;
       s.channels = 0;
+      s.demuxerId = -1;
 
       SubtitleStreamInfo info = nav->GetSubtitleStreamInfo(i);
       s.name     = info.name;
@@ -479,11 +481,13 @@ void CSelectionStreams::Update(std::shared_ptr<CDVDInputStream> input, CDVDDemux
       s.width = info.width;
       s.height = info.height;
       s.codec = info.codecName;
+      s.demuxerId = -1;
       s.name = StringUtils::Format("%s %i", g_localizeStrings.Get(38032).c_str(), i);
       Update(s);
     }
   }
-  else if(demuxer)
+
+  if (demuxer)
   {
     std::string filename = demuxer->GetFileName();
     int source;
