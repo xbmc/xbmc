@@ -416,6 +416,18 @@ namespace PVR
 
     static std::string GetEncryptionName(int iCaid);
 
+    /*!
+     * @brief Get the client order for this channel
+     * @return iOrder The order for this channel
+     */
+    int ClientOrder() const { return m_iOrder; }
+
+    /*!
+     * @brief Change the client order for this channel
+     * @param iOrder The new order for this channel
+     */
+    void SetClientOrder(int iOrder);
+
     //@}
   private:
     /*!
@@ -461,6 +473,7 @@ namespace PVR
     std::string      m_strFileNameAndPath;      /*!< the filename to be used by PVRManager to open and read the stream */
     int              m_iClientEncryptionSystem; /*!< the encryption system used by this channel. 0 for FreeToAir, -1 for unknown */
     std::string      m_strClientEncryptionName; /*!< the name of the encryption system used by this channel */
+    int              m_iOrder;                  /*!< the order from this channels currently selected group memeber */
     //@}
 
     mutable CCriticalSection m_critSection;

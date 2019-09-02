@@ -218,6 +218,12 @@ void CPVREpgInfoTag::ToSortable(SortItem& sortable, Field field) const
     case FieldChannelNumber:
       sortable[FieldChannelNumber] = m_channelData->SortableChannelNumber();
       break;
+    case FieldClientChannelOrder:
+      if (m_channelData->ClientOrder())
+        sortable[FieldClientChannelOrder] = m_channelData->ClientOrder();
+      else
+        sortable[FieldClientChannelOrder] = m_channelData->SortableClientChannelNumber();
+      break;
     case FieldLastPlayed:
       sortable[FieldLastPlayed] = m_channelData->LastWatched();
       break;

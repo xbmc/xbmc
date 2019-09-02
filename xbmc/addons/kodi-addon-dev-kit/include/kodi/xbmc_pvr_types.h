@@ -387,6 +387,11 @@ extern "C" {
   } ATTRIBUTE_PACKED PVR_MENUHOOK;
 
   /*!
+   * @brief special PVR_CHANNEL.iOrder and PVR_CHANNEL_GROUP_MEMBER.iOrder value to indicate this channel has an unknown order
+   */
+  const int PVR_CHANNEL_UNKNOWN_ORDER = 0; /*!< @brief channel has an unknown order. */
+
+  /*!
    * @brief Representation of a TV or radio channel.
    */
   typedef struct PVR_CHANNEL
@@ -402,6 +407,7 @@ extern "C" {
     char         strIconPath[PVR_ADDON_URL_STRING_LENGTH];             /*!< @brief (optional) path to the channel icon (if present) */
     bool         bIsHidden;                                            /*!< @brief (optional) true if this channel is marked as hidden */
     bool         bHasArchive;                                          /*!< @brief (optional) true if this channel has a server-side back buffer */
+    int          iOrder;                                               /*!< @brief (optional) The value denoting the order of this channel in the 'All channels' group */
   } ATTRIBUTE_PACKED PVR_CHANNEL;
 
   typedef struct PVR_CHANNEL_GROUP
@@ -417,6 +423,7 @@ extern "C" {
     unsigned int iChannelUniqueId;                           /*!< @brief (required) unique id of the member */
     unsigned int iChannelNumber;                             /*!< @brief (optional) channel number within the group */
     unsigned int iSubChannelNumber;                          /*!< @brief (optional) sub channel number within the group (ATSC) */
+    int          iOrder;                                     /*!< @brief (optional) The value denoting the order of this channel in this group */
   } ATTRIBUTE_PACKED PVR_CHANNEL_GROUP_MEMBER;
 
   /*!

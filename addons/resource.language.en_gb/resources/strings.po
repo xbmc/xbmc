@@ -10957,7 +10957,14 @@ msgctxt "#19314"
 msgid "Schedule recording when auto-closing the reminder popup"
 msgstr ""
 
-#empty strings from id 19315 to 19498
+#. generic 'backend order' label
+#: xbmc/pvr/channels/PVRChannel.cpp
+#: xbmc/utils/SortUtils.cpp
+msgctxt "#19315"
+msgid "Backend order"
+msgstr ""
+
+#empty strings from id 19316 to 19498
 
 #. label for epg genre value
 #: xbmc/pvr/epg/Epg.cpp
