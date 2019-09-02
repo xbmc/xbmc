@@ -53,7 +53,7 @@ public:
   /*!
    \brief Frees the output buffer allocated by CreateThumbnailFromSurface
    */
-  virtual void ReleaseThumbnailBuffer() {return;}
+  virtual void ReleaseThumbnailBuffer() {}
 
   unsigned int Width() const              { return m_width; }
   unsigned int Height() const             { return m_height; }

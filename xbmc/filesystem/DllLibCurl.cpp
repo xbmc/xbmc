@@ -226,8 +226,6 @@ void DllLibCurlGlobal::easy_acquire(const char* protocol,
   m_sessions.push_back(session);
 
   CLog::Log(LOGINFO, "%s - Created session to %s://%s\n", __FUNCTION__, protocol, hostname);
-
-  return;
 }
 
 void DllLibCurlGlobal::easy_release(CURL_HANDLE** easy_handle, CURLM** multi_handle)
@@ -312,6 +310,5 @@ void DllLibCurlGlobal::easy_duplicate(CURL_HANDLE* easy,
       return;
     }
   }
-  return;
 }
 } // namespace XCURL

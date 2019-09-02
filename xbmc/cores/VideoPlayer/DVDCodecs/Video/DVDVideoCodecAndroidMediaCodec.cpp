@@ -1422,8 +1422,6 @@ void CDVDVideoCodecAndroidMediaCodec::InitSurfaceTexture(void)
     // wait for it.
     CApplicationMessenger::GetInstance().SendMsg(TMSG_CALLBACK, -1, -1, static_cast<void*>(&callbackData));
   }
-
-  return;
 }
 
 void CDVDVideoCodecAndroidMediaCodec::ReleaseSurfaceTexture(void)

@@ -457,7 +457,6 @@ void CTextureDatabase::SetTextureForPath(const std::string &url, const std::stri
   {
     CLog::Log(LOGERROR, "%s failed on url '%s'", __FUNCTION__, url.c_str());
   }
-  return;
 }
 
 void CTextureDatabase::ClearTextureForPath(const std::string &url, const std::string &type)
@@ -476,7 +475,6 @@ void CTextureDatabase::ClearTextureForPath(const std::string &url, const std::st
   {
     CLog::Log(LOGERROR, "%s failed on url '%s'", __FUNCTION__, url.c_str());
   }
-  return;
 }
 
 CDatabaseQueryRule *CTextureDatabase::CreateRule() const

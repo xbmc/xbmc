@@ -1049,5 +1049,4 @@ void CEdl::MergeShortCommBreaks()
       AddSceneMarker(m_vecCuts[i].end);
     }
   }
-  return;
 }

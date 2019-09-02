@@ -719,7 +719,6 @@ void CTeletextDecoder::EndDecoder()
     m_txtCache->PageUpdate = true;
     CLog::Log(LOGDEBUG, "Teletext: Rendering ended");
   }
-  return;
 }
 
 void CTeletextDecoder::PageInput(int Number)

@@ -466,7 +466,6 @@ void CUPnPPlayer::Pause()
   return;
 failed:
   CLog::Log(LOGERROR, "UPNP: CUPnPPlayer::CloseFile - unable to pause/unpause playback");
-  return;
 }
 
 void CUPnPPlayer::SeekTime(int64_t ms)
@@ -564,7 +563,6 @@ void CUPnPPlayer::SetVolume(float volume)
   return;
 failed:
   CLog::Log(LOGERROR, "UPNP: CUPnPPlayer - unable to set volume");
-  return;
 }
 
 int64_t CUPnPPlayer::GetTime()

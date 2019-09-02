@@ -57,7 +57,6 @@ void CApplicationStackHelper::OnPlayBackStarted(const CFileItem& item)
       }
     }
   }
-  return;
 }
 
 bool CApplicationStackHelper::InitializeStack(const CFileItem & item)

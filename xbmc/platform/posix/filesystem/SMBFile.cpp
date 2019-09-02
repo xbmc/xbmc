@@ -39,7 +39,6 @@ void xb_smbc_log(const char* msg)
 void xb_smbc_auth(const char *srv, const char *shr, char *wg, int wglen,
                   char *un, int unlen, char *pw, int pwlen)
 {
-  return ;
 }
 
 // WTF is this ?, we get the original server cache only

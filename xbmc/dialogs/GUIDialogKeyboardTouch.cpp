@@ -61,7 +61,6 @@ void CGUIDialogKeyboardTouch::Cancel()
 {
   if (m_keyboard)
     m_keyboard->Cancel();
-  return;
 }
 
 int CGUIDialogKeyboardTouch::GetWindowId() const
