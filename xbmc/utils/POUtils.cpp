@@ -159,8 +159,6 @@ void CPODocument::ParseEntry(bool bisSourceLang)
                         "Failed entry: %s", m_Entry.Content.c_str());
     m_Entry.msgStrPlural.resize(1); // Put 1 element with an empty string into the vector
   }
-
-  return;
 }
 
 const std::string& CPODocument::GetPlurMsgstr(size_t plural) const

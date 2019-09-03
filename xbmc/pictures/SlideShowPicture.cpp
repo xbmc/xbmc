@@ -222,7 +222,6 @@ void CSlideShowPic::SetTexture_Internal(int iSlideNumber, CBaseTexture* pTexture
   m_bIsFinished = false;
   m_bDrawNextImage = false;
   m_bIsLoaded = true;
-  return ;
 }
 
 void CSlideShowPic::SetOriginalSize(int iOriginalWidth, int iOriginalHeight, bool bFullSize)

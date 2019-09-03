@@ -716,7 +716,6 @@ void CGUIWindowManager::PreviousWindow()
   pNewWindow->OnMessage(msg2);
 
   CServiceBroker::GetGUI()->GetInfoManager().GetInfoProviders().GetGUIControlsInfoProvider().SetPreviousWindow(WINDOW_INVALID);
-  return;
 }
 
 void CGUIWindowManager::ChangeActiveWindow(int newWindow, const std::string& strPath)

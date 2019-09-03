@@ -663,7 +663,6 @@ void CFile::Close()
   {
     CLog::Log(LOGERROR, "%s - Unhandled exception", __FUNCTION__);
   }
-  return;
 }
 
 void CFile::Flush()
@@ -678,7 +677,6 @@ void CFile::Flush()
   {
     CLog::Log(LOGERROR, "%s - Unhandled exception", __FUNCTION__);
   }
-  return;
 }
 
 //*********************************************************************************************

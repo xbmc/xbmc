@@ -271,7 +271,6 @@ void CGUIViewState::GetSortMethodLabelMasks(LABEL_MASKS& masks) const
   masks.m_strLabel2File.clear();
   masks.m_strLabelFolder.clear();
   masks.m_strLabel2Folder.clear();
-  return;
 }
 
 void CGUIViewState::AddSortMethod(SortBy sortBy, int buttonLabel, const LABEL_MASKS &labelMasks, SortAttribute sortAttributes /* = SortAttributeNone */, SortOrder sortOrder /* = SortOrderNone */)

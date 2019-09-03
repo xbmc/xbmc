@@ -749,7 +749,6 @@ void CActiveAESink::GetDeviceFriendlyName(std::string &device)
       }
     }
   }
-  return;
 }
 
 void CActiveAESink::OpenSink()

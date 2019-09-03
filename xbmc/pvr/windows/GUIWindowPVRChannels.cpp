@@ -316,8 +316,6 @@ void CGUIWindowPVRChannelsBase::ShowGroupManager(void)
 
   pDlgInfo->SetRadio(m_bRadio);
   pDlgInfo->Open();
-
-  return;
 }
 
 void CGUIWindowPVRChannelsBase::OnInputDone()

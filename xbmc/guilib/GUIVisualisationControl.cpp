@@ -280,7 +280,6 @@ void CGUIVisualisationControl::OnAudioData(const float* audioData, unsigned int 
   { // Transfer data to our visualisation
     m_instance->AudioData(ptrAudioBuffer->Get(), ptrAudioBuffer->Size(), nullptr, 0);
   }
-  return;
 }
 
 void CGUIVisualisationControl::UpdateTrack()

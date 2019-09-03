@@ -811,8 +811,6 @@ void CAddonCallbacksGUI::Window_ClearList(void *addonData, GUIHANDLE handle)
   Lock();
   pAddonWindow->ClearList();
   Unlock();
-
-  return;
 }
 
 GUIHANDLE CAddonCallbacksGUI::Window_AddItem(void *addonData, GUIHANDLE handle, GUIHANDLE item, int itemPosition)
@@ -856,8 +854,6 @@ void CAddonCallbacksGUI::Window_RemoveItem(void *addonData, GUIHANDLE handle, in
   Lock();
   pAddonWindow->RemoveItem(itemPosition);
   Unlock();
-
-  return;
 }
 
 GUIHANDLE CAddonCallbacksGUI::Window_GetListItem(void *addonData, GUIHANDLE handle, int listPos)
@@ -893,8 +889,6 @@ void CAddonCallbacksGUI::Window_SetCurrentListPosition(void *addonData, GUIHANDL
   Lock();
   pAddonWindow->SetCurrentListPosition(listPos);
   Unlock();
-
-  return;
 }
 
 int CAddonCallbacksGUI::Window_GetCurrentListPosition(void *addonData, GUIHANDLE handle)
