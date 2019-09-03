@@ -33,12 +33,13 @@ namespace PVR
   {
     PVRChannelGroupMember() = default;
 
-    PVRChannelGroupMember(const CPVRChannelPtr _channel, const CPVRChannelNumber &_channelNumber, int _iClientPriority)
-    : channel(_channel), channelNumber(_channelNumber), iClientPriority(_iClientPriority) {}
+    PVRChannelGroupMember(const CPVRChannelPtr _channel, const CPVRChannelNumber& _channelNumber, int _iClientPriority, int _iOrder)
+    : channel(_channel), channelNumber(_channelNumber), iClientPriority(_iClientPriority), iOrder(_iOrder) {}
 
     CPVRChannelPtr channel;
     CPVRChannelNumber channelNumber; // the number this channel has in the group
     int iClientPriority = 0;
+    int iOrder = 0; // The value denoting the order of this member in the group
   };
 
   typedef std::vector<PVRChannelGroupMember> PVR_CHANNEL_GROUP_SORTED_MEMBERS;
@@ -135,10 +136,11 @@ namespace PVR
      * @brief Add a channel to this container.
      * @param channel The channel to add.
      * @param channelNumber The channel number of the channel to add. Use empty channel number to add it at the end.
+     * @param iOrder The value denoting the order of this member in the group, 0 if unknown and needs to be generated
      * @param bUseBackendChannelNumbers True, if channelNumber contains a backend channel number.
      * @return True if the channel was added, false otherwise.
      */
-    virtual bool AddToGroup(const CPVRChannelPtr &channel, const CPVRChannelNumber &channelNumber, bool bUseBackendChannelNumbers);
+    virtual bool AddToGroup(const CPVRChannelPtr& channel, const CPVRChannelNumber& channelNumber, int iOrder, bool bUseBackendChannelNumbers);
 
     /*!
      * @brief Change the name of this group.
@@ -431,6 +433,11 @@ namespace PVR
      * @return True, if data is currently missing, false otherwise.
      */
     bool IsMissingChannelsFromClient(int iClientId) const;
+
+    /*!
+     * @brief For each channel and its corresponding epg channel data update the order from the group members
+     */
+    void UpdateClientOrder();
 
   protected:
     /*!

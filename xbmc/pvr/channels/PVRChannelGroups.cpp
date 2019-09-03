@@ -472,6 +472,7 @@ void CPVRChannelGroups::SetSelectedGroup(const CPVRChannelGroupPtr &group)
 {
   CSingleLock lock(m_critSection);
   m_selectedGroup = group;
+  m_selectedGroup->UpdateClientOrder();
 }
 
 bool CPVRChannelGroups::AddGroup(const std::string &strName)

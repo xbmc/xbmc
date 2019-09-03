@@ -200,7 +200,7 @@ bool CGUIDialogPVRGroupManager::ActionButtonUngroupedChannels(CGUIMessage &messa
       else if (m_ungroupedChannels->GetFileCount() > 0)
       {
         CFileItemPtr pItemChannel = m_ungroupedChannels->Get(m_iSelectedUngroupedChannel);
-        if (m_selectedGroup->AddToGroup(pItemChannel->GetPVRChannelInfoTag(), CPVRChannelNumber(), false))
+        if (m_selectedGroup->AddToGroup(pItemChannel->GetPVRChannelInfoTag(), CPVRChannelNumber(), 0, false))
         {
           ClearSelectedGroupsThumbnail();
           Update();

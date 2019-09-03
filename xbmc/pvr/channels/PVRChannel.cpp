@@ -60,6 +60,8 @@ CPVRChannel::CPVRChannel(bool bRadio /* = false */)
   m_iUniqueId               = -1;
   m_iClientId               = -1;
   m_iClientEncryptionSystem = -1;
+  m_iOrder = 0;
+
   UpdateEncryptionName();
 }
 
@@ -660,6 +662,13 @@ void CPVRChannel::ToSortable(SortItem& sortable, Field field) const
     sortable[FieldChannelName] = m_strChannelName;
   else if (field == FieldChannelNumber)
     sortable[FieldChannelNumber] = m_channelNumber.SortableChannelNumber();
+  else if (field == FieldClientChannelOrder)
+  {
+    if (m_iOrder)
+      sortable[FieldClientChannelOrder] = m_iOrder;
+    else
+      sortable[FieldClientChannelOrder] = m_clientChannelNumber.SortableChannelNumber();
+  }
   else if (field == FieldLastPlayed)
   {
     const CDateTime lastWatched(m_iLastWatched);
@@ -820,4 +829,17 @@ bool CPVRChannel::CanRecord(void) const
 {
   const CPVRClientPtr client = CServiceBroker::GetPVRManager().GetClient(m_iClientId);
   return client && client->GetClientCapabilities().SupportsRecordings();
+}
+
+void CPVRChannel::SetClientOrder(int iOrder)
+{
+  CSingleLock lock(m_critSection);
+  if (m_iOrder != iOrder)
+  {
+    m_iOrder = iOrder;
+
+    const std::shared_ptr<CPVREpg> epg = GetEPG();
+    if (epg)
+      epg->GetChannelData()->SetClientOrder(iOrder);
+  }
 }

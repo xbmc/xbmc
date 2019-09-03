@@ -476,6 +476,7 @@ bool CPVRChannelGroup::AddAndUpdateChannels(const CPVRChannelGroup &channels, bo
     {
       AddToGroup(existingChannel.channel,
                  bUseBackendChannelNumbers ? it->second.channel->ClientChannelNumber() : CPVRChannelNumber(),
+                 it->second.iOrder,
                  bUseBackendChannelNumbers);
 
       bReturn = true;
@@ -501,6 +502,14 @@ bool CPVRChannelGroup::IsMissingChannelGroupMembersFromClient(int iClientId) con
   return std::find(m_failedClientsForChannelGroupMembers.begin(),
                    m_failedClientsForChannelGroupMembers.end(),
                    iClientId) != m_failedClientsForChannelGroupMembers.end();
+}
+
+void CPVRChannelGroup::UpdateClientOrder()
+{
+  CSingleLock lock(m_critSection);
+
+  for (const auto& member : GetMembers())
+    member.channel->SetClientOrder(member.iOrder);
 }
 
 std::vector<CPVRChannelPtr> CPVRChannelGroup::RemoveDeletedChannels(const CPVRChannelGroup &channels)
@@ -601,7 +610,7 @@ bool CPVRChannelGroup::RemoveFromGroup(const CPVRChannelPtr &channel)
   return bReturn;
 }
 
-bool CPVRChannelGroup::AddToGroup(const CPVRChannelPtr &channel, const CPVRChannelNumber &channelNumber, bool bUseBackendChannelNumbers)
+bool CPVRChannelGroup::AddToGroup(const CPVRChannelPtr& channel, const CPVRChannelNumber& channelNumber, int iOrder, bool bUseBackendChannelNumbers)
 {
   bool bReturn(false);
   CSingleLock lock(m_critSection);
@@ -621,6 +630,7 @@ bool CPVRChannelGroup::AddToGroup(const CPVRChannelPtr &channel, const CPVRChann
 
       PVRChannelGroupMember newMember(realChannel);
       newMember.channelNumber = CPVRChannelNumber(iChannelNumber, channelNumber.GetSubChannelNumber());
+      newMember.iOrder = iOrder;
       m_sortedMembers.push_back(newMember);
       m_members.insert(std::make_pair(realChannel.channel->StorageId(), newMember));
       m_bChanged = true;

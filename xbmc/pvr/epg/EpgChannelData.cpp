@@ -29,7 +29,9 @@ CPVREpgChannelData::CPVREpgChannelData(const CPVRChannel& channel)
   m_iChannelId(channel.ChannelID()),
   m_strIconPath(channel.IconPath()),
   m_strChannelName(channel.ChannelName()),
-  m_strSortableChannelNumber(channel.ChannelNumber().SortableChannelNumber())
+  m_strSortableChannelNumber(channel.ChannelNumber().SortableChannelNumber()),
+  m_strSortableClientChannelNumber(channel.ClientChannelNumber().SortableChannelNumber()),
+  m_iOrder(channel.ClientOrder())
 {
   SetLastWatched(channel.LastWatched());
 }
@@ -119,6 +121,16 @@ void CPVREpgChannelData::SetSortableChannelNumber(const std::string& strSortable
   m_strSortableChannelNumber = strSortableChannelNumber;
 }
 
+const std::string& CPVREpgChannelData::SortableClientChannelNumber() const
+{
+  return m_strSortableClientChannelNumber;
+}
+
+void CPVREpgChannelData::SetSortableClientChannelNumber(const std::string& strSortableClientChannelNumber)
+{
+  m_strSortableClientChannelNumber = strSortableClientChannelNumber;
+}
+
 const std::string& CPVREpgChannelData::LastWatched() const
 {
   return m_strLastWatched;
@@ -131,4 +143,14 @@ void CPVREpgChannelData::SetLastWatched(time_t iLastWatched)
     m_strLastWatched = lastWatched.GetAsDBDateTime();
   else
     m_strLastWatched.clear();
+}
+
+int CPVREpgChannelData::ClientOrder() const
+{
+  return m_iOrder;
+}
+
+void CPVREpgChannelData::SetClientOrder(int iOrder)
+{
+  m_iOrder = iOrder;
 }
