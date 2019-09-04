@@ -42,53 +42,25 @@ bool CPVRChannel::operator!=(const CPVRChannel &right) const
 }
 
 CPVRChannel::CPVRChannel(bool bRadio /* = false */)
+  : m_bIsRadio(bRadio)
 {
-  m_iChannelId              = -1;
-  m_bIsRadio                = bRadio;
-  m_bIsHidden               = false;
-  m_bIsUserSetIcon          = false;
-  m_bIsUserSetName          = false;
-  m_bIsLocked               = false;
-  m_iLastWatched            = 0;
-  m_bChanged                = false;
-  m_bHasArchive             = false;
-
-  m_iEpgId                  = -1;
-  m_bEPGEnabled             = true;
-  m_strEPGScraper           = "client";
-
-  m_iUniqueId               = -1;
-  m_iClientId               = -1;
-  m_iClientEncryptionSystem = -1;
-  m_iOrder = 0;
-
   UpdateEncryptionName();
 }
 
 CPVRChannel::CPVRChannel(const PVR_CHANNEL &channel, unsigned int iClientId)
-: m_clientChannelNumber(channel.iChannelNumber, channel.iSubChannelNumber)
+: m_bIsRadio(channel.bIsRadio),
+  m_bIsHidden(channel.bIsHidden), 
+  m_strIconPath(channel.strIconPath), 
+  m_strChannelName(channel.strChannelName), 
+  m_bHasArchive(channel.bHasArchive),
+  m_bEPGEnabled(!channel.bIsHidden), 
+  m_iUniqueId(channel.iUniqueId), 
+  m_iClientId(iClientId), 
+  m_clientChannelNumber(channel.iChannelNumber, channel.iSubChannelNumber), 
+  m_strClientChannelName(channel.strChannelName),
+  m_strInputFormat(channel.strInputFormat), 
+  m_iClientEncryptionSystem(channel.iEncryptionSystem)
 {
-  m_iChannelId              = -1;
-  m_bIsRadio                = channel.bIsRadio;
-  m_bIsHidden               = channel.bIsHidden;
-  m_bIsUserSetIcon          = false;
-  m_bIsUserSetName          = false;
-  m_bIsLocked               = false;
-  m_strIconPath             = channel.strIconPath;
-  m_strChannelName          = channel.strChannelName;
-  m_iUniqueId               = channel.iUniqueId;
-  m_strClientChannelName    = channel.strChannelName;
-  m_strInputFormat          = channel.strInputFormat;
-  m_iClientEncryptionSystem = channel.iEncryptionSystem;
-  m_iOrder = 0;
-  m_iClientId               = iClientId;
-  m_iLastWatched            = 0;
-  m_bEPGEnabled             = !channel.bIsHidden;
-  m_strEPGScraper           = "client";
-  m_iEpgId                  = -1;
-  m_bChanged                = false;
-  m_bHasArchive             = channel.bHasArchive;
-
   if (m_strChannelName.empty())
     m_strChannelName = StringUtils::Format("%s %d", g_localizeStrings.Get(19029).c_str(), m_iUniqueId);
 
