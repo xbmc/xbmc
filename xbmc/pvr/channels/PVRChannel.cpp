@@ -80,6 +80,7 @@ CPVRChannel::CPVRChannel(const PVR_CHANNEL &channel, unsigned int iClientId)
   m_strClientChannelName    = channel.strChannelName;
   m_strInputFormat          = channel.strInputFormat;
   m_iClientEncryptionSystem = channel.iEncryptionSystem;
+  m_iOrder = 0;
   m_iClientId               = iClientId;
   m_iLastWatched            = 0;
   m_bEPGEnabled             = !channel.bIsHidden;
