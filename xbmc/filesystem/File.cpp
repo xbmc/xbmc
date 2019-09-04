@@ -328,7 +328,7 @@ bool CFile::Open(const CURL& file, const unsigned int flags)
         m_pFile = pRedirectEx->m_pNewFileImp;
         delete pRedirectEx;
 
-        if (pNewUrl.get())
+        if (pNewUrl)
         {
           CURL newAuthUrl(*pNewUrl);
           if (CPasswordManager::GetInstance().IsURLSupported(newAuthUrl) && newAuthUrl.GetUserName().empty())
@@ -439,7 +439,7 @@ bool CFile::Exists(const CURL& file, bool bUseCache /* = true */)
     }
 
     std::unique_ptr<IFile> pFile(CFileFactory::CreateLoader(url));
-    if (!pFile.get())
+    if (!pFile)
       return false;
 
     return pFile->Exists(authUrl);
@@ -456,9 +456,9 @@ bool CFile::Exists(const CURL& file, bool bUseCache /* = true */)
       std::unique_ptr<CURL> pNewUrl(pRedirectEx->m_pNewUrl);
       delete pRedirectEx;
 
-      if (pImp.get())
+      if (pImp)
       {
-        if (pNewUrl.get())
+        if (pNewUrl)
         {
           if (bUseCache)
           {
@@ -523,7 +523,7 @@ int CFile::Stat(const CURL& file, struct __stat64* buffer)
   try
   {
     std::unique_ptr<IFile> pFile(CFileFactory::CreateLoader(url));
-    if (!pFile.get())
+    if (!pFile)
       return -1;
     return pFile->Stat(authUrl, buffer);
   }
@@ -539,9 +539,9 @@ int CFile::Stat(const CURL& file, struct __stat64* buffer)
       std::unique_ptr<CURL> pNewUrl(pRedirectEx->m_pNewUrl);
       delete pRedirectEx;
 
-      if (pNewUrl.get())
+      if (pNewUrl)
       {
-        if (pImp.get())
+        if (pImp)
         {
           CURL newAuthUrl = *pNewUrl;
           if (CPasswordManager::GetInstance().IsURLSupported(newAuthUrl) && newAuthUrl.GetUserName().empty())
@@ -869,7 +869,7 @@ bool CFile::Delete(const CURL& file)
       CPasswordManager::GetInstance().AuthenticateURL(authUrl);
 
     std::unique_ptr<IFile> pFile(CFileFactory::CreateLoader(url));
-    if (!pFile.get())
+    if (!pFile)
       return false;
 
     if(pFile->Delete(authUrl))
@@ -910,7 +910,7 @@ bool CFile::Rename(const CURL& file, const CURL& newFile)
       CPasswordManager::GetInstance().AuthenticateURL(authUrlNew);
 
     std::unique_ptr<IFile> pFile(CFileFactory::CreateLoader(url));
-    if (!pFile.get())
+    if (!pFile)
       return false;
 
     if(pFile->Rename(authUrl, authUrlNew))
@@ -945,7 +945,7 @@ bool CFile::SetHidden(const CURL& file, bool hidden)
       CPasswordManager::GetInstance().AuthenticateURL(authUrl);
 
     std::unique_ptr<IFile> pFile(CFileFactory::CreateLoader(url));
-    if (!pFile.get())
+    if (!pFile)
       return false;
 
     return pFile->SetHidden(authUrl, hidden);

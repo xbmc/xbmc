@@ -161,7 +161,7 @@ bool CDirectory::GetDirectory(const CURL& url, std::shared_ptr<IDirectory> pDire
   try
   {
     CURL realURL = URIUtils::SubstitutePath(url);
-    if (!pDirectory.get())
+    if (!pDirectory)
       return false;
 
     // check our cache for this path
@@ -323,7 +323,7 @@ bool CDirectory::Create(const CURL& url)
       CPasswordManager::GetInstance().AuthenticateURL(realURL);
 
     std::unique_ptr<IDirectory> pDirectory(CDirectoryFactory::Create(realURL));
-    if (pDirectory.get())
+    if (pDirectory)
       if(pDirectory->Create(realURL))
         return true;
   }
@@ -362,7 +362,7 @@ bool CDirectory::Exists(const CURL& url, bool bUseCache /* = true */)
       CPasswordManager::GetInstance().AuthenticateURL(realURL);
 
     std::unique_ptr<IDirectory> pDirectory(CDirectoryFactory::Create(realURL));
-    if (pDirectory.get())
+    if (pDirectory)
       return pDirectory->Exists(realURL);
   }
   XBMCCOMMONS_HANDLE_UNCHECKED
@@ -395,7 +395,7 @@ bool CDirectory::Remove(const CURL& url)
       CPasswordManager::GetInstance().AuthenticateURL(authUrl);
 
     std::unique_ptr<IDirectory> pDirectory(CDirectoryFactory::Create(realURL));
-    if (pDirectory.get())
+    if (pDirectory)
       if(pDirectory->Remove(authUrl))
       {
         g_directoryCache.ClearFile(realURL.Get());
@@ -421,7 +421,7 @@ bool CDirectory::RemoveRecursive(const CURL& url)
       CPasswordManager::GetInstance().AuthenticateURL(authUrl);
 
     std::unique_ptr<IDirectory> pDirectory(CDirectoryFactory::Create(realURL));
-    if (pDirectory.get())
+    if (pDirectory)
       if(pDirectory->RemoveRecursive(authUrl))
       {
         g_directoryCache.ClearFile(realURL.Get());
@@ -447,7 +447,7 @@ void CDirectory::FilterFileDirectories(CFileItemList &items, const std::string &
     if (!pItem->m_bIsFolder && pItem->IsFileFolder(mode))
     {
       std::unique_ptr<IFileDirectory> pDirectory(CFileDirectoryFactory::Create(pItem->GetURL(),pItem.get(),mask));
-      if (pDirectory.get())
+      if (pDirectory)
         pItem->m_bIsFolder = true;
       else
         if (pItem->m_bIsFolder)

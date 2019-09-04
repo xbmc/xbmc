@@ -212,7 +212,7 @@ void CFileCache::Process()
 
   // create our read buffer
   std::unique_ptr<char[]> buffer(new char[m_chunkSize]);
-  if (buffer.get() == NULL)
+  if (buffer == nullptr)
   {
     CLog::Log(LOGERROR, "%s - failed to allocate read buffer", __FUNCTION__);
     return;

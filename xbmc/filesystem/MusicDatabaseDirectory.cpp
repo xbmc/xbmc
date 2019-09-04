@@ -35,7 +35,7 @@ bool CMusicDatabaseDirectory::GetDirectory(const CURL& url, CFileItemList &items
 
   std::unique_ptr<CDirectoryNode> pNode(CDirectoryNode::ParseURL(path));
 
-  if (!pNode.get())
+  if (!pNode)
     return false;
 
   bool bResult = pNode->GetChilds(items);
@@ -59,7 +59,7 @@ NODE_TYPE CMusicDatabaseDirectory::GetDirectoryChildType(const std::string& strP
   std::string path = CLegacyPathTranslation::TranslateMusicDbPath(strPath);
   std::unique_ptr<CDirectoryNode> pNode(CDirectoryNode::ParseURL(path));
 
-  if (!pNode.get())
+  if (!pNode)
     return NODE_TYPE_NONE;
 
   return pNode->GetChildType();
@@ -70,7 +70,7 @@ NODE_TYPE CMusicDatabaseDirectory::GetDirectoryType(const std::string& strPath)
   std::string path = CLegacyPathTranslation::TranslateMusicDbPath(strPath);
   std::unique_ptr<CDirectoryNode> pNode(CDirectoryNode::ParseURL(path));
 
-  if (!pNode.get())
+  if (!pNode)
     return NODE_TYPE_NONE;
 
   return pNode->GetType();
@@ -81,7 +81,7 @@ NODE_TYPE CMusicDatabaseDirectory::GetDirectoryParentType(const std::string& str
   std::string path = CLegacyPathTranslation::TranslateMusicDbPath(strPath);
   std::unique_ptr<CDirectoryNode> pNode(CDirectoryNode::ParseURL(path));
 
-  if (!pNode.get())
+  if (!pNode)
     return NODE_TYPE_NONE;
 
   CDirectoryNode* pParentNode=pNode->GetParent();
@@ -124,7 +124,7 @@ bool CMusicDatabaseDirectory::GetLabel(const std::string& strDirectory, std::str
 
   std::string path = CLegacyPathTranslation::TranslateMusicDbPath(strDirectory);
   std::unique_ptr<CDirectoryNode> pNode(CDirectoryNode::ParseURL(path));
-  if (!pNode.get())
+  if (!pNode)
     return false;
 
   // first see if there's any filter criteria
@@ -237,7 +237,7 @@ bool CMusicDatabaseDirectory::Exists(const CURL& url)
   std::string path = CLegacyPathTranslation::TranslateMusicDbPath(url);
   std::unique_ptr<CDirectoryNode> pNode(CDirectoryNode::ParseURL(path));
 
-  if (!pNode.get())
+  if (!pNode)
     return false;
 
   if (pNode->GetChildType() == MUSICDATABASEDIRECTORY::NODE_TYPE_NONE)
@@ -250,7 +250,7 @@ bool CMusicDatabaseDirectory::CanCache(const std::string& strPath)
 {
   std::string path = CLegacyPathTranslation::TranslateMusicDbPath(strPath);
   std::unique_ptr<CDirectoryNode> pNode(CDirectoryNode::ParseURL(path));
-  if (!pNode.get())
+  if (!pNode)
     return false;
   return pNode->CanCache();
 }
