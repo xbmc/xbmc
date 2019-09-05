@@ -36,6 +36,8 @@ class CGraphicContext;
 class CRenderSystemBase;
 class IRenderLoop;
 
+struct VideoPicture;
+
 class CWinSystemBase
 {
 public:
@@ -153,6 +155,10 @@ public:
   virtual void* GetHWContext() { return nullptr; }
 
   std::shared_ptr<CDPMSSupport> GetDPMSManager();
+  virtual bool SetHDR(const VideoPicture* videoPicture) { return false; };
+  virtual bool IsHDRDisplay() { return false; };
+
+  static const char* SETTING_WINSYSTEM_IS_HDR_DISPLAY;
 
 protected:
   void UpdateDesktopResolution(RESOLUTION_INFO& newRes, const std::string &output, int width, int height, float refreshRate, uint32_t dwFlags);

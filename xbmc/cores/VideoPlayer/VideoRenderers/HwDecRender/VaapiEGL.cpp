@@ -539,7 +539,7 @@ bool CVaapi2Texture::Map(CVaapiRenderPicture* pic)
       attribs.Get());
     if (!texture->eglImage)
     {
-      CEGLUtils::LogError("Failed to import VA DRM surface into EGL image");
+      CEGLUtils::Log(LOGERROR, "Failed to import VA DRM surface into EGL image");
       return false;
     }
 

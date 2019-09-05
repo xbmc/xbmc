@@ -156,7 +156,7 @@ void CWinSystemRpiGLESContext::PresentRenderImpl(bool rendered)
 
   if (!m_pGLContext.TrySwapBuffers())
   {
-    CEGLUtils::LogError("eglSwapBuffers failed");
+    CEGLUtils::Log(LOGERROR, "eglSwapBuffers failed");
     throw std::runtime_error("eglSwapBuffers failed");
   }
 }

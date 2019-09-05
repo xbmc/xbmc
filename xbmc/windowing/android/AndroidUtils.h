@@ -21,10 +21,11 @@ class CAndroidUtils : public ISettingCallback
 public:
   CAndroidUtils();
   virtual ~CAndroidUtils();
-  virtual bool  GetNativeResolution(RESOLUTION_INFO *res) const;
-  virtual bool  SetNativeResolution(const RESOLUTION_INFO &res);
-  virtual bool  ProbeResolutions(std::vector<RESOLUTION_INFO> &resolutions);
-  virtual bool UpdateDisplayModes();
+  bool GetNativeResolution(RESOLUTION_INFO* res) const;
+  bool SetNativeResolution(const RESOLUTION_INFO& res);
+  bool ProbeResolutions(std::vector<RESOLUTION_INFO>& resolutions);
+  bool UpdateDisplayModes();
+  bool IsHDRDisplay();
 
   // Implementation of ISettingCallback
   static const std::string SETTING_LIMITGUI;
