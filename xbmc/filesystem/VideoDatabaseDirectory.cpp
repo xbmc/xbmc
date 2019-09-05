@@ -36,7 +36,7 @@ bool CVideoDatabaseDirectory::GetDirectory(const CURL& url, CFileItemList &items
   items.m_dwSize = -1;  // No size
   std::unique_ptr<CDirectoryNode> pNode(CDirectoryNode::ParseURL(path));
 
-  if (!pNode.get())
+  if (!pNode)
     return false;
 
   bool bResult = pNode->GetChilds(items);
@@ -64,7 +64,7 @@ NODE_TYPE CVideoDatabaseDirectory::GetDirectoryChildType(const std::string& strP
   std::string path = CLegacyPathTranslation::TranslateVideoDbPath(strPath);
   std::unique_ptr<CDirectoryNode> pNode(CDirectoryNode::ParseURL(path));
 
-  if (!pNode.get())
+  if (!pNode)
     return NODE_TYPE_NONE;
 
   return pNode->GetChildType();
@@ -75,7 +75,7 @@ NODE_TYPE CVideoDatabaseDirectory::GetDirectoryType(const std::string& strPath)
   std::string path = CLegacyPathTranslation::TranslateVideoDbPath(strPath);
   std::unique_ptr<CDirectoryNode> pNode(CDirectoryNode::ParseURL(path));
 
-  if (!pNode.get())
+  if (!pNode)
     return NODE_TYPE_NONE;
 
   return pNode->GetType();
@@ -86,7 +86,7 @@ NODE_TYPE CVideoDatabaseDirectory::GetDirectoryParentType(const std::string& str
   std::string path = CLegacyPathTranslation::TranslateVideoDbPath(strPath);
   std::unique_ptr<CDirectoryNode> pNode(CDirectoryNode::ParseURL(path));
 
-  if (!pNode.get())
+  if (!pNode)
     return NODE_TYPE_NONE;
 
   CDirectoryNode* pParentNode=pNode->GetParent();
@@ -102,7 +102,7 @@ bool CVideoDatabaseDirectory::GetQueryParams(const std::string& strPath, CQueryP
   std::string path = CLegacyPathTranslation::TranslateVideoDbPath(strPath);
   std::unique_ptr<CDirectoryNode> pNode(CDirectoryNode::ParseURL(path));
 
-  if (!pNode.get())
+  if (!pNode)
     return false;
 
   CDirectoryNode::GetDatabaseInfo(strPath,params);
@@ -133,7 +133,7 @@ bool CVideoDatabaseDirectory::GetLabel(const std::string& strDirectory, std::str
 
   std::string path = CLegacyPathTranslation::TranslateVideoDbPath(strDirectory);
   std::unique_ptr<CDirectoryNode> pNode(CDirectoryNode::ParseURL(path));
-  if (!pNode.get() || path.empty())
+  if (!pNode || path.empty())
     return false;
 
   // first see if there's any filter criteria
@@ -299,7 +299,7 @@ bool CVideoDatabaseDirectory::Exists(const CURL& url)
   std::string path = CLegacyPathTranslation::TranslateVideoDbPath(url);
   std::unique_ptr<CDirectoryNode> pNode(CDirectoryNode::ParseURL(path));
 
-  if (!pNode.get())
+  if (!pNode)
     return false;
 
   if (pNode->GetChildType() == VIDEODATABASEDIRECTORY::NODE_TYPE_NONE)
@@ -312,7 +312,7 @@ bool CVideoDatabaseDirectory::CanCache(const std::string& strPath)
 {
   std::string path = CLegacyPathTranslation::TranslateVideoDbPath(strPath);
   std::unique_ptr<CDirectoryNode> pNode(CDirectoryNode::ParseURL(path));
-  if (!pNode.get())
+  if (!pNode)
     return false;
   return pNode->CanCache();
 }

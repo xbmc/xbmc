@@ -61,7 +61,7 @@ bool CDVDFileInfo::GetFileDuration(const std::string &path, int& duration)
     return false;
 
   demux.reset(CDVDFactoryDemuxer::CreateDemuxer(input, true));
-  if (!demux.get())
+  if (!demux)
     return false;
 
   duration = demux->GetStreamLength();

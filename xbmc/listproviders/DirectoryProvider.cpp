@@ -428,7 +428,7 @@ bool CDirectoryProvider::OnInfo(const CGUIListItemPtr& item)
         mediaType == MediaTypeVideo ||
         mediaType == MediaTypeMusicVideo)
     {
-      CGUIDialogVideoInfo::ShowFor(*fileItem.get());
+      CGUIDialogVideoInfo::ShowFor(*fileItem);
       return true;
     }
   }

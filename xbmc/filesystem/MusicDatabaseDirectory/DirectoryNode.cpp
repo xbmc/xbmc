@@ -82,7 +82,7 @@ void CDirectoryNode::GetDatabaseInfo(const std::string& strPath, CQueryParams& p
 {
   std::unique_ptr<CDirectoryNode> pNode(CDirectoryNode::ParseURL(strPath));
 
-  if (!pNode.get())
+  if (!pNode)
     return;
 
   pNode->CollectQueryParams(params);
@@ -250,7 +250,7 @@ bool CDirectoryNode::GetChilds(CFileItemList& items)
   std::unique_ptr<CDirectoryNode> pNode(CDirectoryNode::CreateNode(GetChildType(), "", this));
 
   bool bSuccess=false;
-  if (pNode.get())
+  if (pNode)
   {
     pNode->m_options = m_options;
     bSuccess=pNode->GetContent(items);
