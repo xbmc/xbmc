@@ -306,6 +306,11 @@ bool CWinSystemAndroid::MessagePump()
   return m_winEvents->MessagePump();
 }
 
+bool CWinSystemAndroid::IsHDRDisplay()
+{
+  return m_android->IsHDRDisplay();
+}
+
 std::unique_ptr<WINDOWING::IOSScreenSaver> CWinSystemAndroid::GetOSScreenSaverImpl()
 {
   std::unique_ptr<KODI::WINDOWING::IOSScreenSaver> ret(new COSScreenSaverAndroid());

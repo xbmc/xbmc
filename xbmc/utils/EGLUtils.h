@@ -22,8 +22,8 @@ public:
   static std::set<std::string> GetClientExtensions();
   static std::set<std::string> GetExtensions(EGLDisplay eglDisplay);
   static bool HasExtension(EGLDisplay eglDisplay, std::string const & name);
-  static bool HasClientExtension(std::string const & name);
-  static void LogError(std::string const & what);
+  static bool HasClientExtension(std::string const& name);
+  static void Log(int logLevel, std::string const& what);
   template<typename T>
   static T GetRequiredProcAddress(const char * procname)
   {
@@ -187,10 +187,11 @@ public:
    */
   bool CreatePlatformDisplay(void* nativeDisplay, EGLNativeDisplayType nativeDisplayLegacy);
 
-  bool CreateSurface(EGLNativeWindowType nativeWindow);
+  void SurfaceAttrib(EGLint attribute, EGLint value);
+  bool CreateSurface(EGLNativeWindowType nativeWindow, EGLint HDRcolorSpace = EGL_NONE);
   bool CreatePlatformSurface(void* nativeWindow, EGLNativeWindowType nativeWindowLegacy);
   bool InitializeDisplay(EGLint renderingApi);
-  bool ChooseConfig(EGLint renderableType, EGLint visualId = 0);
+  bool ChooseConfig(EGLint renderableType, EGLint visualId = 0, bool hdr = false);
   bool CreateContext(CEGLAttributesVec contextAttribs);
   bool BindContext();
   void Destroy();
@@ -227,5 +228,5 @@ private:
   EGLDisplay m_eglDisplay{EGL_NO_DISPLAY};
   EGLSurface m_eglSurface{EGL_NO_SURFACE};
   EGLContext m_eglContext{EGL_NO_CONTEXT};
-  EGLConfig m_eglConfig{};
+  EGLConfig m_eglConfig{}, m_eglHDRConfig{};
 };

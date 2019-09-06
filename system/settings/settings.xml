@@ -143,6 +143,16 @@
           <default>true</default>
           <control type="toggle" />
         </setting>
+        <setting id="winsystem.ishdrdisplay" type="boolean" label="13436" help="36299">
+          <dependencies>
+            <dependency type="visible">
+              <condition on="property" name="ishdrdisplay" />
+            </dependency>
+          </dependencies>
+          <level>2</level>
+          <default>true</default>
+          <control type="toggle" />
+        </setting>
       </group>
       <group id="4" label="14232">
         <setting id="videoplayer.stereoscopicplaybackmode" type="integer" label="36520" help="36537">
