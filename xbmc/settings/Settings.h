@@ -262,6 +262,8 @@ public:
   static const std::string SETTING_SERVICES_WEBSERVERUSERNAME;
   static const std::string SETTING_SERVICES_WEBSERVERPASSWORD;
   static const std::string SETTING_SERVICES_WEBSERVERSSL;
+  static const std::string SETTING_SERVICES_WEBSERVERENABLECORS;
+  static const std::string SETTING_SERVICES_WEBSERVERNAME;
   static const std::string SETTING_SERVICES_WEBSKIN;
   static const std::string SETTING_SERVICES_ESENABLED;
   static const std::string SETTING_SERVICES_ESPORT;

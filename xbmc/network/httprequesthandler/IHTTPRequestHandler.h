@@ -30,7 +30,8 @@ enum HTTPMethod
   UNKNOWN,
   POST,
   GET,
-  HEAD
+  HEAD,
+  OPTIONS
 };
 
 HTTPMethod GetHTTPMethod(const char *method);
@@ -66,6 +67,25 @@ typedef struct HTTPRequest
   HTTPMethod method;
   std::string version;
   CHttpRanges ranges;
+  mutable bool isCORSRequest = false;
+
+  HTTPRequest()
+    : HTTPRequest(nullptr, nullptr, "", "", UNKNOWN, "")
+  {
+  }
+
+  HTTPRequest(CWebServer* webserver, struct MHD_Connection* connection,
+    const std::string& fullUrl, const std::string& url,
+    HTTPMethod method, const std::string& version)
+    : webserver(webserver)
+    , connection(connection)
+    , pathUrlFull(fullUrl)
+    , pathUrl(url)
+    , method(method)
+    , version(version)
+    , ranges()
+  {
+  }
 } HTTPRequest;
 
 typedef struct HTTPResponseDetails {

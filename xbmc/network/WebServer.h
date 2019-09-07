@@ -32,6 +32,7 @@ public:
   bool IsStarted();
   static bool WebServerSupportsSSL();
   void SetCredentials(const std::string &username, const std::string &password);
+  void EnableCORS(bool enableCORS, const std::string& servername);
 
   void RegisterRequestHandler(IHTTPRequestHandler *handler);
   void UnregisterRequestHandler(IHTTPRequestHandler *handler);
@@ -68,6 +69,10 @@ private:
 
   int AskForAuthentication(const HTTPRequest& request) const;
   bool IsAuthenticated(const HTTPRequest& request) const;
+
+  bool IsCORSRequest(HTTPRequest request, std::string& origin) const;
+  int HandleOptionsRequest(HTTPRequest request);
+  void AddCORSHeaders(HTTPRequest request, struct MHD_Response*& response) const;
 
   bool IsRequestCacheable(const HTTPRequest& request) const;
   bool IsRequestRanged(const HTTPRequest& request, const CDateTime &lastModified) const;
@@ -121,6 +126,8 @@ private:
   std::string m_authenticationPassword;
   std::string m_key;
   std::string m_cert;
+  bool m_corsEnabled = false;
+  std::string m_servername;
   mutable CCriticalSection m_critSection;
   std::vector<IHTTPRequestHandler *> m_requestHandlers;
 };

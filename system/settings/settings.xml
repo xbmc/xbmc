@@ -1709,6 +1709,26 @@
           </dependencies>
           <control type="toggle" />
         </setting>
+        <setting id="services.webserverenablecors" type="boolean" parent="services.webserver" label="14278" help="14279">
+          <level>2</level>
+          <default>false</default>
+          <dependencies>
+            <dependency type="enable" setting="services.webserver">true</dependency>
+          </dependencies>
+          <control type="toggle" />
+        </setting>
+        <setting id="services.webservername" type="string" parent="services.webserverenablecors" label="14280" help="14281">
+          <level>2</level>
+          <default>localhost</default>
+          <constraints>
+            <allowempty>false</allowempty>
+          </constraints>
+          <dependencies>
+            <dependency type="visible" setting="services.webserver">true</dependency>
+            <dependency type="visible" setting="services.webserverenablecors">true</dependency>
+          </dependencies>
+          <control type="edit" format="string" />
+        </setting>
         <setting id="services.webskin" type="addon" label="199" help="36332">
           <level>1</level>
           <default>webinterface.default</default>

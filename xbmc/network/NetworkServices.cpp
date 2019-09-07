@@ -112,6 +112,8 @@ CNetworkServices::CNetworkServices()
     CSettings::SETTING_SERVICES_WEBSERVERUSERNAME,
     CSettings::SETTING_SERVICES_WEBSERVERPASSWORD,
     CSettings::SETTING_SERVICES_WEBSERVERSSL,
+    CSettings::SETTING_SERVICES_WEBSERVERENABLECORS,
+    CSettings::SETTING_SERVICES_WEBSERVERNAME,
     CSettings::SETTING_SERVICES_ZEROCONF,
     CSettings::SETTING_SERVICES_AIRPLAY,
     CSettings::SETTING_SERVICES_AIRPLAYVOLUMECONTROL,
@@ -432,6 +434,13 @@ void CNetworkServices::OnSettingChanged(std::shared_ptr<const CSetting> setting)
     m_webserver.SetCredentials(m_settings->GetString(CSettings::SETTING_SERVICES_WEBSERVERUSERNAME),
                                m_settings->GetString(CSettings::SETTING_SERVICES_WEBSERVERPASSWORD));
   }
+  else if (settingId == CSettings::SETTING_SERVICES_WEBSERVERENABLECORS ||
+           settingId == CSettings::SETTING_SERVICES_WEBSERVERNAME)
+  {
+    const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
+    m_webserver.EnableCORS(settings->GetBool(CSettings::SETTING_SERVICES_WEBSERVERENABLECORS),
+                           settings->GetString(CSettings::SETTING_SERVICES_WEBSERVERNAME));
+  }
   else
 #endif // HAS_WEB_SERVER
   if (settingId == CSettings::SETTING_SMB_WINSSERVER ||
@@ -531,6 +540,11 @@ bool CNetworkServices::StartWebserver()
 
   if (!m_webserver.Start(webPort, m_settings->GetString(CSettings::SETTING_SERVICES_WEBSERVERUSERNAME), m_settings->GetString(CSettings::SETTING_SERVICES_WEBSERVERPASSWORD)))
     return false;
+
+  // enable / disable CORS support
+  const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
+  m_webserver.EnableCORS(settings->GetBool(CSettings::SETTING_SERVICES_WEBSERVERENABLECORS),
+                         settings->GetString(CSettings::SETTING_SERVICES_WEBSERVERNAME));
 
 #ifdef HAS_ZEROCONF
   std::vector<std::pair<std::string, std::string> > txt;

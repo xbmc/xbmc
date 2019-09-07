@@ -43,6 +43,25 @@
 
 #define HEADER_NEWLINE        "\r\n"
 
+static const std::string HTTP_HEADER_ORIGIN = "Origin";
+static const std::string HTTP_HEADER_ACCESS_CONTROL_REQUEST_METHOD = "Access-Control-Request-Method";
+static const std::string HTTP_HEADER_ACCESS_CONTROL_REQUEST_HEADERS = "Access-Control-Request-Headers";
+static const std::string HTTP_HEADER_ACCESS_CONTROL_ALLOW_METHODS = "Access-Control-Allow-Methods";
+static const std::string HTTP_HEADER_ACCESS_CONTROL_ALLOW_HEADERS = "Access-Control-Allow-Headers";
+static const std::string HTTP_HEADER_ACCESS_CONTROL_ALLOW_CREDENTIALS = "Access-Control-Allow-Credentials";
+static const std::string HTTP_HEADER_ACCESS_CONTROL_EXPOSE_HEADERS = "Access-Control-Expose-Headers";
+static const std::string HTTP_HEADER_ACCESS_CONTROL_MAX_AGE = "Access-Control-Max-Age";
+
+static const std::set<HTTPMethod> SUPPORTED_HTTP_METHODS = {HEAD, GET, POST};
+
+static const std::set<std::string> SIMPLE_RESPONSE_HEADERS = {
+  MHD_HTTP_HEADER_CACHE_CONTROL,
+  MHD_HTTP_HEADER_CONTENT_LANGUAGE,
+  MHD_HTTP_HEADER_EXPIRES,
+  MHD_HTTP_HEADER_LAST_MODIFIED,
+  MHD_HTTP_HEADER_PRAGMA
+};
+
 typedef struct {
   std::shared_ptr<XFILE::CFile> file;
   CHttpRanges ranges;
@@ -103,6 +122,10 @@ int CWebServer::AskForAuthentication(const HTTPRequest& request) const
     return MHD_NO;
   }
 
+  // if this is a CORS request set the CORS related headers
+  if (request.isCORSRequest)
+    AddCORSHeaders(request, response);
+
   LogResponse(request, MHD_HTTP_UNAUTHORIZED);
 
   ret = MHD_queue_basic_auth_fail_response(request.connection, "XBMC", response);
@@ -155,7 +178,7 @@ int CWebServer::AnswerToConnection(void *cls, struct MHD_Connection *connection,
 
   ConnectionHandler* connectionHandler = reinterpret_cast<ConnectionHandler*>(*con_cls);
   HTTPMethod methodType = GetHTTPMethod(method);
-  HTTPRequest request = { webServer, connection, connectionHandler->fullUri, url, methodType, version };
+  HTTPRequest request(webServer, connection, connectionHandler->fullUri, url, methodType, version);
 
   if (connectionHandler->isNew)
     webServer->LogRequest(request);
@@ -175,12 +198,32 @@ int CWebServer::HandlePartialRequest(struct MHD_Connection *connection, Connecti
   // reset con_cls and set it if still necessary
   *con_cls = nullptr;
 
+  // figure out if this is a CORS request
+  if (isNewRequest)
+  {
+    std::string origin;
+    request.isCORSRequest = IsCORSRequest(request, origin);
+
+    // abort if CORS support is disabled
+    if (request.isCORSRequest && !m_corsEnabled)
+    {
+      CLog::Log(LOGWARNING, "CWebServer[%hu]: CORS support is disabled", m_port);
+      return SendErrorResponse(request, MHD_HTTP_BAD_REQUEST, request.method);
+    }
+
+    // TODO: abort if the origin isn't allowed access
+  }
+
   if (!IsAuthenticated(request))
     return AskForAuthentication(request);
 
   // check if this is the first call to AnswerToConnection for this request
   if (isNewRequest)
   {
+    // handle CORS preflight request (HTTP OPTIONS)
+    if (request.isCORSRequest && request.method == OPTIONS)
+      return HandleOptionsRequest(request);
+
     // look for a IHTTPRequestHandler which can take care of the current request
     auto handler = FindRequestHandler(request);
     if (handler != nullptr)
@@ -413,6 +456,27 @@ int CWebServer::FinalizeRequest(const std::shared_ptr<IHTTPRequestHandler>& hand
   for (const auto& it : responseDetails.headers)
     AddHeader(response, it.first, it.second);
 
+  // add CORS related headers
+  if (request.isCORSRequest)
+  {
+    // add general CORS headers
+    AddCORSHeaders(request, response);
+
+    std::vector<std::string> exposedHeaders;
+    for (auto header : responseDetails.headers)
+    {
+      // ignore simple response headers
+      if (SIMPLE_RESPONSE_HEADERS.find(header.first) != SIMPLE_RESPONSE_HEADERS.cend())
+        continue;
+
+      exposedHeaders.push_back(header.first);
+    }
+
+    // add the "Access-Control-Expose-Headers" response header
+    if (!exposedHeaders.empty())
+      AddHeader(response, HTTP_HEADER_ACCESS_CONTROL_EXPOSE_HEADERS, StringUtils::Join(exposedHeaders, ", "));
+  }
+
   return SendResponse(request, responseStatus, response);
 }
 
@@ -430,6 +494,37 @@ std::shared_ptr<IHTTPRequestHandler> CWebServer::FindRequestHandler(const HTTPRe
     return std::shared_ptr<IHTTPRequestHandler>((*requestHandlerIt)->Create(request));
 
   return nullptr;
+}
+
+bool CWebServer::IsCORSRequest(HTTPRequest request, std::string& origin) const
+{
+  // check if there is an "Origin" header
+  origin = HTTPRequestHandlerUtils::GetRequestHeaderValue(request.connection, MHD_HEADER_KIND, HTTP_HEADER_ORIGIN);
+  if (origin.empty())
+    return false;
+
+  if (request.method == OPTIONS)
+  {
+    // check if there is an "Access-Control-Request-Method" header
+    const std::string headerMethod = HTTPRequestHandlerUtils::GetRequestHeaderValue(request.connection, MHD_HEADER_KIND, HTTP_HEADER_ACCESS_CONTROL_REQUEST_METHOD);
+    if (headerMethod.empty())
+      return false;
+
+    return true;
+  }
+
+  // if the given Origin header matches our servername it's not a CORS request
+  // for that we need to check that
+  // - the protocol is HTTP
+  // - the hostname matches our servername
+  // - the port matches our port or there's no port and we run on port 80 (default HTTP port)
+  CURL originUrl(origin);
+  if (originUrl.IsProtocol("http") &&
+    originUrl.GetHostName() == m_servername &&
+    (originUrl.GetPort() == m_port || (originUrl.GetPort() <= 0 && m_port == 80)))
+    return false;
+
+  return true;
 }
 
 bool CWebServer::IsRequestCacheable(const HTTPRequest& request) const
@@ -560,6 +655,68 @@ void CWebServer::FinalizePostDataProcessing(ConnectionHandler *connectionHandler
     return;
 
   MHD_destroy_post_processor(connectionHandler->postprocessor);
+}
+
+int CWebServer::HandleOptionsRequest(HTTPRequest request)
+{
+  // make sure the requested method is supported (HEAD, GET, POST)
+  const std::string headerMethod = HTTPRequestHandlerUtils::GetRequestHeaderValue(request.connection, MHD_HEADER_KIND, HTTP_HEADER_ACCESS_CONTROL_REQUEST_METHOD);
+  auto meth = GetHTTPMethod(headerMethod.c_str());
+  if (SUPPORTED_HTTP_METHODS.find(meth) == SUPPORTED_HTTP_METHODS.end())
+  {
+    CLog::Log(LOGWARNING, "CWebServer[%hu]: bad OPTIONS request with unsupported \"%s\" header: %s",
+      m_port, HTTP_HEADER_ACCESS_CONTROL_REQUEST_METHOD.c_str(), headerMethod.c_str());
+    return SendErrorResponse(request, MHD_HTTP_BAD_REQUEST, OPTIONS);
+  }
+
+  // create a fake potential request and check if it can be handled
+  HTTPRequest potentialRequest = request;
+  potentialRequest.method = meth;
+  auto requestHandler = FindRequestHandler(potentialRequest);
+  if (requestHandler == nullptr)
+  {
+    CLog::Log(LOGERROR, "CWebServer[%hu]: couldn't find a potential request handler for %s", m_port, request.pathUrl.c_str());
+    return SendErrorResponse(request, MHD_HTTP_NOT_FOUND, request.method);
+  }
+
+  struct MHD_Response* response = create_response(0, nullptr, MHD_NO, MHD_NO);
+  if (response == nullptr)
+  {
+    CLog::Log(LOGERROR, "CWebServer[%hu]: failed to create a HTTP 200 OPTIONS response", m_port);
+    return MHD_NO;
+  }
+
+  // set the "Access-Control-Request-Methods" response header
+  std::vector<std::string> supportedMethods;
+  for (auto method : SUPPORTED_HTTP_METHODS)
+    supportedMethods.push_back(GetHTTPMethod(method));
+  AddHeader(response, HTTP_HEADER_ACCESS_CONTROL_ALLOW_METHODS, StringUtils::Join(supportedMethods, ", "));
+
+  // set the "Access-Control-Request-Headers" response header
+  AddHeader(response, HTTP_HEADER_ACCESS_CONTROL_ALLOW_HEADERS,
+    HTTPRequestHandlerUtils::GetRequestHeaderValue(request.connection, MHD_HEADER_KIND, HTTP_HEADER_ACCESS_CONTROL_REQUEST_HEADERS));
+
+  // set the "Access-Control-Max-Age" response header
+  int maxAge = requestHandler->GetMaximumAgeForCaching();
+  if (maxAge > 0)
+    AddHeader(response, HTTP_HEADER_ACCESS_CONTROL_MAX_AGE, StringUtils::Format("%d", maxAge));
+
+  AddCORSHeaders(request, response);
+
+  return SendResponse(request, MHD_HTTP_OK, response);
+}
+
+void CWebServer::AddCORSHeaders(HTTPRequest request, struct MHD_Response*& response) const
+{
+  // set the "Access-Control-Allow-Origin" response header
+  AddHeader(response, MHD_HTTP_HEADER_ACCESS_CONTROL_ALLOW_ORIGIN,
+    HTTPRequestHandlerUtils::GetRequestHeaderValue(request.connection, MHD_HEADER_KIND, HTTP_HEADER_ORIGIN));
+  // set the "Vary" response header to indicate that the response depends on the "Origin" request header
+  AddHeader(response, MHD_HTTP_HEADER_VARY, HTTP_HEADER_ORIGIN);
+
+  // set the "Access-Control-Allow-Credentials" response header if necessary
+  if (m_authenticationRequired)
+    AddHeader(response, HTTP_HEADER_ACCESS_CONTROL_ALLOW_CREDENTIALS, "true");
 }
 
 int CWebServer::CreateMemoryDownloadResponse(const std::shared_ptr<IHTTPRequestHandler>& handler, struct MHD_Response *&response) const
@@ -1223,6 +1380,12 @@ void CWebServer::SetCredentials(const std::string &username, const std::string &
   m_authenticationUsername = username;
   m_authenticationPassword = password;
   m_authenticationRequired = !m_authenticationPassword.empty();
+}
+
+void CWebServer::EnableCORS(bool enableCORS, const std::string& servername)
+{
+  m_corsEnabled = enableCORS;
+  m_servername = servername;
 }
 
 void CWebServer::RegisterRequestHandler(IHTTPRequestHandler *handler)

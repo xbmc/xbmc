@@ -8292,7 +8292,29 @@ msgctxt "#14277"
 msgid "Allow remote control from applications on other systems"
 msgstr ""
 
-#empty strings from id 14278 to 14300
+#: system/settings/settings.xml
+msgctxt "#14278"
+msgid "Enable CORS"
+msgstr ""
+
+#. Description of setting with label #14278 "Enable CORS"
+#: system/settings/settings.xml
+msgctxt "#14279"
+msgid "Enable Cross-Origin Resource Sharing (CORS) allowing other domains to access resources from Kodi's webserver."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#14280"
+msgid "Server name"
+msgstr ""
+
+#. Description of setting with label #14280 "ServerName"
+#: system/settings/settings.xml
+msgctxt "#14281"
+msgid "Specifies the server/domain name under which the webserver is accessible."
+msgstr ""
+
+#empty strings from id 14282 to 14300
 
 #. pvr "channels" settings group label
 #: system/settings/settings.xml

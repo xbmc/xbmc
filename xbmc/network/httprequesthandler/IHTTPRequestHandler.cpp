@@ -18,6 +18,7 @@
 static const std::string HTTPMethodHead = "HEAD";
 static const std::string HTTPMethodGet = "GET";
 static const std::string HTTPMethodPost = "POST";
+static const std::string HTTPMethodOptions = "OPTIONS";
 
 HTTPMethod GetHTTPMethod(const char *method)
 {
@@ -27,6 +28,8 @@ HTTPMethod GetHTTPMethod(const char *method)
     return POST;
   if (HTTPMethodHead.compare(method) == 0)
     return HEAD;
+  if (HTTPMethodOptions.compare(method) == 0)
+    return OPTIONS;
 
   return UNKNOWN;
 }
@@ -43,6 +46,9 @@ std::string GetHTTPMethod(HTTPMethod method)
 
   case POST:
     return HTTPMethodPost;
+
+  case OPTIONS:
+    return HTTPMethodOptions;
 
   case UNKNOWN:
     break;
