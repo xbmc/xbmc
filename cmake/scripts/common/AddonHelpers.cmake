@@ -108,7 +108,7 @@ macro (build_addon target prefix libs)
         if("${include_name}" MATCHES "_DEPENDS")
           # Use start definition name as base for other value type
           list(GET loop_var 0 list_name)
-          string(REPLACE "_DEPENDS" "" depends_name ${list_name})
+          string(REPLACE "_DEPENDS" "_MIN" depends_name ${list_name})
           string(REPLACE "_DEPENDS" "_XML_ID" xml_entry_name ${list_name})
           string(REPLACE "_DEPENDS" "_USED" used_type_name ${list_name})
 
