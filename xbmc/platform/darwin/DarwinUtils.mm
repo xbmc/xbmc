@@ -39,9 +39,9 @@ const char* CDarwinUtils::getIosPlatformString(void)
 #if defined(TARGET_DARWIN_EMBEDDED)
     // Gets a string with the device model
     size_t size;
-    sysctlbyname("hw.machine", NULL, &size, NULL, 0);
+    sysctlbyname("hw.machine", nullptr, &size, nullptr, 0);
     char machine[size];
-    if (sysctlbyname("hw.machine", machine, &size, NULL, 0) == 0 && machine[0])
+    if (sysctlbyname("hw.machine", machine, &size, nullptr, 0) == 0 && machine[0])
       iOSPlatformString.assign(machine, size-1);
     else
 #endif
@@ -57,9 +57,9 @@ const char *CDarwinUtils::GetOSReleaseString(void)
   std::call_once(flag, []
   {
     size_t size;
-    sysctlbyname("kern.osrelease", NULL, &size, NULL, 0);
+    sysctlbyname("kern.osrelease", nullptr, &size, nullptr, 0);
     char osrelease[size];
-    sysctlbyname("kern.osrelease", osrelease, &size, NULL, 0);
+    sysctlbyname("kern.osrelease", osrelease, &size, nullptr, 0);
     osreleaseStr.assign(osrelease);
   });
   return osreleaseStr.c_str();
@@ -69,7 +69,7 @@ const char *CDarwinUtils::GetOSVersionString(void)
 {
   @autoreleasepool
   {
-    return [[[NSProcessInfo processInfo] operatingSystemVersionString] UTF8String];
+    return NSProcessInfo.processInfo.operatingSystemVersionString.UTF8String;
   }
 }
 
@@ -80,7 +80,7 @@ const char* CDarwinUtils::GetVersionString()
 #if defined(TARGET_DARWIN_EMBEDDED)
   std::call_once(flag, []
   {
-    versionString.assign([[[UIDevice currentDevice] systemVersion] UTF8String]);
+    versionString.assign(UIDevice.currentDevice.systemVersion.UTF8String);
   });
 #else
   std::call_once(flag, []
@@ -224,19 +224,19 @@ bool CFStringRefToStringWithEncoding(CFStringRef source, std::string &destinatio
   {
     CFIndex strLen = CFStringGetMaximumSizeForEncoding(CFStringGetLength(source) + 1,
                                                        encoding);
-    char *allocStr = (char*)malloc(strLen);
+    char* allocStr = static_cast<char*>(malloc(strLen));
 
     if(!allocStr)
       return false;
 
     if(!CFStringGetCString(source, allocStr, strLen, encoding))
     {
-      free((void*)allocStr);
+      free(static_cast<void*>(allocStr));
       return false;
     }
 
     destination = allocStr;
-    free((void*)allocStr);
+    free(static_cast<void*>(allocStr));
 
     return true;
   }
@@ -285,7 +285,7 @@ const std::string& CDarwinUtils::GetManufacturer(void)
             manufName = static_cast<const char*>([NSString stringWithString:(__bridge NSString*)manufacturer].UTF8String);
           else if (typeId == CFDataGetTypeID())
           {
-            manufName.assign((const char*)CFDataGetBytePtr((CFDataRef)manufacturer), CFDataGetLength((CFDataRef)manufacturer));
+            manufName.assign(reinterpret_cast<const char*>(CFDataGetBytePtr((CFDataRef)manufacturer)), CFDataGetLength((CFDataRef)manufacturer));
             if (!manufName.empty() && manufName[manufName.length() - 1] == 0)
               manufName.erase(manufName.length() - 1); // remove extra null at the end if any
           }

@@ -42,7 +42,7 @@ NSDictionary *dictionaryFromVariantMap(const CVariant &data)
     return nil;
   NSMutableDictionary* dict = [[NSMutableDictionary alloc] initWithCapacity:data.size()];
   for (CVariant::const_iterator_map itr = data.begin_map(); itr != data.end_map(); ++itr)
-    [dict setValue:objectFromVariant(itr->second) forKey:[NSString stringWithUTF8String:itr->first.c_str()]];
+    [dict setValue:objectFromVariant(itr->second) forKey:@(itr->first.c_str())];
 
   return dict;
 }
@@ -52,17 +52,17 @@ id objectFromVariant(const CVariant &data)
   if (data.isNull())
     return nil;
   if (data.isString())
-    return [NSString stringWithUTF8String:data.asString().c_str()];
+    return @(data.asString().c_str());
   if (data.isWideString())
-    return [NSString stringWithCString:(const char *)data.asWideString().c_str() encoding:NSUnicodeStringEncoding];
+    return [NSString stringWithCString:(const char*)data.asWideString().c_str() encoding:NSUnicodeStringEncoding];
   if (data.isInteger())
-    return [NSNumber numberWithLongLong:data.asInteger()];
+    return @(data.asInteger());
   if (data.isUnsignedInteger())
-    return [NSNumber numberWithUnsignedLongLong:data.asUnsignedInteger()];
+    return @(data.asUnsignedInteger());
   if (data.isBoolean())
-    return [NSNumber numberWithInt:data.asBoolean()?1:0];
+    return @(data.asBoolean() ? 1 : 0);
   if (data.isDouble())
-    return [NSNumber numberWithDouble:data.asDouble()];
+    return @(data.asDouble());
   if (data.isArray())
     return arrayFromVariantArray(data);
   if (data.isObject())
@@ -85,7 +85,7 @@ void AnnounceBridge(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender, con
     {
       if (!nonConstData["item"]["id"].isNull())
       {
-        item_id = (int)nonConstData["item"]["id"].asInteger();
+        item_id = static_cast<int>(nonConstData["item"]["id"].asInteger());
       }
 
       if (!nonConstData["item"]["type"].isNull())
@@ -133,18 +133,18 @@ void AnnounceBridge(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender, con
       if (!cachedThumb.empty())
       {
         std::string thumbRealPath = CSpecialProtocol::TranslatePath(cachedThumb);
-        [item setValue:[NSString stringWithUTF8String:thumbRealPath.c_str()] forKey:@"thumb"];
+        [item setValue:@(thumbRealPath.c_str()) forKey:@"thumb"];
       }
     }
     double duration = g_application.GetTotalTime();
     if (duration > 0)
-      [item setValue:[NSNumber numberWithDouble:duration] forKey:@"duration"];
-    [item setValue:[NSNumber numberWithDouble:g_application.GetTime()] forKey:@"elapsed"];
+      [item setValue:@(duration) forKey:@"duration"];
+    [item setValue:@(g_application.GetTime()) forKey:@"elapsed"];
     int current = CServiceBroker::GetPlaylistPlayer().GetCurrentSong();
     if (current >= 0)
     {
-      [item setValue:[NSNumber numberWithInt:current] forKey:@"current"];
-      [item setValue:[NSNumber numberWithInt:CServiceBroker::GetPlaylistPlayer().GetPlaylist(CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist()).size()] forKey:@"total"];
+      [item setValue:@(current) forKey:@"current"];
+      [item setValue:@(CServiceBroker::GetPlaylistPlayer().GetPlaylist(CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist()).size()) forKey:@"total"];
     }
     if (g_application.CurrentFileItem().HasMusicInfoTag())
     {
@@ -154,7 +154,7 @@ void AnnounceBridge(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender, con
         NSMutableArray *genreArray = [[NSMutableArray alloc] initWithCapacity:genre.size()];
         for(std::vector<std::string>::const_iterator it = genre.begin(); it != genre.end(); ++it)
         {
-          [genreArray addObject:[NSString stringWithUTF8String:it->c_str()]];
+          [genreArray addObject:@(it->c_str())];
         }
         [item setValue:genreArray forKey:@"genre"];
       }
@@ -167,7 +167,7 @@ void AnnounceBridge(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender, con
     NSDictionary *item = [dict valueForKey:@"item"];
     NSDictionary *player = [dict valueForKey:@"player"];
     [item setValue:[player valueForKey:@"speed"] forKey:@"speed"];
-    [item setValue:[NSNumber numberWithDouble:g_application.GetTime()] forKey:@"elapsed"];
+    [item setValue:@(g_application.GetTime()) forKey:@"elapsed"];
     //LOG(@"item: %@", item.description);
     [g_xbmcController performSelectorOnMainThread:@selector(OnSpeedChanged:) withObject:item  waitUntilDone:NO];
     if (msg == "OnPause")
