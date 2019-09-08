@@ -200,10 +200,10 @@ bool CDVDFileInfo::ExtractThumb(const CFileItem& fileItem,
     if (pVideoCodec)
     {
       int nTotalLen = pDemuxer->GetStreamLength();
-      int nSeekTo = (pos == -1) ? nTotalLen / 3 : pos;
+      int64_t nSeekTo = (pos == -1) ? nTotalLen / 3 : pos;
 
-      CLog::Log(LOGDEBUG,"%s - seeking to pos %dms (total: %dms) in %s", __FUNCTION__, nSeekTo, nTotalLen, redactPath.c_str());
-      if (pDemuxer->SeekTime(nSeekTo, true))
+      CLog::Log(LOGDEBUG, "%s - seeking to pos %lldms (total: %dms) in %s", __FUNCTION__, nSeekTo, nTotalLen, redactPath.c_str());
+      if (pDemuxer->SeekTime(static_cast<double>(nSeekTo), true))
       {
         CDVDVideoCodec::VCReturn iDecoderState = CDVDVideoCodec::VC_NONE;
         VideoPicture picture = {};
@@ -377,7 +377,7 @@ bool CDVDFileInfo::DemuxerToStreamDetails(std::shared_ptr<CDVDInputStream> pInpu
       CDemuxStreamVideo* vstream = static_cast<CDemuxStreamVideo*>(stream);
       p->m_iWidth = vstream->iWidth;
       p->m_iHeight = vstream->iHeight;
-      p->m_fAspect = vstream->fAspect;
+      p->m_fAspect = static_cast<float>(vstream->fAspect);
       if (p->m_fAspect == 0.0f)
         p->m_fAspect = (float)p->m_iWidth / p->m_iHeight;
       p->m_strCodec = pDemux->GetStreamCodecName(stream->demuxerId, stream->uniqueId);

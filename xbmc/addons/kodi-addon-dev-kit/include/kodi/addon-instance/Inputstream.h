@@ -32,7 +32,7 @@ class CInstanceInputStream;
 } // namespace kodi
 
 //Increment this level always if you add features which can lead to compile failures in the addon
-#define INPUTSTREAM_VERSION_LEVEL 1
+#define INPUTSTREAM_VERSION_LEVEL 2
 
 extern "C"
 {
@@ -61,6 +61,9 @@ extern "C"
 
       /// supports interface ITime
       SUPPORTS_ITIME = (1 << 5),
+
+      /// supports interface IChapter
+      SUPPORTS_ICHAPTER = (1 << 6),
     };
 
     /// set of supported capabilities
@@ -365,6 +368,13 @@ extern "C"
     int64_t(__cdecl* length_stream)(const AddonInstance_InputStream* instance);
     void(__cdecl* pause_stream)(const AddonInstance_InputStream* instance, double time);
     bool(__cdecl* is_real_time_stream)(const AddonInstance_InputStream* instance);
+
+    // IChapter
+    int(__cdecl* get_chapter)(const AddonInstance_InputStream* instance);
+    int(__cdecl* get_chapter_count)(const AddonInstance_InputStream* instance);
+    const char*(__cdecl* get_chapter_name)(const AddonInstance_InputStream* instance, int ch);
+    int64_t(__cdecl* get_chapter_pos)(const AddonInstance_InputStream* instance, int ch);
+    bool(__cdecl* seek_chapter)(const AddonInstance_InputStream* instance, int ch);
   } KodiToAddonFuncTable_InputStream;
 
   typedef struct AddonInstance_InputStream /* internal */
@@ -384,14 +394,14 @@ namespace addon
 class CInstanceInputStream : public IAddonInstance
 {
 public:
-  explicit CInstanceInputStream(KODI_HANDLE instance)
+  explicit CInstanceInputStream(KODI_HANDLE instance, const std::string& kodiVersion)
     : IAddonInstance(ADDON_INSTANCE_INPUTSTREAM)
   {
     if (CAddonBase::m_interface->globalSingleInstance != nullptr)
       throw std::logic_error("kodi::addon::CInstanceInputStream: Creation of multiple together "
                              "with single instance way is not allowed!");
 
-    SetAddonStruct(instance);
+    SetAddonStruct(instance, kodiVersion);
   }
 
   ~CInstanceInputStream() override = default;
@@ -527,6 +537,35 @@ public:
      */
   virtual bool PosTime(int ms) { return false; }
 
+  /*!
+  * Return currently selected chapter
+  * @remarks
+  */
+  virtual int GetChapter() { return -1; };
+
+  /*!
+  * Return number of available chapters
+  * @remarks
+  */
+  virtual int GetChapterCount() { return 0; };
+
+  /*!
+  * Return name of chapter # ch
+  * @remarks
+  */
+  virtual const char* GetChapterName(int ch) { return nullptr; };
+
+  /*!
+  * Return position if chapter # ch in milliseconds
+  * @remarks
+  */
+  virtual int64_t GetChapterPos(int ch) { return 0; };
+
+  /*!
+  * Seek to the beginning of chapter # ch
+  * @remarks
+  */
+  virtual bool SeekChapter(int ch) { return false; };
 
   /*!
      * Check if the backend support pausing the currently playing stream
@@ -617,11 +656,21 @@ public:
   }
 
 private:
-  void SetAddonStruct(KODI_HANDLE instance)
+  static int compareVersion(const int v1[3], const int v2[3])
+  {
+    for (unsigned i(0); i < 3; ++i)
+      if (v1[i] != v2[i])
+        return v1[i] - v2[i];
+    return 0;
+  }
+
+  void SetAddonStruct(KODI_HANDLE instance, const std::string& kodiVersion)
   {
     if (instance == nullptr)
       throw std::logic_error("kodi::addon::CInstanceInputStream: Creation with empty addon "
                              "structure not allowed, table must be given from Kodi!");
+    int api[3] = { 0, 0, 0 };
+    sscanf(kodiVersion.c_str(), "%d.%d.%d", &api[0], &api[1], &api[2]);
 
     m_instanceData = static_cast<AddonInstance_InputStream*>(instance);
     m_instanceData->toAddon.addonInstance = this;
@@ -645,7 +694,6 @@ private:
     m_instanceData->toAddon.get_time = ADDON_GetTime;
 
     m_instanceData->toAddon.get_times = ADDON_GetTimes;
-
     m_instanceData->toAddon.pos_time = ADDON_PosTime;
 
     m_instanceData->toAddon.can_pause_stream = ADDON_CanPauseStream;
@@ -657,6 +705,16 @@ private:
     m_instanceData->toAddon.length_stream = ADDON_LengthStream;
     m_instanceData->toAddon.pause_stream = ADDON_PauseStream;
     m_instanceData->toAddon.is_real_time_stream = ADDON_IsRealTimeStream;
+
+    int minChapterVersion[3] = { 2, 0, 10 };
+    if (compareVersion(api, minChapterVersion) >= 0)
+    {
+      m_instanceData->toAddon.get_chapter = ADDON_GetChapter;
+      m_instanceData->toAddon.get_chapter_count = ADDON_GetChapterCount;
+      m_instanceData->toAddon.get_chapter_name = ADDON_GetChapterName;
+      m_instanceData->toAddon.get_chapter_pos = ADDON_GetChapterPos;
+      m_instanceData->toAddon.seek_chapter = ADDON_SeekChapter;
+    }
   }
 
   inline static bool ADDON_Open(const AddonInstance_InputStream* instance, INPUTSTREAM* props)
@@ -763,6 +821,31 @@ private:
   inline static bool ADDON_PosTime(const AddonInstance_InputStream* instance, int ms)
   {
     return instance->toAddon.addonInstance->PosTime(ms);
+  }
+
+  inline static int ADDON_GetChapter(const AddonInstance_InputStream* instance)
+  {
+    return instance->toAddon.addonInstance->GetChapter();
+  }
+
+  inline static int ADDON_GetChapterCount(const AddonInstance_InputStream* instance)
+  {
+    return instance->toAddon.addonInstance->GetChapterCount();
+  }
+
+  inline static const char* ADDON_GetChapterName(const AddonInstance_InputStream* instance, int ch)
+  {
+    return instance->toAddon.addonInstance->GetChapterName(ch);
+  }
+
+  inline static int64_t ADDON_GetChapterPos(const AddonInstance_InputStream* instance, int ch)
+  {
+    return instance->toAddon.addonInstance->GetChapterPos(ch);
+  }
+
+  inline static bool ADDON_SeekChapter(const AddonInstance_InputStream* instance, int ch)
+  {
+    return instance->toAddon.addonInstance->SeekChapter(ch);
   }
 
   // Seekable (mandatory)
