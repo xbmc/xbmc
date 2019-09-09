@@ -41,6 +41,7 @@ const CWindowTranslator::WindowMapByName CWindowTranslator::WindowMappingByName 
     { "radiosearch"              , WINDOW_RADIO_SEARCH },
     { "gamecontrollers"          , WINDOW_DIALOG_GAME_CONTROLLERS },
     { "games"                    , WINDOW_GAMES },
+    { "pvrguidecontrols"         , WINDOW_DIALOG_PVR_GUIDE_CONTROLS },
     { "pvrguideinfo"             , WINDOW_DIALOG_PVR_GUIDE_INFO },
     { "pvrrecordinginfo"         , WINDOW_DIALOG_PVR_RECORDING_INFO },
     { "pvrradiordsinfo"          , WINDOW_DIALOG_PVR_RADIO_RDS_INFO },

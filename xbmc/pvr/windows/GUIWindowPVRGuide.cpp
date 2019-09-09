@@ -11,10 +11,12 @@
 #include "FileItem.h"
 #include "GUIUserMessages.h"
 #include "ServiceBroker.h"
+#include "addons/Skin.h"
 #include "dialogs/GUIDialogBusy.h"
 #include "dialogs/GUIDialogContextMenu.h"
 #include "dialogs/GUIDialogNumeric.h"
 #include "guilib/GUIMessage.h"
+#include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "input/actions/Action.h"
 #include "input/actions/ActionIDs.h"
@@ -36,6 +38,7 @@
 #include "threads/SingleLock.h"
 #include "view/GUIViewState.h"
 
+#include <functional>
 #include <memory>
 #include <utility>
 #include <vector>
@@ -120,6 +123,12 @@ void CGUIWindowPVRGuideBase::OnDeinitWindow(int nextWindowID)
     }
   }
 
+  CGUIDialog* dialog = CServiceBroker::GetGUI()->GetWindowManager().GetDialog(WINDOW_DIALOG_PVR_GUIDE_CONTROLS);
+  if (dialog && dialog->IsDialogRunning())
+  {
+    dialog->Close();
+  }
+
   CGUIWindowPVRBase::OnDeinitWindow(nextWindowID);
 }
 
@@ -171,12 +180,9 @@ void CGUIWindowPVRGuideBase::SetInvalid()
 
 void CGUIWindowPVRGuideBase::GetContextButtons(int itemNumber, CContextButtons& buttons)
 {
-  buttons.Add(CONTEXT_BUTTON_BEGIN, 19063); /* Go to begin */
-  buttons.Add(CONTEXT_BUTTON_NOW,   19070); /* Go to now */
-  buttons.Add(CONTEXT_BUTTON_DATE,  19288); /* Go to date */
-  buttons.Add(CONTEXT_BUTTON_END,   19064); /* Go to end */
-
   CGUIWindowPVRBase::GetContextButtons(itemNumber, buttons);
+
+  buttons.Add(CONTEXT_BUTTON_NAVIGATE, 19326); // Navigate...
 }
 
 void CGUIWindowPVRGuideBase::UpdateSelectedItemPath()
@@ -592,28 +598,93 @@ bool CGUIWindowPVRGuideBase::OnMessage(CGUIMessage& message)
 
 bool CGUIWindowPVRGuideBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 {
-  switch (button)
-  {
-    case CONTEXT_BUTTON_BEGIN:
-      return OnContextButtonBegin();
-
-    case CONTEXT_BUTTON_NOW:
-      return OnContextButtonNow();
-
-    case CONTEXT_BUTTON_DATE:
-      return OnContextButtonDate();
-
-    case CONTEXT_BUTTON_END:
-      return OnContextButtonEnd();
-
-    default:
-      break;
-  }
+  if (OnContextButtonNavigate(button))
+    return true;
 
   if (itemNumber < 0 || itemNumber >= m_vecItems->Size())
     return false;
 
   return CGUIMediaWindow::OnContextButton(itemNumber, button);
+}
+
+namespace
+{
+
+template<typename A>
+class CContextMenuFunctions : public CContextButtons
+{
+public:
+  explicit CContextMenuFunctions(A* instance) : m_instance(instance) {}
+
+  void Add(bool (A::*function)(), unsigned int resId)
+  {
+    CContextButtons::Add(size(), resId);
+    m_functions.emplace_back(std::bind(function, m_instance));
+  }
+
+  bool Call(int idx)
+  {
+    if (idx < 0 || idx >= static_cast<int>(m_functions.size()))
+      return false;
+
+    return m_functions[idx]();
+  }
+
+private:
+  A* m_instance = nullptr;
+  std::vector<std::function<bool()>> m_functions;
+};
+
+} // unnamed namespace
+
+bool CGUIWindowPVRGuideBase::OnContextButtonNavigate(CONTEXT_BUTTON button)
+{
+  bool bReturn = false;
+
+  if (button == CONTEXT_BUTTON_NAVIGATE)
+  {
+    if (g_SkinInfo->HasSkinFile("DialogPVRGuideControls.xml"))
+    {
+      // use controls dialog
+      CGUIDialog* dialog = CServiceBroker::GetGUI()->GetWindowManager().GetDialog(WINDOW_DIALOG_PVR_GUIDE_CONTROLS);
+      if (dialog && !dialog->IsDialogRunning())
+      {
+        dialog->Open();
+      }
+    }
+    else
+    {
+      // use context menu
+      CContextMenuFunctions<CGUIWindowPVRGuideBase> buttons(this);
+      buttons.Add(&CGUIWindowPVRGuideBase::GotoBegin, 19063); // First programme
+      buttons.Add(&CGUIWindowPVRGuideBase::Go12HoursBack, 19317); // 12 hours back
+      buttons.Add(&CGUIWindowPVRGuideBase::GotoNow, 19070); // Current programme
+      buttons.Add(&CGUIWindowPVRGuideBase::Go12HoursForward, 19318); // 12 hours forward
+      buttons.Add(&CGUIWindowPVRGuideBase::GotoEnd, 19064); // Last programme
+      buttons.Add(&CGUIWindowPVRGuideBase::OpenDateSelectionDialog, 19288); // Date selector
+      buttons.Add(&CGUIWindowPVRGuideBase::GotoFirstChannel, 19322); // First channel
+      if (CServiceBroker::GetPVRManager().IsPlayingTV() || CServiceBroker::GetPVRManager().IsPlayingRadio())
+        buttons.Add(&CGUIWindowPVRGuideBase::GotoPlayingChannel, 19323); // Playing channel
+      buttons.Add(&CGUIWindowPVRGuideBase::GotoLastChannel, 19324); // Last channel
+      buttons.Add(&CGUIWindowPVRBase::ActivatePreviousChannelGroup, 19319); // Previous group
+      buttons.Add(&CGUIWindowPVRBase::ActivateNextChannelGroup, 19320); // Next group
+      buttons.Add(&CGUIWindowPVRBase::OpenChannelGroupSelectionDialog, 19321); // Group selector
+
+      int buttonIdx = 0;
+      int lastButtonIdx = 2; // initially select "Current programme"
+
+      // loop until canceled
+      while (buttonIdx >= 0)
+      {
+        buttonIdx = CGUIDialogContextMenu::Show(buttons, lastButtonIdx);
+        lastButtonIdx = buttonIdx;
+        buttons.Call(buttonIdx);
+      }
+    }
+    bReturn = true;
+  }
+
+  return bReturn;
 }
 
 bool CGUIWindowPVRGuideBase::RefreshTimelineItems()
@@ -703,25 +774,25 @@ bool CGUIWindowPVRGuideBase::RefreshTimelineItems()
   return false;
 }
 
-bool CGUIWindowPVRGuideBase::OnContextButtonBegin()
+bool CGUIWindowPVRGuideBase::GotoBegin()
 {
   GetGridControl()->GoToBegin();
   return true;
 }
 
-bool CGUIWindowPVRGuideBase::OnContextButtonEnd()
+bool CGUIWindowPVRGuideBase::GotoEnd()
 {
   GetGridControl()->GoToEnd();
   return true;
 }
 
-bool CGUIWindowPVRGuideBase::OnContextButtonNow()
+bool CGUIWindowPVRGuideBase::GotoNow()
 {
   GetGridControl()->GoToNow();
   return true;
 }
 
-bool CGUIWindowPVRGuideBase::OnContextButtonDate()
+bool CGUIWindowPVRGuideBase::OpenDateSelectionDialog()
 {
   bool bReturn = false;
 
@@ -736,6 +807,46 @@ bool CGUIWindowPVRGuideBase::OnContextButtonDate()
   }
 
   return bReturn;
+}
+
+bool CGUIWindowPVRGuideBase::Go12HoursBack()
+{
+  return GotoDate(-12);
+}
+
+bool CGUIWindowPVRGuideBase::Go12HoursForward()
+{
+  return GotoDate(+12);
+}
+
+bool CGUIWindowPVRGuideBase::GotoDate(int deltaHours)
+{
+  CGUIEPGGridContainer* epgGridContainer = GetGridControl();
+  epgGridContainer->GoToDate(epgGridContainer->GetSelectedDate() + CDateTimeSpan(0, deltaHours, 0, 0));
+  return true;
+}
+
+bool CGUIWindowPVRGuideBase::GotoFirstChannel()
+{
+  GetGridControl()->GoToFirstChannel();
+  return true;
+}
+
+bool CGUIWindowPVRGuideBase::GotoLastChannel()
+{
+  GetGridControl()->GoToLastChannel();
+  return true;
+}
+
+bool CGUIWindowPVRGuideBase::GotoPlayingChannel()
+{
+  const std::shared_ptr<CPVRChannel> channel = CServiceBroker::GetPVRManager().GetPlayingChannel();
+  if (channel)
+  {
+    GetGridControl()->SetChannel(channel);
+    return true;
+  }
+  return false;
 }
 
 void CGUIWindowPVRGuideBase::OnInputDone()

@@ -1655,6 +1655,19 @@ void CGUIEPGGridContainer::GoToDate(const CDateTime& date)
   SetBlock(offset);
 }
 
+void CGUIEPGGridContainer::GoToFirstChannel()
+{
+  GoToChannel(0);
+}
+
+void CGUIEPGGridContainer::GoToLastChannel()
+{
+  if (m_gridModel->ChannelItemsSize())
+    GoToChannel(m_gridModel->ChannelItemsSize() - 1);
+  else
+    GoToChannel(0);
+}
+
 void CGUIEPGGridContainer::GoToTop()
 {
   if (m_orientation == VERTICAL)

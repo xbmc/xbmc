@@ -87,6 +87,10 @@ namespace PVR
     void GoToEnd();
     void GoToNow();
     void GoToDate(const CDateTime& date);
+
+    void GoToFirstChannel();
+    void GoToLastChannel();
+
     void GoToTop();
     void GoToBottom();
     void GoToMostLeft();

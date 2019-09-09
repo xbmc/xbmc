@@ -103,23 +103,24 @@
 
 /* PVR related include Files */
 #include "pvr/PVRManager.h"
-#include "pvr/windows/GUIWindowPVRChannels.h"
-#include "pvr/windows/GUIWindowPVRRecordings.h"
-#include "pvr/windows/GUIWindowPVRGuide.h"
-#include "pvr/windows/GUIWindowPVRTimers.h"
-#include "pvr/windows/GUIWindowPVRTimerRules.h"
-#include "pvr/windows/GUIWindowPVRSearch.h"
+#include "pvr/dialogs/GUIDialogPVRChannelGuide.h"
 #include "pvr/dialogs/GUIDialogPVRChannelManager.h"
 #include "pvr/dialogs/GUIDialogPVRChannelsOSD.h"
 #include "pvr/dialogs/GUIDialogPVRClientPriorities.h"
 #include "pvr/dialogs/GUIDialogPVRGroupManager.h"
+#include "pvr/dialogs/GUIDialogPVRGuideControls.h"
 #include "pvr/dialogs/GUIDialogPVRGuideInfo.h"
-#include "pvr/dialogs/GUIDialogPVRChannelGuide.h"
 #include "pvr/dialogs/GUIDialogPVRGuideSearch.h"
 #include "pvr/dialogs/GUIDialogPVRRadioRDSInfo.h"
 #include "pvr/dialogs/GUIDialogPVRRecordingInfo.h"
 #include "pvr/dialogs/GUIDialogPVRRecordingSettings.h"
 #include "pvr/dialogs/GUIDialogPVRTimerSettings.h"
+#include "pvr/windows/GUIWindowPVRChannels.h"
+#include "pvr/windows/GUIWindowPVRGuide.h"
+#include "pvr/windows/GUIWindowPVRRecordings.h"
+#include "pvr/windows/GUIWindowPVRSearch.h"
+#include "pvr/windows/GUIWindowPVRTimerRules.h"
+#include "pvr/windows/GUIWindowPVRTimers.h"
 
 #include "video/dialogs/GUIDialogTeletext.h"
 #include "dialogs/GUIDialogSlider.h"
@@ -270,6 +271,7 @@ void CGUIWindowManager::CreateWindows()
   Add(new CGUIDialogPVRChannelGuide);
   Add(new CGUIDialogPVRRecordingSettings);
   Add(new CGUIDialogPVRClientPriorities);
+  Add(new CGUIDialogPVRGuideControls);
 
   Add(new CGUIDialogSelect);
   Add(new CGUIDialogMusicInfo);
@@ -380,6 +382,7 @@ bool CGUIWindowManager::DestroyWindows()
     DestroyWindow(WINDOW_DIALOG_OSD_TELETEXT);
     DestroyWindow(WINDOW_DIALOG_PVR_RECORDING_SETTING);
     DestroyWindow(WINDOW_DIALOG_PVR_CLIENT_PRIORITIES);
+    DestroyWindow(WINDOW_DIALOG_PVR_GUIDE_CONTROLS);
 
     DestroyWindow(WINDOW_DIALOG_TEXT_VIEWER);
     DestroyWindow(WINDOW_DIALOG_PLAY_EJECT);

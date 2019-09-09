@@ -98,7 +98,7 @@ void CGUIDialogContextMenu::OnInitWindow()
 {
   m_clickedButton = -1;
   // set initial control focus
-  m_lastControlID = BUTTON_START;
+  m_lastControlID = m_initiallyFocusedButtonIdx + BUTTON_START;
   CGUIDialog::OnInitWindow();
 }
 
@@ -574,6 +574,7 @@ void CGUIDialogContextMenu::OnDeinitWindow(int nextWindowID)
   }
 
   m_buttons.clear();
+  m_initiallyFocusedButtonIdx = 0;
   CGUIDialog::OnDeinitWindow(nextWindowID);
 }
 
@@ -624,7 +625,7 @@ void CGUIDialogContextMenu::SwitchMedia(const std::string& strType, const std::s
   }
 }
 
-int CGUIDialogContextMenu::Show(const CContextButtons& choices)
+int CGUIDialogContextMenu::Show(const CContextButtons& choices, int focusedButtonIdx /* = 0 */)
 {
   auto dialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogContextMenu>(WINDOW_DIALOG_CONTEXT_MENU);
   if (!dialog)
@@ -635,6 +636,7 @@ int CGUIDialogContextMenu::Show(const CContextButtons& choices)
   dialog->SetInitialVisibility();
   dialog->SetupButtons();
   dialog->PositionAtCurrentFocus();
+  dialog->m_initiallyFocusedButtonIdx = focusedButtonIdx;
   dialog->Open();
   return dialog->m_clickedButton;
 }

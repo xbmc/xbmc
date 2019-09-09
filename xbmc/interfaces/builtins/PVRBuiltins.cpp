@@ -12,13 +12,18 @@
 #include "GUIInfoManager.h"
 #include "ServiceBroker.h"
 #include "guilib/GUIComponent.h"
+#include "guilib/GUIWindowManager.h"
 #include "guilib/guiinfo/GUIInfoLabels.h"
 #include "pvr/PVRGUIActions.h"
 #include "pvr/PVRManager.h"
+#include "pvr/windows/GUIWindowPVRGuide.h"
 #include "utils/log.h"
 
 #include <algorithm>
 #include <cstdlib>
+#include <regex>
+
+using namespace PVR;
 
 /*! \brief Search for missing channel icons
  *   \param params (ignored)
@@ -74,6 +79,95 @@ static int SeekPercentage(const std::vector<std::string>& params)
   return 0;
 }
 
+namespace
+{
+/*! \brief Control PVR Guide window's EPG grid.
+ *  \param params The parameters
+ *  \details params[0] = Control to execute.
+ */
+int EpgGridControl(const std::vector<std::string>& params)
+{
+  if (params.empty())
+  {
+    CLog::Log(LOGERROR, "EpgGridControl(n) - No argument given");
+    return 0;
+  }
+
+  int activeWindow = CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow();
+  if (activeWindow != WINDOW_TV_GUIDE && activeWindow != WINDOW_RADIO_GUIDE)
+  {
+    CLog::Log(LOGERROR, "EpgGridControl(n) - Guide window not active");
+    return 0;
+  }
+
+  CGUIWindowPVRGuideBase* guideWindow = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIWindowPVRGuideBase>(activeWindow);
+  if (!guideWindow)
+  {
+    CLog::Log(LOGERROR, "EpgGridControl(n) - Unable to get Guide window instance");
+    return 0;
+  }
+
+  std::string param(params[0]);
+  StringUtils::ToLower(param);
+
+  if (param == "firstprogramme")
+  {
+    guideWindow->GotoBegin();
+  }
+  else if (param == "lastprogramme")
+  {
+    guideWindow->GotoEnd();
+  }
+  else if (param == "currentprogramme")
+  {
+    guideWindow->GotoNow();
+  }
+  else if (param == "selectdate")
+  {
+    guideWindow->OpenDateSelectionDialog();
+  }
+  else if (StringUtils::StartsWithNoCase(param, "+") || StringUtils::StartsWithNoCase(param, "-"))
+  {
+    // jump back/forward n hours
+    if (std::regex_match(param, std::regex("[(-|+)|][0-9]+")))
+    {
+      guideWindow->GotoDate(std::atoi(param.c_str()));
+    }
+    else
+    {
+      CLog::Log(LOGERROR, "EpgGridControl(n) - invalid argument");
+    }
+  }
+  else if (param == "firstchannel")
+  {
+    guideWindow->GotoFirstChannel();
+  }
+  else if (param == "playingchannel")
+  {
+    guideWindow->GotoPlayingChannel();
+  }
+  else if (param == "lastchannel")
+  {
+    guideWindow->GotoLastChannel();
+  }
+  else if (param == "previousgroup")
+  {
+    guideWindow->ActivatePreviousChannelGroup();
+  }
+  else if (param == "nextgroup")
+  {
+    guideWindow->ActivateNextChannelGroup();
+  }
+  else if (param == "selectgroup")
+  {
+    guideWindow->OpenChannelGroupSelectionDialog();
+  }
+
+  return 0;
+}
+
+} // unnamed namespace
+
 // Note: For new Texts with comma add a "\" before!!! Is used for table text.
 //
 /// \page page_List_of_built_in_functions
@@ -100,6 +194,11 @@ static int SeekPercentage(const std::vector<std::string>& params)
 ///     ,
 ///     Performs a seek to the given percentage in timeshift buffer\, if timeshifting is supported
 ///   }
+///   \table_row2_l{
+///     <b>`PVR.EpgGridControl`</b>
+///     ,
+///     Control PVR Guide window's EPG grid
+///   }
 /// \table_end
 ///
 
@@ -109,5 +208,6 @@ CBuiltins::CommandMap CPVRBuiltins::GetOperations() const
            {"pvr.searchmissingchannelicons",  {"Search for missing channel icons", 0, SearchMissingIcons}},
            {"pvr.togglerecordplayingchannel", {"Toggle recording on playing channel", 0, ToggleRecordPlayingChannel}},
            {"pvr.seekpercentage",             {"Performs a seek to the given percentage in timeshift buffer", 1, SeekPercentage}},
+           {"pvr.epggridcontrol",             {"Control PVR Guide window's EPG grid", 1, EpgGridControl}},
          };
 }

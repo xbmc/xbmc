@@ -79,6 +79,10 @@ namespace PVR
      */
     bool DoRefresh(void) { return Refresh(true); }
 
+    bool ActivatePreviousChannelGroup();
+    bool ActivateNextChannelGroup();
+    bool OpenChannelGroupSelectionDialog();
+
   protected:
     CGUIWindowPVRBase(bool bRadio, int id, const std::string& xmlFile);
 
@@ -116,8 +120,6 @@ namespace PVR
     std::atomic_bool m_bUpdating = {false};
 
   private:
-    bool OpenChannelGroupSelectionDialog(void);
-
     /*!
      * @brief Show or update the progress dialog.
      * @param strText The current status.
