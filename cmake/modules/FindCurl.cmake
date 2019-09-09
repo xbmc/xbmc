@@ -52,10 +52,6 @@ if(CURL_FOUND)
     set_target_properties(Curl::Curl PROPERTIES
                                      IMPORTED_LOCATION "${CURL_LIBRARY}"
                                      INTERFACE_INCLUDE_DIRECTORIES "${CURL_INCLUDE_DIR}")
-    if(HAS_CURL_STATIC)
-        set_target_properties(Curl::Curl PROPERTIES
-                                         INTERFACE_COMPILE_DEFINITIONS HAS_CURL_STATIC=1)
-    endif()
   endif()
 endif()
 

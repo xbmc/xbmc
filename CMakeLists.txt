@@ -128,7 +128,7 @@ set(required_deps ASS
                   Iconv
                   LibDvd
                   Lzo2
-                  OpenSSL>=1.0.2
+                  OpenSSL>=1.1.0
                   PCRE
                   RapidJSON
                   Sqlite3

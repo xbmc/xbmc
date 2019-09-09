@@ -112,17 +112,6 @@ const char* DllLibCurl::easy_strerror(CURLcode code)
   return curl_easy_strerror(code);
 }
 
-#if defined(HAS_CURL_STATIC)
-void DllLibCurl::crypto_set_id_callback(unsigned long (*cb)())
-{
-  CRYPTO_set_id_callback(cb);
-}
-void DllLibCurl::crypto_set_locking_callback(void (*cb)(int, int, const char*, int))
-{
-  CRYPTO_set_locking_callback(cb);
-}
-#endif
-
 DllLibCurlGlobal::DllLibCurlGlobal()
 {
   /* we handle this ourself */
