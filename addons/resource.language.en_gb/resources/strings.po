@@ -19061,7 +19061,7 @@ msgstr ""
 #. Description of setting with label #13436 "Use display HDR capabilities"
 #: system/settings/settings.xml
 msgctxt "#36299"
-msgid "Switch display into HDR mode if media with HDR information is played.\nIf disabled, HDR information are applied using kodi's internal HDR path"
+msgid "Switch display into HDR mode if media with HDR information is played.\nIf disabled, HDR information are applied using Kodi's internal HDR path."
 msgstr ""
 
 #empty strings from id 36300 to 36301
