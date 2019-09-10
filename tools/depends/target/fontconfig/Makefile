@@ -1,15 +1,14 @@
 include ../../Makefile.include
-DEPS= ../../Makefile.include lconv.patch fix-aarch64_atomics.patch Makefile
+DEPS= ../../Makefile.include 01-disable-test.patch lconv.patch fix-aarch64_atomics.patch Makefile
 
 # lib name, version
 LIBNAME=fontconfig
-VERSION=2.12.4
+VERSION=2.13.1
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.bz2
 
 # configuration settings
 CONFIGURE=./configure --prefix=$(PREFIX) \
-  --with-freetype-config=$(PREFIX)/bin/freetype-config \
   --disable-libxml2 --disable-docs --with-arch=$(PLATFORM) --disable-shared
 
 LIBDYLIB=$(PLATFORM)/src/.libs/lib$(LIBNAME).a
@@ -22,6 +21,7 @@ $(TARBALLS_LOCATION)/$(ARCHIVE):
 $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 	rm -rf $(PLATFORM)/*; mkdir -p $(PLATFORM)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
+	cd $(PLATFORM); patch -p1 -i ../01-disable-test.patch
 	cd $(PLATFORM); patch -p1 -i ../lconv.patch
 	cd $(PLATFORM); patch -p1 -i ../fix-aarch64_atomics.patch
 	cd $(PLATFORM); $(AUTORECONF) -vif
@@ -40,4 +40,3 @@ clean:
 
 distclean::
 	rm -rf $(PLATFORM) .installed-$(PLATFORM)
-

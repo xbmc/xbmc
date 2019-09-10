@@ -1,6 +1,6 @@
 --- a/src/fcxml.c
 +++ b/src/fcxml.c
-@@ -1352,6 +1352,7 @@
+@@ -1330,6 +1330,7 @@
  static double
  FcStrtod (char *s, char **end)
  {
@@ -8,7 +8,7 @@
  #ifndef __BIONIC__
      struct lconv    *locale_data;
  #endif
-@@ -1409,6 +1410,7 @@
+@@ -1387,6 +1388,7 @@
      else
  	v = strtod (s, end);
      return v;
