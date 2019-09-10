@@ -24,9 +24,6 @@ foreach(loop_var ${ADDON_XML_IN_FILE})
   string(REPLACE ${CORE_SOURCE_DIR} ${CMAKE_BINARY_DIR} dest_dir ${source_dir})
   file(MAKE_DIRECTORY ${dest_dir})
 
-  # copy everything except addon.xml.in to build folder
-  file(COPY "${source_dir}" DESTINATION "${CMAKE_BINARY_DIR}/addons" REGEX ".xml.in" EXCLUDE)
-
   configure_file(${source_dir}/addon.xml.in ${dest_dir}/addon.xml @ONLY)
 
   unset(source_dir)
