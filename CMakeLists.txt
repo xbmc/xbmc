@@ -93,12 +93,6 @@ if (NOT PLATFORMDEFS_DIR STREQUAL "")
 endif()
 
 find_package(PkgConfig)
-if(KODI_DEPENDSBUILD)
-  if(PKG_CONFIG_EXECUTABLE)
-    set(PKG_CONFIG_FOUND TRUE)
-  endif()
-endif()
-
 find_package(Threads REQUIRED QUIET)
 list(APPEND DEPLIBS ${CMAKE_THREAD_LIBS_INIT})
 
