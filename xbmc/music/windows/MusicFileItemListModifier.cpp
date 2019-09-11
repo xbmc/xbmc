@@ -58,9 +58,17 @@ void CMusicFileItemListModifier::AddQueuingFolder(CFileItemList& items)
 
   auto nodeChildType = directoryNode->GetChildType();
 
-  // No need for "all" when overview node and child node albums or artists
+  // No need for "*all" when overview node and child node is "albums" or "artists"
+  // without options (hence all albums or artists unfiltered).
   if (directoryNode->GetType() == NODE_TYPE_OVERVIEW &&
-     (nodeChildType == NODE_TYPE_ARTIST || nodeChildType == NODE_TYPE_ALBUM))
+      (nodeChildType == NODE_TYPE_ARTIST || nodeChildType == NODE_TYPE_ALBUM) &&
+      musicUrl.GetOptions().empty())
+    return;
+  // Smart playlist rules on parent node do not get applied to child nodes so no "*all"
+  // ! @Todo: Remove this allowing "*all" once rules do get applied to child nodes.
+  if (directoryNode->GetType() == NODE_TYPE_OVERVIEW &&
+      (nodeChildType == NODE_TYPE_ARTIST || nodeChildType == NODE_TYPE_ALBUM) &&
+      musicUrl.HasOption("xsp"))
     return;
 
   switch (nodeChildType)

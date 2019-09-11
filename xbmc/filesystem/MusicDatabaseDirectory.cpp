@@ -49,7 +49,8 @@ bool CMusicDatabaseDirectory::GetDirectory(const CURL& url, CFileItemList &items
         item->SetArt("icon", strImage);
     }
   }
-  items.SetLabel(pNode->GetLocalizedName());
+  if (items.GetLabel().empty())
+    items.SetLabel(pNode->GetLocalizedName());
 
   return bResult;
 }
