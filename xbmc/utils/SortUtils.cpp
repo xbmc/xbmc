@@ -179,6 +179,11 @@ std::string ByTrackNumber(SortAttribute attributes, const SortItem &values)
   return StringUtils::Format("%i", (int)values.at(FieldTrackNumber).asInteger());
 }
 
+std::string ByTotalDiscs(SortAttribute attributes, const SortItem& values)
+{
+  return StringUtils::Format("%d %s", static_cast<int>(values.at(FieldTotalDiscs).asInteger()),
+                             ByLabel(attributes, values));
+}
 std::string ByTime(SortAttribute attributes, const SortItem &values)
 {
   std::string label;
@@ -612,6 +617,7 @@ std::map<SortBy, SortUtils::SortPreparator> fillPreparators()
   preparators[SortByInstallDate]              = ByInstallDate;
   preparators[SortByLastUpdated]              = ByLastUpdated;
   preparators[SortByLastUsed]                 = ByLastUsed;
+  preparators[SortByTotalDiscs] = ByTotalDiscs;
 
   return preparators;
 }
@@ -698,6 +704,7 @@ std::map<SortBy, Fields> fillSortingFields()
   sortingFields[SortByInstallDate].insert(FieldInstallDate);
   sortingFields[SortByLastUpdated].insert(FieldLastUpdated);
   sortingFields[SortByLastUsed].insert(FieldLastUsed);
+  sortingFields[SortByTotalDiscs].insert(FieldTotalDiscs);
   sortingFields.insert(std::pair<SortBy, Fields>(SortByRandom, Fields()));
 
   return sortingFields;
@@ -915,6 +922,8 @@ const sort_map table[] = {
   { SortByChannel,                  SORT_METHOD_CLIENT_CHANNEL_ORDER,         SortAttributeNone,          19315 },
   { SortByDateTaken,                SORT_METHOD_DATE_TAKEN,                   SortAttributeIgnoreFolders, 577 },
   { SortByNone,                     SORT_METHOD_NONE,                         SortAttributeNone,          16018 },
+  { SortByTotalDiscs, SORT_METHOD_TOTAL_DISCS, SortAttributeNone, 38077 },
+
   // the following have no corresponding SORT_METHOD_*
   { SortByAlbumType,                SORT_METHOD_NONE,                         SortAttributeNone,          564 },
   { SortByVotes,                    SORT_METHOD_NONE,                         SortAttributeNone,          205 },
@@ -1063,6 +1072,7 @@ const std::map<std::string, SortBy> sortMethods = {
   { "installdate",      SortByInstallDate },
   { "lastupdated",      SortByLastUpdated },
   { "lastused",         SortByLastUsed },
+  { "totaldiscs",       SortByTotalDiscs },
 };
 
 SortBy SortUtils::SortMethodFromString(const std::string& sortMethod)

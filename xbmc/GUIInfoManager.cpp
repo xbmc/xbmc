@@ -2531,6 +2531,14 @@ const infomap musicpartymode[] = {{ "enabled",           MUSICPM_ENABLED },
 ///     @skinning_v17 **[New Infolabel]** \link MusicPlayer_DBID `MusicPlayer.DBID`\endlink
 ///     <p>
 ///   }
+///   \table_row3{   <b>`MusicPlayer.DiscTitle`</b>,
+///                  \anchor MusicPlayer_DiscTitle
+///                  _string_,
+///     @return The title of the disc currently playing.
+///     <p><hr>
+///     @skinning_v19 **[New Infolabel]** \link MusicPlayer_DiscTitle `MusicPlayer.DiscTitle`\endlink
+///     <p>
+///   }
 /// \table_end
 ///
 /// -----------------------------------------------------------------------------
@@ -2551,6 +2559,7 @@ const infomap musicplayer[] =    {{ "title",            MUSICPLAYER_TITLE },
                                   { "samplerate",       MUSICPLAYER_SAMPLERATE },
                                   { "codec",            MUSICPLAYER_CODEC },
                                   { "discnumber",       MUSICPLAYER_DISC_NUMBER },
+                                  { "disctitle",        MUSICPLAYER_DISC_TITLE },
                                   { "rating",           MUSICPLAYER_RATING },
                                   { "ratingandvotes",   MUSICPLAYER_RATING_AND_VOTES },
                                   { "userrating",       MUSICPLAYER_USER_RATING },
@@ -5736,6 +5745,30 @@ const infomap container_str[]  = {{ "property",         CONTAINER_PROPERTY },
 ///     @skinning_v19 **[New Infolabel]** \link ListItem_IsNew `ListItem.IsNew`\endlink
 ///     <p>
 ///   }
+///   \table_row3{   <b>`ListItem.DiscTitle`</b>,
+///                  \anchor ListItem_DiscTitle
+///                  _string_,
+///     @return The disc title of the currently selected album or song.
+///     <p><hr>
+///     @skinning_v19 **[New Infolabel]** \link ListItem_DiscTitle `ListItem.DiscTitle`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`ListItem.IsBoxset`</b>,
+///                  \anchor ListItem_IsBoxset
+///                  _boolean_,
+///     @return **True** if the item is part of a boxset album.
+///     <p><hr>
+///     @skinning_v19 **[New Infolabel]** \link ListItem_IsBoxset `ListItem.IsBoxset`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`ListItem.TotalDiscs`</b>,
+///                  \anchor ListItem_TotalDiscs
+///                  _boolean_,
+///     @return The total number of discs belonging to an album.
+///     <p><hr>
+///     @skinning_v19 **[New Infolabel]** \link ListItem_TotalDiscs `ListItem.TotalDiscs`\endlink
+///     <p>
+///   }
 /// \table_end
 ///
 /// -----------------------------------------------------------------------------
@@ -5755,6 +5788,7 @@ const infomap listitem_labels[]= {{ "thumb",            LISTITEM_THUMB },
                                   { "contributors",     LISTITEM_CONTRIBUTORS },
                                   { "contributorandrole", LISTITEM_CONTRIBUTOR_AND_ROLE },
                                   { "director",         LISTITEM_DIRECTOR },
+                                  { "disctitle",        LISTITEM_DISC_TITLE },
                                   { "filename",         LISTITEM_FILENAME },
                                   { "filenameandpath",  LISTITEM_FILENAME_AND_PATH },
                                   { "fileextension",    LISTITEM_FILE_EXTENSION },
@@ -5929,6 +5963,8 @@ const infomap listitem_labels[]= {{ "thumb",            LISTITEM_THUMB },
                                   { "parentalrating",   LISTITEM_PARENTAL_RATING },
                                   { "currentitem",      LISTITEM_CURRENTITEM },
                                   { "isnew",            LISTITEM_IS_NEW },
+                                  { "isboxset",         LISTITEM_IS_BOXSET },
+                                  { "totaldiscs",       LISTITEM_TOTALDISCS },
 };
 
 /// \page modules__infolabels_boolean_conditions
@@ -8475,6 +8511,14 @@ const infomap slideshow[] =      {{ "ispaused",               SLIDESHOW_ISPAUSED
 ///     @skinning_v17 **[New Boolean Condition]** \link Library_HasContent_Role_Mixer `Library.HasContent(Role.Mixer)`\endlink
 ///     <p>
 ///   }
+///   \table_row3{   <b>`Library.HasContent(boxsets)`</b>,
+///                  \anchor Library_HasContent_Boxsets
+///                  _boolean_,
+///     @return **True** if there are albums in the library which are boxsets.
+///     <p><hr>
+///     @skinning_v19 **[New Boolean Condition]** \link Library_HasContent_Boxsets `Library.HasContent(boxsets)`\endlink
+///     <p>
+///   }
 /// \table_end
 ///
 /// -----------------------------------------------------------------------------
@@ -8889,6 +8933,8 @@ int CGUIInfoManager::TranslateSingleString(const std::string &strCondition, bool
           return LIBRARY_HAS_SINGLES;
         else if (cat == "compilations")
           return LIBRARY_HAS_COMPILATIONS;
+        else if (cat == "boxsets")
+          return LIBRARY_HAS_BOXSETS;
         else if (cat == "role" && prop.num_params() > 1)
           return AddMultiInfo(CGUIInfo(LIBRARY_HAS_ROLE, prop.param(1), 0));
       }

@@ -46,10 +46,12 @@ public:
   int GetTrackNumber() const;
   int GetDiscNumber() const;
   int GetTrackAndDiscNumber() const;
+  int GetTotalDiscs() const;
   int GetDuration() const;  // may be set even if Loaded() returns false
   int GetYear() const;
   int GetDatabaseId() const;
   const std::string &GetType() const;
+  const std::string& GetDiscSubtitle() const;
 
   void GetReleaseDate(SYSTEMTIME& dateTime) const;
   std::string GetYearString() const;
@@ -69,6 +71,7 @@ public:
   const CDateTime& GetLastPlayed() const;
   const CDateTime& GetDateAdded() const;
   bool  GetCompilation() const;
+  bool GetBoxset() const;
   float GetRating() const;
   int GetUserrating() const;
   int GetVotes() const;
@@ -127,10 +130,13 @@ public:
   void SetDateAdded(const std::string& strDateAdded);
   void SetDateAdded(const CDateTime& strDateAdded);
   void SetCompilation(bool compilation);
+  void SetBoxset(bool boxset);
   void SetCoverArtInfo(size_t size, const std::string &mimeType);
   void SetReplayGain(const ReplayGain& aGain);
   void SetAlbumReleaseType(CAlbum::ReleaseType releaseType);
   void SetType(const MediaType mediaType);
+  void SetDiscSubtitle(const std::string& strDiscSubtitle);
+  void SetTotalDiscs(int iDiscTotal);
 
   /*! \brief Append a unique artist to the artist list
    Checks if we have this artist already added, and if not adds it to the songs artist list.
@@ -198,6 +204,7 @@ protected:
   std::string m_strRecordLabel;
   std::string m_strLyrics;
   std::string m_cuesheet;
+  std::string m_strDiscSubtitle;
   CDateTime m_lastPlayed;
   CDateTime m_dateAdded;
   bool m_bCompilation;
@@ -212,6 +219,8 @@ protected:
   int m_listeners;
   int m_iTimesPlayed;
   int m_iAlbumId;
+  int m_iDiscTotal;
+  bool m_bBoxset;
   SYSTEMTIME m_dwReleaseDate;
   CAlbum::ReleaseType m_albumReleaseType;
 

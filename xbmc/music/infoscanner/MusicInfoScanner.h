@@ -78,6 +78,7 @@ protected:
   virtual void Process();
   bool DoScan(const std::string& strDirectory) override;
 
+
   /*! \brief Find art for albums
    Based on the albums in the folder, finds whether we have unique album art
    and assigns to the album if we do.

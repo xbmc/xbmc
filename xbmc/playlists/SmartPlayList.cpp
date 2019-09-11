@@ -113,7 +113,11 @@ static const translateField fields[] = {
   { "artisttype",        FieldArtistType,              CDatabaseQueryRule::TEXT_FIELD,     NULL,                                 false, 564 },
   { "gender",            FieldGender,                  CDatabaseQueryRule::TEXT_FIELD,     NULL,                                 false, 39025 },
   { "disambiguation",    FieldDisambiguation,          CDatabaseQueryRule::TEXT_FIELD,     NULL,                                 false, 39026 },
-  { "source",            FieldSource,                  CDatabaseQueryRule::TEXT_FIELD,     NULL,                                 true,  39030 }
+  { "source",            FieldSource,                  CDatabaseQueryRule::TEXT_FIELD,     NULL,                                 true,  39030 },
+  { "disctitle", FieldDiscTitle, CDatabaseQueryRule::TEXT_FIELD, NULL, false, 38076 },
+  { "isboxset", FieldIsBoxset, CDatabaseQueryRule::BOOLEAN_FIELD, NULL, false, 38074 },
+  { "totaldiscs", FieldTotalDiscs, CDatabaseQueryRule::NUMERIC_FIELD,
+    StringValidation::IsPositiveInteger,  false, 38077 },
 };
 
 typedef struct
@@ -291,6 +295,7 @@ std::vector<Field> CSmartPlaylistRule::GetFields(const std::string &type)
     fields.push_back(FieldGenre);
     fields.push_back(FieldSource);
     fields.push_back(FieldAlbum);
+    fields.push_back(FieldDiscTitle);
     fields.push_back(FieldArtist);
     fields.push_back(FieldAlbumArtist);
     fields.push_back(FieldTitle);
@@ -311,6 +316,9 @@ std::vector<Field> CSmartPlaylistRule::GetFields(const std::string &type)
     fields.push_back(FieldGenre);
     fields.push_back(FieldSource);
     fields.push_back(FieldAlbum);
+    fields.push_back(FieldDiscTitle);
+    fields.push_back(FieldTotalDiscs);
+    fields.push_back(FieldIsBoxset);
     fields.push_back(FieldArtist);        // any artist
     fields.push_back(FieldAlbumArtist);  // album artist
     fields.push_back(FieldYear);
@@ -507,6 +515,7 @@ std::vector<SortBy> CSmartPlaylistRule::GetOrders(const std::string &type)
   {
     orders.push_back(SortByGenre);
     orders.push_back(SortByAlbum);
+    orders.push_back(SortByTotalDiscs);
     orders.push_back(SortByArtist);        // any artist
     orders.push_back(SortByYear);
     //orders.push_back(SortByThemes);
@@ -739,6 +748,8 @@ std::string CSmartPlaylistRule::GetBooleanQuery(const std::string &negate, const
   {
     if (m_field == FieldCompilation)
       return negate + GetField(m_field, strType);
+    if (m_field == FieldIsBoxset)
+      return negate + "albumview.bBoxedSet = 1";
   }
   return "";
 }
@@ -815,6 +826,10 @@ std::string CSmartPlaylistRule::FormatWhereClause(const std::string &negate, con
       query = GetField(m_field, strType) + " is NULL or " + GetField(m_field, strType) + parameter;
     else if (m_field == FieldSource)
       query = negate + " EXISTS (SELECT 1 FROM album_source, source WHERE album_source.idAlbum = " + GetField(FieldId, strType) + " AND album_source.idSource = source.idSource AND source.strName" + parameter + ")";
+    else if (m_field == FieldDiscTitle)
+      query = negate +
+              " EXISTS (SELECT 1 FROM song WHERE song.idAlbum = " + GetField(FieldId, strType) +
+              " AND song.strDiscSubtitle" + parameter + ")";
   }
   else if (strType == "artists")
   {

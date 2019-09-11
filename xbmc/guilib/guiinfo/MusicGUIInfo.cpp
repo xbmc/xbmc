@@ -144,6 +144,13 @@ bool CMusicGUIInfo::GetLabel(std::string& value, const CFileItem *item, int cont
           return true;
         }
         break;
+      case LISTITEM_TOTALDISCS:
+        value = StringUtils::Format("%i", tag->GetTotalDiscs());
+        return true;
+      case MUSICPLAYER_DISC_TITLE:
+      case LISTITEM_DISC_TITLE:
+        value = tag->GetDiscSubtitle();
+        return true;
       case MUSICPLAYER_ARTIST:
       case LISTITEM_ARTIST:
         value = tag->GetArtistString();
@@ -556,6 +563,19 @@ bool CMusicGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int contextW
     case MUSICPM_ENABLED:
       value = g_partyModeManager.IsEnabled();
       return true;
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    // LISTITEM_*
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    case LISTITEM_IS_BOXSET:
+      const CFileItem* item = static_cast<const CFileItem*>(gitem);
+      const CMusicInfoTag* tag = item->GetMusicInfoTag();
+      if (tag)
+      {
+        value = item->GetMusicInfoTag()->GetBoxset() == true;
+        return true;
+      }
+      break;
   }
 
   return false;

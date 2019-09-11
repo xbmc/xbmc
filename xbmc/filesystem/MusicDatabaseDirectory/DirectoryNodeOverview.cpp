@@ -30,6 +30,7 @@ namespace XFILE
                                 { NODE_TYPE_ALBUM,                 "compilations",         521 },
                                 { NODE_TYPE_ROLE,                  "roles",              38033 },
                                 { NODE_TYPE_SOURCE,                "sources",            39031 },
+                                { NODE_TYPE_DISC,                  "discs",              14087 },
                               };
   };
 };

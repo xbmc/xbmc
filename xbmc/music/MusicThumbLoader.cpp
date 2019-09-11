@@ -268,8 +268,9 @@ bool CMusicThumbLoader::FillLibraryArt(CFileItem &item)
   if (artfound)
   {
     std::string fanartfallback;
-    bool bDiscSetThumbSet = false;
+    std::string artname;
     std::map<std::string, std::string> artmap;
+    std::map<std::string, std::string> discartmap;
     for (auto artitem : art)
     {
       /* Add art to artmap, naming according to media type.
@@ -277,7 +278,6 @@ bool CMusicThumbLoader::FillLibraryArt(CFileItem &item)
       albums have "thumb", "artist.thumb", "artist.fanart",... "artist1.thumb", "artist1.fanart" etc.,
       songs have "thumb", "album.thumb", "artist.thumb", "albumartist.thumb", "albumartist1.thumb" etc.
       */
-      std::string artname;
       if (tag.GetType() == artitem.mediaType)
         artname = artitem.artType;
       else if (artitem.prefix.empty())
@@ -289,24 +289,29 @@ bool CMusicThumbLoader::FillLibraryArt(CFileItem &item)
         artname = artitem.prefix + "." + artitem.artType;
       }
 
+      // Pull out album art for this specific disc e.g. "thumb2", skip art for other discs
+      if (artitem.mediaType == MediaTypeAlbum && tag.GetDiscNumber() > 0)
+      {
+        // Find any trailing digits
+        size_t startnum = artitem.artType.find_last_not_of("0123456789");
+        std::string digits = artitem.artType.substr(startnum + 1);
+        int num = atoi(digits.c_str());
+        if (num > 0 && startnum < artitem.artType.size())
+        {
+          if (num == tag.GetDiscNumber())
+            discartmap.insert(std::make_pair(artitem.artType.substr(0, startnum + 1), artitem.url));
+          continue;
+        }
+      }
+
       artmap.insert(std::make_pair(artname, artitem.url));
 
       // Add fallback art for "thumb" and "fanart" art types only
       // Set album thumb as the fallback used when song thumb is missing
-      // or use extra album thumb when part of disc set
-      if (tag.GetType() == MediaTypeSong && artitem.mediaType == MediaTypeAlbum)
+      if (tag.GetType() == MediaTypeSong && artitem.mediaType == MediaTypeAlbum &&
+          artitem.artType == "thumb")
       {
-        if (artitem.artType == "thumb" && !bDiscSetThumbSet)
-          item.SetArtFallback(artitem.artType, artname);
-        else if (StringUtils::StartsWith(artitem.artType, "thumb"))
-        {
-          int number = atoi(artitem.artType.substr(5).c_str());
-          if (number > 0 && tag.GetDiscNumber() == number)
-          {
-            item.SetArtFallback("thumb", artname);
-            bDiscSetThumbSet = true;
-          }
-        }
+        item.SetArtFallback(artitem.artType, artname);
       }
 
       // For albums and songs set fallback fanart from the artist.
@@ -318,6 +323,47 @@ bool CMusicThumbLoader::FillLibraryArt(CFileItem &item)
     }
     if (!fanartfallback.empty())
       item.SetArtFallback("fanart", fanartfallback);
+
+    // Process specific disc art when we have some
+    for (auto discart : discartmap)
+    {
+      std::map<std::string, std::string>::iterator it;
+      if (tag.GetType() == MediaTypeAlbum)
+      {
+        // Insert or replace album art with specific disc art
+        it = artmap.find(discart.first);
+        if (it != artmap.end())
+          it->second = discart.second;
+        else
+          artmap.insert(discart);
+      }
+      else if (tag.GetType() == MediaTypeSong)
+      {
+        // Use disc thumb rather than album as fallback for song thumb
+        // (Fallback approach is used to fill missing thumbs).
+        if (discart.first == "thumb")
+        {
+          it = artmap.find("album.thumb");
+          if (it != artmap.end())
+            // Replace "album.thumb" already set as fallback
+            it->second = discart.second;
+          else
+          {
+            // Insert thumb for album and set as fallback
+            artmap.insert(std::make_pair("album.thumb", discart.second));
+            item.SetArtFallback("thumb", "album.thumb");
+          }
+        }
+        else
+        {
+          // Apply disc art as song art when not have that type (fallback does not apply).
+          // Art of other types could been set via JSON, or in future read from metadata
+          it = artmap.find(discart.first);
+          if (it == artmap.end())
+            artmap.insert(discart);
+        }
+      }
+    }
 
     item.AppendArt(artmap);
   }

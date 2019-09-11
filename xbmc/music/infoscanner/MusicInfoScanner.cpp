@@ -667,6 +667,7 @@ void CMusicInfoScanner::FileItemsToAlbums(CFileItemList& items, VECALBUMS& album
     bool tracksOverlap = false;
     bool hasAlbumArtist = false;
     bool isCompilation = true;
+    std::string old_DiscSubtitle;
 
     std::map<std::string, std::vector<CSong *> > artists;
     for (VECSONGS::iterator song = songs.begin(); song != songs.end(); ++song)
@@ -677,6 +678,9 @@ void CMusicInfoScanner::FileItemsToAlbums(CFileItemList& items, VECALBUMS& album
 
       if (!song->bCompilation)
         isCompilation = false;
+
+      if (song->strDiscSubtitle != old_DiscSubtitle)
+        old_DiscSubtitle = song->strDiscSubtitle;
 
       // get primary artist
       std::string primary;

@@ -167,6 +167,10 @@ CGUIViewStateMusicDatabase::CGUIViewStateMusicDatabase(const CFileItemList& item
       AddSortMethod(SortByArtist, sortAttribute, 557, LABEL_MASKS("%F", "", strAlbum, "%A"));  // Filename, empty | Userdefined, Artist
       // artist / year
       AddSortMethod(SortByArtistThenYear, sortAttribute, 578, LABEL_MASKS("%F", "", strAlbum, "%A / %Y"));  // Filename, empty | Userdefined, Artist / Year
+      // discs
+      AddSortMethod(
+          SortByTotalDiscs, sortAttribute, 38077,
+          LABEL_MASKS("%F", "", strAlbum, "%b")); // Filename, empty | Userdefined, Total discs
       // year
       AddSortMethod(SortByYear, 562, LABEL_MASKS("%F", "", strAlbum, "%Y"));  // Filename, empty | Userdefined, Year
       // album date added
@@ -288,6 +292,12 @@ CGUIViewStateMusicDatabase::CGUIViewStateMusicDatabase(const CFileItemList& item
       SetSortOrder(SortOrderNone);
     }
     break;
+  case NODE_TYPE_DISC:
+    {
+      AddSortMethod(SortByNone, 427, LABEL_MASKS("%L")); // Use the existing label
+      SetSortMethod(SortByNone);
+    }
+    break;
   default:
     break;
   }
@@ -365,6 +375,10 @@ CGUIViewStateMusicSmartPlaylist::CGUIViewStateMusicSmartPlaylist(const CFileItem
     AddSortMethod(SortByArtist, sortAttribute, 557, LABEL_MASKS("%F", "", strAlbum, "%A"));  // Filename, empty | Userdefined, Artist
     // artist / year
     AddSortMethod(SortByArtistThenYear, sortAttribute, 578, LABEL_MASKS("%F", "", strAlbum, "%A / %Y"));  // Filename, empty | Userdefined, Artist / Year
+    // discs
+    AddSortMethod(
+        SortByTotalDiscs, sortAttribute, 38077,
+        LABEL_MASKS("%F", "", strAlbum, "%b")); // Filename, empty | Userdefined, Total discs
     // year
     AddSortMethod(SortByYear, 562, LABEL_MASKS("%F", "", strAlbum, "%Y"));
     // album date added
