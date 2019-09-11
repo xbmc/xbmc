@@ -362,6 +362,7 @@ void CAdvancedSettings::Initialize()
   m_curlretries = 2;
   m_curlDisableIPV6 = false;      //Certain hardware/OS combinations have trouble
                                   //with ipv6.
+  m_curlDisableHTTP2 = false;
 
 #if defined(TARGET_DARWIN_EMBEDDED)
   m_startFullScreen = true;
@@ -844,7 +845,8 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
     XMLUtils::GetInt(pElement, "curlclienttimeout", m_curlconnecttimeout, 1, 1000);
     XMLUtils::GetInt(pElement, "curllowspeedtime", m_curllowspeedtime, 1, 1000);
     XMLUtils::GetInt(pElement, "curlretries", m_curlretries, 0, 10);
-    XMLUtils::GetBoolean(pElement,"disableipv6", m_curlDisableIPV6);
+    XMLUtils::GetBoolean(pElement, "disableipv6", m_curlDisableIPV6);
+    XMLUtils::GetBoolean(pElement, "disablehttp2", m_curlDisableHTTP2);
   }
 
   pElement = pRootElement->FirstChildElement("cache");
