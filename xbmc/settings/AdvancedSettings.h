@@ -299,6 +299,7 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     int m_curllowspeedtime;
     int m_curlretries;
     bool m_curlDisableIPV6;
+    bool m_curlDisableHTTP2;
 
     bool m_fullScreen;
     bool m_startFullScreen;
