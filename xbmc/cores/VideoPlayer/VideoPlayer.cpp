@@ -323,6 +323,7 @@ public:
 
 void CSelectionStreams::Clear(StreamType type, StreamSource source)
 {
+  printf("clear selection streams %i from source %i\n", type, source);
   auto new_end = std::remove_if(m_Streams.begin(), m_Streams.end(),
                                 [type, source](const SelectionStream &stream)
                                 {
@@ -407,15 +408,19 @@ int CSelectionStreams::Source(StreamSource source, std::string filename)
 
 void CSelectionStreams::Update(SelectionStream& s)
 {
+                        // STREAM_VIDEO, , -1, 0)
+  printf("update type=%i source=%i demuxer=%i id=%i\n", s.type, s.source, s.demuxerId, s.id);
   int index = TypeIndexOf(s.type, s.source, s.demuxerId, s.id);
   if(index >= 0)
   {
+    printf("index update found\n");
     SelectionStream& o = Get(s.type, index);
     s.type_index = o.type_index;
     o = s;
   }
   else
   {
+    printf("pushback update\n");
     s.type_index = CountType(s.type);
     m_Streams.push_back(s);
   }
@@ -423,8 +428,10 @@ void CSelectionStreams::Update(SelectionStream& s)
 
 void CSelectionStreams::Update(std::shared_ptr<CDVDInputStream> input, CDVDDemux* demuxer, std::string filename2)
 {
+  printf("Update\n");
   if(input && input->IsStreamType(DVDSTREAM_TYPE_DVD))
   {
+    printf("Input update\n");
     std::shared_ptr<CDVDInputStreamNavigator> nav = std::static_pointer_cast<CDVDInputStreamNavigator>(input);
     std::string filename = nav->GetFileName();
     int source = Source(STREAM_SOURCE_NAV, filename);
@@ -486,8 +493,7 @@ void CSelectionStreams::Update(std::shared_ptr<CDVDInputStream> input, CDVDDemux
       Update(s);
     }
   }
-
-  if (demuxer)
+  else if (demuxer)
   {
     std::string filename = demuxer->GetFileName();
     int source;
@@ -4902,6 +4908,7 @@ void CVideoPlayer::GetVideoStreamInfo(int streamId, VideoStreamInfo &info)
 
   if (streamId < 0 || streamId > GetVideoStreamCount() - 1)
   {
+    printf("video invalid with id %i\n", streamId);
     info.valid = false;
     return;
   }
