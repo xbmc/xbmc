@@ -56,15 +56,15 @@ extern "C" {
 #endif
 
   /* EPG_TAG.iFlags values */
-  const unsigned int EPG_TAG_FLAG_UNDEFINED = 0x00000000; /*!< @brief nothing special to say about this entry */
-  const unsigned int EPG_TAG_FLAG_IS_SERIES = 0x00000001; /*!< @brief this EPG entry is part of a series */
+  static const unsigned int EPG_TAG_FLAG_UNDEFINED = 0x00000000; /*!< @brief nothing special to say about this entry */
+  static const unsigned int EPG_TAG_FLAG_IS_SERIES = 0x00000001; /*!< @brief this EPG entry is part of a series */
 
   /* Special EPG_TAG.iUniqueBroadcastId value */
 
   /*!
    * @brief special EPG_TAG.iUniqueBroadcastId value to indicate that a tag has not a valid EPG event uid.
    */
-  const unsigned int EPG_TAG_INVALID_UID = 0;
+  static const unsigned int EPG_TAG_INVALID_UID = 0;
 
   /*!
    * @brief EPG event states. Used with EpgEventStateChange callback.
