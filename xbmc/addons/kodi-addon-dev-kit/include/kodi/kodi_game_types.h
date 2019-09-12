@@ -469,6 +469,7 @@ typedef struct game_controller_layout
 } ATTRIBUTE_PACKED game_controller_layout;
 
 struct game_input_port;
+typedef struct game_input_port game_input_port;
 
 /*!
  * \brief Device that can provide input
@@ -594,11 +595,11 @@ typedef struct game_input_event
 
 /// @name Environment types
 ///{
-struct game_system_timing
+typedef struct game_system_timing
 {
   double fps;                   // FPS of video content.
   double sample_rate;           // Sampling rate of audio.
-};
+} game_system_timing;
 ///}
 
 /*! Properties passed to the ADDON_Create() method of a game client */
