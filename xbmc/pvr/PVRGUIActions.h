@@ -82,10 +82,9 @@ namespace PVR
     /*!
      * @brief Open a window containing a list of epg tags 'similar' to a given item.
      * @param item containing epg data for matching. item must be an epg tag, a channel or a recording.
-     * @param windowToClose is the window to close before opening the window with the search results.
      * @return true on success, false otherwise.
      */
-    bool FindSimilar(const std::shared_ptr<CFileItem>& item, CGUIWindow* windowToClose = nullptr) const;
+    bool FindSimilar(const std::shared_ptr<CFileItem>& item) const;
 
     /*!
      * @brief Open the timer settings dialog to create a new tv or radio timer.
