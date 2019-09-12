@@ -228,7 +228,7 @@ namespace PVR
     return true;
   }
 
-  bool CPVRGUIActions::FindSimilar(const CFileItemPtr &item, CGUIWindow *windowToClose /* = nullptr */) const
+  bool CPVRGUIActions::FindSimilar(const std::shared_ptr<CFileItem>& item) const
   {
     const bool bRadio(CPVRItem(item).IsRadio());
 
@@ -245,8 +245,26 @@ namespace PVR
       return false;
     }
 
-    if (windowToClose)
-      windowToClose->Close();
+    //! @todo If we want dialogs to spawn program search in a clean way - without having to force-close any
+    //        other dialogs - we must introduce a search dialog with functionality similar to the search window.
+
+    for (int iId = CServiceBroker::GetGUI()->GetWindowManager().GetTopmostModalDialog(true /* ignoreClosing */);
+         iId != WINDOW_INVALID;
+         iId = CServiceBroker::GetGUI()->GetWindowManager().GetTopmostModalDialog(true /* ignoreClosing */))
+    {
+      CLog::LogF(LOGWARNING, "Have to close modal dialog with id %d before search window can be opened.", iId);
+
+      CGUIWindow* window = CServiceBroker::GetGUI()->GetWindowManager().GetWindow(iId);
+      if (window)
+      {
+        window->Close();
+      }
+      else
+      {
+        CLog::LogF(LOGERROR, "Unable to get window instance %d! Cannot open search window.", iId);
+        return false; // return, otherwise we run into an endless loop
+      }
+    }
 
     windowSearch->SetItemToSearch(item);
     CServiceBroker::GetGUI()->GetWindowManager().ActivateWindow(windowSearchId);

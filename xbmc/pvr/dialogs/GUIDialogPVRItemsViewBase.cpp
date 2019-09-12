@@ -90,10 +90,11 @@ void CGUIDialogPVRItemsViewBase::ShowInfo(int itemIdx)
   if (itemIdx < 0 || itemIdx >= m_vecItems->Size())
     return;
 
-  // Preserve the item before closing self, because this will clear m_vecItems
-  const CFileItemPtr itemptr = m_vecItems->Get(itemIdx);
-  Close();
-  CServiceBroker::GetPVRManager().GUIActions()->ShowEPGInfo(itemptr);
+  const std::shared_ptr<CFileItem> item = m_vecItems->Get(itemIdx);
+  if (!item)
+    return;
+
+  CServiceBroker::GetPVRManager().GUIActions()->ShowEPGInfo(item);
 }
 
 bool CGUIDialogPVRItemsViewBase::ContextMenu(int itemIdx)
