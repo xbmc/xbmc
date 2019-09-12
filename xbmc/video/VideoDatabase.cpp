@@ -451,7 +451,7 @@ void CVideoDatabase::CreateViews()
                                      "  tvshow_view.c%02d AS genre,"
                                      "  tvshow_view.c%02d AS studio,"
                                      "  tvshow_view.c%02d AS mpaa,"
-                                     "  count(DISTINCT episode.idEpisode) AS episodes,"
+                                     "  count(episode.idEpisode) AS episodes,"
                                      "  count(files.playCount) AS playCount,"
                                      "  min(episode.c%02d) AS aired "
                                      "FROM seasons"
@@ -5696,7 +5696,7 @@ void CVideoDatabase::UpdateTables(int iVersion)
 
 int CVideoDatabase::GetSchemaVersion() const
 {
-  return 116;
+  return 117;
 }
 
 bool CVideoDatabase::LookupByFolders(const std::string &path, bool shows)
