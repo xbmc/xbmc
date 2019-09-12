@@ -446,7 +446,7 @@ public:
     if (*addonInstance == nullptr)
       throw std::logic_error("kodi::addon::CAddonBase CreateInstanceEx returns a empty instance pointer!");
 
-    if (static_cast<::kodi::addon::IAddonInstance*>(*addonInstance)->m_type != instanceType)
+    if (static_cast< ::kodi::addon::IAddonInstance*>(*addonInstance)->m_type != instanceType)
       throw std::logic_error("kodi::addon::CAddonBase CreateInstanceEx with difference on given and returned instance type!");
 
     return status;
@@ -456,8 +456,8 @@ public:
   {
     if (CAddonBase::m_interface->globalSingleInstance == nullptr && instance != CAddonBase::m_interface->addonBase)
     {
-      if (static_cast<::kodi::addon::IAddonInstance*>(instance)->m_type == instanceType)
-        delete static_cast<::kodi::addon::IAddonInstance*>(instance);
+      if (static_cast< ::kodi::addon::IAddonInstance*>(instance)->m_type == instanceType)
+        delete static_cast< ::kodi::addon::IAddonInstance*>(instance);
       else
         throw std::logic_error("kodi::addon::CAddonBase DestroyInstance called with difference on given and present instance type!");
     }
