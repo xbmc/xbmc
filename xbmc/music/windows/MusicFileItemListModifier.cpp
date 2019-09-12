@@ -83,9 +83,7 @@ void CMusicFileItemListModifier::AddQueuingFolder(CFileItemList& items)
   case NODE_TYPE_ALBUM:
   case NODE_TYPE_ALBUM_RECENTLY_PLAYED:
   case NODE_TYPE_ALBUM_RECENTLY_ADDED:
-  case NODE_TYPE_ALBUM_COMPILATIONS:
   case NODE_TYPE_ALBUM_TOP100:
-  case NODE_TYPE_YEAR_ALBUM:
     pItem.reset(new CFileItem(g_localizeStrings.Get(15102)));  // "All Albums"
     musicUrl.AppendPath("-1/");
     pItem->SetPath(musicUrl.ToString());

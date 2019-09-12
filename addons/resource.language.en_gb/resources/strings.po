@@ -2392,6 +2392,8 @@ msgstr ""
 #empty string with id 520
 
 #: xbmc/filesystem/MusicDatabaseDirectory/DirectoryNodeOverview.cpp
+#. Node title for compilation albums, plural of #204
+#: system/library/music/compilations.xml
 msgctxt "#521"
 msgid "Compilations"
 msgstr ""
@@ -8398,10 +8400,8 @@ msgstr ""
 
 #: xbmc/filesystem/MusicDatabaseDirectory/DirectoryNode.cpp
 #: xbmc/filesystem/MusicDatabaseDirectory/DirectoryNodeAlbum.cpp
-#: xbmc/filesystem/MusicDatabaseDirectory/DirectoryNodeCompilations.cpp
 #: xbmc/filesystem/MusicDatabaseDirectory/DirectoryNodeRcentlyAdded.cpp
 #: xbmc/filesystem/MusicDatabaseDirectory/DirectoryNodeRcentlyPlayed.cpp
-#: xbmc/filesystem/MusicDatabaseDirectory/DirectoryNodeYearAlbum.cpp
 msgctxt "#15102"
 msgid "* All albums"
 msgstr ""

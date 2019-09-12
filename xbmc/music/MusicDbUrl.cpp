@@ -42,18 +42,14 @@ bool CMusicDbUrl::parse()
     case NODE_TYPE_ALBUM_RECENTLY_ADDED:
     case NODE_TYPE_ALBUM_RECENTLY_PLAYED:
     case NODE_TYPE_ALBUM_TOP100:
-    case NODE_TYPE_ALBUM_COMPILATIONS:
-    case NODE_TYPE_YEAR_ALBUM:
       m_type = "albums";
       break;
 
     case NODE_TYPE_ALBUM_RECENTLY_ADDED_SONGS:
     case NODE_TYPE_ALBUM_RECENTLY_PLAYED_SONGS:
     case NODE_TYPE_ALBUM_TOP100_SONGS:
-    case NODE_TYPE_ALBUM_COMPILATIONS_SONGS:
     case NODE_TYPE_SONG:
     case NODE_TYPE_SONG_TOP100:
-    case NODE_TYPE_YEAR_SONG:
     case NODE_TYPE_SINGLES:
       m_type = "songs";
       break;
@@ -72,7 +68,6 @@ bool CMusicDbUrl::parse()
     case NODE_TYPE_ALBUM_RECENTLY_ADDED:
     case NODE_TYPE_ALBUM_RECENTLY_PLAYED:
     case NODE_TYPE_ALBUM_TOP100:
-    case NODE_TYPE_YEAR_ALBUM:
       m_type = "albums";
       break;
 
@@ -80,9 +75,7 @@ bool CMusicDbUrl::parse()
     case NODE_TYPE_ALBUM_RECENTLY_ADDED_SONGS:
     case NODE_TYPE_ALBUM_RECENTLY_PLAYED_SONGS:
     case NODE_TYPE_ALBUM_TOP100_SONGS:
-    case NODE_TYPE_ALBUM_COMPILATIONS_SONGS:
     case NODE_TYPE_SONG_TOP100:
-    case NODE_TYPE_YEAR_SONG:
     case NODE_TYPE_SINGLES:
       m_type = "songs";
       break;
@@ -101,10 +94,6 @@ bool CMusicDbUrl::parse()
 
     case NODE_TYPE_YEAR:
       m_type = "years";
-      break;
-
-    case NODE_TYPE_ALBUM_COMPILATIONS:
-      m_type = "albums";
       break;
 
     case NODE_TYPE_TOP100:
@@ -142,6 +131,10 @@ bool CMusicDbUrl::parse()
     AddOption("songid", (int)queryParams.GetSongId());
   if (queryParams.GetYear() != -1)
     AddOption("year", (int)queryParams.GetYear());
+
+  // Decode legacy use of "musicdb://compilations/" path for filtered albums
+  if (m_url.GetFileName() == "compilations/")
+    AddOption("compilation", true);
 
   return true;
 }

@@ -415,8 +415,6 @@ public:
   /////////////////////////////////////////////////
   // Compilations
   /////////////////////////////////////////////////
-  bool GetCompilationAlbums(const std::string& strBaseDir, CFileItemList& items);
-  bool GetCompilationSongs(const std::string& strBaseDir, CFileItemList& items);
   int  GetCompilationAlbumsCount();
 
   int GetSinglesCount();

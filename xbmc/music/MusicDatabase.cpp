@@ -9016,30 +9016,6 @@ bool CMusicDatabase::GetGenresJSON(CFileItemList& items, bool bSources)
   return false;
 }
 
-bool CMusicDatabase::GetCompilationAlbums(const std::string& strBaseDir, CFileItemList& items)
-{
-  CMusicDbUrl musicUrl;
-  if (!musicUrl.FromString(strBaseDir))
-    return false;
-
-  musicUrl.AddOption("compilation", true);
-
-  Filter filter;
-  return GetAlbumsByWhere(musicUrl.ToString(), filter, items);
-}
-
-bool CMusicDatabase::GetCompilationSongs(const std::string& strBaseDir, CFileItemList& items)
-{
-  CMusicDbUrl musicUrl;
-  if (!musicUrl.FromString(strBaseDir))
-    return false;
-
-  musicUrl.AddOption("compilation", true);
-
-  Filter filter;
-  return GetSongsFullByWhere(musicUrl.ToString(), filter, items, SortDescription(), true);
-}
-
 int CMusicDatabase::GetCompilationAlbumsCount()
 {
   return strtol(GetSingleValue("album", "count(idAlbum)", "bCompilation = 1").c_str(), NULL, 10);
