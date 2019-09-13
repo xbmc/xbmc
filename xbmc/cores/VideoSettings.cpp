@@ -36,6 +36,7 @@ CVideoSettings::CVideoSettings()
   m_StereoMode = 0;
   m_StereoInvert = false;
   m_VideoStream = -1;
+  m_VideoFlip = VS_FLIP_OFF;
 }
 
 bool CVideoSettings::operator!=(const CVideoSettings &right) const
@@ -67,6 +68,7 @@ bool CVideoSettings::operator!=(const CVideoSettings &right) const
   if (m_ToneMapParam != right.m_ToneMapParam) return true;
   if (m_Orientation != right.m_Orientation) return true;
   if (m_CenterMixLevel != right.m_CenterMixLevel) return true;
+  if (m_VideoFlip != right.m_VideoFlip) return true;
   return false;
 }
 

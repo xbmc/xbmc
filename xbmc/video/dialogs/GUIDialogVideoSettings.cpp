@@ -44,6 +44,7 @@
 #define SETTING_VIDEO_TONEMAP_METHOD      "video.tonemapmethod"
 #define SETTING_VIDEO_TONEMAP_PARAM       "video.tonemapparam"
 #define SETTING_VIDEO_ORIENTATION         "video.orientation"
+#define SETTING_VIDEO_FLIP                "video.flip"
 
 #define SETTING_VIDEO_VDPAU_NOISE         "vdpau.noise"
 #define SETTING_VIDEO_VDPAU_SHARPNESS     "vdpau.sharpness"
@@ -197,6 +198,12 @@ void CGUIDialogVideoSettings::OnSettingChanged(std::shared_ptr<const CSetting> s
   {
     CVideoSettings vs = g_application.GetAppPlayer().GetVideoSettings();
     vs.m_StereoInvert = std::static_pointer_cast<const CSettingBool>(setting)->GetValue();
+    g_application.GetAppPlayer().SetVideoSettings(vs);
+  }
+  else if (settingId == SETTING_VIDEO_FLIP)
+  {
+    CVideoSettings vs = g_application.GetAppPlayer().GetVideoSettings();
+    vs.m_VideoFlip = std::static_pointer_cast<const CSettingBool>(setting)->GetValue();
     g_application.GetAppPlayer().SetVideoSettings(vs);
   }
 }
@@ -400,6 +407,14 @@ void CGUIDialogVideoSettings::InitializeSettings()
   if (g_application.GetAppPlayer().Supports(RENDERFEATURE_NONLINSTRETCH))
     AddToggle(groupVideo, SETTING_VIDEO_NONLIN_STRETCH, 659, SettingLevel::Basic, videoSettings.m_CustomNonLinStretch);
 
+  // Video flip settings
+  entries.clear();
+  entries.push_back(std::make_pair(16337, VS_FLIP_OFF));
+  entries.push_back(std::make_pair(16338, VS_FLIP_HORIZONTAL));
+  entries.push_back(std::make_pair(16339, VS_FLIP_VERTICAL));
+  entries.push_back(std::make_pair(16340, VS_FLIP_BOTH));
+  AddSpinner(groupVideo, SETTING_VIDEO_FLIP, 16341, SettingLevel::Basic, videoSettings.m_VideoFlip, entries);
+
   // tone mapping
   if (g_application.GetAppPlayer().Supports(RENDERFEATURE_TONEMAP))
   {
@@ -417,6 +432,7 @@ void CGUIDialogVideoSettings::InitializeSettings()
   entries.push_back(std::make_pair(36504, RENDER_STEREO_MODE_SPLIT_VERTICAL));
   AddSpinner(groupStereoscopic, SETTING_VIDEO_STEREOSCOPICMODE, 36535, SettingLevel::Basic, videoSettings.m_StereoMode, entries);
   AddToggle(groupStereoscopic, SETTING_VIDEO_STEREOSCOPICINVERT, 36536, SettingLevel::Basic, videoSettings.m_StereoInvert);
+
 
   // general settings
   AddButton(groupSaveAsDefault, SETTING_VIDEO_MAKE_DEFAULT, 12376, SettingLevel::Basic);

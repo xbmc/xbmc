@@ -54,11 +54,51 @@ void CBaseRenderer::GetVideoRect(CRect &source, CRect &dest, CRect &view)
 
 inline void CBaseRenderer::ReorderDrawPoints()
 {
-  // 0 - top left, 1 - top right, 2 - bottom right, 3 - bottom left
+
+
   float origMat[4][2] = {{m_destRect.x1, m_destRect.y1},
                          {m_destRect.x2, m_destRect.y1},
                          {m_destRect.x2, m_destRect.y2},
                          {m_destRect.x1, m_destRect.y2}};
+
+
+  if (m_videoSettings.m_VideoFlip == VS_FLIP_HORIZONTAL) {
+    int dst_crn = 1;
+    for (int src_crn=0; src_crn<4; src_crn++) {
+      m_rotatedDestCoords[dst_crn].x = origMat[src_crn][0];
+      m_rotatedDestCoords[dst_crn].y = origMat[src_crn][1];
+      dst_crn--;
+      if (dst_crn<0) {
+        dst_crn = 3;
+      }
+    }
+  }
+  else if (m_videoSettings.m_VideoFlip == VS_FLIP_VERTICAL) {
+    int dst_crn = 3;
+    for (int src_crn=0; src_crn<4; src_crn++) {
+      m_rotatedDestCoords[dst_crn].x = origMat[src_crn][0];
+      m_rotatedDestCoords[dst_crn].y = origMat[src_crn][1];
+      dst_crn--;
+    }
+  }
+  else if (m_videoSettings.m_VideoFlip == VS_FLIP_BOTH) {
+    int dst_crn = 2;
+    for (int src_crn=0; src_crn<4; src_crn++) {
+      m_rotatedDestCoords[dst_crn].x = origMat[src_crn][0];
+      m_rotatedDestCoords[dst_crn].y = origMat[src_crn][1];
+      dst_crn++;
+      if (dst_crn>3) {
+        dst_crn=0;
+      }
+    }
+  } else {
+    int dst_crn = 0;
+    for (int src_crn=0; src_crn<4; src_crn++) {
+      m_rotatedDestCoords[dst_crn].x = origMat[src_crn][0];
+      m_rotatedDestCoords[dst_crn].y = origMat[src_crn][1];
+      dst_crn++;
+    }
+  }
 
   int pointOffset = m_renderOrientation / 90;
 
@@ -72,8 +112,8 @@ inline void CBaseRenderer::ReorderDrawPoints()
 
   for (int destIdx=0, srcIdx=pointOffset; destIdx < 4; destIdx++)
   {
-    m_rotatedDestCoords[destIdx].x = origMat[srcIdx][0];
-    m_rotatedDestCoords[destIdx].y = origMat[srcIdx][1];
+    m_rotatedDestCoords[destIdx].x = m_rotatedDestCoords[srcIdx].x;
+    m_rotatedDestCoords[destIdx].y = m_rotatedDestCoords[srcIdx].y;
 
     srcIdx++;
     srcIdx = srcIdx % 4;
@@ -124,6 +164,9 @@ void CBaseRenderer::CalcNormalRenderRect(float offsetX, float offsetY, float wid
   // allow a certain error to maximize size of render area
   float fCorrection = width / height / outputFrameRatio - 1.0f;
   float fAllowed = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_VIDEOPLAYER_ERRORINASPECT) * 0.01f;
+  
+  m_flipMode = VS_FLIP_OFF;
+
   if (fCorrection > fAllowed)
     fCorrection = fAllowed;
   if (fCorrection < -fAllowed)
