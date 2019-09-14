@@ -241,7 +241,6 @@ TEST(TestVariant, iterator_array)
     EXPECT_STREQ("string", it->c_str());
   }
 
-  CVariant::const_iterator_array const_it;
   for (auto const_it = a.begin_array(); const_it != a.end_array(); const_it++)
   {
     EXPECT_STREQ("string", const_it->c_str());
