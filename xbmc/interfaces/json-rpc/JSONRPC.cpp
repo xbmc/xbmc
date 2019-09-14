@@ -101,6 +101,8 @@ void CJSONRPC::Initialize()
   for (unsigned int index = 0; index < size; index++)
     CJSONServiceDescription::AddNotification(JSONRPC_SERVICE_NOTIFICATIONS[index]);
 
+  CJSONServiceDescription::ResolveReferences();
+
   m_initialized = true;
   CLog::Log(LOGINFO, "JSONRPC v%s: Successfully initialized", CJSONServiceDescription::GetVersion());
 }
