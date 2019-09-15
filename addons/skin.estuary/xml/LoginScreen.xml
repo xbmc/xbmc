@@ -11,18 +11,12 @@
 				<width>250</width>
 				<height>112</height>
 				<control type="image">
-					<width>112</width>
-					<height>112</height>
-					<aspectratio aligny="top" align="center">keep</aspectratio>
-					<texture colordiffuse="button_focus">icons/logo.png</texture>
-				</control>
-				<control type="image">
-					<left>138</left>
+					<left>0</left>
 					<top>0</top>
-					<width>112</width>
+					<width>250</width>
 					<height>112</height>
 					<aspectratio aligny="center" align="center">keep</aspectratio>
-					<texture>icons/logo-text.png</texture>
+					<texture>special://xbmc/media/vendor_logo.png</texture>
 				</control>
 			</control>
 			<control type="textbox">

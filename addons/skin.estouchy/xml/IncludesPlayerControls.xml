@@ -25,10 +25,10 @@
 		<control type="image">
 			<description>Kodi Logo</description>
 			<posx>22</posx>
-			<posy>2</posy>
-			<width>150</width>
-			<height>75</height>
-			<texture>kodi_logo.png</texture>
+			<posy>16</posy>
+			<width>160</width>
+			<height>44</height>
+			<texture>special://xbmc/media/vendor_logo.png</texture>
 			<include>VisibleFadeEffect</include>
 		</control>
 		<control type="group">
