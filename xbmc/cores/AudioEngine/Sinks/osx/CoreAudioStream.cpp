@@ -133,7 +133,7 @@ bool CCoreAudioStream::IsDigitalOutput(AudioStreamID id)
 bool CCoreAudioStream::GetStartingChannelInDevice(AudioStreamID id, UInt32 &startingChannel)
 {
   if (!id)
-    return 0;
+    return false;
 
   UInt32 i_param_size = sizeof(UInt32);
   UInt32 i_param;
