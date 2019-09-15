@@ -3770,12 +3770,10 @@ bool CVideoPlayer::OpenVideoStream(CDVDStreamInfo& hint, bool reset)
 
     // look for any EDL files
     m_Edl.Clear();
-    if (hint.fpsrate > 0 && hint.fpsscale > 0)
-    {
-      float fFramesPerSecond = (float)m_CurrentVideo.hint.fpsrate / (float)m_CurrentVideo.hint.fpsscale;
-      m_Edl.ReadEditDecisionLists(m_item, fFramesPerSecond, m_CurrentVideo.hint.height);
-    }
-
+    float fFramesPerSecond = 0.0f;
+    if (m_CurrentVideo.hint.fpsscale > 0.0f)
+      fFramesPerSecond = static_cast<float>(m_CurrentVideo.hint.fpsrate) / static_cast<float>(m_CurrentVideo.hint.fpsscale);
+    m_Edl.ReadEditDecisionLists(m_item, fFramesPerSecond);
     static_cast<IDVDStreamPlayerVideo*>(player)->SetSpeed(m_streamPlayerSpeed);
     m_CurrentVideo.syncState = IDVDStreamPlayer::SYNC_STARTING;
     m_CurrentVideo.packets = 0;

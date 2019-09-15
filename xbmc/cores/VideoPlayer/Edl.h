@@ -33,7 +33,7 @@ public:
     Action action;
   };
 
-  bool ReadEditDecisionLists(const CFileItem& fileItem, const float fFramesPerSecond, const int iHeight);
+  bool ReadEditDecisionLists(const CFileItem& fileItem, const float fFramesPerSecond);
   void Clear();
 
   bool HasCut() const;
