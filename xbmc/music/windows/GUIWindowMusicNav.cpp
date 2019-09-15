@@ -212,43 +212,6 @@ bool CGUIWindowMusicNav::OnAction(const CAction& action)
   return CGUIWindowMusicBase::OnAction(action);
 }
 
-std::string CGUIWindowMusicNav::GetQuickpathName(const std::string& strPath) const
-{
-  std::string path = CLegacyPathTranslation::TranslateMusicDbPath(strPath);
-  StringUtils::ToLower(path);
-  if (path == "musicdb://genres/")
-    return "Genres";
-  else if (path == "musicdb://artists/")
-    return "Artists";
-  else if (path == "musicdb://albums/")
-    return "Albums";
-  else if (path == "musicdb://songs/")
-    return "Songs";
-  else if (path == "musicdb://top100/")
-    return "Top100";
-  else if (path == "musicdb://top100/songs/")
-    return "Top100Songs";
-  else if (path == "musicdb://top100/albums/")
-    return "Top100Albums";
-  else if (path == "musicdb://recentlyaddedalbums/")
-    return "RecentlyAddedAlbums";
-  else if (path == "musicdb://recentlyplayedalbums/")
-    return "RecentlyPlayedAlbums";
-  else if (path == "musicdb://compilations/")
-    return "Compilations";
-  else if (path == "musicdb://years/")
-    return "Years";
-  else if (path == "musicdb://singles/")
-    return "Singles";
-  else if (path == "special://musicplaylists/")
-    return "Playlists";
-  else
-  {
-    CLog::Log(LOGERROR, "  CGUIWindowMusicNav::GetQuickpathName: Unknown parameter (%s)", strPath.c_str());
-    return strPath;
-  }
-}
-
 bool CGUIWindowMusicNav::ManageInfoProvider(const CFileItemPtr item)
 {
   CQueryParams params;
@@ -754,7 +717,7 @@ bool CGUIWindowMusicNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   case CONTEXT_BUTTON_SET_DEFAULT:
   {
     const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
-    settings->SetString(CSettings::SETTING_MYMUSIC_DEFAULTLIBVIEW, GetQuickpathName(item->GetPath()));
+    settings->SetString(CSettings::SETTING_MYMUSIC_DEFAULTLIBVIEW, item->GetPath());
     settings->Save();
     return true;
   }
