@@ -326,7 +326,7 @@ void CCocoaPowerSyscall::OSPowerCallBack(void *refcon, io_service_t service, nat
 static bool stringsAreEqual(CFStringRef a, CFStringRef b)
 {
 	if (a == nil || b == nil)
-		return 0;
+		return false;
 	return (CFStringCompare (a, b, 0) == kCFCompareEqualTo);
 }
 

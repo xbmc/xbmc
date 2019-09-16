@@ -38,7 +38,7 @@ void CEventLoop::run(IActivityHandler &activityHandler, IInputHandler &inputHand
   m_inputHandler = &inputHandler;
 
   CXBMCApp::android_printf("CEventLoop: starting event loop");
-  while (1)
+  while (true)
   {
     // We will block forever waiting for events.
     while ((ident = ALooper_pollAll(-1, NULL, &events, (void**)&source)) >= 0)

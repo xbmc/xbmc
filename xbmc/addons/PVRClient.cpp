@@ -370,7 +370,7 @@ void CPVRClient::WriteClientChannelInfo(const CPVRChannelPtr &xbmcChannel, PVR_C
 bool CPVRClient::GetAddonProperties(void)
 {
   std::string strBackendName, strConnectionString, strFriendlyName, strBackendVersion, strBackendHostname;
-  PVR_ADDON_CAPABILITIES addonCapabilities = {0};
+  PVR_ADDON_CAPABILITIES addonCapabilities = {false};
   CPVRTimerTypes timerTypes;
 
   /* get the capabilities */
