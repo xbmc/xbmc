@@ -105,7 +105,7 @@ void CTextureRule::GetAvailableFields(std::vector<std::string> &fieldList)
 {
   // start at 1 to skip TF_None
   for (unsigned int i = 1; i < NUM_FIELDS; i++)
-    fieldList.push_back(fields[i].string);
+    fieldList.emplace_back(fields[i].string);
 }
 
 std::string CTextureUtils::GetWrappedImageURL(const std::string &image, const std::string &type, const std::string &options)

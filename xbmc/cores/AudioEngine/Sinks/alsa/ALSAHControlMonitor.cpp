@@ -81,10 +81,7 @@ void CALSAHControlMonitor::Start()
 
     for (int j = 0; j < fdcount; ++j)
     {
-      monitoredFDs.push_back(CFDEventMonitor::MonitoredFD(pollfds[j].fd,
-                                                          pollfds[j].events,
-                                                          FDEventCallback,
-                                                          it->second.handle));
+      monitoredFDs.emplace_back(pollfds[j].fd, pollfds[j].events, FDEventCallback, it->second.handle);
     }
   }
 

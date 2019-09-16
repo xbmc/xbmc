@@ -94,6 +94,6 @@ void CViewModeSettings::ViewModesFiller(std::shared_ptr<const CSetting> setting,
   for (const auto &item : viewModes)
   {
     if (!item.hideFromList)
-      list.push_back(IntegerSettingOption(g_localizeStrings.Get(item.stringIndex), item.viewMode));
+      list.emplace_back(g_localizeStrings.Get(item.stringIndex), item.viewMode);
   }
 }

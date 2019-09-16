@@ -520,9 +520,9 @@ bool CAutorun::CanResumePlayDVD(const std::string& path)
 
 void CAutorun::SettingOptionAudioCdActionsFiller(SettingConstPtr setting, std::vector<IntegerSettingOption> &list, int &current, void *data)
 {
-  list.push_back(IntegerSettingOption(g_localizeStrings.Get(16018), AUTOCD_NONE));
-  list.push_back(IntegerSettingOption(g_localizeStrings.Get(14098), AUTOCD_PLAY));
+  list.emplace_back(g_localizeStrings.Get(16018), AUTOCD_NONE);
+  list.emplace_back(g_localizeStrings.Get(14098), AUTOCD_PLAY);
 #ifdef HAS_CDDA_RIPPER
-  list.push_back(IntegerSettingOption(g_localizeStrings.Get(14096), AUTOCD_RIP));
+  list.emplace_back(g_localizeStrings.Get(14096), AUTOCD_RIP);
 #endif
 }

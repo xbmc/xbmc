@@ -146,7 +146,7 @@ void CPlayerCoreFactory::GetPlayers(const CFileItem& item, std::vector<std::stri
   if (item.IsGame())
   {
     CLog::Log(LOGDEBUG, "CPlayerCoreFactory::GetPlayers: adding retroplayer");
-    players.push_back("RetroPlayer");
+    players.emplace_back("RetroPlayer");
   }
 
   CLog::Log(LOGDEBUG, "CPlayerCoreFactory::GetPlayers: added {0} players", players.size());

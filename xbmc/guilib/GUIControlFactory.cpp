@@ -416,7 +416,7 @@ bool CGUIControlFactory::GetConditionalVisibility(const TiXmlNode* control, std:
       allowHiddenFocus = hidden;
     // add to our condition string
     if (!node->NoChildren())
-      conditions.push_back(node->FirstChild()->Value());
+      conditions.emplace_back(node->FirstChild()->Value());
     node = node->NextSiblingElement("visible");
   }
   if (!conditions.size())
@@ -593,7 +593,7 @@ void CGUIControlFactory::GetInfoLabels(const TiXmlNode *pControlNode, const std:
   if (XMLUtils::GetInt(pControlNode, "number", labelNumber))
   {
     std::string label = StringUtils::Format("%i", labelNumber);
-    infoLabels.push_back(GUIINFO::CGUIInfoLabel(label));
+    infoLabels.emplace_back(label);
     return; // done
   }
   const TiXmlElement *labelNode = pControlNode->FirstChildElement(labelTag);
@@ -616,7 +616,7 @@ void CGUIControlFactory::GetInfoLabels(const TiXmlNode *pControlNode, const std:
       if (infoNode->FirstChild())
       {
         std::string info = StringUtils::Format("$INFO[%s]", infoNode->FirstChild()->Value());
-        infoLabels.push_back(GUIINFO::CGUIInfoLabel(info, fallback, parentID));
+        infoLabels.emplace_back(info, fallback, parentID);
       }
       infoNode = infoNode->NextSibling("info");
     }

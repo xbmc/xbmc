@@ -1101,7 +1101,7 @@ void CXBMCApp::onNewIntent(CJNIIntent intent)
       {
         std::vector<std::string> params;
         params.push_back(targeturl.Get());
-        params.push_back("return");
+        params.emplace_back("return");
         CApplicationMessenger::GetInstance().PostMsg(TMSG_GUI_ACTIVATE_WINDOW, WINDOW_VIDEO_NAV, 0, nullptr, "", params);
       }
       else if (targeturl.IsProtocol("musicdb")
@@ -1109,7 +1109,7 @@ void CXBMCApp::onNewIntent(CJNIIntent intent)
       {
         std::vector<std::string> params;
         params.push_back(targeturl.Get());
-        params.push_back("return");
+        params.emplace_back("return");
         CApplicationMessenger::GetInstance().PostMsg(TMSG_GUI_ACTIVATE_WINDOW, WINDOW_MUSIC_NAV, 0, nullptr, "", params);
       }
     }

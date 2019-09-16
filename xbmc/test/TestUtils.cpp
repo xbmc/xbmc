@@ -252,7 +252,7 @@ void CXBMCTestUtils::ParseArgs(int argc, char **argv)
     arg = argv[i];
     if (arg == "--add-testfilefactory-readurl")
     {
-      TestFileFactoryReadUrls.push_back(argv[++i]);
+      TestFileFactoryReadUrls.emplace_back(argv[++i]);
     }
     else if (arg == "--add-testfilefactory-readurls")
     {
@@ -263,7 +263,7 @@ void CXBMCTestUtils::ParseArgs(int argc, char **argv)
     }
     else if (arg == "--add-testfilefactory-writeurl")
     {
-      TestFileFactoryWriteUrls.push_back(argv[++i]);
+      TestFileFactoryWriteUrls.emplace_back(argv[++i]);
     }
     else if (arg == "--add-testfilefactory-writeurls")
     {
@@ -278,7 +278,7 @@ void CXBMCTestUtils::ParseArgs(int argc, char **argv)
     }
     else if (arg == "--add-advancedsettings-file")
     {
-      AdvancedSettingsFiles.push_back(argv[++i]);
+      AdvancedSettingsFiles.emplace_back(argv[++i]);
     }
     else if (arg == "--add-advancedsettings-files")
     {
@@ -289,7 +289,7 @@ void CXBMCTestUtils::ParseArgs(int argc, char **argv)
     }
     else if (arg == "--add-guisettings-file")
     {
-      GUISettingsFiles.push_back(argv[++i]);
+      GUISettingsFiles.emplace_back(argv[++i]);
     }
     else if (arg == "--add-guisettings-files")
     {

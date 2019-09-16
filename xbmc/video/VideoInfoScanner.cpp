@@ -1349,7 +1349,7 @@ namespace VIDEO
           multipath.push_back(pItem->GetPath());
         std::vector<std::pair<std::string, std::string> > paths;
         for (std::vector<std::string>::const_iterator i = multipath.begin(); i != multipath.end(); ++i)
-          paths.push_back(std::make_pair(*i, URIUtils::GetParentPath(*i)));
+          paths.emplace_back(*i, URIUtils::GetParentPath(*i));
 
         std::map<int, std::map<std::string, std::string> > seasonArt;
 

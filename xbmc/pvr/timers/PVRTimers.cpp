@@ -249,7 +249,7 @@ bool CPVRTimers::UpdateEntries(const CPVRTimersContainer &timers, const std::vec
 
         std::string strMessage;
         newTimer->GetNotificationText(strMessage);
-        timerNotifications.push_back(std::make_pair(newTimer->m_iClientId, strMessage));
+        timerNotifications.emplace_back(newTimer->m_iClientId, strMessage);
 
         CLog::LogFC(LOGDEBUG, LOGPVR, "Added timer %d on client %d",
                     (*timerIt)->m_iClientIndex, (*timerIt)->m_iClientId);
@@ -291,7 +291,7 @@ bool CPVRTimers::UpdateEntries(const CPVRTimersContainer &timers, const std::vec
         CLog::LogFC(LOGDEBUG, LOGPVR, "Deleted timer %d on client %d",
                     timer->m_iClientIndex, timer->m_iClientId);
 
-        timerNotifications.push_back(std::make_pair(timer->m_iClientId, timer->GetDeletedNotificationText()));
+        timerNotifications.emplace_back(timer->m_iClientId, timer->GetDeletedNotificationText());
 
         it2 = it->second.erase(it2);
 

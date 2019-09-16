@@ -98,7 +98,7 @@ void CResolutionUtils::FindResolutionFromWhitelist(float fps, int width, int hei
         if ((info.fRefreshRate > 30) || (MathUtils::FloatEquals(info.fRefreshRate, 24.0f, 0.1f)))
         {
           resString = CDisplaySettings::GetInstance().GetStringFromRes(c);
-          indexList.push_back(resString);
+          indexList.emplace_back(resString);
         }
       }
     }

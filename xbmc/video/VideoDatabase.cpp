@@ -4780,7 +4780,7 @@ std::vector<std::string> GetBasicItemAvailableArtTypes(const CVideoInfoTag& tag)
 
   //! @todo artwork: fanart stored separately, doesn't need to be
   if (tag.m_fanart.GetNumFanarts() && std::find(result.cbegin(), result.cend(), "fanart") == result.cend())
-    result.push_back("fanart");
+    result.emplace_back("fanart");
 
   // all other images
   for (const auto& urlEntry : tag.m_strPictureURL.m_url)
@@ -4837,7 +4837,7 @@ std::vector<std::string> GetMovieSetAvailableArtTypes(int mediaId, CVideoDatabas
       if (pTag->m_fanart.GetNumFanarts() &&
         std::find(result.cbegin(), result.cend(), "fanart") == result.cend())
       {
-        result.push_back("fanart");
+        result.emplace_back("fanart");
       }
 
       // all other images

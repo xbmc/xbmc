@@ -156,7 +156,7 @@ void CUPowerSyscall::EnumeratePowerSources()
     {
       for (int i = 0; i < length; i++)
       {
-        m_powerSources.push_back(CUPowerSource(source[i]));
+        m_powerSources.emplace_back(source[i]);
       }
 
       dbus_free_string_array(source);

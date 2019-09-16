@@ -470,7 +470,7 @@ void GUIFontManager::SettingOptionsFontsFiller(SettingConstPtr setting, std::vec
       if (!pItem->m_bIsFolder
           && URIUtils::HasExtension(pItem->GetLabel(), ".ttf"))
       {
-        list.push_back(StringSettingOption(pItem->GetLabel(), pItem->GetLabel()));
+        list.emplace_back(pItem->GetLabel(), pItem->GetLabel());
       }
     }
   }

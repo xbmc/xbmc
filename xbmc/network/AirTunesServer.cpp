@@ -598,22 +598,22 @@ bool CAirTunesServer::StartServer(int port, bool nonlocal, bool usePassword, con
                                              CSysInfo::GetDeviceName().c_str());
 
     std::vector<std::pair<std::string, std::string> > txt;
-    txt.push_back(std::make_pair("txtvers",  "1"));
-    txt.push_back(std::make_pair("cn", "0,1"));
-    txt.push_back(std::make_pair("ch", "2"));
-    txt.push_back(std::make_pair("ek", "1"));
-    txt.push_back(std::make_pair("et", "0,1"));
-    txt.push_back(std::make_pair("sv", "false"));
-    txt.push_back(std::make_pair("tp",  "UDP"));
-    txt.push_back(std::make_pair("sm",  "false"));
-    txt.push_back(std::make_pair("ss",  "16"));
-    txt.push_back(std::make_pair("sr",  "44100"));
-    txt.push_back(std::make_pair("pw",  usePassword?"true":"false"));
-    txt.push_back(std::make_pair("vn",  "3"));
-    txt.push_back(std::make_pair("da",  "true"));
-    txt.push_back(std::make_pair("md",  "0,1,2"));
-    txt.push_back(std::make_pair("am",  "Kodi,1"));
-    txt.push_back(std::make_pair("vs",  "130.14"));
+    txt.emplace_back("txtvers", "1");
+    txt.emplace_back("cn", "0,1");
+    txt.emplace_back("ch", "2");
+    txt.emplace_back("ek", "1");
+    txt.emplace_back("et", "0,1");
+    txt.emplace_back("sv", "false");
+    txt.emplace_back("tp", "UDP");
+    txt.emplace_back("sm", "false");
+    txt.emplace_back("ss", "16");
+    txt.emplace_back("sr", "44100");
+    txt.emplace_back("pw", usePassword ? "true" : "false");
+    txt.emplace_back("vn", "3");
+    txt.emplace_back("da", "true");
+    txt.emplace_back("md", "0,1,2");
+    txt.emplace_back("am", "Kodi,1");
+    txt.emplace_back("vs", "130.14");
 
     CZeroconf::GetInstance()->PublishService("servers.airtunes", "_raop._tcp", appName, port, txt);
   }

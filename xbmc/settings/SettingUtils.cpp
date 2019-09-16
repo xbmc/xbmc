@@ -38,19 +38,19 @@ std::vector<CVariant> CSettingUtils::ListToValues(std::shared_ptr<const CSetting
     switch (setting->GetElementType())
     {
       case SettingType::Boolean:
-        realValues.push_back(std::static_pointer_cast<const CSettingBool>(value)->GetValue());
+        realValues.emplace_back(std::static_pointer_cast<const CSettingBool>(value)->GetValue());
         break;
 
       case SettingType::Integer:
-        realValues.push_back(std::static_pointer_cast<const CSettingInt>(value)->GetValue());
+        realValues.emplace_back(std::static_pointer_cast<const CSettingInt>(value)->GetValue());
         break;
 
       case SettingType::Number:
-        realValues.push_back(std::static_pointer_cast<const CSettingNumber>(value)->GetValue());
+        realValues.emplace_back(std::static_pointer_cast<const CSettingNumber>(value)->GetValue());
         break;
 
       case SettingType::String:
-        realValues.push_back(std::static_pointer_cast<const CSettingString>(value)->GetValue());
+        realValues.emplace_back(std::static_pointer_cast<const CSettingString>(value)->GetValue());
         break;
 
       default:

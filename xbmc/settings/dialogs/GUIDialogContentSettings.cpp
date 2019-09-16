@@ -182,14 +182,14 @@ void CGUIDialogContentSettings::OnSettingAction(std::shared_ptr<const CSetting> 
     std::vector<std::pair<std::string, int>> labels;
     if (m_content == CONTENT_ALBUMS || m_content == CONTENT_ARTISTS)
     {
-      labels.push_back(std::make_pair(ADDON::TranslateContent(m_content, true), m_content));
+      labels.emplace_back(ADDON::TranslateContent(m_content, true), m_content);
     }
     else
     {
-      labels.push_back(std::make_pair(ADDON::TranslateContent(CONTENT_NONE, true), CONTENT_NONE));
-      labels.push_back(std::make_pair(ADDON::TranslateContent(CONTENT_MOVIES, true), CONTENT_MOVIES));
-      labels.push_back(std::make_pair(ADDON::TranslateContent(CONTENT_TVSHOWS, true), CONTENT_TVSHOWS));
-      labels.push_back(std::make_pair(ADDON::TranslateContent(CONTENT_MUSICVIDEOS, true), CONTENT_MUSICVIDEOS));
+      labels.emplace_back(ADDON::TranslateContent(CONTENT_NONE, true), CONTENT_NONE);
+      labels.emplace_back(ADDON::TranslateContent(CONTENT_MOVIES, true), CONTENT_MOVIES);
+      labels.emplace_back(ADDON::TranslateContent(CONTENT_TVSHOWS, true), CONTENT_TVSHOWS);
+      labels.emplace_back(ADDON::TranslateContent(CONTENT_MUSICVIDEOS, true), CONTENT_MUSICVIDEOS);
     }
     std::sort(labels.begin(), labels.end());
 

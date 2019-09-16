@@ -33,7 +33,7 @@ void CHttpResponse::AddHeader(const std::string &field, const std::string &value
   if (field.empty())
     return;
 
-  m_headers.push_back(std::pair<std::string, std::string>(field, value));
+  m_headers.emplace_back(field, value);
 }
 
 void CHttpResponse::SetContent(const char* data, unsigned int length)

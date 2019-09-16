@@ -188,7 +188,7 @@ namespace dialogs
       if (ret)
       {
         for (unsigned int i = 0; i < listSize; ++i)
-          fileList.push_back(list[i]);
+          fileList.emplace_back(list[i]);
         CAddonBase::m_interface->toKodi->kodi_gui->dialogFileBrowser->clear_file_list(CAddonBase::m_interface->toKodi->kodiBase, &list, listSize);
       }
       return ret;
@@ -272,7 +272,7 @@ namespace dialogs
       if (ret)
       {
         for (unsigned int i = 0; i < listSize; ++i)
-          file_list.push_back(list[i]);
+          file_list.emplace_back(list[i]);
         CAddonBase::m_interface->toKodi->kodi_gui->dialogFileBrowser->clear_file_list(CAddonBase::m_interface->toKodi->kodiBase, &list, listSize);
       }
       return ret;

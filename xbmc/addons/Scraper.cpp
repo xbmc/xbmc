@@ -262,7 +262,7 @@ std::vector<std::string> CScraper::Run(const std::string &function,
       if (strcmp(xchain->Value(), "chain") == 0)
       {
         if (xchain->FirstChild())
-          extras.push_back(xchain->FirstChild()->Value());
+          extras.emplace_back(xchain->FirstChild()->Value());
       }
       else
         scrURL2.ParseElement(xchain);
@@ -776,8 +776,8 @@ void DetailsFromFileItem<CArtist>(const CFileItem &item, CArtist &artist)
   {
     std::stringstream prefix;
     prefix << "artist.album" << i + 1;
-    artist.discography.push_back(std::make_pair(FromString(item, prefix.str() + ".title"),
-                                                FromString(item, prefix.str() + ".year")));
+    artist.discography.emplace_back(FromString(item, prefix.str() + ".title"),
+                                    FromString(item, prefix.str() + ".year"));
   }
 
   int nThumbs = item.GetProperty("artist.thumbs").asInteger32();

@@ -238,7 +238,7 @@ void CPosixTimezone::SettingOptionsTimezoneCountriesFiller(std::shared_ptr<const
 {
   std::vector<std::string> countries = g_timezone.GetCounties();
   for (unsigned int i = 0; i < countries.size(); i++)
-    list.push_back(StringSettingOption(countries[i], countries[i]));
+    list.emplace_back(countries[i], countries[i]);
 }
 
 void CPosixTimezone::SettingOptionsTimezonesFiller(std::shared_ptr<const CSetting> setting, std::vector<StringSettingOption> &list, std::string &current, void *data)
@@ -251,7 +251,7 @@ void CPosixTimezone::SettingOptionsTimezonesFiller(std::shared_ptr<const CSettin
     if (!found && StringUtils::EqualsNoCase(timezones[i], current))
       found = true;
 
-    list.push_back(StringSettingOption(timezones[i], timezones[i]));
+    list.emplace_back(timezones[i], timezones[i]);
   }
 
   if (!found && !timezones.empty())

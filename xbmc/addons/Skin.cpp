@@ -407,7 +407,7 @@ void CSkinInfo::SettingOptionsSkinColorsFiller(SettingConstPtr setting, std::vec
   // any other *.xml files are additional color themes on top of this one.
 
   // add the default label
-  list.push_back(StringSettingOption(g_localizeStrings.Get(15109), "SKINDEFAULT")); // the standard defaults.xml will be used!
+  list.emplace_back(g_localizeStrings.Get(15109), "SKINDEFAULT"); // the standard defaults.xml will be used!
 
   // Search for colors in the Current skin!
   std::vector<std::string> vecColors;
@@ -426,7 +426,7 @@ void CSkinInfo::SettingOptionsSkinColorsFiller(SettingConstPtr setting, std::vec
   }
   sort(vecColors.begin(), vecColors.end(), sortstringbyname());
   for (int i = 0; i < (int) vecColors.size(); ++i)
-    list.push_back(StringSettingOption(vecColors[i], vecColors[i]));
+    list.emplace_back(vecColors[i], vecColors[i]);
 
   // try to find the best matching value
   for (const auto& elem : list)
@@ -467,9 +467,9 @@ void CSkinInfo::SettingOptionsSkinFontsFiller(SettingConstPtr setting, std::vect
     if (idAttr != NULL)
     {
       if (idLocAttr)
-        list.push_back(StringSettingOption(g_localizeStrings.Get(atoi(idLocAttr)), idAttr));
+        list.emplace_back(g_localizeStrings.Get(atoi(idLocAttr)), idAttr);
       else
-        list.push_back(StringSettingOption(idAttr, idAttr));
+        list.emplace_back(idAttr, idAttr);
 
       if (StringUtils::EqualsNoCase(idAttr, settingValue))
         currentValueSet = true;
@@ -479,7 +479,7 @@ void CSkinInfo::SettingOptionsSkinFontsFiller(SettingConstPtr setting, std::vect
 
   if (list.empty())
   { // Since no fontset is defined, there is no selection of a fontset, so disable the component
-    list.push_back(StringSettingOption(g_localizeStrings.Get(13278), ""));
+    list.emplace_back(g_localizeStrings.Get(13278), "");
     current = "";
     currentValueSet = true;
   }
@@ -499,7 +499,7 @@ void CSkinInfo::SettingOptionsSkinThemesFiller(SettingConstPtr setting, std::vec
   // any other *.xbt files are additional themes on top of this one.
 
   // add the default Label
-  list.push_back(StringSettingOption(g_localizeStrings.Get(15109), "SKINDEFAULT")); // the standard Textures.xbt will be used
+  list.emplace_back(g_localizeStrings.Get(15109), "SKINDEFAULT"); // the standard Textures.xbt will be used
 
   // search for themes in the current skin!
   std::vector<std::string> vecTheme;
@@ -507,7 +507,7 @@ void CSkinInfo::SettingOptionsSkinThemesFiller(SettingConstPtr setting, std::vec
 
   // sort the themes for GUI and list them
   for (int i = 0; i < (int) vecTheme.size(); ++i)
-    list.push_back(StringSettingOption(vecTheme[i], vecTheme[i]));
+    list.emplace_back(vecTheme[i], vecTheme[i]);
 
   // try to find the best matching value
   for (const auto& elem : list)
@@ -534,7 +534,7 @@ void CSkinInfo::SettingOptionsStartupWindowsFiller(SettingConstPtr setting, std:
       windowName = g_localizeStrings.Get(atoi(windowName.c_str()));
     int windowID = it->m_id;
 
-    list.push_back(IntegerSettingOption(windowName, windowID));
+    list.emplace_back(windowName, windowID);
 
     if (settingValue == windowID)
       current = settingValue;

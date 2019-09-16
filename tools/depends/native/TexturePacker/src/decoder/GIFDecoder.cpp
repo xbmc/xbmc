@@ -86,5 +86,5 @@ void GIFDecoder::gifDestroyFN(void* user)
 
 void GIFDecoder::FillSupportedExtensions()
 {
-  m_supportedExtensions.push_back(".gif");
+  m_supportedExtensions.emplace_back(".gif");
 }

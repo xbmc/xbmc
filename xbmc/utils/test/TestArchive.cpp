@@ -278,10 +278,10 @@ TEST_F(TestArchive, StringVectorArchive)
 {
   ASSERT_NE(nullptr, file);
   std::vector<std::string> strArray_ref, strArray_var;
-  strArray_ref.push_back("test strArray_ref 0");
-  strArray_ref.push_back("test strArray_ref 1");
-  strArray_ref.push_back("test strArray_ref 2");
-  strArray_ref.push_back("test strArray_ref 3");
+  strArray_ref.emplace_back("test strArray_ref 0");
+  strArray_ref.emplace_back("test strArray_ref 1");
+  strArray_ref.emplace_back("test strArray_ref 2");
+  strArray_ref.emplace_back("test strArray_ref 3");
 
   CArchive arstore(file, CArchive::store);
   arstore << strArray_ref;
@@ -339,10 +339,10 @@ TEST_F(TestArchive, MultiTypeArchive)
   SYSTEMTIME SYSTEMTIME_var = { 0, 0, 0, 0, 0, 0, 0, 0 };
   CVariant CVariant_ref((int)1), CVariant_var;
   std::vector<std::string> strArray_ref, strArray_var;
-  strArray_ref.push_back("test strArray_ref 0");
-  strArray_ref.push_back("test strArray_ref 1");
-  strArray_ref.push_back("test strArray_ref 2");
-  strArray_ref.push_back("test strArray_ref 3");
+  strArray_ref.emplace_back("test strArray_ref 0");
+  strArray_ref.emplace_back("test strArray_ref 1");
+  strArray_ref.emplace_back("test strArray_ref 2");
+  strArray_ref.emplace_back("test strArray_ref 3");
   std::vector<int> iArray_ref, iArray_var;
   iArray_ref.push_back(0);
   iArray_ref.push_back(1);

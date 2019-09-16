@@ -271,7 +271,7 @@ void CGUIDialogAddonInfo::OnUpdate()
           {
             std::string md5 = CUtil::GetFileDigest(path, KODI::UTILITY::CDigest::Type::MD5);
             if (StringUtils::EqualsNoCase(md5, hash))
-              versions.push_back(std::make_pair(AddonVersion(versionString), LOCAL_CACHE));
+              versions.emplace_back(AddonVersion(versionString), LOCAL_CACHE);
           }
         }
       }

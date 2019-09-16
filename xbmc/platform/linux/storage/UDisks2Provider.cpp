@@ -669,7 +669,7 @@ void CUDisks2Provider::ParseDriveProperty(Drive *drive, const char *key, DBusMes
         {
           const char *compatibility;
           dbus_message_iter_get_basic(&arrIter, &compatibility);
-          drive->m_mediaCompatibility.push_back(std::string(compatibility));
+          drive->m_mediaCompatibility.emplace_back(compatibility);
           dbus_message_iter_next(&arrIter);
         }
       }

@@ -670,7 +670,7 @@ namespace vfs
       if (dir_list)
       {
         for (unsigned int i = 0; i < num_items; ++i)
-          items.push_back(CDirEntry(dir_list[i]));
+          items.emplace_back(dir_list[i]);
 
         ::kodi::addon::CAddonBase::m_interface->toKodi->kodi_filesystem->free_directory(::kodi::addon::CAddonBase::m_interface->toKodi->kodiBase, dir_list, num_items);
       }

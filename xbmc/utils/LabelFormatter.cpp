@@ -368,8 +368,7 @@ void CLabelFormatter::SplitMask(unsigned int label, const std::string &mask)
   while ((findStart = reg.RegFind(work.c_str())) >= 0)
   { // we've found a match
     m_staticContent[label].push_back(work.substr(0, findStart));
-    m_dynamicContent[label].push_back(CMaskString("",
-          reg.GetMatch(1)[0], ""));
+    m_dynamicContent[label].emplace_back("", reg.GetMatch(1)[0], "");
     work = work.substr(findStart + reg.GetFindLen());
   }
   m_staticContent[label].push_back(work);
@@ -392,10 +391,7 @@ void CLabelFormatter::AssembleMask(unsigned int label, const std::string& mask)
   { // we've found a match for a pre/postfixed string
     // send anything
     SplitMask(label, work.substr(0, findStart) + reg.GetMatch(1));
-    m_dynamicContent[label].push_back(CMaskString(
-            reg.GetMatch(2),
-            reg.GetMatch(4)[0],
-            reg.GetMatch(5)));
+    m_dynamicContent[label].emplace_back(reg.GetMatch(2), reg.GetMatch(4)[0], reg.GetMatch(5));
     work = work.substr(findStart + reg.GetFindLen());
   }
   SplitMask(label, work);

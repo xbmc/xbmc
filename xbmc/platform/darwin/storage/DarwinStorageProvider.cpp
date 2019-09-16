@@ -179,7 +179,7 @@ std::vector<std::string> CDarwinStorageProvider::GetDiskUsage()
   {
     while (fgets(line, sizeof(line) - 1, pipe))
     {
-      result.push_back(line);
+      result.emplace_back(line);
     }
     pclose(pipe);
   }

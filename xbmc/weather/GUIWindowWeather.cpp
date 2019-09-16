@@ -151,12 +151,12 @@ void CGUIWindowWeather::UpdateLocations()
         std::string strLabel2(strLabel);
         strLabel = strLabel2.substr(0,iPos);
       }
-      labels.push_back(make_pair(strLabel, i));
+      labels.emplace_back(strLabel, i);
     }
     else
     {
       strLabel = StringUtils::Format("AreaCode %i", i);
-      labels.push_back(make_pair(strLabel, i));
+      labels.emplace_back(strLabel, i);
     }
     // in case it's a button, set the label
     if (i == iCurWeather)

@@ -100,15 +100,15 @@ void CActiveAESettings::SettingOptionsAudioQualityLevelsFiller(SettingConstPtr s
   CSingleLock lock(m_instance->m_cs);
 
   if (m_instance->m_audioEngine.SupportsQualityLevel(AE_QUALITY_LOW))
-    list.push_back(IntegerSettingOption(g_localizeStrings.Get(13506), AE_QUALITY_LOW));
+    list.emplace_back(g_localizeStrings.Get(13506), AE_QUALITY_LOW);
   if (m_instance->m_audioEngine.SupportsQualityLevel(AE_QUALITY_MID))
-    list.push_back(IntegerSettingOption(g_localizeStrings.Get(13507), AE_QUALITY_MID));
+    list.emplace_back(g_localizeStrings.Get(13507), AE_QUALITY_MID);
   if (m_instance->m_audioEngine.SupportsQualityLevel(AE_QUALITY_HIGH))
-    list.push_back(IntegerSettingOption(g_localizeStrings.Get(13508), AE_QUALITY_HIGH));
+    list.emplace_back(g_localizeStrings.Get(13508), AE_QUALITY_HIGH);
   if (m_instance->m_audioEngine.SupportsQualityLevel(AE_QUALITY_REALLYHIGH))
-    list.push_back(IntegerSettingOption(g_localizeStrings.Get(13509), AE_QUALITY_REALLYHIGH));
+    list.emplace_back(g_localizeStrings.Get(13509), AE_QUALITY_REALLYHIGH);
   if (m_instance->m_audioEngine.SupportsQualityLevel(AE_QUALITY_GPU))
-    list.push_back(IntegerSettingOption(g_localizeStrings.Get(38010), AE_QUALITY_GPU));
+    list.emplace_back(g_localizeStrings.Get(38010), AE_QUALITY_GPU);
 }
 
 void CActiveAESettings::SettingOptionsAudioStreamsilenceFiller(SettingConstPtr setting,
@@ -117,15 +117,15 @@ void CActiveAESettings::SettingOptionsAudioStreamsilenceFiller(SettingConstPtr s
 {
   CSingleLock lock(m_instance->m_cs);
 
-  list.push_back(IntegerSettingOption(g_localizeStrings.Get(20422), XbmcThreads::EndTime::InfiniteValue));
-  list.push_back(IntegerSettingOption(g_localizeStrings.Get(13551), 0));
+  list.emplace_back(g_localizeStrings.Get(20422), XbmcThreads::EndTime::InfiniteValue);
+  list.emplace_back(g_localizeStrings.Get(13551), 0);
 
   if (m_instance->m_audioEngine.SupportsSilenceTimeout())
   {
-    list.push_back(IntegerSettingOption(StringUtils::Format(g_localizeStrings.Get(13554).c_str(), 1), 1));
+    list.emplace_back(StringUtils::Format(g_localizeStrings.Get(13554).c_str(), 1), 1);
     for (int i = 2; i <= 10; i++)
     {
-      list.push_back(IntegerSettingOption(StringUtils::Format(g_localizeStrings.Get(13555).c_str(), i), i));
+      list.emplace_back(StringUtils::Format(g_localizeStrings.Get(13555).c_str(), i), i);
     }
   }
 }
@@ -156,7 +156,7 @@ void CActiveAESettings::SettingOptionsAudioDevicesFillerGeneral(SettingConstPtr 
   AEDeviceList sinkList;
   m_instance->m_audioEngine.EnumerateOutputDevices(sinkList, passthrough);
   if (sinkList.empty())
-    list.push_back(StringSettingOption("Error - no devices found", "error"));
+    list.emplace_back("Error - no devices found", "error");
   else
   {
     for (AEDeviceList::const_iterator sink = sinkList.begin(); sink != sinkList.end(); ++sink)
@@ -164,7 +164,7 @@ void CActiveAESettings::SettingOptionsAudioDevicesFillerGeneral(SettingConstPtr 
       if (sink == sinkList.begin())
         firstDevice = sink->second;
 
-      list.push_back(StringSettingOption(sink->first, sink->second));
+      list.emplace_back(sink->first, sink->second);
 
       if (StringUtils::EqualsNoCase(current, sink->second))
         foundValue = true;

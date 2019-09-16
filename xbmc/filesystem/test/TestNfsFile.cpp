@@ -53,9 +53,9 @@ class ExportList
 
     ExportList()
     {
-      data.push_back("/srv/test");
-      data.push_back("/srv/test/tv");
-      data.push_back("/");
+      data.emplace_back("/srv/test");
+      data.emplace_back("/srv/test/tv");
+      data.emplace_back("/");
       data.sort();
       data.reverse();
     }

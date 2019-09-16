@@ -328,12 +328,12 @@ void CGUIDialogAudioSettings::AudioStreamsOptionFiller(SettingConstPtr setting, 
 
     strItem += FormatFlags(info.flags);
     strItem += StringUtils::Format(" (%i/%i)", i + 1, audioStreamCount);
-    list.push_back(IntegerSettingOption(strItem, i));
+    list.emplace_back(strItem, i);
   }
 
   if (list.empty())
   {
-    list.push_back(IntegerSettingOption(g_localizeStrings.Get(231), -1));
+    list.emplace_back(g_localizeStrings.Get(231), -1);
     current = -1;
   }
 }

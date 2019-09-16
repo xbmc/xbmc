@@ -473,7 +473,7 @@ void CGUITextureManager::ReleaseTexture(const std::string& strTextureName, bool 
       {
         //CLog::Log(LOGINFO, "  cleanup:%s", strTextureName.c_str());
         // add to our textures to free
-        m_unusedTextures.push_back(std::make_pair(pMap, immediately ? 0 : XbmcThreads::SystemClockMillis()));
+        m_unusedTextures.emplace_back(pMap, immediately ? 0 : XbmcThreads::SystemClockMillis());
         i = m_vecTextures.erase(i);
       }
       return;

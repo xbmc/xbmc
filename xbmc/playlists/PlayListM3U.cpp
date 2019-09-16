@@ -128,10 +128,9 @@ bool CPlayListM3U::Load(const std::string& strFileName)
         iEqualSign > iColon)
       {
         std::string strFirst, strSecond;
-        properties.push_back(std::make_pair(
-          StringUtils::Trim((strFirst = strLine.substr(iColon+1, iEqualSign - iColon -1))),
-          StringUtils::Trim((strSecond = strLine.substr(iEqualSign +1))))
-          );
+        properties.emplace_back(
+          StringUtils::Trim((strFirst = strLine.substr(iColon + 1, iEqualSign - iColon - 1))),
+          StringUtils::Trim((strSecond = strLine.substr(iEqualSign + 1))));
       }
     }
     else if (strLine != StartMarker &&

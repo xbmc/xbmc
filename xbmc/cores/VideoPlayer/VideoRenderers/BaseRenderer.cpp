@@ -485,7 +485,7 @@ void CBaseRenderer::SetVideoSettings(const CVideoSettings &settings)
 
 void CBaseRenderer::SettingOptionsRenderMethodsFiller(std::shared_ptr<const CSetting> setting, std::vector<IntegerSettingOption> &list, int &current, void *data)
 {
-  list.push_back(IntegerSettingOption(g_localizeStrings.Get(13416), RENDER_METHOD_AUTO));
+  list.emplace_back(g_localizeStrings.Get(13416), RENDER_METHOD_AUTO);
 
 #ifdef HAS_DX
   list.push_back(IntegerSettingOption(g_localizeStrings.Get(16319), RENDER_METHOD_DXVA));

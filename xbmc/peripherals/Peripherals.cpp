@@ -579,7 +579,7 @@ void CPeripherals::GetSettingsFromMappingsFile(TiXmlElement *xmlNode, std::map<s
         std::vector<std::string> valuesVec;
         StringUtils::Tokenize(strEnums, valuesVec, "|");
         for (unsigned int i = 0; i < valuesVec.size(); i++)
-          enums.push_back(std::make_pair(atoi(valuesVec[i].c_str()), atoi(valuesVec[i].c_str())));
+          enums.emplace_back(atoi(valuesVec[i].c_str()), atoi(valuesVec[i].c_str()));
         int iValue = currentNode->Attribute("value") ? atoi(currentNode->Attribute("value")) : 0;
         setting = std::make_shared<CSettingInt>(strKey, iLabelId, iValue, enums);
       }

@@ -194,7 +194,7 @@ addDiscoveredService(CFNetServiceBrowserRef browser, CFOptionFlags flags, CZeroc
       break;
   }
   if (serviceIt == services.end())
-    services.push_back(std::make_pair(fcr_service, 1));
+    services.emplace_back(fcr_service, 1);
   else
     ++serviceIt->second;
 }

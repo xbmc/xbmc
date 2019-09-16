@@ -339,7 +339,7 @@ bool CVideoThumbLoader::LoadItemCached(CFileItem* pItem)
   {
     std::vector<std::string> artTypes = GetArtTypes(pItem->HasVideoInfoTag() ? pItem->GetVideoInfoTag()->m_type : "");
     if (find(artTypes.begin(), artTypes.end(), "thumb") == artTypes.end())
-      artTypes.push_back("thumb"); // always look for "thumb" art for files
+      artTypes.emplace_back("thumb"); // always look for "thumb" art for files
     for (std::vector<std::string>::const_iterator i = artTypes.begin(); i != artTypes.end(); ++i)
     {
       std::string type = *i;
@@ -396,7 +396,7 @@ bool CVideoThumbLoader::LoadItemLookup(CFileItem* pItem)
   std::map<std::string, std::string> artwork = pItem->GetArt();
   std::vector<std::string> artTypes = GetArtTypes(pItem->HasVideoInfoTag() ? pItem->GetVideoInfoTag()->m_type : "");
   if (find(artTypes.begin(), artTypes.end(), "thumb") == artTypes.end())
-    artTypes.push_back("thumb"); // always look for "thumb" art for files
+    artTypes.emplace_back("thumb"); // always look for "thumb" art for files
   for (std::vector<std::string>::const_iterator i = artTypes.begin(); i != artTypes.end(); ++i)
   {
     std::string type = *i;

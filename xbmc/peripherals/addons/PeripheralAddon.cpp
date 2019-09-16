@@ -721,7 +721,7 @@ void CPeripheralAddon::RegisterButtonMap(CPeripheral* device, IButtonMap* button
   CSingleLock lock(m_buttonMapMutex);
 
   UnregisterButtonMap(buttonMap);
-  m_buttonMaps.push_back(std::make_pair(device, buttonMap));
+  m_buttonMaps.emplace_back(device, buttonMap);
 }
 
 void CPeripheralAddon::UnregisterButtonMap(IButtonMap* buttonMap)
