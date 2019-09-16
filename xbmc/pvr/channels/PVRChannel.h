@@ -14,7 +14,6 @@
 #include "threads/CriticalSection.h"
 #include "utils/ISerializable.h"
 #include "utils/ISortable.h"
-#include "utils/Observer.h"
 
 #include <memory>
 #include <string>
@@ -27,23 +26,16 @@ namespace PVR
   class CPVREpgInfoTag;
   class CPVRRadioRDSInfoTag;
 
-  /** PVR Channel class */
-  class CPVRChannel : public Observable,
-                      public ISerializable,
-                      public ISortable
+  class CPVRChannel : public ISerializable, public ISortable
   {
     friend class CPVRDatabase;
 
   public:
-    /*! @brief Create a new channel */
     explicit CPVRChannel(bool bRadio = false);
     CPVRChannel(const PVR_CHANNEL &channel, unsigned int iClientId);
 
-  private:
-    CPVRChannel(const CPVRChannel &tag) = delete;
-    CPVRChannel &operator=(const CPVRChannel &channel) = delete;
+    virtual ~CPVRChannel() = default;
 
-  public:
     bool operator ==(const CPVRChannel &right) const;
     bool operator !=(const CPVRChannel &right) const;
 
@@ -430,6 +422,9 @@ namespace PVR
 
     //@}
   private:
+    CPVRChannel(const CPVRChannel& tag) = delete;
+    CPVRChannel& operator=(const CPVRChannel& channel) = delete;
+
     /*!
      * @brief Update the encryption name after SetEncryptionSystem() has been called.
      */

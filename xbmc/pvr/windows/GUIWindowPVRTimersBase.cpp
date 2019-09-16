@@ -31,13 +31,9 @@ using namespace PVR;
 CGUIWindowPVRTimersBase::CGUIWindowPVRTimersBase(bool bRadio, int id, const std::string &xmlFile) :
   CGUIWindowPVRBase(bRadio, id, xmlFile)
 {
-  CServiceBroker::GetGUI()->GetInfoManager().RegisterObserver(this);
 }
 
-CGUIWindowPVRTimersBase::~CGUIWindowPVRTimersBase()
-{
-  CServiceBroker::GetGUI()->GetInfoManager().UnregisterObserver(this);
-}
+CGUIWindowPVRTimersBase::~CGUIWindowPVRTimersBase() = default;
 
 bool CGUIWindowPVRTimersBase::OnAction(const CAction &action)
 {
@@ -146,23 +142,26 @@ bool CGUIWindowPVRTimersBase::OnMessage(CGUIMessage &message)
       }
       break;
     case GUI_MSG_REFRESH_LIST:
-      switch(message.GetParam1())
+    {
+      switch (static_cast<PVREvent>(message.GetParam1()))
       {
-        case ObservableMessageTimers:
-        case ObservableMessageEpg:
-        case ObservableMessageEpgContainer:
-        case ObservableMessageEpgActiveItem:
-        case ObservableMessageCurrentItem:
-        {
+        case PVREvent::CurrentItem:
+        case PVREvent::Epg:
+        case PVREvent::EpgActiveItem:
+        case PVREvent::EpgContainer:
+        case PVREvent::Timers:
           SetInvalid();
           break;
-        }
-        case ObservableMessageTimersReset:
-        {
+
+        case PVREvent::TimersInvalidated:
           Refresh(true);
           break;
-        }
+
+        default:
+          break;
       }
+      break;
+    }
   }
 
   return bReturn || CGUIWindowPVRBase::OnMessage(message);

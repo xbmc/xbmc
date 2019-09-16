@@ -12,7 +12,6 @@
 #include "pvr/PVRSettings.h"
 #include "pvr/PVRTypes.h"
 #include "threads/Thread.h"
-#include "utils/Observer.h"
 
 #include <map>
 #include <memory>
@@ -22,6 +21,7 @@
 namespace PVR
 {
   enum class TimerOperationResult;
+  enum class PVREvent;
 
   class CPVRTimerInfoTag;
   class CPVRTimersPath;
@@ -61,7 +61,7 @@ namespace PVR
     MapTags m_tags;
   };
 
-  class CPVRTimers : public CPVRTimersContainer, public Observer, private CThread
+  class CPVRTimers : public CPVRTimersContainer, private CThread
   {
   public:
     CPVRTimers(void);
@@ -249,7 +249,11 @@ namespace PVR
      */
     void UpdateChannels(void);
 
-    void Notify(const Observable &obs, const ObservableMessage msg) override;
+    /*!
+     * @brief CEventStream callback for PVR events.
+     * @param event The event.
+     */
+   void Notify(const PVREvent& event);
 
     /*!
      * @brief Get a timer tag given it's unique ID

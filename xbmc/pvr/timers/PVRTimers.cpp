@@ -104,7 +104,7 @@ bool CPVRTimers::Load(void)
 
   Update(); // update from clients
 
-  CServiceBroker::GetPVRManager().EpgContainer().RegisterObserver(this);
+  CServiceBroker::GetPVRManager().EpgContainer().Events().Subscribe(this, &CPVRTimers::Notify);
   Create();
 
   return bReturn;
@@ -113,7 +113,7 @@ bool CPVRTimers::Load(void)
 void CPVRTimers::Unload()
 {
   StopThread();
-  CServiceBroker::GetPVRManager().EpgContainer().UnregisterObserver(this);
+  CServiceBroker::GetPVRManager().EpgContainer().Events().Unsubscribe(this);
 
   // remove all tags
   CSingleLock lock(m_critSection);
@@ -1222,15 +1222,15 @@ CPVRTimerInfoTagPtr CPVRTimers::GetTimerRule(const CPVRTimerInfoTagPtr &timer) c
   return CPVRTimerInfoTagPtr();
 }
 
-void CPVRTimers::Notify(const Observable &obs, const ObservableMessage msg)
+void CPVRTimers::Notify(const PVREvent& event)
 {
-  switch (msg)
+  switch (static_cast<PVREvent>(event))
   {
-    case ObservableMessageEpgContainer:
+    case PVREvent::EpgContainer:
       CServiceBroker::GetPVRManager().TriggerTimersUpdate();
       break;
-    case ObservableMessageEpg:
-    case ObservableMessageEpgItemUpdate:
+    case PVREvent::Epg:
+    case PVREvent::EpgItemUpdate:
     {
       CSingleLock lock(m_critSection);
       m_bReminderRulesUpdatePending = true;
@@ -1329,11 +1329,5 @@ CPVRTimerInfoTagPtr CPVRTimers::GetById(unsigned int iTimerId) const
 
 void CPVRTimers::NotifyTimersEvent(bool bAddedOrDeleted /* = true */)
 {
-  CServiceBroker::GetPVRManager().SetChanged();
-  CServiceBroker::GetPVRManager().NotifyObservers(bAddedOrDeleted
-                                                  ? ObservableMessageTimersReset
-                                                  : ObservableMessageTimers);
-
-  if (bAddedOrDeleted)
-    CServiceBroker::GetPVRManager().PublishEvent(PVREvent::TimersInvalidated);
+  CServiceBroker::GetPVRManager().PublishEvent(bAddedOrDeleted ? PVREvent::TimersInvalidated : PVREvent::Timers);
 }

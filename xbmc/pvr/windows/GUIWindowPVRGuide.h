@@ -22,6 +22,8 @@ class CGUIMessage;
 
 namespace PVR
 {
+  enum class PVREvent;
+
   class CGUIEPGGridContainer;
   class CPVRRefreshTimelineItemsThread;
 
@@ -38,9 +40,10 @@ namespace PVR
     void GetContextButtons(int itemNumber, CContextButtons &buttons) override;
     bool OnContextButton(int itemNumber, CONTEXT_BUTTON button) override;
     void UpdateButtons(void) override;
-    void Notify(const Observable &obs, const ObservableMessage msg) override;
     void SetInvalid() override;
     bool Update(const std::string &strDirectory, bool updateFilterPath = true) override;
+
+    void NotifyEvent(const PVREvent& event) override;
 
     bool RefreshTimelineItems();
 

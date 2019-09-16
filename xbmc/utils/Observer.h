@@ -19,24 +19,9 @@ class ObservableMessageJob;
 typedef enum
 {
   ObservableMessageNone,
-  ObservableMessageCurrentItem,
-  ObservableMessageAddons,
-  ObservableMessageEpg,
-  ObservableMessageEpgContainer,
-  ObservableMessageEpgActiveItem,
-  ObservableMessageEpgItemUpdate,
-  ObservableMessageEpgUpdatePending,
-  ObservableMessageChannelGroup,
-  ObservableMessageChannelGroupReset,
-  ObservableMessageTimers,
-  ObservableMessageTimersReset,
-  ObservableMessageRecordings,
   ObservableMessagePeripheralsChanged,
-  ObservableMessageChannelGroupsLoaded,
-  ObservableMessageManagerStopped,
   ObservableMessageSettingsChanged,
   ObservableMessageButtonMapsChanged,
-  ObservableMessageChannelPlaybackStopped,
 } ObservableMessage;
 
 class Observer

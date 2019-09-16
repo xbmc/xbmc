@@ -15,7 +15,7 @@
 #include "threads/CriticalSection.h"
 #include "threads/Event.h"
 #include "threads/Thread.h"
-#include "utils/Observer.h"
+#include "utils/EventStream.h"
 
 #include <list>
 #include <map>
@@ -33,7 +33,9 @@ namespace PVR
   class CPVREpgDatabase;
   class CPVREpgInfoTag;
 
-  class CPVREpgContainer : public Observer, public Observable, private CThread
+  enum class PVREvent;
+
+  class CPVREpgContainer : private CThread
   {
     friend class CPVREpgDatabase;
 
@@ -53,6 +55,11 @@ namespace PVR
      * @return A pointer to the database instance.
      */
     CPVREpgDatabasePtr GetEpgDatabase() const;
+
+    /*!
+     * @brief Query the events available for CEventStream
+     */
+    CEventStream<PVREvent>& Events() { return m_events; }
 
     /*!
      * @brief Start the EPG update thread.
@@ -85,11 +92,10 @@ namespace PVR
     bool DeleteEpg(const CPVREpgPtr &epg, bool bDeleteFromDatabase = false);
 
     /*!
-     * @brief Process a notification from an observable.
-     * @param obs The observable that sent the update.
-     * @param msg The update message.
+     * @brief CEventStream callback for PVR events.
+     * @param event The event.
      */
-    void Notify(const Observable &obs, const ObservableMessage msg) override;
+    void Notify(const PVREvent& event);
 
     /*!
      * @brief Create the EPg for a given channel.
@@ -282,5 +288,6 @@ namespace PVR
 
     bool m_bUpdateNotificationPending = false; /*!< true while an epg updated notification to observers is pending. */
     CPVRSettings m_settings;
+    CEventSource<PVREvent> m_events;
   };
 }

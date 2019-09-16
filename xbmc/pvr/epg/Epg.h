@@ -12,7 +12,7 @@
 #include "addons/kodi-addon-dev-kit/include/kodi/xbmc_pvr_types.h"
 #include "pvr/PVRTypes.h"
 #include "threads/CriticalSection.h"
-#include "utils/Observer.h"
+#include "utils/EventStream.h"
 
 #include <map>
 #include <memory>
@@ -21,11 +21,13 @@
 
 namespace PVR
 {
+  enum class PVREvent;
+
   class CPVREpgChannelData;
   class CPVREpgDatabase;
   class CPVREpgInfoTag;
 
-  class CPVREpg : public Observable
+  class CPVREpg
   {
     friend class CPVREpgDatabase;
 
@@ -50,7 +52,7 @@ namespace PVR
     /*!
      * @brief Destroy this EPG instance.
      */
-    ~CPVREpg(void) override;
+    virtual ~CPVREpg();
 
     /*!
      * @brief Load all entries for this table from the given database.
@@ -245,6 +247,11 @@ namespace PVR
      */
     bool IsValid(void) const;
 
+    /*!
+     * @brief Query the events available for CEventStream
+     */
+    CEventStream<PVREvent>& Events() { return m_events; }
+
   private:
     CPVREpg(void) = delete;
     CPVREpg(const CPVREpg&) = delete;
@@ -312,5 +319,7 @@ namespace PVR
     bool                                m_bUpdateLastScanTime = false;
 
     std::shared_ptr<CPVREpgChannelData> m_channelData;
+
+    CEventSource<PVREvent> m_events;
   };
 }

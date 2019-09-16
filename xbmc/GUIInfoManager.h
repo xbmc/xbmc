@@ -13,7 +13,6 @@
 #include "interfaces/info/SkinVariable.h"
 #include "messaging/IMessageTarget.h"
 #include "threads/CriticalSection.h"
-#include "utils/Observer.h"
 
 #include <map>
 #include <memory>
@@ -51,7 +50,7 @@ namespace MUSIC_INFO
  \ingroup strings
  \brief
  */
-class CGUIInfoManager : public Observable, public KODI::MESSAGING::IMessageTarget
+class CGUIInfoManager : public KODI::MESSAGING::IMessageTarget
 {
 public:
   CGUIInfoManager(void);

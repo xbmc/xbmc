@@ -42,13 +42,9 @@ CGUIWindowPVRRecordingsBase::CGUIWindowPVRRecordingsBase(bool bRadio, int id, co
     CSettings::SETTING_MYVIDEOS_SELECTACTION
   })
 {
-  CServiceBroker::GetGUI()->GetInfoManager().RegisterObserver(this);
 }
 
-CGUIWindowPVRRecordingsBase::~CGUIWindowPVRRecordingsBase()
-{
-  CServiceBroker::GetGUI()->GetInfoManager().UnregisterObserver(this);
-}
+CGUIWindowPVRRecordingsBase::~CGUIWindowPVRRecordingsBase() = default;
 
 void CGUIWindowPVRRecordingsBase::OnWindowLoaded()
 {
@@ -297,25 +293,27 @@ bool CGUIWindowPVRRecordingsBase::OnMessage(CGUIMessage &message)
       }
       break;
     case GUI_MSG_REFRESH_LIST:
-      switch(message.GetParam1())
+    {
+      switch (static_cast<PVREvent>(message.GetParam1()))
       {
-        case ObservableMessageTimers:
-        case ObservableMessageEpg:
-        case ObservableMessageEpgContainer:
-        case ObservableMessageEpgActiveItem:
-        case ObservableMessageCurrentItem:
-        {
+        case PVREvent::CurrentItem:
+        case PVREvent::Epg:
+        case PVREvent::EpgActiveItem:
+        case PVREvent::EpgContainer:
+        case PVREvent::Timers:
           SetInvalid();
           break;
-        }
-        case ObservableMessageRecordings:
-        case ObservableMessageTimersReset:
-        {
+
+        case PVREvent::RecordingsInvalidated:
+        case PVREvent::TimersInvalidated:
           Refresh(true);
           break;
-        }
+
+        default:
+          break;
       }
       break;
+    }
   }
 
   return bReturn || CGUIWindowPVRBase::OnMessage(message);

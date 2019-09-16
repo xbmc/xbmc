@@ -144,7 +144,7 @@ void CPVREpgContainer::Clear()
     CSingleLock lock(m_critSection);
     /* clear all epg tables and remove pointers to epg tables on channels */
     for (const auto &epgEntry : m_epgIdToEpgMap)
-      epgEntry.second->UnregisterObserver(this);
+      epgEntry.second->Events().Unsubscribe(this);
 
     m_epgIdToEpgMap.clear();
     m_channelUidToEpgMap.clear();
@@ -155,12 +155,7 @@ void CPVREpgContainer::Clear()
     m_bUpdateNotificationPending = false;
   }
 
-  SetChanged();
-
-  {
-    CSingleExit ex(m_critSection);
-    NotifyObservers(ObservableMessageEpgContainer);
-  }
+  m_events.Publish(PVREvent::EpgContainer);
 
   if (bThreadRunning)
     Start(true);
@@ -237,24 +232,22 @@ void CPVREpgContainer::Stop(void)
   m_bStarted = false;
 }
 
-void CPVREpgContainer::Notify(const Observable &obs, const ObservableMessage msg)
+void CPVREpgContainer::Notify(const PVREvent& event)
 {
-  if (msg == ObservableMessageEpgItemUpdate)
+  if (event == PVREvent::EpgItemUpdate)
   {
     // there can be many of these notifications during short time period. Thus, announce async and not every event.
     CSingleLock lock(m_critSection);
     m_bUpdateNotificationPending = true;
     return;
   }
-  else if (msg == ObservableMessageEpgUpdatePending)
+  else if (event == PVREvent::EpgUpdatePending)
   {
     SetHasPendingUpdates(true);
     return;
   }
 
-  SetChanged();
-  CSingleExit ex(m_critSection);
-  NotifyObservers(msg);
+  m_events.Publish(event);
 }
 
 void CPVREpgContainer::LoadFromDB(void)
@@ -413,10 +406,7 @@ void CPVREpgContainer::Process(void)
       if (m_bUpdateNotificationPending)
       {
         m_bUpdateNotificationPending = false;
-        SetChanged();
-
-        CSingleExit ex(m_critSection);
-        NotifyObservers(ObservableMessageEpg);
+        m_events.Publish(PVREvent::Epg);
       }
     }
 
@@ -519,22 +509,12 @@ void CPVREpgContainer::InsertFromDB(const CPVREpgPtr &newEpg)
 {
   // table might already have been created when pvr channels were loaded
   CPVREpgPtr epg = GetById(newEpg->EpgID());
-  if (epg)
-  {
-    if (epg->Name() != newEpg->Name() || epg->ScraperName() != newEpg->ScraperName())
-    {
-      // current table data differs from the info in the db
-      epg->SetChanged();
-      SetChanged();
-    }
-  }
-  else
+  if (!epg)
   {
     // create a new epg table
     epg = newEpg;
     m_epgIdToEpgMap.insert({epg->EpgID(), epg});
-    SetChanged();
-    epg->RegisterObserver(this);
+    epg->Events().Subscribe(this, &CPVREpgContainer::Notify);
   }
 }
 
@@ -558,8 +538,7 @@ CPVREpgPtr CPVREpgContainer::CreateChannelEpg(int iEpgId, const std::string& str
     CSingleLock lock(m_critSection);
     m_epgIdToEpgMap.insert({iEpgId, epg});
     m_channelUidToEpgMap.insert({{channelData->ClientId(), channelData->UniqueClientChannelId()}, epg});
-    SetChanged();
-    epg->RegisterObserver(this);
+    epg->Events().Subscribe(this, &CPVREpgContainer::Notify);
   }
   else if (epg->ChannelID() == -1)
   {
@@ -574,8 +553,7 @@ CPVREpgPtr CPVREpgContainer::CreateChannelEpg(int iEpgId, const std::string& str
     CDateTime::GetCurrentDateTime().GetAsUTCDateTime().GetAsTime(m_iNextEpgUpdate);
   }
 
-  CSingleExit ex(m_critSection);
-  NotifyObservers(ObservableMessageEpgContainer);
+  m_events.Publish(PVREvent::EpgContainer);
 
   return epg;
 }
@@ -618,7 +596,7 @@ bool CPVREpgContainer::DeleteEpg(const CPVREpgPtr &epg, bool bDeleteFromDatabase
   if (bDeleteFromDatabase && UseDatabase())
     m_database->Delete(*epgEntry->second);
 
-  epgEntry->second->UnregisterObserver(this);
+  epgEntry->second->Events().Unsubscribe(this);
   m_epgIdToEpgMap.erase(epgEntry);
 
   return true;
@@ -742,11 +720,7 @@ bool CPVREpgContainer::UpdateEPG(bool bOnlyPending /* = false */)
 
   /* notify observers */
   if (iUpdatedTables > 0)
-  {
-    SetChanged();
-    CSingleExit ex(m_critSection);
-    NotifyObservers(ObservableMessageEpgContainer);
-  }
+    m_events.Publish(PVREvent::EpgContainer);
 
   CSingleLock lock(m_critSection);
   m_bIsUpdating = false;
@@ -826,11 +800,8 @@ bool CPVREpgContainer::CheckPlayingEvents(void)
   }
 
   if (bFoundChanges)
-  {
-    SetChanged();
-    CSingleExit ex(m_critSection);
-    NotifyObservers(ObservableMessageEpgActiveItem);
-  }
+    m_events.Publish(PVREvent::EpgActiveItem);
+
   return bReturn;
 }
 

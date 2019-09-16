@@ -11,7 +11,6 @@
 #include "pvr/PVRTypes.h"
 #include "threads/CriticalSection.h"
 #include "threads/SystemClock.h"
-#include "utils/Observer.h"
 #include "windows/GUIMediaWindow.h"
 
 #include <atomic>
@@ -38,6 +37,8 @@ class CGUIDialogProgressBarHandle;
 
 namespace PVR
 {
+  enum class PVREvent;
+
   enum EPGSelectAction
   {
     EPG_SELECT_ACTION_CONTEXT_MENU   = 0,
@@ -50,7 +51,7 @@ namespace PVR
 
   class CGUIPVRChannelGroupsSelector;
 
-  class CGUIWindowPVRBase : public CGUIMediaWindow, public Observer
+  class CGUIWindowPVRBase : public CGUIMediaWindow
   {
   public:
     ~CGUIWindowPVRBase(void) override;
@@ -62,9 +63,15 @@ namespace PVR
     void UpdateButtons(void) override;
     bool OnAction(const CAction &action) override;
     bool OnBack(int actionID) override;
-    void Notify(const Observable &obs, const ObservableMessage msg) override;
     void SetInvalid() override;
     bool CanBeActivated() const override;
+
+    /*!
+     * @brief CEventStream callback for PVR events.
+     * @param event The event.
+     */
+    void Notify(const PVREvent& event);
+    virtual void NotifyEvent(const PVREvent& event);
 
     /*!
      * @brief Refresh window content.

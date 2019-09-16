@@ -44,14 +44,12 @@ CGUIWindowPVRChannelsBase::CGUIWindowPVRChannelsBase(bool bRadio, int id, const 
   CGUIWindowPVRBase(bRadio, id, xmlFile),
   m_bShowHiddenChannels(false)
 {
-  CServiceBroker::GetPVRManager().EpgContainer().RegisterObserver(this);
-  CServiceBroker::GetGUI()->GetInfoManager().RegisterObserver(this);
+  CServiceBroker::GetPVRManager().EpgContainer().Events().Subscribe(static_cast<CGUIWindowPVRBase*>(this), &CGUIWindowPVRBase::Notify);
 }
 
 CGUIWindowPVRChannelsBase::~CGUIWindowPVRChannelsBase()
 {
-  CServiceBroker::GetGUI()->GetInfoManager().UnregisterObserver(this);
-  CServiceBroker::GetPVRManager().EpgContainer().UnregisterObserver(this);
+  CServiceBroker::GetPVRManager().EpgContainer().Events().Unsubscribe(this);
 }
 
 void CGUIWindowPVRChannelsBase::GetContextButtons(int itemNumber, CContextButtons &buttons)
@@ -200,27 +198,30 @@ bool CGUIWindowPVRChannelsBase::OnMessage(CGUIMessage& message)
         bReturn = true;
       }
       break;
+
     case GUI_MSG_REFRESH_LIST:
-      switch(message.GetParam1())
+    {
+      switch (static_cast<PVREvent>(message.GetParam1()))
       {
-        case ObservableMessageChannelGroup:
-        case ObservableMessageTimers:
-        case ObservableMessageEpg:
-        case ObservableMessageEpgContainer:
-        case ObservableMessageEpgActiveItem:
-        case ObservableMessageCurrentItem:
-        case ObservableMessageRecordings:
-        {
+        case PVREvent::ChannelGroup:
+        case PVREvent::CurrentItem:
+        case PVREvent::Epg:
+        case PVREvent::EpgActiveItem:
+        case PVREvent::EpgContainer:
+        case PVREvent::RecordingsInvalidated:
+        case PVREvent::Timers:
           SetInvalid();
           break;
-        }
-        case ObservableMessageChannelGroupReset:
-        {
+
+        case PVREvent::ChannelGroupInvalidated:
           Refresh(true);
           break;
-        }
+
+        default:
+          break;
       }
       break;
+    }
   }
 
   return bReturn || CGUIWindowPVRBase::OnMessage(message);

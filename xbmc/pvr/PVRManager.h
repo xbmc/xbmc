@@ -18,7 +18,6 @@
 #include "threads/Event.h"
 #include "threads/Thread.h"
 #include "utils/EventStream.h"
-#include "utils/Observer.h"
 
 #include <memory>
 #include <string>
@@ -44,15 +43,32 @@ namespace PVR
     ManagerInterrupted,
     ManagerStarted,
 
+    // Channel events
+    ChannelPlaybackStopped,
+
+    // Channel group events
+    ChannelGroup,
+    ChannelGroupInvalidated,
+    ChannelGroupsInvalidated,
+    ChannelGroupsLoaded,
+
     // Recording events
     RecordingsInvalidated,
 
     // Timer events
-    TimersInvalidated,
     AnnounceReminder,
+    Timers,
+    TimersInvalidated,
 
-    // Channel events
-    ChannelGroupsInvalidated,
+    // EPG events
+    Epg,
+    EpgActiveItem,
+    EpgContainer,
+    EpgItemUpdate,
+    EpgUpdatePending,
+
+    // Item events
+    CurrentItem,
   };
 
   class CPVRManagerJobQueue
@@ -75,7 +91,7 @@ namespace PVR
     bool m_bStopped = true;
   };
 
-  class CPVRManager : private CThread, public Observable, public ANNOUNCEMENT::IAnnouncer
+  class CPVRManager : private CThread, public ANNOUNCEMENT::IAnnouncer
   {
   public:
     /*!

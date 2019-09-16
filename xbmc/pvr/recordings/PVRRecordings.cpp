@@ -73,8 +73,6 @@ void CPVRRecordings::Update(void)
   m_bIsUpdating = false;
   lock.Leave();
 
-  CServiceBroker::GetPVRManager().SetChanged();
-  CServiceBroker::GetPVRManager().NotifyObservers(ObservableMessageRecordings);
   CServiceBroker::GetPVRManager().PublishEvent(PVREvent::RecordingsInvalidated);
 }
 

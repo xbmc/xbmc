@@ -12,14 +12,15 @@
 #include "pvr/PVRTypes.h"
 #include "pvr/dialogs/GUIDialogPVRItemsViewBase.h"
 #include "threads/SystemClock.h"
-#include "utils/Observer.h"
 
 #include <map>
 #include <string>
 
 namespace PVR
 {
-  class CGUIDialogPVRChannelsOSD : public CGUIDialogPVRItemsViewBase, public Observer, public CPVRChannelNumberInputHandler
+  enum class PVREvent;
+
+  class CGUIDialogPVRChannelsOSD : public CGUIDialogPVRItemsViewBase, public CPVRChannelNumberInputHandler
   {
   public:
     CGUIDialogPVRChannelsOSD(void);
@@ -27,8 +28,11 @@ namespace PVR
     bool OnMessage(CGUIMessage& message) override;
     bool OnAction(const CAction &action) override;
 
-    // Observer implementation
-    void Notify(const Observable &obs, const ObservableMessage msg) override;
+    /*!
+     * @brief CEventStream callback for PVR events.
+     * @param event The event.
+     */
+    void Notify(const PVREvent& event);
 
     // CPVRChannelNumberInputHandler implementation
     void GetChannelNumbers(std::vector<std::string>& channelNumbers) override;

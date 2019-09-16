@@ -15,7 +15,6 @@
 #include "pvr/addons/PVRClients.h"
 #include "threads/CriticalSection.h"
 #include "threads/Thread.h"
-#include "utils/Observer.h"
 
 #include <atomic>
 #include <string>
@@ -36,7 +35,9 @@ namespace GUIINFO
 
 namespace PVR
 {
-  class CPVRGUIInfo : public KODI::GUILIB::GUIINFO::CGUIInfoProvider, private CThread, private Observer
+  enum class PVREvent;
+
+  class CPVRGUIInfo : public KODI::GUILIB::GUIINFO::CGUIInfoProvider, private CThread
   {
   public:
     CPVRGUIInfo(void);
@@ -45,7 +46,11 @@ namespace PVR
     void Start(void);
     void Stop(void);
 
-    void Notify(const Observable &obs, const ObservableMessage msg) override;
+    /*!
+     * @brief CEventStream callback for PVR events.
+     * @param event The event.
+     */
+    void Notify(const PVREvent& event);
 
     // KODI::GUILIB::GUIINFO::IGUIInfoProvider implementation
     bool InitCurrentItem(CFileItem *item) override;

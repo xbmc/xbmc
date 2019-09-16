@@ -115,7 +115,7 @@ void CPVRGUIInfo::Start(void)
 void CPVRGUIInfo::Stop(void)
 {
   StopThread();
-  CServiceBroker::GetPVRManager().UnregisterObserver(this);
+  CServiceBroker::GetPVRManager().Events().Unsubscribe(this);
 
   CGUIComponent* gui = CServiceBroker::GetGUI();
   if (gui)
@@ -125,9 +125,9 @@ void CPVRGUIInfo::Stop(void)
   }
 }
 
-void CPVRGUIInfo::Notify(const Observable &obs, const ObservableMessage msg)
+void CPVRGUIInfo::Notify(const PVREvent& event)
 {
-  if (msg == ObservableMessageTimers || msg == ObservableMessageTimersReset)
+  if (event == PVREvent::Timers || event == PVREvent::TimersInvalidated)
     UpdateTimersCache();
 }
 
@@ -137,7 +137,7 @@ void CPVRGUIInfo::Process(void)
   int toggleInterval = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_iPVRInfoToggleInterval / 1000;
 
   /* updated on request */
-  CServiceBroker::GetPVRManager().RegisterObserver(this);
+  CServiceBroker::GetPVRManager().Events().Subscribe(this, &CPVRGUIInfo::Notify);
   UpdateTimersCache();
 
   /* update the backend cache once initially */
@@ -273,6 +273,7 @@ void CPVRGUIInfo::UpdateTimeshiftData(void)
 
 bool CPVRGUIInfo::InitCurrentItem(CFileItem *item)
 {
+  CServiceBroker::GetPVRManager().PublishEvent(PVREvent::CurrentItem);
   return false;
 }
 
