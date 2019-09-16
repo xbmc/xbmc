@@ -139,7 +139,10 @@ bool CGUIDialogPVRGuideInfo::OnClickButtonFind(CGUIMessage &message)
   bool bReturn = false;
 
   if (message.GetSenderId() == CONTROL_BTN_FIND)
-    return CServiceBroker::GetPVRManager().GUIActions()->FindSimilar(CFileItemPtr(new CFileItem(m_progItem)), this);
+  {
+    Close();
+    return CServiceBroker::GetPVRManager().GUIActions()->FindSimilar(std::make_shared<CFileItem>(m_progItem));
+  }
 
   return bReturn;
 }
