@@ -59,10 +59,13 @@ CPVREpgInfoTag::CPVREpgInfoTag(const EPG_TAG& data, int iClientId, const std::sh
   m_iYear(data.iYear),
   m_startTime(data.startTime + CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_iPVRTimeCorrection),
   m_endTime(data.endTime + CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_iPVRTimeCorrection),
-  m_firstAired(data.firstAired + CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_iPVRTimeCorrection),
   m_iFlags(data.iFlags),
   m_iEpgID(iEpgID)
 {
+  // firstAired is optional, so check if supported before assigning it
+  if (data.firstAired > 0)
+    m_firstAired = time_t(data.firstAired + CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_iPVRTimeCorrection);
+
   if (channelData)
   {
     m_channelData = channelData;
