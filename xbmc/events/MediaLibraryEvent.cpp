@@ -110,7 +110,7 @@ bool CMediaLibraryEvent::Execute() const
 
   std::vector<std::string> params;
   params.push_back(path);
-  params.push_back("return");
+  params.emplace_back("return");
   CServiceBroker::GetGUI()->GetWindowManager().ActivateWindow(windowId, params);
   return true;
 }

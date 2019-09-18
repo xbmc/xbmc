@@ -332,13 +332,13 @@ void CGUIDialogSubtitleSettings::SubtitleStreamsOptionFiller(SettingConstPtr set
     strItem += FormatFlags(info.flags);
     strItem += StringUtils::Format(" (%i/%i)", i + 1, subtitleStreamCount);
 
-    list.push_back(IntegerSettingOption(strItem, i));
+    list.emplace_back(strItem, i);
   }
 
   // no subtitle streams - just add a "None" entry
   if (list.empty())
   {
-    list.push_back(IntegerSettingOption(g_localizeStrings.Get(231), -1));
+    list.emplace_back(g_localizeStrings.Get(231), -1);
     current = -1;
   }
 }

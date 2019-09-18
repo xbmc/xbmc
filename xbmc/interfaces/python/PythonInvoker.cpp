@@ -91,7 +91,7 @@ static std::vector<std::vector<char>> storeArgumentsCCompatible(std::vector<std:
                 [](std::string const & i) { return std::vector<char>(i.c_str(), i.c_str() + i.length() + 1); });
 
   if (output.empty())
-    output.push_back(std::vector<char>(1u, '\0'));
+    output.emplace_back(1u, '\0');
 
   return output;
 }

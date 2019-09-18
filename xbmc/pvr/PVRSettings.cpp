@@ -159,8 +159,7 @@ void CPVRSettings::MarginTimeFiller(
 
   for (int iValue : marginTimeValues)
   {
-    list.push_back(
-      IntegerSettingOption(StringUtils::Format(g_localizeStrings.Get(14044).c_str(), iValue) /* %i min */, iValue));
+    list.emplace_back(StringUtils::Format(g_localizeStrings.Get(14044).c_str(), iValue) /* %i min */, iValue);
   }
 }
 

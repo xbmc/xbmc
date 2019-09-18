@@ -523,7 +523,8 @@ void CGUIFontTTFBase::DrawTextInternal(float x, float y, const std::vector<UTILS
                                                           dirtyCache);
       CVertexBuffer newVertexBuffer = CreateVertexBuffer(*tempVertices);
       vertexBuffer = newVertexBuffer;
-      m_vertexTrans.push_back(CTranslatedVertices(0, 0, 0, &vertexBuffer, CServiceBroker::GetWinSystem()->GetGfxContext().GetClipRegion()));
+      m_vertexTrans.emplace_back(0, 0, 0, &vertexBuffer,
+                                 CServiceBroker::GetWinSystem()->GetGfxContext().GetClipRegion());
     }
     else
     {
@@ -540,7 +541,8 @@ void CGUIFontTTFBase::DrawTextInternal(float x, float y, const std::vector<UTILS
   else
   {
     if (hardwareClipping)
-      m_vertexTrans.push_back(CTranslatedVertices(dynamicPos.m_x, dynamicPos.m_y, dynamicPos.m_z, &vertexBuffer, CServiceBroker::GetWinSystem()->GetGfxContext().GetClipRegion()));
+      m_vertexTrans.emplace_back(dynamicPos.m_x, dynamicPos.m_y, dynamicPos.m_z, &vertexBuffer,
+                                 CServiceBroker::GetWinSystem()->GetGfxContext().GetClipRegion());
     else
       /* Append the vertices from the cache to the set collected since the first Begin() call */
       m_vertex.insert(m_vertex.end(), vertices->begin(), vertices->end());

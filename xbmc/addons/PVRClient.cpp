@@ -1813,7 +1813,7 @@ void CPVRClientCapabilities::InitRecordingsLifetimeValues()
         // No description given by addon. Create one from value.
         strDescr = StringUtils::Format("%d", iValue);
       }
-      m_recordingsLifetimeValues.push_back(std::make_pair(strDescr, iValue));
+      m_recordingsLifetimeValues.emplace_back(strDescr, iValue);
     }
   }
   else if (SupportsRecordingsLifetimeChange())
@@ -1821,7 +1821,8 @@ void CPVRClientCapabilities::InitRecordingsLifetimeValues()
     // No values given by addon, but lifetime supported. Use default values 1..365
     for (int i = 1; i < 366; ++i)
     {
-      m_recordingsLifetimeValues.push_back(std::make_pair(StringUtils::Format(g_localizeStrings.Get(17999).c_str(), i), i)); // "%s days"
+      m_recordingsLifetimeValues.emplace_back(StringUtils::Format(g_localizeStrings.Get(17999).c_str(), i),
+                                              i); // "%s days"
     }
   }
   else

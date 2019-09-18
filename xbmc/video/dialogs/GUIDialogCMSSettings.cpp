@@ -226,6 +226,6 @@ void CGUIDialogCMSSettings::Cms3dLutsFiller(
 
   for (int i = 0; i < items.Size(); i++)
   {
-    list.push_back(StringSettingOption(items[i]->GetLabel(), items[i]->GetPath()));
+    list.emplace_back(items[i]->GetLabel(), items[i]->GetPath());
   }
 }

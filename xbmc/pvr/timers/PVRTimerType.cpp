@@ -258,7 +258,7 @@ void CPVRTimerType::InitPriorityValues(const PVR_TIMER_TYPE &type)
         // No description given by addon. Create one from value.
         strDescr = StringUtils::Format("%d", type.priorities[i].iValue);
       }
-      m_priorityValues.push_back(std::make_pair(strDescr, type.priorities[i].iValue));
+      m_priorityValues.emplace_back(strDescr, type.priorities[i].iValue);
     }
 
     m_iPriorityDefault = type.iPrioritiesDefault;
@@ -267,7 +267,7 @@ void CPVRTimerType::InitPriorityValues(const PVR_TIMER_TYPE &type)
   {
     // No values given by addon, but priority supported. Use default values 1..100
     for (int i = 1; i < 101; ++i)
-      m_priorityValues.push_back(std::make_pair(StringUtils::Format("%d", i), i));
+      m_priorityValues.emplace_back(StringUtils::Format("%d", i), i);
 
     m_iPriorityDefault = DEFAULT_RECORDING_PRIORITY;
   }
@@ -297,7 +297,7 @@ void CPVRTimerType::InitLifetimeValues(const PVR_TIMER_TYPE &type)
         // No description given by addon. Create one from value.
         strDescr = StringUtils::Format("%d", iValue);
       }
-      m_lifetimeValues.push_back(std::make_pair(strDescr, iValue));
+      m_lifetimeValues.emplace_back(strDescr, iValue);
     }
 
     m_iLifetimeDefault = type.iLifetimesDefault;
@@ -307,7 +307,7 @@ void CPVRTimerType::InitLifetimeValues(const PVR_TIMER_TYPE &type)
     // No values given by addon, but lifetime supported. Use default values 1..365
     for (int i = 1; i < 366; ++i)
     {
-      m_lifetimeValues.push_back(std::make_pair(StringUtils::Format(g_localizeStrings.Get(17999).c_str(), i), i)); // "%s days"
+      m_lifetimeValues.emplace_back(StringUtils::Format(g_localizeStrings.Get(17999).c_str(), i), i); // "%s days"
     }
     m_iLifetimeDefault = DEFAULT_RECORDING_LIFETIME;
   }
@@ -336,7 +336,7 @@ void CPVRTimerType::InitMaxRecordingsValues(const PVR_TIMER_TYPE &type)
         // No description given by addon. Create one from value.
         strDescr = StringUtils::Format("%d", type.maxRecordings[i].iValue);
       }
-      m_maxRecordingsValues.push_back(std::make_pair(strDescr, type.maxRecordings[i].iValue));
+      m_maxRecordingsValues.emplace_back(strDescr, type.maxRecordings[i].iValue);
     }
 
     m_iMaxRecordingsDefault = type.iMaxRecordingsDefault;
@@ -361,7 +361,7 @@ void CPVRTimerType::InitPreventDuplicateEpisodesValues(const PVR_TIMER_TYPE &typ
         // No description given by addon. Create one from value.
         strDescr = StringUtils::Format("%d", type.preventDuplicateEpisodes[i].iValue);
       }
-      m_preventDupEpisodesValues.push_back(std::make_pair(strDescr, type.preventDuplicateEpisodes[i].iValue));
+      m_preventDupEpisodesValues.emplace_back(strDescr, type.preventDuplicateEpisodes[i].iValue);
     }
 
     m_iPreventDupEpisodesDefault = type.iPreventDuplicateEpisodesDefault;
@@ -369,8 +369,8 @@ void CPVRTimerType::InitPreventDuplicateEpisodesValues(const PVR_TIMER_TYPE &typ
   else if (SupportsRecordOnlyNewEpisodes())
   {
     // No values given by addon, but prevent duplicate episodes supported. Use default values 0..1
-    m_preventDupEpisodesValues.push_back(std::make_pair(g_localizeStrings.Get(815), 0)); // "Record all episodes"
-    m_preventDupEpisodesValues.push_back(std::make_pair(g_localizeStrings.Get(816), 1)); // "Record only new episodes"
+    m_preventDupEpisodesValues.emplace_back(g_localizeStrings.Get(815), 0); // "Record all episodes"
+    m_preventDupEpisodesValues.emplace_back(g_localizeStrings.Get(816), 1); // "Record only new episodes"
     m_iPreventDupEpisodesDefault = DEFAULT_RECORDING_DUPLICATEHANDLING;
   }
   else
@@ -400,7 +400,7 @@ void CPVRTimerType::InitRecordingGroupValues(const PVR_TIMER_TYPE &type)
                                        g_localizeStrings.Get(811).c_str(), // Recording group
                                        type.recordingGroup[i].iValue);
       }
-      m_recordingGroupValues.push_back(std::make_pair(strDescr, type.recordingGroup[i].iValue));
+      m_recordingGroupValues.emplace_back(strDescr, type.recordingGroup[i].iValue);
     }
 
     m_iRecordingGroupDefault = type.iRecordingGroupDefault;

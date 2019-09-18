@@ -487,7 +487,7 @@ bool CGUIControlGroup::InsertControl(CGUIControl *control, const CGUIControl *in
 void CGUIControlGroup::SaveStates(std::vector<CControlState> &states)
 {
   // save our state, and that of our children
-  states.push_back(CControlState(GetID(), m_focusedControl));
+  states.emplace_back(GetID(), m_focusedControl);
   for (auto *control : m_children)
     control->SaveStates(states);
 }

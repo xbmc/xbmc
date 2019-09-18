@@ -606,7 +606,7 @@ std::shared_ptr<CSettingList> CGUIDialogSettingsManualBase::AddList(SettingGroup
 
   std::vector<CVariant> valueList;
   for (std::vector<std::string>::const_iterator itValue = values.begin(); itValue != values.end(); ++itValue)
-    valueList.push_back(CVariant(*itValue));
+    valueList.emplace_back(*itValue);
   SettingList settingValues;
   if (!CSettingUtils::ValuesToList(setting, valueList, settingValues))
     return NULL;
@@ -642,7 +642,7 @@ std::shared_ptr<CSettingList> CGUIDialogSettingsManualBase::AddList(SettingGroup
 
   std::vector<CVariant> valueList;
   for (std::vector<int>::const_iterator itValue = values.begin(); itValue != values.end(); ++itValue)
-    valueList.push_back(CVariant(*itValue));
+    valueList.emplace_back(*itValue);
   SettingList settingValues;
   if (!CSettingUtils::ValuesToList(setting, valueList, settingValues))
     return NULL;
@@ -678,7 +678,7 @@ std::shared_ptr<CSettingList> CGUIDialogSettingsManualBase::AddList(SettingGroup
 
   std::vector<CVariant> valueList;
   for (std::vector<int>::const_iterator itValue = values.begin(); itValue != values.end(); ++itValue)
-    valueList.push_back(CVariant(*itValue));
+    valueList.emplace_back(*itValue);
   SettingList settingValues;
   if (!CSettingUtils::ValuesToList(setting, valueList, settingValues))
     return NULL;
@@ -714,7 +714,7 @@ std::shared_ptr<CSettingList> CGUIDialogSettingsManualBase::AddList(SettingGroup
 
   std::vector<CVariant> valueList;
   for (std::vector<int>::const_iterator itValue = values.begin(); itValue != values.end(); ++itValue)
-    valueList.push_back(CVariant(*itValue));
+    valueList.emplace_back(*itValue);
   SettingList settingValues;
   if (!CSettingUtils::ValuesToList(setting, valueList, settingValues))
     return NULL;
@@ -953,8 +953,8 @@ std::shared_ptr<CSettingList> CGUIDialogSettingsManualBase::AddRange(SettingGrou
     return NULL;
 
   std::vector<CVariant> valueList;
-  valueList.push_back(valueLower);
-  valueList.push_back(valueUpper);
+  valueList.emplace_back(valueLower);
+  valueList.emplace_back(valueUpper);
   SettingList settingValues;
   if (!CSettingUtils::ValuesToList(setting, valueList, settingValues))
     return NULL;
@@ -992,8 +992,8 @@ std::shared_ptr<CSettingList> CGUIDialogSettingsManualBase::AddRange(SettingGrou
     return NULL;
 
   std::vector<CVariant> valueList;
-  valueList.push_back(valueLower);
-  valueList.push_back(valueUpper);
+  valueList.emplace_back(valueLower);
+  valueList.emplace_back(valueUpper);
   SettingList settingValues;
   if (!CSettingUtils::ValuesToList(setting, valueList, settingValues))
     return NULL;

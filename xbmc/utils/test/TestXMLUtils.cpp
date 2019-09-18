@@ -236,11 +236,11 @@ TEST(TestXMLUtils, SetStringArray)
 {
   CXBMCTinyXML a;
   std::vector<std::string> strarray;
-  strarray.push_back("some string1");
-  strarray.push_back("some string2");
-  strarray.push_back("some string3");
-  strarray.push_back("some string4");
-  strarray.push_back("some string5");
+  strarray.emplace_back("some string1");
+  strarray.emplace_back("some string2");
+  strarray.emplace_back("some string3");
+  strarray.emplace_back("some string4");
+  strarray.emplace_back("some string5");
 
   a.Parse(std::string("<root></root>"));
   XMLUtils::SetStringArray(a.RootElement(), "node", strarray);

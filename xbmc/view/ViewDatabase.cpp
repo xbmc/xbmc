@@ -72,7 +72,7 @@ void CViewDatabase::UpdateTables(int version)
           path = CLegacyPathTranslation::TranslateVideoDbPath(path);
 
         if (!StringUtils::EqualsNoCase(path, originalPath))
-          paths.push_back(std::make_pair(m_pDS->fv(0).get_asInt(), path));
+          paths.emplace_back(m_pDS->fv(0).get_asInt(), path);
         m_pDS->next();
       }
       m_pDS->close();

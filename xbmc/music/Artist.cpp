@@ -128,7 +128,7 @@ bool CArtist::Load(const TiXmlElement *artist, bool append, bool prioritise)
       const TiXmlNode* year = node->FirstChild("year");
       if (year && year->FirstChild())
         strYear = year->FirstChild()->Value();
-      discography.push_back(make_pair(strTitle,strYear));
+      discography.emplace_back(strTitle, strYear);
     }
     node = node->NextSiblingElement("album");
   }

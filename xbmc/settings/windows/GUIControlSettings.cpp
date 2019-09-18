@@ -1158,13 +1158,13 @@ bool CGUIControlRangeSetting::OnClick()
   switch (listDefintion->GetType())
   {
     case SettingType::Integer:
-      values.push_back(m_pSlider->GetIntValue(CGUISliderControl::RangeSelectorLower));
-      values.push_back(m_pSlider->GetIntValue(CGUISliderControl::RangeSelectorUpper));
+      values.emplace_back(m_pSlider->GetIntValue(CGUISliderControl::RangeSelectorLower));
+      values.emplace_back(m_pSlider->GetIntValue(CGUISliderControl::RangeSelectorUpper));
       break;
 
     case SettingType::Number:
-      values.push_back(m_pSlider->GetFloatValue(CGUISliderControl::RangeSelectorLower));
-      values.push_back(m_pSlider->GetFloatValue(CGUISliderControl::RangeSelectorUpper));
+      values.emplace_back(m_pSlider->GetFloatValue(CGUISliderControl::RangeSelectorLower));
+      values.emplace_back(m_pSlider->GetFloatValue(CGUISliderControl::RangeSelectorUpper));
       break;
 
     default:

@@ -808,9 +808,8 @@ void CGUIDialogPVRTimerSettings::TypesFiller(
     bool foundCurrent(false);
     for (const auto &typeEntry : pThis->m_typeEntries)
     {
-      list.push_back(IntegerSettingOption(typeEntry.second->GetDescription(),
-                                          typeEntry.first,
-                                          typeEntry.second->IsReminder() ? reminderTimerProps : recordingTimerProps));
+      list.emplace_back(typeEntry.second->GetDescription(), typeEntry.first,
+                        typeEntry.second->IsReminder() ? reminderTimerProps : recordingTimerProps);
 
       if (!foundCurrent && (*(pThis->m_timerType) == *(typeEntry.second)))
       {
@@ -883,11 +882,11 @@ void CGUIDialogPVRTimerSettings::DaysFiller(
     const CDateTime oldCDate(oldCDateTime.GetYear(), oldCDateTime.GetMonth(), oldCDateTime.GetDay(), 0, 0, 0);
 
     if ((oldCDate < time) || (oldCDate > yesterdayPlusOneYear))
-      list.push_back(IntegerSettingOption(oldCDate.GetAsLocalizedDate(true /*long date*/), GetDateAsIndex(oldCDate)));
+      list.emplace_back(oldCDate.GetAsLocalizedDate(true /*long date*/), GetDateAsIndex(oldCDate));
 
     while (time <= yesterdayPlusOneYear)
     {
-      list.push_back(IntegerSettingOption(time.GetAsLocalizedDate(true /*long date*/), GetDateAsIndex(time)));
+      list.emplace_back(time.GetAsLocalizedDate(true /*long date*/), GetDateAsIndex(time));
       time += CDateTimeSpan(1, 0, 0, 0);
     }
 
@@ -928,13 +927,13 @@ void CGUIDialogPVRTimerSettings::WeekdaysFiller(
   if (pThis)
   {
     list.clear();
-    list.push_back(IntegerSettingOption(g_localizeStrings.Get(831), PVR_WEEKDAY_MONDAY));    // "Mondays"
-    list.push_back(IntegerSettingOption(g_localizeStrings.Get(832), PVR_WEEKDAY_TUESDAY));   // "Tuesdays"
-    list.push_back(IntegerSettingOption(g_localizeStrings.Get(833), PVR_WEEKDAY_WEDNESDAY)); // "Wednesdays"
-    list.push_back(IntegerSettingOption(g_localizeStrings.Get(834), PVR_WEEKDAY_THURSDAY));  // "Thursdays"
-    list.push_back(IntegerSettingOption(g_localizeStrings.Get(835), PVR_WEEKDAY_FRIDAY));    // "Fridays"
-    list.push_back(IntegerSettingOption(g_localizeStrings.Get(836), PVR_WEEKDAY_SATURDAY));  // "Saturdays"
-    list.push_back(IntegerSettingOption(g_localizeStrings.Get(837), PVR_WEEKDAY_SUNDAY));    // "Sundays"
+    list.emplace_back(g_localizeStrings.Get(831), PVR_WEEKDAY_MONDAY); // "Mondays"
+    list.emplace_back(g_localizeStrings.Get(832), PVR_WEEKDAY_TUESDAY); // "Tuesdays"
+    list.emplace_back(g_localizeStrings.Get(833), PVR_WEEKDAY_WEDNESDAY); // "Wednesdays"
+    list.emplace_back(g_localizeStrings.Get(834), PVR_WEEKDAY_THURSDAY); // "Thursdays"
+    list.emplace_back(g_localizeStrings.Get(835), PVR_WEEKDAY_FRIDAY); // "Fridays"
+    list.emplace_back(g_localizeStrings.Get(836), PVR_WEEKDAY_SATURDAY); // "Saturdays"
+    list.emplace_back(g_localizeStrings.Get(837), PVR_WEEKDAY_SUNDAY); // "Sundays"
 
     current = pThis->m_iWeekdays;
   }

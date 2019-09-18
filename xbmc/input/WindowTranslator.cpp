@@ -185,7 +185,7 @@ void CWindowTranslator::GetWindows(std::vector<std::string> &windowList)
   windowList.clear();
   windowList.reserve(WindowMappingByName.size());
   for (auto itMapping : WindowMappingByName)
-    windowList.push_back(itMapping.windowName);
+    windowList.emplace_back(itMapping.windowName);
 }
 
 int CWindowTranslator::TranslateWindow(const std::string &window)

@@ -751,7 +751,7 @@ void CGUIDialogMediaFilter::GetStringListOptions(SettingConstPtr setting, std::v
     return;
 
   for (const auto& item : items)
-    list.push_back(StringSettingOption(item, item));
+    list.emplace_back(item, item);
 }
 
 void CGUIDialogMediaFilter::GetRange(const Filter &filter, int &min, int &interval, int &max)

@@ -203,29 +203,29 @@ void CAdvancedSettings::Initialize()
   m_videoCleanDateTimeRegExp = "(.*[^ _\\,\\.\\(\\)\\[\\]\\-])[ _\\.\\(\\)\\[\\]\\-]+(19[0-9][0-9]|20[0-9][0-9])([ _\\,\\.\\(\\)\\[\\]\\-]|[^0-9]$)?";
 
   m_videoCleanStringRegExps.clear();
-  m_videoCleanStringRegExps.push_back("[ _\\,\\.\\(\\)\\[\\]\\-](ac3|dts|custom|dc|remastered|divx|divx5|dsr|dsrip|dutch|dvd|dvd5|dvd9|dvdrip|dvdscr|dvdscreener|screener|dvdivx|cam|fragment|fs|hdtv|hdrip|hdtvrip|internal|limited|multisubs|ntsc|ogg|ogm|pal|pdtv|proper|repack|rerip|retail|r3|r5|bd5|se|svcd|swedish|german|read.nfo|nfofix|unrated|extended|ws|telesync|ts|telecine|tc|brrip|bdrip|480p|480i|576p|576i|720p|720i|1080p|1080i|3d|hrhd|hrhdtv|hddvd|bluray|x264|h264|xvid|xvidvd|xxx|www.www|cd[1-9]|\\[.*\\])([ _\\,\\.\\(\\)\\[\\]\\-]|$)");
-  m_videoCleanStringRegExps.push_back("(\\[.*\\])");
+  m_videoCleanStringRegExps.emplace_back("[ _\\,\\.\\(\\)\\[\\]\\-](ac3|dts|custom|dc|remastered|divx|divx5|dsr|dsrip|dutch|dvd|dvd5|dvd9|dvdrip|dvdscr|dvdscreener|screener|dvdivx|cam|fragment|fs|hdtv|hdrip|hdtvrip|internal|limited|multisubs|ntsc|ogg|ogm|pal|pdtv|proper|repack|rerip|retail|r3|r5|bd5|se|svcd|swedish|german|read.nfo|nfofix|unrated|extended|ws|telesync|ts|telecine|tc|brrip|bdrip|480p|480i|576p|576i|720p|720i|1080p|1080i|3d|hrhd|hrhdtv|hddvd|bluray|x264|h264|xvid|xvidvd|xxx|www.www|cd[1-9]|\\[.*\\])([ _\\,\\.\\(\\)\\[\\]\\-]|$)");
+  m_videoCleanStringRegExps.emplace_back("(\\[.*\\])");
 
   // this vector will be inserted at the end to
   // m_moviesExcludeFromScanRegExps, m_tvshowExcludeFromScanRegExps and
   // m_audioExcludeFromScanRegExps
   m_allExcludeFromScanRegExps.clear();
-  m_allExcludeFromScanRegExps.push_back("[\\/].+\\.ite[\\/]");  // ignore itunes extras dir
-  m_allExcludeFromScanRegExps.push_back("[\\/]\\.\\_");
-  m_allExcludeFromScanRegExps.push_back("\\.DS_Store");
-  m_allExcludeFromScanRegExps.push_back("\\.AppleDouble");
+  m_allExcludeFromScanRegExps.emplace_back("[\\/].+\\.ite[\\/]"); // ignore itunes extras dir
+  m_allExcludeFromScanRegExps.emplace_back("[\\/]\\.\\_");
+  m_allExcludeFromScanRegExps.emplace_back("\\.DS_Store");
+  m_allExcludeFromScanRegExps.emplace_back("\\.AppleDouble");
 
   m_moviesExcludeFromScanRegExps.clear();
-  m_moviesExcludeFromScanRegExps.push_back("-trailer");
-  m_moviesExcludeFromScanRegExps.push_back("[!-._ \\\\/]sample[-._ \\\\/]");
-  m_moviesExcludeFromScanRegExps.push_back("[\\/](proof|subs)[\\/]");
+  m_moviesExcludeFromScanRegExps.emplace_back("-trailer");
+  m_moviesExcludeFromScanRegExps.emplace_back("[!-._ \\\\/]sample[-._ \\\\/]");
+  m_moviesExcludeFromScanRegExps.emplace_back("[\\/](proof|subs)[\\/]");
   m_moviesExcludeFromScanRegExps.insert(m_moviesExcludeFromScanRegExps.end(),
                                         m_allExcludeFromScanRegExps.begin(),
                                         m_allExcludeFromScanRegExps.end());
 
 
   m_tvshowExcludeFromScanRegExps.clear();
-  m_tvshowExcludeFromScanRegExps.push_back("[!-._ \\\\/]sample[-._ \\\\/]");
+  m_tvshowExcludeFromScanRegExps.emplace_back("[!-._ \\\\/]sample[-._ \\\\/]");
   m_tvshowExcludeFromScanRegExps.insert(m_tvshowExcludeFromScanRegExps.end(),
                                         m_allExcludeFromScanRegExps.begin(),
                                         m_allExcludeFromScanRegExps.end());
@@ -237,12 +237,12 @@ void CAdvancedSettings::Initialize()
                                         m_allExcludeFromScanRegExps.end());
 
   m_folderStackRegExps.clear();
-  m_folderStackRegExps.push_back("((cd|dvd|dis[ck])[0-9]+)$");
+  m_folderStackRegExps.emplace_back("((cd|dvd|dis[ck])[0-9]+)$");
 
   m_videoStackRegExps.clear();
-  m_videoStackRegExps.push_back("(.*?)([ _.-]*(?:cd|dvd|p(?:(?:ar)?t)|dis[ck])[ _.-]*[0-9]+)(.*?)(\\.[^.]+)$");
-  m_videoStackRegExps.push_back("(.*?)([ _.-]*(?:cd|dvd|p(?:(?:ar)?t)|dis[ck])[ _.-]*[a-d])(.*?)(\\.[^.]+)$");
-  m_videoStackRegExps.push_back("(.*?)([ ._-]*[a-d])(.*?)(\\.[^.]+)$");
+  m_videoStackRegExps.emplace_back("(.*?)([ _.-]*(?:cd|dvd|p(?:(?:ar)?t)|dis[ck])[ _.-]*[0-9]+)(.*?)(\\.[^.]+)$");
+  m_videoStackRegExps.emplace_back("(.*?)([ _.-]*(?:cd|dvd|p(?:(?:ar)?t)|dis[ck])[ _.-]*[a-d])(.*?)(\\.[^.]+)$");
+  m_videoStackRegExps.emplace_back("(.*?)([ ._-]*[a-d])(.*?)(\\.[^.]+)$");
   // This one is a bit too greedy to enable by default.  It will stack sequels
   // in a flat dir structure, but is perfectly safe in a dir-per-vid one.
   //m_videoStackRegExps.push_back("(.*?)([ ._-]*[0-9])(.*?)(\\.[^.]+)$");
@@ -1430,32 +1430,32 @@ bool CAdvancedSettings::CanLogComponent(int component) const
 
 void CAdvancedSettings::SettingOptionsLoggingComponentsFiller(SettingConstPtr setting, std::vector<IntegerSettingOption> &list, int &current, void *data)
 {
-  list.push_back(IntegerSettingOption(g_localizeStrings.Get(669), LOGSAMBA));
-  list.push_back(IntegerSettingOption(g_localizeStrings.Get(670), LOGCURL));
-  list.push_back(IntegerSettingOption(g_localizeStrings.Get(672), LOGFFMPEG));
-  list.push_back(IntegerSettingOption(g_localizeStrings.Get(675), LOGJSONRPC));
-  list.push_back(IntegerSettingOption(g_localizeStrings.Get(676), LOGAUDIO));
-  list.push_back(IntegerSettingOption(g_localizeStrings.Get(680), LOGVIDEO));
-  list.push_back(IntegerSettingOption(g_localizeStrings.Get(683), LOGAVTIMING));
-  list.push_back(IntegerSettingOption(g_localizeStrings.Get(684), LOGWINDOWING));
-  list.push_back(IntegerSettingOption(g_localizeStrings.Get(685), LOGPVR));
-  list.push_back(IntegerSettingOption(g_localizeStrings.Get(686), LOGEPG));
+  list.emplace_back(g_localizeStrings.Get(669), LOGSAMBA);
+  list.emplace_back(g_localizeStrings.Get(670), LOGCURL);
+  list.emplace_back(g_localizeStrings.Get(672), LOGFFMPEG);
+  list.emplace_back(g_localizeStrings.Get(675), LOGJSONRPC);
+  list.emplace_back(g_localizeStrings.Get(676), LOGAUDIO);
+  list.emplace_back(g_localizeStrings.Get(680), LOGVIDEO);
+  list.emplace_back(g_localizeStrings.Get(683), LOGAVTIMING);
+  list.emplace_back(g_localizeStrings.Get(684), LOGWINDOWING);
+  list.emplace_back(g_localizeStrings.Get(685), LOGPVR);
+  list.emplace_back(g_localizeStrings.Get(686), LOGEPG);
 #ifdef HAS_DBUS
-  list.push_back(IntegerSettingOption(g_localizeStrings.Get(674), LOGDBUS));
+  list.emplace_back(g_localizeStrings.Get(674), LOGDBUS);
 #endif
 #ifdef HAS_WEB_SERVER
-  list.push_back(IntegerSettingOption(g_localizeStrings.Get(681), LOGWEBSERVER));
+  list.emplace_back(g_localizeStrings.Get(681), LOGWEBSERVER);
 #endif
 #ifdef HAS_AIRTUNES
-  list.push_back(IntegerSettingOption(g_localizeStrings.Get(677), LOGAIRTUNES));
+  list.emplace_back(g_localizeStrings.Get(677), LOGAIRTUNES);
 #endif
 #ifdef HAS_UPNP
-  list.push_back(IntegerSettingOption(g_localizeStrings.Get(678), LOGUPNP));
+  list.emplace_back(g_localizeStrings.Get(678), LOGUPNP);
 #endif
 #ifdef HAVE_LIBCEC
-  list.push_back(IntegerSettingOption(g_localizeStrings.Get(679), LOGCEC));
+  list.emplace_back(g_localizeStrings.Get(679), LOGCEC);
 #endif
-  list.push_back(IntegerSettingOption(g_localizeStrings.Get(682), LOGDATABASE));
+  list.emplace_back(g_localizeStrings.Get(682), LOGDATABASE);
 }
 
 void CAdvancedSettings::SetExtraLogLevel(const std::vector<CVariant> &components)

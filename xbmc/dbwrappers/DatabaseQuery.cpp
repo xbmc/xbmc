@@ -139,7 +139,7 @@ bool CDatabaseQueryRule::Load(const CVariant &obj)
         m_parameter.push_back(val->asString());
     }
     if (m_parameter.empty())
-      m_parameter.push_back("");
+      m_parameter.emplace_back("");
   }
   else
     return false;
@@ -205,7 +205,7 @@ std::string CDatabaseQueryRule::GetLocalizedOperator(SEARCH_OPERATOR oper)
 void CDatabaseQueryRule::GetAvailableOperators(std::vector<std::string> &operatorList)
 {
   for (const operatorField& o : operators)
-    operatorList.push_back(o.string);
+    operatorList.emplace_back(o.string);
 }
 
 std::string CDatabaseQueryRule::GetParameter() const

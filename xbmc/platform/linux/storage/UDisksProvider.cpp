@@ -339,7 +339,7 @@ std::vector<std::string> CUDisksProvider::EnumerateDisks()
     if (dbus_message_get_args (reply, NULL, DBUS_TYPE_ARRAY, DBUS_TYPE_OBJECT_PATH, &disks, &length, DBUS_TYPE_INVALID))
     {
       for (int i = 0; i < length; i++)
-        devices.push_back(disks[i]);
+        devices.emplace_back(disks[i]);
 
       dbus_free_string_array(disks);
     }

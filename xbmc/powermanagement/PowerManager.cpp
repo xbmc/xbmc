@@ -265,16 +265,16 @@ void CPowerManager::RestorePlayerState()
 void CPowerManager::SettingOptionsShutdownStatesFiller(SettingConstPtr setting, std::vector<IntegerSettingOption> &list, int &current, void *data)
 {
   if (CServiceBroker::GetPowerManager().CanPowerdown())
-    list.push_back(IntegerSettingOption(g_localizeStrings.Get(13005), POWERSTATE_SHUTDOWN));
+    list.emplace_back(g_localizeStrings.Get(13005), POWERSTATE_SHUTDOWN);
   if (CServiceBroker::GetPowerManager().CanHibernate())
-    list.push_back(IntegerSettingOption(g_localizeStrings.Get(13010), POWERSTATE_HIBERNATE));
+    list.emplace_back(g_localizeStrings.Get(13010), POWERSTATE_HIBERNATE);
   if (CServiceBroker::GetPowerManager().CanSuspend())
-    list.push_back(IntegerSettingOption(g_localizeStrings.Get(13011), POWERSTATE_SUSPEND));
+    list.emplace_back(g_localizeStrings.Get(13011), POWERSTATE_SUSPEND);
   if (!g_application.IsStandAlone())
   {
-    list.push_back(IntegerSettingOption(g_localizeStrings.Get(13009), POWERSTATE_QUIT));
+    list.emplace_back(g_localizeStrings.Get(13009), POWERSTATE_QUIT);
 #if !defined(TARGET_DARWIN_EMBEDDED)
-    list.push_back(IntegerSettingOption(g_localizeStrings.Get(13014), POWERSTATE_MINIMIZE));
+    list.emplace_back(g_localizeStrings.Get(13014), POWERSTATE_MINIMIZE);
 #endif
   }
 }

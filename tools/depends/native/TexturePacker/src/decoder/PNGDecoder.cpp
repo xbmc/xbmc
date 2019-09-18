@@ -243,5 +243,5 @@ void PNGDecoder::FreeDecodedFrames(DecodedFrames &frames)
 
 void PNGDecoder::FillSupportedExtensions()
 {
-  m_supportedExtensions.push_back(".png");
+  m_supportedExtensions.emplace_back(".png");
 }

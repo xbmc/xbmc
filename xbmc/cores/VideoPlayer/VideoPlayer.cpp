@@ -4535,7 +4535,7 @@ void CVideoPlayer::UpdatePlayState(double timeout)
       {
         std::string name;
         m_pDemuxer->GetChapterName(name, i + 1);
-        state.chapters.push_back(make_pair(name, m_pDemuxer->GetChapterPos(i + 1)));
+        state.chapters.emplace_back(name, m_pDemuxer->GetChapterPos(i + 1));
       }
     }
     CServiceBroker::GetDataCacheCore().SetChapters(state.chapters);

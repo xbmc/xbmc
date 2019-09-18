@@ -699,11 +699,9 @@ void CDisplaySettings::SettingOptionsModesFiller(std::shared_ptr<const CSetting>
     {
       auto setting = GetStringFromResolution((RESOLUTION)index, mode.fRefreshRate);
 
-      list.push_back(StringSettingOption(
-        StringUtils::Format("%dx%d%s %0.2fHz", mode.iScreenWidth, mode.iScreenHeight,
-                            ModeFlagsToString(mode.dwFlags, false).c_str(),
-                            mode.fRefreshRate),
-                            setting));
+      list.emplace_back(StringUtils::Format("%dx%d%s %0.2fHz", mode.iScreenWidth, mode.iScreenHeight,
+                                            ModeFlagsToString(mode.dwFlags, false).c_str(), mode.fRefreshRate),
+                        setting);
     }
   }
 
@@ -712,10 +710,10 @@ void CDisplaySettings::SettingOptionsModesFiller(std::shared_ptr<const CSetting>
 
 void CDisplaySettings::SettingOptionsRefreshChangeDelaysFiller(SettingConstPtr setting, std::vector<IntegerSettingOption> &list, int &current, void *data)
 {
-  list.push_back(IntegerSettingOption(g_localizeStrings.Get(13551), 0));
+  list.emplace_back(g_localizeStrings.Get(13551), 0);
 
   for (int i = 1; i <= MAX_REFRESH_CHANGE_DELAY; i++)
-    list.push_back(IntegerSettingOption(StringUtils::Format(g_localizeStrings.Get(13553).c_str(), (double)i / 10.0), i));
+    list.emplace_back(StringUtils::Format(g_localizeStrings.Get(13553).c_str(), static_cast<double>(i) / 10.0), i);
 }
 
 void CDisplaySettings::SettingOptionsRefreshRatesFiller(SettingConstPtr setting, std::vector<StringSettingOption> &list, std::string &current, void *data)
@@ -729,7 +727,7 @@ void CDisplaySettings::SettingOptionsRefreshRatesFiller(SettingConstPtr setting,
   if (res == RES_WINDOW)
   {
     current = "WINDOW";
-    list.push_back(StringSettingOption(g_localizeStrings.Get(242), current));
+    list.emplace_back(g_localizeStrings.Get(242), current);
     return;
   }
 
@@ -743,7 +741,7 @@ void CDisplaySettings::SettingOptionsRefreshRatesFiller(SettingConstPtr setting,
     std::string screenmode = GetStringFromResolution((RESOLUTION)refreshrate->ResInfo_Index, refreshrate->RefreshRate);
     if (!match && StringUtils::EqualsNoCase(std::static_pointer_cast<const CSettingString>(setting)->GetValue(), screenmode))
       match = true;
-    list.push_back(StringSettingOption(StringUtils::Format("%.2f", refreshrate->RefreshRate), screenmode));
+    list.emplace_back(StringUtils::Format("%.2f", refreshrate->RefreshRate), screenmode);
   }
 
   if (!match)
@@ -757,7 +755,7 @@ void CDisplaySettings::SettingOptionsResolutionsFiller(SettingConstPtr setting, 
   if (res == RES_WINDOW)
   {
     current = res;
-    list.push_back(IntegerSettingOption(g_localizeStrings.Get(242), res));
+    list.emplace_back(g_localizeStrings.Get(242), res);
   }
   else
   {
@@ -765,10 +763,9 @@ void CDisplaySettings::SettingOptionsResolutionsFiller(SettingConstPtr setting, 
     std::vector<RESOLUTION_WHR> resolutions = CServiceBroker::GetWinSystem()->ScreenResolutions(info.fRefreshRate);
     for (std::vector<RESOLUTION_WHR>::const_iterator resolution = resolutions.begin(); resolution != resolutions.end(); ++resolution)
     {
-      list.push_back(IntegerSettingOption(
-        StringUtils::Format("%dx%d%s", resolution->width, resolution->height,
-                            ModeFlagsToString(resolution->flags, false).c_str()),
-                            resolution->ResInfo_Index));
+      list.emplace_back(StringUtils::Format("%dx%d%s", resolution->width, resolution->height,
+                                            ModeFlagsToString(resolution->flags, false).c_str()),
+                        resolution->ResInfo_Index);
 
       resolutionInfos.insert(std::make_pair((RESOLUTION)resolution->ResInfo_Index, CDisplaySettings::GetInstance().GetResolutionInfo(resolution->ResInfo_Index)));
     }
@@ -786,9 +783,9 @@ void CDisplaySettings::SettingOptionsDispModeFiller(SettingConstPtr setting, std
   // does not support windowed modes, we would just shoot ourselves in the foot
   // by offering the option.
   if (CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_canWindowed && CServiceBroker::GetWinSystem()->CanDoWindowed())
-    list.push_back(IntegerSettingOption(g_localizeStrings.Get(242), DM_WINDOWED));
+    list.emplace_back(g_localizeStrings.Get(242), DM_WINDOWED);
 
-  list.push_back(IntegerSettingOption(g_localizeStrings.Get(244), DM_FULLSCREEN));
+  list.emplace_back(g_localizeStrings.Get(244), DM_FULLSCREEN);
 }
 
 void CDisplaySettings::SettingOptionsStereoscopicModesFiller(SettingConstPtr setting, std::vector<IntegerSettingOption> &list, int &current, void *data)
@@ -802,7 +799,7 @@ void CDisplaySettings::SettingOptionsStereoscopicModesFiller(SettingConstPtr set
     {
       RENDER_STEREO_MODE mode = (RENDER_STEREO_MODE) i;
       if (CServiceBroker::GetRenderSystem()->SupportsStereo(mode))
-        list.push_back(IntegerSettingOption(stereoscopicsManager.GetLabelForStereoMode(mode), mode));
+        list.emplace_back(stereoscopicsManager.GetLabelForStereoMode(mode), mode);
     }
   }
 }
@@ -811,14 +808,15 @@ void CDisplaySettings::SettingOptionsPreferredStereoscopicViewModesFiller(Settin
 {
   const CStereoscopicsManager &stereoscopicsManager = CServiceBroker::GetGUI()->GetStereoscopicsManager();
 
-  list.push_back(IntegerSettingOption(stereoscopicsManager.GetLabelForStereoMode(RENDER_STEREO_MODE_AUTO), RENDER_STEREO_MODE_AUTO)); // option for autodetect
+  list.emplace_back(stereoscopicsManager.GetLabelForStereoMode(RENDER_STEREO_MODE_AUTO),
+                    RENDER_STEREO_MODE_AUTO); // option for autodetect
   // don't add "off" to the list of preferred modes as this doesn't make sense
   for (int i = RENDER_STEREO_MODE_OFF +1; i < RENDER_STEREO_MODE_COUNT; i++)
   {
     RENDER_STEREO_MODE mode = (RENDER_STEREO_MODE) i;
     // also skip "mono" mode which is no real stereoscopic mode
     if (mode != RENDER_STEREO_MODE_MONO && CServiceBroker::GetRenderSystem()->SupportsStereo(mode))
-      list.push_back(IntegerSettingOption(stereoscopicsManager.GetLabelForStereoMode(mode), mode));
+      list.emplace_back(stereoscopicsManager.GetLabelForStereoMode(mode), mode);
   }
 }
 
@@ -843,7 +841,7 @@ void CDisplaySettings::SettingOptionsMonitorsFiller(SettingConstPtr setting, std
     {
       current = monitors[i];
     }
-    list.push_back(StringSettingOption(monitors[i], monitors[i]));
+    list.emplace_back(monitors[i], monitors[i]);
   }
 #elif defined(HAVE_WAYLAND) || defined(TARGET_WINDOWS_DESKTOP)
   std::vector<std::string> monitors;
@@ -861,14 +859,14 @@ void CDisplaySettings::SettingOptionsMonitorsFiller(SettingConstPtr setting, std
     {
       foundMonitor = true;
     }
-    list.push_back(StringSettingOption(monitor, monitor));
+    list.emplace_back(monitor, monitor);
   }
 
   if (!foundMonitor && !current.empty())
   {
     // Add current value so no monitor change is triggered when entering the settings screen and
     // the preferred monitor is preserved
-    list.push_back(StringSettingOption(current, current));
+    list.emplace_back(current, current);
   }
 #endif
 }
@@ -884,34 +882,34 @@ void CDisplaySettings::ClearCustomResolutions()
 
 void CDisplaySettings::SettingOptionsCmsModesFiller(SettingConstPtr setting, std::vector<IntegerSettingOption> &list, int &current, void *data)
 {
-  list.push_back(IntegerSettingOption(g_localizeStrings.Get(36580), CMS_MODE_3DLUT));
+  list.emplace_back(g_localizeStrings.Get(36580), CMS_MODE_3DLUT);
 #ifdef HAVE_LCMS2
-  list.push_back(IntegerSettingOption(g_localizeStrings.Get(36581), CMS_MODE_PROFILE));
+  list.emplace_back(g_localizeStrings.Get(36581), CMS_MODE_PROFILE);
 #endif
 }
 
 void CDisplaySettings::SettingOptionsCmsWhitepointsFiller(SettingConstPtr setting, std::vector<IntegerSettingOption> &list, int &current, void *data)
 {
-  list.push_back(IntegerSettingOption(g_localizeStrings.Get(36586), CMS_WHITEPOINT_D65));
-  list.push_back(IntegerSettingOption(g_localizeStrings.Get(36587), CMS_WHITEPOINT_D93));
+  list.emplace_back(g_localizeStrings.Get(36586), CMS_WHITEPOINT_D65);
+  list.emplace_back(g_localizeStrings.Get(36587), CMS_WHITEPOINT_D93);
 }
 
 void CDisplaySettings::SettingOptionsCmsPrimariesFiller(SettingConstPtr setting, std::vector<IntegerSettingOption> &list, int &current, void *data)
 {
-  list.push_back(IntegerSettingOption(g_localizeStrings.Get(36588), CMS_PRIMARIES_AUTO));
-  list.push_back(IntegerSettingOption(g_localizeStrings.Get(36589), CMS_PRIMARIES_BT709));
-  list.push_back(IntegerSettingOption(g_localizeStrings.Get(36579), CMS_PRIMARIES_BT2020));
-  list.push_back(IntegerSettingOption(g_localizeStrings.Get(36590), CMS_PRIMARIES_170M));
-  list.push_back(IntegerSettingOption(g_localizeStrings.Get(36591), CMS_PRIMARIES_BT470M));
-  list.push_back(IntegerSettingOption(g_localizeStrings.Get(36592), CMS_PRIMARIES_BT470BG));
-  list.push_back(IntegerSettingOption(g_localizeStrings.Get(36593), CMS_PRIMARIES_240M));
+  list.emplace_back(g_localizeStrings.Get(36588), CMS_PRIMARIES_AUTO);
+  list.emplace_back(g_localizeStrings.Get(36589), CMS_PRIMARIES_BT709);
+  list.emplace_back(g_localizeStrings.Get(36579), CMS_PRIMARIES_BT2020);
+  list.emplace_back(g_localizeStrings.Get(36590), CMS_PRIMARIES_170M);
+  list.emplace_back(g_localizeStrings.Get(36591), CMS_PRIMARIES_BT470M);
+  list.emplace_back(g_localizeStrings.Get(36592), CMS_PRIMARIES_BT470BG);
+  list.emplace_back(g_localizeStrings.Get(36593), CMS_PRIMARIES_240M);
 }
 
 void CDisplaySettings::SettingOptionsCmsGammaModesFiller(SettingConstPtr setting, std::vector<IntegerSettingOption> &list, int &current, void *data)
 {
-  list.push_back(IntegerSettingOption(g_localizeStrings.Get(36582), CMS_TRC_BT1886));
-  list.push_back(IntegerSettingOption(g_localizeStrings.Get(36583), CMS_TRC_INPUT_OFFSET));
-  list.push_back(IntegerSettingOption(g_localizeStrings.Get(36584), CMS_TRC_OUTPUT_OFFSET));
-  list.push_back(IntegerSettingOption(g_localizeStrings.Get(36585), CMS_TRC_ABSOLUTE));
+  list.emplace_back(g_localizeStrings.Get(36582), CMS_TRC_BT1886);
+  list.emplace_back(g_localizeStrings.Get(36583), CMS_TRC_INPUT_OFFSET);
+  list.emplace_back(g_localizeStrings.Get(36584), CMS_TRC_OUTPUT_OFFSET);
+  list.emplace_back(g_localizeStrings.Get(36585), CMS_TRC_ABSOLUTE);
 }
 

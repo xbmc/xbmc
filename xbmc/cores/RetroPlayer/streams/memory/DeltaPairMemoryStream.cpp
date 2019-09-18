@@ -22,7 +22,7 @@ void CDeltaPairMemoryStream::Reset()
 
 void CDeltaPairMemoryStream::SubmitFrameInternal()
 {
-  m_rewindBuffer.push_back(MemoryFrame());
+  m_rewindBuffer.emplace_back();
   MemoryFrame& frame = m_rewindBuffer.back();
 
   // Record frame history

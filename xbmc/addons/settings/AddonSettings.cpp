@@ -1526,7 +1526,7 @@ void CAddonSettings::FileEnumSettingOptionsFiller(std::shared_ptr<const CSetting
     {
       if (settingPath->HideExtension())
         item->RemoveExtension();
-      list.push_back(StringSettingOption(item->GetLabel(), item->GetLabel()));
+      list.emplace_back(item->GetLabel(), item->GetLabel());
     }
   }
 }

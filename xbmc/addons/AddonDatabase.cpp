@@ -447,7 +447,7 @@ bool CAddonDatabase::GetAvailableVersions(const std::string& addonId,
     {
       AddonVersion version(m_pDS->fv(0).get_asString());
       std::string repo = m_pDS->fv(1).get_asString();
-      versionsInfo.push_back(std::make_pair(version, repo));
+      versionsInfo.emplace_back(version, repo);
       m_pDS->next();
     }
     return true;

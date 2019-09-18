@@ -1159,7 +1159,10 @@ void CLangInfo::SettingOptionsShortDateFormatsFiller(SettingConstPtr setting, st
 
   CDateTime now = CDateTime::GetCurrentDateTime();
 
-  list.push_back(StringSettingOption(StringUtils::Format(g_localizeStrings.Get(20035).c_str(), now.GetAsLocalizedDate(g_langInfo.m_currentRegion->m_strDateFormatShort).c_str()), SETTING_REGIONAL_DEFAULT));
+  list.emplace_back(
+    StringUtils::Format(g_localizeStrings.Get(20035).c_str(),
+                        now.GetAsLocalizedDate(g_langInfo.m_currentRegion->m_strDateFormatShort).c_str()),
+    SETTING_REGIONAL_DEFAULT);
   if (shortDateFormatSetting == SETTING_REGIONAL_DEFAULT)
   {
     match = true;
@@ -1168,7 +1171,7 @@ void CLangInfo::SettingOptionsShortDateFormatsFiller(SettingConstPtr setting, st
 
   for (const std::string& shortDateFormat : shortDateFormats)
   {
-    list.push_back(StringSettingOption(now.GetAsLocalizedDate(shortDateFormat), shortDateFormat));
+    list.emplace_back(now.GetAsLocalizedDate(shortDateFormat), shortDateFormat);
 
     if (!match && shortDateFormatSetting == shortDateFormat)
     {
@@ -1188,7 +1191,10 @@ void CLangInfo::SettingOptionsLongDateFormatsFiller(SettingConstPtr setting, std
 
   CDateTime now = CDateTime::GetCurrentDateTime();
 
-  list.push_back(StringSettingOption(StringUtils::Format(g_localizeStrings.Get(20035).c_str(), now.GetAsLocalizedDate(g_langInfo.m_currentRegion->m_strDateFormatLong).c_str()), SETTING_REGIONAL_DEFAULT));
+  list.emplace_back(
+    StringUtils::Format(g_localizeStrings.Get(20035).c_str(),
+                        now.GetAsLocalizedDate(g_langInfo.m_currentRegion->m_strDateFormatLong).c_str()),
+    SETTING_REGIONAL_DEFAULT);
   if (longDateFormatSetting == SETTING_REGIONAL_DEFAULT)
   {
     match = true;
@@ -1197,7 +1203,7 @@ void CLangInfo::SettingOptionsLongDateFormatsFiller(SettingConstPtr setting, std
 
   for (const std::string& longDateFormat : longDateFormats)
   {
-    list.push_back(StringSettingOption(now.GetAsLocalizedDate(longDateFormat), longDateFormat));
+    list.emplace_back(now.GetAsLocalizedDate(longDateFormat), longDateFormat);
 
     if (!match && longDateFormatSetting == longDateFormat)
     {
@@ -1218,7 +1224,10 @@ void CLangInfo::SettingOptionsTimeFormatsFiller(SettingConstPtr setting, std::ve
   CDateTime now = CDateTime::GetCurrentDateTime();
   bool use24hourFormat = g_langInfo.Use24HourClock();
 
-  list.push_back(StringSettingOption(StringUtils::Format(g_localizeStrings.Get(20035).c_str(), ToSettingTimeFormat(now, g_langInfo.m_currentRegion->m_strTimeFormat).c_str()), SETTING_REGIONAL_DEFAULT));
+  list.emplace_back(
+    StringUtils::Format(g_localizeStrings.Get(20035).c_str(),
+                        ToSettingTimeFormat(now, g_langInfo.m_currentRegion->m_strTimeFormat).c_str()),
+    SETTING_REGIONAL_DEFAULT);
   if (timeFormatSetting == SETTING_REGIONAL_DEFAULT)
   {
     match = true;
@@ -1227,14 +1236,14 @@ void CLangInfo::SettingOptionsTimeFormatsFiller(SettingConstPtr setting, std::ve
 
   if (use24hourFormat)
   {
-    list.push_back(StringSettingOption(ToSettingTimeFormat(now, TIME_FORMAT_SINGLE_24), TIME_FORMAT_SINGLE_24));
+    list.emplace_back(ToSettingTimeFormat(now, TIME_FORMAT_SINGLE_24), TIME_FORMAT_SINGLE_24);
     if (timeFormatSetting == TIME_FORMAT_SINGLE_24)
     {
       current = TIME_FORMAT_SINGLE_24;
       match = true;
     }
 
-    list.push_back(StringSettingOption(ToSettingTimeFormat(now, TIME_FORMAT_DOUBLE_24), TIME_FORMAT_DOUBLE_24));
+    list.emplace_back(ToSettingTimeFormat(now, TIME_FORMAT_DOUBLE_24), TIME_FORMAT_DOUBLE_24);
     if (timeFormatSetting == TIME_FORMAT_DOUBLE_24)
     {
       current = TIME_FORMAT_DOUBLE_24;
@@ -1243,14 +1252,14 @@ void CLangInfo::SettingOptionsTimeFormatsFiller(SettingConstPtr setting, std::ve
   }
   else
   {
-    list.push_back(StringSettingOption(ToSettingTimeFormat(now, TIME_FORMAT_SINGLE_12), TIME_FORMAT_SINGLE_12));
+    list.emplace_back(ToSettingTimeFormat(now, TIME_FORMAT_SINGLE_12), TIME_FORMAT_SINGLE_12);
     if (timeFormatSetting == TIME_FORMAT_SINGLE_12)
     {
       current = TIME_FORMAT_SINGLE_12;
       match = true;
     }
 
-    list.push_back(StringSettingOption(ToSettingTimeFormat(now, TIME_FORMAT_DOUBLE_12), TIME_FORMAT_DOUBLE_12));
+    list.emplace_back(ToSettingTimeFormat(now, TIME_FORMAT_DOUBLE_12), TIME_FORMAT_DOUBLE_12);
     if (timeFormatSetting == TIME_FORMAT_DOUBLE_12)
     {
       current = TIME_FORMAT_DOUBLE_12;
@@ -1258,7 +1267,7 @@ void CLangInfo::SettingOptionsTimeFormatsFiller(SettingConstPtr setting, std::ve
     }
 
     std::string timeFormatSingle12Meridiem = ToTimeFormat(false, true, true);
-    list.push_back(StringSettingOption(ToSettingTimeFormat(now, timeFormatSingle12Meridiem), timeFormatSingle12Meridiem));
+    list.emplace_back(ToSettingTimeFormat(now, timeFormatSingle12Meridiem), timeFormatSingle12Meridiem);
     if (timeFormatSetting == timeFormatSingle12Meridiem)
     {
       current = timeFormatSingle12Meridiem;
@@ -1266,7 +1275,7 @@ void CLangInfo::SettingOptionsTimeFormatsFiller(SettingConstPtr setting, std::ve
     }
 
     std::string timeFormatDouble12Meridiem = ToTimeFormat(false, false, true);
-    list.push_back(StringSettingOption(ToSettingTimeFormat(now, timeFormatDouble12Meridiem), timeFormatDouble12Meridiem));
+    list.emplace_back(ToSettingTimeFormat(now, timeFormatDouble12Meridiem), timeFormatDouble12Meridiem);
     if (timeFormatSetting == timeFormatDouble12Meridiem)
     {
       current = timeFormatDouble12Meridiem;
@@ -1285,21 +1294,23 @@ void CLangInfo::SettingOptions24HourClockFormatsFiller(SettingConstPtr setting, 
 
   // determine the 24-hour clock format of the regional setting
   int regionalClock24HourFormatLabel = DetermineUse24HourClockFromTimeFormat(g_langInfo.m_currentRegion->m_strTimeFormat) ? 12384 : 12383;
-  list.push_back(StringSettingOption(StringUtils::Format(g_localizeStrings.Get(20035).c_str(), g_localizeStrings.Get(regionalClock24HourFormatLabel).c_str()), SETTING_REGIONAL_DEFAULT));
+  list.emplace_back(StringUtils::Format(g_localizeStrings.Get(20035).c_str(),
+                                        g_localizeStrings.Get(regionalClock24HourFormatLabel).c_str()),
+                    SETTING_REGIONAL_DEFAULT);
   if (clock24HourFormatSetting == SETTING_REGIONAL_DEFAULT)
   {
     match = true;
     current = SETTING_REGIONAL_DEFAULT;
   }
 
-  list.push_back(StringSettingOption(g_localizeStrings.Get(12383), TIME_FORMAT_12HOURS));
+  list.emplace_back(g_localizeStrings.Get(12383), TIME_FORMAT_12HOURS);
   if (clock24HourFormatSetting == TIME_FORMAT_12HOURS)
   {
     current = TIME_FORMAT_12HOURS;
     match = true;
   }
 
-  list.push_back(StringSettingOption(g_localizeStrings.Get(12384), TIME_FORMAT_24HOURS));
+  list.emplace_back(g_localizeStrings.Get(12384), TIME_FORMAT_24HOURS);
   if (clock24HourFormatSetting == TIME_FORMAT_24HOURS)
   {
     current = TIME_FORMAT_24HOURS;
@@ -1315,7 +1326,9 @@ void CLangInfo::SettingOptionsTemperatureUnitsFiller(SettingConstPtr setting, st
   bool match = false;
   const std::string& temperatureUnitSetting = std::static_pointer_cast<const CSettingString>(setting)->GetValue();
 
-  list.push_back(StringSettingOption(StringUtils::Format(g_localizeStrings.Get(20035).c_str(), GetTemperatureUnitString(g_langInfo.m_currentRegion->m_tempUnit).c_str()), SETTING_REGIONAL_DEFAULT));
+  list.emplace_back(StringUtils::Format(g_localizeStrings.Get(20035).c_str(),
+                                        GetTemperatureUnitString(g_langInfo.m_currentRegion->m_tempUnit).c_str()),
+                    SETTING_REGIONAL_DEFAULT);
   if (temperatureUnitSetting == SETTING_REGIONAL_DEFAULT)
   {
     match = true;
@@ -1324,7 +1337,7 @@ void CLangInfo::SettingOptionsTemperatureUnitsFiller(SettingConstPtr setting, st
 
   for (const TemperatureInfo& info : temperatureInfo)
   {
-    list.push_back(StringSettingOption(GetTemperatureUnitString(info.unit), info.name));
+    list.emplace_back(GetTemperatureUnitString(info.unit), info.name);
 
     if (!match && temperatureUnitSetting == info.name)
     {
@@ -1342,7 +1355,9 @@ void CLangInfo::SettingOptionsSpeedUnitsFiller(SettingConstPtr setting, std::vec
   bool match = false;
   const std::string& speedUnitSetting = std::static_pointer_cast<const CSettingString>(setting)->GetValue();
 
-  list.push_back(StringSettingOption(StringUtils::Format(g_localizeStrings.Get(20035).c_str(), GetSpeedUnitString(g_langInfo.m_currentRegion->m_speedUnit).c_str()), SETTING_REGIONAL_DEFAULT));
+  list.emplace_back(StringUtils::Format(g_localizeStrings.Get(20035).c_str(),
+                                        GetSpeedUnitString(g_langInfo.m_currentRegion->m_speedUnit).c_str()),
+                    SETTING_REGIONAL_DEFAULT);
   if (speedUnitSetting == SETTING_REGIONAL_DEFAULT)
   {
     match = true;
@@ -1351,7 +1366,7 @@ void CLangInfo::SettingOptionsSpeedUnitsFiller(SettingConstPtr setting, std::vec
 
   for (const SpeedInfo& info : speedInfo)
   {
-    list.push_back(StringSettingOption(GetSpeedUnitString(info.unit), info.name));
+    list.emplace_back(GetSpeedUnitString(info.unit), info.name);
 
     if (!match && speedUnitSetting == info.name)
     {

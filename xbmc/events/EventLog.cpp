@@ -218,7 +218,7 @@ void CEventLog::ShowFullEventLog(EventLevel level /* = EventLevel::Basic */, boo
   // activate the full eventPtr log window
   std::vector<std::string> params;
   params.push_back(path);
-  params.push_back("return");
+  params.emplace_back("return");
   CServiceBroker::GetGUI()->GetWindowManager().ActivateWindow(WINDOW_EVENT_LOG, params);
 }
 

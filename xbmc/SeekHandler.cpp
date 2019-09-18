@@ -238,7 +238,7 @@ void CSeekHandler::SettingOptionsSeekStepsFiller(SettingConstPtr setting, std::v
       label = StringUtils::Format(g_localizeStrings.Get(14045).c_str(), seconds);
 
     list.insert(list.begin(), IntegerSettingOption("-" + label, seconds * -1));
-    list.push_back(IntegerSettingOption(label, seconds));
+    list.emplace_back(label, seconds);
   }
 }
 

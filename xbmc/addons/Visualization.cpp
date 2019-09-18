@@ -140,7 +140,7 @@ void CVisualization::transfer_preset(void* kodiInstance, const char* preset)
     return;
   }
 
-  addon->m_presets.push_back(preset);
+  addon->m_presets.emplace_back(preset);
 }
 
 } /* namespace ADDON */

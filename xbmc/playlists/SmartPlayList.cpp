@@ -1455,7 +1455,7 @@ void CSmartPlaylist::GetAvailableFields(const std::string &type, std::vector<std
     for (const translateField& i : fields)
     {
       if (*field == i.field)
-        fieldList.push_back(i.string);
+        fieldList.emplace_back(i.string);
     }
   }
 }

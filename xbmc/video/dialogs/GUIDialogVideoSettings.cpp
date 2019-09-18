@@ -474,22 +474,22 @@ void CGUIDialogVideoSettings::VideoStreamsOptionFiller(std::shared_ptr<const CSe
 
     strItem += FormatFlags(info.flags);
     strItem += StringUtils::Format(" (%i/%i)", i + 1, videoStreamCount);
-    list.push_back(IntegerSettingOption(strItem, i));
+    list.emplace_back(strItem, i);
   }
 
   if (list.empty())
   {
-    list.push_back(IntegerSettingOption(g_localizeStrings.Get(231), -1));
+    list.emplace_back(g_localizeStrings.Get(231), -1);
     current = -1;
   }
 }
 
 void CGUIDialogVideoSettings::VideoOrientationFiller(std::shared_ptr<const CSetting> setting, std::vector<IntegerSettingOption> &list, int &current, void *data)
 {
-  list.push_back(IntegerSettingOption(g_localizeStrings.Get(687), 0));
-  list.push_back(IntegerSettingOption(g_localizeStrings.Get(35229), 90));
-  list.push_back(IntegerSettingOption(g_localizeStrings.Get(35230), 180));
-  list.push_back(IntegerSettingOption(g_localizeStrings.Get(35231), 270));
+  list.emplace_back(g_localizeStrings.Get(687), 0);
+  list.emplace_back(g_localizeStrings.Get(35229), 90);
+  list.emplace_back(g_localizeStrings.Get(35230), 180);
+  list.emplace_back(g_localizeStrings.Get(35231), 270);
 }
 
 std::string CGUIDialogVideoSettings::FormatFlags(StreamFlags flags)

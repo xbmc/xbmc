@@ -10804,7 +10804,7 @@ std::vector<std::string> CMusicDatabase::GetAvailableArtTypesForItem(int mediaId
     {
       //! @todo artwork: fanart stored separately, doesn't need to be
       if (artist.fanart.GetNumFanarts())
-        result.push_back("fanart");
+        result.emplace_back("fanart");
 
       // all other images
       for (const auto& urlEntry : artist.thumbURL.m_url)

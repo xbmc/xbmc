@@ -534,8 +534,9 @@ bool CNetworkServices::StartWebserver()
 
 #ifdef HAS_ZEROCONF
   std::vector<std::pair<std::string, std::string> > txt;
-  txt.push_back(std::make_pair("txtvers", "1"));
-  txt.push_back(std::make_pair("uuid", CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(CSettings::SETTING_SERVICES_DEVICEUUID)));
+  txt.emplace_back("txtvers", "1");
+  txt.emplace_back("uuid", CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(
+                             CSettings::SETTING_SERVICES_DEVICEUUID));
 
   // publish web frontend and API services
 #ifdef HAS_WEB_INTERFACE
@@ -603,15 +604,15 @@ bool CNetworkServices::StartAirPlayServer()
 #ifdef HAS_ZEROCONF
   std::vector<std::pair<std::string, std::string> > txt;
   CNetworkInterface* iface = CServiceBroker::GetNetwork().GetFirstConnectedInterface();
-  txt.push_back(std::make_pair("deviceid", iface != NULL ? iface->GetMacAddress() : "FF:FF:FF:FF:FF:F2"));
-  txt.push_back(std::make_pair("model", "Xbmc,1"));
-  txt.push_back(std::make_pair("srcvers", AIRPLAY_SERVER_VERSION_STR));
+  txt.emplace_back("deviceid", iface != nullptr ? iface->GetMacAddress() : "FF:FF:FF:FF:FF:F2");
+  txt.emplace_back("model", "Xbmc,1");
+  txt.emplace_back("srcvers", AIRPLAY_SERVER_VERSION_STR);
 
   // for ios8 clients we need to announce mirroring support
   // else we won't get video urls anymore.
   // We also announce photo caching support (as it seems faster and
   // we have implemented it anyways).
-  txt.push_back(std::make_pair("features", "0x20F7"));
+  txt.emplace_back("features", "0x20F7");
 
   CZeroconf::GetInstance()->PublishService("servers.airplay", "_airplay._tcp", CSysInfo::GetDeviceName(), CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_airPlayPort, txt);
 #endif // HAS_ZEROCONF
@@ -701,8 +702,9 @@ bool CNetworkServices::StartJSONRPCServer()
 
 #ifdef HAS_ZEROCONF
   std::vector<std::pair<std::string, std::string> > txt;
-  txt.push_back(std::make_pair("txtvers", "1"));
-  txt.push_back(std::make_pair("uuid", CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(CSettings::SETTING_SERVICES_DEVICEUUID)));
+  txt.emplace_back("txtvers", "1");
+  txt.emplace_back("uuid", CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(
+                             CSettings::SETTING_SERVICES_DEVICEUUID));
 
   CZeroconf::GetInstance()->PublishService("servers.jsonrpc-tpc", "_xbmc-jsonrpc._tcp", CSysInfo::GetDeviceName(), CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_jsonTcpPort, txt);
 #endif // HAS_ZEROCONF

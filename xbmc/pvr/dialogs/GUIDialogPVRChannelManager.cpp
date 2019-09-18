@@ -710,7 +710,7 @@ void CGUIDialogPVRChannelManager::Update()
 
   {
     std::vector< std::pair<std::string, int> > labels;
-    labels.push_back(std::make_pair(g_localizeStrings.Get(19210), 0));
+    labels.emplace_back(g_localizeStrings.Get(19210), 0);
     //! @todo Add Labels for EPG scrapers here
     SET_CONTROL_LABELS(SPIN_EPGSOURCE_SELECTION, 0, &labels);
   }

@@ -65,7 +65,7 @@ void CPosixMountProvider::GetDrives(VECSOURCES &drives)
           accepted = false;
 
         if(accepted)
-          result.push_back(mount);
+          result.emplace_back(mount);
       }
     }
     pclose(pipe);
@@ -110,7 +110,7 @@ std::vector<std::string> CPosixMountProvider::GetDiskUsage()
         }
       }
       if (ok)
-        result.push_back(line);
+        result.emplace_back(line);
     }
     pclose(pipe);
   }
