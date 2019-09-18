@@ -278,7 +278,7 @@ inline const char* GetTypeVersion(int type)
       return ADDON_INSTANCE_VERSION_VIDEOCODEC;
 #endif
   }
-  return nullptr;
+  return "0.0.0";
 }
 
 ///
@@ -331,7 +331,7 @@ inline const char* GetTypeMinVersion(int type)
     case ADDON_INSTANCE_VIDEOCODEC:
       return ADDON_INSTANCE_VERSION_VIDEOCODEC_MIN;
   }
-  return nullptr;
+  return "0.0.0";
 }
 
 ///
