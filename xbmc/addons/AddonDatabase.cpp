@@ -53,7 +53,8 @@ static std::string SerializeMetadata(const IAddon& addon)
   {
     CVariant info(CVariant::VariantTypeObject);
     info["addonId"] = dep.id;
-    info["version"] = dep.requiredVersion.asString();
+    info["version"] = dep.version.asString();
+    info["minversion"] = dep.versionMin.asString();
     info["optional"] = dep.optional;
     variant["dependencies"].push_back(std::move(info));
   }
@@ -102,10 +103,8 @@ static void DeserializeMetadata(const std::string& document, CAddonInfoBuilder::
     std::vector<DependencyInfo> deps;
     for (auto it = variant["dependencies"].begin_array(); it != variant["dependencies"].end_array(); ++it)
     {
-      deps.emplace_back(
-          (*it)["addonId"].asString(),
-          AddonVersion((*it)["version"].asString()),
-          (*it)["optional"].asBoolean());
+      deps.emplace_back((*it)["addonId"].asString(), AddonVersion((*it)["minversion"].asString()),
+                        AddonVersion((*it)["version"].asString()), (*it)["optional"].asBoolean());
     }
     builder.SetDependencies(std::move(deps));
   }
@@ -353,23 +352,20 @@ bool CAddonDatabase::SetLastUsed(const std::string& addonId, const CDateTime& da
 
 std::pair<AddonVersion, std::string> CAddonDatabase::GetAddonVersion(const std::string &id)
 {
-  auto empty = std::make_pair(AddonVersion("0.0.0"), "");
   try
   {
-    if (!m_pDB)
-      return empty;
-    if (!m_pDS2)
-      return empty;
-
-    std::vector<std::pair<ADDON::AddonVersion, std::string>> versions;
-    if (GetAvailableVersions(id, versions) && versions.size() > 0)
-      return *std::max_element(versions.begin(), versions.end());
+    if (m_pDB && m_pDS2)
+    {
+      std::vector<std::pair<ADDON::AddonVersion, std::string>> versions;
+      if (GetAvailableVersions(id, versions) && versions.size() > 0)
+        return *std::max_element(versions.begin(), versions.end());
+    }
   }
   catch (...)
   {
     CLog::Log(LOGERROR, "%s failed on addon %s", __FUNCTION__, id.c_str());
   }
-  return empty;
+  return std::make_pair(AddonVersion(), "");
 }
 
 bool CAddonDatabase::FindByAddonId(const std::string& addonId, ADDON::VECADDONS& result)
@@ -507,7 +503,7 @@ bool CAddonDatabase::GetAddon(const std::string& id, AddonPtr& addon)
     if (m_pDS2->eof())
       return false;
 
-    AddonVersion maxversion("0.0.0");
+    AddonVersion maxversion;
     int maxid = 0;
     while (!m_pDS2->eof())
     {
@@ -771,7 +767,7 @@ int CAddonDatabase::GetRepoChecksum(const std::string& id, std::string& checksum
 std::pair<CDateTime, ADDON::AddonVersion> CAddonDatabase::LastChecked(const std::string& id)
 {
   CDateTime date;
-  AddonVersion version("0.0.0");
+  AddonVersion version;
   try
   {
     if (m_pDB && m_pDS)

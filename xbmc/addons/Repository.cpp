@@ -101,7 +101,7 @@ CRepository::CRepository(const AddonInfoPtr& addonInfo)
   : CAddon(addonInfo, ADDON_REPOSITORY)
 {
   DirList dirs;
-  AddonVersion version("0.0.0");
+  AddonVersion version;
   AddonInfoPtr addonver = CServiceBroker::GetAddonMgr().GetAddonInfo("xbmc.addon");
   if (addonver)
     version = addonver->Version();

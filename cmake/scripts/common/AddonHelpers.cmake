@@ -108,7 +108,8 @@ macro (build_addon target prefix libs)
         if("${include_name}" MATCHES "_DEPENDS")
           # Use start definition name as base for other value type
           list(GET loop_var 0 list_name)
-          string(REPLACE "_DEPENDS" "" depends_name ${list_name})
+          string(REPLACE "_DEPENDS" "_MIN" depends_minver ${list_name})
+          string(REPLACE "_DEPENDS" "" depends_ver ${list_name})
           string(REPLACE "_DEPENDS" "_XML_ID" xml_entry_name ${list_name})
           string(REPLACE "_DEPENDS" "_USED" used_type_name ${list_name})
 
@@ -126,7 +127,7 @@ macro (build_addon target prefix libs)
                   list(GET loop_var 1 include_name)
                   string(REGEX REPLACE "[<>\"]|kodi/" "" include_name "${include_name}")
                   if(include_name MATCHES ${depend_header})
-                    set(ADDON_DEPENDS "${ADDON_DEPENDS}\n<import addon=\"${${xml_entry_name}}\" version=\"${${depends_name}}\"/>")
+                    set(ADDON_DEPENDS "${ADDON_DEPENDS}\n<import addon=\"${${xml_entry_name}}\" minversion=\"${${depends_minver}}\" version=\"${${depends_ver}}\"/>")
                     # Inform with them the addon header about used type
                     add_definitions(-D${used_type_name})
                     message(STATUS "Added usage definition: ${used_type_name}")

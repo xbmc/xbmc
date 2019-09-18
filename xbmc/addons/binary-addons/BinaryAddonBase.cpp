@@ -107,9 +107,10 @@ const std::string& CBinaryAddonBase::Disclaimer() const
   return m_addonInfo->Disclaimer();
 }
 
-bool CBinaryAddonBase::MeetsVersion(const AddonVersion& version) const
+bool CBinaryAddonBase::MeetsVersion(const AddonVersion& versionMin,
+                                    const AddonVersion& version) const
 {
-  return m_addonInfo->MeetsVersion(version);
+  return m_addonInfo->MeetsVersion(versionMin, version);
 }
 
 AddonDllPtr CBinaryAddonBase::GetAddon(const IAddonInstanceHandler* handler)

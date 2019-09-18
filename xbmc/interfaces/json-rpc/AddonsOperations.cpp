@@ -230,7 +230,8 @@ static CVariant Serialize(const AddonPtr& addon)
   {
     CVariant info(CVariant::VariantTypeObject);
     info["addonid"] = dep.id;
-    info["version"] = dep.requiredVersion.asString();
+    info["minversion"] = dep.versionMin.asString();
+    info["version"] = dep.version.asString();
     info["optional"] = dep.optional;
     variant["dependencies"].push_back(std::move(info));
   }

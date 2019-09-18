@@ -373,6 +373,16 @@ bool CAddonDll::DllLoaded(void) const
   return m_pDll != NULL;
 }
 
+AddonVersion CAddonDll::GetTypeVersionDll(int type) const
+{
+  return AddonVersion(m_pDll ? m_pDll->GetAddonTypeVersion(type) : nullptr);
+}
+
+AddonVersion CAddonDll::GetTypeMinVersionDll(int type) const
+{
+  return AddonVersion(m_pDll ? m_pDll->GetAddonTypeMinVersion(type) : nullptr);
+}
+
 ADDON_STATUS CAddonDll::GetStatus()
 {
   return m_pDll->GetStatus();
@@ -470,9 +480,9 @@ bool CAddonDll::CheckAPIVersion(int type)
     : addonVersion;
 
   /* Check the global usage from addon
-   * if not used from addon becomes "0.0.0" returned
+   * if not used from addon, empty version is returned
    */
-  if (type <= ADDON_GLOBAL_MAX && addonVersion == AddonVersion("0.0.0"))
+  if (type <= ADDON_GLOBAL_MAX && addonVersion.empty())
     return true;
 
   /* If a instance (not global) version becomes checked must be the version

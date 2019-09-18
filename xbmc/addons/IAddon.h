@@ -75,7 +75,8 @@ namespace ADDON
     virtual CAddonSettings* GetSettings() const =0;
     virtual const std::vector<DependencyInfo> &GetDependencies() const =0;
     virtual AddonVersion GetDependencyVersion(const std::string &dependencyID) const =0;
-    virtual bool MeetsVersion(const AddonVersion &version) const =0;
+    virtual bool MeetsVersion(const AddonVersion& versionMin,
+                              const AddonVersion& version) const = 0;
     virtual bool ReloadSettings() =0;
     virtual AddonPtr GetRunningInstance() const=0;
     virtual void OnPreInstall() =0;

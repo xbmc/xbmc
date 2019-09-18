@@ -29,16 +29,20 @@ typedef std::vector<AddonInfoPtr> AddonInfos;
 struct DependencyInfo
 {
   std::string id;
-  AddonVersion requiredVersion;
+  AddonVersion versionMin, version;
   bool optional;
-  DependencyInfo(std::string id, AddonVersion requiredVersion, bool optional)
-      : id(id), requiredVersion(requiredVersion), optional(optional) {}
+  DependencyInfo(std::string id, AddonVersion versionMin, AddonVersion version, bool optional)
+    : id(id)
+    , versionMin(versionMin.empty() ? version : versionMin)
+    , version(version)
+    , optional(optional)
+  {
+  }
 
   bool operator==(const DependencyInfo& rhs) const
   {
-    return id == rhs.id &&
-            requiredVersion == rhs.requiredVersion &&
-            optional == rhs.optional;
+    return id == rhs.id && versionMin == rhs.versionMin && version == rhs.version &&
+           optional == rhs.optional;
   }
 
   bool operator!=(const DependencyInfo& rhs) const
@@ -76,6 +80,7 @@ public:
 
   const AddonVersion& Version() const { return m_version; }
   const AddonVersion& MinVersion() const { return m_minversion; }
+  const AddonVersion& DependencyMinVersion(const std::string& dependencyID) const;
   const AddonVersion& DependencyVersion(const std::string& dependencyID) const;
   const std::string& Name() const { return m_name; }
   const std::string& License() const { return m_license; }
@@ -98,7 +103,7 @@ public:
   const std::string& Origin() const { return m_origin; }
   const InfoMap& ExtraInfo() const { return m_extrainfo; }
 
-  bool MeetsVersion(const AddonVersion& version) const;
+  bool MeetsVersion(const AddonVersion& versionMin, const AddonVersion& version) const;
   uint64_t PackageSize() const { return m_packageSize; }
   CDateTime InstallDate() const { return m_installDate; }
   CDateTime LastUpdated() const { return m_lastUpdated; }
@@ -121,8 +126,8 @@ private:
   TYPE m_mainType = ADDON_UNKNOWN;
   std::vector<CAddonType> m_types;
 
-  AddonVersion m_version{"0.0.0"};
-  AddonVersion m_minversion{"0.0.0"};
+  AddonVersion m_version;
+  AddonVersion m_minversion;
   std::string m_name;
   std::string m_license;
   std::unordered_map<std::string, std::string> m_summary;

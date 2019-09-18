@@ -55,6 +55,11 @@ namespace ADDON
     }
   }
 
+  AddonVersion::AddonVersion(const char* version)
+    : AddonVersion(std::string(version ? version : ""))
+  {
+  }
+
   /**Compare two components of a Debian-style version.  Return -1, 0, or 1
    * if a is less than, equal to, or greater than b, respectively.
    */
