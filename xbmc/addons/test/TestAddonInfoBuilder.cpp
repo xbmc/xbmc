@@ -21,9 +21,9 @@ const std::string addonXML = R"xml(
        provider-name="Team Kodi">
   <requires>
     <import addon="xbmc.metadata" version="2.1.0"/>
-    <import addon="metadata.common.imdb.com" version="2.9.2"/>
-    <import addon="metadata.common.themoviedb.org" version="3.1.0"/>
-    <import addon="plugin.video.youtube" version="4.4.10" optional="true"/>
+    <import addon="metadata.common.imdb.com" minversion="2.9.2" version="2.9.2"/>
+    <import addon="metadata.common.themoviedb.org" minversion="3.1.0" version="3.1.0"/>
+    <import addon="plugin.video.youtube" minversion="4.4.0" version="4.4.10" optional="true"/>
   </requires>
   <extension point="xbmc.metadata.scraper.movies"
              language="en"
@@ -104,16 +104,20 @@ TEST_F(TestAddonInfoBuilder, TestGenerate_Repo)
   ASSERT_EQ(dependencies.size(), (long unsigned int)4);
   EXPECT_EQ(dependencies[0].id, "xbmc.metadata");
   EXPECT_EQ(dependencies[0].optional, false);
-  EXPECT_EQ(dependencies[0].requiredVersion.asString(), "2.1.0");
+  EXPECT_EQ(dependencies[0].versionMin.asString(), "2.1.0");
+  EXPECT_EQ(dependencies[0].version.asString(), "2.1.0");
   EXPECT_EQ(dependencies[1].id, "metadata.common.imdb.com");
   EXPECT_EQ(dependencies[1].optional, false);
-  EXPECT_EQ(dependencies[1].requiredVersion.asString(), "2.9.2");
+  EXPECT_EQ(dependencies[1].versionMin.asString(), "2.9.2");
+  EXPECT_EQ(dependencies[1].version.asString(), "2.9.2");
   EXPECT_EQ(dependencies[2].id, "metadata.common.themoviedb.org");
   EXPECT_EQ(dependencies[2].optional, false);
-  EXPECT_EQ(dependencies[2].requiredVersion.asString(), "3.1.0");
+  EXPECT_EQ(dependencies[2].versionMin.asString(), "3.1.0");
+  EXPECT_EQ(dependencies[2].version.asString(), "3.1.0");
   EXPECT_EQ(dependencies[3].id, "plugin.video.youtube");
   EXPECT_EQ(dependencies[3].optional, true);
-  EXPECT_EQ(dependencies[3].requiredVersion.asString(), "4.4.10");
+  EXPECT_EQ(dependencies[3].versionMin.asString(), "4.4.0");
+  EXPECT_EQ(dependencies[3].version.asString(), "4.4.10");
 
   auto info = addon->ExtraInfo().find("language");
   ASSERT_NE(info, addon->ExtraInfo().end());

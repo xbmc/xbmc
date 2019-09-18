@@ -357,12 +357,12 @@ CDemuxStream* CInputStreamAddon::GetStream(int streamId) const
     videoStream->iBitRate = stream.m_BitRate;
     videoStream->profile = ConvertVideoCodecProfile(stream.m_codecProfile);
 
-    if (GetAddonBase()->DependencyVersion(ADDON_INSTANCE_VERSION_INPUTSTREAM_XML_ID) >= AddonVersion("2.0.8"))
+    if (Addon()->GetTypeVersionDll(ADDON_TYPE::ADDON_INSTANCE_INPUTSTREAM) >= AddonVersion("2.0.8"))
     {
       videoStream->colorSpace = static_cast<AVColorSpace>(stream.m_colorSpace);
       videoStream->colorRange = static_cast<AVColorRange>(stream.m_colorRange);
     }
-    if (GetAddonBase()->DependencyVersion(ADDON_INSTANCE_VERSION_INPUTSTREAM_XML_ID) >= AddonVersion("2.0.9"))
+    if (Addon()->GetTypeVersionDll(ADDON_TYPE::ADDON_INSTANCE_INPUTSTREAM) >= AddonVersion("2.0.9"))
     {
       videoStream->colorPrimaries = static_cast<AVColorPrimaries>(stream.m_colorPrimaries);
       videoStream->colorTransferCharacteristic = static_cast<AVColorTransferCharacteristic>(stream.m_colorTransferCharacteristic);

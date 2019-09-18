@@ -486,7 +486,7 @@ bool CGUIDialogAddonInfo::ShowDependencyList(const std::vector<ADDON::Dependency
     {
       CFileItemPtr item(new CFileItem(info_addon->Name()));
       std::stringstream str;
-      str << it.id << " " << it.requiredVersion.asString();
+      str << it.id << " " << it.versionMin.asString() << " -> " << it.version.asString();
       if ((it.optional && !local_addon) || (!it.optional && local_addon))
         str << " " << StringUtils::Format(g_localizeStrings.Get(39022).c_str(),
                                           local_addon ? g_localizeStrings.Get(39019).c_str()

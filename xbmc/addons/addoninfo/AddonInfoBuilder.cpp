@@ -166,7 +166,7 @@ bool CAddonInfoBuilder::ParseXML(const AddonInfoPtr& addon, const TiXmlElement* 
   /*
    * Parse addon.xml:
    * <requires>
-   *   <import addon="???" version="???" optional="???"/>
+   *   <import addon="???" minversion="???" version="???" optional="???"/>
    * </requires>
    */
   const TiXmlElement* requires = element->FirstChildElement("requires");
@@ -177,11 +177,13 @@ bool CAddonInfoBuilder::ParseXML(const AddonInfoPtr& addon, const TiXmlElement* 
       cstring = child->Attribute("addon");
       if (cstring)
       {
+        const char* versionMin = child->Attribute("minversion");
         const char* version = child->Attribute("version");
         bool optional = false;
         child->QueryBoolAttribute("optional", &optional);
 
-        addon->m_dependencies.emplace_back(cstring, AddonVersion(version ? version : "0.0.0"), optional);
+        addon->m_dependencies.emplace_back(cstring, AddonVersion(versionMin), AddonVersion(version),
+                                           optional);
       }
     }
   }

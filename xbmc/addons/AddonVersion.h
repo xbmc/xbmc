@@ -29,6 +29,7 @@ namespace ADDON
   public:
     AddonVersion(const AddonVersion& other) { *this = other; }
     explicit AddonVersion(const std::string& version);
+    explicit AddonVersion(const char* version = nullptr);
     virtual ~AddonVersion() = default;
 
     int Epoch() const { return mEpoch; }

@@ -177,7 +177,10 @@ public:
    \param version the version to meet.
    \return true if  min_version <= version <= current_version, false otherwise.
    */
-  bool MeetsVersion(const AddonVersion &version) const override { return m_addonInfo->MeetsVersion(version); }
+  bool MeetsVersion(const AddonVersion& versionMin, const AddonVersion& version) const override
+  {
+    return m_addonInfo->MeetsVersion(versionMin, version);
+  }
   bool ReloadSettings() override;
 
   /*! \brief retrieve the running instance of an add-on if it persists while running.

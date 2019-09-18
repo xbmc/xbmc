@@ -51,7 +51,7 @@ namespace ADDON
     const ArtMap& Art() const;
     const std::string& Disclaimer() const;
 
-    bool MeetsVersion(const AddonVersion& version) const;
+    bool MeetsVersion(const AddonVersion& versionMin, const AddonVersion& version) const;
 
     AddonDllPtr GetAddon(const IAddonInstanceHandler* handler);
     void ReleaseAddon(const IAddonInstanceHandler* handler);

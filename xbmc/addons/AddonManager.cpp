@@ -723,7 +723,7 @@ bool CAddonMgr::IsCompatible(const IAddon& addon)
       {
         AddonPtr addon;
         bool haveAddon = GetAddon(dependency.id, addon);
-        if (!haveAddon || !addon->MeetsVersion(dependency.requiredVersion))
+        if (!haveAddon || !addon->MeetsVersion(dependency.versionMin, dependency.version))
           return false;
       }
     }
@@ -753,7 +753,7 @@ std::vector<DependencyInfo> CAddonMgr::GetDepsRecursive(const std::string& id)
     auto added_it = std::find_if(added.begin(), added.end(), [&](const DependencyInfo& d){ return d.id == current_dep.id;});
     if (added_it != added.end())
     {
-      if (current_dep.requiredVersion < added_it->requiredVersion)
+      if (current_dep.version < added_it->version)
         continue;
 
       bool aopt = added_it->optional;
