@@ -145,11 +145,11 @@ void CGUIWindowPVRBase::UpdateSelectedItemPath()
 
 void CGUIWindowPVRBase::RegisterObservers(void)
 {
-  CServiceBroker::GetPVRManager().RegisterObserver(this);
+  CServiceBroker::GetPVRManager().Events().Subscribe(this, &CGUIWindowPVRBase::Notify);
 
   CSingleLock lock(m_critSection);
   if (m_channelGroup)
-    m_channelGroup->RegisterObserver(this);
+    m_channelGroup->Events().Subscribe(this, &CGUIWindowPVRBase::Notify);
 };
 
 void CGUIWindowPVRBase::UnregisterObservers(void)
@@ -157,19 +157,25 @@ void CGUIWindowPVRBase::UnregisterObservers(void)
   {
     CSingleLock lock(m_critSection);
     if (m_channelGroup)
-      m_channelGroup->UnregisterObserver(this);
+      m_channelGroup->Events().Unsubscribe(this);
   }
-  CServiceBroker::GetPVRManager().UnregisterObserver(this);
+  CServiceBroker::GetPVRManager().Events().Unsubscribe(this);
 };
 
-void CGUIWindowPVRBase::Notify(const Observable &obs, const ObservableMessage msg)
+void CGUIWindowPVRBase::Notify(const PVREvent& event)
 {
-  if (msg == ObservableMessageManagerStopped)
+  // call virtual event handler function
+  NotifyEvent(event);
+}
+
+void CGUIWindowPVRBase::NotifyEvent(const PVREvent& event)
+{
+  if (event == PVREvent::ManagerStopped)
     ClearData();
 
   if (m_active)
   {
-    CGUIMessage m(GUI_MSG_REFRESH_LIST, GetID(), 0, msg);
+    CGUIMessage m(GUI_MSG_REFRESH_LIST, GetID(), 0, static_cast<int>(event));
     CApplicationMessenger::GetInstance().SendGUIMessage(m);
   }
 }
@@ -288,9 +294,9 @@ bool CGUIWindowPVRBase::OnMessage(CGUIMessage& message)
 
     case GUI_MSG_REFRESH_LIST:
     {
-      switch (message.GetParam1())
+      switch (static_cast<PVREvent>(message.GetParam1()))
       {
-        case ObservableMessageChannelGroupsLoaded:
+        case PVREvent::ChannelGroupsLoaded:
         {
           // late init
           InitChannelGroup();
@@ -302,6 +308,9 @@ bool CGUIWindowPVRBase::OnMessage(CGUIMessage& message)
           m_viewControl.SetFocused();
           break;
         }
+
+        default:
+          break;
       }
       if (IsActive())
       {
@@ -435,10 +444,10 @@ void CGUIWindowPVRBase::SetChannelGroup(CPVRChannelGroupPtr &&group, bool bUpdat
     if (m_channelGroup != group)
     {
       if (m_channelGroup)
-        m_channelGroup->UnregisterObserver(this);
+        m_channelGroup->Events().Unsubscribe(this);
       m_channelGroup = std::move(group);
       // we need to register the window to receive changes from the new group
-      m_channelGroup->RegisterObserver(this);
+      m_channelGroup->Events().Subscribe(this, &CGUIWindowPVRBase::Notify);
       if (bUpdate)
         updateChannelGroup = m_channelGroup;
     }

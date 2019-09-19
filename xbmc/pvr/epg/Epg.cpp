@@ -57,8 +57,7 @@ void CPVREpg::ForceUpdate(void)
     m_bUpdatePending = true;
   }
 
-  SetChanged(true);
-  NotifyObservers(ObservableMessageEpgUpdatePending);
+  m_events.Publish(PVREvent::EpgUpdatePending);
 }
 
 bool CPVREpg::HasValidEntries(void) const
@@ -193,7 +192,7 @@ bool CPVREpg::CheckPlayingEvent(void)
   bool bTagRemoved = !newTag && previousTag;
   if (bTagChanged || bTagRemoved)
   {
-    NotifyObservers(ObservableMessageEpgActiveItem);
+    m_events.Publish(PVREvent::EpgActiveItem);
     return true;
   }
   return false;
@@ -320,11 +319,7 @@ bool CPVREpg::UpdateEntries(const CPVREpg &epg, bool bStoreInDb /* = true */)
   m_lastScanTime = CDateTime::GetUTCDateTime();
   m_bUpdateLastScanTime = true;
 
-  SetChanged(true);
-
-  lock.Leave();
-  NotifyObservers(ObservableMessageEpg);
-
+  m_events.Publish(PVREvent::Epg);
   return true;
 }
 
@@ -414,10 +409,7 @@ bool CPVREpg::UpdateEntry(const CPVREpgInfoTagPtr &tag, EPG_EVENT_STATE newState
   }
 
   if (bRet && bNotify)
-  {
-    SetChanged();
-    NotifyObservers(ObservableMessageEpgItemUpdate);
-  }
+    m_events.Publish(PVREvent::EpgItemUpdate);
 
   return bRet;
 }

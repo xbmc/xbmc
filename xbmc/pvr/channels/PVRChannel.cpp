@@ -171,7 +171,6 @@ bool CPVRChannel::UpdateFromClient(const CPVRChannelPtr &channel)
     m_bHasArchive             = channel->HasArchive();
 
     UpdateEncryptionName();
-    SetChanged();
   }
 
   // only update the channel name and icon if the user hasn't changed them manually
@@ -216,7 +215,6 @@ bool CPVRChannel::SetChannelID(int iChannelId)
     if (epg)
       epg->GetChannelData()->SetChannelId(m_iChannelId);
 
-    SetChanged();
     m_bChanged = true;
     return true;
   }
@@ -246,7 +244,6 @@ bool CPVRChannel::SetHidden(bool bIsHidden)
       epg->GetChannelData()->SetEPGEnabled(m_bEPGEnabled);
     }
 
-    SetChanged();
     m_bChanged = true;
     return true;
   }
@@ -266,7 +263,6 @@ bool CPVRChannel::SetLocked(bool bIsLocked)
     if (epg)
       epg->GetChannelData()->SetLocked(m_bIsLocked);
 
-    SetChanged();
     m_bChanged = true;
     return true;
   }
@@ -303,7 +299,6 @@ bool CPVRChannel::SetIconPath(const std::string &strIconPath, bool bIsUserSetIco
     if (epg)
       epg->GetChannelData()->SetIconPath(m_strIconPath);
 
-    SetChanged();
     m_bChanged = true;
     m_bIsUserSetIcon = bIsUserSetIcon && !m_strIconPath.empty();
     return true;
@@ -337,9 +332,7 @@ bool CPVRChannel::SetChannelName(const std::string &strChannelName, bool bIsUser
     if (epg)
       epg->GetChannelData()->SetChannelName(m_strChannelName);
 
-    SetChanged();
     m_bChanged = true;
-
     return true;
   }
 
@@ -382,7 +375,6 @@ bool CPVRChannel::SetClientID(int iClientId)
   if (m_iClientId != iClientId)
   {
     m_iClientId = iClientId;
-    SetChanged();
     m_bChanged = true;
     return true;
   }
@@ -398,10 +390,7 @@ void CPVRChannel::UpdatePath(const std::string& channelGroup)
     CSingleLock lock(m_critSection);
     const std::string strFileNameAndPath = CPVRChannelsPath(m_bIsRadio, channelGroup, client->ID(), m_iUniqueId);
     if (m_strFileNameAndPath != strFileNameAndPath)
-    {
       m_strFileNameAndPath = strFileNameAndPath;
-      SetChanged();
-    }
   }
 }
 
@@ -580,7 +569,6 @@ bool CPVRChannel::SetEPGEnabled(bool bEPGEnabled)
     if (epg)
       epg->GetChannelData()->SetEPGEnabled(m_bEPGEnabled);
 
-    SetChanged();
     m_bChanged = true;
 
     /* clear the previous EPG entries if needed */
@@ -602,7 +590,6 @@ bool CPVRChannel::SetEPGScraper(const std::string &strScraper)
     bool bCleanEPG = !m_strEPGScraper.empty() || strScraper.empty();
 
     m_strEPGScraper = StringUtils::Format("%s", strScraper.c_str());
-    SetChanged();
     m_bChanged = true;
 
     /* clear the previous EPG entries if needed */
@@ -781,7 +768,6 @@ void CPVRChannel::SetEpgID(int iEpgId)
   {
     m_iEpgId = iEpgId;
     m_epg.reset();
-    SetChanged();
     m_bChanged = true;
   }
 }

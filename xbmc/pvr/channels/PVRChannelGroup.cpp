@@ -568,10 +568,7 @@ bool CPVRChannelGroup::UpdateGroupEntries(const CPVRChannelGroup& channels, std:
 
     bReturn = Persist();
 
-    SetChanged();
-
-    lock.Leave();
-    NotifyObservers(HasNewChannels() || bRemoved || bRenumbered ? ObservableMessageChannelGroupReset : ObservableMessageChannelGroup);
+    m_events.Publish(HasNewChannels() || bRemoved || bRenumbered ? PVREvent::ChannelGroupInvalidated : PVREvent::ChannelGroup);
   }
   else
   {

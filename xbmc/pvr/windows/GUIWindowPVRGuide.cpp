@@ -50,12 +50,12 @@ CGUIWindowPVRGuideBase::CGUIWindowPVRGuideBase(bool bRadio, int id, const std::s
 {
   m_bRefreshTimelineItems = false;
   m_bSyncRefreshTimelineItems = false;
-  CServiceBroker::GetPVRManager().EpgContainer().RegisterObserver(this);
+  CServiceBroker::GetPVRManager().EpgContainer().Events().Subscribe(static_cast<CGUIWindowPVRBase*>(this), &CGUIWindowPVRBase::Notify);
 }
 
 CGUIWindowPVRGuideBase::~CGUIWindowPVRGuideBase()
 {
-  CServiceBroker::GetPVRManager().EpgContainer().UnregisterObserver(this);
+  CServiceBroker::GetPVRManager().EpgContainer().Events().Unsubscribe(this);
 
   m_bRefreshTimelineItems = false;
   m_bSyncRefreshTimelineItems = false;
@@ -136,18 +136,18 @@ void CGUIWindowPVRGuideBase::StopRefreshTimelineItemsThread()
     m_refreshTimelineItemsThread->Stop();
 }
 
-void CGUIWindowPVRGuideBase::Notify(const Observable &obs, const ObservableMessage msg)
+void CGUIWindowPVRGuideBase::NotifyEvent(const PVREvent& event)
 {
-  if (msg == ObservableMessageEpg ||
-      msg == ObservableMessageEpgContainer ||
-      msg == ObservableMessageChannelGroupReset ||
-      msg == ObservableMessageChannelGroup)
+  if (event == PVREvent::Epg ||
+      event == PVREvent::EpgContainer ||
+      event == PVREvent::ChannelGroupInvalidated ||
+      event == PVREvent::ChannelGroup)
   {
     m_bRefreshTimelineItems = true;
     // no base class call => do async refresh
     return;
   }
-  else if (msg == ObservableMessageChannelPlaybackStopped)
+  else if (event == PVREvent::ChannelPlaybackStopped)
   {
     if (m_guiState && m_guiState->GetSortMethod().sortBy == SortByLastPlayed)
     {
@@ -157,7 +157,7 @@ void CGUIWindowPVRGuideBase::Notify(const Observable &obs, const ObservableMessa
   }
 
   // do sync refresh if dirty
-  CGUIWindowPVRBase::Notify(obs, msg);
+  CGUIWindowPVRBase::NotifyEvent(event);
 }
 
 void CGUIWindowPVRGuideBase::SetInvalid()
@@ -558,32 +558,33 @@ bool CGUIWindowPVRGuideBase::OnMessage(CGUIMessage& message)
       break;
     }
     case GUI_MSG_REFRESH_LIST:
-      switch(message.GetParam1())
+    {
+      switch (static_cast<PVREvent>(message.GetParam1()))
       {
-        case ObservableMessageChannelGroupsLoaded:
-        {
+        case PVREvent::ChannelGroupsLoaded:
           // late init
           InitChannelGroup();
           InitEpgGridControl();
           break;
-        }
-        case ObservableMessageChannelGroupReset:
-        case ObservableMessageChannelGroup:
-        case ObservableMessageEpg:
-        case ObservableMessageEpgContainer:
-        case ObservableMessageChannelPlaybackStopped:
-        {
+
+        case PVREvent::ChannelGroup:
+        case PVREvent::ChannelGroupInvalidated:
+        case PVREvent::ChannelPlaybackStopped:
+        case PVREvent::Epg:
+        case PVREvent::EpgContainer:
           Refresh(true);
           break;
-        }
-        case ObservableMessageTimersReset:
-        case ObservableMessageTimers:
-        {
+
+        case PVREvent::Timers:
+        case PVREvent::TimersInvalidated:
           SetInvalid();
           break;
-        }
+
+        default:
+          break;
       }
       break;
+    }
   }
 
   return bReturn || CGUIWindowPVRBase::OnMessage(message);
@@ -811,7 +812,7 @@ void CPVRRefreshTimelineItemsThread::Process()
 
     if (m_pGuideWindow->RefreshTimelineItems() && !m_bStop)
     {
-      CGUIMessage m(GUI_MSG_REFRESH_LIST, m_pGuideWindow->GetID(), 0, ObservableMessageEpg);
+      CGUIMessage m(GUI_MSG_REFRESH_LIST, m_pGuideWindow->GetID(), 0, static_cast<int>(PVREvent::Epg));
       KODI::MESSAGING::CApplicationMessenger::GetInstance().SendGUIMessage(m);
     }
 

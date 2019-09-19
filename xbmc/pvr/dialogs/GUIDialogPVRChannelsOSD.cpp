@@ -42,25 +42,27 @@ CGUIDialogPVRChannelsOSD::CGUIDialogPVRChannelsOSD()
 
 CGUIDialogPVRChannelsOSD::~CGUIDialogPVRChannelsOSD()
 {
-  CServiceBroker::GetGUI()->GetInfoManager().UnregisterObserver(this);
-  CServiceBroker::GetPVRManager().EpgContainer().UnregisterObserver(this);
+  CServiceBroker::GetPVRManager().Events().Unsubscribe(this);
+  CServiceBroker::GetPVRManager().EpgContainer().Events().Unsubscribe(this);
 }
 
 bool CGUIDialogPVRChannelsOSD::OnMessage(CGUIMessage& message)
 {
   if (message.GetMessage() == GUI_MSG_REFRESH_LIST)
   {
-    switch (message.GetParam1())
+    switch (static_cast<PVREvent>(message.GetParam1()))
     {
-      case ObservableMessageCurrentItem:
+      case PVREvent::CurrentItem:
         m_viewControl.SetItems(*m_vecItems);
         return true;
-      case ObservableMessageEpg:
-      case ObservableMessageEpgContainer:
-      case ObservableMessageEpgActiveItem:
+
+      case PVREvent::Epg:
+      case PVREvent::EpgContainer:
+      case PVREvent::EpgActiveItem:
         if (IsActive())
           SetInvalid();
         return true;
+
       default:
         break;
     }
@@ -161,10 +163,9 @@ bool CGUIDialogPVRChannelsOSD::OnAction(const CAction &action)
 
 void CGUIDialogPVRChannelsOSD::Update()
 {
-  CServiceBroker::GetGUI()->GetInfoManager().RegisterObserver(this);
-
   CPVRManager& pvrMgr = CServiceBroker::GetPVRManager();
-  pvrMgr.EpgContainer().RegisterObserver(this);
+  pvrMgr.Events().Subscribe(this, &CGUIDialogPVRChannelsOSD::Notify);
+  pvrMgr.EpgContainer().Events().Subscribe(this, &CGUIDialogPVRChannelsOSD::Notify);
 
   const CPVRChannelPtr channel = pvrMgr.GetPlayingChannel();
   if (channel)
@@ -237,9 +238,9 @@ void CGUIDialogPVRChannelsOSD::GotoChannel(int item)
   CServiceBroker::GetPVRManager().GUIActions()->SwitchToChannel(itemptr, true /* bCheckResume */);
 }
 
-void CGUIDialogPVRChannelsOSD::Notify(const Observable &obs, const ObservableMessage msg)
+void CGUIDialogPVRChannelsOSD::Notify(const PVREvent& event)
 {
-  const CGUIMessage m(GUI_MSG_REFRESH_LIST, GetID(), 0, msg);
+  const CGUIMessage m(GUI_MSG_REFRESH_LIST, GetID(), 0, static_cast<int>(event));
   CApplicationMessenger::GetInstance().SendGUIMessage(m);
 }
 

@@ -370,48 +370,40 @@ CPVRManager::ManagerState CPVRManager::GetState(void) const
 
 void CPVRManager::SetState(CPVRManager::ManagerState state)
 {
-  ObservableMessage observableMsg(ObservableMessageNone);
-
   {
     CSingleLock lock(m_managerStateMutex);
     if (m_managerState == state)
       return;
 
     m_managerState = state;
-
-    PVREvent event;
-    switch (state)
-    {
-      case ManagerStateError:
-        event = PVREvent::ManagerError;
-        break;
-      case ManagerStateStopped:
-        event = PVREvent::ManagerStopped;
-        observableMsg = ObservableMessageManagerStopped;
-        break;
-      case ManagerStateStarting:
-        event = PVREvent::ManagerStarting;
-        break;
-      case ManagerStateStopping:
-        event = PVREvent::ManagerStopped;
-        break;
-      case ManagerStateInterrupted:
-        event = PVREvent::ManagerInterrupted;
-        break;
-      case ManagerStateStarted:
-        event = PVREvent::ManagerStarted;
-        break;
-      default:
-        return;
-    }
-    m_events.Publish(event);
   }
 
-  if (observableMsg != ObservableMessageNone)
+  PVREvent event;
+  switch (state)
   {
-    SetChanged();
-    NotifyObservers(observableMsg);
+    case ManagerStateError:
+      event = PVREvent::ManagerError;
+      break;
+    case ManagerStateStopped:
+      event = PVREvent::ManagerStopped;
+      break;
+    case ManagerStateStarting:
+      event = PVREvent::ManagerStarting;
+      break;
+    case ManagerStateStopping:
+      event = PVREvent::ManagerStopped;
+      break;
+    case ManagerStateInterrupted:
+      event = PVREvent::ManagerInterrupted;
+      break;
+    case ManagerStateStarted:
+      event = PVREvent::ManagerStarted;
+      break;
+    default:
+      return;
   }
+
+  PublishEvent(event);
 }
 
 void CPVRManager::PublishEvent(PVREvent event)
@@ -564,8 +556,7 @@ bool CPVRManager::LoadComponents(CPVRGUIProgressHandler* progressHandler)
   if (!m_channelGroups->Load() || !IsInitialising())
     return false;
 
-  SetChanged();
-  NotifyObservers(ObservableMessageChannelGroupsLoaded);
+  PublishEvent(PVREvent::ChannelGroupsLoaded);
 
   /* get timers from the backends */
   if (progressHandler)
@@ -884,8 +875,7 @@ void CPVRManager::OnPlaybackStopped(const CFileItemPtr item)
       UpdateLastWatched(m_playingChannel, CDateTime::GetUTCDateTime());
     }
 
-    SetChanged();
-    NotifyObservers(ObservableMessageChannelPlaybackStopped);
+    PublishEvent(PVREvent::ChannelPlaybackStopped);
 
     m_playingChannel.reset();
     m_playingClientId = -1;

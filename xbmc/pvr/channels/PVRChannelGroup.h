@@ -13,7 +13,7 @@
 #include "pvr/channels/PVRChannelNumber.h"
 #include "pvr/channels/PVRChannelsPath.h"
 #include "settings/lib/ISettingCallback.h"
-#include "utils/Observer.h"
+#include "utils/EventStream.h"
 
 #include <map>
 #include <memory>
@@ -28,6 +28,8 @@ namespace PVR
 #define PVR_GROUP_TYPE_DEFAULT      0
 #define PVR_GROUP_TYPE_INTERNAL     1
 #define PVR_GROUP_TYPE_USER_DEFINED 2
+
+  enum class PVREvent;
 
   struct PVRChannelGroupMember
   {
@@ -51,9 +53,7 @@ namespace PVR
     EPG_LAST_DATE = 1
   };
 
-  /** A group of channels */
-  class CPVRChannelGroup : public Observable,
-                           public ISettingCallback
+  class CPVRChannelGroup : public ISettingCallback
   {
     friend class CPVRChannelGroupInternal;
     friend class CPVRDatabase;
@@ -87,6 +87,11 @@ namespace PVR
      * Empty group member
      */
     static PVRChannelGroupMember EmptyMember;
+
+    /*!
+     * @brief Query the events available for CEventStream
+     */
+    CEventStream<PVREvent>& Events() { return m_events; }
 
     /*!
      * @brief Load the channels from the database.
@@ -520,6 +525,7 @@ namespace PVR
     mutable CCriticalSection m_critSection;
     std::vector<int> m_failedClientsForChannels;
     std::vector<int> m_failedClientsForChannelGroupMembers;
+    CEventSource<PVREvent> m_events;
 
   private:
     CDateTime GetEPGDate(EpgDateType epgDateType) const;
