@@ -461,11 +461,21 @@
 						<label>$INFO[ListItem.Label]</label>
 					</control>
 					<control type="image">
+						<visible>ListItem.IsPremiere</visible>
 						<left>6</left>
 						<top>35</top>
-						<width>20</width>
-						<height>20</height>
+						<width>16</width>
+						<height>16</height>
+						<aspectratio>keep</aspectratio>
+						<texture colordiffuse="button_focus">icons/pvr/premiere.png</texture>
+					</control>
+					<control type="image">
+						<left>6</left>
+						<top>35</top>
+						<width>16</width>
+						<height>16</height>
 						<texture>$VAR[PVRTimerIcon]</texture>
+						<animation effect="slide" start="0,0" end="19,0" condition="ListItem.IsPremiere">Conditional</animation>
 					</control>
 				</itemlayout>
 				<focusedlayout height="62" width="60">
@@ -498,11 +508,21 @@
 						<label>$INFO[ListItem.Label]</label>
 					</control>
 					<control type="image">
+						<visible>ListItem.IsPremiere</visible>
 						<left>6</left>
 						<top>35</top>
-						<width>20</width>
-						<height>20</height>
+						<width>16</width>
+						<height>16</height>
+						<aspectratio>keep</aspectratio>
+						<texture colordiffuse="button_focus">icons/pvr/premiere.png</texture>
+					</control>
+					<control type="image">
+						<left>6</left>
+						<top>35</top>
+						<width>16</width>
+						<height>16</height>
 						<texture>$VAR[PVRTimerIcon]</texture>
+						<animation effect="slide" start="0,0" end="19,0" condition="ListItem.IsPremiere">Conditional</animation>
 					</control>
 				</focusedlayout>
 			</control>

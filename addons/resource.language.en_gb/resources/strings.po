@@ -3774,7 +3774,11 @@ msgctxt "#841"
 msgid "Only this"
 msgstr ""
 
-#empty string with id 842
+#. Label for a first aired TV show
+#: addons/skin.estuary/xml/DialogPVRInfo.xml
+msgctxt "#842"
+msgid "New!"
+msgstr ""
 
 #. Label for a context menu entry to activate a currently inactive timer
 #: xbmc/pvr/PVRContextMenus.cpp
