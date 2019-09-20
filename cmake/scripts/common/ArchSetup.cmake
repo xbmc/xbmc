@@ -18,24 +18,7 @@ include(CheckCXXSourceCompiles)
 include(CheckSymbolExists)
 include(CheckFunctionExists)
 include(CheckIncludeFile)
-
-# Macro to check if a given type exists in a given header
-# Arguments:
-#   header the header to check
-#   type   the type to check for existence
-#   var    the compiler definition to set if type exists
-# On return:
-#   If type was found, the definition is added to SYSTEM_DEFINES
-macro(check_type header type var)
-  check_cxx_source_compiles("#include <${header}>
-                             int main()
-                             {
-                               ${type} s;
-                             }" ${var})
-  if(${var})
-    list(APPEND SYSTEM_DEFINES -D${var}=1)
-  endif()
-endmacro()
+include(CheckTypeSize)
 
 # Macro to check if a given builtin function exists
 # Arguments:
@@ -101,11 +84,6 @@ message(STATUS "Cross-Compiling: ${CMAKE_CROSSCOMPILING}")
 message(STATUS "Execute build artefacts on host: ${CORE_HOST_IS_TARGET}")
 message(STATUS "Depends based build: ${KODI_DEPENDSBUILD}")
 
-check_type(string std::u16string HAVE_STD__U16_STRING)
-check_type(string std::u32string HAVE_STD__U32_STRING)
-check_type(string char16_t HAVE_CHAR16_T)
-check_type(string char32_t HAVE_CHAR32_T)
-check_type(stdint.h uint_least16_t HAVE_STDINT_H)
 check_symbol_exists(posix_fadvise fcntl.h HAVE_POSIX_FADVISE)
 check_symbol_exists(PRIdMAX inttypes.h HAVE_INTTYPES_H)
 check_builtin("long* temp=0; long ret=__sync_add_and_fetch(temp, 1)" HAS_BUILTIN_SYNC_ADD_AND_FETCH)

@@ -72,6 +72,8 @@ git clone https://github.com/xbmc/xbmc kodi
 ## 3. Install the required packages
 If you get a `package not found` type of message with the below command, remove the offending package(s) from the install list and reissue the command. Take a note of the missing dependencies and, after a successful step completion, **[build the missing dependencies manually](#31-build-missing-dependencies)**.
 
+**NOTE:** Kodi requires a compiler with C++14 support, i.e. gcc >= 4.9 or clang >= 3.4
+
 Install build dependencies:
 ```
 sudo pkg install autoconf automake avahi-app binutils cmake curl dbus doxygen e2fsprogs-libuuid enca encodings flac flatbuffers font-util fontconfig freetype2 fribidi gawk gettext-tools giflib git glew gmake gmp gnutls gperf gstreamer1-vaapi hal jpeg-turbo libaacs libass libbdplus libbluray libcapn libcdio libcec libedit libfmt libgcrypt libgpg-error libidn libinotify libmicrohttpd libnfs libogg libplist librtmp libtool libudev-devd libva libvdpau libvorbis libxslt lirc lzo2 m4 mesa-libs mysql57-client nasm openjdk8 p8-platform pkgconf python2 rapidjson samba46 shairplay sndio sqlite3 swig30 taglib tiff tinyxml xf86-input-keyboard xf86-input-mouse xorg-proto xorg-server xrandr zip

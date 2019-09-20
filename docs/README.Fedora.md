@@ -61,6 +61,8 @@ git clone https://github.com/xbmc/xbmc kodi
 ## 3. Install the required packages
 If you get a `package not found` type of message with the below command, remove the offending package(s) from the install list and reissue the command. Take a note of the missing dependencies and, after a successful step completion, **[build the missing dependencies manually](README.Linux.md#31-build-missing-dependencies)**.
 
+**NOTE:** Kodi requires a compiler with C++14 support, i.e. gcc >= 4.9 or clang >= 3.4
+
 Install build dependencies:
 ```
 sudo dnf install alsa-lib-devel autoconf automake avahi-compat-libdns_sd-devel avahi-devel bluez-libs-devel bzip2-devel cmake curl dbus-devel flatbuffers flatbuffers-devel fmt-devel fontconfig-devel freetype-devel fribidi-devel fstrcmp-devel gawk gcc gcc-c++ gettext gettext-devel giflib-devel gperf java-11-openjdk-headless jre lcms2-devel libao-devel libass-devel libbluray-devel libcap-devel libcdio-devel libcec-devel libcurl-devel libidn2-devel libjpeg-turbo-devel libmicrohttpd-devel libmpc-devel libnfs-devel libplist-devel libpng12-devel libsmbclient-devel libtool libtool-ltdl-devel libudev-devel libunistring libusb-devel libuuid-devel libva-devel libvdpau-devel libxml2-devel libXmu-devel libXrandr-devel libxslt-devel libXt-devel lirc-devel lzo-devel make mariadb-devel mesa-libEGL-devel mesa-libGL-devel mesa-libGLU-devel mesa-libGLw-devel mesa-libOSMesa-devel nasm openssl-devel openssl-libs patch pcre-devel pulseaudio-libs-devel python-devel python-pillow rapidjson-devel shairplay-devel sqlite-devel swig taglib-devel tinyxml-devel trousers-devel uuid-devel yasm zlib-devel
