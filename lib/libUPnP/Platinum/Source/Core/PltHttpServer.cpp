@@ -190,8 +190,7 @@ PLT_HttpServer::ServeFile(const NPT_HttpRequest&        request,
     NPT_FileInfo             file_info;
     
     // prevent hackers from accessing files outside of our root
-    if ((file_path.Find("/..") >= 0) || (file_path.Find("\\..") >= 0) ||
-        NPT_FAILED(NPT_File::GetInfo(file_path, &file_info))) {
+    if ((file_path.Find("/..") >= 0) || (file_path.Find("\\..") >= 0)) {
         return NPT_ERROR_NO_SUCH_ITEM;
     }
     
@@ -201,7 +200,8 @@ PLT_HttpServer::ServeFile(const NPT_HttpRequest&        request,
     // handle potential 304 only if range header not set
     NPT_DateTime  date;
     NPT_TimeStamp timestamp;
-    if (NPT_SUCCEEDED(PLT_UPnPMessageHelper::GetIfModifiedSince((NPT_HttpMessage&)request, date)) &&
+    if (NPT_SUCCEEDED(NPT_File::GetInfo(file_path, &file_info)) &&
+        NPT_SUCCEEDED(PLT_UPnPMessageHelper::GetIfModifiedSince((NPT_HttpMessage&)request, date)) &&
         !range_spec) {
         date.ToTimeStamp(timestamp);
         
