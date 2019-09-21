@@ -1218,6 +1218,15 @@ bool CSettingString::Deserialize(const TiXmlNode *node, bool update /* = false *
             entry.second = optionElement->FirstChild()->Value();
             m_translatableOptions.push_back(entry);
           }
+          else
+          {
+            const std::string value = optionElement->FirstChild()->Value();
+            // if a specific "label" attribute is present use it otherwise use the value as label
+            std::string label = value;
+            optionElement->QueryStringAttribute(SETTING_XML_ATTR_LABEL, &label);
+
+            m_options.emplace_back(label, value);
+          }
 
           optionElement = optionElement->NextSiblingElement(SETTING_XML_ELM_OPTION);
         }
