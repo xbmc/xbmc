@@ -1513,7 +1513,7 @@ void CAddonSettings::FileEnumSettingOptionsFiller(std::shared_ptr<const CSetting
   if (settingPath->GetSources().empty())
     return;
 
-  const std::string& masking = settingPath->GetMasking();
+  const std::string& masking = settingPath->GetMasking(CServiceBroker::GetFileExtensionProvider());
 
   // fetch the matching files/directories
   CFileItemList items;

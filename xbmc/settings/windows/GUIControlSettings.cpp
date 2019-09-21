@@ -817,7 +817,9 @@ bool CGUIControlButtonSetting::GetPath(std::shared_ptr<CSettingPath> pathSetting
   std::shared_ptr<const CSettingControlButton> control = std::static_pointer_cast<const CSettingControlButton>(pathSetting->GetControl());
   const auto heading = ::Localize(control->GetHeading(), localizer);
   if (control->GetFormat() == "file")
-    result = CGUIDialogFileBrowser::ShowAndGetFile(shares, pathSetting->GetMasking(), heading, path, control->UseImageThumbs(), control->UseFileDirectories());
+    result = CGUIDialogFileBrowser::ShowAndGetFile(
+      shares, pathSetting->GetMasking(CServiceBroker::GetFileExtensionProvider()), heading, path,
+      control->UseImageThumbs(), control->UseFileDirectories());
   else if (control->GetFormat() == "image")
     result = CGUIDialogFileBrowser::ShowAndGetImage(shares, heading, path);
   else

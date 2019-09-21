@@ -9,6 +9,7 @@
 #include "SettingPath.h"
 
 #include "settings/lib/SettingsManager.h"
+#include "utils/FileExtensionProvider.h"
 #include "utils/StringUtils.h"
 #include "utils/XBMCTinyXML.h"
 #include "utils/XMLUtils.h"
@@ -91,7 +92,40 @@ bool CSettingPath::SetValue(const std::string &value)
   return CSettingString::SetValue(value);
 }
 
-void CSettingPath::copy(const CSettingPath &setting)
+std::string CSettingPath::GetMasking(const CFileExtensionProvider& fileExtensionProvider) const
+{
+  if (m_masking.empty())
+    return m_masking;
+
+  // setup masking
+  const auto audioMask = fileExtensionProvider.GetMusicExtensions();
+  const auto videoMask = fileExtensionProvider.GetVideoExtensions();
+  const auto imageMask = fileExtensionProvider.GetPictureExtensions();
+  auto execMask = "";
+#if defined(TARGET_WINDOWS)
+  execMask = ".exe|.bat|.cmd|.py";
+#endif // defined(TARGET_WINDOWS)
+
+  std::string masking = m_masking;
+  if (masking == "video")
+    return videoMask;
+  if (masking == "audio")
+    return audioMask;
+  if (masking == "image")
+    return imageMask;
+  if (masking == "executable")
+    return execMask;
+
+  // convert mask qualifiers
+  StringUtils::Replace(masking, "$AUDIO", audioMask);
+  StringUtils::Replace(masking, "$VIDEO", videoMask);
+  StringUtils::Replace(masking, "$IMAGE", imageMask);
+  StringUtils::Replace(masking, "$EXECUTABLE", execMask);
+
+  return masking;
+}
+
+void CSettingPath::copy(const CSettingPath& setting)
 {
   CSettingString::Copy(setting);
 

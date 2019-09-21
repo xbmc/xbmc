@@ -12,6 +12,8 @@
 
 #include <vector>
 
+class CFileExtensionProvider;
+
 class CSettingPath : public CSettingString
 {
 public:
@@ -31,7 +33,7 @@ public:
   void SetSources(const std::vector<std::string> &sources) { m_sources = sources; }
   bool HideExtension() const { return m_hideExtension; }
   void SetHideExtension(bool hideExtension) { m_hideExtension = hideExtension; }
-  const std::string& GetMasking() const { return m_masking; }
+  std::string GetMasking(const CFileExtensionProvider& fileExtensionProvider) const;
   void SetMasking(const std::string& masking) { m_masking = masking; }
 
 private:
