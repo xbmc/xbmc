@@ -1341,18 +1341,19 @@ bool CAddonSettings::ParseOldLabel(const TiXmlElement* element, const std::strin
   std::string labelString;
   element->QueryStringAttribute("label", &labelString);
 
+  bool parsed = !labelString.empty();
 
   // try to parse the label as a pure number, i.e. a localized string
-  char *endptr;
-  labelId = std::strtol(labelString.c_str(), &endptr, 10);
-  if (endptr == nullptr || *endptr == '\0')
-    return true;
-
-
-  // as a last resort use the setting's identifier as a label
-  bool parsed = !labelString.empty();
-  if (!parsed)
-    labelString = settingId;
+  if (parsed)
+  {
+    char* endptr;
+    labelId = std::strtol(labelString.c_str(), &endptr, 10);
+    if (endptr == nullptr || *endptr == '\0')
+      return true;
+  }
+  // make sure the label string is not empty
+  else
+    labelString = " ";
 
   labelId = m_unknownSettingLabelId;
   m_unknownSettingLabelId += 1;
