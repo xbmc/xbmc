@@ -1246,6 +1246,21 @@ bool CPVRGUIInfo::GetListItemAndPlayerBool(const CFileItem *item, const CGUIInfo
         return true;
       }
       break;
+    case LISTITEM_IS_PREMIERE:
+      if (item->IsEPG())
+      {
+        const std::shared_ptr<CPVREpgInfoTag> epgTag = item->GetEPGInfoTag();
+        const CDateTime firstAired = epgTag->FirstAiredAsUTC();
+        const CDateTime start = epgTag->StartAsUTC();
+        if (firstAired.IsValid() && start.IsValid())
+        {
+          bValue = firstAired.GetYear() == start.GetYear() &&
+                   firstAired.GetMonth() == start.GetMonth() &&
+                   firstAired.GetDay() == start.GetDay();
+          return true;
+        }
+      }
+      break;
     case MUSICPLAYER_CONTENT:
     case VIDEOPLAYER_CONTENT:
       if (item->IsPVRChannel())
