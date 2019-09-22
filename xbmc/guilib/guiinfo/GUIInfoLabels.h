@@ -194,6 +194,7 @@
 #define MUSICPLAYER_CONTRIBUTOR_AND_ROLE 240
 #define MUSICPLAYER_DBID            241
 #define MUSICPLAYER_PROPERTY        242
+// Last musicplayer label, check use as limit and amend if new label added
 
 #define VIDEOPLAYER_AUDIO_BITRATE     248
 #define VIDEOPLAYER_VIDEO_BITRATE     249

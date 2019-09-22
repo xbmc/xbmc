@@ -75,7 +75,8 @@ bool CMusicGUIInfo::InitCurrentItem(CFileItem *item)
 
 bool CMusicGUIInfo::GetLabel(std::string& value, const CFileItem *item, int contextWindow, const CGUIInfo &info, std::string *fallback) const
 {
-  if (info.GetData1() && info.m_info >= MUSICPLAYER_TITLE && info.m_info <= MUSICPLAYER_ALBUM_ARTIST)
+  // For musicplayer info labels check playlist
+  if (info.GetData1() && info.m_info >= MUSICPLAYER_TITLE && info.m_info <= MUSICPLAYER_DBID)
     return GetPlaylistInfo(value, info);
 
   const CMusicInfoTag* tag = item->GetMusicInfoTag();
