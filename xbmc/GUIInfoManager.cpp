@@ -9685,6 +9685,7 @@ void CGUIInfoManager::UpdateAVInfo()
 {
   if (CServiceBroker::GetDataCacheCore().HasAVInfoChanges())
   {
+    printf("datache has AV changes\n");
     VideoStreamInfo video;
     AudioStreamInfo audio;
     SubtitleStreamInfo subtitle;

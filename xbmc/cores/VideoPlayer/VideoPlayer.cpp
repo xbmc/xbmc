@@ -850,6 +850,7 @@ bool CVideoPlayer::OpenDemuxStream()
 
   m_SelectionStreams.Clear(STREAM_NONE, STREAM_SOURCE_DEMUX);
   m_SelectionStreams.Clear(STREAM_NONE, STREAM_SOURCE_NAV);
+  printf("nav demux clear\n");
   m_SelectionStreams.Update(m_pInputStream, m_pDemuxer);
   m_pDemuxer->GetPrograms(m_programs);
   UpdateContent();
@@ -1021,6 +1022,7 @@ bool CVideoPlayer::ReadPacket(DemuxPacket*& packet, CDemuxStream*& stream)
       }
       if (stream->source == STREAM_SOURCE_NONE)
       {
+        printf("NULL stream\n");
         m_SelectionStreams.Clear(STREAM_NONE, STREAM_SOURCE_DEMUX_SUB);
         m_SelectionStreams.Update(NULL, m_pSubtitleDemuxer.get());
         UpdateContent();
@@ -1038,6 +1040,7 @@ bool CVideoPlayer::ReadPacket(DemuxPacket*& packet, CDemuxStream*& stream)
     // stream changed, update and open defaults
     if (packet->iStreamId == DMX_SPECIALID_STREAMCHANGE)
     {
+      printf("special stream change\n");
       m_SelectionStreams.Clear(STREAM_NONE, STREAM_SOURCE_DEMUX);
       m_SelectionStreams.Update(m_pInputStream, m_pDemuxer);
       m_pDemuxer->GetPrograms(m_programs);
@@ -1068,6 +1071,7 @@ bool CVideoPlayer::ReadPacket(DemuxPacket*& packet, CDemuxStream*& stream)
       }
       if(stream->source == STREAM_SOURCE_NONE)
       {
+        printf("no stream\n");
         m_SelectionStreams.Clear(STREAM_NONE, STREAM_SOURCE_DEMUX);
         m_SelectionStreams.Update(m_pInputStream, m_pDemuxer);
         UpdateContent();
@@ -1611,6 +1615,7 @@ void CVideoPlayer::CheckStreamChanges(CCurrentStream& current, CDemuxStream* str
 
     if (current.hint != CDVDStreamInfo(*stream, true))
     {
+      printf("check stram changes\n");
       m_SelectionStreams.Clear(STREAM_NONE, STREAM_SOURCE_DEMUX);
       m_SelectionStreams.Update(m_pInputStream, m_pDemuxer);
       UpdateContent();
@@ -2449,6 +2454,7 @@ void CVideoPlayer::OnExit()
 
   // clean up all selection streams
   m_SelectionStreams.Clear(STREAM_NONE, STREAM_SOURCE_NONE);
+  printf("cleanup all selection streams\n");
 
   m_messenger.End();
 
@@ -2481,6 +2487,7 @@ void CVideoPlayer::HandleMessages()
       IPlayerCallback *cb = &m_callback;
       CFileItem fileItem(m_item);
       UpdateFileItemStreamDetails(fileItem);
+      printf("##########Update File item stream details\n");
       CVideoSettings vs = m_processInfo->GetVideoSettings();
       m_outboundEvents->Submit([=]() {
         cb->StoreVideoSettings(fileItem, vs);
@@ -2520,6 +2527,7 @@ void CVideoPlayer::HandleMessages()
       m_pInputStream.reset();
 
       m_SelectionStreams.Clear(STREAM_NONE, STREAM_SOURCE_NONE);
+      printf("input stream reset\n");
 
       Prepare();
     }
@@ -3635,6 +3643,7 @@ bool CVideoPlayer::OpenVideoStream(CDVDStreamInfo& hint, bool reset)
   {
     m_pCCDemuxer = new CDVDDemuxCC(hint.codec);
     m_SelectionStreams.Clear(STREAM_NONE, STREAM_SOURCE_VIDEOMUX);
+    printf("video is mpeg2\n");
   }
 
   return true;
@@ -4025,6 +4034,7 @@ int CVideoPlayer::OnDiscNavResult(void* pData, int iMessage)
           m_VideoPlayerVideo->SendMessage(new CDVDMsgDouble(CDVDMsg::VIDEO_SET_ASPECT, m_CurrentVideo.hint.aspect));
 
         m_SelectionStreams.Clear(STREAM_NONE, STREAM_SOURCE_NAV);
+        printf("dvdnav ts change\n");
         m_SelectionStreams.Update(m_pInputStream, m_pDemuxer);
         UpdateContent();
 
@@ -4861,11 +4871,12 @@ void CVideoPlayer::OnResetDisplay()
 
 void CVideoPlayer::UpdateFileItemStreamDetails(CFileItem& item)
 {
-  if (!m_UpdateStreamDetails)
-    return;
+//  if (!m_UpdateStreamDetails)
+//    return;
   m_UpdateStreamDetails = false;
 
   CLog::Log(LOGDEBUG, "CVideoPlayer: updating file item stream details with current streams");
+  printf("updating file item stream details with current stream\n");
 
   VideoStreamInfo videoInfo;
   AudioStreamInfo audioInfo;
@@ -4897,6 +4908,7 @@ void CVideoPlayer::UpdateContentState()
                                                       m_CurrentAudio.demuxerId, m_CurrentAudio.id);
   m_content.m_subtitleIndex = m_SelectionStreams.TypeIndexOf(STREAM_SUBTITLE, m_CurrentSubtitle.source,
                                                          m_CurrentSubtitle.demuxerId, m_CurrentSubtitle.id);
+  printf("UPDATE contect state for m_videoindex %i source=%i muxid=%i curid=%i\n", m_content.m_videoIndex, m_CurrentVideo.source, m_CurrentVideo.demuxerId, m_CurrentVideo.id);
 }
 
 void CVideoPlayer::GetVideoStreamInfo(int streamId, VideoStreamInfo &info)
@@ -4908,7 +4920,7 @@ void CVideoPlayer::GetVideoStreamInfo(int streamId, VideoStreamInfo &info)
 
   if (streamId < 0 || streamId > GetVideoStreamCount() - 1)
   {
-    printf("video invalid with id %i\n", streamId);
+    printf("GetVideoStreamInfo: CURRENT_STREAM video invalid with id %i\n", streamId);
     info.valid = false;
     return;
   }

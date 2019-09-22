@@ -8,6 +8,8 @@
 
 #include "guilib/guiinfo/VideoGUIInfo.h"
 
+#include "math.h"
+
 #include "Application.h"
 #include "FileItem.h"
 #include "ServiceBroker.h"
@@ -19,20 +21,19 @@
 #include "guilib/LocalizeStrings.h"
 #include "guilib/StereoscopicsManager.h"
 #include "guilib/WindowIDs.h"
-#include "guilib/guiinfo/GUIInfo.h"
-#include "guilib/guiinfo/GUIInfoHelper.h"
-#include "guilib/guiinfo/GUIInfoLabels.h"
 #include "settings/AdvancedSettings.h"
+#include "settings/lib/Setting.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
-#include "settings/lib/Setting.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 #include "video/VideoInfoTag.h"
 #include "video/VideoThumbLoader.h"
 
-#include <math.h>
+#include "guilib/guiinfo/GUIInfo.h"
+#include "guilib/guiinfo/GUIInfoHelper.h"
+#include "guilib/guiinfo/GUIInfoLabels.h"
 
 using namespace KODI::GUILIB;
 using namespace KODI::GUILIB::GUIINFO;
@@ -401,6 +402,7 @@ bool CVideoGUIInfo::GetLabel(std::string& value, const CFileItem *item, int cont
         return true;
       case LISTITEM_VIDEO_CODEC:
         value = tag->m_streamDetails.GetVideoCodec();
+        printf("codec is %s\n", value.c_str());
         return true;
       case LISTITEM_VIDEO_RESOLUTION:
         value = CStreamDetails::VideoDimsToResolutionDescription(tag->m_streamDetails.GetVideoWidth(), tag->m_streamDetails.GetVideoHeight());
