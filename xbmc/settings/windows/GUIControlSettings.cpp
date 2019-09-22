@@ -67,6 +67,18 @@ static CFileItemPtr GetFileItem(const std::string& label, const TValueType& valu
   return item;
 }
 
+template<class SettingOption>
+static bool CompareSettingOptionAseconding(const SettingOption& lhs, const SettingOption& rhs)
+{
+  return StringUtils::CompareNoCase(lhs.label, rhs.label) < 0;
+}
+
+template<class SettingOption>
+static bool CompareSettingOptionDeseconding(const SettingOption& lhs, const SettingOption& rhs)
+{
+  return StringUtils::CompareNoCase(lhs.label, rhs.label) > 0;
+}
+
 static bool GetIntegerOptions(SettingConstPtr setting, IntegerSettingOptions& options, std::set<int>& selectedOptions, ILocalizer* localizer)
 {
   std::shared_ptr<const CSettingInt> pSettingInt = NULL;
@@ -138,6 +150,21 @@ static bool GetIntegerOptions(SettingConstPtr setting, IntegerSettingOptions& op
     }
   }
 
+  switch (pSettingInt->GetOptionsSort())
+  {
+  case SettingOptionsSort::Ascending:
+    std::sort(options.begin(), options.end(), CompareSettingOptionAseconding<IntegerSettingOption>);
+    break;
+
+  case SettingOptionsSort::Descending:
+    std::sort(options.begin(), options.end(), CompareSettingOptionDeseconding<IntegerSettingOption>);
+    break;
+
+  case SettingOptionsSort::NoSorting:
+  default:
+    break;
+  }
+
   return true;
 }
 
@@ -194,6 +221,21 @@ static bool GetStringOptions(SettingConstPtr setting, StringSettingOptions& opti
     case SettingOptionsType::Unknown:
     default:
       return false;
+  }
+
+  switch (pSettingString->GetOptionsSort())
+  {
+  case SettingOptionsSort::Ascending:
+    std::sort(options.begin(), options.end(), CompareSettingOptionAseconding<StringSettingOption>);
+    break;
+
+  case SettingOptionsSort::Descending:
+    std::sort(options.begin(), options.end(), CompareSettingOptionDeseconding<StringSettingOption>);
+    break;
+
+  case SettingOptionsSort::NoSorting:
+  default:
+    break;
   }
 
   return true;

@@ -302,6 +302,8 @@ public:
     m_optionsFillerData = data;
   }
   IntegerSettingOptions UpdateDynamicOptions();
+  SettingOptionsSort GetOptionsSort() const { return m_optionsSort; }
+  void SetOptionsSort(SettingOptionsSort optionsSort) { m_optionsSort = optionsSort; }
 
 private:
   void copy(const CSettingInt &setting);
@@ -318,6 +320,7 @@ private:
   IntegerSettingOptionsFiller m_optionsFiller = nullptr;
   void *m_optionsFillerData = nullptr;
   IntegerSettingOptions m_dynamicOptions;
+  SettingOptionsSort m_optionsSort = SettingOptionsSort::NoSorting;
 };
 
 /*!
@@ -416,6 +419,8 @@ public:
     m_optionsFillerData = data;
   }
   StringSettingOptions UpdateDynamicOptions();
+  SettingOptionsSort GetOptionsSort() const { return m_optionsSort; }
+  void SetOptionsSort(SettingOptionsSort optionsSort) { m_optionsSort = optionsSort; }
 
 protected:
   virtual void copy(const CSettingString &setting);
@@ -429,6 +434,7 @@ protected:
   StringSettingOptionsFiller m_optionsFiller = nullptr;
   void *m_optionsFillerData = nullptr;
   StringSettingOptions m_dynamicOptions;
+  SettingOptionsSort m_optionsSort = SettingOptionsSort::NoSorting;
 };
 
 /*!

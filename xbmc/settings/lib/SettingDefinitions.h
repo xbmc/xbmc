@@ -98,3 +98,10 @@ using StringSettingOptions = std::vector<StringSettingOption>;
 class CSetting;
 using IntegerSettingOptionsFiller = void (*)(std::shared_ptr<const CSetting> setting, IntegerSettingOptions &list, int &current, void *data);
 using StringSettingOptionsFiller = void (*)(std::shared_ptr<const CSetting> setting, StringSettingOptions &list, std::string &current, void *data);
+
+enum class SettingOptionsSort
+{
+  NoSorting,
+  Ascending,
+  Descending
+};

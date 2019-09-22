@@ -42,6 +42,29 @@ bool CheckSettingOptionsValidity(const TValue& value, const std::vector<TKey>& o
   return false;
 }
 
+bool DeserializeOptionsSort(const TiXmlElement* optionsElement, SettingOptionsSort& optionsSort)
+{
+  optionsSort = SettingOptionsSort::NoSorting;
+
+  std::string sort;
+  if (optionsElement->QueryStringAttribute("sort", &sort) != TIXML_SUCCESS)
+    return true;
+
+  if (StringUtils::EqualsNoCase(sort, "false") || StringUtils::EqualsNoCase(sort, "off") ||
+    StringUtils::EqualsNoCase(sort, "no") || StringUtils::EqualsNoCase(sort, "disabled"))
+    optionsSort = SettingOptionsSort::NoSorting;
+  else if (StringUtils::EqualsNoCase(sort, "asc") || StringUtils::EqualsNoCase(sort, "ascending") ||
+    StringUtils::EqualsNoCase(sort, "true") || StringUtils::EqualsNoCase(sort, "on") ||
+    StringUtils::EqualsNoCase(sort, "yes") || StringUtils::EqualsNoCase(sort, "enabled"))
+    optionsSort = SettingOptionsSort::Ascending;
+  else if (StringUtils::EqualsNoCase(sort, "desc") || StringUtils::EqualsNoCase(sort, "descending"))
+    optionsSort = SettingOptionsSort::Descending;
+  else
+    return false;
+
+  return true;
+}
+
 CSetting::CSetting(const std::string &id, CSettingsManager *settingsManager /* = nullptr */)
   : ISetting(id, settingsManager)
 { }
@@ -764,9 +787,12 @@ bool CSettingInt::Deserialize(const TiXmlNode *node, bool update /* = false */)
   if (constraints != nullptr)
   {
     // get the entries
-    auto options = constraints->FirstChild(SETTING_XML_ELM_OPTIONS);
+    auto options = constraints->FirstChildElement(SETTING_XML_ELM_OPTIONS);
     if (options != nullptr && options->FirstChild() != nullptr)
     {
+      if (!DeserializeOptionsSort(options, m_optionsSort))
+        CLog::Log(LOGWARNING, "CSettingInt: invalid \"sort\" attribute of <" SETTING_XML_ELM_OPTIONS "> for \"%s\"", m_id.c_str());
+
       if (options->FirstChild()->Type() == TiXmlNode::TINYXML_TEXT)
       {
         m_optionsFillerName = options->FirstChild()->ValueStr();
@@ -1195,9 +1221,12 @@ bool CSettingString::Deserialize(const TiXmlNode *node, bool update /* = false *
     XMLUtils::GetBoolean(constraints, SETTING_XML_ELM_ALLOWEMPTY, m_allowEmpty);
 
     // get the entries
-    auto options = constraints->FirstChild(SETTING_XML_ELM_OPTIONS);
+    auto options = constraints->FirstChildElement(SETTING_XML_ELM_OPTIONS);
     if (options != nullptr && options->FirstChild() != nullptr)
     {
+      if (!DeserializeOptionsSort(options, m_optionsSort))
+        CLog::Log(LOGWARNING, "CSettingInt: invalid \"sort\" attribute of <" SETTING_XML_ELM_OPTIONS "> for \"%s\"", m_id.c_str());
+
       if (options->FirstChild()->Type() == TiXmlNode::TINYXML_TEXT)
       {
         m_optionsFillerName = options->FirstChild()->ValueStr();

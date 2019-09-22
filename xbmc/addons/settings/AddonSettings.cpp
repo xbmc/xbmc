@@ -1074,9 +1074,10 @@ SettingPtr CAddonSettings::InitializeFromOldSettingEnums(const std::string& sett
   const auto settingEntries = StringUtils::Split(XMLUtils::GetAttribute(settingElement, "entries"), OldSettingValuesSeparator);
 
   // process sort
+  bool sortAscending = false;
   std::string sort = XMLUtils::GetAttribute(settingElement, "sort");
   if (sort == "true" || sort == "yes")
-    std::sort(values.begin(), values.end(), sortstringbyname());
+    sortAscending = true;
 
   SettingPtr setting = nullptr;
   if (settingType == "enum")
@@ -1113,6 +1114,9 @@ SettingPtr CAddonSettings::InitializeFromOldSettingEnums(const std::string& sett
 
       settingInt->SetTranslatableOptions(options);
     }
+
+    if (sortAscending)
+      settingInt->SetOptionsSort(SettingOptionsSort::Ascending);
 
     // set the default value
     if (settingInt->FromString(defaultValue))
@@ -1153,6 +1157,9 @@ SettingPtr CAddonSettings::InitializeFromOldSettingEnums(const std::string& sett
 
       settingString->SetTranslatableOptions(options);
     }
+
+    if (sortAscending)
+      settingString->SetOptionsSort(SettingOptionsSort::Ascending);
 
     // set the default value
     settingString->SetDefault(defaultValue);
