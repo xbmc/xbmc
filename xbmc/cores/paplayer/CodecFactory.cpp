@@ -19,22 +19,25 @@ using namespace ADDON;
 
 ICodec* CodecFactory::CreateCodec(const std::string &strFileType)
 {
-  std::string fileType = strFileType;
-  StringUtils::ToLower(fileType);
-
-  BinaryAddonBaseList addonInfos;
-  CServiceBroker::GetBinaryAddonManager().GetAddonInfos(addonInfos, true, ADDON_AUDIODECODER);
-  for (const auto& addonInfo : addonInfos)
+  if (!strFileType.empty())
   {
-    if (CAudioDecoder::GetExtensions(addonInfo).find("."+fileType) != std::string::npos)
+    std::string fileType = strFileType;
+    StringUtils::ToLower(fileType);
+
+    BinaryAddonBaseList addonInfos;
+    CServiceBroker::GetBinaryAddonManager().GetAddonInfos(addonInfos, true, ADDON_AUDIODECODER);
+    for (const auto& addonInfo : addonInfos)
     {
-      CAudioDecoder* result = new CAudioDecoder(addonInfo);
-      if (!result->CreateDecoder())
+      if (CAudioDecoder::GetExtensions(addonInfo).find("." + fileType) != std::string::npos)
       {
-        delete result;
-        return nullptr;
+        CAudioDecoder* result = new CAudioDecoder(addonInfo);
+        if (!result->CreateDecoder())
+        {
+          delete result;
+          return nullptr;
+        }
+        return result;
       }
-      return result;
     }
   }
 
