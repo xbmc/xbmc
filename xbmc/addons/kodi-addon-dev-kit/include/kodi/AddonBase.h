@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include <assert.h> /* assert */
 #include <stdarg.h>     /* va_list, va_start, va_arg, va_end */
 #include <cstdlib>
 #include <cstring>
@@ -293,6 +294,110 @@ private:
 //==============================================================================
 namespace kodi {
 namespace addon {
+
+/*
+ * Internally used helper class to manage processing of a "C" structure in "CPP"
+ * class.
+ *
+ * At constant, the "C" structure is copied, otherwise the given pointer is
+ * superseded and is changeable.
+ *
+ * -----------------------------------------------------------------------------
+ *
+ * Example:
+ *
+ * ~~~~~~~~~~~~~{.cpp}
+ * extern "C" typedef struct C_SAMPLE_DATA
+ * {
+ *   unsigned int iUniqueId;
+ * } C_SAMPLE_DATA;
+ *
+ * class CPPSampleData : public CStructHdl<CPPSampleData, C_SAMPLE_DATA>
+ * {
+ * public:
+ *   CPPSampleData() = default;
+ *   CPPSampleData(const CPPSampleData& sample) : CStructHdl(sample) { }
+ *   CPPSampleData(const C_SAMPLE_DATA* sample) : CStructHdl(sample) { }
+ *   CPPSampleData(C_SAMPLE_DATA* sample) : CStructHdl(sample) { }
+ *
+ *   void SetUniqueId(unsigned int uniqueId) { m_cStructure->iUniqueId = uniqueId; }
+ *   unsigned int GetUniqueId() const { return m_cStructure->iUniqueId; }
+ * };
+ *
+ * ~~~~~~~~~~~~~
+ *
+ * It also works with the following example:
+ *
+ * ~~~~~~~~~~~~~{.cpp}
+ * CPPSampleData test;
+ * // Some work
+ * C_SAMPLE_DATA* data = test;
+ * // Give "data" to Kodi
+ * ~~~~~~~~~~~~~
+ */
+template<class CPP_CLASS, typename C_STRUCT>
+class CStructHdl
+{
+public:
+  CStructHdl()
+    : m_cStructure(new C_STRUCT)
+    , m_owner(true)
+  {
+  }
+
+  CStructHdl(const CPP_CLASS& cppClass)
+    : m_cStructure(new C_STRUCT(*cppClass.m_cStructure))
+    , m_owner(true)
+  {
+  }
+
+  CStructHdl(const C_STRUCT* cStructure)
+    : m_cStructure(new C_STRUCT({*cStructure}))
+    , m_owner(true)
+  {
+  }
+
+  CStructHdl(C_STRUCT* cStructure)
+    : m_cStructure(cStructure)
+    , m_owner(false)
+  {
+    assert(cStructure);
+  }
+
+  const CPP_CLASS& operator=(const CPP_CLASS& right)
+  {
+    assert(*right.m_cStructure);
+    if (m_owner)
+      delete m_cStructure;
+    m_owner = true;
+    m_cStructure = new C_STRUCT(*right.m_cStructure);
+    return *this;
+  }
+
+  const CPP_CLASS& operator=(const C_STRUCT& right)
+  {
+    assert(*right);
+    if (m_owner)
+      delete m_cStructure;
+    m_owner = true;
+    m_cStructure = new C_STRUCT(*right);
+    return *this;
+  }
+
+  virtual ~CStructHdl()
+  {
+    if (m_owner)
+      delete m_cStructure;
+  }
+
+  operator C_STRUCT*() { return m_cStructure; }
+
+protected:
+  C_STRUCT* m_cStructure = nullptr;
+
+private:
+  bool m_owner = false;
+};
 
 /// Add-on main instance class.
 class ATTRIBUTE_HIDDEN CAddonBase
