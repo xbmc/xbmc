@@ -755,33 +755,56 @@ void CGUIControlButtonSetting::Update(bool updateDisplayOnly /* = false */)
   {
     if (!std::static_pointer_cast<const CSettingControlButton>(control)->HideValue())
     {
-      switch (m_pSetting->GetType())
+      auto setting = m_pSetting;
+      if (m_pSetting->GetType() == SettingType::List)
+        setting = std::static_pointer_cast<CSettingList>(m_pSetting)->GetDefinition();
+
+      switch (setting->GetType())
       {
       case SettingType::String:
       {
-        std::string strValue = std::static_pointer_cast<CSettingString>(m_pSetting)->GetValue();
         if (controlFormat == "addon")
         {
-          ADDON::AddonPtr addon;
-          if (CServiceBroker::GetAddonMgr().GetAddon(strValue, addon))
-            strText = addon->Name();
-          if (strText.empty())
+          std::vector<std::string> addonIDs;
+          if (m_pSetting->GetType() == SettingType::List)
+          {
+            for (const auto& addonSetting : std::static_pointer_cast<CSettingList>(m_pSetting)->GetValue())
+              addonIDs.push_back(std::static_pointer_cast<CSettingAddon>(addonSetting)->GetValue());
+          }
+          else
+            addonIDs.push_back(std::static_pointer_cast<CSettingString>(setting)->GetValue());
+
+          std::vector<std::string> addonNames;
+          for (const auto addonID : addonIDs)
+          {
+            ADDON::AddonPtr addon;
+            if (CServiceBroker::GetAddonMgr().GetAddon(addonID, addon))
+              addonNames.push_back(addon->Name());
+          }
+
+          if (addonNames.empty())
             strText = g_localizeStrings.Get(231); // None
-        }
-        else if (controlFormat == "path" || controlFormat == "file" || controlFormat == "image")
-        {
-          std::string shortPath;
-          if (CUtil::MakeShortenPath(strValue, shortPath, 30))
-            strText = shortPath;
-        }
-        else if (controlFormat == "infolabel")
-        {
-          strText = strValue;
-          if (strText.empty())
-            strText = g_localizeStrings.Get(231); // None
+          else
+            strText = StringUtils::Join(addonNames, ", ");
         }
         else
-          strText = strValue;
+        {
+          std::string strValue = std::static_pointer_cast<CSettingString>(setting)->GetValue();
+          if (controlFormat == "path" || controlFormat == "file" || controlFormat == "image")
+          {
+            std::string shortPath;
+            if (CUtil::MakeShortenPath(strValue, shortPath, 30))
+              strText = shortPath;
+          }
+          else if (controlFormat == "infolabel")
+          {
+            strText = strValue;
+            if (strText.empty())
+              strText = g_localizeStrings.Get(231); // None
+          }
+          else
+            strText = strValue;
+        }
 
         break;
       }
