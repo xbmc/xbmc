@@ -139,6 +139,11 @@ std::uintptr_t CThread::GetCurrentThreadNativeHandle()
 #endif
 }
 
+uint64_t CThread::GetCurrentThreadNativeId()
+{
+  return static_cast<uint64_t>(GetCurrentThreadPid_());
+}
+
 int CThread::GetMinPriority(void)
 {
   // one level lower than application
