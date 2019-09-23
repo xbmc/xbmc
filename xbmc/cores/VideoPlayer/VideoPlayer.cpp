@@ -2627,7 +2627,17 @@ void CVideoPlayer::HandleMessages()
         offset = DVD_TIME_TO_MSEC(start) - static_cast<int>(beforeSeek);
         m_callback.OnPlayBackSeekChapter(msg.GetChapter());
       }
-
+      else if (m_pInputStream)
+      {
+        CDVDInputStream::IChapter* pChapter = m_pInputStream->GetIChapter();
+        if (pChapter && pChapter->SeekChapter(msg.GetChapter()))
+        {
+          FlushBuffers(start, true, true);
+          int64_t beforeSeek = GetTime();
+          offset = DVD_TIME_TO_MSEC(start) - static_cast<int>(beforeSeek);
+          m_callback.OnPlayBackSeekChapter(msg.GetChapter());
+        }
+      }
       CServiceBroker::GetGUI()->GetInfoManager().GetInfoProviders().GetPlayerInfoProvider().SetDisplayAfterSeek(2500, offset);
     }
     else if (pMsg->IsType(CDVDMsg::DEMUXER_RESET))
@@ -4531,7 +4541,7 @@ void CVideoPlayer::UpdatePlayState(double timeout)
     state.chapters.clear();
     if (m_pDemuxer->GetChapterCount() > 0)
     {
-      for (int i = 0; i < m_pDemuxer->GetChapterCount(); ++i)
+      for (int i = 0, ie = m_pDemuxer->GetChapterCount(); i < ie; ++i)
       {
         std::string name;
         m_pDemuxer->GetChapterName(name, i + 1);
@@ -4552,6 +4562,27 @@ void CVideoPlayer::UpdatePlayState(double timeout)
 
   if (m_pInputStream)
   {
+    CDVDInputStream::IChapter* pChapter = m_pInputStream->GetIChapter();
+    if (pChapter)
+    {
+      if (IsInMenuInternal())
+        state.chapter = 0;
+      else
+        state.chapter = pChapter->GetChapter();
+
+      state.chapters.clear();
+      if (pChapter->GetChapterCount() > 0)
+      {
+        for (int i = 0, ie = pChapter->GetChapterCount(); i < ie; ++i)
+        {
+          std::string name;
+          pChapter->GetChapterName(name, i + 1);
+          state.chapters.push_back(make_pair(name, pChapter->GetChapterPos(i + 1)));
+        }
+      }
+      CServiceBroker::GetDataCacheCore().SetChapters(state.chapters);
+    }
+
     CDVDInputStream::ITimes* pTimes = m_pInputStream->GetITimes();
     CDVDInputStream::IDisplayTime* pDisplayTime = m_pInputStream->GetIDisplayTime();
 
