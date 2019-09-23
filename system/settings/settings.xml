@@ -1195,6 +1195,15 @@
           <default>false</default>
           <control type="toggle" />
         </setting>
+        <setting id="pvrmanager.startgroupchannelnumbersfromone" type="boolean" parent="pvrmanager.usebackendchannelnumbers" label="19316" help="36306">
+          <level>2</level>
+          <dependencies>
+            <dependency type="visible" on="property" name="pvrsettingvisible" setting="pvrmanager.usebackendchannelnumbers" operator="is">true</dependency>
+            <dependency type="enable" setting="pvrmanager.usebackendchannelnumbers" operator="is">false</dependency>
+          </dependencies>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
         <setting id="pvrmanager.clientpriorities" type="action" label="19240" help="36210">
           <level>2</level>
           <dependencies>

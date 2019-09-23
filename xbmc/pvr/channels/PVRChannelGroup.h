@@ -556,6 +556,7 @@ namespace PVR
     std::vector<int> m_failedClientsForChannelGroupMembers;
     CEventSource<PVREvent> m_events;
     bool m_bIsSelectedGroup = false; /*!< Whether or not this group is currently selected */
+    bool m_bStartGroupChannelNumbersFromOne = false; /*!< true if we start group channel numbers from one when not using backend channel numbers, false otherwise */
 
   private:
     CDateTime GetEPGDate(EpgDateType epgDateType) const;
