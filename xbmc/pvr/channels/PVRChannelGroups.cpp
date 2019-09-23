@@ -468,11 +468,15 @@ CPVRChannelGroupPtr CPVRChannelGroups::GetSelectedGroup(void) const
   return m_selectedGroup;
 }
 
-void CPVRChannelGroups::SetSelectedGroup(const CPVRChannelGroupPtr &group)
+void CPVRChannelGroups::SetSelectedGroup(const std::shared_ptr<CPVRChannelGroup>& selectedGroup)
 {
   CSingleLock lock(m_critSection);
-  m_selectedGroup = group;
+  m_selectedGroup = selectedGroup;
   m_selectedGroup->UpdateClientOrder();
+  m_selectedGroup->UpdateChannelNumbers();
+
+  for (auto& group : m_groups)
+    group->SetSelectedGroup(group == m_selectedGroup);
 }
 
 bool CPVRChannelGroups::AddGroup(const std::string &strName)

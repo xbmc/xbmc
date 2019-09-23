@@ -35,11 +35,16 @@ namespace PVR
   {
     PVRChannelGroupMember() = default;
 
-    PVRChannelGroupMember(const CPVRChannelPtr _channel, const CPVRChannelNumber& _channelNumber, int _iClientPriority, int _iOrder)
-    : channel(_channel), channelNumber(_channelNumber), iClientPriority(_iClientPriority), iOrder(_iOrder) {}
+    PVRChannelGroupMember(const std::shared_ptr<CPVRChannel> _channel, const CPVRChannelNumber& _channelNumber, int _iClientPriority, int _iOrder, const CPVRChannelNumber& _clientChannelNumber)
+      : channel(_channel)
+      , channelNumber(_channelNumber)
+      , clientChannelNumber(_clientChannelNumber)
+      , iClientPriority(_iClientPriority)
+      , iOrder(_iOrder) {}
 
     CPVRChannelPtr channel;
-    CPVRChannelNumber channelNumber; // the number this channel has in the group
+    CPVRChannelNumber channelNumber; // the channel number this channel has in the group
+    CPVRChannelNumber clientChannelNumber; // the client channel number this channel has in the group
     int iClientPriority = 0;
     int iOrder = 0; // The value denoting the order of this member in the group
   };
@@ -143,9 +148,10 @@ namespace PVR
      * @param channelNumber The channel number of the channel to add. Use empty channel number to add it at the end.
      * @param iOrder The value denoting the order of this member in the group, 0 if unknown and needs to be generated
      * @param bUseBackendChannelNumbers True, if channelNumber contains a backend channel number.
+     * @param clientChannelNumber The client channel number of the channel to add. (optional)
      * @return True if the channel was added, false otherwise.
      */
-    virtual bool AddToGroup(const CPVRChannelPtr& channel, const CPVRChannelNumber& channelNumber, int iOrder, bool bUseBackendChannelNumbers);
+    virtual bool AddToGroup(const std::shared_ptr<CPVRChannel>& channel, const CPVRChannelNumber& channelNumber, int iOrder, bool bUseBackendChannelNumbers, const CPVRChannelNumber& clientChannelNumber = {});
 
     /*!
      * @brief Change the name of this group.
@@ -243,6 +249,11 @@ namespace PVR
     //@{
 
     /*!
+     * @brief Sort the group.
+     */
+    void Sort();
+
+    /*!
      * @brief Sort the group and fix up channel numbers.
      * @return True when numbering changed, false otherwise
      */
@@ -273,7 +284,7 @@ namespace PVR
     std::shared_ptr<CPVRChannel> GetLastPlayedChannel(int iCurrentChannel = -1) const;
 
     /*!
-     * @brief Get a channel given it's channel number.
+     * @brief Get a channel given it's active channel number
      * @param channelNumber The channel number.
      * @return The channel or nullptr if it wasn't found.
      */
@@ -285,6 +296,13 @@ namespace PVR
      * @return The channel number in this group.
      */
     CPVRChannelNumber GetChannelNumber(const CPVRChannelPtr &channel) const;
+
+    /*!
+     * @brief Get the client channel number in this group of the given channel.
+     * @param channel The channel to get the channel number for.
+     * @return The client channel number in this group.
+     */
+    CPVRChannelNumber GetClientChannelNumber(const std::shared_ptr<CPVRChannel>& channel) const;
 
     /*!
      * @brief Get the next channel in this group.
@@ -322,7 +340,7 @@ namespace PVR
     std::vector<PVRChannelGroupMember> GetMembers(Include eFilter = Include::ALL) const;
 
     /*!
-     * @brief Get the list of channel numbers in a group.
+     * @brief Get the list of active channel numbers in a group.
      * @param channelNumbers The list to store the numbers in.
      */
     void GetChannelNumbers(std::vector<std::string>& channelNumbers) const;
@@ -444,6 +462,17 @@ namespace PVR
      */
     void UpdateClientOrder();
 
+    /*!
+     * @brief For each channel and its corresponding epg channel data update the channel number from the group members
+     */
+    void UpdateChannelNumbers();
+
+    /*!
+     * @brief Update whether or not this group is currently selected
+     * @param isSelectedGroup whether or not this group is the currently selected group.
+     */
+    void SetSelectedGroup(bool isSelectedGroup) { m_bIsSelectedGroup = isSelectedGroup; }
+
   protected:
     /*!
      * @brief Init class
@@ -526,6 +555,7 @@ namespace PVR
     std::vector<int> m_failedClientsForChannels;
     std::vector<int> m_failedClientsForChannelGroupMembers;
     CEventSource<PVREvent> m_events;
+    bool m_bIsSelectedGroup = false; /*!< Whether or not this group is currently selected */
 
   private:
     CDateTime GetEPGDate(EpgDateType epgDateType) const;

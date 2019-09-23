@@ -88,6 +88,12 @@ namespace PVR
     void SetChannelNumber(const CPVRChannelNumber& channelNumber);
 
     /*!
+     * @brief Set the client channel number for this channel.
+     * @param clientChannelNumber The new client channel number
+     */
+    void SetClientChannelNumber(const CPVRChannelNumber& clientChannelNumber);
+
+    /*!
      * @brief Get the channel number for this channel.
      * @return The channel number.
      */
@@ -443,7 +449,7 @@ namespace PVR
     std::string m_strChannelName;                  /*!< the name for this channel used by XBMC */
     time_t m_iLastWatched = 0;                     /*!< last time channel has been watched */
     bool m_bChanged = false;                       /*!< true if anything in this entry was changed that needs to be persisted */
-    CPVRChannelNumber m_channelNumber;             /*!< the number this channel has in the currently selected channel group */
+    CPVRChannelNumber m_channelNumber;             /*!< the active channel number this channel has in the currently selected channel group */
     std::shared_ptr<CPVRRadioRDSInfoTag> m_rdsTag; /*! < the radio rds data, if available for the channel. */
     bool m_bHasArchive = false;                    /*!< true if this channel supports archive */
     //@}
@@ -462,7 +468,7 @@ namespace PVR
     //@{
     int m_iUniqueId = -1;                    /*!< the unique identifier for this channel */
     int m_iClientId = -1;                    /*!< the identifier of the client that serves this channel */
-    CPVRChannelNumber m_clientChannelNumber; /*!< the channel number on the client */
+    CPVRChannelNumber m_clientChannelNumber; /*!< the channel number on the client for the currently selected channel group */
     std::string m_strClientChannelName;      /*!< the name of this channel on the client */
     std::string m_strInputFormat;            /*!< the stream input type based on ffmpeg/libavformat/allformats.c */
     std::string m_strFileNameAndPath;        /*!< the filename to be used by PVRManager to open and read the stream */
