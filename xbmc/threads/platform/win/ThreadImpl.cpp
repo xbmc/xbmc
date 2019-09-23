@@ -50,6 +50,11 @@ std::uintptr_t CThread::GetCurrentThreadNativeHandle()
   return reinterpret_cast<std::uintptr_t>(::GetCurrentThread());
 }
 
+uint64_t CThread::GetCurrentThreadNativeId()
+{
+  return static_cast<uint64_t>(::GetCurrentThreadId());
+}
+
 int CThread::GetMinPriority(void)
 {
   return(THREAD_PRIORITY_IDLE);
