@@ -68,8 +68,8 @@ function(add_addon_depends addon searchpath)
                        -DCORE_SYSTEM_NAME=${CORE_SYSTEM_NAME}
                        -DENABLE_STATIC=1
                        -DBUILD_SHARED_LIBS=0)
-        # windows store args
-        if (CMAKE_SYSTEM_NAME STREQUAL WindowsStore)
+        # windows args
+        if (CMAKE_SYSTEM_NAME STREQUAL WindowsStore OR CMAKE_SYSTEM_NAME STREQUAL Windows)
           list(APPEND BUILD_ARGS -DCMAKE_SYSTEM_NAME=${CMAKE_SYSTEM_NAME}
                                  -DCMAKE_SYSTEM_VERSION=${CMAKE_SYSTEM_VERSION})
         endif()
