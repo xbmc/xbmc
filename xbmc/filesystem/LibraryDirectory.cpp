@@ -65,6 +65,10 @@ bool CLibraryDirectory::GetDirectory(const CURL& url, CFileItemList &items)
       }
       else if (type == "folder")
       {
+        std::string label;
+        if (XMLUtils::GetString(node, "label", label))
+          label = CGUIControlFactory::FilterLabel(label);
+        items.SetLabel(label);
         std::string path;
         XMLUtils::GetPath(node, "path", path);
         if (!path.empty())

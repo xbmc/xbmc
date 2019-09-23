@@ -212,43 +212,6 @@ bool CGUIWindowMusicNav::OnAction(const CAction& action)
   return CGUIWindowMusicBase::OnAction(action);
 }
 
-std::string CGUIWindowMusicNav::GetQuickpathName(const std::string& strPath) const
-{
-  std::string path = CLegacyPathTranslation::TranslateMusicDbPath(strPath);
-  StringUtils::ToLower(path);
-  if (path == "musicdb://genres/")
-    return "Genres";
-  else if (path == "musicdb://artists/")
-    return "Artists";
-  else if (path == "musicdb://albums/")
-    return "Albums";
-  else if (path == "musicdb://songs/")
-    return "Songs";
-  else if (path == "musicdb://top100/")
-    return "Top100";
-  else if (path == "musicdb://top100/songs/")
-    return "Top100Songs";
-  else if (path == "musicdb://top100/albums/")
-    return "Top100Albums";
-  else if (path == "musicdb://recentlyaddedalbums/")
-    return "RecentlyAddedAlbums";
-  else if (path == "musicdb://recentlyplayedalbums/")
-    return "RecentlyPlayedAlbums";
-  else if (path == "musicdb://compilations/")
-    return "Compilations";
-  else if (path == "musicdb://years/")
-    return "Years";
-  else if (path == "musicdb://singles/")
-    return "Singles";
-  else if (path == "special://musicplaylists/")
-    return "Playlists";
-  else
-  {
-    CLog::Log(LOGERROR, "  CGUIWindowMusicNav::GetQuickpathName: Unknown parameter (%s)", strPath.c_str());
-    return strPath;
-  }
-}
-
 bool CGUIWindowMusicNav::ManageInfoProvider(const CFileItemPtr item)
 {
   CQueryParams params;
@@ -449,9 +412,7 @@ bool CGUIWindowMusicNav::GetDirectory(const std::string &strDirectory, CFileItem
     if (node == NODE_TYPE_ALBUM ||
         node == NODE_TYPE_ALBUM_RECENTLY_ADDED ||
         node == NODE_TYPE_ALBUM_RECENTLY_PLAYED ||
-        node == NODE_TYPE_ALBUM_TOP100 ||
-        node == NODE_TYPE_ALBUM_COMPILATIONS ||
-        node == NODE_TYPE_YEAR_ALBUM)
+        node == NODE_TYPE_ALBUM_TOP100)
       items.SetContent("albums");
     else if (node == NODE_TYPE_ARTIST)
       items.SetContent("artists");
@@ -460,9 +421,7 @@ bool CGUIWindowMusicNav::GetDirectory(const std::string &strDirectory, CFileItem
              node == NODE_TYPE_SINGLES ||
              node == NODE_TYPE_ALBUM_RECENTLY_ADDED_SONGS ||
              node == NODE_TYPE_ALBUM_RECENTLY_PLAYED_SONGS ||
-             node == NODE_TYPE_ALBUM_COMPILATIONS_SONGS ||
-             node == NODE_TYPE_ALBUM_TOP100_SONGS ||
-             node == NODE_TYPE_YEAR_SONG)
+             node == NODE_TYPE_ALBUM_TOP100_SONGS)
       items.SetContent("songs");
     else if (node == NODE_TYPE_GENRE)
       items.SetContent("genres");
@@ -754,7 +713,7 @@ bool CGUIWindowMusicNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   case CONTEXT_BUTTON_SET_DEFAULT:
   {
     const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
-    settings->SetString(CSettings::SETTING_MYMUSIC_DEFAULTLIBVIEW, GetQuickpathName(item->GetPath()));
+    settings->SetString(CSettings::SETTING_MYMUSIC_DEFAULTLIBVIEW, item->GetPath());
     settings->Save();
     return true;
   }

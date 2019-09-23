@@ -1235,10 +1235,14 @@ bool CGUIMediaWindow::GoParentFolder()
 
   const std::string currentPath = m_vecItems->GetPath();
   std::string parentPath = m_history.GetParentPath();
-  // in case the path history is messed up and the current folder is on
-  // the stack more than once, keep going until there's nothing left or they
-  // dont match anymore.
-  while (!parentPath.empty() && URIUtils::PathEquals(parentPath, currentPath, true))
+  // Check if a) the current folder is on the stack more than once, (parent is
+  // often same as current), OR
+  // b) the parent is an xml file (happens when ActivateWindow() called with
+  // a node file) and so current path is the result of expanding the xml.
+  // Keep going until there's nothing left or they dont match anymore.
+  while (!parentPath.empty() &&
+         (URIUtils::PathEquals(parentPath, currentPath, true) ||
+          StringUtils::EndsWith(parentPath, ".xml/") || StringUtils::EndsWith(parentPath, ".xml")))
   {
     m_history.RemoveParentPath();
     parentPath = m_history.GetParentPath();
