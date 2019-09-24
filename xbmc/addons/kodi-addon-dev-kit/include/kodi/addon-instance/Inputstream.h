@@ -394,7 +394,7 @@ namespace addon
 class CInstanceInputStream : public IAddonInstance
 {
 public:
-  explicit CInstanceInputStream(KODI_HANDLE instance, const std::string& kodiVersion)
+  explicit CInstanceInputStream(KODI_HANDLE instance, const std::string& kodiVersion = "0.0.0")
     : IAddonInstance(ADDON_INSTANCE_INPUTSTREAM)
   {
     if (CAddonBase::m_interface->globalSingleInstance != nullptr)
