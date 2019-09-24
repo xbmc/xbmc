@@ -249,3 +249,11 @@ CSettingsManager* CGUIDialogAddonSettings::GetSettingsManager() const
 
   return m_addon->GetSettings()->GetSettingsManager();
 }
+
+void CGUIDialogAddonSettings::OnSettingAction(std::shared_ptr<const CSetting> setting)
+{
+  if (m_addon == nullptr || m_addon->GetSettings() == nullptr)
+    return;
+
+  m_addon->GetSettings()->OnSettingAction(setting);
+}
