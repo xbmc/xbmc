@@ -260,19 +260,28 @@ bool CSettingControlSlider::Deserialize(const TiXmlNode *node, bool update /* = 
 
 bool CSettingControlSlider::SetFormat(const std::string &format)
 {
-  if (StringUtils::EqualsNoCase(format, "percentage"))
-    m_formatString = "%i %%";
-  else if (StringUtils::EqualsNoCase(format, "integer"))
-    m_formatString = "%d";
-  else if (StringUtils::EqualsNoCase(format, "number"))
-    m_formatString = "%.1f";
-  else
+  if (!StringUtils::EqualsNoCase(format, "percentage") &&
+      !StringUtils::EqualsNoCase(format, "integer") &&
+      !StringUtils::EqualsNoCase(format, "number"))
     return false;
 
   m_format = format;
   StringUtils::ToLower(m_format);
+  m_formatString = GetDefaultFormatString();
 
   return true;
+}
+
+std::string CSettingControlSlider::GetDefaultFormatString() const
+{
+  if (m_format == "percentage")
+    return "{} %";
+  if (m_format == "integer")
+    return "{:d}";
+  if (m_format == "number")
+    return "{:.1f}";
+
+  return "{}";
 }
 
 bool CSettingControlRange::Deserialize(const TiXmlNode *node, bool update /* = false */)

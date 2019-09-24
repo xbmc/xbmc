@@ -38,6 +38,7 @@
 #include "storage/MediaManager.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
+#include "utils/log.h"
 
 #include <set>
 #include <utility>
@@ -831,7 +832,7 @@ void CGUIControlButtonSetting::Update(bool updateDisplayOnly /* = false */)
       case SettingType::Integer:
       {
         std::shared_ptr<const CSettingInt> settingInt = std::static_pointer_cast<CSettingInt>(m_pSetting);
-        strText = CGUIControlSliderSetting::GetText(std::static_pointer_cast<const CSettingControlSlider>(m_pSetting->GetControl()),
+        strText = CGUIControlSliderSetting::GetText(m_pSetting,
           settingInt->GetValue(), settingInt->GetMinimum(), settingInt->GetStep(), settingInt->GetMaximum(), m_localizer);
         break;
       }
@@ -839,7 +840,7 @@ void CGUIControlButtonSetting::Update(bool updateDisplayOnly /* = false */)
       case SettingType::Number:
       {
         std::shared_ptr<const CSettingNumber> settingNumber = std::static_pointer_cast<CSettingNumber>(m_pSetting);
-        strText = CGUIControlSliderSetting::GetText(std::static_pointer_cast<const CSettingControlSlider>(m_pSetting->GetControl()),
+        strText = CGUIControlSliderSetting::GetText(m_pSetting,
           settingNumber->GetValue(), settingNumber->GetMinimum(), settingNumber->GetStep(), settingNumber->GetMaximum(), m_localizer);
         break;
       }
@@ -908,7 +909,7 @@ void CGUIControlButtonSetting::OnSliderChange(void *data, CGUISliderControl *sli
     {
       std::shared_ptr<CSettingInt> settingInt = std::static_pointer_cast<CSettingInt>(m_pSetting);
       if (settingInt->SetValue(slider->GetIntValue()))
-        strText = CGUIControlSliderSetting::GetText(std::static_pointer_cast<const CSettingControlSlider>(m_pSetting->GetControl()),
+        strText = CGUIControlSliderSetting::GetText(m_pSetting,
           settingInt->GetValue(), settingInt->GetMinimum(), settingInt->GetStep(), settingInt->GetMaximum(), m_localizer);
       break;
     }
@@ -917,7 +918,7 @@ void CGUIControlButtonSetting::OnSliderChange(void *data, CGUISliderControl *sli
     {
       std::shared_ptr<CSettingNumber> settingNumber = std::static_pointer_cast<CSettingNumber>(m_pSetting);
       if (settingNumber->SetValue(static_cast<double>(slider->GetFloatValue())))
-        strText = CGUIControlSliderSetting::GetText(std::static_pointer_cast<const CSettingControlSlider>(m_pSetting->GetControl()),
+        strText = CGUIControlSliderSetting::GetText(m_pSetting,
           settingNumber->GetValue(), settingNumber->GetMinimum(), settingNumber->GetStep(), settingNumber->GetMaximum(), m_localizer);
       break;
     }
@@ -1110,7 +1111,7 @@ void CGUIControlSliderSetting::Update(bool updateDisplayOnly /* = false */)
         m_pSlider->SetIntValue(value);
       }
 
-      strText = CGUIControlSliderSetting::GetText(std::static_pointer_cast<const CSettingControlSlider>(m_pSetting->GetControl()),
+      strText = CGUIControlSliderSetting::GetText(m_pSetting,
         value, settingInt->GetMinimum(), settingInt->GetStep(), settingInt->GetMaximum(), m_localizer);
       break;
     }
@@ -1127,7 +1128,7 @@ void CGUIControlSliderSetting::Update(bool updateDisplayOnly /* = false */)
         m_pSlider->SetFloatValue((float)value);
       }
 
-      strText = CGUIControlSliderSetting::GetText(std::static_pointer_cast<const CSettingControlSlider>(m_pSetting->GetControl()),
+      strText = CGUIControlSliderSetting::GetText(m_pSetting,
         value, settingNumber->GetMinimum(), settingNumber->GetStep(), settingNumber->GetMaximum(), m_localizer);
       break;
     }
@@ -1140,10 +1141,14 @@ void CGUIControlSliderSetting::Update(bool updateDisplayOnly /* = false */)
     m_pSlider->SetTextValue(strText);
 }
 
-std::string CGUIControlSliderSetting::GetText(std::shared_ptr<const CSettingControlSlider> control, const CVariant &value, const CVariant &minimum, const CVariant &step, const CVariant &maximum, ILocalizer* localizer)
+std::string CGUIControlSliderSetting::GetText(std::shared_ptr<CSetting> setting, const CVariant &value, const CVariant &minimum, const CVariant &step, const CVariant &maximum, ILocalizer* localizer)
 {
-  if (control == NULL ||
-      !(value.isInteger() || value.isDouble()))
+  if (setting == NULL ||
+    !(value.isInteger() || value.isDouble()))
+    return "";
+
+  const auto control = std::static_pointer_cast<const CSettingControlSlider>(setting->GetControl());
+  if (control == NULL)
     return "";
 
   SettingControlSliderFormatter formatter = control->GetFormatter();
@@ -1154,10 +1159,34 @@ std::string CGUIControlSliderSetting::GetText(std::shared_ptr<const CSettingCont
   if (control->GetFormatLabel() > -1)
     formatString = ::Localize(control->GetFormatLabel(), localizer);
 
-  if (value.isDouble())
-    return StringUtils::Format(formatString.c_str(), value.asDouble());
+  std::string formattedString;
+  if (FormatText(formatString, value, setting->GetId(), formattedString))
+    return formattedString;
 
-  return StringUtils::Format(formatString.c_str(), static_cast<int>(value.asInteger()));
+  // fall back to default formatting
+  formatString = control->GetDefaultFormatString();
+  if (FormatText(formatString, value, setting->GetId(), formattedString))
+    return formattedString;
+
+  return "";
+}
+
+bool CGUIControlSliderSetting::FormatText(const std::string& formatString, const CVariant &value, const std::string& settingId, std::string& formattedText)
+{
+  try
+  {
+    if (value.isDouble())
+      formattedText = StringUtils::Format(formatString.c_str(), value.asDouble());
+    else
+      formattedText = StringUtils::Format(formatString.c_str(), static_cast<int>(value.asInteger()));
+  }
+  catch (const std::runtime_error& err)
+  {
+    CLog::Log(LOGERROR, "Invalid formatting with string \"{}\" for setting \"{}\": {}", formatString, settingId, err.what());
+    return false;
+  }
+
+  return true;
 }
 
 CGUIControlRangeSetting::CGUIControlRangeSetting(CGUISettingsSliderControl *pSlider, int id, std::shared_ptr<CSetting> pSetting, ILocalizer* localizer)

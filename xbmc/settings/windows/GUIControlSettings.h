@@ -188,9 +188,11 @@ public:
   void Update(bool updateDisplayOnly = false) override;
   void Clear() override { m_pSlider = NULL; }
 
-  static std::string GetText(std::shared_ptr<const CSettingControlSlider> control, const CVariant &value, const CVariant &minimum, const CVariant &step, const CVariant &maximum, ILocalizer* localizer);
+  static std::string GetText(std::shared_ptr<CSetting> setting, const CVariant &value, const CVariant &minimum, const CVariant &step, const CVariant &maximum, ILocalizer* localizer);
 
 private:
+  static bool FormatText(const std::string& formatString, const CVariant &value, const std::string& settingId, std::string& formattedText);
+
   CGUISettingsSliderControl *m_pSlider;
 };
 
