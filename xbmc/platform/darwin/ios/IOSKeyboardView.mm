@@ -245,18 +245,17 @@ static CEvent keyboardFinishedEvent;
   // give back the control to whoever
   [_textField resignFirstResponder];
 
-  // always called in the mainloop context
-  // detach the keyboard view from our main controller
-  [g_xbmcController deactivateKeyboard:self];
+  // delay closing view until text field finishes resigning first responder
+  dispatch_async(dispatch_get_main_queue(), ^{
+    // always called in the mainloop context
+    // detach the keyboard view from our main controller
+    [g_xbmcController deactivateKeyboard:self];
 
-  // until keyboard did hide, we let the calling thread break loop
-  if (0 == _keyboardIsShowing)
-  {
     // no more notification we want to receive.
     [[NSNotificationCenter defaultCenter] removeObserver: self];
 
     keyboardFinishedEvent.Set();
-  }
+  });
 }
 
 - (void) deactivate
