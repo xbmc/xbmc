@@ -189,21 +189,21 @@ bool CWinSystemIOS::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
 
 UIScreenMode *getModeForResolution(int width, int height, unsigned int screenIdx)
 {
-  UIScreen *aScreen = [[UIScreen screens]objectAtIndex:screenIdx];
-  for ( UIScreenMode *mode in [aScreen availableModes] )
+  auto screen = UIScreen.screens[screenIdx];
+  for (UIScreenMode* mode in screen.availableModes)
   {
     //for main screen also find modes where width and height are
     //exchanged (because of the 90°degree rotated buildinscreens)
-    if((mode.size.width == width && mode.size.height == height) ||
-        (screenIdx == 0 && mode.size.width == height && mode.size.height == width)
-       || screenIdx == 0) // for screenIdx == 0 - which is the mainscreen - we only have one resolution - match it every time
+    auto modeSize = mode.size;
+    if ((modeSize.width == width && modeSize.height == height) ||
+        (screenIdx == 0 && modeSize.width == height && modeSize.height == width))
     {
-      CLog::Log(LOGDEBUG,"Found matching mode");
+      CLog::Log(LOGDEBUG, "Found matching mode: {} x {}", modeSize.width, modeSize.height);
       return mode;
     }
   }
   CLog::Log(LOGERROR,"No matching mode found!");
-  return NULL;
+  return nil;
 }
 
 bool CWinSystemIOS::SwitchToVideoMode(int width, int height, double refreshrate)
