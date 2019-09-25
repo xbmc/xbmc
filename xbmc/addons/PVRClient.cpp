@@ -630,7 +630,7 @@ class CAddonEpgTag : public EPG_TAG
 {
 public:
   CAddonEpgTag() = delete;
-  explicit CAddonEpgTag(const CConstPVREpgInfoTagPtr kodiTag) :
+  explicit CAddonEpgTag(const std::shared_ptr<const CPVREpgInfoTag> kodiTag) :
     m_strTitle(kodiTag->Title()),
     m_strPlotOutline(kodiTag->PlotOutline()),
     m_strPlot(kodiTag->Plot()),
@@ -693,7 +693,7 @@ private:
   std::string m_strGenreDescription;
 };
 
-PVR_ERROR CPVRClient::IsRecordable(const CConstPVREpgInfoTagPtr &tag, bool &bIsRecordable) const
+PVR_ERROR CPVRClient::IsRecordable(const std::shared_ptr<const CPVREpgInfoTag> &tag, bool &bIsRecordable) const
 {
   return DoAddonCall(__FUNCTION__, [tag, &bIsRecordable](const AddonInstance* addon) {
     CAddonEpgTag addonTag(tag);
@@ -701,7 +701,7 @@ PVR_ERROR CPVRClient::IsRecordable(const CConstPVREpgInfoTagPtr &tag, bool &bIsR
   }, m_clientCapabilities.SupportsRecordings() && m_clientCapabilities.SupportsEPG());
 }
 
-PVR_ERROR CPVRClient::IsPlayable(const CConstPVREpgInfoTagPtr &tag, bool &bIsPlayable) const
+PVR_ERROR CPVRClient::IsPlayable(const std::shared_ptr<const CPVREpgInfoTag> &tag, bool &bIsPlayable) const
 {
   return DoAddonCall(__FUNCTION__, [tag, &bIsPlayable](const AddonInstance* addon) {
     CAddonEpgTag addonTag(tag);
@@ -734,7 +734,7 @@ PVR_ERROR CPVRClient::GetEpgTagStreamProperties(const std::shared_ptr<CPVREpgInf
   });
 }
 
-PVR_ERROR CPVRClient::GetEpgTagEdl(const CConstPVREpgInfoTagPtr &epgTag, std::vector<PVR_EDL_ENTRY> &edls)
+PVR_ERROR CPVRClient::GetEpgTagEdl(const std::shared_ptr<const CPVREpgInfoTag> &epgTag, std::vector<PVR_EDL_ENTRY> &edls)
 {
   edls.clear();
   return DoAddonCall(__FUNCTION__, [&epgTag, &edls](const AddonInstance* addon) {

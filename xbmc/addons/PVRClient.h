@@ -378,7 +378,7 @@ namespace PVR
      * @param bIsRecordable Set to true if the tag can be recorded
      * @return PVR_ERROR_NO_ERROR if bIsRecordable has been set successfully.
      */
-    PVR_ERROR IsRecordable(const CConstPVREpgInfoTagPtr &tag, bool &bIsRecordable) const;
+    PVR_ERROR IsRecordable(const std::shared_ptr<const CPVREpgInfoTag> &tag, bool &bIsRecordable) const;
 
     /*
      * @brief Check if an epg tag can be played
@@ -386,7 +386,7 @@ namespace PVR
      * @param bIsPlayable Set to true if the tag can be played
      * @return PVR_ERROR_NO_ERROR if bIsPlayable has been set successfully.
      */
-    PVR_ERROR IsPlayable(const CConstPVREpgInfoTagPtr &tag, bool &bIsPlayable) const;
+    PVR_ERROR IsPlayable(const std::shared_ptr<const CPVREpgInfoTag> &tag, bool &bIsPlayable) const;
 
     /*!
      * @brief Fill the given container with the properties required for playback of the given EPG tag. Values are obtained from the PVR backend.
@@ -555,7 +555,7 @@ namespace PVR
     * @param edls The edit decision list (empty on error).
     * @return PVR_ERROR_NO_ERROR on success, respective error code otherwise.
     */
-    PVR_ERROR GetEpgTagEdl(const CConstPVREpgInfoTagPtr &epgTag, std::vector<PVR_EDL_ENTRY> &edls);
+    PVR_ERROR GetEpgTagEdl(const std::shared_ptr<const CPVREpgInfoTag> &epgTag, std::vector<PVR_EDL_ENTRY> &edls);
 
     //@}
     /** @name PVR timer methods */
