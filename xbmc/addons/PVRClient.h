@@ -26,12 +26,10 @@ namespace PVR
   class CPVRClientMenuHooks;
   class CPVRStreamProperties;
   class CPVRTimersContainer;
-
   class CPVRClient;
-  typedef std::shared_ptr<CPVRClient> CPVRClientPtr;
 
   class CPVRTimerType;
-  typedef std::vector<CPVRTimerTypePtr> CPVRTimerTypes;
+  typedef std::vector<std::shared_ptr<CPVRTimerType>> CPVRTimerTypes;
 
   #define PVR_INVALID_CLIENT_ID (-2)
 
@@ -349,28 +347,28 @@ namespace PVR
      * @param channel The channel to add
      * @return PVR_ERROR_NO_ERROR if the add has been fetched successfully.
      */
-    PVR_ERROR OpenDialogChannelAdd(const CPVRChannelPtr &channel);
+    PVR_ERROR OpenDialogChannelAdd(const std::shared_ptr<CPVRChannel> &channel);
 
     /*!
      * @brief Request the client to open dialog about given channel settings
      * @param channel The channel to edit
      * @return PVR_ERROR_NO_ERROR if the edit has been fetched successfully.
      */
-    PVR_ERROR OpenDialogChannelSettings(const CPVRChannelPtr &channel);
+    PVR_ERROR OpenDialogChannelSettings(const std::shared_ptr<CPVRChannel> &channel);
 
     /*!
      * @brief Request the client to delete given channel
      * @param channel The channel to delete
      * @return PVR_ERROR_NO_ERROR if the delete has been fetched successfully.
      */
-    PVR_ERROR DeleteChannel(const CPVRChannelPtr &channel);
+    PVR_ERROR DeleteChannel(const std::shared_ptr<CPVRChannel> &channel);
 
     /*!
      * @brief Request the client to rename given channel
      * @param channel The channel to rename
      * @return PVR_ERROR_NO_ERROR if the rename has been fetched successfully.
      */
-    PVR_ERROR RenameChannel(const CPVRChannelPtr &channel);
+    PVR_ERROR RenameChannel(const std::shared_ptr<CPVRChannel> &channel);
 
     /*
      * @brief Check if an epg tag can be recorded
@@ -928,7 +926,7 @@ namespace PVR
      * @param xbmcChannel The channel on XBMC's side.
      * @param addonChannel The channel on the addon's side.
      */
-    static void WriteClientChannelInfo(const CPVRChannelPtr &xbmcChannel, PVR_CHANNEL &addonChannel);
+    static void WriteClientChannelInfo(const std::shared_ptr<CPVRChannel> &xbmcChannel, PVR_CHANNEL &addonChannel);
 
     /*!
      * @brief Write the given addon properties to the given properties container.
@@ -943,7 +941,7 @@ namespace PVR
      * @param channel The channel to check.
      * @return True when it can be played, false otherwise.
      */
-    bool CanPlayChannel(const CPVRChannelPtr &channel) const;
+    bool CanPlayChannel(const std::shared_ptr<CPVRChannel> &channel) const;
 
     /*!
      * @brief Stop this instance, if it is currently running.

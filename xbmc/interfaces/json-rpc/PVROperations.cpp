@@ -52,7 +52,7 @@ JSONRPC_STATUS CPVROperations::GetChannelGroups(const std::string &method, ITran
   if (!CServiceBroker::GetPVRManager().IsStarted())
     return FailedToExecute;
 
-  CPVRChannelGroupsContainerPtr channelGroupContainer = CServiceBroker::GetPVRManager().ChannelGroups();
+  std::shared_ptr<CPVRChannelGroupsContainer> channelGroupContainer = CServiceBroker::GetPVRManager().ChannelGroups();
   if (!channelGroupContainer)
     return FailedToExecute;
 
@@ -62,7 +62,7 @@ JSONRPC_STATUS CPVROperations::GetChannelGroups(const std::string &method, ITran
 
   int start, end;
 
-  std::vector<CPVRChannelGroupPtr> groupList = channelGroups->GetMembers(true);
+  std::vector<std::shared_ptr<CPVRChannelGroup>> groupList = channelGroups->GetMembers(true);
   HandleLimits(parameterObject, result, groupList.size(), start, end);
   for (int index = start; index < end; index++)
     FillChannelGroupDetails(groupList.at(index), parameterObject, result["channelgroups"], true);
@@ -75,11 +75,11 @@ JSONRPC_STATUS CPVROperations::GetChannelGroupDetails(const std::string &method,
   if (!CServiceBroker::GetPVRManager().IsStarted())
     return FailedToExecute;
 
-  CPVRChannelGroupsContainerPtr channelGroupContainer = CServiceBroker::GetPVRManager().ChannelGroups();
+  std::shared_ptr<CPVRChannelGroupsContainer> channelGroupContainer = CServiceBroker::GetPVRManager().ChannelGroups();
   if (!channelGroupContainer)
     return FailedToExecute;
 
-  CPVRChannelGroupPtr channelGroup;
+  std::shared_ptr<CPVRChannelGroup> channelGroup;
   CVariant id = parameterObject["channelgroupid"];
   if (id.isInteger())
     channelGroup = channelGroupContainer->GetByIdFromAll((int)id.asInteger());
@@ -99,11 +99,11 @@ JSONRPC_STATUS CPVROperations::GetChannels(const std::string &method, ITransport
   if (!CServiceBroker::GetPVRManager().IsStarted())
     return FailedToExecute;
 
-  CPVRChannelGroupsContainerPtr channelGroupContainer = CServiceBroker::GetPVRManager().ChannelGroups();
+  std::shared_ptr<CPVRChannelGroupsContainer> channelGroupContainer = CServiceBroker::GetPVRManager().ChannelGroups();
   if (!channelGroupContainer)
     return FailedToExecute;
 
-  CPVRChannelGroupPtr channelGroup;
+  std::shared_ptr<CPVRChannelGroup> channelGroup;
   CVariant id = parameterObject["channelgroupid"];
   if (id.isInteger())
     channelGroup = channelGroupContainer->GetByIdFromAll((int)id.asInteger());
@@ -130,11 +130,11 @@ JSONRPC_STATUS CPVROperations::GetChannelDetails(const std::string &method, ITra
   if (!CServiceBroker::GetPVRManager().IsStarted())
     return FailedToExecute;
 
-  CPVRChannelGroupsContainerPtr channelGroupContainer = CServiceBroker::GetPVRManager().ChannelGroups();
+  std::shared_ptr<CPVRChannelGroupsContainer> channelGroupContainer = CServiceBroker::GetPVRManager().ChannelGroups();
   if (!channelGroupContainer)
     return FailedToExecute;
 
-  CPVRChannelPtr channel = channelGroupContainer->GetChannelById((int)parameterObject["channelid"].asInteger());
+  std::shared_ptr<CPVRChannel> channel = channelGroupContainer->GetChannelById((int)parameterObject["channelid"].asInteger());
   if (channel == NULL)
     return InvalidParams;
 
@@ -148,15 +148,15 @@ JSONRPC_STATUS CPVROperations::GetBroadcasts(const std::string &method, ITranspo
   if (!CServiceBroker::GetPVRManager().IsStarted())
     return FailedToExecute;
 
-  CPVRChannelGroupsContainerPtr channelGroupContainer = CServiceBroker::GetPVRManager().ChannelGroups();
+  std::shared_ptr<CPVRChannelGroupsContainer> channelGroupContainer = CServiceBroker::GetPVRManager().ChannelGroups();
   if (!channelGroupContainer)
     return FailedToExecute;
 
-  CPVRChannelPtr channel = channelGroupContainer->GetChannelById((int)parameterObject["channelid"].asInteger());
+  std::shared_ptr<CPVRChannel> channel = channelGroupContainer->GetChannelById((int)parameterObject["channelid"].asInteger());
   if (channel == NULL)
     return InvalidParams;
 
-  CPVREpgPtr channelEpg = channel->GetEPG();
+  std::shared_ptr<CPVREpg> channelEpg = channel->GetEPG();
   if (!channelEpg)
     return InternalError;
 
@@ -195,7 +195,7 @@ JSONRPC_STATUS CPVROperations::Record(const std::string &method, ITransportLayer
   if (!CServiceBroker::GetPVRManager().IsStarted())
     return FailedToExecute;
 
-  CPVRChannelPtr pChannel;
+  std::shared_ptr<CPVRChannel> pChannel;
   CVariant channel = parameterObject["channel"];
   if (channel.isString() && channel.asString() == "current")
   {
@@ -205,7 +205,7 @@ JSONRPC_STATUS CPVROperations::Record(const std::string &method, ITransportLayer
   }
   else if (channel.isInteger())
   {
-    CPVRChannelGroupsContainerPtr channelGroupContainer = CServiceBroker::GetPVRManager().ChannelGroups();
+    std::shared_ptr<CPVRChannelGroupsContainer> channelGroupContainer = CServiceBroker::GetPVRManager().ChannelGroups();
     if (!channelGroupContainer)
       return FailedToExecute;
 
@@ -269,7 +269,7 @@ JSONRPC_STATUS CPVROperations::GetPropertyValue(const std::string &property, CVa
   return OK;
 }
 
-void CPVROperations::FillChannelGroupDetails(const CPVRChannelGroupPtr &channelGroup, const CVariant &parameterObject, CVariant &result, bool append /* = false */)
+void CPVROperations::FillChannelGroupDetails(const std::shared_ptr<CPVRChannelGroup> &channelGroup, const CVariant &parameterObject, CVariant &result, bool append /* = false */)
 {
   if (channelGroup == NULL)
     return;
@@ -302,7 +302,7 @@ JSONRPC_STATUS CPVROperations::GetTimers(const std::string &method, ITransportLa
   if (!CServiceBroker::GetPVRManager().IsStarted())
     return FailedToExecute;
 
-  CPVRTimersPtr timers = CServiceBroker::GetPVRManager().Timers();
+  std::shared_ptr<CPVRTimers> timers = CServiceBroker::GetPVRManager().Timers();
   if (!timers)
     return FailedToExecute;
 
@@ -323,11 +323,11 @@ JSONRPC_STATUS CPVROperations::GetTimerDetails(const std::string &method, ITrans
   if (!CServiceBroker::GetPVRManager().IsStarted())
     return FailedToExecute;
 
-  CPVRTimersPtr timers = CServiceBroker::GetPVRManager().Timers();
+  std::shared_ptr<CPVRTimers> timers = CServiceBroker::GetPVRManager().Timers();
   if (!timers)
     return FailedToExecute;
 
-  CPVRTimerInfoTagPtr timer = timers->GetById((int)parameterObject["timerid"].asInteger());
+  std::shared_ptr<CPVRTimerInfoTag> timer = timers->GetById((int)parameterObject["timerid"].asInteger());
   if (!timer)
     return InvalidParams;
 
@@ -350,7 +350,7 @@ JSONRPC_STATUS CPVROperations::AddTimer(const std::string &method, ITransportLay
   if (CServiceBroker::GetPVRManager().Timers()->GetTimerForEpgTag(epgTag))
     return InvalidParams;
 
-  CPVRTimerInfoTagPtr newTimer = CPVRTimerInfoTag::CreateFromEpg(epgTag, parameterObject["timerrule"].asBoolean(false));
+  std::shared_ptr<CPVRTimerInfoTag> newTimer = CPVRTimerInfoTag::CreateFromEpg(epgTag, parameterObject["timerrule"].asBoolean(false));
   if (newTimer)
   {
     if (CServiceBroker::GetPVRManager().GUIActions()->AddTimer(newTimer))
@@ -365,11 +365,11 @@ JSONRPC_STATUS CPVROperations::DeleteTimer(const std::string &method, ITransport
   if (!CServiceBroker::GetPVRManager().IsStarted())
     return FailedToExecute;
 
-  CPVRTimersPtr timers = CServiceBroker::GetPVRManager().Timers();
+  std::shared_ptr<CPVRTimers> timers = CServiceBroker::GetPVRManager().Timers();
   if (!timers)
     return FailedToExecute;
 
-  CPVRTimerInfoTagPtr timer = timers->GetById(parameterObject["timerid"].asInteger());
+  std::shared_ptr<CPVRTimerInfoTag> timer = timers->GetById(parameterObject["timerid"].asInteger());
   if (!timer)
     return InvalidParams;
 
@@ -421,7 +421,7 @@ JSONRPC_STATUS CPVROperations::GetRecordings(const std::string &method, ITranspo
   if (!CServiceBroker::GetPVRManager().IsStarted())
     return FailedToExecute;
 
-  CPVRRecordingsPtr recordings = CServiceBroker::GetPVRManager().Recordings();
+  std::shared_ptr<CPVRRecordings> recordings = CServiceBroker::GetPVRManager().Recordings();
   if (!recordings)
     return FailedToExecute;
 
@@ -442,7 +442,7 @@ JSONRPC_STATUS CPVROperations::GetRecordingDetails(const std::string &method, IT
   if (!CServiceBroker::GetPVRManager().IsStarted())
     return FailedToExecute;
 
-  CPVRRecordingsPtr recordings = CServiceBroker::GetPVRManager().Recordings();
+  std::shared_ptr<CPVRRecordings> recordings = CServiceBroker::GetPVRManager().Recordings();
   if (!recordings)
     return FailedToExecute;
 
