@@ -12,6 +12,8 @@
 #include "pvr/PVRTypes.h"
 #include "pvr/channels/PVRRadioRDSInfoTag.h"
 
+#include <memory>
+
 namespace XBMCAddon
 {
   namespace xbmc
@@ -46,11 +48,11 @@ namespace XBMCAddon
     class InfoTagRadioRDS : public AddonClass
     {
     private:
-      PVR::CPVRRadioRDSInfoTagPtr infoTag;
+      std::shared_ptr<PVR::CPVRRadioRDSInfoTag> infoTag;
 
     public:
 #ifndef SWIG
-      explicit InfoTagRadioRDS(const PVR::CPVRChannelPtr& channel);
+      explicit InfoTagRadioRDS(const std::shared_ptr<PVR::CPVRChannel>& channel);
 #endif
       InfoTagRadioRDS();
       ~InfoTagRadioRDS() override;
