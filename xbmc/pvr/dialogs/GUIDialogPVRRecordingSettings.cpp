@@ -39,7 +39,7 @@ CGUIDialogPVRRecordingSettings::CGUIDialogPVRRecordingSettings() :
   m_loadType = LOAD_EVERY_TIME;
 }
 
-void CGUIDialogPVRRecordingSettings::SetRecording(const CPVRRecordingPtr &recording)
+void CGUIDialogPVRRecordingSettings::SetRecording(const std::shared_ptr<CPVRRecording> &recording)
 {
   if (!recording)
   {
@@ -83,7 +83,7 @@ void CGUIDialogPVRRecordingSettings::InitializeSettings()
   }
 
   std::shared_ptr<CSetting> setting = nullptr;
-  const CPVRClientPtr client = CServiceBroker::GetPVRManager().GetClient(m_recording->ClientID());
+  const std::shared_ptr<CPVRClient> client = CServiceBroker::GetPVRManager().GetClient(m_recording->ClientID());
 
   // Name
   setting = AddEdit(group, SETTING_RECORDING_NAME, 19075, SettingLevel::Basic, m_strTitle);
@@ -186,7 +186,7 @@ void CGUIDialogPVRRecordingSettings::LifetimesFiller(
   {
     list.clear();
 
-    const CPVRClientPtr client = CServiceBroker::GetPVRManager().GetClient(pThis->m_recording->ClientID());
+    const std::shared_ptr<CPVRClient> client = CServiceBroker::GetPVRManager().GetClient(pThis->m_recording->ClientID());
     if (client)
     {
       std::vector<std::pair<std::string,int>> values;

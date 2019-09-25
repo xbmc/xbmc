@@ -13,6 +13,8 @@
 #include "pvr/PVRTypes.h"
 #include "view/GUIViewControl.h"
 
+#include <memory>
+
 class CFileItemList;
 class CGUIMessage;
 
@@ -52,7 +54,7 @@ namespace PVR
     bool OnMessageClick(CGUIMessage &message);
     bool OnActionMove(const CAction& action);
 
-    CPVRChannelGroupPtr m_selectedGroup;
+    std::shared_ptr<CPVRChannelGroup> m_selectedGroup;
     bool              m_bIsRadio;
 
     int m_iSelectedUngroupedChannel = 0;

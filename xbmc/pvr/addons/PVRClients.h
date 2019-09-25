@@ -15,6 +15,7 @@
 
 #include <functional>
 #include <map>
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -32,7 +33,7 @@ namespace PVR
   class CPVRRecordings;
   class CPVRTimersContainer;
 
-  typedef std::map<int, CPVRClientPtr> CPVRClientMap;
+  typedef std::map<int, std::shared_ptr<CPVRClient>> CPVRClientMap;
 
   /**
    * Holds generic data about a backend (number of channels etc.)
@@ -139,7 +140,7 @@ namespace PVR
      * @param addon Will be filled with requested client on success, null otherwise.
      * @return True on success, false otherwise.
      */
-    bool GetCreatedClient(int iClientId, CPVRClientPtr &addon) const;
+    bool GetCreatedClient(int iClientId, std::shared_ptr<CPVRClient> &addon) const;
 
     /*!
      * @brief Get all created clients.
@@ -257,13 +258,13 @@ namespace PVR
      * @brief Get a list of clients providing a channel scan dialog.
      * @return All clients supporting channel scan.
      */
-    std::vector<CPVRClientPtr> GetClientsSupportingChannelScan(void) const;
+    std::vector<std::shared_ptr<CPVRClient>> GetClientsSupportingChannelScan(void) const;
 
     /*!
      * @brief Get a list of clients providing a channel settings dialog.
      * @return All clients supporting channel settings.
      */
-    std::vector<CPVRClientPtr> GetClientsSupportingChannelSettings(bool bRadio) const;
+    std::vector<std::shared_ptr<CPVRClient>> GetClientsSupportingChannelSettings(bool bRadio) const;
 
     //@}
 
@@ -308,7 +309,7 @@ namespace PVR
      * @param addon The client.
      * @return True if the client was found, false otherwise.
      */
-    bool GetClient(int iClientId, CPVRClientPtr &addon) const;
+    bool GetClient(int iClientId, std::shared_ptr<CPVRClient> &addon) const;
 
     /*!
      * @brief Check whether a client is known.
@@ -332,12 +333,12 @@ namespace PVR
      */
     PVR_ERROR GetCreatedClients(CPVRClientMap &clientsReady, std::vector<int> &clientsNotReady) const;
 
-    typedef std::function<PVR_ERROR(const CPVRClientPtr&)> PVRClientFunction;
+    typedef std::function<PVR_ERROR(const std::shared_ptr<CPVRClient>&)> PVRClientFunction;
 
     /*!
      * @brief Wraps calls to all created clients in order to do common pre and post function invocation actions.
      * @param strFunctionName The function name, for logging purposes.
-     * @param function The function to wrap. It has to have return type PVR_ERROR and must take a const reference to a CPVRClientPtr as parameter.
+     * @param function The function to wrap. It has to have return type PVR_ERROR and must take a const reference to a std::shared_ptr<CPVRClient> as parameter.
      * @return PVR_ERROR_NO_ERROR on success, any other PVR_ERROR_* value otherwise.
      */
     PVR_ERROR ForCreatedClients(const char* strFunctionName, PVRClientFunction function) const;
@@ -345,7 +346,7 @@ namespace PVR
     /*!
      * @brief Wraps calls to all created clients in order to do common pre and post function invocation actions.
      * @param strFunctionName The function name, for logging purposes.
-     * @param function The function to wrap. It has to have return type PVR_ERROR and must take a const reference to a CPVRClientPtr as parameter.
+     * @param function The function to wrap. It has to have return type PVR_ERROR and must take a const reference to a std::shared_ptr<CPVRClient> as parameter.
      * @param failedClients Contains a list of the ids of clients for that the call failed, if any.
      * @return PVR_ERROR_NO_ERROR on success, any other PVR_ERROR_* value otherwise.
      */

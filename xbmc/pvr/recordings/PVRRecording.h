@@ -253,7 +253,7 @@ namespace PVR
      * @return Get the channel on which this recording is/was running
      * @note Only works if the recording has a channel uid provided by the add-on
      */
-    CPVRChannelPtr Channel(void) const;
+    std::shared_ptr<CPVRChannel> Channel(void) const;
 
     /*!
      * @brief Get the uid of the channel on which this recording is/was running

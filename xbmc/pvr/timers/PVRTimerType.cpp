@@ -23,9 +23,9 @@
 
 using namespace PVR;
 
-const std::vector<CPVRTimerTypePtr> CPVRTimerType::GetAllTypes()
+const std::vector<std::shared_ptr<CPVRTimerType>> CPVRTimerType::GetAllTypes()
 {
-  std::vector<CPVRTimerTypePtr> allTypes;
+  std::vector<std::shared_ptr<CPVRTimerType>> allTypes;
   CServiceBroker::GetPVRManager().Clients()->GetTimerTypes(allTypes);
 
   // Add local reminder timer types. Local reminders are always available.
@@ -101,11 +101,11 @@ const std::vector<CPVRTimerTypePtr> CPVRTimerType::GetAllTypes()
   return allTypes;
 }
 
-const CPVRTimerTypePtr CPVRTimerType::GetFirstAvailableType(const std::shared_ptr<CPVRClient>& client)
+const std::shared_ptr<CPVRTimerType> CPVRTimerType::GetFirstAvailableType(const std::shared_ptr<CPVRClient>& client)
 {
   if (client)
   {
-    std::vector<CPVRTimerTypePtr> types;
+    std::vector<std::shared_ptr<CPVRTimerType>> types;
     if (client->GetTimerTypes(types) == PVR_ERROR_NO_ERROR && !types.empty())
     {
       return *(types.begin());
@@ -114,7 +114,7 @@ const CPVRTimerTypePtr CPVRTimerType::GetFirstAvailableType(const std::shared_pt
   return {};
 }
 
-CPVRTimerTypePtr CPVRTimerType::CreateFromIds(unsigned int iTypeId, int iClientId)
+std::shared_ptr<CPVRTimerType> CPVRTimerType::CreateFromIds(unsigned int iTypeId, int iClientId)
 {
   const std::vector<std::shared_ptr<CPVRTimerType>> types = GetAllTypes();
   for (const auto& type : types)
@@ -135,7 +135,7 @@ CPVRTimerTypePtr CPVRTimerType::CreateFromIds(unsigned int iTypeId, int iClientI
   return {};
 }
 
-CPVRTimerTypePtr CPVRTimerType::CreateFromAttributes(
+std::shared_ptr<CPVRTimerType> CPVRTimerType::CreateFromAttributes(
   unsigned int iMustHaveAttr, unsigned int iMustNotHaveAttr, int iClientId)
 {
   const std::vector<std::shared_ptr<CPVRTimerType>> types = GetAllTypes();

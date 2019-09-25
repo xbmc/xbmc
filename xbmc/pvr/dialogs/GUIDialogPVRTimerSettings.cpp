@@ -84,7 +84,7 @@ bool CGUIDialogPVRTimerSettings::CanBeActivated() const
   return true;
 }
 
-void CGUIDialogPVRTimerSettings::SetTimer(const CPVRTimerInfoTagPtr &timer)
+void CGUIDialogPVRTimerSettings::SetTimer(const std::shared_ptr<CPVRTimerInfoTag> &timer)
 {
   if (!timer)
   {
@@ -707,7 +707,7 @@ void CGUIDialogPVRTimerSettings::InitializeTypesList()
 
   bool bFoundThisType(false);
   int idx(0);
-  const std::vector<CPVRTimerTypePtr> types(CPVRTimerType::GetAllTypes());
+  const std::vector<std::shared_ptr<CPVRTimerType>> types(CPVRTimerType::GetAllTypes());
   for (const auto &type : types)
   {
     // Type definition prohibits created of new instances.
@@ -727,7 +727,7 @@ void CGUIDialogPVRTimerSettings::InitializeTypesList()
     // Drop TimerTypes without 'Series' EPG attributes if none are set
     if (type->RequiresEpgSeriesOnCreate())
     {
-      const CPVREpgInfoTagPtr epgTag(m_timerInfoTag->GetEpgInfoTag());
+      const std::shared_ptr<CPVREpgInfoTag> epgTag(m_timerInfoTag->GetEpgInfoTag());
       if (epgTag && !epgTag->IsSeries())
         continue;
     }
@@ -735,7 +735,7 @@ void CGUIDialogPVRTimerSettings::InitializeTypesList()
     // Drop TimerTypes which need series link if none is set
     if (type->RequiresEpgSeriesLinkOnCreate())
     {
-      const CPVREpgInfoTagPtr epgTag(m_timerInfoTag->GetEpgInfoTag());
+      const std::shared_ptr<CPVREpgInfoTag> epgTag(m_timerInfoTag->GetEpgInfoTag());
       if (!epgTag || epgTag->SeriesLink().empty())
         continue;
     }
@@ -747,7 +747,7 @@ void CGUIDialogPVRTimerSettings::InitializeTypesList()
     // Drop TimerTypes that aren't rules and cannot be recorded
     if (!type->IsTimerRule())
     {
-      const CPVREpgInfoTagPtr epgTag(m_timerInfoTag->GetEpgInfoTag());
+      const std::shared_ptr<CPVREpgInfoTag> epgTag(m_timerInfoTag->GetEpgInfoTag());
       bool bCanRecord = epgTag ? epgTag->IsRecordable() : m_timerInfoTag->EndAsLocalTime() > CDateTime::GetCurrentDateTime();
       if (!bCanRecord)
         continue;

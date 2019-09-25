@@ -495,7 +495,7 @@ void CGUIDialogPVRGroupManager::Update()
       }
 
       /* for the center part, get all channels of the "all" channels group that are not in this group */
-      const CPVRChannelGroupPtr allGroup = CServiceBroker::GetPVRManager().ChannelGroups()->GetGroupAll(m_bIsRadio);
+      const std::shared_ptr<CPVRChannelGroup> allGroup = CServiceBroker::GetPVRManager().ChannelGroups()->GetGroupAll(m_bIsRadio);
       const std::vector<PVRChannelGroupMember> allGroupMembers = allGroup->GetMembers(CPVRChannelGroup::Include::ONLY_VISIBLE);
       for (const auto& groupMember : allGroupMembers)
       {

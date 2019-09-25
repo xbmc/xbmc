@@ -11,6 +11,8 @@
 #include "pvr/PVRTypes.h"
 #include "threads/CriticalSection.h"
 
+#include <memory>
+
 namespace PVR
 {
   enum class ChannelSwitchMode
@@ -72,7 +74,7 @@ namespace PVR
      * @brief Set a new playing channel and show the channel info OSD for the new channel.
      * @param channel The new playing channel
      */
-    void SetPlayingChannel(const CPVRChannelPtr channel);
+    void SetPlayingChannel(const std::shared_ptr<CPVRChannel> channel);
 
     /*!
      * @brief Clear the currently playing channel and hide the channel info OSD.
@@ -85,14 +87,14 @@ namespace PVR
      * @param bNext True to get the next channel, false to get the previous channel.
      * @param return The channel or nullptr if not found.
      */
-    CPVRChannelPtr GetNextOrPrevChannel(bool bNext);
+    std::shared_ptr<CPVRChannel> GetNextOrPrevChannel(bool bNext);
 
     /*!
      * @brief Select a given channel, display channel info OSD, switch according to given switch mode.
      * @param item The channel to select.
      * @param eSwitchMode The channel switch mode.
      */
-    void SelectChannel(const CPVRChannelPtr channel, ChannelSwitchMode eSwitchMode);
+    void SelectChannel(const std::shared_ptr<CPVRChannel> channel, ChannelSwitchMode eSwitchMode);
 
     /*!
      * @brief Show the channel info OSD.
@@ -101,8 +103,8 @@ namespace PVR
     void ShowInfo(bool bForce);
 
     mutable CCriticalSection m_critSection;
-    CPVRChannelPtr m_playingChannel;
-    CPVRChannelPtr m_currentChannel;
+    std::shared_ptr<CPVRChannel> m_playingChannel;
+    std::shared_ptr<CPVRChannel> m_currentChannel;
     int m_iChannelEntryJobId = -1;
     int m_iChannelInfoJobId = -1;
   };

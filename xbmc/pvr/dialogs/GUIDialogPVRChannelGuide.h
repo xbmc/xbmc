@@ -11,6 +11,8 @@
 #include "pvr/PVRTypes.h"
 #include "pvr/dialogs/GUIDialogPVRItemsViewBase.h"
 
+#include <memory>
+
 namespace PVR
 {
   class CGUIDialogPVRChannelGuide : public CGUIDialogPVRItemsViewBase
@@ -19,13 +21,13 @@ namespace PVR
     CGUIDialogPVRChannelGuide(void);
     ~CGUIDialogPVRChannelGuide(void) override = default;
 
-    void Open(const CPVRChannelPtr &channel);
+    void Open(const std::shared_ptr<CPVRChannel> &channel);
 
   protected:
     void OnInitWindow() override;
     void OnDeinitWindow(int nextWindowID) override;
 
   private:
-    CPVRChannelPtr m_channel;
+    std::shared_ptr<CPVRChannel> m_channel;
   };
 }

@@ -157,7 +157,7 @@ void CPVRChannelGroup::SetPath(const CPVRChannelsPath& path)
   }
 }
 
-bool CPVRChannelGroup::SetChannelNumber(const CPVRChannelPtr &channel, const CPVRChannelNumber &channelNumber)
+bool CPVRChannelGroup::SetChannelNumber(const std::shared_ptr<CPVRChannel> &channel, const CPVRChannelNumber &channelNumber)
 {
   bool bReturn(false);
   CSingleLock lock(m_critSection);
@@ -241,7 +241,7 @@ void CPVRChannelGroup::SortByChannelNumber(void)
 
 bool CPVRChannelGroup::UpdateClientPriorities()
 {
-  const CPVRClientsPtr clients = CServiceBroker::GetPVRManager().Clients();
+  const std::shared_ptr<CPVRClients> clients = CServiceBroker::GetPVRManager().Clients();
   bool bChanged = false;
 
   CSingleLock lock(m_critSection);
@@ -252,7 +252,7 @@ bool CPVRChannelGroup::UpdateClientPriorities()
 
     if (m_bUsingBackendChannelOrder)
     {
-      CPVRClientPtr client;
+      std::shared_ptr<CPVRClient> client;
       if (!clients->GetCreatedClient(member.channel->ClientID(), client))
         continue;
 
@@ -285,14 +285,14 @@ const PVRChannelGroupMember& CPVRChannelGroup::GetByUniqueID(const std::pair<int
   return it != m_members.end() ? it->second : CPVRChannelGroup::EmptyMember;
 }
 
-CPVRChannelPtr CPVRChannelGroup::GetByUniqueID(int iUniqueChannelId, int iClientID) const
+std::shared_ptr<CPVRChannel> CPVRChannelGroup::GetByUniqueID(int iUniqueChannelId, int iClientID) const
 {
   return GetByUniqueID(std::make_pair(iClientID, iUniqueChannelId)).channel;
 }
 
-CPVRChannelPtr CPVRChannelGroup::GetByChannelID(int iChannelID) const
+std::shared_ptr<CPVRChannel> CPVRChannelGroup::GetByChannelID(int iChannelID) const
 {
-  CPVRChannelPtr retval;
+  std::shared_ptr<CPVRChannel> retval;
   CSingleLock lock(m_critSection);
 
   for (PVR_CHANNEL_GROUP_MEMBERS::const_iterator it = m_members.begin(); !retval && it != m_members.end(); ++it)
@@ -304,9 +304,9 @@ CPVRChannelPtr CPVRChannelGroup::GetByChannelID(int iChannelID) const
   return retval;
 }
 
-CPVRChannelPtr CPVRChannelGroup::GetByChannelEpgID(int iEpgID) const
+std::shared_ptr<CPVRChannel> CPVRChannelGroup::GetByChannelEpgID(int iEpgID) const
 {
-  CPVRChannelPtr retval;
+  std::shared_ptr<CPVRChannel> retval;
   CSingleLock lock(m_critSection);
 
   for (PVR_CHANNEL_GROUP_MEMBERS::const_iterator it = m_members.begin(); !retval && it != m_members.end(); ++it)
@@ -322,7 +322,7 @@ std::shared_ptr<CPVRChannel> CPVRChannelGroup::GetLastPlayedChannel(int iCurrent
 {
   CSingleLock lock(m_critSection);
 
-  CPVRChannelPtr returnChannel, channel;
+  std::shared_ptr<CPVRChannel> returnChannel, channel;
   for (PVR_CHANNEL_GROUP_MEMBERS::const_iterator it = m_members.begin(); it != m_members.end(); ++it)
   {
     channel = it->second.channel;
@@ -460,7 +460,7 @@ void CPVRChannelGroup::GetChannelNumbers(std::vector<std::string>& channelNumber
 
 int CPVRChannelGroup::LoadFromDb(bool bCompress /* = false */)
 {
-  const CPVRDatabasePtr database(CServiceBroker::GetPVRManager().GetTVDatabase());
+  const std::shared_ptr<CPVRDatabase> database(CServiceBroker::GetPVRManager().GetTVDatabase());
   if (!database)
     return -1;
 
@@ -542,15 +542,15 @@ void CPVRChannelGroup::UpdateChannelNumbers()
   }
 }
 
-std::vector<CPVRChannelPtr> CPVRChannelGroup::RemoveDeletedChannels(const CPVRChannelGroup &channels)
+std::vector<std::shared_ptr<CPVRChannel>> CPVRChannelGroup::RemoveDeletedChannels(const CPVRChannelGroup &channels)
 {
-  std::vector<CPVRChannelPtr> removedChannels;
+  std::vector<std::shared_ptr<CPVRChannel>> removedChannels;
   CSingleLock lock(m_critSection);
 
   /* check for deleted channels */
   for (PVR_CHANNEL_GROUP_SORTED_MEMBERS::iterator it = m_sortedMembers.begin(); it != m_sortedMembers.end();)
   {
-    const CPVRChannelPtr channel = (*it).channel;
+    const std::shared_ptr<CPVRChannel> channel = (*it).channel;
     if (channels.m_members.find(channel->StorageId()) == channels.m_members.end())
     {
       /* channel was not found */
@@ -608,7 +608,7 @@ bool CPVRChannelGroup::UpdateGroupEntries(const CPVRChannelGroup& channels, std:
   return bReturn;
 }
 
-bool CPVRChannelGroup::RemoveFromGroup(const CPVRChannelPtr &channel)
+bool CPVRChannelGroup::RemoveFromGroup(const std::shared_ptr<CPVRChannel> &channel)
 {
   bool bReturn(false);
   CSingleLock lock(m_critSection);
@@ -672,7 +672,7 @@ bool CPVRChannelGroup::AddToGroup(const std::shared_ptr<CPVRChannel>& channel, c
   return bReturn;
 }
 
-bool CPVRChannelGroup::IsGroupMember(const CPVRChannelPtr &channel) const
+bool CPVRChannelGroup::IsGroupMember(const std::shared_ptr<CPVRChannel> &channel) const
 {
   CSingleLock lock(m_critSection);
   return m_members.find(channel->StorageId()) != m_members.end();
@@ -692,7 +692,7 @@ bool CPVRChannelGroup::IsGroupMember(int iChannelId) const
 bool CPVRChannelGroup::Persist(void)
 {
   bool bReturn(true);
-  const CPVRDatabasePtr database(CServiceBroker::GetPVRManager().GetTVDatabase());
+  const std::shared_ptr<CPVRDatabase> database(CServiceBroker::GetPVRManager().GetTVDatabase());
 
   CSingleLock lock(m_critSection);
 
@@ -871,8 +871,8 @@ std::vector<std::shared_ptr<CPVREpgInfoTag>> CPVRChannelGroup::GetEPGAll(bool bI
 {
   std::vector<std::shared_ptr<CPVREpgInfoTag>> tags;
 
-  CPVREpgInfoTagPtr epgTag;
-  CPVRChannelPtr channel;
+  std::shared_ptr<CPVREpgInfoTag> epgTag;
+  std::shared_ptr<CPVRChannel> channel;
   CSingleLock lock(m_critSection);
 
   for (PVR_CHANNEL_GROUP_SORTED_MEMBERS::const_iterator it = m_sortedMembers.begin(); it != m_sortedMembers.end(); ++it)
@@ -882,7 +882,7 @@ std::vector<std::shared_ptr<CPVREpgInfoTag>> CPVRChannelGroup::GetEPGAll(bool bI
     {
       bool bEmpty = true;
 
-      CPVREpgPtr epg = channel->GetEPG();
+      std::shared_ptr<CPVREpg> epg = channel->GetEPG();
       if (epg)
       {
         const std::vector<std::shared_ptr<CPVREpgInfoTag>> epgTags = epg->GetTags();
@@ -910,8 +910,8 @@ std::vector<std::shared_ptr<CPVREpgInfoTag>> CPVRChannelGroup::GetEPGAll(bool bI
 CDateTime CPVRChannelGroup::GetEPGDate(EpgDateType epgDateType) const
 {
   CDateTime date;
-  CPVREpgPtr epg;
-  CPVRChannelPtr channel;
+  std::shared_ptr<CPVREpg> epg;
+  std::shared_ptr<CPVRChannel> channel;
   CSingleLock lock(m_critSection);
 
   for (PVR_CHANNEL_GROUP_MEMBERS::const_iterator it = m_members.begin(); it != m_members.end(); ++it)
@@ -1002,7 +1002,7 @@ time_t CPVRChannelGroup::LastWatched(void) const
 
 bool CPVRChannelGroup::SetLastWatched(time_t iLastWatched)
 {
-  const CPVRDatabasePtr database(CServiceBroker::GetPVRManager().GetTVDatabase());
+  const std::shared_ptr<CPVRDatabase> database(CServiceBroker::GetPVRManager().GetTVDatabase());
 
   CSingleLock lock(m_critSection);
 

@@ -170,7 +170,7 @@ void CGUIEPGGridContainerModel::Initialize(const std::unique_ptr<CFileItemList> 
     int itemSize          = 1; // size of the programme in blocks
     int savedBlock        = 0;
     CFileItemPtr item;
-    CPVREpgInfoTagPtr tag;
+    std::shared_ptr<CPVREpgInfoTag> tag;
 
     for (int block = 0; block < m_blocks; ++block)
     {
@@ -285,7 +285,7 @@ void CGUIEPGGridContainerModel::FindChannelAndBlockIndex(int channelUid, unsigne
     unsigned long progIdx = m_epgItemsPtr[newChannelIndex].start;
     unsigned long lastIdx = m_epgItemsPtr[newChannelIndex].stop;
     int iEpgId = m_programmeItems[progIdx]->GetEPGInfoTag()->EpgID();
-    CPVREpgInfoTagPtr tag;
+    std::shared_ptr<CPVREpgInfoTag> tag;
     for (int block = 0; block < m_blocks; ++block)
     {
       while (progIdx <= lastIdx)
@@ -447,7 +447,7 @@ int CGUIEPGGridContainerModel::GetNowBlock() const
   return GetBlock(CDateTime::GetUTCDateTime()) - GetPageNowOffset();
 }
 
-int CGUIEPGGridContainerModel::GetFirstEventBlock(const CPVREpgInfoTagPtr &event) const
+int CGUIEPGGridContainerModel::GetFirstEventBlock(const std::shared_ptr<CPVREpgInfoTag> &event) const
 {
   const CDateTime eventStart = event->StartAsUTC();
   int diff;
@@ -465,7 +465,7 @@ int CGUIEPGGridContainerModel::GetFirstEventBlock(const CPVREpgInfoTagPtr &event
   return std::ceil(fBlockIndex);
 }
 
-int CGUIEPGGridContainerModel::GetLastEventBlock(const CPVREpgInfoTagPtr &event) const
+int CGUIEPGGridContainerModel::GetLastEventBlock(const std::shared_ptr<CPVREpgInfoTag> &event) const
 {
   // Last block of a tag is always the block calculated using event's end time, not rounded up.
   // Refer to CGUIEPGGridContainerModel::Refresh, where the model is created, for details!

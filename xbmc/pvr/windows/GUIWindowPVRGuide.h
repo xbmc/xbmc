@@ -80,7 +80,7 @@ namespace PVR
     std::atomic_bool m_bRefreshTimelineItems;
     std::atomic_bool m_bSyncRefreshTimelineItems;
 
-    CPVRChannelGroupPtr m_cachedChannelGroup;
+    std::shared_ptr<CPVRChannelGroup> m_cachedChannelGroup;
     std::unique_ptr<CFileItemList> m_newTimeline;
 
     bool m_bChannelSelectionRestored;

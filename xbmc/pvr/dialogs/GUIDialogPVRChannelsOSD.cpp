@@ -167,10 +167,10 @@ void CGUIDialogPVRChannelsOSD::Update()
   pvrMgr.Events().Subscribe(this, &CGUIDialogPVRChannelsOSD::Notify);
   pvrMgr.EpgContainer().Events().Subscribe(this, &CGUIDialogPVRChannelsOSD::Notify);
 
-  const CPVRChannelPtr channel = pvrMgr.GetPlayingChannel();
+  const std::shared_ptr<CPVRChannel> channel = pvrMgr.GetPlayingChannel();
   if (channel)
   {
-    const CPVRChannelGroupPtr group = pvrMgr.GetPlayingGroup(channel->IsRadio());
+    const std::shared_ptr<CPVRChannelGroup> group = pvrMgr.GetPlayingGroup(channel->IsRadio());
     if (group)
     {
       const std::vector<PVRChannelGroupMember> groupMembers = group->GetMembers(CPVRChannelGroup::Include::ONLY_VISIBLE);

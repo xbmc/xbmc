@@ -14,6 +14,7 @@
 #include "threads/SystemClock.h"
 
 #include <map>
+#include <memory>
 #include <string>
 
 namespace PVR
@@ -51,7 +52,7 @@ namespace PVR
     void SaveSelectedItemPath(int iGroupID);
     std::string GetLastSelectedItemPath(int iGroupID) const;
 
-    CPVRChannelGroupPtr m_group;
+    std::shared_ptr<CPVRChannelGroup> m_group;
     std::map<int, std::string> m_groupSelectedItemPaths;
     XbmcThreads::EndTime m_refreshTimeout;
   };

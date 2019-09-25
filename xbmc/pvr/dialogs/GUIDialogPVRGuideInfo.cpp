@@ -179,7 +179,7 @@ bool CGUIDialogPVRGuideInfo::OnInfo(int actionID)
   return true;
 }
 
-void CGUIDialogPVRGuideInfo::SetProgInfo(const CPVREpgInfoTagPtr &tag)
+void CGUIDialogPVRGuideInfo::SetProgInfo(const std::shared_ptr<CPVREpgInfoTag> &tag)
 {
   m_progItem = tag;
 }
@@ -225,7 +225,7 @@ void CGUIDialogPVRGuideInfo::OnInitWindow()
   }
   else if (m_progItem->IsRecordable())
   {
-    const CPVRClientPtr client = CServiceBroker::GetPVRManager().GetClient(m_progItem->ClientID());
+    const std::shared_ptr<CPVRClient> client = CServiceBroker::GetPVRManager().GetClient(m_progItem->ClientID());
     if (client && client->GetClientCapabilities().SupportsTimers())
     {
       SET_CONTROL_LABEL(CONTROL_BTN_RECORD, 264); /* Record */

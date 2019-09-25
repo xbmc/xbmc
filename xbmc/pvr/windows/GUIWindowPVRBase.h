@@ -96,14 +96,14 @@ namespace PVR
      * @brief Get the channel group for this window.
      * @return the group or null, if no group set.
      */
-   CPVRChannelGroupPtr GetChannelGroup(void);
+   std::shared_ptr<CPVRChannelGroup> GetChannelGroup(void);
 
     /*!
      * @brief Set a new channel group, start listening to this group, optionally update window content.
      * @param group The new group.
      * @param bUpdate if true, window content will be updated.
      */
-    void SetChannelGroup(CPVRChannelGroupPtr &&group, bool bUpdate = true);
+    void SetChannelGroup(std::shared_ptr<CPVRChannelGroup> &&group, bool bUpdate = true);
 
     virtual void UpdateSelectedItemPath();
 
@@ -131,7 +131,7 @@ namespace PVR
     void HideProgressDialog(void);
 
     std::unique_ptr<CGUIPVRChannelGroupsSelector> m_channelGroupsSelector;
-    CPVRChannelGroupPtr m_channelGroup;
+    std::shared_ptr<CPVRChannelGroup> m_channelGroup;
     XbmcThreads::EndTime m_refreshTimeout;
     CGUIDialogProgressBarHandle *m_progressHandle; /*!< progress dialog that is displayed while the pvr manager is loading */
   };

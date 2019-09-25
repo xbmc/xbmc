@@ -105,7 +105,7 @@ namespace PVR
      * @brief Add a timer to the client. Doesn't add the timer to the container. The backend will do this.
      * @return True if it was sent correctly, false if not.
      */
-    bool AddTimer(const CPVRTimerInfoTagPtr &item) const;
+    bool AddTimer(const std::shared_ptr<CPVRTimerInfoTag> &item) const;
 
     /*!
      * @brief Create a new timer rule, either interactive or non-interactive.
@@ -191,7 +191,7 @@ namespace PVR
      * @param bOnOff True to start recording, false to stop.
      * @return True if the recording was started or stopped successfully, false otherwise.
      */
-    bool SetRecordingOnChannel(const CPVRChannelPtr &channel, bool bOnOff);
+    bool SetRecordingOnChannel(const std::shared_ptr<CPVRChannel> &channel, bool bOnOff);
 
     /*!
      * @brief Stop a currently active recording, always showing a confirmation dialog.
@@ -335,7 +335,7 @@ namespace PVR
      * @param channel The channel to do the check for.
      * @return the result of the check (success, failed, or canceled by user).
      */
-    ParentalCheckResult CheckParentalLock(const CPVRChannelPtr &channel) const;
+    ParentalCheckResult CheckParentalLock(const std::shared_ptr<CPVRChannel> &channel) const;
 
     /*!
      * @brief Open Numeric dialog to check for parental PIN.
@@ -428,7 +428,7 @@ namespace PVR
      * @param timer containing the timer the settings shall be displayed for.
      * @return true, if the dialog was ended successfully, false otherwise.
      */
-    bool ShowTimerSettings(const CPVRTimerInfoTagPtr &timer) const;
+    bool ShowTimerSettings(const std::shared_ptr<CPVRTimerInfoTag> &timer) const;
 
     /*!
      * @brief Add a timer or timer rule, either interactive or non-interactive.
@@ -456,7 +456,7 @@ namespace PVR
      * @param bDeleteRule denotes to delete a timer rule. For convenience, one can pass a timer created by a rule.
      * @return true, if the timer or timer rule was deleted successfully, false otherwise.
      */
-    bool DeleteTimer(const CPVRTimerInfoTagPtr &timer, bool bIsRecording, bool bDeleteRule) const;
+    bool DeleteTimer(const std::shared_ptr<CPVRTimerInfoTag> &timer, bool bIsRecording, bool bDeleteRule) const;
 
     /*!
      * @brief Open a dialog to confirm timer delete.
@@ -467,14 +467,14 @@ namespace PVR
      *                    out, for one shot timer not scheduled by a timer rule: ignored
      * @return true, to proceed with delete, false otherwise.
      */
-    bool ConfirmDeleteTimer(const CPVRTimerInfoTagPtr &timer, bool &bDeleteRule) const;
+    bool ConfirmDeleteTimer(const std::shared_ptr<CPVRTimerInfoTag> &timer, bool &bDeleteRule) const;
 
     /*!
      * @brief Open a dialog to confirm stop recording.
      * @param timer the recording to stop (actually the timer to delete).
      * @return true, to proceed with delete, false otherwise.
      */
-    bool ConfirmStopRecording(const CPVRTimerInfoTagPtr &timer) const;
+    bool ConfirmStopRecording(const std::shared_ptr<CPVRTimerInfoTag> &timer) const;
 
     /*!
      * @brief Open a dialog to confirm to delete a recording.
@@ -494,7 +494,7 @@ namespace PVR
      * @param recording containing the recording the settings shall be displayed for.
      * @return true, if the dialog was ended successfully, false otherwise.
      */
-    bool ShowRecordingSettings(const CPVRRecordingPtr &recording) const;
+    bool ShowRecordingSettings(const std::shared_ptr<CPVRRecording> &recording) const;
 
     /*!
      * @brief Check whether resume play is possible for a given item, display "resume from ..."/"play from start" context menu in case.
@@ -516,7 +516,7 @@ namespace PVR
      */
     void StartPlayback(CFileItem *item, bool bFullscreen) const;
 
-    bool AllLocalBackendsIdle(CPVRTimerInfoTagPtr& causingEvent) const;
+    bool AllLocalBackendsIdle(std::shared_ptr<CPVRTimerInfoTag>& causingEvent) const;
     bool EventOccursOnLocalBackend(const std::shared_ptr<CFileItem>& item) const;
     bool IsNextEventWithinBackendIdleTime(void) const;
 

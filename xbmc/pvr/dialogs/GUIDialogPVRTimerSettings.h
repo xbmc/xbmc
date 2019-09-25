@@ -34,7 +34,7 @@ namespace PVR
 
     bool CanBeActivated() const override;
 
-    void SetTimer(const CPVRTimerInfoTagPtr &timer);
+    void SetTimer(const std::shared_ptr<CPVRTimerInfoTag> &timer);
 
   protected:
     // implementation of ISettingCallback
@@ -102,7 +102,7 @@ namespace PVR
     static bool EndAnytimeSetCondition(
       const std::string &condition, const std::string &value, std::shared_ptr<const CSetting> setting, void *data);
 
-    typedef std::map<int, CPVRTimerTypePtr>  TypeEntriesMap;
+    typedef std::map<int, std::shared_ptr<CPVRTimerType>>  TypeEntriesMap;
 
     typedef struct ChannelDescriptor
     {
@@ -129,13 +129,13 @@ namespace PVR
 
     typedef std::map <int, ChannelDescriptor> ChannelEntriesMap;
 
-    CPVRTimerInfoTagPtr m_timerInfoTag;
+    std::shared_ptr<CPVRTimerInfoTag> m_timerInfoTag;
     TypeEntriesMap      m_typeEntries;
     ChannelEntriesMap   m_channelEntries;
     std::string         m_timerStartTimeStr;
     std::string         m_timerEndTimeStr;
 
-    CPVRTimerTypePtr    m_timerType;
+    std::shared_ptr<CPVRTimerType>    m_timerType;
     bool                m_bIsRadio = false;
     bool                m_bIsNewTimer = true;
     bool                m_bTimerActive = false;

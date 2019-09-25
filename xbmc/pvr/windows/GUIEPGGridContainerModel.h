@@ -76,8 +76,8 @@ namespace PVR
 
     CDateTime GetStartTimeForBlock(int block) const;
     int GetBlock(const CDateTime &datetime) const;
-    int GetFirstEventBlock(const CPVREpgInfoTagPtr &event) const;
-    int GetLastEventBlock(const CPVREpgInfoTagPtr &event) const;
+    int GetFirstEventBlock(const std::shared_ptr<CPVREpgInfoTag> &event) const;
+    int GetLastEventBlock(const std::shared_ptr<CPVREpgInfoTag> &event) const;
 
   private:
     void FreeItemsMemory();

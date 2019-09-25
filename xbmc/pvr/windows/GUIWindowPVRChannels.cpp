@@ -270,7 +270,7 @@ bool CGUIWindowPVRChannelsBase::OnContextButtonManage(const CFileItemPtr &item, 
 
 void CGUIWindowPVRChannelsBase::UpdateEpg(const CFileItemPtr &item)
 {
-  const CPVRChannelPtr channel(item->GetPVRChannelInfoTag());
+  const std::shared_ptr<CPVRChannel> channel(item->GetPVRChannelInfoTag());
 
   if (!CGUIDialogYesNo::ShowAndGetInput(CVariant{19251}, // "Update guide information"
                                         CVariant{19252}, // "Schedule guide update for this channel?"
@@ -278,7 +278,7 @@ void CGUIWindowPVRChannelsBase::UpdateEpg(const CFileItemPtr &item)
                                         CVariant{channel->ChannelName()}))
     return;
 
-  const CPVREpgPtr epg = channel->GetEPG();
+  const std::shared_ptr<CPVREpg> epg = channel->GetEPG();
   if (epg)
   {
     epg->ForceUpdate();
@@ -339,7 +339,7 @@ void CGUIWindowPVRChannelsBase::OnInputDone()
 
 void CGUIWindowPVRChannelsBase::GetChannelNumbers(std::vector<std::string>& channelNumbers)
 {
-  const CPVRChannelGroupPtr group = GetChannelGroup();
+  const std::shared_ptr<CPVRChannelGroup> group = GetChannelGroup();
   if (group)
     group->GetChannelNumbers(channelNumbers);
 }

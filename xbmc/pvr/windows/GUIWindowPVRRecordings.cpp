@@ -71,7 +71,7 @@ void CGUIWindowPVRRecordingsBase::GetContextButtons(int itemNumber, CContextButt
 
   bool isDeletedRecording = false;
 
-  CPVRRecordingPtr recording(pItem->GetPVRRecordingInfoTag());
+  std::shared_ptr<CPVRRecording> recording(pItem->GetPVRRecordingInfoTag());
   if (recording)
   {
     isDeletedRecording = recording->IsDeleted();

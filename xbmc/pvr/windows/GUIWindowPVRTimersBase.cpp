@@ -81,7 +81,7 @@ void CGUIWindowPVRTimersBase::UpdateButtons(void)
   std::string strHeaderTitle;
   if (m_currentFileItem && m_currentFileItem->HasPVRTimerInfoTag())
   {
-    CPVRTimerInfoTagPtr timer = m_currentFileItem->GetPVRTimerInfoTag();
+    std::shared_ptr<CPVRTimerInfoTag> timer = m_currentFileItem->GetPVRTimerInfoTag();
     strHeaderTitle = timer->Title();
   }
 
