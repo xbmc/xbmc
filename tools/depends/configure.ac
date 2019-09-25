@@ -331,7 +331,8 @@ case $host in
         esac
 
         # setup which sdk to use
-        found_sdk_version=[`$use_xcodebuild -showsdks | sed -E -n 's/.*macosx([0-9]+)\.([0-9]+)/\1.\2/p' | sort  -n -t. -k1,1 -k2,2 | tail -n 1`]
+        target_platform=macosx
+        found_sdk_version=[`$use_xcodebuild -showsdks | grep $target_platform | sort | tail -n 1 | awk '{ print $2}'`]
         use_sdk="${use_sdk:-$found_sdk_version}"
 
         # now that we know which sdk, error check sdk_name
@@ -342,10 +343,11 @@ case $host in
           10.12);;
           10.13);;
           10.14);;
+          10.15);;
           *)
             AC_MSG_ERROR(error in configure of --with-sdk=$use_sdk)
         esac
-        sdk_name=macosx$use_sdk
+        sdk_name=$target_platform$use_sdk
         platform_min_version="macosx-version-min=10.9"
 
         use_sdk_path=[`$use_xcodebuild -version -sdk $sdk_name Path`]
@@ -384,6 +386,7 @@ case $host in
           case $use_sdk in
             11.*);;
             12.*);;
+            13.*);;
               *)
                 AC_MSG_ERROR(error in configure of --with-sdk=$use_sdk)
               ;;
@@ -394,6 +397,7 @@ case $host in
             10.*);;
             11.*);;
             12.*);;
+            13.*);;
               *)
                 AC_MSG_ERROR(error in configure of --with-sdk=$use_sdk)
               ;;
