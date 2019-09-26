@@ -179,9 +179,9 @@ void CGUIDialogPVRRecordingSettings::Save()
 }
 
 void CGUIDialogPVRRecordingSettings::LifetimesFiller(
-  SettingConstPtr setting, std::vector<IntegerSettingOption>& list, int& current, void *data)
+  SettingConstPtr setting, std::vector<IntegerSettingOption>& list, int& current, void* data)
 {
-  CGUIDialogPVRRecordingSettings *pThis = static_cast<CGUIDialogPVRRecordingSettings*>(data);
+  CGUIDialogPVRRecordingSettings* pThis = static_cast<CGUIDialogPVRRecordingSettings*>(data);
   if (pThis)
   {
     list.clear();

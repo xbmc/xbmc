@@ -60,7 +60,7 @@ namespace PVR
 
     int GetBlockCount() const { return m_blocks; }
     bool HasGridItems() const { return !m_gridIndex.empty(); }
-    GridItem *GetGridItemPtr(int iChannel, int iBlock) { return& m_gridIndex[iChannel][iBlock]; }
+    GridItem* GetGridItemPtr(int iChannel, int iBlock) { return& m_gridIndex[iChannel][iBlock]; }
     std::shared_ptr<CFileItem> GetGridItem(int iChannel, int iBlock) const { return m_gridIndex[iChannel][iBlock].item; }
     float GetGridItemWidth(int iChannel, int iBlock) const { return m_gridIndex[iChannel][iBlock].width; }
     float GetGridItemOriginWidth(int iChannel, int iBlock) const { return m_gridIndex[iChannel][iBlock].originWidth; }

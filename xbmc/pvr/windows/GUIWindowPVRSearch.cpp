@@ -202,7 +202,7 @@ bool CGUIWindowPVRSearchBase::OnMessage(CGUIMessage& message)
   return CGUIWindowPVRBase::OnMessage(message);
 }
 
-bool CGUIWindowPVRSearchBase::OnContextButtonClear(CFileItem *item, CONTEXT_BUTTON button)
+bool CGUIWindowPVRSearchBase::OnContextButtonClear(CFileItem* item, CONTEXT_BUTTON button)
 {
   bool bReturn = false;
 

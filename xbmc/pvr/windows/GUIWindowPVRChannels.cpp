@@ -90,7 +90,7 @@ bool CGUIWindowPVRChannelsBase::Update(const std::string& strDirectory, bool upd
 
 void CGUIWindowPVRChannelsBase::UpdateButtons(void)
 {
-  CGUIRadioButtonControl *btnShowHidden = static_cast<CGUIRadioButtonControl*>(GetControl(CONTROL_BTNSHOWHIDDEN));
+  CGUIRadioButtonControl* btnShowHidden = static_cast<CGUIRadioButtonControl*>(GetControl(CONTROL_BTNSHOWHIDDEN));
   if (btnShowHidden)
   {
     btnShowHidden->SetVisible(CServiceBroker::GetPVRManager().ChannelGroups()->GetGroupAll(m_bRadio)->GetNumHiddenChannels() > 0);
@@ -179,7 +179,7 @@ bool CGUIWindowPVRChannelsBase::OnMessage(CGUIMessage& message)
       }
       else if (message.GetSenderId() == CONTROL_BTNSHOWHIDDEN)
       {
-        CGUIRadioButtonControl *radioButton = static_cast<CGUIRadioButtonControl*>(GetControl(CONTROL_BTNSHOWHIDDEN));
+        CGUIRadioButtonControl* radioButton = static_cast<CGUIRadioButtonControl*>(GetControl(CONTROL_BTNSHOWHIDDEN));
         if (radioButton)
         {
           m_bShowHiddenChannels = radioButton->IsSelected();
@@ -303,7 +303,7 @@ void CGUIWindowPVRChannelsBase::UpdateEpg(const CFileItemPtr& item)
 
 void CGUIWindowPVRChannelsBase::ShowChannelManager()
 {
-  CGUIDialogPVRChannelManager *dialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogPVRChannelManager>(WINDOW_DIALOG_PVR_CHANNEL_MANAGER);
+  CGUIDialogPVRChannelManager* dialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogPVRChannelManager>(WINDOW_DIALOG_PVR_CHANNEL_MANAGER);
   if (dialog)
     dialog->Open();
 }

@@ -103,7 +103,7 @@ namespace PVR
   class CPVRRefreshTimelineItemsThread : public CThread
   {
   public:
-    explicit CPVRRefreshTimelineItemsThread(CGUIWindowPVRGuideBase *pGuideWindow);
+    explicit CPVRRefreshTimelineItemsThread(CGUIWindowPVRGuideBase* pGuideWindow);
     ~CPVRRefreshTimelineItemsThread() override;
 
     void Process() override;
@@ -112,7 +112,7 @@ namespace PVR
     void Stop();
 
   private:
-    CGUIWindowPVRGuideBase *m_pGuideWindow;
+    CGUIWindowPVRGuideBase* m_pGuideWindow;
     CEvent m_ready;
     CEvent m_done;
   };

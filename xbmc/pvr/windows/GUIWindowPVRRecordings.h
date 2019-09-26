@@ -40,7 +40,7 @@ namespace PVR
     bool GetFilteredItems(const std::string& filter, CFileItemList& items) override;
 
   private:
-    bool OnContextButtonDeleteAll(CFileItem *item, CONTEXT_BUTTON button);
+    bool OnContextButtonDeleteAll(CFileItem* item, CONTEXT_BUTTON button);
 
     CVideoThumbLoader m_thumbLoader;
     CVideoDatabase m_database;

@@ -55,7 +55,7 @@ namespace PVR
      * @brief Get the default sqlite database filename.
      * @return The default filename.
      */
-    const char *GetBaseDBName() const override { return "TV"; }
+    const char* GetBaseDBName() const override { return "TV"; }
 
     /*! @name Client methods */
     //@{

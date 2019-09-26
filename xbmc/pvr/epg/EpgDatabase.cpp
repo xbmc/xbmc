@@ -297,7 +297,7 @@ std::vector<std::shared_ptr<CPVREpgInfoTag>> CPVREpgDatabase::Get(const CPVREpg&
   return result;
 }
 
-bool CPVREpgDatabase::GetLastEpgScanTime(int iEpgId, CDateTime *lastScan)
+bool CPVREpgDatabase::GetLastEpgScanTime(int iEpgId, CDateTime* lastScan)
 {
   bool bReturn = false;
 

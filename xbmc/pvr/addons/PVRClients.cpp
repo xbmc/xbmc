@@ -459,7 +459,7 @@ std::vector<SBackend> CPVRClients::GetBackendProperties() const
   return backendProperties;
 }
 
-bool CPVRClients::GetTimers(CPVRTimersContainer *timers, std::vector<int>& failedClients)
+bool CPVRClients::GetTimers(CPVRTimersContainer* timers, std::vector<int>& failedClients)
 {
   return ForCreatedClients(__FUNCTION__, [timers](const std::shared_ptr<CPVRClient>& client) {
     return client->GetTimers(timers);
@@ -477,7 +477,7 @@ PVR_ERROR CPVRClients::GetTimerTypes(CPVRTimerTypes& results) const
   });
 }
 
-PVR_ERROR CPVRClients::GetRecordings(CPVRRecordings *recordings, bool deleted)
+PVR_ERROR CPVRClients::GetRecordings(CPVRRecordings* recordings, bool deleted)
 {
   return ForCreatedClients(__FUNCTION__, [recordings, deleted](const std::shared_ptr<CPVRClient>& client) {
     return client->GetRecordings(recordings, deleted);
@@ -498,21 +498,21 @@ PVR_ERROR CPVRClients::SetEPGTimeFrame(int iDays)
   });
 }
 
-PVR_ERROR CPVRClients::GetChannels(CPVRChannelGroupInternal *group, std::vector<int>& failedClients)
+PVR_ERROR CPVRClients::GetChannels(CPVRChannelGroupInternal* group, std::vector<int>& failedClients)
 {
   return ForCreatedClients(__FUNCTION__, [group](const std::shared_ptr<CPVRClient>& client) {
     return client->GetChannels(*group, group->IsRadio());
   }, failedClients);
 }
 
-PVR_ERROR CPVRClients::GetChannelGroups(CPVRChannelGroups *groups, std::vector<int>& failedClients)
+PVR_ERROR CPVRClients::GetChannelGroups(CPVRChannelGroups* groups, std::vector<int>& failedClients)
 {
   return ForCreatedClients(__FUNCTION__, [groups](const std::shared_ptr<CPVRClient>& client) {
     return client->GetChannelGroups(groups);
   }, failedClients);
 }
 
-PVR_ERROR CPVRClients::GetChannelGroupMembers(CPVRChannelGroup *group, std::vector<int>& failedClients)
+PVR_ERROR CPVRClients::GetChannelGroupMembers(CPVRChannelGroup* group, std::vector<int>& failedClients)
 {
   return ForCreatedClients(__FUNCTION__, [group](const std::shared_ptr<CPVRClient>& client) {
     return client->GetChannelGroupMembers(group);
@@ -576,7 +576,7 @@ void CPVRClients::OnPowerSavingDeactivated()
 }
 
 void CPVRClients::ConnectionStateChange(
-  CPVRClient *client, std::string& strConnectionString, PVR_CONNECTION_STATE newState, std::string& strMessage)
+  CPVRClient* client, std::string& strConnectionString, PVR_CONNECTION_STATE newState, std::string& strMessage)
 {
   if (!client)
     return;

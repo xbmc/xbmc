@@ -66,7 +66,7 @@ void CPVRManagerJobQueue::Stop()
 void CPVRManagerJobQueue::Clear()
 {
   CSingleLock lock(m_critSection);
-  for (CJob *updateJob : m_pendingUpdates)
+  for (CJob* updateJob : m_pendingUpdates)
     delete updateJob;
 
   m_pendingUpdates.clear();
@@ -78,7 +78,7 @@ void CPVRManagerJobQueue::AppendJob(CJob * job)
   CSingleLock lock(m_critSection);
 
   // check for another pending job of given type...
-  for (CJob *updateJob : m_pendingUpdates)
+  for (CJob* updateJob : m_pendingUpdates)
   {
     if (!strcmp(updateJob->GetType(), job->GetType()))
     {
@@ -105,7 +105,7 @@ void CPVRManagerJobQueue::ExecutePendingJobs()
     m_triggerEvent.Reset();
   }
 
-  CJob *job = nullptr;
+  CJob* job = nullptr;
   while (!pendingUpdates.empty())
   {
     job = pendingUpdates.front();
@@ -153,7 +153,7 @@ CPVRManager::~CPVRManager(void)
   CLog::LogFC(LOGDEBUG, LOGPVR, "PVR Manager instance destroyed");
 }
 
-void CPVRManager::Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender, const char *message, const CVariant& data)
+void CPVRManager::Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char* sender, const char* message, const CVariant& data)
 {
   if (!IsStarted())
     return;
@@ -751,7 +751,7 @@ void CPVRManager::SetPlayingGroup(const std::shared_ptr<CPVRChannel>& channel)
   {
     // The channel we'll switch to is not part of the current selected group.
     // Set the first group as the selected group where the channel is a member.
-    CPVRChannelGroups *channelGroups = m_channelGroups->Get(channel->IsRadio());
+    CPVRChannelGroups* channelGroups = m_channelGroups->Get(channel->IsRadio());
     std::vector<std::shared_ptr<CPVRChannelGroup>> groups = channelGroups->GetGroupsByChannel(channel, true);
     if (!groups.empty())
       channelGroups->SetSelectedGroup(groups.front());
@@ -985,7 +985,7 @@ void CPVRManager::TriggerSearchMissingChannelIcons(const std::shared_ptr<CPVRCha
     CJobManager::GetInstance().AddJob(new CPVRSearchMissingChannelIconsJob({group}, false), nullptr);
 }
 
-void CPVRManager::ConnectionStateChange(CPVRClient *client, std::string connectString, PVR_CONNECTION_STATE state, std::string message)
+void CPVRManager::ConnectionStateChange(CPVRClient* client, std::string connectString, PVR_CONNECTION_STATE state, std::string message)
 {
   // Note: No check for started pvr manager here. This method is intended to get called even before the mgr is started.
   CJobManager::GetInstance().AddJob(new CPVRClientConnectionJob(client, connectString, state, message), NULL);

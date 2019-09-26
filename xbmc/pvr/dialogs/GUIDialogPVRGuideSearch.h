@@ -27,7 +27,7 @@ namespace PVR
     bool OnMessage(CGUIMessage& message) override;
     void OnWindowLoaded() override;
 
-    void SetFilterData(CPVREpgSearchFilter *searchFilter) { m_searchFilter = searchFilter; }
+    void SetFilterData(CPVREpgSearchFilter* searchFilter) { m_searchFilter = searchFilter; }
     bool IsConfirmed() const { return m_bConfirmed; }
     bool IsCanceled() const { return m_bCanceled; }
 
@@ -49,7 +49,7 @@ namespace PVR
 
     bool m_bConfirmed = false;
     bool m_bCanceled = false;
-    CPVREpgSearchFilter *m_searchFilter;
+    CPVREpgSearchFilter* m_searchFilter;
     std::map<int, CPVRChannelNumber> m_channelNumbersMap;
   };
 }

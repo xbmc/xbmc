@@ -85,7 +85,7 @@ namespace PVR
         if (m_iChannelEntryJobId >= 0)
           CJobManager::GetInstance().CancelJob(m_iChannelEntryJobId);
 
-        CPVRChannelEntryTimeoutJob *job = new CPVRChannelEntryTimeoutJob(iTimeout);
+        CPVRChannelEntryTimeoutJob* job = new CPVRChannelEntryTimeoutJob(iTimeout);
         m_iChannelEntryJobId = CJobManager::GetInstance().AddJob(job, dynamic_cast<IJobCallback*>(job));
       }
       else
@@ -150,7 +150,7 @@ namespace PVR
 
       if (!bForce && iTimeout > 0)
       {
-        CPVRChannelInfoTimeoutJob *job = new CPVRChannelInfoTimeoutJob(iTimeout * 1000);
+        CPVRChannelInfoTimeoutJob* job = new CPVRChannelInfoTimeoutJob(iTimeout * 1000);
         m_iChannelInfoJobId = CJobManager::GetInstance().AddJob(job, dynamic_cast<IJobCallback*>(job));
       }
     }

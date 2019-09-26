@@ -411,7 +411,7 @@ bool CGUIDialogPVRChannelManager::OnClickEPGSourceSpin(CGUIMessage& message)
 {
   //! @todo Add EPG scraper support
   return true;
-//  CGUISpinControlEx *pSpin = (CGUISpinControlEx *)GetControl(SPIN_EPGSOURCE_SELECTION);
+//  CGUISpinControlEx* pSpin = (CGUISpinControlEx *)GetControl(SPIN_EPGSOURCE_SELECTION);
 //  if (pSpin)
 //  {
 //    CFileItemPtr pItem = m_channelItems->Get(m_iSelected);
@@ -749,7 +749,7 @@ void CGUIDialogPVRChannelManager::RenameChannel(const CFileItemPtr& pItem)
   }
 }
 
-bool CGUIDialogPVRChannelManager::PersistChannel(const CFileItemPtr& pItem, const std::shared_ptr<CPVRChannelGroup>& group, unsigned int *iChannelNumber)
+bool CGUIDialogPVRChannelManager::PersistChannel(const CFileItemPtr& pItem, const std::shared_ptr<CPVRChannelGroup>& group, unsigned int* iChannelNumber)
 {
   if (!pItem || !pItem->HasPVRChannelInfoTag() || !group)
     return false;

@@ -405,7 +405,7 @@ void CGUIEPGGridContainer::ProcessItem(float posX, float posY, const CFileItemPt
   CServiceBroker::GetWinSystem()->GetGfxContext().RestoreOrigin();
 }
 
-void CGUIEPGGridContainer::RenderItem(float posX, float posY, CGUIListItem *item, bool focused)
+void CGUIEPGGridContainer::RenderItem(float posX, float posY, CGUIListItem* item, bool focused)
 {
   // set the origin
   CServiceBroker::GetWinSystem()->GetGfxContext().SetOrigin(posX, posY);
@@ -701,11 +701,11 @@ void CGUIEPGGridContainer::UpdateItems()
     }
     else // "gap" tag selected
     {
-      const GridItem *currItem(GetItem(m_channelCursor));
+      const GridItem* currItem(GetItem(m_channelCursor));
       if (currItem)
         channelUid = currItem->item->GetEPGInfoTag()->UniqueChannelID();
 
-      const GridItem *prevItem(GetPrevItem(m_channelCursor));
+      const GridItem* prevItem(GetPrevItem(m_channelCursor));
       if (prevItem)
       {
         const std::shared_ptr<CPVREpgInfoTag> tag(prevItem->item->GetEPGInfoTag());
@@ -1113,7 +1113,7 @@ void CGUIEPGGridContainer::SetBlock(int block, bool bUpdateBlockTravelAxis /* = 
   MarkDirtyRegion();
 }
 
-CGUIListItemLayout *CGUIEPGGridContainer::GetFocusedLayout() const
+CGUIListItemLayout* CGUIEPGGridContainer::GetFocusedLayout() const
 {
   CGUIListItemPtr item = GetListItem(0);
 
@@ -1267,7 +1267,7 @@ bool CGUIEPGGridContainer::OnClick(int actionID)
   if (actionID == ACTION_SELECT_ITEM || actionID == ACTION_MOUSE_LEFT_CLICK)
   {
     // grab the currently focused subitem (if applicable)
-    CGUIListItemLayout *focusedLayout = GetFocusedLayout();
+    CGUIListItemLayout* focusedLayout = GetFocusedLayout();
 
     if (focusedLayout)
       subItem = focusedLayout->GetFocusedItem();
@@ -1403,7 +1403,7 @@ int CGUIEPGGridContainer::GetRealBlock(const CGUIListItemPtr& item, int channel)
   return block;
 }
 
-GridItem *CGUIEPGGridContainer::GetNextItem(int channel)
+GridItem* CGUIEPGGridContainer::GetNextItem(int channel)
 {
   const int channelIndex = channel + m_channelOffset;
   const int blockIndex = m_blockCursor + m_blockOffset;
@@ -1420,7 +1420,7 @@ GridItem *CGUIEPGGridContainer::GetNextItem(int channel)
   return m_gridModel->GetGridItemPtr(channelIndex, i + m_blockOffset);
 }
 
-GridItem *CGUIEPGGridContainer::GetPrevItem(int channel)
+GridItem* CGUIEPGGridContainer::GetPrevItem(int channel)
 {
   int channelIndex = channel + m_channelOffset;
   int blockIndex = m_blockCursor + m_blockOffset;
@@ -1435,7 +1435,7 @@ GridItem *CGUIEPGGridContainer::GetPrevItem(int channel)
   return m_gridModel->GetGridItemPtr(channelIndex, i + m_blockOffset);
 }
 
-GridItem *CGUIEPGGridContainer::GetItem(int channel)
+GridItem* CGUIEPGGridContainer::GetItem(int channel)
 {
   int channelIndex = channel + m_channelOffset;
   int blockIndex = m_blockCursor + m_blockOffset;
@@ -1546,10 +1546,10 @@ void CGUIEPGGridContainer::ValidateOffset()
   }
 }
 
-void CGUIEPGGridContainer::LoadLayout(TiXmlElement *layout)
+void CGUIEPGGridContainer::LoadLayout(TiXmlElement* layout)
 {
   /* layouts for the channel column */
-  TiXmlElement *itemElement = layout->FirstChildElement("channellayout");
+  TiXmlElement* itemElement = layout->FirstChildElement("channellayout");
   while (itemElement)
   {
     m_channelLayouts.emplace_back();
@@ -1780,12 +1780,12 @@ void CGUIEPGGridContainer::GoToBlock(int blockIndex)
 
 void CGUIEPGGridContainer::UpdateLayout()
 {
-  CGUIListItemLayout *oldFocusedChannelLayout   = m_focusedChannelLayout;
-  CGUIListItemLayout *oldChannelLayout          = m_channelLayout;
-  CGUIListItemLayout *oldFocusedProgrammeLayout = m_focusedProgrammeLayout;
-  CGUIListItemLayout *oldProgrammeLayout        = m_programmeLayout;
-  CGUIListItemLayout *oldRulerLayout            = m_rulerLayout;
-  CGUIListItemLayout *oldRulerDateLayout        = m_rulerDateLayout;
+  CGUIListItemLayout* oldFocusedChannelLayout   = m_focusedChannelLayout;
+  CGUIListItemLayout* oldChannelLayout          = m_channelLayout;
+  CGUIListItemLayout* oldFocusedProgrammeLayout = m_focusedProgrammeLayout;
+  CGUIListItemLayout* oldProgrammeLayout        = m_programmeLayout;
+  CGUIListItemLayout* oldRulerLayout            = m_rulerLayout;
+  CGUIListItemLayout* oldRulerDateLayout        = m_rulerDateLayout;
 
   GetCurrentLayouts();
 

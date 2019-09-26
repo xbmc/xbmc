@@ -57,7 +57,7 @@ public:
   bool SelectChannelGroup(const std::shared_ptr<CPVRChannelGroup>& newGroup);
 
 private:
-  CGUIControl *m_control = nullptr;
+  CGUIControl* m_control = nullptr;
   std::vector<std::shared_ptr<CPVRChannelGroup>> m_channelGroups;
 };
 
@@ -367,7 +367,7 @@ bool CGUIWindowPVRBase::CanBeActivated() const
 
 bool CGUIWindowPVRBase::OpenChannelGroupSelectionDialog(void)
 {
-  CGUIDialogSelect *dialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogSelect>(WINDOW_DIALOG_SELECT);
+  CGUIDialogSelect* dialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogSelect>(WINDOW_DIALOG_SELECT);
   if (!dialog)
     return false;
 
@@ -517,7 +517,7 @@ void CGUIWindowPVRBase::ShowProgressDialog(const std::string& strText, int iProg
 {
   if (!m_progressHandle)
   {
-    CGUIDialogExtendedProgressBar *loadingProgressDialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogExtendedProgressBar>(WINDOW_DIALOG_EXT_PROGRESS);
+    CGUIDialogExtendedProgressBar* loadingProgressDialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogExtendedProgressBar>(WINDOW_DIALOG_EXT_PROGRESS);
     if (!loadingProgressDialog)
     {
       CLog::LogF(LOGERROR, "Unable to get WINDOW_DIALOG_EXT_PROGRESS!");

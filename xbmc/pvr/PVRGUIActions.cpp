@@ -301,7 +301,7 @@ namespace PVR
     const bool bRadio(CPVRItem(item).IsRadio());
 
     int windowSearchId = bRadio ? WINDOW_RADIO_SEARCH : WINDOW_TV_SEARCH;
-    CGUIWindowPVRSearchBase *windowSearch;
+    CGUIWindowPVRSearchBase* windowSearch;
     if (bRadio)
       windowSearch = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIWindowPVRRadioSearch>(windowSearchId);
     else
@@ -506,7 +506,7 @@ namespace PVR
 
     private:
       int m_iInstantRecordTime;
-      CGUIDialogSelect *m_pDlgSelect; // not owner!
+      CGUIDialogSelect* m_pDlgSelect; // not owner!
       std::map<PVRRECORD_INSTANTRECORDACTION, int> m_actions;
     };
 
@@ -859,7 +859,7 @@ namespace PVR
       return false;
     }
 
-    CGUIWindowPVRBase *pvrWindow = dynamic_cast<CGUIWindowPVRBase*>(CServiceBroker::GetGUI()->GetWindowManager().GetWindow(CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow()));
+    CGUIWindowPVRBase* pvrWindow = dynamic_cast<CGUIWindowPVRBase*>(CServiceBroker::GetGUI()->GetWindowManager().GetWindow(CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow()));
     if (pvrWindow)
       pvrWindow->DoRefresh();
     else
@@ -1209,7 +1209,7 @@ namespace PVR
     }
   }
 
-  void CPVRGUIActions::StartPlayback(CFileItem *item, bool bFullscreen) const
+  void CPVRGUIActions::StartPlayback(CFileItem* item, bool bFullscreen) const
   {
     // Obtain dynamic playback url and properties from the respective pvr client
     const std::shared_ptr<CPVRClient> client = CServiceBroker::GetPVRManager().GetClient(*item);
@@ -1261,7 +1261,7 @@ namespace PVR
 
     if (!bCheckResume || CheckResumeRecording(item))
     {
-      CFileItem *itemToPlay = new CFileItem(recording);
+      CFileItem* itemToPlay = new CFileItem(recording);
       itemToPlay->m_lStartOffset = item->m_lStartOffset;
       StartPlayback(itemToPlay, true);
     }
@@ -1494,7 +1494,7 @@ namespace PVR
     if (!CServiceBroker::GetPVRManager().ChannelGroups()->GetGroupAll(channel->IsRadio())->RemoveFromGroup(channel))
       return false;
 
-    CGUIWindowPVRBase *pvrWindow = dynamic_cast<CGUIWindowPVRBase*>(CServiceBroker::GetGUI()->GetWindowManager().GetWindow(CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow()));
+    CGUIWindowPVRBase* pvrWindow = dynamic_cast<CGUIWindowPVRBase*>(CServiceBroker::GetGUI()->GetWindowManager().GetWindow(CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow()));
     if (pvrWindow)
       pvrWindow->DoRefresh();
     else
@@ -2212,7 +2212,7 @@ namespace PVR
   CPVRChannelNumberInputHandler& CPVRGUIActions::GetChannelNumberInputHandler()
   {
     // window/dialog specific input handler
-    CPVRChannelNumberInputHandler *windowInputHandler = dynamic_cast<CPVRChannelNumberInputHandler*>(CServiceBroker::GetGUI()->GetWindowManager().GetWindow(CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindowOrDialog()));
+    CPVRChannelNumberInputHandler* windowInputHandler = dynamic_cast<CPVRChannelNumberInputHandler*>(CServiceBroker::GetGUI()->GetWindowManager().GetWindow(CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindowOrDialog()));
     if (windowInputHandler)
       return *windowInputHandler;
 

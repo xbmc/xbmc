@@ -323,7 +323,7 @@ bool CPVREpg::UpdateEntries(const CPVREpg& epg, bool bStoreInDb /* = true */)
   return true;
 }
 
-bool CPVREpg::UpdateEntry(const EPG_TAG *data, int iClientId)
+bool CPVREpg::UpdateEntry(const EPG_TAG* data, int iClientId)
 {
   if (!data)
     return false;

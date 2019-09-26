@@ -68,7 +68,7 @@ void CPVRChannelGroupsContainer::Unload(void)
   m_bLoaded = false;
 }
 
-CPVRChannelGroups *CPVRChannelGroupsContainer::Get(bool bRadio) const
+CPVRChannelGroups* CPVRChannelGroupsContainer::Get(bool bRadio) const
 {
   return bRadio ? m_groupsRadio : m_groupsTV;
 }

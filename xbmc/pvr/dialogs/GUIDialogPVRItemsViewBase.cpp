@@ -78,7 +78,7 @@ bool CGUIDialogPVRItemsViewBase::OnAction(const CAction& action)
   return CGUIDialog::OnAction(action);
 }
 
-CGUIControl *CGUIDialogPVRItemsViewBase::GetFirstFocusableControl(int id)
+CGUIControl* CGUIDialogPVRItemsViewBase::GetFirstFocusableControl(int id)
 {
   if (m_viewControl.HasControl(id))
     id = m_viewControl.GetCurrentControl();

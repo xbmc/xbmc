@@ -112,7 +112,7 @@ namespace PVR
      */
     ~CPVRManager(void) override;
 
-    void Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender, const char *message, const CVariant& data) override;
+    void Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char* sender, const char* message, const CVariant& data) override;
 
     /*!
      * @brief Get the channel groups container.
@@ -465,7 +465,7 @@ namespace PVR
     /*!
      * @brief Signal a connection change of a client
      */
-    void ConnectionStateChange(CPVRClient *client, std::string connectString, PVR_CONNECTION_STATE state, std::string message);
+    void ConnectionStateChange(CPVRClient* client, std::string connectString, PVR_CONNECTION_STATE state, std::string message);
 
     /*!
      * @brief Query the events available for CEventStream

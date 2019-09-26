@@ -60,20 +60,20 @@ namespace PVR
      * @brief Get the TV channel groups.
      * @return The TV channel groups.
      */
-    CPVRChannelGroups *GetTV(void) const { return Get(false); }
+    CPVRChannelGroups* GetTV(void) const { return Get(false); }
 
     /*!
      * @brief Get the radio channel groups.
      * @return The radio channel groups.
      */
-    CPVRChannelGroups *GetRadio(void) const { return Get(true); }
+    CPVRChannelGroups* GetRadio(void) const { return Get(true); }
 
     /*!
      * @brief Get the radio or TV channel groups.
      * @param bRadio If true, get the radio channel groups. Get the TV channel groups otherwise.
      * @return The requested groups.
      */
-    CPVRChannelGroups *Get(bool bRadio) const;
+    CPVRChannelGroups* Get(bool bRadio) const;
 
     /*!
      * @brief Get the group containing all TV channels.
@@ -176,8 +176,8 @@ namespace PVR
     void SetLastPlayedGroup(const std::shared_ptr<CPVRChannelGroup>& group);
 
   protected:
-    CPVRChannelGroups *m_groupsRadio; /*!< all radio channel groups */
-    CPVRChannelGroups *m_groupsTV;    /*!< all TV channel groups */
+    CPVRChannelGroups* m_groupsRadio; /*!< all radio channel groups */
+    CPVRChannelGroups* m_groupsTV;    /*!< all TV channel groups */
     CCriticalSection   m_critSection;
     bool               m_bUpdateChannelsOnly = false;
     bool               m_bIsUpdating = false;

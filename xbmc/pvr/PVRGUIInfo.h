@@ -53,10 +53,10 @@ namespace PVR
     void Notify(const PVREvent& event);
 
     // KODI::GUILIB::GUIINFO::IGUIInfoProvider implementation
-    bool InitCurrentItem(CFileItem *item) override;
-    bool GetLabel(std::string& value, const CFileItem *item, int contextWindow, const KODI::GUILIB::GUIINFO::CGUIInfo& info, std::string *fallback) const override;
-    bool GetInt(int& value, const CGUIListItem *item, int contextWindow, const KODI::GUILIB::GUIINFO::CGUIInfo& info) const override;
-    bool GetBool(bool& value, const CGUIListItem *item, int contextWindow, const KODI::GUILIB::GUIINFO::CGUIInfo& info) const override;
+    bool InitCurrentItem(CFileItem* item) override;
+    bool GetLabel(std::string& value, const CFileItem* item, int contextWindow, const KODI::GUILIB::GUIINFO::CGUIInfo& info, std::string* fallback) const override;
+    bool GetInt(int& value, const CGUIListItem* item, int contextWindow, const KODI::GUILIB::GUIINFO::CGUIInfo& info) const override;
+    bool GetBool(bool& value, const CGUIListItem* item, int contextWindow, const KODI::GUILIB::GUIINFO::CGUIInfo& info) const override;
 
   private:
     void ResetProperties(void);
@@ -76,16 +76,16 @@ namespace PVR
 
     void UpdateTimersToggle(void);
 
-    bool GetListItemAndPlayerLabel(const CFileItem *item, const KODI::GUILIB::GUIINFO::CGUIInfo& info, std::string& strValue) const;
-    bool GetPVRLabel(const CFileItem *item, const KODI::GUILIB::GUIINFO::CGUIInfo& info, std::string& strValue) const;
-    bool GetRadioRDSLabel(const CFileItem *item, const KODI::GUILIB::GUIINFO::CGUIInfo& info, std::string& strValue) const;
+    bool GetListItemAndPlayerLabel(const CFileItem* item, const KODI::GUILIB::GUIINFO::CGUIInfo& info, std::string& strValue) const;
+    bool GetPVRLabel(const CFileItem* item, const KODI::GUILIB::GUIINFO::CGUIInfo& info, std::string& strValue) const;
+    bool GetRadioRDSLabel(const CFileItem* item, const KODI::GUILIB::GUIINFO::CGUIInfo& info, std::string& strValue) const;
 
-    bool GetListItemAndPlayerInt(const CFileItem *item, const KODI::GUILIB::GUIINFO::CGUIInfo& info, int& iValue) const;
-    bool GetPVRInt(const CFileItem *item, const KODI::GUILIB::GUIINFO::CGUIInfo& info, int& iValue) const;
+    bool GetListItemAndPlayerInt(const CFileItem* item, const KODI::GUILIB::GUIINFO::CGUIInfo& info, int& iValue) const;
+    bool GetPVRInt(const CFileItem* item, const KODI::GUILIB::GUIINFO::CGUIInfo& info, int& iValue) const;
 
-    bool GetListItemAndPlayerBool(const CFileItem *item, const KODI::GUILIB::GUIINFO::CGUIInfo& info, bool& bValue) const;
-    bool GetPVRBool(const CFileItem *item, const KODI::GUILIB::GUIINFO::CGUIInfo& info, bool& bValue) const;
-    bool GetRadioRDSBool(const CFileItem *item, const KODI::GUILIB::GUIINFO::CGUIInfo& info, bool& bValue) const;
+    bool GetListItemAndPlayerBool(const CFileItem* item, const KODI::GUILIB::GUIINFO::CGUIInfo& info, bool& bValue) const;
+    bool GetPVRBool(const CFileItem* item, const KODI::GUILIB::GUIINFO::CGUIInfo& info, bool& bValue) const;
+    bool GetRadioRDSBool(const CFileItem* item, const KODI::GUILIB::GUIINFO::CGUIInfo& info, bool& bValue) const;
 
     void CharInfoBackendNumber(std::string& strValue) const;
     void CharInfoTotalDiskSpace(std::string& strValue) const;

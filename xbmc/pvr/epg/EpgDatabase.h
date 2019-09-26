@@ -67,7 +67,7 @@ namespace PVR
      * @brief Get the default sqlite database filename.
      * @return The default filename.
      */
-    const char *GetBaseDBName(void) const override { return "Epg"; }
+    const char* GetBaseDBName(void) const override { return "Epg"; }
 
     /*! @name EPG methods */
     //@{
@@ -118,7 +118,7 @@ namespace PVR
      * @param lastScan The last scan time or -1 if it wasn't found.
      * @return True if the time was fetched successfully, false otherwise.
      */
-    bool GetLastEpgScanTime(int iEpgId, CDateTime *lastScan);
+    bool GetLastEpgScanTime(int iEpgId, CDateTime* lastScan);
 
     /*!
      * @brief Update the last scan time.

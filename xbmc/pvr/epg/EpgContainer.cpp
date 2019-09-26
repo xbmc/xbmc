@@ -178,7 +178,7 @@ void CPVREpgContainer::Start(bool bAsync)
 {
   if (bAsync)
   {
-    CPVREpgContainerStartJob *job = new CPVREpgContainerStartJob();
+    CPVREpgContainerStartJob* job = new CPVREpgContainerStartJob();
     CJobManager::GetInstance().AddJob(job, NULL);
     return;
   }

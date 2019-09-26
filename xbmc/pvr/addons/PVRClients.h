@@ -183,7 +183,7 @@ namespace PVR
      * @param failedClients in case of errors will contain the ids of the clients for which the timers could not be obtained.
      * @return true on success for all clients, false in case of error for at least one client.
      */
-    bool GetTimers(CPVRTimersContainer *timers, std::vector<int>& failedClients);
+    bool GetTimers(CPVRTimersContainer* timers, std::vector<int>& failedClients);
 
     /*!
      * @brief Get all supported timer types.
@@ -203,7 +203,7 @@ namespace PVR
      * @param deleted If true, return deleted recordings, return not deleted recordings otherwise.
      * @return PVR_ERROR_NO_ERROR if the operation succeeded, the respective PVR_ERROR value otherwise.
      */
-    PVR_ERROR GetRecordings(CPVRRecordings *recordings, bool deleted);
+    PVR_ERROR GetRecordings(CPVRRecordings* recordings, bool deleted);
 
     /*!
      * @brief Delete all "soft" deleted recordings permanently on the backend.
@@ -236,7 +236,7 @@ namespace PVR
      * @param failedClients in case of errors will contain the ids of the clients for which the channels could not be obtained.
      * @return PVR_ERROR_NO_ERROR if the channels were fetched successfully, last error otherwise.
      */
-    PVR_ERROR GetChannels(CPVRChannelGroupInternal *group, std::vector<int>& failedClients);
+    PVR_ERROR GetChannels(CPVRChannelGroupInternal* group, std::vector<int>& failedClients);
 
     /*!
      * @brief Get all channel groups from backends.
@@ -244,7 +244,7 @@ namespace PVR
      * @param failedClients in case of errors will contain the ids of the clients for which the channel groups could not be obtained.
      * @return PVR_ERROR_NO_ERROR if the channel groups were fetched successfully, last error otherwise.
      */
-    PVR_ERROR GetChannelGroups(CPVRChannelGroups *groups, std::vector<int>& failedClients);
+    PVR_ERROR GetChannelGroups(CPVRChannelGroups* groups, std::vector<int>& failedClients);
 
     /*!
      * @brief Get all group members of a channel group.
@@ -252,7 +252,7 @@ namespace PVR
      * @param failedClients in case of errors will contain the ids of the clients for which the channel group members could not be obtained.
      * @return PVR_ERROR_NO_ERROR if the channel group members were fetched successfully, last error otherwise.
      */
-    PVR_ERROR GetChannelGroupMembers(CPVRChannelGroup *group, std::vector<int>& failedClients);
+    PVR_ERROR GetChannelGroupMembers(CPVRChannelGroup* group, std::vector<int>& failedClients);
 
     /*!
      * @brief Get a list of clients providing a channel scan dialog.
@@ -300,7 +300,7 @@ namespace PVR
      * @param newState The new connection state.
      * @param strMessage A human readable message providing additional information.
      */
-    void ConnectionStateChange(CPVRClient *client, std::string& strConnectionString, PVR_CONNECTION_STATE newState, std::string& strMessage);
+    void ConnectionStateChange(CPVRClient* client, std::string& strConnectionString, PVR_CONNECTION_STATE newState, std::string& strMessage);
 
   private:
     /*!

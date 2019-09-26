@@ -516,7 +516,7 @@ namespace PVR
      * @param bFullscreen start playback fullscreen or not.
      * @param item containing a channel or a recording.
      */
-    void StartPlayback(CFileItem *item, bool bFullscreen) const;
+    void StartPlayback(CFileItem* item, bool bFullscreen) const;
 
     bool AllLocalBackendsIdle(std::shared_ptr<CPVRTimerInfoTag>& causingEvent) const;
     bool EventOccursOnLocalBackend(const std::shared_ptr<CFileItem>& item) const;

@@ -358,7 +358,7 @@ bool CPVRTimers::UpdateEntries(const CPVRTimersContainer& timers, const std::vec
 
     if (!timerNotifications.empty() && CServiceBroker::GetPVRManager().IsStarted())
     {
-      CPVREventlogJob *job = new CPVREventlogJob;
+      CPVREventlogJob* job = new CPVREventlogJob;
 
       /* queue notifications / fill eventlog */
       for (const auto& entry : timerNotifications)

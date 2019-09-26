@@ -313,7 +313,7 @@ void CPVRActionListener::OnSettingAction(std::shared_ptr<const CSetting> setting
   {
     if (CServiceBroker::GetPVRManager().IsStarted())
     {
-      CGUIDialog *dialog = CServiceBroker::GetGUI()->GetWindowManager().GetDialog(WINDOW_DIALOG_PVR_CLIENT_PRIORITIES);
+      CGUIDialog* dialog = CServiceBroker::GetGUI()->GetWindowManager().GetDialog(WINDOW_DIALOG_PVR_CLIENT_PRIORITIES);
       if (dialog)
       {
         dialog->Open();
@@ -325,7 +325,7 @@ void CPVRActionListener::OnSettingAction(std::shared_ptr<const CSetting> setting
   {
     if (CServiceBroker::GetPVRManager().IsStarted())
     {
-      CGUIDialog *dialog = CServiceBroker::GetGUI()->GetWindowManager().GetDialog(WINDOW_DIALOG_PVR_CHANNEL_MANAGER);
+      CGUIDialog* dialog = CServiceBroker::GetGUI()->GetWindowManager().GetDialog(WINDOW_DIALOG_PVR_CHANNEL_MANAGER);
       if (dialog)
         dialog->Open();
     }
@@ -334,7 +334,7 @@ void CPVRActionListener::OnSettingAction(std::shared_ptr<const CSetting> setting
   {
     if (CServiceBroker::GetPVRManager().IsStarted())
     {
-      CGUIDialog *dialog = CServiceBroker::GetGUI()->GetWindowManager().GetDialog(WINDOW_DIALOG_PVR_GROUP_MANAGER);
+      CGUIDialog* dialog = CServiceBroker::GetGUI()->GetWindowManager().GetDialog(WINDOW_DIALOG_PVR_GROUP_MANAGER);
       if (dialog)
         dialog->Open();
     }

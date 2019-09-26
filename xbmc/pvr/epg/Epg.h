@@ -164,7 +164,7 @@ namespace PVR
      * @param iClientId The id of the pvr client this event belongs to.
      * @return True if it was updated successfully, false otherwise.
      */
-    bool UpdateEntry(const EPG_TAG *data, int iClientId);
+    bool UpdateEntry(const EPG_TAG* data, int iClientId);
 
     /*!
      * @brief Update an entry in this EPG.

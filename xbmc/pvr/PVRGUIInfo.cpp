@@ -271,13 +271,13 @@ void CPVRGUIInfo::UpdateTimeshiftData(void)
   m_timesInfo.Update();
 }
 
-bool CPVRGUIInfo::InitCurrentItem(CFileItem *item)
+bool CPVRGUIInfo::InitCurrentItem(CFileItem* item)
 {
   CServiceBroker::GetPVRManager().PublishEvent(PVREvent::CurrentItem);
   return false;
 }
 
-bool CPVRGUIInfo::GetLabel(std::string& value, const CFileItem *item, int contextWindow, const CGUIInfo& info, std::string *fallback) const
+bool CPVRGUIInfo::GetLabel(std::string& value, const CFileItem* item, int contextWindow, const CGUIInfo& info, std::string* fallback) const
 {
   return GetListItemAndPlayerLabel(item, info, value) ||
          GetPVRLabel(item, info, value) ||
@@ -303,7 +303,7 @@ namespace
 
 } // unnamed namespace
 
-bool CPVRGUIInfo::GetListItemAndPlayerLabel(const CFileItem *item, const CGUIInfo& info, std::string& strValue) const
+bool CPVRGUIInfo::GetListItemAndPlayerLabel(const CFileItem* item, const CGUIInfo& info, std::string& strValue) const
 {
   const std::shared_ptr<CPVRTimerInfoTag> timer = item->GetPVRTimerInfoTag();
   if (timer)
@@ -666,7 +666,7 @@ bool CPVRGUIInfo::GetListItemAndPlayerLabel(const CFileItem *item, const CGUIInf
   return false;
 }
 
-bool CPVRGUIInfo::GetPVRLabel(const CFileItem *item, const CGUIInfo& info, std::string& strValue) const
+bool CPVRGUIInfo::GetPVRLabel(const CFileItem* item, const CGUIInfo& info, std::string& strValue) const
 {
   CSingleLock lock(m_critSection);
 
@@ -876,7 +876,7 @@ bool CPVRGUIInfo::GetPVRLabel(const CFileItem *item, const CGUIInfo& info, std::
   return false;
 }
 
-bool CPVRGUIInfo::GetRadioRDSLabel(const CFileItem *item, const CGUIInfo& info, std::string& strValue) const
+bool CPVRGUIInfo::GetRadioRDSLabel(const CFileItem* item, const CGUIInfo& info, std::string& strValue) const
 {
   if (!item->HasPVRChannelInfoTag())
     return false;
@@ -1019,17 +1019,17 @@ bool CPVRGUIInfo::GetRadioRDSLabel(const CFileItem *item, const CGUIInfo& info, 
   return false;
 }
 
-bool CPVRGUIInfo::GetInt(int& value, const CGUIListItem *item, int contextWindow, const CGUIInfo& info) const
+bool CPVRGUIInfo::GetInt(int& value, const CGUIListItem* item, int contextWindow, const CGUIInfo& info) const
 {
   if (!item->IsFileItem())
     return false;
 
-  const CFileItem *fitem = static_cast<const CFileItem*>(item);
+  const CFileItem* fitem = static_cast<const CFileItem*>(item);
   return GetListItemAndPlayerInt(fitem, info, value) ||
          GetPVRInt(fitem, info, value);
 }
 
-bool CPVRGUIInfo::GetListItemAndPlayerInt(const CFileItem *item, const CGUIInfo& info, int& iValue) const
+bool CPVRGUIInfo::GetListItemAndPlayerInt(const CFileItem* item, const CGUIInfo& info, int& iValue) const
 {
   switch (info.m_info)
   {
@@ -1045,7 +1045,7 @@ bool CPVRGUIInfo::GetListItemAndPlayerInt(const CFileItem *item, const CGUIInfo&
   return false;
 }
 
-bool CPVRGUIInfo::GetPVRInt(const CFileItem *item, const CGUIInfo& info, int& iValue) const
+bool CPVRGUIInfo::GetPVRInt(const CFileItem* item, const CGUIInfo& info, int& iValue) const
 {
   CSingleLock lock(m_critSection);
 
@@ -1100,18 +1100,18 @@ bool CPVRGUIInfo::GetPVRInt(const CFileItem *item, const CGUIInfo& info, int& iV
   return false;
 }
 
-bool CPVRGUIInfo::GetBool(bool& value, const CGUIListItem *item, int contextWindow, const CGUIInfo& info) const
+bool CPVRGUIInfo::GetBool(bool& value, const CGUIListItem* item, int contextWindow, const CGUIInfo& info) const
 {
   if (!item->IsFileItem())
     return false;
 
-  const CFileItem *fitem = static_cast<const CFileItem*>(item);
+  const CFileItem* fitem = static_cast<const CFileItem*>(item);
   return GetListItemAndPlayerBool(fitem, info, value) ||
          GetPVRBool(fitem, info, value) ||
          GetRadioRDSBool(fitem, info, value);
 }
 
-bool CPVRGUIInfo::GetListItemAndPlayerBool(const CFileItem *item, const CGUIInfo& info, bool& bValue) const
+bool CPVRGUIInfo::GetListItemAndPlayerBool(const CFileItem* item, const CGUIInfo& info, bool& bValue) const
 {
   switch (info.m_info)
   {
@@ -1313,7 +1313,7 @@ bool CPVRGUIInfo::GetListItemAndPlayerBool(const CFileItem *item, const CGUIInfo
   return false;
 }
 
-bool CPVRGUIInfo::GetPVRBool(const CFileItem *item, const CGUIInfo& info, bool& bValue) const
+bool CPVRGUIInfo::GetPVRBool(const CFileItem* item, const CGUIInfo& info, bool& bValue) const
 {
   CSingleLock lock(m_critSection);
 
@@ -1383,7 +1383,7 @@ bool CPVRGUIInfo::GetPVRBool(const CFileItem *item, const CGUIInfo& info, bool& 
   return false;
 }
 
-bool CPVRGUIInfo::GetRadioRDSBool(const CFileItem *item, const CGUIInfo& info, bool& bValue) const
+bool CPVRGUIInfo::GetRadioRDSBool(const CFileItem* item, const CGUIInfo& info, bool& bValue) const
 {
   if (!item->HasPVRChannelInfoTag())
     return false;

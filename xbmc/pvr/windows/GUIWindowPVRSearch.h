@@ -41,7 +41,7 @@ namespace PVR
     std::string GetDirectoryPath(void) override { return ""; }
 
   private:
-    bool OnContextButtonClear(CFileItem *item, CONTEXT_BUTTON button);
+    bool OnContextButtonClear(CFileItem* item, CONTEXT_BUTTON button);
 
     void OpenDialogSearch();
 

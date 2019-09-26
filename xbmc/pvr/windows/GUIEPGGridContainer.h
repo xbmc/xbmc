@@ -41,7 +41,7 @@ namespace PVR
                          int rulerUnit, const CTextureInfo& progressIndicatorTexture);
     CGUIEPGGridContainer(const CGUIEPGGridContainer& other);
 
-    CGUIEPGGridContainer *Clone() const override { return new CGUIEPGGridContainer(*this); }
+    CGUIEPGGridContainer* Clone() const override { return new CGUIEPGGridContainer(*this); }
 
     /*!
      * @brief Check whether the control currently holds data.
@@ -73,7 +73,7 @@ namespace PVR
     std::shared_ptr<CPVRChannel> GetSelectedChannel() const;
     CDateTime GetSelectedDate() const;
 
-    void LoadLayout(TiXmlElement *layout);
+    void LoadLayout(TiXmlElement* layout);
     void SetPageControl(int id);
 
     /*! \brief Set the offset of the first item in the container from the container's position
@@ -118,15 +118,15 @@ namespace PVR
     void ValidateOffset();
     void UpdateLayout();
 
-    GridItem *GetItem(int channel);
-    GridItem *GetNextItem(int channel);
-    GridItem *GetPrevItem(int channel);
+    GridItem* GetItem(int channel);
+    GridItem* GetNextItem(int channel);
+    GridItem* GetPrevItem(int channel);
 
     int GetBlock(const CGUIListItemPtr& item, int channel);
     int GetRealBlock(const CGUIListItemPtr& item, int channel);
     void MoveToRow(int row);
 
-    CGUIListItemLayout *GetFocusedLayout() const;
+    CGUIListItemLayout* GetFocusedLayout() const;
 
     void ScrollToBlockOffset(int offset);
     void ScrollToChannelOffset(int offset);
@@ -134,7 +134,7 @@ namespace PVR
     void GoToChannel(int channelIndex);
     void UpdateScrollOffset(unsigned int currentTime);
     void ProcessItem(float posX, float posY, const std::shared_ptr<CFileItem>& item, std::shared_ptr<CFileItem>& lastitem, bool focused, CGUIListItemLayout* normallayout, CGUIListItemLayout* focusedlayout, unsigned int currentTime, CDirtyRegionList& dirtyregions, float resize = -1.0f);
-    void RenderItem(float posX, float posY, CGUIListItem *item, bool focused);
+    void RenderItem(float posX, float posY, CGUIListItem* item, bool focused);
     void GetCurrentLayouts();
 
     void ProcessChannels(unsigned int currentTime, CDirtyRegionList& dirtyregions);
@@ -159,12 +159,12 @@ namespace PVR
     std::vector<CGUIListItemLayout> m_rulerLayouts;
     std::vector<CGUIListItemLayout> m_rulerDateLayouts;
 
-    CGUIListItemLayout *m_channelLayout;
-    CGUIListItemLayout *m_focusedChannelLayout;
-    CGUIListItemLayout *m_programmeLayout;
-    CGUIListItemLayout *m_focusedProgrammeLayout;
-    CGUIListItemLayout *m_rulerLayout;
-    CGUIListItemLayout *m_rulerDateLayout;
+    CGUIListItemLayout* m_channelLayout;
+    CGUIListItemLayout* m_focusedChannelLayout;
+    CGUIListItemLayout* m_programmeLayout;
+    CGUIListItemLayout* m_focusedProgrammeLayout;
+    CGUIListItemLayout* m_rulerLayout;
+    CGUIListItemLayout* m_rulerDateLayout;
 
     int m_pageControl;
 
@@ -238,6 +238,6 @@ namespace PVR
     std::unique_ptr<CGUIEPGGridContainerModel> m_gridModel;
     std::unique_ptr<CGUIEPGGridContainerModel> m_updatedGridModel;
 
-    GridItem *m_item;
+    GridItem* m_item;
   };
 }

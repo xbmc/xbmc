@@ -163,7 +163,7 @@ void CPVRSettings::MarginTimeFiller(
   }
 }
 
-bool CPVRSettings::IsSettingVisible(const std::string& condition, const std::string& value, std::shared_ptr<const CSetting> setting, void *data)
+bool CPVRSettings::IsSettingVisible(const std::string& condition, const std::string& value, std::shared_ptr<const CSetting> setting, void* data)
 {
   if (setting == nullptr)
     return false;
@@ -187,7 +187,7 @@ bool CPVRSettings::IsSettingVisible(const std::string& condition, const std::str
   }
 }
 
-bool CPVRSettings::CheckParentalPin(const std::string& condition, const std::string& value, std::shared_ptr<const CSetting> setting, void *data)
+bool CPVRSettings::CheckParentalPin(const std::string& condition, const std::string& value, std::shared_ptr<const CSetting> setting, void* data)
 {
   return CServiceBroker::GetPVRManager().GUIActions()->CheckParentalPIN() == ParentalCheckResult::SUCCESS;
 }
