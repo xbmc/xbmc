@@ -81,6 +81,7 @@ enum iosPlatform
   iPhone7,
   iPhone8,
   iPhoneXR,
+  iPhone11,
   iPadAir2Wifi,
   iPadAir2Cellular,
   iPadPro9_7InchWifi,
@@ -108,6 +109,8 @@ enum iosPlatform
   iPhoneX,
   iPhoneXS,
   iPhoneXSMax,
+  iPhone11Pro,
+  iPhone11ProMax,
 };
 
 // platform strings are based on http://theiphonewiki.com/wiki/Models
@@ -174,6 +177,9 @@ enum iosPlatform getIosPlatform()
     else if (devStr == "iPhone11,2") eDev = iPhoneXS;
     else if (devStr == "iPhone11,6") eDev = iPhoneXSMax;
     else if (devStr == "iPhone11,8") eDev = iPhoneXR;
+    else if (devStr == "iPhone12,1") eDev = iPhone11;
+    else if (devStr == "iPhone12,3") eDev = iPhone11Pro;
+    else if (devStr == "iPhone12,5") eDev = iPhone11ProMax;
     else if (devStr == "iPod1,1") eDev = iPodTouch1G;
     else if (devStr == "iPod2,1") eDev = iPodTouch2G;
     else if (devStr == "iPod3,1") eDev = iPodTouch3G;
