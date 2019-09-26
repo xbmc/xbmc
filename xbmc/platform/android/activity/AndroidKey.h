@@ -17,8 +17,8 @@
 class CAndroidKey
 {
 public:
-  CAndroidKey() {};
- ~CAndroidKey() {};
+  CAndroidKey() = default;
+  ~CAndroidKey() = default;
 
   bool onKeyboardEvent(AInputEvent *event);
 

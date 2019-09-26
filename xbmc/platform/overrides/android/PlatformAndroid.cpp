@@ -17,16 +17,6 @@ CPlatform* CPlatform::CreateInstance()
   return new CPlatformAndroid();
 }
 
-CPlatformAndroid::CPlatformAndroid()
-{
-
-}
-
-CPlatformAndroid::~CPlatformAndroid()
-{
-
-}
-
 void CPlatformAndroid::Init()
 {
   CPlatformPosix::Init();

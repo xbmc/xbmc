@@ -23,14 +23,14 @@ namespace Actor
 class CPayloadWrapBase
 {
 public:
-  virtual ~CPayloadWrapBase() {};
+  virtual ~CPayloadWrapBase() = default;
 };
 
 template<typename Payload>
 class CPayloadWrap : public CPayloadWrapBase
 {
 public:
-  ~CPayloadWrap() override {};
+  ~CPayloadWrap() override = default;
   CPayloadWrap(Payload *data) {m_pPayload.reset(data);};
   CPayloadWrap(Payload &data) {m_pPayload.reset(new Payload(data));};
   Payload *GetPlayload() {return m_pPayload.get();};

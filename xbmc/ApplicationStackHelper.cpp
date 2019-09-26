@@ -24,10 +24,6 @@ CApplicationStackHelper::CApplicationStackHelper(void)
 {
 }
 
-CApplicationStackHelper::~CApplicationStackHelper(void)
-{
-}
-
 void CApplicationStackHelper::Clear()
 {
   m_currentStackPosition = 0;

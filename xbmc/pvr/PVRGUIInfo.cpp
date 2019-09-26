@@ -50,10 +50,6 @@ CPVRGUIInfo::CPVRGUIInfo(void) :
   ResetProperties();
 }
 
-CPVRGUIInfo::~CPVRGUIInfo(void)
-{
-}
-
 void CPVRGUIInfo::ResetProperties(void)
 {
   CSingleLock lock(m_critSection);

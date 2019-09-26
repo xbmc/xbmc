@@ -82,13 +82,9 @@ static const std::map<int, int> listitem2slideshow_map =
   { LISTITEM_PICTURE_GPS_ALT          , SLIDESHOW_EXIF_GPS_ALTITUDE }
 };
 
-CPicturesGUIInfo::CPicturesGUIInfo()
-{
-}
+CPicturesGUIInfo::CPicturesGUIInfo() = default;
 
-CPicturesGUIInfo::~CPicturesGUIInfo()
-{
-}
+CPicturesGUIInfo::~CPicturesGUIInfo() = default;
 
 void CPicturesGUIInfo::SetCurrentSlide(CFileItem *item)
 {

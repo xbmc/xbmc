@@ -87,9 +87,7 @@ CProfileManager::CProfileManager() :
 {
 }
 
-CProfileManager::~CProfileManager()
-{
-}
+CProfileManager::~CProfileManager() = default;
 
 void CProfileManager::Initialize(const std::shared_ptr<CSettings>& settings)
 {

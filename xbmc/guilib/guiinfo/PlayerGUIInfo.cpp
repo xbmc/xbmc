@@ -38,9 +38,7 @@ CPlayerGUIInfo::CPlayerGUIInfo()
 {
 }
 
-CPlayerGUIInfo::~CPlayerGUIInfo()
-{
-}
+CPlayerGUIInfo::~CPlayerGUIInfo() = default;
 
 int CPlayerGUIInfo::GetTotalPlayTime() const
 {

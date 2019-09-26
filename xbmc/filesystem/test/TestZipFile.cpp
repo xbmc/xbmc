@@ -24,23 +24,7 @@
 class TestZipFile : public testing::Test
 {
 protected:
-  TestZipFile()
-  {
-    /* Add default settings for locale.
-     * Settings here are taken from CGUISettings::Initialize()
-     */
-    //! @todo implement
-    /*
-    CSettingsCategory *loc = CServiceBroker::GetSettingsComponent()->GetSettings()->AddCategory(7, "locale", 14090);
-    CServiceBroker::GetSettingsComponent()->GetSettings()->AddString(loc, CSettings::SETTING_LOCALE_LANGUAGE,248,"english",
-                            SPIN_CONTROL_TEXT);
-    CServiceBroker::GetSettingsComponent()->GetSettings()->AddString(loc, CSettings::SETTING_LOCALE_COUNTRY, 20026, "USA",
-                            SPIN_CONTROL_TEXT);
-    CServiceBroker::GetSettingsComponent()->GetSettings()->AddString(loc, CSettings::SETTING_LOCALE_CHARSET, 14091, "DEFAULT",
-                            SPIN_CONTROL_TEXT); // charset is set by the
-                                                // language file
-    */
-  }
+  TestZipFile() = default;
 
   ~TestZipFile() override
   {

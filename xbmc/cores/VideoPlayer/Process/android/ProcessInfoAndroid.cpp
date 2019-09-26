@@ -15,10 +15,6 @@ CProcessInfo* CProcessInfoAndroid::Create()
   return new CProcessInfoAndroid();
 }
 
-CProcessInfoAndroid::CProcessInfoAndroid()
-{
-}
-
 void CProcessInfoAndroid::Register()
 {
   CProcessInfo::RegisterProcessControl("android", CProcessInfoAndroid::Create);

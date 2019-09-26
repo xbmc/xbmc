@@ -132,8 +132,7 @@ namespace XbmcCommons
      * in the source buffer and vice/vrs. However, each buffer maintains
      * its own indexing.
      */
-    inline Buffer(const Buffer& buf) : bufferRef(buf.bufferRef), buffer(buf.buffer),
-      mposition(buf.mposition), mcapacity(buf.mcapacity), mlimit(buf.mlimit) { }
+    inline Buffer(const Buffer& buf) = default;
 
     /**
      * Copy another buffer. This is a "shallow copy" and therefore

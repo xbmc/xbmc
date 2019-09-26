@@ -35,9 +35,7 @@
 
 using namespace KODI;
 
-CServiceManager::CServiceManager()
-{
-}
+CServiceManager::CServiceManager() = default;
 
 CServiceManager::~CServiceManager()
 {

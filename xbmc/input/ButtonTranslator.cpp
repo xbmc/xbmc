@@ -31,14 +31,6 @@
 
 using namespace KODI;
 
-CButtonTranslator::CButtonTranslator()
-{
-}
-
-CButtonTranslator::~CButtonTranslator()
-{
-}
-
 // Add the supplied device name to the list of connected devices
 bool CButtonTranslator::AddDevice(const std::string& strDevice)
 {

@@ -190,10 +190,6 @@ CAndroidUtils::CAndroidUtils()
   });
 }
 
-CAndroidUtils::~CAndroidUtils()
-{
-}
-
 bool CAndroidUtils::GetNativeResolution(RESOLUTION_INFO* res) const
 {
   EGLNativeWindowType nativeWindow = (EGLNativeWindowType)CXBMCApp::GetNativeWindow(30000);

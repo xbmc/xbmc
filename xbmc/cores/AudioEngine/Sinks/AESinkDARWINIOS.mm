@@ -583,10 +583,6 @@ CAESinkDARWINIOS::CAESinkDARWINIOS()
 {
 }
 
-CAESinkDARWINIOS::~CAESinkDARWINIOS()
-{
-}
-
 void CAESinkDARWINIOS::Register()
 {
   AE::AESinkRegEntry reg;

@@ -66,11 +66,7 @@ public:
     {
     }
 
-    CElementText(CElementText& src)
-     : CElement(src),
-       m_text(src.m_text)
-    {
-    }
+    CElementText(CElementText& src) = default;
 
     const std::string& GetText()
     { return m_text; }

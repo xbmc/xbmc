@@ -66,7 +66,7 @@ class CMediaCodecVideoBuffer : public CVideoBuffer
 public:
   CMediaCodecVideoBuffer(int id)
     : CVideoBuffer(id){};
-  virtual ~CMediaCodecVideoBuffer(){};
+  virtual ~CMediaCodecVideoBuffer() = default;
 
   void Set(int internalId,
            int textureId,

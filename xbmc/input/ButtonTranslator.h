@@ -29,10 +29,10 @@ class CButtonTranslator
   friend class EVENTCLIENT::CEventButtonState;
 
 public:
-  CButtonTranslator();
+  CButtonTranslator() = default;
   CButtonTranslator(const CButtonTranslator&) = delete;
   CButtonTranslator const& operator=(CButtonTranslator const&) = delete;
-  virtual ~CButtonTranslator();
+  virtual ~CButtonTranslator() = default;
 
   // Add/remove a HID device with custom mappings
   bool AddDevice(const std::string& strDevice);

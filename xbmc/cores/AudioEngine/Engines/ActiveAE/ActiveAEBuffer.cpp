@@ -29,10 +29,6 @@ CSoundPacket::~CSoundPacket()
     CActiveAE::FreeSoundSample(data);
 }
 
-CSampleBuffer::CSampleBuffer()
-{
-}
-
 CSampleBuffer::~CSampleBuffer()
 {
   delete pkt;

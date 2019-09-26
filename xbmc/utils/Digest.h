@@ -106,8 +106,7 @@ struct TypedDigest
   CDigest::Type type{CDigest::Type::INVALID};
   std::string value;
 
-  TypedDigest()
-  {}
+  TypedDigest() = default;
 
   TypedDigest(CDigest::Type type, std::string const& value)
   : type(type), value(value)

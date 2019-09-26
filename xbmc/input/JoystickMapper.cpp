@@ -27,10 +27,6 @@ using namespace KODI;
 #define JOYSTICK_XML_ATTR_HOLDTIME   "holdtime"
 #define JOYSTICK_XML_ATTR_HOTKEY     "hotkey"
 
-CJoystickMapper::~CJoystickMapper()
-{
-}
-
 void CJoystickMapper::MapActions(int windowID, const TiXmlNode *pDevice)
 {
   std::string controllerId;

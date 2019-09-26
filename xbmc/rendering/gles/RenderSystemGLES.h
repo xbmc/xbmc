@@ -36,7 +36,7 @@ class CRenderSystemGLES : public CRenderSystemBase
 {
 public:
   CRenderSystemGLES();
-  virtual ~CRenderSystemGLES();
+  virtual ~CRenderSystemGLES() = default;
 
   bool InitRenderSystem() override;
   bool DestroyRenderSystem() override;

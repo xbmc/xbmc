@@ -20,7 +20,7 @@ namespace XFILE
   {
   public:
     CAPKFile();
-    virtual ~CAPKFile();
+    virtual ~CAPKFile() = default;
     virtual bool Open(const CURL& url);
     virtual void Close();
     virtual bool Exists(const CURL& url);

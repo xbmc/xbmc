@@ -50,8 +50,8 @@ namespace GAME
   class CControllerGrid
   {
   public:
-    CControllerGrid();
-    CControllerGrid(const CControllerGrid &other);
+    CControllerGrid() = default;
+    CControllerGrid(const CControllerGrid& other) = default;
     ~CControllerGrid();
 
     /*!

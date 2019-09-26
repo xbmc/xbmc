@@ -25,7 +25,7 @@ namespace jni
 
 
   protected:
-    virtual ~CJNIXBMCJsonHandler() {}
+    virtual ~CJNIXBMCJsonHandler() = default;
 
     static jstring _requestJSON(JNIEnv* env, jobject thiz, jstring request);
 

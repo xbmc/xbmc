@@ -25,7 +25,7 @@ class CJoystickMapper : public IButtonMapper
 {
 public:
   CJoystickMapper() = default;
-  virtual ~CJoystickMapper();
+  virtual ~CJoystickMapper() = default;
 
   // implementation of IButtonMapper
   virtual void MapActions(int windowID, const TiXmlNode *pDevice) override;

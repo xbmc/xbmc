@@ -41,7 +41,7 @@ namespace PVR
   {
   public:
     CPVRGUIInfo(void);
-    ~CPVRGUIInfo(void) override;
+    ~CPVRGUIInfo() override = default;
 
     void Start(void);
     void Stop(void);

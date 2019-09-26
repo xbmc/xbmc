@@ -31,7 +31,7 @@ struct TextCacheStruct_t;
 class CApplicationPlayer
 {
 public:
-  CApplicationPlayer();
+  CApplicationPlayer() = default;
 
   // player management
   void ClosePlayer();

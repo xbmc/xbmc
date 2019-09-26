@@ -24,7 +24,7 @@ namespace RETRO
   class IRenderBuffer
   {
   public:
-    virtual ~IRenderBuffer() { }
+    virtual ~IRenderBuffer() = default;
 
     // Pool functions
     virtual void Acquire() = 0;

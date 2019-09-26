@@ -17,8 +17,8 @@ class CAndroidAppDirectory :
       public IDirectory
 {
 public:
-  CAndroidAppDirectory(void);
-  virtual ~CAndroidAppDirectory(void);
+  CAndroidAppDirectory() = default;
+  virtual ~CAndroidAppDirectory() = default;
   virtual bool GetDirectory(const CURL& url, CFileItemList &items) override;
   virtual bool Exists(const CURL& url) override { return true; };
   virtual bool AllowAll() const override { return true; };

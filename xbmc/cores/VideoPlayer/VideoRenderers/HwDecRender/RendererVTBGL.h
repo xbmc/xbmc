@@ -14,7 +14,7 @@
 class CRendererVTB : public CLinuxRendererGL
 {
 public:
-  CRendererVTB();
+  CRendererVTB() = default;
   virtual ~CRendererVTB();
 
   static CBaseRenderer* Create(CVideoBuffer *buffer);

@@ -16,8 +16,8 @@ struct AInputEvent;
 class CAndroidJoyStick
 {
 public:
-  CAndroidJoyStick() { }
-  ~CAndroidJoyStick() { }
+  CAndroidJoyStick() = default;
+  ~CAndroidJoyStick() = default;
 
   bool onJoyStickEvent(AInputEvent* event);
 };

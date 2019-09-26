@@ -23,10 +23,6 @@ CAndroidMouse::CAndroidMouse()
 {
 }
 
-CAndroidMouse::~CAndroidMouse()
-{
-}
-
 bool CAndroidMouse::onMouseEvent(AInputEvent* event)
 {
   if (event == NULL)

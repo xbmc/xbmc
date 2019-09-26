@@ -30,10 +30,6 @@ CAPKFile::CAPKFile()
   m_zip_archive = NULL;
 }
 
-CAPKFile::~CAPKFile()
-{
-}
-
 bool CAPKFile::Open(const CURL& url)
 {
   Close();

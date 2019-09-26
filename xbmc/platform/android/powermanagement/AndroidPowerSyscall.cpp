@@ -20,12 +20,6 @@ void CAndroidPowerSyscall::Register()
   IPowerSyscall::RegisterPowerSyscall(CAndroidPowerSyscall::CreateInstance);
 }
 
-CAndroidPowerSyscall::CAndroidPowerSyscall()
-{ }
-
-CAndroidPowerSyscall::~CAndroidPowerSyscall()
-{ }
-
 int CAndroidPowerSyscall::BatteryLevel(void)
 {
   return CXBMCApp::GetBatteryLevel();

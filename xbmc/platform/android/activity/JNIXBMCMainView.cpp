@@ -48,10 +48,6 @@ CJNIXBMCMainView::CJNIXBMCMainView(CJNISurfaceHolderCallback* callback)
   m_instance = this;
 }
 
-CJNIXBMCMainView::~CJNIXBMCMainView()
-{
-}
-
 void CJNIXBMCMainView::_attach(JNIEnv* env, jobject thiz)
 {
   (void)env;

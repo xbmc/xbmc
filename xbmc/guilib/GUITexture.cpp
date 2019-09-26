@@ -27,17 +27,6 @@ CTextureInfo::CTextureInfo(const std::string &file):
   useLarge = false;
 }
 
-CTextureInfo& CTextureInfo::operator=(const CTextureInfo &right)
-{
-  border = right.border;
-  orientation = right.orientation;
-  diffuse = right.diffuse;
-  filename = right.filename;
-  useLarge = right.useLarge;
-  diffuseColor = right.diffuseColor;
-  return *this;
-}
-
 CGUITextureBase::CGUITextureBase(float posX, float posY, float width, float height, const CTextureInfo& texture) :
   m_height(height), m_info(texture)
 {

@@ -30,7 +30,7 @@
 //helper class for easy EventSequence handling
 class XBMCClientEventSequence{
 public:
-  XBMCClientEventSequence(){}
+  XBMCClientEventSequence() = default;
 
   //implicit conversion
   XBMCClientEventSequence(eATVClientEvent f_event){

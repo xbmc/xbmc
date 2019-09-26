@@ -20,19 +20,7 @@
 class TestLabelFormatter : public testing::Test
 {
 protected:
-  TestLabelFormatter()
-  {
-    //! @todo implement
-    /* TODO
-    CSettingsCategory* fl = CServiceBroker::GetSettingsComponent()->GetSettings()->AddCategory(7, "filelists", 14081);
-    CServiceBroker::GetSettingsComponent()->GetSettings()->AddBool(fl, CSettings::SETTING_FILELISTS_SHOWPARENTDIRITEMS, 13306, true);
-    CServiceBroker::GetSettingsComponent()->GetSettings()->AddBool(fl, CSettings::SETTING_FILELISTS_SHOWEXTENSIONS, 497, true);
-    CServiceBroker::GetSettingsComponent()->GetSettings()->AddBool(fl, CSettings::SETTING_FILELISTS_IGNORETHEWHENSORTING, 13399, true);
-    CServiceBroker::GetSettingsComponent()->GetSettings()->AddBool(fl, CSettings::SETTING_FILELISTS_ALLOWFILEDELETION, 14071, false);
-    CServiceBroker::GetSettingsComponent()->GetSettings()->AddBool(fl, CSettings::SETTING_FILELISTS_SHOWADDSOURCEBUTTONS, 21382,  true);
-    CServiceBroker::GetSettingsComponent()->GetSettings()->AddBool(fl, CSettings::SETTING_FILELISTS_SHOWHIDDEN, 21330, false);
-    */
-  }
+  TestLabelFormatter() = default;
 
   ~TestLabelFormatter() override
   {

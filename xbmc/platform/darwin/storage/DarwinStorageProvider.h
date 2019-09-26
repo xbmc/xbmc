@@ -18,7 +18,7 @@ class CDarwinStorageProvider : public IStorageProvider
 {
 public:
   CDarwinStorageProvider();
-  virtual ~CDarwinStorageProvider() { }
+  virtual ~CDarwinStorageProvider() = default;
 
   virtual void Initialize() { }
   virtual void Stop() { }

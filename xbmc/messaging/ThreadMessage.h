@@ -60,18 +60,7 @@ public:
   {
   }
 
-  ThreadMessage(const ThreadMessage& other)
-    : dwMessage(other.dwMessage),
-    param1(other.param1),
-    param2(other.param2),
-    param3(other.param3),
-    lpVoid(other.lpVoid),
-    strParam(other.strParam),
-    params(other.params),
-    waitEvent(other.waitEvent),
-    result(other.result)
-  {
-  }
+  ThreadMessage(const ThreadMessage& other) = default;
 
   ThreadMessage(ThreadMessage&& other)
     : dwMessage(other.dwMessage),

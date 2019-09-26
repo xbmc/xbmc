@@ -52,7 +52,7 @@ namespace XbmcCommons
 
     inline explicit Exception(const char* classname_) : classname(classname_) { }
     inline Exception(const char* classname_, const char* message_) : classname(classname_), message(message_) { }
-    inline Exception(const Exception& other) : classname(other.classname), message(other.message) { }
+    inline Exception(const Exception& other) = default;
 
     /**
      * This method is called from the constructor of subclasses. It

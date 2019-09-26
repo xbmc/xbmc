@@ -12,16 +12,6 @@
 
 #include <stdlib.h>
 
-CPlatformDarwin::CPlatformDarwin()
-{
-
-}
-
-CPlatformDarwin::~CPlatformDarwin()
-{
-
-}
-
 void CPlatformDarwin::Init()
 {
   CPlatformPosix::Init();

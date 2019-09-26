@@ -23,7 +23,8 @@ using RegistrationIdentifierType = int;
 class ISignalHandlerData
 {
 protected:
-  ~ISignalHandlerData() {}
+  ~ISignalHandlerData() = default;
+
 public:
   virtual void Unregister(RegistrationIdentifierType id) = 0;
 };

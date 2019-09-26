@@ -31,7 +31,7 @@ public:
   virtual void OnPointerLeave() {}
   virtual void OnPointerEvent(XBMC_Event& event) = 0;
 protected:
-  ~IInputHandlerPointer() {}
+  ~IInputHandlerPointer() = default;
 };
 
 class CInputProcessorPointer final : public IRawInputHandlerPointer

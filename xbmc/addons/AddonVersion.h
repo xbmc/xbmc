@@ -57,11 +57,5 @@ namespace ADDON
     static int CompareComponent(const char *a, const char *b);
   };
 
-  inline AddonVersion& AddonVersion::operator=(const AddonVersion& other)
-  {
-    mEpoch = other.mEpoch;
-    mUpstream = other.mUpstream;
-    mRevision = other.mRevision;
-    return *this;
-  }
+  inline AddonVersion& AddonVersion::operator=(const AddonVersion& other) = default;
 }

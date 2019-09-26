@@ -20,7 +20,7 @@ class CJNIXBMCMainView : virtual public CJNIBase, public CJNISurfaceHolderCallba
 {
 public:
   CJNIXBMCMainView(CJNISurfaceHolderCallback* callback);
-  ~CJNIXBMCMainView();
+  ~CJNIXBMCMainView() = default;
 
   static void RegisterNatives(JNIEnv* env);
 

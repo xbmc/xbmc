@@ -13,7 +13,7 @@
 class COSScreenSaverAndroid : public KODI::WINDOWING::IOSScreenSaver
 {
 public:
-  explicit COSScreenSaverAndroid() {}
+  explicit COSScreenSaverAndroid() = default;
   void Inhibit() override;
   void Uninhibit() override;
 };

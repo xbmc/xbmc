@@ -21,7 +21,7 @@ class CJNIXBMCVideoView : virtual public CJNIBase, public CJNISurfaceHolderCallb
 {
 public:
   CJNIXBMCVideoView(const jni::jhobject &object);
-  ~CJNIXBMCVideoView();
+  ~CJNIXBMCVideoView() = default;
 
   static void RegisterNatives(JNIEnv* env);
 

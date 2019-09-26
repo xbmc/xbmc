@@ -133,13 +133,15 @@ namespace XBMCAddon
         P::SetLoadType(CGUIWindow::LOAD_ON_GUI_INIT);
       }
 
+#ifdef ENABLE_XBMC_TRACE_API
       ~Interceptor() override
       {
-#ifdef ENABLE_XBMC_TRACE_API
         XBMCAddonUtils::TraceGuard tg;
         CLog::Log(LOGDEBUG, "%sNEWADDON LIFECYCLE destroying %s 0x%lx", tg.getSpaces(),classname.c_str(), (long)(((void*)this)));
-#endif
       }
+#else
+      ~Interceptor() override = default;
+#endif
 
       bool OnMessage(CGUIMessage& message) override
       { XBMC_TRACE; return up() ? P::OnMessage(message) : checkedb(OnMessage(message)); }

@@ -26,7 +26,7 @@ namespace XBMCAddon
   class UnimplementedException : public XbmcCommons::Exception
   {
   public:
-    inline UnimplementedException(const UnimplementedException& other) : Exception(other) { }
+    inline UnimplementedException(const UnimplementedException& other) = default;
     inline UnimplementedException(const char* classname, const char* methodname) :
       Exception("UnimplementedException")
     { SetMessage("Unimplemented method: %s::%s(...)", classname, methodname); }
@@ -39,7 +39,7 @@ namespace XBMCAddon
   class UnhandledException : public XbmcCommons::Exception
   {
   public:
-    inline UnhandledException(const UnhandledException& other) : Exception(other) { }
+    inline UnhandledException(const UnhandledException& other) = default;
     inline UnhandledException(const char* _message,...) : Exception("UnhandledException") { XBMCCOMMONS_COPYVARARGS(_message); }
   };
 }

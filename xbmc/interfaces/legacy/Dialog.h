@@ -762,8 +762,7 @@ namespace XBMCAddon
       void deallocating() override;
 
     public:
-
-      DialogBusy() {}
+      DialogBusy() = default;
       ~DialogBusy() override;
 
 #ifdef DOXYGEN_SHOULD_USE_THIS

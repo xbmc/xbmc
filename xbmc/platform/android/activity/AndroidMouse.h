@@ -15,7 +15,7 @@ class CAndroidMouse
 
 public:
   CAndroidMouse();
-  virtual ~CAndroidMouse();
+  virtual ~CAndroidMouse() = default;
   bool onMouseEvent(AInputEvent* event);
 
 protected:
