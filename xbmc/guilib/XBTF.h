@@ -65,7 +65,7 @@ class CXBTFFile
 {
 public:
   CXBTFFile();
-  CXBTFFile(const CXBTFFile& ref);
+  CXBTFFile(const CXBTFFile& ref) = default;
 
   const std::string& GetPath() const;
   void SetPath(const std::string& path);

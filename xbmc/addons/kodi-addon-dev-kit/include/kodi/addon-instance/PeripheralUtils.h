@@ -150,9 +150,7 @@ namespace addon
   class PeripheralEvent
   {
   public:
-    PeripheralEvent(void)
-    {
-    }
+    PeripheralEvent() = default;
 
     PeripheralEvent(unsigned int peripheralIndex, unsigned int buttonIndex, JOYSTICK_STATE_BUTTON state) :
       m_type(PERIPHERAL_EVENT_TYPE_DRIVER_BUTTON),

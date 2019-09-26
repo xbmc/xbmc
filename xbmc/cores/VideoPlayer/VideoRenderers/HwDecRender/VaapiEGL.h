@@ -61,7 +61,7 @@ public:
 class CVaapi1Texture : public CVaapiTexture
 {
 public:
-  CVaapi1Texture();
+  CVaapi1Texture() = default;
 
   bool Map(CVaapiRenderPicture *pic) override;
   void Unmap() override;

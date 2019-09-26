@@ -20,14 +20,6 @@ std::unique_ptr<CWinSystemBase> CWinSystemBase::CreateWinSystem()
   return winSystem;
 }
 
-CWinSystemOSXGL::CWinSystemOSXGL()
-{
-}
-
-CWinSystemOSXGL::~CWinSystemOSXGL()
-{
-}
-
 void CWinSystemOSXGL::PresentRenderImpl(bool rendered)
 {
   if (rendered)

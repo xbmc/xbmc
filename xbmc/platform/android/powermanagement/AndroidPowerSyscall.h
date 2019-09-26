@@ -13,8 +13,8 @@
 class CAndroidPowerSyscall : public CPowerSyscallWithoutEvents
 {
 public:
-  CAndroidPowerSyscall();
-  ~CAndroidPowerSyscall();
+  CAndroidPowerSyscall() = default;
+  ~CAndroidPowerSyscall() = default;
 
   static IPowerSyscall* CreateInstance();
   static void Register();

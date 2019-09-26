@@ -45,7 +45,7 @@ class CActiveAEBufferPool;
 class CSampleBuffer
 {
 public:
-  CSampleBuffer();
+  CSampleBuffer() = default;
   ~CSampleBuffer();
   CSampleBuffer *Acquire();
   void Return();

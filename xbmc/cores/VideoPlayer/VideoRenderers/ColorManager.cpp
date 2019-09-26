@@ -34,16 +34,18 @@ CColorManager::CColorManager()
 #endif  //defined(HAVE_LCMS2)
 }
 
+#if defined(HAVE_LCMS2)
 CColorManager::~CColorManager()
 {
-#if defined(HAVE_LCMS2)
   if (m_hProfile)
   {
     cmsCloseProfile(m_hProfile);
     m_hProfile = nullptr;
   }
-#endif  //defined(HAVE_LCMS2)
 }
+#else
+CColorManager::~CColorManager() = default;
+#endif //defined(HAVE_LCMS2)
 
 bool CColorManager::IsEnabled() const
 {

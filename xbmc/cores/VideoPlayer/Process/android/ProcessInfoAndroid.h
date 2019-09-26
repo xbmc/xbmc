@@ -16,7 +16,7 @@ namespace VIDEOPLAYER
   class CProcessInfoAndroid : public CProcessInfo
   {
   public:
-    CProcessInfoAndroid();
+    CProcessInfoAndroid() = default;
     static CProcessInfo* Create();
     static void Register();
     EINTERLACEMETHOD GetFallbackDeintMethod() override;

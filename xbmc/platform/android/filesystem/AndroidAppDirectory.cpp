@@ -22,14 +22,6 @@
 
 using namespace XFILE;
 
-CAndroidAppDirectory::CAndroidAppDirectory(void)
-{
-}
-
-CAndroidAppDirectory::~CAndroidAppDirectory(void)
-{
-}
-
 bool CAndroidAppDirectory::GetDirectory(const CURL& url, CFileItemList &items)
 {
   std::string dirname = url.GetFileName();

@@ -26,7 +26,7 @@ namespace DRM
   public:
     // Interface registration
     static CCryptoSession* GetCryptoSession(const std::string& UUID, const std::string& cipherAlgo, const std::string& macAlgo);
-    virtual ~CCryptoSession() {};
+    virtual ~CCryptoSession() = default;
 
     // Interface methods
     virtual XbmcCommons::Buffer GetKeyRequest(const XbmcCommons::Buffer& init, const std::string& mimeType, bool offlineKey, const std::map<std::string, std::string>& parameters) = 0;

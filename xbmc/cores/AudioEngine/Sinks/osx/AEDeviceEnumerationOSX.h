@@ -40,7 +40,7 @@ public:
   */
   AEDeviceEnumerationOSX(AudioDeviceID deviceID);
   // d'tor
-  ~AEDeviceEnumerationOSX(){};
+  ~AEDeviceEnumerationOSX() = default;
 
   /*!
   * @brief Gets the device list which was enumerated by the last call to Enumerate

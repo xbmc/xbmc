@@ -19,10 +19,6 @@
 
 using namespace VAAPI;
 
-CVaapi1Texture::CVaapi1Texture()
-{
-}
-
 void CVaapi1Texture::Init(InteropInfo &interop)
 {
   m_interop = interop;

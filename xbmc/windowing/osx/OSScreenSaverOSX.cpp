@@ -10,10 +10,6 @@
 
 #include <CoreFoundation/CoreFoundation.h>
 
-COSScreenSaverOSX::COSScreenSaverOSX()
-{
-}
-
 void COSScreenSaverOSX::Inhibit()
 {
   // see Technical Q&A QA1340

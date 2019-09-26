@@ -18,7 +18,7 @@ class CAndroidStorageProvider : public IStorageProvider
 {
 public:
   CAndroidStorageProvider();
-  virtual ~CAndroidStorageProvider() { }
+  virtual ~CAndroidStorageProvider() = default;
 
   virtual void Initialize() { }
   virtual void Stop() { }

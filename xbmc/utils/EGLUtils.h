@@ -166,7 +166,7 @@ private:
 class CEGLContextUtils final
 {
 public:
-  CEGLContextUtils();
+  CEGLContextUtils() = default;
   /**
    * \param platform platform as constant from an extension building on EGL_EXT_platform_base
    */

@@ -89,9 +89,7 @@ CGUIWindowPVRSearchBase::CGUIWindowPVRSearchBase(bool bRadio, int id, const std:
 {
 }
 
-CGUIWindowPVRSearchBase::~CGUIWindowPVRSearchBase()
-{
-}
+CGUIWindowPVRSearchBase::~CGUIWindowPVRSearchBase() = default;
 
 void CGUIWindowPVRSearchBase::GetContextButtons(int itemNumber, CContextButtons &buttons)
 {

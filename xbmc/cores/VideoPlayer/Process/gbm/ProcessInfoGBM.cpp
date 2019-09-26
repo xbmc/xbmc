@@ -20,10 +20,6 @@ void CProcessInfoGBM::Register()
   CProcessInfo::RegisterProcessControl("gbm", CProcessInfoGBM::Create);
 }
 
-CProcessInfoGBM::CProcessInfoGBM()
-{
-}
-
 EINTERLACEMETHOD CProcessInfoGBM::GetFallbackDeintMethod()
 {
 #if defined(__arm__)

@@ -182,10 +182,6 @@ void CEGLUtils::Log(int logLevel, const std::string& what)
   CLog::Log(logLevel, "{} ({})", what.c_str(), errorStr);
 }
 
-CEGLContextUtils::CEGLContextUtils()
-{
-}
-
 CEGLContextUtils::CEGLContextUtils(EGLenum platform, std::string const& platformExtension)
 : m_platform{platform}
 {

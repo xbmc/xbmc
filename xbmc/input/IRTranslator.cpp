@@ -21,10 +21,6 @@
 #include <stdlib.h>
 #include <vector>
 
-CIRTranslator::CIRTranslator()
-{
-}
-
 void CIRTranslator::Load(const std::string &irMapName)
 {
   if (irMapName.empty())

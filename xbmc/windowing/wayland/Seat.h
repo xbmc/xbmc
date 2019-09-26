@@ -40,7 +40,7 @@ public:
   virtual void OnKeyboardModifiers(CSeat* seat, std::uint32_t serial, std::uint32_t modsDepressed, std::uint32_t modsLatched, std::uint32_t modsLocked, std::uint32_t group) {}
   virtual void OnKeyboardRepeatInfo(CSeat* seat, std::int32_t rate, std::int32_t delay) {}
 protected:
-  ~IRawInputHandlerKeyboard() {}
+  ~IRawInputHandlerKeyboard() = default;
 };
 
 /**
@@ -57,7 +57,7 @@ public:
   virtual void OnPointerButton(CSeat* seat, std::uint32_t serial, std::uint32_t time, std::uint32_t button, wayland::pointer_button_state state) {}
   virtual void OnPointerAxis(CSeat* seat, std::uint32_t time, wayland::pointer_axis axis, double value) {}
 protected:
-  ~IRawInputHandlerPointer() {}
+  ~IRawInputHandlerPointer() = default;
 };
 
 /**
@@ -74,7 +74,7 @@ public:
   virtual void OnTouchCancel(CSeat* seat) {}
   virtual void OnTouchShape(CSeat* seat, std::int32_t id, double major, double minor) {}
 protected:
-  ~IRawInputHandlerTouch() {};
+  ~IRawInputHandlerTouch() = default;
 };
 
 /**

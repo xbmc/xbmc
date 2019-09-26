@@ -673,9 +673,7 @@ CWinSystemOSX::CWinSystemOSX()
   m_dpms = std::make_shared<CCocoaDPMSSupport>();
 }
 
-CWinSystemOSX::~CWinSystemOSX()
-{
-};
+CWinSystemOSX::~CWinSystemOSX() = default;
 
 void CWinSystemOSX::StartLostDeviceTimer()
 {

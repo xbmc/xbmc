@@ -23,5 +23,5 @@ public:
   virtual void Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data);
 
 private:
-  CAnnounceReceiver() {};
+  CAnnounceReceiver() = default;
 };

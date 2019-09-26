@@ -50,10 +50,6 @@ CJNIXBMCVideoView::CJNIXBMCVideoView(const jni::jhobject &object)
 {
 }
 
-CJNIXBMCVideoView::~CJNIXBMCVideoView()
-{
-}
-
 CJNIXBMCVideoView* CJNIXBMCVideoView::createVideoView(CJNISurfaceHolderCallback* callback)
 {
   std::string signature = "()L" + s_className + ";";

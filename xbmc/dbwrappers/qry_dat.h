@@ -209,9 +209,7 @@ typedef query_data::iterator qry_itor;
 class result_set
 {
 public:
-  result_set()
-  {
-  };
+  result_set() = default;
   ~result_set()
   {
     clear();

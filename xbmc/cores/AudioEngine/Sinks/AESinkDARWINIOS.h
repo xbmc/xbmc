@@ -29,7 +29,7 @@ public:
   virtual const char *GetName() { return "DARWINIOS"; }
 
   CAESinkDARWINIOS();
-  virtual ~CAESinkDARWINIOS();
+  virtual ~CAESinkDARWINIOS() = default;
 
   static void Register();
   static void EnumerateDevicesEx(AEDeviceInfoList &list, bool force);

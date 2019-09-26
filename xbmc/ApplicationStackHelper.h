@@ -15,7 +15,7 @@ class CApplicationStackHelper
 {
 public:
   CApplicationStackHelper(void);
-  ~CApplicationStackHelper(void);
+  ~CApplicationStackHelper() = default;
 
   void Clear();
   void OnPlayBackStarted(const CFileItem& item);

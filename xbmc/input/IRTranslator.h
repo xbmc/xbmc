@@ -17,7 +17,7 @@ class TiXmlNode;
 class CIRTranslator
 {
 public:
-  CIRTranslator();
+  CIRTranslator() = default;
 
   /*!
    * \brief Loads Lircmap.xml/IRSSmap.xml

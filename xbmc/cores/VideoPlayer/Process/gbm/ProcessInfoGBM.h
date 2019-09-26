@@ -17,7 +17,7 @@ namespace VIDEOPLAYER
 class CProcessInfoGBM : public CProcessInfo
 {
 public:
-  CProcessInfoGBM();
+  CProcessInfoGBM() = default;
   static CProcessInfo* Create();
   static void Register();
   EINTERLACEMETHOD GetFallbackDeintMethod() override;

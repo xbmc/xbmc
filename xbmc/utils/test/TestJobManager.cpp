@@ -65,9 +65,7 @@ public:
 class TestJobManager : public testing::Test
 {
 protected:
-  TestJobManager()
-  {
-  }
+  TestJobManager() = default;
 
   ~TestJobManager() override
   {

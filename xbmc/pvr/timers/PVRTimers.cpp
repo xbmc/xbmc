@@ -90,10 +90,6 @@ CPVRTimers::CPVRTimers(void)
 {
 }
 
-CPVRTimers::~CPVRTimers(void)
-{
-}
-
 bool CPVRTimers::Load(void)
 {
   // unload previous timers

@@ -14,8 +14,8 @@
 class CWinSystemOSXGL : public CWinSystemOSX, public CRenderSystemGL
 {
 public:
-  CWinSystemOSXGL();
-  virtual ~CWinSystemOSXGL();
+  CWinSystemOSXGL() = default;
+  virtual ~CWinSystemOSXGL() = default;
 
   // Implementation of CWinSystemBase via CWinSystemOSX
   CRenderSystemBase *GetRenderSystem() override { return this; }

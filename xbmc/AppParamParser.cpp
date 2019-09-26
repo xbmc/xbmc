@@ -23,9 +23,7 @@ CAppParamParser::CAppParamParser()
 {
 }
 
-CAppParamParser::~CAppParamParser()
-{
-}
+CAppParamParser::~CAppParamParser() = default;
 
 void CAppParamParser::Parse(const char* const* argv, int nArgs)
 {

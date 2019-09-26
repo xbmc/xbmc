@@ -30,10 +30,6 @@ CRenderSystemGLES::CRenderSystemGLES()
 {
 }
 
-CRenderSystemGLES::~CRenderSystemGLES()
-{
-}
-
 bool CRenderSystemGLES::InitRenderSystem()
 {
   GLint maxTextureSize;

@@ -36,10 +36,6 @@ bool CRendererVTB::Register()
   return true;
 }
 
-CRendererVTB::CRendererVTB()
-{
-}
-
 CRendererVTB::~CRendererVTB()
 {
   for (int i = 0; i < NUM_BUFFERS; ++i)

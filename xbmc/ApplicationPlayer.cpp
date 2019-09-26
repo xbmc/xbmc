@@ -19,11 +19,6 @@
 #include "guilib/GUIWindowManager.h"
 #include "settings/MediaSettings.h"
 
-CApplicationPlayer::CApplicationPlayer()
-{
-
-}
-
 std::shared_ptr<IPlayer> CApplicationPlayer::GetInternal() const
 {
   CSingleLock lock(m_playerLock);

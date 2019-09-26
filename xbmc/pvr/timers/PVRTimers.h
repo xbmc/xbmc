@@ -65,7 +65,7 @@ namespace PVR
   {
   public:
     CPVRTimers(void);
-    ~CPVRTimers(void) override;
+    ~CPVRTimers() override = default;
 
     /**
      * @brief (re)load the timers from the clients.

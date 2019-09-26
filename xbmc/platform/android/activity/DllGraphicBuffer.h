@@ -13,7 +13,7 @@
 class DllGraphicBufferInterface
 {
 public:
-  virtual ~DllGraphicBufferInterface() {}
+  virtual ~DllGraphicBufferInterface() = default;
   virtual void    GraphicBufferCtor(void *, uint32_t w, uint32_t h, uint32_t format, gfxImageUsage usage)=0;
   virtual void    GraphicBufferDtor(void *)=0;
   virtual int     GraphicBufferLock(void*, uint32_t usage, void **addr)=0;
