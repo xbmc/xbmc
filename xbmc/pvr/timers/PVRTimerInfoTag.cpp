@@ -77,7 +77,7 @@ CPVRTimerInfoTag::CPVRTimerInfoTag(bool bRadio /* = false */) :
   UpdateSummary();
 }
 
-CPVRTimerInfoTag::CPVRTimerInfoTag(const PVR_TIMER &timer, const std::shared_ptr<CPVRChannel> &channel, unsigned int iClientId) :
+CPVRTimerInfoTag::CPVRTimerInfoTag(const PVR_TIMER& timer, const std::shared_ptr<CPVRChannel>& channel, unsigned int iClientId) :
   m_strTitle(timer.strTitle),
   m_strEpgSearchString(timer.strEpgSearchString),
   m_bFullTextEpgSearch(timer.bFullTextEpgSearch),
@@ -217,7 +217,7 @@ bool CPVRTimerInfoTag::operator !=(const CPVRTimerInfoTag& right) const
   return !(*this == right);
 }
 
-void CPVRTimerInfoTag::Serialize(CVariant &value) const
+void CPVRTimerInfoTag::Serialize(CVariant& value) const
 {
   value["channelid"] = m_channel != NULL ? m_channel->ChannelID() : -1;
   value["summary"] = m_strSummary;
@@ -348,7 +348,7 @@ void CPVRTimerInfoTag::UpdateSummary(void)
   }
 }
 
-void CPVRTimerInfoTag::SetTimerType(const std::shared_ptr<CPVRTimerType> &type)
+void CPVRTimerInfoTag::SetTimerType(const std::shared_ptr<CPVRTimerType>& type)
 {
   CSingleLock lock(m_critSection);
   m_timerType = type;
@@ -418,7 +418,7 @@ std::string CPVRTimerInfoTag::GetTypeAsString() const
 
 namespace
 {
-void AppendDay(std::string &strReturn, unsigned int iId)
+void AppendDay(std::string& strReturn, unsigned int iId)
 {
   if (!strReturn.empty())
     strReturn += "-";
@@ -528,7 +528,7 @@ TimerOperationResult CPVRTimerInfoTag::DeleteFromClient(bool bForce /* = false *
   return (error == PVR_ERROR_NO_ERROR) ? TimerOperationResult::OK : TimerOperationResult::FAILED;
 }
 
-bool CPVRTimerInfoTag::RenameOnClient(const std::string &strNewName)
+bool CPVRTimerInfoTag::RenameOnClient(const std::string& strNewName)
 {
   {
     // set the new timer title locally
@@ -558,7 +558,7 @@ bool CPVRTimerInfoTag::DeleteFromDatabase()
   return false;
 }
 
-bool CPVRTimerInfoTag::UpdateEntry(const std::shared_ptr<CPVRTimerInfoTag> &tag)
+bool CPVRTimerInfoTag::UpdateEntry(const std::shared_ptr<CPVRTimerInfoTag>& tag)
 {
   CSingleLock lock(m_critSection);
 
@@ -1124,7 +1124,7 @@ void CPVRTimerInfoTag::SetFirstDayFromLocalTime(const CDateTime& firstDay)
   m_FirstDay = ConvertLocalTimeToUTC(firstDay);
 }
 
-void CPVRTimerInfoTag::GetNotificationText(std::string &strText) const
+void CPVRTimerInfoTag::GetNotificationText(std::string& strText) const
 {
   CSingleLock lock(m_critSection);
 

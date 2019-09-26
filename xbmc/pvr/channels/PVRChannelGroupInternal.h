@@ -50,7 +50,7 @@ namespace PVR
     /*!
      * @see CPVRChannelGroup::IsGroupMember
      */
-    bool IsGroupMember(const std::shared_ptr<CPVRChannel> &channel) const override;
+    bool IsGroupMember(const std::shared_ptr<CPVRChannel>& channel) const override;
 
     /*!
      * @see CPVRChannelGroup::AddToGroup
@@ -60,7 +60,7 @@ namespace PVR
     /*!
      * @see CPVRChannelGroup::RemoveFromGroup
      */
-    bool RemoveFromGroup(const std::shared_ptr<CPVRChannel> &channel) override;
+    bool RemoveFromGroup(const std::shared_ptr<CPVRChannel>& channel) override;
 
     /*!
      * @brief Check whether the group name is still correct after the language setting changed.
@@ -112,14 +112,14 @@ namespace PVR
      * @param bUseBackendChannelNumbers True, if channel numbers from backends shall be used.
      * @return True if everything went well, false otherwise.
      */
-    bool AddAndUpdateChannels(const CPVRChannelGroup &channels, bool bUseBackendChannelNumbers) override;
+    bool AddAndUpdateChannels(const CPVRChannelGroup& channels, bool bUseBackendChannelNumbers) override;
 
     /*!
      * @brief Remove deleted channels from this group.
      * @param channels The new channels to use for this group.
      * @return The removed channels.
      */
-    std::vector<std::shared_ptr<CPVRChannel>> RemoveDeletedChannels(const CPVRChannelGroup &channels) override;
+    std::vector<std::shared_ptr<CPVRChannel>> RemoveDeletedChannels(const CPVRChannelGroup& channels) override;
 
     /*!
      * @brief Refresh the channel list from the clients.

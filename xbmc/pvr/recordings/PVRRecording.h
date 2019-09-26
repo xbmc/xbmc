@@ -52,7 +52,7 @@ namespace PVR
     int           m_iClientId;        /*!< ID of the backend */
     std::string   m_strRecordingId;   /*!< unique ID of the recording on the client */
 
-    CPVRRecordingUid(int iClientId, const std::string &strRecordingId);
+    CPVRRecordingUid(int iClientId, const std::string& strRecordingId);
 
     bool operator >(const CPVRRecordingUid& right) const;
     bool operator <(const CPVRRecordingUid& right) const;
@@ -75,11 +75,11 @@ namespace PVR
     unsigned      m_iRecordingId;     /*!< id that won't change while xbmc is running */
 
     CPVRRecording(void);
-    CPVRRecording(const PVR_RECORDING &recording, unsigned int iClientId);
+    CPVRRecording(const PVR_RECORDING& recording, unsigned int iClientId);
 
   private:
-    CPVRRecording(const CPVRRecording &tag) = delete;
-    CPVRRecording &operator =(const CPVRRecording &other) = delete;
+    CPVRRecording(const CPVRRecording& tag) = delete;
+    CPVRRecording& operator =(const CPVRRecording& other) = delete;
 
   public:
     bool operator ==(const CPVRRecording& right) const;
@@ -109,7 +109,7 @@ namespace PVR
      * @param strNewName The new name.
      * @return True if it was renamed successfully, false otherwise.
      */
-    bool Rename(const std::string &strNewName);
+    bool Rename(const std::string& strNewName);
 
     /*!
      * @brief Set this recording's play count. The value will be transferred to the backend if it supports server-side play counts.
@@ -142,7 +142,7 @@ namespace PVR
      * @param resumePoint resume point.
      * @return True if resume point was set successfully, false otherwise.
      */
-    bool SetResumePoint(const CBookmark &resumePoint) override;
+    bool SetResumePoint(const CBookmark& resumePoint) override;
 
     /*!
      * @brief Set this recording's resume point. The value will be transferred to the backend if it supports server-side resume points.
@@ -151,7 +151,7 @@ namespace PVR
      * @param playerState the player state
      * @return True if resume point was set successfully, false otherwise.
      */
-    bool SetResumePoint(double timeInSeconds, double totalTimeInSeconds, const std::string &playerState = "") override;
+    bool SetResumePoint(double timeInSeconds, double totalTimeInSeconds, const std::string& playerState = "") override;
 
     /*!
      * @brief Get this recording's resume point. The value will be obtained from the backend if it supports server-side resume points.
@@ -175,25 +175,25 @@ namespace PVR
      * @brief Get the resume point and play count from the database if the
      * client doesn't handle it itself.
      */
-    void UpdateMetadata(CVideoDatabase &db);
+    void UpdateMetadata(CVideoDatabase& db);
 
     /*!
      * @brief Update this tag with the contents of the given tag.
      * @param tag The new tag info.
      */
-    void Update(const CPVRRecording &tag);
+    void Update(const CPVRRecording& tag);
 
     /*!
      * @brief Retrieve the recording start as UTC time
      * @return the recording start time
      */
-    const CDateTime &RecordingTimeAsUTC(void) const { return m_recordingTime; }
+    const CDateTime& RecordingTimeAsUTC(void) const { return m_recordingTime; }
 
     /*!
      * @brief Retrieve the recording start as local time
      * @return the recording start time
      */
-    const CDateTime &RecordingTimeAsLocalTime(void) const;
+    const CDateTime& RecordingTimeAsLocalTime(void) const;
 
     /*!
      * @brief Retrieve the recording end as UTC time
@@ -231,7 +231,7 @@ namespace PVR
      * @param url the URL for the recording
      * @return Title of the recording
      */
-    static std::string GetTitleFromURL(const std::string &url);
+    static std::string GetTitleFromURL(const std::string& url);
 
     /*!
      * @brief If deleted but can be undeleted it is true
@@ -291,7 +291,7 @@ namespace PVR
     * @param iGenreSubType The genre subtype ID
     * @param strGenre The genre
     */
-   void SetGenre(int iGenreType, int iGenreSubType, const std::string &strGenre);
+   void SetGenre(int iGenreType, int iGenreSubType, const std::string& strGenre);
 
     /*!
      * @brief Get the genre type ID of this event.

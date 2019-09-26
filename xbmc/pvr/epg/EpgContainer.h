@@ -88,7 +88,7 @@ namespace PVR
      * @param bDeleteFromDatabase Delete this table from the database too if true.
      * @return True on success, false otherwise.
      */
-    bool DeleteEpg(const std::shared_ptr<CPVREpg> &epg, bool bDeleteFromDatabase = false);
+    bool DeleteEpg(const std::shared_ptr<CPVREpg>& epg, bool bDeleteFromDatabase = false);
 
     /*!
      * @brief CEventStream callback for PVR events.
@@ -176,7 +176,7 @@ namespace PVR
      * @param tag The epg tag containing the updated data
      * @param eNewState The kind of change (CREATED, UPDATED, DELETED)
      */
-    void UpdateFromClient(const std::shared_ptr<CPVREpgInfoTag> &tag, EPG_EVENT_STATE eNewState);
+    void UpdateFromClient(const std::shared_ptr<CPVREpgInfoTag>& tag, EPG_EVENT_STATE eNewState);
 
     /*!
      * @brief Get the number of past days to show in the guide and to import from backends.
@@ -257,7 +257,7 @@ namespace PVR
      * @brief Insert data from database
      * @param newEpg the EPG containing the updated data.
      */
-    void InsertFromDB(const std::shared_ptr<CPVREpg> &newEpg);
+    void InsertFromDB(const std::shared_ptr<CPVREpg>& newEpg);
 
     std::shared_ptr<CPVREpgDatabase> m_database; /*!< the EPG database */
 

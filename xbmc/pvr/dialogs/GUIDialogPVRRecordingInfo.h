@@ -31,8 +31,8 @@ namespace PVR
 
   private:
     bool OnClickButtonFind(CGUIMessage& message);
-    bool OnClickButtonOK(CGUIMessage &message);
-    bool OnClickButtonPlay(CGUIMessage &message);
+    bool OnClickButtonOK(CGUIMessage& message);
+    bool OnClickButtonPlay(CGUIMessage& message);
 
     CFileItemPtr m_recordItem;
   };

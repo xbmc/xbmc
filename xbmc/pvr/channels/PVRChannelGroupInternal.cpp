@@ -156,7 +156,7 @@ bool CPVRChannelGroupInternal::AddToGroup(const std::shared_ptr<CPVRChannel>& ch
   return bReturn;
 }
 
-bool CPVRChannelGroupInternal::RemoveFromGroup(const std::shared_ptr<CPVRChannel> &channel)
+bool CPVRChannelGroupInternal::RemoveFromGroup(const std::shared_ptr<CPVRChannel>& channel)
 {
   if (!IsGroupMember(channel))
     return false;
@@ -214,12 +214,12 @@ bool CPVRChannelGroupInternal::LoadFromClients(void)
   return CServiceBroker::GetPVRManager().Clients()->GetChannels(this, m_failedClientsForChannels) == PVR_ERROR_NO_ERROR;
 }
 
-bool CPVRChannelGroupInternal::IsGroupMember(const std::shared_ptr<CPVRChannel> &channel) const
+bool CPVRChannelGroupInternal::IsGroupMember(const std::shared_ptr<CPVRChannel>& channel) const
 {
   return !channel->IsHidden();
 }
 
-bool CPVRChannelGroupInternal::AddAndUpdateChannels(const CPVRChannelGroup &channels, bool bUseBackendChannelNumbers)
+bool CPVRChannelGroupInternal::AddAndUpdateChannels(const CPVRChannelGroup& channels, bool bUseBackendChannelNumbers)
 {
   bool bReturn(false);
   CSingleLock lock(m_critSection);
@@ -257,7 +257,7 @@ bool CPVRChannelGroupInternal::AddAndUpdateChannels(const CPVRChannelGroup &chan
   return bReturn;
 }
 
-std::vector<std::shared_ptr<CPVRChannel>> CPVRChannelGroupInternal::RemoveDeletedChannels(const CPVRChannelGroup &channels)
+std::vector<std::shared_ptr<CPVRChannel>> CPVRChannelGroupInternal::RemoveDeletedChannels(const CPVRChannelGroup& channels)
 {
   std::vector<std::shared_ptr<CPVRChannel>> removedChannels = CPVRChannelGroup::RemoveDeletedChannels(channels);
 

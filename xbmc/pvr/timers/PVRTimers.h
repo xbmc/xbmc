@@ -35,7 +35,7 @@ namespace PVR
      * @param The timer tag
      * @return True, if the update was successful. False, otherwise.
      */
-    bool UpdateFromClient(const std::shared_ptr<CPVRTimerInfoTag> &timer);
+    bool UpdateFromClient(const std::shared_ptr<CPVRTimerInfoTag>& timer);
 
     /*!
      * @brief Get the timer tag denoted by given client id and timer id.
@@ -162,14 +162,14 @@ namespace PVR
      * @param channel The channel to check.
      * @return True when recording, false otherwise.
      */
-    bool IsRecordingOnChannel(const CPVRChannel &channel) const;
+    bool IsRecordingOnChannel(const CPVRChannel& channel) const;
 
     /*!
      * @brief Obtain the active timer for a given channel.
      * @param channel The channel to check.
      * @return the timer, null otherwise.
      */
-    std::shared_ptr<CPVRTimerInfoTag> GetActiveTimerForChannel(const std::shared_ptr<CPVRChannel> &channel) const;
+    std::shared_ptr<CPVRTimerInfoTag> GetActiveTimerForChannel(const std::shared_ptr<CPVRChannel>& channel) const;
 
     /*!
      * @return The amount of tv and radio timers that are currently recording
@@ -193,7 +193,7 @@ namespace PVR
      * @param bCurrentlyActiveOnly True to delete timers that are currently running only.
      * @return True if timers any were deleted, false otherwise.
      */
-    bool DeleteTimersOnChannel(const std::shared_ptr<CPVRChannel> &channel, bool bDeleteTimerRules = true, bool bCurrentlyActiveOnly = false);
+    bool DeleteTimersOnChannel(const std::shared_ptr<CPVRChannel>& channel, bool bDeleteTimerRules = true, bool bCurrentlyActiveOnly = false);
 
     /*!
      * @return Next event time (timer or daily wake up)
@@ -222,7 +222,7 @@ namespace PVR
      * @param tag The timer to rename.
      * @return True if timer rename request was sent correctly, false if not.
      */
-    bool RenameTimer(const std::shared_ptr<CPVRTimerInfoTag>& tag, const std::string &strNewName);
+    bool RenameTimer(const std::shared_ptr<CPVRTimerInfoTag>& tag, const std::string& strNewName);
 
     /*!
      * @brief Update the timer on the client. Doesn't update the timer in the container. The backend will do this.
@@ -236,14 +236,14 @@ namespace PVR
      * @param epgTag The epg tag.
      * @return The requested timer tag, or nullptr if none was found.
      */
-    std::shared_ptr<CPVRTimerInfoTag> GetTimerForEpgTag(const std::shared_ptr<CPVREpgInfoTag> &epgTag) const;
+    std::shared_ptr<CPVRTimerInfoTag> GetTimerForEpgTag(const std::shared_ptr<CPVREpgInfoTag>& epgTag) const;
 
     /*!
      * @brief Get the timer rule for a given timer tag
      * @param timer The timer to query the timer rule for
      * @return The timer rule, or nullptr if none was found.
      */
-    std::shared_ptr<CPVRTimerInfoTag> GetTimerRule(const std::shared_ptr<CPVRTimerInfoTag> &timer) const;
+    std::shared_ptr<CPVRTimerInfoTag> GetTimerRule(const std::shared_ptr<CPVRTimerInfoTag>& timer) const;
 
     /*!
      * @brief Update the channel pointers.
@@ -267,7 +267,7 @@ namespace PVR
     void Process() override;
 
     void RemoveEntry(const std::shared_ptr<CPVRTimerInfoTag>& tag);
-    bool UpdateEntries(const CPVRTimersContainer &timers, const std::vector<int> &failedClients);
+    bool UpdateEntries(const CPVRTimersContainer& timers, const std::vector<int>& failedClients);
     bool UpdateEntries(int iMaxNotificationDelay);
     std::shared_ptr<CPVRTimerInfoTag> UpdateEntry(const std::shared_ptr<CPVRTimerInfoTag>& timer);
 
@@ -286,12 +286,12 @@ namespace PVR
       TimerKindRadio
     };
 
-    bool KindMatchesTag(const TimerKind &eKind, const std::shared_ptr<CPVRTimerInfoTag> &tag) const;
+    bool KindMatchesTag(const TimerKind& eKind, const std::shared_ptr<CPVRTimerInfoTag>& tag) const;
 
     std::shared_ptr<CPVRTimerInfoTag> GetNextActiveTimer(const TimerKind& eKind, bool bIgnoreReminders) const;
-    int AmountActiveTimers(const TimerKind &eKind) const;
+    int AmountActiveTimers(const TimerKind& eKind) const;
     std::vector<std::shared_ptr<CPVRTimerInfoTag>> GetActiveRecordings(const TimerKind& eKind) const;
-    int AmountActiveRecordings(const TimerKind &eKind) const;
+    int AmountActiveRecordings(const TimerKind& eKind) const;
 
     bool m_bIsUpdating = false;
     CPVRSettings m_settings;

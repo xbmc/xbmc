@@ -125,7 +125,7 @@ private:
   CPVRRadioRDSInfoTag(const CPVRRadioRDSInfoTag& tag) = delete;
   const CPVRRadioRDSInfoTag& operator =(const CPVRRadioRDSInfoTag& tag) = delete;
 
-  static std::string Trim(const std::string &value);
+  static std::string Trim(const std::string& value);
 
   mutable CCriticalSection m_critSection;
 
@@ -148,7 +148,7 @@ private:
   public:
     Info() = default;
 
-    bool operator==(const Info &right) const;
+    bool operator==(const Info& right) const;
 
     void Clear();
     void Add(const std::string& text);

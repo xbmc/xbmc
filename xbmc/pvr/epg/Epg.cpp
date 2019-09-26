@@ -80,7 +80,7 @@ void CPVREpg::Cleanup(int iPastDays)
   Cleanup(cleanupTime);
 }
 
-void CPVREpg::Cleanup(const CDateTime &time)
+void CPVREpg::Cleanup(const CDateTime& time)
 {
   CSingleLock lock(m_critSection);
   for (auto it = m_tags.begin(); it != m_tags.end();)
@@ -203,7 +203,7 @@ std::shared_ptr<CPVREpgInfoTag> CPVREpg::GetTagByBroadcastId(unsigned int iUniqu
   if (iUniqueBroadcastId != EPG_TAG_INVALID_UID)
   {
     CSingleLock lock(m_critSection);
-    for (const auto &infoTag : m_tags)
+    for (const auto& infoTag : m_tags)
     {
       if (infoTag.second->UniqueBroadcastID() == iUniqueBroadcastId)
         return infoTag.second;
@@ -212,7 +212,7 @@ std::shared_ptr<CPVREpgInfoTag> CPVREpg::GetTagByBroadcastId(unsigned int iUniqu
   return std::shared_ptr<CPVREpgInfoTag>();
 }
 
-std::shared_ptr<CPVREpgInfoTag> CPVREpg::GetTagBetween(const CDateTime &beginTime, const CDateTime &endTime, bool bUpdateFromClient /* = false */)
+std::shared_ptr<CPVREpgInfoTag> CPVREpg::GetTagBetween(const CDateTime& beginTime, const CDateTime& endTime, bool bUpdateFromClient /* = false */)
 {
   std::shared_ptr<CPVREpgInfoTag> tag;
 
@@ -248,7 +248,7 @@ std::shared_ptr<CPVREpgInfoTag> CPVREpg::GetTagBetween(const CDateTime &beginTim
   return tag;
 }
 
-void CPVREpg::AddEntry(const CPVREpgInfoTag &tag)
+void CPVREpg::AddEntry(const CPVREpgInfoTag& tag)
 {
   std::shared_ptr<CPVREpgInfoTag> newTag;
 
@@ -306,7 +306,7 @@ bool CPVREpg::Load(const std::shared_ptr<CPVREpgDatabase>& database)
   return bReturn;
 }
 
-bool CPVREpg::UpdateEntries(const CPVREpg &epg, bool bStoreInDb /* = true */)
+bool CPVREpg::UpdateEntries(const CPVREpg& epg, bool bStoreInDb /* = true */)
 {
   CSingleLock lock(m_critSection);
   /* copy over tags */
@@ -332,7 +332,7 @@ bool CPVREpg::UpdateEntry(const EPG_TAG *data, int iClientId)
   return UpdateEntry(tag, CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_EPG_STOREEPGINDATABASE));
 }
 
-bool CPVREpg::UpdateEntry(const std::shared_ptr<CPVREpgInfoTag> &tag, bool bUpdateDatabase)
+bool CPVREpg::UpdateEntry(const std::shared_ptr<CPVREpgInfoTag>& tag, bool bUpdateDatabase)
 {
   std::shared_ptr<CPVREpgInfoTag> infoTag;
 
@@ -361,7 +361,7 @@ bool CPVREpg::UpdateEntry(const std::shared_ptr<CPVREpgInfoTag> &tag, bool bUpda
   return true;
 }
 
-bool CPVREpg::UpdateEntry(const std::shared_ptr<CPVREpgInfoTag> &tag, EPG_EVENT_STATE newState, bool bUpdateDatabase)
+bool CPVREpg::UpdateEntry(const std::shared_ptr<CPVREpgInfoTag>& tag, EPG_EVENT_STATE newState, bool bUpdateDatabase)
 {
   bool bRet = true;
   bool bNotify = true;

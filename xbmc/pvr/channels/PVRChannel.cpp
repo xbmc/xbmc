@@ -29,14 +29,14 @@
 
 using namespace PVR;
 
-bool CPVRChannel::operator==(const CPVRChannel &right) const
+bool CPVRChannel::operator==(const CPVRChannel& right) const
 {
   return (m_bIsRadio  == right.m_bIsRadio &&
           m_iUniqueId == right.m_iUniqueId &&
           m_iClientId == right.m_iClientId);
 }
 
-bool CPVRChannel::operator!=(const CPVRChannel &right) const
+bool CPVRChannel::operator!=(const CPVRChannel& right) const
 {
   return !(*this == right);
 }
@@ -47,7 +47,7 @@ CPVRChannel::CPVRChannel(bool bRadio /* = false */)
   UpdateEncryptionName();
 }
 
-CPVRChannel::CPVRChannel(const PVR_CHANNEL &channel, unsigned int iClientId)
+CPVRChannel::CPVRChannel(const PVR_CHANNEL& channel, unsigned int iClientId)
 : m_bIsRadio(channel.bIsRadio),
   m_bIsHidden(channel.bIsHidden),
   m_strIconPath(channel.strIconPath),
@@ -152,7 +152,7 @@ bool CPVRChannel::CreateEPG()
   return false;
 }
 
-bool CPVRChannel::UpdateFromClient(const std::shared_ptr<CPVRChannel> &channel)
+bool CPVRChannel::UpdateFromClient(const std::shared_ptr<CPVRChannel>& channel)
 {
   SetClientID(channel->ClientID());
 
@@ -288,7 +288,7 @@ bool CPVRChannel::HasArchive(void) const
   return m_bHasArchive;
 }
 
-bool CPVRChannel::SetIconPath(const std::string &strIconPath, bool bIsUserSetIcon /* = false */)
+bool CPVRChannel::SetIconPath(const std::string& strIconPath, bool bIsUserSetIcon /* = false */)
 {
   CSingleLock lock(m_critSection);
   if (m_strIconPath != strIconPath)
@@ -307,7 +307,7 @@ bool CPVRChannel::SetIconPath(const std::string &strIconPath, bool bIsUserSetIco
   return false;
 }
 
-bool CPVRChannel::SetChannelName(const std::string &strChannelName, bool bIsUserSetName /*= false*/)
+bool CPVRChannel::SetChannelName(const std::string& strChannelName, bool bIsUserSetName /*= false*/)
 {
   std::string strName(strChannelName);
 
@@ -581,7 +581,7 @@ bool CPVRChannel::SetEPGEnabled(bool bEPGEnabled)
   return false;
 }
 
-bool CPVRChannel::SetEPGScraper(const std::string &strScraper)
+bool CPVRChannel::SetEPGScraper(const std::string& strScraper)
 {
   CSingleLock lock(m_critSection);
 

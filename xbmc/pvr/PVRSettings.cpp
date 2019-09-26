@@ -28,7 +28,7 @@ using namespace PVR;
 
 unsigned int CPVRSettings::m_iInstances = 0;
 
-CPVRSettings::CPVRSettings(const std::set<std::string> &settingNames)
+CPVRSettings::CPVRSettings(const std::set<std::string>& settingNames)
 {
   Init(settingNames);
 
@@ -62,7 +62,7 @@ CPVRSettings::~CPVRSettings()
   settings->GetSettingsManager()->UnregisterSettingsHandler(this);
 }
 
-void CPVRSettings::Init(const std::set<std::string> &settingNames)
+void CPVRSettings::Init(const std::set<std::string>& settingNames)
 {
   for (auto settingName : settingNames)
   {
@@ -102,7 +102,7 @@ void CPVRSettings::OnSettingChanged(std::shared_ptr<const CSetting> setting)
   m_settings[setting->GetId()] = setting->Clone(setting->GetId());
 }
 
-bool CPVRSettings::GetBoolValue(const std::string &settingName) const
+bool CPVRSettings::GetBoolValue(const std::string& settingName) const
 {
   CSingleLock lock(m_critSection);
   auto settingIt = m_settings.find(settingName);
@@ -117,7 +117,7 @@ bool CPVRSettings::GetBoolValue(const std::string &settingName) const
   return false;
 }
 
-int CPVRSettings::GetIntValue(const std::string &settingName) const
+int CPVRSettings::GetIntValue(const std::string& settingName) const
 {
   CSingleLock lock(m_critSection);
   auto settingIt = m_settings.find(settingName);
@@ -132,7 +132,7 @@ int CPVRSettings::GetIntValue(const std::string &settingName) const
   return -1;
 }
 
-std::string CPVRSettings::GetStringValue(const std::string &settingName) const
+std::string CPVRSettings::GetStringValue(const std::string& settingName) const
 {
   CSingleLock lock(m_critSection);
   auto settingIt = m_settings.find(settingName);
@@ -148,7 +148,7 @@ std::string CPVRSettings::GetStringValue(const std::string &settingName) const
 }
 
 void CPVRSettings::MarginTimeFiller(
-  SettingConstPtr  /*setting*/, std::vector<IntegerSettingOption> &list, int &current, void * /*data*/)
+  SettingConstPtr  /*setting*/, std::vector<IntegerSettingOption>& list, int& current, void * /*data*/)
 {
   list.clear();
 
@@ -163,12 +163,12 @@ void CPVRSettings::MarginTimeFiller(
   }
 }
 
-bool CPVRSettings::IsSettingVisible(const std::string &condition, const std::string &value, std::shared_ptr<const CSetting> setting, void *data)
+bool CPVRSettings::IsSettingVisible(const std::string& condition, const std::string& value, std::shared_ptr<const CSetting> setting, void *data)
 {
   if (setting == nullptr)
     return false;
 
-  const std::string &settingId = setting->GetId();
+  const std::string& settingId = setting->GetId();
 
   if (settingId == CSettings::SETTING_PVRMANAGER_USEBACKENDCHANNELNUMBERS)
   {
@@ -187,7 +187,7 @@ bool CPVRSettings::IsSettingVisible(const std::string &condition, const std::str
   }
 }
 
-bool CPVRSettings::CheckParentalPin(const std::string &condition, const std::string &value, std::shared_ptr<const CSetting> setting, void *data)
+bool CPVRSettings::CheckParentalPin(const std::string& condition, const std::string& value, std::shared_ptr<const CSetting> setting, void *data)
 {
   return CServiceBroker::GetPVRManager().GUIActions()->CheckParentalPIN() == ParentalCheckResult::SUCCESS;
 }

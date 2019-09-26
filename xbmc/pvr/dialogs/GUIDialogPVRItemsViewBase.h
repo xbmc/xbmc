@@ -22,12 +22,12 @@ namespace PVR
   {
   public:
     CGUIDialogPVRItemsViewBase() = delete;
-    CGUIDialogPVRItemsViewBase(int id, const std::string &xmlFile);
+    CGUIDialogPVRItemsViewBase(int id, const std::string& xmlFile);
     ~CGUIDialogPVRItemsViewBase() override = default;
 
     void OnWindowLoaded() override;
     void OnWindowUnload() override;
-    bool OnAction(const CAction &action) override;
+    bool OnAction(const CAction& action) override;
 
   protected:
     void Init();

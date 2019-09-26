@@ -87,7 +87,7 @@ ChannelSwitchMode CPVRActionListener::GetChannelSwitchMode(int iAction)
   return ChannelSwitchMode::INSTANT_OR_DELAYED_SWITCH;
 }
 
-bool CPVRActionListener::OnAction(const CAction &action)
+bool CPVRActionListener::OnAction(const CAction& action)
 {
   bool bIsJumpSMS = false;
   bool bIsPlayingPVR(CServiceBroker::GetPVRManager().IsPlaying() &&
@@ -275,7 +275,7 @@ void CPVRActionListener::OnSettingChanged(std::shared_ptr<const CSetting> settin
   if (setting == nullptr)
     return;
 
-  const std::string &settingId = setting->GetId();
+  const std::string& settingId = setting->GetId();
   if (settingId == CSettings::SETTING_PVRPARENTAL_ENABLED)
   {
     if (std::static_pointer_cast<const CSettingBool>(setting)->GetValue() && CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(CSettings::SETTING_PVRPARENTAL_PIN).empty())
@@ -300,7 +300,7 @@ void CPVRActionListener::OnSettingAction(std::shared_ptr<const CSetting> setting
   if (setting == nullptr)
     return;
 
-  const std::string &settingId = setting->GetId();
+  const std::string& settingId = setting->GetId();
   if (settingId == CSettings::SETTING_PVRMANAGER_RESETDB)
   {
     CServiceBroker::GetPVRManager().GUIActions()->ResetPVRDatabase(false);

@@ -165,7 +165,7 @@ CPVRTimerType::CPVRTimerType() :
 {
 }
 
-CPVRTimerType::CPVRTimerType(const PVR_TIMER_TYPE &type, int iClientId) :
+CPVRTimerType::CPVRTimerType(const PVR_TIMER_TYPE& type, int iClientId) :
   m_iClientId(iClientId),
   m_iTypeId(type.iId),
   m_iAttributes(type.iAttributes),
@@ -237,7 +237,7 @@ void CPVRTimerType::InitDescription()
   m_strDescription = StringUtils::Format(g_localizeStrings.Get(prefixId).c_str(), m_strDescription.c_str());
 }
 
-void CPVRTimerType::InitAttributeValues(const PVR_TIMER_TYPE &type)
+void CPVRTimerType::InitAttributeValues(const PVR_TIMER_TYPE& type)
 {
   InitPriorityValues(type);
   InitLifetimeValues(type);
@@ -246,7 +246,7 @@ void CPVRTimerType::InitAttributeValues(const PVR_TIMER_TYPE &type)
   InitRecordingGroupValues(type);
 }
 
-void CPVRTimerType::InitPriorityValues(const PVR_TIMER_TYPE &type)
+void CPVRTimerType::InitPriorityValues(const PVR_TIMER_TYPE& type)
 {
   if (type.iPrioritiesSize > 0)
   {
@@ -278,13 +278,13 @@ void CPVRTimerType::InitPriorityValues(const PVR_TIMER_TYPE &type)
   }
 }
 
-void CPVRTimerType::GetPriorityValues(std::vector< std::pair<std::string, int> > &list) const
+void CPVRTimerType::GetPriorityValues(std::vector< std::pair<std::string, int>>& list) const
 {
-  for (const auto &prio : m_priorityValues)
+  for (const auto& prio : m_priorityValues)
     list.push_back(prio);
 }
 
-void CPVRTimerType::InitLifetimeValues(const PVR_TIMER_TYPE &type)
+void CPVRTimerType::InitLifetimeValues(const PVR_TIMER_TYPE& type)
 {
   if (type.iLifetimesSize > 0)
   {
@@ -318,13 +318,13 @@ void CPVRTimerType::InitLifetimeValues(const PVR_TIMER_TYPE &type)
   }
 }
 
-void CPVRTimerType::GetLifetimeValues(std::vector< std::pair<std::string, int> > &list) const
+void CPVRTimerType::GetLifetimeValues(std::vector< std::pair<std::string, int>>& list) const
 {
-  for (const auto &lifetime : m_lifetimeValues)
+  for (const auto& lifetime : m_lifetimeValues)
     list.push_back(lifetime);
 }
 
-void CPVRTimerType::InitMaxRecordingsValues(const PVR_TIMER_TYPE &type)
+void CPVRTimerType::InitMaxRecordingsValues(const PVR_TIMER_TYPE& type)
 {
   if (type.iMaxRecordingsSize > 0)
   {
@@ -343,13 +343,13 @@ void CPVRTimerType::InitMaxRecordingsValues(const PVR_TIMER_TYPE &type)
   }
 }
 
-void CPVRTimerType::GetMaxRecordingsValues(std::vector< std::pair<std::string, int> > &list) const
+void CPVRTimerType::GetMaxRecordingsValues(std::vector< std::pair<std::string, int>>& list) const
 {
-  for (const auto &maxRecordings : m_maxRecordingsValues)
+  for (const auto& maxRecordings : m_maxRecordingsValues)
     list.push_back(maxRecordings);
 }
 
-void CPVRTimerType::InitPreventDuplicateEpisodesValues(const PVR_TIMER_TYPE &type)
+void CPVRTimerType::InitPreventDuplicateEpisodesValues(const PVR_TIMER_TYPE& type)
 {
   if (type.iPreventDuplicateEpisodesSize > 0)
   {
@@ -380,13 +380,13 @@ void CPVRTimerType::InitPreventDuplicateEpisodesValues(const PVR_TIMER_TYPE &typ
   }
 }
 
-void CPVRTimerType::GetPreventDuplicateEpisodesValues(std::vector< std::pair<std::string, int> > &list) const
+void CPVRTimerType::GetPreventDuplicateEpisodesValues(std::vector< std::pair<std::string, int>>& list) const
 {
-  for (const auto &preventDupEpisodes : m_preventDupEpisodesValues)
+  for (const auto& preventDupEpisodes : m_preventDupEpisodesValues)
     list.push_back(preventDupEpisodes);
 }
 
-void CPVRTimerType::InitRecordingGroupValues(const PVR_TIMER_TYPE &type)
+void CPVRTimerType::InitRecordingGroupValues(const PVR_TIMER_TYPE& type)
 {
   if (type.iRecordingGroupSize > 0)
   {
@@ -407,8 +407,8 @@ void CPVRTimerType::InitRecordingGroupValues(const PVR_TIMER_TYPE &type)
   }
 }
 
-void CPVRTimerType::GetRecordingGroupValues(std::vector< std::pair<std::string, int> > &list) const
+void CPVRTimerType::GetRecordingGroupValues(std::vector< std::pair<std::string, int>>& list) const
 {
-  for (const auto &recordingGroup : m_recordingGroupValues)
+  for (const auto& recordingGroup : m_recordingGroupValues)
     list.push_back(recordingGroup);
 }

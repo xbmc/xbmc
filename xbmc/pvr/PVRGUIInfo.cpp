@@ -93,14 +93,14 @@ void CPVRGUIInfo::ResetProperties(void)
   m_bRegistered = false;
 }
 
-void CPVRGUIInfo::ClearQualityInfo(PVR_SIGNAL_STATUS &qualityInfo)
+void CPVRGUIInfo::ClearQualityInfo(PVR_SIGNAL_STATUS& qualityInfo)
 {
   memset(&qualityInfo, 0, sizeof(qualityInfo));
   strncpy(qualityInfo.strAdapterName, g_localizeStrings.Get(13106).c_str(), PVR_ADDON_NAME_STRING_LENGTH - 1);
   strncpy(qualityInfo.strAdapterStatus, g_localizeStrings.Get(13106).c_str(), PVR_ADDON_NAME_STRING_LENGTH - 1);
 }
 
-void CPVRGUIInfo::ClearDescrambleInfo(PVR_DESCRAMBLE_INFO &descrambleInfo)
+void CPVRGUIInfo::ClearDescrambleInfo(PVR_DESCRAMBLE_INFO& descrambleInfo)
 {
   descrambleInfo = {0};
 }
@@ -277,7 +277,7 @@ bool CPVRGUIInfo::InitCurrentItem(CFileItem *item)
   return false;
 }
 
-bool CPVRGUIInfo::GetLabel(std::string& value, const CFileItem *item, int contextWindow, const CGUIInfo &info, std::string *fallback) const
+bool CPVRGUIInfo::GetLabel(std::string& value, const CFileItem *item, int contextWindow, const CGUIInfo& info, std::string *fallback) const
 {
   return GetListItemAndPlayerLabel(item, info, value) ||
          GetPVRLabel(item, info, value) ||
@@ -303,7 +303,7 @@ namespace
 
 } // unnamed namespace
 
-bool CPVRGUIInfo::GetListItemAndPlayerLabel(const CFileItem *item, const CGUIInfo &info, std::string &strValue) const
+bool CPVRGUIInfo::GetListItemAndPlayerLabel(const CFileItem *item, const CGUIInfo& info, std::string& strValue) const
 {
   const std::shared_ptr<CPVRTimerInfoTag> timer = item->GetPVRTimerInfoTag();
   if (timer)
@@ -666,7 +666,7 @@ bool CPVRGUIInfo::GetListItemAndPlayerLabel(const CFileItem *item, const CGUIInf
   return false;
 }
 
-bool CPVRGUIInfo::GetPVRLabel(const CFileItem *item, const CGUIInfo &info, std::string &strValue) const
+bool CPVRGUIInfo::GetPVRLabel(const CFileItem *item, const CGUIInfo& info, std::string& strValue) const
 {
   CSingleLock lock(m_critSection);
 
@@ -876,7 +876,7 @@ bool CPVRGUIInfo::GetPVRLabel(const CFileItem *item, const CGUIInfo &info, std::
   return false;
 }
 
-bool CPVRGUIInfo::GetRadioRDSLabel(const CFileItem *item, const CGUIInfo &info, std::string &strValue) const
+bool CPVRGUIInfo::GetRadioRDSLabel(const CFileItem *item, const CGUIInfo& info, std::string& strValue) const
 {
   if (!item->HasPVRChannelInfoTag())
     return false;
@@ -1019,7 +1019,7 @@ bool CPVRGUIInfo::GetRadioRDSLabel(const CFileItem *item, const CGUIInfo &info, 
   return false;
 }
 
-bool CPVRGUIInfo::GetInt(int& value, const CGUIListItem *item, int contextWindow, const CGUIInfo &info) const
+bool CPVRGUIInfo::GetInt(int& value, const CGUIListItem *item, int contextWindow, const CGUIInfo& info) const
 {
   if (!item->IsFileItem())
     return false;
@@ -1029,7 +1029,7 @@ bool CPVRGUIInfo::GetInt(int& value, const CGUIListItem *item, int contextWindow
          GetPVRInt(fitem, info, value);
 }
 
-bool CPVRGUIInfo::GetListItemAndPlayerInt(const CFileItem *item, const CGUIInfo &info, int &iValue) const
+bool CPVRGUIInfo::GetListItemAndPlayerInt(const CFileItem *item, const CGUIInfo& info, int& iValue) const
 {
   switch (info.m_info)
   {
@@ -1045,7 +1045,7 @@ bool CPVRGUIInfo::GetListItemAndPlayerInt(const CFileItem *item, const CGUIInfo 
   return false;
 }
 
-bool CPVRGUIInfo::GetPVRInt(const CFileItem *item, const CGUIInfo &info, int& iValue) const
+bool CPVRGUIInfo::GetPVRInt(const CFileItem *item, const CGUIInfo& info, int& iValue) const
 {
   CSingleLock lock(m_critSection);
 
@@ -1100,7 +1100,7 @@ bool CPVRGUIInfo::GetPVRInt(const CFileItem *item, const CGUIInfo &info, int& iV
   return false;
 }
 
-bool CPVRGUIInfo::GetBool(bool& value, const CGUIListItem *item, int contextWindow, const CGUIInfo &info) const
+bool CPVRGUIInfo::GetBool(bool& value, const CGUIListItem *item, int contextWindow, const CGUIInfo& info) const
 {
   if (!item->IsFileItem())
     return false;
@@ -1111,7 +1111,7 @@ bool CPVRGUIInfo::GetBool(bool& value, const CGUIListItem *item, int contextWind
          GetRadioRDSBool(fitem, info, value);
 }
 
-bool CPVRGUIInfo::GetListItemAndPlayerBool(const CFileItem *item, const CGUIInfo &info, bool &bValue) const
+bool CPVRGUIInfo::GetListItemAndPlayerBool(const CFileItem *item, const CGUIInfo& info, bool& bValue) const
 {
   switch (info.m_info)
   {
@@ -1313,7 +1313,7 @@ bool CPVRGUIInfo::GetListItemAndPlayerBool(const CFileItem *item, const CGUIInfo
   return false;
 }
 
-bool CPVRGUIInfo::GetPVRBool(const CFileItem *item, const CGUIInfo &info, bool& bValue) const
+bool CPVRGUIInfo::GetPVRBool(const CFileItem *item, const CGUIInfo& info, bool& bValue) const
 {
   CSingleLock lock(m_critSection);
 
@@ -1383,7 +1383,7 @@ bool CPVRGUIInfo::GetPVRBool(const CFileItem *item, const CGUIInfo &info, bool& 
   return false;
 }
 
-bool CPVRGUIInfo::GetRadioRDSBool(const CFileItem *item, const CGUIInfo &info, bool &bValue) const
+bool CPVRGUIInfo::GetRadioRDSBool(const CFileItem *item, const CGUIInfo& info, bool& bValue) const
 {
   if (!item->HasPVRChannelInfoTag())
     return false;
@@ -1418,7 +1418,7 @@ bool CPVRGUIInfo::GetRadioRDSBool(const CFileItem *item, const CGUIInfo &info, b
   return false;
 }
 
-void CPVRGUIInfo::CharInfoBackendNumber(std::string &strValue) const
+void CPVRGUIInfo::CharInfoBackendNumber(std::string& strValue) const
 {
   size_t numBackends = m_backendProperties.size();
 
@@ -1428,32 +1428,32 @@ void CPVRGUIInfo::CharInfoBackendNumber(std::string &strValue) const
     strValue = g_localizeStrings.Get(14023);
 }
 
-void CPVRGUIInfo::CharInfoTotalDiskSpace(std::string &strValue) const
+void CPVRGUIInfo::CharInfoTotalDiskSpace(std::string& strValue) const
 {
   strValue = StringUtils::SizeToString(m_iBackendDiskTotal).c_str();
 }
 
-void CPVRGUIInfo::CharInfoSignal(std::string &strValue) const
+void CPVRGUIInfo::CharInfoSignal(std::string& strValue) const
 {
   strValue = StringUtils::Format("%d %%", m_qualityInfo.iSignal / 655);
 }
 
-void CPVRGUIInfo::CharInfoSNR(std::string &strValue) const
+void CPVRGUIInfo::CharInfoSNR(std::string& strValue) const
 {
   strValue = StringUtils::Format("%d %%", m_qualityInfo.iSNR / 655);
 }
 
-void CPVRGUIInfo::CharInfoBER(std::string &strValue) const
+void CPVRGUIInfo::CharInfoBER(std::string& strValue) const
 {
   strValue = StringUtils::Format("%08lX", m_qualityInfo.iBER);
 }
 
-void CPVRGUIInfo::CharInfoUNC(std::string &strValue) const
+void CPVRGUIInfo::CharInfoUNC(std::string& strValue) const
 {
   strValue = StringUtils::Format("%08lX", m_qualityInfo.iUNC);
 }
 
-void CPVRGUIInfo::CharInfoFrontendName(std::string &strValue) const
+void CPVRGUIInfo::CharInfoFrontendName(std::string& strValue) const
 {
   if (!strlen(m_qualityInfo.strAdapterName))
     strValue = g_localizeStrings.Get(13205);
@@ -1461,7 +1461,7 @@ void CPVRGUIInfo::CharInfoFrontendName(std::string &strValue) const
     strValue = m_qualityInfo.strAdapterName;
 }
 
-void CPVRGUIInfo::CharInfoFrontendStatus(std::string &strValue) const
+void CPVRGUIInfo::CharInfoFrontendStatus(std::string& strValue) const
 {
   if (!strlen(m_qualityInfo.strAdapterStatus))
     strValue = g_localizeStrings.Get(13205);
@@ -1469,25 +1469,25 @@ void CPVRGUIInfo::CharInfoFrontendStatus(std::string &strValue) const
     strValue = m_qualityInfo.strAdapterStatus;
 }
 
-void CPVRGUIInfo::CharInfoBackendName(std::string &strValue) const
+void CPVRGUIInfo::CharInfoBackendName(std::string& strValue) const
 {
   m_updateBackendCacheRequested = true;
   strValue = m_strBackendName;
 }
 
-void CPVRGUIInfo::CharInfoBackendVersion(std::string &strValue) const
+void CPVRGUIInfo::CharInfoBackendVersion(std::string& strValue) const
 {
   m_updateBackendCacheRequested = true;
   strValue = m_strBackendVersion;
 }
 
-void CPVRGUIInfo::CharInfoBackendHost(std::string &strValue) const
+void CPVRGUIInfo::CharInfoBackendHost(std::string& strValue) const
 {
   m_updateBackendCacheRequested = true;
   strValue = m_strBackendHost;
 }
 
-void CPVRGUIInfo::CharInfoBackendDiskspace(std::string &strValue) const
+void CPVRGUIInfo::CharInfoBackendDiskspace(std::string& strValue) const
 {
   m_updateBackendCacheRequested = true;
 
@@ -1504,31 +1504,31 @@ void CPVRGUIInfo::CharInfoBackendDiskspace(std::string &strValue) const
     strValue = g_localizeStrings.Get(13205);
 }
 
-void CPVRGUIInfo::CharInfoBackendChannels(std::string &strValue) const
+void CPVRGUIInfo::CharInfoBackendChannels(std::string& strValue) const
 {
   m_updateBackendCacheRequested = true;
   strValue = m_strBackendChannels;
 }
 
-void CPVRGUIInfo::CharInfoBackendTimers(std::string &strValue) const
+void CPVRGUIInfo::CharInfoBackendTimers(std::string& strValue) const
 {
   m_updateBackendCacheRequested = true;
   strValue = m_strBackendTimers;
 }
 
-void CPVRGUIInfo::CharInfoBackendRecordings(std::string &strValue) const
+void CPVRGUIInfo::CharInfoBackendRecordings(std::string& strValue) const
 {
   m_updateBackendCacheRequested = true;
   strValue = m_strBackendRecordings;
 }
 
-void CPVRGUIInfo::CharInfoBackendDeletedRecordings(std::string &strValue) const
+void CPVRGUIInfo::CharInfoBackendDeletedRecordings(std::string& strValue) const
 {
   m_updateBackendCacheRequested = true;
   strValue = m_strBackendDeletedRecordings;
 }
 
-void CPVRGUIInfo::CharInfoPlayingClientName(std::string &strValue) const
+void CPVRGUIInfo::CharInfoPlayingClientName(std::string& strValue) const
 {
   if (m_strPlayingClientName.empty())
     strValue = g_localizeStrings.Get(13205);
@@ -1536,7 +1536,7 @@ void CPVRGUIInfo::CharInfoPlayingClientName(std::string &strValue) const
     strValue = m_strPlayingClientName;
 }
 
-void CPVRGUIInfo::CharInfoEncryption(std::string &strValue) const
+void CPVRGUIInfo::CharInfoEncryption(std::string& strValue) const
 {
   if (m_descrambleInfo.iCaid != PVR_DESCRAMBLE_INFO_NOT_AVAILABLE)
   {
@@ -1557,7 +1557,7 @@ void CPVRGUIInfo::CharInfoEncryption(std::string &strValue) const
   strValue.clear();
 }
 
-void CPVRGUIInfo::CharInfoService(std::string &strValue) const
+void CPVRGUIInfo::CharInfoService(std::string& strValue) const
 {
   if (!strlen(m_qualityInfo.strServiceName))
     strValue = g_localizeStrings.Get(13205);
@@ -1565,7 +1565,7 @@ void CPVRGUIInfo::CharInfoService(std::string &strValue) const
     strValue = m_qualityInfo.strServiceName;
 }
 
-void CPVRGUIInfo::CharInfoMux(std::string &strValue) const
+void CPVRGUIInfo::CharInfoMux(std::string& strValue) const
 {
   if (!strlen(m_qualityInfo.strMuxName))
     strValue = g_localizeStrings.Get(13205);
@@ -1573,7 +1573,7 @@ void CPVRGUIInfo::CharInfoMux(std::string &strValue) const
     strValue = m_qualityInfo.strMuxName;
 }
 
-void CPVRGUIInfo::CharInfoProvider(std::string &strValue) const
+void CPVRGUIInfo::CharInfoProvider(std::string& strValue) const
 {
   if (!strlen(m_qualityInfo.strProviderName))
     strValue = g_localizeStrings.Get(13205);
@@ -1613,7 +1613,7 @@ void CPVRGUIInfo::UpdateBackendCache(void)
   // Update with values from the current client when we have at least one
   if (!m_backendProperties.empty())
   {
-    const auto &backend = m_backendProperties[m_iCurrentActiveClient];
+    const auto& backend = m_backendProperties[m_iCurrentActiveClient];
 
     m_strBackendName = backend.name;
     m_strBackendVersion = backend.version;

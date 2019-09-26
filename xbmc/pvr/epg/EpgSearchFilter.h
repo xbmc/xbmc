@@ -44,7 +44,7 @@ namespace PVR
      * @param tag The tag to check.
      * @return True if this tag matches the filter, false if not.
      */
-    bool FilterEntry(const std::shared_ptr<CPVREpgInfoTag> &tag) const;
+    bool FilterEntry(const std::shared_ptr<CPVREpgInfoTag>& tag) const;
 
     /*!
      * @brief remove duplicates from a list of epg tags.
@@ -58,9 +58,9 @@ namespace PVR
      */
     bool IsRadio() const { return m_bIsRadio; }
 
-    const std::string &GetSearchTerm() const { return m_strSearchTerm; }
-    void SetSearchTerm(const std::string &strSearchTerm) { m_strSearchTerm = strSearchTerm; }
-    void SetSearchPhrase(const std::string &strSearchPhrase);
+    const std::string& GetSearchTerm() const { return m_strSearchTerm; }
+    void SetSearchTerm(const std::string& strSearchTerm) { m_strSearchTerm = strSearchTerm; }
+    void SetSearchPhrase(const std::string& strSearchPhrase);
 
     bool IsCaseSensitive() const { return m_bIsCaseSensitive; }
     void SetCaseSensitive(bool bIsCaseSensitive) { m_bIsCaseSensitive = bIsCaseSensitive; }
@@ -80,11 +80,11 @@ namespace PVR
     int GetMaximumDuration() const { return m_iMaximumDuration; }
     void SetMaximumDuration(int iMaximumDuration) { m_iMaximumDuration = iMaximumDuration; }
 
-    const CDateTime &GetStartDateTime() const { return m_startDateTime; }
-    void SetStartDateTime(const CDateTime &startDateTime) { m_startDateTime = startDateTime; }
+    const CDateTime& GetStartDateTime() const { return m_startDateTime; }
+    void SetStartDateTime(const CDateTime& startDateTime) { m_startDateTime = startDateTime; }
 
-    const CDateTime &GetEndDateTime() const  { return m_endDateTime; }
-    void SetEndDateTime(const CDateTime &endDateTime) { m_endDateTime = endDateTime; }
+    const CDateTime& GetEndDateTime() const  { return m_endDateTime; }
+    void SetEndDateTime(const CDateTime& endDateTime) { m_endDateTime = endDateTime; }
 
     bool ShouldIncludeUnknownGenres() const { return m_bIncludeUnknownGenres; }
     void SetIncludeUnknownGenres(bool bIncludeUnknownGenres) { m_bIncludeUnknownGenres = bIncludeUnknownGenres; }
@@ -111,17 +111,17 @@ namespace PVR
     void SetUniqueBroadcastId(unsigned int iUniqueBroadcastId) { m_iUniqueBroadcastId = iUniqueBroadcastId; }
 
   private:
-    bool MatchGenre(const std::shared_ptr<CPVREpgInfoTag> &tag) const;
-    bool MatchDuration(const std::shared_ptr<CPVREpgInfoTag> &tag) const;
-    bool MatchStartAndEndTimes(const std::shared_ptr<CPVREpgInfoTag> &tag) const;
-    bool MatchSearchTerm(const std::shared_ptr<CPVREpgInfoTag> &tag) const;
-    bool MatchChannelNumber(const std::shared_ptr<CPVREpgInfoTag> &tag) const;
-    bool MatchChannelGroup(const std::shared_ptr<CPVREpgInfoTag> &tag) const;
-    bool MatchBroadcastId(const std::shared_ptr<CPVREpgInfoTag> &tag) const;
-    bool MatchChannelType(const std::shared_ptr<CPVREpgInfoTag> &tag) const;
-    bool MatchFreeToAir(const std::shared_ptr<CPVREpgInfoTag> &tag) const;
-    bool MatchTimers(const std::shared_ptr<CPVREpgInfoTag> &tag) const;
-    bool MatchRecordings(const std::shared_ptr<CPVREpgInfoTag> &tag) const;
+    bool MatchGenre(const std::shared_ptr<CPVREpgInfoTag>& tag) const;
+    bool MatchDuration(const std::shared_ptr<CPVREpgInfoTag>& tag) const;
+    bool MatchStartAndEndTimes(const std::shared_ptr<CPVREpgInfoTag>& tag) const;
+    bool MatchSearchTerm(const std::shared_ptr<CPVREpgInfoTag>& tag) const;
+    bool MatchChannelNumber(const std::shared_ptr<CPVREpgInfoTag>& tag) const;
+    bool MatchChannelGroup(const std::shared_ptr<CPVREpgInfoTag>& tag) const;
+    bool MatchBroadcastId(const std::shared_ptr<CPVREpgInfoTag>& tag) const;
+    bool MatchChannelType(const std::shared_ptr<CPVREpgInfoTag>& tag) const;
+    bool MatchFreeToAir(const std::shared_ptr<CPVREpgInfoTag>& tag) const;
+    bool MatchTimers(const std::shared_ptr<CPVREpgInfoTag>& tag) const;
+    bool MatchRecordings(const std::shared_ptr<CPVREpgInfoTag>& tag) const;
 
     std::string   m_strSearchTerm;            /*!< The term to search for */
     bool          m_bIsCaseSensitive;         /*!< Do a case sensitive search */

@@ -28,7 +28,7 @@ public:
   void Deinit(CPVRManager& mgr);
 
   // IActionListener implementation
-  bool OnAction(const CAction &action) override;
+  bool OnAction(const CAction& action) override;
 
   // ISettingCallback implementation
   void OnSettingChanged(std::shared_ptr<const CSetting> setting) override;

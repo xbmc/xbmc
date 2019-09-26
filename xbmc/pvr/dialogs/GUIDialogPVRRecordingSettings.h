@@ -28,7 +28,7 @@ namespace PVR
   public:
     CGUIDialogPVRRecordingSettings();
 
-    void SetRecording(const std::shared_ptr<CPVRRecording> &recording);
+    void SetRecording(const std::shared_ptr<CPVRRecording>& recording);
     static bool CanEditRecording(const CFileItem& item);
 
   protected:
@@ -46,8 +46,8 @@ namespace PVR
 
   private:
     static void LifetimesFiller(std::shared_ptr<const CSetting> setting,
-                                std::vector<IntegerSettingOption> &list,
-                                int &current, void *data);
+                                std::vector<IntegerSettingOption>& list,
+                                int& current, void *data);
 
     std::shared_ptr<CPVRRecording> m_recording;
     std::string m_strTitle;

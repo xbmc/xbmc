@@ -176,7 +176,7 @@ std::shared_ptr<CPVRChannelGroup> CPVRChannelGroupsContainer::GetPreviousPlayedG
   return m_lastPlayedGroups[0];
 }
 
-void CPVRChannelGroupsContainer::SetLastPlayedGroup(const std::shared_ptr<CPVRChannelGroup> &group)
+void CPVRChannelGroupsContainer::SetLastPlayedGroup(const std::shared_ptr<CPVRChannelGroup>& group)
 {
   CSingleLock lock(m_critSection);
   m_lastPlayedGroups[0] = m_lastPlayedGroups[1];

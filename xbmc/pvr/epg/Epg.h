@@ -82,7 +82,7 @@ namespace PVR
      * @brief Get the name of the scraper to use for this table.
      * @return The name of the scraper to use for this table.
      */
-    const std::string &ScraperName(void) const;
+    const std::string& ScraperName(void) const;
 
     /*!
      * @brief Returns if there is a manual update pending for this EPG
@@ -99,7 +99,7 @@ namespace PVR
      * @brief Get the name of this table.
      * @return The name of this table.
      */
-    const std::string &Name(void) const;
+    const std::string& Name(void) const;
 
     /*!
      * @brief Get the database ID of this table.
@@ -117,7 +117,7 @@ namespace PVR
      * @brief Remove all entries from this EPG that finished before the given time.
      * @param time Delete entries with an end time before this time in UTC.
      */
-    void Cleanup(const CDateTime &time);
+    void Cleanup(const CDateTime& time);
 
     /*!
      * @brief Remove all entries from this EPG.
@@ -149,7 +149,7 @@ namespace PVR
      * @param bUpdateFromClient if true, try to fetch the event from the client if not found locally.
      * @return The found tag or NULL if it wasn't found.
      */
-    std::shared_ptr<CPVREpgInfoTag> GetTagBetween(const CDateTime &beginTime, const CDateTime &endTime, bool bUpdateFromClient = false);
+    std::shared_ptr<CPVREpgInfoTag> GetTagBetween(const CDateTime& beginTime, const CDateTime& endTime, bool bUpdateFromClient = false);
 
     /*!
      * @brief Get the event matching the given unique broadcast id
@@ -172,7 +172,7 @@ namespace PVR
      * @param bUpdateDatabase If set to true, this event will be persisted in the database.
      * @return True if it was updated successfully, false otherwise.
      */
-    bool UpdateEntry(const std::shared_ptr<CPVREpgInfoTag> &tag, bool bUpdateDatabase);
+    bool UpdateEntry(const std::shared_ptr<CPVREpgInfoTag>& tag, bool bUpdateDatabase);
 
     /*!
      * @brief Update an entry in this EPG.
@@ -181,7 +181,7 @@ namespace PVR
      * @param bUpdateDatabase If set to true, this event will be persisted in the database.
      * @return True if it was updated successfully, false otherwise.
      */
-    bool UpdateEntry(const std::shared_ptr<CPVREpgInfoTag> &tag, EPG_EVENT_STATE newState, bool bUpdateDatabase);
+    bool UpdateEntry(const std::shared_ptr<CPVREpgInfoTag>& tag, EPG_EVENT_STATE newState, bool bUpdateDatabase);
 
     /*!
      * @brief Update the EPG from 'start' till 'end'.
@@ -277,7 +277,7 @@ namespace PVR
      * @brief Add an infotag to this container.
      * @param tag The tag to add.
      */
-    void AddEntry(const CPVREpgInfoTag &tag);
+    void AddEntry(const CPVREpgInfoTag& tag);
 
     /*!
      * @brief Load all EPG entries from clients into a temporary table and update this table with the contents of that temporary table.
@@ -294,7 +294,7 @@ namespace PVR
      * @param bStoreInDb True to store the updated contents in the db, false otherwise.
      * @return True if the update was successful, false otherwise.
      */
-    bool UpdateEntries(const CPVREpg &epg, bool bStoreInDb = true);
+    bool UpdateEntries(const CPVREpg& epg, bool bStoreInDb = true);
 
     /*!
      * @brief Remove all entries from this EPG that finished before the given amount of days.

@@ -87,8 +87,8 @@ namespace PVR
 
     ~CPVRChannelGroup(void) override;
 
-    bool operator ==(const CPVRChannelGroup &right) const;
-    bool operator !=(const CPVRChannelGroup &right) const;
+    bool operator ==(const CPVRChannelGroup& right) const;
+    bool operator !=(const CPVRChannelGroup& right) const;
 
     /**
      * Empty group member
@@ -135,14 +135,14 @@ namespace PVR
      * @param channel The channel to change the channel number for.
      * @param channelNumber The new channel number.
      */
-    bool SetChannelNumber(const std::shared_ptr<CPVRChannel> &channel, const CPVRChannelNumber &channelNumber);
+    bool SetChannelNumber(const std::shared_ptr<CPVRChannel>& channel, const CPVRChannelNumber& channelNumber);
 
     /*!
      * @brief Remove a channel from this container.
      * @param channel The channel to remove.
      * @return True if the channel was found and removed, false otherwise.
      */
-    virtual bool RemoveFromGroup(const std::shared_ptr<CPVRChannel> &channel);
+    virtual bool RemoveFromGroup(const std::shared_ptr<CPVRChannel>& channel);
 
     /*!
      * @brief Add a channel to this container.
@@ -172,7 +172,7 @@ namespace PVR
      * @param channel The channel to find.
      * @return True if the channel was found, false otherwise.
      */
-    virtual bool IsGroupMember(const std::shared_ptr<CPVRChannel> &channel) const;
+    virtual bool IsGroupMember(const std::shared_ptr<CPVRChannel>& channel) const;
 
     /*!
      * @brief Check whether a channel is in this container.
@@ -297,7 +297,7 @@ namespace PVR
      * @param channel The channel to get the channel number for.
      * @return The channel number in this group.
      */
-    CPVRChannelNumber GetChannelNumber(const std::shared_ptr<CPVRChannel> &channel) const;
+    CPVRChannelNumber GetChannelNumber(const std::shared_ptr<CPVRChannel>& channel) const;
 
     /*!
      * @brief Get the client channel number in this group of the given channel.
@@ -506,14 +506,14 @@ namespace PVR
      * @param bUseBackendChannelNumbers True, if channel numbers from backends shall be used.
      * @return True if everything went well, false otherwise.
      */
-    virtual bool AddAndUpdateChannels(const CPVRChannelGroup &channels, bool bUseBackendChannelNumbers);
+    virtual bool AddAndUpdateChannels(const CPVRChannelGroup& channels, bool bUseBackendChannelNumbers);
 
     /*!
      * @brief Remove deleted channels from this group.
      * @param channels The new channels to use for this group.
      * @return The removed channels.
      */
-    virtual std::vector<std::shared_ptr<CPVRChannel>> RemoveDeletedChannels(const CPVRChannelGroup &channels);
+    virtual std::vector<std::shared_ptr<CPVRChannel>> RemoveDeletedChannels(const CPVRChannelGroup& channels);
 
     /*!
      * @brief Clear this channel list.

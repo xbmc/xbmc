@@ -23,21 +23,21 @@ namespace PVR
   class CGUIWindowPVRSearchBase : public CGUIWindowPVRBase
   {
   public:
-    CGUIWindowPVRSearchBase(bool bRadio, int id, const std::string &xmlFile);
+    CGUIWindowPVRSearchBase(bool bRadio, int id, const std::string& xmlFile);
     ~CGUIWindowPVRSearchBase() override;
 
     bool OnMessage(CGUIMessage& message)  override;
-    void GetContextButtons(int itemNumber, CContextButtons &buttons) override;
+    void GetContextButtons(int itemNumber, CContextButtons& buttons) override;
     bool OnContextButton(int itemNumber, CONTEXT_BUTTON button) override;
 
     /*!
      * @brief set the item to search similar events for.
      * @param item the epg event to search similar events for.
      */
-    void SetItemToSearch(const CFileItemPtr &item);
+    void SetItemToSearch(const CFileItemPtr& item);
 
   protected:
-    void OnPrepareFileItems(CFileItemList &items) override;
+    void OnPrepareFileItems(CFileItemList& items) override;
     std::string GetDirectoryPath(void) override { return ""; }
 
   private:

@@ -43,7 +43,7 @@
 using namespace KODI::MESSAGING;
 using namespace PVR;
 
-CGUIWindowPVRGuideBase::CGUIWindowPVRGuideBase(bool bRadio, int id, const std::string &xmlFile) :
+CGUIWindowPVRGuideBase::CGUIWindowPVRGuideBase(bool bRadio, int id, const std::string& xmlFile) :
   CGUIWindowPVRBase(bRadio, id, xmlFile),
   m_bChannelSelectionRestored(false),
   m_bFirstOpen(true)
@@ -169,7 +169,7 @@ void CGUIWindowPVRGuideBase::SetInvalid()
   CGUIWindowPVRBase::SetInvalid();
 }
 
-void CGUIWindowPVRGuideBase::GetContextButtons(int itemNumber, CContextButtons &buttons)
+void CGUIWindowPVRGuideBase::GetContextButtons(int itemNumber, CContextButtons& buttons)
 {
   buttons.Add(CONTEXT_BUTTON_BEGIN, 19063); /* Go to begin */
   buttons.Add(CONTEXT_BUTTON_NOW,   19070); /* Go to now */
@@ -198,7 +198,7 @@ void CGUIWindowPVRGuideBase::UpdateButtons(void)
   SET_CONTROL_LABEL(CONTROL_LABEL_HEADER2, GetChannelGroup()->GroupName());
 }
 
-bool CGUIWindowPVRGuideBase::Update(const std::string &strDirectory, bool updateFilterPath /* = true */)
+bool CGUIWindowPVRGuideBase::Update(const std::string& strDirectory, bool updateFilterPath /* = true */)
 {
   if (m_bUpdating)
   {
@@ -219,7 +219,7 @@ bool CGUIWindowPVRGuideBase::Update(const std::string &strDirectory, bool update
   return bReturn;
 }
 
-bool CGUIWindowPVRGuideBase::GetDirectory(const std::string &strDirectory, CFileItemList &items)
+bool CGUIWindowPVRGuideBase::GetDirectory(const std::string& strDirectory, CFileItemList& items)
 {
   {
     CSingleLock lock(m_critSection);
@@ -250,7 +250,7 @@ bool CGUIWindowPVRGuideBase::GetDirectory(const std::string &strDirectory, CFile
   return true;
 }
 
-void CGUIWindowPVRGuideBase::FormatAndSort(CFileItemList &items)
+void CGUIWindowPVRGuideBase::FormatAndSort(CFileItemList& items)
 {
   if (&items == m_vecItems)
   {
@@ -298,7 +298,7 @@ bool CGUIWindowPVRGuideBase::ShouldNavigateToGridContainer(int iAction)
   return false;
 }
 
-bool CGUIWindowPVRGuideBase::OnAction(const CAction &action)
+bool CGUIWindowPVRGuideBase::OnAction(const CAction& action)
 {
   switch (action.GetID())
   {

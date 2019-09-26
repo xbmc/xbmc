@@ -29,11 +29,11 @@ static const unsigned int GRID_START_PADDING = 30; // minutes
 
 void CGUIEPGGridContainerModel::SetInvalid()
 {
-  for (const auto &programme : m_programmeItems)
+  for (const auto& programme : m_programmeItems)
     programme->SetInvalid();
-  for (const auto &channel : m_channelItems)
+  for (const auto& channel : m_channelItems)
     channel->SetInvalid();
-  for (const auto &ruler : m_rulerItems)
+  for (const auto& ruler : m_rulerItems)
     ruler->SetInvalid();
 }
 
@@ -51,7 +51,7 @@ std::shared_ptr<CFileItem> CGUIEPGGridContainerModel::CreateGapItem(int iChannel
   return std::make_shared<CFileItem>(gapTag);
 }
 
-void CGUIEPGGridContainerModel::Initialize(const std::unique_ptr<CFileItemList> &items, const CDateTime &gridStart, const CDateTime &gridEnd, int iRulerUnit, int iBlocksPerPage, float fBlockSize)
+void CGUIEPGGridContainerModel::Initialize(const std::unique_ptr<CFileItemList>& items, const CDateTime& gridStart, const CDateTime& gridEnd, int iRulerUnit, int iBlocksPerPage, float fBlockSize)
 {
   if (!m_channelItems.empty())
   {
@@ -259,7 +259,7 @@ void CGUIEPGGridContainerModel::Initialize(const std::unique_ptr<CFileItemList> 
   }
 }
 
-void CGUIEPGGridContainerModel::FindChannelAndBlockIndex(int channelUid, unsigned int broadcastUid, int eventOffset, int &newChannelIndex, int &newBlockIndex) const
+void CGUIEPGGridContainerModel::FindChannelAndBlockIndex(int channelUid, unsigned int broadcastUid, int eventOffset, int& newChannelIndex, int& newBlockIndex) const
 {
   const CDateTimeSpan blockDuration(0, 0, MINSPERBLOCK, 0);
 
@@ -405,11 +405,11 @@ void CGUIEPGGridContainerModel::FreeRulerMemory(int keepStart, int keepEnd)
 
 void CGUIEPGGridContainerModel::FreeItemsMemory()
 {
-  for (const auto &programme : m_programmeItems)
+  for (const auto& programme : m_programmeItems)
     programme->FreeMemory();
-  for (const auto &channel : m_channelItems)
+  for (const auto& channel : m_channelItems)
     channel->FreeMemory();
-  for (const auto &ruler : m_rulerItems)
+  for (const auto& ruler : m_rulerItems)
     ruler->FreeMemory();
 }
 
@@ -428,7 +428,7 @@ CDateTime CGUIEPGGridContainerModel::GetStartTimeForBlock(int block) const
   return m_gridStart + CDateTimeSpan(0, 0 , block * MINSPERBLOCK, 0);
 }
 
-int CGUIEPGGridContainerModel::GetBlock(const CDateTime &datetime) const
+int CGUIEPGGridContainerModel::GetBlock(const CDateTime& datetime) const
 {
   int diff;
 
@@ -447,7 +447,7 @@ int CGUIEPGGridContainerModel::GetNowBlock() const
   return GetBlock(CDateTime::GetUTCDateTime()) - GetPageNowOffset();
 }
 
-int CGUIEPGGridContainerModel::GetFirstEventBlock(const std::shared_ptr<CPVREpgInfoTag> &event) const
+int CGUIEPGGridContainerModel::GetFirstEventBlock(const std::shared_ptr<CPVREpgInfoTag>& event) const
 {
   const CDateTime eventStart = event->StartAsUTC();
   int diff;
@@ -465,7 +465,7 @@ int CGUIEPGGridContainerModel::GetFirstEventBlock(const std::shared_ptr<CPVREpgI
   return std::ceil(fBlockIndex);
 }
 
-int CGUIEPGGridContainerModel::GetLastEventBlock(const std::shared_ptr<CPVREpgInfoTag> &event) const
+int CGUIEPGGridContainerModel::GetLastEventBlock(const std::shared_ptr<CPVREpgInfoTag>& event) const
 {
   // Last block of a tag is always the block calculated using event's end time, not rounded up.
   // Refer to CGUIEPGGridContainerModel::Refresh, where the model is created, for details!

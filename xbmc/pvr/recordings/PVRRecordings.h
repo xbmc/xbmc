@@ -41,7 +41,7 @@ namespace PVR
      */
     void Unload();
 
-    void UpdateFromClient(const std::shared_ptr<CPVRRecording> &tag);
+    void UpdateFromClient(const std::shared_ptr<CPVRRecording>& tag);
 
     /*!
      * @brief refresh the recordings list from the clients.
@@ -75,7 +75,7 @@ namespace PVR
     std::vector<std::shared_ptr<CPVRRecording>> GetAll() const;
 
     std::shared_ptr<CPVRRecording> GetByPath(const std::string& path) const;
-    std::shared_ptr<CPVRRecording> GetById(int iClientId, const std::string &strRecordingId) const;
+    std::shared_ptr<CPVRRecording> GetById(int iClientId, const std::string& strRecordingId) const;
     std::shared_ptr<CPVRRecording> GetById(unsigned int iId) const;
 
     /*!
@@ -83,7 +83,7 @@ namespace PVR
      * @param epgTag The epg tag.
      * @return The requested recording, or an empty recordingptr if none was found.
      */
-    std::shared_ptr<CPVRRecording> GetRecordingForEpgTag(const std::shared_ptr<CPVREpgInfoTag> &epgTag) const;
+    std::shared_ptr<CPVRRecording> GetRecordingForEpgTag(const std::shared_ptr<CPVREpgInfoTag>& epgTag) const;
 
   private:
     mutable CCriticalSection m_critSection;

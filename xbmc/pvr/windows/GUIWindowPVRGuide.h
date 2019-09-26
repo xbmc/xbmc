@@ -31,18 +31,18 @@ namespace PVR
   class CGUIWindowPVRGuideBase : public CGUIWindowPVRBase, public CPVRChannelNumberInputHandler
   {
   public:
-    CGUIWindowPVRGuideBase(bool bRadio, int id, const std::string &xmlFile);
+    CGUIWindowPVRGuideBase(bool bRadio, int id, const std::string& xmlFile);
     ~CGUIWindowPVRGuideBase() override;
 
     void OnInitWindow() override;
     void OnDeinitWindow(int nextWindowID) override;
     bool OnMessage(CGUIMessage& message) override;
-    bool OnAction(const CAction &action) override;
-    void GetContextButtons(int itemNumber, CContextButtons &buttons) override;
+    bool OnAction(const CAction& action) override;
+    void GetContextButtons(int itemNumber, CContextButtons& buttons) override;
     bool OnContextButton(int itemNumber, CONTEXT_BUTTON button) override;
     void UpdateButtons(void) override;
     void SetInvalid() override;
-    bool Update(const std::string &strDirectory, bool updateFilterPath = true) override;
+    bool Update(const std::string& strDirectory, bool updateFilterPath = true) override;
 
     void NotifyEvent(const PVREvent& event) override;
 
@@ -55,8 +55,8 @@ namespace PVR
   protected:
     void UpdateSelectedItemPath() override;
     std::string GetDirectoryPath(void) override { return ""; }
-    bool GetDirectory(const std::string &strDirectory, CFileItemList &items) override;
-    void FormatAndSort(CFileItemList &items) override;
+    bool GetDirectory(const std::string& strDirectory, CFileItemList& items) override;
+    void FormatAndSort(CFileItemList& items) override;
     CFileItemPtr GetCurrentListItem(int offset = 0) override;
 
     void ClearData() override;

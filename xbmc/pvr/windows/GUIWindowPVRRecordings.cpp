@@ -34,7 +34,7 @@
 
 using namespace PVR;
 
-CGUIWindowPVRRecordingsBase::CGUIWindowPVRRecordingsBase(bool bRadio, int id, const std::string &xmlFile) :
+CGUIWindowPVRRecordingsBase::CGUIWindowPVRRecordingsBase(bool bRadio, int id, const std::string& xmlFile) :
   CGUIWindowPVRBase(bRadio, id, xmlFile),
   m_bShowDeletedRecordings(false),
   m_settings({
@@ -57,7 +57,7 @@ std::string CGUIWindowPVRRecordingsBase::GetDirectoryPath()
   return URIUtils::PathHasParent(m_vecItems->GetPath(), basePath) ? m_vecItems->GetPath() : basePath;
 }
 
-void CGUIWindowPVRRecordingsBase::GetContextButtons(int itemNumber, CContextButtons &buttons)
+void CGUIWindowPVRRecordingsBase::GetContextButtons(int itemNumber, CContextButtons& buttons)
 {
   if (itemNumber < 0 || itemNumber >= m_vecItems->Size())
     return;
@@ -87,7 +87,7 @@ void CGUIWindowPVRRecordingsBase::GetContextButtons(int itemNumber, CContextButt
     CGUIWindowPVRBase::GetContextButtons(itemNumber, buttons);
 }
 
-bool CGUIWindowPVRRecordingsBase::OnAction(const CAction &action)
+bool CGUIWindowPVRRecordingsBase::OnAction(const CAction& action)
 {
   if (action.GetID() == ACTION_PARENT_DIR ||
       action.GetID() == ACTION_NAV_BACK)
@@ -112,7 +112,7 @@ bool CGUIWindowPVRRecordingsBase::OnContextButton(int itemNumber, CONTEXT_BUTTON
       CGUIMediaWindow::OnContextButton(itemNumber, button);
 }
 
-bool CGUIWindowPVRRecordingsBase::Update(const std::string &strDirectory, bool updateFilterPath /* = true */)
+bool CGUIWindowPVRRecordingsBase::Update(const std::string& strDirectory, bool updateFilterPath /* = true */)
 {
   m_thumbLoader.StopThread();
 
@@ -181,7 +181,7 @@ void CGUIWindowPVRRecordingsBase::UpdateButtons()
   SET_CONTROL_LABEL(CONTROL_LABEL_HEADER2, bGroupRecordings && path.IsValid() ? path.GetUnescapedDirectoryPath() : "");
 }
 
-bool CGUIWindowPVRRecordingsBase::OnMessage(CGUIMessage &message)
+bool CGUIWindowPVRRecordingsBase::OnMessage(CGUIMessage& message)
 {
   bool bReturn = false;
   switch (message.GetMessage())
@@ -355,7 +355,7 @@ void CGUIWindowPVRRecordingsBase::OnPrepareFileItems(CFileItemList& items)
   CGUIWindowPVRBase::OnPrepareFileItems(items);
 }
 
-bool CGUIWindowPVRRecordingsBase::GetFilteredItems(const std::string &filter, CFileItemList &items)
+bool CGUIWindowPVRRecordingsBase::GetFilteredItems(const std::string& filter, CFileItemList& items)
 {
   bool listchanged = CGUIWindowPVRBase::GetFilteredItems(filter, items);
 

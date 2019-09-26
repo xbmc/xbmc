@@ -40,7 +40,7 @@ namespace PVR
     void UpdateGroupsSpin(void);
     void UpdateGenreSpin(void);
     void UpdateDurationSpin(void);
-    CDateTime ReadDateTime(const std::string &strDate, const std::string &strTime) const;
+    CDateTime ReadDateTime(const std::string& strDate, const std::string& strTime) const;
     void Update();
 
     bool IsRadioSelected(int controlID);

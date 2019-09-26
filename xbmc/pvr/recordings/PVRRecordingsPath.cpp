@@ -24,7 +24,7 @@ const std::string CPVRRecordingsPath::PATH_ACTIVE_RADIO_RECORDINGS  = "pvr://rec
 const std::string CPVRRecordingsPath::PATH_DELETED_TV_RECORDINGS    = "pvr://recordings/tv/deleted/";
 const std::string CPVRRecordingsPath::PATH_DELETED_RADIO_RECORDINGS = "pvr://recordings/radio/deleted/";
 
-CPVRRecordingsPath::CPVRRecordingsPath(const std::string &strPath)
+CPVRRecordingsPath::CPVRRecordingsPath(const std::string& strPath)
 {
   std::string strVarPath(TrimSlashes(strPath));
   const std::vector<std::string> segments = URIUtils::SplitPath(strVarPath);
@@ -75,10 +75,10 @@ CPVRRecordingsPath::CPVRRecordingsPath(bool bDeleted, bool bRadio)
 }
 
 CPVRRecordingsPath::CPVRRecordingsPath(bool bDeleted, bool bRadio,
-                       const std::string &strDirectory, const std::string &strTitle,
+                       const std::string& strDirectory, const std::string& strTitle,
                        int iSeason, int iEpisode, int iYear,
-                       const std::string &strSubtitle, const std::string &strChannelName,
-                       const CDateTime &recordingTime, const std::string &strId)
+                       const std::string& strSubtitle, const std::string& strChannelName,
+                       const CDateTime& recordingTime, const std::string& strId)
 : m_bValid(true),
   m_bRoot(false),
   m_bActive(!bDeleted),
@@ -125,7 +125,7 @@ std::string CPVRRecordingsPath::GetUnescapedDirectoryPath() const
   return CURL::Decode(m_directoryPath);
 }
 
-std::string CPVRRecordingsPath::GetUnescapedSubDirectoryPath(const std::string &strPath) const
+std::string CPVRRecordingsPath::GetUnescapedSubDirectoryPath(const std::string& strPath) const
 {
   // note: strPath must be unescaped.
 
@@ -167,7 +167,7 @@ const std::string CPVRRecordingsPath::GetTitle() const
   return "";
 }
 
-void CPVRRecordingsPath::AppendSegment(const std::string &strSegment)
+void CPVRRecordingsPath::AppendSegment(const std::string& strSegment)
 {
   if (!m_bValid || strSegment.empty() || strSegment == "/")
     return;
@@ -201,7 +201,7 @@ void CPVRRecordingsPath::AppendSegment(const std::string &strSegment)
   m_bRoot = false;
 }
 
-std::string CPVRRecordingsPath::TrimSlashes(const std::string &strString)
+std::string CPVRRecordingsPath::TrimSlashes(const std::string& strString)
 {
   std::string strTrimmed(strString);
   while (!strTrimmed.empty() && strTrimmed.front() == '/')

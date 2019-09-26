@@ -59,9 +59,9 @@ namespace PVR
     void OnInitWindow(void) override;
     void OnDeinitWindow(int nextWindowID) override;
     bool OnMessage(CGUIMessage& message) override;
-    bool Update(const std::string &strDirectory, bool updateFilterPath = true) override;
+    bool Update(const std::string& strDirectory, bool updateFilterPath = true) override;
     void UpdateButtons(void) override;
-    bool OnAction(const CAction &action) override;
+    bool OnAction(const CAction& action) override;
     bool OnBack(int actionID) override;
     void SetInvalid() override;
     bool CanBeActivated() const override;
@@ -80,7 +80,7 @@ namespace PVR
     bool DoRefresh(void) { return Refresh(true); }
 
   protected:
-    CGUIWindowPVRBase(bool bRadio, int id, const std::string &xmlFile);
+    CGUIWindowPVRBase(bool bRadio, int id, const std::string& xmlFile);
 
     virtual std::string GetDirectoryPath(void) = 0;
 
@@ -123,7 +123,7 @@ namespace PVR
      * @param strText The current status.
      * @param iProgress The current progress in %.
      */
-    void ShowProgressDialog(const std::string &strText, int iProgress);
+    void ShowProgressDialog(const std::string& strText, int iProgress);
 
     /*!
      * @brief Hide the progress dialog if it's visible.

@@ -158,7 +158,7 @@ bool CPVREpgDatabase::DeleteEpg(void)
   return bReturn;
 }
 
-bool CPVREpgDatabase::Delete(const CPVREpg &table)
+bool CPVREpgDatabase::Delete(const CPVREpg& table)
 {
   /* invalid channel */
   if (table.EpgID() <= 0)
@@ -174,7 +174,7 @@ bool CPVREpgDatabase::Delete(const CPVREpg &table)
   return DeleteValues("epg", filter);
 }
 
-bool CPVREpgDatabase::DeleteEpgEntries(const CDateTime &maxEndTime)
+bool CPVREpgDatabase::DeleteEpgEntries(const CDateTime& maxEndTime)
 {
   time_t iMaxEndTime;
   maxEndTime.GetAsTime(iMaxEndTime);
@@ -186,7 +186,7 @@ bool CPVREpgDatabase::DeleteEpgEntries(const CDateTime &maxEndTime)
   return DeleteValues("epgtags", filter);
 }
 
-bool CPVREpgDatabase::Delete(const CPVREpgInfoTag &tag)
+bool CPVREpgDatabase::Delete(const CPVREpgInfoTag& tag)
 {
   /* tag without a database ID was not persisted */
   if (tag.DatabaseID() <= 0)
@@ -229,7 +229,7 @@ std::vector<std::shared_ptr<CPVREpg>> CPVREpgDatabase::GetAll()
   return result;
 }
 
-std::vector<std::shared_ptr<CPVREpgInfoTag>> CPVREpgDatabase::Get(const CPVREpg &epg)
+std::vector<std::shared_ptr<CPVREpgInfoTag>> CPVREpgDatabase::Get(const CPVREpg& epg)
 {
   std::vector<std::shared_ptr<CPVREpgInfoTag>> result;
 
@@ -327,7 +327,7 @@ bool CPVREpgDatabase::PersistLastEpgScanTime(int iEpgId, const CDateTime& lastSc
   return bQueueWrite ? QueueInsertQuery(strQuery) : ExecuteQuery(strQuery);
 }
 
-int CPVREpgDatabase::Persist(const CPVREpg &epg, bool bQueueWrite /* = false */)
+int CPVREpgDatabase::Persist(const CPVREpg& epg, bool bQueueWrite /* = false */)
 {
   int iReturn(-1);
   std::string strQuery;
@@ -354,7 +354,7 @@ int CPVREpgDatabase::Persist(const CPVREpg &epg, bool bQueueWrite /* = false */)
   return iReturn;
 }
 
-int CPVREpgDatabase::Persist(const CPVREpgInfoTag &tag, bool bSingleUpdate /* = true */)
+int CPVREpgDatabase::Persist(const CPVREpgInfoTag& tag, bool bSingleUpdate /* = true */)
 {
   int iReturn(-1);
 

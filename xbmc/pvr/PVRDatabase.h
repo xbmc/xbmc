@@ -71,21 +71,21 @@ namespace PVR
      * @param client The client to persist.
      * @return True when persisted, false otherwise.
      */
-    bool Persist(const CPVRClient &client);
+    bool Persist(const CPVRClient& client);
 
     /*!
      * @brief Remove a client entry from the database
      * @param client The client to remove.
      * @return True if the client was removed, false otherwise.
      */
-    bool Delete(const CPVRClient &client);
+    bool Delete(const CPVRClient& client);
 
     /*!
      * @brief Get the priority for a given client from the database.
      * @param client The client.
      * @return The priority.
      */
-    int GetPriority(const CPVRClient &client);
+    int GetPriority(const CPVRClient& client);
 
     /*! @name Channel methods */
     //@{
@@ -102,14 +102,14 @@ namespace PVR
      * @param bCommit queue only or queue and commit
      * @return True when persisted or queued, false otherwise.
      */
-    bool Persist(CPVRChannel &channel, bool bCommit);
+    bool Persist(CPVRChannel& channel, bool bCommit);
 
     /*!
      * @brief Remove a channel entry from the database
      * @param channel The channel to remove.
      * @return True if the channel was removed, false otherwise.
      */
-    bool Delete(const CPVRChannel &channel);
+    bool Delete(const CPVRChannel& channel);
 
     /*!
      * @brief Get the list of channels from the database
@@ -117,7 +117,7 @@ namespace PVR
      * @param bCompressDB Compress the DB after getting the list
      * @return The amount of channels that were added.
      */
-    int Get(CPVRChannelGroup &results, bool bCompressDB);
+    int Get(CPVRChannelGroup& results, bool bCompressDB);
 
     //@}
 
@@ -135,14 +135,14 @@ namespace PVR
      * @param group The group to delete.
      * @return True if the group was deleted successfully, false otherwise.
      */
-    bool Delete(const CPVRChannelGroup &group);
+    bool Delete(const CPVRChannelGroup& group);
 
     /*!
      * @brief Get the channel groups.
      * @param results The container to store the results in.
      * @return True if the list was fetched successfully, false otherwise.
      */
-    bool Get(CPVRChannelGroups &results);
+    bool Get(CPVRChannelGroups& results);
 
     /*!
      * @brief Add the group members to a group.
@@ -150,14 +150,14 @@ namespace PVR
      * @param allGroup The "all channels group" matching param group's 'IsRadio' property.
      * @return The amount of channels that were added.
      */
-    int Get(CPVRChannelGroup &group, const CPVRChannelGroup &allGroup);
+    int Get(CPVRChannelGroup& group, const CPVRChannelGroup& allGroup);
 
     /*!
      * @brief Add or update a channel group entry in the database.
      * @param group The group to persist.
      * @return True if the group was persisted successfully, false otherwise.
      */
-    bool Persist(CPVRChannelGroup &group);
+    bool Persist(CPVRChannelGroup& group);
 
     /*!
      * @brief Reset all epg ids to 0
@@ -204,14 +204,14 @@ namespace PVR
      * @param channel the channel
      * @return whether the update was successful
      */
-    bool UpdateLastWatched(const CPVRChannel &channel);
+    bool UpdateLastWatched(const CPVRChannel& channel);
 
     /*!
      * @brief Updates the last watched timestamp for the channel group
      * @param group the group
      * @return whether the update was successful
      */
-    bool UpdateLastWatched(const CPVRChannelGroup &group);
+    bool UpdateLastWatched(const CPVRChannelGroup& group);
     //@}
 
   private:
@@ -227,16 +227,16 @@ namespace PVR
     void UpdateTables(int version) override;
     int GetMinSchemaVersion() const override { return 11; }
 
-    bool DeleteChannelsFromGroup(const CPVRChannelGroup &group, const std::vector<int> &channelsToDelete);
+    bool DeleteChannelsFromGroup(const CPVRChannelGroup& group, const std::vector<int>& channelsToDelete);
 
-    bool GetCurrentGroupMembers(const CPVRChannelGroup &group, std::vector<int> &members);
-    bool RemoveStaleChannelsFromGroup(const CPVRChannelGroup &group);
+    bool GetCurrentGroupMembers(const CPVRChannelGroup& group, std::vector<int>& members);
+    bool RemoveStaleChannelsFromGroup(const CPVRChannelGroup& group);
 
-    bool PersistGroupMembers(const CPVRChannelGroup &group);
+    bool PersistGroupMembers(const CPVRChannelGroup& group);
 
-    bool PersistChannels(CPVRChannelGroup &group);
+    bool PersistChannels(CPVRChannelGroup& group);
 
-    bool RemoveChannelsFromGroup(const CPVRChannelGroup &group);
+    bool RemoveChannelsFromGroup(const CPVRChannelGroup& group);
 
     int GetClientIdByChannelId(int iChannelId);
 

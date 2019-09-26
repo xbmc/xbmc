@@ -35,12 +35,12 @@ namespace PVR
   {
   public:
     explicit CPVRTimerInfoTag(bool bRadio = false);
-    CPVRTimerInfoTag(const PVR_TIMER &timer, const std::shared_ptr<CPVRChannel> &channel, unsigned int iClientId);
+    CPVRTimerInfoTag(const PVR_TIMER& timer, const std::shared_ptr<CPVRChannel>& channel, unsigned int iClientId);
 
     bool operator ==(const CPVRTimerInfoTag& right) const;
     bool operator !=(const CPVRTimerInfoTag& right) const;
 
-    void Serialize(CVariant &value) const override;
+    void Serialize(CVariant& value) const override;
 
     void UpdateSummary(void);
 
@@ -127,7 +127,7 @@ namespace PVR
      * @param tag A timer containing the data that shall be merged into this timer's data.
      * @return true if the timer was updated successfully
      */
-    bool UpdateEntry(const std::shared_ptr<CPVRTimerInfoTag> &tag);
+    bool UpdateEntry(const std::shared_ptr<CPVRTimerInfoTag>& tag);
 
     /*!
      * @brief merge in the state of this child timer.
@@ -183,7 +183,7 @@ namespace PVR
       * @brief Sets the type of this timer.
       * @param the new timer type.
       */
-    void SetTimerType(const std::shared_ptr<CPVRTimerType> &type);
+    void SetTimerType(const std::shared_ptr<CPVRTimerType>& type);
 
     /*!
       * @brief Checks whether this is a timer rule (vs. one time timer).
@@ -239,7 +239,7 @@ namespace PVR
      * @brief Get the text for the notification.
      * @param strText The notification.
      */
-    void GetNotificationText(std::string &strText) const;
+    void GetNotificationText(std::string& strText) const;
 
     /*!
     * @brief Get the text for the notification when a timer has been deleted
@@ -281,7 +281,7 @@ namespace PVR
      * @param strNewName The new name.
      * @return True on success, false otherwise.
      */
-    bool RenameOnClient(const std::string &strNewName);
+    bool RenameOnClient(const std::string& strNewName);
 
     /*!
      * @brief Update this timer on the backend, transferring all local data of this timer to the backend.
@@ -355,8 +355,8 @@ namespace PVR
     std::string m_strSeriesLink; /*!< series link */
 
   private:
-    CPVRTimerInfoTag(const CPVRTimerInfoTag &tag) = delete;
-    CPVRTimerInfoTag &operator=(const CPVRTimerInfoTag &orig) = delete;
+    CPVRTimerInfoTag(const CPVRTimerInfoTag& tag) = delete;
+    CPVRTimerInfoTag& operator=(const CPVRTimerInfoTag& orig) = delete;
 
     std::string GetWeekdaysString() const;
     void UpdateEpgInfoTag(void);

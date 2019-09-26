@@ -202,7 +202,7 @@ void CGUIDialogPVRGuideSearch::OnWindowLoaded()
   return CGUIDialog::OnWindowLoaded();
 }
 
-CDateTime CGUIDialogPVRGuideSearch::ReadDateTime(const std::string &strDate, const std::string &strTime) const
+CDateTime CGUIDialogPVRGuideSearch::ReadDateTime(const std::string& strDate, const std::string& strTime) const
 {
   CDateTime dateTime;
   int iHours, iMinutes;

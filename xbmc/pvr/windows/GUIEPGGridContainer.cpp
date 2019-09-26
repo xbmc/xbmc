@@ -89,7 +89,7 @@ CGUIEPGGridContainer::CGUIEPGGridContainer(int parentID, int controlID, float po
   ControlType = GUICONTAINER_EPGGRID;
 }
 
-CGUIEPGGridContainer::CGUIEPGGridContainer(const CGUIEPGGridContainer &other)
+CGUIEPGGridContainer::CGUIEPGGridContainer(const CGUIEPGGridContainer& other)
 : IGUIContainer(other),
   m_renderOffset(other.m_renderOffset),
   m_orientation(other.m_orientation),
@@ -172,7 +172,7 @@ void CGUIEPGGridContainer::SetPageControl(int id)
   m_pageControl = id;
 }
 
-void CGUIEPGGridContainer::Process(unsigned int currentTime, CDirtyRegionList &dirtyregions)
+void CGUIEPGGridContainer::Process(unsigned int currentTime, CDirtyRegionList& dirtyregions)
 {
   ValidateOffset();
 
@@ -232,7 +232,7 @@ void CGUIEPGGridContainer::Render()
   CGUIControl::Render();
 }
 
-void CGUIEPGGridContainer::ProcessChannels(unsigned int currentTime, CDirtyRegionList &dirtyregions)
+void CGUIEPGGridContainer::ProcessChannels(unsigned int currentTime, CDirtyRegionList& dirtyregions)
 {
   HandleChannels(false, currentTime, dirtyregions);
 }
@@ -245,7 +245,7 @@ void CGUIEPGGridContainer::RenderChannels()
   HandleChannels(true, dummyTime, dummyRegions);
 }
 
-void CGUIEPGGridContainer::ProcessRulerDate(unsigned int currentTime, CDirtyRegionList &dirtyregions)
+void CGUIEPGGridContainer::ProcessRulerDate(unsigned int currentTime, CDirtyRegionList& dirtyregions)
 {
   HandleRulerDate(false, currentTime, dirtyregions);
 }
@@ -258,7 +258,7 @@ void CGUIEPGGridContainer::RenderRulerDate()
   HandleRulerDate(true, dummyTime, dummyRegions);
 }
 
-void CGUIEPGGridContainer::ProcessRuler(unsigned int currentTime, CDirtyRegionList &dirtyregions)
+void CGUIEPGGridContainer::ProcessRuler(unsigned int currentTime, CDirtyRegionList& dirtyregions)
 {
   HandleRuler(false, currentTime, dirtyregions);
 }
@@ -271,7 +271,7 @@ void CGUIEPGGridContainer::RenderRuler()
   HandleRuler(true, dummyTime, dummyRegions);
 }
 
-void CGUIEPGGridContainer::ProcessProgrammeGrid(unsigned int currentTime, CDirtyRegionList &dirtyregions)
+void CGUIEPGGridContainer::ProcessProgrammeGrid(unsigned int currentTime, CDirtyRegionList& dirtyregions)
 {
   HandleProgrammeGrid(false, currentTime, dirtyregions);
 }
@@ -304,7 +304,7 @@ float CGUIEPGGridContainer::GetProgressIndicatorHeight() const
   return (m_orientation == VERTICAL) ? m_rulerHeight + m_gridHeight : GetCurrentTimePositionOnPage();
 }
 
-void CGUIEPGGridContainer::ProcessProgressIndicator(unsigned int currentTime, CDirtyRegionList &dirtyregions)
+void CGUIEPGGridContainer::ProcessProgressIndicator(unsigned int currentTime, CDirtyRegionList& dirtyregions)
 {
   float width = GetProgressIndicatorWidth();
   float height = GetProgressIndicatorHeight();
@@ -334,9 +334,9 @@ void CGUIEPGGridContainer::RenderProgressIndicator()
   }
 }
 
-void CGUIEPGGridContainer::ProcessItem(float posX, float posY, const CFileItemPtr &item, CFileItemPtr &lastitem,
+void CGUIEPGGridContainer::ProcessItem(float posX, float posY, const CFileItemPtr& item, CFileItemPtr& lastitem,
   bool focused, CGUIListItemLayout* normallayout, CGUIListItemLayout* focusedlayout,
-  unsigned int currentTime, CDirtyRegionList &dirtyregions, float resize /* = -1.0f */)
+  unsigned int currentTime, CDirtyRegionList& dirtyregions, float resize /* = -1.0f */)
 {
   if (!normallayout || !focusedlayout)
     return;
@@ -425,7 +425,7 @@ void CGUIEPGGridContainer::RenderItem(float posX, float posY, CGUIListItem *item
   CServiceBroker::GetWinSystem()->GetGfxContext().RestoreOrigin();
 }
 
-bool CGUIEPGGridContainer::OnAction(const CAction &action)
+bool CGUIEPGGridContainer::OnAction(const CAction& action)
 {
   switch (action.GetID())
   {
@@ -1049,7 +1049,7 @@ void CGUIEPGGridContainer::OnRight()
   }
 }
 
-bool CGUIEPGGridContainer::SetChannel(const std::string &channel)
+bool CGUIEPGGridContainer::SetChannel(const std::string& channel)
 {
   for (int iIndex = 0; iIndex < m_gridModel->ChannelItemsSize(); iIndex++)
   {
@@ -1063,7 +1063,7 @@ bool CGUIEPGGridContainer::SetChannel(const std::string &channel)
   return false;
 }
 
-bool CGUIEPGGridContainer::SetChannel(const std::shared_ptr<CPVRChannel> &channel)
+bool CGUIEPGGridContainer::SetChannel(const std::shared_ptr<CPVRChannel>& channel)
 {
   for (int iIndex = 0; iIndex < m_gridModel->ChannelItemsSize(); iIndex++)
   {
@@ -1123,7 +1123,7 @@ CGUIListItemLayout *CGUIEPGGridContainer::GetFocusedLayout() const
   return nullptr;
 }
 
-bool CGUIEPGGridContainer::SelectItemFromPoint(const CPoint &point, bool justGrid /* = false */)
+bool CGUIEPGGridContainer::SelectItemFromPoint(const CPoint& point, bool justGrid /* = false */)
 {
   /* point has already had origin set to m_posX, m_posY */
   if (!m_focusedProgrammeLayout || !m_programmeLayout || (justGrid && point.x < 0))
@@ -1174,7 +1174,7 @@ bool CGUIEPGGridContainer::SelectItemFromPoint(const CPoint &point, bool justGri
   return true;
 }
 
-EVENT_RESULT CGUIEPGGridContainer::OnMouseEvent(const CPoint &point, const CMouseEvent &event)
+EVENT_RESULT CGUIEPGGridContainer::OnMouseEvent(const CPoint& point, const CMouseEvent& event)
 {
   switch (event.m_id)
   {
@@ -1231,14 +1231,14 @@ EVENT_RESULT CGUIEPGGridContainer::OnMouseEvent(const CPoint &point, const CMous
   }
 }
 
-bool CGUIEPGGridContainer::OnMouseOver(const CPoint &point)
+bool CGUIEPGGridContainer::OnMouseOver(const CPoint& point)
 {
   // select the item under the pointer
   SelectItemFromPoint(point - CPoint(m_gridPosX, m_gridPosY), false);
   return CGUIControl::OnMouseOver(point);
 }
 
-bool CGUIEPGGridContainer::OnMouseClick(int dwButton, const CPoint &point)
+bool CGUIEPGGridContainer::OnMouseClick(int dwButton, const CPoint& point)
 {
   if (SelectItemFromPoint(point - CPoint(m_gridPosX, m_gridPosY)))
   {
@@ -1249,7 +1249,7 @@ bool CGUIEPGGridContainer::OnMouseClick(int dwButton, const CPoint &point)
   return false;
 }
 
-bool CGUIEPGGridContainer::OnMouseDoubleClick(int dwButton, const CPoint &point)
+bool CGUIEPGGridContainer::OnMouseDoubleClick(int dwButton, const CPoint& point)
 {
   if (SelectItemFromPoint(point - CPoint(m_gridPosX, m_gridPosY)))
   {
@@ -1278,7 +1278,7 @@ bool CGUIEPGGridContainer::OnClick(int actionID)
   return SendWindowMessage(msg);
 }
 
-bool CGUIEPGGridContainer::OnMouseWheel(char wheel, const CPoint &point)
+bool CGUIEPGGridContainer::OnMouseWheel(char wheel, const CPoint& point)
 {
   // doesn't work while an item is selected?
   ProgrammesScroll(-wheel);
@@ -1384,7 +1384,7 @@ std::string CGUIEPGGridContainer::GetLabel(int info) const
   return label;
 }
 
-int CGUIEPGGridContainer::GetBlock(const CGUIListItemPtr &item, int channel)
+int CGUIEPGGridContainer::GetBlock(const CGUIListItemPtr& item, int channel)
 {
   if (!item)
     return 0;
@@ -1392,7 +1392,7 @@ int CGUIEPGGridContainer::GetBlock(const CGUIListItemPtr &item, int channel)
   return GetRealBlock(item, channel) - m_blockOffset;
 }
 
-int CGUIEPGGridContainer::GetRealBlock(const CGUIListItemPtr &item, int channel)
+int CGUIEPGGridContainer::GetRealBlock(const CGUIListItemPtr& item, int channel)
 {
   int channelIndex = channel + m_channelOffset;
   int block = 0;
@@ -1648,7 +1648,7 @@ void CGUIEPGGridContainer::GoToNow()
   SetBlock(m_gridModel->GetPageNowOffset());
 }
 
-void CGUIEPGGridContainer::GoToDate(const CDateTime &date)
+void CGUIEPGGridContainer::GoToDate(const CDateTime& date)
 {
   unsigned int offset = m_gridModel->GetPageNowOffset();
   ScrollToBlockOffset(m_gridModel->GetBlock(date) - offset);
@@ -1711,7 +1711,7 @@ void CGUIEPGGridContainer::GoToMostRight()
   }
 }
 
-void CGUIEPGGridContainer::SetTimelineItems(const std::unique_ptr<CFileItemList> &items, const CDateTime &gridStart, const CDateTime &gridEnd)
+void CGUIEPGGridContainer::SetTimelineItems(const std::unique_ptr<CFileItemList>& items, const CDateTime& gridStart, const CDateTime& gridEnd)
 {
   int iRulerUnit;
   int iBlocksPerPage;
@@ -1963,12 +1963,12 @@ void CGUIEPGGridContainer::GetCurrentLayouts()
   // Note: m_rulerDateLayout is optional; so no "failsafe" logic here (see above)
 }
 
-void CGUIEPGGridContainer::SetRenderOffset(const CPoint &offset)
+void CGUIEPGGridContainer::SetRenderOffset(const CPoint& offset)
 {
   m_renderOffset = offset;
 }
 
-void CGUIEPGGridContainer::GetChannelCacheOffsets(int &cacheBefore, int &cacheAfter)
+void CGUIEPGGridContainer::GetChannelCacheOffsets(int& cacheBefore, int& cacheAfter)
 {
   if (m_channelScrollSpeed > 0)
   {
@@ -1987,7 +1987,7 @@ void CGUIEPGGridContainer::GetChannelCacheOffsets(int &cacheBefore, int &cacheAf
   }
 }
 
-void CGUIEPGGridContainer::GetProgrammeCacheOffsets(int &cacheBefore, int &cacheAfter)
+void CGUIEPGGridContainer::GetProgrammeCacheOffsets(int& cacheBefore, int& cacheAfter)
 {
   if (m_programmeScrollSpeed > 0)
   {
@@ -2006,7 +2006,7 @@ void CGUIEPGGridContainer::GetProgrammeCacheOffsets(int &cacheBefore, int &cache
   }
 }
 
-void CGUIEPGGridContainer::HandleChannels(bool bRender, unsigned int currentTime, CDirtyRegionList &dirtyregions)
+void CGUIEPGGridContainer::HandleChannels(bool bRender, unsigned int currentTime, CDirtyRegionList& dirtyregions)
 {
   if (!m_focusedChannelLayout || !m_channelLayout)
     return;
@@ -2114,7 +2114,7 @@ void CGUIEPGGridContainer::HandleChannels(bool bRender, unsigned int currentTime
   }
 }
 
-void CGUIEPGGridContainer::HandleRulerDate(bool bRender, unsigned int currentTime, CDirtyRegionList &dirtyregions)
+void CGUIEPGGridContainer::HandleRulerDate(bool bRender, unsigned int currentTime, CDirtyRegionList& dirtyregions)
 {
   if (!m_rulerDateLayout || m_gridModel->RulerItemsSize() <= 1 || m_gridModel->IsZeroGridDuration())
     return;
@@ -2138,7 +2138,7 @@ void CGUIEPGGridContainer::HandleRulerDate(bool bRender, unsigned int currentTim
   }
 }
 
-void CGUIEPGGridContainer::HandleRuler(bool bRender, unsigned int currentTime, CDirtyRegionList &dirtyregions)
+void CGUIEPGGridContainer::HandleRuler(bool bRender, unsigned int currentTime, CDirtyRegionList& dirtyregions)
 {
   if (!m_rulerLayout || m_gridModel->RulerItemsSize() <= 1 || m_gridModel->IsZeroGridDuration())
     return;
@@ -2244,7 +2244,7 @@ void CGUIEPGGridContainer::HandleRuler(bool bRender, unsigned int currentTime, C
     CServiceBroker::GetWinSystem()->GetGfxContext().RestoreClipRegion();
 }
 
-void CGUIEPGGridContainer::HandleProgrammeGrid(bool bRender, unsigned int currentTime, CDirtyRegionList &dirtyregions)
+void CGUIEPGGridContainer::HandleProgrammeGrid(bool bRender, unsigned int currentTime, CDirtyRegionList& dirtyregions)
 {
   if (!m_focusedProgrammeLayout || !m_programmeLayout || m_gridModel->RulerItemsSize() <= 1 || m_gridModel->IsZeroGridDuration())
     return;

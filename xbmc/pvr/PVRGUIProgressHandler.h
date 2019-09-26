@@ -31,7 +31,7 @@ namespace PVR
      * @param strText The new progress text.
      * @param fProgress The new progress value, in a range from 0.0 to 100.0.
      */
-    void UpdateProgress(const std::string &strText, float fProgress);
+    void UpdateProgress(const std::string& strText, float fProgress);
 
     /*!
      * @brief Update the progress dialogs's content.
@@ -39,7 +39,7 @@ namespace PVR
      * @param iCurrent The new current progress value, must be less or equal iMax.
      * @param iMax The new maximum progress value, must be greater or equal iCurrent.
      */
-    void UpdateProgress(const std::string &strText, int iCurrent, int iMax);
+    void UpdateProgress(const std::string& strText, int iCurrent, int iMax);
 
     /*!
      * @brief Destroy the progress dialog. This happens asynchrounous, instance must not be touched anymore after calling this method.

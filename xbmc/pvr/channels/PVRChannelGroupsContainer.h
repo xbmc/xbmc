@@ -173,7 +173,7 @@ namespace PVR
      * @brief Set the last played group.
      * @param The last played group
      */
-    void SetLastPlayedGroup(const std::shared_ptr<CPVRChannelGroup> &group);
+    void SetLastPlayedGroup(const std::shared_ptr<CPVRChannelGroup>& group);
 
   protected:
     CPVRChannelGroups *m_groupsRadio; /*!< all radio channel groups */

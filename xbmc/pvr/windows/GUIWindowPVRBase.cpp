@@ -54,7 +54,7 @@ public:
 
   bool HasFocus() const;
   std::shared_ptr<CPVRChannelGroup> GetSelectedChannelGroup() const;
-  bool SelectChannelGroup(const std::shared_ptr<CPVRChannelGroup> &newGroup);
+  bool SelectChannelGroup(const std::shared_ptr<CPVRChannelGroup>& newGroup);
 
 private:
   CGUIControl *m_control = nullptr;
@@ -102,7 +102,7 @@ std::shared_ptr<CPVRChannelGroup> CGUIPVRChannelGroupsSelector::GetSelectedChann
   return std::shared_ptr<CPVRChannelGroup>();
 }
 
-bool CGUIPVRChannelGroupsSelector::SelectChannelGroup(const std::shared_ptr<CPVRChannelGroup> &newGroup)
+bool CGUIPVRChannelGroupsSelector::SelectChannelGroup(const std::shared_ptr<CPVRChannelGroup>& newGroup)
 {
   if (m_control && newGroup)
   {
@@ -121,7 +121,7 @@ bool CGUIPVRChannelGroupsSelector::SelectChannelGroup(const std::shared_ptr<CPVR
   return false;
 }
 
-CGUIWindowPVRBase::CGUIWindowPVRBase(bool bRadio, int id, const std::string &xmlFile) :
+CGUIWindowPVRBase::CGUIWindowPVRBase(bool bRadio, int id, const std::string& xmlFile) :
   CGUIMediaWindow(id, xmlFile.c_str()),
   m_bRadio(bRadio),
   m_channelGroupsSelector(new CGUIPVRChannelGroupsSelector),
@@ -180,7 +180,7 @@ void CGUIWindowPVRBase::NotifyEvent(const PVREvent& event)
   }
 }
 
-bool CGUIWindowPVRBase::OnAction(const CAction &action)
+bool CGUIWindowPVRBase::OnAction(const CAction& action)
 {
   switch (action.GetID())
   {
@@ -460,7 +460,7 @@ void CGUIWindowPVRBase::SetChannelGroup(std::shared_ptr<CPVRChannelGroup> &&grou
   }
 }
 
-bool CGUIWindowPVRBase::Update(const std::string &strDirectory, bool updateFilterPath /*= true*/)
+bool CGUIWindowPVRBase::Update(const std::string& strDirectory, bool updateFilterPath /*= true*/)
 {
   if (m_bUpdating)
   {
@@ -513,7 +513,7 @@ void CGUIWindowPVRBase::UpdateButtons(void)
   m_channelGroupsSelector->SelectChannelGroup(channelGroup);
 }
 
-void CGUIWindowPVRBase::ShowProgressDialog(const std::string &strText, int iProgress)
+void CGUIWindowPVRBase::ShowProgressDialog(const std::string& strText, int iProgress)
 {
   if (!m_progressHandle)
   {

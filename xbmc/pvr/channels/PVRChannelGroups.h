@@ -54,14 +54,14 @@ namespace PVR
      * @param bUpdateFromClient True to save the changes in the db.
      * @return True if the group was added or update successfully, false otherwise.
      */
-    bool Update(const CPVRChannelGroup &group, bool bUpdateFromClient = false);
+    bool Update(const CPVRChannelGroup& group, bool bUpdateFromClient = false);
 
     /*!
      * @brief Called by the add-on callback to add a new group
      * @param group The group to add
      * @return True when updated, false otherwise
      */
-    bool UpdateFromClient(const CPVRChannelGroup &group) { return Update(group, true); }
+    bool UpdateFromClient(const CPVRChannelGroup& group) { return Update(group, true); }
 
     /*!
      * @brief Get a channel given its path
@@ -83,7 +83,7 @@ namespace PVR
      * @param bExcludeHidden Whenever to exclude hidden channel groups.
      * @return A list of groups the channel is a member.
      */
-    std::vector<std::shared_ptr<CPVRChannelGroup>> GetGroupsByChannel(const std::shared_ptr<CPVRChannel> &channel, bool bExcludeHidden = false) const;
+    std::vector<std::shared_ptr<CPVRChannelGroup>> GetGroupsByChannel(const std::shared_ptr<CPVRChannel>& channel, bool bExcludeHidden = false) const;
 
     /*!
      * @brief Get a channel group given its path
@@ -97,7 +97,7 @@ namespace PVR
      * @param strName The name.
      * @return The group or NULL if it wasn't found.
      */
-    std::shared_ptr<CPVRChannelGroup> GetByName(const std::string &strName) const;
+    std::shared_ptr<CPVRChannelGroup> GetByName(const std::string& strName) const;
 
     /*!
      * @brief Get the group that contains all channels.
@@ -135,14 +135,14 @@ namespace PVR
      * @param group The current group.
      * @return The previous group or the group containing all channels if it wasn't found.
      */
-    std::shared_ptr<CPVRChannelGroup> GetPreviousGroup(const CPVRChannelGroup &group) const;
+    std::shared_ptr<CPVRChannelGroup> GetPreviousGroup(const CPVRChannelGroup& group) const;
 
     /*!
      * @brief Get the next group in this container.
      * @param group The current group.
      * @return The next group or the group containing all channels if it wasn't found.
      */
-    std::shared_ptr<CPVRChannelGroup> GetNextGroup(const CPVRChannelGroup &group) const;
+    std::shared_ptr<CPVRChannelGroup> GetNextGroup(const CPVRChannelGroup& group) const;
 
     /*!
      * @brief Get the group that is currently selected in the UI.
@@ -161,14 +161,14 @@ namespace PVR
      * @param strName The name of the group.
      * @return True if the group was added, false otherwise.
      */
-    bool AddGroup(const std::string &strName);
+    bool AddGroup(const std::string& strName);
 
     /*!
      * @brief Delete a group in this container.
      * @param group The group to delete.
      * @return True if it was deleted successfully, false if not.
      */
-    bool DeleteGroup(const CPVRChannelGroup &group);
+    bool DeleteGroup(const CPVRChannelGroup& group);
 
     /*!
      * @brief Create EPG tags for all channels of the internal group.

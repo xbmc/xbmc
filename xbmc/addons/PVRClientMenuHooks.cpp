@@ -16,7 +16,7 @@
 namespace PVR
 {
 
-CPVRClientMenuHook::CPVRClientMenuHook(const std::string &addonId, const PVR_MENUHOOK &hook)
+CPVRClientMenuHook::CPVRClientMenuHook(const std::string& addonId, const PVR_MENUHOOK& hook)
 : m_addonId(addonId),
   m_hook(new PVR_MENUHOOK(hook))
 {
@@ -92,7 +92,7 @@ std::string CPVRClientMenuHook::GetLabel() const
   return g_localizeStrings.GetAddonString(m_addonId, m_hook->iLocalizedStringId);
 }
 
-void CPVRClientMenuHooks::AddHook(const PVR_MENUHOOK &addonHook)
+void CPVRClientMenuHooks::AddHook(const PVR_MENUHOOK& addonHook)
 {
   if (!m_hooks)
     m_hooks.reset(new std::vector<CPVRClientMenuHook>());

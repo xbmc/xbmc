@@ -150,7 +150,7 @@ std::shared_ptr<CPVRRecording> CPVRRecordings::GetByPath(const std::string& path
   return {};
 }
 
-std::shared_ptr<CPVRRecording> CPVRRecordings::GetById(int iClientId, const std::string &strRecordingId) const
+std::shared_ptr<CPVRRecording> CPVRRecordings::GetById(int iClientId, const std::string& strRecordingId) const
 {
   std::shared_ptr<CPVRRecording> retVal;
   CSingleLock lock(m_critSection);
@@ -161,7 +161,7 @@ std::shared_ptr<CPVRRecording> CPVRRecordings::GetById(int iClientId, const std:
   return retVal;
 }
 
-void CPVRRecordings::UpdateFromClient(const std::shared_ptr<CPVRRecording> &tag)
+void CPVRRecordings::UpdateFromClient(const std::shared_ptr<CPVRRecording>& tag)
 {
   CSingleLock lock(m_critSection);
 
@@ -192,7 +192,7 @@ void CPVRRecordings::UpdateFromClient(const std::shared_ptr<CPVRRecording> &tag)
   }
 }
 
-std::shared_ptr<CPVRRecording> CPVRRecordings::GetRecordingForEpgTag(const std::shared_ptr<CPVREpgInfoTag> &epgTag) const
+std::shared_ptr<CPVRRecording> CPVRRecordings::GetRecordingForEpgTag(const std::shared_ptr<CPVREpgInfoTag>& epgTag) const
 {
   if (!epgTag)
     return {};

@@ -37,17 +37,17 @@ namespace PVR
     { \
     public: \
       explicit clazz(uint32_t label) : CStaticContextMenuAction(label) {} \
-      bool IsVisible(const CFileItem &item) const override; \
-      bool Execute(const CFileItemPtr &item) const override; \
+      bool IsVisible(const CFileItem& item) const override; \
+      bool Execute(const CFileItemPtr& item) const override; \
     };
 
     #define DECL_CONTEXTMENUITEM(clazz) \
     class clazz : public IContextMenuItem \
     { \
     public: \
-      std::string GetLabel(const CFileItem &item) const override; \
-      bool IsVisible(const CFileItem &item) const override; \
-      bool Execute(const CFileItemPtr &item) const override; \
+      std::string GetLabel(const CFileItem& item) const override; \
+      bool IsVisible(const CFileItem& item) const override; \
+      bool Execute(const CFileItemPtr& item) const override; \
     };
 
     DECL_STATICCONTEXTMENUITEM(PlayEpgTag);
@@ -75,9 +75,9 @@ namespace PVR
     public:
       PVRClientMenuHook(const CPVRClientMenuHook& hook) : m_hook(hook) {};
 
-      std::string GetLabel(const CFileItem &item) const override;
-      bool IsVisible(const CFileItem &item) const override;
-      bool Execute(const CFileItemPtr &item) const override;
+      std::string GetLabel(const CFileItem& item) const override;
+      bool IsVisible(const CFileItem& item) const override;
+      bool Execute(const CFileItemPtr& item) const override;
 
       const CPVRClientMenuHook& GetHook() const { return m_hook; }
 
@@ -85,7 +85,7 @@ namespace PVR
       const CPVRClientMenuHook m_hook;
     };
 
-    std::shared_ptr<CPVRTimerInfoTag> GetTimerInfoTagFromItem(const CFileItem &item)
+    std::shared_ptr<CPVRTimerInfoTag> GetTimerInfoTagFromItem(const CFileItem& item)
     {
       std::shared_ptr<CPVRTimerInfoTag> timer;
 
@@ -102,7 +102,7 @@ namespace PVR
     ///////////////////////////////////////////////////////////////////////////////
     // Play epg tag
 
-    bool PlayEpgTag::IsVisible(const CFileItem &item) const
+    bool PlayEpgTag::IsVisible(const CFileItem& item) const
     {
       const std::shared_ptr<CPVREpgInfoTag> epg(item.GetEPGInfoTag());
       if (epg)
@@ -111,7 +111,7 @@ namespace PVR
       return false;
     }
 
-    bool PlayEpgTag::Execute(const CFileItemPtr &item) const
+    bool PlayEpgTag::Execute(const CFileItemPtr& item) const
     {
       return CServiceBroker::GetPVRManager().GUIActions()->PlayEpgTag(item);
     }
@@ -119,7 +119,7 @@ namespace PVR
     ///////////////////////////////////////////////////////////////////////////////
     // Play recording
 
-    bool PlayRecording::IsVisible(const CFileItem &item) const
+    bool PlayRecording::IsVisible(const CFileItem& item) const
     {
       const std::shared_ptr<CPVRRecording> recording = CServiceBroker::GetPVRManager().Recordings()->GetRecordingForEpgTag(item.GetEPGInfoTag());
       if (recording)
@@ -128,7 +128,7 @@ namespace PVR
       return false;
     }
 
-    bool PlayRecording::Execute(const CFileItemPtr &item) const
+    bool PlayRecording::Execute(const CFileItemPtr& item) const
     {
       return CServiceBroker::GetPVRManager().GUIActions()->PlayRecording(item, true /* bCheckResume */);
     }
@@ -136,7 +136,7 @@ namespace PVR
     ///////////////////////////////////////////////////////////////////////////////
     // Show information (epg, recording)
 
-    std::string ShowInformation::GetLabel(const CFileItem &item) const
+    std::string ShowInformation::GetLabel(const CFileItem& item) const
     {
       if (item.GetPVRRecordingInfoTag())
         return g_localizeStrings.Get(19053); /* Recording Information */
@@ -144,7 +144,7 @@ namespace PVR
       return g_localizeStrings.Get(19047); /* Programme information */
     }
 
-    bool ShowInformation::IsVisible(const CFileItem &item) const
+    bool ShowInformation::IsVisible(const CFileItem& item) const
     {
       const std::shared_ptr<CPVRChannel> channel(item.GetPVRChannelInfoTag());
       if (channel)
@@ -163,7 +163,7 @@ namespace PVR
       return false;
     }
 
-    bool ShowInformation::Execute(const CFileItemPtr &item) const
+    bool ShowInformation::Execute(const CFileItemPtr& item) const
     {
       if (item->GetPVRRecordingInfoTag())
         return CServiceBroker::GetPVRManager().GUIActions()->ShowRecordingInfo(item);
@@ -174,7 +174,7 @@ namespace PVR
     ///////////////////////////////////////////////////////////////////////////////
     // Show channel guide
 
-    bool ShowChannelGuide::IsVisible(const CFileItem &item) const
+    bool ShowChannelGuide::IsVisible(const CFileItem& item) const
     {
       const std::shared_ptr<CPVRChannel> channel(item.GetPVRChannelInfoTag());
       if (channel)
@@ -183,7 +183,7 @@ namespace PVR
       return false;
     }
 
-    bool ShowChannelGuide::Execute(const CFileItemPtr &item) const
+    bool ShowChannelGuide::Execute(const CFileItemPtr& item) const
     {
       return CServiceBroker::GetPVRManager().GUIActions()->ShowChannelEPG(item);
     }
@@ -191,7 +191,7 @@ namespace PVR
     ///////////////////////////////////////////////////////////////////////////////
     // Find similar
 
-    bool FindSimilar::IsVisible(const CFileItem &item) const
+    bool FindSimilar::IsVisible(const CFileItem& item) const
     {
       const std::shared_ptr<CPVRChannel> channel(item.GetPVRChannelInfoTag());
       if (channel)
@@ -211,7 +211,7 @@ namespace PVR
       return false;
     }
 
-    bool FindSimilar::Execute(const CFileItemPtr &item) const
+    bool FindSimilar::Execute(const CFileItemPtr& item) const
     {
       return CServiceBroker::GetPVRManager().GUIActions()->FindSimilar(item);
     }
@@ -219,7 +219,7 @@ namespace PVR
     ///////////////////////////////////////////////////////////////////////////////
     // Start recording
 
-    bool StartRecording::IsVisible(const CFileItem &item) const
+    bool StartRecording::IsVisible(const CFileItem& item) const
     {
       const std::shared_ptr<CPVRClient> client = CServiceBroker::GetPVRManager().GetClient(item);
 
@@ -237,7 +237,7 @@ namespace PVR
       return false;
     }
 
-    bool StartRecording::Execute(const CFileItemPtr &item) const
+    bool StartRecording::Execute(const CFileItemPtr& item) const
     {
       return CServiceBroker::GetPVRManager().GUIActions()->AddTimer(item, false);
     }
@@ -245,7 +245,7 @@ namespace PVR
     ///////////////////////////////////////////////////////////////////////////////
     // Stop recording
 
-    bool StopRecording::IsVisible(const CFileItem &item) const
+    bool StopRecording::IsVisible(const CFileItem& item) const
     {
       const std::shared_ptr<CPVRRecording> recording(item.GetPVRRecordingInfoTag());
       if (recording && recording->IsInProgress())
@@ -262,7 +262,7 @@ namespace PVR
       return false;
     }
 
-    bool StopRecording::Execute(const CFileItemPtr &item) const
+    bool StopRecording::Execute(const CFileItemPtr& item) const
     {
       return CServiceBroker::GetPVRManager().GUIActions()->StopRecording(item);
     }
@@ -270,7 +270,7 @@ namespace PVR
     ///////////////////////////////////////////////////////////////////////////////
     // Edit recording
 
-    bool EditRecording::IsVisible(const CFileItem &item) const
+    bool EditRecording::IsVisible(const CFileItem& item) const
     {
       const std::shared_ptr<CPVRRecording> recording(item.GetPVRRecordingInfoTag());
       if (recording && !recording->IsDeleted() && !recording->IsInProgress())
@@ -280,7 +280,7 @@ namespace PVR
       return false;
     }
 
-    bool EditRecording::Execute(const CFileItemPtr &item) const
+    bool EditRecording::Execute(const CFileItemPtr& item) const
     {
       return CServiceBroker::GetPVRManager().GUIActions()->EditRecording(item);
     }
@@ -288,7 +288,7 @@ namespace PVR
     ///////////////////////////////////////////////////////////////////////////////
     // Rename recording
 
-    bool RenameRecording::IsVisible(const CFileItem &item) const
+    bool RenameRecording::IsVisible(const CFileItem& item) const
     {
       const std::shared_ptr<CPVRRecording> recording = item.GetPVRRecordingInfoTag();
       if (recording &&
@@ -301,7 +301,7 @@ namespace PVR
       return false;
     }
 
-    bool RenameRecording::Execute(const CFileItemPtr &item) const
+    bool RenameRecording::Execute(const CFileItemPtr& item) const
     {
       return CServiceBroker::GetPVRManager().GUIActions()->RenameRecording(item);
     }
@@ -309,7 +309,7 @@ namespace PVR
     ///////////////////////////////////////////////////////////////////////////////
     // Delete recording
 
-    std::string DeleteRecording::GetLabel(const CFileItem &item) const
+    std::string DeleteRecording::GetLabel(const CFileItem& item) const
     {
       const std::shared_ptr<CPVRRecording> recording(item.GetPVRRecordingInfoTag());
       if (recording && recording->IsDeleted())
@@ -318,7 +318,7 @@ namespace PVR
       return g_localizeStrings.Get(117); /* Delete */
     }
 
-    bool DeleteRecording::IsVisible(const CFileItem &item) const
+    bool DeleteRecording::IsVisible(const CFileItem& item) const
     {
       const std::shared_ptr<CPVRRecording> recording(item.GetPVRRecordingInfoTag());
       if (recording && !recording->IsInProgress())
@@ -334,7 +334,7 @@ namespace PVR
       return false;
     }
 
-    bool DeleteRecording::Execute(const CFileItemPtr &item) const
+    bool DeleteRecording::Execute(const CFileItemPtr& item) const
     {
       return CServiceBroker::GetPVRManager().GUIActions()->DeleteRecording(item);
     }
@@ -342,7 +342,7 @@ namespace PVR
     ///////////////////////////////////////////////////////////////////////////////
     // Undelete recording
 
-    bool UndeleteRecording::IsVisible(const CFileItem &item) const
+    bool UndeleteRecording::IsVisible(const CFileItem& item) const
     {
       const std::shared_ptr<CPVRRecording> recording(item.GetPVRRecordingInfoTag());
       if (recording && recording->IsDeleted())
@@ -351,7 +351,7 @@ namespace PVR
       return false;
     }
 
-    bool UndeleteRecording::Execute(const CFileItemPtr &item) const
+    bool UndeleteRecording::Execute(const CFileItemPtr& item) const
     {
       return CServiceBroker::GetPVRManager().GUIActions()->UndeleteRecording(item);
     }
@@ -378,7 +378,7 @@ namespace PVR
     ///////////////////////////////////////////////////////////////////////////////
     // Activate / deactivate timer or timer rule
 
-    std::string ToggleTimerState::GetLabel(const CFileItem &item) const
+    std::string ToggleTimerState::GetLabel(const CFileItem& item) const
     {
       const std::shared_ptr<CPVRTimerInfoTag> timer(item.GetPVRTimerInfoTag());
       if (timer && timer->m_state != PVR_TIMER_STATE_DISABLED)
@@ -387,7 +387,7 @@ namespace PVR
       return g_localizeStrings.Get(843); /* Activate */
     }
 
-    bool ToggleTimerState::IsVisible(const CFileItem &item) const
+    bool ToggleTimerState::IsVisible(const CFileItem& item) const
     {
       const std::shared_ptr<CPVRTimerInfoTag> timer(item.GetPVRTimerInfoTag());
       if (!timer || URIUtils::PathEquals(item.GetPath(), CPVRTimersPath::PATH_ADDTIMER) || timer->IsBroken())
@@ -397,7 +397,7 @@ namespace PVR
       return timerType && timerType->SupportsEnableDisable();
     }
 
-    bool ToggleTimerState::Execute(const CFileItemPtr &item) const
+    bool ToggleTimerState::Execute(const CFileItemPtr& item) const
     {
       return CServiceBroker::GetPVRManager().GUIActions()->ToggleTimerState(item);
     }
@@ -405,7 +405,7 @@ namespace PVR
     ///////////////////////////////////////////////////////////////////////////////
     // Add timer rule
 
-    bool AddTimerRule::IsVisible(const CFileItem &item) const
+    bool AddTimerRule::IsVisible(const CFileItem& item) const
     {
       const std::shared_ptr<CPVREpgInfoTag> epg = item.GetEPGInfoTag();
       if (epg && !CServiceBroker::GetPVRManager().Timers()->GetTimerForEpgTag(epg))
@@ -416,7 +416,7 @@ namespace PVR
       return false;
     }
 
-    bool AddTimerRule::Execute(const CFileItemPtr &item) const
+    bool AddTimerRule::Execute(const CFileItemPtr& item) const
     {
       return CServiceBroker::GetPVRManager().GUIActions()->AddTimerRule(item, true, true);
     }
@@ -424,7 +424,7 @@ namespace PVR
     ///////////////////////////////////////////////////////////////////////////////
     // Edit timer rule
 
-    std::string EditTimerRule::GetLabel(const CFileItem &item) const
+    std::string EditTimerRule::GetLabel(const CFileItem& item) const
     {
       const std::shared_ptr<CPVRTimerInfoTag> timer(GetTimerInfoTagFromItem(item));
       if (timer && !URIUtils::PathEquals(item.GetPath(), CPVRTimersPath::PATH_ADDTIMER))
@@ -441,7 +441,7 @@ namespace PVR
       return g_localizeStrings.Get(19304); /* View timer rule */
     }
 
-    bool EditTimerRule::IsVisible(const CFileItem &item) const
+    bool EditTimerRule::IsVisible(const CFileItem& item) const
     {
       const std::shared_ptr<CPVRTimerInfoTag> timer(GetTimerInfoTagFromItem(item));
       if (timer && !URIUtils::PathEquals(item.GetPath(), CPVRTimersPath::PATH_ADDTIMER))
@@ -450,7 +450,7 @@ namespace PVR
       return false;
     }
 
-    bool EditTimerRule::Execute(const CFileItemPtr &item) const
+    bool EditTimerRule::Execute(const CFileItemPtr& item) const
     {
       return CServiceBroker::GetPVRManager().GUIActions()->EditTimerRule(item);
     }
@@ -458,7 +458,7 @@ namespace PVR
     ///////////////////////////////////////////////////////////////////////////////
     // Delete timer rule
 
-    bool DeleteTimerRule::IsVisible(const CFileItem &item) const
+    bool DeleteTimerRule::IsVisible(const CFileItem& item) const
     {
       const std::shared_ptr<CPVRTimerInfoTag> timer(GetTimerInfoTagFromItem(item));
       if (timer && !URIUtils::PathEquals(item.GetPath(), CPVRTimersPath::PATH_ADDTIMER))
@@ -474,7 +474,7 @@ namespace PVR
       return false;
     }
 
-    bool DeleteTimerRule::Execute(const CFileItemPtr &item) const
+    bool DeleteTimerRule::Execute(const CFileItemPtr& item) const
     {
       const std::shared_ptr<CFileItem> parentTimer = CServiceBroker::GetPVRManager().GUIActions()->GetTimerRule(item);
       if (parentTimer)
@@ -486,7 +486,7 @@ namespace PVR
     ///////////////////////////////////////////////////////////////////////////////
     // Edit / View timer
 
-    std::string EditTimer::GetLabel(const CFileItem &item) const
+    std::string EditTimer::GetLabel(const CFileItem& item) const
     {
       const std::shared_ptr<CPVRTimerInfoTag> timer(GetTimerInfoTagFromItem(item));
       if (timer)
@@ -508,13 +508,13 @@ namespace PVR
       return g_localizeStrings.Get(19241); /* View timer */
     }
 
-    bool EditTimer::IsVisible(const CFileItem &item) const
+    bool EditTimer::IsVisible(const CFileItem& item) const
     {
       const std::shared_ptr<CPVRTimerInfoTag> timer(GetTimerInfoTagFromItem(item));
       return timer && (!item.GetEPGInfoTag() || !URIUtils::PathEquals(item.GetPath(), CPVRTimersPath::PATH_ADDTIMER));
     }
 
-    bool EditTimer::Execute(const CFileItemPtr &item) const
+    bool EditTimer::Execute(const CFileItemPtr& item) const
     {
       return CServiceBroker::GetPVRManager().GUIActions()->EditTimer(item);
     }
@@ -522,7 +522,7 @@ namespace PVR
     ///////////////////////////////////////////////////////////////////////////////
     // Rename timer
 
-    bool RenameTimer::IsVisible(const CFileItem &item) const
+    bool RenameTimer::IsVisible(const CFileItem& item) const
     {
       const std::shared_ptr<CPVRTimerInfoTag> timer(item.GetPVRTimerInfoTag());
       if (!timer || URIUtils::PathEquals(item.GetPath(), CPVRTimersPath::PATH_ADDTIMER))
@@ -539,7 +539,7 @@ namespace PVR
       return false;
     }
 
-    bool RenameTimer::Execute(const CFileItemPtr &item) const
+    bool RenameTimer::Execute(const CFileItemPtr& item) const
     {
       return CServiceBroker::GetPVRManager().GUIActions()->RenameTimer(item);
     }
@@ -547,7 +547,7 @@ namespace PVR
     ///////////////////////////////////////////////////////////////////////////////
     // Delete timer
 
-    std::string DeleteTimer::GetLabel(const CFileItem &item) const
+    std::string DeleteTimer::GetLabel(const CFileItem& item) const
     {
       if (item.GetPVRTimerInfoTag())
         return g_localizeStrings.Get(117); /* Delete */
@@ -562,7 +562,7 @@ namespace PVR
       return g_localizeStrings.Get(19060); /* Delete timer */
     }
 
-    bool DeleteTimer::IsVisible(const CFileItem &item) const
+    bool DeleteTimer::IsVisible(const CFileItem& item) const
     {
       const std::shared_ptr<CPVRTimerInfoTag> timer(GetTimerInfoTagFromItem(item));
       if (timer && (!item.GetEPGInfoTag() || !URIUtils::PathEquals(item.GetPath(), CPVRTimersPath::PATH_ADDTIMER)) && !timer->IsRecording())
@@ -574,7 +574,7 @@ namespace PVR
       return false;
     }
 
-    bool DeleteTimer::Execute(const CFileItemPtr &item) const
+    bool DeleteTimer::Execute(const CFileItemPtr& item) const
     {
       return CServiceBroker::GetPVRManager().GUIActions()->DeleteTimer(item);
     }
@@ -582,12 +582,12 @@ namespace PVR
     ///////////////////////////////////////////////////////////////////////////////
     // PVR Client menu hook
 
-    std::string PVRClientMenuHook::GetLabel(const CFileItem &item) const
+    std::string PVRClientMenuHook::GetLabel(const CFileItem& item) const
     {
       return m_hook.GetLabel();
     }
 
-    bool PVRClientMenuHook::IsVisible(const CFileItem &item) const
+    bool PVRClientMenuHook::IsVisible(const CFileItem& item) const
     {
       if (m_hook.IsAllHook())
         return !item.m_bIsFolder && !URIUtils::PathEquals(item.GetPath(), CPVRTimersPath::PATH_ADDTIMER);
@@ -605,7 +605,7 @@ namespace PVR
         return false;
     }
 
-    bool PVRClientMenuHook::Execute(const CFileItemPtr &item) const
+    bool PVRClientMenuHook::Execute(const CFileItemPtr& item) const
     {
       const std::shared_ptr<CPVRClient> client = CServiceBroker::GetPVRManager().GetClient(*item);
       if (!client)

@@ -28,7 +28,7 @@ namespace PVR
     CGUIDialogPVRChannelsOSD(void);
     ~CGUIDialogPVRChannelsOSD(void) override;
     bool OnMessage(CGUIMessage& message) override;
-    bool OnAction(const CAction &action) override;
+    bool OnAction(const CAction& action) override;
 
     /*!
      * @brief CEventStream callback for PVR events.

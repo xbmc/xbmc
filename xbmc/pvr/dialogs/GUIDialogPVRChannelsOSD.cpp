@@ -96,7 +96,7 @@ void CGUIDialogPVRChannelsOSD::OnDeinitWindow(int nextWindowID)
   CGUIDialogPVRItemsViewBase::OnDeinitWindow(nextWindowID);
 }
 
-bool CGUIDialogPVRChannelsOSD::OnAction(const CAction &action)
+bool CGUIDialogPVRChannelsOSD::OnAction(const CAction& action)
 {
   switch (action.GetID())
   {

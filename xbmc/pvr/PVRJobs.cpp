@@ -69,19 +69,19 @@ bool CPVRPlayChannelOnStartupJob::DoWork()
   return CServiceBroker::GetPVRManager().GUIActions()->PlayChannelOnStartup();
 }
 
-CPVREventlogJob::CPVREventlogJob(bool bNotifyUser, bool bError, const std::string &label, const std::string &msg, const std::string &icon)
+CPVREventlogJob::CPVREventlogJob(bool bNotifyUser, bool bError, const std::string& label, const std::string& msg, const std::string& icon)
 {
   AddEvent(bNotifyUser, bError, label, msg, icon);
 }
 
-void CPVREventlogJob::AddEvent(bool bNotifyUser, bool bError, const std::string &label, const std::string &msg, const std::string &icon)
+void CPVREventlogJob::AddEvent(bool bNotifyUser, bool bError, const std::string& label, const std::string& msg, const std::string& icon)
 {
   m_events.emplace_back(Event(bNotifyUser, bError, label, msg, icon));
 }
 
 bool CPVREventlogJob::DoWork()
 {
-  for (const auto &event : m_events)
+  for (const auto& event : m_events)
   {
     if (event.m_bNotifyUser)
       CGUIDialogKaiToast::QueueNotification(

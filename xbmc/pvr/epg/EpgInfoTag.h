@@ -57,7 +57,7 @@ namespace PVR
     bool operator !=(const CPVREpgInfoTag& right) const;
 
     // ISerializable implementation
-    void Serialize(CVariant &value) const override;
+    void Serialize(CVariant& value) const override;
 
     // ISortable implementation
     void ToSortable(SortItem& sortable, Field field) const override;
@@ -162,7 +162,7 @@ namespace PVR
      * @brief Change the event's end time.
      * @param end The new end time.
      */
-    void SetEndFromUTC(const CDateTime &end);
+    void SetEndFromUTC(const CDateTime& end);
 
     /*!
      * @brief Get the duration of this event in seconds.
@@ -358,7 +358,7 @@ namespace PVR
      * @param bUpdateBroadcastId If set to false, the tag BroadcastId (locally unique) will not be checked/updated
      * @return True if something changed, false otherwise.
      */
-    bool Update(const CPVREpgInfoTag &tag, bool bUpdateBroadcastId = true);
+    bool Update(const CPVREpgInfoTag& tag, bool bUpdateBroadcastId = true);
 
     /*!
      * @brief Retrieve the edit decision list (EDL) of an EPG tag.
@@ -395,20 +395,20 @@ namespace PVR
      * @param str The string to tokenize.
      * @return the tokens.
      */
-    static const std::vector<std::string> Tokenize(const std::string &str);
+    static const std::vector<std::string> Tokenize(const std::string& str);
 
     /*!
      * @brief Combine the given strings to a single string. Inserts EPG_STRING_TOKEN_SEPARATOR as separator.
      * @param tokens The tokens.
      * @return the combined string.
      */
-    static const std::string DeTokenize(const std::vector<std::string> &tokens);
+    static const std::string DeTokenize(const std::vector<std::string>& tokens);
 
   private:
     CPVREpgInfoTag();
 
-    CPVREpgInfoTag(const CPVREpgInfoTag &tag) = delete;
-    CPVREpgInfoTag &operator =(const CPVREpgInfoTag &other) = delete;
+    CPVREpgInfoTag(const CPVREpgInfoTag& tag) = delete;
+    CPVREpgInfoTag& operator =(const CPVREpgInfoTag& other) = delete;
 
     /*!
      * @brief Change the genre of this event.

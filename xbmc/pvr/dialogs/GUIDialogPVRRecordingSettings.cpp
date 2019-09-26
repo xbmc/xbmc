@@ -39,7 +39,7 @@ CGUIDialogPVRRecordingSettings::CGUIDialogPVRRecordingSettings() :
   m_loadType = LOAD_EVERY_TIME;
 }
 
-void CGUIDialogPVRRecordingSettings::SetRecording(const std::shared_ptr<CPVRRecording> &recording)
+void CGUIDialogPVRRecordingSettings::SetRecording(const std::shared_ptr<CPVRRecording>& recording)
 {
   if (!recording)
   {
@@ -123,7 +123,7 @@ bool CGUIDialogPVRRecordingSettings::OnSettingChanging(std::shared_ptr<const CSe
     return false;
   }
 
-  const std::string &settingId = setting->GetId();
+  const std::string& settingId = setting->GetId();
 
   if (settingId == SETTING_RECORDING_LIFETIME)
   {
@@ -150,7 +150,7 @@ void CGUIDialogPVRRecordingSettings::OnSettingChanged(std::shared_ptr<const CSet
 
   CGUIDialogSettingsManualBase::OnSettingChanged(setting);
 
-  const std::string &settingId = setting->GetId();
+  const std::string& settingId = setting->GetId();
 
   if (settingId == SETTING_RECORDING_NAME)
   {
@@ -179,7 +179,7 @@ void CGUIDialogPVRRecordingSettings::Save()
 }
 
 void CGUIDialogPVRRecordingSettings::LifetimesFiller(
-  SettingConstPtr setting, std::vector<IntegerSettingOption> &list, int &current, void *data)
+  SettingConstPtr setting, std::vector<IntegerSettingOption>& list, int& current, void *data)
 {
   CGUIDialogPVRRecordingSettings *pThis = static_cast<CGUIDialogPVRRecordingSettings*>(data);
   if (pThis)

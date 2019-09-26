@@ -61,11 +61,11 @@ namespace PVR
   {
   public:
     CPVREventlogJob() = default;
-    CPVREventlogJob(bool bNotifyUser, bool bError, const std::string &label, const std::string &msg, const std::string &icon);
+    CPVREventlogJob(bool bNotifyUser, bool bError, const std::string& label, const std::string& msg, const std::string& icon);
     ~CPVREventlogJob() override = default;
     const char *GetType() const override { return "pvr-eventlog-job"; }
 
-    void AddEvent(bool bNotifyUser, bool bError, const std::string &label, const std::string &msg, const std::string &icon);
+    void AddEvent(bool bNotifyUser, bool bError, const std::string& label, const std::string& msg, const std::string& icon);
 
     bool DoWork() override;
   private:
@@ -77,7 +77,7 @@ namespace PVR
       std::string m_msg;
       std::string m_icon;
 
-      Event(bool bNotifyUser, bool bError, const std::string &label, const std::string &msg, const std::string &icon)
+      Event(bool bNotifyUser, bool bError, const std::string& label, const std::string& msg, const std::string& icon)
       : m_bNotifyUser(bNotifyUser), m_bError(bError), m_label(label), m_msg(msg), m_icon(icon) {}
     };
 

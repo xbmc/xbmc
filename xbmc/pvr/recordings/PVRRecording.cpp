@@ -68,7 +68,7 @@ CPVRRecording::CPVRRecording()
   Reset();
 }
 
-CPVRRecording::CPVRRecording(const PVR_RECORDING &recording, unsigned int iClientId)
+CPVRRecording::CPVRRecording(const PVR_RECORDING& recording, unsigned int iClientId)
 {
   Reset();
 
@@ -229,7 +229,7 @@ bool CPVRRecording::Undelete(void)
   return client && (client->UndeleteRecording(*this) == PVR_ERROR_NO_ERROR);
 }
 
-bool CPVRRecording::Rename(const std::string &strNewName)
+bool CPVRRecording::Rename(const std::string& strNewName)
 {
   m_strTitle = strNewName;
   const std::shared_ptr<CPVRClient> client = CServiceBroker::GetPVRManager().GetClient(m_iClientId);
@@ -260,7 +260,7 @@ bool CPVRRecording::IncrementPlayCount()
   return CVideoInfoTag::IncrementPlayCount();
 }
 
-bool CPVRRecording::SetResumePoint(const CBookmark &resumePoint)
+bool CPVRRecording::SetResumePoint(const CBookmark& resumePoint)
 {
   const std::shared_ptr<CPVRClient> client = CServiceBroker::GetPVRManager().GetClient(m_iClientId);
   if (client && client->GetClientCapabilities().SupportsRecordingsLastPlayedPosition())
@@ -272,7 +272,7 @@ bool CPVRRecording::SetResumePoint(const CBookmark &resumePoint)
   return CVideoInfoTag::SetResumePoint(resumePoint);
 }
 
-bool CPVRRecording::SetResumePoint(double timeInSeconds, double totalTimeInSeconds, const std::string &playerState /* = "" */)
+bool CPVRRecording::SetResumePoint(double timeInSeconds, double totalTimeInSeconds, const std::string& playerState /* = "" */)
 {
   const std::shared_ptr<CPVRClient> client = CServiceBroker::GetPVRManager().GetClient(m_iClientId);
   if (client && client->GetClientCapabilities().SupportsRecordingsLastPlayedPosition())
@@ -307,7 +307,7 @@ CBookmark CPVRRecording::GetResumePoint() const
   return CVideoInfoTag::GetResumePoint();
 }
 
-void CPVRRecording::UpdateMetadata(CVideoDatabase &db)
+void CPVRRecording::UpdateMetadata(CVideoDatabase& db)
 {
   if (m_bGotMetaData || !db.IsOpen())
     return;
@@ -338,7 +338,7 @@ std::vector<PVR_EDL_ENTRY> CPVRRecording::GetEdl() const
   return edls;
 }
 
-void CPVRRecording::Update(const CPVRRecording &tag)
+void CPVRRecording::Update(const CPVRRecording& tag)
 {
   m_strRecordingId    = tag.m_strRecordingId;
   m_iClientId         = tag.m_iClientId;
@@ -404,7 +404,7 @@ void CPVRRecording::UpdatePath(void)
     m_bIsDeleted, m_bRadio, m_strDirectory, m_strTitle, m_iSeason, m_iEpisode, GetYear(), m_strShowTitle, m_strChannelName, m_recordingTime, m_strRecordingId);
 }
 
-const CDateTime &CPVRRecording::RecordingTimeAsLocalTime(void) const
+const CDateTime& CPVRRecording::RecordingTimeAsLocalTime(void) const
 {
   static CDateTime tmp;
   tmp.SetFromUTCDateTime(m_recordingTime);
@@ -442,7 +442,7 @@ CDateTime CPVRRecording::ExpirationTimeAsLocalTime() const
   return ret;
 }
 
-std::string CPVRRecording::GetTitleFromURL(const std::string &url)
+std::string CPVRRecording::GetTitleFromURL(const std::string& url)
 {
   return CPVRRecordingsPath(url).GetTitle();
 }
@@ -499,7 +499,7 @@ bool CPVRRecording::IsInProgress() const
   return GetRecordingTimer() != nullptr;
 }
 
-void CPVRRecording::SetGenre(int iGenreType, int iGenreSubType, const std::string &strGenre)
+void CPVRRecording::SetGenre(int iGenreType, int iGenreSubType, const std::string& strGenre)
 {
   m_iGenreType = iGenreType;
   m_iGenreSubType = iGenreSubType;

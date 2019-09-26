@@ -112,7 +112,7 @@ namespace PVR
      */
     ~CPVRManager(void) override;
 
-    void Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data) override;
+    void Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender, const char *message, const CVariant& data) override;
 
     /*!
      * @brief Get the channel groups container.
@@ -143,7 +143,7 @@ namespace PVR
      * @param item The item containing a PVR recording, a PVR channel, a PVR timer or a PVR EPG event.
      * @return the requested client on success, nullptr otherwise.
      */
-    std::shared_ptr<CPVRClient> GetClient(const CFileItem &item) const;
+    std::shared_ptr<CPVRClient> GetClient(const CFileItem& item) const;
 
     /*!
      * @brief Get the instance of a client that matches the given id.
@@ -216,21 +216,21 @@ namespace PVR
      * @param channel The channel to check.
      * @return True if it's playing, false otherwise.
      */
-    bool IsPlayingChannel(const std::shared_ptr<CPVRChannel> &channel) const;
+    bool IsPlayingChannel(const std::shared_ptr<CPVRChannel>& channel) const;
 
     /*!
      * @brief Check if the given recording is playing.
      * @param recording The recording to check.
      * @return True if it's playing, false otherwise.
      */
-    bool IsPlayingRecording(const std::shared_ptr<CPVRRecording> &recording) const;
+    bool IsPlayingRecording(const std::shared_ptr<CPVRRecording>& recording) const;
 
     /*!
      * @brief Check if the given epg tag is playing.
      * @param epgTag The tag to check.
      * @return True if it's playing, false otherwise.
      */
-    bool IsPlayingEpgTag(const std::shared_ptr<CPVREpgInfoTag> &epgTag) const;
+    bool IsPlayingEpgTag(const std::shared_ptr<CPVREpgInfoTag>& epgTag) const;
 
     /*!
      * @return True while the PVRManager is initialising.
@@ -357,7 +357,7 @@ namespace PVR
      * @brief Set the current playing group, used to load the right channel.
      * @param group The new group.
      */
-    void SetPlayingGroup(const std::shared_ptr<CPVRChannelGroup> &group);
+    void SetPlayingGroup(const std::shared_ptr<CPVRChannelGroup>& group);
 
     /*!
      * @brief Get the current playing group, used to load the right channel.
@@ -490,13 +490,13 @@ namespace PVR
      * @param channel The channel which is updated
      * @param time The last watched time to set
      */
-    void UpdateLastWatched(const std::shared_ptr<CPVRChannel> &channel, const CDateTime& time);
+    void UpdateLastWatched(const std::shared_ptr<CPVRChannel>& channel, const CDateTime& time);
 
     /*!
      * @brief Set the playing group to the first group the channel is in if the given channel is not part of the current playing group
      * @param channel The channel
      */
-    void SetPlayingGroup(const std::shared_ptr<CPVRChannel> &channel);
+    void SetPlayingGroup(const std::shared_ptr<CPVRChannel>& channel);
 
     /*!
      * @brief Executes "pvrpowermanagement.setwakeupcmd"
