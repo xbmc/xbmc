@@ -9,10 +9,14 @@
 #pragma once
 
 #include "AddonClass.h"
-#include "pvr/PVRTypes.h"
-#include "pvr/channels/PVRRadioRDSInfoTag.h"
 
 #include <memory>
+
+namespace PVR
+{
+  class CPVRChannel;
+  class CPVRRadioRDSInfoTag;
+}
 
 namespace XBMCAddon
 {

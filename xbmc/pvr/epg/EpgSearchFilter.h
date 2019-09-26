@@ -9,7 +9,6 @@
 #pragma once
 
 #include "XBDateTime.h"
-#include "pvr/PVRTypes.h"
 #include "pvr/channels/PVRChannelNumber.h"
 
 #include <memory>

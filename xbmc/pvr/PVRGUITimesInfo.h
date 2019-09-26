@@ -9,13 +9,15 @@
 #pragma once
 
 #include "XBDateTime.h"
-#include "pvr/PVRTypes.h"
 #include "threads/CriticalSection.h"
 
 #include <memory>
 
 namespace PVR
 {
+  class CPVRChannel;
+  class CPVREpgInfoTag;
+
   class CPVRGUITimesInfo
   {
   public:

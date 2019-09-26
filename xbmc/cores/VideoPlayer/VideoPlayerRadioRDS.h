@@ -19,6 +19,12 @@
 
 class CDVDStreamInfo;
 
+namespace PVR
+{
+  class CPVRChannel;
+  class CPVRRadioRDSInfoTag;
+}
+
 /// --- CDVDRadioRDSData ------------------------------------------------------------
 
 #define UECP_DATA_START               0xFE    /*!< A data record starts with the start byte */

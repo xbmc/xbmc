@@ -9,7 +9,6 @@
 #pragma once
 
 #include "addons/kodi-addon-dev-kit/include/kodi/xbmc_pvr_types.h"
-#include "pvr/PVRTypes.h"
 
 #include <memory>
 #include <string>

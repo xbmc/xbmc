@@ -11,7 +11,6 @@
 #include "pvr/PVRChannelNumberInputHandler.h"
 #include "pvr/PVRGUIChannelNavigator.h"
 #include "pvr/PVRSettings.h"
-#include "pvr/PVRTypes.h"
 #include "threads/CriticalSection.h"
 
 #include <memory>
@@ -37,6 +36,9 @@ namespace PVR
     FAILED,
     SUCCESS
   };
+
+  class CPVRRecording;
+  class CPVRTimerInfoTag;
 
   class CPVRChannelSwitchingInputHandler : public CPVRChannelNumberInputHandler
   {

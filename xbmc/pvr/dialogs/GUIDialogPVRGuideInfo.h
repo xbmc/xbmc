@@ -9,7 +9,6 @@
 #pragma once
 
 #include "guilib/GUIDialog.h"
-#include "pvr/PVRTypes.h"
 
 #include <memory>
 
@@ -17,6 +16,8 @@ class CGUIMessage;
 
 namespace PVR
 {
+  class CPVREpgInfoTag;
+
   class CGUIDialogPVRGuideInfo : public CGUIDialog
   {
   public:

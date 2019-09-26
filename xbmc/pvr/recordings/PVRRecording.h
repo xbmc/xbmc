@@ -25,7 +25,6 @@
  */
 
 #include "XBDateTime.h"
-#include "pvr/PVRTypes.h"
 #include "threads/SystemClock.h"
 #include "video/Bookmark.h"
 #include "video/VideoInfoTag.h"
@@ -41,6 +40,7 @@ struct PVR_RECORDING;
 
 namespace PVR
 {
+  class CPVRChannel;
   class CPVRTimerInfoTag;
 
   /*!

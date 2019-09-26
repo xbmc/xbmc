@@ -24,6 +24,7 @@ namespace PVR
 {
   enum class PVREvent;
 
+  class CPVRChannelGroup;
   class CGUIEPGGridContainer;
   class CPVRRefreshTimelineItemsThread;
 

@@ -9,7 +9,6 @@
 #pragma once
 
 #include "pvr/PVRChannelNumberInputHandler.h"
-#include "pvr/PVRTypes.h"
 #include "pvr/dialogs/GUIDialogPVRItemsViewBase.h"
 #include "threads/SystemClock.h"
 
@@ -20,6 +19,8 @@
 namespace PVR
 {
   enum class PVREvent;
+
+  class CPVRChannelGroup;
 
   class CGUIDialogPVRChannelsOSD : public CGUIDialogPVRItemsViewBase, public CPVRChannelNumberInputHandler
   {

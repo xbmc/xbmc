@@ -10,7 +10,6 @@
 
 #include "dialogs/GUIDialogContextMenu.h"
 #include "guilib/GUIDialog.h"
-#include "pvr/PVRTypes.h"
 #include "view/GUIViewControl.h"
 
 #include <memory>
@@ -22,6 +21,7 @@ class CGUIMessage;
 
 namespace PVR
 {
+  class CPVRChannelGroup;
   class CPVRClient;
 
   class CGUIDialogPVRChannelManager : public CGUIDialog

@@ -9,7 +9,6 @@
 #pragma once
 
 #include "dbwrappers/Database.h"
-#include "pvr/PVRTypes.h"
 #include "threads/CriticalSection.h"
 
 #include <map>
@@ -17,8 +16,12 @@
 
 namespace PVR
 {
+  class CPVRChannel;
+  class CPVRChannelGroup;
   class CPVRChannelGroups;
   class CPVRClient;
+  class CPVRTimerInfoTag;
+  class CPVRTimers;
 
   /** The PVR database */
 

@@ -11,7 +11,6 @@
 #include "XBDateTime.h"
 #include "addons/kodi-addon-dev-kit/include/kodi/xbmc_pvr_types.h"
 #include "pvr/PVRSettings.h"
-#include "pvr/PVRTypes.h"
 #include "threads/CriticalSection.h"
 #include "threads/Event.h"
 #include "threads/Thread.h"

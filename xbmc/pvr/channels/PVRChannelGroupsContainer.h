@@ -8,7 +8,6 @@
 
 #pragma once
 
-#include "pvr/PVRTypes.h"
 #include "threads/CriticalSection.h"
 
 #include <memory>
@@ -16,6 +15,7 @@
 namespace PVR
 {
   class CPVRChannel;
+  class CPVRChannelGroup;
   class CPVRChannelGroups;
   class CPVREpgInfoTag;
 

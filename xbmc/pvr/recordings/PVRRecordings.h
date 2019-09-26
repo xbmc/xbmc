@@ -8,7 +8,6 @@
 
 #pragma once
 
-#include "pvr/PVRTypes.h"
 #include "threads/CriticalSection.h"
 
 #include <map>
@@ -20,6 +19,7 @@ class CVideoDatabase;
 
 namespace PVR
 {
+  class CPVREpgInfoTag;
   class CPVRRecording;
   class CPVRRecordingUid;
   class CPVRRecordingsPath;

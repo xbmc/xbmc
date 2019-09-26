@@ -9,7 +9,6 @@
 #pragma once
 
 #include "XBDateTime.h"
-#include "pvr/PVRTypes.h"
 #include "pvr/timers/PVRTimerType.h"
 #include "threads/CriticalSection.h"
 #include "threads/SystemClock.h"

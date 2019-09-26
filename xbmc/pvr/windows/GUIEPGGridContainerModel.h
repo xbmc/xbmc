@@ -9,7 +9,6 @@
 #pragma once
 
 #include "XBDateTime.h"
-#include "pvr/PVRTypes.h"
 
 #include <memory>
 #include <vector>
@@ -26,6 +25,8 @@ namespace PVR
     float width = 0.0f;
     int progIndex = -1;
   };
+
+  class CPVREpgInfoTag;
 
   class CGUIEPGGridContainerModel
   {

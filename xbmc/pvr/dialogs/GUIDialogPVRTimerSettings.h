@@ -9,7 +9,6 @@
 #pragma once
 
 #include "addons/kodi-addon-dev-kit/include/kodi/xbmc_pvr_types.h" // PVR_CHANNEL_INVALID_UID
-#include "pvr/PVRTypes.h"
 #include "settings/SettingConditions.h"
 #include "settings/dialogs/GUIDialogSettingsManualBase.h"
 #include "settings/lib/SettingDependency.h"
@@ -26,6 +25,9 @@ struct IntegerSettingOption;
 
 namespace PVR
 {
+  class CPVRTimerInfoTag;
+  class CPVRTimerType;
+
   class CGUIDialogPVRTimerSettings : public CGUIDialogSettingsManualBase
   {
   public:

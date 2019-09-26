@@ -8,7 +8,6 @@
 
 #pragma once
 
-#include "pvr/PVRTypes.h"
 #include "threads/CriticalSection.h"
 
 #include <memory>
@@ -20,6 +19,8 @@ namespace PVR
     NO_SWITCH, // no channel switch
     INSTANT_OR_DELAYED_SWITCH // switch according to SETTING_PVRPLAYBACK_CHANNELENTRYTIMEOUT
   };
+
+  class CPVRChannel;
 
   class CPVRGUIChannelNavigator
   {

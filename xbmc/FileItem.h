@@ -17,7 +17,6 @@
 #include "XBDateTime.h"
 #include "addons/IAddon.h"
 #include "guilib/GUIListItem.h"
-#include "pvr/PVRTypes.h"
 #include "threads/CriticalSection.h"
 #include "utils/IArchivable.h"
 #include "utils/ISerializable.h"
@@ -43,6 +42,14 @@ namespace GAME
 {
   class CGameInfoTag;
 }
+}
+
+namespace PVR
+{
+  class CPVRChannel;
+  class CPVREpgInfoTag;
+  class CPVRRecording;
+  class CPVRTimerInfoTag;
 }
 
 class CAlbum;

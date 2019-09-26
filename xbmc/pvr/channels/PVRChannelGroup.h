@@ -9,7 +9,6 @@
 #pragma once
 
 #include "XBDateTime.h"
-#include "pvr/PVRTypes.h"
 #include "pvr/channels/PVRChannelNumber.h"
 #include "pvr/channels/PVRChannelsPath.h"
 #include "settings/lib/ISettingCallback.h"
@@ -30,6 +29,9 @@ namespace PVR
 #define PVR_GROUP_TYPE_USER_DEFINED 2
 
   enum class PVREvent;
+
+  class CPVRChannel;
+  class CPVREpgInfoTag;
 
   struct PVRChannelGroupMember
   {

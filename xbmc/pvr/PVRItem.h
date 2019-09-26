@@ -8,7 +8,6 @@
 
 #pragma once
 
-#include "pvr/PVRTypes.h"
 
 #include <memory>
 
@@ -16,6 +15,11 @@ class CFileItem;
 
 namespace PVR
 {
+  class CPVRChannel;
+  class CPVREpgInfoTag;
+  class CPVRRecording;
+  class CPVRTimerInfoTag;
+
   class CPVRItem
   {
   public:

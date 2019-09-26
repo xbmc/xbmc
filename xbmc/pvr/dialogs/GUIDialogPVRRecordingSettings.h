@@ -8,7 +8,6 @@
 
 #pragma once
 
-#include "pvr/PVRTypes.h"
 #include "settings/dialogs/GUIDialogSettingsManualBase.h"
 
 #include <memory>
@@ -22,6 +21,8 @@ struct IntegerSettingOption;
 
 namespace PVR
 {
+  class CPVRRecording;
+
   class CGUIDialogPVRRecordingSettings : public CGUIDialogSettingsManualBase
   {
   public:

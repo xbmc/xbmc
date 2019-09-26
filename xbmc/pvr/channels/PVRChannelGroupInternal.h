@@ -8,7 +8,6 @@
 
 #pragma once
 
-#include "pvr/PVRTypes.h"
 #include "pvr/channels/PVRChannelGroup.h"
 
 #include <memory>

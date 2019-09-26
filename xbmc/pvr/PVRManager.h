@@ -12,7 +12,6 @@
 #include "interfaces/IAnnouncer.h"
 #include "pvr/PVRActionListener.h"
 #include "pvr/PVRSettings.h"
-#include "pvr/PVRTypes.h"
 #include "pvr/epg/EpgContainer.h"
 #include "threads/CriticalSection.h"
 #include "threads/Event.h"
@@ -29,9 +28,18 @@ class CStopWatch;
 
 namespace PVR
 {
+  class CPVRChannel;
+  class CPVRChannelGroup;
+  class CPVRChannelGroupsContainer;
   class CPVRClient;
+  class CPVRClients;
+  class CPVRDatabase;
+  class CPVRGUIActions;
   class CPVRGUIInfo;
   class CPVRGUIProgressHandler;
+  class CPVRRecording;
+  class CPVRRecordings;
+  class CPVRTimers;
 
   enum class PVREvent
   {

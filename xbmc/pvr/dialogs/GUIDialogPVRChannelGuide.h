@@ -8,13 +8,14 @@
 
 #pragma once
 
-#include "pvr/PVRTypes.h"
 #include "pvr/dialogs/GUIDialogPVRItemsViewBase.h"
 
 #include <memory>
 
 namespace PVR
 {
+  class CPVRChannel;
+
   class CGUIDialogPVRChannelGuide : public CGUIDialogPVRItemsViewBase
   {
   public:

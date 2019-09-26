@@ -9,6 +9,7 @@
 #include "InfoTagRadioRDS.h"
 
 #include "pvr/channels/PVRChannel.h"
+#include "pvr/channels/PVRRadioRDSInfoTag.h"
 #include "utils/StringUtils.h"
 
 namespace XBMCAddon

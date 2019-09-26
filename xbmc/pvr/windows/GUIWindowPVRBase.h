@@ -8,7 +8,6 @@
 
 #pragma once
 
-#include "pvr/PVRTypes.h"
 #include "threads/CriticalSection.h"
 #include "threads/SystemClock.h"
 #include "windows/GUIMediaWindow.h"
@@ -49,6 +48,7 @@ namespace PVR
     EPG_SELECT_ACTION_SMART_SELECT   = 5
   };
 
+  class CPVRChannelGroup;
   class CGUIPVRChannelGroupsSelector;
 
   class CGUIWindowPVRBase : public CGUIMediaWindow

@@ -10,7 +10,6 @@
 
 #include "XBDateTime.h"
 #include "pvr/PVRSettings.h"
-#include "pvr/PVRTypes.h"
 #include "threads/Thread.h"
 
 #include <map>
@@ -23,6 +22,8 @@ namespace PVR
   enum class TimerOperationResult;
   enum class PVREvent;
 
+  class CPVRChannel;
+  class CPVREpgInfoTag;
   class CPVRTimerInfoTag;
   class CPVRTimersPath;
 

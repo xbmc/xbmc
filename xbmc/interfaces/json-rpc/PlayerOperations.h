@@ -10,11 +10,16 @@
 
 #include "FileItemHandler.h"
 #include "JSONRPC.h"
-#include "pvr/PVRTypes.h"
 
 #include <string>
 
 class CVariant;
+
+namespace PVR
+{
+  class CPVRChannelGroup;
+  class CPVREpgInfoTag;
+}
 
 namespace JSONRPC
 {
