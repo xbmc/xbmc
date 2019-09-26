@@ -10971,7 +10971,13 @@ msgctxt "#19315"
 msgid "Backend order"
 msgstr ""
 
-#empty strings from id 19316 to 19498
+#. pvr settings "Start all group channel numbers from 1" setting label
+#: system/settings/settings.xml
+msgctxt "#19316"
+msgid "Start group channel numbers from 1"
+msgstr ""
+
+#empty strings from id 19317 to 19498
 
 #. label for epg genre value
 #: xbmc/pvr/epg/Epg.cpp
@@ -18550,12 +18556,12 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36205"
-msgid "Sort the channels by channel number from the backend, but use own numbering for channels."
+msgid "Sort the channels by channel number from the backend, but use local numbering for channels."
 msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36206"
-msgid "Use the channel numbering from the backend, instead of configuring them manually in the channel manager. Only works with one enabled PVR add-on!"
+msgid "Use the channel numbering from the backend. Only works with one enabled PVR add-on!"
 msgstr ""
 
 #: system/settings/settings.xml
@@ -19092,7 +19098,10 @@ msgctxt "#36305"
 msgid "This category contains the settings for how picture file lists are handled."
 msgstr ""
 
-#empty string with id 36306
+#: system/settings/settings.xml
+msgctxt "#36306"
+msgid "If not using backend channel numbers then start all groups channel numbers from 1."
+msgstr ""
 
 #. Description of setting with label #13360 "Automatically generate thumbnails"
 #: system/settings/settings.xml

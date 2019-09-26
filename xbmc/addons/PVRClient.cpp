@@ -1494,7 +1494,7 @@ void CPVRClient::cb_transfer_channel_group_member(void *kodiInstance, const ADDO
   else if (group->IsRadio() == channel->IsRadio())
   {
     /* transfer this entry to the group */
-    group->AddToGroup(channel, CPVRChannelNumber(member->iChannelNumber, member->iSubChannelNumber), member->iOrder, true);
+    group->AddToGroup(channel, CPVRChannelNumber(), member->iOrder, true, CPVRChannelNumber(member->iChannelNumber, member->iSubChannelNumber));
   }
 }
 
@@ -1536,7 +1536,7 @@ void CPVRClient::cb_transfer_channel_entry(void *kodiInstance, const ADDON_HANDL
 
   /* transfer this entry to the internal channels group */
   CPVRChannelPtr transferChannel(new CPVRChannel(*channel, client->GetID()));
-  kodiChannels->UpdateFromClient(transferChannel, CPVRChannelNumber(), channel->iOrder);
+  kodiChannels->UpdateFromClient(transferChannel, CPVRChannelNumber(), channel->iOrder, transferChannel->ClientChannelNumber());
 }
 
 void CPVRClient::cb_transfer_recording_entry(void *kodiInstance, const ADDON_HANDLE handle, const PVR_RECORDING *recording)

@@ -124,7 +124,9 @@ void CPVRDatabase::CreateTables()
         "idGroup           integer, "
         "iChannelNumber    integer, "
         "iSubChannelNumber integer, "
-        "iOrder            integer"
+        "iOrder            integer, "
+        "iClientChannelNumber    integer, "
+        "iClientSubChannelNumber integer"
       ")"
   );
 
@@ -207,6 +209,14 @@ void CPVRDatabase::UpdateTables(int iVersion)
   {
     m_pDS->exec("ALTER TABLE map_channelgroups_channels ADD iOrder integer");
     m_pDS->exec("UPDATE map_channelgroups_channels SET iOrder = 0");
+  }
+
+  if (iVersion < 36)
+  {
+    m_pDS->exec("ALTER TABLE map_channelgroups_channels ADD iClientChannelNumber integer");
+    m_pDS->exec("UPDATE map_channelgroups_channels SET iClientChannelNumber = 0");
+    m_pDS->exec("ALTER TABLE map_channelgroups_channels ADD iClientSubChannelNumber integer");
+    m_pDS->exec("UPDATE map_channelgroups_channels SET iClientSubChannelNumber = 0");
   }
 }
 
@@ -300,7 +310,8 @@ int CPVRDatabase::Get(CPVRChannelGroup &results, bool bCompressDB)
 
   std::string strQuery = PrepareSQL("SELECT channels.idChannel, channels.iUniqueId, channels.bIsRadio, channels.bIsHidden, channels.bIsUserSetIcon, channels.bIsUserSetName, "
       "channels.sIconPath, channels.sChannelName, channels.bIsVirtual, channels.bEPGEnabled, channels.sEPGScraper, channels.iLastWatched, channels.iClientId, channels.bIsLocked, "
-      "map_channelgroups_channels.iChannelNumber, map_channelgroups_channels.iSubChannelNumber, map_channelgroups_channels.iOrder, channels.idEpg, channels.bHasArchive "
+      "map_channelgroups_channels.iChannelNumber, map_channelgroups_channels.iSubChannelNumber, map_channelgroups_channels.iOrder, map_channelgroups_channels.iClientChannelNumber, "
+      "map_channelgroups_channels.iClientSubChannelNumber, channels.idEpg, channels.bHasArchive "
       "FROM map_channelgroups_channels "
       "LEFT JOIN channels ON channels.idChannel = map_channelgroups_channels.idChannel "
       "WHERE map_channelgroups_channels.idGroup = %u", results.GroupID());
@@ -334,7 +345,9 @@ int CPVRDatabase::Get(CPVRChannelGroup &results, bool bCompressDB)
         PVRChannelGroupMember newMember(channel,
                                         CPVRChannelNumber(static_cast<unsigned int>(m_pDS->fv("iChannelNumber").get_asInt()),
                                                           static_cast<unsigned int>(m_pDS->fv("iSubChannelNumber").get_asInt())),
-                                        0, static_cast<int>(m_pDS->fv("iOrder").get_asInt()));
+                                        0, static_cast<int>(m_pDS->fv("iOrder").get_asInt()),
+                                        CPVRChannelNumber(static_cast<unsigned int>(m_pDS->fv("iClientChannelNumber").get_asInt()),
+                                                          static_cast<unsigned int>(m_pDS->fv("iClientSubChannelNumber").get_asInt())));
         results.m_sortedMembers.emplace_back(newMember);
         results.m_members.insert(std::make_pair(channel->StorageId(), newMember));
 
@@ -617,7 +630,7 @@ int CPVRDatabase::Get(CPVRChannelGroup &group, const CPVRChannelGroup &allGroup)
 
   CSingleLock lock(m_critSection);
 
-  const std::string strQuery = PrepareSQL("SELECT idChannel, iChannelNumber, iSubChannelNumber, iOrder FROM map_channelgroups_channels "
+  const std::string strQuery = PrepareSQL("SELECT idChannel, iChannelNumber, iSubChannelNumber, iOrder, iClientChannelNumber, iClientSubChannelNumber FROM map_channelgroups_channels "
                                           "WHERE idGroup = %u ORDER BY iChannelNumber", group.GroupID());
   if (ResultQuery(strQuery))
   {
@@ -642,7 +655,9 @@ int CPVRDatabase::Get(CPVRChannelGroup &group, const CPVRChannelGroup &allGroup)
           PVRChannelGroupMember newMember(channel->second,
                                           CPVRChannelNumber(static_cast<unsigned int>(m_pDS->fv("iChannelNumber").get_asInt()),
                                                             static_cast<unsigned int>(m_pDS->fv("iSubChannelNumber").get_asInt())),
-                                          0, static_cast<int>(m_pDS->fv("iOrder").get_asInt()));
+                                          0, static_cast<int>(m_pDS->fv("iOrder").get_asInt()),
+                                          CPVRChannelNumber(static_cast<unsigned int>(m_pDS->fv("iClientChannelNumber").get_asInt()),
+                                                            static_cast<unsigned int>(m_pDS->fv("iClientSubChannelNumber").get_asInt())));
           group.m_sortedMembers.emplace_back(newMember);
           group.m_members.insert(std::make_pair(channel->second->StorageId(), newMember));
           ++iReturn;
@@ -724,16 +739,18 @@ bool CPVRDatabase::PersistGroupMembers(const CPVRChannelGroup &group)
   {
     for (const auto& groupMember : group.m_sortedMembers)
     {
-      const std::string strWhereClause = PrepareSQL("idChannel = %u AND idGroup = %u AND iChannelNumber = %u AND iSubChannelNumber = %u AND iOrder = %u",
-          groupMember.channel->ChannelID(), group.GroupID(), groupMember.channelNumber.GetChannelNumber(), groupMember.channelNumber.GetSubChannelNumber());
+      const std::string strWhereClause = PrepareSQL("idChannel = %u AND idGroup = %u AND iChannelNumber = %u AND iSubChannelNumber = %u AND iOrder = %u AND iClientChannelNumber = %u AND iClientSubChannelNumber = %u",
+          groupMember.channel->ChannelID(), group.GroupID(), groupMember.channelNumber.GetChannelNumber(), groupMember.channelNumber.GetSubChannelNumber(), groupMember.iOrder,
+          groupMember.clientChannelNumber.GetChannelNumber(), groupMember.clientChannelNumber.GetSubChannelNumber());
 
       const std::string strValue = GetSingleValue("map_channelgroups_channels", "idChannel", strWhereClause);
       if (strValue.empty())
       {
         strQuery = PrepareSQL("REPLACE INTO map_channelgroups_channels ("
-            "idGroup, idChannel, iChannelNumber, iSubChannelNumber, iOrder) "
-            "VALUES (%i, %i, %i, %i, %i);",
-            group.GroupID(), groupMember.channel->ChannelID(), groupMember.channelNumber.GetChannelNumber(), groupMember.channelNumber.GetSubChannelNumber(), groupMember.iOrder);
+            "idGroup, idChannel, iChannelNumber, iSubChannelNumber, iOrder, iClientChannelNumber, iClientSubChannelNumber) "
+            "VALUES (%i, %i, %i, %i, %i, %i, %i);",
+            group.GroupID(), groupMember.channel->ChannelID(), groupMember.channelNumber.GetChannelNumber(), groupMember.channelNumber.GetSubChannelNumber(), groupMember.iOrder,
+            groupMember.clientChannelNumber.GetChannelNumber(), groupMember.clientChannelNumber.GetSubChannelNumber());
         QueueInsertQuery(strQuery);
       }
     }

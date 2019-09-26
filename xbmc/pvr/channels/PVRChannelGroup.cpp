@@ -80,7 +80,8 @@ void CPVRChannelGroup::OnInit(void)
 {
   CServiceBroker::GetSettingsComponent()->GetSettings()->RegisterCallback(this, {
     CSettings::SETTING_PVRMANAGER_BACKENDCHANNELORDER,
-    CSettings::SETTING_PVRMANAGER_USEBACKENDCHANNELNUMBERS
+    CSettings::SETTING_PVRMANAGER_USEBACKENDCHANNELNUMBERS,
+    CSettings::SETTING_PVRMANAGER_STARTGROUPCHANNELNUMBERSFROMONE
   });
 }
 
@@ -91,7 +92,9 @@ bool CPVRChannelGroup::Load(std::vector<std::shared_ptr<CPVRChannel>>& channelsT
 
   const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
   m_bUsingBackendChannelOrder   = settings->GetBool(CSettings::SETTING_PVRMANAGER_BACKENDCHANNELORDER);
-  m_bUsingBackendChannelNumbers = settings->GetBool(CSettings::SETTING_PVRMANAGER_USEBACKENDCHANNELNUMBERS);
+  m_bUsingBackendChannelNumbers = settings->GetBool(CSettings::SETTING_PVRMANAGER_USEBACKENDCHANNELNUMBERS) &&
+                                  CServiceBroker::GetPVRManager().Clients()->EnabledClientAmount() == 1;
+  m_bStartGroupChannelNumbersFromOne = settings->GetBool(CSettings::SETTING_PVRMANAGER_STARTGROUPCHANNELNUMBERSFROMONE) && !m_bUsingBackendChannelNumbers;
 
   int iChannelCount = m_iGroupId > 0 ? LoadFromDb() : 0;
   CLog::LogFC(LOGDEBUG, LOGPVR, "%d channels loaded from the database for group '%s'", iChannelCount, GroupName().c_str());
@@ -185,10 +188,10 @@ struct sortByClientChannelNumber
   {
     if (channel1.iClientPriority == channel2.iClientPriority)
     {
-      if (channel1.channel->ClientChannelNumber() == channel2.channel->ClientChannelNumber())
+      if (channel1.clientChannelNumber == channel2.clientChannelNumber)
         return channel1.channel->ChannelName() < channel2.channel->ChannelName();
 
-      return channel1.channel->ClientChannelNumber() < channel2.channel->ClientChannelNumber();
+      return channel1.clientChannelNumber < channel2.clientChannelNumber;
     }
     return channel1.iClientPriority > channel2.iClientPriority;
   }
@@ -202,16 +205,21 @@ struct sortByChannelNumber
   }
 };
 
+void CPVRChannelGroup::Sort()
+{
+  if (m_bUsingBackendChannelOrder)
+    SortByClientChannelNumber();
+  else
+    SortByChannelNumber();
+}
+
 bool CPVRChannelGroup::SortAndRenumber(void)
 {
   if (PreventSortAndRenumber())
     return true;
 
   CSingleLock lock(m_critSection);
-  if (m_bUsingBackendChannelOrder)
-    SortByClientChannelNumber();
-  else
-    SortByChannelNumber();
+  Sort();
 
   bool bReturn = Renumber();
   return bReturn;
@@ -330,11 +338,18 @@ std::shared_ptr<CPVRChannel> CPVRChannelGroup::GetLastPlayedChannel(int iCurrent
   return returnChannel;
 }
 
-CPVRChannelNumber CPVRChannelGroup::GetChannelNumber(const CPVRChannelPtr &channel) const
+CPVRChannelNumber CPVRChannelGroup::GetChannelNumber(const std::shared_ptr<CPVRChannel>& channel) const
 {
   CSingleLock lock(m_critSection);
   const PVRChannelGroupMember& member(GetByUniqueID(channel->StorageId()));
   return member.channelNumber;
+}
+
+CPVRChannelNumber CPVRChannelGroup::GetClientChannelNumber(const std::shared_ptr<CPVRChannel>& channel) const
+{
+  CSingleLock lock(m_critSection);
+  const PVRChannelGroupMember& member(GetByUniqueID(channel->StorageId()));
+  return member.clientChannelNumber;
 }
 
 std::shared_ptr<CPVRChannel> CPVRChannelGroup::GetByChannelNumber(const CPVRChannelNumber& channelNumber) const
@@ -343,7 +358,8 @@ std::shared_ptr<CPVRChannel> CPVRChannelGroup::GetByChannelNumber(const CPVRChan
 
   for (const auto& groupMember : m_sortedMembers)
   {
-    if (groupMember.channelNumber == channelNumber)
+    CPVRChannelNumber activeChannelNumber = m_bUsingBackendChannelNumbers ? groupMember.clientChannelNumber : groupMember.channelNumber;
+    if (activeChannelNumber == channelNumber)
       return groupMember.channel;
   }
 
@@ -436,7 +452,10 @@ void CPVRChannelGroup::GetChannelNumbers(std::vector<std::string>& channelNumber
 {
   CSingleLock lock(m_critSection);
   for (const auto& member : m_sortedMembers)
-    channelNumbers.emplace_back(member.channelNumber.FormattedChannelNumber());
+  {
+    CPVRChannelNumber activeChannelNumber = m_bUsingBackendChannelNumbers ? member.clientChannelNumber : member.channelNumber;
+    channelNumbers.emplace_back(activeChannelNumber.FormattedChannelNumber());
+  }
 }
 
 int CPVRChannelGroup::LoadFromDb(bool bCompress /* = false */)
@@ -475,9 +494,9 @@ bool CPVRChannelGroup::AddAndUpdateChannels(const CPVRChannelGroup &channels, bo
     if (!IsGroupMember(existingChannel.channel))
     {
       AddToGroup(existingChannel.channel,
-                 bUseBackendChannelNumbers ? it->second.channel->ClientChannelNumber() : CPVRChannelNumber(),
+                 it->second.channelNumber,
                  it->second.iOrder,
-                 bUseBackendChannelNumbers);
+                 bUseBackendChannelNumbers, it->second.clientChannelNumber);
 
       bReturn = true;
       CLog::Log(LOGINFO,"Added %s channel '%s' to group '%s'",
@@ -510,6 +529,17 @@ void CPVRChannelGroup::UpdateClientOrder()
 
   for (const auto& member : GetMembers())
     member.channel->SetClientOrder(member.iOrder);
+}
+
+void CPVRChannelGroup::UpdateChannelNumbers()
+{
+  CSingleLock lock(m_critSection);
+
+  for (const auto& member : GetMembers())
+  {
+    member.channel->SetChannelNumber(m_bUsingBackendChannelNumbers ? member.clientChannelNumber : member.channelNumber);
+    member.channel->SetClientChannelNumber(member.clientChannelNumber);
+  }
 }
 
 std::vector<CPVRChannelPtr> CPVRChannelGroup::RemoveDeletedChannels(const CPVRChannelGroup &channels)
@@ -607,7 +637,7 @@ bool CPVRChannelGroup::RemoveFromGroup(const CPVRChannelPtr &channel)
   return bReturn;
 }
 
-bool CPVRChannelGroup::AddToGroup(const CPVRChannelPtr& channel, const CPVRChannelNumber& channelNumber, int iOrder, bool bUseBackendChannelNumbers)
+bool CPVRChannelGroup::AddToGroup(const std::shared_ptr<CPVRChannel>& channel, const CPVRChannelNumber& channelNumber, int iOrder, bool bUseBackendChannelNumbers, const CPVRChannelNumber& clientChannelNumber /* = {} */)
 {
   bool bReturn(false);
   CSingleLock lock(m_critSection);
@@ -621,12 +651,12 @@ bool CPVRChannelGroup::AddToGroup(const CPVRChannelPtr& channel, const CPVRChann
     if (realChannel.channel)
     {
       unsigned int iChannelNumber = channelNumber.GetChannelNumber();
-      if (!channelNumber.IsValid() ||
-          (!bUseBackendChannelNumbers && (iChannelNumber > m_members.size() + 1)))
-        iChannelNumber = m_members.size() + 1;
+      if (!channelNumber.IsValid())
+        iChannelNumber = realChannel.channelNumber.GetChannelNumber();
 
       PVRChannelGroupMember newMember(realChannel);
       newMember.channelNumber = CPVRChannelNumber(iChannelNumber, channelNumber.GetSubChannelNumber());
+      newMember.clientChannelNumber = clientChannelNumber;
       newMember.iOrder = iOrder;
       m_sortedMembers.push_back(newMember);
       m_members.insert(std::make_pair(realChannel.channel->StorageId(), newMember));
@@ -697,43 +727,56 @@ bool CPVRChannelGroup::Renumber(void)
 
   bool bReturn(false);
   unsigned int iChannelNumber(0);
-  bool bUseBackendChannelNumbers(CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_PVRMANAGER_USEBACKENDCHANNELNUMBERS) &&
+  bool bUsingBackendChannelNumbers(CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_PVRMANAGER_USEBACKENDCHANNELNUMBERS) &&
                                  CServiceBroker::GetPVRManager().Clients()->EnabledClientAmount() == 1);
+  bool bStartGroupChannelNumbersFromOne(CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_PVRMANAGER_STARTGROUPCHANNELNUMBERSFROMONE) &&
+                                        !bUsingBackendChannelNumbers);
 
   CSingleLock lock(m_critSection);
 
   CPVRChannelNumber currentChannelNumber;
-  for (PVR_CHANNEL_GROUP_SORTED_MEMBERS::iterator it = m_sortedMembers.begin(); it != m_sortedMembers.end(); ++it)
+  CPVRChannelNumber currentClientChannelNumber;
+  for (auto& sortedMember : m_sortedMembers)
   {
-    if ((*it).channel->IsHidden())
+    currentClientChannelNumber = sortedMember.clientChannelNumber;
+
+    if (sortedMember.channel->IsHidden())
     {
       currentChannelNumber = CPVRChannelNumber(0, 0);
-    }
-    else if (bUseBackendChannelNumbers)
-    {
-      currentChannelNumber = (*it).channel->ClientChannelNumber();
     }
     else
     {
       if (IsInternalGroup())
+      {
         currentChannelNumber = CPVRChannelNumber(++iChannelNumber, 0);
+      }
       else
-        currentChannelNumber = m_allChannelsGroup->GetChannelNumber((*it).channel);
+      {
+        if (bStartGroupChannelNumbersFromOne)
+          currentChannelNumber = CPVRChannelNumber(++iChannelNumber, 0);
+        else
+          currentChannelNumber = m_allChannelsGroup->GetChannelNumber(sortedMember.channel);
+
+        if (!sortedMember.clientChannelNumber.IsValid())
+          currentClientChannelNumber = m_allChannelsGroup->GetClientChannelNumber(sortedMember.channel);
+      }
     }
 
-    if ((*it).channelNumber != currentChannelNumber)
+    if (sortedMember.channelNumber != currentChannelNumber || sortedMember.clientChannelNumber != currentClientChannelNumber)
     {
       bReturn = true;
       m_bChanged = true;
-      (*it).channelNumber = currentChannelNumber;
-    }
+      sortedMember.channelNumber = currentChannelNumber;
+      sortedMember.clientChannelNumber = currentClientChannelNumber;
 
-    //! @todo This is a quick fix for v18. Whole channel number handling should be reworked - code is imo unmaintainable.
-    if (IsInternalGroup())
-      (*it).channel->SetChannelNumber((*it).channelNumber);
+      auto& unsortedMember = GetByUniqueID(sortedMember.channel->StorageId());
+      unsortedMember.channelNumber = sortedMember.channelNumber;
+      unsortedMember.clientChannelNumber = sortedMember.clientChannelNumber;
+    }
   }
 
-  SortByChannelNumber();
+  Sort();
+
   return bReturn;
 }
 
@@ -778,22 +821,27 @@ void CPVRChannelGroup::OnSettingChanged(std::shared_ptr<const CSetting> setting)
   }
 
   const std::string &settingId = setting->GetId();
-  if (settingId == CSettings::SETTING_PVRMANAGER_BACKENDCHANNELORDER || settingId == CSettings::SETTING_PVRMANAGER_USEBACKENDCHANNELNUMBERS)
+  if (settingId == CSettings::SETTING_PVRMANAGER_BACKENDCHANNELORDER || settingId == CSettings::SETTING_PVRMANAGER_USEBACKENDCHANNELNUMBERS ||
+      settingId == CSettings::SETTING_PVRMANAGER_STARTGROUPCHANNELNUMBERSFROMONE)
   {
     const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
     bool bUsingBackendChannelOrder   = settings->GetBool(CSettings::SETTING_PVRMANAGER_BACKENDCHANNELORDER);
-    bool bUsingBackendChannelNumbers = settings->GetBool(CSettings::SETTING_PVRMANAGER_USEBACKENDCHANNELNUMBERS);
+    bool bUsingBackendChannelNumbers = settings->GetBool(CSettings::SETTING_PVRMANAGER_USEBACKENDCHANNELNUMBERS) &&
+                                       CServiceBroker::GetPVRManager().Clients()->EnabledClientAmount() == 1;
+    bool bStartGroupChannelNumbersFromOne = settings->GetBool(CSettings::SETTING_PVRMANAGER_STARTGROUPCHANNELNUMBERSFROMONE) && !bUsingBackendChannelNumbers;
 
     CSingleLock lock(m_critSection);
 
     bool bChannelNumbersChanged = m_bUsingBackendChannelNumbers != bUsingBackendChannelNumbers;
     bool bChannelOrderChanged = m_bUsingBackendChannelOrder != bUsingBackendChannelOrder;
+    bool bGroupChannelNumbersFromOneChanged = m_bStartGroupChannelNumbersFromOne != bStartGroupChannelNumbersFromOne;
 
     m_bUsingBackendChannelOrder = bUsingBackendChannelOrder;
     m_bUsingBackendChannelNumbers = bUsingBackendChannelNumbers;
+    m_bStartGroupChannelNumbersFromOne = bStartGroupChannelNumbersFromOne;
 
     /* check whether this channel group has to be renumbered */
-    if (bChannelOrderChanged || bChannelNumbersChanged)
+    if (bChannelOrderChanged || bChannelNumbersChanged || bGroupChannelNumbersFromOneChanged)
     {
       CLog::LogFC(LOGDEBUG, LOGPVR, "Renumbering channel group '%s' to use the backend channel order and/or numbers",
                   GroupName().c_str());
@@ -801,8 +849,20 @@ void CPVRChannelGroup::OnSettingChanged(std::shared_ptr<const CSetting> setting)
       if (bChannelOrderChanged)
         UpdateClientPriorities();
 
-      SortAndRenumber();
+      bool bRenumbered = SortAndRenumber();
       Persist();
+
+      if (m_bIsSelectedGroup)
+      {
+        for (const auto& member : GetMembers())
+        {
+          member.channel->SetClientOrder(member.iOrder);
+          member.channel->SetChannelNumber(m_bUsingBackendChannelNumbers ? member.clientChannelNumber : member.channelNumber);
+          member.channel->SetClientChannelNumber(member.clientChannelNumber);
+        }
+      }
+
+      m_events.Publish(bRenumbered ? PVREvent::ChannelGroupInvalidated : PVREvent::ChannelGroup);
     }
   }
 }
@@ -1001,7 +1061,9 @@ bool CPVRChannelGroup::UpdateChannel(const std::pair<int, int>& storageId,
   /* set new values in the channel tag */
   if (bHidden)
   {
-    SortByChannelNumber(); // or previous changes will be overwritten
+    // sort or previous changes will be overwritten
+    Sort();
+
     RemoveFromGroup(member.channel);
   }
   else

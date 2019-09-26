@@ -615,6 +615,19 @@ void CPVRChannel::SetChannelNumber(const CPVRChannelNumber& channelNumber)
   }
 }
 
+void CPVRChannel::SetClientChannelNumber(const CPVRChannelNumber& clientChannelNumber)
+{
+  CSingleLock lock(m_critSection);
+  if (m_clientChannelNumber != clientChannelNumber)
+  {
+    m_clientChannelNumber = clientChannelNumber;
+
+    const std::shared_ptr<CPVREpg> epg = GetEPG();
+    if (epg)
+      epg->GetChannelData()->SetSortableClientChannelNumber(m_clientChannelNumber.SortableChannelNumber());
+  }
+}
+
 void CPVRChannel::ToSortable(SortItem& sortable, Field field) const
 {
   CSingleLock lock(m_critSection);

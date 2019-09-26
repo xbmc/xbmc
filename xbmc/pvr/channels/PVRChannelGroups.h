@@ -153,9 +153,9 @@ namespace PVR
 
     /*!
      * @brief Change the selected group.
-     * @param group The group to select.
+     * @param selectedGroup The group to select.
      */
-    void SetSelectedGroup(const CPVRChannelGroupPtr &group);
+    void SetSelectedGroup(const std::shared_ptr<CPVRChannelGroup>& selectedGroup);
 
     /*!
      * @brief Add a group to this container.

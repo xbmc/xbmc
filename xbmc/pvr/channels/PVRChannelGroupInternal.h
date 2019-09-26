@@ -43,9 +43,10 @@ namespace PVR
      * @param channel The updated channel.
      * @param channelNumber A new channel number for the channel.
      * @param iOrder The value denoting the order of this member in the group, 0 if unknown and needs to be generated
+     * @param clientChannelNumber The client channel number of the channel to add. (optional)
      * @return The new/updated channel.
      */
-    CPVRChannelPtr UpdateFromClient(const CPVRChannelPtr& channel, const CPVRChannelNumber& channelNumber, int iOrder);
+    std::shared_ptr<CPVRChannel> UpdateFromClient(const std::shared_ptr<CPVRChannel>& channel, const CPVRChannelNumber& channelNumber, int iOrder, const CPVRChannelNumber& clientChannelNumber = {});
 
     /*!
      * @see CPVRChannelGroup::IsGroupMember
@@ -55,7 +56,7 @@ namespace PVR
     /*!
      * @see CPVRChannelGroup::AddToGroup
      */
-    bool AddToGroup(const CPVRChannelPtr& channel, const CPVRChannelNumber& channelNumber, int iOrder, bool bUseBackendChannelNumbers) override;
+    bool AddToGroup(const std::shared_ptr<CPVRChannel>& channel, const CPVRChannelNumber& channelNumber, int iOrder, bool bUseBackendChannelNumbers, const CPVRChannelNumber& clientChannelNumber = {}) override;
 
     /*!
      * @see CPVRChannelGroup::RemoveFromGroup
