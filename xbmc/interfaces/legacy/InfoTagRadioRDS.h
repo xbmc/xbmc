@@ -14,8 +14,8 @@
 
 namespace PVR
 {
-  class CPVRChannel;
-  class CPVRRadioRDSInfoTag;
+class CPVRChannel;
+class CPVRRadioRDSInfoTag;
 }
 
 namespace XBMCAddon

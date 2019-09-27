@@ -556,27 +556,27 @@ namespace PVR
 
     /** @name containers */
     //@{
-    std::shared_ptr<CPVRChannelGroupsContainer>  m_channelGroups;               /*!< pointer to the channel groups container */
-    std::shared_ptr<CPVRRecordings>              m_recordings;                  /*!< pointer to the recordings container */
-    std::shared_ptr<CPVRTimers>                  m_timers;                      /*!< pointer to the timers container */
-    std::shared_ptr<CPVRClients>                 m_addons;                      /*!< pointer to the pvr addon container */
-    std::unique_ptr<CPVRGUIInfo>   m_guiInfo;                     /*!< pointer to the guiinfo data */
-    std::shared_ptr<CPVRGUIActions>              m_guiActions;                  /*!< pointer to the pvr gui actions */
-    CPVREpgContainer               m_epgContainer;                /*!< the epg container */
+    std::shared_ptr<CPVRChannelGroupsContainer> m_channelGroups;  /*!< pointer to the channel groups container */
+    std::shared_ptr<CPVRRecordings> m_recordings;                 /*!< pointer to the recordings container */
+    std::shared_ptr<CPVRTimers> m_timers;                         /*!< pointer to the timers container */
+    std::shared_ptr<CPVRClients> m_addons;                        /*!< pointer to the pvr addon container */
+    std::unique_ptr<CPVRGUIInfo> m_guiInfo;                       /*!< pointer to the guiinfo data */
+    std::shared_ptr<CPVRGUIActions> m_guiActions;                 /*!< pointer to the pvr gui actions */
+    CPVREpgContainer m_epgContainer;                              /*!< the epg container */
     //@}
 
-    CPVRManagerJobQueue             m_pendingUpdates;              /*!< vector of pending pvr updates */
+    CPVRManagerJobQueue m_pendingUpdates; /*!< vector of pending pvr updates */
 
-    std::shared_ptr<CPVRDatabase>                 m_database;                    /*!< the database for all PVR related data */
-    mutable CCriticalSection        m_critSection;                 /*!< critical section for all changes to this class, except for changes to triggers */
-    bool                            m_bFirstStart = true;          /*!< true when the PVR manager was started first, false otherwise */
-    bool                            m_bEpgsCreated = false;        /*!< true if epg data for channels has been created */
+    std::shared_ptr<CPVRDatabase> m_database; /*!< the database for all PVR related data */
+    mutable CCriticalSection m_critSection;   /*!< critical section for all changes to this class, except for changes to triggers */
+    bool m_bFirstStart = true;                /*!< true when the PVR manager was started first, false otherwise */
+    bool m_bEpgsCreated = false;              /*!< true if epg data for channels has been created */
 
-    mutable CCriticalSection        m_managerStateMutex;
-    ManagerState                    m_managerState = ManagerStateStopped;
-    std::unique_ptr<CStopWatch>     m_parentalTimer;
+    mutable CCriticalSection m_managerStateMutex;
+    ManagerState m_managerState = ManagerStateStopped;
+    std::unique_ptr<CStopWatch> m_parentalTimer;
 
-    CCriticalSection                m_startStopMutex; // mutex for protecting pvr manager's start/restart/stop sequence */
+    CCriticalSection m_startStopMutex; // mutex for protecting pvr manager's start/restart/stop sequence */
 
     CEventSource<PVREvent> m_events;
 

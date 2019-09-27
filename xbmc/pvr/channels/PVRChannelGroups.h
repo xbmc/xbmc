@@ -211,9 +211,9 @@ namespace PVR
      */
     void RemoveFromAllGroups(const std::shared_ptr<CPVRChannel>& channel);
 
-    bool                             m_bRadio;         /*!< true if this is a container for radio channels, false if it is for tv channels */
-    std::shared_ptr<CPVRChannelGroup>              m_selectedGroup;  /*!< the group that's currently selected in the UI */
-    std::vector<std::shared_ptr<CPVRChannelGroup>> m_groups;         /*!< the groups in this container */
+    bool m_bRadio;                                            /*!< true if this is a container for radio channels, false if it is for tv channels */
+    std::shared_ptr<CPVRChannelGroup> m_selectedGroup;        /*!< the group that's currently selected in the UI */
+    std::vector<std::shared_ptr<CPVRChannelGroup>> m_groups;  /*!< the groups in this container */
     mutable CCriticalSection m_critSection;
     std::vector<int> m_failedClientsForChannelGroups;
   };

@@ -17,8 +17,8 @@ class CVariant;
 
 namespace PVR
 {
-  class CPVRChannelGroup;
-  class CPVREpgInfoTag;
+class CPVRChannelGroup;
+class CPVREpgInfoTag;
 }
 
 namespace JSONRPC

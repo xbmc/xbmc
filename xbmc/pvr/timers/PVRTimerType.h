@@ -310,7 +310,7 @@ namespace PVR
      * @brief Obtain a list with all possible values for the priority attribute.
      * @param list out, the list with the values or an empty list, if priority is not supported by this type.
      */
-    void GetPriorityValues(std::vector< std::pair<std::string, int>>& list) const;
+    void GetPriorityValues(std::vector<std::pair<std::string, int>>& list) const;
 
     /*!
      * @brief Obtain the default value for the priority attribute.
@@ -322,7 +322,7 @@ namespace PVR
      * @brief Obtain a list with all possible values for the lifetime attribute.
      * @param list out, the list with the values or an empty list, if lifetime is not supported by this type.
      */
-    void GetLifetimeValues(std::vector< std::pair<std::string, int>>& list) const;
+    void GetLifetimeValues(std::vector<std::pair<std::string, int>>& list) const;
 
     /*!
      * @brief Obtain the default value for the lifetime attribute.
@@ -334,7 +334,7 @@ namespace PVR
      * @brief Obtain a list with all possible values for the MaxRecordings attribute.
      * @param list out, the list with the values or an empty list, if MaxRecordings is not supported by this type.
      */
-    void GetMaxRecordingsValues(std::vector< std::pair<std::string, int>>& list) const;
+    void GetMaxRecordingsValues(std::vector<std::pair<std::string, int>>& list) const;
 
     /*!
      * @brief Obtain the default value for the MaxRecordings attribute.
@@ -346,7 +346,7 @@ namespace PVR
      * @brief Obtain a list with all possible values for the duplicate episode prevention attribute.
      * @param list out, the list with the values or an empty list, if duplicate episode prevention is not supported by this type.
      */
-    void GetPreventDuplicateEpisodesValues(std::vector< std::pair<std::string, int>>& list) const;
+    void GetPreventDuplicateEpisodesValues(std::vector<std::pair<std::string, int>>& list) const;
 
     /*!
      * @brief Obtain the default value for the duplicate episode prevention attribute.
@@ -358,7 +358,7 @@ namespace PVR
      * @brief Obtain a list with all possible values for the recording group attribute.
      * @param list out, the list with the values or an empty list, if recording group is not supported by this type.
      */
-    void GetRecordingGroupValues(std::vector< std::pair<std::string, int>>& list) const;
+    void GetRecordingGroupValues(std::vector<std::pair<std::string, int>>& list) const;
 
     /*!
      * @brief Obtain the default value for the Recording Group attribute.

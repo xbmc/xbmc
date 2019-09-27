@@ -79,13 +79,13 @@ namespace PVR
      * @brief Get the group containing all TV channels.
      * @return The group containing all TV channels.
      */
-    std::shared_ptr<CPVRChannelGroup> GetGroupAllTV(void)  const{ return GetGroupAll(false); }
+    std::shared_ptr<CPVRChannelGroup> GetGroupAllTV(void) const { return GetGroupAll(false); }
 
     /*!
      * @brief Get the group containing all radio channels.
      * @return The group containing all radio channels.
      */
-    std::shared_ptr<CPVRChannelGroup> GetGroupAllRadio(void)  const{ return GetGroupAll(true); }
+    std::shared_ptr<CPVRChannelGroup> GetGroupAllRadio(void) const { return GetGroupAll(true); }
 
     /*!
      * @brief Get the group containing all TV or radio channels.
@@ -178,9 +178,9 @@ namespace PVR
   protected:
     CPVRChannelGroups* m_groupsRadio; /*!< all radio channel groups */
     CPVRChannelGroups* m_groupsTV;    /*!< all TV channel groups */
-    CCriticalSection   m_critSection;
-    bool               m_bUpdateChannelsOnly = false;
-    bool               m_bIsUpdating = false;
+    CCriticalSection m_critSection;
+    bool m_bUpdateChannelsOnly = false;
+    bool m_bIsUpdating = false;
     std::shared_ptr<CPVRChannelGroup> m_lastPlayedGroups[2]; /*!< used to store the last played groups */
 
   private :

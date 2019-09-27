@@ -303,19 +303,19 @@ namespace PVR
     void Cleanup(int iPastDays);
 
     std::map<CDateTime, std::shared_ptr<CPVREpgInfoTag>> m_tags;
-    std::map<int, std::shared_ptr<CPVREpgInfoTag>>       m_changedTags;
-    std::map<int, std::shared_ptr<CPVREpgInfoTag>>       m_deletedTags;
-    bool                                m_bChanged = false;        /*!< true if anything changed that needs to be persisted, false otherwise */
-    bool                                m_bTagsChanged = false;    /*!< true when any tags are changed and not persisted, false otherwise */
-    bool                                m_bLoaded = false;         /*!< true when the initial entries have been loaded */
-    bool                                m_bUpdatePending = false;  /*!< true if manual update is pending */
-    int                                 m_iEpgID = 0;          /*!< the database ID of this table */
-    std::string                         m_strName;         /*!< the name of this table */
-    std::string                         m_strScraperName;  /*!< the name of the scraper to use */
-    mutable CDateTime                   m_nowActiveStart;  /*!< the start time of the tag that is currently active */
-    CDateTime                           m_lastScanTime;    /*!< the last time the EPG has been updated */
-    mutable CCriticalSection            m_critSection;     /*!< critical section for changes in this table */
-    bool                                m_bUpdateLastScanTime = false;
+    std::map<int, std::shared_ptr<CPVREpgInfoTag>> m_changedTags;
+    std::map<int, std::shared_ptr<CPVREpgInfoTag>> m_deletedTags;
+    bool m_bChanged = false;            /*!< true if anything changed that needs to be persisted, false otherwise */
+    bool m_bTagsChanged = false;        /*!< true when any tags are changed and not persisted, false otherwise */
+    bool m_bLoaded = false;             /*!< true when the initial entries have been loaded */
+    bool m_bUpdatePending = false;      /*!< true if manual update is pending */
+    int m_iEpgID = 0;                   /*!< the database ID of this table */
+    std::string m_strName;              /*!< the name of this table */
+    std::string m_strScraperName;       /*!< the name of the scraper to use */
+    mutable CDateTime m_nowActiveStart; /*!< the start time of the tag that is currently active */
+    CDateTime m_lastScanTime;           /*!< the last time the EPG has been updated */
+    mutable CCriticalSection m_critSection; /*!< critical section for changes in this table */
+    bool m_bUpdateLastScanTime = false;
 
     std::shared_ptr<CPVREpgChannelData> m_channelData;
 

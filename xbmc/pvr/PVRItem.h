@@ -8,7 +8,6 @@
 
 #pragma once
 
-
 #include <memory>
 
 class CFileItem;
