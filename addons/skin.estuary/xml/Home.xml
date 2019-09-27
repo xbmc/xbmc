@@ -1083,18 +1083,12 @@
 				<top>30</top>
 				<left>90</left>
 				<control type="image">
-					<aspectratio>keep</aspectratio>
-					<width>56</width>
-					<height>56</height>
-					<texture colordiffuse="button_focus">icons/logo.png</texture>
-				</control>
-				<control type="image">
-					<left>40</left>
-					<top>10</top>
+					<left>4</left>
+					<top>0</top>
 					<aspectratio>keep</aspectratio>
 					<width>192</width>
-					<height>36</height>
-					<texture>icons/logo-text.png</texture>
+					<height>56</height>
+					<texture>special://xbmc/media/vendor_logo.png</texture>
 				</control>
 			</control>
 		</control>

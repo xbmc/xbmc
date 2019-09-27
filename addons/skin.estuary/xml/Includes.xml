@@ -809,9 +809,9 @@
 				<texturenofocus />
 				<label></label>
 				<textureradioofffocus colordiffuse="EEFFFFFF">dialogs/close.png</textureradioofffocus>
-				<textureradiooffnofocus colordiffuse="EEFFFFFF">icons/logo.png</textureradiooffnofocus>
+				<textureradiooffnofocus colordiffuse="EEFFFFFF">special://xbmc/media/vendor_icon.png</textureradiooffnofocus>
 				<textureradioonfocus colordiffuse="EEFFFFFF">dialogs/close.png</textureradioonfocus>
-				<textureradioonnofocus colordiffuse="EEFFFFFF">icons/logo.png</textureradioonnofocus>
+				<textureradioonnofocus colordiffuse="EEFFFFFF">special://xbmc/media/vendor_icon.png</textureradioonnofocus>
 				<onclick>Action(close)</onclick>
 				<visible>!Skin.HasSetting(touchmode)</visible>
 			</control>
