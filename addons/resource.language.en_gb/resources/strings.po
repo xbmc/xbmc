@@ -785,7 +785,7 @@ msgstr ""
 #. generic "duration" label used in different places
 #: xbmc/dialogs/GUIDialogMediaFilter.cpp
 #: xbmc/playlists/SmartPlaylist.cpp
-#: xbmc/xbmc/pvr/windows/GUIViewStatePVR.cpp
+#: xbmc/pvr/windows/GUIViewStatePVR.cpp
 #: addons/skin.estuary/xml/Variables.xml
 #: addons/skin.estuary/xml/View_51_Poster.xml
 #: addons/skin.estuary/xml/DialogVideoInfo.xml
@@ -2514,8 +2514,8 @@ msgid "Downmix multichannel audio to stereo"
 msgstr ""
 
 #. generic "number" label used in different places
-#: xbmc/xbmc/pvr/windows/GUIViewStatePVR.cpp
-#: xbmc/xbmc/utils/SortUtils.cpp
+#: xbmc/pvr/windows/GUIViewStatePVR.cpp
+#: xbmc/utils/SortUtils.cpp
 msgctxt "#549"
 msgid "Number"
 msgstr ""
@@ -2526,7 +2526,7 @@ msgid "Sort by: {0:s}"
 msgstr ""
 
 #. generic "name" label used in different places
-#: xbmc/xbmc/pvr/windows/GUIViewStatePVR.cpp
+#: xbmc/pvr/windows/GUIViewStatePVR.cpp
 #: xbmc/view/GUIViewState.cpp
 msgctxt "#551"
 msgid "Name"
@@ -2534,7 +2534,7 @@ msgstr ""
 
 #. generic "date" label used in different places
 #: addons/skin.estuary/xml/Variables.xml
-#: xbmc/xbmc/pvr/windows/GUIViewStatePVR.cpp
+#: xbmc/pvr/windows/GUIViewStatePVR.cpp
 msgctxt "#552"
 msgid "Date"
 msgstr ""
@@ -2641,7 +2641,7 @@ msgstr ""
 #. generic "last played" label used in different places
 #: xbmc/dialogs/GUIDialogMediaFilter.cpp
 #: xbmc/playlists/SmartPlaylist.cpp
-#: xbmc/xbmc/pvr/windows/GUIViewStatePVR.cpp
+#: xbmc/pvr/windows/GUIViewStatePVR.cpp
 msgctxt "#568"
 msgid "Last played"
 msgstr ""
@@ -9246,24 +9246,20 @@ msgstr ""
 
 #. generic 'now' label used in different places
 #: addons/skin.estuary/xml/DialogPVRRadioRDSInfo.xml
-#: addons/skin.estuary/xml/MyWeather.xml
-#: xbmc/pvr/windows/GUIWindowPVRGuide.cpp
 msgctxt "#19030"
 msgid "Now"
 msgstr ""
 
 #. generic 'next' label used in different places in pvr context
-#: addons/skin.estuary/xml/DialogFullScreenInfo.xml
 #: addons/skin.estuary/xml/DialogPVRRadioRDSInfo.xml
+#: addons/skin.estuary/xml/DialogSeekBar.xml
 #: addons/skin.estuary/xml/MyPVRChannels.xml
-#: xbmc/pvr/windows/GUIWindowPVRGuide.cpp
 msgctxt "#19031"
 msgid "Next"
 msgstr ""
 
 #. 'timeline' label used in pvr guide window
-#. xbmc/pvr/windows/GUIWindowPVRGuide.cpp
-#: addons/skin.estuary/xml/MyPVRGuide.xml
+#: xbmc/pvr/windows/GUIWindowPVRGuide.cpp
 msgctxt "#19032"
 msgid "Timeline"
 msgstr ""
@@ -9468,16 +9464,18 @@ msgctxt "#19062"
 msgid "Sort by: Channel"
 msgstr ""
 
-#. Label for epg grid window "jump to grid start" (oldest available events) context menu entry
-#: /xbmc/pvr/windows/GUIWindowPVRGuide.cpp
+#. Label for epg grid window "jump to grid start" (oldest available programme) context menu entry and epg grid controls dialog help text
+#: addons/skin.estuary/xml/Variables.xml
+#: xbmc/pvr/windows/GUIWindowPVRGuide.cpp
 msgctxt "#19063"
-msgid "Go to beginning"
+msgid "First programme"
 msgstr ""
 
-#. Label for epg grid window "jump to grid end" (youngest available events) context menu entry
-#: /xbmc/pvr/windows/GUIWindowPVRGuide.cpp
+#. Label for epg grid window "jump to grid end" (youngest available programme) context menu entry and epg grid controls dialog help text
+#: addons/skin.estuary/xml/Variables.xml
+#: xbmc/pvr/windows/GUIWindowPVRGuide.cpp
 msgctxt "#19064"
-msgid "Go to end"
+msgid "Last programme"
 msgstr ""
 
 #. Label for timer settings dialog header
@@ -9510,10 +9508,11 @@ msgctxt "#19069"
 msgid "Guide"
 msgstr ""
 
-#. Label for epg grid window "jump to now" (current epg events) context menu entry
+#. Label for epg grid window "jump to now" (current programme) context menu entry and epg grid controls dialog help text
+#: addons/skin.estuary/xml/Variables.xml
 #: xbmc/pvr/windows/GUIWindowPVRGuide.cpp
 msgctxt "#19070"
-msgid "Go to now"
+msgid "Current programme"
 msgstr ""
 
 #. pvr settings "epg update interval" setting label
@@ -9932,9 +9931,10 @@ msgctxt "#19140"
 msgid "Search..."
 msgstr ""
 
-#. part of PVR window's active channel group label (e.g. "Group: HD Sports Channels")
-#: addons/skin.estuary/xml/Includes_MediaMenu.xml
+#. generic PVR channel 'group' label used in different places
+#: addons/skin.estuary/xml/DialogPVRGuideControls.xml
 #: addons/skin.estuary/xml/DialogPVRGuideSearch.xml
+#: addons/skin.estuary/xml/Includes_MediaMenu.xml
 #: xbmc/pvr/windows/GUIWindowPVRBase.cpp
 msgctxt "#19141"
 msgid "Group"
@@ -9971,7 +9971,9 @@ msgctxt "#19147"
 msgid "Setting the lifetime of this recording to {0:d} days will immediately expire the recording, which might result in instant deletion of the recording. Proceed anyway?"
 msgstr ""
 
+#. generic PVR 'channel' label used in different places
 #: addons/skin.estuary/xml/DialogPVRRadioRDSInfo.xml
+#: addons/skin.estuary/xml/DialogPVRGuideControls.xml
 #: addons/skin.estuary/xml/DialogPVRGuideSearch.xml
 msgctxt "#19148"
 msgid "Channel"
@@ -10802,9 +10804,10 @@ msgid "All channels"
 msgstr ""
 
 #. Label for epg grid window "go to date" context menu entry
+#: addons/skin.estuary/xml/Variables.xml
 #: xbmc/pvr/windows/GUIWindowPVRGuide.cpp
 msgctxt "#19288"
-msgid "Go to date"
+msgid "Date selector"
 msgstr ""
 
 #. Label for button to hide a group in the group manager
@@ -10977,7 +10980,75 @@ msgctxt "#19316"
 msgid "Start group channel numbers from 1"
 msgstr ""
 
-#empty strings from id 19317 to 19498
+#. Label for epg grid window "Jump 12 hours back" context menu entry and epg grid controls dialog help text
+#: addons/skin.estuary/xml/Variables.xml
+#: xbmc/pvr/windows/GUIWindowPVRGuide.cpp
+msgctxt "#19317"
+msgid "12 hours back"
+msgstr ""
+
+#. Label for epg grid window "Jump 12 hours forward" context menu entry and epg grid controls dialog help text
+#: addons/skin.estuary/xml/Variables.xml
+#: xbmc/pvr/windows/GUIWindowPVRGuide.cpp
+msgctxt "#19318"
+msgid "12 hours forward"
+msgstr ""
+
+#. Label for epg grid window "Activate previous channel group" context menu entry and epg grid controls dialog help text
+#: addons/skin.estuary/xml/Variables.xml
+#: xbmc/pvr/windows/GUIWindowPVRGuide.cpp
+msgctxt "#19319"
+msgid "Previous group"
+msgstr ""
+
+#. Label for epg grid window "Activate next channel group" context menu entry and epg grid controls dialog help text
+#: addons/skin.estuary/xml/Variables.xml
+#: xbmc/pvr/windows/GUIWindowPVRGuide.cpp
+msgctxt "#19320"
+msgid "Next group"
+msgstr ""
+
+#. Label for epg grid window "Activate channel group selector" context menu entry and epg grid controls dialog help text
+#: addons/skin.estuary/xml/Variables.xml
+#: xbmc/pvr/windows/GUIWindowPVRGuide.cpp
+msgctxt "#19321"
+msgid "Group selector"
+msgstr ""
+
+#. Label for epg grid window "Jump to first channel" context menu entry and epg grid controls dialog help text
+#: addons/skin.estuary/xml/Variables.xml
+#: xbmc/pvr/windows/GUIWindowPVRGuide.cpp
+msgctxt "#19322"
+msgid "First channel"
+msgstr ""
+
+#. Label for epg grid window "Jump to playing channel" context menu entry and epg grid controls dialog help text
+#: addons/skin.estuary/xml/Variables.xml
+#: xbmc/pvr/windows/GUIWindowPVRGuide.cpp
+msgctxt "#19323"
+msgid "Playing channel"
+msgstr ""
+
+#. Label for epg grid window "Jump to last channel" context menu entry and epg grid controls dialog help text
+#: addons/skin.estuary/xml/Variables.xml
+#: xbmc/pvr/windows/GUIWindowPVRGuide.cpp
+msgctxt "#19324"
+msgid "Last channel"
+msgstr ""
+
+#. Label for epg grid controls "Programme" group header"
+#: addons/skin.estuary/xml/DialogPVRGuideControls.xml
+msgctxt "#19325"
+msgid "Programme"
+msgstr ""
+
+#. Label for epg grid window "Navigate..." context menu entry
+#: xbmc/pvr/windows/GUIWindowPVRGuide.cpp
+msgctxt "#19326"
+msgid "Navigate..."
+msgstr ""
+
+#empty strings from id 19327 to 19498
 
 #. label for epg genre value
 #: xbmc/pvr/epg/Epg.cpp
@@ -20954,12 +21025,12 @@ msgctxt "#38023"
 msgid "Set my rating"
 msgstr ""
 
-#: /xbmc/settings/dialogs/GUIDialogContentSettings.cpp
+#: xbmc/settings/dialogs/GUIDialogContentSettings.cpp
 msgctxt "#38024"
 msgid "Information provider selection"
 msgstr ""
 
-#: /xbmc/settings/dialogs/GUIDialogContentSettings.cpp
+#: xbmc/settings/dialogs/GUIDialogContentSettings.cpp
 msgctxt "#38025"
 msgid "Choose information provider"
 msgstr ""
@@ -21573,7 +21644,7 @@ msgctxt "#39014"
 msgid "Would you also like to remove all related data (e.g. settings) of this add-on?"
 msgstr ""
 
-#: /xbmc/addons/Addon.cpp
+#: xbmc/addons/Addon.cpp
 msgctxt "#39015"
 msgid "Image decoder"
 msgstr ""

@@ -185,17 +185,13 @@ bool CGUIWindowPVRBase::OnAction(const CAction& action)
   switch (action.GetID())
   {
     case ACTION_PREVIOUS_CHANNELGROUP:
-    case ACTION_NEXT_CHANNELGROUP:
-    {
-      // switch to next or previous group
-      const std::shared_ptr<CPVRChannelGroup> channelGroup = GetChannelGroup();
-      if (channelGroup)
-      {
-        const CPVRChannelGroups* groups = CServiceBroker::GetPVRManager().ChannelGroups()->Get(channelGroup->IsRadio());
-        SetChannelGroup(action.GetID() == ACTION_NEXT_CHANNELGROUP ? groups->GetNextGroup(*channelGroup) : groups->GetPreviousGroup(*channelGroup));
-      }
+      ActivatePreviousChannelGroup();
       return true;
-    }
+
+    case ACTION_NEXT_CHANNELGROUP:
+      ActivateNextChannelGroup();
+      return true;
+
     case ACTION_MOVE_RIGHT:
     case ACTION_MOVE_LEFT:
     {
@@ -224,6 +220,36 @@ bool CGUIWindowPVRBase::OnBack(int actionID)
       return CGUIWindow::OnBack(actionID);
   }
   return CGUIMediaWindow::OnBack(actionID);
+}
+
+bool CGUIWindowPVRBase::ActivatePreviousChannelGroup()
+{
+  const std::shared_ptr<CPVRChannelGroup> channelGroup = GetChannelGroup();
+  if (channelGroup)
+  {
+    const CPVRChannelGroups* groups = CServiceBroker::GetPVRManager().ChannelGroups()->Get(channelGroup->IsRadio());
+    if (groups)
+    {
+      SetChannelGroup(groups->GetPreviousGroup(*channelGroup));
+      return true;
+    }
+  }
+  return false;
+}
+
+bool CGUIWindowPVRBase::ActivateNextChannelGroup()
+{
+  const std::shared_ptr<CPVRChannelGroup> channelGroup = GetChannelGroup();
+  if (channelGroup)
+  {
+    const CPVRChannelGroups* groups = CServiceBroker::GetPVRManager().ChannelGroups()->Get(channelGroup->IsRadio());
+    if (groups)
+    {
+      SetChannelGroup(groups->GetNextGroup(*channelGroup));
+      return true;
+    }
+  }
+  return false;
 }
 
 void CGUIWindowPVRBase::ClearData()

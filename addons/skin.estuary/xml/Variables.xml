@@ -214,6 +214,20 @@
 		<value condition="VideoPlayer.HasEpg">$INFO[PVR.EpgEventElapsedTime]$INFO[PVR.EpgEventDuration, / ]</value>
 		<value>$INFO[Player.Time]$INFO[Player.Duration, / ]</value>
 	</variable>
+	<variable name="PVRGuideControlsHelpTextVar">
+		<value condition="Control.HasFocus(600)">$LOCALIZE[19063]</value>
+		<value condition="Control.HasFocus(601)">$LOCALIZE[19317]</value>
+		<value condition="Control.HasFocus(602)">$LOCALIZE[19070]</value>
+		<value condition="Control.HasFocus(603)">$LOCALIZE[19318]</value>
+		<value condition="Control.HasFocus(604)">$LOCALIZE[19064]</value>
+		<value condition="Control.HasFocus(605)">$LOCALIZE[19288]</value>
+		<value condition="Control.HasFocus(70040)">$LOCALIZE[19322]</value>
+		<value condition="Control.HasFocus(70041)">$LOCALIZE[19323]</value>
+		<value condition="Control.HasFocus(70042)">$LOCALIZE[19324]</value>
+		<value condition="Control.HasFocus(70043)">$LOCALIZE[19319]</value>
+		<value condition="Control.HasFocus(70044)">$LOCALIZE[19320]</value>
+		<value condition="Control.HasFocus(70045)">$LOCALIZE[19321]</value>
+	</variable>
 	<variable name="VideoOSDHelpTextVar">
 		<value condition="Control.HasFocus(87) + [Player.Rewinding | Player.Forwarding]">$LOCALIZE[31050]</value>
 		<value condition="Control.HasFocus(700)">$LOCALIZE[298]</value>

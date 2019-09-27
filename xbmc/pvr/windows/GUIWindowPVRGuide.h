@@ -52,6 +52,17 @@ namespace PVR
     void GetChannelNumbers(std::vector<std::string>& channelNumbers) override;
     void OnInputDone() override;
 
+    bool GotoBegin();
+    bool GotoEnd();
+    bool GotoNow();
+    bool GotoDate(int deltaHours);
+    bool OpenDateSelectionDialog();
+    bool Go12HoursBack();
+    bool Go12HoursForward();
+    bool GotoFirstChannel();
+    bool GotoLastChannel();
+    bool GotoPlayingChannel();
+
   protected:
     void UpdateSelectedItemPath() override;
     std::string GetDirectoryPath(void) override { return ""; }
@@ -65,10 +76,7 @@ namespace PVR
     CGUIEPGGridContainer* GetGridControl();
     void InitEpgGridControl();
 
-    bool OnContextButtonBegin();
-    bool OnContextButtonEnd();
-    bool OnContextButtonNow();
-    bool OnContextButtonDate();
+    bool OnContextButtonNavigate(CONTEXT_BUTTON button);
 
     bool ShouldNavigateToGridContainer(int iAction);
 
