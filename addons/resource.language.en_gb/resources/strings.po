@@ -15413,7 +15413,17 @@ msgctxt "#24134"
 msgid "Download subtitle..."
 msgstr ""
 
-#empty strings from id 24135 to 24138
+#: xbmc/interfaces/builtins/AddonBuiltins.cpp
+msgctxt "#24135"
+msgid "To use this feature you must enable an add-on:"
+msgstr ""
+
+#: xbmc/interfaces/builtins/AddonBuiltins.cpp
+msgctxt "#24136"
+msgid "Would you like to enable this add-on?"
+msgstr ""
+
+#empty strings from id 24137 to 24138
 
 #. Label for the action provided by addon management events to jump to a specific Add-on
 #: xbmc/events/AddonManagementEvent.cpp

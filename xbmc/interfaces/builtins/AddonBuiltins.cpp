@@ -10,6 +10,7 @@
 
 #include <memory>
 
+#include "GUIPassword.h"
 #include "addons/AddonManager.h"
 #include "addons/AddonInstaller.h"
 #include "addons/AddonSystemSettings.h"
@@ -24,6 +25,7 @@
 #include "guilib/GUIWindowManager.h"
 #include "GUIUserMessages.h"
 #include "interfaces/generic/ScriptInvocationManager.h"
+#include "messaging/helpers/DialogHelper.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
@@ -39,6 +41,8 @@
 #endif
 
 using namespace ADDON;
+using namespace KODI::MESSAGING;
+using KODI::MESSAGING::HELPERS::DialogResponse;
 
 /*! \brief Install an addon.
  *  \param params The parameters.
@@ -50,6 +54,28 @@ static int InstallAddon(const std::vector<std::string>& params)
 
   AddonPtr addon;
   CAddonInstaller::GetInstance().InstallModal(addonid, addon);
+
+  return 0;
+}
+
+/*! \brief Enable an addon.
+ *  \param params The parameters.
+ *  \details params[0] = add-on id.
+ */
+static int EnableAddon(const std::vector<std::string>& params)
+{
+  const std::string& addonid = params[0];
+
+  if (!g_passwordManager.CheckMenuLock(WINDOW_ADDON_BROWSER))
+    return -1;
+
+  AddonPtr addon;
+  if (!CServiceBroker::GetAddonMgr().GetAddon(addonid, addon, ADDON_UNKNOWN, false))
+    return -1;
+
+  auto response = HELPERS::ShowYesNoDialogLines(CVariant{24076}, CVariant{24135}, CVariant{addon->Name()}, CVariant{24136});
+  if (response == DialogResponse::YES)
+    CServiceBroker::GetAddonMgr().EnableAddon(addonid);
 
   return 0;
 }
@@ -364,6 +390,13 @@ static int UpdateLocals(const std::vector<std::string>& params)
 ///     @param[in] id                    The add-on ID
 ///   }
 ///   \table_row2_l{
+///     <b>`EnableAddon(id)`</b>
+///     ,
+///     Enable the specified plugin/script
+///     @param[in] id                    The add-on id
+///     @skinning_v19 **[New builtin]**
+///   }
+///   \table_row2_l{
 ///     <b>`InstallAddon(id)`</b>
 ///     ,
 ///     Install the specified plugin/script
@@ -443,6 +476,7 @@ CBuiltins::CommandMap CAddonBuiltins::GetOperations() const
            {"addon.default.opensettings", {"Open a settings dialog for the default addon of the given type", 1, OpenDefaultSettings}},
            {"addon.default.set",          {"Open a select dialog to allow choosing the default addon of the given type", 1, SetDefaultAddon}},
            {"addon.opensettings",         {"Open a settings dialog for the addon of the given id", 1, AddonSettings}},
+           {"enableaddon",                {"Enables the specified plugin/script", 1, EnableAddon}},
            {"installaddon",               {"Install the specified plugin/script", 1, InstallAddon}},
            {"installfromzip",             { "Open the install from zip dialog", 0, InstallFromZip}},
            {"runaddon",                   {"Run the specified plugin/script", 1, RunAddon}},

@@ -168,6 +168,14 @@ bool CAddonsGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int context
       value = CServiceBroker::GetAddonMgr().GetAddon(info.GetData3(), addon) && addon;
       return true;
     }
+    case SYSTEM_ADDON_IS_ENABLED:
+    {
+      value = false;
+      ADDON::AddonPtr addon;
+      if (CServiceBroker::GetAddonMgr().GetAddon(info.GetData3(), addon))
+        value = !CServiceBroker::GetAddonMgr().IsAddonDisabled(info.GetData3());
+      return true;
+    }
   }
 
   return false;
