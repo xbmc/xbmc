@@ -39,7 +39,7 @@ CGUIDialogPVRRecordingSettings::CGUIDialogPVRRecordingSettings() :
   m_loadType = LOAD_EVERY_TIME;
 }
 
-void CGUIDialogPVRRecordingSettings::SetRecording(const CPVRRecordingPtr &recording)
+void CGUIDialogPVRRecordingSettings::SetRecording(const std::shared_ptr<CPVRRecording>& recording)
 {
   if (!recording)
   {
@@ -83,7 +83,7 @@ void CGUIDialogPVRRecordingSettings::InitializeSettings()
   }
 
   std::shared_ptr<CSetting> setting = nullptr;
-  const CPVRClientPtr client = CServiceBroker::GetPVRManager().GetClient(m_recording->ClientID());
+  const std::shared_ptr<CPVRClient> client = CServiceBroker::GetPVRManager().GetClient(m_recording->ClientID());
 
   // Name
   setting = AddEdit(group, SETTING_RECORDING_NAME, 19075, SettingLevel::Basic, m_strTitle);
@@ -123,7 +123,7 @@ bool CGUIDialogPVRRecordingSettings::OnSettingChanging(std::shared_ptr<const CSe
     return false;
   }
 
-  const std::string &settingId = setting->GetId();
+  const std::string& settingId = setting->GetId();
 
   if (settingId == SETTING_RECORDING_LIFETIME)
   {
@@ -150,7 +150,7 @@ void CGUIDialogPVRRecordingSettings::OnSettingChanged(std::shared_ptr<const CSet
 
   CGUIDialogSettingsManualBase::OnSettingChanged(setting);
 
-  const std::string &settingId = setting->GetId();
+  const std::string& settingId = setting->GetId();
 
   if (settingId == SETTING_RECORDING_NAME)
   {
@@ -179,14 +179,14 @@ void CGUIDialogPVRRecordingSettings::Save()
 }
 
 void CGUIDialogPVRRecordingSettings::LifetimesFiller(
-  SettingConstPtr setting, std::vector<IntegerSettingOption> &list, int &current, void *data)
+  SettingConstPtr setting, std::vector<IntegerSettingOption>& list, int& current, void* data)
 {
-  CGUIDialogPVRRecordingSettings *pThis = static_cast<CGUIDialogPVRRecordingSettings*>(data);
+  CGUIDialogPVRRecordingSettings* pThis = static_cast<CGUIDialogPVRRecordingSettings*>(data);
   if (pThis)
   {
     list.clear();
 
-    const CPVRClientPtr client = CServiceBroker::GetPVRManager().GetClient(pThis->m_recording->ClientID());
+    const std::shared_ptr<CPVRClient> client = CServiceBroker::GetPVRManager().GetClient(pThis->m_recording->ClientID());
     if (client)
     {
       std::vector<std::pair<std::string,int>> values;

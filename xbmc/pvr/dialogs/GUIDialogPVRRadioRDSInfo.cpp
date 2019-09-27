@@ -71,11 +71,11 @@ bool CGUIDialogPVRRadioRDSInfo::OnMessage(CGUIMessage& message)
       if (!currentRDS)
         return false;
 
-      const CGUISpinControl *spin = static_cast<CGUISpinControl*>(GetControl(SPIN_CONTROL_INFO));
+      const CGUISpinControl* spin = static_cast<CGUISpinControl*>(GetControl(SPIN_CONTROL_INFO));
       if (!spin)
         return false;
 
-      CGUITextBox *textbox = static_cast<CGUITextBox*>(GetControl(TEXT_INFO));
+      CGUITextBox* textbox = static_cast<CGUITextBox*>(GetControl(TEXT_INFO));
       if (!textbox)
         return false;
 

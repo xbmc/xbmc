@@ -8,7 +8,6 @@
 
 #pragma once
 
-#include "pvr/PVRTypes.h"
 #include "pvr/channels/PVRChannelGroup.h"
 #include "threads/CriticalSection.h"
 #include "threads/SingleLock.h"
@@ -55,14 +54,14 @@ namespace PVR
      * @param bUpdateFromClient True to save the changes in the db.
      * @return True if the group was added or update successfully, false otherwise.
      */
-    bool Update(const CPVRChannelGroup &group, bool bUpdateFromClient = false);
+    bool Update(const CPVRChannelGroup& group, bool bUpdateFromClient = false);
 
     /*!
      * @brief Called by the add-on callback to add a new group
      * @param group The group to add
      * @return True when updated, false otherwise
      */
-    bool UpdateFromClient(const CPVRChannelGroup &group) { return Update(group, true); }
+    bool UpdateFromClient(const CPVRChannelGroup& group) { return Update(group, true); }
 
     /*!
      * @brief Get a channel given its path
@@ -76,7 +75,7 @@ namespace PVR
      * @param iGroupId The ID of the group.
      * @return The group or NULL if it wasn't found.
      */
-    CPVRChannelGroupPtr GetById(int iGroupId) const;
+    std::shared_ptr<CPVRChannelGroup> GetById(int iGroupId) const;
 
     /*!
      * @brief Get all groups the given channel is a member.
@@ -84,7 +83,7 @@ namespace PVR
      * @param bExcludeHidden Whenever to exclude hidden channel groups.
      * @return A list of groups the channel is a member.
      */
-    std::vector<CPVRChannelGroupPtr> GetGroupsByChannel(const CPVRChannelPtr &channel, bool bExcludeHidden = false) const;
+    std::vector<std::shared_ptr<CPVRChannelGroup>> GetGroupsByChannel(const std::shared_ptr<CPVRChannel>& channel, bool bExcludeHidden = false) const;
 
     /*!
      * @brief Get a channel group given its path
@@ -98,30 +97,30 @@ namespace PVR
      * @param strName The name.
      * @return The group or NULL if it wasn't found.
      */
-    CPVRChannelGroupPtr GetByName(const std::string &strName) const;
+    std::shared_ptr<CPVRChannelGroup> GetByName(const std::string& strName) const;
 
     /*!
      * @brief Get the group that contains all channels.
      * @return The group that contains all channels.
      */
-    CPVRChannelGroupPtr GetGroupAll(void) const;
+    std::shared_ptr<CPVRChannelGroup> GetGroupAll(void) const;
 
     /*!
      * @return The first group in this container, which always is the group with all channels.
      */
-    CPVRChannelGroupPtr GetFirstGroup(void) const { return GetGroupAll(); }
+    std::shared_ptr<CPVRChannelGroup> GetFirstGroup(void) const { return GetGroupAll(); }
 
     /*!
      * @return The last group in this container.
      */
-    CPVRChannelGroupPtr GetLastGroup(void) const;
+    std::shared_ptr<CPVRChannelGroup> GetLastGroup(void) const;
 
     /*!
      * @brief The group that was played last and optionally contains the given channel.
      * @param iChannelID The channel ID
      * @return The last watched group.
      */
-    CPVRChannelGroupPtr GetLastPlayedGroup(int iChannelID = -1) const;
+    std::shared_ptr<CPVRChannelGroup> GetLastPlayedGroup(int iChannelID = -1) const;
 
     /*!
      * @brief Get the list of groups.
@@ -129,27 +128,27 @@ namespace PVR
      * @param bExcludeHidden Whenever to exclude hidden channel groups.
      * @return The amount of items that were added.
      */
-    std::vector<CPVRChannelGroupPtr> GetMembers(bool bExcludeHidden = false) const;
+    std::vector<std::shared_ptr<CPVRChannelGroup>> GetMembers(bool bExcludeHidden = false) const;
 
     /*!
      * @brief Get the previous group in this container.
      * @param group The current group.
      * @return The previous group or the group containing all channels if it wasn't found.
      */
-    CPVRChannelGroupPtr GetPreviousGroup(const CPVRChannelGroup &group) const;
+    std::shared_ptr<CPVRChannelGroup> GetPreviousGroup(const CPVRChannelGroup& group) const;
 
     /*!
      * @brief Get the next group in this container.
      * @param group The current group.
      * @return The next group or the group containing all channels if it wasn't found.
      */
-    CPVRChannelGroupPtr GetNextGroup(const CPVRChannelGroup &group) const;
+    std::shared_ptr<CPVRChannelGroup> GetNextGroup(const CPVRChannelGroup& group) const;
 
     /*!
      * @brief Get the group that is currently selected in the UI.
      * @return The selected group.
      */
-    CPVRChannelGroupPtr GetSelectedGroup(void) const;
+    std::shared_ptr<CPVRChannelGroup> GetSelectedGroup(void) const;
 
     /*!
      * @brief Change the selected group.
@@ -162,14 +161,14 @@ namespace PVR
      * @param strName The name of the group.
      * @return True if the group was added, false otherwise.
      */
-    bool AddGroup(const std::string &strName);
+    bool AddGroup(const std::string& strName);
 
     /*!
      * @brief Delete a group in this container.
      * @param group The group to delete.
      * @return True if it was deleted successfully, false if not.
      */
-    bool DeleteGroup(const CPVRChannelGroup &group);
+    bool DeleteGroup(const CPVRChannelGroup& group);
 
     /*!
      * @brief Create EPG tags for all channels of the internal group.
@@ -213,8 +212,8 @@ namespace PVR
     void RemoveFromAllGroups(const std::shared_ptr<CPVRChannel>& channel);
 
     bool                             m_bRadio;         /*!< true if this is a container for radio channels, false if it is for tv channels */
-    CPVRChannelGroupPtr              m_selectedGroup;  /*!< the group that's currently selected in the UI */
-    std::vector<CPVRChannelGroupPtr> m_groups;         /*!< the groups in this container */
+    std::shared_ptr<CPVRChannelGroup>              m_selectedGroup;  /*!< the group that's currently selected in the UI */
+    std::vector<std::shared_ptr<CPVRChannelGroup>> m_groups;         /*!< the groups in this container */
     mutable CCriticalSection m_critSection;
     std::vector<int> m_failedClientsForChannelGroups;
   };

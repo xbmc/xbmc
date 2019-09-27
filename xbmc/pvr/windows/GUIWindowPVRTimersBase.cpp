@@ -28,14 +28,14 @@
 
 using namespace PVR;
 
-CGUIWindowPVRTimersBase::CGUIWindowPVRTimersBase(bool bRadio, int id, const std::string &xmlFile) :
+CGUIWindowPVRTimersBase::CGUIWindowPVRTimersBase(bool bRadio, int id, const std::string& xmlFile) :
   CGUIWindowPVRBase(bRadio, id, xmlFile)
 {
 }
 
 CGUIWindowPVRTimersBase::~CGUIWindowPVRTimersBase() = default;
 
-bool CGUIWindowPVRTimersBase::OnAction(const CAction &action)
+bool CGUIWindowPVRTimersBase::OnAction(const CAction& action)
 {
   if (action.GetID() == ACTION_PARENT_DIR ||
       action.GetID() == ACTION_NAV_BACK)
@@ -51,7 +51,7 @@ bool CGUIWindowPVRTimersBase::OnAction(const CAction &action)
   return CGUIWindowPVRBase::OnAction(action);
 }
 
-bool CGUIWindowPVRTimersBase::Update(const std::string &strDirectory, bool updateFilterPath /* = true */)
+bool CGUIWindowPVRTimersBase::Update(const std::string& strDirectory, bool updateFilterPath /* = true */)
 {
   int iOldCount = m_vecItems->GetObjectCount();
   const std::string oldPath = m_vecItems->GetPath();
@@ -81,14 +81,14 @@ void CGUIWindowPVRTimersBase::UpdateButtons(void)
   std::string strHeaderTitle;
   if (m_currentFileItem && m_currentFileItem->HasPVRTimerInfoTag())
   {
-    CPVRTimerInfoTagPtr timer = m_currentFileItem->GetPVRTimerInfoTag();
+    std::shared_ptr<CPVRTimerInfoTag> timer = m_currentFileItem->GetPVRTimerInfoTag();
     strHeaderTitle = timer->Title();
   }
 
   SET_CONTROL_LABEL(CONTROL_LABEL_HEADER1, strHeaderTitle);
 }
 
-bool CGUIWindowPVRTimersBase::OnMessage(CGUIMessage &message)
+bool CGUIWindowPVRTimersBase::OnMessage(CGUIMessage& message)
 {
   bool bReturn = false;
   switch (message.GetMessage())
@@ -167,7 +167,7 @@ bool CGUIWindowPVRTimersBase::OnMessage(CGUIMessage &message)
   return bReturn || CGUIWindowPVRBase::OnMessage(message);
 }
 
-bool CGUIWindowPVRTimersBase::ActionShowTimer(const CFileItemPtr &item)
+bool CGUIWindowPVRTimersBase::ActionShowTimer(const CFileItemPtr& item)
 {
   bool bReturn = false;
 

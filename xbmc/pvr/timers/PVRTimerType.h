@@ -9,7 +9,6 @@
 #pragma once
 
 #include "addons/kodi-addon-dev-kit/include/kodi/xbmc_pvr_types.h"
-#include "pvr/PVRTypes.h"
 
 #include <memory>
 #include <string>
@@ -33,14 +32,14 @@ namespace PVR
      * @brief Return a list with all known timer types.
      * @return A list of timer types or an empty list if no types available.
      */
-    static const std::vector<CPVRTimerTypePtr> GetAllTypes();
+    static const std::vector<std::shared_ptr<CPVRTimerType>> GetAllTypes();
 
     /*!
      * @brief Return the first available timer type from given client.
      * @param client the PVR client.
      * @return A timer type or NULL if none available.
      */
-    static const CPVRTimerTypePtr GetFirstAvailableType(const std::shared_ptr<CPVRClient>& client);
+    static const std::shared_ptr<CPVRTimerType> GetFirstAvailableType(const std::shared_ptr<CPVRClient>& client);
 
     /*!
      * @brief Create a timer type from given timer type id and client id.
@@ -48,7 +47,7 @@ namespace PVR
      * @param iClientId the PVR client id.
      * @return A timer type instance.
      */
-    static CPVRTimerTypePtr CreateFromIds(unsigned int iTypeId, int iClientId);
+    static std::shared_ptr<CPVRTimerType> CreateFromIds(unsigned int iTypeId, int iClientId);
 
     /*!
      * @brief Create a timer type from given timer type attributes and client id.
@@ -57,19 +56,19 @@ namespace PVR
      * @param iClientId the PVR client id.
      * @return A timer type instance.
      */
-    static CPVRTimerTypePtr CreateFromAttributes(unsigned int iMustHaveAttr, unsigned int iMustNotHaveAttr, int iClientId);
+    static std::shared_ptr<CPVRTimerType> CreateFromAttributes(unsigned int iMustHaveAttr, unsigned int iMustNotHaveAttr, int iClientId);
 
     CPVRTimerType();
-    CPVRTimerType(const PVR_TIMER_TYPE &type, int iClientId);
+    CPVRTimerType(const PVR_TIMER_TYPE& type, int iClientId);
     CPVRTimerType(unsigned int iTypeId, unsigned int iAttributes, const std::string& strDescription = "");
 
     virtual ~CPVRTimerType();
 
-    CPVRTimerType(const CPVRTimerType &type) = delete;
-    CPVRTimerType &operator=(const CPVRTimerType &orig) = delete;
+    CPVRTimerType(const CPVRTimerType& type) = delete;
+    CPVRTimerType& operator=(const CPVRTimerType& orig) = delete;
 
-    bool operator ==(const CPVRTimerType &right) const;
-    bool operator !=(const CPVRTimerType &right) const;
+    bool operator ==(const CPVRTimerType& right) const;
+    bool operator !=(const CPVRTimerType& right) const;
 
     /*!
      * @brief Get the PVR client id for this type.
@@ -311,7 +310,7 @@ namespace PVR
      * @brief Obtain a list with all possible values for the priority attribute.
      * @param list out, the list with the values or an empty list, if priority is not supported by this type.
      */
-    void GetPriorityValues(std::vector< std::pair<std::string, int> > &list) const;
+    void GetPriorityValues(std::vector< std::pair<std::string, int>>& list) const;
 
     /*!
      * @brief Obtain the default value for the priority attribute.
@@ -323,7 +322,7 @@ namespace PVR
      * @brief Obtain a list with all possible values for the lifetime attribute.
      * @param list out, the list with the values or an empty list, if lifetime is not supported by this type.
      */
-    void GetLifetimeValues(std::vector< std::pair<std::string, int> > &list) const;
+    void GetLifetimeValues(std::vector< std::pair<std::string, int>>& list) const;
 
     /*!
      * @brief Obtain the default value for the lifetime attribute.
@@ -335,7 +334,7 @@ namespace PVR
      * @brief Obtain a list with all possible values for the MaxRecordings attribute.
      * @param list out, the list with the values or an empty list, if MaxRecordings is not supported by this type.
      */
-    void GetMaxRecordingsValues(std::vector< std::pair<std::string, int> > &list) const;
+    void GetMaxRecordingsValues(std::vector< std::pair<std::string, int>>& list) const;
 
     /*!
      * @brief Obtain the default value for the MaxRecordings attribute.
@@ -347,7 +346,7 @@ namespace PVR
      * @brief Obtain a list with all possible values for the duplicate episode prevention attribute.
      * @param list out, the list with the values or an empty list, if duplicate episode prevention is not supported by this type.
      */
-    void GetPreventDuplicateEpisodesValues(std::vector< std::pair<std::string, int> > &list) const;
+    void GetPreventDuplicateEpisodesValues(std::vector< std::pair<std::string, int>>& list) const;
 
     /*!
      * @brief Obtain the default value for the duplicate episode prevention attribute.
@@ -359,7 +358,7 @@ namespace PVR
      * @brief Obtain a list with all possible values for the recording group attribute.
      * @param list out, the list with the values or an empty list, if recording group is not supported by this type.
      */
-    void GetRecordingGroupValues(std::vector< std::pair<std::string, int> > &list) const;
+    void GetRecordingGroupValues(std::vector< std::pair<std::string, int>>& list) const;
 
     /*!
      * @brief Obtain the default value for the Recording Group attribute.
@@ -369,12 +368,12 @@ namespace PVR
 
   private:
     void InitDescription();
-    void InitAttributeValues(const PVR_TIMER_TYPE &type);
-    void InitPriorityValues(const PVR_TIMER_TYPE &type);
-    void InitLifetimeValues(const PVR_TIMER_TYPE &type);
-    void InitMaxRecordingsValues(const PVR_TIMER_TYPE &type);
-    void InitPreventDuplicateEpisodesValues(const PVR_TIMER_TYPE &type);
-    void InitRecordingGroupValues(const PVR_TIMER_TYPE &type);
+    void InitAttributeValues(const PVR_TIMER_TYPE& type);
+    void InitPriorityValues(const PVR_TIMER_TYPE& type);
+    void InitLifetimeValues(const PVR_TIMER_TYPE& type);
+    void InitMaxRecordingsValues(const PVR_TIMER_TYPE& type);
+    void InitPreventDuplicateEpisodesValues(const PVR_TIMER_TYPE& type);
+    void InitRecordingGroupValues(const PVR_TIMER_TYPE& type);
 
     int           m_iClientId = -1;
     unsigned int  m_iTypeId;

@@ -8,7 +8,6 @@
 
 #pragma once
 
-#include "pvr/PVRTypes.h"
 #include "settings/dialogs/GUIDialogSettingsManualBase.h"
 
 #include <memory>
@@ -22,12 +21,14 @@ struct IntegerSettingOption;
 
 namespace PVR
 {
+  class CPVRRecording;
+
   class CGUIDialogPVRRecordingSettings : public CGUIDialogSettingsManualBase
   {
   public:
     CGUIDialogPVRRecordingSettings();
 
-    void SetRecording(const CPVRRecordingPtr &recording);
+    void SetRecording(const std::shared_ptr<CPVRRecording>& recording);
     static bool CanEditRecording(const CFileItem& item);
 
   protected:
@@ -45,10 +46,10 @@ namespace PVR
 
   private:
     static void LifetimesFiller(std::shared_ptr<const CSetting> setting,
-                                std::vector<IntegerSettingOption> &list,
-                                int &current, void *data);
+                                std::vector<IntegerSettingOption>& list,
+                                int& current, void* data);
 
-    CPVRRecordingPtr m_recording;
+    std::shared_ptr<CPVRRecording> m_recording;
     std::string m_strTitle;
     int m_iPlayCount = 0;
     int m_iLifetime = 0;

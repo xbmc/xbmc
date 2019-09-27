@@ -87,7 +87,7 @@ ChannelSwitchMode CPVRActionListener::GetChannelSwitchMode(int iAction)
   return ChannelSwitchMode::INSTANT_OR_DELAYED_SWITCH;
 }
 
-bool CPVRActionListener::OnAction(const CAction &action)
+bool CPVRActionListener::OnAction(const CAction& action)
 {
   bool bIsJumpSMS = false;
   bool bIsPlayingPVR(CServiceBroker::GetPVRManager().IsPlaying() &&
@@ -244,8 +244,8 @@ bool CPVRActionListener::OnAction(const CAction &action)
       int iChannelNumber = static_cast<int>(action.GetAmount(0));
       int iSubChannelNumber = static_cast<int>(action.GetAmount(1));
 
-      const CPVRChannelPtr currentChannel = CServiceBroker::GetPVRManager().GetPlayingChannel();
-      const CPVRChannelGroupPtr selectedGroup = CServiceBroker::GetPVRManager().ChannelGroups()->Get(currentChannel->IsRadio())->GetSelectedGroup();
+      const std::shared_ptr<CPVRChannel> currentChannel = CServiceBroker::GetPVRManager().GetPlayingChannel();
+      const std::shared_ptr<CPVRChannelGroup> selectedGroup = CServiceBroker::GetPVRManager().ChannelGroups()->Get(currentChannel->IsRadio())->GetSelectedGroup();
       const std::shared_ptr<CPVRChannel> channel = selectedGroup->GetByChannelNumber(CPVRChannelNumber(iChannelNumber, iSubChannelNumber));
 
       if (!channel)
@@ -275,7 +275,7 @@ void CPVRActionListener::OnSettingChanged(std::shared_ptr<const CSetting> settin
   if (setting == nullptr)
     return;
 
-  const std::string &settingId = setting->GetId();
+  const std::string& settingId = setting->GetId();
   if (settingId == CSettings::SETTING_PVRPARENTAL_ENABLED)
   {
     if (std::static_pointer_cast<const CSettingBool>(setting)->GetValue() && CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(CSettings::SETTING_PVRPARENTAL_PIN).empty())
@@ -300,7 +300,7 @@ void CPVRActionListener::OnSettingAction(std::shared_ptr<const CSetting> setting
   if (setting == nullptr)
     return;
 
-  const std::string &settingId = setting->GetId();
+  const std::string& settingId = setting->GetId();
   if (settingId == CSettings::SETTING_PVRMANAGER_RESETDB)
   {
     CServiceBroker::GetPVRManager().GUIActions()->ResetPVRDatabase(false);
@@ -313,7 +313,7 @@ void CPVRActionListener::OnSettingAction(std::shared_ptr<const CSetting> setting
   {
     if (CServiceBroker::GetPVRManager().IsStarted())
     {
-      CGUIDialog *dialog = CServiceBroker::GetGUI()->GetWindowManager().GetDialog(WINDOW_DIALOG_PVR_CLIENT_PRIORITIES);
+      CGUIDialog* dialog = CServiceBroker::GetGUI()->GetWindowManager().GetDialog(WINDOW_DIALOG_PVR_CLIENT_PRIORITIES);
       if (dialog)
       {
         dialog->Open();
@@ -325,7 +325,7 @@ void CPVRActionListener::OnSettingAction(std::shared_ptr<const CSetting> setting
   {
     if (CServiceBroker::GetPVRManager().IsStarted())
     {
-      CGUIDialog *dialog = CServiceBroker::GetGUI()->GetWindowManager().GetDialog(WINDOW_DIALOG_PVR_CHANNEL_MANAGER);
+      CGUIDialog* dialog = CServiceBroker::GetGUI()->GetWindowManager().GetDialog(WINDOW_DIALOG_PVR_CHANNEL_MANAGER);
       if (dialog)
         dialog->Open();
     }
@@ -334,7 +334,7 @@ void CPVRActionListener::OnSettingAction(std::shared_ptr<const CSetting> setting
   {
     if (CServiceBroker::GetPVRManager().IsStarted())
     {
-      CGUIDialog *dialog = CServiceBroker::GetGUI()->GetWindowManager().GetDialog(WINDOW_DIALOG_PVR_GROUP_MANAGER);
+      CGUIDialog* dialog = CServiceBroker::GetGUI()->GetWindowManager().GetDialog(WINDOW_DIALOG_PVR_GROUP_MANAGER);
       if (dialog)
         dialog->Open();
     }

@@ -77,7 +77,7 @@ bool CGUIDialogPVRGroupManager::PersistChanges(void)
   return CServiceBroker::GetPVRManager().ChannelGroups()->Get(m_bIsRadio)->PersistAll();
 }
 
-bool CGUIDialogPVRGroupManager::ActionButtonOk(CGUIMessage &message)
+bool CGUIDialogPVRGroupManager::ActionButtonOk(CGUIMessage& message)
 {
   bool bReturn = false;
   unsigned int iControl = message.GetSenderId();
@@ -92,7 +92,7 @@ bool CGUIDialogPVRGroupManager::ActionButtonOk(CGUIMessage &message)
   return bReturn;
 }
 
-bool CGUIDialogPVRGroupManager::ActionButtonNewGroup(CGUIMessage &message)
+bool CGUIDialogPVRGroupManager::ActionButtonNewGroup(CGUIMessage& message)
 {
   bool bReturn = false;
   unsigned int iControl = message.GetSenderId();
@@ -106,7 +106,7 @@ bool CGUIDialogPVRGroupManager::ActionButtonNewGroup(CGUIMessage &message)
       if (strGroupName != "")
       {
         /* add the group if it doesn't already exist */
-        CPVRChannelGroups *groups = CServiceBroker::GetPVRManager().ChannelGroups()->Get(m_bIsRadio);
+        CPVRChannelGroups* groups = CServiceBroker::GetPVRManager().ChannelGroups()->Get(m_bIsRadio);
         if (groups->AddGroup(strGroupName))
         {
           CServiceBroker::GetPVRManager().ChannelGroups()->Get(m_bIsRadio)->GetByName(strGroupName)->SetGroupType(PVR_GROUP_TYPE_USER_DEFINED);
@@ -121,7 +121,7 @@ bool CGUIDialogPVRGroupManager::ActionButtonNewGroup(CGUIMessage &message)
   return bReturn;
 }
 
-bool CGUIDialogPVRGroupManager::ActionButtonDeleteGroup(CGUIMessage &message)
+bool CGUIDialogPVRGroupManager::ActionButtonDeleteGroup(CGUIMessage& message)
 {
   bool bReturn = false;
   unsigned int iControl = message.GetSenderId();
@@ -154,7 +154,7 @@ bool CGUIDialogPVRGroupManager::ActionButtonDeleteGroup(CGUIMessage &message)
   return bReturn;
 }
 
-bool CGUIDialogPVRGroupManager::ActionButtonRenameGroup(CGUIMessage &message)
+bool CGUIDialogPVRGroupManager::ActionButtonRenameGroup(CGUIMessage& message)
 {
   bool bReturn = false;
   unsigned int iControl = message.GetSenderId();
@@ -181,7 +181,7 @@ bool CGUIDialogPVRGroupManager::ActionButtonRenameGroup(CGUIMessage &message)
   return bReturn;
 }
 
-bool CGUIDialogPVRGroupManager::ActionButtonUngroupedChannels(CGUIMessage &message)
+bool CGUIDialogPVRGroupManager::ActionButtonUngroupedChannels(CGUIMessage& message)
 {
   bool bReturn = false;
   unsigned int iControl = message.GetSenderId();
@@ -213,7 +213,7 @@ bool CGUIDialogPVRGroupManager::ActionButtonUngroupedChannels(CGUIMessage &messa
   return bReturn;
 }
 
-bool CGUIDialogPVRGroupManager::ActionButtonGroupMembers(CGUIMessage &message)
+bool CGUIDialogPVRGroupManager::ActionButtonGroupMembers(CGUIMessage& message)
 {
   bool bReturn = false;
   unsigned int iControl = message.GetSenderId();
@@ -239,7 +239,7 @@ bool CGUIDialogPVRGroupManager::ActionButtonGroupMembers(CGUIMessage &message)
   return bReturn;
 }
 
-bool CGUIDialogPVRGroupManager::ActionButtonChannelGroups(CGUIMessage &message)
+bool CGUIDialogPVRGroupManager::ActionButtonChannelGroups(CGUIMessage& message)
 {
   bool bReturn = false;
   unsigned int iControl = message.GetSenderId();
@@ -259,13 +259,13 @@ bool CGUIDialogPVRGroupManager::ActionButtonChannelGroups(CGUIMessage &message)
   return bReturn;
 }
 
-bool CGUIDialogPVRGroupManager::ActionButtonHideGroup(CGUIMessage &message)
+bool CGUIDialogPVRGroupManager::ActionButtonHideGroup(CGUIMessage& message)
 {
   bool bReturn = false;
 
   if (message.GetSenderId() == BUTTON_HIDE_GROUP && m_selectedGroup)
   {
-    CGUIRadioButtonControl *button = static_cast<CGUIRadioButtonControl*>(GetControl(message.GetSenderId()));
+    CGUIRadioButtonControl* button = static_cast<CGUIRadioButtonControl*>(GetControl(message.GetSenderId()));
     if (button)
     {
       m_selectedGroup->SetHidden(button->IsSelected());
@@ -278,7 +278,7 @@ bool CGUIDialogPVRGroupManager::ActionButtonHideGroup(CGUIMessage &message)
   return bReturn;
 }
 
-bool CGUIDialogPVRGroupManager::ActionButtonToggleRadioTV(CGUIMessage &message)
+bool CGUIDialogPVRGroupManager::ActionButtonToggleRadioTV(CGUIMessage& message)
 {
   bool bReturn = false;
 
@@ -307,7 +307,7 @@ bool CGUIDialogPVRGroupManager::ActionButtonRecreateThumbnail(CGUIMessage& messa
   return bReturn;
 }
 
-bool CGUIDialogPVRGroupManager::OnMessageClick(CGUIMessage &message)
+bool CGUIDialogPVRGroupManager::OnMessageClick(CGUIMessage& message)
 {
   return ActionButtonOk(message) ||
       ActionButtonNewGroup(message) ||
@@ -495,7 +495,7 @@ void CGUIDialogPVRGroupManager::Update()
       }
 
       /* for the center part, get all channels of the "all" channels group that are not in this group */
-      const CPVRChannelGroupPtr allGroup = CServiceBroker::GetPVRManager().ChannelGroups()->GetGroupAll(m_bIsRadio);
+      const std::shared_ptr<CPVRChannelGroup> allGroup = CServiceBroker::GetPVRManager().ChannelGroups()->GetGroupAll(m_bIsRadio);
       const std::vector<PVRChannelGroupMember> allGroupMembers = allGroup->GetMembers(CPVRChannelGroup::Include::ONLY_VISIBLE);
       for (const auto& groupMember : allGroupMembers)
       {

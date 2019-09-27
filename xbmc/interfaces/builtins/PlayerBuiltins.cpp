@@ -333,7 +333,7 @@ static int PlayerControl(const std::vector<std::string>& params)
   else if (StringUtils::StartsWithNoCase(params[0], "resumelivetv"))
   {
     CFileItem& fileItem(g_application.CurrentFileItem());
-    PVR::CPVRChannelPtr channel = fileItem.HasPVRRecordingInfoTag() ? fileItem.GetPVRRecordingInfoTag()->Channel() : PVR::CPVRChannelPtr();
+    std::shared_ptr<PVR::CPVRChannel> channel = fileItem.HasPVRRecordingInfoTag() ? fileItem.GetPVRRecordingInfoTag()->Channel() : std::shared_ptr<PVR::CPVRChannel>();
 
     if (channel)
     {
@@ -530,7 +530,7 @@ static int Seek(const std::vector<std::string>& params)
 ///     <br>
 ///     | Control                 | Video playback behaviour               | Audio playback behaviour    | Added in    |
 ///     |:------------------------|:---------------------------------------|:----------------------------|:------------|
-///     | Play                    | Play/Pause                             | Play/Pause                  |             | 
+///     | Play                    | Play/Pause                             | Play/Pause                  |             |
 ///     | Stop                    | Stop                                   | Stop                        |             |
 ///     | Forward                 | Fast Forward                           | Fast Forward                |             |
 ///     | Rewind                  | Rewind                                 | Rewind                      |             |

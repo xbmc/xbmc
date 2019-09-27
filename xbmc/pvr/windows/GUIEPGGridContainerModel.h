@@ -9,7 +9,6 @@
 #pragma once
 
 #include "XBDateTime.h"
-#include "pvr/PVRTypes.h"
 
 #include <memory>
 #include <vector>
@@ -27,6 +26,8 @@ namespace PVR
     int progIndex = -1;
   };
 
+  class CPVREpgInfoTag;
+
   class CGUIEPGGridContainerModel
   {
   public:
@@ -36,11 +37,11 @@ namespace PVR
     CGUIEPGGridContainerModel() = default;
     virtual ~CGUIEPGGridContainerModel() = default;
 
-    void Initialize(const std::unique_ptr<CFileItemList> &items, const CDateTime &gridStart, const CDateTime &gridEnd, int iRulerUnit, int iBlocksPerPage, float fBlockSize);
+    void Initialize(const std::unique_ptr<CFileItemList>& items, const CDateTime& gridStart, const CDateTime& gridEnd, int iRulerUnit, int iBlocksPerPage, float fBlockSize);
     void SetInvalid();
 
     static const int INVALID_INDEX = -1;
-    void FindChannelAndBlockIndex(int channelUid, unsigned int broadcastUid, int eventOffset, int &newChannelIndex, int &newBlockIndex) const;
+    void FindChannelAndBlockIndex(int channelUid, unsigned int broadcastUid, int eventOffset, int& newChannelIndex, int& newBlockIndex) const;
 
     void FreeChannelMemory(int keepStart, int keepEnd);
     void FreeProgrammeMemory(int channel, int keepStart, int keepEnd);
@@ -59,7 +60,7 @@ namespace PVR
 
     int GetBlockCount() const { return m_blocks; }
     bool HasGridItems() const { return !m_gridIndex.empty(); }
-    GridItem *GetGridItemPtr(int iChannel, int iBlock) { return &m_gridIndex[iChannel][iBlock]; }
+    GridItem* GetGridItemPtr(int iChannel, int iBlock) { return& m_gridIndex[iChannel][iBlock]; }
     std::shared_ptr<CFileItem> GetGridItem(int iChannel, int iBlock) const { return m_gridIndex[iChannel][iBlock].item; }
     float GetGridItemWidth(int iChannel, int iBlock) const { return m_gridIndex[iChannel][iBlock].width; }
     float GetGridItemOriginWidth(int iChannel, int iBlock) const { return m_gridIndex[iChannel][iBlock].originWidth; }
@@ -67,17 +68,17 @@ namespace PVR
     void SetGridItemWidth(int iChannel, int iBlock, float fWidth) { m_gridIndex[iChannel][iBlock].width = fWidth; }
 
     bool IsZeroGridDuration() const { return (m_gridEnd - m_gridStart) == CDateTimeSpan(0, 0, 0, 0); }
-    const CDateTime &GetGridStart() const { return m_gridStart; }
-    const CDateTime &GetGridEnd() const { return m_gridEnd; }
+    const CDateTime& GetGridStart() const { return m_gridStart; }
+    const CDateTime& GetGridEnd() const { return m_gridEnd; }
     unsigned int GetGridStartPadding() const;
 
     unsigned int GetPageNowOffset() const;
     int GetNowBlock() const;
 
     CDateTime GetStartTimeForBlock(int block) const;
-    int GetBlock(const CDateTime &datetime) const;
-    int GetFirstEventBlock(const CPVREpgInfoTagPtr &event) const;
-    int GetLastEventBlock(const CPVREpgInfoTagPtr &event) const;
+    int GetBlock(const CDateTime& datetime) const;
+    int GetFirstEventBlock(const std::shared_ptr<CPVREpgInfoTag>& event) const;
+    int GetLastEventBlock(const std::shared_ptr<CPVREpgInfoTag>& event) const;
 
   private:
     void FreeItemsMemory();

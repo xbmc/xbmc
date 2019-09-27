@@ -33,7 +33,7 @@ namespace PVR
     int GetParentId() const { return m_iParentId; }
 
   private:
-    bool Init(const std::string &strPath);
+    bool Init(const std::string& strPath);
 
     std::string m_path;
     bool m_bValid = false;

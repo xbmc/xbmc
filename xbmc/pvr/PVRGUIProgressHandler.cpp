@@ -29,7 +29,7 @@ namespace PVR
     Create(true /* bAutoDelete */);
   }
 
-  void CPVRGUIProgressHandler::UpdateProgress(const std::string &strText, float fProgress)
+  void CPVRGUIProgressHandler::UpdateProgress(const std::string& strText, float fProgress)
   {
     CSingleLock lock(m_critSection);
     m_bChanged = true;
@@ -37,7 +37,7 @@ namespace PVR
     m_fProgress = fProgress;
   }
 
-  void CPVRGUIProgressHandler::UpdateProgress(const std::string &strText, int iCurrent, int iMax)
+  void CPVRGUIProgressHandler::UpdateProgress(const std::string& strText, int iCurrent, int iMax)
   {
     float fPercentage = (iCurrent * 100.0f) / iMax;
     if (!std::isnan(fPercentage))

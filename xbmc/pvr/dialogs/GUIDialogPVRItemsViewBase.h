@@ -22,19 +22,19 @@ namespace PVR
   {
   public:
     CGUIDialogPVRItemsViewBase() = delete;
-    CGUIDialogPVRItemsViewBase(int id, const std::string &xmlFile);
+    CGUIDialogPVRItemsViewBase(int id, const std::string& xmlFile);
     ~CGUIDialogPVRItemsViewBase() override = default;
 
     void OnWindowLoaded() override;
     void OnWindowUnload() override;
-    bool OnAction(const CAction &action) override;
+    bool OnAction(const CAction& action) override;
 
   protected:
     void Init();
 
     void OnInitWindow() override;
     void OnDeinitWindow(int nextWindowID) override;
-    CGUIControl *GetFirstFocusableControl(int id) override;
+    CGUIControl* GetFirstFocusableControl(int id) override;
 
     std::unique_ptr<CFileItemList> m_vecItems;
     CGUIViewControl m_viewControl;

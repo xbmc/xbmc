@@ -137,7 +137,7 @@ std::shared_ptr<CPVRRecording> CPVRRecordings::GetByPath(const std::string& path
 
     for (const auto recording : m_recordings)
     {
-      CPVRRecordingPtr current = recording.second;
+      std::shared_ptr<CPVRRecording> current = recording.second;
       // Omit recordings not matching criteria
       if (!URIUtils::PathEquals(path, current->m_strFileNameAndPath) ||
           bDeleted != current->IsDeleted() || bRadio != current->IsRadio())
@@ -150,9 +150,9 @@ std::shared_ptr<CPVRRecording> CPVRRecordings::GetByPath(const std::string& path
   return {};
 }
 
-CPVRRecordingPtr CPVRRecordings::GetById(int iClientId, const std::string &strRecordingId) const
+std::shared_ptr<CPVRRecording> CPVRRecordings::GetById(int iClientId, const std::string& strRecordingId) const
 {
-  CPVRRecordingPtr retVal;
+  std::shared_ptr<CPVRRecording> retVal;
   CSingleLock lock(m_critSection);
   const auto it = m_recordings.find(CPVRRecordingUid(iClientId, strRecordingId));
   if (it != m_recordings.end())
@@ -161,7 +161,7 @@ CPVRRecordingPtr CPVRRecordings::GetById(int iClientId, const std::string &strRe
   return retVal;
 }
 
-void CPVRRecordings::UpdateFromClient(const CPVRRecordingPtr &tag)
+void CPVRRecordings::UpdateFromClient(const std::shared_ptr<CPVRRecording>& tag)
 {
   CSingleLock lock(m_critSection);
 
@@ -173,14 +173,14 @@ void CPVRRecordings::UpdateFromClient(const CPVRRecordingPtr &tag)
       m_bDeletedTVRecordings = true;
   }
 
-  CPVRRecordingPtr newTag = GetById(tag->m_iClientId, tag->m_strRecordingId);
+  std::shared_ptr<CPVRRecording> newTag = GetById(tag->m_iClientId, tag->m_strRecordingId);
   if (newTag)
   {
     newTag->Update(*tag);
   }
   else
   {
-    newTag = CPVRRecordingPtr(new CPVRRecording);
+    newTag = std::shared_ptr<CPVRRecording>(new CPVRRecording);
     newTag->Update(*tag);
     newTag->UpdateMetadata(GetVideoDatabase());
     newTag->m_iRecordingId = ++m_iLastId;
@@ -192,7 +192,7 @@ void CPVRRecordings::UpdateFromClient(const CPVRRecordingPtr &tag)
   }
 }
 
-CPVRRecordingPtr CPVRRecordings::GetRecordingForEpgTag(const CPVREpgInfoTagPtr &epgTag) const
+std::shared_ptr<CPVRRecording> CPVRRecordings::GetRecordingForEpgTag(const std::shared_ptr<CPVREpgInfoTag>& epgTag) const
 {
   if (!epgTag)
     return {};
@@ -224,7 +224,7 @@ CPVRRecordingPtr CPVRRecordings::GetRecordingForEpgTag(const CPVREpgInfoTagPtr &
     }
   }
 
-  return CPVRRecordingPtr();
+  return std::shared_ptr<CPVRRecording>();
 }
 
 bool CPVRRecordings::SetRecordingsPlayCount(const std::shared_ptr<CPVRRecording>& recording, int count)

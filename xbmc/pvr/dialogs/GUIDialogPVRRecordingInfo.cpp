@@ -39,7 +39,7 @@ bool CGUIDialogPVRRecordingInfo::OnMessage(CGUIMessage& message)
   return CGUIDialog::OnMessage(message);
 }
 
-bool CGUIDialogPVRRecordingInfo::OnClickButtonOK(CGUIMessage &message)
+bool CGUIDialogPVRRecordingInfo::OnClickButtonOK(CGUIMessage& message)
 {
   bool bReturn = false;
 
@@ -52,7 +52,7 @@ bool CGUIDialogPVRRecordingInfo::OnClickButtonOK(CGUIMessage &message)
   return bReturn;
 }
 
-bool CGUIDialogPVRRecordingInfo::OnClickButtonPlay(CGUIMessage &message)
+bool CGUIDialogPVRRecordingInfo::OnClickButtonPlay(CGUIMessage& message)
 {
   bool bReturn = false;
 
@@ -92,7 +92,7 @@ bool CGUIDialogPVRRecordingInfo::OnInfo(int actionID)
   return true;
 }
 
-void CGUIDialogPVRRecordingInfo::SetRecording(const CFileItem *item)
+void CGUIDialogPVRRecordingInfo::SetRecording(const CFileItem* item)
 {
   *m_recordItem = *item;
 }

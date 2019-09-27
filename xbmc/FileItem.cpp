@@ -128,7 +128,7 @@ namespace
   }
 } // unnamed namespace
 
-void CFileItem::FillMusicInfoTag(const CPVRChannelPtr& channel, const CPVREpgInfoTagPtr& tag)
+void CFileItem::FillMusicInfoTag(const std::shared_ptr<CPVRChannel>& channel, const std::shared_ptr<CPVREpgInfoTag>& tag)
 {
   if (channel && channel->IsRadio() && !HasMusicInfoTag())
   {
@@ -153,7 +153,7 @@ void CFileItem::FillMusicInfoTag(const CPVRChannelPtr& channel, const CPVREpgInf
   }
 }
 
-CFileItem::CFileItem(const CPVREpgInfoTagPtr& tag)
+CFileItem::CFileItem(const std::shared_ptr<CPVREpgInfoTag>& tag)
 {
   Initialize();
 
@@ -180,11 +180,11 @@ CFileItem::CFileItem(const CPVREpgInfoTagPtr& tag)
   FillInMimeType(false);
 }
 
-CFileItem::CFileItem(const CPVRChannelPtr& channel)
+CFileItem::CFileItem(const std::shared_ptr<CPVRChannel>& channel)
 {
   Initialize();
 
-  CPVREpgInfoTagPtr epgNow(channel->GetEPGNow());
+  std::shared_ptr<CPVREpgInfoTag> epgNow(channel->GetEPGNow());
 
   m_strPath = channel->Path();
   m_bIsFolder = false;
@@ -206,7 +206,7 @@ CFileItem::CFileItem(const CPVRChannelPtr& channel)
   FillInMimeType(false);
 }
 
-CFileItem::CFileItem(const CPVRRecordingPtr& record)
+CFileItem::CFileItem(const std::shared_ptr<CPVRRecording>& record)
 {
   Initialize();
 
@@ -231,7 +231,7 @@ CFileItem::CFileItem(const CPVRRecordingPtr& record)
   FillInMimeType(false);
 }
 
-CFileItem::CFileItem(const CPVRTimerInfoTagPtr& timer)
+CFileItem::CFileItem(const std::shared_ptr<CPVRTimerInfoTag>& timer)
 {
   Initialize();
 
@@ -1197,9 +1197,9 @@ bool CFileItem::IsBluray() const
 {
   if (URIUtils::IsBluray(m_strPath))
     return true;
-  
+
   CFileItem item = CFileItem(GetOpticalMediaPath(), false);
-  
+
   return item.IsBDFile();
 }
 
@@ -1507,7 +1507,7 @@ void CFileItem::FillInMimeType(bool lookup /*= true*/)
   }
 
   // change protocol to mms for the following mime-type.  Allows us to create proper FileMMS.
-  if(StringUtils::StartsWithNoCase(m_mimetype, "application/vnd.ms.wms-hdr.asfv1") || 
+  if(StringUtils::StartsWithNoCase(m_mimetype, "application/vnd.ms.wms-hdr.asfv1") ||
      StringUtils::StartsWithNoCase(m_mimetype, "application/x-mms-framed"))
   {
     if (m_strDynPath.empty())

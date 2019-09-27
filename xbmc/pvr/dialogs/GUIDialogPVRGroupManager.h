@@ -10,14 +10,17 @@
 
 #include "guilib/GUIDialog.h"
 #include "pvr/PVRThumbLoader.h"
-#include "pvr/PVRTypes.h"
 #include "view/GUIViewControl.h"
+
+#include <memory>
 
 class CFileItemList;
 class CGUIMessage;
 
 namespace PVR
 {
+  class CPVRChannelGroup;
+
   class CGUIDialogPVRGroupManager : public CGUIDialog
   {
   public:
@@ -39,20 +42,20 @@ namespace PVR
     void ClearSelectedGroupsThumbnail();
     void Update();
     bool PersistChanges(void);
-    bool ActionButtonOk(CGUIMessage &message);
-    bool ActionButtonNewGroup(CGUIMessage &message);
-    bool ActionButtonDeleteGroup(CGUIMessage &message);
-    bool ActionButtonRenameGroup(CGUIMessage &message);
-    bool ActionButtonUngroupedChannels(CGUIMessage &message);
-    bool ActionButtonGroupMembers(CGUIMessage &message);
-    bool ActionButtonChannelGroups(CGUIMessage &message);
-    bool ActionButtonHideGroup(CGUIMessage &message);
-    bool ActionButtonToggleRadioTV(CGUIMessage &message);
+    bool ActionButtonOk(CGUIMessage& message);
+    bool ActionButtonNewGroup(CGUIMessage& message);
+    bool ActionButtonDeleteGroup(CGUIMessage& message);
+    bool ActionButtonRenameGroup(CGUIMessage& message);
+    bool ActionButtonUngroupedChannels(CGUIMessage& message);
+    bool ActionButtonGroupMembers(CGUIMessage& message);
+    bool ActionButtonChannelGroups(CGUIMessage& message);
+    bool ActionButtonHideGroup(CGUIMessage& message);
+    bool ActionButtonToggleRadioTV(CGUIMessage& message);
     bool ActionButtonRecreateThumbnail(CGUIMessage& message);
-    bool OnMessageClick(CGUIMessage &message);
+    bool OnMessageClick(CGUIMessage& message);
     bool OnActionMove(const CAction& action);
 
-    CPVRChannelGroupPtr m_selectedGroup;
+    std::shared_ptr<CPVRChannelGroup> m_selectedGroup;
     bool              m_bIsRadio;
 
     int m_iSelectedUngroupedChannel = 0;

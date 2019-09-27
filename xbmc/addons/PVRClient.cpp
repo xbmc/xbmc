@@ -258,7 +258,7 @@ int CPVRClient::GetID(void) const
  * @param xbmcGroup The group on XBMC's side.
  * @param addonGroup The group on the addon's side.
  */
-void CPVRClient::WriteClientGroupInfo(const CPVRChannelGroup &xbmcGroup, PVR_CHANNEL_GROUP &addonGroup)
+void CPVRClient::WriteClientGroupInfo(const CPVRChannelGroup& xbmcGroup, PVR_CHANNEL_GROUP& addonGroup)
 {
   addonGroup = {{0}};
   addonGroup.bIsRadio = xbmcGroup.IsRadio();
@@ -270,7 +270,7 @@ void CPVRClient::WriteClientGroupInfo(const CPVRChannelGroup &xbmcGroup, PVR_CHA
  * @param xbmcRecording The recording on XBMC's side.
  * @param addonRecording The recording on the addon's side.
  */
-void CPVRClient::WriteClientRecordingInfo(const CPVRRecording &xbmcRecording, PVR_RECORDING &addonRecording)
+void CPVRClient::WriteClientRecordingInfo(const CPVRRecording& xbmcRecording, PVR_RECORDING& addonRecording)
 {
   time_t recTime;
   xbmcRecording.RecordingTimeAsUTC().GetAsTime(recTime);
@@ -308,13 +308,13 @@ void CPVRClient::WriteClientRecordingInfo(const CPVRRecording &xbmcRecording, PV
  * @param xbmcTimer The timer on XBMC's side.
  * @param addonTimer The timer on the addon's side.
  */
-void CPVRClient::WriteClientTimerInfo(const CPVRTimerInfoTag &xbmcTimer, PVR_TIMER &addonTimer)
+void CPVRClient::WriteClientTimerInfo(const CPVRTimerInfoTag& xbmcTimer, PVR_TIMER& addonTimer)
 {
   time_t start, end, firstDay;
   xbmcTimer.StartAsUTC().GetAsTime(start);
   xbmcTimer.EndAsUTC().GetAsTime(end);
   xbmcTimer.FirstDayAsUTC().GetAsTime(firstDay);
-  CPVREpgInfoTagPtr epgTag = xbmcTimer.GetEpgInfoTag();
+  std::shared_ptr<CPVREpgInfoTag> epgTag = xbmcTimer.GetEpgInfoTag();
 
   int iPVRTimeCorrection = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_iPVRTimeCorrection;
 
@@ -353,7 +353,7 @@ void CPVRClient::WriteClientTimerInfo(const CPVRTimerInfoTag &xbmcTimer, PVR_TIM
  * @param xbmcChannel The channel on XBMC's side.
  * @param addonChannel The channel on the addon's side.
  */
-void CPVRClient::WriteClientChannelInfo(const CPVRChannelPtr &xbmcChannel, PVR_CHANNEL &addonChannel)
+void CPVRClient::WriteClientChannelInfo(const std::shared_ptr<CPVRChannel>& xbmcChannel, PVR_CHANNEL& addonChannel)
 {
   addonChannel = {0};
   addonChannel.iUniqueId         = xbmcChannel->UniqueID();
@@ -487,7 +487,7 @@ bool CPVRClient::GetAddonProperties(void)
           CLog::LogF(LOGERROR, "Invalid timer type supplied by add-on '%s'. Please contact the developer of this add-on: %s", GetFriendlyName().c_str(), Author().c_str());
           continue;
         }
-        timerTypes.emplace_back(CPVRTimerTypePtr(new CPVRTimerType(types_array[i], m_iClientId)));
+        timerTypes.emplace_back(std::shared_ptr<CPVRTimerType>(new CPVRTimerType(types_array[i], m_iClientId)));
       }
     }
     return retval;
@@ -534,7 +534,7 @@ const std::string& CPVRClient::GetFriendlyName(void) const
   return m_strFriendlyName;
 }
 
-PVR_ERROR CPVRClient::GetDriveSpace(long long &iTotal, long long &iUsed)
+PVR_ERROR CPVRClient::GetDriveSpace(long long& iTotal, long long& iUsed)
 {
   /* default to 0 in case of error */
   iTotal = 0;
@@ -560,7 +560,7 @@ PVR_ERROR CPVRClient::StartChannelScan(void)
   }, m_clientCapabilities.SupportsChannelScan());
 }
 
-PVR_ERROR CPVRClient::OpenDialogChannelAdd(const CPVRChannelPtr &channel)
+PVR_ERROR CPVRClient::OpenDialogChannelAdd(const std::shared_ptr<CPVRChannel>& channel)
 {
   return DoAddonCall(__FUNCTION__, [channel](const AddonInstance* addon) {
     PVR_CHANNEL addonChannel;
@@ -569,7 +569,7 @@ PVR_ERROR CPVRClient::OpenDialogChannelAdd(const CPVRChannelPtr &channel)
   }, m_clientCapabilities.SupportsChannelSettings());
 }
 
-PVR_ERROR CPVRClient::OpenDialogChannelSettings(const CPVRChannelPtr &channel)
+PVR_ERROR CPVRClient::OpenDialogChannelSettings(const std::shared_ptr<CPVRChannel>& channel)
 {
   return DoAddonCall(__FUNCTION__, [channel] (const AddonInstance* addon){
     PVR_CHANNEL addonChannel;
@@ -578,7 +578,7 @@ PVR_ERROR CPVRClient::OpenDialogChannelSettings(const CPVRChannelPtr &channel)
   }, m_clientCapabilities.SupportsChannelSettings());
 }
 
-PVR_ERROR CPVRClient::DeleteChannel(const CPVRChannelPtr &channel)
+PVR_ERROR CPVRClient::DeleteChannel(const std::shared_ptr<CPVRChannel>& channel)
 {
   return DoAddonCall(__FUNCTION__, [channel](const AddonInstance* addon) {
     PVR_CHANNEL addonChannel;
@@ -587,7 +587,7 @@ PVR_ERROR CPVRClient::DeleteChannel(const CPVRChannelPtr &channel)
   }, m_clientCapabilities.SupportsChannelSettings());
 }
 
-PVR_ERROR CPVRClient::RenameChannel(const CPVRChannelPtr &channel)
+PVR_ERROR CPVRClient::RenameChannel(const std::shared_ptr<CPVRChannel>& channel)
 {
   return DoAddonCall(__FUNCTION__, [channel](const AddonInstance* addon) {
     PVR_CHANNEL addonChannel;
@@ -630,7 +630,7 @@ class CAddonEpgTag : public EPG_TAG
 {
 public:
   CAddonEpgTag() = delete;
-  explicit CAddonEpgTag(const CConstPVREpgInfoTagPtr kodiTag) :
+  explicit CAddonEpgTag(const std::shared_ptr<const CPVREpgInfoTag> kodiTag) :
     m_strTitle(kodiTag->Title()),
     m_strPlotOutline(kodiTag->PlotOutline()),
     m_strPlot(kodiTag->Plot()),
@@ -693,7 +693,7 @@ private:
   std::string m_strGenreDescription;
 };
 
-PVR_ERROR CPVRClient::IsRecordable(const CConstPVREpgInfoTagPtr &tag, bool &bIsRecordable) const
+PVR_ERROR CPVRClient::IsRecordable(const std::shared_ptr<const CPVREpgInfoTag>& tag, bool& bIsRecordable) const
 {
   return DoAddonCall(__FUNCTION__, [tag, &bIsRecordable](const AddonInstance* addon) {
     CAddonEpgTag addonTag(tag);
@@ -701,7 +701,7 @@ PVR_ERROR CPVRClient::IsRecordable(const CConstPVREpgInfoTagPtr &tag, bool &bIsR
   }, m_clientCapabilities.SupportsRecordings() && m_clientCapabilities.SupportsEPG());
 }
 
-PVR_ERROR CPVRClient::IsPlayable(const CConstPVREpgInfoTagPtr &tag, bool &bIsPlayable) const
+PVR_ERROR CPVRClient::IsPlayable(const std::shared_ptr<const CPVREpgInfoTag>& tag, bool& bIsPlayable) const
 {
   return DoAddonCall(__FUNCTION__, [tag, &bIsPlayable](const AddonInstance* addon) {
     CAddonEpgTag addonTag(tag);
@@ -709,7 +709,7 @@ PVR_ERROR CPVRClient::IsPlayable(const CConstPVREpgInfoTagPtr &tag, bool &bIsPla
   }, m_clientCapabilities.SupportsEPG());
 }
 
-void CPVRClient::WriteStreamProperties(const PVR_NAMED_VALUE *properties, unsigned int iPropertyCount, CPVRStreamProperties& props)
+void CPVRClient::WriteStreamProperties(const PVR_NAMED_VALUE* properties, unsigned int iPropertyCount, CPVRStreamProperties& props)
 {
   for (unsigned int i = 0; i < iPropertyCount; ++i)
   {
@@ -734,7 +734,7 @@ PVR_ERROR CPVRClient::GetEpgTagStreamProperties(const std::shared_ptr<CPVREpgInf
   });
 }
 
-PVR_ERROR CPVRClient::GetEpgTagEdl(const CConstPVREpgInfoTagPtr &epgTag, std::vector<PVR_EDL_ENTRY> &edls)
+PVR_ERROR CPVRClient::GetEpgTagEdl(const std::shared_ptr<const CPVREpgInfoTag>& epgTag, std::vector<PVR_EDL_ENTRY>& edls)
 {
   edls.clear();
   return DoAddonCall(__FUNCTION__, [&epgTag, &edls](const AddonInstance* addon) {
@@ -753,7 +753,7 @@ PVR_ERROR CPVRClient::GetEpgTagEdl(const CConstPVREpgInfoTagPtr &epgTag, std::ve
   }, m_clientCapabilities.SupportsEpgTagEdl());
 }
 
-PVR_ERROR CPVRClient::GetChannelGroupsAmount(int &iGroups)
+PVR_ERROR CPVRClient::GetChannelGroupsAmount(int& iGroups)
 {
   iGroups = -1;
   return DoAddonCall(__FUNCTION__, [&iGroups](const AddonInstance* addon) {
@@ -762,7 +762,7 @@ PVR_ERROR CPVRClient::GetChannelGroupsAmount(int &iGroups)
   }, m_clientCapabilities.SupportsChannelGroups());
 }
 
-PVR_ERROR CPVRClient::GetChannelGroups(CPVRChannelGroups *groups)
+PVR_ERROR CPVRClient::GetChannelGroups(CPVRChannelGroups* groups)
 {
   return DoAddonCall(__FUNCTION__, [this, groups](const AddonInstance* addon) {
     ADDON_HANDLE_STRUCT handle = {0};
@@ -772,7 +772,7 @@ PVR_ERROR CPVRClient::GetChannelGroups(CPVRChannelGroups *groups)
   }, m_clientCapabilities.SupportsChannelGroups());
 }
 
-PVR_ERROR CPVRClient::GetChannelGroupMembers(CPVRChannelGroup *group)
+PVR_ERROR CPVRClient::GetChannelGroupMembers(CPVRChannelGroup* group)
 {
   return DoAddonCall(__FUNCTION__, [this, group](const AddonInstance* addon) {
     ADDON_HANDLE_STRUCT handle = {0};
@@ -785,7 +785,7 @@ PVR_ERROR CPVRClient::GetChannelGroupMembers(CPVRChannelGroup *group)
   }, m_clientCapabilities.SupportsChannelGroups());
 }
 
-PVR_ERROR CPVRClient::GetChannelsAmount(int &iChannels)
+PVR_ERROR CPVRClient::GetChannelsAmount(int& iChannels)
 {
   iChannels = -1;
   return DoAddonCall(__FUNCTION__, [&iChannels](const AddonInstance* addon) {
@@ -794,7 +794,7 @@ PVR_ERROR CPVRClient::GetChannelsAmount(int &iChannels)
   });
 }
 
-PVR_ERROR CPVRClient::GetChannels(CPVRChannelGroup &channels, bool radio)
+PVR_ERROR CPVRClient::GetChannels(CPVRChannelGroup& channels, bool radio)
 {
   return DoAddonCall(__FUNCTION__, [this, &channels, radio](const AddonInstance* addon) {
     ADDON_HANDLE_STRUCT handle = {0};
@@ -804,7 +804,7 @@ PVR_ERROR CPVRClient::GetChannels(CPVRChannelGroup &channels, bool radio)
   }, (radio && m_clientCapabilities.SupportsRadio()) || (!radio && m_clientCapabilities.SupportsTV()));
 }
 
-PVR_ERROR CPVRClient::GetRecordingsAmount(bool deleted, int &iRecordings)
+PVR_ERROR CPVRClient::GetRecordingsAmount(bool deleted, int& iRecordings)
 {
   iRecordings = -1;
   return DoAddonCall(__FUNCTION__, [deleted, &iRecordings](const AddonInstance* addon) {
@@ -813,7 +813,7 @@ PVR_ERROR CPVRClient::GetRecordingsAmount(bool deleted, int &iRecordings)
   }, m_clientCapabilities.SupportsRecordings() && (!deleted || m_clientCapabilities.SupportsRecordingsUndelete()));
 }
 
-PVR_ERROR CPVRClient::GetRecordings(CPVRRecordings *results, bool deleted) {
+PVR_ERROR CPVRClient::GetRecordings(CPVRRecordings* results, bool deleted) {
   return DoAddonCall(__FUNCTION__, [this, results, deleted](const AddonInstance* addon)
   {
     ADDON_HANDLE_STRUCT handle = {0};
@@ -823,7 +823,7 @@ PVR_ERROR CPVRClient::GetRecordings(CPVRRecordings *results, bool deleted) {
   }, m_clientCapabilities.SupportsRecordings() && (!deleted || m_clientCapabilities.SupportsRecordingsUndelete()));
 }
 
-PVR_ERROR CPVRClient::DeleteRecording(const CPVRRecording &recording)
+PVR_ERROR CPVRClient::DeleteRecording(const CPVRRecording& recording)
 {
   return DoAddonCall(__FUNCTION__, [&recording](const AddonInstance* addon) {
     PVR_RECORDING tag;
@@ -832,7 +832,7 @@ PVR_ERROR CPVRClient::DeleteRecording(const CPVRRecording &recording)
   }, m_clientCapabilities.SupportsRecordings());
 }
 
-PVR_ERROR CPVRClient::UndeleteRecording(const CPVRRecording &recording)
+PVR_ERROR CPVRClient::UndeleteRecording(const CPVRRecording& recording)
 {
   return DoAddonCall(__FUNCTION__, [&recording](const AddonInstance* addon) {
     PVR_RECORDING tag;
@@ -848,7 +848,7 @@ PVR_ERROR CPVRClient::DeleteAllRecordingsFromTrash()
   }, m_clientCapabilities.SupportsRecordingsUndelete());
 }
 
-PVR_ERROR CPVRClient::RenameRecording(const CPVRRecording &recording)
+PVR_ERROR CPVRClient::RenameRecording(const CPVRRecording& recording)
 {
   return DoAddonCall(__FUNCTION__, [&recording](const AddonInstance* addon) {
     PVR_RECORDING tag;
@@ -857,7 +857,7 @@ PVR_ERROR CPVRClient::RenameRecording(const CPVRRecording &recording)
   }, m_clientCapabilities.SupportsRecordings());
 }
 
-PVR_ERROR CPVRClient::SetRecordingLifetime(const CPVRRecording &recording)
+PVR_ERROR CPVRClient::SetRecordingLifetime(const CPVRRecording& recording)
 {
   return DoAddonCall(__FUNCTION__, [&recording](const AddonInstance* addon) {
     PVR_RECORDING tag;
@@ -866,7 +866,7 @@ PVR_ERROR CPVRClient::SetRecordingLifetime(const CPVRRecording &recording)
   }, m_clientCapabilities.SupportsRecordingsLifetimeChange());
 }
 
-PVR_ERROR CPVRClient::SetRecordingPlayCount(const CPVRRecording &recording, int count)
+PVR_ERROR CPVRClient::SetRecordingPlayCount(const CPVRRecording& recording, int count)
 {
   return DoAddonCall(__FUNCTION__, [&recording, count](const AddonInstance* addon) {
     PVR_RECORDING tag;
@@ -875,7 +875,7 @@ PVR_ERROR CPVRClient::SetRecordingPlayCount(const CPVRRecording &recording, int 
   }, m_clientCapabilities.SupportsRecordingsPlayCount());
 }
 
-PVR_ERROR CPVRClient::SetRecordingLastPlayedPosition(const CPVRRecording &recording, int lastplayedposition)
+PVR_ERROR CPVRClient::SetRecordingLastPlayedPosition(const CPVRRecording& recording, int lastplayedposition)
 {
   return DoAddonCall(__FUNCTION__, [&recording, lastplayedposition](const AddonInstance* addon) {
     PVR_RECORDING tag;
@@ -884,7 +884,7 @@ PVR_ERROR CPVRClient::SetRecordingLastPlayedPosition(const CPVRRecording &record
   }, m_clientCapabilities.SupportsRecordingsLastPlayedPosition());
  }
 
-PVR_ERROR CPVRClient::GetRecordingLastPlayedPosition(const CPVRRecording &recording, int &iPosition)
+PVR_ERROR CPVRClient::GetRecordingLastPlayedPosition(const CPVRRecording& recording, int& iPosition)
 {
   iPosition = -1;
   return DoAddonCall(__FUNCTION__, [&recording, &iPosition](const AddonInstance* addon) {
@@ -895,7 +895,7 @@ PVR_ERROR CPVRClient::GetRecordingLastPlayedPosition(const CPVRRecording &record
   }, m_clientCapabilities.SupportsRecordingsLastPlayedPosition());
 }
 
-PVR_ERROR CPVRClient::GetRecordingEdl(const CPVRRecording &recording, std::vector<PVR_EDL_ENTRY> &edls)
+PVR_ERROR CPVRClient::GetRecordingEdl(const CPVRRecording& recording, std::vector<PVR_EDL_ENTRY>& edls)
 {
   edls.clear();
   return DoAddonCall(__FUNCTION__, [&recording, &edls](const AddonInstance* addon) {
@@ -915,7 +915,7 @@ PVR_ERROR CPVRClient::GetRecordingEdl(const CPVRRecording &recording, std::vecto
   }, m_clientCapabilities.SupportsRecordingsEdl());
 }
 
-PVR_ERROR CPVRClient::GetTimersAmount(int &iTimers)
+PVR_ERROR CPVRClient::GetTimersAmount(int& iTimers)
 {
   iTimers = -1;
   return DoAddonCall(__FUNCTION__, [&iTimers](const AddonInstance* addon) {
@@ -924,7 +924,7 @@ PVR_ERROR CPVRClient::GetTimersAmount(int &iTimers)
   }, m_clientCapabilities.SupportsTimers());
 }
 
-PVR_ERROR CPVRClient::GetTimers(CPVRTimersContainer *results)
+PVR_ERROR CPVRClient::GetTimers(CPVRTimersContainer* results)
 {
   return DoAddonCall(__FUNCTION__, [this, results](const AddonInstance* addon) {
     ADDON_HANDLE_STRUCT handle = {0};
@@ -934,7 +934,7 @@ PVR_ERROR CPVRClient::GetTimers(CPVRTimersContainer *results)
   }, m_clientCapabilities.SupportsTimers());
 }
 
-PVR_ERROR CPVRClient::AddTimer(const CPVRTimerInfoTag &timer)
+PVR_ERROR CPVRClient::AddTimer(const CPVRTimerInfoTag& timer)
 {
   return DoAddonCall(__FUNCTION__, [&timer](const AddonInstance* addon) {
     PVR_TIMER tag;
@@ -943,7 +943,7 @@ PVR_ERROR CPVRClient::AddTimer(const CPVRTimerInfoTag &timer)
   }, m_clientCapabilities.SupportsTimers());
 }
 
-PVR_ERROR CPVRClient::DeleteTimer(const CPVRTimerInfoTag &timer, bool bForce /* = false */)
+PVR_ERROR CPVRClient::DeleteTimer(const CPVRTimerInfoTag& timer, bool bForce /* = false */)
 {
   return DoAddonCall(__FUNCTION__, [&timer, bForce](const AddonInstance* addon) {
     PVR_TIMER tag;
@@ -952,7 +952,7 @@ PVR_ERROR CPVRClient::DeleteTimer(const CPVRTimerInfoTag &timer, bool bForce /* 
   }, m_clientCapabilities.SupportsTimers());
 }
 
-PVR_ERROR CPVRClient::UpdateTimer(const CPVRTimerInfoTag &timer)
+PVR_ERROR CPVRClient::UpdateTimer(const CPVRTimerInfoTag& timer)
 {
   return DoAddonCall(__FUNCTION__, [&timer](const AddonInstance* addon) {
     PVR_TIMER tag;
@@ -975,7 +975,7 @@ PVR_ERROR CPVRClient::GetStreamReadChunkSize(int& iChunkSize)
   }, m_clientCapabilities.SupportsRecordings() || m_clientCapabilities.HandlesInputStream());
 }
 
-PVR_ERROR CPVRClient::ReadLiveStream(void* lpBuf, int64_t uiBufSize, int &iRead)
+PVR_ERROR CPVRClient::ReadLiveStream(void* lpBuf, int64_t uiBufSize, int& iRead)
 {
   iRead = -1;
   return DoAddonCall(__FUNCTION__, [&lpBuf, uiBufSize, &iRead](const AddonInstance* addon) {
@@ -984,7 +984,7 @@ PVR_ERROR CPVRClient::ReadLiveStream(void* lpBuf, int64_t uiBufSize, int &iRead)
   });
 }
 
-PVR_ERROR CPVRClient::ReadRecordedStream(void* lpBuf, int64_t uiBufSize, int &iRead)
+PVR_ERROR CPVRClient::ReadRecordedStream(void* lpBuf, int64_t uiBufSize, int& iRead)
 {
   iRead = -1;
   return DoAddonCall(__FUNCTION__, [&lpBuf, uiBufSize, &iRead](const AddonInstance* addon) {
@@ -993,7 +993,7 @@ PVR_ERROR CPVRClient::ReadRecordedStream(void* lpBuf, int64_t uiBufSize, int &iR
   });
 }
 
-PVR_ERROR CPVRClient::SeekLiveStream(int64_t iFilePosition, int iWhence, int64_t &iPosition)
+PVR_ERROR CPVRClient::SeekLiveStream(int64_t iFilePosition, int iWhence, int64_t& iPosition)
 {
   iPosition = -1;
   return DoAddonCall(__FUNCTION__, [iFilePosition, iWhence, &iPosition](const AddonInstance* addon) {
@@ -1002,7 +1002,7 @@ PVR_ERROR CPVRClient::SeekLiveStream(int64_t iFilePosition, int iWhence, int64_t
   });
 }
 
-PVR_ERROR CPVRClient::SeekRecordedStream(int64_t iFilePosition, int iWhence, int64_t &iPosition)
+PVR_ERROR CPVRClient::SeekRecordedStream(int64_t iFilePosition, int iWhence, int64_t& iPosition)
 {
   iPosition = -1;
   return DoAddonCall(__FUNCTION__, [iFilePosition, iWhence, &iPosition](const AddonInstance* addon) {
@@ -1011,14 +1011,14 @@ PVR_ERROR CPVRClient::SeekRecordedStream(int64_t iFilePosition, int iWhence, int
   });
 }
 
-PVR_ERROR CPVRClient::SeekTime(double time, bool backwards, double *startpts)
+PVR_ERROR CPVRClient::SeekTime(double time, bool backwards, double* startpts)
 {
   return DoAddonCall(__FUNCTION__, [time, backwards, &startpts](const AddonInstance* addon) {
     return addon->SeekTime(time, backwards, startpts) ? PVR_ERROR_NO_ERROR : PVR_ERROR_NOT_IMPLEMENTED;
   });
 }
 
-PVR_ERROR CPVRClient::GetLiveStreamLength(int64_t &iLength)
+PVR_ERROR CPVRClient::GetLiveStreamLength(int64_t& iLength)
 {
   iLength = -1;
   return DoAddonCall(__FUNCTION__, [&iLength](const AddonInstance* addon) {
@@ -1027,7 +1027,7 @@ PVR_ERROR CPVRClient::GetLiveStreamLength(int64_t &iLength)
   });
 }
 
-PVR_ERROR CPVRClient::GetRecordedStreamLength(int64_t &iLength)
+PVR_ERROR CPVRClient::GetRecordedStreamLength(int64_t& iLength)
 {
   iLength = -1;
   return DoAddonCall(__FUNCTION__, [&iLength](const AddonInstance* addon) {
@@ -1036,14 +1036,14 @@ PVR_ERROR CPVRClient::GetRecordedStreamLength(int64_t &iLength)
   });
 }
 
-PVR_ERROR CPVRClient::SignalQuality(PVR_SIGNAL_STATUS &qualityinfo)
+PVR_ERROR CPVRClient::SignalQuality(PVR_SIGNAL_STATUS& qualityinfo)
 {
   return DoAddonCall(__FUNCTION__, [&qualityinfo](const AddonInstance* addon) {
     return addon->SignalStatus(qualityinfo);
   });
 }
 
-PVR_ERROR CPVRClient::GetDescrambleInfo(PVR_DESCRAMBLE_INFO &descrambleinfo) const
+PVR_ERROR CPVRClient::GetDescrambleInfo(PVR_DESCRAMBLE_INFO& descrambleinfo) const
 {
   return DoAddonCall(__FUNCTION__, [&descrambleinfo](const AddonInstance* addon) {
     return addon->GetDescrambleInfo(&descrambleinfo);
@@ -1092,7 +1092,7 @@ PVR_ERROR CPVRClient::GetRecordingStreamProperties(const std::shared_ptr<CPVRRec
   });
 }
 
-PVR_ERROR CPVRClient::GetStreamProperties(PVR_STREAM_PROPERTIES *props)
+PVR_ERROR CPVRClient::GetStreamProperties(PVR_STREAM_PROPERTIES* props)
 {
   return DoAddonCall(__FUNCTION__, [&props](const AddonInstance* addon) {
     return addon->GetStreamProperties(props);
@@ -1131,7 +1131,7 @@ PVR_ERROR CPVRClient::DemuxRead(DemuxPacket* &packet)
   }, m_clientCapabilities.HandlesDemuxing());
 }
 
-const char *CPVRClient::ToString(const PVR_ERROR error)
+const char* CPVRClient::ToString(const PVR_ERROR error)
 {
   switch (error)
   {
@@ -1181,7 +1181,7 @@ PVR_ERROR CPVRClient::DoAddonCall(const char* strFunctionName, std::function<PVR
   return error;
 }
 
-bool CPVRClient::CanPlayChannel(const CPVRChannelPtr &channel) const
+bool CPVRClient::CanPlayChannel(const std::shared_ptr<CPVRChannel>& channel) const
 {
   return (m_bReadyToUse &&
            ((m_clientCapabilities.SupportsTV() && !channel->IsRadio()) ||
@@ -1266,7 +1266,7 @@ PVR_ERROR CPVRClient::FillBuffer(bool mode)
   });
 }
 
-PVR_ERROR CPVRClient::CanPauseStream(bool &bCanPause) const
+PVR_ERROR CPVRClient::CanPauseStream(bool& bCanPause) const
 {
   bCanPause = false;
   return DoAddonCall(__FUNCTION__, [&bCanPause](const AddonInstance* addon) {
@@ -1275,7 +1275,7 @@ PVR_ERROR CPVRClient::CanPauseStream(bool &bCanPause) const
   });
 }
 
-PVR_ERROR CPVRClient::CanSeekStream(bool &bCanSeek) const
+PVR_ERROR CPVRClient::CanSeekStream(bool& bCanSeek) const
 {
   bCanSeek = false;
   return DoAddonCall(__FUNCTION__, [&bCanSeek](const AddonInstance* addon) {
@@ -1284,14 +1284,14 @@ PVR_ERROR CPVRClient::CanSeekStream(bool &bCanSeek) const
   });
 }
 
-PVR_ERROR CPVRClient::GetStreamTimes(PVR_STREAM_TIMES *times)
+PVR_ERROR CPVRClient::GetStreamTimes(PVR_STREAM_TIMES* times)
 {
   return DoAddonCall(__FUNCTION__, [&times](const AddonInstance* addon) {
     return addon->GetStreamTimes(times);
   });
 }
 
-PVR_ERROR CPVRClient::IsRealTimeStream(bool &bRealTime) const
+PVR_ERROR CPVRClient::IsRealTimeStream(bool& bRealTime) const
 {
   bRealTime = false;
   return DoAddonCall(__FUNCTION__, [&bRealTime](const AddonInstance* addon) {
@@ -1444,7 +1444,7 @@ int CPVRClient::GetPriority() const
   return m_iPriority;
 }
 
-void CPVRClient::cb_transfer_channel_group(void *kodiInstance, const ADDON_HANDLE handle, const PVR_CHANNEL_GROUP *group)
+void CPVRClient::cb_transfer_channel_group(void* kodiInstance, const ADDON_HANDLE handle, const PVR_CHANNEL_GROUP* group)
 {
   if (!handle)
   {
@@ -1452,7 +1452,7 @@ void CPVRClient::cb_transfer_channel_group(void *kodiInstance, const ADDON_HANDL
     return;
   }
 
-  CPVRChannelGroups *kodiGroups = static_cast<CPVRChannelGroups *>(handle->dataAddress);
+  CPVRChannelGroups* kodiGroups = static_cast<CPVRChannelGroups *>(handle->dataAddress);
   if (!group || !kodiGroups)
   {
     CLog::LogF(LOGERROR, "Invalid handler data");
@@ -1470,7 +1470,7 @@ void CPVRClient::cb_transfer_channel_group(void *kodiInstance, const ADDON_HANDL
   kodiGroups->UpdateFromClient(transferGroup);
 }
 
-void CPVRClient::cb_transfer_channel_group_member(void *kodiInstance, const ADDON_HANDLE handle, const PVR_CHANNEL_GROUP_MEMBER *member)
+void CPVRClient::cb_transfer_channel_group_member(void* kodiInstance, const ADDON_HANDLE handle, const PVR_CHANNEL_GROUP_MEMBER* member)
 {
   if (!handle)
   {
@@ -1478,15 +1478,15 @@ void CPVRClient::cb_transfer_channel_group_member(void *kodiInstance, const ADDO
     return;
   }
 
-  CPVRClient *client = static_cast<CPVRClient*>(kodiInstance);
-  CPVRChannelGroup *group = static_cast<CPVRChannelGroup *>(handle->dataAddress);
+  CPVRClient* client = static_cast<CPVRClient*>(kodiInstance);
+  CPVRChannelGroup* group = static_cast<CPVRChannelGroup *>(handle->dataAddress);
   if (!member || !client || !group)
   {
     CLog::LogF(LOGERROR, "Invalid handler data");
     return;
   }
 
-  CPVRChannelPtr channel  = CServiceBroker::GetPVRManager().ChannelGroups()->GetByUniqueID(member->iChannelUniqueId, client->GetID());
+  std::shared_ptr<CPVRChannel> channel  = CServiceBroker::GetPVRManager().ChannelGroups()->GetByUniqueID(member->iChannelUniqueId, client->GetID());
   if (!channel)
   {
     CLog::LogF(LOGERROR, "Cannot find group '%s' or channel '%d'", member->strGroupName, member->iChannelUniqueId);
@@ -1498,7 +1498,7 @@ void CPVRClient::cb_transfer_channel_group_member(void *kodiInstance, const ADDO
   }
 }
 
-void CPVRClient::cb_transfer_epg_entry(void *kodiInstance, const ADDON_HANDLE handle, const EPG_TAG *epgentry)
+void CPVRClient::cb_transfer_epg_entry(void* kodiInstance, const ADDON_HANDLE handle, const EPG_TAG* epgentry)
 {
   if (!handle)
   {
@@ -1506,8 +1506,8 @@ void CPVRClient::cb_transfer_epg_entry(void *kodiInstance, const ADDON_HANDLE ha
     return;
   }
 
-  CPVRClient *client = static_cast<CPVRClient*>(kodiInstance);
-  CPVREpg *kodiEpg = static_cast<CPVREpg *>(handle->dataAddress);
+  CPVRClient* client = static_cast<CPVRClient*>(kodiInstance);
+  CPVREpg* kodiEpg = static_cast<CPVREpg *>(handle->dataAddress);
   if (!epgentry || !client || !kodiEpg)
   {
     CLog::LogF(LOGERROR, "Invalid handler data");
@@ -1518,7 +1518,7 @@ void CPVRClient::cb_transfer_epg_entry(void *kodiInstance, const ADDON_HANDLE ha
   kodiEpg->UpdateEntry(epgentry, client->GetID());
 }
 
-void CPVRClient::cb_transfer_channel_entry(void *kodiInstance, const ADDON_HANDLE handle, const PVR_CHANNEL *channel)
+void CPVRClient::cb_transfer_channel_entry(void* kodiInstance, const ADDON_HANDLE handle, const PVR_CHANNEL* channel)
 {
   if (!handle)
   {
@@ -1526,8 +1526,8 @@ void CPVRClient::cb_transfer_channel_entry(void *kodiInstance, const ADDON_HANDL
     return;
   }
 
-  CPVRClient *client = static_cast<CPVRClient*>(kodiInstance);
-  CPVRChannelGroupInternal *kodiChannels = static_cast<CPVRChannelGroupInternal *>(handle->dataAddress);
+  CPVRClient* client = static_cast<CPVRClient*>(kodiInstance);
+  CPVRChannelGroupInternal* kodiChannels = static_cast<CPVRChannelGroupInternal *>(handle->dataAddress);
   if (!channel || !client || !kodiChannels)
   {
     CLog::LogF(LOGERROR, "Invalid handler data");
@@ -1535,11 +1535,11 @@ void CPVRClient::cb_transfer_channel_entry(void *kodiInstance, const ADDON_HANDL
   }
 
   /* transfer this entry to the internal channels group */
-  CPVRChannelPtr transferChannel(new CPVRChannel(*channel, client->GetID()));
+  std::shared_ptr<CPVRChannel> transferChannel(new CPVRChannel(*channel, client->GetID()));
   kodiChannels->UpdateFromClient(transferChannel, CPVRChannelNumber(), channel->iOrder, transferChannel->ClientChannelNumber());
 }
 
-void CPVRClient::cb_transfer_recording_entry(void *kodiInstance, const ADDON_HANDLE handle, const PVR_RECORDING *recording)
+void CPVRClient::cb_transfer_recording_entry(void* kodiInstance, const ADDON_HANDLE handle, const PVR_RECORDING* recording)
 {
   if (!handle)
   {
@@ -1547,8 +1547,8 @@ void CPVRClient::cb_transfer_recording_entry(void *kodiInstance, const ADDON_HAN
     return;
   }
 
-  CPVRClient *client = static_cast<CPVRClient*>(kodiInstance);
-  CPVRRecordings *kodiRecordings = static_cast<CPVRRecordings *>(handle->dataAddress);
+  CPVRClient* client = static_cast<CPVRClient*>(kodiInstance);
+  CPVRRecordings* kodiRecordings = static_cast<CPVRRecordings *>(handle->dataAddress);
   if (!recording || !client || !kodiRecordings)
   {
     CLog::LogF(LOGERROR, "Invalid handler data");
@@ -1556,11 +1556,11 @@ void CPVRClient::cb_transfer_recording_entry(void *kodiInstance, const ADDON_HAN
   }
 
   /* transfer this entry to the recordings container */
-  CPVRRecordingPtr transferRecording(new CPVRRecording(*recording, client->GetID()));
+  std::shared_ptr<CPVRRecording> transferRecording(new CPVRRecording(*recording, client->GetID()));
   kodiRecordings->UpdateFromClient(transferRecording);
 }
 
-void CPVRClient::cb_transfer_timer_entry(void *kodiInstance, const ADDON_HANDLE handle, const PVR_TIMER *timer)
+void CPVRClient::cb_transfer_timer_entry(void* kodiInstance, const ADDON_HANDLE handle, const PVR_TIMER* timer)
 {
   if (!handle)
   {
@@ -1568,8 +1568,8 @@ void CPVRClient::cb_transfer_timer_entry(void *kodiInstance, const ADDON_HANDLE 
     return;
   }
 
-  CPVRClient *client = static_cast<CPVRClient*>(kodiInstance);
-  CPVRTimersContainer *kodiTimers = static_cast<CPVRTimersContainer *>(handle->dataAddress);
+  CPVRClient* client = static_cast<CPVRClient*>(kodiInstance);
+  CPVRTimersContainer* kodiTimers = static_cast<CPVRTimersContainer *>(handle->dataAddress);
   if (!timer || !client || !kodiTimers)
   {
     CLog::LogF(LOGERROR, "Invalid handler data");
@@ -1577,16 +1577,16 @@ void CPVRClient::cb_transfer_timer_entry(void *kodiInstance, const ADDON_HANDLE 
   }
 
   /* Note: channel can be NULL here, for instance for epg-based timer rules ("record on any channel" condition). */
-  CPVRChannelPtr channel = CServiceBroker::GetPVRManager().ChannelGroups()->GetByUniqueID(timer->iClientChannelUid, client->GetID());
+  std::shared_ptr<CPVRChannel> channel = CServiceBroker::GetPVRManager().ChannelGroups()->GetByUniqueID(timer->iClientChannelUid, client->GetID());
 
   /* transfer this entry to the timers container */
-  CPVRTimerInfoTagPtr transferTimer(new CPVRTimerInfoTag(*timer, channel, client->GetID()));
+  std::shared_ptr<CPVRTimerInfoTag> transferTimer(new CPVRTimerInfoTag(*timer, channel, client->GetID()));
   kodiTimers->UpdateFromClient(transferTimer);
 }
 
-void CPVRClient::cb_add_menu_hook(void *kodiInstance, PVR_MENUHOOK *hook)
+void CPVRClient::cb_add_menu_hook(void* kodiInstance, PVR_MENUHOOK* hook)
 {
-  CPVRClient *client = static_cast<CPVRClient*>(kodiInstance);
+  CPVRClient* client = static_cast<CPVRClient*>(kodiInstance);
   if (!hook || !client)
   {
     CLog::LogF(LOGERROR, "Invalid handler data");
@@ -1596,9 +1596,9 @@ void CPVRClient::cb_add_menu_hook(void *kodiInstance, PVR_MENUHOOK *hook)
   client->GetMenuHooks()->AddHook(*hook);
 }
 
-void CPVRClient::cb_recording(void *kodiInstance, const char *strName, const char *strFileName, bool bOnOff)
+void CPVRClient::cb_recording(void* kodiInstance, const char* strName, const char* strFileName, bool bOnOff)
 {
-  CPVRClient *client = static_cast<CPVRClient*>(kodiInstance);
+  CPVRClient* client = static_cast<CPVRClient*>(kodiInstance);
   if (!client || !strFileName)
   {
     CLog::LogF(LOGERROR, "Invalid handler data");
@@ -1620,33 +1620,33 @@ void CPVRClient::cb_recording(void *kodiInstance, const char *strName, const cha
               bOnOff ? "started" : "finished", client->Name().c_str(), strName, strFileName);
 }
 
-void CPVRClient::cb_trigger_channel_update(void *kodiInstance)
+void CPVRClient::cb_trigger_channel_update(void* kodiInstance)
 {
   /* update the channels table in the next iteration of the pvrmanager's main loop */
   CServiceBroker::GetPVRManager().TriggerChannelsUpdate();
 }
 
-void CPVRClient::cb_trigger_timer_update(void *kodiInstance)
+void CPVRClient::cb_trigger_timer_update(void* kodiInstance)
 {
   /* update the timers table in the next iteration of the pvrmanager's main loop */
   CServiceBroker::GetPVRManager().TriggerTimersUpdate();
 }
 
-void CPVRClient::cb_trigger_recording_update(void *kodiInstance)
+void CPVRClient::cb_trigger_recording_update(void* kodiInstance)
 {
   /* update the recordings table in the next iteration of the pvrmanager's main loop */
   CServiceBroker::GetPVRManager().TriggerRecordingsUpdate();
 }
 
-void CPVRClient::cb_trigger_channel_groups_update(void *kodiInstance)
+void CPVRClient::cb_trigger_channel_groups_update(void* kodiInstance)
 {
   /* update all channel groups in the next iteration of the pvrmanager's main loop */
   CServiceBroker::GetPVRManager().TriggerChannelGroupsUpdate();
 }
 
-void CPVRClient::cb_trigger_epg_update(void *kodiInstance, unsigned int iChannelUid)
+void CPVRClient::cb_trigger_epg_update(void* kodiInstance, unsigned int iChannelUid)
 {
-  CPVRClient *client = static_cast<CPVRClient*>(kodiInstance);
+  CPVRClient* client = static_cast<CPVRClient*>(kodiInstance);
   if (!client)
   {
     CLog::LogF(LOGERROR, "Invalid handler data");
@@ -1656,19 +1656,19 @@ void CPVRClient::cb_trigger_epg_update(void *kodiInstance, unsigned int iChannel
   CServiceBroker::GetPVRManager().EpgContainer().UpdateRequest(client->GetID(), iChannelUid);
 }
 
-void CPVRClient::cb_free_demux_packet(void *kodiInstance, DemuxPacket* pPacket)
+void CPVRClient::cb_free_demux_packet(void* kodiInstance, DemuxPacket* pPacket)
 {
   CDVDDemuxUtils::FreeDemuxPacket(pPacket);
 }
 
-DemuxPacket* CPVRClient::cb_allocate_demux_packet(void *kodiInstance, int iDataSize)
+DemuxPacket* CPVRClient::cb_allocate_demux_packet(void* kodiInstance, int iDataSize)
 {
   return CDVDDemuxUtils::AllocateDemuxPacket(iDataSize);
 }
 
-void CPVRClient::cb_connection_state_change(void* kodiInstance, const char* strConnectionString, PVR_CONNECTION_STATE newState, const char *strMessage)
+void CPVRClient::cb_connection_state_change(void* kodiInstance, const char* strConnectionString, PVR_CONNECTION_STATE newState, const char* strMessage)
 {
-  CPVRClient *client = static_cast<CPVRClient*>(kodiInstance);
+  CPVRClient* client = static_cast<CPVRClient*>(kodiInstance);
   if (!client || !strConnectionString)
   {
     CLog::LogF(LOGERROR, "Invalid handler data");
@@ -1692,7 +1692,7 @@ void CPVRClient::cb_connection_state_change(void* kodiInstance, const char* strC
 
 void CPVRClient::cb_epg_event_state_change(void* kodiInstance, EPG_TAG* tag, EPG_EVENT_STATE newState)
 {
-  CPVRClient *client = static_cast<CPVRClient*>(kodiInstance);
+  CPVRClient* client = static_cast<CPVRClient*>(kodiInstance);
   if (!client || !tag)
   {
     CLog::LogF(LOGERROR, "Invalid handler data");
@@ -1831,9 +1831,9 @@ void CPVRClientCapabilities::InitRecordingsLifetimeValues()
   }
 }
 
-void CPVRClientCapabilities::GetRecordingsLifetimeValues(std::vector<std::pair<std::string, int>> &list) const
+void CPVRClientCapabilities::GetRecordingsLifetimeValues(std::vector<std::pair<std::string, int>>& list) const
 {
-  for (const auto &lifetime : m_recordingsLifetimeValues)
+  for (const auto& lifetime : m_recordingsLifetimeValues)
     list.push_back(lifetime);
 }
 

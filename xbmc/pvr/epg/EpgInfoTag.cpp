@@ -166,7 +166,7 @@ bool CPVREpgInfoTag::operator !=(const CPVREpgInfoTag& right) const
   return !(*this == right);
 }
 
-void CPVREpgInfoTag::Serialize(CVariant &value) const
+void CPVREpgInfoTag::Serialize(CVariant& value) const
 {
   CSingleLock lock(m_critSection);
   value["broadcastid"] = m_iUniqueBroadcastID;
@@ -344,7 +344,7 @@ CDateTime CPVREpgInfoTag::EndAsLocalTime(void) const
   return retVal;
 }
 
-void CPVREpgInfoTag::SetEndFromUTC(const CDateTime &end)
+void CPVREpgInfoTag::SetEndFromUTC(const CDateTime& end)
 {
   m_endTime = end;
 }
@@ -519,7 +519,7 @@ std::string CPVREpgInfoTag::Path(void) const
   return m_strFileNameAndPath;
 }
 
-bool CPVREpgInfoTag::Update(const CPVREpgInfoTag &tag, bool bUpdateBroadcastId /* = true */)
+bool CPVREpgInfoTag::Update(const CPVREpgInfoTag& tag, bool bUpdateBroadcastId /* = true */)
 {
   CSingleLock lock(m_critSection);
   bool bChanged = (
@@ -704,12 +704,12 @@ bool CPVREpgInfoTag::IsParentalLocked() const
   return m_channelData->IsLocked();
 }
 
-const std::vector<std::string> CPVREpgInfoTag::Tokenize(const std::string &str)
+const std::vector<std::string> CPVREpgInfoTag::Tokenize(const std::string& str)
 {
   return StringUtils::Split(str.c_str(), EPG_STRING_TOKEN_SEPARATOR);
 }
 
-const std::string CPVREpgInfoTag::DeTokenize(const std::vector<std::string> &tokens)
+const std::string CPVREpgInfoTag::DeTokenize(const std::vector<std::string>& tokens)
 {
   return StringUtils::Join(tokens, EPG_STRING_TOKEN_SEPARATOR);
 }

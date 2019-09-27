@@ -9,16 +9,18 @@
 #pragma once
 
 #include "pvr/PVRChannelNumberInputHandler.h"
-#include "pvr/PVRTypes.h"
 #include "pvr/dialogs/GUIDialogPVRItemsViewBase.h"
 #include "threads/SystemClock.h"
 
 #include <map>
+#include <memory>
 #include <string>
 
 namespace PVR
 {
   enum class PVREvent;
+
+  class CPVRChannelGroup;
 
   class CGUIDialogPVRChannelsOSD : public CGUIDialogPVRItemsViewBase, public CPVRChannelNumberInputHandler
   {
@@ -26,7 +28,7 @@ namespace PVR
     CGUIDialogPVRChannelsOSD(void);
     ~CGUIDialogPVRChannelsOSD(void) override;
     bool OnMessage(CGUIMessage& message) override;
-    bool OnAction(const CAction &action) override;
+    bool OnAction(const CAction& action) override;
 
     /*!
      * @brief CEventStream callback for PVR events.
@@ -51,7 +53,7 @@ namespace PVR
     void SaveSelectedItemPath(int iGroupID);
     std::string GetLastSelectedItemPath(int iGroupID) const;
 
-    CPVRChannelGroupPtr m_group;
+    std::shared_ptr<CPVRChannelGroup> m_group;
     std::map<int, std::string> m_groupSelectedItemPaths;
     XbmcThreads::EndTime m_refreshTimeout;
   };

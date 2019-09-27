@@ -230,7 +230,7 @@ bool CPVRDatabase::DeleteClients()
   return DeleteValues("clients");
 }
 
-bool CPVRDatabase::Persist(const CPVRClient &client)
+bool CPVRDatabase::Persist(const CPVRClient& client)
 {
   if (client.GetID() == PVR_INVALID_CLIENT_ID)
     return false;
@@ -245,7 +245,7 @@ bool CPVRDatabase::Persist(const CPVRClient &client)
   return ExecuteQuery(strQuery);
 }
 
-bool CPVRDatabase::Delete(const CPVRClient &client)
+bool CPVRDatabase::Delete(const CPVRClient& client)
 {
   if (client.GetID() == PVR_INVALID_CLIENT_ID)
     return false;
@@ -260,7 +260,7 @@ bool CPVRDatabase::Delete(const CPVRClient &client)
   return DeleteValues("clients", filter);
 }
 
-int CPVRDatabase::GetPriority(const CPVRClient &client)
+int CPVRDatabase::GetPriority(const CPVRClient& client)
 {
   if (client.GetID() == PVR_INVALID_CLIENT_ID)
     return 0;
@@ -288,7 +288,7 @@ bool CPVRDatabase::DeleteChannels(void)
   return DeleteValues("channels");
 }
 
-bool CPVRDatabase::Delete(const CPVRChannel &channel)
+bool CPVRDatabase::Delete(const CPVRChannel& channel)
 {
   /* invalid channel */
   if (channel.ChannelID() <= 0)
@@ -303,7 +303,7 @@ bool CPVRDatabase::Delete(const CPVRChannel &channel)
   return DeleteValues("channels", filter);
 }
 
-int CPVRDatabase::Get(CPVRChannelGroup &results, bool bCompressDB)
+int CPVRDatabase::Get(CPVRChannelGroup& results, bool bCompressDB)
 {
   int iReturn(0);
   bool bUseEpgDB = CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_EPG_STOREEPGINDATABASE);
@@ -323,7 +323,7 @@ int CPVRDatabase::Get(CPVRChannelGroup &results, bool bCompressDB)
     {
       while (!m_pDS->eof())
       {
-        CPVRChannelPtr channel = CPVRChannelPtr(new CPVRChannel());
+        std::shared_ptr<CPVRChannel> channel = std::shared_ptr<CPVRChannel>(new CPVRChannel());
 
         channel->m_iChannelId              = m_pDS->fv("idChannel").get_asInt();
         channel->m_iUniqueId               = m_pDS->fv("iUniqueId").get_asInt();
@@ -376,7 +376,7 @@ int CPVRDatabase::Get(CPVRChannelGroup &results, bool bCompressDB)
 
 /********** Channel group methods **********/
 
-bool CPVRDatabase::RemoveChannelsFromGroup(const CPVRChannelGroup &group)
+bool CPVRDatabase::RemoveChannelsFromGroup(const CPVRChannelGroup& group)
 {
   Filter filter;
   filter.AppendWhere(PrepareSQL("idGroup = %u", group.GroupID()));
@@ -385,7 +385,7 @@ bool CPVRDatabase::RemoveChannelsFromGroup(const CPVRChannelGroup &group)
   return DeleteValues("map_channelgroups_channels", filter);
 }
 
-bool CPVRDatabase::GetCurrentGroupMembers(const CPVRChannelGroup &group, std::vector<int> &members)
+bool CPVRDatabase::GetCurrentGroupMembers(const CPVRChannelGroup& group, std::vector<int>& members)
 {
   bool bReturn(false);
   /* invalid group id */
@@ -423,7 +423,7 @@ bool CPVRDatabase::GetCurrentGroupMembers(const CPVRChannelGroup &group, std::ve
   return bReturn;
 }
 
-bool CPVRDatabase::DeleteChannelsFromGroup(const CPVRChannelGroup &group, const std::vector<int> &channelsToDelete)
+bool CPVRDatabase::DeleteChannelsFromGroup(const CPVRChannelGroup& group, const std::vector<int>& channelsToDelete)
 {
   bool bDelete(true);
   unsigned int iDeletedChannels(0);
@@ -470,7 +470,7 @@ int CPVRDatabase::GetClientIdByChannelId(int iChannelId)
   return PVR_INVALID_CLIENT_ID;
 }
 
-bool CPVRDatabase::RemoveStaleChannelsFromGroup(const CPVRChannelGroup &group)
+bool CPVRDatabase::RemoveStaleChannelsFromGroup(const CPVRChannelGroup& group)
 {
   bool bDelete(true);
   /* invalid group id */
@@ -543,7 +543,7 @@ bool CPVRDatabase::DeleteChannelGroups(void)
   return DeleteValues("channelgroups") && DeleteValues("map_channelgroups_channels");
 }
 
-bool CPVRDatabase::Delete(const CPVRChannelGroup &group)
+bool CPVRDatabase::Delete(const CPVRChannelGroup& group)
 {
   /* invalid group id */
   if (group.GroupID() <= 0)
@@ -581,7 +581,7 @@ bool CPVRDatabase::Delete(const CPVRChannelGroup &group)
   return true;
 }
 
-bool CPVRDatabase::Get(CPVRChannelGroups &results)
+bool CPVRDatabase::Get(CPVRChannelGroups& results)
 {
   bool bReturn = false;
   CSingleLock lock(m_critSection);
@@ -617,7 +617,7 @@ bool CPVRDatabase::Get(CPVRChannelGroups &results)
   return bReturn;
 }
 
-int CPVRDatabase::Get(CPVRChannelGroup &group, const CPVRChannelGroup &allGroup)
+int CPVRDatabase::Get(CPVRChannelGroup& group, const CPVRChannelGroup& allGroup)
 {
   int iReturn = -1;
 
@@ -637,7 +637,7 @@ int CPVRDatabase::Get(CPVRChannelGroup &group, const CPVRChannelGroup &allGroup)
     iReturn = 0;
 
     // create a map to speedup data lookup
-    std::map<int, CPVRChannelPtr> allChannels;
+    std::map<int, std::shared_ptr<CPVRChannel>> allChannels;
     for (const auto& groupMember : allGroup.GetMembers())
     {
       allChannels.insert(std::make_pair(groupMember.channel->ChannelID(), groupMember.channel));
@@ -691,11 +691,11 @@ int CPVRDatabase::Get(CPVRChannelGroup &group, const CPVRChannelGroup &allGroup)
   return iReturn;
 }
 
-bool CPVRDatabase::PersistChannels(CPVRChannelGroup &group)
+bool CPVRDatabase::PersistChannels(CPVRChannelGroup& group)
 {
   bool bReturn(true);
 
-  CPVRChannelPtr channel;
+  std::shared_ptr<CPVRChannel> channel;
   for (const auto& groupMember : group.m_members)
   {
     channel = groupMember.second.channel;
@@ -728,7 +728,7 @@ bool CPVRDatabase::PersistChannels(CPVRChannelGroup &group)
   return bReturn;
 }
 
-bool CPVRDatabase::PersistGroupMembers(const CPVRChannelGroup &group)
+bool CPVRDatabase::PersistGroupMembers(const CPVRChannelGroup& group)
 {
   bool bReturn = true;
   bool bRemoveChannels = true;
@@ -771,7 +771,7 @@ bool CPVRDatabase::ResetEPG(void)
   return ExecuteQuery(strQuery);
 }
 
-bool CPVRDatabase::Persist(CPVRChannelGroup &group)
+bool CPVRDatabase::Persist(CPVRChannelGroup& group)
 {
   bool bReturn(false);
   if (group.GroupName().empty())
@@ -813,7 +813,7 @@ bool CPVRDatabase::Persist(CPVRChannelGroup &group)
   return bReturn;
 }
 
-bool CPVRDatabase::Persist(CPVRChannel &channel, bool bCommit)
+bool CPVRDatabase::Persist(CPVRChannel& channel, bool bCommit)
 {
   bool bReturn(false);
 
@@ -866,7 +866,7 @@ bool CPVRDatabase::Persist(CPVRChannel &channel, bool bCommit)
   return bReturn;
 }
 
-bool CPVRDatabase::UpdateLastWatched(const CPVRChannel &channel)
+bool CPVRDatabase::UpdateLastWatched(const CPVRChannel& channel)
 {
   CSingleLock lock(m_critSection);
   const std::string strQuery = PrepareSQL("UPDATE channels SET iLastWatched = %u WHERE idChannel = %d",
@@ -874,7 +874,7 @@ bool CPVRDatabase::UpdateLastWatched(const CPVRChannel &channel)
   return ExecuteQuery(strQuery);
 }
 
-bool CPVRDatabase::UpdateLastWatched(const CPVRChannelGroup &group)
+bool CPVRDatabase::UpdateLastWatched(const CPVRChannelGroup& group)
 {
   CSingleLock lock(m_critSection);
   const std::string strQuery = PrepareSQL("UPDATE channelgroups SET iLastWatched = %u WHERE idGroup = %d",

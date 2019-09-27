@@ -39,7 +39,7 @@ CGUIDialogPVRGuideInfo::CGUIDialogPVRGuideInfo(void)
 
 CGUIDialogPVRGuideInfo::~CGUIDialogPVRGuideInfo(void) = default;
 
-bool CGUIDialogPVRGuideInfo::OnClickButtonOK(CGUIMessage &message)
+bool CGUIDialogPVRGuideInfo::OnClickButtonOK(CGUIMessage& message)
 {
   bool bReturn = false;
 
@@ -52,7 +52,7 @@ bool CGUIDialogPVRGuideInfo::OnClickButtonOK(CGUIMessage &message)
   return bReturn;
 }
 
-bool CGUIDialogPVRGuideInfo::OnClickButtonRecord(CGUIMessage &message)
+bool CGUIDialogPVRGuideInfo::OnClickButtonRecord(CGUIMessage& message)
 {
   bool bReturn = false;
 
@@ -82,7 +82,7 @@ bool CGUIDialogPVRGuideInfo::OnClickButtonRecord(CGUIMessage &message)
   return bReturn;
 }
 
-bool CGUIDialogPVRGuideInfo::OnClickButtonAddTimer(CGUIMessage &message)
+bool CGUIDialogPVRGuideInfo::OnClickButtonAddTimer(CGUIMessage& message)
 {
   bool bReturn = false;
 
@@ -120,7 +120,7 @@ bool CGUIDialogPVRGuideInfo::OnClickButtonSetReminder(CGUIMessage& message)
   return bReturn;
 }
 
-bool CGUIDialogPVRGuideInfo::OnClickButtonPlay(CGUIMessage &message)
+bool CGUIDialogPVRGuideInfo::OnClickButtonPlay(CGUIMessage& message)
 {
   bool bReturn = false;
 
@@ -144,7 +144,7 @@ bool CGUIDialogPVRGuideInfo::OnClickButtonPlay(CGUIMessage &message)
   return bReturn;
 }
 
-bool CGUIDialogPVRGuideInfo::OnClickButtonFind(CGUIMessage &message)
+bool CGUIDialogPVRGuideInfo::OnClickButtonFind(CGUIMessage& message)
 {
   bool bReturn = false;
 
@@ -179,7 +179,7 @@ bool CGUIDialogPVRGuideInfo::OnInfo(int actionID)
   return true;
 }
 
-void CGUIDialogPVRGuideInfo::SetProgInfo(const CPVREpgInfoTagPtr &tag)
+void CGUIDialogPVRGuideInfo::SetProgInfo(const std::shared_ptr<CPVREpgInfoTag>& tag)
 {
   m_progItem = tag;
 }
@@ -225,7 +225,7 @@ void CGUIDialogPVRGuideInfo::OnInitWindow()
   }
   else if (m_progItem->IsRecordable())
   {
-    const CPVRClientPtr client = CServiceBroker::GetPVRManager().GetClient(m_progItem->ClientID());
+    const std::shared_ptr<CPVRClient> client = CServiceBroker::GetPVRManager().GetClient(m_progItem->ClientID());
     if (client && client->GetClientCapabilities().SupportsTimers())
     {
       SET_CONTROL_LABEL(CONTROL_BTN_RECORD, 264); /* Record */

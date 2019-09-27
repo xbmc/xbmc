@@ -60,7 +60,7 @@ void CGUIDialogPVRGuideSearch::UpdateChannelSpin(void)
   std::vector< std::pair<std::string, int> > labels;
   labels.emplace_back(g_localizeStrings.Get(19217), EPG_SEARCH_UNSET);
 
-  CPVRChannelGroupPtr group;
+  std::shared_ptr<CPVRChannelGroup> group;
   if (iChannelGroup == EPG_SEARCH_UNSET)
     group = CServiceBroker::GetPVRManager().ChannelGroups()->GetGroupAll(m_searchFilter->IsRadio());
   else
@@ -95,8 +95,8 @@ void CGUIDialogPVRGuideSearch::UpdateGroupsSpin(void)
   std::vector< std::pair<std::string, int> > labels;
 
   /* groups */
-  std::vector<CPVRChannelGroupPtr> groups = CServiceBroker::GetPVRManager().ChannelGroups()->Get(m_searchFilter->IsRadio())->GetMembers();
-  for (std::vector<CPVRChannelGroupPtr>::const_iterator it = groups.begin(); it != groups.end(); ++it)
+  std::vector<std::shared_ptr<CPVRChannelGroup>> groups = CServiceBroker::GetPVRManager().ChannelGroups()->Get(m_searchFilter->IsRadio())->GetMembers();
+  for (std::vector<std::shared_ptr<CPVRChannelGroup>>::const_iterator it = groups.begin(); it != groups.end(); ++it)
     labels.emplace_back((*it)->GroupName(), (*it)->GroupID());
 
   SET_CONTROL_LABELS(CONTROL_SPIN_GROUPS, m_searchFilter->GetChannelGroup(), &labels);
@@ -202,7 +202,7 @@ void CGUIDialogPVRGuideSearch::OnWindowLoaded()
   return CGUIDialog::OnWindowLoaded();
 }
 
-CDateTime CGUIDialogPVRGuideSearch::ReadDateTime(const std::string &strDate, const std::string &strTime) const
+CDateTime CGUIDialogPVRGuideSearch::ReadDateTime(const std::string& strDate, const std::string& strTime) const
 {
   CDateTime dateTime;
   int iHours, iMinutes;

@@ -136,7 +136,7 @@ void CAnnouncementManager::DoAnnounce(AnnouncementFlag flag, const char *sender,
 
   if(item->HasPVRChannelInfoTag())
   {
-    const PVR::CPVRChannelPtr channel(item->GetPVRChannelInfoTag());
+    const std::shared_ptr<PVR::CPVRChannel> channel(item->GetPVRChannelInfoTag());
     id = channel->ChannelID();
     type = "channel";
 

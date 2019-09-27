@@ -20,18 +20,18 @@ namespace PVR
     constexpr CPVRChannelNumber(unsigned int iChannelNumber, unsigned int iSubChannelNumber)
     : m_iChannelNumber(iChannelNumber), m_iSubChannelNumber(iSubChannelNumber) {}
 
-    constexpr bool operator ==(const CPVRChannelNumber &right) const
+    constexpr bool operator ==(const CPVRChannelNumber& right) const
     {
       return (m_iChannelNumber  == right.m_iChannelNumber &&
               m_iSubChannelNumber == right.m_iSubChannelNumber);
     }
 
-    constexpr bool operator !=(const CPVRChannelNumber &right) const
+    constexpr bool operator !=(const CPVRChannelNumber& right) const
     {
       return !(*this == right);
     }
 
-    constexpr bool operator <(const CPVRChannelNumber &right) const
+    constexpr bool operator <(const CPVRChannelNumber& right) const
     {
       return m_iChannelNumber == right.m_iChannelNumber
         ? m_iSubChannelNumber < right.m_iSubChannelNumber

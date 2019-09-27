@@ -11,7 +11,6 @@
 #include "XBDateTime.h"
 #include "addons/kodi-addon-dev-kit/include/kodi/xbmc_pvr_types.h"
 #include "pvr/PVRSettings.h"
-#include "pvr/PVRTypes.h"
 #include "threads/CriticalSection.h"
 #include "threads/Event.h"
 #include "threads/Thread.h"
@@ -54,7 +53,7 @@ namespace PVR
      * @brief Get a pointer to the database instance.
      * @return A pointer to the database instance.
      */
-    CPVREpgDatabasePtr GetEpgDatabase() const;
+    std::shared_ptr<CPVREpgDatabase> GetEpgDatabase() const;
 
     /*!
      * @brief Query the events available for CEventStream
@@ -89,7 +88,7 @@ namespace PVR
      * @param bDeleteFromDatabase Delete this table from the database too if true.
      * @return True on success, false otherwise.
      */
-    bool DeleteEpg(const CPVREpgPtr &epg, bool bDeleteFromDatabase = false);
+    bool DeleteEpg(const std::shared_ptr<CPVREpg>& epg, bool bDeleteFromDatabase = false);
 
     /*!
      * @brief CEventStream callback for PVR events.
@@ -129,7 +128,7 @@ namespace PVR
      * @param iEpgId The database ID of the table.
      * @return The EPG or nullptr if it wasn't found.
      */
-    CPVREpgPtr GetById(int iEpgId) const;
+    std::shared_ptr<CPVREpg> GetById(int iEpgId) const;
 
     /*!
      * @brief Get an EPG given its client id and channel uid.
@@ -177,7 +176,7 @@ namespace PVR
      * @param tag The epg tag containing the updated data
      * @param eNewState The kind of change (CREATED, UPDATED, DELETED)
      */
-    void UpdateFromClient(const CPVREpgInfoTagPtr &tag, EPG_EVENT_STATE eNewState);
+    void UpdateFromClient(const std::shared_ptr<CPVREpgInfoTag>& tag, EPG_EVENT_STATE eNewState);
 
     /*!
      * @brief Get the number of past days to show in the guide and to import from backends.
@@ -258,9 +257,9 @@ namespace PVR
      * @brief Insert data from database
      * @param newEpg the EPG containing the updated data.
      */
-    void InsertFromDB(const CPVREpgPtr &newEpg);
+    void InsertFromDB(const std::shared_ptr<CPVREpg>& newEpg);
 
-    CPVREpgDatabasePtr m_database; /*!< the EPG database */
+    std::shared_ptr<CPVREpgDatabase> m_database; /*!< the EPG database */
 
     bool m_bIsUpdating = false;                /*!< true while an update is running */
     bool m_bIsInitialising = true;             /*!< true while the epg manager hasn't loaded all tables */

@@ -24,7 +24,7 @@
 
 using namespace PVR;
 
-CGUIDialogPVRItemsViewBase::CGUIDialogPVRItemsViewBase(int id, const std::string &xmlFile)
+CGUIDialogPVRItemsViewBase::CGUIDialogPVRItemsViewBase(int id, const std::string& xmlFile)
 : CGUIDialog(id, xmlFile),
   m_vecItems(new CFileItemList)
 {
@@ -55,7 +55,7 @@ void CGUIDialogPVRItemsViewBase::OnDeinitWindow(int nextWindowID)
   Clear();
 }
 
-bool CGUIDialogPVRItemsViewBase::OnAction(const CAction &action)
+bool CGUIDialogPVRItemsViewBase::OnAction(const CAction& action)
 {
   if (m_viewControl.HasControl(GetFocusedControlID()))
   {
@@ -78,7 +78,7 @@ bool CGUIDialogPVRItemsViewBase::OnAction(const CAction &action)
   return CGUIDialog::OnAction(action);
 }
 
-CGUIControl *CGUIDialogPVRItemsViewBase::GetFirstFocusableControl(int id)
+CGUIControl* CGUIDialogPVRItemsViewBase::GetFirstFocusableControl(int id)
 {
   if (m_viewControl.HasControl(id))
     id = m_viewControl.GetCurrentControl();

@@ -43,7 +43,7 @@
 using namespace KODI::MESSAGING;
 using namespace PVR;
 
-CGUIWindowPVRGuideBase::CGUIWindowPVRGuideBase(bool bRadio, int id, const std::string &xmlFile) :
+CGUIWindowPVRGuideBase::CGUIWindowPVRGuideBase(bool bRadio, int id, const std::string& xmlFile) :
   CGUIWindowPVRBase(bRadio, id, xmlFile),
   m_bChannelSelectionRestored(false),
   m_bFirstOpen(true)
@@ -69,7 +69,7 @@ CGUIEPGGridContainer* CGUIWindowPVRGuideBase::GetGridControl()
 
 void CGUIWindowPVRGuideBase::InitEpgGridControl()
 {
-  CGUIEPGGridContainer *epgGridContainer = GetGridControl();
+  CGUIEPGGridContainer* epgGridContainer = GetGridControl();
   if (epgGridContainer)
   {
     m_bChannelSelectionRestored = epgGridContainer->SetChannel(CServiceBroker::GetPVRManager().GUIActions()->GetSelectedItemPath(m_bRadio));
@@ -162,14 +162,14 @@ void CGUIWindowPVRGuideBase::NotifyEvent(const PVREvent& event)
 
 void CGUIWindowPVRGuideBase::SetInvalid()
 {
-  CGUIEPGGridContainer *epgGridContainer = GetGridControl();
+  CGUIEPGGridContainer* epgGridContainer = GetGridControl();
   if (epgGridContainer)
     epgGridContainer->SetInvalid();
 
   CGUIWindowPVRBase::SetInvalid();
 }
 
-void CGUIWindowPVRGuideBase::GetContextButtons(int itemNumber, CContextButtons &buttons)
+void CGUIWindowPVRGuideBase::GetContextButtons(int itemNumber, CContextButtons& buttons)
 {
   buttons.Add(CONTEXT_BUTTON_BEGIN, 19063); /* Go to begin */
   buttons.Add(CONTEXT_BUTTON_NOW,   19070); /* Go to now */
@@ -181,10 +181,10 @@ void CGUIWindowPVRGuideBase::GetContextButtons(int itemNumber, CContextButtons &
 
 void CGUIWindowPVRGuideBase::UpdateSelectedItemPath()
 {
-  CGUIEPGGridContainer *epgGridContainer = GetGridControl();
+  CGUIEPGGridContainer* epgGridContainer = GetGridControl();
   if (epgGridContainer)
   {
-    CPVRChannelPtr channel(epgGridContainer->GetSelectedChannel());
+    std::shared_ptr<CPVRChannel> channel(epgGridContainer->GetSelectedChannel());
     if (channel)
       CServiceBroker::GetPVRManager().GUIActions()->SetSelectedItemPath(m_bRadio, channel->Path());
   }
@@ -198,7 +198,7 @@ void CGUIWindowPVRGuideBase::UpdateButtons(void)
   SET_CONTROL_LABEL(CONTROL_LABEL_HEADER2, GetChannelGroup()->GroupName());
 }
 
-bool CGUIWindowPVRGuideBase::Update(const std::string &strDirectory, bool updateFilterPath /* = true */)
+bool CGUIWindowPVRGuideBase::Update(const std::string& strDirectory, bool updateFilterPath /* = true */)
 {
   if (m_bUpdating)
   {
@@ -219,7 +219,7 @@ bool CGUIWindowPVRGuideBase::Update(const std::string &strDirectory, bool update
   return bReturn;
 }
 
-bool CGUIWindowPVRGuideBase::GetDirectory(const std::string &strDirectory, CFileItemList &items)
+bool CGUIWindowPVRGuideBase::GetDirectory(const std::string& strDirectory, CFileItemList& items)
 {
   {
     CSingleLock lock(m_critSection);
@@ -250,7 +250,7 @@ bool CGUIWindowPVRGuideBase::GetDirectory(const std::string &strDirectory, CFile
   return true;
 }
 
-void CGUIWindowPVRGuideBase::FormatAndSort(CFileItemList &items)
+void CGUIWindowPVRGuideBase::FormatAndSort(CFileItemList& items)
 {
   if (&items == m_vecItems)
   {
@@ -275,7 +275,7 @@ CFileItemPtr CGUIWindowPVRGuideBase::GetCurrentListItem(int offset /*= 0*/)
 
 bool CGUIWindowPVRGuideBase::ShouldNavigateToGridContainer(int iAction)
 {
-  CGUIEPGGridContainer *epgGridContainer = GetGridControl();
+  CGUIEPGGridContainer* epgGridContainer = GetGridControl();
   CGUIControl* control = GetControl(CONTROL_LSTCHANNELGROUPS);
   if (epgGridContainer && control &&
       GetFocusedControlID() == control->GetID())
@@ -298,7 +298,7 @@ bool CGUIWindowPVRGuideBase::ShouldNavigateToGridContainer(int iAction)
   return false;
 }
 
-bool CGUIWindowPVRGuideBase::OnAction(const CAction &action)
+bool CGUIWindowPVRGuideBase::OnAction(const CAction& action)
 {
   switch (action.GetID())
   {
@@ -310,7 +310,7 @@ bool CGUIWindowPVRGuideBase::OnAction(const CAction &action)
       // Check whether grid container is configured as channel group selector's navigation target for the given action.
       if (ShouldNavigateToGridContainer(action.GetID()))
       {
-        CGUIEPGGridContainer *epgGridContainer = GetGridControl();
+        CGUIEPGGridContainer* epgGridContainer = GetGridControl();
         if (epgGridContainer)
         {
           CGUIWindowPVRBase::OnAction(action);
@@ -434,7 +434,7 @@ bool CGUIWindowPVRGuideBase::OnMessage(CGUIMessage& message)
                   break;
                 case EPG_SELECT_ACTION_SMART_SELECT:
                 {
-                  const CPVREpgInfoTagPtr tag(pItem->GetEPGInfoTag());
+                  const std::shared_ptr<CPVREpgInfoTag> tag(pItem->GetEPGInfoTag());
                   if (tag)
                   {
                     const CDateTime start(tag->StartAsUTC());
@@ -513,7 +513,7 @@ bool CGUIWindowPVRGuideBase::OnMessage(CGUIMessage& message)
             case ACTION_PLAYER_PLAY:
             {
               // EPG "gap" selected => switch to associated channel.
-              CGUIEPGGridContainer *epgGridContainer = GetGridControl();
+              CGUIEPGGridContainer* epgGridContainer = GetGridControl();
               if (epgGridContainer)
               {
                 const CFileItemPtr item(epgGridContainer->GetSelectedGridItem());
@@ -626,7 +626,7 @@ bool CGUIWindowPVRGuideBase::RefreshTimelineItems()
     CGUIEPGGridContainer* epgGridContainer = GetGridControl();
     if (epgGridContainer)
     {
-      const CPVRChannelGroupPtr group(GetChannelGroup());
+      const std::shared_ptr<CPVRChannelGroup> group(GetChannelGroup());
       if (!group)
         return false;
 
@@ -761,12 +761,12 @@ void CGUIWindowPVRGuideBase::OnInputDone()
 
 void CGUIWindowPVRGuideBase::GetChannelNumbers(std::vector<std::string>& channelNumbers)
 {
-  const CPVRChannelGroupPtr group = GetChannelGroup();
+  const std::shared_ptr<CPVRChannelGroup> group = GetChannelGroup();
   if (group)
     group->GetChannelNumbers(channelNumbers);
 }
 
-CPVRRefreshTimelineItemsThread::CPVRRefreshTimelineItemsThread(CGUIWindowPVRGuideBase *pGuideWindow)
+CPVRRefreshTimelineItemsThread::CPVRRefreshTimelineItemsThread(CGUIWindowPVRGuideBase* pGuideWindow)
 : CThread("epg-grid-refresh-timeline-items"),
   m_pGuideWindow(pGuideWindow),
   m_ready(true),

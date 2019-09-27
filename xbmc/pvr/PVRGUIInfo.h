@@ -53,15 +53,15 @@ namespace PVR
     void Notify(const PVREvent& event);
 
     // KODI::GUILIB::GUIINFO::IGUIInfoProvider implementation
-    bool InitCurrentItem(CFileItem *item) override;
-    bool GetLabel(std::string& value, const CFileItem *item, int contextWindow, const KODI::GUILIB::GUIINFO::CGUIInfo &info, std::string *fallback) const override;
-    bool GetInt(int& value, const CGUIListItem *item, int contextWindow, const KODI::GUILIB::GUIINFO::CGUIInfo &info) const override;
-    bool GetBool(bool& value, const CGUIListItem *item, int contextWindow, const KODI::GUILIB::GUIINFO::CGUIInfo &info) const override;
+    bool InitCurrentItem(CFileItem* item) override;
+    bool GetLabel(std::string& value, const CFileItem* item, int contextWindow, const KODI::GUILIB::GUIINFO::CGUIInfo& info, std::string* fallback) const override;
+    bool GetInt(int& value, const CGUIListItem* item, int contextWindow, const KODI::GUILIB::GUIINFO::CGUIInfo& info) const override;
+    bool GetBool(bool& value, const CGUIListItem* item, int contextWindow, const KODI::GUILIB::GUIINFO::CGUIInfo& info) const override;
 
   private:
     void ResetProperties(void);
-    void ClearQualityInfo(PVR_SIGNAL_STATUS &qualityInfo);
-    void ClearDescrambleInfo(PVR_DESCRAMBLE_INFO &descrambleInfo);
+    void ClearQualityInfo(PVR_SIGNAL_STATUS& qualityInfo);
+    void ClearDescrambleInfo(PVR_DESCRAMBLE_INFO& descrambleInfo);
 
     void Process(void) override;
 
@@ -76,38 +76,38 @@ namespace PVR
 
     void UpdateTimersToggle(void);
 
-    bool GetListItemAndPlayerLabel(const CFileItem *item, const KODI::GUILIB::GUIINFO::CGUIInfo &info, std::string &strValue) const;
-    bool GetPVRLabel(const CFileItem *item, const KODI::GUILIB::GUIINFO::CGUIInfo &info, std::string &strValue) const;
-    bool GetRadioRDSLabel(const CFileItem *item, const KODI::GUILIB::GUIINFO::CGUIInfo &info, std::string &strValue) const;
+    bool GetListItemAndPlayerLabel(const CFileItem* item, const KODI::GUILIB::GUIINFO::CGUIInfo& info, std::string& strValue) const;
+    bool GetPVRLabel(const CFileItem* item, const KODI::GUILIB::GUIINFO::CGUIInfo& info, std::string& strValue) const;
+    bool GetRadioRDSLabel(const CFileItem* item, const KODI::GUILIB::GUIINFO::CGUIInfo& info, std::string& strValue) const;
 
-    bool GetListItemAndPlayerInt(const CFileItem *item, const KODI::GUILIB::GUIINFO::CGUIInfo &info, int &iValue) const;
-    bool GetPVRInt(const CFileItem *item, const KODI::GUILIB::GUIINFO::CGUIInfo &info, int& iValue) const;
+    bool GetListItemAndPlayerInt(const CFileItem* item, const KODI::GUILIB::GUIINFO::CGUIInfo& info, int& iValue) const;
+    bool GetPVRInt(const CFileItem* item, const KODI::GUILIB::GUIINFO::CGUIInfo& info, int& iValue) const;
 
-    bool GetListItemAndPlayerBool(const CFileItem *item, const KODI::GUILIB::GUIINFO::CGUIInfo &info, bool &bValue) const;
-    bool GetPVRBool(const CFileItem *item, const KODI::GUILIB::GUIINFO::CGUIInfo &info, bool& bValue) const;
-    bool GetRadioRDSBool(const CFileItem *item, const KODI::GUILIB::GUIINFO::CGUIInfo &info, bool &bValue) const;
+    bool GetListItemAndPlayerBool(const CFileItem* item, const KODI::GUILIB::GUIINFO::CGUIInfo& info, bool& bValue) const;
+    bool GetPVRBool(const CFileItem* item, const KODI::GUILIB::GUIINFO::CGUIInfo& info, bool& bValue) const;
+    bool GetRadioRDSBool(const CFileItem* item, const KODI::GUILIB::GUIINFO::CGUIInfo& info, bool& bValue) const;
 
-    void CharInfoBackendNumber(std::string &strValue) const;
-    void CharInfoTotalDiskSpace(std::string &strValue) const;
-    void CharInfoSignal(std::string &strValue) const;
-    void CharInfoSNR(std::string &strValue) const;
-    void CharInfoBER(std::string &strValue) const;
-    void CharInfoUNC(std::string &strValue) const;
-    void CharInfoFrontendName(std::string &strValue) const;
-    void CharInfoFrontendStatus(std::string &strValue) const;
-    void CharInfoBackendName(std::string &strValue) const;
-    void CharInfoBackendVersion(std::string &strValue) const;
-    void CharInfoBackendHost(std::string &strValue) const;
-    void CharInfoBackendDiskspace(std::string &strValue) const;
-    void CharInfoBackendChannels(std::string &strValue) const;
-    void CharInfoBackendTimers(std::string &strValue) const;
-    void CharInfoBackendRecordings(std::string &strValue) const;
-    void CharInfoBackendDeletedRecordings(std::string &strValue) const;
-    void CharInfoPlayingClientName(std::string &strValue) const;
-    void CharInfoEncryption(std::string &strValue) const;
-    void CharInfoService(std::string &strValue) const;
-    void CharInfoMux(std::string &strValue) const;
-    void CharInfoProvider(std::string &strValue) const;
+    void CharInfoBackendNumber(std::string& strValue) const;
+    void CharInfoTotalDiskSpace(std::string& strValue) const;
+    void CharInfoSignal(std::string& strValue) const;
+    void CharInfoSNR(std::string& strValue) const;
+    void CharInfoBER(std::string& strValue) const;
+    void CharInfoUNC(std::string& strValue) const;
+    void CharInfoFrontendName(std::string& strValue) const;
+    void CharInfoFrontendStatus(std::string& strValue) const;
+    void CharInfoBackendName(std::string& strValue) const;
+    void CharInfoBackendVersion(std::string& strValue) const;
+    void CharInfoBackendHost(std::string& strValue) const;
+    void CharInfoBackendDiskspace(std::string& strValue) const;
+    void CharInfoBackendChannels(std::string& strValue) const;
+    void CharInfoBackendTimers(std::string& strValue) const;
+    void CharInfoBackendRecordings(std::string& strValue) const;
+    void CharInfoBackendDeletedRecordings(std::string& strValue) const;
+    void CharInfoPlayingClientName(std::string& strValue) const;
+    void CharInfoEncryption(std::string& strValue) const;
+    void CharInfoService(std::string& strValue) const;
+    void CharInfoMux(std::string& strValue) const;
+    void CharInfoProvider(std::string& strValue) const;
 
     /** @name PVRGUIInfo data */
     //@{

@@ -15,6 +15,7 @@
 
 #include <functional>
 #include <map>
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -32,7 +33,7 @@ namespace PVR
   class CPVRRecordings;
   class CPVRTimersContainer;
 
-  typedef std::map<int, CPVRClientPtr> CPVRClientMap;
+  typedef std::map<int, std::shared_ptr<CPVRClient>> CPVRClientMap;
 
   /**
    * Holds generic data about a backend (number of channels etc.)
@@ -75,7 +76,7 @@ namespace PVR
      * @brief Update add-ons from the AddonManager
      * @param changedAddonId The id of the changed addon, empty string denotes 'any addon'.
      */
-    void UpdateAddons(const std::string &changedAddonId = "");
+    void UpdateAddons(const std::string& changedAddonId = "");
 
     /*!
      * @brief Restart a single client add-on.
@@ -91,7 +92,7 @@ namespace PVR
      * @param bRestart If true, restart the client.
      * @return True if the client was found, false otherwise.
      */
-    bool StopClient(const ADDON::AddonPtr &addon, bool bRestart);
+    bool StopClient(const ADDON::AddonPtr& addon, bool bRestart);
 
     /*!
      * @brief Handle addon events (enable, disable, ...).
@@ -105,7 +106,7 @@ namespace PVR
      * @param addon On success, filled with the client matching the given ID, null otherwise.
      * @return True if the client was found, false otherwise.
      */
-    bool GetClient(const std::string &strId, ADDON::AddonPtr &addon) const;
+    bool GetClient(const std::string& strId, ADDON::AddonPtr& addon) const;
 
     /*!
      * @brief Get a client's numeric ID given its string ID.
@@ -139,14 +140,14 @@ namespace PVR
      * @param addon Will be filled with requested client on success, null otherwise.
      * @return True on success, false otherwise.
      */
-    bool GetCreatedClient(int iClientId, CPVRClientPtr &addon) const;
+    bool GetCreatedClient(int iClientId, std::shared_ptr<CPVRClient>& addon) const;
 
     /*!
      * @brief Get all created clients.
      * @param clients All created clients will be added to this map.
      * @return The amount of clients added to the map.
      */
-    int GetCreatedClients(CPVRClientMap &clients) const;
+    int GetCreatedClients(CPVRClientMap& clients) const;
 
     /*!
      * @brief Get the ID of the first created client.
@@ -182,7 +183,7 @@ namespace PVR
      * @param failedClients in case of errors will contain the ids of the clients for which the timers could not be obtained.
      * @return true on success for all clients, false in case of error for at least one client.
      */
-    bool GetTimers(CPVRTimersContainer *timers, std::vector<int> &failedClients);
+    bool GetTimers(CPVRTimersContainer* timers, std::vector<int>& failedClients);
 
     /*!
      * @brief Get all supported timer types.
@@ -202,7 +203,7 @@ namespace PVR
      * @param deleted If true, return deleted recordings, return not deleted recordings otherwise.
      * @return PVR_ERROR_NO_ERROR if the operation succeeded, the respective PVR_ERROR value otherwise.
      */
-    PVR_ERROR GetRecordings(CPVRRecordings *recordings, bool deleted);
+    PVR_ERROR GetRecordings(CPVRRecordings* recordings, bool deleted);
 
     /*!
      * @brief Delete all "soft" deleted recordings permanently on the backend.
@@ -235,7 +236,7 @@ namespace PVR
      * @param failedClients in case of errors will contain the ids of the clients for which the channels could not be obtained.
      * @return PVR_ERROR_NO_ERROR if the channels were fetched successfully, last error otherwise.
      */
-    PVR_ERROR GetChannels(CPVRChannelGroupInternal *group, std::vector<int> &failedClients);
+    PVR_ERROR GetChannels(CPVRChannelGroupInternal* group, std::vector<int>& failedClients);
 
     /*!
      * @brief Get all channel groups from backends.
@@ -243,7 +244,7 @@ namespace PVR
      * @param failedClients in case of errors will contain the ids of the clients for which the channel groups could not be obtained.
      * @return PVR_ERROR_NO_ERROR if the channel groups were fetched successfully, last error otherwise.
      */
-    PVR_ERROR GetChannelGroups(CPVRChannelGroups *groups, std::vector<int> &failedClients);
+    PVR_ERROR GetChannelGroups(CPVRChannelGroups* groups, std::vector<int>& failedClients);
 
     /*!
      * @brief Get all group members of a channel group.
@@ -251,19 +252,19 @@ namespace PVR
      * @param failedClients in case of errors will contain the ids of the clients for which the channel group members could not be obtained.
      * @return PVR_ERROR_NO_ERROR if the channel group members were fetched successfully, last error otherwise.
      */
-    PVR_ERROR GetChannelGroupMembers(CPVRChannelGroup *group, std::vector<int> &failedClients);
+    PVR_ERROR GetChannelGroupMembers(CPVRChannelGroup* group, std::vector<int>& failedClients);
 
     /*!
      * @brief Get a list of clients providing a channel scan dialog.
      * @return All clients supporting channel scan.
      */
-    std::vector<CPVRClientPtr> GetClientsSupportingChannelScan(void) const;
+    std::vector<std::shared_ptr<CPVRClient>> GetClientsSupportingChannelScan(void) const;
 
     /*!
      * @brief Get a list of clients providing a channel settings dialog.
      * @return All clients supporting channel settings.
      */
-    std::vector<CPVRClientPtr> GetClientsSupportingChannelSettings(bool bRadio) const;
+    std::vector<std::shared_ptr<CPVRClient>> GetClientsSupportingChannelSettings(bool bRadio) const;
 
     //@}
 
@@ -299,7 +300,7 @@ namespace PVR
      * @param newState The new connection state.
      * @param strMessage A human readable message providing additional information.
      */
-    void ConnectionStateChange(CPVRClient *client, std::string &strConnectionString, PVR_CONNECTION_STATE newState, std::string &strMessage);
+    void ConnectionStateChange(CPVRClient* client, std::string& strConnectionString, PVR_CONNECTION_STATE newState, std::string& strMessage);
 
   private:
     /*!
@@ -308,21 +309,21 @@ namespace PVR
      * @param addon The client.
      * @return True if the client was found, false otherwise.
      */
-    bool GetClient(int iClientId, CPVRClientPtr &addon) const;
+    bool GetClient(int iClientId, std::shared_ptr<CPVRClient>& addon) const;
 
     /*!
      * @brief Check whether a client is known.
      * @param client The client to check.
      * @return True if this client is known, false otherwise.
      */
-    bool IsKnownClient(const ADDON::AddonPtr &client) const;
+    bool IsKnownClient(const ADDON::AddonPtr& client) const;
 
     /*!
      * @brief Check whether an given addon instance is a created pvr client.
      * @param addon The addon.
      * @return True if the the addon represents a created client, false otherwise.
      */
-    bool IsCreatedClient(const ADDON::AddonPtr &addon);
+    bool IsCreatedClient(const ADDON::AddonPtr& addon);
 
     /*!
      * @brief Get all created clients and clients not (yet) ready to use.
@@ -330,14 +331,14 @@ namespace PVR
      * @param clientsNotReady Store the the ids of the not (yet) ready clients in this list.
      * @return PVR_ERROR_NO_ERROR in case all clients are ready, PVR_ERROR_SERVER_ERROR otherwise.
      */
-    PVR_ERROR GetCreatedClients(CPVRClientMap &clientsReady, std::vector<int> &clientsNotReady) const;
+    PVR_ERROR GetCreatedClients(CPVRClientMap& clientsReady, std::vector<int>& clientsNotReady) const;
 
-    typedef std::function<PVR_ERROR(const CPVRClientPtr&)> PVRClientFunction;
+    typedef std::function<PVR_ERROR(const std::shared_ptr<CPVRClient>&)> PVRClientFunction;
 
     /*!
      * @brief Wraps calls to all created clients in order to do common pre and post function invocation actions.
      * @param strFunctionName The function name, for logging purposes.
-     * @param function The function to wrap. It has to have return type PVR_ERROR and must take a const reference to a CPVRClientPtr as parameter.
+     * @param function The function to wrap. It has to have return type PVR_ERROR and must take a const reference to a std::shared_ptr<CPVRClient> as parameter.
      * @return PVR_ERROR_NO_ERROR on success, any other PVR_ERROR_* value otherwise.
      */
     PVR_ERROR ForCreatedClients(const char* strFunctionName, PVRClientFunction function) const;
@@ -345,11 +346,11 @@ namespace PVR
     /*!
      * @brief Wraps calls to all created clients in order to do common pre and post function invocation actions.
      * @param strFunctionName The function name, for logging purposes.
-     * @param function The function to wrap. It has to have return type PVR_ERROR and must take a const reference to a CPVRClientPtr as parameter.
+     * @param function The function to wrap. It has to have return type PVR_ERROR and must take a const reference to a std::shared_ptr<CPVRClient> as parameter.
      * @param failedClients Contains a list of the ids of clients for that the call failed, if any.
      * @return PVR_ERROR_NO_ERROR on success, any other PVR_ERROR_* value otherwise.
      */
-    PVR_ERROR ForCreatedClients(const char* strFunctionName, PVRClientFunction function, std::vector<int> &failedClients) const;
+    PVR_ERROR ForCreatedClients(const char* strFunctionName, PVRClientFunction function, std::vector<int>& failedClients) const;
 
     mutable CCriticalSection m_critSection;
     CPVRClientMap m_clientMap;

@@ -80,7 +80,7 @@ void CPVREpg::Cleanup(int iPastDays)
   Cleanup(cleanupTime);
 }
 
-void CPVREpg::Cleanup(const CDateTime &time)
+void CPVREpg::Cleanup(const CDateTime& time)
 {
   CSingleLock lock(m_critSection);
   for (auto it = m_tags.begin(); it != m_tags.end();)
@@ -99,7 +99,7 @@ void CPVREpg::Cleanup(const CDateTime &time)
   }
 }
 
-CPVREpgInfoTagPtr CPVREpg::GetTagNow(bool bUpdateIfNeeded /* = true */) const
+std::shared_ptr<CPVREpgInfoTag> CPVREpg::GetTagNow(bool bUpdateIfNeeded /* = true */) const
 {
   CSingleLock lock(m_critSection);
   if (m_nowActiveStart.IsValid())
@@ -111,7 +111,7 @@ CPVREpgInfoTagPtr CPVREpg::GetTagNow(bool bUpdateIfNeeded /* = true */) const
 
   if (bUpdateIfNeeded)
   {
-    CPVREpgInfoTagPtr lastActiveTag;
+    std::shared_ptr<CPVREpgInfoTag> lastActiveTag;
 
     /* one of the first items will always match if the list is sorted */
     for (const auto& tag : m_tags)
@@ -131,12 +131,12 @@ CPVREpgInfoTagPtr CPVREpg::GetTagNow(bool bUpdateIfNeeded /* = true */) const
       return lastActiveTag;
   }
 
-  return CPVREpgInfoTagPtr();
+  return std::shared_ptr<CPVREpgInfoTag>();
 }
 
-CPVREpgInfoTagPtr CPVREpg::GetTagNext() const
+std::shared_ptr<CPVREpgInfoTag> CPVREpg::GetTagNext() const
 {
-  const CPVREpgInfoTagPtr nowTag = GetTagNow();
+  const std::shared_ptr<CPVREpgInfoTag> nowTag = GetTagNow();
   if (nowTag)
   {
     CSingleLock lock(m_critSection);
@@ -154,12 +154,12 @@ CPVREpgInfoTagPtr CPVREpg::GetTagNext() const
     }
   }
 
-  return CPVREpgInfoTagPtr();
+  return std::shared_ptr<CPVREpgInfoTag>();
 }
 
-CPVREpgInfoTagPtr CPVREpg::GetTagPrevious() const
+std::shared_ptr<CPVREpgInfoTag> CPVREpg::GetTagPrevious() const
 {
-  const CPVREpgInfoTagPtr nowTag = GetTagNow();
+  const std::shared_ptr<CPVREpgInfoTag> nowTag = GetTagNow();
   if (nowTag)
   {
     CSingleLock lock(m_critSection);
@@ -180,13 +180,13 @@ CPVREpgInfoTagPtr CPVREpg::GetTagPrevious() const
     }
   }
 
-  return CPVREpgInfoTagPtr();
+  return std::shared_ptr<CPVREpgInfoTag>();
 }
 
 bool CPVREpg::CheckPlayingEvent(void)
 {
-  const CPVREpgInfoTagPtr previousTag = GetTagNow(false);
-  const CPVREpgInfoTagPtr newTag = GetTagNow(true);
+  const std::shared_ptr<CPVREpgInfoTag> previousTag = GetTagNow(false);
+  const std::shared_ptr<CPVREpgInfoTag> newTag = GetTagNow(true);
 
   bool bTagChanged = newTag && (!previousTag || *previousTag != *newTag);
   bool bTagRemoved = !newTag && previousTag;
@@ -198,23 +198,23 @@ bool CPVREpg::CheckPlayingEvent(void)
   return false;
 }
 
-CPVREpgInfoTagPtr CPVREpg::GetTagByBroadcastId(unsigned int iUniqueBroadcastId) const
+std::shared_ptr<CPVREpgInfoTag> CPVREpg::GetTagByBroadcastId(unsigned int iUniqueBroadcastId) const
 {
   if (iUniqueBroadcastId != EPG_TAG_INVALID_UID)
   {
     CSingleLock lock(m_critSection);
-    for (const auto &infoTag : m_tags)
+    for (const auto& infoTag : m_tags)
     {
       if (infoTag.second->UniqueBroadcastID() == iUniqueBroadcastId)
         return infoTag.second;
     }
   }
-  return CPVREpgInfoTagPtr();
+  return std::shared_ptr<CPVREpgInfoTag>();
 }
 
-CPVREpgInfoTagPtr CPVREpg::GetTagBetween(const CDateTime &beginTime, const CDateTime &endTime, bool bUpdateFromClient /* = false */)
+std::shared_ptr<CPVREpgInfoTag> CPVREpg::GetTagBetween(const CDateTime& beginTime, const CDateTime& endTime, bool bUpdateFromClient /* = false */)
 {
-  CPVREpgInfoTagPtr tag;
+  std::shared_ptr<CPVREpgInfoTag> tag;
 
   CSingleLock lock(m_critSection);
   for (const auto& epgTag : m_tags)
@@ -248,9 +248,9 @@ CPVREpgInfoTagPtr CPVREpg::GetTagBetween(const CDateTime &beginTime, const CDate
   return tag;
 }
 
-void CPVREpg::AddEntry(const CPVREpgInfoTag &tag)
+void CPVREpg::AddEntry(const CPVREpgInfoTag& tag)
 {
-  CPVREpgInfoTagPtr newTag;
+  std::shared_ptr<CPVREpgInfoTag> newTag;
 
   CSingleLock lock(m_critSection);
   const auto it = m_tags.find(tag.StartAsUTC());
@@ -277,7 +277,7 @@ bool CPVREpg::Load(const std::shared_ptr<CPVREpgDatabase>& database)
     return bReturn;
   }
 
-  const std::vector<CPVREpgInfoTagPtr> result = database->Get(*this);
+  const std::vector<std::shared_ptr<CPVREpgInfoTag>> result = database->Get(*this);
 
   CSingleLock lock(m_critSection);
   if (result.empty())
@@ -306,7 +306,7 @@ bool CPVREpg::Load(const std::shared_ptr<CPVREpgDatabase>& database)
   return bReturn;
 }
 
-bool CPVREpg::UpdateEntries(const CPVREpg &epg, bool bStoreInDb /* = true */)
+bool CPVREpg::UpdateEntries(const CPVREpg& epg, bool bStoreInDb /* = true */)
 {
   CSingleLock lock(m_critSection);
   /* copy over tags */
@@ -323,7 +323,7 @@ bool CPVREpg::UpdateEntries(const CPVREpg &epg, bool bStoreInDb /* = true */)
   return true;
 }
 
-bool CPVREpg::UpdateEntry(const EPG_TAG *data, int iClientId)
+bool CPVREpg::UpdateEntry(const EPG_TAG* data, int iClientId)
 {
   if (!data)
     return false;
@@ -332,9 +332,9 @@ bool CPVREpg::UpdateEntry(const EPG_TAG *data, int iClientId)
   return UpdateEntry(tag, CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_EPG_STOREEPGINDATABASE));
 }
 
-bool CPVREpg::UpdateEntry(const CPVREpgInfoTagPtr &tag, bool bUpdateDatabase)
+bool CPVREpg::UpdateEntry(const std::shared_ptr<CPVREpgInfoTag>& tag, bool bUpdateDatabase)
 {
-  CPVREpgInfoTagPtr infoTag;
+  std::shared_ptr<CPVREpgInfoTag> infoTag;
 
   CSingleLock lock(m_critSection);
   const auto it = m_tags.find(tag->StartAsUTC());
@@ -361,7 +361,7 @@ bool CPVREpg::UpdateEntry(const CPVREpgInfoTagPtr &tag, bool bUpdateDatabase)
   return true;
 }
 
-bool CPVREpg::UpdateEntry(const CPVREpgInfoTagPtr &tag, EPG_EVENT_STATE newState, bool bUpdateDatabase)
+bool CPVREpg::UpdateEntry(const std::shared_ptr<CPVREpgInfoTag>& tag, EPG_EVENT_STATE newState, bool bUpdateDatabase)
 {
   bool bRet = true;
   bool bNotify = true;
@@ -549,7 +549,7 @@ CDateTime CPVREpg::GetLastDate(void) const
 bool CPVREpg::FixOverlappingEvents(bool bUpdateDb /* = false */)
 {
   bool bReturn = true;
-  CPVREpgInfoTagPtr previousTag, currentTag;
+  std::shared_ptr<CPVREpgInfoTag> previousTag, currentTag;
 
   for (auto it = m_tags.begin(); it != m_tags.end(); it != m_tags.end() ? it++ : it)
   {
