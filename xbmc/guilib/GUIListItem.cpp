@@ -120,6 +120,7 @@ void CGUIListItem::ClearArt()
 {
   m_art.clear();
   m_artFallbacks.clear();
+  SetProperty("libraryartfilled", false);
 }
 
 void CGUIListItem::AppendArt(const ArtMap &art, const std::string &prefix)
