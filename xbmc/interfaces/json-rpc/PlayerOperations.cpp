@@ -28,6 +28,7 @@
 #include "pictures/GUIWindowSlideShow.h"
 #include "pvr/PVRGUIActions.h"
 #include "pvr/PVRManager.h"
+#include "pvr/PVRPlaybackState.h"
 #include "pvr/channels/PVRChannel.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/epg/EpgInfoTag.h"
@@ -149,12 +150,12 @@ JSONRPC_STATUS CPlayerOperations::GetItem(const std::string &method, ITransportL
     case Video:
     case Audio:
     {
-      fileItem = CFileItemPtr(new CFileItem(g_application.CurrentFileItem()));
+      fileItem = std::make_shared<CFileItem>(g_application.CurrentFileItem());
       if (IsPVRChannel())
       {
-        std::shared_ptr<CPVRChannel> currentChannel(CServiceBroker::GetPVRManager().GetPlayingChannel());
+        const std::shared_ptr<CPVRChannel> currentChannel = CServiceBroker::GetPVRManager().PlaybackState()->GetPlayingChannel();
         if (currentChannel)
-          fileItem = CFileItemPtr(new CFileItem(currentChannel));
+          fileItem = std::make_shared<CFileItem>(currentChannel);
       }
       else if (player == Video)
       {
@@ -1198,9 +1199,12 @@ int CPlayerOperations::GetActivePlayers()
 {
   int activePlayers = 0;
 
-  if (g_application.GetAppPlayer().IsPlayingVideo() || CServiceBroker::GetPVRManager().IsPlayingTV() || CServiceBroker::GetPVRManager().IsPlayingRecording())
+  if (g_application.GetAppPlayer().IsPlayingVideo() ||
+      CServiceBroker::GetPVRManager().PlaybackState()->IsPlayingTV() ||
+      CServiceBroker::GetPVRManager().PlaybackState()->IsPlayingRecording())
     activePlayers |= Video;
-  if (g_application.GetAppPlayer().IsPlayingAudio() || CServiceBroker::GetPVRManager().IsPlayingRadio())
+  if (g_application.GetAppPlayer().IsPlayingAudio() ||
+      CServiceBroker::GetPVRManager().PlaybackState()->IsPlayingRadio())
     activePlayers |= Audio;
   if (CServiceBroker::GetGUI()->GetWindowManager().IsWindowActive(WINDOW_SLIDESHOW))
     activePlayers |= Picture;
@@ -1895,17 +1899,19 @@ double CPlayerOperations::ParseTimeInSeconds(const CVariant &time)
 
 bool CPlayerOperations::IsPVRChannel()
 {
-  return CServiceBroker::GetPVRManager().IsPlayingTV() || CServiceBroker::GetPVRManager().IsPlayingRadio();
+  const std::shared_ptr<CPVRPlaybackState> state = CServiceBroker::GetPVRManager().PlaybackState();
+  return state->IsPlayingTV() || state->IsPlayingRadio();
 }
 
 std::shared_ptr<CPVREpgInfoTag> CPlayerOperations::GetCurrentEpg()
 {
-  if (!CServiceBroker::GetPVRManager().IsPlayingTV() && !CServiceBroker::GetPVRManager().IsPlayingRadio())
-    return std::shared_ptr<CPVREpgInfoTag>();
+  const std::shared_ptr<CPVRPlaybackState> state = CServiceBroker::GetPVRManager().PlaybackState();
+  if (!state->IsPlayingTV() && !state->IsPlayingRadio())
+    return {};
 
-  std::shared_ptr<CPVRChannel> currentChannel(CServiceBroker::GetPVRManager().GetPlayingChannel());
+  const std::shared_ptr<CPVRChannel> currentChannel = state->GetPlayingChannel();
   if (!currentChannel)
-    return std::shared_ptr<CPVREpgInfoTag>();
+    return {};
 
   return currentChannel->GetEPGNow();
 }

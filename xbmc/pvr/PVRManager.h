@@ -37,6 +37,7 @@ namespace PVR
   class CPVRGUIInfo;
   class CPVRGUIProgressHandler;
   class CPVRManagerJobQueue;
+  class CPVRPlaybackState;
   class CPVRRecording;
   class CPVRRecordings;
   class CPVRTimers;
@@ -139,6 +140,12 @@ namespace PVR
     std::shared_ptr<CPVRGUIActions> GUIActions(void) const;
 
     /*!
+     * @brief Get access to the pvr playback state.
+     * @return The playback state.
+     */
+    std::shared_ptr<CPVRPlaybackState> PlaybackState() const;
+
+    /*!
      * @brief Get access to the epg container.
      * @return The epg container.
      */
@@ -186,33 +193,6 @@ namespace PVR
     std::shared_ptr<CPVRDatabase> GetTVDatabase(void) const;
 
     /*!
-     * @brief Check if a TV channel, radio channel or recording is playing.
-     * @return True if it's playing, false otherwise.
-     */
-    bool IsPlaying(void) const;
-
-    /*!
-     * @brief Check if the given channel is playing.
-     * @param channel The channel to check.
-     * @return True if it's playing, false otherwise.
-     */
-    bool IsPlayingChannel(const std::shared_ptr<CPVRChannel>& channel) const;
-
-    /*!
-     * @brief Check if the given recording is playing.
-     * @param recording The recording to check.
-     * @return True if it's playing, false otherwise.
-     */
-    bool IsPlayingRecording(const std::shared_ptr<CPVRRecording>& recording) const;
-
-    /*!
-     * @brief Check if the given epg tag is playing.
-     * @param epgTag The tag to check.
-     * @return True if it's playing, false otherwise.
-     */
-    bool IsPlayingEpgTag(const std::shared_ptr<CPVREpgInfoTag>& epgTag) const;
-
-    /*!
      * @return True while the PVRManager is initialising.
      */
     inline bool IsInitialising(void) const
@@ -248,62 +228,6 @@ namespace PVR
     }
 
     /*!
-     * @brief Check whether playing channel matches given uids.
-     * @param iClientID The client id.
-     * @param iUniqueChannelID The channel uid.
-     * @return True on match, false if there is no match or no channel is playing.
-     */
-    bool IsPlayingChannel(int iClientID, int iUniqueChannelID) const;
-
-    /*!
-     * @brief Return the channel that is currently playing.
-     * @return The channel or NULL if none is playing.
-     */
-    std::shared_ptr<CPVRChannel> GetPlayingChannel(void) const;
-
-    /*!
-     * @brief Return the recording that is currently playing.
-     * @return The recording or NULL if none is playing.
-     */
-    std::shared_ptr<CPVRRecording> GetPlayingRecording(void) const;
-
-    /*!
-     * @brief Return the epg tag that is currently playing.
-     * @return The tag or NULL if none is playing.
-     */
-    std::shared_ptr<CPVREpgInfoTag> GetPlayingEpgTag(void) const;
-
-    /*!
-     * @brief Get the name of the playing client, if there is one.
-     * @return The name of the client or an empty string if nothing is playing.
-     */
-    std::string GetPlayingClientName(void) const;
-
-    /*!
-     * @brief Get the ID of the playing client, if there is one.
-     * @return The ID or -1 if no client is playing.
-     */
-    int GetPlayingClientID(void) const;
-
-    /*!
-     * @brief Check whether there is an active recording on the currenlyt playing channel.
-     * @return True if there is a playing channel and there is an active recording on that channel, false otherwise.
-     */
-    bool IsRecordingOnPlayingChannel(void) const;
-
-    /*!
-     * @brief Check if an active recording is playing.
-     * @return True if an in-progress (active) recording is playing, false otherwise.
-     */
-    bool IsPlayingActiveRecording() const;
-
-    /*!
-     * @brief Check whether the currently playing channel can be recorded.
-     * @return True if there is a playing channel that can be recorded, false otherwise.
-     */
-    bool CanRecordOnPlayingChannel(void) const;
-
-    /*!
      * @brief Check whether EPG tags for channels have been created.
      * @return True if EPG tags have been created, false otherwise.
      */
@@ -332,19 +256,6 @@ namespace PVR
      * @return True if there are active recordings, false otherwise.
      */
     bool IsRecording(void) const;
-
-    /*!
-     * @brief Set the current playing group, used to load the right channel.
-     * @param group The new group.
-     */
-    void SetPlayingGroup(const std::shared_ptr<CPVRChannelGroup>& group);
-
-    /*!
-     * @brief Get the current playing group, used to load the right channel.
-     * @param bRadio True to get the current radio group, false to get the current TV group.
-     * @return The current group or the group containing all channels if it's not set.
-     */
-    std::shared_ptr<CPVRChannelGroup> GetPlayingGroup(bool bRadio = false) const;
 
     /*!
      * @brief Let the background thread create epg tags for all channels.
@@ -386,36 +297,6 @@ namespace PVR
      * @brief Check whether names are still correct after the language settings changed.
      */
     void LocalizationChanged(void);
-
-    /*!
-     * @brief Check if a TV channel is playing.
-     * @return True if it's playing, false otherwise.
-     */
-    bool IsPlayingTV(void) const;
-
-    /*!
-     * @brief Check if a radio channel is playing.
-     * @return True if it's playing, false otherwise.
-     */
-    bool IsPlayingRadio(void) const;
-
-    /*!
-     * @brief Check if a an encrypted TV or radio channel is playing.
-     * @return True if it's playing, false otherwise.
-     */
-    bool IsPlayingEncryptedChannel(void) const;
-
-    /*!
-     * @brief Check if a recording is playing.
-     * @return True if it's playing, false otherwise.
-     */
-    bool IsPlayingRecording(void) const;
-
-    /*!
-     * @brief Check if an epg tag is playing.
-     * @return True if it's playing, false otherwise.
-     */
-    bool IsPlayingEpgTag(void) const;
 
     /*!
      * @brief Check if parental lock is overridden at the given moment.
@@ -468,19 +349,6 @@ namespace PVR
     void Process(void) override;
 
   private:
-    /*!
-     * @brief Updates the last watched timestamps of the channel and group which are currently playing.
-     * @param channel The channel which is updated
-     * @param time The last watched time to set
-     */
-    void UpdateLastWatched(const std::shared_ptr<CPVRChannel>& channel, const CDateTime& time);
-
-    /*!
-     * @brief Set the playing group to the first group the channel is in if the given channel is not part of the current playing group
-     * @param channel The channel
-     */
-    void SetPlayingGroup(const std::shared_ptr<CPVRChannel>& channel);
-
     /*!
      * @brief Executes "pvrpowermanagement.setwakeupcmd"
      */
@@ -562,17 +430,9 @@ namespace PVR
 
     CEventSource<PVREvent> m_events;
 
+    std::shared_ptr<CPVRPlaybackState> m_playbackState;
+
     CPVRActionListener m_actionListener;
     CPVRSettings m_settings;
-
-    std::shared_ptr<CPVRChannel> m_playingChannel;
-    std::shared_ptr<CPVRRecording> m_playingRecording;
-    std::shared_ptr<CPVREpgInfoTag> m_playingEpgTag;
-    std::string m_strPlayingClientName;
-    int m_playingClientId = -1;
-    int m_iplayingChannelUniqueID = -1;
-
-    class CLastWatchedUpdateTimer;
-    std::unique_ptr<CLastWatchedUpdateTimer> m_lastWatchedUpdateTimer;
   };
 }

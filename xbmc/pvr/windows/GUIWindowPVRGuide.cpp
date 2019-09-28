@@ -24,6 +24,7 @@
 #include "messaging/helpers/DialogHelper.h"
 #include "pvr/PVRGUIActions.h"
 #include "pvr/PVRManager.h"
+#include "pvr/PVRPlaybackState.h"
 #include "pvr/channels/PVRChannel.h"
 #include "pvr/channels/PVRChannelGroup.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
@@ -663,7 +664,8 @@ bool CGUIWindowPVRGuideBase::OnContextButtonNavigate(CONTEXT_BUTTON button)
       buttons.Add(&CGUIWindowPVRGuideBase::GotoEnd, 19064); // Last programme
       buttons.Add(&CGUIWindowPVRGuideBase::OpenDateSelectionDialog, 19288); // Date selector
       buttons.Add(&CGUIWindowPVRGuideBase::GotoFirstChannel, 19322); // First channel
-      if (CServiceBroker::GetPVRManager().IsPlayingTV() || CServiceBroker::GetPVRManager().IsPlayingRadio())
+      if (CServiceBroker::GetPVRManager().PlaybackState()->IsPlayingTV() ||
+          CServiceBroker::GetPVRManager().PlaybackState()->IsPlayingRadio())
         buttons.Add(&CGUIWindowPVRGuideBase::GotoPlayingChannel, 19323); // Playing channel
       buttons.Add(&CGUIWindowPVRGuideBase::GotoLastChannel, 19324); // Last channel
       buttons.Add(&CGUIWindowPVRBase::ActivatePreviousChannelGroup, 19319); // Previous group
@@ -840,7 +842,7 @@ bool CGUIWindowPVRGuideBase::GotoLastChannel()
 
 bool CGUIWindowPVRGuideBase::GotoPlayingChannel()
 {
-  const std::shared_ptr<CPVRChannel> channel = CServiceBroker::GetPVRManager().GetPlayingChannel();
+  const std::shared_ptr<CPVRChannel> channel = CServiceBroker::GetPVRManager().PlaybackState()->GetPlayingChannel();
   if (channel)
   {
     GetGridControl()->SetChannel(channel);

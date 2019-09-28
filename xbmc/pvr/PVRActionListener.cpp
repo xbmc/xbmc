@@ -19,6 +19,7 @@
 #include "messaging/ApplicationMessenger.h"
 #include "pvr/PVRGUIActions.h"
 #include "pvr/PVRManager.h"
+#include "pvr/PVRPlaybackState.h"
 #include "pvr/addons/PVRClients.h"
 #include "pvr/channels/PVRChannel.h"
 #include "pvr/channels/PVRChannelGroup.h"
@@ -90,8 +91,8 @@ ChannelSwitchMode CPVRActionListener::GetChannelSwitchMode(int iAction)
 bool CPVRActionListener::OnAction(const CAction& action)
 {
   bool bIsJumpSMS = false;
-  bool bIsPlayingPVR(CServiceBroker::GetPVRManager().IsPlaying() &&
-                     g_application.CurrentFileItem().HasPVRChannelInfoTag());
+  bool bIsPlayingPVR = CServiceBroker::GetPVRManager().PlaybackState()->IsPlaying() &&
+                       g_application.CurrentFileItem().HasPVRChannelInfoTag();
 
   switch (action.GetID())
   {
@@ -244,7 +245,7 @@ bool CPVRActionListener::OnAction(const CAction& action)
       int iChannelNumber = static_cast<int>(action.GetAmount(0));
       int iSubChannelNumber = static_cast<int>(action.GetAmount(1));
 
-      const std::shared_ptr<CPVRChannel> currentChannel = CServiceBroker::GetPVRManager().GetPlayingChannel();
+      const std::shared_ptr<CPVRChannel> currentChannel = CServiceBroker::GetPVRManager().PlaybackState()->GetPlayingChannel();
       const std::shared_ptr<CPVRChannelGroup> selectedGroup = CServiceBroker::GetPVRManager().ChannelGroups()->Get(currentChannel->IsRadio())->GetSelectedGroup();
       const std::shared_ptr<CPVRChannel> channel = selectedGroup->GetByChannelNumber(CPVRChannelNumber(iChannelNumber, iSubChannelNumber));
 

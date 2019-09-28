@@ -35,6 +35,7 @@
 #include "pvr/PVREventLogJob.h"
 #include "pvr/PVRItem.h"
 #include "pvr/PVRManager.h"
+#include "pvr/PVRPlaybackState.h"
 #include "pvr/PVRStreamProperties.h"
 #include "pvr/addons/PVRClients.h"
 #include "pvr/channels/PVRChannel.h"
@@ -592,7 +593,7 @@ namespace PVR
 
   bool CPVRGUIActions::ToggleRecordingOnPlayingChannel()
   {
-    const std::shared_ptr<CPVRChannel> channel = CServiceBroker::GetPVRManager().GetPlayingChannel();
+    const std::shared_ptr<CPVRChannel> channel = CServiceBroker::GetPVRManager().PlaybackState()->GetPlayingChannel();
     if (channel && channel->CanRecord())
       return SetRecordingOnChannel(channel, !CServiceBroker::GetPVRManager().Timers()->IsRecordingOnChannel(*channel));
 
@@ -1252,7 +1253,7 @@ namespace PVR
     if (!recording)
       return false;
 
-    if (CServiceBroker::GetPVRManager().IsPlayingRecording(recording))
+    if (CServiceBroker::GetPVRManager().PlaybackState()->IsPlayingRecording(recording))
     {
       CGUIMessage msg(GUI_MSG_FULLSCREEN, 0, CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow());
       CServiceBroker::GetGUI()->GetWindowManager().SendMessage(msg);
@@ -1274,7 +1275,7 @@ namespace PVR
     if (!epgTag)
       return false;
 
-    if (CServiceBroker::GetPVRManager().IsPlayingEpgTag(epgTag))
+    if (CServiceBroker::GetPVRManager().PlaybackState()->IsPlayingEpgTag(epgTag))
     {
       CGUIMessage msg(GUI_MSG_FULLSCREEN, 0, CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow());
       CServiceBroker::GetGUI()->GetWindowManager().SendMessage(msg);
@@ -1294,12 +1295,12 @@ namespace PVR
     const std::shared_ptr<CPVRChannel> channel(CPVRItem(item).GetChannel());
     if (channel)
     {
-      bool bSwitchToFullscreen = CServiceBroker::GetPVRManager().IsPlayingChannel(channel);
+      bool bSwitchToFullscreen = CServiceBroker::GetPVRManager().PlaybackState()->IsPlayingChannel(channel);
 
       if (!bSwitchToFullscreen)
       {
         recording = CServiceBroker::GetPVRManager().Recordings()->GetRecordingForEpgTag(channel->GetEPGNow());
-        bSwitchToFullscreen = recording && CServiceBroker::GetPVRManager().IsPlayingRecording(recording);
+        bSwitchToFullscreen = recording && CServiceBroker::GetPVRManager().PlaybackState()->IsPlayingRecording(recording);
       }
 
       if (bSwitchToFullscreen)
@@ -1363,7 +1364,7 @@ namespace PVR
     {
       case PlaybackTypeRadio:
       {
-        if (CServiceBroker::GetPVRManager().IsPlayingRadio())
+        if (CServiceBroker::GetPVRManager().PlaybackState()->IsPlayingRadio())
           return true;
 
         const std::shared_ptr<CPVRChannelGroup> allGroup = CServiceBroker::GetPVRManager().ChannelGroups()->GetGroupAllRadio();
@@ -1375,7 +1376,7 @@ namespace PVR
       }
       case PlaybackTypeTV:
       {
-        if (CServiceBroker::GetPVRManager().IsPlayingTV())
+        if (CServiceBroker::GetPVRManager().PlaybackState()->IsPlayingTV())
           return true;
 
         const std::shared_ptr<CPVRChannelGroup> allGroup = CServiceBroker::GetPVRManager().ChannelGroups()->GetGroupAllTV();
@@ -1385,7 +1386,7 @@ namespace PVR
         break;
       }
       default:
-        if (CServiceBroker::GetPVRManager().IsPlaying())
+        if (CServiceBroker::GetPVRManager().PlaybackState()->IsPlaying())
           return true;
 
         channel = CServiceBroker::GetPVRManager().ChannelGroups()->GetLastPlayedChannel();
@@ -1400,7 +1401,7 @@ namespace PVR
     else
     {
       // if we don't, find the active channel group of the demanded type and play it's first channel
-      const std::shared_ptr<CPVRChannelGroup> channelGroup(CServiceBroker::GetPVRManager().GetPlayingGroup(bIsRadio));
+      const std::shared_ptr<CPVRChannelGroup> channelGroup = CServiceBroker::GetPVRManager().PlaybackState()->GetPlayingGroup(bIsRadio);
       if (channelGroup)
       {
         // try to start playback of first channel in this group
@@ -1449,7 +1450,7 @@ namespace PVR
     }
 
     CLog::Log(LOGNOTICE, "PVR is starting playback of channel '%s'", channel->ChannelName().c_str());
-    CServiceBroker::GetPVRManager().SetPlayingGroup(group);
+    CServiceBroker::GetPVRManager().PlaybackState()->SetPlayingGroup(group);
     return SwitchToChannel(std::make_shared<CFileItem>(channel), true);
   }
 
@@ -1650,7 +1651,7 @@ namespace PVR
     pDlgProgress->Open();
     pDlgProgress->Progress();
 
-    if (CServiceBroker::GetPVRManager().IsPlaying())
+    if (CServiceBroker::GetPVRManager().PlaybackState()->IsPlaying())
     {
       CLog::Log(LOGNOTICE, "PVR is stopping playback for %s database reset", bResetEPGOnly ? "EPG" : "PVR and EPG");
       CApplicationMessenger::GetInstance().SendMsg(TMSG_MEDIA_STOP);
@@ -1981,7 +1982,7 @@ namespace PVR
       return;
     }
 
-    if (CServiceBroker::GetPVRManager().IsPlayingChannel(timer->Channel()))
+    if (CServiceBroker::GetPVRManager().PlaybackState()->IsPlayingChannel(timer->Channel()))
     {
       // no need for an announcement. channel in question is already playing.
       return;
@@ -2122,7 +2123,7 @@ namespace PVR
     if (m_settings.GetBoolValue(CSettings::SETTING_PVRMANAGER_PRESELECTPLAYINGCHANNEL))
     {
       // if preselect playing channel is activated, return the path of the playing channel, if any.
-      const std::shared_ptr<CPVRChannel> playingChannel(CServiceBroker::GetPVRManager().GetPlayingChannel());
+      const std::shared_ptr<CPVRChannel> playingChannel = CServiceBroker::GetPVRManager().PlaybackState()->GetPlayingChannel();
       if (playingChannel && playingChannel->IsRadio() == bRadio)
         return playingChannel->Path();
     }
@@ -2136,7 +2137,7 @@ namespace PVR
     time_t playbackStartTime = CServiceBroker::GetDataCacheCore().GetStartTime();
     if (playbackStartTime > 0)
     {
-      const std::shared_ptr<CPVRChannel> playingChannel = CServiceBroker::GetPVRManager().GetPlayingChannel();
+      const std::shared_ptr<CPVRChannel> playingChannel = CServiceBroker::GetPVRManager().PlaybackState()->GetPlayingChannel();
       if (playingChannel)
       {
         time_t nextTime = 0;
@@ -2173,7 +2174,7 @@ namespace PVR
     time_t playbackStartTime = CServiceBroker::GetDataCacheCore().GetStartTime();
     if (playbackStartTime > 0)
     {
-      const std::shared_ptr<CPVRChannel> playingChannel = CServiceBroker::GetPVRManager().GetPlayingChannel();
+      const std::shared_ptr<CPVRChannel> playingChannel = CServiceBroker::GetPVRManager().PlaybackState()->GetPlayingChannel();
       if (playingChannel)
       {
         time_t prevTime = 0;
@@ -2258,7 +2259,7 @@ namespace PVR
   void CPVRChannelSwitchingInputHandler::GetChannelNumbers(std::vector<std::string>& channelNumbers)
   {
     CPVRManager& pvrMgr = CServiceBroker::GetPVRManager();
-    const std::shared_ptr<CPVRChannel> playingChannel = pvrMgr.GetPlayingChannel();
+    const std::shared_ptr<CPVRChannel> playingChannel = pvrMgr.PlaybackState()->GetPlayingChannel();
     if (playingChannel)
     {
       const std::shared_ptr<CPVRChannelGroup> group = pvrMgr.ChannelGroups()->GetGroupAll(playingChannel->IsRadio());
@@ -2276,16 +2277,16 @@ namespace PVR
 
   void CPVRChannelSwitchingInputHandler::SwitchToChannel(const CPVRChannelNumber& channelNumber)
   {
-    if (channelNumber.IsValid() && CServiceBroker::GetPVRManager().IsPlaying())
+    if (channelNumber.IsValid() && CServiceBroker::GetPVRManager().PlaybackState()->IsPlaying())
     {
-      const std::shared_ptr<CPVRChannel> playingChannel(CServiceBroker::GetPVRManager().GetPlayingChannel());
+      const std::shared_ptr<CPVRChannel> playingChannel = CServiceBroker::GetPVRManager().PlaybackState()->GetPlayingChannel();
       if (playingChannel)
       {
         if (channelNumber != playingChannel->ChannelNumber())
         {
           // channel number present in playing group?
           bool bRadio = playingChannel->IsRadio();
-          const std::shared_ptr<CPVRChannelGroup> group = CServiceBroker::GetPVRManager().GetPlayingGroup(bRadio);
+          const std::shared_ptr<CPVRChannelGroup> group = CServiceBroker::GetPVRManager().PlaybackState()->GetPlayingGroup(bRadio);
           std::shared_ptr<CPVRChannel> channel = group->GetByChannelNumber(channelNumber);
 
           if (!channel)
@@ -2299,7 +2300,7 @@ namespace PVR
               if (channel)
               {
                 // switch channel group
-                CServiceBroker::GetPVRManager().SetPlayingGroup(currentGroup);
+                CServiceBroker::GetPVRManager().PlaybackState()->SetPlayingGroup(currentGroup);
                 break;
               }
             }
@@ -2320,15 +2321,15 @@ namespace PVR
 
   void CPVRChannelSwitchingInputHandler::SwitchToPreviousChannel()
   {
-    if (CServiceBroker::GetPVRManager().IsPlaying())
+    if (CServiceBroker::GetPVRManager().PlaybackState()->IsPlaying())
     {
-      const std::shared_ptr<CPVRChannel> playingChannel(CServiceBroker::GetPVRManager().GetPlayingChannel());
+      const std::shared_ptr<CPVRChannel> playingChannel = CServiceBroker::GetPVRManager().PlaybackState()->GetPlayingChannel();
       if (playingChannel)
       {
-        const std::shared_ptr<CPVRChannelGroup> group(CServiceBroker::GetPVRManager().ChannelGroups()->GetPreviousPlayedGroup());
+        const std::shared_ptr<CPVRChannelGroup> group = CServiceBroker::GetPVRManager().ChannelGroups()->GetPreviousPlayedGroup();
         if (group)
         {
-          CServiceBroker::GetPVRManager().SetPlayingGroup(group);
+          CServiceBroker::GetPVRManager().PlaybackState()->SetPlayingGroup(group);
           const std::shared_ptr<CPVRChannel> channel = group->GetLastPlayedChannel(playingChannel->ChannelID());
           if (channel)
           {

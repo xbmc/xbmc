@@ -14,6 +14,7 @@
 #include "messaging/ApplicationMessenger.h"
 #include "pvr/PVREventLogJob.h"
 #include "pvr/PVRManager.h"
+#include "pvr/PVRPlaybackState.h"
 #include "pvr/channels/PVRChannelGroupInternal.h"
 #include "utils/JobManager.h"
 #include "utils/log.h"
@@ -202,7 +203,7 @@ bool CPVRClients::RequestRestart(AddonPtr addon, bool bDataChanged)
 bool CPVRClients::StopClient(const AddonPtr& addon, bool bRestart)
 {
   // stop playback if needed
-  if (CServiceBroker::GetPVRManager().IsPlaying())
+  if (CServiceBroker::GetPVRManager().PlaybackState()->IsPlaying())
     CApplicationMessenger::GetInstance().SendMsg(TMSG_MEDIA_STOP);
 
   CSingleLock lock(m_critSection);

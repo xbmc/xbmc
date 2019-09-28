@@ -18,6 +18,7 @@
 #include "messaging/ApplicationMessenger.h"
 #include "pvr/PVRGUIActions.h"
 #include "pvr/PVRManager.h"
+#include "pvr/PVRPlaybackState.h"
 #include "pvr/channels/PVRChannel.h"
 #include "pvr/channels/PVRChannelGroup.h"
 #include "pvr/channels/PVRChannelGroups.h"
@@ -72,7 +73,7 @@ bool CGUIDialogPVRChannelsOSD::OnMessage(CGUIMessage& message)
 
 void CGUIDialogPVRChannelsOSD::OnInitWindow()
 {
-  if (!CServiceBroker::GetPVRManager().IsPlayingTV() && !CServiceBroker::GetPVRManager().IsPlayingRadio())
+  if (!CServiceBroker::GetPVRManager().PlaybackState()->IsPlayingTV() && !CServiceBroker::GetPVRManager().PlaybackState()->IsPlayingRadio())
   {
     Close();
     return;
@@ -126,7 +127,7 @@ bool CGUIDialogPVRChannelsOSD::OnAction(const CAction& action)
       const std::shared_ptr<CPVRChannelGroup> nextGroup = action.GetID() == ACTION_NEXT_CHANNELGROUP
                                                         ? groups->GetNextGroup(*m_group)
                                                         : groups->GetPreviousGroup(*m_group);
-      CServiceBroker::GetPVRManager().SetPlayingGroup(nextGroup);
+      CServiceBroker::GetPVRManager().PlaybackState()->SetPlayingGroup(nextGroup);
       m_group = nextGroup;
       Init();
       Update();
@@ -167,10 +168,10 @@ void CGUIDialogPVRChannelsOSD::Update()
   pvrMgr.Events().Subscribe(this, &CGUIDialogPVRChannelsOSD::Notify);
   pvrMgr.EpgContainer().Events().Subscribe(this, &CGUIDialogPVRChannelsOSD::Notify);
 
-  const std::shared_ptr<CPVRChannel> channel = pvrMgr.GetPlayingChannel();
+  const std::shared_ptr<CPVRChannel> channel = pvrMgr.PlaybackState()->GetPlayingChannel();
   if (channel)
   {
-    const std::shared_ptr<CPVRChannelGroup> group = pvrMgr.GetPlayingGroup(channel->IsRadio());
+    const std::shared_ptr<CPVRChannelGroup> group = pvrMgr.PlaybackState()->GetPlayingGroup(channel->IsRadio());
     if (group)
     {
       const std::vector<std::shared_ptr<PVRChannelGroupMember>> groupMembers = group->GetMembers(CPVRChannelGroup::Include::ONLY_VISIBLE);

@@ -25,6 +25,7 @@
 #include "pvr/PVRGUIActions.h"
 #include "pvr/PVRGUIDirectory.h"
 #include "pvr/PVRManager.h"
+#include "pvr/PVRPlaybackState.h"
 #include "pvr/channels/PVRChannelGroup.h"
 #include "pvr/channels/PVRChannelGroups.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
@@ -427,13 +428,13 @@ bool CGUIWindowPVRBase::InitChannelGroup()
   std::shared_ptr<CPVRChannelGroup> group;
   if (m_channelGroupPath.empty())
   {
-    group = CServiceBroker::GetPVRManager().GetPlayingGroup(m_bRadio);
+    group = CServiceBroker::GetPVRManager().PlaybackState()->GetPlayingGroup(m_bRadio);
   }
   else
   {
     group = CServiceBroker::GetPVRManager().ChannelGroups()->Get(m_bRadio)->GetGroupByPath(m_channelGroupPath);
     if (group)
-      CServiceBroker::GetPVRManager().SetPlayingGroup(group);
+      CServiceBroker::GetPVRManager().PlaybackState()->SetPlayingGroup(group);
     else
       CLog::LogF(LOGERROR, "Found no %s channel group with path '%s'!", m_bRadio ? "radio" : "TV", m_vecItems->GetPath().c_str());
   }
@@ -481,7 +482,7 @@ void CGUIWindowPVRBase::SetChannelGroup(std::shared_ptr<CPVRChannelGroup> &&grou
 
   if (updateChannelGroup)
   {
-    CServiceBroker::GetPVRManager().SetPlayingGroup(updateChannelGroup);
+    CServiceBroker::GetPVRManager().PlaybackState()->SetPlayingGroup(updateChannelGroup);
     Update(GetDirectoryPath());
   }
 }
