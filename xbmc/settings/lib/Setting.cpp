@@ -332,6 +332,14 @@ SettingPtr CSettingList::Clone(const std::string &id) const
   return std::make_shared<CSettingList>(id, *this);
 }
 
+void CSettingList::MergeDetails(const CSetting& other)
+{
+  if (other.GetType() != SettingType::List)
+    return;
+
+  // TODO(smontellese)
+}
+
 bool CSettingList::Deserialize(const TiXmlNode *node, bool update /* = false */)
 {
   CExclusiveLock lock(m_critical);
@@ -627,6 +635,18 @@ SettingPtr CSettingBool::Clone(const std::string &id) const
   return std::make_shared<CSettingBool>(id, *this);
 }
 
+void CSettingBool::MergeDetails(const CSetting& other)
+{
+  if (other.GetType() != SettingType::Boolean)
+    return;
+
+  const auto& boolSetting = static_cast<const CSettingBool&>(other);
+  if (m_value == false && boolSetting.m_value == true)
+    m_value = true;
+  if (m_default == false && boolSetting.m_default == true)
+    m_default = true;
+}
+
 bool CSettingBool::Deserialize(const TiXmlNode *node, bool update /* = false */)
 {
   CExclusiveLock lock(m_critical);
@@ -774,6 +794,14 @@ CSettingInt::CSettingInt(const std::string &id, int label, int value, const Tran
 SettingPtr CSettingInt::Clone(const std::string &id) const
 {
   return std::make_shared<CSettingInt>(id, *this);
+}
+
+void CSettingInt::MergeDetails(const CSetting& other)
+{
+  if (other.GetType() != SettingType::Integer)
+    return;
+
+  // TODO(smontellese)
 }
 
 bool CSettingInt::Deserialize(const TiXmlNode *node, bool update /* = false */)
@@ -1056,6 +1084,24 @@ SettingPtr CSettingNumber::Clone(const std::string &id) const
   return std::make_shared<CSettingNumber>(id, *this);
 }
 
+void CSettingNumber::MergeDetails(const CSetting& other)
+{
+  if (other.GetType() != SettingType::Number)
+    return;
+
+  const auto& numberSetting = static_cast<const CSettingNumber&>(other);
+  if (m_value == 0.0 && numberSetting.m_value != 0.0)
+    m_value = numberSetting.m_value;
+  if (m_default == 0.0 && numberSetting.m_default != 0.0)
+    m_default = numberSetting.m_default;
+  if (m_min == 0.0 && numberSetting.m_min != 0.0)
+    m_min = numberSetting.m_min;
+  if (m_step == 1.0 && numberSetting.m_step != 1.0)
+    m_step = numberSetting.m_step;
+  if (m_max == 0.0 && numberSetting.m_max != 0.0)
+    m_max = numberSetting.m_max;
+}
+
 bool CSettingNumber::Deserialize(const TiXmlNode *node, bool update /* = false */)
 {
   CExclusiveLock lock(m_critical);
@@ -1215,6 +1261,14 @@ CSettingString::CSettingString(const std::string &id, int label, const std::stri
 SettingPtr CSettingString::Clone(const std::string &id) const
 {
   return std::make_shared<CSettingString>(id, *this);
+}
+
+void CSettingString::MergeDetails(const CSetting& other)
+{
+  if (other.GetType() != SettingType::String)
+    return;
+
+  // TODO(smontellese)
 }
 
 bool CSettingString::Deserialize(const TiXmlNode *node, bool update /* = false */)
@@ -1441,6 +1495,16 @@ CSettingAction::CSettingAction(const std::string &id, const CSettingAction &sett
 SettingPtr CSettingAction::Clone(const std::string &id) const
 {
   return std::make_shared<CSettingAction>(id, *this);
+}
+
+void CSettingAction::MergeDetails(const CSetting& other)
+{
+  if (other.GetType() != SettingType::Action)
+    return;
+
+  const auto& actionSetting = static_cast<const CSettingAction&>(other);
+  if (!HasData() && actionSetting.HasData())
+    SetData(actionSetting.GetData());
 }
 
 bool CSettingAction::Deserialize(const TiXmlNode *node, bool update /* = false */)

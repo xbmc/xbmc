@@ -51,6 +51,7 @@ public:
 
   virtual std::shared_ptr<CSetting> Clone(const std::string &id) const = 0;
   void MergeBasics(const CSetting& other);
+  virtual void MergeDetails(const CSetting& other) = 0;
 
   bool Deserialize(const TiXmlNode *node, bool update = false) override;
 
@@ -153,6 +154,7 @@ public:
   ~CSettingList() override = default;
 
   std::shared_ptr<CSetting> Clone(const std::string &id) const override;
+  void MergeDetails(const CSetting& other) override;
 
   bool Deserialize(const TiXmlNode *node, bool update = false) override;
 
@@ -212,6 +214,7 @@ public:
   ~CSettingBool() override = default;
 
   std::shared_ptr<CSetting> Clone(const std::string &id) const override;
+  void MergeDetails(const CSetting& other) override;
 
   bool Deserialize(const TiXmlNode *node, bool update = false) override;
 
@@ -250,6 +253,7 @@ public:
   ~CSettingInt() override = default;
 
   std::shared_ptr<CSetting> Clone(const std::string &id) const override;
+  void MergeDetails(const CSetting& other) override;
 
   bool Deserialize(const TiXmlNode *node, bool update = false) override;
 
@@ -325,6 +329,7 @@ public:
   ~CSettingNumber() override = default;
 
   std::shared_ptr<CSetting> Clone(const std::string &id) const override;
+  void MergeDetails(const CSetting& other) override;
 
   bool Deserialize(const TiXmlNode *node, bool update = false) override;
 
@@ -372,6 +377,7 @@ public:
   ~CSettingString() override = default;
 
   std::shared_ptr<CSetting> Clone(const std::string &id) const override;
+  void MergeDetails(const CSetting& other) override;
 
   bool Deserialize(const TiXmlNode *node, bool update = false) override;
 
@@ -442,6 +448,7 @@ public:
   ~CSettingAction() override = default;
 
   std::shared_ptr<CSetting> Clone(const std::string &id) const override;
+  void MergeDetails(const CSetting& other) override;
 
   bool Deserialize(const TiXmlNode *node, bool update = false) override;
 

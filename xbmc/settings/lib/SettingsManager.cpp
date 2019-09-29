@@ -1323,7 +1323,11 @@ void CSettingsManager::ResolveReferenceSettings(std::shared_ptr<CSettingSection>
       continue;
 
     for (const auto& referenceSetting : groupedReferenceSetting.second.referenceSettings)
+    {
+      groupedReferenceSetting.second.referencedSetting->MergeDetails(*referenceSetting);
+
       itReferencedSetting->second.references.insert(referenceSetting->GetId());
+    }
   }
 
   // resolve any reference settings
