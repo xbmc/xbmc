@@ -564,8 +564,8 @@ std::shared_ptr<CSettingGroup> CAddonSettings::ParseOldSettingElement(const TiXm
 
           if (parentSetting != groupSettings.crend())
           {
-            if ((*parentSetting)->GetType() == SettingType::Reference)
-              setting->SetParent(std::static_pointer_cast<const CSettingReference>(*parentSetting)->GetReferencedId());
+            if ((*parentSetting)->IsReference())
+              setting->SetParent((*parentSetting)->GetReferencedId());
             else
               setting->SetParent((*parentSetting)->GetId());
           }
@@ -595,7 +595,7 @@ std::shared_ptr<CSettingGroup> CAddonSettings::ParseOldSettingElement(const TiXm
         if (settingIds.find(settingId) != settingIds.end())
         {
           // turn the setting into a reference setting
-          setting = std::make_shared<CSettingReference>(settingId, GetSettingsManager());
+          setting->MakeReference();
         }
         else
         {
@@ -1377,14 +1377,7 @@ bool CAddonSettings::ParseOldCondition(std::shared_ptr<const CSetting> setting, 
     if (otherSetting == nullptr)
       return false;
 
-    std::string id = setting->GetId();
-    if (setting->GetType() == SettingType::Reference)
-      id = std::static_pointer_cast<const CSettingReference>(setting)->GetReferencedId();
-    std::string otherId = otherSetting->GetId();
-    if (otherSetting->GetType() == SettingType::Reference)
-      otherId = std::static_pointer_cast<const CSettingReference>(otherSetting)->GetReferencedId();
-
-    return id == otherId;
+    return setting->GetId() == otherSetting->GetId();
   });
   if (settingIt == settings.cend()) {
     CLog::Log(LOGWARNING, "CAddonSettings[%s]: failed to parse old setting conditions \"%s\" for \"%s\"",

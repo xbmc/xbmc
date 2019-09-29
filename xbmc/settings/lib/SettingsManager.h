@@ -21,6 +21,7 @@
 
 #include <map>
 #include <set>
+#include <unordered_set>
 #include <vector>
 
 class CSettingCategory;
@@ -506,6 +507,7 @@ private:
     SettingDependencyMap dependencies;
     std::set<std::string> children;
     CallbackSet callbacks;
+    std::unordered_set<std::string> references;
   };
 
   using SettingMap = std::map<std::string, Setting>;

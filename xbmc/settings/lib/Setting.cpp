@@ -76,6 +76,21 @@ CSetting::CSetting(const std::string &id, const CSetting &setting)
   Copy(setting);
 }
 
+void CSetting::MergeBasics(const CSetting& other)
+{
+  // ISetting
+  SetVisible(other.GetVisible());
+  SetLabel(other.GetLabel());
+  SetHelp(other.GetHelp());
+  SetRequirementsMet(other.MeetsRequirements());
+  // CSetting
+  SetEnabled(other.GetEnabled());
+  SetParent(other.GetParent());
+  SetLevel(other.GetLevel());
+  SetControl(const_cast<CSetting&>(other).GetControl());
+  SetDependencies(other.GetDependencies());
+}
+
 bool CSetting::Deserialize(const TiXmlNode *node, bool update /* = false */)
 {
   // handle <visible> conditions
@@ -131,7 +146,7 @@ bool CSetting::Deserialize(const TiXmlNode *node, bool update /* = false */)
       return false;
     }
   }
-  else if (!update && m_level < SettingLevel::Internal && GetType() != SettingType::Reference)
+  else if (!update && m_level < SettingLevel::Internal && !IsReference())
   {
     CLog::Log(LOGERROR, "CSetting: missing <control> tag of \"%s\"", m_id.c_str());
     return false;
@@ -196,6 +211,16 @@ void CSetting::SetEnabled(bool enabled)
 
   m_enabled = enabled;
   OnSettingPropertyChanged(shared_from_this(), "enabled");
+}
+
+void CSetting::MakeReference(const std::string& referencedId /* = "" */)
+{
+  auto tmpReferencedId = referencedId;
+  if (referencedId.empty())
+    tmpReferencedId = m_id;
+
+  m_id = StringUtils::Format("#{}[{}]", tmpReferencedId, StringUtils::CreateUUID());
+  m_referencedId = tmpReferencedId;
 }
 
 bool CSetting::IsVisible() const
@@ -279,21 +304,6 @@ void CSetting::Copy(const CSetting &setting)
   m_dependencies = setting.m_dependencies;
   m_updates = setting.m_updates;
   m_changed = setting.m_changed;
-}
-
-CSettingReference::CSettingReference(const std::string &id, CSettingsManager *settingsManager /* = nullptr */)
-  : CSetting("#" + id, settingsManager)
-  , m_referencedId(id)
-{ }
-
-CSettingReference::CSettingReference(const std::string &id, const CSettingReference &setting)
-  : CSetting("#" + id, setting)
-  , m_referencedId(id)
-{ }
-
-std::shared_ptr<CSetting> CSettingReference::Clone(const std::string &id) const
-{
-  return std::make_shared<CSettingReference>(id, *this);
 }
 
 CSettingList::CSettingList(const std::string &id, std::shared_ptr<CSetting> settingDefinition, CSettingsManager *settingsManager /* = nullptr */)
