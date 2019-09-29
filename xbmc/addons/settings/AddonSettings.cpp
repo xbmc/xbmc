@@ -571,9 +571,7 @@ std::shared_ptr<CSettingGroup> CAddonSettings::ParseOldSettingElement(const TiXm
           }
         }
 
-        SettingWithConditions settingWithConditions = {
-          setting
-        };
+        SettingWithConditions settingWithConditions;
 
         // parse enable status
         const auto conditionEnable = XMLUtils::GetAttribute(settingElement, "enable");
@@ -593,9 +591,6 @@ std::shared_ptr<CSettingGroup> CAddonSettings::ParseOldSettingElement(const TiXm
         else if (!conditionVisible.empty())
           settingWithConditions.visibleCondition = conditionVisible;
 
-        if (!settingWithConditions.enableCondition.empty() || !settingWithConditions.visibleCondition.empty())
-          settingsWithConditions.push_back(settingWithConditions);
-
         // check if there already is a setting with the setting identifier
         if (settingIds.find(settingId) != settingIds.end())
         {
@@ -606,6 +601,13 @@ std::shared_ptr<CSettingGroup> CAddonSettings::ParseOldSettingElement(const TiXm
         {
           // add the setting's identifier to the list of all identifiers
           settingIds.insert(setting->GetId());
+        }
+
+        if (!settingWithConditions.enableCondition.empty() ||
+            !settingWithConditions.visibleCondition.empty())
+        {
+          settingWithConditions.setting = setting;
+          settingsWithConditions.push_back(settingWithConditions);
         }
 
         // add the setting to the list of settings from the same category
