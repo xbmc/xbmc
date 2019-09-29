@@ -9,10 +9,10 @@
 #include "InputStreamPVRBase.h"
 
 #include "ServiceBroker.h"
-#include "addons/PVRClient.h"
 #include "cores/VideoPlayer/DVDDemuxers/DVDDemux.h"
 #include "cores/VideoPlayer/Interface/Addon/DemuxPacket.h"
 #include "pvr/PVRManager.h"
+#include "pvr/addons/PVRClient.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/log.h"

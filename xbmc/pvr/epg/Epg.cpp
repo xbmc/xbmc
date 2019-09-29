@@ -9,9 +9,9 @@
 #include "Epg.h"
 
 #include "ServiceBroker.h"
-#include "addons/PVRClient.h"
 #include "guilib/LocalizeStrings.h"
 #include "pvr/PVRManager.h"
+#include "pvr/addons/PVRClient.h"
 #include "pvr/epg/EpgChannelData.h"
 #include "pvr/epg/EpgDatabase.h"
 #include "pvr/epg/EpgInfoTag.h"

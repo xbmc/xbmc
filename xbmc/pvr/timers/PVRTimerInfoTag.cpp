@@ -9,10 +9,10 @@
 #include "PVRTimerInfoTag.h"
 
 #include "ServiceBroker.h"
-#include "addons/PVRClient.h"
 #include "guilib/LocalizeStrings.h"
 #include "pvr/PVRDatabase.h"
 #include "pvr/PVRManager.h"
+#include "pvr/addons/PVRClient.h"
 #include "pvr/addons/PVRClients.h"
 #include "pvr/channels/PVRChannel.h"
 #include "pvr/channels/PVRChannelGroups.h"

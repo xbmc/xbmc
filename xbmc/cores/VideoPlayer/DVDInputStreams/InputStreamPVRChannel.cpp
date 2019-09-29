@@ -9,8 +9,8 @@
 #include "InputStreamPVRChannel.h"
 
 #include "ServiceBroker.h"
-#include "addons/PVRClient.h"
 #include "pvr/PVRManager.h"
+#include "pvr/addons/PVRClient.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "utils/log.h"
 

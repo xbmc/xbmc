@@ -10,11 +10,11 @@
 
 #include "ContextMenuItem.h"
 #include "ServiceBroker.h"
-#include "addons/PVRClient.h"
-#include "addons/PVRClientMenuHooks.h"
 #include "guilib/LocalizeStrings.h"
 #include "pvr/PVRGUIActions.h"
 #include "pvr/PVRManager.h"
+#include "pvr/addons/PVRClient.h"
+#include "pvr/addons/PVRClientMenuHooks.h"
 #include "pvr/channels/PVRChannel.h"
 #include "pvr/epg/EpgInfoTag.h"
 #include "pvr/recordings/PVRRecording.h"

@@ -9,8 +9,8 @@
 #include "InputStreamPVRRecording.h"
 
 #include "ServiceBroker.h"
-#include "addons/PVRClient.h"
 #include "pvr/PVRManager.h"
+#include "pvr/addons/PVRClient.h"
 #include "pvr/recordings/PVRRecordings.h"
 #include "utils/log.h"
 

@@ -9,7 +9,6 @@
 #include "PVRManager.h"
 
 #include "ServiceBroker.h"
-#include "addons/PVRClient.h"
 #include "guilib/LocalizeStrings.h"
 #include "interfaces/AnnouncementManager.h"
 #include "messaging/ApplicationMessenger.h"
@@ -19,6 +18,7 @@
 #include "pvr/PVRGUIInfo.h"
 #include "pvr/PVRGUIProgressHandler.h"
 #include "pvr/PVRPlaybackState.h"
+#include "pvr/addons/PVRClient.h"
 #include "pvr/addons/PVRClients.h"
 #include "pvr/channels/PVRChannel.h"
 #include "pvr/channels/PVRChannelGroup.h"

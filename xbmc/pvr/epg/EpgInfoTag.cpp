@@ -9,11 +9,11 @@
 #include "EpgInfoTag.h"
 
 #include "ServiceBroker.h"
-#include "addons/PVRClient.h"
 #include "addons/kodi-addon-dev-kit/include/kodi/xbmc_pvr_types.h"
 #include "cores/DataCacheCore.h"
 #include "pvr/PVRManager.h"
 #include "pvr/PVRPlaybackState.h"
+#include "pvr/addons/PVRClient.h"
 #include "pvr/epg/Epg.h"
 #include "pvr/epg/EpgChannelData.h"
 #include "pvr/epg/EpgDatabase.h"

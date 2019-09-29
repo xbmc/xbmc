@@ -15,6 +15,7 @@
 #include "pvr/PVREventLogJob.h"
 #include "pvr/PVRManager.h"
 #include "pvr/PVRPlaybackState.h"
+#include "pvr/addons/PVRClient.h"
 #include "pvr/channels/PVRChannelGroupInternal.h"
 #include "utils/JobManager.h"
 #include "utils/log.h"
@@ -474,10 +475,10 @@ bool CPVRClients::GetTimers(CPVRTimersContainer* timers, std::vector<int>& faile
   }, failedClients) == PVR_ERROR_NO_ERROR;
 }
 
-PVR_ERROR CPVRClients::GetTimerTypes(CPVRTimerTypes& results) const
+PVR_ERROR CPVRClients::GetTimerTypes(std::vector<std::shared_ptr<CPVRTimerType>>& results) const
 {
   return ForCreatedClients(__FUNCTION__, [&results](const std::shared_ptr<CPVRClient>& client) {
-    CPVRTimerTypes types;
+    std::vector<std::shared_ptr<CPVRTimerType>> types;
     PVR_ERROR ret = client->GetTimerTypes(types);
     if (ret == PVR_ERROR_NO_ERROR)
       results.insert(results.end(), types.begin(), types.end());

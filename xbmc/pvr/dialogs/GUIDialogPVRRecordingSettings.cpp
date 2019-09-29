@@ -9,11 +9,11 @@
 #include "GUIDialogPVRRecordingSettings.h"
 
 #include "ServiceBroker.h"
-#include "addons/PVRClient.h"
 #include "guilib/GUIMessage.h"
 #include "guilib/LocalizeStrings.h"
 #include "messaging/helpers/DialogHelper.h"
 #include "pvr/PVRManager.h"
+#include "pvr/addons/PVRClient.h"
 #include "pvr/recordings/PVRRecording.h"
 #include "settings/dialogs/GUIDialogSettingsBase.h"
 #include "settings/lib/Setting.h"

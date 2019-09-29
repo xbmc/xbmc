@@ -9,7 +9,6 @@
 #pragma once
 
 #include "addons/AddonManager.h"
-#include "addons/PVRClient.h"
 #include "addons/kodi-addon-dev-kit/include/kodi/xbmc_pvr_types.h"
 #include "threads/CriticalSection.h"
 
@@ -29,8 +28,10 @@ namespace PVR
   class CPVRChannelGroupInternal;
   class CPVRChannelGroup;
   class CPVRChannelGroups;
+  class CPVRClient;
   class CPVREpg;
   class CPVRRecordings;
+  class CPVRTimerType;
   class CPVRTimersContainer;
 
   typedef std::map<int, std::shared_ptr<CPVRClient>> CPVRClientMap;
@@ -190,7 +191,7 @@ namespace PVR
      * @param results The container to store the result in.
      * @return PVR_ERROR_NO_ERROR if the operation succeeded, the respective PVR_ERROR value otherwise.
      */
-    PVR_ERROR GetTimerTypes(CPVRTimerTypes& results) const;
+    PVR_ERROR GetTimerTypes(std::vector<std::shared_ptr<CPVRTimerType>>& results) const;
 
     //@}
 
