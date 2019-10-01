@@ -11,8 +11,8 @@
 #include "Application.h"
 #include "ServiceBroker.h"
 #include "guilib/WindowIDs.h"
-#include "pvr/PVRGUIActions.h"
 #include "pvr/PVRManager.h"
+#include "pvr/guilib/PVRGUIActions.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 

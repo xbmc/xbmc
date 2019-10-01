@@ -18,7 +18,7 @@
 #include "input/actions/ActionIDs.h"
 #include "pvr/channels/PVRChannel.h"
 #include "pvr/epg/EpgInfoTag.h"
-#include "pvr/windows/GUIEPGGridContainerModel.h"
+#include "pvr/guilib/GUIEPGGridContainerModel.h"
 #include "utils/MathUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"

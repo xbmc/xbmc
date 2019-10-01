@@ -18,11 +18,11 @@ class CPVRManager;
 enum class ChannelSwitchMode;
 enum class PVREvent;
 
-class CPVRActionListener : public IActionListener, public ISettingCallback
+class CPVRGUIActionListener : public IActionListener, public ISettingCallback
 {
 public:
-  CPVRActionListener();
-  ~CPVRActionListener() override;
+  CPVRGUIActionListener();
+  ~CPVRGUIActionListener() override;
 
   void Init(CPVRManager& mgr);
   void Deinit(CPVRManager& mgr);
@@ -37,8 +37,8 @@ public:
   void OnPVRManagerEvent(const PVREvent& event);
 
 private:
-  CPVRActionListener(const CPVRActionListener&) = delete;
-  CPVRActionListener& operator=(const CPVRActionListener&) = delete;
+  CPVRGUIActionListener(const CPVRGUIActionListener&) = delete;
+  CPVRGUIActionListener& operator=(const CPVRGUIActionListener&) = delete;
 
   static ChannelSwitchMode GetChannelSwitchMode(int iAction);
 };

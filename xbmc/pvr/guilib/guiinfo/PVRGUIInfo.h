@@ -10,9 +10,9 @@
 
 #include "addons/kodi-addon-dev-kit/include/kodi/xbmc_pvr_types.h"
 #include "guilib/guiinfo/GUIInfoProvider.h"
-#include "pvr/PVRGUITimerInfo.h"
-#include "pvr/PVRGUITimesInfo.h"
 #include "pvr/addons/PVRClients.h"
+#include "pvr/guilib/guiinfo/PVRGUITimerInfo.h"
+#include "pvr/guilib/guiinfo/PVRGUITimesInfo.h"
 #include "threads/CriticalSection.h"
 #include "threads/Thread.h"
 

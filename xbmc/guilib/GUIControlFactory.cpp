@@ -49,7 +49,7 @@
 #include "cores/RetroPlayer/guicontrols/GUIGameControl.h"
 #include "games/controllers/guicontrols/GUIGameController.h"
 #include "input/Key.h"
-#include "pvr/windows/GUIEPGGridContainer.h"
+#include "pvr/guilib/GUIEPGGridContainer.h"
 #include "utils/CharsetConverter.h"
 #include "utils/RssManager.h"
 #include "utils/StringUtils.h"

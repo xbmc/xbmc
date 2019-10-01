@@ -14,8 +14,8 @@
 #include "dialogs/GUIDialogContextMenu.h"
 #include "input/actions/Action.h"
 #include "input/actions/ActionIDs.h"
-#include "pvr/PVRGUIActions.h"
 #include "pvr/PVRManager.h"
+#include "pvr/guilib/PVRGUIActions.h"
 #include "view/ViewState.h"
 
 #include <utility>
