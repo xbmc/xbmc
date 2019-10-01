@@ -872,11 +872,7 @@ void CAESinkAUDIOTRACK::EnumerateDevicesEx(AEDeviceInfoList &list, bool force)
   m_info.m_displayNameExtra = "audiotrack";
 
   UpdateAvailablePCMCapabilities();
-
-  if (!CXBMCApp::IsHeadsetPlugged())
-  {
-    UpdateAvailablePassthroughCapabilities();
-  }
+  UpdateAvailablePassthroughCapabilities();
   list.push_back(m_info);
 }
 
