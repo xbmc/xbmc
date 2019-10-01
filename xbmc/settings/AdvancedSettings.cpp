@@ -124,8 +124,6 @@ void CAdvancedSettings::Initialize()
   if (m_initialized)
     return;
 
-  m_audioHeadRoom = 0;
-  m_ac3Gain = 12.0f;
   m_audioApplyDrc = -1.0f;
   m_VideoPlayerIgnoreDTSinWAV = false;
 
@@ -540,8 +538,6 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
   TiXmlElement *pElement = pRootElement->FirstChildElement("audio");
   if (pElement)
   {
-    XMLUtils::GetFloat(pElement, "ac3downmixgain", m_ac3Gain, -96.0f, 96.0f);
-    XMLUtils::GetInt(pElement, "headroom", m_audioHeadRoom, 0, 12);
     XMLUtils::GetString(pElement, "defaultplayer", m_audioDefaultPlayer);
     // 101 on purpose - can be used to never automark as watched
     XMLUtils::GetFloat(pElement, "playcountminimumpercent", m_audioPlayCountMinimumPercent, 0.0f, 101.0f);
