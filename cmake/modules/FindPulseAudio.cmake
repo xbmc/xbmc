@@ -15,7 +15,7 @@
 #   PulseAudio::PulseAudio   - The PulseAudio library
 
 if(NOT PulseAudio_FIND_VERSION)
-  set(PulseAudio_FIND_VERSION 2.0.0)
+  set(PulseAudio_FIND_VERSION 11.0.0)
 endif()
 
 if(PKG_CONFIG_FOUND)
