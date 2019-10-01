@@ -1479,14 +1479,14 @@ void CPVRClient::cb_transfer_channel_group_member(void* kodiInstance, const ADDO
   }
 
   CPVRClient* client = static_cast<CPVRClient*>(kodiInstance);
-  CPVRChannelGroup* group = static_cast<CPVRChannelGroup *>(handle->dataAddress);
+  CPVRChannelGroup* group = static_cast<CPVRChannelGroup*>(handle->dataAddress);
   if (!member || !client || !group)
   {
     CLog::LogF(LOGERROR, "Invalid handler data");
     return;
   }
 
-  std::shared_ptr<CPVRChannel> channel  = CServiceBroker::GetPVRManager().ChannelGroups()->GetByUniqueID(member->iChannelUniqueId, client->GetID());
+  std::shared_ptr<CPVRChannel> channel = CServiceBroker::GetPVRManager().ChannelGroups()->GetByUniqueID(member->iChannelUniqueId, client->GetID());
   if (!channel)
   {
     CLog::LogF(LOGERROR, "Cannot find group '%s' or channel '%d'", member->strGroupName, member->iChannelUniqueId);
@@ -1507,7 +1507,7 @@ void CPVRClient::cb_transfer_epg_entry(void* kodiInstance, const ADDON_HANDLE ha
   }
 
   CPVRClient* client = static_cast<CPVRClient*>(kodiInstance);
-  CPVREpg* kodiEpg = static_cast<CPVREpg *>(handle->dataAddress);
+  CPVREpg* kodiEpg = static_cast<CPVREpg*>(handle->dataAddress);
   if (!epgentry || !client || !kodiEpg)
   {
     CLog::LogF(LOGERROR, "Invalid handler data");
@@ -1527,7 +1527,7 @@ void CPVRClient::cb_transfer_channel_entry(void* kodiInstance, const ADDON_HANDL
   }
 
   CPVRClient* client = static_cast<CPVRClient*>(kodiInstance);
-  CPVRChannelGroupInternal* kodiChannels = static_cast<CPVRChannelGroupInternal *>(handle->dataAddress);
+  CPVRChannelGroupInternal* kodiChannels = static_cast<CPVRChannelGroupInternal*>(handle->dataAddress);
   if (!channel || !client || !kodiChannels)
   {
     CLog::LogF(LOGERROR, "Invalid handler data");
@@ -1548,7 +1548,7 @@ void CPVRClient::cb_transfer_recording_entry(void* kodiInstance, const ADDON_HAN
   }
 
   CPVRClient* client = static_cast<CPVRClient*>(kodiInstance);
-  CPVRRecordings* kodiRecordings = static_cast<CPVRRecordings *>(handle->dataAddress);
+  CPVRRecordings* kodiRecordings = static_cast<CPVRRecordings*>(handle->dataAddress);
   if (!recording || !client || !kodiRecordings)
   {
     CLog::LogF(LOGERROR, "Invalid handler data");
@@ -1569,7 +1569,7 @@ void CPVRClient::cb_transfer_timer_entry(void* kodiInstance, const ADDON_HANDLE 
   }
 
   CPVRClient* client = static_cast<CPVRClient*>(kodiInstance);
-  CPVRTimersContainer* kodiTimers = static_cast<CPVRTimersContainer *>(handle->dataAddress);
+  CPVRTimersContainer* kodiTimers = static_cast<CPVRTimersContainer*>(handle->dataAddress);
   if (!timer || !client || !kodiTimers)
   {
     CLog::LogF(LOGERROR, "Invalid handler data");

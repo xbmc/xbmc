@@ -21,8 +21,8 @@ class CDVDStreamInfo;
 
 namespace PVR
 {
-  class CPVRChannel;
-  class CPVRRadioRDSInfoTag;
+class CPVRChannel;
+class CPVRRadioRDSInfoTag;
 }
 
 /// --- CDVDRadioRDSData ------------------------------------------------------------
@@ -88,7 +88,7 @@ private:
   void SetRadioStyle(std::string genre);
 
   std::shared_ptr<PVR::CPVRRadioRDSInfoTag> m_currentInfoTag;
-  std::shared_ptr<PVR::CPVRChannel>         m_currentChannel;
+  std::shared_ptr<PVR::CPVRChannel> m_currentChannel;
   bool                        m_currentFileUpdate;
   int                         m_speed;
   CCriticalSection            m_critSection;

@@ -365,10 +365,10 @@ namespace PVR
     static std::shared_ptr<CPVRTimerInfoTag> CreateFromDate(const std::shared_ptr<CPVRChannel>& channel, const CDateTime& start, int iDuration, bool bCreateReminder, bool bReadOnly);
 
     mutable CCriticalSection m_critSection;
-    CDateTime             m_StartTime; /*!< start time */
-    CDateTime             m_StopTime;  /*!< stop time */
-    CDateTime             m_FirstDay;  /*!< if it is a manual timer rule the first date it starts */
-    std::shared_ptr<CPVRTimerType>      m_timerType; /*!< the type of this timer */
+    CDateTime m_StartTime; /*!< start time */
+    CDateTime m_StopTime;  /*!< stop time */
+    CDateTime m_FirstDay;  /*!< if it is a manual timer rule the first date it starts */
+    std::shared_ptr<CPVRTimerType> m_timerType; /*!< the type of this timer */
 
     unsigned int m_iTVChildTimersActive = 0;
     unsigned int m_iTVChildTimersConflictNOK = 0;

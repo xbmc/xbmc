@@ -27,7 +27,7 @@ namespace PVR
   class CPVRSettings : private ISettingsHandler, private ISettingCallback
   {
   public:
-    explicit CPVRSettings(const std::set<std::string>&  settingNames);
+    explicit CPVRSettings(const std::set<std::string>& settingNames);
     ~CPVRSettings() override;
 
     // ISettingsHandler implementation

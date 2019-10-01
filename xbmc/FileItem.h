@@ -46,10 +46,10 @@ namespace GAME
 
 namespace PVR
 {
-  class CPVRChannel;
-  class CPVREpgInfoTag;
-  class CPVRRecording;
-  class CPVRTimerInfoTag;
+class CPVRChannel;
+class CPVREpgInfoTag;
+class CPVRRecording;
+class CPVRTimerInfoTag;
 }
 
 class CAlbum;

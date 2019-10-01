@@ -1793,12 +1793,12 @@ void CGUIEPGGridContainer::GoToBlock(int blockIndex)
 
 void CGUIEPGGridContainer::UpdateLayout()
 {
-  CGUIListItemLayout* oldFocusedChannelLayout   = m_focusedChannelLayout;
-  CGUIListItemLayout* oldChannelLayout          = m_channelLayout;
+  CGUIListItemLayout* oldFocusedChannelLayout = m_focusedChannelLayout;
+  CGUIListItemLayout* oldChannelLayout = m_channelLayout;
   CGUIListItemLayout* oldFocusedProgrammeLayout = m_focusedProgrammeLayout;
-  CGUIListItemLayout* oldProgrammeLayout        = m_programmeLayout;
-  CGUIListItemLayout* oldRulerLayout            = m_rulerLayout;
-  CGUIListItemLayout* oldRulerDateLayout        = m_rulerDateLayout;
+  CGUIListItemLayout* oldProgrammeLayout = m_programmeLayout;
+  CGUIListItemLayout* oldRulerLayout = m_rulerLayout;
+  CGUIListItemLayout* oldRulerDateLayout = m_rulerDateLayout;
 
   GetCurrentLayouts();
 
