@@ -708,13 +708,13 @@ bool CGUIWindowPVRGuideBase::RefreshTimelineItems()
         m_bFirstOpen = false;
 
         // very first open of the window. come up with some data very fast...
-        const std::vector<PVRChannelGroupMember> groupMembers = group->GetMembers(CPVRChannelGroup::Include::ONLY_VISIBLE);
+        const std::vector<std::shared_ptr<PVRChannelGroupMember>> groupMembers = group->GetMembers(CPVRChannelGroup::Include::ONLY_VISIBLE);
         for (const auto& groupMember : groupMembers)
         {
           // fake a channel without epg
 
           const std::shared_ptr<CPVREpgInfoTag> gapTag
-            = std::make_shared<CPVREpgInfoTag>(std::make_shared<CPVREpgChannelData>(*(groupMember.channel)), -1);
+            = std::make_shared<CPVREpgInfoTag>(std::make_shared<CPVREpgChannelData>(*(groupMember->channel)), -1);
           timeline->Add(std::make_shared<CFileItem>(gapTag));
         }
 

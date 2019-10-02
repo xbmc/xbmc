@@ -477,30 +477,30 @@ void CGUIDialogPVRGroupManager::Update()
     // Slightly different handling for "all" group...
     if (m_selectedGroup->IsInternalGroup())
     {
-      const std::vector<PVRChannelGroupMember> groupMembers = m_selectedGroup->GetMembers(CPVRChannelGroup::Include::ALL);
+      const std::vector<std::shared_ptr<PVRChannelGroupMember>> groupMembers = m_selectedGroup->GetMembers(CPVRChannelGroup::Include::ALL);
       for (const auto& groupMember : groupMembers)
       {
-        if (groupMember.channel->IsHidden())
-          m_ungroupedChannels->Add(std::make_shared<CFileItem>(groupMember.channel));
+        if (groupMember->channel->IsHidden())
+          m_ungroupedChannels->Add(std::make_shared<CFileItem>(groupMember->channel));
         else
-          m_groupMembers->Add(std::make_shared<CFileItem>(groupMember.channel));
+          m_groupMembers->Add(std::make_shared<CFileItem>(groupMember->channel));
       }
     }
     else
     {
-      const std::vector<PVRChannelGroupMember> groupMembers = m_selectedGroup->GetMembers(CPVRChannelGroup::Include::ONLY_VISIBLE);
+      const std::vector<std::shared_ptr<PVRChannelGroupMember>> groupMembers = m_selectedGroup->GetMembers(CPVRChannelGroup::Include::ONLY_VISIBLE);
       for (const auto& groupMember : groupMembers)
       {
-        m_groupMembers->Add(std::make_shared<CFileItem>(groupMember.channel));
+        m_groupMembers->Add(std::make_shared<CFileItem>(groupMember->channel));
       }
 
       /* for the center part, get all channels of the "all" channels group that are not in this group */
       const std::shared_ptr<CPVRChannelGroup> allGroup = CServiceBroker::GetPVRManager().ChannelGroups()->GetGroupAll(m_bIsRadio);
-      const std::vector<PVRChannelGroupMember> allGroupMembers = allGroup->GetMembers(CPVRChannelGroup::Include::ONLY_VISIBLE);
+      const std::vector<std::shared_ptr<PVRChannelGroupMember>> allGroupMembers = allGroup->GetMembers(CPVRChannelGroup::Include::ONLY_VISIBLE);
       for (const auto& groupMember : allGroupMembers)
       {
-        if (!m_selectedGroup->IsGroupMember(groupMember.channel))
-          m_ungroupedChannels->Add(std::make_shared<CFileItem>(groupMember.channel));
+        if (!m_selectedGroup->IsGroupMember(groupMember->channel))
+          m_ungroupedChannels->Add(std::make_shared<CFileItem>(groupMember->channel));
       }
     }
     m_viewGroupMembers.SetItems(*m_groupMembers);

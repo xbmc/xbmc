@@ -1404,10 +1404,10 @@ namespace PVR
       if (channelGroup)
       {
         // try to start playback of first channel in this group
-        std::vector<PVRChannelGroupMember> groupMembers(channelGroup->GetMembers());
+        const std::vector<std::shared_ptr<PVRChannelGroupMember>> groupMembers = channelGroup->GetMembers();
         if (!groupMembers.empty())
         {
-          return SwitchToChannel(CFileItemPtr(new CFileItem((*groupMembers.begin()).channel)), true);
+          return SwitchToChannel(std::make_shared<CFileItem>((*groupMembers.begin())->channel), true);
         }
       }
     }
@@ -1445,7 +1445,7 @@ namespace PVR
       if (channels.empty())
         return false;
 
-      channel = channels.front().channel;
+      channel = channels.front()->channel;
     }
 
     CLog::Log(LOGNOTICE, "PVR is starting playback of channel '%s'", channel->ChannelName().c_str());

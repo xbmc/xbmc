@@ -51,9 +51,6 @@ namespace PVR
     int iOrder = 0; // The value denoting the order of this member in the group
   };
 
-  typedef std::vector<PVRChannelGroupMember> PVR_CHANNEL_GROUP_SORTED_MEMBERS;
-  typedef std::map<std::pair<int, int>, PVRChannelGroupMember> PVR_CHANNEL_GROUP_MEMBERS;
-
   enum EpgDateType
   {
     EPG_FIRST_DATE = 0,
@@ -93,7 +90,7 @@ namespace PVR
     /**
      * Empty group member
      */
-    static PVRChannelGroupMember EmptyMember;
+    static std::shared_ptr<PVRChannelGroupMember> EmptyMember;
 
     /*!
      * @brief Query the events available for CEventStream
@@ -339,7 +336,7 @@ namespace PVR
      * @param eFilter A filter to apply.
      * @return The group members
      */
-    std::vector<PVRChannelGroupMember> GetMembers(Include eFilter = Include::ALL) const;
+    std::vector<std::shared_ptr<PVRChannelGroupMember>> GetMembers(Include eFilter = Include::ALL) const;
 
     /*!
      * @brief Get the list of active channel numbers in a group.
@@ -436,8 +433,8 @@ namespace PVR
      * @param id The storage id (a pair of client id and unique channel id).
      * @return A reference to the group member or an empty group member if it wasn't found.
      */
-    PVRChannelGroupMember& GetByUniqueID(const std::pair<int, int>& id);
-    const PVRChannelGroupMember& GetByUniqueID(const std::pair<int, int>& id) const;
+    std::shared_ptr<PVRChannelGroupMember>& GetByUniqueID(const std::pair<int, int>& id);
+    const std::shared_ptr<PVRChannelGroupMember>& GetByUniqueID(const std::pair<int, int>& id) const;
 
     void SetHidden(bool bHidden);
     bool IsHidden(void) const;
@@ -551,8 +548,8 @@ namespace PVR
     time_t           m_iLastWatched = 0;                /*!< last time group has been watched */
     bool             m_bHidden = false;                     /*!< true if this group is hidden, false otherwise */
     int              m_iPosition = 0;                   /*!< the position of this group within the group list */
-    PVR_CHANNEL_GROUP_SORTED_MEMBERS m_sortedMembers; /*!< members sorted by channel number */
-    PVR_CHANNEL_GROUP_MEMBERS        m_members;       /*!< members with key clientid+uniqueid */
+    std::vector<std::shared_ptr<PVRChannelGroupMember>> m_sortedMembers; /*!< members sorted by channel number */
+    std::map<std::pair<int, int>, std::shared_ptr<PVRChannelGroupMember>> m_members; /*!< members with key clientid+uniqueid */
     mutable CCriticalSection m_critSection;
     std::vector<int> m_failedClientsForChannels;
     std::vector<int> m_failedClientsForChannelGroupMembers;
