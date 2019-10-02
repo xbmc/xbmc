@@ -44,6 +44,7 @@
   * [11.3. Overriding virtual functions](#113-overriding-virtual-functions)
   * [11.4. Default member initialization](#114-default-member-initialization)
   * [11.5. Destructors in interfaces](#115-destructors-in-interfaces)
+  * [11.6. Constructor Initialzation Lists](#116-constructor-initialzation-lists)
 * [12. Other conventions](#12-other-conventions)
   * [12.1. Output parameters](#121-output-parameters)
   * [12.2. Casts](#122-casts)
@@ -72,6 +73,9 @@ We currently target the C++11 language standard. Do use C++11 features when poss
 **[back to top](#table-of-contents)**
 
 ## 3. Formatting
+
+### Line length
+The `ColumnLimit` in `.clang-format` is set to `100` which defines line length (in general where lines should be broken) that allows two editors side by side on a 1080p screen for diffs.
 
 ### 3.1. Braces
 Curly braces always go on a new line.
@@ -631,6 +635,31 @@ class Foo
 ### 11.5. Destructors in interfaces
 
 A class with any virtual functions should have a destructor that is either public and virtual or else protected and nonvirtual (cf. [ISO C++ guidelines](http://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#Rc-dtor-virtual)).
+
+### 11.6. Constructor Initialzation Lists
+
+For lines up to [line length](#line-length) everything stays on one line, excluding the braces which must be on the following lines.
+
+```cpp
+MyClass::CMyClass(bool bBoolArg, int iIntegerArg) : m_bArg(bBoolArg), m_iArg(iIntegerArg)
+{
+}
+```
+
+For longer lines, break before colon and after comma.
+
+```cpp
+MyClass::CMyClass(bool bBoolArg,
+                  int iIntegerArg,
+                  const std::string& strSomeText,
+                  const std::shared_ptr<CMyOtherClass>& myOtherClass)
+  : m_bBoolArg(bBoolArg),
+    m_iIntegerArg(iIntegerArg),
+    m_strSomeText(strSomeText),
+    m_myOtherClass(myOtherClass)
+{
+}
+```
 
 ## 12. Other conventions
 
