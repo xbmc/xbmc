@@ -16,7 +16,6 @@
 #include "input/actions/Action.h"
 #include "input/actions/ActionIDs.h"
 #include "messaging/ApplicationMessenger.h"
-#include "pvr/PVRGUIActions.h"
 #include "pvr/PVRManager.h"
 #include "pvr/PVRPlaybackState.h"
 #include "pvr/channels/PVRChannel.h"
@@ -24,6 +23,7 @@
 #include "pvr/channels/PVRChannelGroups.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/epg/EpgContainer.h"
+#include "pvr/guilib/PVRGUIActions.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 

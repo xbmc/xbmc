@@ -10,9 +10,9 @@
 
 #include "ServiceBroker.h"
 #include "guilib/LocalizeStrings.h"
-#include "pvr/PVRGUIActions.h"
 #include "pvr/PVRManager.h"
 #include "pvr/addons/PVRClients.h"
+#include "pvr/guilib/PVRGUIActions.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "settings/lib/SettingsManager.h"

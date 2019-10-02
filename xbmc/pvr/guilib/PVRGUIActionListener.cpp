@@ -6,7 +6,7 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include "PVRActionListener.h"
+#include "PVRGUIActionListener.h"
 
 #include "Application.h"
 #include "ServiceBroker.h"
@@ -17,7 +17,6 @@
 #include "input/actions/Action.h"
 #include "input/actions/ActionIDs.h"
 #include "messaging/ApplicationMessenger.h"
-#include "pvr/PVRGUIActions.h"
 #include "pvr/PVRManager.h"
 #include "pvr/PVRPlaybackState.h"
 #include "pvr/addons/PVRClients.h"
@@ -25,6 +24,7 @@
 #include "pvr/channels/PVRChannelGroup.h"
 #include "pvr/channels/PVRChannelGroups.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
+#include "pvr/guilib/PVRGUIActions.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "settings/lib/Setting.h"
@@ -35,7 +35,7 @@
 namespace PVR
 {
 
-CPVRActionListener::CPVRActionListener()
+CPVRGUIActionListener::CPVRGUIActionListener()
 {
   g_application.RegisterActionListener(this);
   CServiceBroker::GetSettingsComponent()->GetSettings()->RegisterCallback(this, {
@@ -52,23 +52,23 @@ CPVRActionListener::CPVRActionListener()
   });
 }
 
-CPVRActionListener::~CPVRActionListener()
+CPVRGUIActionListener::~CPVRGUIActionListener()
 {
   CServiceBroker::GetSettingsComponent()->GetSettings()->UnregisterCallback(this);
   g_application.UnregisterActionListener(this);
 }
 
-void CPVRActionListener::Init(CPVRManager& mgr)
+void CPVRGUIActionListener::Init(CPVRManager& mgr)
 {
-  mgr.Events().Subscribe(this, &CPVRActionListener::OnPVRManagerEvent);
+  mgr.Events().Subscribe(this, &CPVRGUIActionListener::OnPVRManagerEvent);
 }
 
-void CPVRActionListener::Deinit(CPVRManager& mgr)
+void CPVRGUIActionListener::Deinit(CPVRManager& mgr)
 {
   mgr.Events().Unsubscribe(this);
 }
 
-void CPVRActionListener::OnPVRManagerEvent(const PVREvent& event)
+void CPVRGUIActionListener::OnPVRManagerEvent(const PVREvent& event)
 {
   if (event == PVREvent::AnnounceReminder)
   {
@@ -79,7 +79,7 @@ void CPVRActionListener::OnPVRManagerEvent(const PVREvent& event)
   }
 }
 
-ChannelSwitchMode CPVRActionListener::GetChannelSwitchMode(int iAction)
+ChannelSwitchMode CPVRGUIActionListener::GetChannelSwitchMode(int iAction)
 {
   if ((iAction == ACTION_MOVE_UP || iAction == ACTION_MOVE_DOWN) &&
       CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_PVRPLAYBACK_CONFIRMCHANNELSWITCH))
@@ -88,7 +88,7 @@ ChannelSwitchMode CPVRActionListener::GetChannelSwitchMode(int iAction)
   return ChannelSwitchMode::INSTANT_OR_DELAYED_SWITCH;
 }
 
-bool CPVRActionListener::OnAction(const CAction& action)
+bool CPVRGUIActionListener::OnAction(const CAction& action)
 {
   bool bIsJumpSMS = false;
   bool bIsPlayingPVR = CServiceBroker::GetPVRManager().PlaybackState()->IsPlaying() &&
@@ -271,7 +271,7 @@ bool CPVRActionListener::OnAction(const CAction& action)
   return false;
 }
 
-void CPVRActionListener::OnSettingChanged(std::shared_ptr<const CSetting> setting)
+void CPVRGUIActionListener::OnSettingChanged(std::shared_ptr<const CSetting> setting)
 {
   if (setting == nullptr)
     return;
@@ -296,7 +296,7 @@ void CPVRActionListener::OnSettingChanged(std::shared_ptr<const CSetting> settin
   }
 }
 
-void CPVRActionListener::OnSettingAction(std::shared_ptr<const CSetting> setting)
+void CPVRGUIActionListener::OnSettingAction(std::shared_ptr<const CSetting> setting)
 {
   if (setting == nullptr)
     return;

@@ -8,7 +8,7 @@
 
 #include "PVRDirectory.h"
 
-#include "pvr/PVRGUIDirectory.h"
+#include "pvr/filesystem/PVRGUIDirectory.h"
 
 using namespace XFILE;
 using namespace PVR;

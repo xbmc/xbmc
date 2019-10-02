@@ -13,7 +13,7 @@
 #include "TextureCache.h"
 #include "TextureCacheJob.h"
 #include "pictures/Picture.h"
-#include "pvr/PVRGUIDirectory.h"
+#include "pvr/filesystem/PVRGUIDirectory.h"
 #include "pvr/PVRManager.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"

@@ -10,9 +10,9 @@
 
 #include "addons/kodi-addon-dev-kit/include/kodi/xbmc_pvr_types.h"
 #include "interfaces/IAnnouncer.h"
-#include "pvr/PVRActionListener.h"
-#include "pvr/PVRSettings.h"
 #include "pvr/epg/EpgContainer.h"
+#include "pvr/guilib/PVRGUIActionListener.h"
+#include "pvr/settings/PVRSettings.h"
 #include "threads/CriticalSection.h"
 #include "threads/Event.h"
 #include "threads/Thread.h"
@@ -432,7 +432,7 @@ namespace PVR
 
     std::shared_ptr<CPVRPlaybackState> m_playbackState;
 
-    CPVRActionListener m_actionListener;
+    CPVRGUIActionListener m_actionListener;
     CPVRSettings m_settings;
   };
 }

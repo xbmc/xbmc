@@ -14,8 +14,8 @@
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/guiinfo/GUIInfoLabels.h"
-#include "pvr/PVRGUIActions.h"
 #include "pvr/PVRManager.h"
+#include "pvr/guilib/PVRGUIActions.h"
 #include "pvr/windows/GUIWindowPVRGuide.h"
 #include "utils/log.h"
 

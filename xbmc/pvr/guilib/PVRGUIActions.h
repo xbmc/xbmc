@@ -9,8 +9,8 @@
 #pragma once
 
 #include "pvr/PVRChannelNumberInputHandler.h"
-#include "pvr/PVRGUIChannelNavigator.h"
-#include "pvr/PVRSettings.h"
+#include "pvr/guilib/PVRGUIChannelNavigator.h"
+#include "pvr/settings/PVRSettings.h"
 #include "threads/CriticalSection.h"
 
 #include <memory>

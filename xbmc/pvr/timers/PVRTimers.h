@@ -9,7 +9,7 @@
 #pragma once
 
 #include "XBDateTime.h"
-#include "pvr/PVRSettings.h"
+#include "pvr/settings/PVRSettings.h"
 #include "threads/Thread.h"
 
 #include <map>

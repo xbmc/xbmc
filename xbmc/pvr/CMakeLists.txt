@@ -1,41 +1,21 @@
-set(SOURCES PVRActionListener.cpp
-            PVRGUIInfo.cpp
-            PVRManager.cpp
-            PVRDatabase.cpp
-            PVRSettings.cpp
+set(SOURCES PVRChannelNumberInputHandler.cpp
             PVRContextMenus.cpp
-            PVRGUIActions.cpp
-            PVRItem.cpp
-            PVRChannelNumberInputHandler.cpp
+            PVRDatabase.cpp
             PVREventLogJob.cpp
-            PVRGUIChannelIconUpdater.cpp
-            PVRGUIChannelNavigator.cpp
-            PVRGUIDirectory.cpp
-            PVRGUIProgressHandler.cpp
-            PVRGUITimerInfo.cpp
-            PVRGUITimesInfo.cpp
-            PVRStreamProperties.cpp
+            PVRItem.cpp
+            PVRManager.cpp
             PVRPlaybackState.cpp
+            PVRStreamProperties.cpp
             PVRThumbLoader.cpp)
 
-set(HEADERS PVRActionListener.h
-            PVRDatabase.h
-            PVRGUIInfo.h
-            PVRManager.h
-            PVRSettings.h
+set(HEADERS PVRChannelNumberInputHandler.h
             PVRContextMenus.h
-            PVRGUIActions.h
-            PVRItem.h
-            PVRChannelNumberInputHandler.h
+            PVRDatabase.h
             PVREventLogJob.h
-            PVRGUIChannelIconUpdater.h
-            PVRGUIChannelNavigator.h
-            PVRGUIDirectory.h
-            PVRGUIProgressHandler.h
-            PVRGUITimerInfo.h
-            PVRGUITimesInfo.h
-            PVRStreamProperties.h
+            PVRItem.h
+            PVRManager.h
             PVRPlaybackState.h
+            PVRStreamProperties.h
             PVRThumbLoader.h)
 
 core_add_library(pvr)

@@ -130,8 +130,8 @@
 #include "addons/settings/GUIDialogAddonSettings.h"
 
 // PVR related include Files
-#include "pvr/PVRGUIActions.h"
 #include "pvr/PVRManager.h"
+#include "pvr/guilib/PVRGUIActions.h"
 
 #include "video/dialogs/GUIDialogFullScreenInfo.h"
 #include "dialogs/GUIDialogCache.h"
