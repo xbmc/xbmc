@@ -25,7 +25,8 @@ ICodec* CodecFactory::CreateCodec(const std::string &strFileType)
   CServiceBroker::GetBinaryAddonManager().GetAddonInfos(addonInfos, true, ADDON_AUDIODECODER);
   for (const auto& addonInfo : addonInfos)
   {
-    if (CAudioDecoder::GetExtensions(addonInfo).find("."+fileType) != std::string::npos)
+    auto exts = StringUtils::Split(CAudioDecoder::GetExtensions(addonInfo), "|");
+    if (std::find(exts.begin(), exts.end(), "." + fileType) != exts.end())
     {
       CAudioDecoder* result = new CAudioDecoder(addonInfo);
       if (!result->CreateDecoder())
@@ -52,7 +53,8 @@ ICodec* CodecFactory::CreateCodecDemux(const CFileItem& file, unsigned int filec
     CServiceBroker::GetBinaryAddonManager().GetAddonInfos(addonInfos, true, ADDON_AUDIODECODER);
     for (const auto& addonInfo : addonInfos)
     {
-      if (CAudioDecoder::GetMimetypes(addonInfo).find(content) != std::string::npos)
+      auto types = StringUtils::Split(CAudioDecoder::GetMimetypes(addonInfo), "|");
+      if (std::find(types.begin(), types.end(), content) != types.end())
       {
         CAudioDecoder* result = new CAudioDecoder(addonInfo);
         if (!result->CreateDecoder())

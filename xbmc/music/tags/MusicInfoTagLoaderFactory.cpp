@@ -48,16 +48,19 @@ IMusicInfoTagLoader* CMusicInfoTagLoaderFactory::CreateLoader(const CFileItem& i
   CServiceBroker::GetBinaryAddonManager().GetAddonInfos(addonInfos, true, ADDON_AUDIODECODER);
   for (const auto& addonInfo : addonInfos)
   {
-    if (CAudioDecoder::HasTags(addonInfo) &&
-        CAudioDecoder::GetExtensions(addonInfo).find("."+strExtension) != std::string::npos)
+    if (CAudioDecoder::HasTags(addonInfo))
     {
-      CAudioDecoder* result = new CAudioDecoder(addonInfo);
-      if (!result->CreateDecoder())
+      auto exts = StringUtils::Split(CAudioDecoder::GetExtensions(addonInfo), "|");
+      if (std::find(exts.begin(), exts.end(), "." + strExtension) != exts.end())
       {
-        delete result;
-        return nullptr;
+        CAudioDecoder* result = new CAudioDecoder(addonInfo);
+        if (!result->CreateDecoder())
+        {
+          delete result;
+          return nullptr;
+        }
+        return result;
       }
-      return result;
     }
   }
 

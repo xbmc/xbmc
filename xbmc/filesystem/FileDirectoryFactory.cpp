@@ -43,7 +43,7 @@ IFileDirectory* CFileDirectoryFactory::Create(const CURL& url, CFileItem* pItem,
   if (url.IsProtocol("stack")) // disqualify stack as we need to work with each of the parts instead
     return NULL;
 
-  std::string strExtension=URIUtils::GetExtension(url);
+  std::string strExtension = URIUtils::GetExtension(url);
   StringUtils::ToLower(strExtension);
   if (!strExtension.empty() && CServiceBroker::IsBinaryAddonCacheUp())
   {
@@ -51,16 +51,19 @@ IFileDirectory* CFileDirectoryFactory::Create(const CURL& url, CFileItem* pItem,
     CServiceBroker::GetBinaryAddonManager().GetAddonInfos(addonInfos, true, ADDON_AUDIODECODER);
     for (const auto& addonInfo : addonInfos)
     {
-      if (CAudioDecoder::HasTracks(addonInfo) &&
-          CAudioDecoder::GetExtensions(addonInfo).find(strExtension) != std::string::npos)
+      if (CAudioDecoder::HasTracks(addonInfo))
       {
-        CAudioDecoder* result = new CAudioDecoder(addonInfo);
-        if (!result->CreateDecoder() || !result->ContainsFiles(url))
+        auto exts = StringUtils::Split(CAudioDecoder::GetExtensions(addonInfo), "|");
+        if (std::find(exts.begin(), exts.end(), "." + strExtension) != exts.end())
         {
-          delete result;
-          return nullptr;
+          CAudioDecoder* result = new CAudioDecoder(addonInfo);
+          if (!result->CreateDecoder() || !result->ContainsFiles(url))
+          {
+            delete result;
+            return nullptr;
+          }
+          return result;
         }
-        return result;
       }
     }
   }
@@ -69,28 +72,31 @@ IFileDirectory* CFileDirectoryFactory::Create(const CURL& url, CFileItem* pItem,
   {
     for (const auto& vfsAddon : CServiceBroker::GetVFSAddonCache().GetAddonInstances())
     {
-      if (vfsAddon->HasFileDirectories() &&
-          vfsAddon->GetExtensions().find(strExtension) != std::string::npos)
+      if (vfsAddon->HasFileDirectories())
       {
-        CVFSEntryIFileDirectoryWrapper* wrap = new CVFSEntryIFileDirectoryWrapper(vfsAddon);
-        if (wrap->ContainsFiles(url))
+        auto exts = StringUtils::Split(vfsAddon->GetExtensions(), "|");
+        if (std::find(exts.begin(), exts.end(), "." + strExtension) != exts.end())
         {
-          if (wrap->m_items.Size() == 1)
+          CVFSEntryIFileDirectoryWrapper* wrap = new CVFSEntryIFileDirectoryWrapper(vfsAddon);
+          if (wrap->ContainsFiles(url))
           {
-            // one STORED file - collapse it down
-            *pItem = *wrap->m_items[0];
+            if (wrap->m_items.Size() == 1)
+            {
+              // one STORED file - collapse it down
+              *pItem = *wrap->m_items[0];
+            }
+            else
+            { // compressed or more than one file -> create a dir
+              pItem->SetPath(wrap->m_items.GetPath());
+              return wrap;
+            }
           }
           else
-          { // compressed or more than one file -> create a dir
-            pItem->SetPath(wrap->m_items.GetPath());
-            return wrap;
-          }
-        }
-        else
-          pItem->m_bIsFolder = true;
+            pItem->m_bIsFolder = true;
 
-        delete wrap;
-        return nullptr;
+          delete wrap;
+          return nullptr;
+        }
       }
     }
   }
