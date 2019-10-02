@@ -370,13 +370,13 @@ bool CPVRGUIDirectory::GetChannelsDirectory(CFileItemList& results) const
 
       if (group)
       {
-        const std::vector<PVRChannelGroupMember> groupMembers = group->GetMembers();
+        const std::vector<std::shared_ptr<PVRChannelGroupMember>> groupMembers = group->GetMembers();
         for (const auto& groupMember : groupMembers)
         {
-          if (bShowHiddenChannels != groupMember.channel->IsHidden())
+          if (bShowHiddenChannels != groupMember->channel->IsHidden())
             continue;
 
-          results.Add(std::make_shared<CFileItem>(groupMember.channel));
+          results.Add(std::make_shared<CFileItem>(groupMember->channel));
         }
       }
       else

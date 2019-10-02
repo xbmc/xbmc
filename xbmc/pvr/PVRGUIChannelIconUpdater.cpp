@@ -58,23 +58,23 @@ void CPVRGUIChannelIconUpdater::SearchAndUpdateMissingChannelIcons() const
 
   for (const auto& group : m_groups)
   {
-    const std::vector<PVRChannelGroupMember> members = group->GetMembers();
+    const std::vector<std::shared_ptr<PVRChannelGroupMember>> members = group->GetMembers();
     int channelIndex = 0;
     for (const auto& member : members)
     {
-      progressHandler->UpdateProgress(member.channel->ChannelName(), channelIndex++, members.size());
+      progressHandler->UpdateProgress(member->channel->ChannelName(), channelIndex++, members.size());
 
       // skip if an icon is already set and exists
-      if (XFILE::CFile::Exists(member.channel->IconPath()))
+      if (XFILE::CFile::Exists(member->channel->IconPath()))
         continue;
 
       // reset icon before searching for a new one
-      member.channel->SetIconPath("");
+      member->channel->SetIconPath("");
 
-      const std::string strChannelUid = StringUtils::Format("%08d", member.channel->UniqueID());
-      std::string strLegalClientChannelName = CUtil::MakeLegalFileName(member.channel->ClientChannelName());
+      const std::string strChannelUid = StringUtils::Format("%08d", member->channel->UniqueID());
+      std::string strLegalClientChannelName = CUtil::MakeLegalFileName(member->channel->ClientChannelName());
       StringUtils::ToLower(strLegalClientChannelName);
-      std::string strLegalChannelName = CUtil::MakeLegalFileName(member.channel->ChannelName());
+      std::string strLegalChannelName = CUtil::MakeLegalFileName(member->channel->ChannelName());
       StringUtils::ToLower(strLegalChannelName);
 
       std::map<std::string, std::string>::iterator itItem;
@@ -82,11 +82,11 @@ void CPVRGUIChannelIconUpdater::SearchAndUpdateMissingChannelIcons() const
           (itItem = fileItemMap.find(strLegalChannelName)) != fileItemMap.end() ||
           (itItem = fileItemMap.find(strChannelUid)) != fileItemMap.end())
       {
-        member.channel->SetIconPath(itItem->second, CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_bPVRAutoScanIconsUserSet);
+        member->channel->SetIconPath(itItem->second, CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_bPVRAutoScanIconsUserSet);
       }
 
       if (m_bUpdateDb)
-        member.channel->Persist();
+        member->channel->Persist();
     }
   }
 
