@@ -233,7 +233,7 @@ bool CPVRClients::StopClient(const AddonPtr& addon, bool bRestart)
 
 void CPVRClients::OnAddonEvent(const AddonEvent& event)
 {
-  if (typeid(event) == typeid(AddonEvents::Enabled) ||  // also called on install,
+  if (typeid(event) == typeid(AddonEvents::Enabled) || // also called on install,
       typeid(event) == typeid(AddonEvents::Disabled) || // not called on uninstall
       typeid(event) == typeid(AddonEvents::UnInstalled) ||
       typeid(event) == typeid(AddonEvents::ReInstalled))

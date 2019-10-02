@@ -56,7 +56,7 @@ namespace PVR
     void InitializeChannelsList();
     void SetButtonLabels();
 
-    static int  GetDateAsIndex(const CDateTime& datetime);
+    static int GetDateAsIndex(const CDateTime& datetime);
     static void SetDateFromIndex(CDateTime& datetime, int date);
     static void SetTimeFromSystemTime(CDateTime& datetime, const SYSTEMTIME& time);
 
@@ -104,16 +104,16 @@ namespace PVR
     static bool EndAnytimeSetCondition(
       const std::string& condition, const std::string& value, std::shared_ptr<const CSetting> setting, void* data);
 
-    typedef std::map<int, std::shared_ptr<CPVRTimerType>>  TypeEntriesMap;
+    typedef std::map<int, std::shared_ptr<CPVRTimerType>> TypeEntriesMap;
 
     typedef struct ChannelDescriptor
     {
-      int         channelUid;
-      int         clientId;
+      int channelUid;
+      int clientId;
       std::string description;
 
       ChannelDescriptor(int _channelUid = PVR_CHANNEL_INVALID_UID,
-                        int _clientId   = -1,
+                        int _clientId = -1,
                         const std::string& _description = "")
       : channelUid(_channelUid),
         clientId(_clientId),
@@ -122,8 +122,8 @@ namespace PVR
 
       inline bool operator ==(const ChannelDescriptor& right) const
       {
-        return (channelUid  == right.channelUid &&
-                clientId    == right.clientId   &&
+        return (channelUid == right.channelUid &&
+                clientId == right.clientId &&
                 description == right.description);
       }
 
@@ -132,32 +132,32 @@ namespace PVR
     typedef std::map <int, ChannelDescriptor> ChannelEntriesMap;
 
     std::shared_ptr<CPVRTimerInfoTag> m_timerInfoTag;
-    TypeEntriesMap      m_typeEntries;
-    ChannelEntriesMap   m_channelEntries;
-    std::string         m_timerStartTimeStr;
-    std::string         m_timerEndTimeStr;
+    TypeEntriesMap m_typeEntries;
+    ChannelEntriesMap m_channelEntries;
+    std::string m_timerStartTimeStr;
+    std::string m_timerEndTimeStr;
 
-    std::shared_ptr<CPVRTimerType>    m_timerType;
-    bool                m_bIsRadio = false;
-    bool                m_bIsNewTimer = true;
-    bool                m_bTimerActive = false;
-    std::string         m_strTitle;
-    std::string         m_strEpgSearchString;
-    bool                m_bFullTextEpgSearch = true;
-    ChannelDescriptor   m_channel;
-    CDateTime           m_startLocalTime;
-    CDateTime           m_endLocalTime;
-    bool                m_bStartAnyTime = false;
-    bool                m_bEndAnyTime = false;
-    unsigned int        m_iWeekdays;
-    CDateTime           m_firstDayLocalTime;
-    unsigned int        m_iPreventDupEpisodes = 0;
-    unsigned int        m_iMarginStart = 0;
-    unsigned int        m_iMarginEnd = 0;
-    int                 m_iPriority = 0;
-    int                 m_iLifetime = 0;
-    int                 m_iMaxRecordings = 0;
-    std::string         m_strDirectory;
-    unsigned int        m_iRecordingGroup = 0;
+    std::shared_ptr<CPVRTimerType> m_timerType;
+    bool m_bIsRadio = false;
+    bool m_bIsNewTimer = true;
+    bool m_bTimerActive = false;
+    std::string m_strTitle;
+    std::string m_strEpgSearchString;
+    bool m_bFullTextEpgSearch = true;
+    ChannelDescriptor m_channel;
+    CDateTime m_startLocalTime;
+    CDateTime m_endLocalTime;
+    bool m_bStartAnyTime = false;
+    bool m_bEndAnyTime = false;
+    unsigned int m_iWeekdays;
+    CDateTime m_firstDayLocalTime;
+    unsigned int m_iPreventDupEpisodes = 0;
+    unsigned int m_iMarginStart = 0;
+    unsigned int m_iMarginEnd = 0;
+    int m_iPriority = 0;
+    int m_iLifetime = 0;
+    int m_iMaxRecordings = 0;
+    std::string m_strDirectory;
+    unsigned int m_iRecordingGroup = 0;
   };
 } // namespace PVR

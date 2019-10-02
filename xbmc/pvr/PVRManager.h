@@ -407,13 +407,13 @@ namespace PVR
 
     /** @name containers */
     //@{
-    std::shared_ptr<CPVRChannelGroupsContainer> m_channelGroups;  /*!< pointer to the channel groups container */
-    std::shared_ptr<CPVRRecordings> m_recordings;                 /*!< pointer to the recordings container */
-    std::shared_ptr<CPVRTimers> m_timers;                         /*!< pointer to the timers container */
-    std::shared_ptr<CPVRClients> m_addons;                        /*!< pointer to the pvr addon container */
-    std::unique_ptr<CPVRGUIInfo> m_guiInfo;                       /*!< pointer to the guiinfo data */
-    std::shared_ptr<CPVRGUIActions> m_guiActions;                 /*!< pointer to the pvr gui actions */
-    CPVREpgContainer m_epgContainer;                              /*!< the epg container */
+    std::shared_ptr<CPVRChannelGroupsContainer> m_channelGroups; /*!< pointer to the channel groups container */
+    std::shared_ptr<CPVRRecordings> m_recordings; /*!< pointer to the recordings container */
+    std::shared_ptr<CPVRTimers> m_timers; /*!< pointer to the timers container */
+    std::shared_ptr<CPVRClients> m_addons; /*!< pointer to the pvr addon container */
+    std::unique_ptr<CPVRGUIInfo> m_guiInfo; /*!< pointer to the guiinfo data */
+    std::shared_ptr<CPVRGUIActions> m_guiActions; /*!< pointer to the pvr gui actions */
+    CPVREpgContainer m_epgContainer; /*!< the epg container */
     //@}
 
     std::unique_ptr<CPVRManagerJobQueue> m_pendingUpdates; /*!< vector of pending pvr updates */

@@ -274,7 +274,7 @@ namespace PVR
 
     /*!
      * @brief Gets the backend's previous connection state.
-     * @return the backend's previous  connection state.
+     * @return the backend's previous connection state.
      */
     PVR_CONNECTION_STATE GetPreviousConnectionState(void) const;
 
@@ -1106,28 +1106,28 @@ namespace PVR
     static xbmc_codec_t cb_get_codec_by_name(const void* kodiInstance, const char* strCodecName);
     //@}
 
-    std::atomic<bool>      m_bReadyToUse;          /*!< true if this add-on is initialised (ADDON_Create returned true), false otherwise */
-    std::atomic<bool>      m_bBlockAddonCalls;     /*!< true if no add-on API calls are allowed */
-    PVR_CONNECTION_STATE   m_connectionState;      /*!< the backend connection state */
-    PVR_CONNECTION_STATE   m_prevConnectionState;  /*!< the previous backend connection state */
-    bool                   m_ignoreClient;         /*!< signals to PVRManager to ignore this client until it has been connected */
+    std::atomic<bool> m_bReadyToUse; /*!< true if this add-on is initialised (ADDON_Create returned true), false otherwise */
+    std::atomic<bool> m_bBlockAddonCalls; /*!< true if no add-on API calls are allowed */
+    PVR_CONNECTION_STATE m_connectionState; /*!< the backend connection state */
+    PVR_CONNECTION_STATE m_prevConnectionState; /*!< the previous backend connection state */
+    bool m_ignoreClient; /*!< signals to PVRManager to ignore this client until it has been connected */
     std::vector<std::shared_ptr<CPVRTimerType>> m_timertypes; /*!< timer types supported by this backend */
-    int                    m_iClientId;            /*!< unique ID of the client */
-    mutable int            m_iPriority;            /*!< priority of the client */
-    mutable bool           m_bPriorityFetched;
+    int m_iClientId; /*!< unique ID of the client */
+    mutable int m_iPriority; /*!< priority of the client */
+    mutable bool m_bPriorityFetched;
 
     /* cached data */
-    std::string            m_strBackendName;       /*!< the cached backend version */
-    std::string            m_strBackendVersion;    /*!< the cached backend version */
-    std::string            m_strConnectionString;  /*!< the cached connection string */
-    std::string            m_strFriendlyName;      /*!< the cached friendly name */
-    std::string            m_strBackendHostname;   /*!< the cached backend hostname */
-    CPVRClientCapabilities m_clientCapabilities;   /*!< the cached add-on's capabilities */
+    std::string m_strBackendName; /*!< the cached backend version */
+    std::string m_strBackendVersion; /*!< the cached backend version */
+    std::string m_strConnectionString; /*!< the cached connection string */
+    std::string m_strFriendlyName; /*!< the cached friendly name */
+    std::string m_strBackendHostname; /*!< the cached backend hostname */
+    CPVRClientCapabilities m_clientCapabilities; /*!< the cached add-on's capabilities */
     std::shared_ptr<CPVRClientMenuHooks> m_menuhooks; /*!< the menu hooks for this add-on */
 
     /* stored strings to make sure const char* members in PVR_PROPERTIES stay valid */
-    std::string            m_strUserPath;         /*!< @brief translated path to the user profile */
-    std::string            m_strClientPath;       /*!< @brief translated path to this add-on */
+    std::string m_strUserPath; /*!< @brief translated path to the user profile */
+    std::string m_strClientPath; /*!< @brief translated path to this add-on */
 
     mutable CCriticalSection m_critSection;
 

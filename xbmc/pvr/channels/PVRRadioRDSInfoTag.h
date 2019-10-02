@@ -140,7 +140,7 @@ private:
   std::string m_strConductor;
   std::string m_strAlbum;
   std::string m_strComment;
-  int         m_iAlbumTracknumber;
+  int m_iAlbumTracknumber;
   std::string m_strRadioStyle;
 
   class Info

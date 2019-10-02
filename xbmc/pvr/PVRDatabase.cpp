@@ -325,21 +325,21 @@ int CPVRDatabase::Get(CPVRChannelGroup& results, bool bCompressDB)
       {
         std::shared_ptr<CPVRChannel> channel = std::shared_ptr<CPVRChannel>(new CPVRChannel());
 
-        channel->m_iChannelId              = m_pDS->fv("idChannel").get_asInt();
-        channel->m_iUniqueId               = m_pDS->fv("iUniqueId").get_asInt();
-        channel->m_bIsRadio                = m_pDS->fv("bIsRadio").get_asBool();
-        channel->m_bIsHidden               = m_pDS->fv("bIsHidden").get_asBool();
-        channel->m_bIsUserSetIcon          = m_pDS->fv("bIsUserSetIcon").get_asBool();
-        channel->m_bIsUserSetName          = m_pDS->fv("bIsUserSetName").get_asBool();
-        channel->m_bIsLocked               = m_pDS->fv("bIsLocked").get_asBool();
-        channel->m_strIconPath             = m_pDS->fv("sIconPath").get_asString();
-        channel->m_strChannelName          = m_pDS->fv("sChannelName").get_asString();
-        channel->m_bEPGEnabled             = m_pDS->fv("bEPGEnabled").get_asBool();
-        channel->m_strEPGScraper           = m_pDS->fv("sEPGScraper").get_asString();
-        channel->m_iLastWatched            = static_cast<time_t>(m_pDS->fv("iLastWatched").get_asInt());
-        channel->m_iClientId               = m_pDS->fv("iClientId").get_asInt();
-        channel->m_iEpgId                  = bUseEpgDB ? m_pDS->fv("idEpg").get_asInt() : -1;
-        channel->m_bHasArchive             = m_pDS->fv("bHasArchive").get_asBool();
+        channel->m_iChannelId = m_pDS->fv("idChannel").get_asInt();
+        channel->m_iUniqueId = m_pDS->fv("iUniqueId").get_asInt();
+        channel->m_bIsRadio = m_pDS->fv("bIsRadio").get_asBool();
+        channel->m_bIsHidden = m_pDS->fv("bIsHidden").get_asBool();
+        channel->m_bIsUserSetIcon = m_pDS->fv("bIsUserSetIcon").get_asBool();
+        channel->m_bIsUserSetName = m_pDS->fv("bIsUserSetName").get_asBool();
+        channel->m_bIsLocked = m_pDS->fv("bIsLocked").get_asBool();
+        channel->m_strIconPath = m_pDS->fv("sIconPath").get_asString();
+        channel->m_strChannelName = m_pDS->fv("sChannelName").get_asString();
+        channel->m_bEPGEnabled = m_pDS->fv("bEPGEnabled").get_asBool();
+        channel->m_strEPGScraper = m_pDS->fv("sEPGScraper").get_asString();
+        channel->m_iLastWatched = static_cast<time_t>(m_pDS->fv("iLastWatched").get_asInt());
+        channel->m_iClientId = m_pDS->fv("iClientId").get_asInt();
+        channel->m_iEpgId = bUseEpgDB ? m_pDS->fv("idEpg").get_asInt() : -1;
+        channel->m_bHasArchive = m_pDS->fv("bHasArchive").get_asBool();
         channel->UpdateEncryptionName();
 
         auto newMember = std::make_shared<PVRChannelGroupMember>(channel,
@@ -491,7 +491,7 @@ bool CPVRDatabase::RemoveStaleChannelsFromGroup(const CPVRChannelGroup& group)
     // mysql doesn't support subqueries when deleting and sqlite doesn't support joins when deleting
     if (StringUtils::EqualsNoCase(CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_databaseTV.type, "mysql"))
     {
-      const  std::string strQuery = PrepareSQL("DELETE m FROM map_channelgroups_channels m LEFT JOIN channels c ON (c.idChannel = m.idChannel) WHERE c.idChannel IS NULL");
+      const std::string strQuery = PrepareSQL("DELETE m FROM map_channelgroups_channels m LEFT JOIN channels c ON (c.idChannel = m.idChannel) WHERE c.idChannel IS NULL");
       bDelete = ExecuteQuery(strQuery);
     }
     else

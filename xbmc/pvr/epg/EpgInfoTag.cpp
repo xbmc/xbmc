@@ -128,35 +128,35 @@ bool CPVREpgInfoTag::operator ==(const CPVREpgInfoTag& right) const
     return true;
 
   CSingleLock lock(m_critSection);
-  return (m_iDatabaseID        == right.m_iDatabaseID &&
-          m_iGenreType         == right.m_iGenreType &&
-          m_iGenreSubType      == right.m_iGenreSubType &&
-          m_iParentalRating    == right.m_iParentalRating &&
-          m_firstAired         == right.m_firstAired &&
-          m_iStarRating        == right.m_iStarRating &&
-          m_iSeriesNumber      == right.m_iSeriesNumber &&
-          m_iEpisodeNumber     == right.m_iEpisodeNumber &&
-          m_iEpisodePart       == right.m_iEpisodePart &&
+  return (m_iDatabaseID == right.m_iDatabaseID &&
+          m_iGenreType == right.m_iGenreType &&
+          m_iGenreSubType == right.m_iGenreSubType &&
+          m_iParentalRating == right.m_iParentalRating &&
+          m_firstAired == right.m_firstAired &&
+          m_iStarRating == right.m_iStarRating &&
+          m_iSeriesNumber == right.m_iSeriesNumber &&
+          m_iEpisodeNumber == right.m_iEpisodeNumber &&
+          m_iEpisodePart == right.m_iEpisodePart &&
           m_iUniqueBroadcastID == right.m_iUniqueBroadcastID &&
-          m_strTitle           == right.m_strTitle &&
-          m_strPlotOutline     == right.m_strPlotOutline &&
-          m_strPlot            == right.m_strPlot &&
-          m_strOriginalTitle   == right.m_strOriginalTitle &&
-          m_cast               == right.m_cast &&
-          m_directors          == right.m_directors &&
-          m_writers            == right.m_writers &&
-          m_iYear              == right.m_iYear &&
-          m_strIMDBNumber      == right.m_strIMDBNumber &&
-          m_genre              == right.m_genre &&
-          m_strEpisodeName     == right.m_strEpisodeName &&
-          m_iEpgID             == right.m_iEpgID &&
-          m_strIconPath        == right.m_strIconPath &&
+          m_strTitle == right.m_strTitle &&
+          m_strPlotOutline == right.m_strPlotOutline &&
+          m_strPlot == right.m_strPlot &&
+          m_strOriginalTitle == right.m_strOriginalTitle &&
+          m_cast == right.m_cast &&
+          m_directors == right.m_directors &&
+          m_writers == right.m_writers &&
+          m_iYear == right.m_iYear &&
+          m_strIMDBNumber == right.m_strIMDBNumber &&
+          m_genre == right.m_genre &&
+          m_strEpisodeName == right.m_strEpisodeName &&
+          m_iEpgID == right.m_iEpgID &&
+          m_strIconPath == right.m_strIconPath &&
           m_strFileNameAndPath == right.m_strFileNameAndPath &&
-          m_startTime          == right.m_startTime &&
-          m_endTime            == right.m_endTime &&
-          m_iFlags             == right.m_iFlags &&
-          m_strSeriesLink      == right.m_strSeriesLink &&
-          m_channelData        == right.m_channelData);
+          m_startTime == right.m_startTime &&
+          m_endTime == right.m_endTime &&
+          m_iFlags == right.m_iFlags &&
+          m_strSeriesLink == right.m_strSeriesLink &&
+          m_channelData == right.m_channelData);
 }
 
 bool CPVREpgInfoTag::operator !=(const CPVREpgInfoTag& right) const
@@ -432,7 +432,7 @@ void CPVREpgInfoTag::SetGenre(int iGenreType, int iGenreSubType, const char* str
 {
   if (m_iGenreType != iGenreType || m_iGenreSubType != iGenreSubType)
   {
-    m_iGenreType    = iGenreType;
+    m_iGenreType = iGenreType;
     m_iGenreSubType = iGenreSubType;
     if ((iGenreType == EPG_GENRE_USE_STRING || iGenreSubType == EPG_GENRE_USE_STRING) && (strGenre != NULL) && (strlen(strGenre) > 0))
     {
@@ -559,45 +559,45 @@ bool CPVREpgInfoTag::Update(const CPVREpgInfoTag& tag, bool bUpdateBroadcastId /
   if (bChanged)
   {
     if (bUpdateBroadcastId)
-      m_iDatabaseID      = tag.m_iDatabaseID;
+      m_iDatabaseID = tag.m_iDatabaseID;
 
-    m_strTitle           = tag.m_strTitle;
-    m_strPlotOutline     = tag.m_strPlotOutline;
-    m_strPlot            = tag.m_strPlot;
-    m_strOriginalTitle   = tag.m_strOriginalTitle;
-    m_cast               = tag.m_cast;
-    m_directors          = tag.m_directors;
-    m_writers            = tag.m_writers;
-    m_iYear              = tag.m_iYear;
-    m_strIMDBNumber      = tag.m_strIMDBNumber;
-    m_startTime          = tag.m_startTime;
-    m_endTime            = tag.m_endTime;
-    m_iGenreType         = tag.m_iGenreType;
-    m_iGenreSubType      = tag.m_iGenreSubType;
-    m_iEpgID             = tag.m_iEpgID;
-    m_iFlags             = tag.m_iFlags;
-    m_strSeriesLink      = tag.m_strSeriesLink;
+    m_strTitle = tag.m_strTitle;
+    m_strPlotOutline = tag.m_strPlotOutline;
+    m_strPlot = tag.m_strPlot;
+    m_strOriginalTitle = tag.m_strOriginalTitle;
+    m_cast = tag.m_cast;
+    m_directors = tag.m_directors;
+    m_writers = tag.m_writers;
+    m_iYear = tag.m_iYear;
+    m_strIMDBNumber = tag.m_strIMDBNumber;
+    m_startTime = tag.m_startTime;
+    m_endTime = tag.m_endTime;
+    m_iGenreType = tag.m_iGenreType;
+    m_iGenreSubType = tag.m_iGenreSubType;
+    m_iEpgID = tag.m_iEpgID;
+    m_iFlags = tag.m_iFlags;
+    m_strSeriesLink = tag.m_strSeriesLink;
 
     if (m_iGenreType == EPG_GENRE_USE_STRING || m_iGenreSubType == EPG_GENRE_USE_STRING)
     {
       /* No type/subtype. Use the provided description */
-      m_genre            = tag.m_genre;
+      m_genre = tag.m_genre;
     }
     else
     {
       /* Determine genre description by type/subtype */
       m_genre = StringUtils::Split(CPVREpg::ConvertGenreIdToString(tag.m_iGenreType, tag.m_iGenreSubType), CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoItemSeparator);
     }
-    m_firstAired         = tag.m_firstAired;
-    m_iParentalRating    = tag.m_iParentalRating;
-    m_iStarRating        = tag.m_iStarRating;
-    m_iEpisodeNumber     = tag.m_iEpisodeNumber;
-    m_iEpisodePart       = tag.m_iEpisodePart;
-    m_iSeriesNumber      = tag.m_iSeriesNumber;
-    m_strEpisodeName     = tag.m_strEpisodeName;
+    m_firstAired = tag.m_firstAired;
+    m_iParentalRating = tag.m_iParentalRating;
+    m_iStarRating = tag.m_iStarRating;
+    m_iEpisodeNumber = tag.m_iEpisodeNumber;
+    m_iEpisodePart = tag.m_iEpisodePart;
+    m_iSeriesNumber = tag.m_iSeriesNumber;
+    m_strEpisodeName = tag.m_strEpisodeName;
     m_iUniqueBroadcastID = tag.m_iUniqueBroadcastID;
-    m_strIconPath        = tag.m_strIconPath;
-    m_channelData        = tag.m_channelData;
+    m_strIconPath = tag.m_strIconPath;
+    m_channelData = tag.m_channelData;
   }
 
   if (bChanged)

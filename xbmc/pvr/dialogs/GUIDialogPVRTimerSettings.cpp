@@ -96,19 +96,19 @@ void CGUIDialogPVRTimerSettings::SetTimer(const std::shared_ptr<CPVRTimerInfoTag
   m_timerInfoTag = timer;
 
   // Copy data we need from tag. Do not modify the tag itself until Save()!
-  m_timerType     = m_timerInfoTag->GetTimerType();
-  m_bIsRadio      = m_timerInfoTag->m_bIsRadio;
-  m_bIsNewTimer   = m_timerInfoTag->m_iClientIndex == PVR_TIMER_NO_CLIENT_INDEX;
-  m_bTimerActive  = m_bIsNewTimer || !m_timerType->SupportsEnableDisable() || !(m_timerInfoTag->m_state == PVR_TIMER_STATE_DISABLED);
+  m_timerType = m_timerInfoTag->GetTimerType();
+  m_bIsRadio = m_timerInfoTag->m_bIsRadio;
+  m_bIsNewTimer = m_timerInfoTag->m_iClientIndex == PVR_TIMER_NO_CLIENT_INDEX;
+  m_bTimerActive = m_bIsNewTimer || !m_timerType->SupportsEnableDisable() || !(m_timerInfoTag->m_state == PVR_TIMER_STATE_DISABLED);
   m_bStartAnyTime = m_bIsNewTimer || !m_timerType->SupportsStartAnyTime() || m_timerInfoTag->m_bStartAnyTime;
-  m_bEndAnyTime   = m_bIsNewTimer || !m_timerType->SupportsEndAnyTime() || m_timerInfoTag->m_bEndAnyTime;
-  m_strTitle      = m_timerInfoTag->m_strTitle;
+  m_bEndAnyTime = m_bIsNewTimer || !m_timerType->SupportsEndAnyTime() || m_timerInfoTag->m_bEndAnyTime;
+  m_strTitle = m_timerInfoTag->m_strTitle;
 
   m_startLocalTime = m_timerInfoTag->StartAsLocalTime();
-  m_endLocalTime   = m_timerInfoTag->EndAsLocalTime();
+  m_endLocalTime = m_timerInfoTag->EndAsLocalTime();
 
   m_timerStartTimeStr = m_startLocalTime.GetAsLocalizedTime("", false);
-  m_timerEndTimeStr   = m_endLocalTime.GetAsLocalizedTime("", false);
+  m_timerEndTimeStr = m_endLocalTime.GetAsLocalizedTime("", false);
   m_firstDayLocalTime = m_timerInfoTag->FirstDayAsLocalTime();
 
   m_strEpgSearchString = m_timerInfoTag->m_strEpgSearchString;
@@ -122,18 +122,18 @@ void CGUIDialogPVRTimerSettings::SetTimer(const std::shared_ptr<CPVRTimerInfoTag
     m_iWeekdays = PVR_WEEKDAY_ALLDAYS;
 
   m_iPreventDupEpisodes = m_timerInfoTag->m_iPreventDupEpisodes;
-  m_iMarginStart        = m_timerInfoTag->m_iMarginStart;
-  m_iMarginEnd          = m_timerInfoTag->m_iMarginEnd;
-  m_iPriority           = m_timerInfoTag->m_iPriority;
-  m_iLifetime           = m_timerInfoTag->m_iLifetime;
-  m_iMaxRecordings      = m_timerInfoTag->m_iMaxRecordings;
+  m_iMarginStart = m_timerInfoTag->m_iMarginStart;
+  m_iMarginEnd = m_timerInfoTag->m_iMarginEnd;
+  m_iPriority = m_timerInfoTag->m_iPriority;
+  m_iLifetime = m_timerInfoTag->m_iLifetime;
+  m_iMaxRecordings = m_timerInfoTag->m_iMaxRecordings;
 
   if (m_bIsNewTimer && m_timerInfoTag->m_strDirectory.empty() && m_timerType->SupportsRecordingFolders())
     m_strDirectory = m_strTitle;
   else
     m_strDirectory = m_timerInfoTag->m_strDirectory;
 
-  m_iRecordingGroup     = m_timerInfoTag->m_iRecordingGroup;
+  m_iRecordingGroup = m_timerInfoTag->m_iRecordingGroup;
 
   InitializeChannelsList();
   InitializeTypesList();
@@ -560,11 +560,11 @@ void CGUIDialogPVRTimerSettings::Save()
   // Begin and end time
   if (!m_bStartAnyTime && !m_bEndAnyTime)
   {
-    if (m_timerType->SupportsStartTime() &&    // has start clock entry
-        m_timerType->SupportsEndTime() &&      // and end clock entry
-        m_timerType->IsTimerRule())            // but no associated start/end day spinners
+    if (m_timerType->SupportsStartTime() && // has start clock entry
+        m_timerType->SupportsEndTime() && // and end clock entry
+        m_timerType->IsTimerRule()) // but no associated start/end day spinners
     {
-      if (m_endLocalTime < m_startLocalTime)   // And the end clock is earlier than the start clock
+      if (m_endLocalTime < m_startLocalTime) // And the end clock is earlier than the start clock
       {
         CLog::LogFC(LOGDEBUG, LOGPVR, "End before start, adding a day.");
         m_endLocalTime += CDateTimeSpan(1, 0, 0, 0);
@@ -611,7 +611,7 @@ void CGUIDialogPVRTimerSettings::Save()
 
   // Pre and post record time
   m_timerInfoTag->m_iMarginStart = m_iMarginStart;
-  m_timerInfoTag->m_iMarginEnd   = m_iMarginEnd;
+  m_timerInfoTag->m_iMarginEnd = m_iMarginEnd;
 
   // Priority
   m_timerInfoTag->m_iPriority = m_iPriority;

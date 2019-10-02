@@ -35,12 +35,12 @@ CPVREpgSearchFilter::CPVREpgSearchFilter(bool bRadio)
 void CPVREpgSearchFilter::Reset()
 {
   m_strSearchTerm.clear();
-  m_bIsCaseSensitive         = false;
-  m_bSearchInDescription     = false;
-  m_iGenreType               = EPG_SEARCH_UNSET;
-  m_iGenreSubType            = EPG_SEARCH_UNSET;
-  m_iMinimumDuration         = EPG_SEARCH_UNSET;
-  m_iMaximumDuration         = EPG_SEARCH_UNSET;
+  m_bIsCaseSensitive = false;
+  m_bSearchInDescription = false;
+  m_iGenreType = EPG_SEARCH_UNSET;
+  m_iGenreSubType = EPG_SEARCH_UNSET;
+  m_iMinimumDuration = EPG_SEARCH_UNSET;
+  m_iMaximumDuration = EPG_SEARCH_UNSET;
 
   m_startDateTime.SetFromUTCDateTime(CServiceBroker::GetPVRManager().EpgContainer().GetFirstEPGDate());
   if (!m_startDateTime.IsValid())
@@ -56,16 +56,16 @@ void CPVREpgSearchFilter::Reset()
     m_endDateTime.SetFromUTCDateTime(m_startDateTime + CDateTimeSpan(10, 0, 0, 0)); // default to start + 10 days
   }
 
-  m_bIncludeUnknownGenres    = false;
-  m_bRemoveDuplicates        = false;
+  m_bIncludeUnknownGenres = false;
+  m_bRemoveDuplicates = false;
 
   /* pvr specific filters */
   m_channelNumber = CPVRChannelNumber();
-  m_bFreeToAirOnly           = false;
-  m_iChannelGroup            = EPG_SEARCH_UNSET;
-  m_bIgnorePresentTimers     = true;
+  m_bFreeToAirOnly = false;
+  m_iChannelGroup = EPG_SEARCH_UNSET;
+  m_bIgnorePresentTimers = true;
   m_bIgnorePresentRecordings = true;
-  m_iUniqueBroadcastId       = EPG_TAG_INVALID_UID;
+  m_iUniqueBroadcastId = EPG_TAG_INVALID_UID;
 }
 
 bool CPVREpgSearchFilter::MatchGenre(const std::shared_ptr<CPVREpgInfoTag>& tag) const

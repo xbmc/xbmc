@@ -375,19 +375,19 @@ namespace PVR
     void InitPreventDuplicateEpisodesValues(const PVR_TIMER_TYPE& type);
     void InitRecordingGroupValues(const PVR_TIMER_TYPE& type);
 
-    int           m_iClientId = -1;
-    unsigned int  m_iTypeId;
-    unsigned int  m_iAttributes;
-    std::string   m_strDescription;
+    int m_iClientId = -1;
+    unsigned int m_iTypeId;
+    unsigned int m_iAttributes;
+    std::string m_strDescription;
     std::vector< std::pair<std::string, int> > m_priorityValues;
-    int           m_iPriorityDefault = DEFAULT_RECORDING_PRIORITY;
+    int m_iPriorityDefault = DEFAULT_RECORDING_PRIORITY;
     std::vector< std::pair<std::string, int> > m_lifetimeValues;
-    int           m_iLifetimeDefault = DEFAULT_RECORDING_LIFETIME;
+    int m_iLifetimeDefault = DEFAULT_RECORDING_LIFETIME;
     std::vector< std::pair<std::string, int> > m_maxRecordingsValues;
-    int           m_iMaxRecordingsDefault = 0;
+    int m_iMaxRecordingsDefault = 0;
     std::vector< std::pair<std::string, int> > m_preventDupEpisodesValues;
-    unsigned int  m_iPreventDupEpisodesDefault = DEFAULT_RECORDING_DUPLICATEHANDLING;
+    unsigned int m_iPreventDupEpisodesDefault = DEFAULT_RECORDING_DUPLICATEHANDLING;
     std::vector< std::pair<std::string, int> > m_recordingGroupValues;
-    unsigned int  m_iRecordingGroupDefault = 0;
+    unsigned int m_iRecordingGroupDefault = 0;
   };
 }

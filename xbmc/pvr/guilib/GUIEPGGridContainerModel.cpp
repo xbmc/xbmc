@@ -166,9 +166,9 @@ void CGUIEPGGridContainerModel::Initialize(const std::unique_ptr<CFileItemList>&
     CDateTime gridCursor(m_gridStart); //reset cursor for new channel
     unsigned long progIdx = m_epgItemsPtr[channel].start;
     unsigned long lastIdx = m_epgItemsPtr[channel].stop;
-    int iEpgId            = m_programmeItems[progIdx]->GetEPGInfoTag()->EpgID();
-    int itemSize          = 1; // size of the programme in blocks
-    int savedBlock        = 0;
+    int iEpgId = m_programmeItems[progIdx]->GetEPGInfoTag()->EpgID();
+    int itemSize = 1; // size of the programme in blocks
+    int savedBlock = 0;
     CFileItemPtr item;
     std::shared_ptr<CPVREpgInfoTag> tag;
 

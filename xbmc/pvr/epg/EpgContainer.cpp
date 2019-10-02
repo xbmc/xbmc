@@ -148,7 +148,7 @@ void CPVREpgContainer::Clear()
 
     m_epgIdToEpgMap.clear();
     m_channelUidToEpgMap.clear();
-    m_iNextEpgUpdate  = 0;
+    m_iNextEpgUpdate = 0;
     m_bStarted = false;
     m_bIsInitialising = true;
     m_iNextEpgId = 0;
@@ -193,7 +193,7 @@ void CPVREpgContainer::Start(bool bAsync)
     m_bIsInitialising = true;
     m_bStop = false;
 
-    m_iNextEpgUpdate  = 0;
+    m_iNextEpgUpdate = 0;
     m_iNextEpgActiveTagCheck = 0;
     m_bUpdateNotificationPending = false;
   }

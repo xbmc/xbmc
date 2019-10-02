@@ -102,20 +102,20 @@ void CPVRClient::ResetProperties(int iClientId /* = PVR_INVALID_CLIENT_ID */)
   CSingleLock lock(m_critSection);
 
   /* initialise members */
-  m_strUserPath           = CSpecialProtocol::TranslatePath(Profile());
-  m_strClientPath         = CSpecialProtocol::TranslatePath(Path());
-  m_bReadyToUse           = false;
-  m_bBlockAddonCalls      = false;
-  m_connectionState       = PVR_CONNECTION_STATE_UNKNOWN;
-  m_prevConnectionState   = PVR_CONNECTION_STATE_UNKNOWN;
-  m_ignoreClient          = false;
-  m_iClientId             = iClientId;
-  m_iPriority             = 0;
-  m_bPriorityFetched      = false;
-  m_strBackendVersion     = DEFAULT_INFO_STRING_VALUE;
-  m_strConnectionString   = DEFAULT_INFO_STRING_VALUE;
-  m_strFriendlyName       = DEFAULT_INFO_STRING_VALUE;
-  m_strBackendName        = DEFAULT_INFO_STRING_VALUE;
+  m_strUserPath = CSpecialProtocol::TranslatePath(Profile());
+  m_strClientPath = CSpecialProtocol::TranslatePath(Path());
+  m_bReadyToUse = false;
+  m_bBlockAddonCalls = false;
+  m_connectionState = PVR_CONNECTION_STATE_UNKNOWN;
+  m_prevConnectionState = PVR_CONNECTION_STATE_UNKNOWN;
+  m_ignoreClient = false;
+  m_iClientId = iClientId;
+  m_iPriority = 0;
+  m_bPriorityFetched = false;
+  m_strBackendVersion = DEFAULT_INFO_STRING_VALUE;
+  m_strConnectionString = DEFAULT_INFO_STRING_VALUE;
+  m_strFriendlyName = DEFAULT_INFO_STRING_VALUE;
+  m_strBackendName = DEFAULT_INFO_STRING_VALUE;
   m_strBackendHostname.clear();
   m_menuhooks.reset();
   m_timertypes.clear();
@@ -319,32 +319,32 @@ void CPVRClient::WriteClientTimerInfo(const CPVRTimerInfoTag& xbmcTimer, PVR_TIM
   int iPVRTimeCorrection = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_iPVRTimeCorrection;
 
   addonTimer = {0};
-  addonTimer.iClientIndex              = xbmcTimer.m_iClientIndex;
-  addonTimer.iParentClientIndex        = xbmcTimer.m_iParentClientIndex;
-  addonTimer.state                     = xbmcTimer.m_state;
-  addonTimer.iTimerType                = xbmcTimer.GetTimerType() ? xbmcTimer.GetTimerType()->GetTypeId() : PVR_TIMER_TYPE_NONE;
-  addonTimer.iClientChannelUid         = xbmcTimer.m_iClientChannelUid;
+  addonTimer.iClientIndex = xbmcTimer.m_iClientIndex;
+  addonTimer.iParentClientIndex = xbmcTimer.m_iParentClientIndex;
+  addonTimer.state = xbmcTimer.m_state;
+  addonTimer.iTimerType = xbmcTimer.GetTimerType() ? xbmcTimer.GetTimerType()->GetTypeId() : PVR_TIMER_TYPE_NONE;
+  addonTimer.iClientChannelUid = xbmcTimer.m_iClientChannelUid;
   strncpy(addonTimer.strTitle, xbmcTimer.m_strTitle.c_str(), sizeof(addonTimer.strTitle) - 1);
   strncpy(addonTimer.strEpgSearchString, xbmcTimer.m_strEpgSearchString.c_str(), sizeof(addonTimer.strEpgSearchString) - 1);
-  addonTimer.bFullTextEpgSearch        = xbmcTimer.m_bFullTextEpgSearch;
+  addonTimer.bFullTextEpgSearch = xbmcTimer.m_bFullTextEpgSearch;
   strncpy(addonTimer.strDirectory, xbmcTimer.m_strDirectory.c_str(), sizeof(addonTimer.strDirectory) - 1);
-  addonTimer.iPriority                 = xbmcTimer.m_iPriority;
-  addonTimer.iLifetime                 = xbmcTimer.m_iLifetime;
-  addonTimer.iMaxRecordings            = xbmcTimer.m_iMaxRecordings;
+  addonTimer.iPriority = xbmcTimer.m_iPriority;
+  addonTimer.iLifetime = xbmcTimer.m_iLifetime;
+  addonTimer.iMaxRecordings = xbmcTimer.m_iMaxRecordings;
   addonTimer.iPreventDuplicateEpisodes = xbmcTimer.m_iPreventDupEpisodes;
-  addonTimer.iRecordingGroup           = xbmcTimer.m_iRecordingGroup;
-  addonTimer.iWeekdays                 = xbmcTimer.m_iWeekdays;
-  addonTimer.startTime                 = start - iPVRTimeCorrection;
-  addonTimer.endTime                   = end - iPVRTimeCorrection;
-  addonTimer.bStartAnyTime             = xbmcTimer.m_bStartAnyTime;
-  addonTimer.bEndAnyTime               = xbmcTimer.m_bEndAnyTime;
-  addonTimer.firstDay                  = firstDay - iPVRTimeCorrection;
-  addonTimer.iEpgUid                   = epgTag ? epgTag->UniqueBroadcastID() : PVR_TIMER_NO_EPG_UID;
+  addonTimer.iRecordingGroup = xbmcTimer.m_iRecordingGroup;
+  addonTimer.iWeekdays = xbmcTimer.m_iWeekdays;
+  addonTimer.startTime = start - iPVRTimeCorrection;
+  addonTimer.endTime = end - iPVRTimeCorrection;
+  addonTimer.bStartAnyTime = xbmcTimer.m_bStartAnyTime;
+  addonTimer.bEndAnyTime = xbmcTimer.m_bEndAnyTime;
+  addonTimer.firstDay = firstDay - iPVRTimeCorrection;
+  addonTimer.iEpgUid = epgTag ? epgTag->UniqueBroadcastID() : PVR_TIMER_NO_EPG_UID;
   strncpy(addonTimer.strSummary, xbmcTimer.m_strSummary.c_str(), sizeof(addonTimer.strSummary) - 1);
-  addonTimer.iMarginStart              = xbmcTimer.m_iMarginStart;
-  addonTimer.iMarginEnd                = xbmcTimer.m_iMarginEnd;
-  addonTimer.iGenreType                = epgTag ? epgTag->GenreType() : 0;
-  addonTimer.iGenreSubType             = epgTag ? epgTag->GenreSubType() : 0;
+  addonTimer.iMarginStart = xbmcTimer.m_iMarginStart;
+  addonTimer.iMarginEnd = xbmcTimer.m_iMarginEnd;
+  addonTimer.iGenreType = epgTag ? epgTag->GenreType() : 0;
+  addonTimer.iGenreSubType = epgTag ? epgTag->GenreSubType() : 0;
   strncpy(addonTimer.strSeriesLink, xbmcTimer.SeriesLink().c_str(), sizeof(addonTimer.strSeriesLink) - 1);
 }
 
@@ -356,14 +356,14 @@ void CPVRClient::WriteClientTimerInfo(const CPVRTimerInfoTag& xbmcTimer, PVR_TIM
 void CPVRClient::WriteClientChannelInfo(const std::shared_ptr<CPVRChannel>& xbmcChannel, PVR_CHANNEL& addonChannel)
 {
   addonChannel = {0};
-  addonChannel.iUniqueId         = xbmcChannel->UniqueID();
-  addonChannel.iChannelNumber    = xbmcChannel->ClientChannelNumber().GetChannelNumber();
+  addonChannel.iUniqueId = xbmcChannel->UniqueID();
+  addonChannel.iChannelNumber = xbmcChannel->ClientChannelNumber().GetChannelNumber();
   addonChannel.iSubChannelNumber = xbmcChannel->ClientChannelNumber().GetSubChannelNumber();
   strncpy(addonChannel.strChannelName, xbmcChannel->ClientChannelName().c_str(), sizeof(addonChannel.strChannelName) - 1);
   strncpy(addonChannel.strIconPath, xbmcChannel->IconPath().c_str(), sizeof(addonChannel.strIconPath) - 1);
   addonChannel.iEncryptionSystem = xbmcChannel->EncryptionSystem();
-  addonChannel.bIsRadio          = xbmcChannel->IsRadio();
-  addonChannel.bIsHidden         = xbmcChannel->IsHidden();
+  addonChannel.bIsRadio = xbmcChannel->IsRadio();
+  addonChannel.bIsHidden = xbmcChannel->IsHidden();
   strncpy(addonChannel.strInputFormat, xbmcChannel->InputFormat().c_str(), sizeof(addonChannel.strInputFormat) - 1);
 }
 
@@ -430,7 +430,7 @@ bool CPVRClient::GetAddonProperties(void)
       size = 0;
       // manual one time
       memset(&types_array[size], 0, sizeof(types_array[size]));
-      types_array[size].iId         = size + 1;
+      types_array[size].iId = size + 1;
       types_array[size].iAttributes = PVR_TIMER_TYPE_IS_MANUAL               |
                                       PVR_TIMER_TYPE_SUPPORTS_ENABLE_DISABLE |
                                       PVR_TIMER_TYPE_SUPPORTS_CHANNELS       |
@@ -443,7 +443,7 @@ bool CPVRClient::GetAddonProperties(void)
 
       // manual timer rule
       memset(&types_array[size], 0, sizeof(types_array[size]));
-      types_array[size].iId         = size + 1;
+      types_array[size].iId = size + 1;
       types_array[size].iAttributes = PVR_TIMER_TYPE_IS_MANUAL               |
                                       PVR_TIMER_TYPE_IS_REPEATING            |
                                       PVR_TIMER_TYPE_SUPPORTS_ENABLE_DISABLE |
@@ -461,7 +461,7 @@ bool CPVRClient::GetAddonProperties(void)
       {
         // One-shot epg-based
         memset(&types_array[size], 0, sizeof(types_array[size]));
-        types_array[size].iId         = size + 1;
+        types_array[size].iId = size + 1;
         types_array[size].iAttributes = PVR_TIMER_TYPE_SUPPORTS_ENABLE_DISABLE    |
                                         PVR_TIMER_TYPE_REQUIRES_EPG_TAG_ON_CREATE |
                                         PVR_TIMER_TYPE_SUPPORTS_CHANNELS          |
@@ -498,13 +498,13 @@ bool CPVRClient::GetAddonProperties(void)
 
   /* update the members */
   CSingleLock lock(m_critSection);
-  m_strBackendName      = strBackendName;
+  m_strBackendName = strBackendName;
   m_strConnectionString = strConnectionString;
-  m_strFriendlyName     = strFriendlyName;
-  m_strBackendVersion   = strBackendVersion;
-  m_clientCapabilities  = addonCapabilities;
-  m_strBackendHostname  = strBackendHostname;
-  m_timertypes          = timerTypes;
+  m_strFriendlyName = strFriendlyName;
+  m_strBackendVersion = strBackendVersion;
+  m_clientCapabilities = addonCapabilities;
+  m_strBackendHostname = strBackendHostname;
+  m_timertypes = timerTypes;
 
   return retVal == PVR_ERROR_NO_ERROR;
 }
@@ -538,7 +538,7 @@ PVR_ERROR CPVRClient::GetDriveSpace(long long& iTotal, long long& iUsed)
 {
   /* default to 0 in case of error */
   iTotal = 0;
-  iUsed  = 0;
+  iUsed = 0;
 
   return DoAddonCall(__FUNCTION__, [this, &iTotal, &iUsed](const AddonInstance* addon) {
     long long iTotalSpace = 0;
@@ -601,8 +601,8 @@ PVR_ERROR CPVRClient::GetEPGForChannel(int iChannelUid, CPVREpg* epg, time_t sta
   return DoAddonCall(__FUNCTION__, [this, iChannelUid, epg, start, end](const AddonInstance* addon) {
 
     ADDON_HANDLE_STRUCT handle = {0};
-    handle.callerAddress  = this;
-    handle.dataAddress    = epg;
+    handle.callerAddress = this;
+    handle.dataAddress = epg;
 
     int iPVRTimeCorrection = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_iPVRTimeCorrection;
 
@@ -1743,7 +1743,7 @@ private:
       if (av_codec_is_decoder(codec))
       {
         tmp.codec_type = (xbmc_codec_type_t)codec->type;
-        tmp.codec_id   = codec->id;
+        tmp.codec_id = codec->id;
 
         std::string strUpperCodecName = codec->name;
         StringUtils::ToUpper(strUpperCodecName);
@@ -1754,12 +1754,12 @@ private:
 
     // teletext is not returned by av_codec_next. we got our own decoder
     tmp.codec_type = XBMC_CODEC_TYPE_SUBTITLE;
-    tmp.codec_id   = AV_CODEC_ID_DVB_TELETEXT;
+    tmp.codec_id = AV_CODEC_ID_DVB_TELETEXT;
     m_lookup.insert(std::make_pair("TELETEXT", tmp));
 
     // rds is not returned by av_codec_next. we got our own decoder
     tmp.codec_type = XBMC_CODEC_TYPE_RDS;
-    tmp.codec_id   = AV_CODEC_ID_NONE;
+    tmp.codec_id = AV_CODEC_ID_NONE;
     m_lookup.insert(std::make_pair("RDS", tmp));
   }
 

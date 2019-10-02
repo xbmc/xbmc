@@ -116,13 +116,13 @@ bool CGUIDialogPVRChannelManager::OnActionMove(const CAction& action)
       {
         std::string strNumber;
 
-        bool bMoveUp        = iActionId == ACTION_PAGE_UP || iActionId == ACTION_MOVE_UP || iActionId == ACTION_FIRST_PAGE;
+        bool bMoveUp = iActionId == ACTION_PAGE_UP || iActionId == ACTION_MOVE_UP || iActionId == ACTION_FIRST_PAGE;
         unsigned int iLines = bMoveUp ? abs(m_iSelected - iSelected) : 1;
-        bool bOutOfBounds   = bMoveUp ? m_iSelected <= 0  : m_iSelected >= m_channelItems->Size() - 1;
+        bool bOutOfBounds = bMoveUp ? m_iSelected <= 0  : m_iSelected >= m_channelItems->Size() - 1;
         if (bOutOfBounds)
         {
           bMoveUp = !bMoveUp;
-          iLines  = m_channelItems->Size() - 1;
+          iLines = m_channelItems->Size() - 1;
         }
         for (unsigned int iLine = 0; iLine < iLines; ++iLine)
         {
@@ -480,7 +480,7 @@ bool CGUIDialogPVRChannelManager::OnClickButtonNewChannel()
     else if (ret == PVR_ERROR_NOT_IMPLEMENTED)
       HELPERS::ShowOKDialogText(CVariant{19033}, CVariant{19038}); // "Information", "Not supported by the PVR backend."
     else
-      HELPERS::ShowOKDialogText(CVariant{2103}, CVariant{16029});  // "Add-on error", "Check the log for more information about this message."
+      HELPERS::ShowOKDialogText(CVariant{2103}, CVariant{16029}); // "Add-on error", "Check the log for more information about this message."
   }
   return true;
 }
@@ -570,12 +570,12 @@ bool CGUIDialogPVRChannelManager::OnPopupMenu(int iItem)
   if (!pItem)
     return false;
 
-  buttons.Add(CONTEXT_BUTTON_MOVE, 116);          /* Move channel up or down */
+  buttons.Add(CONTEXT_BUTTON_MOVE, 116); /* Move channel up or down */
 
   if (pItem->GetProperty("SupportsSettings").asBoolean())
   {
-    buttons.Add(CONTEXT_BUTTON_SETTINGS, 10004);  /* Open add-on channel settings dialog */
-    buttons.Add(CONTEXT_BUTTON_DELETE, 117);      /* Delete add-on channel */
+    buttons.Add(CONTEXT_BUTTON_SETTINGS, 10004); /* Open add-on channel settings dialog */
+    buttons.Add(CONTEXT_BUTTON_DELETE, 117); /* Delete add-on channel */
   }
 
   int choice = CGUIDialogContextMenu::ShowAndGetChoice(buttons);
@@ -614,7 +614,7 @@ bool CGUIDialogPVRChannelManager::OnContextButton(int itemNumber, CONTEXT_BUTTON
     if (ret == PVR_ERROR_NOT_IMPLEMENTED)
       HELPERS::ShowOKDialogText(CVariant{19033}, CVariant{19038}); // "Information", "Not supported by the PVR backend."
     else if (ret != PVR_ERROR_NO_ERROR)
-      HELPERS::ShowOKDialogText(CVariant{2103}, CVariant{16029});  // "Add-on error", "Check the log for more information about this message."
+      HELPERS::ShowOKDialogText(CVariant{2103}, CVariant{16029}); // "Add-on error", "Check the log for more information about this message."
   }
   else if (button == CONTEXT_BUTTON_DELETE)
   {
@@ -623,7 +623,7 @@ bool CGUIDialogPVRChannelManager::OnContextButton(int itemNumber, CONTEXT_BUTTON
       return true;
 
     pDialog->SetHeading(CVariant{19211}); // Delete channel
-    pDialog->SetText(CVariant{750});      // Are you sure?
+    pDialog->SetText(CVariant{750}); // Are you sure?
     pDialog->Open();
 
     if (pDialog->IsConfirmed())
@@ -643,7 +643,7 @@ bool CGUIDialogPVRChannelManager::OnContextButton(int itemNumber, CONTEXT_BUTTON
         else if (ret == PVR_ERROR_NOT_IMPLEMENTED)
           HELPERS::ShowOKDialogText(CVariant{19033}, CVariant{19038}); // "Information", "Not supported by the PVR backend."
         else
-          HELPERS::ShowOKDialogText(CVariant{2103}, CVariant{16029});  // "Add-on error", "Check the log for more information about this message."
+          HELPERS::ShowOKDialogText(CVariant{2103}, CVariant{16029}); // "Add-on error", "Check the log for more information about this message."
       }
     }
   }
@@ -745,7 +745,7 @@ void CGUIDialogPVRChannelManager::RenameChannel(const CFileItemPtr& pItem)
 
     const std::shared_ptr<CPVRClient> client = CServiceBroker::GetPVRManager().GetClient(*pItem);
     if (!client || (client->RenameChannel(channel) != PVR_ERROR_NO_ERROR))
-      HELPERS::ShowOKDialogText(CVariant{2103}, CVariant{16029});  // Add-on error;Check the log file for details.
+      HELPERS::ShowOKDialogText(CVariant{2103}, CVariant{16029}); // Add-on error;Check the log file for details.
   }
 }
 

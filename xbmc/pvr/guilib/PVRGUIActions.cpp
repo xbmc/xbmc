@@ -536,10 +536,10 @@ namespace PVR
             m_pDlgSelect->Add(StringUtils::Format(g_localizeStrings.Get(19090).c_str(), m_iInstantRecordTime)); // Record next <default duration> minutes
             break;
           case RECORD_30_MINUTES:
-            m_pDlgSelect->Add(StringUtils::Format(g_localizeStrings.Get(19090).c_str(), 30));  // Record next 30 minutes
+            m_pDlgSelect->Add(StringUtils::Format(g_localizeStrings.Get(19090).c_str(), 30)); // Record next 30 minutes
             break;
           case RECORD_60_MINUTES:
-            m_pDlgSelect->Add(StringUtils::Format(g_localizeStrings.Get(19090).c_str(), 60));  // Record next 60 minutes
+            m_pDlgSelect->Add(StringUtils::Format(g_localizeStrings.Get(19090).c_str(), 60)); // Record next 60 minutes
             break;
           case RECORD_120_MINUTES:
             m_pDlgSelect->Add(StringUtils::Format(g_localizeStrings.Get(19090).c_str(), 120)); // Record next 120 minutes
@@ -1580,7 +1580,7 @@ namespace PVR
     }
 
     if (settingsHooks.empty())
-      return true;  // no settings hooks, no error
+      return true; // no settings hooks, no error
 
     auto selectedHook = settingsHooks.begin();
 
