@@ -11,6 +11,7 @@
 #include "ServiceBroker.h"
 #include "guilib/GUIMessage.h"
 #include "pvr/PVRManager.h"
+#include "pvr/addons/PVRClient.h"
 #include "settings/lib/Setting.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"

@@ -31,10 +31,8 @@ namespace PVR
   class CPVRRecordings;
   class CPVRStreamProperties;
   class CPVRTimerInfoTag;
-  class CPVRTimersContainer;
-
   class CPVRTimerType;
-  typedef std::vector<std::shared_ptr<CPVRTimerType>> CPVRTimerTypes;
+  class CPVRTimersContainer;
 
   #define PVR_INVALID_CLIENT_ID (-2)
 
@@ -605,7 +603,7 @@ namespace PVR
      * @param results The container to store the result in.
      * @return PVR_ERROR_NO_ERROR if the list has been fetched successfully.
      */
-    PVR_ERROR GetTimerTypes(CPVRTimerTypes& results) const;
+    PVR_ERROR GetTimerTypes(std::vector<std::shared_ptr<CPVRTimerType>>& results) const;
 
     //@}
     /** @name PVR live stream methods */
@@ -1113,7 +1111,7 @@ namespace PVR
     PVR_CONNECTION_STATE   m_connectionState;      /*!< the backend connection state */
     PVR_CONNECTION_STATE   m_prevConnectionState;  /*!< the previous backend connection state */
     bool                   m_ignoreClient;         /*!< signals to PVRManager to ignore this client until it has been connected */
-    CPVRTimerTypes         m_timertypes;           /*!< timer types supported by this backend */
+    std::vector<std::shared_ptr<CPVRTimerType>> m_timertypes; /*!< timer types supported by this backend */
     int                    m_iClientId;            /*!< unique ID of the client */
     mutable int            m_iPriority;            /*!< priority of the client */
     mutable bool           m_bPriorityFetched;

@@ -9,7 +9,6 @@
 #include "PVRClient.h"
 
 #include "ServiceBroker.h"
-#include "addons/PVRClientMenuHooks.h"
 #include "cores/VideoPlayer/DVDDemuxers/DVDDemuxUtils.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "events/EventLog.h"
@@ -19,6 +18,7 @@
 #include "pvr/PVRDatabase.h"
 #include "pvr/PVRManager.h"
 #include "pvr/PVRStreamProperties.h"
+#include "pvr/addons/PVRClientMenuHooks.h"
 #include "pvr/addons/PVRClients.h"
 #include "pvr/channels/PVRChannel.h"
 #include "pvr/channels/PVRChannelGroup.h"
@@ -371,7 +371,7 @@ bool CPVRClient::GetAddonProperties(void)
 {
   std::string strBackendName, strConnectionString, strFriendlyName, strBackendVersion, strBackendHostname;
   PVR_ADDON_CAPABILITIES addonCapabilities = {};
-  CPVRTimerTypes timerTypes;
+  std::vector<std::shared_ptr<CPVRTimerType>> timerTypes;
 
   /* get the capabilities */
   PVR_ERROR retVal = DoAddonCall(__FUNCTION__, [&addonCapabilities](const AddonInstance* addon) {
@@ -961,7 +961,7 @@ PVR_ERROR CPVRClient::UpdateTimer(const CPVRTimerInfoTag& timer)
   }, m_clientCapabilities.SupportsTimers());
 }
 
-PVR_ERROR CPVRClient::GetTimerTypes(CPVRTimerTypes& results) const
+PVR_ERROR CPVRClient::GetTimerTypes(std::vector<std::shared_ptr<CPVRTimerType>>& results) const
 {
   CSingleLock lock(m_critSection);
   results = m_timertypes;

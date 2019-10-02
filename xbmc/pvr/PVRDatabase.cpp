@@ -9,8 +9,8 @@
 #include "PVRDatabase.h"
 
 #include "ServiceBroker.h"
-#include "addons/PVRClient.h"
 #include "dbwrappers/dataset.h"
+#include "pvr/addons/PVRClient.h"
 #include "pvr/channels/PVRChannel.h"
 #include "pvr/channels/PVRChannelGroup.h"
 #include "pvr/channels/PVRChannelGroups.h"

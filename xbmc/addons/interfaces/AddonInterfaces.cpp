@@ -10,7 +10,6 @@
 #include "AddonInterfaces.h"
 
 #include "addons/Addon.h"
-#include "addons/PVRClient.h"
 #include "addons/interfaces/Addon/AddonCallbacksAddon.h"
 #include "addons/interfaces/GUI/AddonCallbacksGUI.h"
 #include "addons/interfaces/GUI/AddonGUIWindow.h"
@@ -19,6 +18,7 @@
 #include "games/addons/GameClient.h"
 #include "messaging/ApplicationMessenger.h"
 #include "peripherals/addons/PeripheralAddon.h"
+#include "pvr/addons/PVRClient.h"
 #include "utils/log.h"
 
 using namespace KODI;

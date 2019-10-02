@@ -14,7 +14,6 @@
 #include "addons/GameResource.h"
 #include "addons/ImageResource.h"
 #include "addons/LanguageResource.h"
-#include "addons/PVRClient.h"
 #include "addons/PluginSource.h"
 #include "addons/Repository.h"
 #include "addons/Scraper.h"
@@ -24,6 +23,7 @@
 #include "addons/Webinterface.h"
 #include "games/addons/GameClient.h"
 #include "games/controllers/Controller.h"
+#include "pvr/addons/PVRClient.h"
 #include "utils/StringUtils.h"
 
 using namespace KODI;

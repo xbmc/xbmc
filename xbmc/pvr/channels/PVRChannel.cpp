@@ -10,10 +10,10 @@
 
 #include "ServiceBroker.h"
 #include "XBDateTime.h"
-#include "addons/PVRClient.h"
 #include "guilib/LocalizeStrings.h"
 #include "pvr/PVRDatabase.h"
 #include "pvr/PVRManager.h"
+#include "pvr/addons/PVRClient.h"
 #include "pvr/channels/PVRChannelsPath.h"
 #include "pvr/epg/Epg.h"
 #include "pvr/epg/EpgChannelData.h"
