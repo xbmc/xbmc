@@ -30,7 +30,7 @@ class CVideoBufferVTB: public CVideoBuffer
 {
 public:
   CVideoBufferVTB(IVideoBufferPool &pool, int id);
-  virtual ~CVideoBufferVTB();
+  ~CVideoBufferVTB() override;
   void SetRef(AVFrame *frame);
   void Unref();
   CVPixelBufferRef GetPB();
@@ -45,16 +45,15 @@ class CDecoder: public IHardwareDecoder
 {
 public:
   CDecoder(CProcessInfo& processInfo);
-  virtual ~CDecoder();
+  ~CDecoder() override;
   static IHardwareDecoder* Create(CDVDStreamInfo &hint, CProcessInfo &processInfo, AVPixelFormat fmt);
   static bool Register();
-  virtual bool Open(AVCodecContext* avctx, AVCodecContext* mainctx,
-                    const enum AVPixelFormat) override;
-  virtual CDVDVideoCodec::VCReturn Decode(AVCodecContext* avctx, AVFrame* frame) override;
-  virtual bool GetPicture(AVCodecContext* avctx, VideoPicture* picture) override;
-  virtual CDVDVideoCodec::VCReturn Check(AVCodecContext* avctx) override;
-  virtual const std::string Name() override { return "vtb"; }
-  virtual unsigned GetAllowedReferences() override ;
+  bool Open(AVCodecContext* avctx, AVCodecContext* mainctx, const enum AVPixelFormat) override;
+  CDVDVideoCodec::VCReturn Decode(AVCodecContext* avctx, AVFrame* frame) override;
+  bool GetPicture(AVCodecContext* avctx, VideoPicture* picture) override;
+  CDVDVideoCodec::VCReturn Check(AVCodecContext* avctx) override;
+  const std::string Name() override { return "vtb"; }
+  unsigned GetAllowedReferences() override;
 
   void Close();
 

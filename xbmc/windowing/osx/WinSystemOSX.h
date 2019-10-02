@@ -29,33 +29,33 @@ class CWinSystemOSX : public CWinSystemBase, public ITimerCallback
 public:
 
   CWinSystemOSX();
-  virtual ~CWinSystemOSX();
+  ~CWinSystemOSX() override;
 
   // ITimerCallback interface
-  virtual void OnTimeout() override;
+  void OnTimeout() override;
 
   // CWinSystemBase
-  virtual bool InitWindowSystem() override;
-  virtual bool DestroyWindowSystem() override;
-  virtual bool CreateNewWindow(const std::string& name, bool fullScreen, RESOLUTION_INFO& res) override;
-  virtual bool DestroyWindow() override;
-  virtual bool ResizeWindow(int newWidth, int newHeight, int newLeft, int newTop) override;
-  virtual bool SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays) override;
-  virtual void UpdateResolutions() override;
-  virtual void NotifyAppFocusChange(bool bGaining) override;
-  virtual void ShowOSMouse(bool show) override;
-  virtual bool Minimize() override;
-  virtual bool Restore() override;
-  virtual bool Hide() override;
-  virtual bool Show(bool raise = true) override;
-  virtual void OnMove(int x, int y) override;
+  bool InitWindowSystem() override;
+  bool DestroyWindowSystem() override;
+  bool CreateNewWindow(const std::string& name, bool fullScreen, RESOLUTION_INFO& res) override;
+  bool DestroyWindow() override;
+  bool ResizeWindow(int newWidth, int newHeight, int newLeft, int newTop) override;
+  bool SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays) override;
+  void UpdateResolutions() override;
+  void NotifyAppFocusChange(bool bGaining) override;
+  void ShowOSMouse(bool show) override;
+  bool Minimize() override;
+  bool Restore() override;
+  bool Hide() override;
+  bool Show(bool raise = true) override;
+  void OnMove(int x, int y) override;
 
-  virtual std::string GetClipboardText(void) override;
+  std::string GetClipboardText() override;
 
   void Register(IDispResource *resource) override;
   void Unregister(IDispResource *resource) override;
 
-  virtual std::unique_ptr<CVideoSync> GetVideoSync(void *clock) override;
+  std::unique_ptr<CVideoSync> GetVideoSync(void* clock) override;
 
   void        WindowChangedScreen();
 
@@ -77,7 +77,7 @@ public:
   bool MessagePump() override;
 
 protected:
-  virtual std::unique_ptr<KODI::WINDOWING::IOSScreenSaver> GetOSScreenSaverImpl() override;
+  std::unique_ptr<KODI::WINDOWING::IOSScreenSaver> GetOSScreenSaverImpl() override;
 
   void  HandlePossibleRefreshrateChange();
   void  GetScreenResolution(int* w, int* h, double* fps, int screenIdx);

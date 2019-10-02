@@ -107,7 +107,7 @@ public:
     m_surfaceTexture->setOnFrameAvailableListener(*this);
   }
 
-  virtual ~CDVDMediaCodecOnFrameAvailable()
+  ~CDVDMediaCodecOnFrameAvailable() override
   {
     // unhook the callback
     CJNIXBMCSurfaceTextureOnFrameAvailableListener nullListener(jni::jhobject(NULL));
@@ -115,10 +115,7 @@ public:
   }
 
 protected:
-  void onFrameAvailable(CJNISurfaceTexture)
-  {
-    Set();
-  }
+  void onFrameAvailable(CJNISurfaceTexture) override { Set(); }
 
 private:
   std::shared_ptr<CJNISurfaceTexture> m_surfaceTexture;

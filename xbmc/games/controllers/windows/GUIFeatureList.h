@@ -28,15 +28,15 @@ namespace GAME
   {
   public:
     CGUIFeatureList(CGUIWindow* window, GameClientPtr gameClient);
-    virtual ~CGUIFeatureList(void);
+    ~CGUIFeatureList() override;
 
     // implementation of IFeatureList
-    virtual bool Initialize(void) override;
-    virtual void Deinitialize(void) override;
-    virtual bool HasButton(JOYSTICK::FEATURE_TYPE type) const override;
-    virtual void Load(const ControllerPtr& controller) override;
-    virtual void OnFocus(unsigned int buttonIndex) override { }
-    virtual void OnSelect(unsigned int buttonIndex) override;
+    bool Initialize() override;
+    void Deinitialize() override;
+    bool HasButton(JOYSTICK::FEATURE_TYPE type) const override;
+    void Load(const ControllerPtr& controller) override;
+    void OnFocus(unsigned int buttonIndex) override {}
+    void OnSelect(unsigned int buttonIndex) override;
 
   private:
     IFeatureButton* GetButtonControl(unsigned int buttonIndex);

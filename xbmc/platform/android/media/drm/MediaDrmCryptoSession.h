@@ -39,7 +39,7 @@ namespace DRM
   public:
     static void Register();
     CMediaDrmCryptoSession(const std::string& UUID, const std::string& cipherAlgo, const std::string& macAlgo);
-    virtual ~CMediaDrmCryptoSession();
+    ~CMediaDrmCryptoSession() override;
 
     // Interface methods
     XbmcCommons::Buffer GetKeyRequest(const XbmcCommons::Buffer& init, const std::string& mimeType, bool offlineKey, const std::map<std::string, std::string>& parameters) override;

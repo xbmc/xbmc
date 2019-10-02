@@ -14,7 +14,7 @@ class CGBMDPMSSupport : public CDPMSSupport
 {
 public:
   CGBMDPMSSupport();
-  ~CGBMDPMSSupport() = default;
+  ~CGBMDPMSSupport() override = default;
 
 protected:
   bool EnablePowerSaving(PowerSavingMode mode) override;

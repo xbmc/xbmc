@@ -36,7 +36,7 @@ public:
   unsigned int MaxRewindTimeSec();
 
   // Inherited from ISettingCallback
-  virtual void OnSettingChanged(std::shared_ptr<const CSetting> setting) override;
+  void OnSettingChanged(std::shared_ptr<const CSetting> setting) override;
 
 private:
   // Construction parameters

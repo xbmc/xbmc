@@ -22,7 +22,7 @@ public:
   CJNIXBMCMediaSession();
   CJNIXBMCMediaSession(const CJNIXBMCMediaSession& other);
   CJNIXBMCMediaSession(const jni::jhobject &object) : CJNIBase(object) {}
-  virtual ~CJNIXBMCMediaSession();
+  ~CJNIXBMCMediaSession() override;
 
   static void RegisterNatives(JNIEnv* env);
 

@@ -22,13 +22,13 @@ namespace GAME
                     const CControllerFeature& feature,
                     unsigned int index);
 
-    virtual ~CGUIWheelButton() = default;
+    ~CGUIWheelButton() override = default;
 
     // implementation of IFeatureButton
-    virtual bool PromptForInput(CEvent& waitEvent) override;
-    virtual bool IsFinished(void) const override;
-    virtual JOYSTICK::WHEEL_DIRECTION GetWheelDirection(void) const override;
-    virtual void Reset(void) override;
+    bool PromptForInput(CEvent& waitEvent) override;
+    bool IsFinished() const override;
+    JOYSTICK::WHEEL_DIRECTION GetWheelDirection() const override;
+    void Reset() override;
 
   private:
     enum class STATE

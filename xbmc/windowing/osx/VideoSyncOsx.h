@@ -23,15 +23,15 @@ public:
     m_displayReset(false){};
 
   // CVideoSync interface
-  virtual bool Setup(PUPDATECLOCK func) override;
-  virtual void Run(CEvent& stopEvent) override;
-  virtual void Cleanup() override;
-  virtual float GetFps() override;
-  virtual void RefreshChanged() override;
+  bool Setup(PUPDATECLOCK func) override;
+  void Run(CEvent& stopEvent) override;
+  void Cleanup() override;
+  float GetFps() override;
+  void RefreshChanged() override;
 
   // IDispResource interface
-  virtual void OnLostDisplay() override;
-  virtual void OnResetDisplay() override;
+  void OnLostDisplay() override;
+  void OnResetDisplay() override;
 
   // used in the displaylink callback
   void VblankHandler(int64_t nowtime, uint32_t timebase);

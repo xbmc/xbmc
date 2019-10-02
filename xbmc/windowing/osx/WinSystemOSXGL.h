@@ -15,14 +15,14 @@ class CWinSystemOSXGL : public CWinSystemOSX, public CRenderSystemGL
 {
 public:
   CWinSystemOSXGL() = default;
-  virtual ~CWinSystemOSXGL() = default;
+  ~CWinSystemOSXGL() override = default;
 
   // Implementation of CWinSystemBase via CWinSystemOSX
   CRenderSystemBase *GetRenderSystem() override { return this; }
-  virtual bool ResizeWindow(int newWidth, int newHeight, int newLeft, int newTop) override;
-  virtual bool SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays) override;
+  bool ResizeWindow(int newWidth, int newHeight, int newLeft, int newTop) override;
+  bool SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays) override;
 
 protected:
-  virtual void PresentRenderImpl(bool rendered) override;
-  virtual void SetVSyncImpl(bool enable) override;
+  void PresentRenderImpl(bool rendered) override;
+  void SetVSyncImpl(bool enable) override;
 };

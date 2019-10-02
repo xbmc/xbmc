@@ -66,7 +66,7 @@ class CMediaCodecVideoBuffer : public CVideoBuffer
 public:
   CMediaCodecVideoBuffer(int id)
     : CVideoBuffer(id){};
-  virtual ~CMediaCodecVideoBuffer() = default;
+  ~CMediaCodecVideoBuffer() override = default;
 
   void Set(int internalId,
            int textureId,
@@ -104,10 +104,10 @@ public:
   CMediaCodecVideoBufferPool(std::shared_ptr<CMediaCodec> mediaCodec)
     : m_codec(mediaCodec){};
 
-  virtual ~CMediaCodecVideoBufferPool();
+  ~CMediaCodecVideoBufferPool() override;
 
-  virtual CVideoBuffer* Get() override;
-  virtual void Return(int id) override;
+  CVideoBuffer* Get() override;
+  void Return(int id) override;
 
   std::shared_ptr<CMediaCodec> GetMediaCodec();
   void ResetMediaCodec();
@@ -126,21 +126,21 @@ class CDVDVideoCodecAndroidMediaCodec : public CDVDVideoCodec, public CJNISurfac
 {
 public:
   CDVDVideoCodecAndroidMediaCodec(CProcessInfo& processInfo, bool surface_render = false);
-  virtual ~CDVDVideoCodecAndroidMediaCodec();
+  ~CDVDVideoCodecAndroidMediaCodec() override;
 
   // registration
   static CDVDVideoCodec* Create(CProcessInfo& processInfo);
   static bool Register();
 
   // required overrides
-  virtual bool Open(CDVDStreamInfo& hints, CDVDCodecOptions& options) override;
-  virtual bool AddData(const DemuxPacket& packet) override;
-  virtual void Reset() override;
-  virtual bool Reconfigure(CDVDStreamInfo& hints) override;
-  virtual VCReturn GetPicture(VideoPicture* pVideoPicture) override;
-  virtual const char* GetName() override { return m_formatname.c_str(); };
-  virtual void SetCodecControl(int flags) override;
-  virtual unsigned GetAllowedReferences() override;
+  bool Open(CDVDStreamInfo& hints, CDVDCodecOptions& options) override;
+  bool AddData(const DemuxPacket& packet) override;
+  void Reset() override;
+  bool Reconfigure(CDVDStreamInfo& hints) override;
+  VCReturn GetPicture(VideoPicture* pVideoPicture) override;
+  const char* GetName() override { return m_formatname.c_str(); };
+  void SetCodecControl(int flags) override;
+  unsigned GetAllowedReferences() override;
 
 protected:
   void Dispose();
@@ -200,7 +200,7 @@ protected:
 
   // CJNISurfaceHolderCallback interface
 public:
-  virtual void surfaceChanged(CJNISurfaceHolder holder, int format, int width, int height) override;
-  virtual void surfaceCreated(CJNISurfaceHolder holder) override;
-  virtual void surfaceDestroyed(CJNISurfaceHolder holder) override;
+  void surfaceChanged(CJNISurfaceHolder holder, int format, int width, int height) override;
+  void surfaceCreated(CJNISurfaceHolder holder) override;
+  void surfaceDestroyed(CJNISurfaceHolder holder) override;
 };

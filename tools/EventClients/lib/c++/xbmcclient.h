@@ -301,7 +301,7 @@ private:
   char *m_IconData;
   unsigned short m_IconSize;
 public:
-  virtual void ConstructPayload()
+  void ConstructPayload() override
   {
     m_Payload.clear();
 
@@ -358,7 +358,7 @@ public:
     }
   }
 
-  virtual ~CPacketHELO()
+  ~CPacketHELO() override
   {
     m_DeviceName.clear();
     delete[] m_IconData;
@@ -382,7 +382,7 @@ private:
   char *m_IconData;
   unsigned short m_IconSize;
 public:
-  virtual void ConstructPayload()
+  void ConstructPayload() override
   {
     m_Payload.clear();
 
@@ -445,7 +445,7 @@ public:
       m_IconType = ICON_NONE;
   }
 
-  virtual ~CPacketNOTIFICATION()
+  ~CPacketNOTIFICATION() override
   {
     m_Title.clear();
     m_Message.clear();
@@ -487,7 +487,7 @@ private:
   unsigned short m_Amount;
   unsigned short m_Flags;
 public:
-  virtual void ConstructPayload()
+  void ConstructPayload() override
   {
     m_Payload.clear();
 
@@ -574,7 +574,7 @@ public:
     m_ButtonCode = 0;
   }
 
-  virtual ~CPacketBUTTON()
+  ~CPacketBUTTON() override
   {
     m_DeviceMap.clear();
     m_Button.clear();
@@ -594,7 +594,7 @@ public:
   {
     m_PacketType = PT_PING;
   }
-  virtual ~CPacketPING() = default;
+  ~CPacketPING() override = default;
 };
 
 class CPacketBYE : public CPacket
@@ -607,7 +607,7 @@ public:
   {
     m_PacketType = PT_BYE;
   }
-  virtual ~CPacketBYE() = default;
+  ~CPacketBYE() override = default;
 };
 
 class CPacketMOUSE : public CPacket
@@ -632,7 +632,7 @@ public:
     m_Y = Y;
   }
 
-  virtual void ConstructPayload()
+  void ConstructPayload() override
   {
     m_Payload.clear();
 
@@ -645,7 +645,7 @@ public:
     m_Payload.push_back( (m_Y & 0x00ff));
   }
 
-  virtual ~CPacketMOUSE() = default;
+  ~CPacketMOUSE() override = default;
 };
 
 class CPacketLOG : public CPacket
@@ -672,7 +672,7 @@ public:
     m_AutoPrintf = AutoPrintf;
   }
 
-  virtual void ConstructPayload()
+  void ConstructPayload() override
   {
     m_Payload.clear();
 
@@ -689,7 +689,7 @@ public:
     m_Payload.push_back('\0');
   }
 
-  virtual ~CPacketLOG() = default;
+  ~CPacketLOG() override = default;
 };
 
 class CPacketACTION : public CPacket
@@ -713,7 +713,7 @@ public:
       m_Action.push_back(Action[i]);
   }
 
-  virtual void ConstructPayload()
+  void ConstructPayload() override
   {
     m_Payload.clear();
 
@@ -724,7 +724,7 @@ public:
     m_Payload.push_back('\0');
   }
 
-  virtual ~CPacketACTION() = default;
+  ~CPacketACTION() override = default;
 };
 
 class CXBMCClient

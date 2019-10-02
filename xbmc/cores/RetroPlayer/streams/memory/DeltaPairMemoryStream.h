@@ -25,17 +25,17 @@ namespace RETRO
   public:
     CDeltaPairMemoryStream() = default;
 
-    virtual ~CDeltaPairMemoryStream() = default;
+    ~CDeltaPairMemoryStream() override = default;
 
     // implementation of IMemoryStream via CLinearMemoryStream
-    virtual void Reset() override;
-    virtual uint64_t PastFramesAvailable() const override;
-    virtual uint64_t RewindFrames(uint64_t frameCount) override;
+    void Reset() override;
+    uint64_t PastFramesAvailable() const override;
+    uint64_t RewindFrames(uint64_t frameCount) override;
 
   protected:
     // implementation of CLinearMemoryStream
-    virtual void SubmitFrameInternal() override;
-    virtual void CullPastFrames(uint64_t frameCount) override;
+    void SubmitFrameInternal() override;
+    void CullPastFrames(uint64_t frameCount) override;
 
     /*!
      * Rewinding is implemented by applying XOR deltas on the specific parts of

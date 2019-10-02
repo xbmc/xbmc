@@ -33,7 +33,7 @@ class IVideoBufferDRMPRIME : public CVideoBuffer
 {
 public:
   IVideoBufferDRMPRIME() = delete;
-  virtual ~IVideoBufferDRMPRIME() = default;
+  ~IVideoBufferDRMPRIME() override = default;
 
   virtual AVDRMFrameDescriptor* GetDescriptor() const = 0;
   virtual uint32_t GetWidth() const = 0;
@@ -68,7 +68,7 @@ class CVideoBufferDRMPRIME : public IVideoBufferDRMPRIME
 {
 public:
   CVideoBufferDRMPRIME(IVideoBufferPool& pool, int id);
-  ~CVideoBufferDRMPRIME();
+  ~CVideoBufferDRMPRIME() override;
   void SetRef(AVFrame* frame);
   void Unref();
 
@@ -96,7 +96,7 @@ protected:
 class CVideoBufferPoolDRMPRIME : public IVideoBufferPool
 {
 public:
-  ~CVideoBufferPoolDRMPRIME();
+  ~CVideoBufferPoolDRMPRIME() override;
   void Return(int id) override;
   CVideoBuffer* Get() override;
 

@@ -20,14 +20,14 @@ class CJNIXBMCMainView : virtual public CJNIBase, public CJNISurfaceHolderCallba
 {
 public:
   CJNIXBMCMainView(CJNISurfaceHolderCallback* callback);
-  ~CJNIXBMCMainView() = default;
+  ~CJNIXBMCMainView() override = default;
 
   static void RegisterNatives(JNIEnv* env);
 
   // CJNISurfaceHolderCallback interface
-  void surfaceChanged(CJNISurfaceHolder holder, int format, int width, int height);
-  void surfaceCreated(CJNISurfaceHolder holder);
-  void surfaceDestroyed(CJNISurfaceHolder holder);
+  void surfaceChanged(CJNISurfaceHolder holder, int format, int width, int height) override;
+  void surfaceCreated(CJNISurfaceHolder holder) override;
+  void surfaceDestroyed(CJNISurfaceHolder holder) override;
 
   void attach(const jobject& thiz);
   bool waitForSurface(unsigned int millis);

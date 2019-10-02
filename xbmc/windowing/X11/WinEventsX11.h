@@ -21,7 +21,7 @@ class CWinEventsX11 : public IWinEvents
 {
 public:
   CWinEventsX11(CWinSystemX11& winSystem);
-  virtual ~CWinEventsX11();
+  ~CWinEventsX11() override;
   bool MessagePump() override;
   bool Init(Display *dpy, Window win);
   void Quit();

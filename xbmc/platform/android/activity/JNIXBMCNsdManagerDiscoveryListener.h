@@ -20,18 +20,18 @@ public:
   CJNIXBMCNsdManagerDiscoveryListener();
   CJNIXBMCNsdManagerDiscoveryListener(const CJNIXBMCNsdManagerDiscoveryListener& other);
   explicit CJNIXBMCNsdManagerDiscoveryListener(const jni::jhobject &object) : CJNIBase(object) {}
-  virtual ~CJNIXBMCNsdManagerDiscoveryListener();
+  ~CJNIXBMCNsdManagerDiscoveryListener() override;
 
   static void RegisterNatives(JNIEnv* env);
 
   // CJNINsdManagerDiscoveryListener interface
 public:
-  void onDiscoveryStarted(const std::string& serviceType) = 0;
-  void onDiscoveryStopped(const std::string& serviceType) = 0;
-  void onServiceFound(const CJNINsdServiceInfo& serviceInfo) = 0;
-  void onServiceLost(const CJNINsdServiceInfo& serviceInfo) = 0;
-  void onStartDiscoveryFailed(const std::string& serviceType, int errorCode) = 0;
-  void onStopDiscoveryFailed(const std::string& serviceType, int errorCode) = 0;
+  void onDiscoveryStarted(const std::string& serviceType) override = 0;
+  void onDiscoveryStopped(const std::string& serviceType) override = 0;
+  void onServiceFound(const CJNINsdServiceInfo& serviceInfo) override = 0;
+  void onServiceLost(const CJNINsdServiceInfo& serviceInfo) override = 0;
+  void onStartDiscoveryFailed(const std::string& serviceType, int errorCode) override = 0;
+  void onStopDiscoveryFailed(const std::string& serviceType, int errorCode) override = 0;
 
 protected:
   static void _onDiscoveryStarted(JNIEnv* env, jobject thiz, jstring serviceType);

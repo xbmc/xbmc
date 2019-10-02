@@ -22,7 +22,7 @@ class CVideoTagLoaderPlugin : public VIDEO::IVideoInfoTagLoader
 public:
   CVideoTagLoaderPlugin(const CFileItem& item, bool forceRefresh);
 
-  virtual ~CVideoTagLoaderPlugin() = default;
+  ~CVideoTagLoaderPlugin() override = default;
 
   //! \brief Returns whether or not read has info.
   bool HasInfo() const override;

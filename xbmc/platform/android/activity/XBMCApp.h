@@ -86,19 +86,19 @@ class CXBMCApp
 {
 public:
   explicit CXBMCApp(ANativeActivity *nativeActivity);
-  virtual ~CXBMCApp();
+  ~CXBMCApp() override;
   static CXBMCApp* get() { return m_xbmcappinstance; }
 
   // IAnnouncer IF
-  virtual void Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data) override;
+  void Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char* sender, const char* message, const CVariant& data) override;
 
-  virtual void onReceive(CJNIIntent intent) override;
-  virtual void onNewIntent(CJNIIntent intent) override;
-  virtual void onActivityResult(int requestCode, int resultCode, CJNIIntent resultData) override;
-  virtual void onVolumeChanged(int volume) override;
+  void onReceive(CJNIIntent intent) override;
+  void onNewIntent(CJNIIntent intent) override;
+  void onActivityResult(int requestCode, int resultCode, CJNIIntent resultData) override;
+  void onVolumeChanged(int volume) override;
   virtual void onAudioFocusChange(int focusChange);
-  virtual void doFrame(int64_t frameTimeNanos) override;
-  virtual void onVisibleBehindCanceled() override;
+  void doFrame(int64_t frameTimeNanos) override;
+  void onVisibleBehindCanceled() override;
 
   // implementation of CJNIInputManagerInputDeviceListener
   void onInputDeviceAdded(int deviceId) override;

@@ -62,7 +62,7 @@ namespace ADDON
   friend struct Interface_GUIControlAddonRendering;
   public:
     explicit CGUIAddonRenderingControl(CGUIRenderingControl *pControl);
-    virtual ~CGUIAddonRenderingControl() = default;
+    ~CGUIAddonRenderingControl() override = default;
 
     bool Create(int x, int y, int w, int h, void *device) override;
     void Render() override;

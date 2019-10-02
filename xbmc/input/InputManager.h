@@ -212,10 +212,10 @@ public:
   void QueueAction(const CAction& action);
 
   // implementation of ISettingCallback
-  virtual void OnSettingChanged(std::shared_ptr<const CSetting> setting) override;
+  void OnSettingChanged(std::shared_ptr<const CSetting> setting) override;
 
   // implementation of IActionListener
-  virtual bool OnAction(const CAction& action) override;
+  bool OnAction(const CAction& action) override;
 
   void RegisterKeyboardDriverHandler(KODI::KEYBOARD::IKeyboardDriverHandler* handler);
   void UnregisterKeyboardDriverHandler(KODI::KEYBOARD::IKeyboardDriverHandler* handler);

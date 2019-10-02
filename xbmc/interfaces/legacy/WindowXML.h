@@ -416,15 +416,19 @@ namespace XBMCAddon
 
 #ifndef SWIG
       // CGUIWindow
-      SWIGHIDDENVIRTUAL bool OnMessage(CGUIMessage& message) override;
-      SWIGHIDDENVIRTUAL bool OnAction(const CAction &action) override;
+      bool OnMessage(CGUIMessage& message) override;
+      bool OnAction(const CAction& action) override;
       SWIGHIDDENVIRTUAL void AllocResources(bool forceLoad = false);
       SWIGHIDDENVIRTUAL void FreeResources(bool forceUnLoad = false);
       SWIGHIDDENVIRTUAL bool OnClick(int iItem);
       SWIGHIDDENVIRTUAL bool OnDoubleClick(int iItem);
       SWIGHIDDENVIRTUAL void Process(unsigned int currentTime, CDirtyRegionList &dirtyregions);
 
-      SWIGHIDDENVIRTUAL bool IsMediaWindow() const override { XBMC_TRACE; return m_isMedia; };
+      bool IsMediaWindow() const override
+      {
+        XBMC_TRACE;
+        return m_isMedia;
+      };
 
       // This method is identical to the Window::OnDeinitWindow method
       //  except it passes the message on to their respective parents.
@@ -529,18 +533,42 @@ namespace XBMCAddon
       ~WindowXMLDialog() override;
 
 #ifndef SWIG
-      SWIGHIDDENVIRTUAL bool OnMessage(CGUIMessage &message) override;
-      SWIGHIDDENVIRTUAL bool IsDialogRunning() const override { XBMC_TRACE; return WindowDialogMixin::IsDialogRunning(); }
-      SWIGHIDDENVIRTUAL bool IsDialog() const override { XBMC_TRACE; return true;};
-      SWIGHIDDENVIRTUAL bool IsModalDialog() const override { XBMC_TRACE; return true; };
-      SWIGHIDDENVIRTUAL bool IsMediaWindow() const override { XBMC_TRACE; return false; };
-      SWIGHIDDENVIRTUAL bool OnAction(const CAction &action) override;
-      SWIGHIDDENVIRTUAL void OnDeinitWindow(int nextWindowID) override;
+      bool OnMessage(CGUIMessage& message) override;
+      bool IsDialogRunning() const override
+      {
+        XBMC_TRACE;
+        return WindowDialogMixin::IsDialogRunning();
+      }
+      bool IsDialog() const override
+      {
+        XBMC_TRACE;
+        return true;
+      };
+      bool IsModalDialog() const override
+      {
+        XBMC_TRACE;
+        return true;
+      };
+      bool IsMediaWindow() const override
+      {
+        XBMC_TRACE;
+        return false;
+      };
+      bool OnAction(const CAction& action) override;
+      void OnDeinitWindow(int nextWindowID) override;
 
-      SWIGHIDDENVIRTUAL bool LoadXML(const String &strPath, const String &strPathLower) override;
+      bool LoadXML(const String& strPath, const String& strPathLower) override;
 
-      SWIGHIDDENVIRTUAL inline void show() override { XBMC_TRACE; WindowDialogMixin::show(); }
-      SWIGHIDDENVIRTUAL inline void close() override { XBMC_TRACE; WindowDialogMixin::close(); }
+      inline void show() override
+      {
+        XBMC_TRACE;
+        WindowDialogMixin::show();
+      }
+      inline void close() override
+      {
+        XBMC_TRACE;
+        WindowDialogMixin::close();
+      }
 
       friend class DialogJumper;
 #endif

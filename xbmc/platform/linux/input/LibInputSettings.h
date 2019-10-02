@@ -25,7 +25,7 @@ public:
   static void SettingOptionsKeyboardLayoutsFiller(std::shared_ptr<const CSetting> setting, std::vector<StringSettingOption> &list, std::string &current, void *data);
 
   CLibInputSettings(CLibInputHandler *handler);
-  ~CLibInputSettings();
+  ~CLibInputSettings() override;
 
 private:
   CLibInputHandler *m_libInputHandler{nullptr};

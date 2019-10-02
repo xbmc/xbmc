@@ -25,7 +25,7 @@ namespace JOYSTICK
   {
   public:
     explicit CJoystickEasterEgg(const std::string& controllerId);
-    virtual ~CJoystickEasterEgg() = default;
+    ~CJoystickEasterEgg() override = default;
 
     // implementation of IButtonSequence
     bool OnButtonPress(const FeatureName& feature) override;

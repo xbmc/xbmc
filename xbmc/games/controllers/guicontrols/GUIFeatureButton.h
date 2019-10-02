@@ -27,16 +27,19 @@ namespace GAME
                       const CControllerFeature& feature,
                       unsigned int index);
 
-    virtual ~CGUIFeatureButton() = default;
+    ~CGUIFeatureButton() override = default;
 
     // implementation of CGUIControl via CGUIButtonControl
-    virtual void OnUnFocus(void) override;
+    void OnUnFocus() override;
 
     // partial implementation of IFeatureButton
-    virtual const CControllerFeature& Feature(void) const override { return m_feature; }
-    virtual INPUT::CARDINAL_DIRECTION GetCardinalDirection(void) const override { return INPUT::CARDINAL_DIRECTION::NONE; }
-    virtual JOYSTICK::WHEEL_DIRECTION GetWheelDirection(void) const override { return JOYSTICK::WHEEL_DIRECTION::NONE; }
-    virtual JOYSTICK::THROTTLE_DIRECTION GetThrottleDirection(void) const override { return JOYSTICK::THROTTLE_DIRECTION::NONE; }
+    const CControllerFeature& Feature() const override { return m_feature; }
+    INPUT::CARDINAL_DIRECTION GetCardinalDirection() const override { return INPUT::CARDINAL_DIRECTION::NONE; }
+    JOYSTICK::WHEEL_DIRECTION GetWheelDirection() const override { return JOYSTICK::WHEEL_DIRECTION::NONE; }
+    JOYSTICK::THROTTLE_DIRECTION GetThrottleDirection() const override
+    {
+      return JOYSTICK::THROTTLE_DIRECTION::NONE;
+    }
 
   protected:
     bool DoPrompt(const std::string& strPrompt, const std::string& strWarn, const std::string& strFeature, CEvent& waitEvent);

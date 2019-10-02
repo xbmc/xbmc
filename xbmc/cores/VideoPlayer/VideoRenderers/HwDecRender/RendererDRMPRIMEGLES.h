@@ -29,7 +29,7 @@ class CRendererDRMPRIMEGLES : public CLinuxRendererGLES
 {
 public:
   CRendererDRMPRIMEGLES() = default;
-  ~CRendererDRMPRIMEGLES();
+  ~CRendererDRMPRIMEGLES() override;
 
   // Registration
   static CBaseRenderer* Create(CVideoBuffer* buffer);

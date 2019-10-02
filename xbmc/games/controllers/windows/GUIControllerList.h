@@ -30,16 +30,16 @@ namespace GAME
   {
   public:
     CGUIControllerList(CGUIWindow* window, IFeatureList* featureList, GameClientPtr gameClient);
-    virtual ~CGUIControllerList(void) { Deinitialize(); }
+    ~CGUIControllerList() override { Deinitialize(); }
 
     // implementation of IControllerList
-    virtual bool Initialize(void) override;
-    virtual void Deinitialize(void) override;
-    virtual bool Refresh(const std::string& controllerId) override;
-    virtual void OnFocus(unsigned int controllerIndex) override;
-    virtual void OnSelect(unsigned int controllerIndex) override;
-    virtual int GetFocusedController() const override { return m_focusedController; }
-    virtual void ResetController(void) override;
+    bool Initialize() override;
+    void Deinitialize() override;
+    bool Refresh(const std::string& controllerId) override;
+    void OnFocus(unsigned int controllerIndex) override;
+    void OnSelect(unsigned int controllerIndex) override;
+    int GetFocusedController() const override { return m_focusedController; }
+    void ResetController() override;
 
   private:
     bool RefreshControllers(void);

@@ -20,20 +20,20 @@ namespace GAME
   {
   public:
     CGUIWindowGames();
-    virtual ~CGUIWindowGames() = default;
+    ~CGUIWindowGames() override = default;
 
     // implementation of CGUIControl via CGUIMediaWindow
-    virtual bool OnMessage(CGUIMessage& message) override;
+    bool OnMessage(CGUIMessage& message) override;
 
   protected:
     // implementation of CGUIMediaWindow
-    virtual void SetupShares() override;
-    virtual bool OnClick(int iItem, const std::string &player = "") override;
-    virtual void GetContextButtons(int itemNumber, CContextButtons &buttons) override;
-    virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button) override;
-    virtual bool OnAddMediaSource() override;
-    virtual bool GetDirectory(const std::string &strDirectory, CFileItemList &items) override;
-    virtual std::string GetStartFolder(const std::string &dir) override;
+    void SetupShares() override;
+    bool OnClick(int iItem, const std::string& player = "") override;
+    void GetContextButtons(int itemNumber, CContextButtons& buttons) override;
+    bool OnContextButton(int itemNumber, CONTEXT_BUTTON button) override;
+    bool OnAddMediaSource() override;
+    bool GetDirectory(const std::string& strDirectory, CFileItemList& items) override;
+    std::string GetStartFolder(const std::string& dir) override;
 
     bool OnClickMsg(int controlId, int actionId);
     void OnItemInfo(int itemNumber);

@@ -28,7 +28,7 @@ class CAudioSinkAE : IAEClockCallback
 {
 public:
   explicit CAudioSinkAE(CDVDClock *clock);
-  ~CAudioSinkAE();
+  ~CAudioSinkAE() override;
 
   void SetVolume(float fVolume);
   void SetDynamicRangeCompression(long drc);

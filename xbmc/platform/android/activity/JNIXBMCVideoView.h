@@ -21,16 +21,16 @@ class CJNIXBMCVideoView : virtual public CJNIBase, public CJNISurfaceHolderCallb
 {
 public:
   CJNIXBMCVideoView(const jni::jhobject &object);
-  ~CJNIXBMCVideoView() = default;
+  ~CJNIXBMCVideoView() override = default;
 
   static void RegisterNatives(JNIEnv* env);
 
   static CJNIXBMCVideoView* createVideoView(CJNISurfaceHolderCallback* callback);
 
   // CJNISurfaceHolderCallback interface
-  void surfaceChanged(CJNISurfaceHolder holder, int format, int width, int height);
-  void surfaceCreated(CJNISurfaceHolder holder);
-  void surfaceDestroyed(CJNISurfaceHolder holder);
+  void surfaceChanged(CJNISurfaceHolder holder, int format, int width, int height) override;
+  void surfaceCreated(CJNISurfaceHolder holder) override;
+  void surfaceDestroyed(CJNISurfaceHolder holder) override;
 
   static void _surfaceChanged(JNIEnv* env, jobject thiz, jobject holder, jint format, jint width, jint height);
   static void _surfaceCreated(JNIEnv* env, jobject thiz, jobject holder);

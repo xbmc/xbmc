@@ -27,7 +27,7 @@ class CWinSystemGbmGLESContext : public CWinSystemGbmEGLContext, public CRenderS
 {
 public:
   CWinSystemGbmGLESContext();
-  virtual ~CWinSystemGbmGLESContext() = default;
+  ~CWinSystemGbmGLESContext() override = default;
 
   // Implementation of CWinSystemBase via CWinSystemGbm
   CRenderSystemBase *GetRenderSystem() override { return this; }

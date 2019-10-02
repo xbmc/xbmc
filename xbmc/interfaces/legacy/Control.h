@@ -859,7 +859,7 @@ namespace XBMCAddon
       bool bHasPath = false;
       int iAngle = 0;
 
-      SWIGHIDDENVIRTUAL CGUIControl* Create() override;
+      CGUIControl* Create() override;
 
 #endif
     };
@@ -1058,7 +1058,7 @@ namespace XBMCAddon
       uint32_t align;
       bool bIsPassword = false;
 
-      SWIGHIDDENVIRTUAL CGUIControl* Create() override;
+      CGUIControl* Create() override;
 #endif
 
       // setType() Method
@@ -1628,7 +1628,7 @@ namespace XBMCAddon
 #ifndef SWIG
       void sendLabelBind(int tail);
 
-      SWIGHIDDENVIRTUAL bool canAcceptMessages(int actionId) override
+      bool canAcceptMessages(int actionId) override
       { return ((actionId == ACTION_SELECT_ITEM) | (actionId == ACTION_MOUSE_LEFT_CLICK)); }
 
       // This is called from AddonWindow.cpp but shouldn't be available
@@ -1653,7 +1653,7 @@ namespace XBMCAddon
       int itemTextOffsetY = 0;
       uint32_t alignmentY;
 
-      SWIGHIDDENVIRTUAL CGUIControl* Create() override;
+      CGUIControl* Create() override;
 #endif
     };
     /// @}
@@ -1798,7 +1798,7 @@ namespace XBMCAddon
       std::vector<std::string> vecLabels;
       uint32_t align;
 
-      SWIGHIDDENVIRTUAL CGUIControl* Create() override;
+      CGUIControl* Create() override;
 
       ControlFadeLabel() = default;
 #endif
@@ -1982,7 +1982,7 @@ namespace XBMCAddon
       std::string strFont;
       UTILS::Color textColor;
 
-      SWIGHIDDENVIRTUAL CGUIControl* Create() override;
+      CGUIControl* Create() override;
 
       ControlTextBox() = default;
 #endif
@@ -2101,7 +2101,7 @@ namespace XBMCAddon
       int aspectRatio = 0;
       UTILS::Color colorDiffuse;
 
-      SWIGHIDDENVIRTUAL CGUIControl* Create() override;
+      CGUIControl* Create() override;
 #endif
     };
     /// @}
@@ -2244,7 +2244,7 @@ namespace XBMCAddon
       int aspectRatio = 0;
       UTILS::Color colorDiffuse;
 
-      SWIGHIDDENVIRTUAL CGUIControl* Create() override;
+      CGUIControl* Create() override;
       ControlProgress() = default;
 #endif
     };
@@ -2452,7 +2452,7 @@ namespace XBMCAddon
 #endif
 
 #ifndef SWIG
-      SWIGHIDDENVIRTUAL bool canAcceptMessages(int actionId) override { return true; }
+      bool canAcceptMessages(int actionId) override { return true; }
 
       int textOffsetX = 0;
       int textOffsetY = 0;
@@ -2468,7 +2468,7 @@ namespace XBMCAddon
       std::string strTextureFocus;
       std::string strTextureNoFocus;
 
-      SWIGHIDDENVIRTUAL CGUIControl* Create() override;
+      CGUIControl* Create() override;
 
       ControlButton() = default;
 #endif
@@ -2518,7 +2518,7 @@ namespace XBMCAddon
       ControlGroup(long x, long y, long width, long height);
 
 #ifndef SWIG
-      SWIGHIDDENVIRTUAL CGUIControl* Create() override;
+      CGUIControl* Create() override;
 
       inline ControlGroup() = default;
 #endif
@@ -2755,7 +2755,7 @@ namespace XBMCAddon
 #endif
 
 #ifndef SWIG
-      SWIGHIDDENVIRTUAL bool canAcceptMessages(int actionId) override { return true; }
+      bool canAcceptMessages(int actionId) override { return true; }
 
       std::string strFont;
       std::string strText;
@@ -2776,7 +2776,7 @@ namespace XBMCAddon
       UTILS::Color shadowColor;
       UTILS::Color focusedColor;
 
-      SWIGHIDDENVIRTUAL CGUIControl* Create() override;
+      CGUIControl* Create() override;
 
       ControlRadioButton() = default;
 #endif
@@ -2991,7 +2991,7 @@ namespace XBMCAddon
       std::string strTextureFoc;
       int iOrientation;
 
-      SWIGHIDDENVIRTUAL CGUIControl* Create() override;
+      CGUIControl* Create() override;
 
       inline ControlSlider() = default;
 #endif

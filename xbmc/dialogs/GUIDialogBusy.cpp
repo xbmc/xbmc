@@ -25,10 +25,7 @@ public:
   explicit CBusyWaiter(IRunnable *runnable) :
   CThread(runnable, "waiting"), m_done(new CEvent()),  m_runnable(runnable) { }
 
-  ~CBusyWaiter()
-  {
-    StopThread();
-  }
+  ~CBusyWaiter() override { StopThread(); }
 
   bool Wait(unsigned int displaytime, bool allowCancel)
   {

@@ -27,7 +27,7 @@ namespace RETRO
   class CRendererFactoryOpenGLES : public IRendererFactory
   {
   public:
-    virtual ~CRendererFactoryOpenGLES() = default;
+    ~CRendererFactoryOpenGLES() override = default;
 
     // implementation of IRendererFactory
     std::string RenderSystemName() const override;

@@ -88,7 +88,7 @@ class CSmartPlaylist : public IDatabaseQueryRuleFactory
 {
 public:
   CSmartPlaylist();
-  virtual ~CSmartPlaylist() = default;
+  ~CSmartPlaylist() override = default;
 
   bool Load(const CURL& url);
   bool Load(const std::string &path);

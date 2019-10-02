@@ -25,7 +25,7 @@ class CLibInputHandler : CThread
 {
 public:
   CLibInputHandler();
-  ~CLibInputHandler();
+  ~CLibInputHandler() override;
 
   void Start();
 

@@ -17,17 +17,17 @@ class CIOSStorageProvider : public IStorageProvider
 {
 public:
   CIOSStorageProvider() {}
-  virtual ~CIOSStorageProvider() {}
+  ~CIOSStorageProvider() override {}
 
-  virtual void Initialize() {}
-  virtual void Stop() {}
+  void Initialize() override {}
+  void Stop() override {}
 
-  virtual void GetLocalDrives(VECSOURCES& localDrives);
-  virtual void GetRemovableDrives(VECSOURCES& removableDrives) {}
+  void GetLocalDrives(VECSOURCES& localDrives) override;
+  void GetRemovableDrives(VECSOURCES& removableDrives) override {}
 
-  virtual std::vector<std::string> GetDiskUsage(void);
+  std::vector<std::string> GetDiskUsage(void) override;
 
-  virtual bool Eject(const std::string& mountpath) { return false; }
+  bool Eject(const std::string& mountpath) override { return false; }
 
-  virtual bool PumpDriveChangeEvents(IStorageEventsCallback* callback) { return false; }
+  bool PumpDriveChangeEvents(IStorageEventsCallback* callback) override { return false; }
 };

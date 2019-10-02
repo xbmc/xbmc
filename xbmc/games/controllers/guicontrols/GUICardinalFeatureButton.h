@@ -22,13 +22,13 @@ namespace GAME
                               const CControllerFeature& feature,
                               unsigned int index);
 
-    virtual ~CGUICardinalFeatureButton() = default;
+    ~CGUICardinalFeatureButton() override = default;
 
     // implementation of IFeatureButton
-    virtual bool PromptForInput(CEvent& waitEvent) override;
-    virtual bool IsFinished(void) const override;
-    virtual INPUT::CARDINAL_DIRECTION GetCardinalDirection(void) const override;
-    virtual void Reset(void) override;
+    bool PromptForInput(CEvent& waitEvent) override;
+    bool IsFinished() const override;
+    INPUT::CARDINAL_DIRECTION GetCardinalDirection() const override;
+    void Reset() override;
 
   private:
     enum class STATE

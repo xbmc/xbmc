@@ -16,32 +16,32 @@ class CRendererMediaCodecSurface : public CBaseRenderer
 {
 public:
   CRendererMediaCodecSurface();
-  virtual ~CRendererMediaCodecSurface();
+  ~CRendererMediaCodecSurface() override;
 
   static CBaseRenderer* Create(CVideoBuffer *buffer);
   static bool Register();
 
-  virtual bool RenderCapture(CRenderCapture* capture) override;
-  virtual void AddVideoPicture(const VideoPicture &picture, int index) override;
-  virtual void ReleaseBuffer(int idx) override;
-  virtual bool Configure(const VideoPicture &picture, float fps, unsigned int orientation) override;
-  virtual bool IsConfigured() override { return m_bConfigured; };
-  virtual bool ConfigChanged(const VideoPicture &picture) override { return false; };
-  virtual CRenderInfo GetRenderInfo() override;
-  virtual void UnInit() override {};
-  virtual void Update() override {};
-  virtual void RenderUpdate(int index, int index2, bool clear, unsigned int flags, unsigned int alpha) override;
-  virtual bool SupportsMultiPassRendering() override { return false; };
+  bool RenderCapture(CRenderCapture* capture) override;
+  void AddVideoPicture(const VideoPicture& picture, int index) override;
+  void ReleaseBuffer(int idx) override;
+  bool Configure(const VideoPicture& picture, float fps, unsigned int orientation) override;
+  bool IsConfigured() override { return m_bConfigured; };
+  bool ConfigChanged(const VideoPicture& picture) override { return false; };
+  CRenderInfo GetRenderInfo() override;
+  void UnInit() override{};
+  void Update() override{};
+  void RenderUpdate(int index, int index2, bool clear, unsigned int flags, unsigned int alpha) override;
+  bool SupportsMultiPassRendering() override { return false; };
 
   // Player functions
-  virtual bool IsGuiLayer() override { return false; };
+  bool IsGuiLayer() override { return false; };
 
   // Feature support
-  virtual bool Supports(ESCALINGMETHOD method) override { return false; };
-  virtual bool Supports(ERENDERFEATURE feature) override;
+  bool Supports(ESCALINGMETHOD method) override { return false; };
+  bool Supports(ERENDERFEATURE feature) override;
 
 protected:
-  virtual void ReorderDrawPoints() override;
+  void ReorderDrawPoints() override;
 
 private:
   void Reset();

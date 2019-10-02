@@ -26,16 +26,16 @@ namespace GAME
   {
   public:
     CGUIControllerWindow(void);
-    virtual ~CGUIControllerWindow(void);
+    ~CGUIControllerWindow() override;
 
     // implementation of CGUIControl via CGUIDialog
-    virtual void DoProcess(unsigned int currentTime, CDirtyRegionList &dirtyregions) override;
-    virtual bool OnMessage(CGUIMessage& message) override;
+    void DoProcess(unsigned int currentTime, CDirtyRegionList& dirtyregions) override;
+    bool OnMessage(CGUIMessage& message) override;
 
   protected:
     // implementation of CGUIWindow via CGUIDialog
-    virtual void OnInitWindow(void) override;
-    virtual void OnDeinitWindow(int nextWindowID) override;
+    void OnInitWindow() override;
+    void OnDeinitWindow(int nextWindowID) override;
 
   private:
     void OnControllerFocused(unsigned int controllerIndex);

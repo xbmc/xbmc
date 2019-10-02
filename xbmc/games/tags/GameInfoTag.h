@@ -87,9 +87,9 @@ namespace GAME
     const std::string& GetGameClient() const { return m_strGameClient; }
     void SetGameClient(const std::string& strGameClient) { m_strGameClient = strGameClient; }
 
-    virtual void Archive(CArchive& ar) override;
-    virtual void Serialize(CVariant& value) const override;
-    virtual void ToSortable(SortItem& sortable, Field field) const override;
+    void Archive(CArchive& ar) override;
+    void Serialize(CVariant& value) const override;
+    void ToSortable(SortItem& sortable, Field field) const override;
 
   private:
     bool        m_bLoaded;

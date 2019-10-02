@@ -28,7 +28,7 @@ namespace RETRO
   {
   public:
     CGUIGameSettings(CRPProcessInfo &processInfo);
-    ~CGUIGameSettings();
+    ~CGUIGameSettings() override;
 
     // implementation of IGUIRenderSettings
     CRenderSettings GetSettings() const override;

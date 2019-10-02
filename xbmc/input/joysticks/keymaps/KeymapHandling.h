@@ -34,7 +34,7 @@ namespace JOYSTICK
   public:
     CKeymapHandling(IInputProvider *inputProvider, bool pPromiscuous, const IKeymapEnvironment *environment);
 
-    virtual ~CKeymapHandling();
+    ~CKeymapHandling() override;
 
     /*!
      * \brief Unregister the input provider
@@ -56,7 +56,7 @@ namespace JOYSTICK
     IKeymap *GetKeymap(const std::string &controllerId) const;
 
     // implementation of Observer
-    virtual void Notify(const Observable &obs, const ObservableMessage msg) override;
+    void Notify(const Observable& obs, const ObservableMessage msg) override;
 
   private:
     void LoadKeymaps();

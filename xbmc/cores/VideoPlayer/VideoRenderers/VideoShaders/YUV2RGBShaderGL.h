@@ -32,7 +32,7 @@ public:
                         AVColorPrimaries dst, AVColorPrimaries src,
                         bool toneMap,
                         std::shared_ptr<GLSLOutput> output);
-  virtual ~BaseYUV2RGBGLSLShader();
+  ~BaseYUV2RGBGLSLShader() override;
 
   void SetField(int field) { m_field  = field; }
   void SetWidth(int w) { m_width  = w; }

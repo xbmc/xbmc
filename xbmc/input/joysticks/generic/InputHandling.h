@@ -41,13 +41,13 @@ namespace JOYSTICK
   public:
     CInputHandling(IInputHandler* handler, IButtonMap* buttonMap);
 
-    virtual ~CInputHandling(void);
+    ~CInputHandling() override;
 
     // implementation of IDriverHandler
-    virtual bool OnButtonMotion(unsigned int buttonIndex, bool bPressed) override;
-    virtual bool OnHatMotion(unsigned int hatIndex, HAT_STATE state) override;
-    virtual bool OnAxisMotion(unsigned int axisIndex, float position, int center, unsigned int range) override;
-    virtual void ProcessAxisMotions(void) override;
+    bool OnButtonMotion(unsigned int buttonIndex, bool bPressed) override;
+    bool OnHatMotion(unsigned int hatIndex, HAT_STATE state) override;
+    bool OnAxisMotion(unsigned int axisIndex, float position, int center, unsigned int range) override;
+    void ProcessAxisMotions() override;
 
   private:
     bool OnDigitalMotion(const CDriverPrimitive& source, bool bPressed);

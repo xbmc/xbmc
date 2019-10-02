@@ -32,7 +32,7 @@ class CWinSystemGbm : public CWinSystemBase
 {
 public:
   CWinSystemGbm();
-  virtual ~CWinSystemGbm() = default;
+  ~CWinSystemGbm() override = default;
 
   bool InitWindowSystem() override;
   bool DestroyWindowSystem() override;
@@ -49,8 +49,8 @@ public:
 
   bool Hide() override;
   bool Show(bool raise = true) override;
-  virtual void Register(IDispResource *resource);
-  virtual void Unregister(IDispResource *resource);
+  void Register(IDispResource* resource) override;
+  void Unregister(IDispResource* resource) override;
 
   std::shared_ptr<CVideoLayerBridge> GetVideoLayerBridge() const { return m_videoLayerBridge; };
   void RegisterVideoLayerBridge(std::shared_ptr<CVideoLayerBridge> bridge) { m_videoLayerBridge = bridge; };

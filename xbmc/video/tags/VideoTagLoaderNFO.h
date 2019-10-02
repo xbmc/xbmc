@@ -21,7 +21,7 @@ public:
                      ADDON::ScraperPtr info,
                      bool lookInFolder);
 
-  virtual ~CVideoTagLoaderNFO() = default;
+  ~CVideoTagLoaderNFO() override = default;
 
   //! \brief Returns whether or not read has info.
   bool HasInfo() const override;

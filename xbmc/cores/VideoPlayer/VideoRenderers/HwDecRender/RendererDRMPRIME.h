@@ -18,7 +18,7 @@ class CRendererDRMPRIME
 {
 public:
   CRendererDRMPRIME() = default;
-  ~CRendererDRMPRIME();
+  ~CRendererDRMPRIME() override;
 
   // Registration
   static CBaseRenderer* Create(CVideoBuffer* buffer);

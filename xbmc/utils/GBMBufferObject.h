@@ -19,7 +19,7 @@ class CGBMBufferObject : public IBufferObject
 {
 public:
   CGBMBufferObject(int format);
-  virtual ~CGBMBufferObject() override;
+  ~CGBMBufferObject() override;
 
   bool CreateBufferObject(int width, int height) override;
   void DestroyBufferObject() override;

@@ -20,14 +20,14 @@ class CZeroconfAndroid : public CZeroconf
 {
 public:
   CZeroconfAndroid();
-  virtual ~CZeroconfAndroid();
+  ~CZeroconfAndroid() override;
 
   // CZeroconf interface
 protected:
-  bool doPublishService(const std::string& fcr_identifier, const std::string& fcr_type, const std::string& fcr_name, unsigned int f_port, const std::vector<std::pair<std::string, std::string> >& txt);
-  bool doForceReAnnounceService(const std::string& fcr_identifier);
-  bool doRemoveService(const std::string& fcr_ident);
-  void doStop();
+  bool doPublishService(const std::string& fcr_identifier, const std::string& fcr_type, const std::string& fcr_name, unsigned int f_port, const std::vector<std::pair<std::string, std::string>>& txt) override;
+  bool doForceReAnnounceService(const std::string& fcr_identifier) override;
+  bool doRemoveService(const std::string& fcr_ident) override;
+  void doStop() override;
 
 private:
   jni::CJNINsdManager m_manager;

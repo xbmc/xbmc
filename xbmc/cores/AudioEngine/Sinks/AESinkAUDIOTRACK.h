@@ -22,21 +22,21 @@
 class CAESinkAUDIOTRACK : public IAESink
 {
 public:
-  virtual const char *GetName() { return "AUDIOTRACK"; }
+  const char* GetName() override { return "AUDIOTRACK"; }
 
   CAESinkAUDIOTRACK();
-  virtual ~CAESinkAUDIOTRACK();
+  ~CAESinkAUDIOTRACK() override;
 
-  virtual bool Initialize(AEAudioFormat &format, std::string &device);
-  virtual void Deinitialize();
+  bool Initialize(AEAudioFormat& format, std::string& device) override;
+  void Deinitialize() override;
   bool IsInitialized();
 
-  virtual void         GetDelay        (AEDelayStatus& status);
-  virtual double       GetLatency      ();
-  virtual double       GetCacheTotal   ();
-  virtual unsigned int AddPackets      (uint8_t **data, unsigned int frames, unsigned int offset);
-  virtual void         AddPause        (unsigned int millis);
-  virtual void         Drain           ();
+  void GetDelay(AEDelayStatus& status) override;
+  double GetLatency() override;
+  double GetCacheTotal() override;
+  unsigned int AddPackets(uint8_t** data, unsigned int frames, unsigned int offset) override;
+  void AddPause(unsigned int millis) override;
+  void Drain() override;
   static void          EnumerateDevicesEx(AEDeviceInfoList &list, bool force = false);
   static void Register();
   static IAESink* Create(std::string &device, AEAudioFormat &desiredFormat);

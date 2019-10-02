@@ -21,13 +21,13 @@ public:
   CJNIXBMCNsdManagerResolveListener();
   CJNIXBMCNsdManagerResolveListener(const CJNIXBMCNsdManagerResolveListener& other);
   explicit CJNIXBMCNsdManagerResolveListener(const jni::jhobject &object) : CJNIBase(object) {}
-  virtual ~CJNIXBMCNsdManagerResolveListener();
+  ~CJNIXBMCNsdManagerResolveListener() override;
 
   static void RegisterNatives(JNIEnv* env);
 
   // CJNINsdManagerResolveListener interface
-  void onResolveFailed(const CJNINsdServiceInfo& serviceInfo, int errorCode) = 0;
-  void onServiceResolved(const CJNINsdServiceInfo& serviceInfo) = 0;
+  void onResolveFailed(const CJNINsdServiceInfo& serviceInfo, int errorCode) override = 0;
+  void onServiceResolved(const CJNINsdServiceInfo& serviceInfo) override = 0;
 
 protected:
   static void _onResolveFailed(JNIEnv* env, jobject thiz, jobject serviceInfo, jint errorCode);
