@@ -300,7 +300,10 @@ namespace PVR
      * @param newState The new connection state.
      * @param strMessage A human readable message providing additional information.
      */
-    void ConnectionStateChange(CPVRClient* client, std::string& strConnectionString, PVR_CONNECTION_STATE newState, std::string& strMessage);
+    void ConnectionStateChange(CPVRClient* client,
+                               const std::string& strConnectionString,
+                               PVR_CONNECTION_STATE newState,
+                               const std::string& strMessage);
 
   private:
     /*!

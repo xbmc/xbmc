@@ -7,7 +7,7 @@ set(SOURCES PVRActionListener.cpp
             PVRGUIActions.cpp
             PVRItem.cpp
             PVRChannelNumberInputHandler.cpp
-            PVRJobs.cpp
+            PVREventLogJob.cpp
             PVRGUIChannelIconUpdater.cpp
             PVRGUIChannelNavigator.cpp
             PVRGUIDirectory.cpp
@@ -26,7 +26,7 @@ set(HEADERS PVRActionListener.h
             PVRGUIActions.h
             PVRItem.h
             PVRChannelNumberInputHandler.h
-            PVRJobs.h
+            PVREventLogJob.h
             PVRGUIChannelIconUpdater.h
             PVRGUIChannelNavigator.h
             PVRGUIDirectory.h

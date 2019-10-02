@@ -13,13 +13,77 @@
 #include "ServiceBroker.h"
 #include "guilib/GUIComponent.h"
 #include "pvr/PVRGUIActions.h"
-#include "pvr/PVRJobs.h"
 #include "pvr/PVRManager.h"
 #include "pvr/channels/PVRChannelGroup.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "threads/SingleLock.h"
+#include "utils/Job.h"
 #include "utils/JobManager.h"
+
+#ifdef TARGET_POSIX
+#include "platform/posix/XTimeUtils.h"
+#endif
+
+namespace
+{
+class CPVRChannelTimeoutJobBase : public CJob, public IJobCallback
+{
+public:
+  CPVRChannelTimeoutJobBase() = delete;
+  CPVRChannelTimeoutJobBase(PVR::CPVRGUIChannelNavigator& channelNavigator, int iTimeout)
+  : m_channelNavigator(channelNavigator)
+  {
+    m_delayTimer.Set(iTimeout);
+  }
+
+  ~CPVRChannelTimeoutJobBase() override = default;
+
+  virtual void OnTimeout() = 0;
+
+  void OnJobComplete(unsigned int iJobID, bool bSuccess, CJob* job) override {}
+
+  bool DoWork() override
+  {
+    while (!ShouldCancel(0, 0))
+    {
+      if (m_delayTimer.IsTimePast())
+      {
+        OnTimeout();
+        return true;
+      }
+      Sleep(10);
+    }
+    return false;
+  }
+
+protected:
+  PVR::CPVRGUIChannelNavigator& m_channelNavigator;
+
+private:
+  XbmcThreads::EndTime m_delayTimer;
+};
+
+class CPVRChannelEntryTimeoutJob : public CPVRChannelTimeoutJobBase
+{
+public:
+  CPVRChannelEntryTimeoutJob(PVR::CPVRGUIChannelNavigator& channelNavigator, int iTimeout)
+  : CPVRChannelTimeoutJobBase(channelNavigator, iTimeout) {}
+  ~CPVRChannelEntryTimeoutJob() override = default;
+  const char* GetType() const override { return "pvr-channel-entry-timeout-job"; }
+  void OnTimeout() override { m_channelNavigator.SwitchToCurrentChannel(); }
+};
+
+class CPVRChannelInfoTimeoutJob : public CPVRChannelTimeoutJobBase
+{
+public:
+  CPVRChannelInfoTimeoutJob(PVR::CPVRGUIChannelNavigator& channelNavigator, int iTimeout)
+  : CPVRChannelTimeoutJobBase(channelNavigator, iTimeout) {}
+  ~CPVRChannelInfoTimeoutJob() override = default;
+  const char* GetType() const override { return "pvr-channel-info-timeout-job"; }
+  void OnTimeout() override { m_channelNavigator.HideInfo(); }
+};
+} // unnamed namespace
 
 namespace PVR
 {
@@ -85,7 +149,7 @@ namespace PVR
         if (m_iChannelEntryJobId >= 0)
           CJobManager::GetInstance().CancelJob(m_iChannelEntryJobId);
 
-        CPVRChannelEntryTimeoutJob* job = new CPVRChannelEntryTimeoutJob(iTimeout);
+        CPVRChannelEntryTimeoutJob* job = new CPVRChannelEntryTimeoutJob(*this, iTimeout);
         m_iChannelEntryJobId = CJobManager::GetInstance().AddJob(job, dynamic_cast<IJobCallback*>(job));
       }
       else
@@ -150,7 +214,7 @@ namespace PVR
 
       if (!bForce && iTimeout > 0)
       {
-        CPVRChannelInfoTimeoutJob* job = new CPVRChannelInfoTimeoutJob(iTimeout * 1000);
+        CPVRChannelInfoTimeoutJob* job = new CPVRChannelInfoTimeoutJob(*this, iTimeout * 1000);
         m_iChannelInfoJobId = CJobManager::GetInstance().AddJob(job, dynamic_cast<IJobCallback*>(job));
       }
     }
