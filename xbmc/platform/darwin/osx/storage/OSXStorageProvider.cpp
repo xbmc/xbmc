@@ -7,55 +7,40 @@
  */
 
 #include <stdlib.h>
-#include "DarwinStorageProvider.h"
+#include "OSXStorageProvider.h"
 #include "utils/RegExp.h"
 #include "Util.h"
 #include "guilib/LocalizeStrings.h"
 
 #include <sys/mount.h>
-#if defined(TARGET_DARWIN_OSX)
 #include <DiskArbitration/DiskArbitration.h>
 #include <IOKit/storage/IOCDMedia.h>
 #include <IOKit/storage/IODVDMedia.h>
 #include "platform/darwin/osx/CocoaInterface.h"
-#endif
 
-std::vector<std::pair<std::string, std::string>> CDarwinStorageProvider::m_mountsToNotify;
-std::vector<std::pair<std::string, std::string>> CDarwinStorageProvider::m_unmountsToNotify;
+std::vector<std::pair<std::string, std::string>> COSXStorageProvider::m_mountsToNotify;
+std::vector<std::pair<std::string, std::string>> COSXStorageProvider::m_unmountsToNotify;
 
 IStorageProvider* IStorageProvider::CreateInstance()
 {
-  return new CDarwinStorageProvider();
+  return new COSXStorageProvider();
 }
 
-CDarwinStorageProvider::CDarwinStorageProvider()
+COSXStorageProvider::COSXStorageProvider()
 {
   PumpDriveChangeEvents(NULL);
 }
 
-void CDarwinStorageProvider::GetLocalDrives(VECSOURCES &localDrives)
+void COSXStorageProvider::GetLocalDrives(VECSOURCES& localDrives)
 {
   CMediaSource share;
 
   // User home folder
-  #ifdef TARGET_DARWIN_EMBEDDED
-    share.strPath = "special://envhome/";
-  #else
-    share.strPath = getenv("HOME");
-  #endif
+  share.strPath = getenv("HOME");
   share.strName = g_localizeStrings.Get(21440);
   share.m_ignore = true;
   localDrives.push_back(share);
 
-#if defined(TARGET_DARWIN_IOS)
-  // iOS Inbox folder
-  share.strPath = "special://envhome/Documents/Inbox";
-  share.strName = "Inbox";
-  share.m_ignore = true;
-  localDrives.push_back(share);
-#endif
-
-#if defined(TARGET_DARWIN_OSX)
   // User desktop folder
   share.strPath = getenv("HOME");
   share.strPath += "/Desktop";
@@ -106,13 +91,10 @@ void CDarwinStorageProvider::GetLocalDrives(VECSOURCES &localDrives)
 
     CFRelease(session);
   }
-#endif
 }
 
-void CDarwinStorageProvider::GetRemovableDrives(VECSOURCES &removableDrives)
+void COSXStorageProvider::GetRemovableDrives(VECSOURCES& removableDrives)
 {
-#if defined(TARGET_DARWIN_OSX)
-
   DASessionRef session = DASessionCreate(kCFAllocatorDefault);
   if (session)
   {
@@ -161,20 +143,14 @@ void CDarwinStorageProvider::GetRemovableDrives(VECSOURCES &removableDrives)
 
     CFRelease(session);
   }
-#endif
 }
 
-std::vector<std::string> CDarwinStorageProvider::GetDiskUsage()
+std::vector<std::string> COSXStorageProvider::GetDiskUsage()
 {
   std::vector<std::string> result;
   char line[1024];
 
-#ifdef TARGET_DARWIN_EMBEDDED
-  FILE* pipe = popen("df -ht hfs,apfs", "r");
-#else
   FILE* pipe = popen("df -HT ufs,cd9660,hfs,apfs,udf", "r");
-#endif
-
   if (pipe)
   {
     while (fgets(line, sizeof(line) - 1, pipe))
@@ -187,7 +163,6 @@ std::vector<std::string> CDarwinStorageProvider::GetDiskUsage()
   return result;
 }
 
-#if defined(TARGET_DARWIN_OSX)
 namespace
 {
   class DAOperationContext
@@ -295,11 +270,9 @@ namespace
   }
 
 } // unnamed namespace
-#endif
 
-bool CDarwinStorageProvider::Eject(const std::string& mountpath)
+bool COSXStorageProvider::Eject(const std::string& mountpath)
 {
-#if defined(TARGET_DARWIN_OSX)
   if (mountpath.empty())
     return false;
 
@@ -332,12 +305,9 @@ bool CDarwinStorageProvider::Eject(const std::string& mountpath)
   }
 
   return success;
-#else
-  return false;
-#endif
 }
 
-bool CDarwinStorageProvider::PumpDriveChangeEvents(IStorageEventsCallback *callback)
+bool COSXStorageProvider::PumpDriveChangeEvents(IStorageEventsCallback* callback)
 {
   // Note: If we find a way to only notify kodi user initiated mounts/unmounts we
   //       could do this here, but currently we can't distinguish this and popups
@@ -352,13 +322,13 @@ bool CDarwinStorageProvider::PumpDriveChangeEvents(IStorageEventsCallback *callb
   return bChanged;
 }
 
-void CDarwinStorageProvider::VolumeMountNotification(const char* label, const char* mountpoint)
+void COSXStorageProvider::VolumeMountNotification(const char* label, const char* mountpoint)
 {
   if (label && mountpoint)
     m_mountsToNotify.emplace_back(std::make_pair(label, mountpoint));
 }
 
-void CDarwinStorageProvider::VolumeUnmountNotification(const char* label, const char* mountpoint)
+void COSXStorageProvider::VolumeUnmountNotification(const char* label, const char* mountpoint)
 {
   if (label && mountpoint)
    m_unmountsToNotify.emplace_back(std::make_pair(label, mountpoint));

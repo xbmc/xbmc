@@ -14,11 +14,11 @@
 #include <utility>
 #include <vector>
 
-class CDarwinStorageProvider : public IStorageProvider
+class COSXStorageProvider : public IStorageProvider
 {
 public:
-  CDarwinStorageProvider();
-  virtual ~CDarwinStorageProvider() = default;
+  COSXStorageProvider();
+  virtual ~COSXStorageProvider() = default;
 
   virtual void Initialize() { }
   virtual void Stop() { }
