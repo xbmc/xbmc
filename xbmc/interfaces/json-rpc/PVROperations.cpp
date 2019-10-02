@@ -11,6 +11,7 @@
 #include "ServiceBroker.h"
 #include "pvr/PVRGUIActions.h"
 #include "pvr/PVRManager.h"
+#include "pvr/PVRPlaybackState.h"
 #include "pvr/channels/PVRChannel.h"
 #include "pvr/channels/PVRChannelGroups.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
@@ -199,7 +200,7 @@ JSONRPC_STATUS CPVROperations::Record(const std::string &method, ITransportLayer
   CVariant channel = parameterObject["channel"];
   if (channel.isString() && channel.asString() == "current")
   {
-    pChannel = CServiceBroker::GetPVRManager().GetPlayingChannel();
+    pChannel = CServiceBroker::GetPVRManager().PlaybackState()->GetPlayingChannel();
     if (!pChannel)
       return InternalError;
   }
@@ -252,7 +253,7 @@ JSONRPC_STATUS CPVROperations::GetPropertyValue(const std::string &property, CVa
   else if (property == "recording")
   {
     if (started)
-      result = CServiceBroker::GetPVRManager().IsRecording();
+      result = CServiceBroker::GetPVRManager().PlaybackState()->IsRecording();
     else
       result = false;
   }

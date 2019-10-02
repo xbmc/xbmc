@@ -13,6 +13,7 @@
 #include "addons/kodi-addon-dev-kit/include/kodi/xbmc_pvr_types.h"
 #include "cores/DataCacheCore.h"
 #include "pvr/PVRManager.h"
+#include "pvr/PVRPlaybackState.h"
 #include "pvr/epg/Epg.h"
 #include "pvr/epg/EpgChannelData.h"
 #include "pvr/epg/EpgDatabase.h"
@@ -237,7 +238,7 @@ void CPVREpgInfoTag::ToSortable(SortItem& sortable, Field field) const
 
 CDateTime CPVREpgInfoTag::GetCurrentPlayingTime() const
 {
-  if (CServiceBroker::GetPVRManager().IsPlayingChannel(ClientID(), UniqueChannelID()))
+  if (CServiceBroker::GetPVRManager().PlaybackState()->IsPlayingChannel(ClientID(), UniqueChannelID()))
   {
     // start time valid?
     time_t startTime = CServiceBroker::GetDataCacheCore().GetStartTime();

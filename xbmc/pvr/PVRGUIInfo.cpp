@@ -19,6 +19,7 @@
 #include "pvr/PVRGUIActions.h"
 #include "pvr/PVRItem.h"
 #include "pvr/PVRManager.h"
+#include "pvr/PVRPlaybackState.h"
 #include "pvr/addons/PVRClients.h"
 #include "pvr/channels/PVRChannel.h"
 #include "pvr/channels/PVRChannelGroup.h"
@@ -194,11 +195,11 @@ void CPVRGUIInfo::UpdateQualityData(void)
 
   if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_PVRPLAYBACK_SIGNALQUALITY))
   {
-    bool bIsPlayingRecording = CServiceBroker::GetPVRManager().IsPlayingRecording();
+    bool bIsPlayingRecording = CServiceBroker::GetPVRManager().PlaybackState()->IsPlayingRecording();
     if (!bIsPlayingRecording)
     {
       std::shared_ptr<CPVRClient> client;
-      CServiceBroker::GetPVRManager().Clients()->GetCreatedClient(CServiceBroker::GetPVRManager().GetPlayingClientID(), client);
+      CServiceBroker::GetPVRManager().Clients()->GetCreatedClient(CServiceBroker::GetPVRManager().PlaybackState()->GetPlayingClientID(), client);
       if (client && client->SignalQuality(qualityInfo) == PVR_ERROR_NO_ERROR)
       {
         m_qualityInfo = qualityInfo;
@@ -212,11 +213,11 @@ void CPVRGUIInfo::UpdateDescrambleData(void)
   PVR_DESCRAMBLE_INFO descrambleInfo;
   ClearDescrambleInfo(descrambleInfo);
 
-  bool bIsPlayingRecording = CServiceBroker::GetPVRManager().IsPlayingRecording();
+  bool bIsPlayingRecording = CServiceBroker::GetPVRManager().PlaybackState()->IsPlayingRecording();
   if (!bIsPlayingRecording)
   {
     std::shared_ptr<CPVRClient> client;
-    CServiceBroker::GetPVRManager().Clients()->GetCreatedClient(CServiceBroker::GetPVRManager().GetPlayingClientID(), client);
+    CServiceBroker::GetPVRManager().Clients()->GetCreatedClient(CServiceBroker::GetPVRManager().PlaybackState()->GetPlayingClientID(), client);
     if (client && client->GetDescrambleInfo(descrambleInfo) == PVR_ERROR_NO_ERROR)
     {
       m_descrambleInfo = descrambleInfo;
@@ -226,38 +227,41 @@ void CPVRGUIInfo::UpdateDescrambleData(void)
 
 void CPVRGUIInfo::UpdateMisc(void)
 {
-  bool bStarted = CServiceBroker::GetPVRManager().IsStarted();
+  CPVRManager& mgr = CServiceBroker::GetPVRManager();
+  bool bStarted = mgr.IsStarted();
+  const std::shared_ptr<CPVRPlaybackState> state = mgr.PlaybackState();
+
   /* safe to fetch these unlocked, since they're updated from the same thread as this one */
-  std::string strPlayingClientName     = bStarted ? CServiceBroker::GetPVRManager().GetPlayingClientName() : "";
-  bool       bHasTVRecordings          = bStarted && CServiceBroker::GetPVRManager().Recordings()->GetNumTVRecordings() > 0;
-  bool       bHasRadioRecordings       = bStarted && CServiceBroker::GetPVRManager().Recordings()->GetNumRadioRecordings() > 0;
-  bool       bIsPlayingTV              = bStarted && CServiceBroker::GetPVRManager().IsPlayingTV();
-  bool       bIsPlayingRadio           = bStarted && CServiceBroker::GetPVRManager().IsPlayingRadio();
-  bool       bIsPlayingRecording       = bStarted && CServiceBroker::GetPVRManager().IsPlayingRecording();
-  bool       bIsPlayingEpgTag          = bStarted && CServiceBroker::GetPVRManager().IsPlayingEpgTag();
-  bool       bIsPlayingEncryptedStream = bStarted && CServiceBroker::GetPVRManager().IsPlayingEncryptedChannel();
-  bool       bHasTVChannels            = bStarted && CServiceBroker::GetPVRManager().ChannelGroups()->GetGroupAllTV()->HasChannels();
-  bool       bHasRadioChannels         = bStarted && CServiceBroker::GetPVRManager().ChannelGroups()->GetGroupAllRadio()->HasChannels();
-  bool bCanRecordPlayingChannel        = bStarted && CServiceBroker::GetPVRManager().CanRecordOnPlayingChannel();
-  bool bIsRecordingPlayingChannel      = bStarted && CServiceBroker::GetPVRManager().IsRecordingOnPlayingChannel();
-  bool bIsPlayingActiveRecording       = bStarted && CServiceBroker::GetPVRManager().IsPlayingActiveRecording();
-  std::string strPlayingTVGroup        = (bStarted && bIsPlayingTV) ? CServiceBroker::GetPVRManager().GetPlayingGroup(false)->GroupName() : "";
-  std::string strPlayingRadioGroup     = (bStarted && bIsPlayingRadio) ? CServiceBroker::GetPVRManager().GetPlayingGroup(true)->GroupName() : "";
+  const std::string strPlayingClientName = bStarted ? state->GetPlayingClientName() : "";
+  const bool bHasTVRecordings = bStarted && mgr.Recordings()->GetNumTVRecordings() > 0;
+  const bool bHasRadioRecordings = bStarted && mgr.Recordings()->GetNumRadioRecordings() > 0;
+  const bool bIsPlayingTV = bStarted && state->IsPlayingTV();
+  const bool bIsPlayingRadio = bStarted && state->IsPlayingRadio();
+  const bool bIsPlayingRecording = bStarted && state->IsPlayingRecording();
+  const bool bIsPlayingEpgTag = bStarted && state->IsPlayingEpgTag();
+  const bool bIsPlayingEncryptedStream = bStarted && state->IsPlayingEncryptedChannel();
+  const bool bHasTVChannels = bStarted && mgr.ChannelGroups()->GetGroupAllTV()->HasChannels();
+  const bool bHasRadioChannels = bStarted && mgr.ChannelGroups()->GetGroupAllRadio()->HasChannels();
+  const bool bCanRecordPlayingChannel = bStarted && state->CanRecordOnPlayingChannel();
+  const bool bIsRecordingPlayingChannel = bStarted && state->IsRecordingOnPlayingChannel();
+  const bool bIsPlayingActiveRecording = bStarted && state->IsPlayingActiveRecording();
+  const std::string strPlayingTVGroup = (bStarted && bIsPlayingTV) ? state->GetPlayingGroup(false)->GroupName() : "";
+  const std::string strPlayingRadioGroup = (bStarted && bIsPlayingRadio) ? state->GetPlayingGroup(true)->GroupName() : "";
 
   CSingleLock lock(m_critSection);
-  m_strPlayingClientName      = strPlayingClientName;
-  m_bHasTVRecordings          = bHasTVRecordings;
-  m_bHasRadioRecordings       = bHasRadioRecordings;
-  m_bIsPlayingTV              = bIsPlayingTV;
-  m_bIsPlayingRadio           = bIsPlayingRadio;
-  m_bIsPlayingRecording       = bIsPlayingRecording;
-  m_bIsPlayingEpgTag          = bIsPlayingEpgTag;
+  m_strPlayingClientName = strPlayingClientName;
+  m_bHasTVRecordings = bHasTVRecordings;
+  m_bHasRadioRecordings = bHasRadioRecordings;
+  m_bIsPlayingTV = bIsPlayingTV;
+  m_bIsPlayingRadio = bIsPlayingRadio;
+  m_bIsPlayingRecording = bIsPlayingRecording;
+  m_bIsPlayingEpgTag = bIsPlayingEpgTag;
   m_bIsPlayingEncryptedStream = bIsPlayingEncryptedStream;
-  m_bHasTVChannels            = bHasTVChannels;
-  m_bHasRadioChannels         = bHasRadioChannels;
-  m_strPlayingTVGroup         = strPlayingTVGroup;
-  m_strPlayingRadioGroup      = strPlayingRadioGroup;
-  m_bCanRecordPlayingChannel  = bCanRecordPlayingChannel;
+  m_bHasTVChannels = bHasTVChannels;
+  m_bHasRadioChannels = bHasRadioChannels;
+  m_strPlayingTVGroup = strPlayingTVGroup;
+  m_strPlayingRadioGroup = strPlayingRadioGroup;
+  m_bCanRecordPlayingChannel = bCanRecordPlayingChannel;
   m_bIsRecordingPlayingChannel = bIsRecordingPlayingChannel;
   m_bIsPlayingActiveRecording = bIsPlayingActiveRecording;
 }
@@ -1542,7 +1546,7 @@ void CPVRGUIInfo::CharInfoEncryption(std::string& strValue) const
   }
   else
   {
-    const std::shared_ptr<CPVRChannel> channel(CServiceBroker::GetPVRManager().GetPlayingChannel());
+    const std::shared_ptr<CPVRChannel> channel = CServiceBroker::GetPVRManager().PlaybackState()->GetPlayingChannel();
     if (channel)
     {
       strValue = channel->EncryptionName();

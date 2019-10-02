@@ -14,6 +14,7 @@
 #include "guilib/GUIComponent.h"
 #include "pvr/PVRGUIActions.h"
 #include "pvr/PVRManager.h"
+#include "pvr/PVRPlaybackState.h"
 #include "pvr/channels/PVRChannelGroup.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
@@ -117,12 +118,12 @@ namespace PVR
 
   std::shared_ptr<CPVRChannel> CPVRGUIChannelNavigator::GetNextOrPrevChannel(bool bNext)
   {
-    const bool bPlayingRadio = CServiceBroker::GetPVRManager().IsPlayingRadio();
-    const bool bPlayingTV = CServiceBroker::GetPVRManager().IsPlayingTV();
+    const bool bPlayingRadio = CServiceBroker::GetPVRManager().PlaybackState()->IsPlayingRadio();
+    const bool bPlayingTV = CServiceBroker::GetPVRManager().PlaybackState()->IsPlayingTV();
 
     if (bPlayingTV || bPlayingRadio)
     {
-      const std::shared_ptr<CPVRChannelGroup> group = CServiceBroker::GetPVRManager().GetPlayingGroup(bPlayingRadio);
+      const std::shared_ptr<CPVRChannelGroup> group = CServiceBroker::GetPVRManager().PlaybackState()->GetPlayingGroup(bPlayingRadio);
       if (group)
       {
         CSingleLock lock(m_critSection);

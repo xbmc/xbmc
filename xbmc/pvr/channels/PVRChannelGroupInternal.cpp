@@ -13,6 +13,7 @@
 #include "messaging/helpers/DialogOKHelper.h"
 #include "pvr/PVRDatabase.h"
 #include "pvr/PVRManager.h"
+#include "pvr/PVRPlaybackState.h"
 #include "pvr/addons/PVRClients.h"
 #include "pvr/channels/PVRChannel.h"
 #include "pvr/epg/EpgContainer.h"
@@ -162,7 +163,7 @@ bool CPVRChannelGroupInternal::RemoveFromGroup(const std::shared_ptr<CPVRChannel
     return false;
 
   /* check if this channel is currently playing if we are hiding it */
-  std::shared_ptr<CPVRChannel> currentChannel(CServiceBroker::GetPVRManager().GetPlayingChannel());
+  const std::shared_ptr<CPVRChannel> currentChannel = CServiceBroker::GetPVRManager().PlaybackState()->GetPlayingChannel();
   if (currentChannel && currentChannel == channel)
   {
     HELPERS::ShowOKDialogText(CVariant{19098}, CVariant{19102});

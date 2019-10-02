@@ -15,6 +15,7 @@ set(SOURCES PVRActionListener.cpp
             PVRGUITimerInfo.cpp
             PVRGUITimesInfo.cpp
             PVRStreamProperties.cpp
+            PVRPlaybackState.cpp
             PVRThumbLoader.cpp)
 
 set(HEADERS PVRActionListener.h
@@ -34,6 +35,7 @@ set(HEADERS PVRActionListener.h
             PVRGUITimerInfo.h
             PVRGUITimesInfo.h
             PVRStreamProperties.h
+            PVRPlaybackState.h
             PVRThumbLoader.h)
 
 core_add_library(pvr)
