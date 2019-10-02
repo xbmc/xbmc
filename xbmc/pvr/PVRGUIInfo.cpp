@@ -1242,7 +1242,7 @@ bool CPVRGUIInfo::GetListItemAndPlayerBool(const CFileItem* item, const CGUIInfo
         return true;
       }
       break;
-    case LISTITEM_IS_PREMIERE:
+    case LISTITEM_IS_NEW:
       if (item->IsEPG())
       {
         const std::shared_ptr<CPVREpgInfoTag> epgTag = item->GetEPGInfoTag();

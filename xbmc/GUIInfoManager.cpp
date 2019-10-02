@@ -5727,12 +5727,12 @@ const infomap container_str[]  = {{ "property",         CONTAINER_PROPERTY },
 ///     @skinning_v19 **[New Infolabel]** \link ListItem_CurrentItem `ListItem.CurrentItem`\endlink
 ///     <p>
 ///   }
-///   \table_row3{   <b>`ListItem.IsPremiere`</b>,
-///                  \anchor ListItem_IsPremiere
+///   \table_row3{   <b>`ListItem.IsNew`</b>,
+///                  \anchor ListItem_IsNew
 ///                  _boolean_,
-///     @return **True** if the item is a premiere (for example, a Live TV show that will be first aired).
+///     @return **True** if the item is new (for example, a Live TV show that will be first aired).
 ///     <p><hr>
-///     @skinning_v19 **[New Infolabel]** \link ListItem_IsPremiere `ListItem.IsPremiere`\endlink
+///     @skinning_v19 **[New Infolabel]** \link ListItem_IsNew `ListItem.IsNew`\endlink
 ///     <p>
 ///   }
 /// \table_end
@@ -5927,7 +5927,7 @@ const infomap listitem_labels[]= {{ "thumb",            LISTITEM_THUMB },
                                   { "property",         LISTITEM_PROPERTY },
                                   { "parentalrating",   LISTITEM_PARENTAL_RATING },
                                   { "currentitem",      LISTITEM_CURRENTITEM },
-                                  { "ispremiere",       LISTITEM_IS_PREMIERE },
+                                  { "isnew",            LISTITEM_IS_NEW },
 };
 
 /// \page modules__infolabels_boolean_conditions
