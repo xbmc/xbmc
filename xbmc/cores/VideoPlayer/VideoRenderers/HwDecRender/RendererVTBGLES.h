@@ -16,7 +16,7 @@ class CRendererVTB : public CLinuxRendererGLES
 {
 public:
   CRendererVTB();
-  virtual ~CRendererVTB();
+  ~CRendererVTB() override;
 
   static CBaseRenderer* Create(CVideoBuffer *buffer);
   static bool Register();

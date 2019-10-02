@@ -20,7 +20,7 @@ namespace RETRO
   class CRendererFactoryGuiTexture : public IRendererFactory
   {
   public:
-    virtual ~CRendererFactoryGuiTexture() = default;
+    ~CRendererFactoryGuiTexture() override = default;
 
     // implementation of IRendererFactory
     std::string RenderSystemName() const override;

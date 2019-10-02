@@ -30,7 +30,7 @@ public:
                         bool lookInFolder);
 
   //! \brief Destructor.
-  virtual ~CVideoTagLoaderFFmpeg();
+  ~CVideoTagLoaderFFmpeg() override;
 
   //! \brief Returns whether or not reader has info.
   bool HasInfo() const override;

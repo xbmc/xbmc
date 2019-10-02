@@ -24,7 +24,7 @@ class CWinSystemWaylandEGLContext : public CWinSystemWayland
 {
 public:
   CWinSystemWaylandEGLContext();
-  virtual ~CWinSystemWaylandEGLContext() = default;
+  ~CWinSystemWaylandEGLContext() override = default;
 
   bool CreateNewWindow(const std::string& name,
                        bool fullScreen,

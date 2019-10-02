@@ -44,13 +44,13 @@ namespace GAME
     /*!
      * \brief Destructor unregisters from mouse events from CInputManager.
      */
-    virtual ~CGameClientMouse();
+    ~CGameClientMouse() override;
 
     // implementation of IMouseInputHandler
-    virtual std::string ControllerID(void) const override;
-    virtual bool OnMotion(const std::string& relpointer, int dx, int dy) override;
-    virtual bool OnButtonPress(const std::string& button) override;
-    virtual void OnButtonRelease(const std::string& button) override;
+    std::string ControllerID() const override;
+    bool OnMotion(const std::string& relpointer, int dx, int dy) override;
+    bool OnButtonPress(const std::string& button) override;
+    void OnButtonRelease(const std::string& button) override;
 
   private:
     // Construction parameters

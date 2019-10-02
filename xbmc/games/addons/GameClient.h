@@ -45,7 +45,7 @@ class CGameClient : public ADDON::CAddonDll
 public:
   explicit CGameClient(const ADDON::AddonInfoPtr& addonInfo);
 
-  virtual ~CGameClient(void);
+  ~CGameClient() override;
 
   // Game subsystems (const)
   const CGameClientInput &Input() const { return *m_subsystems.Input; }
@@ -58,8 +58,8 @@ public:
   CGameClientStreams &Streams() { return *m_subsystems.Streams; }
 
   // Implementation of IAddon via CAddonDll
-  virtual std::string     LibPath() const override;
-  virtual ADDON::AddonPtr GetRunningInstance() const override;
+  std::string LibPath() const override;
+  ADDON::AddonPtr GetRunningInstance() const override;
 
   // Query properties of the game client
   bool SupportsStandalone() const { return m_bSupportsStandalone; }

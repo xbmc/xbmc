@@ -112,12 +112,12 @@ namespace JOYSTICK
   {
   public:
     CScalarFeature(const FeatureName& name, IInputHandler* handler, IButtonMap* buttonMap);
-    virtual ~CScalarFeature() = default;
+    ~CScalarFeature() override = default;
 
     // implementation of CJoystickFeature
-    virtual bool OnDigitalMotion(const CDriverPrimitive& source, bool bPressed) override;
-    virtual bool OnAnalogMotion(const CDriverPrimitive& source, float magnitude) override;
-    virtual void ProcessMotions(void) override;
+    bool OnDigitalMotion(const CDriverPrimitive& source, bool bPressed) override;
+    bool OnAnalogMotion(const CDriverPrimitive& source, float magnitude) override;
+    void ProcessMotions() override;
 
   private:
     bool OnDigitalMotion(bool bPressed);
@@ -206,11 +206,11 @@ namespace JOYSTICK
   {
   public:
     CAxisFeature(const FeatureName& name, IInputHandler* handler, IButtonMap* buttonMap);
-    virtual ~CAxisFeature() = default;
+    ~CAxisFeature() override = default;
 
     // partial implementation of CJoystickFeature
-    virtual bool OnDigitalMotion(const CDriverPrimitive& source, bool bPressed) override;
-    virtual void ProcessMotions(void) override;
+    bool OnDigitalMotion(const CDriverPrimitive& source, bool bPressed) override;
+    void ProcessMotions() override;
 
   protected:
     CFeatureAxis m_axis;
@@ -222,32 +222,32 @@ namespace JOYSTICK
   {
   public:
     CWheel(const FeatureName& name, IInputHandler* handler, IButtonMap* buttonMap);
-    virtual ~CWheel() = default;
+    ~CWheel() override = default;
 
     // partial implementation of CJoystickFeature
-    virtual bool OnAnalogMotion(const CDriverPrimitive& source, float magnitude) override;
+    bool OnAnalogMotion(const CDriverPrimitive& source, float magnitude) override;
   };
 
   class CThrottle : public CAxisFeature
   {
   public:
     CThrottle(const FeatureName& name, IInputHandler* handler, IButtonMap* buttonMap);
-    virtual ~CThrottle() = default;
+    ~CThrottle() override = default;
 
     // partial implementation of CJoystickFeature
-    virtual bool OnAnalogMotion(const CDriverPrimitive& source, float magnitude) override;
+    bool OnAnalogMotion(const CDriverPrimitive& source, float magnitude) override;
   };
 
   class CAnalogStick : public CJoystickFeature
   {
   public:
     CAnalogStick(const FeatureName& name, IInputHandler* handler, IButtonMap* buttonMap);
-    virtual ~CAnalogStick() = default;
+    ~CAnalogStick() override = default;
 
     // implementation of CJoystickFeature
-    virtual bool OnDigitalMotion(const CDriverPrimitive& source, bool bPressed) override;
-    virtual bool OnAnalogMotion(const CDriverPrimitive& source, float magnitude) override;
-    virtual void ProcessMotions(void) override;
+    bool OnDigitalMotion(const CDriverPrimitive& source, bool bPressed) override;
+    bool OnAnalogMotion(const CDriverPrimitive& source, float magnitude) override;
+    void ProcessMotions() override;
 
   protected:
     CFeatureAxis m_vertAxis;
@@ -261,12 +261,12 @@ namespace JOYSTICK
   {
   public:
     CAccelerometer(const FeatureName& name, IInputHandler* handler, IButtonMap* buttonMap);
-    virtual ~CAccelerometer() = default;
+    ~CAccelerometer() override = default;
 
     // implementation of CJoystickFeature
-    virtual bool OnDigitalMotion(const CDriverPrimitive& source, bool bPressed) override;
-    virtual bool OnAnalogMotion(const CDriverPrimitive& source, float magnitude) override;
-    virtual void ProcessMotions(void) override;
+    bool OnDigitalMotion(const CDriverPrimitive& source, bool bPressed) override;
+    bool OnAnalogMotion(const CDriverPrimitive& source, float magnitude) override;
+    void ProcessMotions() override;
 
   protected:
     CFeatureAxis m_xAxis;

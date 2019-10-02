@@ -30,7 +30,7 @@ namespace RETRO
   {
   public:
     CSavestateFlatBuffer();
-    ~CSavestateFlatBuffer();
+    ~CSavestateFlatBuffer() override;
 
     // Implementation of ISavestate
     void Reset() override;

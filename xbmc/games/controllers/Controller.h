@@ -32,7 +32,7 @@ class CController : public ADDON::CAddon
 public:
   explicit CController(const ADDON::AddonInfoPtr& addonInfo);
 
-  virtual ~CController();
+  ~CController() override;
 
   static const ControllerPtr EmptyPtr;
 

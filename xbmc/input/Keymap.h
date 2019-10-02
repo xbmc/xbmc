@@ -20,8 +20,8 @@ public:
   CKeymap(std::shared_ptr<const IWindowKeymap> keymap, const IKeymapEnvironment *environment);
 
   // implementation of IKeymap
-  virtual std::string ControllerID() const override ;
-  virtual const IKeymapEnvironment *Environment() const override { return m_environment; }
+  std::string ControllerID() const override;
+  const IKeymapEnvironment* Environment() const override { return m_environment; }
   const KODI::JOYSTICK::KeymapActionGroup &GetActions(const std::string& keyName) const override;
 
 private:

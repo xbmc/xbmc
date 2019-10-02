@@ -22,7 +22,7 @@ namespace jni
   public:
     CJNIXBMCFile();
     CJNIXBMCFile(const jni::jhobject &object) : CJNIBase(object) {}
-    virtual ~CJNIXBMCFile() = default;
+    ~CJNIXBMCFile() override = default;
 
     static void RegisterNatives(JNIEnv* env);
 

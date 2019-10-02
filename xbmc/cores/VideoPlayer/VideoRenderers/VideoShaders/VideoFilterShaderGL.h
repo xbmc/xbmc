@@ -20,7 +20,7 @@ namespace Shaders {
   {
   public:
     BaseVideoFilterShader();
-    virtual ~BaseVideoFilterShader();
+    ~BaseVideoFilterShader() override;
     virtual bool GetTextureFilter(GLint& filter) { return false; }
 
     void SetSourceTexture(GLint ytex) { m_sourceTexUnit = ytex; }

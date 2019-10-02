@@ -17,24 +17,25 @@ class CCocoaPowerSyscall : public CPowerSyscallWithoutEvents
 {
 public:
   CCocoaPowerSyscall();
-  ~CCocoaPowerSyscall();
+  ~CCocoaPowerSyscall() override;
 
   static IPowerSyscall* CreateInstance();
   static void Register();
 
-  virtual bool Powerdown(void);
-  virtual bool Suspend(void);
-  virtual bool Hibernate(void);
-  virtual bool Reboot(void);
+  bool Powerdown() override;
+  bool Suspend() override;
+  bool Hibernate() override;
+  bool Reboot() override;
 
-  virtual bool CanPowerdown(void);
-  virtual bool CanSuspend(void);
-  virtual bool CanHibernate(void);
-  virtual bool CanReboot(void);
-          bool HasBattery(void);
-  virtual int  BatteryLevel(void);
+  bool CanPowerdown() override;
+  bool CanSuspend() override;
+  bool CanHibernate() override;
+  bool CanReboot() override;
+  bool HasBattery();
+  int BatteryLevel() override;
 
-  virtual bool PumpPowerEvents(IPowerEventsCallback *callback);
+  bool PumpPowerEvents(IPowerEventsCallback* callback) override;
+
 private:
           void CreateOSPowerCallBacks(void);
           void DeleteOSPowerCallBacks(void);

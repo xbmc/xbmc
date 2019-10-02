@@ -16,11 +16,11 @@ class CIOSKeyboard : public CGUIKeyboard
 {
   public:
     CIOSKeyboard();
-    virtual bool ShowAndGetInput(char_callback_t pCallback, const std::string &initialString, std::string &typedString, const std::string &heading, bool bHiddenInput);
-    virtual void Cancel();
+    bool ShowAndGetInput(char_callback_t pCallback, const std::string& initialString, std::string& typedString, const std::string& heading, bool bHiddenInput) override;
+    void Cancel() override;
     void fireCallback(const std::string &str);
     void invalidateCallback() {m_pCharCallback = nullptr;}
-    virtual bool SetTextToKeyboard(const std::string &text, bool closeKeyboard = false);
+    bool SetTextToKeyboard(const std::string& text, bool closeKeyboard = false) override;
 
   private:
     char_callback_t m_pCharCallback;

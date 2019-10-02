@@ -22,12 +22,12 @@ namespace PERIPHERALS
   {
   public:
     explicit CPeripheralBusUSB(CPeripherals& manager);
-    virtual ~CPeripheralBusUSB();
+    ~CPeripheralBusUSB() override;
 
     /*!
      * @see PeripheralBus::PerformDeviceScan()
      */
-    bool PerformDeviceScan(PeripheralScanResults &results);
+    bool PerformDeviceScan(PeripheralScanResults& results) override;
 
   protected:
     PeripheralScanResults m_scan_results;

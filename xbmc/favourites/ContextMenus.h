@@ -21,7 +21,7 @@ public:
   bool IsVisible(const CFileItem& item) const override;
   bool Execute(const CFileItemPtr& item) const override;
 protected:
-  virtual ~CFavouriteContextMenuAction() = default;
+  ~CFavouriteContextMenuAction() override = default;
   virtual bool DoExecute(CFileItemList& items, const CFileItemPtr& item) const = 0;
 };
 

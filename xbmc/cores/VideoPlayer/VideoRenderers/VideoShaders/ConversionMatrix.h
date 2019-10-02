@@ -44,7 +44,7 @@ class CGlMatrix : public CMatrix<4>
 public:
   CGlMatrix() = default;
   CGlMatrix(float (&src)[3][3]);
-  virtual ~CGlMatrix() = default;
+  ~CGlMatrix() override = default;
   CMatrix operator*(const float (&other)[4][4]) override;
 };
 
@@ -52,21 +52,21 @@ class CScale : public CGlMatrix
 {
 public:
   CScale(float x, float y, float z);
-  virtual ~CScale() = default;
+  ~CScale() override = default;
 };
 
 class CTranslate : public CGlMatrix
 {
 public:
   CTranslate(float x, float y, float z);
-  virtual ~CTranslate() = default;
+  ~CTranslate() override = default;
 };
 
 class ConversionToRGB : public CMatrix<3>
 {
 public:
   ConversionToRGB(float Kr, float Kb);
-  virtual ~ConversionToRGB() = default;
+  ~ConversionToRGB() override = default;
   ConversionToRGB& operator=(const float (&src)[3][3]);
 
 protected:
@@ -80,7 +80,7 @@ class PrimaryToXYZ : public CMatrix<3>
 {
 public:
   PrimaryToXYZ(const float (&primaries)[3][2], const float (&whitepoint)[2]);
-  virtual ~PrimaryToXYZ() = default;
+  ~PrimaryToXYZ() override = default;
 
 protected:
   PrimaryToXYZ() = default;
@@ -93,7 +93,7 @@ class PrimaryToRGB : public PrimaryToXYZ
 {
 public:
   PrimaryToRGB(float (&primaries)[3][2], float (&whitepoint)[2]);
-  virtual ~PrimaryToRGB() = default;
+  ~PrimaryToRGB() override = default;
 };
 
 //------------------------------------------------------------------------------

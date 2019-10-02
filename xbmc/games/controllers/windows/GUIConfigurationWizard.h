@@ -43,35 +43,35 @@ namespace GAME
   public:
     CGUIConfigurationWizard();
 
-    virtual ~CGUIConfigurationWizard(void);
+    ~CGUIConfigurationWizard() override;
 
     // implementation of IConfigurationWizard
-    virtual void Run(const std::string& strControllerId, const std::vector<IFeatureButton*>& buttons) override;
-    virtual void OnUnfocus(IFeatureButton* button) override;
-    virtual bool Abort(bool bWait = true) override;
+    void Run(const std::string& strControllerId, const std::vector<IFeatureButton*>& buttons) override;
+    void OnUnfocus(IFeatureButton* button) override;
+    bool Abort(bool bWait = true) override;
     void RegisterKey(const CControllerFeature &key) override;
     void UnregisterKeys() override;
 
     // implementation of IButtonMapper
-    virtual std::string ControllerID(void) const override { return m_strControllerId; }
-    virtual bool NeedsCooldown(void) const override { return true; }
-    virtual bool AcceptsPrimitive(JOYSTICK::PRIMITIVE_TYPE type) const override { return true; }
-    virtual bool MapPrimitive(JOYSTICK::IButtonMap* buttonMap,
-                              IKeymap* keymap,
-                              const JOYSTICK::CDriverPrimitive& primitive) override;
-    virtual void OnEventFrame(const JOYSTICK::IButtonMap* buttonMap, bool bMotion) override;
-    virtual void OnLateAxis(const JOYSTICK::IButtonMap* buttonMap, unsigned int axisIndex) override;
+    std::string ControllerID() const override { return m_strControllerId; }
+    bool NeedsCooldown() const override { return true; }
+    bool AcceptsPrimitive(JOYSTICK::PRIMITIVE_TYPE type) const override { return true; }
+    bool MapPrimitive(JOYSTICK::IButtonMap* buttonMap,
+                      IKeymap* keymap,
+                      const JOYSTICK::CDriverPrimitive& primitive) override;
+    void OnEventFrame(const JOYSTICK::IButtonMap* buttonMap, bool bMotion) override;
+    void OnLateAxis(const JOYSTICK::IButtonMap* buttonMap, unsigned int axisIndex) override;
 
     // implementation of IKeyboardDriverHandler
-    virtual bool OnKeyPress(const CKey& key) override;
-    virtual void OnKeyRelease(const CKey& key) override { }
+    bool OnKeyPress(const CKey& key) override;
+    void OnKeyRelease(const CKey& key) override {}
 
     // implementation of Observer
-    virtual void Notify(const Observable& obs, const ObservableMessage msg) override;
+    void Notify(const Observable& obs, const ObservableMessage msg) override;
 
   protected:
     // implementation of CThread
-    virtual void Process(void) override;
+    void Process() override;
 
   private:
     void InitializeState(void);

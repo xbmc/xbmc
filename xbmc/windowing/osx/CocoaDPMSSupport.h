@@ -12,7 +12,7 @@ class CCocoaDPMSSupport : public CDPMSSupport
 {
 public:
   CCocoaDPMSSupport();
-  ~CCocoaDPMSSupport() = default;
+  ~CCocoaDPMSSupport() override = default;
 
 protected:
   bool EnablePowerSaving(PowerSavingMode mode) override;

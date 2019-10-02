@@ -44,7 +44,7 @@ namespace GAME
     /*!
      * \brief Destructor unregisters from keyboard events from CInputManager.
      */
-    virtual ~CGameClientKeyboard();
+    ~CGameClientKeyboard() override;
 
     // implementation of IKeyboardInputHandler
     std::string ControllerID() const override;

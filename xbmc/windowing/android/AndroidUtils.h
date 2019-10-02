@@ -20,7 +20,7 @@ class CAndroidUtils : public ISettingCallback
 {
 public:
   CAndroidUtils();
-  virtual ~CAndroidUtils() = default;
+  ~CAndroidUtils() override = default;
   bool GetNativeResolution(RESOLUTION_INFO* res) const;
   bool SetNativeResolution(const RESOLUTION_INFO& res);
   bool ProbeResolutions(std::vector<RESOLUTION_INFO>& resolutions);

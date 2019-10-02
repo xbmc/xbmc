@@ -26,23 +26,23 @@ class CAAudioUnitSink;
 class CAESinkDARWINIOS : public IAESink
 {
 public:
-  virtual const char *GetName() { return "DARWINIOS"; }
+  const char* GetName() override { return "DARWINIOS"; }
 
   CAESinkDARWINIOS();
-  virtual ~CAESinkDARWINIOS() = default;
+  ~CAESinkDARWINIOS() override = default;
 
   static void Register();
   static void EnumerateDevicesEx(AEDeviceInfoList &list, bool force);
   static IAESink* Create(std::string &device, AEAudioFormat &desiredFormat);
 
-  virtual bool Initialize(AEAudioFormat &format, std::string &device);
-  virtual void Deinitialize();
+  bool Initialize(AEAudioFormat& format, std::string& device) override;
+  void Deinitialize() override;
 
-  virtual void         GetDelay(AEDelayStatus& status);
-  virtual double       GetCacheTotal   ();
-  virtual unsigned int AddPackets      (uint8_t **data, unsigned int frames, unsigned int offset);
-  virtual void         Drain           ();
-  virtual bool         HasVolume       ();
+  void GetDelay(AEDelayStatus& status) override;
+  double GetCacheTotal() override;
+  unsigned int AddPackets(uint8_t** data, unsigned int frames, unsigned int offset) override;
+  void Drain() override;
+  bool HasVolume() override;
 
 private:
   static AEDeviceInfoList m_devices;

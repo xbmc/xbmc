@@ -26,7 +26,7 @@ namespace Shaders {
   {
   public:
     BaseYUV2RGBGLSLShader(EShaderFormat format, AVColorPrimaries dst, AVColorPrimaries src, bool toneMap);
-   ~BaseYUV2RGBGLSLShader();
+    ~BaseYUV2RGBGLSLShader() override;
     void SetField(int field) { m_field = field; }
     void SetWidth(int w) { m_width = w; }
     void SetHeight(int h) { m_height = h; }

@@ -133,7 +133,7 @@ class CRenderCaptureGL : public CRenderCaptureBase
 {
   public:
     CRenderCaptureGL();
-    ~CRenderCaptureGL();
+    ~CRenderCaptureGL() override;
 
     int   GetCaptureFormat();
 

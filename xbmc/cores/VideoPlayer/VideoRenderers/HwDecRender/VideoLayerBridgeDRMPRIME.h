@@ -31,7 +31,7 @@ class CVideoLayerBridgeDRMPRIME
 {
 public:
   CVideoLayerBridgeDRMPRIME(std::shared_ptr<KODI::WINDOWING::GBM::CDRMUtils> drm);
-  ~CVideoLayerBridgeDRMPRIME();
+  ~CVideoLayerBridgeDRMPRIME() override;
   void Disable() override;
 
   virtual void Configure(IVideoBufferDRMPRIME* buffer);

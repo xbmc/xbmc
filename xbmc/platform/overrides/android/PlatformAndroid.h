@@ -17,7 +17,7 @@ class CPlatformAndroid : public CPlatformPosix
     CPlatformAndroid() = default;
 
     /**\brief D'tor */
-    virtual ~CPlatformAndroid() = default;
+    ~CPlatformAndroid() override = default;
 
     void Init() override;
 };

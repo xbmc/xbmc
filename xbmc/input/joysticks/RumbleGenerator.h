@@ -24,7 +24,7 @@ namespace JOYSTICK
   public:
     CRumbleGenerator();
 
-    virtual ~CRumbleGenerator(void) { AbortRumble(); }
+    ~CRumbleGenerator() override { AbortRumble(); }
 
     std::string ControllerID() const;
 
@@ -35,7 +35,7 @@ namespace JOYSTICK
 
   protected:
     // implementation of CThread
-    void Process(void);
+    void Process() override;
 
   private:
     enum RUMBLE_TYPE

@@ -20,7 +20,7 @@ class CWinSystemAndroidGLESContext : public CWinSystemAndroid, public CRenderSys
 {
 public:
   CWinSystemAndroidGLESContext() = default;
-  virtual ~CWinSystemAndroidGLESContext() = default;
+  ~CWinSystemAndroidGLESContext() override = default;
 
   // Implementation of CWinSystemBase via CWinSystemAndroid
   CRenderSystemBase *GetRenderSystem() override { return this; }
@@ -32,7 +32,7 @@ public:
   bool ResizeWindow(int newWidth, int newHeight, int newLeft, int newTop) override;
   bool SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays) override;
 
-  virtual std::unique_ptr<CVideoSync> GetVideoSync(void *clock) override;
+  std::unique_ptr<CVideoSync> GetVideoSync(void* clock) override;
 
   float GetFrameLatencyAdjustment() override;
   bool IsHDRDisplay() override;

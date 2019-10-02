@@ -38,7 +38,7 @@ public:
    *               .desktop file of the application
    */
   CShellSurfaceXdgShell(IShellSurfaceHandler& handler, wayland::display_t& display, wayland::xdg_wm_base_t const& shell, wayland::surface_t const& surface, std::string const& title, std::string const& class_);
-  virtual ~CShellSurfaceXdgShell() noexcept;
+  ~CShellSurfaceXdgShell() noexcept override;
 
   static CShellSurfaceXdgShell* TryCreate(IShellSurfaceHandler& handler, CConnection& connection, wayland::surface_t const& surface, std::string const& title, std::string const& class_);
 

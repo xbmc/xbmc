@@ -36,29 +36,29 @@ namespace RETRO
   public:
     CReversiblePlayback(GAME::CGameClient* gameClient, double fps, size_t serializeSize);
 
-    virtual ~CReversiblePlayback();
+    ~CReversiblePlayback() override;
 
     // implementation of IPlayback
-    virtual void Initialize() override;
-    virtual void Deinitialize() override;
-    virtual bool CanPause() const override { return true; }
-    virtual bool CanSeek() const override { return true; }
-    virtual unsigned int GetTimeMs() const override { return m_playTimeMs; }
-    virtual unsigned int GetTotalTimeMs() const override { return m_totalTimeMs; }
-    virtual unsigned int GetCacheTimeMs() const override { return m_cacheTimeMs; }
-    virtual void SeekTimeMs(unsigned int timeMs) override;
-    virtual double GetSpeed() const override;
-    virtual void SetSpeed(double speedFactor) override;
-    virtual void PauseAsync() override;
-    virtual std::string CreateSavestate() override;
-    virtual bool LoadSavestate(const std::string& path) override;
+    void Initialize() override;
+    void Deinitialize() override;
+    bool CanPause() const override { return true; }
+    bool CanSeek() const override { return true; }
+    unsigned int GetTimeMs() const override { return m_playTimeMs; }
+    unsigned int GetTotalTimeMs() const override { return m_totalTimeMs; }
+    unsigned int GetCacheTimeMs() const override { return m_cacheTimeMs; }
+    void SeekTimeMs(unsigned int timeMs) override;
+    double GetSpeed() const override;
+    void SetSpeed(double speedFactor) override;
+    void PauseAsync() override;
+    std::string CreateSavestate() override;
+    bool LoadSavestate(const std::string& path) override;
 
     // implementation of IGameLoopCallback
-    virtual void FrameEvent() override;
-    virtual void RewindEvent() override;
+    void FrameEvent() override;
+    void RewindEvent() override;
 
     // implementation of Observer
-    virtual void Notify(const Observable &obs, const ObservableMessage msg) override;
+    void Notify(const Observable& obs, const ObservableMessage msg) override;
 
   private:
     void AddFrame();

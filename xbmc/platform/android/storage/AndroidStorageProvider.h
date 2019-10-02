@@ -18,17 +18,17 @@ class CAndroidStorageProvider : public IStorageProvider
 {
 public:
   CAndroidStorageProvider();
-  virtual ~CAndroidStorageProvider() = default;
+  ~CAndroidStorageProvider() override = default;
 
-  virtual void Initialize() { }
-  virtual void Stop() { }
-  virtual bool Eject(const std::string& mountpath) { return false; }
+  void Initialize() override {}
+  void Stop() override {}
+  bool Eject(const std::string& mountpath) override { return false; }
 
-  virtual void GetLocalDrives(VECSOURCES &localDrives);
-  virtual void GetRemovableDrives(VECSOURCES &removableDrives);
-  virtual std::vector<std::string> GetDiskUsage();
+  void GetLocalDrives(VECSOURCES& localDrives) override;
+  void GetRemovableDrives(VECSOURCES& removableDrives) override;
+  std::vector<std::string> GetDiskUsage() override;
 
-  virtual bool PumpDriveChangeEvents(IStorageEventsCallback *callback);
+  bool PumpDriveChangeEvents(IStorageEventsCallback* callback) override;
 
 private:
   std::string unescape(const std::string& str);

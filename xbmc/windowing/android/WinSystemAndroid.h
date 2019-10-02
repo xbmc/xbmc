@@ -23,7 +23,7 @@ class CWinSystemAndroid : public CWinSystemBase, public ITimerCallback
 {
 public:
   CWinSystemAndroid();
-  virtual ~CWinSystemAndroid();
+  ~CWinSystemAndroid() override;
 
   bool InitWindowSystem() override;
   bool DestroyWindowSystem() override;

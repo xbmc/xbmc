@@ -17,8 +17,8 @@ class CGLESShader : public Shaders::CGLSLShaderProgram
 public:
   CGLESShader( const char *shader, std::string prefix);
   CGLESShader(const char *vshader, const char *fshader, std::string prefix);
-  void OnCompiledAndLinked();
-  bool OnEnabled();
+  void OnCompiledAndLinked() override;
+  bool OnEnabled() override;
   void Free();
 
   GLint GetPosLoc()   { return m_hPos;   }

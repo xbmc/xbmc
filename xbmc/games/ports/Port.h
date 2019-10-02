@@ -36,23 +36,23 @@ namespace GAME
     JOYSTICK::IInputHandler *InputHandler() { return m_gameInput; }
 
     // Implementation of IInputHandler
-    virtual std::string ControllerID() const override;
-    virtual bool HasFeature(const std::string& feature) const override { return true; }
-    virtual bool AcceptsInput(const std::string& feature) const override;
-    virtual bool OnButtonPress(const std::string& feature, bool bPressed) override;
-    virtual void OnButtonHold(const std::string& feature, unsigned int holdTimeMs) override;
-    virtual bool OnButtonMotion(const std::string& feature, float magnitude, unsigned int motionTimeMs) override;
-    virtual bool OnAnalogStickMotion(const std::string& feature, float x, float y, unsigned int motionTimeMs) override;
-    virtual bool OnAccelerometerMotion(const std::string& feature, float x, float y, float z) override;
-    virtual bool OnWheelMotion(const std::string& feature, float position, unsigned int motionTimeMs) override;
-    virtual bool OnThrottleMotion(const std::string& feature, float position, unsigned int motionTimeMs) override;
+    std::string ControllerID() const override;
+    bool HasFeature(const std::string& feature) const override { return true; }
+    bool AcceptsInput(const std::string& feature) const override;
+    bool OnButtonPress(const std::string& feature, bool bPressed) override;
+    void OnButtonHold(const std::string& feature, unsigned int holdTimeMs) override;
+    bool OnButtonMotion(const std::string& feature, float magnitude, unsigned int motionTimeMs) override;
+    bool OnAnalogStickMotion(const std::string& feature, float x, float y, unsigned int motionTimeMs) override;
+    bool OnAccelerometerMotion(const std::string& feature, float x, float y, float z) override;
+    bool OnWheelMotion(const std::string& feature, float position, unsigned int motionTimeMs) override;
+    bool OnThrottleMotion(const std::string& feature, float position, unsigned int motionTimeMs) override;
 
     // Implementation of IKeymapEnvironment
-    virtual int GetWindowID() const override;
-    virtual void SetWindowID(int windowId) override { }
-    virtual int GetFallthrough(int windowId) const override { return -1; }
-    virtual bool UseGlobalFallthrough() const override { return false; }
-    virtual bool UseEasterEgg() const override { return false; }
+    int GetWindowID() const override;
+    void SetWindowID(int windowId) override {}
+    int GetFallthrough(int windowId) const override { return -1; }
+    bool UseGlobalFallthrough() const override { return false; }
+    bool UseEasterEgg() const override { return false; }
 
   private:
     // Construction parameters

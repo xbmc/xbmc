@@ -12,7 +12,7 @@ class CX11DPMSSupport : public CDPMSSupport
 {
 public:
   CX11DPMSSupport();
-  ~CX11DPMSSupport() = default;
+  ~CX11DPMSSupport() override = default;
 
 protected:
   bool EnablePowerSaving(PowerSavingMode mode) override;

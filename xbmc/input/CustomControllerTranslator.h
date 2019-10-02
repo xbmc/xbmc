@@ -21,8 +21,8 @@ public:
   CCustomControllerTranslator() = default;
 
   // implementation of IButtonMapper
-  virtual void MapActions(int windowID, const TiXmlNode *pDevice) override;
-  virtual void Clear() override;
+  void MapActions(int windowID, const TiXmlNode* pDevice) override;
+  void Clear() override;
 
   bool TranslateCustomControllerString(int windowId, const std::string& controllerName, int buttonId, int& action, std::string& strAction);
 

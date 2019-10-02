@@ -16,7 +16,7 @@ class CLinuxStorageProvider : public IStorageProvider
 {
 public:
   CLinuxStorageProvider();
-  virtual ~CLinuxStorageProvider();
+  ~CLinuxStorageProvider() override;
 
   void Initialize() override;
   void Stop() override;

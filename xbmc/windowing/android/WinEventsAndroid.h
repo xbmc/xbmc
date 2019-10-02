@@ -22,17 +22,17 @@ class CWinEventsAndroid : public IWinEvents, public CThread
 {
 public:
   CWinEventsAndroid();
- ~CWinEventsAndroid();
+  ~CWinEventsAndroid() override;
 
   void            MessagePush(XBMC_Event *newEvent);
   void            MessagePushRepeat(XBMC_Event *repeatEvent);
-  bool            MessagePump();
+  bool MessagePump() override;
 
 private:
   size_t          GetQueueSize();
 
   // for CThread
-  virtual void    Process();
+  void Process() override;
 
   CCriticalSection             m_eventsCond;
   std::list<XBMC_Event>        m_events;

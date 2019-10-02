@@ -20,13 +20,13 @@ public:
     CVideoSync(clock), m_winSystem(winSystem) {}
 
   // CVideoSync interface
-  virtual bool Setup(PUPDATECLOCK func) override;
-  virtual void Run(CEvent& stopEvent) override;
-  virtual void Cleanup() override;
-  virtual float GetFps() override;
+  bool Setup(PUPDATECLOCK func) override;
+  void Run(CEvent& stopEvent) override;
+  void Cleanup() override;
+  float GetFps() override;
 
   // IDispResource interface
-  virtual void OnResetDisplay() override;
+  void OnResetDisplay() override;
 
   // used in the displaylink callback
   void IosVblankHandler();

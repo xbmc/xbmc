@@ -20,19 +20,19 @@ class CFileAndroidApp : public IFile
 public:
   /*! \brief Currently only used for retrieving App Icons. */
   CFileAndroidApp(void);
-  virtual ~CFileAndroidApp(void);
-  virtual bool Open(const CURL& url);
-  virtual bool Exists(const CURL& url);
-  virtual int Stat(const CURL& url, struct __stat64* buffer);
+  ~CFileAndroidApp() override;
+  bool Open(const CURL& url) override;
+  bool Exists(const CURL& url) override;
+  int Stat(const CURL& url, struct __stat64* buffer) override;
 
   /*! \brief Return 32bit rgba raw bitmap. */
-  virtual ssize_t Read(void* lpBuf, size_t uiBufSize) {return 0;}
-  virtual void Close();
-  virtual int64_t GetLength()  {return 0;}
-  virtual int64_t Seek(int64_t, int) {return -1;}
-  virtual int64_t GetPosition() {return 0;}
-  virtual int GetChunkSize();
-  virtual int IoControl(EIoControl request, void* param);
+  ssize_t Read(void* lpBuf, size_t uiBufSize) override { return 0; }
+  void Close() override;
+  int64_t GetLength() override { return 0; }
+  int64_t Seek(int64_t, int) override { return -1; }
+  int64_t GetPosition() override { return 0; }
+  int GetChunkSize() override;
+  int IoControl(EIoControl request, void* param) override;
 
   virtual unsigned int ReadIcon(unsigned char **lpBuf, unsigned int* width, unsigned int* height);
 

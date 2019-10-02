@@ -25,11 +25,11 @@ class CJoystickMapper : public IButtonMapper
 {
 public:
   CJoystickMapper() = default;
-  virtual ~CJoystickMapper() = default;
+  ~CJoystickMapper() override = default;
 
   // implementation of IButtonMapper
-  virtual void MapActions(int windowID, const TiXmlNode *pDevice) override;
-  virtual void Clear() override;
+  void MapActions(int windowID, const TiXmlNode* pDevice) override;
+  void Clear() override;
 
   std::vector<std::shared_ptr<const IWindowKeymap>> GetJoystickKeymaps() const;
 

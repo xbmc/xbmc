@@ -13,14 +13,14 @@
 class CKeymapEnvironment : public IKeymapEnvironment
 {
 public:
-  virtual ~CKeymapEnvironment() = default;
+  ~CKeymapEnvironment() override = default;
 
   // implementation of IKeymapEnvironment
-  virtual int GetWindowID() const override { return m_windowId; }
-  virtual void SetWindowID(int windowId) override { m_windowId = windowId; }
-  virtual int GetFallthrough(int windowId) const override;
-  virtual bool UseGlobalFallthrough() const override { return true; }
-  virtual bool UseEasterEgg() const override { return true; }
+  int GetWindowID() const override { return m_windowId; }
+  void SetWindowID(int windowId) override { m_windowId = windowId; }
+  int GetFallthrough(int windowId) const override;
+  bool UseGlobalFallthrough() const override { return true; }
+  bool UseEasterEgg() const override { return true; }
 
 private:
   int m_windowId = -1;

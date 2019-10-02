@@ -63,7 +63,7 @@ public:
     Create();
   }
 
-  ~CWinEventsWaylandThread()
+  ~CWinEventsWaylandThread() override
   {
     Stop();
     // Wait for roundtrip invocation to finish

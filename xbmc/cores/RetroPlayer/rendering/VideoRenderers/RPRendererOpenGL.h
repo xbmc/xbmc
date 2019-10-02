@@ -22,7 +22,7 @@ namespace RETRO
   class CRendererFactoryOpenGL : public IRendererFactory
   {
   public:
-    virtual ~CRendererFactoryOpenGL() = default;
+    ~CRendererFactoryOpenGL() override = default;
 
     // implementation of IRendererFactory
     std::string RenderSystemName() const override;

@@ -30,5 +30,5 @@ public:
 
 private:
   CDiscSettings() = default;
-  ~CDiscSettings() = default;
+  ~CDiscSettings() override = default;
 };

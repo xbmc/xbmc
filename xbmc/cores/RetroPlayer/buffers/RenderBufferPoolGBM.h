@@ -28,7 +28,7 @@ namespace RETRO
   protected:
     // implementation of CBaseRenderBufferPool
     IRenderBuffer *CreateRenderBuffer(void *header = nullptr) override;
-    bool ConfigureInternal();
+    bool ConfigureInternal() override;
 
     // Construction parameters
     CRenderContext &m_context;

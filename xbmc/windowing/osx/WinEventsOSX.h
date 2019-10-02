@@ -14,5 +14,5 @@ class CWinEventsOSX : public CWinEventsSDL
 {
 public:
   CWinEventsOSX() = default;
-  ~CWinEventsOSX() = default;
+  ~CWinEventsOSX() override = default;
 };

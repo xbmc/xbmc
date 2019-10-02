@@ -14,28 +14,28 @@ class CRendererMediaCodec : public CLinuxRendererGLES
 {
 public:
   CRendererMediaCodec();
-  virtual ~CRendererMediaCodec();
+  ~CRendererMediaCodec() override;
 
   // Registration
   static CBaseRenderer* Create(CVideoBuffer *buffer);
   static bool Register();
 
   // Player functions
-  virtual void AddVideoPicture(const VideoPicture &picture, int index) override;
-  virtual void ReleaseBuffer(int idx) override;
+  void AddVideoPicture(const VideoPicture& picture, int index) override;
+  void ReleaseBuffer(int idx) override;
 
   // Feature support
-  virtual CRenderInfo GetRenderInfo() override;
+  CRenderInfo GetRenderInfo() override;
 
 protected:
   // textures
-  virtual bool UploadTexture(int index) override;
-  virtual void DeleteTexture(int index) override;
-  virtual bool CreateTexture(int index) override;
+  bool UploadTexture(int index) override;
+  void DeleteTexture(int index) override;
+  bool CreateTexture(int index) override;
 
   // hooks for hw dec renderer
-  virtual bool LoadShadersHook() override;
-  virtual bool RenderHook(int index) override;
+  bool LoadShadersHook() override;
+  bool RenderHook(int index) override;
 
 private:
   float m_textureMatrix[16];

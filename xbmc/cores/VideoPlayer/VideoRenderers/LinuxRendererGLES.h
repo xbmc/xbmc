@@ -60,31 +60,31 @@ class CLinuxRendererGLES : public CBaseRenderer
 {
 public:
   CLinuxRendererGLES();
-  virtual ~CLinuxRendererGLES();
+  ~CLinuxRendererGLES() override;
 
   // Registration
   static CBaseRenderer* Create(CVideoBuffer *buffer);
   static bool Register();
 
   // Player functions
-  virtual bool Configure(const VideoPicture &picture, float fps, unsigned int orientation) override;
-  virtual bool IsConfigured() override { return m_bConfigured; }
-  virtual void AddVideoPicture(const VideoPicture &picture, int index) override;
-  virtual void UnInit() override;
-  virtual bool Flush(bool saveBuffers) override;
-  virtual void SetBufferSize(int numBuffers) override { m_NumYV12Buffers = numBuffers; }
-  virtual bool IsGuiLayer() override;
-  virtual void ReleaseBuffer(int idx) override;
-  virtual void RenderUpdate(int index, int index2, bool clear, unsigned int flags, unsigned int alpha) override;
-  virtual void Update() override;
-  virtual bool RenderCapture(CRenderCapture* capture) override;
-  virtual CRenderInfo GetRenderInfo() override;
-  virtual bool ConfigChanged(const VideoPicture &picture) override;
+  bool Configure(const VideoPicture& picture, float fps, unsigned int orientation) override;
+  bool IsConfigured() override { return m_bConfigured; }
+  void AddVideoPicture(const VideoPicture& picture, int index) override;
+  void UnInit() override;
+  bool Flush(bool saveBuffers) override;
+  void SetBufferSize(int numBuffers) override { m_NumYV12Buffers = numBuffers; }
+  bool IsGuiLayer() override;
+  void ReleaseBuffer(int idx) override;
+  void RenderUpdate(int index, int index2, bool clear, unsigned int flags, unsigned int alpha) override;
+  void Update() override;
+  bool RenderCapture(CRenderCapture* capture) override;
+  CRenderInfo GetRenderInfo() override;
+  bool ConfigChanged(const VideoPicture& picture) override;
 
   // Feature support
-  virtual bool SupportsMultiPassRendering() override;
-  virtual bool Supports(ERENDERFEATURE feature) override;
-  virtual bool Supports(ESCALINGMETHOD method) override;
+  bool SupportsMultiPassRendering() override;
+  bool Supports(ERENDERFEATURE feature) override;
+  bool Supports(ESCALINGMETHOD method) override;
 
 protected:
   static const int FIELD_FULL{0};

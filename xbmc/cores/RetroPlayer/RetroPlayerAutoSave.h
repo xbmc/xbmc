@@ -41,7 +41,7 @@ namespace RETRO
 
   protected:
     // implementation of CThread
-    virtual void Process() override;
+    void Process() override;
 
   private:
     // Construction parameters

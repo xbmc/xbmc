@@ -35,12 +35,12 @@ namespace JOYSTICK
   public:
     CKeyHandler(const std::string &keyName, IActionListener *actionHandler, const IKeymap *keymap, IKeymapHandler *keymapHandler);
 
-    virtual ~CKeyHandler() = default;
+    ~CKeyHandler() override = default;
 
     // implementation of IKeyHandler
-    virtual bool IsPressed() const override { return m_bHeld; }
-    virtual bool OnDigitalMotion(bool bPressed, unsigned int holdTimeMs) override;
-    virtual bool OnAnalogMotion(float magnitude, unsigned int motionTimeMs) override;
+    bool IsPressed() const override { return m_bHeld; }
+    bool OnDigitalMotion(bool bPressed, unsigned int holdTimeMs) override;
+    bool OnAnalogMotion(float magnitude, unsigned int motionTimeMs) override;
 
   private:
     void Reset();

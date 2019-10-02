@@ -18,22 +18,22 @@ struct AEDelayStatus;
 class CAESinkDARWINOSX : public IAESink
 {
 public:
-  virtual const char *GetName() { return "DARWINOSX"; }
+  const char* GetName() override { return "DARWINOSX"; }
 
   CAESinkDARWINOSX();
-  virtual ~CAESinkDARWINOSX();
+  ~CAESinkDARWINOSX() override;
 
   static void Register();
   static void EnumerateDevicesEx(AEDeviceInfoList &list, bool force);
   static IAESink* Create(std::string &device, AEAudioFormat &desiredFormat);
 
-  virtual bool Initialize(AEAudioFormat &format, std::string &device);
-  virtual void Deinitialize();
+  bool Initialize(AEAudioFormat& format, std::string& device) override;
+  void Deinitialize() override;
 
-  virtual void GetDelay(AEDelayStatus& status);
-  virtual double GetCacheTotal();
-  virtual unsigned int AddPackets(uint8_t **data, unsigned int frames, unsigned int offset);
-  virtual void Drain();
+  void GetDelay(AEDelayStatus& status) override;
+  double GetCacheTotal() override;
+  unsigned int AddPackets(uint8_t** data, unsigned int frames, unsigned int offset) override;
+  void Drain() override;
 
 private:
   static OSStatus renderCallback(AudioDeviceID inDevice, const AudioTimeStamp* inNow, const AudioBufferList* inInputData, const AudioTimeStamp* inInputTime, AudioBufferList* outOutputData, const AudioTimeStamp* inOutputTime, void* inClientData);

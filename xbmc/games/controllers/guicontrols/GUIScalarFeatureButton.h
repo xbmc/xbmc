@@ -22,12 +22,12 @@ namespace GAME
                             const CControllerFeature& feature,
                             unsigned int index);
 
-    virtual ~CGUIScalarFeatureButton() = default;
+    ~CGUIScalarFeatureButton() override = default;
 
     // implementation of IFeatureButton
-    virtual bool PromptForInput(CEvent& waitEvent) override;
-    virtual bool IsFinished(void) const override;
-    virtual void Reset(void) override;
+    bool PromptForInput(CEvent& waitEvent) override;
+    bool IsFinished() const override;
+    void Reset() override;
 
   private:
     enum class STATE

@@ -23,16 +23,16 @@ namespace JOYSTICK
   {
   public:
     // implementation of IInputHandler
-    virtual std::string ControllerID() const override;
-    virtual bool HasFeature(const FeatureName& feature) const override { return true; }
-    virtual bool AcceptsInput(const FeatureName& feature) const override;
-    virtual bool OnButtonPress(const FeatureName& feature, bool bPressed) override;
-    virtual void OnButtonHold(const FeatureName& feature, unsigned int holdTimeMs) override { }
-    virtual bool OnButtonMotion(const FeatureName& feature, float magnitude, unsigned int motionTimeMs) override;
-    virtual bool OnAnalogStickMotion(const FeatureName& feature, float x, float y, unsigned int motionTimeMs) override;
-    virtual bool OnAccelerometerMotion(const FeatureName& feature, float x, float y, float z) override { return false; }
-    virtual bool OnWheelMotion(const FeatureName& feature, float position, unsigned int motionTimeMs) override;
-    virtual bool OnThrottleMotion(const FeatureName& feature, float position, unsigned int motionTimeMs) override;
+    std::string ControllerID() const override;
+    bool HasFeature(const FeatureName& feature) const override { return true; }
+    bool AcceptsInput(const FeatureName& feature) const override;
+    bool OnButtonPress(const FeatureName& feature, bool bPressed) override;
+    void OnButtonHold(const FeatureName& feature, unsigned int holdTimeMs) override {}
+    bool OnButtonMotion(const FeatureName& feature, float magnitude, unsigned int motionTimeMs) override;
+    bool OnAnalogStickMotion(const FeatureName& feature, float x, float y, unsigned int motionTimeMs) override;
+    bool OnAccelerometerMotion(const FeatureName& feature, float x, float y, float z) override { return false; }
+    bool OnWheelMotion(const FeatureName& feature, float position, unsigned int motionTimeMs) override;
+    bool OnThrottleMotion(const FeatureName& feature, float position, unsigned int motionTimeMs) override;
 
   private:
     /*!

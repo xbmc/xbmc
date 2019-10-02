@@ -19,7 +19,7 @@ class CDVDVideoCodecDRMPRIME
 {
 public:
   explicit CDVDVideoCodecDRMPRIME(CProcessInfo& processInfo);
-  ~CDVDVideoCodecDRMPRIME();
+  ~CDVDVideoCodecDRMPRIME() override;
 
   static CDVDVideoCodec* Create(CProcessInfo& processInfo);
   static void Register();

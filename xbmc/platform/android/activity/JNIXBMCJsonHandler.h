@@ -25,7 +25,7 @@ namespace jni
 
 
   protected:
-    virtual ~CJNIXBMCJsonHandler() = default;
+    ~CJNIXBMCJsonHandler() override = default;
 
     static jstring _requestJSON(JNIEnv* env, jobject thiz, jstring request);
 
@@ -33,7 +33,7 @@ namespace jni
     {
     public:
       CJNITransportLayer() = default;
-      ~CJNITransportLayer() = default;
+      ~CJNITransportLayer() override = default;
 
       // implementations of JSONRPC::ITransportLayer
       bool PrepareDownload(const char *path, CVariant &details, std::string &protocol) override;
@@ -44,9 +44,9 @@ namespace jni
     class CJNIClient : public JSONRPC::IClient
     {
     public:
-      virtual int  GetPermissionFlags();
-      virtual int  GetAnnouncementFlags();
-      virtual bool SetAnnouncementFlags(int flags);
+      int GetPermissionFlags() override;
+      int GetAnnouncementFlags() override;
+      bool SetAnnouncementFlags(int flags) override;
     };
 
   };

@@ -25,7 +25,7 @@ class CWinSystemIOS : public CWinSystemBase, public CRenderSystemGLES
 {
 public:
   CWinSystemIOS();
-  virtual ~CWinSystemIOS();
+  ~CWinSystemIOS() override;
 
   int GetDisplayIndexFromSettings();
   // Implementation of CWinSystemBase
@@ -57,7 +57,7 @@ public:
   void Register(IDispResource *resource) override;
   void Unregister(IDispResource *resource) override;
 
-  virtual std::unique_ptr<CVideoSync> GetVideoSync(void *clock) override;
+  std::unique_ptr<CVideoSync> GetVideoSync(void* clock) override;
 
   bool InitDisplayLink(CVideoSyncIos *syncImpl);
   void DeinitDisplayLink(void);

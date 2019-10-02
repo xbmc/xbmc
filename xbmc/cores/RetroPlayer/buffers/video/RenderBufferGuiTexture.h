@@ -23,7 +23,7 @@ namespace RETRO
   {
   public:
     CRenderBufferGuiTexture(SCALINGMETHOD scalingMethod);
-    virtual ~CRenderBufferGuiTexture() = default;
+    ~CRenderBufferGuiTexture() override = default;
 
     // implementation of IRenderBuffer via CBaseRenderBuffer
     bool Allocate(AVPixelFormat format, unsigned int width, unsigned int height) override;

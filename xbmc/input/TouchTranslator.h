@@ -21,8 +21,8 @@ public:
   CTouchTranslator() = default;
 
   // implementation of IButtonMapper
-  virtual void MapActions(int windowID, const TiXmlNode *bDevice) override;
-  virtual void Clear() override;
+  void MapActions(int windowID, const TiXmlNode* bDevice) override;
+  void Clear() override;
 
   bool TranslateTouchAction(int window, int touchAction, int touchPointers, int &action, std::string &actionString);
 

@@ -23,7 +23,7 @@ namespace GAME
   public:
     CGUIDialogAxisDetection() = default;
 
-    virtual ~CGUIDialogAxisDetection() = default;
+    ~CGUIDialogAxisDetection() override = default;
 
     // specialization of IButtonMapper via CGUIDialogButtonCapture
     bool AcceptsPrimitive(JOYSTICK::PRIMITIVE_TYPE type) const override;
@@ -31,12 +31,12 @@ namespace GAME
 
   protected:
     // implementation of CGUIDialogButtonCapture
-    virtual std::string GetDialogText() override;
-    virtual std::string GetDialogHeader() override;
-    virtual bool MapPrimitiveInternal(JOYSTICK::IButtonMap* buttonMap,
-                                      IKeymap* keymap,
-                                      const JOYSTICK::CDriverPrimitive& primitive) override;
-    virtual void OnClose(bool bAccepted) override { }
+    std::string GetDialogText() override;
+    std::string GetDialogHeader() override;
+    bool MapPrimitiveInternal(JOYSTICK::IButtonMap* buttonMap,
+                              IKeymap* keymap,
+                              const JOYSTICK::CDriverPrimitive& primitive) override;
+    void OnClose(bool bAccepted) override {}
 
   private:
     void AddAxis(const std::string& deviceName, unsigned int axisIndex);

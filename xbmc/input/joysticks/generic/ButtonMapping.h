@@ -319,13 +319,13 @@ namespace JOYSTICK
      */
     CButtonMapping(IButtonMapper* buttonMapper, IButtonMap* buttonMap, IKeymap* keymap);
 
-    virtual ~CButtonMapping() = default;
+    ~CButtonMapping() override = default;
 
     // implementation of IDriverHandler
-    virtual bool OnButtonMotion(unsigned int buttonIndex, bool bPressed) override;
-    virtual bool OnHatMotion(unsigned int hatIndex, HAT_STATE state) override;
-    virtual bool OnAxisMotion(unsigned int axisIndex, float position, int center, unsigned int range) override;
-    virtual void ProcessAxisMotions(void) override;
+    bool OnButtonMotion(unsigned int buttonIndex, bool bPressed) override;
+    bool OnHatMotion(unsigned int hatIndex, HAT_STATE state) override;
+    bool OnAxisMotion(unsigned int axisIndex, float position, int center, unsigned int range) override;
+    void ProcessAxisMotions() override;
 
     // implementation of IKeyboardDriverHandler
     bool OnKeyPress(const CKey& key) override;
@@ -337,9 +337,9 @@ namespace JOYSTICK
     void OnButtonRelease(MOUSE::BUTTON_ID button) override;
 
     // implementation of IButtonMapCallback
-    virtual void SaveButtonMap() override;
-    virtual void ResetIgnoredPrimitives() override;
-    virtual void RevertButtonMap() override;
+    void SaveButtonMap() override;
+    void ResetIgnoredPrimitives() override;
+    void RevertButtonMap() override;
 
     /*!
      * \brief Process the primitive mapping command

@@ -27,19 +27,19 @@ namespace GAME
   public:
     CGUIDialogButtonCapture();
 
-    virtual ~CGUIDialogButtonCapture() = default;
+    ~CGUIDialogButtonCapture() override = default;
 
     // implementation of IButtonMapper
-    virtual std::string ControllerID(void) const override;
-    virtual bool NeedsCooldown(void) const override { return false; }
-    virtual bool MapPrimitive(JOYSTICK::IButtonMap* buttonMap,
-                              IKeymap* keymap,
-                              const JOYSTICK::CDriverPrimitive& primitive) override;
-    virtual void OnEventFrame(const JOYSTICK::IButtonMap* buttonMap, bool bMotion) override { }
-    virtual void OnLateAxis(const JOYSTICK::IButtonMap* buttonMap, unsigned int axisIndex) override { }
+    std::string ControllerID() const override;
+    bool NeedsCooldown() const override { return false; }
+    bool MapPrimitive(JOYSTICK::IButtonMap* buttonMap,
+                      IKeymap* keymap,
+                      const JOYSTICK::CDriverPrimitive& primitive) override;
+    void OnEventFrame(const JOYSTICK::IButtonMap* buttonMap, bool bMotion) override {}
+    void OnLateAxis(const JOYSTICK::IButtonMap* buttonMap, unsigned int axisIndex) override {}
 
     // implementation of Observer
-    virtual void Notify(const Observable &obs, const ObservableMessage msg) override;
+    void Notify(const Observable& obs, const ObservableMessage msg) override;
 
     /*!
      * \brief Show the dialog
@@ -48,7 +48,7 @@ namespace GAME
 
   protected:
     // implementation of CThread
-    virtual void Process() override;
+    void Process() override;
 
     virtual std::string GetDialogText() = 0;
     virtual std::string GetDialogHeader() = 0;

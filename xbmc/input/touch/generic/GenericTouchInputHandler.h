@@ -47,7 +47,7 @@ public:
 private:
   // private construction, and no assignments; use the provided singleton methods
   CGenericTouchInputHandler();
-  ~CGenericTouchInputHandler();
+  ~CGenericTouchInputHandler() override;
   CGenericTouchInputHandler(const CGenericTouchInputHandler&) = delete;
   CGenericTouchInputHandler const& operator=(CGenericTouchInputHandler const&) = delete;
 

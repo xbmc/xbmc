@@ -17,13 +17,13 @@ public:
   CVideoSyncAndroid(void *clock) : CVideoSync(clock), m_LastVBlankTime(0) {}
 
   // CVideoSync interface
-  virtual bool Setup(PUPDATECLOCK func) override;
-  virtual void Run(CEvent& stop) override;
-  virtual void Cleanup() override;
-  virtual float GetFps() override;
+  bool Setup(PUPDATECLOCK func) override;
+  void Run(CEvent& stop) override;
+  void Cleanup() override;
+  float GetFps() override;
 
   // IDispResource interface
-  virtual void OnResetDisplay() override;
+  void OnResetDisplay() override;
 
   // Choreographer callback
   void FrameCallback(int64_t frameTimeNanos);

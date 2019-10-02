@@ -18,13 +18,13 @@ namespace JOYSTICK
   {
   public:
     CGUIDialogNewJoystick();
-    virtual ~CGUIDialogNewJoystick() = default;
+    ~CGUIDialogNewJoystick() override = default;
 
     void ShowAsync();
 
   protected:
     // implementation of CThread
-    virtual void Process() override;
+    void Process() override;
   };
 }
 }

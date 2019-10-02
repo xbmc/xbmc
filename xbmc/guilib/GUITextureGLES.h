@@ -31,9 +31,9 @@ public:
   CGUITextureGLES(float posX, float posY, float width, float height, const CTextureInfo& texture);
   static void DrawQuad(const CRect &coords, UTILS::Color color, CBaseTexture *texture = NULL, const CRect *texCoords = NULL);
 protected:
-  void Begin(UTILS::Color color);
-  void Draw(float *x, float *y, float *z, const CRect &texture, const CRect &diffuse, int orientation);
-  void End();
+  void Begin(UTILS::Color color) override;
+  void Draw(float* x, float* y, float* z, const CRect& texture, const CRect& diffuse, int orientation) override;
+  void End() override;
 
   GLubyte m_col[4];
 

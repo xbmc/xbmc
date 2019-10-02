@@ -28,7 +28,7 @@ class CDVDAudioCodecAndroidMediaCodec : public CDVDAudioCodec
 {
 public:
   CDVDAudioCodecAndroidMediaCodec(CProcessInfo &processInfo);
-  virtual ~CDVDAudioCodecAndroidMediaCodec();
+  ~CDVDAudioCodecAndroidMediaCodec() override;
 
   // registration
   static CDVDAudioCodec* Create(CProcessInfo &processInfo);

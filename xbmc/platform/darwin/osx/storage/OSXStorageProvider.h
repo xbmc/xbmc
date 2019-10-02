@@ -18,19 +18,19 @@ class COSXStorageProvider : public IStorageProvider
 {
 public:
   COSXStorageProvider();
-  virtual ~COSXStorageProvider() = default;
+  ~COSXStorageProvider() override = default;
 
-  virtual void Initialize() { }
-  virtual void Stop() { }
+  void Initialize() override {}
+  void Stop() override {}
 
-  virtual void GetLocalDrives(VECSOURCES &localDrives);
-  virtual void GetRemovableDrives(VECSOURCES &removableDrives);
+  void GetLocalDrives(VECSOURCES& localDrives) override;
+  void GetRemovableDrives(VECSOURCES& removableDrives) override;
 
-  virtual std::vector<std::string> GetDiskUsage(void);
+  std::vector<std::string> GetDiskUsage() override;
 
-  virtual bool Eject(const std::string& mountpath);
+  bool Eject(const std::string& mountpath) override;
 
-  virtual bool PumpDriveChangeEvents(IStorageEventsCallback *callback);
+  bool PumpDriveChangeEvents(IStorageEventsCallback* callback) override;
 
   static void VolumeMountNotification(const char* label, const char* mountpoint);
   static void VolumeUnmountNotification(const char* label, const char* mountpoint);
