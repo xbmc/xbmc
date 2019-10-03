@@ -1924,7 +1924,8 @@ void CUtil::ScanPathsForAssociatedItems(const std::string& videoName,
       continue;
 
     URIUtils::RemoveExtension(strCandidate);
-    if (StringUtils::StartsWithNoCase(strCandidate, videoName))
+    // NOTE: We don't know if one of videoName or strCandidate is URL-encoded and the other is not, so try both
+    if (StringUtils::StartsWithNoCase(strCandidate, videoName) || (StringUtils::StartsWithNoCase(strCandidate, CURL::Decode(videoName))))
     {
       if (URIUtils::IsRAR(pItem->GetPath()) || URIUtils::IsZIP(pItem->GetPath()))
         CUtil::ScanArchiveForAssociatedItems(pItem->GetPath(), "", item_exts, associatedFiles);
@@ -1973,7 +1974,10 @@ int CUtil::ScanArchiveForAssociatedItems(const std::string& strArchivePath,
 
     // check that the found filename matches the movie filename
     size_t fnl = videoNameNoExt.size();
-    if (fnl && !StringUtils::StartsWithNoCase(URIUtils::GetFileName(strPathInRar), videoNameNoExt))
+    // NOTE: We don't know if videoNameNoExt is URL-encoded, so try both
+    if (fnl &&
+      !(StringUtils::StartsWithNoCase(URIUtils::GetFileName(strPathInRar), videoNameNoExt) ||
+        StringUtils::StartsWithNoCase(URIUtils::GetFileName(strPathInRar), CURL::Decode(videoNameNoExt))))
       continue;
 
     for (auto ext : item_exts)
