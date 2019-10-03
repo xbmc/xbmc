@@ -280,11 +280,10 @@ CSysData::INTERNET_STATE CSysInfoJob::GetInternetState()
 
 std::string CSysInfoJob::GetMACAddress()
 {
-#if defined(HAS_LINUX_NETWORK) || defined(HAS_WIN32_NETWORK) || defined(HAS_WIN10_NETWORK)
   CNetworkInterface* iface = CServiceBroker::GetNetwork().GetFirstConnectedInterface();
   if (iface)
     return iface->GetMacAddress();
-#endif
+
   return "";
 }
 
