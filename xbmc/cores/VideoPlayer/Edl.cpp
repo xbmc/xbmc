@@ -12,9 +12,7 @@
 #include "ServiceBroker.h"
 #include "cores/Cut.h"
 #include "filesystem/File.h"
-#include "pvr/PVRManager.h"
-#include "pvr/epg/EpgInfoTag.h"
-#include "pvr/recordings/PVRRecording.h"
+#include "pvr/PVREdl.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/StringUtils.h"
@@ -75,22 +73,8 @@ bool CEdl::ReadEditDecisionLists(const CFileItem& fileItem, const float fFramesP
     if (!bFound)
       bFound = ReadBeyondTV(strMovie);
   }
-
-  /*
-   * PVR Recordings
-   */
-  else if (fileItem.IsPVRRecording())
+  else
   {
-    CLog::Log(LOGDEBUG, "%s - Checking for edit decision list (EDL) for PVR recording: %s",
-      __FUNCTION__, CURL::GetRedacted(strMovie).c_str());
-
-    bFound = ReadPvr(fileItem);
-  }
-  else if (fileItem.IsEPG())
-  {
-    CLog::Log(LOGDEBUG, "%s - Checking for edit decision list (EDL) for EPG entry: %s",
-      __FUNCTION__, CURL::GetRedacted(strMovie).c_str());
-
     bFound = ReadPvr(fileItem);
   }
 
@@ -542,75 +526,42 @@ bool CEdl::ReadBeyondTV(const std::string& strMovie)
 
 bool CEdl::ReadPvr(const CFileItem &fileItem)
 {
-  const std::string strMovie = fileItem.GetDynPath();
-  if (!CServiceBroker::GetPVRManager().IsStarted())
+  std::vector<Cut> cutlist = PVR::CPVREdl::GetCuts(fileItem);
+  for (auto& cut : cutlist)
   {
-    CLog::Log(LOGERROR, "%s - PVR Manager not started, cannot read Edl for %s", __FUNCTION__, CURL::GetRedacted(strMovie).c_str());
-    return false;
-  }
-
-  std::vector<PVR_EDL_ENTRY> edl;
-
-  if (fileItem.HasPVRRecordingInfoTag())
-  {
-    CLog::Log(LOGDEBUG, "%s - Reading Edl for recording: %s", __FUNCTION__, fileItem.GetPVRRecordingInfoTag()->m_strTitle.c_str());
-    edl = fileItem.GetPVRRecordingInfoTag()->GetEdl();
-  }
-  else if (fileItem.HasEPGInfoTag())
-  {
-    CLog::Log(LOGDEBUG, "%s - Reading Edl for EPG: %s", __FUNCTION__, fileItem.GetEPGInfoTag()->Title().c_str());
-    edl = fileItem.GetEPGInfoTag()->GetEdl();
-  }
-  else
-  {
-    CLog::Log(LOGERROR, "%s - Unknown file item type : %s", __FUNCTION__, CURL::GetRedacted(strMovie).c_str());
-    return false;
-  }
-
-  std::vector<PVR_EDL_ENTRY>::const_iterator it;
-  for (it = edl.begin(); it != edl.end(); ++it)
-  {
-    Cut cut;
-    cut.start = it->start;
-    cut.end = it->end;
-
-    switch (it->type)
+    switch (cut.action)
     {
-    case PVR_EDL_TYPE_CUT:
-      cut.action = Action::CUT;
-      break;
-    case PVR_EDL_TYPE_MUTE:
-      cut.action = Action::MUTE;
-      break;
-    case PVR_EDL_TYPE_SCENE:
-      if (!AddSceneMarker(cut.end))
-      {
-        CLog::Log(LOGWARNING, "%s - Error adding scene marker for pvr recording", __FUNCTION__);
-      }
-      continue;
-    case PVR_EDL_TYPE_COMBREAK:
-      cut.action = Action::COMM_BREAK;
-      break;
-    default:
-      CLog::Log(LOGINFO, "%s - Ignoring entry of unknown type: %d", __FUNCTION__, it->type);
-      continue;
-    }
+      case Action::CUT:
+      case Action::MUTE:
+      case Action::COMM_BREAK:
+        if (AddCut(cut))
+        {
+          CLog::Log(LOGDEBUG, "%s - Added break [%s - %s] found in PVR item for: %s.",
+            __FUNCTION__, MillisecondsToTimeString(cut.start).c_str(),
+            MillisecondsToTimeString(cut.end).c_str(), CURL::GetRedacted(fileItem.GetDynPath()).c_str());
+        }
+        else
+        {
+          CLog::Log(LOGERROR, "%s - Invalid break [%s - %s] found in PVR item for: %s. Continuing anyway.",
+            __FUNCTION__, MillisecondsToTimeString(cut.start).c_str(),
+            MillisecondsToTimeString(cut.end).c_str(), CURL::GetRedacted(fileItem.GetDynPath()).c_str());
+        }
+        break;
 
-    if (AddCut(cut))
-    {
-      CLog::Log(LOGDEBUG, "%s - Added break [%s - %s] found in PVRRecording for: %s.",
-        __FUNCTION__, MillisecondsToTimeString(cut.start).c_str(),
-        MillisecondsToTimeString(cut.end).c_str(), CURL::GetRedacted(strMovie).c_str());
-    }
-    else
-    {
-      CLog::Log(LOGERROR, "%s - Invalid break [%s - %s] found in PVRRecording for: %s. Continuing anyway.",
-        __FUNCTION__, MillisecondsToTimeString(cut.start).c_str(),
-        MillisecondsToTimeString(cut.end).c_str(), CURL::GetRedacted(strMovie).c_str());
+      case Action::SCENE:
+        if (!AddSceneMarker(cut.end))
+        {
+          CLog::Log(LOGWARNING, "%s - Error adding scene marker for PVR item", __FUNCTION__);
+        }
+        break;
+
+      default:
+        CLog::Log(LOGINFO, "%s - Ignoring entry of unknown cut action: %d", __FUNCTION__, static_cast<int>(cut.action));
+        break;
     }
   }
 
- return !edl.empty();
+  return !cutlist.empty();
 }
 
 bool CEdl::AddCut(Cut& cut)
@@ -792,6 +743,8 @@ std::string CEdl::GetInfo() const
         break;
       case Action::COMM_BREAK:
         commBreakCount++;
+        break;
+      default:
         break;
       }
     }

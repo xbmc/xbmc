@@ -1,6 +1,7 @@
 set(SOURCES PVRChannelNumberInputHandler.cpp
             PVRContextMenus.cpp
             PVRDatabase.cpp
+            PVREdl.cpp
             PVREventLogJob.cpp
             PVRItem.cpp
             PVRManager.cpp
@@ -11,6 +12,7 @@ set(SOURCES PVRChannelNumberInputHandler.cpp
 set(HEADERS PVRChannelNumberInputHandler.h
             PVRContextMenus.h
             PVRDatabase.h
+            PVREdl.h
             PVREventLogJob.h
             PVRItem.h
             PVRManager.h
