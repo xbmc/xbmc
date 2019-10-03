@@ -1903,38 +1903,29 @@ void CVideoPlayer::HandlePlaySpeed()
     if (m_pInputStream->IsRealtime())
       threshold = 40;
 
-    bool video = m_CurrentVideo.id < 0 ||
-                 (m_CurrentVideo.syncState == IDVDStreamPlayer::SYNC_WAITSYNC) ||
-                 (m_CurrentVideo.syncState == IDVDStreamPlayer::SYNC_INSYNC) ||
+    bool video = m_CurrentVideo.id < 0 || (m_CurrentVideo.syncState == IDVDStreamPlayer::SYNC_WAITSYNC) ||
                  (m_CurrentVideo.packets == 0 && m_CurrentAudio.packets > threshold) ||
                  (!m_VideoPlayerAudio->AcceptsData() && m_processInfo->GetLevelVQ() < 10);
-    bool audio = m_CurrentAudio.id < 0 ||
-                 (m_CurrentAudio.syncState == IDVDStreamPlayer::SYNC_WAITSYNC) ||
-                 (m_CurrentAudio.syncState == IDVDStreamPlayer::SYNC_INSYNC) ||
+    bool audio = m_CurrentAudio.id < 0 || (m_CurrentAudio.syncState == IDVDStreamPlayer::SYNC_WAITSYNC) ||
                  (m_CurrentAudio.packets == 0 && m_CurrentVideo.packets > threshold) ||
                  (!m_VideoPlayerVideo->AcceptsData() && m_VideoPlayerAudio->GetLevel() < 10);
 
-    if (m_CurrentAudio.syncState == IDVDStreamPlayer::SYNC_WAITSYNC)
+    if (m_CurrentAudio.syncState == IDVDStreamPlayer::SYNC_WAITSYNC &&
+        (m_CurrentAudio.avsync == CCurrentStream::AV_SYNC_CONT ||
+         m_CurrentVideo.syncState == IDVDStreamPlayer::SYNC_INSYNC))
     {
-      if (m_CurrentAudio.avsync == CCurrentStream::AV_SYNC_CONT)
-      {
-        m_CurrentAudio.syncState = IDVDStreamPlayer::SYNC_INSYNC;
-        m_CurrentAudio.avsync = CCurrentStream::AV_SYNC_NONE;
-      }
-      else
-        audio = false;
+      m_CurrentAudio.syncState = IDVDStreamPlayer::SYNC_INSYNC;
+      m_CurrentAudio.avsync = CCurrentStream::AV_SYNC_NONE;
+      m_VideoPlayerAudio->SendMessage(new CDVDMsgDouble(CDVDMsg::GENERAL_RESYNC, m_clock.GetClock()), 1);
     }
-    if (m_CurrentVideo.syncState == IDVDStreamPlayer::SYNC_WAITSYNC)
+    else if (m_CurrentVideo.syncState == IDVDStreamPlayer::SYNC_WAITSYNC &&
+             m_CurrentVideo.avsync == CCurrentStream::AV_SYNC_CONT)
     {
-      if (m_CurrentVideo.avsync == CCurrentStream::AV_SYNC_CONT)
-      {
-        m_CurrentVideo.syncState = IDVDStreamPlayer::SYNC_INSYNC;
-        m_CurrentVideo.avsync = CCurrentStream::AV_SYNC_NONE;
-      }
-      else
-        video = false;
+      m_CurrentVideo.syncState = IDVDStreamPlayer::SYNC_INSYNC;
+      m_CurrentVideo.avsync = CCurrentStream::AV_SYNC_NONE;
+      m_VideoPlayerVideo->SendMessage(new CDVDMsgDouble(CDVDMsg::GENERAL_RESYNC, m_clock.GetClock()), 1);
     }
-    if (video && audio)
+    else if (video && audio)
     {
       double clock = 0;
       if (m_CurrentAudio.syncState == IDVDStreamPlayer::SYNC_WAITSYNC)
@@ -2880,7 +2871,6 @@ void CVideoPlayer::HandleMessages()
       if (msg.player == VideoPlayer_AUDIO)
       {
         m_CurrentAudio.syncState = IDVDStreamPlayer::SYNC_WAITSYNC;
-        m_CurrentAudio.avsync = CCurrentStream::AV_SYNC_CONT;
         m_CurrentAudio.cachetime = msg.cachetime;
         m_CurrentAudio.cachetotal = msg.cachetotal;
         m_CurrentAudio.starttime = msg.timestamp;
@@ -2888,7 +2878,6 @@ void CVideoPlayer::HandleMessages()
       if (msg.player == VideoPlayer_VIDEO)
       {
         m_CurrentVideo.syncState = IDVDStreamPlayer::SYNC_WAITSYNC;
-        m_CurrentVideo.avsync = CCurrentStream::AV_SYNC_CONT;
         m_CurrentVideo.cachetime = msg.cachetime;
         m_CurrentVideo.cachetotal = msg.cachetotal;
         m_CurrentVideo.starttime = msg.timestamp;
@@ -3539,7 +3528,7 @@ bool CVideoPlayer::OpenAudioStream(CDVDStreamInfo& hint, bool reset)
 
   m_HasAudio = true;
 
-  static_cast<IDVDStreamPlayerAudio*>(player)->SendMessage(new CDVDMsg(CDVDMsg::PLAYER_REQUEST_STATE), 0);
+  static_cast<IDVDStreamPlayerAudio*>(player)->SendMessage(new CDVDMsg(CDVDMsg::PLAYER_REQUEST_STATE), 1);
 
   return true;
 }
@@ -3638,7 +3627,7 @@ bool CVideoPlayer::OpenVideoStream(CDVDStreamInfo& hint, bool reset)
 
   m_HasVideo = true;
 
-  static_cast<IDVDStreamPlayerVideo*>(player)->SendMessage(new CDVDMsg(CDVDMsg::PLAYER_REQUEST_STATE), 0);
+  static_cast<IDVDStreamPlayerVideo*>(player)->SendMessage(new CDVDMsg(CDVDMsg::PLAYER_REQUEST_STATE), 1);
 
   // open CC demuxer if video is mpeg2
   if ((hint.codec == AV_CODEC_ID_MPEG2VIDEO || hint.codec == AV_CODEC_ID_H264) && !m_pCCDemuxer)
