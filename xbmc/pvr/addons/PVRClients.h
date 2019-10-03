@@ -44,12 +44,12 @@ namespace PVR
     std::string name;
     std::string version;
     std::string host;
-    int         numTimers = 0;
-    int         numRecordings = 0;
-    int         numDeletedRecordings = 0;
-    int         numChannels = 0;
-    long long   diskUsed = 0;
-    long long   diskTotal = 0;
+    int numTimers = 0;
+    int numRecordings = 0;
+    int numDeletedRecordings = 0;
+    int numChannels = 0;
+    long long diskUsed = 0;
+    long long diskTotal = 0;
   };
 
   class CPVRClients : public ADDON::IAddonMgrCallback

@@ -49,8 +49,8 @@ namespace PVR
   class CPVRRecordingUid final
   {
   public:
-    int           m_iClientId;        /*!< ID of the backend */
-    std::string   m_strRecordingId;   /*!< unique ID of the recording on the client */
+    int m_iClientId; /*!< ID of the backend */
+    std::string m_strRecordingId; /*!< unique ID of the recording on the client */
 
     CPVRRecordingUid(int iClientId, const std::string& strRecordingId);
 
@@ -63,16 +63,16 @@ namespace PVR
   class CPVRRecording final : public CVideoInfoTag
   {
   public:
-    int           m_iClientId;        /*!< ID of the backend */
-    std::string   m_strRecordingId;   /*!< unique ID of the recording on the client */
-    std::string   m_strChannelName;   /*!< name of the channel this was recorded from */
-    int           m_iPriority;        /*!< priority of this recording */
-    int           m_iLifetime;        /*!< lifetime of this recording */
-    std::string   m_strDirectory;     /*!< directory of this recording on the client */
-    std::string   m_strIconPath;      /*!< icon path */
-    std::string   m_strThumbnailPath; /*!< thumbnail path */
-    std::string   m_strFanartPath;    /*!< fanart path */
-    unsigned      m_iRecordingId;     /*!< id that won't change while xbmc is running */
+    int m_iClientId; /*!< ID of the backend */
+    std::string m_strRecordingId; /*!< unique ID of the recording on the client */
+    std::string m_strChannelName; /*!< name of the channel this was recorded from */
+    int m_iPriority; /*!< priority of this recording */
+    int m_iLifetime; /*!< lifetime of this recording */
+    std::string m_strDirectory; /*!< directory of this recording on the client */
+    std::string m_strIconPath; /*!< icon path */
+    std::string m_strThumbnailPath; /*!< thumbnail path */
+    std::string m_strFanartPath; /*!< fanart path */
+    unsigned m_iRecordingId; /*!< id that won't change while xbmc is running */
 
     CPVRRecording(void);
     CPVRRecording(const PVR_RECORDING& recording, unsigned int iClientId);
@@ -318,14 +318,14 @@ namespace PVR
    const std::string GetGenresLabel() const;
 
   private:
-    CDateTime    m_recordingTime; /*!< start time of the recording */
-    bool         m_bGotMetaData;
-    bool         m_bIsDeleted;    /*!< set if entry is a deleted recording which can be undelete */
-    unsigned int m_iEpgEventId;   /*!< epg broadcast id associated with this recording */
-    int          m_iChannelUid;   /*!< channel uid associated with this recording */
-    bool         m_bRadio;        /*!< radio or tv recording */
-    int          m_iGenreType = 0;    /*!< genre type */
-    int          m_iGenreSubType = 0; /*!< genre subtype */
+    CDateTime m_recordingTime; /*!< start time of the recording */
+    bool m_bGotMetaData;
+    bool m_bIsDeleted; /*!< set if entry is a deleted recording which can be undelete */
+    unsigned int m_iEpgEventId; /*!< epg broadcast id associated with this recording */
+    int m_iChannelUid; /*!< channel uid associated with this recording */
+    bool m_bRadio; /*!< radio or tv recording */
+    int m_iGenreType = 0; /*!< genre type */
+    int m_iGenreSubType = 0; /*!< genre subtype */
     mutable XbmcThreads::EndTime m_resumePointRefetchTimeout;
 
     void UpdatePath(void);

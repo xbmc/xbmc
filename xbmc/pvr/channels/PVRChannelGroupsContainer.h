@@ -177,7 +177,7 @@ namespace PVR
 
   protected:
     CPVRChannelGroups* m_groupsRadio; /*!< all radio channel groups */
-    CPVRChannelGroups* m_groupsTV;    /*!< all TV channel groups */
+    CPVRChannelGroups* m_groupsTV; /*!< all TV channel groups */
     CCriticalSection m_critSection;
     bool m_bUpdateChannelsOnly = false;
     bool m_bIsUpdating = false;

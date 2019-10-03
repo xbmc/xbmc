@@ -44,7 +44,7 @@ namespace PVR
     void Update();
 
     bool IsRadioSelected(int controlID);
-    int  GetSpinValue(int controlID);
+    int GetSpinValue(int controlID);
     std::string GetEditValue(int controlID);
 
     bool m_bConfirmed = false;

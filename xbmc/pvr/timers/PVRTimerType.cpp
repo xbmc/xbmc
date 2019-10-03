@@ -187,20 +187,20 @@ CPVRTimerType::~CPVRTimerType() = default;
 
 bool CPVRTimerType::operator ==(const CPVRTimerType& right) const
 {
-  return (m_iClientId                  == right.m_iClientId   &&
-          m_iTypeId                    == right.m_iTypeId  &&
-          m_iAttributes                == right.m_iAttributes &&
-          m_strDescription             == right.m_strDescription &&
-          m_priorityValues             == right.m_priorityValues &&
-          m_iPriorityDefault           == right.m_iPriorityDefault &&
-          m_lifetimeValues             == right.m_lifetimeValues &&
-          m_iLifetimeDefault           == right.m_iLifetimeDefault &&
-          m_maxRecordingsValues        == right.m_maxRecordingsValues &&
-          m_iMaxRecordingsDefault      == right.m_iMaxRecordingsDefault &&
-          m_preventDupEpisodesValues   == right.m_preventDupEpisodesValues &&
+  return (m_iClientId == right.m_iClientId &&
+          m_iTypeId == right.m_iTypeId &&
+          m_iAttributes == right.m_iAttributes &&
+          m_strDescription == right.m_strDescription &&
+          m_priorityValues == right.m_priorityValues &&
+          m_iPriorityDefault == right.m_iPriorityDefault &&
+          m_lifetimeValues == right.m_lifetimeValues &&
+          m_iLifetimeDefault == right.m_iLifetimeDefault &&
+          m_maxRecordingsValues == right.m_maxRecordingsValues &&
+          m_iMaxRecordingsDefault == right.m_iMaxRecordingsDefault &&
+          m_preventDupEpisodesValues == right.m_preventDupEpisodesValues &&
           m_iPreventDupEpisodesDefault == right.m_iPreventDupEpisodesDefault &&
-          m_recordingGroupValues       == right.m_recordingGroupValues &&
-          m_iRecordingGroupDefault     == right.m_iRecordingGroupDefault);
+          m_recordingGroupValues == right.m_recordingGroupValues &&
+          m_iRecordingGroupDefault == right.m_iRecordingGroupDefault);
 }
 
 bool CPVRTimerType::operator !=(const CPVRTimerType& right) const

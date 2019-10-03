@@ -513,8 +513,8 @@ bool CPVREpg::Persist(const std::shared_ptr<CPVREpgDatabase>& database)
 
     m_deletedTags.clear();
     m_changedTags.clear();
-    m_bChanged            = false;
-    m_bTagsChanged        = false;
+    m_bChanged = false;
+    m_bTagsChanged = false;
     m_bUpdateLastScanTime = false;
   }
 

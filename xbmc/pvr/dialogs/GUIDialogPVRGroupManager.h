@@ -56,7 +56,7 @@ namespace PVR
     bool OnActionMove(const CAction& action);
 
     std::shared_ptr<CPVRChannelGroup> m_selectedGroup;
-    bool              m_bIsRadio;
+    bool m_bIsRadio;
 
     int m_iSelectedUngroupedChannel = 0;
     int m_iSelectedGroupMember = 0;
@@ -66,9 +66,9 @@ namespace PVR
     CFileItemList *   m_groupMembers;
     CFileItemList *   m_channelGroups;
 
-    CGUIViewControl   m_viewUngroupedChannels;
-    CGUIViewControl   m_viewGroupMembers;
-    CGUIViewControl   m_viewChannelGroups;
+    CGUIViewControl m_viewUngroupedChannels;
+    CGUIViewControl m_viewGroupMembers;
+    CGUIViewControl m_viewChannelGroups;
 
     CPVRThumbLoader m_thumbLoader;
   };

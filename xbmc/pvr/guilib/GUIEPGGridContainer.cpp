@@ -663,12 +663,12 @@ void CGUIEPGGridContainer::UpdateItems()
     prevSelectedEpgTag = m_item->item->GetEPGInfoTag();
 
   const int oldChannelIndex = m_channelOffset + m_channelCursor;
-  const int oldBlockIndex   = m_blockOffset + m_blockCursor;
+  const int oldBlockIndex = m_blockOffset + m_blockCursor;
   const CDateTime oldGridStart(m_gridModel->GetGridStart());
-  int eventOffset           = oldBlockIndex;
-  int newChannelIndex       = oldChannelIndex;
-  int newBlockIndex         = oldBlockIndex;
-  int channelUid            = -1;
+  int eventOffset = oldBlockIndex;
+  int newChannelIndex = oldChannelIndex;
+  int newBlockIndex = oldBlockIndex;
+  int channelUid = -1;
   unsigned int broadcastUid = 0;
 
   if (prevSelectedEpgTag)
@@ -731,7 +731,7 @@ void CGUIEPGGridContainer::UpdateItems()
     }
   }
 
-  m_lastItem    = nullptr;
+  m_lastItem = nullptr;
   m_lastChannel = nullptr;
 
   // always use asynchronously precalculated grid data.
@@ -1463,7 +1463,7 @@ void CGUIEPGGridContainer::ScrollToChannelOffset(int offset)
   if (range <= 0)
     range = 1;
 
-  if (offset * size < m_channelScrollOffset &&  m_channelScrollOffset - offset * size > size * range)
+  if (offset * size < m_channelScrollOffset && m_channelScrollOffset - offset * size > size * range)
   {
     // scrolling up, and we're jumping more than 0.5 of a screen
     m_channelScrollOffset = (offset + range) * size;
@@ -1493,7 +1493,7 @@ void CGUIEPGGridContainer::ScrollToBlockOffset(int offset)
   if (range <= 0)
     range = 1;
 
-  if (offset * size < m_programmeScrollOffset &&  m_programmeScrollOffset - offset * size > size * range)
+  if (offset * size < m_programmeScrollOffset && m_programmeScrollOffset - offset * size > size * range)
   {
     // scrolling left, and we're jumping more than 0.5 of a screen
     m_programmeScrollOffset = (offset + range) * size;
@@ -1621,7 +1621,7 @@ void CGUIEPGGridContainer::GoToBegin()
 
 void CGUIEPGGridContainer::GoToEnd()
 {
-  int blocksEnd = 0;   // the end block of the last epg element for the selected channel
+  int blocksEnd = 0; // the end block of the last epg element for the selected channel
   int blocksStart = 0; // the start block of the last epg element for the selected channel
   int blockOffset = 0; // the block offset to scroll to
   for (int blockIndex = m_gridModel->GetBlockCount() - 1; blockIndex >= 0 && (!blocksEnd || !blocksStart); blockIndex--)
@@ -1639,7 +1639,7 @@ void CGUIEPGGridContainer::GoToEnd()
     blockOffset = blocksEnd - m_blocksPerPage;
 
   ScrollToBlockOffset(blockOffset); // scroll to the start point of the last epg element
-  SetBlock(m_blocksPerPage - 1);    // select the last epg element
+  SetBlock(m_blocksPerPage - 1); // select the last epg element
 }
 
 void CGUIEPGGridContainer::GoToNow()
@@ -1812,25 +1812,25 @@ void CGUIEPGGridContainer::UpdateLayout()
     return; // nothing has changed, so don't update stuff
 
   m_channelHeight = m_channelLayout->Size(VERTICAL);
-  m_channelWidth  = m_channelLayout->Size(HORIZONTAL);
+  m_channelWidth = m_channelLayout->Size(HORIZONTAL);
 
   m_rulerDateHeight = m_rulerDateLayout ? m_rulerDateLayout->Size(VERTICAL) : 0;
   m_rulerDateWidth = m_rulerDateLayout ? m_rulerDateLayout->Size(HORIZONTAL) : 0;
 
   if (m_orientation == VERTICAL)
   {
-    m_rulerHeight       = m_rulerLayout->Size(VERTICAL);
-    m_gridPosX          = m_posX + m_channelWidth;
-    m_gridPosY          = m_posY + m_rulerHeight + m_rulerDateHeight;
-    m_gridWidth         = m_width - m_channelWidth;
-    m_gridHeight        = m_height - m_rulerHeight - m_rulerDateHeight;
-    m_blockSize         = m_gridWidth / m_blocksPerPage;
-    m_rulerWidth        = m_rulerUnit * m_blockSize;
-    m_channelPosX       = m_posX;
-    m_channelPosY       = m_posY + m_rulerHeight + m_rulerDateHeight;
-    m_rulerPosX         = m_posX + m_channelWidth;
-    m_rulerPosY         = m_posY + m_rulerDateHeight;
-    m_channelsPerPage   = m_gridHeight / m_channelHeight;
+    m_rulerHeight = m_rulerLayout->Size(VERTICAL);
+    m_gridPosX = m_posX + m_channelWidth;
+    m_gridPosY = m_posY + m_rulerHeight + m_rulerDateHeight;
+    m_gridWidth = m_width - m_channelWidth;
+    m_gridHeight = m_height - m_rulerHeight - m_rulerDateHeight;
+    m_blockSize = m_gridWidth / m_blocksPerPage;
+    m_rulerWidth = m_rulerUnit * m_blockSize;
+    m_channelPosX = m_posX;
+    m_channelPosY = m_posY + m_rulerHeight + m_rulerDateHeight;
+    m_rulerPosX = m_posX + m_channelWidth;
+    m_rulerPosY = m_posY + m_rulerDateHeight;
+    m_channelsPerPage = m_gridHeight / m_channelHeight;
     m_programmesPerPage = (m_gridWidth / m_blockSize) + 1;
 
     m_programmeLayout->SetHeight(m_channelHeight);
@@ -1838,18 +1838,18 @@ void CGUIEPGGridContainer::UpdateLayout()
   }
   else
   {
-    m_rulerWidth        = m_rulerLayout->Size(HORIZONTAL);
-    m_gridPosX          = m_posX + m_rulerWidth;
-    m_gridPosY          = m_posY + m_channelHeight + m_rulerDateHeight;
-    m_gridWidth         = m_width - m_rulerWidth;
-    m_gridHeight        = m_height - m_channelHeight - m_rulerDateHeight;
-    m_blockSize         = m_gridHeight / m_blocksPerPage;
-    m_rulerHeight       = m_rulerUnit * m_blockSize;
-    m_channelPosX       = m_posX + m_rulerWidth;
-    m_channelPosY       = m_posY + m_rulerDateHeight;
-    m_rulerPosX         = m_posX;
-    m_rulerPosY         = m_posY + m_channelHeight + m_rulerDateHeight;
-    m_channelsPerPage   = m_gridWidth / m_channelWidth;
+    m_rulerWidth = m_rulerLayout->Size(HORIZONTAL);
+    m_gridPosX = m_posX + m_rulerWidth;
+    m_gridPosY = m_posY + m_channelHeight + m_rulerDateHeight;
+    m_gridWidth = m_width - m_rulerWidth;
+    m_gridHeight = m_height - m_channelHeight - m_rulerDateHeight;
+    m_blockSize = m_gridHeight / m_blocksPerPage;
+    m_rulerHeight = m_rulerUnit * m_blockSize;
+    m_channelPosX = m_posX + m_rulerWidth;
+    m_channelPosY = m_posY + m_rulerDateHeight;
+    m_rulerPosX = m_posX;
+    m_rulerPosY = m_posY + m_channelHeight + m_rulerDateHeight;
+    m_channelsPerPage = m_gridWidth / m_channelWidth;
     m_programmesPerPage = (m_gridHeight / m_blockSize) + 1;
 
     m_programmeLayout->SetWidth(m_channelWidth);
@@ -1857,7 +1857,7 @@ void CGUIEPGGridContainer::UpdateLayout()
   }
 
   // ensure that the scroll offsets are a multiple of our sizes
-  m_channelScrollOffset   = m_channelOffset * m_programmeLayout->Size(m_orientation);
+  m_channelScrollOffset = m_channelOffset * m_programmeLayout->Size(m_orientation);
   m_programmeScrollOffset = m_blockOffset * m_blockSize;
 }
 
@@ -1904,7 +1904,7 @@ void CGUIEPGGridContainer::GetCurrentLayouts()
   }
 
   if (!m_channelLayout && !m_channelLayouts.empty())
-    m_channelLayout = &m_channelLayouts[0];  // failsafe
+    m_channelLayout = &m_channelLayouts[0]; // failsafe
 
   m_focusedChannelLayout = nullptr;
 
@@ -1918,7 +1918,7 @@ void CGUIEPGGridContainer::GetCurrentLayouts()
   }
 
   if (!m_focusedChannelLayout && !m_focusedChannelLayouts.empty())
-    m_focusedChannelLayout = &m_focusedChannelLayouts[0];  // failsafe
+    m_focusedChannelLayout = &m_focusedChannelLayouts[0]; // failsafe
 
   m_programmeLayout = nullptr;
 
@@ -1932,7 +1932,7 @@ void CGUIEPGGridContainer::GetCurrentLayouts()
   }
 
   if (!m_programmeLayout && !m_programmeLayouts.empty())
-    m_programmeLayout = &m_programmeLayouts[0];  // failsafe
+    m_programmeLayout = &m_programmeLayouts[0]; // failsafe
 
   m_focusedProgrammeLayout = nullptr;
 
@@ -1946,7 +1946,7 @@ void CGUIEPGGridContainer::GetCurrentLayouts()
   }
 
   if (!m_focusedProgrammeLayout && !m_focusedProgrammeLayouts.empty())
-    m_focusedProgrammeLayout = &m_focusedProgrammeLayouts[0];  // failsafe
+    m_focusedProgrammeLayout = &m_focusedProgrammeLayouts[0]; // failsafe
 
   m_rulerLayout = nullptr;
 
@@ -1960,7 +1960,7 @@ void CGUIEPGGridContainer::GetCurrentLayouts()
   }
 
   if (!m_rulerLayout && !m_rulerLayouts.empty())
-    m_rulerLayout = &m_rulerLayouts[0];  // failsafe
+    m_rulerLayout = &m_rulerLayouts[0]; // failsafe
 
   m_rulerDateLayout = nullptr;
 
@@ -2263,7 +2263,7 @@ void CGUIEPGGridContainer::HandleProgrammeGrid(bool bRender, unsigned int curren
     return;
 
   int blockOffset = MathUtils::round_int(m_programmeScrollOffset / m_blockSize);
-  int chanOffset  = MathUtils::round_int(m_channelScrollOffset / m_programmeLayout->Size(m_orientation));
+  int chanOffset = MathUtils::round_int(m_channelScrollOffset / m_programmeLayout->Size(m_orientation));
 
   int cacheBeforeProgramme, cacheAfterProgramme;
   GetProgrammeCacheOffsets(cacheBeforeProgramme, cacheAfterProgramme);

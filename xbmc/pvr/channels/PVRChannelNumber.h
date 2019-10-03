@@ -22,7 +22,7 @@ namespace PVR
 
     constexpr bool operator ==(const CPVRChannelNumber& right) const
     {
-      return (m_iChannelNumber  == right.m_iChannelNumber &&
+      return (m_iChannelNumber == right.m_iChannelNumber &&
               m_iSubChannelNumber == right.m_iSubChannelNumber);
     }
 

@@ -568,7 +568,7 @@ namespace PVR
       if (timer && (!item.GetEPGInfoTag() || !URIUtils::PathEquals(item.GetPath(), CPVRTimersPath::PATH_ADDTIMER)) && !timer->IsRecording())
       {
         const std::shared_ptr<CPVRTimerType> timerType(timer->GetTimerType());
-        return  timerType && timerType->AllowsDelete();
+        return timerType && timerType->AllowsDelete();
       }
 
       return false;

@@ -72,28 +72,28 @@ CPVRRecording::CPVRRecording(const PVR_RECORDING& recording, unsigned int iClien
 {
   Reset();
 
-  m_strRecordingId                 = recording.strRecordingId;
-  m_strTitle                       = recording.strTitle;
-  m_strShowTitle                   = recording.strEpisodeName;
-  m_iSeason                        = recording.iSeriesNumber;
-  m_iEpisode                       = recording.iEpisodeNumber;
+  m_strRecordingId = recording.strRecordingId;
+  m_strTitle = recording.strTitle;
+  m_strShowTitle = recording.strEpisodeName;
+  m_iSeason = recording.iSeriesNumber;
+  m_iEpisode = recording.iEpisodeNumber;
   if (recording.iYear > 0)
     SetYear(recording.iYear);
-  m_iClientId                      = iClientId;
-  m_recordingTime                  = recording.recordingTime + CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_iPVRTimeCorrection;
-  m_iPriority                      = recording.iPriority;
-  m_iLifetime                      = recording.iLifetime;
+  m_iClientId = iClientId;
+  m_recordingTime = recording.recordingTime + CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_iPVRTimeCorrection;
+  m_iPriority = recording.iPriority;
+  m_iLifetime = recording.iLifetime;
   // Deleted recording is placed at the root of the deleted view
-  m_strDirectory                   = recording.bIsDeleted ? "" : recording.strDirectory;
-  m_strPlot                        = recording.strPlot;
-  m_strPlotOutline                 = recording.strPlotOutline;
-  m_strChannelName                 = recording.strChannelName;
-  m_strIconPath                    = recording.strIconPath;
-  m_strThumbnailPath               = recording.strThumbnailPath;
-  m_strFanartPath                  = recording.strFanartPath;
-  m_bIsDeleted                     = recording.bIsDeleted;
-  m_iEpgEventId                    = recording.iEpgEventId;
-  m_iChannelUid                    = recording.iChannelUid;
+  m_strDirectory = recording.bIsDeleted ? "" : recording.strDirectory;
+  m_strPlot = recording.strPlot;
+  m_strPlotOutline = recording.strPlotOutline;
+  m_strChannelName = recording.strChannelName;
+  m_strIconPath = recording.strIconPath;
+  m_strThumbnailPath = recording.strThumbnailPath;
+  m_strFanartPath = recording.strFanartPath;
+  m_bIsDeleted = recording.bIsDeleted;
+  m_iEpgEventId = recording.iEpgEventId;
+  m_iChannelUid = recording.iChannelUid;
 
   SetGenre(recording.iGenreType, recording.iGenreSubType, recording.strGenreDescription);
   CVideoInfoTag::SetPlayCount(recording.iPlayCount);
@@ -133,33 +133,33 @@ CPVRRecording::CPVRRecording(const PVR_RECORDING& recording, unsigned int iClien
 bool CPVRRecording::operator ==(const CPVRRecording& right) const
 {
   return (this == &right) ||
-      (m_strRecordingId     == right.m_strRecordingId &&
-       m_iClientId          == right.m_iClientId &&
-       m_strChannelName     == right.m_strChannelName &&
-       m_recordingTime      == right.m_recordingTime &&
-       GetDuration()        == right.GetDuration() &&
-       m_strPlotOutline     == right.m_strPlotOutline &&
-       m_strPlot            == right.m_strPlot &&
-       m_iPriority          == right.m_iPriority &&
-       m_iLifetime          == right.m_iLifetime &&
-       m_strDirectory       == right.m_strDirectory &&
+      (m_strRecordingId == right.m_strRecordingId &&
+       m_iClientId == right.m_iClientId &&
+       m_strChannelName == right.m_strChannelName &&
+       m_recordingTime == right.m_recordingTime &&
+       GetDuration() == right.GetDuration() &&
+       m_strPlotOutline == right.m_strPlotOutline &&
+       m_strPlot == right.m_strPlot &&
+       m_iPriority == right.m_iPriority &&
+       m_iLifetime == right.m_iLifetime &&
+       m_strDirectory == right.m_strDirectory &&
        m_strFileNameAndPath == right.m_strFileNameAndPath &&
-       m_strTitle           == right.m_strTitle &&
-       m_strShowTitle       == right.m_strShowTitle &&
-       m_iSeason            == right.m_iSeason &&
-       m_iEpisode           == right.m_iEpisode &&
-       GetPremiered()       == right.GetPremiered() &&
-       m_strIconPath        == right.m_strIconPath &&
-       m_strThumbnailPath   == right.m_strThumbnailPath &&
-       m_strFanartPath      == right.m_strFanartPath &&
-       m_iRecordingId       == right.m_iRecordingId &&
-       m_bIsDeleted         == right.m_bIsDeleted &&
-       m_iEpgEventId        == right.m_iEpgEventId &&
-       m_iChannelUid        == right.m_iChannelUid &&
-       m_bRadio             == right.m_bRadio &&
-       m_genre              == right.m_genre &&
-       m_iGenreType         == right.m_iGenreType &&
-       m_iGenreSubType      == right.m_iGenreSubType);
+       m_strTitle == right.m_strTitle &&
+       m_strShowTitle == right.m_strShowTitle &&
+       m_iSeason == right.m_iSeason &&
+       m_iEpisode == right.m_iEpisode &&
+       GetPremiered() == right.GetPremiered() &&
+       m_strIconPath == right.m_strIconPath &&
+       m_strThumbnailPath == right.m_strThumbnailPath &&
+       m_strFanartPath == right.m_strFanartPath &&
+       m_iRecordingId == right.m_iRecordingId &&
+       m_bIsDeleted == right.m_bIsDeleted &&
+       m_iEpgEventId == right.m_iEpgEventId &&
+       m_iChannelUid == right.m_iChannelUid &&
+       m_bRadio == right.m_bRadio &&
+       m_genre == right.m_genre &&
+       m_iGenreType == right.m_iGenreType &&
+       m_iGenreSubType == right.m_iGenreSubType);
 }
 
 bool CPVRRecording::operator !=(const CPVRRecording& right) const
@@ -195,23 +195,23 @@ void CPVRRecording::Serialize(CVariant& value) const
 void CPVRRecording::Reset(void)
 {
   m_strRecordingId     .clear();
-  m_iClientId          = -1;
+  m_iClientId = -1;
   m_strChannelName     .clear();
   m_strDirectory       .clear();
-  m_iPriority          = -1;
-  m_iLifetime          = -1;
+  m_iPriority = -1;
+  m_iLifetime = -1;
   m_strFileNameAndPath .clear();
   m_strIconPath        .clear();
   m_strThumbnailPath   .clear();
   m_strFanartPath      .clear();
-  m_bGotMetaData       = false;
-  m_iRecordingId       = 0;
-  m_bIsDeleted         = false;
-  m_iEpgEventId        = EPG_TAG_INVALID_UID;
-  m_iSeason            = -1;
-  m_iEpisode           = -1;
-  m_iChannelUid        = PVR_CHANNEL_INVALID_UID;
-  m_bRadio             = false;
+  m_bGotMetaData = false;
+  m_iRecordingId = 0;
+  m_bIsDeleted = false;
+  m_iEpgEventId = EPG_TAG_INVALID_UID;
+  m_iSeason = -1;
+  m_iEpisode = -1;
+  m_iChannelUid = PVR_CHANNEL_INVALID_UID;
+  m_bRadio = false;
 
   m_recordingTime.Reset();
   CVideoInfoTag::Reset();
@@ -340,28 +340,28 @@ std::vector<PVR_EDL_ENTRY> CPVRRecording::GetEdl() const
 
 void CPVRRecording::Update(const CPVRRecording& tag)
 {
-  m_strRecordingId    = tag.m_strRecordingId;
-  m_iClientId         = tag.m_iClientId;
-  m_strTitle          = tag.m_strTitle;
-  m_strShowTitle      = tag.m_strShowTitle;
-  m_iSeason           = tag.m_iSeason;
-  m_iEpisode          = tag.m_iEpisode;
+  m_strRecordingId = tag.m_strRecordingId;
+  m_iClientId = tag.m_iClientId;
+  m_strTitle = tag.m_strTitle;
+  m_strShowTitle = tag.m_strShowTitle;
+  m_iSeason = tag.m_iSeason;
+  m_iEpisode = tag.m_iEpisode;
   SetPremiered(tag.GetPremiered());
-  m_recordingTime     = tag.m_recordingTime;
-  m_iPriority         = tag.m_iPriority;
-  m_iLifetime         = tag.m_iLifetime;
-  m_strDirectory      = tag.m_strDirectory;
-  m_strPlot           = tag.m_strPlot;
-  m_strPlotOutline    = tag.m_strPlotOutline;
-  m_strChannelName    = tag.m_strChannelName;
-  m_genre             = tag.m_genre;
-  m_strIconPath       = tag.m_strIconPath;
-  m_strThumbnailPath  = tag.m_strThumbnailPath;
-  m_strFanartPath     = tag.m_strFanartPath;
-  m_bIsDeleted        = tag.m_bIsDeleted;
-  m_iEpgEventId       = tag.m_iEpgEventId;
-  m_iChannelUid       = tag.m_iChannelUid;
-  m_bRadio            = tag.m_bRadio;
+  m_recordingTime = tag.m_recordingTime;
+  m_iPriority = tag.m_iPriority;
+  m_iLifetime = tag.m_iLifetime;
+  m_strDirectory = tag.m_strDirectory;
+  m_strPlot = tag.m_strPlot;
+  m_strPlotOutline = tag.m_strPlotOutline;
+  m_strChannelName = tag.m_strChannelName;
+  m_genre = tag.m_genre;
+  m_strIconPath = tag.m_strIconPath;
+  m_strThumbnailPath = tag.m_strThumbnailPath;
+  m_strFanartPath = tag.m_strFanartPath;
+  m_bIsDeleted = tag.m_bIsDeleted;
+  m_iEpgEventId = tag.m_iEpgEventId;
+  m_iChannelUid = tag.m_iChannelUid;
+  m_bRadio = tag.m_bRadio;
 
   CVideoInfoTag::SetPlayCount(tag.GetLocalPlayCount());
   CVideoInfoTag::SetResumePoint(tag.GetLocalResumePoint());

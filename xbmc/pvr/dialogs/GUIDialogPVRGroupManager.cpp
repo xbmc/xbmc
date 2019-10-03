@@ -54,8 +54,8 @@ CGUIDialogPVRGroupManager::CGUIDialogPVRGroupManager() :
     CGUIDialog(WINDOW_DIALOG_PVR_GROUP_MANAGER, "DialogPVRGroupManager.xml")
 {
   m_ungroupedChannels = new CFileItemList;
-  m_groupMembers      = new CFileItemList;
-  m_channelGroups     = new CFileItemList;
+  m_groupMembers = new CFileItemList;
+  m_channelGroups = new CFileItemList;
 
   SetRadio(false);
 }
@@ -187,7 +187,7 @@ bool CGUIDialogPVRGroupManager::ActionButtonUngroupedChannels(CGUIMessage& messa
   bool bReturn = false;
   unsigned int iControl = message.GetSenderId();
 
-  if (m_viewUngroupedChannels.HasControl(iControl))   // list/thumb control
+  if (m_viewUngroupedChannels.HasControl(iControl)) // list/thumb control
   {
     m_iSelectedUngroupedChannel = m_viewUngroupedChannels.GetSelectedItem();
     int iAction = message.GetParam1();
@@ -219,7 +219,7 @@ bool CGUIDialogPVRGroupManager::ActionButtonGroupMembers(CGUIMessage& message)
   bool bReturn = false;
   unsigned int iControl = message.GetSenderId();
 
-  if (m_viewGroupMembers.HasControl(iControl))   // list/thumb control
+  if (m_viewGroupMembers.HasControl(iControl)) // list/thumb control
   {
     m_iSelectedGroupMember = m_viewGroupMembers.GetSelectedItem();
     int iAction = message.GetParam1();
@@ -245,7 +245,7 @@ bool CGUIDialogPVRGroupManager::ActionButtonChannelGroups(CGUIMessage& message)
   bool bReturn = false;
   unsigned int iControl = message.GetSenderId();
 
-  if (m_viewChannelGroups.HasControl(iControl))   // list/thumb control
+  if (m_viewChannelGroups.HasControl(iControl)) // list/thumb control
   {
     int iAction = message.GetParam1();
 

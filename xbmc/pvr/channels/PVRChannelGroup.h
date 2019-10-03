@@ -538,16 +538,16 @@ namespace PVR
      */
     bool UpdateClientPriorities();
 
-    int              m_iGroupType = PVR_GROUP_TYPE_DEFAULT;                  /*!< The type of this group */
-    int              m_iGroupId = INVALID_GROUP_ID; /*!< The ID of this group in the database */
-    bool             m_bLoaded = false;                     /*!< True if this container is loaded, false otherwise */
-    bool             m_bChanged = false;                    /*!< true if anything changed in this group that hasn't been persisted, false otherwise */
-    bool             m_bUsingBackendChannelOrder = false;   /*!< true to use the channel order from backends, false otherwise */
-    bool             m_bUsingBackendChannelNumbers = false; /*!< true to use the channel numbers from 1 backend, false otherwise */
-    bool             m_bPreventSortAndRenumber = false;     /*!< true when sorting and renumbering should not be done after adding/updating channels to the group */
-    time_t           m_iLastWatched = 0;                /*!< last time group has been watched */
-    bool             m_bHidden = false;                     /*!< true if this group is hidden, false otherwise */
-    int              m_iPosition = 0;                   /*!< the position of this group within the group list */
+    int m_iGroupType = PVR_GROUP_TYPE_DEFAULT; /*!< The type of this group */
+    int m_iGroupId = INVALID_GROUP_ID; /*!< The ID of this group in the database */
+    bool m_bLoaded = false; /*!< True if this container is loaded, false otherwise */
+    bool m_bChanged = false; /*!< true if anything changed in this group that hasn't been persisted, false otherwise */
+    bool m_bUsingBackendChannelOrder = false; /*!< true to use the channel order from backends, false otherwise */
+    bool m_bUsingBackendChannelNumbers = false; /*!< true to use the channel numbers from 1 backend, false otherwise */
+    bool m_bPreventSortAndRenumber = false; /*!< true when sorting and renumbering should not be done after adding/updating channels to the group */
+    time_t m_iLastWatched = 0; /*!< last time group has been watched */
+    bool m_bHidden = false; /*!< true if this group is hidden, false otherwise */
+    int m_iPosition = 0; /*!< the position of this group within the group list */
     std::vector<std::shared_ptr<PVRChannelGroupMember>> m_sortedMembers; /*!< members sorted by channel number */
     std::map<std::pair<int, int>, std::shared_ptr<PVRChannelGroupMember>> m_members; /*!< members with key clientid+uniqueid */
     mutable CCriticalSection m_critSection;

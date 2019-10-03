@@ -111,43 +111,43 @@ namespace PVR
 
     /** @name PVRGUIInfo data */
     //@{
-    CPVRGUIAnyTimerInfo   m_anyTimersInfo; // tv + radio
-    CPVRGUITVTimerInfo    m_tvTimersInfo;
+    CPVRGUIAnyTimerInfo m_anyTimersInfo; // tv + radio
+    CPVRGUITVTimerInfo m_tvTimersInfo;
     CPVRGUIRadioTimerInfo m_radioTimersInfo;
 
     CPVRGUITimesInfo m_timesInfo;
 
-    bool                            m_bHasTVRecordings;
-    bool                            m_bHasRadioRecordings;
-    unsigned int                    m_iCurrentActiveClient;
-    std::string                     m_strPlayingClientName;
-    std::string                     m_strBackendName;
-    std::string                     m_strBackendVersion;
-    std::string                     m_strBackendHost;
-    std::string                     m_strBackendTimers;
-    std::string                     m_strBackendRecordings;
-    std::string                     m_strBackendDeletedRecordings;
-    std::string                     m_strBackendChannels;
-    long long                       m_iBackendDiskTotal;
-    long long                       m_iBackendDiskUsed;
-    bool                            m_bIsPlayingTV;
-    bool                            m_bIsPlayingRadio;
-    bool                            m_bIsPlayingRecording;
-    bool                            m_bIsPlayingEpgTag;
-    bool                            m_bIsPlayingEncryptedStream;
-    bool                            m_bHasTVChannels;
-    bool                            m_bHasRadioChannels;
-    bool                            m_bCanRecordPlayingChannel;
-    bool                            m_bIsRecordingPlayingChannel;
-    bool                            m_bIsPlayingActiveRecording;
-    std::string                     m_strPlayingTVGroup;
-    std::string                     m_strPlayingRadioGroup;
+    bool m_bHasTVRecordings;
+    bool m_bHasRadioRecordings;
+    unsigned int m_iCurrentActiveClient;
+    std::string m_strPlayingClientName;
+    std::string m_strBackendName;
+    std::string m_strBackendVersion;
+    std::string m_strBackendHost;
+    std::string m_strBackendTimers;
+    std::string m_strBackendRecordings;
+    std::string m_strBackendDeletedRecordings;
+    std::string m_strBackendChannels;
+    long long m_iBackendDiskTotal;
+    long long m_iBackendDiskUsed;
+    bool m_bIsPlayingTV;
+    bool m_bIsPlayingRadio;
+    bool m_bIsPlayingRecording;
+    bool m_bIsPlayingEpgTag;
+    bool m_bIsPlayingEncryptedStream;
+    bool m_bHasTVChannels;
+    bool m_bHasRadioChannels;
+    bool m_bCanRecordPlayingChannel;
+    bool m_bIsRecordingPlayingChannel;
+    bool m_bIsPlayingActiveRecording;
+    std::string m_strPlayingTVGroup;
+    std::string m_strPlayingRadioGroup;
 
     //@}
 
-    PVR_SIGNAL_STATUS               m_qualityInfo;       /*!< stream quality information */
-    PVR_DESCRAMBLE_INFO             m_descrambleInfo;    /*!< stream descramble information */
-    std::vector<SBackend>           m_backendProperties;
+    PVR_SIGNAL_STATUS m_qualityInfo; /*!< stream quality information */
+    PVR_DESCRAMBLE_INFO m_descrambleInfo; /*!< stream descramble information */
+    std::vector<SBackend> m_backendProperties;
 
     mutable CCriticalSection m_critSection;
 

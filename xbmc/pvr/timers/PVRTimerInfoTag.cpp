@@ -127,7 +127,7 @@ CPVRTimerInfoTag::CPVRTimerInfoTag(const PVR_TIMER& timer, const std::shared_ptr
     if (timer.iTimerType == PVR_TIMER_TYPE_NONE)
     {
       // Create type according to certain timer values.
-      unsigned int iMustHave    = PVR_TIMER_TYPE_ATTRIBUTE_NONE;
+      unsigned int iMustHave = PVR_TIMER_TYPE_ATTRIBUTE_NONE;
       unsigned int iMustNotHave = PVR_TIMER_TYPE_FORBIDS_NEW_INSTANCES;
 
       if (timer.iEpgUid == PVR_TIMER_NO_EPG_UID && timer.iWeekdays != PVR_WEEKDAY_NONE)
@@ -170,35 +170,35 @@ bool CPVRTimerInfoTag::operator ==(const CPVRTimerInfoTag& right) const
     bChannelsMatch = false;
 
   return (bChannelsMatch &&
-          m_iClientIndex        == right.m_iClientIndex &&
-          m_iParentClientIndex  == right.m_iParentClientIndex &&
-          m_strSummary          == right.m_strSummary &&
-          m_iClientChannelUid   == right.m_iClientChannelUid &&
-          m_bIsRadio            == right.m_bIsRadio &&
+          m_iClientIndex == right.m_iClientIndex &&
+          m_iParentClientIndex == right.m_iParentClientIndex &&
+          m_strSummary == right.m_strSummary &&
+          m_iClientChannelUid == right.m_iClientChannelUid &&
+          m_bIsRadio == right.m_bIsRadio &&
           m_iPreventDupEpisodes == right.m_iPreventDupEpisodes &&
-          m_iRecordingGroup     == right.m_iRecordingGroup &&
-          m_StartTime           == right.m_StartTime &&
-          m_StopTime            == right.m_StopTime &&
-          m_bStartAnyTime       == right.m_bStartAnyTime &&
-          m_bEndAnyTime         == right.m_bEndAnyTime &&
-          m_FirstDay            == right.m_FirstDay &&
-          m_iWeekdays           == right.m_iWeekdays &&
-          m_iPriority           == right.m_iPriority &&
-          m_iLifetime           == right.m_iLifetime &&
-          m_iMaxRecordings      == right.m_iMaxRecordings &&
-          m_strFileNameAndPath  == right.m_strFileNameAndPath &&
-          m_strTitle            == right.m_strTitle &&
-          m_strEpgSearchString  == right.m_strEpgSearchString &&
-          m_bFullTextEpgSearch  == right.m_bFullTextEpgSearch &&
-          m_strDirectory        == right.m_strDirectory &&
-          m_iClientId           == right.m_iClientId &&
-          m_iMarginStart        == right.m_iMarginStart &&
-          m_iMarginEnd          == right.m_iMarginEnd &&
-          m_state               == right.m_state &&
-          m_timerType           == right.m_timerType &&
-          m_iTimerId            == right.m_iTimerId &&
-          m_strSeriesLink       == right.m_strSeriesLink &&
-          m_iEpgUid             == right.m_iEpgUid &&
+          m_iRecordingGroup == right.m_iRecordingGroup &&
+          m_StartTime == right.m_StartTime &&
+          m_StopTime == right.m_StopTime &&
+          m_bStartAnyTime == right.m_bStartAnyTime &&
+          m_bEndAnyTime == right.m_bEndAnyTime &&
+          m_FirstDay == right.m_FirstDay &&
+          m_iWeekdays == right.m_iWeekdays &&
+          m_iPriority == right.m_iPriority &&
+          m_iLifetime == right.m_iLifetime &&
+          m_iMaxRecordings == right.m_iMaxRecordings &&
+          m_strFileNameAndPath == right.m_strFileNameAndPath &&
+          m_strTitle == right.m_strTitle &&
+          m_strEpgSearchString == right.m_strEpgSearchString &&
+          m_bFullTextEpgSearch == right.m_bFullTextEpgSearch &&
+          m_strDirectory == right.m_strDirectory &&
+          m_iClientId == right.m_iClientId &&
+          m_iMarginStart == right.m_iMarginStart &&
+          m_iMarginEnd == right.m_iMarginEnd &&
+          m_state == right.m_state &&
+          m_timerType == right.m_timerType &&
+          m_iTimerId == right.m_iTimerId &&
+          m_strSeriesLink == right.m_strSeriesLink &&
+          m_iEpgUid == right.m_iEpgUid &&
           m_iTVChildTimersActive == right.m_iTVChildTimersActive &&
           m_iTVChildTimersConflictNOK == right.m_iTVChildTimersConflictNOK &&
           m_iTVChildTimersRecording == right.m_iTVChildTimersRecording &&
@@ -355,11 +355,11 @@ void CPVRTimerInfoTag::SetTimerType(const std::shared_ptr<CPVRTimerType>& type)
 
   if (m_timerType && m_iClientIndex == PVR_TIMER_NO_CLIENT_INDEX)
   {
-    m_iPriority           = m_timerType->GetPriorityDefault();
-    m_iLifetime           = m_timerType->GetLifetimeDefault();
-    m_iMaxRecordings      = m_timerType->GetMaxRecordingsDefault();
+    m_iPriority = m_timerType->GetPriorityDefault();
+    m_iLifetime = m_timerType->GetLifetimeDefault();
+    m_iMaxRecordings = m_timerType->GetMaxRecordingsDefault();
     m_iPreventDupEpisodes = m_timerType->GetPreventDuplicateEpisodesDefault();
-    m_iRecordingGroup     = m_timerType->GetRecordingGroupDefault();
+    m_iRecordingGroup = m_timerType->GetRecordingGroupDefault();
   }
 
   if (m_timerType && !m_timerType->IsTimerRule())
@@ -396,7 +396,7 @@ std::string CPVRTimerInfoTag::GetStatus(bool bRadio) const
     if ((m_iTVChildTimersRecording > 0 && !bRadio) || (m_iRadioChildTimersRecording > 0 && bRadio))
       strReturn = g_localizeStrings.Get(19162); // "Recording active"
     else if ((m_iTVChildTimersErrors > 0 && !bRadio) || (m_iRadioChildTimersErrors > 0 && bRadio))
-      strReturn = g_localizeStrings.Get(257);   // "Error"
+      strReturn = g_localizeStrings.Get(257); // "Error"
     else if ((m_iTVChildTimersConflictNOK > 0 && !bRadio) || (m_iRadioChildTimersConflictNOK > 0 && bRadio))
       strReturn = g_localizeStrings.Get(19276); // "Conflict error"
     else if ((m_iTVChildTimersActive > 0 && !bRadio) || (m_iRadioChildTimersActive > 0 && bRadio))
@@ -438,7 +438,7 @@ std::string CPVRTimerInfoTag::GetWeekdaysString(unsigned int iWeekdays, bool bEp
     return strReturn;
   else if (iWeekdays == PVR_WEEKDAY_ALLDAYS)
     strReturn = bEpgBased
-              ? g_localizeStrings.Get(807)  // "Any day"
+              ? g_localizeStrings.Get(807) // "Any day"
               : g_localizeStrings.Get(808); // "Every day"
   else if (iWeekdays == PVR_WEEKDAY_MONDAY)
     strReturn = g_localizeStrings.Get(831); // "Mondays"
@@ -562,34 +562,34 @@ bool CPVRTimerInfoTag::UpdateEntry(const std::shared_ptr<CPVRTimerInfoTag>& tag)
 {
   CSingleLock lock(m_critSection);
 
-  m_iClientId           = tag->m_iClientId;
-  m_iClientIndex        = tag->m_iClientIndex;
-  m_iParentClientIndex  = tag->m_iParentClientIndex;
-  m_strTitle            = tag->m_strTitle;
-  m_strEpgSearchString  = tag->m_strEpgSearchString;
-  m_bFullTextEpgSearch  = tag->m_bFullTextEpgSearch;
-  m_strDirectory        = tag->m_strDirectory;
-  m_iClientChannelUid   = tag->m_iClientChannelUid;
-  m_StartTime           = tag->m_StartTime;
-  m_StopTime            = tag->m_StopTime;
-  m_bStartAnyTime       = tag->m_bStartAnyTime;
-  m_bEndAnyTime         = tag->m_bEndAnyTime;
-  m_FirstDay            = tag->m_FirstDay;
-  m_iPriority           = tag->m_iPriority;
-  m_iLifetime           = tag->m_iLifetime;
-  m_iMaxRecordings      = tag->m_iMaxRecordings;
-  m_state               = tag->m_state;
+  m_iClientId = tag->m_iClientId;
+  m_iClientIndex = tag->m_iClientIndex;
+  m_iParentClientIndex = tag->m_iParentClientIndex;
+  m_strTitle = tag->m_strTitle;
+  m_strEpgSearchString = tag->m_strEpgSearchString;
+  m_bFullTextEpgSearch = tag->m_bFullTextEpgSearch;
+  m_strDirectory = tag->m_strDirectory;
+  m_iClientChannelUid = tag->m_iClientChannelUid;
+  m_StartTime = tag->m_StartTime;
+  m_StopTime = tag->m_StopTime;
+  m_bStartAnyTime = tag->m_bStartAnyTime;
+  m_bEndAnyTime = tag->m_bEndAnyTime;
+  m_FirstDay = tag->m_FirstDay;
+  m_iPriority = tag->m_iPriority;
+  m_iLifetime = tag->m_iLifetime;
+  m_iMaxRecordings = tag->m_iMaxRecordings;
+  m_state = tag->m_state;
   m_iPreventDupEpisodes = tag->m_iPreventDupEpisodes;
-  m_iRecordingGroup     = tag->m_iRecordingGroup;
-  m_iWeekdays           = tag->m_iWeekdays;
-  m_bIsRadio            = tag->m_bIsRadio;
-  m_iMarginStart        = tag->m_iMarginStart;
-  m_iMarginEnd          = tag->m_iMarginEnd;
-  m_strSeriesLink       = tag->m_strSeriesLink;
-  m_iEpgUid             = tag->m_iEpgUid;
-  m_epgTag              = tag->m_epgTag;
-  m_strSummary          = tag->m_strSummary;
-  m_channel             = tag->m_channel;
+  m_iRecordingGroup = tag->m_iRecordingGroup;
+  m_iWeekdays = tag->m_iWeekdays;
+  m_bIsRadio = tag->m_bIsRadio;
+  m_iMarginStart = tag->m_iMarginStart;
+  m_iMarginEnd = tag->m_iMarginEnd;
+  m_strSeriesLink = tag->m_strSeriesLink;
+  m_iEpgUid = tag->m_iEpgUid;
+  m_epgTag = tag->m_epgTag;
+  m_strSummary = tag->m_strSummary;
+  m_channel = tag->m_channel;
 
   m_iTVChildTimersActive = tag->m_iTVChildTimersActive;
   m_iTVChildTimersConflictNOK = tag->m_iTVChildTimersConflictNOK;
@@ -766,13 +766,13 @@ std::shared_ptr<CPVRTimerInfoTag> CPVRTimerInfoTag::CreateFromDate(
   {
     newTimer.reset(new CPVRTimerInfoTag);
 
-    newTimer->m_iClientIndex       = PVR_TIMER_NO_CLIENT_INDEX;
+    newTimer->m_iClientIndex = PVR_TIMER_NO_CLIENT_INDEX;
     newTimer->m_iParentClientIndex = PVR_TIMER_NO_PARENT;
-    newTimer->m_channel            = channel;
-    newTimer->m_strTitle           = channel->ChannelName();
-    newTimer->m_iClientChannelUid  = channel->UniqueID();
-    newTimer->m_iClientId          = channel->ClientID();
-    newTimer->m_bIsRadio           = channel->IsRadio();
+    newTimer->m_channel = channel;
+    newTimer->m_strTitle = channel->ChannelName();
+    newTimer->m_iClientChannelUid = channel->UniqueID();
+    newTimer->m_iClientId = channel->ClientID();
+    newTimer->m_bIsRadio = channel->IsRadio();
 
     int iMustHaveAttribs = PVR_TIMER_TYPE_IS_MANUAL;
     if (bCreateReminder)
@@ -876,18 +876,18 @@ std::shared_ptr<CPVRTimerInfoTag> CPVRTimerInfoTag::CreateFromEpg(
     return std::shared_ptr<CPVRTimerInfoTag>();
   }
 
-  newTag->m_iClientIndex       = PVR_TIMER_NO_CLIENT_INDEX;
+  newTag->m_iClientIndex = PVR_TIMER_NO_CLIENT_INDEX;
   newTag->m_iParentClientIndex = PVR_TIMER_NO_PARENT;
   if (!CServiceBroker::GetPVRManager().IsParentalLocked(tag))
     newTag->m_strTitle = tag->Title();
   if (newTag->m_strTitle.empty())
     newTag->m_strTitle = channel->ChannelName();
-  newTag->m_iClientChannelUid  = channel->UniqueID();
-  newTag->m_iClientId          = channel->ClientID();
-  newTag->m_bIsRadio           = channel->IsRadio();
-  newTag->m_channel            = channel;
-  newTag->m_strSeriesLink      = tag->SeriesLink();
-  newTag->m_iEpgUid            = tag->UniqueBroadcastID();
+  newTag->m_iClientChannelUid = channel->UniqueID();
+  newTag->m_iClientId = channel->ClientID();
+  newTag->m_bIsRadio = channel->IsRadio();
+  newTag->m_channel = channel;
+  newTag->m_strSeriesLink = tag->SeriesLink();
+  newTag->m_iEpgUid = tag->UniqueBroadcastID();
   newTag->SetStartFromUTC(tag->StartAsUTC());
   newTag->SetEndFromUTC(tag->EndAsUTC());
 

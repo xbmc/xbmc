@@ -31,7 +31,7 @@ using namespace PVR;
 
 bool CPVRChannel::operator==(const CPVRChannel& right) const
 {
-  return (m_bIsRadio  == right.m_bIsRadio &&
+  return (m_bIsRadio == right.m_bIsRadio &&
           m_iUniqueId == right.m_iUniqueId &&
           m_iClientId == right.m_iClientId);
 }
@@ -164,11 +164,11 @@ bool CPVRChannel::UpdateFromClient(const std::shared_ptr<CPVRChannel>& channel)
       m_strClientChannelName    != channel->ClientChannelName() ||
       m_bHasArchive             != channel->HasArchive())
   {
-    m_clientChannelNumber     = channel->m_clientChannelNumber;
-    m_strInputFormat          = channel->InputFormat();
+    m_clientChannelNumber = channel->m_clientChannelNumber;
+    m_strInputFormat = channel->InputFormat();
     m_iClientEncryptionSystem = channel->EncryptionSystem();
-    m_strClientChannelName    = channel->ClientChannelName();
-    m_bHasArchive             = channel->HasArchive();
+    m_strClientChannelName = channel->ClientChannelName();
+    m_bHasArchive = channel->HasArchive();
 
     UpdateEncryptionName();
   }

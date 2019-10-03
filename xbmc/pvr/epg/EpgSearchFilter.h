@@ -123,25 +123,25 @@ namespace PVR
     bool MatchTimers(const std::shared_ptr<CPVREpgInfoTag>& tag) const;
     bool MatchRecordings(const std::shared_ptr<CPVREpgInfoTag>& tag) const;
 
-    std::string   m_strSearchTerm;            /*!< The term to search for */
-    bool          m_bIsCaseSensitive;         /*!< Do a case sensitive search */
-    bool          m_bSearchInDescription;     /*!< Search for strSearchTerm in the description too */
-    int           m_iGenreType;               /*!< The genre type for an entry */
-    int           m_iGenreSubType;            /*!< The genre subtype for an entry */
-    int           m_iMinimumDuration;         /*!< The minimum duration for an entry */
-    int           m_iMaximumDuration;         /*!< The maximum duration for an entry */
-    CDateTime     m_startDateTime;            /*!< The minimum start time for an entry */
-    CDateTime     m_endDateTime;              /*!< The maximum end time for an entry */
-    bool          m_bIncludeUnknownGenres;    /*!< Include unknown genres or not */
-    bool          m_bRemoveDuplicates;        /*!< True to remove duplicate events, false if not */
-    const bool    m_bIsRadio;                 /*!< True to filter radio channels only, false to tv only */
+    std::string m_strSearchTerm; /*!< The term to search for */
+    bool m_bIsCaseSensitive; /*!< Do a case sensitive search */
+    bool m_bSearchInDescription; /*!< Search for strSearchTerm in the description too */
+    int m_iGenreType; /*!< The genre type for an entry */
+    int m_iGenreSubType; /*!< The genre subtype for an entry */
+    int m_iMinimumDuration; /*!< The minimum duration for an entry */
+    int m_iMaximumDuration; /*!< The maximum duration for an entry */
+    CDateTime m_startDateTime; /*!< The minimum start time for an entry */
+    CDateTime m_endDateTime; /*!< The maximum end time for an entry */
+    bool m_bIncludeUnknownGenres; /*!< Include unknown genres or not */
+    bool m_bRemoveDuplicates; /*!< True to remove duplicate events, false if not */
+    const bool m_bIsRadio; /*!< True to filter radio channels only, false to tv only */
 
     /* PVR specific filters */
-    CPVRChannelNumber  m_channelNumber;       /*!< The channel number in the selected channel group */
-    bool          m_bFreeToAirOnly;           /*!< Include free to air channels only */
-    int           m_iChannelGroup;            /*!< The group this channel belongs to */
-    bool          m_bIgnorePresentTimers;     /*!< True to ignore currently present timers (future recordings), false if not */
-    bool          m_bIgnorePresentRecordings; /*!< True to ignore currently active recordings, false if not */
-    unsigned int  m_iUniqueBroadcastId;       /*!< The broadcastid to search for */
+    CPVRChannelNumber m_channelNumber; /*!< The channel number in the selected channel group */
+    bool m_bFreeToAirOnly; /*!< Include free to air channels only */
+    int m_iChannelGroup; /*!< The group this channel belongs to */
+    bool m_bIgnorePresentTimers; /*!< True to ignore currently present timers (future recordings), false if not */
+    bool m_bIgnorePresentRecordings; /*!< True to ignore currently active recordings, false if not */
+    unsigned int m_iUniqueBroadcastId; /*!< The broadcastid to search for */
   };
 }

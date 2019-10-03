@@ -133,7 +133,7 @@ std::shared_ptr<CPVRRecording> CPVRRecordings::GetByPath(const std::string& path
   if (recPath.IsValid())
   {
     bool bDeleted = recPath.IsDeleted();
-    bool bRadio   = recPath.IsRadio();
+    bool bRadio = recPath.IsRadio();
 
     for (const auto recording : m_recordings)
     {

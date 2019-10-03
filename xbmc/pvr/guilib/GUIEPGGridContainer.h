@@ -208,19 +208,19 @@ namespace PVR
 
     float m_rulerDateHeight; //! height of ruler date item
     float m_rulerDateWidth; //! width of ruler date item
-    float m_rulerPosX;      //! X position of first ruler item
-    float m_rulerPosY;      //! Y position of first ruler item
-    float m_rulerHeight;    //! height of the scrolling timeline above the ruler items
-    float m_rulerWidth;     //! width of each element of the ruler
-    float m_channelPosX;    //! X position of first channel row
-    float m_channelPosY;    //! Y position of first channel row
-    float m_channelHeight;  //! height of the channel item
-    float m_channelWidth;   //! width of the channel item
-    float m_gridPosX;       //! X position of first grid item
-    float m_gridPosY;       //! Y position of first grid item
-    float m_gridWidth;      //! width of the epg grid control
-    float m_gridHeight;     //! height of the epg grid control
-    float m_blockSize;      //! a block's width in pixels
+    float m_rulerPosX; //! X position of first ruler item
+    float m_rulerPosY; //! Y position of first ruler item
+    float m_rulerHeight; //! height of the scrolling timeline above the ruler items
+    float m_rulerWidth; //! width of each element of the ruler
+    float m_channelPosX; //! X position of first channel row
+    float m_channelPosY; //! Y position of first channel row
+    float m_channelHeight; //! height of the channel item
+    float m_channelWidth; //! width of the channel item
+    float m_gridPosX; //! X position of first grid item
+    float m_gridPosY; //! Y position of first grid item
+    float m_gridWidth; //! width of the epg grid control
+    float m_gridHeight; //! height of the epg grid control
+    float m_blockSize; //! a block's width in pixels
     float m_analogScrollCount;
 
     CGUITexture m_guiProgressIndicatorTexture;
