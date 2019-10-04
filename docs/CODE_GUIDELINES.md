@@ -120,8 +120,6 @@ public:
 }
 ```
 
-**Exception:** Do not increase indentation after a `switch` statements.
-
 ### 3.3. Control statements
 Insert a new line before every:
 * else in an if statement
@@ -148,21 +146,20 @@ else
 ```
 
 #### 3.3.2. switch case
-Do not indent `case` and `default`.
 
 ```cpp
 switch (cmd)
 {
-case x:
-{
-  doSomething();
-  break;
-}
-case x:
-case z:
-  return true;
-default:
-  doSomething();
+  case x:
+  {
+    doSomething();
+    break;
+  }
+  case x:
+  case z:
+    return true;
+  default:
+    doSomething();
 }
 ```
 

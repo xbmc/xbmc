@@ -51,7 +51,7 @@ IncludeCategories:
   - Regex:           '.*'
     Priority:        1
 IncludeIsMainRegex: '$'
-IndentCaseLabels: false
+IndentCaseLabels: true
 IndentWidth:     2
 IndentWrappedFunctionNames: false
 JavaScriptQuotes: Leave
