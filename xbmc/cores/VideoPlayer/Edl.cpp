@@ -526,8 +526,8 @@ bool CEdl::ReadBeyondTV(const std::string& strMovie)
 
 bool CEdl::ReadPvr(const CFileItem &fileItem)
 {
-  std::vector<Cut> cutlist = PVR::CPVREdl::GetCuts(fileItem);
-  for (auto& cut : cutlist)
+  const std::vector<Cut> cutlist = PVR::CPVREdl::GetCuts(fileItem);
+  for (const auto& cut : cutlist)
   {
     switch (cut.action)
     {
@@ -564,8 +564,10 @@ bool CEdl::ReadPvr(const CFileItem &fileItem)
   return !cutlist.empty();
 }
 
-bool CEdl::AddCut(Cut& cut)
+bool CEdl::AddCut(const Cut& newCut)
 {
+  Cut cut = newCut;
+
   if (cut.action != Action::CUT && cut.action != Action::MUTE && cut.action != Action::COMM_BREAK)
   {
     CLog::Log(LOGERROR, "%s - Not an Action::CUT, Action::MUTE, or Action::COMM_BREAK! [%s - %s], %d", __FUNCTION__,

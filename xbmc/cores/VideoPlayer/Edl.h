@@ -57,7 +57,7 @@ private:
   bool ReadBeyondTV(const std::string& strMovie);
   bool ReadPvr(const CFileItem& fileItem);
 
-  bool AddCut(EDL::Cut& NewCut);
+  bool AddCut(const EDL::Cut& newCut);
   bool AddSceneMarker(const int sceneMarker);
 
   void MergeShortCommBreaks();
