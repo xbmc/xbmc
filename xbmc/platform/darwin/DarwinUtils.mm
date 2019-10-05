@@ -87,6 +87,8 @@ enum iosPlatform
   iPadPro9_7InchCellular,
   iPad6thGeneration9_7InchWifi,
   iPad6thGeneration9_7InchCellular,
+  iPad7thGeneration10_2InchWifi,
+  iPad7thGeneration10_2InchCellular,
   iPadPro12_9InchWifi,
   iPadPro12_9InchCellular,
   iPadPro2_12_9InchWifi,
@@ -222,6 +224,8 @@ enum iosPlatform getIosPlatform()
     else if (devStr == "iPad7,4") eDev = iPadPro_10_5InchCellular;
     else if (devStr == "iPad7,5") eDev = iPad6thGeneration9_7InchWifi;
     else if (devStr == "iPad7,6") eDev = iPad6thGeneration9_7InchCellular;
+    else if (devStr == "iPad7,11") eDev = iPad7thGeneration10_2InchWifi;
+    else if (devStr == "iPad7,12") eDev = iPad7thGeneration10_2InchCellular;
     else if (devStr == "iPad8,1") eDev = iPadPro11InchWifi;
     else if (devStr == "iPad8,2") eDev = iPadPro11InchWifi;
     else if (devStr == "iPad8,3") eDev = iPadPro11InchCellular;
