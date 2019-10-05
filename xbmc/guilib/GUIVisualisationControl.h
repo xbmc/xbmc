@@ -50,7 +50,6 @@ public:
   // Child functions related to CGUIControl
   void FreeResources(bool immediately = false) override;
   void Process(unsigned int currentTime, CDirtyRegionList &dirtyregions) override;
-  virtual bool IsDirty();
   void Render() override;
   void UpdateVisibility(const CGUIListItem *item = nullptr) override;
   bool OnAction(const CAction &action) override;
