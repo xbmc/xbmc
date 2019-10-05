@@ -60,6 +60,7 @@ typedef struct AddonToKodiFuncTable_Visualization /* internal */
 {
   KODI_HANDLE kodiInstance;
   void (__cdecl* transfer_preset) (void* kodiInstance, const char* preset);
+  void (__cdecl* clear_presets) (void* kodiInstance);
 } AddonToKodiFuncTable_Visualization;
 
 typedef struct KodiToAddonFuncTable_Visualization /* internal */
@@ -545,6 +546,26 @@ namespace addon
     /// @brief **To get info about the device, display and several other parts**
     ///
     //@{
+
+    //==========================================================================
+    ///
+    /// @ingroup cpp_kodi_addon_visualization_CB
+    /// @brief To transfer available presets on addon
+    ///
+    /// Used if @ref GetPresets not possible to use, e.g. where available presets
+    /// are only known during @ref Start call.
+    ///
+    /// @param[in] presets List to store available presets.
+    ///
+    /// @note The function should only be called once, if possible
+    ///
+    inline void TransferPresets(const std::vector<std::string>& presets)
+    {
+      m_instanceData->toKodi->clear_presets(m_instanceData->toKodi->kodiInstance);
+      for (auto it : presets)
+        m_instanceData->toKodi->transfer_preset(m_instanceData->toKodi->kodiInstance, it.c_str());
+    }
+    //--------------------------------------------------------------------------
 
     //==========================================================================
     ///

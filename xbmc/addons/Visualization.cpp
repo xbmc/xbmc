@@ -37,6 +37,7 @@ CVisualization::CVisualization(ADDON::BinaryAddonBasePtr addonBase, float x, flo
   m_struct.toKodi = new AddonToKodiFuncTable_Visualization;
   m_struct.toKodi->kodiInstance = this;
   m_struct.toKodi->transfer_preset = transfer_preset;
+  m_struct.toKodi->clear_presets = clear_presets;
 
   m_struct.toAddon = new KodiToAddonFuncTable_Visualization;
   memset(m_struct.toAddon, 0, sizeof(KodiToAddonFuncTable_Visualization));
@@ -150,6 +151,18 @@ void CVisualization::transfer_preset(void* kodiInstance, const char* preset)
   }
 
   addon->m_presets.emplace_back(preset);
+}
+
+void CVisualization::clear_presets(void* kodiInstance)
+{
+  CVisualization* addon = static_cast<CVisualization*>(kodiInstance);
+  if (!addon)
+  {
+    CLog::Log(LOGERROR, "CVisualization::%s - invalid handler data", __FUNCTION__);
+    return;
+  }
+
+  addon->m_presets.clear();
 }
 
 } /* namespace ADDON */

@@ -43,6 +43,7 @@ private:
 
   // Static function to transfer data from add-on to kodi
   static void transfer_preset(void* kodiInstance, const char* preset);
+  static void clear_presets(void* kodiInstance);
 };
 
 } /* namespace ADDON */
