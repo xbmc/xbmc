@@ -95,7 +95,7 @@ python27: expat gettext libxml2 sqlite3 openssl libffi
 libcdio: $(ICONV)
 libcdio-gplv3: $(ICONV)
 libplist: $(ZLIB)
-libbluray: $(ICONV) libxml2
+libbluray: fontconfig freetype2 $(ICONV) libxml2
 mariadb: openssl $(ICONV) $(ZLIB)
 libzip: $(ZLIB)
 libpng: $(ZLIB)
