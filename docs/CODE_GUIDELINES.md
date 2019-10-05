@@ -68,7 +68,7 @@ In the repository root directory, there is a `.clang-format` file that implement
 
 ## 2. Language standard
 
-We currently target the C++11 language standard. Do use C++11 features when possible. Do not use C++14 or C++17 features.
+We currently target the C++14 language standard. Do use C++14 features when possible. Do not use C++17 features.
 
 **[back to top](#table-of-contents)**
 
