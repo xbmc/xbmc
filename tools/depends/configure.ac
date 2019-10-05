@@ -359,14 +359,8 @@ case $host in
 
         # setup which sdk to use
         if test "$use_platform" = "tvos"; then
-          # setup which cpu to use
-          if test "x$use_cpu" = "xauto"; then
-            use_cpu=arm64
-          fi
-
+          use_cpu=arm64
           target_platform=appletvos
-          platform_cflags+=" -fembed-bitcode"
-          platform_cxxflags+=" -fembed-bitcode"
           platform_min_version="$target_platform-version-min=11.0"
         else
           # setup which cpu to use
@@ -378,7 +372,7 @@ case $host in
           platform_min_version="$target_platform-version-min=9.0"
         fi
 
-        found_sdk_version=[`$use_xcodebuild -showsdks | grep $target_platform | sort | tail -n 1 | awk '{ print $2}'`]
+        found_sdk_version=[`$use_xcodebuild -showsdks | grep "\-sdk $target_platform" | awk '{ print $2}'`]
         use_sdk="${use_sdk:-$found_sdk_version}"
         sdk_name=$target_platform$use_sdk
 
@@ -415,7 +409,7 @@ case $host in
         platform_cflags+=" -Wno-error=implicit-function-declaration"
         optimize_flags="-O3"
         use_sdk_path=[`$use_xcodebuild -version -sdk $sdk_name | grep ^Path | awk '{ print $2}'`]
-        platform_ldflags+=" -L$use_sdk_path/usr/lib/system"
+        platform_ldflags+=" -L$use_sdk_path/usr/lib"
         platform_cxxflags+=" $cpu_flags"
       ;;
     esac
@@ -462,6 +456,8 @@ case $use_platform in
      platform_ldflags="-lpthread"
      ;;
   tvos)
+    platform_cflags+=" -fembed-bitcode"
+    platform_cxxflags+=" -fembed-bitcode"
     if test "$platform_os" != "darwin_embedded"; then
       AC_MSG_ERROR([$use_platform is only supported on the darwin_embedded platform])
     fi
@@ -691,15 +687,11 @@ AC_SUBST(ffmpeg_options)
 AC_OUTPUT
 
 if test "$platform_os" == "darwin_embedded"; then
-  if test "$use_platform" = "tvos"; then
-    simulator_sdk_path=[`$use_xcodebuild -version -sdk appletvsimulator$use_sdk  | grep ^Path | awk '{ print $2}'`]
-  else
+  if test "$use_platform" = "ios"; then
     simulator_sdk_path=[`$use_xcodebuild -version -sdk iphonesimulator$use_sdk  | grep ^Path | awk '{ print $2}'`]
+    echo -e "use simulator:\t $simulator_sdk_path"
   fi
-  cp -vf $simulator_sdk_path/usr/include/crt_externs.h $prefix/$deps_dir/include
 fi
-
-echo -e "use simulator:\t $use_simulator"
 
 cp -vf target/config.site $prefix/$deps_dir/share
 cp -vf target/config-binaddons.site $prefix/$tool_dir/share

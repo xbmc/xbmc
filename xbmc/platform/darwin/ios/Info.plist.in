@@ -79,7 +79,7 @@
 		<integer>2</integer>
 	</array>
 	<key>CFBundleIdentifier</key>
-	<string>org.xbmc.@APP_NAME_LC@-ios</string>
+	<string>@PLATFORM_BUNDLE_IDENTIFIER@</string>
 	<key>DTXcode</key>
 	<string>0730</string>
 	<key>CFBundleExecutable</key>
@@ -142,7 +142,7 @@
       <string>Picture</string>
       <key>LSItemContentTypes</key>
       <array>
-        <string>org.xbmc.kodi-ios.picture</string>
+        <string>@PLATFORM_BUNDLE_IDENTIFIER@.picture</string>
       </array>
     </dict>
     <dict>
@@ -152,7 +152,7 @@
       <string>Music</string>
       <key>LSItemContentTypes</key>
       <array>
-        <string>org.xbmc.kodi-ios.music</string>
+        <string>@PLATFORM_BUNDLE_IDENTIFIER@.music</string>
       </array>
     </dict>
     <dict>
@@ -162,7 +162,7 @@
       <string>Video</string>
       <key>LSItemContentTypes</key>
       <array>
-        <string>org.xbmc.kodi-ios.video</string>
+        <string>@PLATFORM_BUNDLE_IDENTIFIER@.video</string>
       </array>
     </dict>
     <dict>
@@ -172,7 +172,7 @@
       <string>Subtitle</string>
       <key>LSItemContentTypes</key>
       <array>
-        <string>org.xbmc.kodi-ios.subtitle</string>
+        <string>@PLATFORM_BUNDLE_IDENTIFIER@.subtitle</string>
       </array>
     </dict>
   </array>
@@ -182,7 +182,7 @@
       <key>UTTypeSize320IconFile</key>
       <string>AppIcon60x60</string>
       <key>UTTypeIdentifier</key>
-      <string>org.xbmc.kodi-ios.picture</string>
+      <string>@PLATFORM_BUNDLE_IDENTIFIER@.picture</string>
       <key>UTTypeSize64IconFile</key>
       <string>AppIcon60x60</string>
       <key>UTTypeConformsTo</key>
@@ -220,7 +220,7 @@
       <key>UTTypeSize320IconFile</key>
       <string>AppIcon60x60</string>
       <key>UTTypeIdentifier</key>
-      <string>org.xbmc.kodi-ios.music</string>
+      <string>@PLATFORM_BUNDLE_IDENTIFIER@.music</string>
       <key>UTTypeSize64IconFile</key>
       <string>AppIcon60x60</string>
       <key>UTTypeConformsTo</key>
@@ -309,7 +309,7 @@
       <key>UTTypeSize320IconFile</key>
       <string>AppIcon60x60</string>
       <key>UTTypeIdentifier</key>
-      <string>org.xbmc.kodi-ios.video</string>
+      <string>@PLATFORM_BUNDLE_IDENTIFIER@.video</string>
       <key>UTTypeSize64IconFile</key>
       <string>AppIcon60x60</string>
       <key>UTTypeConformsTo</key>
@@ -401,7 +401,7 @@
       <key>UTTypeSize320IconFile</key>
       <string>AppIcon60x60</string>
       <key>UTTypeIdentifier</key>
-      <string>org.xbmc.kodi-ios.subtitle</string>
+      <string>@PLATFORM_BUNDLE_IDENTIFIER@.subtitle</string>
       <key>UTTypeSize64IconFile</key>
       <string>AppIcon60x60</string>
       <key>UTTypeConformsTo</key>
