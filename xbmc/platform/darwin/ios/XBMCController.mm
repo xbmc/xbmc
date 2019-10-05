@@ -577,6 +577,12 @@ XBMCController *g_xbmcController;
   [super viewWillAppear:animated];
 }
 //--------------------------------------------------------------
+- (void)viewSafeAreaInsetsDidChange NS_AVAILABLE_IOS(11_0)
+{
+  [super viewSafeAreaInsetsDidChange];
+  m_glView.frame = UIEdgeInsetsInsetRect(self.view.bounds, self.view.safeAreaInsets);
+}
+//--------------------------------------------------------------
 -(void) viewDidAppear:(BOOL)animated
 {
   [super viewDidAppear:animated];
