@@ -124,8 +124,6 @@ void CAdvancedSettings::Initialize()
   if (m_initialized)
     return;
 
-  m_audioHeadRoom = 0;
-  m_ac3Gain = 12.0f;
   m_audioApplyDrc = -1.0f;
   m_VideoPlayerIgnoreDTSinWAV = false;
 
@@ -150,29 +148,23 @@ void CAdvancedSettings::Initialize()
   m_videoPercentSeekForwardBig = 10;
   m_videoPercentSeekBackwardBig = -10;
 
-  m_videoPPFFmpegDeint = "linblenddeint";
   m_videoPPFFmpegPostProc = "ha:128:7,va,dr";
   m_videoDefaultPlayer = "VideoPlayer";
   m_videoIgnoreSecondsAtStart = 3*60;
   m_videoIgnorePercentAtEnd   = 8.0f;
   m_videoPlayCountMinimumPercent = 90.0f;
   m_videoVDPAUScaling = -1;
-  m_videoVAAPIforced = false;
   m_videoNonLinStretchRatio = 0.5f;
   m_videoEnableHighQualityHwScalers = false;
   m_videoAutoScaleMaxFps = 30.0f;
   m_videoCaptureUseOcclusionQuery = -1; //-1 is auto detect
   m_videoVDPAUtelecine = false;
   m_videoVDPAUdeintSkipChromaHD = false;
-  m_useFfmpegVda = true;
   m_DXVACheckCompatibility = false;
   m_DXVACheckCompatibilityPresent = false;
-  m_DXVAForceProcessorRenderer = true;
   m_videoFpsDetect = 1;
   m_maxTempo = 1.55f;
   m_videoPreferStereoStream = false;
-
-  m_mediacodecForceSoftwareRendering = false;
 
   m_videoDefaultLatency = 0.0;
 
@@ -267,7 +259,6 @@ void CAdvancedSettings::Initialize()
   m_tvshowMultiPartEnumRegExp = "^[-_ex]+([0-9]+(?:(?:[a-i]|\\.[1-9])(?![0-9]))?)";
 
   m_remoteDelay = 3;
-  m_controllerDeadzone = 0.2f;
   m_bScanIRServer = true;
 
   m_playlistAsFolders = true;
@@ -305,7 +296,6 @@ void CAdvancedSettings::Initialize()
   m_iVideoLibraryRecentlyAddedItems = 25;
   m_bVideoLibraryCleanOnUpdate = false;
   m_bVideoLibraryUseFastHash = true;
-  m_bVideoLibraryExportAutoThumbs = false;
   m_bVideoLibraryImportWatchedState = false;
   m_bVideoLibraryImportResumePoint = false;
   m_bVideoScannerIgnoreErrors = false;
@@ -351,12 +341,6 @@ void CAdvancedSettings::Initialize()
   m_iEdlCommBreakAutowait = 0;             // Off by default
   m_iEdlCommBreakAutowind = 0;             // Off by default
 
-  // Touchscreen  default values if no adjustment is necessary
-  m_screenAlign_xOffset = 0;
-  m_screenAlign_yOffset= 0;
-  m_screenAlign_xStretchFactor = 1.0;
-  m_screenAlign_yStretchFactor = 1.0;
-
   m_curlconnecttimeout = 30;
   m_curllowspeedtime = 20;
   m_curlretries = 2;
@@ -376,10 +360,7 @@ void CAdvancedSettings::Initialize()
   m_playlistTimeout = 20; // 20 seconds timeout
   m_GLRectangleHack = false;
   m_iSkipLoopFilter = 0;
-  m_RestrictCapsMask = 0;
-  m_sleepBeforeFlip = 0;
   m_bVirtualShares = true;
-  m_bAllowDeferredRendering = true;
   m_bTry10bitOutput = false;
 
   m_cpuTempCmd = "";
@@ -437,7 +418,6 @@ void CAdvancedSettings::Initialize()
   m_stereoscopicregex_sbs = "[-. _]h?sbs[-. _]";
   m_stereoscopicregex_tab = "[-. _]h?tab[-. _]";
 
-  m_useDisplayControlHWStereo = false;
   m_allowUseSeparateDeviceForDecoding = false;
 
   m_videoAssFixedWorks = false;
@@ -542,8 +522,6 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
   TiXmlElement *pElement = pRootElement->FirstChildElement("audio");
   if (pElement)
   {
-    XMLUtils::GetFloat(pElement, "ac3downmixgain", m_ac3Gain, -96.0f, 96.0f);
-    XMLUtils::GetInt(pElement, "headroom", m_audioHeadRoom, 0, 12);
     XMLUtils::GetString(pElement, "defaultplayer", m_audioDefaultPlayer);
     // 101 on purpose - can be used to never automark as watched
     XMLUtils::GetFloat(pElement, "playcountminimumpercent", m_audioPlayCountMinimumPercent, 0.0f, 101.0f);
@@ -624,21 +602,14 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
       GetCustomRegexps(pVideoExcludes, m_videoCleanStringRegExps);
 
     XMLUtils::GetString(pElement,"cleandatetime", m_videoCleanDateTimeRegExp);
-    XMLUtils::GetString(pElement,"ppffmpegdeinterlacing",m_videoPPFFmpegDeint);
     XMLUtils::GetString(pElement,"ppffmpegpostprocessing",m_videoPPFFmpegPostProc);
     XMLUtils::GetInt(pElement,"vdpauscaling",m_videoVDPAUScaling);
-    // There is a large amount of drivers implementing VAAPI in a non stable way
-    // the forcevaapienabled setting let's the user decide to use it nevertheless
-    XMLUtils::GetBoolean(pElement, "forcevaapienabled", m_videoVAAPIforced);
     XMLUtils::GetFloat(pElement, "nonlinearstretchratio", m_videoNonLinStretchRatio, 0.01f, 1.0f);
     XMLUtils::GetBoolean(pElement,"enablehighqualityhwscalers", m_videoEnableHighQualityHwScalers);
     XMLUtils::GetFloat(pElement,"autoscalemaxfps",m_videoAutoScaleMaxFps, 0.0f, 1000.0f);
     XMLUtils::GetInt(pElement, "useocclusionquery", m_videoCaptureUseOcclusionQuery, -1, 1);
     XMLUtils::GetBoolean(pElement,"vdpauInvTelecine",m_videoVDPAUtelecine);
     XMLUtils::GetBoolean(pElement,"vdpauHDdeintSkipChroma",m_videoVDPAUdeintSkipChromaHD);
-    XMLUtils::GetBoolean(pElement,"useffmpegvda", m_useFfmpegVda);
-
-    XMLUtils::GetBoolean(pElement,"mediacodecforcesoftwarerendering",m_mediacodecForceSoftwareRendering);
 
     TiXmlElement* pAdjustRefreshrate = pElement->FirstChildElement("adjustrefreshrate");
     if (pAdjustRefreshrate)
@@ -723,8 +694,6 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
 
     m_DXVACheckCompatibilityPresent = XMLUtils::GetBoolean(pElement,"checkdxvacompatibility", m_DXVACheckCompatibility);
 
-    XMLUtils::GetBoolean(pElement,"forcedxvarenderer", m_DXVAForceProcessorRenderer);
-    XMLUtils::GetBoolean(pElement, "usedisplaycontrolhwstereo", m_useDisplayControlHWStereo);
     XMLUtils::GetBoolean(pElement, "allowdiscretedecoder", m_allowUseSeparateDeviceForDecoding);
     //0 = disable fps detect, 1 = only detect on timestamps with uniform spacing, 2 detect on all timestamps
     XMLUtils::GetInt(pElement, "fpsdetect", m_videoFpsDetect, 0, 2);
@@ -806,7 +775,6 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
     XMLUtils::GetBoolean(pElement, "cleanonupdate", m_bVideoLibraryCleanOnUpdate);
     XMLUtils::GetBoolean(pElement, "usefasthash", m_bVideoLibraryUseFastHash);
     XMLUtils::GetString(pElement, "itemseparator", m_videoItemSeparator);
-    XMLUtils::GetBoolean(pElement, "exportautothumbs", m_bVideoLibraryExportAutoThumbs);
     XMLUtils::GetBoolean(pElement, "importwatchedstate", m_bVideoLibraryImportWatchedState);
     XMLUtils::GetBoolean(pElement, "importresumepoint", m_bVideoLibraryImportResumePoint);
     XMLUtils::GetInt(pElement, "dateadded", m_iVideoLibraryDateAdded);
@@ -921,11 +889,8 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
   XMLUtils::GetBoolean(pRootElement,"glrectanglehack", m_GLRectangleHack);
   XMLUtils::GetInt(pRootElement,"skiploopfilter", m_iSkipLoopFilter, -16, 48);
 
-  XMLUtils::GetUInt(pRootElement,"restrictcapsmask", m_RestrictCapsMask);
-  XMLUtils::GetFloat(pRootElement,"sleepbeforeflip", m_sleepBeforeFlip, 0.0f, 1.0f);
   XMLUtils::GetBoolean(pRootElement,"virtualshares", m_bVirtualShares);
   XMLUtils::GetUInt(pRootElement, "packagefoldersize", m_addonPackageFolderSize);
-  XMLUtils::GetBoolean(pRootElement, "allowdeferredrendering", m_bAllowDeferredRendering);
   XMLUtils::GetBoolean(pRootElement, "try10bitoutput", m_bTry10bitOutput);
 
   // EPG
@@ -952,16 +917,6 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
     XMLUtils::GetInt(pElement, "maxstartgap", m_iEdlMaxStartGap, 0, 10 * 60);               // Between 0 and 10 minutes
     XMLUtils::GetInt(pElement, "commbreakautowait", m_iEdlCommBreakAutowait, 0, 10);        // Between 0 and 10 seconds
     XMLUtils::GetInt(pElement, "commbreakautowind", m_iEdlCommBreakAutowind, 0, 10);        // Between 0 and 10 seconds
-  }
-
-  // Touchscreen
-  pElement = pRootElement->FirstChildElement("touchscreen");
-  if (pElement)
-  {
-    XMLUtils::GetInt(pElement, "x_offset", m_screenAlign_xOffset );
-    XMLUtils::GetInt(pElement, "y_offset", m_screenAlign_yOffset );
-    XMLUtils::GetFloat(pElement, "x_stretch_factor", m_screenAlign_xStretchFactor );
-    XMLUtils::GetFloat(pElement, "y_stretch_factor", m_screenAlign_yStretchFactor );
   }
 
   // picture exclude regexps
@@ -1068,7 +1023,6 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
   }
 
   XMLUtils::GetInt(pRootElement, "remotedelay", m_remoteDelay, 0, 20);
-  XMLUtils::GetFloat(pRootElement, "controllerdeadzone", m_controllerDeadzone, 0.0f, 1.0f);
   XMLUtils::GetBoolean(pRootElement, "scanirserver", m_bScanIRServer);
 
   XMLUtils::GetUInt(pRootElement, "fanartres", m_fanartRes, 0, 9999);
@@ -1202,23 +1156,6 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
     XMLUtils::GetString(pDatabase, "capath", m_databaseEpg.capath);
     XMLUtils::GetString(pDatabase, "ciphers", m_databaseEpg.ciphers);
     XMLUtils::GetBoolean(pDatabase, "compression", m_databaseEpg.compression);
-  }
-
-  pDatabase = pRootElement->FirstChildElement("savestatedatabase");
-  if (pDatabase)
-  {
-    XMLUtils::GetString(pDatabase, "type", m_databaseSavestates.type);
-    XMLUtils::GetString(pDatabase, "host", m_databaseSavestates.host);
-    XMLUtils::GetString(pDatabase, "port", m_databaseSavestates.port);
-    XMLUtils::GetString(pDatabase, "user", m_databaseSavestates.user);
-    XMLUtils::GetString(pDatabase, "pass", m_databaseSavestates.pass);
-    XMLUtils::GetString(pDatabase, "name", m_databaseSavestates.name);
-    XMLUtils::GetString(pDatabase, "key", m_databaseSavestates.key);
-    XMLUtils::GetString(pDatabase, "cert", m_databaseSavestates.cert);
-    XMLUtils::GetString(pDatabase, "ca", m_databaseSavestates.ca);
-    XMLUtils::GetString(pDatabase, "capath", m_databaseSavestates.capath);
-    XMLUtils::GetString(pDatabase, "ciphers", m_databaseSavestates.ciphers);
-    XMLUtils::GetBoolean(pDatabase, "compression", m_databaseSavestates.compression);
   }
 
   pElement = pRootElement->FirstChildElement("enablemultimediakeys");
