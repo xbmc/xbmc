@@ -5,7 +5,7 @@ BUILD_TYPE_LC:=$(shell echo $(BUILD_TYPE) | tr A-Z a-z)
 
 OBJS = libshairplay.so \
   libass.so \
-  libbluray.so libsmbclient.so
+  libsmbclient.so
 
 PLATFORM_OBJS =
 EXCLUDED_ADDONS =
