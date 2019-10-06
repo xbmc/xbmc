@@ -84,6 +84,22 @@ void CDirectoryNode::GetDatabaseInfo(const std::string& strPath, CQueryParams& p
   pNode->CollectQueryParams(params);
 }
 
+bool CDirectoryNode::GetNodeInfo(const std::string& strPath,
+                                 NODE_TYPE& type,
+                                 NODE_TYPE& childtype,
+                                 CQueryParams& params)
+{
+  std::unique_ptr<CDirectoryNode> pNode(CDirectoryNode::ParseURL(strPath));
+  if (!pNode)
+    return false;
+
+  type = pNode->GetType();
+  childtype = pNode->GetChildType();
+  pNode->CollectQueryParams(params);
+
+  return true;
+}
+
 //  Create a node object
 CDirectoryNode* CDirectoryNode::CreateNode(NODE_TYPE Type, const std::string& strName, CDirectoryNode* pParent)
 {

@@ -93,6 +93,18 @@ NODE_TYPE CMusicDatabaseDirectory::GetDirectoryParentType(const std::string& str
   return pParentNode->GetChildType();
 }
 
+bool CMusicDatabaseDirectory::GetDirectoryNodeInfo(const std::string& strPath,
+                                                   MUSICDATABASEDIRECTORY::NODE_TYPE& type,
+                                                   MUSICDATABASEDIRECTORY::NODE_TYPE& childtype,
+                                                   MUSICDATABASEDIRECTORY::CQueryParams& params)
+{
+  std::string path = CLegacyPathTranslation::TranslateMusicDbPath(strPath);
+  if (!CDirectoryNode::GetNodeInfo(path, type, childtype, params))
+    return false;
+
+  return true;
+}
+
 bool CMusicDatabaseDirectory::IsArtistDir(const std::string& strDirectory)
 {
   NODE_TYPE node=GetDirectoryType(strDirectory);

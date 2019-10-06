@@ -29,8 +29,13 @@ bool CMusicDbUrl::parse()
     return false;
 
   std::string path = m_url.Get();
-  NODE_TYPE dirType = CMusicDatabaseDirectory::GetDirectoryType(path);
-  NODE_TYPE childType = CMusicDatabaseDirectory::GetDirectoryChildType(path);
+
+  // Parse path for directory node types and query params
+  NODE_TYPE dirType;
+  NODE_TYPE childType;
+  CQueryParams queryParams;
+  if (!CMusicDatabaseDirectory::GetDirectoryNodeInfo(path, dirType, childType, queryParams))
+    return false;
 
   switch (dirType)
   {
@@ -108,10 +113,6 @@ bool CMusicDbUrl::parse()
 
   if (m_type.empty())
     return false;
-
-  // parse query params
-  CQueryParams queryParams;
-  CDirectoryNode::GetDatabaseInfo(path, queryParams);
 
   // retrieve and parse all options
   AddOptions(m_url.GetOptions());
