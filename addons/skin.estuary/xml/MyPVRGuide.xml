@@ -186,7 +186,7 @@
 						<control type="label">
 							<width>70%</width>
 							<height>30</height>
-							<label>[B]$INFO[ListItem.EpgEventTitle][/B]</label>
+							<label>[B]$INFO[ListItem.EpgEventTitle][/B] $INFO[ListItem.Year,([COLOR grey],[/COLOR])]</label>
 						</control>
 						<control type="label">
 							<top>0</top>

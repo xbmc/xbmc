@@ -246,7 +246,7 @@
 				<width>830</width>
 				<height>262</height>
 				<font>font36_title</font>
-				<label>$INFO[ListItem.Title]</label>
+				<label>$INFO[ListItem.Title] $INFO[ListItem.Year,([COLOR grey],[/COLOR])]</label>
 				<visible>!PVR.HasEpg</visible>
 			</control>
 			<control type="label">
@@ -254,14 +254,22 @@
 				<width>830</width>
 				<height>262</height>
 				<font>font36_title</font>
-				<label>$INFO[ListItem.EpgEventTitle]</label>
+				<label>$INFO[ListItem.EpgEventTitle] $INFO[ListItem.Year,([COLOR grey],[/COLOR])]</label>
 				<visible>PVR.HasEpg</visible>
 			</control>
 			<control type="label">
 				<top>435</top>
-				<width>830</width>
+				<width>40%</width>
 				<height>70</height>
 				<label>[I]$VAR[SeasonEpisodeLabel]$INFO[ListItem.EpisodeName][/I]</label>
+			</control>
+			<control type="label">
+				<top>435</top>
+				<right>30</right>
+				<width>60%</width>
+				<height>70</height>
+				<align>right</align>
+				<label>$INFO[ListItem.Genre,[COLOR grey]$LOCALIZE[515]:[/COLOR] ]</label>
 			</control>
 			<control type="textbox">
 				<top>490</top>
