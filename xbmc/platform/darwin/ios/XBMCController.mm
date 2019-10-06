@@ -577,6 +577,12 @@ XBMCController *g_xbmcController;
   [super viewWillAppear:animated];
 }
 //--------------------------------------------------------------
+- (void)viewSafeAreaInsetsDidChange NS_AVAILABLE_IOS(11_0)
+{
+  [super viewSafeAreaInsetsDidChange];
+  m_glView.frame = [self fullscreenSubviewFrame];
+}
+//--------------------------------------------------------------
 -(void) viewDidAppear:(BOOL)animated
 {
   [super viewDidAppear:animated];
@@ -631,6 +637,15 @@ XBMCController *g_xbmcController;
   [self resignFirstResponder];
 
 	[super viewDidUnload];
+}
+//--------------------------------------------------------------
+- (CGRect)fullscreenSubviewFrame
+{
+  auto rect = self.view.bounds;
+  if (@available(ios 11.0, *))
+    return UIEdgeInsetsInsetRect(rect, self.view.safeAreaInsets);
+  else
+    return rect;
 }
 //--------------------------------------------------------------
 - (void) setFramebuffer
