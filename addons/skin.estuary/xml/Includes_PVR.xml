@@ -246,7 +246,7 @@
 				<width>830</width>
 				<height>262</height>
 				<font>font36_title</font>
-				<label>$INFO[ListItem.Title]</label>
+				<label>$INFO[ListItem.Title] $INFO[ListItem.Year,([COLOR grey],[/COLOR])]</label>
 				<visible>!PVR.HasEpg</visible>
 			</control>
 			<control type="label">
@@ -254,7 +254,7 @@
 				<width>830</width>
 				<height>262</height>
 				<font>font36_title</font>
-				<label>$INFO[ListItem.EpgEventTitle]</label>
+				<label>$INFO[ListItem.EpgEventTitle] $INFO[ListItem.Year,([COLOR grey],[/COLOR])]</label>
 				<visible>PVR.HasEpg</visible>
 			</control>
 			<control type="label">
