@@ -29,9 +29,7 @@ bool CIOSKeyboard::ShowAndGetInput(char_callback_t pCallback, const std::string 
       return false;
 
     // assume we are only drawn on the mainscreen ever!
-    UIScreen *pCurrentScreen = [UIScreen mainScreen];
-    CGRect keyboardFrame = CGRectMake(0, 0, pCurrentScreen.bounds.size.width, pCurrentScreen.bounds.size.height);
-//    LOG(@"kb: kb frame: %@", NSStringFromCGRect(keyboardFrame));
+    auto keyboardFrame = [g_xbmcController fullscreenSubviewFrame];
 
     //create the keyboardview
     g_pIosKeyboard = [[KeyboardView alloc] initWithFrame:keyboardFrame];
