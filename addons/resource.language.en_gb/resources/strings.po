@@ -21703,3 +21703,9 @@ msgstr ""
 msgctxt "#39116"
 msgid "Episode plot"
 msgstr ""
+
+#. Label for component level debug logging setting
+#: xbmc/settings/AdvancedSettings.cpp
+msgctxt "#39117"
+msgid "Verbose logging for the [B]Announcer[/B] component"
+msgstr ""
