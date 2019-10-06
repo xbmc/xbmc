@@ -19,7 +19,6 @@ class CDarwinUtils
 {
 public:
   static const char *getIosPlatformString(void);
-  static bool        DeviceHasRetina(double &scale);
   static const char *GetOSReleaseString(void);
   static const char *GetOSVersionString(void);
   static const char* GetVersionString();
