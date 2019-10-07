@@ -39,14 +39,17 @@
 
 #include <cassert>
 #include <memory>
+#include <vector>
 
 #include <GLES2/gl2.h>
 #include <GLES2/gl2ext.h>
 #include <androidjni/ByteBuffer.h>
 #include <androidjni/MediaCodecInfo.h>
 #include <androidjni/MediaCodecList.h>
+#include <androidjni/MediaCrypto.h>
 #include <androidjni/Surface.h>
 #include <androidjni/SurfaceTexture.h>
+#include <androidjni/UUID.h>
 #include <media/NdkMediaCrypto.h>
 
 #include "system.h"
@@ -58,7 +61,8 @@ static const char* XMEDIAFORMAT_KEY_CROP_LEFT = "crop-left";
 static const char* XMEDIAFORMAT_KEY_CROP_RIGHT = "crop-right";
 static const char* XMEDIAFORMAT_KEY_CROP_TOP = "crop-top";
 static const char* XMEDIAFORMAT_KEY_CROP_BOTTOM = "crop-bottom";
-static const char* XMEDIAFORMAT_KEY_TUNNELED_PLAYBACK = "feature-tunneled-playback";
+static const char* XMEDIAFORMAT_FEATURE_TUNNELED_PLAYBACK = "feature-tunneled-playback";
+static const char* XMEDIAFORMAT_FEATURE_SECURE_PLAYBACK = "feature-secure-playback";
 static const char* XMEDIAFORMAT_KEY_COLOR_STANDARD = "color-standard";
 static const char* XMEDIAFORMAT_KEY_COLOR_RANGE = "color-range";
 static const char* XMEDIAFORMAT_KEY_COLOR_TRANSFER = "color-transfer";
@@ -366,10 +370,16 @@ std::atomic<bool> CDVDVideoCodecAndroidMediaCodec::m_InstanceGuard(false);
 bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
 {
   int num_codecs;
-  bool needSecureDecoder(false);
   int profile(0);
 
+  const AMediaUUID* uuid(nullptr);
+  const AMediaUUID wvuuid = {0xED, 0xEF, 0x8B, 0xA9, 0x79, 0xD6, 0x4A, 0xCE,
+                             0xA3, 0xC8, 0x27, 0xDC, 0xD5, 0x1D, 0x21, 0xED};
+  const AMediaUUID pruuid = {0x9A, 0x04, 0xF0, 0x79, 0x98, 0x40, 0x42, 0x86,
+                             0xAB, 0x92, 0xE6, 0x5B, 0xE0, 0x88, 0x5F, 0x95};
+
   m_opened = false;
+  m_needSecureDecoder = false;
   // allow only 1 instance here
   if (m_InstanceGuard.exchange(true))
   {
@@ -564,7 +574,35 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
   }
 
   if (m_hints.cryptoSession)
-    needSecureDecoder = AMediaCrypto_requiresSecureDecoderComponent(m_mime.c_str()) && (m_hints.cryptoSession->flags & DemuxCryptoSession::FLAG_SECURE_DECODER) != 0;
+  {
+    if (m_hints.cryptoSession->keySystem == CRYPTO_SESSION_SYSTEM_WIDEVINE)
+      uuid = &wvuuid;
+    else if (m_hints.cryptoSession->keySystem == CRYPTO_SESSION_SYSTEM_PLAYREADY)
+      uuid = &pruuid;
+    else
+    {
+      CLog::Log(LOGERROR, "CDVDVideoCodecAndroidMediaCodec::Open Unsupported crypto-keysystem %u",
+                m_hints.cryptoSession->keySystem);
+      goto FAIL;
+    }
+
+    int64_t mostSigBits(0), leastSigBits(0);
+    for (unsigned int i(0); i < 8; ++i)
+      mostSigBits = (mostSigBits << 8) | (*uuid)[i];
+    for (unsigned int i(8); i < 16; ++i)
+      leastSigBits = (leastSigBits << 8) | (*uuid)[i];
+    CJNIUUID juuid(mostSigBits, leastSigBits);
+    CJNIMediaCrypto crypto(juuid, std::vector<char>(m_hints.cryptoSession->sessionId,
+                                                    m_hints.cryptoSession->sessionId +
+                                                        m_hints.cryptoSession->sessionIdSize));
+    m_needSecureDecoder =
+        crypto.requiresSecureDecoderComponent(m_mime) &&
+        (m_hints.cryptoSession->flags & DemuxCryptoSession::FLAG_SECURE_DECODER) != 0;
+
+    CLog::Log(LOGNOTICE,
+              "CDVDVideoCodecAndroidMediaCodec::Open: Secure decoder requested: %s (stream flags: %d)",
+              m_needSecureDecoder ? "true" : "false", m_hints.cryptoSession->flags);
+  }
 
   m_codec = nullptr;
   m_colorFormat = -1;
@@ -582,20 +620,26 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
 
     CLog::Log(LOGNOTICE, "CDVDVideoCodecAndroidMediaCodec::Open Testing codec:%s", m_codecname.c_str());
 
-    bool codecIsSecure(m_codecname.find(".secure") != std::string::npos);
-    if (needSecureDecoder)
-    {
-      if (!codecIsSecure)
-        m_codecname += ".secure";
-    }
-    else if (codecIsSecure)
-      continue;
-
     CJNIMediaCodecInfoCodecCapabilities codec_caps = codec_info.getCapabilitiesForType(m_mime);
     if (xbmc_jnienv()->ExceptionCheck())
     {
       // Unsupported type?
       xbmc_jnienv()->ExceptionClear();
+      continue;
+    }
+
+    bool codecIsSecure(
+        m_codecname.find(".secure") != std::string::npos ||
+        codec_caps.isFeatureSupported(CJNIMediaCodecInfoCodecCapabilities::FEATURE_SecurePlayback));
+    if (m_needSecureDecoder)
+    {
+      if (!codecIsSecure)
+        m_codecname += ".secure";
+    }
+    else if (codecIsSecure)
+    {
+      CLog::Log(LOGNOTICE, "CDVDVideoCodecAndroidMediaCodec::Open: skipping insecure decoder while "
+                           "secure decoding is required");
       continue;
     }
 
@@ -647,20 +691,6 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
   if (m_hints.cryptoSession)
   {
     CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec::Open Initializing MediaCrypto");
-
-    const AMediaUUID *uuid(nullptr);
-    const AMediaUUID wvuuid = {0xED,0xEF,0x8B,0xA9,0x79,0xD6,0x4A,0xCE,0xA3,0xC8,0x27,0xDC,0xD5,0x1D,0x21,0xED};
-    const AMediaUUID pruuid = {0x9A,0x04,0xF0,0x79,0x98,0x40,0x42,0x86,0xAB,0x92,0xE6,0x5B,0xE0,0x88,0x5F,0x95};
-
-    if (m_hints.cryptoSession->keySystem == CRYPTO_SESSION_SYSTEM_WIDEVINE)
-      uuid = &wvuuid;
-    else if (m_hints.cryptoSession->keySystem == CRYPTO_SESSION_SYSTEM_PLAYREADY)
-      uuid = &pruuid;
-    else
-    {
-      CLog::Log(LOGERROR, "CDVDVideoCodecAndroidMediaCodec::Open Unsupported crypto-keysystem %u", m_hints.cryptoSession->keySystem);
-      goto FAIL;
-    }
 
     m_crypto = AMediaCrypto_new(*uuid, m_hints.cryptoSession->sessionId, m_hints.cryptoSession->sessionIdSize);
 
@@ -1140,7 +1170,9 @@ bool CDVDVideoCodecAndroidMediaCodec::ConfigureMediaCodec(void)
   {
     // Handle rotation
     AMediaFormat_setInt32(mediaformat, XMEDIAFORMAT_KEY_ROTATION, m_hints.orientation);
-    AMediaFormat_setInt32(mediaformat, XMEDIAFORMAT_KEY_TUNNELED_PLAYBACK, 0);
+    AMediaFormat_setInt32(mediaformat, XMEDIAFORMAT_FEATURE_TUNNELED_PLAYBACK, 0);
+    if (m_needSecureDecoder)
+      AMediaFormat_setInt32(mediaformat, XMEDIAFORMAT_FEATURE_SECURE_PLAYBACK, 1);
   }
 
   if (CJNIBase::GetSDKVersion() >= 24)
