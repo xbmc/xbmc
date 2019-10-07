@@ -235,6 +235,12 @@ public:
    */
   virtual void Reopen() {};
 
+  /**
+   * Return true, if codec parses stream to detect mid stream changes
+   * If false, demuxer tries to parse the stream and notifies VideoPlayer on changes.
+   */
+  virtual bool HasCodecParser() const { return true; }
+
 protected:
   CProcessInfo &m_processInfo;
 };

@@ -344,6 +344,9 @@ void CInputStreamPVRBase::UpdateStreamMap()
       dStream = std::make_shared<CDemuxStream>();
 
     dStream->codec = (AVCodecID)stream.iCodecId;
+    if (dStream->codec == AV_CODEC_ID_MPEG2VIDEO)
+      dStream->checkStreamChange = true;
+
     dStream->uniqueId = stream.iPID;
     dStream->language = stream.strLanguage;
 

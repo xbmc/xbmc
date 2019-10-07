@@ -66,6 +66,10 @@ public:
   double GetSubtitleDelay() override { return m_iSubtitleDelay; }
   void SetSubtitleDelay(double delay) override { m_iSubtitleDelay = delay; }
   bool IsStalled() const override { return m_stalled; }
+  bool HasCodecParser() const override
+  {
+    return m_pVideoCodec ? m_pVideoCodec->HasCodecParser() : false;
+  }
   bool IsRewindStalled() const override { return m_rewindStalled; }
   double GetCurrentPts() override;
   double GetOutputDelay() override; /* returns the expected delay, from that a packet is put in queue */

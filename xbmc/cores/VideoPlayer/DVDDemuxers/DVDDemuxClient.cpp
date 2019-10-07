@@ -15,6 +15,13 @@
 
 #define FF_MAX_EXTRADATA_SIZE ((1 << 28) - AV_INPUT_BUFFER_PADDING_SIZE)
 
+static int GetStartcodeLength(uint8_t* buf)
+{
+  if (buf && !buf[0] && !buf[1])
+    return buf[2] == 1 ? 3 : (buf[2] == 0 && buf[3] == 1 ? 4 : 0);
+  return 0;
+}
+
 class CDemuxStreamClientInternal
 {
 public:
@@ -35,11 +42,16 @@ public:
       avcodec_free_context(&m_context);
       m_context = nullptr;
     }
+    m_parser_split = false;
+    m_parser_keep_running = false;
+    m_codec = nullptr;
   }
 
   AVCodecParserContext *m_parser = nullptr;
   AVCodecContext *m_context = nullptr;
+  AVCodec* m_codec = nullptr;
   bool m_parser_split = false;
+  bool m_parser_keep_running = false;
 };
 
 template <class T>
@@ -119,26 +131,25 @@ bool CDVDDemuxClient::ParsePacket(DemuxPacket* pkt)
   bool change = false;
 
   CDemuxStream* st = GetStream(pkt->iStreamId);
-  if (st == nullptr || st->changes < 0 || st->ExtraSize || !CodecHasExtraData(st->codec))
+  if (!st || !CodecHasExtraData(st->codec))
     return change;
 
   CDemuxStreamClientInternal* stream = dynamic_cast<CDemuxStreamClientInternal*>(st);
 
-  if (stream == nullptr ||
-     stream->m_parser == nullptr)
+  if (!stream || !stream->m_parser || !stream->m_parser_split)
     return change;
 
   if (stream->m_context == nullptr)
   {
-    AVCodec *codec = avcodec_find_decoder(st->codec);
-    if (codec == nullptr)
+    stream->m_codec = avcodec_find_decoder(st->codec);
+    if (stream->m_codec == nullptr)
     {
       CLog::Log(LOGERROR, "%s - can't find decoder", __FUNCTION__);
       stream->DisposeParser();
       return change;
     }
 
-    stream->m_context = avcodec_alloc_context3(codec);
+    stream->m_context = avcodec_alloc_context3(stream->m_codec);
     if (stream->m_context == nullptr)
     {
       CLog::Log(LOGERROR, "%s - can't allocate context", __FUNCTION__);
@@ -152,42 +163,60 @@ bool CDVDDemuxClient::ParsePacket(DemuxPacket* pkt)
   if (stream->m_parser_split && stream->m_parser->parser->split)
   {
     int len = stream->m_parser->parser->split(stream->m_context, pkt->pData, pkt->iSize);
-    if (len > 0 && len < FF_MAX_EXTRADATA_SIZE)
+    if (len > 3 && len < FF_MAX_EXTRADATA_SIZE)
     {
-      if (st->ExtraData)
-        delete[] st->ExtraData;
-      st->changes++;
-      st->disabled = false;
-      st->ExtraSize = len;
-      st->ExtraData = new uint8_t[len+AV_INPUT_BUFFER_PADDING_SIZE];
-      memcpy(st->ExtraData, pkt->pData, len);
-      memset(st->ExtraData + len, 0 , AV_INPUT_BUFFER_PADDING_SIZE);
-      stream->m_parser_split = false;
-      change = true;
-      CLog::Log(LOGDEBUG, "CDVDDemuxClient::ParsePacket - split extradata");
+      int startcur = GetStartcodeLength(pkt->pData);
+      int startold = GetStartcodeLength(st->ExtraData);
 
-      // Allow ffmpeg to transport codec information to stream->m_context
-      if (!avcodec_open2(stream->m_context, stream->m_context->codec, nullptr))
+      if (len - startcur != static_cast<int>(st->ExtraSize) - startold ||
+          memcmp(pkt->pData + startcur, st->ExtraData + startold, st->ExtraSize - startold) != 0)
       {
-        AVPacket avpkt;
-        av_init_packet(&avpkt);
-        avpkt.data = pkt->pData;
-        avpkt.size = pkt->iSize;
-        avpkt.dts = avpkt.pts = AV_NOPTS_VALUE;
-        avcodec_send_packet(stream->m_context, &avpkt);
-        avcodec_close(stream->m_context);
+        CLog::Log(LOGDEBUG,
+                  "CDVDDemuxClient::ParsePacket (%d) - split extradata. Old: %d -> New: %d",
+                  pkt->iStreamId, st->ExtraSize, len);
+        if (st->ExtraData)
+          delete[] st->ExtraData;
+        st->changes++;
+        st->disabled = false;
+        st->ExtraSize = len;
+        st->ExtraData = new uint8_t[len + AV_INPUT_BUFFER_PADDING_SIZE];
+        memcpy(st->ExtraData, pkt->pData, len);
+        memset(st->ExtraData + len, 0, AV_INPUT_BUFFER_PADDING_SIZE);
+        stream->m_parser_split = false;
+        change = true;
+
+        // Allow ffmpeg to transport codec information to stream->m_context
+        if (!avcodec_open2(stream->m_context, stream->m_codec, nullptr))
+        {
+          AVPacket avpkt;
+          av_init_packet(&avpkt);
+          avpkt.data = pkt->pData;
+          avpkt.size = pkt->iSize;
+          avpkt.dts = avpkt.pts = AV_NOPTS_VALUE;
+          avcodec_send_packet(stream->m_context, &avpkt);
+          avcodec_close(stream->m_context);
+        }
       }
+      if (!stream->m_parser_keep_running)
+        stream->m_parser_split = false;
     }
   }
 
-  uint8_t *outbuf = nullptr;
+  uint8_t* outbuf = nullptr;
   int outbuf_size = 0;
+  uint8_t* extradataOld = stream->m_context->extradata;
+  int extradata_sizeOld = stream->m_context->extradata_size;
+
+  stream->m_context->extradata = st->ExtraData;
+  stream->m_context->extradata_size = st->ExtraSize;
   int len = av_parser_parse2(stream->m_parser,
                              stream->m_context, &outbuf, &outbuf_size,
                              pkt->pData, pkt->iSize,
                              (int64_t)(pkt->pts * DVD_TIME_BASE),
                              (int64_t)(pkt->dts * DVD_TIME_BASE),
                              0);
+  stream->m_context->extradata = extradataOld;
+  stream->m_context->extradata_size = extradata_sizeOld;
 
   // our parse is setup to parse complete frames, so we don't care about outbufs
   if (len >= 0)
@@ -230,8 +259,8 @@ bool CDVDDemuxClient::ParsePacket(DemuxPacket* pkt)
           sta->changes++;
           sta->disabled = false;
         }
-        if (stream->m_context->channels)
-          st->changes = -1; // stop parsing
+        if (stream->m_context->channels && !stream->m_parser_keep_running)
+          stream->m_parser_split = false;
         break;
       }
       case STREAM_VIDEO:
@@ -267,7 +296,7 @@ bool CDVDDemuxClient::ParsePacket(DemuxPacket* pkt)
             stv->disabled = false;
           }
         }
-        if (stream->m_context->framerate.num &&
+        if (stream->m_context->framerate.num && !stv->iFpsRate &&
             (stv->iFpsRate != stream->m_context->framerate.num ||
              stv->iFpsScale != stream->m_context->framerate.den))
         {
@@ -279,10 +308,8 @@ bool CDVDDemuxClient::ParsePacket(DemuxPacket* pkt)
           stv->changes++;
           stv->disabled = false;
         }
-
         break;
       }
-
       default:
         break;
     }
@@ -321,7 +348,6 @@ DemuxPacket* CDVDDemuxClient::Read()
   {
     if (ParsePacket(m_packet.get()))
     {
-      RequestStreams();
       DemuxPacket *pPacket = CDVDDemuxUtils::AllocateDemuxPacket(0);
       pPacket->iStreamId = DMX_SPECIALID_STREAMCHANGE;
       pPacket->demuxerId = m_demuxerId;
@@ -383,11 +409,12 @@ void CDVDDemuxClient::RequestStreams()
 {
   std::map<int, std::shared_ptr<CDemuxStream>> newStreamMap;
   for (auto stream : m_IDemux->GetStreams())
-    SetStreamProps(stream, newStreamMap, false);
+    SetStreamProps(stream, newStreamMap);
   m_streams = newStreamMap;
 }
 
-void CDVDDemuxClient::SetStreamProps(CDemuxStream *stream, std::map<int, std::shared_ptr<CDemuxStream>> &map, bool forceInit)
+void CDVDDemuxClient::SetStreamProps(CDemuxStream* stream,
+                                     std::map<int, std::shared_ptr<CDemuxStream>>& map)
 {
   if (!stream)
   {
@@ -412,19 +439,11 @@ void CDVDDemuxClient::SetStreamProps(CDemuxStream *stream, std::map<int, std::sh
     std::shared_ptr<CDemuxStreamClientInternalTpl<CDemuxStreamAudio>> streamAudio;
     if (currentStream)
       streamAudio = std::dynamic_pointer_cast<CDemuxStreamClientInternalTpl<CDemuxStreamAudio>>(currentStream);
-    if (forceInit || !streamAudio || streamAudio->codec != source->codec)
-    {
-      streamAudio.reset(new CDemuxStreamClientInternalTpl<CDemuxStreamAudio>());
-      streamAudio->m_parser = av_parser_init(source->codec);
-      if (streamAudio->m_parser)
-        streamAudio->m_parser->flags |= PARSER_FLAG_COMPLETE_FRAMES;
-      streamAudio->iSampleRate = source->iSampleRate;
-      streamAudio->iChannels = source->iChannels;
-    }
+    streamAudio.reset(new CDemuxStreamClientInternalTpl<CDemuxStreamAudio>());
+    streamAudio->m_parser = av_parser_init(source->codec);
+    if (streamAudio->m_parser)
+      streamAudio->m_parser->flags |= PARSER_FLAG_COMPLETE_FRAMES;
 
-    streamAudio->iBlockAlign     = source->iBlockAlign;
-    streamAudio->iBitRate        = source->iBitRate;
-    streamAudio->iBitsPerSample  = source->iBitsPerSample;
     if (source->ExtraSize > 0 && source->ExtraData)
     {
       delete[] streamAudio->ExtraData;
@@ -433,7 +452,12 @@ void CDVDDemuxClient::SetStreamProps(CDemuxStream *stream, std::map<int, std::sh
       for (unsigned int j=0; j<source->ExtraSize; j++)
         streamAudio->ExtraData[j] = source->ExtraData[j];
     }
-    streamAudio->m_parser_split = true;
+    streamAudio->iSampleRate = source->iSampleRate;
+    streamAudio->iChannels = source->iChannels;
+    streamAudio->iBlockAlign = source->iBlockAlign;
+    streamAudio->iBitRate = source->iBitRate;
+    streamAudio->iBitsPerSample = source->iBitsPerSample;
+    streamAudio->m_parser_split = streamAudio->ExtraSize == 0;
     streamAudio->changes++;
     map[stream->uniqueId] = streamAudio;
     toStream = streamAudio;
@@ -452,19 +476,10 @@ void CDVDDemuxClient::SetStreamProps(CDemuxStream *stream, std::map<int, std::sh
     std::shared_ptr<CDemuxStreamClientInternalTpl<CDemuxStreamVideo>> streamVideo;
     if (currentStream)
       streamVideo = std::dynamic_pointer_cast<CDemuxStreamClientInternalTpl<CDemuxStreamVideo>>(currentStream);
-    if (forceInit || !streamVideo || streamVideo->codec != source->codec)
-    {
-      streamVideo.reset(new CDemuxStreamClientInternalTpl<CDemuxStreamVideo>());
-      streamVideo->m_parser = av_parser_init(source->codec);
-      if (streamVideo->m_parser)
-        streamVideo->m_parser->flags |= PARSER_FLAG_COMPLETE_FRAMES;
-      streamVideo->iHeight = source->iHeight;
-      streamVideo->iWidth = source->iWidth;
-      streamVideo->fAspect = source->fAspect;
-      streamVideo->iFpsScale = source->iFpsScale;
-      streamVideo->iFpsRate = source->iFpsRate;
-    }
-    streamVideo->iBitRate = source->iBitRate;
+    streamVideo.reset(new CDemuxStreamClientInternalTpl<CDemuxStreamVideo>());
+    streamVideo->m_parser = av_parser_init(source->codec);
+    if (streamVideo->m_parser)
+      streamVideo->m_parser->flags |= PARSER_FLAG_COMPLETE_FRAMES;
     if (source->ExtraSize > 0 && source->ExtraData)
     {
       delete[] streamVideo->ExtraData;
@@ -473,6 +488,13 @@ void CDVDDemuxClient::SetStreamProps(CDemuxStream *stream, std::map<int, std::sh
       for (unsigned int j=0; j<source->ExtraSize; j++)
         streamVideo->ExtraData[j] = source->ExtraData[j];
     }
+    streamVideo->iHeight = source->iHeight;
+    streamVideo->iWidth = source->iWidth;
+    streamVideo->fAspect = source->fAspect;
+    streamVideo->iFpsScale = source->iFpsScale;
+    streamVideo->iFpsRate = source->iFpsRate;
+
+    streamVideo->iBitRate = source->iBitRate;
     streamVideo->colorPrimaries = source->colorPrimaries;
     streamVideo->colorRange = source->colorRange;
     streamVideo->colorSpace = source->colorSpace;
@@ -480,7 +502,7 @@ void CDVDDemuxClient::SetStreamProps(CDemuxStream *stream, std::map<int, std::sh
     streamVideo->masteringMetaData = source->masteringMetaData;
     streamVideo->contentLightMetaData = source->contentLightMetaData;
 
-    streamVideo->m_parser_split = true;
+    streamVideo->m_parser_split = streamVideo->ExtraSize == 0;
     streamVideo->changes++;
     map[stream->uniqueId] = streamVideo;
     toStream = streamVideo;
@@ -505,16 +527,17 @@ void CDVDDemuxClient::SetStreamProps(CDemuxStream *stream, std::map<int, std::sh
       streamSubtitle->m_parser = av_parser_init(source->codec);
       if (streamSubtitle->m_parser)
         streamSubtitle->m_parser->flags |= PARSER_FLAG_COMPLETE_FRAMES;
+
+      if (source->ExtraSize == 4)
+      {
+        delete[] streamSubtitle->ExtraData;
+        streamSubtitle->ExtraData = new uint8_t[4];
+        streamSubtitle->ExtraSize = 4;
+        for (int j = 0; j < 4; j++)
+          streamSubtitle->ExtraData[j] = source->ExtraData[j];
+      }
     }
 
-    if (source->ExtraSize == 4)
-    {
-      delete[] streamSubtitle->ExtraData;
-      streamSubtitle->ExtraData = new uint8_t[4];
-      streamSubtitle->ExtraSize = 4;
-      for (int j=0; j<4; j++)
-        streamSubtitle->ExtraData[j] = source->ExtraData[j];
-    }
     map[stream->uniqueId] = streamSubtitle;
     toStream = streamSubtitle;
   }
@@ -585,6 +608,7 @@ void CDVDDemuxClient::SetStreamProps(CDemuxStream *stream, std::map<int, std::sh
   toStream->cryptoSession = stream->cryptoSession;
   toStream->externalInterfaces = stream->externalInterfaces;
   toStream->language = stream->language;
+  toStream->checkStreamChange = stream->checkStreamChange;
 
   CLog::Log(LOGDEBUG,"CDVDDemuxClient::RequestStream(): added/updated stream %d with codec_id %d",
       toStream->uniqueId,
@@ -706,7 +730,7 @@ void CDVDDemuxClient::OpenStream(int id)
       m_videoStreamPlaying = id;
 
     if (bOpenStream)
-      SetStreamProps(stream, m_streams, true);
+      SetStreamProps(stream, m_streams);
   }
 }
 
@@ -715,6 +739,21 @@ void CDVDDemuxClient::SetVideoResolution(int width, int height)
   if (m_IDemux)
   {
     m_IDemux->SetVideoResolution(width, height);
+  }
+}
+
+void CDVDDemuxClient::EnableParsePacket(int64_t demuxerId, bool enable)
+{
+  std::shared_ptr<CDemuxStream> stream = GetStreamInternal(static_cast<int>(demuxerId));
+  if (stream && stream->checkStreamChange)
+  {
+    std::shared_ptr<CDemuxStreamClientInternalTpl<CDemuxStream>> streamCI =
+        std::dynamic_pointer_cast<CDemuxStreamClientInternalTpl<CDemuxStream>>(stream);
+    if (streamCI)
+    {
+      streamCI->m_parser_keep_running = enable;
+      CLog::Log(LOGDEBUG, "CDVDDemuxClient::EnableParsePacket: %d", enable);
+    }
   }
 }
 

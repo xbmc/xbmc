@@ -1475,13 +1475,16 @@ void CDVDVideoCodecAndroidMediaCodec::ReleaseSurfaceTexture(void)
 void CDVDVideoCodecAndroidMediaCodec::UpdateFpsDuration()
 {
   if (m_hints.fpsrate > 0 && m_hints.fpsscale > 0)
-    m_fpsDuration = static_cast<uint32_t>(static_cast<uint64_t>(DVD_TIME_BASE) * m_hints.fpsscale /  m_hints.fpsrate);
+  {
+    m_fpsDuration =
+        static_cast<uint32_t>(static_cast<uint64_t>(DVD_TIME_BASE) * m_hints.fpsscale / m_hints.fpsrate);
+    m_processInfo.SetVideoFps(static_cast<float>(m_hints.fpsrate) / m_hints.fpsscale);
+  }
   else
     m_fpsDuration = 1;
-
-  m_processInfo.SetVideoFps(static_cast<float>(m_hints.fpsrate) / m_hints.fpsscale);
-
-  CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec::UpdateFpsDuration fpsRate:%u fpsscale:%u, fpsDur:%u", m_hints.fpsrate, m_hints.fpsscale, m_fpsDuration);
+  CLog::Log(LOGDEBUG,
+            "CDVDVideoCodecAndroidMediaCodec::UpdateFpsDuration fpsRate:%u fpsscale:%u, fpsDur:%u",
+            fpsRate, m_hints.fpsscale, m_fpsDuration);
 }
 
 void CDVDVideoCodecAndroidMediaCodec::surfaceChanged(CJNISurfaceHolder holder, int format, int width, int height)

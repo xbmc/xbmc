@@ -69,53 +69,37 @@ enum StreamSource
 class CDemuxStream
 {
 public:
-  CDemuxStream()
-  {
-    uniqueId = 0;
-    dvdNavId = 0;
-    demuxerId = -1;
-    codec = (AVCodecID)0; // AV_CODEC_ID_NONE
-    codec_fourcc = 0;
-    profile = FF_PROFILE_UNKNOWN;
-    level = FF_LEVEL_UNKNOWN;
-    type = STREAM_NONE;
-    source = STREAM_SOURCE_NONE;
-    iDuration = 0;
-    pPrivate = NULL;
-    ExtraData = NULL;
-    ExtraSize = 0;
-    disabled = false;
-    changes = 0;
-    flags = StreamFlags::FLAG_NONE;
-  }
-
+  CDemuxStream() = default;
   virtual ~CDemuxStream() { delete[] ExtraData; }
 
   virtual std::string GetStreamName();
 
-  int uniqueId; // unique stream id
-  int dvdNavId;
-  int64_t demuxerId; // id of the associated demuxer
-  AVCodecID codec;
-  unsigned int codec_fourcc; // if available
-  int profile; // encoder profile of the stream reported by the decoder. used to qualify hw decoders.
-  int level; // encoder level of the stream reported by the decoder. used to qualify hw decoders.
-  StreamType type;
-  int source;
+  int uniqueId = 0; // unique stream id
+  int dvdNavId = 0;
+  int64_t demuxerId = -1; // id of the associated demuxer
+  AVCodecID codec = AV_CODEC_ID_NONE;
+  unsigned int codec_fourcc = 0; // if available
+  int profile =
+      FF_PROFILE_UNKNOWN; // encoder profile of the stream reported by the decoder. used to qualify hw decoders.
+  int level =
+      FF_LEVEL_UNKNOWN; // encoder level of the stream reported by the decoder. used to qualify hw decoders.
+  StreamType type = STREAM_NONE;
+  int source = STREAM_SOURCE_NONE;
 
-  int iDuration; // in mseconds
-  void* pPrivate; // private pointer for the demuxer
-  uint8_t* ExtraData; // extra data for codec to use
-  unsigned int ExtraSize; // size of extra data
+  int iDuration = 0; // in mseconds
+  void* pPrivate = nullptr; // private pointer for the demuxer
+  uint8_t* ExtraData = nullptr; // extra data for codec to use
+  unsigned int ExtraSize = 0; // size of extra data
 
-  StreamFlags flags;
+  StreamFlags flags = StreamFlags::FLAG_NONE;
   std::string language; // RFC 5646 language code (empty string if undefined)
-  bool disabled; // set when stream is disabled. (when no decoder exists)
+  bool disabled = false; // set when stream is disabled. (when no decoder exists)
 
   std::string name;
   std::string codecName;
 
-  int changes; // increment on change which player may need to know about
+  bool checkStreamChange = false;
+  int changes = 0; // increment on change which player may need to know about
 
   std::shared_ptr<DemuxCryptoSession> cryptoSession;
   std::shared_ptr<ADDON::IAddonProvider> externalInterfaces;
@@ -348,6 +332,11 @@ public:
    * adaptive demuxers like DASH can use this to choose best fitting video stream
    */
   virtual void SetVideoResolution(int width, int height){};
+
+  /*
+  * Enable ParsePacket to detect mid stream changes
+  */
+  virtual void EnableParsePacket(int64_t demuxerId, bool enable){};
 
   /*
   * return the id of the demuxer

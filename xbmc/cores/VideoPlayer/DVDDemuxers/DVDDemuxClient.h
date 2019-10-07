@@ -43,10 +43,11 @@ public:
   void EnableStream(int id, bool enable) override;
   void OpenStream(int id) override;
   void SetVideoResolution(int width, int height) override;
+  void EnableParsePacket(int64_t demuxerId, bool enable) override;
 
 protected:
   void RequestStreams();
-  void SetStreamProps(CDemuxStream *stream, std::map<int, std::shared_ptr<CDemuxStream>> &map, bool forceInit);
+  void SetStreamProps(CDemuxStream* stream, std::map<int, std::shared_ptr<CDemuxStream>>& map);
   bool ParsePacket(DemuxPacket* pPacket);
   void DisposeStreams();
   std::shared_ptr<CDemuxStream> GetStreamInternal(int iStreamId);

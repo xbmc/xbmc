@@ -141,6 +141,7 @@ public:
   const char* GetName() override { return m_formatname.c_str(); };
   void SetCodecControl(int flags) override;
   unsigned GetAllowedReferences() override;
+  bool HasCodecParser() const override { return false; }
 
 protected:
   void Dispose();

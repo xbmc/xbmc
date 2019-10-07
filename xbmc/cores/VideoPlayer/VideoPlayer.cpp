@@ -3599,6 +3599,9 @@ bool CVideoPlayer::OpenVideoStream(CDVDStreamInfo& hint, bool reset)
   if(player == nullptr)
     return false;
 
+  if (m_pDemuxer)
+    m_pDemuxer->EnableParsePacket(hint.uniqueId, !player->HasCodecParser());
+
   if(m_CurrentVideo.id < 0 ||
      m_CurrentVideo.hint != hint)
   {

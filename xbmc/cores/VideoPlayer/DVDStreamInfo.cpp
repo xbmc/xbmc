@@ -93,22 +93,23 @@ bool CDVDStreamInfo::Equal(const CDVDStreamInfo& right, bool withextradata)
   }
 
   // VIDEO
-  if( fpsscale != right.fpsscale
-  ||  fpsrate  != right.fpsrate
-  ||  height   != right.height
-  ||  width    != right.width
-  ||  stills   != right.stills
-  ||  level    != right.level
-  ||  profile  != right.profile
-  ||  ptsinvalid != right.ptsinvalid
-  ||  forced_aspect != right.forced_aspect
-  ||  bitsperpixel != right.bitsperpixel
-  ||  vfr      != right.vfr
-  ||  colorSpace != right.colorSpace
-  ||  colorRange != right.colorRange
-  ||  colorPrimaries != right.colorPrimaries
-  ||  colorTransferCharacteristic != right.colorTransferCharacteristic
-  ||  stereo_mode != right.stereo_mode ) return false;
+  if (fpsscale != right.fpsscale
+    || fpsrate != right.fpsrate
+    || height != right.height
+    || width != right.width
+    || stills != right.stills
+    || level != right.level
+    || profile != right.profile
+    || ptsinvalid != right.ptsinvalid
+    || forced_aspect != right.forced_aspect
+    || bitsperpixel != right.bitsperpixel
+    || vfr != right.vfr
+    || colorSpace != right.colorSpace
+    || colorRange != right.colorRange
+    || colorPrimaries != right.colorPrimaries
+    || colorTransferCharacteristic != right.colorTransferCharacteristic
+    || stereo_mode != right.stereo_mode)
+    return false;
 
   if (masteringMetadata && right.masteringMetadata)
   {

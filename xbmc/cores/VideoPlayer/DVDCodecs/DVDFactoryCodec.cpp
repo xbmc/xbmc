@@ -64,7 +64,7 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo &hint, CProces
   }
 
   // platform specifig video decoders
-  if (!(hint.codecOptions & CODEC_FORCE_SOFTWARE))
+  if (!m_hwVideoCodecs.empty() && !(hint.codecOptions & CODEC_FORCE_SOFTWARE))
   {
     for (auto &codec : m_hwVideoCodecs)
     {

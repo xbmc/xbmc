@@ -44,6 +44,7 @@ public:
   virtual bool IsInited() const = 0;
   virtual bool AcceptsData() const = 0;
   virtual bool IsStalled() const = 0;
+  virtual bool HasCodecParser() const { return true; }
 
   enum ESyncState
   {
