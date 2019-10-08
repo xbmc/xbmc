@@ -243,7 +243,7 @@ std::vector<std::shared_ptr<CPVREpgInfoTag>> CPVREpgDatabase::Get(const CPVREpg&
       {
         std::shared_ptr<CPVREpgInfoTag> newTag(new CPVREpgInfoTag());
 
-        time_t iStartTime, iEndTime, iFirstAired;
+        time_t iStartTime, iEndTime;
         iStartTime = (time_t) m_pDS->fv("iStartTime").get_asInt();
         CDateTime startTime(iStartTime);
         newTag->m_startTime = startTime;
@@ -252,9 +252,12 @@ std::vector<std::shared_ptr<CPVREpgInfoTag>> CPVREpgDatabase::Get(const CPVREpg&
         CDateTime endTime(iEndTime);
         newTag->m_endTime = endTime;
 
-        iFirstAired = (time_t) m_pDS->fv("iFirstAired").get_asInt();
-        CDateTime firstAired(iFirstAired);
-        newTag->m_firstAired = firstAired;
+        time_t iFirstAired = static_cast<time_t>(m_pDS->fv("iFirstAired").get_asInt());
+        if (iFirstAired > 0)
+        {
+          const CDateTime firstAired(iFirstAired);
+          newTag->m_firstAired = firstAired;
+        }
 
         int iBroadcastUID = m_pDS->fv("iBroadcastUid").get_asInt();
         // Compat: null value for broadcast uid changed from numerical -1 to 0 with PVR Addon API v4.0.0
@@ -364,10 +367,13 @@ int CPVREpgDatabase::Persist(const CPVREpgInfoTag& tag, bool bSingleUpdate /* = 
     return iReturn;
   }
 
-  time_t iStartTime, iEndTime, iFirstAired;
+  time_t iStartTime, iEndTime;
   tag.StartAsUTC().GetAsTime(iStartTime);
   tag.EndAsUTC().GetAsTime(iEndTime);
-  tag.FirstAiredAsUTC().GetAsTime(iFirstAired);
+
+  time_t iFirstAired = 0;
+  if (tag.FirstAiredAsUTC().IsValid())
+    tag.FirstAiredAsUTC().GetAsTime(iFirstAired);
 
   int iBroadcastId = tag.DatabaseID();
   std::string strQuery;
