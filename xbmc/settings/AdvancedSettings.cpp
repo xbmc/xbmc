@@ -1484,7 +1484,7 @@ void CAdvancedSettings::SetExtraLogLevel(const std::vector<CVariant> &components
 void CAdvancedSettings::SetExtraArtwork(const TiXmlElement* arttypes, std::vector<std::string>& artworkMap)
 {
   if (!arttypes)
-    return
+    return;
   artworkMap.clear();
   const TiXmlNode* arttype = arttypes->FirstChild("arttype");
   while (arttype)
