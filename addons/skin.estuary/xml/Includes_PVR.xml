@@ -203,7 +203,7 @@
 			<control type="group">
 				<top>120</top>
 				<left>0</left>
-				<width>590</width>
+				<width>600</width>
 				<control type="label">
 					<height>262</height>
 					<font>font45</font>
