@@ -656,6 +656,7 @@ namespace addon
       m_instanceData->toAddon->start = ADDON_Start;
       m_instanceData->toAddon->stop = ADDON_Stop;
       m_instanceData->toAddon->audio_data = ADDON_AudioData;
+      m_instanceData->toAddon->is_dirty = ADDON_IsDirty;
       m_instanceData->toAddon->render = ADDON_Render;
       m_instanceData->toAddon->get_info = ADDON_GetInfo;
       m_instanceData->toAddon->on_action = ADDON_OnAction;
