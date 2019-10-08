@@ -134,7 +134,7 @@ TEST(TestDatabaseUtils, GetField_MediaTypeAlbum)
                                    DatabaseQueryPartSelect);
   EXPECT_STREQ(refstr.c_str(), varstr.c_str());
 
-  refstr = "albumview.strGenre";
+  refstr = "albumview.strGenres";
   varstr = DatabaseUtils::GetField(FieldGenre, MediaTypeAlbum,
                                    DatabaseQueryPartSelect);
   EXPECT_STREQ(refstr.c_str(), varstr.c_str());
@@ -313,7 +313,7 @@ TEST(TestDatabaseUtils, GetField_MediaTypeSong)
                                    DatabaseQueryPartSelect);
   EXPECT_STREQ(refstr.c_str(), varstr.c_str());
 
-  refstr = "songview.strGenre";
+  refstr = "songview.strGenres";
   varstr = DatabaseUtils::GetField(FieldGenre, MediaTypeSong,
                                    DatabaseQueryPartSelect);
   EXPECT_STREQ(refstr.c_str(), varstr.c_str());

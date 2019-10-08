@@ -167,6 +167,7 @@ public:
   static bool GetDatabaseResults(const MediaType &mediaType, const FieldList &fields, const std::unique_ptr<dbiplus::Dataset> &dataset, DatabaseResults &results);
 
   static std::string BuildLimitClause(int end, int start = 0);
+  static std::string BuildLimitClauseOnly(int end, int start = 0);
 
 private:
   static int GetField(Field field, const MediaType &mediaType, bool asIndex);

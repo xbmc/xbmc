@@ -748,6 +748,190 @@ std::map<SortBy, Fields> fillSortingFields()
 std::map<SortBy, SortUtils::SortPreparator> SortUtils::m_preparators = fillPreparators();
 std::map<SortBy, Fields> SortUtils::m_sortingFields = fillSortingFields();
 
+void SortUtils::GetFieldsForSQLSort(const MediaType& mediaType,
+                                    SortBy sortMethod,
+                                    FieldList& fields)
+{
+  fields.clear();
+  if (mediaType == MediaTypeNone)
+    return;
+
+  if (mediaType == MediaTypeAlbum)
+  {
+    if (sortMethod == SortByLabel || sortMethod == SortByAlbum || sortMethod == SortByTitle)
+    {
+      fields.emplace_back(FieldAlbum);
+      fields.emplace_back(FieldArtist);
+    }
+    else if (sortMethod == SortByAlbumType)
+    {
+      fields.emplace_back(FieldAlbumType);
+      fields.emplace_back(FieldAlbum);
+      fields.emplace_back(FieldArtist);
+    }
+    else if (sortMethod == SortByArtist)
+    {
+      fields.emplace_back(FieldArtist);
+      fields.emplace_back(FieldAlbum);
+    }
+    else if (sortMethod == SortByArtistThenYear)
+    {
+      fields.emplace_back(FieldArtist);
+      fields.emplace_back(FieldYear);
+      fields.emplace_back(FieldAlbum);
+    }
+    else if (sortMethod == SortByYear)
+    {
+      fields.emplace_back(FieldYear);
+      fields.emplace_back(FieldAlbum);
+    }
+    else if (sortMethod == SortByGenre)
+    {
+      fields.emplace_back(FieldGenre);
+      fields.emplace_back(FieldAlbum);
+    }
+    else if (sortMethod == SortByDateAdded)
+      fields.emplace_back(FieldDateAdded);
+    else if (sortMethod == SortByPlaycount)
+    {
+      fields.emplace_back(FieldPlaycount);
+      fields.emplace_back(FieldAlbum);
+    }
+    else if (sortMethod == SortByLastPlayed)
+    {
+      fields.emplace_back(FieldLastPlayed);
+      fields.emplace_back(FieldAlbum);
+    }
+    else if (sortMethod == SortByRating)
+    {
+      fields.emplace_back(FieldRating);
+      fields.emplace_back(FieldAlbum);
+    }
+    else if (sortMethod == SortByVotes)
+    {
+      fields.emplace_back(FieldVotes);
+      fields.emplace_back(FieldAlbum);
+    }
+    else if (sortMethod == SortByUserRating)
+    {
+      fields.emplace_back(FieldUserRating);
+      fields.emplace_back(FieldAlbum);
+    }
+    else if (sortMethod == SortByTotalDiscs)
+    {
+      fields.emplace_back(FieldTotalDiscs);
+      fields.emplace_back(FieldAlbum);
+    }
+    else if (sortMethod == SortByOrigDate)
+    {
+      fields.emplace_back(FieldOrigDate);
+      fields.emplace_back(FieldAlbum);
+    }
+  }
+  else if (mediaType == MediaTypeSong)
+  {
+    if (sortMethod == SortByLabel || sortMethod == SortByTrackNumber)
+      fields.emplace_back(FieldTrackNumber);
+    else if (sortMethod == SortByTrackNumber)
+      fields.emplace_back(FieldTrackNumber);
+    else if (sortMethod == SortByTitle)
+      fields.emplace_back(FieldTitle);
+    else if (sortMethod == SortByAlbum)
+    {
+      fields.emplace_back(FieldAlbum);
+      fields.emplace_back(FieldAlbumArtist);
+      fields.emplace_back(FieldTrackNumber);
+    }
+    else if (sortMethod == SortByArtist)
+    {
+      fields.emplace_back(FieldArtist);
+      fields.emplace_back(FieldAlbum);
+      fields.emplace_back(FieldTrackNumber);
+    }
+    else if (sortMethod == SortByArtistThenYear)
+    {
+      fields.emplace_back(FieldArtist);
+      fields.emplace_back(FieldYear);
+      fields.emplace_back(FieldAlbum);
+      fields.emplace_back(FieldTrackNumber);
+    }
+    else if (sortMethod == SortByYear)
+    {
+      fields.emplace_back(FieldYear);
+      fields.emplace_back(FieldAlbum);
+      fields.emplace_back(FieldTrackNumber);
+    }
+    else if (sortMethod == SortByGenre)
+    {
+      fields.emplace_back(FieldGenre);
+      fields.emplace_back(FieldAlbum);
+    }
+    else if (sortMethod == SortByDateAdded)
+      fields.emplace_back(FieldDateAdded);
+    else if (sortMethod == SortByPlaycount)
+    {
+      fields.emplace_back(FieldPlaycount);
+      fields.emplace_back(FieldTrackNumber);
+    }
+    else if (sortMethod == SortByLastPlayed)
+    {
+      fields.emplace_back(FieldLastPlayed);
+      fields.emplace_back(FieldTrackNumber);
+    }
+    else if (sortMethod == SortByRating)
+    {
+      fields.emplace_back(FieldRating);
+      fields.emplace_back(FieldTrackNumber);
+    }
+    else if (sortMethod == SortByVotes)
+    {
+      fields.emplace_back(FieldVotes);
+      fields.emplace_back(FieldTrackNumber);
+    }
+    else if (sortMethod == SortByUserRating)
+    {
+      fields.emplace_back(FieldUserRating);
+      fields.emplace_back(FieldTrackNumber);
+    }
+    else if (sortMethod == SortByFile)
+    {
+      fields.emplace_back(FieldPath);
+      fields.emplace_back(FieldFilename);
+      fields.emplace_back(FieldStartOffset);
+    }
+    else if (sortMethod == SortByTime)
+      fields.emplace_back(FieldTime);
+    else if (sortMethod == SortByAlbumType)
+    {
+      fields.emplace_back(FieldAlbumType);
+      fields.emplace_back(FieldAlbum);
+      fields.emplace_back(FieldTrackNumber);
+    }
+    else if (sortMethod == SortByOrigDate)
+    {
+      fields.emplace_back(FieldOrigDate);
+      fields.emplace_back(FieldAlbum);
+      fields.emplace_back(FieldTrackNumber);
+    }
+    else if (sortMethod == SortByBPM)
+      fields.emplace_back(FieldBPM);
+  }
+  else if (mediaType == MediaTypeArtist)
+  {
+    if (sortMethod == SortByLabel || sortMethod == SortByTitle || sortMethod == SortByArtist)
+      fields.emplace_back(FieldArtist);
+    else if (sortMethod == SortByGenre)
+      fields.emplace_back(FieldGenre);
+    else if (sortMethod == SortByDateAdded)
+      fields.emplace_back(FieldDateAdded);
+  }
+
+  // Add sort by id to define order when other fields same or sort none
+  fields.emplace_back(FieldId);
+  return;
+}
+
+
 void SortUtils::Sort(SortBy sortBy, SortOrder sortOrder, SortAttribute attributes, DatabaseResults& items, int limitEnd /* = -1 */, int limitStart /* = 0 */)
 {
   if (sortBy != SortByNone)
