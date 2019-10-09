@@ -6,32 +6,34 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include <sys/resource.h>
-#include <signal.h>
-
-#include "ServiceBroker.h"
-#include "settings/AdvancedSettings.h"
-#include "settings/Settings.h"
-#include "FileItem.h"
-#include "music/tags/MusicInfoTag.h"
-#include "filesystem/SpecialProtocol.h"
-#include "playlists/PlayList.h"
-#include "messaging/ApplicationMessenger.h"
-#include "Application.h"
 #include "AppInboundProtocol.h"
-#include "input/touch/generic/GenericTouchActionHandler.h"
+#include "Application.h"
+#include "FileItem.h"
+#include "ServiceBroker.h"
+#include "Util.h"
+#include "filesystem/SpecialProtocol.h"
 #include "guilib/GUIControl.h"
 #include "input/Key.h"
-#include "windowing/ios/WinSystemIOS.h"
-#include "windowing/XBMC_events.h"
-#include "utils/log.h"
-#include "utils/TimeUtils.h"
-#include "Util.h"
+#include "input/touch/generic/GenericTouchActionHandler.h"
+#include "messaging/ApplicationMessenger.h"
+#include "music/tags/MusicInfoTag.h"
+#include "playlists/PlayList.h"
+#include "settings/AdvancedSettings.h"
+#include "settings/Settings.h"
 #include "threads/Event.h"
+#include "utils/TimeUtils.h"
+#include "utils/log.h"
+#include "windowing/XBMC_events.h"
+#include "windowing/ios/WinSystemIOS.h"
+
 #define id _id
 #include "TextureCache.h"
 #undef id
+
 #include <math.h>
+#include <signal.h>
+
+#include <sys/resource.h>
 
 using namespace KODI::MESSAGING;
 
