@@ -155,6 +155,7 @@ protected:
   int             m_colorFormat;
   std::string     m_formatname;
   bool            m_opened;
+  bool m_needSecureDecoder = false;
   int             m_codecControlFlags;
   int             m_state;
   int             m_noPictureLoop;
