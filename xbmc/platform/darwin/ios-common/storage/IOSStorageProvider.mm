@@ -38,8 +38,8 @@ void CIOSStorageProvider::GetLocalDrives(VECSOURCES& localDrives)
 std::vector<std::string> CIOSStorageProvider::GetDiskUsage()
 {
   std::vector<std::string> result;
-  auto fileSystemAttributes = [NSFileManager.defaultManager attributesOfFileSystemForPath:@"/"
-                                                                                    error:nil];
+  auto fileSystemAttributes =
+      [NSFileManager.defaultManager attributesOfFileSystemForPath:NSHomeDirectory() error:nil];
 
   auto formatter = [NSByteCountFormatter new];
   formatter.includesActualByteCount = YES;
