@@ -121,11 +121,19 @@ std::string CDarwinUtils::GetFrameworkPath(bool forPython)
 #endif
 }
 
+namespace
+{
+NSString* getExecutablePath()
+{
+  return NSBundle.mainBundle.executablePath;
+}
+}
+
 int  CDarwinUtils::GetExecutablePath(char* path, size_t *pathsize)
 {
   @autoreleasepool
   {
-    strcpy(path, NSBundle.mainBundle.executablePath.UTF8String);
+    strcpy(path, getExecutablePath().UTF8String);
   }
   *pathsize = strlen(path);
 
@@ -157,35 +165,20 @@ bool CDarwinUtils::IsIosSandboxed(void)
 {
   static bool ret = false;
   static std::once_flag flag;
-  std::call_once(flag, []
-  {
-    size_t path_size = 2*MAXPATHLEN;
-    char given_path[path_size];
-    memset(given_path, 0x0, path_size);
-    /* Get Application directory */
-    int result = GetExecutablePath(given_path, &path_size);
-    if (result == 0)
+  std::call_once(flag, [] {
+    auto executablePath = getExecutablePath();
+    auto sandboxPrefixPaths = {
+        // since iOS 8
+        @"/var/mobile/Containers/Bundle/",
+        // since iOS later than 9.0.2 but before 9.3.5
+        @"/var/containers/Bundle/",
+    };
+    for (auto prefixPath : sandboxPrefixPaths)
     {
-      // we're sandboxed if we are installed in /var/mobile/Applications
-      if (strlen("/var/mobile/Applications/") < path_size &&
-        strncmp(given_path, "/var/mobile/Applications/", strlen("/var/mobile/Applications/")) == 0)
+      if ([executablePath hasPrefix:prefixPath])
       {
         ret = true;
-      }
-
-      // since ios8 the sandbox filesystem has moved to container approach
-      // we are also sandboxed if this is our bundle path
-      if (strlen("/var/mobile/Containers/Bundle/") < path_size &&
-        strncmp(given_path, "/var/mobile/Containers/Bundle/", strlen("/var/mobile/Containers/Bundle/")) == 0)
-      {
-        ret = true;
-      }
-
-      // Some time after ios8, Apple decided to change this yet again
-      if (strlen("/var/containers/Bundle/") < path_size &&
-        strncmp(given_path, "/var/containers/Bundle/", strlen("/var/containers/Bundle/")) == 0)
-      {
-        ret = true;
+        break;
       }
     }
   });
