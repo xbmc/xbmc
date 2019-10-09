@@ -37,18 +37,25 @@
 * [9. Comments](#9-comments)
   * [9.1. General](#91-general)
   * [9.2. Doxygen](#92-doxygen)
-* [10. Other conventions](#10-other-conventions)
-  * [10.1. Destructors in interfaces](#101-destructors-in-interfaces)
-  * [10.2. Output parameters](#102-output-parameters)
-  * [10.3. Casts](#103-casts)
-  * [10.4. `NULL` vs `nullptr`](#104-null-vs-nullptr)
-  * [10.5. auto](#105-auto)
-  * [10.6. `for` loops](#106-for-loops)
-  * [10.7. Default member initialization](#107-default-member-initialization)
-  * [10.8. Include guards](#108-include-guards)
-  * [10.9. Type aliases](#109-type-aliases)
-  * [10.10. `goto`](#1010goto)
-  * [10.11. Macros](#1011-macros)
+* [10. Logging](#10-logging)
+* [11. Classes](#11-classes)
+  * [11.1. Member visibility](#111-member-visibility)
+  * [11.2. Const correctness](#112-const-correctness)
+  * [11.3. Overriding virtual functions](#113-overriding-virtual-functions)
+  * [11.4. Default member initialization](#114-default-member-initialization)
+  * [11.5. Destructors in interfaces](#115-destructors-in-interfaces)
+  * [11.6. Constructor Initialzation Lists](#116-constructor-initialzation-lists)
+* [12. Other conventions](#12-other-conventions)
+  * [12.1. Output parameters](#121-output-parameters)
+  * [12.2. Casts](#122-casts)
+  * [12.3. `NULL` vs `nullptr`](#123-null-vs-nullptr)
+  * [12.4. auto](#124-auto)
+  * [12.5. `for` loops](#125-for-loops)
+  * [12.6. Include guards](#126-include-guards)
+  * [12.7. Type aliases](#127-type-aliases)
+  * [12.8. `goto`](#128goto)
+  * [12.9. Macros](#129-macros)
+  * [12.10. constexpr](#1210-constexpr)
 
 ## 1. Motivation
 When working in a large group, the two most important values are readability and maintainability. We code for other people, not computers. To accomplish these goals, we have created a unified set of code conventions.
@@ -61,11 +68,14 @@ In the repository root directory, there is a `.clang-format` file that implement
 
 ## 2. Language standard
 
-We currently target the C++11 language standard. Do use C++11 features when possible. Do not use C++14 or C++17 features.
+We currently target the C++14 language standard. Do use C++14 features when possible. Do not use C++17 features.
 
 **[back to top](#table-of-contents)**
 
 ## 3. Formatting
+
+### Line length
+The `ColumnLimit` in `.clang-format` is set to `100` which defines line length (in general where lines should be broken) that allows two editors side by side on a 1080p screen for diffs.
 
 ### 3.1. Braces
 Curly braces always go on a new line.
@@ -110,8 +120,6 @@ public:
 }
 ```
 
-**Exception:** Do not increase indentation after a `switch` statements.
-
 ### 3.3. Control statements
 Insert a new line before every:
 * else in an if statement
@@ -128,31 +136,30 @@ if (true)
 if (true)
 {
   [...]
-} 
+}
 else if (false)
 {
   return;
-} 
+}
 else
   return;
 ```
 
 #### 3.3.2. switch case
-Do not indent `case` and `default`.
 
 ```cpp
 switch (cmd)
 {
-case x:
-{
-  doSomething();
-  break;
-}
-case x:
-case z:
-  return true;
-default:
-  doSomething();
+  case x:
+  {
+    doSomething();
+    break;
+  }
+  case x:
+  case z:
+    return true;
+  default:
+    doSomething();
 }
 ```
 
@@ -522,7 +529,7 @@ Use `// ` for inline single-line and multi-line comments. Use `/* */` for the co
 
 ### 9.2. Doxygen
 
-New classes and functions are expected to have Doxygen comments describing their purpose, parameters, and behavior in the header file. However, do not describe trivialities - it only adds visual noise. Use the Qt style with exclamation mark (`/*! */`) and backslash for doxygen commands (e.g. `\brief`). 
+New classes and functions are expected to have Doxygen comments describing their purpose, parameters, and behavior in the header file. However, do not describe trivialities - it only adds visual noise. Use the Qt style with exclamation mark (`/*! */`) and backslash for doxygen commands (e.g. `\brief`).
 
 ✅ Good:
 ```cpp
@@ -581,17 +588,17 @@ std::cout << "Window size: " << width << "x" << height << std::endl;
 
 The predefined logging levels are `DEBUG`, `INFO`, `NOTICE`, `WARNING`, `ERROR`, `SEVERE`, and `FATAL`. Use anything `INFO` and above sparingly since it will be written to the log by default. Too many messages will clutter the log and reduce visibility of important information. `DEBUG` messages are only written when debug logging is enabled.
 
-## 10. Classes
+## 11. Classes
 
-### 10.1. Member visibility
+### 11.1. Member visibility
 
 Make class data members `private`. Think twice before using `protected` for data members and functions, as its level of encapsulation is effectively equivalent to `public`.
 
-### 10.13. Const correctness
+### 11.2. Const correctness
 
 Try to mark member functions of classes as `const` whenever reasonable.
 
-### 10.10. Overriding virtual functions
+### 11.3. Overriding virtual functions
 
 When overriding virtual functions of a base class, add the `override` keyword. Do not add the `virtual` keyword.
 
@@ -613,7 +620,7 @@ public:
 }
 ```
 
-### 10.7. Default member initialization
+### 11.4. Default member initialization
 Use default member initialization instead of initializer lists or constructor assignments whenever it makes sense.
 ```cpp
 class Foo
@@ -622,22 +629,47 @@ class Foo
 };
 ```
 
-### 10.1. Destructors in interfaces
+### 11.5. Destructors in interfaces
 
 A class with any virtual functions should have a destructor that is either public and virtual or else protected and nonvirtual (cf. [ISO C++ guidelines](http://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#Rc-dtor-virtual)).
 
-## 10. Other conventions
+### 11.6. Constructor Initialzation Lists
 
-### 10.2. Output parameters
+For lines up to [line length](#line-length) everything stays on one line, excluding the braces which must be on the following lines.
+
+```cpp
+MyClass::CMyClass(bool bBoolArg, int iIntegerArg) : m_bArg(bBoolArg), m_iArg(iIntegerArg)
+{
+}
+```
+
+For longer lines, break before colon and after comma.
+
+```cpp
+MyClass::CMyClass(bool bBoolArg,
+                  int iIntegerArg,
+                  const std::string& strSomeText,
+                  const std::shared_ptr<CMyOtherClass>& myOtherClass)
+  : m_bBoolArg(bBoolArg),
+    m_iIntegerArg(iIntegerArg),
+    m_strSomeText(strSomeText),
+    m_myOtherClass(myOtherClass)
+{
+}
+```
+
+## 12. Other conventions
+
+### 12.1. Output parameters
 For functions that have multiple output values, prefer using a `struct` or `tuple` return value over output parameters that use pointers or references (cf. [ISO C++ guidelines](http://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#Rf-out-multi)). In general, try to avoid output parameters completely (cf. [ISO C++ guidelines](http://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#Rf-out), [Google C++ Style Guide](https://google.github.io/styleguide/cppguide.html#Output_Parameters)). At the function call site, it is completely invisible that actually a reference is being passed and the value might be modified. Return semantics make it clear what is happening.
 
-### 10.3. Casts
+### 12.2. Casts
 New code has to use C++ style casts and not older C style casts. When modifying existing code the developer can choose to update it to C++ style casts or leave as is. Whenever a `dynamic_cast` is used to cast to a pointer type, the result can be `nullptr` and needs to be checked accordingly.
 
-### 10.4. `NULL` vs `nullptr`
+### 12.3. `NULL` vs `nullptr`
 Prefer the use of `nullptr` instead of `NULL`. `nullptr` is a typesafe version and as such can't be implicitly converted to `int` or anything else.
 
-### 10.5. `auto`
+### 12.4. `auto`
 
 Feel free to use `auto` wherever it improves readability, which is not always the case. Good places are iterators or when dealing with containers. Bad places are code that expects a certain type that is not immediately clear from the context.
 
@@ -657,7 +689,7 @@ for (const auto j : list)
 std::map<std::string, std::vector<int>>::iterator i = var.begin();
 ```
 
-### 10.6. `for` loops
+### 12.5. `for` loops
 Use range-based for loops wherever it makes sense. If iterators are used, see above about using `auto`.
 ```cpp
 for (const auto& : var)
@@ -667,7 +699,7 @@ for (const auto& : var)
 ```
 Remove `const` if the value has to be modified. Do not use references to fundamental types that are not modified.
 
-### 10.8. Include guards
+### 12.6. Include guards
 
 Use `#pragma once`.
 
@@ -684,7 +716,7 @@ Use `#pragma once`.
 #endif
 ```
 
-### 10.9. Type aliases
+### 12.7. Type aliases
 
 Use the C++ `using` syntax when aliasing types (encouraged when it improves readability).
 
@@ -698,15 +730,15 @@ using SizeType = int;
 typedef int SizeType;
 ```
 
-### 10.11. `goto`
+### 12.8. `goto`
 
 Usage of `goto` is discouraged.
 
-### 10.12. Macros
+### 12.9. Macros
 
 Try to avoid using C macros. In many cases, they can be easily substituted with other non-macro constructs.
 
-### 10.14. `constexpr`
+### 12.10. `constexpr`
 
 Prefer `constexpr` over `const` for constants when possible. Try to mark functions `constexpr` when reasonable.
 
