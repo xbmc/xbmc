@@ -21841,3 +21841,9 @@ msgstr ""
 msgctxt "#39117"
 msgid "Verbose logging for the [B]Announcer[/B] component"
 msgstr ""
+
+#. Label for action to present native iOS sharing sheet
+#: system/settings/darwin_ios.xml
+msgctxt "#39118"
+msgid "Share debug log"
+msgstr ""
