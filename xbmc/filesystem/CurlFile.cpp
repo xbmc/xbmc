@@ -10,6 +10,7 @@
 
 #include "File.h"
 #include "ServiceBroker.h"
+#include "SpecialProtocol.h"
 #include "URL.h"
 #include "Util.h"
 #include "settings/AdvancedSettings.h"
@@ -426,6 +427,7 @@ CCurlFile::CCurlFile()
   m_acceptCharset = "UTF-8,*;q=0.8"; /* prefer UTF-8 if available */
   m_allowRetry = true;
   m_acceptencoding = "all"; /* Accept all supported encoding by default */
+  m_curlAltSvcCachePath = CSpecialProtocol::TranslatePath("special://temp/curl-alt-svc-cache.txt");
 }
 
 //Has to be called before Open()
@@ -637,6 +639,26 @@ void CCurlFile::SetCommonOptions(CReadState* state, bool failOnError /* = true *
   else
     // enable HTTP2 support. default: CURL_HTTP_VERSION_1_1. Curl >= 7.62.0 defaults to CURL_HTTP_VERSION_2TLS
     g_curlInterface.easy_setopt(h, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_2TLS);
+
+#if LIBCURL_VERSION_NUM >= 0x074001 // 7.64.1
+  const CURLcode altSvcCacheResult =
+    g_curlInterface.easy_setopt(h, CURLOPT_ALTSVC, m_curlAltSvcCachePath.c_str());
+  if (altSvcCacheResult == CURLE_OK)
+  {
+    CLog::Log(
+      LOGDEBUG,
+      "CCurlFile::SetCommonOptions - alt svc path set to %s",
+      m_curlAltSvcCachePath.c_str());
+  }
+  else
+  {
+    CLog::Log(
+      LOGERROR,
+      "CCurlFile::SetCommonOptions - failed to set alt svc path to %s with result code {}",
+      m_curlAltSvcCachePath.c_str(),
+      altSvcCacheResult);
+  }
+#endif
 }
 
 void CCurlFile::SetRequestHeaders(CReadState* state)
