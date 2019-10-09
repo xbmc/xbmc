@@ -221,6 +221,7 @@ public:
   void SetFormatLabel(int formatLabel) { m_formatLabel = formatLabel; }
   const std::string& GetFormatString() const { return m_formatString; }
   void SetFormatString(const std::string &formatString) { m_formatString = formatString; }
+  std::string GetDefaultFormatString() const;
 
   SettingControlSliderFormatter GetFormatter() const { return m_formatter; }
   void SetFormatter(SettingControlSliderFormatter formatter) { m_formatter = formatter; }
@@ -229,7 +230,7 @@ protected:
   int m_heading = -1;
   bool m_popup = false;
   int m_formatLabel = -1;
-  std::string m_formatString = "%i";
+  std::string m_formatString;
   SettingControlSliderFormatter m_formatter = nullptr;
 };
 

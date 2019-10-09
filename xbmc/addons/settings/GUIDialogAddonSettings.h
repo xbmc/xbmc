@@ -39,6 +39,9 @@ protected:
   void Save() override { }
   CSettingsManager* GetSettingsManager() const override;
 
+  // implementation of ISettingCallback
+  void OnSettingAction(std::shared_ptr<const CSetting> setting) override;
+
 private:
   ADDON::AddonPtr m_addon;
   bool m_saveToDisk = false;

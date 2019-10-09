@@ -1074,9 +1074,10 @@ SettingPtr CAddonSettings::InitializeFromOldSettingEnums(const std::string& sett
   const auto settingEntries = StringUtils::Split(XMLUtils::GetAttribute(settingElement, "entries"), OldSettingValuesSeparator);
 
   // process sort
+  bool sortAscending = false;
   std::string sort = XMLUtils::GetAttribute(settingElement, "sort");
   if (sort == "true" || sort == "yes")
-    std::sort(values.begin(), values.end(), sortstringbyname());
+    sortAscending = true;
 
   SettingPtr setting = nullptr;
   if (settingType == "enum")
@@ -1113,6 +1114,9 @@ SettingPtr CAddonSettings::InitializeFromOldSettingEnums(const std::string& sett
 
       settingInt->SetTranslatableOptions(options);
     }
+
+    if (sortAscending)
+      settingInt->SetOptionsSort(SettingOptionsSort::Ascending);
 
     // set the default value
     if (settingInt->FromString(defaultValue))
@@ -1153,6 +1157,9 @@ SettingPtr CAddonSettings::InitializeFromOldSettingEnums(const std::string& sett
 
       settingString->SetTranslatableOptions(options);
     }
+
+    if (sortAscending)
+      settingString->SetOptionsSort(SettingOptionsSort::Ascending);
 
     // set the default value
     settingString->SetDefault(defaultValue);
@@ -1334,18 +1341,19 @@ bool CAddonSettings::ParseOldLabel(const TiXmlElement* element, const std::strin
   std::string labelString;
   element->QueryStringAttribute("label", &labelString);
 
+  bool parsed = !labelString.empty();
 
   // try to parse the label as a pure number, i.e. a localized string
-  char *endptr;
-  labelId = std::strtol(labelString.c_str(), &endptr, 10);
-  if (endptr == nullptr || *endptr == '\0')
-    return true;
-
-
-  // as a last resort use the setting's identifier as a label
-  bool parsed = !labelString.empty();
-  if (!parsed)
-    labelString = settingId;
+  if (parsed)
+  {
+    char* endptr;
+    labelId = std::strtol(labelString.c_str(), &endptr, 10);
+    if (endptr == nullptr || *endptr == '\0')
+      return true;
+  }
+  // make sure the label string is not empty
+  else
+    labelString = " ";
 
   labelId = m_unknownSettingLabelId;
   m_unknownSettingLabelId += 1;
@@ -1513,7 +1521,7 @@ void CAddonSettings::FileEnumSettingOptionsFiller(std::shared_ptr<const CSetting
   if (settingPath->GetSources().empty())
     return;
 
-  const std::string& masking = settingPath->GetMasking();
+  const std::string& masking = settingPath->GetMasking(CServiceBroker::GetFileExtensionProvider());
 
   // fetch the matching files/directories
   CFileItemList items;

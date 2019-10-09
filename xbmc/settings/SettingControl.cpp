@@ -138,7 +138,13 @@ bool CSettingControlButton::Deserialize(const TiXmlNode *node, bool update /* = 
   XMLUtils::GetInt(node, SETTING_XML_ELM_CONTROL_HEADING, m_heading);
   XMLUtils::GetBoolean(node, SETTING_XML_ELM_CONTROL_HIDEVALUE, m_hideValue);
 
-  if (m_format == "addon")
+  if (m_format == "action")
+  {
+    bool closeDialog = false;
+    if (XMLUtils::GetBoolean(node, "close", closeDialog))
+      m_closeDialog = closeDialog;
+  }
+  else if (m_format == "addon")
   {
     std::string strShowAddons;
     if (XMLUtils::GetString(node, "show", strShowAddons) && !strShowAddons.empty())
@@ -254,19 +260,28 @@ bool CSettingControlSlider::Deserialize(const TiXmlNode *node, bool update /* = 
 
 bool CSettingControlSlider::SetFormat(const std::string &format)
 {
-  if (StringUtils::EqualsNoCase(format, "percentage"))
-    m_formatString = "%i %%";
-  else if (StringUtils::EqualsNoCase(format, "integer"))
-    m_formatString = "%d";
-  else if (StringUtils::EqualsNoCase(format, "number"))
-    m_formatString = "%.1f";
-  else
+  if (!StringUtils::EqualsNoCase(format, "percentage") &&
+      !StringUtils::EqualsNoCase(format, "integer") &&
+      !StringUtils::EqualsNoCase(format, "number"))
     return false;
 
   m_format = format;
   StringUtils::ToLower(m_format);
+  m_formatString = GetDefaultFormatString();
 
   return true;
+}
+
+std::string CSettingControlSlider::GetDefaultFormatString() const
+{
+  if (m_format == "percentage")
+    return "{} %";
+  if (m_format == "integer")
+    return "{:d}";
+  if (m_format == "number")
+    return "{:.1f}";
+
+  return "{}";
 }
 
 bool CSettingControlRange::Deserialize(const TiXmlNode *node, bool update /* = false */)
