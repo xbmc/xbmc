@@ -9,7 +9,6 @@
 #include "PVREdl.h"
 
 #include "FileItem.h"
-#include "URL.h"
 #include "addons/kodi-addon-dev-kit/include/kodi/xbmc_pvr_types.h"
 #include "cores/Cut.h"
 #include "pvr/epg/EpgInfoTag.h"
@@ -32,11 +31,6 @@ std::vector<EDL::Cut> CPVREdl::GetCuts(const CFileItem& item)
   {
     CLog::LogFC(LOGDEBUG, LOGPVR, "Reading EDL for EPG tag: %s", item.GetEPGInfoTag()->Title().c_str());
     edl = item.GetEPGInfoTag()->GetEdl();
-  }
-  else
-  {
-    CLog::LogF(LOGERROR, "Unhandled file item: %s", CURL::GetRedacted(item.GetDynPath()).c_str());
-    return {};
   }
 
   std::vector<EDL::Cut> cutlist;
