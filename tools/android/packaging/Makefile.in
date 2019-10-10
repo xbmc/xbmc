@@ -163,7 +163,7 @@ java: res
 package: libs python java
 	@echo "Gradle build..."
 	ANDROID_HOME=$(SDKROOT) ./gradlew assemble$(BUILD_TYPE)Unsigned
-	@cp xbmc/build/outputs/apk/xbmc-$(BUILD_TYPE_LC)Unsigned-unsigned.apk images/@APP_NAME_LC@app-debug-$(CPU)-unaligned.apk
+	@cp xbmc/build/outputs/apk/$(BUILD_TYPE_LC)Unsigned/xbmc-$(BUILD_TYPE_LC)Unsigned-unsigned.apk images/@APP_NAME_LC@app-debug-$(CPU)-unaligned.apk
 
 apk-sign:
 	@echo "Signing..."

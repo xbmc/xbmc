@@ -94,8 +94,8 @@ Before Android SDK can be used, you need to accept the licenses and configure it
 cd $HOME/android-tools/android-sdk-linux/tools/bin
 ./sdkmanager --licenses
 ./sdkmanager platform-tools
-./sdkmanager "platforms;android-26"
-./sdkmanager "build-tools;25.0.3"
+./sdkmanager "platforms;android-28"
+./sdkmanager "build-tools;28.0.3"
 ```
 
 ### 3.3. Set up the Android toolchain
