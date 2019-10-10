@@ -225,7 +225,7 @@
 			<control type="group">
 				<top>235</top>
 				<left>0</left>
-				<width>590</width>
+				<width>600</width>
 				<control type="label">
 					<height>150</height>
 					<wrapmultiline>true</wrapmultiline>
