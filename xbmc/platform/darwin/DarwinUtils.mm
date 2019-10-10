@@ -172,6 +172,8 @@ bool CDarwinUtils::IsIosSandboxed(void)
         @"/var/mobile/Containers/Bundle/",
         // since iOS later than 9.0.2 but before 9.3.5
         @"/var/containers/Bundle/",
+        // since iOS 13
+        @"/private/var/containers/Bundle/",
     };
     for (auto prefixPath : sandboxPrefixPaths)
     {
