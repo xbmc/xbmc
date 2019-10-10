@@ -29,13 +29,9 @@
   #include <sys/sockio.h>
   #include <net/if.h>
   #include <net/if_dl.h>
-#if defined(TARGET_DARWIN_OSX)
   #include <net/if_types.h>
   #include <net/route.h>
   #include <netinet/if_ether.h>
-#else //IOS
-  #include "platform/darwin/network/ioshacks.h"
-#endif
   #include <ifaddrs.h>
 #elif defined(TARGET_FREEBSD)
   #include <sys/sockio.h>
@@ -484,9 +480,7 @@ bool CNetworkLinux::PingHost(unsigned long remote_ip, unsigned int timeout_ms)
 #endif
 
   int status = -1;
-#if !defined (TARGET_DARWIN_EMBEDDED) // no system calls allowed since ios11
   status = system (cmd_line);
-#endif
   int result = WIFEXITED(status) ? WEXITSTATUS(status) : -1;
 
   // http://linux.about.com/od/commands/l/blcmdl8_ping.htm ;
