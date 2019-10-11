@@ -351,6 +351,7 @@ void CGUIWindow::DoRender()
   CServiceBroker::GetWinSystem()->GetGfxContext().SetRenderingResolution(m_coordsRes, m_needsScaling);
 
   CServiceBroker::GetWinSystem()->GetGfxContext().AddGUITransform();
+  CServiceBroker::GetWinSystem()->GetGfxContext().ApplyStateBlock();
   CGUIControlGroup::DoRender();
   CServiceBroker::GetWinSystem()->GetGfxContext().RemoveTransform();
 
