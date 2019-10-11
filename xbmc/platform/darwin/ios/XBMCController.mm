@@ -534,7 +534,8 @@ XBMCController *g_xbmcController;
   self.view.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
   self.view.autoresizesSubviews = YES;
 
-  m_glView = [[IOSEAGLView alloc] initWithFrame:self.view.bounds withScreen:[UIScreen mainScreen]];
+  m_glView = [[IOSEAGLView alloc] initWithFrame:[self fullscreenSubviewFrame]
+                                     withScreen:UIScreen.mainScreen];
   [[IOSScreenManager sharedInstance] setView:m_glView];
   [m_glView setMultipleTouchEnabled:YES];
 
@@ -575,12 +576,6 @@ XBMCController *g_xbmcController;
   [self resumeAnimation];
 
   [super viewWillAppear:animated];
-}
-//--------------------------------------------------------------
-- (void)viewSafeAreaInsetsDidChange NS_AVAILABLE_IOS(11_0)
-{
-  [super viewSafeAreaInsetsDidChange];
-  m_glView.frame = [self fullscreenSubviewFrame];
 }
 //--------------------------------------------------------------
 -(void) viewDidAppear:(BOOL)animated
@@ -643,7 +638,7 @@ XBMCController *g_xbmcController;
 {
   auto rect = self.view.bounds;
   if (@available(ios 11.0, *))
-    return UIEdgeInsetsInsetRect(rect, self.view.safeAreaInsets);
+    return UIEdgeInsetsInsetRect(rect, m_window.safeAreaInsets);
   else
     return rect;
 }
