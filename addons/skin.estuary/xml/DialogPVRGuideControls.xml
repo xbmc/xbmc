@@ -47,32 +47,31 @@
 						<onright>70040</onright>
 						<control type="radiobutton" id="600">
 							<include content="OSDButton">
-								<param name="texture" value="osd/fullscreen/buttons/previous.png"/>
+								<param name="texture" value="osd/fullscreen/buttons/epg-first.png"/>
 							</include>
 							<onclick>PVR.EpgGridControl(FirstProgramme)</onclick>
 						</control>
 						<control type="radiobutton" id="601">
 							<include content="OSDButton">
-								<param name="texture" value="osd/fullscreen/buttons/rewind.png"/>
+								<param name="texture" value="osd/fullscreen/buttons/epg-previous.png"/>
 							</include>
 							<onclick>PVR.EpgGridControl(-12)</onclick>
 						</control>
 						<control type="radiobutton" id="602">
 							<include content="OSDButton">
-								<param name="texture" value="osd/fullscreen/buttons/play.png"/>
+								<param name="texture" value="osd/fullscreen/buttons/epg-now.png"/>
 							</include>
-							<animation effect="rotate" start="0" end="-90" center="auto" condition="true">Conditional</animation>
 							<onclick>PVR.EpgGridControl(CurrentProgramme)</onclick>
 						</control>
 						<control type="radiobutton" id="603">
 							<include content="OSDButton">
-								<param name="texture" value="osd/fullscreen/buttons/forward.png"/>
+								<param name="texture" value="osd/fullscreen/buttons/epg-next.png"/>
 							</include>
 							<onclick>PVR.EpgGridControl(+12)</onclick>
 						</control>
 						<control type="radiobutton" id="604">
 							<include content="OSDButton">
-								<param name="texture" value="osd/fullscreen/buttons/next.png"/>
+								<param name="texture" value="osd/fullscreen/buttons/epg-last.png"/>
 							</include>
 							<onclick>PVR.EpgGridControl(LastProgramme)</onclick>
 						</control>
