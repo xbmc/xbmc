@@ -345,6 +345,7 @@ public:
   static const std::string SETTING_DEBUG_EXTRALOGGING;
   static const std::string SETTING_DEBUG_SETEXTRALOGLEVEL;
   static const std::string SETTING_DEBUG_SCREENSHOTPATH;
+  static const std::string SETTING_DEBUG_SHARE_LOG;
   static const std::string SETTING_EVENTLOG_ENABLED;
   static const std::string SETTING_EVENTLOG_ENABLED_NOTIFICATIONS;
   static const std::string SETTING_EVENTLOG_SHOW;

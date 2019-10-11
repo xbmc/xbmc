@@ -70,6 +70,13 @@
         </setting>
       </group>
     </category>
+    <category id="logging">
+      <group id="1">
+        <setting id="debug.sharelog" type="action" label="39118">
+          <control type="button" format="action" />
+        </setting>
+      </group>
+    </category>
   </section>
   <section id="interface">
     <category id="skin">
