@@ -229,57 +229,67 @@ CUPnPRenderer::ProcessHttpGetRequest(NPT_HttpRequest&              request,
 /*----------------------------------------------------------------------
 |   CUPnPRenderer::Announce
 +---------------------------------------------------------------------*/
-void
-CUPnPRenderer::Announce(ANNOUNCEMENT::AnnouncementFlag flag, const std::string& sender, const std::string& message, const CVariant &data)
+void CUPnPRenderer::Announce(ANNOUNCEMENT::AnnouncementFlag flag,
+                             const std::string& sender,
+                             const std::string& message,
+                             const CVariant& data)
 {
-    if (sender != "xbmc")
+  if (sender != "xbmc")
+    return;
+
+  NPT_AutoLock lock(m_state);
+  PLT_Service *avt, *rct;
+
+  if (flag == ANNOUNCEMENT::Player)
+  {
+    if (NPT_FAILED(FindServiceByType("urn:schemas-upnp-org:service:AVTransport:1", avt)))
       return;
+    if (message == "OnPlay" || message == "OnResume")
+    {
+      avt->SetStateVariable("AVTransportURI", g_application.CurrentFile().c_str());
+      avt->SetStateVariable("CurrentTrackURI", g_application.CurrentFile().c_str());
 
-    NPT_AutoLock lock(m_state);
-    PLT_Service *avt, *rct;
+      NPT_String meta;
+      if (NPT_SUCCEEDED(GetMetadata(meta)))
+      {
+        avt->SetStateVariable("CurrentTrackMetadata", meta);
+        avt->SetStateVariable("AVTransportURIMetaData", meta);
+      }
 
-    if (flag == ANNOUNCEMENT::Player) {
-        if (NPT_FAILED(FindServiceByType("urn:schemas-upnp-org:service:AVTransport:1", avt)))
-            return;
-        if (message == "OnPlay" || message == "OnResume") {
-            avt->SetStateVariable("AVTransportURI", g_application.CurrentFile().c_str());
-            avt->SetStateVariable("CurrentTrackURI", g_application.CurrentFile().c_str());
+      avt->SetStateVariable("TransportPlaySpeed",
+                            NPT_String::FromInteger(data["player"]["speed"].asInteger()));
+      avt->SetStateVariable("TransportState", "PLAYING");
 
-            NPT_String meta;
-            if (NPT_SUCCEEDED(GetMetadata(meta))) {
-                avt->SetStateVariable("CurrentTrackMetadata", meta);
-                avt->SetStateVariable("AVTransportURIMetaData", meta);
-            }
-
-            avt->SetStateVariable("TransportPlaySpeed", NPT_String::FromInteger(data["player"]["speed"].asInteger()));
-            avt->SetStateVariable("TransportState", "PLAYING");
-
-            /* this could be a transition to next track, so clear next */
-            avt->SetStateVariable("NextAVTransportURI", "");
-            avt->SetStateVariable("NextAVTransportURIMetaData", "");
-        }
-        else if (message == "OnPause") {
-            int64_t speed = data["player"]["speed"].asInteger();
-            avt->SetStateVariable("TransportPlaySpeed", NPT_String::FromInteger(speed != 0 ? speed : 1));
-            avt->SetStateVariable("TransportState", "PAUSED_PLAYBACK");
-        }
-        else if (message == "OnSpeedChanged") {
-            avt->SetStateVariable("TransportPlaySpeed", NPT_String::FromInteger(data["player"]["speed"].asInteger()));
-        }
+      /* this could be a transition to next track, so clear next */
+      avt->SetStateVariable("NextAVTransportURI", "");
+      avt->SetStateVariable("NextAVTransportURIMetaData", "");
     }
-    else if (flag == ANNOUNCEMENT::Application && message == "OnVolumeChanged") {
-        if (NPT_FAILED(FindServiceByType("urn:schemas-upnp-org:service:RenderingControl:1", rct)))
-            return;
+    else if (message == "OnPause")
+    {
+      int64_t speed = data["player"]["speed"].asInteger();
+      avt->SetStateVariable("TransportPlaySpeed", NPT_String::FromInteger(speed != 0 ? speed : 1));
+      avt->SetStateVariable("TransportState", "PAUSED_PLAYBACK");
+    }
+    else if (message == "OnSpeedChanged")
+    {
+      avt->SetStateVariable("TransportPlaySpeed",
+                            NPT_String::FromInteger(data["player"]["speed"].asInteger()));
+    }
+    }
+    else if (flag == ANNOUNCEMENT::Application && message == "OnVolumeChanged")
+    {
+      if (NPT_FAILED(FindServiceByType("urn:schemas-upnp-org:service:RenderingControl:1", rct)))
+        return;
 
-        std::string buffer;
+      std::string buffer;
 
-        buffer = StringUtils::Format("%" PRId64, data["volume"].asInteger());
-        rct->SetStateVariable("Volume", buffer.c_str());
+      buffer = StringUtils::Format("%" PRId64, data["volume"].asInteger());
+      rct->SetStateVariable("Volume", buffer.c_str());
 
-        buffer = StringUtils::Format("%" PRId64, 256 * (data["volume"].asInteger() * 60 - 60) / 100);
-        rct->SetStateVariable("VolumeDb", buffer.c_str());
+      buffer = StringUtils::Format("%" PRId64, 256 * (data["volume"].asInteger() * 60 - 60) / 100);
+      rct->SetStateVariable("VolumeDb", buffer.c_str());
 
-        rct->SetStateVariable("Mute", data["muted"].asBoolean() ? "1" : "0");
+      rct->SetStateVariable("Mute", data["muted"].asBoolean() ? "1" : "0");
     }
 }
 

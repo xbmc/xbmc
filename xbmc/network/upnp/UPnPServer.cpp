@@ -410,26 +410,30 @@ failure:
 /*----------------------------------------------------------------------
 |   CUPnPServer::Announce
 +---------------------------------------------------------------------*/
-void
-CUPnPServer::Announce(AnnouncementFlag flag, const std::string& sender, const std::string& message, const CVariant &data)
+void CUPnPServer::Announce(AnnouncementFlag flag,
+                           const std::string& sender,
+                           const std::string& message,
+                           const CVariant& data)
 {
     NPT_String path;
     int item_id;
     std::string item_type;
 
     if (sender != "xbmc")
-        return;
+      return;
 
-    if (message != "OnUpdate" && message != "OnRemove"
-        && message != "OnScanStarted" && message != "OnScanFinished")
-        return;
+    if (message != "OnUpdate" && message != "OnRemove" && message != "OnScanStarted" &&
+        message != "OnScanFinished")
+      return;
 
     if (data.isNull()) {
-        if (message == "OnScanStarted" || message == "OnCleanStarted") {
-            m_scanning = true;
+      if (message == "OnScanStarted" || message == "OnCleanStarted")
+      {
+        m_scanning = true;
         }
-        else if (message == "OnScanFinished" || message == "OnCleanFinished") {
-            OnScanCompleted(flag);
+        else if (message == "OnScanFinished" || message == "OnCleanFinished")
+        {
+          OnScanCompleted(flag);
         }
     }
     else {

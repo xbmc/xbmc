@@ -161,9 +161,12 @@ void CAirTunesServer::SetMetadataFromBuffer(const char *buffer, unsigned int siz
   RefreshMetadata();
 }
 
-void CAirTunesServer::Announce(ANNOUNCEMENT::AnnouncementFlag flag, const std::string& sender, const std::string& message, const CVariant &data)
+void CAirTunesServer::Announce(ANNOUNCEMENT::AnnouncementFlag flag,
+                               const std::string& sender,
+                               const std::string& message,
+                               const CVariant& data)
 {
-  if ( (flag & ANNOUNCEMENT::Player) && sender == "xbmc")
+  if ((flag & ANNOUNCEMENT::Player) && sender == "xbmc")
   {
     if ((message == "OnPlay" || message == "OnResume") && m_streamStarted)
     {

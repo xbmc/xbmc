@@ -105,7 +105,10 @@ bool CDialogGameVolume::IsShown() const
   return m_active;
 }
 
-void CDialogGameVolume::Announce(ANNOUNCEMENT::AnnouncementFlag flag, const std::string& sender, const std::string& message, const CVariant &data)
+void CDialogGameVolume::Announce(ANNOUNCEMENT::AnnouncementFlag flag,
+                                 const std::string& sender,
+                                 const std::string& message,
+                                 const CVariant& data)
 {
   if (flag == ANNOUNCEMENT::Application && message == "OnVolumeChanged")
   {

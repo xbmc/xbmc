@@ -150,11 +150,14 @@ const char *eventStrings[] = {"playing", "paused", "loading", "stopped"};
 #define AUTH_REALM "AirPlay"
 #define AUTH_REQUIRED "WWW-Authenticate: Digest realm=\""  AUTH_REALM  "\", nonce=\"%s\"\r\n"
 
-void CAirPlayServer::Announce(ANNOUNCEMENT::AnnouncementFlag flag, const std::string& sender, const std::string& message, const CVariant &data)
+void CAirPlayServer::Announce(ANNOUNCEMENT::AnnouncementFlag flag,
+                              const std::string& sender,
+                              const std::string& message,
+                              const CVariant& data)
 {
   CSingleLock lock(ServerInstanceLock);
 
-  if ( (flag & ANNOUNCEMENT::Player) && sender == "xbmc" && ServerInstance)
+  if ((flag & ANNOUNCEMENT::Player) && sender == "xbmc" && ServerInstance)
   {
     if (message == "OnStop")
     {

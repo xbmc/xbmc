@@ -35,16 +35,31 @@ namespace ANNOUNCEMENT
     void RemoveAnnouncer(IAnnouncer *listener);
 
     void Announce(AnnouncementFlag flag, const std::string& sender, const std::string& message);
-    void Announce(AnnouncementFlag flag, const std::string& sender, const std::string& message, const CVariant &data);
-    void Announce(AnnouncementFlag flag, const std::string& sender, const std::string& message,
-        const std::shared_ptr<const CFileItem>& item);
-    void Announce(AnnouncementFlag flag, const std::string& sender, const std::string& message,
-        const std::shared_ptr<const CFileItem>& item, const CVariant &data);
+    void Announce(AnnouncementFlag flag,
+                  const std::string& sender,
+                  const std::string& message,
+                  const CVariant& data);
+    void Announce(AnnouncementFlag flag,
+                  const std::string& sender,
+                  const std::string& message,
+                  const std::shared_ptr<const CFileItem>& item);
+    void Announce(AnnouncementFlag flag,
+                  const std::string& sender,
+                  const std::string& message,
+                  const std::shared_ptr<const CFileItem>& item,
+                  const CVariant& data);
 
   protected:
     void Process() override;
-    void DoAnnounce(AnnouncementFlag flag, const std::string& sender, const std::string& message, CFileItemPtr item, const CVariant &data);
-    void DoAnnounce(AnnouncementFlag flag, const std::string& sender, const std::string& message, const CVariant &data);
+    void DoAnnounce(AnnouncementFlag flag,
+                    const std::string& sender,
+                    const std::string& message,
+                    CFileItemPtr item,
+                    const CVariant& data);
+    void DoAnnounce(AnnouncementFlag flag,
+                    const std::string& sender,
+                    const std::string& message,
+                    const CVariant& data);
 
     struct CAnnounceData
     {

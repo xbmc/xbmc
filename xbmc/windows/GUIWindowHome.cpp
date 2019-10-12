@@ -61,7 +61,10 @@ void CGUIWindowHome::OnInitWindow()
   CGUIWindow::OnInitWindow();
 }
 
-void CGUIWindowHome::Announce(ANNOUNCEMENT::AnnouncementFlag flag, const std::string& sender, const std::string& message, const CVariant &data)
+void CGUIWindowHome::Announce(ANNOUNCEMENT::AnnouncementFlag flag,
+                              const std::string& sender,
+                              const std::string& message,
+                              const CVariant& data)
 {
   int ra_flag = 0;
 
@@ -74,8 +77,7 @@ void CGUIWindowHome::Announce(ANNOUNCEMENT::AnnouncementFlag flag, const std::st
   if (data.isMember("transaction") && data["transaction"].asBoolean())
     return;
 
-  if (message == "OnScanStarted" ||
-      message == "OnCleanStarted")
+  if (message == "OnScanStarted" || message == "OnCleanStarted")
     return;
 
   bool onUpdate = message == "OnUpdate";

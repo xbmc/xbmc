@@ -67,40 +67,43 @@ XBPython::~XBPython()
 #define CHECK_FOR_ENTRY(l, v) \
   (l.hadSomethingRemoved ? (std::find(l.begin(), l.end(), v) != l.end()) : true)
 
-void XBPython::Announce(ANNOUNCEMENT::AnnouncementFlag flag, const std::string& sender, const std::string& message, const CVariant &data)
+void XBPython::Announce(ANNOUNCEMENT::AnnouncementFlag flag,
+                        const std::string& sender,
+                        const std::string& message,
+                        const CVariant& data)
 {
   if (flag & ANNOUNCEMENT::VideoLibrary)
   {
-   if (message == "OnScanFinished")
-     OnScanFinished("video");
-   else if (message == "OnScanStarted")
-     OnScanStarted("video");
-   else if (message == "OnCleanStarted")
-     OnCleanStarted("video");
-   else if (message == "OnCleanFinished")
-     OnCleanFinished("video");
+    if (message == "OnScanFinished")
+      OnScanFinished("video");
+    else if (message == "OnScanStarted")
+      OnScanStarted("video");
+    else if (message == "OnCleanStarted")
+      OnCleanStarted("video");
+    else if (message == "OnCleanFinished")
+      OnCleanFinished("video");
   }
   else if (flag & ANNOUNCEMENT::AudioLibrary)
   {
-   if (message == "OnScanFinished")
-     OnScanFinished("music");
-   else if (message == "OnScanStarted")
-     OnScanStarted("music");
-   else if (message == "OnCleanStarted")
-     OnCleanStarted("music");
-   else if (message == "OnCleanFinished")
-     OnCleanFinished("music");
+    if (message == "OnScanFinished")
+      OnScanFinished("music");
+    else if (message == "OnScanStarted")
+      OnScanStarted("music");
+    else if (message == "OnCleanStarted")
+      OnCleanStarted("music");
+    else if (message == "OnCleanFinished")
+      OnCleanFinished("music");
   }
   else if (flag & ANNOUNCEMENT::GUI)
   {
-   if (message == "OnScreensaverDeactivated")
-     OnScreensaverDeactivated();
-   else if (message == "OnScreensaverActivated")
-     OnScreensaverActivated();
-   else if (message == "OnDPMSDeactivated")
-     OnDPMSDeactivated();
-   else if (message == "OnDPMSActivated")
-     OnDPMSActivated();
+    if (message == "OnScreensaverDeactivated")
+      OnScreensaverDeactivated();
+    else if (message == "OnScreensaverActivated")
+      OnScreensaverActivated();
+    else if (message == "OnDPMSDeactivated")
+      OnDPMSDeactivated();
+    else if (message == "OnDPMSActivated")
+      OnDPMSActivated();
   }
 
   std::string jsonData;

@@ -118,7 +118,10 @@ void CPeripheralCecAdapter::ResetMembers(void)
   m_configuration.Clear();
 }
 
-void CPeripheralCecAdapter::Announce(ANNOUNCEMENT::AnnouncementFlag flag, const std::string& sender, const std::string& message, const CVariant &data)
+void CPeripheralCecAdapter::Announce(ANNOUNCEMENT::AnnouncementFlag flag,
+                                     const std::string& sender,
+                                     const std::string& message,
+                                     const CVariant& data)
 {
   if (flag == ANNOUNCEMENT::System && sender == "xbmc" && message == "OnQuit" && m_bIsReady)
   {
@@ -145,7 +148,8 @@ void CPeripheralCecAdapter::Announce(ANNOUNCEMENT::AnnouncementFlag flag, const 
       ActivateSource();
     }
   }
-  else if (flag == ANNOUNCEMENT::GUI && sender == "xbmc" && message == "OnScreensaverActivated" && m_bIsReady)
+  else if (flag == ANNOUNCEMENT::GUI && sender == "xbmc" && message == "OnScreensaverActivated" &&
+           m_bIsReady)
   {
     // Don't put devices to standby if application is currently playing
     if (!g_application.GetAppPlayer().IsPlaying() && m_bPowerOffScreensaver)
@@ -185,7 +189,8 @@ void CPeripheralCecAdapter::Announce(ANNOUNCEMENT::AnnouncementFlag flag, const 
     m_preventActivateSourceOnPlay = CDateTime::GetCurrentDateTime();
     m_bOnPlayReceived = false;
   }
-  else if (flag == ANNOUNCEMENT::Player && sender == "xbmc" && (message == "OnPlay") || message == "OnResume"))
+  else if (flag == ANNOUNCEMENT::Player && sender == "xbmc" && (message == "OnPlay") ||
+           message == "OnResume"))
   {
     // activate the source when playback started, and the option is enabled
     bool bActivateSource(false);

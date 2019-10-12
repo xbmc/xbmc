@@ -1007,7 +1007,10 @@ int CPeripherals::GetMessageMask()
   return TMSG_MASK_PERIPHERALS;
 }
 
-void CPeripherals::Announce(ANNOUNCEMENT::AnnouncementFlag flag, const std::string& sender, const std::string& message, const CVariant &data)
+void CPeripherals::Announce(ANNOUNCEMENT::AnnouncementFlag flag,
+                            const std::string& sender,
+                            const std::string& message,
+                            const CVariant& data)
 {
   if (flag == ANNOUNCEMENT::Player && sender == "xbmc")
   {

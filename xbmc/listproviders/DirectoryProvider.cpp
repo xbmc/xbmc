@@ -222,7 +222,10 @@ bool CDirectoryProvider::Update(bool forceRefresh)
   return changed; //! @todo Also returned changed if properties are changed (if so, need to update scroll to letter).
 }
 
-void CDirectoryProvider::Announce(ANNOUNCEMENT::AnnouncementFlag flag, const std::string& sender, const std::string& message, const CVariant &data)
+void CDirectoryProvider::Announce(ANNOUNCEMENT::AnnouncementFlag flag,
+                                  const std::string& sender,
+                                  const std::string& message,
+                                  const CVariant& data)
 {
   // we are only interested in library, player and GUI changes
   if ((flag & (ANNOUNCEMENT::VideoLibrary | ANNOUNCEMENT::AudioLibrary | ANNOUNCEMENT::Player | ANNOUNCEMENT::GUI)) == 0)
@@ -240,9 +243,7 @@ void CDirectoryProvider::Announce(ANNOUNCEMENT::AnnouncementFlag flag, const std
 
     if (flag & ANNOUNCEMENT::Player)
     {
-      if (message == "OnPlay" ||
-          message == "OnResume" ||
-          message == "OnStop")
+      if (message == "OnPlay" || message == "OnResume" || message == "OnStop")
       {
         if (m_currentSort.sortBy == SortByNone || // not nice, but many directories that need to be refreshed on start/stop have no special sort order (e.g. in progress movies)
             m_currentSort.sortBy == SortByLastPlayed ||
@@ -259,11 +260,8 @@ void CDirectoryProvider::Announce(ANNOUNCEMENT::AnnouncementFlag flag, const std
 
       // if there was a database update, we set the update state
       // to PENDING to fire off a new job in the next update
-      if (message == "OnScanFinished" ||
-          message == "OnCleanFinished" ||
-          message == "OnUpdate" ||
-          message == "OnRemove" ||
-          message == "OnRefresh")
+      if (message == "OnScanFinished" || message == "OnCleanFinished" || message == "OnUpdate" ||
+          message == "OnRemove" || message == "OnRefresh")
         m_updateState = INVALIDATED;
     }
   }

@@ -72,6 +72,9 @@ namespace ANNOUNCEMENT
   public:
     IAnnouncer() = default;
     virtual ~IAnnouncer() = default;
-    virtual void Announce(AnnouncementFlag flag, const std::string& sender, const std::string& message, const CVariant &data) = 0;
+    virtual void Announce(AnnouncementFlag flag,
+                          const std::string& sender,
+                          const std::string& message,
+                          const CVariant& data) = 0;
   };
 }

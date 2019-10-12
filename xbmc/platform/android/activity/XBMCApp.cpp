@@ -167,7 +167,10 @@ CXBMCApp::~CXBMCApp()
   delete m_wakeLock;
 }
 
-void CXBMCApp::Announce(ANNOUNCEMENT::AnnouncementFlag flag, const std::string& sender, const std::string& message, const CVariant &data)
+void CXBMCApp::Announce(ANNOUNCEMENT::AnnouncementFlag flag,
+                        const std::string& sender,
+                        const std::string& message,
+                        const CVariant& data)
 {
   if (sender != "xbmc")
     return;
@@ -194,7 +197,7 @@ void CXBMCApp::Announce(ANNOUNCEMENT::AnnouncementFlag flag, const std::string& 
   }
   else if (flag & Info)
   {
-     if (message == "OnChanged")
+    if (message == "OnChanged")
       UpdateSessionMetadata();
   }
 }
