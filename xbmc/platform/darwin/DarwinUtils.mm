@@ -469,6 +469,13 @@ bool CDarwinUtils::IsIosSandboxed(void)
       {
         ret = 1;
       }
+
+      // since iOS 13
+      if (strlen("/private/var/containers/Bundle/") < path_size &&
+        strncmp(given_path, "/private/var/containers/Bundle/", strlen("/private/var/containers/Bundle/")) == 0)
+      {
+        ret = 1;
+      }
     }
   }
   return ret == 1;
