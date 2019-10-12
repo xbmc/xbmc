@@ -225,12 +225,19 @@ void CVAAPIContext::DestroyContext()
 {
   delete[] m_profiles;
   if (m_display)
-    CheckSuccess(vaTerminate(m_display), "vaTerminate");
-
+  {
+    if (CheckSuccess(vaTerminate(m_display), "vaTerminate"))
+    {
+      m_display = NULL;
+    }
+    else
+    {
 #if VA_CHECK_VERSION(1, 0, 0)
-  vaSetErrorCallback(m_display, nullptr, nullptr);
-  vaSetInfoCallback(m_display, nullptr, nullptr);
+      vaSetErrorCallback(m_display, nullptr, nullptr);
+      vaSetInfoCallback(m_display, nullptr, nullptr);
 #endif
+    }
+  }
 }
 
 void CVAAPIContext::QueryCaps()
