@@ -426,7 +426,7 @@ void CProfileManager::FinalizeLoadProfile()
   // if the user interfaces has been fully initialized let everyone know
   if (uiInitializationFinished)
   {
-    CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UI_READY);
+    CGUIMessage msg(GUI_MSG_NOTIFY_ALL, WINDOW_SETTINGS_PROFILES, 0, GUI_MSG_UI_READY);
     CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg);
   }
 }
