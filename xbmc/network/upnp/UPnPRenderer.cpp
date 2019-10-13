@@ -230,9 +230,9 @@ CUPnPRenderer::ProcessHttpGetRequest(NPT_HttpRequest&              request,
 |   CUPnPRenderer::Announce
 +---------------------------------------------------------------------*/
 void
-CUPnPRenderer::Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data)
+CUPnPRenderer::Announce(ANNOUNCEMENT::AnnouncementFlag flag, const std::string& sender, const std::string& message, const CVariant &data)
 {
-    if (strcmp(sender, "xbmc") != 0)
+    if (sender != "xbmc")
       return;
 
     NPT_AutoLock lock(m_state);
@@ -241,7 +241,7 @@ CUPnPRenderer::Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender,
     if (flag == ANNOUNCEMENT::Player) {
         if (NPT_FAILED(FindServiceByType("urn:schemas-upnp-org:service:AVTransport:1", avt)))
             return;
-        if (strcmp(message, "OnPlay") == 0 || strcmp(message, "OnResume") == 0 ) {
+        if (message == "OnPlay" || message == "OnResume") {
             avt->SetStateVariable("AVTransportURI", g_application.CurrentFile().c_str());
             avt->SetStateVariable("CurrentTrackURI", g_application.CurrentFile().c_str());
 
@@ -258,16 +258,16 @@ CUPnPRenderer::Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender,
             avt->SetStateVariable("NextAVTransportURI", "");
             avt->SetStateVariable("NextAVTransportURIMetaData", "");
         }
-        else if (strcmp(message, "OnPause") == 0) {
+        else if (message == "OnPause") {
             int64_t speed = data["player"]["speed"].asInteger();
             avt->SetStateVariable("TransportPlaySpeed", NPT_String::FromInteger(speed != 0 ? speed : 1));
             avt->SetStateVariable("TransportState", "PAUSED_PLAYBACK");
         }
-        else if (strcmp(message, "OnSpeedChanged") == 0) {
+        else if (message == "OnSpeedChanged") {
             avt->SetStateVariable("TransportPlaySpeed", NPT_String::FromInteger(data["player"]["speed"].asInteger()));
         }
     }
-    else if (flag == ANNOUNCEMENT::Application && strcmp(message, "OnVolumeChanged") == 0) {
+    else if (flag == ANNOUNCEMENT::Application && message == "OnVolumeChanged") {
         if (NPT_FAILED(FindServiceByType("urn:schemas-upnp-org:service:RenderingControl:1", rct)))
             return;
 

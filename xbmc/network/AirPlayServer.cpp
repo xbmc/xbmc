@@ -150,13 +150,13 @@ const char *eventStrings[] = {"playing", "paused", "loading", "stopped"};
 #define AUTH_REALM "AirPlay"
 #define AUTH_REQUIRED "WWW-Authenticate: Digest realm=\""  AUTH_REALM  "\", nonce=\"%s\"\r\n"
 
-void CAirPlayServer::Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data)
+void CAirPlayServer::Announce(ANNOUNCEMENT::AnnouncementFlag flag, const std::string& sender, const std::string& message, const CVariant &data)
 {
   CSingleLock lock(ServerInstanceLock);
 
-  if ( (flag & ANNOUNCEMENT::Player) && strcmp(sender, "xbmc") == 0 && ServerInstance)
+  if ( (flag & ANNOUNCEMENT::Player) && sender == "xbmc" && ServerInstance)
   {
-    if (strcmp(message, "OnStop") == 0)
+    if (message == "OnStop")
     {
       bool shouldRestoreVolume = true;
       if (data.isMember("player") && data["player"].isMember("playerid"))
@@ -167,11 +167,11 @@ void CAirPlayServer::Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char *s
 
       ServerInstance->AnnounceToClients(EVENT_STOPPED);
     }
-    else if (strcmp(message, "OnPlay") == 0 || strcmp(message, "OnResume") == 0)
+    else if (message == "OnPlay" || message == "OnResume")
     {
       ServerInstance->AnnounceToClients(EVENT_PLAYING);
     }
-    else if (strcmp(message, "OnPause") == 0)
+    else if (message == "OnPause")
     {
       ServerInstance->AnnounceToClients(EVENT_PAUSED);
     }

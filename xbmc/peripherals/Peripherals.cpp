@@ -1007,14 +1007,11 @@ int CPeripherals::GetMessageMask()
   return TMSG_MASK_PERIPHERALS;
 }
 
-void CPeripherals::Announce(ANNOUNCEMENT::AnnouncementFlag flag,
-                            const char* sender,
-                            const char* message,
-                            const CVariant& data)
+void CPeripherals::Announce(ANNOUNCEMENT::AnnouncementFlag flag, const std::string& sender, const std::string& message, const CVariant &data)
 {
-  if (flag == ANNOUNCEMENT::Player && strcmp(sender, "xbmc") == 0)
+  if (flag == ANNOUNCEMENT::Player && sender == "xbmc")
   {
-    if (strcmp(message, "OnQuit") == 0)
+    if (message == "OnQuit")
     {
       if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
               CSettings::SETTING_INPUT_CONTROLLERPOWEROFF))

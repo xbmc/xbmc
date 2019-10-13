@@ -411,24 +411,24 @@ failure:
 |   CUPnPServer::Announce
 +---------------------------------------------------------------------*/
 void
-CUPnPServer::Announce(AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data)
+CUPnPServer::Announce(AnnouncementFlag flag, const std::string& sender, const std::string& message, const CVariant &data)
 {
     NPT_String path;
     int item_id;
     std::string item_type;
 
-    if (strcmp(sender, "xbmc"))
+    if (sender != "xbmc")
         return;
 
-    if (strcmp(message, "OnUpdate") && strcmp(message, "OnRemove")
-        && strcmp(message, "OnScanStarted") && strcmp(message, "OnScanFinished"))
+    if (message != "OnUpdate" && message != "OnRemove"
+        && message != "OnScanStarted" && message != "OnScanFinished")
         return;
 
     if (data.isNull()) {
-        if (!strcmp(message, "OnScanStarted") || !strcmp(message, "OnCleanStarted")) {
+        if (message == "OnScanStarted" || message == "OnCleanStarted") {
             m_scanning = true;
         }
-        else if (!strcmp(message, "OnScanFinished") || !strcmp(message, "OnCleanFinished")) {
+        else if (message == "OnScanFinished" || message == "OnCleanFinished") {
             OnScanCompleted(flag);
         }
     }

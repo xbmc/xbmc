@@ -78,8 +78,8 @@ id objectFromVariant(const CVariant& data)
 }
 
 void AnnounceBridge(ANNOUNCEMENT::AnnouncementFlag flag,
-                    const char* sender,
-                    const char* message,
+                    const std::string& sender,
+                    const std::string& message,
                     const CVariant& data)
 {
   int item_id = -1;
@@ -215,8 +215,8 @@ void CAnnounceReceiver::DeInitialize()
 }
 
 void CAnnounceReceiver::Announce(ANNOUNCEMENT::AnnouncementFlag flag,
-                                 const char* sender,
-                                 const char* message,
+                                 const std::string& sender,
+                                 const std::string& message,
                                  const CVariant& data)
 {
   // can be called from c++, we need an auto poll here.

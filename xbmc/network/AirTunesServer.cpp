@@ -161,11 +161,11 @@ void CAirTunesServer::SetMetadataFromBuffer(const char *buffer, unsigned int siz
   RefreshMetadata();
 }
 
-void CAirTunesServer::Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data)
+void CAirTunesServer::Announce(ANNOUNCEMENT::AnnouncementFlag flag, const std::string& sender, const std::string& message, const CVariant &data)
 {
-  if ( (flag & ANNOUNCEMENT::Player) && strcmp(sender, "xbmc") == 0)
+  if ( (flag & ANNOUNCEMENT::Player) && sender == "xbmc")
   {
-    if ((strcmp(message, "OnPlay") == 0 || strcmp(message, "OnResume") == 0) && m_streamStarted)
+    if ((message == "OnPlay" || message == "OnResume") && m_streamStarted)
     {
       RefreshMetadata();
       RefreshCoverArt();
@@ -174,14 +174,14 @@ void CAirTunesServer::Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char *
         m_pDACP->Play();
     }
 
-    if (strcmp(message, "OnStop") == 0 && m_streamStarted)
+    if (message == "OnStop" && m_streamStarted)
     {
       CSingleLock lock(m_dacpLock);
       if (m_pDACP)
         m_pDACP->Stop();
     }
 
-    if (strcmp(message, "OnPause") == 0 && m_streamStarted)
+    if (message == "OnPause" && m_streamStarted)
     {
       CSingleLock lock(m_dacpLock);
       if (m_pDACP)

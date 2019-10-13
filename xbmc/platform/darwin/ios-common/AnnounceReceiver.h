@@ -21,8 +21,8 @@ public:
   void DeInitialize();
 
   void Announce(ANNOUNCEMENT::AnnouncementFlag flag,
-                const char* sender,
-                const char* message,
+                const std::string& sender,
+                const std::string& message,
                 const CVariant& data) override;
 
 private:

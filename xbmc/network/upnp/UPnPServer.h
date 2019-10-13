@@ -31,7 +31,7 @@ class CUPnPServer : public PLT_MediaConnect,
 public:
     CUPnPServer(const char* friendly_name, const char* uuid = NULL, int port = 0);
     ~CUPnPServer() override;
-    void Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data) override;
+    void Announce(ANNOUNCEMENT::AnnouncementFlag flag, const std::string& sender, const std::string& message, const CVariant &data) override;
 
     // PLT_MediaServer methods
     NPT_Result OnBrowseMetadata(PLT_ActionReference&          action,

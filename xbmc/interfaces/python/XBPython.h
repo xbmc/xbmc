@@ -69,10 +69,7 @@ public:
   void OnPlayBackSeekChapter(int iChapter) override;
   void OnQueueNextItem() override;
 
-  void Announce(ANNOUNCEMENT::AnnouncementFlag flag,
-                const char* sender,
-                const char* message,
-                const CVariant& data) override;
+  void Announce(ANNOUNCEMENT::AnnouncementFlag flag, const std::string& sender, const std::string& message, const CVariant &data) override;
   void RegisterPythonPlayerCallBack(IPlayerCallback* pCallback);
   void UnregisterPythonPlayerCallBack(IPlayerCallback* pCallback);
   void RegisterPythonMonitorCallBack(XBMCAddon::xbmc::Monitor* pCallback);
