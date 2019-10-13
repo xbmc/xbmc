@@ -377,5 +377,9 @@ namespace PythonBindings
     return typeInfoLookup[ti];
   }
 
+  int dummy_tp_init(PyObject* self, PyObject* args, PyObject* kwds)
+  {
+    return 0;
+  }
 }
 
