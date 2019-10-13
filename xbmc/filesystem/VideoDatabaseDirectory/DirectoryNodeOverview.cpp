@@ -29,8 +29,8 @@ Node OverviewChildren[] = {
                             { NODE_TYPE_INPROGRESS_TVSHOWS,         "inprogresstvshows",        626 },
                           };
 
-CDirectoryNodeOverview::CDirectoryNodeOverview(const std::string& strName, CDirectoryNode* pParent)
-  : CDirectoryNode(NODE_TYPE_OVERVIEW, strName, pParent)
+CDirectoryNodeOverview::CDirectoryNodeOverview(const std::string& strName, CDirectoryNode* pParent, const std::string& strOrigin)
+  : CDirectoryNode(NODE_TYPE_OVERVIEW, strName, pParent, strOrigin)
 {
 
 }

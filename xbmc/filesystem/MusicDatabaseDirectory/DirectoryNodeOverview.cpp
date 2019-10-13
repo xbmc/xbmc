@@ -36,8 +36,8 @@ namespace XFILE
 
 using namespace XFILE::MUSICDATABASEDIRECTORY;
 
-CDirectoryNodeOverview::CDirectoryNodeOverview(const std::string& strName, CDirectoryNode* pParent)
-  : CDirectoryNode(NODE_TYPE_OVERVIEW, strName, pParent)
+CDirectoryNodeOverview::CDirectoryNodeOverview(const std::string& strName, CDirectoryNode* pParent, const std::string& strOrigin)
+  : CDirectoryNode(NODE_TYPE_OVERVIEW, strName, pParent, strOrigin)
 {
 
 }

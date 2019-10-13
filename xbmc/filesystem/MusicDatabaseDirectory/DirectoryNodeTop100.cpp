@@ -19,8 +19,8 @@ Node Top100Children[] = {
                           { NODE_TYPE_ALBUM_TOP100, "albums",  10505 },
                         };
 
-CDirectoryNodeTop100::CDirectoryNodeTop100(const std::string& strName, CDirectoryNode* pParent)
-  : CDirectoryNode(NODE_TYPE_TOP100, strName, pParent)
+CDirectoryNodeTop100::CDirectoryNodeTop100(const std::string& strName, CDirectoryNode* pParent, const std::string& strOrigin)
+  : CDirectoryNode(NODE_TYPE_TOP100, strName, pParent, strOrigin)
 {
 
 }

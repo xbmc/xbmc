@@ -17,7 +17,7 @@ namespace XFILE
     class CDirectoryNodeSingles : public CDirectoryNode
     {
     public:
-      CDirectoryNodeSingles(const std::string& strName, CDirectoryNode* pParent);
+      CDirectoryNodeSingles(const std::string& strName, CDirectoryNode* pParent, const std::string& strOrigin);
     protected:
       bool GetContent(CFileItemList& items) const override;
     };

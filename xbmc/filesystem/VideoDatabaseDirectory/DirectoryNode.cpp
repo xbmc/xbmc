@@ -32,11 +32,11 @@
 using namespace XFILE::VIDEODATABASEDIRECTORY;
 
 //  Constructor is protected use ParseURL()
-CDirectoryNode::CDirectoryNode(NODE_TYPE Type, const std::string& strName, CDirectoryNode* pParent)
+CDirectoryNode::CDirectoryNode(NODE_TYPE Type,
+                               const std::string& strName,
+                               CDirectoryNode* pParent,
+                               const std::string& strOrigin) : m_Type(Type), m_strName(strName), m_pParent(pParent), m_origin(strOrigin)
 {
-  m_Type = Type;
-  m_strName = strName;
-  m_pParent = pParent;
 }
 
 CDirectoryNode::~CDirectoryNode()
@@ -63,7 +63,7 @@ CDirectoryNode* CDirectoryNode::ParseURL(const std::string& strPath)
   // if we hit a child type of NODE_TYPE_NONE, then we are done.
   for (size_t i = 0; i < Path.size() && NodeType != NODE_TYPE_NONE; ++i)
   {
-    pNode = CDirectoryNode::CreateNode(NodeType, Path[i], pParent);
+    pNode = CDirectoryNode::CreateNode(NodeType, Path[i], pParent, url.GetProtocol());
     NodeType = pNode ? pNode->GetChildType() : NODE_TYPE_NONE;
     pParent = pNode;
   }
@@ -87,14 +87,14 @@ void CDirectoryNode::GetDatabaseInfo(const std::string& strPath, CQueryParams& p
 }
 
 //  Create a node object
-CDirectoryNode* CDirectoryNode::CreateNode(NODE_TYPE Type, const std::string& strName, CDirectoryNode* pParent)
+CDirectoryNode* CDirectoryNode::CreateNode(NODE_TYPE Type, const std::string& strName, CDirectoryNode* pParent, const std::string& strOrigin)
 {
   switch (Type)
   {
   case NODE_TYPE_ROOT:
-    return new CDirectoryNodeRoot(strName, pParent);
+    return new CDirectoryNodeRoot(strName, pParent, strOrigin);
   case NODE_TYPE_OVERVIEW:
-    return new CDirectoryNodeOverview(strName, pParent);
+    return new CDirectoryNodeOverview(strName, pParent, strOrigin);
   case NODE_TYPE_GENRE:
   case NODE_TYPE_COUNTRY:
   case NODE_TYPE_SETS:
@@ -104,31 +104,31 @@ CDirectoryNode* CDirectoryNode::CreateNode(NODE_TYPE Type, const std::string& st
   case NODE_TYPE_DIRECTOR:
   case NODE_TYPE_STUDIO:
   case NODE_TYPE_MUSICVIDEOS_ALBUM:
-    return new CDirectoryNodeGrouped(Type, strName, pParent);
+    return new CDirectoryNodeGrouped(Type, strName, pParent, strOrigin);
   case NODE_TYPE_TITLE_MOVIES:
-    return new CDirectoryNodeTitleMovies(strName, pParent);
+    return new CDirectoryNodeTitleMovies(strName, pParent, strOrigin);
   case NODE_TYPE_TITLE_TVSHOWS:
-    return new CDirectoryNodeTitleTvShows(strName, pParent);
+    return new CDirectoryNodeTitleTvShows(strName, pParent, strOrigin);
   case NODE_TYPE_MOVIES_OVERVIEW:
-    return new CDirectoryNodeMoviesOverview(strName, pParent);
+    return new CDirectoryNodeMoviesOverview(strName, pParent, strOrigin);
   case NODE_TYPE_TVSHOWS_OVERVIEW:
-    return new CDirectoryNodeTvShowsOverview(strName, pParent);
+    return new CDirectoryNodeTvShowsOverview(strName, pParent, strOrigin);
   case NODE_TYPE_SEASONS:
-    return new CDirectoryNodeSeasons(strName, pParent);
+    return new CDirectoryNodeSeasons(strName, pParent, strOrigin);
   case NODE_TYPE_EPISODES:
-    return new CDirectoryNodeEpisodes(strName, pParent);
+    return new CDirectoryNodeEpisodes(strName, pParent, strOrigin);
   case NODE_TYPE_RECENTLY_ADDED_MOVIES:
-    return new CDirectoryNodeRecentlyAddedMovies(strName,pParent);
+    return new CDirectoryNodeRecentlyAddedMovies(strName, pParent, strOrigin);
   case NODE_TYPE_RECENTLY_ADDED_EPISODES:
-    return new CDirectoryNodeRecentlyAddedEpisodes(strName,pParent);
+    return new CDirectoryNodeRecentlyAddedEpisodes(strName, pParent, strOrigin);
   case NODE_TYPE_MUSICVIDEOS_OVERVIEW:
-    return new CDirectoryNodeMusicVideosOverview(strName,pParent);
+    return new CDirectoryNodeMusicVideosOverview(strName, pParent, strOrigin);
   case NODE_TYPE_RECENTLY_ADDED_MUSICVIDEOS:
-    return new CDirectoryNodeRecentlyAddedMusicVideos(strName,pParent);
+    return new CDirectoryNodeRecentlyAddedMusicVideos(strName, pParent, strOrigin);
   case NODE_TYPE_INPROGRESS_TVSHOWS:
-    return new CDirectoryNodeInProgressTvShows(strName,pParent);
+    return new CDirectoryNodeInProgressTvShows(strName, pParent, strOrigin);
   case NODE_TYPE_TITLE_MUSICVIDEOS:
-    return new CDirectoryNodeTitleMusicVideos(strName,pParent);
+    return new CDirectoryNodeTitleMusicVideos(strName, pParent, strOrigin);
   default:
     break;
   }
@@ -242,7 +242,7 @@ bool CDirectoryNode::GetChilds(CFileItemList& items)
   if (CanCache() && items.Load())
     return true;
 
-  std::unique_ptr<CDirectoryNode> pNode(CDirectoryNode::CreateNode(GetChildType(), "", this));
+  std::unique_ptr<CDirectoryNode> pNode(CDirectoryNode::CreateNode(GetChildType(), "", this, m_origin));
 
   bool bSuccess=false;
   if (pNode)

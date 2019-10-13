@@ -13,8 +13,8 @@
 
 using namespace XFILE::VIDEODATABASEDIRECTORY;
 
-CDirectoryNodeTitleTvShows::CDirectoryNodeTitleTvShows(const std::string& strName, CDirectoryNode* pParent)
-  : CDirectoryNode(NODE_TYPE_TITLE_TVSHOWS, strName, pParent)
+CDirectoryNodeTitleTvShows::CDirectoryNodeTitleTvShows(const std::string& strName, CDirectoryNode* pParent, const std::string& strOrigin)
+  : CDirectoryNode(NODE_TYPE_TITLE_TVSHOWS, strName, pParent, strOrigin)
 {
 
 }

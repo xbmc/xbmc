@@ -12,8 +12,8 @@
 
 using namespace XFILE::MUSICDATABASEDIRECTORY;
 
-CDirectoryNodeAlbumTop100Song::CDirectoryNodeAlbumTop100Song(const std::string& strName, CDirectoryNode* pParent)
-  : CDirectoryNode(NODE_TYPE_ALBUM_TOP100_SONGS, strName, pParent)
+CDirectoryNodeAlbumTop100Song::CDirectoryNodeAlbumTop100Song(const std::string& strName, CDirectoryNode* pParent, const std::string& strOrigin)
+  : CDirectoryNode(NODE_TYPE_ALBUM_TOP100_SONGS, strName, pParent, strOrigin)
 {
 
 }

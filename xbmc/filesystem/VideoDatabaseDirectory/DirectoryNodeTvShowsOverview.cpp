@@ -24,8 +24,8 @@ Node TvShowChildren[] = {
                           { NODE_TYPE_TAGS,          "tags",     20459 }
                         };
 
-CDirectoryNodeTvShowsOverview::CDirectoryNodeTvShowsOverview(const std::string& strName, CDirectoryNode* pParent)
-  : CDirectoryNode(NODE_TYPE_TVSHOWS_OVERVIEW, strName, pParent)
+CDirectoryNodeTvShowsOverview::CDirectoryNodeTvShowsOverview(const std::string& strName, CDirectoryNode* pParent, const std::string& strOrigin)
+  : CDirectoryNode(NODE_TYPE_TVSHOWS_OVERVIEW, strName, pParent, strOrigin)
 {
 
 }

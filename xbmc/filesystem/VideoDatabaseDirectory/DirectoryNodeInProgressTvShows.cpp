@@ -12,8 +12,8 @@
 
 using namespace XFILE::VIDEODATABASEDIRECTORY;
 
-CDirectoryNodeInProgressTvShows::CDirectoryNodeInProgressTvShows(const std::string& strName, CDirectoryNode* pParent)
-  : CDirectoryNode(NODE_TYPE_INPROGRESS_TVSHOWS, strName, pParent)
+CDirectoryNodeInProgressTvShows::CDirectoryNodeInProgressTvShows(const std::string& strName, CDirectoryNode* pParent, const std::string& strOrigin)
+  : CDirectoryNode(NODE_TYPE_INPROGRESS_TVSHOWS, strName, pParent, strOrigin)
 {
 
 }

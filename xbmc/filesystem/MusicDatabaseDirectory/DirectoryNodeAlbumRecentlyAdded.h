@@ -17,7 +17,7 @@ namespace XFILE
     class CDirectoryNodeAlbumRecentlyAdded : public CDirectoryNode
     {
     public:
-      CDirectoryNodeAlbumRecentlyAdded(const std::string& strName, CDirectoryNode* pParent);
+      CDirectoryNodeAlbumRecentlyAdded(const std::string& strName, CDirectoryNode* pParent, const std::string& strOrigin);
     protected:
       NODE_TYPE GetChildType() const override;
       bool GetContent(CFileItemList& items) const override;

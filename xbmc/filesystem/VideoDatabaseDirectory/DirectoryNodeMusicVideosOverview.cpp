@@ -26,8 +26,8 @@ Node MusicVideoChildren[] = {
                               { NODE_TYPE_TAGS,              "tags",      20459 }
                             };
 
-CDirectoryNodeMusicVideosOverview::CDirectoryNodeMusicVideosOverview(const std::string& strName, CDirectoryNode* pParent)
-  : CDirectoryNode(NODE_TYPE_MUSICVIDEOS_OVERVIEW, strName, pParent)
+CDirectoryNodeMusicVideosOverview::CDirectoryNodeMusicVideosOverview(const std::string& strName, CDirectoryNode* pParent, const std::string& strOrigin)
+  : CDirectoryNode(NODE_TYPE_MUSICVIDEOS_OVERVIEW, strName, pParent, strOrigin)
 {
 
 }

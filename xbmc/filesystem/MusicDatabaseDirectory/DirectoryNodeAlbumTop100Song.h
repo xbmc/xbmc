@@ -17,7 +17,7 @@ namespace XFILE
     class CDirectoryNodeAlbumTop100Song : public CDirectoryNode
     {
     public:
-      CDirectoryNodeAlbumTop100Song(const std::string& strName, CDirectoryNode* pParent);
+      CDirectoryNodeAlbumTop100Song(const std::string& strName, CDirectoryNode* pParent, const std::string& strOrigin);
     protected:
       bool GetContent(CFileItemList& items) const override;
     };

@@ -17,7 +17,7 @@ namespace XFILE
     class CDirectoryNodeGrouped : public CDirectoryNode
     {
     public:
-      CDirectoryNodeGrouped(NODE_TYPE type, const std::string& strName, CDirectoryNode* pParent);
+      CDirectoryNodeGrouped(NODE_TYPE type, const std::string& strName, CDirectoryNode* pParent, const std::string& strOrigin);
     protected:
       NODE_TYPE GetChildType() const override;
       bool GetContent(CFileItemList& items) const override;
