@@ -89,6 +89,11 @@
 							<height>32</height>
 							<texture>$VAR[WallWatchedIconVar]</texture>
 						</control>
+						<control type="group">
+							<left>158</left>
+							<top>92</top>
+							<include condition="Skin.HasSetting(circle_rating) | Skin.HasSetting(circle_userrating)">RatingCircle</include>
+						</control>
 					</itemlayout>
 					<focusedlayout width="370">
 						<control type="image">
@@ -118,6 +123,11 @@
 							<width>32</width>
 							<height>32</height>
 							<texture>$VAR[WallWatchedIconVar]</texture>
+						</control>
+						<control type="group">
+							<left>158</left>
+							<top>92</top>
+							<include condition="Skin.HasSetting(circle_rating) | Skin.HasSetting(circle_userrating)">RatingCircle</include>
 						</control>
 					</focusedlayout>
 				</control>
