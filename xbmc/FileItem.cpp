@@ -2696,6 +2696,7 @@ void CFileItemList::StackFolders()
           {
             // NOTE: should this be done for the CD# folders too?
             item->m_bIsFolder = false;
+            item->SetLabel(CUtil::GetTitleFromPath(GetPath(), true));
             item->SetPath(dvdPath);
             item->SetLabel2("");
             item->SetLabelPreformatted(true);
