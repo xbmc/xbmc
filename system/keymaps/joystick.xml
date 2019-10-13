@@ -49,6 +49,7 @@
       <x>ContextMenu</x>
       <y>FullScreen</y>
       <start>ActivateWindow(PlayerControls)</start>
+      <back>ActivateWindow(Home)</back>
       <guide>ActivateWindow(Home)</guide>
       <up>Up</up>
       <down>Down</down>
@@ -96,7 +97,7 @@
       <x>OSD</x>
       <y>FullScreen</y>
       <start>Info</start>
-      <back>OSD</back>
+      <back>FullScreen</back>
       <guide>OSD</guide>
       <up>ChapterOrBigStepForward</up>
       <down>ChapterOrBigStepBack</down>
