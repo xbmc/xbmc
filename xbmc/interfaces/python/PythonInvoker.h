@@ -9,8 +9,6 @@
 #pragma once
 
 #include "interfaces/generic/ILanguageInvoker.h"
-#include "interfaces/legacy/Addon.h"
-#include "interfaces/python/LanguageHook.h"
 #include "threads/CriticalSection.h"
 #include "threads/Event.h"
 
@@ -18,7 +16,7 @@
 #include <string>
 #include <vector>
 
-struct _ts;
+typedef struct _object PyObject;
 
 class CPythonInvoker : public ILanguageInvoker
 {
@@ -30,19 +28,18 @@ public:
 
   bool IsStopping() const override { return m_stop || ILanguageInvoker::IsStopping(); }
 
-  typedef void (*PythonModuleInitialization)();
+  typedef PyObject* (*PythonModuleInitialization)();
 
 protected:
   // implementation of ILanguageInvoker
   bool execute(const std::string &script, const std::vector<std::string> &arguments) override;
-  virtual void executeScript(void *fp, const std::string &script, void *module, void *moduleDict);
+  virtual void executeScript(FILE* fp, const std::string& script, PyObject* moduleDict);
   bool stop(bool abort) override;
-  void onExecutionDone() override;
   void onExecutionFailed() override;
 
   // custom virtual methods
-  virtual std::map<std::string, PythonModuleInitialization> getModules() const;
-  virtual const char* getInitializationScript() const;
+  virtual std::map<std::string, PythonModuleInitialization> getModules() const = 0;
+  virtual const char* getInitializationScript() const = 0;
   virtual void onInitialization();
   // actually a PyObject* but don't wanna draw Python.h include into the header
   virtual void onPythonModuleInitialization(void* moduleDict);
@@ -59,16 +56,14 @@ private:
   void initializeModules(const std::map<std::string, PythonModuleInitialization> &modules);
   bool initializeModule(PythonModuleInitialization module);
   void addPath(const std::string& path); // add path in UTF-8 encoding
-  void addNativePath(const std::string& path); // add path in system/Python encoding
   void getAddonModuleDeps(const ADDON::AddonPtr& addon, std::set<std::string>& paths);
+  bool execute(const std::string& script, const std::vector<std::wstring>& arguments);
+  FILE* PyFile_AsFileWithMode(PyObject* py_file, const char* mode);
 
   std::string m_pythonPath;
-  _ts *m_threadState;
+  void* m_threadState;
   bool m_stop;
   CEvent m_stoppedEvent;
-
-  XBMCAddon::AddonClass::Ref<XBMCAddon::Python::PythonLanguageHook> m_languageHook;
-  bool m_systemExitThrown = false;
 
   static CCriticalSection s_critical;
 };

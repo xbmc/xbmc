@@ -124,7 +124,7 @@ namespace XBMCAddon
       // from the global dictionary
       PyObject* pyid = PyDict_GetItemString(global_dict, "__xbmcaddonid__");
       if (pyid)
-        return PyString_AsString(pyid);
+        return PyUnicode_AsUTF8(pyid);
       return "";
     }
 
@@ -139,7 +139,7 @@ namespace XBMCAddon
       // from the global dictionary
       PyObject* pyversion = PyDict_GetItemString(global_dict, "__xbmcapiversion__");
       if (pyversion)
-        return PyString_AsString(pyversion);
+        return PyUnicode_AsUTF8(pyversion);
       return "";
     }
 

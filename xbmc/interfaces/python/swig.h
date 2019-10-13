@@ -146,6 +146,8 @@ namespace PythonBindings
   void registerAddonClassTypeInformation(const TypeInfo* classInfo);
   const TypeInfo* getTypeInfoForInstance(XBMCAddon::AddonClass* obj);
 
+  int dummy_tp_init(PyObject* self, PyObject* args, PyObject* kwds);
+
   class Director
   {
   protected:

@@ -17,7 +17,7 @@
       bool isTuple = PyObject_TypeCheck(${slarg},&PyTuple_Type);
       if (!isTuple && !PyObject_TypeCheck(${slarg},&PyList_Type))
         throw WrongTypeException("The parameter \"${api}\" must be either a Tuple or a List.");
-      auto vecSize = (isTuple ? PyTuple_Size(${slarg}) : PyList_Size(${slarg}));
+      Py_ssize_t vecSize = (isTuple ? PyTuple_Size(${slarg}) : PyList_Size(${slarg}));
 <%
       types.eachWithIndex { curType, entryIndex ->
 %>

@@ -34,7 +34,7 @@ LIBGCRYPT_CONFIG=@prefix@/@deps_dir@/bin/libgcrypt-config
 PATH=@prefix@/@tool_dir@/bin:@use_toolchain@/usr/bin:@use_toolchain@/bin:$PATH
 LD_LIBRARY_PATH=@prefix@/@tool_dir@/lib:$LD_LIBRARY_PATH
 
-PYTHON_VERSION=2.7
+PYTHON_VERSION=3.7
 PYTHON_LDFLAGS="-L@prefix@/@deps_dir@/lib -L@prefix@/@deps_dir@/lib64 -lpython${PYTHON_VERSION} -lc -ldl -lm -lexpat -lffi -lintl -lutil -lssl -lcrypto"
 PYTHON_CPPFLAGS=-I@prefix@/@deps_dir@/include/python${PYTHON_VERSION}
 PYTHON_SITE_PKG=@prefix@/@deps_dir@/lib/python${PYTHON_VERSION}/site-packages
@@ -142,7 +142,9 @@ if test "@platform_os@" = "osx" ; then
   # in 10.12 but will get wrongly detected if building on 10.11
   ac_cv_search_clock_gettime=no
   ac_cv_func_clock_gettime=no
+  ac_cv_func_futimens=no
   ac_cv_func_getentropy=no
+  ac_cv_func_utimensat=no
 fi
 
 
@@ -151,7 +153,10 @@ if test "@platform_os@" = "darwin_embedded"; then
   # in 10.12 but will get wrongly detected if building on 10.11
   ac_cv_search_clock_gettime=no
   ac_cv_func_clock_gettime=no
+  ac_cv_func_clock_settime=no
+  ac_cv_func_futimens=no
   ac_cv_func_getentropy=no
+  ac_cv_func_utimensat=no
 
   # tweaks for libffi
   if test "${PACKAGE_NAME}" = "libffi" ; then
@@ -166,6 +171,11 @@ if test "@platform_os@" = "darwin_embedded"; then
     export CFLAGS=`echo ${CFLAGS} | sed 's/-O3/-Os/'`
     export CPPFLAGS=`echo ${CPPFLAGS} | sed 's/-O3/-Os/'`
   fi
+fi
+
+# Python3 build for appletvos
+if test "@target_platform@" = "appletvos"; then
+  ac_cv_func_sigaltstack=no
 fi
 
 #Fix for older, broken android toolchains

@@ -10,12 +10,11 @@
 
 #include "ScriptInvocationManager.h"
 
-CLanguageInvokerThread::CLanguageInvokerThread(LanguageInvokerPtr invoker, CScriptInvocationManager *invocationManager, bool reuseable)
+CLanguageInvokerThread::CLanguageInvokerThread(LanguageInvokerPtr invoker, CScriptInvocationManager* invocationManager)
   : ILanguageInvoker(NULL),
     CThread("LanguageInvoker"),
     m_invoker(invoker),
-    m_invocationManager(invocationManager),
-    m_reusable(reuseable)
+    m_invocationManager(invocationManager)
 { }
 
 CLanguageInvokerThread::~CLanguageInvokerThread()
@@ -23,18 +22,12 @@ CLanguageInvokerThread::~CLanguageInvokerThread()
   Stop(true);
 }
 
-InvokerState CLanguageInvokerThread::GetState() const
+InvokerState CLanguageInvokerThread::GetState()
 {
   if (m_invoker == NULL)
     return InvokerStateFailed;
 
   return m_invoker->GetState();
-}
-
-void CLanguageInvokerThread::Release()
-{
-  m_bStop = true;
-  m_condition.notify_one();
 }
 
 bool CLanguageInvokerThread::execute(const std::string &script, const std::vector<std::string> &arguments)
@@ -45,17 +38,7 @@ bool CLanguageInvokerThread::execute(const std::string &script, const std::vecto
   m_script = script;
   m_args = arguments;
 
-  if (CThread::IsRunning())
-  {
-    std::unique_lock<std::mutex> lck(m_mutex);
-    m_restart = true;
-    m_condition.notify_one();
-  }
-  else
-    Create();
-
-  //Todo wait until running
-
+  Create();
   return true;
 }
 
@@ -67,16 +50,14 @@ bool CLanguageInvokerThread::stop(bool wait)
   if (!CThread::IsRunning())
     return false;
 
-  Release();
-
   bool result = true;
-  if (m_invoker->GetState() < InvokerStateExecutionDone)
+  if (m_invoker->GetState() < InvokerStateDone)
   {
     // stop the language-specific invoker
     result = m_invoker->Stop(wait);
+    // stop the thread
+    CThread::StopThread(wait);
   }
-  // stop the thread
-  CThread::StopThread(wait);
 
   return result;
 }
@@ -96,17 +77,7 @@ void CLanguageInvokerThread::Process()
   if (m_invoker == NULL)
     return;
 
-  std::unique_lock<std::mutex> lckdl(m_mutex);
-  do {
-    m_restart = false;
-    m_invoker->Execute(m_script, m_args);
-
-    if (m_invoker->GetState() != InvokerStateScriptDone)
-      m_reusable = false;
-
-    m_condition.wait(lckdl, [this] {return m_bStop || m_restart || !m_reusable; });
-
-  } while (m_reusable && !m_bStop);
+  m_invoker->Execute(m_script, m_args);
 }
 
 void CLanguageInvokerThread::OnExit()
@@ -115,7 +86,7 @@ void CLanguageInvokerThread::OnExit()
     return;
 
   m_invoker->onExecutionDone();
-  m_invocationManager->OnExecutionDone(GetId());
+  m_invocationManager->OnScriptEnded(GetId());
 }
 
 void CLanguageInvokerThread::OnException()
@@ -124,5 +95,5 @@ void CLanguageInvokerThread::OnException()
     return;
 
   m_invoker->onExecutionFailed();
-  m_invocationManager->OnExecutionDone(GetId());
+  m_invocationManager->OnScriptEnded(GetId());
 }

@@ -22,6 +22,7 @@ add_custom_target(bundle
             "APP_NAME=${APP_NAME}"
             "FULL_PRODUCT_NAME=${APP_NAME}.app"
             "SRCROOT=${CMAKE_BINARY_DIR}"
+            "PYTHON_VERSION=${PYTHON_VERSION}"
             ${CMAKE_SOURCE_DIR}/tools/darwin/Support/copyframeworks-osx.command)
 set_target_properties(bundle PROPERTIES FOLDER "Build Utilities")
 add_dependencies(bundle ${APP_NAME_LC})
