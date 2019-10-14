@@ -553,7 +553,7 @@ void CGUIWindowVideoBase::AddItemToPlayList(const CFileItemPtr &pItem, CFileItem
     { // just queue the internet stream, it will be expanded on play
       queuedItems.Add(pItem);
     }
-    else if (pItem->IsPlugin() && pItem->GetProperty("isplayable") == "true")
+    else if (pItem->IsPlugin() && pItem->GetProperty("isplayable").asBoolean())
     { // a playable python files
       queuedItems.Add(pItem);
     }
