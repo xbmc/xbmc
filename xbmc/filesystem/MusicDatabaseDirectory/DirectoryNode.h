@@ -52,6 +52,7 @@ namespace XFILE
     public:
       static CDirectoryNode* ParseURL(const std::string& strPath);
       static void GetDatabaseInfo(const std::string& strPath, CQueryParams& params);
+      static bool GetNodeInfo(const std::string& strPath, NODE_TYPE& type, NODE_TYPE& childtype, CQueryParams& params);
       virtual ~CDirectoryNode();
 
       NODE_TYPE GetType() const;
