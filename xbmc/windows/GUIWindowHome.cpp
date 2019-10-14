@@ -64,7 +64,7 @@ void CGUIWindowHome::Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char *s
 {
   int ra_flag = 0;
 
-  CLog::Log(LOGDEBUG, "GOT ANNOUNCEMENT, type: %i, from %s, message %s",(int)flag, sender, message);
+  CLog::Log(LOGDEBUG, LOGANNOUNCE, "GOT ANNOUNCEMENT, type: {}, from {}, message {}", flag, sender, message);
 
   // we are only interested in library changes
   if ((flag & (ANNOUNCEMENT::VideoLibrary | ANNOUNCEMENT::AudioLibrary)) == 0)

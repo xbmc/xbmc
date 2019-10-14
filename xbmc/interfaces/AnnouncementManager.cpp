@@ -108,7 +108,7 @@ void CAnnouncementManager::Announce(AnnouncementFlag flag, const char *sender, c
 
 void CAnnouncementManager::DoAnnounce(AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data)
 {
-  CLog::Log(LOGDEBUG, "CAnnouncementManager - Announcement: %s from %s", message, sender);
+  CLog::Log(LOGDEBUG, LOGANNOUNCE, "CAnnouncementManager - Announcement: {} from {}", message, sender);
 
   CSingleLock lock(m_announcersCritSection);
 
