@@ -923,9 +923,9 @@ JSONRPC_STATUS CAudioLibrary::Export(const std::string &method, ITransportLayer 
   else
   {
     cmd = "exportlibrary2(music, library, dummy, albums, albumartists";
-    if (parameterObject["options"].isMember("images"))
+    if (parameterObject["options"].asBoolean("images"))
       cmd += ", artwork";
-    if (parameterObject["options"].isMember("overwrite"))
+    if (parameterObject["options"].asBoolean("overwrite"))
       cmd += ", overwrite";
     cmd += ")";
   }
