@@ -385,19 +385,24 @@
 					</include>
 				</control>
 				<include content="MediaFlag">
-					<param name="texture" value="$INFO[$PARAM[infolabel_prefix]ListItem.AudioChannels,flags/audiochannel/,.png]" />
-					<param name="visible" value="!String.IsEmpty($PARAM[infolabel_prefix]ListItem.AudioChannels)" />
+					<param name="texture" value="$INFO[ListItem.VideoCodec,flags/videocodec/,.png]" />
+					<param name="visible" value="!String.IsEmpty($PARAM[infolabel_prefix]ListItem.VideoCodec)" />
+				</include>
+				<include content="MediaFlag">
+					<param name="texture" value="$PARAM[resolution_var]" />
+					<param name="visible" value="!String.IsEmpty($PARAM[infolabel_prefix]ListItem.VideoResolution)" />
+				</include>
+				<include content="MediaFlag">
+					<param name="texture" value="$INFO[ListItem.VideoAspect,flags/aspectratio/,.png]" />
+					<param name="visible" value="!String.IsEmpty($PARAM[infolabel_prefix]ListItem.VideoAspect)" />
 				</include>
 				<include content="MediaFlag">
 					<param name="texture" value="$INFO[$PARAM[infolabel_prefix]ListItem.AudioCodec,flags/audiocodec/,.png]" />
 					<param name="visible" value="!String.IsEmpty($PARAM[infolabel_prefix]ListItem.AudioCodec)" />
 				</include>
-				<!-- 			<include content="MediaFlag">
-																														<param name="texture" value="$INFO[ListItem.VideoAspect,flags/aspectratio/,.png]" />
-																													</include> -->
 				<include content="MediaFlag">
-					<param name="texture" value="$PARAM[resolution_var]" />
-					<param name="visible" value="!String.IsEmpty($PARAM[infolabel_prefix]ListItem.VideoResolution)" />
+					<param name="texture" value="$INFO[$PARAM[infolabel_prefix]ListItem.AudioChannels,flags/audiochannel/,.png]" />
+					<param name="visible" value="!String.IsEmpty($PARAM[infolabel_prefix]ListItem.AudioChannels)" />
 				</include>
 			</control>
 		</definition>
