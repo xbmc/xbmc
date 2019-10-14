@@ -541,6 +541,11 @@ void* CSettingsManager::GetSettingOptionsFiller(SettingConstPtr setting)
   return fillerIt->second.filler;
 }
 
+bool CSettingsManager::HasSettings() const
+{
+  return !m_settings.empty();
+}
+
 SettingPtr CSettingsManager::GetSetting(const std::string &id) const
 {
   CSharedLock lock(m_settingsCritical);
