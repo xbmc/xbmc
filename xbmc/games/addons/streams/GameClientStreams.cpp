@@ -9,6 +9,7 @@
 #include "GameClientStreams.h"
 
 #include "GameClientStreamAudio.h"
+#include "GameClientStreamHwFramebuffer.h"
 #include "GameClientStreamSwFramebuffer.h"
 #include "GameClientStreamVideo.h"
 #include "cores/RetroPlayer/streams/IRetroPlayerStream.h"
@@ -16,6 +17,7 @@
 #include "cores/RetroPlayer/streams/RetroPlayerStreamTypes.h"
 #include "games/addons/GameClient.h"
 #include "games/addons/GameClientTranslator.h"
+#include "utils/StringUtils.h"
 #include "utils/log.h"
 
 #include <memory>
@@ -67,7 +69,7 @@ IGameClientStream* CGameClientStreams::OpenStream(const game_stream_properties& 
 
   if (!gameStream->OpenStream(retroStream.get(), properties))
   {
-    CLog::Log(LOGERROR, "GAME: Failed to open audio stream");
+    CLog::Log(LOGERROR, "GAME: Failed to open stream");
     return nullptr;
   }
 
@@ -88,6 +90,58 @@ void CGameClientStreams::CloseStream(IGameClientStream* stream)
   }
 }
 
+bool CGameClientStreams::EnableHardwareRendering(const game_hw_rendering_properties& properties)
+{
+  std::string strContextType;
+
+  switch (properties.context_type)
+  {
+    case GAME_HW_CONTEXT_OPENGL:
+      strContextType = "OpenGL 2.x";
+      break;
+    case GAME_HW_CONTEXT_OPENGLES2:
+      strContextType = "OpenGLES 2.0";
+      break;
+    case GAME_HW_CONTEXT_OPENGL_CORE:
+      strContextType =
+          StringUtils::Format("OpenGL {}.{}", properties.version_major, properties.version_minor);
+      break;
+    case GAME_HW_CONTEXT_OPENGLES3:
+      strContextType = "OpenGLES 3.0";
+      break;
+    case GAME_HW_CONTEXT_OPENGLES_VERSION:
+      strContextType =
+          StringUtils::Format("OpenGLES {}.{}", properties.version_major, properties.version_minor);
+      break;
+    case GAME_HW_CONTEXT_VULKAN:
+      strContextType = "Vulkan";
+      break;
+    default:
+      return false;
+  }
+
+  CLog::Log(LOGDEBUG, "Enabling hardware rendering for {}", strContextType);
+  CLog::Log(LOGDEBUG, "  depth: {}", properties.depth ? "true" : "false");
+  CLog::Log(LOGDEBUG, "  stencil: {}", properties.stencil ? "true" : "false");
+  CLog::Log(LOGDEBUG, "  bottomLeftOrigin: {}", properties.bottom_left_origin ? "true" : "false");
+  CLog::Log(LOGDEBUG, "  cacheContext: {}", properties.cache_context ? "true" : "false");
+  CLog::Log(LOGDEBUG, "  debugContext: {}", properties.debug_context ? "true" : "false");
+
+  // Store hardware rendering properties
+  m_hwProperties = properties;
+
+  //! @todo Finish OpenGL support
+  return false;
+}
+
+game_proc_address_t CGameClientStreams::GetHwProcedureAddress(const char* symbol)
+{
+  if (m_streamManager != nullptr)
+    return m_streamManager->GetHwProcedureAddress(symbol);
+
+  return nullptr;
+}
+
 std::unique_ptr<IGameClientStream> CGameClientStreams::CreateStream(
     GAME_STREAM_TYPE streamType) const
 {
@@ -103,6 +157,11 @@ std::unique_ptr<IGameClientStream> CGameClientStreams::CreateStream(
     case GAME_STREAM_VIDEO:
     {
       gameStream = std::make_unique<CGameClientStreamVideo>();
+      break;
+    }
+    case GAME_STREAM_HW_FRAMEBUFFER:
+    {
+      gameStream = std::make_unique<CGameClientStreamHwFramebuffer>(m_gameClient, m_hwProperties);
       break;
     }
     case GAME_STREAM_SW_FRAMEBUFFER:
