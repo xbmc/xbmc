@@ -183,7 +183,7 @@ bool CPlayerGUIInfo::GetLabel(std::string& value, const CFileItem *item, int con
       return true;
     }
     case PLAYER_VOLUME:
-      value = StringUtils::Format("%2.1f dB", CAEUtil::PercentToGain(g_application.GetVolume(false)));
+      value = StringUtils::Format("%2.1f dB", CAEUtil::PercentToGain(g_application.GetVolumeRatio()));
       return true;
     case PLAYER_SUBTITLE_DELAY:
       value = StringUtils::Format("%2.3f s", g_application.GetAppPlayer().GetVideoSettings().m_SubtitleDelay);
@@ -355,7 +355,7 @@ bool CPlayerGUIInfo::GetInt(int& value, const CGUIListItem *gitem, int contextWi
     // PLAYER_*
     ///////////////////////////////////////////////////////////////////////////////////////////////
     case PLAYER_VOLUME:
-      value = static_cast<int>(g_application.GetVolume());
+      value = static_cast<int>(g_application.GetVolumePercent());
       return true;
     case PLAYER_SUBTITLE_DELAY:
       value = g_application.GetSubtitleDelay();
@@ -407,7 +407,7 @@ bool CPlayerGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int context
       value = m_playerShowTime;
       return true;
     case PLAYER_MUTED:
-      value = (g_application.IsMuted() || g_application.GetVolume(false) <= VOLUME_MINIMUM);
+      value = (g_application.IsMuted() || g_application.GetVolumeRatio() <= VOLUME_MINIMUM);
       return true;
     case PLAYER_HAS_MEDIA:
       value = g_application.GetAppPlayer().IsPlaying();

@@ -210,7 +210,8 @@ public:
   void Process() override;
   void ProcessSlow();
   void ResetScreenSaver();
-  float GetVolume(bool percentage = true) const;
+  float GetVolumePercent() const;
+  float GetVolumeRatio() const;
   void SetVolume(float iValue, bool isPercentage = true);
   bool IsMuted() const;
   bool IsMutedInternal() const { return m_muted; }

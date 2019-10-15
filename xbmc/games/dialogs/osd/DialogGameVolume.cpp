@@ -130,7 +130,7 @@ void CDialogGameVolume::OnStateChanged()
 
 float CDialogGameVolume::GetVolumePercent() const
 {
-  return g_application.GetVolume(true);
+  return g_application.GetVolumePercent();
 }
 
 std::string CDialogGameVolume::GetLabel()
