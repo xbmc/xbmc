@@ -33,30 +33,30 @@ CRetroPlayerRendering::~CRetroPlayerRendering()
 
 bool CRetroPlayerRendering::OpenStream(const StreamProperties& properties)
 {
-  const HwFramebufferProperties& hwProperties =
+  [[maybe_unused]] const HwFramebufferProperties& hwProperties =
       static_cast<const HwFramebufferProperties&>(properties);
 
-  const AVPixelFormat pixfmt = hwProperties.pixfmt;
-  const unsigned int nominalWidth = hwProperties.nominalWidth;
-  const unsigned int nominalHeight = hwProperties.nominalHeight;
-  const unsigned int maxWidth = hwProperties.maxWidth;
-  const unsigned int maxHeight = hwProperties.maxHeight;
-  const float pixelAspectRatio = hwProperties.pixelAspectRatio;
+  //! @todo
+  const AVPixelFormat pixelFormat = AV_PIX_FMT_NONE;
+  const unsigned int width = 640;
+  const unsigned int height = 480;
+  const float pixelAspectRatio = 1.0f;
 
-  CLog::Log(
-      LOGDEBUG,
-      "RetroPlayer[RENDERING]: Creating rendering stream - format {}, nominal {}x{}, max {}x{}",
-      CRenderTranslator::TranslatePixelFormat(pixfmt), nominalWidth, nominalHeight, maxWidth,
-      maxHeight);
+  CLog::Log(LOGDEBUG, "RetroPlayer[RENDERING]: Creating rendering stream - width {}, height {}",
+            width, height);
 
-  m_processInfo.SetVideoPixelFormat(pixfmt);
-  m_processInfo.SetVideoDimensions(nominalWidth, nominalHeight); // Report nominal height for now
+  m_processInfo.SetVideoPixelFormat(pixelFormat);
+  m_processInfo.SetVideoDimensions(width, height);
 
-  if (!m_renderManager.Configure(pixfmt, nominalWidth, nominalHeight, maxWidth, maxHeight,
-                                 pixelAspectRatio))
+  if (!m_renderManager.Configure(pixelFormat, width, height, width, height, pixelAspectRatio))
     return false;
 
-  return m_renderManager.Create(maxWidth, maxHeight);
+  CLog::Log(LOGDEBUG, "RetroPlayer[RENDERING]: Render manager configured");
+
+  //! @todo: This must be called from the rendering thread
+  //return m_renderManager.Create(width, height);
+
+  return false;
 }
 
 void CRetroPlayerRendering::CloseStream()

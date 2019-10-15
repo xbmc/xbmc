@@ -17,6 +17,9 @@ extern "C"
 #include <libavutil/pixfmt.h>
 }
 
+//! @todo RetroPlayer needs an abstraction for GAME_HW_CONTEXT_TYPE
+#include "addons/kodi-dev-kit/include/kodi/c-api/addon-instance/game.h"
+
 namespace KODI
 {
 namespace RETRO
@@ -26,27 +29,33 @@ class CRPRenderManager;
 
 struct HwFramebufferProperties : public StreamProperties
 {
-  HwFramebufferProperties(AVPixelFormat pixfmt,
-                          unsigned int nominalWidth,
-                          unsigned int nominalHeight,
-                          unsigned int maxWidth,
-                          unsigned int maxHeight,
-                          float pixelAspectRatio)
-    : pixfmt(pixfmt),
-      nominalWidth(nominalWidth),
-      nominalHeight(nominalHeight),
-      maxWidth(maxWidth),
-      maxHeight(maxHeight),
-      pixelAspectRatio(pixelAspectRatio)
+  HwFramebufferProperties(GAME_HW_CONTEXT_TYPE contextType,
+                          bool depth,
+                          bool stencil,
+                          bool bottomLeftOrigin,
+                          unsigned int versionMajor,
+                          unsigned int versionMinor,
+                          bool cacheContext,
+                          bool debugContext)
+    : contextType(contextType),
+      depth(depth),
+      stencil(stencil),
+      bottomLeftOrigin(bottomLeftOrigin),
+      versionMajor(versionMajor),
+      versionMinor(versionMinor),
+      cacheContext(cacheContext),
+      debugContext(debugContext)
   {
   }
 
-  AVPixelFormat pixfmt;
-  unsigned int nominalWidth;
-  unsigned int nominalHeight;
-  unsigned int maxWidth;
-  unsigned int maxHeight;
-  float pixelAspectRatio;
+  GAME_HW_CONTEXT_TYPE contextType;
+  bool depth;
+  bool stencil;
+  bool bottomLeftOrigin;
+  unsigned int versionMajor;
+  unsigned int versionMinor;
+  bool cacheContext;
+  bool debugContext;
 };
 
 struct HwFramebufferBuffer : public StreamBuffer

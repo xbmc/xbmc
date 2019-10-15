@@ -19134,7 +19134,13 @@ msgctxt "#35270"
 msgid "Your account is not verified. Please check your email to complete your sign up."
 msgstr ""
 
-#empty strings from id 35271 to 35504
+#. Error message shown when an OpenGL game is played, as OpenGL is not currently supported
+#: xbmc/games/addons/GameClient.cpp
+msgctxt "#35271"
+msgid "This game requires OpenGL support for 3D rendering. OpenGL support is still under development."
+msgstr ""
+
+#empty strings from id 35272 to 35504
 
 #. connection state "host unreachable"
 #: xbmc/pvr/addons/PVRClients.cpp

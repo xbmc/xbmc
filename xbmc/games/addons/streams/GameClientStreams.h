@@ -34,11 +34,21 @@ class CGameClientStreams
 public:
   CGameClientStreams(CGameClient& gameClient);
 
+  // Lifecycle functions
   void Initialize(RETRO::IStreamManager& streamManager);
   void Deinitialize();
 
+  // Stream management functions
   IGameClientStream* OpenStream(const game_stream_properties& properties);
   void CloseStream(IGameClientStream* stream);
+
+  // HW rendering functions
+  bool EnableHardwareRendering(const game_hw_rendering_properties& properties);
+  game_proc_address_t GetHwProcedureAddress(const char* sym);
+  bool HardwareRenderingAttempted() const
+  {
+    return m_hwProperties.context_type != GAME_HW_CONTEXT_NONE;
+  }
 
 private:
   // Utility functions
@@ -52,6 +62,9 @@ private:
 
   // Stream parameters
   std::map<IGameClientStream*, RETRO::StreamPtr> m_streams;
+
+  // Hardware rendering parameters
+  game_hw_rendering_properties m_hwProperties{};
 };
 
 } // namespace GAME
