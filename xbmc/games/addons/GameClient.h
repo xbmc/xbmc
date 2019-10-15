@@ -39,6 +39,31 @@ class IGameInputCallback;
 /*!
  * \ingroup games
  * \brief Interface between Kodi and Game add-ons.
+ *
+ * The game add-on system is extremely large. To make the code more manageable,
+ * a subsystem pattern has been put in place. This pattern takes functionality
+ * that would normally be placed in this class, and puts it in another class
+ * (a "subsystem").
+ *
+ * The architecture is relatively simple. Subsystems are placed in a flat
+ * struct and accessed by calling the subsystem name. For example,
+ * historically, OpenJoystick() was a member of this class. Now, the function
+ * is called like Input().OpenJoystick().
+ *
+ * Although this pattern adds a layer of complexity, it enforces modularity and
+ * separation of concerns by making it very clear when one subsystem becomes
+ * dependent on another. Subsystems are all given access to each other by the
+ * calling mechanism. However, calling a subsystem creates a dependency on it,
+ * and an engineering decision must be made to justify the dependency.
+ *
+ * CONTRIBUTING
+ *
+ * If you wish to contribute, a beneficial task would be to refactor anything
+ * in this class into a new subsystem:
+ *
+ * Using line count as a heuristic, the subsystem pattern has shrunk the .cpp
+ * from 1,200 lines to just over 600. Reducing this further is the challenge.
+ * You must now choose whether to accept.
  */
 class CGameClient : public ADDON::CAddonDll
 {
