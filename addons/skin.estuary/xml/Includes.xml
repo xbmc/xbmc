@@ -350,7 +350,7 @@
 				<top>0</top>
 				<height>70</height>
 				<align>right</align>
-				<itemgap>28</itemgap>
+				<itemgap>10</itemgap>
 				<width>1900</width>
 				<usecontrolcoords>true</usecontrolcoords>
 				<control type="group">
