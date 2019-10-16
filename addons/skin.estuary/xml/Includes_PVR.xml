@@ -191,30 +191,8 @@
 	<include name="PVRInfoPanel">
 		<control type="group">
 			<visible>!ListItem.IsFolder</visible>
-			<control type="label">
-				<top>120</top>
-				<width>830</width>
-				<height>262</height>
-				<font>font36_title</font>
-				<label>$INFO[ListItem.Title] $INFO[ListItem.Year,([COLOR grey],[/COLOR])]</label>
-				<visible>!PVR.HasEpg</visible>
-			</control>
-			<control type="label">
-				<top>120</top>
-				<width>830</width>
-				<height>262</height>
-				<font>font36_title</font>
-				<label>$INFO[ListItem.EpgEventTitle] $INFO[ListItem.Year,([COLOR grey],[/COLOR])]</label>
-				<visible>PVR.HasEpg</visible>
-			</control>
-			<control type="label">
-				<top>165</top>
-				<width>830</width>
-				<height>70</height>
-				<label>[I]$VAR[SeasonEpisodeLabel]$INFO[ListItem.EpisodeName][/I]</label>
-			</control>
 			<control type="image">
-				<top>250</top>
+				<top>135</top>
 				<left>630</left>
 				<width>200</width>
 				<height>200</height>
@@ -223,18 +201,24 @@
 				<fadetime>200</fadetime>
 			</control>
 			<control type="group">
-				<top>235</top>
+				<top>120</top>
 				<left>0</left>
 				<width>600</width>
 				<control type="label">
-					<height>150</height>
+					<height>262</height>
+					<font>font45</font>
+					<label>$INFO[ListItem.ChannelName]</label>
+				</control>
+				<control type="label">
+					<top>60</top>
+					<height>200</height>
 					<wrapmultiline>true</wrapmultiline>
-					<label>$INFO[ListItem.ChannelName,[B],[/B][CR]]$INFO[ListItem.Date,[COLOR grey]$LOCALIZE[552]:[/COLOR] ,[CR]]$INFO[ListItem.Duration,[COLOR grey]$LOCALIZE[180]:[/COLOR] ,[CR]]$INFO[ListItem.Genre,[COLOR grey]$LOCALIZE[515]:[/COLOR] ,[CR]]</label>
+					<label>$INFO[ListItem.TimerType,[COLOR grey]$LOCALIZE[803]:[/COLOR] ,[CR]]$INFO[ListItem.Date,[COLOR grey]$LOCALIZE[552]:[/COLOR] ,[CR]]$INFO[ListItem.Duration,[COLOR grey]$LOCALIZE[180]:[/COLOR] ,[CR]]$VAR[ExpirationDateTimeLabel]</label>
 				</control>
 				<control type="group">
 					<visible>Integer.IsGreater(ListItem.Progress,0)</visible>
-					<top>170</top>
-					<height>100</height>
+					<top>150</top>
+					<height>262</height>
 					<control type="label">
 						<label>$INFO[ListItem.StartTime]</label>
 					</control>
@@ -257,12 +241,44 @@
 					<visible>Integer.IsGreater(ListItem.PercentPlayed,0)</visible>
 				</control>
 			</control>
+			<control type="label">
+				<top>390</top>
+				<width>830</width>
+				<height>262</height>
+				<font>font36_title</font>
+				<label>$INFO[ListItem.Title] $INFO[ListItem.Year,([COLOR grey],[/COLOR])]</label>
+				<visible>!PVR.HasEpg</visible>
+			</control>
+			<control type="label">
+				<top>390</top>
+				<width>830</width>
+				<height>262</height>
+				<font>font36_title</font>
+				<label>$INFO[ListItem.EpgEventTitle] $INFO[ListItem.Year,([COLOR grey],[/COLOR])]</label>
+				<visible>PVR.HasEpg</visible>
+			</control>
+			<control type="label">
+				<top>435</top>
+				<width>830</width>
+				<height>70</height>
+				<label>[I]$VAR[SeasonEpisodeLabel]$INFO[ListItem.EpisodeName][/I]</label>
+			</control>
 			<control type="textbox">
 				<top>490</top>
 				<width>830</width>
 				<bottom>75</bottom>
-				<label>$INFO[ListItem.TimerType,[COLOR grey]$LOCALIZE[803]:[/COLOR] ,[CR]]$VAR[ExpirationDateTimeLabel]$VAR[PremieredLabel]$INFO[ListItem.Rating,[COLOR grey]$LOCALIZE[563]:[/COLOR] ,[CR]]$INFO[ListItem.Writer,[COLOR grey]$LOCALIZE[20417]:[/COLOR] ,[CR]]$INFO[ListItem.Director,[COLOR grey]$LOCALIZE[20339]:[/COLOR] ,[CR]]$INFO[ListItem.Cast,[COLOR grey]$LOCALIZE[206]:[/COLOR] ,[CR]][CR]$INFO[ListItem.Plot]</label>
+				<label>$INFO[ListItem.Plot]</label>
 				<autoscroll delay="10000" time="3000" repeat="10000">Skin.HasSetting(AutoScroll)</autoscroll>
+			</control>
+			<control type="textbox">
+				<top>530</top>
+				<width>830</width>
+				<height>340</height>
+				<align>center</align>
+				<font>font27</font>
+				<textcolor>80FFFFFF</textcolor>
+				<label>$LOCALIZE[19055]</label>
+				<visible>String.IsEmpty(Listitem.Plot) + String.IsEmpty(Listitem.Genre)</visible>
 			</control>
 		</control>
 		<control type="group">
