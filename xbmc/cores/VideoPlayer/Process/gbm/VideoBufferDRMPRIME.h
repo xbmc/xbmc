@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include "cores/VideoPlayer/DVDCodecs/Video/DVDVideoCodec.h"
 #include "cores/VideoPlayer/Process/VideoBuffer.h"
 
 extern "C"
@@ -15,6 +16,9 @@ extern "C"
 #include <libavutil/frame.h>
 #include <libavutil/hwcontext_drm.h>
 }
+
+namespace DRMPRIME
+{
 
 // Color enums is copied from linux include/drm/drm_color_mgmt.h (strangely not part of uapi)
 enum drm_color_encoding
@@ -29,18 +33,23 @@ enum drm_color_range
   DRM_COLOR_YCBCR_FULL_RANGE,
 };
 
+int GetColorEncoding(const VideoPicture& picture);
+int GetColorRange(const VideoPicture& picture);
+
+} // namespace DRMPRIME
+
 class CVideoBufferDRMPRIME : public CVideoBuffer
 {
 public:
   CVideoBufferDRMPRIME() = delete;
   ~CVideoBufferDRMPRIME() override = default;
 
-  virtual AVDRMFrameDescriptor* GetDescriptor() const = 0;
-  virtual uint32_t GetWidth() const = 0;
-  virtual uint32_t GetHeight() const = 0;
-  virtual int GetColorEncoding() const { return DRM_COLOR_YCBCR_BT709; }
-  virtual int GetColorRange() const { return DRM_COLOR_YCBCR_LIMITED_RANGE; }
+  virtual void SetPictureParams(const VideoPicture& picture) { m_picture.SetParams(picture); }
+  virtual const VideoPicture& GetPicture() const { return m_picture; }
+  uint32_t GetWidth() const { return GetPicture().iWidth; }
+  uint32_t GetHeight() const { return GetPicture().iHeight; }
 
+  virtual AVDRMFrameDescriptor* GetDescriptor() const = 0;
   virtual bool IsValid() const { return true; }
   virtual bool Map() { return true; }
   virtual void Unmap() {}
@@ -50,6 +59,8 @@ public:
 
 protected:
   explicit CVideoBufferDRMPRIME(int id);
+
+  VideoPicture m_picture;
 };
 
 class CVideoBufferDRMPRIMEFFmpeg : public CVideoBufferDRMPRIME
@@ -64,11 +75,6 @@ public:
   {
     return reinterpret_cast<AVDRMFrameDescriptor*>(m_pFrame->data[0]);
   }
-  uint32_t GetWidth() const override { return m_pFrame->width; }
-  uint32_t GetHeight() const override { return m_pFrame->height; }
-  int GetColorEncoding() const override;
-  int GetColorRange() const override;
-
   bool IsValid() const override;
 
 protected:

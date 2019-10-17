@@ -16,6 +16,41 @@ extern "C"
 #include <libavutil/pixdesc.h>
 }
 
+namespace DRMPRIME
+{
+
+int GetColorEncoding(const VideoPicture& picture)
+{
+  switch (picture.color_space)
+  {
+    case AVCOL_SPC_BT2020_CL:
+    case AVCOL_SPC_BT2020_NCL:
+      return DRM_COLOR_YCBCR_BT2020;
+    case AVCOL_SPC_SMPTE170M:
+    case AVCOL_SPC_BT470BG:
+    case AVCOL_SPC_FCC:
+      return DRM_COLOR_YCBCR_BT601;
+    case AVCOL_SPC_BT709:
+      return DRM_COLOR_YCBCR_BT709;
+    case AVCOL_SPC_RESERVED:
+    case AVCOL_SPC_UNSPECIFIED:
+    default:
+      if (picture.iWidth > 1024 || picture.iHeight >= 600)
+        return DRM_COLOR_YCBCR_BT709;
+      else
+        return DRM_COLOR_YCBCR_BT601;
+  }
+}
+
+int GetColorRange(const VideoPicture& picture)
+{
+  if (picture.color_range)
+    return DRM_COLOR_YCBCR_FULL_RANGE;
+  return DRM_COLOR_YCBCR_LIMITED_RANGE;
+}
+
+} // namespace DRMPRIME
+
 CVideoBufferDRMPRIME::CVideoBufferDRMPRIME(int id) : CVideoBuffer(id)
 {
 }
@@ -40,41 +75,6 @@ void CVideoBufferDRMPRIMEFFmpeg::SetRef(AVFrame* frame)
 void CVideoBufferDRMPRIMEFFmpeg::Unref()
 {
   av_frame_unref(m_pFrame);
-}
-
-int CVideoBufferDRMPRIMEFFmpeg::GetColorEncoding() const
-{
-  switch (m_pFrame->colorspace)
-  {
-    case AVCOL_SPC_BT2020_CL:
-    case AVCOL_SPC_BT2020_NCL:
-      return DRM_COLOR_YCBCR_BT2020;
-    case AVCOL_SPC_SMPTE170M:
-    case AVCOL_SPC_BT470BG:
-    case AVCOL_SPC_FCC:
-      return DRM_COLOR_YCBCR_BT601;
-    case AVCOL_SPC_BT709:
-      return DRM_COLOR_YCBCR_BT709;
-    case AVCOL_SPC_RESERVED:
-    case AVCOL_SPC_UNSPECIFIED:
-    default:
-      if (m_pFrame->width > 1024 || m_pFrame->height >= 600)
-        return DRM_COLOR_YCBCR_BT709;
-      else
-        return DRM_COLOR_YCBCR_BT601;
-  }
-}
-
-int CVideoBufferDRMPRIMEFFmpeg::GetColorRange() const
-{
-  switch (m_pFrame->color_range)
-  {
-    case AVCOL_RANGE_JPEG:
-      return DRM_COLOR_YCBCR_FULL_RANGE;
-    case AVCOL_RANGE_MPEG:
-    default:
-      return DRM_COLOR_YCBCR_LIMITED_RANGE;
-  }
 }
 
 bool CVideoBufferDRMPRIMEFFmpeg::IsValid() const

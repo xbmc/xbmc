@@ -10,6 +10,8 @@
 
 #include "utils/log.h"
 
+using namespace DRMPRIME;
+
 void CDRMPRIMETexture::Init(EGLDisplay eglDisplay)
 {
   m_eglImage.reset(new CEGLImage(eglDisplay));
@@ -45,8 +47,8 @@ bool CDRMPRIMETexture::Map(CVideoBufferDRMPRIME* buffer)
     attribs.width = m_texWidth;
     attribs.height = m_texHeight;
     attribs.format = layer->format;
-    attribs.colorSpace = GetColorSpace(buffer->GetColorEncoding());
-    attribs.colorRange = GetColorRange(buffer->GetColorRange());
+    attribs.colorSpace = GetColorSpace(DRMPRIME::GetColorEncoding(buffer->GetPicture()));
+    attribs.colorRange = GetColorRange(DRMPRIME::GetColorRange(buffer->GetPicture()));
     attribs.planes = planes;
 
     if (!m_eglImage->CreateImage(attribs))

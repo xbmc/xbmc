@@ -13,6 +13,7 @@
 #include "windowing/gbm/DRMUtils.h"
 
 using namespace KODI::WINDOWING::GBM;
+using namespace DRMPRIME;
 
 CVideoLayerBridgeDRMPRIME::CVideoLayerBridgeDRMPRIME(std::shared_ptr<CDRMUtils> drm) : m_DRM(drm)
 {
@@ -138,12 +139,14 @@ void CVideoLayerBridgeDRMPRIME::Unmap(CVideoBufferDRMPRIME* buffer)
 
 void CVideoLayerBridgeDRMPRIME::Configure(CVideoBufferDRMPRIME* buffer)
 {
+  const VideoPicture& picture = buffer->GetPicture();
+
   struct plane* plane = m_DRM->GetVideoPlane();
   if (m_DRM->SupportsProperty(plane, "COLOR_ENCODING") &&
       m_DRM->SupportsProperty(plane, "COLOR_RANGE"))
   {
-    m_DRM->AddProperty(plane, "COLOR_ENCODING", buffer->GetColorEncoding());
-    m_DRM->AddProperty(plane, "COLOR_RANGE", buffer->GetColorRange());
+    m_DRM->AddProperty(plane, "COLOR_ENCODING", GetColorEncoding(picture));
+    m_DRM->AddProperty(plane, "COLOR_RANGE", GetColorRange(picture));
   }
 }
 
