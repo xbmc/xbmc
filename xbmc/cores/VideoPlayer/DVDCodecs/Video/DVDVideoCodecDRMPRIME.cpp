@@ -9,6 +9,7 @@
 #include "DVDVideoCodecDRMPRIME.h"
 
 #include "ServiceBroker.h"
+#include "cores/VideoPlayer/DVDCodecs/DVDCodecs.h"
 #include "cores/VideoPlayer/DVDCodecs/DVDFactoryCodec.h"
 #include "cores/VideoPlayer/Process/gbm/VideoBufferDRMPRIME.h"
 #include "settings/Settings.h"
@@ -21,6 +22,7 @@
 extern "C"
 {
 #include <libavcodec/avcodec.h>
+#include <libavutil/opt.h>
 #include <libavutil/pixdesc.h>
 }
 
@@ -161,6 +163,9 @@ bool CDVDVideoCodecDRMPRIME::Open(CDVDStreamInfo& hints, CDVDCodecOptions& optio
         static_cast<uint8_t*>(av_mallocz(hints.extrasize + AV_INPUT_BUFFER_PADDING_SIZE));
     memcpy(m_pCodecContext->extradata, hints.extradata, hints.extrasize);
   }
+
+  for (auto&& option : options.m_keys)
+    av_opt_set(m_pCodecContext, option.m_name.c_str(), option.m_value.c_str(), 0);
 
   if (avcodec_open2(m_pCodecContext, pCodec, nullptr) < 0)
   {
