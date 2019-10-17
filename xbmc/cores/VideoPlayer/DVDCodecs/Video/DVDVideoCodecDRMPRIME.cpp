@@ -284,6 +284,16 @@ void CDVDVideoCodecDRMPRIME::SetPictureParams(VideoPicture* pVideoPicture)
                                       : m_pFrame->color_trc;
   pVideoPicture->color_space =
       m_pFrame->colorspace == AVCOL_SPC_UNSPECIFIED ? m_hints.colorSpace : m_pFrame->colorspace;
+  pVideoPicture->chroma_position = m_pFrame->chroma_location;
+
+  pVideoPicture->colorBits = 8;
+  if (m_pCodecContext->codec_id == AV_CODEC_ID_HEVC &&
+      m_pCodecContext->profile == FF_PROFILE_HEVC_MAIN_10)
+    pVideoPicture->colorBits = 10;
+  else if (m_pCodecContext->codec_id == AV_CODEC_ID_H264 &&
+           (m_pCodecContext->profile == FF_PROFILE_H264_HIGH_10 ||
+            m_pCodecContext->profile == FF_PROFILE_H264_HIGH_10_INTRA))
+    pVideoPicture->colorBits = 10;
 
   pVideoPicture->iRepeatPicture = 0;
   pVideoPicture->iFlags = 0;
