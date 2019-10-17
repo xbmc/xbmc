@@ -22,7 +22,7 @@ public:
   void Init(EGLDisplay eglDisplay);
 
   GLuint GetTexture() { return m_texture; }
-  CSizeInt GetTextureSize() { return { m_texWidth, m_texHeight }; }
+  CSizeInt GetTextureSize() { return {m_texWidth, m_texHeight}; }
 
 protected:
   IVideoBufferDRMPRIME* m_primebuffer{nullptr};
@@ -36,5 +36,4 @@ protected:
 private:
   static int GetColorSpace(int colorSpace);
   static int GetColorRange(int colorRange);
-
 };

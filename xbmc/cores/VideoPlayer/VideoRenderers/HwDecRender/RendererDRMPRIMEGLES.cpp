@@ -36,13 +36,16 @@ void CRendererDRMPRIMEGLES::Register()
   VIDEOPLAYER::CRendererFactory::RegisterRenderer("drm_prime_gles", CRendererDRMPRIMEGLES::Create);
 }
 
-bool CRendererDRMPRIMEGLES::Configure(const VideoPicture &picture, float fps, unsigned int orientation)
+bool CRendererDRMPRIMEGLES::Configure(const VideoPicture& picture,
+                                      float fps,
+                                      unsigned int orientation)
 {
-  CWinSystemGbmGLESContext* winSystem = dynamic_cast<CWinSystemGbmGLESContext*>(CServiceBroker::GetWinSystem());
+  CWinSystemGbmGLESContext* winSystem =
+      dynamic_cast<CWinSystemGbmGLESContext*>(CServiceBroker::GetWinSystem());
   if (!winSystem)
     return false;
 
-  for (auto &texture : m_DRMPRIMETextures)
+  for (auto& texture : m_DRMPRIMETextures)
     texture.Init(winSystem->GetEGLDisplay());
 
   for (auto& fence : m_fences)
@@ -68,9 +71,9 @@ bool CRendererDRMPRIMEGLES::NeedBuffer(int index)
 
 bool CRendererDRMPRIMEGLES::CreateTexture(int index)
 {
-  CPictureBuffer &buf = m_buffers[index];
-  YuvImage &im = buf.image;
-  CYuvPlane &plane = buf.fields[0][0];
+  CPictureBuffer& buf = m_buffers[index];
+  YuvImage& im = buf.image;
+  CYuvPlane& plane = buf.fields[0][0];
 
   DeleteTexture(index);
 
@@ -78,7 +81,7 @@ bool CRendererDRMPRIMEGLES::CreateTexture(int index)
   plane = {};
 
   im.height = m_sourceHeight;
-  im.width  = m_sourceWidth;
+  im.width = m_sourceWidth;
   im.cshift_x = 1;
   im.cshift_y = 1;
 
@@ -91,13 +94,13 @@ void CRendererDRMPRIMEGLES::DeleteTexture(int index)
 {
   ReleaseBuffer(index);
 
-  CPictureBuffer &buf = m_buffers[index];
+  CPictureBuffer& buf = m_buffers[index];
   buf.fields[0][0].id = 0;
 }
 
 bool CRendererDRMPRIMEGLES::UploadTexture(int index)
 {
-  CPictureBuffer &buf = m_buffers[index];
+  CPictureBuffer& buf = m_buffers[index];
 
   IVideoBufferDRMPRIME* buffer = dynamic_cast<IVideoBufferDRMPRIME*>(buf.videoBuffer);
 
@@ -109,10 +112,10 @@ bool CRendererDRMPRIMEGLES::UploadTexture(int index)
 
   m_DRMPRIMETextures[index].Map(buffer);
 
-  CYuvPlane &plane = buf.fields[0][0];
+  CYuvPlane& plane = buf.fields[0][0];
 
   auto size = m_DRMPRIMETextures[index].GetTextureSize();
-  plane.texwidth  = size.Width();
+  plane.texwidth = size.Width();
   plane.texheight = size.Height();
   plane.pixpertex_x = 1;
   plane.pixpertex_y = 1;
@@ -134,10 +137,11 @@ bool CRendererDRMPRIMEGLES::LoadShadersHook()
 
 bool CRendererDRMPRIMEGLES::RenderHook(int index)
 {
-  CRenderSystemGLES *renderSystem = dynamic_cast<CRenderSystemGLES*>(CServiceBroker::GetRenderSystem());
+  CRenderSystemGLES* renderSystem =
+      dynamic_cast<CRenderSystemGLES*>(CServiceBroker::GetRenderSystem());
   assert(renderSystem);
 
-  CYuvPlane &plane = m_buffers[index].fields[0][0];
+  CYuvPlane& plane = m_buffers[index].fields[0][0];
 
   glDisable(GL_DEPTH_TEST);
 
@@ -186,14 +190,17 @@ bool CRendererDRMPRIMEGLES::RenderHook(int index)
   vertex[3].y = m_rotatedDestCoords[3].y;
   vertex[3].z = 0.0f;
   vertex[3].u1 = plane.rect.x1;
-  vertex[3].v1 = plane.rect.y2;;
+  vertex[3].v1 = plane.rect.y2;
 
   glGenBuffers(1, &vertexVBO);
   glBindBuffer(GL_ARRAY_BUFFER, vertexVBO);
-  glBufferData(GL_ARRAY_BUFFER, sizeof(PackedVertex) * vertex.size(), vertex.data(), GL_STATIC_DRAW);
+  glBufferData(GL_ARRAY_BUFFER, sizeof(PackedVertex) * vertex.size(), vertex.data(),
+               GL_STATIC_DRAW);
 
-  glVertexAttribPointer(vertLoc, 3, GL_FLOAT, 0, sizeof(PackedVertex), reinterpret_cast<const GLvoid*>(offsetof(PackedVertex, x)));
-  glVertexAttribPointer(loc, 2, GL_FLOAT, 0, sizeof(PackedVertex), reinterpret_cast<const GLvoid*>(offsetof(PackedVertex, u1)));
+  glVertexAttribPointer(vertLoc, 3, GL_FLOAT, 0, sizeof(PackedVertex),
+                        reinterpret_cast<const GLvoid*>(offsetof(PackedVertex, x)));
+  glVertexAttribPointer(loc, 2, GL_FLOAT, 0, sizeof(PackedVertex),
+                        reinterpret_cast<const GLvoid*>(offsetof(PackedVertex, u1)));
 
   glEnableVertexAttribArray(vertLoc);
   glEnableVertexAttribArray(loc);
@@ -228,14 +235,14 @@ bool CRendererDRMPRIMEGLES::Supports(ERENDERFEATURE feature)
 {
   switch (feature)
   {
-  case RENDERFEATURE_STRETCH:
-  case RENDERFEATURE_ZOOM:
-  case RENDERFEATURE_VERTICAL_SHIFT:
-  case RENDERFEATURE_PIXEL_RATIO:
-  case RENDERFEATURE_ROTATION:
-    return true;
-  default:
-    return false;
+    case RENDERFEATURE_STRETCH:
+    case RENDERFEATURE_ZOOM:
+    case RENDERFEATURE_VERTICAL_SHIFT:
+    case RENDERFEATURE_PIXEL_RATIO:
+    case RENDERFEATURE_ROTATION:
+      return true;
+    default:
+      return false;
   }
 }
 
@@ -243,9 +250,9 @@ bool CRendererDRMPRIMEGLES::Supports(ESCALINGMETHOD method)
 {
   switch (method)
   {
-  case VS_SCALINGMETHOD_LINEAR:
-    return true;
-  default:
-    return false;
+    case VS_SCALINGMETHOD_LINEAR:
+      return true;
+    default:
+      return false;
   }
 }

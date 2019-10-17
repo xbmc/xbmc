@@ -14,8 +14,7 @@
 
 #include <memory>
 
-class CDVDVideoCodecDRMPRIME
-  : public CDVDVideoCodec
+class CDVDVideoCodecDRMPRIME : public CDVDVideoCodec
 {
 public:
   explicit CDVDVideoCodecDRMPRIME(CProcessInfo& processInfo);
@@ -28,9 +27,9 @@ public:
   bool AddData(const DemuxPacket& packet) override;
   void Reset() override;
   CDVDVideoCodec::VCReturn GetPicture(VideoPicture* pVideoPicture) override;
-  const char* GetName() override { return m_name.c_str(); };
-  unsigned GetAllowedReferences() override { return 5; };
-  void SetCodecControl(int flags) override { m_codecControlFlags = flags; };
+  const char* GetName() override { return m_name.c_str(); }
+  unsigned GetAllowedReferences() override { return 5; }
+  void SetCodecControl(int flags) override { m_codecControlFlags = flags; }
 
 protected:
   void Drain();

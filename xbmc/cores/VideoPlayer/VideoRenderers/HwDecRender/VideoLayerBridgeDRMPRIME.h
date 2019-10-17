@@ -19,15 +19,14 @@ namespace WINDOWING
 {
 namespace GBM
 {
-  class CDRMUtils;
+class CDRMUtils;
 }
-}
-}
+} // namespace WINDOWING
+} // namespace KODI
 
 class IVideoBufferDRMPRIME;
 
-class CVideoLayerBridgeDRMPRIME
-  : public KODI::WINDOWING::GBM::CVideoLayerBridge
+class CVideoLayerBridgeDRMPRIME : public KODI::WINDOWING::GBM::CVideoLayerBridge
 {
 public:
   CVideoLayerBridgeDRMPRIME(std::shared_ptr<KODI::WINDOWING::GBM::CDRMUtils> drm);

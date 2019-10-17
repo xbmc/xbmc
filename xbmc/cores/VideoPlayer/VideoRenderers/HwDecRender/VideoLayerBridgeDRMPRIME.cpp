@@ -14,8 +14,7 @@
 
 using namespace KODI::WINDOWING::GBM;
 
-CVideoLayerBridgeDRMPRIME::CVideoLayerBridgeDRMPRIME(std::shared_ptr<CDRMUtils> drm)
-  : m_DRM(drm)
+CVideoLayerBridgeDRMPRIME::CVideoLayerBridgeDRMPRIME(std::shared_ptr<CDRMUtils> drm) : m_DRM(drm)
 {
 }
 
@@ -71,10 +70,13 @@ bool CVideoLayerBridgeDRMPRIME::Map(IVideoBufferDRMPRIME* buffer)
   // convert Prime FD to GEM handle
   for (int object = 0; object < descriptor->nb_objects; object++)
   {
-    ret = drmPrimeFDToHandle(m_DRM->GetFileDescriptor(), descriptor->objects[object].fd, &buffer->m_handles[object]);
+    ret = drmPrimeFDToHandle(m_DRM->GetFileDescriptor(), descriptor->objects[object].fd,
+                             &buffer->m_handles[object]);
     if (ret < 0)
     {
-      CLog::Log(LOGERROR, "CVideoLayerBridgeDRMPRIME::{} - failed to convert prime fd {} to gem handle {}, ret = {}",
+      CLog::Log(LOGERROR,
+                "CVideoLayerBridgeDRMPRIME::{} - failed to convert prime fd {} to gem handle {}, "
+                "ret = {}",
                 __FUNCTION__, descriptor->objects[object].fd, buffer->m_handles[object], ret);
       return false;
     }
@@ -99,11 +101,13 @@ bool CVideoLayerBridgeDRMPRIME::Map(IVideoBufferDRMPRIME* buffer)
     flags = DRM_MODE_FB_MODIFIERS;
 
   // add the video frame FB
-  ret = drmModeAddFB2WithModifiers(m_DRM->GetFileDescriptor(), buffer->GetWidth(), buffer->GetHeight(), layer->format,
-                                   handles, pitches, offsets, modifier, &buffer->m_fb_id, flags);
+  ret = drmModeAddFB2WithModifiers(m_DRM->GetFileDescriptor(), buffer->GetWidth(),
+                                   buffer->GetHeight(), layer->format, handles, pitches, offsets,
+                                   modifier, &buffer->m_fb_id, flags);
   if (ret < 0)
   {
-    CLog::Log(LOGERROR, "CVideoLayerBridgeDRMPRIME::{} - failed to add fb {}, ret = {}", __FUNCTION__, buffer->m_fb_id, ret);
+    CLog::Log(LOGERROR, "CVideoLayerBridgeDRMPRIME::{} - failed to add fb {}, ret = {}",
+              __FUNCTION__, buffer->m_fb_id, ret);
     return false;
   }
 
@@ -123,7 +127,7 @@ void CVideoLayerBridgeDRMPRIME::Unmap(IVideoBufferDRMPRIME* buffer)
   {
     if (buffer->m_handles[i])
     {
-      struct drm_gem_close gem_close = { .handle = buffer->m_handles[i] };
+      struct drm_gem_close gem_close = {.handle = buffer->m_handles[i]};
       drmIoctl(m_DRM->GetFileDescriptor(), DRM_IOCTL_GEM_CLOSE, &gem_close);
       buffer->m_handles[i] = 0;
     }
