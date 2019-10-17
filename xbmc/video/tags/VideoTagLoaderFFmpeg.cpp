@@ -8,11 +8,12 @@
 
 #include "VideoTagLoaderFFmpeg.h"
 
-#include "addons/Scraper.h"
 #include "FileItem.h"
+#include "NfoFile.h"
+#include "addons/Scraper.h"
 #include "cores/FFmpeg.h"
 #include "filesystem/File.h"
-#include "NfoFile.h"
+#include "filesystem/StackDirectory.h"
 #include "utils/StringUtils.h"
 #include "video/VideoInfoTag.h"
 
@@ -39,8 +40,12 @@ CVideoTagLoaderFFmpeg::CVideoTagLoaderFFmpeg(const CFileItem& item,
   : IVideoInfoTagLoader(item, info, lookInFolder)
   , m_info(info)
 {
+  std::string filename =
+      item.IsStack() ? CStackDirectory::GetFirstStackedFile(item.GetPath()) : item.GetPath();
+
   m_file = new CFile;
-  if (!m_file->Open(m_item.GetPath()))
+
+  if (!m_file->Open(filename))
   {
     delete m_file;
     m_file = nullptr;
