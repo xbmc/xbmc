@@ -103,7 +103,7 @@ bool CRendererDRMPRIMEGLES::UploadTexture(int index)
 
   if (!buffer || !buffer->IsValid())
   {
-    CLog::Log(LOGNOTICE, "CRendererDRMPRIMEGLES::%s - no buffer", __FUNCTION__);
+    CLog::Log(LOGNOTICE, "CRendererDRMPRIMEGLES::{} - no buffer", __FUNCTION__);
     return false;
   }
 

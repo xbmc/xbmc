@@ -94,7 +94,7 @@ int CDRMPRIMETexture::GetColorSpace(int colorSpace)
     case DRM_COLOR_YCBCR_BT709:
       return EGL_ITU_REC709_EXT;
     default:
-      CLog::Log(LOGERROR, "CEGLImage::%s - failed to get colorspace for: %d", __FUNCTION__, colorSpace);
+      CLog::Log(LOGERROR, "CDRMPRIMETexture::{} - failed to get colorspace for: {}", __FUNCTION__, colorSpace);
       break;
   }
 
@@ -110,7 +110,7 @@ int CDRMPRIMETexture::GetColorRange(int colorRange)
     case DRM_COLOR_YCBCR_LIMITED_RANGE:
       return EGL_YUV_NARROW_RANGE_EXT;
     default:
-      CLog::Log(LOGERROR, "CEGLImage::%s - failed to get colorrange for: %d", __FUNCTION__, colorRange);
+      CLog::Log(LOGERROR, "CDRMPRIMETexture::{} - failed to get colorrange for: {}", __FUNCTION__, colorRange);
       break;
   }
 

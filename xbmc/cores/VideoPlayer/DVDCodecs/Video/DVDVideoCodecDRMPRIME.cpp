@@ -110,11 +110,11 @@ bool CDVDVideoCodecDRMPRIME::Open(CDVDStreamInfo& hints, CDVDCodecOptions& optio
   const AVCodec* pCodec = FindDecoder(hints);
   if (!pCodec)
   {
-    CLog::Log(LOGDEBUG, "CDVDVideoCodecDRMPRIME::%s - unable to find decoder for codec %d", __FUNCTION__, hints.codec);
+    CLog::Log(LOGDEBUG, "CDVDVideoCodecDRMPRIME::{} - unable to find decoder for codec {}", __FUNCTION__, hints.codec);
     return false;
   }
 
-  CLog::Log(LOGNOTICE, "CDVDVideoCodecDRMPRIME::%s - using decoder %s", __FUNCTION__, pCodec->long_name ? pCodec->long_name : pCodec->name);
+  CLog::Log(LOGNOTICE, "CDVDVideoCodecDRMPRIME::{} - using decoder {}", __FUNCTION__, pCodec->long_name ? pCodec->long_name : pCodec->name);
 
   m_pCodecContext = avcodec_alloc_context3(pCodec);
   if (!m_pCodecContext)
@@ -128,7 +128,7 @@ bool CDVDVideoCodecDRMPRIME::Open(CDVDStreamInfo& hints, CDVDCodecOptions& optio
     CWinSystemGbm* winSystem = dynamic_cast<CWinSystemGbm*>(CServiceBroker::GetWinSystem());
     if (av_hwdevice_ctx_create(&m_pCodecContext->hw_device_ctx, AV_HWDEVICE_TYPE_DRM, drmGetDeviceNameFromFd2(winSystem->GetDrm()->GetFileDescriptor()), nullptr, 0) < 0)
     {
-      CLog::Log(LOGNOTICE, "CDVDVideoCodecDRMPRIME::%s - unable to create hwdevice context", __FUNCTION__);
+      CLog::Log(LOGNOTICE, "CDVDVideoCodecDRMPRIME::{} - unable to create hwdevice context", __FUNCTION__);
       avcodec_free_context(&m_pCodecContext);
       return false;
     }
@@ -153,7 +153,7 @@ bool CDVDVideoCodecDRMPRIME::Open(CDVDStreamInfo& hints, CDVDCodecOptions& optio
 
   if (avcodec_open2(m_pCodecContext, pCodec, nullptr) < 0)
   {
-    CLog::Log(LOGNOTICE, "CDVDVideoCodecDRMPRIME::%s - unable to open codec", __FUNCTION__);
+    CLog::Log(LOGNOTICE, "CDVDVideoCodecDRMPRIME::{} - unable to open codec", __FUNCTION__);
     avcodec_free_context(&m_pCodecContext);
     return false;
   }
@@ -200,7 +200,7 @@ bool CDVDVideoCodecDRMPRIME::AddData(const DemuxPacket& packet)
     return true;
   else if (ret)
   {
-    CLog::Log(LOGERROR, "CDVDVideoCodecDRMPRIME::%s - send packet failed, ret:%d", __FUNCTION__, ret);
+    CLog::Log(LOGERROR, "CDVDVideoCodecDRMPRIME::{} - send packet failed, ret:{}", __FUNCTION__, ret);
     return false;
   }
 
@@ -277,7 +277,7 @@ CDVDVideoCodec::VCReturn CDVDVideoCodecDRMPRIME::GetPicture(VideoPicture* pVideo
     return VC_EOF;
   else if (ret)
   {
-    CLog::Log(LOGERROR, "CDVDVideoCodecDRMPRIME::%s - receive frame failed, ret:%d", __FUNCTION__, ret);
+    CLog::Log(LOGERROR, "CDVDVideoCodecDRMPRIME::{} - receive frame failed, ret:{}", __FUNCTION__, ret);
     return VC_ERROR;
   }
 

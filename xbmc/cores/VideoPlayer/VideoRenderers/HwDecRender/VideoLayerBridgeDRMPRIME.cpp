@@ -74,7 +74,7 @@ bool CVideoLayerBridgeDRMPRIME::Map(IVideoBufferDRMPRIME* buffer)
     ret = drmPrimeFDToHandle(m_DRM->GetFileDescriptor(), descriptor->objects[object].fd, &buffer->m_handles[object]);
     if (ret < 0)
     {
-      CLog::Log(LOGERROR, "CVideoLayerBridgeDRMPRIME::%s - failed to convert prime fd %d to gem handle %u, ret = %d",
+      CLog::Log(LOGERROR, "CVideoLayerBridgeDRMPRIME::{} - failed to convert prime fd {} to gem handle {}, ret = {}",
                 __FUNCTION__, descriptor->objects[object].fd, buffer->m_handles[object], ret);
       return false;
     }
@@ -103,7 +103,7 @@ bool CVideoLayerBridgeDRMPRIME::Map(IVideoBufferDRMPRIME* buffer)
                                    handles, pitches, offsets, modifier, &buffer->m_fb_id, flags);
   if (ret < 0)
   {
-    CLog::Log(LOGERROR, "CVideoLayerBridgeDRMPRIME::%s - failed to add fb %d, ret = %d", __FUNCTION__, buffer->m_fb_id, ret);
+    CLog::Log(LOGERROR, "CVideoLayerBridgeDRMPRIME::{} - failed to add fb {}, ret = {}", __FUNCTION__, buffer->m_fb_id, ret);
     return false;
   }
 
