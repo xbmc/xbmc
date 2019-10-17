@@ -35,7 +35,7 @@ CRendererDRMPRIME::~CRendererDRMPRIME()
 
 CBaseRenderer* CRendererDRMPRIME::Create(CVideoBuffer* buffer)
 {
-  if (buffer && dynamic_cast<IVideoBufferDRMPRIME*>(buffer) &&
+  if (buffer && dynamic_cast<CVideoBufferDRMPRIME*>(buffer) &&
       CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
           SETTING_VIDEOPLAYER_USEPRIMERENDERER) == 0)
   {
@@ -137,7 +137,7 @@ bool CRendererDRMPRIME::NeedBuffer(int index)
   if (m_iLastRenderBuffer == index)
     return true;
 
-  IVideoBufferDRMPRIME* buffer = dynamic_cast<IVideoBufferDRMPRIME*>(m_buffers[index].videoBuffer);
+  CVideoBufferDRMPRIME* buffer = dynamic_cast<CVideoBufferDRMPRIME*>(m_buffers[index].videoBuffer);
   if (buffer && buffer->m_fb_id)
     return true;
 
@@ -168,7 +168,7 @@ void CRendererDRMPRIME::RenderUpdate(
     return;
   }
 
-  IVideoBufferDRMPRIME* buffer = dynamic_cast<IVideoBufferDRMPRIME*>(m_buffers[index].videoBuffer);
+  CVideoBufferDRMPRIME* buffer = dynamic_cast<CVideoBufferDRMPRIME*>(m_buffers[index].videoBuffer);
   if (!buffer || !buffer->IsValid())
     return;
 

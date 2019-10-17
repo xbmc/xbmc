@@ -32,7 +32,7 @@ void CVideoLayerBridgeDRMPRIME::Disable()
   m_DRM->AddProperty(plane, "CRTC_ID", 0);
 }
 
-void CVideoLayerBridgeDRMPRIME::Acquire(IVideoBufferDRMPRIME* buffer)
+void CVideoLayerBridgeDRMPRIME::Acquire(CVideoBufferDRMPRIME* buffer)
 {
   // release the buffer that is no longer presented on screen
   Release(m_prev_buffer);
@@ -45,7 +45,7 @@ void CVideoLayerBridgeDRMPRIME::Acquire(IVideoBufferDRMPRIME* buffer)
   m_buffer->Acquire();
 }
 
-void CVideoLayerBridgeDRMPRIME::Release(IVideoBufferDRMPRIME* buffer)
+void CVideoLayerBridgeDRMPRIME::Release(CVideoBufferDRMPRIME* buffer)
 {
   if (!buffer)
     return;
@@ -54,7 +54,7 @@ void CVideoLayerBridgeDRMPRIME::Release(IVideoBufferDRMPRIME* buffer)
   buffer->Release();
 }
 
-bool CVideoLayerBridgeDRMPRIME::Map(IVideoBufferDRMPRIME* buffer)
+bool CVideoLayerBridgeDRMPRIME::Map(CVideoBufferDRMPRIME* buffer)
 {
   if (buffer->m_fb_id)
     return true;
@@ -115,7 +115,7 @@ bool CVideoLayerBridgeDRMPRIME::Map(IVideoBufferDRMPRIME* buffer)
   return true;
 }
 
-void CVideoLayerBridgeDRMPRIME::Unmap(IVideoBufferDRMPRIME* buffer)
+void CVideoLayerBridgeDRMPRIME::Unmap(CVideoBufferDRMPRIME* buffer)
 {
   if (buffer->m_fb_id)
   {
@@ -136,7 +136,7 @@ void CVideoLayerBridgeDRMPRIME::Unmap(IVideoBufferDRMPRIME* buffer)
   buffer->Unmap();
 }
 
-void CVideoLayerBridgeDRMPRIME::Configure(IVideoBufferDRMPRIME* buffer)
+void CVideoLayerBridgeDRMPRIME::Configure(CVideoBufferDRMPRIME* buffer)
 {
   struct plane* plane = m_DRM->GetVideoPlane();
   if (m_DRM->SupportsProperty(plane, "COLOR_ENCODING") &&
@@ -147,7 +147,7 @@ void CVideoLayerBridgeDRMPRIME::Configure(IVideoBufferDRMPRIME* buffer)
   }
 }
 
-void CVideoLayerBridgeDRMPRIME::SetVideoPlane(IVideoBufferDRMPRIME* buffer, const CRect& destRect)
+void CVideoLayerBridgeDRMPRIME::SetVideoPlane(CVideoBufferDRMPRIME* buffer, const CRect& destRect)
 {
   if (!Map(buffer))
   {

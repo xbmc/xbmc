@@ -29,11 +29,11 @@ enum drm_color_range
   DRM_COLOR_YCBCR_FULL_RANGE,
 };
 
-class IVideoBufferDRMPRIME : public CVideoBuffer
+class CVideoBufferDRMPRIME : public CVideoBuffer
 {
 public:
-  IVideoBufferDRMPRIME() = delete;
-  ~IVideoBufferDRMPRIME() override = default;
+  CVideoBufferDRMPRIME() = delete;
+  ~CVideoBufferDRMPRIME() override = default;
 
   virtual AVDRMFrameDescriptor* GetDescriptor() const = 0;
   virtual uint32_t GetWidth() const = 0;
@@ -49,14 +49,14 @@ public:
   uint32_t m_handles[AV_DRM_MAX_PLANES] = {};
 
 protected:
-  explicit IVideoBufferDRMPRIME(int id);
+  explicit CVideoBufferDRMPRIME(int id);
 };
 
-class CVideoBufferDRMPRIME : public IVideoBufferDRMPRIME
+class CVideoBufferDRMPRIMEFFmpeg : public CVideoBufferDRMPRIME
 {
 public:
-  CVideoBufferDRMPRIME(IVideoBufferPool& pool, int id);
-  ~CVideoBufferDRMPRIME() override;
+  CVideoBufferDRMPRIMEFFmpeg(IVideoBufferPool& pool, int id);
+  ~CVideoBufferDRMPRIMEFFmpeg() override;
   void SetRef(AVFrame* frame);
   void Unref();
 
@@ -75,16 +75,16 @@ protected:
   AVFrame* m_pFrame = nullptr;
 };
 
-class CVideoBufferPoolDRMPRIME : public IVideoBufferPool
+class CVideoBufferPoolDRMPRIMEFFmpeg : public IVideoBufferPool
 {
 public:
-  ~CVideoBufferPoolDRMPRIME() override;
+  ~CVideoBufferPoolDRMPRIMEFFmpeg() override;
   void Return(int id) override;
   CVideoBuffer* Get() override;
 
 protected:
   CCriticalSection m_critSection;
-  std::vector<CVideoBufferDRMPRIME*> m_all;
+  std::vector<CVideoBufferDRMPRIMEFFmpeg*> m_all;
   std::deque<int> m_used;
   std::deque<int> m_free;
 };

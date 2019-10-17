@@ -16,33 +16,33 @@ extern "C"
 #include <libavutil/pixdesc.h>
 }
 
-IVideoBufferDRMPRIME::IVideoBufferDRMPRIME(int id) : CVideoBuffer(id)
+CVideoBufferDRMPRIME::CVideoBufferDRMPRIME(int id) : CVideoBuffer(id)
 {
 }
 
-CVideoBufferDRMPRIME::CVideoBufferDRMPRIME(IVideoBufferPool& pool, int id)
-  : IVideoBufferDRMPRIME(id)
+CVideoBufferDRMPRIMEFFmpeg::CVideoBufferDRMPRIMEFFmpeg(IVideoBufferPool& pool, int id)
+  : CVideoBufferDRMPRIME(id)
 {
   m_pFrame = av_frame_alloc();
 }
 
-CVideoBufferDRMPRIME::~CVideoBufferDRMPRIME()
+CVideoBufferDRMPRIMEFFmpeg::~CVideoBufferDRMPRIMEFFmpeg()
 {
   Unref();
   av_frame_free(&m_pFrame);
 }
 
-void CVideoBufferDRMPRIME::SetRef(AVFrame* frame)
+void CVideoBufferDRMPRIMEFFmpeg::SetRef(AVFrame* frame)
 {
   av_frame_move_ref(m_pFrame, frame);
 }
 
-void CVideoBufferDRMPRIME::Unref()
+void CVideoBufferDRMPRIMEFFmpeg::Unref()
 {
   av_frame_unref(m_pFrame);
 }
 
-int CVideoBufferDRMPRIME::GetColorEncoding() const
+int CVideoBufferDRMPRIMEFFmpeg::GetColorEncoding() const
 {
   switch (m_pFrame->colorspace)
   {
@@ -65,7 +65,7 @@ int CVideoBufferDRMPRIME::GetColorEncoding() const
   }
 }
 
-int CVideoBufferDRMPRIME::GetColorRange() const
+int CVideoBufferDRMPRIMEFFmpeg::GetColorRange() const
 {
   switch (m_pFrame->color_range)
   {
@@ -77,23 +77,23 @@ int CVideoBufferDRMPRIME::GetColorRange() const
   }
 }
 
-bool CVideoBufferDRMPRIME::IsValid() const
+bool CVideoBufferDRMPRIMEFFmpeg::IsValid() const
 {
   AVDRMFrameDescriptor* descriptor = GetDescriptor();
   return descriptor && descriptor->nb_layers;
 }
 
-CVideoBufferPoolDRMPRIME::~CVideoBufferPoolDRMPRIME()
+CVideoBufferPoolDRMPRIMEFFmpeg::~CVideoBufferPoolDRMPRIMEFFmpeg()
 {
   for (auto buf : m_all)
     delete buf;
 }
 
-CVideoBuffer* CVideoBufferPoolDRMPRIME::Get()
+CVideoBuffer* CVideoBufferPoolDRMPRIMEFFmpeg::Get()
 {
   CSingleLock lock(m_critSection);
 
-  CVideoBufferDRMPRIME* buf = nullptr;
+  CVideoBufferDRMPRIMEFFmpeg* buf = nullptr;
   if (!m_free.empty())
   {
     int idx = m_free.front();
@@ -104,7 +104,7 @@ CVideoBuffer* CVideoBufferPoolDRMPRIME::Get()
   else
   {
     int id = m_all.size();
-    buf = new CVideoBufferDRMPRIME(*this, id);
+    buf = new CVideoBufferDRMPRIMEFFmpeg(*this, id);
     m_all.push_back(buf);
     m_used.push_back(id);
   }
@@ -113,7 +113,7 @@ CVideoBuffer* CVideoBufferPoolDRMPRIME::Get()
   return buf;
 }
 
-void CVideoBufferPoolDRMPRIME::Return(int id)
+void CVideoBufferPoolDRMPRIMEFFmpeg::Return(int id)
 {
   CSingleLock lock(m_critSection);
 

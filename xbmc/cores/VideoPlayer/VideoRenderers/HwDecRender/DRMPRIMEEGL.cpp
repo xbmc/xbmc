@@ -15,7 +15,7 @@ void CDRMPRIMETexture::Init(EGLDisplay eglDisplay)
   m_eglImage.reset(new CEGLImage(eglDisplay));
 }
 
-bool CDRMPRIMETexture::Map(IVideoBufferDRMPRIME* buffer)
+bool CDRMPRIMETexture::Map(CVideoBufferDRMPRIME* buffer)
 {
   if (m_primebuffer)
     return true;
