@@ -211,6 +211,7 @@ bool CRendererDRMPRIME::Supports(ERENDERFEATURE feature)
   {
     case RENDERFEATURE_STRETCH:
     case RENDERFEATURE_ZOOM:
+    case RENDERFEATURE_VERTICAL_SHIFT:
     case RENDERFEATURE_PIXEL_RATIO:
       return true;
     default:
