@@ -130,6 +130,8 @@ bool CDVDVideoCodecDRMPRIME::Open(CDVDStreamInfo& hints, CDVDCodecOptions& optio
   if (!m_pCodecContext)
     return false;
 
+  m_hints = hints;
+
   const AVCodecHWConfig* pConfig = FindHWConfig(pCodec);
   if (pConfig && (pConfig->methods & AV_CODEC_HW_CONFIG_METHOD_HW_DEVICE_CTX) &&
       pConfig->device_type == AV_HWDEVICE_TYPE_DRM)
@@ -272,10 +274,16 @@ void CDVDVideoCodecDRMPRIME::SetPictureParams(VideoPicture* pVideoPicture)
         (static_cast<int>(lrint(pVideoPicture->iWidth / aspect_ratio))) & -3;
   }
 
-  pVideoPicture->color_range = m_pFrame->color_range == AVCOL_RANGE_JPEG ? 1 : 0;
-  pVideoPicture->color_primaries = m_pFrame->color_primaries;
-  pVideoPicture->color_transfer = m_pFrame->color_trc;
-  pVideoPicture->color_space = m_pFrame->colorspace;
+  pVideoPicture->color_range =
+      m_pFrame->color_range == AVCOL_RANGE_JPEG || m_hints.colorRange == AVCOL_RANGE_JPEG ? 1 : 0;
+  pVideoPicture->color_primaries = m_pFrame->color_primaries == AVCOL_PRI_UNSPECIFIED
+                                       ? m_hints.colorPrimaries
+                                       : m_pFrame->color_primaries;
+  pVideoPicture->color_transfer = m_pFrame->color_trc == AVCOL_TRC_UNSPECIFIED
+                                      ? m_hints.colorTransferCharacteristic
+                                      : m_pFrame->color_trc;
+  pVideoPicture->color_space =
+      m_pFrame->colorspace == AVCOL_SPC_UNSPECIFIED ? m_hints.colorSpace : m_pFrame->colorspace;
 
   pVideoPicture->iRepeatPicture = 0;
   pVideoPicture->iFlags = 0;

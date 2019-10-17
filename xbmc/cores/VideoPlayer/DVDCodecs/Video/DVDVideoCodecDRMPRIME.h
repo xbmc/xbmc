@@ -39,6 +39,7 @@ protected:
 
   std::string m_name;
   int m_codecControlFlags = 0;
+  CDVDStreamInfo m_hints;
   AVCodecContext* m_pCodecContext = nullptr;
   AVFrame* m_pFrame = nullptr;
   std::shared_ptr<IVideoBufferPool> m_videoBufferPool;
