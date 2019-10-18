@@ -14,7 +14,10 @@
 
 using namespace XFILE::VIDEODATABASEDIRECTORY;
 
-CDirectoryNodeGrouped::CDirectoryNodeGrouped(NODE_TYPE type, const std::string& strName, CDirectoryNode* pParent, const std::string& strOrigin)
+CDirectoryNodeGrouped::CDirectoryNodeGrouped(NODE_TYPE type,
+                                             const std::string& strName,
+                                             CDirectoryNode* pParent,
+                                             const std::string& strOrigin)
   : CDirectoryNode(type, strName, pParent, strOrigin)
 { }
 

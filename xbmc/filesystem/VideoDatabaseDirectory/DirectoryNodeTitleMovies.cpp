@@ -13,7 +13,9 @@
 
 using namespace XFILE::VIDEODATABASEDIRECTORY;
 
-CDirectoryNodeTitleMovies::CDirectoryNodeTitleMovies(const std::string& strName, CDirectoryNode* pParent, const std::string& strOrigin)
+CDirectoryNodeTitleMovies::CDirectoryNodeTitleMovies(const std::string& strName,
+                                                     CDirectoryNode* pParent,
+                                                     const std::string& strOrigin)
   : CDirectoryNode(NODE_TYPE_TITLE_MOVIES, strName, pParent, strOrigin)
 {
 

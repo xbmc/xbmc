@@ -101,7 +101,10 @@ bool CDirectoryNode::GetNodeInfo(const std::string& strPath,
 }
 
 //  Create a node object
-CDirectoryNode* CDirectoryNode::CreateNode(NODE_TYPE Type, const std::string& strName, CDirectoryNode* pParent, const std::string& strOrigin)
+CDirectoryNode* CDirectoryNode::CreateNode(NODE_TYPE Type,
+                                           const std::string& strName,
+                                           CDirectoryNode* pParent,
+                                           const std::string& strOrigin)
 {
   switch (Type)
   {
@@ -251,7 +254,8 @@ bool CDirectoryNode::GetChilds(CFileItemList& items)
   if (CanCache() && items.Load())
     return true;
 
-  std::unique_ptr<CDirectoryNode> pNode(CDirectoryNode::CreateNode(GetChildType(), "", this, m_origin));
+  std::unique_ptr<CDirectoryNode> pNode(
+      CDirectoryNode::CreateNode(GetChildType(), "", this, m_origin));
 
   bool bSuccess=false;
   if (pNode)

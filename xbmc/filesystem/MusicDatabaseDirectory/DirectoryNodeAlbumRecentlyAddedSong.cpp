@@ -12,7 +12,8 @@
 
 using namespace XFILE::MUSICDATABASEDIRECTORY;
 
-CDirectoryNodeAlbumRecentlyAddedSong::CDirectoryNodeAlbumRecentlyAddedSong(const std::string& strName, CDirectoryNode* pParent, const std::string& strOrigin)
+CDirectoryNodeAlbumRecentlyAddedSong::CDirectoryNodeAlbumRecentlyAddedSong(
+    const std::string& strName, CDirectoryNode* pParent, const std::string& strOrigin)
   : CDirectoryNode(NODE_TYPE_ALBUM_RECENTLY_ADDED_SONGS, strName, pParent, strOrigin)
 {
 

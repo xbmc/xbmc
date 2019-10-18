@@ -67,8 +67,14 @@ namespace XFILE
       std::string BuildPath() const;
 
     protected:
-      CDirectoryNode(NODE_TYPE Type, const std::string& strName, CDirectoryNode* pParent, const std::string& strOrigin);
-      static CDirectoryNode* CreateNode(NODE_TYPE Type, const std::string& strName, CDirectoryNode* pParent, const std::string& strOrigin);
+      CDirectoryNode(NODE_TYPE Type,
+                     const std::string& strName,
+                     CDirectoryNode* pParent,
+                     const std::string& strOrigin);
+      static CDirectoryNode* CreateNode(NODE_TYPE Type,
+                                        const std::string& strName,
+                                        CDirectoryNode* pParent,
+                                        const std::string& strOrigin);
 
       void AddOptions(const std::string &options);
       void CollectQueryParams(CQueryParams& params) const;

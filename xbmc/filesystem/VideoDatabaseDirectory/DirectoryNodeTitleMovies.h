@@ -17,7 +17,10 @@ namespace XFILE
     class CDirectoryNodeTitleMovies : public CDirectoryNode
     {
     public:
-      CDirectoryNodeTitleMovies(const std::string& strEntryName, CDirectoryNode* pParent, const std::string& strOrigin);
+      CDirectoryNodeTitleMovies(const std::string& strEntryName,
+                                CDirectoryNode* pParent,
+                                const std::string& strOrigin);
+
     protected:
       bool GetContent(CFileItemList& items) const override;
     };

@@ -17,7 +17,10 @@ namespace XFILE
     class CDirectoryNodeTop100 : public CDirectoryNode
     {
     public:
-      CDirectoryNodeTop100(const std::string& strName, CDirectoryNode* pParent, const std::string& strOrigin);
+      CDirectoryNodeTop100(const std::string& strName,
+                           CDirectoryNode* pParent,
+                           const std::string& strOrigin);
+
     protected:
       NODE_TYPE GetChildType() const override;
       bool GetContent(CFileItemList& items) const override;

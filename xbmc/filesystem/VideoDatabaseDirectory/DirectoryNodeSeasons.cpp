@@ -16,7 +16,9 @@
 
 using namespace XFILE::VIDEODATABASEDIRECTORY;
 
-CDirectoryNodeSeasons::CDirectoryNodeSeasons(const std::string& strName, CDirectoryNode* pParent, const std::string& strOrigin)
+CDirectoryNodeSeasons::CDirectoryNodeSeasons(const std::string& strName,
+                                             CDirectoryNode* pParent,
+                                             const std::string& strOrigin)
   : CDirectoryNode(NODE_TYPE_SEASONS, strName, pParent, strOrigin)
 {
 

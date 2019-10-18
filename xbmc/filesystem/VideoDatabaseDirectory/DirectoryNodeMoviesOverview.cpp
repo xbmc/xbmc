@@ -28,7 +28,9 @@ Node MovieChildren[] = {
                         { NODE_TYPE_TAGS,         "tags",       20459 }
                        };
 
-CDirectoryNodeMoviesOverview::CDirectoryNodeMoviesOverview(const std::string& strName, CDirectoryNode* pParent, const std::string& strOrigin)
+CDirectoryNodeMoviesOverview::CDirectoryNodeMoviesOverview(const std::string& strName,
+                                                           CDirectoryNode* pParent,
+                                                           const std::string& strOrigin)
   : CDirectoryNode(NODE_TYPE_MOVIES_OVERVIEW, strName, pParent, strOrigin)
 {
 
