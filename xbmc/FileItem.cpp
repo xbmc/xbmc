@@ -2909,8 +2909,17 @@ bool CFileItemList::Save(int windowID)
   CLog::Log(LOGDEBUG,"Saving fileitems [%s]", CURL::GetRedacted(GetPath()).c_str());
 
   CFile file;
-  if (file.OpenForWrite(GetDiscFileCache(windowID), true)) // overwrite always
+  std::string cachefile = GetDiscFileCache(windowID);
+  if (file.OpenForWrite(cachefile, true)) // overwrite always
   {
+    // Before caching save simplified cache file name in every item so the cache file can be
+    // identifed and removed if the item is updated. List path and options (used for file
+    // name when list cached) can not be accurately derived from item path
+    StringUtils::Replace(cachefile, "special://temp/archive_cache/", "");
+    StringUtils::Replace(cachefile, ".fi", "");
+    for (auto item : m_items)
+      item->SetProperty("cachefilename", cachefile);
+
     CArchive ar(&file, CArchive::store);
     ar << *this;
     CLog::Log(LOGDEBUG,"  -- items: %i, sort method: %i, ascending: %s", iSize, m_sortDescription.sortBy, m_sortDescription.sortOrder == SortOrderAscending ? "true" : "false");
@@ -2924,12 +2933,22 @@ bool CFileItemList::Save(int windowID)
 
 void CFileItemList::RemoveDiscCache(int windowID) const
 {
-  std::string cacheFile(GetDiscFileCache(windowID));
+  RemoveDiscCache(GetDiscFileCache(windowID));
+}
+
+void CFileItemList::RemoveDiscCache(const std::string& cacheFile) const
+{
   if (CFile::Exists(cacheFile))
   {
     CLog::Log(LOGDEBUG,"Clearing cached fileitems [%s]", CURL::GetRedacted(GetPath()).c_str());
     CFile::Delete(cacheFile);
   }
+}
+
+void CFileItemList::RemoveDiscCacheCRC(const std::string& crc) const
+{
+  std::string cachefile = StringUtils::Format("special://temp/archive_cache/%s.fi", crc);
+  RemoveDiscCache(cachefile);
 }
 
 std::string CFileItemList::GetDiscFileCache(int windowID) const
