@@ -57,6 +57,12 @@ namespace PVR
     EPG_LAST_DATE = 1
   };
 
+  enum RenumberMode
+  {
+    NORMAL = 0,
+    IGNORE_NUMBERING_FROM_ONE = 1
+  };
+
   class CPVRChannelGroup : public ISettingCallback
   {
     friend class CPVRChannelGroupInternal;
@@ -260,9 +266,10 @@ namespace PVR
 
     /*!
      * @brief Remove invalid channels and updates the channel numbers.
+     * @param mode the numbering mode to use
      * @return True if something changed, false otherwise.
      */
-    bool Renumber();
+    bool Renumber(RenumberMode mode = NORMAL);
 
     //@}
 
@@ -472,6 +479,12 @@ namespace PVR
      */
     void SetSelectedGroup(bool isSelectedGroup) { m_bIsSelectedGroup = isSelectedGroup; }
 
+    /*!
+     * @brief Update the channel numbers according to the all channels group and publish event.
+     * @return True, if a channel number was changed, false otherwise.
+     */
+    bool UpdateChannelNumbersFromAllChannelsGroup();
+
   protected:
     /*!
      * @brief Init class
@@ -556,6 +569,7 @@ namespace PVR
     CEventSource<PVREvent> m_events;
     bool m_bIsSelectedGroup = false; /*!< Whether or not this group is currently selected */
     bool m_bStartGroupChannelNumbersFromOne = false; /*!< true if we start group channel numbers from one when not using backend channel numbers, false otherwise */
+    bool m_bSyncChannelGroups = false; /*!< true if channel groups should be synced with the backend, false otherwise */
 
   private:
     CDateTime GetEPGDate(EpgDateType epgDateType) const;

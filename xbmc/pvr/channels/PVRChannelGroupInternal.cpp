@@ -240,11 +240,12 @@ bool CPVRChannelGroupInternal::AddAndUpdateChannels(const CPVRChannelGroup& chan
         CLog::LogFC(LOGDEBUG, LOGPVR, "Updated {} channel '{}' from PVR client", IsRadio() ? "radio" : "TV", newMember->channel->ChannelName());
       }
 
-      if (existingMember->channelNumber != newMember->channelNumber ||
+      if ((existingMember->channelNumber != newMember->channelNumber && m_bSyncChannelGroups) ||
           existingMember->clientChannelNumber != newMember->clientChannelNumber ||
           existingMember->iOrder != newMember->iOrder)
       {
-        existingMember->channelNumber = newMember->channelNumber;
+        if (m_bSyncChannelGroups)
+          existingMember->channelNumber = newMember->channelNumber;
         existingMember->clientChannelNumber = newMember->clientChannelNumber;
         existingMember->iOrder = newMember->iOrder;
         bReturn = true;

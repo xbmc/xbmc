@@ -249,6 +249,19 @@ bool CPVRChannelGroups::Update(bool bChannelsOnly /* = false */)
   return PersistAll() && bReturn;
 }
 
+bool CPVRChannelGroups::PropagateChannelNumbersAndPersist()
+{
+  CSingleLock lock(m_critSection);
+
+  bool bChanged = false;
+  for (auto& group : m_groups)
+    bChanged = group->UpdateChannelNumbersFromAllChannelsGroup();
+
+  m_selectedGroup->UpdateChannelNumbers();
+
+  return bChanged;
+}
+
 bool CPVRChannelGroups::LoadUserDefinedChannelGroups()
 {
   bool bSyncWithBackends = CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_PVRMANAGER_SYNCCHANNELGROUPS);

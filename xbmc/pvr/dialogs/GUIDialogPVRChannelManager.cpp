@@ -29,6 +29,7 @@
 #include "pvr/addons/PVRClients.h"
 #include "pvr/channels/PVRChannel.h"
 #include "pvr/channels/PVRChannelGroup.h"
+#include "pvr/channels/PVRChannelGroups.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/dialogs/GUIDialogPVRGroupManager.h"
 #include "pvr/guilib/PVRGUIActions.h"
@@ -805,6 +806,8 @@ void CGUIDialogPVRChannelManager::SaveList()
   group->Persist();
   m_bContainsChanges = false;
   SetItemsUnchanged();
+  auto channelGroups = CServiceBroker::GetPVRManager().ChannelGroups()->Get(m_bIsRadio);
+  channelGroups->PropagateChannelNumbersAndPersist();
   pDlgProgress->Close();
 }
 

@@ -194,6 +194,12 @@ namespace PVR
      */
     bool Update(bool bChannelsOnly = false);
 
+    /*!
+     * @brief Update the channel numbers across the channel groups from the all channels group
+     * @return True if any channel number was changed, false otherwise.
+     */
+    bool PropagateChannelNumbersAndPersist();
+
   private:
     bool LoadUserDefinedChannelGroups();
     bool GetGroupsFromClients();
