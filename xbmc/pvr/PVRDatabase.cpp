@@ -280,7 +280,7 @@ int CPVRDatabase::GetPriority(const CPVRClient& client)
 
 /********** Channel methods **********/
 
-bool CPVRDatabase::DeleteChannels(void)
+bool CPVRDatabase::DeleteChannels()
 {
   CLog::LogFC(LOGDEBUG, LOGPVR, "Deleting all channels from the database");
 
@@ -536,7 +536,7 @@ bool CPVRDatabase::RemoveStaleChannelsFromGroup(const CPVRChannelGroup& group)
   return bDelete;
 }
 
-bool CPVRDatabase::DeleteChannelGroups(void)
+bool CPVRDatabase::DeleteChannelGroups()
 {
   CLog::LogFC(LOGDEBUG, LOGPVR, "Deleting all channel groups from the database");
 
@@ -766,7 +766,7 @@ bool CPVRDatabase::PersistGroupMembers(const CPVRChannelGroup& group)
 
 /********** Client methods **********/
 
-bool CPVRDatabase::ResetEPG(void)
+bool CPVRDatabase::ResetEPG()
 {
   CSingleLock lock(m_critSection);
   const std::string strQuery = PrepareSQL("UPDATE channels SET idEpg = 0");

@@ -215,7 +215,7 @@ namespace PVR
   {
   public:
     explicit CPVRClient(const ADDON::AddonInfoPtr& addonInfo);
-    ~CPVRClient(void) override;
+    ~CPVRClient() override;
 
     void OnPreInstall() override;
     void OnPreUnInstall() override;
@@ -233,7 +233,7 @@ namespace PVR
     /*!
      * @return True when the dll for this add-on was loaded, false otherwise (e.g. unresolved symbols)
      */
-    bool DllLoaded(void) const;
+    bool DllLoaded() const;
 
     /*!
      * @brief Stop this add-on instance. No more client add-on access after this call.
@@ -248,23 +248,23 @@ namespace PVR
     /*!
      * @brief Destroy the instance of this add-on.
      */
-    void Destroy(void);
+    void Destroy();
 
     /*!
      * @brief Destroy and recreate this add-on.
      */
-    void ReCreate(void);
+    void ReCreate();
 
     /*!
      * @return True if this instance is initialised (ADDON_Create returned true), false otherwise.
      */
-    bool ReadyToUse(void) const;
+    bool ReadyToUse() const;
 
     /*!
      * @brief Gets the backend connection state.
      * @return the backend connection state.
      */
-    PVR_CONNECTION_STATE GetConnectionState(void) const;
+    PVR_CONNECTION_STATE GetConnectionState() const;
 
     /*!
      * @brief Sets the backend connection state.
@@ -276,18 +276,18 @@ namespace PVR
      * @brief Gets the backend's previous connection state.
      * @return the backend's previous connection state.
      */
-    PVR_CONNECTION_STATE GetPreviousConnectionState(void) const;
+    PVR_CONNECTION_STATE GetPreviousConnectionState() const;
 
     /*!
      * @brief signal to PVRManager this client should be ignored
      * @return true if this client should be ignored
      */
-    bool IgnoreClient(void) const;
+    bool IgnoreClient() const;
 
     /*!
      * @return The ID of this instance.
      */
-    int GetID(void) const;
+    int GetID() const;
 
     //@}
     /** @name PVR server methods */
@@ -297,7 +297,7 @@ namespace PVR
      * @brief Query this add-on's capabilities.
      * @return The add-on's capabilities.
      */
-    const CPVRClientCapabilities& GetClientCapabilities(void) const { return m_clientCapabilities; }
+    const CPVRClientCapabilities& GetClientCapabilities() const { return m_clientCapabilities; }
 
     /*!
      * @brief Get the stream properties of the stream that's currently being read.
@@ -309,27 +309,27 @@ namespace PVR
     /*!
      * @return The name reported by the backend.
      */
-    const std::string& GetBackendName(void) const;
+    const std::string& GetBackendName() const;
 
     /*!
      * @return The version string reported by the backend.
      */
-    const std::string& GetBackendVersion(void) const;
+    const std::string& GetBackendVersion() const;
 
     /*!
      * @brief the ip address or alias of the pvr backend server
      */
-    const std::string& GetBackendHostname(void) const;
+    const std::string& GetBackendHostname() const;
 
     /*!
      * @return The connection string reported by the backend.
      */
-    const std::string& GetConnectionString(void) const;
+    const std::string& GetConnectionString() const;
 
     /*!
      * @return A friendly name for this add-on that can be used in log messages.
      */
-    const std::string& GetFriendlyName(void) const;
+    const std::string& GetFriendlyName() const;
 
     /*!
      * @brief Get the disk space reported by the server.
@@ -343,7 +343,7 @@ namespace PVR
      * @brief Start a channel scan on the server.
      * @return PVR_ERROR_NO_ERROR if the channel scan has been started successfully.
      */
-    PVR_ERROR StartChannelScan(void);
+    PVR_ERROR StartChannelScan();
 
     /*!
      * @brief Request the client to open dialog about given channel to add
@@ -815,7 +815,7 @@ namespace PVR
      * @brief reads the client's properties.
      * @return True on success, false otherwise.
      */
-    bool GetAddonProperties(void);
+    bool GetAddonProperties();
 
     /*!
      * @brief Get the client's menu hooks.

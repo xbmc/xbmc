@@ -520,7 +520,7 @@ namespace PVR
 
     bool AllLocalBackendsIdle(std::shared_ptr<CPVRTimerInfoTag>& causingEvent) const;
     bool EventOccursOnLocalBackend(const std::shared_ptr<CFileItem>& item) const;
-    bool IsNextEventWithinBackendIdleTime(void) const;
+    bool IsNextEventWithinBackendIdleTime() const;
 
     /*!
      * @brief Announce and process a reminder timer.

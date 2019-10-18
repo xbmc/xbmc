@@ -34,7 +34,7 @@ CPVRChannelGroupInternal::CPVRChannelGroupInternal(bool bRadio)
   m_iGroupType = PVR_GROUP_TYPE_INTERNAL;
 }
 
-CPVRChannelGroupInternal::~CPVRChannelGroupInternal(void)
+CPVRChannelGroupInternal::~CPVRChannelGroupInternal()
 {
   Unload();
   CServiceBroker::GetPVRManager().Events().Unsubscribe(this);
@@ -53,7 +53,7 @@ bool CPVRChannelGroupInternal::Load(std::vector<std::shared_ptr<CPVRChannel>>& c
   return false;
 }
 
-void CPVRChannelGroupInternal::CheckGroupName(void)
+void CPVRChannelGroupInternal::CheckGroupName()
 {
   CSingleLock lock(m_critSection);
 
@@ -66,7 +66,7 @@ void CPVRChannelGroupInternal::CheckGroupName(void)
   }
 }
 
-void CPVRChannelGroupInternal::UpdateChannelPaths(void)
+void CPVRChannelGroupInternal::UpdateChannelPaths()
 {
   CSingleLock lock(m_critSection);
   m_iHiddenChannels = 0;
@@ -209,7 +209,7 @@ int CPVRChannelGroupInternal::LoadFromDb(bool bCompress /* = false */)
   return Size() - iChannelCount;
 }
 
-bool CPVRChannelGroupInternal::LoadFromClients(void)
+bool CPVRChannelGroupInternal::LoadFromClients()
 {
   /* get the channels from the backends */
   return CServiceBroker::GetPVRManager().Clients()->GetChannels(this, m_failedClientsForChannels) == PVR_ERROR_NO_ERROR;

@@ -24,8 +24,8 @@ namespace PVR
   class CGUIDialogPVRGroupManager : public CGUIDialog
   {
   public:
-    CGUIDialogPVRGroupManager(void);
-    ~CGUIDialogPVRGroupManager(void) override;
+    CGUIDialogPVRGroupManager();
+    ~CGUIDialogPVRGroupManager() override;
     bool OnMessage(CGUIMessage& message) override;
     bool OnAction(const CAction& action) override;
     void OnWindowLoaded() override;
@@ -41,7 +41,7 @@ namespace PVR
     void Clear();
     void ClearSelectedGroupsThumbnail();
     void Update();
-    bool PersistChanges(void);
+    bool PersistChanges();
     bool ActionButtonOk(CGUIMessage& message);
     bool ActionButtonNewGroup(CGUIMessage& message);
     bool ActionButtonDeleteGroup(CGUIMessage& message);

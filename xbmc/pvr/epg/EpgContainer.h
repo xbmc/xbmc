@@ -42,12 +42,12 @@ namespace PVR
     /*!
      * @brief Create a new EPG table container.
      */
-    CPVREpgContainer(void);
+    CPVREpgContainer();
 
     /*!
      * @brief Destroy this instance.
      */
-    ~CPVREpgContainer(void) override;
+    ~CPVREpgContainer() override;
 
     /*!
      * @brief Get a pointer to the database instance.
@@ -69,7 +69,7 @@ namespace PVR
     /*!
      * @brief Stop the EPG update thread.
      */
-    void Stop(void);
+    void Stop();
 
     /*!
      * @brief Clear all EPG entries.
@@ -80,7 +80,7 @@ namespace PVR
      * @brief Check whether the EpgContainer has fully started.
      * @return True if started, false otherwise.
      */
-    bool IsStarted(void) const;
+    bool IsStarted() const;
 
     /*!
      * @brief Delete an EPG table from this container.
@@ -109,13 +109,13 @@ namespace PVR
      * @brief Get the start time of the first entry.
      * @return The start time.
      */
-    const CDateTime GetFirstEPGDate(void);
+    const CDateTime GetFirstEPGDate();
 
     /*!
      * @brief Get the end time of the last entry.
      * @return The end time.
      */
-    const CDateTime GetLastEPGDate(void);
+    const CDateTime GetLastEPGDate();
 
     /*!
      * @brief Get all EPGs.
@@ -205,13 +205,13 @@ namespace PVR
      * @brief Notify EPG table observers when the currently active tag changed.
      * @return True if the check was done, false if it was not the right time to check
      */
-    bool CheckPlayingEvents(void);
+    bool CheckPlayingEvents();
 
     /*!
      * @brief The next EPG ID to be given to a table when the db isn't being used.
      * @return The next ID.
      */
-    int NextEpgId(void);
+    int NextEpgId();
 
     /*!
      * @brief Wait for an EPG update to finish.
@@ -222,13 +222,13 @@ namespace PVR
      * @brief Call Persist() on each table
      * @return True when they all were persisted, false otherwise.
      */
-    bool PersistAll(void);
+    bool PersistAll();
 
     /*!
      * @brief Remove old EPG entries.
      * @return True if the old entries were removed successfully, false otherwise.
      */
-    bool RemoveOldEntries(void);
+    bool RemoveOldEntries();
 
     /*!
      * @brief Load and update the EPG data.
@@ -241,17 +241,17 @@ namespace PVR
      * @brief Check whether a running update should be interrupted.
      * @return True if a running update should be interrupted, false otherwise.
      */
-    bool InterruptUpdate(void) const;
+    bool InterruptUpdate() const;
 
     /*!
      * @brief EPG update thread
      */
-    void Process(void) override;
+    void Process() override;
 
     /*!
      * @brief Load all tables from the database
      */
-    void LoadFromDB(void);
+    void LoadFromDB();
 
     /*!
      * @brief Insert data from database

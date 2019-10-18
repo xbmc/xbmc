@@ -55,13 +55,13 @@ namespace PVR
   class CPVRClients : public ADDON::IAddonMgrCallback
   {
   public:
-    CPVRClients(void);
-    ~CPVRClients(void) override;
+    CPVRClients();
+    ~CPVRClients() override;
 
     /*!
      * @brief Start all clients.
      */
-    void Start(void);
+    void Start();
 
     /*!
      * @brief Stop all clients.
@@ -120,13 +120,13 @@ namespace PVR
      * @brief Get the number of created clients.
      * @return The amount of created clients.
      */
-    int CreatedClientAmount(void) const;
+    int CreatedClientAmount() const;
 
     /*!
      * @brief Check whether there are any created clients.
      * @return True if at least one client is created.
      */
-    bool HasCreatedClients(void) const;
+    bool HasCreatedClients() const;
 
     /*!
      * @brief Check whether a given client ID points to a created client.
@@ -154,13 +154,13 @@ namespace PVR
      * @brief Get the ID of the first created client.
      * @return the ID or -1 if no clients are created;
      */
-    int GetFirstCreatedClientID(void);
+    int GetFirstCreatedClientID();
 
     /*!
      * @brief Get the number of enabled clients.
      * @return The amount of enabled clients.
      */
-    int EnabledClientAmount(void) const;
+    int EnabledClientAmount() const;
 
     //@}
 
@@ -259,7 +259,7 @@ namespace PVR
      * @brief Get a list of clients providing a channel scan dialog.
      * @return All clients supporting channel scan.
      */
-    std::vector<std::shared_ptr<CPVRClient>> GetClientsSupportingChannelScan(void) const;
+    std::vector<std::shared_ptr<CPVRClient>> GetClientsSupportingChannelScan() const;
 
     /*!
      * @brief Get a list of clients providing a channel settings dialog.

@@ -43,13 +43,13 @@ namespace
 
 } // unnamed namespace
 
-CPVRClients::CPVRClients(void)
+CPVRClients::CPVRClients()
 {
   CServiceBroker::GetAddonMgr().RegisterAddonMgrCallback(ADDON_PVRDLL, this);
   CServiceBroker::GetAddonMgr().Events().Subscribe(this, &CPVRClients::OnAddonEvent);
 }
 
-CPVRClients::~CPVRClients(void)
+CPVRClients::~CPVRClients()
 {
   CServiceBroker::GetAddonMgr().Events().Unsubscribe(this);
   CServiceBroker::GetAddonMgr().UnregisterAddonMgrCallback(ADDON_PVRDLL);
@@ -60,7 +60,7 @@ CPVRClients::~CPVRClients(void)
   }
 }
 
-void CPVRClients::Start(void)
+void CPVRClients::Start()
 {
   UpdateAddons();
 }
@@ -299,7 +299,7 @@ int CPVRClients::GetClientId(const std::string& strId) const
   return -1;
 }
 
-int CPVRClients::CreatedClientAmount(void) const
+int CPVRClients::CreatedClientAmount() const
 {
   int iReturn = 0;
 
@@ -313,7 +313,7 @@ int CPVRClients::CreatedClientAmount(void) const
   return iReturn;
 }
 
-bool CPVRClients::HasCreatedClients(void) const
+bool CPVRClients::HasCreatedClients() const
 {
   CSingleLock lock(m_critSection);
   for (const auto& client : m_clientMap)
@@ -400,7 +400,7 @@ PVR_ERROR CPVRClients::GetCreatedClients(CPVRClientMap& clientsReady, std::vecto
   return clientsNotReady.empty() ? PVR_ERROR_NO_ERROR : PVR_ERROR_SERVER_ERROR;
 }
 
-int CPVRClients::GetFirstCreatedClientID(void)
+int CPVRClients::GetFirstCreatedClientID()
 {
   CSingleLock lock(m_critSection);
   for (const auto& client : m_clientMap)
@@ -412,7 +412,7 @@ int CPVRClients::GetFirstCreatedClientID(void)
   return -1;
 }
 
-int CPVRClients::EnabledClientAmount(void) const
+int CPVRClients::EnabledClientAmount() const
 {
   int iReturn = 0;
 
@@ -528,7 +528,7 @@ PVR_ERROR CPVRClients::GetChannelGroupMembers(CPVRChannelGroup* group, std::vect
   }, failedClients);
 }
 
-std::vector<std::shared_ptr<CPVRClient>> CPVRClients::GetClientsSupportingChannelScan(void) const
+std::vector<std::shared_ptr<CPVRClient>> CPVRClients::GetClientsSupportingChannelScan() const
 {
   std::vector<std::shared_ptr<CPVRClient>> possibleScanClients;
   ForCreatedClients(__FUNCTION__, [&possibleScanClients](const std::shared_ptr<CPVRClient>& client) {

@@ -30,23 +30,23 @@ namespace PVR
      * @param bRadio True if this is a container for radio channels, false if it is for tv channels.
      */
     explicit CPVRChannelGroups(bool bRadio);
-    virtual ~CPVRChannelGroups(void);
+    virtual ~CPVRChannelGroups();
 
     /*!
      * @brief Remove all channels from this group.
      */
-    void Clear(void);
+    void Clear();
 
     /*!
      * @brief Load this container's contents from the database or PVR clients.
      * @return True if it was loaded successfully, false if not.
      */
-    bool Load(void);
+    bool Load();
 
     /*!
      * @return Amount of groups in this container
      */
-    size_t Size(void) const { CSingleLock lock(m_critSection); return m_groups.size(); }
+    size_t Size() const { CSingleLock lock(m_critSection); return m_groups.size(); }
 
     /*!
      * @brief Update a group or add it if it's not in here yet.
@@ -103,17 +103,17 @@ namespace PVR
      * @brief Get the group that contains all channels.
      * @return The group that contains all channels.
      */
-    std::shared_ptr<CPVRChannelGroup> GetGroupAll(void) const;
+    std::shared_ptr<CPVRChannelGroup> GetGroupAll() const;
 
     /*!
      * @return The first group in this container, which always is the group with all channels.
      */
-    std::shared_ptr<CPVRChannelGroup> GetFirstGroup(void) const { return GetGroupAll(); }
+    std::shared_ptr<CPVRChannelGroup> GetFirstGroup() const { return GetGroupAll(); }
 
     /*!
      * @return The last group in this container.
      */
-    std::shared_ptr<CPVRChannelGroup> GetLastGroup(void) const;
+    std::shared_ptr<CPVRChannelGroup> GetLastGroup() const;
 
     /*!
      * @brief The group that was played last and optionally contains the given channel.
@@ -148,7 +148,7 @@ namespace PVR
      * @brief Get the group that is currently selected in the UI.
      * @return The selected group.
      */
-    std::shared_ptr<CPVRChannelGroup> GetSelectedGroup(void) const;
+    std::shared_ptr<CPVRChannelGroup> GetSelectedGroup() const;
 
     /*!
      * @brief Change the selected group.
@@ -174,18 +174,18 @@ namespace PVR
      * @brief Create EPG tags for all channels of the internal group.
      * @return True if EPG tags where created successfully, false if not.
      */
-    bool CreateChannelEpgs(void);
+    bool CreateChannelEpgs();
 
     /*!
      * @brief Persist all changes in channel groups.
      * @return True if everything was persisted, false otherwise.
      */
-    bool PersistAll(void);
+    bool PersistAll();
 
     /*!
      * @return True when this container contains radio groups, false otherwise
      */
-    bool IsRadio(void) const { return m_bRadio; }
+    bool IsRadio() const { return m_bRadio; }
 
     /*!
      * @brief Update the contents of the groups in this container.
@@ -195,9 +195,9 @@ namespace PVR
     bool Update(bool bChannelsOnly = false);
 
   private:
-    bool LoadUserDefinedChannelGroups(void);
-    bool GetGroupsFromClients(void);
-    void SortGroups(void);
+    bool LoadUserDefinedChannelGroups();
+    bool GetGroupsFromClients();
+    void SortGroups();
 
     /*!
      * @brief Remove the given channels from all non-system groups.

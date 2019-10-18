@@ -197,7 +197,7 @@ void CGUIWindowPVRGuideBase::UpdateSelectedItemPath()
   }
 }
 
-void CGUIWindowPVRGuideBase::UpdateButtons(void)
+void CGUIWindowPVRGuideBase::UpdateButtons()
 {
   CGUIWindowPVRBase::UpdateButtons();
 

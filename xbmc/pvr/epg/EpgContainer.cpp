@@ -91,7 +91,7 @@ void CEpgTagStateChange::Deliver()
   epg->UpdateEntry(m_epgtag, m_state, epgContainer.UseDatabase());
 }
 
-CPVREpgContainer::CPVREpgContainer(void) :
+CPVREpgContainer::CPVREpgContainer() :
   CThread("EPGUpdater"),
   m_database(new CPVREpgDatabase),
   m_settings({
@@ -106,7 +106,7 @@ CPVREpgContainer::CPVREpgContainer(void) :
   m_updateEvent.Reset();
 }
 
-CPVREpgContainer::~CPVREpgContainer(void)
+CPVREpgContainer::~CPVREpgContainer()
 {
   Stop();
   Clear();
@@ -121,13 +121,13 @@ std::shared_ptr<CPVREpgDatabase> CPVREpgContainer::GetEpgDatabase() const
   return m_database;
 }
 
-bool CPVREpgContainer::IsStarted(void) const
+bool CPVREpgContainer::IsStarted() const
 {
   CSingleLock lock(m_critSection);
   return m_bStarted;
 }
 
-int CPVREpgContainer::NextEpgId(void)
+int CPVREpgContainer::NextEpgId()
 {
   CSingleLock lock(m_critSection);
   return ++m_iNextEpgId;
@@ -165,7 +165,7 @@ class CPVREpgContainerStartJob : public CJob
 {
 public:
   CPVREpgContainerStartJob() = default;
-  ~CPVREpgContainerStartJob(void) override = default;
+  ~CPVREpgContainerStartJob() override = default;
 
   bool DoWork() override
   {
@@ -222,7 +222,7 @@ void CPVREpgContainer::Start(bool bAsync)
   }
 }
 
-void CPVREpgContainer::Stop(void)
+void CPVREpgContainer::Stop()
 {
   StopThread();
 
@@ -250,7 +250,7 @@ void CPVREpgContainer::Notify(const PVREvent& event)
   m_events.Publish(event);
 }
 
-void CPVREpgContainer::LoadFromDB(void)
+void CPVREpgContainer::LoadFromDB()
 {
   CSingleLock lock(m_critSection);
 
@@ -289,7 +289,7 @@ void CPVREpgContainer::LoadFromDB(void)
   m_bLoaded = bLoaded;
 }
 
-bool CPVREpgContainer::PersistAll(void)
+bool CPVREpgContainer::PersistAll()
 {
   bool bReturn = !UseDatabase();
 
@@ -311,7 +311,7 @@ bool CPVREpgContainer::PersistAll(void)
   return bReturn;
 }
 
-void CPVREpgContainer::Process(void)
+void CPVREpgContainer::Process()
 {
   time_t iNow = 0;
   time_t iLastSave = 0;
@@ -558,7 +558,7 @@ std::shared_ptr<CPVREpg> CPVREpgContainer::CreateChannelEpg(int iEpgId, const st
   return epg;
 }
 
-bool CPVREpgContainer::RemoveOldEntries(void)
+bool CPVREpgContainer::RemoveOldEntries()
 {
   const CDateTime cleanupTime(CDateTime::GetUTCDateTime() - CDateTimeSpan(GetPastDaysToDisplay(), 0, 0, 0));
 
@@ -607,7 +607,7 @@ bool CPVREpgContainer::UseDatabase() const
   return m_settings.GetBoolValue(CSettings::SETTING_EPG_STOREEPGINDATABASE);
 }
 
-bool CPVREpgContainer::InterruptUpdate(void) const
+bool CPVREpgContainer::InterruptUpdate() const
 {
   CSingleLock lock(m_critSection);
   return m_bStop ||
@@ -729,7 +729,7 @@ bool CPVREpgContainer::UpdateEPG(bool bOnlyPending /* = false */)
   return !bInterrupted;
 }
 
-const CDateTime CPVREpgContainer::GetFirstEPGDate(void)
+const CDateTime CPVREpgContainer::GetFirstEPGDate()
 {
   CDateTime returnValue;
 
@@ -747,7 +747,7 @@ const CDateTime CPVREpgContainer::GetFirstEPGDate(void)
   return returnValue;
 }
 
-const CDateTime CPVREpgContainer::GetLastEPGDate(void)
+const CDateTime CPVREpgContainer::GetLastEPGDate()
 {
   CDateTime returnValue;
 
@@ -765,7 +765,7 @@ const CDateTime CPVREpgContainer::GetLastEPGDate(void)
   return returnValue;
 }
 
-bool CPVREpgContainer::CheckPlayingEvents(void)
+bool CPVREpgContainer::CheckPlayingEvents()
 {
   bool bReturn = false;
   bool bFoundChanges = false;

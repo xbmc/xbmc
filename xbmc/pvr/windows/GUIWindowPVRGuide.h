@@ -40,7 +40,7 @@ namespace PVR
     bool OnAction(const CAction& action) override;
     void GetContextButtons(int itemNumber, CContextButtons& buttons) override;
     bool OnContextButton(int itemNumber, CONTEXT_BUTTON button) override;
-    void UpdateButtons(void) override;
+    void UpdateButtons() override;
     void SetInvalid() override;
     bool Update(const std::string& strDirectory, bool updateFilterPath = true) override;
 
@@ -65,7 +65,7 @@ namespace PVR
 
   protected:
     void UpdateSelectedItemPath() override;
-    std::string GetDirectoryPath(void) override { return ""; }
+    std::string GetDirectoryPath() override { return ""; }
     bool GetDirectory(const std::string& strDirectory, CFileItemList& items) override;
     void FormatAndSort(CFileItemList& items) override;
     CFileItemPtr GetCurrentListItem(int offset = 0) override;

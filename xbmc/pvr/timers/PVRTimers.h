@@ -65,14 +65,14 @@ namespace PVR
   class CPVRTimers : public CPVRTimersContainer, private CThread
   {
   public:
-    CPVRTimers(void);
+    CPVRTimers();
     ~CPVRTimers() override = default;
 
     /**
      * @brief (re)load the timers from the clients.
      * @return True if loaded successfully, false otherwise.
      */
-    bool Load(void);
+    bool Load();
 
     /**
      * @brief unload all timers.
@@ -82,13 +82,13 @@ namespace PVR
     /**
      * @brief refresh the timer list from the clients.
      */
-    bool Update(void);
+    bool Update();
 
     /**
      * @brief load the local timers from database.
      * @return True if loaded successfully, false otherwise.
      */
-    bool LoadFromDatabase(void);
+    bool LoadFromDatabase();
 
     /*!
      * @param bIgnoreReminders include or ignore reminders
@@ -99,17 +99,17 @@ namespace PVR
     /*!
      * @return The tv timer that will be active next (state scheduled), or nullptr if none.
      */
-    std::shared_ptr<CPVRTimerInfoTag> GetNextActiveTVTimer(void) const;
+    std::shared_ptr<CPVRTimerInfoTag> GetNextActiveTVTimer() const;
 
     /*!
      * @return The radio timer that will be active next (state scheduled), or nullptr if none.
      */
-    std::shared_ptr<CPVRTimerInfoTag> GetNextActiveRadioTimer(void) const;
+    std::shared_ptr<CPVRTimerInfoTag> GetNextActiveRadioTimer() const;
 
     /*!
      * @return All timers that are active (states scheduled or recording)
      */
-    std::vector<std::shared_ptr<CPVRTimerInfoTag>> GetActiveTimers(void) const;
+    std::vector<std::shared_ptr<CPVRTimerInfoTag>> GetActiveTimers() const;
 
     /*!
      * @return Next due reminder, if any. Removes it from the queue of due reminders.
@@ -125,17 +125,17 @@ namespace PVR
     /*!
      * @return The amount of tv and radio timers that are active (states scheduled or recording)
      */
-    int AmountActiveTimers(void) const;
+    int AmountActiveTimers() const;
 
     /*!
      * @return The amount of tv timers that are active (states scheduled or recording)
      */
-    int AmountActiveTVTimers(void) const;
+    int AmountActiveTVTimers() const;
 
     /*!
      * @return The amount of radio timers that are active (states scheduled or recording)
      */
-    int AmountActiveRadioTimers(void) const;
+    int AmountActiveRadioTimers() const;
 
     /*!
      * @return All tv and radio timers that are recording
@@ -155,7 +155,7 @@ namespace PVR
     /*!
      * @return True when recording, false otherwise.
      */
-    bool IsRecording(void) const;
+    bool IsRecording() const;
 
     /*!
      * @brief Check if a recording is running on the given channel.
@@ -174,17 +174,17 @@ namespace PVR
     /*!
      * @return The amount of tv and radio timers that are currently recording
      */
-    int AmountActiveRecordings(void) const;
+    int AmountActiveRecordings() const;
 
     /*!
      * @return The amount of tv timers that are currently recording
      */
-    int AmountActiveTVRecordings(void) const;
+    int AmountActiveTVRecordings() const;
 
     /*!
      * @return The amount of radio timers that are currently recording
      */
-    int AmountActiveRadioRecordings(void) const;
+    int AmountActiveRadioRecordings() const;
 
     /*!
      * @brief Delete all timers on a channel.
@@ -198,7 +198,7 @@ namespace PVR
     /*!
      * @return Next event time (timer or daily wake up)
      */
-    CDateTime GetNextEventTime(void) const;
+    CDateTime GetNextEventTime() const;
 
     /*!
      * @brief Add a timer to the client. Doesn't add the timer to the container. The backend will do this.
@@ -248,7 +248,7 @@ namespace PVR
     /*!
      * @brief Update the channel pointers.
      */
-    void UpdateChannels(void);
+    void UpdateChannels();
 
     /*!
      * @brief CEventStream callback for PVR events.

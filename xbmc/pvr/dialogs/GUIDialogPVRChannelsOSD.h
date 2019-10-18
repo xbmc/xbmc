@@ -25,8 +25,8 @@ namespace PVR
   class CGUIDialogPVRChannelsOSD : public CGUIDialogPVRItemsViewBase, public CPVRChannelNumberInputHandler
   {
   public:
-    CGUIDialogPVRChannelsOSD(void);
-    ~CGUIDialogPVRChannelsOSD(void) override;
+    CGUIDialogPVRChannelsOSD();
+    ~CGUIDialogPVRChannelsOSD() override;
     bool OnMessage(CGUIMessage& message) override;
     bool OnAction(const CAction& action) override;
 

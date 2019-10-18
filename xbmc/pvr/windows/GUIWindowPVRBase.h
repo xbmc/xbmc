@@ -54,13 +54,13 @@ namespace PVR
   class CGUIWindowPVRBase : public CGUIMediaWindow
   {
   public:
-    ~CGUIWindowPVRBase(void) override;
+    ~CGUIWindowPVRBase() override;
 
-    void OnInitWindow(void) override;
+    void OnInitWindow() override;
     void OnDeinitWindow(int nextWindowID) override;
     bool OnMessage(CGUIMessage& message) override;
     bool Update(const std::string& strDirectory, bool updateFilterPath = true) override;
-    void UpdateButtons(void) override;
+    void UpdateButtons() override;
     bool OnAction(const CAction& action) override;
     bool OnBack(int actionID) override;
     void SetInvalid() override;
@@ -77,7 +77,7 @@ namespace PVR
      * @brief Refresh window content.
      * @return true, if refresh succeeded, false otherwise.
      */
-    bool DoRefresh(void) { return Refresh(true); }
+    bool DoRefresh() { return Refresh(true); }
 
     bool ActivatePreviousChannelGroup();
     bool ActivateNextChannelGroup();
@@ -86,7 +86,7 @@ namespace PVR
   protected:
     CGUIWindowPVRBase(bool bRadio, int id, const std::string& xmlFile);
 
-    virtual std::string GetDirectoryPath(void) = 0;
+    virtual std::string GetDirectoryPath() = 0;
 
     virtual void ClearData();
 
@@ -94,13 +94,13 @@ namespace PVR
      * @brief Init this window's channel group with the currently active (the "playing") channel group.
      * @return true if group could be set, false otherwise.
      */
-    bool InitChannelGroup(void);
+    bool InitChannelGroup();
 
     /*!
      * @brief Get the channel group for this window.
      * @return the group or null, if no group set.
      */
-   std::shared_ptr<CPVRChannelGroup> GetChannelGroup(void);
+   std::shared_ptr<CPVRChannelGroup> GetChannelGroup();
 
     /*!
      * @brief Set a new channel group, start listening to this group, optionally update window content.
@@ -111,8 +111,8 @@ namespace PVR
 
     virtual void UpdateSelectedItemPath();
 
-    void RegisterObservers(void);
-    void UnregisterObservers(void);
+    void RegisterObservers();
+    void UnregisterObservers();
 
     CCriticalSection m_critSection;
     std::string m_channelGroupPath;
@@ -130,7 +130,7 @@ namespace PVR
     /*!
      * @brief Hide the progress dialog if it's visible.
      */
-    void HideProgressDialog(void);
+    void HideProgressDialog();
 
     std::unique_ptr<CGUIPVRChannelGroupsSelector> m_channelGroupsSelector;
     std::shared_ptr<CPVRChannelGroup> m_channelGroup;

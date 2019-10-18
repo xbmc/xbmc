@@ -26,7 +26,7 @@ namespace PVR
     void GetContextButtons(int itemNumber, CContextButtons& buttons) override;
     bool OnContextButton(int itemNumber, CONTEXT_BUTTON button) override;
     bool Update(const std::string& strDirectory, bool updateFilterPath = true) override;
-    void UpdateButtons(void) override;
+    void UpdateButtons() override;
     bool OnAction(const CAction& action) override;
 
     // CPVRChannelNumberInputHandler implementation

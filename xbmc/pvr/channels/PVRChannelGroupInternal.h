@@ -29,7 +29,7 @@ namespace PVR
      */
     explicit CPVRChannelGroupInternal(bool bRadio);
 
-    ~CPVRChannelGroupInternal(void) override;
+    ~CPVRChannelGroupInternal() override;
 
     /**
      * @brief The amount of channels in this container.
@@ -65,7 +65,7 @@ namespace PVR
     /*!
      * @brief Check whether the group name is still correct after the language setting changed.
      */
-    void CheckGroupName(void);
+    void CheckGroupName();
 
     /*!
      * @brief Create an EPG table for each channel.
@@ -86,13 +86,13 @@ namespace PVR
      * @brief Load all channels from the clients.
      * @return True when updated successfully, false otherwise.
      */
-    bool LoadFromClients(void) override;
+    bool LoadFromClients() override;
 
     /*!
      * @brief Check if this group is the internal group containing all channels.
      * @return True if it's the internal group, false otherwise.
      */
-    bool IsInternalGroup(void) const override { return true; }
+    bool IsInternalGroup() const override { return true; }
 
     /*!
      * @brief Update the current channel list with the given list.
@@ -141,7 +141,7 @@ namespace PVR
     /*!
      * @brief Update the vfs paths of all channels.
      */
-    void UpdateChannelPaths(void);
+    void UpdateChannelPaths();
 
     void CreateChannelEpg(const std::shared_ptr<CPVRChannel>& channel);
 

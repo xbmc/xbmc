@@ -42,7 +42,7 @@ namespace PVR
 
     void Serialize(CVariant& value) const override;
 
-    void UpdateSummary(void);
+    void UpdateSummary();
 
     std::string GetStatus(bool bRadio) const;
     std::string GetTypeAsString() const;
@@ -107,8 +107,8 @@ namespace PVR
      */
     std::shared_ptr<CPVREpgInfoTag> GetEpgInfoTag(bool bCreate = true) const;
 
-    std::string ChannelName(void) const;
-    std::string ChannelIcon(void) const;
+    std::string ChannelName() const;
+    std::string ChannelIcon() const;
 
     /*!
      * @brief Check whether this timer has an associated channel.
@@ -142,7 +142,7 @@ namespace PVR
      */
     void ResetChildState();
 
-    bool IsActive(void) const
+    bool IsActive() const
     {
       return m_state == PVR_TIMER_STATE_SCHEDULED
         || m_state == PVR_TIMER_STATE_RECORDING
@@ -154,7 +154,7 @@ namespace PVR
     /*!
      * @return True if this timer won't result in a recording because it is broken for some reason, false otherwise
      */
-    bool IsBroken(void) const
+    bool IsBroken() const
     {
       return m_state == PVR_TIMER_STATE_CONFLICT_NOK
         || m_state == PVR_TIMER_STATE_ERROR;
@@ -163,15 +163,15 @@ namespace PVR
     /*!
      * @return True if this timer won't result in a recording because it is in conflict with another timer or live stream, false otherwise
      */
-    bool HasConflict(void) const { return m_state == PVR_TIMER_STATE_CONFLICT_NOK; }
+    bool HasConflict() const { return m_state == PVR_TIMER_STATE_CONFLICT_NOK; }
 
-    bool IsRecording(void) const { return m_state == PVR_TIMER_STATE_RECORDING; }
+    bool IsRecording() const { return m_state == PVR_TIMER_STATE_RECORDING; }
 
     /*!
       * @brief Checks whether this timer has a timer type.
       * @return True if this timer has a timer type, false otherwise
       */
-    bool HasTimerType(void) const { return m_timerType.get() != NULL; }
+    bool HasTimerType() const { return m_timerType.get() != NULL; }
 
     /*!
       * @brief Gets the type of this timer.
@@ -189,7 +189,7 @@ namespace PVR
       * @brief Checks whether this is a timer rule (vs. one time timer).
       * @return True if this is a timer rule, false otherwise.
       */
-    bool IsTimerRule(void) const { return m_timerType && m_timerType->IsTimerRule(); }
+    bool IsTimerRule() const { return m_timerType && m_timerType->IsTimerRule(); }
 
     /*!
      * @brief Checks whether this is a reminder timer (vs. recording timer).
@@ -201,24 +201,24 @@ namespace PVR
       * @brief Checks whether this is a manual (vs. epg-based) timer.
       * @return True if this is a manual timer, false otherwise.
       */
-    bool IsManual(void) const { return m_timerType && m_timerType->IsManual(); }
+    bool IsManual() const { return m_timerType && m_timerType->IsManual(); }
 
     /*!
      * @brief Checks whether this is an epg-based (vs. manual) timer.
      * @return True if this is an epg-Based timer, false otherwise.
      */
-    bool IsEpgBased(void) const { return !IsManual(); }
+    bool IsEpgBased() const { return !IsManual(); }
 
     static CDateTime ConvertUTCToLocalTime(const CDateTime& utc);
     static CDateTime ConvertLocalTimeToUTC(const CDateTime& local);
 
-    CDateTime StartAsUTC(void) const;
-    CDateTime StartAsLocalTime(void) const;
+    CDateTime StartAsUTC() const;
+    CDateTime StartAsLocalTime() const;
     void SetStartFromUTC(const CDateTime& start);
     void SetStartFromLocalTime(const CDateTime& start);
 
-    CDateTime EndAsUTC(void) const;
-    CDateTime EndAsLocalTime(void) const;
+    CDateTime EndAsUTC() const;
+    CDateTime EndAsLocalTime() const;
     void SetEndFromUTC(const CDateTime& end);
     void SetEndFromLocalTime(const CDateTime& end);
 
@@ -228,12 +228,12 @@ namespace PVR
      */
     int GetDuration() const;
 
-    CDateTime FirstDayAsUTC(void) const;
-    CDateTime FirstDayAsLocalTime(void) const;
+    CDateTime FirstDayAsUTC() const;
+    CDateTime FirstDayAsLocalTime() const;
     void SetFirstDayFromUTC(const CDateTime& firstDay);
     void SetFirstDayFromLocalTime(const CDateTime& firstDay);
 
-    unsigned int MarginStart(void) const { return m_iMarginStart; }
+    unsigned int MarginStart() const { return m_iMarginStart; }
 
     /*!
      * @brief Get the text for the notification.
@@ -246,9 +246,9 @@ namespace PVR
     */
     std::string GetDeletedNotificationText() const;
 
-    const std::string& Title(void) const;
-    const std::string& Summary(void) const;
-    const std::string& Path(void) const;
+    const std::string& Title() const;
+    const std::string& Summary() const;
+    const std::string& Path() const;
 
     /*!
      * @brief The series link for this timer.
@@ -305,7 +305,7 @@ namespace PVR
      * @brief Update the channel associated with this timer.
      * @return the channel for the timer. Can be empty for epg based repeating timers (e.g. "match any channel" rules)
      */
-    std::shared_ptr<CPVRChannel> UpdateChannel(void);
+    std::shared_ptr<CPVRChannel> UpdateChannel();
 
     /*!
      * @brief Return string representation for any possible combination of weekdays.
@@ -359,7 +359,7 @@ namespace PVR
     CPVRTimerInfoTag& operator=(const CPVRTimerInfoTag& orig) = delete;
 
     std::string GetWeekdaysString() const;
-    void UpdateEpgInfoTag(void);
+    void UpdateEpgInfoTag();
 
     static std::shared_ptr<CPVRTimerInfoTag> CreateFromEpg(const std::shared_ptr<CPVREpgInfoTag>& tag, bool bCreateRule, bool bCreateReminder, bool bReadOnly);
     static std::shared_ptr<CPVRTimerInfoTag> CreateFromDate(const std::shared_ptr<CPVRChannel>& channel, const CDateTime& start, int iDuration, bool bCreateReminder, bool bReadOnly);

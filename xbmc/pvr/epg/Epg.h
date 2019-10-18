@@ -76,42 +76,42 @@ namespace PVR
      * @brief The id of the channel associated with this EPG.
      * @return The channel id or -1 if no channel is associated
      */
-    int ChannelID(void) const;
+    int ChannelID() const;
 
     /*!
      * @brief Get the name of the scraper to use for this table.
      * @return The name of the scraper to use for this table.
      */
-    const std::string& ScraperName(void) const;
+    const std::string& ScraperName() const;
 
     /*!
      * @brief Returns if there is a manual update pending for this EPG
      * @return True if there is a manual update pending, false otherwise
      */
-    bool UpdatePending(void) const;
+    bool UpdatePending() const;
 
     /*!
      * @brief Clear the current tags and schedule manual update
      */
-    void ForceUpdate(void);
+    void ForceUpdate();
 
     /*!
      * @brief Get the name of this table.
      * @return The name of this table.
      */
-    const std::string& Name(void) const;
+    const std::string& Name() const;
 
     /*!
      * @brief Get the database ID of this table.
      * @return The database ID of this table.
      */
-    int EpgID(void) const;
+    int EpgID() const;
 
     /*!
      * @brief Check whether this EPG contains valid entries.
      * @return True if it has valid entries, false if not.
      */
-    bool HasValidEntries(void) const;
+    bool HasValidEntries() const;
 
     /*!
      * @brief Remove all entries from this EPG that finished before the given time.
@@ -122,7 +122,7 @@ namespace PVR
     /*!
      * @brief Remove all entries from this EPG.
      */
-    void Clear(void);
+    void Clear();
 
     /*!
      * @brief Get the event that is occurring now
@@ -212,19 +212,19 @@ namespace PVR
      * @brief Get the start time of the first entry in this table.
      * @return The first date in UTC.
      */
-    CDateTime GetFirstDate(void) const;
+    CDateTime GetFirstDate() const;
 
     /*!
      * @brief Get the end time of the last entry in this table.
      * @return The last date in UTC.
      */
-    CDateTime GetLastDate(void) const;
+    CDateTime GetLastDate() const;
 
     /*!
      * @brief Notify observers when the currently active tag changed.
      * @return True if the playing tag has changed, false otherwise.
      */
-    bool CheckPlayingEvent(void);
+    bool CheckPlayingEvent();
 
     /*!
      * @brief Convert a genre id and subid to a human readable name.
@@ -238,13 +238,13 @@ namespace PVR
      * @brief Check whether this EPG has unsaved data.
      * @return True if this EPG contains unsaved data, false otherwise.
      */
-    bool NeedsSave(void) const;
+    bool NeedsSave() const;
 
     /*!
      * @brief Check whether this EPG is valid.
      * @return True if this EPG is valid and can be updated, false otherwise.
      */
-    bool IsValid(void) const;
+    bool IsValid() const;
 
     /*!
      * @brief Query the events available for CEventStream
@@ -252,7 +252,7 @@ namespace PVR
     CEventStream<PVREvent>& Events() { return m_events; }
 
   private:
-    CPVREpg(void) = delete;
+    CPVREpg() = delete;
     CPVREpg(const CPVREpg&) = delete;
     CPVREpg& operator =(const CPVREpg&) = delete;
 

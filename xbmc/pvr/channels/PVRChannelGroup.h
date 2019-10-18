@@ -82,7 +82,7 @@ namespace PVR
      */
     CPVRChannelGroup(const PVR_CHANNEL_GROUP& group, const std::shared_ptr<CPVRChannelGroup>& allChannelsGroup);
 
-    ~CPVRChannelGroup(void) override;
+    ~CPVRChannelGroup() override;
 
     bool operator ==(const CPVRChannelGroup& right) const;
     bool operator !=(const CPVRChannelGroup& right) const;
@@ -107,7 +107,7 @@ namespace PVR
     /*!
      * @return The amount of group members
      */
-    size_t Size(void) const;
+    size_t Size() const;
 
     /*!
      * @brief Refresh the channel list from the clients.
@@ -162,7 +162,7 @@ namespace PVR
      * @brief Persist changed or new data.
      * @return True if the channel was persisted, false otherwise.
      */
-    bool Persist(void);
+    bool Persist();
 
     /*!
      * @brief Check whether a channel is in this container.
@@ -182,7 +182,7 @@ namespace PVR
      * @brief Check if this group is the internal group containing all channels.
      * @return True if it's the internal group, false otherwise.
      */
-    virtual bool IsInternalGroup(void) const { return m_iGroupType == PVR_GROUP_TYPE_INTERNAL; }
+    virtual bool IsInternalGroup() const { return m_iGroupType == PVR_GROUP_TYPE_INTERNAL; }
 
     /*!
      * @brief True if this group holds radio channels, false if it holds TV channels.
@@ -194,13 +194,13 @@ namespace PVR
      * @brief True if sorting should be prevented when adding/updating channels to the group.
      * @return True if sorting should be prevented when adding/updating channels to the group.
      */
-    bool PreventSortAndRenumber(void) const;
+    bool PreventSortAndRenumber() const;
 
     /*!
      * @brief The database ID of this group.
      * @return The database ID of this group.
      */
-    int GroupID(void) const;
+    int GroupID() const;
 
     /*!
      * @brief Set the database ID of this group.
@@ -217,7 +217,7 @@ namespace PVR
     /*!
      * @brief Return the type of this group.
      */
-    int GroupType(void) const;
+    int GroupType() const;
 
     /*!
      * @return Time group has been watched last.
@@ -241,7 +241,7 @@ namespace PVR
      * @brief The name of this group.
      * @return The name of this group.
      */
-    std::string GroupName(void) const;
+    std::string GroupName() const;
 
     /*! @name Sort methods
      */
@@ -256,13 +256,13 @@ namespace PVR
      * @brief Sort the group and fix up channel numbers.
      * @return True when numbering changed, false otherwise
      */
-    bool SortAndRenumber(void);
+    bool SortAndRenumber();
 
     /*!
      * @brief Remove invalid channels and updates the channel numbers.
      * @return True if something changed, false otherwise.
      */
-    bool Renumber(void);
+    bool Renumber();
 
     //@}
 
@@ -348,28 +348,28 @@ namespace PVR
      * @brief The amount of hidden channels in this container.
      * @return The amount of hidden channels in this container.
      */
-    virtual size_t GetNumHiddenChannels(void) const { return 0; }
+    virtual size_t GetNumHiddenChannels() const { return 0; }
 
     /*!
      * @brief Does this container holds channels.
      * @return True if there is at least one channel in this container, otherwise false.
      */
-    bool HasChannels(void) const;
+    bool HasChannels() const;
 
     /*!
      * @return True if there is at least one channel in this group with changes that haven't been persisted, false otherwise.
      */
-    bool HasChangedChannels(void) const;
+    bool HasChangedChannels() const;
 
     /*!
      * @return True if there is at least one new channel in this group that hasn't been persisted, false otherwise.
      */
-    bool HasNewChannels(void) const;
+    bool HasNewChannels() const;
 
     /*!
      * @return True if anything changed in this group that hasn't been persisted, false otherwise.
      */
-    bool HasChanges(void) const;
+    bool HasChanges() const;
 
     /*!
      * @brief Create an EPG table for each channel.
@@ -389,13 +389,13 @@ namespace PVR
      * @brief Get the start time of the first entry.
      * @return The start time.
      */
-    CDateTime GetFirstEPGDate(void) const;
+    CDateTime GetFirstEPGDate() const;
 
     /*!
      * @brief Get the end time of the last entry.
      * @return The end time.
      */
-    CDateTime GetLastEPGDate(void) const;
+    CDateTime GetLastEPGDate() const;
 
     /*!
      * @brief Update a channel group member with given data.
@@ -437,9 +437,9 @@ namespace PVR
     const std::shared_ptr<PVRChannelGroupMember>& GetByUniqueID(const std::pair<int, int>& id) const;
 
     void SetHidden(bool bHidden);
-    bool IsHidden(void) const;
+    bool IsHidden() const;
 
-    int GetPosition(void) const;
+    int GetPosition() const;
     void SetPosition(int iPosition);
 
     /*!
@@ -476,7 +476,7 @@ namespace PVR
     /*!
      * @brief Init class
      */
-    virtual void OnInit(void);
+    virtual void OnInit();
 
     /*!
      * @brief Load the channels stored in the database.
@@ -515,23 +515,23 @@ namespace PVR
     /*!
      * @brief Clear this channel list.
      */
-    virtual void Unload(void);
+    virtual void Unload();
 
     /*!
      * @brief Load the channels from the clients.
      * @return True when loaded successfully, false otherwise.
      */
-    virtual bool LoadFromClients(void);
+    virtual bool LoadFromClients();
 
     /*!
      * @brief Sort the current channel list by client channel number.
      */
-    void SortByClientChannelNumber(void);
+    void SortByClientChannelNumber();
 
     /*!
      * @brief Sort the current channel list by channel number.
      */
-    void SortByChannelNumber(void);
+    void SortByChannelNumber();
 
     /*!
      * @brief Update the priority for all members of all channel groups.
