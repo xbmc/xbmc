@@ -135,7 +135,7 @@
 	</variable>
 	<variable name="WidgetStudioIconVar">
 		<value condition="System.HasAddon(resource.images.studios.white)">$INFO[ListItem.Label,resource://resource.images.studios.white/,.png]</value>
-		<value>DefaultStudio.png</value>
+		<value>DefaultStudios.png</value>
 	</variable>
 	<variable name="AddonsLabel2Var">
 		<value condition="ListItem.Property(addon.downloading)">$INFO[ListItem.Property(addon.status)]</value>
