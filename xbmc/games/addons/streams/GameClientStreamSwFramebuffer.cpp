@@ -8,7 +8,7 @@
 
 #include "GameClientStreamSwFramebuffer.h"
 
-#include "addons/kodi-addon-dev-kit/include/kodi/kodi_game_types.h"
+#include "addons/kodi-addon-dev-kit/include/kodi/addon-instance/Game.h"
 #include "cores/RetroPlayer/streams/RetroPlayerVideo.h"
 #include "games/addons/GameClientTranslator.h"
 
