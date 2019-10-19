@@ -81,15 +81,16 @@ bool CVideoLibraryMarkWatchedJob::Work(CVideoDatabase &db)
   for (std::vector<CFileItemPtr>::const_iterator iter = markItems.begin(); iter != markItems.end(); ++iter)
   {
     CFileItemPtr item = *iter;
-    if (m_mark)
-    {
-      std::string path(item->GetPath());
-      if (item->HasVideoInfoTag() && !item->GetVideoInfoTag()->GetPath().empty())
-        path = item->GetVideoInfoTag()->GetPath();
 
-      db.ClearBookMarksOfFile(path, CBookmark::RESUME);
+    std::string path(item->GetPath());
+    if (item->HasVideoInfoTag() && !item->GetVideoInfoTag()->GetPath().empty())
+      path = item->GetVideoInfoTag()->GetPath();
+
+    // With both mark as watched and unwatched we want the resume bookmarks to be reset
+    db.ClearBookMarksOfFile(path, CBookmark::RESUME);
+
+    if (m_mark)
       db.IncrementPlayCount(*item);
-    }
     else
       db.SetPlayCount(*item, 0);
   }
