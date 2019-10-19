@@ -657,6 +657,8 @@ typedef AddonProps_Game game_client_properties;
 
 /*! Structure to transfer the methods from kodi_game_dll.h to Kodi */
 
+struct AddonInstance_Game;
+
 typedef struct AddonToKodiFuncTable_Game
 {
   KODI_HANDLE kodiInstance;
@@ -674,31 +676,34 @@ typedef struct AddonToKodiFuncTable_Game
 
 typedef struct KodiToAddonFuncTable_Game
 {
-  GAME_ERROR  (__cdecl* LoadGame)(const char*);
-  GAME_ERROR  (__cdecl* LoadGameSpecial)(SPECIAL_GAME_TYPE, const char**, size_t);
-  GAME_ERROR  (__cdecl* LoadStandalone)(void);
-  GAME_ERROR  (__cdecl* UnloadGame)(void);
-  GAME_ERROR  (__cdecl* GetGameTiming)(game_system_timing*);
-  GAME_REGION (__cdecl* GetRegion)(void);
-  bool        (__cdecl* RequiresGameLoop)(void);
-  GAME_ERROR  (__cdecl* RunFrame)(void);
-  GAME_ERROR  (__cdecl* Reset)(void);
-  GAME_ERROR  (__cdecl* HwContextReset)(void);
-  GAME_ERROR  (__cdecl* HwContextDestroy)(void);
-  bool        (__cdecl* HasFeature)(const char*, const char*);
-  game_input_topology* (__cdecl* GetTopology)();
-  void        (__cdecl* FreeTopology)(game_input_topology*);
-  void        (__cdecl* SetControllerLayouts)(const game_controller_layout*, unsigned int);
-  bool        (__cdecl* EnableKeyboard)(bool, const char*);
-  bool        (__cdecl* EnableMouse)(bool, const char*);
-  bool        (__cdecl* ConnectController)(bool, const char*, const char*);
-  bool        (__cdecl* InputEvent)(const game_input_event*);
-  size_t      (__cdecl* SerializeSize)(void);
-  GAME_ERROR  (__cdecl* Serialize)(uint8_t*, size_t);
-  GAME_ERROR  (__cdecl* Deserialize)(const uint8_t*, size_t);
-  GAME_ERROR  (__cdecl* CheatReset)(void);
-  GAME_ERROR  (__cdecl* GetMemory)(GAME_MEMORY, uint8_t**, size_t*);
-  GAME_ERROR  (__cdecl* SetCheat)(unsigned int, bool, const char*);
+  GAME_ERROR(__cdecl* LoadGame)(const AddonInstance_Game*, const char*);
+  GAME_ERROR(__cdecl* LoadGameSpecial)
+  (const AddonInstance_Game*, SPECIAL_GAME_TYPE, const char**, size_t);
+  GAME_ERROR(__cdecl* LoadStandalone)(const AddonInstance_Game*);
+  GAME_ERROR(__cdecl* UnloadGame)(const AddonInstance_Game*);
+  GAME_ERROR(__cdecl* GetGameTiming)(const AddonInstance_Game*, game_system_timing*);
+  GAME_REGION(__cdecl* GetRegion)(const AddonInstance_Game*);
+  bool(__cdecl* RequiresGameLoop)(const AddonInstance_Game*);
+  GAME_ERROR(__cdecl* RunFrame)(const AddonInstance_Game*);
+  GAME_ERROR(__cdecl* Reset)(const AddonInstance_Game*);
+  GAME_ERROR(__cdecl* HwContextReset)(const AddonInstance_Game*);
+  GAME_ERROR(__cdecl* HwContextDestroy)(const AddonInstance_Game*);
+  bool(__cdecl* HasFeature)(const AddonInstance_Game*, const char*, const char*);
+  game_input_topology*(__cdecl* GetTopology)(const AddonInstance_Game*);
+  void(__cdecl* FreeTopology)(const AddonInstance_Game*, game_input_topology*);
+  void(__cdecl* SetControllerLayouts)(const AddonInstance_Game*,
+                                      const game_controller_layout*,
+                                      unsigned int);
+  bool(__cdecl* EnableKeyboard)(const AddonInstance_Game*, bool, const char*);
+  bool(__cdecl* EnableMouse)(const AddonInstance_Game*, bool, const char*);
+  bool(__cdecl* ConnectController)(const AddonInstance_Game*, bool, const char*, const char*);
+  bool(__cdecl* InputEvent)(const AddonInstance_Game*, const game_input_event*);
+  size_t(__cdecl* SerializeSize)(const AddonInstance_Game*);
+  GAME_ERROR(__cdecl* Serialize)(const AddonInstance_Game*, uint8_t*, size_t);
+  GAME_ERROR(__cdecl* Deserialize)(const AddonInstance_Game*, const uint8_t*, size_t);
+  GAME_ERROR(__cdecl* CheatReset)(const AddonInstance_Game*);
+  GAME_ERROR(__cdecl* GetMemory)(const AddonInstance_Game*, GAME_MEMORY, uint8_t**, size_t*);
+  GAME_ERROR(__cdecl* SetCheat)(const AddonInstance_Game*, unsigned int, bool, const char*);
 } KodiToAddonFuncTable_Game;
 
 typedef struct AddonInstance_Game

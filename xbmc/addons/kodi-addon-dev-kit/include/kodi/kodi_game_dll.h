@@ -23,7 +23,7 @@ extern "C" {
  *
  * return the error, or GAME_ERROR_NO_ERROR if the game was loaded
  */
-GAME_ERROR LoadGame(const char* url);
+GAME_ERROR LoadGame(const AddonInstance_Game* instance, const char* url);
 
 /*!
  * \brief Load a game that requires multiple files
@@ -34,7 +34,10 @@ GAME_ERROR LoadGame(const char* url);
  *
  * \return the error, or GAME_ERROR_NO_ERROR if the game was loaded
  */
-GAME_ERROR LoadGameSpecial(SPECIAL_GAME_TYPE type, const char** urls, size_t urlCount);
+GAME_ERROR LoadGameSpecial(const AddonInstance_Game* instance,
+                           SPECIAL_GAME_TYPE type,
+                           const char** urls,
+                           size_t urlCount);
 
 /*!
  * \brief Begin playing without a game file
@@ -46,7 +49,7 @@ GAME_ERROR LoadGameSpecial(SPECIAL_GAME_TYPE type, const char** urls, size_t url
  *
  * \return the error, or GAME_ERROR_NO_ERROR if the game add-on was loaded
  */
-GAME_ERROR LoadStandalone(void);
+GAME_ERROR LoadStandalone(const AddonInstance_Game* instance);
 
 /*!
  * \brief Unload the current game
@@ -54,7 +57,7 @@ GAME_ERROR LoadStandalone(void);
  * \return the error, or GAME_ERROR_NO_ERROR if the game was unloaded
  */
 /*! Unloads a currently loaded game */
-GAME_ERROR UnloadGame(void);
+GAME_ERROR UnloadGame(const AddonInstance_Game* instance);
 
 /*!
  * \brief Get timing information about the loaded game
@@ -63,14 +66,14 @@ GAME_ERROR UnloadGame(void);
  *
  * \return the error, or GAME_ERROR_NO_ERROR if info was filled
  */
-GAME_ERROR GetGameTiming(game_system_timing* timing_info);
+GAME_ERROR GetGameTiming(const AddonInstance_Game* instance, game_system_timing* timing_info);
 
 /*!
  * \brief Get region of the loaded game
  *
  * \return the region, or GAME_REGION_UNKNOWN if unknown or no game is loaded
  */
-GAME_REGION GetRegion(void);
+GAME_REGION GetRegion(const AddonInstance_Game* instance);
 
 /*!
  * \brief Return true if the client requires the frontend to provide a game loop
@@ -80,21 +83,21 @@ GAME_REGION GetRegion(void);
  *
  * \return true if the frontend should provide a game loop, false otherwise
  */
-bool RequiresGameLoop(void);
+bool RequiresGameLoop(const AddonInstance_Game* instance);
 
 /*!
  * \brief Run a single frame for add-ons that use a game loop
  *
  * \return the error, or GAME_ERROR_NO_ERROR if there was no error
  */
-GAME_ERROR RunFrame(void);
+GAME_ERROR RunFrame(const AddonInstance_Game* instance);
 
 /*!
  * \brief Reset the current game
  *
  * \return the error, or GAME_ERROR_NO_ERROR if the game was reset
  */
-GAME_ERROR Reset(void);
+GAME_ERROR Reset(const AddonInstance_Game* instance);
 
 // --- Hardware rendering operations -------------------------------------------
 
@@ -105,7 +108,7 @@ GAME_ERROR Reset(void);
  *
  * \return the error, or GAME_ERROR_NO_ERROR if the HW context was reset
  */
-GAME_ERROR HwContextReset(void);
+GAME_ERROR HwContextReset(const AddonInstance_Game* instance);
 
 /*!
  * \brief Called before the context is destroyed
@@ -114,7 +117,7 @@ GAME_ERROR HwContextReset(void);
  *
  * \return the error, or GAME_ERROR_NO_ERROR if the HW context was destroyed
  */
-GAME_ERROR HwContextDestroy(void);
+GAME_ERROR HwContextDestroy(const AddonInstance_Game* instance);
 
 // --- Input operations --------------------------------------------------------
 
@@ -130,7 +133,9 @@ GAME_ERROR HwContextDestroy(void);
  * \param feature_name The name of a feature in that profile
  * \return true if input is accepted for the feature, false otherwise
  */
-bool HasFeature(const char* controller_id, const char* feature_name);
+bool HasFeature(const AddonInstance_Game* instance,
+                const char* controller_id,
+                const char* feature_name);
 
 /*!
  * \brief Get the input topology that specifies which controllers can be connected
@@ -143,14 +148,14 @@ bool HasFeature(const char* controller_id, const char* feature_name);
  * accept all controllers imported by addon.xml. The port ID is set to
  * the DEFAULT_PORT_ID constant.
  */
-game_input_topology* GetTopology();
+game_input_topology* GetTopology(const AddonInstance_Game* instance);
 
 /*!
  * \brief Free the topology's resources
  *
  * \param topology The topology returned by GetTopology()
  */
-void FreeTopology(game_input_topology* topology);
+void FreeTopology(const AddonInstance_Game* instance, game_input_topology* topology);
 
 /*!
  * \brief Set the layouts for known controllers
@@ -161,7 +166,9 @@ void FreeTopology(game_input_topology* topology);
  * After loading the input topology, the frontend will call this with
  * controller layouts for all controllers discovered in the topology.
  */
-void SetControllerLayouts(const game_controller_layout* controllers, unsigned int controller_count);
+void SetControllerLayouts(const AddonInstance_Game* instance,
+                          const game_controller_layout* controllers,
+                          unsigned int controller_count);
 
 /*!
  * \brief Enable/disable keyboard input using the specified controller
@@ -171,7 +178,7 @@ void SetControllerLayouts(const game_controller_layout* controllers, unsigned in
  *
  * \return True if keyboard input was enabled, false otherwise
  */
-bool EnableKeyboard(bool enable, const char* controller_id);
+bool EnableKeyboard(const AddonInstance_Game* instance, bool enable, const char* controller_id);
 
 /*!
  * \brief Enable/disable mouse input using the specified controller
@@ -181,7 +188,7 @@ bool EnableKeyboard(bool enable, const char* controller_id);
  *
  * \return True if mouse input was enabled, false otherwise
  */
-bool EnableMouse(bool enable, const char* controller_id);
+bool EnableMouse(const AddonInstance_Game* instance, bool enable, const char* controller_id);
 
 /*!
  * \brief Connect/disconnect a controller to a port on the virtual game console
@@ -224,7 +231,10 @@ bool EnableMouse(bool enable, const char* controller_id);
  * Any attempts to connect a controller to a port on a disconnected multitap
  * will return false.
  */
-bool ConnectController(bool connect, const char* port_address, const char* controller_id);
+bool ConnectController(const AddonInstance_Game* instance,
+                       bool connect,
+                       const char* port_address,
+                       const char* controller_id);
 
 /*!
  * \brief Notify the add-on of an input event
@@ -233,7 +243,7 @@ bool ConnectController(bool connect, const char* port_address, const char* contr
  *
  * \return true if the event was handled, false otherwise
  */
-bool InputEvent(const game_input_event* event);
+bool InputEvent(const AddonInstance_Game* instance, const game_input_event* event);
 
 // --- Serialization operations ------------------------------------------------
 
@@ -242,7 +252,7 @@ bool InputEvent(const game_input_event* event);
  *
  * \return the number of bytes, or 0 if serialization is not supported
  */
-size_t SerializeSize(void);
+size_t SerializeSize(const AddonInstance_Game* instance);
 
 /*!
  * \brief Serialize the state of the game
@@ -252,7 +262,7 @@ size_t SerializeSize(void);
  *
  * \return the error, or GAME_ERROR_NO_ERROR if the game was serialized into the buffer
  */
-GAME_ERROR Serialize(uint8_t* data, size_t size);
+GAME_ERROR Serialize(const AddonInstance_Game* instance, uint8_t* data, size_t size);
 
 /*!
  * \brief Deserialize the game from the given state
@@ -262,7 +272,7 @@ GAME_ERROR Serialize(uint8_t* data, size_t size);
  *
  * \return the error, or GAME_ERROR_NO_ERROR if the game deserialized
  */
-GAME_ERROR Deserialize(const uint8_t* data, size_t size);
+GAME_ERROR Deserialize(const AddonInstance_Game* instance, const uint8_t* data, size_t size);
 
 // --- Cheat operations --------------------------------------------------------
 
@@ -271,7 +281,7 @@ GAME_ERROR Deserialize(const uint8_t* data, size_t size);
  *
  * \return the error, or GAME_ERROR_NO_ERROR if the cheat system was reset
  */
-GAME_ERROR CheatReset(void);
+GAME_ERROR CheatReset(const AddonInstance_Game* instance);
 
 /*!
  * \brief Get a region of memory
@@ -282,7 +292,10 @@ GAME_ERROR CheatReset(void);
  *
  * \return the error, or GAME_ERROR_NO_ERROR if data was set to a valid buffer
  */
-GAME_ERROR GetMemory(GAME_MEMORY type, uint8_t** data, size_t* size);
+GAME_ERROR GetMemory(const AddonInstance_Game* instance,
+                     GAME_MEMORY type,
+                     uint8_t** data,
+                     size_t* size);
 
 /*!
  * \brief Set a cheat code
@@ -293,7 +306,10 @@ GAME_ERROR GetMemory(GAME_MEMORY type, uint8_t** data, size_t* size);
  *
  * \return the error, or GAME_ERROR_NO_ERROR if the cheat was set
  */
-GAME_ERROR SetCheat(unsigned int index, bool enabled, const char* code);
+GAME_ERROR SetCheat(const AddonInstance_Game* instance,
+                    unsigned int index,
+                    bool enabled,
+                    const char* code);
 
 // --- Add-on helper implementation --------------------------------------------
 
