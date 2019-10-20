@@ -318,6 +318,11 @@ bool CAddonInfoBuilder::ParseXML(const AddonInfoPtr& addon, const TiXmlElement* 
       if (element && element->GetText() != nullptr)
         addon->AddExtraInfo("language", element->GetText());
 
+      /* Parse addon.xml "<reuselanguageinvoker">...</reuselanguageinvoker>" */
+      element = child->FirstChildElement("reuselanguageinvoker");
+      if (element && element->GetText() != nullptr)
+        addon->AddExtraInfo("reuselanguageinvoker", element->GetText());
+
       /* Parse addon.xml "<noicon">...</noicon>" */
       if (addon->m_icon.empty())
       {
