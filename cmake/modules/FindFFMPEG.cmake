@@ -166,6 +166,17 @@ if(NOT ENABLE_INTERNAL_FFMPEG OR KODI_DEPENDSBUILD)
                                                     FFMPEG_VERSION
                                       FAIL_MESSAGE "FFmpeg ${REQUIRED_FFMPEG_VERSION} not found, please consider using -DENABLE_INTERNAL_FFMPEG=ON")
 
+    include(CheckCSourceCompiles)
+    set(CMAKE_REQUIRED_INCLUDES ${FFMPEG_INCLUDE_DIRS})
+    check_c_source_compiles("#include <libavutil/hwcontext_drm.h>
+
+                             int main()
+                             {
+                               AVDRMFrameDescriptor test;
+                               return test.format;
+                             }
+                             " FFMPEG_HAS_AVDRMFRAMEDESCRIPTOR_FORMAT)
+
   else()
     message(STATUS "FFmpeg ${REQUIRED_FFMPEG_VERSION} not found, falling back to internal build")
     unset(FFMPEG_INCLUDE_DIRS)
@@ -194,6 +205,10 @@ if(NOT ENABLE_INTERNAL_FFMPEG OR KODI_DEPENDSBUILD)
                          ${FFMPEG_LIBSWSCALE} ${FFMPEG_LIBSWRESAMPLE}
                          ${FFMPEG_LIBPOSTPROC} ${FFMPEG_LDFLAGS})
     list(APPEND FFMPEG_DEFINITIONS -DFFMPEG_VER_SHA=\"${FFMPEG_VERSION}\")
+
+    if(FFMPEG_HAS_AVDRMFRAMEDESCRIPTOR_FORMAT)
+      list(APPEND FFMPEG_DEFINITIONS -DHAVE_AVDRMFRAMEDESCRIPTOR_FORMAT=1)
+    endif()
 
     if(NOT TARGET ffmpeg)
       add_library(ffmpeg ${FFMPEG_LIB_TYPE} IMPORTED)
