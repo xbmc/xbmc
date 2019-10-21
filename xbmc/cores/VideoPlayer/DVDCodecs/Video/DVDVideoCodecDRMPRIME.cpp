@@ -9,6 +9,7 @@
 #include "DVDVideoCodecDRMPRIME.h"
 
 #include "ServiceBroker.h"
+#include "cores/VideoPlayer/Buffers/VideoBufferDMA.h"
 #include "cores/VideoPlayer/Buffers/VideoBufferDRMPRIME.h"
 #include "cores/VideoPlayer/DVDCodecs/DVDCodecs.h"
 #include "cores/VideoPlayer/DVDCodecs/DVDFactoryCodec.h"
@@ -24,11 +25,50 @@ extern "C"
 {
 #include <libavcodec/avcodec.h>
 #include <libavutil/error.h>
+#include <libavutil/imgutils.h>
 #include <libavutil/opt.h>
 #include <libavutil/pixdesc.h>
 }
 
 using namespace KODI::WINDOWING::GBM;
+
+namespace
+{
+
+static void ReleaseBuffer(void* opaque, uint8_t* data)
+{
+  CVideoBufferDMA* buffer = static_cast<CVideoBufferDMA*>(opaque);
+  buffer->Release();
+}
+
+static void AlignedSize(AVCodecContext* avctx, int& width, int& height)
+{
+  int w = width;
+  int h = height;
+  AVFrame picture;
+  int unaligned;
+  int stride_align[AV_NUM_DATA_POINTERS];
+
+  avcodec_align_dimensions2(avctx, &w, &h, stride_align);
+
+  do
+  {
+    // NOTE: do not align linesizes individually, this breaks e.g. assumptions
+    // that linesize[0] == 2*linesize[1] in the MPEG-encoder for 4:2:2
+    av_image_fill_linesizes(picture.linesize, avctx->pix_fmt, w);
+    // increase alignment of w for next try (rhs gives the lowest bit set in w)
+    w += w & ~(w - 1);
+
+    unaligned = 0;
+    for (int i = 0; i < 4; i++)
+      unaligned |= picture.linesize[i] % stride_align[i];
+  } while (unaligned);
+
+  width = w;
+  height = h;
+}
+
+} // namespace
 
 CDVDVideoCodecDRMPRIME::CDVDVideoCodecDRMPRIME(CProcessInfo& processInfo)
   : CDVDVideoCodec(processInfo)
@@ -65,6 +105,11 @@ static bool IsSupportedHwFormat(const enum AVPixelFormat fmt)
   return fmt == AV_PIX_FMT_DRM_PRIME;
 }
 
+static bool IsSupportedSwFormat(const enum AVPixelFormat fmt)
+{
+  return fmt == AV_PIX_FMT_YUV420P || fmt == AV_PIX_FMT_YUVJ420P;
+}
+
 static const AVCodecHWConfig* FindHWConfig(const AVCodec* codec)
 {
   const AVCodecHWConfig* config = nullptr;
@@ -89,17 +134,22 @@ static const AVCodec* FindDecoder(CDVDStreamInfo& hints)
   const AVCodec* codec = nullptr;
   void* i = 0;
 
-  while ((codec = av_codec_iterate(&i)))
-  {
-    if (!av_codec_is_decoder(codec))
-      continue;
-    if (codec->id != hints.codec)
-      continue;
+  if (!(hints.codecOptions & CODEC_FORCE_SOFTWARE))
+    while ((codec = av_codec_iterate(&i)))
+    {
+      if (!av_codec_is_decoder(codec))
+        continue;
+      if (codec->id != hints.codec)
+        continue;
 
-    const AVCodecHWConfig* config = FindHWConfig(codec);
-    if (config)
-      return codec;
-  }
+      const AVCodecHWConfig* config = FindHWConfig(codec);
+      if (config)
+        return codec;
+    }
+
+  codec = avcodec_find_decoder(hints.codec);
+  if (codec && (codec->capabilities & AV_CODEC_CAP_DR1) == AV_CODEC_CAP_DR1)
+    return codec;
 
   return nullptr;
 }
@@ -109,7 +159,7 @@ enum AVPixelFormat CDVDVideoCodecDRMPRIME::GetFormat(struct AVCodecContext* avct
 {
   for (int n = 0; fmt[n] != AV_PIX_FMT_NONE; n++)
   {
-    if (IsSupportedHwFormat(fmt[n]))
+    if (IsSupportedHwFormat(fmt[n]) || IsSupportedSwFormat(fmt[n]))
     {
       CDVDVideoCodecDRMPRIME* ctx = static_cast<CDVDVideoCodecDRMPRIME*>(avctx->opaque);
       ctx->UpdateProcessInfo(avctx, fmt[n]);
@@ -119,6 +169,45 @@ enum AVPixelFormat CDVDVideoCodecDRMPRIME::GetFormat(struct AVCodecContext* avct
 
   CLog::Log(LOGERROR, "CDVDVideoCodecDRMPRIME::{} - unsupported pixel format", __FUNCTION__);
   return AV_PIX_FMT_NONE;
+}
+
+int CDVDVideoCodecDRMPRIME::GetBuffer(struct AVCodecContext* avctx, AVFrame* frame, int flags)
+{
+  if (IsSupportedSwFormat(static_cast<AVPixelFormat>(frame->format)))
+  {
+    int width = frame->width;
+    int height = frame->height;
+
+    AlignedSize(avctx, width, height);
+
+    int size;
+    switch (avctx->pix_fmt)
+    {
+      case AV_PIX_FMT_YUV420P:
+      case AV_PIX_FMT_YUVJ420P:
+        size = width * height * 3 / 2;
+        break;
+      default:
+        return -1;
+    }
+
+    CDVDVideoCodecDRMPRIME* ctx = static_cast<CDVDVideoCodecDRMPRIME*>(avctx->opaque);
+    auto buffer = dynamic_cast<CVideoBufferDMA*>(
+        ctx->m_processInfo.GetVideoBufferManager().Get(avctx->pix_fmt, size, nullptr));
+    if (!buffer)
+      return -1;
+
+    frame->opaque = static_cast<void*>(buffer);
+    frame->opaque_ref =
+        av_buffer_create(nullptr, 0, ReleaseBuffer, frame->opaque, AV_BUFFER_FLAG_READONLY);
+
+    buffer->Export(frame, width, height);
+    buffer->SyncStart();
+
+    return 0;
+  }
+
+  return avcodec_default_get_buffer2(avctx, frame, flags);
 }
 
 bool CDVDVideoCodecDRMPRIME::Open(CDVDStreamInfo& hints, CDVDCodecOptions& options)
@@ -159,6 +248,7 @@ bool CDVDVideoCodecDRMPRIME::Open(CDVDStreamInfo& hints, CDVDCodecOptions& optio
   m_pCodecContext->pix_fmt = AV_PIX_FMT_DRM_PRIME;
   m_pCodecContext->opaque = static_cast<void*>(this);
   m_pCodecContext->get_format = GetFormat;
+  m_pCodecContext->get_buffer2 = GetBuffer;
   m_pCodecContext->codec_tag = hints.codec_tag;
   m_pCodecContext->coded_width = hints.width;
   m_pCodecContext->coded_height = hints.height;
@@ -183,7 +273,11 @@ bool CDVDVideoCodecDRMPRIME::Open(CDVDStreamInfo& hints, CDVDCodecOptions& optio
   {
     CLog::Log(LOGINFO, "CDVDVideoCodecDRMPRIME::{} - unable to open codec", __FUNCTION__);
     avcodec_free_context(&m_pCodecContext);
-    return false;
+    if (hints.codecOptions & CODEC_FORCE_SOFTWARE)
+      return false;
+
+    hints.codecOptions |= CODEC_FORCE_SOFTWARE;
+    return Open(hints, options);
   }
 
   UpdateProcessInfo(m_pCodecContext, m_pCodecContext->pix_fmt);
@@ -313,8 +407,9 @@ void CDVDVideoCodecDRMPRIME::SetPictureParams(VideoPicture* pVideoPicture)
         (static_cast<int>(lrint(pVideoPicture->iWidth / aspect_ratio))) & -3;
   }
 
-  pVideoPicture->color_range =
-      m_pFrame->color_range == AVCOL_RANGE_JPEG || m_hints.colorRange == AVCOL_RANGE_JPEG;
+  pVideoPicture->color_range = m_pFrame->color_range == AVCOL_RANGE_JPEG ||
+                               m_pFrame->format == AV_PIX_FMT_YUVJ420P ||
+                               m_hints.colorRange == AVCOL_RANGE_JPEG;
   pVideoPicture->color_primaries = m_pFrame->color_primaries == AVCOL_PRI_UNSPECIFIED
                                        ? m_hints.colorPrimaries
                                        : m_pFrame->color_primaries;
@@ -414,6 +509,17 @@ CDVDVideoCodec::VCReturn CDVDVideoCodecDRMPRIME::GetPicture(VideoPicture* pVideo
     buffer->SetPictureParams(*pVideoPicture);
     buffer->SetRef(m_pFrame);
     pVideoPicture->videoBuffer = buffer;
+  }
+  else if (m_pFrame->opaque)
+  {
+    CVideoBufferDMA* buffer = static_cast<CVideoBufferDMA*>(m_pFrame->opaque);
+    buffer->SetPictureParams(*pVideoPicture);
+    buffer->Acquire();
+    buffer->SyncEnd();
+    buffer->SetDimensions(m_pFrame->width, m_pFrame->height);
+
+    pVideoPicture->videoBuffer = buffer;
+    av_frame_unref(m_pFrame);
   }
 
   if (!pVideoPicture->videoBuffer)
