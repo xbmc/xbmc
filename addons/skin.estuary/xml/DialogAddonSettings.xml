@@ -50,8 +50,9 @@
 				<top>100</top>
 				<width>1060</width>
 				<height>700</height>
+				<pagecontrol>60</pagecontrol>
 				<onleft>3</onleft>
-				<onright>9000</onright>
+				<onright>60</onright>
 				<onup>5</onup>
 				<ondown>5</ondown>
 			</control>
@@ -141,6 +142,17 @@
 				<textureradioonnofocus>icons/settings.png</textureradioonnofocus>
 				<textureradioofffocus>icons/settings.png</textureradioofffocus>
 				<textureradiooffnofocus>icons/settings.png</textureradiooffnofocus>
+			</control>
+			<control type="scrollbar" id="60">
+				<left>1489</left>
+				<top>100</top>
+				<width>12</width>
+				<height>700</height>
+				<orientation>vertical</orientation>
+				<onleft>5</onleft>
+				<onright>9000</onright>
+				<animation effect="fade" start="0" end="100" delay="300" time="320">WindowOpen</animation>
+				<animation effect="fade" start="100" end="0" time="150">WindowClose</animation>
 			</control>
 		</control>
 	</controls>
