@@ -1,0 +1,13 @@
+# See https://help.github.com/articles/about-codeowners/
+# for more info about CODEOWNERS file
+
+# Please try and keep the list in alphabetical order
+
+/xbmc/cores/VideoPlayer/VideoRenderers/HwDecRender/DRMPRIMEEGL.* @lrusak
+/xbmc/cores/VideoPlayer/VideoRenderers/HwDecRender/RendererDRMPRIME* @lrusak
+/xbmc/platform/linux/ @lrusak
+/xbmc/rendering/gles/ @lrusak
+/xbmc/utils/EGL* @lrusak
+/xbmc/utils/GBMBufferObject.* @lrusak
+/xbmc/windowing/gbm/ @lrusak
+
