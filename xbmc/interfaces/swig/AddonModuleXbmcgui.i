@@ -49,8 +49,6 @@ using namespace xbmcgui;
 
 %include "interfaces/legacy/ListItem.h"
 
-%feature("python:coerceToUnicode") XBMCAddon::xbmcgui::ControlButton::getLabel "true"
-%feature("python:coerceToUnicode") XBMCAddon::xbmcgui::ControlButton::getLabel2 "true"
 %include "interfaces/legacy/Control.h"
 
 %include "interfaces/legacy/Dialog.h"
