@@ -2946,7 +2946,7 @@ void CFileItemList::RemoveDiscCache(int windowID) const
 std::string CFileItemList::GetDiscFileCache(int windowID) const
 {
   std::string strPath(GetPath());
-  URIUtils::RemoveSlashAtEnd(strPath);
+  strPath = CURL(strPath).GetWithoutOptions();
 
   uint32_t crc = Crc32::ComputeFromLowerCase(strPath);
 
