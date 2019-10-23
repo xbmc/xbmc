@@ -16,85 +16,84 @@ extern "C"
 #include <libavutil/pixdesc.h>
 }
 
-IVideoBufferDRMPRIME::IVideoBufferDRMPRIME(int id)
-  : CVideoBuffer(id)
+namespace DRMPRIME
+{
+
+int GetColorEncoding(const VideoPicture& picture)
+{
+  switch (picture.color_space)
+  {
+    case AVCOL_SPC_BT2020_CL:
+    case AVCOL_SPC_BT2020_NCL:
+      return DRM_COLOR_YCBCR_BT2020;
+    case AVCOL_SPC_SMPTE170M:
+    case AVCOL_SPC_BT470BG:
+    case AVCOL_SPC_FCC:
+      return DRM_COLOR_YCBCR_BT601;
+    case AVCOL_SPC_BT709:
+      return DRM_COLOR_YCBCR_BT709;
+    case AVCOL_SPC_RESERVED:
+    case AVCOL_SPC_UNSPECIFIED:
+    default:
+      if (picture.iWidth > 1024 || picture.iHeight >= 600)
+        return DRM_COLOR_YCBCR_BT709;
+      else
+        return DRM_COLOR_YCBCR_BT601;
+  }
+}
+
+int GetColorRange(const VideoPicture& picture)
+{
+  if (picture.color_range)
+    return DRM_COLOR_YCBCR_FULL_RANGE;
+  return DRM_COLOR_YCBCR_LIMITED_RANGE;
+}
+
+} // namespace DRMPRIME
+
+CVideoBufferDRMPRIME::CVideoBufferDRMPRIME(int id) : CVideoBuffer(id)
 {
 }
 
-CVideoBufferDRMPRIME::CVideoBufferDRMPRIME(IVideoBufferPool& pool, int id)
-  : IVideoBufferDRMPRIME(id)
+CVideoBufferDRMPRIMEFFmpeg::CVideoBufferDRMPRIMEFFmpeg(IVideoBufferPool& pool, int id)
+  : CVideoBufferDRMPRIME(id)
 {
   m_pFrame = av_frame_alloc();
 }
 
-CVideoBufferDRMPRIME::~CVideoBufferDRMPRIME()
+CVideoBufferDRMPRIMEFFmpeg::~CVideoBufferDRMPRIMEFFmpeg()
 {
   Unref();
   av_frame_free(&m_pFrame);
 }
 
-void CVideoBufferDRMPRIME::SetRef(AVFrame* frame)
+void CVideoBufferDRMPRIMEFFmpeg::SetRef(AVFrame* frame)
 {
   av_frame_move_ref(m_pFrame, frame);
 }
 
-void CVideoBufferDRMPRIME::Unref()
+void CVideoBufferDRMPRIMEFFmpeg::Unref()
 {
   av_frame_unref(m_pFrame);
 }
 
-int CVideoBufferDRMPRIME::GetColorEncoding() const
-{
-  switch (m_pFrame->colorspace)
-  {
-  case AVCOL_SPC_BT2020_CL:
-  case AVCOL_SPC_BT2020_NCL:
-    return DRM_COLOR_YCBCR_BT2020;
-  case AVCOL_SPC_SMPTE170M:
-  case AVCOL_SPC_BT470BG:
-  case AVCOL_SPC_FCC:
-    return DRM_COLOR_YCBCR_BT601;
-  case AVCOL_SPC_BT709:
-    return DRM_COLOR_YCBCR_BT709;
-  case AVCOL_SPC_RESERVED:
-  case AVCOL_SPC_UNSPECIFIED:
-  default:
-    if (m_pFrame->width > 1024 || m_pFrame->height >= 600)
-      return DRM_COLOR_YCBCR_BT709;
-    else
-      return DRM_COLOR_YCBCR_BT601;
-  }
-}
-
-int CVideoBufferDRMPRIME::GetColorRange() const
-{
-  switch (m_pFrame->color_range)
-  {
-  case AVCOL_RANGE_JPEG:
-    return DRM_COLOR_YCBCR_FULL_RANGE;
-  case AVCOL_RANGE_MPEG:
-  default:
-    return DRM_COLOR_YCBCR_LIMITED_RANGE;
-  }
-}
-
-bool CVideoBufferDRMPRIME::IsValid() const
+bool CVideoBufferDRMPRIMEFFmpeg::IsValid() const
 {
   AVDRMFrameDescriptor* descriptor = GetDescriptor();
   return descriptor && descriptor->nb_layers;
 }
 
-CVideoBufferPoolDRMPRIME::~CVideoBufferPoolDRMPRIME()
+CVideoBufferPoolDRMPRIMEFFmpeg::~CVideoBufferPoolDRMPRIMEFFmpeg()
 {
   for (auto buf : m_all)
     delete buf;
 }
 
-CVideoBuffer* CVideoBufferPoolDRMPRIME::Get()
+CVideoBuffer* CVideoBufferPoolDRMPRIMEFFmpeg::Get()
 {
   CSingleLock lock(m_critSection);
 
-  CVideoBufferDRMPRIME* buf = nullptr;
+  CVideoBufferDRMPRIMEFFmpeg* buf = nullptr;
   if (!m_free.empty())
   {
     int idx = m_free.front();
@@ -105,7 +104,7 @@ CVideoBuffer* CVideoBufferPoolDRMPRIME::Get()
   else
   {
     int id = m_all.size();
-    buf = new CVideoBufferDRMPRIME(*this, id);
+    buf = new CVideoBufferDRMPRIMEFFmpeg(*this, id);
     m_all.push_back(buf);
     m_used.push_back(id);
   }
@@ -114,7 +113,7 @@ CVideoBuffer* CVideoBufferPoolDRMPRIME::Get()
   return buf;
 }
 
-void CVideoBufferPoolDRMPRIME::Return(int id)
+void CVideoBufferPoolDRMPRIMEFFmpeg::Return(int id)
 {
   CSingleLock lock(m_critSection);
 

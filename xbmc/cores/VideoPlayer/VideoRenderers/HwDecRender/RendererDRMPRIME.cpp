@@ -35,8 +35,9 @@ CRendererDRMPRIME::~CRendererDRMPRIME()
 
 CBaseRenderer* CRendererDRMPRIME::Create(CVideoBuffer* buffer)
 {
-  if (buffer && dynamic_cast<IVideoBufferDRMPRIME*>(buffer) &&
-      CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(SETTING_VIDEOPLAYER_USEPRIMERENDERER) == 0)
+  if (buffer && dynamic_cast<CVideoBufferDRMPRIME*>(buffer) &&
+      CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
+          SETTING_VIDEOPLAYER_USEPRIMERENDERER) == 0)
   {
     CWinSystemGbm* winSystem = dynamic_cast<CWinSystemGbm*>(CServiceBroker::GetWinSystem());
     if (winSystem && winSystem->GetDrm()->GetVideoPlane()->plane &&
@@ -53,7 +54,10 @@ void CRendererDRMPRIME::Register()
   if (winSystem && winSystem->GetDrm()->GetVideoPlane()->plane &&
       std::dynamic_pointer_cast<CDRMAtomic>(winSystem->GetDrm()))
   {
-    CServiceBroker::GetSettingsComponent()->GetSettings()->GetSetting(SETTING_VIDEOPLAYER_USEPRIMERENDERER)->SetVisible(true);
+    CServiceBroker::GetSettingsComponent()
+        ->GetSettings()
+        ->GetSetting(SETTING_VIDEOPLAYER_USEPRIMERENDERER)
+        ->SetVisible(true);
     VIDEOPLAYER::CRendererFactory::RegisterRenderer("drm_prime", CRendererDRMPRIME::Create);
     return;
   }
@@ -133,7 +137,7 @@ bool CRendererDRMPRIME::NeedBuffer(int index)
   if (m_iLastRenderBuffer == index)
     return true;
 
-  IVideoBufferDRMPRIME* buffer = dynamic_cast<IVideoBufferDRMPRIME*>(m_buffers[index].videoBuffer);
+  CVideoBufferDRMPRIME* buffer = dynamic_cast<CVideoBufferDRMPRIME*>(m_buffers[index].videoBuffer);
   if (buffer && buffer->m_fb_id)
     return true;
 
@@ -155,7 +159,8 @@ void CRendererDRMPRIME::Update()
   ManageRenderArea();
 }
 
-void CRendererDRMPRIME::RenderUpdate(int index, int index2, bool clear, unsigned int flags, unsigned int alpha)
+void CRendererDRMPRIME::RenderUpdate(
+    int index, int index2, bool clear, unsigned int flags, unsigned int alpha)
 {
   if (m_iLastRenderBuffer == index && m_videoLayerBridge)
   {
@@ -163,14 +168,15 @@ void CRendererDRMPRIME::RenderUpdate(int index, int index2, bool clear, unsigned
     return;
   }
 
-  IVideoBufferDRMPRIME* buffer = dynamic_cast<IVideoBufferDRMPRIME*>(m_buffers[index].videoBuffer);
+  CVideoBufferDRMPRIME* buffer = dynamic_cast<CVideoBufferDRMPRIME*>(m_buffers[index].videoBuffer);
   if (!buffer || !buffer->IsValid())
     return;
 
   if (!m_videoLayerBridge)
   {
     CWinSystemGbm* winSystem = static_cast<CWinSystemGbm*>(CServiceBroker::GetWinSystem());
-    m_videoLayerBridge = std::dynamic_pointer_cast<CVideoLayerBridgeDRMPRIME>(winSystem->GetVideoLayerBridge());
+    m_videoLayerBridge =
+        std::dynamic_pointer_cast<CVideoLayerBridgeDRMPRIME>(winSystem->GetVideoLayerBridge());
     if (!m_videoLayerBridge)
       m_videoLayerBridge = std::make_shared<CVideoLayerBridgeDRMPRIME>(winSystem->GetDrm());
     winSystem->RegisterVideoLayerBridge(m_videoLayerBridge);
@@ -201,12 +207,16 @@ bool CRendererDRMPRIME::ConfigChanged(const VideoPicture& picture)
 
 bool CRendererDRMPRIME::Supports(ERENDERFEATURE feature)
 {
-  if (feature == RENDERFEATURE_ZOOM ||
-      feature == RENDERFEATURE_STRETCH ||
-      feature == RENDERFEATURE_PIXEL_RATIO)
-    return true;
-
-  return false;
+  switch (feature)
+  {
+    case RENDERFEATURE_STRETCH:
+    case RENDERFEATURE_ZOOM:
+    case RENDERFEATURE_VERTICAL_SHIFT:
+    case RENDERFEATURE_PIXEL_RATIO:
+      return true;
+    default:
+      return false;
+  }
 }
 
 bool CRendererDRMPRIME::Supports(ESCALINGMETHOD method)

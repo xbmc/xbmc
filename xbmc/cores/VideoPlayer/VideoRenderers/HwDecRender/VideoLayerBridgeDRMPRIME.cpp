@@ -13,9 +13,9 @@
 #include "windowing/gbm/DRMUtils.h"
 
 using namespace KODI::WINDOWING::GBM;
+using namespace DRMPRIME;
 
-CVideoLayerBridgeDRMPRIME::CVideoLayerBridgeDRMPRIME(std::shared_ptr<CDRMUtils> drm)
-  : m_DRM(drm)
+CVideoLayerBridgeDRMPRIME::CVideoLayerBridgeDRMPRIME(std::shared_ptr<CDRMUtils> drm) : m_DRM(drm)
 {
 }
 
@@ -33,7 +33,7 @@ void CVideoLayerBridgeDRMPRIME::Disable()
   m_DRM->AddProperty(plane, "CRTC_ID", 0);
 }
 
-void CVideoLayerBridgeDRMPRIME::Acquire(IVideoBufferDRMPRIME* buffer)
+void CVideoLayerBridgeDRMPRIME::Acquire(CVideoBufferDRMPRIME* buffer)
 {
   // release the buffer that is no longer presented on screen
   Release(m_prev_buffer);
@@ -46,7 +46,7 @@ void CVideoLayerBridgeDRMPRIME::Acquire(IVideoBufferDRMPRIME* buffer)
   m_buffer->Acquire();
 }
 
-void CVideoLayerBridgeDRMPRIME::Release(IVideoBufferDRMPRIME* buffer)
+void CVideoLayerBridgeDRMPRIME::Release(CVideoBufferDRMPRIME* buffer)
 {
   if (!buffer)
     return;
@@ -55,7 +55,7 @@ void CVideoLayerBridgeDRMPRIME::Release(IVideoBufferDRMPRIME* buffer)
   buffer->Release();
 }
 
-bool CVideoLayerBridgeDRMPRIME::Map(IVideoBufferDRMPRIME* buffer)
+bool CVideoLayerBridgeDRMPRIME::Map(CVideoBufferDRMPRIME* buffer)
 {
   if (buffer->m_fb_id)
     return true;
@@ -71,10 +71,13 @@ bool CVideoLayerBridgeDRMPRIME::Map(IVideoBufferDRMPRIME* buffer)
   // convert Prime FD to GEM handle
   for (int object = 0; object < descriptor->nb_objects; object++)
   {
-    ret = drmPrimeFDToHandle(m_DRM->GetFileDescriptor(), descriptor->objects[object].fd, &buffer->m_handles[object]);
+    ret = drmPrimeFDToHandle(m_DRM->GetFileDescriptor(), descriptor->objects[object].fd,
+                             &buffer->m_handles[object]);
     if (ret < 0)
     {
-      CLog::Log(LOGERROR, "CVideoLayerBridgeDRMPRIME::%s - failed to convert prime fd %d to gem handle %u, ret = %d",
+      CLog::Log(LOGERROR,
+                "CVideoLayerBridgeDRMPRIME::{} - failed to convert prime fd {} to gem handle {}, "
+                "ret = {}",
                 __FUNCTION__, descriptor->objects[object].fd, buffer->m_handles[object], ret);
       return false;
     }
@@ -99,11 +102,13 @@ bool CVideoLayerBridgeDRMPRIME::Map(IVideoBufferDRMPRIME* buffer)
     flags = DRM_MODE_FB_MODIFIERS;
 
   // add the video frame FB
-  ret = drmModeAddFB2WithModifiers(m_DRM->GetFileDescriptor(), buffer->GetWidth(), buffer->GetHeight(), layer->format,
-                                   handles, pitches, offsets, modifier, &buffer->m_fb_id, flags);
+  ret = drmModeAddFB2WithModifiers(m_DRM->GetFileDescriptor(), buffer->GetWidth(),
+                                   buffer->GetHeight(), layer->format, handles, pitches, offsets,
+                                   modifier, &buffer->m_fb_id, flags);
   if (ret < 0)
   {
-    CLog::Log(LOGERROR, "CVideoLayerBridgeDRMPRIME::%s - failed to add fb %d, ret = %d", __FUNCTION__, buffer->m_fb_id, ret);
+    CLog::Log(LOGERROR, "CVideoLayerBridgeDRMPRIME::{} - failed to add fb {}, ret = {}",
+              __FUNCTION__, buffer->m_fb_id, ret);
     return false;
   }
 
@@ -111,7 +116,7 @@ bool CVideoLayerBridgeDRMPRIME::Map(IVideoBufferDRMPRIME* buffer)
   return true;
 }
 
-void CVideoLayerBridgeDRMPRIME::Unmap(IVideoBufferDRMPRIME* buffer)
+void CVideoLayerBridgeDRMPRIME::Unmap(CVideoBufferDRMPRIME* buffer)
 {
   if (buffer->m_fb_id)
   {
@@ -123,7 +128,7 @@ void CVideoLayerBridgeDRMPRIME::Unmap(IVideoBufferDRMPRIME* buffer)
   {
     if (buffer->m_handles[i])
     {
-      struct drm_gem_close gem_close = { .handle = buffer->m_handles[i] };
+      struct drm_gem_close gem_close = {.handle = buffer->m_handles[i]};
       drmIoctl(m_DRM->GetFileDescriptor(), DRM_IOCTL_GEM_CLOSE, &gem_close);
       buffer->m_handles[i] = 0;
     }
@@ -132,18 +137,20 @@ void CVideoLayerBridgeDRMPRIME::Unmap(IVideoBufferDRMPRIME* buffer)
   buffer->Unmap();
 }
 
-void CVideoLayerBridgeDRMPRIME::Configure(IVideoBufferDRMPRIME* buffer)
+void CVideoLayerBridgeDRMPRIME::Configure(CVideoBufferDRMPRIME* buffer)
 {
+  const VideoPicture& picture = buffer->GetPicture();
+
   struct plane* plane = m_DRM->GetVideoPlane();
   if (m_DRM->SupportsProperty(plane, "COLOR_ENCODING") &&
       m_DRM->SupportsProperty(plane, "COLOR_RANGE"))
   {
-    m_DRM->AddProperty(plane, "COLOR_ENCODING", buffer->GetColorEncoding());
-    m_DRM->AddProperty(plane, "COLOR_RANGE", buffer->GetColorRange());
+    m_DRM->AddProperty(plane, "COLOR_ENCODING", GetColorEncoding(picture));
+    m_DRM->AddProperty(plane, "COLOR_RANGE", GetColorRange(picture));
   }
 }
 
-void CVideoLayerBridgeDRMPRIME::SetVideoPlane(IVideoBufferDRMPRIME* buffer, const CRect& destRect)
+void CVideoLayerBridgeDRMPRIME::SetVideoPlane(CVideoBufferDRMPRIME* buffer, const CRect& destRect)
 {
   if (!Map(buffer))
   {

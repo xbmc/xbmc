@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include "cores/VideoPlayer/DVDCodecs/Video/DVDVideoCodec.h"
 #include "cores/VideoPlayer/Process/VideoBuffer.h"
 
 extern "C"
@@ -15,6 +16,9 @@ extern "C"
 #include <libavutil/frame.h>
 #include <libavutil/hwcontext_drm.h>
 }
+
+namespace DRMPRIME
+{
 
 // Color enums is copied from linux include/drm/drm_color_mgmt.h (strangely not part of uapi)
 enum drm_color_encoding
@@ -29,46 +33,41 @@ enum drm_color_range
   DRM_COLOR_YCBCR_FULL_RANGE,
 };
 
-class IVideoBufferDRMPRIME : public CVideoBuffer
+int GetColorEncoding(const VideoPicture& picture);
+int GetColorRange(const VideoPicture& picture);
+
+} // namespace DRMPRIME
+
+class CVideoBufferDRMPRIME : public CVideoBuffer
 {
 public:
-  IVideoBufferDRMPRIME() = delete;
-  ~IVideoBufferDRMPRIME() override = default;
+  CVideoBufferDRMPRIME() = delete;
+  ~CVideoBufferDRMPRIME() override = default;
+
+  virtual void SetPictureParams(const VideoPicture& picture) { m_picture.SetParams(picture); }
+  virtual const VideoPicture& GetPicture() const { return m_picture; }
+  uint32_t GetWidth() const { return GetPicture().iWidth; }
+  uint32_t GetHeight() const { return GetPicture().iHeight; }
 
   virtual AVDRMFrameDescriptor* GetDescriptor() const = 0;
-  virtual uint32_t GetWidth() const = 0;
-  virtual uint32_t GetHeight() const = 0;
-  virtual int GetColorEncoding() const
-  {
-    return DRM_COLOR_YCBCR_BT709;
-  };
-  virtual int GetColorRange() const
-  {
-    return DRM_COLOR_YCBCR_LIMITED_RANGE;
-  };
-
-  virtual bool IsValid() const
-  {
-    return true;
-  };
-  virtual bool Map()
-  {
-    return true;
-  };
-  virtual void Unmap() {};
+  virtual bool IsValid() const { return true; }
+  virtual bool Map() { return true; }
+  virtual void Unmap() {}
 
   uint32_t m_fb_id = 0;
   uint32_t m_handles[AV_DRM_MAX_PLANES] = {};
 
 protected:
-  explicit IVideoBufferDRMPRIME(int id);
+  explicit CVideoBufferDRMPRIME(int id);
+
+  VideoPicture m_picture;
 };
 
-class CVideoBufferDRMPRIME : public IVideoBufferDRMPRIME
+class CVideoBufferDRMPRIMEFFmpeg : public CVideoBufferDRMPRIME
 {
 public:
-  CVideoBufferDRMPRIME(IVideoBufferPool& pool, int id);
-  ~CVideoBufferDRMPRIME() override;
+  CVideoBufferDRMPRIMEFFmpeg(IVideoBufferPool& pool, int id);
+  ~CVideoBufferDRMPRIMEFFmpeg() override;
   void SetRef(AVFrame* frame);
   void Unref();
 
@@ -76,33 +75,22 @@ public:
   {
     return reinterpret_cast<AVDRMFrameDescriptor*>(m_pFrame->data[0]);
   }
-  uint32_t GetWidth() const override
-  {
-    return m_pFrame->width;
-  }
-  uint32_t GetHeight() const override
-  {
-    return m_pFrame->height;
-  }
-  int GetColorEncoding() const override;
-  int GetColorRange() const override;
-
   bool IsValid() const override;
 
 protected:
   AVFrame* m_pFrame = nullptr;
 };
 
-class CVideoBufferPoolDRMPRIME : public IVideoBufferPool
+class CVideoBufferPoolDRMPRIMEFFmpeg : public IVideoBufferPool
 {
 public:
-  ~CVideoBufferPoolDRMPRIME() override;
+  ~CVideoBufferPoolDRMPRIMEFFmpeg() override;
   void Return(int id) override;
   CVideoBuffer* Get() override;
 
 protected:
   CCriticalSection m_critSection;
-  std::vector<CVideoBufferDRMPRIME*> m_all;
+  std::vector<CVideoBufferDRMPRIMEFFmpeg*> m_all;
   std::deque<int> m_used;
   std::deque<int> m_free;
 };
