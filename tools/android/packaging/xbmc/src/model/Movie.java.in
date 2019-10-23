@@ -9,7 +9,8 @@ import @APP_PACKAGE@.model.Media;
 public class Movie extends Media
 {
   private String year;
-  private String plot;
+  private String rating;
+  private int duration;
 
   public String getYear()
   {
@@ -21,13 +22,23 @@ public class Movie extends Media
     this.year = year;
   }
 
-  public String getPlot()
+  public String getRating()
   {
-    return plot;
+    return rating;
   }
 
-  public void setPlot(String plot)
+  public void setRating(String rating)
   {
-    this.plot = plot;
+    this.rating = rating;
+  }
+
+  public int getDuration()
+  {
+    return duration;
+  }
+
+  public void setDuration(int duration)
+  {
+    this.duration = duration;
   }
 }
