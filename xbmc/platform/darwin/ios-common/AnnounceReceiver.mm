@@ -8,24 +8,24 @@
 
 #import "platform/darwin/ios-common/AnnounceReceiver.h"
 
-#import "Application.h"
-#import "FileItem.h"
+#include "Application.h"
+#include "FileItem.h"
 #include "PlayListPlayer.h"
 #include "ServiceBroker.h"
-#import "TextureCache.h"
-#import "filesystem/SpecialProtocol.h"
-#import "music/MusicDatabase.h"
-#import "music/tags/MusicInfoTag.h"
-#import "playlists/PlayList.h"
-#import "utils/Variant.h"
+#include "TextureCache.h"
+#include "filesystem/SpecialProtocol.h"
+#include "music/MusicDatabase.h"
+#include "music/tags/MusicInfoTag.h"
+#include "playlists/PlayList.h"
+#include "utils/Variant.h"
 
 #import "platform/darwin/ios/XBMCController.h"
 
 #import <UIKit/UIKit.h>
 
-id objectFromVariant(const CVariant &data);
+id objectFromVariant(const CVariant& data);
 
-NSArray *arrayFromVariantArray(const CVariant &data)
+NSArray* arrayFromVariantArray(const CVariant& data)
 {
   if (!data.isArray())
     return nil;
@@ -36,7 +36,7 @@ NSArray *arrayFromVariantArray(const CVariant &data)
   return array;
 }
 
-NSDictionary *dictionaryFromVariantMap(const CVariant &data)
+NSDictionary* dictionaryFromVariantMap(const CVariant& data)
 {
   if (!data.isObject())
     return nil;
@@ -47,7 +47,7 @@ NSDictionary *dictionaryFromVariantMap(const CVariant &data)
   return dict;
 }
 
-id objectFromVariant(const CVariant &data)
+id objectFromVariant(const CVariant& data)
 {
   if (data.isNull())
     return nil;
@@ -71,7 +71,10 @@ id objectFromVariant(const CVariant &data)
   return nil;
 }
 
-void AnnounceBridge(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data)
+void AnnounceBridge(ANNOUNCEMENT::AnnouncementFlag flag,
+                    const char* sender,
+                    const char* message,
+                    const CVariant& data)
 {
   int item_id = -1;
   std::string item_type = "";
@@ -117,12 +120,12 @@ void AnnounceBridge(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender, con
   }
 
   //LOG(@"AnnounceBridge: [%s], [%s], [%s]", ANNOUNCEMENT::AnnouncementFlagToString(flag), sender, message);
-  NSDictionary *dict = dictionaryFromVariantMap(nonConstData);
+  NSDictionary* dict = dictionaryFromVariantMap(nonConstData);
   //LOG(@"data: %@", dict.description);
   if (msg == "OnPlay" || msg == "OnResume")
   {
-    NSDictionary *item = [dict valueForKey:@"item"];
-    NSDictionary *player = [dict valueForKey:@"player"];
+    NSDictionary* item = [dict valueForKey:@"item"];
+    NSDictionary* player = [dict valueForKey:@"player"];
     [item setValue:[player valueForKey:@"speed"] forKey:@"speed"];
     std::string thumb = g_application.CurrentFileItem().GetArt("thumb");
     if (!thumb.empty())
@@ -144,15 +147,18 @@ void AnnounceBridge(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender, con
     if (current >= 0)
     {
       [item setValue:@(current) forKey:@"current"];
-      [item setValue:@(CServiceBroker::GetPlaylistPlayer().GetPlaylist(CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist()).size()) forKey:@"total"];
+      [item setValue:@(CServiceBroker::GetPlaylistPlayer()
+                        .GetPlaylist(CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist()).size()
+              forKey:@"total"];
     }
     if (g_application.CurrentFileItem().HasMusicInfoTag())
     {
-      const std::vector<std::string> &genre = g_application.CurrentFileItem().GetMusicInfoTag()->GetGenre();
+      const std::vector<std::string>& genre =
+          g_application.CurrentFileItem().GetMusicInfoTag()->GetGenre();
       if (!genre.empty())
       {
-        NSMutableArray *genreArray = [[NSMutableArray alloc] initWithCapacity:genre.size()];
-        for(std::vector<std::string>::const_iterator it = genre.begin(); it != genre.end(); ++it)
+        NSMutableArray* genreArray = [[NSMutableArray alloc] initWithCapacity:genre.size()];
+        for (std::vector<std::string>::const_iterator it = genre.begin(); it != genre.end(); ++it)
         {
           [genreArray addObject:@(it->c_str())];
         }
@@ -160,26 +166,34 @@ void AnnounceBridge(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender, con
       }
     }
     //LOG(@"item: %@", item.description);
-    [g_xbmcController performSelectorOnMainThread:@selector(onPlay:) withObject:item  waitUntilDone:NO];
+    [g_xbmcController performSelectorOnMainThread:@selector(onPlay:)
+                                       withObject:item
+                                    waitUntilDone:NO];
   }
   else if (msg == "OnSpeedChanged" || msg == "OnPause")
   {
-    NSDictionary *item = [dict valueForKey:@"item"];
-    NSDictionary *player = [dict valueForKey:@"player"];
+    NSDictionary* item = [dict valueForKey:@"item"];
+    NSDictionary* player = [dict valueForKey:@"player"];
     [item setValue:[player valueForKey:@"speed"] forKey:@"speed"];
     [item setValue:@(g_application.GetTime()) forKey:@"elapsed"];
     //LOG(@"item: %@", item.description);
-    [g_xbmcController performSelectorOnMainThread:@selector(OnSpeedChanged:) withObject:item  waitUntilDone:NO];
+    [g_xbmcController performSelectorOnMainThread:@selector(OnSpeedChanged:)
+                                       withObject:item
+                                    waitUntilDone:NO];
     if (msg == "OnPause")
-      [g_xbmcController performSelectorOnMainThread:@selector(onPause:) withObject:[dict valueForKey:@"item"]  waitUntilDone:NO];
+      [g_xbmcController performSelectorOnMainThread:@selector(onPause:)
+                                         withObject:[dict valueForKey:@"item"]
+                                      waitUntilDone:NO];
   }
   else if (msg == "OnStop")
   {
-    [g_xbmcController performSelectorOnMainThread:@selector(onStop:) withObject:[dict valueForKey:@"item"]  waitUntilDone:NO];
+    [g_xbmcController performSelectorOnMainThread:@selector(onStop:)
+                                       withObject:[dict valueForKey:@"item"]
+                                    waitUntilDone:NO];
   }
 }
 
-CAnnounceReceiver *CAnnounceReceiver::GetInstance()
+CAnnounceReceiver* CAnnounceReceiver::GetInstance()
 {
   static CAnnounceReceiver announceReceiverInstance;
   return &announceReceiverInstance;
@@ -195,7 +209,10 @@ void CAnnounceReceiver::DeInitialize()
   CServiceBroker::GetAnnouncementManager()->RemoveAnnouncer(GetInstance());
 }
 
-void CAnnounceReceiver::Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data)
+void CAnnounceReceiver::Announce(ANNOUNCEMENT::AnnouncementFlag flag,
+                                 const char* sender,
+                                 const char* message,
+                                 const CVariant& data)
 {
   // can be called from c++, we need an auto poll here.
   @autoreleasepool
