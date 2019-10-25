@@ -5,10 +5,7 @@ set(HEADERS AddonBase.h
             Network.h
             StreamCodec.h
             StreamCrypto.h
-            kodi_game_dll.h
-            kodi_game_types.h
             kodi_vfs_types.h
-            libKODI_game.h
             libKODI_guilib.h
             libXBMC_addon.h
             libXBMC_pvr.h

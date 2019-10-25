@@ -10,7 +10,7 @@
 
 #include "GameClientPort.h"
 #include "ServiceBroker.h"
-#include "addons/kodi-addon-dev-kit/include/kodi/kodi_game_types.h"
+#include "addons/kodi-addon-dev-kit/include/kodi/addon-instance/Game.h"
 #include "games/GameServices.h"
 #include "games/controllers/Controller.h"
 #include "games/controllers/ControllerTopology.h"
