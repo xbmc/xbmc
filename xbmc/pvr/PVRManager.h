@@ -252,12 +252,6 @@ namespace PVR
     void OnPlaybackEnded(const std::shared_ptr<CFileItem> item);
 
     /*!
-     * @brief Check whether there are active recordings.
-     * @return True if there are active recordings, false otherwise.
-     */
-    bool IsRecording() const;
-
-    /*!
      * @brief Let the background thread create epg tags for all channels.
      */
     void TriggerEpgsCreate();
