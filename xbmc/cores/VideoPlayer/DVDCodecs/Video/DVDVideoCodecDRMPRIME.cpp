@@ -16,6 +16,7 @@
 #include "settings/SettingsComponent.h"
 #include "settings/lib/Setting.h"
 #include "threads/SingleLock.h"
+#include "utils/CPUInfo.h"
 #include "utils/log.h"
 #include "windowing/gbm/WinSystemGbm.h"
 
@@ -164,6 +165,8 @@ bool CDVDVideoCodecDRMPRIME::Open(CDVDStreamInfo& hints, CDVDCodecOptions& optio
   m_pCodecContext->bits_per_coded_sample = hints.bitsperpixel;
   m_pCodecContext->time_base.num = 1;
   m_pCodecContext->time_base.den = DVD_TIME_BASE;
+  m_pCodecContext->thread_safe_callbacks = 1;
+  m_pCodecContext->thread_count = CServiceBroker::GetCPUInfo()->GetCPUCount();
 
   if (hints.extradata && hints.extrasize > 0)
   {
