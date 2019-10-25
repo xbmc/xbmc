@@ -29,6 +29,7 @@
 #include "pvr/addons/PVRClients.h"
 #include "pvr/channels/PVRChannel.h"
 #include "pvr/channels/PVRChannelGroup.h"
+#include "pvr/channels/PVRChannelGroups.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/dialogs/GUIDialogPVRGroupManager.h"
 #include "pvr/guilib/PVRGUIActions.h"
@@ -61,13 +62,13 @@
 using namespace PVR;
 using namespace KODI::MESSAGING;
 
-CGUIDialogPVRChannelManager::CGUIDialogPVRChannelManager(void) :
+CGUIDialogPVRChannelManager::CGUIDialogPVRChannelManager() :
     CGUIDialog(WINDOW_DIALOG_PVR_CHANNEL_MANAGER, "DialogPVRChannelManager.xml"),
     m_channelItems(new CFileItemList)
 {
 }
 
-CGUIDialogPVRChannelManager::~CGUIDialogPVRChannelManager(void)
+CGUIDialogPVRChannelManager::~CGUIDialogPVRChannelManager()
 {
   delete m_channelItems;
 }
@@ -534,7 +535,7 @@ bool CGUIDialogPVRChannelManager::OnMessage(CGUIMessage& message)
   return CGUIDialog::OnMessage(message);
 }
 
-void CGUIDialogPVRChannelManager::OnWindowLoaded(void)
+void CGUIDialogPVRChannelManager::OnWindowLoaded()
 {
   CGUIDialog::OnWindowLoaded();
 
@@ -543,7 +544,7 @@ void CGUIDialogPVRChannelManager::OnWindowLoaded(void)
   m_viewControl.AddView(GetControl(CONTROL_LIST_CHANNELS));
 }
 
-void CGUIDialogPVRChannelManager::OnWindowUnload(void)
+void CGUIDialogPVRChannelManager::OnWindowUnload()
 {
   CGUIDialog::OnWindowUnload();
   m_viewControl.Reset();
@@ -729,7 +730,7 @@ void CGUIDialogPVRChannelManager::Update()
   m_viewControl.SetSelectedItem(m_iSelected);
 }
 
-void CGUIDialogPVRChannelManager::Clear(void)
+void CGUIDialogPVRChannelManager::Clear()
 {
   m_viewControl.Clear();
   m_channelItems->Clear();
@@ -765,7 +766,7 @@ bool CGUIDialogPVRChannelManager::PersistChannel(const CFileItemPtr& pItem, cons
                               pItem->GetProperty("UserSetIcon").asBoolean());
 }
 
-void CGUIDialogPVRChannelManager::SaveList(void)
+void CGUIDialogPVRChannelManager::SaveList()
 {
   if (!m_bContainsChanges)
    return;
@@ -805,10 +806,12 @@ void CGUIDialogPVRChannelManager::SaveList(void)
   group->Persist();
   m_bContainsChanges = false;
   SetItemsUnchanged();
+  auto channelGroups = CServiceBroker::GetPVRManager().ChannelGroups()->Get(m_bIsRadio);
+  channelGroups->PropagateChannelNumbersAndPersist();
   pDlgProgress->Close();
 }
 
-void CGUIDialogPVRChannelManager::SetItemsUnchanged(void)
+void CGUIDialogPVRChannelManager::SetItemsUnchanged()
 {
   for (int iItemPtr = 0; iItemPtr < m_channelItems->Size(); ++iItemPtr)
   {
@@ -818,7 +821,7 @@ void CGUIDialogPVRChannelManager::SetItemsUnchanged(void)
   }
 }
 
-void CGUIDialogPVRChannelManager::Renumber(void)
+void CGUIDialogPVRChannelManager::Renumber()
 {
   int iNextChannelNumber(0);
   std::string strNumber;

@@ -72,7 +72,7 @@ bool CGUIWindowPVRTimersBase::Update(const std::string& strDirectory, bool updat
   return bReturn;
 }
 
-void CGUIWindowPVRTimersBase::UpdateButtons(void)
+void CGUIWindowPVRTimersBase::UpdateButtons()
 {
   SET_CONTROL_SELECTED(GetID(), CONTROL_BTNHIDEDISABLEDTIMERS, CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_PVRTIMERS_HIDEDISABLEDTIMERS));
 

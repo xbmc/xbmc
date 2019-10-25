@@ -134,7 +134,7 @@ CGUIWindowPVRBase::CGUIWindowPVRBase(bool bRadio, int id, const std::string& xml
   RegisterObservers();
 }
 
-CGUIWindowPVRBase::~CGUIWindowPVRBase(void)
+CGUIWindowPVRBase::~CGUIWindowPVRBase()
 {
   UnregisterObservers();
 }
@@ -144,7 +144,7 @@ void CGUIWindowPVRBase::UpdateSelectedItemPath()
   CServiceBroker::GetPVRManager().GUIActions()->SetSelectedItemPath(m_bRadio, m_viewControl.GetSelectedItemPath());
 }
 
-void CGUIWindowPVRBase::RegisterObservers(void)
+void CGUIWindowPVRBase::RegisterObservers()
 {
   CServiceBroker::GetPVRManager().Events().Subscribe(this, &CGUIWindowPVRBase::Notify);
 
@@ -153,7 +153,7 @@ void CGUIWindowPVRBase::RegisterObservers(void)
     m_channelGroup->Events().Subscribe(this, &CGUIWindowPVRBase::Notify);
 };
 
-void CGUIWindowPVRBase::UnregisterObservers(void)
+void CGUIWindowPVRBase::UnregisterObservers()
 {
   {
     CSingleLock lock(m_critSection);
@@ -260,7 +260,7 @@ void CGUIWindowPVRBase::ClearData()
   m_channelGroupsSelector.reset(new CGUIPVRChannelGroupsSelector);
 }
 
-void CGUIWindowPVRBase::OnInitWindow(void)
+void CGUIWindowPVRBase::OnInitWindow()
 {
   SetProperty("IsRadio", m_bRadio ? "true" : "");
 
@@ -392,7 +392,7 @@ bool CGUIWindowPVRBase::CanBeActivated() const
   return true;
 }
 
-bool CGUIWindowPVRBase::OpenChannelGroupSelectionDialog(void)
+bool CGUIWindowPVRBase::OpenChannelGroupSelectionDialog()
 {
   CGUIDialogSelect* dialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogSelect>(WINDOW_DIALOG_SELECT);
   if (!dialog)
@@ -454,7 +454,7 @@ bool CGUIWindowPVRBase::InitChannelGroup()
   return false;
 }
 
-std::shared_ptr<CPVRChannelGroup> CGUIWindowPVRBase::GetChannelGroup(void)
+std::shared_ptr<CPVRChannelGroup> CGUIWindowPVRBase::GetChannelGroup()
 {
   CSingleLock lock(m_critSection);
   return m_channelGroup;
@@ -527,7 +527,7 @@ bool CGUIWindowPVRBase::Update(const std::string& strDirectory, bool updateFilte
   return bReturn;
 }
 
-void CGUIWindowPVRBase::UpdateButtons(void)
+void CGUIWindowPVRBase::UpdateButtons()
 {
   CGUIMediaWindow::UpdateButtons();
 
@@ -557,7 +557,7 @@ void CGUIWindowPVRBase::ShowProgressDialog(const std::string& strText, int iProg
   m_progressHandle->SetText(strText);
 }
 
-void CGUIWindowPVRBase::HideProgressDialog(void)
+void CGUIWindowPVRBase::HideProgressDialog()
 {
   if (m_progressHandle)
   {

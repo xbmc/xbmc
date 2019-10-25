@@ -20,7 +20,7 @@ namespace PVR
     CGUIViewStatePVR(const int windowId, const CFileItemList& items) : CGUIViewState(items) { m_windowId = windowId; }
 
   protected:
-    bool HideParentDirItems(void) override { return true; }
+    bool HideParentDirItems() override { return true; }
 
     int m_windowId;
   };
@@ -41,7 +41,7 @@ namespace PVR
 
   protected:
     void SaveViewState() override;
-    bool HideParentDirItems(void) override;
+    bool HideParentDirItems() override;
   };
 
   class CGUIViewStateWindowPVRGuide : public CGUIViewStatePVR
@@ -60,7 +60,7 @@ namespace PVR
 
   protected:
     void SaveViewState() override;
-    bool HideParentDirItems(void) override;
+    bool HideParentDirItems() override;
   };
 
   class CGUIViewStateWindowPVRSearch : public CGUIViewStatePVR

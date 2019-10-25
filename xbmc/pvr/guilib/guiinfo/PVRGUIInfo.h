@@ -40,11 +40,11 @@ namespace PVR
   class CPVRGUIInfo : public KODI::GUILIB::GUIINFO::CGUIInfoProvider, private CThread
   {
   public:
-    CPVRGUIInfo(void);
+    CPVRGUIInfo();
     ~CPVRGUIInfo() override = default;
 
-    void Start(void);
-    void Stop(void);
+    void Start();
+    void Stop();
 
     /*!
      * @brief CEventStream callback for PVR events.
@@ -59,22 +59,22 @@ namespace PVR
     bool GetBool(bool& value, const CGUIListItem* item, int contextWindow, const KODI::GUILIB::GUIINFO::CGUIInfo& info) const override;
 
   private:
-    void ResetProperties(void);
+    void ResetProperties();
     void ClearQualityInfo(PVR_SIGNAL_STATUS& qualityInfo);
     void ClearDescrambleInfo(PVR_DESCRAMBLE_INFO& descrambleInfo);
 
-    void Process(void) override;
+    void Process() override;
 
-    void UpdateTimersCache(void);
-    void UpdateBackendCache(void);
-    void UpdateQualityData(void);
-    void UpdateDescrambleData(void);
-    void UpdateMisc(void);
-    void UpdateNextTimer(void);
-    void UpdateTimeshiftData(void);
+    void UpdateTimersCache();
+    void UpdateBackendCache();
+    void UpdateQualityData();
+    void UpdateDescrambleData();
+    void UpdateMisc();
+    void UpdateNextTimer();
+    void UpdateTimeshiftData();
     void UpdateTimeshiftProgressData();
 
-    void UpdateTimersToggle(void);
+    void UpdateTimersToggle();
 
     bool GetListItemAndPlayerLabel(const CFileItem* item, const KODI::GUILIB::GUIINFO::CGUIInfo& info, std::string& strValue) const;
     bool GetPVRLabel(const CFileItem* item, const KODI::GUILIB::GUIINFO::CGUIInfo& info, std::string& strValue) const;

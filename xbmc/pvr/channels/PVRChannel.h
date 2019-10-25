@@ -48,7 +48,7 @@ namespace PVR
      * @brief Delete this channel from the database and delete the corresponding EPG table if it exists.
      * @return True if it was deleted successfully, false otherwise.
      */
-    bool Delete(void);
+    bool Delete();
 
     /*!
      * @brief Update this channel tag with the data of the given channel tag.
@@ -66,12 +66,12 @@ namespace PVR
     /*!
      * @return The identifier given to this channel by the TV database.
      */
-    int ChannelID(void) const;
+    int ChannelID() const;
 
     /*!
      * @return True when not persisted yet, false otherwise.
      */
-    bool IsNew(void) const;
+    bool IsNew() const;
 
     /*!
      * @brief Set the identifier for this channel.
@@ -101,12 +101,12 @@ namespace PVR
     /*!
      * @return True if this channel is a radio channel, false if not.
      */
-    bool IsRadio(void) const { return m_bIsRadio; }
+    bool IsRadio() const { return m_bIsRadio; }
 
     /*!
      * @return True if this channel is hidden. False if not.
      */
-    bool IsHidden(void) const;
+    bool IsHidden() const;
 
     /*!
      * @brief Set to true to hide this channel. Set to false to unhide it.
@@ -121,7 +121,7 @@ namespace PVR
     /*!
      * @return True if this channel is locked. False if not.
      */
-    bool IsLocked(void) const;
+    bool IsLocked() const;
 
     /*!
      * @brief Set to true to lock this channel. Set to false to unlock it.
@@ -148,22 +148,22 @@ namespace PVR
     /*!
      * @return True if this channel has archive support, false otherwise
      */
-    bool HasArchive(void) const;
+    bool HasArchive() const;
 
     /*!
      * @return The path to the icon for this channel.
      */
-    std::string IconPath(void) const;
+    std::string IconPath() const;
 
     /*!
      * @return True if this user changed icon via GUI. False if not.
      */
-    bool IsUserSetIcon(void) const;
+    bool IsUserSetIcon() const;
 
     /*!
      * @return whether the user has changed the channel name through the GUI
      */
-    bool IsUserSetName(void) const;
+    bool IsUserSetName() const;
 
     /*!
      * @brief Set the path to the icon for this channel.
@@ -176,7 +176,7 @@ namespace PVR
     /*!
      * @return The name for this channel used by XBMC.
      */
-    std::string ChannelName(void) const;
+    std::string ChannelName() const;
 
     /*!
      * @brief Set the name for this channel used by XBMC.
@@ -224,12 +224,12 @@ namespace PVR
      *
      * @return The Unique ID.
      */
-    int UniqueID(void) const;
+    int UniqueID() const;
 
     /*!
      * @return The identifier of the client that serves this channel.
      */
-    int ClientID(void) const;
+    int ClientID() const;
 
     /*!
      * @brief Set the identifier of the client that serves this channel.
@@ -247,7 +247,7 @@ namespace PVR
     /*!
      * @return The name of this channel on the client.
      */
-    std::string ClientChannelName(void) const;
+    std::string ClientChannelName() const;
 
     /*!
      * @brief The stream input type
@@ -259,13 +259,13 @@ namespace PVR
      *
      * @return The stream input type
      */
-    std::string InputFormat(void) const;
+    std::string InputFormat() const;
 
     /*!
      * @brief The path in the XBMC VFS to be used by PVRManager to open and read the stream.
      * @return The path in the XBMC VFS to be used by PVRManager to open and read the stream.
      */
-    std::string Path(void) const;
+    std::string Path() const;
 
     // ISortable implementation
     void ToSortable(SortItem& sortable, Field field) const override;
@@ -279,7 +279,7 @@ namespace PVR
     /*!
      * @return Storage id for this channel in CPVRChannelGroup
      */
-    std::pair<int, int> StorageId(void) const { return std::make_pair(m_iClientId, m_iUniqueId); }
+    std::pair<int, int> StorageId() const { return std::make_pair(m_iClientId, m_iUniqueId); }
 
     /*!
      * @brief Return true if this channel is encrypted.
@@ -289,7 +289,7 @@ namespace PVR
      *
      * @return Return true if this channel is encrypted.
      */
-    bool IsEncrypted(void) const;
+    bool IsEncrypted() const;
 
     /*!
      * @brief Return the encryption system ID for this channel. 0 for FTA.
@@ -299,12 +299,12 @@ namespace PVR
      *
      * @return Return the encryption system ID for this channel.
      */
-    int EncryptionSystem(void) const;
+    int EncryptionSystem() const;
 
     /*!
      * @return A friendly name for the used encryption system.
      */
-    std::string EncryptionName(void) const;
+    std::string EncryptionName() const;
     //@}
 
     /*! @name EPG methods
@@ -314,7 +314,7 @@ namespace PVR
     /*!
      * @return The ID of the EPG table to use for this channel or -1 if it isn't set.
      */
-    int EpgID(void) const;
+    int EpgID() const;
 
     /*!
      * @brief Change the id of the epg that is linked to this channel
@@ -332,7 +332,7 @@ namespace PVR
      * @brief Get the EPG table for this channel.
      * @return The EPG for this channel.
      */
-    std::shared_ptr<CPVREpg> GetEPG(void) const;
+    std::shared_ptr<CPVREpg> GetEPG() const;
 
     /*!
      * @brief Get the EPG tags for this channel.
@@ -344,7 +344,7 @@ namespace PVR
      * @brief Clear the EPG for this channel.
      * @return True if it was cleared, false if not.
      */
-    bool ClearEPG(void) const;
+    bool ClearEPG() const;
 
     /*!
      * @brief Get the EPG tag that is now active on this channel.
@@ -379,7 +379,7 @@ namespace PVR
     /*!
      * @return Don't use an EPG for this channel if set to false.
      */
-    bool EPGEnabled(void) const;
+    bool EPGEnabled() const;
 
     /*!
      * @brief Set to true if an EPG should be used for this channel. Set to false otherwise.
@@ -396,7 +396,7 @@ namespace PVR
      *
      * @return The name of the scraper to be used for this channel.
      */
-    std::string EPGScraper(void) const;
+    std::string EPGScraper() const;
 
     /*!
      * @brief Set the name of the scraper to be used for this channel.
@@ -409,7 +409,7 @@ namespace PVR
      */
     bool SetEPGScraper(const std::string& strScraper);
 
-    bool CanRecord(void) const;
+    bool CanRecord() const;
 
     static std::string GetEncryptionName(int iCaid);
 
@@ -433,7 +433,7 @@ namespace PVR
     /*!
      * @brief Update the encryption name after SetEncryptionSystem() has been called.
      */
-    void UpdateEncryptionName(void);
+    void UpdateEncryptionName();
 
     /*! @name XBMC related channel data
      */

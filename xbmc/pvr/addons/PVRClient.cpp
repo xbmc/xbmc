@@ -61,7 +61,7 @@ CPVRClient::CPVRClient(const AddonInfoPtr& addonInfo)
   ResetProperties();
 }
 
-CPVRClient::~CPVRClient(void)
+CPVRClient::~CPVRClient()
 {
   Destroy();
 }
@@ -166,12 +166,12 @@ ADDON_STATUS CPVRClient::Create(int iClientId)
   return status;
 }
 
-bool CPVRClient::DllLoaded(void) const
+bool CPVRClient::DllLoaded() const
 {
   return CAddonDll::DllLoaded();
 }
 
-void CPVRClient::Destroy(void)
+void CPVRClient::Destroy()
 {
   if (!m_bReadyToUse)
     return;
@@ -202,7 +202,7 @@ void CPVRClient::Continue()
   m_bBlockAddonCalls = false;
 }
 
-void CPVRClient::ReCreate(void)
+void CPVRClient::ReCreate()
 {
   int iClientID(m_iClientId);
   Destroy();
@@ -211,12 +211,12 @@ void CPVRClient::ReCreate(void)
   Create(iClientID);
 }
 
-bool CPVRClient::ReadyToUse(void) const
+bool CPVRClient::ReadyToUse() const
 {
   return m_bReadyToUse;
 }
 
-PVR_CONNECTION_STATE CPVRClient::GetConnectionState(void) const
+PVR_CONNECTION_STATE CPVRClient::GetConnectionState() const
 {
   CSingleLock lock(m_critSection);
   return m_connectionState;
@@ -236,19 +236,19 @@ void CPVRClient::SetConnectionState(PVR_CONNECTION_STATE state)
     m_ignoreClient = true;
 }
 
-PVR_CONNECTION_STATE CPVRClient::GetPreviousConnectionState(void) const
+PVR_CONNECTION_STATE CPVRClient::GetPreviousConnectionState() const
 {
   CSingleLock lock(m_critSection);
   return m_prevConnectionState;
 }
 
-bool CPVRClient::IgnoreClient(void) const
+bool CPVRClient::IgnoreClient() const
 {
   CSingleLock lock(m_critSection);
   return m_ignoreClient;
 }
 
-int CPVRClient::GetID(void) const
+int CPVRClient::GetID() const
 {
   return m_iClientId;
 }
@@ -367,7 +367,7 @@ void CPVRClient::WriteClientChannelInfo(const std::shared_ptr<CPVRChannel>& xbmc
   strncpy(addonChannel.strInputFormat, xbmcChannel->InputFormat().c_str(), sizeof(addonChannel.strInputFormat) - 1);
 }
 
-bool CPVRClient::GetAddonProperties(void)
+bool CPVRClient::GetAddonProperties()
 {
   std::string strBackendName, strConnectionString, strFriendlyName, strBackendVersion, strBackendHostname;
   PVR_ADDON_CAPABILITIES addonCapabilities = {};
@@ -509,27 +509,27 @@ bool CPVRClient::GetAddonProperties(void)
   return retVal == PVR_ERROR_NO_ERROR;
 }
 
-const std::string& CPVRClient::GetBackendName(void) const
+const std::string& CPVRClient::GetBackendName() const
 {
   return m_strBackendName;
 }
 
-const std::string& CPVRClient::GetBackendVersion(void) const
+const std::string& CPVRClient::GetBackendVersion() const
 {
   return m_strBackendVersion;
 }
 
-const std::string& CPVRClient::GetBackendHostname(void) const
+const std::string& CPVRClient::GetBackendHostname() const
 {
   return m_strBackendHostname;
 }
 
-const std::string& CPVRClient::GetConnectionString(void) const
+const std::string& CPVRClient::GetConnectionString() const
 {
   return m_strConnectionString;
 }
 
-const std::string& CPVRClient::GetFriendlyName(void) const
+const std::string& CPVRClient::GetFriendlyName() const
 {
   return m_strFriendlyName;
 }
@@ -553,7 +553,7 @@ PVR_ERROR CPVRClient::GetDriveSpace(long long& iTotal, long long& iUsed)
   });
 }
 
-PVR_ERROR CPVRClient::StartChannelScan(void)
+PVR_ERROR CPVRClient::StartChannelScan()
 {
   return DoAddonCall(__FUNCTION__, [](const AddonInstance* addon) {
     return addon->OpenDialogChannelScan();
@@ -1707,7 +1707,7 @@ void CPVRClient::cb_epg_event_state_change(void* kodiInstance, EPG_TAG* tag, EPG
 class CCodecIds
 {
 public:
-  virtual ~CCodecIds(void) = default;
+  virtual ~CCodecIds() = default;
 
   static CCodecIds& GetInstance()
   {
@@ -1732,7 +1732,7 @@ public:
   }
 
 private:
-  CCodecIds(void)
+  CCodecIds()
   {
     // get ids and names
     const AVCodec* codec = nullptr;

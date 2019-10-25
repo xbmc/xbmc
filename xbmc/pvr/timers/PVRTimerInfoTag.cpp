@@ -305,7 +305,7 @@ void CPVRTimerInfoTag::Serialize(CVariant& value) const
   value["serieslink"]        = m_strSeriesLink;
 }
 
-void CPVRTimerInfoTag::UpdateSummary(void)
+void CPVRTimerInfoTag::UpdateSummary()
 {
   CSingleLock lock(m_critSection);
   m_strSummary.clear();
@@ -506,7 +506,7 @@ bool CPVRTimerInfoTag::IsOwnedByClient() const
   return m_timerType && m_timerType->GetClientId() > -1;
 }
 
-bool CPVRTimerInfoTag::AddToClient(void) const
+bool CPVRTimerInfoTag::AddToClient() const
 {
   const std::shared_ptr<CPVRClient> client = CServiceBroker::GetPVRManager().GetClient(m_iClientId);
   if (client)
@@ -1056,12 +1056,12 @@ CDateTime CPVRTimerInfoTag::ConvertLocalTimeToUTC(const CDateTime& local)
   return CDateTime(mktime(tms));
 }
 
-CDateTime CPVRTimerInfoTag::StartAsUTC(void) const
+CDateTime CPVRTimerInfoTag::StartAsUTC() const
 {
   return m_StartTime;
 }
 
-CDateTime CPVRTimerInfoTag::StartAsLocalTime(void) const
+CDateTime CPVRTimerInfoTag::StartAsLocalTime() const
 {
   return ConvertUTCToLocalTime(m_StartTime);
 }
@@ -1076,12 +1076,12 @@ void CPVRTimerInfoTag::SetStartFromLocalTime(const CDateTime& start)
   m_StartTime = ConvertLocalTimeToUTC(start);
 }
 
-CDateTime CPVRTimerInfoTag::EndAsUTC(void) const
+CDateTime CPVRTimerInfoTag::EndAsUTC() const
 {
   return m_StopTime;
 }
 
-CDateTime CPVRTimerInfoTag::EndAsLocalTime(void) const
+CDateTime CPVRTimerInfoTag::EndAsLocalTime() const
 {
   return ConvertUTCToLocalTime(m_StopTime);
 }
@@ -1104,12 +1104,12 @@ int CPVRTimerInfoTag::GetDuration() const
   return end - start > 0 ? end - start : 3600;
 }
 
-CDateTime CPVRTimerInfoTag::FirstDayAsUTC(void) const
+CDateTime CPVRTimerInfoTag::FirstDayAsUTC() const
 {
   return m_FirstDay;
 }
 
-CDateTime CPVRTimerInfoTag::FirstDayAsLocalTime(void) const
+CDateTime CPVRTimerInfoTag::FirstDayAsLocalTime() const
 {
   return ConvertUTCToLocalTime(m_FirstDay);
 }
@@ -1262,7 +1262,7 @@ std::shared_ptr<CPVRChannel> CPVRTimerInfoTag::Channel() const
   return m_channel;
 }
 
-std::shared_ptr<CPVRChannel> CPVRTimerInfoTag::UpdateChannel(void)
+std::shared_ptr<CPVRChannel> CPVRTimerInfoTag::UpdateChannel()
 {
   const std::shared_ptr<CPVRChannel> channel(CServiceBroker::GetPVRManager().ChannelGroups()->Get(m_bIsRadio)->GetGroupAll()->GetByUniqueID(m_iClientChannelUid, m_iClientId));
 
@@ -1271,17 +1271,17 @@ std::shared_ptr<CPVRChannel> CPVRTimerInfoTag::UpdateChannel(void)
   return m_channel;
 }
 
-const std::string& CPVRTimerInfoTag::Title(void) const
+const std::string& CPVRTimerInfoTag::Title() const
 {
   return m_strTitle;
 }
 
-const std::string& CPVRTimerInfoTag::Summary(void) const
+const std::string& CPVRTimerInfoTag::Summary() const
 {
   return m_strSummary;
 }
 
-const std::string& CPVRTimerInfoTag::Path(void) const
+const std::string& CPVRTimerInfoTag::Path() const
 {
   return m_strFileNameAndPath;
 }

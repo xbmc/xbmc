@@ -25,29 +25,29 @@ namespace PVR
     /*!
      * @brief Create a new container for all channel groups
      */
-    CPVRChannelGroupsContainer(void);
+    CPVRChannelGroupsContainer();
 
     /*!
      * @brief Destroy this container.
      */
-    virtual ~CPVRChannelGroupsContainer(void);
+    virtual ~CPVRChannelGroupsContainer();
 
     /*!
      * @brief Load all channel groups and all channels in those channel groups.
      * @return True if all groups were loaded, false otherwise.
      */
-    bool Load(void);
+    bool Load();
 
     /*!
      * @brief Checks whether groups were already loaded.
      * @return True if groups were successfully loaded, false otherwise.
      */
-    bool Loaded(void) const;
+    bool Loaded() const;
 
     /*!
      * @brief Unload and destruct all channel groups and all channels in them.
      */
-    void Unload(void);
+    void Unload();
 
     /*!
      * @brief Update the contents of all the groups in this container.
@@ -60,13 +60,13 @@ namespace PVR
      * @brief Get the TV channel groups.
      * @return The TV channel groups.
      */
-    CPVRChannelGroups* GetTV(void) const { return Get(false); }
+    CPVRChannelGroups* GetTV() const { return Get(false); }
 
     /*!
      * @brief Get the radio channel groups.
      * @return The radio channel groups.
      */
-    CPVRChannelGroups* GetRadio(void) const { return Get(true); }
+    CPVRChannelGroups* GetRadio() const { return Get(true); }
 
     /*!
      * @brief Get the radio or TV channel groups.
@@ -79,13 +79,13 @@ namespace PVR
      * @brief Get the group containing all TV channels.
      * @return The group containing all TV channels.
      */
-    std::shared_ptr<CPVRChannelGroup> GetGroupAllTV(void) const { return GetGroupAll(false); }
+    std::shared_ptr<CPVRChannelGroup> GetGroupAllTV() const { return GetGroupAll(false); }
 
     /*!
      * @brief Get the group containing all radio channels.
      * @return The group containing all radio channels.
      */
-    std::shared_ptr<CPVRChannelGroup> GetGroupAllRadio(void) const { return GetGroupAll(true); }
+    std::shared_ptr<CPVRChannelGroup> GetGroupAllRadio() const { return GetGroupAll(true); }
 
     /*!
      * @brief Get the group containing all TV or radio channels.
@@ -161,13 +161,13 @@ namespace PVR
      * @brief Create EPG tags for channels in all internal channel groups.
      * @return True if EPG tags were created successfully.
      */
-    bool CreateChannelEpgs(void);
+    bool CreateChannelEpgs();
 
     /*!
      * @brief Return the group which was previous played.
      * @return The group which was previous played.
      */
-    std::shared_ptr<CPVRChannelGroup> GetPreviousPlayedGroup(void);
+    std::shared_ptr<CPVRChannelGroup> GetPreviousPlayedGroup();
 
     /*!
      * @brief Set the last played group.

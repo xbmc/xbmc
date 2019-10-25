@@ -33,7 +33,7 @@ CPVRRecordings::~CPVRRecordings()
     m_database->Close();
 }
 
-void CPVRRecordings::UpdateFromClients(void)
+void CPVRRecordings::UpdateFromClients()
 {
   CSingleLock lock(m_critSection);
   Unload();
@@ -41,7 +41,7 @@ void CPVRRecordings::UpdateFromClients(void)
   CServiceBroker::GetPVRManager().Clients()->GetRecordings(this, true);
 }
 
-int CPVRRecordings::Load(void)
+int CPVRRecordings::Load()
 {
   Unload();
   Update();
@@ -58,7 +58,7 @@ void CPVRRecordings::Unload()
   m_recordings.clear();
 }
 
-void CPVRRecordings::Update(void)
+void CPVRRecordings::Update()
 {
   CSingleLock lock(m_critSection);
   if (m_bIsUpdating)

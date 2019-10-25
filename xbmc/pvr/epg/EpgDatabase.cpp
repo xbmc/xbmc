@@ -47,7 +47,7 @@ void CPVREpgDatabase::Unlock()
   m_critSection.unlock();
 }
 
-void CPVREpgDatabase::CreateTables(void)
+void CPVREpgDatabase::CreateTables()
 {
   CLog::Log(LOGINFO, "Creating EPG database tables");
 
@@ -144,7 +144,7 @@ void CPVREpgDatabase::UpdateTables(int iVersion)
   }
 }
 
-bool CPVREpgDatabase::DeleteEpg(void)
+bool CPVREpgDatabase::DeleteEpg()
 {
   bool bReturn(false);
   CLog::LogFC(LOGDEBUG, LOGEPG, "Deleting all EPG data from the database");
@@ -430,7 +430,7 @@ int CPVREpgDatabase::Persist(const CPVREpgInfoTag& tag, bool bSingleUpdate /* = 
   return iReturn;
 }
 
-int CPVREpgDatabase::GetLastEPGId(void)
+int CPVREpgDatabase::GetLastEPGId()
 {
   CSingleLock lock(m_critSection);
   std::string strQuery = PrepareSQL("SELECT MAX(idEpg) FROM epg");

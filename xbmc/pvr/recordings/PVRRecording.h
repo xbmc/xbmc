@@ -74,7 +74,7 @@ namespace PVR
     std::string m_strFanartPath; /*!< fanart path */
     unsigned m_iRecordingId; /*!< id that won't change while xbmc is running */
 
-    CPVRRecording(void);
+    CPVRRecording();
     CPVRRecording(const PVR_RECORDING& recording, unsigned int iClientId);
 
   private:
@@ -90,19 +90,19 @@ namespace PVR
     /*!
      * @brief Reset this tag to it's initial state.
      */
-    void Reset(void);
+    void Reset();
 
     /*!
      * @brief Delete this recording on the client (if supported).
      * @return True if it was deleted successfully, false otherwise.
      */
-    bool Delete(void);
+    bool Delete();
 
     /*!
      * @brief Undelete this recording on the client (if supported).
      * @return True if it was undeleted successfully, false otherwise.
      */
-    bool Undelete(void);
+    bool Undelete();
 
     /*!
      * @brief Rename this recording on the client (if supported).
@@ -187,13 +187,13 @@ namespace PVR
      * @brief Retrieve the recording start as UTC time
      * @return the recording start time
      */
-    const CDateTime& RecordingTimeAsUTC(void) const { return m_recordingTime; }
+    const CDateTime& RecordingTimeAsUTC() const { return m_recordingTime; }
 
     /*!
      * @brief Retrieve the recording start as local time
      * @return the recording start time
      */
-    const CDateTime& RecordingTimeAsLocalTime(void) const;
+    const CDateTime& RecordingTimeAsLocalTime() const;
 
     /*!
      * @brief Retrieve the recording end as UTC time
@@ -247,31 +247,31 @@ namespace PVR
     /*!
      * @return Broadcast id of the EPG event associated with this recording or EPG_TAG_INVALID_UID
      */
-    unsigned int BroadcastUid(void) const { return m_iEpgEventId; }
+    unsigned int BroadcastUid() const { return m_iEpgEventId; }
 
     /*!
      * @return Get the channel on which this recording is/was running
      * @note Only works if the recording has a channel uid provided by the add-on
      */
-    std::shared_ptr<CPVRChannel> Channel(void) const;
+    std::shared_ptr<CPVRChannel> Channel() const;
 
     /*!
      * @brief Get the uid of the channel on which this recording is/was running
      * @return the uid of the channel or PVR_CHANNEL_INVALID_UID
      */
-    int ChannelUid(void) const;
+    int ChannelUid() const;
 
     /*!
      * @brief the identifier of the client that serves this recording
      * @return the client identifier
      */
-    int ClientID(void) const;
+    int ClientID() const;
 
     /*!
      * @brief Retrieve the recording Episode Name
      * @note Returns an empty string if no Episode Name was provided by the PVR client
      */
-    std::string EpisodeName(void) const { return m_strShowTitle; }
+    std::string EpisodeName() const { return m_strShowTitle; }
 
     /*!
      * @brief check whether this recording is currently in progress
@@ -297,19 +297,19 @@ namespace PVR
      * @brief Get the genre type ID of this event.
      * @return The genre type ID.
      */
-    int GenreType(void) const { return m_iGenreType; }
+    int GenreType() const { return m_iGenreType; }
 
     /*!
      * @brief Get the genre subtype ID of this event.
      * @return The genre subtype ID.
      */
-    int GenreSubType(void) const { return m_iGenreSubType; }
+    int GenreSubType() const { return m_iGenreSubType; }
 
     /*!
      * @brief Get the genre as human readable string.
      * @return The genre.
      */
-    const std::vector<std::string> Genre(void) const { return m_genre; }
+    const std::vector<std::string> Genre() const { return m_genre; }
 
     /*!
      * @brief Get the genre(s) of this event as formatted string.
@@ -328,6 +328,6 @@ namespace PVR
     int m_iGenreSubType = 0; /*!< genre subtype */
     mutable XbmcThreads::EndTime m_resumePointRefetchTimeout;
 
-    void UpdatePath(void);
+    void UpdatePath();
   };
 }

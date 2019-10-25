@@ -46,13 +46,12 @@
 using namespace PVR;
 using namespace KODI::GUILIB::GUIINFO;
 
-CPVRGUIInfo::CPVRGUIInfo(void) :
-    CThread("PVRGUIInfo")
+CPVRGUIInfo::CPVRGUIInfo() : CThread("PVRGUIInfo")
 {
   ResetProperties();
 }
 
-void CPVRGUIInfo::ResetProperties(void)
+void CPVRGUIInfo::ResetProperties()
 {
   CSingleLock lock(m_critSection);
 
@@ -103,14 +102,14 @@ void CPVRGUIInfo::ClearDescrambleInfo(PVR_DESCRAMBLE_INFO& descrambleInfo)
   descrambleInfo = {0};
 }
 
-void CPVRGUIInfo::Start(void)
+void CPVRGUIInfo::Start()
 {
   ResetProperties();
   Create();
   SetPriority(-1);
 }
 
-void CPVRGUIInfo::Stop(void)
+void CPVRGUIInfo::Stop()
 {
   StopThread();
   CServiceBroker::GetPVRManager().Events().Unsubscribe(this);
@@ -129,7 +128,7 @@ void CPVRGUIInfo::Notify(const PVREvent& event)
     UpdateTimersCache();
 }
 
-void CPVRGUIInfo::Process(void)
+void CPVRGUIInfo::Process()
 {
   unsigned int iLoop = 0;
   int toggleInterval = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_iPVRInfoToggleInterval / 1000;
@@ -189,7 +188,7 @@ void CPVRGUIInfo::Process(void)
   }
 }
 
-void CPVRGUIInfo::UpdateQualityData(void)
+void CPVRGUIInfo::UpdateQualityData()
 {
   PVR_SIGNAL_STATUS qualityInfo;
   ClearQualityInfo(qualityInfo);
@@ -209,7 +208,7 @@ void CPVRGUIInfo::UpdateQualityData(void)
   }
 }
 
-void CPVRGUIInfo::UpdateDescrambleData(void)
+void CPVRGUIInfo::UpdateDescrambleData()
 {
   PVR_DESCRAMBLE_INFO descrambleInfo;
   ClearDescrambleInfo(descrambleInfo);
@@ -226,7 +225,7 @@ void CPVRGUIInfo::UpdateDescrambleData(void)
   }
 }
 
-void CPVRGUIInfo::UpdateMisc(void)
+void CPVRGUIInfo::UpdateMisc()
 {
   CPVRManager& mgr = CServiceBroker::GetPVRManager();
   bool bStarted = mgr.IsStarted();
@@ -267,7 +266,7 @@ void CPVRGUIInfo::UpdateMisc(void)
   m_bIsPlayingActiveRecording = bIsPlayingActiveRecording;
 }
 
-void CPVRGUIInfo::UpdateTimeshiftData(void)
+void CPVRGUIInfo::UpdateTimeshiftData()
 {
   m_timesInfo.Update();
 }
@@ -1582,7 +1581,7 @@ void CPVRGUIInfo::CharInfoProvider(std::string& strValue) const
     strValue = m_qualityInfo.strProviderName;
 }
 
-void CPVRGUIInfo::UpdateBackendCache(void)
+void CPVRGUIInfo::UpdateBackendCache()
 {
   CSingleLock lock(m_critSection);
 
@@ -1641,21 +1640,21 @@ void CPVRGUIInfo::UpdateBackendCache(void)
     m_iCurrentActiveClient = 0;
 }
 
-void CPVRGUIInfo::UpdateTimersCache(void)
+void CPVRGUIInfo::UpdateTimersCache()
 {
   m_anyTimersInfo.UpdateTimersCache();
   m_tvTimersInfo.UpdateTimersCache();
   m_radioTimersInfo.UpdateTimersCache();
 }
 
-void CPVRGUIInfo::UpdateTimersToggle(void)
+void CPVRGUIInfo::UpdateTimersToggle()
 {
   m_anyTimersInfo.UpdateTimersToggle();
   m_tvTimersInfo.UpdateTimersToggle();
   m_radioTimersInfo.UpdateTimersToggle();
 }
 
-void CPVRGUIInfo::UpdateNextTimer(void)
+void CPVRGUIInfo::UpdateNextTimer()
 {
   m_anyTimersInfo.UpdateNextTimer();
   m_tvTimersInfo.UpdateNextTimer();

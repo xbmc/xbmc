@@ -20,12 +20,12 @@ namespace PVR
   {
   public:
     CGUIWindowPVRTimersBase(bool bRadio, int id, const std::string& xmlFile);
-    ~CGUIWindowPVRTimersBase(void) override;
+    ~CGUIWindowPVRTimersBase() override;
 
     bool OnMessage(CGUIMessage& message) override;
     bool OnAction(const CAction& action) override;
     bool Update(const std::string& strDirectory, bool updateFilterPath = true) override;
-    void UpdateButtons(void) override;
+    void UpdateButtons() override;
 
   private:
     bool ActionShowTimer(const std::shared_ptr<CFileItem>& item);

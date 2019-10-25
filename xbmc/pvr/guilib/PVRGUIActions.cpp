@@ -1956,7 +1956,7 @@ namespace PVR
     }
   } // unnamed namespace
 
-  bool CPVRGUIActions::IsNextEventWithinBackendIdleTime(void) const
+  bool CPVRGUIActions::IsNextEventWithinBackendIdleTime() const
   {
     // timers going off soon?
     const CDateTime now(CDateTime::GetUTCDateTime());

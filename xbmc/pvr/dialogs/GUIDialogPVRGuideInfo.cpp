@@ -32,12 +32,12 @@ using namespace PVR;
 #define CONTROL_BTN_PLAY_EPGTAG        10
 #define CONTROL_BTN_SET_REMINDER       11
 
-CGUIDialogPVRGuideInfo::CGUIDialogPVRGuideInfo(void)
+CGUIDialogPVRGuideInfo::CGUIDialogPVRGuideInfo()
     : CGUIDialog(WINDOW_DIALOG_PVR_GUIDE_INFO, "DialogPVRInfo.xml")
 {
 }
 
-CGUIDialogPVRGuideInfo::~CGUIDialogPVRGuideInfo(void) = default;
+CGUIDialogPVRGuideInfo::~CGUIDialogPVRGuideInfo() = default;
 
 bool CGUIDialogPVRGuideInfo::OnClickButtonOK(CGUIMessage& message)
 {
