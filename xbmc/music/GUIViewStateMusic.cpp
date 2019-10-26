@@ -461,6 +461,12 @@ CGUIViewStateWindowMusicNav::CGUIViewStateWindowMusicNav(const CFileItemList& it
 
     SetSortOrder(SortOrderNone);
   }
+  else if (items.GetPath() == "special://musicplaylists/")
+  { // playlists list sorts by label only, ignoring folders
+    AddSortMethod(SortByLabel, SortAttributeIgnoreFolders, 551,
+                  LABEL_MASKS("%F", "%D", "%L", "")); // Filename, Duration | Foldername, empty
+    SetSortMethod(SortByLabel);
+  }
   else
   {
     if (items.IsVideoDb() && items.Size() > (settings->GetBool(CSettings::SETTING_FILELISTS_SHOWPARENTDIRITEMS)?1:0))
