@@ -364,7 +364,7 @@ void CGameClientInput::CloseKeyboard()
     {
       try
       {
-        m_struct.toAddon.EnableKeyboard(&m_struct, false, nullptr);
+        m_struct.toAddon.EnableKeyboard(&m_struct, false, "");
       }
       catch (...)
       {
@@ -428,7 +428,7 @@ void CGameClientInput::CloseMouse()
     {
       try
       {
-        m_struct.toAddon.EnableMouse(&m_struct, false, nullptr);
+        m_struct.toAddon.EnableMouse(&m_struct, false, "");
       }
       catch (...)
       {
@@ -512,7 +512,7 @@ void CGameClientInput::CloseJoystick(const std::string &portAddress)
     {
       try
       {
-        m_struct.toAddon.ConnectController(&m_struct, false, portAddress.c_str(), nullptr);
+        m_struct.toAddon.ConnectController(&m_struct, false, portAddress.c_str(), "");
       }
       catch (...)
       {
