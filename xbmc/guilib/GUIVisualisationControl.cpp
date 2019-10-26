@@ -183,17 +183,11 @@ void CGUIVisualisationControl::Process(unsigned int currentTime, CDirtyRegionLis
       m_updateTrack = false;
     }
 
-    MarkDirtyRegion();
+    if (m_instance && m_instance->IsDirty())
+      MarkDirtyRegion();
   }
 
   CGUIControl::Process(currentTime, dirtyregions);
-}
-
-bool CGUIVisualisationControl::IsDirty()
-{
-  if (m_instance)
-    return m_instance->IsDirty();
-  return false;
 }
 
 void CGUIVisualisationControl::Render()
