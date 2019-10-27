@@ -206,6 +206,11 @@ CEventLog& CServiceBroker::GetEventLog()
   return m_pSettingsComponent->GetProfileManager()->GetEventLog();
 }
 
+CMediaManager& CServiceBroker::GetMediaManager()
+{
+  return g_application.m_ServiceManager->GetMediaManager();
+}
+
 CGUIComponent* CServiceBroker::m_pGUI = nullptr;
 
 CGUIComponent* CServiceBroker::GetGUI()

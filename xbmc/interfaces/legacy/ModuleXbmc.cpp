@@ -242,7 +242,7 @@ namespace XBMCAddon
     long getDVDState()
     {
       XBMC_TRACE;
-      return g_mediaManager.GetDriveStatus();
+      return CServiceBroker::GetMediaManager().GetDriveStatus();
     }
 
     long getFreeMem()

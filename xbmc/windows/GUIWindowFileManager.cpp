@@ -362,7 +362,7 @@ void CGUIWindowFileManager::OnSort(int iList)
           pItem->SetFileSizeLabel();
         }
       }
-      else if (pItem->IsDVD() && g_mediaManager.IsDiscInDrive())
+      else if (pItem->IsDVD() && CServiceBroker::GetMediaManager().IsDiscInDrive())
       {
         std::error_code ec;
         auto freeSpace = space(pItem->GetPath(), ec);
@@ -686,7 +686,7 @@ bool CGUIWindowFileManager::HaveDiscOrConnection( std::string& strPath, int iDri
 {
   if ( iDriveType == CMediaSource::SOURCE_TYPE_DVD )
   {
-    if ( !g_mediaManager.IsDiscInDrive(strPath) )
+    if (!CServiceBroker::GetMediaManager().IsDiscInDrive(strPath))
     {
       HELPERS::ShowOKDialogText(CVariant{218}, CVariant{219});
       int iList = GetFocusedList();

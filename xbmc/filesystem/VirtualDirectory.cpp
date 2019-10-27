@@ -11,6 +11,7 @@
 #include "Directory.h"
 #include "DirectoryFactory.h"
 #include "FileItem.h"
+#include "ServiceBroker.h"
 #include "SourcesDirectory.h"
 #include "URL.h"
 #include "Util.h"
@@ -167,7 +168,7 @@ void CVirtualDirectory::GetSources(VECSOURCES &shares) const
   // add our plug n play shares
 
   if (m_allowNonLocalSources)
-    g_mediaManager.GetRemovableDrives(shares);
+    CServiceBroker::GetMediaManager().GetRemovableDrives(shares);
 
 #ifdef HAS_DVD_DRIVE
   // and update our dvd share
@@ -176,7 +177,7 @@ void CVirtualDirectory::GetSources(VECSOURCES &shares) const
     CMediaSource& share = shares[i];
     if (share.m_iDriveType == CMediaSource::SOURCE_TYPE_DVD)
     {
-      if(g_mediaManager.IsAudio(share.strPath))
+      if (CServiceBroker::GetMediaManager().IsAudio(share.strPath))
       {
         share.strStatus = "Audio-CD";
         share.strPath = "cdda://local/";
@@ -184,11 +185,11 @@ void CVirtualDirectory::GetSources(VECSOURCES &shares) const
       }
       else
       {
-        share.strStatus = g_mediaManager.GetDiskLabel(share.strPath);
-        share.strDiskUniqueId = g_mediaManager.GetDiskUniqueId(share.strPath);
+        share.strStatus = CServiceBroker::GetMediaManager().GetDiskLabel(share.strPath);
+        share.strDiskUniqueId = CServiceBroker::GetMediaManager().GetDiskUniqueId(share.strPath);
         if (!share.strPath.length()) // unmounted CD
         {
-          if (g_mediaManager.GetDiscPath() == "iso9660://")
+          if (CServiceBroker::GetMediaManager().GetDiscPath() == "iso9660://")
             share.strPath = "iso9660://";
           else
             // share is unmounted and not iso9660, discard it

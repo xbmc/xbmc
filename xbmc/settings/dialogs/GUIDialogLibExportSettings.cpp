@@ -149,9 +149,9 @@ void CGUIDialogLibExportSettings::OnSettingAction(std::shared_ptr<const CSetting
       !m_settings.IsToLibFolders() && !m_settings.IsArtistFoldersOnly())
   {
     VECSOURCES shares;
-    g_mediaManager.GetLocalDrives(shares);
-    g_mediaManager.GetNetworkLocations(shares);
-    g_mediaManager.GetRemovableDrives(shares);
+    CServiceBroker::GetMediaManager().GetLocalDrives(shares);
+    CServiceBroker::GetMediaManager().GetNetworkLocations(shares);
+    CServiceBroker::GetMediaManager().GetRemovableDrives(shares);
     std::string strDirectory = m_settings.m_strPath;
     if (!strDirectory.empty())
     {

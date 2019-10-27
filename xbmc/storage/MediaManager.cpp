@@ -62,8 +62,6 @@ using namespace MEDIA_DETECT;
 
 const char MEDIA_SOURCES_XML[] = { "special://profile/mediasources.xml" };
 
-class CMediaManager g_mediaManager;
-
 CMediaManager::CMediaManager()
 {
   m_bhasoptical = false;
@@ -489,15 +487,15 @@ std::string CMediaManager::GetDiskLabel(const std::string& devicePath)
   if(!m_bhasoptical)
     return "";
 
-  std::string mediaPath = g_mediaManager.TranslateDevicePath(devicePath);
+  std::string mediaPath = CServiceBroker::GetMediaManager().TranslateDevicePath(devicePath);
 
   auto cached = m_mapDiscInfo.find(mediaPath);
   if (cached != m_mapDiscInfo.end())
     return cached->second.name;
 
   // try to minimize the chance of a "device not ready" dialog
-  std::string drivePath = g_mediaManager.TranslateDevicePath(devicePath, true);
-  if (g_mediaManager.GetDriveStatus(drivePath) != DRIVE_CLOSED_MEDIA_PRESENT)
+  std::string drivePath = CServiceBroker::GetMediaManager().TranslateDevicePath(devicePath, true);
+  if (CServiceBroker::GetMediaManager().GetDriveStatus(drivePath) != DRIVE_CLOSED_MEDIA_PRESENT)
     return "";
 
   DiscInfo info;
@@ -531,7 +529,7 @@ std::string CMediaManager::GetDiskUniqueId(const std::string& devicePath)
 {
   std::string mediaPath;
 
-  CCdInfo* pInfo = g_mediaManager.GetCdInfo(devicePath);
+  CCdInfo* pInfo = CServiceBroker::GetMediaManager().GetCdInfo(devicePath);
   if (pInfo == NULL)
     return "";
 
@@ -547,7 +545,7 @@ std::string CMediaManager::GetDiskUniqueId(const std::string& devicePath)
 #ifdef TARGET_WINDOWS
   if (mediaPath.empty() || mediaPath == "iso9660://")
   {
-    mediaPath = g_mediaManager.TranslateDevicePath(devicePath);
+    mediaPath = CServiceBroker::GetMediaManager().TranslateDevicePath(devicePath);
   }
 #endif
 
@@ -567,7 +565,7 @@ std::string CMediaManager::GetDiskUniqueId(const std::string& devicePath)
 std::string CMediaManager::GetDiscPath()
 {
 #ifdef TARGET_WINDOWS
-  return g_mediaManager.TranslateDevicePath("");
+  return CServiceBroker::GetMediaManager().TranslateDevicePath("");
 #else
 
   CSingleLock lock(m_CritSecStorageProvider);
@@ -724,7 +722,7 @@ CMediaManager::DiscInfo CMediaManager::GetDiscInfo(const std::string& mediaPath)
     // correct the filename if needed
     if (StringUtils::StartsWith(pathVideoTS, "dvd://") ||
       StringUtils::StartsWith(pathVideoTS, "iso9660://"))
-      pathVideoTS = g_mediaManager.TranslateDevicePath("");
+      pathVideoTS = CServiceBroker::GetMediaManager().TranslateDevicePath("");
 
 
     CFileItem item(pathVideoTS, false);

@@ -88,7 +88,7 @@ bool CGUIDialogFileBrowser::OnAction(const CAction &action)
     int iItem = m_viewControl.GetSelectedItem();
     if ((!m_addSourceType.empty() && iItem != m_vecItems->Size()-1))
       return OnPopupMenu(iItem);
-    if (m_addNetworkShareEnabled && g_mediaManager.HasLocation(m_selectedPath))
+    if (m_addNetworkShareEnabled && CServiceBroker::GetMediaManager().HasLocation(m_selectedPath))
     {
       // need to make sure this source is not an auto added location
       // as users locations might have the same paths
@@ -558,7 +558,7 @@ bool CGUIDialogFileBrowser::HaveDiscOrConnection( int iDriveType )
 {
   if ( iDriveType == CMediaSource::SOURCE_TYPE_DVD )
   {
-    if ( !g_mediaManager.IsDiscInDrive() )
+    if (!CServiceBroker::GetMediaManager().IsDiscInDrive())
     {
       HELPERS::ShowOKDialogText(CVariant{218}, CVariant{219});
       return false;
@@ -763,7 +763,7 @@ bool CGUIDialogFileBrowser::ShowAndGetFile(const std::string &directory, const s
     CServiceBroker::GetGUI()->GetWindowManager().Remove(browser->GetID());
     delete browser;
     VECSOURCES shares;
-    g_mediaManager.GetLocalDrives(shares);
+    CServiceBroker::GetMediaManager().GetLocalDrives(shares);
 
     return ShowAndGetFile(shares, mask, heading, path, useThumbs,useFileDirectories);
   }
@@ -841,7 +841,7 @@ bool CGUIDialogFileBrowser::ShowAndGetSource(std::string &path, bool allowNetwor
   {
     browser->SetHeading(g_localizeStrings.Get(1023));
 
-    g_mediaManager.GetLocalDrives(shares);
+    CServiceBroker::GetMediaManager().GetLocalDrives(shares);
 
     // Now the additional share if appropriate
     if (additionalShare)
@@ -852,7 +852,7 @@ bool CGUIDialogFileBrowser::ShowAndGetSource(std::string &path, bool allowNetwor
     // Now add the network shares...
     if (allowNetworkShares)
     {
-      g_mediaManager.GetNetworkLocations(shares);
+      CServiceBroker::GetMediaManager().GetNetworkLocations(shares);
     }
   }
 
@@ -876,7 +876,7 @@ void CGUIDialogFileBrowser::SetSources(const VECSOURCES &shares)
 {
   m_shares = shares;
   if (!m_shares.size() && m_addSourceType.empty())
-    g_mediaManager.GetLocalDrives(m_shares);
+    CServiceBroker::GetMediaManager().GetLocalDrives(m_shares);
   m_rootDir.SetSources(m_shares);
 }
 
@@ -897,7 +897,7 @@ void CGUIDialogFileBrowser::OnAddNetworkLocation()
       URIUtils::RemoveSlashAtEnd(share.strName);
       m_shares.push_back(share);
       // add to our location manager...
-      g_mediaManager.AddNetworkLocation(path);
+      CServiceBroker::GetMediaManager().AddNetworkLocation(path);
     }
   }
   m_rootDir.SetSources(m_shares);
@@ -937,7 +937,7 @@ bool CGUIDialogFileBrowser::OnPopupMenu(int iItem)
       VECSOURCES shares=m_shares;
       if (CGUIDialogNetworkSetup::ShowAndGetNetworkAddress(newPath))
       {
-        g_mediaManager.SetLocationPath(strOldPath,newPath);
+        CServiceBroker::GetMediaManager().SetLocationPath(strOldPath, newPath);
         CURL url(newPath);
         for (unsigned int i=0;i<shares.size();++i)
         {
@@ -969,7 +969,7 @@ bool CGUIDialogFileBrowser::OnPopupMenu(int iItem)
   {
     if (m_addNetworkShareEnabled)
     {
-      g_mediaManager.RemoveLocation(m_selectedPath);
+      CServiceBroker::GetMediaManager().RemoveLocation(m_selectedPath);
 
       for (unsigned int i=0;i<m_shares.size();++i)
       {

@@ -594,8 +594,6 @@ bool CApplication::Create(const CAppParamParser &params)
 
   CUtil::InitRandomSeed();
 
-  g_mediaManager.Initialize();
-
   m_lastRenderTime = XbmcThreads::SystemClockMillis();
   return true;
 }
@@ -2600,8 +2598,6 @@ void CApplication::Stop(int exitCode)
       XBMCHelper::GetInstance().Stop();
 #endif
 
-    g_mediaManager.Stop();
-
     // Stop services before unloading Python
     CServiceBroker::GetServiceAddons().Stop();
 
@@ -2760,7 +2756,7 @@ bool CApplication::PlayFile(CFileItem item, const std::string& player, bool bRes
   {
 #ifdef HAS_DVD_DRIVE
     // Display the Play Eject dialog if there is any optical disc drive
-    if (g_mediaManager.HasOpticalDrive())
+    if (CServiceBroker::GetMediaManager().HasOpticalDrive())
     {
       if (CGUIDialogPlayEject::ShowAndGetInput(item))
         // PlayDiscAskResume takes path to disc. No parameter means default DVD drive.
@@ -2998,7 +2994,10 @@ void CApplication::PlaybackCleanup()
   }
 
   // DVD ejected while playing in vis ?
-  if (!m_appPlayer.IsPlayingAudio() && (m_itemCurrentFile->IsCDDA() || m_itemCurrentFile->IsOnDVD()) && !g_mediaManager.IsDiscInDrive() && CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() == WINDOW_VISUALISATION)
+  if (!m_appPlayer.IsPlayingAudio() &&
+      (m_itemCurrentFile->IsCDDA() || m_itemCurrentFile->IsOnDVD()) &&
+      !CServiceBroker::GetMediaManager().IsDiscInDrive() &&
+      CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() == WINDOW_VISUALISATION)
   {
     // yes, disable vis
     CServiceBroker::GetSettingsComponent()->GetSettings()->Save();    // save vis settings
@@ -4168,7 +4167,7 @@ void CApplication::ProcessSlow()
   for (const auto& vfsAddon : CServiceBroker::GetVFSAddonCache().GetAddonInstances())
     vfsAddon->ClearOutIdle();
 
-  g_mediaManager.ProcessEvents();
+  CServiceBroker::GetMediaManager().ProcessEvents();
 
   // if we don't render the gui there's no reason to start the screensaver.
   // that way the screensaver won't kick in if we maximize the XBMC window

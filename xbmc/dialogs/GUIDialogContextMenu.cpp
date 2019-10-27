@@ -280,10 +280,11 @@ bool CGUIDialogContextMenu::OnContextButton(const std::string &type, const CFile
   switch (button)
   {
     case CONTEXT_BUTTON_EJECT_DRIVE:
-      return g_mediaManager.Eject(item->GetPath());
+      return CServiceBroker::GetMediaManager().Eject(item->GetPath());
 #ifdef HAS_DVD_DRIVE
     case CONTEXT_BUTTON_EJECT_DISC:
-      g_mediaManager.ToggleTray(g_mediaManager.TranslateDevicePath(item->GetPath())[0]);
+      CServiceBroker::GetMediaManager().ToggleTray(
+          CServiceBroker::GetMediaManager().TranslateDevicePath(item->GetPath())[0]);
 #endif
       return true;
     default:
@@ -397,7 +398,7 @@ bool CGUIDialogContextMenu::OnContextButton(const std::string &type, const CFile
 
       std::string strThumb;
       VECSOURCES shares;
-      g_mediaManager.GetLocalDrives(shares);
+      CServiceBroker::GetMediaManager().GetLocalDrives(shares);
       if (!CGUIDialogFileBrowser::ShowAndGetImage(items, shares, g_localizeStrings.Get(1030), strThumb))
         return false;
 

@@ -237,7 +237,7 @@ void CDisplaySettings::OnSettingAction(std::shared_ptr<const CSetting> setting)
   {
     std::string path = std::static_pointer_cast<const CSettingString>(setting)->GetValue();
     VECSOURCES shares;
-    g_mediaManager.GetLocalDrives(shares);
+    CServiceBroker::GetMediaManager().GetLocalDrives(shares);
     if (CGUIDialogFileBrowser::ShowAndGetFile(shares, ".3dlut", g_localizeStrings.Get(36580), path))
     {
       std::static_pointer_cast<CSettingString>(std::const_pointer_cast<CSetting>(setting))->SetValue(path);
@@ -247,7 +247,7 @@ void CDisplaySettings::OnSettingAction(std::shared_ptr<const CSetting> setting)
   {
     std::string path = std::static_pointer_cast<const CSettingString>(setting)->GetValue();
     VECSOURCES shares;
-    g_mediaManager.GetLocalDrives(shares);
+    CServiceBroker::GetMediaManager().GetLocalDrives(shares);
     if (CGUIDialogFileBrowser::ShowAndGetFile(shares, ".icc|.icm", g_localizeStrings.Get(36581), path))
     {
       std::static_pointer_cast<CSettingString>(std::const_pointer_cast<CSetting>(setting))->SetValue(path);

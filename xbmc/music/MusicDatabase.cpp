@@ -3581,7 +3581,7 @@ bool CMusicDatabase::LookupCDDBInfo(bool bRequery/*=false*/)
     return false;
 
   // Get information for the inserted disc
-  CCdInfo* pCdInfo = g_mediaManager.GetCdInfo();
+  CCdInfo* pCdInfo = CServiceBroker::GetMediaManager().GetCdInfo();
   if (pCdInfo == NULL)
     return false;
 
