@@ -6,12 +6,15 @@
 /xbmc/cores/VideoPlayer/DVDInputStreams/InputStreamPVR*.* @ksooo
 /xbmc/cores/VideoPlayer/VideoRenderers/HwDecRender/DRMPRIMEEGL.* @lrusak
 /xbmc/cores/VideoPlayer/VideoRenderers/HwDecRender/RendererDRMPRIME* @lrusak
+/xbmc/filesystem/Music*.* @DaveTBlake
 /xbmc/interfaces/builtins/PVR*.* @ksooo
+/xbmc/interfaces/json-rpc/AudioLibrary.*  @DaveTBlake
 /xbmc/interfaces/json-rpc/PVR*.* @ksooo
 /xbmc/guilib/GUIRangesControl.* @ksooo
 /xbmc/guilib/guiinfo/GUIInfoProvider.h @ksooo
 /xbmc/guilib/guiinfo/GUIInfoProviders.* @ksooo
 /xbmc/guilib/guiinfo/IGUIInfoProvider.h @ksooo
+/xbmc/music/ @DaveTBlake
 /xbmc/platform/linux/ @lrusak
 /xbmc/pvr/ @ksooo
 /xbmc/rendering/gles/ @lrusak
