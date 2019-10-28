@@ -3,10 +3,13 @@
 
 # Please try and keep the list in alphabetical order
 
+/xbmc/cores/RetroPlayer/ @garbear
 /xbmc/cores/VideoPlayer/DVDInputStreams/InputStreamPVR*.* @ksooo
 /xbmc/cores/VideoPlayer/VideoRenderers/HwDecRender/DRMPRIMEEGL.* @lrusak
 /xbmc/cores/VideoPlayer/VideoRenderers/HwDecRender/RendererDRMPRIME* @lrusak
 /xbmc/filesystem/Music*.* @DaveTBlake
+/xbmc/games/ @garbear
+/xbmc/input/ @garbear
 /xbmc/interfaces/builtins/PVR*.* @ksooo
 /xbmc/interfaces/json-rpc/AudioLibrary.*  @DaveTBlake
 /xbmc/interfaces/json-rpc/PVR*.* @ksooo
@@ -15,6 +18,7 @@
 /xbmc/guilib/guiinfo/GUIInfoProviders.* @ksooo
 /xbmc/guilib/guiinfo/IGUIInfoProvider.h @ksooo
 /xbmc/music/ @DaveTBlake
+/xbmc/peripherals/ @garbear
 /xbmc/platform/linux/ @lrusak
 /xbmc/pvr/ @ksooo
 /xbmc/rendering/gles/ @lrusak
