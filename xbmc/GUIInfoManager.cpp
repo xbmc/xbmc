@@ -1704,6 +1704,7 @@ const infomap system_labels[] =  {{ "hasnetwork",       SYSTEM_ETHERNET_LINK_ACT
 ///                  _boolean_,
 ///     @return **True** if the specified addon is installed on the system.
 ///     @param id - the addon id
+///     @skinning_v19 **[Boolean Condition Updated]** \link System_HasAddon `System.HasAddon(id)`\endlink
 ///     <p>
 ///   }
 ///   \table_row3{   <b>`System.AddonIsEnabled(id)`</b>,
