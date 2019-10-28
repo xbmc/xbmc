@@ -406,8 +406,9 @@ void CProfileManager::FinalizeLoadProfile()
   // Restart context menu manager
   contextMenuManager.Init();
 
-  // restart PVR services
-  pvrManager.Init();
+  // Restart PVR services if we are not just loading the master profile for the login screen
+  if (m_profileLoadedForLogin || m_currentProfile != 0 || m_lastUsedProfile == 0)
+    pvrManager.Init();
 
   favouritesManager.ReInit(GetProfileUserDataFolder());
 
@@ -444,6 +445,9 @@ void CProfileManager::LogOff()
 
   if (CVideoLibraryQueue::GetInstance().IsRunning())
     CVideoLibraryQueue::GetInstance().CancelAllJobs();
+
+  // Stop PVR services
+  CServiceBroker::GetPVRManager().Stop();
 
   networkManager.NetworkMessage(CNetwork::SERVICES_DOWN, 1);
 
