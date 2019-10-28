@@ -3,10 +3,19 @@
 
 # Please try and keep the list in alphabetical order
 
+/xbmc/cores/VideoPlayer/DVDInputStreams/InputStreamPVR*.* @ksooo
 /xbmc/cores/VideoPlayer/VideoRenderers/HwDecRender/DRMPRIMEEGL.* @lrusak
 /xbmc/cores/VideoPlayer/VideoRenderers/HwDecRender/RendererDRMPRIME* @lrusak
+/xbmc/interfaces/builtins/PVR*.* @ksooo
+/xbmc/interfaces/json-rpc/PVR*.* @ksooo
+/xbmc/guilib/GUIRangesControl.* @ksooo
+/xbmc/guilib/guiinfo/GUIInfoProvider.h @ksooo
+/xbmc/guilib/guiinfo/GUIInfoProviders.* @ksooo
+/xbmc/guilib/guiinfo/IGUIInfoProvider.h @ksooo
 /xbmc/platform/linux/ @lrusak
+/xbmc/pvr/ @ksooo
 /xbmc/rendering/gles/ @lrusak
+/xbmc/settings/SettingsComponent.* @ksooo
 /xbmc/utils/EGL* @lrusak
 /xbmc/utils/GBMBufferObject.* @lrusak
 /xbmc/windowing/gbm/ @lrusak
