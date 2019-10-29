@@ -12,6 +12,8 @@
 
 #include "platform/posix/CPUInfoPosix.h"
 
+#include <string>
+
 class CCPUInfoLinux : public CCPUInfoPosix
 {
 public:
@@ -21,4 +23,8 @@ public:
   int GetUsedPercentage() override;
   float GetCPUFrequency() override;
   bool GetTemperature(CTemperature& temperature) override;
+
+private:
+  std::string m_freqPath;
+  std::string m_tempPath;
 };
