@@ -68,7 +68,9 @@ private:
 
 void CEpgTagStateChange::Deliver()
 {
-  const std::shared_ptr<CPVREpg> epg = CServiceBroker::GetPVRManager().EpgContainer().GetByChannelUid(m_epgtag->ClientID(), m_epgtag->UniqueChannelID());
+  CPVREpgContainer& epgContainer = CServiceBroker::GetPVRManager().EpgContainer();
+
+  const std::shared_ptr<CPVREpg> epg = epgContainer.GetByChannelUid(m_epgtag->ClientID(), m_epgtag->UniqueChannelID());
   if (!epg)
   {
     CLog::LogF(LOGERROR, "Unable to obtain EPG for client %d and channel %d! Unable to deliver state change for tag '%d'!",
@@ -83,12 +85,7 @@ void CEpgTagStateChange::Deliver()
     m_epgtag->SetChannelData(epg->GetChannelData());
   }
 
-  // update
-  if (!epg->UpdateEntry(m_epgtag, m_state, false))
-    CLog::LogF(LOGWARNING, "State update failed for epgtag (%s | %s | %s | %s | %s)",
-               m_state == EPG_EVENT_DELETED ? "DELETED" : m_state == EPG_EVENT_UPDATED ? "UPDTAED" : m_state == EPG_EVENT_CREATED ? "CREATED" : "UNKNOWN",
-               epg->GetChannelData()->ChannelName().c_str(), m_epgtag->StartAsLocalTime().GetAsDBDateTime(), m_epgtag->EndAsLocalTime().GetAsDBDateTime(),
-               m_epgtag->Title().c_str());
+  epg->UpdateEntry(m_epgtag, m_state, !epgContainer.IgnoreDB());
 }
 
 CPVREpgContainer::CPVREpgContainer(void) :

@@ -327,13 +327,13 @@ bool CPVREpg::UpdateEntries(const CPVREpg &epg, bool bStoreInDb /* = true */)
   return true;
 }
 
-bool CPVREpg::UpdateEntry(const EPG_TAG *data, int iClientId, bool bUpdateDatabase)
+bool CPVREpg::UpdateEntry(const EPG_TAG *data, int iClientId)
 {
   if (!data)
     return false;
 
   const std::shared_ptr<CPVREpgInfoTag> tag = std::make_shared<CPVREpgInfoTag>(*data, iClientId, m_channelData, m_iEpgID);
-  return UpdateEntry(tag, bUpdateDatabase);
+  return UpdateEntry(tag, !CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_EPG_IGNOREDBFORCLIENT));
 }
 
 bool CPVREpg::UpdateEntry(const CPVREpgInfoTagPtr &tag, bool bUpdateDatabase)

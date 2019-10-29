@@ -159,10 +159,9 @@ namespace PVR
      * @brief Update an entry in this EPG.
      * @param data The tag to update.
      * @param iClientId The id of the pvr client this event belongs to.
-     * @param bUpdateDatabase If set to true, this event will be persisted in the database.
      * @return True if it was updated successfully, false otherwise.
      */
-    bool UpdateEntry(const EPG_TAG *data, int iClientId, bool bUpdateDatabase);
+    bool UpdateEntry(const EPG_TAG *data, int iClientId);
 
     /*!
      * @brief Update an entry in this EPG.

@@ -612,11 +612,10 @@ PVR_ERROR CPVRClient::RenameChannel(const CPVRChannelPtr &channel)
 
 PVR_ERROR CPVRClient::GetEPGForChannel(const std::shared_ptr<CPVREpgChannelData>& channelData,
                                        CPVREpg* epg,
-                                       time_t start /* = 0 */,
-                                       time_t end /* = 0 */,
-                                       bool bSaveInDb /* = false */)
+                                       time_t start,
+                                       time_t end)
 {
-  return DoAddonCall(__FUNCTION__, [this, channelData, epg, start, end, bSaveInDb](const AddonInstance* addon) {
+  return DoAddonCall(__FUNCTION__, [this, channelData, epg, start, end](const AddonInstance* addon) {
 
     //! @todo PVR Addon API Change: Change GetEPGForChannel param from 'PVR_CHANNEL channel' to 'int iUniqueId'.
     PVR_CHANNEL addonChannel = {0};
@@ -630,10 +629,9 @@ PVR_ERROR CPVRClient::GetEPGForChannel(const std::shared_ptr<CPVREpgChannelData>
     strncpy(addonChannel.strIconPath, channelData->IconPath().c_str(), sizeof(addonChannel.strIconPath) - 1);
     addonChannel.bIsHidden = channelData->IsHidden();
 
-    ADDON_HANDLE_STRUCT handle;
+    ADDON_HANDLE_STRUCT handle = {0};
     handle.callerAddress  = this;
     handle.dataAddress    = epg;
-    handle.dataIdentifier = bSaveInDb ? 1 : 0; // used by the callback method CPVRClient::cb_transfer_epg_entry()
 
     int iPVRTimeCorrection = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_iPVRTimeCorrection;
 
@@ -807,7 +805,7 @@ PVR_ERROR CPVRClient::GetChannelGroupsAmount(int &iGroups)
 PVR_ERROR CPVRClient::GetChannelGroups(CPVRChannelGroups *groups)
 {
   return DoAddonCall(__FUNCTION__, [this, groups](const AddonInstance* addon) {
-    ADDON_HANDLE_STRUCT handle;
+    ADDON_HANDLE_STRUCT handle = {0};
     handle.callerAddress = this;
     handle.dataAddress = groups;
     return addon->GetChannelGroups(&handle, groups->IsRadio());
@@ -817,7 +815,7 @@ PVR_ERROR CPVRClient::GetChannelGroups(CPVRChannelGroups *groups)
 PVR_ERROR CPVRClient::GetChannelGroupMembers(CPVRChannelGroup *group)
 {
   return DoAddonCall(__FUNCTION__, [this, group](const AddonInstance* addon) {
-    ADDON_HANDLE_STRUCT handle;
+    ADDON_HANDLE_STRUCT handle = {0};
     handle.callerAddress = this;
     handle.dataAddress = group;
 
@@ -839,7 +837,7 @@ PVR_ERROR CPVRClient::GetChannelsAmount(int &iChannels)
 PVR_ERROR CPVRClient::GetChannels(CPVRChannelGroup &channels, bool radio)
 {
   return DoAddonCall(__FUNCTION__, [this, &channels, radio](const AddonInstance* addon) {
-    ADDON_HANDLE_STRUCT handle;
+    ADDON_HANDLE_STRUCT handle = {0};
     handle.callerAddress = this;
     handle.dataAddress = &channels;
     return addon->GetChannels(&handle, radio);
@@ -858,7 +856,7 @@ PVR_ERROR CPVRClient::GetRecordingsAmount(bool deleted, int &iRecordings)
 PVR_ERROR CPVRClient::GetRecordings(CPVRRecordings *results, bool deleted) {
   return DoAddonCall(__FUNCTION__, [this, results, deleted](const AddonInstance* addon)
   {
-    ADDON_HANDLE_STRUCT handle;
+    ADDON_HANDLE_STRUCT handle = {0};
     handle.callerAddress = this;
     handle.dataAddress = results;
     return addon->GetRecordings(&handle, deleted);
@@ -969,7 +967,7 @@ PVR_ERROR CPVRClient::GetTimersAmount(int &iTimers)
 PVR_ERROR CPVRClient::GetTimers(CPVRTimersContainer *results)
 {
   return DoAddonCall(__FUNCTION__, [this, results](const AddonInstance* addon) {
-    ADDON_HANDLE_STRUCT handle;
+    ADDON_HANDLE_STRUCT handle = {0};
     handle.callerAddress = this;
     handle.dataAddress = results;
     return addon->GetTimers(&handle);
@@ -1548,7 +1546,7 @@ void CPVRClient::cb_transfer_epg_entry(void *kodiInstance, const ADDON_HANDLE ha
   }
 
   /* transfer this entry to the epg */
-  kodiEpg->UpdateEntry(epgentry, client->GetID(), handle->dataIdentifier == 1 /* update db */);
+  kodiEpg->UpdateEntry(epgentry, client->GetID());
 }
 
 void CPVRClient::cb_transfer_channel_entry(void *kodiInstance, const ADDON_HANDLE handle, const PVR_CHANNEL *channel)
