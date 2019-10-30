@@ -10,7 +10,9 @@
 
 #include "XBDateTime.h"
 
+#include <map>
 #include <memory>
+#include <utility>
 #include <vector>
 
 class CFileItem;
@@ -83,6 +85,7 @@ namespace PVR
   private:
     void FreeItemsMemory();
     std::shared_ptr<CFileItem> CreateGapItem(int iChannel) const;
+    std::shared_ptr<CFileItem> GetGapItem(int iChannel, int iStartBlock) const;
 
     struct ItemsPtr
     {
@@ -98,7 +101,9 @@ namespace PVR
     std::vector<std::shared_ptr<CFileItem>> m_rulerItems;
     std::vector<ItemsPtr> m_epgItemsPtr;
     mutable std::vector<std::vector<GridItem>> m_gridIndex;
+    mutable std::map<std::pair<int, int>, std::shared_ptr<CFileItem>> m_gapItems;
 
     int m_blocks = 0;
+    float m_fBlockSize = 0.0f;
   };
 }

@@ -51,6 +51,25 @@ std::shared_ptr<CFileItem> CGUIEPGGridContainerModel::CreateGapItem(int iChannel
   return std::make_shared<CFileItem>(gapTag);
 }
 
+std::shared_ptr<CFileItem> CGUIEPGGridContainerModel::GetGapItem(int iChannel,
+                                                                 int iStartBlock) const
+{
+  std::shared_ptr<CFileItem> item;
+
+  auto gapsIt = m_gapItems.find({iChannel, iStartBlock});
+  if (gapsIt != m_gapItems.end())
+  {
+    item = (*gapsIt).second;
+  }
+  else
+  {
+    item = CreateGapItem(iChannel);
+    m_gapItems.insert({{iChannel, iStartBlock}, item});
+  }
+
+  return item;
+}
+
 void CGUIEPGGridContainerModel::Initialize(const std::unique_ptr<CFileItemList>& items, const CDateTime& gridStart, const CDateTime& gridEnd, int iRulerUnit, int iBlocksPerPage, float fBlockSize)
 {
   if (!m_channelItems.empty())
@@ -58,6 +77,8 @@ void CGUIEPGGridContainerModel::Initialize(const std::unique_ptr<CFileItemList>&
     CLog::LogF(LOGERROR, "Already initialized!");
     return;
   }
+
+  m_fBlockSize = fBlockSize;
 
   ////////////////////////////////////////////////////////////////////////
   // Create programme & channel items
@@ -147,7 +168,7 @@ void CGUIEPGGridContainerModel::Initialize(const std::unique_ptr<CFileItemList>&
   FreeItemsMemory();
 
   ////////////////////////////////////////////////////////////////////////
-  // Create epg grid
+  // Create empty epg grid (will be filled on demand)
   const CDateTimeSpan blockDuration(0, 0, MINSPERBLOCK, 0);
   const CDateTimeSpan gridDuration(m_gridEnd - m_gridStart);
   m_blocks = (gridDuration.GetDays() * 24 * 60 + gridDuration.GetHours() * 60 + gridDuration.GetMinutes()) / MINSPERBLOCK;
@@ -162,103 +183,6 @@ void CGUIEPGGridContainerModel::Initialize(const std::unique_ptr<CFileItemList>&
   for (size_t channel = 0; channel < m_channelItems.size(); ++channel)
   {
     m_gridIndex.emplace_back(blocks);
-
-    CDateTime gridCursor(m_gridStart); //reset cursor for new channel
-    unsigned long progIdx = m_epgItemsPtr[channel].start;
-    unsigned long lastIdx = m_epgItemsPtr[channel].stop;
-    int iEpgId = m_programmeItems[progIdx]->GetEPGInfoTag()->EpgID();
-    int itemSize = 1; // size of the programme in blocks
-    int savedBlock = 0;
-    CFileItemPtr item;
-    std::shared_ptr<CPVREpgInfoTag> tag;
-
-    for (int block = 0; block < m_blocks; ++block)
-    {
-      while (progIdx <= lastIdx)
-      {
-        item = m_programmeItems[progIdx];
-        tag = item->GetEPGInfoTag();
-
-        // Note: Start block of an event is start-time-based calculated block + 1,
-        //       unless start times matches exactly the begin of a block.
-
-        if (tag->EpgID() != iEpgId || gridCursor < tag->StartAsUTC() || m_gridEnd <= tag->StartAsUTC())
-          break;
-
-        if (gridCursor < tag->EndAsUTC())
-        {
-          GridItem* gridItem = GetGridItemPtr(channel, block);
-          gridItem->item = item;
-          gridItem->progIndex = progIdx;
-          break;
-        }
-
-        progIdx++;
-      }
-
-      gridCursor += blockDuration;
-
-      if (block == 0)
-        continue;
-
-      const std::shared_ptr<CFileItem> prevItem = GetGridItem(channel, block - 1);
-      const std::shared_ptr<CFileItem> currItem = GetGridItem(channel, block);
-
-      if (block == m_blocks - 1 || prevItem != currItem)
-      {
-        // special handling for last block.
-        int blockDelta = -1;
-        int sizeDelta = 0;
-        if (block == m_blocks - 1 && prevItem == currItem)
-        {
-          itemSize++;
-          blockDelta = 0;
-          sizeDelta = 1;
-        }
-
-        if (prevItem)
-        {
-          GetGridItem(channel, savedBlock)
-              ->SetProperty("GenreType", prevItem->GetEPGInfoTag()->GenreType());
-        }
-        else
-        {
-          const std::shared_ptr<CFileItem> gapItem = CreateGapItem(channel);
-          for (int i = block + blockDelta; i >= block - itemSize + sizeDelta; --i)
-          {
-            GetGridItemPtr(channel, i)->item = gapItem;
-          }
-        }
-
-        float fItemWidth = itemSize * fBlockSize;
-        m_gridIndex[channel][savedBlock].originWidth = fItemWidth;
-        m_gridIndex[channel][savedBlock].width = fItemWidth;
-
-        itemSize = 1;
-        savedBlock = block;
-
-        // special handling for last block.
-        if (block == m_blocks - 1 && prevItem != currItem)
-        {
-          GridItem* gridItem = GetGridItemPtr(channel, savedBlock);
-          if (currItem)
-          {
-            gridItem->item->SetProperty("GenreType", currItem->GetEPGInfoTag()->GenreType());
-          }
-          else
-          {
-            GetGridItemPtr(channel, block)->item = CreateGapItem(channel);
-          }
-
-          m_gridIndex[channel][savedBlock].originWidth = fBlockSize; // size always 1 block here
-          m_gridIndex[channel][savedBlock].width = fBlockSize;
-        }
-      }
-      else
-      {
-        itemSize++;
-      }
-    }
   }
 }
 
@@ -316,6 +240,79 @@ void CGUIEPGGridContainerModel::FindChannelAndBlockIndex(int channelUid, unsigne
 
 GridItem* CGUIEPGGridContainerModel::GetGridItemPtr(int iChannel, int iBlock) const
 {
+  if (!m_gridIndex[iChannel][iBlock].item)
+  {
+    bool bFound = false;
+
+    std::shared_ptr<CFileItem> item;
+    int startBlock = 0;
+    int endBlock = 0;
+
+    const CDateTime start = GetStartTimeForBlock(iBlock);
+    std::shared_ptr<CPVREpgInfoTag> epgTag;
+
+    int progIndex = m_epgItemsPtr[iChannel].start;
+    for (; progIndex < m_epgItemsPtr[iChannel].stop; ++progIndex)
+    {
+      item = m_programmeItems[progIndex];
+      epgTag = item->GetEPGInfoTag();
+
+      if (start < epgTag->StartAsUTC() || m_gridEnd <= epgTag->StartAsUTC())
+        break;
+
+      if (start < epgTag->EndAsUTC())
+      {
+        startBlock = GetFirstEventBlock(epgTag);
+        endBlock = GetLastEventBlock(epgTag);
+
+        item->SetProperty("GenreType", epgTag->GenreType());
+
+        bFound = true;
+        break;
+      }
+    }
+
+    if (!bFound)
+    {
+      // Insert a gap tag.
+      if (epgTag)
+      {
+        if (progIndex == m_epgItemsPtr[iChannel].start)
+        {
+          // gap before first event
+          startBlock = 0;
+          endBlock = GetFirstEventBlock(epgTag) - 1;
+        }
+        else if (progIndex == m_epgItemsPtr[iChannel].stop)
+        {
+          // gap after last event
+          startBlock = GetLastEventBlock(epgTag) + 1;
+          endBlock = m_blocks - 1;
+        }
+        else
+        {
+          // gap between two events
+          startBlock = GetLastEventBlock(m_programmeItems[progIndex - 1]->GetEPGInfoTag()) + 1;
+          endBlock = GetFirstEventBlock(epgTag) - 1;
+        }
+      }
+      else
+      {
+        // channel without epg
+        startBlock = 0;
+        endBlock = m_blocks - 1;
+      }
+
+      progIndex = -1;
+      item = GetGapItem(iChannel, startBlock);
+    }
+
+    const float fItemWidth = (endBlock - startBlock + 1) * m_fBlockSize;
+    m_gridIndex[iChannel][iBlock].originWidth = fItemWidth;
+    m_gridIndex[iChannel][iBlock].width = fItemWidth;
+    m_gridIndex[iChannel][iBlock].item = item;
+    m_gridIndex[iChannel][iBlock].progIndex = progIndex;
+  }
   return &m_gridIndex[iChannel][iBlock];
 }
 
@@ -341,7 +338,8 @@ int CGUIEPGGridContainerModel::GetGridItemIndex(int iChannel, int iBlock) const
 
 void CGUIEPGGridContainerModel::SetGridItemWidth(int iChannel, int iBlock, float fWidth)
 {
-  GetGridItemPtr(iChannel, iBlock)->width = fWidth;
+  if (m_gridIndex[iChannel][iBlock].width != fWidth)
+    GetGridItemPtr(iChannel, iBlock)->width = fWidth;
 }
 
 unsigned int CGUIEPGGridContainerModel::GetGridStartPadding() const
@@ -460,7 +458,7 @@ CDateTime CGUIEPGGridContainerModel::GetStartTimeForBlock(int block) const
   else if (block >= m_blocks)
     block = m_blocks - 1;
 
-  return m_gridStart + CDateTimeSpan(0, 0 , block * MINSPERBLOCK, 0);
+  return m_gridStart + CDateTimeSpan(0, 0, block * MINSPERBLOCK, 0);
 }
 
 int CGUIEPGGridContainerModel::GetBlock(const CDateTime& datetime) const
@@ -474,7 +472,10 @@ int CGUIEPGGridContainerModel::GetBlock(const CDateTime& datetime) const
   else
     diff = (datetime - m_gridStart).GetSecondsTotal(); // block is after grid start
 
-  return diff / 60 / MINSPERBLOCK;
+  // Note: Subtract 1 second from diff to ensure that events ending exactly at block boundary
+  //       are unambigious. Example: An event ending at 5:00:00 shall be mapped to block 9 and
+  //       an event starting at 5:00:00 shall be mapped to block 10, not both at block 10.
+  return (diff - 1) / 60 / MINSPERBLOCK;
 }
 
 int CGUIEPGGridContainerModel::GetNowBlock() const
