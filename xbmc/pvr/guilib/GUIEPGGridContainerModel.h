@@ -60,12 +60,12 @@ namespace PVR
 
     int GetBlockCount() const { return m_blocks; }
     bool HasGridItems() const { return !m_gridIndex.empty(); }
-    GridItem* GetGridItemPtr(int iChannel, int iBlock) { return &m_gridIndex[iChannel][iBlock]; }
-    std::shared_ptr<CFileItem> GetGridItem(int iChannel, int iBlock) const { return m_gridIndex[iChannel][iBlock].item; }
-    float GetGridItemWidth(int iChannel, int iBlock) const { return m_gridIndex[iChannel][iBlock].width; }
-    float GetGridItemOriginWidth(int iChannel, int iBlock) const { return m_gridIndex[iChannel][iBlock].originWidth; }
-    int GetGridItemIndex(int iChannel, int iBlock) const { return m_gridIndex[iChannel][iBlock].progIndex; }
-    void SetGridItemWidth(int iChannel, int iBlock, float fWidth) { m_gridIndex[iChannel][iBlock].width = fWidth; }
+    GridItem* GetGridItemPtr(int iChannel, int iBlock) const;
+    std::shared_ptr<CFileItem> GetGridItem(int iChannel, int iBlock) const;
+    float GetGridItemWidth(int iChannel, int iBlock) const;
+    float GetGridItemOriginWidth(int iChannel, int iBlock) const;
+    int GetGridItemIndex(int iChannel, int iBlock) const;
+    void SetGridItemWidth(int iChannel, int iBlock, float fWidth);
 
     bool IsZeroGridDuration() const { return (m_gridEnd - m_gridStart) == CDateTimeSpan(0, 0, 0, 0); }
     const CDateTime& GetGridStart() const { return m_gridStart; }
@@ -97,7 +97,7 @@ namespace PVR
     std::vector<std::shared_ptr<CFileItem>> m_channelItems;
     std::vector<std::shared_ptr<CFileItem>> m_rulerItems;
     std::vector<ItemsPtr> m_epgItemsPtr;
-    std::vector<std::vector<GridItem> > m_gridIndex;
+    mutable std::vector<std::vector<GridItem>> m_gridIndex;
 
     int m_blocks = 0;
   };

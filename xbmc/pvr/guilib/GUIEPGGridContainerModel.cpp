@@ -187,8 +187,9 @@ void CGUIEPGGridContainerModel::Initialize(const std::unique_ptr<CFileItemList>&
 
         if (gridCursor < tag->EndAsUTC())
         {
-          m_gridIndex[channel][block].item = item;
-          m_gridIndex[channel][block].progIndex = progIdx;
+          GridItem* gridItem = GetGridItemPtr(channel, block);
+          gridItem->item = item;
+          gridItem->progIndex = progIdx;
           break;
         }
 
@@ -200,8 +201,8 @@ void CGUIEPGGridContainerModel::Initialize(const std::unique_ptr<CFileItemList>&
       if (block == 0)
         continue;
 
-      const CFileItemPtr prevItem(m_gridIndex[channel][block - 1].item);
-      const CFileItemPtr currItem(m_gridIndex[channel][block].item);
+      const std::shared_ptr<CFileItem> prevItem = GetGridItem(channel, block - 1);
+      const std::shared_ptr<CFileItem> currItem = GetGridItem(channel, block);
 
       if (block == m_blocks - 1 || prevItem != currItem)
       {
@@ -217,14 +218,15 @@ void CGUIEPGGridContainerModel::Initialize(const std::unique_ptr<CFileItemList>&
 
         if (prevItem)
         {
-          m_gridIndex[channel][savedBlock].item->SetProperty("GenreType", prevItem->GetEPGInfoTag()->GenreType());
+          GetGridItem(channel, savedBlock)
+              ->SetProperty("GenreType", prevItem->GetEPGInfoTag()->GenreType());
         }
         else
         {
           const std::shared_ptr<CFileItem> gapItem = CreateGapItem(channel);
           for (int i = block + blockDelta; i >= block - itemSize + sizeDelta; --i)
           {
-            m_gridIndex[channel][i].item = gapItem;
+            GetGridItemPtr(channel, i)->item = gapItem;
           }
         }
 
@@ -238,13 +240,14 @@ void CGUIEPGGridContainerModel::Initialize(const std::unique_ptr<CFileItemList>&
         // special handling for last block.
         if (block == m_blocks - 1 && prevItem != currItem)
         {
+          GridItem* gridItem = GetGridItemPtr(channel, savedBlock);
           if (currItem)
           {
-            m_gridIndex[channel][savedBlock].item->SetProperty("GenreType", currItem->GetEPGInfoTag()->GenreType());
+            gridItem->item->SetProperty("GenreType", currItem->GetEPGInfoTag()->GenreType());
           }
           else
           {
-            m_gridIndex[channel][block].item = CreateGapItem(channel);
+            GetGridItemPtr(channel, block)->item = CreateGapItem(channel);
           }
 
           m_gridIndex[channel][savedBlock].originWidth = fBlockSize; // size always 1 block here
@@ -311,6 +314,36 @@ void CGUIEPGGridContainerModel::FindChannelAndBlockIndex(int channelUid, unsigne
   }
 }
 
+GridItem* CGUIEPGGridContainerModel::GetGridItemPtr(int iChannel, int iBlock) const
+{
+  return &m_gridIndex[iChannel][iBlock];
+}
+
+std::shared_ptr<CFileItem> CGUIEPGGridContainerModel::GetGridItem(int iChannel, int iBlock) const
+{
+  return GetGridItemPtr(iChannel, iBlock)->item;
+}
+
+float CGUIEPGGridContainerModel::GetGridItemWidth(int iChannel, int iBlock) const
+{
+  return GetGridItemPtr(iChannel, iBlock)->width;
+}
+
+float CGUIEPGGridContainerModel::GetGridItemOriginWidth(int iChannel, int iBlock) const
+{
+  return GetGridItemPtr(iChannel, iBlock)->originWidth;
+}
+
+int CGUIEPGGridContainerModel::GetGridItemIndex(int iChannel, int iBlock) const
+{
+  return GetGridItemPtr(iChannel, iBlock)->progIndex;
+}
+
+void CGUIEPGGridContainerModel::SetGridItemWidth(int iChannel, int iBlock, float fWidth)
+{
+  GetGridItemPtr(iChannel, iBlock)->width = fWidth;
+}
+
 unsigned int CGUIEPGGridContainerModel::GetGridStartPadding() const
 {
   unsigned int iPastMinutes = CServiceBroker::GetPVRManager().EpgContainer().GetPastDaysToDisplay() * 24 * 60;
@@ -350,13 +383,14 @@ void CGUIEPGGridContainerModel::FreeProgrammeMemory(int channel, int keepStart, 
       std::shared_ptr<CGUIListItem> last = m_gridIndex[channel][keepStart].item;
       for (int i = keepStart - 1; i > 0; --i)
       {
-        if (m_gridIndex[channel][i].item && m_gridIndex[channel][i].item != last)
+        const std::shared_ptr<CGUIListItem> current = m_gridIndex[channel][i].item;
+        if (current && current != last)
         {
-          m_gridIndex[channel][i].item->FreeMemory();
+          current->FreeMemory();
           // FreeMemory() is smart enough to not cause any problems when called multiple times on same item
           // but we can make use of condition needed to not call FreeMemory() on item that is partially visible
           // to avoid calling FreeMemory() multiple times on item that occupy few blocks in a row
-          last = m_gridIndex[channel][i].item;
+          last = current;
         }
       }
     }
@@ -367,13 +401,14 @@ void CGUIEPGGridContainerModel::FreeProgrammeMemory(int channel, int keepStart, 
       for (int i = keepEnd + 1; i < m_blocks; ++i)
       {
         // if item exist and block is not part of visible item
-        if (m_gridIndex[channel][i].item && m_gridIndex[channel][i].item != last)
+        std::shared_ptr<CGUIListItem> current = m_gridIndex[channel][i].item;
+        if (current && current != last)
         {
-          m_gridIndex[channel][i].item->FreeMemory();
+          current->FreeMemory();
           // FreeMemory() is smart enough to not cause any problems when called multiple times on same item
           // but we can make use of condition needed to not call FreeMemory() on item that is partially visible
           // to avoid calling FreeMemory() multiple times on item that occupy few blocks in a row
-          last = m_gridIndex[channel][i].item;
+          last = current;
         }
       }
     }
