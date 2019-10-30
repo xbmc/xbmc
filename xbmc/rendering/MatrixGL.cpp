@@ -7,6 +7,8 @@
  */
 
 #include "MatrixGL.h"
+
+#include "ServiceBroker.h"
 #include "utils/TransformMatrix.h"
 
 #if defined(HAS_NEON) && !defined(__LP64__)
@@ -132,11 +134,11 @@ void CMatrixGL::Rotatef(GLfloat angle, GLfloat x, GLfloat y, GLfloat z)
 void CMatrixGL::MultMatrixf(const CMatrixGL &matrix) noexcept
 {
 #if defined(HAS_NEON) && !defined(__LP64__)
-    if ((g_cpuInfo.GetCPUFeatures() & CPU_FEATURE_NEON) == CPU_FEATURE_NEON)
-    {
-      Matrix4Mul(m_pMatrix, matrix.m_pMatrix);
-      return;
-    }
+  if ((CServiceBroker::GetCPUInfo()->GetCPUFeatures() & CPU_FEATURE_NEON) == CPU_FEATURE_NEON)
+  {
+    Matrix4Mul(m_pMatrix, matrix.m_pMatrix);
+    return;
+  }
 #endif
     GLfloat a = (matrix.m_pMatrix[0]  * m_pMatrix[0]) + (matrix.m_pMatrix[1]  * m_pMatrix[4]) + (matrix.m_pMatrix[2]  * m_pMatrix[8])  + (matrix.m_pMatrix[3]  * m_pMatrix[12]);
     GLfloat b = (matrix.m_pMatrix[0]  * m_pMatrix[1]) + (matrix.m_pMatrix[1]  * m_pMatrix[5]) + (matrix.m_pMatrix[2]  * m_pMatrix[9])  + (matrix.m_pMatrix[3]  * m_pMatrix[13]);

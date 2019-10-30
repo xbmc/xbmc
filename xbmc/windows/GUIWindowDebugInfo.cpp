@@ -63,7 +63,7 @@ void CGUIWindowDebugInfo::Process(unsigned int currentTime, CDirtyRegionList &di
 {
   CServiceBroker::GetWinSystem()->GetGfxContext().SetRenderingResolution(CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo(), false);
 
-  g_cpuInfo.getUsedPercentage(); // must call it to recalculate pct values
+  CServiceBroker::GetCPUInfo()->GetUsedPercentage(); // must call it to recalculate pct values
 
   static int yShift = 20;
   static int xShift = 40;
@@ -94,7 +94,7 @@ void CGUIWindowDebugInfo::Process(unsigned int currentTime, CDirtyRegionList &di
     KODI::MEMORY::MemoryStatus stat;
     KODI::MEMORY::GetMemoryStatus(&stat);
     std::string profiling = CGUIControlProfiler::IsRunning() ? " (profiling)" : "";
-    std::string strCores = g_cpuInfo.GetCoresUsageString();
+    std::string strCores = CServiceBroker::GetCPUInfo()->GetCoresUsageString();
     std::string lcAppName = CCompileInfo::GetAppName();
     StringUtils::ToLower(lcAppName);
 #if !defined(TARGET_POSIX)

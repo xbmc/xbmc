@@ -1,8 +1,10 @@
-set(SOURCES MemUtils.cpp
+set(SOURCES CPUInfoFreebsd.cpp
             ../linux/OptionalsReg.cpp
-            ../linux/TimeUtils.cpp)
+            ../linux/TimeUtils.cpp
+            MemUtils.cpp)
 
-set(HEADERS ../linux/OptionalsReg.h
+set(HEADERS CPUInfoFreebsd.h
+            ../linux/OptionalsReg.h
             ../linux/PlatformConstants.h
             ../linux/TimeUtils.h)
 

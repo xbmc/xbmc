@@ -474,11 +474,14 @@ bool CApplication::Create(const CAppParamParser &params)
 
   CLog::Log(LOGNOTICE, "FFmpeg version/source: %s", av_version_info());
 
-  std::string cpuModel(g_cpuInfo.getCPUModel());
+  std::string cpuModel(CServiceBroker::GetCPUInfo()->GetCPUModel());
   if (!cpuModel.empty())
-    CLog::Log(LOGNOTICE, "Host CPU: %s, %d core%s available", cpuModel.c_str(), g_cpuInfo.getCPUCount(), (g_cpuInfo.getCPUCount() == 1) ? "" : "s");
+    CLog::Log(LOGNOTICE, "Host CPU: %s, %d core%s available", cpuModel.c_str(),
+              CServiceBroker::GetCPUInfo()->GetCPUCount(),
+              (CServiceBroker::GetCPUInfo()->GetCPUCount() == 1) ? "" : "s");
   else
-    CLog::Log(LOGNOTICE, "%d CPU core%s available", g_cpuInfo.getCPUCount(), (g_cpuInfo.getCPUCount() == 1) ? "" : "s");
+    CLog::Log(LOGNOTICE, "%d CPU core%s available", CServiceBroker::GetCPUInfo()->GetCPUCount(),
+              (CServiceBroker::GetCPUInfo()->GetCPUCount() == 1) ? "" : "s");
 
   //! @todo - move to CPlatformXXX ???
 #if defined(TARGET_WINDOWS)
@@ -497,7 +500,7 @@ bool CApplication::Create(const CAppParamParser &params)
 #endif
 
 #if defined(__arm__) || defined(__aarch64__)
-  if (g_cpuInfo.GetCPUFeatures() & CPU_FEATURE_NEON)
+  if (CServiceBroker::GetCPUInfo()->GetCPUFeatures() & CPU_FEATURE_NEON)
     CLog::Log(LOGNOTICE, "ARM Features: Neon enabled");
   else
     CLog::Log(LOGNOTICE, "ARM Features: Neon disabled");
@@ -2493,6 +2496,8 @@ bool CApplication::Cleanup()
     m_pSettingsComponent->Deinit();
     m_pSettingsComponent.reset();
 
+    CServiceBroker::UnregisterCPUInfo();
+
     return true;
   }
   catch (...)
@@ -4069,7 +4074,7 @@ void CApplication::Process()
     ProcessSlow();
   }
 #if !defined(TARGET_DARWIN)
-  g_cpuInfo.getUsedPercentage(); // must call it to recalculate pct values
+  CServiceBroker::GetCPUInfo()->GetUsedPercentage(); // must call it to recalculate pct values
 #endif
 }
 

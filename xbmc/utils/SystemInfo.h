@@ -56,9 +56,7 @@ public:
   static CSysData::INTERNET_STATE GetInternetState();
 private:
   static bool SystemUpTime(int iInputMinutes, int &iMinutes, int &iHours, int &iDays);
-  static double GetCPUFrequency();
   static std::string GetSystemUpTime(bool bTotalUptime);
-  static std::string GetCPUFreqInfo();
   static std::string GetMACAddress();
   static std::string GetVideoEncoder();
   static std::string GetBatteryLevel();
@@ -120,13 +118,6 @@ public:
   static int GetKernelBitness(void);
   static int GetXbmcBitness(void);
   static const std::string& GetKernelCpuFamily(void);
-  std::string GetCPUModel();
-  std::string GetCPUBogoMips();
-  std::string GetCPUSoC();
-  std::string GetCPUHardware();
-  std::string GetCPURevision();
-  std::string GetCPUSerial();
-  static int GetCPUCount();
   static std::string GetManufacturerName(void);
   static std::string GetModelName(void);
   bool GetDiskSpace(std::string drive,int& iTotal, int& iTotalFree, int& iTotalUsed, int& iPercentFree, int& iPercentUsed);

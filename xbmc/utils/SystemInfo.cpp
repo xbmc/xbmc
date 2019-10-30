@@ -15,18 +15,18 @@
 #else
 #include <sys/utsname.h>
 #endif
-#include "guilib/guiinfo/GUIInfoLabels.h"
+#include "CompileInfo.h"
+#include "ServiceBroker.h"
 #include "filesystem/CurlFile.h"
 #include "filesystem/File.h"
-#include "network/Network.h"
-#include "ServiceBroker.h"
-#include "rendering/RenderSystem.h"
 #include "guilib/LocalizeStrings.h"
-#include "CPUInfo.h"
-#include "CompileInfo.h"
+#include "guilib/guiinfo/GUIInfoLabels.h"
+#include "network/Network.h"
+#include "platform/Filesystem.h"
+#include "rendering/RenderSystem.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
-#include "platform/Filesystem.h"
+#include "utils/CPUInfo.h"
 #include "utils/log.h"
 
 #ifdef TARGET_WINDOWS
@@ -251,7 +251,8 @@ bool CSysInfoJob::DoWork()
   m_info.systemTotalUptime = GetSystemUpTime(true);
   m_info.internetState     = GetInternetState();
   m_info.videoEncoder      = GetVideoEncoder();
-  m_info.cpuFrequency      = GetCPUFreqInfo();
+  m_info.cpuFrequency =
+      StringUtils::Format("%4.0f MHz", CServiceBroker::GetCPUInfo()->GetCPUFrequency());
   m_info.osVersionInfo     = CSysInfo::GetOsPrettyNameWithVersion() + " (kernel: " + CSysInfo::GetKernelName() + " " + CSysInfo::GetKernelVersionFull() + ")";
   m_info.macAddress        = GetMACAddress();
   m_info.batteryLevel      = GetBatteryLevel();
@@ -261,12 +262,6 @@ bool CSysInfoJob::DoWork()
 const CSysData &CSysInfoJob::GetData() const
 {
   return m_info;
-}
-
-std::string CSysInfoJob::GetCPUFreqInfo()
-{
-  double CPUFreq = GetCPUFrequency();
-  return StringUtils::Format("%4.0f MHz", CPUFreq);
 }
 
 CSysData::INTERNET_STATE CSysInfoJob::GetInternetState()
@@ -295,15 +290,6 @@ std::string CSysInfoJob::GetVideoEncoder()
 std::string CSysInfoJob::GetBatteryLevel()
 {
   return StringUtils::Format("%d%%", CServiceBroker::GetPowerManager().BatteryLevel());
-}
-
-double CSysInfoJob::GetCPUFrequency()
-{
-#if defined (TARGET_POSIX) || defined(TARGET_WINDOWS)
-  return double (g_cpuInfo.getCPUFrequency());
-#else
-  return 0;
-#endif
 }
 
 bool CSysInfoJob::SystemUpTime(int iInputMinutes, int &iMinutes, int &iHours, int &iDays)
@@ -483,43 +469,6 @@ bool CSysInfo::GetDiskSpace(std::string drive,int& iTotal, int& iTotalFree, int&
   iPercentFree = 100 - iPercentUsed;
 
   return true;
-}
-
-std::string CSysInfo::GetCPUModel()
-{
-  return "CPU: " + g_cpuInfo.getCPUModel();
-}
-
-std::string CSysInfo::GetCPUBogoMips()
-{
-  return "BogoMips: " + g_cpuInfo.getCPUBogoMips();
-}
-
-std::string CSysInfo::GetCPUSoC()
-{
-  if (!g_cpuInfo.getCPUSoC().empty())
-    return "SoC: " + g_cpuInfo.getCPUSoC();
-  return "";
-}
-
-std::string CSysInfo::GetCPUHardware()
-{
-  return "Hardware: " + g_cpuInfo.getCPUHardware();
-}
-
-std::string CSysInfo::GetCPURevision()
-{
-  return "Revision: " + g_cpuInfo.getCPURevision();
-}
-
-std::string CSysInfo::GetCPUSerial()
-{
-  return "Serial: " + g_cpuInfo.getCPUSerial();
-}
-
-int CSysInfo::GetCPUCount()
-{
-  return g_cpuInfo.getCPUCount();
 }
 
 std::string CSysInfo::GetKernelName(bool emptyIfUnknown /*= false*/)

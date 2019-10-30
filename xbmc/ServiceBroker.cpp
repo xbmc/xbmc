@@ -268,3 +268,19 @@ CDecoderFilterManager* CServiceBroker::GetDecoderFilterManager()
 {
   return m_decoderFilterManager;
 }
+
+std::shared_ptr<CCPUInfo> CServiceBroker::m_cpuInfo;
+std::shared_ptr<CCPUInfo> CServiceBroker::GetCPUInfo()
+{
+  return m_cpuInfo;
+}
+
+void CServiceBroker::RegisterCPUInfo(std::shared_ptr<CCPUInfo> cpuInfo)
+{
+  m_cpuInfo = cpuInfo;
+}
+
+void CServiceBroker::UnregisterCPUInfo()
+{
+  m_cpuInfo.reset();
+}

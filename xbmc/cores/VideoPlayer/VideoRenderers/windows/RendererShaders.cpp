@@ -374,9 +374,9 @@ bool CRendererShaders::CRenderBufferImpl::UploadFromGPU()
 
   void* (*copy_func)(void* d, const void* s, size_t size) =
 #if defined(HAVE_SSE2)
-    ((g_cpuInfo.GetCPUFeatures() & CPU_FEATURE_SSE4) != 0) ? gpu_memcpy :
+      ((CServiceBroker::GetCPUInfo()->GetCPUFeatures() & CPU_FEATURE_SSE4) != 0) ? gpu_memcpy :
 #endif
-    memcpy;
+                                                                                 memcpy;
 
   auto* s_y = static_cast<uint8_t*>(mapGPU.pData);
   auto* s_uv = static_cast<uint8_t*>(mapGPU.pData) + m_sDesc.Height * mapGPU.RowPitch;
