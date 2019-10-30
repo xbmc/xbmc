@@ -364,6 +364,8 @@ bool CApplication::Create(const CAppParamParser &params)
   m_bTestMode = params.m_testmode;
   m_bStandalone = params.m_standAlone;
 
+  CServiceBroker::RegisterCPUInfo(CCPUInfo::GetCPUInfo());
+
   m_pSettingsComponent.reset(new CSettingsComponent());
   m_pSettingsComponent->Init(params);
 
