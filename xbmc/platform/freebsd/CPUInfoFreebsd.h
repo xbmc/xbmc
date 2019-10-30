@@ -8,10 +8,11 @@
 
 #pragma once
 
-#include "utils/CPUInfo.h"
 #include "utils/Temperature.h"
 
-class CCPUInfoFreebsd : public CCPUInfo
+#include "platform/posix/CPUInfoPosix.h"
+
+class CCPUInfoFreebsd : public CCPUInfoPosix
 {
 public:
   CCPUInfoFreebsd();

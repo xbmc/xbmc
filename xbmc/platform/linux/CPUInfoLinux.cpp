@@ -264,7 +264,7 @@ float CCPUInfoLinux::GetCPUFrequency()
 bool CCPUInfoLinux::GetTemperature(CTemperature& temperature)
 {
   if (!SysfsUtils::Has("/sys/class/hwmon/hwmon0/temp1_input"))
-    return CCPUInfo::GetTemperature(temperature);
+    return CCPUInfoPosix::GetTemperature(temperature);
 
   int value{-1};
   char scale{'c'};

@@ -285,3 +285,9 @@ float CCPUInfoWin32::GetCPUFrequency()
 
   return 0;
 }
+
+bool CCPUInfoWin32::GetTemperature(CTemperature& temperature)
+{
+  temperature.SetValid(false);
+  return false;
+}

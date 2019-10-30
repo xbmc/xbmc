@@ -117,3 +117,9 @@ int CCPUInfoWin10::GetUsedPercentage()
 
   return static_cast<int>(m_lastUsedPercentage);
 }
+
+bool CCPUInfoWin10::GetTemperature(CTemperature& temperature)
+{
+  temperature.SetValid(false);
+  return false;
+}
