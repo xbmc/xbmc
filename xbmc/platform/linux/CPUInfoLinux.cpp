@@ -279,6 +279,8 @@ bool CCPUInfoLinux::GetTemperature(CTemperature& temperature)
     temperature = CTemperature::CreateFromCelsius(value);
   else if (scale == 'F' || scale == 'f')
     temperature = CTemperature::CreateFromFahrenheit(value);
+  else
+    return false;
 
   temperature.SetValid(true);
 
