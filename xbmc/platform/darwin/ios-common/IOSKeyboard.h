@@ -14,16 +14,20 @@ class CIOSKeyboardImpl;
 
 class CIOSKeyboard : public CGUIKeyboard
 {
-  public:
-    CIOSKeyboard();
-    bool ShowAndGetInput(char_callback_t pCallback, const std::string& initialString, std::string& typedString, const std::string& heading, bool bHiddenInput) override;
-    void Cancel() override;
-    void fireCallback(const std::string &str);
-    void invalidateCallback() {m_pCharCallback = nullptr;}
-    bool SetTextToKeyboard(const std::string& text, bool closeKeyboard = false) override;
+public:
+  CIOSKeyboard();
+  bool ShowAndGetInput(char_callback_t pCallback,
+                       const std::string& initialString,
+                       std::string& typedString,
+                       const std::string& heading,
+                       bool bHiddenInput) override;
+  void Cancel() override;
+  void fireCallback(const std::string& str);
+  void invalidateCallback() { m_pCharCallback = nullptr; }
+  bool SetTextToKeyboard(const std::string& text, bool closeKeyboard = false) override;
 
-  private:
-    char_callback_t m_pCharCallback;
-    bool m_bCanceled;
-    std::unique_ptr<CIOSKeyboardImpl> m_impl;
+private:
+  char_callback_t m_pCharCallback;
+  bool m_bCanceled;
+  std::unique_ptr<CIOSKeyboardImpl> m_impl;
 };

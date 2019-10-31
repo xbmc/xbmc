@@ -31,9 +31,11 @@ static CEvent keyboardFinishedEvent;
 - (id)initWithFrame:(CGRect)frame
 {
   _frame = frame;
-  if([NSThread currentThread] != [NSThread mainThread])
+  if ([NSThread currentThread] != [NSThread mainThread])
   {
-    [self performSelectorOnMainThread:@selector(initWithFrameInternal) withObject:nil  waitUntilDone:YES];
+    [self performSelectorOnMainThread:@selector(initWithFrameInternal)
+                           withObject:nil
+                        waitUntilDone:YES];
   }
   else
   {
@@ -56,11 +58,11 @@ static CEvent keyboardFinishedEvent;
 
     self.text = [NSMutableString stringWithString:@""];
 
-   // default input box position above the half screen.
-    CGRect textFieldFrame = CGRectMake(frame.size.width/2,
-                                       frame.size.height/2-INPUT_BOX_HEIGHT-SPACE_BETWEEN_INPUT_AND_KEYBOARD,
-                                       frame.size.width/2,
-                                       INPUT_BOX_HEIGHT);
+    // default input box position above the half screen.
+    CGRect textFieldFrame =
+        CGRectMake(frame.size.width / 2,
+                   frame.size.height / 2 - INPUT_BOX_HEIGHT - SPACE_BETWEEN_INPUT_AND_KEYBOARD,
+                   frame.size.width / 2, INPUT_BOX_HEIGHT);
     _textField = [[UITextField alloc] initWithFrame:textFieldFrame];
     _textField.clearButtonMode = UITextFieldViewModeAlways;
     // UITextBorderStyleRoundedRect; - with round rect we can't control backgroundcolor
@@ -115,17 +117,20 @@ static CEvent keyboardFinishedEvent;
   CGFloat headingW = 0;
   if (_heading.text and _heading.text.length > 0)
   {
-    CGSize headingSize = [_heading.text sizeWithAttributes: @{NSFontAttributeName: [UIFont systemFontOfSize:[UIFont systemFontSize]]}];
-    headingW = MIN(self.bounds.size.width/2, headingSize.width+30);
+    CGSize headingSize = [_heading.text sizeWithAttributes:@{
+      NSFontAttributeName : [UIFont systemFontOfSize:[UIFont systemFontSize]]
+    }];
+    headingW = MIN(self.bounds.size.width / 2, headingSize.width + 30);
   }
 
   CGFloat y = _kbRect.origin.y - INPUT_BOX_HEIGHT - SPACE_BETWEEN_INPUT_AND_KEYBOARD;
 
   _heading.frame = CGRectMake(0, y, headingW, INPUT_BOX_HEIGHT);
-  _textField.frame = CGRectMake(headingW, y, self.bounds.size.width-headingW, INPUT_BOX_HEIGHT);
+  _textField.frame = CGRectMake(headingW, y, self.bounds.size.width - headingW, INPUT_BOX_HEIGHT);
 }
 
--(void)keyboardWillShow:(NSNotification *) notification{
+- (void)keyboardWillShow:(NSNotification*)notification
+{
   NSDictionary* info = [notification userInfo];
   CGRect kbRect = [[info objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
   LOG(@"keyboardWillShow: keyboard frame: %@", NSStringFromCGRect(kbRect));
@@ -134,20 +139,21 @@ static CEvent keyboardFinishedEvent;
   _keyboardIsShowing = 1;
 }
 
--(void)keyboardDidShow:(NSNotification *) notification{
+- (void)keyboardDidShow:(NSNotification*)notification
+{
   LOG(@"keyboardDidShow: deactivated: %d", _deactivated);
   _keyboardIsShowing = 2;
   if (_deactivated)
     [self doDeactivate:nil];
 }
 
-- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
+- (void)touchesBegan:(NSSet*)touches withEvent:(UIEvent*)event
 {
   PRINT_SIGNATURE();
   [_textField resignFirstResponder];
 }
 
-- (BOOL)textFieldShouldEndEditing:(UITextField *)textField
+- (BOOL)textFieldShouldEndEditing:(UITextField*)textField
 {
   LOG(@"%s: keyboard IsShowing %d", __PRETTY_FUNCTION__, _keyboardIsShowing);
   // Do not break the keyboard show up process, else we will lost
@@ -155,13 +161,14 @@ static CEvent keyboardFinishedEvent;
   return _keyboardIsShowing != 1;
 }
 
-- (void)textFieldDidEndEditing:(UITextField *)textField
+- (void)textFieldDidEndEditing:(UITextField*)textField
 {
   PRINT_SIGNATURE();
   [self deactivate];
 }
 
--(BOOL)textFieldShouldReturn:(UITextField *)textField{
+- (BOOL)textFieldShouldReturn:(UITextField*)textField
+{
   PRINT_SIGNATURE();
   _confirmed = YES;
   [_textField resignFirstResponder];
@@ -187,7 +194,7 @@ static CEvent keyboardFinishedEvent;
   [self deactivate];
 }
 
-- (void) doActivate:(NSDictionary *)dict
+- (void)doActivate:(NSDictionary*)dict
 {
   PRINT_SIGNATURE();
   [g_xbmcController activateKeyboard:self];
@@ -199,9 +206,9 @@ static CEvent keyboardFinishedEvent;
 - (void)activate
 {
   PRINT_SIGNATURE();
-  if([NSThread currentThread] != [NSThread mainThread])
+  if ([NSThread currentThread] != [NSThread mainThread])
   {
-    [self performSelectorOnMainThread:@selector(doActivate:) withObject:nil  waitUntilDone:YES];
+    [self performSelectorOnMainThread:@selector(doActivate:) withObject:nil waitUntilDone:YES];
   }
   else
   {
@@ -210,7 +217,7 @@ static CEvent keyboardFinishedEvent;
   }
 
   // we are waiting on the user finishing the keyboard
-  while(!keyboardFinishedEvent.WaitMSec(500))
+  while (!keyboardFinishedEvent.WaitMSec(500))
   {
     if (NULL != _canceled && *_canceled)
     {
@@ -220,7 +227,7 @@ static CEvent keyboardFinishedEvent;
   }
 }
 
-- (void) doDeactivate:(NSDictionary *)dict
+- (void)doDeactivate:(NSDictionary*)dict
 {
   LOG(@"%s: keyboard IsShowing %d", __PRETTY_FUNCTION__, _keyboardIsShowing);
   _deactivated = YES;
@@ -231,7 +238,7 @@ static CEvent keyboardFinishedEvent;
     return;
 
   // invalidate our callback object
-  if(_iosKeyboard)
+  if (_iosKeyboard)
   {
     _iosKeyboard->invalidateCallback();
     _iosKeyboard = nil;
@@ -246,18 +253,18 @@ static CEvent keyboardFinishedEvent;
     [g_xbmcController deactivateKeyboard:self];
 
     // no more notification we want to receive.
-    [[NSNotificationCenter defaultCenter] removeObserver: self];
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 
     keyboardFinishedEvent.Set();
   });
 }
 
-- (void) deactivate
+- (void)deactivate
 {
   PRINT_SIGNATURE();
-  if([NSThread currentThread] != [NSThread mainThread])
+  if ([NSThread currentThread] != [NSThread mainThread])
   {
-    [self performSelectorOnMainThread:@selector(doDeactivate:) withObject:nil  waitUntilDone:YES];
+    [self performSelectorOnMainThread:@selector(doDeactivate:) withObject:nil waitUntilDone:YES];
   }
   else
   {
@@ -265,12 +272,12 @@ static CEvent keyboardFinishedEvent;
   }
 }
 
-- (void) setKeyboardText:(NSString*)aText closeKeyboard:(BOOL)closeKeyboard
+- (void)setKeyboardText:(NSString*)aText closeKeyboard:(BOOL)closeKeyboard
 {
   LOG(@"%s: %@, %d", __PRETTY_FUNCTION__, aText, closeKeyboard);
-  if([NSThread currentThread] != [NSThread mainThread])
+  if ([NSThread currentThread] != [NSThread mainThread])
   {
-    [self performSelectorOnMainThread:@selector(setDefault:) withObject:aText  waitUntilDone:YES];
+    [self performSelectorOnMainThread:@selector(setDefault:) withObject:aText waitUntilDone:YES];
   }
   else
   {
@@ -283,11 +290,13 @@ static CEvent keyboardFinishedEvent;
   }
 }
 
-- (void) setHeading:(NSString *)heading
+- (void)setHeading:(NSString*)heading
 {
-  if([NSThread currentThread] != [NSThread mainThread])
+  if ([NSThread currentThread] != [NSThread mainThread])
   {
-    [self performSelectorOnMainThread:@selector(setHeadingInternal:) withObject:heading  waitUntilDone:YES];
+    [self performSelectorOnMainThread:@selector(setHeadingInternal:)
+                           withObject:heading
+                        waitUntilDone:YES];
   }
   else
   {
@@ -295,35 +304,39 @@ static CEvent keyboardFinishedEvent;
   }
 }
 
-- (void) setHeadingInternal:(NSString *)heading
+- (void)setHeadingInternal:(NSString*)heading
 {
-  if (heading && heading.length > 0) {
+  if (heading && heading.length > 0)
+  {
     _heading.text = [NSString stringWithFormat:@" %@:", heading];
   }
-  else {
+  else
+  {
     _heading.text = nil;
   }
 }
 
-- (void) setDefault:(NSString *)defaultText
+- (void)setDefault:(NSString*)defaultText
 {
   [_textField setText:defaultText];
   [self textChanged:nil];
 }
 
-- (void) setHiddenInternal:(NSNumber *)hidden
+- (void)setHiddenInternal:(NSNumber*)hidden
 {
   BOOL hiddenBool = [hidden boolValue];
   [_textField setSecureTextEntry:hiddenBool];
 }
 
-- (void) setHidden:(BOOL)hidden
+- (void)setHidden:(BOOL)hidden
 {
-  NSNumber *passedValue = [NSNumber numberWithBool:hidden];
+  NSNumber* passedValue = [NSNumber numberWithBool:hidden];
 
-  if([NSThread currentThread] != [NSThread mainThread])
+  if ([NSThread currentThread] != [NSThread mainThread])
   {
-    [self performSelectorOnMainThread:@selector(setHiddenInternal:) withObject:passedValue  waitUntilDone:YES];
+    [self performSelectorOnMainThread:@selector(setHiddenInternal:)
+                           withObject:passedValue
+                        waitUntilDone:YES];
   }
   else
   {
@@ -331,7 +344,7 @@ static CEvent keyboardFinishedEvent;
   }
 }
 
-- (void) textChanged:(NSNotification*)aNotification
+- (void)textChanged:(NSNotification*)aNotification
 {
   if (![self.text isEqualToString:_textField.text])
   {
@@ -343,7 +356,7 @@ static CEvent keyboardFinishedEvent;
   }
 }
 
-- (void) setCancelFlag:(bool *)cancelFlag
+- (void)setCancelFlag:(bool*)cancelFlag
 {
   _canceled = cancelFlag;
 }
