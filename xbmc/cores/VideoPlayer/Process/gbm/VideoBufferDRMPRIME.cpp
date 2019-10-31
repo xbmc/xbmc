@@ -49,6 +49,30 @@ int GetColorRange(const VideoPicture& picture)
   return DRM_COLOR_YCBCR_LIMITED_RANGE;
 }
 
+uint8_t GetEOTF(const VideoPicture& picture)
+{
+  switch (picture.color_transfer)
+  {
+    case AVCOL_TRC_SMPTE2084:
+      return HDMI_EOTF_SMPTE_ST2084;
+    case AVCOL_TRC_ARIB_STD_B67:
+    case AVCOL_TRC_BT2020_10:
+      return HDMI_EOTF_BT_2100_HLG;
+    default:
+      return HDMI_EOTF_TRADITIONAL_GAMMA_SDR;
+  }
+}
+
+const AVMasteringDisplayMetadata* GetMasteringDisplayMetadata(const VideoPicture& picture)
+{
+  return picture.hasDisplayMetadata ? &picture.displayMetadata : nullptr;
+}
+
+const AVContentLightMetadata* GetContentLightMetadata(const VideoPicture& picture)
+{
+  return picture.hasLightMetadata ? &picture.lightMetadata : nullptr;
+}
+
 } // namespace DRMPRIME
 
 CVideoBufferDRMPRIME::CVideoBufferDRMPRIME(int id) : CVideoBuffer(id)
