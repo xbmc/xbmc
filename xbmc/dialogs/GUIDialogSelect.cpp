@@ -126,7 +126,7 @@ bool CGUIDialogSelect::OnMessage(CGUIMessage& message)
     {
       if (m_viewControl.HasControl(message.GetControlId()))
       {
-        if (m_vecList->IsEmpty())
+        if (m_vecList->IsEmpty() || m_focusToButton)
         {
           if (m_bButtonEnabled)
             SET_CONTROL_FOCUS(CONTROL_EXTRA_BUTTON, 0);
@@ -168,6 +168,7 @@ void CGUIDialogSelect::Reset()
   m_bButtonPressed = false;
   m_useDetails = false;
   m_multiSelection = false;
+  m_focusToButton = false;
   m_selectedItem = nullptr;
   m_vecList->Clear();
   m_selectedItems.clear();
@@ -277,6 +278,11 @@ void CGUIDialogSelect::SetUseDetails(bool useDetails)
 void CGUIDialogSelect::SetMultiSelection(bool multiSelection)
 {
   m_multiSelection = multiSelection;
+}
+
+void CGUIDialogSelect::SetButtonFocus(bool buttonFocus)
+{
+  m_focusToButton = buttonFocus;
 }
 
 CGUIControl *CGUIDialogSelect::GetFirstFocusableControl(int id)
