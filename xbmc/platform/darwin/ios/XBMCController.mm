@@ -6,6 +6,8 @@
  *  See LICENSES/README.md for more information.
  */
 
+#import "XBMCController.h"
+
 #include "AppInboundProtocol.h"
 #include "Application.h"
 #include "CompileInfo.h"
@@ -30,7 +32,13 @@
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 #include "windowing/XBMC_events.h"
-#include "windowing/ios/WinSystemIOS.h"
+#import "windowing/ios/WinSystemIOS.h"
+
+#import "platform/darwin/NSLogDebugHelpers.h"
+#import "platform/darwin/ios-common/DarwinEmbedNowPlayingInfoManager.h"
+#import "platform/darwin/ios/IOSEAGLView.h"
+#import "platform/darwin/ios/IOSScreenManager.h"
+#import "platform/darwin/ios/XBMCApplication.h"
 
 #define id _id
 #include "TextureCache.h"
@@ -39,6 +47,7 @@
 #include <math.h>
 #include <signal.h>
 
+#import <AVFoundation/AVAudioSession.h>
 #include <sys/resource.h>
 
 using namespace KODI::MESSAGING;
@@ -47,16 +56,6 @@ using namespace KODI::MESSAGING;
 #define M_PI 3.1415926535897932384626433832795028842
 #endif
 #define RADIANS_TO_DEGREES(radians) ((radians) * (180.0 / M_PI))
-
-#import <AVFoundation/AVAudioSession.h>
-#import <MediaPlayer/MPMediaItem.h>
-#import <MediaPlayer/MPNowPlayingInfoCenter.h>
-#import "IOSEAGLView.h"
-
-#import "XBMCController.h"
-#import "IOSScreenManager.h"
-#import "XBMCApplication.h"
-#import "platform/darwin/NSLogDebugHelpers.h"
 
 XBMCController *g_xbmcController;
 
@@ -142,7 +141,7 @@ public:
 @synthesize m_screenIdx;
 @synthesize screensize;
 @synthesize m_networkAutoSuspendTimer;
-@synthesize nowPlayingInfo;
+@synthesize MPNPInfoManager;
 @synthesize nativeKeyboardActive;
 //--------------------------------------------------------------
 - (void) sendKeypressEvent: (XBMC_Event) event
@@ -575,7 +574,6 @@ public:
 
   m_isPlayingBeforeInactive = NO;
   m_bgTask = UIBackgroundTaskInvalid;
-  m_playbackState = IOS_PLAYBACK_STOPPED;
 
   m_window = [[UIWindow alloc] initWithFrame:frame];
   [m_window setRootViewController:self];
@@ -595,6 +593,7 @@ public:
 
   [m_window makeKeyAndVisible];
   g_xbmcController = self;
+  MPNPInfoManager = [DarwinEmbedNowPlayingInfoManager new];
 
   return self;
 }
@@ -958,117 +957,11 @@ public:
 
   [m_glView stopAnimation];
 }
-//--------------------------------------------------------------
-- (void)setIOSNowPlayingInfo:(NSDictionary *)info
-{
-  self.nowPlayingInfo = info;
-  [[MPNowPlayingInfoCenter defaultCenter] setNowPlayingInfo:self.nowPlayingInfo];
-}
-//--------------------------------------------------------------
-- (void)onPlay:(NSDictionary *)item
-{
-  PRINT_SIGNATURE();
-  NSMutableDictionary * dict = [[NSMutableDictionary alloc] init];
 
-  NSString *title = [item objectForKey:@"title"];
-  if (title && title.length > 0)
-    [dict setObject:title forKey:MPMediaItemPropertyTitle];
-  NSString *album = [item objectForKey:@"album"];
-  if (album && album.length > 0)
-    [dict setObject:album forKey:MPMediaItemPropertyAlbumTitle];
-  NSArray *artists = [item objectForKey:@"artist"];
-  if (artists && artists.count > 0)
-    [dict setObject:[artists componentsJoinedByString:@" "] forKey:MPMediaItemPropertyArtist];
-  NSNumber *track = [item objectForKey:@"track"];
-  if (track)
-    [dict setObject:track forKey:MPMediaItemPropertyAlbumTrackNumber];
-  NSNumber *duration = [item objectForKey:@"duration"];
-  if (duration)
-    [dict setObject:duration forKey:MPMediaItemPropertyPlaybackDuration];
-  NSArray *genres = [item objectForKey:@"genre"];
-  if (genres && genres.count > 0)
-    [dict setObject:[genres componentsJoinedByString:@" "] forKey:MPMediaItemPropertyGenre];
-
-  NSString *thumb = [item objectForKey:@"thumb"];
-  if (thumb && thumb.length > 0)
-  {
-    UIImage *image = [UIImage imageWithContentsOfFile:thumb];
-    if (image)
-    {
-      MPMediaItemArtwork *mArt = [[MPMediaItemArtwork alloc] initWithImage:image];
-      if (mArt)
-      {
-        [dict setObject:mArt forKey:MPMediaItemPropertyArtwork];
-      }
-    }
-  }
-  NSNumber *elapsed = [item objectForKey:@"elapsed"];
-  if (elapsed)
-    [dict setObject:elapsed forKey:MPNowPlayingInfoPropertyElapsedPlaybackTime];
-  NSNumber *speed = [item objectForKey:@"speed"];
-  if (speed)
-    [dict setObject:speed forKey:MPNowPlayingInfoPropertyPlaybackRate];
-  NSNumber *current = [item objectForKey:@"current"];
-  if (current)
-    [dict setObject:current forKey:MPNowPlayingInfoPropertyPlaybackQueueIndex];
-  NSNumber *total = [item objectForKey:@"total"];
-  if (total)
-    [dict setObject:total forKey:MPNowPlayingInfoPropertyPlaybackQueueCount];
-  /*
-   other properties can be set:
-   MPMediaItemPropertyAlbumTrackCount
-   MPMediaItemPropertyComposer
-   MPMediaItemPropertyDiscCount
-   MPMediaItemPropertyDiscNumber
-   MPMediaItemPropertyPersistentID
-
-   Additional metadata properties:
-   MPNowPlayingInfoPropertyChapterNumber;
-   MPNowPlayingInfoPropertyChapterCount;
-   */
-
-  [self setIOSNowPlayingInfo:dict];
-
-  m_playbackState = IOS_PLAYBACK_PLAYING;
-  [self disableNetworkAutoSuspend];
-}
-//--------------------------------------------------------------
-- (void)OnSpeedChanged:(NSDictionary *)item
-{
-  PRINT_SIGNATURE();
-  NSMutableDictionary *info = [self.nowPlayingInfo mutableCopy];
-  NSNumber *elapsed = [item objectForKey:@"elapsed"];
-  if (elapsed)
-    [info setObject:elapsed forKey:MPNowPlayingInfoPropertyElapsedPlaybackTime];
-  NSNumber *speed = [item objectForKey:@"speed"];
-  if (speed)
-    [info setObject:speed forKey:MPNowPlayingInfoPropertyPlaybackRate];
-
-  [self setIOSNowPlayingInfo:info];
-}
-//--------------------------------------------------------------
-- (void)onPause:(NSDictionary *)item
-{
-  PRINT_SIGNATURE();
-  m_playbackState = IOS_PLAYBACK_PAUSED;
-  // schedule set network auto suspend state for save power if idle.
-  [self rescheduleNetworkAutoSuspend];
-}
-//--------------------------------------------------------------
-- (void)onStop:(NSDictionary *)item
-{
-  PRINT_SIGNATURE();
-  [self setIOSNowPlayingInfo:nil];
-
-  m_playbackState = IOS_PLAYBACK_STOPPED;
-  // delay set network auto suspend state in case we are switching playing item.
-  [self rescheduleNetworkAutoSuspend];
-}
-//--------------------------------------------------------------
 - (void)rescheduleNetworkAutoSuspend
 {
-  LOG(@"%s: playback state: %d", __PRETTY_FUNCTION__,  m_playbackState);
-  if (m_playbackState == IOS_PLAYBACK_PLAYING)
+  LOG(@"%s: playback state: %d", __PRETTY_FUNCTION__, MPNPInfoManager.playbackState);
+  if (MPNPInfoManager.playbackState == DARWINEMBED_PLAYBACK_PLAYING)
   {
     [self disableNetworkAutoSuspend];
     return;
@@ -1076,8 +969,14 @@ public:
   if (m_networkAutoSuspendTimer)
     [m_networkAutoSuspendTimer invalidate];
 
-  int delay = m_playbackState == IOS_PLAYBACK_PAUSED ? 60 : 30;  // wait longer if paused than stopped
-  self.m_networkAutoSuspendTimer = [NSTimer scheduledTimerWithTimeInterval:delay target:self selector:@selector(enableNetworkAutoSuspend:) userInfo:nil repeats:NO];
+  // wait longer if paused than stopped
+  int delay = MPNPInfoManager.playbackState == DARWINEMBED_PLAYBACK_PAUSED ? 60 : 30;
+  self.m_networkAutoSuspendTimer =
+      [NSTimer scheduledTimerWithTimeInterval:delay
+                                       target:self
+                                     selector:@selector(enableNetworkAutoSuspend:)
+                                     userInfo:nil
+                                      repeats:NO];
 }
 
 #pragma mark -
