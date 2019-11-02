@@ -1401,17 +1401,19 @@ GridItem* CGUIEPGGridContainer::GetNextItem(int channel)
 
 GridItem* CGUIEPGGridContainer::GetPrevItem(int channel)
 {
-  int channelIndex = channel + m_channelOffset;
-  int blockIndex = m_blockCursor + m_blockOffset;
+  const int channelIndex = channel + m_channelOffset;
+  const int blockIndex = m_blockCursor + m_blockOffset;
   if (channelIndex >= m_gridModel->ChannelItemsSize() || blockIndex >= m_gridModel->GetBlockCount())
     return nullptr;
 
-  int i = m_blockCursor;
+  int block = m_gridModel->GetGridItemStartBlock(channelIndex, blockIndex);
+  if (block > 0)
+  {
+    // last block of previous event is one block before start block of selected event
+    block -= 1;
+  }
 
-  while (i > 0 && m_gridModel->GetGridItem(channelIndex, i + m_blockOffset) == m_gridModel->GetGridItem(channelIndex, blockIndex))
-    i--;
-
-  return m_gridModel->GetGridItemPtr(channelIndex, i + m_blockOffset);
+  return m_gridModel->GetGridItemPtr(channelIndex, block);
 }
 
 GridItem* CGUIEPGGridContainer::GetItem(int channel)
