@@ -674,15 +674,8 @@ void CGUIEPGGridContainer::UpdateItems()
   if (prevSelectedEpgTag)
   {
     // get the block offset relative to the first block of the selected event
-    while (eventOffset > 0)
-    {
-      if (m_gridModel->GetGridItem(oldChannelIndex, eventOffset - 1) != m_gridModel->GetGridItem(oldChannelIndex, oldBlockIndex))
-        break;
-
-      eventOffset--;
-    }
-
-    eventOffset = oldBlockIndex - eventOffset;
+    eventOffset =
+        oldBlockIndex - m_gridModel->GetGridItemStartBlock(oldChannelIndex, oldBlockIndex);
 
     if (prevSelectedEpgTag->StartAsUTC().IsValid() && prevSelectedEpgTag->EndAsUTC().IsValid()) // "normal" tag selected
     {
@@ -871,7 +864,7 @@ void CGUIEPGGridContainer::OnUp()
       {
         // this is not first item on page
         m_item = GetPrevItem(m_channelCursor);
-        SetBlock(GetBlock(m_item->item, m_channelCursor));
+        SetBlock(GetBlock(m_item));
 
         return;
       }
@@ -879,7 +872,7 @@ void CGUIEPGGridContainer::OnUp()
       {
         // this is the first item on page
         ScrollToBlockOffset(m_blockOffset - BLOCK_SCROLL_OFFSET);
-        SetBlock(GetBlock(m_item->item, m_channelCursor));
+        SetBlock(GetBlock(m_item));
 
         return;
       }
@@ -922,7 +915,7 @@ void CGUIEPGGridContainer::OnDown()
       {
         // this is not last item on page
         m_item = GetNextItem(m_channelCursor);
-        SetBlock(GetBlock(m_item->item, m_channelCursor));
+        SetBlock(GetBlock(m_item));
 
         return;
       }
@@ -932,7 +925,7 @@ void CGUIEPGGridContainer::OnDown()
       {
         // this is the last item on page
         ScrollToBlockOffset(m_blockOffset + BLOCK_SCROLL_OFFSET);
-        SetBlock(GetBlock(m_item->item, m_channelCursor));
+        SetBlock(GetBlock(m_item));
 
         return;
       }
@@ -953,7 +946,7 @@ void CGUIEPGGridContainer::OnLeft()
       {
         // this is not first item on page
         m_item = GetPrevItem(m_channelCursor);
-        SetBlock(GetBlock(m_item->item, m_channelCursor));
+        SetBlock(GetBlock(m_item));
 
         return;
       }
@@ -961,7 +954,7 @@ void CGUIEPGGridContainer::OnLeft()
       {
         // this is the first item on page
         ScrollToBlockOffset(m_blockOffset - BLOCK_SCROLL_OFFSET);
-        SetBlock(GetBlock(m_item->item, m_channelCursor));
+        SetBlock(GetBlock(m_item));
 
         return;
       }
@@ -1006,7 +999,7 @@ void CGUIEPGGridContainer::OnRight()
       {
         // this is not last item on page
         m_item = GetNextItem(m_channelCursor);
-        SetBlock(GetBlock(m_item->item, m_channelCursor));
+        SetBlock(GetBlock(m_item));
 
         return;
       }
@@ -1016,7 +1009,7 @@ void CGUIEPGGridContainer::OnRight()
       {
         // this is the last item on page
         ScrollToBlockOffset(m_blockOffset + BLOCK_SCROLL_OFFSET);
-        SetBlock(GetBlock(m_item->item, m_channelCursor));
+        SetBlock(GetBlock(m_item));
 
         return;
       }
@@ -1090,7 +1083,7 @@ void CGUIEPGGridContainer::SetChannel(int channel)
     {
       m_channelCursor = channel;
       MarkDirtyRegion();
-      SetBlock(GetBlock(m_item->item, channel), false);
+      SetBlock(GetBlock(m_item), false);
     }
   }
 }
@@ -1384,23 +1377,9 @@ std::string CGUIEPGGridContainer::GetLabel(int info) const
   return label;
 }
 
-int CGUIEPGGridContainer::GetBlock(const CGUIListItemPtr& item, int channel)
+int CGUIEPGGridContainer::GetBlock(GridItem* gridItem)
 {
-  if (!item)
-    return 0;
-
-  return GetRealBlock(item, channel) - m_blockOffset;
-}
-
-int CGUIEPGGridContainer::GetRealBlock(const CGUIListItemPtr& item, int channel)
-{
-  int channelIndex = channel + m_channelOffset;
-  int block = 0;
-
-  while (block < m_gridModel->GetBlockCount() && m_gridModel->GetGridItem(channelIndex, block) != item)
-    block++;
-
-  return block;
+  return gridItem ? gridItem->startBlock - m_blockOffset : 0;
 }
 
 GridItem* CGUIEPGGridContainer::GetNextItem(int channel)

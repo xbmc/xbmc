@@ -126,8 +126,7 @@ namespace PVR
     GridItem* GetNextItem(int channel);
     GridItem* GetPrevItem(int channel);
 
-    int GetBlock(const CGUIListItemPtr& item, int channel);
-    int GetRealBlock(const CGUIListItemPtr& item, int channel);
+    int GetBlock(GridItem* gridItem);
     void MoveToRow(int row);
 
     CGUIListItemLayout* GetFocusedLayout() const;
