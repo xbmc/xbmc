@@ -2262,6 +2262,17 @@ void CApplication::OnApplicationMessage(ThreadMessage* pMsg)
 
     break;
 
+  case TMSG_EVENT:
+  {
+    if (pMsg->lpVoid)
+    {
+      XBMC_Event* event = static_cast<XBMC_Event*>(pMsg->lpVoid);
+      OnEvent(*event);
+      delete event;
+    }
+  }
+  break;
+    
   default:
     CLog::Log(LOGERROR, "%s: Unhandled threadmessage sent, %u", __FUNCTION__, msg);
     break;

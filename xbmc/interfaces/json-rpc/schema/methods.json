@@ -2342,6 +2342,18 @@
     ],
     "returns": "string"
   },
+  "Input.ButtonEvent": {
+    "type": "method",
+    "description": "Send a button press event",
+    "transport": "Response",
+    "permission": "Navigate",
+    "params": [
+      { "name": "button", "type": "string", "required": true, "description": "Button name" },
+      { "name": "keymap", "type": "string", "required": true, "description": "Keymap name (KB, XG, R1, or R2)", "enum": [ "KB", "XG", "R1", "R2" ] },
+      { "name": "holdtime", "type": "integer", "required": false, "minimum" : 0, "default" : 0, "description": "Number of milliseconds to simulate button hold." }
+    ],
+    "returns": "string"
+  },
   "Input.Left": {
     "type": "method",
     "description": "Navigate left in GUI",
