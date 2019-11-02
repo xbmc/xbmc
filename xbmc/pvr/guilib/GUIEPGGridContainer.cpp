@@ -1389,14 +1389,14 @@ GridItem* CGUIEPGGridContainer::GetNextItem(int channel)
   if (channelIndex >= m_gridModel->ChannelItemsSize() || blockIndex >= m_gridModel->GetBlockCount())
     return nullptr;
 
-  int i = m_blockCursor;
+  int block = m_gridModel->GetGridItemEndBlock(channelIndex, blockIndex);
+  if (block < m_gridModel->GetBlockCount())
+  {
+    // first block of next event is one block after end block of selected event
+    block += 1;
+  }
 
-  while (i < m_blocksPerPage &&
-         i + m_blockOffset + 1 < m_gridModel->GetBlockCount() &&
-         m_gridModel->GetGridItem(channelIndex, i + m_blockOffset) == m_gridModel->GetGridItem(channelIndex, blockIndex))
-    i++;
-
-  return m_gridModel->GetGridItemPtr(channelIndex, i + m_blockOffset);
+  return m_gridModel->GetGridItemPtr(channelIndex, block);
 }
 
 GridItem* CGUIEPGGridContainer::GetPrevItem(int channel)

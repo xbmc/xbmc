@@ -22,11 +22,26 @@ namespace PVR
 {
   struct GridItem
   {
+    GridItem(const std::shared_ptr<CFileItem>& _item,
+             float _width,
+             int _startBlock,
+             int _endBlock,
+             int _progIndex)
+      : item(_item),
+        originWidth(_width),
+        width(_width),
+        progIndex(_progIndex),
+        startBlock(_startBlock),
+        endBlock(_endBlock)
+    {
+    }
+
     std::shared_ptr<CFileItem> item;
     float originWidth = 0.0f;
     float width = 0.0f;
     int progIndex = -1;
     int startBlock = 0;
+    int endBlock = 0;
   };
 
   class CPVREpgInfoTag;
@@ -66,6 +81,7 @@ namespace PVR
     GridItem* GetGridItemPtr(int iChannel, int iBlock) const;
     std::shared_ptr<CFileItem> GetGridItem(int iChannel, int iBlock) const;
     int GetGridItemStartBlock(int iChannel, int iBlock) const;
+    int GetGridItemEndBlock(int iChannel, int iBlock) const;
     float GetGridItemWidth(int iChannel, int iBlock) const;
     float GetGridItemOriginWidth(int iChannel, int iBlock) const;
     int GetGridItemIndex(int iChannel, int iBlock) const;

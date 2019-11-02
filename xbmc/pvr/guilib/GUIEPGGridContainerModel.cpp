@@ -308,11 +308,7 @@ GridItem* CGUIEPGGridContainerModel::GetGridItemPtr(int iChannel, int iBlock) co
     }
 
     const float fItemWidth = (endBlock - startBlock + 1) * m_fBlockSize;
-    m_gridIndex[iChannel][iBlock].originWidth = fItemWidth;
-    m_gridIndex[iChannel][iBlock].width = fItemWidth;
-    m_gridIndex[iChannel][iBlock].item = item;
-    m_gridIndex[iChannel][iBlock].progIndex = progIndex;
-    m_gridIndex[iChannel][iBlock].startBlock = startBlock;
+    m_gridIndex[iChannel][iBlock] = GridItem(item, fItemWidth, startBlock, endBlock, progIndex);
   }
   return &m_gridIndex[iChannel][iBlock];
 }
@@ -325,6 +321,11 @@ std::shared_ptr<CFileItem> CGUIEPGGridContainerModel::GetGridItem(int iChannel, 
 int CGUIEPGGridContainerModel::GetGridItemStartBlock(int iChannel, int iBlock) const
 {
   return GetGridItemPtr(iChannel, iBlock)->startBlock;
+}
+
+int CGUIEPGGridContainerModel::GetGridItemEndBlock(int iChannel, int iBlock) const
+{
+  return GetGridItemPtr(iChannel, iBlock)->endBlock;
 }
 
 float CGUIEPGGridContainerModel::GetGridItemWidth(int iChannel, int iBlock) const
