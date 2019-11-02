@@ -26,6 +26,7 @@ namespace PVR
     float originWidth = 0.0f;
     float width = 0.0f;
     int progIndex = -1;
+    int startBlock = 0;
   };
 
   class CPVREpgInfoTag;
@@ -64,6 +65,7 @@ namespace PVR
     bool HasGridItems() const { return !m_gridIndex.empty(); }
     GridItem* GetGridItemPtr(int iChannel, int iBlock) const;
     std::shared_ptr<CFileItem> GetGridItem(int iChannel, int iBlock) const;
+    int GetGridItemStartBlock(int iChannel, int iBlock) const;
     float GetGridItemWidth(int iChannel, int iBlock) const;
     float GetGridItemOriginWidth(int iChannel, int iBlock) const;
     int GetGridItemIndex(int iChannel, int iBlock) const;

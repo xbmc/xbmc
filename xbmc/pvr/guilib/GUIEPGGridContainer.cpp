@@ -2320,17 +2320,11 @@ void CGUIEPGGridContainer::HandleProgrammeGrid(bool bRender, unsigned int curren
     int block = blockOffset;
     float posA2 = posA;
 
-    item = m_gridModel->GetGridItem(channel, block);
-
-    if (blockOffset > 0 && item == m_gridModel->GetGridItem(channel, blockOffset - 1))
+    if (blockOffset > 0 && m_gridModel->GetGridItem(channel, block) ==
+                               m_gridModel->GetGridItem(channel, blockOffset - 1))
     {
-      /* first program starts before current view */
-      int startBlock = blockOffset - 1;
-
-      while (startBlock >= 0 && m_gridModel->GetGridItem(channel, startBlock) == item)
-        startBlock--;
-
-      block = startBlock + 1;
+      // First program starts before current view
+      block = m_gridModel->GetGridItemStartBlock(channel, blockOffset - 1);
       int missingSection = blockOffset - block;
       posA2 -= missingSection * m_blockSize;
     }
