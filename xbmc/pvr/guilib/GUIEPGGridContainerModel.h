@@ -10,8 +10,10 @@
 
 #include "XBDateTime.h"
 
+#include <functional>
 #include <map>
 #include <memory>
+#include <unordered_map>
 #include <utility>
 #include <vector>
 
@@ -77,7 +79,6 @@ namespace PVR
     int RulerItemsSize() const { return static_cast<int>(m_rulerItems.size()); }
 
     int GetBlockCount() const { return m_blocks; }
-    bool HasGridItems() const { return !m_gridIndex.empty(); }
     std::shared_ptr<CFileItem> GetGridItem(int iChannel, int iBlock) const;
     int GetGridItemStartBlock(int iChannel, int iBlock) const;
     int GetGridItemEndBlock(int iChannel, int iBlock) const;
@@ -118,7 +119,29 @@ namespace PVR
     std::vector<std::shared_ptr<CFileItem>> m_channelItems;
     std::vector<std::shared_ptr<CFileItem>> m_rulerItems;
     std::vector<ItemsPtr> m_epgItemsPtr;
-    mutable std::vector<std::vector<GridItem>> m_gridIndex;
+
+    struct GridCoordinates
+    {
+      GridCoordinates(int _channel, int _block) : channel(_channel), block(_block) {}
+
+      bool operator==(const GridCoordinates& other) const
+      {
+        return (channel == other.channel && block == other.block);
+      }
+
+      int channel = 0;
+      int block = 0;
+    };
+
+    struct GridCoordinatesHash
+    {
+      std::size_t operator()(const GridCoordinates& coordinates) const
+      {
+        return std::hash<int>()(coordinates.channel) ^ std::hash<int>()(coordinates.block);
+      }
+    };
+
+    mutable std::unordered_map<GridCoordinates, GridItem, GridCoordinatesHash> m_gridIndex;
     mutable std::map<std::pair<int, int>, std::shared_ptr<CFileItem>> m_gapItems;
 
     int m_blocks = 0;

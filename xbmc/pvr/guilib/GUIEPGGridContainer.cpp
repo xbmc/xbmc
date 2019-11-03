@@ -860,7 +860,7 @@ void CGUIEPGGridContainer::OnUp()
   }
   else
   {
-    if (m_gridModel->HasGridItems() && m_item)
+    if (m_item)
     {
       if (m_channelCursor + m_channelOffset >= 0 && m_blockOffset >= 0 &&
           m_item != m_gridModel->GetGridItem(m_channelCursor + m_channelOffset, m_blockOffset))
@@ -912,7 +912,7 @@ void CGUIEPGGridContainer::OnDown()
   }
   else
   {
-    if (m_gridModel->HasGridItems() && m_item)
+    if (m_item)
     {
       if (m_item != m_gridModel->GetGridItem(m_channelCursor + m_channelOffset,
                                              m_blocksPerPage + m_blockOffset - 1))
@@ -943,7 +943,7 @@ void CGUIEPGGridContainer::OnLeft()
 {
   if (m_orientation == VERTICAL)
   {
-    if (m_gridModel->HasGridItems() && m_item)
+    if (m_item)
     {
       if (m_channelCursor + m_channelOffset >= 0 && m_blockOffset >= 0 &&
           m_item != m_gridModel->GetGridItem(m_channelCursor + m_channelOffset, m_blockOffset))
@@ -997,7 +997,7 @@ void CGUIEPGGridContainer::OnRight()
 {
   if (m_orientation == VERTICAL)
   {
-    if (m_gridModel->HasGridItems() && m_item)
+    if (m_item)
     {
       if (m_item != m_gridModel->GetGridItem(m_channelCursor + m_channelOffset,
                                              m_blocksPerPage + m_blockOffset - 1))
@@ -1311,9 +1311,7 @@ CDateTime CGUIEPGGridContainer::GetSelectedDate() const
 
 int CGUIEPGGridContainer::GetSelectedItem() const
 {
-  if (!m_gridModel->HasGridItems() ||
-      !m_gridModel->HasChannelItems() ||
-      m_channelCursor + m_channelOffset >= m_gridModel->ChannelItemsSize() ||
+  if (m_channelCursor + m_channelOffset >= m_gridModel->ChannelItemsSize() ||
       m_blockCursor + m_blockOffset >= m_gridModel->GetBlockCount())
     return -1;
 
@@ -1324,9 +1322,7 @@ CFileItemPtr CGUIEPGGridContainer::GetSelectedGridItem(int offset /*= 0*/) const
 {
   CFileItemPtr item;
 
-  if (m_gridModel->HasGridItems() &&
-      m_gridModel->ChannelItemsSize() > 0 &&
-      m_channelCursor + m_channelOffset + offset < m_gridModel->ChannelItemsSize() &&
+  if (m_channelCursor + m_channelOffset + offset < m_gridModel->ChannelItemsSize() &&
       m_blockCursor + m_blockOffset < m_gridModel->GetBlockCount())
     item = m_gridModel->GetGridItem(m_channelCursor + m_channelOffset, m_blockCursor + m_blockOffset);
 

@@ -167,8 +167,6 @@ void CGUIEPGGridContainerModel::Initialize(const std::unique_ptr<CFileItemList>&
 
   FreeItemsMemory();
 
-  ////////////////////////////////////////////////////////////////////////
-  // Create empty epg grid (will be filled on demand)
   const CDateTimeSpan blockDuration(0, 0, MINSPERBLOCK, 0);
   const CDateTimeSpan gridDuration(m_gridEnd - m_gridStart);
   m_blocks = (gridDuration.GetDays() * 24 * 60 + gridDuration.GetHours() * 60 + gridDuration.GetMinutes()) / MINSPERBLOCK;
@@ -176,14 +174,6 @@ void CGUIEPGGridContainerModel::Initialize(const std::unique_ptr<CFileItemList>&
     m_blocks = MAXBLOCKS;
   else if (m_blocks < iBlocksPerPage)
     m_blocks = iBlocksPerPage;
-
-  m_gridIndex.reserve(m_channelItems.size());
-  const std::vector<GridItem> blocks(m_blocks);
-
-  for (size_t channel = 0; channel < m_channelItems.size(); ++channel)
-  {
-    m_gridIndex.emplace_back(blocks);
-  }
 }
 
 void CGUIEPGGridContainerModel::FindChannelAndBlockIndex(int channelUid, unsigned int broadcastUid, int eventOffset, int& newChannelIndex, int& newBlockIndex) const
@@ -240,7 +230,8 @@ void CGUIEPGGridContainerModel::FindChannelAndBlockIndex(int channelUid, unsigne
 
 GridItem* CGUIEPGGridContainerModel::GetGridItemPtr(int iChannel, int iBlock) const
 {
-  if (!m_gridIndex[iChannel][iBlock].item)
+  auto it = m_gridIndex.find({iChannel, iBlock});
+  if (it == m_gridIndex.end())
   {
     bool bFound = false;
 
@@ -308,9 +299,11 @@ GridItem* CGUIEPGGridContainerModel::GetGridItemPtr(int iChannel, int iBlock) co
     }
 
     const float fItemWidth = (endBlock - startBlock + 1) * m_fBlockSize;
-    m_gridIndex[iChannel][iBlock] = GridItem(item, fItemWidth, startBlock, endBlock, progIndex);
+    it = m_gridIndex
+             .insert({{iChannel, iBlock}, {item, fItemWidth, startBlock, endBlock, progIndex}})
+             .first;
   }
-  return &m_gridIndex[iChannel][iBlock];
+  return &(*it).second;
 }
 
 std::shared_ptr<CFileItem> CGUIEPGGridContainerModel::GetGridItem(int iChannel, int iBlock) const
@@ -345,7 +338,8 @@ int CGUIEPGGridContainerModel::GetGridItemIndex(int iChannel, int iBlock) const
 
 void CGUIEPGGridContainerModel::SetGridItemWidth(int iChannel, int iBlock, float fWidth)
 {
-  if (m_gridIndex[iChannel][iBlock].width != fWidth)
+  auto it = m_gridIndex.find({iChannel, iBlock});
+  if (it != m_gridIndex.end() && (*it).second.width != fWidth)
     GetGridItemPtr(iChannel, iBlock)->width = fWidth;
 }
 
@@ -385,10 +379,13 @@ void CGUIEPGGridContainerModel::FreeProgrammeMemory(int channel, int keepStart, 
     if (keepStart > 0 && keepStart < m_blocks)
     {
       // if item exist and block is not part of visible item
-      std::shared_ptr<CGUIListItem> last = m_gridIndex[channel][keepStart].item;
+      auto it = m_gridIndex.find({channel, keepStart});
+      std::shared_ptr<CGUIListItem> last = it != m_gridIndex.end() ? (*it).second.item : nullptr;
       for (int i = keepStart - 1; i > 0; --i)
       {
-        const std::shared_ptr<CGUIListItem> current = m_gridIndex[channel][i].item;
+        auto it1 = m_gridIndex.find({channel, i});
+        const std::shared_ptr<CGUIListItem> current =
+            it1 != m_gridIndex.end() ? (*it1).second.item : nullptr;
         if (current && current != last)
         {
           current->FreeMemory();
@@ -402,11 +399,14 @@ void CGUIEPGGridContainerModel::FreeProgrammeMemory(int channel, int keepStart, 
 
     if (keepEnd > 0 && keepEnd < m_blocks)
     {
-      std::shared_ptr<CGUIListItem> last = m_gridIndex[channel][keepEnd].item;
+      auto it = m_gridIndex.find({channel, keepEnd});
+      std::shared_ptr<CGUIListItem> last = it != m_gridIndex.end() ? (*it).second.item : nullptr;
       for (int i = keepEnd + 1; i < m_blocks; ++i)
       {
         // if item exist and block is not part of visible item
-        std::shared_ptr<CGUIListItem> current = m_gridIndex[channel][i].item;
+        auto it1 = m_gridIndex.find({channel, i});
+        std::shared_ptr<CGUIListItem> current =
+            it1 != m_gridIndex.end() ? (*it1).second.item : nullptr;
         if (current && current != last)
         {
           current->FreeMemory();
