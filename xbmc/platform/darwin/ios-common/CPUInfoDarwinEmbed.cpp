@@ -6,7 +6,7 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include "CPUInfoIos.h"
+#include "CPUInfoDarwinEmbed.h"
 
 #include "utils/Temperature.h"
 
@@ -21,10 +21,10 @@
 
 std::shared_ptr<CCPUInfo> CCPUInfo::GetCPUInfo()
 {
-  return std::make_shared<CCPUInfoIos>();
+  return std::make_shared<CCPUInfoDarwinEmbed>();
 }
 
-CCPUInfoIos::CCPUInfoIos() : m_resourceCounter(new CPosixResourceCounter())
+CCPUInfoDarwinEmbed::CCPUInfoDarwinEmbed() : m_resourceCounter(new CPosixResourceCounter())
 {
   int count = 0;
   size_t countLength = sizeof(count);
@@ -52,7 +52,7 @@ CCPUInfoIos::CCPUInfoIos() : m_resourceCounter(new CPosixResourceCounter())
   m_cpuFeatures |= CPU_FEATURE_NEON;
 }
 
-int CCPUInfoIos::GetUsedPercentage()
+int CCPUInfoDarwinEmbed::GetUsedPercentage()
 {
   if (!m_nextUsedReadTime.IsTimePast())
     return m_lastUsedPercentage;
@@ -63,7 +63,7 @@ int CCPUInfoIos::GetUsedPercentage()
   return m_lastUsedPercentage;
 }
 
-float CCPUInfoIos::GetCPUFrequency()
+float CCPUInfoDarwinEmbed::GetCPUFrequency()
 {
   // Get CPU frequency, scaled to MHz.
   long long hz = 0;
