@@ -38,14 +38,20 @@
 #include "windowing/WinSystem.h"
 
 #if defined(HAVE_X11)
+#define WIN_SYSTEM_CLASS CWinSystemX11
 #include "windowing/X11/WinSystemX11.h"
 #elif defined(TARGET_DARWIN_OSX)
+#define WIN_SYSTEM_CLASS CWinSystemOSX
 #include "windowing/osx/WinSystemOSX.h"
+#elif defined(TARGET_ANDROID)
 #elif defined(TARGET_DARWIN_IOS)
+#define WIN_SYSTEM_CLASS CWinSystemIOS
 #include "windowing/ios/WinSystemIOS.h"
 #elif defined(HAVE_WAYLAND)
+#define WIN_SYSTEM_CLASS KODI::WINDOWING::WAYLAND::CWinSystemWayland
 #include "windowing/wayland/WinSystemWayland.h"
 #elif defined(TARGET_WINDOWS_DESKTOP)
+#define WIN_SYSTEM_CLASS CWinSystemWin32DX
 #include "windowing/windows/WinSystemWin32DX.h"
 #endif
 
@@ -822,19 +828,14 @@ void CDisplaySettings::SettingOptionsPreferredStereoscopicViewModesFiller(Settin
 
 void CDisplaySettings::SettingOptionsMonitorsFiller(SettingConstPtr setting, std::vector<StringSettingOption> &list, std::string &current, void *data)
 {
-#if defined(HAVE_X11) || defined(TARGET_DARWIN)
+#if defined(HAVE_X11) || defined(TARGET_DARWIN) || defined(HAVE_WAYLAND) || \
+    defined(TARGET_WINDOWS_DESKTOP)
   std::vector<std::string> monitors;
-
-#if defined(HAVE_X11)
-  CWinSystemX11 *winSystem = dynamic_cast<CWinSystemX11*>(CServiceBroker::GetWinSystem());
-#elif defined(TARGET_DARWIN_OSX)
-  CWinSystemOSX *winSystem = dynamic_cast<CWinSystemOSX*>(CServiceBroker::GetWinSystem());
-#elif defined(TARGET_DARWIN_IOS)
-  CWinSystemIOS *winSystem = dynamic_cast<CWinSystemIOS*>(CServiceBroker::GetWinSystem());
-#endif
+  auto winSystem = dynamic_cast<WIN_SYSTEM_CLASS*>(CServiceBroker::GetWinSystem());
   winSystem->GetConnectedOutputs(&monitors);
   std::string currentMonitor = CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(CSettings::SETTING_VIDEOSCREEN_MONITOR);
-  for (unsigned int i=0; i<monitors.size(); ++i)
+#if defined(HAVE_X11) || defined(TARGET_DARWIN)
+  for (unsigned int i = 0; i < monitors.size(); ++i)
   {
     if(currentMonitor.compare("Default") != 0 &&
        StringUtils::EqualsNoCase(CDisplaySettings::GetInstance().GetResolutionInfo(RES_DESKTOP).strOutput, monitors[i]))
@@ -844,15 +845,7 @@ void CDisplaySettings::SettingOptionsMonitorsFiller(SettingConstPtr setting, std
     list.emplace_back(monitors[i], monitors[i]);
   }
 #elif defined(HAVE_WAYLAND) || defined(TARGET_WINDOWS_DESKTOP)
-  std::vector<std::string> monitors;
-#if defined(HAVE_WAYLAND)
-  KODI::WINDOWING::WAYLAND::CWinSystemWayland *winSystem = dynamic_cast<KODI::WINDOWING::WAYLAND::CWinSystemWayland*>(CServiceBroker::GetWinSystem());
-#elif defined(TARGET_WINDOWS_DESKTOP)
-  CWinSystemWin32DX *winSystem = dynamic_cast<CWinSystemWin32DX*>(CServiceBroker::GetWinSystem());
-#endif
-  winSystem->GetConnectedOutputs(&monitors);
   bool foundMonitor = false;
-  std::string currentMonitor = CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(CSettings::SETTING_VIDEOSCREEN_MONITOR);
   for (auto const& monitor : monitors)
   {
     if(monitor == currentMonitor)
@@ -868,6 +861,7 @@ void CDisplaySettings::SettingOptionsMonitorsFiller(SettingConstPtr setting, std
     // the preferred monitor is preserved
     list.emplace_back(current, current);
   }
+#endif
 #endif
 }
 
