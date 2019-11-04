@@ -13,9 +13,8 @@
 #
 #   ICONV::ICONV   - The ICONV library
 
-find_path(ICONV_INCLUDE_DIR NAMES iconv.h)
-
-find_library(ICONV_LIBRARY NAMES iconv libiconv c)
+find_path(ICONV_INCLUDE_DIR NAMES iconv.h HINTS ${DEPENDS_DIR} PATH_SUFFIXES include)
+find_library(ICONV_LIBRARY NAMES libiconv iconv c HINTS ${DEPENDS_DIR}/lib)
 
 set(CMAKE_REQUIRED_LIBRARIES ${ICONV_LIBRARY})
 check_function_exists(iconv HAVE_ICONV_FUNCTION)
