@@ -316,7 +316,8 @@ bool CAndroidUtils::ProbeResolutions(std::vector<RESOLUTION_INFO> &resolutions)
 
 bool CAndroidUtils::UpdateDisplayModes()
 {
-  fetchDisplayModes();
+  if (CJNIBase::GetSDKVersion() >= 24)
+    fetchDisplayModes();
   return true;
 }
 
