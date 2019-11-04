@@ -186,7 +186,10 @@ void CGUIDialogPVRGuideInfo::SetProgInfo(const std::shared_ptr<CPVREpgInfoTag>& 
 
 CFileItemPtr CGUIDialogPVRGuideInfo::GetCurrentListItem(int offset)
 {
-  return CFileItemPtr(new CFileItem(m_progItem));
+  if (!m_progItem)
+    return {};
+
+  return std::make_shared<CFileItem>(m_progItem);
 }
 
 void CGUIDialogPVRGuideInfo::OnInitWindow()
