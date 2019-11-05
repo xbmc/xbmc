@@ -19,6 +19,7 @@
 
 #include <memory>
 #include <string>
+#include <utility>
 #include <vector>
 
 class CFileItem;
@@ -30,7 +31,6 @@ namespace PVR
 {
   class CPVRChannel;
 
-  struct GridItem;
   class CGUIEPGGridContainerModel;
 
   class CGUIEPGGridContainer : public IGUIContainer
@@ -111,22 +111,27 @@ namespace PVR
      */
     bool SetChannel(const std::string& channel);
 
-  protected:
+  private:
     bool OnClick(int actionID);
     bool SelectItemFromPoint(const CPoint& point, bool justGrid = true);
 
     void SetChannel(int channel);
+
     void SetBlock(int block, bool bUpdateBlockTravelAxis = true);
+    void UpdateBlock(bool bUpdateBlockTravelAxis = true);
+
     void ChannelScroll(int amount);
     void ProgrammesScroll(int amount);
     void ValidateOffset();
     void UpdateLayout();
 
-    GridItem* GetItem(int channel);
-    GridItem* GetNextItem(int channel);
-    GridItem* GetPrevItem(int channel);
+    void SetItem(const std::pair<std::shared_ptr<CFileItem>, int>& itemInfo);
+    void SetItem(const std::shared_ptr<CFileItem>& item, int channelIndex, int blockIndex);
+    std::shared_ptr<CFileItem> GetItem() const;
+    std::pair<std::shared_ptr<CFileItem>, int> GetNextItem() const;
+    std::pair<std::shared_ptr<CFileItem>, int> GetPrevItem() const;
+    void UpdateItem();
 
-    int GetBlock(GridItem* gridItem);
     void MoveToRow(int row);
 
     CGUIListItemLayout* GetFocusedLayout() const;
@@ -241,6 +246,7 @@ namespace PVR
     std::unique_ptr<CGUIEPGGridContainerModel> m_gridModel;
     std::unique_ptr<CGUIEPGGridContainerModel> m_updatedGridModel;
 
-    GridItem* m_item;
+    std::shared_ptr<CFileItem> m_item;
+    int m_itemStartBlock = 0;
   };
 }

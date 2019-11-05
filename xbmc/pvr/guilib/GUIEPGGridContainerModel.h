@@ -78,7 +78,6 @@ namespace PVR
 
     int GetBlockCount() const { return m_blocks; }
     bool HasGridItems() const { return !m_gridIndex.empty(); }
-    GridItem* GetGridItemPtr(int iChannel, int iBlock) const;
     std::shared_ptr<CFileItem> GetGridItem(int iChannel, int iBlock) const;
     int GetGridItemStartBlock(int iChannel, int iBlock) const;
     int GetGridItemEndBlock(int iChannel, int iBlock) const;
@@ -102,6 +101,7 @@ namespace PVR
 
   private:
     void FreeItemsMemory();
+    GridItem* GetGridItemPtr(int iChannel, int iBlock) const;
     std::shared_ptr<CFileItem> CreateGapItem(int iChannel) const;
     std::shared_ptr<CFileItem> GetGapItem(int iChannel, int iStartBlock) const;
 
