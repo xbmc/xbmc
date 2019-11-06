@@ -137,7 +137,7 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
   ||  url.IsProtocol("http")
   ||  url.IsProtocol("https")) return new CCurlFile();
   else if (url.IsProtocol("dav") || url.IsProtocol("davs")) return new CDAVFile();
-  else if (url.IsProtocol("shout")) return new CShoutcastFile();
+  else if (url.IsProtocol("shout") || url.IsProtocol("shouts")) return new CShoutcastFile();
 #ifdef HAS_FILESYSTEM_SMB
 #ifdef TARGET_WINDOWS
   else if (url.IsProtocol("smb")) return new CWin32SMBFile();
