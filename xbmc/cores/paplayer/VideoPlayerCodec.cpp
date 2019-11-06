@@ -160,7 +160,8 @@ bool VideoPlayerCodec::Init(const CFileItem &file, unsigned int filecache)
 
   CDVDStreamInfo hint(*pStream, true);
 
-  CAEStreamInfo::DataType ptStreamTye = GetPassthroughStreamType(hint.codec, hint.samplerate);
+  CAEStreamInfo::DataType ptStreamTye =
+      GetPassthroughStreamType(hint.codec, hint.samplerate, hint.profile);
   m_pAudioCodec = CDVDFactoryCodec::CreateAudioCodec(hint, *m_processInfo, true, true, ptStreamTye);
   if (!m_pAudioCodec)
   {
@@ -491,7 +492,9 @@ bool VideoPlayerCodec::NeedConvert(AEDataFormat fmt)
   }
 }
 
-CAEStreamInfo::DataType VideoPlayerCodec::GetPassthroughStreamType(AVCodecID codecId, int samplerate)
+CAEStreamInfo::DataType VideoPlayerCodec::GetPassthroughStreamType(AVCodecID codecId,
+                                                                   int samplerate,
+                                                                   int profile)
 {
   AEAudioFormat format;
   format.m_dataFormat = AE_FMT_RAW;
@@ -510,7 +513,10 @@ CAEStreamInfo::DataType VideoPlayerCodec::GetPassthroughStreamType(AVCodecID cod
       break;
 
     case AV_CODEC_ID_DTS:
-      format.m_streamInfo.m_type = CAEStreamInfo::STREAM_TYPE_DTSHD;
+      if (profile == FF_PROFILE_DTS_HD_HRA)
+        format.m_streamInfo.m_type = CAEStreamInfo::STREAM_TYPE_DTSHD;
+      else
+        format.m_streamInfo.m_type = CAEStreamInfo::STREAM_TYPE_DTSHD_MA;
       format.m_streamInfo.m_sampleRate = samplerate;
       break;
 
