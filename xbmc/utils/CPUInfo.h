@@ -77,7 +77,7 @@ public:
 
   virtual int GetUsedPercentage() = 0;
   virtual float GetCPUFrequency() = 0;
-  virtual bool GetTemperature(CTemperature& temperature);
+  virtual bool GetTemperature(CTemperature& temperature) = 0;
 
   bool HasCoreId(int coreId) const;
   const CoreInfo GetCoreInfo(int coreId);

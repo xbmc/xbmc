@@ -19,6 +19,7 @@ public:
 
   int GetUsedPercentage() override;
   float GetCPUFrequency() override;
+  bool GetTemperature(CTemperature& temperature) override;
 
 private:
   // avoid inclusion of <windows.h> and others

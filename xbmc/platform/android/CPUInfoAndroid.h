@@ -8,10 +8,11 @@
 
 #pragma once
 
-#include "utils/CPUInfo.h"
 #include "utils/Temperature.h"
 
-class CCPUInfoAndroid : public CCPUInfo
+#include "platform/posix/CPUInfoPosix.h"
+
+class CCPUInfoAndroid : public CCPUInfoPosix
 {
 public:
   CCPUInfoAndroid();

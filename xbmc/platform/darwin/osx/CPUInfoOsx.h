@@ -8,12 +8,13 @@
 
 #pragma once
 
-#include "utils/CPUInfo.h"
 #include "utils/Temperature.h"
+
+#include "platform/posix/CPUInfoPosix.h"
 
 class CPosixResourceCounter;
 
-class CCPUInfoOsx : public CCPUInfo
+class CCPUInfoOsx : public CCPUInfoPosix
 {
 public:
   CCPUInfoOsx();

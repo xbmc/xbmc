@@ -9,7 +9,6 @@
 #include "Platform.h"
 
 #include "ServiceBroker.h"
-#include "utils/CPUInfo.h"
 
 // Override for platform ports
 #if !defined(PLATFORM_OVERRIDE)
@@ -29,6 +28,5 @@ CPlatform::~CPlatform() = default;
 
 void CPlatform::Init()
 {
-  CServiceBroker::RegisterCPUInfo(CCPUInfo::GetCPUInfo());
 }
 

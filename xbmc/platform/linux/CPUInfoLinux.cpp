@@ -16,10 +16,10 @@
 #include <sstream>
 #include <vector>
 
-#if defined(HAS_NEON)
+#if (defined(__arm__) && defined(HAS_NEON)) || defined(__aarch64__)
 #include <asm/hwcap.h>
 #include <sys/auxv.h>
-#else
+#elif defined(__i386__) || defined(__x86_64__)
 #include <cpuid.h>
 #endif
 
@@ -94,7 +94,7 @@ CCPUInfoLinux::CCPUInfoLinux()
     m_cores.emplace_back(coreInfo);
   }
 
-#if !defined(HAS_NEON)
+#if defined(__i386__) || defined(__x86_64__)
   unsigned int eax;
   unsigned int ebx;
   unsigned int ecx;
@@ -184,10 +184,8 @@ CCPUInfoLinux::CCPUInfoLinux()
   }
 #endif
 
-#if defined(HAS_NEON) && !defined(__LP64__)
+#if defined(HAS_NEON) && defined(__arm__)
   if (getauxval(AT_HWCAP) & HWCAP_NEON)
-#endif
-#if defined(HAS_NEON)
     m_cpuFeatures |= CPU_FEATURE_NEON;
 #endif
 
@@ -266,7 +264,7 @@ float CCPUInfoLinux::GetCPUFrequency()
 bool CCPUInfoLinux::GetTemperature(CTemperature& temperature)
 {
   if (!SysfsUtils::Has("/sys/class/hwmon/hwmon0/temp1_input"))
-    return CCPUInfo::GetTemperature(temperature);
+    return CCPUInfoPosix::GetTemperature(temperature);
 
   int value{-1};
   char scale{'c'};
@@ -279,6 +277,8 @@ bool CCPUInfoLinux::GetTemperature(CTemperature& temperature)
     temperature = CTemperature::CreateFromCelsius(value);
   else if (scale == 'F' || scale == 'f')
     temperature = CTemperature::CreateFromFahrenheit(value);
+  else
+    return false;
 
   temperature.SetValid(true);
 
