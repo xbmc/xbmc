@@ -1720,13 +1720,19 @@ void CGUIEPGGridContainer::GoToMostRight()
 void CGUIEPGGridContainer::SetTimelineItems(const std::unique_ptr<CFileItemList>& items, const CDateTime& gridStart, const CDateTime& gridEnd)
 {
   int iRulerUnit;
+  int iFirstChannel;
+  int iChannelsPerPage;
   int iBlocksPerPage;
+  int iFirstBlock;
   float fBlockSize;
   {
     CSingleLock lock(m_critSection);
 
     UpdateLayout();
     iRulerUnit = m_rulerUnit;
+    iFirstChannel = m_channelOffset;
+    iChannelsPerPage = m_channelsPerPage;
+    iFirstBlock = m_blockOffset;
     iBlocksPerPage = m_blocksPerPage;
     fBlockSize = m_blockSize;
   }
@@ -1734,8 +1740,8 @@ void CGUIEPGGridContainer::SetTimelineItems(const std::unique_ptr<CFileItemList>
   std::unique_ptr<CGUIEPGGridContainerModel> oldUpdatedGridModel;
   std::unique_ptr<CGUIEPGGridContainerModel> newUpdatedGridModel(new CGUIEPGGridContainerModel);
   // can be very expensive. never call with lock acquired.
-  newUpdatedGridModel->Initialize(items, gridStart, gridEnd, iRulerUnit, iBlocksPerPage, fBlockSize);
-
+  newUpdatedGridModel->Initialize(items, gridStart, gridEnd, iFirstChannel, iChannelsPerPage,
+                                  iFirstBlock, iBlocksPerPage, iRulerUnit, fBlockSize);
   {
     CSingleLock lock(m_critSection);
 
@@ -2033,7 +2039,8 @@ void CGUIEPGGridContainer::HandleChannels(bool bRender, unsigned int currentTime
   {
     // Free memory not used on screen
     if (m_gridModel->ChannelItemsSize() > m_channelsPerPage + cacheBeforeChannel + cacheAfterChannel)
-      m_gridModel->FreeChannelMemory(chanOffset - cacheBeforeChannel, chanOffset + m_channelsPerPage + 1 + cacheAfterChannel);
+      m_gridModel->FreeChannelMemory(chanOffset - cacheBeforeChannel,
+                                     chanOffset + m_channelsPerPage - 1 + cacheAfterChannel);
   }
 
   CPoint originChannel = CPoint(m_channelPosX, m_channelPosY) + m_renderOffset;
@@ -2185,7 +2192,9 @@ void CGUIEPGGridContainer::HandleRuler(bool bRender, unsigned int currentTime, C
 
     // Free memory not used on screen
     if (m_gridModel->RulerItemsSize() > m_blocksPerPage + cacheBeforeRuler + cacheAfterRuler)
-      m_gridModel->FreeRulerMemory(rulerOffset / m_rulerUnit + 1 - cacheBeforeRuler, rulerOffset / m_rulerUnit + 1 + m_blocksPerPage + 1 + cacheAfterRuler);
+      m_gridModel->FreeRulerMemory(rulerOffset / m_rulerUnit + 1 - cacheBeforeRuler,
+                                   rulerOffset / m_rulerUnit + 1 + m_blocksPerPage - 1 +
+                                       cacheAfterRuler);
   }
 
   CPoint originRuler = CPoint(m_rulerPosX, m_rulerPosY) + m_renderOffset;
@@ -2255,14 +2264,28 @@ void CGUIEPGGridContainer::HandleProgrammeGrid(bool bRender, unsigned int curren
   if (!m_focusedProgrammeLayout || !m_programmeLayout || m_gridModel->RulerItemsSize() <= 1 || m_gridModel->IsZeroGridDuration())
     return;
 
-  int blockOffset = MathUtils::round_int(m_programmeScrollOffset / m_blockSize);
-  int chanOffset = MathUtils::round_int(m_channelScrollOffset / m_programmeLayout->Size(m_orientation));
+  const int blockOffset = MathUtils::round_int(m_programmeScrollOffset / m_blockSize);
+  const int chanOffset =
+      MathUtils::round_int(m_channelScrollOffset / m_programmeLayout->Size(m_orientation));
 
   int cacheBeforeProgramme, cacheAfterProgramme;
   GetProgrammeCacheOffsets(cacheBeforeProgramme, cacheAfterProgramme);
 
   if (bRender)
+  {
     CServiceBroker::GetWinSystem()->GetGfxContext().SetClipRegion(m_gridPosX, m_gridPosY, m_gridWidth, m_gridHeight);
+  }
+  else
+  {
+    int cacheBeforeChannel, cacheAfterChannel;
+    GetChannelCacheOffsets(cacheBeforeChannel, cacheAfterChannel);
+
+    // Free memory not used on screen
+    m_gridModel->FreeProgrammeMemory(chanOffset - cacheBeforeChannel,
+                                     chanOffset + m_channelsPerPage - 1 + cacheAfterChannel,
+                                     blockOffset - cacheBeforeProgramme,
+                                     blockOffset + m_programmesPerPage - 1 + cacheAfterProgramme);
+  }
 
   CPoint originProgramme = CPoint(m_gridPosX, m_gridPosY) + m_renderOffset;
   float posA;
@@ -2303,12 +2326,6 @@ void CGUIEPGGridContainer::HandleProgrammeGrid(bool bRender, unsigned int curren
   {
     if (channel >= m_gridModel->ChannelItemsSize())
       break;
-
-    if (!bRender)
-    {
-      // Free memory not used on screen
-      m_gridModel->FreeProgrammeMemory(channel, blockOffset - cacheBeforeProgramme, blockOffset + m_programmesPerPage + 1 + cacheAfterProgramme);
-    }
 
     int block = blockOffset;
     float posA2 = posA;

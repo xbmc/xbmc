@@ -57,14 +57,22 @@ namespace PVR
     CGUIEPGGridContainerModel() = default;
     virtual ~CGUIEPGGridContainerModel() = default;
 
-    void Initialize(const std::unique_ptr<CFileItemList>& items, const CDateTime& gridStart, const CDateTime& gridEnd, int iRulerUnit, int iBlocksPerPage, float fBlockSize);
+    void Initialize(const std::unique_ptr<CFileItemList>& items,
+                    const CDateTime& gridStart,
+                    const CDateTime& gridEnd,
+                    int iFirstChannel,
+                    int iChannelsPerPage,
+                    int iFirstBlock,
+                    int iBlocksPerPage,
+                    int iRulerUnit,
+                    float fBlockSize);
     void SetInvalid();
 
     static const int INVALID_INDEX = -1;
     void FindChannelAndBlockIndex(int channelUid, unsigned int broadcastUid, int eventOffset, int& newChannelIndex, int& newBlockIndex) const;
 
     void FreeChannelMemory(int keepStart, int keepEnd);
-    void FreeProgrammeMemory(int channel, int keepStart, int keepEnd);
+    void FreeProgrammeMemory(int firstChannel, int lastChannel, int firstBlock, int lastBlock);
     void FreeRulerMemory(int keepStart, int keepEnd);
 
     std::shared_ptr<CFileItem> GetProgrammeItem(int iIndex) const { return m_programmeItems[iIndex]; }
@@ -146,5 +154,10 @@ namespace PVR
 
     int m_blocks = 0;
     float m_fBlockSize = 0.0f;
+
+    int m_firstActiveChannel = 0;
+    int m_lastActiveChannel = 0;
+    int m_firstActiveBlock = 0;
+    int m_lastActiveBlock = 0;
   };
 }

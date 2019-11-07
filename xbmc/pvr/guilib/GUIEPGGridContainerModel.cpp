@@ -70,7 +70,15 @@ std::shared_ptr<CFileItem> CGUIEPGGridContainerModel::GetGapItem(int iChannel,
   return item;
 }
 
-void CGUIEPGGridContainerModel::Initialize(const std::unique_ptr<CFileItemList>& items, const CDateTime& gridStart, const CDateTime& gridEnd, int iRulerUnit, int iBlocksPerPage, float fBlockSize)
+void CGUIEPGGridContainerModel::Initialize(const std::unique_ptr<CFileItemList>& items,
+                                           const CDateTime& gridStart,
+                                           const CDateTime& gridEnd,
+                                           int iFirstChannel,
+                                           int iChannelsPerPage,
+                                           int iFirstBlock,
+                                           int iBlocksPerPage,
+                                           int iRulerUnit,
+                                           float fBlockSize)
 {
   if (!m_channelItems.empty())
   {
@@ -174,6 +182,11 @@ void CGUIEPGGridContainerModel::Initialize(const std::unique_ptr<CFileItemList>&
     m_blocks = MAXBLOCKS;
   else if (m_blocks < iBlocksPerPage)
     m_blocks = iBlocksPerPage;
+
+  m_firstActiveChannel = iFirstChannel;
+  m_lastActiveChannel = iFirstChannel + iChannelsPerPage - 1;
+  m_firstActiveBlock = iFirstBlock;
+  m_lastActiveBlock = iFirstBlock + iBlocksPerPage - 1;
 }
 
 void CGUIEPGGridContainerModel::FindChannelAndBlockIndex(int channelUid, unsigned int broadcastUid, int eventOffset, int& newChannelIndex, int& newBlockIndex) const
@@ -303,6 +316,7 @@ GridItem* CGUIEPGGridContainerModel::GetGridItemPtr(int iChannel, int iBlock) co
              .insert({{iChannel, iBlock}, {item, fItemWidth, startBlock, endBlock, progIndex}})
              .first;
   }
+
   return &(*it).second;
 }
 
@@ -371,53 +385,31 @@ void CGUIEPGGridContainerModel::FreeChannelMemory(int keepStart, int keepEnd)
   }
 }
 
-void CGUIEPGGridContainerModel::FreeProgrammeMemory(int channel, int keepStart, int keepEnd)
+void CGUIEPGGridContainerModel::FreeProgrammeMemory(int firstChannel,
+                                                    int lastChannel,
+                                                    int firstBlock,
+                                                    int lastBlock)
 {
-  if (keepStart < keepEnd)
-  {
-    // remove before keepStart and after keepEnd
-    if (keepStart > 0 && keepStart < m_blocks)
-    {
-      // if item exist and block is not part of visible item
-      auto it = m_gridIndex.find({channel, keepStart});
-      std::shared_ptr<CGUIListItem> last = it != m_gridIndex.end() ? (*it).second.item : nullptr;
-      for (int i = keepStart - 1; i > 0; --i)
-      {
-        auto it1 = m_gridIndex.find({channel, i});
-        const std::shared_ptr<CGUIListItem> current =
-            it1 != m_gridIndex.end() ? (*it1).second.item : nullptr;
-        if (current && current != last)
-        {
-          current->FreeMemory();
-          // FreeMemory() is smart enough to not cause any problems when called multiple times on same item
-          // but we can make use of condition needed to not call FreeMemory() on item that is partially visible
-          // to avoid calling FreeMemory() multiple times on item that occupy few blocks in a row
-          last = current;
-        }
-      }
-    }
+  if (firstChannel == m_firstActiveChannel && lastChannel == m_lastActiveChannel &&
+      firstBlock == m_firstActiveBlock && lastBlock == m_lastActiveBlock)
+    return;
 
-    if (keepEnd > 0 && keepEnd < m_blocks)
+  for (auto it = m_gridIndex.begin(); it != m_gridIndex.end();)
+  {
+    if ((*it).first.channel < firstChannel || (*it).first.channel > lastChannel ||
+        (*it).first.block < firstBlock || (*it).first.block > lastBlock)
     {
-      auto it = m_gridIndex.find({channel, keepEnd});
-      std::shared_ptr<CGUIListItem> last = it != m_gridIndex.end() ? (*it).second.item : nullptr;
-      for (int i = keepEnd + 1; i < m_blocks; ++i)
-      {
-        // if item exist and block is not part of visible item
-        auto it1 = m_gridIndex.find({channel, i});
-        std::shared_ptr<CGUIListItem> current =
-            it1 != m_gridIndex.end() ? (*it1).second.item : nullptr;
-        if (current && current != last)
-        {
-          current->FreeMemory();
-          // FreeMemory() is smart enough to not cause any problems when called multiple times on same item
-          // but we can make use of condition needed to not call FreeMemory() on item that is partially visible
-          // to avoid calling FreeMemory() multiple times on item that occupy few blocks in a row
-          last = current;
-        }
-      }
+      (*it).second.item->FreeMemory();
+      it = m_gridIndex.erase(it);
+      continue; // next grid item
     }
+    ++it;
   }
+
+  m_firstActiveChannel = firstChannel;
+  m_lastActiveChannel = lastChannel;
+  m_firstActiveBlock = firstBlock;
+  m_lastActiveBlock = lastBlock;
 }
 
 void CGUIEPGGridContainerModel::FreeRulerMemory(int keepStart, int keepEnd)
