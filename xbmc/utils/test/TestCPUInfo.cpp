@@ -44,7 +44,11 @@ TEST_F(TestCPUInfo, GetCPUFrequency)
   EXPECT_GE(CServiceBroker::GetCPUInfo()->GetCPUFrequency(), 0.f);
 }
 
+#if defined(TARGET_WINDOWS)
+TEST_F(TestCPUInfo, DISABLED_GetTemperature)
+#else
 TEST_F(TestCPUInfo, GetTemperature)
+#endif
 {
   CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_cpuTempCmd = "echo '50 c'";
   CTemperature t;
