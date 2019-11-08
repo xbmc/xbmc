@@ -13,8 +13,12 @@
 #include "cores/AudioEngine/Utils/AEUtil.h"
 #include "threads/CriticalSection.h"
 
+#include <memory>
+
 #include <pulse/pulseaudio.h>
 #include <pulse/simple.h>
+
+class CDriverMonitor;
 
 class CAESinkPULSE : public IAESink
 {
@@ -27,6 +31,7 @@ public:
   static bool Register();
   static IAESink* Create(std::string &device, AEAudioFormat &desiredFormat);
   static void EnumerateDevicesEx(AEDeviceInfoList &list, bool force = false);
+  static void Cleanup();
 
   bool Initialize(AEAudioFormat &format, std::string &device) override;
   void Deinitialize() override;
@@ -47,7 +52,6 @@ public:
 private:
   void Pause(bool pause);
   static inline bool WaitForOperation(pa_operation *op, pa_threaded_mainloop *mainloop, const char *LogEntry);
-  static bool SetupContext(const char *host, pa_context **context, pa_threaded_mainloop **mainloop);
 
   bool m_IsAllocated;
   bool m_passthrough;
@@ -65,4 +69,6 @@ private:
 
   pa_context *m_Context;
   pa_threaded_mainloop *m_MainLoop;
+
+  static std::unique_ptr<CDriverMonitor> m_pMonitor;
 };

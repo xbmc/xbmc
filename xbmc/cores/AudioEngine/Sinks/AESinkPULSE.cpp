@@ -15,6 +15,28 @@
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 
+//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
+
+class CDriverMonitor
+{
+public:
+  CDriverMonitor() = default;
+  virtual ~CDriverMonitor();
+  bool Start();
+  bool IsInitialized();
+
+  CCriticalSection m_sec;
+
+protected:
+  pa_context* m_pContext = nullptr;
+  pa_threaded_mainloop* m_pMainLoop = nullptr;
+  bool m_isInit = false;
+};
+
+//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
+
 static const char *ContextStateToString(pa_context_state s)
 {
   switch (s)
@@ -206,6 +228,42 @@ static void SinkInputInfoCallback(pa_context *c, const pa_sink_input_info *i, in
     p->UpdateInternalVolume(&(i->volume));
 }
 
+static void SinkCallback(pa_context* c,
+                         pa_subscription_event_type_t t,
+                         uint32_t idx,
+                         void* userdata)
+{
+  CDriverMonitor* p = static_cast<CDriverMonitor*>(userdata);
+  if (!p)
+    return;
+
+  CSingleLock lock(p->m_sec);
+  if (p->IsInitialized())
+  {
+    if ((t & PA_SUBSCRIPTION_EVENT_FACILITY_MASK) == PA_SUBSCRIPTION_EVENT_SINK)
+    {
+      if ((t & PA_SUBSCRIPTION_EVENT_TYPE_MASK) == PA_SUBSCRIPTION_EVENT_NEW)
+      {
+        CLog::Log(LOGDEBUG, "Sink appeared");
+        CServiceBroker::GetActiveAE()->DeviceChange();
+      }
+      else if ((t & PA_SUBSCRIPTION_EVENT_TYPE_MASK) == PA_SUBSCRIPTION_EVENT_REMOVE)
+      {
+        CLog::Log(LOGDEBUG, "Sink removed");
+        CServiceBroker::GetActiveAE()->DeviceChange();
+      }
+      else if ((t & PA_SUBSCRIPTION_EVENT_TYPE_MASK) == PA_SUBSCRIPTION_EVENT_CHANGE)
+      {
+        CLog::Log(LOGDEBUG, "Sink changed");
+      }
+    }
+    else
+    {
+      CLog::Log(LOGDEBUG, "Not subscribed to Event: %d", static_cast<int>(t));
+    }
+  }
+}
+
 static void SinkChangedCallback(pa_context *c, pa_subscription_event_type_t t, uint32_t idx, void *userdata)
 {
   CAESinkPULSE* p = static_cast<CAESinkPULSE*>(userdata);
@@ -230,23 +288,6 @@ static void SinkChangedCallback(pa_context *c, pa_subscription_event_type_t t, u
           CLog::Log(LOGERROR, "PulseAudio: Failed to sync volume");
         else
           pa_operation_unref(op);
-      }
-    }
-    else if ((t & PA_SUBSCRIPTION_EVENT_FACILITY_MASK) == PA_SUBSCRIPTION_EVENT_SINK)
-    {
-      if ((t & PA_SUBSCRIPTION_EVENT_TYPE_MASK) == PA_SUBSCRIPTION_EVENT_NEW)
-      {
-        CLog::Log(LOGDEBUG, "Sink appeared");
-        CServiceBroker::GetActiveAE()->DeviceChange();
-      }
-      else if ((t & PA_SUBSCRIPTION_EVENT_TYPE_MASK) == PA_SUBSCRIPTION_EVENT_REMOVE)
-      {
-        CLog::Log(LOGDEBUG, "Sink removed");
-        CServiceBroker::GetActiveAE()->DeviceChange();
-      }
-      else if ((t & PA_SUBSCRIPTION_EVENT_TYPE_MASK) == PA_SUBSCRIPTION_EVENT_CHANGE)
-      {
-        CLog::Log(LOGDEBUG, "Sink changed");
       }
     }
     else
@@ -497,7 +538,118 @@ static void SinkInfoRequestCallback(pa_context *c, const pa_sink_info *i, int eo
   pa_threaded_mainloop_signal(sinkStruct->mainloop, 0);
 }
 
+static bool SetupContext(const char* host,
+                         const char* appname,
+                         pa_context** context,
+                         pa_threaded_mainloop** mainloop)
+{
+  if ((*mainloop = pa_threaded_mainloop_new()) == nullptr)
+  {
+    CLog::Log(LOGERROR, "PulseAudio: Failed to allocate main loop");
+    return false;
+  }
+
+  if (((*context) = pa_context_new(pa_threaded_mainloop_get_api(*mainloop), appname)) == nullptr)
+  {
+    CLog::Log(LOGERROR, "PulseAudio: Failed to allocate context");
+    return false;
+  }
+
+  pa_context_set_state_callback(*context, ContextStateCallback, *mainloop);
+
+  if (pa_context_connect(*context, host, (pa_context_flags_t)0, nullptr) < 0)
+  {
+    CLog::Log(LOGERROR, "PulseAudio: Failed to connect context");
+    return false;
+  }
+  pa_threaded_mainloop_lock(*mainloop);
+
+  if (pa_threaded_mainloop_start(*mainloop) < 0)
+  {
+    CLog::Log(LOGERROR, "PulseAudio: Failed to start MainLoop");
+    pa_threaded_mainloop_unlock(*mainloop);
+    return false;
+  }
+
+  /* Wait until the context is ready */
+  do
+  {
+    pa_threaded_mainloop_wait(*mainloop);
+    CLog::Log(LOGDEBUG, "PulseAudio: Context %s",
+              ContextStateToString(pa_context_get_state(*context)));
+  } while (pa_context_get_state(*context) != PA_CONTEXT_READY &&
+           pa_context_get_state(*context) != PA_CONTEXT_FAILED);
+
+  if (pa_context_get_state(*context) == PA_CONTEXT_FAILED)
+  {
+    CLog::Log(LOGERROR, "PulseAudio: Waited for the Context but it failed");
+    pa_threaded_mainloop_unlock(*mainloop);
+    return false;
+  }
+
+  pa_threaded_mainloop_unlock(*mainloop);
+  return true;
+}
+
+//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
+
+CDriverMonitor::~CDriverMonitor()
+{
+  m_isInit = false;
+
+  if (m_pMainLoop)
+    pa_threaded_mainloop_stop(m_pMainLoop);
+
+  if (m_pContext)
+  {
+    pa_context_disconnect(m_pContext);
+    pa_context_unref(m_pContext);
+    m_pContext = nullptr;
+  }
+
+  if (m_pMainLoop)
+  {
+    pa_threaded_mainloop_free(m_pMainLoop);
+    m_pMainLoop = nullptr;
+  }
+}
+
+bool CDriverMonitor::IsInitialized()
+{
+  return m_isInit;
+}
+
+bool CDriverMonitor::Start()
+{
+  if (!SetupContext(nullptr, "KodiDriver", &m_pContext, &m_pMainLoop))
+  {
+    CLog::Log(LOGNOTICE, "PulseAudio might not be running. Context was not created.");
+    return false;
+  }
+
+  pa_threaded_mainloop_lock(m_pMainLoop);
+
+  m_isInit = true;
+
+  CSingleLock lock(m_sec);
+  // Register Callback for Sink changes
+  pa_context_set_subscribe_callback(m_pContext, SinkCallback, this);
+  const pa_subscription_mask_t mask = pa_subscription_mask_t(PA_SUBSCRIPTION_MASK_SINK);
+  pa_operation* op = pa_context_subscribe(m_pContext, mask, nullptr, this);
+  if (op != nullptr)
+    pa_operation_unref(op);
+
+  pa_threaded_mainloop_unlock(m_pMainLoop);
+
+  return true;
+}
+//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
+
 /* PulseAudio class memberfunctions*/
+
+std::unique_ptr<CDriverMonitor> CAESinkPULSE::m_pMonitor;
 
 bool CAESinkPULSE::Register()
 {
@@ -519,10 +671,14 @@ bool CAESinkPULSE::Register()
     pa_simple_free(s);
   }
 
+  m_pMonitor.reset(new CDriverMonitor());
+  m_pMonitor->Start();
+
   AE::AESinkRegEntry entry;
   entry.sinkName = "PULSE";
   entry.createFunc = CAESinkPULSE::Create;
   entry.enumerateFunc = CAESinkPULSE::EnumerateDevicesEx;
+  entry.cleanupFunc = CAESinkPULSE::Cleanup;
   AE::CAESinkFactory::RegisterSink(entry);
   return true;
 }
@@ -571,7 +727,7 @@ bool CAESinkPULSE::Initialize(AEAudioFormat &format, std::string &device)
   m_Context = NULL;
   m_periodSize = 0;
 
-  if (!SetupContext(NULL, &m_Context, &m_MainLoop))
+  if (!SetupContext(NULL, "KodiSink", &m_Context, &m_MainLoop))
   {
     CLog::Log(LOGNOTICE, "PulseAudio might not be running. Context was not created.");
     Deinitialize();
@@ -816,7 +972,7 @@ bool CAESinkPULSE::Initialize(AEAudioFormat &format, std::string &device)
     CSingleLock lock(m_sec);
     // Register Callback for Sink changes
     pa_context_set_subscribe_callback(m_Context, SinkChangedCallback, this);
-    const pa_subscription_mask_t mask = pa_subscription_mask_t (PA_SUBSCRIPTION_MASK_SINK | PA_SUBSCRIPTION_MASK_SINK_INPUT);
+    const pa_subscription_mask_t mask = pa_subscription_mask_t(PA_SUBSCRIPTION_MASK_SINK_INPUT);
     pa_operation *op = pa_context_subscribe(m_Context, mask, NULL, this);
     if (op != NULL)
       pa_operation_unref(op);
@@ -1013,7 +1169,7 @@ void CAESinkPULSE::EnumerateDevicesEx(AEDeviceInfoList &list, bool force)
   pa_context *context;
   pa_threaded_mainloop *mainloop;
 
-  if (!SetupContext(NULL, &context, &mainloop))
+  if (!SetupContext(NULL, "KodiSink", &context, &mainloop))
   {
     CLog::Log(LOGNOTICE, "PulseAudio might not be running. Context was not created.");
     return;
@@ -1093,51 +1249,7 @@ inline bool CAESinkPULSE::WaitForOperation(pa_operation *op, pa_threaded_mainloo
   return success;
 }
 
-bool CAESinkPULSE::SetupContext(const char *host, pa_context **context, pa_threaded_mainloop **mainloop)
+void CAESinkPULSE::Cleanup()
 {
-  if ((*mainloop = pa_threaded_mainloop_new()) == NULL)
-  {
-    CLog::Log(LOGERROR, "PulseAudio: Failed to allocate main loop");
-    return false;
-  }
-
-  if (((*context) = pa_context_new(pa_threaded_mainloop_get_api(*mainloop), "Kodi")) == NULL)
-  {
-    CLog::Log(LOGERROR, "PulseAudio: Failed to allocate context");
-    return false;
-  }
-
-  pa_context_set_state_callback(*context, ContextStateCallback, *mainloop);
-
-  if (pa_context_connect(*context, host, (pa_context_flags_t)0, NULL) < 0)
-  {
-    CLog::Log(LOGERROR, "PulseAudio: Failed to connect context");
-    return false;
-  }
-  pa_threaded_mainloop_lock(*mainloop);
-
-  if (pa_threaded_mainloop_start(*mainloop) < 0)
-  {
-    CLog::Log(LOGERROR, "PulseAudio: Failed to start MainLoop");
-    pa_threaded_mainloop_unlock(*mainloop);
-    return false;
-  }
-
-  /* Wait until the context is ready */
-  do
-  {
-    pa_threaded_mainloop_wait(*mainloop);
-    CLog::Log(LOGDEBUG, "PulseAudio: Context %s", ContextStateToString(pa_context_get_state(*context)));
-  }
-  while (pa_context_get_state(*context) != PA_CONTEXT_READY && pa_context_get_state(*context) != PA_CONTEXT_FAILED);
-
-  if (pa_context_get_state(*context) == PA_CONTEXT_FAILED)
-  {
-    CLog::Log(LOGERROR, "PulseAudio: Waited for the Context but it failed");
-    pa_threaded_mainloop_unlock(*mainloop);
-    return false;
-  }
-
-  pa_threaded_mainloop_unlock(*mainloop);
-  return true;
+  m_pMonitor.reset();
 }
