@@ -301,6 +301,8 @@ struct SinkInfoStruct
 {
   AEDeviceInfoList *list;
   bool isHWDevice;
+  bool isNWDevice;
+  bool isBTDevice;
   bool device_found;
   pa_threaded_mainloop *mainloop;
   int samplerate;
@@ -309,6 +311,8 @@ struct SinkInfoStruct
   {
     list = nullptr;
     isHWDevice = false;
+    isNWDevice = false;
+    isBTDevice = false;
     device_found = true;
     mainloop = NULL; //called into C
     samplerate = 0;
@@ -335,12 +339,23 @@ static void SinkInfoCallback(pa_context *c, const pa_sink_info *i, int eol, void
 
   if(i)
   {
-    if (i->flags && (i->flags & PA_SINK_HARDWARE))
-      sinkStruct->isHWDevice = true;
+    if (i->flags)
+    {
+      if (i->flags & PA_SINK_HARDWARE)
+        sinkStruct->isHWDevice = true;
 
-    sinkStruct->samplerate = i->sample_spec.rate;
-    sinkStruct->device_found = true;
-    sinkStruct->map = i->channel_map;
+      if (i->flags & PA_SINK_NETWORK)
+        sinkStruct->isNWDevice = true;
+
+      sinkStruct->isBTDevice =
+          StringUtils::EndsWithNoCase(std::string(i->name), std::string("a2dp_sink"));
+      if (sinkStruct->isBTDevice)
+        CLog::Log(LOGNOTICE, "Found BT Device - will adjust buffers to larger values");
+
+      sinkStruct->samplerate = i->sample_spec.rate;
+      sinkStruct->device_found = true;
+      sinkStruct->map = i->channel_map;
+    }
   }
   pa_threaded_mainloop_signal(sinkStruct->mainloop, 0);
 }
@@ -900,7 +915,7 @@ bool CAESinkPULSE::Initialize(AEAudioFormat &format, std::string &device)
   // align with AE's max buffer
   unsigned int latency = m_BytesPerSecond / 2.5; // 400 ms
   unsigned int process_time = latency / 4; // 100 ms
-  if(sinkStruct.isHWDevice)
+  if (sinkStruct.isHWDevice && !sinkStruct.isNWDevice && !sinkStruct.isBTDevice)
   {
     // on hw devices buffers can be further reduced
     // 200ms max latency
@@ -984,9 +999,11 @@ bool CAESinkPULSE::Initialize(AEAudioFormat &format, std::string &device)
   m_format = format;
   format.m_dataFormat = m_passthrough ? AE_FMT_S16NE : format.m_dataFormat;
 
-  CLog::Log(LOGNOTICE, "PulseAudio: Opened device %s in %s mode with Buffersize %u ms",
-                      device.c_str(), m_passthrough ? "passthrough" : "pcm",
-                      (unsigned int) ((m_BufferSize / (float) m_BytesPerSecond) * 1000));
+  CLog::Log(LOGNOTICE,
+            "PulseAudio: Opened device %s in %s mode with Buffersize %u ms Periodsize %u ms",
+            device.c_str(), m_passthrough ? "passthrough" : "pcm",
+            static_cast<unsigned int>(1000.0 * m_BufferSize / m_BytesPerSecond),
+            static_cast<unsigned int>(1000.0 * m_periodSize / m_BytesPerSecond));
 
   // Cork stream will resume when adding first package
   Pause(true);
