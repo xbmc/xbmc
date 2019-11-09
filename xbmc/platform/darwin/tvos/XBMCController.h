@@ -25,11 +25,14 @@ class CFileItem;
 {
   BOOL m_isPlayingBeforeInactive;
   UIBackgroundTaskIdentifier m_bgTask;
+  BOOL m_bgTaskActive;
   bool m_nativeKeyboardActive;
   BOOL m_pause;
   BOOL m_animating;
   NSConditionLock* m_animationThreadLock;
   NSThread* m_animationThread;
+  std::unique_ptr<CFileItem> m_playingFileItemBeforeBackground;
+  std::string m_lastUsedPlayer;
 }
 
 @property(nonatomic) BOOL appAlive;
@@ -52,8 +55,8 @@ class CFileItem;
 - (void)deactivateKeyboard:(UIView*)view;
 - (void)nativeKeyboardActive:(bool)active;
 
-- (void)enableBackGroundTask;
-- (void)disableBackGroundTask;
+- (UIBackgroundTaskIdentifier)enableBackGroundTask;
+- (void)disableBackGroundTask:(UIBackgroundTaskIdentifier)bgTaskID;
 
 - (void)disableScreenSaver;
 - (void)enableScreenSaver;

@@ -11,13 +11,17 @@
 #include "AppParamParser.h"
 #include "Application.h"
 #include "CompileInfo.h"
+#include "FileItem.h"
 #include "ServiceBroker.h"
+#include "cores/AudioEngine/Interfaces/AE.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "interfaces/AnnouncementManager.h"
 #include "messaging/ApplicationMessenger.h"
+#include "network/Network.h"
 #include "network/NetworkServices.h"
 #include "platform/xbmc.h"
+#include "pvr/PVRManager.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/log.h"
@@ -168,25 +172,20 @@ XBMCController* g_xbmcController;
 
 #pragma mark - BackgroundTask
 
-- (void)enableBackGroundTask
+- (UIBackgroundTaskIdentifier)enableBackGroundTask;
 {
-  if (m_bgTask != UIBackgroundTaskInvalid)
-  {
-    [[UIApplication sharedApplication] endBackgroundTask:m_bgTask];
-    m_bgTask = UIBackgroundTaskInvalid;
-  }
-  CLog::Log(LOGDEBUG, "%s: beginBackgroundTask", __PRETTY_FUNCTION__);
+  CLog::Log(LOGDEBUG, "%s: enableBackgroundTask created", __PRETTY_FUNCTION__);
   // we have to alloc the background task for keep network working after screen lock and dark.
-  m_bgTask = [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:nil];
+  return [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:nil];
 }
 
-- (void)disableBackGroundTask
+- (void)disableBackGroundTask:(UIBackgroundTaskIdentifier)bgTaskID;
 {
-  if (m_bgTask != UIBackgroundTaskInvalid)
+  if (bgTaskID != UIBackgroundTaskInvalid)
   {
-    CLog::Log(LOGDEBUG, "%s: endBackgroundTask", __PRETTY_FUNCTION__);
-    [[UIApplication sharedApplication] endBackgroundTask:m_bgTask];
-    m_bgTask = UIBackgroundTaskInvalid;
+    CLog::Log(LOGDEBUG, "%s: endBackgroundTask closed", __PRETTY_FUNCTION__);
+    [[UIApplication sharedApplication] endBackgroundTask:bgTaskID];
+    bgTaskID = UIBackgroundTaskInvalid;
   }
 }
 
@@ -199,58 +198,56 @@ XBMCController* g_xbmcController;
   if (g_application.GetAppPlayer().IsPlayingVideo() && !g_application.GetAppPlayer().IsPaused())
   {
     m_isPlayingBeforeInactive = YES;
+    m_lastUsedPlayer = g_application.GetAppPlayer().GetCurrentPlayer();
+    m_playingFileItemBeforeBackground =
+        std::make_unique<CFileItem>(g_application.CurrentFileItem());
     CApplicationMessenger::GetInstance().SendMsg(TMSG_MEDIA_PAUSE_IF_PLAYING);
+    g_application.CurrentFileItem().m_lStartOffset = g_application.GetAppPlayer().GetTime() - 2.50;
   }
 }
 
 - (void)enterBackground
 {
-  // We have 5 seconds before the OS will force kill us for delaying too long.
-  XbmcThreads::EndTime timer(4500);
+  m_bgTask = [self enableBackGroundTask];
+  m_bgTaskActive = YES;
 
-  // this should not be required as we 'should' get becomeInactive before enterBackground
-  if (g_application.GetAppPlayer().IsPlaying() && !g_application.GetAppPlayer().IsPaused())
-  {
-    m_isPlayingBeforeInactive = YES;
-    CApplicationMessenger::GetInstance().SendMsg(TMSG_MEDIA_PAUSE_IF_PLAYING);
-  }
+  CLog::Log(LOGNOTICE, "%s: Running sleep jobs", __FUNCTION__);
 
   CWinSystemTVOS* winSystem = dynamic_cast<CWinSystemTVOS*>(CServiceBroker::GetWinSystem());
   winSystem->OnAppFocusChange(false);
 
-  // Apple says to disable ZeroConfig when moving to background
-  //! @todo
-  //CNetworkServices::GetInstance().StopZeroconf();
+  // Media was paused, Full background shutdown, so stop now.
+  // Only do for PVR? leave regular media paused?
+  if (g_application.GetAppPlayer().IsPaused())
+  {
+    if (CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() == WINDOW_SLIDESHOW ||
+        CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO ||
+        CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() == WINDOW_FULLSCREEN_GAME ||
+        CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() == WINDOW_VISUALISATION)
+      CServiceBroker::GetGUI()->GetWindowManager().PreviousWindow();
 
-  if (m_isPlayingBeforeInactive)
-  {
-    // if we were playing and have paused, then
-    // enable a background task to keep the network alive
-    [self enableBackGroundTask];
-  }
-  else
-  {
-    // if we are not playing/pause when going to background
-    // close out network shares as we can get fully suspended.
-    g_application.CloseNetworkShares();
+    g_application.StopPlaying();
   }
 
-  // OnAppFocusChange triggers an AE suspend.
-  // Wait for AE to suspend and delete the audio sink, this allows
-  // AudioOutputUnitStop to complete and AVAudioSession to be set inactive.
-  // Note that to user, we moved into background to user but we
-  // are really waiting here for AE to suspend.
-  //! @todo
-  /*
-  while (!CAEFactory::IsSuspended() && !timer.IsTimePast())
-    usleep(250*1000);
-     */
+  CServiceBroker::GetPVRManager().OnSleep();
+  CServiceBroker::GetActiveAE()->Suspend();
+  CServiceBroker::GetNetwork().GetServices().Stop(true);
+
+  //  if (!m_isPlayingBeforeInactive)
+  g_application.CloseNetworkShares();
+
+  m_bgTaskActive = NO;
+  [self disableBackGroundTask:m_bgTask];
 }
 
 - (void)enterForeground
 {
   // stop background task (if running)
-  [self disableBackGroundTask];
+  if (m_bgTaskActive)
+  {
+    CLog::Log(LOGDEBUG, "%s: bgTask already running, closing", __PRETTY_FUNCTION__);
+    [self disableBackGroundTask:m_bgTask];
+  }
 
   [NSThread detachNewThreadSelector:@selector(enterForegroundDelayed:)
                            toTarget:self
@@ -259,10 +256,29 @@ XBMCController* g_xbmcController;
 
 - (void)enterForegroundDelayed:(id)arg
 {
-  // MCRuntimeLib_Initialized is only true if
+
+  __block BOOL appstate = YES;
+  dispatch_async(dispatch_get_main_queue(), ^{
+    if ([UIApplication sharedApplication].applicationState != UIApplicationStateActive)
+      appstate = NO;
+  });
+
+  if (!appstate)
+    return;
+
+  // g_application.IsInitialized is only true if
   // we were running and got moved to background
   while (!g_application.IsInitialized())
     usleep(50 * 1000);
+
+  CServiceBroker::GetNetwork().WaitForNet();
+  CServiceBroker::GetNetwork().GetServices().Start();
+
+  if (CServiceBroker::GetActiveAE())
+    if (CServiceBroker::GetActiveAE()->IsSuspended())
+      CServiceBroker::GetActiveAE()->Resume();
+
+  CServiceBroker::GetPVRManager().OnWake();
 
   CWinSystemTVOS* winSystem = dynamic_cast<CWinSystemTVOS*>(CServiceBroker::GetWinSystem());
   winSystem->OnAppFocusChange(true);
@@ -270,12 +286,28 @@ XBMCController* g_xbmcController;
   // when we come back, restore playing if we were.
   if (m_isPlayingBeforeInactive)
   {
-    CApplicationMessenger::GetInstance().SendMsg(TMSG_MEDIA_UNPAUSE);
+    if (m_playingFileItemBeforeBackground->IsLiveTV())
+    {
+      CLog::Log(LOGDEBUG, "%s: Live TV was playing before suspend. Restart channel",
+                __PRETTY_FUNCTION__);
+      // Restart player with lastused FileItem
+      g_application.PlayFile(*m_playingFileItemBeforeBackground, m_lastUsedPlayer, true);
+    }
+    else
+    {
+      if (g_application.GetAppPlayer().IsPaused() && g_application.GetAppPlayer().HasPlayer())
+      {
+        CApplicationMessenger::GetInstance().SendMsg(TMSG_MEDIA_UNPAUSE);
+      }
+      else
+      {
+        g_application.PlayFile(*m_playingFileItemBeforeBackground, m_lastUsedPlayer, true);
+      }
+    }
+    m_playingFileItemBeforeBackground = std::make_unique<CFileItem>();
+    m_lastUsedPlayer = "";
     m_isPlayingBeforeInactive = NO;
   }
-  // restart ZeroConfig (if stopped)
-  //! @todo
-  //CNetworkServices::GetInstance().StartZeroconf();
 
   // do not update if we are already updating
   if (!(g_application.IsVideoScanning() || g_application.IsMusicScanning()))
@@ -512,7 +544,7 @@ int KODI_Run(bool renderGUI)
 {
   [displayManager removeModeSwitchObserver];
   // stop background task (if running)
-  [self disableBackGroundTask];
+  [self disableBackGroundTask:m_bgTask];
 
   [self stopAnimation];
 }
@@ -528,6 +560,7 @@ int KODI_Run(bool renderGUI)
   m_animating = NO;
 
   m_isPlayingBeforeInactive = NO;
+  m_bgTaskActive = NO;
   m_bgTask = UIBackgroundTaskInvalid;
 
   [self enableScreenSaver];
