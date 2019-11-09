@@ -895,6 +895,7 @@
       "userrating": { "type": "integer" },
       "ratings": { "type": "Video.Ratings" },
       "runtime": { "type": "integer", "description": "Runtime in seconds" },
+      "status": { "type": "string", "description": "Returns 'returning series', 'in production', 'planned', 'cancelled' or 'ended'" },
       "uniqueid": { "$ref": "Media.UniqueID" }
     }
   },
