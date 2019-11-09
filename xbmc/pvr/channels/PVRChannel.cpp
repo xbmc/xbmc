@@ -507,6 +507,36 @@ std::vector<std::shared_ptr<CPVREpgInfoTag>> CPVRChannel::GetEpgTags() const
   return epg->GetTags();
 }
 
+std::vector<std::shared_ptr<CPVREpgInfoTag>> CPVRChannel::GetEPGTimeline(
+    const CDateTime& timelineStart,
+    const CDateTime& timelineEnd,
+    const CDateTime& minEventEnd,
+    const CDateTime& maxEventStart) const
+{
+  const std::shared_ptr<CPVREpg> epg = GetEPG();
+  if (epg)
+  {
+    return epg->GetTimeline(timelineStart, timelineEnd, minEventEnd, maxEventStart);
+  }
+  else
+  {
+    // return single gap tag spanning whole timeline
+    return std::vector<std::shared_ptr<CPVREpgInfoTag>>{
+        CreateEPGGapTag(timelineStart, timelineEnd)};
+  }
+}
+
+std::shared_ptr<CPVREpgInfoTag> CPVRChannel::CreateEPGGapTag(const CDateTime& start,
+                                                             const CDateTime& end) const
+{
+  const std::shared_ptr<CPVREpg> epg = GetEPG();
+  if (epg)
+    return std::make_shared<CPVREpgInfoTag>(epg->GetChannelData(), epg->EpgID(), start, end, true);
+  else
+    return std::make_shared<CPVREpgInfoTag>(std::make_shared<CPVREpgChannelData>(*this), -1, start,
+                                            end, true);
+}
+
 bool CPVRChannel::ClearEPG() const
 {
   const std::shared_ptr<CPVREpg> epg = GetEPG();

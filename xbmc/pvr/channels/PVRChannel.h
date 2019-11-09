@@ -19,6 +19,8 @@
 #include <utility>
 #include <vector>
 
+class CDateTime;
+
 namespace PVR
 {
   class CPVREpg;
@@ -339,6 +341,29 @@ namespace PVR
      * @return The tags.
      */
     std::vector<std::shared_ptr<CPVREpgInfoTag>> GetEpgTags() const;
+
+    /*!
+     * @brief Get all EPG tags for the given time frame, including "gap" tags.
+     * @param timelineStart Start of time line.
+     * @param timelineEnd End of time line.
+     * @param minEventEnd The minimum end time of the events to return.
+     * @param maxEventStart The maximum start time of the events to return.
+     * @return The matching tags.
+     */
+    std::vector<std::shared_ptr<CPVREpgInfoTag>> GetEPGTimeline(
+        const CDateTime& timelineStart,
+        const CDateTime& timelineEnd,
+        const CDateTime& minEventEnd,
+        const CDateTime& maxEventStart) const;
+
+    /*!
+     * @brief Create a "gap" EPG tag.
+     * @param start Start of gap.
+     * @param end End of gap.
+     * @return The tag.
+     */
+    std::shared_ptr<CPVREpgInfoTag> CreateEPGGapTag(const CDateTime& start,
+                                                    const CDateTime& end) const;
 
     /*!
      * @brief Clear the EPG for this channel.

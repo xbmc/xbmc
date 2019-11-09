@@ -129,7 +129,7 @@ namespace PVR
     void UpdateLayout();
 
     void SetItem(const std::pair<std::shared_ptr<CFileItem>, int>& itemInfo);
-    void SetItem(const std::shared_ptr<CFileItem>& item, int channelIndex, int blockIndex);
+    bool SetItem(const std::shared_ptr<CFileItem>& item, int channelIndex, int blockIndex);
     std::shared_ptr<CFileItem> GetItem() const;
     std::pair<std::shared_ptr<CFileItem>, int> GetNextItem() const;
     std::pair<std::shared_ptr<CFileItem>, int> GetPrevItem() const;
@@ -247,7 +247,6 @@ namespace PVR
     std::unique_ptr<CGUIEPGGridContainerModel> m_gridModel;
     std::unique_ptr<CGUIEPGGridContainerModel> m_updatedGridModel;
 
-    std::shared_ptr<CFileItem> m_item;
     int m_itemStartBlock = 0;
   };
 }

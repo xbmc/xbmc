@@ -33,6 +33,11 @@ namespace PVR
     {
     }
 
+    bool operator==(const GridItem& other) const
+    {
+      return (startBlock == other.startBlock && endBlock == other.endBlock);
+    }
+
     std::shared_ptr<CFileItem> item;
     float originWidth = 0.0f;
     float width = 0.0f;
@@ -45,8 +50,7 @@ namespace PVR
   class CGUIEPGGridContainerModel
   {
   public:
-    static const int MINSPERBLOCK = 5; // minutes
-    static const int MAXBLOCKS = 33 * 24 * 60 / MINSPERBLOCK; //! 33 days of 5 minute blocks (31 days for upcoming data + 1 day for past data + 1 day for fillers)
+    static constexpr int MINSPERBLOCK = 5; // minutes
 
     CGUIEPGGridContainerModel() = default;
     virtual ~CGUIEPGGridContainerModel() = default;
@@ -73,17 +77,22 @@ namespace PVR
     std::shared_ptr<CFileItem> GetChannelItem(int iIndex) const { return m_channelItems[iIndex]; }
     bool HasChannelItems() const { return !m_channelItems.empty(); }
     int ChannelItemsSize() const { return static_cast<int>(m_channelItems.size()); }
+    int GetLastChannel() const
+    {
+      return m_channelItems.empty() ? -1 : static_cast<int>(m_channelItems.size()) - 1;
+    }
 
     std::shared_ptr<CFileItem> GetRulerItem(int iIndex) const { return m_rulerItems[iIndex]; }
     int RulerItemsSize() const { return static_cast<int>(m_rulerItems.size()); }
 
-    int GetBlockCount() const { return m_blocks; }
+    int GridItemsSize() const { return m_blocks; }
+    bool IsSameGridItem(int iChannel, int iBlock1, int iBlock2) const;
     std::shared_ptr<CFileItem> GetGridItem(int iChannel, int iBlock) const;
     int GetGridItemStartBlock(int iChannel, int iBlock) const;
     int GetGridItemEndBlock(int iChannel, int iBlock) const;
     float GetGridItemWidth(int iChannel, int iBlock) const;
     float GetGridItemOriginWidth(int iChannel, int iBlock) const;
-    void SetGridItemWidth(int iChannel, int iBlock, float fWidth);
+    void DecreaseGridItemWidth(int iChannel, int iBlock, float fSize);
 
     bool IsZeroGridDuration() const { return (m_gridEnd - m_gridStart) == CDateTimeSpan(0, 0, 0, 0); }
     const CDateTime& GetGridStart() const { return m_gridStart; }
@@ -92,19 +101,34 @@ namespace PVR
 
     unsigned int GetPageNowOffset() const;
     int GetNowBlock() const;
+    int GetLastBlock() const { return m_blocks - 1; }
 
     CDateTime GetStartTimeForBlock(int block) const;
     int GetBlock(const CDateTime& datetime) const;
     int GetFirstEventBlock(const std::shared_ptr<CPVREpgInfoTag>& event) const;
     int GetLastEventBlock(const std::shared_ptr<CPVREpgInfoTag>& event) const;
+    bool IsEventMemberOfBlock(const std::shared_ptr<CPVREpgInfoTag>& event, int iBlock) const;
 
   private:
     GridItem* GetGridItemPtr(int iChannel, int iBlock) const;
     std::shared_ptr<CFileItem> CreateGapItem(int iChannel) const;
-    std::shared_ptr<CFileItem> GetGapItem(int iChannel, int iStartBlock) const;
+    std::shared_ptr<CFileItem> GetItem(int iChannel, int iBlock) const;
 
-    using EpgTagsMap = std::unordered_map<int, std::vector<std::shared_ptr<CFileItem>>>;
-    const EpgTagsMap::const_iterator GetChannelEpgTags(int iChannel) const;
+    struct EpgTags
+    {
+      std::vector<std::shared_ptr<CFileItem>> tags;
+      int firstBlock = -1;
+      int lastBlock = -1;
+    };
+
+    using EpgTagsMap = std::unordered_map<int, EpgTags>;
+
+    std::shared_ptr<CFileItem> CreateEpgTags(int iChannel, int iBlock) const;
+    std::shared_ptr<CFileItem> GetEpgTags(EpgTagsMap::iterator& itEpg,
+                                          int iChannel,
+                                          int iBlock) const;
+    std::shared_ptr<CFileItem> GetEpgTagsBefore(EpgTags& epgTags, int iChannel, int iBlock) const;
+    std::shared_ptr<CFileItem> GetEpgTagsAfter(EpgTags& epgTags, int iChannel, int iBlock) const;
 
     mutable EpgTagsMap m_epgItems;
 
@@ -136,7 +160,6 @@ namespace PVR
     };
 
     mutable std::unordered_map<GridCoordinates, GridItem, GridCoordinatesHash> m_gridIndex;
-    mutable std::map<std::pair<int, int>, std::shared_ptr<CFileItem>> m_gapItems;
 
     int m_blocks = 0;
     float m_fBlockSize = 0.0f;

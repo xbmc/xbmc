@@ -202,6 +202,19 @@ namespace PVR
     std::vector<std::shared_ptr<CPVREpgInfoTag>> GetTags() const;
 
     /*!
+     * @brief Get all EPG tags for the given time frame, including "gap" tags.
+     * @param timelineStart Start of time line
+     * @param timelineEnd End of time line
+     * @param minEventEnd The minimum end time of the events to return
+     * @param maxEventStart The maximum start time of the events to return
+     * @return The matching tags.
+     */
+    std::vector<std::shared_ptr<CPVREpgInfoTag>> GetTimeline(const CDateTime& timelineStart,
+                                                             const CDateTime& timelineEnd,
+                                                             const CDateTime& minEventEnd,
+                                                             const CDateTime& maxEventStart) const;
+
+    /*!
      * @brief Persist this table in the given database
      * @param database The database.
      * @return True if the table was persisted, false otherwise.
@@ -301,6 +314,15 @@ namespace PVR
      * @param iPastDays Delete entries with an end time before the given amount of days from now on.
      */
     void Cleanup(int iPastDays);
+
+    /*!
+     * @brief Create a "gap" tag
+     * @param start The start time of the gap.
+     * @param end The end time of the gap.
+     * @return The tag.
+     */
+    std::shared_ptr<CPVREpgInfoTag> CreateGapTag(const CDateTime& start,
+                                                 const CDateTime& end) const;
 
     std::map<CDateTime, std::shared_ptr<CPVREpgInfoTag>> m_tags;
     std::map<int, std::shared_ptr<CPVREpgInfoTag>> m_changedTags;

@@ -37,15 +37,25 @@ CPVREpgInfoTag::CPVREpgInfoTag()
 {
 }
 
-CPVREpgInfoTag::CPVREpgInfoTag(const std::shared_ptr<CPVREpgChannelData>& channelData, int iEpgID)
-: m_iUniqueBroadcastID(EPG_TAG_INVALID_UID),
-  m_iFlags(EPG_TAG_FLAG_UNDEFINED),
-  m_iEpgID(iEpgID)
+CPVREpgInfoTag::CPVREpgInfoTag(const std::shared_ptr<CPVREpgChannelData>& channelData,
+                               int iEpgID,
+                               const CDateTime& start,
+                               const CDateTime& end,
+                               bool bIsGapTag)
+  : m_iUniqueBroadcastID(EPG_TAG_INVALID_UID),
+    m_iFlags(EPG_TAG_FLAG_UNDEFINED),
+    m_bIsGapTag(bIsGapTag),
+    m_iEpgID(iEpgID)
 {
   if (channelData)
     m_channelData = channelData;
   else
     m_channelData = std::make_shared<CPVREpgChannelData>();
+
+  const CDateTimeSpan correction(
+      0, 0, 0, CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_iPVRTimeCorrection);
+  m_startTime = start + correction;
+  m_endTime = end + correction;
 
   UpdatePath();
 }
@@ -677,6 +687,12 @@ bool CPVREpgInfoTag::IsParentalLocked() const
 {
   CSingleLock lock(m_critSection);
   return m_channelData->IsLocked();
+}
+
+bool CPVREpgInfoTag::IsGapTag() const
+{
+  CSingleLock lock(m_critSection);
+  return m_bIsGapTag;
 }
 
 const std::vector<std::string> CPVREpgInfoTag::Tokenize(const std::string& str)

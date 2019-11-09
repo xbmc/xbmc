@@ -248,6 +248,116 @@ std::shared_ptr<CPVREpgInfoTag> CPVREpg::GetTagBetween(const CDateTime& beginTim
   return tag;
 }
 
+std::shared_ptr<CPVREpgInfoTag> CPVREpg::CreateGapTag(const CDateTime& start,
+                                                      const CDateTime& end) const
+{
+  return std::make_shared<CPVREpgInfoTag>(GetChannelData(), EpgID(), start, end, true);
+}
+
+std::vector<std::shared_ptr<CPVREpgInfoTag>> CPVREpg::GetTimeline(
+    const CDateTime& timelineStart,
+    const CDateTime& timelineEnd,
+    const CDateTime& minEventEnd,
+    const CDateTime& maxEventStart) const
+{
+  static const CDateTimeSpan ONE_SECOND(0, 0, 0, 1);
+
+  std::vector<std::shared_ptr<CPVREpgInfoTag>> tags;
+
+  CSingleLock lock(m_critSection);
+
+  CDateTime lastEnd = minEventEnd;
+  for (const auto& epgTag : m_tags)
+  {
+    if (epgTag.second->EndAsUTC() > minEventEnd)
+    {
+      const CDateTime start = epgTag.second->StartAsUTC();
+
+      if (start <= maxEventStart)
+      {
+        if (start > minEventEnd && (start - lastEnd) > ONE_SECOND &&
+            epgTag.second != (*m_tags.cbegin()).second)
+        {
+          // insert gap tag between two events
+          tags.emplace_back(CreateGapTag(lastEnd, start - ONE_SECOND));
+        }
+
+        tags.emplace_back(epgTag.second);
+      }
+      else
+      {
+        if (tags.empty())
+        {
+          if (epgTag.second != (*m_tags.cbegin()).second)
+          {
+            // insert gap tag spanning pred of last checked event end to next event start
+            tags.emplace_back(CreateGapTag(lastEnd, start - ONE_SECOND));
+          }
+        }
+        else
+        {
+          if (maxEventStart >= tags.back()->EndAsUTC() && (start - ONE_SECOND) <= timelineEnd)
+          {
+            // append gap tag spanning last found event end to next event start
+            tags.emplace_back(CreateGapTag(tags.back()->EndAsUTC(), start - ONE_SECOND));
+          }
+
+          if (minEventEnd <= tags.front()->StartAsUTC() - ONE_SECOND &&
+              tags.front() != (*m_tags.cbegin()).second)
+          {
+            // prepend gap tag spanning pred of first found event end to first found event start
+            tags.insert(tags.begin(),
+                        CreateGapTag(lastEnd, tags.front()->StartAsUTC() - ONE_SECOND));
+          }
+        }
+        break; // done. m_tags is sorted by date, ascending
+      }
+    }
+    lastEnd = epgTag.second->EndAsUTC();
+  }
+
+  if (tags.empty())
+  {
+    if (m_tags.empty())
+    {
+      // insert gap tag spanning whole timeline
+      tags.emplace_back(CreateGapTag(timelineStart, timelineEnd));
+    }
+    else if (maxEventStart <= (*m_tags.cbegin()).second->StartAsUTC())
+    {
+      // insert gap tag spanning timeline start to very first event start
+      tags.emplace_back(
+          CreateGapTag(timelineStart, (*m_tags.cbegin()).second->StartAsUTC() - ONE_SECOND));
+    }
+    else if (minEventEnd >= (*m_tags.crbegin()).second->EndAsUTC())
+    {
+      // insert gap tag spanning very last event end to timeline end
+      tags.emplace_back(CreateGapTag((*m_tags.crbegin()).second->EndAsUTC(), timelineEnd));
+    }
+    else
+    {
+      CLog::LogF(LOGERROR, "Could not find any epgtag for requested timeline");
+    }
+  }
+  else
+  {
+    if (tags.front() == (*m_tags.cbegin()).second && tags.front()->StartAsUTC() >= minEventEnd)
+    {
+      // prepend gap tag spanning timeline start to very first event start
+      tags.insert(tags.begin(), CreateGapTag(timelineStart,
+                                             (*m_tags.cbegin()).second->StartAsUTC() - ONE_SECOND));
+    }
+
+    if (tags.back() == (*m_tags.crbegin()).second && tags.back()->EndAsUTC() <= maxEventStart)
+    {
+      // append gap tag spanning very last event end to timeline end
+      tags.emplace_back(CreateGapTag((*m_tags.crbegin()).second->EndAsUTC(), timelineEnd));
+    }
+  }
+
+  return tags;
+}
+
 void CPVREpg::AddEntry(const CPVREpgInfoTag& tag)
 {
   std::shared_ptr<CPVREpgInfoTag> newTag;

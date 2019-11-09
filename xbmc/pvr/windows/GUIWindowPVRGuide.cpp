@@ -433,7 +433,7 @@ bool CGUIWindowPVRGuideBase::OnMessage(CGUIMessage& message)
         }
 
         const std::shared_ptr<CFileItem> pItem = GetCurrentListItem();
-        if (pItem && pItem->GetEPGInfoTag()->StartAsUTC().IsValid())
+        if (pItem && !pItem->GetEPGInfoTag()->IsGapTag())
         {
           switch (message.GetParam1())
           {
@@ -762,8 +762,8 @@ bool CGUIWindowPVRGuideBase::RefreshTimelineItems()
         for (const auto& groupMember : groupMembers)
         {
           // fake a channel without epg
-          const std::shared_ptr<CPVREpgInfoTag> gapTag
-            = std::make_shared<CPVREpgInfoTag>(std::make_shared<CPVREpgChannelData>(*(groupMember->channel)), -1);
+          const std::shared_ptr<CPVREpgInfoTag> gapTag =
+              groupMember->channel->CreateEPGGapTag(startDate, endDate);
           timeline->Add(std::make_shared<CFileItem>(gapTag));
 
           channels->Add(std::make_shared<CFileItem>(groupMember->channel));
