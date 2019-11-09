@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <window>
-	<visible>Player.Seeking | Player.DisplayAfterSeek | [Player.Paused + !Player.Caching] | Player.Forwarding | Player.Rewinding | Player.ShowInfo | Player.ShowTime | Window.IsActive(videoosd) | Window.IsActive(musicosd) | Window.IsActive(playerprocessinfo) | !String.IsEmpty(Player.SeekNumeric) | !String.IsEmpty(PVR.ChannelNumberInput)</visible>
+	<visible>Player.Seeking | Player.DisplayAfterSeek | [Player.Paused + !Player.Caching] | Player.Forwarding | Player.Rewinding | Player.ShowInfo | Window.IsActive(fullscreeninfo) | Player.ShowTime | Window.IsActive(videoosd) | Window.IsActive(musicosd) | Window.IsActive(playerprocessinfo) | !String.IsEmpty(Player.SeekNumeric) | !String.IsEmpty(PVR.ChannelNumberInput)</visible>
 	<visible>![Window.IsActive(sliderdialog) | Window.IsActive(pvrosdchannels) | Window.IsActive(pvrguideinfo)]</visible>
 	<visible>Window.IsActive(fullscreenvideo) | Window.IsActive(visualisation)</visible>
 	<include>Animation_BottomSlide</include>
@@ -49,7 +49,7 @@
 					<include>Animation_BottomSlide</include>
 					<orientation>horizontal</orientation>
 					<itemgap>10</itemgap>
-					<visible>Player.ShowInfo + !Player.ChannelPreviewActive + Window.IsActive(fullscreenvideo)</visible>
+					<visible>[Player.ShowInfo | Window.IsActive(fullscreeninfo)] + !Player.ChannelPreviewActive + Window.IsActive(fullscreenvideo)</visible>
 					<animation effect="fade" start="0" end="100" time="200" delay="1000">Visible</animation>
 					<include content="MediaFlag">
 					<param name="texture" value="$INFO[VideoPlayer.VideoCodec,flags/videocodec/,.png]" />
@@ -249,7 +249,7 @@
 		</control>
 		<control type="group">
 			<visible>!Window.IsVisible(playerprocessinfo)</visible>
-			<visible>Player.ShowInfo + VideoPlayer.Content(LiveTV)</visible>
+			<visible>[Player.ShowInfo | Window.IsActive(fullscreeninfo)] + VideoPlayer.Content(LiveTV)</visible>
 			<animation effect="fade" time="400">VisibleChange</animation>
 			<animation effect="slide" end="0,-20" time="150" condition="VideoPlayer.Content(LiveTV)">conditional</animation>
 			<bottom>0</bottom>
@@ -327,7 +327,7 @@
 			<bottom>0</bottom>
 			<height>230</height>
 			<visible>!Window.IsVisible(playerprocessinfo)</visible>
-			<visible>Player.ShowInfo + !VideoPlayer.Content(LiveTV) + Window.IsActive(fullscreenvideo)</visible>
+			<visible>[Player.ShowInfo | Window.IsActive(fullscreeninfo)] + !VideoPlayer.Content(LiveTV) + Window.IsActive(fullscreenvideo)</visible>
 			<animation effect="fade" time="200">VisibleChange</animation>
 			<control type="group">
 				<control type="image">
