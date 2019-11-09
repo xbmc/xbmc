@@ -96,7 +96,10 @@ namespace PVR
     void GoToMostLeft();
     void GoToMostRight();
 
-    void SetTimelineItems(const std::unique_ptr<CFileItemList>& items, const CDateTime& gridStart, const CDateTime& gridEnd);
+    void SetTimelineItems(const std::unique_ptr<CFileItemList>& items,
+                          const CDateTime& gridStart,
+                          const CDateTime& gridEnd,
+                          bool bFirstOpen);
     /*!
      * @brief Set the control's selection to the given channel and set the control's view port to show the channel.
      * @param channel the channel.
@@ -194,8 +197,6 @@ namespace PVR
     float GetProgressIndicatorHeight() const;
 
     void UpdateItems();
-
-    int GetSelectedItem() const;
 
     int m_rulerUnit; //! number of blocks that makes up one element of the ruler
     int m_channelsPerPage;

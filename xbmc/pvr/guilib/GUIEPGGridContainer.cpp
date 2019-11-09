@@ -155,7 +155,7 @@ CGUIEPGGridContainer::CGUIEPGGridContainer(const CGUIEPGGridContainer& other)
 
 bool CGUIEPGGridContainer::HasData() const
 {
-  return m_gridModel && m_gridModel->HasProgrammeItems();
+  return m_gridModel && m_gridModel->HasChannelItems();
 }
 
 void CGUIEPGGridContainer::AllocResources()
@@ -618,10 +618,6 @@ bool CGUIEPGGridContainer::OnMessage(CGUIMessage& message)
   {
     switch (message.GetMessage())
     {
-      case GUI_MSG_ITEM_SELECTED:
-        message.SetParam1(GetSelectedItem());
-        return true;
-
       case GUI_MSG_PAGE_CHANGE:
         if (message.GetSenderId() == m_pageControl && IsVisible())
         {
@@ -1309,15 +1305,6 @@ CDateTime CGUIEPGGridContainer::GetSelectedDate() const
   return m_gridModel->GetStartTimeForBlock(m_blockOffset + m_blockCursor);
 }
 
-int CGUIEPGGridContainer::GetSelectedItem() const
-{
-  if (m_channelCursor + m_channelOffset >= m_gridModel->ChannelItemsSize() ||
-      m_blockCursor + m_blockOffset >= m_gridModel->GetBlockCount())
-    return -1;
-
-  return m_gridModel->GetGridItemIndex(m_channelCursor + m_channelOffset, m_blockCursor + m_blockOffset);
-}
-
 CFileItemPtr CGUIEPGGridContainer::GetSelectedGridItem(int offset /*= 0*/) const
 {
   CFileItemPtr item;
@@ -1602,14 +1589,12 @@ std::string CGUIEPGGridContainer::GetDescription() const
 {
   CSingleLock lock(m_critSection);
 
-  std::string strLabel;
-  int item = GetSelectedItem();
-  if (item >= 0 && item < m_gridModel->ProgrammeItemsSize())
-  {
-    CGUIListItemPtr pItem(m_gridModel->GetProgrammeItem(item));
-    strLabel = pItem->GetLabel();
-  }
-  return strLabel;
+  const std::shared_ptr<CFileItem> item =
+      m_gridModel->GetGridItem(m_channelCursor + m_channelOffset, m_blockCursor + m_blockOffset);
+  if (item)
+    return item->GetLabel();
+
+  return {};
 }
 
 void CGUIEPGGridContainer::GoToBegin()
@@ -1721,7 +1706,10 @@ void CGUIEPGGridContainer::GoToMostRight()
   }
 }
 
-void CGUIEPGGridContainer::SetTimelineItems(const std::unique_ptr<CFileItemList>& items, const CDateTime& gridStart, const CDateTime& gridEnd)
+void CGUIEPGGridContainer::SetTimelineItems(const std::unique_ptr<CFileItemList>& items,
+                                            const CDateTime& gridStart,
+                                            const CDateTime& gridEnd,
+                                            bool bFirstOpen)
 {
   int iRulerUnit;
   int iFirstChannel;
@@ -1743,9 +1731,9 @@ void CGUIEPGGridContainer::SetTimelineItems(const std::unique_ptr<CFileItemList>
 
   std::unique_ptr<CGUIEPGGridContainerModel> oldUpdatedGridModel;
   std::unique_ptr<CGUIEPGGridContainerModel> newUpdatedGridModel(new CGUIEPGGridContainerModel);
-  // can be very expensive. never call with lock acquired.
+
   newUpdatedGridModel->Initialize(items, gridStart, gridEnd, iFirstChannel, iChannelsPerPage,
-                                  iFirstBlock, iBlocksPerPage, iRulerUnit, fBlockSize);
+                                  iFirstBlock, iBlocksPerPage, iRulerUnit, fBlockSize, bFirstOpen);
   {
     CSingleLock lock(m_critSection);
 
@@ -2343,7 +2331,7 @@ void CGUIEPGGridContainer::HandleProgrammeGrid(bool bRender, unsigned int curren
       posA2 -= missingSection * m_blockSize;
     }
 
-    while (posA2 < endA && m_gridModel->HasProgrammeItems())
+    while (posA2 < endA && HasData())
     {
       if (block >= m_gridModel->GetBlockCount())
         break;

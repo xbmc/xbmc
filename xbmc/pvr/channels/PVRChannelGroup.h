@@ -386,13 +386,6 @@ namespace PVR
     virtual bool CreateChannelEpgs(bool bForce = false);
 
     /*!
-     * @brief Get all EPG tags for all channels in this group.
-     * @param bIncludeChannelsWithoutEPG, for channels without EPG data, put an empty EPG tag associated with the channel into results
-     * @return The tags.
-     */
-    std::vector<std::shared_ptr<CPVREpgInfoTag>> GetEPGAll(bool bIncludeChannelsWithoutEPG = false) const;
-
-    /*!
      * @brief Get the start time of the first entry.
      * @return The start time.
      */

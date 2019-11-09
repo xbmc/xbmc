@@ -269,15 +269,34 @@ void CGUIWindowPVRGuideBase::FormatAndSort(CFileItemList& items)
 
 CFileItemPtr CGUIWindowPVRGuideBase::GetCurrentListItem(int offset /*= 0*/)
 {
-  CFileItemPtr item = CGUIWindowPVRBase::GetCurrentListItem(offset);
-  if (!item)
+  const CGUIEPGGridContainer* epgGridContainer = GetGridControl();
+  if (epgGridContainer)
+    return epgGridContainer->GetSelectedGridItem(offset);
+
+  return {};
+}
+
+int CGUIWindowPVRGuideBase::GetCurrentListItemIndex(const std::shared_ptr<CFileItem>& item)
+{
+  if (item)
   {
-    // EPG "gap" item selected?
-    CGUIEPGGridContainer* epgGridContainer = GetGridControl();
-    if (epgGridContainer)
-      item = epgGridContainer->GetSelectedGridItem(offset);
+    //! @todo optimize item -> iItem mapping? Depends on call frequency...
+
+    int iItem = 0;
+    const std::shared_ptr<CPVREpgInfoTag> epgTag = item->GetEPGInfoTag();
+    for (const auto& item : *m_vecItems)
+    {
+      if (item->GetEPGInfoTag() == epgTag)
+      {
+        return iItem;
+      }
+      else
+      {
+        ++iItem;
+      }
+    }
   }
-  return item;
+  return -1;
 }
 
 bool CGUIWindowPVRGuideBase::ShouldNavigateToGridContainer(int iAction)
@@ -393,6 +412,11 @@ bool CGUIWindowPVRGuideBase::OnMessage(CGUIMessage& message)
       m_channelGroupPath = message.GetStringParam(0);
       break;
 
+    case GUI_MSG_ITEM_SELECTED:
+      message.SetParam1(GetCurrentListItemIndex(GetCurrentListItem()));
+      bReturn = true;
+      break;
+
     case GUI_MSG_CLICKED:
     {
       if (message.GetSenderId() == m_viewControl.GetCurrentControl())
@@ -408,19 +432,18 @@ bool CGUIWindowPVRGuideBase::OnMessage(CGUIMessage& message)
           }
         }
 
-        int iItem = m_viewControl.GetSelectedItem();
-        if (iItem >= 0 && iItem < m_vecItems->Size())
+        const std::shared_ptr<CFileItem> pItem = GetCurrentListItem();
+        if (pItem && pItem->GetEPGInfoTag()->StartAsUTC().IsValid())
         {
-          CFileItemPtr pItem = m_vecItems->Get(iItem);
-          /* process actions */
           switch (message.GetParam1())
           {
             case ACTION_SELECT_ITEM:
             case ACTION_MOUSE_LEFT_CLICK:
-              switch(CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_EPG_SELECTACTION))
+              switch (CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
+                  CSettings::SETTING_EPG_SELECTACTION))
               {
                 case EPG_SELECT_ACTION_CONTEXT_MENU:
-                  OnPopupMenu(iItem);
+                  OnPopupMenu(GetCurrentListItemIndex(pItem));
                   bReturn = true;
                   break;
                 case EPG_SELECT_ACTION_SWITCH:
@@ -505,14 +528,13 @@ bool CGUIWindowPVRGuideBase::OnMessage(CGUIMessage& message)
               break;
             case ACTION_CONTEXT_MENU:
             case ACTION_MOUSE_RIGHT_CLICK:
-              OnPopupMenu(iItem);
+              OnPopupMenu(GetCurrentListItemIndex(pItem));
               bReturn = true;
               break;
           }
         }
-        else if (iItem == -1)
+        else
         {
-          /* process actions */
           switch (message.GetParam1())
           {
             case ACTION_SELECT_ITEM:
@@ -703,37 +725,6 @@ bool CGUIWindowPVRGuideBase::RefreshTimelineItems()
       if (!group)
         return false;
 
-      std::unique_ptr<CFileItemList> timeline(new CFileItemList);
-
-      if (m_bFirstOpen)
-      {
-        m_bFirstOpen = false;
-
-        // very first open of the window. come up with some data very fast...
-        const std::vector<std::shared_ptr<PVRChannelGroupMember>> groupMembers = group->GetMembers(CPVRChannelGroup::Include::ONLY_VISIBLE);
-        for (const auto& groupMember : groupMembers)
-        {
-          // fake a channel without epg
-
-          const std::shared_ptr<CPVREpgInfoTag> gapTag
-            = std::make_shared<CPVREpgInfoTag>(std::make_shared<CPVREpgChannelData>(*(groupMember->channel)), -1);
-          timeline->Add(std::make_shared<CFileItem>(gapTag));
-        }
-
-        // next, fetch actual data.
-        m_bRefreshTimelineItems = true;
-        m_refreshTimelineItemsThread->DoRefresh(false);
-      }
-      else
-      {
-        // can be very expensive. never call with lock acquired.
-        const std::vector<std::shared_ptr<CPVREpgInfoTag>> tags = group->GetEPGAll(true);
-        for (const auto& tag : tags)
-        {
-          timeline->Add(std::make_shared<CFileItem>(tag));
-        }
-      }
-
       CDateTime startDate(group->GetFirstEPGDate());
       CDateTime endDate(group->GetLastEPGDate());
       const CDateTime currentDate(CDateTime::GetCurrentDateTime().GetAsUTCDateTime());
@@ -747,22 +738,65 @@ bool CGUIWindowPVRGuideBase::RefreshTimelineItems()
       CPVREpgContainer& epgContainer = CServiceBroker::GetPVRManager().EpgContainer();
 
       // limit start to past days to display
-      int iPastDays = epgContainer.GetPastDaysToDisplay();
+      const int iPastDays = epgContainer.GetPastDaysToDisplay();
       const CDateTime maxPastDate(currentDate - CDateTimeSpan(iPastDays, 0, 0, 0));
       if (startDate < maxPastDate)
         startDate = maxPastDate;
 
       // limit end to future days to display
-      int iFutureDays = epgContainer.GetFutureDaysToDisplay();
+      const int iFutureDays = epgContainer.GetFutureDaysToDisplay();
       const CDateTime maxFutureDate(currentDate + CDateTimeSpan(iFutureDays, 0, 0, 0));
       if (endDate > maxFutureDate)
         endDate = maxFutureDate;
 
-      if (m_guiState)
-        timeline->Sort(m_guiState->GetSortMethod());
+      std::unique_ptr<CFileItemList> timeline(new CFileItemList);
+      std::unique_ptr<CFileItemList> channels(new CFileItemList);
+      const std::vector<std::shared_ptr<PVRChannelGroupMember>> groupMembers =
+          group->GetMembers(CPVRChannelGroup::Include::ONLY_VISIBLE);
 
-      // can be very expensive. never call with lock acquired.
-      epgGridContainer->SetTimelineItems(timeline, startDate, endDate);
+      if (m_bFirstOpen)
+      {
+        m_bFirstOpen = false;
+
+        // very first open of the window. come up with some data very fast...
+        for (const auto& groupMember : groupMembers)
+        {
+          // fake a channel without epg
+          const std::shared_ptr<CPVREpgInfoTag> gapTag
+            = std::make_shared<CPVREpgInfoTag>(std::make_shared<CPVREpgChannelData>(*(groupMember->channel)), -1);
+          timeline->Add(std::make_shared<CFileItem>(gapTag));
+
+          channels->Add(std::make_shared<CFileItem>(groupMember->channel));
+        }
+
+        if (m_guiState)
+          channels->Sort(m_guiState->GetSortMethod());
+
+        epgGridContainer->SetTimelineItems(channels, startDate, endDate, true);
+
+        // next, fetch actual data.
+        m_bRefreshTimelineItems = true;
+        m_refreshTimelineItemsThread->DoRefresh(false);
+      }
+      else
+      {
+        // can be very expensive. never call with lock acquired.
+        std::vector<std::shared_ptr<CPVREpgInfoTag>> tags;
+        for (const auto& groupMember : groupMembers)
+        {
+          tags = groupMember->channel->GetEpgTags();
+          for (const auto& tag : tags)
+          {
+            timeline->Add(std::make_shared<CFileItem>(tag));
+          }
+          channels->Add(std::make_shared<CFileItem>(groupMember->channel));
+        }
+
+        if (m_guiState)
+          channels->Sort(m_guiState->GetSortMethod());
+
+        epgGridContainer->SetTimelineItems(channels, startDate, endDate, false);
+      }
 
       {
         CSingleLock lock(m_critSection);

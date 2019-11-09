@@ -24,15 +24,10 @@ namespace PVR
 {
   struct GridItem
   {
-    GridItem(const std::shared_ptr<CFileItem>& _item,
-             float _width,
-             int _startBlock,
-             int _endBlock,
-             int _progIndex)
+    GridItem(const std::shared_ptr<CFileItem>& _item, float _width, int _startBlock, int _endBlock)
       : item(_item),
         originWidth(_width),
         width(_width),
-        progIndex(_progIndex),
         startBlock(_startBlock),
         endBlock(_endBlock)
     {
@@ -41,7 +36,6 @@ namespace PVR
     std::shared_ptr<CFileItem> item;
     float originWidth = 0.0f;
     float width = 0.0f;
-    int progIndex = -1;
     int startBlock = 0;
     int endBlock = 0;
   };
@@ -65,7 +59,8 @@ namespace PVR
                     int iFirstBlock,
                     int iBlocksPerPage,
                     int iRulerUnit,
-                    float fBlockSize);
+                    float fBlockSize,
+                    bool bFirstOpen);
     void SetInvalid();
 
     static const int INVALID_INDEX = -1;
@@ -74,10 +69,6 @@ namespace PVR
     void FreeChannelMemory(int keepStart, int keepEnd);
     void FreeProgrammeMemory(int firstChannel, int lastChannel, int firstBlock, int lastBlock);
     void FreeRulerMemory(int keepStart, int keepEnd);
-
-    std::shared_ptr<CFileItem> GetProgrammeItem(int iIndex) const { return m_programmeItems[iIndex]; }
-    bool HasProgrammeItems() const { return !m_programmeItems.empty(); }
-    int ProgrammeItemsSize() const { return static_cast<int>(m_programmeItems.size()); }
 
     std::shared_ptr<CFileItem> GetChannelItem(int iIndex) const { return m_channelItems[iIndex]; }
     bool HasChannelItems() const { return !m_channelItems.empty(); }
@@ -92,7 +83,6 @@ namespace PVR
     int GetGridItemEndBlock(int iChannel, int iBlock) const;
     float GetGridItemWidth(int iChannel, int iBlock) const;
     float GetGridItemOriginWidth(int iChannel, int iBlock) const;
-    int GetGridItemIndex(int iChannel, int iBlock) const;
     void SetGridItemWidth(int iChannel, int iBlock, float fWidth);
 
     bool IsZeroGridDuration() const { return (m_gridEnd - m_gridStart) == CDateTimeSpan(0, 0, 0, 0); }
@@ -109,24 +99,20 @@ namespace PVR
     int GetLastEventBlock(const std::shared_ptr<CPVREpgInfoTag>& event) const;
 
   private:
-    void FreeItemsMemory();
     GridItem* GetGridItemPtr(int iChannel, int iBlock) const;
     std::shared_ptr<CFileItem> CreateGapItem(int iChannel) const;
     std::shared_ptr<CFileItem> GetGapItem(int iChannel, int iStartBlock) const;
 
-    struct ItemsPtr
-    {
-      long start;
-      long stop;
-    };
+    using EpgTagsMap = std::unordered_map<int, std::vector<std::shared_ptr<CFileItem>>>;
+    const EpgTagsMap::const_iterator GetChannelEpgTags(int iChannel) const;
+
+    mutable EpgTagsMap m_epgItems;
 
     CDateTime m_gridStart;
     CDateTime m_gridEnd;
 
-    std::vector<std::shared_ptr<CFileItem>> m_programmeItems;
     std::vector<std::shared_ptr<CFileItem>> m_channelItems;
     std::vector<std::shared_ptr<CFileItem>> m_rulerItems;
-    std::vector<ItemsPtr> m_epgItemsPtr;
 
     struct GridCoordinates
     {
@@ -159,5 +145,7 @@ namespace PVR
     int m_lastActiveChannel = 0;
     int m_firstActiveBlock = 0;
     int m_lastActiveBlock = 0;
+
+    bool m_bFirstOpen = true;
   };
 }

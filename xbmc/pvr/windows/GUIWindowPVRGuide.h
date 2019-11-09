@@ -85,6 +85,8 @@ namespace PVR
 
     void RefreshView(CGUIMessage& message, bool bInitGridControl);
 
+    int GetCurrentListItemIndex(const std::shared_ptr<CFileItem>& item);
+
     std::unique_ptr<CPVRRefreshTimelineItemsThread> m_refreshTimelineItemsThread;
     std::atomic_bool m_bRefreshTimelineItems;
     std::atomic_bool m_bSyncRefreshTimelineItems;
