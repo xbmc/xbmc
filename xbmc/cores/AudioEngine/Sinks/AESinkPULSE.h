@@ -12,7 +12,9 @@
 #include "cores/AudioEngine/Utils/AEDeviceInfo.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
 #include "threads/CriticalSection.h"
+#include "threads/Thread.h"
 
+#include <atomic>
 #include <memory>
 
 #include <pulse/pulseaudio.h>
@@ -48,7 +50,10 @@ public:
   bool IsInitialized();
   void UpdateInternalVolume(const pa_cvolume* nVol);
   pa_stream* GetInternalStream();
+  pa_threaded_mainloop* GetInternalMainLoop();
   CCriticalSection m_sec;
+  std::atomic<int> m_requestedBytes;
+
 private:
   void Pause(bool pause);
   static inline bool WaitForOperation(pa_operation *op, pa_threaded_mainloop *mainloop, const char *LogEntry);
@@ -69,6 +74,8 @@ private:
 
   pa_context *m_Context;
   pa_threaded_mainloop *m_MainLoop;
+
+  XbmcThreads::EndTime m_extTimer;
 
   static std::unique_ptr<CDriverMonitor> m_pMonitor;
 };

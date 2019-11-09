@@ -207,7 +207,14 @@ static void StreamStateCallback(pa_stream *s, void *userdata)
 
 static void StreamRequestCallback(pa_stream *s, size_t length, void *userdata)
 {
-  pa_threaded_mainloop* m = static_cast<pa_threaded_mainloop*>(userdata);
+  CAESinkPULSE* p = static_cast<CAESinkPULSE*>(userdata);
+  if (!p)
+    return;
+
+  pa_threaded_mainloop* m = p->GetInternalMainLoop();
+  // pulse always tells us the total number of bytes
+  // we can add.
+  p->m_requestedBytes = static_cast<int>(length);
   pa_threaded_mainloop_signal(m, 0);
 }
 
@@ -720,6 +727,7 @@ CAESinkPULSE::CAESinkPULSE()
   m_IsStreamPaused = false;
   m_volume_needs_update = false;
   m_periodSize = 0;
+  m_requestedBytes = 0;
   pa_cvolume_init(&m_Volume);
 }
 
@@ -908,7 +916,7 @@ bool CAESinkPULSE::Initialize(AEAudioFormat &format, std::string &device)
   }
 
   pa_stream_set_state_callback(m_Stream, StreamStateCallback, m_MainLoop);
-  pa_stream_set_write_callback(m_Stream, StreamRequestCallback, m_MainLoop);
+  pa_stream_set_write_callback(m_Stream, StreamRequestCallback, this);
   pa_stream_set_latency_update_callback(m_Stream, StreamLatencyUpdateCallback, m_MainLoop);
 
   // default buffer construction
@@ -1011,7 +1019,6 @@ bool CAESinkPULSE::Initialize(AEAudioFormat &format, std::string &device)
     CSingleLock lock(m_sec);
     m_IsAllocated = true;
   }
-
   return true;
 }
 
@@ -1021,6 +1028,7 @@ void CAESinkPULSE::Deinitialize()
   m_IsAllocated = false;
   m_passthrough = false;
   m_periodSize = 0;
+  m_requestedBytes = 0;
 
   if (m_Stream)
     Drain();
@@ -1090,22 +1098,39 @@ unsigned int CAESinkPULSE::AddPackets(uint8_t **data, unsigned int frames, unsig
   pa_threaded_mainloop_lock(m_MainLoop);
 
   unsigned int available = frames * m_format.m_frameSize;
-  unsigned int length = 0;
+  unsigned int length = m_periodSize;
   void *buffer = data[0]+offset*m_format.m_frameSize;
-  // care a bit for fragmentation
-  while ((length = pa_stream_writable_size(m_Stream)) < m_periodSize)
-    pa_threaded_mainloop_wait(m_MainLoop);
-
-  length =  std::min(length, available);
-
-  int error = pa_stream_write(m_Stream, buffer, length, NULL, 0, PA_SEEK_RELATIVE);
-  pa_threaded_mainloop_unlock(m_MainLoop);
-
-  if (error)
+  unsigned int wait_time = static_cast<unsigned int>(1000.0 * m_BufferSize / m_BytesPerSecond);
+  m_extTimer.Set(wait_time);
+  // we don't want to block forever - if timer expires pa_stream_write will
+  // fail - therefore we don't care and just return 0;
+  while (!m_extTimer.IsTimePast())
   {
-    CLog::Log(LOGERROR, "CPulseAudioDirectSound::AddPackets - pa_stream_write failed\n");
+    if (m_requestedBytes > 0)
+      break;
+    pa_threaded_mainloop_wait(m_MainLoop);
+  }
+
+  if (m_extTimer.IsTimePast())
+  {
+    CLog::Log(LOGERROR, "Sink Timer expired for more than buffer time: %ul", wait_time);
+    pa_threaded_mainloop_unlock(m_MainLoop);
     return 0;
   }
+
+  length = std::min(length, available);
+  int error = pa_stream_write(m_Stream, buffer, length, NULL, 0, PA_SEEK_RELATIVE);
+  pa_threaded_mainloop_unlock(m_MainLoop);
+  if (error)
+  {
+    CLog::Log(LOGERROR, "CAESinkPULSE::AddPackets - pa_stream_write failed: %d", error);
+    return 0;
+  }
+
+  // subtract here, as we might come back earlier than our callback and there is
+  // still space in the buffer to write another time
+  m_requestedBytes -= length;
+
   unsigned int res = length / m_format.m_frameSize;
 
   return res;
@@ -1126,6 +1151,13 @@ void CAESinkPULSE::Drain()
 pa_stream* CAESinkPULSE::GetInternalStream()
 {
   return m_Stream;
+}
+
+// This is a helper to use the internal mainloop from another thread, e.g. a RequestCallback
+// it is shipped via the userdata. Don't use it for other purposes than signalling
+pa_threaded_mainloop* CAESinkPULSE::GetInternalMainLoop()
+{
+  return m_MainLoop;
 }
 
 void CAESinkPULSE::UpdateInternalVolume(const pa_cvolume* nVol)
