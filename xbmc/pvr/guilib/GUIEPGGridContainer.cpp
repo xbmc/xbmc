@@ -1665,13 +1665,11 @@ void CGUIEPGGridContainer::GoToTop()
 {
   if (m_orientation == VERTICAL)
   {
-    if (m_gridModel->HasChannelItems())
-      GoToChannel(0);
+    GoToChannel(0);
   }
   else
   {
-    if (m_gridModel->HasProgrammeItems())
-      GoToBlock(0);
+    GoToBlock(0);
   }
 }
 
@@ -1681,11 +1679,15 @@ void CGUIEPGGridContainer::GoToBottom()
   {
     if (m_gridModel->HasChannelItems())
       GoToChannel(m_gridModel->ChannelItemsSize() - 1);
+    else
+      GoToChannel(0);
   }
   else
   {
-    if (m_gridModel->HasProgrammeItems())
-      GoToBlock(m_gridModel->ProgrammeItemsSize() - 1);
+    if (m_gridModel->GetBlockCount() > 0)
+      GoToBlock(m_gridModel->GetBlockCount() - 1);
+    else
+      GoToBlock(0);
   }
 }
 
@@ -1693,13 +1695,11 @@ void CGUIEPGGridContainer::GoToMostLeft()
 {
   if (m_orientation == VERTICAL)
   {
-    if (m_gridModel->HasProgrammeItems())
-      GoToBlock(m_gridModel->ProgrammeItemsSize() - 1);
+    GoToBlock(0);
   }
   else
   {
-    if (m_gridModel->HasChannelItems())
-      GoToChannel(m_gridModel->ChannelItemsSize() - 1);
+    GoToChannel(0);
   }
 }
 
@@ -1707,12 +1707,16 @@ void CGUIEPGGridContainer::GoToMostRight()
 {
   if (m_orientation == VERTICAL)
   {
-    if (m_gridModel->HasProgrammeItems())
+    if (m_gridModel->GetBlockCount() > 0)
+      GoToBlock(m_gridModel->GetBlockCount() - 1);
+    else
       GoToBlock(0);
   }
   else
   {
     if (m_gridModel->HasChannelItems())
+      GoToChannel(m_gridModel->ChannelItemsSize() - 1);
+    else
       GoToChannel(0);
   }
 }
