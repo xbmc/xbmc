@@ -13,6 +13,7 @@
 #include "utils/Temperature.h"
 
 #include <fstream>
+#include <regex>
 #include <sstream>
 #include <vector>
 
@@ -180,6 +181,37 @@ CCPUInfoLinux::CCPUInfoLinux()
 
       if (edx & CPUID_80000001_EDX_3DNOWEXT)
         m_cpuFeatures |= CPU_FEATURE_3DNOWEXT;
+    }
+  }
+#else
+  std::ifstream cpuinfo("/proc/cpuinfo");
+  std::regex re(".*: (.*)$");
+
+  for (std::string line; std::getline(cpuinfo, line);)
+  {
+    std::smatch match;
+
+    if (std::regex_match(line, match, re))
+    {
+      if (match.size() == 2)
+      {
+        std::ssub_match value = match[1];
+
+        if (line.find("model name") != std::string::npos)
+          m_cpuModel = value.str();
+
+        if (line.find("BogoMIPS") != std::string::npos)
+          m_cpuBogoMips = value.str();
+
+        if (line.find("Hardware") != std::string::npos)
+          m_cpuHardware = value.str();
+
+        if (line.find("Serial") != std::string::npos)
+          m_cpuSerial = value.str();
+
+        if (line.find("Revision") != std::string::npos)
+          m_cpuRevision = value.str();
+      }
     }
   }
 #endif
