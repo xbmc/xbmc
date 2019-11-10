@@ -725,6 +725,10 @@ AVDictionary* CDVDDemuxFFmpeg::GetFFMpegOptionsFromInput()
   CURL url = m_pInput->GetURL();
   AVDictionary* options = nullptr;
 
+  // For a local file we need the following protocol whitelist
+  if (url.GetProtocol().empty() || url.IsProtocol("file"))
+    av_dict_set(&options, "protocol_whitelist", "file,http,https,tcp,tls,crypto", 0);
+
   if (url.IsProtocol("http") || url.IsProtocol("https"))
   {
     std::map<std::string, std::string> protocolOptions;
