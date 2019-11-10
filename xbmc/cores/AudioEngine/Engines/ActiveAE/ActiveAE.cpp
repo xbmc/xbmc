@@ -1381,12 +1381,12 @@ void CActiveAE::Configure(AEAudioFormat *desiredFmt)
 
         // input buffers
         m_vizBuffersInput = new CActiveAEBufferPool(m_internalFormat);
-        m_vizBuffersInput->Create(2000);
+        m_vizBuffersInput->Create(2000 + m_stats.GetMaxDelay() * 1000);
 
         // resample buffers
         m_vizBuffers = new CActiveAEBufferPoolResample(m_internalFormat, vizFormat, m_settings.resampleQuality);
         //! @todo use cache of sync + water level
-        m_vizBuffers->Create(2000, false, false);
+        m_vizBuffers->Create(2000 + m_stats.GetMaxDelay() * 1000, false, false);
         m_vizInitialized = false;
       }
     }
