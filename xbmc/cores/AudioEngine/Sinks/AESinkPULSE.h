@@ -66,6 +66,7 @@ private:
   unsigned int m_BytesPerSecond;
   unsigned int m_BufferSize;
   unsigned int m_Channels;
+  double m_maxLatency;
 
   pa_stream *m_Stream;
   pa_cvolume m_Volume;

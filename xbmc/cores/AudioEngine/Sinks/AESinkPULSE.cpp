@@ -722,6 +722,7 @@ CAESinkPULSE::CAESinkPULSE()
   m_BytesPerSecond = 0;
   m_BufferSize = 0;
   m_Channels = 0;
+  m_maxLatency = 0.0;
   m_Stream = NULL;
   m_Context = NULL;
   m_IsStreamPaused = false;
@@ -746,6 +747,7 @@ bool CAESinkPULSE::Initialize(AEAudioFormat &format, std::string &device)
   m_BytesPerSecond = 0;
   m_BufferSize = 0;
   m_Channels = 0;
+  m_maxLatency = 0.0;
   m_Stream = NULL;
   m_Context = NULL;
   m_periodSize = 0;
@@ -989,6 +991,7 @@ bool CAESinkPULSE::Initialize(AEAudioFormat &format, std::string &device)
     m_periodSize = a->minreq;
 
     format.m_frames = packetSize / frameSize;
+    m_maxLatency = static_cast<double>(m_BufferSize) / m_BytesPerSecond;
   }
 
   {
@@ -1029,6 +1032,7 @@ void CAESinkPULSE::Deinitialize()
   m_passthrough = false;
   m_periodSize = 0;
   m_requestedBytes = 0;
+  m_maxLatency = 0.0;
 
   if (m_Stream)
     Drain();
@@ -1076,13 +1080,17 @@ void CAESinkPULSE::GetDelay(AEDelayStatus& status)
   if (pa_stream_get_latency(m_Stream, &r_usec, &negative) < 0)
     r_usec = 0;
 
+  double delay = r_usec / 1000000.0;
+  if (delay > m_maxLatency)
+    m_maxLatency = delay;
+
   pa_threaded_mainloop_unlock(m_MainLoop);
-  status.SetDelay(r_usec / 1000000.0);
+  status.SetDelay(delay);
 }
 
 double CAESinkPULSE::GetCacheTotal()
 {
-  return (float)m_BufferSize / (float)m_BytesPerSecond;
+  return m_maxLatency;
 }
 
 unsigned int CAESinkPULSE::AddPackets(uint8_t **data, unsigned int frames, unsigned int offset)
