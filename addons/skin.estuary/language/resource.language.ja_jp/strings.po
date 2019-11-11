@@ -258,7 +258,7 @@ msgstr "最終更新時刻"
 
 msgctxt "#31071"
 msgid "by"
-msgstr "で"
+msgstr "by"
 
 msgctxt "#31072"
 msgid "Power Options"

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<addon id="skin.estuary" version="2.0.25" name="Estuary" provider-name="phil65, Ichabod Fletchman">
+<addon id="skin.estuary" version="2.0.26" name="Estuary" provider-name="phil65, Ichabod Fletchman">
 	<requires>
 		<import addon="xbmc.gui" version="5.14.0"/>
 	</requires>
@@ -105,7 +105,7 @@
 		<description lang="uk_UA">Estuary є стандартною обкладинкою Kodi 17.0 і подальших версій. Її основна ідея — простота використання для нових користувачів Kodi.</description>
 		<description lang="zh_CN">Estuary 是 Kodi 17.0 的默认皮肤。它力求使首次使用 Kodi 的用户易于上手。</description>
 		<description lang="zh_TW">Estuary是Kodi 17.0開始搭載的預設佈景主題。主要在讓第一次使用 Kodi 的使用者可以簡單地上手。</description>
-		<disclaimer lang="af_ZA">Confluence is die bestek oortreksel vir Kodi, verwydering mag probleme veroorsaak</disclaimer>
+		<disclaimer lang="af_ZA">Estuary is die bestek oortreksel vir Kodi, verwydering mag probleme veroorsaak</disclaimer>
 		<disclaimer lang="bg_BG">Estuary е стандартният облик на Kodi. Премахването му може да предизвика проблеми</disclaimer>
 		<disclaimer lang="ca_ES">Estuary és l'aparença predeterminada de Kodi, si s'elimina pot causar problemes.</disclaimer>
 		<disclaimer lang="cs_CZ">Estuary je výchozí vzhled pro Kodi, jeho odebrání může způsobit problémy</disclaimer>

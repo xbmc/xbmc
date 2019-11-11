@@ -210,7 +210,7 @@ msgstr "Baseret på Arial"
 
 msgctxt "#31054"
 msgid "Press [B]Left[/B] to rewind, or [B]Right[/B] to fast-forward"
-msgstr "Tryk {B]Venstre[/B] for tilbagespoling, eller [B]Højre[/B] for at spole fremad"
+msgstr "Tryk [B]Venstre[/B] for tilbagespoling, eller [B]Højre[/B] for at spole fremad"
 
 msgctxt "#31056"
 msgid "Go to playlist"

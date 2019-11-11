@@ -554,7 +554,7 @@ msgstr "Tastatură numerică"
 
 msgctxt "#31162"
 msgid "Play your personal games or download one of the many game add-ons from the official repository."
-msgstr "Redați-vă jocurile personale sau descărcați unul din multele add-on-uri de jocuri din depozitul oficial."
+msgstr "Rulati jocurile personale sau descărcați unul din multele add-on-uri de jocuri din libraria oficiala."
 
 msgctxt "#31163"
 msgid "Show Fanart background"
@@ -571,3 +571,7 @@ msgstr "Nume profil"
 msgctxt "#31166"
 msgid "Profile avatar"
 msgstr "Avatar profil"
+
+msgctxt "#31167"
+msgid "Animate background"
+msgstr "Animați fundalul"
