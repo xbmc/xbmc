@@ -326,7 +326,7 @@ msgstr "Estouchyの操作で2つ知っておくべきことがあります"
 
 msgctxt "#31902"
 msgid "The Kodi logo functions as a 'HOME' button. Whenever you touch it, you will be taken back to the home screen."
-msgstr "Kodiのロゴは 'ホーム' ボタンになっています。どんなときでもタッチすればホーム画面に戻ってこられます。"
+msgstr "Kodiのロゴは 'ホーム' ボタンになっています。どんなときでもタッチすればホーム画面に戻れます。"
 
 msgctxt "#31903"
 msgid "When you are playing audio or video, the item title will appear at the top of the screen. Touching it will take you to the fullscreen visualization or video window."
