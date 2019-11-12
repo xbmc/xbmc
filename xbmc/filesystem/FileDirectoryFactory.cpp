@@ -54,7 +54,7 @@ IFileDirectory* CFileDirectoryFactory::Create(const CURL& url, CFileItem* pItem,
       if (CAudioDecoder::HasTracks(addonInfo))
       {
         auto exts = StringUtils::Split(CAudioDecoder::GetExtensions(addonInfo), "|");
-        if (std::find(exts.begin(), exts.end(), "." + strExtension) != exts.end())
+        if (std::find(exts.begin(), exts.end(), strExtension) != exts.end())
         {
           CAudioDecoder* result = new CAudioDecoder(addonInfo);
           if (!result->CreateDecoder() || !result->ContainsFiles(url))
@@ -75,7 +75,7 @@ IFileDirectory* CFileDirectoryFactory::Create(const CURL& url, CFileItem* pItem,
       if (vfsAddon->HasFileDirectories())
       {
         auto exts = StringUtils::Split(vfsAddon->GetExtensions(), "|");
-        if (std::find(exts.begin(), exts.end(), "." + strExtension) != exts.end())
+        if (std::find(exts.begin(), exts.end(), strExtension) != exts.end())
         {
           CVFSEntryIFileDirectoryWrapper* wrap = new CVFSEntryIFileDirectoryWrapper(vfsAddon);
           if (wrap->ContainsFiles(url))
