@@ -231,6 +231,9 @@ typedef enum {
   XBMCK_FASTFORWARD       = 343,
   XBMCK_EJECT             = 344,
 
+  // Remote control buttons
+  XBMCK_SUBTITLE          = 345,
+
   XBMCK_LAST
 } XBMCKey;
 
