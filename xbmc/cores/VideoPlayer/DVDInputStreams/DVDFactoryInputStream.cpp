@@ -7,29 +7,30 @@
  */
 
 #include "DVDFactoryInputStream.h"
+
 #include "DVDInputStream.h"
+#ifdef HAVE_LIBBLURAY
+#include "DVDInputStreamBluray.h"
+#endif
+#include "DVDInputStreamFFmpeg.h"
 #include "DVDInputStreamFile.h"
 #include "DVDInputStreamNavigator.h"
-#include "DVDInputStreamFFmpeg.h"
+#include "DVDInputStreamStack.h"
+#include "FileItem.h"
 #include "InputStreamAddon.h"
 #include "InputStreamMultiSource.h"
 #include "InputStreamPVRChannel.h"
 #include "InputStreamPVRRecording.h"
-#ifdef HAVE_LIBBLURAY
-#include "DVDInputStreamBluray.h"
-#endif
-#include "DVDInputStreamStack.h"
-#include "FileItem.h"
-#include "storage/MediaManager.h"
+#include "ServiceBroker.h"
 #include "URL.h"
+#include "Util.h"
+#include "addons/binary-addons/BinaryAddonManager.h"
 #include "cores/VideoPlayer/Interface/Addon/InputStreamConstants.h"
 #include "filesystem/CurlFile.h"
 #include "filesystem/File.h"
 #include "filesystem/IFileTypes.h"
+#include "storage/MediaManager.h"
 #include "utils/URIUtils.h"
-#include "ServiceBroker.h"
-#include "addons/binary-addons/BinaryAddonManager.h"
-#include "Util.h"
 
 
 std::shared_ptr<CDVDInputStream> CDVDFactoryInputStream::CreateInputStream(IVideoPlayer* pPlayer, const CFileItem &fileitem, bool scanforextaudio)
