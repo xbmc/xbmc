@@ -371,8 +371,10 @@
       <z>AspectRatio</z>
       <zoom>AspectRatio</zoom>
       <t>ShowSubtitles</t>
+      <subtitle>ShowSubtitles</subtitle>
       <t mod="ctrl">SubtitleAlign</t>
       <l>NextSubtitle</l>
+      <subtitle mod="longpress">NextSubtitle</subtitle>
       <left>StepBack</left>
       <right>StepForward</right>
       <up>ChapterOrBigStepForward</up>
@@ -571,7 +573,9 @@
       <z>AspectRatio</z>
       <zoom>AspectRatio</zoom>
       <t>ShowSubtitles</t>
+      <subtitle>ShowSubtitles</subtitle>
       <l>NextSubtitle</l>
+      <subtitle mod="longpress">NextSubtitle</subtitle>
       <a>AudioDelay</a>
       <escape>Fullscreen</escape>
       <return>Select</return>
