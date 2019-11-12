@@ -522,6 +522,11 @@ CDVDInputStream::IChapter* CInputStreamAddon::GetIChapter()
   return this;
 }
 
+int CInputStreamAddon::GetTitle()
+{
+  return -1;
+}
+
 int CInputStreamAddon::GetChapter()
 {
   if (m_struct.toAddon.get_chapter)

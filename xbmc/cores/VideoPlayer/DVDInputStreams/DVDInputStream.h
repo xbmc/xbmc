@@ -83,11 +83,13 @@ public:
   {
   public:
     virtual ~IChapter() = default;
+    virtual int GetTitle() = 0;
     virtual int  GetChapter() = 0;
     virtual int  GetChapterCount() = 0;
     virtual void GetChapterName(std::string& name, int ch=-1) = 0;
     virtual int64_t GetChapterPos(int ch=-1) = 0;
     virtual bool SeekChapter(int ch) = 0;
+    virtual bool SeekTitle(int tt) = 0;
   };
 
   class IMenus

@@ -954,6 +954,10 @@ bool CVideoLibrary::FillFileItemList(const CVariant &parameterObject, CFileItemL
   CFileItemPtr fileItem(new CFileItem());
   if (FillFileItem(file, fileItem))
   {
+    if (parameterObject.isMember("title"))
+    {
+      fileItem->SetStartTitle(parameterObject["title"].asInteger());
+    }
     success = true;
     list.Add(fileItem);
   }

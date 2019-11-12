@@ -96,11 +96,13 @@ public:
   bool GetState(std::string &xmlstate) override;
   bool SetState(const std::string &xmlstate) override;
 
+  int GetTitle() override { return m_iTitle; } // the current title
   int GetChapter() override { return m_iPart; } // the current part in the current title
   int GetChapterCount() override { return m_iPartCount; } // the number of parts in the current title
   void GetChapterName(std::string& name, int idx=-1) override {};
   int64_t GetChapterPos(int ch=-1) override;
   bool SeekChapter(int iChapter) override;
+  bool SeekTitle(int iTitle) override;
 
   CDVDInputStream::IDisplayTime* GetIDisplayTime() override { return this; }
   int GetTotalTime() override; // the total time in milli seconds

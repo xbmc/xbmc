@@ -413,6 +413,10 @@ bool CFileItemHandler::FillFileItemList(const CVariant &parameterObject, CFileIt
     if (!added)
     {
       CFileItemPtr item = CFileItemPtr(new CFileItem(file, false));
+      if (parameterObject.isMember("title"))
+      {
+        item->SetStartTitle(parameterObject["title"].asInteger());
+      }
       if (item->IsPicture())
       {
         CPictureInfoTag picture;

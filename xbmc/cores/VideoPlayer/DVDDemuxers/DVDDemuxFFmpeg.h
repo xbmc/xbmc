@@ -96,8 +96,10 @@ public:
   void SetProgram(int progId) override;
 
   bool SeekChapter(int chapter, double* startpts = NULL) override;
+  bool SeekTitle(int title) override;
   int GetChapterCount() override;
   int GetChapter() override;
+  int GetTitle() override;
   void GetChapterName(std::string& strChapterName, int chapterIdx=-1) override;
   int64_t GetChapterPos(int chapterIdx = -1) override;
   std::string GetStreamCodecName(int iStreamId) override;

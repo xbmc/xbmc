@@ -45,6 +45,7 @@ struct SPlayerState
     player_state  = "";
     isInMenu = false;
     hasMenu = false;
+    title = 0;
     chapter = 0;
     chapters.clear();
     canpause = false;
@@ -74,6 +75,7 @@ struct SPlayerState
   bool hasMenu;
   bool streamsReady;
 
+  int title; // current title
   int chapter;              // current chapter
   std::vector<std::pair<std::string, int64_t>> chapters; // name and position for chapters
 
@@ -290,6 +292,7 @@ public:
 
   int  GetChapterCount() override;
   int  GetChapter() override;
+  int GetTitle() override;
   void GetChapterName(std::string& strChapterName, int chapterIdx=-1) override;
   int64_t GetChapterPos(int chapterIdx=-1) override;
   int  SeekChapter(int iChapter) override;

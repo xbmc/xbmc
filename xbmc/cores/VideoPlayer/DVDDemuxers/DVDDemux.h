@@ -252,6 +252,11 @@ public:
   virtual bool SeekChapter(int chapter, double* startpts = NULL) { return false; }
 
   /*
+   * Starts the specified title.
+   */
+  virtual bool SeekTitle(int title) { return false; }
+
+  /*
    * Get the number of chapters available
    */
   virtual int GetChapterCount() { return 0; }
@@ -260,6 +265,11 @@ public:
    * Get current chapter
    */
   virtual int GetChapter() { return 0; }
+
+  /*
+   * Get current title
+   */
+  virtual int GetTitle() { return 0; }
 
   /*
    * Get the name of a chapter

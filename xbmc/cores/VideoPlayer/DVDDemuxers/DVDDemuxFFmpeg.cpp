@@ -1824,6 +1824,16 @@ int CDVDDemuxFFmpeg::GetChapter()
   return 0;
 }
 
+int CDVDDemuxFFmpeg::GetTitle()
+{
+  std::shared_ptr<CDVDInputStream::IChapter> ich =
+    std::dynamic_pointer_cast<CDVDInputStream::IChapter>(m_pInput);
+  if (ich)
+    return ich->GetTitle();
+
+  return 0;
+}
+
 void CDVDDemuxFFmpeg::GetChapterName(std::string& strChapterName, int chapterIdx)
 {
   if (chapterIdx <= 0 || chapterIdx > GetChapterCount())
@@ -1887,6 +1897,25 @@ bool CDVDDemuxFFmpeg::SeekChapter(int chapter, double* startpts)
   AVChapter* ch = m_pFormatContext->chapters[chapter - 1];
   double dts = ConvertTimestamp(ch->start, ch->time_base.den, ch->time_base.num);
   return SeekTime(DVD_TIME_TO_MSEC(dts), true, startpts);
+}
+
+bool CDVDDemuxFFmpeg::SeekTitle(int title)
+{
+  if (title < 1)
+    return false;
+
+  std::shared_ptr<CDVDInputStream::IChapter> ich =
+    std::dynamic_pointer_cast<CDVDInputStream::IChapter>(m_pInput);
+  if (ich)
+  {
+    CLog::Log(LOGDEBUG, "%s - title seeking using input stream", __FUNCTION__);
+    if (!ich->SeekTitle(title))
+      return false;
+
+    return true;
+  }
+
+  return false;
 }
 
 std::string CDVDDemuxFFmpeg::GetStreamCodecName(int iStreamId)

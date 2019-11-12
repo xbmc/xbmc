@@ -1276,6 +1276,28 @@ bool CDVDInputStreamNavigator::SeekChapter(int iChapter)
   return true;
 }
 
+bool CDVDInputStreamNavigator::SeekTitle(int iTitle)
+{
+  if (!m_dvdnav)
+    return false;
+
+  bool enabled = IsSubtitleStreamEnabled();
+  int audio = GetActiveAudioStream();
+  int subtitle = GetActiveSubtitleStream();
+
+  if (m_dll.dvdnav_title_play(m_dvdnav, iTitle) == DVDNAV_STATUS_ERR)
+  {
+    CLog::Log(LOGERROR, "dvdnav: dvdnav_title_play failed( %s )",
+              m_dll.dvdnav_err_to_string(m_dvdnav));
+    return false;
+  }
+
+  SetActiveSubtitleStream(subtitle);
+  SetActiveAudioStream(audio);
+  EnableSubtitleStream(enabled);
+  return true;
+}
+
 float CDVDInputStreamNavigator::GetVideoAspectRatio()
 {
   int iAspect = m_dll.dvdnav_get_video_aspect(m_dvdnav);

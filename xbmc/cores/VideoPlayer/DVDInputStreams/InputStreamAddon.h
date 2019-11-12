@@ -89,11 +89,13 @@ public:
 
   // IChapter
   CDVDInputStream::IChapter* GetIChapter() override;
+  int GetTitle() override;
   int GetChapter() override;
   int GetChapterCount() override;
   void GetChapterName(std::string& name, int ch = -1) override;
   int64_t GetChapterPos(int ch = -1) override;
   bool SeekChapter(int ch) override;
+  bool SeekTitle(int tt) override { return false; }
 
 protected:
   static int ConvertVideoCodecProfile(STREAMCODEC_PROFILE profile);

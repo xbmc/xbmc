@@ -2811,6 +2811,7 @@ bool CApplication::PlayFile(CFileItem item, const std::string& player, bool bRes
   }
 
   options.starttime = CUtil::ConvertMilliSecsToSecs(item.m_lStartOffset);
+  options.starttitle = item.GetStartTitle();
 
   if (bRestart)
   {

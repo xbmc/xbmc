@@ -455,6 +455,7 @@ CFileItem& CFileItem::operator=(const CFileItem& item)
 
   m_lStartOffset = item.m_lStartOffset;
   m_lStartPartNumber = item.m_lStartPartNumber;
+  m_iStartTitle = item.m_iStartTitle;
   m_lEndOffset = item.m_lEndOffset;
   m_strDVDLabel = item.m_strDVDLabel;
   m_strTitle = item.m_strTitle;
@@ -487,6 +488,7 @@ void CFileItem::Initialize()
   m_iDriveType = CMediaSource::SOURCE_TYPE_UNKNOWN;
   m_lStartOffset = 0;
   m_lStartPartNumber = 1;
+  m_iStartTitle = -1;
   m_lEndOffset = 0;
   m_iprogramCount = 0;
   m_idepth = 1;

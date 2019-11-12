@@ -254,6 +254,8 @@ public:
   void FillInDefaultIcon();
   void SetFileSizeLabel();
   void SetLabel(const std::string &strLabel) override;
+  void SetStartTitle(int tt) { m_iStartTitle = tt; }
+  int GetStartTitle() const { return m_iStartTitle; }
   int GetVideoContentType() const; /* return VIDEODB_CONTENT_TYPE, but don't want to include videodb in this header */
   bool IsLabelPreformatted() const { return m_bLabelPreformatted; }
   void SetLabelPreformatted(bool bYesNo) { m_bLabelPreformatted=bYesNo; }
@@ -531,6 +533,7 @@ public:
   int m_idepth;
   int64_t m_lStartOffset;
   int m_lStartPartNumber;
+  int m_iStartTitle;
   int64_t m_lEndOffset;
   LockType m_iLockMode;
   std::string m_strLockCode;

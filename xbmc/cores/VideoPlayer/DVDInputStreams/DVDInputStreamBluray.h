@@ -96,11 +96,13 @@ public:
   bool MouseMove(const CPoint &point);
   bool MouseClick(const CPoint &point);
 
+  int GetTitle() override;
   int GetChapter() override;
   int GetChapterCount() override;
   void GetChapterName(std::string& name, int ch=-1) override {};
   int64_t GetChapterPos(int ch) override;
   bool SeekChapter(int ch) override;
+  bool SeekTitle(int tt) override { return false; }
 
   CDVDInputStream::IDisplayTime* GetIDisplayTime() override { return this; }
   int GetTotalTime() override;

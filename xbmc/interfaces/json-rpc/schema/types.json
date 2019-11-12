@@ -152,7 +152,7 @@
   },
   "Playlist.Item": {
     "type": [
-      { "type": "object", "properties": { "file": { "type": "string", "description": "Path to a file (not a directory) to be added to the playlist", "required": true } }, "additionalProperties": false },
+      { "type": "object", "properties": { "file": { "type": "string", "description": "Path to a file (not a directory) to be added to the playlist", "required": true }, "title": { "type": "integer", "description": "Title on disc to play", "default": -1 } }, "additionalProperties": false },
       { "type": "object", "properties": { "directory": { "type": "string", "required": true }, "recursive": { "type": "boolean", "default": false }, "media": { "$ref": "Files.Media", "default": "files" } }, "additionalProperties": false },
       { "type": "object", "properties": { "movieid": { "$ref": "Library.Id", "required": true } }, "additionalProperties": false },
       { "type": "object", "properties": { "episodeid": { "$ref": "Library.Id", "required": true } }, "additionalProperties": false },
@@ -254,7 +254,7 @@
   },
   "Player.Property.Name": {
     "type": "string",
-    "enum": [ "type", "partymode", "speed", "time", "percentage",
+    "enum": [ "type", "partymode", "speed", "title", "time", "percentage",
               "totaltime", "playlistid", "position", "repeat", "shuffled",
               "canseek", "canchangespeed", "canmove", "canzoom", "canrotate",
               "canshuffle", "canrepeat", "currentaudiostream", "audiostreams",

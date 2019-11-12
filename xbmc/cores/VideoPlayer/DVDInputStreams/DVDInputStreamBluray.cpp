@@ -903,6 +903,14 @@ int CDVDInputStreamBluray::GetChapter()
     return 0;
 }
 
+int CDVDInputStreamBluray::GetTitle()
+{
+  if (m_titleInfo)
+    return static_cast<int>(bd_get_current_title(m_bd) + 1);
+  else
+    return 0;
+}
+
 bool CDVDInputStreamBluray::SeekChapter(int ch)
 {
   if(m_titleInfo && bd_seek_chapter(m_bd, ch-1) < 0)

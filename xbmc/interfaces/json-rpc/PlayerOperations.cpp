@@ -1370,6 +1370,21 @@ JSONRPC_STATUS CPlayerOperations::GetPropertyValue(PlayerType player, const std:
         return FailedToExecute;
     }
   }
+  else if (property == "title")
+  {
+    switch (player)
+    {
+      case Video:
+        result = g_application.GetAppPlayer().GetTitle();
+        break;
+
+      case Audio:
+      case Picture:
+      default:
+        result = -1;
+        break;
+    }
+  }
   else if (property == "time")
   {
     switch (player)

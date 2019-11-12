@@ -34,12 +34,14 @@ public:
   {
     starttime = 0LL;
     startpercent = 0LL;
+    starttitle = -1;
     fullscreen = false;
     videoOnly = false;
     preferStereo = false;
   }
   double starttime; /* start time in seconds */
   double startpercent; /* start time in percent */
+  int starttitle; /* start title index */
   std::string state;  /* potential playerstate to restore to */
   bool fullscreen; /* player is allowed to switch to fullscreen */
   bool videoOnly; /* player is not allowed to play audio streams, video streams only */
@@ -149,6 +151,7 @@ public:
 
   virtual int  GetChapterCount()                               { return 0; }
   virtual int  GetChapter()                                    { return -1; }
+  virtual int GetTitle() { return -1; }
   virtual void GetChapterName(std::string& strChapterName, int chapterIdx = -1) {}
   virtual int64_t GetChapterPos(int chapterIdx=-1)             { return 0; }
   virtual int  SeekChapter(int iChapter)                       { return -1; }

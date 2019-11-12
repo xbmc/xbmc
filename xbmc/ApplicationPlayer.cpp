@@ -171,6 +171,15 @@ int CApplicationPlayer::GetChapter()
     return -1;
 }
 
+int CApplicationPlayer::GetTitle()
+{
+  std::shared_ptr<IPlayer> player = GetInternal();
+  if (player)
+    return player->GetTitle();
+  else
+    return -1;
+}
+
 int CApplicationPlayer::GetChapterCount()
 {
   std::shared_ptr<IPlayer> player = GetInternal();
