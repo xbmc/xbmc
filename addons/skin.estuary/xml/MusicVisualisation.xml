@@ -20,6 +20,15 @@
 				<animation effect="fade" start="0" end="100" time="400">WindowOpen</animation>
 				<animation effect="fade" start="100" end="0" time="300">WindowClose</animation>
 				<texture background="true" colordiffuse="88FFFFFF">$INFO[Player.Art(fanart)]</texture>
+				<visible>String.IsEmpty(Window(Visualisation).Property(ArtistSlideshow.Image))</visible>
+			</control>
+			<control type="image">
+				<aspectratio>scale</aspectratio>
+				<fadetime>400</fadetime>
+				<animation effect="fade" start="0" end="100" time="400">WindowOpen</animation>
+				<animation effect="fade" start="100" end="0" time="300">WindowClose</animation>
+				<texture background="true" colordiffuse="88FFFFFF">$INFO[Window(Visualisation).Property(ArtistSlideshow.Image)]</texture>
+				<visible>!String.IsEmpty(Window(Visualisation).Property(ArtistSlideshow.Image))</visible>
 			</control>
 			<control type="multiimage">
 				<aspectratio>scale</aspectratio>
@@ -28,7 +37,7 @@
 				<fadetime>600</fadetime>
 				<loop>yes</loop>
 				<imagepath background="true">$INFO[Window(Visualisation).Property(ArtistSlideshow)]</imagepath>
-				<visible>System.HasAddon(script.artistslideshow)</visible>
+				<visible>!String.IsEmpty(Window(Visualisation).Property(ArtistSlideshow.ArtworkReady)</visible>
 			</control>
 		</control>
 		<control type="group">
