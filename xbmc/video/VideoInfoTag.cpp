@@ -1418,7 +1418,11 @@ void CVideoInfoTag::SetUniqueIDs(std::map<std::string, std::string> uniqueIDs)
       uniqueIDs.erase(uniqueid.first);
   }
   if (uniqueIDs.find(m_strDefaultUniqueID) == uniqueIDs.end())
-    uniqueIDs[m_strDefaultUniqueID] = GetUniqueID();
+  {
+    const auto defaultUniqueId = GetUniqueID();
+    if (!defaultUniqueId.empty())
+      uniqueIDs[m_strDefaultUniqueID] = defaultUniqueId;
+  }
   m_uniqueIDs = std::move(uniqueIDs);
 }
 
@@ -1502,10 +1506,11 @@ void CVideoInfoTag::SetShowLink(std::vector<std::string> showLink)
 
 void CVideoInfoTag::SetUniqueID(const std::string& uniqueid, const std::string& type /* = "" */, bool isDefaultID /* = false */)
 {
+  if (uniqueid.empty())
+    return;
+
   if (type.empty())
-  {
     m_uniqueIDs[m_strDefaultUniqueID] = uniqueid;
-  }
   else
   {
     m_uniqueIDs[type] = uniqueid;
