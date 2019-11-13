@@ -27,10 +27,23 @@ bool OPTIONALS::ALSARegister()
 }
 #endif
 
+//-----------------------------------------------------------------------------
+// OSS
+//-----------------------------------------------------------------------------
+
+#ifdef HAS_OSS
+#include "cores/AudioEngine/Sinks/AESinkOSS.h"
+bool OPTIONALS::OSSRegister()
+{
+  CAESinkOSS::Register();
+  return true;
+}
+#else
 bool OPTIONALS::OSSRegister()
 {
   return false;
 }
+#endif
 
 //-----------------------------------------------------------------------------
 // PulseAudio
