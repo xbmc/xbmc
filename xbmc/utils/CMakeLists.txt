@@ -184,7 +184,7 @@ if(CMAKE_CXX_COMPILER_ID STREQUAL Clang)
   set_source_files_properties(Mime.cpp PROPERTIES COMPILE_FLAGS -O0)
 endif()
 
-if(NOT CORE_SYSTEM_NAME STREQUAL windows AND NOT CORE_SYSTEM_NAME STREQUAL windowsstore)
+if(OPENGL_FOUND OR OPENGLES_FOUND)
   list(APPEND SOURCES GLUtils.cpp)
   list(APPEND HEADERS GLUtils.h)
 endif()
