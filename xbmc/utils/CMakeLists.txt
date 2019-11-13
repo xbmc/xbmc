@@ -191,11 +191,9 @@ endif()
 
 if(CORE_PLATFORM_NAME_LC STREQUAL gbm OR CORE_PLATFORM_NAME_LC STREQUAL wayland)
   list(APPEND SOURCES BufferObject.cpp
-                      BufferObjectFactory.cpp
-                      EGLImage.cpp)
+                      BufferObjectFactory.cpp)
   list(APPEND HEADERS BufferObject.h
-                      BufferObjectFactory.h
-                      EGLImage.h)
+                      BufferObjectFactory.h)
 
   if(CORE_PLATFORM_NAME_LC STREQUAL gbm)
     list(APPEND SOURCES DumbBufferObject.cpp)
@@ -215,6 +213,11 @@ if(CORE_PLATFORM_NAME_LC STREQUAL gbm OR CORE_PLATFORM_NAME_LC STREQUAL wayland)
   if(GBM_HAS_BO_MAP)
     list(APPEND SOURCES GBMBufferObject.cpp)
     list(APPEND HEADERS GBMBufferObject.h)
+  endif()
+
+  if(EGL_FOUND)
+    list(APPEND SOURCES EGLImage.cpp)
+    list(APPEND HEADERS EGLImage.h)
   endif()
 endif()
 
