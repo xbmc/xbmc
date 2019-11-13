@@ -233,6 +233,7 @@ typedef enum {
 
   // Remote control buttons
   XBMCK_SUBTITLE = 345,
+  XBMCK_LANGUAGE = 346,
 
   XBMCK_LAST
 } XBMCKey;
