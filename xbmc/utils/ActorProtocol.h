@@ -78,11 +78,18 @@ public:
   ~Protocol();
   Message *GetMessage();
   void ReturnMessage(Message *msg);
-  bool SendOutMessage(int signal, void *data = nullptr, size_t size = 0, Message *outMsg = nullptr);
+  bool SendOutMessage(int signal,
+                      const void* data = nullptr,
+                      size_t size = 0,
+                      Message* outMsg = nullptr);
   bool SendOutMessage(int signal, CPayloadWrapBase *payload, Message *outMsg = nullptr);
-  bool SendInMessage(int signal, void *data = nullptr, size_t size = 0, Message *outMsg = nullptr);
+  bool SendInMessage(int signal,
+                     const void* data = nullptr,
+                     size_t size = 0,
+                     Message* outMsg = nullptr);
   bool SendInMessage(int signal, CPayloadWrapBase *payload, Message *outMsg = nullptr);
-  bool SendOutMessageSync(int signal, Message **retMsg, int timeout, void *data = nullptr, size_t size = 0);
+  bool SendOutMessageSync(
+      int signal, Message** retMsg, int timeout, const void* data = nullptr, size_t size = 0);
   bool SendOutMessageSync(int signal, Message **retMsg, int timeout, CPayloadWrapBase *payload);
   bool ReceiveOutMessage(Message **msg);
   bool ReceiveInMessage(Message **msg);

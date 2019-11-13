@@ -85,12 +85,15 @@ IAESink *CAESinkFactory::Create(std::string &device, AEAudioFormat &desiredForma
   return nullptr;
 }
 
-void CAESinkFactory::EnumerateEx(std::vector<AESinkInfo> &list, bool force)
+void CAESinkFactory::EnumerateEx(std::vector<AESinkInfo>& list, bool force, std::string driver)
 {
   AESinkInfo info;
 
   for(auto reg : m_AESinkRegEntry)
   {
+    if (!driver.empty() && driver != reg.second.sinkName)
+      continue;
+
     info.m_deviceInfoList.clear();
     info.m_sinkName = reg.second.sinkName;
     reg.second.enumerateFunc(info.m_deviceInfoList, force);

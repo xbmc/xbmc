@@ -223,6 +223,11 @@ public:
   virtual void DeviceChange() {}
 
   /**
+   * Instruct AE to re-initialize, e.g. after ELD change event
+   */
+  virtual void DeviceCountChange(std::string driver) {}
+
+  /**
    * Get the current sink data format
    *
    * @param Current sink data format. For more details see AEAudioFormat.

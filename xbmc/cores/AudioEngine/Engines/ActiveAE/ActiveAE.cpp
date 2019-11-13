@@ -448,6 +448,7 @@ void CActiveAE::StateMachine(int signal, Protocol *port, Message *msg)
             return;
 
           case CActiveAEControlProtocol::DEVICECHANGE:
+          case CActiveAEControlProtocol::DEVICECOUNTCHANGE:
             LoadSettings();
             if (!m_settings.device.empty() && CAESinkFactory::HasSinks())
             {
@@ -494,7 +495,7 @@ void CActiveAE::StateMachine(int signal, Protocol *port, Message *msg)
         {
         case CActiveAEControlProtocol::INIT:
           m_extError = false;
-          m_sink.EnumerateSinkList(false);
+          m_sink.EnumerateSinkList(false, "");
           LoadSettings();
           Configure();
           if (!m_isWinSysReg)
@@ -622,7 +623,7 @@ void CActiveAE::StateMachine(int signal, Protocol *port, Message *msg)
           m_extLastDeviceChange.push(now);
           UnconfigureSink();
           m_controlPort.PurgeOut(CActiveAEControlProtocol::DEVICECHANGE);
-          m_sink.EnumerateSinkList(true);
+          m_sink.EnumerateSinkList(true, "");
           LoadSettings();
           m_extError = false;
           Configure();
@@ -635,6 +636,29 @@ void CActiveAE::StateMachine(int signal, Protocol *port, Message *msg)
           {
             m_state = AE_TOP_ERROR;
             m_extTimeout = 500;
+          }
+          return;
+        case CActiveAEControlProtocol::DEVICECOUNTCHANGE:
+          const char* param;
+          param = reinterpret_cast<const char*>(msg->data);
+          CLog::Log(LOGDEBUG, "CActiveAE - device count change event from driver: %s", param);
+          m_sink.EnumerateSinkList(true, param);
+          if (!m_sink.DeviceExist(m_settings.driver, m_currDevice))
+          {
+            UnconfigureSink();
+            LoadSettings();
+            m_extError = false;
+            Configure();
+            if (!m_extError)
+            {
+              m_state = AE_TOP_CONFIGURED_PLAY;
+              m_extTimeout = 0;
+            }
+            else
+            {
+              m_state = AE_TOP_ERROR;
+              m_extTimeout = 500;
+            }
           }
           return;
         case CActiveAEControlProtocol::PAUSESTREAM:
@@ -835,7 +859,8 @@ void CActiveAE::StateMachine(int signal, Protocol *port, Message *msg)
           if (!displayReset)
           {
             m_controlPort.PurgeOut(CActiveAEControlProtocol::DEVICECHANGE);
-            m_sink.EnumerateSinkList(true);
+            m_controlPort.PurgeOut(CActiveAEControlProtocol::DEVICECOUNTCHANGE);
+            m_sink.EnumerateSinkList(true, "");
             LoadSettings();
           }
           Configure();
@@ -855,6 +880,7 @@ void CActiveAE::StateMachine(int signal, Protocol *port, Message *msg)
           m_extDeferData = false;
           return;
         case CActiveAEControlProtocol::DEVICECHANGE:
+        case CActiveAEControlProtocol::DEVICECOUNTCHANGE:
           return;
         default:
           break;
@@ -1355,12 +1381,12 @@ void CActiveAE::Configure(AEAudioFormat *desiredFmt)
 
         // input buffers
         m_vizBuffersInput = new CActiveAEBufferPool(m_internalFormat);
-        m_vizBuffersInput->Create(2000);
+        m_vizBuffersInput->Create(2000 + m_stats.GetMaxDelay() * 1000);
 
         // resample buffers
         m_vizBuffers = new CActiveAEBufferPoolResample(m_internalFormat, vizFormat, m_settings.resampleQuality);
         //! @todo use cache of sync + water level
-        m_vizBuffers->Create(2000, false, false);
+        m_vizBuffers->Create(2000 + m_stats.GetMaxDelay() * 1000, false, false);
         m_vizInitialized = false;
       }
     }
@@ -2859,6 +2885,13 @@ void CActiveAE::KeepConfiguration(unsigned int millis)
 void CActiveAE::DeviceChange()
 {
   m_controlPort.SendOutMessage(CActiveAEControlProtocol::DEVICECHANGE);
+}
+
+void CActiveAE::DeviceCountChange(std::string driver)
+{
+  const char* name = driver.c_str();
+  m_controlPort.SendOutMessage(CActiveAEControlProtocol::DEVICECOUNTCHANGE, name,
+                               driver.length() + 1);
 }
 
 bool CActiveAE::GetCurrentSinkFormat(AEAudioFormat &SinkFormat)
