@@ -54,6 +54,11 @@ CWinSystemRpi::CWinSystemRpi() :
   {
     OPTIONALS::PulseAudioRegister();
   }
+  else if (StringUtils::EqualsNoCase(envSink, "ALSA+PULSE"))
+  {
+    OPTIONALS::ALSARegister();
+    OPTIONALS::PulseAudioRegister();
+  }
   else
   {
     OPTIONALS::ALSARegister();
