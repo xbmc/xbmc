@@ -54,6 +54,11 @@ CWinSystemGbm::CWinSystemGbm() :
   {
     OPTIONALS::SndioRegister();
   }
+  else if (StringUtils::EqualsNoCase(envSink, "ALSA+PULSE"))
+  {
+    OPTIONALS::ALSARegister();
+    OPTIONALS::PulseAudioRegister();
+  }
   else
   {
     if (!OPTIONALS::PulseAudioRegister())
