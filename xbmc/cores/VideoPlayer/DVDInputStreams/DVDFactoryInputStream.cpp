@@ -7,28 +7,30 @@
  */
 
 #include "DVDFactoryInputStream.h"
+
 #include "DVDInputStream.h"
+#ifdef HAVE_LIBBLURAY
+#include "DVDInputStreamBluray.h"
+#endif
+#include "DVDInputStreamFFmpeg.h"
 #include "DVDInputStreamFile.h"
 #include "DVDInputStreamNavigator.h"
-#include "DVDInputStreamFFmpeg.h"
+#include "DVDInputStreamStack.h"
+#include "FileItem.h"
 #include "InputStreamAddon.h"
 #include "InputStreamMultiSource.h"
 #include "InputStreamPVRChannel.h"
 #include "InputStreamPVRRecording.h"
-#ifdef HAVE_LIBBLURAY
-#include "DVDInputStreamBluray.h"
-#endif
-#include "DVDInputStreamStack.h"
-#include "FileItem.h"
-#include "storage/MediaManager.h"
+#include "ServiceBroker.h"
 #include "URL.h"
+#include "Util.h"
+#include "addons/binary-addons/BinaryAddonManager.h"
+#include "cores/VideoPlayer/Interface/Addon/InputStreamConstants.h"
 #include "filesystem/CurlFile.h"
 #include "filesystem/File.h"
 #include "filesystem/IFileTypes.h"
+#include "storage/MediaManager.h"
 #include "utils/URIUtils.h"
-#include "ServiceBroker.h"
-#include "addons/binary-addons/BinaryAddonManager.h"
-#include "Util.h"
 
 
 std::shared_ptr<CDVDInputStream> CDVDFactoryInputStream::CreateInputStream(IVideoPlayer* pPlayer, const CFileItem &fileitem, bool scanforextaudio)
@@ -56,6 +58,10 @@ std::shared_ptr<CDVDInputStream> CDVDFactoryInputStream::CreateInputStream(IVide
     if (CInputStreamAddon::Supports(addonInfo, fileitem))
       return std::shared_ptr<CInputStreamAddon>(new CInputStreamAddon(addonInfo, pPlayer, fileitem));
   }
+
+  if (fileitem.GetProperty(STREAM_PROPERTY_INPUTSTREAMCLASS).asString() ==
+      STREAM_PROPERTY_VALUE_INPUTSTREAMFFMPEG)
+    return std::shared_ptr<CDVDInputStreamFFmpeg>(new CDVDInputStreamFFmpeg(fileitem));
 
   if (fileitem.IsDiscImage())
   {
@@ -153,7 +159,9 @@ std::shared_ptr<CDVDInputStream> CDVDFactoryInputStream::CreateInputStream(IVide
     if (finalFileitem.IsType(".m3u8"))
       return std::shared_ptr<CDVDInputStreamFFmpeg>(new CDVDInputStreamFFmpeg(finalFileitem));
 
-    if (finalFileitem.GetMimeType() == "application/vnd.apple.mpegurl")
+    // mime type for m3u8/hls streams
+    if (finalFileitem.GetMimeType() == "application/vnd.apple.mpegurl" ||
+        finalFileitem.GetMimeType() == "application/x-mpegURL")
       return std::shared_ptr<CDVDInputStreamFFmpeg>(new CDVDInputStreamFFmpeg(finalFileitem));
 
     if (URIUtils::IsProtocol(finalFileitem.GetPath(), "udp"))

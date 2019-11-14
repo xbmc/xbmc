@@ -14,6 +14,7 @@
 #include "cores/VideoPlayer/DVDDemuxers/DVDDemux.h"
 #include "cores/VideoPlayer/DVDDemuxers/DVDDemuxUtils.h"
 #include "cores/VideoPlayer/Interface/Addon/DemuxCrypto.h"
+#include "cores/VideoPlayer/Interface/Addon/InputStreamConstants.h"
 #include "cores/VideoPlayer/Interface/Addon/TimingConstants.h"
 #include "filesystem/SpecialProtocol.h"
 #include "utils/StringUtils.h"
@@ -65,7 +66,12 @@ CInputStreamAddon::~CInputStreamAddon()
 bool CInputStreamAddon::Supports(BinaryAddonBasePtr& addonBase, const CFileItem &fileitem)
 {
   // check if a specific inputstream addon is requested
-  CVariant addon = fileitem.GetProperty("inputstreamaddon");
+  CVariant addon = fileitem.GetProperty(STREAM_PROPERTY_INPUTSTREAMCLASS);
+  if (!addon.isNull())
+    return (addon.asString() == addonBase->ID());
+
+  // TODO: to be deprecated for the above - all addons must change
+  addon = fileitem.GetProperty("inputstreamaddon");
   if (!addon.isNull())
     return (addon.asString() == addonBase->ID());
 

@@ -38,6 +38,7 @@ set(HEADERS AudioSinkAE.h
             Interface/StreamInfo.h
             Interface/Addon/DemuxPacket.h
             Interface/Addon/DemuxCrypto.h
+            Interface/Addon/InputStreamConstants.h
             Interface/Addon/TimingConstants.h)
 
 core_add_library(VideoPlayer)

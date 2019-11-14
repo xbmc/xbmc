@@ -725,6 +725,10 @@ AVDictionary* CDVDDemuxFFmpeg::GetFFMpegOptionsFromInput()
   CURL url = m_pInput->GetURL();
   AVDictionary* options = nullptr;
 
+  // For a local file we need the following protocol whitelist
+  if (url.GetProtocol().empty() || url.IsProtocol("file"))
+    av_dict_set(&options, "protocol_whitelist", "file,http,https,tcp,tls,crypto", 0);
+
   if (url.IsProtocol("http") || url.IsProtocol("https"))
   {
     std::map<std::string, std::string> protocolOptions;
@@ -738,8 +742,16 @@ AVDictionary* CDVDDemuxFFmpeg::GetFFMpegOptionsFromInput()
       StringUtils::ToLower(name);
       const std::string &value = it->second;
 
-      if (name == "seekable")
-        av_dict_set(&options, "seekable", value.c_str(), 0);
+      // set any of these ffmpeg options
+      if (name == "seekable" || name == "reconnect" || name == "reconnect_at_eof" ||
+          name == "reconnect_streamed" || name == "reconnect_delay_max" ||
+          name == "icy" || name == "icy_metadata_headers" || name == "icy_metadata_packet")
+      {
+        CLog::Log(LOGDEBUG,
+                  "CDVDDemuxFFmpeg::GetFFMpegOptionsFromInput() adding ffmpeg option '%s: %s'",
+                  it->first.c_str(), value.c_str());
+        av_dict_set(&options, name.c_str(), value.c_str(), 0);
+      }
       // map some standard http headers to the ffmpeg related options
       else if (name == "user-agent")
       {
@@ -782,12 +794,22 @@ AVDictionary* CDVDDemuxFFmpeg::GetFFMpegOptionsFromInput()
         }
         headers.append(it->first).append(": ").append(value).append("\r\n");
       }
-      // we don't add blindly all options to headers anymore
-      // if anybody wants to pass options to ffmpeg, explicitly prefix those
-      // to be identified here
+      // Any other headers that need to be sent would be user defined and should be prefixed
+      // by a `!`. We mask these values so we don't log anything we shouldn't
+      else if (name.length() > 0 && name[0] == '!')
+      {
+        CLog::Log(LOGDEBUG,
+                  "CDVDDemuxFFmpeg::GetFFMpegOptionsFromInput() adding user custom header option "
+                  "'%s: ***********'",
+                  it->first.c_str());
+        headers.append(it->first.substr(1)).append(": ").append(value).append("\r\n");
+      }
+      // for everything else we ignore the headers options if not specified above
       else
       {
-        CLog::Log(LOGDEBUG, "CDVDDemuxFFmpeg::GetFFMpegOptionsFromInput() ignoring header option '%s: %s'", it->first.c_str(), value.c_str());
+        CLog::Log(LOGDEBUG,
+                  "CDVDDemuxFFmpeg::GetFFMpegOptionsFromInput() ignoring header option '%s'",
+                  it->first.c_str());
       }
     }
     if (!hasUserAgent)
