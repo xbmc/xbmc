@@ -31,14 +31,7 @@ bool OPTIONALS::ALSARegister()
 // OSS
 //-----------------------------------------------------------------------------
 
-#ifdef HAS_OSS
-#include "cores/AudioEngine/Sinks/AESinkOSS.h"
-bool OPTIONALS::OSSRegister()
-{
-  CAESinkOSS::Register();
-  return true;
-}
-#else
+#ifdef TARGET_LINUX
 bool OPTIONALS::OSSRegister()
 {
   return false;

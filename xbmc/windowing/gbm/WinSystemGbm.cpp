@@ -23,6 +23,7 @@
 #include "utils/log.h"
 #include "windowing/GraphicContext.h"
 
+#include "platform/freebsd/OptionalsReg.h"
 #include "platform/linux/OptionalsReg.h"
 #include "platform/linux/powermanagement/LinuxPowerSyscall.h"
 

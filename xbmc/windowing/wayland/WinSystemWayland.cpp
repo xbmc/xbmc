@@ -21,6 +21,7 @@
 #include "input/InputManager.h"
 #include "input/touch/generic/GenericTouchActionHandler.h"
 #include "input/touch/generic/GenericTouchInputHandler.h"
+#include "platform/freebsd/OptionalsReg.h"
 #include "platform/linux/powermanagement/LinuxPowerSyscall.h"
 #include "platform/linux/OptionalsReg.h"
 #include "platform/linux/PlatformConstants.h"

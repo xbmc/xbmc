@@ -14,6 +14,7 @@
 #include "threads/SystemClock.h"
 #include "windowing/WinSystem.h"
 
+#include "platform/freebsd/OptionalsReg.h"
 #include "platform/linux/OptionalsReg.h"
 #include "platform/linux/input/LibInputHandler.h"
 

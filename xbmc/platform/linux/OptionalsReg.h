@@ -30,10 +30,12 @@ bool PulseAudioRegister();
 // OSS
 //-----------------------------------------------------------------------------
 
+#ifdef TARGET_LINUX
 namespace OPTIONALS
 {
 bool OSSRegister();
 }
+#endif
 
 //-----------------------------------------------------------------------------
 // sndio
