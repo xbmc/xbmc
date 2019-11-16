@@ -1605,7 +1605,7 @@
       { "name": "ratings", "$ref": "Video.Ratings.Set" },
       { "name": "dateadded", "$ref": "Optional.String" },
       { "name": "runtime", "$ref": "Optional.Integer", "description": "Runtime in seconds" },
-      { "name": "status", "$ref": "Optional.String" },
+      { "name": "status", "$ref": "Optional.String", "description": "Valid values: 'returning series', 'in production', 'planned', 'cancelled', 'ended'" },
       { "name": "uniqueid", "type": [ "null", { "$ref": "Media.UniqueID.Set", "required": true } ], "default": null }
     ],
     "returns": "string"
