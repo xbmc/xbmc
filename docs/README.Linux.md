@@ -136,8 +136,10 @@ cd $HOME/kodi-build
 
 Configure build for X11:
 ```
-cmake ../kodi -DCMAKE_INSTALL_PREFIX=/usr/local
+cmake ../kodi -DCMAKE_INSTALL_PREFIX=/usr/local -DX11_RENDER_SYSTEM=gl
 ```
+
+**NOTE:** You can use `gles` instead of `gl` if you want to build with `GLES`.
 
 Or configure build for Wayland:
 ```
