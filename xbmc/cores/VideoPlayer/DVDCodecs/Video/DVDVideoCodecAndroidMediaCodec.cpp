@@ -493,8 +493,16 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
       }
       break;
     case AV_CODEC_ID_HEVC:
-      m_mime = "video/hevc";
-      m_formatname = "amc-h265";
+      if (m_hints.codec_tag == MKTAG('d', 'v', 'h', 'e'))
+      {
+        m_mime = "video/dolby-vision";
+        m_formatname = "amc-dvhe";
+      }
+      else
+      {
+        m_mime = "video/hevc";
+        m_formatname = "amc-hevc";
+      }
       // check for hevc-hvcC and convert to h265-annex-b
       if (m_hints.extradata && !m_hints.cryptoSession)
       {
