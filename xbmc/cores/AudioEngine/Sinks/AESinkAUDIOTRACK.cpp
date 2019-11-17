@@ -463,12 +463,12 @@ bool CAESinkAUDIOTRACK::Initialize(AEAudioFormat &format, std::string &device)
     {
       m_format.m_frameSize = m_format.m_channelLayout.Count() * (CAEUtil::DataFormatToBits(m_format.m_dataFormat) / 8);
       m_sink_frameSize = m_format.m_frameSize;
-      // aim at 200 ms buffer but at max 300 ms (2 * 0.15s) and 50 ms periods
+      // aim at 200 ms buffer and 50 ms periods
       m_audiotrackbuffer_sec =
           static_cast<double>(m_min_buffer_size) / (m_sink_frameSize * m_sink_sampleRate);
-      while (m_audiotrackbuffer_sec < 0.15)
+      while (m_audiotrackbuffer_sec < 0.2)
       {
-        m_min_buffer_size *= 2;
+        m_min_buffer_size += min_buffer;
         m_audiotrackbuffer_sec =
             static_cast<double>(m_min_buffer_size) / (m_sink_frameSize * m_sink_sampleRate);
       }
