@@ -27,6 +27,7 @@ enum class GL_SHADER_METHOD
   DEFAULT,
   TEXTURE,
   TEXTURE_RGBA_OES,
+  TEXTURE_NOALPHA,
 };
 
 namespace KODI
