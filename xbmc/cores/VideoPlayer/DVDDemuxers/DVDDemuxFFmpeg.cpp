@@ -812,6 +812,26 @@ AVDictionary* CDVDDemuxFFmpeg::GetFFMpegOptionsFromInput()
                   it->first.c_str());
       }
     }
+    // Allow ffmpeg options to be overidden by properties
+    static std::string optionPrefix = "inputstream.ffmpeg.";
+    static std::string ffmpegOptions[] =
+      {"user_agent", "referer", "seekable", "reconnect", "reconnect_at_eof",
+       "reconnect_streamed", "reconnect_delay_max", "icy", "icy_metadata_headers",
+       "icy_metadata_packet"};
+
+    for (const std::string optionName : ffmpegOptions)
+    {
+      CVariant optionValue = m_pInput->GetProperty(optionPrefix + optionName);
+      if (!optionValue.isNull())
+      {
+        CLog::Log(LOGDEBUG,
+                  "CDVDDemuxFFmpeg::GetFFMpegOptionsFromInput() overriding ffmpeg option '%s: %s'",
+                  optionName.c_str(), optionValue.asString().c_str());
+        if (optionName == "user_agent")
+          hasUserAgent = true;
+        av_dict_set(&options, optionName.c_str(), optionValue.asString().c_str(), 0);
+      }
+    }
     if (!hasUserAgent)
     {
       // set default xbmc user-agent.
