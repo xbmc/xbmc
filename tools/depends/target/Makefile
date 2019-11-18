@@ -15,10 +15,7 @@ DEPENDS = \
 	taglib libusb libnfs meson-cross-file \
 	pythonmodule-pil pythonmodule-pycryptodome pythonmodule-setuptools \
 	libxslt ffmpeg crossguid \
-	libdvdread libdvdnav libdvdcss p8-platform flatbuffers
-
-
-FFMPEG_DEPENDS = gnutls
+	libdvdread libdvdnav libdvdcss p8-platform flatbuffers dav1d
 
 ifeq ($(ENABLE_GPLV3),yes)
   DEPENDS+=samba-gplv3 libcdio-gplv3
@@ -107,7 +104,7 @@ pythonmodule-pycryptodome: $(PYMODULE_DEPS) python3 pythonmodule-setuptools
 pythonmodule-pil: bzip2 $(PYMODULE_DEPS) $(ZLIB) libjpeg-turbo libpng freetype2 python3 pythonmodule-setuptools
 pythonmodule-setuptools: $(PYMODULE_DEPS) python3
 libxslt: libgcrypt libxml2
-ffmpeg: $(ICONV) $(ZLIB) bzip2 $(FFMPEG_DEPENDS)
+ffmpeg: $(ICONV) $(ZLIB) bzip2 gnutls dav1d
 libcec: p8-platform
 crossguid: $(LIBUUID)
 libdvdnav: libdvdread

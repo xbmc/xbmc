@@ -21,6 +21,7 @@ ffmpg_config += --enable-encoder=ac3 --enable-encoder=aac
 ffmpg_config += --enable-encoder=wmav2 --enable-protocol=http
 ffmpg_config += --enable-gnutls
 ffmpg_config += --enable-encoder=png --enable-encoder=mjpeg
+ffmpg_config += --enable-libdav1d
 ffmpg_config += $(FFMPEG_CONFIGURE_OPTIONS)
 
 ifeq ($(CROSS_COMPILING), yes)

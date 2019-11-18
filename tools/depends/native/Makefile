@@ -10,17 +10,12 @@ NATIVE= m4 gettext heimdal autoconf automake \
         pcre swig \
         libpng libjpeg-turbo liblzo2 giflib \
         setuptools distutilscross JsonSchemaBuilder TexturePacker \
-        flatbuffers
+        flatbuffers \
+        meson ninja
 
 
 ifeq ($(OS),darwin_embedded)
   NATIVE += dpkg xz tar gen_entitlements ldid
-endif
-
-ifeq ($(OS),linux)
-  ifeq ($(TARGET_PLATFORM),$(filter $(TARGET_PLATFORM),raspberry-pi gbm))
-    NATIVE += meson ninja
-  endif
 endif
 
 ifeq ($(TARGET_PLATFORM),wayland)

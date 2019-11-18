@@ -73,8 +73,11 @@ install:
       libpcre3-dev libplist-dev libpng-dev libpulse-dev libsmbclient-dev libsqlite3-dev
       libssl-dev libtag1-dev libtinyxml-dev libtool libudev-dev libusb-dev libva-dev libvdpau-dev
       libxml2-dev libxmu-dev libxrandr-dev libxrender-dev libxslt1-dev libxt-dev mesa-utils
-      nasm pmount python-dev python-imaging python-sqlite rapidjson-dev swig unzip uuid-dev yasm zip zlib1g-dev;
+      nasm ninja-build pmount python-dev python-imaging python-pip3 python-sqlite rapidjson-dev swig unzip uuid-dev yasm zip zlib1g-dev;
     fi
+  # We can't use the `meson` distro-package, since dav1d requires at least meson >= 0.47.0.
+  # Ubuntu 18.04 ships the outdated 0.45.1 version. So we have to install it via pip.
+  - pip3 install meson
 
 # Prepare builds
 #

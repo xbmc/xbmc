@@ -229,10 +229,13 @@ if(NOT FFMPEG_FOUND)
     message(STATUS "FFMPEG_URL: ${FFMPEG_URL}")
   endif()
 
+  find_package(Dav1d)
+
   set(FFMPEG_OPTIONS -DENABLE_CCACHE=${ENABLE_CCACHE}
                      -DCCACHE_PROGRAM=${CCACHE_PROGRAM}
                      -DENABLE_VAAPI=${ENABLE_VAAPI}
-                     -DENABLE_VDPAU=${ENABLE_VDPAU})
+                     -DENABLE_VDPAU=${ENABLE_VDPAU}
+                     -DENABLE_DAV1D=${DAV1D_FOUND})
 
   if(KODI_DEPENDSBUILD)
     set(CROSS_ARGS -DDEPENDS_PATH=${DEPENDS_PATH}
@@ -265,12 +268,17 @@ if(NOT FFMPEG_FOUND)
                                  -DCMAKE_EXE_LINKER_FLAGS=${LINKER_FLAGS}
                                  ${CROSS_ARGS}
                                  ${FFMPEG_OPTIONS}
+                                 -DPKG_CONFIG_PATH=${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/lib/pkgconfig
                       PATCH_COMMAND ${CMAKE_COMMAND} -E copy
                                     ${CMAKE_SOURCE_DIR}/tools/depends/target/ffmpeg/CMakeLists.txt
                                     <SOURCE_DIR> &&
                                     ${CMAKE_COMMAND} -E copy
                                     ${CMAKE_SOURCE_DIR}/tools/depends/target/ffmpeg/FindGnuTls.cmake
                                     <SOURCE_DIR>)
+
+  if (ENABLE_INTERNAL_DAV1D)
+    add_dependencies(ffmpeg dav1d)
+  endif()
 
   find_program(BASH_COMMAND bash)
   if(NOT BASH_COMMAND)

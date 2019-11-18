@@ -56,6 +56,7 @@ if(UNIX)
   option(ENABLE_INTERNAL_FMT "Enable internal fmt?" OFF)
   option(ENABLE_INTERNAL_FSTRCMP "Enable internal fstrcmp?" OFF)
   option(ENABLE_INTERNAL_FLATBUFFERS "Enable internal flatbuffers?" OFF)
+  option(ENABLE_INTERNAL_DAV1D "Enable internal dav1d?" OFF)
 endif()
 # System options
 if(NOT WIN32)
