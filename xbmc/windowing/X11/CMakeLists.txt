@@ -14,7 +14,7 @@ set(HEADERS GLContext.h
             WinEventsX11.h
             WinSystemX11.h
             XRandR.h
-            X11DPMSSupport.cpp)
+            X11DPMSSupport.h)
 
 if(GLX_FOUND)
   list(APPEND SOURCES GLContextGLX.cpp
