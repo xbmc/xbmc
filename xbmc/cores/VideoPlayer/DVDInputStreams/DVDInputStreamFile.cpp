@@ -8,11 +8,8 @@
 
 #include "DVDInputStreamFile.h"
 
-#include "ServiceBroker.h"
 #include "filesystem/File.h"
 #include "filesystem/IFile.h"
-#include "settings/AdvancedSettings.h"
-#include "settings/SettingsComponent.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 
@@ -49,29 +46,6 @@ bool CDVDInputStreamFile::Open()
   // If this file is audio and/or video (= not a subtitle) flag to caller
   if (!m_item.IsSubtitle())
     flags |= READ_AUDIO_VIDEO;
-
-  /*
-   * There are 5 buffer modes available (configurable in as.xml)
-   * 0) Buffer all internet filesystems (like 2 but additionally also ftp, webdav, etc.) (default)
-   * 1) Buffer all filesystems (including local)
-   * 2) Only buffer true internet filesystems (streams) (http, etc.)
-   * 3) No buffer
-   * 4) Buffer all non-local (remote) filesystems
-   */
-  if (!URIUtils::IsOnDVD(m_item.GetDynPath()) && !URIUtils::IsBluray(m_item.GetDynPath())) // Never cache these
-  {
-    unsigned int iCacheBufferMode = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_cacheBufferMode;
-    if ((iCacheBufferMode == CACHE_BUFFER_MODE_INTERNET && URIUtils::IsInternetStream(m_item.GetDynPath(), true))
-     || (iCacheBufferMode == CACHE_BUFFER_MODE_TRUE_INTERNET && URIUtils::IsInternetStream(m_item.GetDynPath(), false))
-     || (iCacheBufferMode == CACHE_BUFFER_MODE_REMOTE && URIUtils::IsRemote(m_item.GetDynPath()))
-     || (iCacheBufferMode == CACHE_BUFFER_MODE_ALL))
-    {
-      flags |= READ_CACHED;
-    }
-  }
-
-  if (!(flags & READ_CACHED))
-    flags |= READ_NO_CACHE; // Make sure CFile honors our no-cache hint
 
   std::string content = m_item.GetMimeType();
 
