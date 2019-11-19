@@ -81,7 +81,8 @@ bool CVideoPlayerAudio::OpenStream(CDVDStreamInfo hints)
   if (m_processInfo.IsRealtimeStream())
     allowpassthrough = false;
 
-  CAEStreamInfo::DataType streamType = m_audioSink.GetPassthroughStreamType(hints.codec, hints.samplerate);
+  CAEStreamInfo::DataType streamType =
+      m_audioSink.GetPassthroughStreamType(hints.codec, hints.samplerate, hints.profile);
   CDVDAudioCodec* codec = CDVDFactoryCodec::CreateAudioCodec(hints, m_processInfo,
                                                              allowpassthrough, m_processInfo.AllowDTSHDDecode(),
                                                              streamType);
@@ -607,7 +608,8 @@ bool CVideoPlayerAudio::SwitchCodecIfNeeded()
   if (m_processInfo.IsRealtimeStream() || m_synctype == SYNC_RESAMPLE)
     allowpassthrough = false;
 
-  CAEStreamInfo::DataType streamType = m_audioSink.GetPassthroughStreamType(m_streaminfo.codec, m_streaminfo.samplerate);
+  CAEStreamInfo::DataType streamType = m_audioSink.GetPassthroughStreamType(
+      m_streaminfo.codec, m_streaminfo.samplerate, m_streaminfo.profile);
   CDVDAudioCodec *codec = CDVDFactoryCodec::CreateAudioCodec(m_streaminfo, m_processInfo,
                                                              allowpassthrough, m_processInfo.AllowDTSHDDecode(),
                                                              streamType);
