@@ -92,10 +92,8 @@ namespace PVR
     std::atomic_bool m_bSyncRefreshTimelineItems;
 
     std::shared_ptr<CPVRChannelGroup> m_cachedChannelGroup;
-    std::unique_ptr<CFileItemList> m_newTimeline;
 
     bool m_bChannelSelectionRestored;
-    std::atomic_bool m_bFirstOpen;
   };
 
   class CGUIWindowPVRTVGuide : public CGUIWindowPVRGuideBase

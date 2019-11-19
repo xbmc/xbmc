@@ -63,15 +63,14 @@ namespace PVR
                     int iFirstBlock,
                     int iBlocksPerPage,
                     int iRulerUnit,
-                    float fBlockSize,
-                    bool bFirstOpen);
+                    float fBlockSize);
     void SetInvalid();
 
     static const int INVALID_INDEX = -1;
     void FindChannelAndBlockIndex(int channelUid, unsigned int broadcastUid, int eventOffset, int& newChannelIndex, int& newBlockIndex) const;
 
     void FreeChannelMemory(int keepStart, int keepEnd);
-    void FreeProgrammeMemory(int firstChannel, int lastChannel, int firstBlock, int lastBlock);
+    bool FreeProgrammeMemory(int firstChannel, int lastChannel, int firstBlock, int lastBlock);
     void FreeRulerMemory(int keepStart, int keepEnd);
 
     std::shared_ptr<CFileItem> GetChannelItem(int iIndex) const { return m_channelItems[iIndex]; }
@@ -108,6 +107,8 @@ namespace PVR
     int GetFirstEventBlock(const std::shared_ptr<CPVREpgInfoTag>& event) const;
     int GetLastEventBlock(const std::shared_ptr<CPVREpgInfoTag>& event) const;
     bool IsEventMemberOfBlock(const std::shared_ptr<CPVREpgInfoTag>& event, int iBlock) const;
+
+    std::unique_ptr<CFileItemList> GetCurrentTimeLineItems() const;
 
   private:
     GridItem* GetGridItemPtr(int iChannel, int iBlock) const;
@@ -168,7 +169,5 @@ namespace PVR
     int m_lastActiveChannel = 0;
     int m_firstActiveBlock = 0;
     int m_lastActiveBlock = 0;
-
-    bool m_bFirstOpen = true;
   };
 }

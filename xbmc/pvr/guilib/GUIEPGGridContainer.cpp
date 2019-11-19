@@ -16,6 +16,8 @@
 #include "input/Key.h"
 #include "input/actions/Action.h"
 #include "input/actions/ActionIDs.h"
+#include "messaging/ApplicationMessenger.h"
+#include "pvr/PVRManager.h"
 #include "pvr/channels/PVRChannel.h"
 #include "pvr/epg/EpgInfoTag.h"
 #include "pvr/guilib/GUIEPGGridContainerModel.h"
@@ -1067,6 +1069,21 @@ bool CGUIEPGGridContainer::SetChannel(const std::shared_ptr<CPVRChannel>& channe
   return false;
 }
 
+bool CGUIEPGGridContainer::SetChannel(const CPVRChannelNumber& channelNumber)
+{
+  for (int iIndex = 0; iIndex < m_gridModel->ChannelItemsSize(); iIndex++)
+  {
+    const CPVRChannelNumber& number =
+        m_gridModel->GetChannelItem(iIndex)->GetPVRChannelInfoTag()->ChannelNumber();
+    if (number == channelNumber)
+    {
+      GoToChannel(iIndex);
+      return true;
+    }
+  }
+  return false;
+}
+
 void CGUIEPGGridContainer::SetChannel(int channel)
 {
   CSingleLock lock(m_critSection);
@@ -1709,8 +1726,7 @@ void CGUIEPGGridContainer::GoToMostRight()
 
 void CGUIEPGGridContainer::SetTimelineItems(const std::unique_ptr<CFileItemList>& items,
                                             const CDateTime& gridStart,
-                                            const CDateTime& gridEnd,
-                                            bool bFirstOpen)
+                                            const CDateTime& gridEnd)
 {
   int iRulerUnit;
   int iFirstChannel;
@@ -1734,7 +1750,7 @@ void CGUIEPGGridContainer::SetTimelineItems(const std::unique_ptr<CFileItemList>
   std::unique_ptr<CGUIEPGGridContainerModel> newUpdatedGridModel(new CGUIEPGGridContainerModel);
 
   newUpdatedGridModel->Initialize(items, gridStart, gridEnd, iFirstChannel, iChannelsPerPage,
-                                  iFirstBlock, iBlocksPerPage, iRulerUnit, fBlockSize, bFirstOpen);
+                                  iFirstBlock, iBlocksPerPage, iRulerUnit, fBlockSize);
   {
     CSingleLock lock(m_critSection);
 
@@ -1744,6 +1760,11 @@ void CGUIEPGGridContainer::SetTimelineItems(const std::unique_ptr<CFileItemList>
 
     m_updatedGridModel = std::move(newUpdatedGridModel);
   }
+}
+
+std::unique_ptr<CFileItemList> CGUIEPGGridContainer::GetCurrentTimeLineItems() const
+{
+  return m_gridModel->GetCurrentTimeLineItems();
 }
 
 void CGUIEPGGridContainer::GoToChannel(int channelIndex)
@@ -2287,7 +2308,12 @@ void CGUIEPGGridContainer::HandleProgrammeGrid(bool bRender, unsigned int curren
     if (lastBlock > m_gridModel->GetLastBlock())
       lastBlock = m_gridModel->GetLastBlock();
 
-    m_gridModel->FreeProgrammeMemory(firstChannel, lastChannel, firstBlock, lastBlock);
+    if (m_gridModel->FreeProgrammeMemory(firstChannel, lastChannel, firstBlock, lastBlock))
+    {
+      // announce changed viewport
+      const CGUIMessage msg(GUI_MSG_REFRESH_LIST, GetID(), 0, static_cast<int>(PVREvent::Epg));
+      KODI::MESSAGING::CApplicationMessenger::GetInstance().SendGUIMessage(msg);
+    }
   }
 
   CPoint originProgramme = CPoint(m_gridPosX, m_gridPosY) + m_renderOffset;

@@ -30,6 +30,7 @@ class CGUIListItemLayout;
 namespace PVR
 {
   class CPVRChannel;
+  class CPVRChannelNumber;
 
   class CGUIEPGGridContainerModel;
 
@@ -98,8 +99,10 @@ namespace PVR
 
     void SetTimelineItems(const std::unique_ptr<CFileItemList>& items,
                           const CDateTime& gridStart,
-                          const CDateTime& gridEnd,
-                          bool bFirstOpen);
+                          const CDateTime& gridEnd);
+
+    std::unique_ptr<CFileItemList> GetCurrentTimeLineItems() const;
+
     /*!
      * @brief Set the control's selection to the given channel and set the control's view port to show the channel.
      * @param channel the channel.
@@ -113,6 +116,13 @@ namespace PVR
      * @return true if the selection was set to the given channel, false otherwise.
      */
     bool SetChannel(const std::string& channel);
+
+    /*!
+     * @brief Set the control's selection to the given channel and set the control's view port to show the channel.
+     * @param channelNumber the channel's number.
+     * @return true if the selection was set to the given channel, false otherwise.
+     */
+    bool SetChannel(const CPVRChannelNumber& channelNumber);
 
   private:
     bool OnClick(int actionID);
