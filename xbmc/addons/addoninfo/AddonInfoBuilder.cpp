@@ -281,7 +281,14 @@ bool CAddonInfoBuilder::ParseXML(const AddonInfoPtr& addon, const TiXmlElement* 
       /* Parse addon.xml "<platform">...</platform>" */
       element = child->FirstChildElement("platform");
       if (element && element->GetText() != nullptr)
-        addon->m_platforms = StringUtils::Split(element->GetText(), " ");
+      {
+        auto platforms = StringUtils::Split(element->GetText(),
+                                            {" ", "\t", "\n", "\r"});
+        platforms.erase(std::remove_if(platforms.begin(), platforms.end(),
+                        [](const std::string& platform) { return platform.empty(); }),
+                        platforms.cend());
+        addon->m_platforms = platforms;
+      }
 
       /* Parse addon.xml "<license">...</license>" */
       element = child->FirstChildElement("license");
