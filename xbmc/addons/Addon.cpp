@@ -53,7 +53,7 @@ CAddon::CAddon(const AddonInfoPtr& addonInfo, TYPE addonType)
  */
 bool CAddon::HasSettings()
 {
-  return LoadSettings(false);
+  return LoadSettings(false) && m_settings->HasSettings();
 }
 
 bool CAddon::SettingsInitialized() const

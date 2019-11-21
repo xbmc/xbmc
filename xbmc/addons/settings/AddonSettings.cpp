@@ -336,7 +336,7 @@ bool CAddonSettings::Save(CXBMCTinyXML& doc) const
 
 bool CAddonSettings::HasSettings() const
 {
-  return IsInitialized() && !GetSettingsManager()->GetSections().empty();
+  return IsInitialized() && GetSettingsManager()->HasSettings();
 }
 
 std::string CAddonSettings::GetSettingLabel(int label) const
