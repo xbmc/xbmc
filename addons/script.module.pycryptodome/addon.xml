@@ -4,7 +4,7 @@
        version="3.4.3"
        provider-name="Legrandin">
   <requires>
-    <import addon="xbmc.python" version="2.7.0"/>
+    <import addon="xbmc.python" version="3.0.0"/>
   </requires>
   <extension point="xbmc.python.module" library="lib" />
   <extension point="xbmc.addon.metadata">
