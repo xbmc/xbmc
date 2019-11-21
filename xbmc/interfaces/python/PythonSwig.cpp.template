@@ -680,7 +680,7 @@ void doClassMethodInfo(Node clazz, List initTypeCalls)
 %>
 
     pythonType.tp_base = ${baseclass ? ('&(Ty' + PythonTools.getClassNameAsVariable(baseclass) + '_Type.pythonType)') : "NULL"};
-    pythonType.tp_new = <% Helper.hasHiddenConstructor(clazz) ? print('NULL') : print("${module.@name}_${classNameAsVariable}_New") %>;
+    pythonType.tp_new = <% !Helper.hasDefinedConstructor(clazz) || Helper.hasHiddenConstructor(clazz) ? print('NULL') : print("${module.@name}_${classNameAsVariable}_New") %>;
     pythonType.tp_init = dummy_tp_init;
 
     Ty${classNameAsVariable}_Type.swigType="p.${fullClassName}";<%
