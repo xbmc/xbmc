@@ -129,6 +129,7 @@ public:
   static bool IsISO9660(const std::string& strFile);
   static bool IsLiveTV(const std::string& strFile);
   static bool IsPVRRecording(const std::string& strFile);
+  static bool IsPVRRecordingFileOrFolder(const std::string& strFile);
   static bool IsMultiPath(const std::string& strPath);
   static bool IsMusicDb(const std::string& strFile);
   static bool IsNfs(const std::string& strFile);

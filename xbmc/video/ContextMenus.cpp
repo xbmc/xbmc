@@ -65,7 +65,7 @@ bool CMarkWatched::IsVisible(const CFileItem& item) const
     else if (item.GetProperty("IsVideoFolder").asBoolean())
       return true;
     else
-      return StringUtils::StartsWith(item.GetPath(), "pvr://recordings/");
+      return URIUtils::IsPVRRecordingFileOrFolder(item.GetPath());
   }
   else if (!item.HasVideoInfoTag())
     return false;
@@ -91,7 +91,7 @@ bool CMarkUnWatched::IsVisible(const CFileItem& item) const
     else if (item.GetProperty("IsVideoFolder").asBoolean())
       return true;
     else
-      return StringUtils::StartsWith(item.GetPath(), "pvr://recordings/");
+      return URIUtils::IsPVRRecordingFileOrFolder(item.GetPath());
   }
   else if (!item.HasVideoInfoTag())
     return false;

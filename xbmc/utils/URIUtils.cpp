@@ -600,16 +600,16 @@ bool URIUtils::IsRemote(const std::string& strFile)
 
   if (IsSourcesPath(strFile))
     return false;
-  
+
   if (IsVideoDb(strFile) || IsMusicDb(strFile))
     return false;
-  
+
   if (IsLibraryFolder(strFile))
     return false;
-  
+
   if (IsPlugin(strFile))
     return false;
-  
+
   if (IsAndroidApp(strFile))
     return false;
 
@@ -1061,6 +1061,11 @@ bool URIUtils::IsPVRRecording(const std::string& strFile)
 
   return StringUtils::EndsWithNoCase(strFileWithoutSlash, ".pvr") &&
          StringUtils::StartsWith(strFile, "pvr://recordings");
+}
+
+bool URIUtils::IsPVRRecordingFileOrFolder(const std::string& strFile)
+{
+  return StringUtils::StartsWith(strFile, "pvr://recordings");
 }
 
 bool URIUtils::IsMusicDb(const std::string& strFile)
