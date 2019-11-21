@@ -41,6 +41,7 @@ public:
   void SetSelected(const std::vector<std::string> &selectedLabels);
   void SetUseDetails(bool useDetails);
   void SetMultiSelection(bool multiSelection);
+  void SetButtonFocus(bool buttonFocus);
 
 protected:
   explicit CGUIDialogSelect(int windowid);
@@ -59,6 +60,7 @@ private:
   CFileItemPtr m_selectedItem;
   bool m_useDetails;
   bool m_multiSelection;
+  bool m_focusToButton{};
 
   std::vector<int> m_selectedItems;
   std::unique_ptr<CFileItemList> m_vecList;

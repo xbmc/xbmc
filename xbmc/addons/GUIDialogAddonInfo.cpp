@@ -518,6 +518,7 @@ bool CGUIDialogAddonInfo::ShowDependencyList(const std::vector<ADDON::Dependency
     for (auto& it : items)
       pDialog->Add(*it);
     pDialog->EnableButton(!reactivate, 186);
+    pDialog->SetButtonFocus(true);
     pDialog->Open();
 
     if (pDialog->IsButtonPressed())
