@@ -295,10 +295,6 @@ bool CPVRChannel::SetIconPath(const std::string& strIconPath, bool bIsUserSetIco
   {
     m_strIconPath = StringUtils::Format("%s", strIconPath.c_str());
 
-    const std::shared_ptr<CPVREpg> epg = GetEPG();
-    if (epg)
-      epg->GetChannelData()->SetIconPath(m_strIconPath);
-
     m_bChanged = true;
     m_bIsUserSetIcon = bIsUserSetIcon && !m_strIconPath.empty();
     return true;
@@ -343,14 +339,7 @@ bool CPVRChannel::SetLastWatched(time_t iLastWatched)
 {
   {
     CSingleLock lock(m_critSection);
-    if (m_iLastWatched != iLastWatched)
-    {
-      m_iLastWatched = iLastWatched;
-
-      const std::shared_ptr<CPVREpg> epg = GetEPG();
-      if (epg)
-        epg->GetChannelData()->SetLastWatched(iLastWatched);
-    }
+    m_iLastWatched = iLastWatched;
   }
 
   const std::shared_ptr<CPVRDatabase> database = CServiceBroker::GetPVRManager().GetTVDatabase();
@@ -605,27 +594,13 @@ bool CPVRChannel::SetEPGScraper(const std::string& strScraper)
 void CPVRChannel::SetChannelNumber(const CPVRChannelNumber& channelNumber)
 {
   CSingleLock lock(m_critSection);
-  if (m_channelNumber != channelNumber)
-  {
-    m_channelNumber = channelNumber;
-
-    const std::shared_ptr<CPVREpg> epg = GetEPG();
-    if (epg)
-      epg->GetChannelData()->SetSortableChannelNumber(m_channelNumber.SortableChannelNumber());
-  }
+  m_channelNumber = channelNumber;
 }
 
 void CPVRChannel::SetClientChannelNumber(const CPVRChannelNumber& clientChannelNumber)
 {
   CSingleLock lock(m_critSection);
-  if (m_clientChannelNumber != clientChannelNumber)
-  {
-    m_clientChannelNumber = clientChannelNumber;
-
-    const std::shared_ptr<CPVREpg> epg = GetEPG();
-    if (epg)
-      epg->GetChannelData()->SetSortableClientChannelNumber(m_clientChannelNumber.SortableChannelNumber());
-  }
+  m_clientChannelNumber = clientChannelNumber;
 }
 
 void CPVRChannel::ToSortable(SortItem& sortable, Field field) const
@@ -806,12 +781,5 @@ bool CPVRChannel::CanRecord() const
 void CPVRChannel::SetClientOrder(int iOrder)
 {
   CSingleLock lock(m_critSection);
-  if (m_iOrder != iOrder)
-  {
-    m_iOrder = iOrder;
-
-    const std::shared_ptr<CPVREpg> epg = GetEPG();
-    if (epg)
-      epg->GetChannelData()->SetClientOrder(iOrder);
-  }
+  m_iOrder = iOrder;
 }

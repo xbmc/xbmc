@@ -210,32 +210,6 @@ int CPVREpgInfoTag::ClientID() const
   return m_channelData->ClientId();
 }
 
-void CPVREpgInfoTag::ToSortable(SortItem& sortable, Field field) const
-{
-  CSingleLock lock(m_critSection);
-
-  switch (field)
-  {
-    case FieldChannelName:
-      sortable[FieldChannelName] = m_channelData->ChannelName();
-      break;
-    case FieldChannelNumber:
-      sortable[FieldChannelNumber] = m_channelData->SortableChannelNumber();
-      break;
-    case FieldClientChannelOrder:
-      if (m_channelData->ClientOrder())
-        sortable[FieldClientChannelOrder] = m_channelData->ClientOrder();
-      else
-        sortable[FieldClientChannelOrder] = m_channelData->SortableClientChannelNumber();
-      break;
-    case FieldLastPlayed:
-      sortable[FieldLastPlayed] = m_channelData->LastWatched();
-      break;
-    default:
-      break;
-  }
-}
-
 CDateTime CPVREpgInfoTag::GetCurrentPlayingTime() const
 {
   if (CServiceBroker::GetPVRManager().PlaybackState()->IsPlayingChannel(ClientID(), UniqueChannelID()))

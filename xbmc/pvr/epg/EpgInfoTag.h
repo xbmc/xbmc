@@ -11,7 +11,6 @@
 #include "XBDateTime.h"
 #include "threads/CriticalSection.h"
 #include "utils/ISerializable.h"
-#include "utils/ISortable.h"
 
 #include <memory>
 #include <string>
@@ -25,7 +24,8 @@ namespace PVR
   class CPVREpgChannelData;
   class CPVREpgDatabase;
 
-  class CPVREpgInfoTag final : public ISerializable, public ISortable, public std::enable_shared_from_this<CPVREpgInfoTag>
+  class CPVREpgInfoTag final : public ISerializable,
+                               public std::enable_shared_from_this<CPVREpgInfoTag>
   {
     friend class CPVREpg;
     friend class CPVREpgDatabase;
@@ -58,9 +58,6 @@ namespace PVR
 
     // ISerializable implementation
     void Serialize(CVariant& value) const override;
-
-    // ISortable implementation
-    void ToSortable(SortItem& sortable, Field field) const override;
 
     /*!
      * @brief Get the identifier of the client that serves this event.
