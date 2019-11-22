@@ -157,6 +157,11 @@ namespace PVR
     void SetSelectedGroup(const std::shared_ptr<CPVRChannelGroup>& selectedGroup);
 
     /*!
+     * @brief Update the selected groups channel numbers and client order.
+     */
+    void UpdateSelectedGroup();
+
+    /*!
      * @brief Add a group to this container.
      * @param strName The name of the group.
      * @return True if the group was added, false otherwise.

@@ -237,6 +237,9 @@ bool CPVRChannelGroups::Update(bool bChannelsOnly /* = false */)
       RemoveFromAllGroups(channelsToRemove);
     }
 
+    if (bReturn && group == m_selectedGroup)
+      UpdateSelectedGroup();
+
     if (bReturn &&
         group->IsInternalGroup() &&
         CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_bPVRChannelIconsAutoScan)
@@ -490,6 +493,13 @@ void CPVRChannelGroups::SetSelectedGroup(const std::shared_ptr<CPVRChannelGroup>
 
   for (auto& group : m_groups)
     group->SetSelectedGroup(group == m_selectedGroup);
+}
+
+void CPVRChannelGroups::UpdateSelectedGroup()
+{
+  CSingleLock lock(m_critSection);
+  m_selectedGroup->UpdateClientOrder();
+  m_selectedGroup->UpdateChannelNumbers();
 }
 
 bool CPVRChannelGroups::AddGroup(const std::string& strName)
