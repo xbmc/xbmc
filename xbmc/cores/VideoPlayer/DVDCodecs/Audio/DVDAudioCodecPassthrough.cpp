@@ -43,6 +43,10 @@ bool CDVDAudioCodecPassthrough::Open(CDVDStreamInfo &hints, CDVDCodecOptions &op
       m_codecName = "pt-eac3";
       break;
 
+    case CAEStreamInfo::STREAM_TYPE_DTSHD_MA:
+      m_codecName = "pt-dtshd";
+      break;
+
     case CAEStreamInfo::STREAM_TYPE_DTSHD:
       m_codecName = "pt-dtshd";
       break;
