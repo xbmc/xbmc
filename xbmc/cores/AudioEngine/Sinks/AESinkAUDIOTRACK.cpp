@@ -251,11 +251,18 @@ CAESinkAUDIOTRACK::~CAESinkAUDIOTRACK()
   Deinitialize();
 }
 
-bool CAESinkAUDIOTRACK::VerifySinkConfiguration(int sampleRate, int channelMask, int encoding)
+bool CAESinkAUDIOTRACK::VerifySinkConfiguration(int sampleRate,
+                                                int channelMask,
+                                                int encoding,
+                                                bool isRaw)
 {
   int minBufferSize = CJNIAudioTrack::getMinBufferSize(sampleRate, channelMask, encoding);
   if (minBufferSize < 0)
     return false;
+
+  // make sure to have enough buffer as minimum might not be enough to open
+  if (!isRaw)
+    minBufferSize *= 4;
 
   jni::CJNIAudioTrack *jniAt = CreateAudioTrack(CJNIAudioManager::STREAM_MUSIC, sampleRate, channelMask, encoding, minBufferSize);
 
@@ -837,7 +844,8 @@ void CAESinkAUDIOTRACK::UpdateAvailablePassthroughCapabilities()
   m_info.m_streamTypes.clear();
   if (CJNIAudioFormat::ENCODING_AC3 != -1)
   {
-    if (VerifySinkConfiguration(48000, CJNIAudioFormat::CHANNEL_OUT_STEREO, CJNIAudioFormat::ENCODING_AC3))
+    if (VerifySinkConfiguration(48000, CJNIAudioFormat::CHANNEL_OUT_STEREO,
+                                CJNIAudioFormat::ENCODING_AC3, true))
     {
       m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_AC3);
       CLog::Log(LOGDEBUG, "Firmware implements AC3 RAW");
@@ -847,7 +855,8 @@ void CAESinkAUDIOTRACK::UpdateAvailablePassthroughCapabilities()
   // EAC3 working on shield, broken on FireTV
   if (CJNIAudioFormat::ENCODING_E_AC3 != -1)
   {
-    if (VerifySinkConfiguration(48000, CJNIAudioFormat::CHANNEL_OUT_STEREO, CJNIAudioFormat::ENCODING_E_AC3))
+    if (VerifySinkConfiguration(48000, CJNIAudioFormat::CHANNEL_OUT_STEREO,
+                                CJNIAudioFormat::ENCODING_E_AC3, true))
     {
       m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_EAC3);
       CLog::Log(LOGDEBUG, "Firmware implements EAC3 RAW");
@@ -856,7 +865,8 @@ void CAESinkAUDIOTRACK::UpdateAvailablePassthroughCapabilities()
 
   if (CJNIAudioFormat::ENCODING_DTS != -1)
   {
-    if (VerifySinkConfiguration(48000, CJNIAudioFormat::CHANNEL_OUT_STEREO, CJNIAudioFormat::ENCODING_DTS))
+    if (VerifySinkConfiguration(48000, CJNIAudioFormat::CHANNEL_OUT_STEREO,
+                                CJNIAudioFormat::ENCODING_DTS, true))
     {
       CLog::Log(LOGDEBUG, "Firmware implements DTS RAW");
       m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTSHD_CORE);
@@ -870,7 +880,8 @@ void CAESinkAUDIOTRACK::UpdateAvailablePassthroughCapabilities()
   {
     if (CJNIAudioFormat::ENCODING_DTS_HD != -1)
     {
-      if (VerifySinkConfiguration(48000, AEChannelMapToAUDIOTRACKChannelMask(AE_CH_LAYOUT_7_1), CJNIAudioFormat::ENCODING_DTS_HD))
+      if (VerifySinkConfiguration(48000, AEChannelMapToAUDIOTRACKChannelMask(AE_CH_LAYOUT_7_1),
+                                  CJNIAudioFormat::ENCODING_DTS_HD, true))
       {
         CLog::Log(LOGDEBUG, "Firmware implements DTS-HD RAW");
         m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTSHD);
@@ -879,7 +890,8 @@ void CAESinkAUDIOTRACK::UpdateAvailablePassthroughCapabilities()
     }
     if (CJNIAudioFormat::ENCODING_DOLBY_TRUEHD != -1)
     {
-      if (VerifySinkConfiguration(48000, AEChannelMapToAUDIOTRACKChannelMask(AE_CH_LAYOUT_7_1), CJNIAudioFormat::ENCODING_DOLBY_TRUEHD))
+      if (VerifySinkConfiguration(48000, AEChannelMapToAUDIOTRACKChannelMask(AE_CH_LAYOUT_7_1),
+                                  CJNIAudioFormat::ENCODING_DOLBY_TRUEHD, true))
       {
         CLog::Log(LOGDEBUG, "Firmware implements TrueHD RAW");
         m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_TRUEHD);
