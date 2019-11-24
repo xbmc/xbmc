@@ -11,7 +11,7 @@
 #include "AndroidUtils.h"
 #include "rendering/gles/RenderSystemGLES.h"
 #include "threads/CriticalSection.h"
-#include "threads/Timer.h"
+#include "threads/SystemClock.h"
 #include "windowing/WinSystem.h"
 
 #include <EGL/egl.h>
@@ -19,7 +19,7 @@
 class CDecoderFilterManager;
 class IDispResource;
 
-class CWinSystemAndroid : public CWinSystemBase, public ITimerCallback
+class CWinSystemAndroid : public CWinSystemBase
 {
 public:
   CWinSystemAndroid();
@@ -54,7 +54,6 @@ public:
 
 protected:
   std::unique_ptr<KODI::WINDOWING::IOSScreenSaver> GetOSScreenSaverImpl() override;
-  void OnTimeout() override;
 
   CAndroidUtils *m_android;
 
@@ -66,15 +65,8 @@ protected:
 
   RENDER_STEREO_MODE m_stereo_mode;
 
-  enum RESETSTATE
-  {
-    RESET_NOTWAITING,
-    RESET_WAITTIMER,
-    RESET_WAITEVENT
-  };
-
-  RESETSTATE m_dispResetState;
-  CTimer *m_dispResetTimer;
+  bool m_delayDispReset;
+  XbmcThreads::EndTime m_dispResetTimer;
 
   CCriticalSection m_resourceSection;
   std::vector<IDispResource*> m_resources;

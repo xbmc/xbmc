@@ -119,6 +119,14 @@ void CWinSystemAndroidGLESContext::PresentRenderImpl(bool rendered)
     return;
   }
 
+  if (m_delayDispReset && m_dispResetTimer.IsTimePast())
+  {
+    CSingleLock lock(m_resourceSection);
+    m_delayDispReset = false;
+    for (auto resource : m_resources)
+      resource->OnResetDisplay();
+  }
+
   // Ignore EGL_BAD_SURFACE: It seems to happen during/after mode changes, but
   // we can't actually do anything about it
   if (rendered && !m_pGLContext.TrySwapBuffers())
