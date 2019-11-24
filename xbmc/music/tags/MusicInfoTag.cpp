@@ -777,6 +777,9 @@ void CMusicInfoTag::Serialize(CVariant& value) const
     value["releasetype"] = CAlbum::ReleaseTypeToString(m_albumReleaseType);
   else if (m_type.compare(MediaTypeSong) == 0)
     value["albumreleasetype"] = CAlbum::ReleaseTypeToString(m_albumReleaseType);
+  value["isboxset"] = m_bBoxset;
+  value["totaldiscs"] = m_iDiscTotal;
+  value["disctitle"] = m_strDiscSubtitle;
 }
 
 void CMusicInfoTag::ToSortable(SortItem& sortable, Field field) const

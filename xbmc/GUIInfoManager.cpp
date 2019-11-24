@@ -4003,6 +4003,22 @@ const infomap container_str[]  = {{ "property",         CONTAINER_PROPERTY },
 ///     @return A review of the currently selected Album.
 ///     <p>
 ///   }
+///   \table_row3{   <b>`ListItem.Property(Album_Totaldiscs)`</b>,
+///                  \anchor ListItem_Property_Album_Totaldiscs
+///                  _string_,
+///     @return The total number of discs belonging to an album.
+///     <p><hr>
+///     @skinning_v19 **[New Infolabel]** \link ListItem.Property(Album_Totaldiscs) `ListItem.Property(Album_Totaldiscs)`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`ListItem.Property(Album_Isboxset)`</b>,
+///                  \anchor ListItem_Property_Album_Isboxset
+///                  _string_,
+///     @return **True** if the album is a boxset.
+///     <p><hr>
+///     @skinning_v19 **[New Infobool]** \link ListItem.Property(Album_Isboxset) `ListItem.Property(Album_Isboxset)`\endlink
+///     <p>
+///   }
 ///   \table_row3{   <b>`ListItem.DiscNumber`</b>,
 ///                  \anchor ListItem_DiscNumber
 ///                  _string_,
