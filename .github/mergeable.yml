@@ -1,0 +1,18 @@
+version: 2
+mergeable:
+  - when: pull_request.*
+    validate:
+      - do: milestone
+        no_empty:
+          enabled: true
+        must_exclude:
+          regex: 'Abandoned'
+      - do: label
+        must_include:
+          regex: '^v|Infrastructure'
+          message: 'At least version label must be set'
+        must_exclude:
+          regex: '^(Don''t merge|On hold|No Jenkins|RFC|WIP)$'
+      - do: title
+        must_exclude:
+          regex: '\[(RFC|WIP)\]'
