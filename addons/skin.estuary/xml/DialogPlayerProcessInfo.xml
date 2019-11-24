@@ -183,6 +183,16 @@
 					<label>$INFO[System.Memory(used.percent),[COLOR button_focus]$LOCALIZE[31030]:[/COLOR] ,       ]$INFO[System.CpuUsage,[COLOR button_focus]$LOCALIZE[13271][/COLOR] ]</label>
 					<font>font14</font>
 					<shadowcolor>black</shadowcolor>
+					<visible>System.SupportsCPUUsage</visible>
+				</control>
+				<control type="label">
+					<width>1600</width>
+					<height>50</height>
+					<aligny>bottom</aligny>
+					<label>$INFO[System.Memory(used.percent),[COLOR button_focus]$LOCALIZE[31030]:[/COLOR] ]</label>
+					<font>font14</font>
+					<shadowcolor>black</shadowcolor>
+					<visible>!System.SupportsCPUUsage</visible>
 				</control>
 			</control>
 			<control type="grouplist" id="5550">

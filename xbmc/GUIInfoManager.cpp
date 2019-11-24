@@ -1629,6 +1629,14 @@ const infomap weather[] =        {{ "isfetched",        WEATHER_IS_FETCHED },
 ///     @skinning_v17 **[New Infolabel]** \link System_PrivacyPolicy `System.PrivacyPolicy`\endlink
 ///     <p>
 ///   }
+///   \table_row3{   <b>`System.SupportsCPUUsage`</b>,
+///                  \anchor System_SupportsCPUUsage
+///                  _boolean_,
+///     @return **True** if the system can provide CPU usage information.
+///     <p><hr>
+///     @skinning_v19 **[New Boolean Condition]** \link  System_SupportsCPUUsage ` System.SupportsCPUUsage`\endlink
+///     <p>
+///   }
 const infomap system_labels[] =  {{ "hasnetwork",       SYSTEM_ETHERNET_LINK_ACTIVE },
                                   { "hasmediadvd",      SYSTEM_MEDIA_DVD },
                                   { "hasmediaaudiocd",  SYSTEM_MEDIA_AUDIO_CD },
@@ -1696,7 +1704,8 @@ const infomap system_labels[] =  {{ "hasnetwork",       SYSTEM_ETHERNET_LINK_ACT
                                   { "stereoscopicmode", SYSTEM_STEREOSCOPIC_MODE },
                                   { "hascms",           SYSTEM_HAS_CMS },
                                   { "privacypolicy",    SYSTEM_PRIVACY_POLICY },
-                                  { "haspvraddon",      SYSTEM_HAS_PVR_ADDON }};
+                                  { "haspvraddon",      SYSTEM_HAS_PVR_ADDON },
+                                  { "supportscpuusage", SYSTEM_SUPPORTS_CPU_USAGE }};
 
 /// \page modules__infolabels_boolean_conditions
 ///   \table_row3{   <b>`System.HasAddon(id)`</b>,
@@ -1708,9 +1717,9 @@ const infomap system_labels[] =  {{ "hasnetwork",       SYSTEM_ETHERNET_LINK_ACT
 ///     <p>
 ///   }
 ///   \table_row3{   <b>`System.AddonIsEnabled(id)`</b>,
-///                  \anchor AddonIsEnabled
+///                  \anchor System_AddonIsEnabled
 ///                  _boolean_,
-///     @return **True** if the specified addon is enabled on the system..
+///     @return **True** if the specified addon is enabled on the system.
 ///     @param id - The addon Id
 ///     <p><hr>
 ///     @skinning_v19 **[New Boolean Condition]** \link System_AddonIsEnabled `System.AddonIsEnabled(id)`\endlink

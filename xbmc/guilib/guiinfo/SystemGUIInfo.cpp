@@ -71,11 +71,14 @@ std::string CSystemGUIInfo::GetSystemHeatInfo(int info) const
       text = StringUtils::Format("%i%%", m_fanSpeed * 2);
       break;
     case SYSTEM_CPU_USAGE:
+      if (CServiceBroker::GetCPUInfo()->SupportsCPUUsage())
 #if defined(TARGET_DARWIN) || defined(TARGET_WINDOWS)
-      text = StringUtils::Format("%d%%", CServiceBroker::GetCPUInfo()->GetUsedPercentage());
+        text = StringUtils::Format("%d%%", CServiceBroker::GetCPUInfo()->GetUsedPercentage());
 #else
-      text = StringUtils::Format("%s", CServiceBroker::GetCPUInfo()->GetCoresUsageString().c_str());
+        text = CServiceBroker::GetCPUInfo()->GetCoresUsageString();
 #endif
+      else
+        text = g_localizeStrings.Get(10005); // Not available
       break;
   }
   return text;
@@ -621,6 +624,9 @@ bool CSystemGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int context
     }
     case SYSTEM_HAS_ALARM:
       value = g_alarmClock.HasAlarm(info.GetData3());
+      return true;
+    case SYSTEM_SUPPORTS_CPU_USAGE:
+      value = CServiceBroker::GetCPUInfo()->SupportsCPUUsage();
       return true;
     case SYSTEM_GET_BOOL:
       value = CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(info.GetData3());
