@@ -9,8 +9,9 @@
 #include "CPUInfoLinux.h"
 
 #include "utils/StringUtils.h"
-#include "utils/SysfsUtils.h"
 #include "utils/Temperature.h"
+
+#include "platform/linux/SysfsPath.h"
 
 #include <fstream>
 #include <regex>

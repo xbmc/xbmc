@@ -185,11 +185,6 @@ if(NOT CORE_SYSTEM_NAME STREQUAL windows AND NOT CORE_SYSTEM_NAME STREQUAL windo
   list(APPEND HEADERS GLUtils.h)
 endif()
 
-if(CORE_SYSTEM_NAME STREQUAL linux)
-  list(APPEND SOURCES SysfsUtils.cpp)
-  list(APPEND HEADERS SysfsUtils.h)
-endif()
-
 if(CORE_PLATFORM_NAME_LC STREQUAL gbm)
   list(APPEND SOURCES EGLImage.cpp)
   list(APPEND HEADERS EGLImage.h)

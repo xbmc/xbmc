@@ -6,7 +6,7 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include "SysfsUtils.h"
+#include "SysfsPath.h"
 
 bool CSysfsPath::Exists()
 {

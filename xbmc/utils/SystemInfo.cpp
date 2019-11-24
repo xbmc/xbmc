@@ -68,8 +68,9 @@ using namespace winrt::Windows::System::Profile;
 #elif defined(TARGET_FREEBSD)
 #include <sys/param.h>
 #elif defined(TARGET_LINUX)
+#include "platform/linux/SysfsPath.h"
+
 #include <linux/version.h>
-#include "utils/SysfsUtils.h"
 #endif
 
 #include <system_error>
