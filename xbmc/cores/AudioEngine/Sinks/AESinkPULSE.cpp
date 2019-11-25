@@ -1035,7 +1035,12 @@ void CAESinkPULSE::Deinitialize()
   m_maxLatency = 0.0;
 
   if (m_Stream)
-    Drain();
+  {
+    CSingleExit exit(m_sec);
+    pa_threaded_mainloop_lock(m_MainLoop);
+    WaitForOperation(pa_stream_flush(m_Stream, NULL, NULL), m_MainLoop, "Flush");
+    pa_threaded_mainloop_unlock(m_MainLoop);
+  }
 
   {
     CSingleExit exit(m_sec);
