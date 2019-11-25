@@ -1151,6 +1151,8 @@ void CAESinkPULSE::Drain()
 
   pa_threaded_mainloop_lock(m_MainLoop);
   WaitForOperation(pa_stream_drain(m_Stream, NULL, NULL), m_MainLoop, "Drain");
+  WaitForOperation(pa_stream_cork(m_Stream, 1, NULL, NULL), m_MainLoop, "Pause");
+  m_IsStreamPaused = true;
   pa_threaded_mainloop_unlock(m_MainLoop);
 }
 
