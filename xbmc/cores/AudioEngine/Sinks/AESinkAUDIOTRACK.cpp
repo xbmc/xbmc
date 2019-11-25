@@ -792,6 +792,7 @@ void CAESinkAUDIOTRACK::Drain()
 
   CLog::Log(LOGDEBUG, "Draining Audio");
   m_at_jni->stop();
+  m_at_jni->pause();
   m_duration_written = 0;
   m_headPos = 0;
   m_linearmovingaverage.clear();
