@@ -1365,6 +1365,7 @@ void CActiveAE::Configure(AEAudioFormat *desiredFmt)
     // buffers for viz
     if (!(inputFormat.m_dataFormat == AE_FMT_RAW))
     {
+      CSingleLock lock(m_vizLock);
       if (initSink && m_vizBuffers)
       {
         m_discardBufferPools.push_back(m_vizBuffers);
@@ -2209,19 +2210,26 @@ bool CActiveAE::RunStages()
 
             if (!m_vizBuffersInput->m_freeSamples.empty())
             {
-              // copy the samples into the viz input buffer
-              CSampleBuffer *viz = m_vizBuffersInput->GetFreeBuffer();
               int samples = out->pkt->nb_samples;
-              int bytes = samples * out->pkt->config.channels / out->pkt->planes * out->pkt->bytes_per_sample;
-              for(int i= 0; i < out->pkt->planes; i++)
+              if (samples)
               {
-                memcpy(viz->pkt->data[i], out->pkt->data[i], bytes);
+                // copy the samples into the viz input buffer
+                CSampleBuffer* viz = m_vizBuffersInput->GetFreeBuffer();
+                int bytes = samples * out->pkt->config.channels / out->pkt->planes *
+                            out->pkt->bytes_per_sample;
+                for (int i = 0; i < out->pkt->planes; i++)
+                {
+                  memcpy(viz->pkt->data[i], out->pkt->data[i], bytes);
+                }
+                viz->pkt->nb_samples = samples;
+                m_vizBuffers->m_inputSamples.push_back(viz);
               }
-              viz->pkt->nb_samples = samples;
-              m_vizBuffers->m_inputSamples.push_back(viz);
+              else
+                CLog::Log(LOGDEBUG, "ActiveAE::%s - no samples available to add to viz buffer",
+                          __FUNCTION__);
             }
             else
-              CLog::Log(LOGWARNING,"ActiveAE::%s - viz ran out of free buffers", __FUNCTION__);
+              CLog::Log(LOGWARNING, "ActiveAE::%s - viz ran out of free buffers", __FUNCTION__);
             AEDelayStatus status;
             m_stats.GetDelay(status);
             int64_t now = XbmcThreads::SystemClockMillis();
