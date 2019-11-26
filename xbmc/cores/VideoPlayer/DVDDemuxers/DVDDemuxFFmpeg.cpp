@@ -243,7 +243,7 @@ bool CDVDDemuxFFmpeg::Open(std::shared_ptr<CDVDInputStream> pInput, bool streami
   // try to abort after 30 seconds
   m_timeout.Set(30000);
 
-  if (m_pInput->IsStreamType(DVDSTREAM_TYPE_FFMPEG))
+  if (m_pInput->IsStreamType(DVDSTREAM_TYPE_FFMPEG) || m_pInput->IsStreamType(DVDSTREAM_TYPE_PVR_ARCHIVE))
   {
     // special stream type that makes avformat handle file opening
     // allows internal ffmpeg protocols to be used

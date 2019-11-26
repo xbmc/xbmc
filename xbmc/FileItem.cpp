@@ -843,9 +843,25 @@ bool CFileItem::IsEPG() const
   return HasEPGInfoTag();
 }
 
+bool CFileItem::IsEPGWithArchive() const
+{
+  if (HasEPGInfoTag())
+  {
+    const std::shared_ptr<CPVRChannel> channel = CServiceBroker::GetPVRManager().ChannelGroups()->GetChannelForEpgTag(GetEPGInfoTag());
+    if (channel)
+      return channel->HasArchive();
+  }
+  return false;
+}
+
 bool CFileItem::IsPVRChannel() const
 {
   return HasPVRChannelInfoTag();
+}
+
+bool CFileItem::IsPVRChannelWithArchive() const
+{
+  return (HasPVRChannelInfoTag() && GetPVRChannelInfoTag()->HasArchive());
 }
 
 bool CFileItem::IsPVRChannelGroup() const

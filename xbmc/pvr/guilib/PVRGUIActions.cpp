@@ -1218,12 +1218,29 @@ namespace PVR
     {
       CPVRStreamProperties props;
 
+      // Need a better way of telling if we're currently playing a live stream
+      //if (item->IsPVRChannelWithArchive() || item->IsEPGWithArchive())
+      client->CloseLiveStream();
+
       if (item->IsPVRChannel())
         client->GetChannelStreamProperties(item->GetPVRChannelInfoTag(), props);
       else if (item->IsPVRRecording())
         client->GetRecordingStreamProperties(item->GetPVRRecordingInfoTag(), props);
       else if (item->IsEPG())
-        client->GetEpgTagStreamProperties(item->GetEPGInfoTag(), props);
+      {
+        PVR_ERROR error = client->GetEpgTagStreamProperties(item->GetEPGInfoTag(), props);
+        if (error == PVR_ERROR_NOT_IMPLEMENTED)
+        {
+          // PVR_ERROR_NOT_IMPLEMENTED is returned when Play EPG as Live TV is selected.
+          const std::shared_ptr<CPVRChannel> channel = CServiceBroker::GetPVRManager().ChannelGroups()->GetChannelForEpgTag(item->GetEPGInfoTag());
+          if (channel)
+          {
+            *item = CFileItem(channel);
+            props.clear();
+            client->GetChannelStreamProperties(item->GetPVRChannelInfoTag(), props);
+          }
+        }
+      }
 
       if (props.size())
       {

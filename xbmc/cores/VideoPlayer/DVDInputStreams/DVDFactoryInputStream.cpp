@@ -13,6 +13,7 @@
 #include "DVDInputStreamBluray.h"
 #endif
 #include "DVDInputStreamFFmpeg.h"
+#include "DVDInputStreamFFmpegArchive.h"
 #include "DVDInputStreamFile.h"
 #include "DVDInputStreamNavigator.h"
 #include "DVDInputStreamStack.h"
@@ -63,6 +64,10 @@ std::shared_ptr<CDVDInputStream> CDVDFactoryInputStream::CreateInputStream(IVide
       STREAM_PROPERTY_VALUE_INPUTSTREAMFFMPEG)
     return std::shared_ptr<CDVDInputStreamFFmpeg>(new CDVDInputStreamFFmpeg(fileitem));
 
+  if (fileitem.GetProperty(STREAM_PROPERTY_INPUTSTREAMCLASS).asString() ==
+      STREAM_PROPERTY_VALUE_INPUTSTREAMFFMPEGARCHIVE)
+    return std::shared_ptr<CDVDInputStreamFFmpegArchive>(new CDVDInputStreamFFmpegArchive(fileitem));
+
   if (fileitem.IsDiscImage())
   {
 #ifdef HAVE_LIBBLURAY
@@ -100,8 +105,8 @@ std::shared_ptr<CDVDInputStream> CDVDFactoryInputStream::CreateInputStream(IVide
   else if (URIUtils::IsPVRRecording(file))
     return std::shared_ptr<CInputStreamPVRRecording>(new CInputStreamPVRRecording(pPlayer, fileitem));
 #ifdef HAVE_LIBBLURAY
-  else if (fileitem.IsType(".bdmv") || fileitem.IsType(".mpls") 
-          || fileitem.IsType(".bdm") || fileitem.IsType(".mpl") 
+  else if (fileitem.IsType(".bdmv") || fileitem.IsType(".mpls")
+          || fileitem.IsType(".bdm") || fileitem.IsType(".mpl")
           || StringUtils::StartsWithNoCase(file, "bluray:"))
     return std::shared_ptr<CDVDInputStreamBluray>(new CDVDInputStreamBluray(pPlayer, fileitem));
 #endif

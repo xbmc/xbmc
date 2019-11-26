@@ -30,7 +30,8 @@ enum DVDStreamType
   DVDSTREAM_TYPE_BLURAY = 11,
   DVDSTREAM_TYPE_PVRMANAGER = 12,
   DVDSTREAM_TYPE_MULTIFILES = 13,
-  DVDSTREAM_TYPE_ADDON = 14
+  DVDSTREAM_TYPE_ADDON = 14,
+  DVDSTREAM_TYPE_PVR_ARCHIVE = 15
 };
 
 #define SEEK_POSSIBLE 0x10 // flag used to check if protocol allows seeks
@@ -170,7 +171,7 @@ public:
    */
   virtual bool GetCacheStatus(XFILE::SCacheStatus *status) { return false; }
 
-  bool IsStreamType(DVDStreamType type) const { return m_streamType == type; }
+  virtual bool IsStreamType(DVDStreamType type) const { return m_streamType == type; }
   virtual bool IsEOF() = 0;
   virtual BitstreamStats GetBitstreamStats() const { return m_stats; }
 
