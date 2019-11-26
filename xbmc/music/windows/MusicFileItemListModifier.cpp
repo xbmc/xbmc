@@ -89,6 +89,13 @@ void CMusicFileItemListModifier::AddQueuingFolder(CFileItemList& items)
     pItem->SetPath(musicUrl.ToString());
     break;
 
+  //  Disc node
+  case NODE_TYPE_DISC:
+    pItem.reset(new CFileItem(g_localizeStrings.Get(38075)));  // "All Discs"
+    musicUrl.AppendPath("-1/");
+    pItem->SetPath(musicUrl.ToString());
+    break;
+
   default:
     break;
   }

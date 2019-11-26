@@ -183,6 +183,8 @@ bool CTagLoaderTagLib::ParseTag(ASF::Tag *asf, EmbeddedArt *art, CMusicInfoTag& 
     {} // Known unsupported, suppress warnings
     else if (it->first == "WM/Year")
       tag.SetYear(atoi(it->second.front().toString().toCString(true)));
+    else if (it->first == "WM/SetSubTitle")
+      tag.SetDiscSubtitle(it->second.front().toString().to8Bit(true));
     else if (it->first == "MusicBrainz/Artist Id")
       tag.SetMusicBrainzArtistID(SplitMBID(GetASFStringList(it->second)));
     else if (it->first == "MusicBrainz/Album Id")
@@ -308,6 +310,8 @@ bool CTagLoaderTagLib::ParseTag(ID3v2::Tag *id3v2, EmbeddedArt *art, MUSIC_INFO:
     else if (it->first == "TDTG")   {} // Tagging time
     else if (it->first == "TLAN")   {} // Languages
     else if (it->first == "TMOO")   tag.SetMood(it->second.front()->toString().to8Bit(true));
+    else if (it->first == "TSST")
+      tag.SetDiscSubtitle(it->second.front()->toString().to8Bit(true));
     else if (it->first == "USLT")
       // Loop through any lyrics frames. Could there be multiple frames, how to choose?
       for (ID3v2::FrameList::ConstIterator lt = it->second.begin(); lt != it->second.end(); ++lt)
@@ -500,6 +504,8 @@ bool CTagLoaderTagLib::ParseTag(APE::Tag *ape, EmbeddedArt *art, CMusicInfoTag& 
       tag.SetDiscNumber(it->second.toString().toInt());
     else if (it->first == "YEAR")
       tag.SetYear(it->second.toString().toInt());
+    else if (it->first == "DISCSUBTITLE")
+      tag.SetDiscSubtitle(it->second.toString().to8Bit(true));
     else if (it->first == "GENRE")
       SetGenre(tag, StringListToVectorString(it->second.toStringList()));
     else if (it->first == "MOOD")
@@ -644,6 +650,8 @@ bool CTagLoaderTagLib::ParseTag(Ogg::XiphComment *xiph, EmbeddedArt *art, CMusic
       tag.SetComment(it->second.front().to8Bit(true));
     else if (it->first == "CUESHEET")
       tag.SetCueSheet(it->second.front().to8Bit(true));
+    else if (it->first == "DISCSUBTITLE")
+      tag.SetDiscSubtitle(it->second.front().to8Bit(true));
     else if (it->first == "ENCODEDBY")
     {} // Known but unsupported, suppress warnings
     else if (it->first == "COMPOSER")
@@ -844,6 +852,8 @@ bool CTagLoaderTagLib::ParseTag(MP4::Tag *mp4, EmbeddedArt *art, CMusicInfoTag& 
     //No MP4 standard tag for musician credits
     else if (it->first == "----:com.apple.iTunes:LABEL")
       tag.SetRecordLabel(it->second.toStringList().front().to8Bit(true));
+    else if (it->first == "----:com.apple.iTunes:DISCSUBTITLE")
+      tag.SetDiscSubtitle(it->second.toStringList().front().to8Bit(true));
     else if (it->first == "cpil")
       tag.SetCompilation(it->second.toBool());
     else if (it->first == "trkn")
@@ -1060,6 +1070,14 @@ void CTagLoaderTagLib::AddArtistRole(CMusicInfoTag &tag, const std::string& strR
     tag.AddArtistRole(strRole, values[0]);
   else
     tag.AddArtistRole(strRole, values);
+}
+
+void CTagLoaderTagLib::SetDiscSubtitle(CMusicInfoTag& tag, const std::vector<std::string>& values)
+{
+  if (values.size() == 1)
+    tag.SetDiscSubtitle(values[0]);
+  else
+    tag.SetDiscSubtitle(std::string());
 }
 
 void CTagLoaderTagLib::AddArtistRole(CMusicInfoTag &tag, const std::vector<std::string> &values)

@@ -91,6 +91,7 @@ using namespace MUSIC_INFO;
  *  %Y - Year
  *  %Z - tvshow title
  *  %a - Date Added
+ *  %b - Total number of discs
  *  %c - Relevance - Used for actors' appearances
  *  %d - Date and Time
  *  %p - Last Played
@@ -98,7 +99,7 @@ using namespace MUSIC_INFO;
  *  *t - Date Taken (suitable for Pictures)
  */
 
-#define MASK_CHARS "NSATBGYFLDIJRCKMEPHZOQUVXWacdiprstuv"
+#define MASK_CHARS "NSATBGYFLDIJRCKMEPHZOQUVXWabcdiprstuv"
 
 CLabelFormatter::CLabelFormatter(const std::string &mask, const std::string &mask2)
 {
@@ -316,6 +317,10 @@ std::string CLabelFormatter::GetMaskContent(const CMaskString &mask, const CFile
     if (music && music->GetDateAdded().IsValid())
       value = music->GetDateAdded().GetAsLocalizedDate();
     break;
+  case 'b': // Total number of discs
+    if (music)
+      value = StringUtils::Format("%i", music->GetTotalDiscs());
+    break;
   case 'd': // date and time
     if (item->m_dateTime.IsValid())
       value = item->m_dateTime.GetAsLocalizedDateTime();
@@ -450,6 +455,9 @@ void CLabelFormatter::FillMusicMaskContent(const char mask, const std::string &v
     break;
   case 'r': // userrating
     tag->SetUserrating(value[0]);
+    break;
+  case 'b': // total discs
+    tag->SetTotalDiscs(atol(value.c_str()));
     break;
   }
 }

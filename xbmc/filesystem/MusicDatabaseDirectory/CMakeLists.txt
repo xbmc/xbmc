@@ -6,6 +6,7 @@ set(SOURCES DirectoryNodeAlbum.cpp
             DirectoryNodeAlbumTop100.cpp
             DirectoryNodeAlbumTop100Song.cpp
             DirectoryNodeArtist.cpp
+            DirectoryNodeDiscs.cpp
             DirectoryNode.cpp
             DirectoryNodeGrouped.cpp
             DirectoryNodeOverview.cpp
@@ -25,6 +26,7 @@ set(HEADERS DirectoryNode.h
             DirectoryNodeAlbumTop100.h
             DirectoryNodeAlbumTop100Song.h
             DirectoryNodeArtist.h
+            DirectoryNodeDiscs.h
             DirectoryNodeGrouped.h
             DirectoryNodeOverview.h
             DirectoryNodeRoot.h

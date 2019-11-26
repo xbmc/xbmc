@@ -1044,6 +1044,11 @@
           <default>true</default>
           <control type="toggle" />
         </setting>
+        <setting id="musiclibrary.showdiscs" type="boolean" label="13522" help="13523">
+          <level>0</level>
+          <default>true</default>
+          <control type="toggle" />
+        </setting>
         <setting id="musiclibrary.useartistsortname" type="boolean" label="20228" help="36294">
           <level>1</level>
           <default>false</default>

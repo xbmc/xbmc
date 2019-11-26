@@ -100,6 +100,11 @@ public:
   */
   const std::string GetAlbumArtistSort() const { return m_strAlbumArtistSort; }
 
+  /*! \brief Get disc subtitle string where one exists
+  \return disc subtitle as a single string
+  */
+  const std::string GetDiscSubtitle() const;
+
   /*! \brief Get composer sort name string
   \return composer sort name as a single string
   */
@@ -173,6 +178,7 @@ public:
   int iTrack;
   int iDuration;
   int iYear;
+  std::string strDiscSubtitle;
   int iTimesPlayed;
   CDateTime lastPlayed;
   CDateTime dateAdded;

@@ -26,7 +26,7 @@ NODE_TYPE CDirectoryNodeAlbumRecentlyAdded::GetChildType() const
   if (GetName()=="-1")
     return NODE_TYPE_ALBUM_RECENTLY_ADDED_SONGS;
 
-  return NODE_TYPE_SONG;
+  return NODE_TYPE_DISC;
 }
 
 std::string CDirectoryNodeAlbumRecentlyAdded::GetLocalizedName() const

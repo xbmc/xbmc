@@ -38,7 +38,8 @@ namespace XFILE
       NODE_TYPE_SONG,
       NODE_TYPE_SONG_TOP100,
       NODE_TYPE_YEAR,
-      NODE_TYPE_SINGLES
+      NODE_TYPE_SINGLES,
+      NODE_TYPE_DISC,
     } NODE_TYPE;
 
     typedef struct {
