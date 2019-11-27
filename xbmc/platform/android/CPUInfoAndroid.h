@@ -18,6 +18,7 @@ public:
   CCPUInfoAndroid();
   ~CCPUInfoAndroid() = default;
 
+  bool SupportsCPUUsage() const override { return false; }
   int GetUsedPercentage() override { return 0; }
   float GetCPUFrequency() override { return 0; }
 };

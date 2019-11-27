@@ -94,7 +94,11 @@ void CGUIWindowDebugInfo::Process(unsigned int currentTime, CDirtyRegionList &di
     KODI::MEMORY::MemoryStatus stat;
     KODI::MEMORY::GetMemoryStatus(&stat);
     std::string profiling = CGUIControlProfiler::IsRunning() ? " (profiling)" : "";
-    std::string strCores = CServiceBroker::GetCPUInfo()->GetCoresUsageString();
+    std::string strCores;
+    if (CServiceBroker::GetCPUInfo()->SupportsCPUUsage())
+      strCores = CServiceBroker::GetCPUInfo()->GetCoresUsageString();
+    else
+      strCores = "N/A";
     std::string lcAppName = CCompileInfo::GetAppName();
     StringUtils::ToLower(lcAppName);
 #if !defined(TARGET_POSIX)

@@ -75,6 +75,8 @@ public:
 
   static std::shared_ptr<CCPUInfo> GetCPUInfo();
 
+  virtual bool SupportsCPUUsage() const { return true; }
+
   virtual int GetUsedPercentage() = 0;
   virtual float GetCPUFrequency() = 0;
   virtual bool GetTemperature(CTemperature& temperature) = 0;

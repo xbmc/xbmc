@@ -104,6 +104,7 @@
 #define SYSTEM_MEDIA_DVD            127
 #define SYSTEM_DVDREADY             128
 #define SYSTEM_HAS_ALARM            129
+#define SYSTEM_SUPPORTS_CPU_USAGE   130
 #define SYSTEM_SCREEN_MODE          132
 #define SYSTEM_SCREEN_WIDTH         133
 #define SYSTEM_SCREEN_HEIGHT        134
