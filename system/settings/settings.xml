@@ -989,6 +989,16 @@
           <default>true</default>
           <control type="toggle" />
         </setting>
+        <setting id="videolibrary.moviesetsfolder" type="path" label="20226" help="36300">
+          <level>1</level>
+          <default></default>
+          <constraints>
+            <allowempty>true</allowempty>
+          </constraints>
+          <control type="button" format="path">
+            <heading>657</heading>
+          </control>
+        </setting>
       </group>
     </category>
     <category id="music" label="14216" help="38108">

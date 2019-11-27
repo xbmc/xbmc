@@ -20,6 +20,8 @@
 #include "messaging/helpers/DialogHelper.h"
 #include "music/MusicLibraryQueue.h"
 #include "settings/LibExportSettings.h"
+#include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "storage/MediaManager.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
@@ -107,6 +109,20 @@ static int ExportLibrary(const std::vector<std::string>& params)
       HELPERS::DialogResponse result = HELPERS::ShowYesNoDialogText(CVariant{iHeading}, CVariant{20430});
       cancelled = result == HELPERS::DialogResponse::CANCELLED;
       thumbs = result == HELPERS::DialogResponse::YES;
+    }
+  }
+
+  if (cancelled)
+    return -1;
+
+  if (thumbs && !singleFile && StringUtils::EqualsNoCase(params[0], "video"))
+  {
+    std::string movieSetsInfoPath = CServiceBroker::GetSettingsComponent()->GetSettings()->
+        GetString(CSettings::SETTING_VIDEOLIBRARY_MOVIESETSFOLDER);
+    if (movieSetsInfoPath.empty())
+    {
+      auto result = HELPERS::ShowYesNoDialogText(CVariant{iHeading}, CVariant{36301});
+      cancelled = result != HELPERS::DialogResponse::YES;
     }
   }
 

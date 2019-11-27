@@ -12566,7 +12566,13 @@ msgctxt "#20225"
 msgid "Where no local album cover exists, online art will be used. Where neither is available, cover images embedded in music files will be used"
 msgstr ""
 
-#empty strings from id 20226 to 20227
+#: system/settings/settings.xml
+#: xbmc/music/dialogs/GUIDialogVideoInfo.cpp
+msgctxt "#20226"
+msgid "Movie set information folder"
+msgstr ""
+
+#empty string id 20227
 
 #: system/settings/settings.xml
 msgctxt "#20228"
@@ -19155,7 +19161,16 @@ msgctxt "#36299"
 msgid "Switch display into HDR mode if media with HDR information is played.\nIf disabled, HDR information are applied using Kodi's internal HDR path."
 msgstr ""
 
-#empty strings from id 36300 to 36301
+#. Description of setting with label #20226 "Movie set information folder"
+#: system/settings/settings.xml
+msgctxt "#36300"
+msgid "Select the folder where movie set information (images) are saved locally."
+msgstr ""
+
+#: xbmc/interfaces/builtins/LibraryBuiltins.cpp
+msgctxt "#36301"
+msgid "No 'Movie set information folder' is configured to store movie set images so they will not be exported. Do you want to proceed?"
+msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36302"
