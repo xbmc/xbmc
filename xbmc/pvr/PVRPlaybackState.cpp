@@ -153,7 +153,7 @@ bool CPVRPlaybackState::OnPlaybackStopped(const std::shared_ptr<CFileItem> item)
     m_iplayingChannelUniqueID = -1;
     m_strPlayingClientName.clear();
   }
-  else if (item->HasEPGInfoTag() && item->GetEPGInfoTag() == m_playingEpgTag)
+  else if (item->HasEPGInfoTag() && m_playingEpgTag && *item->GetEPGInfoTag() == *m_playingEpgTag)
   {
     bChanged = true;
     m_playingEpgTag.reset();

@@ -138,35 +138,10 @@ bool CPVREpgInfoTag::operator ==(const CPVREpgInfoTag& right) const
     return true;
 
   CSingleLock lock(m_critSection);
-  return (m_iDatabaseID == right.m_iDatabaseID &&
-          m_iGenreType == right.m_iGenreType &&
-          m_iGenreSubType == right.m_iGenreSubType &&
-          m_iParentalRating == right.m_iParentalRating &&
-          m_firstAired == right.m_firstAired &&
-          m_iStarRating == right.m_iStarRating &&
-          m_iSeriesNumber == right.m_iSeriesNumber &&
-          m_iEpisodeNumber == right.m_iEpisodeNumber &&
-          m_iEpisodePart == right.m_iEpisodePart &&
-          m_iUniqueBroadcastID == right.m_iUniqueBroadcastID &&
-          m_strTitle == right.m_strTitle &&
-          m_strPlotOutline == right.m_strPlotOutline &&
-          m_strPlot == right.m_strPlot &&
-          m_strOriginalTitle == right.m_strOriginalTitle &&
-          m_cast == right.m_cast &&
-          m_directors == right.m_directors &&
-          m_writers == right.m_writers &&
-          m_iYear == right.m_iYear &&
-          m_strIMDBNumber == right.m_strIMDBNumber &&
-          m_genre == right.m_genre &&
-          m_strEpisodeName == right.m_strEpisodeName &&
-          m_iEpgID == right.m_iEpgID &&
-          m_strIconPath == right.m_strIconPath &&
-          m_strFileNameAndPath == right.m_strFileNameAndPath &&
-          m_startTime == right.m_startTime &&
-          m_endTime == right.m_endTime &&
-          m_iFlags == right.m_iFlags &&
-          m_strSeriesLink == right.m_strSeriesLink &&
-          m_channelData == right.m_channelData);
+  return (m_iUniqueBroadcastID == right.m_iUniqueBroadcastID && m_channelData &&
+          right.m_channelData &&
+          m_channelData->UniqueClientChannelId() == right.m_channelData->UniqueClientChannelId() &&
+          m_channelData->ClientId() == right.m_channelData->ClientId());
 }
 
 bool CPVREpgInfoTag::operator !=(const CPVREpgInfoTag& right) const
