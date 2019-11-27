@@ -715,24 +715,25 @@ void CMusicInfoScanner::FileItemsToAlbums(CFileItemList& items, VECALBUMS& album
         !StringUtils::EqualsNoCase(artist, "various artists") &&
         !StringUtils::EqualsNoCase(artist, various)) // 3a
         compilation = false;
+      else
+        // Grab name for use in "various artist" artist
+        various = artists.begin()->first;
     }
     else if (hasAlbumArtist) // 3b
       compilation = false;
 
-    //Such a compilation album is stored with the localized value for "various artists" as the album artist
+    // Such a compilation album is stored under a unique artist that matches on Musicbrainz ID
+    // the "various artists" artist for music tagged with mbids.
     if (compilation)
     {
       CLog::Log(LOGDEBUG, "Album '%s' is a compilation as there's no overlapping tracks and %s",
                 songsByAlbumName.first.c_str(),
                 hasAlbumArtist ? "the album artist is 'Various'"
                                : "there is more than one unique artist");
+      // Clear song artists from artists map, put songs under "various artists" mbid entry
       artists.clear();
-      std::vector<std::string> va; va.push_back(various);
       for (auto& song : songs)
-      {
-        song.SetAlbumArtist(va);
-        artists[various].push_back(&song);
-      }
+        artists[VARIOUSARTISTS_MBID].push_back(&song);
     }
 
     /*
@@ -758,9 +759,10 @@ void CMusicInfoScanner::FileItemsToAlbums(CFileItemList& items, VECALBUMS& album
      */
     for (auto& j : artists)
     {
-      /*
-       Find the common artist(s) for these songs. Take from albumartist tag when present, or use artist tag.
-       When from albumartist tag also check albumartistsort tag and take first non-empty value
+      /* Find the common artist(s) for these songs (grouped under primary artist).
+      Various artist compilations already under the unique "various artists" mbid.
+      Take from albumartist tag when present, or use artist tag.
+      When from albumartist tag also check albumartistsort tag and take first non-empty value
       */
       std::vector<CSong*>& artistSongs = j.second;
       std::vector<std::string> common;
@@ -791,6 +793,11 @@ void CMusicInfoScanner::FileItemsToAlbums(CFileItemList& items, VECALBUMS& album
         }
         common.erase(common.begin() + match, common.end());
       }
+      if (j.first == VARIOUSARTISTS_MBID)
+      {
+        common.clear();
+        common.emplace_back(VARIOUSARTISTS_MBID);
+      }
 
       /*
        Step 4: Assign the album artist for each song that doesn't have it set
@@ -807,11 +814,22 @@ void CMusicInfoScanner::FileItemsToAlbums(CFileItemList& items, VECALBUMS& album
 
       for (size_t i = 0; i < common.size(); i++)
       {
-        album.artistCredits.emplace_back(StringUtils::Trim(common[i]));
-        // Set artist sort name providing we have as many as we have artists,
-        // otherwise something is wrong with them so ignore rather than guess.
-        if (sortnames.size() == common.size())
-          album.artistCredits.back().SetSortName(StringUtils::Trim(sortnames[i]));
+        if (common[i] == VARIOUSARTISTS_MBID)
+          /* Treat "various", "various artists" and the localized equivalent name as the same
+          album artist as the artist with Musicbrainz ID 89ad4ac3-39f7-470e-963a-56509c546377. 
+          If adding this artist for the first time then the name will be set to either the primary
+          artist read from tags when 3a, or the localized value for "various artists" when not 3a.
+          This means that tag values are no longer translated into the current langauge.
+          */
+          album.artistCredits.emplace_back(various, VARIOUSARTISTS_MBID);
+        else
+        {
+          album.artistCredits.emplace_back(StringUtils::Trim(common[i]));
+          // Set artist sort name providing we have as many as we have artists,
+          // otherwise something is wrong with them so ignore rather than guess.
+          if (sortnames.size() == common.size())
+            album.artistCredits.back().SetSortName(StringUtils::Trim(sortnames[i]));
+        }
       }
       album.bCompilation = compilation;
       for (auto& k : artistSongs)
