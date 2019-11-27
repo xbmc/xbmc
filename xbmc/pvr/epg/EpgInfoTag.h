@@ -27,7 +27,7 @@ namespace PVR
   class CPVREpgInfoTag final : public ISerializable,
                                public std::enable_shared_from_this<CPVREpgInfoTag>
   {
-    friend class CPVREpg;
+    friend class CPVREpgTagsContainer;
     friend class CPVREpgDatabase;
 
   public:

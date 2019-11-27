@@ -10,6 +10,7 @@
 
 #include "XBDateTime.h"
 #include "addons/kodi-addon-dev-kit/include/kodi/xbmc_pvr_types.h"
+#include "pvr/epg/EpgTagsContainer.h"
 #include "threads/CriticalSection.h"
 #include "utils/EventStream.h"
 
@@ -169,14 +170,6 @@ namespace PVR
     /*!
      * @brief Update an entry in this EPG.
      * @param tag The tag to update.
-     * @param bUpdateDatabase If set to true, this event will be persisted in the database.
-     * @return True if it was updated successfully, false otherwise.
-     */
-    bool UpdateEntry(const std::shared_ptr<CPVREpgInfoTag>& tag, bool bUpdateDatabase);
-
-    /*!
-     * @brief Update an entry in this EPG.
-     * @param tag The tag to update.
      * @param newState the new state of the event.
      * @param bUpdateDatabase If set to true, this event will be persisted in the database.
      * @return True if it was updated successfully, false otherwise.
@@ -280,13 +273,6 @@ namespace PVR
     bool UpdateFromScraper(time_t start, time_t end, bool bForceUpdate);
 
     /*!
-     * @brief Fix overlapping events from the tables.
-     * @param bUpdateDb If set to yes, any changes to tags during fixing will be persisted to database
-     * @return True if anything changed, false otherwise.
-     */
-    bool FixOverlappingEvents(bool bUpdateDb = false);
-
-    /*!
      * @brief Add an infotag to this container.
      * @param tag The tag to add.
      */
@@ -315,31 +301,17 @@ namespace PVR
      */
     void Cleanup(int iPastDays);
 
-    /*!
-     * @brief Create a "gap" tag
-     * @param start The start time of the gap.
-     * @param end The end time of the gap.
-     * @return The tag.
-     */
-    std::shared_ptr<CPVREpgInfoTag> CreateGapTag(const CDateTime& start,
-                                                 const CDateTime& end) const;
-
-    std::map<CDateTime, std::shared_ptr<CPVREpgInfoTag>> m_tags;
-    std::map<int, std::shared_ptr<CPVREpgInfoTag>> m_changedTags;
-    std::map<int, std::shared_ptr<CPVREpgInfoTag>> m_deletedTags;
     bool m_bChanged = false; /*!< true if anything changed that needs to be persisted, false otherwise */
-    bool m_bTagsChanged = false; /*!< true when any tags are changed and not persisted, false otherwise */
     bool m_bLoaded = false; /*!< true when the initial entries have been loaded */
     bool m_bUpdatePending = false; /*!< true if manual update is pending */
     int m_iEpgID = 0; /*!< the database ID of this table */
     std::string m_strName; /*!< the name of this table */
     std::string m_strScraperName; /*!< the name of the scraper to use */
-    mutable CDateTime m_nowActiveStart; /*!< the start time of the tag that is currently active */
     CDateTime m_lastScanTime; /*!< the last time the EPG has been updated */
     mutable CCriticalSection m_critSection; /*!< critical section for changes in this table */
     bool m_bUpdateLastScanTime = false;
-
     std::shared_ptr<CPVREpgChannelData> m_channelData;
+    CPVREpgTagsContainer m_tags;
 
     CEventSource<PVREvent> m_events;
   };
