@@ -88,14 +88,13 @@ void CEpgTagStateChange::Deliver()
     m_epgtag->SetChannelData(epg->GetChannelData());
   }
 
-  epg->UpdateEntry(m_epgtag, m_state, epgContainer.UseDatabase());
+  epg->UpdateEntry(m_epgtag, m_state);
 }
 
 CPVREpgContainer::CPVREpgContainer() :
   CThread("EPGUpdater"),
   m_database(new CPVREpgDatabase),
   m_settings({
-    CSettings::SETTING_EPG_STOREEPGINDATABASE,
     CSettings::SETTING_EPG_EPGUPDATE,
     CSettings::SETTING_EPG_FUTURE_DAYSTODISPLAY,
     CSettings::SETTING_EPG_PAST_DAYSTODISPLAY,
@@ -115,8 +114,9 @@ CPVREpgContainer::~CPVREpgContainer()
 std::shared_ptr<CPVREpgDatabase> CPVREpgContainer::GetEpgDatabase() const
 {
   CSingleLock lock(m_critSection);
-  if (!m_database || !m_database->IsOpen())
-    CLog::LogF(LOGERROR, "Failed to open the EPG database");
+
+  if (!m_database->IsOpen())
+    m_database->Open();
 
   return m_database;
 }
@@ -188,8 +188,6 @@ void CPVREpgContainer::Start(bool bAsync)
   {
     CSingleLock lock(m_critSection);
 
-    m_database->Open();
-
     m_bIsInitialising = true;
     m_bStop = false;
 
@@ -254,58 +252,35 @@ void CPVREpgContainer::LoadFromDB()
 {
   CSingleLock lock(m_critSection);
 
-  if (m_bLoaded || !UseDatabase())
+  if (m_bLoaded)
     return;
 
-  bool bLoaded = true;
-  unsigned int iCounter = 0;
-
-  CPVRGUIProgressHandler* progressHandler = new CPVRGUIProgressHandler(g_localizeStrings.Get(19250)); // Loading guide from database
-  const CDateTime cleanupTime(CDateTime::GetUTCDateTime() - CDateTimeSpan(GetPastDaysToDisplay(), 0, 0, 0));
-
-  m_database->Lock();
-  m_iNextEpgId = m_database->GetLastEPGId();
-  m_database->DeleteEpgEntries(cleanupTime);
-  const std::vector<std::shared_ptr<CPVREpg>> result = m_database->GetAll();
-  m_database->Unlock();
+  const std::shared_ptr<CPVREpgDatabase> database = GetEpgDatabase();
+  database->Lock();
+  m_iNextEpgId = database->GetLastEPGId();
+  const std::vector<std::shared_ptr<CPVREpg>> result = database->GetAll();
+  database->Unlock();
 
   for (const auto& entry : result)
     InsertFromDB(entry);
 
-  for (const auto& epgEntry : m_epgIdToEpgMap)
-  {
-    if (m_bStop)
-      break;
-
-    progressHandler->UpdateProgress(epgEntry.second->Name(), ++iCounter, m_epgIdToEpgMap.size());
-
-    lock.Leave();
-    epgEntry.second->Load(GetEpgDatabase());
-    lock.Enter();
-  }
-
-  progressHandler->DestroyProgress();
-
-  m_bLoaded = bLoaded;
+  m_bLoaded = true;
 }
 
 bool CPVREpgContainer::PersistAll()
 {
-  bool bReturn = !UseDatabase();
+  bool bReturn = true;
 
-  if (!bReturn)
+  m_critSection.lock();
+  const auto epgs = m_epgIdToEpgMap;
+  m_critSection.unlock();
+
+  const std::shared_ptr<CPVREpgDatabase> database = GetEpgDatabase();
+
+  for (const auto& epg : epgs)
   {
-    m_critSection.lock();
-    const auto epgs = m_epgIdToEpgMap;
-    m_critSection.unlock();
-
-    const std::shared_ptr<CPVREpgDatabase> database = GetEpgDatabase();
-
-    for (const auto& epg : epgs)
-    {
-      if (epg.second && epg.second->NeedsSave())
-        bReturn &= epg.second->Persist(database);
-    }
+    if (epg.second && epg.second->NeedsSave())
+      bReturn &= epg.second->Persist(database);
   }
 
   return bReturn;
@@ -566,10 +541,6 @@ bool CPVREpgContainer::RemoveOldEntries()
   for (const auto& epgEntry : m_epgIdToEpgMap)
     epgEntry.second->Cleanup(cleanupTime);
 
-  /* remove the old entries from the database */
-  if (UseDatabase())
-    m_database->DeleteEpgEntries(cleanupTime);
-
   CSingleLock lock(m_critSection);
   CDateTime::GetCurrentDateTime().GetAsUTCDateTime().GetAsTime(m_iLastEpgCleanup);
 
@@ -593,18 +564,13 @@ bool CPVREpgContainer::DeleteEpg(const std::shared_ptr<CPVREpg>& epg, bool bDele
     m_channelUidToEpgMap.erase(epgEntry1);
 
   CLog::LogFC(LOGDEBUG, LOGEPG, "Deleting EPG table %s (%d)", epg->Name().c_str(), epg->EpgID());
-  if (bDeleteFromDatabase && UseDatabase())
-    m_database->Delete(*epgEntry->second);
+  if (bDeleteFromDatabase)
+    GetEpgDatabase()->Delete(*epgEntry->second);
 
   epgEntry->second->Events().Unsubscribe(this);
   m_epgIdToEpgMap.erase(epgEntry);
 
   return true;
-}
-
-bool CPVREpgContainer::UseDatabase() const
-{
-  return m_settings.GetBoolValue(CSettings::SETTING_EPG_STOREEPGINDATABASE);
 }
 
 bool CPVREpgContainer::InterruptUpdate() const
@@ -664,7 +630,7 @@ bool CPVREpgContainer::UpdateEPG(bool bOnlyPending /* = false */)
 
   /* load or update all EPG tables */
   unsigned int iCounter = 0;
-  const std::shared_ptr<CPVREpgDatabase> database = UseDatabase() ? GetEpgDatabase() : nullptr;
+  const std::shared_ptr<CPVREpgDatabase> database = GetEpgDatabase();
   for (const auto& epgEntry : m_epgIdToEpgMap)
   {
     if (InterruptUpdate())

@@ -17,7 +17,6 @@
 #include "pvr/timers/PVRTimerInfoTag.h"
 #include "pvr/timers/PVRTimerType.h"
 #include "settings/AdvancedSettings.h"
-#include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "threads/SingleLock.h"
 #include "utils/StringUtils.h"
@@ -305,9 +304,7 @@ bool CPVRDatabase::Delete(const CPVRChannel& channel)
 
 int CPVRDatabase::Get(CPVRChannelGroup& results, bool bCompressDB)
 {
-  int iReturn(0);
-  bool bUseEpgDB = CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_EPG_STOREEPGINDATABASE);
-
+  int iReturn = 0;
   std::string strQuery = PrepareSQL("SELECT channels.idChannel, channels.iUniqueId, channels.bIsRadio, channels.bIsHidden, channels.bIsUserSetIcon, channels.bIsUserSetName, "
       "channels.sIconPath, channels.sChannelName, channels.bIsVirtual, channels.bEPGEnabled, channels.sEPGScraper, channels.iLastWatched, channels.iClientId, channels.bIsLocked, "
       "map_channelgroups_channels.iChannelNumber, map_channelgroups_channels.iSubChannelNumber, map_channelgroups_channels.iOrder, map_channelgroups_channels.iClientChannelNumber, "
@@ -338,7 +335,7 @@ int CPVRDatabase::Get(CPVRChannelGroup& results, bool bCompressDB)
         channel->m_strEPGScraper = m_pDS->fv("sEPGScraper").get_asString();
         channel->m_iLastWatched = static_cast<time_t>(m_pDS->fv("iLastWatched").get_asInt());
         channel->m_iClientId = m_pDS->fv("iClientId").get_asInt();
-        channel->m_iEpgId = bUseEpgDB ? m_pDS->fv("idEpg").get_asInt() : -1;
+        channel->m_iEpgId = m_pDS->fv("idEpg").get_asInt();
         channel->m_bHasArchive = m_pDS->fv("bHasArchive").get_asBool();
         channel->UpdateEncryptionName();
 

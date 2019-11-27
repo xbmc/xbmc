@@ -86,13 +86,6 @@ namespace PVR
     bool Delete(const CPVREpg& table);
 
     /*!
-     * @brief Erase all EPG entries with an end time less than the given time.
-     * @param maxEndTime The maximum allowed end time.
-     * @return True if the entries were removed successfully, false otherwise.
-     */
-    bool DeleteEpgEntries(const CDateTime& maxEndTime);
-
-    /*!
      * @brief Remove a single EPG entry.
      * @param tag The entry to remove.
      * @return True if it was removed successfully, false otherwise.

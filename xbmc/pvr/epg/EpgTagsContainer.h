@@ -33,21 +33,16 @@ public:
 
   void SetChannelData(const std::shared_ptr<CPVREpgChannelData>& data);
 
-  void AddEntry(const CPVREpgInfoTag& tag);
-
   /*!
    * @brief Update an entry in this EPG.
    * @param tag The tag to update.
-   * @param bUpdateDatabase If set to true, this event will be persisted in the database.
-   * @param channelData ...
-   * @param iEpgID
    * @return True if it was updated successfully, false otherwise.
    */
-  bool UpdateEntry(const std::shared_ptr<CPVREpgInfoTag>& tag, bool bUpdateDatabase);
+  bool UpdateEntry(const std::shared_ptr<CPVREpgInfoTag>& tag);
 
-  bool DeleteEntry(const std::shared_ptr<CPVREpgInfoTag>& tag, bool bUpdateDatabase);
+  bool DeleteEntry(const std::shared_ptr<CPVREpgInfoTag>& tag);
 
-  bool UpdateEntries(const CPVREpgTagsContainer& tags, bool bUpdateDatabase);
+  bool UpdateEntries(const CPVREpgTagsContainer& tags);
 
   void Clear();
 
@@ -96,10 +91,9 @@ private:
 
   /*!
    * @brief Fix overlapping events from the tables.
-   * @param bUpdateDatabase True, to persist any changes to tags during fixup
    * @return True if anything changed, false otherwise.
    */
-  bool FixOverlappingEvents(bool bUpdateDatabase);
+  bool FixOverlappingEvents();
 
   int m_iEpgID = 0;
   std::shared_ptr<CPVREpgChannelData> m_channelData;

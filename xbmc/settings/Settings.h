@@ -169,7 +169,6 @@ public:
   static const std::string SETTING_EPG_HIDENOINFOAVAILABLE;
   static const std::string SETTING_EPG_EPGUPDATE;
   static const std::string SETTING_EPG_PREVENTUPDATESWHILEPLAYINGTV;
-  static const std::string SETTING_EPG_STOREEPGINDATABASE;
   static const std::string SETTING_EPG_RESETEPG;
   static const std::string SETTING_PVRPLAYBACK_SWITCHTOFULLSCREEN;
   static const std::string SETTING_PVRPLAYBACK_SIGNALQUALITY;

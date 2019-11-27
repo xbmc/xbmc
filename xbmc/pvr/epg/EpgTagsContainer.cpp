@@ -29,17 +29,17 @@ void CPVREpgTagsContainer::SetChannelData(const std::shared_ptr<CPVREpgChannelDa
     tag.second->SetChannelData(data);
 }
 
-bool CPVREpgTagsContainer::UpdateEntries(const CPVREpgTagsContainer& tags, bool bUpdateDatabase)
+bool CPVREpgTagsContainer::UpdateEntries(const CPVREpgTagsContainer& tags)
 {
   for (const auto& tag : tags.m_tags)
-    UpdateEntry(tag.second, bUpdateDatabase);
+    UpdateEntry(tag.second);
 
-  FixOverlappingEvents(bUpdateDatabase);
+  FixOverlappingEvents();
 
   return true;
 }
 
-bool CPVREpgTagsContainer::FixOverlappingEvents(bool bUpdateDatabase)
+bool CPVREpgTagsContainer::FixOverlappingEvents()
 {
   bool bReturn = false;
   std::shared_ptr<CPVREpgInfoTag> previousTag, currentTag;
@@ -56,8 +56,7 @@ bool CPVREpgTagsContainer::FixOverlappingEvents(bool bUpdateDatabase)
     if (previousTag->EndAsUTC() >= currentTag->EndAsUTC())
     {
       // delete the current tag. it's completely overlapped
-      if (bUpdateDatabase)
-        m_deletedTags.insert(std::make_pair(currentTag->UniqueBroadcastID(), currentTag));
+      m_deletedTags.insert(std::make_pair(currentTag->UniqueBroadcastID(), currentTag));
 
       if (m_nowActiveStart == it->first)
         m_nowActiveStart.SetValid(false);
@@ -67,8 +66,7 @@ bool CPVREpgTagsContainer::FixOverlappingEvents(bool bUpdateDatabase)
     else if (previousTag->EndAsUTC() > currentTag->StartAsUTC())
     {
       previousTag->SetEndFromUTC(currentTag->StartAsUTC());
-      if (bUpdateDatabase)
-        m_changedTags.insert(std::make_pair(previousTag->UniqueBroadcastID(), previousTag));
+      m_changedTags.insert(std::make_pair(previousTag->UniqueBroadcastID(), previousTag));
 
       previousTag = it->second;
     }
@@ -81,22 +79,7 @@ bool CPVREpgTagsContainer::FixOverlappingEvents(bool bUpdateDatabase)
   return bReturn;
 }
 
-void CPVREpgTagsContainer::AddEntry(const CPVREpgInfoTag& tag)
-{
-  std::shared_ptr<CPVREpgInfoTag> newTag = GetTag(tag.StartAsUTC());
-  if (!newTag)
-  {
-    newTag.reset(new CPVREpgInfoTag());
-    m_tags.insert({tag.StartAsUTC(), newTag});
-  }
-
-  newTag->Update(tag);
-  newTag->SetChannelData(m_channelData);
-  newTag->SetEpgID(m_iEpgID);
-}
-
-bool CPVREpgTagsContainer::UpdateEntry(const std::shared_ptr<CPVREpgInfoTag>& tag,
-                                       bool bUpdateDatabase)
+bool CPVREpgTagsContainer::UpdateEntry(const std::shared_ptr<CPVREpgInfoTag>& tag)
 {
   bool bNewTag = false;
 
@@ -113,19 +96,15 @@ bool CPVREpgTagsContainer::UpdateEntry(const std::shared_ptr<CPVREpgInfoTag>& ta
   infoTag->SetChannelData(m_channelData);
   infoTag->SetEpgID(m_iEpgID);
 
-  if (bUpdateDatabase)
-    m_changedTags.insert({infoTag->UniqueBroadcastID(), infoTag});
-
+  m_changedTags.insert({infoTag->UniqueBroadcastID(), infoTag});
   return true;
 }
 
-bool CPVREpgTagsContainer::DeleteEntry(const std::shared_ptr<CPVREpgInfoTag>& tag,
-                                       bool bUpdateDatabase)
+bool CPVREpgTagsContainer::DeleteEntry(const std::shared_ptr<CPVREpgInfoTag>& tag)
 {
   if (m_tags.erase(tag->StartAsUTC()) > 0)
   {
-    if (bUpdateDatabase)
-      m_deletedTags.insert(std::make_pair(tag->UniqueBroadcastID(), tag));
+    m_deletedTags.insert({tag->UniqueBroadcastID(), tag});
 
     if (m_nowActiveStart == tag->StartAsUTC())
       m_nowActiveStart.SetValid(false);
@@ -141,6 +120,8 @@ void CPVREpgTagsContainer::Cleanup(const CDateTime& time)
   {
     if (it->second->EndAsUTC() < time)
     {
+      m_deletedTags.insert({it->second->UniqueBroadcastID(), it->second});
+
       if (m_nowActiveStart == it->first)
         m_nowActiveStart.SetValid(false);
 

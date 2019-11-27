@@ -174,18 +174,6 @@ bool CPVREpgDatabase::Delete(const CPVREpg& table)
   return DeleteValues("epg", filter);
 }
 
-bool CPVREpgDatabase::DeleteEpgEntries(const CDateTime& maxEndTime)
-{
-  time_t iMaxEndTime;
-  maxEndTime.GetAsTime(iMaxEndTime);
-
-  Filter filter;
-
-  CSingleLock lock(m_critSection);
-  filter.AppendWhere(PrepareSQL("iEndTime < %u", iMaxEndTime));
-  return DeleteValues("epgtags", filter);
-}
-
 bool CPVREpgDatabase::Delete(const CPVREpgInfoTag& tag)
 {
   /* tag without a database ID was not persisted */

@@ -1353,11 +1353,6 @@
           <default>false</default>
           <control type="toggle" />
         </setting>
-        <setting id="epg.storeepgindatabase" type="boolean" label="19072" help="36223">
-          <level>2</level>
-          <default>false</default>
-          <control type="toggle" />
-        </setting>
         <setting id="epg.resetepg" type="action" label="19185" help="36225">
           <level>1</level>
           <control type="button" format="action" />

@@ -153,12 +153,6 @@ namespace PVR
     std::vector<std::shared_ptr<CPVREpgInfoTag>> GetAllTags() const;
 
     /*!
-     * @brief Check whether data should be persisted to the EPG database.
-     * @return True if data should be persisted to the EPG database, false otherwise.
-     */
-    bool UseDatabase() const;
-
-    /*!
      * @brief Notify EPG container that there are pending manual EPG updates
      * @param bHasPendingUpdates The new value
      */

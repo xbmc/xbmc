@@ -65,20 +65,6 @@ void CPVREpg::ForceUpdate()
   m_events.Publish(PVREvent::EpgUpdatePending);
 }
 
-bool CPVREpg::HasValidEntries() const
-{
-  CSingleLock lock(m_critSection);
-  if (m_iEpgID > 0) // EPG ID valid?
-  {
-    const std::shared_ptr<CPVREpgInfoTag> tag = m_tags.GetLastTag();
-    if (tag && tag->EndAsUTC() >= CDateTime::GetUTCDateTime())
-    {
-      return true;
-    }
-  }
-  return false;
-}
-
 void CPVREpg::Clear()
 {
   CSingleLock lock(m_critSection);
@@ -174,8 +160,7 @@ std::shared_ptr<CPVREpgInfoTag> CPVREpg::GetTagBetween(const CDateTime& beginTim
       tag = tmpEpg->GetTagBetween(beginTime, endTime, false);
 
     if (tag)
-      m_tags.UpdateEntry(tag, CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
-                                  CSettings::SETTING_EPG_STOREEPGINDATABASE));
+      m_tags.UpdateEntry(tag);
   }
 
   return tag;
@@ -191,57 +176,12 @@ std::vector<std::shared_ptr<CPVREpgInfoTag>> CPVREpg::GetTimeline(
   return m_tags.GetTimeline(timelineStart, timelineEnd, minEventEnd, maxEventStart);
 }
 
-void CPVREpg::AddEntry(const CPVREpgInfoTag& tag)
-{
-  CSingleLock lock(m_critSection);
-  m_tags.AddEntry(tag);
-}
-
-bool CPVREpg::Load(const std::shared_ptr<CPVREpgDatabase>& database)
-{
-  bool bReturn = false;
-
-  if (!database)
-  {
-    CLog::LogF(LOGERROR, "Could not open the EPG database");
-    return bReturn;
-  }
-
-  const std::vector<std::shared_ptr<CPVREpgInfoTag>> result = database->Get(*this);
-
-  CSingleLock lock(m_critSection);
-  if (result.empty())
-  {
-    CLog::LogFC(LOGDEBUG, LOGEPG, "No database entries found for table '%s'.", m_strName.c_str());
-  }
-  else
-  {
-    for (const auto& entry : result)
-      AddEntry(*entry);
-
-    if (!m_lastScanTime.IsValid())
-      database->GetLastEpgScanTime(m_iEpgID, &m_lastScanTime);
-
-    if (!m_lastScanTime.IsValid())
-    {
-      m_lastScanTime.SetDateTime(1970, 1, 1, 0, 0, 0);
-      m_bUpdateLastScanTime = true;
-    }
-
-    bReturn = true;
-  }
-
-  m_bLoaded = true;
-
-  return bReturn;
-}
-
-bool CPVREpg::UpdateEntries(const CPVREpg& epg, bool bStoreInDb /* = true */)
+bool CPVREpg::UpdateEntries(const CPVREpg& epg)
 {
   CSingleLock lock(m_critSection);
 
   /* copy over tags */
-  m_tags.UpdateEntries(epg.m_tags, bStoreInDb);
+  m_tags.UpdateEntries(epg.m_tags);
 
   /* update the last scan time of this table */
   m_lastScanTime = CDateTime::GetUTCDateTime();
@@ -257,18 +197,17 @@ bool CPVREpg::UpdateEntry(const EPG_TAG* data, int iClientId)
     return false;
 
   const std::shared_ptr<CPVREpgInfoTag> tag = std::make_shared<CPVREpgInfoTag>(*data, iClientId, m_channelData, m_iEpgID);
-  return m_tags.UpdateEntry(tag, CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
-                                     CSettings::SETTING_EPG_STOREEPGINDATABASE));
+  return m_tags.UpdateEntry(tag);
 }
 
-bool CPVREpg::UpdateEntry(const std::shared_ptr<CPVREpgInfoTag>& tag, EPG_EVENT_STATE newState, bool bUpdateDatabase)
+bool CPVREpg::UpdateEntry(const std::shared_ptr<CPVREpgInfoTag>& tag, EPG_EVENT_STATE newState)
 {
   bool bRet = true;
   bool bNotify = true;
 
   if (newState == EPG_EVENT_CREATED || newState == EPG_EVENT_UPDATED)
   {
-    bRet = m_tags.UpdateEntry(tag, bUpdateDatabase);
+    bRet = m_tags.UpdateEntry(tag);
   }
   else if (newState == EPG_EVENT_DELETED)
   {
@@ -285,7 +224,7 @@ bool CPVREpg::UpdateEntry(const std::shared_ptr<CPVREpgInfoTag>& tag, EPG_EVENT_
       const CDateTime cleanupTime(CDateTime::GetUTCDateTime() - CDateTimeSpan(iPastDays, 0, 0, 0));
       if (existingTag->EndAsUTC() < cleanupTime)
       {
-        m_tags.DeleteEntry(existingTag, bUpdateDatabase);
+        m_tags.DeleteEntry(existingTag);
       }
       else
       {
@@ -315,13 +254,8 @@ bool CPVREpg::Update(time_t start,
   bool bGrabSuccess = true;
   bool bUpdate = false;
 
-  /* load the entries from the db first */
-  if (!m_bLoaded && database)
-    Load(database);
-
   /* clean up if needed */
-  if (m_bLoaded)
-    Cleanup(iPastDays);
+  Cleanup(iPastDays);
 
   /* enforce advanced settings update interval override for channels with no EPG data */
   if (m_tags.IsEmpty() && !bUpdate && ChannelID() > 0)
@@ -342,9 +276,7 @@ bool CPVREpg::Update(time_t start,
   if (bUpdate)
     bGrabSuccess = LoadFromClients(start, end, bForceUpdate);
 
-  if (bGrabSuccess)
-    m_bLoaded = true;
-  else
+  if (!bGrabSuccess)
     CLog::LogF(LOGERROR, "Failed to update table '%s'", Name().c_str());
 
   CSingleLock lock(m_critSection);
@@ -525,7 +457,7 @@ bool CPVREpg::LoadFromClients(time_t start, time_t end, bool bForceUpdate)
 
   const std::shared_ptr<CPVREpg> tmpEpg = std::make_shared<CPVREpg>(m_iEpgID, m_strName, m_strScraperName, m_channelData);
   if (tmpEpg->UpdateFromScraper(start, end, bForceUpdate))
-    bReturn = UpdateEntries(*tmpEpg, CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_EPG_STOREEPGINDATABASE));
+    bReturn = UpdateEntries(*tmpEpg);
 
   return bReturn;
 }

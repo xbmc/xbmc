@@ -55,13 +55,6 @@ namespace PVR
     virtual ~CPVREpg();
 
     /*!
-     * @brief Load all entries for this table from the given database.
-     * @param database The database.
-     * @return True if any entries were loaded, false otherwise.
-     */
-    bool Load(const std::shared_ptr<CPVREpgDatabase>& database);
-
-    /*!
      * @brief Get data for the channel associated with this EPG.
      * @return The data.
      */
@@ -107,12 +100,6 @@ namespace PVR
      * @return The database ID of this table.
      */
     int EpgID() const;
-
-    /*!
-     * @brief Check whether this EPG contains valid entries.
-     * @return True if it has valid entries, false if not.
-     */
-    bool HasValidEntries() const;
 
     /*!
      * @brief Remove all entries from this EPG that finished before the given time.
@@ -171,10 +158,9 @@ namespace PVR
      * @brief Update an entry in this EPG.
      * @param tag The tag to update.
      * @param newState the new state of the event.
-     * @param bUpdateDatabase If set to true, this event will be persisted in the database.
      * @return True if it was updated successfully, false otherwise.
      */
-    bool UpdateEntry(const std::shared_ptr<CPVREpgInfoTag>& tag, EPG_EVENT_STATE newState, bool bUpdateDatabase);
+    bool UpdateEntry(const std::shared_ptr<CPVREpgInfoTag>& tag, EPG_EVENT_STATE newState);
 
     /*!
      * @brief Update the EPG from 'start' till 'end'.
@@ -273,12 +259,6 @@ namespace PVR
     bool UpdateFromScraper(time_t start, time_t end, bool bForceUpdate);
 
     /*!
-     * @brief Add an infotag to this container.
-     * @param tag The tag to add.
-     */
-    void AddEntry(const CPVREpgInfoTag& tag);
-
-    /*!
      * @brief Load all EPG entries from clients into a temporary table and update this table with the contents of that temporary table.
      * @param start Only get entries after this start time. Use 0 to get all entries before "end".
      * @param end Only get entries before this end time. Use 0 to get all entries after "begin". If both "begin" and "end" are 0, all entries will be updated.
@@ -290,10 +270,9 @@ namespace PVR
     /*!
      * @brief Update the contents of this table with the contents provided in "epg"
      * @param epg The updated contents.
-     * @param bStoreInDb True to store the updated contents in the db, false otherwise.
      * @return True if the update was successful, false otherwise.
      */
-    bool UpdateEntries(const CPVREpg& epg, bool bStoreInDb = true);
+    bool UpdateEntries(const CPVREpg& epg);
 
     /*!
      * @brief Remove all entries from this EPG that finished before the given amount of days.
@@ -302,7 +281,6 @@ namespace PVR
     void Cleanup(int iPastDays);
 
     bool m_bChanged = false; /*!< true if anything changed that needs to be persisted, false otherwise */
-    bool m_bLoaded = false; /*!< true when the initial entries have been loaded */
     bool m_bUpdatePending = false; /*!< true if manual update is pending */
     int m_iEpgID = 0; /*!< the database ID of this table */
     std::string m_strName; /*!< the name of this table */
