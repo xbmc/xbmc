@@ -923,46 +923,6 @@ void CPVRChannelGroup::OnSettingChanged(std::shared_ptr<const CSetting> setting)
   }
 }
 
-std::vector<std::shared_ptr<CPVREpgInfoTag>> CPVRChannelGroup::GetEPGAll(bool bIncludeChannelsWithoutEPG /* = false */) const
-{
-  std::vector<std::shared_ptr<CPVREpgInfoTag>> tags;
-
-  std::shared_ptr<CPVREpgInfoTag> epgTag;
-  std::shared_ptr<CPVRChannel> channel;
-  CSingleLock lock(m_critSection);
-
-  for (const auto& member : m_sortedMembers)
-  {
-    channel = member->channel;
-    if (!channel->IsHidden())
-    {
-      bool bEmpty = true;
-
-      std::shared_ptr<CPVREpg> epg = channel->GetEPG();
-      if (epg)
-      {
-        const std::vector<std::shared_ptr<CPVREpgInfoTag>> epgTags = epg->GetTags();
-        bEmpty = epgTags.empty();
-        if (!bEmpty)
-          tags.insert(tags.end(), epgTags.begin(), epgTags.end());
-      }
-
-      if (bIncludeChannelsWithoutEPG && bEmpty)
-      {
-        // Add dummy EPG tag associated with this channel
-        if (epg)
-          epgTag = std::make_shared<CPVREpgInfoTag>(epg->GetChannelData(), epg->EpgID());
-        else
-          epgTag = std::make_shared<CPVREpgInfoTag>(std::make_shared<CPVREpgChannelData>(*channel), -1);
-
-        tags.emplace_back(epgTag);
-      }
-    }
-  }
-
-  return tags;
-}
-
 CDateTime CPVRChannelGroup::GetEPGDate(EpgDateType epgDateType) const
 {
   CDateTime date;

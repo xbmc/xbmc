@@ -295,10 +295,6 @@ bool CPVRChannel::SetIconPath(const std::string& strIconPath, bool bIsUserSetIco
   {
     m_strIconPath = StringUtils::Format("%s", strIconPath.c_str());
 
-    const std::shared_ptr<CPVREpg> epg = GetEPG();
-    if (epg)
-      epg->GetChannelData()->SetIconPath(m_strIconPath);
-
     m_bChanged = true;
     m_bIsUserSetIcon = bIsUserSetIcon && !m_strIconPath.empty();
     return true;
@@ -343,14 +339,7 @@ bool CPVRChannel::SetLastWatched(time_t iLastWatched)
 {
   {
     CSingleLock lock(m_critSection);
-    if (m_iLastWatched != iLastWatched)
-    {
-      m_iLastWatched = iLastWatched;
-
-      const std::shared_ptr<CPVREpg> epg = GetEPG();
-      if (epg)
-        epg->GetChannelData()->SetLastWatched(iLastWatched);
-    }
+    m_iLastWatched = iLastWatched;
   }
 
   const std::shared_ptr<CPVRDatabase> database = CServiceBroker::GetPVRManager().GetTVDatabase();
@@ -518,6 +507,36 @@ std::vector<std::shared_ptr<CPVREpgInfoTag>> CPVRChannel::GetEpgTags() const
   return epg->GetTags();
 }
 
+std::vector<std::shared_ptr<CPVREpgInfoTag>> CPVRChannel::GetEPGTimeline(
+    const CDateTime& timelineStart,
+    const CDateTime& timelineEnd,
+    const CDateTime& minEventEnd,
+    const CDateTime& maxEventStart) const
+{
+  const std::shared_ptr<CPVREpg> epg = GetEPG();
+  if (epg)
+  {
+    return epg->GetTimeline(timelineStart, timelineEnd, minEventEnd, maxEventStart);
+  }
+  else
+  {
+    // return single gap tag spanning whole timeline
+    return std::vector<std::shared_ptr<CPVREpgInfoTag>>{
+        CreateEPGGapTag(timelineStart, timelineEnd)};
+  }
+}
+
+std::shared_ptr<CPVREpgInfoTag> CPVRChannel::CreateEPGGapTag(const CDateTime& start,
+                                                             const CDateTime& end) const
+{
+  const std::shared_ptr<CPVREpg> epg = GetEPG();
+  if (epg)
+    return std::make_shared<CPVREpgInfoTag>(epg->GetChannelData(), epg->EpgID(), start, end, true);
+  else
+    return std::make_shared<CPVREpgInfoTag>(std::make_shared<CPVREpgChannelData>(*this), -1, start,
+                                            end, true);
+}
+
 bool CPVRChannel::ClearEPG() const
 {
   const std::shared_ptr<CPVREpg> epg = GetEPG();
@@ -605,27 +624,13 @@ bool CPVRChannel::SetEPGScraper(const std::string& strScraper)
 void CPVRChannel::SetChannelNumber(const CPVRChannelNumber& channelNumber)
 {
   CSingleLock lock(m_critSection);
-  if (m_channelNumber != channelNumber)
-  {
-    m_channelNumber = channelNumber;
-
-    const std::shared_ptr<CPVREpg> epg = GetEPG();
-    if (epg)
-      epg->GetChannelData()->SetSortableChannelNumber(m_channelNumber.SortableChannelNumber());
-  }
+  m_channelNumber = channelNumber;
 }
 
 void CPVRChannel::SetClientChannelNumber(const CPVRChannelNumber& clientChannelNumber)
 {
   CSingleLock lock(m_critSection);
-  if (m_clientChannelNumber != clientChannelNumber)
-  {
-    m_clientChannelNumber = clientChannelNumber;
-
-    const std::shared_ptr<CPVREpg> epg = GetEPG();
-    if (epg)
-      epg->GetChannelData()->SetSortableClientChannelNumber(m_clientChannelNumber.SortableChannelNumber());
-  }
+  m_clientChannelNumber = clientChannelNumber;
 }
 
 void CPVRChannel::ToSortable(SortItem& sortable, Field field) const
@@ -806,12 +811,5 @@ bool CPVRChannel::CanRecord() const
 void CPVRChannel::SetClientOrder(int iOrder)
 {
   CSingleLock lock(m_critSection);
-  if (m_iOrder != iOrder)
-  {
-    m_iOrder = iOrder;
-
-    const std::shared_ptr<CPVREpg> epg = GetEPG();
-    if (epg)
-      epg->GetChannelData()->SetClientOrder(iOrder);
-  }
+  m_iOrder = iOrder;
 }

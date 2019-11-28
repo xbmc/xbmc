@@ -38,23 +38,8 @@ namespace PVR
     int ChannelId() const;
     void SetChannelId(int iChannelId);
 
-    const std::string& IconPath() const;
-    void SetIconPath(const std::string& strIconPath);
-
     const std::string& ChannelName() const;
     void SetChannelName(const std::string& strChannelName);
-
-    const std::string& SortableChannelNumber() const;
-    void SetSortableChannelNumber(const std::string& strSortableChannelNumber);
-
-    const std::string& SortableClientChannelNumber() const;
-    void SetSortableClientChannelNumber(const std::string& strSortableClientChannelNumber);
-
-    const std::string& LastWatched() const;
-    void SetLastWatched(time_t iLastWatched);
-
-    int ClientOrder() const;
-    void SetClientOrder(int iOrder);
 
   private:
     const bool m_bIsRadio = false;
@@ -65,11 +50,6 @@ namespace PVR
     bool m_bIsLocked = false;
     bool m_bIsEPGEnabled = true;
     int m_iChannelId = -1;
-    std::string m_strIconPath;
     std::string m_strChannelName;
-    std::string m_strSortableChannelNumber;
-    std::string m_strSortableClientChannelNumber;
-    std::string m_strLastWatched;
-    int m_iOrder = 0;
   };
 }

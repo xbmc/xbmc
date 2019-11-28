@@ -11,7 +11,6 @@
 #include "XBDateTime.h"
 #include "threads/CriticalSection.h"
 #include "utils/ISerializable.h"
-#include "utils/ISortable.h"
 
 #include <memory>
 #include <string>
@@ -25,7 +24,8 @@ namespace PVR
   class CPVREpgChannelData;
   class CPVREpgDatabase;
 
-  class CPVREpgInfoTag final : public ISerializable, public ISortable, public std::enable_shared_from_this<CPVREpgInfoTag>
+  class CPVREpgInfoTag final : public ISerializable,
+                               public std::enable_shared_from_this<CPVREpgInfoTag>
   {
     friend class CPVREpg;
     friend class CPVREpgDatabase;
@@ -44,8 +44,15 @@ namespace PVR
      * @brief Create a new EPG infotag.
      * @param channelData The channel data.
      * @param iEpgId The id of the EPG this tag belongs to.
+     * @param start The start time of the event
+     * @param end The end time of the event
+     * @param bIsGapTagTrue if this is a "gap" tag, false if this is a real EPG event
      */
-    CPVREpgInfoTag(const std::shared_ptr<CPVREpgChannelData>& channelData, int iEpgID);
+    CPVREpgInfoTag(const std::shared_ptr<CPVREpgChannelData>& channelData,
+                   int iEpgID,
+                   const CDateTime& start,
+                   const CDateTime& end,
+                   bool bIsGapTag);
 
     /*!
      * @brief Set data for the channel linked to this EPG infotag.
@@ -58,9 +65,6 @@ namespace PVR
 
     // ISerializable implementation
     void Serialize(CVariant& value) const override;
-
-    // ISortable implementation
-    void ToSortable(SortItem& sortable, Field field) const override;
 
     /*!
      * @brief Get the identifier of the client that serves this event.
@@ -385,6 +389,12 @@ namespace PVR
     bool IsParentalLocked() const;
 
     /*!
+     * @brief Check whether this event is a real event or a gap in the EPG timeline.
+     * @return True if this event is a gap, false otherwise.
+     */
+    bool IsGapTag() const;
+
+    /*!
      * @brief Return the flags (EPG_TAG_FLAG_*) of this event as a bitfield.
      * @return the flags.
      */
@@ -455,6 +465,7 @@ namespace PVR
     CDateTime m_firstAired; /*!< first airdate */
     unsigned int m_iFlags = 0; /*!< the flags applicable to this EPG entry */
     std::string m_strSeriesLink; /*!< series link */
+    bool m_bIsGapTag = false;
 
     mutable CCriticalSection m_critSection;
     std::shared_ptr<CPVREpgChannelData> m_channelData;

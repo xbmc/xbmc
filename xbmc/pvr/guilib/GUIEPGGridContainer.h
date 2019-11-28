@@ -19,6 +19,7 @@
 
 #include <memory>
 #include <string>
+#include <utility>
 #include <vector>
 
 class CFileItem;
@@ -29,8 +30,8 @@ class CGUIListItemLayout;
 namespace PVR
 {
   class CPVRChannel;
+  class CPVRChannelNumber;
 
-  struct GridItem;
   class CGUIEPGGridContainerModel;
 
   class CGUIEPGGridContainer : public IGUIContainer
@@ -96,7 +97,12 @@ namespace PVR
     void GoToMostLeft();
     void GoToMostRight();
 
-    void SetTimelineItems(const std::unique_ptr<CFileItemList>& items, const CDateTime& gridStart, const CDateTime& gridEnd);
+    void SetTimelineItems(const std::unique_ptr<CFileItemList>& items,
+                          const CDateTime& gridStart,
+                          const CDateTime& gridEnd);
+
+    std::unique_ptr<CFileItemList> GetCurrentTimeLineItems() const;
+
     /*!
      * @brief Set the control's selection to the given channel and set the control's view port to show the channel.
      * @param channel the channel.
@@ -111,23 +117,34 @@ namespace PVR
      */
     bool SetChannel(const std::string& channel);
 
-  protected:
+    /*!
+     * @brief Set the control's selection to the given channel and set the control's view port to show the channel.
+     * @param channelNumber the channel's number.
+     * @return true if the selection was set to the given channel, false otherwise.
+     */
+    bool SetChannel(const CPVRChannelNumber& channelNumber);
+
+  private:
     bool OnClick(int actionID);
     bool SelectItemFromPoint(const CPoint& point, bool justGrid = true);
 
     void SetChannel(int channel);
+
     void SetBlock(int block, bool bUpdateBlockTravelAxis = true);
+    void UpdateBlock(bool bUpdateBlockTravelAxis = true);
+
     void ChannelScroll(int amount);
     void ProgrammesScroll(int amount);
     void ValidateOffset();
     void UpdateLayout();
 
-    GridItem* GetItem(int channel);
-    GridItem* GetNextItem(int channel);
-    GridItem* GetPrevItem(int channel);
+    void SetItem(const std::pair<std::shared_ptr<CFileItem>, int>& itemInfo);
+    bool SetItem(const std::shared_ptr<CFileItem>& item, int channelIndex, int blockIndex);
+    std::shared_ptr<CFileItem> GetItem() const;
+    std::pair<std::shared_ptr<CFileItem>, int> GetNextItem() const;
+    std::pair<std::shared_ptr<CFileItem>, int> GetPrevItem() const;
+    void UpdateItem();
 
-    int GetBlock(const CGUIListItemPtr& item, int channel);
-    int GetRealBlock(const CGUIListItemPtr& item, int channel);
     void MoveToRow(int row);
 
     CGUIListItemLayout* GetFocusedLayout() const;
@@ -191,8 +208,6 @@ namespace PVR
 
     void UpdateItems();
 
-    int GetSelectedItem() const;
-
     int m_rulerUnit; //! number of blocks that makes up one element of the ruler
     int m_channelsPerPage;
     int m_programmesPerPage;
@@ -242,6 +257,6 @@ namespace PVR
     std::unique_ptr<CGUIEPGGridContainerModel> m_gridModel;
     std::unique_ptr<CGUIEPGGridContainerModel> m_updatedGridModel;
 
-    GridItem* m_item;
+    int m_itemStartBlock = 0;
   };
 }

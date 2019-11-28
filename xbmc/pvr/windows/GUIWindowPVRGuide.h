@@ -85,15 +85,15 @@ namespace PVR
 
     void RefreshView(CGUIMessage& message, bool bInitGridControl);
 
+    int GetCurrentListItemIndex(const std::shared_ptr<CFileItem>& item);
+
     std::unique_ptr<CPVRRefreshTimelineItemsThread> m_refreshTimelineItemsThread;
     std::atomic_bool m_bRefreshTimelineItems;
     std::atomic_bool m_bSyncRefreshTimelineItems;
 
     std::shared_ptr<CPVRChannelGroup> m_cachedChannelGroup;
-    std::unique_ptr<CFileItemList> m_newTimeline;
 
     bool m_bChannelSelectionRestored;
-    std::atomic_bool m_bFirstOpen;
   };
 
   class CGUIWindowPVRTVGuide : public CGUIWindowPVRGuideBase

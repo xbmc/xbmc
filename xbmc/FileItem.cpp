@@ -719,9 +719,6 @@ void CFileItem::ToSortable(SortItem &sortable, Field field) const
   if (HasPVRChannelInfoTag())
     GetPVRChannelInfoTag()->ToSortable(sortable, field);
 
-  if (HasEPGInfoTag())
-    GetEPGInfoTag()->ToSortable(sortable, field);
-
   if (HasAddonInfo())
   {
     switch (field)
