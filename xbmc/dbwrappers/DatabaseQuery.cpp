@@ -334,6 +334,22 @@ std::string CDatabaseQueryRule::GetWhereClause(const CDatabase &db, const std::s
   if (m_operator == OPERATOR_FALSE || m_operator == OPERATOR_TRUE)
     return GetBooleanQuery(negate, strType);
 
+  // Process boolean field with (not) EQUAL/CONTAINS "true"/"false" parameter too
+  if (GetFieldType(m_field) == BOOLEAN_FIELD &&
+      (m_parameter[0] == "true" || m_parameter[0] == "false") &&
+      (op == OPERATOR_CONTAINS || op == OPERATOR_EQUALS || op == OPERATOR_DOES_NOT_CONTAIN ||
+       op == OPERATOR_DOES_NOT_EQUAL))
+  {
+    if (m_parameter[0] == "false")
+    {
+      if (!negate.empty())
+        negate.clear();
+      else
+        negate = " NOT ";
+    }
+    return GetBooleanQuery(negate, strType);
+  }
+
   // The BETWEEN operator is handled special
   if (op == OPERATOR_BETWEEN)
   {
