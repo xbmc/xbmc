@@ -86,7 +86,7 @@ int CPluginDirectory::getNewHandle(CPluginDirectory *cp)
   return handle;
 }
 
-void CPluginDirectory::reuseHandle(int handle, CPluginDirectory *cp)
+void CPluginDirectory::reuseHandle(int handle, CPluginDirectory* cp)
 {
   CSingleLock lock(m_handleLock);
   globalHandles[handle] = cp;
@@ -166,7 +166,8 @@ bool CPluginDirectory::StartScript(const std::string& strPath, bool retrievingDi
   if (m_addon->ExtraInfo().find("reuselanguageinvoker") != m_addon->ExtraInfo().end())
     reuseLanguageInvoker = m_addon->ExtraInfo().at("reuselanguageinvoker") == "true";
 
-  int id = CScriptInvocationManager::GetInstance().ExecuteAsync(file, m_addon, argv, reuseLanguageInvoker, handle);
+  int id = CScriptInvocationManager::GetInstance().ExecuteAsync(file, m_addon, argv,
+                                                                reuseLanguageInvoker, handle);
   if (id >= 0)
   { // wait for our script to finish
     std::string scriptName = m_addon->Name();

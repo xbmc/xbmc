@@ -75,7 +75,7 @@ private:
 
   static std::map<int,CPluginDirectory*> globalHandles;
   static int getNewHandle(CPluginDirectory *cp);
-  static void reuseHandle(int handle, CPluginDirectory *cp);
+  static void reuseHandle(int handle, CPluginDirectory* cp);
 
   static void removeHandle(int handle);
   static CPluginDirectory *dirFromHandle(int handle);

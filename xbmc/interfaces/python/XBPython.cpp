@@ -647,7 +647,7 @@ void XBPython::OnScriptAbortRequested(ILanguageInvoker *invoker)
   }
 }
 
-void XBPython::OnExecutionEnded(ILanguageInvoker *invoker)
+void XBPython::OnExecutionEnded(ILanguageInvoker* invoker)
 {
   CSingleLock lock(m_vecPyList);
   PyList::iterator it = m_vecPyList.begin();

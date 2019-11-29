@@ -17,7 +17,8 @@
 class CLanguageInvokerThread;
 class ILanguageInvocationHandler;
 
-typedef enum {
+typedef enum
+{
   InvokerStateUninitialized,
   InvokerStateInitialized,
   InvokerStateRunning,
