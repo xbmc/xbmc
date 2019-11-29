@@ -35,7 +35,7 @@ public:
   bool DestroyWindow() override;
   void UpdateResolutions() override;
 
-  void SetHDMIState(bool connected);
+  void SetHDMIState(uint8_t state);
 
   void UpdateDisplayModes();
 
@@ -52,6 +52,13 @@ public:
   bool MessagePump() override;
   bool IsHDRDisplay() override;
 
+  enum HDMISTATE : uint8_t
+  {
+    HDMI_STATE_UNCONNECTED = 0,
+    HDMI_STATE_CONNECTED = 1,
+    HDMI_STATE_UNCONNECTED_TIMER = 2,
+  };
+
 protected:
   std::unique_ptr<KODI::WINDOWING::IOSScreenSaver> GetOSScreenSaverImpl() override;
   void OnTimeout() override;
@@ -66,14 +73,13 @@ protected:
 
   RENDER_STEREO_MODE m_stereo_mode;
 
-  enum RESETSTATE
+  enum RESETSTATE : uint8_t
   {
-    RESET_NOTWAITING,
-    RESET_WAITTIMER,
-    RESET_WAITEVENT
+    RESET_WAIT_TIMER = 1U << 0,
+    RESET_WAIT_HDMIPLUG = 1U << 1,
   };
 
-  RESETSTATE m_dispResetState;
+  uint8_t m_dispResetState;
   CTimer *m_dispResetTimer;
 
   CCriticalSection m_resourceSection;

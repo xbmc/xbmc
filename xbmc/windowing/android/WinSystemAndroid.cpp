@@ -52,7 +52,7 @@ CWinSystemAndroid::CWinSystemAndroid()
 
   m_stereo_mode = RENDER_STEREO_MODE_OFF;
 
-  m_dispResetState = RESET_NOTWAITING;
+  m_dispResetState = 0;
   m_dispResetTimer = new CTimer(this);
 
   m_android = nullptr;
@@ -132,10 +132,10 @@ bool CWinSystemAndroid::CreateNewWindow(const std::string& name,
     return true;
   }
 
-  if (m_dispResetState != RESET_NOTWAITING)
   {
-    CLog::Log(LOGERROR, "CWinSystemAndroid::CreateNewWindow: cannot create window while resetting");
-    return false;
+    CSingleLock lock(m_resourceSection);
+    m_dispResetTimer->Stop();
+    m_dispResetState = 0;
   }
 
   m_stereo_mode = stereo_mode;
@@ -219,41 +219,65 @@ void CWinSystemAndroid::UpdateResolutions(bool bUpdateDesktopRes)
 
 void CWinSystemAndroid::OnTimeout()
 {
-  m_dispResetState = RESET_WAITEVENT;
-  SetHDMIState(true);
-}
-
-void CWinSystemAndroid::SetHDMIState(bool connected)
-{
-  CSingleLock lock(m_resourceSection);
-  CLog::Log(LOGDEBUG, "CWinSystemAndroid::SetHDMIState: connected: %d, dispResetState: %d", static_cast<int>(connected), m_dispResetState);
-  if (connected && m_dispResetState != RESET_NOTWAITING)
+  // We don't trigger OnResetDisplay if we wait for HDMI connect
   {
-    for (auto resource : m_resources)
-      resource->OnResetDisplay();
-    m_dispResetState = RESET_NOTWAITING;
-    m_dispResetTimer->Stop();
-  }
-  else if (!connected)
-  {
-    if (m_dispResetState == RESET_WAITTIMER)
+    CSingleLock lock(m_resourceSection);
+    if (m_dispResetState & RESET_WAIT_HDMIPLUG)
     {
-      //HDMI_AUDIOPLUG arrived, use this
-      m_dispResetTimer->Stop();
-      m_dispResetState = RESET_WAITEVENT;
+      // Let HDMI_PLUG trigger the reset
+      m_dispResetState &= ~RESET_WAIT_HDMIPLUG;
       return;
     }
-    else if (m_dispResetState != RESET_NOTWAITING)
+  }
+  SetHDMIState(HDMI_STATE_CONNECTED);
+}
+
+void CWinSystemAndroid::SetHDMIState(uint8_t state)
+{
+  CSingleLock lock(m_resourceSection);
+  CLog::Log(LOGDEBUG, "CWinSystemAndroid::SetHDMIState: state: %d, dispResetState: %d",
+            static_cast<int>(state), m_dispResetState);
+  int delay = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
+                  "videoscreen.delayrefreshchange") *
+              100;
+  if (state & HDMI_STATE_CONNECTED)
+  {
+    if (m_dispResetState & RESET_WAIT_HDMIPLUG)
+    {
+      m_dispResetState &= ~RESET_WAIT_HDMIPLUG;
+
+      if (m_dispResetTimer->GetElapsedMilliseconds() >= delay)
+        // Most probably a pseudo (2 sec) timer -> signal now
+        m_dispResetTimer->Stop();
+      else
+        // Let the timer signal end of switch
+        return;
+    }
+    if (m_dispResetState == RESET_WAIT_TIMER)
+    {
+      for (auto resource : m_resources)
+        resource->OnResetDisplay();
+      m_dispResetState = 0;
+      m_dispResetTimer->Stop();
+    }
+  }
+  else
+  {
+    // Second call of !connected is called from HDMI_PLUG
+    if (m_dispResetState & RESET_WAIT_TIMER)
+    {
+      m_dispResetState |= RESET_WAIT_HDMIPLUG;
       return;
+    }
+    m_dispResetState = RESET_WAIT_TIMER;
 
-    int delay = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt("videoscreen.delayrefreshchange") * 100;
-
-    if (delay < 2000)
-      delay = 2000;
-
-    m_dispResetState = RESET_WAITTIMER;
-    m_dispResetTimer->Stop();
-    m_dispResetTimer->Start(delay);
+    if (state & HDMI_STATE_UNCONNECTED_TIMER)
+    {
+      if (delay < 2000)
+        delay = 2000;
+      m_dispResetTimer->Stop();
+      m_dispResetTimer->Start(delay);
+    }
 
     for (auto resource : m_resources)
       resource->OnLostDisplay();
