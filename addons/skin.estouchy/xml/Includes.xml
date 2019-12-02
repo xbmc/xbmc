@@ -729,14 +729,14 @@
 						<label></label>
 						<onclick>ActivateWindow(Videos,MovieTitles,Return)</onclick>
 						<icon>icon_menu_movies.png</icon>
-						<visible>Library.HasContent(Movies)</visible>
+						<visible>Library.HasContent(Movies) + Library.HasNode(library://video/movies/titles.xml/)</visible>
 						<visible>!Skin.HasSetting(HideHomeButtonMovies)</visible>
 					</item>
 					<item>
 						<label></label>
 						<onclick>ActivateWindow(Videos,TVShowTitles,Return)</onclick>
 						<icon>icon_menu_tvshows.png</icon>
-						<visible>Library.HasContent(TVShows)</visible>
+						<visible>Library.HasContent(TVShows) + Library.HasNode(library://video/tvshows/titles.xml/)</visible>
 						<visible>!Skin.HasSetting(HideHomeButtonTVShows)</visible>
 					</item>
 					<item>
@@ -881,7 +881,7 @@
 			<onclick>ActivateWindow(Videos,MovieTitles,Return)</onclick>
 			<icon>icon_menu_movies.png</icon>
 			<thumb></thumb>
-			<visible>Library.HasContent(Movies)</visible>
+			<visible>Library.HasContent(Movies) + Library.HasNode(library://video/movies/titles.xml/)</visible>
 			<visible>!Skin.HasSetting(HideHomeButtonMovies)</visible>
 		</item>
 		<item>
@@ -889,7 +889,7 @@
 			<onclick>ActivateWindow(Videos,TVShowTitles,Return)</onclick>
 			<icon>icon_menu_tvshows.png</icon>
 			<thumb></thumb>
-			<visible>Library.HasContent(TVShows)</visible>
+			<visible>Library.HasContent(TVShows) + Library.HasNode(library://video/tvshows/titles.xml/)</visible>
 			<visible>!Skin.HasSetting(HideHomeButtonTVShows)</visible>
 		</item>
 		<item>
