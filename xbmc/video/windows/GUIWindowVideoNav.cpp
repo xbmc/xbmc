@@ -1194,67 +1194,71 @@ std::string CGUIWindowVideoNav::GetStartFolder(const std::string &dir)
 {
   std::string lower(dir); StringUtils::ToLower(lower);
   if (lower == "moviegenres")
-    return "videodb://movies/genres/";
+    return "library://video/movies/genres.xml/";
   else if (lower == "movietitles")
-    return "videodb://movies/titles/";
+    return "library://video/movies/titles.xml/";
   else if (lower == "movieyears")
-    return "videodb://movies/years/";
+    return "library://video/movies/years.xml/";
   else if (lower == "movieactors")
-    return "videodb://movies/actors/";
+    return "library://video/movies/actors.xml/";
   else if (lower == "moviedirectors")
-    return "videodb://movies/directors/";
+    return "library://video/movies/directors.xml/";
   else if (lower == "moviestudios")
-    return "videodb://movies/studios/";
+    return "library://video/movies/studios.xml/";
   else if (lower == "moviesets")
-    return "videodb://movies/sets/";
+    return "library://video/movies/sets.xml/";
   else if (lower == "moviecountries")
-    return "videodb://movies/countries/";
+    return "library://video/movies/countries.xml/";
   else if (lower == "movietags")
-    return "videodb://movies/tags/";
+    return "library://video/movies/tags.xml/";
   else if (lower == "movies")
-    return "videodb://movies/";
+    return "library://video/movies/";
   else if (lower == "tvshowgenres")
-    return "videodb://tvshows/genres/";
+    return "library://video/tvshows/genres.xml/";
   else if (lower == "tvshowtitles")
-    return "videodb://tvshows/titles/";
+    return "library://video/tvshows/titles.xml/";
   else if (lower == "tvshowyears")
-    return "videodb://tvshows/years/";
+    return "library://video/tvshows/years.xml/";
   else if (lower == "tvshowactors")
-    return "videodb://tvshows/actors/";
+    return "library://video/tvshows/actors.xml/";
   else if (lower == "tvshowstudios")
-    return "videodb://tvshows/studios/";
+    return "library://video/tvshows/studios.xml/";
   else if (lower == "tvshowtags")
-    return "videodb://tvshows/tags/";
+    return "library://video/tvshows/tags.xml/";
   else if (lower == "tvshows")
-    return "videodb://tvshows/";
+    return "library://video/tvshows/";
   else if (lower == "musicvideogenres")
-    return "videodb://musicvideos/genres/";
+    return "library://video/musicvideos/genres.xml/";
   else if (lower == "musicvideotitles")
-    return "videodb://musicvideos/titles/";
+    return "library://video/musicvideos/titles.xml/";
   else if (lower == "musicvideoyears")
-    return "videodb://musicvideos/years/";
+    return "library://video/musicvideos/years.xml/";
   else if (lower == "musicvideoartists")
-    return "videodb://musicvideos/artists/";
+    return "library://video/musicvideos/artists.xml/";
   else if (lower == "musicvideoalbums")
-    return "videodb://musicvideos/albums/";
+    return "library://video/musicvideos/albums.xml/";
   else if (lower == "musicvideodirectors")
-    return "videodb://musicvideos/directors/";
+    return "library://video/musicvideos/directors.xml/";
   else if (lower == "musicvideostudios")
-    return "videodb://musicvideos/studios/";
+    return "library://video/musicvideos/studios.xml/";
   else if (lower == "musicvideotags")
-    return "videodb://musicvideos/tags/";
+    return "library://video/musicvideos/tags.xml/";
   else if (lower == "musicvideos")
-    return "videodb://musicvideos/";
+    return "library://video/musicvideos/";
   else if (lower == "recentlyaddedmovies")
-    return "videodb://recentlyaddedmovies/";
+    return "library://video/movies/recentlyaddedmovies.xml/";
   else if (lower == "recentlyaddedepisodes")
-    return "videodb://recentlyaddedepisodes/";
+    return "library://video/tvshows/recentlyaddedepisodes.xml/";
   else if (lower == "recentlyaddedmusicvideos")
-    return "videodb://recentlyaddedmusicvideos/";
+    return "library://video/musicvideos/recentlyaddedmusicvideos.xml/";
   else if (lower == "inprogresstvshows")
-    return "videodb://inprogresstvshows/";
+    return "library://video/tvshows/inprogresstvshows.xml/";
   else if (lower == "files")
-    return "sources://video/";
+    return "library://video/files.xml";
+  else if (lower == "playlists")
+    return "library://video/playlists.xml";
+  else if (lower == "addons")
+    return "library://video/addons.xml";
   return CGUIWindowVideoBase::GetStartFolder(dir);
 }
 

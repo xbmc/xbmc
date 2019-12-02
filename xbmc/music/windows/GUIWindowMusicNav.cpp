@@ -941,33 +941,43 @@ std::string CGUIWindowMusicNav::GetStartFolder(const std::string &dir)
 {
   std::string lower(dir); StringUtils::ToLower(lower);
   if (lower == "genres")
-    return "musicdb://genres/";
+    return "library://music/genres.xml/";
   else if (lower == "artists")
-    return "musicdb://artists/";
+    return "library://music/artists.xml/";
   else if (lower == "albums")
-    return "musicdb://albums/";
+    return "library://music/albums.xml/";
   else if (lower == "singles")
-    return "musicdb://singles/";
+    return "library://music/singles.xml/";
   else if (lower == "songs")
-    return "musicdb://songs/";
+    return "library://music/songs.xml/";
   else if (lower == "top100")
-    return "musicdb://top100/";
+    return "library://music/top100/";
   else if (lower == "top100songs")
-    return "musicdb://top100/songs/";
+    return "library://music/top100/songs.xml/";
   else if (lower == "top100albums")
-    return "musicdb://top100/albums/";
+    return "library://music/top100/albums.xml/";
   else if (lower == "recentlyaddedalbums")
-    return "musicdb://recentlyaddedalbums/";
+    return "library://music/recentlyaddedalbums.xml/";
   else if (lower == "recentlyplayedalbums")
-   return "musicdb://recentlyplayedalbums/";
+    return "library://music/recentlyplayedalbums.xml/";
   else if (lower == "compilations")
-    return "musicdb://compilations/";
+    return "library://music/compilations.xml/";
   else if (lower == "years")
-    return "musicdb://years/";
+    return "library://music/years.xml/";
   else if (lower == "files")
-    return "sources://music/";
+    return "library://music/files.xml/";
   else if (lower == "boxsets")
-    return "musicdb://boxsets/";
+    return "library://music/boxsets.xml/";
+  else if (lower == "playlists")
+    return "library://music/playlists.xml/";
+  else if (lower == "addons")
+    return "library://music/addons.xml/";
+  else if (lower == "sources")
+    return "library://music/sources.xml/";
+  else if (lower == "musicroles")
+    return "library://music/musicroles/";
+  else if (lower == "musicvideos")
+    return "library://music/musicvideos/";
 
   return CGUIWindowMusicBase::GetStartFolder(dir);
 }
