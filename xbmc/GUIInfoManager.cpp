@@ -8528,6 +8528,14 @@ const infomap slideshow[] =      {{ "ispaused",               SLIDESHOW_ISPAUSED
 ///     @skinning_v19 **[New Boolean Condition]** \link Library_HasContent_Boxsets `Library.HasContent(boxsets)`\endlink
 ///     <p>
 ///   }
+///   \table_row3{   <b>`Library.HasNode(path)`</b>,
+///                  \anchor Library_HasNode
+///                  _boolean_,
+///     @return **True** if there the node is present in the library.
+///     <p><hr>
+///     @skinning_v19 **[New Boolean Condition]** \link Library_HasNode `Library.HasNode(path)`\endlink
+///     <p>
+///   }
 /// \table_end
 ///
 /// -----------------------------------------------------------------------------
@@ -8946,6 +8954,12 @@ int CGUIInfoManager::TranslateSingleString(const std::string &strCondition, bool
           return LIBRARY_HAS_BOXSETS;
         else if (cat == "role" && prop.num_params() > 1)
           return AddMultiInfo(CGUIInfo(LIBRARY_HAS_ROLE, prop.param(1), 0));
+      }
+      else if (prop.name == "hasnode" && prop.num_params())
+      {
+        std::string node = prop.param(0);
+        StringUtils::ToLower(node);
+        return AddMultiInfo(CGUIInfo(LIBRARY_HAS_NODE, prop.param(), 0));
       }
     }
     else if (cat.name == "musicplayer")

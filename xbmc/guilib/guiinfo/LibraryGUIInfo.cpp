@@ -9,10 +9,16 @@
 #include "guilib/guiinfo/LibraryGUIInfo.h"
 
 #include "Application.h"
+#include "ServiceBroker.h"
+#include "filesystem/Directory.h"
+#include "filesystem/File.h"
 #include "guilib/guiinfo/GUIInfo.h"
 #include "guilib/guiinfo/GUIInfoLabels.h"
 #include "music/MusicDatabase.h"
+#include "profiles/ProfileManager.h"
+#include "settings/SettingsComponent.h"
 #include "utils/StringUtils.h"
+#include "utils/URIUtils.h"
 #include "video/VideoDatabase.h"
 
 using namespace KODI::GUILIB::GUIINFO;
@@ -240,6 +246,23 @@ bool CLibraryGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int contex
         }
       }
       value = artistcount > 0;
+      return true;
+    }
+    case LIBRARY_HAS_NODE:
+    {
+      const CURL url(info.GetData3());
+      const std::shared_ptr<CProfileManager> profileManager =
+            CServiceBroker::GetSettingsComponent()->GetProfileManager();
+      CFileItemList items;
+
+      std::string libDir = profileManager->GetLibraryFolder();
+      XFILE::CDirectory::GetDirectory(libDir, items, "", XFILE::DIR_FLAG_NO_FILE_DIRS);
+      if (items.Size() == 0)
+        libDir = "special://xbmc/system/library/";
+
+      std::string nodePath = URIUtils::AddFileToFolder(libDir, url.GetHostName() + "/");
+      nodePath = URIUtils::AddFileToFolder(nodePath, url.GetFileName());
+      value = XFILE::CFile::Exists(nodePath);
       return true;
     }
     case LIBRARY_IS_SCANNING:
