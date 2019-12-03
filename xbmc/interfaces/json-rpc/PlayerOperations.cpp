@@ -1298,6 +1298,20 @@ void CPlayerOperations::SendSlideshowAction(int actionID)
   CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION, WINDOW_SLIDESHOW, -1, static_cast<void*>(new CAction(actionID)));
 }
 
+void AppendAudioStreamFlagsAsBooleans(CVariant& list, StreamFlags& flags)
+{
+  list["is_default"] = ((flags & StreamFlags::FLAG_DEFAULT) != 0);
+  list["is_original"] = ((flags & StreamFlags::FLAG_ORIGINAL) != 0);
+  list["is_impaired"] = ((flags & StreamFlags::FLAG_VISUAL_IMPAIRED) != 0);
+}
+
+void AppendSubtitleStreamFlagsAsBooleans(CVariant& list, StreamFlags& flags)
+{
+  list["is_default"] = ((flags & StreamFlags::FLAG_DEFAULT) != 0);
+  list["is_forced"] = ((flags & StreamFlags::FLAG_FORCED) != 0);
+  list["is_impaired"] = ((flags & StreamFlags::FLAG_HEARING_IMPAIRED) != 0);
+}
+
 JSONRPC_STATUS CPlayerOperations::GetPropertyValue(PlayerType player, const std::string &property, CVariant &result)
 {
   if (player == None)
@@ -1678,6 +1692,7 @@ JSONRPC_STATUS CPlayerOperations::GetPropertyValue(PlayerType player, const std:
             result["codec"] = info.codecName;
             result["bitrate"] = info.bitrate;
             result["channels"] = info.channels;
+            AppendAudioStreamFlagsAsBooleans(result, info.flags);
           }
         }
         else
@@ -1710,6 +1725,7 @@ JSONRPC_STATUS CPlayerOperations::GetPropertyValue(PlayerType player, const std:
             audioStream["codec"] = info.codecName;
             audioStream["bitrate"] = info.bitrate;
             audioStream["channels"] = info.channels;
+            AppendAudioStreamFlagsAsBooleans(audioStream, info.flags);
 
             result.append(audioStream);
           }
@@ -1819,6 +1835,7 @@ JSONRPC_STATUS CPlayerOperations::GetPropertyValue(PlayerType player, const std:
             result["index"] = index;
             result["name"] = info.name;
             result["language"] = info.language;
+            AppendSubtitleStreamFlagsAsBooleans(result, info.flags);
           }
         }
         else
@@ -1849,6 +1866,7 @@ JSONRPC_STATUS CPlayerOperations::GetPropertyValue(PlayerType player, const std:
             subtitle["index"] = index;
             subtitle["name"] = info.name;
             subtitle["language"] = info.language;
+            AppendSubtitleStreamFlagsAsBooleans(subtitle, info.flags);
 
             result.append(subtitle);
           }
