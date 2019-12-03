@@ -647,7 +647,7 @@ void XBPython::OnScriptAbortRequested(ILanguageInvoker *invoker)
   }
 }
 
-void XBPython::OnScriptEnded(ILanguageInvoker* invoker)
+void XBPython::OnExecutionEnded(ILanguageInvoker* invoker)
 {
   CSingleLock lock(m_vecPyList);
   PyList::iterator it = m_vecPyList.begin();
@@ -656,9 +656,9 @@ void XBPython::OnScriptEnded(ILanguageInvoker* invoker)
     if (it->id == invoker->GetId())
     {
       if (it->pyThread->IsStopping())
-        CLog::Log(LOGINFO, "Python script interrupted by user");
+        CLog::Log(LOGINFO, "Python interpreter interrupted by user");
       else
-        CLog::Log(LOGINFO, "Python script stopped");
+        CLog::Log(LOGINFO, "Python interpreter stopped");
       it->bDone = true;
     }
     ++it;

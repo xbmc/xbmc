@@ -86,6 +86,12 @@ int CPluginDirectory::getNewHandle(CPluginDirectory *cp)
   return handle;
 }
 
+void CPluginDirectory::reuseHandle(int handle, CPluginDirectory* cp)
+{
+  CSingleLock lock(m_handleLock);
+  globalHandles[handle] = cp;
+}
+
 void CPluginDirectory::removeHandle(int handle)
 {
   CSingleLock lock(m_handleLock);
@@ -124,7 +130,12 @@ bool CPluginDirectory::StartScript(const std::string& strPath, bool retrievingDi
   std::string basePath(url.Get());
   // reset our wait event, and grab a new handle
   m_fetchComplete.Reset();
-  int handle = getNewHandle(this);
+  int handle = CScriptInvocationManager::GetInstance().GetReusablePluginHandle(m_addon->LibPath());
+
+  if (handle < 0)
+    handle = getNewHandle(this);
+  else
+    reuseHandle(handle, this);
 
   // clear out our status variables
   m_fileResult->Reset();
@@ -151,7 +162,12 @@ bool CPluginDirectory::StartScript(const std::string& strPath, bool retrievingDi
   CLog::Log(LOGDEBUG, "%s - calling plugin %s('%s','%s','%s','%s')", __FUNCTION__, m_addon->Name().c_str(), argv[0].c_str(), argv[1].c_str(), argv[2].c_str(), argv[3].c_str());
   bool success = false;
   std::string file = m_addon->LibPath();
-  int id = CScriptInvocationManager::GetInstance().ExecuteAsync(file, m_addon, argv);
+  bool reuseLanguageInvoker = false;
+  if (m_addon->ExtraInfo().find("reuselanguageinvoker") != m_addon->ExtraInfo().end())
+    reuseLanguageInvoker = m_addon->ExtraInfo().at("reuselanguageinvoker") == "true";
+
+  int id = CScriptInvocationManager::GetInstance().ExecuteAsync(file, m_addon, argv,
+                                                                reuseLanguageInvoker, handle);
   if (id >= 0)
   { // wait for our script to finish
     std::string scriptName = m_addon->Name();

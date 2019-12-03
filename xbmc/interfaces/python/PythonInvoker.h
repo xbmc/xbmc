@@ -9,6 +9,8 @@
 #pragma once
 
 #include "interfaces/generic/ILanguageInvoker.h"
+#include "interfaces/legacy/Addon.h"
+#include "interfaces/python/LanguageHook.h"
 #include "threads/CriticalSection.h"
 #include "threads/Event.h"
 
@@ -17,6 +19,7 @@
 #include <vector>
 
 typedef struct _object PyObject;
+struct _ts;
 
 class CPythonInvoker : public ILanguageInvoker
 {
@@ -35,6 +38,7 @@ protected:
   bool execute(const std::string &script, const std::vector<std::string> &arguments) override;
   virtual void executeScript(FILE* fp, const std::string& script, PyObject* moduleDict);
   bool stop(bool abort) override;
+  void onExecutionDone() override;
   void onExecutionFailed() override;
 
   // custom virtual methods
@@ -61,9 +65,12 @@ private:
   FILE* PyFile_AsFileWithMode(PyObject* py_file, const char* mode);
 
   std::string m_pythonPath;
-  void* m_threadState;
+  _ts* m_threadState;
   bool m_stop;
   CEvent m_stoppedEvent;
+
+  XBMCAddon::AddonClass::Ref<XBMCAddon::Python::PythonLanguageHook> m_languageHook;
+  bool m_systemExitThrown = false;
 
   static CCriticalSection s_critical;
 };

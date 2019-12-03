@@ -23,8 +23,6 @@
 #include "windowing/GraphicContext.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
-#include "interfaces/legacy/Addon.h"
-#include "interfaces/python/LanguageHook.h"
 #include "interfaces/python/PyContext.h"
 #include "interfaces/python/pythreadstate.h"
 #include "interfaces/python/swig.h"
@@ -110,7 +108,7 @@ CPythonInvoker::~CPythonInvoker()
   if (GetId() < 0)
     return;
 
-  if (GetState() < InvokerStateDone)
+  if (GetState() < InvokerStateExecutionDone)
     CLog::Log(LOGDEBUG, "CPythonInvoker(%d): waiting for python thread \"%s\" to stop",
       GetId(), (!m_sourceFile.empty() ? m_sourceFile.c_str() : "unknown script"));
   Stop(true);
@@ -152,6 +150,7 @@ bool CPythonInvoker::execute(const std::string& script, const std::vector<std::w
 {
   // copy the code/script into a local string buffer
   m_sourceFile = script;
+  m_pythonPath.clear();
 
   // copy the arguments into a local buffer
   unsigned int argc = arguments.size();
@@ -160,112 +159,139 @@ bool CPythonInvoker::execute(const std::string& script, const std::vector<std::w
 
   CLog::Log(LOGDEBUG, "CPythonInvoker(%d, %s): start processing", GetId(), m_sourceFile.c_str());
 
-  // get the global lock
-  extern PyThreadState* savestate;
-  PyEval_RestoreThread(savestate);
-  PyThreadState* state = Py_NewInterpreter();
-  if (state == NULL)
-  {
-    PyEval_ReleaseLock();
-    CLog::Log(LOGERROR, "CPythonInvoker(%d, %s): FAILED to get thread state!", GetId(), m_sourceFile.c_str());
-    return false;
-  }
-  // swap in my thread state
-  PyThreadState_Swap(state);
-
-  XBMCAddon::AddonClass::Ref<XBMCAddon::Python::PythonLanguageHook> languageHook(new XBMCAddon::Python::PythonLanguageHook(state->interp));
-  languageHook->RegisterMe();
-
-  onInitialization();
-  setState(InvokerStateInitialized);
-
   std::string realFilename(CSpecialProtocol::TranslatePath(m_sourceFile));
-  if (realFilename == m_sourceFile)
-    CLog::Log(LOGDEBUG, "CPythonInvoker(%d, %s): the source file to load is \"%s\"", GetId(), m_sourceFile.c_str(), m_sourceFile.c_str());
-  else
-    CLog::Log(LOGDEBUG, "CPythonInvoker(%d, %s): the source file to load is \"%s\" (\"%s\")", GetId(), m_sourceFile.c_str(), m_sourceFile.c_str(), realFilename.c_str());
-
-  // get path from script file name and add python path's
-  // this is used for python so it will search modules from script path first
   std::string scriptDir = URIUtils::GetDirectory(realFilename);
   URIUtils::RemoveSlashAtEnd(scriptDir);
-  addPath(scriptDir);
 
-  // add all addon module dependencies to path
-  if (m_addon)
+  // set m_threadState if it's not set.
+  PyThreadState* l_threadState = nullptr;
+  bool newInterp = false;
   {
-    std::set<std::string> paths;
-    getAddonModuleDeps(m_addon, paths);
-    for (const auto& it : paths)
-      addPath(it);
-  }
-  else
-  { // for backwards compatibility.
-    // we don't have any addon so just add all addon modules installed
-    CLog::Log(LOGWARNING, "CPythonInvoker(%d): Script invoked without an addon. Adding all addon "
-        "modules installed to python path as fallback. This behaviour will be removed in future "
-        "version.", GetId());
-    ADDON::VECADDONS addons;
-    CServiceBroker::GetAddonMgr().GetAddons(addons, ADDON::ADDON_SCRIPT_MODULE);
-    for (const auto& addon : addons)
-      addPath(CSpecialProtocol::TranslatePath(addon->LibPath()));
-  }
-
-  // we want to use sys.path so it includes site-packages
-  // if this fails, default to using Py_GetPath
-  PyObject* sysMod(PyImport_ImportModule("sys")); // must call Py_DECREF when finished
-  PyObject* sysModDict(PyModule_GetDict(sysMod)); // borrowed ref, no need to delete
-  PyObject* pathObj(PyDict_GetItemString(sysModDict, "path")); // borrowed ref, no need to delete
-
-  if (pathObj != NULL && PyList_Check(pathObj))
-  {
-    for (int i = 0; i < PyList_Size(pathObj); i++)
+    if (!m_threadState)
     {
-      PyObject *e = PyList_GetItem(pathObj, i); // borrowed ref, no need to delete
-      if (e != NULL && PyUnicode_Check(e))
-        addPath(PyUnicode_AsUTF8(e)); // returns internal data, don't delete or modify
+      // TODO: Re-write everything.
+      // this is a TOTAL hack. We need the GIL but we need to borrow a PyThreadState in order to get it
+      // as of Python 3.2 since PyEval_AcquireLock is deprecated
+      extern PyThreadState* savestate;
+      PyEval_RestoreThread(savestate);
+      l_threadState = Py_NewInterpreter();
+      PyEval_ReleaseThread(l_threadState);
+      if (l_threadState == NULL)
+      {
+        CLog::Log(LOGERROR, "CPythonInvoker(%d, %s): FAILED to get thread m_threadState!", GetId(),
+                  m_sourceFile.c_str());
+        return false;
+      }
+      newInterp = true;
+    }
+    else
+      l_threadState = m_threadState;
+  }
+
+  // get the GIL
+  PyEval_RestoreThread(l_threadState);
+  if (newInterp)
+  {
+    m_languageHook = new XBMCAddon::Python::PythonLanguageHook(l_threadState->interp);
+    m_languageHook->RegisterMe();
+
+    onInitialization();
+    setState(InvokerStateInitialized);
+
+    if (realFilename == m_sourceFile)
+      CLog::Log(LOGDEBUG, "CPythonInvoker(%d, %s): the source file to load is \"%s\"", GetId(),
+                m_sourceFile.c_str(), m_sourceFile.c_str());
+    else
+      CLog::Log(LOGDEBUG, "CPythonInvoker(%d, %s): the source file to load is \"%s\" (\"%s\")",
+                GetId(), m_sourceFile.c_str(), m_sourceFile.c_str(), realFilename.c_str());
+
+    // get path from script file name and add python path's
+    // this is used for python so it will search modules from script path first
+    addPath(scriptDir);
+
+    // add all addon module dependencies to path
+    if (m_addon)
+    {
+      std::set<std::string> paths;
+      getAddonModuleDeps(m_addon, paths);
+      for (const auto& it : paths)
+        addPath(it);
+    }
+    else
+    { // for backwards compatibility.
+      // we don't have any addon so just add all addon modules installed
+      CLog::Log(
+          LOGWARNING,
+          "CPythonInvoker(%d): Script invoked without an addon. Adding all addon "
+          "modules installed to python path as fallback. This behaviour will be removed in future "
+          "version.",
+          GetId());
+      ADDON::VECADDONS addons;
+      CServiceBroker::GetAddonMgr().GetAddons(addons, ADDON::ADDON_SCRIPT_MODULE);
+      for (unsigned int i = 0; i < addons.size(); ++i)
+        addPath(CSpecialProtocol::TranslatePath(addons[i]->LibPath()));
+    }
+
+    // we want to use sys.path so it includes site-packages
+    // if this fails, default to using Py_GetPath
+    PyObject* sysMod(PyImport_ImportModule("sys")); // must call Py_DECREF when finished
+    PyObject* sysModDict(PyModule_GetDict(sysMod)); // borrowed ref, no need to delete
+    PyObject* pathObj(PyDict_GetItemString(sysModDict, "path")); // borrowed ref, no need to delete
+
+    if (pathObj != NULL && PyList_Check(pathObj))
+    {
+      for (int i = 0; i < PyList_Size(pathObj); i++)
+      {
+        PyObject* e = PyList_GetItem(pathObj, i); // borrowed ref, no need to delete
+        if (e != NULL && PyUnicode_Check(e))
+          addPath(PyUnicode_AsUTF8(e)); // returns internal data, don't delete or modify
+      }
+    }
+    else
+    {
+      std::string GetPath;
+      g_charsetConverter.wToUTF8(Py_GetPath(), GetPath);
+      addPath(GetPath);
+    }
+
+    Py_DECREF(sysMod); // release ref to sysMod
+
+#ifdef TARGET_WINDOWS
+    std::string pyPathUtf8;
+    g_charsetConverter.systemToUtf8(m_pythonPath, pyPathUtf8, false);
+    CLog::Log(LOGDEBUG, "CPythonInvoker(%d, %s): setting the Python path to %s", GetId(),
+              m_sourceFile.c_str(), pyPathUtf8.c_str());
+#else // ! TARGET_WINDOWS
+    CLog::Log(LOGDEBUG, "CPythonInvoker(%d, %s): setting the Python path to %s", GetId(),
+              m_sourceFile.c_str(), m_pythonPath.c_str());
+#endif // ! TARGET_WINDOWS
+
+    std::wstring pypath;
+    g_charsetConverter.utf8ToW(m_pythonPath, pypath);
+    PySys_SetPath(pypath.c_str());
+
+    { // set the m_threadState to this new interp
+      CSingleLock lockMe(m_critical);
+      m_threadState = l_threadState;
     }
   }
   else
-  {
-    std::string GetPath;
-    g_charsetConverter.wToUTF8(Py_GetPath(), GetPath);
-    addPath(GetPath);
-  }
-
-  Py_DECREF(sysMod); // release ref to sysMod
+    // swap in my thread m_threadState
+    PyThreadState_Swap(m_threadState);
 
   // set current directory and python's path.
   PySys_SetArgv(argc, &argv[0]);
-
-#ifdef TARGET_WINDOWS
-  std::string pyPathUtf8;
-  g_charsetConverter.systemToUtf8(m_pythonPath, pyPathUtf8, false);
-  CLog::Log(LOGDEBUG, "CPythonInvoker(%d, %s): setting the Python path to %s", GetId(), m_sourceFile.c_str(), pyPathUtf8.c_str());
-#else // ! TARGET_WINDOWS
-  CLog::Log(LOGDEBUG, "CPythonInvoker(%d, %s): setting the Python path to %s", GetId(), m_sourceFile.c_str(), m_pythonPath.c_str());
-#endif // ! TARGET_WINDOWS
-
-  std::wstring pypath;
-  g_charsetConverter.utf8ToW(m_pythonPath, pypath);
-  PySys_SetPath(pypath.c_str());
 
   CLog::Log(LOGDEBUG, "CPythonInvoker(%d, %s): entering source directory %s", GetId(), m_sourceFile.c_str(), scriptDir.c_str());
   PyObject* module = PyImport_AddModule("__main__");
   PyObject* moduleDict = PyModule_GetDict(module);
 
-  // when we are done initing we store thread state so we can be aborted
-  PyThreadState_Swap(NULL);
-  PyEval_ReleaseLock();
-
   // we need to check if we was asked to abort before we had inited
   bool stopping = false;
-  { CSingleLock lock(m_critical);
-    m_threadState = state;
+  {
+    GilSafeSingleLock lock(m_critical);
     stopping = m_stop;
   }
-
-  PyEval_AcquireThread(state);
 
   bool failed = false;
   std::string exceptionType, exceptionValue, exceptionTraceback;
@@ -316,17 +342,17 @@ bool CPythonInvoker::execute(const std::string& script, const std::vector<std::w
     }
   }
 
-  bool systemExitThrown = false;
+  m_systemExitThrown = false;
   InvokerState stateToSet;
   if (!failed && !PyErr_Occurred())
   {
     CLog::Log(LOGINFO, "CPythonInvoker(%d, %s): script successfully run", GetId(), m_sourceFile.c_str());
-    stateToSet = InvokerStateDone;
+    stateToSet = InvokerStateScriptDone;
     onSuccess();
   }
   else if (PyErr_ExceptionMatches(PyExc_SystemExit))
   {
-    systemExitThrown = true;
+    m_systemExitThrown = true;
     CLog::Log(LOGINFO, "CPythonInvoker(%d, %s): script aborted", GetId(), m_sourceFile.c_str());
     stateToSet = InvokerStateFailed;
     onAbort();
@@ -351,6 +377,7 @@ bool CPythonInvoker::execute(const std::string& script, const std::vector<std::w
     onError(exceptionType, exceptionValue, exceptionTraceback);
   }
 
+  CSingleLock lock(m_critical);
   // no need to do anything else because the script has already stopped
   if (failed)
   {
@@ -358,74 +385,42 @@ bool CPythonInvoker::execute(const std::string& script, const std::vector<std::w
     return true;
   }
 
-  PyObject* m = PyImport_AddModule("xbmc");
-  if (m == NULL || PyObject_SetAttrString(m, "abortRequested", PyBool_FromLong(1)))
-    CLog::Log(LOGERROR, "CPythonInvoker(%d, %s): failed to set abortRequested", GetId(), m_sourceFile.c_str());
-
-  // make sure all sub threads have finished
-  for (PyThreadState* s = state->interp->tstate_head, *old = NULL; s;)
+  if (m_threadState)
   {
-    if (s == state)
-    {
-      s = s->next;
-      continue;
-    }
-    if (old != s)
-    {
-      CLog::Log(LOGINFO, "CPythonInvoker(%d, %s): waiting on thread %" PRIu64, GetId(), m_sourceFile.c_str(), (uint64_t)s->thread_id);
-      old = s;
-    }
+    PyObject* m = PyImport_AddModule("xbmc");
+    if (m == NULL || PyObject_SetAttrString(m, "abortRequested", PyBool_FromLong(1)))
+      CLog::Log(LOGERROR, "CPythonInvoker(%d, %s): failed to set abortRequested", GetId(),
+                m_sourceFile.c_str());
 
-    CPyThreadState pyState;
-    Sleep(100);
-    pyState.Restore();
+    // make sure all sub threads have finished
+    for (PyThreadState* old = nullptr; m_threadState != nullptr;)
+    {
+      PyThreadState* s = m_threadState->interp->tstate_head;
+      for (; s && s == m_threadState;)
+        s = s->next;
 
-    s = state->interp->tstate_head;
+      if (!s)
+        break;
+
+      if (old != s)
+      {
+        CLog::Log(LOGINFO, "CPythonInvoker(%d, %s): waiting on thread %" PRIu64, GetId(),
+                  m_sourceFile.c_str(), (uint64_t)s->thread_id);
+        old = s;
+      }
+
+      lock.Leave();
+      CPyThreadState pyState;
+      Sleep(100);
+      pyState.Restore();
+      lock.Enter();
+    }
   }
 
   // pending calls must be cleared out
-  XBMCAddon::RetardedAsyncCallbackHandler::clearPendingCalls(state);
+  XBMCAddon::RetardedAsyncCallbackHandler::clearPendingCalls(m_threadState);
 
-  PyThreadState_Swap(NULL);
-  PyEval_ReleaseLock();
-
-  // set stopped event - this allows ::stop to run and kill remaining threads
-  // this event has to be fired without holding m_critical
-  // also the GIL (PyEval_RestoreThread) must not be held
-  // if not obeyed there is still no deadlock because ::stop waits with timeout (smart one!)
-  m_stoppedEvent.Set();
-
-  { CSingleLock lock(m_critical);
-    m_threadState = NULL;
-  }
-
-  PyEval_RestoreThread(state);
-
-  onDeinitialization();
-
-  // run the gc before finishing
-  //
-  // if the script exited by throwing a SystemExit exception then going back
-  // into the interpreter causes this python bug to get hit:
-  //    http://bugs.python.org/issue10582
-  // and that causes major failures. So we are not going to go back in
-  // to run the GC if that's the case.
-  if (!m_stop && languageHook->HasRegisteredAddonClasses() && !systemExitThrown &&
-      PyRun_SimpleString(GC_SCRIPT) == -1)
-    CLog::Log(LOGERROR, "CPythonInvoker(%d, %s): failed to run the gc to clean up after running prior to shutting down the Interpreter", GetId(), m_sourceFile.c_str());
-
-  Py_EndInterpreter(state);
-
-  // If we still have objects left around, produce an error message detailing what's been left behind
-  if (languageHook->HasRegisteredAddonClasses())
-    CLog::Log(LOGWARNING, "CPythonInvoker(%d, %s): the python script \"%s\" has left several "
-      "classes in memory that we couldn't clean up. The classes include: %s",
-      GetId(), m_sourceFile.c_str(), m_sourceFile.c_str(), getListOfAddonClassesAsString(languageHook).c_str());
-
-  // unregister the language hook
-  languageHook->UnregisterMe();
-
-  PyEval_ReleaseLock();
+  PyEval_ReleaseThread(m_threadState);
 
   setState(stateToSet);
 
@@ -467,28 +462,37 @@ bool CPythonInvoker::stop(bool abort)
   CSingleLock lock(m_critical);
   m_stop = true;
 
-  if (!IsRunning())
+  if (!IsRunning() && !m_threadState)
     return false;
-
-  setState(InvokerStateStopping);
 
   if (m_threadState != NULL)
   {
-    PyEval_RestoreThread((PyThreadState*)m_threadState);
-    PyThreadState* old = PyThreadState_Swap((PyThreadState*)m_threadState);
+    if (IsRunning())
+    {
+      setState(InvokerStateStopping);
+      lock.Leave();
 
-    //tell xbmc.Monitor to call onAbortRequested()
-    if (m_addon != NULL)
-      onAbortRequested();
+      PyEval_RestoreThread((PyThreadState*)m_threadState);
 
-    PyObject* m;
-    m = PyImport_AddModule("xbmc");
-    if (m == NULL || PyObject_SetAttrString(m, "abortRequested", PyBool_FromLong(1)))
-      CLog::Log(LOGERROR, "CPythonInvoker(%d, %s): failed to set abortRequested", GetId(), m_sourceFile.c_str());
+      //tell xbmc.Monitor to call onAbortRequested()
+      if (m_addon)
+      {
+        CLog::Log(LOGDEBUG, "CPythonInvoker(%d, %s): trigger Monitor abort request", GetId(),
+                  m_sourceFile.c_str());
+        onAbortRequested();
+      }
 
-    PyThreadState_Swap(old);
-    old = NULL;
-    PyEval_ReleaseLock();
+      PyObject* m;
+      m = PyImport_AddModule("xbmc");
+      if (m == NULL || PyObject_SetAttrString(m, "abortRequested", PyBool_FromLong(1)))
+        CLog::Log(LOGERROR, "CPythonInvoker(%d, %s): failed to set abortRequested", GetId(),
+                  m_sourceFile.c_str());
+
+      PyEval_ReleaseThread(m_threadState);
+    }
+    else
+      //Release the lock while waiting for threads to finish
+      lock.Leave();
 
     XbmcThreads::EndTime timeout(PYTHON_SCRIPT_TIMEOUT);
     while (!m_stoppedEvent.WaitMSec(15))
@@ -508,22 +512,24 @@ bool CPythonInvoker::stop(bool abort)
       }
     }
 
+    lock.Enter();
+
+    setState(InvokerStateExecutionDone);
+
     // Useful for add-on performance metrics
     if (!timeout.IsTimePast())
       CLog::Log(LOGDEBUG, "CPythonInvoker(%d, %s): script termination took %dms", GetId(), m_sourceFile.c_str(), PYTHON_SCRIPT_TIMEOUT - timeout.MillisLeft());
-
-    // everything which didn't exit by now gets killed
-    {
-      // grabbing the PyLock while holding the m_critical is asking for a deadlock
-      CSingleExit ex2(m_critical);
-      PyEval_RestoreThread((PyThreadState*)m_threadState);
-    }
 
     // Since we released the m_critical it's possible that the state is cleaned up
     // so we need to recheck for m_threadState == NULL
     if (m_threadState != NULL)
     {
-      old = PyThreadState_Swap((PyThreadState*)m_threadState);
+      {
+        // grabbing the PyLock while holding the m_critical is asking for a deadlock
+        CSingleExit ex2(m_critical);
+        PyEval_RestoreThread((PyThreadState*)m_threadState);
+      }
+
       for (PyThreadState* state = ((PyThreadState*)m_threadState)->interp->tstate_head; state; state = state->next)
       {
         // Raise a SystemExit exception in python threads
@@ -534,16 +540,70 @@ bool CPythonInvoker::stop(bool abort)
 
       // If a dialog entered its doModal(), we need to wake it to see the exception
       pulseGlobalEvent();
+
+      PyEval_ReleaseThread(m_threadState);
+      m_threadState = nullptr;
     }
-
-    if (old != NULL)
-      PyThreadState_Swap(old);
-
     lock.Leave();
-    PyEval_ReleaseLock();
+
+    setState(InvokerStateFailed);
   }
 
   return true;
+}
+
+// Always called from Invoker thread
+void CPythonInvoker::onExecutionDone()
+{
+  CSingleLock lock(m_critical);
+  if (m_threadState != NULL)
+  {
+    CLog::Log(LOGDEBUG, "%s(%d, %s)", __FUNCTION__, GetId(), m_sourceFile.c_str());
+
+    PyEval_RestoreThread(m_threadState);
+
+    onDeinitialization();
+
+    // run the gc before finishing
+    //
+    // if the script exited by throwing a SystemExit exception then going back
+    // into the interpreter causes this python bug to get hit:
+    //    http://bugs.python.org/issue10582
+    // and that causes major failures. So we are not going to go back in
+    // to run the GC if that's the case.
+    if (!m_stop && m_languageHook->HasRegisteredAddonClasses() && !m_systemExitThrown &&
+        PyRun_SimpleString(GC_SCRIPT) == -1)
+      CLog::Log(LOGERROR,
+                "CPythonInvoker(%d, %s): failed to run the gc to clean up after running prior to "
+                "shutting down the Interpreter",
+                GetId(), m_sourceFile.c_str());
+
+    Py_EndInterpreter(m_threadState);
+
+    // If we still have objects left around, produce an error message detailing what's been left behind
+    if (m_languageHook->HasRegisteredAddonClasses())
+      CLog::Log(LOGWARNING,
+                "CPythonInvoker(%d, %s): the python script \"%s\" has left several "
+                "classes in memory that we couldn't clean up. The classes include: %s",
+                GetId(), m_sourceFile.c_str(), m_sourceFile.c_str(),
+                getListOfAddonClassesAsString(m_languageHook).c_str());
+
+    // unregister the language hook
+    m_languageHook->UnregisterMe();
+
+    PyEval_ReleaseLock();
+
+    // set stopped event - this allows ::stop to run and kill remaining threads
+    // this event has to be fired without holding m_critical
+    // also the GIL (PyEval_AcquireLock) must not be held
+    // if not obeyed there is still no deadlock because ::stop waits with timeout (smart one!)
+    m_stoppedEvent.Set();
+
+    m_threadState = nullptr;
+
+    setState(InvokerStateExecutionDone);
+  }
+  ILanguageInvoker::onExecutionDone();
 }
 
 void CPythonInvoker::onExecutionFailed()
