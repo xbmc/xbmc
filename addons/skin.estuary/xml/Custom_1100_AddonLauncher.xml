@@ -23,14 +23,14 @@
 				<include content="AddonLauncherPanel">
 					<param name="group_id" value="500" />
 					<param name="id" value="video" />
-					<param name="container_path" value="addons://sources/video/" />
+					<param name="container_path" value="library://video/addons.xml" />
 					<param name="container_target" value="videos" />
 					<param name="imagewidget_onclick" value="ActivateWindow(addonbrowser,addons://all/xbmc.addon.video,return)" />
 				</include>
 				<include content="AddonLauncherPanel">
 					<param name="group_id" value="501" />
 					<param name="id" value="music" />
-					<param name="container_path" value="addons://sources/audio/" />
+					<param name="container_path" value="library://music/addons.xml/" />
 					<param name="container_target" value="music" />
 					<param name="imagewidget_onclick" value="ActivateWindow(addonbrowser,addons://all/xbmc.addon.audio,return)" />
 				</include>
@@ -152,19 +152,19 @@
 					<content>
 						<item id="1">
 							<label>$LOCALIZE[1037]</label>
-							<onclick>ActivateWindow(videos,addons://sources/video/,return)</onclick>
+							<onclick>ActivateWindow(videos,addons,return)</onclick>
 							<thumb>icons/sidemenu/videos.png</thumb>
 							<property name="id">video</property>
-							<property name="path">addons://sources/video/</property>
 							<property name="menu_id">$NUMBER[500]</property>
+							<visible>Library.HasNode(library://video/addons.xml)</visible>
 						</item>
 						<item id="2">
 							<label>$LOCALIZE[1038]</label>
-							<onclick>ActivateWindow(music,addons://sources/audio/,return)</onclick>
+							<onclick>ActivateWindow(music,addons,return)</onclick>
 							<thumb>icons/sidemenu/music.png</thumb>
 							<property name="id">music</property>
-							<property name="path">addons://sources/audio/</property>
 							<property name="menu_id">$NUMBER[501]</property>
+							<visible>Library.HasNode(library://music/addons.xml)</visible>
 						</item>
 						<item id="8">
 							<label>$LOCALIZE[35049]</label>
@@ -172,7 +172,6 @@
 							<onclick>ActivateWindow(games,addons://sources/game/,return)</onclick>
 							<thumb>icons/sidemenu/games.png</thumb>
 							<property name="id">game</property>
-							<property name="path">addons://sources/game/</property>
 							<property name="menu_id">$NUMBER[509]</property>
 						</item>
 						<item id="3">
@@ -180,7 +179,6 @@
 							<onclick>ActivateWindow(programs,addons://sources/executable/,return)</onclick>
 							<thumb>icons/sidemenu/programs.png</thumb>
 							<property name="id">addons</property>
-							<property name="path">addons://sources/executable/</property>
 							<property name="menu_id">$NUMBER[502]</property>
 						</item>
 						<item id="4">
@@ -188,7 +186,6 @@
 							<onclick>ActivateWindow(programs,androidapp://sources/apps/,return)</onclick>
 							<thumb>icons/sidemenu/android.png</thumb>
 							<property name="id">android</property>
-							<property name="path">androidapp://sources/apps/</property>
 							<property name="menu_id">$NUMBER[506]</property>
 							<visible>System.Platform.Android</visible>
 						</item>
@@ -197,7 +194,6 @@
 							<onclick>ActivateWindow(pictures,addons://sources/image/,return)</onclick>
 							<thumb>icons/sidemenu/pictures.png</thumb>
 							<property name="id">pictures</property>
-							<property name="path">addons://sources/image/</property>
 							<property name="menu_id">$NUMBER[503]</property>
 						</item>
 						<item id="7">
@@ -205,7 +201,6 @@
 							<onclick>ActivateWindow(addonbrowser,addons://user/,return)</onclick>
 							<thumb>icons/sidemenu/manage.png</thumb>
 							<property name="id">manage</property>
-							<property name="path">addons://user/</property>
 							<property name="menu_id">$NUMBER[508]</property>
 						</item>
 						<item id="6">
@@ -213,7 +208,6 @@
 							<onclick>ActivateWindow(addonbrowser,addons://all/,return)</onclick>
 							<thumb>icons/sidemenu/download.png</thumb>
 							<property name="id">download</property>
-							<property name="path">addons://all/</property>
 							<property name="menu_id">$NUMBER[507]</property>
 						</item>
 					</content>

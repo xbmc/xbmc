@@ -16,7 +16,7 @@
 			<posy>10</posy>
 			<include>Window_OpenClose_Animation</include>
 			<animation effect="slide" start="0,0" end="250,0" time="0" condition="String.IsEqual(Skin.AspectRatio,4:3)">Conditional</animation>
-			<visible>[Library.HasContent(Movies) + Library.HasNode(library://video/movies/recentlyaddedmovies.xml/)] | [Library.HasContent(TVShows) + Library.HasNode(library://video/tvshows/recentlyaddedepisodes.xml/)] | [Library.HasContent(Music) + Library.HasNode(library://music/recentlyaddedalbums.xml/)] | Integer.IsGreater(Container(2400).NumItems,0)</visible>
+			<visible>[Library.HasContent(Movies) + Library.HasNode(library://video/movies/recentlyaddedmovies.xml)] | [Library.HasContent(TVShows) + Library.HasNode(library://video/tvshows/recentlyaddedepisodes.xml)] | [Library.HasContent(Music) + Library.HasNode(library://music/recentlyaddedalbums.xml)] | Integer.IsGreater(Container(2400).NumItems,0)</visible>
 			<control type="button">
 				<posx>0</posx>
 				<posy>120</posy>
@@ -107,7 +107,7 @@
 						<onclick>Control.Move(9010,1)</onclick>
 						<icon></icon>
 						<thumb></thumb>
-						<visible>Library.HasContent(Movies) + Library.HasNode(library://video/movies/recentlyaddedmovies.xml/)</visible>
+						<visible>Library.HasContent(Movies) + Library.HasNode(library://video/movies/recentlyaddedmovies.xml)</visible>
 					</item>
 					<item id="2">
 						<label>$LOCALIZE[31011][CR]$LOCALIZE[31014]</label>
@@ -115,7 +115,7 @@
 						<onclick>Control.Move(9010,1)</onclick>
 						<icon></icon>
 						<thumb></thumb>
-						<visible>Library.HasContent(TVShows) + Library.HasNode(library://video/tvshows/recentlyaddedepisodes.xml/)</visible>
+						<visible>Library.HasContent(TVShows) + Library.HasNode(library://video/tvshows/recentlyaddedepisodes.xml)</visible>
 					</item>
 					<item id="3">
 						<label>$LOCALIZE[31011][CR]$LOCALIZE[31016]</label>
@@ -123,7 +123,7 @@
 						<onclick>Control.Move(9010,1)</onclick>
 						<icon></icon>
 						<thumb></thumb>
-						<visible>Library.HasContent(Music) + Library.HasNode(library://music/recentlyaddedalbums.xml/)</visible>
+						<visible>Library.HasContent(Music) + Library.HasNode(library://music/recentlyaddedalbums.xml)</visible>
 					</item>
 					<item id="4">
 						<label>24001</label>

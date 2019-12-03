@@ -18,7 +18,7 @@
 				<width>630</width>
 				<height>660</height>
 				<control type="panel" id="2100">
-					<visible>Library.HasContent(Movies) + Library.HasNode(library://video/movies/recentlyaddedmovies.xml/) + String.IsEqual(Container(9010).ListItem.Label2,item1)</visible>
+					<visible>Library.HasContent(Movies) + Library.HasNode(library://video/movies/recentlyaddedmovies.xml) + String.IsEqual(Container(9010).ListItem.Label2,item1)</visible>
 					<animation type="Visible" reversible="false">
 						<effect type="slide" start="400,0" end="0,0" delay="200" easing="out" tween="quadratic" time="400" />
 						<effect type="fade" start="0" end="100" delay="200" time="400" />
@@ -110,7 +110,7 @@
 					<content target="movies" limit="10">library://video/movies/recentlyaddedmovies.xml/</content>
 				</control>
 				<control type="panel" id="2200">
-					<visible>Library.HasContent(TVShows) + Library.HasNode(library://video/tvshows/recentlyaddedepisodes.xml/) + String.IsEqual(Container(9010).ListItem.Label2,item2)</visible>
+					<visible>Library.HasContent(TVShows) + Library.HasNode(library://video/tvshows/recentlyaddedepisodes.xml) + String.IsEqual(Container(9010).ListItem.Label2,item2)</visible>
 					<animation type="Visible" reversible="false">
 						<effect type="slide" start="400,0" end="0,0" delay="200" easing="out" tween="quadratic" time="400" />
 						<effect type="fade" start="0" end="100" delay="200" time="400" />
@@ -229,7 +229,7 @@
 					<content target="video" limit="12">library://video/tvshows/recentlyaddedepisodes.xml/</content>
 				</control>
 				<control type="panel" id="2300">
-					<visible>Library.HasContent(Music) + Library.HasNode(library://music/recentlyaddedalbums.xml/) + String.IsEqual(Container(9010).ListItem.Label2,item3)</visible>
+					<visible>Library.HasContent(Music) + Library.HasNode(library://music/recentlyaddedalbums.xml) + String.IsEqual(Container(9010).ListItem.Label2,item3)</visible>
 					<animation type="Visible" reversible="false">
 						<effect type="slide" start="400,0" end="0,0" delay="200" easing="out" tween="quadratic" time="400" />
 						<effect type="fade" start="0" end="100" delay="200" time="400" />

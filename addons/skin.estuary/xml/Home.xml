@@ -51,7 +51,7 @@
 					<control type="grouplist" id="5001">
 						<include>WidgetGroupListCommon</include>
 						<pagecontrol>5010</pagecontrol>
-						<include content="WidgetListCategories" condition="Library.HasContent(movies) + !Skin.HasSetting(home_no_categories_widget)">
+						<include content="WidgetListCategories" condition="Library.HasContent(movies) + Library.HasNode(library://video/movies/) + !Skin.HasSetting(home_no_categories_widget)">
 							<param name="content_path" value="library://video/movies/"/>
 							<param name="widget_header" value="$LOCALIZE[31148]"/>
 							<param name="widget_target" value="videos"/>
@@ -81,23 +81,23 @@
 							<param name="widget_target" value="videos"/>
 							<param name="list_id" value="5400"/>
 						</include>
-						<include content="WidgetListCategories" condition="Library.HasContent(movies)">
-							<param name="content_path" value="videodb://movies/genres/"/>
+						<include content="WidgetListCategories" condition="Library.HasContent(movies) + Library.HasNode(library://video/movies/genres.xml)">
+							<param name="content_path" value="library://video/movies/genres.xml/"/>
 							<param name="widget_header" value="$LOCALIZE[135]"/>
 							<param name="widget_target" value="videos"/>
 							<param name="list_id" value="5500"/>
 							<param name="icon" value="$VAR[WidgetGenreIconVar]"/>
 							<param name="icon_height" value="70"/>
 						</include>
-						<include content="WidgetListPoster" condition="Library.HasContent(movies)">
-							<param name="content_path" value="videodb://movies/sets/"/>
+						<include content="WidgetListPoster" condition="Library.HasContent(movies) + Library.HasNode(library://video/movies/sets.xml)">
+							<param name="content_path" value="library://video/movies/sets.xml/"/>
 							<param name="widget_header" value="$LOCALIZE[31075]"/>
 							<param name="widget_target" value="videos"/>
 							<param name="sortby" value="random"/>
 							<param name="list_id" value="5600"/>
 						</include>
 					</control>
-					<include content="ImageWidget" condition="!Library.HasContent(movies)">
+					<include content="ImageWidget" condition="!Library.HasContent(movies) + Library.HasNode(library://video/files.xml)">
 						<param name="text_label" value="$LOCALIZE[31104]" />
 						<param name="button_label" value="$LOCALIZE[31110]" />
 						<param name="button_onclick" value="ActivateWindow(videos,files,return)"/>
@@ -116,14 +116,14 @@
 					<control type="grouplist" id="6001">
 						<include>WidgetGroupListCommon</include>
 						<pagecontrol>6010</pagecontrol>
-						<include content="WidgetListCategories" condition="Library.HasContent(tvshows) + !Skin.HasSetting(home_no_categories_widget)">
+						<include content="WidgetListCategories" condition="Library.HasContent(tvshows) + Library.HasNode(library://video/tvshows/) + !Skin.HasSetting(home_no_categories_widget)">
 							<param name="content_path" value="library://video/tvshows/"/>
 							<param name="widget_header" value="$LOCALIZE[31148]"/>
 							<param name="widget_target" value="videos"/>
 							<param name="list_id" value="6900"/>
 						</include>
-						<include content="WidgetListPoster" condition="Library.HasContent(tvshows)">
-							<param name="content_path" value="videodb://inprogresstvshows"/>
+						<include content="WidgetListPoster" condition="Library.HasContent(tvshows) + Library.HasNode(library://video/tvshows/inprogresstvshows.xml)">
+							<param name="content_path" value="library://video/tvshows/inprogresstvshows.xml/"/>
 							<param name="sortby" value="lastplayed"/>
 							<param name="sortorder" value="descending"/>
 							<param name="widget_header" value="$LOCALIZE[626]"/>
@@ -142,16 +142,16 @@
 							<param name="widget_target" value="videos"/>
 							<param name="list_id" value="6300"/>
 						</include>
-						<include content="WidgetListCategories" condition="Library.HasContent(tvshows)">
-							<param name="content_path" value="videodb://tvshows/genres/"/>
+						<include content="WidgetListCategories" condition="Library.HasContent(tvshows) + Library.HasNode(library://video/tvshows/genres.xml)">
+							<param name="content_path" value="library://video/tvshows/genres.xml/"/>
 							<param name="widget_header" value="$LOCALIZE[135]"/>
 							<param name="widget_target" value="videos"/>
 							<param name="list_id" value="6400"/>
 							<param name="icon" value="$VAR[WidgetGenreIconVar]"/>
 							<param name="icon_height" value="70"/>
 						</include>
-						<include content="WidgetListCategories" condition="Library.HasContent(tvshows)">
-							<param name="content_path" value="videodb://tvshows/studios/"/>
+						<include content="WidgetListCategories" condition="Library.HasContent(tvshows) + Library.HasNode(library://video/tvshows/studios.xml)">
+							<param name="content_path" value="library://video/tvshows/studios.xml/"/>
 							<param name="widget_header" value="$LOCALIZE[20388]"/>
 							<param name="widget_target" value="videos"/>
 							<param name="list_id" value="6500"/>
@@ -159,7 +159,7 @@
 							<param name="icon_height" value="70"/>
 						</include>
 					</control>
-					<include content="ImageWidget" condition="!Library.HasContent(tvshows)">
+					<include content="ImageWidget" condition="!Library.HasContent(tvshows) + Library.HasNode(library://video/files.xml)">
 						<param name="text_label" value="$LOCALIZE[31104]" />
 						<param name="button_label" value="$LOCALIZE[31110]" />
 						<param name="button_onclick" value="ActivateWindow(videos,files,return)"/>
@@ -184,15 +184,15 @@
 							<param name="widget_target" value="music"/>
 							<param name="list_id" value="7900"/>
 						</include>
-						<include content="WidgetListSquare" condition="Library.HasContent(music)">
-							<param name="content_path" value="musicdb://recentlyplayedalbums"/>
+						<include content="WidgetListSquare" condition="Library.HasContent(music) + Library.HasNode(library://music/recentlyplayedalbums.xml)">
+							<param name="content_path" value="library://music/recentlyplayedalbums.xml/"/>
 							<param name="widget_header" value="$LOCALIZE[517]"/>
 							<param name="widget_target" value="music"/>
 							<param name="list_id" value="7100"/>
 							<param name="fallback_icon" value="DefaultMusicAlbums.png"/>
 						</include>
-						<include content="WidgetListSquare" condition="Library.HasContent(music)">
-							<param name="content_path" value="musicdb://recentlyaddedalbums/"/>
+						<include content="WidgetListSquare" condition="Library.HasContent(music) + Library.HasNode(library://music/recentlyaddedalbums.xml)">
+							<param name="content_path" value="library://music/recentlyaddedalbums.xml/"/>
 							<param name="widget_header" value="$LOCALIZE[359]"/>
 							<param name="widget_target" value="music"/>
 							<param name="list_id" value="7200"/>
@@ -229,7 +229,7 @@
 							<param name="sortorder" value="descending"/>
 						</include>
 					</control>
-					<include content="ImageWidget" condition="!Library.HasContent(music)">
+					<include content="ImageWidget" condition="!Library.HasContent(music) + Library.HasNode(library://music/files.xml)">
 						<param name="text_label" value="$LOCALIZE[31104]" />
 						<param name="button_label" value="$LOCALIZE[31110]" />
 						<param name="button_onclick" value="ActivateWindow(music,files)"/>
@@ -255,8 +255,8 @@
 							<param name="list_id" value="8900"/>
 							<param name="visible" value="Integer.IsGreater(Container(8100).NumItems,0) | Integer.IsGreater(Container(8200).NumItems,0) | Integer.IsGreater(Container(8300).NumItems,0) | Integer.IsGreater(Container(8400).NumItems,0) | Integer.IsGreater(Container(8500).NumItems,0) | Integer.IsGreater(Container(8700).NumItems,0)"/>
 						</include>
-						<include content="WidgetListSquare">
-							<param name="content_path" value="addons://sources/video/"/>
+						<include content="WidgetListSquare" condition="Library.HasNode(library://video/addons.xml)">
+							<param name="content_path" value="library://video/addons.xml/"/>
 							<param name="widget_header" value="$LOCALIZE[1037]"/>
 							<param name="widget_target" value="videos"/>
 							<param name="sortby" value="lastused"/>
@@ -264,8 +264,8 @@
 							<param name="list_id" value="8100"/>
 							<param name="fallback_icon" value="DefaultAddon.png"/>
 						</include>
-						<include content="WidgetListSquare">
-							<param name="content_path" value="addons://sources/audio/"/>
+						<include content="WidgetListSquare" condition="Library.HasNode(library://music/addons.xml)">
+							<param name="content_path" value="library://music/addons.xml/"/>
 							<param name="widget_header" value="$LOCALIZE[1038]"/>
 							<param name="widget_target" value="music"/>
 							<param name="sortby" value="lastused"/>
@@ -336,14 +336,14 @@
 							<param name="widget_target" value="videos"/>
 							<param name="list_id" value="11900"/>
 						</include>
-						<include content="WidgetListCategories">
-							<param name="content_path" value="sources://video/"/>
+						<include content="WidgetListCategories" condition="Library.HasNode(library://video/files.xml)">
+							<param name="content_path" value="library://video/files.xml/"/>
 							<param name="widget_header" value="$LOCALIZE[20094]"/>
 							<param name="widget_target" value="videos"/>
 							<param name="list_id" value="11100"/>
 						</include>
-						<include content="WidgetListCategories">
-							<param name="content_path" value="special://videoplaylists/"/>
+						<include content="WidgetListCategories" condition="Library.HasNode(library://video/playlists.xml)">
+							<param name="content_path" value="library://video/playlists.xml/"/>
 							<param name="widget_header" value="$LOCALIZE[136]"/>
 							<param name="widget_target" value="videos"/>
 							<param name="list_id" value="11200"/>
@@ -683,14 +683,14 @@
 					<control type="grouplist" id="16001">
 						<include>WidgetGroupListCommon</include>
 						<pagecontrol>16010</pagecontrol>
-						<include content="WidgetListCategories" condition="Library.HasContent(musicvideos) + !Skin.HasSetting(home_no_categories_widget)">
+						<include content="WidgetListCategories" condition="Library.HasContent(musicvideos) + Library.HasNode(library://video/musicvideos/) + !Skin.HasSetting(home_no_categories_widget)">
 							<param name="content_path" value="library://video/musicvideos/"/>
 							<param name="widget_header" value="$LOCALIZE[31148]"/>
 							<param name="widget_target" value="videos"/>
 							<param name="list_id" value="16900"/>
 						</include>
-						<include content="WidgetListEpisodes" condition="Library.HasContent(musicvideos)">
-							<param name="content_path" value="videodb://recentlyaddedmusicvideos/"/>
+						<include content="WidgetListEpisodes" condition="Library.HasContent(musicvideos) + Library.HasNode(library://video/musicvideos/recentlyaddedmusicvideos.xml)">
+							<param name="content_path" value="library://video/musicvideos/recentlyaddedmusicvideos.xml/"/>
 							<param name="widget_header" value="$LOCALIZE[20390]"/>
 							<param name="widget_target" value="videos"/>
 							<param name="main_label" value="$INFO[ListItem.Label]" />
@@ -726,8 +726,8 @@
 							<param name="fallback_image" value="DefaultMusicSongs.png" />
 							<param name="list_id" value="16500"/>
 						</include>
-						<include content="WidgetListCategories" condition="Library.HasContent(musicvideos)">
-							<param name="content_path" value="videodb://musicvideos/studios/"/>
+						<include content="WidgetListCategories" condition="Library.HasContent(musicvideos) + Library.HasNode(library://video/musicvideos/studios.xml)">
+							<param name="content_path" value="library://video/musicvideos/studios.xml/"/>
 							<param name="widget_header" value="$LOCALIZE[20388]"/>
 							<param name="widget_target" value="music"/>
 							<param name="list_id" value="16600"/>
@@ -735,7 +735,7 @@
 							<param name="icon_height" value="70"/>
 						</include>
 					</control>
-					<include content="ImageWidget" condition="!Library.HasContent(musicvideos)">
+					<include content="ImageWidget" condition="!Library.HasContent(musicvideos) + Library.HasNode(library://video/files.xml)">
 						<param name="text_label" value="$LOCALIZE[31104]" />
 						<param name="button_label" value="$LOCALIZE[31110]" />
 						<param name="button_onclick" value="ActivateWindow(videos,files,return)"/>
@@ -897,23 +897,23 @@
 					<content>
 						<item>
 							<label>$LOCALIZE[342]</label>
-							<onclick condition="Library.HasContent(movies) + Skin.HasSetting(home_no_categories_widget)">ActivateWindow(Videos,videodb://movies/,return)</onclick>
-							<onclick condition="Library.HasContent(movies) + !Skin.HasSetting(home_no_categories_widget)">ActivateWindow(Videos,videodb://movies/titles/,return)</onclick>
-							<onclick condition="!Library.HasContent(movies)">ActivateWindow(Videos,sources://video/,return)</onclick>
+							<onclick condition="Library.HasContent(movies) + Library.HasNode(library://video/movies/) + Skin.HasSetting(home_no_categories_widget)">ActivateWindow(Videos,Movies,return)</onclick>
+							<onclick condition="Library.HasContent(movies) + Library.HasNode(library://video/movies/titles.xml) + !Skin.HasSetting(home_no_categories_widget)">ActivateWindow(Videos,MovieTitles,return)</onclick>
+							<onclick condition="!Library.HasContent(movies) + Library.HasNode(library://video/files.xml)">ActivateWindow(Videos,Files,return)</onclick>
 							<property name="menu_id">$NUMBER[5000]</property>
 							<thumb>icons/sidemenu/movies.png</thumb>
 							<property name="id">movies</property>
-							<visible>!Skin.HasSetting(HomeMenuNoMovieButton)</visible>
+							<visible>!Skin.HasSetting(HomeMenuNoMovieButton) + [Library.HasNode(library://video/movies/) | Library.HasNode(library://video/movies/titles.xml) | Library.HasNode(library://video/files.xml)]</visible>
 						</item>
 						<item>
 							<label>$LOCALIZE[20343]</label>
-							<onclick condition="Library.HasContent(tvshows) + Skin.HasSetting(home_no_categories_widget)">ActivateWindow(Videos,videodb://tvshows/,return)</onclick>
-							<onclick condition="Library.HasContent(tvshows) + !Skin.HasSetting(home_no_categories_widget)">ActivateWindow(Videos,videodb://tvshows/titles/,return)</onclick>
-							<onclick condition="!Library.HasContent(tvshows)">ActivateWindow(Videos,sources://video/,return)</onclick>
+							<onclick condition="Library.HasContent(tvshows) + Library.HasNode(library://video/tvshows/) + Skin.HasSetting(home_no_categories_widget)">ActivateWindow(Videos,TvShows,return)</onclick>
+							<onclick condition="Library.HasContent(tvshows) + Library.HasNode(library://video/tvshows/titles.xml) + !Skin.HasSetting(home_no_categories_widget)">ActivateWindow(Videos,TvShowTitles,return)</onclick>
+							<onclick condition="!Library.HasContent(tvshows) + Library.HasNode(library://video/files.xml)">ActivateWindow(Videos,Files,return)</onclick>
 							<property name="menu_id">$NUMBER[6000]</property>
 							<thumb>icons/sidemenu/tv.png</thumb>
 							<property name="id">tvshows</property>
-							<visible>!Skin.HasSetting(HomeMenuNoTVShowButton)</visible>
+							<visible>!Skin.HasSetting(HomeMenuNoTVShowButton) + [Library.HasNode(library://video/tvshows/) | Library.HasNode(library://video/tvshows/titles.xml) | Library.HasNode(library://video/files.xml)]</visible>
 						</item>
 						<item>
 							<label>$LOCALIZE[2]</label>
@@ -937,7 +937,7 @@
 							<onclick>ActivateWindow(Videos,musicvideos,return)</onclick>
 							<thumb>icons/sidemenu/musicvideos.png</thumb>
 							<property name="id">musicvideos</property>
-							<visible>!Skin.HasSetting(HomeMenuNoMusicVideoButton)</visible>
+							<visible>!Skin.HasSetting(HomeMenuNoMusicVideoButton) + Library.HasNode(library://video/musicvideos/)</visible>
 						</item>
 						<item>
 							<label>$LOCALIZE[19020]</label>
