@@ -33,6 +33,8 @@
 #include "utils/Variant.h"
 #include "ServiceBroker.h"
 
+#include <cassert>
+
 #define SETTING_PROFILE_NAME          "profile.name"
 #define SETTING_PROFILE_IMAGE         "profile.image"
 #define SETTING_PROFILE_DIRECTORY     "profile.directory"

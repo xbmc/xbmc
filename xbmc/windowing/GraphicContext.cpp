@@ -24,6 +24,8 @@
 #include "guilib/GUIWindowManager.h"
 #include "guilib/TextureManager.h"
 
+#include <cassert>
+
 using namespace KODI::MESSAGING;
 
 CGraphicContext::CGraphicContext(void) = default;
