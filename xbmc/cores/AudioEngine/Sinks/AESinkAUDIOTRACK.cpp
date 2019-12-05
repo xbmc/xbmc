@@ -8,9 +8,12 @@
 
 #include "AESinkAUDIOTRACK.h"
 
+#include "ServiceBroker.h"
 #include "cores/AudioEngine/AESinkFactory.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
+#include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "utils/StringUtils.h"
 #include "utils/TimeUtils.h"
 #include "utils/log.h"
@@ -37,7 +40,9 @@ const unsigned int MOVING_AVERAGE_MAX_MEMBERS = 5;
 const uint64_t UINT64_LOWER_BYTES = 0x00000000FFFFFFFF;
 const uint64_t UINT64_UPPER_BYTES = 0xFFFFFFFF00000000;
 
-static const AEChannel KnownChannels[] = { AE_CH_FL, AE_CH_FR, AE_CH_FC, AE_CH_LFE, AE_CH_SL, AE_CH_SR, AE_CH_BL, AE_CH_BR, AE_CH_BC, AE_CH_BLOC, AE_CH_BROC, AE_CH_NULL };
+static const AEChannel KnownChannels[] = {AE_CH_FL, AE_CH_FR,   AE_CH_FC,   AE_CH_LFE,
+                                          AE_CH_SL, AE_CH_SR,   AE_CH_BL,   AE_CH_BR,
+                                          AE_CH_BC, AE_CH_BLOC, AE_CH_BROC, AE_CH_NULL};
 
 static int AEStreamFormatToATFormat(const CAEStreamInfo::DataType& dt)
 {
@@ -240,6 +245,7 @@ CAESinkAUDIOTRACK::CAESinkAUDIOTRACK()
   m_at_jni = NULL;
   m_duration_written = 0;
   m_headPos = 0;
+  m_timestampPos = 0;
   m_volume = -1;
   m_sink_sampleRate = 0;
   m_passthrough = false;
@@ -292,6 +298,7 @@ bool CAESinkAUDIOTRACK::Initialize(AEAudioFormat &format, std::string &device)
   m_format      = format;
   m_volume      = -1;
   m_headPos = 0;
+  m_timestampPos = 0;
   m_linearmovingaverage.clear();
   m_pause_ms = 0.0;
   CLog::Log(LOGDEBUG, "CAESinkAUDIOTRACK::Initialize requested: sampleRate %u; format: %s; channels: %d", format.m_sampleRate, CAEUtil::DataFormatToStr(format.m_dataFormat), format.m_channelLayout.Count());
@@ -554,12 +561,15 @@ void CAESinkAUDIOTRACK::Deinitialize()
 
   m_duration_written = 0;
   m_headPos = 0;
+  m_timestampPos = 0;
+  m_stampTimer.SetExpired();
 
   m_linearmovingaverage.clear();
 
   delete m_at_jni;
   m_at_jni = NULL;
   m_delay = 0.0;
+  m_hw_delay = 0.0;
 }
 
 bool CAESinkAUDIOTRACK::IsInitialized()
@@ -607,12 +617,89 @@ void CAESinkAUDIOTRACK::GetDelay(AEDelayStatus& status)
   // track delay in local member
   m_delay = d;
 
+  if (m_stampTimer.IsTimePast())
+  {
+    if (!m_at_jni->getTimestamp(m_timestamp))
+    {
+      CLog::Log(LOGDEBUG, "Could not acquire timestamp");
+      m_stampTimer.Set(100);
+    }
+    else
+    {
+      // check if frameposition is valid and nano timer less than 50 ms outdated
+      if (m_timestamp.get_framePosition() > 0 &&
+          (CurrentHostCounter() - m_timestamp.get_nanoTime()) < 50 * 1000 * 1000)
+        m_stampTimer.Set(1000);
+      else
+        m_stampTimer.Set(100);
+    }
+  }
+  else
+  {
+    // check if last value was received less than 2 seconds ago
+    if (m_timestamp.get_framePosition() > 0 &&
+        (CurrentHostCounter() - m_timestamp.get_nanoTime()) < 2 * 1000 * 1000 * 1000)
+    {
+      if (CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->CanLogComponent(LOGAUDIO))
+      {
+        CLog::Log(LOGDEBUG, "Framecounter: {} Time: {} Current-Time: {}",
+                  (m_timestamp.get_framePosition() & UINT64_LOWER_BYTES),
+                  m_timestamp.get_nanoTime(), CurrentHostCounter());
+      }
+      uint64_t delta = static_cast<uint64_t>(CurrentHostCounter() - m_timestamp.get_nanoTime());
+      uint64_t stamphead =
+          static_cast<uint64_t>(m_timestamp.get_framePosition() & UINT64_LOWER_BYTES) +
+          delta * m_sink_sampleRate / 1000000000.0;
+
+      // wrap around
+      // e.g. 0xFFFFFFFFFFFF0123 -> 0x0000000000002478
+      // because we only query each second the simple smaller comparison won't suffice
+      // as delay can fluctuate minimally
+      if (stamphead < m_timestampPos && (m_timestampPos - stamphead) > 0x7FFFFFFFFFFFFFFFULL)
+      {
+        uint64_t stamp = m_timestampPos;
+        stamp += (1ULL << 32);
+        stamphead = (stamp & UINT64_UPPER_BYTES) | stamphead;
+        CLog::Log(LOGDEBUG, "Wraparound happend old: {} new: {}", m_timestampPos, stamphead);
+      }
+      m_timestampPos = stamphead;
+
+      double playtime = m_timestampPos / static_cast<double>(m_sink_sampleRate);
+
+      if (CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->CanLogComponent(LOGAUDIO))
+      {
+        CLog::Log(LOGDEBUG,
+                  "Delay - Timestamp: {} (ms) delta: {} (ms) playtime: {} (ms) Duration: {} ms",
+                  1000.0 * (m_duration_written - playtime), delta / 1000000.0, playtime * 1000,
+                  m_duration_written * 1000);
+        CLog::Log(LOGDEBUG, "Head-Position {} Timestamp Position {} Delay-Offset: {} ms", m_headPos,
+                  m_timestampPos, 1000.0 * (m_headPos - m_timestampPos) / m_sink_sampleRate);
+      }
+      double hw_delay =
+          m_duration_written - m_timestampPos / static_cast<double>(m_sink_sampleRate);
+      // sadly we smooth the delay, so only compensate here what we did not yet smooth away
+      hw_delay -= d;
+      // sometimes at the beginning of the stream m_timestampPos is more accurate and ahead of
+      // m_headPos - don't use the computed value then and wait
+      if (hw_delay >= 0.0 && hw_delay < 1.0)
+        m_hw_delay = hw_delay;
+      if (CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->CanLogComponent(LOGAUDIO))
+      {
+        CLog::Log(LOGDEBUG, "HW-Delay (1): {}", hw_delay);
+      }
+    }
+  }
+  if (CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->CanLogComponent(LOGAUDIO))
+  {
+    CLog::Log(LOGDEBUG, "Delay Current: %lf", d * 1000);
+  }
+
   status.SetDelay(d);
 }
 
 double CAESinkAUDIOTRACK::GetLatency()
 {
-  return 0.0;
+  return m_hw_delay;
 }
 
 double CAESinkAUDIOTRACK::GetCacheTotal()
@@ -787,7 +874,9 @@ void CAESinkAUDIOTRACK::Drain()
   m_at_jni->pause();
   m_duration_written = 0;
   m_headPos = 0;
+  m_timestampPos = 0;
   m_linearmovingaverage.clear();
+  m_stampTimer.SetExpired();
   m_pause_ms = 0.0;
 }
 
