@@ -8,6 +8,7 @@
 
 #include "GUIDialogProfileSettings.h"
 
+#include <cassert>
 #include <utility>
 
 #include "dialogs/GUIDialogFileBrowser.h"
