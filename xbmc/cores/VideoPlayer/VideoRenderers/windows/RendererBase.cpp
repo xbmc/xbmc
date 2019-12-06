@@ -162,6 +162,23 @@ bool CRendererBase::Configure(const VideoPicture& picture, float fps, unsigned o
   m_fps = fps;
   m_renderOrientation = orientation;
 
+  if (picture.hasDisplayMetadata || picture.color_primaries == AVCOL_PRI_BT2020)
+  {
+    bool hdr_capable, hdr_enabled;
+
+    DX::DeviceResources::Get()->DetectDisplayHDRcapable(hdr_capable, hdr_enabled);
+
+    if (hdr_enabled)
+    {
+      DX::DeviceResources::Get()->Set_HDR_MetaData(picture.displayMetadata, picture.lightMetadata);
+    }
+  }
+  else
+  {
+    if (DX::Windowing()->Is_10bitSwapchain())
+      DX::DeviceResources::Get()->Clear_HDR_MetaData();
+  }
+
   return true;
 }
 
