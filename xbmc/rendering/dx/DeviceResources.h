@@ -14,7 +14,7 @@
 #if defined(TARGET_WINDOWS_STORE)
 #include <dxgi1_3.h>
 #else
-#include <dxgi1_2.h>
+#include <dxgi1_6.h>
 #include <easyhook/easyhook.h>
 #endif
 #include <functional>
@@ -22,6 +22,11 @@
 
 #include "DirectXHelper.h"
 #include "guilib/D3DResource.h"
+
+extern "C"
+{
+#include <libavutil/mastering_display_metadata.h>
+}
 
 struct RESOLUTION_INFO;
 
@@ -81,6 +86,10 @@ namespace DX
 
     bool SetFullScreen(bool fullscreen, RESOLUTION_INFO& res);
 
+    void DetectDisplayHDRcapable(bool& hdr_capable, bool& hdr_enabled) const;
+    void Set_HDR_MetaData(AVMasteringDisplayMetadata dm, AVContentLightMetadata lm) const;
+    void Clear_HDR_MetaData() const;
+
     // DX resources registration
     void Register(ID3DResource *resource);
     void Unregister(ID3DResource *resource);
@@ -131,6 +140,7 @@ namespace DX
     Microsoft::WRL::ComPtr<IDXGIFactory2> m_dxgiFactory;
     Microsoft::WRL::ComPtr<IDXGIAdapter1> m_adapter;
     Microsoft::WRL::ComPtr<IDXGIOutput1> m_output;
+    Microsoft::WRL::ComPtr<IDXGIOutput6> m_output6;
 
     Microsoft::WRL::ComPtr<ID3D11Device1> m_d3dDevice;
     Microsoft::WRL::ComPtr<ID3D11DeviceContext1> m_d3dContext;
