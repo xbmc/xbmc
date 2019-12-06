@@ -66,6 +66,9 @@ public:
 
   void FixRefreshRateIfNecessary(const D3D10DDIARG_CREATERESOURCE* pResource) const;
 
+  bool Is_10bitSwapchain() const { return m_10bit_swapchain; }
+  void Set10bitSwapchain(bool flag) { m_10bit_swapchain = flag; }
+
 protected:
   void SetDeviceFullScreen(bool fullScreen, RESOLUTION_INFO& res) override;
   void ReleaseBackBuffer() override;
@@ -77,5 +80,6 @@ protected:
 
   HMODULE m_hDriverModule;
   TRACED_HOOK_HANDLE m_hHook;
+  bool m_10bit_swapchain;
 };
 
