@@ -41,6 +41,8 @@
 #include "ServiceBroker.h"
 #include "messaging/ApplicationMessenger.h"
 
+#include "rendering/dx/DeviceResources.h"
+#include "rendering/dx/RenderContext.h"
 #include "DVDDemuxers/DVDDemuxCC.h"
 #include "cores/FFmpeg.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderManager.h"
@@ -2385,6 +2387,14 @@ void CVideoPlayer::SendPlayerMessage(CDVDMsg* pMsg, unsigned int target)
 void CVideoPlayer::OnExit()
 {
   CLog::Log(LOGNOTICE, "CVideoPlayer::OnExit()");
+
+  bool hdr_capable, hdr_enabled;
+  DX::DeviceResources::Get()->DetectDisplayHDRcapable(hdr_capable, hdr_enabled);
+
+  if (hdr_enabled && DX::Windowing()->Is_10bitSwapchain())
+  {
+    DX::DeviceResources::Get()->Clear_HDR_MetaData();
+  }
 
   // set event to inform openfile something went wrong in case openfile is still waiting for this event
   SetCaching(CACHESTATE_DONE);
