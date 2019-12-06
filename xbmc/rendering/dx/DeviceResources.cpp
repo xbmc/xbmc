@@ -515,6 +515,7 @@ void DX::DeviceResources::ResizeBuffers()
 
   bool bHWStereoEnabled = RENDER_STEREO_MODE_HARDWAREBASED == CServiceBroker::GetWinSystem()->GetGfxContext().GetStereoMode();
   bool windowed = true;
+  bool hdr_enabled = false;
   HRESULT hr = E_FAIL;
 
   DXGI_SWAP_CHAIN_DESC1 scDesc = { 0 };
@@ -537,6 +538,27 @@ void DX::DeviceResources::ResizeBuffers()
         m_swapChain->SetFullscreenState(false, nullptr); // mandatory before releasing swapchain
       }
 
+      m_swapChain = nullptr;
+      m_deferrContext->Flush();
+      m_d3dContext->Flush();
+    }
+  }
+
+  if (m_swapChain)
+  {
+    bool hdr_capable;
+    DetectDisplayHDRcapable(hdr_capable, hdr_enabled);
+
+    // check if swapchain needs to be recreated at 10 bit
+    if (DX::Windowing()->Is_10bitSwapchain() == false && hdr_enabled)
+    {
+      BOOL bFullcreen = 0;
+      m_swapChain->GetFullscreenState(&bFullcreen, nullptr);
+      if (!!bFullcreen)
+      {
+        windowed = false;
+        m_swapChain->SetFullscreenState(false, nullptr); // mandatory before releasing swapchain
+      }
       m_swapChain = nullptr;
       m_deferrContext->Flush();
       m_d3dContext->Flush();
@@ -589,7 +611,7 @@ void DX::DeviceResources::ResizeBuffers()
     ComPtr<IDXGISwapChain1> swapChain;
     if ( m_d3dFeatureLevel >= D3D_FEATURE_LEVEL_11_0
       && !bHWStereoEnabled
-      && CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_bTry10bitOutput)
+      && (CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_bTry10bitOutput || hdr_enabled))
     {
       swapChainDesc.Format = DXGI_FORMAT_R10G10B10A2_UNORM;
       hr = CreateSwapChain(swapChainDesc, scFSDesc, &swapChain);
@@ -622,6 +644,17 @@ void DX::DeviceResources::ResizeBuffers()
     {
       CLog::LogF(LOGERROR, "unable to create swapchain.");
       return;
+    }
+
+    if (swapChainDesc.Format == DXGI_FORMAT_R10G10B10A2_UNORM)
+    {
+      DX::Windowing()->Set10bitSwapchain(true);
+      CLog::LogF(LOGNOTICE, "10 bit swapchain is used.");
+    }
+    else
+    {
+      DX::Windowing()->Set10bitSwapchain(false);
+      CLog::LogF(LOGNOTICE, "8 bit swapchain is used.");
     }
 
     hr = swapChain.As(&m_swapChain); CHECK_ERR();
