@@ -525,6 +525,12 @@ bool CProcessorHD::Render(CRect src, CRect dst, ID3D11Resource* target, CRenderB
     // makes target available for processing in shaders
     videoCtx1->VideoProcessorSetOutputShaderUsage(m_pVideoProcessor.Get(), 1);
 
+//  Disabled because causes HDR image to dark.
+//  It is also not needed because it is only for dynamic HDR metadata (HDR10+).
+//  This code runs continuously during playback and this is only necessary for HDR10+.
+//  Static HDR metadata is configured only at the beginning.
+//  Probably there is some error with the change of scale (factor 50000) and data types conversions.
+/*
     if (m_bSupportHDR10)
     {
       ComPtr<ID3D11VideoContext2> videoCtx2;
@@ -556,6 +562,7 @@ bool CProcessorHD::Render(CRect src, CRect dst, ID3D11Resource* target, CRenderB
                                                       DXGI_HDR_METADATA_TYPE_HDR10, sizeof(hdr10), &hdr10);
       }
     }
+*/
   }
   else
   {
