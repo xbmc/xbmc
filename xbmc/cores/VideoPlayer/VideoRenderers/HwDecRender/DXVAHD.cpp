@@ -505,9 +505,20 @@ bool CProcessorHD::Render(CRect src, CRect dst, ID3D11Resource* target, CRenderB
   if (SUCCEEDED(m_pVideoContext.As(&videoCtx1)))
   {
     const DXGI_COLOR_SPACE_TYPE source_color = GetDXGIColorSpace(views[2], m_bSupportHDR10);
-    const DXGI_COLOR_SPACE_TYPE target_color = DX::Windowing()->UseLimitedColor() 
-                                               ? DXGI_COLOR_SPACE_RGB_STUDIO_G22_NONE_P709 
-                                               : DXGI_COLOR_SPACE_RGB_FULL_G22_NONE_P709;
+    DXGI_COLOR_SPACE_TYPE target_color;
+
+    if (DX::Windowing()->Is_10bitSwapchain() && (views[2]->hasLightMetadata || views[2]->primaries == AVCOL_PRI_BT2020))
+    {
+      target_color = DX::Windowing()->UseLimitedColor()
+                             ? DXGI_COLOR_SPACE_RGB_STUDIO_G2084_NONE_P2020
+                             : DXGI_COLOR_SPACE_RGB_FULL_G2084_NONE_P2020;
+    }
+    else
+    {
+      target_color = DX::Windowing()->UseLimitedColor()
+                             ? DXGI_COLOR_SPACE_RGB_STUDIO_G22_NONE_P709
+                             : DXGI_COLOR_SPACE_RGB_FULL_G22_NONE_P709;
+    }
 
     videoCtx1->VideoProcessorSetStreamColorSpace1(m_pVideoProcessor.Get(), DEFAULT_STREAM_INDEX, source_color);
     videoCtx1->VideoProcessorSetOutputColorSpace1(m_pVideoProcessor.Get(), target_color);
