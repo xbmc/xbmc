@@ -12,6 +12,7 @@
 #include <stdarg.h>     /* va_list, va_start, va_arg, va_end */
 #include <cstdlib>
 #include <cstring>
+#include <ctime>
 #include <memory>
 #include <stdexcept>
 #include <string>
