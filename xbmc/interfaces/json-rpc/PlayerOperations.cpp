@@ -45,6 +45,25 @@ using namespace PLAYLIST;
 using namespace PVR;
 using namespace KODI::MESSAGING;
 
+namespace
+{
+
+void AppendAudioStreamFlagsAsBooleans(CVariant& list, StreamFlags flags)
+{
+  list["isdefault"] = ((flags & StreamFlags::FLAG_DEFAULT) != 0);
+  list["isoriginal"] = ((flags & StreamFlags::FLAG_ORIGINAL) != 0);
+  list["isimpaired"] = ((flags & StreamFlags::FLAG_VISUAL_IMPAIRED) != 0);
+}
+
+void AppendSubtitleStreamFlagsAsBooleans(CVariant& list, StreamFlags flags)
+{
+  list["isdefault"] = ((flags & StreamFlags::FLAG_DEFAULT) != 0);
+  list["isforced"] = ((flags & StreamFlags::FLAG_FORCED) != 0);
+  list["isimpaired"] = ((flags & StreamFlags::FLAG_HEARING_IMPAIRED) != 0);
+}
+
+} // namespace
+
 JSONRPC_STATUS CPlayerOperations::GetActivePlayers(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   int activePlayers = GetActivePlayers();
@@ -1296,20 +1315,6 @@ JSONRPC_STATUS CPlayerOperations::StartSlideshow(const std::string& path, bool r
 void CPlayerOperations::SendSlideshowAction(int actionID)
 {
   CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION, WINDOW_SLIDESHOW, -1, static_cast<void*>(new CAction(actionID)));
-}
-
-void AppendAudioStreamFlagsAsBooleans(CVariant& list, StreamFlags& flags)
-{
-  list["is_default"] = ((flags & StreamFlags::FLAG_DEFAULT) != 0);
-  list["is_original"] = ((flags & StreamFlags::FLAG_ORIGINAL) != 0);
-  list["is_impaired"] = ((flags & StreamFlags::FLAG_VISUAL_IMPAIRED) != 0);
-}
-
-void AppendSubtitleStreamFlagsAsBooleans(CVariant& list, StreamFlags& flags)
-{
-  list["is_default"] = ((flags & StreamFlags::FLAG_DEFAULT) != 0);
-  list["is_forced"] = ((flags & StreamFlags::FLAG_FORCED) != 0);
-  list["is_impaired"] = ((flags & StreamFlags::FLAG_HEARING_IMPAIRED) != 0);
 }
 
 JSONRPC_STATUS CPlayerOperations::GetPropertyValue(PlayerType player, const std::string &property, CVariant &result)
