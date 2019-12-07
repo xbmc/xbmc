@@ -15,6 +15,8 @@
 #include "guilib/LocalizeStrings.h"
 #include "guilib/TextureManager.h"
 #include "music/MusicDatabase.h"
+#include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "utils/Crc32.h"
 #include "utils/LegacyPathTranslation.h"
 #include "utils/StringUtils.h"
@@ -30,6 +32,45 @@ CMusicDatabaseDirectory::~CMusicDatabaseDirectory(void) = default;
 bool CMusicDatabaseDirectory::GetDirectory(const CURL& url, CFileItemList &items)
 {
   std::string path = CLegacyPathTranslation::TranslateMusicDbPath(url);
+
+  // Adjust path to control navigation from albums to discs or directly to songs
+  CQueryParams params;
+  NODE_TYPE type;
+  NODE_TYPE childtype;
+  GetDirectoryNodeInfo(path, type, childtype, params);
+  if (childtype == NODE_TYPE_DISC)
+  {
+    bool bFlatten = false;
+    if (params.GetAlbumId() < 0)
+      bFlatten = true; // Showing *all albums next always songs
+    else
+    {
+      // Option to show discs for ordinary albums (not just boxed sets)
+      bFlatten = !CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+          CSettings::SETTING_MUSICLIBRARY_SHOWDISCS);
+      CMusicDatabase musicdatabase;
+      if (musicdatabase.Open())
+      {
+        if (bFlatten) // Check for boxed set
+          bFlatten = !musicdatabase.IsAlbumBoxset(params.GetAlbumId());
+        if (!bFlatten)
+        { // Check we will get more than 1 disc when path filter options applied
+          int iDiscTotal = musicdatabase.GetDiscsCount(path);
+          bFlatten = iDiscTotal <= 1;
+        }
+      }
+      musicdatabase.Close();
+    }
+    if (bFlatten)
+    { // Skip discs level and go directly to songs
+      CMusicDbUrl musicUrl;
+      if (!musicUrl.FromString(path))
+        return false;
+      musicUrl.AppendPath("-2/"); // Flattened so adjust list label etc.
+      path = musicUrl.ToString();
+    }
+  }
+
   items.SetPath(path);
   items.m_dwSize = -1;  // No size
 

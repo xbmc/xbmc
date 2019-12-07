@@ -4849,6 +4849,14 @@ bool CMusicDatabase::GetDiscsByWhere(CMusicDbUrl& musicUrl,
 
   return false;
 }
+int CMusicDatabase::GetDiscsCount(const std::string& baseDir, const Filter& filter /* = Filter() */)
+{
+  int iDiscTotal = -1;
+  CFileItemList itemscount;
+  if (GetDiscsByWhere(baseDir, filter, itemscount, SortDescription(), true))
+    iDiscTotal = itemscount.GetProperty("total").asInteger();
+  return iDiscTotal;
+}
 
 bool CMusicDatabase::GetSongsFullByWhere(const std::string &baseDir, const Filter &filter, CFileItemList &items, const SortDescription &sortDescription /* = SortDescription() */, bool artistData /* = false*/)
 {
