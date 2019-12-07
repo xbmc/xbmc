@@ -11,11 +11,7 @@
 #include <wrl.h>
 #include <wrl/client.h>
 #include <concrt.h>
-#if defined(TARGET_WINDOWS_STORE)
-#include <dxgi1_3.h>
-#else
-#include <dxgi1_2.h>
-#endif
+#include <dxgi1_5.h>
 #include <functional>
 #include <memory>
 
@@ -79,6 +75,12 @@ namespace DX
     void ResizeBuffers();
 
     bool SetFullScreen(bool fullscreen, RESOLUTION_INFO& res);
+
+    bool IsDisplayHDREnabled();
+    void SetHdrMetaData(DXGI_HDR_METADATA_HDR10& hdr10, bool setColorSpace) const;
+    void ClearHdrMetaData() const;
+    bool Is10BitSwapchain() const { return m_Is10bSwapchain; }
+    DXGI_HDR_METADATA_HDR10 GetHdr10Display() const { return m_displayHDR10; }
 
     // DX resources registration
     void Register(ID3DResource *resource);
@@ -160,5 +162,7 @@ namespace DX
     std::vector<ID3DResource*> m_resources;
     bool m_stereoEnabled;
     bool m_bDeviceCreated;
+    bool m_Is10bSwapchain;
+    DXGI_HDR_METADATA_HDR10 m_displayHDR10;
   };
 }
