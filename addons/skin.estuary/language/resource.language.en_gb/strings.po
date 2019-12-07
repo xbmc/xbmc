@@ -201,7 +201,10 @@ msgctxt "#31036"
 msgid "items"
 msgstr ""
 
-#empty string with id 31037
+#: /xml/Includes.xml
+msgctxt "#31037"
+msgid "Selected track"
+msgstr ""
 
 #: /xml/Variables.xml
 msgctxt "#31038"
@@ -349,7 +352,15 @@ msgctxt "#31072"
 msgid "Power Options"
 msgstr ""
 
-#empty strings from id 31073 to 31074
+#: /xml/MyPlaylist.xml
+msgctxt "#31073"
+msgid "Total length"
+msgstr ""
+
+#: /xml/MyPlaylist.xml
+msgctxt "#31074"
+msgid "Total duration"
+msgstr ""
 
 #: /xml/Home.xml
 msgctxt "#31075"
