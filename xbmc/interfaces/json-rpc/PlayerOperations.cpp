@@ -411,11 +411,11 @@ JSONRPC_STATUS CPlayerOperations::Seek(const std::string &method, ITransportLaye
         return FailedToExecute;
 
       const CVariant& value = parameterObject["value"];
-      if (IsType(value, NumberValue) || value.isMember("percentage"))
-        g_application.SeekPercentage(IsType(value, NumberValue) ? value.asFloat() : value["percentage"].asFloat());
-      else if (value.isString() || value.isMember("step"))
+      if (value.isMember("percentage"))
+        g_application.SeekPercentage(value["percentage"].asFloat());
+      else if (value.isMember("step"))
       {
-        std::string step = value.isString() ? value.asString() : value["step"].asString();
+        std::string step = value["step"].asString();
         if (step == "smallforward")
           CBuiltins::GetInstance().Execute("playercontrol(smallskipforward)");
         else if (step == "smallbackward")
@@ -427,10 +427,10 @@ JSONRPC_STATUS CPlayerOperations::Seek(const std::string &method, ITransportLaye
         else
           return InvalidParams;
       }
-      else if (value.isMember("seconds") && value.size() == 1)
+      else if (value.isMember("seconds"))
         g_application.GetAppPlayer().GetSeekHandler().SeekSeconds(static_cast<int>(value["seconds"].asInteger()));
-      else if (value.isObject())
-        g_application.SeekTime(ParseTimeInSeconds(value.isMember("time") ? value["time"] : value));
+      else if (value.isMember("time"))
+        g_application.SeekTime(ParseTimeInSeconds(value["time"]));
       else
         return InvalidParams;
 
