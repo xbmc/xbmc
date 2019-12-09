@@ -294,7 +294,6 @@ CGUIControlRadioButtonSetting::CGUIControlRadioButtonSetting(CGUIRadioButtonCont
     return;
 
   m_pRadioButton->SetID(id);
-  Update();
 }
 
 CGUIControlRadioButtonSetting::~CGUIControlRadioButtonSetting() = default;
@@ -324,7 +323,41 @@ CGUIControlSpinExSetting::CGUIControlSpinExSetting(CGUISpinControlEx *pSpin, int
 
   m_pSpin->SetID(id);
 
-  FillControl();
+  const std::string &controlFormat = m_pSetting->GetControl()->GetFormat();
+  if (controlFormat == "number")
+  {
+    std::shared_ptr<CSettingNumber> pSettingNumber = std::static_pointer_cast<CSettingNumber>(m_pSetting);
+    m_pSpin->SetType(SPIN_CONTROL_TYPE_FLOAT);
+    m_pSpin->SetFloatRange((float)pSettingNumber->GetMinimum(), (float)pSettingNumber->GetMaximum());
+    m_pSpin->SetFloatInterval((float)pSettingNumber->GetStep());
+  }
+  else if (controlFormat == "integer")
+    m_pSpin->SetType(SPIN_CONTROL_TYPE_TEXT);
+  else if (controlFormat == "string")
+  {
+    m_pSpin->SetType(SPIN_CONTROL_TYPE_TEXT);
+
+    if (m_pSetting->GetType() == SettingType::Integer)
+      FillIntegerSettingControl();
+    else if (m_pSetting->GetType() == SettingType::Number)
+    {
+      std::shared_ptr<CSettingNumber> pSettingNumber = std::static_pointer_cast<CSettingNumber>(m_pSetting);
+      std::shared_ptr<const CSettingControlFormattedRange> control = std::static_pointer_cast<const CSettingControlFormattedRange>(m_pSetting->GetControl());
+      int index = 0;
+      for (double value = pSettingNumber->GetMinimum(); value <= pSettingNumber->GetMaximum(); value += pSettingNumber->GetStep(), index++)
+      {
+        std::string strLabel;
+        if (value == pSettingNumber->GetMinimum() && control->GetMinimumLabel() > -1)
+          strLabel = Localize(control->GetMinimumLabel());
+        else if (control->GetFormatLabel() > -1)
+          strLabel = StringUtils::Format(Localize(control->GetFormatLabel()).c_str(), value);
+        else
+          strLabel = StringUtils::Format(control->GetFormatString().c_str(), value);
+
+        m_pSpin->AddLabel(strLabel, index);
+      }
+    }
+  }
 }
 
 CGUIControlSpinExSetting::~CGUIControlSpinExSetting() = default;
@@ -388,21 +421,12 @@ void CGUIControlSpinExSetting::FillControl()
   if (controlFormat == "number")
   {
     std::shared_ptr<CSettingNumber> pSettingNumber = std::static_pointer_cast<CSettingNumber>(m_pSetting);
-    m_pSpin->SetType(SPIN_CONTROL_TYPE_FLOAT);
-    m_pSpin->SetFloatRange((float)pSettingNumber->GetMinimum(), (float)pSettingNumber->GetMaximum());
-    m_pSpin->SetFloatInterval((float)pSettingNumber->GetStep());
-
     m_pSpin->SetFloatValue((float)pSettingNumber->GetValue());
   }
   else if (controlFormat == "integer")
-  {
-    m_pSpin->SetType(SPIN_CONTROL_TYPE_TEXT);
     FillIntegerSettingControl();
-  }
   else if (controlFormat == "string")
   {
-    m_pSpin->SetType(SPIN_CONTROL_TYPE_TEXT);
-
     if (m_pSetting->GetType() == SettingType::Integer)
       FillIntegerSettingControl();
     else if (m_pSetting->GetType() == SettingType::Number)
@@ -415,16 +439,6 @@ void CGUIControlSpinExSetting::FillControl()
       {
         if (value == pSettingNumber->GetValue())
           currentIndex = index;
-
-        std::string strLabel;
-        if (value == pSettingNumber->GetMinimum() && control->GetMinimumLabel() > -1)
-          strLabel = Localize(control->GetMinimumLabel());
-        else if (control->GetFormatLabel() > -1)
-          strLabel = StringUtils::Format(Localize(control->GetFormatLabel()).c_str(), value);
-        else
-          strLabel = StringUtils::Format(control->GetFormatString().c_str(), value);
-
-        m_pSpin->AddLabel(strLabel, index);
       }
 
       m_pSpin->SetValue(currentIndex);
@@ -471,7 +485,6 @@ CGUIControlListSetting::CGUIControlListSetting(CGUIButtonControl *pButton, int i
     return;
 
   m_pButton->SetID(id);
-  Update();
 }
 
 CGUIControlListSetting::~CGUIControlListSetting() = default;
@@ -644,7 +657,6 @@ CGUIControlButtonSetting::CGUIControlButtonSetting(CGUIButtonControl *pButton, i
     return;
 
   m_pButton->SetID(id);
-  Update();
 }
 
 CGUIControlButtonSetting::~CGUIControlButtonSetting() = default;
@@ -991,8 +1003,6 @@ CGUIControlEditSetting::CGUIControlEditSetting(CGUIEditControl *pEdit, int id, s
 
   m_pEdit->SetInputType(inputType, heading);
 
-  Update();
-
   // this will automatically trigger validation so it must be executed after
   // having set the value of the control based on the value of the setting
   m_pEdit->SetInputValidation(InputValidation, this);
@@ -1085,8 +1095,6 @@ CGUIControlSliderSetting::CGUIControlSliderSetting(CGUISettingsSliderControl *pS
     default:
       break;
   }
-
-  Update();
 }
 
 CGUIControlSliderSetting::~CGUIControlSliderSetting() = default;
@@ -1256,8 +1264,6 @@ CGUIControlRangeSetting::CGUIControlRangeSetting(CGUISettingsSliderControl *pSli
         break;
     }
   }
-
-  Update();
 }
 
 CGUIControlRangeSetting::~CGUIControlRangeSetting() = default;
