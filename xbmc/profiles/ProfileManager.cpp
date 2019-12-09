@@ -187,6 +187,15 @@ bool CProfileManager::Load()
       ret = false;
     }
   }
+  if (!ret)
+  {
+    CLog::Log(LOGERROR,
+              "Failed to load profile - might be corrupted - falling back to master profile");
+    m_profiles.clear();
+    CFile::Delete(file);
+
+    ret = true;
+  }
 
   if (m_profiles.empty())
   { // add the master user
