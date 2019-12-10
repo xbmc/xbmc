@@ -95,6 +95,12 @@
 						<label>$LOCALIZE[31020]</label>
 						<visible>Control.IsVisible(621) | Control.IsVisible(624)</visible>
 					</control>
+					<control type="button" id="309">
+						<description>Open Favorites</description>
+						<include>MediaMenuItemsCommon</include>
+						<label>1036</label>
+						<onclick>ActivateWindow(Favourites)</onclick>
+					</control>
 					<control type="button" id="621">
 						<description>Get more</description>
 						<include>MediaMenuItemsCommon</include>
