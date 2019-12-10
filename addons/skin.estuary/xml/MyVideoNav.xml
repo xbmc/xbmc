@@ -140,6 +140,12 @@
 						<onclick>ActivateWindow(videoplaylist)</onclick>
 						<visible>Integer.IsGreater(Playlist.Length(video),0)</visible>
 					</control>
+					<control type="button" id="309">
+						<description>Open Favorites</description>
+						<include>MediaMenuItemsCommon</include>
+						<label>1036</label>
+						<onclick>ActivateWindow(Favourites)</onclick>
+					</control>
 					<control type="button" id="621">
 						<description>Get more</description>
 						<include>MediaMenuItemsCommon</include>

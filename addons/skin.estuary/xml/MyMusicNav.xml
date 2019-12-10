@@ -56,6 +56,12 @@
 						<onclick>ActivateWindow(musicplaylist)</onclick>
 						<visible>Integer.IsGreater(Playlist.Length(music),0)</visible>
 					</control>
+					<control type="button" id="309">
+						<description>Open Favorites</description>
+						<include>MediaMenuItemsCommon</include>
+						<label>1036</label>
+						<onclick>ActivateWindow(Favourites)</onclick>
+					</control>
 					<control type="button" id="621">
 						<include>MediaMenuItemsCommon</include>
 						<label>$LOCALIZE[21452]</label>
