@@ -120,6 +120,8 @@ public:
 private:
   void FillControl();
   void FillIntegerSettingControl();
+  void FillFloatSettingControl();
+  void FillStringSettingControl();
   CGUISpinControlEx *m_pSpin;
 };
 

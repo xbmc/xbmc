@@ -430,34 +430,9 @@ void CGUIControlSpinExSetting::FillControl()
     if (m_pSetting->GetType() == SettingType::Integer)
       FillIntegerSettingControl();
     else if (m_pSetting->GetType() == SettingType::Number)
-    {
-      std::shared_ptr<CSettingNumber> pSettingNumber = std::static_pointer_cast<CSettingNumber>(m_pSetting);
-      std::shared_ptr<const CSettingControlFormattedRange> control = std::static_pointer_cast<const CSettingControlFormattedRange>(m_pSetting->GetControl());
-      int index = 0;
-      int currentIndex = 0;
-      for (double value = pSettingNumber->GetMinimum(); value <= pSettingNumber->GetMaximum(); value += pSettingNumber->GetStep(), index++)
-      {
-        if (value == pSettingNumber->GetValue())
-          currentIndex = index;
-      }
-
-      m_pSpin->SetValue(currentIndex);
-    }
+      FillFloatSettingControl();
     else if (m_pSetting->GetType() == SettingType::String)
-    {
-      StringSettingOptions options;
-      std::set<std::string> selectedValues;
-      // get the string options
-      if (!GetStringOptions(m_pSetting, options, selectedValues, m_localizer) || selectedValues.size() != 1)
-        return;
-
-      // add them to the spinner
-      for (const auto& option : options)
-        m_pSpin->AddLabel(option.label, option.value);
-
-      // and set the current value
-      m_pSpin->SetStringValue(*selectedValues.begin());
-    }
+      FillStringSettingControl();
   }
 }
 
@@ -475,6 +450,40 @@ void CGUIControlSpinExSetting::FillIntegerSettingControl()
 
   // and set the current value
   m_pSpin->SetValue(*selectedValues.begin());
+}
+
+void CGUIControlSpinExSetting::FillFloatSettingControl()
+{
+  std::shared_ptr<CSettingNumber> pSettingNumber = std::static_pointer_cast<CSettingNumber>(m_pSetting);
+  std::shared_ptr<const CSettingControlFormattedRange> control = std::static_pointer_cast<const CSettingControlFormattedRange>(m_pSetting->GetControl());
+  int index = 0;
+  int currentIndex = 0;
+  for (double value = pSettingNumber->GetMinimum(); value <= pSettingNumber->GetMaximum(); value += pSettingNumber->GetStep(), index++)
+  {
+    if (value == pSettingNumber->GetValue())
+    {
+      currentIndex = index;
+      break;
+    }
+  }
+
+  m_pSpin->SetValue(currentIndex);
+}
+
+void CGUIControlSpinExSetting::FillStringSettingControl()
+{
+  StringSettingOptions options;
+  std::set<std::string> selectedValues;
+  // get the string options
+  if (!GetStringOptions(m_pSetting, options, selectedValues, m_localizer, updateValues) || selectedValues.size() != 1)
+    return;
+
+  // add them to the spinner
+  for (const auto& option : options)
+    m_pSpin->AddLabel(option.label, option.value);
+
+  // and set the current value
+  m_pSpin->SetStringValue(*selectedValues.begin());
 }
 
 CGUIControlListSetting::CGUIControlListSetting(CGUIButtonControl *pButton, int id, std::shared_ptr<CSetting> pSetting, ILocalizer* localizer)
