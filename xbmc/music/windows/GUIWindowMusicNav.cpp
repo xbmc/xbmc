@@ -371,58 +371,7 @@ bool CGUIWindowMusicNav::GetDirectory(const std::string &strDirectory, CFileItem
   if (strDirectory.empty())
     AddSearchFolder();
 
-  bool bResult = false;
-  if (URIUtils::IsMusicDb(strDirectory))
-  {
-    XFILE::CMusicDatabaseDirectory dir;
-    CQueryParams params;
-    MUSICDATABASEDIRECTORY::NODE_TYPE type;
-    MUSICDATABASEDIRECTORY::NODE_TYPE childtype;
-    dir.GetDirectoryNodeInfo(strDirectory, type, childtype, params);
-
-    //Control navigation from albums to discs or directly to songs
-    if (childtype == NODE_TYPE_DISC)
-    {
-      bool bFlatten = false;
-
-      if (params.GetAlbumId() < 0)
-        bFlatten = true; // Showing *all albums next always songs
-      else
-      {
-        // Option to show discs for ordinary albums (not just boxed sets)
-        bFlatten = !CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
-            CSettings::SETTING_MUSICLIBRARY_SHOWDISCS);
-        CMusicDatabase musicdatabase;
-        if (musicdatabase.Open())
-        {
-          if (bFlatten) // Check for boxed set
-            bFlatten = !musicdatabase.IsAlbumBoxset(params.GetAlbumId());
-          if (!bFlatten)
-          { // Check we will get more than 1 disc when filter applied
-            int iDiscTotal = -1;
-            if (musicdatabase.GetDiscsByWhere(strDirectory, CDatabase::Filter(), items,
-                                              SortDescription(), true))
-              iDiscTotal = items.GetProperty("total").asInteger();
-            bFlatten = iDiscTotal <= 1;
-          }
-        }
-        musicdatabase.Close();
-      }
-      if (bFlatten)
-      { // Skip discs level and show songs
-        CMusicDbUrl musicUrl;
-        if (!musicUrl.FromString(strDirectory))
-          return false;
-
-        musicUrl.AppendPath("-2/"); // Flattened so adjust list label etc.
-        bResult = CGUIWindowMusicBase::GetDirectory(musicUrl.ToString(), items);
-      }
-    }
-  }
-
-  if (!bResult)
-    bResult = CGUIWindowMusicBase::GetDirectory(strDirectory, items);
-
+  bool bResult = CGUIWindowMusicBase::GetDirectory(strDirectory, items);
   if (bResult)
   {
     if (items.IsPlayList())
