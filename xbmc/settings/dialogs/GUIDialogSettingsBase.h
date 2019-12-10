@@ -140,8 +140,8 @@ protected:
    */
   virtual void OnClick(BaseSettingControlPtr pSettingControl);
 
-  void UpdateSettingControl(const std::string &settingId);
-  void UpdateSettingControl(BaseSettingControlPtr pSettingControl);
+  void UpdateSettingControl(const std::string &settingId, bool updateDisplayOnly = false);
+  void UpdateSettingControl(BaseSettingControlPtr pSettingControl, bool updateDisplayOnly = false);
   void SetControlLabel(int controlId, const CVariant &label);
 
   BaseSettingControlPtr GetSettingControl(const std::string &setting);

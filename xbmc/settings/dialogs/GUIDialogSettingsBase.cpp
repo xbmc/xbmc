@@ -130,7 +130,8 @@ bool CGUIDialogSettingsBase::OnMessage(CGUIMessage &message)
       if (m_delayedSetting != NULL && m_delayedSetting->GetID() != m_focusedControl)
       {
         m_delayedTimer.Stop();
-        CGUIMessage message(GUI_MSG_UPDATE_ITEM, GetID(), m_delayedSetting->GetID(), 1); // param1 = 1 for "reset the control if it's invalid"
+        // param1 = 1 for "reset the control if it's invalid"
+        CGUIMessage message(GUI_MSG_UPDATE_ITEM, GetID(), m_delayedSetting->GetID(), 1);
         CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(message, GetID());
       }
       // update the value of the previous setting (in case it was invalid)
@@ -139,7 +140,9 @@ bool CGUIDialogSettingsBase::OnMessage(CGUIMessage &message)
         BaseSettingControlPtr control = GetSettingControl(m_iSetting);
         if (control != NULL && control->GetSetting() != NULL && !control->IsValid())
         {
-          CGUIMessage message(GUI_MSG_UPDATE_ITEM, GetID(), m_iSetting, 1); // param1 = 1 for "reset the control if it's invalid"
+          // param1 = 1 for "reset the control if it's invalid"
+          // param2 = 1 for "only update the current value"
+          CGUIMessage message(GUI_MSG_UPDATE_ITEM, GetID(), m_iSetting, 1, 1);
           CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(message, GetID());
         }
       }
@@ -230,7 +233,7 @@ bool CGUIDialogSettingsBase::OnMessage(CGUIMessage &message)
         BaseSettingControlPtr settingControl = GetSettingControl(message.GetControlId());
         if (settingControl.get() != NULL && settingControl->GetSetting() != NULL)
         {
-          settingControl->Update();
+          settingControl->Update(message.GetParam2() != 0);
           return true;
         }
       }
@@ -474,7 +477,7 @@ void CGUIDialogSettingsBase::FreeSettingsControls()
 
 void CGUIDialogSettingsBase::OnTimeout()
 {
-  UpdateSettingControl(m_delayedSetting);
+  UpdateSettingControl(m_delayedSetting, true);
 }
 
 void CGUIDialogSettingsBase::OnSettingChanged(std::shared_ptr<const CSetting> setting)
@@ -483,7 +486,7 @@ void CGUIDialogSettingsBase::OnSettingChanged(std::shared_ptr<const CSetting> se
       setting->GetType() == SettingType::Action)
     return;
 
-  UpdateSettingControl(setting->GetId());
+  UpdateSettingControl(setting->GetId(), true);
 }
 
 void CGUIDialogSettingsBase::OnSettingPropertyChanged(std::shared_ptr<const CSetting> setting, const char *propertyName)
@@ -837,22 +840,23 @@ void CGUIDialogSettingsBase::OnClick(BaseSettingControlPtr pSettingControl)
     pSettingControl->Update();
 }
 
-void CGUIDialogSettingsBase::UpdateSettingControl(const std::string &settingId)
+void CGUIDialogSettingsBase::UpdateSettingControl(const std::string &settingId, bool updateDisplayOnly /* = false */)
 {
   if (settingId.empty())
     return;
 
-  return UpdateSettingControl(GetSettingControl(settingId));
+  return UpdateSettingControl(GetSettingControl(settingId), updateDisplayOnly);
 }
 
-void CGUIDialogSettingsBase::UpdateSettingControl(BaseSettingControlPtr pSettingControl)
+void CGUIDialogSettingsBase::UpdateSettingControl(BaseSettingControlPtr pSettingControl, bool updateDisplayOnly /* = false */)
 {
   if (pSettingControl == NULL)
     return;
 
   // we send a thread message so that it's processed the following frame (some settings won't
   // like being changed during Render())
-  CGUIMessage message(GUI_MSG_UPDATE_ITEM, GetID(), pSettingControl->GetID());
+  // param2 = 1 for "only update the current value"
+  CGUIMessage message(GUI_MSG_UPDATE_ITEM, GetID(), pSettingControl->GetID(), 0, updateDisplayOnly ? 1 : 0);
   CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(message, GetID());
 }
 
