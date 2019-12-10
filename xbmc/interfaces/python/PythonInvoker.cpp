@@ -11,6 +11,17 @@
 #include <iterator>
 #include <osdefs.h>
 
+// This is a workaround to compile Kodi against python 3.8
+//! @todo implement a compliant way to get access to the chain of thread states
+#if PY_VERSION_HEX >= 0x03080000
+# define Py_BUILD_CORE
+# undef HAVE_STD_ATOMIC
+/* for access to the fields of PyInterpreterState */
+#  include <internal/pycore_pystate.h>
+# undef Py_BUILD_CORE
+# define HAVE_STD_ATOMIC
+#endif
+
 #include "PythonInvoker.h"
 #include "Application.h"
 #include "ServiceBroker.h"
