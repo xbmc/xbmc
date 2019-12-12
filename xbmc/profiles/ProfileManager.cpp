@@ -127,12 +127,6 @@ void CProfileManager::OnSettingsLoaded()
   CDirectory::Create(URIUtils::AddFileToFolder(strDir,"mixed"));
 }
 
-void CProfileManager::OnSettingsSaved() const
-{
-  // save mastercode
-  Save();
-}
-
 void CProfileManager::OnSettingsCleared()
 {
   Clear();
@@ -287,7 +281,6 @@ bool CProfileManager::LoadProfile(unsigned int index)
       pWindow->ResetControlStates();
 
     UpdateCurrentProfileDate();
-    Save();
     FinalizeLoadProfile();
 
     return true;
@@ -367,7 +360,6 @@ bool CProfileManager::LoadProfile(unsigned int index)
   lock.Leave();
 
   UpdateCurrentProfileDate();
-  Save();
   FinalizeLoadProfile();
 
   return true;
@@ -587,19 +579,26 @@ int CProfileManager::GetProfileIndex(const std::string &name) const
 
 void CProfileManager::AddProfile(const CProfile &profile)
 {
-  CSingleLock lock(m_critical);
-  // data integrity check - covers off migration from old profiles.xml,
-  // incrementing of the m_nextIdProfile,and bad data coming in
-  m_nextProfileId = std::max(m_nextProfileId, profile.getId() + 1);
+  {
+    CSingleLock lock(m_critical);
+    // data integrity check - covers off migration from old profiles.xml,
+    // incrementing of the m_nextIdProfile,and bad data coming in
+    m_nextProfileId = std::max(m_nextProfileId, profile.getId() + 1);
 
-  m_profiles.push_back(profile);
+    m_profiles.push_back(profile);
+  }
+  Save();
 }
 
 void CProfileManager::UpdateCurrentProfileDate()
 {
   CSingleLock lock(m_critical);
   if (m_currentProfile < m_profiles.size())
+  {
     m_profiles[m_currentProfile].setDate();
+    CSingleExit exit(m_critical);
+    Save();
+  }
 }
 
 void CProfileManager::LoadMasterProfileForLogin()
@@ -727,7 +726,10 @@ void CProfileManager::OnSettingAction(std::shared_ptr<const CSetting> setting)
 
 void CProfileManager::SetCurrentProfileId(unsigned int profileId)
 {
-  CSingleLock lock(m_critical);
-  m_currentProfile = profileId;
-  CSpecialProtocol::SetProfilePath(GetProfileUserDataFolder());
+  {
+    CSingleLock lock(m_critical);
+    m_currentProfile = profileId;
+    CSpecialProtocol::SetProfilePath(GetProfileUserDataFolder());
+  }
+  Save();
 }
