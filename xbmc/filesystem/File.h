@@ -101,16 +101,7 @@ public:
   const std::vector<std::string> GetPropertyValues(XFILE::FileProperty type, const std::string &name = "") const;
   ssize_t LoadFile(const std::string &filename, auto_buffer& outputBuffer);
 
-
-  // will return a size, that is aligned to chunk size
-  // but always greater or equal to the file's chunk size
-  static int GetChunkSize(int chunk, int minimum)
-  {
-    if(chunk)
-      return chunk * ((minimum + chunk - 1) / chunk);
-    else
-      return minimum;
-  }
+  static int DetermineChunkSize(const int srcChunkSize, const int reqChunkSize);
 
   BitstreamStats* GetBitstreamStats() { return m_bitStreamStats; }
 

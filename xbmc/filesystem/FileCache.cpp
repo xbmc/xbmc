@@ -135,7 +135,12 @@ bool CFileCache::Open(const CURL& url)
 
   // check if source can seek
   m_seekPossible = m_source.IoControl(IOCTRL_SEEK_POSSIBLE, NULL);
-  m_chunkSize = CFile::GetChunkSize(m_source.GetChunkSize(), READ_CACHE_CHUNK_SIZE);
+
+  // Determine the best chunk size we can use
+  m_chunkSize = CFile::DetermineChunkSize(m_source.GetChunkSize(), READ_CACHE_CHUNK_SIZE);
+  CLog::Log(LOGDEBUG, "CFileCache::Open - Source chunk size is %i, setting cache chunk size to %i",
+            m_source.GetChunkSize(), m_chunkSize);
+
   m_fileSize = m_source.GetLength();
 
   if (!m_pCache)
@@ -288,7 +293,7 @@ void CFileCache::Process()
     /* Only read from source if there's enough write space in the cache
      * else we may keep disposing data and seeking back on (slow) source
      */
-    if (maxWrite == 0 && !cacheReachEOF)
+    if (maxWrite < m_chunkSize && !cacheReachEOF)
     {
       m_pCache->m_space.WaitMSec(5);
       continue;
@@ -296,7 +301,7 @@ void CFileCache::Process()
 
     ssize_t iRead = 0;
     if (!cacheReachEOF)
-      iRead = m_source.Read(buffer.get(), maxWrite);
+      iRead = m_source.Read(buffer.get(), m_chunkSize);
     if (iRead == 0)
     {
       // Check for actual EOF and retry as long as we still have data in our cache
