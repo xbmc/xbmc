@@ -1901,7 +1901,7 @@ void CUtil::GetItemsToScan(const std::string& videoPath,
   for (std::vector<std::string>::const_iterator it = additionalPaths.begin(); it != additionalPaths.end(); ++it)
   {
     CFileItemList moreItems;
-    CDirectory::GetDirectory(*it, moreItems, CServiceBroker::GetFileExtensionProvider().GetSubtitleExtensions(), flags);
+    CDirectory::GetDirectory(*it, moreItems, item_exts, flags);
     items.Append(moreItems);
   }
 }
