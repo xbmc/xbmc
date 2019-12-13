@@ -586,6 +586,7 @@ void CDVDDemuxClient::SetStreamProps(CDemuxStream *stream, std::map<int, std::sh
   toStream->cryptoSession = stream->cryptoSession;
   toStream->externalInterfaces = stream->externalInterfaces;
   toStream->language = stream->language;
+  toStream->name = stream->name;
 
   CLog::Log(LOGDEBUG,"CDVDDemuxClient::RequestStream(): added/updated stream %d with codec_id %d",
       toStream->uniqueId,
