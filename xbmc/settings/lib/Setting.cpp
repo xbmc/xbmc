@@ -851,6 +851,16 @@ bool CSettingInt::Deserialize(const TiXmlNode *node, bool update /* = false */)
             entry.second = strtol(optionElement->FirstChild()->Value(), nullptr, 10);
             m_translatableOptions.push_back(entry);
           }
+          else
+          {
+            std::string label;
+            if (optionElement->QueryStringAttribute(SETTING_XML_ATTR_LABEL, &label) ==
+                TIXML_SUCCESS)
+            {
+              int value = strtol(optionElement->FirstChild()->Value(), nullptr, 10);
+              m_options.emplace_back(label, value);
+            }
+          }
 
           optionElement = optionElement->NextSiblingElement(SETTING_XML_ELM_OPTION);
         }
