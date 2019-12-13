@@ -119,7 +119,8 @@ int CSimpleFileCache::WriteToCache(const char *pBuffer, size_t iSize)
   size_t written = 0;
   while (iSize > 0)
   {
-    const ssize_t lastWritten = m_cacheFileWrite->Write(pBuffer, (iSize > SSIZE_MAX) ? SSIZE_MAX : iSize);
+    const ssize_t lastWritten =
+        m_cacheFileWrite->Write(pBuffer, std::min(iSize, static_cast<size_t>(SSIZE_MAX)));
     if (lastWritten <= 0)
     {
       CLog::LogF(LOGERROR, "failed to write to file");
@@ -145,14 +146,16 @@ int CSimpleFileCache::ReadFromCache(char *pBuffer, size_t iMaxSize)
 {
   int64_t iAvailable = GetAvailableRead();
   if ( iAvailable <= 0 )
-    return m_bEndOfInput? 0 : CACHE_RC_WOULD_BLOCK;
+    return m_bEndOfInput ? 0 : CACHE_RC_WOULD_BLOCK;
 
-  size_t toRead = ((int64_t)iMaxSize > iAvailable) ? (size_t)iAvailable : iMaxSize;
+  size_t toRead = std::min(iMaxSize, static_cast<size_t>(iAvailable));
 
   size_t readBytes = 0;
   while (toRead > 0)
   {
-    const ssize_t lastRead = m_cacheFileRead->Read(pBuffer, (toRead > SSIZE_MAX) ? SSIZE_MAX : toRead);
+    const ssize_t lastRead =
+      m_cacheFileRead->Read(pBuffer, std::min(toRead, static_cast<size_t>(SSIZE_MAX)));
+
     if (lastRead == 0)
       break;
     if (lastRead < 0)
