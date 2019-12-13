@@ -508,7 +508,8 @@ std::shared_ptr<CPVREpg> CPVREpgContainer::CreateChannelEpg(int iEpgId, const st
     if (iEpgId <= 0)
       iEpgId = NextEpgId();
 
-    epg.reset(new CPVREpg(iEpgId, channelData->ChannelName(), strScraperName, channelData));
+    epg.reset(new CPVREpg(iEpgId, channelData->ChannelName(), strScraperName, channelData,
+                          GetEpgDatabase()));
 
     CSingleLock lock(m_critSection);
     m_epgIdToEpgMap.insert({iEpgId, epg});

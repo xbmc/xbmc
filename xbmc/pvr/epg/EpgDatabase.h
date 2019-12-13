@@ -23,7 +23,7 @@ namespace PVR
 
   /** The EPG database */
 
-  class CPVREpgDatabase : public CDatabase
+  class CPVREpgDatabase : public CDatabase, public std::enable_shared_from_this<CPVREpgDatabase>
   {
   public:
     /*!
@@ -99,11 +99,106 @@ namespace PVR
     std::vector<std::shared_ptr<CPVREpg>> GetAll();
 
     /*!
-     * @brief Get all EPG entries for a table.
-     * @param epg The EPG table to get the entries for.
+     * @brief Get all tags for a given EPG id.
+     * @param iEpgID The ID of the EPG.
      * @return The entries.
      */
-    std::vector<std::shared_ptr<CPVREpgInfoTag>> Get(const CPVREpg& epg);
+    std::vector<std::shared_ptr<CPVREpgInfoTag>> GetAllEpgTags(int iEpgID);
+
+    /*!
+     * @brief Get the start time of the first tag in this EPG.
+     * @param iEpgID The ID of the EPG.
+     * @return The time.
+     */
+    CDateTime GetFirstStartTime(int iEpgID);
+
+    /*!
+     * @brief Get the end time of the last tag in this EPG.
+     * @param iEpgID The ID of the EPG.
+     * @return The time.
+     */
+    CDateTime GetLastEndTime(int iEpgID);
+
+    /*!
+     * @brief Get the start time of the first tag with a start time greater than the given min time.
+     * @param iEpgID The ID of the EPG.
+     * @param minStart The min start time.
+     * @return The time.
+     */
+    CDateTime GetMinStartTime(int iEpgID, const CDateTime& minStart);
+
+    /*!
+     * @brief Get the end time of the first tag with an end time less than the given max time.
+     * @param iEpgID The ID of the EPG.
+     * @param maxEnd The mx end time.
+     * @return The time.
+     */
+    CDateTime GetMaxEndTime(int iEpgID, const CDateTime& maxEnd);
+
+    /*!
+     * @brief Get an EPG tag given its EPG id and unique broadcast ID.
+     * @param iEpgID The ID of the EPG for the tag to get.
+     * @param iUniqueBroadcastId The unique broadcast ID for the tag to get.
+     * @return The tag or nullptr, if not found.
+     */
+    std::shared_ptr<CPVREpgInfoTag> GetEpgTagByUniqueBroadcastID(int iEpgID,
+                                                                 unsigned int iUniqueBroadcastId);
+
+    /*!
+     * @brief Get an EPG tag given its EPG ID and start time.
+     * @param iEpgID The ID of the EPG for the tag to get.
+     * @param startTime The start time for the tag to get.
+     * @return The tag or nullptr, if not found.
+     */
+    std::shared_ptr<CPVREpgInfoTag> GetEpgTagByStartTime(int iEpgID, const CDateTime& startTime);
+
+    /*!
+     * @brief Get the next EPG tag matching the given EPG id and min start time.
+     * @param iEpgID The ID of the EPG for the tag to get.
+     * @param minStartTime The min start time for the tag to get.
+     * @return The tag or nullptr, if not found.
+     */
+    std::shared_ptr<CPVREpgInfoTag> GetEpgTagByMinStartTime(int iEpgID,
+                                                            const CDateTime& minStartTime);
+
+    /*!
+     * @brief Get the next EPG tag matching the given EPG id and max end time.
+     * @param iEpgID The ID of the EPG for the tag to get.
+     * @param maxEndTime The max end time for the tag to get.
+     * @return The tag or nullptr, if not found.
+     */
+    std::shared_ptr<CPVREpgInfoTag> GetEpgTagByMaxEndTime(int iEpgID, const CDateTime& maxEndTime);
+
+    /*!
+     * @brief Get all EPG tags matching the given EPG id, min start time and max end time.
+     * @param iEpgID The ID of the EPG for the tags to get.
+     * @param minStartTime The min start time for the tags to get.
+     * @param maxEndTime The max end time for the tags to get.
+     * @return The tags or empty vector, if no tags were found.
+     */
+    std::vector<std::shared_ptr<CPVREpgInfoTag>> GetEpgTagsByMinStartMaxEndTime(
+        int iEpgID, const CDateTime& minStartTime, const CDateTime& maxEndTime);
+
+    /*!
+     * @brief Get all EPG tags matching the given EPG id, min end time and max start time.
+     * @param iEpgID The ID of the EPG for the tags to get.
+     * @param minEndTime The min end time for the tags to get.
+     * @param maxStartTime The max start time for the tags to get.
+     * @return The tags or empty vector, if no tags were found.
+     */
+    std::vector<std::shared_ptr<CPVREpgInfoTag>> GetEpgTagsByMinEndMaxStartTime(
+        int iEpgID, const CDateTime& minEndTime, const CDateTime& maxStartTime);
+
+    /*!
+     * @brief Delete all EPG tags in range of given EPG id, min end time and max start time.
+     * @param iEpgID The ID of the EPG for the tags to delete.
+     * @param minEndTime The min end time for the tags to delete.
+     * @param maxStartTime The max start time for the tags to delete.
+     * @return True on success, false otherwise.
+     */
+    bool DeleteEpgTagsByMinEndMaxStartTime(int iEpgID,
+                                           const CDateTime& minEndTime,
+                                           const CDateTime& maxStartTime);
 
     /*!
      * @brief Get the last stored EPG scan time.
@@ -129,6 +224,14 @@ namespace PVR
      * @return The database ID of this entry or 0 if bSingleUpdate is false and the query was queued.
      */
     int Persist(const CPVREpg& epg, bool bQueueWrite = false);
+
+    /*!
+     * @brief Erase all EPG tags with the given epg ID and an end time less than the given time.
+     * @param iEpgID The ID of the EPG.
+     * @param maxEndTime The maximum allowed end time.
+     * @return True if the entries were removed successfully, false otherwise.
+     */
+    bool DeleteEpgTags(int iEpgId, const CDateTime& maxEndTime);
 
     /*!
      * @brief Persist an infotag.
@@ -163,6 +266,8 @@ namespace PVR
     void UpdateTables(int version) override;
 
     int GetMinSchemaVersion() const override { return 4; }
+
+    std::shared_ptr<CPVREpgInfoTag> CreateEpgTag(const std::unique_ptr<dbiplus::Dataset>& pDS);
 
     CCriticalSection m_critSection;
   };

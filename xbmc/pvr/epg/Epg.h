@@ -37,8 +37,12 @@ namespace PVR
      * @param iEpgID The ID of this table or <= 0 to create a new ID.
      * @param strName The name of this table.
      * @param strScraperName The name of the scraper to use.
+     * @param database The EPG database
      */
-    CPVREpg(int iEpgID, const std::string& strName, const std::string& strScraperName);
+    CPVREpg(int iEpgID,
+            const std::string& strName,
+            const std::string& strScraperName,
+            const std::shared_ptr<CPVREpgDatabase>& database);
 
     /*!
      * @brief Create a new EPG instance.
@@ -46,8 +50,13 @@ namespace PVR
      * @param strName The name of this table.
      * @param strScraperName The name of the scraper to use.
      * @param channelData The channel data.
+     * @param database The EPG database
      */
-    CPVREpg(int iEpgID, const std::string& strName, const std::string& strScraperName, const std::shared_ptr<CPVREpgChannelData>& channelData);
+    CPVREpg(int iEpgID,
+            const std::string& strName,
+            const std::string& strScraperName,
+            const std::shared_ptr<CPVREpgChannelData>& channelData,
+            const std::shared_ptr<CPVREpgDatabase>& database);
 
     /*!
      * @brief Destroy this EPG instance.
@@ -280,7 +289,6 @@ namespace PVR
      */
     void Cleanup(int iPastDays);
 
-    bool m_bChanged = false; /*!< true if anything changed that needs to be persisted, false otherwise */
     bool m_bUpdatePending = false; /*!< true if manual update is pending */
     int m_iEpgID = 0; /*!< the database ID of this table */
     std::string m_strName; /*!< the name of this table */

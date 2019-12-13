@@ -203,7 +203,7 @@ std::vector<std::shared_ptr<CPVREpg>> CPVREpgDatabase::GetAll()
         std::string strName = m_pDS->fv("sName").get_asString().c_str();
         std::string strScraperName = m_pDS->fv("sScraperName").get_asString().c_str();
 
-        result.emplace_back(new CPVREpg(iEpgID, strName, strScraperName));
+        result.emplace_back(new CPVREpg(iEpgID, strName, strScraperName, shared_from_this()));
         m_pDS->next();
       }
       m_pDS->close();
@@ -217,75 +217,360 @@ std::vector<std::shared_ptr<CPVREpg>> CPVREpgDatabase::GetAll()
   return result;
 }
 
-std::vector<std::shared_ptr<CPVREpgInfoTag>> CPVREpgDatabase::Get(const CPVREpg& epg)
+std::shared_ptr<CPVREpgInfoTag> CPVREpgDatabase::CreateEpgTag(
+    const std::unique_ptr<dbiplus::Dataset>& pDS)
 {
-  std::vector<std::shared_ptr<CPVREpgInfoTag>> result;
+  if (!pDS->eof())
+  {
+    const std::shared_ptr<CPVREpgInfoTag> newTag(new CPVREpgInfoTag());
+
+    time_t iStartTime;
+    iStartTime = static_cast<time_t>(m_pDS->fv("iStartTime").get_asInt());
+    const CDateTime startTime(iStartTime);
+    newTag->m_startTime = startTime;
+
+    time_t iEndTime = static_cast<time_t>(m_pDS->fv("iEndTime").get_asInt());
+    const CDateTime endTime(iEndTime);
+    newTag->m_endTime = endTime;
+
+    time_t iFirstAired = static_cast<time_t>(m_pDS->fv("iFirstAired").get_asInt());
+    if (iFirstAired > 0)
+    {
+      const CDateTime firstAired(iFirstAired);
+      newTag->m_firstAired = firstAired;
+    }
+
+    int iBroadcastUID = m_pDS->fv("iBroadcastUid").get_asInt();
+    // Compat: null value for broadcast uid changed from numerical -1 to 0 with PVR Addon API v4.0.0
+    newTag->m_iUniqueBroadcastID = iBroadcastUID == -1 ? EPG_TAG_INVALID_UID : iBroadcastUID;
+
+    newTag->m_iDatabaseID = m_pDS->fv("idBroadcast").get_asInt();
+    newTag->m_strTitle = m_pDS->fv("sTitle").get_asString().c_str();
+    newTag->m_strPlotOutline = m_pDS->fv("sPlotOutline").get_asString().c_str();
+    newTag->m_strPlot = m_pDS->fv("sPlot").get_asString().c_str();
+    newTag->m_strOriginalTitle = m_pDS->fv("sOriginalTitle").get_asString().c_str();
+    newTag->m_cast = newTag->Tokenize(m_pDS->fv("sCast").get_asString());
+    newTag->m_directors = newTag->Tokenize(m_pDS->fv("sDirector").get_asString());
+    newTag->m_writers = newTag->Tokenize(m_pDS->fv("sWriter").get_asString());
+    newTag->m_iYear = m_pDS->fv("iYear").get_asInt();
+    newTag->m_strIMDBNumber = m_pDS->fv("sIMDBNumber").get_asString().c_str();
+    newTag->m_iParentalRating = m_pDS->fv("iParentalRating").get_asInt();
+    newTag->m_iStarRating = m_pDS->fv("iStarRating").get_asInt();
+    newTag->m_iEpisodeNumber = m_pDS->fv("iEpisodeId").get_asInt();
+    newTag->m_iEpisodePart = m_pDS->fv("iEpisodePart").get_asInt();
+    newTag->m_strEpisodeName = m_pDS->fv("sEpisodeName").get_asString().c_str();
+    newTag->m_iSeriesNumber = m_pDS->fv("iSeriesId").get_asInt();
+    newTag->m_strIconPath = m_pDS->fv("sIconPath").get_asString().c_str();
+    newTag->m_iFlags = m_pDS->fv("iFlags").get_asInt();
+    newTag->m_strSeriesLink = m_pDS->fv("sSeriesLink").get_asString().c_str();
+
+    newTag->SetGenre(m_pDS->fv("iGenreType").get_asInt(), m_pDS->fv("iGenreSubType").get_asInt(),
+                     m_pDS->fv("sGenre").get_asString().c_str());
+    return newTag;
+  }
+  return {};
+}
+
+CDateTime CPVREpgDatabase::GetFirstStartTime(int iEpgID)
+{
+  CSingleLock lock(m_critSection);
+  const std::string strQuery =
+      PrepareSQL("SELECT MIN(iStartTime) FROM epgtags WHERE idEpg = %u;", iEpgID);
+  std::string strValue = GetSingleValue(strQuery);
+  if (!strValue.empty())
+    return CDateTime(static_cast<time_t>(std::atoi(strValue.c_str())));
+
+  return {};
+}
+
+CDateTime CPVREpgDatabase::GetLastEndTime(int iEpgID)
+{
+  CSingleLock lock(m_critSection);
+  const std::string strQuery =
+      PrepareSQL("SELECT MAX(iEndTime) FROM epgtags WHERE idEpg = %u;", iEpgID);
+  std::string strValue = GetSingleValue(strQuery);
+  if (!strValue.empty())
+    return CDateTime(static_cast<time_t>(std::atoi(strValue.c_str())));
+
+  return {};
+}
+
+CDateTime CPVREpgDatabase::GetMinStartTime(int iEpgID, const CDateTime& minStart)
+{
+  time_t t;
+  minStart.GetAsTime(t);
 
   CSingleLock lock(m_critSection);
-  std::string strQuery = PrepareSQL("SELECT * FROM epgtags WHERE idEpg = %u;", epg.EpgID());
+  const std::string strQuery = PrepareSQL("SELECT MIN(iStartTime) "
+                                          "FROM epgtags "
+                                          "WHERE idEpg = %u AND iStartTime > %u;",
+                                          iEpgID, static_cast<unsigned int>(t));
+  std::string strValue = GetSingleValue(strQuery);
+  if (!strValue.empty())
+    return CDateTime(static_cast<time_t>(std::atoi(strValue.c_str())));
+
+  return {};
+}
+
+CDateTime CPVREpgDatabase::GetMaxEndTime(int iEpgID, const CDateTime& maxEnd)
+{
+  time_t t;
+  maxEnd.GetAsTime(t);
+
+  CSingleLock lock(m_critSection);
+  const std::string strQuery = PrepareSQL("SELECT MAX(iEndTime) "
+                                          "FROM epgtags "
+                                          "WHERE idEpg = %u AND iEndTime <= %u;",
+                                          iEpgID, static_cast<unsigned int>(t));
+  std::string strValue = GetSingleValue(strQuery);
+  if (!strValue.empty())
+    return CDateTime(static_cast<time_t>(std::atoi(strValue.c_str())));
+
+  return {};
+}
+
+std::shared_ptr<CPVREpgInfoTag> CPVREpgDatabase::GetEpgTagByUniqueBroadcastID(
+    int iEpgID, unsigned int iUniqueBroadcastId)
+{
+  CSingleLock lock(m_critSection);
+  const std::string strQuery = PrepareSQL("SELECT * "
+                                          "FROM epgtags "
+                                          "WHERE idEpg = %u AND iBroadcastUid = %u;",
+                                          iEpgID, iUniqueBroadcastId);
+
   if (ResultQuery(strQuery))
   {
     try
     {
-      while (!m_pDS->eof())
-      {
-        std::shared_ptr<CPVREpgInfoTag> newTag(new CPVREpgInfoTag());
-
-        time_t iStartTime, iEndTime;
-        iStartTime = (time_t) m_pDS->fv("iStartTime").get_asInt();
-        CDateTime startTime(iStartTime);
-        newTag->m_startTime = startTime;
-
-        iEndTime = (time_t) m_pDS->fv("iEndTime").get_asInt();
-        CDateTime endTime(iEndTime);
-        newTag->m_endTime = endTime;
-
-        time_t iFirstAired = static_cast<time_t>(m_pDS->fv("iFirstAired").get_asInt());
-        if (iFirstAired > 0)
-        {
-          const CDateTime firstAired(iFirstAired);
-          newTag->m_firstAired = firstAired;
-        }
-
-        int iBroadcastUID = m_pDS->fv("iBroadcastUid").get_asInt();
-        // Compat: null value for broadcast uid changed from numerical -1 to 0 with PVR Addon API v4.0.0
-        newTag->m_iUniqueBroadcastID = iBroadcastUID == -1 ? EPG_TAG_INVALID_UID : iBroadcastUID;
-
-        newTag->m_iDatabaseID = m_pDS->fv("idBroadcast").get_asInt();
-        newTag->m_strTitle = m_pDS->fv("sTitle").get_asString().c_str();
-        newTag->m_strPlotOutline = m_pDS->fv("sPlotOutline").get_asString().c_str();
-        newTag->m_strPlot = m_pDS->fv("sPlot").get_asString().c_str();
-        newTag->m_strOriginalTitle = m_pDS->fv("sOriginalTitle").get_asString().c_str();
-        newTag->m_cast = newTag->Tokenize(m_pDS->fv("sCast").get_asString());
-        newTag->m_directors = newTag->Tokenize(m_pDS->fv("sDirector").get_asString());
-        newTag->m_writers = newTag->Tokenize(m_pDS->fv("sWriter").get_asString());
-        newTag->m_iYear = m_pDS->fv("iYear").get_asInt();
-        newTag->m_strIMDBNumber = m_pDS->fv("sIMDBNumber").get_asString().c_str();
-        newTag->m_iGenreType = m_pDS->fv("iGenreType").get_asInt();
-        newTag->m_iGenreSubType = m_pDS->fv("iGenreSubType").get_asInt();
-        newTag->m_genre = newTag->Tokenize(m_pDS->fv("sGenre").get_asString());
-        newTag->m_iParentalRating = m_pDS->fv("iParentalRating").get_asInt();
-        newTag->m_iStarRating = m_pDS->fv("iStarRating").get_asInt();
-        newTag->m_iEpisodeNumber = m_pDS->fv("iEpisodeId").get_asInt();
-        newTag->m_iEpisodePart = m_pDS->fv("iEpisodePart").get_asInt();
-        newTag->m_strEpisodeName = m_pDS->fv("sEpisodeName").get_asString().c_str();
-        newTag->m_iSeriesNumber = m_pDS->fv("iSeriesId").get_asInt();
-        newTag->m_strIconPath = m_pDS->fv("sIconPath").get_asString().c_str();
-        newTag->m_iFlags = m_pDS->fv("iFlags").get_asInt();
-        newTag->m_strSeriesLink = m_pDS->fv("sSeriesLink").get_asString().c_str();
-
-        result.emplace_back(newTag);
-
-        m_pDS->next();
-      }
+      const std::shared_ptr<CPVREpgInfoTag> tag = CreateEpgTag(m_pDS);
       m_pDS->close();
+      return tag;
     }
     catch (...)
     {
-      CLog::LogF(LOGERROR, "Could not load EPG data from the database");
+      CLog::LogF(LOGERROR, "Could not load EPG tag with unique broadcast ID (%u) from the database",
+                 iUniqueBroadcastId);
     }
   }
-  return result;
+
+  return {};
+}
+
+std::shared_ptr<CPVREpgInfoTag> CPVREpgDatabase::GetEpgTagByStartTime(int iEpgID,
+                                                                      const CDateTime& startTime)
+{
+  time_t start;
+  startTime.GetAsTime(start);
+
+  CSingleLock lock(m_critSection);
+  const std::string strQuery = PrepareSQL("SELECT * "
+                                          "FROM epgtags "
+                                          "WHERE idEpg = %u AND iStartTime = %u;",
+                                          iEpgID, static_cast<unsigned int>(start));
+
+  if (ResultQuery(strQuery))
+  {
+    try
+    {
+      const std::shared_ptr<CPVREpgInfoTag> tag = CreateEpgTag(m_pDS);
+      m_pDS->close();
+      return tag;
+    }
+    catch (...)
+    {
+      CLog::LogF(LOGERROR, "Could not load EPG tag with start time (%s) from the database",
+                 startTime.GetAsDBDateTime());
+    }
+  }
+
+  return {};
+}
+
+std::shared_ptr<CPVREpgInfoTag> CPVREpgDatabase::GetEpgTagByMinStartTime(
+    int iEpgID, const CDateTime& minStartTime)
+{
+  time_t minStart;
+  minStartTime.GetAsTime(minStart);
+
+  CSingleLock lock(m_critSection);
+  const std::string strQuery =
+      PrepareSQL("SELECT * "
+                 "FROM epgtags "
+                 "WHERE idEpg = %u AND iStartTime > %u ORDER BY iStartTime ASC LIMIT 1;",
+                 iEpgID, static_cast<unsigned int>(minStart));
+
+  if (ResultQuery(strQuery))
+  {
+    try
+    {
+      const std::shared_ptr<CPVREpgInfoTag> tag = CreateEpgTag(m_pDS);
+      m_pDS->close();
+      return tag;
+    }
+    catch (...)
+    {
+      CLog::LogF(LOGERROR, "Could not load tags with min start time (%u) for EPG (%d)",
+                 minStartTime.GetAsDBDateTime(), iEpgID);
+    }
+  }
+
+  return {};
+}
+
+std::shared_ptr<CPVREpgInfoTag> CPVREpgDatabase::GetEpgTagByMaxEndTime(int iEpgID,
+                                                                       const CDateTime& maxEndTime)
+{
+  time_t maxEnd;
+  maxEndTime.GetAsTime(maxEnd);
+
+  CSingleLock lock(m_critSection);
+  const std::string strQuery =
+      PrepareSQL("SELECT * "
+                 "FROM epgtags "
+                 "WHERE idEpg = %u AND iEndTime <= %u ORDER BY iStartTime DESC LIMIT 1;",
+                 iEpgID, static_cast<unsigned int>(maxEnd));
+
+  if (ResultQuery(strQuery))
+  {
+    try
+    {
+      const std::shared_ptr<CPVREpgInfoTag> tag = CreateEpgTag(m_pDS);
+      m_pDS->close();
+      return tag;
+    }
+    catch (...)
+    {
+      CLog::LogF(LOGERROR, "Could not load tags with max end time (%u) for EPG (%d)",
+                 maxEndTime.GetAsDBDateTime(), iEpgID);
+    }
+  }
+
+  return {};
+}
+
+std::vector<std::shared_ptr<CPVREpgInfoTag>> CPVREpgDatabase::GetEpgTagsByMinStartMaxEndTime(
+    int iEpgID, const CDateTime& minStartTime, const CDateTime& maxEndTime)
+{
+  time_t minStart;
+  minStartTime.GetAsTime(minStart);
+
+  time_t maxEnd;
+  maxEndTime.GetAsTime(maxEnd);
+
+  CSingleLock lock(m_critSection);
+  const std::string strQuery =
+      PrepareSQL("SELECT * "
+                 "FROM epgtags "
+                 "WHERE idEpg = %u AND iStartTime >= %u AND iEndTime <= %u ORDER BY iStartTime;",
+                 iEpgID, static_cast<unsigned int>(minStart), static_cast<unsigned int>(maxEnd));
+
+  if (ResultQuery(strQuery))
+  {
+    try
+    {
+      std::vector<std::shared_ptr<CPVREpgInfoTag>> tags;
+      while (!m_pDS->eof())
+      {
+        tags.emplace_back(CreateEpgTag(m_pDS));
+        m_pDS->next();
+      }
+      m_pDS->close();
+      return tags;
+    }
+    catch (...)
+    {
+      CLog::LogF(LOGERROR,
+                 "Could not load tags with min start time (%u) and max end time (%u) for EPG (%d)",
+                 minStartTime.GetAsDBDateTime(), maxEndTime.GetAsDBDateTime(), iEpgID);
+    }
+  }
+
+  return {};
+}
+
+std::vector<std::shared_ptr<CPVREpgInfoTag>> CPVREpgDatabase::GetEpgTagsByMinEndMaxStartTime(
+    int iEpgID, const CDateTime& minEndTime, const CDateTime& maxStartTime)
+{
+  time_t minEnd;
+  minEndTime.GetAsTime(minEnd);
+
+  time_t maxStart;
+  maxStartTime.GetAsTime(maxStart);
+
+  CSingleLock lock(m_critSection);
+  const std::string strQuery =
+      PrepareSQL("SELECT * "
+                 "FROM epgtags "
+                 "WHERE idEpg = %u AND iEndTime > %u AND iStartTime <= %u ORDER BY iStartTime;",
+                 iEpgID, static_cast<unsigned int>(minEnd), static_cast<unsigned int>(maxStart));
+
+  if (ResultQuery(strQuery))
+  {
+    try
+    {
+      std::vector<std::shared_ptr<CPVREpgInfoTag>> tags;
+      while (!m_pDS->eof())
+      {
+        tags.emplace_back(CreateEpgTag(m_pDS));
+        m_pDS->next();
+      }
+      m_pDS->close();
+      return tags;
+    }
+    catch (...)
+    {
+      CLog::LogF(LOGERROR,
+                 "Could not load tags with min end time (%u) and max start time (%u) for EPG (%d)",
+                 minEndTime.GetAsDBDateTime(), maxStartTime.GetAsDBDateTime(), iEpgID);
+    }
+  }
+
+  return {};
+}
+
+bool CPVREpgDatabase::DeleteEpgTagsByMinEndMaxStartTime(int iEpgID,
+                                                        const CDateTime& minEndTime,
+                                                        const CDateTime& maxStartTime)
+{
+  time_t minEnd;
+  minEndTime.GetAsTime(minEnd);
+
+  time_t maxStart;
+  maxStartTime.GetAsTime(maxStart);
+
+  Filter filter;
+
+  CSingleLock lock(m_critSection);
+  filter.AppendWhere(PrepareSQL("idEpg = %u AND iEndTime > %u AND iStartTime <= %u", iEpgID,
+                                static_cast<unsigned int>(minEnd),
+                                static_cast<unsigned int>(maxStart)));
+  return DeleteValues("epgtags", filter);
+}
+
+std::vector<std::shared_ptr<CPVREpgInfoTag>> CPVREpgDatabase::GetAllEpgTags(int iEpgID)
+{
+  CSingleLock lock(m_critSection);
+  const std::string strQuery =
+      PrepareSQL("SELECT * FROM epgtags WHERE idEpg = %u ORDER BY iStartTime;", iEpgID);
+  if (ResultQuery(strQuery))
+  {
+    try
+    {
+      std::vector<std::shared_ptr<CPVREpgInfoTag>> tags;
+      while (!m_pDS->eof())
+      {
+        tags.emplace_back(CreateEpgTag(m_pDS));
+        m_pDS->next();
+      }
+      m_pDS->close();
+      return tags;
+    }
+    catch (...)
+    {
+      CLog::LogF(LOGERROR, "Could not load tags for EPG (%d)", iEpgID);
+    }
+  }
+  return {};
 }
 
 bool CPVREpgDatabase::GetLastEpgScanTime(int iEpgId, CDateTime* lastScan)
@@ -343,6 +628,19 @@ int CPVREpgDatabase::Persist(const CPVREpg& epg, bool bQueueWrite /* = false */)
   }
 
   return iReturn;
+}
+
+bool CPVREpgDatabase::DeleteEpgTags(int iEpgId, const CDateTime& maxEndTime)
+{
+  time_t iMaxEndTime;
+  maxEndTime.GetAsTime(iMaxEndTime);
+
+  Filter filter;
+
+  CSingleLock lock(m_critSection);
+  filter.AppendWhere(
+      PrepareSQL("idEpg = %u AND iEndTime < %u", iEpgId, static_cast<unsigned int>(iMaxEndTime)));
+  return DeleteValues("epgtags", filter);
 }
 
 int CPVREpgDatabase::Persist(const CPVREpgInfoTag& tag, bool bSingleUpdate /* = true */)

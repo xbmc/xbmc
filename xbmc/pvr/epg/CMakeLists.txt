@@ -4,6 +4,7 @@ set(SOURCES EpgContainer.cpp
             EpgInfoTag.cpp
             EpgSearchFilter.cpp
             EpgChannelData.cpp
+            EpgTagsCache.cpp
             EpgTagsContainer.cpp)
 
 set(HEADERS Epg.h
@@ -12,6 +13,7 @@ set(HEADERS Epg.h
             EpgInfoTag.h
             EpgSearchFilter.h
             EpgChannelData.h
+            EpgTagsCache.h
             EpgTagsContainer.h)
 
 core_add_library(pvr_epg)
