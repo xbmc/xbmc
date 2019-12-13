@@ -1540,7 +1540,8 @@ bool CWinSystemOSX::IsObscured(void)
         {
           std::string appName;
           if (CDarwinUtils::CFStringRefToUTF8String(ownerName, appName))
-            CLog::Log(LOGDEBUG, "WinSystemOSX: Fullscreen window %s obscures XBMC!", appName.c_str());
+            CLog::Log(LOGDEBUG, "WinSystemOSX: Fullscreen window %s obscures Kodi!",
+                      appName.c_str());
           obscureLogged = true;
         }
         m_obscured = true;
