@@ -31,6 +31,7 @@
 #include "utils/Variant.h"
 #include "utils/log.h"
 
+#include <cassert>
 #include <utility>
 
 #define SETTING_PROFILE_NAME          "profile.name"

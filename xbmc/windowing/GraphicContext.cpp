@@ -25,6 +25,8 @@
 #include "settings/lib/Setting.h"
 #include "utils/log.h"
 
+#include <cassert>
+
 using namespace KODI::MESSAGING;
 
 CGraphicContext::CGraphicContext(void) = default;
