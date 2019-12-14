@@ -368,7 +368,7 @@ namespace XBMCAddon
 
       const CVideoInfoTag* movie = CServiceBroker::GetGUI()->GetInfoManager().GetCurrentMovieTag();
       if (movie)
-        return new InfoTagVideo(*movie);
+        return new InfoTagVideo(movie);
 
       return new InfoTagVideo();
     }

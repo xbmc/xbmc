@@ -24,7 +24,7 @@ namespace XBMCAddon
     ///
     /// \python_class{ xbmc.InfoTagVideo() }
     ///
-    /// To get video info tag data of a video item.
+    /// Access and / or modify the video metadata of a ListItem.
     ///
     ///
     ///-------------------------------------------------------------------------
@@ -43,10 +43,12 @@ namespace XBMCAddon
     {
     private:
       CVideoInfoTag* infoTag;
+      bool owned;
 
     public:
 #ifndef SWIG
-      explicit InfoTagVideo(const CVideoInfoTag& tag);
+      explicit InfoTagVideo(const CVideoInfoTag* tag);
+      explicit InfoTagVideo(CVideoInfoTag* tag);
 #endif
       InfoTagVideo();
       ~InfoTagVideo() override;
