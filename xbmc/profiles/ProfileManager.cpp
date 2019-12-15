@@ -428,17 +428,11 @@ void CProfileManager::FinalizeLoadProfile()
   // Load initial window
   int firstWindow = g_SkinInfo->GetFirstWindow();
 
-  // the startup window is considered part of the initialization as it most likely switches to the final window
-  bool uiInitializationFinished = firstWindow != WINDOW_STARTUP_ANIM;
-
   CServiceBroker::GetGUI()->GetWindowManager().ChangeActiveWindow(firstWindow);
 
-  // if the user interfaces has been fully initialized let everyone know
-  if (uiInitializationFinished)
-  {
-    CGUIMessage msg(GUI_MSG_NOTIFY_ALL, WINDOW_SETTINGS_PROFILES, 0, GUI_MSG_UI_READY);
-    CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg);
-  }
+  //the user interfaces has been fully initialized, let everyone know
+  CGUIMessage msg(GUI_MSG_NOTIFY_ALL, WINDOW_SETTINGS_PROFILES, 0, GUI_MSG_UI_READY);
+  CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg);
 }
 
 void CProfileManager::LogOff()
