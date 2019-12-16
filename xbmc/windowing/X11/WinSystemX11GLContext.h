@@ -11,6 +11,7 @@
 #include "WinSystemX11.h"
 #include "rendering/gl/RenderSystemGL.h"
 
+#include "platform/freebsd/OptionalsReg.h"
 #include "platform/linux/OptionalsReg.h"
 
 #include <memory>
