@@ -11,12 +11,10 @@
 #include <wrl.h>
 #include <wrl/client.h>
 #include <concrt.h>
-#if defined(TARGET_WINDOWS_STORE)
-#include <dxgi1_6.h>
-#else
-#include <dxgi1_6.h>
+#if !defined(TARGET_WINDOWS_STORE)
 #include <easyhook/easyhook.h>
 #endif
+#include <dxgi1_6.h>
 #include <functional>
 #include <memory>
 

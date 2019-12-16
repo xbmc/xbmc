@@ -541,7 +541,7 @@ DXGI_HDR_METADATA_HDR10 CRendererBase::GetDXGIHDR10MetaData(CRenderBuffer* rb)
 bool CRendererBase::IsStreamHDR10(CRenderBuffer* rb)
 {
   if ((rb->displayMetadata.has_luminance || rb->hasLightMetadata ||
-       rb->color_space == AVCOL_SPC_BT2020_NCL) &&
+       rb->color_transfer == AVCOL_TRC_SMPTE2084) &&
       rb->primaries == AVCOL_PRI_BT2020)
     return true;
 

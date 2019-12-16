@@ -507,7 +507,7 @@ bool CProcessorHD::Render(CRect src, CRect dst, ID3D11Resource* target, CRenderB
     const DXGI_COLOR_SPACE_TYPE source_color = GetDXGIColorSpace(views[2], m_bSupportHDR10);
     DXGI_COLOR_SPACE_TYPE target_color;
 
-    if (DX::DeviceResources::Get()->Is10BitSwapchain() && views[2]->primaries == AVCOL_PRI_BT2020)
+    if (DX::DeviceResources::Get()->Is10BitSwapchain() && CRendererBase::IsStreamHDR10(views[2]))
     {
       target_color = DX::Windowing()->UseLimitedColor()
                          ? DXGI_COLOR_SPACE_RGB_STUDIO_G2084_NONE_P2020
