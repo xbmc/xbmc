@@ -20,15 +20,21 @@
 #include "system.h"
 
 #ifndef _M_X64
-#pragma comment(lib, "EasyHook32.lib")
 #include "utils/SystemInfo.h"
+#endif
+#if _DEBUG
+#pragma comment(lib, "detoursd.lib")
 #else
-#pragma comment(lib, "EasyHook64.lib")
+#pragma comment(lib, "detours.lib")
 #endif
 #pragma comment(lib, "dxgi.lib")
+#include <windows.h>
+#include <winnt.h>
+#include <winternl.h>
 #pragma warning(disable: 4091)
 #include <d3d10umddi.h>
 #pragma warning(default: 4091)
+#include <detours.h>
 
 using KODI::PLATFORM::WINDOWS::FromW;
 
@@ -48,7 +54,6 @@ std::unique_ptr<CWinSystemBase> CWinSystemBase::CreateWinSystem()
 
 CWinSystemWin32DX::CWinSystemWin32DX() : CRenderSystemDX()
   , m_hDriverModule(nullptr)
-  , m_hHook(nullptr)
 {
 }
 
@@ -200,10 +205,13 @@ bool CWinSystemWin32DX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, boo
 void CWinSystemWin32DX::UninitHooks()
 {
   // uninstall
-  LhUninstallAllHooks();
-  // we need to wait for memory release
-  LhWaitForPendingRemovals();
-  SAFE_DELETE(m_hHook);
+  if (!s_fnOpenAdapter10_2)
+    return;
+
+  DetourTransactionBegin();
+  DetourUpdateThread(GetCurrentThread());
+  DetourDetach(reinterpret_cast<void**>(&s_fnOpenAdapter10_2), HookOpenAdapter10_2);
+  DetourTransactionCommit();
   if (m_hDriverModule)
   {
     FreeLibrary(m_hDriverModule);
@@ -223,7 +231,8 @@ void CWinSystemWin32DX::InitHooks(IDXGIOutput* pOutput)
   bool deviceFound = false;
 
   // delete exiting hooks.
-  UninitHooks();
+  if (s_fnOpenAdapter10_2)
+    UninitHooks();
 
   // enum devices to find matched
   while (EnumDisplayDevicesW(nullptr, adapter, &displayDevice, 0))
@@ -280,11 +289,11 @@ void CWinSystemWin32DX::InitHooks(IDXGIOutput* pOutput)
         s_fnOpenAdapter10_2 = reinterpret_cast<PFND3D10DDI_OPENADAPTER>(GetProcAddress(m_hDriverModule, "OpenAdapter10_2"));
         if (s_fnOpenAdapter10_2 != nullptr)
         {
-          ULONG ACLEntries[1] = { 0 };
-          m_hHook = new HOOK_TRACE_INFO();
+          DetourTransactionBegin();
+          DetourUpdateThread(GetCurrentThread());
+          DetourAttach(reinterpret_cast<void**>(&s_fnOpenAdapter10_2), HookOpenAdapter10_2);
+          if (NO_ERROR == DetourTransactionCommit())
           // install and activate hook into a driver
-          if (SUCCEEDED(LhInstallHook(s_fnOpenAdapter10_2, HookOpenAdapter10_2, nullptr, m_hHook))
-            && SUCCEEDED(LhSetInclusiveACL(ACLEntries, 1, m_hHook)))
           {
             CLog::LogF(LOGDEBUG, "D3D11 hook installed and activated.");
             break;
@@ -292,7 +301,7 @@ void CWinSystemWin32DX::InitHooks(IDXGIOutput* pOutput)
           else
           {
             CLog::Log(LOGDEBUG, __FUNCTION__": Unable ot install and activate D3D11 hook.");
-            SAFE_DELETE(m_hHook);
+            s_fnOpenAdapter10_2 = nullptr;
             FreeLibrary(m_hDriverModule);
             m_hDriverModule = nullptr;
           }

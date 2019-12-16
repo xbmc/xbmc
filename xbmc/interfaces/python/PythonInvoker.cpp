@@ -9,7 +9,6 @@
 // python.h should always be included first before any other includes
 #include <Python.h>
 #include <iterator>
-#include <osdefs.h>
 
 // This is a workaround to compile Kodi against python 3.8
 //! @todo implement a compliant way to get access to the chain of thread states
@@ -46,6 +45,12 @@
 #ifdef TARGET_POSIX
 #include "platform/posix/XTimeUtils.h"
 #endif
+
+// clang-format off
+// This breaks fmt because of SEP define, don't include
+// before anything that includes logging
+#include <osdefs.h>
+// clang-format on
 
 #ifdef TARGET_WINDOWS
 extern "C" FILE *fopen_utf8(const char *_Filename, const char *_Mode);
