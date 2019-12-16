@@ -33,8 +33,6 @@
 
 using namespace XFILE;
 
-#define READ_CACHE_CHUNK_SIZE (128*1024)
-
 class CWriteRate
 {
 public:
@@ -137,7 +135,9 @@ bool CFileCache::Open(const CURL& url)
   m_seekPossible = m_source.IoControl(IOCTRL_SEEK_POSSIBLE, NULL);
 
   // Determine the best chunk size we can use
-  m_chunkSize = CFile::DetermineChunkSize(m_source.GetChunkSize(), READ_CACHE_CHUNK_SIZE);
+  m_chunkSize = CFile::DetermineChunkSize(
+      m_source.GetChunkSize(),
+      CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_cacheChunkSize);
   CLog::Log(LOGDEBUG, "CFileCache::Open - Source chunk size is %i, setting cache chunk size to %i",
             m_source.GetChunkSize(), m_chunkSize);
 
