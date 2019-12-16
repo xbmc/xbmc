@@ -244,7 +244,8 @@ void CFileCache::Process()
         m_nSeekResult = m_source.Seek(cacheMaxPos, SEEK_SET);
         if (m_nSeekResult != cacheMaxPos)
         {
-          CLog::Log(LOGERROR,"CFileCache::Process - Error %d seeking. Seek returned %" PRId64, (int)GetLastError(), m_nSeekResult);
+          CLog::Log(LOGERROR, "CFileCache::Process - Error %d seeking. Seek returned %" PRId64,
+                    static_cast<int>(GetLastError()), m_nSeekResult);
           m_seekPossible = m_source.IoControl(IOCTRL_SEEK_POSSIBLE, NULL);
           sourceSeekFailed = true;
         }
@@ -260,6 +261,9 @@ void CFileCache::Process()
         m_nSeekResult = m_seekPos;
         if (bCompleteReset)
         {
+          CLog::Log(LOGDEBUG,
+                    "CFileCache::Process - Cache completely reset for seek to position %" PRId64,
+                    m_seekPos);
           m_forward = 0;
           m_bFilling = true;
           m_bLowSpeedDetected = false;
