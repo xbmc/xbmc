@@ -37,7 +37,7 @@
 				<fadetime>600</fadetime>
 				<loop>yes</loop>
 				<imagepath background="true">$INFO[Window(Visualisation).Property(ArtistSlideshow)]</imagepath>
-				<visible>!String.IsEmpty(Window(Visualisation).Property(ArtistSlideshow.ArtworkReady)</visible>
+				<visible>!String.IsEmpty(Window(Visualisation).Property(ArtistSlideshow.ArtworkReady))</visible>
 			</control>
 		</control>
 		<control type="group">
