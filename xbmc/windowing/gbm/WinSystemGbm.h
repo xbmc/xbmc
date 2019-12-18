@@ -68,6 +68,8 @@ public:
 protected:
   void OnLostDevice();
 
+  std::unique_ptr<CVideoSync> GetVideoSync(void* clock) override;
+
   std::shared_ptr<CDRMUtils> m_DRM;
   std::unique_ptr<CGBMUtils> m_GBM;
   std::shared_ptr<CVideoLayerBridge> m_videoLayerBridge;

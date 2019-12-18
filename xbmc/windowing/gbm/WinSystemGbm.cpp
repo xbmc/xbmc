@@ -11,6 +11,7 @@
 #include "GBMDPMSSupport.h"
 #include "OptionalsReg.h"
 #include "ServiceBroker.h"
+#include "VideoSyncGbm.h"
 #include "drm/DRMAtomic.h"
 #include "drm/DRMLegacy.h"
 #include "drm/OffScreenModeSetting.h"
@@ -263,4 +264,9 @@ void CWinSystemGbm::OnLostDevice()
   CSingleLock lock(m_resourceSection);
   for (auto resource : m_resources)
     resource->OnLostDisplay();
+}
+
+std::unique_ptr<CVideoSync> CWinSystemGbm::GetVideoSync(void* clock)
+{
+  return std::make_unique<CVideoSyncGbm>(clock);
 }

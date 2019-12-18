@@ -2,12 +2,14 @@ add_subdirectory(drm)
 
 set(SOURCES OptionalsReg.cpp
             WinSystemGbm.cpp
+            VideoSyncGbm.cpp
             GBMUtils.cpp
             WinSystemGbmEGLContext.cpp
             GBMDPMSSupport.cpp)
 
 set(HEADERS OptionalsReg.h
             WinSystemGbm.h
+            VideoSyncGbm.h
             GBMUtils.h
             WinSystemGbmEGLContext.h
             GBMDPMSSupport.h)
