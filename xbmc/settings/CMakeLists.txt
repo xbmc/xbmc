@@ -12,6 +12,7 @@ set(SOURCES AdvancedSettings.cpp
             SettingPath.cpp
             Settings.cpp
             SettingsBase.cpp
+            SettingsValueFlatJsonSerializer.cpp
             SettingUtils.cpp
             SkinSettings.cpp
             SettingsComponent.cpp)
@@ -31,6 +32,7 @@ set(HEADERS AdvancedSettings.h
             SettingPath.h
             Settings.h
             SettingsBase.h
+            SettingsValueFlatJsonSerializer.h
             SettingUtils.h
             SkinSettings.h
             SettingsComponent.h)
