@@ -57,6 +57,9 @@ public:
   // implementation of ISettingControlCreator
   std::shared_ptr<ISettingControl> CreateControl(const std::string &controlType) const override;
 
+  uint32_t GetVersion() const { return Version; }
+  uint32_t GetMinimumSupportedVersion() const { return MinimumSupportedVersion; }
+
   /*!
    \brief Try to get the version of the setting definitions/values represented by the given XML element.
 
