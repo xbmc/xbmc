@@ -122,7 +122,6 @@ public:
   static DXGI_FORMAT GetDXGIFormat(CVideoBuffer* videoBuffer);
   static AVPixelFormat GetAVFormat(DXGI_FORMAT dxgi_format);
   static DXGI_HDR_METADATA_HDR10 GetDXGIHDR10MetaData(CRenderBuffer* rb);
-  static bool IsStreamHDR10(CRenderBuffer* rb);
 
 protected:
   explicit CRendererBase(CVideoSettings& videoSettings);
@@ -173,4 +172,6 @@ protected:
   DXGI_HDR_METADATA_HDR10 m_lastHdr10 = {};
   int m_iCntMetaData = 0;
   bool m_isHdrEnabled = false;
+  bool m_isHlgEnabled = false;
+  bool m_isRec2020Enabled = false;
 };

@@ -134,7 +134,8 @@ CRendererBase::~CRendererBase()
   {
     if (DX::DeviceResources::Get()->IsDisplayHDREnabled())
     {
-      DX::DeviceResources::Get()->ClearHdrMetaData();
+      CLog::LogF(LOGDEBUG, "Restoring SDR rendering");
+      DX::DeviceResources::Get()->SetColorSpace1(DXGI_COLOR_SPACE_RGB_FULL_G22_NONE_P709);
     }
   }
   Flush(false);
@@ -171,6 +172,8 @@ bool CRendererBase::Configure(const VideoPicture& picture, float fps, unsigned o
 
   m_lastHdr10 = {};
   m_isHdrEnabled = false;
+  m_isHlgEnabled = false;
+  m_isRec2020Enabled = false;
   m_iCntMetaData = 0;
 
   return true;
@@ -208,7 +211,7 @@ void CRendererBase::Render(CD3DTexture& target, const CRect& sourceRect, const C
 
   if (DX::DeviceResources::Get()->Is10BitSwapchain())
   {
-    if (IsStreamHDR10(buf))
+    if (buf->color_transfer == AVCOL_TRC_SMPTE2084 && buf->primaries == AVCOL_PRI_BT2020)  // HDR10
     {
       DXGI_HDR_METADATA_HDR10 hdr10 = GetDXGIHDR10MetaData(buf);
       if (m_isHdrEnabled)
@@ -217,7 +220,7 @@ void CRendererBase::Render(CD3DTexture& target, const CRect& sourceRect, const C
         if (0 != std::memcmp(&hdr10, &m_lastHdr10, sizeof(hdr10)))
         {
           // Sets HDR10 metadata only
-          DX::DeviceResources::Get()->SetHdrMetaData(hdr10, false);
+          DX::DeviceResources::Get()->SetHdrMetaData(hdr10);
           m_lastHdr10 = hdr10;
         }
       }
@@ -226,12 +229,37 @@ void CRendererBase::Render(CD3DTexture& target, const CRect& sourceRect, const C
         // Sets HDR10 metadata and enables HDR10 color space (switch to HDR rendering)
         if (DX::DeviceResources::Get()->IsDisplayHDREnabled())
         {
-          DX::DeviceResources::Get()->SetHdrMetaData(hdr10, true);
+          DX::DeviceResources::Get()->SetHdrMetaData(hdr10);
+          CLog::LogF(LOGNOTICE, "Switching to HDR rendering");
+          DX::DeviceResources::Get()->SetColorSpace1(DXGI_COLOR_SPACE_RGB_FULL_G2084_NONE_P2020);
           m_isHdrEnabled = true;
           m_lastHdr10 = hdr10;
         }
       }
       m_iCntMetaData = 0;
+    }
+    else if (buf->color_transfer == AVCOL_TRC_ARIB_STD_B67 && buf->primaries == AVCOL_PRI_BT2020)  // HLG
+    {
+      if (!m_isHlgEnabled)
+      {
+        if (DX::DeviceResources::Get()->IsDisplayHDREnabled())
+        {
+          // Switch to HLG rendering (internally converts HLG to HDR10)
+          CLog::LogF(LOGNOTICE, "Switching to HLG rendering");
+          DX::DeviceResources::Get()->SetColorSpace1(DXGI_COLOR_SPACE_RGB_FULL_G2084_NONE_P2020);
+          m_isHlgEnabled = true;
+        }
+      }
+    }
+    else if (buf->primaries == AVCOL_PRI_BT2020)
+    {
+      if (m_isRec2020Enabled == false)
+      {
+        // Switch to Rec.2020 rendering
+        CLog::LogF(LOGNOTICE, "Switching to Rec.2020 rendering");
+        DX::DeviceResources::Get()->SetColorSpace1(DXGI_COLOR_SPACE_RGB_FULL_G22_NONE_P2020);
+        m_isRec2020Enabled = true;
+      }
     }
     else
     {
@@ -241,10 +269,19 @@ void CRendererBase::Render(CD3DTexture& target, const CRect& sourceRect, const C
         if (m_iCntMetaData > 60)
         {
           // If more than 60 frames are received without HDR10 metadata switch to SDR rendering
-          DX::DeviceResources::Get()->ClearHdrMetaData();
+          CLog::LogF(LOGNOTICE, "Switching to SDR rendering");
+          DX::DeviceResources::Get()->SetColorSpace1(DXGI_COLOR_SPACE_RGB_FULL_G22_NONE_P709);
           m_isHdrEnabled = false;
           m_iCntMetaData = 0;
         }
+      }
+      if (m_isHlgEnabled || m_isRec2020Enabled)
+      {
+        // Switch to SDR rendering
+        CLog::LogF(LOGNOTICE, "Switching to SDR rendering");
+        DX::DeviceResources::Get()->SetColorSpace1(DXGI_COLOR_SPACE_RGB_FULL_G22_NONE_P709);
+        m_isHlgEnabled = false;
+        m_isRec2020Enabled = false;
       }
     }
   }
@@ -536,14 +573,4 @@ DXGI_HDR_METADATA_HDR10 CRendererBase::GetDXGIHDR10MetaData(CRenderBuffer* rb)
     hdr10.MaxFrameAverageLightLevel = static_cast<uint16_t>(rb->lightMetadata.MaxFALL);
   }
   return hdr10;
-}
-
-bool CRendererBase::IsStreamHDR10(CRenderBuffer* rb)
-{
-  if ((rb->displayMetadata.has_luminance || rb->hasLightMetadata ||
-       rb->color_transfer == AVCOL_TRC_SMPTE2084) &&
-      rb->primaries == AVCOL_PRI_BT2020)
-    return true;
-
-  return false;
 }
