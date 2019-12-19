@@ -200,10 +200,7 @@ bool CWinSystemGbm::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
 
   int delay = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt("videoscreen.delayrefreshchange");
   if (delay > 0)
-  {
-    m_delayDispReset = true;
     m_dispResetTimer.Set(delay * 100);
-  }
 
   return result;
 }
@@ -275,6 +272,7 @@ void CWinSystemGbm::Unregister(IDispResource *resource)
 void CWinSystemGbm::OnLostDevice()
 {
   CLog::Log(LOGDEBUG, "%s - notify display change event", __FUNCTION__);
+  m_dispReset = true;
 
   CSingleLock lock(m_resourceSection);
   for (auto resource : m_resources)
