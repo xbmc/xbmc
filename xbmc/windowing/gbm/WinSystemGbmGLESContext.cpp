@@ -92,14 +92,6 @@ bool CWinSystemGbmGLESContext::SetFullScreen(bool fullScreen, RESOLUTION_INFO& r
   CWinSystemGbm::SetFullScreen(fullScreen, res, blankOtherDisplays);
   CRenderSystemGLES::ResetRenderSystem(res.iWidth, res.iHeight);
 
-  if (!m_delayDispReset)
-  {
-    CSingleLock lock(m_resourceSection);
-
-    for (auto resource : m_resources)
-      resource->OnResetDisplay();
-  }
-
   return true;
 }
 
@@ -119,19 +111,21 @@ void CWinSystemGbmGLESContext::PresentRender(bool rendered, bool videoLayer)
       }
     }
     CWinSystemGbm::FlipPage(rendered, videoLayer);
+
+    if (m_dispReset && m_dispResetTimer.IsTimePast())
+    {
+      CLog::Log(LOGDEBUG, "CWinSystemGbmGLESContext::%s - Sending display reset to all clients",
+                __FUNCTION__);
+      m_dispReset = false;
+      CSingleLock lock(m_resourceSection);
+
+      for (auto resource : m_resources)
+        resource->OnResetDisplay();
+    }
   }
   else
   {
     Sleep(10);
-  }
-
-  if (m_delayDispReset && m_dispResetTimer.IsTimePast())
-  {
-    m_delayDispReset = false;
-    CSingleLock lock(m_resourceSection);
-
-    for (auto resource : m_resources)
-      resource->OnResetDisplay();
   }
 }
 

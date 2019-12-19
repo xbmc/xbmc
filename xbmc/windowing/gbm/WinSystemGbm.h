@@ -70,7 +70,7 @@ protected:
   CCriticalSection m_resourceSection;
   std::vector<IDispResource*>  m_resources;
 
-  bool m_delayDispReset = false;
+  bool m_dispReset = false;
   XbmcThreads::EndTime m_dispResetTimer;
   std::unique_ptr<OPTIONALS::CLircContainer, OPTIONALS::delete_CLircContainer> m_lirc;
   std::unique_ptr<CLibInputHandler> m_libinput;
