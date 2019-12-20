@@ -11,10 +11,10 @@
 #include <wrl.h>
 #include <wrl/client.h>
 #include <concrt.h>
+#include <dxgi1_6.h>
 #if defined(TARGET_WINDOWS_DESKTOP)
 #include <easyhook/easyhook.h>
 #endif
-#include <dxgi1_6.h>
 #include <functional>
 #include <memory>
 

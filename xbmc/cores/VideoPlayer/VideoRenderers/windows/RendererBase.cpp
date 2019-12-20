@@ -211,7 +211,8 @@ void CRendererBase::Render(CD3DTexture& target, const CRect& sourceRect, const C
 
   if (DX::DeviceResources::Get()->Is10BitSwapchain())
   {
-    if (buf->color_transfer == AVCOL_TRC_SMPTE2084 && buf->primaries == AVCOL_PRI_BT2020)  // HDR10
+    // HDR10
+    if (buf->color_transfer == AVCOL_TRC_SMPTE2084 && buf->primaries == AVCOL_PRI_BT2020)
     {
       DXGI_HDR_METADATA_HDR10 hdr10 = GetDXGIHDR10MetaData(buf);
       if (m_isHdrEnabled)
@@ -238,7 +239,8 @@ void CRendererBase::Render(CD3DTexture& target, const CRect& sourceRect, const C
       }
       m_iCntMetaData = 0;
     }
-    else if (buf->color_transfer == AVCOL_TRC_ARIB_STD_B67 && buf->primaries == AVCOL_PRI_BT2020)  // HLG
+    // HLG
+    else if (buf->color_transfer == AVCOL_TRC_ARIB_STD_B67 && buf->primaries == AVCOL_PRI_BT2020)
     {
       if (!m_isHlgEnabled)
       {
@@ -251,6 +253,7 @@ void CRendererBase::Render(CD3DTexture& target, const CRect& sourceRect, const C
         }
       }
     }
+    // Rec. 2020
     else if (buf->primaries == AVCOL_PRI_BT2020)
     {
       if (m_isRec2020Enabled == false)
