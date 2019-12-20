@@ -162,30 +162,21 @@ bool CSettingsManager::Load(const TiXmlElement *root, bool &updated, bool trigge
   return true;
 }
 
-bool CSettingsManager::Save(TiXmlNode *root) const
+bool CSettingsManager::Save(
+  const ISettingsValueSerializer* serializer, std::string& serializedValues) const
 {
+  if (serializer == nullptr)
+    return false;
+
   CSharedLock lock(m_critical);
   CSharedLock settingsLock(m_settingsCritical);
-  if (!m_initialized || root == nullptr)
+  if (!m_initialized)
     return false;
 
   if (!OnSettingsSaving())
     return false;
 
-  // save the current version
-  auto rootElement = root->ToElement();
-  if (rootElement == nullptr)
-  {
-    CLog::Log(LOGERROR, "CSettingsManager: failed to save settings");
-    return false;
-  }
-  rootElement->SetAttribute(SETTING_XML_ROOT_VERSION, Version);
-
-  if (!Serialize(root))
-  {
-    CLog::Log(LOGERROR, "CSettingsManager: failed to save settings");
-    return false;
-  }
+  serializedValues = serializer->SerializeValues(this);
 
   OnSettingsSaved();
 

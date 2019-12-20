@@ -12,6 +12,7 @@
 #include "ISettingControlCreator.h"
 #include "ISettingCreator.h"
 #include "ISettingsHandler.h"
+#include "ISettingsValueSerializer.h"
 #include "Setting.h"
 #include "SettingConditions.h"
 #include "SettingDefinitions.h"
@@ -85,12 +86,12 @@ public:
    */
   bool Load(const TiXmlElement *root, bool &updated, bool triggerEvents = true, std::map<std::string, std::shared_ptr<CSetting>> *loadedSettings = nullptr);
   /*!
-   \brief Saves the setting values to the given XML node.
+   \brief Saves the setting values using the given serializer.
 
-   \param root XML node
-   \return True if the setting values were successfully saved, false otherwise
+   \param serializer Settings value serializer to use
+   \return True if the setting values were successfully serialized, false otherwise
    */
-  bool Save(TiXmlNode *root) const;
+  bool Save(const ISettingsValueSerializer* serializer, std::string& serializedValues) const;
   /*!
    \brief Unloads the previously loaded setting values.
 

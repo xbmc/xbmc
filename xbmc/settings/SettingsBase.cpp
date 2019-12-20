@@ -9,6 +9,7 @@
 #include "SettingsBase.h"
 
 #include "settings/SettingUtils.h"
+#include "settings/SettingsValueXmlSerializer.h"
 #include "settings/lib/Setting.h"
 #include "settings/lib/SettingsManager.h"
 #include "utils/Variant.h"
@@ -114,12 +115,15 @@ bool CSettingsBase::IsLoaded() const
 
 bool CSettingsBase::SaveValuesToXml(CXBMCTinyXML& xml) const
 {
-  TiXmlElement rootElement(SETTINGS_XML_ROOT);
-  TiXmlNode* xmlRoot = xml.InsertEndChild(rootElement);
-  if (xmlRoot == nullptr)
+  std::string serializedSettings;
+  auto xmlSerializer = std::make_unique<CSettingsValueXmlSerializer>();
+  if (!m_settingsManager->Save(xmlSerializer.get(), serializedSettings))
     return false;
 
-  return m_settingsManager->Save(xmlRoot);
+  if (!xml.Parse(serializedSettings))
+    return false;
+
+  return true;
 }
 
 void CSettingsBase::Unload()
