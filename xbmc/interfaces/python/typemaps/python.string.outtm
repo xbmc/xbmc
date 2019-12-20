@@ -7,5 +7,5 @@
  *  See LICENSES/README.md for more information.
  */
 %>${result} = <%
-  if(method.@feature_python_coerceToUnicode) { %>PyUnicode_DecodeUTF8(${api}.c_str(),${api}.size(),"replace");<% }
-  else { %>PyUnicode_FromStringAndSize(${api}.c_str(), ${api}.length());<% } %>
+  if(method.@feature_python_strictUnicode) { %>PyUnicode_DecodeUTF8(${api}.c_str(),${api}.size(),"strict");<% }
+  else { %>PyUnicode_DecodeUTF8(${api}.c_str(),${api}.size(),"surrogateescape");<% } %>
