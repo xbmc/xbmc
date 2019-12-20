@@ -21,6 +21,7 @@ set(HEADERS AdvancedSettings.h
             DiscSettings.h
             DisplaySettings.h
             GameSettings.h
+            ISubSettings.h
             LibExportSettings.h
             MediaSettings.h
             MediaSourceSettings.h

@@ -10,7 +10,7 @@
 
 #include "ViewState.h"
 #include "events/IEvent.h"
-#include "settings/lib/ISubSettings.h"
+#include "settings/ISubSettings.h"
 #include "settings/lib/Setting.h"
 #include "threads/CriticalSection.h"
 #include "windowing/GraphicContext.h"

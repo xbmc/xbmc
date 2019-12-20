@@ -27,7 +27,7 @@
 #include "cores/IPlayerCallback.h"
 #include "settings/lib/ISettingsHandler.h"
 #include "settings/lib/ISettingCallback.h"
-#include "settings/lib/ISubSettings.h"
+#include "settings/ISubSettings.h"
 #if !defined(TARGET_WINDOWS) && defined(HAS_DVD_DRIVE)
 #include "storage/DetectDVDType.h"
 #endif

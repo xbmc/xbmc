@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include "settings/ISubSettings.h"
 #include "settings/SettingControl.h"
 #include "settings/SettingCreator.h"
 #include "settings/SettingsBase.h"
@@ -24,6 +25,7 @@ class TiXmlNode;
  \sa CSettingsManager
  */
 class CSettings : public CSettingsBase, public CSettingCreator, public CSettingControlCreator
+                , private ISubSettings
 {
 public:
   static const std::string SETTING_LOOKANDFEEL_SKIN;
@@ -393,6 +395,19 @@ public:
   // specialization of CSettingsBase
   bool Initialize() override;
 
+  /*!
+   \brief Registers the given ISubSettings implementation.
+
+   \param subSettings ISubSettings implementation
+   */
+  void RegisterSubSettings(ISubSettings* subSettings);
+  /*!
+   \brief Unregisters the given ISubSettings implementation.
+
+   \param subSettings ISubSettings implementation
+   */
+  void UnregisterSubSettings(ISubSettings* subSettings);
+
   // implementations of CSettingsBase
   bool Load() override;
   bool Save() override;
@@ -410,7 +425,7 @@ public:
   \param root XML element containing setting values
   \return True if the setting values were successfully loaded, false otherwise
   */
-  bool Load(const TiXmlElement *root) { bool updated; return CSettingsBase::LoadValuesFromXml(root, updated); }
+  bool Load(const TiXmlElement* root);
   /*!
    \brief Loads setting values from the given XML element.
 
@@ -427,6 +442,13 @@ public:
    \return True if the setting values were successfully saved, false otherwise
    */
   bool Save(const std::string &file);
+  /*!
+   \brief Saves the setting values to the given XML node.
+
+   \param root XML node
+   \return True if the setting values were successfully saved, false otherwise
+   */
+  bool Save(TiXmlNode* root) const override;
 
   /*!
    \brief Loads the setting being represented by the given XML node with the
@@ -440,6 +462,15 @@ public:
 
   // overwrite (not override) from CSettingsBase
   bool GetBool(const std::string& id) const;
+
+  /*!
+   \brief Clears the complete settings.
+
+   This removes all initialized settings, groups, categories and sections and
+   returns to the uninitialized state. Any registered callbacks or
+   implementations stay registered.
+   */
+  void Clear() override;
 
 protected:
   // specializations of CSettingsBase
@@ -465,6 +496,13 @@ private:
   CSettings(const CSettings&) = delete;
   CSettings const& operator=(CSettings const&) = delete;
 
+  bool Load(const TiXmlElement* root, bool& updated);
+
+  // implementation of ISubSettings
+  bool Load(const TiXmlNode* settings) override;
+
   bool Initialize(const std::string &file);
   bool Reset();
+
+  std::set<ISubSettings*> m_subSettings;
 };

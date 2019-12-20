@@ -12,7 +12,6 @@
 #include "ISettingControlCreator.h"
 #include "ISettingCreator.h"
 #include "ISettingsHandler.h"
-#include "ISubSettings.h"
 #include "Setting.h"
 #include "SettingConditions.h"
 #include "SettingDefinitions.h"
@@ -38,8 +37,7 @@ class TiXmlNode;
  all settings.
  */
 class CSettingsManager : public ISettingCreator, public ISettingControlCreator,
-                         private ISettingCallback, private ISettingsHandler,
-                         private ISubSettings
+                         private ISettingCallback, private ISettingsHandler
 {
 public:
   /*!
@@ -92,7 +90,7 @@ public:
    \param root XML node
    \return True if the setting values were successfully saved, false otherwise
    */
-  bool Save(TiXmlNode *root) const override;
+  bool Save(TiXmlNode *root) const;
   /*!
    \brief Unloads the previously loaded setting values.
 
@@ -106,7 +104,7 @@ public:
    returns to the uninitialized state. Any registered callbacks or
    implementations stay registered.
    */
-  void Clear() override;
+  void Clear();
 
   /*!
   \brief Loads the setting being represented by the given XML node with the
@@ -236,19 +234,6 @@ public:
    \param settingsHandler ISettingsHandler implementation
    */
   void UnregisterSettingsHandler(ISettingsHandler *settingsHandler);
-
-  /*!
-   \brief Registers the given ISubSettings implementation.
-
-   \param subSettings ISubSettings implementation
-   */
-  void RegisterSubSettings(ISubSettings *subSettings);
-  /*!
-   \brief Unregisters the given ISubSettings implementation.
-
-   \param subSettings ISubSettings implementation
-   */
-  void UnregisterSubSettings(ISubSettings *subSettings);
 
   /*!
    \brief Registers the given integer setting options filler under the given identifier.
@@ -486,9 +471,6 @@ private:
   void OnSettingsSaved() const override;
   void OnSettingsCleared() override;
 
-  // implementation of ISubSettings
-  bool Load(const TiXmlNode *settings) override;
-
   bool Serialize(TiXmlNode *parent) const;
   bool Deserialize(const TiXmlNode *node, bool &updated, std::map<std::string, std::shared_ptr<CSetting>> *loadedSettings = nullptr);
 
@@ -541,7 +523,6 @@ private:
   using SettingControlCreatorMap = std::map<std::string, ISettingControlCreator*>;
   SettingControlCreatorMap m_settingControlCreators;
 
-  std::set<ISubSettings*> m_subSettings;
   using SettingsHandlers = std::vector<ISettingsHandler*>;
   SettingsHandlers m_settingsHandlers;
 
