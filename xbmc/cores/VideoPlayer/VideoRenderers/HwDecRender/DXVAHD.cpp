@@ -536,8 +536,8 @@ bool CProcessorHD::Render(CRect src, CRect dst, ID3D11Resource* target, CRenderB
     // makes target available for processing in shaders
     videoCtx1->VideoProcessorSetOutputShaderUsage(m_pVideoProcessor.Get(), 1);
 
-    if (m_bSupportHDR10 && views[2]->color_transfer == AVCOL_TRC_SMPTE2084 &&
-        views[2]->primaries == AVCOL_PRI_BT2020)
+    if (DX::DeviceResources::Get()->Is10BitSwapchain() && m_bSupportHDR10 &&
+        views[2]->color_transfer == AVCOL_TRC_SMPTE2084 && views[2]->primaries == AVCOL_PRI_BT2020)
     {
       ComPtr<ID3D11VideoContext2> videoCtx2;
       if (SUCCEEDED(m_pVideoContext.As(&videoCtx2)))
