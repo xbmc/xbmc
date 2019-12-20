@@ -1353,6 +1353,7 @@ int64_t CCurlFile::Seek(int64_t iFilePosition, int iWhence)
 
   m_state->m_filePos = nextPos;
   m_state->m_sendRange = true;
+  m_state->m_bRetry = m_allowRetry;
 
   long response = m_state->Connect(m_bufferSize);
   if(response < 0 && (m_state->m_fileSize == 0 || m_state->m_fileSize != m_state->m_filePos))
