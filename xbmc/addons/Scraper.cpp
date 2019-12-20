@@ -13,6 +13,7 @@
 #include "ServiceBroker.h"
 #include "URL.h"
 #include "Util.h"
+#include "addons/settings/AddonSettings.h"
 #include "filesystem/CurlFile.h"
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"
@@ -25,6 +26,7 @@
 #include "music/infoscanner/MusicArtistInfo.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
+#include "settings/SettingsValueFlatJsonSerializer.h"
 #include "utils/CharsetConverter.h"
 #include "utils/ScraperParser.h"
 #include "utils/ScraperUrl.h"
@@ -326,6 +328,21 @@ std::string CScraper::InternalRun(const std::string &function,
   return m_parser.Parse(function, this);
 }
 
+std::string CScraper::GetPathSettingsAsJSON()
+{
+  static const std::string EmptyPathSettings = "{}";
+
+  if (!LoadSettings(false))
+    return EmptyPathSettings;
+
+  CSettingsValueFlatJsonSerializer jsonSerializer;
+  const auto json = jsonSerializer.SerializeValues(GetSettings()->GetSettingsManager());
+  if (json.empty())
+    return EmptyPathSettings;
+
+  return json;
+}
+
 bool CScraper::Load()
 {
   if (m_fLoaded || m_isPython)
@@ -410,8 +427,9 @@ CScraperUrl CScraper::NfoUrl(const std::string &sNfoContent)
   if (m_isPython)
   {
     std::stringstream str;
-    str << "plugin://" << ID() << "?action=NfoUrl&nfo="
-      << CURL::Encode(sNfoContent);
+    str << "plugin://" << ID() << "?action=NfoUrl&nfo=" << CURL::Encode(sNfoContent)
+        << "&pathSettings=" << CURL::Encode(GetPathSettingsAsJSON());
+
     CFileItemList items;
     if (!XFILE::CDirectory::GetDirectory(str.str(), items, "", DIR_FLAG_DEFAULTS))
       return scurlRet;
@@ -493,7 +511,8 @@ CScraperUrl CScraper::ResolveIDToUrl(const std::string &externalID)
   if (m_isPython)
   {
     std::stringstream str;
-    str << "plugin://" << ID() << "?action=resolveid&key=" << CURL::Encode(externalID);
+    str << "plugin://" << ID() << "?action=resolveid&key=" << CURL::Encode(externalID)
+        << "&pathSettings=" << CURL::Encode(GetPathSettingsAsJSON());
 
     CFileItem item("resolve me", false);
 
@@ -800,10 +819,12 @@ static bool PythonDetails(const std::string &ID,
                           const std::string &key,
                           const std::string &url,
                           const std::string &action,
+                          const std::string &pathSettings,
                           T &result)
 {
   std::stringstream str;
   str << "plugin://" << ID << "?action=" << action << "&" << key << "=" << CURL::Encode(url);
+  str << "&pathSettings=" << CURL::Encode(pathSettings);
 
   CFileItem item(url, false);
 
@@ -851,6 +872,7 @@ std::vector<CScraperUrl> CScraper::FindMovie(XFILE::CCurlFile &fcurl,
     std::map<std::string, std::string> additionals{{"title", sTitle}};
     if (!sYear.empty())
       additionals.insert({"year", sYear});
+    additionals.emplace("pathSettings", GetPathSettingsAsJSON());
     return PythonFind<CScraperUrl>(ID(), additionals);
   }
 
@@ -981,7 +1003,8 @@ std::vector<CMusicAlbumInfo> CScraper::FindAlbum(CCurlFile &fcurl,
     return vcali;
 
   if (m_isPython)
-    return PythonFind<CMusicAlbumInfo>(ID(), {{"title", sAlbum}, {"artist", sArtist}});
+    return PythonFind<CMusicAlbumInfo>(ID(),
+      {{"title", sAlbum}, {"artist", sArtist}, {"pathSettings", GetPathSettingsAsJSON()}});
 
   // scraper function is given the album and artist as parameters and
   // returns an XML <url> element parseable by CScraperUrl
@@ -1081,7 +1104,8 @@ std::vector<CMusicArtistInfo> CScraper::FindArtist(CCurlFile &fcurl, const std::
     return vcari;
 
   if (m_isPython)
-    return PythonFind<CMusicArtistInfo>(ID(), {{"artist", sArtist}});
+    return PythonFind<CMusicArtistInfo>(ID(),
+      {{"artist", sArtist}, {"pathSettings", GetPathSettingsAsJSON()}});
 
   // scraper function is given the artist as parameter and
   // returns an XML <url> element parseable by CScraperUrl
@@ -1170,7 +1194,9 @@ EPISODELIST CScraper::GetEpisodeList(XFILE::CCurlFile &fcurl, const CScraperUrl 
   {
     std::stringstream str;
     str << "plugin://" << ID()
-        << "?action=getepisodelist&url=" << CURL::Encode(scurl.m_url.front().m_url);
+        << "?action=getepisodelist&url=" << CURL::Encode(scurl.m_url.front().m_url)
+        << "&pathSettings=" << CURL::Encode(GetPathSettingsAsJSON());
+
     CFileItemList items;
     if (!XFILE::CDirectory::GetDirectory(str.str(), items, "", DIR_FLAG_DEFAULTS))
       return vcep;
@@ -1264,7 +1290,7 @@ bool CScraper::GetVideoDetails(XFILE::CCurlFile &fcurl,
 
   if (m_isPython)
     return PythonDetails(ID(), "url", scurl.m_url.front().m_url,
-                         fMovie ? "getdetails" : "getepisodedetails", video);
+      fMovie ? "getdetails" : "getepisodedetails", GetPathSettingsAsJSON(), video);
 
   std::string sFunc = fMovie ? "GetDetails" : "GetEpisodeDetails";
   std::vector<std::string> vcsIn;
@@ -1307,7 +1333,8 @@ bool CScraper::GetAlbumDetails(CCurlFile &fcurl, const CScraperUrl &scurl, CAlbu
             ADDON::TranslateContent(Content()).c_str(), Version().asString().c_str());
 
   if (m_isPython)
-    return PythonDetails(ID(), "url", scurl.m_url.front().m_url, "getdetails", album);
+    return PythonDetails(ID(), "url", scurl.m_url.front().m_url,
+      "getdetails", GetPathSettingsAsJSON(), album);
 
   std::vector<std::string> vcsOut = RunNoThrow("GetAlbumDetails", scurl, fcurl);
 
@@ -1345,7 +1372,8 @@ bool CScraper::GetArtistDetails(CCurlFile &fcurl,
             Version().asString().c_str());
 
   if (m_isPython)
-    return PythonDetails(ID(), "url", scurl.m_url.front().m_url, "getdetails", artist);
+    return PythonDetails(ID(), "url", scurl.m_url.front().m_url,
+      "getdetails", GetPathSettingsAsJSON(), artist);
 
   // pass in the original search string for chaining to search other sites
   std::vector<std::string> vcIn;
@@ -1383,7 +1411,8 @@ bool CScraper::GetArtwork(XFILE::CCurlFile &fcurl, CVideoInfoTag &details)
             ADDON::TranslateContent(Content()).c_str(), Version().asString().c_str());
 
   if (m_isPython)
-    return PythonDetails(ID(), "id", details.GetUniqueID(), "getartwork", details);
+    return PythonDetails(ID(), "id", details.GetUniqueID(),
+      "getartwork", GetPathSettingsAsJSON(), details);
 
   std::vector<std::string> vcsIn;
   CScraperUrl scurl;
