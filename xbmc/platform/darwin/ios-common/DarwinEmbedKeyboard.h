@@ -10,12 +10,12 @@
 
 #include "guilib/GUIKeyboard.h"
 
-class CIOSKeyboardImpl;
+struct CDarwinEmbedKeyboardImpl;
 
-class CIOSKeyboard : public CGUIKeyboard
+class CDarwinEmbedKeyboard : public CGUIKeyboard
 {
 public:
-  CIOSKeyboard();
+  CDarwinEmbedKeyboard();
   bool ShowAndGetInput(char_callback_t pCallback,
                        const std::string& initialString,
                        std::string& typedString,
@@ -23,11 +23,11 @@ public:
                        bool bHiddenInput) override;
   void Cancel() override;
   void fireCallback(const std::string& str);
-  void invalidateCallback() { m_pCharCallback = nullptr; }
+  void invalidateCallback();
   bool SetTextToKeyboard(const std::string& text, bool closeKeyboard = false) override;
 
 private:
-  char_callback_t m_pCharCallback;
-  bool m_bCanceled;
-  std::unique_ptr<CIOSKeyboardImpl> m_impl;
+  char_callback_t m_pCharCallback = nullptr;
+  bool m_canceled = false;
+  std::unique_ptr<CDarwinEmbedKeyboardImpl> m_impl;
 };
