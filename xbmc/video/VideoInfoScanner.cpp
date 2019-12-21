@@ -472,10 +472,20 @@ namespace VIDEO
           mediaType = MediaTypeTvShow;
         else if (info2->Content() == CONTENT_MUSICVIDEOS)
           mediaType = MediaTypeMusicVideo;
-        CServiceBroker::GetEventLog().Add(EventPtr(new CMediaLibraryEvent(
-          mediaType, pItem->GetPath(), 24145,
-          StringUtils::Format(g_localizeStrings.Get(24147).c_str(), mediaType.c_str(), URIUtils::GetFileName(pItem->GetPath()).c_str()),
-          pItem->GetArt("thumb"), CURL::GetRedacted(pItem->GetPath()), EventLevel::Warning)));
+
+        if (info2->Content() == CONTENT_TVSHOWS)
+          CServiceBroker::GetEventLog().Add(EventPtr(new CMediaLibraryEvent(
+            mediaType, pItem->GetPath(), 24145,
+            StringUtils::Format(g_localizeStrings.Get(24147).c_str(),
+            CMediaTypes::GetLocalization(mediaType), CURL::GetRedacted(pItem->GetPath())),
+            EventLevel::Warning)));
+        else if (info2->Content() == CONTENT_MOVIES || info2->Content() == CONTENT_MUSICVIDEOS)
+          CServiceBroker::GetEventLog().Add(EventPtr(new CMediaLibraryEvent(
+            mediaType, pItem->GetPath(), 24145,
+            StringUtils::Format(g_localizeStrings.Get(24147).c_str(),
+            CMediaTypes::GetLocalization(mediaType),
+            URIUtils::GetFileName(pItem->GetPath()).c_str()),
+            pItem->GetArt("thumb"), CURL::GetRedacted(pItem->GetPath()), EventLevel::Warning)));
       }
 
       pURL = NULL;
