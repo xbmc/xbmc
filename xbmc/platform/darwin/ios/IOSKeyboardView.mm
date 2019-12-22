@@ -10,10 +10,19 @@
 
 #import "utils/log.h"
 
+static const CGFloat INPUT_BOX_HEIGHT = 30;
+
+@interface IOSKeyboardView ()
+@property(nonatomic, weak) UIView* textFieldContainer;
+@property(nonatomic, weak) NSLayoutConstraint* containerBottomConstraint;
+@property(nonatomic, assign, getter=isKeyboardVisible) bool keyboardVisible;
+@end
+
 @implementation IOSKeyboardView
-{
-  int m_keyboardIsShowing; // 0: not, 1: will show, 2: showing
-}
+
+@synthesize textFieldContainer = m_textFieldContainer;
+@synthesize containerBottomConstraint = m_containerBottomConstraint;
+@synthesize keyboardVisible = m_keyboardVisible;
 
 - (instancetype)initWithFrame:(CGRect)frame
 {
@@ -21,94 +30,116 @@
   if (!self)
     return nil;
 
-  m_keyboardIsShowing = 0;
+  m_keyboardVisible = false;
 
-  [self setAlpha:0.9];
+  self.backgroundColor = [UIColor colorWithWhite:0 alpha:0.1];
 
-  [[NSNotificationCenter defaultCenter] addObserver:self
-                                           selector:@selector(keyboardDidHide:)
-                                               name:UIKeyboardDidHideNotification
-                                             object:nil];
-  [[NSNotificationCenter defaultCenter] addObserver:self
-                                           selector:@selector(keyboardDidChangeFrame:)
-                                               name:UIKeyboardDidChangeFrameNotification
-                                             object:nil];
-  [[NSNotificationCenter defaultCenter] addObserver:self
-                                           selector:@selector(keyboardWillShow:)
-                                               name:UIKeyboardWillShowNotification
-                                             object:nil];
-  [[NSNotificationCenter defaultCenter] addObserver:self
-                                           selector:@selector(keyboardDidShow:)
-                                               name:UIKeyboardDidShowNotification
-                                             object:nil];
+  auto notificationCenter = NSNotificationCenter.defaultCenter;
+  [notificationCenter addObserver:self
+                         selector:@selector(keyboardDidHide:)
+                             name:UIKeyboardDidHideNotification
+                           object:nil];
+  [notificationCenter addObserver:self
+                         selector:@selector(keyboardDidChangeFrame:)
+                             name:UIKeyboardDidChangeFrameNotification
+                           object:nil];
+  [notificationCenter addObserver:self
+                         selector:@selector(keyboardWillShow:)
+                             name:UIKeyboardWillShowNotification
+                           object:nil];
+  [notificationCenter addObserver:self
+                         selector:@selector(keyboardDidShow:)
+                             name:UIKeyboardDidShowNotification
+                           object:nil];
+
+  [self addGestureRecognizer:[[UITapGestureRecognizer alloc]
+                                 initWithTarget:m_inputTextField
+                                         action:@selector(resignFirstResponder)]];
+
+  auto textFieldContainer = [UIView new];
+  textFieldContainer.translatesAutoresizingMaskIntoConstraints = NO;
+  textFieldContainer.backgroundColor = UIColor.whiteColor;
+  [textFieldContainer addSubview:m_inputTextField];
+  [self addSubview:textFieldContainer];
+  m_textFieldContainer = textFieldContainer;
+
+  auto bottomConstraint = [textFieldContainer.bottomAnchor constraintEqualToAnchor:self.topAnchor];
+  m_containerBottomConstraint = bottomConstraint;
+
+  [NSLayoutConstraint activateConstraints:@[
+    bottomConstraint,
+    [textFieldContainer.leadingAnchor constraintEqualToAnchor:self.leadingAnchor],
+    [textFieldContainer.trailingAnchor constraintEqualToAnchor:self.trailingAnchor],
+    [textFieldContainer.heightAnchor constraintEqualToConstant:INPUT_BOX_HEIGHT],
+
+    [m_inputTextField.widthAnchor constraintEqualToAnchor:textFieldContainer.widthAnchor
+                                               multiplier:0.5],
+    [m_inputTextField.centerXAnchor constraintEqualToAnchor:textFieldContainer.centerXAnchor],
+    [m_inputTextField.topAnchor constraintEqualToAnchor:textFieldContainer.topAnchor],
+    [m_inputTextField.bottomAnchor constraintEqualToAnchor:textFieldContainer.bottomAnchor],
+  ]];
 
   return self;
 }
 
 - (void)keyboardWillShow:(NSNotification*)notification
 {
-  NSDictionary* info = [notification userInfo];
-  CGRect kbRect = [[info objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
-  CLog::Log(LOGDEBUG, "keyboardWillShow: keyboard frame: {}",
-            NSStringFromCGRect(kbRect).UTF8String);
-  m_kbRect = kbRect;
-  [self setNeedsLayout];
-  m_keyboardIsShowing = 1;
+  CLog::Log(LOGDEBUG, "{} {}", __PRETTY_FUNCTION__, notification.userInfo.description.UTF8String);
+  if (!self.isKeyboardVisible)
+    self.textFieldContainer.hidden = YES;
 }
 
 - (void)keyboardDidShow:(NSNotification*)notification
 {
-  CLog::Log(LOGDEBUG, "keyboardDidShow: deactivated: {}", m_deactivated);
-  m_keyboardIsShowing = 2;
+  CLog::Log(LOGDEBUG, "{} deactivated: {}, {}", __PRETTY_FUNCTION__, m_deactivated,
+            notification.userInfo.description.UTF8String);
+  self.keyboardVisible = true;
+  self.textFieldContainer.hidden = NO;
+
   if (m_deactivated)
     [self deactivate];
 }
 
-- (void)touchesBegan:(NSSet*)touches withEvent:(UIEvent*)event
-{
-  [m_inputTextField resignFirstResponder];
-}
-
 - (BOOL)textFieldShouldEndEditing:(UITextField*)textField
 {
-  CLog::Log(LOGDEBUG, "{}: keyboard IsShowing {}", __PRETTY_FUNCTION__, m_keyboardIsShowing);
-  // Do not break the keyboard show up process, else we will lose
-  // keyboard did hide notification.
-  return m_keyboardIsShowing != 1;
+  CLog::Log(LOGDEBUG, "{}: keyboard IsShowing {}", __PRETTY_FUNCTION__, self.isKeyboardVisible);
+  return YES;
 }
 
 - (BOOL)textFieldShouldReturn:(UITextField*)textField
 {
-  [textField resignFirstResponder];
-  return [super textFieldShouldReturn:textField];
+  auto result = [super textFieldShouldReturn:textField];
+  if (result)
+    [textField resignFirstResponder];
+  return result;
 }
 
-- (void)keyboardDidChangeFrame:(id)sender
+- (void)keyboardDidChangeFrame:(NSNotification*)notification
 {
+  auto keyboardFrame = [notification.userInfo[UIKeyboardFrameEndUserInfoKey] CGRectValue];
+  // although converting isn't really necessary in our case, as the holder view occupies
+  // the whole screen, technically it's more correct
+  auto convertedFrame = [self convertRect:keyboardFrame
+                      fromCoordinateSpace:UIScreen.mainScreen.coordinateSpace];
+  self.containerBottomConstraint.constant = CGRectGetMinY(convertedFrame);
+  [self layoutIfNeeded];
 }
 
 - (void)keyboardDidHide:(id)sender
 {
-  m_keyboardIsShowing = 0;
-
   if (m_inputTextField.editing)
   {
     CLog::Log(LOGDEBUG, "kb hide when editing, it could be a language switch");
     return;
   }
 
+  self.keyboardVisible = false;
   [self deactivate];
 }
 
 - (void)deactivate
 {
-  CLog::Log(LOGDEBUG, "{}: keyboard IsShowing {}", __PRETTY_FUNCTION__, m_keyboardIsShowing);
-
-  // Do not break keyboard show up process, if so there's a bug of ios4 will not
-  // notify us keyboard hide.
-  if (m_keyboardIsShowing == 1)
-    return;
-
+  CLog::Log(LOGDEBUG, "{}: keyboard IsShowing {}", __PRETTY_FUNCTION__, self.isKeyboardVisible);
   [super deactivate];
 }
 

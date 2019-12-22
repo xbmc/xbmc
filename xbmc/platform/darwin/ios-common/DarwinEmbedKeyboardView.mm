@@ -17,14 +17,10 @@
 
 static CEvent keyboardFinishedEvent;
 
-static const int INPUT_BOX_HEIGHT = 30;
-static const int SPACE_BETWEEN_INPUT_AND_KEYBOARD = 0;
-
 @implementation KeyboardView
 
 @synthesize confirmed = m_confirmed;
 @synthesize darwinEmbedKeyboard = m_darwinEmbedKeyboard;
-@synthesize text = m_text;
 
 - (instancetype)initWithFrame:(CGRect)frame
 {
@@ -32,37 +28,19 @@ static const int SPACE_BETWEEN_INPUT_AND_KEYBOARD = 0;
   if (!self)
     return nil;
 
-  m_confirmed = NO;
-  m_canceled = NULL;
+  m_canceled = nullptr;
   m_deactivated = NO;
 
-  m_text = [NSMutableString string];
-
-  // default input box position above the half screen.
-  CGRect textFieldFrame =
-      CGRectMake(frame.size.width / 2,
-                 frame.size.height / 2 - INPUT_BOX_HEIGHT - SPACE_BETWEEN_INPUT_AND_KEYBOARD,
-                 frame.size.width / 2, INPUT_BOX_HEIGHT);
-  m_inputTextField = [[UITextField alloc] initWithFrame:textFieldFrame];
-  m_inputTextField.clearButtonMode = UITextFieldViewModeAlways;
-  m_inputTextField.borderStyle = UITextBorderStyleNone;
-  m_inputTextField.returnKeyType = UIReturnKeyDone;
-  m_inputTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
-  m_inputTextField.backgroundColor = [UIColor whiteColor];
-  m_inputTextField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
-  m_inputTextField.delegate = self;
-
-  CGRect labelFrame = textFieldFrame;
-  labelFrame.origin.x = 0;
-  m_inputTextHeading = [[UITextField alloc] initWithFrame:labelFrame];
-  m_inputTextHeading.borderStyle = UITextBorderStyleNone;
-  m_inputTextHeading.backgroundColor = [UIColor whiteColor];
-  m_inputTextHeading.adjustsFontSizeToFitWidth = YES;
-  m_inputTextHeading.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
-  m_inputTextHeading.enabled = NO;
-
-  [self addSubview:m_inputTextHeading];
-  [self addSubview:m_inputTextField];
+  auto textField = [UITextField new];
+  textField.translatesAutoresizingMaskIntoConstraints = NO;
+  textField.clearButtonMode = UITextFieldViewModeAlways;
+  textField.borderStyle = UITextBorderStyleNone;
+  textField.returnKeyType = UIReturnKeyDone;
+  textField.autocapitalizationType = UITextAutocapitalizationTypeNone;
+  textField.backgroundColor = UIColor.whiteColor;
+  textField.delegate = self;
+  [self addSubview:textField];
+  m_inputTextField = textField;
 
   self.userInteractionEnabled = YES;
 
@@ -73,25 +51,6 @@ static const int SPACE_BETWEEN_INPUT_AND_KEYBOARD = 0;
   return self;
 }
 
-- (void)layoutSubviews
-{
-  CGFloat headingW = 0;
-  if (m_inputTextHeading.text && m_inputTextHeading.text.length > 0)
-  {
-    CGSize headingSize = [m_inputTextHeading.text sizeWithAttributes:@{
-      NSFontAttributeName : [UIFont systemFontOfSize:[UIFont systemFontSize]]
-    }];
-
-    headingW = MIN(self.bounds.size.width / 2, headingSize.width + 30);
-  }
-
-  CGFloat y = m_kbRect.origin.y - INPUT_BOX_HEIGHT - SPACE_BETWEEN_INPUT_AND_KEYBOARD;
-
-  m_inputTextHeading.frame = CGRectMake(0, y, headingW, INPUT_BOX_HEIGHT);
-  m_inputTextField.frame =
-      CGRectMake(headingW, y, self.bounds.size.width - headingW, INPUT_BOX_HEIGHT);
-}
-
 - (void)textFieldDidEndEditing:(UITextField*)textField
 {
   [self deactivate];
@@ -100,16 +59,24 @@ static const int SPACE_BETWEEN_INPUT_AND_KEYBOARD = 0;
 - (BOOL)textFieldShouldReturn:(UITextField*)textField
 {
   m_confirmed = YES;
-
   return YES;
+}
+
+- (NSString*)text
+{
+  NSString __block* result;
+  dispatch_sync(dispatch_get_main_queue(), ^{
+    result = m_inputTextField.text;
+  });
+  return result;
 }
 
 - (void)activate
 {
   dispatch_sync(dispatch_get_main_queue(), ^{
     [g_xbmcController activateKeyboard:self];
+    [self layoutIfNeeded];
     [m_inputTextField becomeFirstResponder];
-    [self setNeedsLayout];
     keyboardFinishedEvent.Reset();
   });
 
@@ -169,10 +136,7 @@ static const int SPACE_BETWEEN_INPUT_AND_KEYBOARD = 0;
 - (void)setHeading:(NSString*)heading
 {
   dispatch_sync(dispatch_get_main_queue(), ^{
-    if (heading && heading.length > 0)
-      m_inputTextHeading.text = [NSString stringWithFormat:@" %@:", heading];
-    else
-      m_inputTextHeading.text = nil;
+    m_inputTextField.placeholder = heading;
   });
 }
 
@@ -185,12 +149,8 @@ static const int SPACE_BETWEEN_INPUT_AND_KEYBOARD = 0;
 
 - (void)textChanged:(NSNotification*)aNotification
 {
-  if (![self.text isEqualToString:m_inputTextField.text])
-  {
-    [self.text setString:m_inputTextField.text];
-    if (m_darwinEmbedKeyboard)
-      m_darwinEmbedKeyboard->fireCallback([self text].UTF8String);
-  }
+  if (m_darwinEmbedKeyboard)
+    m_darwinEmbedKeyboard->fireCallback(m_inputTextField.text.UTF8String);
 }
 
 - (void)setCancelFlag:(bool*)cancelFlag
