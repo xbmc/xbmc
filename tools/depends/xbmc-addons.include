@@ -1,6 +1,7 @@
 ADDON_DEPS_DIR := $(BUILDDIR)/$(PLATFORM)/build/depends
 TOOLCHAIN_FILE = $(ADDON_DEPS_DIR)/share/Toolchain_binaddons.cmake
 ADDON_PROJECT_DIR = $(BUILDDIR)/../../../../cmake/addons
+export PKG_CONFIG_LIBDIR = $(ADDON_DEPS_DIR)/lib/pkgconfig
 
 ifeq ($(CROSS_COMPILING),yes)
   DEPS = $(TOOLCHAIN_FILE) $(abs_top_srcdir)/target/config-binaddons.site $(abs_top_srcdir)/target/Toolchain_binaddons.cmake $(CONFIG_SUB) $(CONFIG_GUESS)
