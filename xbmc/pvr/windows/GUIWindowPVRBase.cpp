@@ -172,12 +172,26 @@ void CGUIWindowPVRBase::Notify(const PVREvent& event)
 void CGUIWindowPVRBase::NotifyEvent(const PVREvent& event)
 {
   if (event == PVREvent::ManagerStopped)
-    ClearData();
-
-  if (m_active)
   {
-    CGUIMessage m(GUI_MSG_REFRESH_LIST, GetID(), 0, static_cast<int>(event));
-    CApplicationMessenger::GetInstance().SendGUIMessage(m);
+    ClearData();
+  }
+  else if (m_active)
+  {
+    if (event == PVREvent::SystemSleep)
+    {
+      CGUIMessage m(GUI_MSG_SYSTEM_SLEEP, GetID(), 0, static_cast<int>(event));
+      CApplicationMessenger::GetInstance().SendGUIMessage(m);
+    }
+    else if (event == PVREvent::SystemWake)
+    {
+      CGUIMessage m(GUI_MSG_SYSTEM_WAKE, GetID(), 0, static_cast<int>(event));
+      CApplicationMessenger::GetInstance().SendGUIMessage(m);
+    }
+    else
+    {
+      CGUIMessage m(GUI_MSG_REFRESH_LIST, GetID(), 0, static_cast<int>(event));
+      CApplicationMessenger::GetInstance().SendGUIMessage(m);
+    }
   }
 }
 
