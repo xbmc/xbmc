@@ -76,6 +76,7 @@ namespace DX
 
     bool SetFullScreen(bool fullscreen, RESOLUTION_INFO& res);
 
+    bool IsDisplayHDRCapable() const;
     bool IsDisplayHDREnabled();
     void SetHdrMetaData(DXGI_HDR_METADATA_HDR10& hdr10) const;
     void SetColorSpace1(const DXGI_COLOR_SPACE_TYPE colorSpace) const;

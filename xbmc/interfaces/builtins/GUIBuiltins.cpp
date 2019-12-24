@@ -31,6 +31,9 @@
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 #include "windows/GUIMediaWindow.h"
+#if defined(TARGET_WINDOWS)
+#include "windowing/windows/WinSystemWin32.h"
+#endif
 
 using namespace KODI::MESSAGING;
 
@@ -375,6 +378,15 @@ static int ToggleDirty(const std::vector<std::string>&)
   return 0;
 }
 
+static int WindowsHDRSwitch(const std::vector<std::string>&)
+{
+#if defined(TARGET_WINDOWS)
+  CWinSystemWin32::WindowsHDRSwitch();
+  CApplicationMessenger::GetInstance().SendMsg(TMSG_RESTARTAPP);
+#endif
+  return 0;
+}
+
 // Note: For new Texts with comma add a "\" before!!! Is used for table text.
 //
 /// \page page_List_of_built_in_functions
@@ -564,6 +576,7 @@ CBuiltins::CommandMap CGUIBuiltins::GetOperations() const
            {"setproperty",                    {"Sets a window property for the current focused window/dialog (key,value)", 2, SetProperty}},
            {"setstereomode",                  {"Changes the stereo mode of the GUI. Params can be: toggle, next, previous, select, tomono or any of the supported stereomodes (off, split_vertical, split_horizontal, row_interleaved, hardware_based, anaglyph_cyan_red, anaglyph_green_magenta, anaglyph_yellow_blue, monoscopic)", 1, SetStereoMode}},
            {"takescreenshot",                 {"Takes a Screenshot", 0, Screenshot}},
-           {"toggledirtyregionvisualization", {"Enables/disables dirty-region visualization", 0, ToggleDirty}}
+           {"toggledirtyregionvisualization", {"Enables/disables dirty-region visualization", 0, ToggleDirty}},
+           {"windowshdrswitch",               {"Enables/disables Windows HDR and restart Kodi", 0, WindowsHDRSwitch}}
          };
 }

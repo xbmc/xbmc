@@ -1118,7 +1118,7 @@ bool DX::DeviceResources::IsDisplayHDREnabled()
   ComPtr<IDXGIOutput> pOutput;
   ComPtr<IDXGIOutput6> pOutput6;
   DXGI_HDR_METADATA_HDR10 hdr10 = {};
-  DXGI_OUTPUT_DESC1 od;
+  DXGI_OUTPUT_DESC1 od = {};
   bool hdrCapable = false;
   bool hdrEnabled = false;
 
@@ -1271,4 +1271,35 @@ void DX::DeviceResources::SetColorSpace1(const DXGI_COLOR_SPACE_TYPE colorSpace)
       CLog::LogF(LOGERROR, "DXGI SetColorSpace1 failed");
     }
   }
+}
+
+bool DX::DeviceResources::IsDisplayHDRCapable() const
+{
+  ComPtr<IDXGIOutput> pOutput;
+  ComPtr<IDXGIOutput6> pOutput6;
+  DXGI_OUTPUT_DESC1 od = {};
+
+  if (m_swapChain == nullptr)
+    return false;
+
+  if (SUCCEEDED(m_swapChain->GetContainingOutput(pOutput.GetAddressOf())))
+  {
+    if (SUCCEEDED(pOutput.As(&pOutput6)))
+    {
+      if (SUCCEEDED(pOutput6->GetDesc1(&od)))
+      {
+        if (od.MaxLuminance >= 400.0)
+        {
+          CLog::LogF(LOGDEBUG, "Monitor HDR capable detected.");
+          return true;
+        }
+      }
+      else
+      {
+        CLog::LogF(LOGERROR, "DXGI GetDesc1 failed");
+      }
+    }
+  }
+
+  return false;
 }

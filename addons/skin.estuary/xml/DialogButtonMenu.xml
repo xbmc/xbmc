@@ -23,6 +23,16 @@
 						<visible>System.ShowExitButton</visible>
 					</item>
 					<item>
+						<label>$LOCALIZE[13037]</label>
+						<onclick>WindowsHDRSwitch()</onclick>
+						<visible>System.WindowsHdrOff</visible>
+					</item>
+					<item>
+						<label>$LOCALIZE[13038]</label>
+						<onclick>WindowsHDRSwitch()</onclick>
+						<visible>System.WindowsHdrOn</visible>
+					</item>
+					<item>
 						<label>$LOCALIZE[13016]</label>
 						<onclick>Powerdown()</onclick>
 						<visible>System.CanPowerDown</visible>

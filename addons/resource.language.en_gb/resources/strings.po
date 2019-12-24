@@ -6129,7 +6129,17 @@ msgctxt "#13036"
 msgid "Failed for {0:s}"
 msgstr ""
 
-#empty strings from id 13037 to 13049
+#: addons/skin.estuary/xml/DialogButtonMenu.xml
+msgctxt "#13037"
+msgid "Toggle Windows HDR On"
+msgstr ""
+
+#: addons/skin.estuary/xml/DialogButtonMenu.xml
+msgctxt "#13038"
+msgid "Toggle Windows HDR Off"
+msgstr ""
+
+#empty strings from id 13039 to 13049
 
 #: xbmc/powermanagement/PowerManager.cpp
 msgctxt "#13050"
