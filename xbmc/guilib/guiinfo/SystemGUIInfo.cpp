@@ -22,6 +22,9 @@
 #endif
 #include "powermanagement/PowerManager.h"
 #include "profiles/ProfileManager.h"
+#if defined(TARGET_WINDOWS)
+#include "rendering/dx/deviceresources.h"
+#endif
 #include "settings/AdvancedSettings.h"
 #include "settings/DisplaySettings.h"
 #include "settings/MediaSettings.h"
@@ -569,6 +572,20 @@ bool CSystemGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int context
       return true;
     case SYSTEM_SHOW_EXIT_BUTTON:
       value = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_showExitButton;
+      return true;
+    case SYSTEM_WINDOWS_HDR_OFF:
+#if defined(TARGET_WINDOWS)
+      value = DX::DeviceResources::Get()->IsDisplayHDRCapable() && !DX::DeviceResources::Get()->IsDisplayHDREnabled();
+#else
+      value = false;
+#endif
+      return true;
+    case SYSTEM_WINDOWS_HDR_ON:
+#if defined(TARGET_WINDOWS)
+      value = DX::DeviceResources::Get()->IsDisplayHDRCapable() && DX::DeviceResources::Get()->IsDisplayHDREnabled();
+#else
+      value = false;
+#endif
       return true;
     case SYSTEM_HAS_LOGINSCREEN:
       value = CServiceBroker::GetSettingsComponent()->GetProfileManager()->UsingLoginScreen();

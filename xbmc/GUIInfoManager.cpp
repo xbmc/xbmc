@@ -1705,7 +1705,9 @@ const infomap system_labels[] =  {{ "hasnetwork",       SYSTEM_ETHERNET_LINK_ACT
                                   { "hascms",           SYSTEM_HAS_CMS },
                                   { "privacypolicy",    SYSTEM_PRIVACY_POLICY },
                                   { "haspvraddon",      SYSTEM_HAS_PVR_ADDON },
-                                  { "supportscpuusage", SYSTEM_SUPPORTS_CPU_USAGE }};
+                                  { "supportscpuusage", SYSTEM_SUPPORTS_CPU_USAGE },
+                                  { "windowshdroff",    SYSTEM_WINDOWS_HDR_OFF },
+                                  { "windowshdron",     SYSTEM_WINDOWS_HDR_ON }};
 
 /// \page modules__infolabels_boolean_conditions
 ///   \table_row3{   <b>`System.HasAddon(id)`</b>,
