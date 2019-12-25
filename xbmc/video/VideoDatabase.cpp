@@ -2441,13 +2441,11 @@ int CVideoDatabase::SetDetailsForMovie(const std::string& strFilenameAndPath, CV
       // add art if not available
       if (!HasArtForItem(idSet, MediaTypeVideoCollection))
       {
-        std::map<std::string, std::string> setArt;
         for (const auto &it : artwork)
         {
           if (StringUtils::StartsWith(it.first, "set."))
-            setArt[it.first.substr(4)] = it.second;
+            SetArtForItem(idSet, MediaTypeVideoCollection, it.first.substr(4), it.second);
         }
-        SetArtForItem(idSet, MediaTypeVideoCollection, setArt.empty() ? artwork : setArt);
       }
     }
 
@@ -2559,9 +2557,6 @@ int CVideoDatabase::UpdateDetailsForMovie(int idMovie, CVideoInfoTag& details, c
       if (!details.m_set.title.empty())
       {
         idSet = AddSet(details.m_set.title, details.m_set.overview);
-        // add art if not available
-        if (!HasArtForItem(idSet, MediaTypeVideoCollection))
-          SetArtForItem(idSet, MediaTypeVideoCollection, artwork);
       }
     }
 
@@ -4832,23 +4827,13 @@ std::vector<std::string> GetMovieSetAvailableArtTypes(int mediaId, CVideoDatabas
     {
       CVideoInfoTag* pTag = item->GetVideoInfoTag();
       pTag->m_strPictureURL.Parse();
-      //! @todo artwork: fanart stored separately, doesn't need to be
-      pTag->m_fanart.Unpack();
-      if (pTag->m_fanart.GetNumFanarts() &&
-        std::find(result.cbegin(), result.cend(), "fanart") == result.cend())
-      {
-        result.emplace_back("fanart");
-      }
 
-      // all other images
       for (const auto& urlEntry : pTag->m_strPictureURL.m_url)
       {
-        std::string artType = urlEntry.m_aspect;
-        if (artType.empty())
-          artType = "poster";
-        else if (StringUtils::StartsWith(artType, "set."))
-          artType = artType.substr(4);
+        if (!StringUtils::StartsWith(urlEntry.m_aspect, "set."))
+          continue;
 
+        std::string artType = urlEntry.m_aspect.substr(4);
         if (std::find(result.cbegin(), result.cend(), artType) == result.cend())
           result.push_back(artType);
       }
@@ -9462,6 +9447,7 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
     std::string xmlFile = URIUtils::AddFileToFolder(exportRoot, "videodb.xml");
     std::string actorsDir = URIUtils::AddFileToFolder(exportRoot, "actors");
     std::string moviesDir = URIUtils::AddFileToFolder(exportRoot, "movies");
+    std::string movieSetsDir = URIUtils::AddFileToFolder(exportRoot, "moviesets");
     std::string musicvideosDir = URIUtils::AddFileToFolder(exportRoot, "musicvideos");
     std::string tvshowsDir = URIUtils::AddFileToFolder(exportRoot, "tvshows");
     if (singleFile)
@@ -9473,6 +9459,7 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
       CDirectory::Create(exportRoot);
       CDirectory::Create(actorsDir);
       CDirectory::Create(moviesDir);
+      CDirectory::Create(movieSetsDir);
       CDirectory::Create(musicvideosDir);
       CDirectory::Create(tvshowsDir);
     }
@@ -9602,6 +9589,58 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
       current++;
     }
     m_pDS->close();
+
+    if (!singleFile)
+      movieSetsDir = CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(
+          CSettings::SETTING_VIDEOLIBRARY_MOVIESETSFOLDER);
+    if (images && !movieSetsDir.empty())
+    {
+      // find all movie sets
+      sql = "select idSet, strSet from sets";
+
+      m_pDS->query(sql);
+
+      total = m_pDS->num_rows();
+      current = 0;
+
+      while (!m_pDS->eof())
+      {
+        std::string title = m_pDS->fv("strSet").get_asString();
+
+        if (progress)
+        {
+          progress->SetLine(1, CVariant{title});
+          progress->SetPercentage(current * 100 / total);
+          progress->Progress();
+          if (progress->IsCanceled())
+          {
+            progress->Close();
+            m_pDS->close();
+            return;
+          }
+        }
+
+        std::string itemPath = URIUtils::AddFileToFolder(movieSetsDir,
+            CUtil::MakeLegalFileName(title, LEGAL_WIN32_COMPAT));
+        if (CDirectory::Exists(itemPath) || CDirectory::Create(itemPath))
+        {
+          std::map<std::string, std::string> artwork;
+          GetArtForItem(m_pDS->fv("idSet").get_asInt(), MediaTypeVideoCollection, artwork);
+          for (const auto& art : artwork)
+          {
+            std::string savedThumb = URIUtils::AddFileToFolder(itemPath, art.first);
+            CTextureCache::GetInstance().Export(art.second, savedThumb, overwrite);
+          }
+        }
+        else
+          CLog::Log(LOGDEBUG,
+            "CVideoDatabase::%s - Not exporting movie set '%s' as could not create folder '%s'",
+            __FUNCTION__, title.c_str(), itemPath.c_str());
+        m_pDS->next();
+        current++;
+      }
+      m_pDS->close();
+    }
 
     // find all musicvideos
     sql = "select * from musicvideo_view";
@@ -10015,6 +10054,7 @@ void CVideoDatabase::ImportFromXML(const std::string &path)
 
     std::string actorsDir(URIUtils::AddFileToFolder(path, "actors"));
     std::string moviesDir(URIUtils::AddFileToFolder(path, "movies"));
+    std::string movieSetsDir(URIUtils::AddFileToFolder(path, "moviesets"));
     std::string musicvideosDir(URIUtils::AddFileToFolder(path, "musicvideos"));
     std::string tvshowsDir(URIUtils::AddFileToFolder(path, "tvshows"));
     CVideoInfoScanner scanner;
@@ -10062,6 +10102,25 @@ void CVideoDatabase::ImportFromXML(const std::string &path)
         artItem.SetPath(GetSafeFile(moviesDir, filename) + ".avi");
         scanner.GetArtwork(&artItem, CONTENT_MOVIES, useFolders, true, actorsDir);
         item.SetArt(artItem.GetArt());
+        if (!item.GetVideoInfoTag()->m_set.title.empty())
+        {
+          std::string setPath = URIUtils::AddFileToFolder(movieSetsDir,
+              CUtil::MakeLegalFileName(item.GetVideoInfoTag()->m_set.title, LEGAL_WIN32_COMPAT));
+          if (CDirectory::Exists(setPath))
+          {
+            CGUIListItem::ArtMap setArt;
+            CFileItem artItem(setPath, true);
+            for (const auto& artType : CVideoThumbLoader::GetArtTypes(MediaTypeVideoCollection))
+            {
+              std::string artPath = CVideoThumbLoader::GetLocalArt(artItem, artType, true);
+              if (!artPath.empty())
+              {
+                setArt[artType] = artPath;
+              }
+            }
+            item.AppendArt(setArt, "set");
+          }
+        }
         scanner.AddVideo(&item, CONTENT_MOVIES, useFolders, true, NULL, true);
         current++;
       }
