@@ -184,6 +184,7 @@ public:
   virtual IPosTime* GetIPosTime() { return nullptr; }
   virtual IDisplayTime* GetIDisplayTime() { return nullptr; }
   virtual ITimes* GetITimes() { return nullptr; }
+  virtual IChapter* GetIChapter() { return nullptr; }
 
   const CVariant &GetProperty(const std::string key){ return m_item.GetProperty(key); }
 
