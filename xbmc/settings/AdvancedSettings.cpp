@@ -381,8 +381,9 @@ void CAdvancedSettings::Initialize()
   m_iPVRTimeshiftThreshold = 10;
   m_bPVRTimeshiftSimpleOSD = true;
 
-  m_cacheMemSize = 1024 * 1024 * 20;
+  m_cacheMemSize = 1024 * 1024 * 20; // 20 MiB
   m_cacheBufferMode = CACHE_BUFFER_MODE_INTERNET; // Default (buffer all internet streams/filesystems)
+  m_cacheChunkSize = 128 * 1024; // 128 KiB
   // the following setting determines the readRate of a player data
   // as multiply of the default data read rate
   m_cacheReadFactor = 4.0f;
@@ -822,6 +823,7 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
   {
     XMLUtils::GetUInt(pElement, "memorysize", m_cacheMemSize);
     XMLUtils::GetUInt(pElement, "buffermode", m_cacheBufferMode, 0, 4);
+    XMLUtils::GetUInt(pElement, "chunksize", m_cacheChunkSize, 256, 1024 * 1024);
     XMLUtils::GetFloat(pElement, "readfactor", m_cacheReadFactor);
   }
 
