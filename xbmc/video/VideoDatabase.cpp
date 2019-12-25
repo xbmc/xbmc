@@ -8928,6 +8928,9 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle, const st
       sql += PrepareSQL(" AND path.idPath IN (%s)", strPaths.substr(1).c_str());
     }
 
+    // For directory caching to work properly, we need to sort the files by path
+    sql += " ORDER BY path.strPath";
+
     m_pDS2->query(sql);
     if (m_pDS2->num_rows() == 0) return;
 
@@ -8957,6 +8960,8 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle, const st
 
     int total = m_pDS2->num_rows();
     int current = 0;
+    std::string lastDir;
+    bool gotDir = true;
 
     while (!m_pDS2->eof())
     {
@@ -8984,11 +8989,26 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle, const st
       }
       else
       {
-        // remove optical, non-existing files, files with no matching source
+        // Only consider keeping this file if not optical and belonging to a (matching) source
         bool bIsSource;
-        if (!URIUtils::IsOnDVD(fullPath) && CFile::Exists(fullPath, false) &&
+        if (!URIUtils::IsOnDVD(fullPath) &&
             CUtil::GetMatchingSource(fullPath, videoSources, bIsSource) >= 0)
-          del = false;
+        {
+          const std::string pathDir = URIUtils::GetDirectory(fullPath);
+
+          // Cache file's directory in case it's different from the previous file
+          if (lastDir != pathDir)
+          {
+            lastDir = pathDir;
+            CFileItemList items; // Dummy list
+            gotDir = CDirectory::GetDirectory(pathDir, items, "", DIR_FLAG_NO_FILE_DIRS |
+                                              DIR_FLAG_NO_FILE_INFO);
+          }
+
+          // Keep existing files
+          if (gotDir && CFile::Exists(fullPath, true))
+            del = false;
+        }
       }
       if (del)
         filesToTestForDelete += m_pDS2->fv("files.idFile").get_asString() + ",";
