@@ -577,6 +577,6 @@ CBuiltins::CommandMap CGUIBuiltins::GetOperations() const
            {"setstereomode",                  {"Changes the stereo mode of the GUI. Params can be: toggle, next, previous, select, tomono or any of the supported stereomodes (off, split_vertical, split_horizontal, row_interleaved, hardware_based, anaglyph_cyan_red, anaglyph_green_magenta, anaglyph_yellow_blue, monoscopic)", 1, SetStereoMode}},
            {"takescreenshot",                 {"Takes a Screenshot", 0, Screenshot}},
            {"toggledirtyregionvisualization", {"Enables/disables dirty-region visualization", 0, ToggleDirty}},
-           {"windowshdrswitch",               {"Enables/disables Windows HDR and restart Kodi", 0, WindowsHDRSwitch}}
+           {"windowshdrswitch",               {"Toggles Windows HDR On/Off and restarts Kodi", 0, WindowsHDRSwitch}}
          };
 }

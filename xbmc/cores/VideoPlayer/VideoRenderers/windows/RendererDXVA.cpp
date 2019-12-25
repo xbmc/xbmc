@@ -183,7 +183,9 @@ CRect CRendererDXVA::ApplyTransforms(const CRect& destRect) const
 bool CRendererDXVA::UseToneMapping() const
 {
   // use mapping only if processor doesn't support HDR10
-  return !m_processor->HasHDR10Support() && __super::UseToneMapping();
+  // and is not 10 bit swapchain (HDR to SDR conversion)
+  return !m_processor->HasHDR10Support() && !DX::DeviceResources::Get()->Is10BitSwapchain() &&
+         __super::UseToneMapping();
 }
 
 void CRendererDXVA::FillBuffersSet(CRenderBuffer* (&buffers)[8])

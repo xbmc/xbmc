@@ -1149,7 +1149,6 @@ bool DX::DeviceResources::IsDisplayHDREnabled()
           hdr10.MaxMasteringLuminance = static_cast<uint32_t>(FACTOR_2 * od.MaxLuminance);
           hdr10.MinMasteringLuminance = static_cast<uint32_t>(FACTOR_2 * od.MinLuminance);
           hdr10.MaxContentLightLevel = static_cast<uint16_t>(od.MaxFullFrameLuminance);
-          hdr10.MaxFrameAverageLightLevel = static_cast<uint16_t>(od.MaxFullFrameLuminance);
         }
         else if (od.MaxLuminance >= 400.0)
         {
