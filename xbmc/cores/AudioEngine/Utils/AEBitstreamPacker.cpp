@@ -174,7 +174,8 @@ void CAEBitstreamPacker::PackTrueHD(CAEStreamInfo &info, uint8_t* data, int size
 
   if (size > maxSize)
   {
-    CLog::Log(LOGERROR, "CAEBitstreamPacker::PackTrueHD - truncating TrueHD frame of %d bytes", size);
+    CLog::Log(LOGERROR, "CAEBitstreamPacker::PackTrueHD - truncating TrueHD frame of %d bytes",
+              size);
     size = maxSize;
   }
 
