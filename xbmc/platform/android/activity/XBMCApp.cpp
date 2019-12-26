@@ -579,8 +579,7 @@ void CXBMCApp::SetRefreshRate(float rate)
   {
     m_displayChangeEvent.WaitMSec(5000);
     if (m_hdmiSource && g_application.GetAppPlayer().IsPlaying())
-      dynamic_cast<CWinSystemAndroid*>(CServiceBroker::GetWinSystem())
-          ->SetHDMIState(CWinSystemAndroid::HDMI_STATE_UNCONNECTED_TIMER);
+      dynamic_cast<CWinSystemAndroid*>(CServiceBroker::GetWinSystem())->InitiateModeChange();
   }
 }
 
@@ -608,8 +607,7 @@ void CXBMCApp::SetDisplayMode(int mode, float rate)
   {
     m_displayChangeEvent.WaitMSec(5000);
     if (m_hdmiSource && g_application.GetAppPlayer().IsPlaying())
-      dynamic_cast<CWinSystemAndroid*>(CServiceBroker::GetWinSystem())
-          ->SetHDMIState(CWinSystemAndroid::HDMI_STATE_UNCONNECTED_TIMER);
+      dynamic_cast<CWinSystemAndroid*>(CServiceBroker::GetWinSystem())->InitiateModeChange();
   }
 }
 
@@ -1024,9 +1022,7 @@ void CXBMCApp::onReceive(CJNIIntent intent)
     {
       CWinSystemBase* winSystem = CServiceBroker::GetWinSystem();
       if (winSystem && dynamic_cast<CWinSystemAndroid*>(winSystem))
-        dynamic_cast<CWinSystemAndroid*>(winSystem)->SetHDMIState(
-            m_hdmiPlugged ? CWinSystemAndroid::HDMI_STATE_CONNECTED
-                          : CWinSystemAndroid::HDMI_STATE_UNCONNECTED);
+        dynamic_cast<CWinSystemAndroid*>(winSystem)->SetHdmiState(m_hdmiPlugged);
     }
   }
   else if (action == "android.intent.action.SCREEN_OFF")
