@@ -320,6 +320,7 @@ void CVideoDatabase::CreateAnalytics()
               "DELETE FROM studio_link WHERE media_id=old.idMVideo AND media_type='musicvideo'; "
               "DELETE FROM art WHERE media_id=old.idMVideo AND media_type='musicvideo'; "
               "DELETE FROM tag_link WHERE media_id=old.idMVideo AND media_type='musicvideo'; "
+              "DELETE FROM uniqueid WHERE media_id=old.idMVideo AND media_type='musicvideo'; "
               "END");
   m_pDS->exec("CREATE TRIGGER delete_episode AFTER DELETE ON episode FOR EACH ROW BEGIN "
               "DELETE FROM actor_link WHERE media_id=old.idEpisode AND media_type='episode'; "
@@ -495,7 +496,8 @@ void CVideoDatabase::CreateViews()
   m_pDS->exec(seasonview);
 
   CLog::Log(LOGINFO, "create musicvideo_view");
-  m_pDS->exec("CREATE VIEW musicvideo_view AS SELECT"
+  m_pDS->exec(PrepareSQL(
+              "CREATE VIEW musicvideo_view AS SELECT"
               "  musicvideo.*,"
               "  files.strFileName as strFileName,"
               "  path.strPath as strPath,"
@@ -504,14 +506,19 @@ void CVideoDatabase::CreateViews()
               "  files.dateAdded as dateAdded, "
               "  bookmark.timeInSeconds AS resumeTimeInSeconds, "
               "  bookmark.totalTimeInSeconds AS totalTimeInSeconds, "
-              "  bookmark.playerState AS playerState "
+              "  bookmark.playerState AS playerState, "
+              "  uniqueid.value AS uniqueid_value, "
+              "  uniqueid.type AS uniqueid_type "
               "FROM musicvideo"
               "  JOIN files ON"
               "    files.idFile=musicvideo.idFile"
               "  JOIN path ON"
               "    path.idPath=files.idPath"
               "  LEFT JOIN bookmark ON"
-              "    bookmark.idFile=musicvideo.idFile AND bookmark.type=1");
+              "    bookmark.idFile=musicvideo.idFile AND bookmark.type=1"
+              "  LEFT JOIN uniqueid ON"
+              "    uniqueid.uniqueid_id=musicvideo.c%02d",
+              VIDEODB_ID_MUSICVIDEO_IDENT_ID));
 
   CLog::Log(LOGINFO, "create movie_view");
 
@@ -2995,6 +3002,9 @@ int CVideoDatabase::SetDetailsForMusicVideo(CVideoInfoTag& details,
     AddLinksToItem(idMVideo, MediaTypeMusicVideo, "studio", details.m_studio);
     AddLinksToItem(idMVideo, MediaTypeMusicVideo, "tag", details.m_tags);
 
+    // add unique ids
+    details.m_iIdUniqueID = UpdateUniqueIDs(idMVideo, MediaTypeMusicVideo, details);
+
     if (details.HasStreamDetails())
       SetStreamDetailsForFileId(details.m_streamDetails, GetAndFillFileId(details));
 
@@ -4238,6 +4248,8 @@ CVideoInfoTag CVideoDatabase::GetDetailsForMusicVideo(const dbiplus::sql_record*
                          record->at(VIDEODB_DETAILS_MUSICVIDEO_TOTAL_TIME).get_asInt(),
                          record->at(VIDEODB_DETAILS_MUSICVIDEO_PLAYER_STATE).get_asString());
   details.m_iUserRating = record->at(VIDEODB_DETAILS_MUSICVIDEO_USER_RATING).get_asInt();
+  details.SetUniqueID(record->at(VIDEODB_DETAILS_MUSICVIDEO_UNIQUEID_VALUE).get_asString(),
+                      record->at(VIDEODB_DETAILS_MUSICVIDEO_UNIQUEID_TYPE).get_asString(), true);
   std::string premieredString = record->at(VIDEODB_DETAILS_MUSICVIDEO_PREMIERED).get_asString();
   if (premieredString.size() == 4)
     details.SetYear(record->at(VIDEODB_DETAILS_MUSICVIDEO_PREMIERED).get_asInt());
@@ -4248,6 +4260,9 @@ CVideoInfoTag CVideoDatabase::GetDetailsForMusicVideo(const dbiplus::sql_record*
   {
     if (getDetails & VideoDbDetailsTag)
       GetTags(details.m_iDbId, MediaTypeMusicVideo, details.m_tags);
+
+    if (getDetails & VideoDbDetailsUniqueID)
+      GetUniqueIDs(details.m_iDbId, MediaTypeMusicVideo, details);
 
     if (getDetails & VideoDbDetailsStream)
       GetStreamDetails(details);
