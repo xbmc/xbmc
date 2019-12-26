@@ -177,6 +177,13 @@ bool CDVDAudioCodecPassthrough::AddData(const DemuxPacket &packet)
     if (!m_trueHDoffset)
       memset(m_trueHDBuffer.get(), 0, TRUEHD_BUF_SIZE);
 
+    if (m_dataSize > 2560 - 2)
+    {
+      CLog::Log(LOGERROR,
+                "CDVDAudioCodecPassthrough::AddData - truncating TrueHD frame of %u bytes",
+                m_dataSize);
+      m_dataSize = 2560 - 2;
+    }
     memcpy(&(m_trueHDBuffer.get())[m_trueHDoffset], m_buffer, m_dataSize);
     uint8_t highByte = (m_dataSize >> 8) & 0xFF;
     uint8_t lowByte = m_dataSize & 0xFF;
