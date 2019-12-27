@@ -14,6 +14,7 @@
 #include "windowing/GraphicContext.h"
 #include "messaging/ApplicationMessenger.h"
 #include "platform/win32/CharsetConverter.h"
+#include "platform/win32/WIN32Util.h"
 #include "ServiceBroker.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
@@ -516,7 +517,7 @@ void DX::DeviceResources::ResizeBuffers()
   bool bHWStereoEnabled = RENDER_STEREO_MODE_HARDWAREBASED ==
                           CServiceBroker::GetWinSystem()->GetGfxContext().GetStereoMode();
   bool windowed = true;
-  bool isHdrEnabled = false;
+  bool isHdrEnabled = CWIN32Util::IsDisplayHDREnabled();
   HRESULT hr = E_FAIL;
   DXGI_SWAP_CHAIN_DESC1 scDesc = { 0 };
 
@@ -531,9 +532,8 @@ void DX::DeviceResources::ResizeBuffers()
 
     // check if swapchain needs to be recreated
     m_swapChain->GetDesc1(&scDesc);
-    isHdrEnabled = IsDisplayHDREnabled();
 
-    if ((scDesc.Stereo == TRUE) != bHWStereoEnabled || (!m_Is10bSwapchain && isHdrEnabled))
+    if ((scDesc.Stereo == TRUE) != bHWStereoEnabled || (m_Is10bSwapchain != isHdrEnabled))
     {
       // check fullscreen state and go to windowing if necessary
       if (!!bFullcreen)
@@ -1113,17 +1113,16 @@ void DX::DeviceResources::Trim() const
 
 #endif
 
-bool DX::DeviceResources::IsDisplayHDREnabled()
+DXGI_HDR_METADATA_HDR10 DX::DeviceResources::GetHdr10Display() const
 {
   ComPtr<IDXGIOutput> pOutput;
   ComPtr<IDXGIOutput6> pOutput6;
   DXGI_HDR_METADATA_HDR10 hdr10 = {};
   DXGI_OUTPUT_DESC1 od = {};
   bool hdrCapable = false;
-  bool hdrEnabled = false;
 
   if (m_swapChain == nullptr)
-    return false;
+    return hdr10;
 
   if (SUCCEEDED(m_swapChain->GetContainingOutput(pOutput.GetAddressOf())))
   {
@@ -1131,33 +1130,33 @@ bool DX::DeviceResources::IsDisplayHDREnabled()
     {
       if (SUCCEEDED(pOutput6->GetDesc1(&od)))
       {
+        constexpr float FACTOR_1 = 50000.0;
+        constexpr float FACTOR_2 = 10000.0;
+        hdr10.RedPrimary[0] = static_cast<uint16_t>(FACTOR_1 * od.RedPrimary[0]);
+        hdr10.RedPrimary[1] = static_cast<uint16_t>(FACTOR_1 * od.RedPrimary[1]);
+        hdr10.GreenPrimary[0] = static_cast<uint16_t>(FACTOR_1 * od.GreenPrimary[0]);
+        hdr10.GreenPrimary[1] = static_cast<uint16_t>(FACTOR_1 * od.GreenPrimary[1]);
+        hdr10.BluePrimary[0] = static_cast<uint16_t>(FACTOR_1 * od.BluePrimary[0]);
+        hdr10.BluePrimary[1] = static_cast<uint16_t>(FACTOR_1 * od.BluePrimary[1]);
+        hdr10.WhitePoint[0] = static_cast<uint16_t>(FACTOR_1 * od.WhitePoint[0]);
+        hdr10.WhitePoint[1] = static_cast<uint16_t>(FACTOR_1 * od.WhitePoint[1]);
+        hdr10.MaxMasteringLuminance = static_cast<uint32_t>(FACTOR_2 * od.MaxLuminance);
+        hdr10.MinMasteringLuminance = static_cast<uint32_t>(FACTOR_2 * od.MinLuminance);
+        hdr10.MaxContentLightLevel = static_cast<uint16_t>(od.MaxFullFrameLuminance);
+
         if (od.ColorSpace == DXGI_COLOR_SPACE_RGB_FULL_G2084_NONE_P2020)
         {
-          CLog::LogF(LOGNOTICE, "Monitor HDR capable detected and HDR current state is ENABLED:");
-          hdrEnabled = true;
+          CLog::LogF(LOGNOTICE, "Display HDR capable detected and HDR current state is ENABLED:");
           hdrCapable = true;
-          constexpr double FACTOR_1 = 50000.0;
-          constexpr double FACTOR_2 = 10000.0;
-          hdr10.RedPrimary[0] = static_cast<uint16_t>(FACTOR_1 * od.RedPrimary[0]);
-          hdr10.RedPrimary[1] = static_cast<uint16_t>(FACTOR_1 * od.RedPrimary[1]);
-          hdr10.GreenPrimary[0] = static_cast<uint16_t>(FACTOR_1 * od.GreenPrimary[0]);
-          hdr10.GreenPrimary[1] = static_cast<uint16_t>(FACTOR_1 * od.GreenPrimary[1]);
-          hdr10.BluePrimary[0] = static_cast<uint16_t>(FACTOR_1 * od.BluePrimary[0]);
-          hdr10.BluePrimary[1] = static_cast<uint16_t>(FACTOR_1 * od.BluePrimary[1]);
-          hdr10.WhitePoint[0] = static_cast<uint16_t>(FACTOR_1 * od.WhitePoint[0]);
-          hdr10.WhitePoint[1] = static_cast<uint16_t>(FACTOR_1 * od.WhitePoint[1]);
-          hdr10.MaxMasteringLuminance = static_cast<uint32_t>(FACTOR_2 * od.MaxLuminance);
-          hdr10.MinMasteringLuminance = static_cast<uint32_t>(FACTOR_2 * od.MinLuminance);
-          hdr10.MaxContentLightLevel = static_cast<uint16_t>(od.MaxFullFrameLuminance);
         }
         else if (od.MaxLuminance >= 400.0)
         {
-          CLog::LogF(LOGNOTICE, "Monitor HDR capable is detected but NOT enabled:");
+          CLog::LogF(LOGNOTICE, "Display HDR capable is detected but NOT enabled:");
           hdrCapable = true;
         }
         else
         {
-          CLog::LogF(LOGNOTICE, "No monitor HDR capable detected.");
+          CLog::LogF(LOGNOTICE, "No display HDR capable detected.");
         }
         if (hdrCapable)
         {
@@ -1191,10 +1190,8 @@ bool DX::DeviceResources::IsDisplayHDREnabled()
       }
     }
   }
-  //Saves Monitor parameters for use later
-  m_displayHDR10 = hdr10;
 
-  return hdrEnabled;
+  return hdr10;
 }
 
 void DX::DeviceResources::SetHdrMetaData(DXGI_HDR_METADATA_HDR10& hdr10) const
@@ -1270,35 +1267,4 @@ void DX::DeviceResources::SetColorSpace1(const DXGI_COLOR_SPACE_TYPE colorSpace)
       CLog::LogF(LOGERROR, "DXGI SetColorSpace1 failed");
     }
   }
-}
-
-bool DX::DeviceResources::IsDisplayHDRCapable() const
-{
-  ComPtr<IDXGIOutput> pOutput;
-  ComPtr<IDXGIOutput6> pOutput6;
-  DXGI_OUTPUT_DESC1 od = {};
-
-  if (m_swapChain == nullptr)
-    return false;
-
-  if (SUCCEEDED(m_swapChain->GetContainingOutput(pOutput.GetAddressOf())))
-  {
-    if (SUCCEEDED(pOutput.As(&pOutput6)))
-    {
-      if (SUCCEEDED(pOutput6->GetDesc1(&od)))
-      {
-        if (od.MaxLuminance >= 400.0)
-        {
-          CLog::LogF(LOGDEBUG, "Monitor HDR capable detected.");
-          return true;
-        }
-      }
-      else
-      {
-        CLog::LogF(LOGERROR, "DXGI GetDesc1 failed");
-      }
-    }
-  }
-
-  return false;
 }

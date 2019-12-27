@@ -10,6 +10,7 @@
 
 #include "DVDCodecs/Video/DVDVideoCodec.h"
 #include "DVDCodecs/Video/DXVA.h"
+#include "platform/win32/WIN32Util.h"
 #include "Process/VideoBuffer.h"
 #include "VideoRenderers/BaseRenderer.h"
 #include "VideoRenderers/RenderFlags.h"
@@ -132,7 +133,7 @@ CRendererBase::~CRendererBase()
 {
   if (DX::DeviceResources::Get()->Is10BitSwapchain())
   {
-    if (DX::DeviceResources::Get()->IsDisplayHDREnabled())
+    if (CWIN32Util::IsDisplayHDREnabled())
     {
       CLog::LogF(LOGDEBUG, "Restoring SDR rendering");
       DX::DeviceResources::Get()->SetColorSpace1(DXGI_COLOR_SPACE_RGB_FULL_G22_NONE_P709);
@@ -170,11 +171,15 @@ bool CRendererBase::Configure(const VideoPicture& picture, float fps, unsigned o
   m_fps = fps;
   m_renderOrientation = orientation;
 
-  m_lastHdr10 = {};
-  m_isHdrEnabled = false;
-  m_isHlgEnabled = false;
-  m_isRec2020Enabled = false;
-  m_iCntMetaData = 0;
+  if (DX::DeviceResources::Get()->Is10BitSwapchain())
+  {
+    m_lastHdr10 = {};
+    m_isHdrEnabled = false;
+    m_isHlgEnabled = false;
+    m_isRec2020Enabled = false;
+    m_iCntMetaData = 0;
+    m_hdr10Display = DX::DeviceResources::Get()->GetHdr10Display();
+  }
 
   return true;
 }
@@ -228,7 +233,7 @@ void CRendererBase::Render(CD3DTexture& target, const CRect& sourceRect, const C
       else
       {
         // Sets HDR10 metadata and enables HDR10 color space (switch to HDR rendering)
-        if (DX::DeviceResources::Get()->IsDisplayHDREnabled())
+        if (CWIN32Util::IsDisplayHDREnabled())
         {
           DX::DeviceResources::Get()->SetHdrMetaData(hdr10);
           CLog::LogF(LOGNOTICE, "Switching to HDR rendering");
@@ -244,7 +249,7 @@ void CRendererBase::Render(CD3DTexture& target, const CRect& sourceRect, const C
     {
       if (!m_isHlgEnabled)
       {
-        if (DX::DeviceResources::Get()->IsDisplayHDREnabled())
+        if (CWIN32Util::IsDisplayHDREnabled())
         {
           // Switch to HLG rendering (internally converts HLG to HDR10)
           CLog::LogF(LOGNOTICE, "Switching to HLG rendering");

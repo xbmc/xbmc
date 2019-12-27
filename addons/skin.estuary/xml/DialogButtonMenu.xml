@@ -24,13 +24,13 @@
 					</item>
 					<item>
 						<label>$LOCALIZE[13037]</label>
-						<onclick>WindowsHDRSwitch()</onclick>
-						<visible>System.WindowsHdrOff</visible>
+						<onclick>ToggleDisplayHDR()</onclick>
+						<visible>System.IsHDRDisplayOff</visible>
 					</item>
 					<item>
 						<label>$LOCALIZE[13038]</label>
-						<onclick>WindowsHDRSwitch()</onclick>
-						<visible>System.WindowsHdrOn</visible>
+						<onclick>ToggleDisplayHDR()</onclick>
+						<visible>System.IsHDRDisplayOn</visible>
 					</item>
 					<item>
 						<label>$LOCALIZE[13016]</label>

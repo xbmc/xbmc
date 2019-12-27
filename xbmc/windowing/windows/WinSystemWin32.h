@@ -127,7 +127,6 @@ public:
   // winevents override
   bool MessagePump() override;
 
-  static void WindowsHDRSwitch();
 
 protected:
   bool CreateNewWindow(const std::string& name, bool fullScreen, RESOLUTION_INFO& res) override = 0;
