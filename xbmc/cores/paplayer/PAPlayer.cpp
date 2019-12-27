@@ -256,8 +256,10 @@ bool PAPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
   m_isPlaying = true;
   m_startEvent.Set();
 
-  m_callback.OnPlayBackStarted(file);
+  // OnPlayBackStarted to be made only once. Callback processing may be slower than player process
+  // so clear signal flag first otherwise async stream processing could also make callback
   m_signalStarted = false;
+  m_callback.OnPlayBackStarted(file);
 
   return true;
 }
