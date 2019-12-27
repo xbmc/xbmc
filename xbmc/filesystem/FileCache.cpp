@@ -164,6 +164,10 @@ bool CFileCache::Open(const CURL& url)
         cacheSize = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_cacheMemSize;
       }
 
+      // Cap chunk size by cache size
+      if (m_chunkSize > cacheSize)
+        m_chunkSize = cacheSize;
+
       size_t back = cacheSize / 4;
       size_t front = cacheSize - back;
 
@@ -292,20 +296,25 @@ void CFileCache::Process()
       }
     }
 
-    size_t maxWrite = m_pCache->GetMaxWriteSize(m_chunkSize);
+    const int64_t maxWrite = m_pCache->GetMaxWriteSize(m_chunkSize);
+    int64_t maxSourceRead = m_chunkSize;
+    // Cap source read size by space available between current write position and EOF
+    if (m_fileSize != 0)
+      maxSourceRead = std::min(maxSourceRead, m_fileSize - m_writePos);
 
     /* Only read from source if there's enough write space in the cache
      * else we may keep disposing data and seeking back on (slow) source
      */
-    if (maxWrite < m_chunkSize && !cacheReachEOF)
+    if (maxWrite < maxSourceRead && !cacheReachEOF)
     {
+      // Wait until sufficient cache write space is available
       m_pCache->m_space.WaitMSec(5);
       continue;
     }
 
     ssize_t iRead = 0;
     if (!cacheReachEOF)
-      iRead = m_source.Read(buffer.get(), m_chunkSize);
+      iRead = m_source.Read(buffer.get(), maxSourceRead);
     if (iRead == 0)
     {
       // Check for actual EOF and retry as long as we still have data in our cache
