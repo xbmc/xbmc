@@ -22,6 +22,9 @@
 #include "input/WindowTranslator.h"
 #include "input/actions/ActionTranslator.h"
 #include "messaging/ApplicationMessenger.h"
+#if defined(TARGET_WINDOWS)
+#include "platform/win32/WIN32Util.h"
+#endif
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/AlarmClock.h"
@@ -31,9 +34,6 @@
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 #include "windows/GUIMediaWindow.h"
-#if defined(TARGET_WINDOWS)
-#include "windowing/windows/WinSystemWin32.h"
-#endif
 
 using namespace KODI::MESSAGING;
 
@@ -378,10 +378,13 @@ static int ToggleDirty(const std::vector<std::string>&)
   return 0;
 }
 
-static int WindowsHDRSwitch(const std::vector<std::string>&)
+/*! \brief Toggle display HDR On/Off (equivalent to Windows HDR switch in display settings).
+ *  \param params (ignored)
+ */
+static int ToggleDisplayHDR(const std::vector<std::string>&)
 {
 #if defined(TARGET_WINDOWS)
-  CWinSystemWin32::WindowsHDRSwitch();
+  CWIN32Util::ToggleWindowsHDR();
   CApplicationMessenger::GetInstance().SendMsg(TMSG_RESTARTAPP);
 #endif
   return 0;
@@ -555,6 +558,11 @@ static int WindowsHDRSwitch(const std::vector<std::string>&)
 ///     ,
 ///     makes dirty regions visible for debugging proposes.
 ///   }
+///   \table_row2_l{
+///     <b>`ToggleDisplayHDR`</b>
+///     ,
+///     Toggles display HDR On/Off and restarts Kodi.
+///   }
 ///  \table_end
 ///
 
@@ -577,6 +585,6 @@ CBuiltins::CommandMap CGUIBuiltins::GetOperations() const
            {"setstereomode",                  {"Changes the stereo mode of the GUI. Params can be: toggle, next, previous, select, tomono or any of the supported stereomodes (off, split_vertical, split_horizontal, row_interleaved, hardware_based, anaglyph_cyan_red, anaglyph_green_magenta, anaglyph_yellow_blue, monoscopic)", 1, SetStereoMode}},
            {"takescreenshot",                 {"Takes a Screenshot", 0, Screenshot}},
            {"toggledirtyregionvisualization", {"Enables/disables dirty-region visualization", 0, ToggleDirty}},
-           {"windowshdrswitch",               {"Toggles Windows HDR On/Off and restarts Kodi", 0, WindowsHDRSwitch}}
+           {"toggledisplayhdr",               {"Toggles display HDR On/Off and restarts Kodi. Function always invert current status e.g. OFF->ON->OFF->ON. In Windows is equivalent to Windows HDR switch in display settings", 0, ToggleDisplayHDR}}
          };
 }

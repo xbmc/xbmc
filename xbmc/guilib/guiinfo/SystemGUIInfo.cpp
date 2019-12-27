@@ -20,11 +20,11 @@
 #if defined(TARGET_DARWIN_OSX)
 #include "platform/darwin/osx/smc.h"
 #endif
+#if defined(TARGET_WINDOWS)
+#include "platform/win32/WIN32Util.h"
+#endif
 #include "powermanagement/PowerManager.h"
 #include "profiles/ProfileManager.h"
-#if defined(TARGET_WINDOWS)
-#include "rendering/dx/deviceresources.h"
-#endif
 #include "settings/AdvancedSettings.h"
 #include "settings/DisplaySettings.h"
 #include "settings/MediaSettings.h"
@@ -580,16 +580,16 @@ bool CSystemGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int context
     case SYSTEM_SHOW_EXIT_BUTTON:
       value = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_showExitButton;
       return true;
-    case SYSTEM_WINDOWS_HDR_OFF:
+    case SYSTEM_IS_HDR_DISPLAY_OFF:
 #if defined(TARGET_WINDOWS)
-      value = DX::DeviceResources::Get()->IsDisplayHDRCapable() && !DX::DeviceResources::Get()->IsDisplayHDREnabled();
+      value = (1 == CWIN32Util::GetHDRDisplayStatus());
 #else
       value = false;
 #endif
       return true;
-    case SYSTEM_WINDOWS_HDR_ON:
+    case SYSTEM_IS_HDR_DISPLAY_ON:
 #if defined(TARGET_WINDOWS)
-      value = DX::DeviceResources::Get()->IsDisplayHDRCapable() && DX::DeviceResources::Get()->IsDisplayHDREnabled();
+      value = (2 == CWIN32Util::GetHDRDisplayStatus());
 #else
       value = false;
 #endif

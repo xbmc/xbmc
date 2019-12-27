@@ -21,7 +21,6 @@
 #include "utils/log.h"
 
 #include <Windows.h>
-#include <dxgi1_5.h>
 #include <d3d11_4.h>
 
 using namespace DXVA;
@@ -208,6 +207,9 @@ bool CProcessorHD::InitProcessor()
       m_Filters[i].bSupported = false;
     }
   }
+
+  if (m_bSupportHDR10)
+    m_hdr10Display = DX::DeviceResources::Get()->GetHdr10Display();
 
   return true;
 }
@@ -549,10 +551,9 @@ bool CProcessorHD::Render(CRect src, CRect dst, ID3D11Resource* target, CRenderB
                                                       sizeof(hdr10Stream), &hdr10Stream);
 
         // Passes Display HDR parameters (EDID) to VideoProcessor
-        DXGI_HDR_METADATA_HDR10 hdr10Display = DX::DeviceResources::Get()->GetHdr10Display();
         videoCtx2->VideoProcessorSetOutputHDRMetaData(m_pVideoProcessor.Get(),
                                                       DXGI_HDR_METADATA_TYPE_HDR10,
-                                                      sizeof(hdr10Display), &hdr10Display);
+                                                      sizeof(m_hdr10Display), &m_hdr10Display);
       }
     }
   }

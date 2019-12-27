@@ -170,6 +170,7 @@ protected:
   std::map<int, CRenderBuffer*> m_renderBuffers;
 
   DXGI_HDR_METADATA_HDR10 m_lastHdr10 = {};
+  DXGI_HDR_METADATA_HDR10 m_hdr10Display = {};
   int m_iCntMetaData = 0;
   bool m_isHdrEnabled = false;
   bool m_isHlgEnabled = false;

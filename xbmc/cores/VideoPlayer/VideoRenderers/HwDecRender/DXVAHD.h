@@ -13,6 +13,7 @@
 #include "guilib/D3DResource.h"
 #include "utils/Geometry.h"
 
+#include <dxgi1_5.h>
 #include <wrl/client.h>
 
 class CRenderBuffer;
@@ -69,6 +70,7 @@ protected:
   D3D11_VIDEO_PROCESSOR_CAPS m_vcaps = {};
   D3D11_VIDEO_PROCESSOR_RATE_CONVERSION_CAPS m_rateCaps = {};
   bool m_bSupportHDR10 = false;
+  DXGI_HDR_METADATA_HDR10 m_hdr10Display = {};
 
   struct ProcAmpInfo
   {

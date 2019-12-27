@@ -1645,6 +1645,22 @@ const infomap weather[] =        {{ "isfetched",        WEATHER_IS_FETCHED },
 ///     @skinning_v19 **[New Boolean Condition]** \link  System_SupportsCPUUsage ` System.SupportsCPUUsage`\endlink
 ///     <p>
 ///   }
+///   \table_row3{   <b>`System.IsHDRDisplayOff`</b>,
+///                  \anchor System_IsHDRDisplayOff
+///                  _boolean_,
+///     @return **True** if the system has HDR display capable but HDR no enabled.
+///     <p><hr>
+///     @skinning_v19 **[New Boolean Condition]** \link  System_IsHDRDisplayOff ` System.IsHDRDisplayOff`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`System.IsHDRDisplayOn`</b>,
+///                  \anchor System_IsHDRDisplayOn
+///                  _boolean_,
+///     @return **True** if the system has HDR display enabled.
+///     <p><hr>
+///     @skinning_v19 **[New Boolean Condition]** \link  System_IsHDRDisplayOn ` System.IsHDRDisplayOn`\endlink
+///     <p>
+///   }
 const infomap system_labels[] =  {{ "hasnetwork",       SYSTEM_ETHERNET_LINK_ACTIVE },
                                   { "hasmediadvd",      SYSTEM_MEDIA_DVD },
                                   { "hasmediaaudiocd",  SYSTEM_MEDIA_AUDIO_CD },
@@ -1714,8 +1730,8 @@ const infomap system_labels[] =  {{ "hasnetwork",       SYSTEM_ETHERNET_LINK_ACT
                                   { "privacypolicy",    SYSTEM_PRIVACY_POLICY },
                                   { "haspvraddon",      SYSTEM_HAS_PVR_ADDON },
                                   { "supportscpuusage", SYSTEM_SUPPORTS_CPU_USAGE },
-                                  { "windowshdroff",    SYSTEM_WINDOWS_HDR_OFF },
-                                  { "windowshdron",     SYSTEM_WINDOWS_HDR_ON }};
+                                  { "ishdrdisplayoff",  SYSTEM_IS_HDR_DISPLAY_OFF },
+                                  { "ishdrdisplayon",   SYSTEM_IS_HDR_DISPLAY_ON }};
 
 /// \page modules__infolabels_boolean_conditions
 ///   \table_row3{   <b>`System.HasAddon(id)`</b>,
