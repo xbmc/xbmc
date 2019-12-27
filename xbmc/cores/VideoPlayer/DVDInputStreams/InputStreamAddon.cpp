@@ -333,10 +333,15 @@ CDemuxStream* CInputStreamAddon::GetStream(int streamId) const
     return nullptr;
 
   std::string codecName(stream.m_codecName);
-  StringUtils::ToLower(codecName);
-  AVCodec *codec = avcodec_find_decoder_by_name(codecName.c_str());
-  if (!codec)
-    return nullptr;
+  AVCodec* codec = nullptr;
+
+  if (stream.m_streamType != INPUTSTREAM_INFO::TYPE_TELETEXT)
+  {
+    StringUtils::ToLower(codecName);
+    codec = avcodec_find_decoder_by_name(codecName.c_str());
+    if (!codec)
+      return nullptr;
+  }
 
   CDemuxStream *demuxStream;
 
@@ -403,11 +408,19 @@ CDemuxStream* CInputStreamAddon::GetStream(int streamId) const
     CDemuxStreamSubtitle *subtitleStream = new CDemuxStreamSubtitle();
     demuxStream = subtitleStream;
   }
+  else if (stream.m_streamType == INPUTSTREAM_INFO::TYPE_TELETEXT)
+  {
+    CDemuxStreamTeletext* teletextStream = new CDemuxStreamTeletext();
+    demuxStream = teletextStream;
+  }
   else
     return nullptr;
 
   demuxStream->name = stream.m_name;
-  demuxStream->codec = codec->id;
+  if (codec)
+    demuxStream->codec = codec->id;
+  else
+    demuxStream->codec = AV_CODEC_ID_DVB_TELETEXT;
   demuxStream->codecName = stream.m_codecInternalName;
   demuxStream->uniqueId = streamId;
   demuxStream->flags = static_cast<StreamFlags>(stream.m_flags);
