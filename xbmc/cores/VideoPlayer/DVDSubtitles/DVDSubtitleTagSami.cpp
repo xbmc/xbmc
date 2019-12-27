@@ -188,7 +188,7 @@ void CDVDSubtitleTagSami::ConvertLine(CDVDOverlayText* pOverlay, const char* lin
     strUTF8.erase(strUTF8.size()-1);
 
   std::wstring wStrHtml, wStr;
-  g_charsetConverter.utf8ToW(strUTF8, wStrHtml);
+  g_charsetConverter.utf8ToW(strUTF8, wStrHtml, false);
   HTML::CHTMLUtil::ConvertHTMLToW(wStrHtml, wStr);
   g_charsetConverter.wToUTF8(wStr, strUTF8);
 
