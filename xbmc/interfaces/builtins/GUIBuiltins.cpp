@@ -22,9 +22,6 @@
 #include "input/WindowTranslator.h"
 #include "input/actions/ActionTranslator.h"
 #include "messaging/ApplicationMessenger.h"
-#if defined(TARGET_WINDOWS)
-#include "platform/win32/WIN32Util.h"
-#endif
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/AlarmClock.h"
@@ -383,10 +380,8 @@ static int ToggleDirty(const std::vector<std::string>&)
  */
 static int ToggleDisplayHDR(const std::vector<std::string>&)
 {
-#if defined(TARGET_WINDOWS)
-  CWIN32Util::ToggleWindowsHDR();
+  CServiceBroker::GetWinSystem()->ToggleDisplayHDR();
   CApplicationMessenger::GetInstance().SendMsg(TMSG_RESTARTAPP);
-#endif
   return 0;
 }
 

@@ -228,7 +228,7 @@ bool COutputShader::Create(bool useLUT, bool useDithering, int ditherDepth, bool
 {
   m_useLut = useLUT;
   m_ditherDepth = ditherDepth;
-  m_toneMapping = toneMapping && !DX::DeviceResources::Get()->Is10BitSwapchain();
+  m_toneMapping = toneMapping && !DX::DeviceResources::Get()->IsHDROutput();
 
   CWinShader::CreateVertexBuffer(4, sizeof(Vertex));
 

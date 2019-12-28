@@ -20,9 +20,6 @@
 #if defined(TARGET_DARWIN_OSX)
 #include "platform/darwin/osx/smc.h"
 #endif
-#if defined(TARGET_WINDOWS)
-#include "platform/win32/WIN32Util.h"
-#endif
 #include "powermanagement/PowerManager.h"
 #include "profiles/ProfileManager.h"
 #include "settings/AdvancedSettings.h"
@@ -574,18 +571,10 @@ bool CSystemGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int context
       value = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_showExitButton;
       return true;
     case SYSTEM_IS_HDR_DISPLAY_OFF:
-#if defined(TARGET_WINDOWS)
-      value = (1 == CWIN32Util::GetHDRDisplayStatus());
-#else
-      value = false;
-#endif
+      value = (1 == CServiceBroker::GetWinSystem()->GetHDRDisplayStatus());
       return true;
     case SYSTEM_IS_HDR_DISPLAY_ON:
-#if defined(TARGET_WINDOWS)
-      value = (2 == CWIN32Util::GetHDRDisplayStatus());
-#else
-      value = false;
-#endif
+      value = (2 == CServiceBroker::GetWinSystem()->GetHDRDisplayStatus());
       return true;
     case SYSTEM_HAS_LOGINSCREEN:
       value = CServiceBroker::GetSettingsComponent()->GetProfileManager()->UsingLoginScreen();

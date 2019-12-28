@@ -124,9 +124,12 @@ public:
   void SetSizeMoveMode(bool mode) { m_bSizeMoveEnabled = mode; }
   bool IsInSizeMoveMode() const { return m_bSizeMoveEnabled; }
 
+  // HDR display support
+  void ToggleDisplayHDR() override;
+  int GetHDRDisplayStatus() override;
+
   // winevents override
   bool MessagePump() override;
-
 
 protected:
   bool CreateNewWindow(const std::string& name, bool fullScreen, RESOLUTION_INFO& res) override = 0;
