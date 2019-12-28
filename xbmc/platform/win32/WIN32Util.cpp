@@ -1377,11 +1377,3 @@ int CWIN32Util::GetHDRDisplayStatus()
 
   return status;
 }
-
-bool CWIN32Util::IsDisplayHDREnabled()
-{
-  if (GetHDRDisplayStatus() == 2)
-    return true;
-
-  return false;
-}

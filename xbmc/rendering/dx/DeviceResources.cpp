@@ -14,7 +14,6 @@
 #include "windowing/GraphicContext.h"
 #include "messaging/ApplicationMessenger.h"
 #include "platform/win32/CharsetConverter.h"
-#include "platform/win32/WIN32Util.h"
 #include "ServiceBroker.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
@@ -517,7 +516,7 @@ void DX::DeviceResources::ResizeBuffers()
   bool bHWStereoEnabled = RENDER_STEREO_MODE_HARDWAREBASED ==
                           CServiceBroker::GetWinSystem()->GetGfxContext().GetStereoMode();
   bool windowed = true;
-  bool isHdrEnabled = CWIN32Util::IsDisplayHDREnabled();
+  bool isHdrEnabled = false;
   HRESULT hr = E_FAIL;
   DXGI_SWAP_CHAIN_DESC1 scDesc = { 0 };
 
@@ -532,6 +531,7 @@ void DX::DeviceResources::ResizeBuffers()
 
     // check if swapchain needs to be recreated
     m_swapChain->GetDesc1(&scDesc);
+    isHdrEnabled = IsDisplayHDREnabled();
 
     if ((scDesc.Stereo == TRUE) != bHWStereoEnabled || (m_Is10bSwapchain != isHdrEnabled))
     {
@@ -630,13 +630,25 @@ void DX::DeviceResources::ResizeBuffers()
 
     if (swapChainDesc.Format == DXGI_FORMAT_R10G10B10A2_UNORM)
     {
+      std::string txOutput;
       m_Is10bSwapchain = true;
-      CLog::LogF(LOGNOTICE, "10 bit swapchain is used.");
+      if (isHdrEnabled)
+      {
+        m_IsHDROutput = true;
+        txOutput = "HDR";
+      }
+      else
+      {
+        m_IsHDROutput = false;
+        txOutput = "SDR";
+      }
+      CLog::LogF(LOGNOTICE, "10 bit swapchain is used with {0:s} output", txOutput);
     }
     else
     {
       m_Is10bSwapchain = false;
-      CLog::LogF(LOGNOTICE, "8 bit swapchain is used.");
+      m_IsHDROutput = false;
+      CLog::LogF(LOGNOTICE, "8 bit swapchain is used with SDR output");
     }
 
     hr = swapChain.As(&m_swapChain); CHECK_ERR();
@@ -648,6 +660,8 @@ void DX::DeviceResources::ResizeBuffers()
     hr = m_d3dDevice.As(&dxgiDevice); CHECK_ERR();
     dxgiDevice->SetMaximumFrameLatency(1);
   }
+
+  CLog::LogF(LOGDEBUG, "end resize buffers.");
 }
 
 // These resources need to be recreated every time the window size is changed.
@@ -1233,7 +1247,7 @@ void DX::DeviceResources::SetHdrMetaData(DXGI_HDR_METADATA_HDR10& hdr10) const
   }
 }
 
-void DX::DeviceResources::SetColorSpace1(const DXGI_COLOR_SPACE_TYPE colorSpace) const
+void DX::DeviceResources::SetHdrColorSpace(const DXGI_COLOR_SPACE_TYPE colorSpace) const
 {
   ComPtr<IDXGISwapChain3> swapChain3;
 
@@ -1267,4 +1281,35 @@ void DX::DeviceResources::SetColorSpace1(const DXGI_COLOR_SPACE_TYPE colorSpace)
       CLog::LogF(LOGERROR, "DXGI SetColorSpace1 failed");
     }
   }
+}
+
+bool DX::DeviceResources::IsDisplayHDREnabled() const
+{
+  ComPtr<IDXGIOutput> pOutput;
+  ComPtr<IDXGIOutput6> pOutput6;
+  DXGI_OUTPUT_DESC1 od = {};
+
+  if (m_swapChain == nullptr)
+    return false;
+
+  if (SUCCEEDED(m_swapChain->GetContainingOutput(pOutput.GetAddressOf())))
+  {
+    if (SUCCEEDED(pOutput.As(&pOutput6)))
+    {
+      if (SUCCEEDED(pOutput6->GetDesc1(&od)))
+      {
+        CLog::LogF(LOGDEBUG, "DXGI GetDesc1 success");
+        if (od.ColorSpace == DXGI_COLOR_SPACE_RGB_FULL_G2084_NONE_P2020)
+        {
+          return true;
+        }
+      }
+      else
+      {
+        CLog::LogF(LOGERROR, "DXGI GetDesc1 failed");
+      }
+    }
+  }
+
+  return false;
 }

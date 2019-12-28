@@ -6131,12 +6131,12 @@ msgstr ""
 
 #: addons/skin.estuary/xml/DialogButtonMenu.xml
 msgctxt "#13037"
-msgid "Toggle Windows HDR On"
+msgid "Toggle display HDR on"
 msgstr ""
 
 #: addons/skin.estuary/xml/DialogButtonMenu.xml
 msgctxt "#13038"
-msgid "Toggle Windows HDR Off"
+msgid "Toggle display HDR off"
 msgstr ""
 
 #empty strings from id 13039 to 13049

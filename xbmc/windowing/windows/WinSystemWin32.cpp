@@ -19,6 +19,7 @@
 #include "filesystem/SpecialProtocol.h"
 #include "messaging/ApplicationMessenger.h"
 #include "platform/Environment.h"
+#include "platform/win32/WIN32Util.h"
 #include "rendering/dx/ScreenshotSurfaceWindows.h"
 #include "resource.h"
 #include "settings/AdvancedSettings.h"
@@ -1194,3 +1195,12 @@ bool CWinSystemWin32::MessagePump()
   return m_winEvents->MessagePump();
 }
 
+void CWinSystemWin32::ToggleDisplayHDR()
+{
+  CWIN32Util::ToggleWindowsHDR();
+}
+
+int CWinSystemWin32::GetHDRDisplayStatus()
+{
+  return CWIN32Util::GetHDRDisplayStatus();
+}
