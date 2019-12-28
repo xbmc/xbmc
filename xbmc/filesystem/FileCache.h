@@ -69,7 +69,6 @@ namespace XFILE
     unsigned m_writeRate;
     unsigned m_writeRateActual;
     int64_t m_forwardCacheSize;
-    int64_t m_forward;
     bool m_bFilling;
     bool m_bLowSpeedDetected;
     std::atomic<int64_t> m_fileSize;
