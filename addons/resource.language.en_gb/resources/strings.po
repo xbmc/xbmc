@@ -20615,6 +20615,7 @@ msgstr ""
 
 #. Values for setting with label #36621 and #36628 "Minimum/Maximum protocol version" - none means "no protocol version is forced"
 #: system/settings/settings.xml
+#: addons/skin.estuary/xml/View_50_List.xml
 msgctxt "#36623"
 msgid "None"
 msgstr ""
