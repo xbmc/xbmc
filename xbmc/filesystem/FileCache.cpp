@@ -155,27 +155,40 @@ bool CFileCache::Open(const CURL& url)
       size_t cacheSize;
       if (m_fileSize > 0 && m_fileSize < CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_cacheMemSize && !(m_flags & READ_AUDIO_VIDEO))
       {
-        // NOTE: We don't need to take into account READ_MULTI_STREAM here as it's only used for audio/video
+        // Cap cache size by filesize, but not for audio/video files as those may grow.
+        // We don't need to take into account READ_MULTI_STREAM here as that's only used for audio/video
         cacheSize = m_fileSize;
+
+        // Cap chunk size by cache size
+        if (m_chunkSize > cacheSize)
+          m_chunkSize = cacheSize;
       }
       else
       {
         cacheSize = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_cacheMemSize;
+
+        // NOTE: READ_MULTI_STREAM is only used with READ_AUDIO_VIDEO
+        if (m_flags & READ_MULTI_STREAM)
+        {
+          // READ_MULTI_STREAM requires double buffering, so use half the amount of memory for each buffer
+          cacheSize /= 2;
+        }
+
+        // Make sure cache can at least hold 2 chunks
+        if (cacheSize < m_chunkSize * 2)
+          cacheSize = m_chunkSize * 2;
       }
-
-      // Cap chunk size by cache size
-      if (m_chunkSize > cacheSize)
-        m_chunkSize = cacheSize;
-
-      size_t back = cacheSize / 4;
-      size_t front = cacheSize - back;
 
       if (m_flags & READ_MULTI_STREAM)
-      {
-        // READ_MULTI_STREAM requires double buffering, so use half the amount of memory for each buffer
-        front /= 2;
-        back /= 2;
-      }
+        CLog::Log(LOGDEBUG, "CFileCache::Open - Using double memory cache each sized %i bytes",
+                  cacheSize);
+      else
+        CLog::Log(LOGDEBUG, "CFileCache::Open - Using single memory cache sized %i bytes",
+                  cacheSize);
+
+      const size_t back = cacheSize / 4;
+      const size_t front = cacheSize - back;
+
       m_pCache = std::unique_ptr<CCircularCache>(new CCircularCache(front, back)); // C++14 - Replace with std::make_unique
       m_forwardCacheSize = front;
     }
