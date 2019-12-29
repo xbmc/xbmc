@@ -77,50 +77,52 @@ if [ "${PLATFORM_NAME}" == "iphoneos" ] || [ "${PLATFORM_NAME}" == "appletvos" ]
   fi
 
   #if user has set a code_sign_identity different from iPhone Developer we do a real codesign (for deployment on non-jailbroken devices)
-  if ! [ -z "${CODE_SIGN_IDENTITY}" ] && echo ${CODE_SIGN_IDENTITY} | grep -cim1 "iPhone Developer" &>/dev/null; then
-    echo "Doing a full bundle sign using genuine identity ${CODE_SIGN_IDENTITY}"
-    for binext in $LIST_BINARY_EXTENSIONS
-    do
-      echo "Signing binary: $binext"
-      # check if at least 1 file with the extension exists to sign, otherwise do nothing
-      FINDOUTPUT=`find ${CODESIGNING_FOLDER_PATH} -name "*.$binext" -type f`
-      if [ `echo $FINDOUTPUT | wc -l` != 0 ]; then
-        for singlefile in $FINDOUTPUT; do
-          codesign -s "${CODE_SIGN_IDENTITY_FOR_ITEMS}" -fvvv -i "${BUNDLEID}" "${singlefile}"
-        done
-      fi
-    done
-    echo "In case your app crashes with SIG_SIGN check the variable LIST_BINARY_EXTENSIONS in tools/darwin/Support/Codesign.command"
-
-    for FRAMEWORK_PATH in `find ${CODESIGNING_FOLDER_PATH} -name "*.framework" -type d`
-    do
-      DYLIB_BASENAME=$(basename "${FRAMEWORK_PATH%.framework}")
-      echo "Signing Framework: ${DYLIB_BASENAME}.framework"
-      FRAMEWORKBUNDLEID="${BUNDLEID}.framework.${DYLIB_BASENAME}"
-      codesign -s "${CODE_SIGN_IDENTITY_FOR_ITEMS}" -fvvv -i "${FRAMEWORKBUNDLEID}" ${FRAMEWORK_PATH}/${DYLIB_BASENAME}
-      codesign -s "${CODE_SIGN_IDENTITY_FOR_ITEMS}" -fvvv -i "${FRAMEWORKBUNDLEID}" ${FRAMEWORK_PATH}
-    done
-
-    #repackage python eggs
-    EGGS=`find ${CODESIGNING_FOLDER_PATH} -name "*.egg" -type f`
-    echo "Signing Eggs"
-    for i in $EGGS; do
-      echo $i
-      mkdir del
-      unzip -q $i -d del
+  if ! [ -z "${CODE_SIGN_IDENTITY}" ]; then
+    if echo ${CODE_SIGN_IDENTITY} | grep -cim1 "iPhone Developer" &>/dev/null || echo ${CODE_SIGN_IDENTITY} | grep -cim1 "Apple Development" &>/dev/null; then
+      echo "Doing a full bundle sign using genuine identity ${CODE_SIGN_IDENTITY}"
       for binext in $LIST_BINARY_EXTENSIONS
       do
+        echo "Signing binary: $binext"
         # check if at least 1 file with the extension exists to sign, otherwise do nothing
-        FINDOUTPUT=`find ./del/ -name "*.$binext" -type f`
+        FINDOUTPUT=`find ${CODESIGNING_FOLDER_PATH} -name "*.$binext" -type f`
         if [ `echo $FINDOUTPUT | wc -l` != 0 ]; then
           for singlefile in $FINDOUTPUT; do
             codesign -s "${CODE_SIGN_IDENTITY_FOR_ITEMS}" -fvvv -i "${BUNDLEID}" "${singlefile}"
           done
         fi
       done
-      rm $i
-      cd del && zip -qr $i ./* &&  cd ..
-      rm -r ./del/
-    done
+      echo "In case your app crashes with SIG_SIGN check the variable LIST_BINARY_EXTENSIONS in tools/darwin/Support/Codesign.command"
+
+      for FRAMEWORK_PATH in `find ${CODESIGNING_FOLDER_PATH} -name "*.framework" -type d`
+      do
+        DYLIB_BASENAME=$(basename "${FRAMEWORK_PATH%.framework}")
+        echo "Signing Framework: ${DYLIB_BASENAME}.framework"
+        FRAMEWORKBUNDLEID="${BUNDLEID}.framework.${DYLIB_BASENAME}"
+        codesign -s "${CODE_SIGN_IDENTITY_FOR_ITEMS}" -fvvv -i "${FRAMEWORKBUNDLEID}" ${FRAMEWORK_PATH}/${DYLIB_BASENAME}
+        codesign -s "${CODE_SIGN_IDENTITY_FOR_ITEMS}" -fvvv -i "${FRAMEWORKBUNDLEID}" ${FRAMEWORK_PATH}
+      done
+
+      #repackage python eggs
+      EGGS=`find ${CODESIGNING_FOLDER_PATH} -name "*.egg" -type f`
+      echo "Signing Eggs"
+      for i in $EGGS; do
+        echo $i
+        mkdir del
+        unzip -q $i -d del
+        for binext in $LIST_BINARY_EXTENSIONS
+        do
+          # check if at least 1 file with the extension exists to sign, otherwise do nothing
+          FINDOUTPUT=`find ./del/ -name "*.$binext" -type f`
+          if [ `echo $FINDOUTPUT | wc -l` != 0 ]; then
+            for singlefile in $FINDOUTPUT; do
+              codesign -s "${CODE_SIGN_IDENTITY_FOR_ITEMS}" -fvvv -i "${BUNDLEID}" "${singlefile}"
+            done
+          fi
+        done
+        rm $i
+        cd del && zip -qr $i ./* &&  cd ..
+        rm -r ./del/
+      done
+    fi
   fi
 fi
