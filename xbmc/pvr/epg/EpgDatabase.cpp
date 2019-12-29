@@ -12,6 +12,7 @@
 #include "dbwrappers/dataset.h"
 #include "pvr/epg/Epg.h"
 #include "pvr/epg/EpgInfoTag.h"
+#include "pvr/epg/EpgSearchData.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
 #include "threads/SingleLock.h"
@@ -244,6 +245,7 @@ std::shared_ptr<CPVREpgInfoTag> CPVREpgDatabase::CreateEpgTag(
     // Compat: null value for broadcast uid changed from numerical -1 to 0 with PVR Addon API v4.0.0
     newTag->m_iUniqueBroadcastID = iBroadcastUID == -1 ? EPG_TAG_INVALID_UID : iBroadcastUID;
 
+    newTag->m_iEpgID = m_pDS->fv("idEpg").get_asInt();
     newTag->m_iDatabaseID = m_pDS->fv("idBroadcast").get_asInt();
     newTag->m_strTitle = m_pDS->fv("sTitle").get_asString().c_str();
     newTag->m_strPlotOutline = m_pDS->fv("sPlotOutline").get_asString().c_str();
@@ -325,6 +327,256 @@ CDateTime CPVREpgDatabase::GetMaxEndTime(int iEpgID, const CDateTime& maxEnd)
   std::string strValue = GetSingleValue(strQuery);
   if (!strValue.empty())
     return CDateTime(static_cast<time_t>(std::atoi(strValue.c_str())));
+
+  return {};
+}
+
+namespace
+{
+
+CDateTime ConvertLocalTimeToUTC(const CDateTime& local)
+{
+  time_t time = 0;
+  local.GetAsTime(time);
+
+  struct tm* tms;
+
+  // obtain dst flag for given datetime
+#ifdef HAVE_LOCALTIME_R
+  struct tm loc_buf;
+  tms = localtime_r(&time, &loc_buf);
+#else
+  tms = localtime(&time);
+#endif
+
+  int isdst = tms->tm_isdst;
+
+#ifdef HAVE_GMTIME_R
+  struct tm gm_buf;
+  tms = gmtime_r(&time, &gm_buf);
+#else
+  tms = gmtime(&time);
+#endif
+
+  tms->tm_isdst = isdst;
+  return CDateTime(mktime(tms));
+}
+
+class CSearchTermConverter
+{
+public:
+  CSearchTermConverter(const std::string& strSearchTerm) { Parse(strSearchTerm); }
+
+  std::string ToSQL(const std::string& strFieldName) const
+  {
+    std::string result = "(";
+
+    for (auto it = m_fragments.cbegin(); it != m_fragments.cend();)
+    {
+      result += (*it);
+
+      ++it;
+      if (it != m_fragments.cend())
+        result += strFieldName;
+    }
+
+    StringUtils::TrimRight(result);
+    result += ")";
+    return result;
+  }
+
+private:
+  void Parse(const std::string& strSearchTerm)
+  {
+    std::string strParsedSearchTerm(strSearchTerm);
+    StringUtils::Trim(strParsedSearchTerm);
+
+    std::string strFragment;
+
+    bool bNextOR = false;
+    while (!strParsedSearchTerm.empty())
+    {
+      StringUtils::TrimLeft(strParsedSearchTerm);
+
+      if (StringUtils::StartsWith(strParsedSearchTerm, "!") ||
+          StringUtils::StartsWithNoCase(strParsedSearchTerm, "not"))
+      {
+        std::string strDummy;
+        GetAndCutNextTerm(strParsedSearchTerm, strDummy);
+        strFragment += " NOT ";
+        bNextOR = false;
+      }
+      else if (StringUtils::StartsWith(strParsedSearchTerm, "+") ||
+               StringUtils::StartsWithNoCase(strParsedSearchTerm, "and"))
+      {
+        std::string strDummy;
+        GetAndCutNextTerm(strParsedSearchTerm, strDummy);
+        strFragment += " AND ";
+        bNextOR = false;
+      }
+      else if (StringUtils::StartsWith(strParsedSearchTerm, "|") ||
+               StringUtils::StartsWithNoCase(strParsedSearchTerm, "or"))
+      {
+        std::string strDummy;
+        GetAndCutNextTerm(strParsedSearchTerm, strDummy);
+        strFragment += " OR ";
+        bNextOR = false;
+      }
+      else
+      {
+        std::string strTerm;
+        GetAndCutNextTerm(strParsedSearchTerm, strTerm);
+        if (!strTerm.empty())
+        {
+          if (bNextOR && !m_fragments.empty())
+            strFragment += " OR "; // default operator
+
+          strFragment += "(UPPER(";
+
+          m_fragments.emplace_back(strFragment);
+          strFragment.clear();
+
+          strFragment += ") LIKE UPPER('%";
+          StringUtils::Replace(strTerm, "'", "''"); // escape '
+          strFragment += strTerm;
+          strFragment += "%')) ";
+
+          bNextOR = true;
+        }
+        else
+        {
+          break;
+        }
+      }
+
+      StringUtils::TrimLeft(strParsedSearchTerm);
+    }
+
+    if (!strFragment.empty())
+      m_fragments.emplace_back(strFragment);
+  }
+
+  static void GetAndCutNextTerm(std::string& strSearchTerm, std::string& strNextTerm)
+  {
+    std::string strFindNext(" ");
+
+    if (StringUtils::EndsWith(strSearchTerm, "\""))
+    {
+      strSearchTerm.erase(0, 1);
+      strFindNext = "\"";
+    }
+
+    const size_t iNextPos = strSearchTerm.find(strFindNext);
+    if (iNextPos != std::string::npos)
+    {
+      strNextTerm = strSearchTerm.substr(0, iNextPos);
+      strSearchTerm.erase(0, iNextPos + 1);
+    }
+    else
+    {
+      strNextTerm = strSearchTerm;
+      strSearchTerm.clear();
+    }
+  }
+
+  std::vector<std::string> m_fragments;
+};
+
+} // unnamed namespace
+
+std::vector<std::shared_ptr<CPVREpgInfoTag>> CPVREpgDatabase::GetEpgTags(
+    const PVREpgSearchData& searchData)
+{
+  CSingleLock lock(m_critSection);
+
+  std::string strQuery = PrepareSQL("SELECT * FROM epgtags");
+
+  Filter filter;
+
+  /////////////////////////////////////////////////////////////////////////////////////////////
+  // broadcast UID
+  /////////////////////////////////////////////////////////////////////////////////////////////
+
+  if (searchData.m_iUniqueBroadcastId != EPG_TAG_INVALID_UID)
+  {
+    filter.AppendWhere(PrepareSQL("iBroadcastUid = %u", searchData.m_iUniqueBroadcastId));
+  }
+
+  /////////////////////////////////////////////////////////////////////////////////////////////
+  // min start datetime
+  /////////////////////////////////////////////////////////////////////////////////////////////
+
+  const CDateTime minStartTime = ConvertLocalTimeToUTC(searchData.m_startDateTime);
+  time_t minStart;
+  minStartTime.GetAsTime(minStart);
+  filter.AppendWhere(PrepareSQL("iStartTime >= %u", static_cast<unsigned int>(minStart)));
+
+  /////////////////////////////////////////////////////////////////////////////////////////////
+  // max end datetime
+  /////////////////////////////////////////////////////////////////////////////////////////////
+
+  const CDateTime maxEndTime = ConvertLocalTimeToUTC(searchData.m_endDateTime);
+  time_t maxEnd;
+  maxEndTime.GetAsTime(maxEnd);
+  filter.AppendWhere(PrepareSQL("iEndTime <= %u", static_cast<unsigned int>(maxEnd)));
+
+  /////////////////////////////////////////////////////////////////////////////////////////////
+  // genre type
+  /////////////////////////////////////////////////////////////////////////////////////////////
+
+  if (searchData.m_iGenreType != EPG_SEARCH_UNSET)
+  {
+    filter.AppendWhere(PrepareSQL("(iGenreType < %u) OR (iGenreType > %u) OR (iGenreType = %u)",
+                                  EPG_EVENT_CONTENTMASK_MOVIEDRAMA,
+                                  EPG_EVENT_CONTENTMASK_USERDEFINED, searchData.m_iGenreType));
+  }
+
+  /////////////////////////////////////////////////////////////////////////////////////////////
+  // search term
+  /////////////////////////////////////////////////////////////////////////////////////////////
+
+  if (!searchData.m_strSearchTerm.empty())
+  {
+    const CSearchTermConverter conv(searchData.m_strSearchTerm);
+
+    // title
+    std::string strWhere = conv.ToSQL("sTitle");
+
+    // plot outline
+    strWhere += " OR ";
+    strWhere += conv.ToSQL("sPlotOutline");
+
+    if (searchData.m_bSearchInDescription)
+    {
+      // plot
+      strWhere += " OR ";
+      strWhere += conv.ToSQL("sPlot");
+    }
+
+    filter.AppendWhere(strWhere);
+  }
+
+  if (BuildSQL(strQuery, filter, strQuery))
+  {
+    try
+    {
+      if (m_pDS->query(strQuery))
+      {
+        std::vector<std::shared_ptr<CPVREpgInfoTag>> tags;
+        while (!m_pDS->eof())
+        {
+          tags.emplace_back(CreateEpgTag(m_pDS));
+          m_pDS->next();
+        }
+        m_pDS->close();
+        return tags;
+      }
+    }
+    catch (...)
+    {
+      CLog::LogF(LOGERROR, "Could not load tags for given search criteria");
+    }
+  }
 
   return {};
 }

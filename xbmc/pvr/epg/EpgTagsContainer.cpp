@@ -227,7 +227,6 @@ std::shared_ptr<CPVREpgInfoTag> CPVREpgTagsContainer::CreateEntry(
   if (tag)
   {
     tag->SetChannelData(m_channelData);
-    tag->SetEpgID(m_iEpgID);
   }
   return tag;
 }
@@ -238,7 +237,6 @@ std::vector<std::shared_ptr<CPVREpgInfoTag>> CPVREpgTagsContainer::CreateEntries
   for (auto& tag : tags)
   {
     tag->SetChannelData(m_channelData);
-    tag->SetEpgID(m_iEpgID);
   }
   return tags;
 }

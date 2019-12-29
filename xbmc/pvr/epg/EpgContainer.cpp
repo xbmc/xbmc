@@ -267,7 +267,7 @@ void CPVREpgContainer::LoadFromDB()
   m_bLoaded = true;
 }
 
-bool CPVREpgContainer::PersistAll(unsigned int iMaxTimeslice)
+bool CPVREpgContainer::PersistAll(unsigned int iMaxTimeslice) const
 {
   bool bReturn = true;
 
@@ -479,18 +479,23 @@ std::shared_ptr<CPVREpgInfoTag> CPVREpgContainer::GetTagById(const std::shared_p
   return retval;
 }
 
-std::vector<std::shared_ptr<CPVREpgInfoTag>> CPVREpgContainer::GetAllTags() const
+std::vector<std::shared_ptr<CPVREpgInfoTag>> CPVREpgContainer::GetTags(
+    const PVREpgSearchData& searchData) const
 {
-  std::vector<std::shared_ptr<CPVREpgInfoTag>> allTags;
+  // make sure we have up-to-date data in the database.
+  PersistAll(XbmcThreads::EndTime::InfiniteValue);
 
-  CSingleLock lock(m_critSection);
-  for (const auto& epgEntry : m_epgIdToEpgMap)
+  const std::shared_ptr<CPVREpgDatabase> database = GetEpgDatabase();
+  const std::vector<std::shared_ptr<CPVREpgInfoTag>> results = database->GetEpgTags(searchData);
+
+  for (const auto& tag : results)
   {
-    const std::vector<std::shared_ptr<CPVREpgInfoTag>> epgTags = epgEntry.second->GetTags();
-    allTags.insert(allTags.end(), epgTags.begin(), epgTags.end());
+    const auto& it = m_epgIdToEpgMap.find(tag->EpgID());
+    if (it != m_epgIdToEpgMap.cend())
+      tag->SetChannelData((*it).second->GetChannelData());
   }
 
-  return allTags;
+  return results;
 }
 
 void CPVREpgContainer::InsertFromDB(const std::shared_ptr<CPVREpg>& newEpg)

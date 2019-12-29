@@ -21,6 +21,8 @@ namespace PVR
   class CPVREpg;
   class CPVREpgInfoTag;
 
+  struct PVREpgSearchData;
+
   /** The EPG database */
 
   class CPVREpgDatabase : public CDatabase, public std::enable_shared_from_this<CPVREpgDatabase>
@@ -134,6 +136,13 @@ namespace PVR
      * @return The time.
      */
     CDateTime GetMaxEndTime(int iEpgID, const CDateTime& maxEnd);
+
+    /*!
+     * @brief Get all EPG tags matching the given search criteria.
+     * @param searchData The search criteria.
+     * @return The matching tags.
+     */
+    std::vector<std::shared_ptr<CPVREpgInfoTag>> GetEpgTags(const PVREpgSearchData& searchData);
 
     /*!
      * @brief Get an EPG tag given its EPG id and unique broadcast ID.
