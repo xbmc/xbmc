@@ -60,7 +60,7 @@ using namespace KODI::MESSAGING;
 //--------------------------------------------------------------
 - (void) resizeFrameBuffer
 {
-  auto frame = self.bounds;
+  auto frame = currentScreen == UIScreen.mainScreen ? self.bounds : currentScreen.bounds;
   CAEAGLLayer *eaglLayer = (CAEAGLLayer *)[self layer];
   //allow a maximum framebuffer size of 1080p
   //needed for tvout on iPad3/4 and iphone4/5 and maybe AppleTV3
