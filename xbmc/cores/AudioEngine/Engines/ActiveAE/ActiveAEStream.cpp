@@ -421,6 +421,9 @@ void CActiveAEStream::Drain(bool wait)
     m_currentBuffer = NULL;
   }
 
+  if (wait)
+    Resume();
+
   XbmcThreads::EndTime timer(2000);
   while (!timer.IsTimePast())
   {
