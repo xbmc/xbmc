@@ -617,7 +617,7 @@ void CGUIDialogVideoInfo::ClearCastList()
 
 void CGUIDialogVideoInfo::Play(bool resume)
 {
-  if (!m_movieItem->GetVideoInfoTag()->m_strEpisodeGuide.empty())
+  if (m_movieItem->GetVideoInfoTag()->m_type == MediaTypeTvShow)
   {
     std::string strPath = StringUtils::Format("videodb://tvshows/titles/%i/",m_movieItem->GetVideoInfoTag()->m_iDbId);
     Close();
