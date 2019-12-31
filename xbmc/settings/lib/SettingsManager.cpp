@@ -55,7 +55,6 @@ CSettingsManager::~CSettingsManager()
   // first clear all registered settings handler and subsettings
   // implementations because we can't be sure that they are still valid
   m_settingsHandlers.clear();
-  m_subSettings.clear();
   m_settingCreators.clear();
   m_settingControlCreators.clear();
 
@@ -157,48 +156,27 @@ bool CSettingsManager::Load(const TiXmlElement *root, bool &updated, bool trigge
   if (!Deserialize(root, updated, loadedSettings))
     return false;
 
-  bool ret = true;
-  // load any ISubSettings implementations
-  if (triggerEvents)
-    ret = Load(root);
-
   if (triggerEvents)
     OnSettingsLoaded();
 
-  return ret;
+  return true;
 }
 
-bool CSettingsManager::Save(TiXmlNode *root) const
+bool CSettingsManager::Save(
+  const ISettingsValueSerializer* serializer, std::string& serializedValues) const
 {
+  if (serializer == nullptr)
+    return false;
+
   CSharedLock lock(m_critical);
   CSharedLock settingsLock(m_settingsCritical);
-  if (!m_initialized || root == nullptr)
+  if (!m_initialized)
     return false;
 
   if (!OnSettingsSaving())
     return false;
 
-  // save the current version
-  auto rootElement = root->ToElement();
-  if (rootElement == nullptr)
-  {
-    CLog::Log(LOGERROR, "CSettingsManager: failed to save settings");
-    return false;
-  }
-  rootElement->SetAttribute(SETTING_XML_ROOT_VERSION, Version);
-
-  if (!Serialize(root))
-  {
-    CLog::Log(LOGERROR, "CSettingsManager: failed to save settings");
-    return false;
-  }
-
-  // save any ISubSettings implementations
-  for (const auto& subSetting : m_subSettings)
-  {
-    if (!subSetting->Save(root))
-      return false;
-  }
+  serializedValues = serializer->SerializeValues(this);
 
   OnSettingsSaved();
 
@@ -230,9 +208,6 @@ void CSettingsManager::Clear()
   m_sections.clear();
 
   OnSettingsCleared();
-
-  for (auto& subSetting : m_subSettings)
-    subSetting->Clear();
 
   m_initialized = false;
 }
@@ -449,24 +424,6 @@ void CSettingsManager::UnregisterSettingsHandler(ISettingsHandler *settingsHandl
   auto it = std::find(m_settingsHandlers.begin(), m_settingsHandlers.end(), settingsHandler);
   if (it != m_settingsHandlers.end())
     m_settingsHandlers.erase(it);
-}
-
-void CSettingsManager::RegisterSubSettings(ISubSettings *subSettings)
-{
-  CExclusiveLock lock(m_critical);
-  if (subSettings == nullptr)
-    return;
-
-  m_subSettings.insert(subSettings);
-}
-
-void CSettingsManager::UnregisterSubSettings(ISubSettings *subSettings)
-{
-  CExclusiveLock lock(m_critical);
-  if (subSettings == nullptr)
-    return;
-
-  m_subSettings.erase(subSettings);
 }
 
 void CSettingsManager::RegisterSettingOptionsFiller(const std::string &identifier, IntegerSettingOptionsFiller optionsFiller)
@@ -1078,16 +1035,6 @@ void CSettingsManager::OnSettingsCleared()
   CSharedLock lock(m_critical);
   for (const auto& settingsHandler : m_settingsHandlers)
     settingsHandler->OnSettingsCleared();
-}
-
-bool CSettingsManager::Load(const TiXmlNode *settings)
-{
-  bool ok = true;
-  CSharedLock lock(m_critical);
-  for (const auto& subSetting : m_subSettings)
-    ok &= subSetting->Load(settings);
-
-  return ok;
 }
 
 bool CSettingsManager::LoadSetting(const TiXmlNode *node, SettingPtr setting, bool &updated)

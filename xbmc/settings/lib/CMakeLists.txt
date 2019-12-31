@@ -15,7 +15,7 @@ set(HEADERS ISetting.h
             ISettingControlCreator.h
             ISettingCreator.h
             ISettingsHandler.h
-            ISubSettings.h
+            ISettingsValueSerializer.h
             Setting.h
             SettingCategoryAccess.h
             SettingConditions.h

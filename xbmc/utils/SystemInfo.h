@@ -9,7 +9,7 @@
 #pragma once
 
 #include "InfoLoader.h"
-#include "settings/lib/ISubSettings.h"
+#include "settings/ISubSettings.h"
 
 #include <string>
 

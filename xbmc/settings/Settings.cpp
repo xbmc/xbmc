@@ -441,6 +441,24 @@ bool CSettings::Initialize()
   return true;
 }
 
+void CSettings::RegisterSubSettings(ISubSettings* subSettings)
+{
+  if (subSettings == nullptr)
+    return;
+
+  CSingleLock lock(m_critical);
+  m_subSettings.insert(subSettings);
+}
+
+void CSettings::UnregisterSubSettings(ISubSettings* subSettings)
+{
+  if (subSettings == nullptr)
+    return;
+
+  CSingleLock lock(m_critical);
+  m_subSettings.erase(subSettings);
+}
+
 bool CSettings::Load()
 {
   const std::shared_ptr<CProfileManager> profileManager = CServiceBroker::GetSettingsComponent()->GetProfileManager();
@@ -453,7 +471,7 @@ bool CSettings::Load(const std::string &file)
   CXBMCTinyXML xmlDoc;
   bool updated = false;
   if (!XFILE::CFile::Exists(file) || !xmlDoc.LoadFile(file) ||
-      !LoadValuesFromXml(xmlDoc, updated))
+      !Load(xmlDoc.RootElement(), updated) || !Load(xmlDoc.RootElement()))
   {
     CLog::Log(LOGERROR, "CSettings: unable to load settings from %s, creating new default settings", file.c_str());
     if (!Reset())
@@ -469,6 +487,12 @@ bool CSettings::Load(const std::string &file)
   return true;
 }
 
+bool CSettings::Load(const TiXmlElement* root)
+{
+  bool updated = false;
+  return Load(root, updated);
+}
+
 bool CSettings::Save()
 {
   const std::shared_ptr<CProfileManager> profileManager = CServiceBroker::GetSettingsComponent()->GetProfileManager();
@@ -482,7 +506,27 @@ bool CSettings::Save(const std::string &file)
   if (!SaveValuesToXml(xmlDoc))
     return false;
 
+  TiXmlElement* root = xmlDoc.RootElement();
+  if (root == nullptr)
+    return false;
+
+  if (!Save(root))
+    return false;
+
   return xmlDoc.SaveFile(file);
+}
+
+bool CSettings::Save(TiXmlNode* root) const
+{
+  CSingleLock lock(m_critical);
+  // save any ISubSettings implementations
+  for (const auto& subSetting : m_subSettings)
+  {
+    if (!subSetting->Save(root))
+      return false;
+  }
+
+  return true;
 }
 
 bool CSettings::LoadSetting(const TiXmlNode *node, const std::string &settingId)
@@ -497,6 +541,41 @@ bool CSettings::GetBool(const std::string& id) const
     return CSettingsBase::GetBool(CSettings::SETTING_INPUT_ENABLEMOUSE);
 
   return CSettingsBase::GetBool(id);
+}
+
+void CSettings::Clear()
+{
+  CSingleLock lock(m_critical);
+  if (!m_initialized)
+    return;
+
+  GetSettingsManager()->Clear();
+
+  for (auto& subSetting : m_subSettings)
+    subSetting->Clear();
+
+  m_initialized = false;
+}
+
+bool CSettings::Load(const TiXmlElement* root, bool& updated)
+{
+  if (root == nullptr)
+    return false;
+
+  if (!CSettingsBase::LoadValuesFromXml(root, updated))
+    return false;
+
+  return Load(static_cast<const TiXmlNode*>(root));
+}
+
+bool CSettings::Load(const TiXmlNode* settings)
+{
+  bool ok = true;
+  CSingleLock lock(m_critical);
+  for (const auto& subSetting : m_subSettings)
+    ok &= subSetting->Load(settings);
+
+  return ok;
 }
 
 bool CSettings::Initialize(const std::string &file)
@@ -786,23 +865,23 @@ void CSettings::UninitializeISettingsHandlers()
 void CSettings::InitializeISubSettings()
 {
   // register ISubSettings implementations
-  GetSettingsManager()->RegisterSubSettings(&g_application);
-  GetSettingsManager()->RegisterSubSettings(&CDisplaySettings::GetInstance());
-  GetSettingsManager()->RegisterSubSettings(&CMediaSettings::GetInstance());
-  GetSettingsManager()->RegisterSubSettings(&CSkinSettings::GetInstance());
-  GetSettingsManager()->RegisterSubSettings(&g_sysinfo);
-  GetSettingsManager()->RegisterSubSettings(&CViewStateSettings::GetInstance());
+  RegisterSubSettings(&g_application);
+  RegisterSubSettings(&CDisplaySettings::GetInstance());
+  RegisterSubSettings(&CMediaSettings::GetInstance());
+  RegisterSubSettings(&CSkinSettings::GetInstance());
+  RegisterSubSettings(&g_sysinfo);
+  RegisterSubSettings(&CViewStateSettings::GetInstance());
 }
 
 void CSettings::UninitializeISubSettings()
 {
   // unregister ISubSettings implementations
-  GetSettingsManager()->UnregisterSubSettings(&g_application);
-  GetSettingsManager()->UnregisterSubSettings(&CDisplaySettings::GetInstance());
-  GetSettingsManager()->UnregisterSubSettings(&CMediaSettings::GetInstance());
-  GetSettingsManager()->UnregisterSubSettings(&CSkinSettings::GetInstance());
-  GetSettingsManager()->UnregisterSubSettings(&g_sysinfo);
-  GetSettingsManager()->UnregisterSubSettings(&CViewStateSettings::GetInstance());
+  UnregisterSubSettings(&g_application);
+  UnregisterSubSettings(&CDisplaySettings::GetInstance());
+  UnregisterSubSettings(&CMediaSettings::GetInstance());
+  UnregisterSubSettings(&CSkinSettings::GetInstance());
+  UnregisterSubSettings(&g_sysinfo);
+  UnregisterSubSettings(&CViewStateSettings::GetInstance());
 }
 
 void CSettings::InitializeISettingCallbacks()
