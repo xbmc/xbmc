@@ -133,8 +133,10 @@ CRepository::CRepository(const AddonInfoPtr& addonInfo)
 
 bool CRepository::FetchChecksum(const std::string& url, std::string& checksum) noexcept
 {
-  CFile file;
-  if (!file.Open(url))
+  CCurlFile file;
+  CURL curlURL{url};
+    
+  if (!file.Open(curlURL))
     return false;
 
   // we intentionally avoid using file.GetLength() for
