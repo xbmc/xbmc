@@ -148,6 +148,14 @@ private:
   std::string SearchStringEncoding() const
     { return m_parser.GetSearchStringEncoding(); }
 
+  /*! \brief Get the scraper settings for a particular path in the form of a JSON string
+   Loads the default and user settings (if not already loaded) and returns the user settings in the
+   form of an JSON string. It is used in Python scrapers.
+   \return a string containing the JSON settings
+   \sa SetPathSettings
+   */
+  std::string GetPathSettingsAsJSON();
+
   bool Load();
   std::vector<std::string> Run(const std::string& function,
                               const CScraperUrl& url,
