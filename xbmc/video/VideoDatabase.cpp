@@ -2431,7 +2431,7 @@ int CVideoDatabase::SetDetailsForMovie(const std::string& strFilenameAndPath, CV
     details.m_iIdRating = AddRatings(idMovie, MediaTypeMovie, details.m_ratings, details.GetDefaultRating());
 
     // add unique ids
-    details.m_iIdUniqueID = AddUniqueIDs(idMovie, MediaTypeMovie, details);
+    details.m_iIdUniqueID = UpdateUniqueIDs(idMovie, MediaTypeMovie, details);
 
     // add set...
     int idSet = -1;
