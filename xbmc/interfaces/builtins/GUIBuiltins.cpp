@@ -380,8 +380,9 @@ static int ToggleDirty(const std::vector<std::string>&)
  */
 static int ToggleDisplayHDR(const std::vector<std::string>&)
 {
-  CServiceBroker::GetWinSystem()->ToggleDisplayHDR();
+  CServiceBroker::GetWinSystem()->SetHDR(nullptr);
   CApplicationMessenger::GetInstance().SendMsg(TMSG_RESTARTAPP);
+
   return 0;
 }
 

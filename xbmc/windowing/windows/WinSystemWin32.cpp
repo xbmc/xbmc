@@ -1195,12 +1195,12 @@ bool CWinSystemWin32::MessagePump()
   return m_winEvents->MessagePump();
 }
 
-void CWinSystemWin32::ToggleDisplayHDR()
+bool CWinSystemWin32::SetHDR(const VideoPicture* videoPicture/*param not used*/)
 {
-  CWIN32Util::ToggleWindowsHDR();
+  return CWIN32Util::ToggleWindowsHDR();
 }
 
-int CWinSystemWin32::GetHDRDisplayStatus()
+int CWinSystemWin32::IsHDRDisplay(void* not_used)
 {
   return CWIN32Util::GetHDRDisplayStatus();
 }

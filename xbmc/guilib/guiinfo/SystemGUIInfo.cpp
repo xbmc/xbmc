@@ -578,10 +578,10 @@ bool CSystemGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int context
       value = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_showExitButton;
       return true;
     case SYSTEM_IS_HDR_DISPLAY_OFF:
-      value = (1 == CServiceBroker::GetWinSystem()->GetHDRDisplayStatus());
+      value = (1 == CServiceBroker::GetWinSystem()->IsHDRDisplay(nullptr));
       return true;
     case SYSTEM_IS_HDR_DISPLAY_ON:
-      value = (2 == CServiceBroker::GetWinSystem()->GetHDRDisplayStatus());
+      value = (2 == CServiceBroker::GetWinSystem()->IsHDRDisplay(nullptr));
       return true;
     case SYSTEM_HAS_LOGINSCREEN:
       value = CServiceBroker::GetSettingsComponent()->GetProfileManager()->UsingLoginScreen();

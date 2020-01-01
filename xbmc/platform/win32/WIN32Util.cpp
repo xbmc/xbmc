@@ -1228,9 +1228,10 @@ bool CWIN32Util::SetThreadLocalLocale(bool enable /* = true */)
   return _configthreadlocale(param) != -1;
 }
 
-void CWIN32Util::ToggleWindowsHDR()
+bool CWIN32Util::ToggleWindowsHDR()
 {
   uint32_t pathCount, modeCount;
+  bool success = false;
 
   uint8_t set[] = {0x0A, 0x00, 0x00, 0x00, 0x18, 0x00, 0x00, 0x00, 0x14, 0x81, 0x00, 0x00,
                    0x00, 0x00, 0x00, 0x00, 0x04, 0x01, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00};
@@ -1284,12 +1285,14 @@ void CWIN32Util::ToggleWindowsHDR()
             set[20] = 1;
             CLog::LogF(LOGNOTICE, "Toggle Windows HDR On (OFF => ON).");
             DisplayConfigSetDeviceInfo(setPacket);
+            success = true;
           }
           else if (request[20] == 0xD3) // HDR is ON
           {
             set[20] = 0;
             CLog::LogF(LOGNOTICE, "Toggle Windows HDR Off (ON => OFF).");
             DisplayConfigSetDeviceInfo(setPacket);
+            success = true;
           }
         }
       }
@@ -1297,6 +1300,7 @@ void CWIN32Util::ToggleWindowsHDR()
       std::free(modesArray);
     }
   }
+  return success;
 }
 
 int CWIN32Util::GetHDRDisplayStatus()
