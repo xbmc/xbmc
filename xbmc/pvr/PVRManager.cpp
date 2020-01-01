@@ -579,6 +579,8 @@ bool CPVRManager::SetWakeupCommand()
 
 void CPVRManager::OnSleep()
 {
+  PublishEvent(PVREvent::SystemSleep);
+
   SetWakeupCommand();
 
   m_addons->OnSystemSleep();
@@ -587,6 +589,8 @@ void CPVRManager::OnSleep()
 void CPVRManager::OnWake()
 {
   m_addons->OnSystemWake();
+
+  PublishEvent(PVREvent::SystemWake);
 
   /* start job to search for missing channel icons */
   TriggerSearchMissingChannelIcons();

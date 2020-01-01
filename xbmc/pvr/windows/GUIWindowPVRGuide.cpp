@@ -575,6 +575,10 @@ bool CGUIWindowPVRGuideBase::OnMessage(CGUIMessage& message)
       }
       break;
     }
+    case GUI_MSG_SYSTEM_WAKE:
+      GotoNow();
+      bReturn = true;
+      break;
   }
 
   return bReturn || CGUIWindowPVRBase::OnMessage(message);

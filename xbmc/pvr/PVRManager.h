@@ -78,6 +78,10 @@ namespace PVR
 
     // Item events
     CurrentItem,
+
+    // Syetem events
+    SystemSleep,
+    SystemWake,
   };
 
   class CPVRManager : private CThread, public ANNOUNCEMENT::IAnnouncer
