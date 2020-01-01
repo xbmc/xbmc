@@ -708,9 +708,11 @@ void CGUIEPGGridContainer::UpdateItems()
     }
     else // "gap" tag selected
     {
-      const std::shared_ptr<CFileItem> currItem = GetItem();
-      if (currItem)
-        channelUid = currItem->GetEPGInfoTag()->UniqueChannelID();
+      channelUid = prevSelectedEpgTag->UniqueChannelID();
+
+      // As gap tags do not have a unique broadcast id, we will look for the real tag preceeding
+      // the gap tag and add the respective offset to restore the gap tag selection, assuming that
+      // the real tag is still the predecessor of the gap tag after the grid model update.
 
       const std::shared_ptr<CFileItem> prevItem = GetPrevItem().first;
       if (prevItem)
@@ -725,11 +727,8 @@ void CGUIEPGGridContainer::UpdateItems()
           }
           else
           {
-            // first block of previously selected gap tag is one block after last block of tag before previously selected gap tag.
-            int gapTagStartIndex = m_gridModel->GetLastEventBlock(tag) + 1;
-
-            newBlockIndex = m_gridModel->GetFirstEventBlock(tag); // points to tag before previously selected gap tag
-            eventOffset = gapTagStartIndex - newBlockIndex; // newBlockIndex + eventOffset points to first block of previously selected gap tag
+            newBlockIndex = m_gridModel->GetFirstEventBlock(tag);
+            eventOffset += m_gridModel->GetFirstEventBlock(prevSelectedEpgTag) - newBlockIndex;
           }
 
           broadcastUid = tag->UniqueBroadcastID();
