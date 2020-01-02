@@ -324,55 +324,28 @@ void CGUIEPGGridContainerModel::FindChannelAndBlockIndex(int channelUid,
                                                          int& newChannelIndex,
                                                          int& newBlockIndex) const
 {
-  static const CDateTimeSpan blockDuration(0, 0, MINSPERBLOCK, 0);
-
   newChannelIndex = INVALID_INDEX;
   newBlockIndex = INVALID_INDEX;
 
-  // find the channel
+  // find the new channel index
   int iCurrentChannel = 0;
   for (const auto& channel : m_channelItems)
   {
     if (channel->GetPVRChannelInfoTag()->UniqueID() == channelUid)
     {
       newChannelIndex = iCurrentChannel;
-      break;
+
+      // find the new block index
+      const std::shared_ptr<CPVREpg> epg = channel->GetPVRChannelInfoTag()->GetEPG();
+      if (epg)
+      {
+        const std::shared_ptr<CPVREpgInfoTag> tag = epg->GetTagByBroadcastId(broadcastUid);
+        if (tag)
+          newBlockIndex = GetFirstEventBlock(tag) + eventOffset;
+      }
+      break; // done
     }
     iCurrentChannel++;
-  }
-
-  if (newChannelIndex != INVALID_INDEX)
-  {
-    // find the block
-    GetItem(newChannelIndex, GetLastBlock()); // expensive; might fetch many EPG tags
-    const auto itEpg = m_epgItems.find(newChannelIndex);
-    if (itEpg != m_epgItems.end())
-    {
-      const int blocks = GridItemsSize();
-
-      CDateTime gridCursor = m_gridStart;
-      for (int block = 0; block < blocks; ++block)
-      {
-        for (const auto& item : (*itEpg).second.tags)
-        {
-          const std::shared_ptr<CPVREpgInfoTag> tag = item->GetEPGInfoTag();
-
-          if (gridCursor < tag->StartAsUTC())
-            break; // next block
-
-          if (gridCursor < tag->EndAsUTC())
-          {
-            if (broadcastUid > 0 && tag->UniqueBroadcastID() == broadcastUid)
-            {
-              newBlockIndex = block + eventOffset;
-              return; // done.
-            }
-            break; // next block
-          }
-        }
-        gridCursor += blockDuration;
-      }
-    }
   }
 }
 
