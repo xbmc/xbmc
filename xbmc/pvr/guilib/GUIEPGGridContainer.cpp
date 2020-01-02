@@ -760,7 +760,7 @@ void CGUIEPGGridContainer::UpdateItems()
     }
   }
 
-  if (prevSelectedEpgTag && (oldChannelIndex != 0 || oldBlockIndex != 0))
+  if (prevSelectedEpgTag)
   {
     if (newChannelIndex >= m_gridModel->ChannelItemsSize() ||
         newBlockIndex >= m_gridModel->GridItemsSize() ||
@@ -2347,11 +2347,12 @@ void CGUIEPGGridContainer::HandleProgrammeGrid(bool bRender, unsigned int curren
       int block = blockOffset;
       float posA2 = posA;
 
-      if (blockOffset > 0 && m_gridModel->IsSameGridItem(channel, block, blockOffset - 1))
+      const int startBlock = blockOffset == 0 ? 0 : blockOffset - 1;
+      if (startBlock == 0 || m_gridModel->IsSameGridItem(channel, block, startBlock))
       {
         // First program starts before current view
-        block = m_gridModel->GetGridItemStartBlock(channel, blockOffset - 1);
-        int missingSection = blockOffset - block;
+        block = m_gridModel->GetGridItemStartBlock(channel, startBlock);
+        const int missingSection = startBlock - block;
         posA2 -= missingSection * m_blockSize;
       }
 
