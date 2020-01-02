@@ -126,7 +126,7 @@ bool CGUIDialogSelect::OnMessage(CGUIMessage& message)
     {
       if (m_viewControl.HasControl(message.GetControlId()))
       {
-        if (m_vecList->IsEmpty() || m_focusToButton)
+        if (m_vecList->IsEmpty())
         {
           if (m_bButtonEnabled)
             SET_CONTROL_FOCUS(CONTROL_EXTRA_BUTTON, 0);
@@ -334,6 +334,16 @@ void CGUIDialogSelect::OnInitWindow()
   SET_CONTROL_LABEL(CONTROL_CANCEL_BUTTON, g_localizeStrings.Get(222));
 
   CGUIDialogBoxBase::OnInitWindow();
+
+  // focus one of the buttons if explicitly requested
+  // ATTENTION: this must be done after calling CGUIDialogBoxBase::OnInitWindow()
+  if (m_focusToButton)
+  {
+    if (m_bButtonEnabled)
+      SET_CONTROL_FOCUS(CONTROL_EXTRA_BUTTON, 0);
+    else
+      SET_CONTROL_FOCUS(CONTROL_CANCEL_BUTTON, 0);
+  }
 
   // if nothing is selected, select first item
   m_viewControl.SetSelectedItem(std::max(GetSelectedItem(), 0));
