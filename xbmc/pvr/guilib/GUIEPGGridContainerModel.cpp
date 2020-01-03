@@ -576,7 +576,11 @@ int CGUIEPGGridContainerModel::GetBlock(const CDateTime& datetime) const
   // Note: Subtract 1 second from diff to ensure that events ending exactly at block boundary
   //       are unambigious. Example: An event ending at 5:00:00 shall be mapped to block 9 and
   //       an event starting at 5:00:00 shall be mapped to block 10, not both at block 10.
-  return (diff - 1) / 60 / MINSPERBLOCK;
+  //       Only exception is grid end, because there is no successor.
+  if (datetime >= m_gridEnd)
+    return diff / 60 / MINSPERBLOCK; // block is equal or after grid end
+  else
+    return (diff - 1) / 60 / MINSPERBLOCK;
 }
 
 int CGUIEPGGridContainerModel::GetNowBlock() const
