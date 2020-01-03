@@ -214,9 +214,11 @@ namespace PVR
 
     /*!
      * @brief Call Persist() on each table
+     * @param iMaxTimeslice time in milliseconds for max processing. Return after this time
+     *        even if not all data was persisted, unless value is -1
      * @return True when they all were persisted, false otherwise.
      */
-    bool PersistAll();
+    bool PersistAll(unsigned int iMaxTimeslice);
 
     /*!
      * @brief Remove old EPG entries.

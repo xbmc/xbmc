@@ -267,7 +267,7 @@ void CPVREpgContainer::LoadFromDB()
   m_bLoaded = true;
 }
 
-bool CPVREpgContainer::PersistAll()
+bool CPVREpgContainer::PersistAll(unsigned int iMaxTimeslice)
 {
   bool bReturn = true;
 
@@ -276,11 +276,20 @@ bool CPVREpgContainer::PersistAll()
   m_critSection.unlock();
 
   const std::shared_ptr<CPVREpgDatabase> database = GetEpgDatabase();
+  XbmcThreads::EndTime processTimeslice(iMaxTimeslice);
 
   for (const auto& epg : epgs)
   {
     if (epg.second && epg.second->NeedsSave())
+    {
+      CLog::Log(LOGNOTICE, "EPG Container: Persisting events for channel '%s'...",
+                epg.second->GetChannelData()->ChannelName().c_str());
+
       bReturn &= epg.second->Persist(database);
+    }
+
+    if (processTimeslice.IsTimePast())
+      break;
   }
 
   return bReturn;
@@ -292,6 +301,8 @@ void CPVREpgContainer::Process()
   time_t iLastSave = 0;
   bool bUpdateEpg = true;
   bool bHasPendingUpdates = false;
+
+  SetPriority(GetMinPriority());
 
   while (!m_bStop)
   {
@@ -335,7 +346,7 @@ void CPVREpgContainer::Process()
       unsigned int iProcessed = 0;
       XbmcThreads::EndTime processTimeslice(1000); // max 1 sec per cycle, regardless of how many events are in the queue
 
-      while (!m_bStop)
+      while (!InterruptUpdate())
       {
         CEpgTagStateChange change;
         {
@@ -386,9 +397,9 @@ void CPVREpgContainer::Process()
     }
 
     /* check for changes that need to be saved every 60 seconds */
-    if (iNow - iLastSave > 60)
+    if ((iNow - iLastSave > 60) && !InterruptUpdate())
     {
-      PersistAll();
+      PersistAll(1000);
       iLastSave = iNow;
     }
 
@@ -396,7 +407,9 @@ void CPVREpgContainer::Process()
   }
 
   // store data on exit
-  PersistAll();
+  CLog::Log(LOGNOTICE, "EPG Container: Persisting unsaved events...");
+  PersistAll(XbmcThreads::EndTime::InfiniteValue);
+  CLog::Log(LOGNOTICE, "EPG Container: Persisting events done");
 }
 
 std::vector<std::shared_ptr<CPVREpg>> CPVREpgContainer::GetAllEpgs() const
