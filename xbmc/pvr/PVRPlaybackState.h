@@ -185,6 +185,12 @@ public:
    */
   std::shared_ptr<CPVRChannelGroup> GetPlayingGroup(bool bRadio) const;
 
+  /*!
+   * @brief Get current playback time, taking timeshifting into account.
+   * @return The playback time.
+   */
+  CDateTime GetPlaybackTime() const;
+
 private:
   /*!
    * @brief Set the playing group to the first group the channel is in if the given channel is not part of the current playing group

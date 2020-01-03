@@ -10,7 +10,6 @@
 
 #include "ServiceBroker.h"
 #include "addons/kodi-addon-dev-kit/include/kodi/xbmc_pvr_types.h"
-#include "cores/DataCacheCore.h"
 #include "pvr/PVRManager.h"
 #include "pvr/PVRPlaybackState.h"
 #include "pvr/addons/PVRClient.h"
@@ -197,17 +196,12 @@ int CPVREpgInfoTag::ClientID() const
 
 CDateTime CPVREpgInfoTag::GetCurrentPlayingTime() const
 {
-  if (CServiceBroker::GetPVRManager().PlaybackState()->IsPlayingChannel(ClientID(), UniqueChannelID()))
-  {
-    // start time valid?
-    time_t startTime = CServiceBroker::GetDataCacheCore().GetStartTime();
-    if (startTime > 0)
-    {
-      return CDateTime(startTime + CServiceBroker::GetDataCacheCore().GetPlayTime() / 1000);
-    }
-  }
-
-  return CDateTime::GetUTCDateTime();
+  const std::shared_ptr<CPVRPlaybackState> playbackState =
+      CServiceBroker::GetPVRManager().PlaybackState();
+  if (playbackState && playbackState->IsPlayingChannel(ClientID(), UniqueChannelID()))
+    return playbackState->GetPlaybackTime();
+  else
+    return CDateTime::GetUTCDateTime();
 }
 
 bool CPVREpgInfoTag::IsActive() const
