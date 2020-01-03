@@ -220,6 +220,7 @@ int CActiveAEFilter::ProcessFilter(uint8_t **dst_buffer, int dst_samples, uint8_
     {
       av_frame_free(&frame);
       CLog::Log(LOGERROR, "CActiveAEFilter::ProcessFilter - avcodec_fill_audio_frame failed");
+      m_filterEof = true;
       return -1;
     }
 
@@ -228,6 +229,7 @@ int CActiveAEFilter::ProcessFilter(uint8_t **dst_buffer, int dst_samples, uint8_
     if (result < 0)
     {
       CLog::Log(LOGERROR, "CActiveAEFilter::ProcessFilter - av_buffersrc_add_frame failed");
+      m_filterEof = true;
       return -1;
     }
 
@@ -239,6 +241,7 @@ int CActiveAEFilter::ProcessFilter(uint8_t **dst_buffer, int dst_samples, uint8_
     if (result < 0)
     {
       CLog::Log(LOGERROR, "CActiveAEFilter::ProcessFilter - av_buffersrc_add_frame");
+      m_filterEof = true;
       return -1;
     }
   }
@@ -265,6 +268,7 @@ int CActiveAEFilter::ProcessFilter(uint8_t **dst_buffer, int dst_samples, uint8_
     else if (result < 0)
     {
       CLog::Log(LOGERROR, "CActiveAEFilter::ProcessFilter - av_buffersink_get_frame");
+      m_filterEof = true;
       return -1;
     }
 
@@ -281,6 +285,7 @@ int CActiveAEFilter::ProcessFilter(uint8_t **dst_buffer, int dst_samples, uint8_
       if (result < 0)
       {
         CLog::Log(LOGERROR, "CActiveAEFilter::ProcessFilter - swr_convert_frame failed");
+        m_filterEof = true;
         return -1;
       }
     }
@@ -326,7 +331,7 @@ bool CActiveAEFilter::NeedData() const
 
 bool CActiveAEFilter::IsActive() const
 {
-  return m_pFilterGraph != nullptr;
+  return m_pFilterGraph != nullptr && !m_filterEof;
 }
 
 int CActiveAEFilter::GetBufferedSamples() const
