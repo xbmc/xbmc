@@ -11,7 +11,6 @@
 #include "XBDateTime.h"
 #include "pvr/timers/PVRTimerType.h"
 #include "threads/CriticalSection.h"
-#include "threads/SystemClock.h"
 #include "utils/ISerializable.h"
 
 #include <memory>
@@ -382,6 +381,6 @@ namespace PVR
     mutable std::shared_ptr<CPVREpgInfoTag> m_epgTag; /*!< epg info tag matching m_iEpgUid. */
     mutable std::shared_ptr<CPVRChannel> m_channel;
 
-    mutable XbmcThreads::EndTime m_epTagRefetchTimeout;
+    mutable bool m_bProbedEpgTag = false;
   };
 }
