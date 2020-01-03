@@ -399,11 +399,14 @@ void CPVREpgInfoTag::SetGenre(int iGenreType, int iGenreSubType, const char* str
        * EPG_GENRE_USE_STRING leaving type available for genre category, use the provided genre description for the text. */
       m_genre = Tokenize(strGenre);
     }
-    else
-    {
-      /* Determine the genre description from the type and subtype IDs */
-      m_genre = StringUtils::Split(CPVREpg::ConvertGenreIdToString(iGenreType, iGenreSubType), CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoItemSeparator);
-    }
+  }
+
+  if (m_genre.empty())
+  {
+    // Determine the genre description from the type and subtype IDs.
+    m_genre = StringUtils::Split(
+        CPVREpg::ConvertGenreIdToString(iGenreType, iGenreSubType),
+        CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoItemSeparator);
   }
 }
 
