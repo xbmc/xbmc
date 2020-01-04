@@ -510,7 +510,10 @@ bool CVideoThumbLoader::FillLibraryArt(CFileItem &item)
     std::map<std::string, std::string> artwork;
     m_videoDatabase->Open();
     if (m_videoDatabase->GetArtForItem(tag.m_iDbId, tag.m_type, artwork))
-      SetArt(item, artwork);
+    {
+      for (const auto& arttype : artwork)
+        item.SetArt(arttype.first, arttype.second);
+    }
     else if (tag.m_type == "actor" && !tag.m_artist.empty())
     { // we retrieve music video art from the music database (no backward compat)
       CMusicDatabase database;
