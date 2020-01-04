@@ -540,8 +540,10 @@ XBMCController *g_xbmcController;
   self.view.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
   self.view.autoresizesSubviews = YES;
 
-  m_glView = [[IOSEAGLView alloc] initWithFrame:[self fullscreenSubviewFrame]
-                                     withScreen:UIScreen.mainScreen];
+  auto frame = [NSUserDefaults.standardUserDefaults boolForKey:DisableSafeAreaDefaultsKey]
+                   ? self.view.bounds
+                   : [self fullscreenSubviewFrame];
+  m_glView = [[IOSEAGLView alloc] initWithFrame:frame withScreen:UIScreen.mainScreen];
   [[IOSScreenManager sharedInstance] setView:m_glView];
   [m_glView setMultipleTouchEnabled:YES];
 

@@ -19,9 +19,12 @@
 
 #import <UIKit/UIKit.h>
 
+NSString* const DisableSafeAreaDefaultsKey = @"DisableSafeArea";
+
 IOSSettingsHandler::IOSSettingsHandler()
 {
-  std::set<std::string> watchedSettings{CSettings::SETTING_DEBUG_SHARE_LOG};
+  std::set<std::string> watchedSettings{CSettings::SETTING_DEBUG_SHARE_LOG,
+                                        CSettings::SETTING_LOOKANDFEEL_EXTENDUIUNDERNOTCH};
   CServiceBroker::GetSettingsComponent()->GetSettings()->RegisterCallback(this, watchedSettings);
 }
 
@@ -74,4 +77,17 @@ void IOSSettingsHandler::OnSettingAction(std::shared_ptr<const CSetting> setting
     activityVc.popoverPresentationController.sourceView = rootVc.view;
     activityVc.popoverPresentationController.sourceRect = CGRectMake(0.0, 0.0, 10.0, 10.0);
   });
+}
+
+void IOSSettingsHandler::OnSettingChanged(std::shared_ptr<const CSetting> setting)
+{
+  if (!setting || setting->GetId() != CSettings::SETTING_LOOKANDFEEL_EXTENDUIUNDERNOTCH)
+    return;
+
+  // the value is also saved to native settings because Kodi settings
+  // are unavailable on app start when `XBMCController` is loaded
+  // @todo figure out how to resize `IOSEAGLView` properly, without app restart
+  auto disableSafeArea = std::static_pointer_cast<const CSettingBool>(setting)->GetValue();
+  [NSUserDefaults.standardUserDefaults setBool:static_cast<BOOL>(disableSafeArea)
+                                        forKey:DisableSafeAreaDefaultsKey];
 }

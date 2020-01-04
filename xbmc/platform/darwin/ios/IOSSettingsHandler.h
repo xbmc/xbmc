@@ -8,6 +8,9 @@
 
 #include "settings/lib/ISettingCallback.h"
 
+@class NSString;
+extern NSString* const DisableSafeAreaDefaultsKey;
+
 class IOSSettingsHandler : public ISettingCallback
 {
 public:
@@ -15,4 +18,5 @@ public:
   virtual ~IOSSettingsHandler();
 
   void OnSettingAction(std::shared_ptr<const CSetting> setting) override;
+  void OnSettingChanged(std::shared_ptr<const CSetting> setting) override;
 };

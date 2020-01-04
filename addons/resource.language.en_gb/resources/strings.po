@@ -21901,3 +21901,15 @@ msgstr ""
 msgctxt "#39118"
 msgid "Share debug log"
 msgstr ""
+
+#. Label for skin setting whether to position UI under the notch
+#: system/settings/darwin_ios.xml
+msgctxt "#39119"
+msgid "Extend UI under the notch"
+msgstr ""
+
+#. Description of setting with label #39119 "Extend UI under the notch"
+#: system/settings/darwin_ios.xml
+msgctxt "#39120"
+msgid "Toggles whether UI is positioned within the 'safe area'. You might want to enable this setting and use \"Zoom\" setting to adjust UI manually. Takes effect after relaunching the app."
+msgstr ""

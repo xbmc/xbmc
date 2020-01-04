@@ -66,6 +66,8 @@ const std::string CSettings::SETTING_LOOKANDFEEL_SKINTHEME = "lookandfeel.skinth
 const std::string CSettings::SETTING_LOOKANDFEEL_SKINCOLORS = "lookandfeel.skincolors";
 const std::string CSettings::SETTING_LOOKANDFEEL_FONT = "lookandfeel.font";
 const std::string CSettings::SETTING_LOOKANDFEEL_SKINZOOM = "lookandfeel.skinzoom";
+const std::string CSettings::SETTING_LOOKANDFEEL_EXTENDUIUNDERNOTCH =
+    "lookandfeel.extenduiundernotch";
 const std::string CSettings::SETTING_LOOKANDFEEL_STARTUPACTION = "lookandfeel.startupaction";
 const std::string CSettings::SETTING_LOOKANDFEEL_STARTUPWINDOW = "lookandfeel.startupwindow";
 const std::string CSettings::SETTING_LOOKANDFEEL_SOUNDSKIN = "lookandfeel.soundskin";

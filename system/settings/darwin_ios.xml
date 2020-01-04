@@ -84,6 +84,11 @@
         <setting id="lookandfeel.skin" type="addon">
           <default>skin.estouchy</default>
         </setting>
+        <setting id="lookandfeel.extenduiundernotch" type="boolean" label="39119" help="39120">
+          <level>1</level>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
       </group>
     </category>
   </section>
