@@ -9,6 +9,7 @@
 #include "WinSystemWin32DX.h"
 #include "commons/ilog.h"
 #include "platform/win32/CharsetConverter.h"
+#include "platform/win32/WIN32Util.h"
 #include "rendering/dx/RenderContext.h"
 #include "settings/DisplaySettings.h"
 #include "settings/Settings.h"
@@ -376,4 +377,52 @@ HRESULT APIENTRY HookOpenAdapter10_2(D3D10DDIARG_OPENADAPTER *pOpenData)
     pOpenData->pAdapterFuncs->pfnCreateDevice = HookCreateDevice;
   }
   return hr;
+}
+
+bool CWinSystemWin32DX::SetHDR(const VideoPicture* videoPicture /*not used*/)
+{
+  bool success = CWIN32Util::ToggleWindowsHDR();
+  Sleep(2000); //Display is switching
+
+  m_deviceResources->ReCreateSwapChain();
+
+  return success;
+}
+
+bool CWinSystemWin32DX::IsHDRDisplay()
+{
+  if (CWIN32Util::GetWindowsHDRStatus() > 0)
+    return true;
+
+  return false;
+}
+
+int CWinSystemWin32DX::GetOSHDRStatus()
+{
+  return CWIN32Util::GetWindowsHDRStatus();
+}
+
+bool CWinSystemWin32DX::IsHDROutput() const
+{
+  return m_deviceResources->IsHDROutput();
+}
+
+void CWinSystemWin32DX::ReCreateSwapChain()
+{
+  m_deviceResources->ReCreateSwapChain();
+}
+
+DXGI_HDR_METADATA_HDR10 CWinSystemWin32DX::GetHdr10Display() const
+{
+  return m_deviceResources->GetHdr10Display();
+}
+
+void CWinSystemWin32DX::SetHdrMetaData(DXGI_HDR_METADATA_HDR10& hdr10) const
+{
+  m_deviceResources->SetHdrMetaData(hdr10);
+}
+
+void CWinSystemWin32DX::SetHdrColorSpace(const DXGI_COLOR_SPACE_TYPE colorSpace) const
+{
+  m_deviceResources->SetHdrColorSpace(colorSpace);
 }

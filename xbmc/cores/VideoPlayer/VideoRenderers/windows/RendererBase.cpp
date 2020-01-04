@@ -130,10 +130,10 @@ CRendererBase::CRendererBase(CVideoSettings& videoSettings)
 
 CRendererBase::~CRendererBase()
 {
-  if (DX::DeviceResources::Get()->IsHDROutput())
+  if (DX::Windowing()->IsHDROutput())
   {
     CLog::LogF(LOGDEBUG, "Restoring SDR rendering");
-    DX::DeviceResources::Get()->SetHdrColorSpace(DXGI_COLOR_SPACE_RGB_FULL_G22_NONE_P709);
+    DX::Windowing()->SetHdrColorSpace(DXGI_COLOR_SPACE_RGB_FULL_G22_NONE_P709);
   }
   Flush(false);
 }
@@ -167,14 +167,14 @@ bool CRendererBase::Configure(const VideoPicture& picture, float fps, unsigned o
   m_fps = fps;
   m_renderOrientation = orientation;
 
-  if (DX::DeviceResources::Get()->IsHDROutput())
+  if (DX::Windowing()->IsHDROutput())
   {
     m_lastHdr10 = {};
     m_isHdrEnabled = false;
     m_isHlgEnabled = false;
     m_isRec2020Enabled = false;
     m_iCntMetaData = 0;
-    m_hdr10Display = DX::DeviceResources::Get()->GetHdr10Display();
+    m_hdr10Display = DX::Windowing()->GetHdr10Display();
   }
 
   return true;
@@ -210,7 +210,7 @@ void CRendererBase::Render(CD3DTexture& target, const CRect& sourceRect, const C
       return;
   }
 
-  if (DX::DeviceResources::Get()->IsHDROutput())
+  if (DX::Windowing()->IsHDROutput())
   {
     // HDR10
     if (buf->color_transfer == AVCOL_TRC_SMPTE2084 && buf->primaries == AVCOL_PRI_BT2020)
@@ -222,7 +222,7 @@ void CRendererBase::Render(CD3DTexture& target, const CRect& sourceRect, const C
         if (0 != std::memcmp(&hdr10, &m_lastHdr10, sizeof(hdr10)))
         {
           // Sets HDR10 metadata only
-          DX::DeviceResources::Get()->SetHdrMetaData(hdr10);
+          DX::Windowing()->SetHdrMetaData(hdr10);
           m_lastHdr10 = hdr10;
         }
       }
@@ -231,7 +231,7 @@ void CRendererBase::Render(CD3DTexture& target, const CRect& sourceRect, const C
         // Sets HDR10 metadata and enables HDR10 color space (switch to HDR rendering)
         DX::DeviceResources::Get()->SetHdrMetaData(hdr10);
         CLog::LogF(LOGNOTICE, "Switching to HDR rendering");
-        DX::DeviceResources::Get()->SetHdrColorSpace(DXGI_COLOR_SPACE_RGB_FULL_G2084_NONE_P2020);
+        DX::Windowing()->SetHdrColorSpace(DXGI_COLOR_SPACE_RGB_FULL_G2084_NONE_P2020);
         m_isHdrEnabled = true;
         m_lastHdr10 = hdr10;
       }
@@ -244,7 +244,7 @@ void CRendererBase::Render(CD3DTexture& target, const CRect& sourceRect, const C
       {
         // Switch to HLG rendering (internally converts HLG to HDR10)
         CLog::LogF(LOGNOTICE, "Switching to HLG rendering");
-        DX::DeviceResources::Get()->SetHdrColorSpace(DXGI_COLOR_SPACE_RGB_FULL_G2084_NONE_P2020);
+        DX::Windowing()->SetHdrColorSpace(DXGI_COLOR_SPACE_RGB_FULL_G2084_NONE_P2020);
         m_isHlgEnabled = true;
       }
     }
@@ -255,7 +255,7 @@ void CRendererBase::Render(CD3DTexture& target, const CRect& sourceRect, const C
       {
         // Switch to Rec.2020 rendering
         CLog::LogF(LOGNOTICE, "Switching to Rec.2020 rendering");
-        DX::DeviceResources::Get()->SetHdrColorSpace(DXGI_COLOR_SPACE_RGB_FULL_G22_NONE_P2020);
+        DX::Windowing()->SetHdrColorSpace(DXGI_COLOR_SPACE_RGB_FULL_G22_NONE_P2020);
         m_isRec2020Enabled = true;
       }
     }
@@ -268,7 +268,7 @@ void CRendererBase::Render(CD3DTexture& target, const CRect& sourceRect, const C
         {
           // If more than 60 frames are received without HDR10 metadata switch to SDR rendering
           CLog::LogF(LOGNOTICE, "Switching to SDR rendering");
-          DX::DeviceResources::Get()->SetHdrColorSpace(DXGI_COLOR_SPACE_RGB_FULL_G22_NONE_P709);
+          DX::Windowing()->SetHdrColorSpace(DXGI_COLOR_SPACE_RGB_FULL_G22_NONE_P709);
           m_isHdrEnabled = false;
           m_iCntMetaData = 0;
         }
@@ -277,7 +277,7 @@ void CRendererBase::Render(CD3DTexture& target, const CRect& sourceRect, const C
       {
         // Switch to SDR rendering
         CLog::LogF(LOGNOTICE, "Switching to SDR rendering");
-        DX::DeviceResources::Get()->SetHdrColorSpace(DXGI_COLOR_SPACE_RGB_FULL_G22_NONE_P709);
+        DX::Windowing()->SetHdrColorSpace(DXGI_COLOR_SPACE_RGB_FULL_G22_NONE_P709);
         m_isHlgEnabled = false;
         m_isRec2020Enabled = false;
       }
@@ -481,8 +481,7 @@ void CRendererBase::CheckVideoParameters()
   CRenderBuffer* buf = m_renderBuffers[m_iBufferIndex];
 
   bool toneMap = false;
-  if (m_videoSettings.m_ToneMapMethod != VS_TONEMAPMETHOD_OFF &&
-      !DX::DeviceResources::Get()->IsHDROutput())
+  if (m_videoSettings.m_ToneMapMethod != VS_TONEMAPMETHOD_OFF && !DX::Windowing()->IsHDROutput())
   {
     if (buf->hasLightMetadata || buf->hasDisplayMetadata && buf->displayMetadata.has_luminance)
       toneMap = true;

@@ -73,6 +73,7 @@ namespace DX
     void ReleaseBackBuffer();
     void CreateBackBuffer();
     void ResizeBuffers();
+    void ReCreateSwapChain();
 
     bool SetFullScreen(bool fullscreen, RESOLUTION_INFO& res);
 
@@ -137,7 +138,7 @@ namespace DX
     Microsoft::WRL::ComPtr<ID3D11Device1> m_d3dDevice;
     Microsoft::WRL::ComPtr<ID3D11DeviceContext1> m_d3dContext;
     Microsoft::WRL::ComPtr<ID3D11DeviceContext1> m_deferrContext;
-    Microsoft::WRL::ComPtr<IDXGISwapChain1> m_swapChain;
+    Microsoft::WRL::ComPtr<IDXGISwapChain3> m_swapChain;
 #ifdef _DEBUG
     Microsoft::WRL::ComPtr<ID3D11Debug> m_d3dDebug;
 #endif

@@ -135,7 +135,7 @@ void CRendererShaders::UpdateVideoFilters()
 
     AVColorPrimaries dstPrimaries = AVCOL_PRI_BT709;
 
-    if (DX::DeviceResources::Get()->IsHDROutput() &&
+    if (DX::Windowing()->IsHDROutput() &&
         (m_srcPrimaries == AVCOL_PRI_BT709 || m_srcPrimaries == AVCOL_PRI_BT2020))
       dstPrimaries = m_srcPrimaries;
 

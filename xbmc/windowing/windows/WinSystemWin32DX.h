@@ -64,6 +64,18 @@ public:
 
   void FixRefreshRateIfNecessary(const D3D10DDIARG_CREATERESOURCE* pResource) const;
 
+  // HDR OS/display override
+  bool SetHDR(const VideoPicture* videoPicture) override;
+  bool IsHDRDisplay() override;
+  int GetOSHDRStatus() override;
+
+  // HDR support
+  bool IsHDROutput() const;
+  void ReCreateSwapChain();
+  void SetHdrMetaData(DXGI_HDR_METADATA_HDR10& hdr10) const;
+  void SetHdrColorSpace(const DXGI_COLOR_SPACE_TYPE colorSpace) const;
+  DXGI_HDR_METADATA_HDR10 GetHdr10Display() const;
+
 protected:
   void SetDeviceFullScreen(bool fullScreen, RESOLUTION_INFO& res) override;
   void ReleaseBackBuffer() override;

@@ -518,7 +518,7 @@ void DX::DeviceResources::ResizeBuffers()
   bool windowed = true;
   bool isHdrEnabled = false;
   HRESULT hr = E_FAIL;
-  DXGI_SWAP_CHAIN_DESC1 scDesc = { 0 };
+  DXGI_SWAP_CHAIN_DESC1 scDesc = {};
 
   if (m_swapChain)
   {
@@ -531,9 +531,8 @@ void DX::DeviceResources::ResizeBuffers()
 
     // check if swapchain needs to be recreated
     m_swapChain->GetDesc1(&scDesc);
-    isHdrEnabled = IsDisplayHDREnabled();
 
-    if ((scDesc.Stereo == TRUE) != bHWStereoEnabled || (m_Is10bSwapchain != isHdrEnabled))
+    if ((scDesc.Stereo == TRUE) != bHWStereoEnabled)
     {
       // check fullscreen state and go to windowing if necessary
       if (!!bFullcreen)
@@ -549,7 +548,10 @@ void DX::DeviceResources::ResizeBuffers()
   if (m_swapChain != nullptr)
   {
     // If the swap chain already exists, resize it.
+    isHdrEnabled = IsDisplayHDREnabled();
     m_swapChain->GetDesc1(&scDesc);
+    isHdrEnabled ? scDesc.Format = DXGI_FORMAT_R10G10B10A2_UNORM
+                 : scDesc.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
     hr = m_swapChain->ResizeBuffers(
       scDesc.BufferCount,
       lround(m_outputSize.Width),
@@ -571,8 +573,12 @@ void DX::DeviceResources::ResizeBuffers()
   }
   else
   {
+    // When swapchain is not yet initialized IsDisplayHDREnabled() can not be used
+    // Is used alternate "low level" method GetOSHDRStatus()
+    isHdrEnabled = (2 == DX::Windowing()->GetOSHDRStatus());
+
     // Otherwise, create a new one using the same adapter as the existing Direct3D device.
-    DXGI_SWAP_CHAIN_DESC1 swapChainDesc = { 0 };
+    DXGI_SWAP_CHAIN_DESC1 swapChainDesc = {};
     swapChainDesc.Width = lround(m_outputSize.Width);
     swapChainDesc.Height = lround(m_outputSize.Height);
     swapChainDesc.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
@@ -1127,6 +1133,26 @@ void DX::DeviceResources::Trim() const
 
 #endif
 
+void DX::DeviceResources::ReCreateSwapChain()
+{
+  CLog::LogF(LOGDEBUG, "Re-create swapchain due HDR <-> SDR switch");
+
+  if (m_swapChain)
+  {
+    BOOL bFullcreen = 0;
+    m_swapChain->GetFullscreenState(&bFullcreen, nullptr);
+    if (!!bFullcreen)
+    {
+      m_swapChain->SetFullscreenState(false, nullptr); // mandatory before releasing swapchain
+    }
+    m_swapChain = nullptr;
+    m_deferrContext->Flush();
+    m_d3dContext->Flush();
+
+    CreateWindowSizeDependentResources();
+  }
+}
+
 DXGI_HDR_METADATA_HDR10 DX::DeviceResources::GetHdr10Display() const
 {
   ComPtr<IDXGIOutput> pOutput;
@@ -1157,6 +1183,9 @@ DXGI_HDR_METADATA_HDR10 DX::DeviceResources::GetHdr10Display() const
         hdr10.MaxMasteringLuminance = static_cast<uint32_t>(FACTOR_2 * od.MaxLuminance);
         hdr10.MinMasteringLuminance = static_cast<uint32_t>(FACTOR_2 * od.MinLuminance);
         hdr10.MaxContentLightLevel = static_cast<uint16_t>(od.MaxFullFrameLuminance);
+
+        if (m_IsHDROutput)
+          od.ColorSpace = DXGI_COLOR_SPACE_RGB_FULL_G2084_NONE_P2020;
 
         if (od.ColorSpace == DXGI_COLOR_SPACE_RGB_FULL_G2084_NONE_P2020)
         {
@@ -1249,37 +1278,32 @@ void DX::DeviceResources::SetHdrMetaData(DXGI_HDR_METADATA_HDR10& hdr10) const
 
 void DX::DeviceResources::SetHdrColorSpace(const DXGI_COLOR_SPACE_TYPE colorSpace) const
 {
-  ComPtr<IDXGISwapChain3> swapChain3;
-
   if (m_swapChain == nullptr)
     return;
 
-  if (SUCCEEDED(m_swapChain.As(&swapChain3)))
+  DXGI_COLOR_SPACE_TYPE cs = colorSpace;
+  if (DX::Windowing()->UseLimitedColor())
   {
-    DXGI_COLOR_SPACE_TYPE cs = colorSpace;
-    if (DX::Windowing()->UseLimitedColor())
+    switch (cs)
     {
-      switch (cs)
-      {
-        case DXGI_COLOR_SPACE_RGB_FULL_G22_NONE_P709:
-          cs = DXGI_COLOR_SPACE_RGB_STUDIO_G22_NONE_P709;
-          break;
-        case DXGI_COLOR_SPACE_RGB_FULL_G2084_NONE_P2020:
-          cs = DXGI_COLOR_SPACE_RGB_STUDIO_G2084_NONE_P2020;
-          break;
-        case DXGI_COLOR_SPACE_RGB_FULL_G22_NONE_P2020:
-          cs = DXGI_COLOR_SPACE_RGB_STUDIO_G22_NONE_P2020;
-          break;
-      }
+      case DXGI_COLOR_SPACE_RGB_FULL_G22_NONE_P709:
+        cs = DXGI_COLOR_SPACE_RGB_STUDIO_G22_NONE_P709;
+        break;
+      case DXGI_COLOR_SPACE_RGB_FULL_G2084_NONE_P2020:
+        cs = DXGI_COLOR_SPACE_RGB_STUDIO_G2084_NONE_P2020;
+        break;
+      case DXGI_COLOR_SPACE_RGB_FULL_G22_NONE_P2020:
+        cs = DXGI_COLOR_SPACE_RGB_STUDIO_G22_NONE_P2020;
+        break;
     }
-    if (SUCCEEDED(swapChain3->SetColorSpace1(cs)))
-    {
-      CLog::LogF(LOGDEBUG, "DXGI SetColorSpace1 success");
-    }
-    else
-    {
-      CLog::LogF(LOGERROR, "DXGI SetColorSpace1 failed");
-    }
+  }
+  if (SUCCEEDED(m_swapChain->SetColorSpace1(cs)))
+  {
+    CLog::LogF(LOGDEBUG, "DXGI SetColorSpace1 success");
+  }
+  else
+  {
+    CLog::LogF(LOGERROR, "DXGI SetColorSpace1 failed");
   }
 }
 

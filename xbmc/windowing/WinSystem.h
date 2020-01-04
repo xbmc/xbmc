@@ -157,7 +157,7 @@ public:
   std::shared_ptr<CDPMSSupport> GetDPMSManager();
   virtual bool SetHDR(const VideoPicture* videoPicture) { return false; };
   virtual bool IsHDRDisplay() { return false; };
-  virtual int IsHDRDisplay(void*) { return 0; };
+  virtual int GetOSHDRStatus() { return 0; };
 
   static const char* SETTING_WINSYSTEM_IS_HDR_DISPLAY;
 

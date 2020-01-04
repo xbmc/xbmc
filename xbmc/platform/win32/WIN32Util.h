@@ -66,5 +66,5 @@ public:
 
   // HDR display support
   static bool ToggleWindowsHDR();
-  static int GetHDRDisplayStatus();
+  static int GetWindowsHDRStatus();
 };

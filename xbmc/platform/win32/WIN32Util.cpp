@@ -1303,7 +1303,7 @@ bool CWIN32Util::ToggleWindowsHDR()
   return success;
 }
 
-int CWIN32Util::GetHDRDisplayStatus()
+int CWIN32Util::GetWindowsHDRStatus()
 {
   uint32_t pathCount, modeCount;
 

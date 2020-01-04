@@ -12,9 +12,7 @@
 #define DEFAULT_STREAM_INDEX (0)
 
 #include "DXVAHD.h"
-#include "platform/win32/WIN32Util.h"
 #include "rendering/dx/RenderContext.h"
-#include "rendering/dx/DeviceResources.h"
 #include "VideoRenderers/RenderManager.h"
 #include "VideoRenderers/RenderFlags.h"
 #include "VideoRenderers/windows/RendererBase.h"
@@ -22,6 +20,7 @@
 
 #include <Windows.h>
 #include <d3d11_4.h>
+#include <dxgi1_5.h>
 
 using namespace DXVA;
 using namespace Microsoft::WRL;
@@ -201,9 +200,6 @@ bool CProcessorHD::InitProcessor()
       m_Filters[i].bSupported = false;
     }
   }
-
-  if (m_bSupportHDR10)
-    m_hdr10Display = DX::DeviceResources::Get()->GetHdr10Display();
 
   return true;
 }
@@ -508,7 +504,7 @@ bool CProcessorHD::Render(CRect src, CRect dst, ID3D11Resource* target, CRenderB
                                              ? DXGI_COLOR_SPACE_RGB_STUDIO_G22_NONE_P709
                                              : DXGI_COLOR_SPACE_RGB_FULL_G22_NONE_P709;
 
-    if (DX::DeviceResources::Get()->IsHDROutput())
+    if (DX::Windowing()->IsHDROutput())
     {
       if ((views[2]->color_transfer == AVCOL_TRC_SMPTE2084 ||
            views[2]->color_transfer == AVCOL_TRC_ARIB_STD_B67) &&
@@ -532,7 +528,7 @@ bool CProcessorHD::Render(CRect src, CRect dst, ID3D11Resource* target, CRenderB
     // makes target available for processing in shaders
     videoCtx1->VideoProcessorSetOutputShaderUsage(m_pVideoProcessor.Get(), 1);
 
-    if (DX::DeviceResources::Get()->IsHDROutput() && m_bSupportHDR10 &&
+    if (!DX::Windowing()->IsHDROutput() && m_bSupportHDR10 &&
         views[2]->color_transfer == AVCOL_TRC_SMPTE2084 && views[2]->primaries == AVCOL_PRI_BT2020)
     {
       ComPtr<ID3D11VideoContext2> videoCtx2;
@@ -543,11 +539,6 @@ bool CProcessorHD::Render(CRect src, CRect dst, ID3D11Resource* target, CRenderB
         videoCtx2->VideoProcessorSetStreamHDRMetaData(m_pVideoProcessor.Get(), DEFAULT_STREAM_INDEX,
                                                       DXGI_HDR_METADATA_TYPE_HDR10,
                                                       sizeof(hdr10Stream), &hdr10Stream);
-
-        // Passes Display HDR parameters (EDID) to VideoProcessor
-        videoCtx2->VideoProcessorSetOutputHDRMetaData(m_pVideoProcessor.Get(),
-                                                      DXGI_HDR_METADATA_TYPE_HDR10,
-                                                      sizeof(m_hdr10Display), &m_hdr10Display);
       }
     }
   }

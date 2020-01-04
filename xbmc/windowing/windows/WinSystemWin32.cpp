@@ -19,7 +19,6 @@
 #include "filesystem/SpecialProtocol.h"
 #include "messaging/ApplicationMessenger.h"
 #include "platform/Environment.h"
-#include "platform/win32/WIN32Util.h"
 #include "rendering/dx/ScreenshotSurfaceWindows.h"
 #include "resource.h"
 #include "settings/AdvancedSettings.h"
@@ -1193,14 +1192,4 @@ WINDOW_STATE CWinSystemWin32::GetState(bool fullScreen) const
 bool CWinSystemWin32::MessagePump()
 {
   return m_winEvents->MessagePump();
-}
-
-bool CWinSystemWin32::SetHDR(const VideoPicture* videoPicture/*param not used*/)
-{
-  return CWIN32Util::ToggleWindowsHDR();
-}
-
-int CWinSystemWin32::IsHDRDisplay(void* not_used)
-{
-  return CWIN32Util::GetHDRDisplayStatus();
 }
