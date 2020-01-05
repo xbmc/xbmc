@@ -86,13 +86,21 @@ IFileDirectory* CFileDirectoryFactory::Create(const CURL& url, CFileItem* pItem,
               *pItem = *wrap->m_items[0];
             }
             else
-            { // compressed or more than one file -> create a dir
-              pItem->SetPath(wrap->m_items.GetPath());
-              return wrap;
+            {
+              // compressed or more than one file -> create a dir
+              *pItem = wrap->m_items;
             }
+
+            // Check for folder, if yes return also wrap.
+            // Needed to fix for e.g. RAR files with only one file inside
+            pItem->m_bIsFolder = URIUtils::HasSlashAtEnd(pItem->GetPath());
+            if (pItem->m_bIsFolder)
+              return wrap;
           }
           else
+          {
             pItem->m_bIsFolder = true;
+          }
 
           delete wrap;
           return nullptr;
