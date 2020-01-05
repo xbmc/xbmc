@@ -545,10 +545,11 @@ void DX::DeviceResources::ResizeBuffers()
     }
   }
 
+  isHdrEnabled = (2 == DX::Windowing()->GetOSHDRStatus());
+
   if (m_swapChain != nullptr)
   {
     // If the swap chain already exists, resize it.
-    isHdrEnabled = IsDisplayHDREnabled();
     m_swapChain->GetDesc1(&scDesc);
     isHdrEnabled ? scDesc.Format = DXGI_FORMAT_R10G10B10A2_UNORM
                  : scDesc.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
@@ -573,10 +574,6 @@ void DX::DeviceResources::ResizeBuffers()
   }
   else
   {
-    // When swapchain is not yet initialized IsDisplayHDREnabled() can not be used
-    // Is used alternate "low level" method GetOSHDRStatus()
-    isHdrEnabled = (2 == DX::Windowing()->GetOSHDRStatus());
-
     // Otherwise, create a new one using the same adapter as the existing Direct3D device.
     DXGI_SWAP_CHAIN_DESC1 swapChainDesc = {};
     swapChainDesc.Width = lround(m_outputSize.Width);
@@ -637,7 +634,6 @@ void DX::DeviceResources::ResizeBuffers()
     if (swapChainDesc.Format == DXGI_FORMAT_R10G10B10A2_UNORM)
     {
       std::string txOutput;
-      m_Is10bSwapchain = true;
       if (isHdrEnabled)
       {
         m_IsHDROutput = true;
@@ -652,7 +648,6 @@ void DX::DeviceResources::ResizeBuffers()
     }
     else
     {
-      m_Is10bSwapchain = false;
       m_IsHDROutput = false;
       CLog::LogF(LOGNOTICE, "8 bit swapchain is used with SDR output");
     }
@@ -1133,110 +1128,6 @@ void DX::DeviceResources::Trim() const
 
 #endif
 
-void DX::DeviceResources::ReCreateSwapChain()
-{
-  CLog::LogF(LOGDEBUG, "Re-create swapchain due HDR <-> SDR switch");
-
-  if (m_swapChain)
-  {
-    BOOL bFullcreen = 0;
-    m_swapChain->GetFullscreenState(&bFullcreen, nullptr);
-    if (!!bFullcreen)
-    {
-      m_swapChain->SetFullscreenState(false, nullptr); // mandatory before releasing swapchain
-    }
-    m_swapChain = nullptr;
-    m_deferrContext->Flush();
-    m_d3dContext->Flush();
-
-    CreateWindowSizeDependentResources();
-  }
-}
-
-DXGI_HDR_METADATA_HDR10 DX::DeviceResources::GetHdr10Display() const
-{
-  ComPtr<IDXGIOutput> pOutput;
-  ComPtr<IDXGIOutput6> pOutput6;
-  DXGI_HDR_METADATA_HDR10 hdr10 = {};
-  DXGI_OUTPUT_DESC1 od = {};
-  bool hdrCapable = false;
-
-  if (m_swapChain == nullptr)
-    return hdr10;
-
-  if (SUCCEEDED(m_swapChain->GetContainingOutput(pOutput.GetAddressOf())))
-  {
-    if (SUCCEEDED(pOutput.As(&pOutput6)))
-    {
-      if (SUCCEEDED(pOutput6->GetDesc1(&od)))
-      {
-        constexpr float FACTOR_1 = 50000.0;
-        constexpr float FACTOR_2 = 10000.0;
-        hdr10.RedPrimary[0] = static_cast<uint16_t>(FACTOR_1 * od.RedPrimary[0]);
-        hdr10.RedPrimary[1] = static_cast<uint16_t>(FACTOR_1 * od.RedPrimary[1]);
-        hdr10.GreenPrimary[0] = static_cast<uint16_t>(FACTOR_1 * od.GreenPrimary[0]);
-        hdr10.GreenPrimary[1] = static_cast<uint16_t>(FACTOR_1 * od.GreenPrimary[1]);
-        hdr10.BluePrimary[0] = static_cast<uint16_t>(FACTOR_1 * od.BluePrimary[0]);
-        hdr10.BluePrimary[1] = static_cast<uint16_t>(FACTOR_1 * od.BluePrimary[1]);
-        hdr10.WhitePoint[0] = static_cast<uint16_t>(FACTOR_1 * od.WhitePoint[0]);
-        hdr10.WhitePoint[1] = static_cast<uint16_t>(FACTOR_1 * od.WhitePoint[1]);
-        hdr10.MaxMasteringLuminance = static_cast<uint32_t>(FACTOR_2 * od.MaxLuminance);
-        hdr10.MinMasteringLuminance = static_cast<uint32_t>(FACTOR_2 * od.MinLuminance);
-        hdr10.MaxContentLightLevel = static_cast<uint16_t>(od.MaxFullFrameLuminance);
-
-        if (m_IsHDROutput)
-          od.ColorSpace = DXGI_COLOR_SPACE_RGB_FULL_G2084_NONE_P2020;
-
-        if (od.ColorSpace == DXGI_COLOR_SPACE_RGB_FULL_G2084_NONE_P2020)
-        {
-          CLog::LogF(LOGNOTICE, "Display HDR capable detected and HDR current state is ENABLED:");
-          hdrCapable = true;
-        }
-        else if (od.MaxLuminance >= 400.0)
-        {
-          CLog::LogF(LOGNOTICE, "Display HDR capable is detected but NOT enabled:");
-          hdrCapable = true;
-        }
-        else
-        {
-          CLog::LogF(LOGNOTICE, "No display HDR capable detected.");
-        }
-        if (hdrCapable)
-        {
-          std::string txColorSpace = "UNKNOWN";
-          switch (od.ColorSpace)
-          {
-            case DXGI_COLOR_SPACE_RGB_FULL_G2084_NONE_P2020:
-              txColorSpace = "DXGI_COLOR_SPACE_RGB_FULL_G2084_NONE_P2020";
-              break;
-            case DXGI_COLOR_SPACE_RGB_FULL_G22_NONE_P709:
-              txColorSpace = "DXGI_COLOR_SPACE_RGB_FULL_G22_NONE_P709";
-              break;
-          }
-          CLog::LogF(LOGNOTICE, "ColorSpace = {0:s}", txColorSpace);
-          CLog::LogF(LOGNOTICE, "RedPrimary = {0:0.3f}, {1:0.3f}", od.RedPrimary[0],
-                     od.RedPrimary[1]);
-          CLog::LogF(LOGNOTICE, "GreenPrimary = {0:0.3f}, {1:0.3f}", od.GreenPrimary[0],
-                     od.GreenPrimary[1]);
-          CLog::LogF(LOGNOTICE, "BluePrimary = {0:0.3f}, {1:0.3f}", od.BluePrimary[0],
-                     od.BluePrimary[1]);
-          CLog::LogF(LOGNOTICE, "WhitePoint = {0:0.3f}, {1:0.3f}", od.WhitePoint[0],
-                     od.WhitePoint[1]);
-          CLog::LogF(LOGNOTICE, "MinLuminance = {0:0.4f}", od.MinLuminance);
-          CLog::LogF(LOGNOTICE, "MaxLuminance = {0:0.0f}", od.MaxLuminance);
-          CLog::LogF(LOGNOTICE, "MaxFullFrameLuminance = {0:0.0f}", od.MaxFullFrameLuminance);
-        }
-      }
-      else
-      {
-        CLog::LogF(LOGERROR, "DXGI GetDesc1 failed");
-      }
-    }
-  }
-
-  return hdr10;
-}
-
 void DX::DeviceResources::SetHdrMetaData(DXGI_HDR_METADATA_HDR10& hdr10) const
 {
   ComPtr<IDXGISwapChain4> swapChain4;
@@ -1262,7 +1153,7 @@ void DX::DeviceResources::SetHdrMetaData(DXGI_HDR_METADATA_HDR10& hdr10) const
       const double min_ML = static_cast<double>(hdr10.MinMasteringLuminance) / FACTOR_2;
 
       CLog::LogF(LOGNOTICE,
-                 "Stream HDR metadata => RP {0:0.3f} {1:0.3f} | GP {2:0.3f} {3:0.3f} | BP "
+                 "RP {0:0.3f} {1:0.3f} | GP {2:0.3f} {3:0.3f} | BP "
                  "{4:0.3f} {5:0.3f} | WP {6:0.3f} "
                  "{7:0.3f} | MAX ML {8:0.0f} "
                  "| min ML {9:0.3f} | Max CLL {10:d} | Max FALL {11:d}",
@@ -1307,33 +1198,22 @@ void DX::DeviceResources::SetHdrColorSpace(const DXGI_COLOR_SPACE_TYPE colorSpac
   }
 }
 
-bool DX::DeviceResources::IsDisplayHDREnabled() const
+void DX::DeviceResources::ReCreateSwapChain()
 {
-  ComPtr<IDXGIOutput> pOutput;
-  ComPtr<IDXGIOutput6> pOutput6;
-  DXGI_OUTPUT_DESC1 od = {};
-
   if (m_swapChain == nullptr)
-    return false;
+    return;
 
-  if (SUCCEEDED(m_swapChain->GetContainingOutput(pOutput.GetAddressOf())))
+  CLog::LogF(LOGDEBUG, "Re-create swapchain due HDR <-> SDR switch");
+
+  BOOL bFullcreen = 0;
+  m_swapChain->GetFullscreenState(&bFullcreen, nullptr);
+  if (!!bFullcreen)
   {
-    if (SUCCEEDED(pOutput.As(&pOutput6)))
-    {
-      if (SUCCEEDED(pOutput6->GetDesc1(&od)))
-      {
-        CLog::LogF(LOGDEBUG, "DXGI GetDesc1 success");
-        if (od.ColorSpace == DXGI_COLOR_SPACE_RGB_FULL_G2084_NONE_P2020)
-        {
-          return true;
-        }
-      }
-      else
-      {
-        CLog::LogF(LOGERROR, "DXGI GetDesc1 failed");
-      }
-    }
+    m_swapChain->SetFullscreenState(false, nullptr); // mandatory before releasing swapchain
   }
+  m_swapChain = nullptr;
+  m_deferrContext->Flush();
+  m_d3dContext->Flush();
 
-  return false;
+  CreateWindowSizeDependentResources();
 }

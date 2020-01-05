@@ -412,11 +412,6 @@ void CWinSystemWin32DX::ReCreateSwapChain()
   m_deviceResources->ReCreateSwapChain();
 }
 
-DXGI_HDR_METADATA_HDR10 CWinSystemWin32DX::GetHdr10Display() const
-{
-  return m_deviceResources->GetHdr10Display();
-}
-
 void CWinSystemWin32DX::SetHdrMetaData(DXGI_HDR_METADATA_HDR10& hdr10) const
 {
   m_deviceResources->SetHdrMetaData(hdr10);

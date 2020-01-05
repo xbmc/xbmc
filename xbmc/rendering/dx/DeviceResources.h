@@ -78,11 +78,9 @@ namespace DX
     bool SetFullScreen(bool fullscreen, RESOLUTION_INFO& res);
 
     // HDR display support
-    bool IsDisplayHDREnabled() const;
     void SetHdrMetaData(DXGI_HDR_METADATA_HDR10& hdr10) const;
     void SetHdrColorSpace(const DXGI_COLOR_SPACE_TYPE colorSpace) const;
     bool IsHDROutput() const { return m_IsHDROutput; }
-    DXGI_HDR_METADATA_HDR10 GetHdr10Display() const;
 
     // DX resources registration
     void Register(ID3DResource *resource);
@@ -164,7 +162,6 @@ namespace DX
     std::vector<ID3DResource*> m_resources;
     bool m_stereoEnabled;
     bool m_bDeviceCreated;
-    bool m_Is10bSwapchain;
     bool m_IsHDROutput;
   };
 }

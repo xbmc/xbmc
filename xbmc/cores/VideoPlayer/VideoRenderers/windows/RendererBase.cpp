@@ -167,15 +167,11 @@ bool CRendererBase::Configure(const VideoPicture& picture, float fps, unsigned o
   m_fps = fps;
   m_renderOrientation = orientation;
 
-  if (DX::Windowing()->IsHDROutput())
-  {
-    m_lastHdr10 = {};
-    m_isHdrEnabled = false;
-    m_isHlgEnabled = false;
-    m_isRec2020Enabled = false;
-    m_iCntMetaData = 0;
-    m_hdr10Display = DX::Windowing()->GetHdr10Display();
-  }
+  m_lastHdr10 = {};
+  m_isHdrEnabled = false;
+  m_isHlgEnabled = false;
+  m_isRec2020Enabled = false;
+  m_iCntMetaData = 0;
 
   return true;
 }

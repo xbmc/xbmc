@@ -74,7 +74,6 @@ public:
   void ReCreateSwapChain();
   void SetHdrMetaData(DXGI_HDR_METADATA_HDR10& hdr10) const;
   void SetHdrColorSpace(const DXGI_COLOR_SPACE_TYPE colorSpace) const;
-  DXGI_HDR_METADATA_HDR10 GetHdr10Display() const;
 
 protected:
   void SetDeviceFullScreen(bool fullScreen, RESOLUTION_INFO& res) override;
