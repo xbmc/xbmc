@@ -138,7 +138,7 @@ bool CProcessorHD::InitProcessor()
   CLog::LogF(LOGDEBUG, "video processor has %#x input format caps.", m_vcaps.InputFormatCaps);
   CLog::LogF(LOGDEBUG, "video processor has %d max input streams.", m_vcaps.MaxInputStreams);
   CLog::LogF(LOGDEBUG, "video processor has %d max stream states.", m_vcaps.MaxStreamStates);
-  if ((m_bSupportHDR10 = m_vcaps.FeatureCaps & D3D11_VIDEO_PROCESSOR_FEATURE_CAPS_METADATA_HDR10))
+  if (m_vcaps.FeatureCaps & D3D11_VIDEO_PROCESSOR_FEATURE_CAPS_METADATA_HDR10)
     CLog::LogF(LOGDEBUG, "video processor supports HDR10.");
 
   if (0 != (m_vcaps.FeatureCaps & D3D11_VIDEO_PROCESSOR_FEATURE_CAPS_LEGACY))
@@ -529,7 +529,7 @@ bool CProcessorHD::Render(CRect src, CRect dst, ID3D11Resource* target, CRenderB
     // makes target available for processing in shaders
     videoCtx1->VideoProcessorSetOutputShaderUsage(m_pVideoProcessor.Get(), 1);
 
-	// only used for DXVA HW tone mapping HDR to SDR
+    // only used for DXVA HW tone mapping HDR to SDR
     if (!DX::Windowing()->IsHDROutput() && m_bSupportHDR10 &&
         views[2]->color_transfer == AVCOL_TRC_SMPTE2084 && views[2]->primaries == AVCOL_PRI_BT2020)
     {

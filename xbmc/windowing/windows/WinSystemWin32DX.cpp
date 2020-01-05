@@ -397,19 +397,17 @@ bool CWinSystemWin32DX::IsHDRDisplay()
   return false;
 }
 
-int CWinSystemWin32DX::GetOSHDRStatus()
+bool CWinSystemWin32DX::GetOSHDRStatus()
 {
-  return CWIN32Util::GetWindowsHDRStatus();
+  if (CWIN32Util::GetWindowsHDRStatus() == 2)
+    return true;
+
+  return false;
 }
 
 bool CWinSystemWin32DX::IsHDROutput() const
 {
   return m_deviceResources->IsHDROutput();
-}
-
-void CWinSystemWin32DX::ReCreateSwapChain()
-{
-  m_deviceResources->ReCreateSwapChain();
 }
 
 void CWinSystemWin32DX::SetHdrMetaData(DXGI_HDR_METADATA_HDR10& hdr10) const

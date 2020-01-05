@@ -545,7 +545,7 @@ void DX::DeviceResources::ResizeBuffers()
     }
   }
 
-  isHdrEnabled = (2 == DX::Windowing()->GetOSHDRStatus());
+  isHdrEnabled = DX::Windowing()->GetOSHDRStatus();
 
   if (m_swapChain != nullptr)
   {

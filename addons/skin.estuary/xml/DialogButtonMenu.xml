@@ -25,11 +25,13 @@
 					<item>
 						<label>$LOCALIZE[13037]</label>
 						<onclick>ToggleDisplayHDR()</onclick>
+						<onclick>dialog.close(all,true)</onclick>
 						<visible>System.IsHDRDisplayOff</visible>
 					</item>
 					<item>
 						<label>$LOCALIZE[13038]</label>
 						<onclick>ToggleDisplayHDR()</onclick>
+						<onclick>dialog.close(all,true)</onclick>
 						<visible>System.IsHDRDisplayOn</visible>
 					</item>
 					<item>

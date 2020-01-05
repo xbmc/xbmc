@@ -67,11 +67,10 @@ public:
   // HDR OS/display override
   bool SetHDR(const VideoPicture* videoPicture) override;
   bool IsHDRDisplay() override;
-  int GetOSHDRStatus() override;
+  bool GetOSHDRStatus() override;
 
   // HDR support
   bool IsHDROutput() const;
-  void ReCreateSwapChain();
   void SetHdrMetaData(DXGI_HDR_METADATA_HDR10& hdr10) const;
   void SetHdrColorSpace(const DXGI_COLOR_SPACE_TYPE colorSpace) const;
 
