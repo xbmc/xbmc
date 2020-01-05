@@ -233,6 +233,7 @@ int CAESinkAUDIOTRACK::AudioTrackWrite(char* audioData, int sizeInBytes, int64_t
 CAEDeviceInfo CAESinkAUDIOTRACK::m_info;
 CAEDeviceInfo CAESinkAUDIOTRACK::m_info_iec;
 CAEDeviceInfo CAESinkAUDIOTRACK::m_info_raw;
+bool CAESinkAUDIOTRACK::m_hasIEC = false;
 std::set<unsigned int> CAESinkAUDIOTRACK::m_sink_sampleRates;
 bool CAESinkAUDIOTRACK::m_sinkSupportsFloat = false;
 bool CAESinkAUDIOTRACK::m_sinkSupportsMultiChannelFloat = false;
@@ -298,7 +299,9 @@ bool CAESinkAUDIOTRACK::Initialize(AEAudioFormat &format, std::string &device)
 {
 
   // try to recover used device
-  if (device == "Default" && !m_info.m_wantsIECPassthrough)
+  if (!m_hasIEC)
+    m_info = m_info_raw;
+  else if (device == "Default" && !m_info.m_wantsIECPassthrough)
     m_info = m_info_raw;
   else if (device == "AudioTrack (RAW)")
     m_info = m_info_raw;
@@ -914,8 +917,12 @@ void CAESinkAUDIOTRACK::EnumerateDevicesEx(AEDeviceInfoList &list, bool force)
     UpdateAvailablePCMCapabilities();
     UpdateAvailablePassthroughCapabilities(isRaw);
 
-    m_info_iec = m_info;
-    list.push_back(m_info_iec);
+    if (!m_info.m_streamTypes.empty())
+    {
+      m_info_iec = m_info;
+      list.push_back(m_info_iec);
+      m_hasIEC = true;
+    }
   }
 
   // Query RAW capabilities

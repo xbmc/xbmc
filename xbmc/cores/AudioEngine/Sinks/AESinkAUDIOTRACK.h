@@ -75,6 +75,7 @@ private:
   static CAEDeviceInfo m_info;
   static CAEDeviceInfo m_info_raw;
   static CAEDeviceInfo m_info_iec;
+  static bool m_hasIEC;
   static std::set<unsigned int>       m_sink_sampleRates;
   static bool m_sinkSupportsFloat;
   static bool m_sinkSupportsMultiChannelFloat;
