@@ -2352,7 +2352,7 @@ void CGUIEPGGridContainer::HandleProgrammeGrid(bool bRender, unsigned int curren
       {
         // First program starts before current view
         block = m_gridModel->GetGridItemStartBlock(channel, startBlock);
-        const int missingSection = startBlock - block;
+        const int missingSection = blockOffset - block;
         posA2 -= missingSection * m_blockSize;
       }
 
