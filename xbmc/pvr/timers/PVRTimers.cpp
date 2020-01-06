@@ -37,14 +37,17 @@ bool CPVRTimersContainer::UpdateFromClient(const std::shared_ptr<CPVRTimerInfoTa
 {
   CSingleLock lock(m_critSection);
   std::shared_ptr<CPVRTimerInfoTag> tag = GetByClient(timer->m_iClientId, timer->m_iClientIndex);
-  if (!tag)
+  if (tag)
   {
-    tag.reset(new CPVRTimerInfoTag());
-    tag->m_iTimerId = ++m_iLastId;
-    InsertEntry(tag);
+    return tag->UpdateEntry(timer);
+  }
+  else
+  {
+    timer->m_iTimerId = ++m_iLastId;
+    InsertEntry(timer);
   }
 
-  return tag->UpdateEntry(timer);
+  return true;
 }
 
 std::shared_ptr<CPVRTimerInfoTag> CPVRTimersContainer::GetByClient(int iClientId, int iClientIndex) const

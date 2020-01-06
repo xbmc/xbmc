@@ -173,19 +173,17 @@ void CPVRRecordings::UpdateFromClient(const std::shared_ptr<CPVRRecording>& tag)
       m_bDeletedTVRecordings = true;
   }
 
-  std::shared_ptr<CPVRRecording> newTag = GetById(tag->m_iClientId, tag->m_strRecordingId);
-  if (newTag)
+  std::shared_ptr<CPVRRecording> existingTag = GetById(tag->m_iClientId, tag->m_strRecordingId);
+  if (existingTag)
   {
-    newTag->Update(*tag);
+    existingTag->Update(*tag);
   }
   else
   {
-    newTag = std::shared_ptr<CPVRRecording>(new CPVRRecording);
-    newTag->Update(*tag);
-    newTag->UpdateMetadata(GetVideoDatabase());
-    newTag->m_iRecordingId = ++m_iLastId;
-    m_recordings.insert(std::make_pair(CPVRRecordingUid(newTag->m_iClientId, newTag->m_strRecordingId), newTag));
-    if (newTag->IsRadio())
+    tag->UpdateMetadata(GetVideoDatabase());
+    tag->m_iRecordingId = ++m_iLastId;
+    m_recordings.insert({CPVRRecordingUid(tag->m_iClientId, tag->m_strRecordingId), tag});
+    if (tag->IsRadio())
       ++m_iRadioRecordings;
     else
       ++m_iTVRecordings;
