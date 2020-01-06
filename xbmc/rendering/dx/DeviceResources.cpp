@@ -1139,6 +1139,15 @@ void DX::DeviceResources::SetHdrMetaData(DXGI_HDR_METADATA_HDR10& hdr10) const
   {
     if (SUCCEEDED(swapChain4->SetHDRMetaData(DXGI_HDR_METADATA_TYPE_HDR10, sizeof(hdr10), &hdr10)))
     {
+      CLog::LogF(LOGNOTICE,
+                 "(raw) RP {0} {1} | GP {2} {3} | BP {4} {5} | WP {6} {7} | Max ML {8} | min ML "
+                 "{9} | Max CLL {10} | Max FALL {11}",
+                 hdr10.RedPrimary[0], hdr10.RedPrimary[1], hdr10.GreenPrimary[0],
+                 hdr10.GreenPrimary[1], hdr10.BluePrimary[0], hdr10.BluePrimary[1],
+                 hdr10.WhitePoint[0], hdr10.WhitePoint[1], hdr10.MaxMasteringLuminance,
+                 hdr10.MinMasteringLuminance, hdr10.MaxContentLightLevel,
+                 hdr10.MaxFrameAverageLightLevel);
+
       constexpr double FACTOR_1 = 50000.0;
       constexpr double FACTOR_2 = 10000.0;
       const double RP_0 = static_cast<double>(hdr10.RedPrimary[0]) / FACTOR_1;
@@ -1155,7 +1164,7 @@ void DX::DeviceResources::SetHdrMetaData(DXGI_HDR_METADATA_HDR10& hdr10) const
       CLog::LogF(LOGNOTICE,
                  "RP {0:0.3f} {1:0.3f} | GP {2:0.3f} {3:0.3f} | BP "
                  "{4:0.3f} {5:0.3f} | WP {6:0.3f} "
-                 "{7:0.3f} | MAX ML {8:0.0f} "
+                 "{7:0.3f} | Max ML {8:0.0f} "
                  "| min ML {9:0.3f} | Max CLL {10:d} | Max FALL {11:d}",
                  RP_0, RP_1, GP_0, GP_1, BP_0, BP_1, WP_0, WP_1, Max_ML, min_ML,
                  hdr10.MaxContentLightLevel, hdr10.MaxFrameAverageLightLevel);
