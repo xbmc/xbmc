@@ -34,5 +34,6 @@ public:
   static bool        IsAliasShortcut(const std::string& path, bool isdirectory);
   static void        TranslateAliasShortcut(std::string& path);
   static bool        CreateAliasShortcut(const std::string& fromPath, const std::string& toPath);
+  static bool hasSafeArea(bool callOnMainThread = false);
 };
 

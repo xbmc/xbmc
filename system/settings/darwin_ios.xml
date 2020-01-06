@@ -85,6 +85,7 @@
           <default>skin.estouchy</default>
         </setting>
         <setting id="lookandfeel.extenduiundernotch" type="boolean" label="39119" help="39120">
+          <requirement>DEVICE_HAS_NOTCH</requirement>
           <level>1</level>
           <default>false</default>
           <control type="toggle" />

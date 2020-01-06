@@ -15,6 +15,8 @@
 #include "addons/Skin.h"
 #if defined(TARGET_ANDROID)
 #include "platform/android/activity/AndroidFeatures.h"
+#elif defined(TARGET_DARWIN_IOS)
+#include "platform/darwin/DarwinUtils.h"
 #endif // defined(TARGET_ANDROID)
 #include "cores/AudioEngine/Engines/ActiveAE/ActiveAESettings.h"
 #include "ServiceBroker.h"
@@ -327,6 +329,11 @@ void CSettingConditions::Initialize()
 #ifdef HAS_WEB_SERVER
   if(CWebServer::WebServerSupportsSSL())
     m_simpleConditions.insert("webserver_has_ssl");
+#endif
+
+#if defined(TARGET_DARWIN_IOS)
+  if (CDarwinUtils::hasSafeArea(true))
+    m_simpleConditions.insert("device_has_notch");
 #endif
 
   // add complex conditions

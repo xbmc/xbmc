@@ -378,3 +378,23 @@ bool CDarwinUtils::CreateAliasShortcut(const std::string& fromPath, const std::s
 #endif
   return ret;
 }
+
+bool CDarwinUtils::hasSafeArea(bool callOnMainThread)
+{
+#if defined(TARGET_DARWIN_IOS)
+  if (@available(ios 11.0, *))
+  {
+    bool __block result;
+    auto getResult = ^{
+      auto app = UIApplication.sharedApplication;
+      result = !UIEdgeInsetsEqualToEdgeInsets(app.keyWindow.safeAreaInsets, UIEdgeInsetsZero);
+    };
+    if (callOnMainThread)
+      dispatch_sync(dispatch_get_main_queue(), getResult);
+    else
+      getResult();
+    return result;
+  }
+#endif
+  return false;
+}
