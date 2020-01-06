@@ -139,6 +139,7 @@ bool CDVDInputStreamBluray::Open()
   std::string root;
 
   bool openStream = false;
+  bool openDisc = false;
 
   // The item was selected via the simple menu
   if (URIUtils::IsProtocol(strPath, "bluray"))
@@ -146,6 +147,11 @@ bool CDVDInputStreamBluray::Open()
     CURL url(strPath);
     root = url.GetHostName();
     filename = URIUtils::GetFileName(url.GetFileName());
+
+    // Check whether disc is AACS protected
+    CURL url3(root);
+    CFileItem base(url3, false);
+    openDisc = base.IsProtectedBlurayDisc();
 
     // check for a menu call for an image file
     if (StringUtils::EqualsNoCase(filename, "menu"))
@@ -155,6 +161,11 @@ bool CDVDInputStreamBluray::Open()
       std::string root2 = url2.GetHostName();
       CURL url(root2);
       CFileItem item(url, false);
+
+      // Check whether disc is AACS protected
+      if (!openDisc)
+        openDisc = item.IsProtectedBlurayDisc();
+
       if (item.IsDiscImage())
       {
         if (!OpenStream(item))
@@ -170,6 +181,10 @@ bool CDVDInputStreamBluray::Open()
       return false;
 
     openStream = true;
+  }
+  else if (m_item.IsProtectedBlurayDisc())
+  {
+    openDisc = true;
   }
   else
   {
@@ -217,12 +232,25 @@ bool CDVDInputStreamBluray::Open()
       return false;
     }
   }
+  else if (openDisc)
+  {
+    // This special case is required for opening original AACS protected Blu-ray discs. Otherwise
+    // things like Bus Encryption might not be handled properly and playback will fail.
+    m_rootPath = root;
+    if (!bd_open_disc(m_bd, root.c_str(), nullptr))
+    {
+      CLog::Log(LOGERROR, "CDVDInputStreamBluray::Open - failed to open %s in disc mode",
+                CURL::GetRedacted(root).c_str());
+      return false;
+    }
+  }
   else
   {
     m_rootPath = root;
     if (!bd_open_files(m_bd, &m_rootPath, CBlurayCallback::dir_open, CBlurayCallback::file_open))
     {
-      CLog::Log(LOGERROR, "CDVDInputStreamBluray::Open - failed to open %s", CURL::GetRedacted(root).c_str());
+      CLog::Log(LOGERROR, "CDVDInputStreamBluray::Open - failed to open %s in files mode",
+                CURL::GetRedacted(root).c_str());
       return false;
     }
   }
