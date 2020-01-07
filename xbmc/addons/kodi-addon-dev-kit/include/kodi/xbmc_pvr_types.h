@@ -59,6 +59,7 @@ struct DemuxPacket;
 #define PVR_ADDON_ATTRIBUTE_DESC_LENGTH       128
 #define PVR_ADDON_ATTRIBUTE_VALUES_ARRAY_SIZE 512
 #define PVR_ADDON_DESCRAMBLE_INFO_STRING_LENGTH 64
+#define PVR_ADDON_DATE_STRING_LENGTH          32
 
 #define XBMC_INVALID_CODEC_ID   0
 #define XBMC_INVALID_CODEC      { XBMC_CODEC_TYPE_UNKNOWN, XBMC_INVALID_CODEC_ID }
@@ -556,6 +557,7 @@ extern "C" {
     unsigned int iEpgEventId;                             /*!< @brief (optional) EPG event id associated with this recording. Valid ids must be greater than EPG_TAG_INVALID_UID. */
     int    iChannelUid;                                   /*!< @brief (optional) unique identifier of the channel for this recording. PVR_CHANNEL_INVALID_UID denotes that channel uid is not available. */
     PVR_RECORDING_CHANNEL_TYPE channelType;               /*!< @brief (optional) channel type. Set to PVR_RECORDING_CHANNEL_TYPE_UNKNOWN if the type cannot be determined. */
+    char   strFirstAired[PVR_ADDON_DATE_STRING_LENGTH];   /*!< @brief (optional) first aired date of this recording. Used only for display purposes. Specify in W3C date format "YYYY-MM-DD". */
   } ATTRIBUTE_PACKED PVR_RECORDING;
 
   /*!
