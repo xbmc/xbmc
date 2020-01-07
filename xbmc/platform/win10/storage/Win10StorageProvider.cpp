@@ -151,7 +151,9 @@ std::vector<std::string> CStorageProvider::GetDiskUsage()
 
   auto localfolder = ApplicationData::Current().LocalFolder().Path();
   GetDiskFreeSpaceExW(localfolder.c_str(), nullptr, &ULTotal, &ULTotalFree);
-  strRet = FromW(StringUtils::Format(L"%s: %d MB %s", g_localizeStrings.Get(21440), (ULTotalFree.QuadPart / (1024 * 1024)), g_localizeStrings.Get(160).c_str()));
+  strRet = StringUtils::Format("%s: %d MB %s", g_localizeStrings.Get(21440),
+                               (ULTotalFree.QuadPart / (1024 * 1024)),
+                               g_localizeStrings.Get(160).c_str());
   result.push_back(strRet);
 
   DWORD drivesBits = GetLogicalDrives();

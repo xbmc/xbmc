@@ -11,8 +11,6 @@
 #include "rendering/dx/RenderSystemDX.h"
 #include "windowing/windows/WinSystemWin32.h"
 
-#include <easyhook/easyhook.h>
-
 struct D3D10DDIARG_CREATERESOURCE;
 
 class CWinSystemWin32DX : public CWinSystemWin32, public CRenderSystemDX
@@ -76,6 +74,5 @@ protected:
   bool ChangeResolution(const RESOLUTION_INFO& res, bool forceChange = false) override;
 
   HMODULE m_hDriverModule;
-  TRACED_HOOK_HANDLE m_hHook;
 };
 

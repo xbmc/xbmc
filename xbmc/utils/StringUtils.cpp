@@ -16,7 +16,11 @@
 //
 //------------------------------------------------------------------------
 
+#ifdef HAVE_NEW_CROSSGUID
+#include <guid.hpp>
+#else
 #include <guid.h>
+#endif
 
 #if defined(TARGET_ANDROID)
 #include <androidjni/JNIThreading.h>
@@ -1126,11 +1130,15 @@ void StringUtils::WordToDigits(std::string &word)
 
 std::string StringUtils::CreateUUID()
 {
+#ifdef HAVE_NEW_CROSSGUID
+  return xg::newGuid().str();
+#else
   static GuidGenerator guidGenerator;
   auto guid = guidGenerator.newGuid();
 
   std::stringstream strGuid; strGuid << guid;
   return strGuid.str();
+#endif
 }
 
 bool StringUtils::ValidateUUID(const std::string &uuid)
