@@ -84,6 +84,8 @@ namespace PVR
      */
     void SetRenderOffset(const CPoint& offset);
 
+    void JumpToNow();
+
     void GoToBegin();
     void GoToEnd();
     void GoToNow();
@@ -208,6 +210,11 @@ namespace PVR
 
     void UpdateItems();
 
+    float GetChannelScrollOffsetPos() const;
+    float GetProgrammeScrollOffsetPos() const;
+    int GetChannelScrollOffset(CGUIListItemLayout* layout) const;
+    int GetProgrammeScrollOffset() const;
+
     int m_rulerUnit; //! number of blocks that makes up one element of the ruler
     int m_channelsPerPage;
     int m_programmesPerPage;
@@ -242,6 +249,9 @@ namespace PVR
 
     std::shared_ptr<CFileItem> m_lastItem;
     std::shared_ptr<CFileItem> m_lastChannel;
+
+    bool m_bEnableProgrammeScrolling = true;
+    bool m_bEnableChannelScrolling = true;
 
     int m_scrollTime;
 
