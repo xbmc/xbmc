@@ -47,10 +47,12 @@ using namespace MEDIA_DETECT;
 #include <ppltasks.h>
 #include <winrt/Windows.Devices.Power.h>
 #include <winrt/Windows.Foundation.Collections.h>
+#include <winrt/Windows.Graphics.Display.Core.h>
 #include <winrt/Windows.Storage.h>
 
 using namespace winrt::Windows::Devices::Power;
 using namespace winrt::Windows::Graphics::Display;
+using namespace winrt::Windows::Graphics::Display::Core;
 using namespace winrt::Windows::Storage;
 #endif
 
@@ -1230,6 +1232,56 @@ bool CWIN32Util::SetThreadLocalLocale(bool enable /* = true */)
 
 bool CWIN32Util::ToggleWindowsHDR()
 {
+#ifdef TARGET_WINDOWS_STORE
+  bool success = false;
+
+  auto hdmiDisplayInfo = HdmiDisplayInformation::GetForCurrentView();
+
+  if (hdmiDisplayInfo)
+  {
+    auto current = hdmiDisplayInfo.GetCurrentDisplayMode();
+
+    auto newColorSp = (current.ColorSpace() == HdmiDisplayColorSpace::BT2020)
+                          ? HdmiDisplayColorSpace::BT709
+                          : HdmiDisplayColorSpace::BT2020;
+
+    auto hdmiModes = hdmiDisplayInfo.GetSupportedDisplayModes();
+
+    // Browse over all modes available like the current (resolution and refresh)
+    // but reciprocals HDR (color space and transfer).
+    // NOTE: transfer for HDR is here "fake HDR" (EotfSdr) to be
+    // able render SRD content with HDR ON, same as Windows HDR switch does.
+    // GUI-skin is SDR. The real HDR mode is activated later when playback begins.
+    for (unsigned i = 0; i < hdmiModes.Size(); i++)
+    {
+      auto mode = hdmiModes.GetAt(i);
+
+      if (mode.ColorSpace() == newColorSp &&
+          mode.ResolutionHeightInRawPixels() == current.ResolutionHeightInRawPixels() &&
+          mode.ResolutionWidthInRawPixels() == current.ResolutionWidthInRawPixels() &&
+          mode.StereoEnabled() == false && mode.RefreshRate() < (current.RefreshRate() + 0.1) &&
+          mode.RefreshRate() > (current.RefreshRate() - 0.1))
+      {
+        if (current.ColorSpace() == HdmiDisplayColorSpace::BT2020) // HDR is ON
+        {
+          CLog::LogF(LOGNOTICE, "Toggle Windows HDR Off (ON => OFF).");
+          hdmiDisplayInfo.RequestSetCurrentDisplayModeAsync(mode, HdmiDisplayHdrOption::None);
+          success = true;
+        }
+        else // HDR is OFF
+        {
+          CLog::LogF(LOGNOTICE, "Toggle Windows HDR On (OFF => ON).");
+          hdmiDisplayInfo.RequestSetCurrentDisplayModeAsync(mode, HdmiDisplayHdrOption::EotfSdr);
+          success = true;
+        }
+
+        break;
+      }
+    }
+  }
+
+  return success;
+#else
   uint32_t pathCount, modeCount;
   bool success = false;
 
@@ -1264,7 +1316,7 @@ bool CWIN32Util::ToggleWindowsHDR()
         DISPLAYCONFIG_DEVICE_INFO_HEADER* requestPacket =
             reinterpret_cast<DISPLAYCONFIG_DEVICE_INFO_HEADER*>(request);
 
-        for (int i = 0; i < modeCount; i++)
+        for (unsigned i = 0; i < modeCount; i++)
         {
           if (modesArray[i].infoType == DISPLAYCONFIG_MODE_INFO_TYPE_TARGET)
           {
@@ -1301,10 +1353,40 @@ bool CWIN32Util::ToggleWindowsHDR()
     }
   }
   return success;
+#endif
 }
 
 int CWIN32Util::GetWindowsHDRStatus()
 {
+#ifdef TARGET_WINDOWS_STORE
+  int status = 0;
+
+  auto displayInformation = DisplayInformation::GetForCurrentView();
+
+  if (displayInformation)
+  {
+    auto advancedColorInfo = displayInformation.GetAdvancedColorInfo();
+
+    if (advancedColorInfo)
+    {
+      if (advancedColorInfo.CurrentAdvancedColorKind() == AdvancedColorKind::HighDynamicRange)
+      {
+        status = 2;
+        if (CServiceBroker::IsServiceManagerUp())
+          CLog::LogF(LOGDEBUG, "CurrentAdvancedColorKind() = HDR, return status = {0:d}", status);
+      }
+      else if (advancedColorInfo.IsAdvancedColorKindAvailable(AdvancedColorKind::HighDynamicRange))
+      {
+        status = 1;
+        if (CServiceBroker::IsServiceManagerUp())
+          CLog::LogF(LOGDEBUG, "IsAdvancedColorKindAvailable(HDR) = true, return status = {0:d}",
+                     status);
+      }
+    }
+  }
+
+  return status;
+#else
   uint32_t pathCount, modeCount;
 
   uint8_t request[] = {0x09, 0x00, 0x00, 0x00, 0x20, 0x00, 0x00, 0x00, 0x7C, 0x6F, 0x00,
@@ -1335,7 +1417,7 @@ int CWIN32Util::GetWindowsHDRStatus()
         DISPLAYCONFIG_DEVICE_INFO_HEADER* requestPacket =
             reinterpret_cast<DISPLAYCONFIG_DEVICE_INFO_HEADER*>(request);
 
-        for (int i = 0; i < modeCount; i++)
+        for (unsigned i = 0; i < modeCount; i++)
         {
           if (modesArray[i].infoType == DISPLAYCONFIG_MODE_INFO_TYPE_TARGET)
           {
@@ -1380,4 +1462,5 @@ int CWIN32Util::GetWindowsHDRStatus()
   }
 
   return status;
+#endif
 }

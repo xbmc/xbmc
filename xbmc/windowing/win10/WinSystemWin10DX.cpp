@@ -10,6 +10,7 @@
 
 #include "input/touch/generic/GenericTouchActionHandler.h"
 #include "input/touch/generic/GenericTouchInputHandler.h"
+#include "platform/win32/WIN32Util.h"
 #include "rendering/dx/DirectXHelper.h"
 #include "utils/log.h"
 
@@ -151,4 +152,48 @@ void CWinSystemWin10DX::UninitHooks()
 
 void CWinSystemWin10DX::InitHooks(IDXGIOutput* pOutput)
 {
+}
+
+bool CWinSystemWin10DX::SetHDR(const VideoPicture* videoPicture /*not used*/)
+{
+  bool success = CWIN32Util::ToggleWindowsHDR();
+
+  if (success)
+  {
+    Sleep(2000); //Display is switching
+    m_deviceResources->ReCreateSwapChain();
+  }
+
+  return success;
+}
+
+bool CWinSystemWin10DX::IsHDRDisplay()
+{
+  if (CWIN32Util::GetWindowsHDRStatus() > 0)
+    return true;
+
+  return false;
+}
+
+bool CWinSystemWin10DX::GetOSHDRStatus()
+{
+  if (CWIN32Util::GetWindowsHDRStatus() == 2)
+    return true;
+
+  return false;
+}
+
+bool CWinSystemWin10DX::IsHDROutput() const
+{
+  return m_deviceResources->IsHDROutput();
+}
+
+void CWinSystemWin10DX::SetHdrMetaData(DXGI_HDR_METADATA_HDR10& hdr10) const
+{
+  m_deviceResources->SetHdrMetaData(hdr10);
+}
+
+void CWinSystemWin10DX::SetHdrColorSpace(const DXGI_COLOR_SPACE_TYPE colorSpace) const
+{
+  m_deviceResources->SetHdrColorSpace(colorSpace);
 }

@@ -1178,32 +1178,37 @@ void DX::DeviceResources::SetHdrMetaData(DXGI_HDR_METADATA_HDR10& hdr10) const
 
 void DX::DeviceResources::SetHdrColorSpace(const DXGI_COLOR_SPACE_TYPE colorSpace) const
 {
+  ComPtr<IDXGISwapChain3> swapChain3;
+
   if (m_swapChain == nullptr)
     return;
 
-  DXGI_COLOR_SPACE_TYPE cs = colorSpace;
-  if (DX::Windowing()->UseLimitedColor())
+  if (SUCCEEDED(m_swapChain.As(&swapChain3)))
   {
-    switch (cs)
+    DXGI_COLOR_SPACE_TYPE cs = colorSpace;
+    if (DX::Windowing()->UseLimitedColor())
     {
-      case DXGI_COLOR_SPACE_RGB_FULL_G22_NONE_P709:
-        cs = DXGI_COLOR_SPACE_RGB_STUDIO_G22_NONE_P709;
-        break;
-      case DXGI_COLOR_SPACE_RGB_FULL_G2084_NONE_P2020:
-        cs = DXGI_COLOR_SPACE_RGB_STUDIO_G2084_NONE_P2020;
-        break;
-      case DXGI_COLOR_SPACE_RGB_FULL_G22_NONE_P2020:
-        cs = DXGI_COLOR_SPACE_RGB_STUDIO_G22_NONE_P2020;
-        break;
+      switch (cs)
+      {
+        case DXGI_COLOR_SPACE_RGB_FULL_G22_NONE_P709:
+          cs = DXGI_COLOR_SPACE_RGB_STUDIO_G22_NONE_P709;
+          break;
+        case DXGI_COLOR_SPACE_RGB_FULL_G2084_NONE_P2020:
+          cs = DXGI_COLOR_SPACE_RGB_STUDIO_G2084_NONE_P2020;
+          break;
+        case DXGI_COLOR_SPACE_RGB_FULL_G22_NONE_P2020:
+          cs = DXGI_COLOR_SPACE_RGB_STUDIO_G22_NONE_P2020;
+          break;
+      }
     }
-  }
-  if (SUCCEEDED(m_swapChain->SetColorSpace1(cs)))
-  {
-    CLog::LogF(LOGDEBUG, "DXGI SetColorSpace1 success");
-  }
-  else
-  {
-    CLog::LogF(LOGERROR, "DXGI SetColorSpace1 failed");
+    if (SUCCEEDED(swapChain3->SetColorSpace1(cs)))
+    {
+      CLog::LogF(LOGDEBUG, "DXGI SetColorSpace1 success");
+    }
+    else
+    {
+      CLog::LogF(LOGERROR, "DXGI SetColorSpace1 failed");
+    }
   }
 }
 
