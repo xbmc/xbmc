@@ -128,6 +128,8 @@ CPVRRecording::CPVRRecording(const PVR_RECORDING& recording, unsigned int iClien
       }
     }
   }
+
+  UpdatePath();
 }
 
 bool CPVRRecording::operator ==(const CPVRRecording& right) const
