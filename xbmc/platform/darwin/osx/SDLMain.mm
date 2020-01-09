@@ -115,6 +115,8 @@ static void setupWindowMenu(void)
 
   // "Full/Windowed Toggle" item
   menuItem = [[NSMenuItem alloc] initWithTitle:@"Full/Windowed Toggle" action:@selector(fullScreenToggle:) keyEquivalent:@"f"];
+  // this is just for display purposes, key handling is in CWinEventsSDL::ProcessOSXShortcuts()
+  menuItem.keyEquivalentModifierMask = NSCommandKeyMask | NSControlKeyMask;
   [windowMenu addItem:menuItem];
 
   // "Full/Windowed Toggle" item
