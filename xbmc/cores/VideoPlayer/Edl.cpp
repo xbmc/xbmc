@@ -134,6 +134,12 @@ bool CEdl::ReadEdl(const std::string& strMovie, const float fFramesPerSecond)
       strFields[1] = strFields[0];
     }
 
+    if (StringUtils::StartsWith(strFields[0], "##"))
+    {
+      CLog::Log(LOGDEBUG, "Skipping comment line %i in EDL file: %s", iLine,
+                CURL::GetRedacted(edlFilename).c_str());
+      continue;
+    }
     /*
      * For each of the first two fields read, parse based on whether it is a time string
      * (HH:MM:SS.sss), frame marker (#12345), or normal seconds string (123.45).
