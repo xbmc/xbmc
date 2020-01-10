@@ -248,9 +248,9 @@ Note that using a free developer account the signing will need to be reapplied e
 
   1. Open the Xcode project in Xcode as above (requires Xcode 7 or later)
   2. Select Xcode->Preferences and select Accounts
-    * Hit the + sign to add an Apple ID accoumt and Login.
+    * Hit the + sign to add an Apple ID account and Login.
   2. Next select the kodi build target
-  3. Under the `General` tab, enter a unique bundle identifer and check the box to `Automatically Manage Signing`.
+  3. Under the `General` tab, enter a unique bundle identifier and check the box to `Automatically Manage Signing`.
   4. Select your team under `Automatically Manage Signing`.
 
 ## An important note on Code Signing

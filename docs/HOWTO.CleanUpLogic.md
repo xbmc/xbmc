@@ -35,7 +35,7 @@ Ternary logic can also be unwieldy. For example, the previous logic in the secon
 X = (A && !B) ? Y : Z;
 ```
 
-This statement isn't as offensive, but wouldn't it be more readable and maintanable by using a few more lines?
+This statement isn't as offensive, but wouldn't it be more readable and maintainable by using a few more lines?
 
 **[back to top](#table-of-contents)**
 

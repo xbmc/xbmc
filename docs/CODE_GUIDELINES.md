@@ -504,7 +504,7 @@ void MyDummyClass::DoSomething();
 Use CamelCase. Type prefixing (Systems Hungarian notation) is discouraged.
 
 #### Member variables
-Prefix nonstatic member variables with `m_`. Prefix static member variables with `ms_`.
+Prefix non-static member variables with `m_`. Prefix static member variables with `ms_`.
 ```cpp
 int m_variableA;
 static int ms_variableB;
@@ -651,7 +651,7 @@ class Foo
 
 ### 11.5. Destructors in interfaces
 
-A class with any virtual functions should have a destructor that is either public and virtual or else protected and nonvirtual (cf. [ISO C++ guidelines](http://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#Rc-dtor-virtual)).
+A class with any virtual functions should have a destructor that is either public and virtual or else protected and non-virtual (cf. [ISO C++ guidelines](http://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#Rc-dtor-virtual)).
 
 ### 11.6. Constructor Initialzation Lists
 
