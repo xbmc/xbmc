@@ -1,3 +1,5 @@
+xbmc/cores/RetroPlayer/process/ios    cores/RetroPlayer/process/ios
+xbmc/cores/VideoPlayer/Process/ios    cores/VideoPlayer/Process/ios
 xbmc/input/touch                      input/touch
 xbmc/input/touch/generic              input/touch/generic
 xbmc/platform/darwin                  platform/darwin

@@ -333,6 +333,10 @@ public:
   static const std::string SETTING_INPUT_APPLEREMOTEMODE;
   static const std::string SETTING_INPUT_APPLEREMOTEALWAYSON;
   static const std::string SETTING_INPUT_APPLEREMOTESEQUENCETIME;
+  static const std::string SETTING_INPUT_APPLESIRI;
+  static const std::string SETTING_INPUT_APPLESIRITIMEOUT;
+  static const std::string SETTING_INPUT_APPLESIRITIMEOUTENABLED;
+  static const std::string SETTING_INPUT_APPLEUSEKODIKEYBOARD;
   static const std::string SETTING_NETWORK_USEHTTPPROXY;
   static const std::string SETTING_NETWORK_HTTPPROXYTYPE;
   static const std::string SETTING_NETWORK_HTTPPROXYSERVER;

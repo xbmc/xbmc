@@ -102,6 +102,10 @@ TEST_F(TestSystemInfo, GetOsName)
 #elif defined(TARGET_DARWIN_IOS)
   EXPECT_STREQ("iOS", g_sysinfo.GetOsName(true).c_str()) << "'GetOsName(true)' must return 'iOS'";
   EXPECT_STREQ("iOS", g_sysinfo.GetOsName(false).c_str()) << "'GetOsName(false)' must return 'iOS'";
+#elif defined(TARGET_DARWIN_TVOS)
+  EXPECT_STREQ("tvOS", g_sysinfo.GetOsName(true).c_str()) << "'GetOsName(true)' must return 'tvOS'";
+  EXPECT_STREQ("tvOS", g_sysinfo.GetOsName(false).c_str())
+      << "'GetOsName(false)' must return 'tvOS'";
 #elif defined(TARGET_DARWIN_OSX)
   EXPECT_STREQ("OS X", g_sysinfo.GetOsName(true).c_str()) << "'GetOsName(true)' must return 'OS X'";
   EXPECT_STREQ("OS X", g_sysinfo.GetOsName(false).c_str()) << "'GetOsName(false)' must return 'OS X'";
@@ -217,6 +221,11 @@ TEST_F(TestSystemInfo, GetUserAgent)
 #elif defined(TARGET_DARWIN_IOS)
   EXPECT_NE(std::string::npos, g_sysinfo.GetUserAgent().find("like Mac OS X")) << "'GetUserAgent()' must contain ' like Mac OS X'";
   EXPECT_TRUE(g_sysinfo.GetUserAgent().find("CPU OS ") != std::string::npos || g_sysinfo.GetUserAgent().find("CPU iPhone OS ") != std::string::npos) << "'GetUserAgent()' must contain 'CPU OS ' or 'CPU iPhone OS '";
+#elif defined(TARGET_DARWIN_TVOS)
+  EXPECT_NE(std::string::npos, g_sysinfo.GetUserAgent().find("like Mac OS X"))
+      << "'GetUserAgent()' must contain ' like Mac OS X'";
+  EXPECT_TRUE(g_sysinfo.GetUserAgent().find("CPU TVOS ") != std::string::npos)
+      << "'GetUserAgent()' must contain 'CPU TVOS '";
 #elif defined(TARGET_DARWIN_OSX)
   EXPECT_EQ(g_sysinfo.GetUserAgent().find('('), g_sysinfo.GetUserAgent().find("(Macintosh; ")) << "Second parameter in 'GetUserAgent()' string must start from 'Macintosh; '";
 #elif defined(TARGET_ANDROID)

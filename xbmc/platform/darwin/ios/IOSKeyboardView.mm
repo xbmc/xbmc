@@ -15,22 +15,18 @@ static const CGFloat INPUT_BOX_HEIGHT = 30;
 @interface IOSKeyboardView ()
 @property(nonatomic, weak) UIView* textFieldContainer;
 @property(nonatomic, weak) NSLayoutConstraint* containerBottomConstraint;
-@property(nonatomic, assign, getter=isKeyboardVisible) bool keyboardVisible;
 @end
 
 @implementation IOSKeyboardView
 
 @synthesize textFieldContainer = m_textFieldContainer;
 @synthesize containerBottomConstraint = m_containerBottomConstraint;
-@synthesize keyboardVisible = m_keyboardVisible;
 
 - (instancetype)initWithFrame:(CGRect)frame
 {
   self = [super initWithFrame:frame];
   if (!self)
     return nil;
-
-  m_keyboardVisible = false;
 
   self.backgroundColor = [UIColor colorWithWhite:0 alpha:0.1];
 
@@ -100,20 +96,6 @@ static const CGFloat INPUT_BOX_HEIGHT = 30;
     [self deactivate];
 }
 
-- (BOOL)textFieldShouldEndEditing:(UITextField*)textField
-{
-  CLog::Log(LOGDEBUG, "{}: keyboard IsShowing {}", __PRETTY_FUNCTION__, self.isKeyboardVisible);
-  return YES;
-}
-
-- (BOOL)textFieldShouldReturn:(UITextField*)textField
-{
-  auto result = [super textFieldShouldReturn:textField];
-  if (result)
-    [textField resignFirstResponder];
-  return result;
-}
-
 - (void)keyboardDidChangeFrame:(NSNotification*)notification
 {
   auto keyboardFrame = [notification.userInfo[UIKeyboardFrameEndUserInfoKey] CGRectValue];
@@ -137,10 +119,16 @@ static const CGFloat INPUT_BOX_HEIGHT = 30;
   [self deactivate];
 }
 
-- (void)deactivate
+- (void)setKeyboardText:(NSString*)aText closeKeyboard:(BOOL)closeKeyboard
 {
-  CLog::Log(LOGDEBUG, "{}: keyboard IsShowing {}", __PRETTY_FUNCTION__, self.isKeyboardVisible);
-  [super deactivate];
+
+  [super setKeyboardText:aText closeKeyboard:closeKeyboard];
+
+  if (closeKeyboard)
+  {
+    self.confirmed = YES;
+    [self deactivate];
+  }
 }
 
 @end

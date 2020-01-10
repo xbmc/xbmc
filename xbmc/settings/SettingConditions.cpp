@@ -307,6 +307,9 @@ void CSettingConditions::Initialize()
 #ifdef TARGET_DARWIN_IOS
   m_simpleConditions.insert("have_ios");
 #endif
+#ifdef TARGET_DARWIN_TVOS
+  m_simpleConditions.insert("have_tvos");
+#endif
 #if defined(TARGET_WINDOWS)
   m_simpleConditions.insert("has_dx");
   m_simpleConditions.insert("hasdxva2");

@@ -24,6 +24,7 @@ endif()
 
 if(OPENGLES_FOUND AND (CORE_PLATFORM_NAME_LC STREQUAL android OR
                        CORE_PLATFORM_NAME_LC STREQUAL ios OR
+                       CORE_PLATFORM_NAME_LC STREQUAL tvos OR
                        CORE_PLATFORM_NAME_LC STREQUAL gbm OR
                        CORE_PLATFORM_NAME_LC STREQUAL x11 OR
                        CORE_PLATFORM_NAME_LC STREQUAL wayland))

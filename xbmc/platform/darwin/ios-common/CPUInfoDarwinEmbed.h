@@ -16,11 +16,11 @@
 
 class CPosixResourceCounter;
 
-class CCPUInfoIos : public CCPUInfoPosix
+class CCPUInfoDarwinEmbed : public CCPUInfoPosix
 {
 public:
-  CCPUInfoIos();
-  ~CCPUInfoIos() = default;
+  CCPUInfoDarwinEmbed();
+  ~CCPUInfoDarwinEmbed() = default;
 
   int GetUsedPercentage() override;
   float GetCPUFrequency() override;

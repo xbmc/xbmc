@@ -38,10 +38,15 @@ list(APPEND DEPLIBS "-framework CoreFoundation" "-framework CoreVideo"
                     "-framework CFNetwork" "-framework CoreGraphics"
                     "-framework Foundation" "-framework UIKit"
                     "-framework CoreMedia" "-framework AVFoundation"
-                    "-framework VideoToolbox" "-lresolv")
+                    "-framework VideoToolbox" "-lresolv" "-ObjC"
+                    "-framework AVKit")
 
 set(ENABLE_OPTICAL OFF CACHE BOOL "" FORCE)
 
+# AppleTV already has built-in AirPlay support
+if(CORE_PLATFORM_NAME_LC STREQUAL tvos)
+  set(ENABLE_AIRTUNES OFF CACHE BOOL "" FORCE)
+endif()
 set(CMAKE_XCODE_ATTRIBUTE_INLINES_ARE_PRIVATE_EXTERN OFF)
 set(CMAKE_XCODE_ATTRIBUTE_GCC_SYMBOLS_PRIVATE_EXTERN OFF)
 set(CMAKE_XCODE_ATTRIBUTE_COPY_PHASE_STRIP OFF)
@@ -51,6 +56,8 @@ enable_arc()
 
 # Xcode strips dead code by default which breaks wrapping
 set(CMAKE_XCODE_ATTRIBUTE_DEAD_CODE_STRIPPING OFF)
+
+option(ENABLE_XCODE_ADDONBUILD "Enable Xcode automatic addon building?" OFF)
 
 # Unify output directories for iOS/tvOS packaging scripts
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CORE_BUILD_DIR}/${CORE_BUILD_CONFIG})

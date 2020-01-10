@@ -600,7 +600,9 @@ bool CAddonInfoBuilder::PlatformSupportsAddon(const AddonInfoPtr& addon)
 #endif
 #elif defined(TARGET_WINDOWS_STORE)
     "windowsstore",
-#elif defined(TARGET_DARWIN_IOS)
+#elif defined(TARGET_DARWIN_EMBEDDED)
+    "darwin_embedded",
+#if defined(TARGET_DARWIN_IOS)
     "ios",
 #if defined(__ARM_ARCH_7A__)
     "ios-armv7",
@@ -608,6 +610,10 @@ bool CAddonInfoBuilder::PlatformSupportsAddon(const AddonInfoPtr& addon)
     "ios-aarch64",
 #else
 #warning no architecture dependant platform tag
+#endif
+#elif defined(TARGET_DARWIN_TVOS)
+    "tvos",
+    "tvos-aarch64",
 #endif
 #elif defined(TARGET_DARWIN_OSX)
     "osx",
