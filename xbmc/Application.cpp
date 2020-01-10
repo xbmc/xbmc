@@ -562,6 +562,13 @@ bool CApplication::Create(const CAppParamParser &params)
   //! @todo - move to CPlatformXXX
 #ifdef TARGET_WINDOWS
   CWIN32Util::SetThreadLocalLocale(true); // enable independent locale for each thread, see https://connect.microsoft.com/VisualStudio/feedback/details/794122
+  if (CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_bAutoHDR &&
+      CWIN32Util::GetWindowsHDRStatus() == 1)
+  {
+    CLog::Log(LOGNOTICE, "Turning display HDR on due advancedsettings");
+    CWIN32Util::ToggleWindowsHDR();
+    Sleep(2000);
+  }
 #endif // TARGET_WINDOWS
 
   // application inbound service
@@ -2635,6 +2642,15 @@ void CApplication::Stop(int exitCode)
   }
 
   cleanup_emu_environ();
+
+#if defined(TARGET_WINDOWS)
+  if (CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_bAutoHDR &&
+      exitCode == EXITCODE_QUIT && CWIN32Util::GetWindowsHDRStatus() == 2)
+  {
+    CWIN32Util::ToggleWindowsHDR();
+    Sleep(1800);
+  }
+#endif
 
   Sleep(200);
 }

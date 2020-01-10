@@ -363,6 +363,8 @@ void CAdvancedSettings::Initialize()
   m_bVirtualShares = true;
   m_bTry10bitOutput = false;
 
+  m_bAutoHDR = false;
+
   m_cpuTempCmd = "";
   m_gpuTempCmd = "";
 #if defined(TARGET_DARWIN)
@@ -894,6 +896,8 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
   XMLUtils::GetBoolean(pRootElement,"virtualshares", m_bVirtualShares);
   XMLUtils::GetUInt(pRootElement, "packagefoldersize", m_addonPackageFolderSize);
   XMLUtils::GetBoolean(pRootElement, "try10bitoutput", m_bTry10bitOutput);
+
+  XMLUtils::GetBoolean(pRootElement, "autoHDR", m_bAutoHDR);
 
   // EPG
   pElement = pRootElement->FirstChildElement("epg");
