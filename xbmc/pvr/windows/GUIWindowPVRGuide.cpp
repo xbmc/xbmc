@@ -75,7 +75,7 @@ void CGUIWindowPVRGuideBase::InitEpgGridControl()
   if (epgGridContainer)
   {
     m_bChannelSelectionRestored = epgGridContainer->SetChannel(CServiceBroker::GetPVRManager().GUIActions()->GetSelectedItemPath(m_bRadio));
-    epgGridContainer->GoToNow();
+    epgGridContainer->JumpToNow();
   }
 
   if (epgGridContainer && !epgGridContainer->HasData())
