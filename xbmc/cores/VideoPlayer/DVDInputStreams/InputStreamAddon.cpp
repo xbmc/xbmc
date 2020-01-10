@@ -335,7 +335,8 @@ CDemuxStream* CInputStreamAddon::GetStream(int streamId) const
   std::string codecName(stream.m_codecName);
   AVCodec* codec = nullptr;
 
-  if (stream.m_streamType != INPUTSTREAM_INFO::TYPE_TELETEXT)
+  if (stream.m_streamType != INPUTSTREAM_INFO::TYPE_TELETEXT &&
+      stream.m_streamType != INPUTSTREAM_INFO::TYPE_RDS)
   {
     StringUtils::ToLower(codecName);
     codec = avcodec_find_decoder_by_name(codecName.c_str());
@@ -412,6 +413,11 @@ CDemuxStream* CInputStreamAddon::GetStream(int streamId) const
   {
     CDemuxStreamTeletext* teletextStream = new CDemuxStreamTeletext();
     demuxStream = teletextStream;
+  }
+  else if (stream.m_streamType == INPUTSTREAM_INFO::TYPE_RDS)
+  {
+    CDemuxStreamRadioRDS* rdsStream = new CDemuxStreamRadioRDS();
+    demuxStream = rdsStream;
   }
   else
     return nullptr;
