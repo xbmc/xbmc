@@ -111,18 +111,6 @@ function(add_addon_depends addon searchpath)
             endif()
 
             set(PATCH_PROGRAM ${PATCH_EXECUTABLE})
-
-            # On Windows "patch.exe" can only handle CR-LF line-endings.
-            # Our patches have LF-only line endings - except when they
-            # have been checked out as part of a dependency hosted on Git
-            # and core.autocrlf=true.
-            if(WIN32)
-              file(READ ${patch} patch_content_hex HEX)
-              # Force handle LF-only line endings
-              if(NOT patch_content_hex MATCHES "0d0a")
-                list(APPEND PATCH_PROGRAM --binary)
-              endif()
-            endif()
           endif()
 
           set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS ${patch})
