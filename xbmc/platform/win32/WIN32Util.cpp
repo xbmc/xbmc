@@ -1259,8 +1259,7 @@ bool CWIN32Util::ToggleWindowsHDR()
       if (mode.ColorSpace() == newColorSp &&
           mode.ResolutionHeightInRawPixels() == current.ResolutionHeightInRawPixels() &&
           mode.ResolutionWidthInRawPixels() == current.ResolutionWidthInRawPixels() &&
-          mode.StereoEnabled() == false && mode.RefreshRate() < (current.RefreshRate() + 0.1) &&
-          mode.RefreshRate() > (current.RefreshRate() - 0.1))
+          mode.StereoEnabled() == false && abs(mode.RefreshRate() - current.RefreshRate()) < 0.01)
       {
         if (current.ColorSpace() == HdmiDisplayColorSpace::BT2020) // HDR is ON
         {
@@ -1375,12 +1374,11 @@ int CWIN32Util::GetWindowsHDRStatus()
         if (CServiceBroker::IsServiceManagerUp())
           CLog::LogF(LOGDEBUG, "CurrentAdvancedColorKind() = HDR, return status = {0:d}", status);
       }
-      else if (advancedColorInfo.IsAdvancedColorKindAvailable(AdvancedColorKind::HighDynamicRange))
+      else if (advancedColorInfo.MaxLuminanceInNits() >= 400.0f)
       {
         status = 1;
         if (CServiceBroker::IsServiceManagerUp())
-          CLog::LogF(LOGDEBUG, "IsAdvancedColorKindAvailable(HDR) = true, return status = {0:d}",
-                     status);
+          CLog::LogF(LOGDEBUG, "MaxLuminanceInNits() >= 400, return status = {0:d}", status);
       }
     }
   }
