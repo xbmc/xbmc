@@ -1,6 +1,41 @@
-find_program(PATCH_FOUND NAMES patch patch.exe)
+set(_doc "Patch command line executable")
+set(_patch_path )
+
+#cmake can't handle ENV{PROGRAMFILES(X86)} so
+#use a hack where we append it ourselves
+set(_patch_path
+  "$ENV{LOCALAPPDATA}/Programs/Git/bin"
+  "$ENV{LOCALAPPDATA}/Programs/Git/usr/bin"
+  "$ENV{APPDATA}/Programs/Git/bin"
+  "$ENV{APPDATA}/Programs/Git/usr/bin"
+  "$ENV{PROGRAMFILES}/Git/bin"
+  "$ENV{PROGRAMFILES}/Git/usr/bin"
+  "$ENV{PROGRAMFILES} (x86)/Git/bin"
+  "$ENV{PROGRAMFILES} (x86)/Git/usr/bin"
+  )
+
+# First search the PATH
+find_program(PATCH_EXECUTABLE
+  NAME patch
+  PATHS ${_patch_path}
+  DOC ${_doc}
+  NO_DEFAULT_PATH
+  )
+
+if(PATCH_EXECUTABLE AND NOT TARGET Patch::patch AND NOT PATCH_EXECUTABLE MATCHES Strawberry)
+  add_executable(Patch::patch IMPORTED)
+  set_property(TARGET Patch::patch PROPERTY IMPORTED_LOCATION ${PATCH_EXECUTABLE})
+endif()
+
+unset(_patch_path)
+unset(_doc)
+
+include(FindPackageHandleStandardArgs)
+find_package_handle_standard_args(Patch
+                                  REQUIRED_VARS PATCH_EXECUTABLE)
+
 if(PATCH_FOUND)
-  message(STATUS "patch utility found at ${PATCH_FOUND}")
+  message(STATUS "patch utility found at ${PATCH_EXECUTABLE}")
 else()
   set(PATCH_ARCHIVE_NAME "patch-2.7.6-bin")
   set(PATCH_ARCHIVE "${PATCH_ARCHIVE_NAME}.zip")
