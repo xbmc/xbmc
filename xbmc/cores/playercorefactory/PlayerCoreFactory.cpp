@@ -14,6 +14,7 @@
 #include "URL.h"
 #include "cores/IPlayerCallback.h"
 #include "cores/paplayer/PAPlayer.h"
+#include "cores/VideoPlayer/Interface/Addon/InputStreamConstants.h"
 #include "dialogs/GUIDialogContextMenu.h"
 #include "guilib/LocalizeStrings.h"
 #include "profiles/ProfileManager.h"
@@ -102,20 +103,30 @@ void CPlayerCoreFactory::GetPlayers(const CFileItem& item, std::vector<std::stri
 
   CLog::Log(LOGDEBUG, "CPlayerCoreFactory::GetPlayers(%s)", CURL::GetRedacted(item.GetDynPath()).c_str());
 
-  std::vector<std::string>validPlayers;
-  GetPlayers(validPlayers);
+  bool isInputstreamClass = !item.GetProperty(STREAM_PROPERTY_INPUTSTREAMCLASS).empty();
 
-  // Process rules
-  for (auto rule: m_vecCoreSelectionRules)
-    rule->GetPlayers(item, validPlayers, players);
+  // If inputstream content don't check here, the use of internal
+  // "VideoPlayer" is mandatory for this.
+  if (!isInputstreamClass)
+  {
+    std::vector<std::string>validPlayers;
+    GetPlayers(validPlayers);
 
-  CLog::Log(LOGDEBUG, "CPlayerCoreFactory::GetPlayers: matched {0} rules with players", players.size());
+    // Process rules
+    for (auto rule: m_vecCoreSelectionRules)
+      rule->GetPlayers(item, validPlayers, players);
+
+    CLog::Log(LOGDEBUG, "CPlayerCoreFactory::GetPlayers: matched {0} rules with players", players.size());
+  }
 
   // Process defaults
 
   // Set video default player. Check whether it's video first (overrule audio and
   // game check). Also push these players in case it is NOT audio or game either.
-  if (item.IsVideo() || (!item.IsAudio() && !item.IsGame()))
+  //
+  // In case inputstream class is used force to use "videodefaultplayer" where
+  // needed to process inputstream content.
+  if (isInputstreamClass || item.IsVideo() || (!item.IsAudio() && !item.IsGame()))
   {
     int idx = GetPlayerIndex("videodefaultplayer");
     if (idx > -1)
@@ -130,7 +141,7 @@ void CPlayerCoreFactory::GetPlayers(const CFileItem& item, std::vector<std::stri
 
   // Set audio default player
   // Pushback all audio players in case we don't know the type
-  if (item.IsAudio())
+  if (!isInputstreamClass && item.IsAudio())
   {
     int idx = GetPlayerIndex("audiodefaultplayer");
     if (idx > -1)
