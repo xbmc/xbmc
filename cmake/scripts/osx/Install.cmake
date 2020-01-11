@@ -47,6 +47,9 @@ add_custom_target(dmg
     COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/tools/darwin/Support/Codesign.command
                                      ${CMAKE_BINARY_DIR}/tools/darwin/packaging/osx/Codesign.command
     COMMAND "CODESIGNING_FOLDER_PATH=${PACKAGE_OUTPUT_DIR}/${APP_NAME}.app"
+            "DEV_ACCOUNT=${DEV_ACCOUNT}"
+            "DEV_ACCOUNT_PASSWORD=${DEV_ACCOUNT_PASSWORD}"
+            "DEV_TEAM=${DEV_TEAM}"
             "EXPANDED_CODE_SIGN_IDENTITY_NAME=${CODE_SIGN_IDENTITY}"
             "PLATFORM_NAME=${PLATFORM}"
             ./mkdmg-osx.sh ${CORE_BUILD_CONFIG_LOWERCASED}

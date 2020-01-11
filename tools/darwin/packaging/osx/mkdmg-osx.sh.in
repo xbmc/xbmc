@@ -62,7 +62,8 @@ $DIRNAME/dmgmaker.pl $APP $ARCHIVE
 
 echo "done"
 
-# codesign dmg
+# codesign and notarize dmg
 if [ "$EXPANDED_CODE_SIGN_IDENTITY_NAME" ]; then
   codesign --verbose=4 --sign "$EXPANDED_CODE_SIGN_IDENTITY_NAME" "$dmgPath"
+  ./notarize.sh "$dmgPath" "$APP/Contents/Info.plist"
 fi
