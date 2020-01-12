@@ -17,12 +17,28 @@ if(PKG_CONFIG_FOUND)
   pkg_check_modules(PC_FRIBIDI fribidi QUIET)
 endif()
 
+if(CMAKE_HOST_WIN32)
+  find_package(fribidi NO_MODULE)
+  if(TARGET fribidi::fribidi)
+    get_target_property(_definitions fribidi::fribidi INTERFACE_COMPILE_DEFINITIONS)
+    if(NOT _definitions STREQUAL NOTFOUND)
+      foreach(_def IN LISTS _definitions)
+        if(_def MATCHES ^-D)    
+          list(APPEND FRIBIDI_DEFINITIONS "${_def}")
+        else()
+          list(APPEND FRIBIDI_DEFINITIONS "-D${_def}")
+        endif()
+      endforeach(_def FRIBIDI_DEFINITIONS)
+    endif()
+    unset(_definitions)
+  endif()
+endif()
+
 find_path(FRIBIDI_INCLUDE_DIR NAMES fribidi.h
                               PATH_SUFFIXES fribidi
                               PATHS ${PC_FRIBIDI_INCLUDEDIR})
 find_library(FRIBIDI_LIBRARY NAMES fribidi libfribidi
                              PATHS ${PC_FRIBIDI_LIBDIR})
-
 set(FRIBIDI_VERSION ${PC_FRIBIDI_VERSION})
 
 include(FindPackageHandleStandardArgs)

@@ -45,7 +45,6 @@ set(SYSTEM_DEFINES -DWIN32_LEAN_AND_MEAN -DNOMINMAX -DHAS_DX -D__STDC_CONSTANT_M
                    -DPLT_HTTP_DEFAULT_USER_AGENT="UPnP/1.0 DLNADOC/1.50 Kodi"
                    -DPLT_HTTP_DEFAULT_SERVER="UPnP/1.0 DLNADOC/1.50 Kodi"
                    -DUNICODE -D_UNICODE
-                   -DFRIBIDI_STATIC
                    $<$<CONFIG:Debug>:-DD3D_DEBUG_INFO>)
 
 # Additional SYSTEM_DEFINES

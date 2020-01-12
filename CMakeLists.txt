@@ -199,6 +199,10 @@ if(CORE_SYSTEM_NAME STREQUAL osx)
   core_require_dep(Sdl)
 endif()
 
+if(CMAKE_HOST_WIN32 AND NOT CMAKE_SYSTEM_NAME STREQUAL WindowsStore)
+  core_require_dep(detours)
+endif()
+
 # find all folders containing addon.xml.in
 # used to define ADDON_XML_OUTPUTS, ADDON_XML_DEPENDS and ADDON_INSTALL_DATA
 # Function defined in ./cmake/scripts/common/Macros.cmake
