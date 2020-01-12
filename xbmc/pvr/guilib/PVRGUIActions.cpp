@@ -1210,7 +1210,9 @@ namespace PVR
     }
   }
 
-  void CPVRGUIActions::StartPlayback(CFileItem* item, bool bFullscreen) const
+  void CPVRGUIActions::StartPlayback(CFileItem* item,
+                                     bool bFullscreen,
+                                     CPVRStreamProperties* epgProps) const
   {
     // Obtain dynamic playback url and properties from the respective pvr client
     const std::shared_ptr<CPVRClient> client = CServiceBroker::GetPVRManager().GetClient(*item);
@@ -1219,11 +1221,25 @@ namespace PVR
       CPVRStreamProperties props;
 
       if (item->IsPVRChannel())
-        client->GetChannelStreamProperties(item->GetPVRChannelInfoTag(), props);
+      {
+        // If this was an EPG Tag to be played as live then PlayEpgTag() will create a channel
+        // fileitem instead and pass the epg tags props so we use those and skip the client call
+        if (epgProps)
+          props = *epgProps;
+        else
+          client->GetChannelStreamProperties(item->GetPVRChannelInfoTag(), props);
+      }
       else if (item->IsPVRRecording())
+      {
         client->GetRecordingStreamProperties(item->GetPVRRecordingInfoTag(), props);
+      }
       else if (item->IsEPG())
-        client->GetEpgTagStreamProperties(item->GetEPGInfoTag(), props);
+      {
+        if (epgProps) // we already have props from PlayEpgTag()
+          props = *epgProps;
+        else
+          client->GetEpgTagStreamProperties(item->GetEPGInfoTag(), props);
+      }
 
       if (props.size())
       {
@@ -1275,6 +1291,19 @@ namespace PVR
     if (!epgTag)
       return false;
 
+    const std::shared_ptr<CPVRChannel> channelTag(CPVRItem(item).GetChannel());
+    if (!channelTag)
+      return false;
+
+    // Obtain dynamic playback url and properties from the respective pvr client
+    const std::shared_ptr<CPVRClient> client =
+        CServiceBroker::GetPVRManager().GetClient(epgTag->ClientID());
+    if (!client)
+      return false;
+
+    CPVRStreamProperties props;
+    client->GetEpgTagStreamProperties(epgTag, props);
+
     if (CServiceBroker::GetPVRManager().PlaybackState()->IsPlayingEpgTag(epgTag))
     {
       CGUIMessage msg(GUI_MSG_FULLSCREEN, 0, CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow());
@@ -1282,7 +1311,8 @@ namespace PVR
       return true;
     }
 
-    StartPlayback(new CFileItem(epgTag), true);
+    StartPlayback(props.EPGPlaybackAsLive() ? new CFileItem(channelTag) : new CFileItem(epgTag),
+                  true, &props);
     return true;
   }
 

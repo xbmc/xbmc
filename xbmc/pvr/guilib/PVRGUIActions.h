@@ -38,6 +38,7 @@ namespace PVR
   };
 
   class CPVRRecording;
+  class CPVRStreamProperties;
   class CPVRTimerInfoTag;
 
   class CPVRChannelSwitchingInputHandler : public CPVRChannelNumberInputHandler
@@ -514,9 +515,12 @@ namespace PVR
     /*!
      * @brief Start playback of the given item.
      * @param bFullscreen start playback fullscreen or not.
+     * @param epgProps propeties to be used instead of calling to the client if supplied.
      * @param item containing a channel or a recording.
      */
-    void StartPlayback(CFileItem* item, bool bFullscreen) const;
+    void StartPlayback(CFileItem* item,
+                       bool bFullscreen,
+                       CPVRStreamProperties* epgProps = nullptr) const;
 
     bool AllLocalBackendsIdle(std::shared_ptr<CPVRTimerInfoTag>& causingEvent) const;
     bool EventOccursOnLocalBackend(const std::shared_ptr<CFileItem>& item) const;
