@@ -22,7 +22,7 @@
 				<visible>!Window.IsVisible(videoosd) + !Window.IsVisible(musicosd)</visible>
 				<animation effect="fade" time="200">VisibleChange</animation>
 				<control type="image">
-					<left>200</left>
+					<left>20</left>
 					<top>120</top>
 					<width>264</width>
 					<height>40</height>
@@ -79,12 +79,57 @@
 					<visible>Player.ShowInfo + !Player.ChannelPreviewActive + Window.IsActive(visualisation)</visible>
 					<animation effect="fade" start="0" end="100" time="200" delay="1000">Visible</animation>
 					<include content="MediaFlag">
-						<param name="texture" value="$INFO[MusicPlayer.Codec,flags/audiocodec/,.png]" />
-					</include>
-					<include content="MediaFlag">
 						<param name="texture" value="flags/rds/rds.png" />
 						<param name="visible" value="RDS.HasRDS" />
 					</include>
+					<include content="MediaFlag">
+						<param name="texture" value="$INFO[MusicPlayer.Codec,flags/audiocodec/,.png]" />
+					</include>
+					<include content="MediaFlag">
+						<param name="texture" value="$INFO[MusicPlayer.Channels,flags/audiochannel/,.png]" />
+					</include>
+					<control type="group">
+						<width>115</width>
+						<control type="label">
+							<width>115</width>
+							<height>60</height>
+							<align>center</align>
+							<aligny>center</aligny>
+							<label>$INFO[MusicPlayer.SampleRate, ,kHz]</label>
+							<font>font_flag</font>
+						</control>
+						<include content="MediaFlag">
+							<param name="texture" value="flags/flag.png" />
+						</include>
+					</control>
+					<control type="group">
+						<width>115</width>
+						<control type="label">
+							<width>115</width>
+							<height>60</height>
+							<align>center</align>
+							<aligny>center</aligny>
+							<label>$INFO[MusicPlayer.BitRate, ,kbps ]</label>
+							<font>font_flag</font>
+						</control>
+						<include content="MediaFlag">
+							<param name="texture" value="flags/flag.png" />
+						</include>
+					</control>
+					<control type="group">
+						<width>115</width>
+						<control type="label">
+							<width>115</width>
+							<height>60</height>
+							<align>center</align>
+							<aligny>center</aligny>
+							<label>$INFO[MusicPlayer.BitsPerSample, ,bit]</label>
+							<font>font_flag</font>
+						</control>
+						<include content="MediaFlag">
+							<param name="texture" value="flags/flag.png" />
+						</include>
+					</control>
 				</control>
 				<control type="group">
 					<visible>[PVR.IsRecordingPlayingChannel + !Player.ChannelPreviewActive] | PVR.IsPlayingActiveRecording</visible>
