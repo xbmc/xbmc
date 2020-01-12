@@ -81,6 +81,13 @@ CPeripheralBusUSB::CPeripheralBusUSB(CPeripherals& manager) :
 
   /* set up a devices monitor that listen for any device change */
   m_udevMon = udev_monitor_new_from_netlink(m_udev, "udev");
+
+  /* filter to only receive usb events */
+  if (udev_monitor_filter_add_match_subsystem_devtype(m_udevMon, "usb", NULL) < 0)
+  {
+    CLog::Log(LOGERROR, "Could not limit filter on USB only");
+  }
+
   udev_monitor_enable_receiving(m_udevMon);
 
   CLog::Log(LOGDEBUG, "%s - initialised udev monitor", __FUNCTION__);
