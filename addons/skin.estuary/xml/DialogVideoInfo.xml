@@ -238,12 +238,6 @@
 						<param name="visible" value="!String.IsEmpty(ListItem.DateAdded) + (String.IsEqual(ListItem.DBType,episode) | String.IsEqual(ListItem.DBType,movie) | String.IsEqual(ListItem.DBType,video))" />
 					</include>
 					<include content="InfoDialogMetadata">
-						<param name="control_id" value="162" />
-						<param name="label" value="[COLOR button_focus]$LOCALIZE[180]: [/COLOR]$INFO[ListItem.Duration(hh:mm:ss)]" />
-						<param name="altlabel" value="$LOCALIZE[180]: $INFO[ListItem.Duration(hh:mm:ss)]" />
-						<param name="visible" value="!String.IsEmpty(ListItem.Duration) + (String.IsEqual(ListItem.DBType,episode) | String.IsEqual(ListItem.DBType,movie) | String.IsEqual(ListItem.DBType,video))" />
-					</include>
-					<include content="InfoDialogMetadata">
 						<param name="control_id" value="163" />
 						<param name="label" value="[COLOR button_focus]$LOCALIZE[576]: [/COLOR]$INFO[ListItem.PlayCount]" />
 						<param name="altlabel" value="$LOCALIZE[576]: $INFO[ListItem.PlayCount]" />
