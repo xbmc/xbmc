@@ -1200,6 +1200,16 @@ bool CFileItem::IsBluray() const
   return item.IsBDFile();
 }
 
+bool CFileItem::IsProtectedBlurayDisc() const
+{
+  std::string path;
+  path = URIUtils::AddFileToFolder(GetPath(), "AACS", "Unit_Key_RO.inf");
+  if (CFile::Exists(path))
+    return true;
+
+  return false;
+}
+
 bool CFileItem::IsCDDA() const
 {
   return URIUtils::IsCDDA(m_strPath);

@@ -52,6 +52,8 @@
 #include <osdefs.h>
 // clang-format on
 
+#include <cassert>
+
 #ifdef TARGET_WINDOWS
 extern "C" FILE *fopen_utf8(const char *_Filename, const char *_Mode);
 #else
@@ -436,6 +438,7 @@ bool CPythonInvoker::execute(const std::string& script, const std::vector<std::w
   // pending calls must be cleared out
   XBMCAddon::RetardedAsyncCallbackHandler::clearPendingCalls(m_threadState);
 
+  assert(m_threadState != nullptr);
   PyEval_ReleaseThread(m_threadState);
 
   setState(stateToSet);
@@ -558,7 +561,6 @@ bool CPythonInvoker::stop(bool abort)
       pulseGlobalEvent();
 
       PyEval_ReleaseThread(m_threadState);
-      m_threadState = nullptr;
     }
     lock.Leave();
 
