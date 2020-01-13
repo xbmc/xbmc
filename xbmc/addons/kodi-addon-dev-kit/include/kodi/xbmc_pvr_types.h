@@ -70,6 +70,7 @@ struct DemuxPacket;
 #define PVR_STREAM_PROPERTY_INPUTSTREAMCLASS  "inputstreamclass" /*!< @brief the name of the inputstream add-on that should be used by Kodi to play the stream denoted by PVR_STREAM_PROPERTY_STREAMURL. Leave blank to use Kodi's built-in playing capabilities or to allow ffmpeg to handle directly set to `inputstream.ffmpeg`. */
 #define PVR_STREAM_PROPERTY_MIMETYPE "mimetype" /*!< @brief the MIME type of the stream that should be played. */
 #define PVR_STREAM_PROPERTY_ISREALTIMESTREAM "isrealtimestream" /*!< @brief "true" to denote that the stream that should be played is a realtime stream. Any other value indicates that this is no realtime stream.*/
+#define PVR_STREAM_PROPERTY_EPGPLAYBACKASLIVE "epgplaybackaslive" /*!< @brief "true" to denote that if the stream is from an EPG tag that it should be played is a live stream. Otherwise if it's a EPG tag it will play as normal video.*/
 #define PVR_STREAM_PROPERTY_VALUE_INPUTSTREAMFFMPEG  "inputstream.ffmpeg" /*!< @brief special value for PVR_STREAM_PROPERTY_INPUTSTREAMCLASS to use ffmpeg to directly play a stream URL. */
 
 /* using the default avformat's MAX_STREAMS value to be safe */
