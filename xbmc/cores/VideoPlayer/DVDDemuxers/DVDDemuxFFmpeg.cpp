@@ -1727,6 +1727,14 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int streamIdx)
 #ifdef HAVE_LIBBLURAY
     if (m_pInput->IsStreamType(DVDSTREAM_TYPE_BLURAY))
     {
+      // UHD BD have a secondary video stream called by Dolby as enhancement layer.
+      // This is not used by streaming services and devices (ATV, Nvidia Shield, XONE).
+      if (pStream->id == 0x1015)
+      {
+        CLog::Log(LOGDEBUG, "CDVDDemuxFFmpeg::AddStream - discarding Dolby Vision stream");
+        pStream->discard = AVDISCARD_ALL;
+        return nullptr;
+      }
       stream->dvdNavId = pStream->id;
 
       auto it = std::find_if(m_streams.begin(), m_streams.end(),
