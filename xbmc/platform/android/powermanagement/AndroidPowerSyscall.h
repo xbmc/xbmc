@@ -31,4 +31,16 @@ public:
   int BatteryLevel() override;
 
   bool PumpPowerEvents(IPowerEventsCallback* callback) override;
+
+  void SetOnPause() { m_state = SUSPENDED; }
+  void SetOnResume() { m_state = RESUMED; }
+
+private:
+  enum STATE : unsigned int
+  {
+    REPORTED = 0,
+    SUSPENDED = 1,
+    RESUMED = 2,
+  };
+  STATE m_state = REPORTED;
 };

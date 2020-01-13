@@ -64,32 +64,34 @@
 #include "windowing/GraphicContext.h"
 #include "guilib/GUIWindowManager.h"
 // Audio Engine includes for Factory and interfaces
-#include "cores/AudioEngine/Interfaces/AE.h"
-#include "cores/AudioEngine/AESinkFactory.h"
-#include "cores/AudioEngine/Sinks/AESinkAUDIOTRACK.h"
-
-#include "ServiceBroker.h"
 #include "GUIInfoManager.h"
-#include "guilib/guiinfo/GUIInfoLabels.h"
-#include "guilib/GUIComponent.h"
-#include "platform/android/activity/IInputDeviceCallbacks.h"
-#include "platform/android/activity/IInputDeviceEventHandler.h"
-#include "input/mouse/MouseStat.h"
-#include "input/Key.h"
-#include "utils/log.h"
-#include "utils/TimeUtils.h"
-#include "platform/android/network/NetworkAndroid.h"
+#include "ServiceBroker.h"
+#include "TextureCache.h"
+#include "cores/AudioEngine/AESinkFactory.h"
+#include "cores/AudioEngine/Interfaces/AE.h"
+#include "cores/AudioEngine/Sinks/AESinkAUDIOTRACK.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderManager.h"
 #include "filesystem/SpecialProtocol.h"
-#include "TextureCache.h"
-#include "utils/StringUtils.h"
 #include "filesystem/VideoDatabaseFile.h"
+#include "guilib/GUIComponent.h"
+#include "guilib/guiinfo/GUIInfoLabels.h"
+#include "input/Key.h"
+#include "input/mouse/MouseStat.h"
+#include "platform/xbmc.h"
+#include "powermanagement/PowerManager.h"
+#include "utils/StringUtils.h"
+#include "utils/TimeUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
+#include "utils/log.h"
+#include "windowing/WinEvents.h"
 #include "windowing/android/VideoSyncAndroid.h"
 #include "windowing/android/WinSystemAndroid.h"
-#include "windowing/WinEvents.h"
-#include "platform/xbmc.h"
+
+#include "platform/android/activity/IInputDeviceCallbacks.h"
+#include "platform/android/activity/IInputDeviceEventHandler.h"
+#include "platform/android/network/NetworkAndroid.h"
+#include "platform/android/powermanagement/AndroidPowerSyscall.h"
 
 #define GIGABYTES       1073741824
 
@@ -245,6 +247,10 @@ void CXBMCApp::onResume()
   // Re-request Visible Behind
   if ((m_playback_state & PLAYBACK_STATE_PLAYING) && (m_playback_state & PLAYBACK_STATE_VIDEO))
     RequestVisibleBehind(true);
+
+  if (g_application.IsInitialized())
+    dynamic_cast<CAndroidPowerSyscall*>(CServiceBroker::GetPowerManager().GetPowerSyscall())
+        ->SetOnResume();
 }
 
 void CXBMCApp::onPause()
@@ -265,6 +271,9 @@ void CXBMCApp::onPause()
 
   EnableWakeLock(false);
   m_hasReqVisible = false;
+
+  dynamic_cast<CAndroidPowerSyscall*>(CServiceBroker::GetPowerManager().GetPowerSyscall())
+      ->SetOnPause();
 }
 
 void CXBMCApp::onStop()
