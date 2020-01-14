@@ -18,11 +18,13 @@
 
 using namespace kodi::addon;
 
-CAddonVideoCodec::CAddonVideoCodec(CProcessInfo &processInfo, ADDON::BinaryAddonBasePtr& addonInfo, kodi::addon::IAddonInstance* parentInstance)
+CAddonVideoCodec::CAddonVideoCodec(CProcessInfo& processInfo,
+                                   ADDON::BinaryAddonBasePtr& addonInfo,
+                                   KODI_HANDLE parentInstance)
   : CDVDVideoCodec(processInfo),
-    IAddonInstanceHandler(ADDON_INSTANCE_VIDEOCODEC, addonInfo, parentInstance)
-  , m_codecFlags(0)
-  , m_displayAspect(0.0f)
+    IAddonInstanceHandler(ADDON_INSTANCE_VIDEOCODEC, addonInfo, parentInstance),
+    m_codecFlags(0),
+    m_displayAspect(0.0f)
 {
   m_struct = { { 0 } };
   m_struct.toKodi.kodiInstance = this;

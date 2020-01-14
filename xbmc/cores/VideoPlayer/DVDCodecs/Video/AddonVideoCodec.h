@@ -20,7 +20,9 @@ class CAddonVideoCodec
   , public ADDON::IAddonInstanceHandler
 {
 public:
-  CAddonVideoCodec(CProcessInfo &processInfo, ADDON::BinaryAddonBasePtr& addonInfo, kodi::addon::IAddonInstance* parentInstance);
+  CAddonVideoCodec(CProcessInfo& processInfo,
+                   ADDON::BinaryAddonBasePtr& addonInfo,
+                   KODI_HANDLE parentInstance);
   ~CAddonVideoCodec() override;
 
   bool Open(CDVDStreamInfo &hints, CDVDCodecOptions &options) override;

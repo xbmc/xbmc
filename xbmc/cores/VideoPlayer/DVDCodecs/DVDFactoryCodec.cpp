@@ -50,7 +50,7 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo &hint, CProces
   if (hint.externalInterfaces)
   {
     ADDON::BinaryAddonBasePtr addonInfo;
-    kodi::addon::IAddonInstance* parentInstance;
+    KODI_HANDLE parentInstance;
     hint.externalInterfaces->getAddonInstance(ADDON::IAddonProvider::INSTANCE_VIDEOCODEC, addonInfo, parentInstance);
     if (addonInfo && parentInstance)
     {
