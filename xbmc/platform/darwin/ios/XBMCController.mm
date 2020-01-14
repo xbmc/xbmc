@@ -22,6 +22,7 @@
 #include "music/tags/MusicInfoTag.h"
 #include "playlists/PlayList.h"
 #include "settings/AdvancedSettings.h"
+#include "settings/DisplaySettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "settings/lib/ISettingCallback.h"
@@ -604,8 +605,7 @@ public:
   self.view.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
   self.view.autoresizesSubviews = YES;
 
-  m_glView = [[IOSEAGLView alloc] initWithFrame:[self fullscreenSubviewFrame]
-                                     withScreen:UIScreen.mainScreen];
+  m_glView = [[IOSEAGLView alloc] initWithFrame:self.view.bounds withScreen:UIScreen.mainScreen];
   [[IOSScreenManager sharedInstance] setView:m_glView];
   [m_glView setMultipleTouchEnabled:YES];
 
@@ -712,6 +712,18 @@ public:
 - (void)onXbmcAlive
 {
   m_debugLogSharingPresenter = std::make_unique<DebugLogSharingPresenter>();
+
+  // apply safe area to Kodi GUI
+  UIEdgeInsets __block insets;
+  dispatch_sync(dispatch_get_main_queue(), ^{
+    insets = m_window.safeAreaInsets;
+  });
+  if (!UIEdgeInsetsEqualToEdgeInsets(insets, UIEdgeInsetsZero))
+  {
+    auto scale = [m_glView getScreenScale:UIScreen.mainScreen];
+    CDisplaySettings::GetInstance().GetCurrentResolutionInfo().guiInsets = EdgeInsets(
+        insets.left * scale, insets.top * scale, insets.right * scale, insets.bottom * scale);
+  }
 }
 //--------------------------------------------------------------
 - (void) setFramebuffer
