@@ -67,6 +67,7 @@ typedef enum
 - (void) sendKey: (XBMCKey) key;
 - (void) observeDefaultCenterStuff: (NSNotification *) notification;
 - (CGRect)fullscreenSubviewFrame;
+- (void)onXbmcAlive;
 - (void) setFramebuffer;
 - (bool) presentFramebuffer;
 - (CGSize) getScreenSize;

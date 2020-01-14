@@ -410,6 +410,7 @@ using namespace KODI::MESSAGING;
     CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_startFullScreen = true;
     CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_canWindowed = false;
     xbmcAlive = TRUE;
+    [g_xbmcController onXbmcAlive];
     try
     {
       CCocoaAutoPool innerpool;
