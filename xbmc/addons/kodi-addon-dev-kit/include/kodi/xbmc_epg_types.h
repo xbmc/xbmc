@@ -58,6 +58,7 @@ extern "C" {
   /* EPG_TAG.iFlags values */
   const unsigned int EPG_TAG_FLAG_UNDEFINED = 0x00000000; /*!< @brief nothing special to say about this entry */
   const unsigned int EPG_TAG_FLAG_IS_SERIES = 0x00000001; /*!< @brief this EPG entry is part of a series */
+  const unsigned int EPG_TAG_FLAG_IS_NEW    = 0x00000002; /*!< @brief this EPG entry will be flagged as new */
 
   /* Special EPG_TAG.iUniqueBroadcastId value */
 
@@ -97,7 +98,7 @@ extern "C" {
     int           iGenreType;          /*!< @brief (optional) genre type */
     int           iGenreSubType;       /*!< @brief (optional) genre sub type */
     const char *  strGenreDescription; /*!< @brief (optional) genre. Will be used only when iGenreType == EPG_GENRE_USE_STRING or iGenreSubType == EPG_GENRE_USE_STRING. Use EPG_STRING_TOKEN_SEPARATOR to separate different genres. */
-    time_t        firstAired;          /*!< @brief (optional) first aired in UTC */
+    const char *  strFirstAired;       /*!< @brief (optional) first aired date of the event. Used only for display purposes. Specify in W3C date format "YYYY-MM-DD". */
     int           iParentalRating;     /*!< @brief (optional) parental rating */
     int           iStarRating;         /*!< @brief (optional) star rating */
     int           iSeriesNumber;       /*!< @brief (optional) series number */

@@ -609,9 +609,14 @@ bool CPVRGUIInfo::GetListItemAndPlayerLabel(const CFileItem* item, const CGUIInf
         return false;
       case VIDEOPLAYER_PREMIERED:
       case LISTITEM_PREMIERED:
-        if (epgTag->FirstAiredAsLocalTime().IsValid())
+        if (epgTag->FirstAired().IsValid())
         {
-          strValue = epgTag->FirstAiredAsLocalTime().GetAsLocalizedDate(true);
+          strValue = epgTag->FirstAired().GetAsLocalizedDate(true);
+          return true;
+        }
+        else if (epgTag->Year() > 0)
+        {
+          strValue = StringUtils::Format("%i", epgTag->Year());
           return true;
         }
         return false;
@@ -1249,16 +1254,8 @@ bool CPVRGUIInfo::GetListItemAndPlayerBool(const CFileItem* item, const CGUIInfo
     case LISTITEM_IS_NEW:
       if (item->IsEPG())
       {
-        const std::shared_ptr<CPVREpgInfoTag> epgTag = item->GetEPGInfoTag();
-        const CDateTime firstAired = epgTag->FirstAiredAsUTC();
-        const CDateTime start = epgTag->StartAsUTC();
-        if (firstAired.IsValid() && start.IsValid())
-        {
-          bValue = firstAired.GetYear() == start.GetYear() &&
-                   firstAired.GetMonth() == start.GetMonth() &&
-                   firstAired.GetDay() == start.GetDay();
-          return true;
-        }
+        bValue = item->GetEPGInfoTag()->IsNew();
+        return true;
       }
       break;
     case MUSICPLAYER_CONTENT:

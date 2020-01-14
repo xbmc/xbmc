@@ -271,15 +271,9 @@ namespace PVR
 
     /*!
      * @brief Get the first air date of this event.
-     * @return The first air date in UTC.
+     * @return The first air date.
      */
-    CDateTime FirstAiredAsUTC() const;
-
-    /*!
-     * @brief Get the first air date of this event.
-     * @return The first air date as local time.
-     */
-    CDateTime FirstAiredAsLocalTime() const;
+    CDateTime FirstAired() const;
 
     /*!
      * @brief Get the parental rating of this event.
@@ -392,6 +386,12 @@ namespace PVR
      * @return True if this event is a gap, false otherwise.
      */
     bool IsGapTag() const;
+
+    /*!
+     * @brief Check whether this tag will be flagged as new.
+     * @return True if this tag will be flagged as new, false otherwise
+     */
+    bool IsNew() const;
 
     /*!
      * @brief Return the flags (EPG_TAG_FLAG_*) of this event as a bitfield.
