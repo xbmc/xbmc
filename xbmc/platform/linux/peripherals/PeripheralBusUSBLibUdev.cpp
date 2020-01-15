@@ -11,6 +11,7 @@
 extern "C" {
 #include <libudev.h>
 }
+#include <cassert>
 #include <poll.h>
 #include "utils/log.h"
 
