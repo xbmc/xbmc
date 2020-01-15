@@ -18,15 +18,15 @@
 #include <string>
 #include <vector>
 
-#define INPUT_ALPHANUM        0
-#define INPUT_NUMERIC         1
-#define INPUT_DATE            2
-#define INPUT_TIME            3
-#define INPUT_IPADDRESS       4
-#define INPUT_PASSWORD        5
+const int INPUT_ALPHANUM{0};
+const int INPUT_NUMERIC{1};
+const int INPUT_DATE{2};
+const int INPUT_TIME{3};
+const int INPUT_IPADDRESS{4};
+const int INPUT_PASSWORD{5};
 
-#define PASSWORD_VERIFY       1
-#define ALPHANUM_HIDE_INPUT   2
+const int PASSWORD_VERIFY{1};
+const int ALPHANUM_HIDE_INPUT{2};
 
 namespace XBMCAddon
 {
