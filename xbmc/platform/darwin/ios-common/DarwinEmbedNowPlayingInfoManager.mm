@@ -14,6 +14,7 @@
 #include "platform/darwin/tvos/XBMCController.h"
 #endif
 
+#import <AVFoundation/AVFoundation.h>
 #import <MediaPlayer/MediaPlayer.h>
 
 @implementation DarwinEmbedNowPlayingInfoManager
@@ -49,10 +50,19 @@
   {
     if (auto image = [UIImage imageWithContentsOfFile:thumb])
     {
+      auto square_size = image.size.height;
+      if (image.size.width > square_size)
+        square_size = image.size.width;
+      auto rect = CGRectMake(0, 0, square_size, square_size);
+      UIGraphicsBeginImageContextWithOptions(rect.size, YES, 0.0);
+      [image drawInRect:AVMakeRectWithAspectRatioInsideRect(image.size, rect)];
+      image = UIGraphicsGetImageFromCurrentImageContext();
+      UIGraphicsEndImageContext();
       if (auto mArt =
-          [[MPMediaItemArtwork alloc] initWithBoundsSize:image.size
-                                          requestHandler:^UIImage* _Nonnull(CGSize aSize) {
-                                            return image;}])
+              [[MPMediaItemArtwork alloc] initWithBoundsSize:rect.size
+                                              requestHandler:^UIImage* _Nonnull(CGSize aSize) {
+                                                return image;
+                                              }])
       {
         dict[MPMediaItemPropertyArtwork] = mArt;
       }
