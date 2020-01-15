@@ -59,7 +59,6 @@ set(SOURCES ActorProtocol.cpp
             StreamUtils.cpp
             StringUtils.cpp
             StringValidation.cpp
-            SysfsUtils.cpp
             SystemInfo.cpp
             Temperature.cpp
             TextSearch.cpp
@@ -151,7 +150,6 @@ set(HEADERS ActorProtocol.h
             StreamUtils.h
             StringUtils.h
             StringValidation.h
-            SysfsUtils.h
             SystemInfo.h
             Temperature.h
             TextSearch.h
