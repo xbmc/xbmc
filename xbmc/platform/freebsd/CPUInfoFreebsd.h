@@ -20,4 +20,5 @@ public:
 
   int GetUsedPercentage() override;
   float GetCPUFrequency() override;
+  bool GetTemperature(CTemperature& temperature) override;
 };
