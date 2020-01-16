@@ -31,12 +31,14 @@ CVideoReferenceClock::CVideoReferenceClock() : CThread("RefClock")
   m_RefreshRate = 0.0;
   m_MissedVblanks = 0;
   m_VblankTime = 0;
+  m_vsyncStopEvent.Reset();
 
   Start();
 }
 
 CVideoReferenceClock::~CVideoReferenceClock()
 {
+  m_bStop = true;
   m_vsyncStopEvent.Set();
   StopThread();
 }
@@ -87,9 +89,13 @@ void CVideoReferenceClock::Process()
       m_VblankTime = Now;          //initialize the timestamp of the last vblank
       SingleLock.Leave();
 
-      m_vsyncStopEvent.Reset();
-      //run the clock
-      m_pVideoSync->Run(m_vsyncStopEvent);
+      // we might got signalled while we did not wait
+      if (!m_vsyncStopEvent.Signaled())
+      {
+        //run the clock
+        m_pVideoSync->Run(m_vsyncStopEvent);
+        m_vsyncStopEvent.Reset();
+      }
     }
     else
     {
