@@ -225,6 +225,30 @@
 						<param name="altlabel" value="$LOCALIZE[126]: $INFO[ListItem.Status]" />
 						<param name="visible" value="!String.IsEmpty(ListItem.Status)" />
 					</include>
+					<include content="InfoDialogMetadata">
+						<param name="control_id" value="161" />
+						<param name="label" value="[COLOR button_focus]$LOCALIZE[570]: [/COLOR]$INFO[ListItem.DateAdded]" />
+						<param name="altlabel" value="$LOCALIZE[570]: $INFO[ListItem.DateAdded]" />
+						<param name="visible" value="!String.IsEmpty(ListItem.DateAdded) + (String.IsEqual(ListItem.DBType,episode) | String.IsEqual(ListItem.DBType,movie) | String.IsEqual(ListItem.DBType,musicvideo) | String.IsEqual(ListItem.DBType,video))" />
+					</include>
+					<include content="InfoDialogMetadata">
+						<param name="control_id" value="163" />
+						<param name="label" value="[COLOR button_focus]$LOCALIZE[576]: [/COLOR]$INFO[ListItem.PlayCount]" />
+						<param name="altlabel" value="$LOCALIZE[576]: $INFO[ListItem.PlayCount]" />
+						<param name="visible" value="!String.IsEmpty(ListItem.PlayCount)" />
+					</include>
+					<include content="InfoDialogMetadata">
+						<param name="control_id" value="164" />
+						<param name="label" value="[COLOR button_focus]$LOCALIZE[568]: [/COLOR]$INFO[ListItem.LastPlayed]" />
+						<param name="altlabel" value="$LOCALIZE[568]: $INFO[ListItem.LastPlayed]" />
+						<param name="visible" value="!String.IsEmpty(ListItem.LastPlayed)" />
+					</include>
+					<include content="InfoDialogMetadata">
+						<param name="control_id" value="165" />
+						<param name="label" value="[COLOR button_focus]$LOCALIZE[564]: [/COLOR]$INFO[ListItem.DBType]" />
+						<param name="altlabel" value="$LOCALIZE[564]: $INFO[ListItem.DBType]" />
+						<param name="visible" value="!String.IsEmpty(ListItem.DBType)" />
+					</include>
 				</control>
 				<control type="group">
 					<visible>Integer.IsEqual(Container(50).NumItems,0) + String.IsEmpty(ListItem.Art(tvshow.banner)) + String.IsEmpty(ListItem.Art(banner))</visible>
