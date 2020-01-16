@@ -50,12 +50,12 @@
 						<height>850</height>
 						<bottom>124</bottom>
 						<fadetime>200</fadetime>
-						<aspectratio align="center" aligny="center">keep</aspectratio>
+						<aspectratio aligny="bottom">keep</aspectratio>
 						<texture fallback="DefaultVideo.png" background="true">$VAR[InfoWallThumbVar]</texture>
 					</control>
 					<control type="group">
-						<left>318</left>
-						<top>936</top>
+						<left>291</left>
+						<top>950</top>
 						<include content="RatingCircle">
 							<param name="animation" value="True" />
 						</include>
@@ -65,18 +65,32 @@
 					<visible>Control.IsVisible(503) + Window.IsActive(musicplaylist)</visible>
 					<control type="image">
 						<left>58</left>
-						<top>120</top>
+						<top>110</top>
 						<width>540</width>
 						<height>470</height>
 						<aspectratio aligny="bottom">keep</aspectratio>
 						<fadetime>300</fadetime>
 						<texture fallback="DefaultAudio.png" background="true">$INFO[Player.Icon]</texture>
 					</control>
+					<control type="group">
+						<left>301</left>
+						<top>560</top>
+						<control type="group">
+							<animation effect="fade" time="0" condition="$PARAM[animation]">VisibleChange</animation>
+							<include content="UserRatingContent" condition="Skin.HasSetting(circle_userrating)">
+								<param name="infolabel" value="MusicPlayer.UserRating" />
+							</include>
+							<include content="UserRatingContent" condition="Skin.HasSetting(circle_rating)">
+								<param name="infolabel" value="MusicPlayer.Rating" />
+							</include>
+						</control>
+					</control>
 					<control type="textbox" id="15599">
 						<visible>Player.HasAudio + Window.IsActive(musicplaylist)</visible>
 						<left>58</left>
 						<top>600</top>
 						<width>540</width>
+						<bottom>70</bottom>
 						<autoscroll time="3000" delay="7000" repeat="5000">!System.HasModalDialog + Skin.HasSetting(AutoScroll)</autoscroll>
 						<label>[COLOR button_focus][B]$LOCALIZE[31000]: [/COLOR]$INFO[musicplayer.Playlistposition,]$INFO[musicplayer.Playlistlength,/][/B][CR]$VAR[NowPlayingInfoVar]</label>
 					</control>
@@ -85,6 +99,7 @@
 						<left>58</left>
 						<top>640</top>
 						<width>540</width>
+						<bottom>70</bottom>
 						<autoscroll time="3000" delay="7000" repeat="5000">!System.HasModalDialog + Skin.HasSetting(AutoScroll)</autoscroll>
 						<label>[COLOR button_focus][B]$LOCALIZE[31000]: [/COLOR]$LOCALIZE[36623][/B]</label>
 					</control>
@@ -219,7 +234,7 @@
 				</include>
 				<control type="image">
 					<left>30</left>
-					<top>140</top>
+					<top>110</top>
 					<width>540</width>
 					<height>470</height>
 					<aspectratio aligny="bottom">keep</aspectratio>
@@ -229,7 +244,7 @@
 				</control>
 				<control type="image">
 					<left>30</left>
-					<top>140</top>
+					<top>110</top>
 					<width>540</width>
 					<height>330</height>
 					<aspectratio aligny="bottom">keep</aspectratio>
@@ -239,7 +254,7 @@
 				</control>
 				<control type="image">
 					<left>30</left>
-					<top>120</top>
+					<top>110</top>
 					<width>540</width>
 					<height>470</height>
 					<aspectratio aligny="bottom">keep</aspectratio>
@@ -249,7 +264,7 @@
 				</control>
 				<control type="group">
 					<left>273</left>
-					<top>590</top>
+					<top>560</top>
 					<include condition="Skin.HasSetting(circle_rating) | Skin.HasSetting(circle_userrating)">RatingCircle</include>
 					<animation effect="slide" end="0,-140" time="0" condition="String.IsEqual(ListItem.DbType,episode)">conditional</animation>
 				</control>
@@ -257,17 +272,17 @@
 					<visible>!Container.Content() | !String.isempty(ListItem.Plot)</visible>
 					<left>30</left>
 					<control type="textbox" id="15500">
-						<top>640</top>
+						<top>600</top>
 						<width>540</width>
-						<bottom>117</bottom>
+						<bottom>70</bottom>
 						<autoscroll time="3000" delay="7000" repeat="5000">!System.HasModalDialog + Skin.HasSetting(AutoScroll)</autoscroll>
 						<label>$VAR[ListBoxInfoVar]</label>
 						<visible>!String.IsEqual(ListItem.DbType,episode) + !String.IsEqual(ListItem.DBType,song)</visible>
 					</control>
 					<control type="textbox" id="15501">
-						<top>485</top>
+						<top>465</top>
 						<width>540</width>
-						<bottom>96</bottom>
+						<bottom>70</bottom>
 						<autoscroll time="3000" delay="7000" repeat="5000">!System.HasModalDialog + Skin.HasSetting(AutoScroll)</autoscroll>
 						<label>$INFO[ListItem.Plot]</label>
 						<visible>String.IsEqual(ListItem.DbType,episode)</visible>
@@ -275,7 +290,7 @@
 					<control type="textbox" id="15502">
 						<top>600</top>
 						<width>540</width>
-						<height>410</height>
+						<bottom>70</bottom>
 						<autoscroll time="3000" delay="3000" repeat="5000">!System.HasModalDialog + Skin.HasSetting(AutoScroll)</autoscroll>
 						<label>[COLOR button_focus][B]$LOCALIZE[31037]: [/COLOR]$INFO[Container.CurrentItem,,/]$INFO[Container.NumItems][/B][CR]$VAR[ListBoxInfoVar]</label>
 						<visible>String.IsEqual(ListItem.DBType,song)</visible>
