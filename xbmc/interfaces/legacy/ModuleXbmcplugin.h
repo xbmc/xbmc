@@ -170,7 +170,8 @@ namespace XBMCAddon
 #ifdef DOXYGEN_SHOULD_USE_THIS
     ///
     /// \ingroup python_xbmcplugin
-    /// @brief \python_func{ xbmcplugin.addSortMethod(handle, sortMethod [,label2Mask]) }
+    /// @brief \python_func{ xbmcplugin.addSortMethod(handle, sortMethod [,label2Mask, labelMask]) }
+    ///-------------------------------------------------------------------------
     /// Adds a sorting method for the media list.
     ///
     /// @param handle               integer - handle the plugin was started
@@ -235,11 +236,22 @@ namespace XBMCAddon
     /// @note to add multiple sort methods just call the method multiple times.
     ///
     ///
+    /// @param labelMask            [opt] string - the label mask to use for
+    ///                             the first label.
+    /// | sortMethod                            | labelMask                   |
+    /// |---------------------------------------|-----------------------------|
+    /// | SORT_METHOD_TRACKNUM                  | Defaults to `[%%N. ]%%T`    |
+    /// | SORT_METHOD_EPISODE                   | Defaults to `%%H. %%T`      |
+    /// | SORT_METHOD_PRODUCTIONCODE            | Defaults to `%%H. %%T`      |
+    /// | All other sort methods                | Defaults to `%%T`           |
+    ///
+    ///
     /// ------------------------------------------------------------------------
     /// @python_v13 Added new sort **SORT_METHOD_DATE_TAKEN**, **SORT_METHOD_COUNTRY**,
     /// **SORT_METHOD_DATEADDED**, **SORT_METHOD_FULLPATH**, **SORT_METHOD_LABEL_IGNORE_FOLDERS**,
     /// **SORT_METHOD_LASTPLAYED**, **SORT_METHOD_PLAYCOUNT**, **SORT_METHOD_CHANNEL**.
     /// @python_v17 Added new sort **SORT_METHOD_VIDEO_USER_RATING**.
+    /// @python_v19 Added new option **labelMask**.
     ///
     /// **Example:**
     /// ~~~~~~~~~~~~~{.py}
@@ -250,7 +262,7 @@ namespace XBMCAddon
     ///
     addSortMethod(...);
 #else
-    void addSortMethod(int handle, int sortMethod, const String& label2Mask = emptyString);
+    void addSortMethod(int handle, int sortMethod, const String& label2Mask = emptyString, const String& labelMask = emptyString);
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
