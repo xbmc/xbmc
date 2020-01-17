@@ -712,18 +712,39 @@ public:
 - (void)onXbmcAlive
 {
   m_debugLogSharingPresenter = std::make_unique<DebugLogSharingPresenter>();
+  [self setGUIInsetsFromMainThread:NO];
+}
+//--------------------------------------------------------------
+- (void)setGUIInsetsFromMainThread:(BOOL)isMainThread
+{
+  auto& guiInsets = CDisplaySettings::GetInstance().GetCurrentResolutionInfo().guiInsets;
+
+  // disable insets for external screen
+  if ([[IOSScreenManager sharedInstance] isExternalScreen])
+  {
+    guiInsets = EdgeInsets{};
+    return;
+  }
 
   // apply safe area to Kodi GUI
   UIEdgeInsets __block insets;
-  dispatch_sync(dispatch_get_main_queue(), ^{
+  auto getInsets = ^{
     insets = m_window.safeAreaInsets;
-  });
-  if (!UIEdgeInsetsEqualToEdgeInsets(insets, UIEdgeInsetsZero))
-  {
-    auto scale = [m_glView getScreenScale:UIScreen.mainScreen];
-    CDisplaySettings::GetInstance().GetCurrentResolutionInfo().guiInsets = EdgeInsets(
-        insets.left * scale, insets.top * scale, insets.right * scale, insets.bottom * scale);
-  }
+  };
+  if (isMainThread)
+    getInsets();
+  else
+    dispatch_sync(dispatch_get_main_queue(), getInsets);
+
+  CLog::Log(LOGDEBUG, "insets: {}\nwindow: {}\nscreen: {}",
+            NSStringFromUIEdgeInsets(insets).UTF8String, m_window.description.UTF8String,
+            m_glView.currentScreen.description.UTF8String);
+  if (UIEdgeInsetsEqualToEdgeInsets(insets, UIEdgeInsetsZero))
+    return;
+
+  auto scale = [m_glView getScreenScale:m_glView.currentScreen];
+  guiInsets = EdgeInsets(insets.left * scale, insets.top * scale, insets.right * scale,
+                         insets.bottom * scale);
 }
 //--------------------------------------------------------------
 - (void) setFramebuffer
