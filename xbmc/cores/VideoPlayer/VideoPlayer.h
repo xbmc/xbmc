@@ -291,6 +291,10 @@ public:
   void SetSubtitleVerticalPosition(const int value, bool save) override;
 
   void AddSubtitle(const std::string& strSubPath) override;
+  void AddSubtitle(const std::string& strSubPath,
+                   const std::string& name,
+                   const std::string& language,
+                   bool activate = true) override;
 
   int GetAudioStreamCount() const override;
   int GetAudioStream() override;
@@ -401,7 +405,10 @@ protected:
   void ProcessRadioRDSData(CDemuxStream* pStream, DemuxPacket* pPacket);
   void ProcessAudioID3Data(CDemuxStream* pStream, DemuxPacket* pPacket);
 
-  int  AddSubtitleFile(const std::string& filename, const std::string& subfilename = "");
+  int AddSubtitleFile(const std::string& filename,
+                      const std::string& subfilename = "",
+                      const std::string& name = "",
+                      const std::string& language = "");
   void SetSubtitleVisibleInternal(bool bVisible);
 
   /**

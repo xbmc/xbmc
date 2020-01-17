@@ -137,6 +137,12 @@ public:
   *   \param[in] strSubPath The full path of the subtitle file.
   */
   virtual void AddSubtitle(const std::string& strSubPath) {}
+  virtual void AddSubtitle(const std::string& strSubPath,
+                           const std::string& name,
+                           const std::string& language,
+                           bool activate = true)
+  {
+  }
 
   virtual int GetAudioStreamCount() const { return 0; }
   virtual int  GetAudioStream()       { return -1; }

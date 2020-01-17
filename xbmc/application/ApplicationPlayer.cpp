@@ -737,6 +737,16 @@ void CApplicationPlayer::AddSubtitle(const std::string& strSubPath)
     player->AddSubtitle(strSubPath);
 }
 
+void CApplicationPlayer::AddSubtitle(const std::string& strSubPath,
+                                     const std::string& name,
+                                     const std::string& language,
+                                     bool activate /* = true */)
+{
+  std::shared_ptr<IPlayer> player = GetInternal();
+  if (player)
+    player->AddSubtitle(strSubPath, name, language, activate);
+}
+
 void CApplicationPlayer::SetSubTitleDelay(float fValue)
 {
   std::shared_ptr<IPlayer> player = GetInternal();

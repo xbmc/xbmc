@@ -70,6 +70,14 @@ struct SStateMsg
   int player;
 };
 
+struct SSubtitleMsg
+{
+  std::string path;
+  std::string name;
+  std::string language;
+  bool activate = false;
+};
+
 class CDVDVideoCodec;
 
 class IDVDStreamPlayerVideo : public IDVDStreamPlayer
