@@ -68,6 +68,7 @@ typedef enum
 - (void) observeDefaultCenterStuff: (NSNotification *) notification;
 - (CGRect)fullscreenSubviewFrame;
 - (void)onXbmcAlive;
+- (void)setGUIInsetsFromMainThread:(BOOL)isMainThread;
 - (void) setFramebuffer;
 - (bool) presentFramebuffer;
 - (CGSize) getScreenSize;
