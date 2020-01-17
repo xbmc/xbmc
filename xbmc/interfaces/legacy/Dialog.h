@@ -18,20 +18,20 @@
 #include <string>
 #include <vector>
 
-const int INPUT_ALPHANUM{0};
-const int INPUT_NUMERIC{1};
-const int INPUT_DATE{2};
-const int INPUT_TIME{3};
-const int INPUT_IPADDRESS{4};
-const int INPUT_PASSWORD{5};
-
-const int PASSWORD_VERIFY{1};
-const int ALPHANUM_HIDE_INPUT{2};
-
 namespace XBMCAddon
 {
-  namespace xbmcgui
-  {
+namespace xbmcgui
+{
+constexpr int INPUT_ALPHANUM{0};
+constexpr int INPUT_NUMERIC{1};
+constexpr int INPUT_DATE{2};
+constexpr int INPUT_TIME{3};
+constexpr int INPUT_IPADDRESS{4};
+constexpr int INPUT_PASSWORD{5};
+
+constexpr int PASSWORD_VERIFY{1};
+constexpr int ALPHANUM_HIDE_INPUT{2};
+
     ///
     /// \defgroup python_Dialog Dialog
     /// \ingroup python_xbmcgui
@@ -982,5 +982,5 @@ namespace XBMCAddon
     };
     //@}
 
-  }
-}
+} // namespace xbmcgui
+} // namespace XBMCAddon
