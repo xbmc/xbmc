@@ -73,6 +73,7 @@ public:
   bool IsHDROutput() const;
   void SetHdrMetaData(DXGI_HDR_METADATA_HDR10& hdr10) const;
   void SetHdrColorSpace(const DXGI_COLOR_SPACE_TYPE colorSpace) const;
+  void ReSetFullScreen(float refreshRate) const;
 
 protected:
   void SetDeviceFullScreen(bool fullScreen, RESOLUTION_INFO& res) override;

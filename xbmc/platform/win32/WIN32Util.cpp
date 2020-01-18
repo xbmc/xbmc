@@ -1326,24 +1326,24 @@ bool CWIN32Util::ToggleWindowsHDR()
             requestPacket->adapterId.HighPart = modesArray[i].adapterId.HighPart;
             requestPacket->adapterId.LowPart = modesArray[i].adapterId.LowPart;
             requestPacket->id = modesArray[i].id;
-          }
-        }
 
-        if (ERROR_SUCCESS == DisplayConfigGetDeviceInfo(requestPacket))
-        {
-          if (request[20] == 0xD1) // HDR is OFF
-          {
-            set[20] = 1;
-            CLog::LogF(LOGNOTICE, "Toggle Windows HDR On (OFF => ON).");
-            DisplayConfigSetDeviceInfo(setPacket);
-            success = true;
-          }
-          else if (request[20] == 0xD3) // HDR is ON
-          {
-            set[20] = 0;
-            CLog::LogF(LOGNOTICE, "Toggle Windows HDR Off (ON => OFF).");
-            DisplayConfigSetDeviceInfo(setPacket);
-            success = true;
+            if (ERROR_SUCCESS == DisplayConfigGetDeviceInfo(requestPacket))
+            {
+              if (request[20] == 0xD1) // HDR is OFF
+              {
+                set[20] = 1;
+                CLog::LogF(LOGNOTICE, "Toggle Windows HDR On (OFF => ON).");
+                DisplayConfigSetDeviceInfo(setPacket);
+                success = true;
+              }
+              else if (request[20] == 0xD3) // HDR is ON
+              {
+                set[20] = 0;
+                CLog::LogF(LOGNOTICE, "Toggle Windows HDR Off (ON => OFF).");
+                DisplayConfigSetDeviceInfo(setPacket);
+                success = true;
+              }
+            }
           }
         }
       }
@@ -1385,12 +1385,13 @@ int CWIN32Util::GetWindowsHDRStatus()
 
   return status;
 #else
-  uint32_t pathCount, modeCount;
+  uint32_t pathCount, modeCount, targetCount;
 
   uint8_t request[] = {0x09, 0x00, 0x00, 0x00, 0x20, 0x00, 0x00, 0x00, 0x7C, 0x6F, 0x00,
                        0x00, 0x00, 0x00, 0x00, 0x00, 0x04, 0x01, 0x00, 0x00, 0xDB, 0x00,
                        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x40, 0x00, 0x00};
 
+  uint8_t targetArray[10] = {};
   int status = 0;
 
   if (ERROR_SUCCESS == GetDisplayConfigBufferSizes(QDC_ONLY_ACTIVE_PATHS, &pathCount, &modeCount))
@@ -1415,6 +1416,7 @@ int CWIN32Util::GetWindowsHDRStatus()
         DISPLAYCONFIG_DEVICE_INFO_HEADER* requestPacket =
             reinterpret_cast<DISPLAYCONFIG_DEVICE_INFO_HEADER*>(request);
 
+        targetCount = 0;
         for (unsigned i = 0; i < modeCount; i++)
         {
           if (modesArray[i].infoType == DISPLAYCONFIG_MODE_INFO_TYPE_TARGET)
@@ -1422,37 +1424,45 @@ int CWIN32Util::GetWindowsHDRStatus()
             requestPacket->adapterId.HighPart = modesArray[i].adapterId.HighPart;
             requestPacket->adapterId.LowPart = modesArray[i].adapterId.LowPart;
             requestPacket->id = modesArray[i].id;
+            if (ERROR_SUCCESS == DisplayConfigGetDeviceInfo(requestPacket))
+            {
+              targetArray[targetCount] = request[20];
+              targetCount ++;
+            }
           }
         }
 
-        if (ERROR_SUCCESS == DisplayConfigGetDeviceInfo(requestPacket))
+        uint8_t targetStatus = 0xD0;
+        for (int i = 0; i < targetCount; i++)
         {
-          std::string txDeviceInfo;
-          switch (request[20])
+          if (targetArray[i] == 0xD1 || targetArray[i] == 0xD3)
           {
-            case 0xD0: // display is not HDR capable
-              status = 0;
-              txDeviceInfo = "No HDR capable";
-              break;
-            case 0xD1: // capable and HDR is OFF
-              status = 1;
-              txDeviceInfo = "HDR capable and OFF";
-              break;
-            case 0xD3: // capable and HDR is ON
-              status = 2;
-              txDeviceInfo = "HDR capable and ON";
-              break;
-            default:
-              status = 0;
-              txDeviceInfo = "UNKNOWN";
-              break;
+            targetStatus = targetArray[i];
+            break;
           }
-          if (CServiceBroker::IsServiceManagerUp())
-            CLog::LogF(LOGDEBUG,
-                       "DisplayConfigGetDeviceInfo returned value 0x{0:2X} \"{1:s}\"  (return "
-                       "status = {2:d})",
-                       request[20], txDeviceInfo, status);
         }
+
+        std::string txDeviceInfo;
+        switch (targetStatus)
+        {
+          case 0xD0: // display is not HDR capable
+            status = 0;
+            txDeviceInfo = "No HDR capable";
+            break;
+          case 0xD1: // capable and HDR is OFF
+            status = 1;
+            txDeviceInfo = "HDR capable and OFF";
+            break;
+          case 0xD3: // capable and HDR is ON
+            status = 2;
+            txDeviceInfo = "HDR capable and ON";
+            break;
+        }
+        if (CServiceBroker::IsServiceManagerUp())
+          CLog::LogF(LOGDEBUG,
+                     "DisplayConfigGetDeviceInfo returned value 0x{0:2X} \"{1:s}\"  (return status "
+                     "= {2:d})",
+                     request[20], txDeviceInfo, status);
       }
       std::free(pathsArray);
       std::free(modesArray);

@@ -1231,3 +1231,83 @@ void DX::DeviceResources::ReCreateSwapChain()
 
   CreateWindowSizeDependentResources();
 }
+
+void DX::DeviceResources::ReSetFullScreen(float refreshRate)
+{
+  if (m_swapChain == nullptr)
+    return;
+
+  DXGI_ADAPTER_DESC id = {};
+  GetAdapterDesc(&id);
+
+  if (id.VendorId != 0x10DE) // Only need for NVIDIA
+    return;
+
+  CLog::LogF(LOGDEBUG, "Re-set full screen due SDR -> HDR switch");
+
+  BOOL bFullcreen = 0;
+  m_swapChain->GetFullscreenState(&bFullcreen, nullptr);
+  if (!!bFullcreen)
+  {
+    DXGI_RATIONAL rRate;
+    DXGI_MODE_DESC md = {};
+    DXGI_SWAP_CHAIN_DESC1 scd = {};
+
+    m_swapChain->GetDesc1(&scd);
+
+    if (abs((24000.0f / 1001.0f) - refreshRate) < 0.001f)
+    {
+      rRate.Numerator = 24000u;
+      rRate.Denominator = 1001u;
+    }
+    else if (abs((24000.0f / 1000.0f) - refreshRate) < 0.001f)
+    {
+      rRate.Numerator = 24u;
+      rRate.Denominator = 1u;
+    }
+    else if (abs((25000.0f / 1000.0f) - refreshRate) < 0.001f)
+    {
+      rRate.Numerator = 25u;
+      rRate.Denominator = 1u;
+    }
+    else if (abs((30000.0f / 1001.0f) - refreshRate) < 0.001f)
+    {
+      rRate.Numerator = 30000u;
+      rRate.Denominator = 1001u;
+    }
+    else if (abs((30000.0f / 1000.0f) - refreshRate) < 0.001f)
+    {
+      rRate.Numerator = 30u;
+      rRate.Denominator = 1u;
+    }
+    else if (abs((50000.0f / 1000.0f) - refreshRate) < 0.001f)
+    {
+      rRate.Numerator = 50u;
+      rRate.Denominator = 1u;
+    }
+    else if (abs((60000.0f / 1001.0f) - refreshRate) < 0.001f)
+    {
+      rRate.Numerator = 60000u;
+      rRate.Denominator = 1001u;
+    }
+    else if (abs((60000.0f / 1000.0f) - refreshRate) < 0.001f)
+    {
+      rRate.Numerator = 60u;
+      rRate.Denominator = 1u;
+    }
+
+    md.Format = DXGI_FORMAT_UNKNOWN;
+    md.RefreshRate = rRate;
+    md.Height = scd.Height;
+    md.Width = scd.Width;
+    m_swapChain->ResizeTarget(&md);
+    m_swapChain->SetFullscreenState(true, nullptr);
+    md.RefreshRate.Numerator = 0;
+    md.RefreshRate.Denominator = 1;
+    m_swapChain->ResizeTarget(&md);
+
+    ComPtr<IDXGIOutput> output;
+    m_swapChain->GetFullscreenState(&bFullcreen, &output);
+    output.As(&m_output);
+  }
+}
