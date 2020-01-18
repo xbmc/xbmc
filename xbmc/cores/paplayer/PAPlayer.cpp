@@ -17,6 +17,7 @@
 #include "cores/AudioEngine/Utils/AEUtil.h"
 #include "cores/DataCacheCore.h"
 #include "cores/VideoPlayer/Process/ProcessInfo.h"
+#include "messaging/ApplicationMessenger.h"
 #include "music/tags/MusicInfoTag.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
@@ -24,6 +25,8 @@
 #include "utils/JobManager.h"
 #include "utils/log.h"
 #include "video/Bookmark.h"
+
+using namespace KODI::MESSAGING;
 
 #define TIME_TO_CACHE_NEXT_FILE 5000 /* 5 seconds before end of song, start caching the next song */
 #define FAST_XFADE_TIME           80 /* 80 milliseconds */
@@ -218,6 +221,7 @@ void PAPlayer::CloseAllStreams(bool fade/* = true */)
 bool PAPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
 {
   m_defaultCrossfadeMS = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_MUSICPLAYER_CROSSFADE) * 1000;
+  m_fullScreen = options.fullscreen;
 
   if (m_streams.size() > 1 || !m_defaultCrossfadeMS || m_isPaused)
   {
@@ -719,6 +723,11 @@ inline bool PAPlayer::ProcessStream(StreamInfo *si, double &freeBufferTime)
     if (m_signalStarted)
       m_callback.OnPlayBackStarted(si->m_fileItem);
     m_signalStarted = true;
+    if (m_fullScreen)
+    {
+      CApplicationMessenger::GetInstance().PostMsg(TMSG_SWITCHTOFULLSCREEN);
+      m_fullScreen = false;
+    }
     m_callback.OnAVStarted(si->m_fileItem);
   }
 

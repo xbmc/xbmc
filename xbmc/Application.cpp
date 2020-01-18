@@ -2103,7 +2103,8 @@ void CApplication::OnApplicationMessage(ThreadMessage* pMsg)
 
   case TMSG_SWITCHTOFULLSCREEN:
     if (CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() != WINDOW_FULLSCREEN_VIDEO &&
-        CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() != WINDOW_FULLSCREEN_GAME)
+        CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() != WINDOW_FULLSCREEN_GAME &&
+        CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() != WINDOW_VISUALISATION)
       SwitchToFullScreen(true);
     break;
 
@@ -2906,7 +2907,15 @@ bool CApplication::PlayFile(CFileItem item, const std::string& player, bool bRes
   // this really aught to be inside !bRestart, but since PlayStack
   // uses that to init playback, we have to keep it outside
   int playlist = CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist();
-  if (item.IsVideo() && playlist == PLAYLIST_VIDEO && CServiceBroker::GetPlaylistPlayer().GetPlaylist(playlist).size() > 1)
+  if (item.IsAudio() && playlist == PLAYLIST_MUSIC)
+  { // playing from a playlist by the looks
+    // don't switch to fullscreen if we are not playing the first item...
+    options.fullscreen = !CServiceBroker::GetPlaylistPlayer().HasPlayedFirstFile() &&
+        CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+        CSettings::SETTING_MUSICFILES_SELECTACTION);
+  }
+  else if (item.IsVideo() && playlist == PLAYLIST_VIDEO &&
+      CServiceBroker::GetPlaylistPlayer().GetPlaylist(playlist).size() > 1)
   { // playing from a playlist by the looks
     // don't switch to fullscreen if we are not playing the first item...
     options.fullscreen = !CServiceBroker::GetPlaylistPlayer().HasPlayedFirstFile() && CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_fullScreenOnMovieStart && !CMediaSettings::GetInstance().DoesVideoStartWindowed();
@@ -4551,6 +4560,24 @@ bool CApplication::SwitchToFullScreen(bool force /* = false */)
   {
     CGUIDialogVideoInfo* pDialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogVideoInfo>(WINDOW_DIALOG_VIDEO_INFO);
     if (pDialog) pDialog->Close(true);
+  }
+
+  // if playing from the album info window, close it first!
+  if (CServiceBroker::GetGUI()->GetWindowManager().IsModalDialogTopmost(WINDOW_DIALOG_MUSIC_INFO))
+  {
+    CGUIDialogVideoInfo* pDialog = CServiceBroker::GetGUI()->
+        GetWindowManager().GetWindow<CGUIDialogVideoInfo>(WINDOW_DIALOG_MUSIC_INFO);
+    if (pDialog)
+      pDialog->Close(true);
+  }
+
+  // if playing from the song info window, close it first!
+  if (CServiceBroker::GetGUI()->GetWindowManager().IsModalDialogTopmost(WINDOW_DIALOG_SONG_INFO))
+  {
+    CGUIDialogVideoInfo* pDialog = CServiceBroker::GetGUI()->
+        GetWindowManager().GetWindow<CGUIDialogVideoInfo>(WINDOW_DIALOG_SONG_INFO);
+    if (pDialog)
+      pDialog->Close(true);
   }
 
   int windowID = WINDOW_INVALID;

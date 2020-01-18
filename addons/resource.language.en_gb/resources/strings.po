@@ -5839,7 +5839,12 @@ msgctxt "#12379"
 msgid "Use pan and zoom effects"
 msgstr ""
 
-#empty strings from id 12380 to 12381
+#empty string with id 12380
+
+#: system/settings/settings.xml
+msgctxt "#12381"
+msgid "Switch to visualisation on playback"
+msgstr ""
 
 #. time format with meridiem (xx) e.g. "HH:mm:ss xx"
 #: xbmc/LangInfo.cpp
@@ -21431,7 +21436,13 @@ msgctxt "#38111"
 msgid "This category contains other settings for the GUI interface"
 msgstr ""
 
-#empty strings from id 38112 to 38189
+#. Description of setting with label #12381 "Switch to visualisation on playback"
+#: system/settings/settings.xml
+msgctxt "#38112"
+msgid "Automatically go to the visualisation window when audio playback starts"
+msgstr ""
+
+#empty strings from id 38113 to 38189
 
 msgctxt "#38190"
 msgid "Extract thumbnails from video files"
