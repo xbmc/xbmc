@@ -393,7 +393,7 @@ bool CGUIWindowPVRGuideBase::OnMessage(CGUIMessage& message)
         }
 
         const std::shared_ptr<CFileItem> pItem = GetCurrentListItem();
-        if (pItem && !pItem->GetEPGInfoTag()->IsGapTag())
+        if (pItem)
         {
           switch (message.GetParam1())
           {
@@ -491,43 +491,6 @@ bool CGUIWindowPVRGuideBase::OnMessage(CGUIMessage& message)
               OnPopupMenu(GetCurrentListItemIndex(pItem));
               bReturn = true;
               break;
-          }
-        }
-        else
-        {
-          switch (message.GetParam1())
-          {
-            case ACTION_SELECT_ITEM:
-            case ACTION_MOUSE_LEFT_CLICK:
-            case ACTION_PLAYER_PLAY:
-            {
-              // EPG "gap" selected => switch to associated channel.
-              CGUIEPGGridContainer* epgGridContainer = GetGridControl();
-              if (epgGridContainer)
-              {
-                const CFileItemPtr item(epgGridContainer->GetSelectedGridItem());
-                if (item)
-                {
-                  CServiceBroker::GetPVRManager().GUIActions()->SwitchToChannel(item, true);
-                  bReturn = true;
-                }
-              }
-              break;
-            }
-            case ACTION_CONTEXT_MENU:
-            {
-              // EPG "gap" selected => create and process special context menu with item independent entries.
-              CContextButtons buttons;
-              GetContextButtons(-1, buttons);
-
-              int iButton = CGUIDialogContextMenu::ShowAndGetChoice(buttons);
-              if (iButton >= 0)
-              {
-                OnContextButton(-1, static_cast<CONTEXT_BUTTON>(iButton));
-              }
-              bReturn = true;
-              break;
-            }
           }
         }
       }
