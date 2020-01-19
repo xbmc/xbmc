@@ -330,7 +330,7 @@ ADDON_STATUS CAddonDll::CreateInstance(ADDON_TYPE instanceType, const std::strin
   if (!CheckAPIVersion(instanceType))
     return ADDON_STATUS_PERMANENT_FAILURE;
 
-  KODI_HANDLE addonInstance;
+  KODI_HANDLE addonInstance = nullptr;
   if (!m_interface.toAddon->create_instance_ex)
     status = m_interface.toAddon->create_instance(instanceType, instanceID.c_str(), instance, &addonInstance, parentInstance);
   else
