@@ -5,9 +5,6 @@
 		<value condition="ListItem.HasTimer | ListItem.HasTimerSchedule">windows/pvr/timer.png</value>
 		<value condition="ListItem.HasArchive">windows/pvr/archive.png</value>
 	</variable>
-	<variable name="AutoCompletionContentVar">
-		<value condition="System.HasAddon(plugin.program.autocompletion) + !System.HasHiddenInput">plugin://plugin.program.autocompletion?info=autocomplete&amp;&amp;id=$INFO[Control.GetLabel(312).index(1)]&amp;&amp;limit=9</value>
-	</variable>
 	<variable name="InfoListPathVar">
 		<value condition="String.IsEmpty(Container.PluginName)">$INFO[ListItem.FolderPath]</value>
 		<value></value>
