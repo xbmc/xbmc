@@ -27,7 +27,7 @@ namespace jni
     static void RegisterNatives(JNIEnv* env);
 
   protected:
-    bool m_eof;
+    bool m_eof = true;
     std::unique_ptr<XFILE::CFile> m_file;
 
     static jboolean _open(JNIEnv* env, jobject thiz, jstring path);

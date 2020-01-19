@@ -29,7 +29,7 @@ namespace XFILE
 class CTVOSFile : public IFile
 {
 public:
-  CTVOSFile() : m_position(-1), m_pFallbackFile(nullptr){};
+  CTVOSFile(){};
   ~CTVOSFile();
 
   bool static WantsFile(const CURL& url);
@@ -53,8 +53,8 @@ public:
 
 protected:
   CURL m_url;
-  int64_t m_position;
-  CPosixFile* m_pFallbackFile;
+  int64_t m_position = -1;
+  CPosixFile* m_pFallbackFile = nullptr;
   struct __stat64 m_cachedStat;
 
   int CacheStat(const CURL& url, struct __stat64* buffer);

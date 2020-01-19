@@ -52,7 +52,7 @@ private:
   void removeDiscoveredService(CFNetServiceBrowserRef browser, CFOptionFlags flags, ZeroconfService const &fcr_service);
 
   //CF runloop ref; we're using main-threads runloop
-  CFRunLoopRef m_runloop;
+  CFRunLoopRef m_runloop = nullptr;
 
   //shared variables (with guard)
   //! @todo split the guard for discovered, resolved access?

@@ -24,5 +24,5 @@ protected:
   virtual void setDPI(uint32_t dpi);
 
 private:
-  uint32_t m_dpi;
+  uint32_t m_dpi = 160;
 };

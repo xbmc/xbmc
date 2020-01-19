@@ -29,28 +29,9 @@
 class AERingBuffer {
 
 public:
-  AERingBuffer() :
-    m_iReadPos(0),
-    m_iWritePos(0),
-    m_iRead(0),
-    m_iWritten(0),
-    m_iSize(0),
-    m_planes(0),
-    m_Buffer(NULL)
-  {
-  }
+  AERingBuffer() = default;
 
-  AERingBuffer(unsigned int size, unsigned int planes = 1) :
-    m_iReadPos(0),
-    m_iWritePos(0),
-    m_iRead(0),
-    m_iWritten(0),
-    m_iSize(0),
-    m_planes(0),
-    m_Buffer(NULL)
-  {
-    Create(size, planes);
-  }
+  AERingBuffer(unsigned int size, unsigned int planes = 1) { Create(size, planes); }
 
   ~AERingBuffer()
   {
@@ -285,11 +266,11 @@ private:
     m_iRead+=size;
   }
 
-  unsigned int m_iReadPos;
-  unsigned int m_iWritePos;
-  unsigned int m_iRead;
-  unsigned int m_iWritten;
-  unsigned int m_iSize;
-  unsigned int m_planes;
-  unsigned char **m_Buffer;
+  unsigned int m_iReadPos = 0;
+  unsigned int m_iWritePos = 0;
+  unsigned int m_iRead = 0;
+  unsigned int m_iWritten = 0;
+  unsigned int m_iSize = 0;
+  unsigned int m_planes = 0;
+  unsigned char** m_Buffer = nullptr;
 };

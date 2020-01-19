@@ -360,7 +360,6 @@ public:
 
   CStructHdl(C_STRUCT* cStructure)
     : m_cStructure(cStructure)
-    , m_owner(false)
   {
     assert(cStructure);
   }

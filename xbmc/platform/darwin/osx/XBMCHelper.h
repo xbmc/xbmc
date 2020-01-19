@@ -56,11 +56,11 @@ private:
   std::string ReadFile(const char* fileName);
   void WriteFile(const char* fileName, const std::string& data);
 
-  bool m_alwaysOn;
-  int  m_mode;
-  int  m_sequenceDelay;
-  int  m_port;
-  bool m_errorStarting;
+  bool m_alwaysOn = false;
+  int m_mode = APPLE_REMOTE_DISABLED;
+  int m_sequenceDelay = 0;
+  int m_port = 0;
+  bool m_errorStarting = false;
 
   std::string m_configFile;
   std::string m_launchAgentLocalFile;

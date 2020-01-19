@@ -50,7 +50,7 @@ private:
   CAEDeviceInfo m_info;
   AEAudioFormat m_format;
 
-  CAAudioUnitSink* m_audioSink;
+  CAAudioUnitSink* m_audioSink = nullptr;
 #if DO_440HZ_TONE_TEST
   SineWaveGenerator m_SineWaveGenerator;
 #endif

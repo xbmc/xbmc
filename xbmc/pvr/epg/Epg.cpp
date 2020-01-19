@@ -28,11 +28,10 @@
 using namespace PVR;
 
 CPVREpg::CPVREpg(int iEpgID, const std::string& strName, const std::string& strScraperName)
-: m_bChanged(false),
-  m_iEpgID(iEpgID),
-  m_strName(strName),
-  m_strScraperName(strScraperName),
-  m_channelData(new CPVREpgChannelData)
+  : m_iEpgID(iEpgID),
+    m_strName(strName),
+    m_strScraperName(strScraperName),
+    m_channelData(new CPVREpgChannelData)
 {
 }
 

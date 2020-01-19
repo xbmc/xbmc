@@ -47,10 +47,10 @@ public:
   bool isCreated() const;
 
 protected:
-  CJNISurfaceHolderCallback* m_callback;
+  CJNISurfaceHolderCallback* m_callback = nullptr;
   CEvent m_surfaceCreated;
   CRect m_surfaceRect;
 
 private:
-  CJNIXBMCVideoView();
+  CJNIXBMCVideoView() = default;
   };

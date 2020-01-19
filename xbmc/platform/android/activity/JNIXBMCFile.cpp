@@ -22,7 +22,6 @@ static std::string s_className = std::string(CCompileInfo::GetClass()) + "/XBMCF
 
 CJNIXBMCFile::CJNIXBMCFile()
   : CJNIBase()
-  , m_eof(true)
 {
 }
 

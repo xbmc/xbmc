@@ -43,18 +43,20 @@ private:
 
   CCoreAudioDevice   m_device;
   CCoreAudioStream   m_outputStream;
-  unsigned int       m_latentFrames;
-  unsigned int       m_outputBufferIndex;
+  unsigned int m_latentFrames = 0;
+  unsigned int m_outputBufferIndex = 0;
 
-  bool               m_outputBitstream;   ///< true if we're bistreaming into a LinearPCM stream rather than AC3 stream.
-  unsigned int       m_planes;            ///< number of audio planes (1 if non-planar)
-  unsigned int       m_frameSizePerPlane; ///< frame size (per plane) in bytes
-  unsigned int       m_framesPerSecond;   ///< sample rate
+  bool m_outputBitstream =
+      false; ///< true if we're bistreaming into a LinearPCM stream rather than AC3 stream.
+  unsigned int m_planes = 1; ///< number of audio planes (1 if non-planar)
+  unsigned int m_frameSizePerPlane = 0; ///< frame size (per plane) in bytes
+  unsigned int m_framesPerSecond = 0; ///< sample rate
 
-  AERingBuffer      *m_buffer;
-  volatile bool      m_started;     // set once we get a callback from CoreAudio, which can take a little while.
+  AERingBuffer* m_buffer = nullptr;
+  volatile bool m_started =
+      false; // set once we get a callback from CoreAudio, which can take a little while.
 
   CAESpinSection         m_render_locker;
-  volatile int64_t       m_render_tick;
-  volatile double        m_render_delay;
+  volatile int64_t m_render_tick = 0;
+  volatile double m_render_delay = 0.0;
 };

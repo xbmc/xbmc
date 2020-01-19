@@ -198,12 +198,14 @@ private:
   std::shared_ptr<CSettings> m_settings;
 
   std::vector<CProfile> m_profiles;
-  bool m_usingLoginScreen;
-  bool m_profileLoadedForLogin;
-  int m_autoLoginProfile;
-  unsigned int m_lastUsedProfile;
-  unsigned int m_currentProfile; // do not modify directly, use SetCurrentProfileId() function instead
-  int m_nextProfileId; // for tracking the next available id to give to a new profile to ensure id's are not re-used
+  bool m_usingLoginScreen = false;
+  bool m_profileLoadedForLogin = false;
+  int m_autoLoginProfile = -1;
+  unsigned int m_lastUsedProfile = 0;
+  unsigned int m_currentProfile =
+      0; // do not modify directly, use SetCurrentProfileId() function instead
+  int m_nextProfileId =
+      0; // for tracking the next available id to give to a new profile to ensure id's are not re-used
   mutable CCriticalSection m_critical;
 
   // Event properties
