@@ -225,13 +225,6 @@
 						<label>$LOCALIZE[13319]</label>
 						<include>MediaMenuItemsCommon</include>
 					</control>
-					<control type="button" id="622">
-						<include>MediaMenuItemsCommon</include>
-						<label>$LOCALIZE[31124]</label>
-						<onclick condition="System.HasAddon(script.maps.browser)">RunScript(script.maps.browser,folder=$INFO[Container.FolderPath])</onclick>
-						<onclick condition="!System.HasAddon(script.maps.browser)">InstallAddon(script.maps.browser)</onclick>
-						<visible>Container.Content(images) + String.IsEmpty(Container.PluginName)</visible>
-					</control>
 					<control type="button" id="624">
 						<include>MediaMenuItemsCommon</include>
 						<label>$LOCALIZE[10140]</label>

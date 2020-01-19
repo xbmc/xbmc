@@ -564,11 +564,6 @@ msgctxt "#31123"
 msgid "Same director"
 msgstr ""
 
-#: /xml/MyPics.xml
-msgctxt "#31124"
-msgid "Show images on map"
-msgstr ""
-
 #: /xml/DialogVideoInfo.xml
 msgctxt "#31125"
 msgid "Press up for actor info"
