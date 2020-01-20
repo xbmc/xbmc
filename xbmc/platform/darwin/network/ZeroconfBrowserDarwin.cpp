@@ -109,7 +109,7 @@ namespace
   }
 }
 
-CZeroconfBrowserDarwin::CZeroconfBrowserDarwin():m_runloop(0)
+CZeroconfBrowserDarwin::CZeroconfBrowserDarwin()
 {
   //acquire the main threads event loop
   m_runloop = CFRunLoopGetMain();

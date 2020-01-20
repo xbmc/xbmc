@@ -75,7 +75,7 @@ static float SineWaveGeneratorNextSampleFloat(SineWaveGenerator *ctx)
 class CAAudioUnitSink
 {
   public:
-    CAAudioUnitSink();
+    CAAudioUnitSink() = default;
    ~CAAudioUnitSink();
 
     bool         open(AudioStreamBasicDescription outputFormat);
@@ -110,10 +110,10 @@ class CAAudioUnitSink
                   AudioBufferList *ioData);
 
     bool                m_setup;
-    bool                m_activated;
+    bool m_activated = false;
     AudioUnit           m_audioUnit;
     AudioStreamBasicDescription m_outputFormat;
-    AERingBuffer       *m_buffer;
+    AERingBuffer* m_buffer = nullptr;
 
     bool                m_mute;
     Float32             m_outputVolume;
@@ -123,23 +123,13 @@ class CAAudioUnitSink
     unsigned int        m_sampleRate;
     unsigned int        m_frameSize;
 
-    bool                m_playing;
-    volatile bool       m_started;
+    bool m_playing = false;
+    volatile bool m_started = false;
 
     CAESpinSection      m_render_section;
-    volatile int64_t    m_render_timestamp;
-    volatile uint32_t   m_render_frames;
+    volatile int64_t m_render_timestamp = 0;
+    volatile uint32_t m_render_frames = 0;
 };
-
-CAAudioUnitSink::CAAudioUnitSink()
-: m_activated(false)
-, m_buffer(NULL)
-, m_playing(false)
-, m_started(false)
-, m_render_timestamp(0)
-, m_render_frames(0)
-{
-}
 
 CAAudioUnitSink::~CAAudioUnitSink()
 {

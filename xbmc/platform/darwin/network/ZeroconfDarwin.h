@@ -46,7 +46,7 @@ private:
   void cancelRegistration(CFNetServiceRef theService);
 
   //CF runloop ref; we're using main-threads runloop
-  CFRunLoopRef m_runloop;
+  CFRunLoopRef m_runloop = nullptr;
 
   //lock + data (accessed from runloop(main thread) + the rest)
   CCriticalSection m_data_guard;

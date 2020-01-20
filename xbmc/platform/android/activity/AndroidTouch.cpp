@@ -13,7 +13,7 @@
 
 #include "platform/android/activity/XBMCApp.h"
 
-CAndroidTouch::CAndroidTouch() : m_dpi(160)
+CAndroidTouch::CAndroidTouch()
 {
   CGenericTouchInputHandler::GetInstance().RegisterHandler(&CGenericTouchActionHandler::GetInstance());
 }

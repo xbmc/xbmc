@@ -60,21 +60,21 @@ class GifFrame
   friend class GifHelper;
 public:
 
-  GifFrame();
+  GifFrame() = default;
   virtual ~GifFrame();
 
-  unsigned char*  m_pImage;
-  unsigned int    m_delay;
+  unsigned char* m_pImage = nullptr;
+  unsigned int m_delay = 0;
 
 private:
   GifFrame(const GifFrame& src);
 
-  unsigned int    m_top;
-  unsigned int    m_left;
-  unsigned int    m_disposal;
-  unsigned int    m_height;
-  unsigned int    m_width;
-  unsigned int    m_imageSize;
+  unsigned int m_top = 0;
+  unsigned int m_left = 0;
+  unsigned int m_disposal = 0;
+  unsigned int m_height = 0;
+  unsigned int m_width = 0;
+  unsigned int m_imageSize = 0;
   std::vector<GifColor>   m_palette;
 };
 
@@ -101,15 +101,15 @@ public:
 
 private:
   std::vector<FramePtr> m_frames;
-  unsigned int    m_imageSize;
-  unsigned int    m_pitch;
-  unsigned int    m_loops;
-  unsigned int    m_numFrames;
+  unsigned int m_imageSize = 0;
+  unsigned int m_pitch = 0;
+  unsigned int m_loops = 0;
+  unsigned int m_numFrames = 0;
 
   std::string     m_filename;
-  GifFileType*    m_gif;
+  GifFileType* m_gif = nullptr;
   std::vector<GifColor> m_globalPalette;
-  unsigned char*  m_pTemplate;
+  unsigned char* m_pTemplate = nullptr;
   CFile*          m_gifFile;
 
   unsigned int m_width;

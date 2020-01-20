@@ -129,16 +129,6 @@ OSStatus deviceChangedCB(AudioObjectID                       inObjectID,
 
 ////////////////////////////////////////////////////////////////////////////////////////////
 CAESinkDARWINOSX::CAESinkDARWINOSX()
-: m_latentFrames(0),
-  m_outputBufferIndex(0),
-  m_outputBitstream(false),
-  m_planes(1),
-  m_frameSizePerPlane(0),
-  m_framesPerSecond(0),
-  m_buffer(NULL),
-  m_started(false),
-  m_render_tick(0),
-  m_render_delay(0.0)
 {
   // By default, kAudioHardwarePropertyRunLoop points at the process's main thread on SnowLeopard,
   // If your process lacks such a run loop, you can set kAudioHardwarePropertyRunLoop to NULL which

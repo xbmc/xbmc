@@ -23,7 +23,7 @@ namespace PERIPHERALS
   class CAndroidJoystickState
   {
   public:
-    CAndroidJoystickState();
+    CAndroidJoystickState() = default;
     CAndroidJoystickState(CAndroidJoystickState &&other);
     virtual ~CAndroidJoystickState();
 
@@ -82,7 +82,7 @@ namespace PERIPHERALS
     static bool ContainsAxis(int axisId, const JoystickAxes& axes);
     static bool GetAxesIndex(const std::vector<int>& axisIds, const JoystickAxes& axes, size_t& axesIndex);
 
-    int m_deviceId;
+    int m_deviceId = -1;
 
     JoystickAxes m_buttons;
     JoystickAxes m_axes;

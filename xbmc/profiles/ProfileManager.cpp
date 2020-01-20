@@ -76,14 +76,7 @@ using namespace XFILE;
 
 static CProfile EmptyProfile;
 
-CProfileManager::CProfileManager() :
-    m_usingLoginScreen(false),
-    m_profileLoadedForLogin(false),
-    m_autoLoginProfile(-1),
-    m_lastUsedProfile(0),
-    m_currentProfile(0),
-    m_nextProfileId(0),
-    m_eventLogs(new CEventLogManager)
+CProfileManager::CProfileManager() : m_eventLogs(new CEventLogManager)
 {
 }
 

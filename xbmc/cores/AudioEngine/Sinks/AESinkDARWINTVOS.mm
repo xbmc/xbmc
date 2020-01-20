@@ -223,10 +223,10 @@ private:
                                  AudioBufferList* ioData);
 
   bool m_setup;
-  bool m_activated;
+  bool m_activated = false;
   AudioUnit m_audioUnit;
   AudioStreamBasicDescription m_outputFormat;
-  AERingBuffer* m_buffer;
+  AERingBuffer* m_buffer = nullptr;
 
   Float32 m_totalLatency;
   Float32 m_inputLatency;
@@ -242,8 +242,7 @@ private:
   std::atomic<int64_t> m_render_timestamp;
 };
 
-CAAudioUnitSink::CAAudioUnitSink()
-  : m_activated(false), m_buffer(nullptr), m_started(false), m_render_timestamp(0)
+CAAudioUnitSink::CAAudioUnitSink() : m_started(false), m_render_timestamp(0)
 {
 }
 
@@ -609,7 +608,7 @@ static void EnumerateDevices(AEDeviceInfoList& list)
 /***************************************************************************************/
 AEDeviceInfoList CAESinkDARWINTVOS::m_devices;
 
-CAESinkDARWINTVOS::CAESinkDARWINTVOS() : m_audioSink(nullptr)
+CAESinkDARWINTVOS::CAESinkDARWINTVOS()
 {
 }
 

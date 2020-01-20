@@ -64,10 +64,6 @@ static void MapAxisIds(int axisId, int primaryAxisId, int secondaryAxisId, std::
     axisIds.insert(axisIds.begin(), primaryAxisId);
 }
 
-CAndroidJoystickState::CAndroidJoystickState()
-  : m_deviceId(-1)
-{ }
-
 CAndroidJoystickState::CAndroidJoystickState(CAndroidJoystickState &&other) :
     m_deviceId(other.m_deviceId),
     m_buttons(std::move(other.m_buttons)),

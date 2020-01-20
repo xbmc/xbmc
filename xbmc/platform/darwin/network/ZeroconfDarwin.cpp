@@ -14,7 +14,7 @@
 #include <sstream>
 #include <string>
 
-CZeroconfDarwin::CZeroconfDarwin():m_runloop(0)
+CZeroconfDarwin::CZeroconfDarwin()
 {
   //acquire the main threads event loop
   m_runloop = CFRunLoopGetMain();
