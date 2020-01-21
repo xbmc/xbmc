@@ -174,8 +174,10 @@ static CEvent keyboardFinishedEvent;
   return YES;
 }
 
-- (void)keyboardDidChangeFrame:(id)sender
+- (void)keyboardDidChangeFrame:(NSNotification*)notification
 {
+  _kbRect = [notification.userInfo[UIKeyboardFrameEndUserInfoKey] CGRectValue];
+  [self setNeedsLayout];
 }
 
 - (void)keyboardDidHide:(id)sender
