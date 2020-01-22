@@ -200,6 +200,7 @@ private:
   std::vector<CProfile> m_profiles;
   bool m_usingLoginScreen = false;
   bool m_profileLoadedForLogin = false;
+  bool m_previousProfileLoadedForLogin = false;
   int m_autoLoginProfile = -1;
   unsigned int m_lastUsedProfile = 0;
   unsigned int m_currentProfile =

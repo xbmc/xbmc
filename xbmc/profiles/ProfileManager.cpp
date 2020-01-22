@@ -245,6 +245,7 @@ void CProfileManager::Clear()
   CSingleLock lock(m_critical);
   m_usingLoginScreen = false;
   m_profileLoadedForLogin = false;
+  m_previousProfileLoadedForLogin = false;
   m_lastUsedProfile = 0;
   m_nextProfileId = 0;
   SetCurrentProfileId(0);
@@ -297,7 +298,7 @@ bool CProfileManager::LoadProfile(unsigned int index)
 
   // save any settings of the currently used skin but only if the (master)
   // profile hasn't just been loaded as a temporary profile for login
-  if (g_SkinInfo != nullptr && !m_profileLoadedForLogin)
+  if (g_SkinInfo != nullptr && !m_previousProfileLoadedForLogin)
     g_SkinInfo->SaveSettings();
 
   // @todo: why is m_settings not used here?
@@ -307,7 +308,7 @@ bool CProfileManager::LoadProfile(unsigned int index)
   settings->Unload();
 
   SetCurrentProfileId(index);
-  m_profileLoadedForLogin = false;
+  m_previousProfileLoadedForLogin = false;
 
   // load the new settings
   if (!settings->Load())
@@ -363,6 +364,8 @@ bool CProfileManager::LoadProfile(unsigned int index)
   Save();
   FinalizeLoadProfile();
 
+  m_profileLoadedForLogin = false;
+
   return true;
 }
 
@@ -407,14 +410,17 @@ void CProfileManager::FinalizeLoadProfile()
   contextMenuManager.Init();
 
   // Restart PVR services if we are not just loading the master profile for the login screen
-  if (m_profileLoadedForLogin || m_currentProfile != 0 || m_lastUsedProfile == 0)
+  if (m_previousProfileLoadedForLogin || m_currentProfile != 0 || m_lastUsedProfile == 0)
     pvrManager.Init();
 
   favouritesManager.ReInit(GetProfileUserDataFolder());
 
-  serviceAddons.Start();
-
-  g_application.UpdateLibraries();
+  // Start these operations only when a profile is loaded, not on the login screen
+  if (!m_profileLoadedForLogin || (m_profileLoadedForLogin && m_lastUsedProfile == 0))
+  {
+    serviceAddons.Start();
+    g_application.UpdateLibraries();
+  }
 
   stereoscopicsManager.Initialize();
 
@@ -602,10 +608,13 @@ void CProfileManager::LoadMasterProfileForLogin()
   m_lastUsedProfile = m_currentProfile;
   if (m_currentProfile != 0)
   {
+    // determines that the (master) profile has only been loaded for login
+    m_profileLoadedForLogin = true;
+
     LoadProfile(0);
 
     // remember that the (master) profile has only been loaded for login
-    m_profileLoadedForLogin = true;
+    m_previousProfileLoadedForLogin = true;
   }
 }
 
