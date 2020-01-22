@@ -1,8 +1,4 @@
-if(AVAHI_FOUND)
-  set(SOURCES ZeroconfAvahi.cpp
-              ZeroconfBrowserAvahi.cpp)
-  set(HEADERS ZeroconfAvahi.h
-              ZeroconfBrowserAvahi.h)
+set(SOURCES NetworkLinux.cpp)
+set(HEADERS NetworkLinux.h)
 
-  core_add_library(platform_linux_network)
-endif()
+core_add_library(platform_linux_network)
