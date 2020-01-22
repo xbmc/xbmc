@@ -154,14 +154,16 @@ bool CVideoGUIInfo::GetLabel(std::string& value, const CFileItem *item, int cont
       case LISTITEM_RATING_AND_VOTES:
       {
         CRating rating = tag->GetRating(info.GetData3());
-        if (rating.rating > 0.f)
+        if (rating.rating >= 0.f)
         {
-          if (rating.votes == 0)
+          if (rating.rating > 0.f && rating.votes == 0)
             value = StringUtils::FormatNumber(rating.rating);
-          else
+          else if (rating.votes > 0)
             value = StringUtils::Format(g_localizeStrings.Get(20350).c_str(),
                                         StringUtils::FormatNumber(rating.rating).c_str(),
                                         StringUtils::FormatNumber(rating.votes).c_str());
+          else
+            break;
           return true;
         }
         break;
