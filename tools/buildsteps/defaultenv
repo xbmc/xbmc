@@ -6,6 +6,7 @@ Configuration=${Configuration:-"Default"}
 XBMC_DEPENDS_ROOT=${XBMC_DEPENDS_ROOT:-"Default"}
 DARWIN_ARM_CPU=${DARWIN_ARM_CPU:-"Default"}
 XCODE_APP=${XCODE_APP:-"Default"}
+CODE_SIGN_IDENTITY=${CODE_SIGN_IDENTITY:-"Default"}
 PATH_CHANGE_REV_FILENAME=".last_success_revision"
 FAILED_BUILD_FILENAME=".last_failed_revision"
 #TARBALLS ENV-VAR is only used by android scripts atm
@@ -31,6 +32,7 @@ case $XBMC_PLATFORM_DIR in
     DEFAULT_XBMC_DEPENDS_ROOT=$WORKSPACE/tools/depends/xbmc-depends
     DEFAULT_CONFIGURATION="Debug"
     DEFAULT_XCODE_APP="Xcode9.0.app"
+    DEFAULT_CODE_SIGN_IDENTITY="Developer ID Application: Kodi Foundation"
     ;;
 
   android)
@@ -84,6 +86,11 @@ fi
 if [ "$XCODE_APP" == "Default" ]
 then
   XCODE_APP=$DEFAULT_XCODE_APP
+fi
+
+if [ "$CODE_SIGN_IDENTITY" == "Default" ]
+then
+  CODE_SIGN_IDENTITY="$DEFAULT_CODE_SIGN_IDENTITY"
 fi
 
 # make osx environment aware of the selected xcode app
