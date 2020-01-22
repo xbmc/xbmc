@@ -304,8 +304,11 @@ void CGUIWindowPVRChannelsBase::UpdateEpg(const CFileItemPtr& item)
 void CGUIWindowPVRChannelsBase::ShowChannelManager()
 {
   CGUIDialogPVRChannelManager* dialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogPVRChannelManager>(WINDOW_DIALOG_PVR_CHANNEL_MANAGER);
-  if (dialog)
-    dialog->Open();
+  if (!dialog)
+    return;
+
+  const int iItem = m_viewControl.GetSelectedItem();
+  dialog->Open(iItem >= 0 && iItem < m_vecItems->Size() ? m_vecItems->Get(iItem) : nullptr);
 }
 
 void CGUIWindowPVRChannelsBase::ShowGroupManager()
