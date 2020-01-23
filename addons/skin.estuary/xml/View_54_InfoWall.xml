@@ -100,6 +100,18 @@
 					<shadowcolor>text_shadow</shadowcolor>
 					<scroll>$PARAM[focused]</scroll>
 					<align>center</align>
+					<visible>!String.IsEqual(Container.SortMethod,$LOCALIZE[427])</visible>
+				</control>
+				<control type="label">
+					<left>29</left>
+					<top>300</top>
+					<width>260</width>
+					<label>$INFO[ListItem.Label]</label>
+					<font>font10</font>
+					<shadowcolor>text_shadow</shadowcolor>
+					<scroll>$PARAM[focused]</scroll>
+					<align>center</align>
+					<visible>String.IsEqual(Container.SortMethod,$LOCALIZE[427])</visible>
 				</control>
 				<control type="label">
 					<left>29</left>
