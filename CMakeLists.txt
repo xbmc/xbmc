@@ -148,7 +148,6 @@ set(optional_deps Alsa
                   CEC
                   ClangFormat
                   Dav1d
-                  DBus
                   Iso9660pp
                   LCMS2
                   LircClient

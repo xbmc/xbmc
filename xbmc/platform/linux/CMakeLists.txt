@@ -14,13 +14,4 @@ if(ALSA_FOUND)
   list(APPEND HEADERS FDEventMonitor.h)
 endif()
 
-if(DBUS_FOUND)
-  list(APPEND SOURCES DBusMessage.cpp
-                      DBusReserve.cpp
-                      DBusUtil.cpp)
-  list(APPEND HEADERS DBusMessage.h
-                      DBusReserve.h
-                      DBusUtil.h)
-endif()
-
 core_add_library(linuxsupport)

@@ -61,7 +61,7 @@ endif
 WAYLANDPP_DEPS=
 ALSA_LIB=
 ifeq ($(OS),linux)
-  DEPENDS += dbus libuuid alsa-lib sdbuscpp
+  DEPENDS += libuuid alsa-lib sdbuscpp
   ALSA_LIB = alsa-lib
   LIBUUID = libuuid
 
@@ -113,7 +113,6 @@ libdvdnav: libdvdread
 libdvdread: libdvdcss
 wayland: expat libffi
 waylandpp: wayland $(WAYLANDPP_DEPS)
-dbus: expat
 libinput: mtdev libevdev meson-cross-file
 libevdev: libudev
 samba-gplv3: gnutls
