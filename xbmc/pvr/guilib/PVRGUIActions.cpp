@@ -414,8 +414,13 @@ namespace PVR
     if (CheckParentalLock(channel) != ParentalCheckResult::SUCCESS)
       return false;
 
-    const std::shared_ptr<CPVREpgInfoTag> epgTag(CPVRItem(item).GetEpgInfoTag());
-    if (!epgTag && bCreateRule)
+    std::shared_ptr<CPVREpgInfoTag> epgTag = CPVRItem(item).GetEpgInfoTag();
+    if (epgTag)
+    {
+      if (epgTag->IsGapTag())
+        epgTag.reset(); // for gap tags, we can only create instant timers
+    }
+    else if (bCreateRule)
     {
       CLog::LogF(LOGERROR, "No epg tag!");
       return false;
@@ -667,6 +672,16 @@ namespace PVR
                 if (epgTag->ProgressPercentage() > 90.0f)
                   ePreselect = RECORD_NEXT_SHOW;
               }
+            }
+
+            if (ePreselect == RECORD_INSTANTRECORDTIME)
+            {
+              if (iDurationDefault == 30)
+                ePreselect = RECORD_30_MINUTES;
+              else if (iDurationDefault == 60)
+                ePreselect = RECORD_60_MINUTES;
+              else if (iDurationDefault == 120)
+                ePreselect = RECORD_120_MINUTES;
             }
 
             selector.PreSelectAction(ePreselect);
