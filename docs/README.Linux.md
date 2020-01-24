@@ -8,14 +8,14 @@ Several distribution **[specific build guides](README.md)** are available.
 ## Table of Contents
 1. **[Document conventions](#1-document-conventions)**
 2. **[Get the source code](#2-get-the-source-code)**
-3. **[Install the required packages](#3-install-the-required-packages)**  
-  3.1. **[Build missing dependencies](#31-build-missing-dependencies)**  
+3. **[Install the required packages](#3-install-the-required-packages)**
+  3.1. **[Build missing dependencies](#31-build-missing-dependencies)**
   3.2. **[Enable internal dependencies](#32-enable-internal-dependencies)**
-4. **[Build Kodi](#4-build-kodi)**  
-  4.1. **[Configure build](#41-configure-build)**  
+4. **[Build Kodi](#4-build-kodi)**
+  4.1. **[Configure build](#41-configure-build)**
   4.2. **[Build](#42-build)**
-5. **[Build binary add-ons](#5-build-binary-add-ons)**  
-  5.1. **[In-tree building of binary add-ons](#51-in-tree-building-of-binary-add-ons)**  
+5. **[Build binary add-ons](#5-build-binary-add-ons)**
+  5.1. **[In-tree building of binary add-ons](#51-in-tree-building-of-binary-add-ons)**
   5.2. **[Out-of-tree building of binary add-ons](#52-out-of-tree-building-of-binary-add-ons)**
 6. **[Run Kodi](#6-run-kodi)**
 7. **[Uninstall Kodi](#7-uninstall-kodi)**
@@ -47,9 +47,9 @@ git clone -b Krypton https://github.com/xbmc/xbmc kodi
 ```
 
 Several different strategies are used to draw your attention to certain pieces of information. In order of how critical the information is, these items are marked as a note, tip, or warning. For example:
- 
-**NOTE:** Linux is user friendly... It's just very particular about who its friends are.  
-**TIP:** Algorithm is what developers call code they do not want to explain.  
+
+**NOTE:** Linux is user friendly... It's just very particular about who its friends are.
+**TIP:** Algorithm is what developers call code they do not want to explain.
 **WARNING:** Developers don't change light bulbs. It's a hardware problem.
 
 **[back to top](#table-of-contents)** | **[back to section top](#1-document-conventions)**
@@ -114,12 +114,22 @@ Build and install waylandpp:
 sudo make -C tools/depends/target/waylandpp PREFIX=/usr/local
 ```
 
+Build and install sdbus-c++:
+```
+sudo make -C tools/depends/target/sdbuscpp PREFIX=/usr/local
+```
+
+
 **WARNING:** Building `waylandpp` has some dependencies of its own, namely `scons, libwayland-dev (>= 1.11.0) and libwayland-egl1-mesa`
 
 **TIP:** Complete list of dependencies is available **[here](https://github.com/xbmc/xbmc/tree/master/tools/depends/target)**.
 
 ### 3.2. Enable internal dependencies
+<<<<<<< HEAD
 Some dependencies can be configured to build before Kodi. That's the case with `flatbuffers`, `crossguid`, `libfmt`, `libspdlog`, `rapidjson` and `dav1d`. To enable the internal build of a dependency, append `-DENABLE_INTERNAL_<DEPENDENCY_NAME>=ON` to the configure command below. For example, configuring an X11 build with internal `fmt` would become `cmake ../kodi -DCMAKE_INSTALL_PREFIX=/usr/local -DENABLE_INTERNAL_FMT=ON` instead of `cmake ../kodi -DCMAKE_INSTALL_PREFIX=/usr/local`.
+=======
+Some dependencies can be configured to build before Kodi. That's the case with `flatbuffers`, `crossguid, libfmt, rapidjson and sdbus-c++`. To enable the internal build of a dependency, append `-DENABLE_INTERNAL_<DEPENDENCY_NAME>=ON` to the configure command below. For example, configuring an X11 build with internal `fmt` would become `cmake ../kodi -DCMAKE_INSTALL_PREFIX=/usr/local -DENABLE_INTERNAL_FMT=ON` instead of `cmake ../kodi -DCMAKE_INSTALL_PREFIX=/usr/local`.
+>>>>>>> 9f1449ef72... [docs] update docs for sdbus-c++
 
 **[back to top](#table-of-contents)** | **[back to section top](#3-installing-the-required-packages)**
 

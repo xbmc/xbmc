@@ -10,7 +10,7 @@ Several other distributions have **[specific build guides](README.md)** and a ge
 ## Table of Contents
 1. **[Document conventions](#1-document-conventions)**
 2. **[Get the source code](#2-get-the-source-code)**
-3. **[Install the required packages](#3-install-the-required-packages)**  
+3. **[Install the required packages](#3-install-the-required-packages)**
   3.1. **[Build missing dependencies](#31-build-missing-dependencies)**
 4. **[Build Kodi](#4-build-kodi)**
 
@@ -40,9 +40,9 @@ git clone -b Krypton https://github.com/xbmc/xbmc kodi
 ```
 
 Several different strategies are used to draw your attention to certain pieces of information. In order of how critical the information is, these items are marked as a note, tip, or warning. For example:
- 
-**NOTE:** Linux is user friendly... It's just very particular about who its friends are.  
-**TIP:** Algorithm is what developers call code they do not want to explain.  
+
+**NOTE:** Linux is user friendly... It's just very particular about who its friends are.
+**TIP:** Algorithm is what developers call code they do not want to explain.
 **WARNING:** Developers don't change light bulbs. It's a hardware problem.
 
 **[back to top](#table-of-contents)** | **[back to section top](#1-document-conventions)**

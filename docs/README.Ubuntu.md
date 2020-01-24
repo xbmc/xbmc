@@ -8,9 +8,9 @@ Several other distributions have **[specific build guides](README.md)** and a ge
 ## Table of Contents
 1. **[Document conventions](#1-document-conventions)**
 2. **[Get the source code](#2-get-the-source-code)**
-3. **[Install the required packages](#3-install-the-required-packages)**  
-  3.1. **[Get build dependencies automagically](#31-get-build-dependencies-automagically)**  
-  3.2. **[Get build dependencies manually](#32-get-build-dependencies-manually)**   
+3. **[Install the required packages](#3-install-the-required-packages)**
+  3.1. **[Get build dependencies automagically](#31-get-build-dependencies-automagically)**
+  3.2. **[Get build dependencies manually](#32-get-build-dependencies-manually)**
   3.3. **[Ubuntu <= 18.04](#33-ubuntu--1804)**
 4. **[Build Kodi](#4-build-kodi)**
 
@@ -40,9 +40,9 @@ git clone -b Krypton https://github.com/xbmc/xbmc kodi
 ```
 
 Several different strategies are used to draw your attention to certain pieces of information. In order of how critical the information is, these items are marked as a note, tip, or warning. For example:
- 
-**NOTE:** Linux is user friendly... It's just very particular about who its friends are.  
-**TIP:** Algorithm is what developers call code they do not want to explain.  
+
+**NOTE:** Linux is user friendly... It's just very particular about who its friends are.
+**TIP:** Algorithm is what developers call code they do not want to explain.
 **WARNING:** Developers don't change light bulbs. It's a hardware problem.
 
 **[back to top](#table-of-contents)** | **[back to section top](#1-document-conventions)**
@@ -149,7 +149,7 @@ sudo apt install doxygen libcap-dev libsndio-dev libmariadbd-dev
 **[back to top](#table-of-contents)**
 
 ### 3.3 Ubuntu <= 18.04
-Ubuntu 18.04 and lower ship an outdated [Meson](https://mesonbuild.com/) and [nasm](https://nasm.us/) package. 
+Ubuntu 18.04 and lower ship an outdated [Meson](https://mesonbuild.com/) and [nasm](https://nasm.us/) package.
 In order to compile Kodi with AV1 support, you have to manually update both Meson and nasm.
 
 > This is a requirement by the [dav1d](https://code.videolan.org/videolan/dav1d) AV1 decoder used in ffmpeg.
