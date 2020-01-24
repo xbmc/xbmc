@@ -164,7 +164,24 @@ void CGUIDialogPVRChannelManager::OnInitWindow()
   m_bContainsChanges = false;
   m_bAllowNewChannel = false;
   SetProperty("IsRadio", "");
+
   Update();
+
+  if (m_initialSelection)
+  {
+    // set initial selection
+    const std::shared_ptr<CPVRChannel> channel = m_initialSelection->GetPVRChannelInfoTag();
+    for (int i = 0; i < m_channelItems->Size(); ++i)
+    {
+      if (m_channelItems->Get(i)->GetPVRChannelInfoTag() == channel)
+      {
+        m_iSelected = i;
+        m_viewControl.SetSelectedItem(m_iSelected);
+        break;
+      }
+    }
+    m_initialSelection.reset();
+  }
   SetData(m_iSelected);
 }
 
@@ -173,6 +190,12 @@ void CGUIDialogPVRChannelManager::OnDeinitWindow(int nextWindowID)
   Clear();
 
   CGUIDialog::OnDeinitWindow(nextWindowID);
+}
+
+void CGUIDialogPVRChannelManager::Open(const std::shared_ptr<CFileItem>& initialSelection)
+{
+  m_initialSelection = initialSelection;
+  CGUIDialog::Open();
 }
 
 bool CGUIDialogPVRChannelManager::OnClickListChannels(CGUIMessage& message)

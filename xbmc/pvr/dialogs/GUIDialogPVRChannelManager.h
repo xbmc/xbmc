@@ -36,6 +36,8 @@ namespace PVR
     bool HasListItems() const override{ return true; }
     CFileItemPtr GetCurrentListItem(int offset = 0) override;
 
+    void Open(const std::shared_ptr<CFileItem>& initialSelection);
+
   protected:
     void OnInitWindow() override;
     void OnDeinitWindow(int nextWindowID) override;
@@ -74,6 +76,7 @@ namespace PVR
     bool m_bContainsChanges = false;
     bool m_bAllowNewChannel = false;
 
+    std::shared_ptr<CFileItem> m_initialSelection;
     int m_iSelected = 0;
     CFileItemList* m_channelItems;
     CGUIViewControl m_viewControl;
