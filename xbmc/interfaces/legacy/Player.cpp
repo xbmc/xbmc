@@ -350,6 +350,16 @@ namespace XBMCAddon
       return g_application.CurrentFileItem().GetDynPath();
     }
 
+    XBMCAddon::xbmcgui::ListItem* Player::getPlayingItem()
+    {
+      XBMC_TRACE;
+      if (!g_application.GetAppPlayer().IsPlaying())
+        throw PlayerException("Kodi is not playing any item");
+
+      CFileItemPtr itemPtr = std::make_shared<CFileItem>(g_application.CurrentFileItem());
+      return new XBMCAddon::xbmcgui::ListItem(itemPtr);
+    }
+
     InfoTagVideo* Player::getVideoInfoTag()
     {
       XBMC_TRACE;
