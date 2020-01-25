@@ -4816,8 +4816,8 @@ bool CMusicDatabase::GetDiscsByWhere(CMusicDbUrl& musicUrl,
           itemUrl.AddOption("discid", discnum);
         CFileItemPtr pItem(new CFileItem(itemUrl.ToString(), album));
         pItem->SetLabel2(record->at(0).get_asString()); // GUI show label2 for disc sort order??
-        pItem->GetMusicInfoTag()->SetDiscNumber(
-            discnum); // Skins show discnumber for "albums"?? Confluence does.
+        pItem->GetMusicInfoTag()->SetDiscNumber(discnum);
+        pItem->GetMusicInfoTag()->SetTitle(strDiscSubtitle);
         pItem->SetLabel(strDiscSubtitle);
         pItem->SetArt("icon", "DefaultAlbumCover.png");
         items.Add(pItem);
