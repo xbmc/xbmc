@@ -773,6 +773,17 @@ std::string CSysInfo::GetModelName(void)
   return modelName;
 }
 
+std::string CSysInfo::GetSystemPropertyString(const std::string& propertyName)
+{
+  std::string value;
+#if defined(TARGET_ANDROID)
+  char deviceCStr[PROP_VALUE_MAX];
+  int propLen = __system_property_get(propertyName.c_str(), deviceCStr);
+  value.assign(deviceCStr, (propLen > 0 && propLen <= PROP_VALUE_MAX) ? propLen : 0);
+#endif
+  return value;
+}
+
 bool CSysInfo::IsAeroDisabled()
 {
 #ifdef TARGET_WINDOWS_STORE

@@ -971,6 +971,38 @@ namespace XBMCAddon
 #else
     String convertLanguage(const char* language, int format);
 #endif
+
+#ifdef DOXYGEN_SHOULD_USE_THIS
+    ///
+    /// \ingroup python_xbmc
+    /// @brief \python_func{ xbmc.getOsName() }
+    ///-----------------------------------------------------------------------
+    /// @brief Returns Kodi's operating system name
+    ///
+    /// @return operation system name
+    ///
+    /// ------------------------------------------------------------------------
+    ///
+    /// example output: OS X
+    ///
+    getOsName();
+#else
+    String getOsName();
+#endif
+
+#ifdef DOXYGEN_SHOULD_USE_THIS
+    ///
+    /// \ingroup python_xbmc
+    /// @brief \python_func{ xbmc.getSystemPropertyString(propertyName) }
+    ///-----------------------------------------------------------------------
+    /// @brief Returns an Os dependend system property
+    ///
+    /// @return value assigned to propertyName
+    ///
+    getSystemPropertyString(...);
+#else
+    String getSystemPropertyString(const String& propertyName);
+#endif
     //@}
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
     SWIG_CONSTANT_FROM_GETTER(int, SERVER_WEBSERVER);

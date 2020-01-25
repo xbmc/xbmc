@@ -540,6 +540,16 @@ namespace XBMCAddon
       return CSysInfo::GetUserAgent();
     }
 
+    String getOsName()
+    {
+      return CSysInfo::GetOsName();
+    }
+
+    String getSystemPropertyString(const String& propertyName)
+    {
+      return CSysInfo::GetSystemPropertyString(propertyName);
+    }
+
     int getSERVER_WEBSERVER() { return CApplication::ES_WEBSERVER; }
     int getSERVER_AIRPLAYSERVER() { return CApplication::ES_AIRPLAYSERVER; }
     int getSERVER_UPNPSERVER() { return CApplication::ES_UPNPSERVER; }

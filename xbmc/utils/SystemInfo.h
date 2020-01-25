@@ -120,6 +120,7 @@ public:
   static const std::string& GetKernelCpuFamily(void);
   static std::string GetManufacturerName(void);
   static std::string GetModelName(void);
+  static std::string GetSystemPropertyString(const std::string& propertyName);
   bool GetDiskSpace(std::string drive,int& iTotal, int& iTotalFree, int& iTotalUsed, int& iPercentFree, int& iPercentUsed);
   std::string GetHddSpaceInfo(int& percent, int drive, bool shortText=false);
   std::string GetHddSpaceInfo(int drive, bool shortText=false);
