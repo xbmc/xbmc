@@ -77,6 +77,7 @@ const AVContentLightMetadata* GetContentLightMetadata(const VideoPicture& pictur
 
 CVideoBufferDRMPRIME::CVideoBufferDRMPRIME(int id) : CVideoBuffer(id)
 {
+  m_pixFormat = AV_PIX_FMT_DRM_PRIME;
 }
 
 CVideoBufferDRMPRIMEFFmpeg::CVideoBufferDRMPRIMEFFmpeg(IVideoBufferPool& pool, int id)
