@@ -407,3 +407,27 @@ void CButtonTranslator::UnregisterMapper(IButtonMapper *mapper)
     }
   }
 }
+
+uint32_t CButtonTranslator::TranslateString(std::string strMap, std::string strButton)
+{
+  if (strMap == "KB") // standard keyboard map
+  {
+    return CKeyboardTranslator::TranslateString(strButton);
+  }
+  else if (strMap == "XG") // xbox gamepad map
+  {
+    return CGamepadTranslator::TranslateString(strButton);
+  }
+  else if (strMap == "R1") // xbox remote map
+  {
+    return CIRTranslator::TranslateString(strButton);
+  }
+  else if (strMap == "R2") // xbox universal remote map
+  {
+    return CIRTranslator::TranslateUniversalRemoteString(strButton);
+  }
+  else
+  {
+    return 0;
+  }
+}
