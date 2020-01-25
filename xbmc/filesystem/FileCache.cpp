@@ -366,6 +366,8 @@ void CFileCache::Process()
     {
       CLog::Log(LOGDEBUG, "CFileCache::Process - Source read returned a fatal error! Will wait for buffer to empty.");
 
+      m_pCache->EndOfInput();
+
       while (m_pCache->WaitForData(0, 0) > 0)
       {
         if (m_seekEvent.WaitMSec(100))
@@ -534,10 +536,11 @@ int64_t CFileCache::Seek(int64_t iFilePosition, int iWhence)
     m_seekPos = std::min(iTarget, std::max((int64_t)0, m_fileSize - m_chunkSize));
 
     m_seekEvent.Set();
-    if (!m_seekEnded.Wait())
+    while (!m_seekEnded.WaitMSec(100))
     {
-      CLog::Log(LOGWARNING,"%s - seek to %" PRId64" failed.", __FUNCTION__, m_seekPos);
-      return -1;
+      // SeekEnded will never be set if FileCache thread is not running
+      if (!CThread::IsRunning())
+        return -1;
     }
 
     /* wait for any remaining data */
