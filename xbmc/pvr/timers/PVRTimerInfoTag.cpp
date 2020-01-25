@@ -590,6 +590,7 @@ bool CPVRTimerInfoTag::UpdateEntry(const std::shared_ptr<CPVRTimerInfoTag>& tag)
   m_epgTag = tag->m_epgTag;
   m_strSummary = tag->m_strSummary;
   m_channel = tag->m_channel;
+  m_bProbedEpgTag = tag->m_bProbedEpgTag;
 
   m_iTVChildTimersActive = tag->m_iTVChildTimersActive;
   m_iTVChildTimersConflictNOK = tag->m_iTVChildTimersConflictNOK;
@@ -1191,18 +1192,20 @@ void CPVRTimerInfoTag::SetEpgInfoTag(const std::shared_ptr<CPVREpgInfoTag>& tag)
 {
   CSingleLock lock(m_critSection);
   m_epgTag = tag;
+  m_bProbedEpgTag = true;
 }
 
 void CPVRTimerInfoTag::UpdateEpgInfoTag()
 {
   CSingleLock lock(m_critSection);
   m_epgTag.reset();
+  m_bProbedEpgTag = false;
   GetEpgInfoTag();
 }
 
 std::shared_ptr<CPVREpgInfoTag> CPVRTimerInfoTag::GetEpgInfoTag(bool bCreate /* = true */) const
 {
-  if (!m_epgTag && bCreate && CServiceBroker::GetPVRManager().EpgsCreated())
+  if (!m_epgTag && !m_bProbedEpgTag && bCreate && CServiceBroker::GetPVRManager().EpgsCreated())
   {
     std::shared_ptr<CPVRChannel> channel(m_channel);
     if (!channel)
@@ -1219,18 +1222,13 @@ std::shared_ptr<CPVREpgInfoTag> CPVRTimerInfoTag::GetEpgInfoTag(bool bCreate /* 
       if (epg)
       {
         CSingleLock lock(m_critSection);
-        if (!m_epgTag)
+        if (!m_epgTag && m_iEpgUid != EPG_TAG_INVALID_UID)
         {
-          if (m_iEpgUid != EPG_TAG_INVALID_UID)
-          {
-            m_epgTag = epg->GetTagByBroadcastId(m_iEpgUid);
-          }
+          m_epgTag = epg->GetTagByBroadcastId(m_iEpgUid);
         }
 
-        if (!IsTimerRule() && !m_epgTag && m_epTagRefetchTimeout.IsTimePast() && IsOwnedByClient())
+        if (!m_epgTag && !IsTimerRule() && IsOwnedByClient())
         {
-          m_epTagRefetchTimeout.Set(30000); // try to fetch missing epg tag from backend at most every 30 secs
-
           time_t startTime = 0;
           time_t endTime = 0;
 
@@ -1248,6 +1246,7 @@ std::shared_ptr<CPVREpgInfoTag> CPVRTimerInfoTag::GetEpgInfoTag(bool bCreate /* 
         }
       }
     }
+    m_bProbedEpgTag = true;
   }
   return m_epgTag;
 }

@@ -9538,11 +9538,7 @@ msgctxt "#19071"
 msgid "Update interval"
 msgstr ""
 
-#. pvr settings "store epg data in database" setting label
-#: system/settings/settings.xml
-msgctxt "#19072"
-msgid "Store data in database"
-msgstr ""
+#empty string with id 19072
 
 #. pvr settings "delay channel switch" setting label
 #: system/settings/settings.xml
@@ -10598,11 +10594,7 @@ msgctxt "#19249"
 msgid "Filter channels"
 msgstr ""
 
-#. label 'loading epg data from database' for progress dialog text
-#: xbmc/pvr/epg/EpgContainer.cpp
-msgctxt "#19250"
-msgid "Loading guide from database"
-msgstr ""
+#empty string with id 19250
 
 #. label for 'update epg' context menu item and 'update epg' confirmation dialog header
 #: xbmc/pvr/windows/GUIWindowPVRChannels.cpp
@@ -18803,10 +18795,7 @@ msgctxt "#36222"
 msgid "Don't import the guide data while playing TV to minimise CPU usage."
 msgstr ""
 
-#: system/settings/settings.xml
-msgctxt "#36223"
-msgid "Activate to store epg data in a database. This may speedup importing epg data on startup."
-msgstr ""
+#empty string with id 36223
 
 #: system/settings/settings.xml
 msgctxt "#36224"

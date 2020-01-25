@@ -291,7 +291,7 @@ std::string CPVRGUITimesInfo::GetEpgEventElapsedTime(const std::shared_ptr<CPVRE
 {
   int iElapsed = 0;
   CSingleLock lock(m_critSection);
-  if (epgTag && epgTag != m_playingEpgTag)
+  if (epgTag && m_playingEpgTag && *epgTag != *m_playingEpgTag)
     iElapsed = epgTag->Progress();
   else
     iElapsed = GetElapsedTime();
@@ -336,7 +336,7 @@ int CPVRGUITimesInfo::GetElapsedTime() const
 int CPVRGUITimesInfo::GetRemainingTime(const std::shared_ptr<CPVREpgInfoTag>& epgTag) const
 {
   CSingleLock lock(m_critSection);
-  if (epgTag && epgTag != m_playingEpgTag)
+  if (epgTag && m_playingEpgTag && *epgTag != *m_playingEpgTag)
     return epgTag->GetDuration() - epgTag->Progress();
   else
     return m_iDuration - GetElapsedTime();
@@ -399,7 +399,7 @@ int CPVRGUITimesInfo::GetTimeshiftProgressBufferEnd() const
 int CPVRGUITimesInfo::GetEpgEventDuration(const std::shared_ptr<CPVREpgInfoTag>& epgTag) const
 {
   CSingleLock lock(m_critSection);
-  if (epgTag && epgTag != m_playingEpgTag)
+  if (epgTag && m_playingEpgTag && *epgTag != *m_playingEpgTag)
     return epgTag->GetDuration();
   else
     return m_iDuration;
@@ -408,7 +408,7 @@ int CPVRGUITimesInfo::GetEpgEventDuration(const std::shared_ptr<CPVREpgInfoTag>&
 int CPVRGUITimesInfo::GetEpgEventProgress(const std::shared_ptr<CPVREpgInfoTag>& epgTag) const
 {
   CSingleLock lock(m_critSection);
-  if (epgTag && epgTag != m_playingEpgTag)
+  if (epgTag && m_playingEpgTag && *epgTag != *m_playingEpgTag)
     return std::lrintf(epgTag->ProgressPercentage());
   else
     return std::lrintf(static_cast<float>(GetElapsedTime()) / m_iDuration * 100);

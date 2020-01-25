@@ -34,6 +34,8 @@ namespace PVR
 
   enum class PVREvent;
 
+  struct PVREpgSearchData;
+
   class CPVREpgContainer : private CThread
   {
     friend class CPVREpgDatabase;
@@ -147,16 +149,11 @@ namespace PVR
     std::shared_ptr<CPVREpgInfoTag> GetTagById(const std::shared_ptr<CPVREpg>& epg, unsigned int iBroadcastId) const;
 
     /*!
-     * @brief Get all EPG tags.
-     * @return The tags.
+     * @brief Get all EPG tags matching the given search criteria.
+     * @param searchData The search criteria.
+     * @return The matching tags.
      */
-    std::vector<std::shared_ptr<CPVREpgInfoTag>> GetAllTags() const;
-
-    /*!
-     * @brief Check whether data should be persisted to the EPG database.
-     * @return True if data should be persisted to the EPG database, false otherwise.
-     */
-    bool UseDatabase() const;
+    std::vector<std::shared_ptr<CPVREpgInfoTag>> GetTags(const PVREpgSearchData& searchData) const;
 
     /*!
      * @brief Notify EPG container that there are pending manual EPG updates
@@ -220,9 +217,11 @@ namespace PVR
 
     /*!
      * @brief Call Persist() on each table
+     * @param iMaxTimeslice time in milliseconds for max processing. Return after this time
+     *        even if not all data was persisted, unless value is -1
      * @return True when they all were persisted, false otherwise.
      */
-    bool PersistAll();
+    bool PersistAll(unsigned int iMaxTimeslice) const;
 
     /*!
      * @brief Remove old EPG entries.

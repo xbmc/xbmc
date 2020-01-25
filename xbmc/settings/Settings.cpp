@@ -204,7 +204,6 @@ const std::string CSettings::SETTING_EPG_SELECTACTION = "epg.selectaction";
 const std::string CSettings::SETTING_EPG_HIDENOINFOAVAILABLE = "epg.hidenoinfoavailable";
 const std::string CSettings::SETTING_EPG_EPGUPDATE = "epg.epgupdate";
 const std::string CSettings::SETTING_EPG_PREVENTUPDATESWHILEPLAYINGTV = "epg.preventupdateswhileplayingtv";
-const std::string CSettings::SETTING_EPG_STOREEPGINDATABASE = "epg.storeepgindatabase";
 const std::string CSettings::SETTING_EPG_RESETEPG = "epg.resetepg";
 const std::string CSettings::SETTING_PVRPLAYBACK_SWITCHTOFULLSCREEN = "pvrplayback.switchtofullscreen";
 const std::string CSettings::SETTING_PVRPLAYBACK_SIGNALQUALITY = "pvrplayback.signalquality";
