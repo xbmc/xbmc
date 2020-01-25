@@ -152,6 +152,9 @@ tool_dir=$build_cpu-$build_os-native
 cross_compiling="yes"
 
 case $build in
+  aarch64*-*-linux-gnu*|aarch64*-*-linux-uclibc*)
+    build_os="linux"
+  ;;
   arm*-*-linux-gnu*|arm*-*-linux-uclibc*)
     build_os="linux"
   ;;
