@@ -14,8 +14,10 @@
 #include "windowing/GraphicContext.h"
 #include "messaging/ApplicationMessenger.h"
 #include "platform/win32/CharsetConverter.h"
+#include "platform/win32/WIN32Util.h"
 #include "ServiceBroker.h"
 #include "settings/AdvancedSettings.h"
+#include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/log.h"
 #include "utils/SystemInfo.h"
@@ -286,6 +288,21 @@ bool DX::DeviceResources::SetFullScreen(bool fullscreen, RESOLUTION_INFO& res)
 // Configures resources that don't depend on the Direct3D device.
 void DX::DeviceResources::CreateDeviceIndependentResources()
 {
+  // Configures Windows HDR according GUI Settings / Player / Use HDR display capabilities
+  if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+          Windowing()->SETTING_WINSYSTEM_IS_HDR_DISPLAY) &&
+      CWIN32Util::GetWindowsHDRStatus() == 1)
+  {
+    CWIN32Util::ToggleWindowsHDR(); // Toggle Windows HDR on
+    Sleep(2000);
+  }
+  else if (!CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+               Windowing()->SETTING_WINSYSTEM_IS_HDR_DISPLAY) &&
+           CWIN32Util::GetWindowsHDRStatus() == 2)
+  {
+    CWIN32Util::ToggleWindowsHDR(); // Toggle Windows HDR off
+    Sleep(2000);
+  }
 }
 
 // Configures the Direct3D device, and stores handles to it and the device context.
