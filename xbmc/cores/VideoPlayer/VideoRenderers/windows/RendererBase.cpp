@@ -228,7 +228,6 @@ void CRendererBase::Render(CD3DTexture& target, const CRect& sourceRect, const C
         DX::DeviceResources::Get()->SetHdrMetaData(hdr10);
         CLog::LogF(LOGNOTICE, "Switching to HDR rendering");
         DX::Windowing()->SetHdrColorSpace(DXGI_COLOR_SPACE_RGB_FULL_G2084_NONE_P2020);
-        DX::Windowing()->ReSetFullScreen(m_fps);
         m_isHdrEnabled = true;
         m_lastHdr10 = hdr10;
       }
@@ -242,7 +241,6 @@ void CRendererBase::Render(CD3DTexture& target, const CRect& sourceRect, const C
         // Switch to HLG rendering (internally converts HLG to HDR10)
         CLog::LogF(LOGNOTICE, "Switching to HLG rendering");
         DX::Windowing()->SetHdrColorSpace(DXGI_COLOR_SPACE_RGB_FULL_G2084_NONE_P2020);
-        DX::Windowing()->ReSetFullScreen(m_fps);
         m_isHlgEnabled = true;
       }
     }

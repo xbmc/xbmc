@@ -76,7 +76,6 @@ namespace DX
     void ReCreateSwapChain();
 
     bool SetFullScreen(bool fullscreen, RESOLUTION_INFO& res);
-    void ReSetFullScreen(float refreshRate);
 
     // HDR display support
     void SetHdrMetaData(DXGI_HDR_METADATA_HDR10& hdr10) const;

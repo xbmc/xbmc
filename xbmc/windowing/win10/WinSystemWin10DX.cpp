@@ -197,8 +197,3 @@ void CWinSystemWin10DX::SetHdrColorSpace(const DXGI_COLOR_SPACE_TYPE colorSpace)
 {
   m_deviceResources->SetHdrColorSpace(colorSpace);
 }
-
-void CWinSystemWin10DX::ReSetFullScreen(float refreshRate) const
-{
-  m_deviceResources->ReSetFullScreen(refreshRate);
-}
