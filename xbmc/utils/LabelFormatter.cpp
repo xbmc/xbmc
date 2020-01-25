@@ -94,12 +94,13 @@ using namespace MUSIC_INFO;
  *  %b - Total number of discs
  *  %c - Relevance - Used for actors' appearances
  *  %d - Date and Time
+ *  %e - Season and Episode
  *  %p - Last Played
  *  %r - User Rating
  *  *t - Date Taken (suitable for Pictures)
  */
 
-#define MASK_CHARS "NSATBGYFLDIJRCKMEPHZOQUVXWabcdiprstuv"
+#define MASK_CHARS "NSATBGYFLDIJRCKMEPHZOQUVXWabcdeiprstuv"
 
 CLabelFormatter::CLabelFormatter(const std::string &mask, const std::string &mask2)
 {
@@ -324,6 +325,15 @@ std::string CLabelFormatter::GetMaskContent(const CMaskString &mask, const CFile
   case 'd': // date and time
     if (item->m_dateTime.IsValid())
       value = item->m_dateTime.GetAsLocalizedDateTime();
+    break;
+  case 'e': // season and episode
+    if (movie && movie->m_iEpisode > 0)
+    {
+      if (movie->m_iSeason == 0)
+        value = StringUtils::Format("S%i", movie->m_iEpisode);
+      else
+        value = StringUtils::Format("S%iE%i", movie->m_iSeason, movie->m_iEpisode);
+    }
     break;
   case 'p': // Last played
     if (movie && movie->m_lastPlayed.IsValid())

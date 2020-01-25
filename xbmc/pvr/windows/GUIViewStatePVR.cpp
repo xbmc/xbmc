@@ -38,13 +38,14 @@ void CGUIViewStateWindowPVRChannels::SaveViewState()
 
 CGUIViewStateWindowPVRRecordings::CGUIViewStateWindowPVRRecordings(const int windowId, const CFileItemList& items) : CGUIViewStatePVR(windowId, items)
 {
-  AddSortMethod(SortByLabel, 551, LABEL_MASKS("%L", "%d", "%L", ""),    // "Name"     : Filename, DateTime | Foldername, empty
+  AddSortMethod(SortByLabel,           551, LABEL_MASKS("%L", "%d", "%L", ""),    // "Name"        : Filename, DateTime | Foldername, empty
                 CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_FILELISTS_IGNORETHEWHENSORTING)
                   ? SortAttributeIgnoreArticle
                   : SortAttributeNone);
-  AddSortMethod(SortByDate,  552, LABEL_MASKS("%L", "%d", "%L", "%d")); // "Date"     : Filename, DateTime | Foldername, DateTime
-  AddSortMethod(SortByTime,  180, LABEL_MASKS("%L", "%D", "%L", ""));   // "Duration" : Filename, Duration | Foldername, empty
-  AddSortMethod(SortByFile,  561, LABEL_MASKS("%L", "%d", "%L", ""));   // "File"     : Filename, DateTime | Foldername, empty
+  AddSortMethod(SortByDate,            552, LABEL_MASKS("%L", "%d", "%L", "%d")); // "Date"        : Filename, DateTime | Foldername, DateTime
+  AddSortMethod(SortByEpisodeNumber, 20359, LABEL_MASKS("%L", "%e", "%L", ""));   // "Episode"     : Filename, SeasonEpisode | Foldername, empty
+  AddSortMethod(SortByTime,            180, LABEL_MASKS("%L", "%D", "%L", ""));   // "Duration"    : Filename, Duration | Foldername, empty
+  AddSortMethod(SortByFile,            561, LABEL_MASKS("%L", "%d", "%L", ""));   // "File"        : Filename, DateTime | Foldername, empty
 
   // Default sorting
   SetSortMethod(SortByDate);
