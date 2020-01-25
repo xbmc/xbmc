@@ -11,6 +11,7 @@
 extern "C" {
 #include <libudev.h>
 }
+#include <cassert>
 #include <poll.h>
 #include "utils/log.h"
 
@@ -72,29 +73,18 @@ CPeripheralBusUSB::CPeripheralBusUSB(CPeripherals& manager) :
 
   m_udev          = NULL;
   m_udevMon       = NULL;
-
-  if (!(m_udev = udev_new()))
-  {
-    CLog::Log(LOGERROR, "%s - failed to allocate udev context", __FUNCTION__);
-    return;
-  }
-
-  /* set up a devices monitor that listen for any device change */
-  m_udevMon = udev_monitor_new_from_netlink(m_udev, "udev");
-  udev_monitor_enable_receiving(m_udevMon);
-
-  CLog::Log(LOGDEBUG, "%s - initialised udev monitor", __FUNCTION__);
 }
 
 CPeripheralBusUSB::~CPeripheralBusUSB(void)
 {
   StopThread(true);
-  udev_monitor_unref(m_udevMon);
-  udev_unref(m_udev);
 }
 
 bool CPeripheralBusUSB::PerformDeviceScan(PeripheralScanResults &results)
 {
+  // We don't want this one to be called from outside world
+  assert(IsCurrentThread());
+
   struct udev_enumerate *enumerate;
   struct udev_list_entry *devices, *dev_list_entry;
   struct udev_device *dev(NULL), *parent(NULL);
@@ -188,6 +178,24 @@ PeripheralType CPeripheralBusUSB::GetType(int iDeviceClass)
 
 void CPeripheralBusUSB::Process(void)
 {
+  if (!(m_udev = udev_new()))
+  {
+    CLog::Log(LOGERROR, "%s - failed to allocate udev context", __FUNCTION__);
+    return;
+  }
+
+  /* set up a devices monitor that listen for any device change */
+  m_udevMon = udev_monitor_new_from_netlink(m_udev, "udev");
+
+  /* filter to only receive usb events */
+  if (udev_monitor_filter_add_match_subsystem_devtype(m_udevMon, "usb", nullptr) < 0)
+  {
+    CLog::Log(LOGERROR, "Could not limit filter on USB only");
+  }
+
+  CLog::Log(LOGDEBUG, "%s - initialised udev monitor", __FUNCTION__);
+
+  udev_monitor_enable_receiving(m_udevMon);
   bool bUpdated(false);
   ScanForDevices();
   while (!m_bStop)
@@ -196,6 +204,8 @@ void CPeripheralBusUSB::Process(void)
     if (bUpdated && !m_bStop)
       ScanForDevices();
   }
+  udev_monitor_unref(m_udevMon);
+  udev_unref(m_udev);
 }
 
 void CPeripheralBusUSB::Clear(void)
