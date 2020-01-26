@@ -155,7 +155,7 @@ bool CPVREpgTagsContainer::UpdateEntries(const CPVREpgTagsContainer& tags)
     }
 
     if (bResetCache)
-      m_tagsCache.reset();
+      m_tagsCache->Reset();
   }
   else
   {

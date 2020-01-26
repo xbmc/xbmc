@@ -197,9 +197,8 @@ private:
 
   int m_iEpgID = 0;
   std::shared_ptr<CPVREpgChannelData> m_channelData;
-  std::shared_ptr<CPVREpgDatabase> m_database;
-
-  std::unique_ptr<CPVREpgTagsCache> m_tagsCache;
+  const std::shared_ptr<CPVREpgDatabase> m_database;
+  const std::unique_ptr<CPVREpgTagsCache> m_tagsCache;
 
   std::map<CDateTime, std::shared_ptr<CPVREpgInfoTag>> m_changedTags;
   std::map<CDateTime, std::shared_ptr<CPVREpgInfoTag>> m_deletedTags;
