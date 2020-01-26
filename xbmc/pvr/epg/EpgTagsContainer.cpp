@@ -43,6 +43,7 @@ void CPVREpgTagsContainer::SetEpgID(int iEpgID)
 void CPVREpgTagsContainer::SetChannelData(const std::shared_ptr<CPVREpgChannelData>& data)
 {
   m_channelData = data;
+  m_tagsCache->SetChannelData(data);
   for (const auto& tag : m_changedTags)
     tag.second->SetChannelData(data);
 }

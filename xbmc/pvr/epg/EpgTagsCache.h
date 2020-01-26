@@ -31,6 +31,8 @@ public:
   {
   }
 
+  void SetChannelData(const std::shared_ptr<CPVREpgChannelData>& data);
+
   void Reset();
 
   std::shared_ptr<CPVREpgInfoTag> GetLastEndedTag();
