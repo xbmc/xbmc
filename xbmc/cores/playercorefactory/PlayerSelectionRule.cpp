@@ -45,6 +45,7 @@ void CPlayerSelectionRule::Initialize(TiXmlElement* pRule)
   m_tRemote = GetTristate(pRule->Attribute("remote"));
   m_tAudio = GetTristate(pRule->Attribute("audio"));
   m_tVideo = GetTristate(pRule->Attribute("video"));
+  m_tGame = GetTristate(pRule->Attribute("game"));
 
   m_tBD = GetTristate(pRule->Attribute("bd"));
   m_tDVD = GetTristate(pRule->Attribute("dvd"));
@@ -109,6 +110,8 @@ void CPlayerSelectionRule::GetPlayers(const CFileItem& item, std::vector<std::st
   if (m_tAudio >= 0 && (m_tAudio > 0) != item.IsAudio())
     return;
   if (m_tVideo >= 0 && (m_tVideo > 0) != item.IsVideo())
+    return;
+  if (m_tGame >= 0 && (m_tGame > 0) != item.IsGame())
     return;
   if (m_tInternetStream >= 0 && (m_tInternetStream > 0) != item.IsInternetStream())
     return;
