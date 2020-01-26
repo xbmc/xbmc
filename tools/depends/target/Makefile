@@ -61,7 +61,7 @@ endif
 WAYLANDPP_DEPS=
 ALSA_LIB=
 ifeq ($(OS),linux)
-  DEPENDS += dbus libuuid alsa-lib
+  DEPENDS += dbus libuuid alsa-lib sdbuscpp
   ALSA_LIB = alsa-lib
   LIBUUID = libuuid
 
