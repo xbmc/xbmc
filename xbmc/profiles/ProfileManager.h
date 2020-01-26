@@ -207,6 +207,7 @@ private:
   std::vector<CProfile> m_profiles;
   bool m_usingLoginScreen;
   bool m_profileLoadedForLogin;
+  bool m_previousProfileLoadedForLogin;
   int m_autoLoginProfile;
   unsigned int m_lastUsedProfile;
   unsigned int m_currentProfile; // do not modify directly, use SetCurrentProfileId() function instead
