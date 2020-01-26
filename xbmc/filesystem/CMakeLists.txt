@@ -40,6 +40,7 @@ set(SOURCES AddonsDirectory.cpp
             PlaylistDirectory.cpp
             PlaylistFileDirectory.cpp
             PluginDirectory.cpp
+            PluginFile.cpp
             PVRDirectory.cpp
             ResourceDirectory.cpp
             ResourceFile.cpp
@@ -110,6 +111,7 @@ set(HEADERS AddonsDirectory.h
             PlaylistDirectory.h
             PlaylistFileDirectory.h
             PluginDirectory.h
+            PluginFile.h
             RSSDirectory.h
             ResourceDirectory.h
             ResourceFile.h
