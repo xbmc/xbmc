@@ -22,6 +22,18 @@ namespace
 const CDateTimeSpan ONE_SECOND(0, 0, 0, 1);
 }
 
+void CPVREpgTagsCache::SetChannelData(const std::shared_ptr<CPVREpgChannelData>& data)
+{
+  m_channelData = data;
+
+  if (m_lastEndedTag)
+    m_lastEndedTag->SetChannelData(data);
+  if (m_nowActiveTag)
+    m_nowActiveTag->SetChannelData(data);
+  if (m_nextStartingTag)
+    m_nextStartingTag->SetChannelData(data);
+}
+
 std::shared_ptr<CPVREpgInfoTag> CPVREpgTagsCache::GetLastEndedTag()
 {
   Refresh(true);
