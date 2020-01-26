@@ -1085,7 +1085,7 @@ void CGUIDialogVideoInfo::PlayTrailer()
   item.GetVideoInfoTag()->m_strTitle = StringUtils::Format("%s (%s)",
                                                            m_movieItem->GetVideoInfoTag()->m_strTitle.c_str(),
                                                            g_localizeStrings.Get(20410).c_str());
-  CVideoThumbLoader::SetArt(item, m_movieItem->GetArt());
+  item.SetArt(m_movieItem->GetArt());
   item.GetVideoInfoTag()->m_iDbId = -1;
   item.GetVideoInfoTag()->m_iFileId = -1;
 
