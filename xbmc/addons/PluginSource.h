@@ -23,7 +23,6 @@ public:
 
   explicit CPluginSource(const AddonInfoPtr& addonInfo, TYPE addonType);
 
-  TYPE FullType() const override;
   bool IsType(TYPE type) const override;
   bool Provides(const Content& content) const
   {

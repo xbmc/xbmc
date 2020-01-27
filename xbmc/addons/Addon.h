@@ -34,7 +34,6 @@ public:
   ~CAddon() override = default;
 
   TYPE Type() const override { return m_addonInfo->MainType(); }
-  TYPE FullType() const override { return Type(); }
   bool IsType(TYPE type) const override { return type == m_addonInfo->MainType(); }
   const CAddonType* Type(TYPE type) const { return m_addonInfo->Type(type); }
 
