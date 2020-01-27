@@ -228,7 +228,7 @@ bool CGameUtils::IsStandaloneGame(const ADDON::AddonPtr& addon)
     }
     case ADDON_SCRIPT:
     {
-      return addon->IsType(ADDON_GAME);
+      return addon->HasType(ADDON_GAME);
     }
     default:
       break;

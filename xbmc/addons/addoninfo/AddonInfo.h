@@ -71,7 +71,7 @@ public:
   const std::string& ID() const { return m_id; }
 
   TYPE MainType() const { return m_mainType; }
-  bool IsType(TYPE type, bool mainOnly = false) const;
+  bool HasType(TYPE type, bool mainOnly = false) const;
   const std::vector<CAddonType>& Types() const { return m_types; }
   const CAddonType* Type(TYPE type) const;
 

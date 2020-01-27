@@ -150,7 +150,7 @@ const CAddonType* CAddonInfo::Type(TYPE type) const
   return &dummy;
 }
 
-bool CAddonInfo::IsType(TYPE type, bool mainOnly /*= false*/) const
+bool CAddonInfo::HasType(TYPE type, bool mainOnly /*= false*/) const
 {
   return (m_mainType == type || ProvidesSubContent(type, mainOnly ? m_mainType : ADDON_UNKNOWN));
 }

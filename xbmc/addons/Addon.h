@@ -35,7 +35,7 @@ public:
 
   TYPE MainType() const override { return m_addonInfo->MainType(); }
   TYPE Type() const override { return m_type; }
-  bool IsType(TYPE type) const override { return m_addonInfo->IsType(type); }
+  bool HasType(TYPE type) const override { return m_addonInfo->HasType(type); }
   const CAddonType* Type(TYPE type) const { return m_addonInfo->Type(type); }
 
   std::string ID() const override{ return m_addonInfo->ID(); }

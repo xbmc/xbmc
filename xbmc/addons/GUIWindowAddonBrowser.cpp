@@ -423,7 +423,7 @@ int CGUIWindowAddonBrowser::SelectAddonID(const std::vector<ADDON::TYPE> &types,
         bool matchesType = false;
         for (std::vector<ADDON::TYPE>::const_iterator type = validTypes.begin(); type != validTypes.end(); ++type)
         {
-          if (pAddon->IsType(*type))
+          if (pAddon->HasType(*type))
           {
             matchesType = true;
             break;

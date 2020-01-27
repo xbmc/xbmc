@@ -23,7 +23,7 @@ public:
 
   explicit CPluginSource(const AddonInfoPtr& addonInfo, TYPE addonType);
 
-  bool IsType(TYPE type) const override;
+  bool HasType(TYPE type) const override;
   bool Provides(const Content& content) const
   {
     return content == UNKNOWN ? false : m_providedContent.count(content) > 0;

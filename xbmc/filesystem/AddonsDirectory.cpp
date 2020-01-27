@@ -120,7 +120,7 @@ static bool IsEmulator(const AddonPtr& addon)
 
 static bool IsGameProvider(const AddonPtr& addon)
 {
-  return addon->Type() == ADDON_PLUGIN && addon->IsType(ADDON_GAME);
+  return addon->Type() == ADDON_PLUGIN && addon->HasType(ADDON_GAME);
 }
 
 static bool IsGameResource(const AddonPtr& addon)
@@ -152,7 +152,7 @@ static bool IsDependencyType(TYPE type)
 static bool IsUserInstalled(const AddonPtr& addon)
 {
   return std::find_if(dependencyTypes.begin(), dependencyTypes.end(),
-      [&](TYPE type){ return addon->IsType(type); }) == dependencyTypes.end();
+                      [&](TYPE type) { return addon->HasType(type); }) == dependencyTypes.end();
 }
 
 static bool IsOrphaned(const AddonPtr& addon, const VECADDONS& all)
@@ -178,7 +178,7 @@ static void GenerateTypeListing(const CURL& path, const std::set<TYPE>& types,
   {
     for (const auto& addon : addons)
     {
-      if (addon->IsType(type))
+      if (addon->HasType(type))
       {
         CFileItemPtr item(new CFileItem(CAddonInfo::TranslateType(type, true)));
         CURL itemPath = path;
@@ -419,7 +419,8 @@ static void GenerateCategoryListing(const CURL& path, VECADDONS& addons,
     TYPE type = CAddonInfo::TranslateType(category);
     items.SetProperty("addoncategory", CAddonInfo::TranslateType(type, true));
     addons.erase(std::remove_if(addons.begin(), addons.end(),
-        [type](const AddonPtr& addon){ return !addon->IsType(type); }), addons.end());
+                                [type](const AddonPtr& addon) { return !addon->HasType(type); }),
+                 addons.end());
     CAddonsDirectory::GenerateAddonListing(path, addons, items, CAddonInfo::TranslateType(type, true));
   }
 }
@@ -891,7 +892,7 @@ bool CAddonsDirectory::GetScriptsAndPlugins(const std::string &content, CFileIte
     const bool bIsFolder = (addon->Type() == ADDON_PLUGIN);
 
     std::string path;
-    if (addon->IsType(ADDON_PLUGIN))
+    if (addon->HasType(ADDON_PLUGIN))
     {
       path = "plugin://" + addon->ID();
       PluginPtr plugin = std::dynamic_pointer_cast<CPluginSource>(addon);
@@ -903,11 +904,11 @@ bool CAddonsDirectory::GetScriptsAndPlugins(const std::string &content, CFileIte
         path = url.Get();
       }
     }
-    else if (addon->IsType(ADDON_SCRIPT))
+    else if (addon->HasType(ADDON_SCRIPT))
     {
       path = "script://" + addon->ID();
     }
-    else if (addon->IsType(ADDON_GAMEDLL))
+    else if (addon->HasType(ADDON_GAMEDLL))
     {
       // Kodi fails to launch games with empty path from home screen
       path = "game://" + addon->ID();

@@ -86,7 +86,7 @@ CPluginSource::Content CPluginSource::Translate(const std::string &content)
     return CPluginSource::UNKNOWN;
 }
 
-bool CPluginSource::IsType(TYPE type) const
+bool CPluginSource::HasType(TYPE type) const
 {
   return ((type == ADDON_VIDEO && Provides(VIDEO))
        || (type == ADDON_AUDIO && Provides(AUDIO))

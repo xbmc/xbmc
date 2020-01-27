@@ -279,7 +279,7 @@ bool CAddonMgr::GetInstallableAddons(VECADDONS& addons, const TYPE &type)
       bool bErase = false;
 
       // check if the addon matches the provided addon type
-      if (type != ADDON::ADDON_UNKNOWN && addon->Type() != type && !addon->IsType(type))
+      if (type != ADDON::ADDON_UNKNOWN && addon->Type() != type && !addon->HasType(type))
         bErase = true;
 
       if (!this->CanAddonBeInstalled(addon))
@@ -341,7 +341,7 @@ bool CAddonMgr::GetAddonsInternal(const TYPE &type, VECADDONS &addons, bool enab
 
   for (const auto& addonInfo : m_installedAddons)
   {
-    if (type != ADDON_UNKNOWN && !addonInfo.second->IsType(type))
+    if (type != ADDON_UNKNOWN && !addonInfo.second->HasType(type))
       continue;
 
     if (enabledOnly && IsAddonDisabled(addonInfo.second->ID()))
@@ -783,7 +783,7 @@ bool CAddonMgr::GetAddonInfos(AddonInfos& addonInfos, TYPE type)
   bool forUnknown = type == ADDON_UNKNOWN;
   for (auto& info : m_installedAddons)
   {
-    if (info.second->MainType() != ADDON_UNKNOWN && (forUnknown || info.second->IsType(type)))
+    if (info.second->MainType() != ADDON_UNKNOWN && (forUnknown || info.second->HasType(type)))
       addonInfos.push_back(info.second);
   }
 
@@ -796,7 +796,7 @@ const AddonInfoPtr CAddonMgr::GetAddonInfo(const std::string& id, TYPE type /*= 
 
   auto addon = m_installedAddons.find(id);
   if (addon != m_installedAddons.end())
-    if ((type == ADDON_UNKNOWN || addon->second->IsType(type)))
+    if ((type == ADDON_UNKNOWN || addon->second->HasType(type)))
       return addon->second;
 
   return nullptr;

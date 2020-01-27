@@ -61,7 +61,7 @@ bool CBinaryAddonManager::HasInstalledAddons(const TYPE &type) const
   CSingleLock lock(m_critSection);
   for (auto info : m_installedAddons)
   {
-    if (info.second->IsType(type))
+    if (info.second->HasType(type))
       return true;
   }
   return false;
@@ -72,7 +72,7 @@ bool CBinaryAddonManager::HasEnabledAddons(const TYPE &type) const
   CSingleLock lock(m_critSection);
   for (auto info : m_enabledAddons)
   {
-    if (info.second->IsType(type))
+    if (info.second->HasType(type))
       return true;
   }
   return false;
@@ -102,7 +102,7 @@ void CBinaryAddonManager::GetAddonInfos(BinaryAddonBaseList& addonInfos, bool en
 
   for (auto info : *addons)
   {
-    if (type == ADDON_UNKNOWN || info.second->IsType(type))
+    if (type == ADDON_UNKNOWN || info.second->HasType(type))
     {
       addonInfos.push_back(info.second);
     }
@@ -115,7 +115,7 @@ void CBinaryAddonManager::GetDisabledAddonInfos(BinaryAddonBaseList& addonInfos,
 
   for (auto info : m_installedAddons)
   {
-    if (type == ADDON_UNKNOWN || info.second->IsType(type))
+    if (type == ADDON_UNKNOWN || info.second->HasType(type))
     {
       if (!IsAddonEnabled(info.second->ID(), type))
         addonInfos.push_back(info.second);
@@ -128,7 +128,7 @@ const BinaryAddonBasePtr CBinaryAddonManager::GetInstalledAddonInfo(const std::s
   CSingleLock lock(m_critSection);
 
   auto addon = m_installedAddons.find(addonId);
-  if (addon != m_installedAddons.end() && (type == ADDON_UNKNOWN || addon->second->IsType(type)))
+  if (addon != m_installedAddons.end() && (type == ADDON_UNKNOWN || addon->second->HasType(type)))
     return addon->second;
 
   CLog::Log(LOGERROR, "CBinaryAddonManager::%s: Requested addon '%s' unknown as binary", __FUNCTION__, addonId.c_str());
