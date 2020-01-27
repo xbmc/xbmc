@@ -577,67 +577,6 @@
 					<param name="width" value="350" />
 				</include>
 			</control>
-			<control type="panel" id="9010">
-				<centerleft>50%</centerleft>
-				<bottom>490</bottom>
-				<width>1500</width>
-				<height>200</height>
-				<scrolltime tween="cubic" easing="out">500</scrolltime>
-				<orientation>vertical</orientation>
-				<onleft>9010</onleft>
-				<onright>9010</onright>
-				<onup>noop</onup>
-				<ondown>105</ondown>
-				<visible>!Control.IsVisible(313)</visible>
-				<itemlayout width="500" height="60">
-					<control type="image">
-						<left>10</left>
-						<top>0</top>
-						<width>480</width>
-						<height>50</height>
-						<texture colordiffuse="dialog_tint">colors/white.png</texture>
-					</control>
-					<control type="label">
-						<textoffsetx>30</textoffsetx>
-						<top>0</top>
-						<width>500</width>
-						<height>50</height>
-						<label>$INFO[ListItem.Label]</label>
-						<font>font12</font>
-						<shadowcolor>text_shadow</shadowcolor>
-						<aligny>center</aligny>
-					</control>
-				</itemlayout>
-				<focusedlayout width="500" height="60">
-					<control type="group">
-						<control type="image">
-							<left>10</left>
-							<top>0</top>
-							<width>480</width>
-							<height>50</height>
-							<texture colordiffuse="dialog_tint">colors/white.png</texture>
-						</control>
-						<control type="image">
-							<left>10</left>
-							<width>480</width>
-							<height>50</height>
-							<texture colordiffuse="button_focus">colors/grey.png</texture>
-							<include>Animation_FocusTextureFade</include>
-						</control>
-						<control type="label">
-							<textoffsetx>30</textoffsetx>
-							<top>0</top>
-							<width>500</width>
-							<height>50</height>
-							<label>$INFO[ListItem.Label]</label>
-							<font>font12</font>
-							<shadowcolor>text_shadow</shadowcolor>
-							<aligny>center</aligny>
-						</control>
-					</control>
-				</focusedlayout>
-				<content>$VAR[AutoCompletionContentVar]</content>
-			</control>
 			<control type="label" id="313">
 				<centerleft>50%</centerleft>
 				<top>290</top>

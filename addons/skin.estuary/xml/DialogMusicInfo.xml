@@ -417,16 +417,6 @@
 						<onclick>ActivateWindow(1104)</onclick>
 						<visible>String.IsEqual(ListItem.DBType,artist) | String.IsEqual(ListItem.DBType,album)</visible>
 					</control>
-					<control type="radiobutton" id="440">
-						<label>$LOCALIZE[31114]</label>
-						<include content="VideoInfoButtonsCommon">
-							<param name="icon" value="icons/infodialogs/youtube.png" />
-						</include>
-						<onclick>Action(close)</onclick>
-						<visible>System.hasAddon(script.extendedinfo)</visible>
-						<onclick condition="!String.IsEqual(ListItem.DBType,song)">RunScript(script.extendedinfo,info=youtubebrowser,id=$INFO[ListItem.Artist] $INFO[ListItem.Album])</onclick>
-						<onclick condition="String.IsEqual(ListItem.DBType,song)">RunScript(script.extendedinfo,info=youtubebrowser,id=$INFO[ListItem.Artist] $INFO[ListItem.Title])</onclick>
-					</control>
 					<include content="InfoDialogButton">
 						<param name="id" value="6" />
 						<param name="icon" value="icons/infodialogs/update.png" />
