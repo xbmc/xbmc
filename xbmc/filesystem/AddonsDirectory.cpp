@@ -341,7 +341,16 @@ static void GenerateMainCategoryListing(const CURL& path, const VECADDONS& addon
   for (unsigned int i = ADDON_UNKNOWN + 1; i < ADDON_MAX - 1; ++i)
   {
     const TYPE type = (TYPE)i;
-    if (!IsInfoProviderType(type) && !IsLookAndFeelType(type) && !IsDependencyType(type) && !IsGameType(type))
+    /*
+     * Check and prevent insert for this cases:
+     * - By a provider, look and feel, dependency and game becomes given to
+     *   subdirectory to control the types
+     * - By ADDON_SCRIPT and ADDON_PLUGIN, them contains one of the possible
+     *   subtypes (audio, video, app or/and game) and not needed to show
+     *   together in a Script or Plugin list
+     */
+    if (!IsInfoProviderType(type) && !IsLookAndFeelType(type) && !IsDependencyType(type) &&
+        !IsGameType(type) && type != ADDON_SCRIPT && type != ADDON_PLUGIN)
       uncategorized.insert(static_cast<TYPE>(i));
   }
   GenerateTypeListing(path, uncategorized, addons, items);
