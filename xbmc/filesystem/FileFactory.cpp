@@ -51,6 +51,7 @@
 #include "PipeFile.h"
 #include "MusicDatabaseFile.h"
 #include "VideoDatabaseFile.h"
+#include "PluginFile.h"
 #include "SpecialProtocolFile.h"
 #include "MultiPathFile.h"
 #include "UDFFile.h"
@@ -99,6 +100,7 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
   else if (url.IsProtocol("xbt")) return new CXbtFile();
   else if (url.IsProtocol("musicdb")) return new CMusicDatabaseFile();
   else if (url.IsProtocol("videodb")) return new CVideoDatabaseFile();
+  else if (url.IsProtocol("plugin")) return new CPluginFile();
   else if (url.IsProtocol("library")) return nullptr;
   else if (url.IsProtocol("pvr")) return nullptr;
   else if (url.IsProtocol("special")) return new CSpecialProtocolFile();

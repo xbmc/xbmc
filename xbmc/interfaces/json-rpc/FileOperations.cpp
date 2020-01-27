@@ -174,10 +174,15 @@ JSONRPC_STATUS CFileOperations::GetFileDetails(const std::string &method, ITrans
   std::string path = URIUtils::GetDirectory(file);
 
   CFileItemList items;
-  if (path.empty() || !CDirectory::GetDirectory(path, items, "", DIR_FLAG_DEFAULTS) || !items.Contains(file))
+  if (path.empty())
     return InvalidParams;
 
-  CFileItemPtr item = items.Get(file);
+  CFileItemPtr item;
+  if (CDirectory::GetDirectory(path, items, "", DIR_FLAG_DEFAULTS) && items.Contains(file))
+    item = items.Get(file);
+  else
+    item = CFileItemPtr(new CFileItem(file, false));
+
   if (!URIUtils::IsUPnP(file))
     FillFileItem(item, item, parameterObject["media"].asString(), parameterObject);
 
