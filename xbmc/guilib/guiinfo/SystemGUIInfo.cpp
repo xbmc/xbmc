@@ -651,6 +651,16 @@ bool CSystemGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int context
       }
       break;
     }
+    case SYSTEM_HAS_DISPLAY_HDR:
+    {
+      value = CServiceBroker::GetWinSystem()->IsHDRDisplay();
+      return true;
+    }
+    case SYSTEM_HDR_IS_ENABLED:
+    {
+      value = CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CServiceBroker::GetWinSystem()->SETTING_WINSYSTEM_IS_HDR_DISPLAY);
+      return true;
+    }
   }
 
   return false;
