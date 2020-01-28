@@ -86,7 +86,8 @@ bool CPluginSource::IsType(TYPE type) const
        || (type == ADDON_AUDIO && Provides(AUDIO))
        || (type == ADDON_IMAGE && Provides(IMAGE))
        || (type == ADDON_GAME && Provides(GAME))
-       || (type == ADDON_EXECUTABLE && Provides(EXECUTABLE)));
+       || (type == ADDON_EXECUTABLE && Provides(EXECUTABLE))
+       || (type == CAddon::Type()));
 }
 
 } /*namespace ADDON*/

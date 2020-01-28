@@ -891,34 +891,26 @@ bool CAddonsDirectory::GetScriptsAndPlugins(const std::string &content, CFileIte
     const bool bIsFolder = (addon->Type() == ADDON_PLUGIN);
 
     std::string path;
-    switch (addon->Type())
+    if (addon->IsType(ADDON_PLUGIN))
     {
-      case ADDON_PLUGIN:
+      path = "plugin://" + addon->ID();
+      PluginPtr plugin = std::dynamic_pointer_cast<CPluginSource>(addon);
+      if (plugin && plugin->ProvidesSeveral())
       {
-        path = "plugin://" + addon->ID();
-        PluginPtr plugin = std::dynamic_pointer_cast<CPluginSource>(addon);
-        if (plugin && plugin->ProvidesSeveral())
-        {
-          CURL url(path);
-          std::string opt = StringUtils::Format("?content_type=%s", content.c_str());
-          url.SetOptions(opt);
-          path = url.Get();
-        }
-        break;
+        CURL url(path);
+        std::string opt = StringUtils::Format("?content_type=%s", content.c_str());
+        url.SetOptions(opt);
+        path = url.Get();
       }
-      case ADDON_SCRIPT:
-      {
-        path = "script://" + addon->ID();
-        break;
-      }
-      case ADDON_GAMEDLL:
-      {
-        // Kodi fails to launch games with empty path from home screen
-        path = "game://" + addon->ID();
-        break;
-      }
-      default:
-        break;
+    }
+    else if (addon->IsType(ADDON_SCRIPT))
+    {
+      path = "script://" + addon->ID();
+    }
+    else if (addon->IsType(ADDON_GAMEDLL))
+    {
+      // Kodi fails to launch games with empty path from home screen
+      path = "game://" + addon->ID();
     }
 
     items.Add(FileItemFromAddon(addon, path, bIsFolder));
