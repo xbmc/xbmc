@@ -159,7 +159,8 @@ void CAirPlayServer::Announce(ANNOUNCEMENT::AnnouncementFlag flag,
 {
   CSingleLock lock(ServerInstanceLock);
 
-  if ((flag & ANNOUNCEMENT::Player) && sender == ANNOUNCEMENT::CAnnouncementManager::ANNOUNCEMENT_SENDER && ServerInstance)
+  if ((flag & ANNOUNCEMENT::Player) &&
+      sender == ANNOUNCEMENT::CAnnouncementManager::ANNOUNCEMENT_SENDER && ServerInstance)
   {
     if (message == "OnStop")
     {

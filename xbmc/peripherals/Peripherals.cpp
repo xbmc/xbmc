@@ -1013,7 +1013,8 @@ void CPeripherals::Announce(ANNOUNCEMENT::AnnouncementFlag flag,
                             const std::string& message,
                             const CVariant& data)
 {
-  if (flag == ANNOUNCEMENT::Player && sender == ANNOUNCEMENT::CAnnouncementManager::ANNOUNCEMENT_SENDER)
+  if (flag == ANNOUNCEMENT::Player &&
+      sender == ANNOUNCEMENT::CAnnouncementManager::ANNOUNCEMENT_SENDER)
   {
     if (message == "OnQuit")
     {

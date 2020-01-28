@@ -245,6 +245,7 @@ void CUPnPRenderer::Announce(ANNOUNCEMENT::AnnouncementFlag flag,
   {
     if (NPT_FAILED(FindServiceByType("urn:schemas-upnp-org:service:AVTransport:1", avt)))
       return;
+
     if (message == "OnPlay" || message == "OnResume")
     {
       avt->SetStateVariable("AVTransportURI", g_application.CurrentFile().c_str());
@@ -276,22 +277,22 @@ void CUPnPRenderer::Announce(ANNOUNCEMENT::AnnouncementFlag flag,
       avt->SetStateVariable("TransportPlaySpeed",
                             NPT_String::FromInteger(data["player"]["speed"].asInteger()));
     }
-    }
-    else if (flag == ANNOUNCEMENT::Application && message == "OnVolumeChanged")
-    {
-      if (NPT_FAILED(FindServiceByType("urn:schemas-upnp-org:service:RenderingControl:1", rct)))
-        return;
+  }
+  else if (flag == ANNOUNCEMENT::Application && message == "OnVolumeChanged")
+  {
+    if (NPT_FAILED(FindServiceByType("urn:schemas-upnp-org:service:RenderingControl:1", rct)))
+      return;
 
-      std::string buffer;
+    std::string buffer;
 
-      buffer = StringUtils::Format("%" PRId64, data["volume"].asInteger());
-      rct->SetStateVariable("Volume", buffer.c_str());
+    buffer = StringUtils::Format("%" PRId64, data["volume"].asInteger());
+    rct->SetStateVariable("Volume", buffer.c_str());
 
-      buffer = StringUtils::Format("%" PRId64, 256 * (data["volume"].asInteger() * 60 - 60) / 100);
-      rct->SetStateVariable("VolumeDb", buffer.c_str());
+    buffer = StringUtils::Format("%" PRId64, 256 * (data["volume"].asInteger() * 60 - 60) / 100);
+    rct->SetStateVariable("VolumeDb", buffer.c_str());
 
-      rct->SetStateVariable("Mute", data["muted"].asBoolean() ? "1" : "0");
-    }
+    rct->SetStateVariable("Mute", data["muted"].asBoolean() ? "1" : "0");
+  }
 }
 
 /*----------------------------------------------------------------------
