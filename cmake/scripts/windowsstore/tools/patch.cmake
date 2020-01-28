@@ -70,7 +70,9 @@ else()
   endif()
 
   # make sure that cmake can find the copied patch.exe
-  find_program(PATCH_FOUND NAMES patch patch.exe)
+  find_program(PATCH_EXECUTABLE NAMES patch patch.exe)
+  find_package_handle_standard_args(Patch
+                                    REQUIRED_VARS PATCH_EXECUTABLE)
   if(NOT PATCH_FOUND)
     message(FATAL_ERROR "ERROR installing patch utility from ${PATCH_BINARY_PATH} to ${ADDON_DEPENDS_PATH}/bin")
   endif()
