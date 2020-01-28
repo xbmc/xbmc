@@ -1,0 +1,11 @@
+--- a/configure.ac
++++ b/configure.ac
+@@ -309,8 +309,6 @@
+ #endif
+ ],-ledit,,, READLINE,, [readline.h readline/readline.h editline/readline.h])
+ 
+-AC_CONFIG_SUBDIRS([lib/libedit])
+-
+ KRB_C_BIGENDIAN
+ AC_C_INLINE
+ 

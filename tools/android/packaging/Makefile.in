@@ -4,8 +4,7 @@ BUILD_TYPE:=@CMAKE_BUILD_TYPE@
 BUILD_TYPE_LC:=$(shell echo $(BUILD_TYPE) | tr A-Z a-z)
 
 OBJS = libshairplay.so \
-  libass.so \
-  libsmbclient.so
+  libass.so
 
 PLATFORM_OBJS =
 EXCLUDED_ADDONS =

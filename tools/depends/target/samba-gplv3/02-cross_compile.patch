@@ -1,0 +1,302 @@
+--- a/buildtools/wafsamba/samba_autoconf.py
++++ b/buildtools/wafsamba/samba_autoconf.py
+@@ -319,7 +319,7 @@
+ 
+ 
+ @conf
+-def CHECK_SIZEOF(conf, vars, headers=None, define=None, critical=True):
++def CHECK_SIZEOF(conf, vars, headers=None, define=None, cflags='', critical=True):
+     '''check the size of a type'''
+     for v in TO_LIST(vars):
+         v_define = define
+@@ -332,6 +332,7 @@
+                       define=v_define,
+                       quote=False,
+                       headers=headers,
++                      cflags=cflags,
+                       local_include=False,
+                       msg="Checking if size of %s == %d" % (v, size)):
+                 conf.DEFINE(v_define, size)
+@@ -828,7 +829,6 @@
+     for key in conf.env.define_key:
+         conf.undefine(key, from_env=False)
+     conf.env.define_key = []
+-    conf.SAMBA_CROSS_CHECK_COMPLETE()
+ 
+ 
+ @conf
+--- a/buildtools/wafsamba/samba_conftests.py
++++ b/buildtools/wafsamba/samba_conftests.py
+@@ -101,25 +101,24 @@
+                     else:
+                         conf.DEFINE(flag_split[0], flag_split[1])
+ 
+-    if conf.CHECK_CODE('if (sizeof(off_t) < 8) return 1',
+-                       define,
+-                       execute=True,
+-                       msg='Checking for large file support without additional flags'):
++    conf.undefine("SIZEOF_OFF_T")
++    conf.CHECK_SIZEOF("off_t")
++    if int(conf.get_define("SIZEOF_OFF_T")) >= 8:
++        conf.undefine("SIZEOF_OFF_T")
++        conf.DEFINE(define, 1)
+         return True
+ 
+-    if conf.CHECK_CODE('if (sizeof(off_t) < 8) return 1',
+-                       define,
+-                       execute=True,
+-                       cflags='-D_FILE_OFFSET_BITS=64',
+-                       msg='Checking for -D_FILE_OFFSET_BITS=64'):
++    conf.undefine("SIZEOF_OFF_T")
++    conf.CHECK_SIZEOF("off_t", cflags='-D_FILE_OFFSET_BITS=64')
++    if int(conf.get_define("SIZEOF_OFF_T")) >= 8:
++        conf.undefine("SIZEOF_OFF_T")
+         conf.DEFINE('_FILE_OFFSET_BITS', 64)
+         return True
+ 
+-    if conf.CHECK_CODE('if (sizeof(off_t) < 8) return 1',
+-                       define,
+-                       execute=True,
+-                       cflags='-D_LARGE_FILES',
+-                       msg='Checking for -D_LARGE_FILES'):
++    conf.undefine("SIZEOF_OFF_T")
++    conf.CHECK_SIZEOF("off_t", cflags='-D_LARGE_FILES')
++    if int(conf.get_define("SIZEOF_OFF_T")) >= 8:
++        conf.undefine("SIZEOF_OFF_T")
+         conf.DEFINE('_LARGE_FILES', 1)
+         return True
+     return False
+--- a/buildtools/wafsamba/wscript
++++ b/buildtools/wafsamba/wscript
+@@ -302,7 +302,7 @@
+     conf.CHECK_CODE('printf("hello world")',
+                     define='HAVE_SIMPLE_C_PROG',
+                     mandatory=True,
+-                    execute=True,
++                    execute=False,
+                     headers='stdio.h',
+                     msg='Checking simple C program')
+ 
+--- a/lib/replace/system/time.h
++++ b/lib/replace/system/time.h
+@@ -74,9 +74,6 @@
+ #endif
+ 
+ #ifndef HAVE_CLOCK_GETTIME
+-/* CLOCK_REALTIME is required by POSIX */
+-#define CLOCK_REALTIME 0
+-typedef int clockid_t;
+ int rep_clock_gettime(clockid_t clk_id, struct timespec *tp);
+ #endif
+ /* make sure we have a best effort CUSTOM_CLOCK_MONOTONIC we can rely on.
+--- a/lib/replace/wscript
++++ b/lib/replace/wscript
+@@ -37,6 +37,7 @@
+     conf.CHECK_HEADERS('linux/types.h crypt.h locale.h acl/libacl.h compat.h')
+     conf.CHECK_HEADERS('acl/libacl.h attr/xattr.h compat.h ctype.h dustat.h')
+     conf.CHECK_HEADERS('fcntl.h fnmatch.h glob.h history.h krb5.h langinfo.h')
++    conf.CHECK_FUNCS('nl_langinfo', headers='langinfo.h')
+     conf.CHECK_HEADERS('libaio.h locale.h ndir.h pwd.h')
+     conf.CHECK_HEADERS('shadow.h sys/acl.h')
+     conf.CHECK_HEADERS('sys/attributes.h attr/attributes.h sys/capability.h sys/dir.h sys/epoll.h')
+@@ -679,7 +680,7 @@
+     conf.CHECK_CODE('''#define LIBREPLACE_CONFIGURE_TEST_STRPTIME
+                        #include "tests/strptime.c"''',
+                        define='HAVE_WORKING_STRPTIME',
+-                       execute=True,
++                       execute=False,
+                        addmain=False,
+                        msg='Checking for working strptime')
+ 
+@@ -694,7 +695,7 @@
+ 
+     conf.CHECK_CODE('#include "tests/snprintf.c"',
+                     define="HAVE_C99_VSNPRINTF",
+-                    execute=True,
++                    execute=False,
+                     addmain=False,
+                     msg="Checking for C99 vsnprintf")
+ 
+@@ -791,7 +792,7 @@
+                     exit(0);
+                     ''',
+                     define='HAVE_SECURE_MKSTEMP',
+-                    execute=True,
++                    execute=False,
+                     mandatory=True) # lets see if we get a mandatory failure for this one
+ 
+     # look for a method of finding the list of network interfaces
+@@ -803,6 +804,7 @@
+                            #define %s 1
+                            #define NO_CONFIG_H 1
+                            #define AUTOCONF_TEST 1
++                           #define __STDC_WANT_LIB_EXT1__ 1
+                            #include "replace.c"
+                            #include "inet_ntop.c"
+                            #include "snprintf.c"
+@@ -813,7 +815,7 @@
+                            method,
+                            lib='nsl socket' + bsd_for_strlcpy,
+                            addmain=False,
+-                           execute=True):
++                           execute=False):
+             break
+ 
+     conf.RECURSE('system')
+--- a/lib/socket/wscript
++++ b/lib/socket/wscript
+@@ -4,4 +4,5 @@
+     conf.CHECK_HEADERS('linux/sockios.h linux/ethtool.h')
+     if (conf.CONFIG_SET('HAVE_LINUX_SOCKIOS_H') and \
+                     conf.CONFIG_SET('HAVE_LINUX_ETHTOOL_H')):
+-        conf.DEFINE('HAVE_ETHTOOL', 1)
++        if conf.CHECK_FUNCS('ethtool_cmd_speed', headers='linux/sockios.h linux/ethtool.h'):
++            conf.DEFINE('HAVE_ETHTOOL', 1)
+--- a/source3/lib/util.c
++++ b/source3/lib/util.c
+@@ -82,6 +82,10 @@
+ #endif /* WITH_NISPLUS_HOME */
+ #endif /* HAVE_NETGROUP && WITH_AUTOMOUNT */
+ 
++#ifndef YPERR_KEY
++#define YPERR_KEY 5
++#endif
++
+ static enum protocol_types Protocol = PROTOCOL_COREPLUS;
+ 
+ enum protocol_types get_Protocol(void)
+--- a/source3/wscript
++++ b/source3/wscript
+@@ -137,7 +137,7 @@
+ 
+     # Check for inotify support (Skip if we are SunOS)
+     #NOTE: illumos provides sys/inotify.h but is not an exact match for linux
+-    host_os = sys.platform
++    host_os = os.getenv('HOST', sys.platform)
+     if host_os.rfind('sunos') == -1:
+         conf.CHECK_HEADERS('sys/inotify.h')
+         if conf.env.HAVE_SYS_INOTIFY_H:
+@@ -416,8 +416,8 @@
+ 
+     # FIXME: these should be tests for features, but the old build system just
+     # checks for OSes.
+-    host_os = sys.platform
+-    Logs.info("building on %s" % host_os)
++    host_os = os.getenv('HOST', sys.platform)
++    Logs.info("building for %s" % host_os)
+ 
+     # Python doesn't have case switches... :/
+     # FIXME: original was *linux* | gnu* | k*bsd*-gnu | kopensolaris*-gnu | *qnx*)
+@@ -989,7 +989,7 @@
+                                 ''',
+                                 'USE_SETREUID',
+                                 addmain=False,
+-                                execute=True,
++                                execute=False,
+                                 msg="Checking whether setreuid is available")
+     if not seteuid:
+         seteuid = conf.CHECK_CODE('''
+@@ -1055,7 +1055,7 @@
+ ''',
+                 'HAVE_FCNTL_LOCK',
+                 addmain=False,
+-                execute=True,
++                execute=False,
+                 msg='Checking whether fcntl locking is available')
+ 
+     conf.CHECK_CODE('''
+--- a/tests/summary.c
++++ b/tests/summary.c
+@@ -9,7 +9,7 @@
+ #endif
+ 
+ #if !(defined(HAVE_IFACE_GETIFADDRS) || defined(HAVE_IFACE_IFCONF) || defined(HAVE_IFACE_IFREQ) || defined(HAVE_IFACE_AIX))
+-#warning "WARNING: No automated network interface determination"
++#error "ERROR: No automated network interface determination"
+ #endif
+ 
+ #if !(defined(USE_SETEUID) || defined(USE_SETREUID) || defined(USE_SETRESUID) || defined(USE_SETUIDX) || defined(HAVE_LINUX_THREAD_CREDENTIALS))
+--- a/third_party/popt/poptconfig.c
++++ b/third_party/popt/poptconfig.c
+@@ -24,7 +24,7 @@
+ #if defined(HAVE_GLOB_H)
+ #include <glob.h>
+ 
+-#if defined(__LCLINT__)
++#if defined(HAVE_GLOB) && defined(__LCLINT__)
+ /*@-declundef -exportheader -incondefs -protoparammatch -redecl -type @*/
+ extern int glob (const char *__pattern, int __flags,
+ 		/*@null@*/ int (*__errfunc) (const char *, int),
+@@ -104,7 +104,7 @@
+     if (pat[0] == '@' && pat[1] != '(')
+ 	pat++;
+ 
+-#if defined(HAVE_GLOB_H)
++#if defined(HAVE_GLOB)
+     if (glob_pattern_p(pat, 0)) {
+ 	glob_t _g, *pglob = &_g;
+ 
+@@ -125,7 +125,7 @@
+ 	} else
+ 	    rc = POPT_ERROR_ERRNO;
+     } else
+-#endif	/* HAVE_GLOB_H */
++#endif	/* HAVE_GLOB */
+     {
+ 	if (acp)
+ 	    *acp = 1;
+--- a/third_party/popt/poptint.c
++++ b/third_party/popt/poptint.c
+@@ -86,7 +86,7 @@
+     if (istr == NULL)
+ 	return NULL;
+ 
+-#ifdef HAVE_LANGINFO_H
++#ifdef HAVE_NL_LANGINFO
+     codeset = nl_langinfo ((nl_item)CODESET);
+ #endif
+ 
+--- a/third_party/popt/poptint.h
++++ b/third_party/popt/poptint.h
+@@ -174,7 +174,7 @@
+ 
+ #ifdef HAVE_LANGINFO_H
+ #include <langinfo.h>
+-#if defined(__LCLINT__)
++#if defined(HAVE_NL_LANGINFO) && defined(__LCLINT__)
+ /*@-declundef -incondefs @*/
+ extern char *nl_langinfo (nl_item __item)
+ 	/*@*/;
+--- a/wscript
++++ b/wscript
+@@ -153,7 +153,7 @@
+     conf.SAMBA_CHECK_PYTHON()
+     conf.SAMBA_CHECK_PYTHON_HEADERS()
+ 
+-    if sys.platform == 'darwin' and not conf.env['HAVE_ENVIRON_DECL']:
++    if os.getenv('HOST', sys.platform).find('darwin') > -1 and not conf.env['HAVE_ENVIRON_DECL']:
+         # Mac OSX needs to have this and it's also needed that the python is compiled with this
+         # otherwise you face errors about common symbols
+         if not conf.CHECK_SHLIB_W_PYTHON("Checking if -fno-common is needed"):
+@@ -161,7 +161,7 @@
+         if not conf.CHECK_SHLIB_W_PYTHON("Checking if -undefined dynamic_lookup is not need"):
+             conf.env.append_value('cshlib_LINKFLAGS', ['-undefined', 'dynamic_lookup'])
+ 
+-    if sys.platform == 'darwin':
++    if os.getenv('HOST', sys.platform).find('darwin') > -1:
+         conf.ADD_LDFLAGS('-framework CoreFoundation')
+ 
+     conf.RECURSE('dynconfig')
+--- a/wscript_configure_embedded_heimdal
++++ b/wscript_configure_embedded_heimdal
+@@ -1 +1,10 @@
+ conf.RECURSE('source4/heimdal_build')
++
++def check_system_heimdal_binary(name):
++    if not conf.find_program(name, var=name.upper()):
++        raise Exception("not conf.find_program(%s, var=%s)" % (name, name.upper()))
++    conf.define('USING_SYSTEM_%s' % name.upper(), 1)
++    return True
++
++check_system_heimdal_binary("compile_et")
++check_system_heimdal_binary("asn1_compile")

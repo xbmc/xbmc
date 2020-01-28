@@ -4,7 +4,7 @@ ifneq ($(shell test -f $(NATIVEPREFIX)/share/config.site && echo 1),1)
   $(error Error: $(NATIVEPREFIX)/share/config.site  is missing. Please reconfigure depends to generate it)
 endif
 
-NATIVE= m4 gettext autoconf automake \
+NATIVE= m4 gettext heimdal autoconf automake \
         libtool pkg-config yasm cmake \
         gas-preprocessor libffi python3 zlib \
         pcre swig \
@@ -42,6 +42,7 @@ autoconf: m4
 automake: autoconf
 dpkg: automake gettext libtool pkg-config tar
 flatbuffers: cmake
+heimdal: libtool
 libtool: automake
 libpng: zlib
 meson: python3 setuptools

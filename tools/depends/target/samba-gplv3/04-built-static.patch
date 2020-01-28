@@ -1,0 +1,52 @@
+--- a/buildtools/wafsamba/pkgconfig.py
++++ b/buildtools/wafsamba/pkgconfig.py
+@@ -60,6 +60,15 @@
+             t.env.LIB_RPATH = ''
+         if vnum:
+             t.env.PACKAGE_VERSION = vnum
++        LIBS_PRIVATE = []
++        REQUIRES_PRIVATE = []
++        for _target, _type in t.env['TARGET_TYPE'].items():
++            if _type == "SYSLIB" and 'LIB_' + _target.upper() in t.env:
++                LIBS_PRIVATE.append('-l%s' % _target)
++                if 'INCLUDES_' + _target.upper() in t.env and 'LIBPATH_' + _target.upper() in t.env and _target not in ['z']:
++                    REQUIRES_PRIVATE.append(_target)
++        t.env.LIBS_PRIVATE = ' '.join(LIBS_PRIVATE)
++        t.env.REQUIRES_PRIVATE = ' '.join(REQUIRES_PRIVATE)
+         for v in [ 'PREFIX', 'EXEC_PREFIX', 'LIB_RPATH' ]:
+             t.vars.append(t.env[v])
+         bld.INSTALL_FILES(dest, target, flat=True, destname=base)
+--- a/buildtools/wafsamba/wafsamba.py
++++ b/buildtools/wafsamba/wafsamba.py
+@@ -241,7 +241,7 @@
+     if bld.env['ENABLE_RELRO'] is True:
+         ldflags.extend(TO_LIST('-Wl,-z,relro,-z,now'))
+ 
+-    features = 'c cshlib symlink_lib install_lib'
++    features = 'c cstlib'
+     if pyext:
+         features += ' pyext'
+     if pyembed:
+--- a/source3/libsmb/smbclient.pc.in
++++ b/source3/libsmb/smbclient.pc.in
+@@ -7,5 +7,7 @@
+ Description: A SMB library interface
+ Version: @PACKAGE_VERSION@
+ Libs: @LIB_RPATH@ -L${libdir} -lsmbclient
++Libs.private: @LIBS_PRIVATE@
++Requires.private: @REQUIRES_PRIVATE@
+ Cflags: -I${includedir}
+ URL: http://www.samba.org/
+--- a/source4/heimdal/lib/hcrypto/camellia-ntt.h
++++ b/source4/heimdal/lib/hcrypto/camellia-ntt.h
+@@ -35,6 +35,10 @@
+ 
+ typedef u32 KEY_TABLE_TYPE[CAMELLIA_TABLE_WORD_LEN];
+ 
++/* symbol renaming */
++#define Camellia_Ekeygen hc_Camellia_Ekeygen
++#define Camellia_EncryptBlock hc_Camellia_EncryptBlock
++#define Camellia_DecryptBlock hc_Camellia_DecryptBlock
+ 
+ void Camellia_Ekeygen(const int keyBitLength,
+ 		      const unsigned char *rawKey,
