@@ -55,7 +55,7 @@ CInputStreamAddon::CInputStreamAddon(BinaryAddonBasePtr& addonBase, IVideoPlayer
     key = name + "." + key;
   }
   m_struct = {{ 0 }};
-  m_caps.m_mask = 0;
+  m_caps = { 0 };
 }
 
 CInputStreamAddon::~CInputStreamAddon()
@@ -120,7 +120,7 @@ bool CInputStreamAddon::Open()
   if (CreateInstance(&m_struct) != ADDON_STATUS_OK || !m_struct.toAddon.open)
     return false;
 
-  INPUTSTREAM props;
+  INPUTSTREAM props = { 0 };
   std::map<std::string, std::string> propsMap;
   for (auto &key : m_fileItemProps)
   {
@@ -153,7 +153,7 @@ bool CInputStreamAddon::Open()
   bool ret = m_struct.toAddon.open(&m_struct, &props);
   if (ret)
   {
-    memset(&m_caps, 0, sizeof(m_caps));
+    m_caps = { 0 };
     m_struct.toAddon.get_capabilities(&m_struct, &m_caps);
 
     m_subAddonProvider = std::shared_ptr<CInputStreamProvider>(new CInputStreamProvider(GetAddonBase(), m_struct.toAddon.addonInstance));
