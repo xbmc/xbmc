@@ -117,6 +117,7 @@ waylandpp: wayland $(WAYLANDPP_DEPS)
 dbus: expat
 libinput: mtdev libevdev
 libevdev: libudev
+samba-gplv3: gnutls
 taglib: $(ZLIB)
 
 .installed-$(PLATFORM): $(DEPENDS)

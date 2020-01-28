@@ -1,41 +1,38 @@
 include ../../Makefile.include
-DEPS= ../../Makefile.include Makefile autotools41.patch configureEndian.patch samba_android.patch samba_off64_t.patch no_fork_and_exec.patch crt_extensions.patch
+DEPS= ../../Makefile.include Makefile 01-fix-dependencies.patch 02-cross_compile.patch 03-builtin-heimdal.patch samba_android.patch no_fork_and_exec.patch crt_extensions.patch
 
 # lib name, version
 LIBNAME=samba
-VERSION=4.1.23
+VERSION=4.11.6
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
 
-ifeq ($(OS), darwin_embedded)
-ifeq ($(CPU), arm64)
-# clang issue with optimizing out functions
-CONFIGURE_EXTRAS= --without-libmsrpc samba_cv_optimize_out_funcation_calls=no ac_cv_func_yp_get_default_domain=no
-endif
-endif
-
-CONFIGURE= cp -f $(CONFIG_SUB) $(CONFIG_GUESS) .; \
-          ./configure --prefix=$(PREFIX) \
+CONFIGURE=./configure --prefix=$(PREFIX) \
+          --cross-compile --cross-answers=cross-answers.txt \
           --without-cluster-support --without-ldap \
-          --without-pam --without-pam_smbpass --enable-fhs \
+          --without-pam --enable-fhs \
           --without-winbind --disable-cups --without-ads \
-          --disable-avahi \
+          --disable-avahi --without-gettext \
           --without-dnsupdate \
-          --without-acl-support \
-          --with-libiconv=$(STAGING_DIR)
+          --without-ad-dc --without-acl-support \
+          --without-utmp --disable-iprint \
+          --nopyc --nopyo \
+          --builtin-libraries=!smbclient,!smbd_base,!smbstatus,ALL \
+          --disable-python \
+          --disable-symbol-versions \
+          --without-json \
+          --without-libarchive \
+          --without-regedit
 
-# configuration settings
-# android does not really support LFS but we can force it
-# in libsmbclient by defining off_t to off64_t and changing
-# libsmbclient.h to match. Defining _OFF_T_DEFINED_ allows
-# us to change the typedef of off_t in android's sys/type.h.
-# Then xbmc will correctly access smb shares with LFS enabled
-# using the altered libsmbclient.h.
-ifeq ($(OS),android)
-export CFLAGS+=-DHAVE_BZERO
+LIBDYLIB=$(PLATFORM)/bin/default/source3/libsmb/libsmbclient.so
+ifeq ($(OS),$(filter $(OS), osx darwin_embedded))
+LIBDYLIB=$(PLATFORM)/bin/default/source3/libsmb/libsmbclient.dylib
 endif
 
-LIBDYLIB=$(PLATFORM)/source3/bin/libsmbclient.a
+export CC CXX CPP AR RANLIB LD AS NM STRIP TOOLCHAIN
+export CFLAGS CXXFLAGS CPPFLAGS LDFLAGS
+export HOST
+export PKG_CONFIG_LIBDIR=$(PREFIX)/lib/pkgconfig
 
 all: .installed-$(PLATFORM)
 
@@ -45,38 +42,40 @@ $(TARBALLS_LOCATION)/$(ARCHIVE):
 $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 	rm -rf $(PLATFORM); mkdir -p $(PLATFORM)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
-	cd $(PLATFORM); patch -p1 -i ../autotools41.patch
-	cd $(PLATFORM); patch -p1 -i ../configureEndian.patch
-	cd $(PLATFORM); chmod +x source3/autogen.sh source3/script/*.sh librpc/build_idl.sh
-	cd $(PLATFORM)/source3; ./autogen.sh
+	cd $(PLATFORM); patch -p1 -i ../01-fix-dependencies.patch
+	cd $(PLATFORM); patch -p1 -i ../02-cross_compile.patch
+	cd $(PLATFORM); patch -p1 -i ../03-builtin-heimdal.patch
 ifeq ($(OS),android)
 	cd $(PLATFORM); patch -p1 -i ../samba_android.patch
-	cd $(PLATFORM); patch -p1 -i ../samba_off64_t.patch
 endif
 ifeq ($(OS), darwin_embedded)
 	cd $(PLATFORM); patch -p1 -i ../no_fork_and_exec.patch
 	cd $(PLATFORM); patch -p1 -i ../crt_extensions.patch
 endif
+	cd $(PLATFORM); $(CONFIGURE)
 ifeq (darwin, $(findstring darwin, $(HOST)))
-	sed -ie "s|ifndef HAVE_CLOCK_GETTIME|if !defined(HAVE_CLOCK_GETTIME) \&\& !defined(CLOCK_REALTIME)|" "$(PLATFORM)/lib/replace/system/time.h"
+ifneq ($(TARGET_PLATFORM),appletvos)
+	# clock_gettime is only available since macOS 10.12, iOS 10.0 and tvOS 10.0
+	# build sytem doesn't include time.h for the check,
+	# so the version guards have no effect
+	sed -ie -E "s/#define (HAVE_(CLOCK_GETTIME|CLOCK_MONOTONIC|CLOCK_PROCESS_CPUTIME_ID|CLOCK_REALTIME)) 1/\/* #undef \1 *\//g" $(PLATFORM)/bin/default/include/config.h
 endif
-	cd $(PLATFORM)/source3; $(CONFIGURE)
+endif
 
 $(LIBDYLIB): $(PLATFORM)
-	$(MAKE) -C $(PLATFORM)/source3 libsmbclient
+	cd $(PLATFORM); WAF_MAKE=1 ./buildtools/bin/waf --targets=smbclient
 
 .installed-$(PLATFORM): $(LIBDYLIB)
-	$(MAKE) -C $(PLATFORM)/source3 installlibsmbclient
-ifeq (darwin, $(findstring darwin, $(HOST)))
-	mv $(PREFIX)/lib/libsmbclient.dylib.0 $(PREFIX)/lib/libsmbclient.dylib
+	cd $(PLATFORM); WAF_MAKE=1 ./buildtools/bin/waf install --targets=smbclient
+	install $(LIBDYLIB) $(PREFIX)/lib
+ifeq ($(OS),$(filter $(OS), osx darwin_embedded))
 	install_name_tool -id $(PREFIX)/lib/libsmbclient.dylib $(PREFIX)/lib/libsmbclient.dylib
 endif
 	touch $@
 
 clean:
-	$(MAKE) -C $(PLATFORM)/source3 clean
+	cd $(PLATFORM); WAF_MAKE=1 ./buildtools/bin/waf uninstall --targets=smbclient
 	rm -f .installed-$(PLATFORM)
 
 distclean::
 	rm -rf $(PLATFORM) .installed-$(PLATFORM)
-
