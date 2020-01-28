@@ -1,5 +1,5 @@
 include ../../Makefile.include
-DEPS= ../../Makefile.include Makefile 01-fix-dependencies.patch 02-cross_compile.patch 03-builtin-heimdal.patch samba_android.patch no_fork_and_exec.patch crt_extensions.patch
+DEPS= ../../Makefile.include Makefile 01-fix-dependencies.patch 02-cross_compile.patch 03-builtin-heimdal.patch 04-built-static.patch samba_android.patch no_fork_and_exec.patch crt_extensions.patch
 
 # lib name, version
 LIBNAME=samba
@@ -24,10 +24,7 @@ CONFIGURE=./configure --prefix=$(PREFIX) \
           --without-libarchive \
           --without-regedit
 
-LIBDYLIB=$(PLATFORM)/bin/default/source3/libsmb/libsmbclient.so
-ifeq ($(OS),$(filter $(OS), osx darwin_embedded))
-LIBDYLIB=$(PLATFORM)/bin/default/source3/libsmb/libsmbclient.dylib
-endif
+LIBDYLIB=$(PLATFORM)/bin/default/source3/libsmb/libsmbclient.a
 
 export CC CXX CPP AR RANLIB LD AS NM STRIP TOOLCHAIN
 export CFLAGS CXXFLAGS CPPFLAGS LDFLAGS
@@ -45,6 +42,7 @@ $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 	cd $(PLATFORM); patch -p1 -i ../01-fix-dependencies.patch
 	cd $(PLATFORM); patch -p1 -i ../02-cross_compile.patch
 	cd $(PLATFORM); patch -p1 -i ../03-builtin-heimdal.patch
+	cd $(PLATFORM); patch -p1 -i ../04-built-static.patch
 ifeq ($(OS),android)
 	cd $(PLATFORM); patch -p1 -i ../samba_android.patch
 endif
@@ -68,9 +66,6 @@ $(LIBDYLIB): $(PLATFORM)
 .installed-$(PLATFORM): $(LIBDYLIB)
 	cd $(PLATFORM); WAF_MAKE=1 ./buildtools/bin/waf install --targets=smbclient
 	install $(LIBDYLIB) $(PREFIX)/lib
-ifeq ($(OS),$(filter $(OS), osx darwin_embedded))
-	install_name_tool -id $(PREFIX)/lib/libsmbclient.dylib $(PREFIX)/lib/libsmbclient.dylib
-endif
 	touch $@
 
 clean:

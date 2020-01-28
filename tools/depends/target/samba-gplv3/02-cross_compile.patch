@@ -66,17 +66,6 @@
          conf.DEFINE('_LARGE_FILES', 1)
          return True
      return False
---- a/buildtools/wafsamba/samba_install.py
-+++ b/buildtools/wafsamba/samba_install.py
-@@ -113,7 +113,7 @@
-                 inst_name    = bld.make_libname(t.target, nolibprefix=True, python=True)
-             else:
-                 inst_name    = bld.make_libname(t.target)
--        elif self.vnum:
-+        elif self.vnum and not self.env.disable_symbol_versions:
-             vnum_base    = self.vnum.split('.')[0]
-             install_name = bld.make_libname(target_name, version=self.vnum)
-             install_link = bld.make_libname(target_name, version=vnum_base)
 --- a/buildtools/wafsamba/wscript
 +++ b/buildtools/wafsamba/wscript
 @@ -302,7 +302,7 @@
@@ -88,14 +77,6 @@
                      headers='stdio.h',
                      msg='Checking simple C program')
  
-@@ -345,6 +345,7 @@
-             # the user can of course always override it.
-             conf.env.PRIVATELIBDIR = conf.env.LIBDIR
- 
-+    conf.env.disable_symbol_versions = Options.options.disable_symbol_versions
-     if (not Options.options.disable_symbol_versions and
-         conf.CHECK_LIBRARY_SUPPORT(rpath=support_rpath,
-                                    version_script=True,
 --- a/lib/replace/system/time.h
 +++ b/lib/replace/system/time.h
 @@ -74,9 +74,6 @@
