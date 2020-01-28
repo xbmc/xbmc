@@ -21,13 +21,15 @@ class CInputStreamProvider
   : public ADDON::IAddonProvider
 {
 public:
-  CInputStreamProvider(ADDON::BinaryAddonBasePtr addonBase, kodi::addon::IAddonInstance* parentInstance);
+  CInputStreamProvider(ADDON::BinaryAddonBasePtr addonBase, KODI_HANDLE parentInstance);
 
-  void getAddonInstance(INSTANCE_TYPE instance_type, ADDON::BinaryAddonBasePtr& addonBase, kodi::addon::IAddonInstance*& parentInstance) override;
+  void getAddonInstance(INSTANCE_TYPE instance_type,
+                        ADDON::BinaryAddonBasePtr& addonBase,
+                        KODI_HANDLE& parentInstance) override;
 
 private:
   ADDON::BinaryAddonBasePtr m_addonBase;
-  kodi::addon::IAddonInstance* m_parentInstance;
+  KODI_HANDLE m_parentInstance;
 };
 
 //! \brief Input stream class

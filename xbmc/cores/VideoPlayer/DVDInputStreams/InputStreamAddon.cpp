@@ -20,13 +20,15 @@
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 
-CInputStreamProvider::CInputStreamProvider(ADDON::BinaryAddonBasePtr addonBase, kodi::addon::IAddonInstance* parentInstance)
-  : m_addonBase(addonBase)
-  , m_parentInstance(parentInstance)
+CInputStreamProvider::CInputStreamProvider(ADDON::BinaryAddonBasePtr addonBase,
+                                           KODI_HANDLE parentInstance)
+  : m_addonBase(addonBase), m_parentInstance(parentInstance)
 {
 }
 
-void CInputStreamProvider::getAddonInstance(INSTANCE_TYPE instance_type, ADDON::BinaryAddonBasePtr& addonBase, kodi::addon::IAddonInstance*& parentInstance)
+void CInputStreamProvider::getAddonInstance(INSTANCE_TYPE instance_type,
+                                            ADDON::BinaryAddonBasePtr& addonBase,
+                                            KODI_HANDLE& parentInstance)
 {
   if (instance_type == ADDON::IAddonProvider::INSTANCE_VIDEOCODEC)
   {
