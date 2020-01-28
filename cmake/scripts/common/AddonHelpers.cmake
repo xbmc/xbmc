@@ -92,6 +92,7 @@ macro (build_addon target prefix libs)
       endforeach()
     endif()
 
+    message(STATUS "Addon dependency check ...")
     # Set defines used in addon.xml.in and read from versions.h to set add-on
     # version parts automatically
     file(STRINGS ${KODI_INCLUDE_DIR}/versions.h BIN_ADDON_PARTS)
@@ -128,7 +129,7 @@ macro (build_addon target prefix libs)
                     set(ADDON_DEPENDS "${ADDON_DEPENDS}\n<import addon=\"${${xml_entry_name}}\" minversion=\"${${depends_minver}}\" version=\"${${depends_ver}}\"/>")
                     # Inform with them the addon header about used type, if not present before
                     add_definitions(-D${used_type_name})
-                    message(STATUS "Added usage definition: ${used_type_name}")
+                    message(STATUS " - Added usage definition: ${used_type_name}")
                     set(FOUND_HEADER_USAGE 1)
                   endif()
                 endif()
