@@ -785,8 +785,7 @@ void CAddonsDirectory::GenerateAddonListing(const CURL &path,
     itemPath.SetFileName(addon->ID());
     CFileItemPtr pItem = FileItemFromAddon(addon, itemPath.Get(), false);
 
-    AddonPtr localAddon;
-    bool installed = CServiceBroker::GetAddonMgr().GetAddon(addon->ID(), localAddon, ADDON_UNKNOWN, false);
+    bool installed = CServiceBroker::GetAddonMgr().IsAddonInstalled(addon->ID());
     bool disabled = CServiceBroker::GetAddonMgr().IsAddonDisabled(addon->ID());
     bool hasUpdate = outdated.find(addon->ID()) != outdated.end();
 
