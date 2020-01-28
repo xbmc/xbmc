@@ -11,35 +11,37 @@
 
 #include "AirTunesServer.h"
 
-#include <map>
-#include <string>
-#include <utility>
-
 #include "Application.h"
-#include "ServiceBroker.h"
-#include "cores/VideoPlayer/DVDDemuxers/DVDDemuxBXA.h"
+#include "CompileInfo.h"
 #include "FileItem.h"
+#include "GUIInfoManager.h"
+#include "ServiceBroker.h"
+#include "URL.h"
+#include "cores/VideoPlayer/DVDDemuxers/DVDDemuxBXA.h"
 #include "filesystem/File.h"
 #include "filesystem/PipeFile.h"
-#include "GUIInfoManager.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "input/Key.h"
 #include "interfaces/AnnouncementManager.h"
 #include "messaging/ApplicationMessenger.h"
 #include "music/tags/MusicInfoTag.h"
-#include "network/dacp/dacp.h"
 #include "network/Network.h"
 #include "network/Zeroconf.h"
 #include "network/ZeroconfBrowser.h"
+#include "network/dacp/dacp.h"
+#include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
-#include "URL.h"
 #include "utils/EndianSwap.h"
-#include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/SystemInfo.h"
 #include "utils/Variant.h"
+#include "utils/log.h"
+
+#include <map>
+#include <string>
+#include <utility>
 
 #if !defined(TARGET_WINDOWS)
 #pragma GCC diagnostic ignored "-Wwrite-strings"
@@ -166,7 +168,7 @@ void CAirTunesServer::Announce(ANNOUNCEMENT::AnnouncementFlag flag,
                                const std::string& message,
                                const CVariant& data)
 {
-  if ((flag & ANNOUNCEMENT::Player) && sender == "xbmc")
+  if ((flag & ANNOUNCEMENT::Player) && sender == ANNOUNCEMENT::CAnnouncementManager::ANNOUNCEMENT_SENDER)
   {
     if ((message == "OnPlay" || message == "OnResume") && m_streamStarted)
     {

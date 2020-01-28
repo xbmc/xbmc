@@ -214,13 +214,15 @@ JSONRPC_STATUS CJSONRPC::SetConfiguration(const std::string &method, ITransportL
 JSONRPC_STATUS CJSONRPC::NotifyAll(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant& parameterObject, CVariant &result)
 {
   if (parameterObject["data"].isNull())
-    CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Other, parameterObject["sender"].asString().c_str(),
-      parameterObject["message"].asString().c_str());
+    CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Other,
+                                                       parameterObject["sender"].asString(),
+                                                       parameterObject["message"].asString());
   else
   {
     CVariant data = parameterObject["data"];
-    CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Other, parameterObject["sender"].asString().c_str(),
-      parameterObject["message"].asString().c_str(), data);
+    CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Other,
+                                                       parameterObject["sender"].asString(),
+                                                       parameterObject["message"].asString(), data);
   }
 
   return ACK;

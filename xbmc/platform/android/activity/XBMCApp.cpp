@@ -172,7 +172,7 @@ void CXBMCApp::Announce(ANNOUNCEMENT::AnnouncementFlag flag,
                         const std::string& message,
                         const CVariant& data)
 {
-  if (sender != "xbmc")
+  if (sender != CAnnouncementManager::ANNOUNCEMENT_SENDER)
     return;
 
   if (flag & Input)

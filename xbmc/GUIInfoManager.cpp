@@ -10614,7 +10614,7 @@ void CGUIInfoManager::SetCurrentItem(const CFileItem &item)
 
   m_infoProviders.InitCurrentItem(m_currentFile);
 
-  CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Info, "xbmc", "OnChanged");
+  CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Info, "OnChanged");
 }
 
 void CGUIInfoManager::SetCurrentAlbumThumb(const std::string &thumbFileName)

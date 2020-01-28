@@ -39,6 +39,7 @@
 #include "video/VideoDatabase.h"
 #include "video/VideoThumbLoader.h"
 #include "view/GUIViewState.h"
+#include "xbmc/interfaces/AnnouncementManager.h"
 
 #include <Platinum/Source/Platinum/Platinum.h>
 
@@ -419,7 +420,7 @@ void CUPnPServer::Announce(AnnouncementFlag flag,
     int item_id;
     std::string item_type;
 
-    if (sender != "xbmc")
+    if (sender != CAnnouncementManager::ANNOUNCEMENT_SENDER)
       return;
 
     if (message != "OnUpdate" && message != "OnRemove" && message != "OnScanStarted" &&
@@ -1089,7 +1090,8 @@ CUPnPServer::OnUpdateObject(PLT_ActionReference&             action,
               CVariant data;
               data["id"] = updated.GetVideoInfoTag()->m_iDbId;
               data["type"] = updated.GetVideoInfoTag()->m_type;
-              CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::VideoLibrary, "xbmc", "OnUpdate", data);
+              CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::VideoLibrary,
+                                                                 "OnUpdate", data);
             }
             updatelisting = true;
         }

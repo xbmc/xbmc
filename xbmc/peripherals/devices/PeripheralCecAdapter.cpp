@@ -22,6 +22,7 @@
 #include "utils/JobManager.h"
 #include "utils/Variant.h"
 #include "utils/log.h"
+#include "xbmc/interfaces/AnnouncementManager.h"
 
 #include <libcec/cec.h>
 
@@ -29,6 +30,7 @@ using namespace KODI;
 using namespace MESSAGING;
 using namespace PERIPHERALS;
 using namespace CEC;
+using namespace ANNOUNCEMENT;
 
 #define CEC_LIB_SUPPORTED_VERSION LIBCEC_VERSION_TO_UINT(4, 0, 0)
 
@@ -123,14 +125,16 @@ void CPeripheralCecAdapter::Announce(ANNOUNCEMENT::AnnouncementFlag flag,
                                      const std::string& message,
                                      const CVariant& data)
 {
-  if (flag == ANNOUNCEMENT::System && sender == "xbmc" && message == "OnQuit" && m_bIsReady)
+  if (flag == ANNOUNCEMENT::System && sender == CAnnouncementManager::ANNOUNCEMENT_SENDER &&
+      message == "OnQuit" && m_bIsReady)
   {
     CSingleLock lock(m_critSection);
     m_iExitCode = static_cast<int>(data["exitcode"].asInteger(EXITCODE_QUIT));
     CServiceBroker::GetAnnouncementManager()->RemoveAnnouncer(this);
     StopThread(false);
   }
-  else if (flag == ANNOUNCEMENT::GUI && sender == "xbmc") && message == "OnScreensaverDeactivated" && m_bIsReady)
+  else if (flag == ANNOUNCEMENT::GUI && sender == CAnnouncementManager::ANNOUNCEMENT_SENDER &&
+           message == "OnScreensaverDeactivated" && m_bIsReady)
   {
     bool bIgnoreDeactivate(false);
     if (data["shuttingdown"].isBoolean())
@@ -148,8 +152,8 @@ void CPeripheralCecAdapter::Announce(ANNOUNCEMENT::AnnouncementFlag flag,
       ActivateSource();
     }
   }
-  else if (flag == ANNOUNCEMENT::GUI && sender == "xbmc" && message == "OnScreensaverActivated" &&
-           m_bIsReady)
+  else if (flag == ANNOUNCEMENT::GUI && sender == CAnnouncementManager::ANNOUNCEMENT_SENDER &&
+           message == "OnScreensaverActivated" && m_bIsReady)
   {
     // Don't put devices to standby if application is currently playing
     if (!g_application.GetAppPlayer().IsPlaying() && m_bPowerOffScreensaver)
@@ -159,7 +163,8 @@ void CPeripheralCecAdapter::Announce(ANNOUNCEMENT::AnnouncementFlag flag,
         StandbyDevices();
     }
   }
-  else if (flag == ANNOUNCEMENT::System && sender == "xbmc" && message == "OnSleep")
+  else if (flag == ANNOUNCEMENT::System && sender == CAnnouncementManager::ANNOUNCEMENT_SENDER &&
+           message == "OnSleep")
   {
     // this will also power off devices when we're the active source
     {
@@ -168,7 +173,8 @@ void CPeripheralCecAdapter::Announce(ANNOUNCEMENT::AnnouncementFlag flag,
     }
     StopThread();
   }
-  else if (flag == ANNOUNCEMENT::System && sender == "xbmc" && message == "OnWake")
+  else if (flag == ANNOUNCEMENT::System && sender == CAnnouncementManager::ANNOUNCEMENT_SENDER &&
+           message == "OnWake")
   {
     CLog::Log(LOGDEBUG, "%s - reconnecting to the CEC adapter after standby mode", __FUNCTION__);
     if (ReopenConnection())
@@ -183,14 +189,15 @@ void CPeripheralCecAdapter::Announce(ANNOUNCEMENT::AnnouncementFlag flag,
         ActivateSource();
     }
   }
-  else if (flag == ANNOUNCEMENT::Player && sender == "xbmc" && message == "OnStop")
+  else if (flag == ANNOUNCEMENT::Player && sender == CAnnouncementManager::ANNOUNCEMENT_SENDER &&
+           message == "OnStop")
   {
     CSingleLock lock(m_critSection);
     m_preventActivateSourceOnPlay = CDateTime::GetCurrentDateTime();
     m_bOnPlayReceived = false;
   }
-  else if (flag == ANNOUNCEMENT::Player && sender == "xbmc" && (message == "OnPlay") ||
-           message == "OnResume"))
+  else if (flag == ANNOUNCEMENT::Player && sender == CAnnouncementManager::ANNOUNCEMENT_SENDER &&
+           (message == "OnPlay" || message == "OnResume"))
   {
     // activate the source when playback started, and the option is enabled
     bool bActivateSource(false);

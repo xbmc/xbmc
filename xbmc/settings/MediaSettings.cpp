@@ -349,7 +349,7 @@ void CMediaSettings::OnSettingChanged(std::shared_ptr<const CSetting> setting)
     return;
 
   if (setting->GetId() == CSettings::SETTING_VIDEOLIBRARY_SHOWUNWATCHEDPLOTS)
-    CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::VideoLibrary, "xbmc", "OnRefresh");
+    CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::VideoLibrary, "OnRefresh");
 }
 
 int CMediaSettings::GetWatchedMode(const std::string &content) const

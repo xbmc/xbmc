@@ -25,6 +25,8 @@
 
 using namespace ANNOUNCEMENT;
 
+const std::string CAnnouncementManager::ANNOUNCEMENT_SENDER = "xbmc";
+
 CAnnouncementManager::CAnnouncementManager() : CThread("Announce")
 {
 }
@@ -72,6 +74,34 @@ void CAnnouncementManager::RemoveAnnouncer(IAnnouncer *listener)
     }
   }
 }
+
+void CAnnouncementManager::Announce(AnnouncementFlag flag, const std::string& message)
+{
+  Announce(flag, ANNOUNCEMENT_SENDER, message);
+}
+
+void CAnnouncementManager::Announce(AnnouncementFlag flag,
+                                    const std::string& message,
+                                    const CVariant& data)
+{
+  Announce(flag, ANNOUNCEMENT_SENDER, message, data);
+}
+
+void CAnnouncementManager::Announce(AnnouncementFlag flag,
+                                    const std::string& message,
+                                    const std::shared_ptr<const CFileItem>& item)
+{
+  Announce(flag, ANNOUNCEMENT_SENDER, message, item);
+}
+
+void CAnnouncementManager::Announce(AnnouncementFlag flag,
+                                    const std::string& message,
+                                    const std::shared_ptr<const CFileItem>& item,
+                                    const CVariant& data)
+{
+  Announce(flag, ANNOUNCEMENT_SENDER, message, item, data);
+}
+
 
 void CAnnouncementManager::Announce(AnnouncementFlag flag,
                                     const std::string& sender,

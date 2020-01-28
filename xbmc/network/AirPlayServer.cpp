@@ -9,29 +9,31 @@
  *  from Airplayer. https://github.com/PascalW/Airplayer
  */
 
-#include "network/Network.h"
 #include "AirPlayServer.h"
 
-#include <netinet/in.h>
-#include <arpa/inet.h>
-#include "utils/log.h"
-#include "utils/StringUtils.h"
-#include "threads/SingleLock.h"
-#include "filesystem/File.h"
-#include "filesystem/Directory.h"
-#include "FileItem.h"
 #include "Application.h"
-#include "ServiceBroker.h"
-#include "messaging/ApplicationMessenger.h"
+#include "CompileInfo.h"
+#include "FileItem.h"
 #include "PlayListPlayer.h"
-#include "utils/Digest.h"
-#include "utils/Variant.h"
-#include "settings/Settings.h"
-#include "settings/SettingsComponent.h"
-#include "input/Key.h"
+#include "ServiceBroker.h"
 #include "URL.h"
 #include "cores/IPlayer.h"
+#include "filesystem/Directory.h"
+#include "filesystem/File.h"
+#include "input/Key.h"
 #include "interfaces/AnnouncementManager.h"
+#include "messaging/ApplicationMessenger.h"
+#include "network/Network.h"
+#include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
+#include "threads/SingleLock.h"
+#include "utils/Digest.h"
+#include "utils/StringUtils.h"
+#include "utils/Variant.h"
+#include "utils/log.h"
+
+#include <arpa/inet.h>
+#include <netinet/in.h>
 #ifdef HAS_ZEROCONF
 #include "network/Zeroconf.h"
 #endif // HAS_ZEROCONF
@@ -157,7 +159,7 @@ void CAirPlayServer::Announce(ANNOUNCEMENT::AnnouncementFlag flag,
 {
   CSingleLock lock(ServerInstanceLock);
 
-  if ((flag & ANNOUNCEMENT::Player) && sender == "xbmc" && ServerInstance)
+  if ((flag & ANNOUNCEMENT::Player) && sender == ANNOUNCEMENT::CAnnouncementManager::ANNOUNCEMENT_SENDER && ServerInstance)
   {
     if (message == "OnStop")
     {

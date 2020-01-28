@@ -31,6 +31,7 @@
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
+#include "xbmc/interfaces/AnnouncementManager.h"
 
 #include <inttypes.h>
 
@@ -234,7 +235,7 @@ void CUPnPRenderer::Announce(ANNOUNCEMENT::AnnouncementFlag flag,
                              const std::string& message,
                              const CVariant& data)
 {
-  if (sender != "xbmc")
+  if (sender != ANNOUNCEMENT::CAnnouncementManager::ANNOUNCEMENT_SENDER)
     return;
 
   NPT_AutoLock lock(m_state);

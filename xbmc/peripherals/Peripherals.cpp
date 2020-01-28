@@ -8,6 +8,7 @@
 
 #include "Peripherals.h"
 
+#include "CompileInfo.h"
 #include "EventScanner.h"
 #include "addons/AddonButtonMap.h"
 #include "addons/AddonManager.h"
@@ -1012,7 +1013,7 @@ void CPeripherals::Announce(ANNOUNCEMENT::AnnouncementFlag flag,
                             const std::string& message,
                             const CVariant& data)
 {
-  if (flag == ANNOUNCEMENT::Player && sender == "xbmc")
+  if (flag == ANNOUNCEMENT::Player && sender == ANNOUNCEMENT::CAnnouncementManager::ANNOUNCEMENT_SENDER)
   {
     if (message == "OnQuit")
     {
