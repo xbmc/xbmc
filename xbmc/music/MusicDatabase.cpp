@@ -2207,6 +2207,7 @@ CSong CMusicDatabase::GetSongFromDataset(const dbiplus::sql_record* const record
   song.iTrack = record->at(offset + song_iTrack).get_asInt() ;
   song.iDuration = record->at(offset + song_iDuration).get_asInt() ;
   song.iYear = record->at(offset + song_iYear).get_asInt() ;
+  song.strDiscSubtitle = record->at(offset + song_strDiscSubtitle).get_asString();
   song.strTitle = record->at(offset + song_strTitle).get_asString();
   song.iTimesPlayed = record->at(offset + song_iTimesPlayed).get_asInt();
   song.lastPlayed.SetFromDBDateTime(record->at(offset + song_lastplayed).get_asString());
