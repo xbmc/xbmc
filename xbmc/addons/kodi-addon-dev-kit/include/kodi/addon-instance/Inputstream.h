@@ -138,6 +138,7 @@ extern "C"
       TYPE_AUDIO,
       TYPE_SUBTITLE,
       TYPE_TELETEXT,
+      TYPE_RDS,
     } m_streamType;
 
     enum Codec_FEATURES : uint32_t
