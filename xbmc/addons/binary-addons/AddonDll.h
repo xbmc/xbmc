@@ -107,7 +107,7 @@ public:
 protected:
   static std::string GetDllPath(const std::string& strFileName);
 
-  CAddonInterfaces* m_pHelpers;
+  CAddonInterfaces* m_pHelpers = nullptr;
   std::string m_parentLib;
 
 private:
@@ -129,9 +129,9 @@ private:
 
   bool CheckAPIVersion(int type);
 
-  BinaryAddonBasePtr m_binaryAddonBase;
-  DllAddon* m_pDll;
-  bool m_initialized;
+  BinaryAddonBasePtr m_binaryAddonBase = nullptr;
+  DllAddon* m_pDll = nullptr;
+  bool m_initialized = false;
   bool LoadDll();
   std::map<ADDON_INSTANCE_HANDLER, std::pair<ADDON_TYPE, KODI_HANDLE>> m_usedInstances;
 
@@ -143,7 +143,7 @@ private:
    * This structure is defined in:
    * /xbmc/addons/kodi-addon-dev-kit/include/kodi/AddonBase.h
    */
-  AddonGlobalInterface m_interface;
+  AddonGlobalInterface m_interface = {0};
 };
 
 } /* namespace ADDON */

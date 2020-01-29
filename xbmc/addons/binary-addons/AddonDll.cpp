@@ -27,22 +27,11 @@ namespace ADDON
 {
 
 CAddonDll::CAddonDll(const AddonInfoPtr& addonInfo, BinaryAddonBasePtr addonBase)
-  : CAddon(addonInfo, addonBase->MainType()),
-    m_pHelpers(nullptr),
-    m_binaryAddonBase(addonBase),
-    m_pDll(nullptr),
-    m_initialized(false),
-    m_interface{0}
+  : CAddon(addonInfo, addonBase->MainType()), m_binaryAddonBase(addonBase)
 {
 }
 
-CAddonDll::CAddonDll(const AddonInfoPtr& addonInfo, TYPE addonType)
-  : CAddon(addonInfo, addonType),
-    m_pHelpers(nullptr),
-    m_binaryAddonBase(nullptr),
-    m_pDll(nullptr),
-    m_initialized(false),
-    m_interface{0}
+CAddonDll::CAddonDll(const AddonInfoPtr& addonInfo, TYPE addonType) : CAddon(addonInfo, addonType)
 {
 }
 
@@ -151,7 +140,7 @@ bool CAddonDll::LoadDll()
   if (!m_pDll->Load())
   {
     delete m_pDll;
-    m_pDll = NULL;
+    m_pDll = nullptr;
 
     std::string heading = StringUtils::Format("%s: %s", CAddonInfo::TranslateType(Type(), true).c_str(), Name().c_str());
     HELPERS::ShowOKDialogLines(CVariant{heading}, CVariant{24070}, CVariant{24071});
@@ -286,11 +275,11 @@ void CAddonDll::Destroy()
   Interface_Base::DeInitInterface(m_interface);
 
   delete m_pHelpers;
-  m_pHelpers = NULL;
+  m_pHelpers = nullptr;
   if (m_pDll)
   {
     delete m_pDll;
-    m_pDll = NULL;
+    m_pDll = nullptr;
     CLog::Log(LOGINFO, "ADDON: Dll Destroyed - %s", Name().c_str());
   }
   m_initialized = false;
@@ -353,7 +342,7 @@ AddonPtr CAddonDll::GetRunningInstance() const
 
 bool CAddonDll::DllLoaded(void) const
 {
-  return m_pDll != NULL;
+  return m_pDll != nullptr;
 }
 
 AddonVersion CAddonDll::GetTypeVersionDll(int type) const
