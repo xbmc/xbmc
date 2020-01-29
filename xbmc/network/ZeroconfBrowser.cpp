@@ -11,7 +11,7 @@
 #include <cassert>
 
 #if defined (HAS_AVAHI)
-#include "platform/linux/network/ZeroconfBrowserAvahi.h"
+#include "platform/linux/network/zeroconf/ZeroconfBrowserAvahi.h"
 #elif defined(TARGET_DARWIN)
 //on osx use the native implementation
 #include "platform/darwin/network/ZeroconfBrowserDarwin.h"
