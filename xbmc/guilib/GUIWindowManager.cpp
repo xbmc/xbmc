@@ -851,7 +851,8 @@ void CGUIWindowManager::CloseDialogs(bool forceClose) const
   auto activeDialogs = m_activeDialogs;
   for (const auto& window : activeDialogs)
   {
-    window->Close(forceClose);
+    if (window->IsModalDialog())
+      window->Close(forceClose);
   }
 }
 
