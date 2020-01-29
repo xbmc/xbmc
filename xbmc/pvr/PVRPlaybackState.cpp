@@ -65,7 +65,7 @@ void CPVRPlaybackState::OnPlaybackStarted(const std::shared_ptr<CFileItem> item)
   m_playingRecording.reset();
   m_playingEpgTag.reset();
   m_playingClientId = -1;
-  m_iplayingChannelUniqueID = -1;
+  m_playingChannelUniqueId = -1;
   m_strPlayingClientName.clear();
 
   if (item->HasPVRChannelInfoTag())
@@ -74,7 +74,7 @@ void CPVRPlaybackState::OnPlaybackStarted(const std::shared_ptr<CFileItem> item)
 
     m_playingChannel = channel;
     m_playingClientId = m_playingChannel->ClientID();
-    m_iplayingChannelUniqueID = m_playingChannel->UniqueID();
+    m_playingChannelUniqueId = m_playingChannel->UniqueID();
 
     SetPlayingGroup(channel);
 
@@ -143,7 +143,7 @@ bool CPVRPlaybackState::OnPlaybackStopped(const std::shared_ptr<CFileItem> item)
     bChanged = true;
     m_playingChannel.reset();
     m_playingClientId = -1;
-    m_iplayingChannelUniqueID = -1;
+    m_playingChannelUniqueId = -1;
     m_strPlayingClientName.clear();
   }
   else if (item->HasPVRRecordingInfoTag() && item->GetPVRRecordingInfoTag() == m_playingRecording)
@@ -151,7 +151,7 @@ bool CPVRPlaybackState::OnPlaybackStopped(const std::shared_ptr<CFileItem> item)
     bChanged = true;
     m_playingRecording.reset();
     m_playingClientId = -1;
-    m_iplayingChannelUniqueID = -1;
+    m_playingChannelUniqueId = -1;
     m_strPlayingClientName.clear();
   }
   else if (item->HasEPGInfoTag() && m_playingEpgTag && *item->GetEPGInfoTag() == *m_playingEpgTag)
@@ -159,7 +159,7 @@ bool CPVRPlaybackState::OnPlaybackStopped(const std::shared_ptr<CFileItem> item)
     bChanged = true;
     m_playingEpgTag.reset();
     m_playingClientId = -1;
-    m_iplayingChannelUniqueID = -1;
+    m_playingChannelUniqueId = -1;
     m_strPlayingClientName.clear();
   }
 
@@ -204,7 +204,7 @@ bool CPVRPlaybackState::IsPlayingEpgTag() const
 
 bool CPVRPlaybackState::IsPlayingChannel(int iClientID, int iUniqueChannelID) const
 {
-  return m_playingChannel && m_playingClientId == iClientID && m_iplayingChannelUniqueID == iUniqueChannelID;
+  return m_playingChannel && m_playingClientId == iClientID && m_playingChannelUniqueId == iUniqueChannelID;
 }
 
 bool CPVRPlaybackState::IsPlayingChannel(const std::shared_ptr<CPVRChannel>& channel) const

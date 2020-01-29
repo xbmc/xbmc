@@ -210,7 +210,7 @@ private:
   std::shared_ptr<CPVREpgInfoTag> m_playingEpgTag;
   std::string m_strPlayingClientName;
   int m_playingClientId = -1;
-  int m_iplayingChannelUniqueID = -1;
+  int m_playingChannelUniqueId = -1;
 
   class CLastWatchedUpdateTimer;
   std::unique_ptr<CLastWatchedUpdateTimer> m_lastWatchedUpdateTimer;
