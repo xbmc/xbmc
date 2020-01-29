@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include "FileItem.h"
+#include "addons/kodi-addon-dev-kit/include/kodi/Filesystem.h"
 
 extern "C"
 {
