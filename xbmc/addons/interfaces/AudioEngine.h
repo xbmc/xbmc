@@ -10,6 +10,8 @@
 
 #include "addons/kodi-addon-dev-kit/include/kodi/AudioEngine.h"
 
+extern "C"
+{
 namespace ADDON
 {
 
@@ -179,3 +181,4 @@ struct Interface_AudioEngine
 };
 
 } /* namespace ADDON */
+} /* extern "C" */

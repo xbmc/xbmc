@@ -10,6 +10,8 @@
 
 struct AddonGlobalInterface;
 
+extern "C"
+{
 namespace ADDON
 {
 
@@ -45,3 +47,4 @@ namespace ADDON
   };
 
 } /* namespace ADDON */
+} /* extern "C" */
