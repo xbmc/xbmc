@@ -52,7 +52,13 @@ void CPlayerSelectionRule::Initialize(TiXmlElement* pRule)
   m_tBD = GetTristate(pRule->Attribute("bd"));
   m_tDVD = GetTristate(pRule->Attribute("dvd"));
   m_tDVDFile = GetTristate(pRule->Attribute("dvdfile"));
-  m_tDVDImage = GetTristate(pRule->Attribute("dvdimage"));
+  m_tDiscImage = GetTristate(pRule->Attribute("discimage"));
+  if (m_tDiscImage < 0)
+  {
+    m_tDiscImage = GetTristate(pRule->Attribute("dvdimage"));
+    if (m_tDiscImage >= 0)
+      CLog::Log(LOGWARNING, "\"dvdimage\" tag is deprecated. use \"discimage\"");
+  }
 
   m_protocols = XMLUtils::GetAttribute(pRule, "protocols");
   m_fileTypes = XMLUtils::GetAttribute(pRule, "filetypes");
@@ -126,7 +132,7 @@ void CPlayerSelectionRule::GetPlayers(const CFileItem& item, std::vector<std::st
     return;
   if (m_tDVDFile >= 0 && (m_tDVDFile > 0) != item.IsDVDFile())
     return;
-  if (m_tDVDImage >= 0 && (m_tDVDImage > 0) != item.IsDiscImage())
+  if (m_tDiscImage >= 0 && (m_tDiscImage > 0) != item.IsDiscImage())
     return;
 
   CRegExp regExp(false, CRegExp::autoUtf8);

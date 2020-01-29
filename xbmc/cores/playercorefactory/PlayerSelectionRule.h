@@ -42,7 +42,7 @@ private:
   int m_tBD;
   int m_tDVD;
   int m_tDVDFile;
-  int m_tDVDImage;
+  int m_tDiscImage;
 
   std::string m_protocols;
   std::string m_fileTypes;
