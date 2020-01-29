@@ -317,7 +317,11 @@ void CAddonDll::Destroy()
   m_initialized = false;
 }
 
-ADDON_STATUS CAddonDll::CreateInstance(ADDON_TYPE instanceType, const std::string& instanceID, KODI_HANDLE instance, KODI_HANDLE parentInstance)
+ADDON_STATUS CAddonDll::CreateInstance(ADDON_TYPE instanceType,
+                                       ADDON_INSTANCE_HANDLER instanceClass,
+                                       const std::string& instanceID,
+                                       KODI_HANDLE instance,
+                                       KODI_HANDLE parentInstance)
 {
   ADDON_STATUS status = ADDON_STATUS_OK;
 
@@ -338,18 +342,18 @@ ADDON_STATUS CAddonDll::CreateInstance(ADDON_TYPE instanceType, const std::strin
 
   if (status == ADDON_STATUS_OK)
   {
-    m_usedInstances[instanceID] = std::make_pair(instanceType, addonInstance);
+    m_usedInstances[instanceClass] = std::make_pair(instanceType, addonInstance);
   }
 
   return status;
 }
 
-void CAddonDll::DestroyInstance(const std::string& instanceID)
+void CAddonDll::DestroyInstance(ADDON_INSTANCE_HANDLER instanceClass)
 {
   if (m_usedInstances.empty())
     return;
 
-  auto it = m_usedInstances.find(instanceID);
+  auto it = m_usedInstances.find(instanceClass);
   if (it != m_usedInstances.end())
   {
     m_interface.toAddon->destroy_instance(it->second.first, it->second.second);

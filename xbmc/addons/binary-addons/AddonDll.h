@@ -17,6 +17,17 @@
 namespace ADDON
 {
 
+/*!
+ * Addon instance handler, used as identify for std::map to find related
+ * addon instance. This class itself not accessed here.
+ *
+ * @todo As long game addon system use CAddonDll itself and not
+ * IAddonInstanceHandler as parent, is the set of this as "void*" needed.
+ * After game system is changed should by this also changed to
+ * "const IAddonInstanceHandler*" or direct in map below.
+ */
+using ADDON_INSTANCE_HANDLER = const void*;
+
   typedef void* (*ADDON_GET_INTERFACE_FN)(const std::string &name, const std::string &version);
 
   class CAddonDll : public CAddon
@@ -67,7 +78,8 @@ namespace ADDON
      * @brief Function to create a addon instance class
      *
      * @param[in] instanceType The wanted instance type class to open on addon
-     * @param[in] instanceID The from Kodi used ID string of active instance
+     * @param[in] instanceClass The from Kodi used class for active instance
+     * @param[in] instanceID The from addon used ID string of active instance
      * @param[in] instance Pointer where the interface functions from addon
      *                     becomes stored during his instance creation.
      * @param[in] parentInstance In case the instance class is related to another
@@ -76,14 +88,18 @@ namespace ADDON
      *                           not use it.
      * @return The status of addon after the creation.
      */
-    ADDON_STATUS CreateInstance(ADDON_TYPE instanceType, const std::string& instanceID, KODI_HANDLE instance, KODI_HANDLE parentInstance = nullptr);
+    ADDON_STATUS CreateInstance(ADDON_TYPE instanceType,
+                                ADDON_INSTANCE_HANDLER instanceClass,
+                                const std::string& instanceID,
+                                KODI_HANDLE instance,
+                                KODI_HANDLE parentInstance = nullptr);
 
     /*!
      * @brief Function to destroy a on addon created instance class
      *
-     * @param[in] instanceID The from Kodi used ID string of active instance
+     * @param[in] instanceClass The from Kodi used class for active instance
      */
-    void DestroyInstance(const std::string& instanceID);
+    void DestroyInstance(ADDON_INSTANCE_HANDLER instanceClass);
 
     AddonPtr GetRunningInstance() const override;
 
@@ -118,7 +134,7 @@ namespace ADDON
     DllAddon* m_pDll;
     bool m_initialized;
     bool LoadDll();
-    std::map<std::string, std::pair<ADDON_TYPE, KODI_HANDLE>> m_usedInstances;
+    std::map<ADDON_INSTANCE_HANDLER, std::pair<ADDON_TYPE, KODI_HANDLE>> m_usedInstances;
 
     virtual ADDON_STATUS TransferSettings();
 
