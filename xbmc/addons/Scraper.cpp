@@ -755,11 +755,12 @@ void DetailsFromFileItem<CAlbum>(const CFileItem &item, CAlbum &album)
   album.themes = FromArray(item, "album.themes", 0);
   album.bCompilation = item.GetProperty("album.compilation").asBoolean();
   album.strReview = FromString(item, "album.review");
-  album.m_strDateOfRelease = FromString(item, "album.release_date");
+  album.strReleaseDate = FromString(item, "album.releasedate");
+  if (album.strReleaseDate.empty())
+    album.strReleaseDate = FromString(item, "album.year");
   album.strLabel = FromString(item, "album.label");
   album.strType = FromString(item, "album.type");
   album.SetReleaseType(FromString(item, "album.release_type"));
-  album.iYear = item.GetProperty("album.year").asInteger32();
   album.fRating = item.GetProperty("album.rating").asFloat();
   album.iUserrating = item.GetProperty("album.user_rating").asInteger32();
   album.iVotes = item.GetProperty("album.votes").asInteger32();

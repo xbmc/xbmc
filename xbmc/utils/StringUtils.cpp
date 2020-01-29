@@ -842,6 +842,45 @@ int StringUtils::DateStringToYYYYMMDD(const std::string &dateString)
     return -1;
 }
 
+std::string StringUtils::ISODateToLocalizedDate(const std::string& strIsoDate)
+{
+  // Convert ISO8601 date strings YYYY, YYYY-MM, or YYYY-MM-DD to (partial) localized date strings
+  CDateTime date;
+  std::string formattedDate = strIsoDate;
+  if (formattedDate.size() == 10)
+  {
+    date.SetFromDBDate(strIsoDate);
+    formattedDate = date.GetAsLocalizedDate();
+  }
+  else if (formattedDate.size() == 7)
+  {
+    std::string strFormat = date.GetAsLocalizedDate(false);
+    std::string tempdate;
+    // find which date separator we are using.  Can be -./
+    size_t pos = strFormat.find_first_of("-./");
+    if (pos != std::string::npos)
+    {
+      bool yearFirst = strFormat.find("1601") == 0; // true if year comes first
+      std::string sep = strFormat.substr(pos, 1);
+      if (yearFirst)
+      { // build formatted date with year first, then separator and month
+        tempdate = formattedDate.substr(0, 4);
+        tempdate += sep;
+        tempdate += formattedDate.substr(5, 2);
+      }
+      else
+      {
+        tempdate = formattedDate.substr(5, 2);
+        tempdate += sep;
+        tempdate += formattedDate.substr(0, 4);
+      }
+      formattedDate = tempdate;
+    }
+  // return either just the year or the locally formatted version of the ISO date
+  }
+  return formattedDate;
+}
+
 long StringUtils::TimeStringToSeconds(const std::string &timeString)
 {
   std::string strCopy(timeString);

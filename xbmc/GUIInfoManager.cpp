@@ -2556,6 +2556,30 @@ const infomap musicpartymode[] = {{ "enabled",           MUSICPM_ENABLED },
 ///     @skinning_v19 **[New Infolabel]** \link MusicPlayer_DiscTitle `MusicPlayer.DiscTitle`\endlink
 ///     <p>
 ///   }
+///   \table_row3{   <b>`MusicPlayer.ReleaseDate`</b>,
+///                  \anchor MusicPlayer_ReleaseDate
+///                  _string_,
+///     @return The release date of the song currently playing.
+///     <p><hr>
+///     @skinning_v19 **[New Infolabel]** \link MusicPlayer_ReleaseDate `MusicPlayer.ReleaseDate`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`MusicPlayer.OriginalDate`</b>,
+///                  \anchor MusicPlayer_OriginalDate
+///                  _string_,
+///     @return The original release date of the song currently playing.
+///     <p><hr>
+///     @skinning_v19 **[New Infolabel]** \link MusicPlayer_OriginalDate `MusicPlayer.OriginalDate`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`MusicPlayer.BPM`</b>,
+///                  \anchor MusicPlayer_BPM
+///                  _string_,
+///     @return The bpm of the track currently playing.
+///     <p><hr>
+///     @skinning_v19 **[New Infolabel]** \link MusicPlayer_BPM `MusicPlayer.BPM`\endlink
+///     <p>
+///   }
 /// \table_end
 ///
 /// -----------------------------------------------------------------------------
@@ -2597,6 +2621,9 @@ const infomap musicplayer[] =    {{ "title",            MUSICPLAYER_TITLE },
                                   { "channelgroup",     MUSICPLAYER_CHANNEL_GROUP },
                                   { "dbid",             MUSICPLAYER_DBID },
                                   { "property",         MUSICPLAYER_PROPERTY },
+                                  { "releasedate",      MUSICPLAYER_RELEASEDATE },
+                                  { "originaldate",     MUSICPLAYER_ORIGINALDATE },
+                                  { "bpm",              MUSICPLAYER_BPM }
 };
 
 /// \page modules__infolabels_boolean_conditions
@@ -5802,6 +5829,30 @@ const infomap container_str[]  = {{ "property",         CONTAINER_PROPERTY },
 ///     @skinning_v19 **[New Infolabel]** \link ListItem_TotalDiscs `ListItem.TotalDiscs`\endlink
 ///     <p>
 ///   }
+///   \table_row3{   <b>`ListItem.ReleaseDate`</b>,
+///                  \anchor ListItem_ReleaseDate
+///                  _string_,
+///     @return The release date of the item.
+///     <p><hr>
+///     @skinning_v19 **[New Infolabel]** \link ListItem_ReleaseDate `ListItem.ReleaseDate`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`ListItem.OriginalDate`</b>,
+///                  \anchor ListItem_OriginalDate
+///                  _string_,
+///     @return The original release date of the item. Can be full or partial date.
+///     <p><hr>
+///     @skinning_v19 **[New Infolabel]** \link ListItem_OriginalDate `ListItem.OriginalDate`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`ListItem.BPM`</b>,
+///                  \anchor ListItem_BPM
+///                  _string_,
+///     @return The BPM of a song.
+///     <p><hr>
+///     @skinning_v19 **[New Infolabel]** \link ListItem_BPM `ListItem.BPM`\endlink
+///     <p>
+///   }
 /// \table_end
 ///
 /// -----------------------------------------------------------------------------
@@ -5998,6 +6049,9 @@ const infomap listitem_labels[]= {{ "thumb",            LISTITEM_THUMB },
                                   { "isnew",            LISTITEM_IS_NEW },
                                   { "isboxset",         LISTITEM_IS_BOXSET },
                                   { "totaldiscs",       LISTITEM_TOTALDISCS },
+                                  { "releasedate",      LISTITEM_RELEASEDATE },
+                                  { "originaldate",     LISTITEM_ORIGINALDATE },
+                                  { "bpm",              LISTITEM_BPM },
 };
 
 /// \page modules__infolabels_boolean_conditions

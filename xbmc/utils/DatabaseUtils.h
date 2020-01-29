@@ -62,6 +62,8 @@ typedef enum {
   FieldDiscTitle,
   FieldIsBoxset,
   FieldTotalDiscs,
+  FieldOrigYear,
+  FieldOrigDate,
   FieldArtist,
   FieldArtistSort,
   FieldAlbumArtist,
@@ -135,6 +137,7 @@ typedef enum {
   FieldUserRating,
   FieldRelevance, // Used for actors' appearances
   FieldClientChannelOrder,
+  FieldBPM,
   FieldMax
 } Field;
 

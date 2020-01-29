@@ -216,6 +216,11 @@ void CGUIDialogSmartPlaylistRule::OnBrowse()
     }
     iLabel = 562;
   }
+  else if (m_rule.m_field == FieldOrigYear)
+  {
+    database.GetYearsNav("musicdb://originalyears/", items);
+    iLabel = 38078;
+  }
   else if (m_rule.m_field == FieldDirector)
   {
     videodatabase.GetDirectorsNav(basePath + "directors/", items, type);

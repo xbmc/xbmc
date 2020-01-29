@@ -22,8 +22,6 @@ using namespace MUSIC_INFO;
 CSong::CSong(CFileItem& item)
 {
   CMusicInfoTag& tag = *item.GetMusicInfoTag();
-  KODI::TIME::SystemTime stTime;
-  tag.GetReleaseDate(stTime);
   strTitle = tag.GetTitle();
   genre = tag.GetGenre();
   std::vector<std::string> artist = tag.GetArtist();
@@ -56,7 +54,8 @@ CSong::CSong(CFileItem& item)
   rating = tag.GetRating();
   userrating = tag.GetUserrating();
   votes = tag.GetVotes();
-  iYear = stTime.year;
+  strOrigReleaseDate = tag.GetOriginalDate();
+  strReleaseDate = tag.GetReleaseDate();
   strDiscSubtitle = tag.GetDiscSubtitle();
   iTrack = tag.GetTrackAndDiscNumber();
   iDuration = tag.GetDuration();
@@ -73,6 +72,7 @@ CSong::CSong(CFileItem& item)
   idSong = -1;
   iTimesPlayed = 0;
   idAlbum = -1;
+  iBPM = tag.GetBPM();
 }
 
 CSong::CSong()
@@ -221,7 +221,7 @@ void CSong::Serialize(CVariant& value) const
   value["genre"] = genre;
   value["duration"] = iDuration;
   value["track"] = iTrack;
-  value["year"] = iYear;
+  value["year"] = atoi(strReleaseDate.c_str());;
   value["musicbrainztrackid"] = strMusicBrainzTrackID;
   value["comment"] = strComment;
   value["mood"] = strMood;
@@ -232,6 +232,8 @@ void CSong::Serialize(CVariant& value) const
   value["lastplayed"] = lastPlayed.IsValid() ? lastPlayed.GetAsDBDateTime() : "";
   value["dateadded"] = dateAdded.IsValid() ? dateAdded.GetAsDBDateTime() : "";
   value["albumid"] = idAlbum;
+  value["albumreleasedate"] = strReleaseDate;
+  value["bpm"] = iBPM;
 }
 
 void CSong::Clear()
@@ -254,7 +256,8 @@ void CSong::Clear()
   votes = 0;
   iTrack = 0;
   iDuration = 0;
-  iYear = 0;
+  strOrigReleaseDate.clear();
+  strReleaseDate.clear();
   strDiscSubtitle.clear();
   iStartOffset = 0;
   iEndOffset = 0;
@@ -265,6 +268,7 @@ void CSong::Clear()
   idAlbum = -1;
   bCompilation = false;
   embeddedArt.Clear();
+  iBPM = 0;
   replayGain = ReplayGain();
 }
 const std::vector<std::string> CSong::GetArtist() const

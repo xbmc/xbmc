@@ -100,7 +100,7 @@ namespace XBMCAddon
 
     String InfoTagMusic::getReleaseDate()
     {
-      return infoTag->GetYearString();
+      return infoTag->GetReleaseDate();
     }
 
     int InfoTagMusic::getListeners()

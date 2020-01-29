@@ -37,7 +37,6 @@ CMusicAlbumInfo::CMusicAlbumInfo(const std::string& strAlbum, const std::string&
 void CMusicAlbumInfo::SetAlbum(CAlbum& album)
 {
   m_album = album;
-  m_album.m_strDateOfRelease = StringUtils::Format("%i", album.iYear);
   m_strTitle2 = "";
   m_bLoaded = true;
 }

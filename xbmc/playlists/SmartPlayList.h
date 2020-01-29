@@ -67,6 +67,9 @@ protected:
 private:
   std::string GetVideoResolutionQuery(const std::string &parameter) const;
   static std::string FormatLinkQuery(const char *field, const char *table, const MediaType& mediaType, const std::string& mediaField, const std::string& parameter);
+  std::string FormatYearQuery(const std::string& field,
+                              const std::string& param,
+                              const std::string& parameter) const;
 };
 
 class CSmartPlaylistRuleCombination : public CDatabaseQueryRuleCombination

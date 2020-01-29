@@ -588,6 +588,24 @@ std::string MysqlDatabase::vprepare(const char *format, va_list args)
     pos += 6;
   }
 
+  // Replace some dataypes in CAST statements: 
+  // before: CAST(iFoo AS TEXT), CAST(foo AS INTEGER)
+  // after:  CAST(iFoo AS CHAR), CAST(foo AS SIGNED INTEGER)
+  pos = strResult.find("CAST(");
+  while (pos != std::string::npos)
+  {
+    size_t pos2 = strResult.find(" AS TEXT)", pos + 1);
+    if (pos2 != std::string::npos)
+      strResult.replace(pos2, 9, " AS CHAR)");
+    else
+    {
+      pos2 = strResult.find(" AS INTEGER)", pos + 1);
+      if (pos2 != std::string::npos)
+        strResult.replace(pos2, 12, " AS SIGNED INTEGER)");
+    }
+    pos = strResult.find("CAST(", pos + 1);
+  }
+
   // Remove COLLATE NOCASE the SQLite case insensitive collation.
   // In MySQL all tables are defined with case insensitive collation utf8_general_ci
   pos = 0;
