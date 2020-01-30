@@ -264,9 +264,9 @@
 				<label>[I]$VAR[SeasonEpisodeLabel]$INFO[ListItem.EpisodeName][/I]</label>
 			</control>
 			<control type="textbox">
-				<top>490</top>
+				<top>530</top>
 				<width>830</width>
-				<bottom>75</bottom>
+				<bottom>95</bottom>
 				<label>$INFO[ListItem.Plot]</label>
 				<autoscroll delay="10000" time="3000" repeat="10000">Skin.HasSetting(AutoScroll)</autoscroll>
 			</control>
