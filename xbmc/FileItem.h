@@ -758,12 +758,12 @@ public:
 
   void ClearSortState();
 
-  VECFILEITEMS::const_iterator begin() { return m_items.cbegin(); }
-  VECFILEITEMS::const_iterator end() { return m_items.cend(); }
+  VECFILEITEMS::iterator begin() { return m_items.begin(); }
+  VECFILEITEMS::iterator end() { return m_items.end(); }
   VECFILEITEMS::const_iterator begin() const { return m_items.begin(); }
   VECFILEITEMS::const_iterator end() const { return m_items.end(); }
-  VECFILEITEMS::const_iterator cbegin() const { return m_items.begin(); }
-  VECFILEITEMS::const_iterator cend() const { return m_items.end(); }
+  VECFILEITEMS::const_iterator cbegin() const { return m_items.cbegin(); }
+  VECFILEITEMS::const_iterator cend() const { return m_items.cend(); }
 private:
   void Sort(FILEITEMLISTCOMPARISONFUNC func);
   void FillSortFields(FILEITEMFILLFUNC func);
