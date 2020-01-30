@@ -26,6 +26,11 @@
 #include <sstream>
 #include <locale>
 
+// workaround for broken [[depreciated]] in coverity
+#if defined(__COVERITY__)
+#undef FMT_DEPRECATED
+#define FMT_DEPRECATED
+#endif
 #include <fmt/format.h>
 
 #if FMT_VERSION >= 40000
