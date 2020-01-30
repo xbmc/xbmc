@@ -129,7 +129,7 @@ macro (build_addon target prefix libs)
                     set(ADDON_DEPENDS "${ADDON_DEPENDS}\n<import addon=\"${${xml_entry_name}}\" minversion=\"${${depends_minver}}\" version=\"${${depends_ver}}\"/>")
                     # Inform with them the addon header about used type, if not present before
                     add_definitions(-D${used_type_name})
-                    message(STATUS " - Added usage definition: ${used_type_name}")
+                    message(STATUS " - Added API usage definition: ${used_type_name} (Version: \"${${depends_ver}}\", Min. Version: \"${${depends_minver}}\")")
                     set(FOUND_HEADER_USAGE 1)
                   endif()
                 endif()
