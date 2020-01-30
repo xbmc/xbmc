@@ -32,13 +32,12 @@ private:
 
 //! \brief Input stream class
 class CInputStreamAddon
-  : public ADDON::IAddonInstanceHandler
-  , public CDVDInputStream
-  , public CDVDInputStream::IDisplayTime
-  , public CDVDInputStream::ITimes
-  , public CDVDInputStream::IPosTime
-  , public CDVDInputStream::IDemux
-  , public CDVDInputStream::IChapter
+  : public ADDON::IAddonInstanceHandler,
+    public CDVDInputStream,
+    public CDVDInputStream::IDisplayTime,
+    public CDVDInputStream::ITimes,
+    public CDVDInputStream::IPosTime,
+    public CDVDInputStream::IDemux
 {
 public:
   CInputStreamAddon(ADDON::BinaryAddonBasePtr& addonBase, IVideoPlayer* player, const CFileItem& fileitem);
@@ -86,14 +85,6 @@ public:
   void FlushDemux() override;
   void SetVideoResolution(int width, int height) override;
   bool IsRealtime() override;
-
-  // IChapter
-  CDVDInputStream::IChapter* GetIChapter() override;
-  int GetChapter() override;
-  int GetChapterCount() override;
-  void GetChapterName(std::string& name, int ch = -1) override;
-  int64_t GetChapterPos(int ch = -1) override;
-  bool SeekChapter(int ch) override;
 
 protected:
   static int ConvertVideoCodecProfile(STREAMCODEC_PROFILE profile);

@@ -95,7 +95,6 @@ bool CInputStreamAddon::Supports(BinaryAddonBasePtr& addonBase, const CFileItem 
       for (auto& value : extensionsList)
       {
         StringUtils::Trim(value);
-
         if (value == filetype)
           return true;
       }
@@ -475,59 +474,6 @@ bool CInputStreamAddon::IsRealtime()
 {
   if (m_struct.toAddon.is_real_time_stream)
     return m_struct.toAddon.is_real_time_stream(&m_struct);
-  return false;
-}
-
-
-// IChapter
-CDVDInputStream::IChapter* CInputStreamAddon::GetIChapter()
-{
-  if ((m_caps.m_mask & INPUTSTREAM_CAPABILITIES::SUPPORTS_ICHAPTER) == 0)
-    return nullptr;
-
-  return this;
-}
-
-int CInputStreamAddon::GetChapter()
-{
-  if (m_struct.toAddon.get_chapter)
-    return m_struct.toAddon.get_chapter(&m_struct);
-
-  return -1;
-}
-
-int CInputStreamAddon::GetChapterCount()
-{
-  if (m_struct.toAddon.get_chapter_count)
-    return m_struct.toAddon.get_chapter_count(&m_struct);
-
-  return 0;
-}
-
-void CInputStreamAddon::GetChapterName(std::string& name, int ch)
-{
-  name.clear();
-  if (m_struct.toAddon.get_chapter_name)
-  {
-    const char* res = m_struct.toAddon.get_chapter_name(&m_struct, ch);
-    if (res)
-      name = res;
-  }
-}
-
-int64_t CInputStreamAddon::GetChapterPos(int ch)
-{
-  if (m_struct.toAddon.get_chapter_pos)
-    return m_struct.toAddon.get_chapter_pos(&m_struct, ch);
-
-  return 0;
-}
-
-bool CInputStreamAddon::SeekChapter(int ch)
-{
-  if (m_struct.toAddon.seek_chapter)
-    return m_struct.toAddon.seek_chapter(&m_struct, ch);
-
   return false;
 }
 
