@@ -547,7 +547,7 @@ JSONRPC_STATUS CVideoLibrary::SetMovieDetails(const std::string &method, ITransp
 
   UpdateResumePoint(parameterObject, infos, videodatabase);
 
-  CJSONRPCUtils::NotifyItemUpdated(infos);
+  CJSONRPCUtils::NotifyItemUpdated(infos, artwork);
   return ACK;
 }
 

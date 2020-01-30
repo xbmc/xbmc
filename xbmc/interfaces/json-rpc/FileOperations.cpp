@@ -252,7 +252,7 @@ JSONRPC_STATUS CFileOperations::SetFileDetails(const std::string &method, ITrans
   CVideoLibrary::UpdateResumePoint(parameterObject, infos, videodatabase);
 
   videodatabase.GetFileInfo("", infos, fileId);
-  CJSONRPCUtils::NotifyItemUpdated(infos);
+  CJSONRPCUtils::NotifyItemUpdated(infos, std::map<std::string, std::string>{});
   return ACK;
 }
 
