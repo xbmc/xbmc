@@ -168,8 +168,7 @@ bool CGameClient::Initialize(void)
   m_struct.toKodi.HwGetProcAddress = cb_hw_get_proc_address;
   m_struct.toKodi.InputEvent = cb_input_event;
 
-  if (CreateInstance(ADDON_INSTANCE_GAME, StringUtils::Format("%p", static_cast<void*>(this)),
-                     &m_struct, nullptr) == ADDON_STATUS_OK)
+  if (CreateInstance(ADDON_INSTANCE_GAME, this, "", &m_struct, nullptr) == ADDON_STATUS_OK)
   {
     Input().Initialize();
     LogAddonProperties();
@@ -183,7 +182,7 @@ void CGameClient::Unload()
 {
   Input().Deinitialize();
 
-  DestroyInstance(StringUtils::Format("%p", static_cast<void*>(this)));
+  DestroyInstance(this);
 }
 
 bool CGameClient::OpenFile(const CFileItem& file, RETRO::IStreamManager& streamManager, IGameInputCallback *input)
