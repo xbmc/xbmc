@@ -32,6 +32,8 @@ using namespace DirectX;
 using namespace Microsoft::WRL;
 #endif
 
+#include <cstddef>
+
 #define IMMEDIATE_TRANSITION_TIME          20
 
 #define PICTURE_MOVE_AMOUNT              0.02f
