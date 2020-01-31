@@ -404,6 +404,8 @@ bool CPVRGUIInfo::GetListItemAndPlayerLabel(const CFileItem* item, const CGUIInf
       case VIDEOPLAYER_EPISODENAME:
       case LISTITEM_EPISODENAME:
         strValue = recording->EpisodeName();
+        // fixup multiline episode name strings (which do not fit in any way in our GUI)
+        StringUtils::Replace(strValue, "\n", ", ");
         return true;
       case VIDEOPLAYER_CHANNEL_NAME:
       case LISTITEM_CHANNEL_NAME:
@@ -582,7 +584,11 @@ bool CPVRGUIInfo::GetListItemAndPlayerLabel(const CFileItem* item, const CGUIInf
       case VIDEOPLAYER_EPISODENAME:
       case LISTITEM_EPISODENAME:
         if (!CServiceBroker::GetPVRManager().IsParentalLocked(epgTag))
+        {
           strValue = epgTag->EpisodeName();
+          // fixup multiline episode name strings (which do not fit in any way in our GUI)
+          StringUtils::Replace(strValue, "\n", ", ");
+        }
         return true;
       case VIDEOPLAYER_CAST:
       case LISTITEM_CAST:
