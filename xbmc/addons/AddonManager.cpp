@@ -131,6 +131,10 @@ bool CAddonMgr::Init()
 void CAddonMgr::DeInit()
 {
   m_database.Close();
+
+  /* If temporary directory was used from add-on, delete it */
+  if (XFILE::CDirectory::Exists(m_tempAddonBasePath))
+    XFILE::CDirectory::RemoveRecursive(CSpecialProtocol::TranslatePath(m_tempAddonBasePath));
 }
 
 bool CAddonMgr::HasAddons(const TYPE &type)

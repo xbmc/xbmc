@@ -238,6 +238,15 @@ namespace ADDON
     bool GetAddonInfos(AddonInfos& addonInfos, TYPE type);
     const AddonInfoPtr GetAddonInfo(const std::string& id, TYPE type = ADDON_UNKNOWN);
 
+    /*!
+     * @brief Get the path where temporary add-on files are stored
+     *
+     * @return the base path used for temporary addon paths
+     *
+     * @warning the folder and its contents are deleted when Kodi is closed
+     */
+    const std::string& GetTempAddonBasePath() { return m_tempAddonBasePath; }
+
   private:
     CAddonMgr& operator=(CAddonMgr const&) = delete;
 
@@ -258,6 +267,9 @@ namespace ADDON
     std::set<std::string> m_systemAddons;
     std::set<std::string> m_optionalAddons;
     ADDON_INFO_LIST m_installedAddons;
+
+    // Temporary path given to add-ons, whose content is deleted when Kodi is stopped
+    const std::string m_tempAddonBasePath = "special://temp/addons";
   };
 
 }; /* namespace ADDON */

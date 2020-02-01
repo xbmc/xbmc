@@ -18,11 +18,6 @@
 
 using namespace ADDON;
 
-CBinaryAddonManager::CBinaryAddonManager()
-  : m_tempAddonBasePath("special://temp/binary-addons")
-{
-}
-
 CBinaryAddonManager::~CBinaryAddonManager()
 {
   DeInit();
@@ -49,10 +44,6 @@ bool CBinaryAddonManager::Init()
 
 void CBinaryAddonManager::DeInit()
 {
-  /* If temporary directory was used from addon delete them */
-  if (XFILE::CDirectory::Exists(m_tempAddonBasePath))
-    XFILE::CDirectory::RemoveRecursive(CSpecialProtocol::TranslatePath(m_tempAddonBasePath));
-
   CServiceBroker::GetAddonMgr().Events().Unsubscribe(this);
 }
 
