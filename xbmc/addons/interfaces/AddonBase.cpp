@@ -20,9 +20,9 @@
 // "C" interface addon callback handle classes
 #include "AudioEngine.h"
 #include "Filesystem.h"
-#include "GUI/General.h"
 #include "General.h"
 #include "Network.h"
+#include "gui/General.h"
 
 namespace ADDON
 {
