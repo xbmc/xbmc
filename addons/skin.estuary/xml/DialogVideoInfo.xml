@@ -534,7 +534,7 @@
 							</include>
 							<label>$LOCALIZE[31033]</label>
 							<onleft>441</onleft>
-							<onright>101</onright>
+							<onright>102</onright>
 							<onup>140</onup>
 							<enable>String.IsEmpty(Container.PluginName) + !Container.Content(Sets)</enable>
 							<ondown condition="Integer.IsEqual(Container(5000).CurrentItem,1)">SetFocus(50,0)</ondown>
