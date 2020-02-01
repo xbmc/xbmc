@@ -206,6 +206,8 @@ void CWinSystemAndroid::UpdateResolutions(bool bUpdateDesktopRes)
       CDisplaySettings::GetInstance().GetResolutionInfo(RES_WINDOW) = res;
     }
   }
+
+  CDisplaySettings::GetInstance().ApplyCalibrations();
 }
 
 void CWinSystemAndroid::OnTimeout()
