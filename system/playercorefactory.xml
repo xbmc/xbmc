@@ -26,7 +26,7 @@
 
     <!-- DVDs -->
     <rule name="dvd" dvd="true" player="VideoPlayer" />
-    <rule name="dvdimage" dvdimage="true" player="VideoPlayer" />
+    <rule name="discimage" discimage="true" game="false" player="VideoPlayer" />
 
     <!-- Only VideoPlayer can handle these normally -->
     <rule name="sdp/asf" filetypes="sdp|asf" player="VideoPlayer" />
