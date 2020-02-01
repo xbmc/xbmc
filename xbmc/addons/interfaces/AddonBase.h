@@ -30,8 +30,8 @@ class CAddonDll;
 struct Interface_Base
 {
   static bool InitInterface(CAddonDll* addon,
-                              AddonGlobalInterface& addonInterface,
-                              KODI_HANDLE firstKodiInstance);
+                            AddonGlobalInterface& addonInterface,
+                            KODI_HANDLE firstKodiInstance);
   static void DeInitInterface(AddonGlobalInterface& addonInterface);
   static void RegisterInterface(ADDON_GET_INTERFACE_FN fn);
   static bool UpdateSettingInActiveDialog(CAddonDll* addon,
@@ -41,15 +41,15 @@ struct Interface_Base
   static std::vector<ADDON_GET_INTERFACE_FN> s_registeredInterfaces;
 
   /*!
-  * @brief callback functions from add-on to kodi
-  *
-  * @note To add a new function use the "_" style to directly identify an
-  * add-on callback function. Everything with CamelCase is only to be used
-  * in Kodi.
-  *
-  * The parameter `kodiBase` is used to become the pointer for a `CAddonDll`
-  * class.
-  */
+   * @brief callback functions from add-on to kodi
+   *
+   * @note To add a new function use the "_" style to directly identify an
+   * add-on callback function. Everything with CamelCase is only to be used
+   * in Kodi.
+   *
+   * The parameter `kodiBase` is used to become the pointer for a `CAddonDll`
+   * class.
+   */
   //@{
   static char* get_addon_path(void* kodiBase);
   static char* get_base_user_path(void* kodiBase);
