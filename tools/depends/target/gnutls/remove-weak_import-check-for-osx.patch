@@ -1,0 +1,17 @@
+--- a/configure.ac	2020-01-25 08:26:59.223068640 -0800
++++ b/configure.ac	2020-01-25 08:26:38.846233553 -0800
+@@ -122,14 +122,6 @@
+   ;;
+   *darwin*)
+     have_macosx=yes
+-    save_LDFLAGS="$LDFLAGS"
+-    dnl Try to use -no_weak_imports if available. This makes sure we
+-    dnl error out when linking to a function that doesn't exist in the
+-    dnl intended minimum runtime version.
+-    LDFLAGS="$LDFLAGS -Wl,-no_weak_imports"
+-    AC_MSG_CHECKING([whether the linker supports -Wl,-no_weak_imports])
+-    AC_LINK_IFELSE([AC_LANG_PROGRAM([], [])],
+-      [AC_MSG_RESULT(yes)], [AC_MSG_RESULT(no); LDFLAGS="$save_LDFLAGS"])
+   ;;
+   *solaris*)
+     have_elf=yes
