@@ -81,6 +81,46 @@ CCPUInfoLinux::CCPUInfoLinux()
   if (socPath.Exists())
     m_cpuSoC += " " + socPath.Get<std::string>();
 
+  const std::string freqStr{"/sys/devices/system/cpu/cpu0/cpufreq/scaling_cur_freq"};
+  CSysfsPath freqPath{freqStr};
+  if (freqPath.Exists())
+    m_freqPath = freqStr;
+
+  const std::array<std::string, 3> modules = {
+      "coretemp",
+      "k10temp",
+      "scpi_sensors",
+  };
+
+  for (int i = 0; i < 20; i++)
+  {
+    CSysfsPath path{"/sys/class/hwmon/hwmon" + std::to_string(i) + "/name"};
+    if (!path.Exists())
+      continue;
+
+    auto name = path.Get<std::string>();
+
+    if (name.empty())
+      continue;
+
+    for (const auto& module : modules)
+    {
+      if (module == name)
+      {
+        std::string tempStr{"/sys/class/hwmon/hwmon" + std::to_string(i) + "/temp1_input"};
+        CSysfsPath tempPath{tempStr};
+        if (!tempPath.Exists())
+          continue;
+
+        m_tempPath = tempStr;
+        break;
+      }
+    }
+
+    if (!m_tempPath.empty())
+      break;
+  }
+
   m_cpuCount = sysconf(_SC_NPROCESSORS_ONLN);
 
   for (int core = 0; core < m_cpuCount; core++)
@@ -279,24 +319,20 @@ int CCPUInfoLinux::GetUsedPercentage()
 
 float CCPUInfoLinux::GetCPUFrequency()
 {
-  float value{0};
-  CSysfsPath path("/sys/devices/system/cpu/cpu0/cpufreq/scaling_cur_freq");
+  if (m_freqPath.empty())
+    return -1;
 
-  if (path.Exists())
-    value = path.Get<float>() / 1000.0;
-
-  return value;
+  CSysfsPath path{m_freqPath};
+  return path.Get<float>() / 1000.0;
 }
 
 bool CCPUInfoLinux::GetTemperature(CTemperature& temperature)
 {
-  int value{0};
-  CSysfsPath path("/sys/class/hwmon/hwmon0/temp1_input");
-
-  if (!path.Exists())
+  if (m_tempPath.empty())
     return CCPUInfoPosix::GetTemperature(temperature);
 
-  value = path.Get<int>() / 1000.0;
+  CSysfsPath path{m_tempPath};
+  double value = path.Get<double>() / 1000.0;
 
   temperature = CTemperature::CreateFromCelsius(value);
   temperature.SetValid(true);
