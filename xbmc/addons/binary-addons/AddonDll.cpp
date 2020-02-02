@@ -8,39 +8,23 @@
 
 #include "AddonDll.h"
 
+#include "ServiceBroker.h"
 #include "addons/AddonStatusHandler.h"
-#include "GUIUserMessages.h"
 #include "addons/binary-addons/BinaryAddonBase.h"
 #include "addons/settings/AddonSettings.h"
-#include "addons/settings/GUIDialogAddonSettings.h"
 #include "events/EventLog.h"
 #include "events/NotificationEvent.h"
-#include "guilib/GUIComponent.h"
-#include "guilib/GUIWindowManager.h"
-#include "utils/URIUtils.h"
 #include "filesystem/File.h"
 #include "filesystem/SpecialProtocol.h"
 #include "messaging/helpers/DialogOKHelper.h"
-#include "settings/lib/SettingSection.h"
-#include "utils/log.h"
-#include "utils/StringUtils.h"
+#include "utils/URIUtils.h"
 #include "utils/Variant.h"
-#include "ServiceBroker.h"
-#include "Util.h"
-
-// Global addon callback handle classes
-#include "addons/interfaces/AudioEngine.h"
-#include "addons/interfaces/Filesystem.h"
-#include "addons/interfaces/General.h"
-#include "addons/interfaces/Network.h"
-#include "addons/interfaces/GUI/General.h"
+#include "utils/log.h"
 
 using namespace KODI::MESSAGING;
 
 namespace ADDON
 {
-
-std::vector<ADDON_GET_INTERFACE_FN> CAddonDll::s_registeredInterfaces;
 
 CAddonDll::CAddonDll(const AddonInfoPtr& addonInfo, BinaryAddonBasePtr addonBase)
   : CAddon(addonInfo, addonBase->MainType()),
@@ -66,11 +50,6 @@ CAddonDll::~CAddonDll()
 {
   if (m_initialized)
     Destroy();
-}
-
-void CAddonDll::RegisterInterface(ADDON_GET_INTERFACE_FN fn)
-{
-  s_registeredInterfaces.push_back(fn);
 }
 
 std::string CAddonDll::GetDllPath(const std::string &libPath)
@@ -263,7 +242,7 @@ ADDON_STATUS CAddonDll::Create(KODI_HANDLE firstKodiInstance)
 
   /* Allocate the helper function class to allow crosstalk over
      helper add-on headers */
-  if (!InitInterface(firstKodiInstance))
+  if (!Interface_Base::InitInterface(this, m_interface, firstKodiInstance))
     return ADDON_STATUS_PERMANENT_FAILURE;
 
   /* Call Create to make connections, initializing data or whatever is
@@ -304,7 +283,7 @@ void CAddonDll::Destroy()
     m_pDll->Unload();
   }
 
-  DeInitInterface();
+  Interface_Base::DeInitInterface(m_interface);
 
   delete m_pHelpers;
   m_pHelpers = NULL;
@@ -512,432 +491,4 @@ bool CAddonDll::CheckAPIVersion(int type)
   return true;
 }
 
-bool CAddonDll::UpdateSettingInActiveDialog(const char* id, const std::string& value)
-{
-  if (!CServiceBroker::GetGUI()->GetWindowManager().IsWindowActive(WINDOW_DIALOG_ADDON_SETTINGS))
-    return false;
-
-  CGUIDialogAddonSettings* dialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogAddonSettings>(WINDOW_DIALOG_ADDON_SETTINGS);
-  if (dialog->GetCurrentAddonID() != m_addonInfo->ID())
-    return false;
-
-  CGUIMessage message(GUI_MSG_SETTING_UPDATED, 0, 0);
-  std::vector<std::string> params;
-  params.emplace_back(id);
-  params.push_back(value);
-  message.SetStringParams(params);
-  CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(message, WINDOW_DIALOG_ADDON_SETTINGS);
-
-  return true;
-}
-
-/*!
- * @brief Addon to Kodi basic callbacks below
- *
- * The amount of functions here are hold so minimal as possible. Only parts
- * where needed on nearly every add-on (e.g. addon_log_msg) are to add there.
- *
- * More specific parts like e.g. to open files should be added to a separate
- * part.
- */
-//@{
-
-bool CAddonDll::InitInterface(KODI_HANDLE firstKodiInstance)
-{
-  m_interface = {0};
-
-  m_interface.libBasePath = strdup(CSpecialProtocol::TranslatePath("special://xbmcbinaddons").c_str());
-  m_interface.addonBase = nullptr;
-  m_interface.globalSingleInstance = nullptr;
-  m_interface.firstKodiInstance = firstKodiInstance;
-
-  // Create function list from kodi to addon, generated with malloc to have
-  // compatible with other versions
-  m_interface.toKodi = (AddonToKodiFuncTable_Addon*) malloc(sizeof(AddonToKodiFuncTable_Addon));
-  m_interface.toKodi->kodiBase = this;
-  m_interface.toKodi->get_addon_path = get_addon_path;
-  m_interface.toKodi->get_base_user_path = get_base_user_path;
-  m_interface.toKodi->addon_log_msg = addon_log_msg;
-  m_interface.toKodi->get_setting_bool = get_setting_bool;
-  m_interface.toKodi->get_setting_int = get_setting_int;
-  m_interface.toKodi->get_setting_float = get_setting_float;
-  m_interface.toKodi->get_setting_string = get_setting_string;
-  m_interface.toKodi->set_setting_bool = set_setting_bool;
-  m_interface.toKodi->set_setting_int = set_setting_int;
-  m_interface.toKodi->set_setting_float = set_setting_float;
-  m_interface.toKodi->set_setting_string = set_setting_string;
-  m_interface.toKodi->free_string = free_string;
-  m_interface.toKodi->free_string_array = free_string_array;
-
-  // Create function list from addon to kodi, generated with calloc to have
-  // compatible with other versions and everything with "0"
-  // Related parts becomes set from addon headers.
-  m_interface.toAddon = (KodiToAddonFuncTable_Addon*) calloc(1, sizeof(KodiToAddonFuncTable_Addon));
-
-  Interface_General::Init(&m_interface);
-  Interface_AudioEngine::Init(&m_interface);
-  Interface_Filesystem::Init(&m_interface);
-  Interface_Network::Init(&m_interface);
-  Interface_GUIGeneral::Init(&m_interface);
-
-  m_interface.toKodi->get_interface = get_interface;
-
-  return true;
-}
-
-void CAddonDll::DeInitInterface()
-{
-  Interface_GUIGeneral::DeInit(&m_interface);
-  Interface_Network::DeInit(&m_interface);
-  Interface_Filesystem::DeInit(&m_interface);
-  Interface_AudioEngine::DeInit(&m_interface);
-  Interface_General::DeInit(&m_interface);
-
-  if (m_interface.libBasePath)
-    free(const_cast<char*>(m_interface.libBasePath));
-  if (m_interface.toKodi)
-    free((char*)m_interface.toKodi);
-  if (m_interface.toAddon)
-    free((char*)m_interface.toAddon);
-  m_interface = {0};
-}
-
-char* CAddonDll::get_addon_path(void* kodiBase)
-{
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  if (addon == nullptr)
-  {
-    CLog::Log(LOGERROR, "get_addon_path(...) called with empty kodi instance pointer");
-    return nullptr;
-  }
-
-  return strdup(CSpecialProtocol::TranslatePath(addon->Path()).c_str());
-}
-
-char* CAddonDll::get_base_user_path(void* kodiBase)
-{
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  if (addon == nullptr)
-  {
-    CLog::Log(LOGERROR, "get_base_user_path(...) called with empty kodi instance pointer");
-    return nullptr;
-  }
-
-  return strdup(CSpecialProtocol::TranslatePath(addon->Profile()).c_str());
-}
-
-void CAddonDll::addon_log_msg(void* kodiBase, const int addonLogLevel, const char* strMessage)
-{
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  if (addon == nullptr)
-  {
-    CLog::Log(LOGERROR, "addon_log_msg(...) called with empty kodi instance pointer");
-    return;
-  }
-
-  int logLevel = LOGNONE;
-  switch (addonLogLevel)
-  {
-    case ADDON_LOG_FATAL:
-      logLevel = LOGFATAL;
-      break;
-    case ADDON_LOG_SEVERE:
-      logLevel = LOGSEVERE;
-      break;
-    case ADDON_LOG_ERROR:
-      logLevel = LOGERROR;
-      break;
-    case ADDON_LOG_WARNING:
-      logLevel = LOGWARNING;
-      break;
-    case ADDON_LOG_NOTICE:
-      logLevel = LOGNOTICE;
-      break;
-    case ADDON_LOG_INFO:
-      logLevel = LOGINFO;
-      break;
-    case ADDON_LOG_DEBUG:
-      logLevel = LOGDEBUG;
-      break;
-    default:
-      break;
-  }
-
-  CLog::Log(logLevel, "AddOnLog: %s: %s", addon->Name().c_str(), strMessage);
-}
-
-bool CAddonDll::get_setting_bool(void* kodiBase, const char* id, bool* value)
-{
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  if (addon == nullptr || id == nullptr || value == nullptr)
-  {
-    CLog::Log(LOGERROR, "kodi::General::%s - invalid data (addon='%p', id='%p', value='%p')",
-                                        __FUNCTION__, kodiBase, static_cast<const void*>(id), static_cast<void*>(value));
-
-    return false;
-  }
-
-  if (!addon->ReloadSettings())
-  {
-    CLog::Log(LOGERROR, "kodi::General::%s - could't get settings for add-on '%s'", __FUNCTION__, addon->Name().c_str());
-    return false;
-  }
-
-  auto setting = addon->GetSettings()->GetSetting(id);
-  if (setting == nullptr)
-  {
-    CLog::Log(LOGERROR, "kodi::General::%s - can't find setting '%s' in '%s'", __FUNCTION__, id, addon->Name().c_str());
-    return false;
-  }
-
-  if (setting->GetType() != SettingType::Boolean)
-  {
-    CLog::Log(LOGERROR, "kodi::General::%s - setting '%s' is not a boolean in '%s'", __FUNCTION__, id, addon->Name().c_str());
-    return false;
-  }
-
-  *value = std::static_pointer_cast<CSettingBool>(setting)->GetValue();
-  return true;
-}
-
-bool CAddonDll::get_setting_int(void* kodiBase, const char* id, int* value)
-{
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  if (addon == nullptr || id == nullptr || value == nullptr)
-  {
-    CLog::Log(LOGERROR, "kodi::General::%s - invalid data (addon='%p', id='%p', value='%p')",
-                                        __FUNCTION__, kodiBase, static_cast<const void*>(id), static_cast<void*>(value));
-
-    return false;
-  }
-
-  if (!addon->ReloadSettings())
-  {
-    CLog::Log(LOGERROR, "kodi::General::%s - could't get settings for add-on '%s'", __FUNCTION__, addon->Name().c_str());
-    return false;
-  }
-
-  auto setting = addon->GetSettings()->GetSetting(id);
-  if (setting == nullptr)
-  {
-    CLog::Log(LOGERROR, "kodi::General::%s - can't find setting '%s' in '%s'", __FUNCTION__, id, addon->Name().c_str());
-    return false;
-  }
-
-  if (setting->GetType() != SettingType::Integer && setting->GetType() != SettingType::Number)
-  {
-    CLog::Log(LOGERROR, "kodi::General::%s - setting '%s' is not a integer in '%s'", __FUNCTION__, id, addon->Name().c_str());
-    return false;
-  }
-
-  if (setting->GetType() == SettingType::Integer)
-    *value = std::static_pointer_cast<CSettingInt>(setting)->GetValue();
-  else
-    *value = static_cast<int>(std::static_pointer_cast<CSettingNumber>(setting)->GetValue());
-  return true;
-}
-
-bool CAddonDll::get_setting_float(void* kodiBase, const char* id, float* value)
-{
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  if (addon == nullptr || id == nullptr || value == nullptr)
-  {
-    CLog::Log(LOGERROR, "kodi::General::%s - invalid data (addon='%p', id='%p', value='%p')",
-                                        __FUNCTION__, kodiBase, static_cast<const void*>(id), static_cast<void*>(value));
-
-    return false;
-  }
-
-  if (!addon->ReloadSettings())
-  {
-    CLog::Log(LOGERROR, "kodi::General::%s - could't get settings for add-on '%s'", __FUNCTION__, addon->Name().c_str());
-    return false;
-  }
-
-  auto setting = addon->GetSettings()->GetSetting(id);
-  if (setting == nullptr)
-  {
-    CLog::Log(LOGERROR, "kodi::General::%s - can't find setting '%s' in '%s'", __FUNCTION__, id, addon->Name().c_str());
-    return false;
-  }
-
-  if (setting->GetType() != SettingType::Number)
-  {
-    CLog::Log(LOGERROR, "kodi::General::%s - setting '%s' is not a number in '%s'", __FUNCTION__, id, addon->Name().c_str());
-    return false;
-  }
-
-  *value = static_cast<float>(std::static_pointer_cast<CSettingNumber>(setting)->GetValue());
-  return true;
-}
-
-bool CAddonDll::get_setting_string(void* kodiBase, const char* id, char** value)
-{
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  if (addon == nullptr || id == nullptr || value == nullptr)
-  {
-    CLog::Log(LOGERROR, "kodi::General::%s - invalid data (addon='%p', id='%p', value='%p')",
-                                        __FUNCTION__, kodiBase, static_cast<const void*>(id), static_cast<void*>(value));
-
-    return false;
-  }
-
-  if (!addon->ReloadSettings())
-  {
-    CLog::Log(LOGERROR, "kodi::General::%s - could't get settings for add-on '%s'", __FUNCTION__, addon->Name().c_str());
-    return false;
-  }
-
-  auto setting = addon->GetSettings()->GetSetting(id);
-  if (setting == nullptr)
-  {
-    CLog::Log(LOGERROR, "kodi::General::%s - can't find setting '%s' in '%s'", __FUNCTION__, id, addon->Name().c_str());
-    return false;
-  }
-
-  if (setting->GetType() != SettingType::String)
-  {
-    CLog::Log(LOGERROR, "kodi::General::%s - setting '%s' is not a string in '%s'", __FUNCTION__, id, addon->Name().c_str());
-    return false;
-  }
-
-  *value = strdup(std::static_pointer_cast<CSettingString>(setting)->GetValue().c_str());
-  return true;
-}
-
-bool CAddonDll::set_setting_bool(void* kodiBase, const char* id, bool value)
-{
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  if (addon == nullptr || id == nullptr)
-  {
-    CLog::Log(LOGERROR, "kodi::General::%s - invalid data (addon='%p', id='%p')",
-                                        __FUNCTION__, kodiBase, static_cast<const void*>(id));
-
-    return false;
-  }
-
-  if (addon->UpdateSettingInActiveDialog(id, value ? "true" : "false"))
-    return true;
-
-  if (!addon->UpdateSettingBool(id, value))
-  {
-    CLog::Log(LOGERROR, "kodi::General::%s - invalid setting type", __FUNCTION__);
-    return false;
-  }
-
-  addon->SaveSettings();
-
-  return true;
-}
-
-bool CAddonDll::set_setting_int(void* kodiBase, const char* id, int value)
-{
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  if (addon == nullptr || id == nullptr)
-  {
-    CLog::Log(LOGERROR, "kodi::General::%s - invalid data (addon='%p', id='%p')",
-                                        __FUNCTION__, kodiBase, static_cast<const void*>(id));
-
-    return false;
-  }
-
-  if (addon->UpdateSettingInActiveDialog(id, StringUtils::Format("%d", value)))
-    return true;
-
-  if (!addon->UpdateSettingInt(id, value))
-  {
-    CLog::Log(LOGERROR, "kodi::General::%s - invalid setting type", __FUNCTION__);
-    return false;
-  }
-
-  addon->SaveSettings();
-
-  return true;
-}
-
-bool CAddonDll::set_setting_float(void* kodiBase, const char* id, float value)
-{
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  if (addon == nullptr || id == nullptr)
-  {
-    CLog::Log(LOGERROR, "kodi::General::%s - invalid data (addon='%p', id='%p')",
-                                        __FUNCTION__, kodiBase, static_cast<const void*>(id));
-
-    return false;
-  }
-
-  if (addon->UpdateSettingInActiveDialog(id, StringUtils::Format("%f", value)))
-    return true;
-
-  if (!addon->UpdateSettingNumber(id, value))
-  {
-    CLog::Log(LOGERROR, "kodi::General::%s - invalid setting type", __FUNCTION__);
-    return false;
-  }
-
-  addon->SaveSettings();
-
-  return true;
-}
-
-bool CAddonDll::set_setting_string(void* kodiBase, const char* id, const char* value)
-{
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  if (addon == nullptr || id == nullptr || value == nullptr)
-  {
-    CLog::Log(LOGERROR, "kodi::General::%s - invalid data (addon='%p', id='%p', value='%p')",
-                                        __FUNCTION__, kodiBase, static_cast<const void*>(id), static_cast<const void*>(value));
-
-    return false;
-  }
-
-  if (addon->UpdateSettingInActiveDialog(id, value))
-    return true;
-
-  if (!addon->UpdateSettingString(id, value))
-  {
-    CLog::Log(LOGERROR, "kodi::General::%s - invalid setting type", __FUNCTION__);
-    return false;
-  }
-
-  addon->SaveSettings();
-
-  return true;
-}
-
-void CAddonDll::free_string(void* kodiBase, char* str)
-{
-  if (str)
-    free(str);
-}
-
-void CAddonDll::free_string_array(void* kodiBase, char** arr, int numElements)
-{
-  if (arr)
-  {
-    for (int i = 0; i < numElements; ++i)
-    {
-      free(arr[i]);
-    }
-    free(arr);
-  }
-}
-
-void* CAddonDll::get_interface(void* kodiBase, const char *name, const char *version)
-{
-  if (!name || !version)
-    return nullptr;
-
-  void *retval(nullptr);
-
-  for (auto fn : s_registeredInterfaces)
-    if ((retval = fn(name, version)))
-      break;
-
-  return retval;
-}
-
-//@}
-
-}; /* namespace ADDON */
-
+} /* namespace ADDON */

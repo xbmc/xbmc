@@ -14,6 +14,9 @@
 #include "addons/interfaces/AddonInterfaces.h"
 #include "utils/XMLUtils.h"
 
+// Global addon callback handle classes
+#include "addons/interfaces/AddonBase.h"
+
 namespace ADDON
 {
 
@@ -28,8 +31,6 @@ namespace ADDON
  */
 using ADDON_INSTANCE_HANDLER = const void*;
 
-typedef void* (*ADDON_GET_INTERFACE_FN)(const std::string& name, const std::string& version);
-
 class CAddonDll : public CAddon
 {
 public:
@@ -38,8 +39,6 @@ public:
   ~CAddonDll() override;
 
   virtual ADDON_STATUS GetStatus();
-
-  static void RegisterInterface(ADDON_GET_INTERFACE_FN fn);
 
   // Implementation of IAddon via CAddon
   std::string LibPath() const override;
@@ -138,13 +137,6 @@ private:
 
   virtual ADDON_STATUS TransferSettings();
 
-  bool UpdateSettingInActiveDialog(const char* id, const std::string& value);
-
-  static std::vector<ADDON_GET_INTERFACE_FN> s_registeredInterfaces;
-
-  /// addon to kodi basic callbacks below
-  //@{
-
   /*!
    * This structure, which is fixed to the addon headers, makes use of the at
    * least supposed parts for the interface.
@@ -152,25 +144,6 @@ private:
    * /xbmc/addons/kodi-addon-dev-kit/include/kodi/AddonBase.h
    */
   AddonGlobalInterface m_interface;
-
-  inline bool InitInterface(KODI_HANDLE firstKodiInstance);
-  inline void DeInitInterface();
-
-  static char* get_addon_path(void* kodiBase);
-  static char* get_base_user_path(void* kodiBase);
-  static void addon_log_msg(void* kodiBase, const int addonLogLevel, const char* strMessage);
-  static bool get_setting_bool(void* kodiBase, const char* id, bool* value);
-  static bool get_setting_int(void* kodiBase, const char* id, int* value);
-  static bool get_setting_float(void* kodiBase, const char* id, float* value);
-  static bool get_setting_string(void* kodiBase, const char* id, char** value);
-  static bool set_setting_bool(void* kodiBase, const char* id, bool value);
-  static bool set_setting_int(void* kodiBase, const char* id, int value);
-  static bool set_setting_float(void* kodiBase, const char* id, float value);
-  static bool set_setting_string(void* kodiBase, const char* id, const char* value);
-  static void free_string(void* kodiBase, char* str);
-  static void free_string_array(void* kodiBase, char** arr, int numElements);
-  static void* get_interface(void* kodiBase, const char* name, const char* version);
-  //@}
 };
 
 } /* namespace ADDON */
