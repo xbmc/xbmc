@@ -162,9 +162,12 @@ namespace JSONRPC
       CGUIMessage message(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE, CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow());
       CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(message);
     }
-    static inline void NotifyItemUpdated(const CVideoInfoTag &info)
+    static inline void NotifyItemUpdated(const CVideoInfoTag& info,
+                                         const std::map<std::string, std::string>& artwork)
     {
       CFileItemPtr msgItem(new CFileItem(info));
+      if (!artwork.empty())
+        msgItem->SetArt(artwork);
       CGUIMessage message(GUI_MSG_NOTIFY_ALL, CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow(), 0, GUI_MSG_UPDATE_ITEM, 0, msgItem);
       CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(message);
     }
