@@ -62,30 +62,6 @@ TEST_F(TestCPUInfo, GetCPUModel)
   EXPECT_STRNE("", s.c_str());
 }
 
-TEST_F(TestCPUInfo, GetCPUBogoMips)
-{
-  std::string s = CServiceBroker::GetCPUInfo()->GetCPUBogoMips();
-  EXPECT_STRNE("", s.c_str());
-}
-
-TEST_F(TestCPUInfo, GetCPUHardware)
-{
-  std::string s = CServiceBroker::GetCPUInfo()->GetCPUHardware();
-  EXPECT_STRNE("", s.c_str());
-}
-
-TEST_F(TestCPUInfo, GetCPURevision)
-{
-  std::string s = CServiceBroker::GetCPUInfo()->GetCPURevision();
-  EXPECT_STRNE("", s.c_str());
-}
-
-TEST_F(TestCPUInfo, GetCPUSerial)
-{
-  std::string s = CServiceBroker::GetCPUInfo()->GetCPUSerial();
-  EXPECT_STRNE("", s.c_str());
-}
-
 TEST_F(TestCPUInfo, CoreInfo)
 {
   ASSERT_TRUE(CServiceBroker::GetCPUInfo()->HasCoreId(0));
