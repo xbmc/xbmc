@@ -240,7 +240,6 @@ void CFileCache::Process()
 
   CWriteRate limiter;
   CWriteRate average;
-  bool cacheReachEOF = false;
 
   while (!m_bStop)
   {
@@ -252,7 +251,7 @@ void CFileCache::Process()
     {
       m_seekEvent.Reset();
       int64_t cacheMaxPos = m_pCache->CachedDataEndPosIfSeekTo(m_seekPos);
-      cacheReachEOF = (cacheMaxPos == m_fileSize);
+      const bool cacheReachEOF = (cacheMaxPos == m_fileSize);
       bool sourceSeekFailed = false;
       if (!cacheReachEOF)
       {
@@ -315,7 +314,7 @@ void CFileCache::Process()
     /* Only read from source if there's enough write space in the cache
      * else we may keep disposing data and seeking back on (slow) source
      */
-    if (maxWrite < maxSourceRead && !cacheReachEOF)
+    if (maxWrite < maxSourceRead)
     {
       // Wait until sufficient cache write space is available
       m_pCache->m_space.WaitMSec(5);
@@ -323,7 +322,7 @@ void CFileCache::Process()
     }
 
     ssize_t iRead = 0;
-    if (!cacheReachEOF)
+    if (maxSourceRead > 0)
       iRead = m_source.Read(buffer.get(), maxSourceRead);
     if (iRead == 0)
     {
