@@ -3,12 +3,8 @@
 //
 // Direct3D 11 Effects Stream Out Decl Parser
 //
-// THIS CODE AND INFORMATION IS PROVIDED "AS IS" WITHOUT WARRANTY OF
-// ANY KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO
-// THE IMPLIED WARRANTIES OF MERCHANTABILITY AND/OR FITNESS FOR A
-// PARTICULAR PURPOSE.
-//
 // Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License.
 //
 // http://go.microsoft.com/fwlink/p/?LinkId=271568
 //--------------------------------------------------------------------------------------
@@ -36,11 +32,11 @@ class CSOParser
     char                                        m_pError[ MAX_ERROR_SIZE + 1 ];                 // Error buffer
 
 public:
-    CSOParser()
+    CSOParser() noexcept :
+        m_newEntry{},
+        m_SemanticString{},
+        m_pError{}
     {
-        ZeroMemory(&m_newEntry, sizeof(m_newEntry));
-        ZeroMemory(m_SemanticString, sizeof(m_SemanticString));
-        m_pError[0] = 0;
     }
 
     ~CSOParser()

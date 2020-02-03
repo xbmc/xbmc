@@ -3,12 +3,8 @@
 //
 // Direct3D 11 Effects implementation for helper data structures
 //
-// THIS CODE AND INFORMATION IS PROVIDED "AS IS" WITHOUT WARRANTY OF
-// ANY KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO
-// THE IMPLIED WARRANTIES OF MERCHANTABILITY AND/OR FITNESS FOR A
-// PARTICULAR PURPOSE.
-//
 // Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License.
 //
 // http://go.microsoft.com/fwlink/p/?LinkId=271568
 //--------------------------------------------------------------------------------------
@@ -27,7 +23,10 @@ namespace D3DX11Core
 // CMemoryStream - A class to simplify reading binary data
 //////////////////////////////////////////////////////////////////////////
 
-CMemoryStream::CMemoryStream() : m_pData(nullptr), m_cbData(0), m_readPtr(0)
+CMemoryStream::CMemoryStream() noexcept :
+    m_pData(nullptr),
+    m_cbData(0),
+    m_readPtr(0)
 {
 }
 
@@ -128,7 +127,7 @@ HRESULT CMemoryStream::Seek(_In_ size_t offset)
 // CDataBlock - used to dynamically build up the effect file in memory
 //////////////////////////////////////////////////////////////////////////
 
-CDataBlock::CDataBlock() :
+CDataBlock::CDataBlock() noexcept :
     m_size(0),
     m_maxSize(0),
     m_pData(nullptr),
@@ -255,7 +254,7 @@ void* CDataBlock::Allocate(uint32_t bufferSize, CDataBlock **ppBlock)
 
 //////////////////////////////////////////////////////////////////////////
 
-CDataBlockStore::CDataBlockStore() :
+CDataBlockStore::CDataBlockStore() noexcept :
     m_pFirst(nullptr),
     m_pLast(nullptr),
     m_Size(0),
@@ -368,14 +367,26 @@ uint32_t CDataBlockStore::GetSize()
 
 //////////////////////////////////////////////////////////////////////////
 
+static bool s_mute = false;
+
+bool D3DX11DebugMute(bool mute)
+{
+    bool previous = s_mute;
+    s_mute = mute;
+    return previous;
+}
+
 #ifdef _DEBUG
 _Use_decl_annotations_
 void __cdecl D3DXDebugPrintf(UINT lvl, LPCSTR szFormat, ...)
 {
+    if (s_mute)
+        return;
+
     UNREFERENCED_PARAMETER(lvl);
 
-    char strA[4096];
-    char strB[4096];
+    char strA[4096] = {};
+    char strB[4096] = {};
 
     va_list ap;
     va_start(ap, szFormat);
