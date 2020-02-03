@@ -4,12 +4,8 @@
 // Direct3D 11 Effects Variable reflection template
 // These templates define the many Effect variable types.
 //
-// THIS CODE AND INFORMATION IS PROVIDED "AS IS" WITHOUT WARRANTY OF
-// ANY KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO
-// THE IMPLIED WARRANTIES OF MERCHANTABILITY AND/OR FITNESS FOR A
-// PARTICULAR PURPOSE.
-//
 // Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License.
 //
 // http://go.microsoft.com/fwlink/p/?LinkId=271568
 //--------------------------------------------------------------------------------------
@@ -1185,7 +1181,8 @@ struct TTopLevelVariable : public SVariable, public IBaseInterface
         return pEffect;
     }
 
-    TTopLevelVariable() : pEffect (nullptr)
+    TTopLevelVariable() noexcept :
+        pEffect(nullptr)
     {
     }
 
@@ -1224,10 +1221,10 @@ struct TMember : public SVariable, public IBaseInterface
     // Required to create member/element variable interfaces
     TTopLevelVariable<ID3DX11EffectVariable>    *pTopLevelEntity;
 
-    TMember()
+    TMember() noexcept :
+        IsSingleElement(false),
+        pTopLevelEntity(nullptr)
     {
-        IsSingleElement = false;
-        pTopLevelEntity = nullptr;
     }
 
     CEffect* GetEffect()
@@ -1394,10 +1391,10 @@ struct TGlobalVariable : public TVariable<TTopLevelVariable<IBaseInterface> >
     // if numeric, pointer to the constant buffer where this variable lives
     SConstantBuffer *pCB;
 
-    uint32_t            AnnotationCount;
+    uint32_t        AnnotationCount;
     SAnnotation     *pAnnotations;
 
-    TGlobalVariable() :
+    TGlobalVariable() noexcept :
         LastModifiedTime(0),
         pCB(nullptr),
         AnnotationCount(0),

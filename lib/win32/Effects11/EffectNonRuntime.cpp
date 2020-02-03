@@ -6,12 +6,8 @@
 // are typically called when creating, cloning, or optimizing an 
 // Effect, or reflecting a variable.
 //
-// THIS CODE AND INFORMATION IS PROVIDED "AS IS" WITHOUT WARRANTY OF
-// ANY KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO
-// THE IMPLIED WARRANTIES OF MERCHANTABILITY AND/OR FITNESS FOR A
-// PARTICULAR PURPOSE.
-//
 // Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License.
 //
 // http://go.microsoft.com/fwlink/p/?LinkId=271568
 //--------------------------------------------------------------------------------------
@@ -24,53 +20,52 @@ namespace D3DX11Effects
 
 extern SUnorderedAccessView g_NullUnorderedAccessView;
 
-SBaseBlock::SBaseBlock()
-: BlockType(EBT_Invalid)
-, IsUserManaged(false)
-, AssignmentCount(0)
-, pAssignments(nullptr)
-{
-
-}
-
-SPassBlock::SPassBlock()
-{
-    pName = nullptr;
-    AnnotationCount = 0;
-    pAnnotations = nullptr;
-    InitiallyValid = true;
-    HasDependencies = false;
-    ZeroMemory(&BackingStore, sizeof(BackingStore));
-}
-
-STechnique::STechnique()
-: pName(nullptr)
-, PassCount(0)
-, pPasses(nullptr)
-, AnnotationCount(0)
-, pAnnotations(nullptr)
-, InitiallyValid( true )
-, HasDependencies( false )
+SBaseBlock::SBaseBlock() noexcept :
+    BlockType(EBT_Invalid),
+    IsUserManaged(false),
+    AssignmentCount(0),
+    pAssignments(nullptr)
 {
 }
 
-SGroup::SGroup()
-: pName(nullptr)
-, TechniqueCount(0)
-, pTechniques(nullptr)
-, AnnotationCount(0)
-, pAnnotations(nullptr)
-, InitiallyValid( true )
-, HasDependencies( false )
+SPassBlock::SPassBlock() noexcept :
+    BackingStore{},
+    pName(nullptr),
+    AnnotationCount(0),
+    pAnnotations(nullptr),
+    pEffect(nullptr),
+    InitiallyValid(true),
+    HasDependencies(false)
 {
 }
 
-SDepthStencilBlock::SDepthStencilBlock()
+STechnique::STechnique() noexcept :
+    pName(nullptr),
+    PassCount(0),
+    pPasses(nullptr),
+    AnnotationCount(0),
+    pAnnotations(nullptr),
+    InitiallyValid( true ),
+    HasDependencies( false )
 {
-    pDSObject = nullptr;
-    ZeroMemory(&BackingStore, sizeof(BackingStore));
-    IsValid = true;
+}
 
+SGroup::SGroup() noexcept :
+    pName(nullptr),
+    TechniqueCount(0),
+    pTechniques(nullptr),
+    AnnotationCount(0),
+    pAnnotations(nullptr),
+    InitiallyValid( true ),
+    HasDependencies( false )
+{
+}
+
+SDepthStencilBlock::SDepthStencilBlock() noexcept :
+    pDSObject(nullptr),
+    BackingStore{},
+    IsValid(true)
+{
     BackingStore.BackFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
     BackingStore.BackFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
     BackingStore.BackFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
@@ -87,12 +82,11 @@ SDepthStencilBlock::SDepthStencilBlock()
     BackingStore.StencilWriteMask = D3D11_DEFAULT_STENCIL_WRITE_MASK;
 }
 
-SBlendBlock::SBlendBlock()
+SBlendBlock::SBlendBlock() noexcept :
+    pBlendObject(nullptr),
+    BackingStore{},
+    IsValid(true)
 {
-    pBlendObject = nullptr;
-    ZeroMemory(&BackingStore, sizeof(BackingStore));
-    IsValid = true;
-
     BackingStore.AlphaToCoverageEnable = false;
     BackingStore.IndependentBlendEnable = true;
     for( size_t i=0; i < D3D11_SIMULTANEOUS_RENDER_TARGET_COUNT; i++ )
@@ -107,12 +101,11 @@ SBlendBlock::SBlendBlock()
     }
 }
 
-SRasterizerBlock::SRasterizerBlock()
+SRasterizerBlock::SRasterizerBlock() noexcept :
+    pRasterizerObject(nullptr),
+    BackingStore{},
+    IsValid(true)
 {
-    pRasterizerObject = nullptr;
-    ZeroMemory(&BackingStore, sizeof(BackingStore));
-    IsValid = true;
-
     BackingStore.AntialiasedLineEnable = false;
     BackingStore.CullMode = D3D11_CULL_BACK;
     BackingStore.DepthBias = D3D11_DEFAULT_DEPTH_BIAS;
@@ -125,11 +118,10 @@ SRasterizerBlock::SRasterizerBlock()
     BackingStore.DepthClipEnable = true;
 }
 
-SSamplerBlock::SSamplerBlock()
+SSamplerBlock::SSamplerBlock() noexcept :
+    pD3DObject(nullptr),
+    BackingStore{}
 {
-    pD3DObject = nullptr;
-    ZeroMemory(&BackingStore, sizeof(BackingStore));
-
     BackingStore.SamplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_CLAMP;
     BackingStore.SamplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_CLAMP;
     BackingStore.SamplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_CLAMP;
@@ -145,35 +137,25 @@ SSamplerBlock::SSamplerBlock()
     BackingStore.SamplerDesc.MaxLOD = FLT_MAX;
 }
 
-SShaderBlock::SShaderBlock(SD3DShaderVTable *pVirtualTable)
+SShaderBlock::SShaderBlock(SD3DShaderVTable *pVirtualTable) noexcept :
+    IsValid(true),
+    pVT(pVirtualTable),
+    pReflectionData(nullptr),
+    pD3DObject(nullptr),
+    CBDepCount(0),
+    pCBDeps(nullptr),
+    SampDepCount(0),
+    pSampDeps(nullptr),
+    InterfaceDepCount(0),
+    pInterfaceDeps(nullptr),
+    ResourceDepCount(0),
+    pResourceDeps(nullptr),
+    UAVDepCount(0),
+    pUAVDeps(nullptr),
+    TBufferDepCount(0),
+    ppTbufDeps(nullptr),
+    pInputSignatureBlob(nullptr)
 {
-    IsValid = true;
-
-    pVT = pVirtualTable;
-
-    pReflectionData = nullptr;
-    
-    pD3DObject = nullptr;
-
-    CBDepCount = 0;
-    pCBDeps = nullptr;
-
-    SampDepCount = 0;
-    pSampDeps = nullptr;
-
-    InterfaceDepCount = 0;
-    pInterfaceDeps = nullptr;
-
-    ResourceDepCount = 0;
-    pResourceDeps = nullptr;
-
-    UAVDepCount = 0;
-    pUAVDeps = nullptr;
-
-    TBufferDepCount = 0;
-    ppTbufDeps = nullptr;
-
-    pInputSignatureBlob = nullptr;
 }
 
 HRESULT SShaderBlock::OnDeviceBind()
@@ -540,7 +522,7 @@ HRESULT SShaderBlock::GetSignatureElementDesc(ESigType SigType, uint32_t Element
         D3D11_SHADER_DESC ShaderDesc;
         VH( pReflectionData->pReflection->GetDesc( &ShaderDesc ) );
 
-        D3D11_SIGNATURE_PARAMETER_DESC ParamDesc ={0};
+        D3D11_SIGNATURE_PARAMETER_DESC ParamDesc ={};
         if( pReflectionData->IsNullGS )
         {
             switch( SigType )
@@ -619,21 +601,6 @@ lExit:
     return hr;
 }
 
-SString::SString()
-{
-    pString = nullptr;
-}
-
-SRenderTargetView::SRenderTargetView()
-{
-    pRenderTargetView = nullptr;
-}
-
-SDepthStencilView::SDepthStencilView()
-{
-    pDepthStencilView = nullptr;
-}
-
 void * GetBlockByIndex(EVarType VarType, EObjectType ObjectType, void *pBaseBlock, uint32_t Index)
 {
     switch( VarType )
@@ -709,58 +676,54 @@ void * GetBlockByIndex(EVarType VarType, EObjectType ObjectType, void *pBaseBloc
 // CEffect
 //--------------------------------------------------------------------------------------
 
-CEffect::CEffect( uint32_t Flags )
+CEffect::CEffect( uint32_t Flags ) noexcept :
+    m_RefCount(1),
+    m_Flags(Flags),
+    m_pReflection(nullptr),
+    m_VariableCount(0),
+    m_pVariables(nullptr),
+    m_AnonymousShaderCount(0),
+    m_pAnonymousShaders(nullptr),
+    m_TechniqueCount(0),
+    m_GroupCount(0),
+    m_pGroups(nullptr),
+    m_pNullGroup(nullptr),
+    m_ShaderBlockCount(0),
+    m_pShaderBlocks(nullptr),
+    m_DepthStencilBlockCount(0),
+    m_pDepthStencilBlocks(nullptr),
+    m_BlendBlockCount(0),
+    m_pBlendBlocks(nullptr),
+    m_RasterizerBlockCount(0),
+    m_pRasterizerBlocks(nullptr),
+    m_SamplerBlockCount(0),
+    m_pSamplerBlocks(nullptr),
+    m_MemberDataCount(0),
+    m_pMemberDataBlocks(nullptr),
+    m_InterfaceCount(0),
+    m_pInterfaces(nullptr),
+    m_CBCount(0),
+    m_pCBs(nullptr),
+    m_StringCount(0),
+    m_pStrings(nullptr),
+    m_ShaderResourceCount(0),
+    m_pShaderResources(nullptr),
+    m_UnorderedAccessViewCount(0),
+    m_pUnorderedAccessViews(nullptr),
+    m_RenderTargetViewCount(0),
+    m_pRenderTargetViews(nullptr),
+    m_DepthStencilViewCount(0),
+    m_pDepthStencilViews(nullptr),
+    m_LocalTimer(1),
+    m_FXLIndex(0),
+    m_pDevice(nullptr),
+    m_pContext(nullptr),
+    m_pClassLinkage(nullptr),
+    m_pTypePool(nullptr),
+    m_pStringPool(nullptr),
+    m_pPooledHeap(nullptr),
+    m_pOptimizedTypeHeap(nullptr)
 {
-    m_RefCount = 1;
-
-    m_pVariables = nullptr;
-    m_pAnonymousShaders = nullptr;
-    m_pGroups = nullptr;
-    m_pNullGroup = nullptr;
-    m_pShaderBlocks = nullptr;
-    m_pDepthStencilBlocks = nullptr;
-    m_pBlendBlocks = nullptr;
-    m_pRasterizerBlocks = nullptr;
-    m_pSamplerBlocks = nullptr;
-    m_pCBs = nullptr;
-    m_pStrings = nullptr;
-    m_pMemberDataBlocks = nullptr;
-    m_pInterfaces = nullptr;
-    m_pShaderResources = nullptr;
-    m_pUnorderedAccessViews = nullptr;
-    m_pRenderTargetViews = nullptr;
-    m_pDepthStencilViews = nullptr;
-    m_pDevice = nullptr;
-    m_pClassLinkage = nullptr;
-    m_pContext = nullptr;
-
-    m_VariableCount = 0;
-    m_AnonymousShaderCount = 0;
-    m_ShaderBlockCount = 0;
-    m_DepthStencilBlockCount = 0;
-    m_BlendBlockCount = 0;
-    m_RasterizerBlockCount = 0;
-    m_SamplerBlockCount = 0;
-    m_StringCount = 0;
-    m_MemberDataCount = 0;
-    m_InterfaceCount = 0;
-    m_ShaderResourceCount = 0;
-    m_UnorderedAccessViewCount = 0;
-    m_RenderTargetViewCount = 0;
-    m_DepthStencilViewCount = 0;
-    m_CBCount = 0;
-    m_TechniqueCount = 0;
-    m_GroupCount = 0;
-
-    m_pReflection = nullptr;
-    m_LocalTimer = 1;
-    m_Flags = Flags;
-    m_FXLIndex = 0;
-
-    m_pTypePool = nullptr;
-    m_pStringPool = nullptr;
-    m_pPooledHeap = nullptr;
-    m_pOptimizedTypeHeap = nullptr;
 }
 
 void CEffect::ReleaseShaderRefection()
@@ -789,9 +752,8 @@ CEffect::~CEffect()
 
     if (pInfoQueue)
     {
-        D3D11_INFO_QUEUE_FILTER filter;
+        D3D11_INFO_QUEUE_FILTER filter = {};
         D3D11_MESSAGE_CATEGORY messageCategory = D3D11_MESSAGE_CATEGORY_STATE_SETTING;
-        ZeroMemory(&filter, sizeof(filter));
 
         filter.DenyList.NumCategories = 1;
         filter.DenyList.pCategoryList = &messageCategory;

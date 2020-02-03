@@ -3,12 +3,8 @@
 //
 // Effect API entry point
 //
-// THIS CODE AND INFORMATION IS PROVIDED "AS IS" WITHOUT WARRANTY OF
-// ANY KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO
-// THE IMPLIED WARRANTIES OF MERCHANTABILITY AND/OR FITNESS FOR A
-// PARTICULAR PURPOSE.
-//
 // Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License.
 //
 // http://go.microsoft.com/fwlink/p/?LinkId=271568
 //--------------------------------------------------------------------------------------
@@ -23,9 +19,9 @@ using namespace D3DX11Effects;
 
 struct handle_closer { void operator()(HANDLE h) { if (h) CloseHandle(h); } };
 
-typedef public std::unique_ptr<void, handle_closer> ScopedHandle;
+typedef std::unique_ptr<void, handle_closer> ScopedHandle;
 
-inline HANDLE safe_handle( HANDLE h ) { return (h == INVALID_HANDLE_VALUE) ? 0 : h; }
+inline HANDLE safe_handle( HANDLE h ) { return (h == INVALID_HANDLE_VALUE) ? nullptr : h; }
 
 //-------------------------------------------------------------------------------------
 
@@ -54,27 +50,20 @@ static HRESULT LoadBinaryFromFile( _In_z_ LPCWSTR pFileName, _Inout_ std::unique
     }
 
     // Get the file size
-    LARGE_INTEGER FileSize = { 0 };
-
-#if (_WIN32_WINNT >= _WIN32_WINNT_VISTA)
     FILE_STANDARD_INFO fileInfo;
     if ( !GetFileInformationByHandleEx( hFile.get(), FileStandardInfo, &fileInfo, sizeof(fileInfo) ) )
     {
         return HRESULT_FROM_WIN32( GetLastError() );
     }
-    FileSize = fileInfo.EndOfFile;
-#else
-    GetFileSizeEx( hFile.get(), &FileSize );
-#endif
 
     // File is too big for 32-bit allocation or contains no data, so reject read
-    if ( !FileSize.LowPart || FileSize.HighPart > 0)
+    if ( !fileInfo.EndOfFile.LowPart || fileInfo.EndOfFile.HighPart > 0 )
     {
         return E_FAIL;
     }
 
     // create enough space for the file data
-    data.reset( new uint8_t[ FileSize.LowPart ] );
+    data.reset( new uint8_t[ fileInfo.EndOfFile.LowPart ] );
     if (!data)
     {
         return E_OUTOFMEMORY;
@@ -84,7 +73,7 @@ static HRESULT LoadBinaryFromFile( _In_z_ LPCWSTR pFileName, _Inout_ std::unique
     DWORD BytesRead = 0;
     if (!ReadFile( hFile.get(),
                    data.get(),
-                   FileSize.LowPart,
+                   fileInfo.EndOfFile.LowPart,
                    &BytesRead,
                    nullptr
                  ))
@@ -92,7 +81,7 @@ static HRESULT LoadBinaryFromFile( _In_z_ LPCWSTR pFileName, _Inout_ std::unique
         return HRESULT_FROM_WIN32( GetLastError() );
     }
 
-    if (BytesRead < FileSize.LowPart)
+    if (BytesRead < fileInfo.EndOfFile.LowPart)
     {
         return E_FAIL;
     }
@@ -111,10 +100,8 @@ HRESULT WINAPI D3DX11CreateEffectFromMemory(LPCVOID pData, SIZE_T DataLength, UI
     if ( !pData || !DataLength || !pDevice || !ppEffect )
         return E_INVALIDARG;
 
-#ifdef _M_X64
-    if ( DataLength > 0xFFFFFFFF )
+    if ( DataLength > UINT32_MAX )
         return E_INVALIDARG;
-#endif
 
     HRESULT hr = S_OK;
 
@@ -288,13 +275,11 @@ HRESULT D3DX11CompileEffectFromFile( LPCWSTR pFileName,
 
 #endif // D3D_COMPILER_VERSION
 
-#ifdef _M_X64
-    if ( blob->GetBufferSize() > 0xFFFFFFFF )
+    if ( blob->GetBufferSize() > UINT32_MAX)
     {
         SAFE_RELEASE( blob );
         return E_FAIL;
     }
-#endif // _M_X64
 
     hr = S_OK;
 

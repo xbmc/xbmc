@@ -6,12 +6,8 @@
 // Lifetime for most Effects objects is based on the the lifetime of the master
 // effect, so the reference count is not used.
 //
-// THIS CODE AND INFORMATION IS PROVIDED "AS IS" WITHOUT WARRANTY OF
-// ANY KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO
-// THE IMPLIED WARRANTIES OF MERCHANTABILITY AND/OR FITNESS FOR A
-// PARTICULAR PURPOSE.
-//
 // Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License.
 //
 // http://go.microsoft.com/fwlink/p/?LinkId=271568
 //--------------------------------------------------------------------------------------
@@ -20,7 +16,7 @@
 
 #define IUNKNOWN_IMP(Class, Interface, BaseInterface) \
  \
-HRESULT STDMETHODCALLTYPE Class##::QueryInterface(REFIID iid, _COM_Outptr_ LPVOID *ppv) override \
+HRESULT STDMETHODCALLTYPE QueryInterface(REFIID iid, _COM_Outptr_ LPVOID *ppv) override \
 { \
     if( !ppv ) \
         return E_INVALIDARG; \
@@ -46,12 +42,12 @@ HRESULT STDMETHODCALLTYPE Class##::QueryInterface(REFIID iid, _COM_Outptr_ LPVOI
     return S_OK; \
 } \
  \
-ULONG STDMETHODCALLTYPE Class##::AddRef() override \
+ULONG STDMETHODCALLTYPE AddRef() override \
 { \
     return 1; \
 } \
  \
-ULONG STDMETHODCALLTYPE Class##::Release() override \
+ULONG STDMETHODCALLTYPE Release() override \
 { \
     return 0; \
 }

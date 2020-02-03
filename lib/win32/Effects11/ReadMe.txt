@@ -3,16 +3,19 @@ EFFECTS FOR DIRECT3D 11 (FX11)
 
 Copyright (c) Microsoft Corporation. All rights reserved.
 
-August 1, 2016
+April 26, 2019
 
 Effects for Direct3D 11 (FX11) is a management runtime for authoring HLSL shaders, render
 state, and runtime variables together.
 
-The source is written for Visual Studio 2013 or 2015. It is recommended that you
-make use of VS 2013 Update 5, VS 2015 Update 2, and Windows 7 Service Pack 1 or later.
+This code is designed to build with Visual Studio 2015 Update 3, Visual Studio 2017,
+or Visual Studio 2019. It is recommended that you make use of VS 2015 Update 3,
+Windows Tools 1.4.1, and the Windows 10 Anniversary Update SDK (14393) -or-
+VS 2017 (15.9 update) / VS 2019 with the Windows 10 October 2018 Update SDK (17763).
 
-These components are designed to work without requiring any content from the DirectX SDK. For details,
-see "Where is the DirectX SDK?" <http://msdn.microsoft.com/en-us/library/ee663275.aspx>.
+These components are designed to work without requiring any content from the
+legacy DirectX SDK. For details, see "Where is the DirectX SDK?"
+<https://aka.ms/dxsdk>.
 
 All content and source code for this package are subject to the terms of the MIT License.
 <http://opensource.org/licenses/MIT>.
@@ -59,6 +62,38 @@ in a future update.
 ---------------
 RELEASE HISTORY
 ---------------
+
+April 26, 2019 (11.26)
+    Added VS 2019 desktop projects
+    VS 2017 updated for Windows 10 October 2018 Update SDK (17763)
+    Minor code cleanup
+
+July 12, 2018 (11.25)
+    Added D3DX11DebugMute function
+    Minor project and code cleanup
+
+May 31, 2018 (11.24)
+    VS 2017 updated for Windows 10 April 2018 Update SDK (17134)
+
+May 11, 2018 (11.23)
+    Retired VS 2013 projects
+    Code cleanup
+
+February 27, 2018 (11.22)
+    Minor code update
+
+November 2, 2017 (11.21)
+    VS 2017 updated for Windows 10 Fall Creators Update SDK (16299)
+
+October 13, 2017 (11.20)
+    Updated for VS 2017 update 15.1 - 15.3 and Windows 10 SDK (15063)    
+
+March 10, 2017 (11.19)
+    Add VS 2017 projects
+    Minor code cleanup    
+
+September 15, 2016 (11.18)
+    Minor code cleanup
 
 August 2, 2016 (11.17)
     Updated for VS 2015 Update 3 and Windows 10 SDK (14393)
