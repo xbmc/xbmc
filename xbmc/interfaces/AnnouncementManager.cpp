@@ -77,21 +77,23 @@ void CAnnouncementManager::RemoveAnnouncer(IAnnouncer *listener)
 
 void CAnnouncementManager::Announce(AnnouncementFlag flag, const std::string& message)
 {
-  Announce(flag, ANNOUNCEMENT_SENDER, message);
+  CVariant data;
+  Announce(flag, ANNOUNCEMENT_SENDER, message, CFileItemPtr(), data);
 }
 
 void CAnnouncementManager::Announce(AnnouncementFlag flag,
                                     const std::string& message,
                                     const CVariant& data)
 {
-  Announce(flag, ANNOUNCEMENT_SENDER, message, data);
+  Announce(flag, ANNOUNCEMENT_SENDER, message, CFileItemPtr(), data);
 }
 
 void CAnnouncementManager::Announce(AnnouncementFlag flag,
                                     const std::string& message,
                                     const std::shared_ptr<const CFileItem>& item)
 {
-  Announce(flag, ANNOUNCEMENT_SENDER, message, item);
+  CVariant data;
+  Announce(flag, ANNOUNCEMENT_SENDER, message, item, data);
 }
 
 void CAnnouncementManager::Announce(AnnouncementFlag flag,
@@ -117,15 +119,6 @@ void CAnnouncementManager::Announce(AnnouncementFlag flag,
                                     const CVariant& data)
 {
   Announce(flag, sender, message, CFileItemPtr(), data);
-}
-
-void CAnnouncementManager::Announce(AnnouncementFlag flag,
-                                    const std::string& sender,
-                                    const std::string& message,
-                                    const std::shared_ptr<const CFileItem>& item)
-{
-  CVariant data;
-  Announce(flag, sender, message, item, data);
 }
 
 void CAnnouncementManager::Announce(AnnouncementFlag flag,

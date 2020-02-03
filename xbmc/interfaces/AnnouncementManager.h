@@ -52,10 +52,6 @@ namespace ANNOUNCEMENT
     void Announce(AnnouncementFlag flag,
                   const std::string& sender,
                   const std::string& message,
-                  const std::shared_ptr<const CFileItem>& item);
-    void Announce(AnnouncementFlag flag,
-                  const std::string& sender,
-                  const std::string& message,
                   const std::shared_ptr<const CFileItem>& item,
                   const CVariant& data);
 
