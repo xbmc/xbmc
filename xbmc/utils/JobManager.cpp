@@ -201,7 +201,7 @@ void CJobManager::CancelJobs()
   {
     lock.Leave();
     m_jobEvent.Set();
-    Sleep(0); // yield after setting the event to give the workers some time to die
+    std::this_thread::yield(); // yield after setting the event to give the workers some time to die
     lock.Enter();
   }
 }
