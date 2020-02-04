@@ -51,13 +51,11 @@ ifeq ($(OS), darwin_embedded)
 	cd $(PLATFORM); patch -p1 -i ../crt_extensions.patch
 endif
 	cd $(PLATFORM); $(CONFIGURE)
-ifeq (darwin, $(findstring darwin, $(HOST)))
-ifneq ($(TARGET_PLATFORM),appletvos)
+ifeq ($(TARGET_PLATFORM), iphoneos)
 	# clock_gettime is only available since macOS 10.12, iOS 10.0 and tvOS 10.0
 	# build sytem doesn't include time.h for the check,
 	# so the version guards have no effect
 	sed -ie -E "s/#define (HAVE_(CLOCK_GETTIME|CLOCK_MONOTONIC|CLOCK_PROCESS_CPUTIME_ID|CLOCK_REALTIME)) 1/\/* #undef \1 *\//g" $(PLATFORM)/bin/default/include/config.h
-endif
 endif
 
 $(LIBDYLIB): $(PLATFORM)

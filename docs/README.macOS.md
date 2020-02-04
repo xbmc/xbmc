@@ -55,11 +55,9 @@ Several different strategies are used to draw your attention to certain pieces o
 ## 2. Prerequisites
 * **[Java Development Kit (JDK)](http://www.oracle.com/technetwork/java/javase/downloads/index.html)**
 * **[Xcode](https://developer.apple.com/xcode/)**. Install it from the AppStore or from the **[Apple Developer Homepage](https://developer.apple.com/)**.
-* Device with **OSX 10.9 or newer** to run Kodi after build.
+* Device with **OSX 10.13 or newer** to run Kodi after build.
 
 Building for OSX/macOS should work with the following constellations of Xcode and OSX/macOS versions:
-  * Xcode 8.x on OSX 10.11.x (El Capitan)
-  * Xcode 9.x on OSX 10.12.x (Sierra)
   * Xcode 9.x on macOS 10.13.x (High Sierra)
 
 **WARNING:** Start Xcode after installation finishes. You need to accept the licenses and install missing components.
@@ -107,9 +105,9 @@ make -j$(getconf _NPROCESSORS_ONLN)
 
 **WARNING:** Look for the `Dependencies built successfully.` success message. If in doubt run a single threaded `make` command until the message appears. If the single make fails, clean the specific library by issuing `make -C target/<name_of_failed_lib> distclean` and run `make`again.
 
-**NOTE:** **Advanced developers** may want to specify an SDK version (if multiple versions are installed) in the configure line(s) shown above. The example below would use SDK 10.9:
+**NOTE:** **Advanced developers** may want to specify an SDK version (if multiple versions are installed) in the configure line(s) shown above. The example below would use SDK 10.13:
 ```
-./configure --host=x86_64-apple-darwin --with-sdk=10.9
+./configure --host=x86_64-apple-darwin --with-sdk=10.13
 ```
 
 **[back to top](#table-of-contents)** | **[back to section top](#4-configure-and-build-tools-and-dependencies)**
