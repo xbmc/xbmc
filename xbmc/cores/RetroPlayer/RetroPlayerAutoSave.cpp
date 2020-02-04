@@ -41,7 +41,7 @@ void CRetroPlayerAutoSave::Process()
 
   while (!m_bStop)
   {
-    Sleep(AUTOSAVE_DURATION_SECS * 1000);
+    CThread::Sleep(AUTOSAVE_DURATION_SECS * 1000);
 
     if (m_bStop)
       break;

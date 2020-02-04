@@ -184,7 +184,7 @@ void CPVRGUIInfo::Process()
       iLoop = 0;
 
     if (!m_bStop)
-      Sleep(500);
+      CThread::Sleep(500);
   }
 }
 

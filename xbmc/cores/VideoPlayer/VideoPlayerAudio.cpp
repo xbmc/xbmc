@@ -283,7 +283,7 @@ void CVideoPlayerAudio::Process()
         }
       }
       if (timeout == 0)
-        Sleep(10);
+        CThread::Sleep(10);
 
       continue;
     }

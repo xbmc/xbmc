@@ -884,7 +884,7 @@ CVideoPlayerVideo::EOutputState CVideoPlayerVideo::OutputPicture(const VideoPict
       if (inputPts >= renderPts)
       {
         m_rewindStalled = true;
-        Sleep(50);
+        CThread::Sleep(50);
       }
       return OUTPUT_DROPPED;
     }

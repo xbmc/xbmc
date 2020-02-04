@@ -194,7 +194,7 @@ void CShoutcastFile::Process()
     if (m_tagChange.WaitMSec(500))
     {
       while (!m_bStop && m_cacheReader->GetPosition() < m_tagPos)
-        Sleep(20);
+        CThread::Sleep(20);
       CSingleLock lock(m_tagSection);
       CApplicationMessenger::GetInstance().PostMsg(TMSG_UPDATE_CURRENT_ITEM, 1,-1, static_cast<void*>(new CFileItem(m_tag)));
       m_tagPos = 0;

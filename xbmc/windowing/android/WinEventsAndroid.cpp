@@ -123,7 +123,7 @@ void CWinEventsAndroid::Process()
   while (!m_bStop)
   {
     // run a 10ms (timeout) wait cycle
-    Sleep(timeout);
+    CThread::Sleep(timeout);
 
     CSingleLock lock(m_lasteventCond);
 

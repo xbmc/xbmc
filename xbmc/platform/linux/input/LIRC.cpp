@@ -60,7 +60,7 @@ void CLirc::Process()
       if (!CheckDaemon())
       {
         CSingleExit lock(m_critSection);
-        Sleep(1000);
+        CThread::Sleep(1000);
         continue;
       }
 
@@ -68,7 +68,7 @@ void CLirc::Process()
       if (m_fd <= 0)
       {
         CSingleExit lock(m_critSection);
-        Sleep(1000);
+        CThread::Sleep(1000);
         continue;
       }
     }
@@ -80,7 +80,7 @@ void CLirc::Process()
       if (ret < 0)
       {
         lirc_deinit();
-        Sleep(1000);
+        CThread::Sleep(1000);
         break;
       }
       if (code != nullptr)

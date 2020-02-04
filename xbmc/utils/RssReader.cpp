@@ -168,7 +168,7 @@ void CRssReader::Process()
             break;
           }
           else if (nRetries > 0)
-            Sleep(5000); // Network problems? Retry, but not immediately.
+            CThread::Sleep(5000); // Network problems? Retry, but not immediately.
           else
             CLog::Log(LOGERROR, "Unable to obtain rss feed: %s", strUrl.c_str());
         }

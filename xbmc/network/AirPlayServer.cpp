@@ -352,7 +352,7 @@ void CAirPlayServer::Process()
     if (res < 0)
     {
       CLog::Log(LOGERROR, "AIRPLAY Server: Select failed");
-      Sleep(1000);
+      CThread::Sleep(1000);
       Initialize();
     }
     else if (res > 0)
@@ -395,7 +395,7 @@ void CAirPlayServer::Process()
             CLog::Log(LOGERROR, "AIRPLAY Server: Accept of new connection failed: %d", errno);
             if (EBADF == errno)
             {
-              Sleep(1000);
+              CThread::Sleep(1000);
               Initialize();
               break;
             }

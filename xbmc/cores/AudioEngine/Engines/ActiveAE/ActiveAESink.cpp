@@ -379,7 +379,7 @@ void CActiveAESink::StateMachine(int signal, Protocol *port, Message *msg)
           int timeout;
           samples = *((CSampleBuffer**)msg->data);
           timeout = 1000*samples->pkt->nb_samples/samples->pkt->config.sample_rate;
-          Sleep(timeout);
+          CThread::Sleep(timeout);
           msg->Reply(CSinkDataProtocol::RETURNSAMPLE, &samples, sizeof(CSampleBuffer*));
           m_extTimeout = 0;
           return;
@@ -707,7 +707,7 @@ void CActiveAESink::EnumerateSinkList(bool force, std::string driver)
   while (m_sinkInfoList.empty() && c_retry > 0)
   {
     CLog::Log(LOGNOTICE, "No Devices found - retry: %d", c_retry);
-    Sleep(1500);
+    CThread::Sleep(1500);
     c_retry--;
     // retry the enumeration
     CAESinkFactory::EnumerateEx(m_sinkInfoList, true, driver);
@@ -1029,7 +1029,7 @@ unsigned int CActiveAESink::OutputSamples(CSampleBuffer* samples)
     written = m_sink->AddPackets(buffer, maxFrames, totalFrames - frames);
     if (written == 0)
     {
-      Sleep(500*m_sinkFormat.m_frames/m_sinkFormat.m_sampleRate);
+      CThread::Sleep(500 * m_sinkFormat.m_frames / m_sinkFormat.m_sampleRate);
       retry++;
       if (retry > 4)
       {
