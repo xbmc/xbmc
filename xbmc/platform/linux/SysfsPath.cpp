@@ -17,3 +17,21 @@ bool CSysfsPath::Exists()
 
   return true;
 }
+
+template<>
+std::string CSysfsPath::Get()
+{
+  std::ifstream file(m_path);
+
+  std::string value;
+
+  std::getline(file, value);
+
+  if (file.bad())
+  {
+    CLog::LogF(LOGERROR, "error reading from '{}'", m_path);
+    throw std::runtime_error("error reading from " + m_path);
+  }
+
+  return value;
+}

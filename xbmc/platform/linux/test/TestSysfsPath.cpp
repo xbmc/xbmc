@@ -15,14 +15,15 @@
 struct TestSysfsPath : public ::testing::Test
 {
   ~TestSysfsPath() { std::remove("/tmp/kodi-test"); }
+
+  std::ofstream m_output{"/tmp/kodi-test"};
 };
 
-TEST_F(TestSysfsPath, SysfsPathTest)
+TEST_F(TestSysfsPath, SysfsPathTestInt)
 {
   int temp{1234};
-  std::ofstream output{"/tmp/kodi-test"};
-  output << temp;
-  output.close();
+  m_output << temp;
+  m_output.close();
 
   CSysfsPath path("/tmp/kodi-test");
   ASSERT_TRUE(path.Exists());
@@ -33,8 +34,32 @@ TEST_F(TestSysfsPath, SysfsPathTest)
   ASSERT_TRUE(path.Get<uint16_t>() == 1234);
   ASSERT_TRUE(path.Get<unsigned int>() == 1234);
   ASSERT_TRUE(path.Get<unsigned long int>() == 1234);
-  ASSERT_TRUE(path.Get<std::string>() == "1234");
+}
 
+TEST_F(TestSysfsPath, SysfsPathTestString)
+{
+  std::string temp{"test"};
+  m_output << temp;
+  m_output.close();
+
+  CSysfsPath path("/tmp/kodi-test");
+  ASSERT_TRUE(path.Exists());
+  ASSERT_TRUE(path.Get<std::string>() == "test");
+}
+
+TEST_F(TestSysfsPath, SysfsPathTestLongString)
+{
+  std::string temp{"test with spaces"};
+  m_output << temp;
+  m_output.close();
+
+  CSysfsPath path("/tmp/kodi-test");
+  ASSERT_TRUE(path.Exists());
+  ASSERT_TRUE(path.Get<std::string>() == "test with spaces");
+}
+
+TEST_F(TestSysfsPath, SysfsPathTestPathDoesNotExist)
+{
   CSysfsPath otherPath{"/thispathdoesnotexist"};
   ASSERT_FALSE(otherPath.Exists());
 }
