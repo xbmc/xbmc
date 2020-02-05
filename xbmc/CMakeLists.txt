@@ -65,6 +65,8 @@ set(HEADERS AppParamParser.h
             IProgressCallback.h
             InfoScanner.h
             LangInfo.h
+            LockState.h
+            LockType.h
             MediaSource.h
             NfoFile.h
             PartyModeManager.h
