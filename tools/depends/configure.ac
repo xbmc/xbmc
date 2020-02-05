@@ -340,10 +340,6 @@ case $host in
 
         # now that we know which sdk, error check sdk_name
         case $use_sdk in
-          10.9);;
-          10.10);;
-          10.11);;
-          10.12);;
           10.13);;
           10.14);;
           10.15);;
@@ -351,7 +347,7 @@ case $host in
             AC_MSG_ERROR(error in configure of --with-sdk=$use_sdk)
         esac
         sdk_name=$target_platform$use_sdk
-        platform_min_version="macosx-version-min=10.9"
+        platform_min_version="macosx-version-min=10.13"
 
         use_sdk_path=[`$use_xcodebuild -version -sdk $sdk_name Path`]
         platform_os="osx"

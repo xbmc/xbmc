@@ -59,7 +59,7 @@ static pid_t GetCurrentThreadPid_()
   return pthread_getthreadid_np();
 #elif defined(TARGET_ANDROID)
   return gettid();
-#elif TARGET_DARWIN_TVOS
+#elif TARGET_DARWIN
   return pthread_mach_thread_np(pthread_self());
 #else
   return syscall(SYS_gettid);

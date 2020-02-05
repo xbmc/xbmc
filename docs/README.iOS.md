@@ -55,9 +55,6 @@ Several different strategies are used to draw your attention to certain pieces o
 * Device with **iOS 9.0 or newer** to install Kodi after build.
 
 Building for iOS should work with the following constellations of Xcode and macOS versions:
-  * Xcode 8.x against iOS SDK 10.x on 10.11.x (El Capitan)(recommended)
-  * Xcode 8.x against iOS SDK 10.x on 10.12.x (Sierra)(recommended)
-  * Xcode 9.x against iOS SDK 11.x on 10.12.x (Sierra)
   * Xcode 9.x against iOS SDK 11.x on 10.13.x (High Sierra)(recommended)
 
 **WARNING:** Start Xcode after installation finishes. You need to accept the licenses and install missing components.
