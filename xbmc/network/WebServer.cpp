@@ -1304,7 +1304,7 @@ int CWebServer::AddHeader(struct MHD_Response *response, const std::string &name
   CLog::Log(LOGDEBUG, LOGWEBSERVER, "CWebServer[%hu] [OUT] %s: %s", m_port, name.c_str(), value.c_str());
 
 #if MHD_VERSION >= 0x00096800
-  if (name == "Content-Length")
+  if (name == MHD_HTTP_HEADER_CONTENT_LENGTH)
   {
     MHD_set_response_options(response, MHD_RF_INSANITY_HEADER_CONTENT_LENGTH, MHD_RO_END);
   }
