@@ -14,7 +14,7 @@ Several distribution **[specific build guides](README.md)** are available.
 4. **[Build Kodi](#4-build-kodi)**  
   4.1. **[Configure build](#41-configure-build)**  
   4.2. **[Build](#42-build)**
-5. **[Build binary add-ons](#5-build-binary-add-ons)**
+5. **[Build binary add-ons](#5-build-binary-add-ons)**  
   5.1. **[In-tree building of binary add-ons](#51-in-tree-building-of-binary-add-ons)**  
   5.2. **[Out-of-tree building of binary add-ons](#52-out-of-tree-building-of-binary-add-ons)**
 6. **[Run Kodi](#6-run-kodi)**
