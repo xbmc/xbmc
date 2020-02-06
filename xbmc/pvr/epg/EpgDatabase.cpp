@@ -895,6 +895,15 @@ bool CPVREpgDatabase::DeleteEpgTags(int iEpgId, const CDateTime& maxEndTime)
   return DeleteValues("epgtags", filter);
 }
 
+bool CPVREpgDatabase::DeleteEpgTags(int iEpgId)
+{
+  Filter filter;
+
+  CSingleLock lock(m_critSection);
+  filter.AppendWhere(PrepareSQL("idEpg = %u", iEpgId));
+  return DeleteValues("epgtags", filter);
+}
+
 int CPVREpgDatabase::Persist(const CPVREpgInfoTag& tag, bool bSingleUpdate /* = true */)
 {
   int iReturn(-1);

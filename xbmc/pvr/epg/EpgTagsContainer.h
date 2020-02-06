@@ -161,9 +161,13 @@ public:
   /*!
    * @brief Persist this container in its database.
    * @param bCommit Whether to commit the data.
-   * @return True if the data was persisted, false otherwise.
    */
   void Persist(bool bCommit);
+
+  /*!
+   * @brief Delete this container from its database.
+   */
+  void Delete();
 
 private:
   /*!

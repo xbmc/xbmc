@@ -584,7 +584,7 @@ bool CPVREpgContainer::DeleteEpg(const std::shared_ptr<CPVREpg>& epg)
 
   CLog::LogFC(LOGDEBUG, LOGEPG, "Deleting EPG table %s (%d)", epg->Name().c_str(), epg->EpgID());
 
-  GetEpgDatabase()->Delete(*epgEntry->second);
+  epgEntry->second->Delete(GetEpgDatabase());
 
   epgEntry->second->Events().Unsubscribe(this);
   m_epgIdToEpgMap.erase(epgEntry);
