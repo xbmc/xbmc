@@ -566,7 +566,7 @@ bool CPVREpgContainer::RemoveOldEntries()
   return true;
 }
 
-bool CPVREpgContainer::DeleteEpg(const std::shared_ptr<CPVREpg>& epg, bool bDeleteFromDatabase /* = false */)
+bool CPVREpgContainer::DeleteEpg(const std::shared_ptr<CPVREpg>& epg)
 {
   if (!epg || epg->EpgID() < 0)
     return false;
@@ -583,8 +583,8 @@ bool CPVREpgContainer::DeleteEpg(const std::shared_ptr<CPVREpg>& epg, bool bDele
     m_channelUidToEpgMap.erase(epgEntry1);
 
   CLog::LogFC(LOGDEBUG, LOGEPG, "Deleting EPG table %s (%d)", epg->Name().c_str(), epg->EpgID());
-  if (bDeleteFromDatabase)
-    GetEpgDatabase()->Delete(*epgEntry->second);
+
+  GetEpgDatabase()->Delete(*epgEntry->second);
 
   epgEntry->second->Events().Unsubscribe(this);
   m_epgIdToEpgMap.erase(epgEntry);
@@ -685,7 +685,7 @@ bool CPVREpgContainer::UpdateEPG(bool bOnlyPending /* = false */)
     progressHandler->DestroyProgress();
 
   for (const auto& epg : invalidTables)
-    DeleteEpg(epg, true);
+    DeleteEpg(epg);
 
   if (bInterrupted)
   {

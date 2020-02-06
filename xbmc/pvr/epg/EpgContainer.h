@@ -87,10 +87,9 @@ namespace PVR
     /*!
      * @brief Delete an EPG table from this container.
      * @param epg The table to delete.
-     * @param bDeleteFromDatabase Delete this table from the database too if true.
      * @return True on success, false otherwise.
      */
-    bool DeleteEpg(const std::shared_ptr<CPVREpg>& epg, bool bDeleteFromDatabase = false);
+    bool DeleteEpg(const std::shared_ptr<CPVREpg>& epg);
 
     /*!
      * @brief CEventStream callback for PVR events.
