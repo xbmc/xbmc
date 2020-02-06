@@ -9,7 +9,6 @@ SWITCH=`echo $1 | tr [A-Z] [a-z]`
 DIRNAME=`dirname $0`
 DSYM_TARGET_DIR=/Users/Shared/xbmc-depends/dSyms
 DSYM_FILENAME=@APP_NAME@.app.dSYM
-ARM64=false
 PP_DEVICE=iOS
 if [ "@PLATFORM@" == "appletvos" ]; then
   PP_DEVICE=tvOS
@@ -26,11 +25,6 @@ elif [ "${SWITCH#*release}" != "${SWITCH}" ]; then
 else
   echo "You need to specify the build target"
   exit 1
-fi
-
-# check if build is 64-bit
-if [[ "$(lipo -info "$APP/@APP_NAME@" | awk '{print $NF}')" == "arm64" ]]; then
-  ARM64=true
 fi
 
 #copy bzip2 of dsym to xbmc-depends install dir
@@ -64,10 +58,7 @@ fi
 # customize revision string
 [ ! -z "$2" ] && REVISION="$2"
 
-ARCHIVE=${PACKAGE}_${VERSION}-${REVISION}_@PLATFORM@-arm.deb
-
-# package identifier for arm64
-$ARM64 && ARCHIVE=${PACKAGE_ARM64}_${VERSION}-${REVISION}_@PLATFORM@-arm.deb
+ARCHIVE=${PACKAGE_ARM64}_${VERSION}-${REVISION}_@PLATFORM@-arm.deb
 
 SIZE="$(du -s -k ${APP} | awk '{print $1}')"
 
@@ -77,16 +68,11 @@ rm -rf $DIRNAME/$ARCHIVE
 
 # create debian control file.
 mkdir -p $DIRNAME/$PACKAGE/DEBIAN
-if $ARM64; then
-  echo "Package: $PACKAGE_ARM64"                  >  $DIRNAME/$PACKAGE/DEBIAN/control
-  echo "Name: @APP_NAME@-${PP_DEVICE} (64-bit)"   >> $DIRNAME/$PACKAGE/DEBIAN/control
-  echo "Pre-Depends: cy+cpu.arm64"                >> $DIRNAME/$PACKAGE/DEBIAN/control
-  echo "Conflicts: $PACKAGE"                      >> $DIRNAME/$PACKAGE/DEBIAN/control
-  echo "Replaces: $PACKAGE"                       >> $DIRNAME/$PACKAGE/DEBIAN/control
-else
-  echo "Package: $PACKAGE"                        >  $DIRNAME/$PACKAGE/DEBIAN/control
-  echo "Name: @APP_NAME@-${PP_DEVICE}"            >> $DIRNAME/$PACKAGE/DEBIAN/control
-fi
+echo "Package: $PACKAGE_ARM64"                  >  $DIRNAME/$PACKAGE/DEBIAN/control
+echo "Name: @APP_NAME@-${PP_DEVICE} (64-bit)"   >> $DIRNAME/$PACKAGE/DEBIAN/control
+echo "Pre-Depends: cy+cpu.arm64"                >> $DIRNAME/$PACKAGE/DEBIAN/control
+echo "Conflicts: $PACKAGE"                      >> $DIRNAME/$PACKAGE/DEBIAN/control
+echo "Replaces: $PACKAGE"                       >> $DIRNAME/$PACKAGE/DEBIAN/control
 echo "Priority: Extra"                            >> $DIRNAME/$PACKAGE/DEBIAN/control
 echo "Version: $VERSION-$REVISION"                >> $DIRNAME/$PACKAGE/DEBIAN/control
 echo "Architecture: @CMAKE_SYSTEM_NAME@-@CPU@"                 >> $DIRNAME/$PACKAGE/DEBIAN/control

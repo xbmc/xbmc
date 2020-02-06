@@ -81,12 +81,8 @@ if test "@platform_os@" = "android"; then
 fi
 
 if test "@platform_os@" = "darwin_embedded"; then
-  ac_cv_search_clock_gettime=no
-  ac_cv_func_clock_gettime=no
+  # there is no clock_settime on iOS/tvOS as of latest version 13.X
   ac_cv_func_clock_settime=no
-  ac_cv_func_futimens=no
-  ac_cv_func_getentropy=no
-  ac_cv_func_utimensat=no
 
   # tweaks for libffi
   if test "${PACKAGE_NAME}" = "libffi" ; then

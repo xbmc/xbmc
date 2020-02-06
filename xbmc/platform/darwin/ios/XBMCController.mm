@@ -706,11 +706,7 @@ public:
 //--------------------------------------------------------------
 - (CGRect)fullscreenSubviewFrame
 {
-  auto rect = self.view.bounds;
-  if (@available(ios 11.0, *))
-    return UIEdgeInsetsInsetRect(rect, m_window.safeAreaInsets);
-  else
-    return rect;
+  return UIEdgeInsetsInsetRect(self.view.bounds, m_window.safeAreaInsets);
 }
 //--------------------------------------------------------------
 - (void)onXbmcAlive

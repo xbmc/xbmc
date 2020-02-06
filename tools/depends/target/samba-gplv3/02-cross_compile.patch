@@ -77,18 +77,6 @@
                      headers='stdio.h',
                      msg='Checking simple C program')
  
---- a/lib/replace/system/time.h
-+++ b/lib/replace/system/time.h
-@@ -74,9 +74,6 @@
- #endif
- 
- #ifndef HAVE_CLOCK_GETTIME
--/* CLOCK_REALTIME is required by POSIX */
--#define CLOCK_REALTIME 0
--typedef int clockid_t;
- int rep_clock_gettime(clockid_t clk_id, struct timespec *tp);
- #endif
- /* make sure we have a best effort CUSTOM_CLOCK_MONOTONIC we can rely on.
 --- a/lib/replace/wscript
 +++ b/lib/replace/wscript
 @@ -37,6 +37,7 @@

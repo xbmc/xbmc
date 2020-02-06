@@ -8,6 +8,5 @@ then
     --with-tarballs=/Users/Shared/xbmc-depends/tarballs \
     --host=arm-apple-darwin \
     --with-sdk=$SDK_VERSION \
-    --with-cpu=$DARWIN_ARM_CPU \
     --prefix=$XBMC_DEPENDS_ROOT $DEBUG_SWITCH
 fi
