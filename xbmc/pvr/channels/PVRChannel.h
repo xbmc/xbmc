@@ -319,12 +319,6 @@ namespace PVR
     int EpgID() const;
 
     /*!
-     * @brief Change the id of the epg that is linked to this channel
-     * @param iEpgId The new epg id
-     */
-    void SetEpgID(int iEpgId);
-
-    /*!
      * @brief Create the EPG for this channel, if it does not yet exist
      * @return true if a new epg was created, false otherwise.
      */
