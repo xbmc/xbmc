@@ -1250,11 +1250,13 @@ std::string CSysInfo::GetBuildTargetPlatformVersion(void)
 std::string CSysInfo::GetBuildTargetPlatformVersionDecoded(void)
 {
 #if defined(TARGET_DARWIN_OSX)
-  if (__MAC_OS_X_VERSION_MIN_REQUIRED % 10)
-    return StringUtils::Format("version %d.%d", (__MAC_OS_X_VERSION_MIN_REQUIRED / 1000) % 100, (__MAC_OS_X_VERSION_MIN_REQUIRED / 10) % 100);
+  if (__MAC_OS_X_VERSION_MIN_REQUIRED % 100)
+    return StringUtils::Format("version %d.%d.%d", __MAC_OS_X_VERSION_MIN_REQUIRED / 10000,
+                               (__MAC_OS_X_VERSION_MIN_REQUIRED / 100) % 100,
+                               __MAC_OS_X_VERSION_MIN_REQUIRED % 100);
   else
-    return StringUtils::Format("version %d.%d.%d", (__MAC_OS_X_VERSION_MIN_REQUIRED / 1000) % 100,
-    (__MAC_OS_X_VERSION_MIN_REQUIRED / 10) % 100, __MAC_OS_X_VERSION_MIN_REQUIRED % 10);
+    return StringUtils::Format("version %d.%d", __MAC_OS_X_VERSION_MIN_REQUIRED / 10000,
+                               (__MAC_OS_X_VERSION_MIN_REQUIRED / 100) % 100);
 #elif defined(TARGET_DARWIN_EMBEDDED)
   std::string versionStr = GetBuildTargetPlatformVersion();
   static const int major = (std::stoi(versionStr) / 10000) % 100;
