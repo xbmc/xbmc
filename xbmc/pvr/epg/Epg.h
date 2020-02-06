@@ -289,6 +289,7 @@ namespace PVR
      */
     void Cleanup(int iPastDays);
 
+    bool m_bChanged = false; /*!< true if anything changed that needs to be persisted, false otherwise */
     bool m_bUpdatePending = false; /*!< true if manual update is pending */
     int m_iEpgID = 0; /*!< the database ID of this table */
     std::string m_strName; /*!< the name of this table */
