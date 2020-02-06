@@ -8,12 +8,12 @@
 
 #include "OSScreenSaverFreedesktop.h"
 
+#include "CompileInfo.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/log.h"
 
 #include "platform/linux/DBusMessage.h"
 #include "platform/linux/DBusUtil.h"
-#include "platform/linux/PlatformConstants.h"
 
 using namespace KODI::WINDOWING::LINUX;
 
@@ -42,7 +42,8 @@ void COSScreenSaverFreedesktop::Inhibit()
   }
 
   CDBusMessage inhibitMessage(SCREENSAVER_INTERFACE, SCREENSAVER_OBJECT, SCREENSAVER_INTERFACE, "Inhibit");
-  inhibitMessage.AppendArguments(KODI::LINUX::DESKTOP_FILE_NAME, g_localizeStrings.Get(14086));
+  inhibitMessage.AppendArguments(std::string(CCompileInfo::GetAppName()),
+                                 g_localizeStrings.Get(14086));
   if (!inhibitMessage.SendSession())
   {
     // DBus call failed

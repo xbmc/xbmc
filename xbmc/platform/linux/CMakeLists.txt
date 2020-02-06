@@ -6,7 +6,6 @@ set(SOURCES CPUInfoLinux.cpp
 
 set(HEADERS CPUInfoLinux.h
             OptionalsReg.h
-            PlatformConstants.h
             SysfsPath.h
             TimeUtils.h)
 

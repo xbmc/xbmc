@@ -7,7 +7,6 @@ set(SOURCES CPUInfoFreebsd.cpp
 set(HEADERS CPUInfoFreebsd.h
             OptionalsReg.h
             ../linux/OptionalsReg.h
-            ../linux/PlatformConstants.h
             ../linux/TimeUtils.h)
 
 if(ALSA_FOUND)
