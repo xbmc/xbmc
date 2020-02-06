@@ -56,12 +56,6 @@ TEST_F(TestCPUInfo, GetTemperature)
   EXPECT_TRUE(t.IsValid());
 }
 
-TEST_F(TestCPUInfo, GetCPUModel)
-{
-  std::string s = CServiceBroker::GetCPUInfo()->GetCPUModel();
-  EXPECT_STRNE("", s.c_str());
-}
-
 TEST_F(TestCPUInfo, CoreInfo)
 {
   ASSERT_TRUE(CServiceBroker::GetCPUInfo()->HasCoreId(0));
