@@ -3092,6 +3092,15 @@ const infomap musicplayer[] =    {{ "title",            MUSICPLAYER_TITLE },
 ///     @skinning_v17 **[New Infolabel]** \link VideoPlayer_DBID `VideoPlayer.DBID`\endlink
 ///     <p>
 ///   }
+///   \table_row3{   <b>`VideoPlayer.UniqueID(name)`</b>,
+///                  \anchor VideoPlayer_UniqueID
+///                  _string_,
+///     @return The scraped metadata id of current movie\, if it's in the database.
+///     @param name - the name of the metadata provider.
+///     <p><hr>
+///     @skinning_v19 **[New Infolabel]** \link VideoPlayer_UniqueID `VideoPlayer.UniqueID(name)`\endlink
+///     <p>
+///   }
 /// \table_end
 ///
 /// -----------------------------------------------------------------------------
@@ -3161,7 +3170,8 @@ const infomap videoplayer[] =    {{ "title",            VIDEOPLAYER_TITLE },
                                   { "canresumelivetv",  VIDEOPLAYER_CAN_RESUME_LIVE_TV },
                                   { "imdbnumber",       VIDEOPLAYER_IMDBNUMBER },
                                   { "episodename",      VIDEOPLAYER_EPISODENAME },
-                                  { "dbid",             VIDEOPLAYER_DBID }
+                                  { "dbid",             VIDEOPLAYER_DBID },
+                                  { "uniqueid",         VIDEOPLAYER_UNIQUEID },
 };
 
 /// \page modules__infolabels_boolean_conditions
@@ -5851,6 +5861,14 @@ const infomap container_str[]  = {{ "property",         CONTAINER_PROPERTY },
 ///     @return The BPM of a song.
 ///     <p><hr>
 ///     @skinning_v19 **[New Infolabel]** \link ListItem_BPM `ListItem.BPM`\endlink
+///   \table_row3{   <b>`ListItem.UniqueID(name)`</b>,
+///                  \anchor ListItem_UniqueID
+///                  _string_,
+///     @return The scraped metadata id of the currently selected item in a container\,
+///     for use in dialogvideoinfo.xml.
+///     @param name - the name of the metadata provider.
+///     <p><hr>
+///     @skinning_v19 **[New Infolabel]** \link ListItem_UniqueID `ListItem.UniqueID(name)`\endlink
 ///     <p>
 ///   }
 /// \table_end
@@ -6052,6 +6070,7 @@ const infomap listitem_labels[]= {{ "thumb",            LISTITEM_THUMB },
                                   { "releasedate",      LISTITEM_RELEASEDATE },
                                   { "originaldate",     LISTITEM_ORIGINALDATE },
                                   { "bpm",              LISTITEM_BPM },
+                                  { "uniqueid",         LISTITEM_UNIQUEID },
 };
 
 /// \page modules__infolabels_boolean_conditions
@@ -9361,7 +9380,8 @@ int CGUIInfoManager::TranslateListItem(const Property& cat, const Property& prop
              prop.name == "art" ||
              prop.name == "rating" ||
              prop.name == "votes" ||
-             prop.name == "ratingandvotes")
+             prop.name == "ratingandvotes" ||
+             prop.name == "uniqueid")
     {
       data3 = prop.param();
     }

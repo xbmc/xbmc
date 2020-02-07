@@ -139,6 +139,11 @@ bool CVideoGUIInfo::GetLabel(std::string& value, const CFileItem *item, int cont
           return true;
         }
         break;
+      case VIDEOPLAYER_UNIQUEID:
+      case LISTITEM_UNIQUEID:
+        if (!info.GetData3().empty())
+          value = tag->GetUniqueID(info.GetData3());
+        return true;
       case VIDEOPLAYER_RATING:
       case LISTITEM_RATING:
       {
