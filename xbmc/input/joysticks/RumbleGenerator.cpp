@@ -81,7 +81,7 @@ void CRumbleGenerator::Process(void)
     for (const std::string& motor : motors)
       m_receiver->SetRumbleState(motor, 1.0f);
 
-    Sleep(RUMBLE_NOTIFICATION_DURATION_MS);
+    CThread::Sleep(RUMBLE_NOTIFICATION_DURATION_MS);
 
     if (m_bStop)
       break;
@@ -97,7 +97,7 @@ void CRumbleGenerator::Process(void)
     {
       m_receiver->SetRumbleState(motor, 1.0f);
 
-      Sleep(RUMBLE_TEST_DURATION_MS);
+      CThread::Sleep(RUMBLE_TEST_DURATION_MS);
 
       if (m_bStop)
         break;

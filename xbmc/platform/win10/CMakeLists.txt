@@ -8,7 +8,8 @@ set(SOURCES CPUInfoWin10.cpp
             ../win32/Filesystem.cpp
             ../win32/MemUtils.cpp
             ../win32/pch.cpp
-            ../win32/WIN32Util.cpp)
+            ../win32/WIN32Util.cpp
+            ../win32/XTimeUtils.cpp)
 
 set(HEADERS AsyncHelpers.h
             CPUInfoWin10.h

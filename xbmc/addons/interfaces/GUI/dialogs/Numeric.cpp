@@ -122,7 +122,7 @@ bool Interface_GUIDialogNumeric::show_and_get_time(void* kodiBase, tm* time, con
     return false;
   }
 
-  SYSTEMTIME systemTime;
+  KODI::TIME::SystemTime systemTime;
   CDateTime dateTime(*time);
   dateTime.GetAsSystemTime(systemTime);
   if (CGUIDialogNumeric::ShowAndGetTime(systemTime, heading))
@@ -152,7 +152,7 @@ bool Interface_GUIDialogNumeric::show_and_get_date(void* kodiBase, tm *date, con
     return false;
   }
 
-  SYSTEMTIME systemTime;
+  KODI::TIME::SystemTime systemTime;
   CDateTime dateTime(*date);
   dateTime.GetAsSystemTime(systemTime);
   if (CGUIDialogNumeric::ShowAndGetDate(systemTime, heading))

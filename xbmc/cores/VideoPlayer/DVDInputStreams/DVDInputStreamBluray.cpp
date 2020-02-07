@@ -6,33 +6,31 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include <functional>
-#include <limits>
-
-#include "filesystem/BlurayCallback.h"
 #include "DVDInputStreamBluray.h"
-#include "IVideoPlayer.h"
+
 #include "DVDCodecs/Overlay/DVDOverlay.h"
 #include "DVDCodecs/Overlay/DVDOverlayImage.h"
-#include "settings/Settings.h"
-#include "settings/SettingsComponent.h"
+#include "IVideoPlayer.h"
 #include "LangInfo.h"
 #include "ServiceBroker.h"
-#include "utils/log.h"
-#include "utils/URIUtils.h"
-#include "filesystem/File.h"
-#include "filesystem/Directory.h"
 #include "URL.h"
-#include "utils/Geometry.h"
+#include "filesystem/BlurayCallback.h"
+#include "filesystem/Directory.h"
+#include "filesystem/File.h"
+#include "filesystem/SpecialProtocol.h"
 #include "guilib/LocalizeStrings.h"
 #include "settings/DiscSettings.h"
+#include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
+#include "utils/Geometry.h"
 #include "utils/LangCodeExpander.h"
-#include "filesystem/SpecialProtocol.h"
 #include "utils/StringUtils.h"
+#include "utils/URIUtils.h"
+#include "utils/XTimeUtils.h"
+#include "utils/log.h"
 
-#ifdef TARGET_POSIX
-#include "platform/posix/XTimeUtils.h"
-#endif
+#include <functional>
+#include <limits>
 
 #include <libbluray/bluray.h>
 #include <libbluray/log_control.h>
@@ -552,7 +550,7 @@ void CDVDInputStreamBluray::ProcessEvent() {
     break;
 
   case BD_EVENT_IDLE:
-    Sleep(100);
+    KODI::TIME::Sleep(100);
     break;
 
   case BD_EVENT_SOUND_EFFECT:

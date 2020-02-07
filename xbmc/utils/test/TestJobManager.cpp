@@ -7,15 +7,13 @@
  */
 
 #include "test/MtTestUtils.h"
-#include "utils/JobManager.h"
 #include "utils/Job.h"
+#include "utils/JobManager.h"
+#include "utils/XTimeUtils.h"
 
-#include <gtest/gtest.h>
 #include <atomic>
 
-#ifdef TARGET_POSIX
-#include "platform/posix/XTimeUtils.h"
-#endif
+#include <gtest/gtest.h>
 
 using namespace ConditionPoll;
 

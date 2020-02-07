@@ -130,7 +130,7 @@ bool CUdpClient::Send(struct sockaddr_in aAddress, unsigned char* pMessage, DWOR
 
 void CUdpClient::Process()
 {
-  Sleep(2000);
+  CThread::Sleep(2000);
 
   CLog::Log(UDPCLIENT_DEBUG_LEVEL, "UDPCLIENT: Listening.");
 

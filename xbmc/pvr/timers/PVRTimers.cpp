@@ -163,7 +163,7 @@ void CPVRTimers::Process()
     // update all timers not owned by a client (e.g. reminders)
     UpdateEntries(MAX_NOTIFICATION_DELAY);
 
-    Sleep(MAX_NOTIFICATION_DELAY * 1000);
+    CThread::Sleep(MAX_NOTIFICATION_DELAY * 1000);
   }
 }
 

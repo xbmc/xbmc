@@ -5,7 +5,6 @@
  *  SPDX-License-Identifier: GPL-2.0-or-later
  *  See LICENSES/README.md for more information.
  */
-
 #include "Dialog.h"
 
 #include "LanguageHook.h"
@@ -29,13 +28,11 @@
 #include "storage/MediaManager.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
+#include "utils/XTimeUtils.h"
 #include "utils/log.h"
 #include "video/dialogs/GUIDialogVideoInfo.h"
-#ifdef TARGET_POSIX
-#include "platform/posix/XTimeUtils.h"
-#endif
 
-using namespace KODI::MESSAGING;
+ using namespace KODI::MESSAGING;
 
 #define ACTIVE_WINDOW CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow()
 
@@ -284,8 +281,8 @@ namespace XBMCAddon
     {
       DelayedCallGuard dcguard(languageHook);
       std::string value;
-      SYSTEMTIME timedate;
-      GetLocalTime(&timedate);
+      KODI::TIME::SystemTime timedate;
+      KODI::TIME::GetLocalTime(&timedate);
 
       if (!heading.empty())
       {
@@ -294,12 +291,12 @@ namespace XBMCAddon
           if (!defaultt.empty() && defaultt.size() == 10)
           {
             std::string sDefault = defaultt;
-            timedate.wDay = atoi(sDefault.substr(0, 2).c_str());
-            timedate.wMonth = atoi(sDefault.substr(3, 4).c_str());
-            timedate.wYear = atoi(sDefault.substr(sDefault.size() - 4).c_str());
+            timedate.day = atoi(sDefault.substr(0, 2).c_str());
+            timedate.month = atoi(sDefault.substr(3, 4).c_str());
+            timedate.year = atoi(sDefault.substr(sDefault.size() - 4).c_str());
           }
           if (CGUIDialogNumeric::ShowAndGetDate(timedate, heading))
-            value = StringUtils::Format("%2d/%2d/%4d", timedate.wDay, timedate.wMonth, timedate.wYear);
+            value = StringUtils::Format("%2d/%2d/%4d", timedate.day, timedate.month, timedate.year);
           else
             return emptyString;
         }
@@ -308,11 +305,11 @@ namespace XBMCAddon
           if (!defaultt.empty() && defaultt.size() == 5)
           {
             std::string sDefault = defaultt;
-            timedate.wHour = atoi(sDefault.substr(0, 2).c_str());
-            timedate.wMinute = atoi(sDefault.substr(3, 2).c_str());
+            timedate.hour = atoi(sDefault.substr(0, 2).c_str());
+            timedate.minute = atoi(sDefault.substr(3, 2).c_str());
           }
           if (CGUIDialogNumeric::ShowAndGetTime(timedate, heading))
-            value = StringUtils::Format("%2d:%02d", timedate.wHour, timedate.wMinute);
+            value = StringUtils::Format("%2d:%02d", timedate.hour, timedate.minute);
           else
             return emptyString;
         }
@@ -358,8 +355,8 @@ namespace XBMCAddon
     {
       DelayedCallGuard dcguard(languageHook);
       std::string value(defaultt);
-      SYSTEMTIME timedate;
-      GetLocalTime(&timedate);
+      KODI::TIME::SystemTime timedate;
+      KODI::TIME::GetLocalTime(&timedate);
 
       switch (type)
       {
@@ -381,12 +378,13 @@ namespace XBMCAddon
             if (!defaultt.empty() && defaultt.size() == 10)
             {
               std::string sDefault = defaultt;
-              timedate.wDay = atoi(sDefault.substr(0, 2).c_str());
-              timedate.wMonth = atoi(sDefault.substr(3, 4).c_str());
-              timedate.wYear = atoi(sDefault.substr(sDefault.size() - 4).c_str());
+              timedate.day = atoi(sDefault.substr(0, 2).c_str());
+              timedate.month = atoi(sDefault.substr(3, 4).c_str());
+              timedate.year = atoi(sDefault.substr(sDefault.size() - 4).c_str());
             }
             if (CGUIDialogNumeric::ShowAndGetDate(timedate, heading))
-              value = StringUtils::Format("%2d/%2d/%4d", timedate.wDay, timedate.wMonth, timedate.wYear);
+              value =
+                  StringUtils::Format("%2d/%2d/%4d", timedate.day, timedate.month, timedate.year);
             else
               value = emptyString;
           }
@@ -396,11 +394,11 @@ namespace XBMCAddon
             if (!defaultt.empty() && defaultt.size() == 5)
             {
               std::string sDefault = defaultt;
-              timedate.wHour = atoi(sDefault.substr(0, 2).c_str());
-              timedate.wMinute = atoi(sDefault.substr(3, 2).c_str());
+              timedate.hour = atoi(sDefault.substr(0, 2).c_str());
+              timedate.minute = atoi(sDefault.substr(3, 2).c_str());
             }
             if (CGUIDialogNumeric::ShowAndGetTime(timedate, heading))
-              value = StringUtils::Format("%2d:%02d", timedate.wHour, timedate.wMinute);
+              value = StringUtils::Format("%2d:%02d", timedate.hour, timedate.minute);
             else
               value = emptyString;
           }

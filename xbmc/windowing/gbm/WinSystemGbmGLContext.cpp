@@ -16,9 +16,8 @@
 #include "cores/VideoPlayer/VideoRenderers/LinuxRendererGL.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderFactory.h"
 #include "rendering/gl/ScreenshotSurfaceGL.h"
+#include "utils/XTimeUtils.h"
 #include "utils/log.h"
-
-#include "platform/posix/XTimeUtils.h"
 
 #include <EGL/egl.h>
 #include <EGL/eglext.h>
@@ -114,7 +113,7 @@ void CWinSystemGbmGLContext::PresentRender(bool rendered, bool videoLayer)
   }
   else
   {
-    Sleep(10);
+    KODI::TIME::Sleep(10);
   }
 }
 

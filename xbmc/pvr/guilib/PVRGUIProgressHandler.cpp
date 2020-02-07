@@ -86,7 +86,8 @@ namespace PVR
         progressHandle->SetText(strText);
       }
 
-      Sleep(100); // Intentionally ignore some changes that come in too fast. Humans cannot read as fast as Mr. Data ;-)
+      CThread::Sleep(
+          100); // Intentionally ignore some changes that come in too fast. Humans cannot read as fast as Mr. Data ;-)
     }
 
     progressHandle->MarkFinished();

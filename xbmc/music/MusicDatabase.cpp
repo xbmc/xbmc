@@ -2287,8 +2287,8 @@ void CMusicDatabase::GetFileItemFromDataset(const dbiplus::sql_record* const rec
   item->GetMusicInfoTag()->SetTrackAndDiscNumber(record->at(song_iTrack).get_asInt());
   item->GetMusicInfoTag()->SetDuration(record->at(song_iDuration).get_asInt());
   item->GetMusicInfoTag()->SetDatabaseId(record->at(song_idSong).get_asInt(), MediaTypeSong);
-  SYSTEMTIME stTime;
-  stTime.wYear = static_cast<unsigned short>(record->at(song_iYear).get_asInt());
+  KODI::TIME::SystemTime stTime;
+  stTime.year = static_cast<unsigned short>(record->at(song_iYear).get_asInt());
   item->GetMusicInfoTag()->SetReleaseDate(stTime);
   item->GetMusicInfoTag()->SetTitle(record->at(song_strTitle).get_asString());
   item->GetMusicInfoTag()->SetDiscSubtitle(record->at(song_strDiscSubtitle).get_asString());
@@ -4127,8 +4127,8 @@ bool CMusicDatabase::GetYearsNav(const std::string& strBaseDir, CFileItemList& i
     while (!m_pDS->eof())
     {
       CFileItemPtr pItem(new CFileItem(m_pDS->fv(0).get_asString()));
-      SYSTEMTIME stTime;
-      stTime.wYear = static_cast<unsigned short>(m_pDS->fv(0).get_asInt());
+      KODI::TIME::SystemTime stTime;
+      stTime.year = static_cast<unsigned short>(m_pDS->fv(0).get_asInt());
       pItem->GetMusicInfoTag()->SetReleaseDate(stTime);
       pItem->GetMusicInfoTag()->SetDatabaseId(-1, "year");
 

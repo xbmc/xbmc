@@ -24,12 +24,12 @@
 #include "URL.h"
 #include "filesystem/SpecialProtocol.h"
 #include "utils/URIUtils.h"
+#include "utils/XTimeUtils.h"
 #include "utils/log.h"
 
 #include "platform/darwin/ios-common/DarwinNSUserDefaults.h"
 #include "platform/darwin/tvos/filesystem/TVOSFile.h"
 #include "platform/darwin/tvos/filesystem/TVOSFileUtils.h"
-#include "platform/posix/XTimeUtils.h"
 #include "platform/posix/filesystem/PosixDirectory.h"
 
 
@@ -92,8 +92,8 @@ bool CTVOSDirectory::GetDirectory(const CURL& url, CFileItemList& items)
       {
         // fake the datetime
         FILETIME fileTime, localTime;
-        TimeTToFileTime(buffer.st_mtime, &fileTime);
-        FileTimeToLocalFileTime(&fileTime, &localTime);
+        KODI::TIME::TimeTToFileTime(buffer.st_mtime, &fileTime);
+        KODI::TIME::FileTimeToLocalFileTime(&fileTime, &localTime);
         pItem->m_dateTime = localTime;
         // all this to get the file size
         pItem->m_dwSize = buffer.st_size;

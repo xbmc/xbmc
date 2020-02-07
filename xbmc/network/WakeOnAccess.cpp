@@ -6,35 +6,34 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include <limits.h>
-#include <netinet/in.h>
-#include <sys/socket.h>
-#include <arpa/inet.h>
-
-#include "network/Network.h"
 #include "Application.h"
-#include "ServiceBroker.h"
 #include "DNSNameCache.h"
-#include "dialogs/GUIDialogProgress.h"
+#include "ServiceBroker.h"
 #include "dialogs/GUIDialogKaiToast.h"
+#include "dialogs/GUIDialogProgress.h"
 #include "filesystem/SpecialProtocol.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
+#include "network/Network.h"
 #include "settings/AdvancedSettings.h"
+#include "settings/MediaSourceSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
-#include "settings/MediaSourceSettings.h"
 #include "settings/lib/Setting.h"
 #include "utils/JobManager.h"
-#include "utils/log.h"
-#include "utils/XMLUtils.h"
-#include "utils/URIUtils.h"
 #include "utils/StringUtils.h"
+#include "utils/URIUtils.h"
 #include "utils/Variant.h"
-#ifdef TARGET_POSIX
-#include "platform/posix/XTimeUtils.h"
-#endif
+#include "utils/XMLUtils.h"
+#include "utils/XTimeUtils.h"
+#include "utils/log.h"
+
+#include <limits.h>
+
+#include <arpa/inet.h>
+#include <netinet/in.h>
+#include <sys/socket.h>
 
 #ifdef HAS_UPNP
 #include "network/upnp/UPnP.h"
@@ -127,7 +126,7 @@ static void AddMatchingUPnPServers(std::vector<UPnPServer>& list, const std::str
 {
 #ifdef HAS_UPNP
   while (CDateTime::GetCurrentDateTime() < upnpInitReady)
-    Sleep(1000);
+    KODI::TIME::Sleep(1000);
 
   PLT_SyncMediaBrowser* browser = UPNP::CUPnP::GetInstance()->m_MediaBrowser;
 
@@ -328,7 +327,7 @@ public:
         m_dialog->SetPercentage(std::max(percentage, 1)); // avoid flickering , keep minimum 1%
       }
 
-      Sleep (m_dialog ? 20 : 200);
+      KODI::TIME::Sleep(m_dialog ? 20 : 200);
     }
 
     return TimedOut;
@@ -400,7 +399,7 @@ public:
 
       if (host.empty())
       {
-        Sleep(timeOutMs);
+        KODI::TIME::Sleep(timeOutMs);
 
         host = LookupUPnPHost(server.upnpUuid);
       }

@@ -17,6 +17,7 @@
 #include "settings/SettingsComponent.h"
 #include "utils/StringUtils.h"
 #include "utils/TimeUtils.h"
+#include "utils/XTimeUtils.h"
 #include "utils/log.h"
 
 #include "platform/win10/AsyncHelpers.h"
@@ -820,7 +821,7 @@ void CAESinkXAudio::Drain()
   AEDelayStatus status;
   GetDelay(status);
 
-  Sleep((DWORD)(status.GetDelay() * 500));
+  KODI::TIME::Sleep(static_cast<int>(status.GetDelay() * 500));
 
   if (m_running)
   {

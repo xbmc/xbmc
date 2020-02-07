@@ -134,7 +134,7 @@ void CEventServer::Process()
   {
     Run();
     if (!m_bStop)
-      Sleep(1000);
+      CThread::Sleep(1000);
   }
 }
 

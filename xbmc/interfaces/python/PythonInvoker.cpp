@@ -21,30 +21,28 @@
 # define HAVE_STD_ATOMIC
 #endif
 
-#include "PythonInvoker.h"
 #include "Application.h"
+#include "PythonInvoker.h"
 #include "ServiceBroker.h"
-#include "messaging/ApplicationMessenger.h"
 #include "addons/AddonManager.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "filesystem/File.h"
 #include "filesystem/SpecialProtocol.h"
 #include "guilib/GUIComponent.h"
-#include "windowing/GraphicContext.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "interfaces/python/PyContext.h"
+#include "interfaces/python/XBPython.h"
 #include "interfaces/python/pythreadstate.h"
 #include "interfaces/python/swig.h"
-#include "interfaces/python/XBPython.h"
+#include "messaging/ApplicationMessenger.h"
 #include "threads/SingleLock.h"
 #include "utils/CharsetConverter.h"
-#include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
-#ifdef TARGET_POSIX
-#include "platform/posix/XTimeUtils.h"
-#endif
+#include "utils/XTimeUtils.h"
+#include "utils/log.h"
+#include "windowing/GraphicContext.h"
 
 // clang-format off
 // This breaks fmt because of SEP define, don't include
@@ -429,7 +427,7 @@ bool CPythonInvoker::execute(const std::string& script, const std::vector<std::w
 
       lock.Leave();
       CPyThreadState pyState;
-      Sleep(100);
+      KODI::TIME::Sleep(100);
       pyState.Restore();
       lock.Enter();
     }

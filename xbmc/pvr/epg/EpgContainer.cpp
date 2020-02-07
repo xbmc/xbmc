@@ -403,7 +403,7 @@ void CPVREpgContainer::Process()
       iLastSave = iNow;
     }
 
-    Sleep(1000);
+    CThread::Sleep(1000);
   }
 
   // store data on exit

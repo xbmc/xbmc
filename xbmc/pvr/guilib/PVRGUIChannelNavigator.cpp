@@ -21,10 +21,7 @@
 #include "threads/SingleLock.h"
 #include "utils/Job.h"
 #include "utils/JobManager.h"
-
-#ifdef TARGET_POSIX
-#include "platform/posix/XTimeUtils.h"
-#endif
+#include "utils/XTimeUtils.h"
 
 namespace
 {
@@ -53,7 +50,7 @@ public:
         OnTimeout();
         return true;
       }
-      Sleep(10);
+      KODI::TIME::Sleep(10);
     }
     return false;
   }

@@ -10,18 +10,16 @@
  *  See LICENSES/README.md for more information.
  */
 
+#include "sqlitedataset.h"
+
+#include "utils/URIUtils.h"
+#include "utils/XTimeUtils.h"
+#include "utils/log.h"
+
 #include <iostream>
 #include <map>
-#include <string>
 #include <sstream>
-
-#include "sqlitedataset.h"
-#include "utils/log.h"
-#include "utils/URIUtils.h"
-
-#ifdef TARGET_POSIX
-#include "platform/posix/XTimeUtils.h"
-#endif
+#include <string>
 
 namespace {
 #define X(VAL) std::make_pair(VAL, #VAL)
@@ -199,7 +197,7 @@ int callback(void* res_ptr,int ncol, char** result,char** cols)
 
 static int busy_callback(void*, int busyCount)
 {
-  Sleep(100);
+  KODI::TIME::Sleep(100);
   return 1;
 }
 

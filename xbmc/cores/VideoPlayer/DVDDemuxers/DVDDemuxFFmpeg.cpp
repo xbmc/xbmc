@@ -8,32 +8,29 @@
 
 #include "DVDDemuxFFmpeg.h"
 
-#include <sstream>
-#include <utility>
-
-#include "commons/Exception.h"
-#include "cores/FFmpeg.h"
-#include "cores/VideoPlayer/Interface/Addon/TimingConstants.h" // for DVD_TIME_BASE
 #include "DVDDemuxUtils.h"
 #include "DVDInputStreams/DVDInputStream.h"
 #include "DVDInputStreams/DVDInputStreamFFmpeg.h"
 #include "ServiceBroker.h"
+#include "URL.h"
+#include "commons/Exception.h"
+#include "cores/FFmpeg.h"
+#include "cores/VideoPlayer/Interface/Addon/TimingConstants.h" // for DVD_TIME_BASE
 #include "filesystem/CurlFile.h"
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
-#include "threads/SystemClock.h"
 #include "threads/SingleLock.h"
-#include "URL.h"
-#include "utils/log.h"
+#include "threads/SystemClock.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
+#include "utils/XTimeUtils.h"
+#include "utils/log.h"
 
-#ifdef TARGET_POSIX
-#include "platform/posix/XTimeUtils.h"
-#endif
+#include <sstream>
+#include <utility>
 
 #ifdef HAVE_LIBBLURAY
 #include "DVDInputStreams/DVDInputStreamBluray.h"
@@ -1199,7 +1196,7 @@ bool CDVDDemuxFFmpeg::SeekTime(double time, bool backwards, double* startpts)
       if (pkt)
         CDVDDemuxUtils::FreeDemuxPacket(pkt);
       else
-        Sleep(10);
+        KODI::TIME::Sleep(10);
       m_pkt.result = -1;
       av_packet_unref(&m_pkt.pkt);
 

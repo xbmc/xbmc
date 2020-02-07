@@ -167,7 +167,7 @@ bool CWin32SMBDirectory::GetDirectory(const CURL& url, CFileItemList &items)
     // calculation of size and date costs a little on win32
     // so DIR_FLAG_NO_FILE_INFO flag is ignored
     FILETIME localTime;
-    if (FileTimeToLocalFileTime(&findData.ftLastWriteTime, &localTime) == TRUE)
+    if (KODI::TIME::FileTimeToLocalFileTime(&findData.ftLastWriteTime, &localTime) == TRUE)
       pItem->m_dateTime = localTime;
     else
       pItem->m_dateTime.SetValid(false);

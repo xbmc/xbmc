@@ -6,29 +6,28 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include <stdint.h>
-#include <limits.h>
-#include <sys/utsname.h>
-#include <set>
-#include <sstream>
-#include <string>
-#include <algorithm>
-
 #include "AESinkALSA.h"
+
 #include "ServiceBroker.h"
 #include "cores/AudioEngine/AESinkFactory.h"
-#include "cores/AudioEngine/Utils/AEUtil.h"
 #include "cores/AudioEngine/Utils/AEELDParser.h"
-#include "utils/log.h"
-#include "utils/MathUtils.h"
-#include "utils/SystemInfo.h"
-#include "threads/SingleLock.h"
+#include "cores/AudioEngine/Utils/AEUtil.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
+#include "threads/SingleLock.h"
+#include "utils/MathUtils.h"
+#include "utils/SystemInfo.h"
+#include "utils/XTimeUtils.h"
+#include "utils/log.h"
 
-#ifdef TARGET_POSIX
-#include "platform/posix/XTimeUtils.h"
-#endif
+#include <algorithm>
+#include <limits.h>
+#include <set>
+#include <sstream>
+#include <stdint.h>
+#include <string>
+
+#include <sys/utsname.h>
 
 #define ALSA_OPTIONS (SND_PCM_NO_AUTO_FORMAT | SND_PCM_NO_AUTO_CHANNELS | SND_PCM_NO_AUTO_RESAMPLE)
 
@@ -943,7 +942,7 @@ void CAESinkALSA::HandleError(const char* name, int err)
 
       /* try to resume the stream */
       while((err = snd_pcm_resume(m_pcm)) == -EAGAIN)
-        Sleep(1);
+        KODI::TIME::Sleep(1);
 
       /* if the hardware doesnt support resume, prepare the stream */
       if (err == -ENOSYS)

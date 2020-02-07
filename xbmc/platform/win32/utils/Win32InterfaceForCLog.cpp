@@ -107,13 +107,13 @@ void CWin32InterfaceForCLog::PrintDebugString(const std::string& debugString)
 
 void CWin32InterfaceForCLog::GetCurrentLocalTime(int& year, int& month, int& day, int& hour, int& minute, int& second, double& millisecond)
 {
-  SYSTEMTIME time;
+  KODI::TIME::SystemTime time;
   GetLocalTime(&time);
-  year = time.wYear;
-  month = time.wMonth;
-  day = time.wDay;
-  hour = time.wHour;
-  minute = time.wMinute;
-  second = time.wSecond;
-  millisecond = static_cast<double>(time.wMilliseconds);
+  year = time.year;
+  month = time.month;
+  day = time.day;
+  hour = time.hour;
+  minute = time.minute;
+  second = time.second;
+  millisecond = static_cast<double>(time.milliseconds);
 }

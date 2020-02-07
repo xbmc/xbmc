@@ -11,6 +11,7 @@
 #include "input/touch/generic/GenericTouchActionHandler.h"
 #include "input/touch/generic/GenericTouchInputHandler.h"
 #include "rendering/dx/DirectXHelper.h"
+#include "utils/XTimeUtils.h"
 #include "utils/log.h"
 
 std::unique_ptr<CWinSystemBase> CWinSystemBase::CreateWinSystem()
@@ -38,7 +39,7 @@ void CWinSystemWin10DX::PresentRenderImpl(bool rendered)
   }
 
   if (!rendered)
-    Sleep(40);
+    KODI::TIME::Sleep(40);
 }
 
 bool CWinSystemWin10DX::CreateNewWindow(const std::string& name, bool fullScreen, RESOLUTION_INFO& res)

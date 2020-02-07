@@ -142,7 +142,7 @@ void CAlarmClock::Process()
         else
           strLast = iter->first;
     }
-    Sleep(100);
+    CThread::Sleep(100);
   }
 }
 

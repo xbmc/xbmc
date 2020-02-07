@@ -295,7 +295,7 @@ void CExternalPlayer::Process()
   XbmcThreads::EndTime timer(2000);
   while (!timer.IsTimePast() && !CServiceBroker::GetActiveAE()->IsSuspended())
   {
-    Sleep(50);
+    CThread::Sleep(50);
   }
   if (timer.IsTimePast())
   {

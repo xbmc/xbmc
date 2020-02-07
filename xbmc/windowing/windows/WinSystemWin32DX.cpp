@@ -7,15 +7,18 @@
  */
 
 #include "WinSystemWin32DX.h"
+
 #include "commons/ilog.h"
-#include "platform/win32/CharsetConverter.h"
 #include "rendering/dx/RenderContext.h"
 #include "settings/DisplaySettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
-#include "utils/log.h"
 #include "utils/SystemInfo.h"
+#include "utils/XTimeUtils.h"
+#include "utils/log.h"
 #include "windowing/GraphicContext.h"
+
+#include "platform/win32/CharsetConverter.h"
 
 #include "system.h"
 
@@ -73,7 +76,7 @@ void CWinSystemWin32DX::PresentRenderImpl(bool rendered)
   }
 
   if (!rendered)
-    Sleep(40);
+    KODI::TIME::Sleep(40);
 }
 
 bool CWinSystemWin32DX::CreateNewWindow(const std::string& name, bool fullScreen, RESOLUTION_INFO& res)

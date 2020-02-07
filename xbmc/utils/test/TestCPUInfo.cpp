@@ -10,15 +10,12 @@
 #  include <windows.h>
 #endif
 
-#include "utils/CPUInfo.h"
-#include "utils/Temperature.h"
 #include "ServiceBroker.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
-
-#ifdef TARGET_POSIX
-#include "platform/posix/XTimeUtils.h"
-#endif
+#include "utils/CPUInfo.h"
+#include "utils/Temperature.h"
+#include "utils/XTimeUtils.h"
 
 #include <gtest/gtest.h>
 

@@ -7,14 +7,14 @@
  */
 
 #include "JobManager.h"
+
+#include "threads/SingleLock.h"
+#include "utils/XTimeUtils.h"
+#include "utils/log.h"
+
 #include <algorithm>
 #include <functional>
 #include <stdexcept>
-#include "threads/SingleLock.h"
-#include "utils/log.h"
-#ifdef TARGET_POSIX
-#include "platform/posix/XTimeUtils.h"
-#endif
 
 bool CJob::ShouldCancel(unsigned int progress, unsigned int total) const
 {
@@ -201,7 +201,7 @@ void CJobManager::CancelJobs()
   {
     lock.Leave();
     m_jobEvent.Set();
-    Sleep(0); // yield after setting the event to give the workers some time to die
+    std::this_thread::yield(); // yield after setting the event to give the workers some time to die
     lock.Enter();
   }
 }

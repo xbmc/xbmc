@@ -7,20 +7,19 @@
  */
 
 #include "RenderSystemGL.h"
+
 #include "filesystem/File.h"
 #include "rendering/MatrixGL.h"
-#include "windowing/GraphicContext.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/DisplaySettings.h"
-#include "utils/log.h"
 #include "utils/GLUtils.h"
-#include "utils/TimeUtils.h"
-#include "utils/SystemInfo.h"
 #include "utils/MathUtils.h"
 #include "utils/StringUtils.h"
-#ifdef TARGET_POSIX
-#include "platform/posix/XTimeUtils.h"
-#endif
+#include "utils/SystemInfo.h"
+#include "utils/TimeUtils.h"
+#include "utils/XTimeUtils.h"
+#include "utils/log.h"
+#include "windowing/GraphicContext.h"
 
 CRenderSystemGL::CRenderSystemGL() : CRenderSystemBase()
 {
@@ -287,7 +286,7 @@ void CRenderSystemGL::PresentRender(bool rendered, bool videoLayer)
   PresentRenderImpl(rendered);
 
   if (!rendered)
-    Sleep(40);
+    KODI::TIME::Sleep(40);
 }
 
 void CRenderSystemGL::SetVSync(bool enable)

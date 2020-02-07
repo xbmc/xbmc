@@ -110,24 +110,6 @@ uint32_t SetFilePointer(HANDLE hFile, int32_t lDistanceToMove,
   return (DWORD)currOff;
 }
 
-uint32_t GetTimeZoneInformation( LPTIME_ZONE_INFORMATION lpTimeZoneInformation )
-{
-  if (lpTimeZoneInformation == NULL)
-    return TIME_ZONE_ID_INVALID;
-
-  memset(lpTimeZoneInformation, 0, sizeof(TIME_ZONE_INFORMATION));
-
-  struct tm t;
-  time_t tt = time(NULL);
-  if(localtime_r(&tt, &t))
-    lpTimeZoneInformation->Bias = -t.tm_gmtoff / 60;
-
-  swprintf(lpTimeZoneInformation->StandardName, 31, L"%s", tzname[0]);
-  swprintf(lpTimeZoneInformation->DaylightName, 31, L"%s", tzname[1]);
-
-  return TIME_ZONE_ID_UNKNOWN;
-}
-
 int SetFilePointerEx(  HANDLE hFile,
             LARGE_INTEGER liDistanceToMove,
             PLARGE_INTEGER lpNewFilePointer,

@@ -133,7 +133,7 @@ void CGUIDialogCache::Process()
         m_pDlg->Progress();
         if( bSentCancel )
         {
-          Sleep(10);
+          CThread::Sleep(10);
           continue;
         }
 
@@ -151,7 +151,7 @@ void CGUIDialogCache::Process()
       }
     }
 
-    Sleep(10);
+    CThread::Sleep(10);
   }
 }
 

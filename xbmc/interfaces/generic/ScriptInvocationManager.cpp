@@ -8,10 +8,6 @@
 
 #include "ScriptInvocationManager.h"
 
-#include <cerrno>
-#include <utility>
-#include <vector>
-
 #include "filesystem/File.h"
 #include "interfaces/generic/ILanguageInvocationHandler.h"
 #include "interfaces/generic/ILanguageInvoker.h"
@@ -19,11 +15,12 @@
 #include "threads/SingleLock.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
+#include "utils/XTimeUtils.h"
 #include "utils/log.h"
 
-#ifdef TARGET_POSIX
-#include "platform/posix/XTimeUtils.h"
-#endif
+#include <cerrno>
+#include <utility>
+#include <vector>
 
 using namespace XFILE;
 
@@ -334,7 +331,7 @@ int CScriptInvocationManager::ExecuteSync(
     if (timeout && timeoutMs < sleepMs)
       sleepMs = timeoutMs;
 
-    Sleep(sleepMs);
+    KODI::TIME::Sleep(sleepMs);
 
     if (timeout)
       timeoutMs -= sleepMs;

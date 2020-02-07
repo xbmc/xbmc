@@ -54,7 +54,7 @@ void CPluginDirectory::CScriptObserver::Process()
       m_event.Set();
       break;
     }
-    Sleep(20);
+    CThread::Sleep(20);
   }
 }
 

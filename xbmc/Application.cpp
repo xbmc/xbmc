@@ -45,49 +45,49 @@
 #ifdef HAS_PYTHON
 #include "interfaces/python/XBPython.h"
 #endif
-#include "input/actions/ActionTranslator.h"
-#include "input/ButtonTranslator.h"
-#include "guilib/GUIAudioManager.h"
+#include "GUILargeTextureManager.h"
 #include "GUIPassword.h"
-#include "input/InertialScrollingHandler.h"
-#include "messaging/ThreadMessage.h"
-#include "messaging/ApplicationMessenger.h"
-#include "messaging/helpers/DialogHelper.h"
-#include "messaging/helpers/DialogOKHelper.h"
-#include "SectionLoader.h"
-#include "cores/DllLoader/DllLoaderContainer.h"
 #include "GUIUserMessages.h"
+#include "SectionLoader.h"
+#include "SeekHandler.h"
+#include "ServiceBroker.h"
+#include "TextureCache.h"
+#include "cores/DllLoader/DllLoaderContainer.h"
 #include "filesystem/Directory.h"
 #include "filesystem/DirectoryCache.h"
-#include "filesystem/StackDirectory.h"
-#include "filesystem/SpecialProtocol.h"
 #include "filesystem/DllLibCurl.h"
 #include "filesystem/PluginDirectory.h"
-#include "utils/SystemInfo.h"
-#include "utils/TimeUtils.h"
-#include "GUILargeTextureManager.h"
-#include "TextureCache.h"
-#include "playlists/SmartPlayList.h"
+#include "filesystem/SpecialProtocol.h"
+#include "filesystem/StackDirectory.h"
+#include "guilib/GUIAudioManager.h"
+#include "guilib/LocalizeStrings.h"
+#include "input/ButtonTranslator.h"
+#include "input/InertialScrollingHandler.h"
+#include "input/KeyboardLayoutManager.h"
+#include "input/actions/ActionTranslator.h"
+#include "messaging/ApplicationMessenger.h"
+#include "messaging/ThreadMessage.h"
+#include "messaging/helpers/DialogHelper.h"
+#include "messaging/helpers/DialogOKHelper.h"
 #include "playlists/PlayList.h"
-#include "profiles/ProfileManager.h"
-#include "windowing/WinSystem.h"
+#include "playlists/SmartPlayList.h"
 #include "powermanagement/DPMSSupport.h"
 #include "powermanagement/PowerManager.h"
 #include "powermanagement/PowerTypes.h"
-#include "settings/Settings.h"
+#include "profiles/ProfileManager.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/DisplaySettings.h"
 #include "settings/MediaSettings.h"
+#include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "settings/SkinSettings.h"
-#include "guilib/LocalizeStrings.h"
 #include "utils/CPUInfo.h"
 #include "utils/FileExtensionProvider.h"
+#include "utils/SystemInfo.h"
+#include "utils/TimeUtils.h"
+#include "utils/XTimeUtils.h"
 #include "utils/log.h"
-#include "SeekHandler.h"
-#include "ServiceBroker.h"
-
-#include "input/KeyboardLayoutManager.h"
+#include "windowing/WinSystem.h"
 
 #ifdef HAS_UPNP
 #include "network/upnp/UPnP.h"
@@ -169,7 +169,6 @@
 
 #ifdef TARGET_POSIX
 #include "platform/posix/XHandle.h"
-#include "platform/posix/XTimeUtils.h"
 #include "platform/posix/filesystem/PosixDirectory.h"
 #include "platform/posix/PlatformPosix.h"
 #endif
@@ -2371,7 +2370,7 @@ void CApplication::FrameMove(bool processEvents, bool processGUI)
       if (!m_appPlayer.IsPlayingVideo() || m_appPlayer.IsPausedPlayback())
         max_sleep = 80;
       unsigned int sleepTime = std::max(static_cast<unsigned int>(2), std::min(m_ProcessedExternalCalls >> 2, max_sleep));
-      Sleep(sleepTime);
+      KODI::TIME::Sleep(sleepTime);
       m_frameMoveGuard.lock();
       m_ProcessedExternalDecay = 5;
     }
@@ -2531,7 +2530,7 @@ void CApplication::Stop(int exitCode)
     XbmcThreads::EndTime timer(1000);
     while (m_pAppPort.use_count() > 1)
     {
-      Sleep(100);
+      KODI::TIME::Sleep(100);
       if (timer.IsTimePast())
       {
         CLog::Log(LOGERROR, "CApplication::Stop - CAppPort still in use, app may crash");
@@ -2641,7 +2640,7 @@ void CApplication::Stop(int exitCode)
 
   cleanup_emu_environ();
 
-  Sleep(200);
+  KODI::TIME::Sleep(200);
 }
 
 bool CApplication::PlayMedia(CFileItem& item, const std::string &player, int iPlaylist)
