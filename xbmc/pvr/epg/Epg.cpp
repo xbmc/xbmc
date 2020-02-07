@@ -44,7 +44,8 @@ CPVREpg::CPVREpg(int iEpgID,
                  const std::string& strScraperName,
                  const std::shared_ptr<CPVREpgChannelData>& channelData,
                  const std::shared_ptr<CPVREpgDatabase>& database)
-  : m_iEpgID(iEpgID),
+  : m_bChanged(true),
+    m_iEpgID(iEpgID),
     m_strName(strName),
     m_strScraperName(strScraperName),
     m_channelData(channelData),
@@ -303,7 +304,7 @@ bool CPVREpg::Persist(const std::shared_ptr<CPVREpgDatabase>& database)
   {
     CSingleLock lock(m_critSection);
     bool bEpgIdChanged = false;
-    if (m_iEpgID <= 0)
+    if (m_iEpgID <= 0 || m_bChanged)
     {
       int iId = database->Persist(*this, m_iEpgID > 0);
       if (iId > 0 && m_iEpgID != iId)
@@ -313,7 +314,8 @@ bool CPVREpg::Persist(const std::shared_ptr<CPVREpgDatabase>& database)
       }
     }
 
-    m_tags.Persist(false);
+    if (m_tags.NeedsSave())
+      m_tags.Persist(false);
 
     if (m_bUpdateLastScanTime)
       database->PersistLastEpgScanTime(m_iEpgID, m_lastScanTime, true);
@@ -321,6 +323,7 @@ bool CPVREpg::Persist(const std::shared_ptr<CPVREpgDatabase>& database)
     if (bEpgIdChanged)
       m_tags.SetEpgID(m_iEpgID);
 
+    m_bChanged = false;
     m_bUpdateLastScanTime = false;
   }
 
@@ -500,7 +503,7 @@ bool CPVREpg::UpdatePending() const
 bool CPVREpg::NeedsSave() const
 {
   CSingleLock lock(m_critSection);
-  return m_tags.NeedsSave();
+  return m_bChanged || m_tags.NeedsSave();
 }
 
 bool CPVREpg::IsValid() const
