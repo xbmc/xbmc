@@ -37,7 +37,6 @@ public:
   static void GetResumeItemOffset(const CFileItem *item, int64_t& startoffset, int& partNumber);
   static bool HasResumeItemOffset(const CFileItem *item);
 
-  void AddToDatabase(int iItem);
   virtual void OnItemInfo(const CFileItem& fileItem, ADDON::ScraperPtr& scraper);
 
 
