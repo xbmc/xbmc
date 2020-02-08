@@ -116,6 +116,7 @@ private:
   bool                m_isPlaying;
   bool                m_isPaused;
   bool                m_isFinished;          /* if there are no more songs in the queue */
+  bool m_fullScreen;
   unsigned int        m_defaultCrossfadeMS;  /* how long the default crossfade is in ms */
   unsigned int        m_upcomingCrossfadeMS; /* how long the upcoming crossfade is in ms */
   CEvent              m_startEvent;          /* event for playback start */
