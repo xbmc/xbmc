@@ -95,7 +95,7 @@ std::string CVideoTagLoaderNFO::FindNFO(const CFileItem& item,
     if (URIUtils::IsInRAR(item.GetPath())) // we have a rarred item - we want to check outside the rars
     {
       CFileItem item2(item);
-      CURL url(m_item.GetPath());
+      CURL url(item.GetPath());
       std::string strPath = URIUtils::GetDirectory(url.GetHostName());
       item2.SetPath(URIUtils::AddFileToFolder(strPath,
                                             URIUtils::GetFileName(item.GetPath())));
