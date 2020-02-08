@@ -243,6 +243,13 @@ namespace PVR
     bool DeleteEpgTags(int iEpgId, const CDateTime& maxEndTime);
 
     /*!
+     * @brief Erase all EPG tags with the given epg ID.
+     * @param iEpgID The ID of the EPG.
+     * @return True if the entries were removed successfully, false otherwise.
+     */
+    bool DeleteEpgTags(int iEpgId);
+
+    /*!
      * @brief Persist an infotag.
      * @param tag The tag to persist.
      * @param bSingleUpdate If true, this is a single update and the query will be executed immediately.

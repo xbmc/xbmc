@@ -334,6 +334,25 @@ bool CPVREpg::Persist(const std::shared_ptr<CPVREpgDatabase>& database)
   return bRet;
 }
 
+bool CPVREpg::Delete(const std::shared_ptr<CPVREpgDatabase>& database)
+{
+  if (!database)
+  {
+    CLog::LogF(LOGERROR, "No EPG database");
+    return false;
+  }
+
+  // delete own epg db entry
+  database->Delete(*this);
+
+  // delete all tags for this epg from db
+  m_tags.Delete();
+
+  Clear();
+
+  return true;
+}
+
 CDateTime CPVREpg::GetFirstDate() const
 {
   CSingleLock lock(m_critSection);

@@ -608,3 +608,11 @@ void CPVREpgTagsContainer::Persist(bool bCommit)
     m_database->Unlock();
   }
 }
+
+void CPVREpgTagsContainer::Delete()
+{
+  if (m_database)
+    m_database->DeleteEpgTags(m_iEpgID);
+
+  Clear();
+}
