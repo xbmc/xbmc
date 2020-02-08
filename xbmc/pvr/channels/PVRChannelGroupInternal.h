@@ -58,6 +58,11 @@ namespace PVR
     bool AddToGroup(const std::shared_ptr<CPVRChannel>& channel, const CPVRChannelNumber& channelNumber, int iOrder, bool bUseBackendChannelNumbers, const CPVRChannelNumber& clientChannelNumber = {}) override;
 
     /*!
+     * @see CPVRChannelGroup::AppendToGroup
+     */
+    bool AppendToGroup(const std::shared_ptr<CPVRChannel>& channel) override;
+
+    /*!
      * @see CPVRChannelGroup::RemoveFromGroup
      */
     bool RemoveFromGroup(const std::shared_ptr<CPVRChannel>& channel) override;

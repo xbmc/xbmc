@@ -157,6 +157,13 @@ bool CPVRChannelGroupInternal::AddToGroup(const std::shared_ptr<CPVRChannel>& ch
   return bReturn;
 }
 
+bool CPVRChannelGroupInternal::AppendToGroup(const std::shared_ptr<CPVRChannel>& channel)
+{
+  CSingleLock lock(m_critSection);
+
+  return AddToGroup(channel, CPVRChannelNumber(), 0, false);
+}
+
 bool CPVRChannelGroupInternal::RemoveFromGroup(const std::shared_ptr<CPVRChannel>& channel)
 {
   if (!IsGroupMember(channel))

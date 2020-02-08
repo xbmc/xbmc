@@ -714,6 +714,20 @@ bool CPVRChannelGroup::AddToGroup(const std::shared_ptr<CPVRChannel>& channel, c
   return bReturn;
 }
 
+bool CPVRChannelGroup::AppendToGroup(const std::shared_ptr<CPVRChannel>& channel)
+{
+  CSingleLock lock(m_critSection);
+
+  unsigned int channelNumberMax = 0;
+  for (const auto& member : m_sortedMembers)
+  {
+    if (member->channelNumber.GetChannelNumber() > channelNumberMax)
+      channelNumberMax = member->channelNumber.GetChannelNumber();
+  }
+
+  return AddToGroup(channel, CPVRChannelNumber(channelNumberMax + 1, 0), 0, false);
+}
+
 bool CPVRChannelGroup::IsGroupMember(const std::shared_ptr<CPVRChannel>& channel) const
 {
   CSingleLock lock(m_critSection);

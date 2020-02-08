@@ -150,13 +150,20 @@ namespace PVR
     /*!
      * @brief Add a channel to this container.
      * @param channel The channel to add.
-     * @param channelNumber The channel number of the channel to add. Use empty channel number to add it at the end.
+     * @param channelNumber The channel number of the channel to add. Use empty channel number if it's to be generated.
      * @param iOrder The value denoting the order of this member in the group, 0 if unknown and needs to be generated
      * @param bUseBackendChannelNumbers True, if channelNumber contains a backend channel number.
      * @param clientChannelNumber The client channel number of the channel to add. (optional)
      * @return True if the channel was added, false otherwise.
      */
     virtual bool AddToGroup(const std::shared_ptr<CPVRChannel>& channel, const CPVRChannelNumber& channelNumber, int iOrder, bool bUseBackendChannelNumbers, const CPVRChannelNumber& clientChannelNumber = {});
+
+    /*!
+     * @brief Append a channel to this container.
+     * @param channel The channel to append.
+     * @return True if the channel was appended, false otherwise.
+     */
+    virtual bool AppendToGroup(const std::shared_ptr<CPVRChannel>& channel);
 
     /*!
      * @brief Change the name of this group.
