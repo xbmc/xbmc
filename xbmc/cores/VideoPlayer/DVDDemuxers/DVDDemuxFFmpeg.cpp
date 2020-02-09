@@ -1730,6 +1730,7 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int streamIdx)
       {
         CLog::Log(LOGDEBUG, "CDVDDemuxFFmpeg::AddStream - discarding Dolby Vision stream");
         pStream->discard = AVDISCARD_ALL;
+        delete stream;
         return nullptr;
       }
       stream->dvdNavId = pStream->id;
