@@ -2351,7 +2351,8 @@ void CGUIEPGGridContainer::HandleProgrammeGrid(bool bRender, unsigned int curren
     if (m_gridModel->FreeProgrammeMemory(firstChannel, lastChannel, firstBlock, lastBlock))
     {
       // announce changed viewport
-      const CGUIMessage msg(GUI_MSG_REFRESH_LIST, GetID(), 0, static_cast<int>(PVREvent::Epg));
+      const CGUIMessage msg(
+          GUI_MSG_REFRESH_LIST, GetParentID(), GetID(), static_cast<int>(PVREvent::Epg));
       KODI::MESSAGING::CApplicationMessenger::GetInstance().SendGUIMessage(msg);
     }
   }
