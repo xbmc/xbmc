@@ -84,6 +84,7 @@ bool CThumbExtractor::DoWork()
   ||  URIUtils::IsPVRRecording(m_item.GetDynPath())
   ||  URIUtils::IsUPnP(m_item.GetPath())
   ||  URIUtils::IsBluray(m_item.GetPath())
+  ||  URIUtils::IsPlugin(m_item.GetDynPath()) // plugin path not fully resolved
   ||  m_item.IsBDFile()
   ||  m_item.IsDVD()
   ||  m_item.IsDiscImage()
