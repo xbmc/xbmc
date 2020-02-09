@@ -1078,7 +1078,7 @@ unsigned int CDVDRadioRDSData::DecodeRT(uint8_t *msgElement, unsigned int len)
   unsigned int msgLength = msgElement[UECP_ME_MEL];
   if (msgLength > len-2)
   {
-    CLog::Log(LOGERROR, "Radio UECP (RDS) - %s - RT-Error: Length=0 or not correct (MFL= %d, MEL= %d)\n", __FUNCTION__, len, msgLength);
+    CLog::Log(LOGERROR, "Radio UECP (RDS) - %s - RT-Error: Length=0 or not correct (MFL= %d, MEL= %d)", __FUNCTION__, len, msgLength);
     m_UECPDataDeadBreak = true;
     return 0;
   }

@@ -285,11 +285,11 @@ bool CNfsConnection::Connect(const CURL& url, std::string &relativePath)
 
       if(nfsRet != 0)
       {
-        CLog::Log(LOGERROR,"NFS: Failed to mount nfs share: %s (%s)\n", exportPath.c_str(), nfs_get_error(m_pNfsContext));
+        CLog::Log(LOGERROR,"NFS: Failed to mount nfs share: %s (%s)", exportPath.c_str(), nfs_get_error(m_pNfsContext));
         destroyContext(url.GetHostName() + exportPath);
         return false;
       }
-      CLog::Log(LOGDEBUG,"NFS: Connected to server %s and export %s\n", url.GetHostName().c_str(), exportPath.c_str());
+      CLog::Log(LOGDEBUG,"NFS: Connected to server %s and export %s", url.GetHostName().c_str(), exportPath.c_str());
     }
     m_exportPath = exportPath;
     m_hostName = url.GetHostName();
@@ -299,7 +299,7 @@ bool CNfsConnection::Connect(const CURL& url, std::string &relativePath)
 
     if(contextRet == CONTEXT_NEW)
     {
-      CLog::Log(LOGDEBUG,"NFS: chunks: r/w %i/%i\n", (int)m_readChunkSize,(int)m_writeChunkSize);
+      CLog::Log(LOGDEBUG,"NFS: chunks: r/w %i/%i", (int)m_readChunkSize,(int)m_writeChunkSize);
     }
   }
   return ret;
@@ -434,11 +434,11 @@ int CNfsConnection::stat(const CURL &url, NFSSTAT *statbuff)
       }
       else
       {
-        CLog::Log(LOGERROR,"NFS: Failed to mount nfs share: %s (%s)\n", exportPath.c_str(), nfs_get_error(m_pNfsContext));
+        CLog::Log(LOGERROR,"NFS: Failed to mount nfs share: %s (%s)", exportPath.c_str(), nfs_get_error(m_pNfsContext));
       }
 
       nfs_destroy_context(pTmpContext);
-      CLog::Log(LOGDEBUG,"NFS: Connected to server %s and export %s in tmpContext\n", url.GetHostName().c_str(), exportPath.c_str());
+      CLog::Log(LOGDEBUG,"NFS: Connected to server %s and export %s in tmpContext", url.GetHostName().c_str(), exportPath.c_str());
     }
   }
   return nfsRet;
@@ -577,7 +577,7 @@ int CNFSFile::Stat(const CURL& url, struct __stat64* buffer)
   //if buffer == NULL we where called from Exists - in that case don't spam the log with errors
   if (ret != 0 && buffer != NULL)
   {
-    CLog::Log(LOGERROR, "NFS: Failed to stat(%s) %s\n", url.GetFileName().c_str(), nfs_get_error(gNfsConnection.GetNfsContext()));
+    CLog::Log(LOGERROR, "NFS: Failed to stat(%s) %s", url.GetFileName().c_str(), nfs_get_error(gNfsConnection.GetNfsContext()));
     ret = -1;
   }
   else
@@ -679,7 +679,7 @@ void CNFSFile::Close()
 
 	  if (ret < 0)
     {
-      CLog::Log(LOGERROR, "Failed to close(%s) - %s\n", m_url.GetFileName().c_str(), nfs_get_error(m_pNfsContext));
+      CLog::Log(LOGERROR, "Failed to close(%s) - %s", m_url.GetFileName().c_str(), nfs_get_error(m_pNfsContext));
     }
     m_pFileHandle = NULL;
     m_pNfsContext = NULL;
@@ -725,7 +725,7 @@ ssize_t CNFSFile::Write(const void* lpBuf, size_t uiBufSize)
     //danger - something went wrong
     if (writtenBytes < 0)
     {
-      CLog::Log(LOGERROR, "Failed to pwrite(%s) %s\n", m_url.GetFileName().c_str(), nfs_get_error(m_pNfsContext));
+      CLog::Log(LOGERROR, "Failed to pwrite(%s) %s", m_url.GetFileName().c_str(), nfs_get_error(m_pNfsContext));
       if (numberOfBytesWritten == 0)
         return -1;
 

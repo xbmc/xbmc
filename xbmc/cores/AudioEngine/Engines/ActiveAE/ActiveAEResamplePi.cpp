@@ -338,7 +338,7 @@ bool CActiveAEResamplePi::Init(SampleConfig dstConfig, SampleConfig srcConfig, b
   omx_err = m_omx_mixer.SetConfig(OMX_IndexConfigBrcmAudioDownmixCoefficients8x8, &mix);
   if (omx_err != OMX_ErrorNone)
   {
-    CLog::Log(LOGERROR, "%s::%s - error setting mixer OMX_IndexConfigBrcmAudioDownmixCoefficients, error 0x%08x\n",
+    CLog::Log(LOGERROR, "%s::%s - error setting mixer OMX_IndexConfigBrcmAudioDownmixCoefficients, error 0x%08x",
               CLASSNAME, __func__, omx_err);
     return false;
   }

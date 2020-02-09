@@ -31,7 +31,7 @@ void CBlurayCallback::dir_close(BD_DIR_H *dir)
 {
   if (dir)
   {
-    CLog::Log(LOGDEBUG, "CBlurayCallback - Closed dir (%p)\n", static_cast<void*>(dir));
+    CLog::Log(LOGDEBUG, "CBlurayCallback - Closed dir (%p)", static_cast<void*>(dir));
     delete static_cast<SDirState*>(dir->internal);
     delete dir;
   }
@@ -51,13 +51,13 @@ BD_DIR_H* CBlurayCallback::dir_open(void *handle, const char* rel_path)
   if (URIUtils::HasSlashAtEnd(strDirname))
     URIUtils::RemoveSlashAtEnd(strDirname);
 
-  CLog::Log(LOGDEBUG, "CBlurayCallback - Opening dir %s\n", CURL::GetRedacted(strDirname).c_str());
+  CLog::Log(LOGDEBUG, "CBlurayCallback - Opening dir %s", CURL::GetRedacted(strDirname).c_str());
 
   SDirState *st = new SDirState();
   if (!CDirectory::GetDirectory(strDirname, st->list, "", DIR_FLAG_DEFAULTS))
   {
     if (!CFile::Exists(strDirname))
-      CLog::Log(LOGDEBUG, "CBlurayCallback - Error opening dir! (%s)\n", CURL::GetRedacted(strDirname).c_str());
+      CLog::Log(LOGDEBUG, "CBlurayCallback - Error opening dir! (%s)", CURL::GetRedacted(strDirname).c_str());
     delete st;
     return nullptr;
   }

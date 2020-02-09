@@ -110,7 +110,7 @@ void CXHandle::ChangeType(HandleType newType) {
 
 void CXHandle::DumpObjectTracker() {
   for (int i=0; i< 10; i++) {
-    CLog::Log(LOGDEBUG,"object %d --> %d instances\n", i, m_objectTracker[i]);
+    CLog::Log(LOGDEBUG,"object %d --> %d instances", i, m_objectTracker[i]);
   }
 }
 

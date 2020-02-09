@@ -367,26 +367,26 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
   // allow only 1 instance here
   if (m_InstanceGuard.exchange(true))
   {
-    CLog::Log(LOGERROR, "CDVDVideoCodecAndroidMediaCodec::Open - InstanceGuard locked\n");
+    CLog::Log(LOGERROR, "CDVDVideoCodecAndroidMediaCodec::Open - InstanceGuard locked");
     return false;
   }
 
   // mediacodec crashes with null size. Trap this...
   if (!hints.width || !hints.height)
   {
-    CLog::Log(LOGERROR, "CDVDVideoCodecAndroidMediaCodec::Open - %s\n", "null size, cannot handle");
+    CLog::Log(LOGERROR, "CDVDVideoCodecAndroidMediaCodec::Open - %s", "null size, cannot handle");
     goto FAIL;
   }
   else if (hints.orientation && m_render_surface && CJNIBase::GetSDKVersion() < 23)
   {
-    CLog::Log(LOGERROR, "CDVDVideoCodecAndroidMediaCodec::Open - %s\n", "Surface does not support orientation before API 23");
+    CLog::Log(LOGERROR, "CDVDVideoCodecAndroidMediaCodec::Open - %s", "Surface does not support orientation before API 23");
     goto FAIL;
   }
   else if (!CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_VIDEOPLAYER_USEMEDIACODEC) &&
            !CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_VIDEOPLAYER_USEMEDIACODECSURFACE))
     goto FAIL;
 
-  CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec::Open hints: Width %d x Height %d, Fpsrate %d / Fpsscale %d, CodecID %d, Level %d, Profile %d, PTS_invalid %d, Tag %d, Extradata-Size: %d\n",
+  CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec::Open hints: Width %d x Height %d, Fpsrate %d / Fpsscale %d, CodecID %d, Level %d, Profile %d, PTS_invalid %d, Tag %d, Extradata-Size: %d",
     hints.width, hints.height, hints.fpsrate, hints.fpsscale, hints.codec, hints.level, hints.profile, hints.ptsinvalid, hints.codec_tag, hints.extrasize);
 
   m_render_surface = CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_VIDEOPLAYER_USEMEDIACODECSURFACE);

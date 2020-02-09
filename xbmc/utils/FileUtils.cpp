@@ -71,7 +71,7 @@ bool CFileUtils::RenameFile(const std::string &strFile)
   if (CGUIKeyboardFactory::ShowAndGetInput(strFileName, CVariant{g_localizeStrings.Get(16013)}, false))
   {
     strPath = URIUtils::AddFileToFolder(strPath, strFileName);
-    CLog::Log(LOGINFO,"FileUtils: rename %s->%s\n", strFileAndPath.c_str(), strPath.c_str());
+    CLog::Log(LOGINFO,"FileUtils: rename %s->%s", strFileAndPath.c_str(), strPath.c_str());
     if (URIUtils::IsMultiPath(strFileAndPath))
     { // special case for multipath renames - rename all the paths.
       std::vector<std::string> paths;

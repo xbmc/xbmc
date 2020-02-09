@@ -56,7 +56,7 @@ void CTVOSTopShelf::SetTopShelfItems(CFileItemList& movies, CFileItemList& tv)
 
     storeUrl = [storeUrl URLByAppendingPathComponent:@"RA" isDirectory:YES];
     const BOOL isJailbroken = [tvosShared isJailbroken];
-    CLog::Log(LOGDEBUG, "TopShelf: using shared path {} (jailbroken: {})\n",
+    CLog::Log(LOGDEBUG, "TopShelf: using shared path {} (jailbroken: {})",
               storeUrl.path.UTF8String, isJailbroken ? "yes" : "no");
 
     auto sharedDefaults = [[NSUserDefaults alloc] initWithSuiteName:[tvosShared getSharedID]];
@@ -106,7 +106,7 @@ void CTVOSTopShelf::SetTopShelfItems(CFileItemList& movies, CFileItemList& tv)
               }
 
               auto title = getTitleForItem(videoItem);
-              CLog::Log(LOGDEBUG, "TopShelf: - adding video to '{}' array: {}\n",
+              CLog::Log(LOGDEBUG, "TopShelf: - adding video to '{}' array: {}",
                         videosKey.UTF8String, title.c_str());
               [videosArray addObject:@{
                 @"title" : @(title.c_str()),

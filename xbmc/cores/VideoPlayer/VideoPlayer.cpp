@@ -4009,7 +4009,7 @@ int CVideoPlayer::OnDiscNavResult(void* pData, int iMessage)
       {
         //dvdnav_highlight_event_t* pInfo = (dvdnav_highlight_event_t*)pData;
         int iButton = pStream->GetCurrentButton();
-        CLog::Log(LOGDEBUG, "DVDNAV_HIGHLIGHT: Highlight button %d\n", iButton);
+        CLog::Log(LOGDEBUG, "DVDNAV_HIGHLIGHT: Highlight button %d", iButton);
         m_VideoPlayerSubtitle->UpdateOverlayInfo(std::static_pointer_cast<CDVDInputStreamNavigator>(m_pInputStream), LIBDVDNAV_BUTTON_NORMAL);
       }
       break;

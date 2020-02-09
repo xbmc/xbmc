@@ -161,7 +161,7 @@ bool CRPIUtils::SetNativeResolution(const RESOLUTION_INFO res, EGLSurface m_nati
 
     if (success == 0)
     {
-      CLog::Log(LOGDEBUG, "EGL set HDMI mode (%d,%d)=%d %s%s\n",
+      CLog::Log(LOGDEBUG, "EGL set HDMI mode (%d,%d)=%d %s%s",
                           GETFLAGS_GROUP(res.dwFlags), GETFLAGS_MODE(res.dwFlags), success,
                           CStereoscopicsManager::ConvertGuiStereoModeToString(stereo_mode),
                           mode3d==HDMI_3D_FORMAT_FRAME_PACKING ? " FP" : mode3d==HDMI_3D_FORMAT_SBS_HALF ? " SBS" : mode3d==HDMI_3D_FORMAT_TB_HALF ? " TB" : "");
@@ -170,7 +170,7 @@ bool CRPIUtils::SetNativeResolution(const RESOLUTION_INFO res, EGLSurface m_nati
     }
     else
     {
-      CLog::Log(LOGERROR, "EGL failed to set HDMI mode (%d,%d)=%d %s%s\n",
+      CLog::Log(LOGERROR, "EGL failed to set HDMI mode (%d,%d)=%d %s%s",
                           GETFLAGS_GROUP(res.dwFlags), GETFLAGS_MODE(res.dwFlags), success,
                           CStereoscopicsManager::ConvertGuiStereoModeToString(stereo_mode),
                           mode3d==HDMI_3D_FORMAT_FRAME_PACKING ? " FP" : mode3d==HDMI_3D_FORMAT_SBS_HALF ? " SBS" : mode3d==HDMI_3D_FORMAT_TB_HALF ? " TB" : "");
@@ -192,14 +192,14 @@ bool CRPIUtils::SetNativeResolution(const RESOLUTION_INFO res, EGLSurface m_nati
 
     if (success == 0)
     {
-      CLog::Log(LOGDEBUG, "EGL set SDTV mode (%d,%d)=%d\n",
+      CLog::Log(LOGDEBUG, "EGL set SDTV mode (%d,%d)=%d",
                           GETFLAGS_GROUP(res.dwFlags), GETFLAGS_MODE(res.dwFlags), success);
 
       sem_wait(&m_tv_synced);
     }
     else
     {
-      CLog::Log(LOGERROR, "EGL failed to set SDTV mode (%d,%d)=%d\n",
+      CLog::Log(LOGERROR, "EGL failed to set SDTV mode (%d,%d)=%d",
                           GETFLAGS_GROUP(res.dwFlags), GETFLAGS_MODE(res.dwFlags), success);
     }
     m_DllBcmHost->vc_tv_unregister_callback(CallbackTvServiceCallback);
@@ -246,7 +246,7 @@ bool CRPIUtils::SetNativeResolution(const RESOLUTION_INFO res, EGLSurface m_nati
   else
     transform = DISPMANX_STEREOSCOPIC_MONO;
 
-  CLog::Log(LOGDEBUG, "EGL set resolution %dx%d -> %dx%d @ %.2f fps (%d,%d) flags:%x aspect:%.2f\n",
+  CLog::Log(LOGDEBUG, "EGL set resolution %dx%d -> %dx%d @ %.2f fps (%d,%d) flags:%x aspect:%.2f",
       m_width, m_height, dst_rect.width, dst_rect.height, res.fRefreshRate, GETFLAGS_GROUP(res.dwFlags), GETFLAGS_MODE(res.dwFlags), (int)res.dwFlags, res.fPixelRatio);
 
   m_dispman_element = m_DllBcmHost->vc_dispmanx_element_add(dispman_update,
@@ -430,7 +430,7 @@ bool CRPIUtils::ProbeResolutions(std::vector<RESOLUTION_INFO> &resolutions)
 
     m_desktopRes.iSubtitles   = (int)(0.965 * m_desktopRes.iHeight);
 
-    CLog::Log(LOGDEBUG, "EGL initial desktop resolution %s (%.2f)\n", m_desktopRes.strMode.c_str(), m_desktopRes.fPixelRatio);
+    CLog::Log(LOGDEBUG, "EGL initial desktop resolution %s (%.2f)", m_desktopRes.strMode.c_str(), m_desktopRes.fPixelRatio);
   }
 
   if(GETFLAGS_GROUP(m_desktopRes.dwFlags) && GETFLAGS_MODE(m_desktopRes.dwFlags))
@@ -440,7 +440,7 @@ bool CRPIUtils::ProbeResolutions(std::vector<RESOLUTION_INFO> &resolutions)
   }
   {
     AddUniqueResolution(m_desktopRes, resolutions, true);
-    CLog::Log(LOGDEBUG, "EGL probe resolution %s:%x\n", m_desktopRes.strMode.c_str(), m_desktopRes.dwFlags);
+    CLog::Log(LOGDEBUG, "EGL probe resolution %s:%x", m_desktopRes.strMode.c_str(), m_desktopRes.dwFlags);
   }
 
   return true;
@@ -522,7 +522,7 @@ void CRPIUtils::GetSupportedModes(HDMI_RES_GROUP_T group, std::vector<RESOLUTION
     num_modes = m_DllBcmHost->vc_tv_hdmi_get_supported_modes_new(group,
         supported_modes, max_supported_modes, &prefer_group, &prefer_mode);
 
-    CLog::Log(LOGDEBUG, "EGL get supported modes (%d) = %d, prefer_group=%x, prefer_mode=%x\n",
+    CLog::Log(LOGDEBUG, "EGL get supported modes (%d) = %d, prefer_group=%x, prefer_mode=%x",
         group, num_modes, prefer_group, prefer_mode);
   }
 
@@ -547,7 +547,7 @@ void CRPIUtils::GetSupportedModes(HDMI_RES_GROUP_T group, std::vector<RESOLUTION
         m_desktopRes = res;
 
       AddUniqueResolution(res, resolutions);
-      CLog::Log(LOGDEBUG, "EGL mode %d: %s (%.2f) %s%s:%x\n", i, res.strMode, res.fPixelRatio,
+      CLog::Log(LOGDEBUG, "EGL mode %d: %s (%.2f) %s%s:%x", i, res.strMode, res.fPixelRatio,
           tv->native ? "N" : "", tv->scan_mode ? "I" : "", int(tv->code));
 
       if (tv->frame_rate == 24 || tv->frame_rate == 30 || tv->frame_rate == 48 || tv->frame_rate == 60 || tv->frame_rate == 72)
@@ -564,7 +564,7 @@ void CRPIUtils::GetSupportedModes(HDMI_RES_GROUP_T group, std::vector<RESOLUTION
 
 void CRPIUtils::TvServiceCallback(uint32_t reason, uint32_t param1, uint32_t param2)
 {
-  CLog::Log(LOGDEBUG, "EGL tv_service_callback (%d,%d,%d)\n", reason, param1, param2);
+  CLog::Log(LOGDEBUG, "EGL tv_service_callback (%d,%d,%d)", reason, param1, param2);
   switch(reason)
   {
   case VC_HDMI_UNPLUGGED:

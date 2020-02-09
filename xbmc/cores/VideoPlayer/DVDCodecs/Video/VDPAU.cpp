@@ -281,7 +281,7 @@ void CVDPAUContext::SpewHardwareAvailable()  //Copyright (c) 2008 Wladimir J. va
                                 &is_supported, &max_level, &max_macroblocks, &max_width, &max_height);
     if(rv == VDP_STATUS_OK && is_supported)
     {
-      CLog::Log(LOGNOTICE,"%-16s %2i %5i %5i %5i\n", decoder_profile.name,
+      CLog::Log(LOGNOTICE,"%-16s %2i %5i %5i %5i", decoder_profile.name,
                 max_level, max_macroblocks, max_width, max_height);
     }
   }
@@ -1258,7 +1258,7 @@ bool CDecoder::CheckStatus(VdpStatus vdp_st, int line)
 {
   if (vdp_st != VDP_STATUS_OK)
   {
-    CLog::Log(LOGERROR, " (VDPAU) Error: %s(%d) at %s:%d\n", m_vdpauConfig.context->GetProcs().vdp_get_error_string(vdp_st), vdp_st, __FILE__, line);
+    CLog::Log(LOGERROR, " (VDPAU) Error: %s(%d) at %s:%d", m_vdpauConfig.context->GetProcs().vdp_get_error_string(vdp_st), vdp_st, __FILE__, line);
 
     m_ErrorCount++;
 
@@ -2731,7 +2731,7 @@ bool CMixer::CheckStatus(VdpStatus vdp_st, int line)
 {
   if (vdp_st != VDP_STATUS_OK)
   {
-    CLog::Log(LOGERROR, " (VDPAU) Error: %s(%d) at %s:%d\n", m_config.context->GetProcs().vdp_get_error_string(vdp_st), vdp_st, __FILE__, line);
+    CLog::Log(LOGERROR, " (VDPAU) Error: %s(%d) at %s:%d", m_config.context->GetProcs().vdp_get_error_string(vdp_st), vdp_st, __FILE__, line);
     m_vdpError = true;
     return true;
   }
@@ -3365,7 +3365,7 @@ bool COutput::CheckStatus(VdpStatus vdp_st, int line)
 {
   if (vdp_st != VDP_STATUS_OK)
   {
-    CLog::Log(LOGERROR, " (VDPAU) Error: %s(%d) at %s:%d\n", m_config.context->GetProcs().vdp_get_error_string(vdp_st), vdp_st, __FILE__, line);
+    CLog::Log(LOGERROR, " (VDPAU) Error: %s(%d) at %s:%d", m_config.context->GetProcs().vdp_get_error_string(vdp_st), vdp_st, __FILE__, line);
     m_vdpError = true;
     return true;
   }

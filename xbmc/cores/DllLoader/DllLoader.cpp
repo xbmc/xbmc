@@ -186,11 +186,11 @@ void DllLoader::PrintImportLookupTable(unsigned long ImportLookupTable_RVA)
     if (*Table & 0x80000000)
     {
       // Process Ordinal...
-      CLog::Log(LOGDEBUG, "            Ordinal: %01lX\n", *Table & 0x7fffffff);
+      CLog::Log(LOGDEBUG, "            Ordinal: %01lX", *Table & 0x7fffffff);
     }
     else
     {
-      CLog::Log(LOGDEBUG, "            Don't process Hint/Name Table yet...\n");
+      CLog::Log(LOGDEBUG, "            Don't process Hint/Name Table yet...");
     }
     Table++;
   }
@@ -201,7 +201,7 @@ void DllLoader::PrintImportTable(ImportDirTable_t *ImportDirTable)
   ImportDirTable_t *Imp = ImportDirTable;
   int HavePrinted = 0;
 
-  CLog::Log(LOGDEBUG, "The Coff Image contains the following imports:\n\n");
+  CLog::Log(LOGDEBUG, "The Coff Image contains the following imports:");
   while ( Imp->ImportLookupTable_RVA != 0 ||
           Imp->TimeStamp != 0 ||
           Imp->ForwarderChain != 0 ||
@@ -213,14 +213,14 @@ void DllLoader::PrintImportTable(ImportDirTable_t *ImportDirTable)
 
     Name = (char*)RVA2Data(Imp->Name_RVA);
 
-    CLog::Log(LOGDEBUG, "    %s:\n", Name);
-    CLog::Log(LOGDEBUG, "        ImportAddressTable:     %04lX\n", Imp->ImportAddressTable_RVA);
-    CLog::Log(LOGDEBUG, "        ImportLookupTable:      %04lX\n", Imp->ImportLookupTable_RVA);
-    CLog::Log(LOGDEBUG, "        TimeStamp:              %01lX\n", Imp->TimeStamp);
-    CLog::Log(LOGDEBUG, "        Forwarder Chain:        %01lX\n", Imp->ForwarderChain);
+    CLog::Log(LOGDEBUG, "    %s:", Name);
+    CLog::Log(LOGDEBUG, "        ImportAddressTable:     %04lX", Imp->ImportAddressTable_RVA);
+    CLog::Log(LOGDEBUG, "        ImportLookupTable:      %04lX", Imp->ImportLookupTable_RVA);
+    CLog::Log(LOGDEBUG, "        TimeStamp:              %01lX", Imp->TimeStamp);
+    CLog::Log(LOGDEBUG, "        Forwarder Chain:        %01lX", Imp->ForwarderChain);
 
     PrintImportLookupTable(Imp->ImportLookupTable_RVA);
-    CLog::Log(LOGDEBUG, "\n");
+    CLog::Log(LOGDEBUG, "");
     Imp++;
   }
   if (!HavePrinted) CLog::Log(LOGDEBUG, "None.");
@@ -235,22 +235,22 @@ void DllLoader::PrintExportTable(ExportDirTable_t *ExportDirTable)
   unsigned short *OrdinalTable = (unsigned short*)RVA2Data(ExportDirTable->OrdinalTable_RVA);
 
 
-  CLog::Log(LOGDEBUG, "Export Table for %s:\n", Name);
+  CLog::Log(LOGDEBUG, "Export Table for %s:", Name);
 
-  CLog::Log(LOGDEBUG, "ExportFlags:    %04lX\n", ExportDirTable->ExportFlags);
-  CLog::Log(LOGDEBUG, "TimeStamp:      %04lX\n", ExportDirTable->TimeStamp);
-  CLog::Log(LOGDEBUG, "Major Ver:      %02X\n", ExportDirTable->MajorVersion);
-  CLog::Log(LOGDEBUG, "Minor Ver:      %02X\n", ExportDirTable->MinorVersion);
-  CLog::Log(LOGDEBUG, "Name RVA:       %04lX\n", ExportDirTable->Name_RVA);
-  CLog::Log(LOGDEBUG, "OrdinalBase     %lu\n", ExportDirTable->OrdinalBase);
-  CLog::Log(LOGDEBUG, "NumAddrTable    %lu\n", ExportDirTable->NumAddrTable);
-  CLog::Log(LOGDEBUG, "NumNamePtrs     %lu\n", ExportDirTable->NumNamePtrs);
-  CLog::Log(LOGDEBUG, "ExportAddressTable_RVA  %04lX\n", ExportDirTable->ExportAddressTable_RVA);
-  CLog::Log(LOGDEBUG, "NamePointerTable_RVA    %04lX\n", ExportDirTable->NamePointerTable_RVA);
-  CLog::Log(LOGDEBUG, "OrdinalTable_RVA        %04lX\n\n", ExportDirTable->OrdinalTable_RVA);
+  CLog::Log(LOGDEBUG, "ExportFlags:    %04lX", ExportDirTable->ExportFlags);
+  CLog::Log(LOGDEBUG, "TimeStamp:      %04lX", ExportDirTable->TimeStamp);
+  CLog::Log(LOGDEBUG, "Major Ver:      %02X", ExportDirTable->MajorVersion);
+  CLog::Log(LOGDEBUG, "Minor Ver:      %02X", ExportDirTable->MinorVersion);
+  CLog::Log(LOGDEBUG, "Name RVA:       %04lX", ExportDirTable->Name_RVA);
+  CLog::Log(LOGDEBUG, "OrdinalBase     %lu", ExportDirTable->OrdinalBase);
+  CLog::Log(LOGDEBUG, "NumAddrTable    %lu", ExportDirTable->NumAddrTable);
+  CLog::Log(LOGDEBUG, "NumNamePtrs     %lu", ExportDirTable->NumNamePtrs);
+  CLog::Log(LOGDEBUG, "ExportAddressTable_RVA  %04lX", ExportDirTable->ExportAddressTable_RVA);
+  CLog::Log(LOGDEBUG, "NamePointerTable_RVA    %04lX", ExportDirTable->NamePointerTable_RVA);
+  CLog::Log(LOGDEBUG, "OrdinalTable_RVA        %04lX", ExportDirTable->OrdinalTable_RVA);
 
-  CLog::Log(LOGDEBUG, "Public Exports:\n");
-  CLog::Log(LOGDEBUG, "    ordinal hint RVA      name\n");
+  CLog::Log(LOGDEBUG, "Public Exports:");
+  CLog::Log(LOGDEBUG, "    ordinal hint RVA      name");
   for (unsigned int i = 0; i < ExportDirTable->NumNamePtrs; i++)
   {
     char *Name = (char*)RVA2Data(NamePointerTable[i]);
@@ -258,7 +258,7 @@ void DllLoader::PrintExportTable(ExportDirTable_t *ExportDirTable)
     CLog::Log(LOGDEBUG, "          %lu", OrdinalTable[i] + ExportDirTable->OrdinalBase);
     CLog::Log(LOGDEBUG, "    %d", OrdinalTable[i]);
     CLog::Log(LOGDEBUG, " %08lX", ExportAddressTable[OrdinalTable[i]]);
-    CLog::Log(LOGDEBUG, " %s\n", Name);
+    CLog::Log(LOGDEBUG, " %s", Name);
   }
 }
 
@@ -300,7 +300,7 @@ int DllLoader::ResolveImports(void)
           {
             bResult = 0;
             char szBuf[128];
-            CLog::Log(LOGDEBUG,"Unable to resolve ordinal %s %lu\n", Name, *Table&0x7ffffff);
+            CLog::Log(LOGDEBUG,"Unable to resolve ordinal %s %lu", Name, *Table&0x7ffffff);
             sprintf(szBuf, "%lu", *Table&0x7ffffff);
             *Addr = create_dummy_function(Name, szBuf);
             tracker_dll_data_track(this, *Addr);
@@ -321,7 +321,7 @@ int DllLoader::ResolveImports(void)
             *Addr=get_win_function_address(Name, ImpName);
             if(!*Addr)
             {
-              CLog::Log(LOGDEBUG,"Unable to resolve %s %s\n", Name, ImpName);
+              CLog::Log(LOGDEBUG,"Unable to resolve %s %s", Name, ImpName);
               *Addr = create_dummy_function(Name, ImpName);
               tracker_dll_data_track(this, *Addr);
               bResult = 0;

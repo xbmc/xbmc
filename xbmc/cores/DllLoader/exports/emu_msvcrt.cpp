@@ -382,7 +382,7 @@ extern "C"
     if (szLine[strlen(szLine) - 1] != '\n')
       CLog::Log(LOGDEBUG,"  msg: %s", szLine);
     else
-      CLog::Log(LOGDEBUG,"  msg: %s\n", szLine);
+      CLog::Log(LOGDEBUG,"  msg: %s", szLine);
 
     // return a non negative value
     return 0;

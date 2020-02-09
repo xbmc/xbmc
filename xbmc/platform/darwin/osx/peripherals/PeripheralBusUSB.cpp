@@ -114,7 +114,7 @@ void CPeripheralBusUSB::DeviceDetachCallback(void *refCon, io_service_t service,
     }
     privateDataRef->refCon->ScanForDevices();
 
-    CLog::Log(LOGDEBUG, "USB Device Detach:%s, %s\n",
+    CLog::Log(LOGDEBUG, "USB Device Detach:%s, %s",
       privateDataRef->deviceName.c_str(), privateDataRef->result.m_strLocation.c_str());
     IOObjectRelease(privateDataRef->notification);
     delete privateDataRef;
@@ -260,7 +260,7 @@ void CPeripheralBusUSB::DeviceAttachCallback(CPeripheralBusUSB* refCon, io_itera
           if (result == kIOReturnSuccess)
           {
             refCon->m_scan_results.m_results.push_back(privateDataRef->result);
-            CLog::Log(LOGDEBUG, "USB Device Attach:%s, %s\n",
+            CLog::Log(LOGDEBUG, "USB Device Attach:%s, %s",
               deviceName, privateDataRef->result.m_strLocation.c_str());
           }
           else

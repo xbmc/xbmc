@@ -122,7 +122,7 @@ std::string CSpecialProtocol::TranslatePath(const CURL &url)
     std::string path(url.Get());
     if (path.length() >= 2 && path[1] == ':')
     {
-      CLog::Log(LOGWARNING, "Trying to access old style dir: %s\n", path.c_str());
+      CLog::Log(LOGWARNING, "Trying to access old style dir: %s", path.c_str());
      // printf("Trying to access old style dir: %s\n", path.c_str());
     }
 #endif

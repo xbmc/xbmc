@@ -112,7 +112,7 @@ bool CDVDInputStreamNavigator::Open()
     m_pstream.reset(new CDVDInputStreamFile(m_item, XFILE::READ_TRUNCATED | XFILE::READ_BITRATE | XFILE::READ_CHUNKED));
     if (!m_pstream->Open() || m_dll.dvdnav_open_stream(&m_dvdnav, m_pstream.get(), &m_dvdnav_stream_cb) != DVDNAV_STATUS_OK)
     {
-      CLog::Log(LOGERROR, "Error opening image file or Error on dvdnav_open_stream\n");
+      CLog::Log(LOGERROR, "Error opening image file or Error on dvdnav_open_stream");
       Close();
       return false;
     }
@@ -120,7 +120,7 @@ bool CDVDInputStreamNavigator::Open()
   else
   if (m_dll.dvdnav_open(&m_dvdnav, path.c_str()) != DVDNAV_STATUS_OK)
   {
-    CLog::Log(LOGERROR,"Error on dvdnav_open\n");
+    CLog::Log(LOGERROR,"Error on dvdnav_open");
     Close();
     return false;
   }
@@ -163,7 +163,7 @@ bool CDVDInputStreamNavigator::Open()
   // set default language settings
   if (m_dll.dvdnav_menu_language_select(m_dvdnav, (char*)language_menu) != DVDNAV_STATUS_OK)
   {
-    CLog::Log(LOGERROR, "Error on setting default menu language: %s\n", m_dll.dvdnav_err_to_string(m_dvdnav));
+    CLog::Log(LOGERROR, "Error on setting default menu language: %s", m_dll.dvdnav_err_to_string(m_dvdnav));
     CLog::Log(LOGERROR, "Defaulting to \"en\"");
     //! @bug libdvdnav isn't const correct
     m_dll.dvdnav_menu_language_select(m_dvdnav, const_cast<char*>("en"));
@@ -171,7 +171,7 @@ bool CDVDInputStreamNavigator::Open()
 
   if (m_dll.dvdnav_audio_language_select(m_dvdnav, (char*)language_audio) != DVDNAV_STATUS_OK)
   {
-    CLog::Log(LOGERROR, "Error on setting default audio language: %s\n", m_dll.dvdnav_err_to_string(m_dvdnav));
+    CLog::Log(LOGERROR, "Error on setting default audio language: %s", m_dll.dvdnav_err_to_string(m_dvdnav));
     CLog::Log(LOGERROR, "Defaulting to \"en\"");
     //! @bug libdvdnav isn't const correct
     m_dll.dvdnav_audio_language_select(m_dvdnav, const_cast<char*>("en"));
@@ -179,7 +179,7 @@ bool CDVDInputStreamNavigator::Open()
 
   if (m_dll.dvdnav_spu_language_select(m_dvdnav, (char*)language_subtitle) != DVDNAV_STATUS_OK)
   {
-    CLog::Log(LOGERROR, "Error on setting default subtitle language: %s\n", m_dll.dvdnav_err_to_string(m_dvdnav));
+    CLog::Log(LOGERROR, "Error on setting default subtitle language: %s", m_dll.dvdnav_err_to_string(m_dvdnav));
     CLog::Log(LOGERROR, "Defaulting to \"en\"");
     //! @bug libdvdnav isn't const correct
     m_dll.dvdnav_spu_language_select(m_dvdnav, const_cast<char*>("en"));
@@ -188,7 +188,7 @@ bool CDVDInputStreamNavigator::Open()
   // set read ahead cache usage
   if (m_dll.dvdnav_set_readahead_flag(m_dvdnav, 1) != DVDNAV_STATUS_OK)
   {
-    CLog::Log(LOGERROR,"Error on dvdnav_set_readahead_flag: %s\n", m_dll.dvdnav_err_to_string(m_dvdnav));
+    CLog::Log(LOGERROR,"Error on dvdnav_set_readahead_flag: %s", m_dll.dvdnav_err_to_string(m_dvdnav));
     Close();
     return false;
   }
@@ -197,7 +197,7 @@ bool CDVDInputStreamNavigator::Open()
   // whole feature instead of just relatively to the current chapter
   if (m_dll.dvdnav_set_PGC_positioning_flag(m_dvdnav, 1) != DVDNAV_STATUS_OK)
   {
-    CLog::Log(LOGERROR,"Error on dvdnav_set_PGC_positioning_flag: %s\n", m_dll.dvdnav_err_to_string(m_dvdnav));
+    CLog::Log(LOGERROR,"Error on dvdnav_set_PGC_positioning_flag: %s", m_dll.dvdnav_err_to_string(m_dvdnav));
     Close();
     return false;
   }
@@ -216,10 +216,10 @@ bool CDVDInputStreamNavigator::Open()
     // first try title menu
     if(m_dll.dvdnav_menu_call(m_dvdnav, DVD_MENU_Title) != DVDNAV_STATUS_OK)
     {
-      CLog::Log(LOGERROR,"Error on dvdnav_menu_call(Title): %s\n", m_dll.dvdnav_err_to_string(m_dvdnav));
+      CLog::Log(LOGERROR,"Error on dvdnav_menu_call(Title): %s", m_dll.dvdnav_err_to_string(m_dvdnav));
       // next try root menu
       if(m_dll.dvdnav_menu_call(m_dvdnav, DVD_MENU_Root) != DVDNAV_STATUS_OK )
-        CLog::Log(LOGERROR,"Error on dvdnav_menu_call(Root): %s\n", m_dll.dvdnav_err_to_string(m_dvdnav));
+        CLog::Log(LOGERROR,"Error on dvdnav_menu_call(Root): %s", m_dll.dvdnav_err_to_string(m_dvdnav));
     }
   }
 
@@ -245,7 +245,7 @@ void CDVDInputStreamNavigator::Close()
   // finish off by closing the dvdnav device
   if (m_dll.dvdnav_close(m_dvdnav) != DVDNAV_STATUS_OK)
   {
-    CLog::Log(LOGERROR,"Error on dvdnav_close: %s\n", m_dll.dvdnav_err_to_string(m_dvdnav));
+    CLog::Log(LOGERROR,"Error on dvdnav_close: %s", m_dll.dvdnav_err_to_string(m_dvdnav));
     return ;
   }
 
@@ -333,7 +333,7 @@ int CDVDInputStreamNavigator::ProcessBlock(uint8_t* dest_buffer, int* read)
 
   if (result == DVDNAV_STATUS_ERR)
   {
-    CLog::Log(LOGERROR,"Error getting next block: %s\n", m_dll.dvdnav_err_to_string(m_dvdnav));
+    CLog::Log(LOGERROR,"Error getting next block: %s", m_dll.dvdnav_err_to_string(m_dvdnav));
     m_bEOF = true;
     return NAVRESULT_ERROR;
   }
@@ -508,7 +508,7 @@ int CDVDInputStreamNavigator::ProcessBlock(uint8_t* dest_buffer, int* read)
           int entries = m_dll.dvdnav_describe_title_chapters(m_dvdnav, m_iTitle, &times, &duration);
 
           if (entries != m_iPartCount)
-            CLog::Log(LOGDEBUG, "%s - Number of chapters/positions differ: Chapters %d, positions %d\n", __FUNCTION__, m_iPartCount, entries);
+            CLog::Log(LOGDEBUG, "%s - Number of chapters/positions differ: Chapters %d, positions %d", __FUNCTION__, m_iPartCount, entries);
 
           if (times)
           {
@@ -521,8 +521,8 @@ int CDVDInputStreamNavigator::ProcessBlock(uint8_t* dest_buffer, int* read)
             m_dll.dvdnav_free(times);
           }
         }
-        CLog::Log(LOGDEBUG, "%s - Cell change: Title %d, Chapter %d\n", __FUNCTION__, m_iTitle, m_iPart);
-        CLog::Log(LOGDEBUG, "%s - At position %.0f%% inside the feature\n", __FUNCTION__, 100 * (double)pos / (double)len);
+        CLog::Log(LOGDEBUG, "%s - Cell change: Title %d, Chapter %d", __FUNCTION__, m_iTitle, m_iPart);
+        CLog::Log(LOGDEBUG, "%s - At position %.0f%% inside the feature", __FUNCTION__, 100 * (double)pos / (double)len);
         //Get total segment time
 
         dvdnav_cell_change_event_t* cell_change_event = reinterpret_cast<dvdnav_cell_change_event_t*>(buf);
@@ -617,7 +617,7 @@ int CDVDInputStreamNavigator::ProcessBlock(uint8_t* dest_buffer, int* read)
 
     default:
       {
-        CLog::Log(LOGDEBUG,"CDVDInputStreamNavigator: Unknown event (%i)\n", m_lastevent);
+        CLog::Log(LOGDEBUG,"CDVDInputStreamNavigator: Unknown event (%i)", m_lastevent);
       }
       break;
 

@@ -230,12 +230,12 @@ XVisualInfo* CWinSystemX11GLESContext::GetVisual()
 
   if (eglDisplay == EGL_NO_DISPLAY)
   {
-    CLog::Log(LOGERROR, "failed to get egl display\n");
+    CLog::Log(LOGERROR, "failed to get egl display");
     return nullptr;
   }
   if (!eglInitialize(eglDisplay, nullptr, nullptr))
   {
-    CLog::Log(LOGERROR, "failed to initialize egl display\n");
+    CLog::Log(LOGERROR, "failed to initialize egl display");
     return nullptr;
   }
 
@@ -254,7 +254,7 @@ XVisualInfo* CWinSystemX11GLESContext::GetVisual()
   EGLConfig eglConfig = 0;
   if (!eglChooseConfig(eglDisplay, att, &eglConfig, 1, &numConfigs) || numConfigs == 0)
   {
-    CLog::Log(LOGERROR, "Failed to choose a config %d\n", eglGetError());
+    CLog::Log(LOGERROR, "Failed to choose a config %d", eglGetError());
     return nullptr;
   }
 
@@ -262,7 +262,7 @@ XVisualInfo* CWinSystemX11GLESContext::GetVisual()
   if (!eglGetConfigAttrib(eglDisplay, eglConfig,
     EGL_NATIVE_VISUAL_ID, reinterpret_cast<EGLint*>(&x11_visual_info_template.visualid)))
   {
-    CLog::Log(LOGERROR, "Failed to query native visual id\n");
+    CLog::Log(LOGERROR, "Failed to query native visual id");
     return nullptr;
   }
   int num_visuals;

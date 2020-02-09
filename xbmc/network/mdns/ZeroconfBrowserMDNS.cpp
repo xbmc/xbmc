@@ -88,7 +88,7 @@ void DNSSD_API CZeroconfBrowserMDNS::BrowserCallback(DNSServiceRef browser,
   }
   else
   {
-    CLog::Log(LOGERROR, "ZeroconfBrowserMDNS::BrowserCallback returned (error = %ld)\n", (int)errorCode);
+    CLog::Log(LOGERROR, "ZeroconfBrowserMDNS::BrowserCallback returned (error = %ld)", (int)errorCode);
   }
 }
 

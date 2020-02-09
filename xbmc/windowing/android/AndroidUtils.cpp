@@ -225,7 +225,7 @@ bool CAndroidUtils::GetNativeResolution(RESOLUTION_INFO* res) const
   res->iSubtitles    = (int)(0.965 * res->iHeight);
   res->strMode       = StringUtils::Format("%dx%d @ %.6f%s - Full Screen", res->iScreenWidth, res->iScreenHeight, res->fRefreshRate,
                                            res->dwFlags & D3DPRESENTFLAG_INTERLACED ? "i" : "");
-  CLog::Log(LOGNOTICE,"CAndroidUtils: Current resolution: %dx%d %s\n", res->iWidth, res->iHeight, res->strMode.c_str());
+  CLog::Log(LOGNOTICE,"CAndroidUtils: Current resolution: %dx%d %s", res->iWidth, res->iHeight, res->strMode.c_str());
   return true;
 }
 

@@ -153,7 +153,7 @@ void XBMCHelper::Stop()
   int pid = GetProcessPid(XBMC_HELPER_PROGRAM);
   if (pid != -1)
   {
-    CLog::Log(LOGDEBUG,"XBMCHelper: Sending SIGKILL to %s\n", XBMC_HELPER_PROGRAM);
+    CLog::Log(LOGDEBUG,"XBMCHelper: Sending SIGKILL to %s", XBMC_HELPER_PROGRAM);
     kill(pid, SIGKILL);
   }
 }

@@ -635,7 +635,7 @@ bool CGUIWindow::OnMessage(CGUIMessage& message)
     }
   case GUI_MSG_SETFOCUS:
     {
-//      CLog::Log(LOGDEBUG,"set focus to control:%i window:%i (%i)\n", message.GetControlId(),message.GetSenderId(), GetID());
+//      CLog::Log(LOGDEBUG,"set focus to control:%i window:%i (%i)", message.GetControlId(),message.GetSenderId(), GetID());
       if ( message.GetControlId() )
       {
         // first unfocus the current control
