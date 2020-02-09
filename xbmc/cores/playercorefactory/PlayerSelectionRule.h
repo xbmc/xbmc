@@ -35,6 +35,7 @@ private:
 
   int m_tAudio;
   int m_tVideo;
+  int m_tGame;
   int m_tInternetStream;
   int m_tRemote;
 

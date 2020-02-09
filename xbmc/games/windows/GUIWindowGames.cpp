@@ -264,6 +264,13 @@ bool CGUIWindowGames::GetDirectory(const std::string &strDirectory, CFileItemLis
   if (!content.empty())
     items.SetContent(content);
 
+  // Ensure a game info tag is created so that files are recognized as games
+  for (const CFileItemPtr& item : items)
+  {
+    if (!item->m_bIsFolder)
+      item->GetGameInfoTag();
+  }
+
   return true;
 }
 
