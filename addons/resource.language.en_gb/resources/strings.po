@@ -20769,7 +20769,13 @@ msgctxt "#36632"
 msgid "Anyone who has access to the web interface will be able to completely control this application and, therefore, this device, so it should never be exposed on the Internet. A password must be set below. Proceed?"
 msgstr ""
 
-#empty strings from id 36633 to 36898
+#. Text in confirm dialog when enabling setting "Services -> Control -> Allow remote control from applications on other systems"
+#: xbmc/network/NetworkServices.cpp
+msgctxt "#36633"
+msgid "These services offer neither authentication nor encryption. Anyone who can connect to them will be able to completely control this application and, therefore, this device, so they should never be exposed to the Internet. Proceed?"
+msgstr ""
+
+#empty strings from id 36634 to 36898
 
 #. Description of setting with label #729 "Enable SSL"
 #: system/settings/settings.xml

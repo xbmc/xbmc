@@ -391,6 +391,13 @@ bool CNetworkServices::OnSettingChanging(std::shared_ptr<const CSetting> setting
   }
   else if (settingId == CSettings::SETTING_SERVICES_ESALLINTERFACES)
   {
+    if (m_settings->GetBool(CSettings::SETTING_SERVICES_ESALLINTERFACES) &&
+        HELPERS::ShowYesNoDialogText(19098, 36633) != DialogResponse::YES)
+    {
+      // Revert change, do not start server
+      return false;
+    }
+
     if (m_settings->GetBool(CSettings::SETTING_SERVICES_ESENABLED))
     {
       if (!StopEventServer(true, true))
