@@ -9,7 +9,7 @@ NATIVE= m4 gettext heimdal autoconf automake \
         gas-preprocessor libffi python3 zlib \
         pcre swig \
         libpng libjpeg-turbo liblzo2 giflib \
-        distribute distutilscross JsonSchemaBuilder TexturePacker \
+        setuptools distutilscross JsonSchemaBuilder TexturePacker \
         flatbuffers
 
 
@@ -23,7 +23,7 @@ endif
 
 ifeq ($(OS),linux)
   ifeq ($(TARGET_PLATFORM),$(filter $(TARGET_PLATFORM),raspberry-pi gbm))
-    NATIVE += meson ninja setuptools
+    NATIVE += meson ninja
   endif
 endif
 
@@ -48,8 +48,7 @@ libpng: zlib
 meson: python3 setuptools
 ninja: python3
 swig: pcre
-distribute: python3
-distutilscross: python3 distribute
+distutilscross: python3
 tar: xz automake
 python3: $(EXPAT) libffi pkg-config zlib
 setuptools: python3
