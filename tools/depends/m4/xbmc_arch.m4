@@ -51,9 +51,6 @@ case $host in
   *86*-apple-darwin*)
      AC_SUBST(ARCH_DEFINES, "-DTARGET_POSIX -DTARGET_DARWIN -DTARGET_DARWIN_OSX")
      ;;
-  powerpc-apple-darwin*)
-     AC_SUBST(ARCH_DEFINES, "-DTARGET_POSIX -DTARGET_DARWIN -DTARGET_DARWIN_OSX")
-     ;;
   powerpc-*-linux-gnu*|powerpc-*-linux-uclibc*)
      AC_SUBST(ARCH_DEFINES, "-DTARGET_POSIX -DTARGET_LINUX -D_POWERPC")
      ;;
