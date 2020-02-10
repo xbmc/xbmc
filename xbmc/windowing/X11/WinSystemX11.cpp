@@ -365,7 +365,7 @@ void CWinSystemX11::UpdateResolutions()
   XOutput *out = g_xrandr.GetOutput(m_userOutput);
   if (out != NULL)
   {
-    CLog::Log(LOGINFO, "Output '%s' has %" PRIdS" modes", out->name.c_str(), out->modes.size());
+    CLog::Log(LOGINFO, "Output '{}' has {} modes", out->name, out->modes.size());
 
     for (auto mode : out->modes)
     {

@@ -21,7 +21,6 @@
 #ifndef __STDC_FORMAT_MACROS
   #define __STDC_FORMAT_MACROS
 #endif
-#include <inttypes.h>
 #include <sys/sysctl.h>
 #include <mach/mach.h>
 #if defined(TARGET_DARWIN_OSX)
@@ -51,34 +50,6 @@
 #endif
 
 #include <stdint.h>
-
-#ifndef PRId64
-#ifdef TARGET_WINDOWS
-#define PRId64 "I64d"
-#else
-#if __WORDSIZE == 64
-#define PRId64 "ld"
-#else
-#define PRId64 "lld"
-#endif
-#endif
-#endif
-
-#ifndef PRIu64
-#ifdef TARGET_WINDOWS
-#define PRIu64 "I64u"
-#else
-#if __WORDSIZE == 64
-#define PRIu64 "lu"
-#else
-#define PRIu64 "llu"
-#endif
-#endif
-#endif
-
-#ifndef PRIdS
-#define PRIdS "zd"
-#endif
 
 #define _fdopen fdopen
 #define _vsnprintf vsnprintf

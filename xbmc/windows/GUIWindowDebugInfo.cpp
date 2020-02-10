@@ -28,6 +28,8 @@
 #include "utils/Variant.h"
 #include "utils/log.h"
 
+#include <inttypes.h>
+
 CGUIWindowDebugInfo::CGUIWindowDebugInfo(void)
   : CGUIDialog(WINDOW_DEBUG_INFO, "", DialogModalityType::MODELESS)
 {
