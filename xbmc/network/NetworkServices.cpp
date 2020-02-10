@@ -180,6 +180,13 @@ bool CNetworkServices::OnSettingChanging(std::shared_ptr<const CSetting> setting
 
     if (m_settings->GetBool(CSettings::SETTING_SERVICES_WEBSERVER))
     {
+      if (settingId == CSettings::SETTING_SERVICES_WEBSERVER &&
+          HELPERS::ShowYesNoDialogText(19098, 36632) != DialogResponse::YES)
+      {
+        // Revert change, do not start server
+        return false;
+      }
+
       if (!StartWebserver())
       {
         HELPERS::ShowOKDialogText(CVariant{33101}, CVariant{33100});
