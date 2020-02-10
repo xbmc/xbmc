@@ -192,6 +192,12 @@ std::string CScraper::GetPathSettings()
 
 void CScraper::ClearCache()
 {
+  if (!m_persistence.IsValid())
+  {
+    CLog::Log(LOGERROR, "{}: m_persistence is invalid! Skipping ...", __FUNCTION__);
+    return;
+  }
+
   std::string strCachePath = URIUtils::AddFileToFolder(CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_cachePath, "scrapers");
 
   // create scraper cache dir if needed
