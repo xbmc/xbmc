@@ -82,18 +82,11 @@ Kodi can be built as either a 32bit or 64bit program. The dependencies are built
 
 **TIP:** Look for comments starting with `Or ...` and only execute the command(s) you need.
 
-Configure build for 64bit (**recommended**):
+Configure build:
 ```
 cd $HOME/kodi/tools/depends
 ./bootstrap
 ./configure --host=x86_64-apple-darwin
-```
-
-Or configure build for 32bit:
-```
-cd $HOME/kodi/tools/depends
-./bootstrap
-./configure --host=i386-apple-darwin
 ```
 
 Build tools and dependencies:
@@ -166,17 +159,12 @@ Change to build directory:
 cd $HOME/kodi-build
 ```
 
-Generate Xcode project for 64bit (**recommended**):
+Generate Xcode project:
 ```
 /Users/Shared/xbmc-depends/x86_64-darwin17.5.0-native/bin/cmake -G Xcode -DCMAKE_TOOLCHAIN_FILE=/Users/Shared/xbmc-depends/macosx10.13_x86_64-target-debug/share/Toolchain.cmake ../kodi
 ```
 
-Or generate Xcode project for 32bit:
-```
-/Users/Shared/xbmc-depends/x86_64-darwin17.5.0-native/bin/cmake -G Xcode -DCMAKE_TOOLCHAIN_FILE=/Users/Shared/xbmc-depends/macosx10.13_i386-target-debug/share/Toolchain.cmake ../kodi
-```
-
-**WARNING:** The toolchain file location differs depending on SDK version. You have to replace `x86_64-darwin17.5.0-native` and `macosx10.13_x86_64-target-debug` or `macosx10.13_i386-target-debug` in the paths above with the correct ones on your system.
+**WARNING:** The toolchain file location differs depending on SDK version. You have to replace `x86_64-darwin17.5.0-native` and `macosx10.13_x86_64-target-debug` in the paths above with the correct ones on your system.
 
 You can check `Users/Shared/xbmc-depends` directory content with:
 ```

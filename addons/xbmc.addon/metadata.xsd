@@ -41,7 +41,6 @@
       <xs:enumeration value="linux"/>
       <xs:enumeration value="osx"/>
       <xs:enumeration value="osx64"/>
-      <xs:enumeration value="osx32"/>
       <xs:enumeration value="ios"/>
       <xs:enumeration value="windx"/>
       <xs:enumeration value="windows"/>

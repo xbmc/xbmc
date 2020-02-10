@@ -14,7 +14,7 @@ case $build in
   amd64-*-freebsd*)
      AC_SUBST(NATIVE_ARCH_DEFINES, "-DTARGET_POSIX -DTARGET_FREEBSD")
      ;;
-  *86*-apple-darwin*)
+  x86_64-apple-darwin*)
      AC_SUBST(NATIVE_ARCH_DEFINES, "-DTARGET_POSIX -DTARGET_DARWIN -DTARGET_DARWIN_OSX")
      ;;
   powerpc-*-linux-gnu*|powerpc-*-linux-uclibc*)
@@ -48,7 +48,7 @@ case $host in
   arm-apple-darwin*)
      AC_SUBST(ARCH_DEFINES, "-DTARGET_POSIX -DTARGET_DARWIN -DTARGET_DARWIN_EMBEDDED")
      ;;
-  *86*-apple-darwin*)
+  x86_64-apple-darwin*)
      AC_SUBST(ARCH_DEFINES, "-DTARGET_POSIX -DTARGET_DARWIN -DTARGET_DARWIN_OSX")
      ;;
   powerpc-*-linux-gnu*|powerpc-*-linux-uclibc*)
