@@ -8,8 +8,7 @@
 
 #pragma once
 
-#include "PlatformDefs.h" // DWORD ...
+#include "PlatformDefs.h" // uint32_t ...
 
-DWORD GetLastError();
-void  SetLastError(DWORD dwErrCode);
-
+uint32_t GetLastError();
+void SetLastError(uint32_t dwErrCode);

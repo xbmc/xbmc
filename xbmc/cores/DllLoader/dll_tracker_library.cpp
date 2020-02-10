@@ -96,7 +96,9 @@ extern "C" HMODULE __stdcall track_LoadLibraryA(const char* file)
   return hHandle;
 }
 
-extern "C" HMODULE __stdcall track_LoadLibraryExA(const char* lpLibFileName, HANDLE hFile, DWORD dwFlags)
+extern "C" HMODULE __stdcall track_LoadLibraryExA(const char* lpLibFileName,
+                                                  HANDLE hFile,
+                                                  uint32_t dwFlags)
 {
   uintptr_t loc = (uintptr_t)_ReturnAddress();
 

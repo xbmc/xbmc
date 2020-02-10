@@ -18,16 +18,16 @@
 #define D3DFMT_LIN_D16      D3DFMT_D16
 #define D3DFMT_LIN_A8       D3DFMT_A8
 
-#define D3DPIXELSHADERDEF DWORD
+#define D3DPIXELSHADERDEF uint32_t
 
 struct D3DTexture
 {
-  DWORD Common;
-  DWORD Data;
-  DWORD Lock;
+  uint32_t Common;
+  uint32_t Data;
+  uint32_t Lock;
 
-  DWORD Format;   // Format information about the texture.
-  DWORD Size;     // Size of a non power-of-2 texture, must be zero otherwise
+  uint32_t Format; // Format information about the texture.
+  uint32_t Size; // Size of a non power-of-2 texture, must be zero otherwise
 };
 
 #define D3DCOMMON_TYPE_MASK 0x0070000
@@ -35,9 +35,9 @@ struct D3DTexture
 
 struct D3DPalette
 {
-  DWORD Common;
-  DWORD Data;
-  DWORD Lock;
+  uint32_t Common;
+  uint32_t Data;
+  uint32_t Lock;
 };
 
 typedef D3DPalette* LPDIRECT3DPALETTE8;

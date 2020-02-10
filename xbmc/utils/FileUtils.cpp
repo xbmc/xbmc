@@ -298,7 +298,7 @@ bool CFileUtils::CheckFileAccessAllowed(const std::string &filePath)
     std::wstring decodePathW;
     g_charsetConverter.utf8ToW(decodePath, decodePathW, false);
     CWIN32Util::AddExtraLongPathPrefix(decodePathW);
-    DWORD bufSize = GetFullPathNameW(decodePathW.c_str(), 0, nullptr, nullptr);
+    uint32_t bufSize = GetFullPathNameW(decodePathW.c_str(), 0, nullptr, nullptr);
     if (bufSize > 0)
     {
       std::wstring fullpathW;

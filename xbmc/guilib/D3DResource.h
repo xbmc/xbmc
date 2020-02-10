@@ -51,7 +51,7 @@ protected:
 class CD3DHelper
 {
 public:
-  static inline void XMStoreColor(float* floats, DWORD dword)
+  static inline void XMStoreColor(float* floats, uint32_t dword)
   {
     floats[0] = float((dword >> 16) & 0xFF) * (1.0f / 255.0f); // r
     floats[1] = float((dword >>  8) & 0xFF) * (1.0f / 255.0f); // g
@@ -59,7 +59,7 @@ public:
     floats[3] = float((dword >> 24) & 0xFF) * (1.0f / 255.0f); // a
   }
 
-  static inline void XMStoreColor(DirectX::XMFLOAT4* floats, DWORD dword)
+  static inline void XMStoreColor(DirectX::XMFLOAT4* floats, uint32_t dword)
   {
     XMStoreColor(reinterpret_cast<float*>(floats), dword);
   }
@@ -171,7 +171,7 @@ public:
   bool SetResources(LPCSTR handle, ID3D11ShaderResourceView** ppSRViews, size_t count);
   bool SetConstantBuffer(LPCSTR handle, ID3D11Buffer *buffer);
   bool SetScalar(LPCSTR handle, float value);
-  bool Begin(UINT *passes, DWORD flags);
+  bool Begin(UINT* passes, uint32_t flags);
   bool BeginPass(UINT pass);
   bool EndPass();
   bool End();

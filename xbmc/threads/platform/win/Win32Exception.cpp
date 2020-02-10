@@ -18,41 +18,52 @@
 #include <VersionHelpers.h>
 #include <dbghelp.h>
 
-typedef BOOL (WINAPI *MINIDUMPWRITEDUMP)(HANDLE hProcess, DWORD dwPid, HANDLE hFile, MINIDUMP_TYPE DumpType,
+typedef BOOL(WINAPI* MINIDUMPWRITEDUMP)(HANDLE hProcess,
+                                        uint32_t dwPid,
+                                        HANDLE hFile,
+                                        MINIDUMP_TYPE DumpType,
                                         const PMINIDUMP_EXCEPTION_INFORMATION ExceptionParam,
                                         const PMINIDUMP_USER_STREAM_INFORMATION UserStreamParam,
                                         const PMINIDUMP_CALLBACK_INFORMATION CallbackParam);
 
 // StackWalk64()
-typedef BOOL (__stdcall *tSW)(
-  DWORD MachineType,
-  HANDLE hProcess,
-  HANDLE hThread,
-  LPSTACKFRAME64 StackFrame,
-  PVOID ContextRecord,
-  PREAD_PROCESS_MEMORY_ROUTINE64 ReadMemoryRoutine,
-  PFUNCTION_TABLE_ACCESS_ROUTINE64 FunctionTableAccessRoutine,
-  PGET_MODULE_BASE_ROUTINE64 GetModuleBaseRoutine,
-  PTRANSLATE_ADDRESS_ROUTINE64 TranslateAddress );
+typedef BOOL(__stdcall* tSW)(uint32_t MachineType,
+                             HANDLE hProcess,
+                             HANDLE hThread,
+                             LPSTACKFRAME64 StackFrame,
+                             PVOID ContextRecord,
+                             PREAD_PROCESS_MEMORY_ROUTINE64 ReadMemoryRoutine,
+                             PFUNCTION_TABLE_ACCESS_ROUTINE64 FunctionTableAccessRoutine,
+                             PGET_MODULE_BASE_ROUTINE64 GetModuleBaseRoutine,
+                             PTRANSLATE_ADDRESS_ROUTINE64 TranslateAddress);
 
 // SymInitialize()
 typedef BOOL (__stdcall *tSI)( IN HANDLE hProcess, IN PSTR UserSearchPath, IN BOOL fInvadeProcess );
 // SymCleanup()
 typedef BOOL (__stdcall *tSC)( IN HANDLE hProcess );
 // SymGetSymFromAddr64()
-typedef BOOL (__stdcall *tSGSFA)( IN HANDLE hProcess, IN DWORD64 dwAddr, OUT PDWORD64 pdwDisplacement, OUT PIMAGEHLP_SYMBOL64 Symbol );
+typedef BOOL(__stdcall* tSGSFA)(IN HANDLE hProcess,
+                                IN uint32_t64 dwAddr,
+                                OUT Puint32_t64 pdwDisplacement,
+                                OUT PIMAGEHLP_SYMBOL64 Symbol);
 // UnDecorateSymbolName()
-typedef DWORD (__stdcall WINAPI *tUDSN)( PCSTR DecoratedName, PSTR UnDecoratedName, DWORD UndecoratedLength, DWORD Flags );
+typedef uint32_t(__stdcall WINAPI* tUDSN)(PCSTR DecoratedName,
+                                          PSTR UnDecoratedName,
+                                          uint32_t UndecoratedLength,
+                                          uint32_t Flags);
 // SymGetLineFromAddr64()
-typedef BOOL (__stdcall *tSGLFA)( IN HANDLE hProcess, IN DWORD64 dwAddr, OUT PDWORD pdwDisplacement, OUT PIMAGEHLP_LINE64 Line );
+typedef BOOL(__stdcall* tSGLFA)(IN HANDLE hProcess,
+                                IN uint32_t64 dwAddr,
+                                OUT Puint32_t pdwDisplacement,
+                                OUT PIMAGEHLP_LINE64 Line);
 // SymGetModuleBase64()
-typedef DWORD64 (__stdcall *tSGMB)( IN HANDLE hProcess, IN DWORD64 dwAddr );
+typedef uint32_t64(__stdcall* tSGMB)(IN HANDLE hProcess, IN uint32_t64 dwAddr);
 // SymFunctionTableAccess64()
-typedef PVOID (__stdcall *tSFTA)( HANDLE hProcess, DWORD64 AddrBase );
+typedef PVOID(__stdcall* tSFTA)(HANDLE hProcess, uint32_t64 AddrBase);
 // SymGetOptions()
-typedef DWORD (__stdcall *tSGO)( VOID );
+typedef uint32_t(__stdcall* tSGO)(VOID);
 // SymSetOptions()
-typedef DWORD (__stdcall *tSSO)( IN DWORD SymOptions );
+typedef uint32_t(__stdcall* tSSO)(IN uint32_t SymOptions);
 
 // GetCurrentPackageFullName
 typedef LONG (__stdcall *GCPFN)(UINT32*, PWSTR);
@@ -134,7 +145,7 @@ bool win32_exception::write_stacktrace(EXCEPTION_POINTERS* pEp)
   std::string dumpFileName, strOutput;
   std::wstring dumpFileNameW;
   CHAR cTemp[STACKWALK_MAX_NAMELEN];
-  DWORD dwBytes;
+  uint32_t dwBytes;
   KODI::TIME::SystemTime stLocalTime;
   KODI::TIME::GetLocalTime(&stLocalTime);
   bool returncode = false;
@@ -196,7 +207,7 @@ bool win32_exception::write_stacktrace(EXCEPTION_POINTERS* pEp)
   if(pSI(hCurProc, NULL, TRUE) == FALSE)
     goto cleanup;
 
-  DWORD symOptions = pSGO();
+  uint32_t symOptions = pSGO();
   symOptions |= SYMOPT_LOAD_LINES;
   symOptions |= SYMOPT_FAIL_CRITICAL_ERRORS;
   symOptions &= ~SYMOPT_UNDNAME;
@@ -226,8 +237,8 @@ bool win32_exception::write_stacktrace(EXCEPTION_POINTERS* pEp)
   {
     if(frame.AddrPC.Offset != 0)
     {
-      DWORD64 symoffset=0;
-      DWORD   lineoffset=0;
+      uint32_t64 symoffset = 0;
+      uint32_t lineoffset = 0;
       strOutput = StringUtils::Format("#%2d", seq++);
 
       if(pSGSFA(hCurProc, frame.AddrPC.Offset, &symoffset, pSym))

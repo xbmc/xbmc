@@ -75,7 +75,7 @@ int CWIN32Util::GetDriveStatus(const std::string &strPath, bool bStatusEx)
   HANDLE hDevice;               // handle to the drive to be examined
   int iResult;                  // results flag
   ULONG ulChanges=0;
-  DWORD dwBytesReturned;
+  uint32_t dwBytesReturned;
   T_SPDT_SBUF sptd_sb;  //SCSI Pass Through Direct variable.
   byte DataBuf[8];  //Buffer for holding data to/from drive.
 
@@ -162,12 +162,9 @@ int CWIN32Util::GetDriveStatus(const std::string &strPath, bool bStatusEx)
 
   //Send the command to drive
   CLog::LogF(LOGDEBUG, "Requesting tray status for drive %s.", strPath);
-  iResult = DeviceIoControl((HANDLE) hDevice,
-                            IOCTL_SCSI_PASS_THROUGH_DIRECT,
-                            (PVOID)&sptd_sb, (DWORD)sizeof(sptd_sb),
-                            (PVOID)&sptd_sb, (DWORD)sizeof(sptd_sb),
-                            &dwBytesReturned,
-                            NULL);
+  iResult = DeviceIoControl((HANDLE)hDevice, IOCTL_SCSI_PASS_THROUGH_DIRECT, (PVOID)&sptd_sb,
+                            (uint32_t)sizeof(sptd_sb), (PVOID)&sptd_sb, (uint32_t)sizeof(sptd_sb),
+                            &dwBytesReturned, NULL);
 
   CloseHandle(hDevice);
 
@@ -502,7 +499,7 @@ HRESULT CWIN32Util::ToggleTray(const char cDriveLetter)
 #else
   using namespace KODI::PLATFORM::WINDOWS;
   BOOL bRet= FALSE;
-  DWORD dwReq = 0;
+  uint32_t dwReq = 0;
   char cDL = cDriveLetter;
   if( !cDL )
   {
@@ -519,7 +516,7 @@ HRESULT CWIN32Util::ToggleTray(const char cDriveLetter)
   if( ( hDrive != INVALID_HANDLE_VALUE || GetLastError() == NO_ERROR) &&
     ( GetDriveType( strRootFormat.c_str() ) == DRIVE_CDROM ) )
   {
-    DWORD dwDummy;
+    uint32_t dwDummy;
     dwReq = (GetDriveStatus(FromW(strVolFormat), true) == 1) ? IOCTL_STORAGE_LOAD_MEDIA : IOCTL_STORAGE_EJECT_MEDIA;
     bRet = DeviceIoControl( hDrive, dwReq, NULL, 0, NULL, 0, &dwDummy, NULL);
   }
@@ -971,13 +968,18 @@ extern "C" {
 }
 
 #ifdef TARGET_WINDOWS_DESKTOP
-LONG CWIN32Util::UtilRegGetValue( const HKEY hKey, const char *const pcKey, DWORD *const pdwType, char **const ppcBuffer, DWORD *const pdwSizeBuff, const DWORD dwSizeAdd )
+LONG CWIN32Util::UtilRegGetValue(const HKEY hKey,
+                                 const char* const pcKey,
+                                 uint32_t* const pdwType,
+                                 char** const ppcBuffer,
+                                 uint32_t* const pdwSizeBuff,
+                                 const uint32_t dwSizeAdd)
 {
   using KODI::PLATFORM::WINDOWS::ToW;
 
   auto pcKeyW = ToW(pcKey);
 
-  DWORD dwSize;
+  uint32_t dwSize;
   LONG lRet= RegQueryValueEx(hKey, pcKeyW.c_str(), nullptr, pdwType, nullptr, &dwSize );
   if (lRet == ERROR_SUCCESS)
   {
@@ -1029,7 +1031,7 @@ bool CWIN32Util::GetFocussedProcess(std::string &strProcessFile)
     return false;
 
   // Get the process ID from the window handle
-  DWORD pid = 0;
+  uint32_t pid = 0;
   GetWindowThreadProcessId(hfocus, &pid);
 
   // Use OpenProcess to get the process handle from the process ID
@@ -1040,7 +1042,7 @@ bool CWIN32Util::GetFocussedProcess(std::string &strProcessFile)
   // Load QueryFullProcessImageName dynamically because it isn't available
   // in all versions of Windows.
   wchar_t procfile[MAX_PATH+1];
-  DWORD procfilelen = MAX_PATH;
+  uint32_t procfilelen = MAX_PATH;
 
   if (QueryFullProcessImageNameW(hproc, 0, procfile, &procfilelen))
     strProcessFile = FromW(procfile);
@@ -1191,7 +1193,7 @@ bool CWIN32Util::IsUsbDevice(const std::wstring &strWdrive)
   query.QueryType = PropertyStandardQuery;
 
   // issue query
-  DWORD bytes;
+  uint32_t bytes;
   STORAGE_DEVICE_DESCRIPTOR devd;
   STORAGE_BUS_TYPE busType = BusTypeUnknown;
 
@@ -1210,7 +1212,7 @@ bool CWIN32Util::IsUsbDevice(const std::wstring &strWdrive)
 #endif
 }
 
-std::string CWIN32Util::WUSysMsg(DWORD dwError)
+std::string CWIN32Util::WUSysMsg(uint32_t dwError)
 {
   #define SS_DEFLANGID MAKELANGID(LANG_NEUTRAL,SUBLANG_DEFAULT)
   CHAR szBuf[512];

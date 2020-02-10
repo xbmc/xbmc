@@ -60,7 +60,7 @@ bool CWin32InterfaceForCLog::OpenLogFile(const std::string& logFilename, const s
     return false;
 
   static const unsigned char BOM[3] = { 0xEF, 0xBB, 0xBF };
-  DWORD written;
+  uint32_t written;
   (void)WriteFile(m_hFile, BOM, sizeof(BOM), &written, NULL); // write BOM, ignore possible errors
   (void)FlushFileBuffers(m_hFile);
 
@@ -85,7 +85,7 @@ bool CWin32InterfaceForCLog::WriteStringToLog(const std::string& logString)
   StringUtils::Replace(strData, "\n", "\r\n");
   strData += "\r\n";
 
-  DWORD written;
+  uint32_t written;
   const bool ret = (WriteFile(m_hFile, strData.c_str(), strData.length(), &written, NULL) != 0) && written == strData.length();
 
   return ret;

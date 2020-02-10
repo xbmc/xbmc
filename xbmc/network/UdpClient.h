@@ -39,9 +39,12 @@ protected:
   bool Broadcast(int aPort, const std::string& aMessage);
   bool Send(const std::string& aIpAddress, int aPort, const std::string& aMessage);
   bool Send(struct sockaddr_in aAddress, const std::string& aMessage);
-  bool Send(struct sockaddr_in aAddress, unsigned char* pMessage, DWORD dwSize);
+  bool Send(struct sockaddr_in aAddress, unsigned char* pMessage, uint32_t dwSize);
 
-  virtual void OnMessage(struct sockaddr_in& aRemoteAddress, const std::string& aMessage, unsigned char* pMessage, DWORD dwMessageLength){};
+  virtual void OnMessage(struct sockaddr_in& aRemoteAddress,
+                         const std::string& aMessage,
+                         unsigned char* pMessage,
+                         uint32_t dwMessageLength){};
 
 protected:
 
@@ -50,7 +53,7 @@ protected:
     struct sockaddr_in address;
     std::string message;
     unsigned char* binary;
-    DWORD binarySize;
+    uint32_t binarySize;
   };
 
   bool DispatchNextCommand();

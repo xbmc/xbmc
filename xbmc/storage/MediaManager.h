@@ -63,7 +63,7 @@ public:
   bool IsAudio(const std::string& devicePath="");
   bool HasOpticalDrive();
   std::string TranslateDevicePath(const std::string& devicePath, bool bReturnAsDevice=false);
-  DWORD GetDriveStatus(const std::string& devicePath="");
+  uint32_t GetDriveStatus(const std::string& devicePath = "");
 #ifdef HAS_DVD_DRIVE
   MEDIA_DETECT::CCdInfo* GetCdInfo(const std::string& devicePath="");
   bool RemoveCdInfo(const std::string& devicePath="");

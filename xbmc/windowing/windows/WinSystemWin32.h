@@ -15,10 +15,10 @@
 
 #include <vector>
 
-static const DWORD WINDOWED_STYLE = WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN;
-static const DWORD WINDOWED_EX_STYLE = NULL;
-static const DWORD FULLSCREEN_WINDOW_STYLE = WS_POPUP | WS_SYSMENU | WS_CLIPCHILDREN;
-static const DWORD FULLSCREEN_WINDOW_EX_STYLE = WS_EX_APPWINDOW;
+static const uint32_t WINDOWED_STYLE = WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN;
+static const uint32_t WINDOWED_EX_STYLE = NULL;
+static const uint32_t FULLSCREEN_WINDOW_STYLE = WS_POPUP | WS_SYSMENU | WS_CLIPCHILDREN;
+static const uint32_t FULLSCREEN_WINDOW_EX_STYLE = WS_EX_APPWINDOW;
 
 /* Controls the way the window appears and behaves. */
 enum WINDOW_STATE
@@ -113,7 +113,7 @@ public:
 
   // touchscreen support
   typedef BOOL(WINAPI *pGetGestureInfo)(HGESTUREINFO, PGESTUREINFO);
-  typedef BOOL(WINAPI *pSetGestureConfig)(HWND, DWORD, UINT, PGESTURECONFIG, UINT);
+  typedef BOOL(WINAPI* pSetGestureConfig)(HWND, uint32_t, UINT, PGESTURECONFIG, UINT);
   typedef BOOL(WINAPI *pCloseGestureInfoHandle)(HGESTUREINFO);
   typedef BOOL(WINAPI *pEnableNonClientDpiScaling)(HWND);
   pGetGestureInfo         PtrGetGestureInfo;
@@ -182,8 +182,8 @@ protected:
   WINDOW_STATE m_state;                       // the state of the window
   WINDOW_FULLSCREEN_STATE m_fullscreenState;  // the state of the window when in fullscreen
   WINDOW_WINDOW_STATE m_windowState;          // the state of the window when in windowed
-  DWORD m_windowStyle;                        // the style of the window
-  DWORD m_windowExStyle;                      // the ex style of the window
+  uint32_t m_windowStyle; // the style of the window
+  uint32_t m_windowExStyle; // the ex style of the window
   bool m_inFocus;
   bool m_bMinimized;
   bool m_bSizeMoveEnabled = false;

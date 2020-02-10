@@ -47,9 +47,9 @@ CCPUInfoWin32::CCPUInfoWin32()
   if (RegOpenKeyExW(HKEY_LOCAL_MACHINE, L"HARDWARE\\DESCRIPTION\\System\\CentralProcessor", 0,
                     KEY_READ, &hKeyCpuRoot) == ERROR_SUCCESS)
   {
-    DWORD num = 0;
+    uint32_t num = 0;
     wchar_t subKeyName[200]; // more than enough
-    DWORD subKeyNameLen = sizeof(subKeyName) / sizeof(wchar_t);
+    uint32_t subKeyNameLen = sizeof(subKeyName) / sizeof(wchar_t);
     while (RegEnumKeyExW(hKeyCpuRoot, num++, subKeyName, &subKeyNameLen, nullptr, nullptr, nullptr,
                          nullptr) == ERROR_SUCCESS)
     {
@@ -62,8 +62,8 @@ CCPUInfoWin32::CCPUInfoWin32()
         if (swscanf_s(subKeyName, L"%i", &cpuCore.m_id) != 1)
           cpuCore.m_id = num - 1;
         wchar_t buf[300]; // more than enough
-        DWORD bufSize = sizeof(buf);
-        DWORD valType;
+        uint32_t bufSize = sizeof(buf);
+        uint32_t valType;
         if (!modelfound &&
             RegQueryValueExW(hCpuKey, L"ProcessorNameString", nullptr, &valType, LPBYTE(buf),
                              &bufSize) == ERROR_SUCCESS &&
@@ -226,7 +226,7 @@ int CCPUInfoWin32::GetUsedPercentage()
     for (auto& core : m_cores)
     {
       PDH_RAW_COUNTER cnt;
-      DWORD cntType;
+      uint32_t cntType;
       PDH_HCOUNTER coreCounter;
       if (i < m_coreCounters.size())
         coreCounter = m_coreCounters[i];
@@ -274,7 +274,7 @@ float CCPUInfoWin32::GetCPUFrequency()
   if (m_cpuFreqCounter && PdhCollectQueryData(m_cpuQueryFreq) == ERROR_SUCCESS)
   {
     PDH_RAW_COUNTER cnt;
-    DWORD cntType;
+    uint32_t cntType;
     if (PdhGetRawCounterValue(m_cpuFreqCounter, &cntType, &cnt) == ERROR_SUCCESS &&
         (cnt.CStatus == PDH_CSTATUS_VALID_DATA || cnt.CStatus == PDH_CSTATUS_NEW_DATA))
     {

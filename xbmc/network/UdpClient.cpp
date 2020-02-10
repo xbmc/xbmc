@@ -117,7 +117,7 @@ bool CUdpClient::Send(struct sockaddr_in aAddress, const std::string& aMessage)
   return true;
 }
 
-bool CUdpClient::Send(struct sockaddr_in aAddress, unsigned char* pMessage, DWORD dwSize)
+bool CUdpClient::Send(struct sockaddr_in aAddress, unsigned char* pMessage, uint32_t dwSize)
 {
   CSingleLock lock(critical_section);
 
@@ -136,7 +136,7 @@ void CUdpClient::Process()
 
   struct sockaddr_in remoteAddress;
   char messageBuffer[1024];
-  DWORD dataAvailable;
+  uint32_t dataAvailable;
 
   while ( !m_bStop )
   {

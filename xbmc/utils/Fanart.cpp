@@ -145,7 +145,7 @@ bool CFanart::ParseColors(const std::string &colorsIn, std::string &colorsOut)
   // 0: XBMC ARGB Hexadecimal string comma separated "FFFFFFFF,DDDDDDDD,AAAAAAAA"
   // 1: The TVDB RGB Int Triplets, pipe separate with leading/trailing pipes "|68,69,59|69,70,58|78,78,68|"
 
-  // Essentially we read the colors in using the proper format, and store them in our own fixed temporary format (3 DWORDS), and then
+  // Essentially we read the colors in using the proper format, and store them in our own fixed temporary format (3 uint32_tS), and then
   // write them back in in the specified format.
 
   if (colorsIn.empty())

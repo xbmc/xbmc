@@ -101,7 +101,7 @@ bool CWin32StorageProvider::Eject(const std::string& mountpath)
     return false;
 
   STORAGE_DEVICE_NUMBER sdn;
-  DWORD dwBytesReturned = 0;
+  uint32_t dwBytesReturned = 0;
   long res = DeviceIoControl(hVolume, IOCTL_STORAGE_GET_DEVICE_NUMBER,NULL, 0, &sdn, sizeof(sdn), &dwBytesReturned, NULL);
   CloseHandle(hVolume);
   if ( res )
@@ -141,7 +141,7 @@ std::vector<std::string > CWin32StorageProvider::GetDiskUsage()
   ULARGE_INTEGER ULTotalFree = { { 0 } };
 
   std::unique_ptr<wchar_t[]> pcBuffer;
-  DWORD dwStrLength= GetLogicalDriveStrings( 0, pcBuffer.get() );
+  uint32_t dwStrLength = GetLogicalDriveStrings(0, pcBuffer.get());
   if( dwStrLength != 0 )
   {
     std::string strRet;
@@ -177,7 +177,7 @@ void CWin32StorageProvider::GetDrivesByType(VECSOURCES &localDrives, Drive_Types
   using KODI::PLATFORM::WINDOWS::FromW;
 
   std::unique_ptr<wchar_t[]> pcBuffer;
-  DWORD dwStrLength= GetLogicalDriveStringsW( 0, pcBuffer.get() );
+  uint32_t dwStrLength = GetLogicalDriveStringsW(0, pcBuffer.get());
   if( dwStrLength != 0 )
   {
     CMediaSource share;
@@ -290,7 +290,7 @@ DEVINST CWin32StorageProvider::GetDrivesDevInstByDiskNumber(long DiskNumber)
 
   // Retrieve a context structure for a device interface of a device
   // information set.
-  DWORD dwIndex = 0;
+  uint32_t dwIndex = 0;
   SP_DEVICE_INTERFACE_DATA devInterfaceData = { 0 };
   devInterfaceData.cbSize = sizeof(SP_DEVICE_INTERFACE_DATA);
   BOOL bRet = FALSE;
@@ -298,7 +298,7 @@ DEVINST CWin32StorageProvider::GetDrivesDevInstByDiskNumber(long DiskNumber)
   PSP_DEVICE_INTERFACE_DETAIL_DATA pspdidd;
   SP_DEVICE_INTERFACE_DATA spdid;
   SP_DEVINFO_DATA spdd;
-  DWORD dwSize;
+  uint32_t dwSize;
 
   spdid.cbSize = sizeof(spdid);
 
@@ -331,7 +331,7 @@ DEVINST CWin32StorageProvider::GetDrivesDevInstByDiskNumber(long DiskNumber)
         if (hDrive != INVALID_HANDLE_VALUE)
         {
           STORAGE_DEVICE_NUMBER sdn;
-          DWORD dwBytesReturned = 0;
+          uint32_t dwBytesReturned = 0;
           res = DeviceIoControl(hDrive, IOCTL_STORAGE_GET_DEVICE_NUMBER, NULL, 0, &sdn, sizeof(sdn), &dwBytesReturned, NULL);
           if (res)
           {

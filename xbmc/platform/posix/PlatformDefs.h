@@ -98,7 +98,6 @@ typedef CXHandle* HANDLE;
 typedef void* HINSTANCE;
 typedef void* HMODULE;
 
-typedef unsigned int  DWORD;
 #define INVALID_HANDLE_VALUE     ((HANDLE)~0U)
 
 #define MAXWORD   0xffff
@@ -106,7 +105,7 @@ typedef unsigned int  DWORD;
 typedef union _LARGE_INTEGER
 {
   struct {
-    DWORD LowPart;
+    uint32_t LowPart;
     int32_t HighPart;
   } u;
   long long QuadPart;
@@ -114,8 +113,8 @@ typedef union _LARGE_INTEGER
 
  typedef union _ULARGE_INTEGER {
   struct {
-      DWORD LowPart;
-      DWORD HighPart;
+    uint32_t LowPart;
+    uint32_t HighPart;
   } u;
   unsigned long long QuadPart;
 } ULARGE_INTEGER;
@@ -167,8 +166,8 @@ struct _stati64 {
 
 typedef struct _FILETIME
 {
-  DWORD dwLowDateTime;
-  DWORD dwHighDateTime;
+  uint32_t dwLowDateTime;
+  uint32_t dwHighDateTime;
 } FILETIME, *PFILETIME, *LPFILETIME;
 
 #define FILE_ATTRIBUTE_DIRECTORY           0x00000010

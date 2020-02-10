@@ -36,8 +36,11 @@
 
 #include "utils/log.h"
 
-int ReadFile(HANDLE hFile, void* lpBuffer, DWORD nNumberOfBytesToRead,
-  unsigned int* lpNumberOfBytesRead, void* lpOverlapped)
+int ReadFile(HANDLE hFile,
+             void* lpBuffer,
+             uint32_t nNumberOfBytesToRead,
+             unsigned int* lpNumberOfBytesRead,
+             void* lpOverlapped)
 {
   if (lpOverlapped)
   {
@@ -55,8 +58,11 @@ int ReadFile(HANDLE hFile, void* lpBuffer, DWORD nNumberOfBytesToRead,
   return 1;
 }
 
-int WriteFile(HANDLE hFile, const void * lpBuffer, DWORD nNumberOfBytesToWrite,
-  unsigned int* lpNumberOfBytesWritten, void* lpOverlapped)
+int WriteFile(HANDLE hFile,
+              const void* lpBuffer,
+              uint32_t nNumberOfBytesToWrite,
+              unsigned int* lpNumberOfBytesWritten,
+              void* lpOverlapped)
 {
   if (lpOverlapped)
   {
@@ -74,8 +80,10 @@ int WriteFile(HANDLE hFile, const void * lpBuffer, DWORD nNumberOfBytesToWrite,
   return 1;
 }
 
-uint32_t SetFilePointer(HANDLE hFile, int32_t lDistanceToMove,
-                      int32_t *lpDistanceToMoveHigh, DWORD dwMoveMethod)
+uint32_t SetFilePointer(HANDLE hFile,
+                        int32_t lDistanceToMove,
+                        int32_t* lpDistanceToMoveHigh,
+                        uint32_t dwMoveMethod)
 {
   if (hFile == NULL)
     return 0;
@@ -107,13 +115,13 @@ uint32_t SetFilePointer(HANDLE hFile, int32_t lDistanceToMove,
     *lpDistanceToMoveHigh = (int32_t)(currOff >> 32);
   }
 
-  return (DWORD)currOff;
+  return (uint32_t)currOff;
 }
 
-int SetFilePointerEx(  HANDLE hFile,
-            LARGE_INTEGER liDistanceToMove,
-            PLARGE_INTEGER lpNewFilePointer,
-            DWORD dwMoveMethod )
+int SetFilePointerEx(HANDLE hFile,
+                     LARGE_INTEGER liDistanceToMove,
+                     PLARGE_INTEGER lpNewFilePointer,
+                     uint32_t dwMoveMethod)
 {
 
   int nMode = SEEK_SET;

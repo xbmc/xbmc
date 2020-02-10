@@ -356,12 +356,12 @@ SymbolTable_t;
 #define IMAGE_SYM_TYPE_BYTE         12
 #define IMAGE_SYM_TYPE_WORD         13
 #define IMAGE_SYM_TYPE_UINT         14
-#define IMAGE_SYM_TYPE_DWORD        15
+#define IMAGE_SYM_TYPE_uint32_t 15
 
-#define IMAGE_SYM_DWORD_NULL        0
-#define IMAGE_SYM_DWORD_POINTER     1
-#define IMAGE_SYM_DWORD_FUNCTION    2
-#define IMAGE_SYM_DWORD_ARRAY       3
+#define IMAGE_SYM_uint32_t_NULL 0
+#define IMAGE_SYM_uint32_t_POINTER 1
+#define IMAGE_SYM_uint32_t_FUNCTION 2
+#define IMAGE_SYM_uint32_t_ARRAY 3
 
 
 #define IMAGE_SYM_CLASS_END_OF_FUNCTION         0xFF

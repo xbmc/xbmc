@@ -53,7 +53,12 @@ public:
 
 #ifdef TARGET_WINDOWS_DESKTOP
   static std::string GetSpecialFolder(int csidl);
-  static LONG UtilRegGetValue( const HKEY hKey, const char *const pcKey, DWORD *const pdwType, char **const ppcBuffer, DWORD *const pdwSizeBuff, const DWORD dwSizeAdd );
+  static LONG UtilRegGetValue(const HKEY hKey,
+                              const char* const pcKey,
+                              uint32_t* const pdwType,
+                              char** const ppcBuffer,
+                              uint32_t* const pdwSizeBuff,
+                              const uint32_t dwSizeAdd);
   static bool UtilRegOpenKeyEx( const HKEY hKeyParent, const char *const pcKey, const REGSAM rsAccessRights, HKEY *hKey, const bool bReadX64= false );
   static bool GetFocussedProcess(std::string &strProcessFile);
 #endif // TARGET_WINDOWS_DESKTOP
@@ -61,6 +66,6 @@ public:
 
   static bool IsUsbDevice(const std::wstring &strWdrive);
 
-  static std::string WUSysMsg(DWORD dwError);
+  static std::string WUSysMsg(uint32_t dwError);
   static bool SetThreadLocalLocale(bool enable = true);
 };

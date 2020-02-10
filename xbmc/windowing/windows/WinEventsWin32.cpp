@@ -45,11 +45,11 @@ using namespace KODI::MESSAGING;
 
 HWND g_hWnd = nullptr;
 
-#ifndef LODWORD
-#define LODWORD(longval) ((DWORD)((DWORDLONG)(longval)))
+#ifndef LOuint32_t
+#define LOuint32_t(longval) ((uint32_t)((uint32_tLONG)(longval)))
 #endif
 
-#define ROTATE_ANGLE_DEGREE(arg) GID_ROTATE_ANGLE_FROM_ARGUMENT(LODWORD(arg)) * 180 / M_PI
+#define ROTATE_ANGLE_DEGREE(arg) GID_ROTATE_ANGLE_FROM_ARGUMENT(LOuint32_t(arg)) * 180 / M_PI
 
 /* Masks for processing the windows KEYDOWN and KEYUP messages */
 #define REPEATED_KEYMASK  (1<<30)
@@ -696,7 +696,8 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
         // we still use this event only for sd.
         long lEvent;
         PIDLIST_ABSOLUTE *ppidl;
-        HANDLE hLock = SHChangeNotification_Lock(reinterpret_cast<HANDLE>(wParam), static_cast<DWORD>(lParam), &ppidl, &lEvent);
+        HANDLE hLock = SHChangeNotification_Lock(reinterpret_cast<HANDLE>(wParam),
+                                                 static_cast<uint32_t>(lParam), &ppidl, &lEvent);
 
         if (hLock)
         {
@@ -966,7 +967,7 @@ void CWinEventsWin32::OnGesture(HWND hWnd, LPARAM lParam)
     {
       if (gi.dwFlags == GF_BEGIN)
       {
-        m_originalZoomDistance = static_cast<int>(LODWORD(gi.ullArguments));
+        m_originalZoomDistance = static_cast<int>(LOuint32_t(gi.ullArguments));
         break;
       }
 
@@ -974,8 +975,10 @@ void CWinEventsWin32::OnGesture(HWND hWnd, LPARAM lParam)
       if (m_originalZoomDistance == 0)
         break;
 
-      CGenericTouchActionHandler::GetInstance().OnZoomPinch(static_cast<float>(point.x), static_cast<float>(point.y),
-                                                            static_cast<float>(LODWORD(gi.ullArguments)) / static_cast<float>(m_originalZoomDistance));
+      CGenericTouchActionHandler::GetInstance().OnZoomPinch(
+          static_cast<float>(point.x), static_cast<float>(point.y),
+          static_cast<float>(LOuint32_t(gi.ullArguments)) /
+              static_cast<float>(m_originalZoomDistance));
     }
     break;
 

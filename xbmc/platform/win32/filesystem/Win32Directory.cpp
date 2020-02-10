@@ -128,7 +128,7 @@ bool CWin32Directory::Exists(const CURL& url)
   if (nameW.empty())
     return false;
 
-  DWORD fileAttrs = GetFileAttributesW(nameW.c_str());
+  uint32_t fileAttrs = GetFileAttributesW(nameW.c_str());
   if (fileAttrs == INVALID_FILE_ATTRIBUTES || (fileAttrs & FILE_ATTRIBUTE_DIRECTORY) == 0)
     return false;
 
@@ -238,7 +238,7 @@ bool CWin32Directory::Create(std::wstring path) const
   const auto lastSlashPos = path.rfind(L'\\');
   if (lastSlashPos < path.length() - 1 && path[lastSlashPos + 1] == L'.')
   {
-    DWORD dirAttrs = GetFileAttributesW(path.c_str());
+    uint32_t dirAttrs = GetFileAttributesW(path.c_str());
     if (dirAttrs != INVALID_FILE_ATTRIBUTES && SetFileAttributesW(path.c_str(), dirAttrs | FILE_ATTRIBUTE_HIDDEN))
       return true;
   }

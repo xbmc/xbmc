@@ -392,7 +392,7 @@ bool CMediaManager::HasOpticalDrive()
   return false;
 }
 
-DWORD CMediaManager::GetDriveStatus(const std::string& devicePath)
+uint32_t CMediaManager::GetDriveStatus(const std::string& devicePath)
 {
 #ifdef HAS_DVD_DRIVE
 #ifdef TARGET_WINDOWS
@@ -400,7 +400,7 @@ DWORD CMediaManager::GetDriveStatus(const std::string& devicePath)
     return DRIVE_NOT_READY;
 
   std::string strDevice = TranslateDevicePath(devicePath, true);
-  DWORD dwRet = DRIVE_NOT_READY;
+  uint32_t dwRet = DRIVE_NOT_READY;
   int status = CWIN32Util::GetDriveStatus(strDevice);
 
   switch(status)

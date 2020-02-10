@@ -208,11 +208,12 @@ public:
   */
   static HRESULT ActivateWASAPIDevice(std::string &device, IAEWASAPIDevice** ppDevice);
 
-  static void AEChannelsFromSpeakerMask(CAEChannelInfo& channelLayout, DWORD speakers);
+  static void AEChannelsFromSpeakerMask(CAEChannelInfo& channelLayout, uint32_t speakers);
 
-  static DWORD SpeakerMaskFromAEChannels(const CAEChannelInfo &channels);
+  static uint32_t SpeakerMaskFromAEChannels(const CAEChannelInfo& channels);
 
-  static DWORD ChLayoutToChMask(const enum AEChannel * layout, unsigned int * numberOfChannels = NULL);
+  static uint32_t ChLayoutToChMask(const enum AEChannel* layout,
+                                   unsigned int* numberOfChannels = NULL);
 
   static void BuildWaveFormatExtensible(AEAudioFormat &format, WAVEFORMATEXTENSIBLE &wfxex);
 };

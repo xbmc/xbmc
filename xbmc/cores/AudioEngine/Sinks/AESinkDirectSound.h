@@ -41,8 +41,8 @@ public:
   static std::string GetDefaultDevice();
   static void EnumerateDevicesEx (AEDeviceInfoList &deviceInfoList, bool force = false);
 private:
-  void          AEChannelsFromSpeakerMask(DWORD speakers);
-  DWORD         SpeakerMaskFromAEChannels(const CAEChannelInfo &channels);
+  void AEChannelsFromSpeakerMask(uint32_t speakers);
+  uint32_t SpeakerMaskFromAEChannels(const CAEChannelInfo& channels);
   void          CheckPlayStatus();
   bool          UpdateCacheStatus();
   unsigned int  GetSpace();

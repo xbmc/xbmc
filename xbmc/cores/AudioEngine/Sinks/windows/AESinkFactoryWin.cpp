@@ -48,48 +48,48 @@ const char *WASAPIErrToStr(HRESULT err)
   return NULL;
 }
 
-  void CAESinkFactoryWin::AEChannelsFromSpeakerMask(CAEChannelInfo& channelLayout, DWORD speakers)
+void CAESinkFactoryWin::AEChannelsFromSpeakerMask(CAEChannelInfo& channelLayout, uint32_t speakers)
+{
+  channelLayout.Reset();
+
+  for (int i = 0; i < WASAPI_SPEAKER_COUNT; i++)
   {
-    channelLayout.Reset();
+    if (speakers & WASAPIChannelOrder[i])
+      channelLayout += AEChannelNames[i];
+  }
+};
 
-    for (int i = 0; i < WASAPI_SPEAKER_COUNT; i++)
-    {
-      if (speakers & WASAPIChannelOrder[i])
-        channelLayout += AEChannelNames[i];
-    }
+uint32_t CAESinkFactoryWin::SpeakerMaskFromAEChannels(const CAEChannelInfo& channels)
+{
+  uint32_t mask = 0;
 
-  };
-
-  DWORD CAESinkFactoryWin::SpeakerMaskFromAEChannels(const CAEChannelInfo &channels)
+  for (unsigned int i = 0; i < channels.Count(); i++)
   {
-    DWORD mask = 0;
+    for (unsigned int j = 0; j < WASAPI_SPEAKER_COUNT; j++)
+      if (channels[i] == AEChannelNames[j])
+        mask |= WASAPIChannelOrder[j];
+  }
+  return mask;
+};
 
-    for (unsigned int i = 0; i < channels.Count(); i++)
-    {
-      for (unsigned int j = 0; j < WASAPI_SPEAKER_COUNT; j++)
-        if (channels[i] == AEChannelNames[j])
-          mask |= WASAPIChannelOrder[j];
-    }
-    return mask;
-  };
+uint32_t CAESinkFactoryWin::ChLayoutToChMask(const enum AEChannel* layout,
+                                             unsigned int* numberOfChannels /*= NULL*/)
+{
+  if (numberOfChannels)
+    *numberOfChannels = 0;
+  if (!layout)
+    return 0;
 
-  DWORD CAESinkFactoryWin::ChLayoutToChMask(const enum AEChannel * layout, unsigned int * numberOfChannels /*= NULL*/)
-  {
-    if (numberOfChannels)
-      *numberOfChannels = 0;
-    if (!layout)
-      return 0;
+  uint32_t mask = 0;
+  unsigned int i;
+  for (i = 0; layout[i] != AE_CH_NULL; i++)
+    mask |= WASAPIChannelOrder[layout[i]];
 
-    DWORD mask = 0;
-    unsigned int i;
-    for (i = 0; layout[i] != AE_CH_NULL; i++)
-      mask |= WASAPIChannelOrder[layout[i]];
+  if (numberOfChannels)
+    *numberOfChannels = i;
 
-    if (numberOfChannels)
-      *numberOfChannels = i;
-
-    return mask;
-  };
+  return mask;
+};
 
   void CAESinkFactoryWin::BuildWaveFormatExtensible(AEAudioFormat &format, WAVEFORMATEXTENSIBLE &wfxex)
   {

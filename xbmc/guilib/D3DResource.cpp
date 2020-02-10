@@ -705,7 +705,7 @@ bool CD3DEffect::SetScalar(LPCSTR handle, float value)
   return false;
 }
 
-bool CD3DEffect::Begin(UINT *passes, DWORD flags)
+bool CD3DEffect::Begin(UINT* passes, uint32_t flags)
 {
   if (m_effect && m_techniquie)
   {

@@ -11,7 +11,10 @@
 #include "Texture.h"
 #include "XBTF.h"
 
-LPVOID XPhysicalAlloc(SIZE_T s, DWORD ulPhysicalAddress, DWORD ulAlignment, DWORD flProtect)
+LPVOID XPhysicalAlloc(SIZE_T s,
+                      uint32_t ulPhysicalAddress,
+                      uint32_t ulAlignment,
+                      uint32_t flProtect)
 {
   return malloc(s);
 }
@@ -21,12 +24,12 @@ void XPhysicalFree(LPVOID lpAddress)
   free(lpAddress);
 }
 
-DWORD GetD3DFormat(XB_D3DFORMAT format)
+uint32_t GetD3DFormat(XB_D3DFORMAT format)
 {
 #ifndef MAKEFOURCC
-#define MAKEFOURCC(ch0, ch1, ch2, ch3)                              \
-                ((DWORD)(BYTE)(ch0) | ((DWORD)(BYTE)(ch1) << 8) |   \
-                ((DWORD)(BYTE)(ch2) << 16) | ((DWORD)(BYTE)(ch3) << 24 ))
+#define MAKEFOURCC(ch0, ch1, ch2, ch3) \
+  ((uint32_t)(BYTE)(ch0) | ((uint32_t)(BYTE)(ch1) << 8) | ((uint32_t)(BYTE)(ch2) << 16) | \
+   ((uint32_t)(BYTE)(ch3) << 24))
 #endif
   switch (format)
   {
@@ -45,7 +48,7 @@ DWORD GetD3DFormat(XB_D3DFORMAT format)
   }
 }
 
-DWORD BytesPerPixelFromFormat(XB_D3DFORMAT format)
+uint32_t BytesPerPixelFromFormat(XB_D3DFORMAT format)
 {
   switch (format)
   {
@@ -69,7 +72,12 @@ bool IsPalettedFormat(XB_D3DFORMAT format)
   return false;
 }
 
-void ParseTextureHeader(D3DTexture *tex, XB_D3DFORMAT &fmt, DWORD &width, DWORD &height, DWORD &pitch, DWORD &offset)
+void ParseTextureHeader(D3DTexture* tex,
+                        XB_D3DFORMAT& fmt,
+                        uint32_t& width,
+                        uint32_t& height,
+                        uint32_t& pitch,
+                        uint32_t& offset)
 {
   fmt = (XB_D3DFORMAT)((tex->Format & 0xff00) >> 8);
   offset = tex->Data;
@@ -157,7 +165,7 @@ void DXT1toARGB(const void *src, void *dest, unsigned int destWidth)
 {
   const BYTE *b = (const BYTE *)src;
   // colour is in R5G6B5 format, convert to R8G8B8
-  DWORD colour[4];
+  uint32_t colour[4];
   BYTE red[4];
   BYTE green[4];
   BYTE blue[4];
@@ -191,7 +199,7 @@ void DXT1toARGB(const void *src, void *dest, unsigned int destWidth)
   // ok, now grab the bits
   for (int y = 0; y < 4; y++)
   {
-    DWORD *d = (DWORD *)dest + destWidth * y;
+    uint32_t* d = (uint32_t*)dest + destWidth * y;
     *d++ = colour[(b[4 + y] & 0x03)];
     *d++ = colour[(b[4 + y] & 0x0c) >> 2];
     *d++ = colour[(b[4 + y] & 0x30) >> 4];
@@ -244,7 +252,7 @@ void DXT4toARGB(const void *src, void *dest, unsigned int destWidth)
 
   b = (BYTE *)src + 8;
   // colour is in R5G6B5 format, convert to R8G8B8
-  DWORD colour[4];
+  uint32_t colour[4];
   BYTE red[4];
   BYTE green[4];
   BYTE blue[4];
@@ -265,7 +273,7 @@ void DXT4toARGB(const void *src, void *dest, unsigned int destWidth)
   // and assign them to our texture
   for (int y = 0; y < 4; y++)
   {
-    DWORD *d = (DWORD *)dest + destWidth * y;
+    uint32_t* d = (uint32_t*)dest + destWidth * y;
     *d++ = colour[(b[4 + y] & 0x03)] | (a[y][0] << 24);
     *d++ = colour[(b[4 + y] & 0x0e) >> 2] | (a[y][1] << 24);
     *d++ = colour[(b[4 + y] & 0x30) >> 4] | (a[y][2] << 24);
@@ -281,7 +289,7 @@ void ConvertDXT1(const void *src, unsigned int width, unsigned int height, void 
     for (unsigned int x = 0; x < width; x += 4)
     {
       const BYTE *s = (const BYTE *)src + y * width / 2 + x * 2;
-      DWORD *d = (DWORD *)dest + y * width + x;
+      uint32_t* d = (uint32_t*)dest + y * width + x;
       DXT1toARGB(s, d, width);
     }
   }
@@ -298,7 +306,7 @@ void ConvertDXT4(const void *src, unsigned int width, unsigned int height, void 
     for (unsigned int x = 0; x < width; x += 4)
     {
       const BYTE *s = (const BYTE *)src + y * width + x * 4;
-      DWORD *d = (DWORD *)dest + y * width + x;
+      uint32_t* d = (uint32_t*)dest + y * width + x;
       DXT4toARGB(s, d, width);
     }
   }
@@ -307,7 +315,7 @@ void ConvertDXT4(const void *src, unsigned int width, unsigned int height, void 
 void GetTextureFromData(D3DTexture *pTex, void *texData, CBaseTexture **ppTexture)
 {
   XB_D3DFORMAT fmt;
-  DWORD width, height, pitch, offset;
+  uint32_t width, height, pitch, offset;
   ParseTextureHeader(pTex, fmt, width, height, pitch, offset);
 
   *ppTexture = new CTexture(width, height, XB_FMT_A8R8G8B8);
@@ -317,14 +325,14 @@ void GetTextureFromData(D3DTexture *pTex, void *texData, CBaseTexture **ppTextur
     BYTE *texDataStart = (BYTE *)texData;
     COLOR *color = (COLOR *)texData;
     texDataStart += offset;
-/* DXMERGE - We should really support DXT1,DXT2 and DXT4 in both renderers
+    /* DXMERGE - We should really support DXT1,DXT2 and DXT4 in both renderers
              Perhaps we should extend CTexture::Update() to support a bunch of different texture types
              Rather than assuming linear 32bits
              We could just override, as at least then all the loading code from various texture formats
              will be in one place
 
     BYTE *dstPixels = (BYTE *)lr.pBits;
-    DWORD destPitch = lr.Pitch;
+    uint32_t destPitch = lr.Pitch;
     if (fmt == XB_D3DFMT_DXT1)  // Not sure if these are 100% correct, but they seem to work :P
     {
       pitch /= 2;

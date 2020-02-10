@@ -20,7 +20,7 @@
 using namespace XFILE;
 
 // local helper
-static bool worthTryToConnect(const DWORD lastErr)
+static bool worthTryToConnect(const uint32_t lastErr)
 {
   return lastErr != ERROR_INVALID_DATA && // used to indicate internal errors
          lastErr != ERROR_FILE_NOT_FOUND      && lastErr != ERROR_BAD_NET_NAME  &&
@@ -90,7 +90,7 @@ bool CWin32SMBFile::SetHidden(const CURL& url, bool hidden)
   if (pathnameW.empty())
     return false;
 
-  DWORD attrs = GetFileAttributesW(pathnameW.c_str());
+  uint32_t attrs = GetFileAttributesW(pathnameW.c_str());
   if (attrs == INVALID_FILE_ATTRIBUTES)
   {
     if (!worthTryToConnect(GetLastError()) || !ConnectAndAuthenticate(url))
@@ -119,7 +119,7 @@ bool CWin32SMBFile::Exists(const CURL& url)
   if (pathnameW.empty())
     return false;
 
-  DWORD attrs = GetFileAttributesW(pathnameW.c_str());
+  uint32_t attrs = GetFileAttributesW(pathnameW.c_str());
   if (attrs == INVALID_FILE_ATTRIBUTES)
   {
     if (!worthTryToConnect(GetLastError()) || !ConnectAndAuthenticate(url))

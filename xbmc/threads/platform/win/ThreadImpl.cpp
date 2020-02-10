@@ -22,10 +22,10 @@ void CThread::SetThreadInfo()
 #pragma pack(push,8)
   struct THREADNAME_INFO
   {
-    DWORD dwType; // must be 0x1000
+    uint32_t dwType; // must be 0x1000
     LPCSTR szName; // pointer to name (in same addr space)
-    DWORD dwThreadID; // thread ID (-1 caller thread)
-    DWORD dwFlags; // reserved for future use, most be zero
+    uint32_t dwThreadID; // thread ID (-1 caller thread)
+    uint32_t dwFlags; // reserved for future use, most be zero
   } info;
 #pragma pack(pop)
 

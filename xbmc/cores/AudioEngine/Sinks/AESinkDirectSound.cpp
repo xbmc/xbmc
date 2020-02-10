@@ -317,11 +317,11 @@ unsigned int CAESinkDirectSound::AddPackets(uint8_t **data, unsigned int frames,
   if (!m_initialized)
     return 0;
 
-  DWORD total = m_dwFrameSize * frames;
-  DWORD len = total;
+  uint32_t total = m_dwFrameSize * frames;
+  uint32_t len = total;
   unsigned char* pBuffer = (unsigned char*)data[0]+offset*m_format.m_frameSize;
 
-  DWORD bufferStatus = 0;
+  uint32_t bufferStatus = 0;
   if (m_pBuffer->GetStatus(&bufferStatus) != DS_OK)
   {
     CLog::LogF(LOGERROR, "GetStatus() failed");
@@ -346,10 +346,10 @@ unsigned int CAESinkDirectSound::AddPackets(uint8_t **data, unsigned int frames,
   while (len)
   {
     void* start = nullptr, *startWrap = nullptr;
-    DWORD size = 0, sizeWrap = 0;
+    uint32_t size = 0, sizeWrap = 0;
     if (m_BufferOffset >= m_dwBufferLen) // Wrap-around manually
       m_BufferOffset = 0;
-    DWORD dwWriteBytes = std::min((int)m_dwChunkSize, (int)len);
+    uint32_t dwWriteBytes = std::min((int)m_dwChunkSize, (int)len);
     HRESULT res = m_pBuffer->Lock(m_BufferOffset, dwWriteBytes, &start, &size, &startWrap, &sizeWrap, 0);
     if (DS_OK != res)
     {
@@ -531,7 +531,7 @@ void CAESinkDirectSound::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bo
         // signal that we can doe AE_FMT_RAW
         deviceInfo.m_dataFormats.push_back(AE_FMT_RAW);
       }
-      deviceInfo.m_sampleRates.push_back(std::min(smpwfxex->nSamplesPerSec, (DWORD) 192000));
+      deviceInfo.m_sampleRates.push_back(std::min(smpwfxex->nSamplesPerSec, (uint32_t)192000));
     }
     else
     {
@@ -569,7 +569,7 @@ failed:
 
 void CAESinkDirectSound::CheckPlayStatus()
 {
-  DWORD status = 0;
+  uint32_t status = 0;
   if (m_pBuffer->GetStatus(&status) != DS_OK)
   {
     CLog::LogF(LOGERROR, "GetStatus() failed");
@@ -589,7 +589,7 @@ bool CAESinkDirectSound::UpdateCacheStatus()
 {
   CSingleLock lock (m_runLock);
 
-  DWORD playCursor = 0, writeCursor = 0;
+  uint32_t playCursor = 0, writeCursor = 0;
   HRESULT res = m_pBuffer->GetCurrentPosition(&playCursor, &writeCursor); // Get the current playback and safe write positions
   if (DS_OK != res)
   {
@@ -662,7 +662,7 @@ unsigned int CAESinkDirectSound::GetSpace()
     return 0;
 }
 
-void CAESinkDirectSound::AEChannelsFromSpeakerMask(DWORD speakers)
+void CAESinkDirectSound::AEChannelsFromSpeakerMask(uint32_t speakers)
 {
   m_channelLayout.Reset();
 
@@ -673,9 +673,9 @@ void CAESinkDirectSound::AEChannelsFromSpeakerMask(DWORD speakers)
   }
 }
 
-DWORD CAESinkDirectSound::SpeakerMaskFromAEChannels(const CAEChannelInfo &channels)
+uint32_t CAESinkDirectSound::SpeakerMaskFromAEChannels(const CAEChannelInfo& channels)
 {
-  DWORD mask = 0;
+  uint32_t mask = 0;
 
   for (unsigned int i = 0; i < channels.Count(); i++)
   {

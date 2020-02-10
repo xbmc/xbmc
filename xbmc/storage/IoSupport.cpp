@@ -100,11 +100,11 @@ void CIoSupport::FreeReadBuffer()
 #endif
 }
 
-int CIoSupport::ReadSector(HANDLE hDevice, DWORD dwSector, char* lpczBuffer)
+int CIoSupport::ReadSector(HANDLE hDevice, uint32_t dwSector, char* lpczBuffer)
 
 {
-  DWORD dwRead;
-  DWORD dwSectorSize = 2048;
+  uint32_t dwRead;
+  uint32_t dwSectorSize = 2048;
 
 #if defined(TARGET_DARWIN) && defined(HAS_DVD_DRIVE)
   dk_cd_read_t cd_read;
@@ -159,7 +159,8 @@ int CIoSupport::ReadSector(HANDLE hDevice, DWORD dwSector, char* lpczBuffer)
 
   for (int i = 0; i < 5; i++)
   {
-    if (SetFilePointer(hDevice, Displacement.u.LowPart, &Displacement.u.HighPart, FILE_BEGIN) != (DWORD)-1)
+    if (SetFilePointer(hDevice, Displacement.u.LowPart, &Displacement.u.HighPart, FILE_BEGIN) !=
+        (uint32_t)-1)
     {
       if (ReadFile(hDevice, m_rawXferBuffer, dwSectorSize, &dwRead, NULL))
       {
@@ -174,7 +175,7 @@ int CIoSupport::ReadSector(HANDLE hDevice, DWORD dwSector, char* lpczBuffer)
 }
 
 
-int CIoSupport::ReadSectorMode2(HANDLE hDevice, DWORD dwSector, char* lpczBuffer)
+int CIoSupport::ReadSectorMode2(HANDLE hDevice, uint32_t dwSector, char* lpczBuffer)
 {
 #ifdef HAS_DVD_DRIVE
 #if defined(TARGET_DARWIN)
@@ -234,7 +235,7 @@ int CIoSupport::ReadSectorMode2(HANDLE hDevice, DWORD dwSector, char* lpczBuffer
 #elif defined(TARGET_WINDOWS_STORE)
   CLog::Log(LOGDEBUG, "%s is not implemented", __FUNCTION__);
 #else
-  DWORD dwBytesReturned;
+  uint32_t dwBytesReturned;
   RAW_READ_INFO rawRead = {0};
 
   // Oddly enough, DiskOffset uses the Red Book sector size
@@ -267,7 +268,7 @@ int CIoSupport::ReadSectorMode2(HANDLE hDevice, DWORD dwSector, char* lpczBuffer
   return -1;
 }
 
-int CIoSupport::ReadSectorCDDA(HANDLE hDevice, DWORD dwSector, char* lpczBuffer)
+int CIoSupport::ReadSectorCDDA(HANDLE hDevice, uint32_t dwSector, char* lpczBuffer)
 {
   return -1;
 }

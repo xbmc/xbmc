@@ -414,7 +414,7 @@ bool CExternalPlayer::ExecuteAppW32(const char* strPath, const char* strSwitches
 
   if (ret == FALSE)
   {
-    DWORD lastError = GetLastError();
+    uint32_t lastError = GetLastError();
     CLog::Log(LOGNOTICE, "%s - Failure: %d", __FUNCTION__, lastError);
   }
   else

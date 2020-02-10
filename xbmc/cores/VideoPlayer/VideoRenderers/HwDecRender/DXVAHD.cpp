@@ -397,7 +397,15 @@ DXGI_COLOR_SPACE_TYPE CProcessorHD::GetDXGIColorSpace(CRenderBuffer* view, bool 
   return DXGI_COLOR_SPACE_YCBCR_STUDIO_G22_LEFT_P709;
 }
 
-bool CProcessorHD::Render(CRect src, CRect dst, ID3D11Resource* target, CRenderBuffer** views, DWORD flags, UINT frameIdx, UINT rotation, float contrast, float brightness)
+bool CProcessorHD::Render(CRect src,
+                          CRect dst,
+                          ID3D11Resource* target,
+                          CRenderBuffer** views,
+                          uint32_t flags,
+                          UINT frameIdx,
+                          UINT rotation,
+                          float contrast,
+                          float brightness)
 {
   CSingleLock lock(m_section);
 

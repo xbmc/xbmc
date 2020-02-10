@@ -198,7 +198,7 @@ bool CWinSystemWin32::CreateNewWindow(const std::string& name, bool fullScreen, 
 
   m_inFocus = true;
 
-  DWORD dwHwndTabletProperty =
+  uint32_t dwHwndTabletProperty =
       TABLET_DISABLE_PENBARRELFEEDBACK | // disables UI feedback on pen button down (circle)
       TABLET_DISABLE_FLICKS; // disables pen flicks (back, forward, drag down, drag up)
 
@@ -716,7 +716,7 @@ void CWinSystemWin32::GetConnectedDisplays(std::vector<MONITOR_DETAILS>& outputs
   DISPLAY_DEVICEW ddAdapter = { 0 };
   ddAdapter.cb = sizeof(ddAdapter);
 
-  for (DWORD adapter = 0; EnumDisplayDevicesW(nullptr, adapter, &ddAdapter, 0); ++adapter)
+  for (uint32_t adapter = 0; EnumDisplayDevicesW(nullptr, adapter, &ddAdapter, 0); ++adapter)
   {
     // Exclude displays that are not part of the windows desktop. Using them is too different: no windows,
     // direct access with GDI CreateDC() or DirectDraw for example. So it may be possible to play video, but GUI?
@@ -728,7 +728,7 @@ void CWinSystemWin32::GetConnectedDisplays(std::vector<MONITOR_DETAILS>& outputs
     ddMon.cb = sizeof(ddMon);
     bool foundScreen = false;
 
-    DWORD screen = 0;
+    uint32_t screen = 0;
     // Just look for the first active output, we're actually only interested in the information at the adapter level.
     for (; EnumDisplayDevicesW(ddAdapter.DeviceName, screen, &ddMon, 0); ++screen)
     {
@@ -1080,10 +1080,10 @@ void CWinSystemWin32::SetForegroundWindowInternal(HWND hWnd)
   if (!res)
   {
     //relation time of SetForegroundWindow lock
-    DWORD lockTimeOut = 0;
+    uint32_t lockTimeOut = 0;
     HWND  hCurrWnd = GetForegroundWindow();
-    DWORD dwThisTID = GetCurrentThreadId(),
-          dwCurrTID = GetWindowThreadProcessId(hCurrWnd, nullptr);
+    uint32_t dwThisTID = GetCurrentThreadId(),
+             dwCurrTID = GetWindowThreadProcessId(hCurrWnd, nullptr);
 
     // we need to bypass some limitations from Microsoft
     if (dwThisTID != dwCurrTID)

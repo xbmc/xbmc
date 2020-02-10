@@ -682,7 +682,7 @@ RESOLUTION CRenderManager::GetResolution()
   return res;
 }
 
-void CRenderManager::Render(bool clear, DWORD flags, DWORD alpha, bool gui)
+void CRenderManager::Render(bool clear, uint32_t flags, uint32_t alpha, bool gui)
 {
   CSingleExit exitLock(CServiceBroker::GetWinSystem()->GetGfxContext());
 
@@ -799,7 +799,7 @@ bool CRenderManager::IsVideoLayer()
 }
 
 /* simple present method */
-void CRenderManager::PresentSingle(bool clear, DWORD flags, DWORD alpha)
+void CRenderManager::PresentSingle(bool clear, uint32_t flags, uint32_t alpha)
 {
   SPresent& m = m_Queue[m_presentsource];
 
@@ -813,7 +813,7 @@ void CRenderManager::PresentSingle(bool clear, DWORD flags, DWORD alpha)
 
 /* new simpler method of handling interlaced material, *
  * we just render the two fields right after eachother */
-void CRenderManager::PresentFields(bool clear, DWORD flags, DWORD alpha)
+void CRenderManager::PresentFields(bool clear, uint32_t flags, uint32_t alpha)
 {
   SPresent& m = m_Queue[m_presentsource];
 
@@ -833,7 +833,7 @@ void CRenderManager::PresentFields(bool clear, DWORD flags, DWORD alpha)
   }
 }
 
-void CRenderManager::PresentBlend(bool clear, DWORD flags, DWORD alpha)
+void CRenderManager::PresentBlend(bool clear, uint32_t flags, uint32_t alpha)
 {
   SPresent& m = m_Queue[m_presentsource];
 

@@ -40,7 +40,15 @@ public:
   void UnInit();
   bool Open(UINT width, UINT height);
   void Close();
-  bool Render(CRect src, CRect dst, ID3D11Resource* target, CRenderBuffer **views, DWORD flags, UINT frameIdx, UINT rotation, float contrast, float brightness);
+  bool Render(CRect src,
+              CRect dst,
+              ID3D11Resource* target,
+              CRenderBuffer** views,
+              uint32_t flags,
+              UINT frameIdx,
+              UINT rotation,
+              float contrast,
+              float brightness);
   uint8_t PastRefs() const { return m_max_back_refs; }
   bool IsFormatSupported(DXGI_FORMAT format, D3D11_VIDEO_PROCESSOR_FORMAT_SUPPORT support) const;
   bool HasHDR10Support() const { return m_bSupportHDR10; }

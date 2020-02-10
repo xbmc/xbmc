@@ -298,69 +298,77 @@ _wopendir(
     /* Allocate new _WDIR structure */
     dirp = (_WDIR*) malloc (sizeof (struct _WDIR));
     if (dirp != NULL) {
-        DWORD n;
+      uint32_t n;
 
-        /* Reset _WDIR structure */
-        dirp->handle = INVALID_HANDLE_VALUE;
-        dirp->patt = NULL;
-        dirp->cached = 0;
+      /* Reset _WDIR structure */
+      dirp->handle = INVALID_HANDLE_VALUE;
+      dirp->patt = NULL;
+      dirp->cached = 0;
 
-        /* Compute the length of full path plus zero terminator */
-        n = GetFullPathNameW (dirname, 0, NULL, NULL);
+      /* Compute the length of full path plus zero terminator */
+      n = GetFullPathNameW(dirname, 0, NULL, NULL);
 
-        /* Allocate room for absolute directory name and search pattern */
-        dirp->patt = (wchar_t*) malloc (sizeof (wchar_t) * n + 16);
-        if (dirp->patt) {
+      /* Allocate room for absolute directory name and search pattern */
+      dirp->patt = (wchar_t*)malloc(sizeof(wchar_t) * n + 16);
+      if (dirp->patt)
+      {
 
-            /*
+        /*
              * Convert relative directory name to an absolute one.  This
              * allows rewinddir() to function correctly even when current
              * working directory is changed between opendir() and rewinddir().
              */
-            n = GetFullPathNameW (dirname, n, dirp->patt, NULL);
-            if (n > 0) {
-                wchar_t *p;
+        n = GetFullPathNameW(dirname, n, dirp->patt, NULL);
+        if (n > 0)
+        {
+          wchar_t* p;
 
-                /* Append search pattern \* to the directory name */
-                p = dirp->patt + n;
-                if (dirp->patt < p) {
-                    switch (p[-1]) {
-                    case '\\':
-                    case '/':
-                    case ':':
-                        /* Directory ends in path separator, e.g. c:\temp\ */
-                        /*NOP*/;
-                        break;
+          /* Append search pattern \* to the directory name */
+          p = dirp->patt + n;
+          if (dirp->patt < p)
+          {
+            switch (p[-1])
+            {
+              case '\\':
+              case '/':
+              case ':':
+                  /* Directory ends in path separator, e.g. c:\temp\ */
+                  /*NOP*/;
+                break;
 
-                    default:
-                        /* Directory name doesn't end in path separator */
-                        *p++ = '\\';
-                    }
-                }
-                *p++ = '*';
-                *p = '\0';
-
-                /* Open directory stream and retrieve the first entry */
-                if (dirent_first (dirp)) {
-                    /* Directory stream opened successfully */
-                    error = 0;
-                } else {
-                    /* Cannot retrieve first entry */
-                    error = 1;
-                    dirent_set_errno (ENOENT);
-                }
-
-            } else {
-                /* Cannot retrieve full path name */
-                dirent_set_errno (ENOENT);
-                error = 1;
+              default:
+                /* Directory name doesn't end in path separator */
+                *p++ = '\\';
             }
+          }
+          *p++ = '*';
+          *p = '\0';
 
-        } else {
-            /* Cannot allocate memory for search pattern */
+          /* Open directory stream and retrieve the first entry */
+          if (dirent_first(dirp))
+          {
+            /* Directory stream opened successfully */
+            error = 0;
+          }
+          else
+          {
+            /* Cannot retrieve first entry */
             error = 1;
+            dirent_set_errno(ENOENT);
+          }
         }
-
+        else
+        {
+          /* Cannot retrieve full path name */
+          dirent_set_errno(ENOENT);
+          error = 1;
+        }
+      }
+      else
+      {
+        /* Cannot allocate memory for search pattern */
+        error = 1;
+      }
     } else {
         /* Cannot allocate _WDIR structure */
         error = 1;
@@ -392,7 +400,7 @@ _wreaddir(
     datap = dirent_next (dirp);
     if (datap) {
         size_t n;
-        DWORD attr;
+        uint32_t attr;
 
         /* Pointer to directory entry to return */
         entp = &dirp->ent;
@@ -662,23 +670,28 @@ readdir(
         }
 
         if (!error) {
-            DWORD attr;
+          uint32_t attr;
 
-            /* Initialize directory entry for return */
-            entp = &dirp->ent;
+          /* Initialize directory entry for return */
+          entp = &dirp->ent;
 
-            /* Length of file name excluding zero terminator */
-            entp->d_namlen = n - 1;
+          /* Length of file name excluding zero terminator */
+          entp->d_namlen = n - 1;
 
-            /* File attributes */
-            attr = datap->dwFileAttributes;
-            if ((attr & FILE_ATTRIBUTE_DEVICE) != 0) {
-                entp->d_type = DT_CHR;
-            } else if ((attr & FILE_ATTRIBUTE_DIRECTORY) != 0) {
-                entp->d_type = DT_DIR;
-            } else {
-                entp->d_type = DT_REG;
-            }
+          /* File attributes */
+          attr = datap->dwFileAttributes;
+          if ((attr & FILE_ATTRIBUTE_DEVICE) != 0)
+          {
+            entp->d_type = DT_CHR;
+          }
+          else if ((attr & FILE_ATTRIBUTE_DIRECTORY) != 0)
+          {
+            entp->d_type = DT_DIR;
+          }
+          else
+          {
+            entp->d_type = DT_REG;
+          }
 
             /* Reset dummy fields */
             entp->d_ino = 0;

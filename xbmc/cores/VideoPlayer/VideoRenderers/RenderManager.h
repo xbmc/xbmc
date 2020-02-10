@@ -62,7 +62,7 @@ public:
   float GetAspectRatio();
   void FrameMove();
   void FrameWait(int ms);
-  void Render(bool clear, DWORD flags = 0, DWORD alpha = 255, bool gui = true);
+  void Render(bool clear, uint32_t flags = 0, uint32_t alpha = 255, bool gui = true);
   bool IsVideoLayer();
   RESOLUTION GetResolution();
   void UpdateResolution();
@@ -115,10 +115,9 @@ public:
   void SetVideoSettings(CVideoSettings settings);
 
 protected:
-
-  void PresentSingle(bool clear, DWORD flags, DWORD alpha);
-  void PresentFields(bool clear, DWORD flags, DWORD alpha);
-  void PresentBlend(bool clear, DWORD flags, DWORD alpha);
+  void PresentSingle(bool clear, uint32_t flags, uint32_t alpha);
+  void PresentFields(bool clear, uint32_t flags, uint32_t alpha);
+  void PresentBlend(bool clear, uint32_t flags, uint32_t alpha);
 
   void PrepareNextRender();
   bool IsPresenting();

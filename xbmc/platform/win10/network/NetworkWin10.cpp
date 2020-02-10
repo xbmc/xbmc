@@ -292,11 +292,11 @@ bool CNetworkWin10::PingHost(unsigned long host, unsigned int timeout_ms /* = 20
 
   SetLastError(ERROR_SUCCESS);
 
-  DWORD dwRetVal = IcmpSendEcho2(hIcmpFile, nullptr, nullptr, nullptr,
-                                 host, SendData, sizeof(SendData), nullptr,
-                                 ReplyBuffer, sizeof(ReplyBuffer), timeout_ms);
+  uint32_t dwRetVal =
+      IcmpSendEcho2(hIcmpFile, nullptr, nullptr, nullptr, host, SendData, sizeof(SendData), nullptr,
+                    ReplyBuffer, sizeof(ReplyBuffer), timeout_ms);
 
-  DWORD lastErr = GetLastError();
+  uint32_t lastErr = GetLastError();
   if (lastErr != ERROR_SUCCESS && lastErr != IP_REQ_TIMED_OUT)
     CLog::LogF(LOGERROR, "IcmpSendEcho2 failed - {}", CWIN32Util::WUSysMsg(lastErr));
 

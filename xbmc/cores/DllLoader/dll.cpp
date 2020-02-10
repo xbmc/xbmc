@@ -104,7 +104,10 @@ extern "C" HMODULE __stdcall dllLoadLibraryA(const char* file)
 #define LOAD_WITH_ALTERED_SEARCH_PATH 0x00000008
 #define LOAD_IGNORE_CODE_AUTHZ_LEVEL  0x00000010
 
-extern "C" HMODULE __stdcall dllLoadLibraryExExtended(const char* lpLibFileName, HANDLE hFile, DWORD dwFlags, const char* sourcedll)
+extern "C" HMODULE __stdcall dllLoadLibraryExExtended(const char* lpLibFileName,
+                                                      HANDLE hFile,
+                                                      uint32_t dwFlags,
+                                                      const char* sourcedll)
 {
   char strFlags[512];
   strFlags[0] = '\0';
@@ -119,7 +122,9 @@ extern "C" HMODULE __stdcall dllLoadLibraryExExtended(const char* lpLibFileName,
   return dllLoadLibraryExtended(lpLibFileName, sourcedll);
 }
 
-extern "C" HMODULE __stdcall dllLoadLibraryExA(const char* lpLibFileName, HANDLE hFile, DWORD dwFlags)
+extern "C" HMODULE __stdcall dllLoadLibraryExA(const char* lpLibFileName,
+                                               HANDLE hFile,
+                                               uint32_t dwFlags)
 {
   return dllLoadLibraryExExtended(lpLibFileName, hFile, dwFlags, NULL);
 }

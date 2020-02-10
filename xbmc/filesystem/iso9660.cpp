@@ -125,12 +125,12 @@ bool iso9660::IsRockRidge(struct iso9660_Directory& isodir)
 }
 
 //******************************************************************************************************************
-struct iso_dirtree *iso9660::ReadRecursiveDirFromSector( DWORD sector, const char *path )
+struct iso_dirtree* iso9660::ReadRecursiveDirFromSector(uint32_t sector, const char* path)
 {
   struct iso_dirtree* pDir = NULL;
   struct iso_dirtree* pFile_Pointer = NULL;
   char* pCurr_dir_cache = NULL;
-  DWORD iso9660searchpointer;
+  uint32_t iso9660searchpointer;
   struct iso9660_Directory isodir;
   struct iso9660_Directory curr_dir;
   unsigned short wSectorSize = from_723(m_info.iso.logical_block_size);
@@ -166,7 +166,7 @@ struct iso_dirtree *iso9660::ReadRecursiveDirFromSector( DWORD sector, const cha
 
 
   ::SetFilePointer( m_info.ISO_HANDLE, wSectorSize * sector, 0, FILE_BEGIN );
-  DWORD lpNumberOfBytesRead = 0;
+  uint32_t lpNumberOfBytesRead = 0;
 
   pCurr_dir_cache = (char*)malloc( 16*wSectorSize );
   if (!pCurr_dir_cache )
@@ -182,7 +182,7 @@ struct iso_dirtree *iso9660::ReadRecursiveDirFromSector( DWORD sector, const cha
   memcpy( &isodir, pCurr_dir_cache, sizeof(isodir) );
   memcpy( &curr_dir, pCurr_dir_cache, sizeof(isodir) );
 
-  DWORD curr_dirSize = from_733(curr_dir.size);
+  uint32_t curr_dirSize = from_733(curr_dir.size);
   if ( curr_dirSize > wSectorSize )
   {
     free( pCurr_dir_cache );
@@ -404,7 +404,7 @@ struct iso_dirtree *iso9660::ReadRecursiveDirFromSector( DWORD sector, const cha
 
           strcpy( pFile_Pointer->name , temp_text.c_str());
 
-          DWORD dwFileLocation = from_733(isodir.extent);
+          uint32_t dwFileLocation = from_733(isodir.extent);
 #ifdef _DEBUG_OUTPUT
           std::string strTmp;
           strTmp = StringUtils::Format("adding directory sector : %X, File : %s     size = %u     pos = %x\r", sector, temp_text.c_str(), from_733(isodir.size), dwFileLocation );
@@ -459,7 +459,7 @@ void iso9660::Scan()
 
   CSingleLock lock(m_critSection);
 
-  DWORD lpNumberOfBytesRead = 0;
+  uint32_t lpNumberOfBytesRead = 0;
   ::SetFilePointer( m_info.ISO_HANDLE, 0x8000, 0, FILE_BEGIN );
 
   ::ReadFile( m_info.ISO_HANDLE, &m_info.iso, sizeof(m_info.iso), &lpNumberOfBytesRead, NULL );
@@ -487,7 +487,7 @@ void iso9660::Scan()
     iso9660_Directory *dirPointer = reinterpret_cast<iso9660_Directory*>(&m_info.iso.szRootDir);
     ::SetFilePointer( m_info.ISO_HANDLE, wSectorSize * from_733(dirPointer->extent), 0, FILE_BEGIN );
 
-    DWORD lpNumberOfBytesRead;
+    uint32_t lpNumberOfBytesRead;
     char* pCurr_dir_cache = (char*)malloc( 16*wSectorSize );
     iso9660_Directory isodir;
     int bResult = ::ReadFile( m_info.ISO_HANDLE, pCurr_dir_cache, wSectorSize, &lpNumberOfBytesRead, NULL );
@@ -791,11 +791,11 @@ void iso9660::CloseFile(HANDLE hFile)
   FreeFileContext(hFile);
 }
 //************************************************************************************
-bool iso9660::ReadSectorFromCache(iso9660::isofile* pContext, DWORD sector, uint8_t** ppBuffer)
+bool iso9660::ReadSectorFromCache(iso9660::isofile* pContext, uint32_t sector, uint8_t** ppBuffer)
 {
 
-  DWORD StartSectorInCircBuff = pContext->m_dwCircBuffSectorStart;
-  DWORD SectorsInCircBuff;
+  uint32_t StartSectorInCircBuff = pContext->m_dwCircBuffSectorStart;
+  uint32_t SectorsInCircBuff;
 
   if ( pContext->m_dwCircBuffEnd >= pContext->m_dwCircBuffBegin )
     SectorsInCircBuff = pContext->m_dwCircBuffEnd - pContext->m_dwCircBuffBegin;
@@ -808,8 +808,7 @@ bool iso9660::ReadSectorFromCache(iso9660::isofile* pContext, DWORD sector, uint
        SectorsInCircBuff > 0 )
   {
     // Just retrieve it
-    DWORD SectorInCircBuff = (sector - StartSectorInCircBuff) +
-                             pContext->m_dwCircBuffBegin;
+    uint32_t SectorInCircBuff = (sector - StartSectorInCircBuff) + pContext->m_dwCircBuffBegin;
     if ( SectorInCircBuff >= CIRC_BUFFER_SIZE )
       SectorInCircBuff -= CIRC_BUFFER_SIZE;
 
@@ -866,11 +865,11 @@ bool iso9660::ReadSectorFromCache(iso9660::isofile* pContext, DWORD sector, uint
   return true;
 }
 //************************************************************************************
-void iso9660::ReleaseSectorFromCache(iso9660::isofile* pContext, DWORD sector)
+void iso9660::ReleaseSectorFromCache(iso9660::isofile* pContext, uint32_t sector)
 {
 
-  DWORD StartSectorInCircBuff = pContext->m_dwCircBuffSectorStart;
-  DWORD SectorsInCircBuff;
+  uint32_t StartSectorInCircBuff = pContext->m_dwCircBuffSectorStart;
+  uint32_t SectorsInCircBuff;
 
   if ( pContext->m_dwCircBuffEnd >= pContext->m_dwCircBuffBegin )
     SectorsInCircBuff = pContext->m_dwCircBuffEnd - pContext->m_dwCircBuffBegin;
@@ -882,7 +881,7 @@ void iso9660::ReleaseSectorFromCache(iso9660::isofile* pContext, DWORD sector)
        sector < (StartSectorInCircBuff + SectorsInCircBuff) &&
        SectorsInCircBuff > 0 )
   {
-    DWORD SectorsToFlush = sector - StartSectorInCircBuff + 1;
+    uint32_t SectorsToFlush = sector - StartSectorInCircBuff + 1;
     pContext->m_dwCircBuffBegin += SectorsToFlush;
 
     pContext->m_dwCircBuffSectorStart += SectorsToFlush;
@@ -895,7 +894,7 @@ long iso9660::ReadFile(HANDLE hFile, uint8_t *pBuffer, long lSize)
 {
   bool bError;
   long iBytesRead = 0;
-  DWORD sectorSize = 2048;
+  uint32_t sectorSize = 2048;
   iso9660::isofile* pContext = GetFileContext(hFile);
   if (!pContext) return -1;
 
@@ -904,7 +903,7 @@ long iso9660::ReadFile(HANDLE hFile, uint8_t *pBuffer, long lSize)
 
   while (lSize > 0 && pContext->m_dwFilePos < pContext->m_dwFileSize)
   {
-    pContext->m_dwCurrentBlock = (DWORD) (pContext->m_dwFilePos / sectorSize);
+    pContext->m_dwCurrentBlock = (uint32_t)(pContext->m_dwFilePos / sectorSize);
     int64_t iOffsetInBuffer = pContext->m_dwFilePos - (sectorSize * pContext->m_dwCurrentBlock);
     pContext->m_dwCurrentBlock += pContext->m_dwStartBlock;
 
@@ -914,9 +913,9 @@ long iso9660::ReadFile(HANDLE hFile, uint8_t *pBuffer, long lSize)
     bError = !ReadSectorFromCache(pContext, pContext->m_dwCurrentBlock, &pSector);
     if (!bError)
     {
-      DWORD iBytes2Copy = lSize;
+      uint32_t iBytes2Copy = lSize;
       if (iBytes2Copy > (sectorSize - iOffsetInBuffer) )
-        iBytes2Copy = (DWORD) (sectorSize - iOffsetInBuffer);
+        iBytes2Copy = (uint32_t)(sectorSize - iOffsetInBuffer);
 
 
       memcpy( &pBuffer[iBytesRead], &pSector[iOffsetInBuffer], iBytes2Copy);

@@ -29,9 +29,9 @@ public:
   static void FreeReadBuffer();
 
   static HANDLE OpenCDROM();
-  static int ReadSector(HANDLE hDevice, DWORD dwSector, char* lpczBuffer);
-  static int ReadSectorMode2(HANDLE hDevice, DWORD dwSector, char* lpczBuffer);
-  static int ReadSectorCDDA(HANDLE hDevice, DWORD dwSector, char* lpczBuffer);
+  static int ReadSector(HANDLE hDevice, uint32_t dwSector, char* lpczBuffer);
+  static int ReadSectorMode2(HANDLE hDevice, uint32_t dwSector, char* lpczBuffer);
+  static int ReadSectorCDDA(HANDLE hDevice, uint32_t dwSector, char* lpczBuffer);
   static void CloseCDROM(HANDLE hDevice);
 
 private:

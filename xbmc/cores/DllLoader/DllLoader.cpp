@@ -37,7 +37,7 @@ extern "C" FILE *fopen_utf8(const char *_Filename, const char *_Mode);
 #endif
 
 //  Entry point of a dll (DllMain)
-typedef int (APIENTRY *EntryFunc)(HINSTANCE hinstDLL, DWORD fdwReason, void* lpvReserved);
+typedef int(APIENTRY* EntryFunc)(HINSTANCE hinstDLL, uint32_t fdwReason, void* lpvReserved);
 
 
 #ifdef TARGET_POSIX

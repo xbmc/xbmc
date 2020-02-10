@@ -147,9 +147,11 @@ bool Win32DllLoader::Load()
 
   if (!m_dllHandle)
   {
-    DWORD dw = GetLastError();
+    uint32_t dw = GetLastError();
     wchar_t* lpMsgBuf = NULL;
-    DWORD strLen = FormatMessageW(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS, NULL, dw, MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_US), (LPWSTR)&lpMsgBuf, 0, NULL);
+    uint32_t strLen = FormatMessageW(
+        FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
+        NULL, dw, MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_US), (LPWSTR)&lpMsgBuf, 0, NULL);
     if (strLen == 0)
       strLen = FormatMessageW(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS, NULL, dw, MAKELANGID(LANG_NEUTRAL, SUBLANG_NEUTRAL), (LPWSTR)&lpMsgBuf, 0, NULL);
 
@@ -293,7 +295,7 @@ void Win32DllLoader::OverrideImports(const std::string &dll)
         import.function = first_thunk[j].u1.Function;
         m_overriddenImports.push_back(import);
 
-        DWORD old_prot = 0;
+        uint32_t old_prot = 0;
 
         // change to protection settings so we can write to memory area
         VirtualProtect((PVOID)&first_thunk[j].u1.Function, 4, PAGE_EXECUTE_READWRITE, &old_prot);
@@ -337,7 +339,7 @@ void Win32DllLoader::RestoreImports()
   for (auto& import : m_overriddenImports)
   {
     // change to protection settings so we can write to memory area
-    DWORD old_prot = 0;
+    uint32_t old_prot = 0;
     VirtualProtect(import.table, 4, PAGE_EXECUTE_READWRITE, &old_prot);
 
     *static_cast<uintptr_t *>(import.table) = import.function;

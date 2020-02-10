@@ -156,7 +156,7 @@ std::vector<std::string> CStorageProvider::GetDiskUsage()
                                g_localizeStrings.Get(160).c_str());
   result.push_back(strRet);
 
-  DWORD drivesBits = GetLogicalDrives();
+  uint32_t drivesBits = GetLogicalDrives();
   if (drivesBits == 0)
     return result;
 
@@ -189,7 +189,7 @@ bool CStorageProvider::PumpDriveChangeEvents(IStorageEventsCallback *callback)
 
 void CStorageProvider::GetDrivesByType(VECSOURCES & localDrives, Drive_Types eDriveType, bool bonlywithmedia)
 {
-  DWORD drivesBits = GetLogicalDrives();
+  uint32_t drivesBits = GetLogicalDrives();
   if (drivesBits == 0)
     return;
 

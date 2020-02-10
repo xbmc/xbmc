@@ -230,7 +230,7 @@ void CWinSystemWin32DX::InitHooks(IDXGIOutput* pOutput)
 
   DISPLAY_DEVICEW displayDevice;
   displayDevice.cb = sizeof(DISPLAY_DEVICEW);
-  DWORD adapter = 0;
+  uint32_t adapter = 0;
   bool deviceFound = false;
 
   // delete exiting hooks.
@@ -258,10 +258,10 @@ void CWinSystemWin32DX::InitHooks(IDXGIOutput* pOutput)
 #endif // !_WIN64
     L"UserModeDriverName";
 
-  DWORD dwType = REG_MULTI_SZ;
+  uint32_t dwType = REG_MULTI_SZ;
   HKEY hKey = nullptr;
   wchar_t value[1024];
-  DWORD valueLength = sizeof(value);
+  uint32_t valueLength = sizeof(value);
   LSTATUS lstat;
 
   // to void \Registry\Machine at the beginning, we use shifted pointer at 18

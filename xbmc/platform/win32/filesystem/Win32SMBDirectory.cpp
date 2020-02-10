@@ -31,7 +31,7 @@ using namespace XFILE;
 using KODI::PLATFORM::WINDOWS::FromW;
 
 // local helper
-static inline bool worthTryToConnect(const DWORD lastErr)
+static inline bool worthTryToConnect(const uint32_t lastErr)
 {
   return lastErr != ERROR_FILE_NOT_FOUND      && lastErr != ERROR_BAD_NET_NAME  &&
          lastErr != ERROR_NO_NET_OR_BAD_PATH  && lastErr != ERROR_NO_NETWORK    &&
@@ -110,7 +110,7 @@ bool CWin32SMBDirectory::GetDirectory(const CURL& url, CFileItemList &items)
 
   if (hSearch == INVALID_HANDLE_VALUE)
   {
-    DWORD searchErr = GetLastError();
+    uint32_t searchErr = GetLastError();
     if (!worthTryToConnect(searchErr))
       return false;
 
@@ -218,7 +218,7 @@ bool CWin32SMBDirectory::RealCreate(const CURL& url, bool tryToConnect)
   const size_t lastSlashPos = nameW.rfind(L'\\');
   if (lastSlashPos < nameW.length() - 1 && nameW[lastSlashPos + 1] == L'.')
   {
-    DWORD dirAttrs = GetFileAttributesW(nameW.c_str());
+    uint32_t dirAttrs = GetFileAttributesW(nameW.c_str());
     if (dirAttrs == INVALID_FILE_ATTRIBUTES || !SetFileAttributesW(nameW.c_str(), dirAttrs | FILE_ATTRIBUTE_HIDDEN))
       CLog::LogF(LOGWARNING, "Can't set hidden attribute for newly created directory \"%s\"", url.Get().c_str());
   }
@@ -297,7 +297,7 @@ bool CWin32SMBDirectory::RealExists(const CURL& url, bool tryToConnect)
   if (nameW.empty())
     return false;
 
-  DWORD fileAttrs = GetFileAttributesW(nameW.c_str());
+  uint32_t fileAttrs = GetFileAttributesW(nameW.c_str());
   if (fileAttrs != INVALID_FILE_ATTRIBUTES)
     return (fileAttrs & FILE_ATTRIBUTE_DIRECTORY) != 0; // is file or directory?
 
@@ -391,7 +391,7 @@ static bool localGetNetworkResources(struct _NETRESOURCEW* basePathToScanPtr, co
   }
 
   HANDLE netEnum;
-  DWORD result;
+  uint32_t result;
   result = WNetOpenEnumW(RESOURCE_GLOBALNET, getShares ? RESOURCETYPE_DISK : RESOURCETYPE_ANY, 0, basePathToScanPtr, &netEnum);
   if (result != NO_ERROR)
   {
@@ -413,8 +413,8 @@ static bool localGetNetworkResources(struct _NETRESOURCEW* basePathToScanPtr, co
   bool errorFlag = false;
   do
   {
-    DWORD resCount = -1;
-    DWORD bufSize = buf.size();
+    uint32_t resCount = -1;
+    uint32_t bufSize = buf.size();
     result = WNetEnumResourceW(netEnum, &resCount, buf.get(), &bufSize);
     if (result == NO_ERROR)
     {
@@ -569,12 +569,12 @@ static bool localGetShares(const std::wstring& serverNameToScan, const std::stri
   CFileItemList locItems; // store items locally until last one is successfully loaded
 
   NET_API_STATUS enumResult;
-  DWORD hEnumResume = 0;
+  uint32_t hEnumResume = 0;
   bool errorFlag = false;
   do
   {
     SHARE_INFO_1* shareInfos = NULL;
-    DWORD count, totalCount;
+    uint32_t count, totalCount;
     enumResult = NetShareEnum((LPWSTR)serverNameToScan.c_str(), 1, (LPBYTE*)&shareInfos, MAX_PREFERRED_LENGTH, &count, &totalCount, &hEnumResume);
     if (enumResult == NERR_Success || enumResult == ERROR_MORE_DATA)
     {
@@ -677,7 +677,7 @@ bool CWin32SMBDirectory::ConnectAndAuthenticate(CURL& url, bool allowPromptForCr
   NETRESOURCEW connInfo = {};
   connInfo.dwType = RESOURCETYPE_ANY;
   connInfo.lpRemoteName = (LPWSTR)serverShareNameW.c_str();
-  DWORD connRes;
+  uint32_t connRes;
   for (int i = 0; i < 3; i++) // make up to three attempts to connect
   {
     connRes = WNetAddConnection2W(&connInfo, passwordW.empty() ? NULL : (LPWSTR)passwordW.c_str(),

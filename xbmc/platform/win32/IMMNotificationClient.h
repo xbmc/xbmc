@@ -121,7 +121,7 @@ public:
     return S_OK;
   }
 
-  HRESULT STDMETHODCALLTYPE OnDeviceStateChanged(LPCWSTR pwstrDeviceId, DWORD dwNewState)
+  HRESULT STDMETHODCALLTYPE OnDeviceStateChanged(LPCWSTR pwstrDeviceId, uint32_t dwNewState)
   {
     char  *pszState = "?????";
 

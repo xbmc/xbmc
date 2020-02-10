@@ -178,7 +178,7 @@ ssize_t CWin32File::Read(void* lpBuf, size_t uiBufSize)
   if (uiBufSize == 0)
   { // allow "test" read with zero size
     XUTILS::auto_buffer dummyBuf(255);
-    DWORD bytesRead = 0;
+    uint32_t bytesRead = 0;
     if (!ReadFile(m_hFile, dummyBuf.get(), 0, &bytesRead, NULL))
       return -1;
 
@@ -191,12 +191,13 @@ ssize_t CWin32File::Read(void* lpBuf, size_t uiBufSize)
 
   ssize_t read = 0;
 
-  // if uiBufSize is larger than ReadFile() can read at one time (larger than DWORD_MAX)
+  // if uiBufSize is larger than ReadFile() can read at one time (larger than uint32_t_MAX)
   // repeat ReadFile until buffer is filled
   while (uiBufSize > 0)
   {
-    DWORD lastRead = 0;
-    if (!ReadFile(m_hFile, ((BYTE*)lpBuf) + read, (uiBufSize > DWORD_MAX) ? DWORD_MAX : (DWORD)uiBufSize, &lastRead, NULL))
+    uint32_t lastRead = 0;
+    if (!ReadFile(m_hFile, ((BYTE*)lpBuf) + read,
+                  (uiBufSize > uint32_t_MAX) ? uint32_t_MAX : (uint32_t)uiBufSize, &lastRead, NULL))
     {
       m_filePos = -1;
       if (read > 0)
@@ -213,7 +214,7 @@ ssize_t CWin32File::Read(void* lpBuf, size_t uiBufSize)
     // number of bytes than requested, just return number of read bytes (work as
     // transparent wrapper for ReadFile() ).
     // If ReadFile() can't read any more bytes than don't try to fill buffer.
-    if (uiBufSize <= DWORD_MAX || lastRead == 0)
+    if (uiBufSize <= uint32_t_MAX || lastRead == 0)
       return read;
     assert(lastRead <= uiBufSize);
     uiBufSize -= lastRead;
@@ -240,7 +241,7 @@ ssize_t CWin32File::Write(const void* lpBuf, size_t uiBufSize)
   { // allow "test" write with zero size
     XUTILS::auto_buffer dummyBuf(255);
     dummyBuf.get()[0] = 0;
-    DWORD bytesWritten = 0;
+    uint32_t bytesWritten = 0;
     if (!WriteFile(m_hFile, dummyBuf.get(), 0, &bytesWritten, NULL))
       return -1;
 
@@ -254,8 +255,8 @@ ssize_t CWin32File::Write(const void* lpBuf, size_t uiBufSize)
   ssize_t written = 0;
   while (uiBufSize > 0)
   {
-    DWORD lastWritten = 0;
-    const DWORD toWrite = uiBufSize > DWORD_MAX ? DWORD_MAX : (DWORD)uiBufSize;
+    uint32_t lastWritten = 0;
+    const uint32_t toWrite = uiBufSize > uint32_t_MAX ? uint32_t_MAX : (uint32_t)uiBufSize;
     if (!WriteFile(m_hFile, ((const BYTE*)lpBuf) + written, toWrite, &lastWritten, NULL))
     {
       m_filePos = -1;
@@ -283,7 +284,7 @@ int64_t CWin32File::Seek(int64_t iFilePosition, int iWhence /*= SEEK_SET*/)
 
   LARGE_INTEGER distance, newPos = {};
   distance.QuadPart = iFilePosition;
-  DWORD moveMethod;
+  uint32_t moveMethod;
   if (iWhence == SEEK_SET)
     moveMethod = FILE_BEGIN;
   else if (iWhence == SEEK_CUR)
@@ -416,7 +417,7 @@ bool CWin32File::SetHidden(const CURL& url, bool hidden)
   if (pathnameW.empty())
     return false;
 
-  const DWORD attrs = GetFileAttributesW(pathnameW.c_str());
+  const uint32_t attrs = GetFileAttributesW(pathnameW.c_str());
   if (attrs == INVALID_FILE_ATTRIBUTES || (attrs & FILE_ATTRIBUTE_DIRECTORY) != 0)
     return false;
 
@@ -445,7 +446,7 @@ bool CWin32File::Exists(const CURL& url)
   if (pathnameW.empty())
     return false;
 
-  const DWORD attrs = GetFileAttributesW(pathnameW.c_str());
+  const uint32_t attrs = GetFileAttributesW(pathnameW.c_str());
   if (m_smbFile)
     m_lastSMBFileErr = GetLastError(); // set real error state
 
@@ -578,7 +579,8 @@ int CWin32File::Stat(const CURL& url, struct __stat64* statData)
     { // file has some extension
       const std::wstring fileExt(pathnameW, lastDot);
       XUTILS::auto_buffer buf(32767 * sizeof(wchar_t)); // maximum possible size
-      const DWORD envRes = GetEnvironmentVariableW(L"PATHEXT", (wchar_t*)buf.get(), buf.size() / sizeof(wchar_t));
+      const uint32_t envRes =
+          GetEnvironmentVariableW(L"PATHEXT", (wchar_t*)buf.get(), buf.size() / sizeof(wchar_t));
       std::vector<std::wstring> listExts;
       if (envRes == 0 || envRes > (buf.size() / sizeof(wchar_t)))
       {
@@ -719,7 +721,8 @@ int CWin32File::Stat(struct __stat64* statData)
     { // file has some extension
       const std::wstring fileExt(pathnameW, lastDot);
       XUTILS::auto_buffer buf(32767 * sizeof(wchar_t)); // maximum possible size
-      const DWORD envRes = GetEnvironmentVariableW(L"PATHEXT", (wchar_t*)buf.get(), buf.size() / sizeof(wchar_t));
+      const uint32_t envRes =
+          GetEnvironmentVariableW(L"PATHEXT", (wchar_t*)buf.get(), buf.size() / sizeof(wchar_t));
       std::vector<std::wstring> listExts;
       if (envRes == 0 || envRes > (buf.size() / sizeof(wchar_t)))
       {

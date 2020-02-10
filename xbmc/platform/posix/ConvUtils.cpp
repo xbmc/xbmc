@@ -12,12 +12,12 @@
 
 #include "PlatformDefs.h"
 
-DWORD GetLastError()
+uint32_t GetLastError()
 {
   return errno;
 }
 
-void SetLastError(DWORD dwErrCode)
+void SetLastError(uint32_t dwErrCode)
 {
   errno = dwErrCode;
 }

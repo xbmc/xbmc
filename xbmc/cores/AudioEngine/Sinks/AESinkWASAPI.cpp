@@ -272,7 +272,7 @@ unsigned int CAESinkWASAPI::AddPackets(uint8_t **data, unsigned int frames, unsi
 
   HRESULT hr;
   BYTE *buf;
-  DWORD flags = 0;
+  uint32_t flags = 0;
 
 #ifndef _DEBUG
   LARGE_INTEGER timerStart;
@@ -336,7 +336,7 @@ unsigned int CAESinkWASAPI::AddPackets(uint8_t **data, unsigned int frames, unsi
 #endif
 
   /* Wait for Audio Driver to tell us it's got a buffer available */
-  DWORD eventAudioCallback;
+  uint32_t eventAudioCallback;
   eventAudioCallback = WaitForSingleObject(m_needDataEvent, 1100);
 
   if(eventAudioCallback != WAIT_OBJECT_0 || !&buf)
@@ -932,7 +932,7 @@ void CAESinkWASAPI::Drain()
   AEDelayStatus status;
   GetDelay(status);
 
-  KODI::TIME::Sleep((DWORD)(status.GetDelay() * 500));
+  KODI::TIME::Sleep((uint32_t)(status.GetDelay() * 500));
 
   if (m_running)
   {

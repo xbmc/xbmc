@@ -230,7 +230,7 @@ unsigned int CAESinkXAudio::AddPackets(uint8_t **data, unsigned int frames, unsi
     return 0;
 
   HRESULT hr = S_OK;
-  DWORD flags = 0;
+  uint32_t flags = 0;
 
 #ifndef _DEBUG
   LARGE_INTEGER timerStart;
@@ -285,7 +285,7 @@ unsigned int CAESinkXAudio::AddPackets(uint8_t **data, unsigned int frames, unsi
   //while (m_sourceVoice->GetState(&state), state.BuffersQueued >= XAUDIO_BUFFERS_IN_QUEUE)
   while (m_format.m_frames * XAUDIO_BUFFERS_IN_QUEUE <= m_framesInBuffers.load())
   {
-    DWORD eventAudioCallback;
+    uint32_t eventAudioCallback;
     eventAudioCallback = WaitForSingleObjectEx(m_voiceCallback.mBufferEnd.get(), 1100, TRUE);
     if (eventAudioCallback != WAIT_OBJECT_0)
     {

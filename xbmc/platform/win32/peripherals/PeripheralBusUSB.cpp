@@ -44,7 +44,7 @@ bool CPeripheralBusUSB::PerformDeviceScan(const GUID *guid, const PeripheralType
   using KODI::PLATFORM::WINDOWS::FromW;
 
   bool     bReturn(false);
-  DWORD    required = 0, iMemberIndex = 0;
+  uint32_t required = 0, iMemberIndex = 0;
   int      nBufferSize = 200;  // Just initial guess, will be increased if required
 
   SP_DEVICE_INTERFACE_DATA deviceInterfaceData;

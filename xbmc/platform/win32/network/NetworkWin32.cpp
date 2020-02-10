@@ -184,7 +184,7 @@ bool CNetworkWin32::PingHost(const struct sockaddr& host, unsigned int timeout_m
   SetLastError(ERROR_SUCCESS);
 
   HANDLE hIcmpFile;
-  DWORD dwRetVal;
+  uint32_t dwRetVal;
 
   switch (host.sa_family)
   {
@@ -205,7 +205,7 @@ bool CNetworkWin32::PingHost(const struct sockaddr& host, unsigned int timeout_m
       return false;
   }
 
-  DWORD lastErr = GetLastError();
+  uint32_t lastErr = GetLastError();
   if (lastErr != ERROR_SUCCESS && lastErr != IP_REQ_TIMED_OUT)
     CLog::Log(LOGERROR, "%s - %s failed - %s", __FUNCTION__, host.sa_family == AF_INET ? "IcmpSendEcho2" : "Icmp6SendEcho2", CWIN32Util::WUSysMsg(lastErr).c_str());
 
@@ -229,7 +229,7 @@ bool CNetworkInterfaceWin32::GetHostMacAddress(unsigned long host, std::string& 
 
 bool CNetworkInterfaceWin32::GetHostMacAddress(const struct sockaddr& host, std::string& mac) const
 {
-  DWORD InterfaceIndex;
+  uint32_t InterfaceIndex;
   if (GetBestInterfaceEx(&static_cast<struct sockaddr>(host), &InterfaceIndex) != NO_ERROR)
     return false;
 
@@ -253,7 +253,7 @@ bool CNetworkInterfaceWin32::GetHostMacAddress(const struct sockaddr& host, std:
       return false;
   }
 
-  DWORD dwRetVal = ResolveIpNetEntry2(&neighborIp, nullptr);
+  uint32_t dwRetVal = ResolveIpNetEntry2(&neighborIp, nullptr);
   if (dwRetVal == NO_ERROR)
   {
     if (neighborIp.PhysicalAddressLength == 6)

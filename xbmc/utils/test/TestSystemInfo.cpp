@@ -304,7 +304,8 @@ TEST_F(TestSystemInfo, GetDiskSpace)
 #ifdef TARGET_WINDOWS
   using KODI::PLATFORM::WINDOWS::FromW;
   wchar_t sysDrive[300];
-  DWORD res = GetEnvironmentVariableW(L"SystemDrive", sysDrive, sizeof(sysDrive) / sizeof(wchar_t));
+  uint32_t res =
+      GetEnvironmentVariableW(L"SystemDrive", sysDrive, sizeof(sysDrive) / sizeof(wchar_t));
   std::string sysDriveLtr;
   if (res != 0 && res <= sizeof(sysDrive) / sizeof(wchar_t))
     sysDriveLtr.assign(FromW(sysDrive), 0, 1);
