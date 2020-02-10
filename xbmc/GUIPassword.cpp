@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2018 Team Kodi
+ *  Copyright (C) 2005-2020 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -18,6 +18,7 @@
 #include "guilib/GUIKeyboardFactory.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
+#include "media/MediaLockState.h"
 #include "messaging/ApplicationMessenger.h"
 #include "messaging/helpers/DialogOKHelper.h"
 #include "profiles/ProfileManager.h"
@@ -52,7 +53,7 @@ bool CGUIPassword::IsItemUnlocked(CFileItem* pItem, const std::string &strType)
   if (profileManager->GetMasterProfile().getLockMode() == LOCK_MODE_EVERYONE)
     return true;
 
-  while (pItem->m_iHasLock > 1)
+  while (pItem->m_iHasLock > LOCK_STATE_LOCK_BUT_UNLOCKED)
   {
     std::string strLockCode = pItem->m_strLockCode;
     std::string strLabel = pItem->GetLabel();
@@ -89,7 +90,7 @@ bool CGUIPassword::IsItemUnlocked(CFileItem* pItem, const std::string &strType)
       {
         // password entry succeeded
         pItem->m_iBadPwdCount = 0;
-        pItem->m_iHasLock = 1;
+        pItem->m_iHasLock = LOCK_STATE_LOCK_BUT_UNLOCKED;
         g_passwordManager.LockSource(strType,strLabel,false);
         sprintf(buffer,"%i",pItem->m_iBadPwdCount);
         CMediaSourceSettings::GetInstance().UpdateSource(strType, strLabel, "badpwdcount", buffer);
@@ -459,9 +460,9 @@ bool CGUIPassword::LockSource(const std::string& strType, const std::string& str
   {
     if (it->strName == strName)
     {
-      if (it->m_iHasLock > 0)
+      if (it->m_iHasLock > LOCK_STATE_NO_LOCK)
       {
-        it->m_iHasLock = bState?2:1;
+        it->m_iHasLock = bState ? LOCK_STATE_LOCKED : LOCK_STATE_LOCK_BUT_UNLOCKED;
         bResult = true;
       }
       break;
@@ -482,7 +483,7 @@ void CGUIPassword::LockSources(bool lock)
     VECSOURCES *shares = CMediaSourceSettings::GetInstance().GetSources(strType);
     for (IVECSOURCES it=shares->begin();it != shares->end();++it)
       if (it->m_iLockMode != LOCK_MODE_EVERYONE)
-        it->m_iHasLock = lock ? 2 : 1;
+        it->m_iHasLock = lock ? LOCK_STATE_LOCKED : LOCK_STATE_LOCK_BUT_UNLOCKED;
   }
   CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_UPDATE_SOURCES);
   CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg);
@@ -498,7 +499,7 @@ void CGUIPassword::RemoveSourceLocks()
     for (IVECSOURCES it=shares->begin();it != shares->end();++it)
       if (it->m_iLockMode != LOCK_MODE_EVERYONE) // remove old info
       {
-        it->m_iHasLock = 0;
+        it->m_iHasLock = LOCK_STATE_NO_LOCK;
         it->m_iLockMode = LOCK_MODE_EVERYONE;
         CMediaSourceSettings::GetInstance().UpdateSource(strType, it->strName, "lockmode", "0"); // removes locks from xml
       }
@@ -520,7 +521,7 @@ bool CGUIPassword::IsDatabasePathUnlocked(const std::string& strPath, VECSOURCES
   int iIndex = CUtil::GetMatchingSource(strPath, vecSources, bName);
 
   if (iIndex > -1 && iIndex < (int)vecSources.size())
-    if (vecSources[iIndex].m_iHasLock < 2)
+    if (vecSources[iIndex].m_iHasLock < LOCK_STATE_LOCKED)
       return true;
 
   return false;
