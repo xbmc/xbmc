@@ -3,16 +3,15 @@ DEPS = Makefile
 
 # lib name, version
 LIBNAME=fmt
-VERSION=5.1.0
+VERSION=6.1.2
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
 
-CMAKE_OPTIONS=-DFMT_DOC=OFF -DFMT_INSTALL=ON -DFMT_TEST=OFF -DFMT_USE_CPP11=ON
+CMAKE_OPTIONS=-DCMAKE_CXX_STANDARD=14 -DCMAKE_CXX_EXTENSIONS:BOOL=OFF -DFMT_DOC=OFF -DFMT_INSTALL=ON -DFMT_TEST=OFF
 
 ifeq ($(CROSS_COMPILING), yes)
   DEPS += ../../Makefile.include
 else
-  CXXFLAGS += -std=c++11
   ROOT_DIR := $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 
   ifeq ($(PLATFORM),)
@@ -28,7 +27,7 @@ else
   endif
 endif
 
-LIBDYLIB=$(PLATFORM)/build/$(LIBNAME)/libfmt.a
+LIBDYLIB=$(PLATFORM)/build/libfmt.a
 
 .PHONY: .installed-native
 
@@ -61,4 +60,3 @@ clean:
 
 distclean::
 	rm -rf $(PLATFORM) .installed-$(PLATFORM)
-
