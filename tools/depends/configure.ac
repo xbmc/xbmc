@@ -313,25 +313,13 @@ case $host in
     platform_cxxflags="-no-cpp-precomp"
 
     case $host in
-      *86*-apple-darwin)
+      x86_64-apple-darwin)
         MC_CHECK_NOT_CPU([$use_cpu], "arm")
 
         # setup which cpu to use
-        case $host in
-          x86_64-apple-darwin*)
-            if test "x$use_cpu" = "xauto"; then
-              use_cpu=x86_64
-            fi
-          ;;
-          i*86-apple-darwin*)
-            if test "x$use_cpu" = "xauto"; then
-              use_cpu=i386
-            fi
-            platform_ldflags+=" -read_only_relocs suppress"
-         ;;
-          *)
-            AC_MSG_ERROR(error in configure of --with-arch=$use_cpu)
-        esac
+        if test "x$use_cpu" = "xauto"; then
+          use_cpu=x86_64
+        fi
 
         # setup which sdk to use
         target_platform=macosx

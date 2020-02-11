@@ -20,9 +20,6 @@ Paths below are examples. If you want to build Kodi, follow our **[build guides]
 ### All platforms
 `./bootstrap`
 ### Darwin
-**macOS (i386)**  
-`./configure --host=i386-apple-darwin`
-
 **macOS (x86_64)**  
 `./configure --host=x86_64-apple-darwin`
 

@@ -21,12 +21,8 @@
 /target/*/aarch64-linux-*/*
 /target/*/macosx*.*_x86_64-target-*/
 /target/*/macosx*.*_x86_64-target-*/*
-/target/*/macosx*.*_i386-target-*/
-/target/*/macosx*.*_i386-target-*/*
 /target/*/iphoneos*.*_arm*-target-*/
 /target/*/iphoneos*.*_arm*-target-*/*
-/target/*/iphonesimulator*.*_i386*-target-*/
-/target/*/iphonesimulator*.*_i386*-target-*/*
 /target/*/iphonesimulator*.*_x86_64*-target-*/
 /target/*/iphonesimulator*.*_x86_64*-target-*/*
 /target/*/appletvos*.*_arm64*-target-*/

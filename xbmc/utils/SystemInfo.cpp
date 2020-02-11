@@ -914,8 +914,6 @@ const std::string& CSysInfo::GetKernelCpuFamily(void)
         kernelCpuFamily = "x86";
       else if (cpuType == CPU_TYPE_ARM)
         kernelCpuFamily = "ARM";
-      else if (cpuType == CPU_TYPE_POWERPC)
-        kernelCpuFamily = "PowerPC";
 #ifdef CPU_TYPE_MIPS
       else if (cpuType == CPU_TYPE_MIPS)
         kernelCpuFamily = "MIPS";
@@ -1072,8 +1070,6 @@ std::string CSysInfo::GetUserAgent()
   std::string cpuFam(GetBuildTargetCpuFamily());
   if (cpuFam == "x86")
     result += "Intel ";
-  else if (cpuFam == "PowerPC")
-    result += "PPC ";
   result += "Mac OS X ";
   std::string OSXVersion(GetOsVersion());
   StringUtils::Replace(OSXVersion, '.', '_');
