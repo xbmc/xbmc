@@ -4,6 +4,7 @@ set(SOURCES TestBasicEnvironment.cpp
             TestURL.cpp
             TestUtil.cpp
             TestUtils.cpp
+            TestDateTime.cpp
             TestDateTimeSpan.cpp)
 
 set(HEADERS TestBasicEnvironment.h
