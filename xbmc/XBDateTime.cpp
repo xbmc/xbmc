@@ -1002,9 +1002,9 @@ bool CDateTime::SetFromW3CDateTime(const std::string &dateTime, bool ignoreTimez
       if (zoneSpan.GetSecondsTotal() != 0)
       {
         if (StringUtils::StartsWith(zone, "+"))
-          tmpDateTime += zoneSpan;
-        else if (StringUtils::StartsWith(zone, "-"))
           tmpDateTime -= zoneSpan;
+        else if (StringUtils::StartsWith(zone, "-"))
+          tmpDateTime += zoneSpan;
       }
     }
   }
