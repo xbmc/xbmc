@@ -3,7 +3,8 @@ set(SOURCES TestBasicEnvironment.cpp
             TestTextureUtils.cpp
             TestURL.cpp
             TestUtil.cpp
-            TestUtils.cpp)
+            TestUtils.cpp
+            TestDateTimeSpan.cpp)
 
 set(HEADERS TestBasicEnvironment.h
             TestUtils.h)
