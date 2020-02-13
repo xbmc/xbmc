@@ -86,7 +86,6 @@
 #define stricmp   strcasecmp
 #define strcmpi strcasecmp
 #define strnicmp  strncasecmp
-#define _atoi64(x) atoll(x)
 
 #define __stdcall
 #define __cdecl
