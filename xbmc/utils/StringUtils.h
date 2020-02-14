@@ -51,6 +51,25 @@ DEF_TO_STR_VALUE(foo) // outputs "4"
 #define DEF_TO_STR_NAME(x) #x
 #define DEF_TO_STR_VALUE(x) DEF_TO_STR_NAME(x)
 
+template< bool B, class T = void >
+using enable_if_t = typename std::enable_if<B,T>::type;
+
+template< class T > struct remove_rvalue_reference      {typedef T type;};
+template< class T > struct remove_rvalue_reference<T&>  {typedef T& type;};
+template< class T > struct remove_rvalue_reference<T*>  {typedef T* type;};
+template< class T > struct remove_rvalue_reference<T&&> {typedef T type;};
+
+template<typename T, enable_if_t<!std::is_enum<T>::value, int> = 0>
+constexpr auto EnumToInt(T&& arg) noexcept -> typename remove_rvalue_reference<decltype(arg)>::type
+{
+  return arg;
+}
+template<typename T, enable_if_t<std::is_enum<T>::value, int> = 0>
+constexpr auto EnumToInt(T&& arg) noexcept -> int
+{
+  return static_cast<int>(arg);
+}
+
 class StringUtils
 {
 public:
@@ -69,9 +88,9 @@ public:
   static std::string Format(const std::string& fmt, Args&&... args)
   {
     // coverity[fun_call_w_exception : FALSE]
-    auto result = ::fmt::format(fmt, std::forward<Args>(args)...);
+    auto result = ::fmt::format(fmt, EnumToInt(std::forward<Args>(args))...);
     if (result == fmt)
-      result = ::fmt::sprintf(fmt, std::forward<Args>(args)...);
+      result = ::fmt::sprintf(fmt, EnumToInt(std::forward<Args>(args))...);
 
     return result;
   }
@@ -79,9 +98,9 @@ public:
   static std::wstring Format(const std::wstring& fmt, Args&&... args)
   {
     // coverity[fun_call_w_exception : FALSE]
-    auto result = ::fmt::format(fmt, std::forward<Args>(args)...);
+    auto result = ::fmt::format(fmt, EnumToInt(std::forward<Args>(args))...);
     if (result == fmt)
-      result = ::fmt::sprintf(fmt, std::forward<Args>(args)...);
+      result = ::fmt::sprintf(fmt, EnumToInt(std::forward<Args>(args))...);
 
     return result;
   }
