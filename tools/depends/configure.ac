@@ -341,7 +341,7 @@ case $host in
         platform_os="osx"
       ;;
 
-      arm-apple-darwin*)
+      aarch64-apple-darwin*)
         MC_CHECK_NOT_CPU([$use_cpu], "*86")
 
         # setup which sdk to use

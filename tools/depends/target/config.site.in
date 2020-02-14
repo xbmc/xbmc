@@ -84,13 +84,6 @@ if test "@platform_os@" = "darwin_embedded"; then
   # there is no clock_settime on iOS/tvOS as of latest version 13.X
   ac_cv_func_clock_settime=no
 
-  # tweaks for libffi
-  if test "${PACKAGE_NAME}" = "libffi" ; then
-    if test "@use_cpu@" = "arm64"; then
-      host_alias=aarch64-apple-darwin
-    fi
-  fi
-
   # tweaks for flac
   if test "${ac_unique_file}" = "src/flac/main.c" ; then
     # compiler barfs if we use -O3/O2 for flac
@@ -99,9 +92,10 @@ if test "@platform_os@" = "darwin_embedded"; then
   fi
 fi
 
-# Python3 build for appletvos
 if test "@target_platform@" = "appletvos"; then
   ac_cv_func_sigaltstack=no
+  ac_cv_func_vfork_works=no
+  ac_cv_func_fork=no
 fi
 
 #Fix for older, broken android toolchains

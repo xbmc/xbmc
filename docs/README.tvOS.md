@@ -91,7 +91,7 @@ Configure build:
 ```
 cd $HOME/kodi/tools/depends
 ./bootstrap
-./configure --host=arm-apple-darwin --with-platform=tvos
+./configure --host=aarch64-apple-darwin --with-platform=tvos
 ```
 
 Build tools and dependencies:
@@ -105,7 +105,7 @@ make -j$(getconf _NPROCESSORS_ONLN)
 
 **NOTE:** **Advanced developers** may want to specify an tvOS SDK version (if multiple versions are installed) in the configure line(s) shown above. The example below would use the tvOS SDK 11.0:
 ```
-./configure --host=arm-apple-darwin --with-platform=tvos --with-sdk=11.0
+./configure --host=aarch64-apple-darwin --with-platform=tvos --with-sdk=11.0
 ```
 
 **[back to top](#table-of-contents)**

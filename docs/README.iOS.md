@@ -84,7 +84,7 @@ Configure build:
 ```
 cd $HOME/kodi/tools/depends
 ./bootstrap
-./configure --host=arm-apple-darwin
+./configure --host=aarch64-apple-darwin
 ```
 
 Build tools and dependencies:
@@ -98,7 +98,7 @@ make -j$(getconf _NPROCESSORS_ONLN)
 
 **NOTE:** **Advanced developers** may want to specify an iOS SDK version (if multiple versions are installed) in the configure line(s) shown above. The example below would use the iOS SDK 11.0:
 ```
-./configure --host=arm-apple-darwin --with-sdk=11.0
+./configure --host=aarch64-apple-darwin --with-sdk=11.0
 ```
 
 **[back to top](#table-of-contents)** | **[back to section top](#4-configure-and-build-tools-and-dependencies)**

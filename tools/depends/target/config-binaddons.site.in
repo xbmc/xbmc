@@ -75,6 +75,11 @@ if test "@platform_os@" = "darwin_embedded"; then
     export CFLAGS=`echo ${CFLAGS} | sed 's/-O3/-Os/'`
     export CPPFLAGS=`echo ${CPPFLAGS} | sed 's/-O3/-Os/'`
   fi
+
+  if test "@target_platform@" = "appletvos"; then
+    ac_cv_func_vfork_works=no
+    ac_cv_func_fork=no
+  fi
 fi
 
 #Fix for older, broken android toolchains
