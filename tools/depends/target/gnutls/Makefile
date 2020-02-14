@@ -7,11 +7,6 @@ VERSION=3.6.11.1
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.xz
 
-ifeq (darwin, $(findstring darwin, $(HOST)))
-# darwins tar doesn't know about xz - so we need our native version of tar here
-ARCHIVE_TOOL=$(ARCHIVE_TOOL_NATIVE)
-endif
-
 ifeq ($(OS),darwin_embedded)
 CONFIGURE_OPTIONS = --disable-hardware-acceleration
 endif

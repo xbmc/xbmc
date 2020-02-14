@@ -17,10 +17,6 @@ ifeq ($(OS),darwin_embedded)
   NATIVE += dpkg xz tar gen_entitlements ldid
 endif
 
-ifeq ($(OS),osx)
-  NATIVE += xz tar
-endif
-
 ifeq ($(OS),linux)
   ifeq ($(TARGET_PLATFORM),$(filter $(TARGET_PLATFORM),raspberry-pi gbm))
     NATIVE += meson ninja
