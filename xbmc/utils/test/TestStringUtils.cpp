@@ -66,6 +66,17 @@ TEST(TestStringUtils, FormatEnum)
   EXPECT_STREQ(one, varstr.c_str());
 }
 
+TEST(TestStringUtils, FormatEnumWidth)
+{
+  const char* one = "01";
+
+  std::string varstr = StringUtils::Format("{:02d}", ECG::B);
+  EXPECT_STREQ(one, varstr.c_str());
+
+  varstr = StringUtils::Format("%02d", EG::D);
+  EXPECT_STREQ(one, varstr.c_str());
+}
+
 TEST(TestStringUtils, ToUpper)
 {
   std::string refstr = "TEST";
