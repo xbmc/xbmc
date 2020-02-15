@@ -46,3 +46,7 @@ clean:
 
 distclean::
 	rm -rf $(PLATFORM) .installed-$(PLATFORM)
+
+.PHONY: update-cacert
+update-cacert: $(PLATFORM)
+	$(PLATFORM)/lib/mk-ca-bundle.pl -u $(CMAKE_SOURCE_DIR)/system/certs/cacert.pem
