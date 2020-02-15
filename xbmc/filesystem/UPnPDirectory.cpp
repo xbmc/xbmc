@@ -4,7 +4,7 @@
  *      Portions Copyright (c) by the authors of libPlatinum
  *      http://www.plutinosoft.com/blog/category/platinum/
  *
- *  Copyright (C) 2010-2018 Team Kodi
+ *  Copyright (c) 2020 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later

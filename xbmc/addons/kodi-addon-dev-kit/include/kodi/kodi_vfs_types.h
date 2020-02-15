@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2015-2018 Team Kodi
+ *  Copyright (c) 2020 Team Kodi
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
  *  See LICENSES/README.md for more information.

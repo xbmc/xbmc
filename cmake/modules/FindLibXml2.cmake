@@ -18,7 +18,7 @@
 #=============================================================================
 # Copyright 2006-2009 Kitware, Inc.
 # Copyright 2006 Alexander Neundorf <neundorf@kde.org>
-# Copyright 2016 Team Kodi
+# Copyright (c) 2020 Team Kodi
 #
 # Distributed under the OSI-approved BSD License (the "License");
 # see accompanying file Copyright.txt for details.

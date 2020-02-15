@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2018 Team Kodi
+ *      Copyright (c) 2020 Team Kodi
  *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify

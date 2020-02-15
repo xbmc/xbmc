@@ -71,7 +71,7 @@ Credits:
 Kodi - Cross-platform Media Center
 <http://Kodi.org/>
 
-    Copyright © 2005-2016 Team Kodi http://kodi.tv
+    Copyright (c) 2020 Team Kodi http://kodi.tv
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -618,7 +618,7 @@ Neptune Portable C++ Runtime Library
 MMST implementation taken from the xine-mms plugin made by Major MMS
 (http://geocities.com/majormms/).
 
-    Copyright © 2005-2008 Team Kodi
+    Copyright (c) 2020 Team Kodi
     Copyright © 2002 Abhijeet Phatak <abhijeetphatak@yahoo.com>
     Copyright © 2002 the xine project
     Copyright © 2000-2001 major mms
@@ -1842,7 +1842,7 @@ Kodi-xrandr.c
 
 Kodi/Crc32.cpp and Kodi/Crc32.h
 
-    Copyright (C) 2005-2009 Team Kodi
+    Copyright (c) 2020 Team Kodi
     http://kodi.tv
 
     This program is free software; you can redistribute it and/or modify

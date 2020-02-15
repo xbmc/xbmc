@@ -35,7 +35,7 @@ The SPDX license identifier is added in the form of a comment. The comment style
 Since most source files in Kodi are `GPL-2.0-or-later` licensed, the typical copyright notice will look like this:
 ```
 /*
- *  Copyright (C) 2005-2018 Team Kodi
+ *  Copyright (c) 2020 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
