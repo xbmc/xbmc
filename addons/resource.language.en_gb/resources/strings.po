@@ -19435,7 +19435,7 @@ msgstr ""
 #. Description of setting with label #263 "Allow remote control via HTTP"
 #: system/settings/settings.xml
 msgctxt "#36328"
-msgid "Enable remote users to control this application through the built-in web server."
+msgid "Enable remote users to control this application through the built-in web server. Never expose the web server port to the Internet."
 msgstr ""
 
 #. Description of setting with label #730 "Port"
