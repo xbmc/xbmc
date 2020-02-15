@@ -52,6 +52,7 @@ protected:
   bool m_started;
   bool m_hasData;
   bool m_needData;
+  bool m_ptsInitialized;
   int m_sampleOffset;
   int64_t m_SamplesIn;
   int64_t m_SamplesOut;
