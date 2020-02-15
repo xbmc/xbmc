@@ -75,8 +75,6 @@ shared:
 	find `pwd`/assets/ -name "*.so" -exec rm {} \;
 	find `pwd`/assets/addons/skin.*/media/* -depth -not -iname "Textures.xbt" -exec rm -rf {} \;
 	cd `pwd`/assets/addons; rm -rf $(EXCLUDED_ADDONS)
-	mkdir -p assets/system/certs
-	cp $(CMAKE_SOURCE_DIR)/tools/depends/target/openssl/cacert.pem assets/system/certs
 	cp $(CMAKE_SOURCE_DIR)/privacy-policy.txt assets
 
 sharedapk: shared | xbmc/assets

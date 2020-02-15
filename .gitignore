@@ -322,9 +322,6 @@ cmake_install.cmake
 /docs/html
 exclude_dll.txt
 
-#certificates
-/system/certs/
-
 # VS git tools doesn't work for true out of tree builds and it's
 # useful to be able to work on multiple configs
 /build*/
