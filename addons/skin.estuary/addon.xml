@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<addon id="skin.estuary" version="2.0.26" name="Estuary" provider-name="phil65, Ichabod Fletchman">
+<addon id="skin.estuary" version="2.0.27" name="Estuary" provider-name="phil65, Ichabod Fletchman">
 	<requires>
 		<import addon="xbmc.gui" version="5.14.0"/>
 	</requires>
@@ -51,7 +51,7 @@
 		<summary lang="pt_PT">Visual Estuary de phil65 e Piers. (Visual por omissão do Kodi)</summary>
 		<summary lang="ro_RO">Tema Estuary de phil65. (Temă implicită pentru Kodi)</summary>
 		<summary lang="ru_RU">Обложка Estuary (стандартная обложка Kodi). Авторы: phil65 and Piers.</summary>
-		<summary lang="sk_SK">Vzhľad Estuary, vytvorili phil65 a Piers. (predvolený vzhľad pre Kodi)</summary>
+		<summary lang="sk_SK">Vzhľad Estuary, vytvorili phil65. (predvolený vzhľad pre Kodi)</summary>
 		<summary lang="sr_RS">Маска Estuary аутора phil65 и Piers. (Подразумевана Коди маска)</summary>
 		<summary lang="sr_RS@latin">Maska Estuary autora phil65 i Piers. (Podrazumevana Kodi maska)</summary>
 		<summary lang="sv_SE">Estuary, ett skal av phil65. (Kodi's standardskal)</summary>

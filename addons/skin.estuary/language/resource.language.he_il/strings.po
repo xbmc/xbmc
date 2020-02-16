@@ -448,6 +448,10 @@ msgctxt "#31132"
 msgid "Select Program"
 msgstr "בחר תוכנית"
 
+msgctxt "#31133"
+msgid "Select Resolution"
+msgstr "בחירת רזולוציה"
+
 msgctxt "#31134"
 msgid "Remaining"
 msgstr "נותר"
@@ -556,6 +560,18 @@ msgctxt "#31163"
 msgid "Show Fanart background"
 msgstr "הצג רקע פאנארט"
 
+msgctxt "#31164"
+msgid "Choose kind of profile identification"
+msgstr "לבחור סוג של זיהוי פרופיל"
+
 msgctxt "#31165"
 msgid "Profile name"
 msgstr "שם משתמש"
+
+msgctxt "#31166"
+msgid "Profile avatar"
+msgstr "דמות מייצגת לפרופיל"
+
+msgctxt "#31167"
+msgid "Animate background"
+msgstr "הנפשת הרקע"

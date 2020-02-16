@@ -46,7 +46,7 @@ msgstr "ランダムムービー"
 
 msgctxt "#31007"
 msgid "Unwatched movies"
-msgstr "未視聴な映画"
+msgstr "未視聴の映画"
 
 msgctxt "#31008"
 msgid "Enable category widgets"
