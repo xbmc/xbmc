@@ -208,6 +208,10 @@ msgctxt "#31072"
 msgid "Power Options"
 msgstr "Enerģijas opcijas"
 
+msgctxt "#31074"
+msgid "Total duration"
+msgstr "Kopējais ilgums"
+
 msgctxt "#31075"
 msgid "Movie sets"
 msgstr "Filmu kopumi"

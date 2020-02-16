@@ -96,6 +96,10 @@ msgctxt "#31072"
 msgid "Power Options"
 msgstr "Pilihan Batere"
 
+msgctxt "#31074"
+msgid "Total duration"
+msgstr "Total durasi"
+
 msgctxt "#31082"
 msgid "Lyrics add-on"
 msgstr "Add-on lirik"

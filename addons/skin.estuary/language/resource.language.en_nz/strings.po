@@ -148,10 +148,6 @@ msgctxt "#31033"
 msgid "Your rating"
 msgstr "Your rating"
 
-msgctxt "#31034"
-msgid "Extended info"
-msgstr "Extended info"
-
 msgctxt "#31035"
 msgid "Pages"
 msgstr "Pages"
@@ -264,6 +260,10 @@ msgctxt "#31072"
 msgid "Power Options"
 msgstr "Power Options"
 
+msgctxt "#31074"
+msgid "Total duration"
+msgstr "Total duration"
+
 msgctxt "#31075"
 msgid "Movie sets"
 msgstr "Movie sets"
@@ -291,10 +291,6 @@ msgstr "Visualisation settings"
 msgctxt "#31089"
 msgid "Available groups"
 msgstr "Available groups"
-
-msgctxt "#31090"
-msgid "Search trailer"
-msgstr "Search trailer"
 
 msgctxt "#31092"
 msgid "Video menu"
@@ -376,10 +372,6 @@ msgctxt "#31114"
 msgid "Search YouTube"
 msgstr "Search YouTube"
 
-msgctxt "#31115"
-msgid "Search TheMovieDB"
-msgstr "Search TheMovieDB"
-
 msgctxt "#31116"
 msgid "Remove this main menu item"
 msgstr "Remove this main menu item"
@@ -412,10 +404,6 @@ msgctxt "#31123"
 msgid "Same director"
 msgstr "Same director"
 
-msgctxt "#31124"
-msgid "Show images on map"
-msgstr "Show images on map"
-
 msgctxt "#31125"
 msgid "Press up for actor info"
 msgstr "Press up for actor info"
@@ -443,6 +431,14 @@ msgstr "Main menu-related settings: Configure the home screen to your likings."
 msgctxt "#31131"
 msgid "Choose skin fanart pack"
 msgstr "Choose skin fanart pack"
+
+msgctxt "#31132"
+msgid "Select Program"
+msgstr "Select Program"
+
+msgctxt "#31133"
+msgid "Select Resolution"
+msgstr "Select Resolution"
 
 msgctxt "#31134"
 msgid "Remaining"
@@ -552,6 +548,18 @@ msgctxt "#31163"
 msgid "Show Fanart background"
 msgstr "Show Fanart background"
 
+msgctxt "#31164"
+msgid "Choose kind of profile identification"
+msgstr "Choose kind of profile identification"
+
 msgctxt "#31165"
 msgid "Profile name"
 msgstr "Profile name"
+
+msgctxt "#31166"
+msgid "Profile avatar"
+msgstr "Profile avatar"
+
+msgctxt "#31167"
+msgid "Animate background"
+msgstr "Animate background"

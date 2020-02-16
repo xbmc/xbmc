@@ -148,10 +148,6 @@ msgctxt "#31033"
 msgid "Your rating"
 msgstr "Votre évaluation"
 
-msgctxt "#31034"
-msgid "Extended info"
-msgstr "Informations complémentaires"
-
 msgctxt "#31035"
 msgid "Pages"
 msgstr "Pages"
@@ -264,6 +260,10 @@ msgctxt "#31072"
 msgid "Power Options"
 msgstr "Options de fermeture"
 
+msgctxt "#31074"
+msgid "Total duration"
+msgstr "Durée totale"
+
 msgctxt "#31075"
 msgid "Movie sets"
 msgstr "Sagas"
@@ -291,10 +291,6 @@ msgstr "Paramètres de visusalisation"
 msgctxt "#31089"
 msgid "Available groups"
 msgstr "Groupes proposés"
-
-msgctxt "#31090"
-msgid "Search trailer"
-msgstr "Chercher la bande-annonce"
 
 msgctxt "#31092"
 msgid "Video menu"
@@ -342,7 +338,7 @@ msgstr "Saisir du texte ici…"
 
 msgctxt "#31104"
 msgid "Your library is currently empty. In order to populate it with your personal media, enter \"Files\" section, add a media source and configure it. After the source has been added and indexed you will be able to browse your library."
-msgstr "Votre médiathèque est actuellement vide. Afin de la remplir avec vos médias personnels, allez à la section « Fichiers », ajoutez une source de médias et configurez-la. Une fois que la source aura été ajoutée et indexée, vous pourrez parcourir votre médiathèque."
+msgstr "Votre médiathèque est actuellement vide. Afin de la remplir avec vos médias personnels, allez à la section «  Fichiers », ajoutez une source de médias et configurez-la. Une fois que la source aura été ajoutée et indexée, vous pourrez parcourir votre médiathèque."
 
 msgctxt "#31105"
 msgid "Add video sources and set the appropriate content type in order to populate your video libraries."
@@ -376,10 +372,6 @@ msgctxt "#31114"
 msgid "Search YouTube"
 msgstr "Rechercher sur YouTube"
 
-msgctxt "#31115"
-msgid "Search TheMovieDB"
-msgstr "Rechercher sur TheMovieDB"
-
 msgctxt "#31116"
 msgid "Remove this main menu item"
 msgstr "Retirer cet élément du menu principal"
@@ -412,10 +404,6 @@ msgctxt "#31123"
 msgid "Same director"
 msgstr "Même réalisateur"
 
-msgctxt "#31124"
-msgid "Show images on map"
-msgstr "Afficher les images sur la carte"
-
 msgctxt "#31125"
 msgid "Press up for actor info"
 msgstr "Peser sur haut pour les informations sur les acteurs"
@@ -438,7 +426,7 @@ msgstr "Paramètres généraux s’appliquant à toutes les sections de l’habi
 
 msgctxt "#31130"
 msgid "Main menu-related settings: Configure the home screen to your likings."
-msgstr "Paramètres concernant le menu principal : configurez l’écran d’accueil selon vos goûts."
+msgstr "Paramètres concernant le menu principal : configurez l’écran d’accueil selon vos goûts."
 
 msgctxt "#31131"
 msgid "Choose skin fanart pack"

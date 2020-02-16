@@ -52,6 +52,10 @@ msgctxt "#31072"
 msgid "Power Options"
 msgstr "Energia valikud"
 
+msgctxt "#31074"
+msgid "Total duration"
+msgstr "Kogukestvus"
+
 msgctxt "#31096"
 msgid "Local subtitle available"
 msgstr "Lokaalsed subtiitrid on saadaval"

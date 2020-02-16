@@ -76,6 +76,10 @@ msgctxt "#31072"
 msgid "Power Options"
 msgstr "گزینه های صرفه جویی در مصرف انرژی"
 
+msgctxt "#31074"
+msgid "Total duration"
+msgstr "تمام مدت"
+
 msgctxt "#31082"
 msgid "Lyrics add-on"
 msgstr "افزونه متن ترانه"
