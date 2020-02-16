@@ -186,6 +186,8 @@ msgctxt "#31033"
 msgid "Your rating"
 msgstr ""
 
+#empty string with id 31034
+
 #: /xml/DialogPVRChannelManager.xml /xml/DialogPVRChannelsOSD.xml /xml/DialogPVRGuideOSD.xml /xml/Variables.xml /xml/FileBrowser.xml
 msgctxt "#31035"
 msgid "Pages"
@@ -398,7 +400,7 @@ msgctxt "#31089"
 msgid "Available groups"
 msgstr ""
 
-#empty string with id 31091
+#empty strings from id 31090 to 31091
 
 #: /xml/VideoOSD.xml /xml/Variables.xml
 msgctxt "#31092"
@@ -509,6 +511,8 @@ msgctxt "#31114"
 msgid "Search YouTube"
 msgstr ""
 
+#empty string with id 31115
+
 #: /xml/Includes_Home.xml
 msgctxt "#31116"
 msgid "Remove this main menu item"
@@ -548,6 +552,8 @@ msgstr ""
 msgctxt "#31123"
 msgid "Same director"
 msgstr ""
+
+#empty string with id 31124
 
 #: /xml/DialogVideoInfo.xml
 msgctxt "#31125"
