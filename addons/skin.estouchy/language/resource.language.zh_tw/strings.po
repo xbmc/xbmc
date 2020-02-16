@@ -96,6 +96,10 @@ msgctxt "#31039"
 msgid "Updated:"
 msgstr "已更新："
 
+msgctxt "#31043"
+msgid "PAUSED"
+msgstr "已暫停"
+
 msgctxt "#31044"
 msgid "FAST FORWARD"
 msgstr "快轉"

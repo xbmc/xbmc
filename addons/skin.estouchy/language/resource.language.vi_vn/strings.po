@@ -64,6 +64,10 @@ msgctxt "#31038"
 msgid "Login"
 msgstr "Đăng nhập"
 
+msgctxt "#31043"
+msgid "PAUSED"
+msgstr "Tạm dừng"
+
 msgctxt "#31044"
 msgid "FAST FORWARD"
 msgstr "TUA NHANH"

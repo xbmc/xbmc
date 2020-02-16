@@ -72,6 +72,10 @@ msgctxt "#31038"
 msgid "Login"
 msgstr "Најави се"
 
+msgctxt "#31043"
+msgid "PAUSED"
+msgstr "ПАУЗИРАНО"
+
 msgctxt "#31044"
 msgid "FAST FORWARD"
 msgstr "ПРЕМОТУВАЊЕ НАНАПРЕД"

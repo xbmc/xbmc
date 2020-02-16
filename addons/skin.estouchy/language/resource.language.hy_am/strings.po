@@ -36,6 +36,10 @@ msgctxt "#31038"
 msgid "Login"
 msgstr "Մուտք"
 
+msgctxt "#31043"
+msgid "PAUSED"
+msgstr "ԴԱԴԱՐ"
+
 msgctxt "#31044"
 msgid "FAST FORWARD"
 msgstr "ԱՌԱՋ"

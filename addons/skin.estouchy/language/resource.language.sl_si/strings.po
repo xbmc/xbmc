@@ -68,6 +68,10 @@ msgctxt "#31038"
 msgid "Login"
 msgstr "Prijava"
 
+msgctxt "#31043"
+msgid "PAUSED"
+msgstr "PREKINITEV"
+
 msgctxt "#31044"
 msgid "FAST FORWARD"
 msgstr "PREVIJANJE NAPREJ"

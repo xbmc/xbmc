@@ -34,7 +34,7 @@ msgstr "Visualiseringsindstillinger"
 
 msgctxt "#31006"
 msgid "Visualization Presets"
-msgstr "Forudindstillinger til Visualisering"
+msgstr "Forudindstillinger til visualisering"
 
 msgctxt "#31007"
 msgid "Context Menu"
@@ -55,6 +55,10 @@ msgstr "Film"
 msgctxt "#31014"
 msgid "Episodes"
 msgstr "Afsnit"
+
+msgctxt "#31015"
+msgid "Player info"
+msgstr "Information for afspiller"
 
 msgctxt "#31016"
 msgid "Albums"
@@ -78,7 +82,7 @@ msgstr "Pixelformat"
 
 msgctxt "#31021"
 msgid "System memory usage"
-msgstr "Hukommelsesforbrug"
+msgstr "Systemets hukommelsesforbrug"
 
 msgctxt "#31024"
 msgid "Page"
@@ -90,11 +94,15 @@ msgstr "Informationsliste"
 
 msgctxt "#31038"
 msgid "Login"
-msgstr "Brugernavn"
+msgstr "Login"
 
 msgctxt "#31039"
 msgid "Updated:"
 msgstr "Opdateret:"
+
+msgctxt "#31043"
+msgid "PAUSED"
+msgstr "PAUSE"
 
 msgctxt "#31044"
 msgid "FAST FORWARD"
@@ -114,11 +122,11 @@ msgstr "Sluttidspunkt"
 
 msgctxt "#31050"
 msgid "Sort: Ascending"
-msgstr "Sorter: Stigende"
+msgstr "Sorter: stigende"
 
 msgctxt "#31051"
 msgid "Sort: Descending"
-msgstr "Sorter: Faldende"
+msgstr "Sorter: faldende"
 
 msgctxt "#31055"
 msgid "Open playlist"
@@ -126,7 +134,7 @@ msgstr "Åbn playliste"
 
 msgctxt "#31056"
 msgid "Save playlist"
-msgstr "Gem afspilningsliste"
+msgstr "Gem playliste"
 
 msgctxt "#31057"
 msgid "Close playlist"
@@ -146,7 +154,7 @@ msgstr "Tilbage"
 
 msgctxt "#31201"
 msgid "Location"
-msgstr "Lokalitet"
+msgstr "Placering"
 
 msgctxt "#31202"
 msgid "View"
@@ -154,11 +162,11 @@ msgstr "Vis"
 
 msgctxt "#31300"
 msgid "Current Temp"
-msgstr "Temperatur Nu"
+msgstr "Nuværende temperatur"
 
 msgctxt "#31301"
 msgid "Last Updated"
-msgstr "Sidst Opdateret"
+msgstr "Sidst opdateret"
 
 msgctxt "#31303"
 msgid "Data provider"
@@ -166,7 +174,7 @@ msgstr "Dataleverandør"
 
 msgctxt "#31309"
 msgid "System Memory Used:"
-msgstr "System hukommelse ibrug:"
+msgstr "Systemets hukommelsesforbrug:"
 
 msgctxt "#31320"
 msgid "Last Logged In"
@@ -182,7 +190,7 @@ msgstr "Videomenu"
 
 msgctxt "#31356"
 msgid "Download Subtitles"
-msgstr "Hent Undertekster"
+msgstr "Hent undertekster"
 
 msgctxt "#31358"
 msgid "Teletext"
@@ -194,15 +202,27 @@ msgstr "Skinnets standard"
 
 msgctxt "#31391"
 msgid "Arial based"
-msgstr "Arialbaseret"
+msgstr "Baseret på Arial"
 
 msgctxt "#31400"
 msgid "Change the skin · Set language and region · Change file listing options · Set up a screensaver"
 msgstr "Skift skin · Vælg sprog og region · Skift indstillinger for filvisning · Opsæt en pauseskærm"
 
+msgctxt "#31407"
+msgid "Manage your installed add-ons · Browse for and install add-ons from kodi.tv · Modify add-on settings"
+msgstr "Administrer dine installerede add-ons · Gennemse og installer add-ons fra kodi.tv · Tilpas indstillinger for add-ons"
+
 msgctxt "#31421"
 msgid "Select your Kodi user Profile[CR]to login and continue"
 msgstr "Vælg din Kodi brugerprofil[CR]for at logge ind og fortsætte"
+
+msgctxt "#31548"
+msgid "Home menu"
+msgstr "Hovedmenu"
+
+msgctxt "#31549"
+msgid "Home Add-ons"
+msgstr "Hovedmenuens add-ons"
 
 msgctxt "#31550"
 msgid "Backgrounds"
@@ -210,15 +230,39 @@ msgstr "Baggrunde"
 
 msgctxt "#31551"
 msgid "Add-on Shortcut"
-msgstr "Genvej til Addon"
+msgstr "Genvej til add-on"
+
+msgctxt "#31552"
+msgid "SYNC"
+msgstr "SYNC"
+
+msgctxt "#31553"
+msgid "Use Custom Background"
+msgstr "Anvend brugerdefineret baggrund"
+
+msgctxt "#31554"
+msgid "Background:"
+msgstr "Baggrund:"
+
+msgctxt "#31555"
+msgid "Configure TV settings · Change full screen info · Manage EPG data settings"
+msgstr "Konfigurer tv-indstillinger · Skift fuldskærmsinfo · Administrer dataindstillinger for EPG"
 
 msgctxt "#31556"
 msgid "Live TV"
-msgstr "Live TV"
+msgstr "Direkte tv"
 
 msgctxt "#31557"
 msgid "Hide video background"
 msgstr "Skjul videobaggrund"
+
+msgctxt "#31558"
+msgid "Hide visualization background"
+msgstr "Skjul visualiseringens baggrund"
+
+msgctxt "#31559"
+msgid "Channel settings"
+msgstr "Kanalindstillinger"
 
 msgctxt "#31560"
 msgid "Available groups"
@@ -226,15 +270,15 @@ msgstr "Tilgængelig grupper"
 
 msgctxt "#31561"
 msgid "Add Group"
-msgstr "Tilføj Gruppe"
+msgstr "Tilføj gruppe"
 
 msgctxt "#31562"
 msgid "Rename Group"
-msgstr "Omdøb Gruppe"
+msgstr "Omdøb gruppe"
 
 msgctxt "#31563"
 msgid "Delete Group"
-msgstr "Slet Gruppe"
+msgstr "Slet gruppe"
 
 msgctxt "#31564"
 msgid "Show hidden"
@@ -243,3 +287,15 @@ msgstr "Vis skjulte"
 msgctxt "#31565"
 msgid "Show deleted"
 msgstr "Vis slettede"
+
+msgctxt "#31901"
+msgid "There are two things to know about navigating Estouchy"
+msgstr "Der er to ting at vide omkring navigeringen i Estouchy"
+
+msgctxt "#31902"
+msgid "The Kodi logo functions as a 'HOME' button. Whenever you touch it, you will be taken back to the home screen."
+msgstr "Kodi-logoet fungerer som en 'HOME' -knap. Hver gang du trykker på den, føres du tilbage til startskærmen."
+
+msgctxt "#31903"
+msgid "When you are playing audio or video, the item title will appear at the top of the screen. Touching it will take you to the fullscreen visualization or video window."
+msgstr "Når du afspiller lyd eller video, vises titlen øverst på skærmen. Hvis du trykker på den, kommer du til visualiseringen eller videovinduet i fuld skærm."
