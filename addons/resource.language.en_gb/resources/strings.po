@@ -2392,8 +2392,8 @@ msgstr ""
 
 #empty string with id 520
 
-#: xbmc/filesystem/MusicDatabaseDirectory/DirectoryNodeOverview.cpp
 #. Node title for compilation albums, plural of #204
+#: xbmc/filesystem/MusicDatabaseDirectory/DirectoryNodeOverview.cpp
 #: system/library/music/compilations.xml
 msgctxt "#521"
 msgid "Compilations"
@@ -3465,7 +3465,7 @@ msgctxt "#768"
 msgid "Dark Grey"
 msgstr ""
 
-#empty string id 769
+#empty string with id 769
 #string 769 reserved for more subtitle colours
 
 msgctxt "#770"
@@ -12586,7 +12586,7 @@ msgctxt "#20226"
 msgid "Movie set information folder"
 msgstr ""
 
-#empty string id 20227
+#empty string with id 20227
 
 #: system/settings/settings.xml
 msgctxt "#20228"
