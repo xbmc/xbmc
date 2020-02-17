@@ -37,8 +37,12 @@ ifeq ($(OS), android)
     ifeq ($(findstring arm, $(CPU)), arm)
       ffmpg_config += --cpu=cortex-a9
     else
-      ffmpg_config += --cpu=i686 --disable-mmx
-      ffmpg_config += --extra-cflags=-no-integrated-as --extra-cflags=-mno-stackrealign
+      ifeq ($(CPU), x86_64)
+        ffmpg_config += --cpu=x86_64 --enable-pic
+      else
+        ffmpg_config += --cpu=i686 --disable-mmx
+      endif
+      ffmpg_config += --extra-cflags='-no-integrated-as -mno-stackrealign'
     endif
   endif
   ffmpg_config += --target-os=linux --extra-libs=-liconv --disable-linux-perf

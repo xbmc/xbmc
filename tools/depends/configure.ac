@@ -262,7 +262,7 @@ case $host in
           platform_cflags+=" -march=armv8-a -mtune=cortex-a53"
         fi
       ;;
-      i*86*-linux-android*)
+      i*86*-linux-android*|x86_64*-linux-android*)
         if test "x$use_cpu" = "xauto"; then
           use_cpu=$host_cpu
         fi
