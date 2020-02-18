@@ -1,0 +1,28 @@
+From b1c00096a190e2fd9176a7d62c358a50888248e3 Mon Sep 17 00:00:00 2001
+From: Vasyl Gello <vasek.gello@gmail.com>
+Date: Wed, 23 Oct 2024 08:44:18 +0300
+Subject: [PATCH] Do not try loading leap seconds on MacOS / OSX / IOS with
+ system TZDB
+
+Signed-off-by: Vasyl Gello <vasek.gello@gmail.com>
+---
+ src/tz.cpp | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/src/tz.cpp b/src/tz.cpp
+index 15c9f5d..a864520 100644
+--- a/src/tz.cpp
++++ b/src/tz.cpp
+@@ -87,6 +87,9 @@
+ 
+ #ifdef __APPLE__
+ #  include "date/ios.h"
++#  if USE_OS_TZDB
++#    define MISSING_LEAP_SECONDS 1
++#  endif // USE_OS_TZDB
+ #else
+ #  define TARGET_OS_IPHONE 0
+ #  define TARGET_OS_SIMULATOR 0
+-- 
+2.39.5
+
