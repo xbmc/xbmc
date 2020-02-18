@@ -1,0 +1,74 @@
+From 8b3fac88cb5e4fef81b55b7537232a6418752153 Mon Sep 17 00:00:00 2001
+From: Andrea Pappacoda <andrea@pappacoda.it>
+Date: Thu, 4 Aug 2022 11:35:41 +0200
+Subject: [PATCH 1/4] cmake: install all headers
+
+Lazy solution: mark all headers as either PUBLIC_ or PRIVATE_HEADER,
+requiring CMake 3.15.
+
+Bug: https://github.com/HowardHinnant/date/pull/503
+Bug-Debian: https://bugs.debian.org/1001895
+---
+ CMakeLists.txt | 20 +++++++++++++++-----
+ 1 file changed, 15 insertions(+), 5 deletions(-)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 012512a..c0bda7f 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -75,7 +75,13 @@ target_sources( date INTERFACE
+ )
+ if (CMAKE_VERSION VERSION_GREATER_EQUAL 3.15)
+     # public headers will get installed:
+-    set_target_properties( date PROPERTIES PUBLIC_HEADER include/date/date.h )
++    set_property(TARGET date PROPERTY PUBLIC_HEADER
++      include/date/date.h
++      include/date/islamic.h
++      include/date/iso_week.h
++      include/date/julian.h
++      include/date/solar_hijri.h
++    )
+ endif ()
+ 
+ # These used to be set with generator expressions,
+@@ -137,14 +143,16 @@ if( BUILD_TZ_LIB )
+       target_compile_definitions( date-tz PUBLIC DATE_BUILD_DLL=1 )
+     endif()
+ 
+-    set(TZ_HEADERS include/date/tz.h)
++    set(TZ_PUBLIC_HEADERS include/date/ptz.h include/date/tz.h)
++    set(TZ_PRIVATE_HEADERS include/date/tz_private.h)
+ 
+     if( IOS )
+-        list(APPEND TZ_HEADERS include/date/ios.h)
++        list(APPEND TZ_PRIVATE_HEADERS include/date/ios.h)
+     endif( )
+     set_target_properties( date-tz PROPERTIES
+         POSITION_INDEPENDENT_CODE ON
+-        PUBLIC_HEADER "${TZ_HEADERS}"
++        PUBLIC_HEADER "${TZ_PUBLIC_HEADERS}"
++        PRIVATE_HEADER "${TZ_PRIVATE_HEADERS}"
+         VERSION "${PROJECT_VERSION}"
+         SOVERSION "${ABI_VERSION}" )
+     if( NOT MSVC )
+@@ -170,7 +178,8 @@ write_basic_package_version_file( "${version_config}"
+ 
+ install( TARGETS date
+     EXPORT dateConfig
+-    PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/date )
++    PUBLIC_HEADER  DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/date
++    PRIVATE_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/date )
+ export( TARGETS date NAMESPACE date:: FILE dateTargets.cmake )
+ if (CMAKE_VERSION VERSION_LESS 3.15)
+     install(
+@@ -182,6 +191,7 @@ if( BUILD_TZ_LIB )
+     install( TARGETS date-tz
+         EXPORT dateConfig
+         PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/date
++        PRIVATE_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/date
+         ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+         LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+         RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR} )  # This is for Windows
+-- 
+2.39.0
+
