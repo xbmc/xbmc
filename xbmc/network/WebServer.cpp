@@ -17,22 +17,24 @@
 #include <pthread.h>
 #endif
 
+#include "ServiceBroker.h"
+#include "Util.h"
+#include "XBDateTime.h"
 #include "filesystem/File.h"
 #include "network/httprequesthandler/HTTPRequestHandlerUtils.h"
 #include "network/httprequesthandler/IHTTPRequestHandler.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
-#include "ServiceBroker.h"
 #include "threads/SingleLock.h"
-#include "Util.h"
 #include "utils/FileUtils.h"
-#include "utils/log.h"
 #include "utils/Mime.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
-#include "XBDateTime.h"
+#include "utils/log.h"
+
+#include <inttypes.h>
 
 #define MAX_POST_BUFFER_SIZE 2048
 

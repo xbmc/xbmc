@@ -36,6 +36,8 @@
 #include "network/Zeroconf.h"
 #endif // HAS_ZEROCONF
 
+#include <inttypes.h>
+
 #include <plist/plist.h>
 
 using namespace KODI::MESSAGING;

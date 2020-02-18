@@ -17,10 +17,9 @@
 
 #include "qry_dat.h"
 
+#include <inttypes.h>
 #include <stdio.h>
 #include <stdlib.h>
-
-#include "PlatformDefs.h" // for PRId64
 
 #ifndef __GNUC__
 #pragma warning (disable:4800)

@@ -21,6 +21,8 @@
 #include "utils/log.h"
 #include "windowing/GraphicContext.h"
 
+#include <inttypes.h>
+
 #include <lzo/lzo1x.h>
 
 #ifdef TARGET_WINDOWS_DESKTOP

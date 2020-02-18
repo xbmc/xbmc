@@ -11,6 +11,7 @@
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 
+#include <inttypes.h>
 #include <sstream>
 #include <string>
 

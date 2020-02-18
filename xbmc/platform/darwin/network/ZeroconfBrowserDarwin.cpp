@@ -18,6 +18,8 @@
 
 #include "platform/darwin/DarwinUtils.h"
 
+#include <inttypes.h>
+
 #include <arpa/inet.h>
 #include <netinet/in.h>
 

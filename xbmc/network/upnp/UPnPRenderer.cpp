@@ -32,6 +32,8 @@
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
 
+#include <inttypes.h>
+
 #include <Platinum/Source/Platinum/Platinum.h>
 
 NPT_SET_LOCAL_LOGGER("xbmc.upnp.renderer")

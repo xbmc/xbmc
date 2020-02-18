@@ -26,23 +26,30 @@
 #include <androidjni/JNIThreading.h>
 #endif
 
-#include "StringUtils.h"
 #include "CharsetConverter.h"
 #include "LangInfo.h"
+#include "StringUtils.h"
 #include "Util.h"
-#include <fstrcmp.h>
-#include <functional>
+
+#include <algorithm>
 #include <array>
-#include <iomanip>
 #include <assert.h>
+#include <functional>
+#include <inttypes.h>
+#include <iomanip>
 #include <math.h>
-#include <time.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdio.h>
+#include <time.h>
+
+#include <fstrcmp.h>
 #include <memory.h>
-#include <algorithm>
-#include "utils/RegExp.h" // don't move or std functions end up in PCRE namespace
+
+// don't move or std functions end up in PCRE namespace
+// clang-format off
+#include "utils/RegExp.h"
+// clang-format on
 
 #define FORMAT_BLOCK_SIZE 512 // # of bytes for initial allocation for printf
 

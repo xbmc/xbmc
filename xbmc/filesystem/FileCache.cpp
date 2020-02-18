@@ -23,8 +23,9 @@
 #include "platform/posix/ConvUtils.h"
 #endif
 
-#include <cassert>
 #include <algorithm>
+#include <cassert>
+#include <inttypes.h>
 #include <memory>
 
 #ifdef TARGET_POSIX
