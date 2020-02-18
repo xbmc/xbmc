@@ -1,0 +1,38 @@
+From cd3c57932f7f3906c5876b8f04e2ff6b20d2070b Mon Sep 17 00:00:00 2001
+From: Howard Hinnant <howard.hinnant@gmail.com>
+Date: Mon, 15 Apr 2024 10:03:38 -0400
+Subject: [PATCH 42/50] Eliminate dead code. * fixes #822
+
+---
+ include/date/date.h | 8 ++------
+ 1 file changed, 2 insertions(+), 6 deletions(-)
+
+diff --git a/include/date/date.h b/include/date/date.h
+index f21970e..2772ab5 100644
+--- a/include/date/date.h
++++ b/include/date/date.h
+@@ -7748,9 +7748,7 @@ from_stream(std::basic_istream<CharT, Traits>& is, const CharT* fmt,
+                 year_month_day ymd_trial = sys_days(year{Y}/January/Sunday[1]) +
+                                            weeks{U-1} +
+                                            (weekday{static_cast<unsigned>(wd)} - Sunday);
+-                if (Y == not_a_year)
+-                    Y = static_cast<int>(ymd_trial.year());
+-                else if (year{Y} != ymd_trial.year())
++                if (year{Y} != ymd_trial.year())
+                     goto broken;
+                 if (m == not_a_month)
+                     m = static_cast<int>(static_cast<unsigned>(ymd_trial.month()));
+@@ -7767,9 +7765,7 @@ from_stream(std::basic_istream<CharT, Traits>& is, const CharT* fmt,
+                 year_month_day ymd_trial = sys_days(year{Y}/January/Monday[1]) +
+                                            weeks{W-1} +
+                                            (weekday{static_cast<unsigned>(wd)} - Monday);
+-                if (Y == not_a_year)
+-                    Y = static_cast<int>(ymd_trial.year());
+-                else if (year{Y} != ymd_trial.year())
++                if (year{Y} != ymd_trial.year())
+                     goto broken;
+                 if (m == not_a_month)
+                     m = static_cast<int>(static_cast<unsigned>(ymd_trial.month()));
+-- 
+2.39.5
+

@@ -1,0 +1,25 @@
+From 2c035f8def89d72ef9638fb6378d95914d3fb951 Mon Sep 17 00:00:00 2001
+From: Howard Hinnant <howard.hinnant@gmail.com>
+Date: Fri, 12 Aug 2022 10:28:12 -0400
+Subject: [PATCH 27/50] Fix abs(duration) to work with non-normalized ratios
+
+---
+ include/date/date.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/include/date/date.h b/include/date/date.h
+index 143bc9a..4ad85cc 100644
+--- a/include/date/date.h
++++ b/include/date/date.h
+@@ -1316,7 +1316,7 @@ CONSTCD11
+ std::chrono::duration<Rep, Period>
+ abs(std::chrono::duration<Rep, Period> d)
+ {
+-    return d >= d.zero() ? d : -d;
++    return d >= d.zero() ? d : static_cast<decltype(d)>(-d);
+ }
+ 
+ // round down
+-- 
+2.39.5
+

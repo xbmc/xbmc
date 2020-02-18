@@ -1,0 +1,30 @@
+From 655b249b8f463f690c53a19d6b4110297699e3c5 Mon Sep 17 00:00:00 2001
+From: Andrea Pappacoda <andrea@pappacoda.it>
+Date: Tue, 2 Nov 2021 18:20:04 +0100
+Subject: [PATCH 21/50] test: use -pthread when $CXX is g++
+
+Fixes https://github.com/HowardHinnant/date/issues/713
+---
+ test/testit | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/test/testit b/test/testit
+index f34ab35..69669ff 100755
+--- a/test/testit
++++ b/test/testit
+@@ -48,6 +48,12 @@ if [ -z "$CXX_LANG" ]
+ then
+     CXX_LANG=c++17
+ fi
++
++if expr "$CXX" : ".*g++" >/dev/null
++then
++	OPTIONS="$OPTIONS -pthread"
++fi
++
+ OPTIONS="-std=${CXX_LANG} $OPTIONS -I$ROOT -Wall $ROOT/src/tz.cpp -lcurl"
+ 
+ echo $ROOT
+-- 
+2.39.5
+

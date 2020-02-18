@@ -1,0 +1,100 @@
+From 6b1c1b8b3aedc8936fbe1465a522217e5bc7314b Mon Sep 17 00:00:00 2001
+From: Howard Hinnant <howard.hinnant@gmail.com>
+Date: Fri, 10 May 2024 16:21:36 -0400
+Subject: [PATCH 44/50] Clean up restore_recursion_depth code.
+
+---
+ src/tz.cpp | 69 ++++++++++++++++++++++++++++++++++--------------------
+ 1 file changed, 44 insertions(+), 25 deletions(-)
+
+diff --git a/src/tz.cpp b/src/tz.cpp
+index 77a3ee6..490e585 100644
+--- a/src/tz.cpp
++++ b/src/tz.cpp
+@@ -3718,39 +3718,58 @@ class recursion_limiter
+     unsigned depth_ = 0;
+     unsigned limit_;
+ 
+-    class restore_recursion_depth
+-    {
+-        recursion_limiter* rc_;
+-
+-    public:
+-        ~restore_recursion_depth() {--(rc_->depth_);}
+-        restore_recursion_depth(restore_recursion_depth&&) = default;
+-
+-        explicit restore_recursion_depth(recursion_limiter* rc) noexcept
+-            : rc_{rc}
+-        {}
+-    };
++    class restore_recursion_depth;
+ 
+ public:
+     recursion_limiter(recursion_limiter const&) = delete;
+     recursion_limiter& operator=(recursion_limiter const&) = delete;
+ 
+-    explicit recursion_limiter(unsigned limit) noexcept
+-        : limit_{limit}
+-    {
+-    }
++    explicit constexpr recursion_limiter(unsigned limit) noexcept;
+ 
+-    restore_recursion_depth
+-    count()
+-    {
+-        ++depth_;
+-        if (depth_ > limit_)
+-            throw std::runtime_error("recursion limit of " +
+-                                      std::to_string(limit_) + " exceeded");
+-        return restore_recursion_depth{this};
+-    }
++    restore_recursion_depth count();
++};
++
++class recursion_limiter::restore_recursion_depth
++{
++    recursion_limiter* rc_;
++
++public:
++    ~restore_recursion_depth();
++    restore_recursion_depth(restore_recursion_depth&&) = default;
++
++    explicit restore_recursion_depth(recursion_limiter* rc) noexcept;
+ };
+ 
++inline
++recursion_limiter::restore_recursion_depth::~restore_recursion_depth()
++{
++    --(rc_->depth_);
++}
++
++inline
++recursion_limiter::restore_recursion_depth::restore_recursion_depth(recursion_limiter* rc)
++                                                                                  noexcept
++    : rc_{rc}
++{}
++
++inline
++constexpr
++recursion_limiter::recursion_limiter(unsigned limit) noexcept
++    : limit_{limit}
++{
++}
++
++inline
++recursion_limiter::restore_recursion_depth
++recursion_limiter::count()
++{
++    ++depth_;
++    if (depth_ > limit_)
++        throw std::runtime_error("recursion limit of " +
++                                  std::to_string(limit_) + " exceeded");
++    return restore_recursion_depth{this};
++}
++
+ }  // unnamed namespace
+ 
+ const time_zone*
+-- 
+2.39.5
+

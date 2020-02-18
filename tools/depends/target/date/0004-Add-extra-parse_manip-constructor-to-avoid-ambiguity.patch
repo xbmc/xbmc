@@ -1,0 +1,32 @@
+From 2f4411312b29f656d2b30479a6b6f2fc787e62e0 Mon Sep 17 00:00:00 2001
+From: Howard Hinnant <howard.hinnant@gmail.com>
+Date: Wed, 19 May 2021 14:36:09 -0400
+Subject: [PATCH 04/50] Add extra parse_manip constructor to avoid ambiguity
+
+---
+ include/date/date.h | 9 +++++++++
+ 1 file changed, 9 insertions(+)
+
+diff --git a/include/date/date.h b/include/date/date.h
+index e97175b..4509fae 100644
+--- a/include/date/date.h
++++ b/include/date/date.h
+@@ -8071,6 +8071,15 @@ public:
+         {}
+ 
+ #if HAS_STRING_VIEW
++    parse_manip(const CharT* format, Parsable& tp,
++                std::basic_string<CharT, Traits, Alloc>* abbrev = nullptr,
++                std::chrono::minutes* offset = nullptr)
++        : format_(format)
++        , tp_(tp)
++        , abbrev_(abbrev)
++        , offset_(offset)
++        {}
++
+     parse_manip(std::basic_string_view<CharT> format, Parsable& tp,
+                 std::basic_string<CharT, Traits, Alloc>* abbrev = nullptr,
+                 std::chrono::minutes* offset = nullptr)
+-- 
+2.39.5
+

@@ -1,0 +1,23 @@
+From 1ff7208036249d9113407f4a90a04cdbf1f7ab68 Mon Sep 17 00:00:00 2001
+From: Howard Hinnant <howard.hinnant@gmail.com>
+Date: Tue, 31 Aug 2021 12:40:28 -0400
+Subject: [PATCH 14/50] Update README.md
+
+---
+ README.md | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/README.md b/README.md
+index 7ef280f..46d6d23 100644
+--- a/README.md
++++ b/README.md
+@@ -80,5 +80,6 @@ cmake --build . --target testit # Consider '-- -j4' for multithreading
+ * https://github.com/KomodoPlatform/atomicDEX-Pro
+ * https://github.com/Kotlin/kotlinx-datetime
+ * https://github.com/royalbee/jewish_date
++* https://github.com/apache/arrow/
+ 
+ If you would like your project (or product) on this list, just let me know.
+-- 
+2.39.5
+

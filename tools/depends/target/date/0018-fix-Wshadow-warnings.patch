@@ -1,0 +1,54 @@
+From 2709deddd3c0deae74bc768b9d7c3b17dc4ba969 Mon Sep 17 00:00:00 2001
+From: tylawin <tylawin@users.noreply.github.com>
+Date: Sun, 12 Sep 2021 00:53:46 -0600
+Subject: [PATCH 18/50] fix -Wshadow warnings
+
+---
+ src/tz.cpp | 18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
+
+diff --git a/src/tz.cpp b/src/tz.cpp
+index 1592bc8..86680a5 100644
+--- a/src/tz.cpp
++++ b/src/tz.cpp
+@@ -2669,16 +2669,16 @@ find_read_and_leap_seconds()
+             std::getline(in, line);
+             if (!line.empty() && line[0] != '#')
+             {
+-                std::istringstream in(line);
+-                in.exceptions(std::ios::failbit | std::ios::badbit);
++                std::istringstream iss(line);
++                iss.exceptions(std::ios::failbit | std::ios::badbit);
+                 std::string word;
+-                in >> word;
++                iss >> word;
+                 if (word == "Leap")
+                 {
+                     int y, m, d;
+-                    in >> y;
+-                    m = static_cast<int>(parse_month(in));
+-                    in >> d;
++                    iss >> y;
++                    m = static_cast<int>(parse_month(iss));
++                    iss >> d;
+                     leap_seconds.push_back(leap_second(sys_days{year{y}/m/d} + days{1},
+                                                                  detail::undocumented{}));
+                 }
+@@ -2703,11 +2703,11 @@ find_read_and_leap_seconds()
+             std::getline(in, line);
+             if (!line.empty() && line[0] != '#')
+             {
+-                std::istringstream in(line);
+-                in.exceptions(std::ios::failbit | std::ios::badbit);
++                std::istringstream iss(line);
++                iss.exceptions(std::ios::failbit | std::ios::badbit);
+                 using seconds = std::chrono::seconds;
+                 seconds::rep s;
+-                in >> s;
++                iss >> s;
+                 if (s == 2272060800)
+                     continue;
+                 leap_seconds.push_back(leap_second(sys_seconds{seconds{s}} - offset,
+-- 
+2.39.5
+

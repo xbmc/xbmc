@@ -1,0 +1,26 @@
+From b0adc5467792a2108c89158e154208c17f1be726 Mon Sep 17 00:00:00 2001
+From: Nicolas <nico.e@tuta.io>
+Date: Tue, 17 Aug 2021 12:35:13 -0300
+Subject: [PATCH 13/50] static_cast to silent warning implict conversion (#693)
+
+That happen because `sizeof(long long unsigned int) == sizeof(long double)` in 32-bit architectures.
+---
+ include/date/date.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/include/date/date.h b/include/date/date.h
+index 0c3d4c2..bb226ca 100644
+--- a/include/date/date.h
++++ b/include/date/date.h
+@@ -6405,7 +6405,7 @@ read_long_double(std::basic_istream<CharT, Traits>& is, unsigned m = 1, unsigned
+         is.setstate(std::ios::failbit);
+         return 0;
+     }
+-    return i + f/std::pow(10.L, fcount);
++    return static_cast<long double>(i) + static_cast<long double>(f)/std::pow(10.L, fcount);
+ }
+ 
+ struct rs
+-- 
+2.39.5
+

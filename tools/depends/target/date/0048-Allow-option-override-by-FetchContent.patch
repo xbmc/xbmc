@@ -1,0 +1,28 @@
+From 1ead6715dec030d340a316c927c877a3c4e5a00c Mon Sep 17 00:00:00 2001
+From: Nikolay Baklicharov <nikolay.baklicharov@gmail.com>
+Date: Sat, 17 Feb 2024 18:33:12 +0200
+Subject: [PATCH 48/50] Allow option override by FetchContent
+
+---
+ CMakeLists.txt | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index c606f47..6885a43 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -24,6 +24,11 @@ include( GNUInstallDirs )
+ 
+ get_directory_property( has_parent PARENT_DIRECTORY )
+ 
++if (POLICY CMP0077)
++    # Allow CMake 3.13+ to override options when using FetchContent / add_subdirectory.
++    cmake_policy(SET CMP0077 NEW)
++endif ()
++
+ # Override by setting on CMake command line.
+ set( CMAKE_CXX_STANDARD 17 CACHE STRING "The C++ standard whose features are requested." )
+ 
+-- 
+2.39.5
+

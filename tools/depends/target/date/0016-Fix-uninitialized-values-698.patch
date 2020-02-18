@@ -1,0 +1,61 @@
+From 28b5106d4ca911d1e6682c83b03058ae68934eae Mon Sep 17 00:00:00 2001
+From: Ans <45072211+crawlserv@users.noreply.github.com>
+Date: Wed, 1 Sep 2021 16:44:26 +0300
+Subject: [PATCH 16/50] Fix uninitialized values (#698)
+
+---
+ include/date/date.h | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/include/date/date.h b/include/date/date.h
+index 3b8b461..143bc9a 100644
+--- a/include/date/date.h
++++ b/include/date/date.h
+@@ -6781,7 +6781,7 @@ from_stream(std::basic_istream<CharT, Traits>& is, const CharT* fmt,
+                         CONSTDATA auto w = Duration::period::den == 1 ? 2 : 3 + dfs::width;
+                         int tH;
+                         int tM;
+-                        long double S;
++                        long double S{};
+                         read(is, ru{tH, 1, 2}, CharT{':'}, ru{tM, 1, 2},
+                                                CharT{':'}, rld{S, 1, w});
+                         checked_set(H, tH, not_a_hour, is);
+@@ -6861,7 +6861,7 @@ from_stream(std::basic_istream<CharT, Traits>& is, const CharT* fmt,
+                         CONSTDATA auto w = Duration::period::den == 1 ? 2 : 3 + dfs::width;
+                         int tH = not_a_hour;
+                         int tM = not_a_minute;
+-                        long double S;
++                        long double S{};
+                         read(is, ru{tH, 1, 2}, CharT{':'}, ru{tM, 1, 2},
+                                                CharT{':'}, rld{S, 1, w});
+                         checked_set(H, tH, not_a_hour, is);
+@@ -7216,7 +7216,7 @@ from_stream(std::basic_istream<CharT, Traits>& is, const CharT* fmt,
+                         // "%I:%M:%S %p"
+                         using dfs = detail::decimal_format_seconds<Duration>;
+                         CONSTDATA auto w = Duration::period::den == 1 ? 2 : 3 + dfs::width;
+-                        long double S;
++                        long double S{};
+                         int tI = not_a_hour_12_value;
+                         int tM = not_a_minute;
+                         read(is, ru{tI, 1, 2}, CharT{':'}, ru{tM, 1, 2},
+@@ -7272,7 +7272,7 @@ from_stream(std::basic_istream<CharT, Traits>& is, const CharT* fmt,
+                     {
+                         using dfs = detail::decimal_format_seconds<Duration>;
+                         CONSTDATA auto w = Duration::period::den == 1 ? 2 : 3 + dfs::width;
+-                        long double S;
++                        long double S{};
+                         read(is, rld{S, 1, width == -1 ? w : static_cast<unsigned>(width)});
+                         checked_set(s, round_i<Duration>(duration<long double>{S}),
+                                     not_a_second, is);
+@@ -7306,7 +7306,7 @@ from_stream(std::basic_istream<CharT, Traits>& is, const CharT* fmt,
+                         CONSTDATA auto w = Duration::period::den == 1 ? 2 : 3 + dfs::width;
+                         int tH = not_a_hour;
+                         int tM = not_a_minute;
+-                        long double S;
++                        long double S{};
+                         read(is, ru{tH, 1, 2}, CharT{':'}, ru{tM, 1, 2},
+                                                CharT{':'}, rld{S, 1, w});
+                         checked_set(H, tH, not_a_hour, is);
+-- 
+2.39.5
+

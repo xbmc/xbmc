@@ -1,0 +1,75 @@
+From 383214dea6cbe78b968ccdaeb84a9c84949771c2 Mon Sep 17 00:00:00 2001
+From: Howard Hinnant <howard.hinnant@gmail.com>
+Date: Sun, 25 Jul 2021 23:01:30 -0400
+Subject: [PATCH 11/50] Remove string_view overloads of parse
+
+* They were rejected by the LWG
+---
+ include/date/date.h | 51 ---------------------------------------------
+ 1 file changed, 51 deletions(-)
+
+diff --git a/include/date/date.h b/include/date/date.h
+index b93fd11..cbcbf32 100644
+--- a/include/date/date.h
++++ b/include/date/date.h
+@@ -8198,57 +8198,6 @@ parse(const CharT* format, Parsable& tp,
+     return {format, tp, &abbrev, &offset};
+ }
+ 
+-#if HAS_STRING_VIEW
+-
+-// basic_string_view formats
+-
+-template <class Parsable, class CharT, class Traits>
+-inline
+-auto
+-parse(std::basic_string_view<CharT, Traits> format, Parsable& tp)
+-    -> decltype(date::from_stream(std::declval<std::basic_istream<CharT, Traits>&>(), format.data(), tp),
+-                parse_manip<Parsable, CharT, Traits>{format, tp})
+-{
+-    return {format, tp};
+-}
+-
+-template <class Parsable, class CharT, class Traits, class Alloc>
+-inline
+-auto
+-parse(std::basic_string_view<CharT, Traits> format,
+-      Parsable& tp, std::basic_string<CharT, Traits, Alloc>& abbrev)
+-    -> decltype(date::from_stream(std::declval<std::basic_istream<CharT, Traits>&>(), format.data(),
+-                            tp, &abbrev),
+-                parse_manip<Parsable, CharT, Traits, Alloc>{format, tp, &abbrev})
+-{
+-    return {format, tp, &abbrev};
+-}
+-
+-template <class Parsable, class CharT, class Traits>
+-inline
+-auto
+-parse(std::basic_string_view<CharT, Traits> format, Parsable& tp, std::chrono::minutes& offset)
+-    -> decltype(date::from_stream(std::declval<std::basic_istream<CharT, Traits>&>(), format.data(),
+-                            tp, std::declval<std::basic_string<CharT, Traits>*>(), &offset),
+-                parse_manip<Parsable, CharT, Traits>{format, tp, nullptr, &offset})
+-{
+-    return {format, tp, nullptr, &offset};
+-}
+-
+-template <class Parsable, class CharT, class Traits, class Alloc>
+-inline
+-auto
+-parse(std::basic_string_view<CharT, Traits> format, Parsable& tp,
+-      std::basic_string<CharT, Traits, Alloc>& abbrev, std::chrono::minutes& offset)
+-    -> decltype(date::from_stream(std::declval<std::basic_istream<CharT, Traits>&>(), format.data(),
+-                            tp, &abbrev, &offset),
+-                parse_manip<Parsable, CharT, Traits, Alloc>{format, tp, &abbrev, &offset})
+-{
+-    return {format, tp, &abbrev, &offset};
+-}
+-
+-#endif  // HAS_STRING_VIEW
+-
+ // duration streaming
+ 
+ template <class CharT, class Traits, class Rep, class Period>
+-- 
+2.39.5
+

@@ -102,6 +102,7 @@ option(ENABLE_INTERNAL_FFMPEG "Enable internal ffmpeg?" OFF)
 # These are built for all platforms not using system libs or disabled by user
 dependent_option(ENABLE_INTERNAL_CEC "Enable internal libcec?")
 dependent_option(ENABLE_INTERNAL_CURL "Enable internal libcurl?")
+dependent_option(ENABLE_INTERNAL_DATE "Enable internal date library?")
 dependent_option(ENABLE_INTERNAL_EXIV2 "Enable internal exiv2?")
 dependent_option(ENABLE_INTERNAL_FLATBUFFERS "Enable internal flatbuffers?")
 dependent_option(ENABLE_INTERNAL_FMT "Enable internal fmt?")
@@ -115,6 +116,13 @@ if(ENABLE_INTERNAL_FMT)
   option(ENABLE_INTERNAL_SPDLOG "Enable internal spdlog Forced" ON)
 else()
   dependent_option(ENABLE_INTERNAL_SPDLOG "Enable internal spdlog?")
+endif()
+
+# If ENABLE_INTERNAL_DATE is ON, we force DATE_HAS_STRINGVIEW ON
+if(ENABLE_INTERNAL_DATE)
+  option(DATE_HAS_STRINGVIEW "Is system date library compiled with StringView support Forced" ON)
+else()
+  dependent_option(DATE_HAS_STRINGVIEW "Is system date library compiled with StringView support?")
 endif()
 
 dependent_option(ENABLE_INTERNAL_TAGLIB "Enable internal taglib?")
@@ -219,6 +227,7 @@ set(required_deps ASS>=0.15.0
                   Cdio
                   CrossGUID
                   Curl
+                  Date
                   Exiv2
                   FFMPEG
                   FlatBuffers

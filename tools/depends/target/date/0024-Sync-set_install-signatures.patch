@@ -1,0 +1,28 @@
+From 9d9161c978049fb2735da9d58607890e2119db59 Mon Sep 17 00:00:00 2001
+From: DavisVaughan <davis@rstudio.com>
+Date: Wed, 16 Feb 2022 16:30:45 -0500
+Subject: [PATCH 24/50] Sync `set_install()` signatures
+
+---
+ src/tz.cpp | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/src/tz.cpp b/src/tz.cpp
+index 0006f42..9d55d4f 100644
+--- a/src/tz.cpp
++++ b/src/tz.cpp
+@@ -415,9 +415,9 @@ access_install()
+ }
+ 
+ void
+-set_install(const std::string& s)
++set_install(const std::string& install)
+ {
+-    access_install() = s;
++    access_install() = install;
+ }
+ 
+ static
+-- 
+2.39.5
+

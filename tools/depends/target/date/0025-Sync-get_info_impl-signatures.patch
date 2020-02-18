@@ -1,0 +1,25 @@
+From 9ea5654c1206e19245dc21d8a2c433e090c8c3f5 Mon Sep 17 00:00:00 2001
+From: DavisVaughan <davis@rstudio.com>
+Date: Wed, 16 Feb 2022 16:31:10 -0500
+Subject: [PATCH 25/50] Sync `get_info_impl()` signatures
+
+---
+ include/date/tz.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/include/date/tz.h b/include/date/tz.h
+index 4921068..ee09b85 100644
+--- a/include/date/tz.h
++++ b/include/date/tz.h
+@@ -845,7 +845,7 @@ private:
+     load_data(std::istream& inf, std::int32_t tzh_leapcnt, std::int32_t tzh_timecnt,
+                                  std::int32_t tzh_typecnt, std::int32_t tzh_charcnt);
+ #else  // !USE_OS_TZDB
+-    DATE_API sys_info   get_info_impl(sys_seconds tp, int timezone) const;
++    DATE_API sys_info   get_info_impl(sys_seconds tp, int tz_int) const;
+     DATE_API void adjust_infos(const std::vector<detail::Rule>& rules);
+     DATE_API void parse_info(std::istream& in);
+ #endif  // !USE_OS_TZDB
+-- 
+2.39.5
+

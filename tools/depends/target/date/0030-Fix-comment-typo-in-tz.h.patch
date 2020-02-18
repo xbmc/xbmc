@@ -1,0 +1,25 @@
+From c9169ea31021127d2acde79c0a838480602a5539 Mon Sep 17 00:00:00 2001
+From: Jonathan Wakely <jwakely@fedoraproject.org>
+Date: Tue, 13 Dec 2022 10:49:28 +0000
+Subject: [PATCH 30/50] Fix comment typo in tz.h
+
+---
+ include/date/tz.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/include/date/tz.h b/include/date/tz.h
+index ee09b85..61dde29 100644
+--- a/include/date/tz.h
++++ b/include/date/tz.h
+@@ -54,7 +54,7 @@
+ #    else
+ #      define HAS_REMOTE_API 1
+ #    endif
+-#  else  // HAS_REMOTE_API makes no since when using the OS timezone database
++#  else  // HAS_REMOTE_API makes no sense when using the OS timezone database
+ #    define HAS_REMOTE_API 0
+ #  endif
+ #endif
+-- 
+2.39.5
+

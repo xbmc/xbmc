@@ -1,0 +1,29 @@
+From 3776e0f18562b8813a8733aed3677e01e960a5a2 Mon Sep 17 00:00:00 2001
+From: Howard Hinnant <howard.hinnant@gmail.com>
+Date: Wed, 26 Jan 2022 19:44:06 -0500
+Subject: [PATCH 23/50] Update Posix::time_zone comment with CTAD
+ simplification
+
+---
+ include/date/ptz.h | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/include/date/ptz.h b/include/date/ptz.h
+index 3ea3e47..88d2244 100644
+--- a/include/date/ptz.h
++++ b/include/date/ptz.h
+@@ -36,6 +36,11 @@
+ // Posix::time_zone tz{"EST5EDT,M3.2.0,M11.1.0"};
+ // zoned_time<system_clock::duration, Posix::time_zone> zt{tz, system_clock::now()};
+ //
++// In C++17 CTAD simplifies this to:
++//
++// Posix::time_zone tz{"EST5EDT,M3.2.0,M11.1.0"};
++// zoned_time zt{tz, system_clock::now()};
++//
+ // If the rule set is missing (everything starting with ','), then the rule is that the
+ // alternate offset is never enabled.
+ //
+-- 
+2.39.5
+

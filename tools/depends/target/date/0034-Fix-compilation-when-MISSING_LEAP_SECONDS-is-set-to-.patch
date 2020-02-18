@@ -1,0 +1,33 @@
+From 50acf3ffd8b09deeec6980be824f2ac54a50b095 Mon Sep 17 00:00:00 2001
+From: Tim Tavlintsev <ttavlintsev@enttec.com>
+Date: Fri, 3 Mar 2023 14:00:54 +1100
+Subject: [PATCH 34/50] Fix compilation when MISSING_LEAP_SECONDS is set to
+ true
+
+---
+ src/tz.cpp | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/src/tz.cpp b/src/tz.cpp
+index bd9fad4..999403e 100644
+--- a/src/tz.cpp
++++ b/src/tz.cpp
+@@ -2820,6 +2820,7 @@ find_read_and_leap_seconds()
+         }
+         return leap_seconds;
+     }
++#if !MISSING_LEAP_SECONDS
+     in.clear();
+     in.open(get_tz_dir() + std::string(1, folder_delimiter) + "right/UTC",
+                      std::ios_base::binary);
+@@ -2834,6 +2835,7 @@ find_read_and_leap_seconds()
+     {
+         return load_just_leaps(in);
+     }
++#endif
+     return {};
+ }
+ 
+-- 
+2.39.5
+

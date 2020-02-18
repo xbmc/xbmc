@@ -1,0 +1,28 @@
+From fb2554a7e00b24d23838b57a4db4121e148edb5c Mon Sep 17 00:00:00 2001
+From: Howard Hinnant <howard.hinnant@gmail.com>
+Date: Wed, 2 Jun 2021 18:23:54 -0400
+Subject: [PATCH 10/50] Give gcc 4.8 a hand in constructing fields Fixes #678
+
+---
+ include/date/date.h | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/include/date/date.h b/include/date/date.h
+index d6545ac..b93fd11 100644
+--- a/include/date/date.h
++++ b/include/date/date.h
+@@ -4787,7 +4787,11 @@ struct fields
+     hh_mm_ss<Duration>    tod{};
+     bool                  has_tod = false;
+ 
++#if !defined(__clang__) && defined(__GNUC__) && (__GNUC__ * 100 + __GNUC_MINOR__ <= 409)
++    fields() : ymd{nanyear/0/0}, wd{8u}, tod{}, has_tod{false} {}
++#else
+     fields() = default;
++#endif
+ 
+     fields(year_month_day ymd_) : ymd(ymd_) {}
+     fields(weekday wd_) : wd(wd_) {}
+-- 
+2.39.5
+

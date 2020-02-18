@@ -1,0 +1,32 @@
+From 052eebaf0086e6bbc5ead01c3f1a8f02496aa701 Mon Sep 17 00:00:00 2001
+From: Howard Hinnant <howard.hinnant@gmail.com>
+Date: Tue, 18 May 2021 16:17:37 -0400
+Subject: [PATCH 02/50] When comparing sys_info in test... only compare whether
+ the saves are equal to 0 and not their actual values.
+
+This allows one to compare against the binary database
+which does not contain actual values of save.
+---
+ test/posix/ptz.pass.cpp | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/test/posix/ptz.pass.cpp b/test/posix/ptz.pass.cpp
+index 5601c21..9e15e3a 100644
+--- a/test/posix/ptz.pass.cpp
++++ b/test/posix/ptz.pass.cpp
+@@ -29,10 +29,11 @@
+ bool
+ is_equal(date::sys_info const& x, date::sys_info const& y)
+ {
++    using namespace std::chrono;
+     return x.begin == y.begin &&
+            x.end == y.end &&
+            x.offset == y.offset &&
+-           x.save == y.save &&
++           (x.save == minutes{0}) == (y.save == minutes{0}) &&
+            x.abbrev == y.abbrev;
+ }
+ 
+-- 
+2.39.5
+

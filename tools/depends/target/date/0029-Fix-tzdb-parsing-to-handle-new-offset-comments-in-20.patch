@@ -1,0 +1,27 @@
+From 22ceabf205d8d678710a43154da5a06b701c5830 Mon Sep 17 00:00:00 2001
+From: Howard Hinnant <howard.hinnant@gmail.com>
+Date: Fri, 12 Aug 2022 10:30:35 -0400
+Subject: [PATCH 29/50] Fix tzdb parsing to handle new offset comments in 2022b
+
+---
+ src/tz.cpp | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/src/tz.cpp b/src/tz.cpp
+index 9d55d4f..bd9fad4 100644
+--- a/src/tz.cpp
++++ b/src/tz.cpp
+@@ -3660,6 +3660,10 @@ init_tzdb()
+                 {
+                     db->zones.back().add(line);
+                 }
++                else if (word.size() > 0 && word[0] == '#')
++                {
++                    continue;
++                }
+                 else
+                 {
+                     std::cerr << line << '\n';
+-- 
+2.39.5
+

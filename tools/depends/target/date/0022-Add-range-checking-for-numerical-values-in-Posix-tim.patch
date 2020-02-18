@@ -1,0 +1,81 @@
+From 9e830536a0a2e9a0a73f845581a6fedbc6484bb8 Mon Sep 17 00:00:00 2001
+From: Howard Hinnant <howard.hinnant@gmail.com>
+Date: Wed, 26 Jan 2022 19:40:32 -0500
+Subject: [PATCH 22/50] Add range checking for numerical values in
+ Posix::time_zone
+
+---
+ include/date/ptz.h | 16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
+
+diff --git a/include/date/ptz.h b/include/date/ptz.h
+index ebd6e04..3ea3e47 100644
+--- a/include/date/ptz.h
++++ b/include/date/ptz.h
+@@ -678,6 +678,8 @@ read_date(const string_t& s, unsigned i, rule& r)
+         ++i;
+         unsigned n;
+         i = read_unsigned(s, i, 3, n, "Expected to find the Julian day [1, 365]");
++        if (!(1 <= n && n <= 365))
++            throw_invalid(s, i-1, "Expected Julian day to be in the range [1, 365]");
+         r.mode_ = rule::J;
+         r.n_ = n;
+     }
+@@ -686,16 +688,22 @@ read_date(const string_t& s, unsigned i, rule& r)
+         ++i;
+         unsigned m;
+         i = read_unsigned(s, i, 2, m, "Expected to find month [1, 12]");
++        if (!(1 <= m && m <= 12))
++            throw_invalid(s, i-1, "Expected month to be in the range [1, 12]");
+         if (i == s.size() || s[i] != '.')
+             throw_invalid(s, i, "Expected '.' after month");
+         ++i;
+         unsigned n;
+         i = read_unsigned(s, i, 1, n, "Expected to find week number [1, 5]");
++        if (!(1 <= n && n <= 5))
++            throw_invalid(s, i-1, "Expected week number to be in the range [1, 5]");
+         if (i == s.size() || s[i] != '.')
+             throw_invalid(s, i, "Expected '.' after weekday index");
+         ++i;
+         unsigned wd;
+         i = read_unsigned(s, i, 1, wd, "Expected to find day of week [0, 6]");
++        if (wd > 6)
++            throw_invalid(s, i-1, "Expected day of week to be in the range [0, 6]");
+         r.mode_ = rule::M;
+         r.m_ = month{m};
+         r.wd_ = weekday{wd};
+@@ -705,6 +713,8 @@ read_date(const string_t& s, unsigned i, rule& r)
+     {
+         unsigned n;
+         i = read_unsigned(s, i, 3, n);
++        if (n > 365)
++            throw_invalid(s, i-1, "Expected Julian day to be in the range [0, 365]");
+         r.mode_ = rule::N;
+         r.n_ = n;
+     }
+@@ -786,16 +796,22 @@ read_unsigned_time(const string_t& s, unsigned i, std::chrono::seconds& t)
+         throw_invalid(s, i, "Expected to read unsigned time, but found end of string");
+     unsigned x;
+     i = read_unsigned(s, i, 2, x, "Expected to find hours [0, 24]");
++    if (x > 24)
++        throw_invalid(s, i-1, "Expected hours to be in the range [0, 24]");
+     t = hours{x};
+     if (i != s.size() && s[i] == ':')
+     {
+         ++i;
+         i = read_unsigned(s, i, 2, x, "Expected to find minutes [0, 59]");
++        if (x > 59)
++            throw_invalid(s, i-1, "Expected minutes to be in the range [0, 59]");
+         t += minutes{x};
+         if (i != s.size() && s[i] == ':')
+         {
+             ++i;
+             i = read_unsigned(s, i, 2, x, "Expected to find seconds [0, 59]");
++            if (x > 59)
++                throw_invalid(s, i-1, "Expected seconds to be in the range [0, 59]");
+             t += seconds{x};
+         }
+     }
+-- 
+2.39.5
+

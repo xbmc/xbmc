@@ -1,0 +1,46 @@
+From f986299fbbe3a23f6b9b0a707d0640a757f6f731 Mon Sep 17 00:00:00 2001
+From: Nicolas Dusart <dusartnicolas@gmail.com>
+Date: Tue, 1 Dec 2020 12:12:39 +0100
+Subject: [PATCH 47/50] support Android for current_zone()
+
+---
+ src/tz.cpp | 16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
+
+diff --git a/src/tz.cpp b/src/tz.cpp
+index 5191521..82e4312 100644
+--- a/src/tz.cpp
++++ b/src/tz.cpp
+@@ -92,6 +92,10 @@
+ #  define TARGET_OS_SIMULATOR 0
+ #endif
+ 
++#if defined(ANDROID) || defined(__ANDROID__)
++#include <sys/system_properties.h>
++#endif
++
+ #if USE_OS_TZDB
+ #  include <dirent.h>
+ #endif
+@@ -4092,6 +4096,18 @@ tzdb::current_zone() const
+         if (!result.empty())
+             return locate_zone(result);
+ #endif
++    // Fall through to try other means.
++    }
++    {
++    // On Android, it is not possible to use file based approach either,
++    // we have to ask the value of `persist.sys.timezone` system property
++#if defined(ANDROID) || defined(__ANDROID__)
++    char sys_timezone[PROP_VALUE_MAX];
++    if (__system_property_get("persist.sys.timezone", sys_timezone) > 0)
++    {
++        return locate_zone(sys_timezone);
++    }
++#endif // defined(ANDROID) || defined(__ANDROID__)
+     // Fall through to try other means.
+     }
+     {
+-- 
+2.39.5
+

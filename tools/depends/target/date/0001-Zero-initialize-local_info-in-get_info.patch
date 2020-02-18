@@ -1,0 +1,27 @@
+From b49a7575ebbe127e8bd344900a52c14b5d69dd7b Mon Sep 17 00:00:00 2001
+From: Howard Hinnant <howard.hinnant@gmail.com>
+Date: Tue, 18 May 2021 16:15:31 -0400
+Subject: [PATCH 01/50] Zero initialize local_info in get_info
+
+* Even when the result is unique, the second sys_info
+  should be zero initialized.
+---
+ src/tz.cpp | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/tz.cpp b/src/tz.cpp
+index 26babbd..1592bc8 100644
+--- a/src/tz.cpp
++++ b/src/tz.cpp
+@@ -2164,7 +2164,7 @@ time_zone::get_info_impl(local_seconds tp) const
+ {
+     using namespace std::chrono;
+     init();
+-    local_info i;
++    local_info i{};
+     i.result = local_info::unique;
+     auto tr = upper_bound(transitions_.begin(), transitions_.end(), tp,
+                           [](const local_seconds& x, const transition& t)
+-- 
+2.39.5
+
