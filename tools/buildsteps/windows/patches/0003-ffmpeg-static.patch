@@ -1,6 +1,8 @@
+diff --git a/configure b/configure
+index 34c2adb4a4..9c0ff0cd88 100755
 --- a/configure
 +++ b/configure
-@@ -5131,6 +5131,8 @@
+@@ -5312,6 +5312,8 @@ case $target_os in
          enabled shared && ! enabled small && test_cmd $windres --version && enable gnu_windres
          enabled x86_32 && check_ldflags -Wl,--large-address-aware
          shlibdir_default="$bindir_default"
@@ -9,7 +11,7 @@
          SLIBPREF=""
          SLIBSUF=".dll"
          SLIBNAME_WITH_VERSION='$(SLIBPREF)$(FULLNAME)-$(LIBVERSION)$(SLIBSUF)'
-@@ -5180,6 +5182,8 @@
+@@ -5361,6 +5363,8 @@ case $target_os in
          fi
          enabled x86_32 && check_ldflags -LARGEADDRESSAWARE
          shlibdir_default="$bindir_default"
@@ -18,3 +20,22 @@
          SLIBPREF=""
          SLIBSUF=".dll"
          SLIBNAME_WITH_VERSION='$(SLIBPREF)$(FULLNAME)-$(LIBVERSION)$(SLIBSUF)'
+@@ -6358,6 +6362,8 @@ enabled openssl           && { check_pkg_config openssl openssl openssl/ssl.h OP
+                                check_lib openssl openssl/ssl.h SSL_library_init -lssl -lcrypto ||
+                                check_lib openssl openssl/ssl.h SSL_library_init -lssl32 -leay32 ||
+                                check_lib openssl openssl/ssl.h SSL_library_init -lssl -lcrypto -lws2_32 -lgdi32 ||
++                               check_lib openssl openssl/ssl.h OPENSSL_init_ssl -llibssl -llibcrypto -lws2_32 -lgdi32 -ladvapi32 -luser32 ||
++                               check_lib openssl openssl/ssl.h SSL_library_init -llibeay32 -lssleay32 ||
+                                die "ERROR: openssl not found"; }
+ enabled pocketsphinx      && require_pkg_config pocketsphinx pocketsphinx pocketsphinx/pocketsphinx.h ps_init
+ enabled rkmpp             && { require_pkg_config rkmpp rockchip_mpp  rockchip/rk_mpi.h mpp_create &&
+@@ -7437,6 +7443,9 @@ print_config CONFIG_ "$config_files" $CONFIG_LIST       \
+                                      $CONFIG_EXTRA      \
+                                      $ALL_COMPONENTS    \
+ 
++echo "#if defined(HAVE_UNISTD_H) && HAVE_UNISTD_H == 0" >> $TMPH
++echo "#undef HAVE_UNISTD_H" >> $TMPH
++echo "#endif" >> $TMPH
+ echo "#endif /* FFMPEG_CONFIG_H */" >> $TMPH
+ echo "endif # FFMPEG_CONFIG_MAK" >> ffbuild/config.mak
+ 

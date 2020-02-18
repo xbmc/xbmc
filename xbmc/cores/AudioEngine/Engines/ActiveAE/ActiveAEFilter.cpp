@@ -157,6 +157,7 @@ bool CActiveAEFilter::CreateAtempoFilter()
   m_needData = true;
   m_filterEof = false;
   m_started = false;
+  m_ptsInitialized = false;
 
   return true;
 }
@@ -182,6 +183,8 @@ void CActiveAEFilter::CloseFilter()
 
   m_SamplesIn = 0;
   m_SamplesOut = 0;
+
+  m_ptsInitialized = false;
 }
 
 int CActiveAEFilter::ProcessFilter(uint8_t **dst_buffer, int dst_samples, uint8_t **src_buffer, int src_samples, int src_bufsize)
@@ -211,6 +214,11 @@ int CActiveAEFilter::ProcessFilter(uint8_t **dst_buffer, int dst_samples, uint8_
     frame->sample_rate = m_sampleRate;
     frame->nb_samples = src_samples;
     frame->format = m_sampleFormat;
+    if (!m_ptsInitialized)
+    {
+      frame->pts = 0;
+      m_ptsInitialized = true;
+    }
 
     m_SamplesIn += src_samples;
 
