@@ -178,7 +178,7 @@ bool CNFSDirectory::GetDirectory(const CURL& url, CFileItemList &items)
 {
   // We accept nfs://server/path[/file]]]]
   int ret = 0;
-  FILETIME fileTime, localTime;
+  KODI::TIME::FileTime fileTime, localTime;
   CSingleLock lock(gNfsConnection);
   std::string strDirName="";
   std::string myStrPath(url.Get());
@@ -253,8 +253,8 @@ bool CNFSDirectory::GetDirectory(const CURL& url, CFileItemList &items)
       long long ll = lTimeDate & 0xffffffff;
       ll *= 10000000ll;
       ll += 116444736000000000ll;
-      fileTime.dwLowDateTime = (DWORD) (ll & 0xffffffff);
-      fileTime.dwHighDateTime = (DWORD)(ll >> 32);
+      fileTime.lowDateTime = (DWORD)(ll & 0xffffffff);
+      fileTime.highDateTime = (DWORD)(ll >> 32);
       KODI::TIME::FileTimeToLocalFileTime(&fileTime, &localTime);
 
       CFileItemPtr pItem(new CFileItem(tmpDirent.name));

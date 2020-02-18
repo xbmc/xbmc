@@ -7,17 +7,19 @@
  */
 
 #include "Win32SMBDirectory.h"
+
 #include "FileItem.h"
-#include "platform/win32/WIN32Util.h"
-#include "platform/win32/CharsetConverter.h"
-#include "utils/CharsetConverter.h"
-#include "URL.h"
-#include "utils/log.h"
 #include "PasswordManager.h"
+#include "URL.h"
+#include "utils/CharsetConverter.h"
+#include "utils/XTimeUtils.h"
 #include "utils/auto_buffer.h"
+#include "utils/log.h"
+
+#include "platform/win32/CharsetConverter.h"
+#include "platform/win32/WIN32Util.h"
 
 #include <Windows.h>
-
 #include <Winnetwk.h>
 #pragma comment(lib, "mpr.lib")
 
@@ -166,8 +168,11 @@ bool CWin32SMBDirectory::GetDirectory(const CURL& url, CFileItemList &items)
 
     // calculation of size and date costs a little on win32
     // so DIR_FLAG_NO_FILE_INFO flag is ignored
-    FILETIME localTime;
-    if (KODI::TIME::FileTimeToLocalFileTime(&findData.ftLastWriteTime, &localTime) == TRUE)
+    KODI::TIME::FileTime fileTime;
+    fileTime.lowDateTime = findData.ftLastWriteTime.dwLowDateTime;
+    fileTime.lowDateTime = findData.ftLastWriteTime.dwHighDateTime;
+    KODI::TIME::FileTime localTime;
+    if (KODI::TIME::FileTimeToLocalFileTime(&fileTime, &localTime) == TRUE)
       pItem->m_dateTime = localTime;
     else
       pItem->m_dateTime.SetValid(false);

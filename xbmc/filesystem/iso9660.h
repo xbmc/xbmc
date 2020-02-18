@@ -9,9 +9,10 @@
 
 #pragma once
 
-#include <vector>
+#include "XBDateTime.h"
+
 #include <string>
-#include "PlatformDefs.h" // for win32 types
+#include <vector>
 
 #ifdef TARGET_WINDOWS
 // Ideally we should just be including iso9660.h, but it's not win32-ified at this point,
@@ -131,7 +132,7 @@ struct iso_dirtree
   char type;  // bit 0 = no entry, bit 1 = file, bit 2 = dir
   DWORD Location; // number of the first sector of file data or directory
   DWORD Length;      // number of bytes of file data or length of directory
-  FILETIME filetime; // date time of the directory/file
+  KODI::TIME::FileTime filetime; // date time of the directory/file
 
   struct iso_dirtree *dirpointer; // if type is a dir, this will point to the list in that dir
   struct iso_dirtree *next;  // pointer to next file/dir in this directory
@@ -148,9 +149,9 @@ struct iso_directories
 struct Win32FindData
 {
   unsigned int fileAttributes;
-  FILETIME creationTime;
-  FILETIME lastAccessTime;
-  FILETIME lastWriteTime;
+  KODI::TIME::FileTime creationTime;
+  KODI::TIME::FileTime lastAccessTime;
+  KODI::TIME::FileTime lastWriteTime;
   unsigned int fileSizeHigh;
   unsigned int fileSizeLow;
   unsigned int reserved0;
@@ -158,6 +159,8 @@ struct Win32FindData
   char fileName[260];
   char alternateFileName[14];
 };
+
+constexpr unsigned int KODI_FILE_ATTRIBUTE_DIRECTORY{0x10};
 
 class iso9660
 {
@@ -194,7 +197,7 @@ public:
   bool IsScanned();
 
 protected:
-  void IsoDateTimeToFileTime(iso9660_Datetime* isoDateTime, FILETIME* filetime);
+  void IsoDateTimeToFileTime(iso9660_Datetime* isoDateTime, KODI::TIME::FileTime* filetime);
   struct iso_dirtree* ReadRecursiveDirFromSector( DWORD sector, const char * );
   struct iso_dirtree* FindFolder(const char *Folder );
   std::string GetThinText(unsigned char* strTxt, int iLen );

@@ -135,14 +135,6 @@ struct _stati64 {
   time_t _st_ctime;
 };
 
-typedef struct _FILETIME
-{
-  DWORD dwLowDateTime;
-  DWORD dwHighDateTime;
-} FILETIME, *PFILETIME, *LPFILETIME;
-
-#define FILE_ATTRIBUTE_DIRECTORY           0x00000010
-
 #define FILE_BEGIN              0
 #define FILE_CURRENT            1
 #define FILE_END                2
