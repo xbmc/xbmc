@@ -1,11 +1,12 @@
 include ../../Makefile.include
-DEPS= ../../Makefile.include Makefile osx.patch osx2.patch
+DEPS= ../../Makefile.include Makefile osx.patch
 
 # lib name, version
 LIBNAME=libcdio
-VERSION=0.94
+VERSION=2.1.0
 SOURCE=$(LIBNAME)-$(VERSION)
-ARCHIVE=$(SOURCE).tar.gz
+ARCHIVE=$(SOURCE).tar.bz2
+
 # configuration settings
 CONFIGURE=cp -f $(CONFIG_SUB) $(CONFIG_GUESS) .; \
           ./configure --prefix=$(PREFIX)  --with-cd-drive=no --with-cd-info=no \
@@ -23,7 +24,6 @@ $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 	rm -rf $(PLATFORM)/*; mkdir -p $(PLATFORM)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
 	cd $(PLATFORM); patch -p1 -i ../osx.patch
-	cd $(PLATFORM); patch -p1 -i ../osx2.patch
 	cd $(PLATFORM); $(AUTORECONF) -vif
 	cd $(PLATFORM); $(CONFIGURE)
 
@@ -34,7 +34,6 @@ $(LIBDYLIB): $(PLATFORM)
 	$(MAKE) -C $(PLATFORM)/lib install
 	$(MAKE) -C $(PLATFORM)/include install
 	$(MAKE) -C $(PLATFORM) install-data-am
-	cp $(PLATFORM)/include/cdio/cdtext.h $(PREFIX)/include/cdio/
 	touch $@
 
 clean:
