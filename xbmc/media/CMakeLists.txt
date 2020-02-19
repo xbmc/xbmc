@@ -1,5 +1,6 @@
 set(SOURCES MediaType.cpp)
 
-set(HEADERS MediaType.h)
+set(HEADERS MediaLockState.h
+            MediaType.h)
 
 core_add_library(media)
