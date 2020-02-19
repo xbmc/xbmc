@@ -53,6 +53,7 @@ if(CMAKE_SYSTEM_NAME STREQUAL Darwin)
   set(CMAKE_INCLUDE_PATH @CMAKE_FIND_ROOT_PATH@/include:@use_sdk_path@/include:/usr/X11R6/include)
 endif()
 set(CMAKE_SYSTEM_VERSION 1)
+set(CMAKE_SYSTEM_PROCESSOR "@use_cmake_cpu@")
 
 # specify the cross compiler
 set(CMAKE_C_COMPILER @CC@)

@@ -9,6 +9,7 @@ TARBALLS_LOCATION=@use_tarballs@
 PLATFORM=@deps_dir@
 HOST=@use_host@
 CPU=@use_cpu@
+CMAKE_CPU=@use_cmake_cpu@
 NATIVEPLATFORM=@build_cpu@-@build_os@-native
 NDK_LEVEL=@use_ndk_api@
 RETRIEVE_TOOL=@CURL@

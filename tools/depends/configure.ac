@@ -249,6 +249,7 @@ case $host in
         if test "x$use_cpu" = "xauto"; then
           use_cpu="armeabi-v7a"
         fi
+        use_cmake_cpu=armv7-a
         if test "x$use_cpu" = "xarmeabi-v7a"; then
           platform_cflags+=" -march=armv7-a -mtune=cortex-a9 -mfloat-abi=softfp -mfpu=neon"
         fi
@@ -258,6 +259,7 @@ case $host in
         if test "x$use_cpu" = "xauto"; then
           use_cpu="arm64-v8a"
         fi
+        use_cmake_cpu=aarch64
         if test "x$use_cpu" = "xarm64-v8a"; then
           platform_cflags+=" -march=armv8-a -mtune=cortex-a53"
         fi
@@ -266,6 +268,7 @@ case $host in
         if test "x$use_cpu" = "xauto"; then
           use_cpu=$host_cpu
         fi
+        use_cmake_cpu=$host_cpu
       ;;
       *)
         AC_MSG_ERROR(unsupported host ($use_host))
@@ -281,6 +284,7 @@ case $host in
     if test "x$use_cpu" = "xauto"; then
       use_cpu=$host_cpu
     fi
+    use_cmake_cpu=$host_cpu
     use_toolchain="${use_toolchain:-/usr}"
     platform_cflags="-fPIC -DPIC"
     optimize_flags="-Os"
@@ -290,6 +294,7 @@ case $host in
   ;;
   *i686*-linux-gnu*|i*86*-*-linux-uclibc*|x86_64*-linux-gnu*|x86_64-*-linux-uclibc*)
     use_cpu=$host_cpu
+    use_cmake_cpu=$host_cpu
     use_toolchain="${use_toolchain:-/usr}"
     platform_cflags="-fPIC -DPIC"
     optimize_flags="-O2"
@@ -320,6 +325,7 @@ case $host in
         if test "x$use_cpu" = "xauto"; then
           use_cpu=x86_64
         fi
+        use_cmake_cpu=x86_64
 
         # setup which sdk to use
         target_platform=macosx
@@ -347,12 +353,18 @@ case $host in
         # setup which sdk to use
         if test "$use_platform" = "tvos"; then
           use_cpu=arm64
+          use_cmake_cpu=aarch64
           target_platform=appletvos
           platform_min_version="$target_platform-version-min=11.0"
         else
           # setup which cpu to use
           if test "x$use_cpu" = "xauto"; then
             use_cpu=armv7
+          fi
+          if test "x$use_cpu" = "xarm64"; then
+            use_cmake_cpu=aarch64
+          else
+            use_cmake_cpu=armv7
           fi
 
           target_platform=iphoneos
@@ -421,6 +433,7 @@ case $use_platform in
   raspberry-pi)
      target_platform=raspberry-pi
      use_cpu=arm1176jzf-s
+     use_cmake_cpu=armv6
      ffmpeg_options_default="--cpu=arm1176jzf-s"
      platform_cflags="-mcpu=arm1176jzf-s -mtune=arm1176jzf-s -mfloat-abi=hard -mfpu=vfp"
      platform_cxxflags="-mcpu=arm1176jzf-s -mtune=arm1176jzf-s -mfloat-abi=hard -mfpu=vfp"
@@ -429,6 +442,7 @@ case $use_platform in
   raspberry-pi2)
      target_platform=raspberry-pi
      use_cpu=cortex-a7
+     use_cmake_cpu=armv7-a
      ffmpeg_options_default="--cpu=cortex-a7"
      platform_cflags="-fPIC -mcpu=cortex-a7 -mfloat-abi=hard -mfpu=neon-vfpv4 -mvectorize-with-neon-quad"
      platform_cxxflags="-fPIC -mcpu=cortex-a7 -mfloat-abi=hard -mfpu=neon-vfpv4 -mvectorize-with-neon-quad"
@@ -437,6 +451,7 @@ case $use_platform in
   raspberry-pi3)
      target_platform=raspberry-pi
      use_cpu=cortex-a53
+     use_cmake_cpu=armv7-a # Raspberry mostly only use 32bit, also on the newer versions with 64bit CPU.
      ffmpeg_options_default="--cpu=cortex-a53"
      platform_cflags="-fPIC -mcpu=cortex-a53 -mfloat-abi=hard -mfpu=neon-fp-armv8 -mvectorize-with-neon-quad"
      platform_cxxflags="-fPIC -mcpu=cortex-a53 -mfloat-abi=hard -mfpu=neon-fp-armv8 -mvectorize-with-neon-quad"
@@ -646,6 +661,7 @@ AC_SUBST(use_host)
 AC_SUBST(deps_dir)
 AC_SUBST(tool_dir)
 AC_SUBST(use_cpu)
+AC_SUBST(use_cmake_cpu)
 AC_SUBST(use_toolchain)
 AC_SUBST(use_build_toolchain)
 AC_SUBST(use_tarballs)
@@ -693,6 +709,7 @@ echo -e "ccache:\t\t $use_ccache"
 echo -e "build type:\t $build_type"
 echo -e "toolchain:\t $use_toolchain"
 echo -e "cpu:\t\t $use_cpu"
+echo -e "cpu (cmake):\t $use_cmake_cpu"
 echo -e "host:\t\t $use_host"
 echo -e "cflags:\t\t $platform_cflags"
 echo -e "cxxflags:\t $platform_cxxflags"
