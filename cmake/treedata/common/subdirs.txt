@@ -4,9 +4,9 @@ xbmc/addons/addoninfo                           addons_addoninfo
 xbmc/addons/binary-addons                       addons_binary-addons
 xbmc/addons/interfaces                          addons_interfaces
 xbmc/addons/interfaces/Addon                    addons_interfaces_addon
-xbmc/addons/interfaces/GUI                      addons_interfaces_gui
-xbmc/addons/interfaces/GUI/controls             addons_interfaces_gui_controls
-xbmc/addons/interfaces/GUI/dialogs              addons_interfaces_gui_dialogs
+xbmc/addons/interfaces/gui                      addons_interfaces_gui
+xbmc/addons/interfaces/gui/controls             addons_interfaces_gui_controls
+xbmc/addons/interfaces/gui/dialogs              addons_interfaces_gui_dialogs
 xbmc/addons/kodi-addon-dev-kit/include/kodi     addons_kodi-addon-dev-kit_include_kodi
 xbmc/addons/kodi-addon-dev-kit/include/kodi/addon-instance addons_kodi-addon-dev-kit_include_kodi_addon-instance
 xbmc/addons/kodi-addon-dev-kit/include/kodi/gui addons_kodi-addon-dev-kit_include_kodi_gui

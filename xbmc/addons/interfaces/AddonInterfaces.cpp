@@ -11,9 +11,9 @@
 
 #include "addons/Addon.h"
 #include "addons/interfaces/Addon/AddonCallbacksAddon.h"
-#include "addons/interfaces/GUI/AddonCallbacksGUI.h"
-#include "addons/interfaces/GUI/AddonGUIWindow.h"
-#include "addons/interfaces/GUI/Window.h"
+#include "addons/interfaces/gui/AddonCallbacksGUI.h"
+#include "addons/interfaces/gui/AddonGUIWindow.h"
+#include "addons/interfaces/gui/Window.h"
 #include "filesystem/SpecialProtocol.h"
 #include "games/addons/GameClient.h"
 #include "messaging/ApplicationMessenger.h"
