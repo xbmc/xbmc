@@ -1,27 +1,28 @@
 /*
- *  Copyright (C) 2013-2018 Team Kodi
+ *  Copyright (C) 2013-2020 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
  *  See LICENSES/README.md for more information.
  */
 
-#include <cstdlib>
-#include <string>
-
 #include "MediaSourceSettings.h"
+
+#include "ServiceBroker.h"
 #include "URL.h"
 #include "Util.h"
 #include "filesystem/File.h"
+#include "network/WakeOnAccess.h"
 #include "profiles/ProfileManager.h"
 #include "settings/SettingsComponent.h"
-#include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/XBMCTinyXML.h"
 #include "utils/XMLUtils.h"
-#include "network/WakeOnAccess.h"
-#include "ServiceBroker.h"
+#include "utils/log.h"
+
+#include <cstdlib>
+#include <string>
 
 #define SOURCES_FILE  "sources.xml"
 #define XML_SOURCES   "sources"

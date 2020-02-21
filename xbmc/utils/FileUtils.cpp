@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2010-2018 Team Kodi
+ *  Copyright (C) 2010-2020 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -7,24 +7,25 @@
  */
 
 #include "FileUtils.h"
-#include "ServiceBroker.h"
-#include "guilib/GUIKeyboardFactory.h"
-#include "utils/log.h"
-#include "guilib/LocalizeStrings.h"
-#include "JobManager.h"
+
 #include "FileOperationJob.h"
+#include "JobManager.h"
+#include "ServiceBroker.h"
+#include "StringUtils.h"
 #include "URIUtils.h"
+#include "URL.h"
+#include "Util.h"
 #include "filesystem/MultiPathDirectory.h"
 #include "filesystem/SpecialProtocol.h"
 #include "filesystem/StackDirectory.h"
+#include "guilib/GUIKeyboardFactory.h"
+#include "guilib/LocalizeStrings.h"
 #include "settings/MediaSourceSettings.h"
-#include "Util.h"
-#include "StringUtils.h"
-#include "URL.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "storage/MediaManager.h"
 #include "utils/Variant.h"
+#include "utils/log.h"
 
 #if defined(TARGET_WINDOWS)
 #include "platform/win32/WIN32Util.h"
