@@ -23,4 +23,5 @@ if test -n "@use_build_toolchain@"; then
 fi
 
 LD_LIBRARY_PATH=@prefix@/@tool_dir@/lib:$LD_LIBRARY_PATH
-NASM=@prefix@/@tool_dir@/bin/yasm
+YASM=@prefix@/@tool_dir@/bin/yasm
+NASM=@prefix@/@tool_dir@/bin/nasm
