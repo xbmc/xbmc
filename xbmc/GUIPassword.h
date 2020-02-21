@@ -75,6 +75,7 @@ public:
 
   bool bMasterUser;
   int iMasterLockRetriesLeft;
+  std::string strMediasourcePath;
 
 private:
   int VerifyPassword(LockType btnType, const std::string& strPassword, const std::string& strHeading);
