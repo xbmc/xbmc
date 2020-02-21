@@ -20,6 +20,7 @@
 #include "filesystem/StackDirectory.h"
 #include "guilib/GUIKeyboardFactory.h"
 #include "guilib/LocalizeStrings.h"
+#include "media/MediaLockState.h"
 #include "settings/MediaSourceSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
@@ -145,7 +146,9 @@ bool CFileUtils::RemoteAccessAllowed(const std::string &strPath)
   {
     VECSOURCES* sources = CMediaSourceSettings::GetInstance().GetSources(sourceName);
     int sourceIndex = CUtil::GetMatchingSource(realPath, *sources, isSource);
-    if (sourceIndex >= 0 && sourceIndex < (int)sources->size() && sources->at(sourceIndex).m_iHasLock != 2 && sources->at(sourceIndex).m_allowSharing)
+    if (sourceIndex >= 0 && sourceIndex < static_cast<int>(sources->size()) &&
+        sources->at(sourceIndex).m_iHasLock != LOCK_STATE_LOCKED &&
+        sources->at(sourceIndex).m_allowSharing)
       return true;
   }  
   // Check auto-mounted sources
@@ -153,8 +156,9 @@ bool CFileUtils::RemoteAccessAllowed(const std::string &strPath)
   g_mediaManager.GetRemovableDrives(sources);   // Sources returned allways have m_allowsharing = true
   //! @todo Make sharing of auto-mounted sources user configurable
   int sourceIndex = CUtil::GetMatchingSource(realPath, sources, isSource);
-  if (sourceIndex >= 0 && sourceIndex < static_cast<int>(sources.size()) && 
-      sources.at(sourceIndex).m_iHasLock != 2 && sources.at(sourceIndex).m_allowSharing)
+  if (sourceIndex >= 0 && sourceIndex < static_cast<int>(sources.size()) &&
+      sources.at(sourceIndex).m_iHasLock != LOCK_STATE_LOCKED &&
+      sources.at(sourceIndex).m_allowSharing)
     return true;
 
   return false;

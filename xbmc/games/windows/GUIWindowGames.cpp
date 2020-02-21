@@ -23,6 +23,7 @@
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/WindowIDs.h"
+#include "media/MediaLockState.h"
 #include "settings/MediaSourceSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
@@ -292,7 +293,7 @@ std::string CGUIWindowGames::GetStartFolder(const std::string &dir)
   int iIndex = CUtil::GetMatchingSource(dir, shares, bIsSourceName);
   if (iIndex >= 0)
   {
-    if (iIndex < (int)shares.size() && shares[iIndex].m_iHasLock == 2)
+    if (iIndex < static_cast<int>(shares.size()) && shares[iIndex].m_iHasLock == LOCK_STATE_LOCKED)
     {
       CFileItem item(shares[iIndex]);
       if (!g_passwordManager.IsItemUnlocked(&item, "games"))

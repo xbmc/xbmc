@@ -10,6 +10,7 @@
 
 #include "Util.h"
 #include "filesystem/File.h"
+#include "media/MediaLockState.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
@@ -136,7 +137,7 @@ bool CPlayListXML::Load( const std::string& strFileName )
        if ( !lockpass.empty() )
        {
          newItem->m_strLockCode = lockpass;
-         newItem->m_iHasLock = 2;
+         newItem->m_iHasLock = LOCK_STATE_LOCKED;
          newItem->m_iLockMode = LOCK_MODE_NUMERIC;
        }
 
@@ -181,7 +182,7 @@ void CPlayListXML::Save(const std::string& strFileName) const
     if ( !item->GetProperty("remotechannel").empty() )
       write += StringUtils::Format("    <channel>%s</channel>", item->GetProperty("remotechannel").c_str() );
 
-    if ( item->m_iHasLock > 0 )
+    if (item->m_iHasLock > LOCK_STATE_NO_LOCK)
       write += StringUtils::Format("    <lockpassword>%s<lockpassword>", item->m_strLockCode.c_str() );
 
     write += StringUtils::Format("  </stream>\n\n" );

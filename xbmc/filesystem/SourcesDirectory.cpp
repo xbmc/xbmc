@@ -14,6 +14,7 @@
 #include "URL.h"
 #include "Util.h"
 #include "guilib/TextureManager.h"
+#include "media/MediaLockState.h"
 #include "profiles/ProfileManager.h"
 #include "settings/MediaSourceSettings.h"
 #include "storage/MediaManager.h"
@@ -88,7 +89,8 @@ bool CSourcesDirectory::GetDirectory(const VECSOURCES &sources, CFileItemList &i
       strIcon = "DefaultHardDisk.png";
 
     pItem->SetIconImage(strIcon);
-    if (share.m_iHasLock == 2 && m_profileManager->GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE)
+    if (share.m_iHasLock == LOCK_STATE_LOCKED &&
+        m_profileManager->GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE)
       pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_LOCKED);
     else
       pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_NONE);

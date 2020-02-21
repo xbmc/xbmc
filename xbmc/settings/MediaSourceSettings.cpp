@@ -12,6 +12,7 @@
 #include "URL.h"
 #include "Util.h"
 #include "filesystem/File.h"
+#include "media/MediaLockState.h"
 #include "network/WakeOnAccess.h"
 #include "profiles/ProfileManager.h"
 #include "settings/SettingsComponent.h"
@@ -399,7 +400,7 @@ bool CMediaSourceSettings::GetSource(const std::string &category, const TiXmlNod
   if (pLockMode)
   {
     share.m_iLockMode = (LockType)std::strtol(pLockMode->FirstChild()->Value(), NULL, 10);
-    share.m_iHasLock = 2;
+    share.m_iHasLock = LOCK_STATE_LOCKED;
   }
 
   if (pLockCode && pLockCode->FirstChild())
