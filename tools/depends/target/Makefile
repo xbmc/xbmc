@@ -12,7 +12,7 @@ DEPENDS = \
 	libxml2 rapidjson libmicrohttpd mariadb libffi \
 	python3 libshairplay libfmt \
 	libplist libcec libbluray tinyxml \
-	taglib libusb libnfs \
+	taglib libusb libnfs meson-cross-file \
 	pythonmodule-pil pythonmodule-pycryptodome pythonmodule-setuptools \
 	libxslt ffmpeg crossguid \
 	libdvdread libdvdnav libdvdcss p8-platform flatbuffers
@@ -115,10 +115,11 @@ libdvdread: libdvdcss
 wayland: expat libffi
 waylandpp: wayland $(WAYLANDPP_DEPS)
 dbus: expat
-libinput: mtdev libevdev
+libinput: mtdev libevdev meson-cross-file
 libevdev: libudev
 samba-gplv3: gnutls
 taglib: $(ZLIB)
+dav1d: meson-cross-file
 
 .installed-$(PLATFORM): $(DEPENDS)
 	touch $@
@@ -185,3 +186,19 @@ linux-system-libs: linux-system-libs-egl
 	[ -f $(PREFIX)/lib/pkgconfig/libdrm.pc ] || ln -sf /usr/lib/$(HOST)/pkgconfig/libdrm.pc $(PREFIX)/lib/pkgconfig/libdrm.pc
 	[ -f $(PREFIX)/lib/pkgconfig/xkbcommon.pc ] || ln -sf /usr/lib/$(HOST)/pkgconfig/xkbcommon.pc $(PREFIX)/lib/pkgconfig/xkbcommon.pc
 	[ -f $(PREFIX)/lib/pkgconfig/libva.pc ] || ln -sf /usr/lib/$(HOST)/pkgconfig/libva.pc $(PREFIX)/lib/pkgconfig/libva.pc
+
+meson-cross-file:
+	PREFIX="$(PREFIX)" \
+	NATIVEPREFIX="$(NATIVEPREFIX)" \
+	CC="$(CC)" \
+	CXX="$(CXX)" \
+	AR="$(AR)" \
+	STRIP="$(STRIP)" \
+	MESON_SYSTEM="$(MESON_SYSTEM)" \
+	MESON_CPU="$(MESON_CPU)" \
+	CPU="$(CPU)" \
+	CFLAGS="$(CFLAGS)" \
+	CXXFLAGS="$(CXXFLAGS)" \
+	LDFLAGS="$(LDFLAGS)" \
+	./meson-cross-setup.sh
+
