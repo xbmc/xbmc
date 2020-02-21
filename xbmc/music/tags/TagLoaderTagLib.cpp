@@ -1309,8 +1309,13 @@ bool CTagLoaderTagLib::Load(const std::string& strFileName, CMusicInfoTag& tag, 
     genericTag = file->tag();
 
   if (file->audioProperties())
+  {
     tag.SetDuration(file->audioProperties()->length());
-
+    tag.SetBitRate(file->audioProperties()->bitrate());
+    tag.SetNoOfChannels(file->audioProperties()->channels());
+    tag.SetSampleRate(file->audioProperties()->sampleRate());
+  }
+  
   if (asf)
     ParseTag(asf, art, tag);
   if (id3v1)

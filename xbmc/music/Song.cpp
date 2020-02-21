@@ -73,6 +73,9 @@ CSong::CSong(CFileItem& item)
   iTimesPlayed = 0;
   idAlbum = -1;
   iBPM = tag.GetBPM();
+  iSampleRate = tag.GetSampleRate();
+  iBitRate = tag.GetBitRate();
+  iChannels = tag.GetNoOfChannels();
 }
 
 CSong::CSong()
@@ -234,6 +237,9 @@ void CSong::Serialize(CVariant& value) const
   value["albumid"] = idAlbum;
   value["albumreleasedate"] = strReleaseDate;
   value["bpm"] = iBPM;
+  value["bitrate"] = iBitRate;
+  value["samplerate"] = iSampleRate;
+  value["channels"] = iChannels;
 }
 
 void CSong::Clear()
@@ -269,6 +275,10 @@ void CSong::Clear()
   bCompilation = false;
   embeddedArt.Clear();
   iBPM = 0;
+  iBitRate = 0;
+  iSampleRate = 0;
+  iChannels =  0;
+  
   replayGain = ReplayGain();
 }
 const std::vector<std::string> CSong::GetArtist() const

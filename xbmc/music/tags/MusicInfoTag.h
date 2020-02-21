@@ -79,6 +79,9 @@ public:
   int GetVotes() const;
   int GetListeners() const;
   int GetPlayCount() const;
+  int GetBitRate() const;
+  int GetNoOfChannels() const;
+  int GetSampleRate() const;
   const EmbeddedArtInfo &GetCoverArtInfo() const;
   const ReplayGain& GetReplayGain() const;
   CAlbum::ReleaseType GetAlbumReleaseType() const;
@@ -141,6 +144,9 @@ public:
   void SetDiscSubtitle(const std::string& strDiscSubtitle);
   void SetTotalDiscs(int iDiscTotal);
   void SetBPM(int iBPM);
+  void SetBitRate(int bitrate);
+  void SetNoOfChannels(int channels);
+  void SetSampleRate(int samplerate);
 
   /*! \brief Append a unique artist to the artist list
    Checks if we have this artist already added, and if not adds it to the songs artist list.
@@ -231,6 +237,9 @@ protected:
   bool m_bBoxset;
   int m_iBPM;
   CAlbum::ReleaseType m_albumReleaseType;
+  int m_samplerate;
+  int m_channels;
+  int m_bitrate;
 
   EmbeddedArtInfo m_coverArt; ///< art information
 

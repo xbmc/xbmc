@@ -281,6 +281,21 @@ int CMusicInfoTag::GetBPM() const
   return m_iBPM;
 }
 
+int CMusicInfoTag::GetBitRate() const
+{
+  return m_bitrate;
+}
+
+int CMusicInfoTag::GetSampleRate() const
+{
+  return m_samplerate;
+}
+
+int CMusicInfoTag::GetNoOfChannels() const
+{
+  return m_channels;
+}
+
 const std::string& CMusicInfoTag::GetReleaseDate() const
 {
   return m_strReleaseDate;
@@ -486,6 +501,21 @@ void CMusicInfoTag::SetTrackAndDiscNumber(int iTrackAndDisc)
 void CMusicInfoTag::SetDuration(int iSec)
 {
   m_iDuration = iSec;
+}
+
+void CMusicInfoTag::SetBitRate(int bitrate)
+{
+  m_bitrate = bitrate;
+}
+
+void CMusicInfoTag::SetNoOfChannels(int channels)
+{
+  m_channels = channels;
+}
+
+void CMusicInfoTag::SetSampleRate(int samplerate)
+{
+  m_samplerate = samplerate;
 }
 
 void CMusicInfoTag::SetComment(const std::string& comment)
@@ -788,6 +818,9 @@ void CMusicInfoTag::SetSong(const CSong& song)
   SetAlbumId(song.idAlbum);
   SetDatabaseId(song.idSong, MediaTypeSong);
   SetBPM(song.iBPM);
+  SetBitRate(song.iBitRate);
+  SetSampleRate(song.iSampleRate);
+  SetNoOfChannels(song.iChannels);
 
   if (song.replayGain.Get(ReplayGain::TRACK).Valid())
     m_replayGain.Set(ReplayGain::TRACK, song.replayGain.Get(ReplayGain::TRACK));
@@ -966,6 +999,9 @@ void CMusicInfoTag::Archive(CArchive& ar)
     ar << m_cuesheet;
     ar << static_cast<int>(m_albumReleaseType);
     ar << m_iBPM;
+    ar << m_samplerate;
+    ar << m_bitrate;
+    ar << m_channels;
   }
   else
   {
@@ -1029,6 +1065,9 @@ void CMusicInfoTag::Archive(CArchive& ar)
     ar >> albumReleaseType;
     m_albumReleaseType = static_cast<CAlbum::ReleaseType>(albumReleaseType);
     ar >> m_iBPM;
+    ar >> m_samplerate;
+    ar >> m_bitrate;
+    ar >> m_channels;
   }
 }
 
@@ -1076,6 +1115,9 @@ void CMusicInfoTag::Clear()
   m_Votes = 0;
   m_iDiscTotal = 0;
   m_iBPM = 0;
+  m_samplerate = 0;
+  m_bitrate = 0;
+  m_channels = 0;
 }
 
 void CMusicInfoTag::AppendArtist(const std::string &artist)
