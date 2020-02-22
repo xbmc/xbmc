@@ -44,6 +44,7 @@ dpkg: automake gettext libtool pkg-config tar
 flatbuffers: cmake
 heimdal: libtool
 libtool: automake
+libjpeg-turbo: cmake yasm
 libpng: zlib
 meson: python3 setuptools
 ninja: python3
