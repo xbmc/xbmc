@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2018 Team Kodi
+ *  Copyright (C) 2005-2020 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -30,13 +30,13 @@ public:
                       const std::string& strType,
                       const std::string& strLabel,
                       const std::string& strHeading);
-  /* \brief Tests if the user is allowed to access the share folder
+  /*! \brief Tests if the user is allowed to access the share folder
    \param pItem The share folder item to access
    \param strType The type of share being accessed, e.g. "music", "video", etc. See CSettings::UpdateSources()
    \return If access is granted, returns \e true
    */
   bool IsItemUnlocked(CFileItem* pItem, const std::string &strType);
-  /* \brief Tests if the user is allowed to access the Mediasource
+  /*! \brief Tests if the user is allowed to access the Mediasource
    \param pItem The share folder item to access
    \param strType The type of share being accessed, e.g. "music", "video", etc. See CSettings::UpdateSources()
    \return If access is granted, returns \e true
@@ -64,7 +64,7 @@ public:
   void LockSources(bool lock);
   void RemoveSourceLocks();
   bool IsDatabasePathUnlocked(const std::string& strPath, VECSOURCES& vecSources);
-  /* \brief Tests if the user is allowed to access the path by looking up the matching Mediasource
+  /*! \brief Tests if the user is allowed to access the path by looking up the matching Mediasource
    \param strPath The folder path to access
    \param strType The type of share being accessed, e.g. "music", "video", etc. See CSettings::UpdateSources()
    \return If access is granted, returns \e true
