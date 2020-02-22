@@ -206,7 +206,8 @@ bool CWinEventsSDL::ProcessOSXShortcuts(SDL_Event& event)
     // use this instead for getting the real
     // character based on the used keyboard layout
     // see http://lists.libsdl.org/pipermail/sdl-libsdl.org/2004-May/043716.html
-    if (!(event.key.keysym.unicode & 0xff80))
+    bool isControl = (event.key.keysym.mod & KMOD_CTRL) != 0;
+    if (!isControl && !(event.key.keysym.unicode & 0xff80))
       keysymbol = event.key.keysym.unicode;
 
     switch(keysymbol)
@@ -216,7 +217,9 @@ bool CWinEventsSDL::ProcessOSXShortcuts(SDL_Event& event)
         CApplicationMessenger::GetInstance().PostMsg(TMSG_QUIT);
       return true;
 
-    case SDLK_f: // CMD-f to toggle fullscreen
+    case SDLK_f: // CMD-Ctrl-f to toggle fullscreen
+      if (!isControl)
+        return false;
       g_application.OnAction(CAction(ACTION_TOGGLE_FULLSCREEN));
       return true;
 
