@@ -1,0 +1,18 @@
+- name: jenkins-action-parametrized
+  uses: enflo/jenkins-action@0.1.0
+  
+  name: JENKINS ACTION
+on: push
+jobs:
+  curl:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@master
+    - name: jenkins
+      uses: enflo/jenkins-action@master
+      with:
+        url: {{ URL }}
+        user: {{ Jenkins User ID }}
+        token: {{ Jenkins User Token ID }}
+        job: {{ jenkins Job path }} `example /job/test`
+        parameters: {{ jenkins parameters for parametrized jobs }}
