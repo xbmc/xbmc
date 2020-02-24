@@ -450,7 +450,11 @@ namespace XBMCAddon
       else if (strcmpi(id, "time") == 0)
         {
           result = g_langInfo.GetTimeFormat();
-          StringUtils::Replace(result, "H", "%H");
+
+          if (StringUtils::StartsWith(result, "HH"))
+            StringUtils::Replace(result, "HH", "%H");
+          else
+            StringUtils::Replace(result, "H", "%H");
           StringUtils::Replace(result, "h", "%I");
           StringUtils::Replace(result, "mm", "%M");
           StringUtils::Replace(result, "ss", "%S");
