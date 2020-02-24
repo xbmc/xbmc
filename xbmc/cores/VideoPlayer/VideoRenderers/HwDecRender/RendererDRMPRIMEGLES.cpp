@@ -10,12 +10,20 @@
 
 #include "ServiceBroker.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderFactory.h"
+#include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
+#include "settings/lib/Setting.h"
 #include "utils/EGLFence.h"
 #include "utils/log.h"
 #include "windowing/gbm/WinSystemGbmGLESContext.h"
 
 using namespace KODI::WINDOWING::GBM;
 using namespace KODI::UTILS::EGL;
+
+namespace
+{
+constexpr auto SETTING_VIDEOPLAYER_USEPRIMERENDERER = "videoplayer.useprimerenderer";
+}
 
 CRendererDRMPRIMEGLES::~CRendererDRMPRIMEGLES()
 {
@@ -33,6 +41,11 @@ CBaseRenderer* CRendererDRMPRIMEGLES::Create(CVideoBuffer* buffer)
 
 void CRendererDRMPRIMEGLES::Register()
 {
+  CServiceBroker::GetSettingsComponent()
+      ->GetSettings()
+      ->GetSetting(SETTING_VIDEOPLAYER_USEPRIMERENDERER)
+      ->SetVisible(true);
+
   VIDEOPLAYER::CRendererFactory::RegisterRenderer("drm_prime_gles", CRendererDRMPRIMEGLES::Create);
 }
 
