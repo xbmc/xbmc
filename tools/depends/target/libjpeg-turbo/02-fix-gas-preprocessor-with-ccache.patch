@@ -1,0 +1,5 @@
+--- a/simd/gas-preprocessor.in
++++ b/simd/gas-preprocessor.in
+@@ -1 +1,2 @@
++#!/bin/sh
+ gas-preprocessor.pl @CMAKE_ASM_COMPILER@ ${1+"$@"}
