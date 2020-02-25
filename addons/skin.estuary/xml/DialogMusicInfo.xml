@@ -455,7 +455,7 @@
 						<control type="list" id="41">
 							<left>42</left>
 							<top>0</top>
-							<width>430</width>
+							<width>446</width>
 							<height>385</height>
 							<onleft>130</onleft>
 							<onright>130</onright>
@@ -484,7 +484,7 @@
 								<control type="image">
 									<left>0</left>
 									<top>1</top>
-									<width>430</width>
+									<width>446</width>
 									<height>33</height>
 									<texture colordiffuse="button_focus">lists/focus.png</texture>
 									<visible>Control.HasFocus(41)</visible>
