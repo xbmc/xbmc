@@ -872,7 +872,7 @@
 				<height>800</height>
 				<texture>$INFO[Window(weather).Property(Map.$PARAM[item_id].Layer)]</texture>
 				<aspectratio>scale</aspectratio>
-				<colordiffuse>70FFFFFF</colordiffuse>
+				<colordiffuse>B0FFFFFF</colordiffuse>
 			</control>
 			<control type="image" id="700$PARAM[item_id]4">
 				<left>1340</left>
