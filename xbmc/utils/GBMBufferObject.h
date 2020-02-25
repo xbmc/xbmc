@@ -18,10 +18,10 @@ struct gbm_device;
 class CGBMBufferObject : public IBufferObject
 {
 public:
-  CGBMBufferObject(int format);
+  CGBMBufferObject();
   ~CGBMBufferObject() override;
 
-  bool CreateBufferObject(int width, int height) override;
+  bool CreateBufferObject(int format, int width, int height) override;
   void DestroyBufferObject() override;
   uint8_t* GetMemory() override;
   void ReleaseMemory() override;
@@ -32,7 +32,6 @@ public:
 private:
   gbm_device *m_device = nullptr;
 
-  int m_format = 0;
   int m_fd = -1;
   uint32_t m_stride = 0;
   uint8_t *m_map = nullptr;

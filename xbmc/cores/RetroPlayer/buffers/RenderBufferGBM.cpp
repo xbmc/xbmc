@@ -22,7 +22,7 @@ CRenderBufferGBM::CRenderBufferGBM(CRenderContext &context,
   m_context(context),
   m_fourcc(fourcc),
   m_egl(new CEGLImage(static_cast<CWinSystemGbmEGLContext*>(CServiceBroker::GetWinSystem())->GetEGLDisplay())),
-  m_bo(new CGBMBufferObject(fourcc))
+  m_bo(new CGBMBufferObject())
 {
 }
 
@@ -38,7 +38,7 @@ bool CRenderBufferGBM::Allocate(AVPixelFormat format, unsigned int width, unsign
   m_width = width;
   m_height = height;
 
-  m_bo->CreateBufferObject(m_width, m_height);
+  m_bo->CreateBufferObject(m_fourcc, m_width, m_height);
 
   return true;
 }

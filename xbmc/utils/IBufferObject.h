@@ -15,7 +15,7 @@ class IBufferObject
 public:
   virtual ~IBufferObject() = default;
 
-  virtual bool CreateBufferObject(int width, int height) = 0;
+  virtual bool CreateBufferObject(int format, int width, int height) = 0;
   virtual void DestroyBufferObject() { }
   virtual uint8_t *GetMemory() = 0;
   virtual void ReleaseMemory() { }

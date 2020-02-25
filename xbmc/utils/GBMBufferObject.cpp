@@ -15,8 +15,7 @@
 
 using namespace KODI::WINDOWING::GBM;
 
-CGBMBufferObject::CGBMBufferObject(int format) :
-  m_format(format)
+CGBMBufferObject::CGBMBufferObject()
 {
   m_device = static_cast<CWinSystemGbmEGLContext*>(CServiceBroker::GetWinSystem())->GetGBMDevice();
 }
@@ -27,12 +26,12 @@ CGBMBufferObject::~CGBMBufferObject()
   DestroyBufferObject();
 }
 
-bool CGBMBufferObject::CreateBufferObject(int width, int height)
+bool CGBMBufferObject::CreateBufferObject(int format, int width, int height)
 {
   m_width = width;
   m_height = height;
 
-  m_bo = gbm_bo_create(m_device, m_width, m_height, m_format, GBM_BO_USE_LINEAR);
+  m_bo = gbm_bo_create(m_device, m_width, m_height, format, GBM_BO_USE_LINEAR);
 
   if (!m_bo)
     return false;
