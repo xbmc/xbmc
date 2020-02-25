@@ -64,9 +64,10 @@ bool CGUIPassword::IsItemUnlocked(T pItem,
                    CSettings::SETTING_MASTERLOCK_MAXRETRIES) &&
           pItem->m_iBadPwdCount >= CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
                                        CSettings::SETTING_MASTERLOCK_MAXRETRIES))
-      { // user previously exhausted all retries, show access denied error
+      {
+        // user previously exhausted all retries, show access denied error
         HELPERS::ShowOKDialogText(CVariant{12345}, CVariant{12346});
-        return false; //             "Access denied"      "Password retry limit exceeded."
+        return false;
       }
       // show the appropriate lock dialog
       iResult = VerifyPassword(pItem->m_iLockMode, strLockCode, strHeading);
@@ -164,7 +165,7 @@ bool CGUIPassword::CheckStartUpLock()
 
         // PopUp OK and Display: MasterLock mode has changed but no new Mastercode has been set!
         HELPERS::ShowOKDialogLines(CVariant{12360}, CVariant{12367}, CVariant{strLabel}, CVariant{""});
-      } //                             "Master lock"    "Master code is not valid..."
+      }
       else
         i=g_passwordManager.iMasterLockRetriesLeft;
     }
@@ -190,8 +191,9 @@ bool CGUIPassword::SetMasterLockMode(bool bDetails)
   if (profile)
   {
     CProfile::CLock locks = profile->GetLocks();
+    // prompt user for master lock
     if (CGUIDialogLockSettings::ShowAndGetLock(locks, 12360, true, bDetails))
-    { //                                          "Master lock"
+    {
       profile->SetLocks(locks);
       return true;
     }
@@ -239,8 +241,9 @@ bool CGUIPassword::IsProfileLockUnlocked(int iProfile, bool& bCanceled, bool pro
     else
     {
       if (profileManager->GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE)
+        // prompt user for profile lock code
         return CheckLock(profile->getLockMode(),profile->getLockCode(),20095,bCanceled);
-    } //                                                          "Enter profile lock code"
+    }
   }
 
   return true;
@@ -316,15 +319,16 @@ void CGUIPassword::UpdateMasterLockRetryCount(bool bResetCount)
         g_passwordManager.iMasterLockRetriesLeft = 0;
         // Tell the user they ran out of retry attempts
         HELPERS::ShowOKDialogText(CVariant{12345}, CVariant{12346});
-        return; //                    "Access denied"    "Password retry limit exceeded."
+        return;
       }
     }
     std::string dlgLine1 = "";
     if (0 < g_passwordManager.iMasterLockRetriesLeft)
       dlgLine1 = StringUtils::Format("%d %s", g_passwordManager.iMasterLockRetriesLeft,
                                      g_localizeStrings.Get(12343).c_str()); // "retries left"
+    // prompt user for master lock code
     HELPERS::ShowOKDialogLines(CVariant{20075}, CVariant{12345}, CVariant{std::move(dlgLine1)}, CVariant{0});
-  } //                    "Enter master lock code"     "Access denied"
+  }
   else
     g_passwordManager.iMasterLockRetriesLeft = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_MASTERLOCK_MAXRETRIES); // user entered correct mastercode, reset retries to max allowed
 }
