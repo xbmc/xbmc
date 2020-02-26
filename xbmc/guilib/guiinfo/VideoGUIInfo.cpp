@@ -218,26 +218,22 @@ bool CVideoGUIInfo::GetLabel(std::string& value, const CFileItem *item, int cont
       case VIDEOPLAYER_EPISODE:
       case LISTITEM_EPISODE:
       {
-        int iSeason = -1, iEpisode = -1;
+        int iEpisode = -1;
         if (tag->m_iEpisode > 0)
         {
-          iSeason = tag->m_iSeason;
           iEpisode = tag->m_iEpisode;
         }
 
         if (iEpisode >= 0)
         {
-          if (iSeason == 0) // prefix episode with 'S'
-            value = StringUtils::Format("S%d", iEpisode);
-          else
-            value = StringUtils::Format("%d", iEpisode);
+          value = StringUtils::Format("%d", iEpisode);
           return true;
         }
         break;
       }
       case VIDEOPLAYER_SEASON:
       case LISTITEM_SEASON:
-        if (tag->m_iSeason > 0)
+        if (tag->m_iSeason >= 0)
         {
           value = StringUtils::Format("%d", tag->m_iSeason);
           return true;
