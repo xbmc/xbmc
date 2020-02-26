@@ -49,7 +49,7 @@
 #ifdef  __cplusplus
 extern "C" {
 #endif
-#if defined(TARGET_ANDROID) && defined(__i386__) && !defined(modify_ldt)
+#if defined(TARGET_ANDROID) && (defined(__i386__) || defined(__x86_64__)) && !defined(modify_ldt)
 #define modify_ldt(a,b,c) syscall( __NR_modify_ldt,  a, b, c);
 #else
 int modify_ldt(int func, void *ptr, unsigned long bytecount);

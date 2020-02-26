@@ -580,6 +580,8 @@ bool CAddonInfoBuilder::PlatformSupportsAddon(const AddonInfoPtr& addon)
     "android-aarch64",
 #elif defined(__i686__)
     "android-i686",
+#elif defined(__x86_64__)
+    "android-x86_64",
 #else
     #warning no architecture dependant platform tag
 #endif

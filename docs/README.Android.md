@@ -151,6 +151,13 @@ Or configure build for x86:
 ./configure --with-tarballs=$HOME/android-tools/xbmc-tarballs --host=i686-linux-android --with-sdk-path=$HOME/android-tools/android-sdk-linux --with-ndk-path=$HOME/android-tools/android-ndk-r20 --prefix=$HOME/android-tools/xbmc-depends
 ```
 
+Or configure build for x86_64:
+```
+./configure --with-tarballs=$HOME/android-tools/xbmc-tarballs --host=x86_64-linux-android --with-sdk-path=$HOME/android-tools/android-sdk-linux --with-ndk-path=$HOME/android-tools/android-ndk-r20 --prefix=$HOME/android-tools/xbmc-depends
+```
+
+> **Note:** Android x86 and x86_64 are not maintained and are not 100% sure that everything works correctly!
+
 Build tools and dependencies:
 ```
 make -j$(getconf _NPROCESSORS_ONLN)
