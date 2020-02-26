@@ -511,7 +511,7 @@
 					<onup>140</onup>
 					<ondown condition="!Integer.IsGreater(Container(5000).Position,4)">SetFocus(50,$INFO[Container(5000).Position])</ondown>
 					<ondown condition="Integer.IsGreater(Container(5000).Position,4)">SetFocus(50,4)</ondown>
-					<itemgap>-16</itemgap>
+					<itemgap>-18</itemgap>
 					<align>center</align>
 					<orientation>horizontal</orientation>
 					<scrolltime tween="quadratic">200</scrolltime>
@@ -537,7 +537,7 @@
 						<param name="visible" value="System.HasAddon(script.cinemavision) + [String.IsEqual(ListItem.DBType,movie) | String.IsEqual(ListItem.DBType,tvshow) | String.IsEqual(ListItem.DBType,season) | String.IsEqual(ListItem.DBType,episode)]" />
 					</include>
 					<control type="group" id="400">
-						<width>262</width>
+						<width>264</width>
 						<visible>Control.IsEnabled(7) | !String.IsEmpty(ListItem.UserRating)</visible>
 						<control type="button" id="7">
 							<include content="VideoInfoButtonsCommon">
@@ -559,12 +559,12 @@
 							<font>font45_title</font>
 							<left>0</left>
 							<top>24</top>
-							<width>262</width>
+							<width>264</width>
 							<align>center</align>
 						</control>
 						<control type="image">
 							<texture>icons/infodialogs/rating.png</texture>
-							<left>107</left>
+							<left>108</left>
 							<top>30</top>
 							<width>48</width>
 							<height>48</height>
