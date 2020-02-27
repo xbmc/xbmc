@@ -35,6 +35,7 @@ public:
   void Uninitialize();
 
   void OnSettingsLoaded() override;
+  void OnSettingsSaved() const override;
   void OnSettingsCleared() override;
 
   bool Load();
