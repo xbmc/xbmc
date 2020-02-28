@@ -10,10 +10,11 @@
 
 #include "Application.h"
 #include "Autorun.h"
+#include "guilib/GUIComponent.h"
+#include "guilib/GUIWindowManager.h"
 #include "utils/URIUtils.h"
 #include "video/dialogs/GUIDialogVideoInfo.h"
 #include "video/windows/GUIWindowVideoBase.h"
-
 
 namespace CONTEXTMENU
 {
@@ -68,7 +69,15 @@ bool CMarkWatched::IsVisible(const CFileItem& item) const
       return URIUtils::IsPVRRecordingFileOrFolder(item.GetPath());
   }
   else if (!item.HasVideoInfoTag())
+  {
+    if (!item.IsVideo())
+      return false;
+
+    const int currentWindow = CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow();
+    if (currentWindow == WINDOW_VIDEO_NAV))
+      return true;
     return false;
+  }
 
   return item.GetVideoInfoTag()->GetPlayCount() == 0;
 }
