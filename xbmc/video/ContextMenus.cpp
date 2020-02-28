@@ -67,7 +67,9 @@ bool CMarkWatched::IsVisible(const CFileItem& item) const
       return CUtil::IsTVRecording(item.GetPath());
   }
   else if (!item.HasVideoInfoTag())
-    return false;
+  {
+    return item.IsVideo() && !item.IsAudio(); // FIXME: For now we need to exclude audio items but this also excludes playlists like m3u, strm, xsp etc.
+  }
 
   return item.GetVideoInfoTag()->GetPlayCount() == 0;
 }
