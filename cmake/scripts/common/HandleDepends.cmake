@@ -72,6 +72,16 @@ function(add_addon_depends addon searchpath)
         if (CMAKE_SYSTEM_NAME STREQUAL WindowsStore)
           list(APPEND BUILD_ARGS -DCMAKE_SYSTEM_NAME=${CMAKE_SYSTEM_NAME}
                                  -DCMAKE_SYSTEM_VERSION=${CMAKE_SYSTEM_VERSION})
+
+          if(CMAKE_GENERATOR_PLATFORM MATCHES ARM64)
+            list(APPEND BUILD_ARGS -DCMAKE_SYSTEM_PROCESSOR=AARCH64)
+          elseif(CMAKE_GENERATOR MATCHES ARM OR CMAKE_GENERATOR_PLATFORM MATCHES ARM)
+            list(APPEND BUILD_ARGS -DCMAKE_SYSTEM_PROCESSOR=ARM)
+          elseif(CMAKE_GENERATOR MATCHES Win64 OR CMAKE_GENERATOR MATCHES IA64 OR CMAKE_GENERATOR_PLATFORM MATCHES x64)
+            list(APPEND BUILD_ARGS -DCMAKE_SYSTEM_PROCESSOR=x86_64)
+          else()
+            list(APPEND BUILD_ARGS -DCMAKE_SYSTEM_PROCESSOR=i686)
+          endif()
         endif()
         # if there are no make rules override files available take care of manually passing on ARCH_DEFINES
         if(NOT CMAKE_USER_MAKE_RULES_OVERRIDE AND NOT CMAKE_USER_MAKE_RULES_OVERRIDE_CXX)
