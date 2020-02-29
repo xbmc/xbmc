@@ -128,7 +128,7 @@ do_download() {
   for patch in ${patches[@]}; do
     echo "Applying patch ${patch}"
     if [[ -f $patch ]]; then
-      patch -d $LOCALSRCDIR -i $patch -N -r -
+      patch -p1 -d $LOCALSRCDIR -i $patch -N -r -
     fi
   done
 }
