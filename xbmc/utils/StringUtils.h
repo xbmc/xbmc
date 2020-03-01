@@ -19,17 +19,26 @@
 //
 //------------------------------------------------------------------------
 
-#include "XBDateTime.h"
-#include "utils/params_check_macros.h"
-
-#include <locale>
-#include <ostream>
-#include <sstream>
 #include <stdarg.h>
 #include <stdint.h>
 #include <string>
-#include <type_traits>
 #include <vector>
+#include <sstream>
+#include <locale>
+
+// workaround for broken [[depreciated]] in coverity
+#if defined(__COVERITY__)
+#undef FMT_DEPRECATED
+#define FMT_DEPRECATED
+#endif
+#include <fmt/format.h>
+
+#if FMT_VERSION >= 40000
+#include <fmt/printf.h>
+#endif
+
+#include "XBDateTime.h"
+#include "utils/params_check_macros.h"
 
 /*! \brief  C-processor Token stringification
 
@@ -47,38 +56,26 @@ DEF_TO_STR_VALUE(foo) // outputs "4"
 #define DEF_TO_STR_NAME(x) #x
 #define DEF_TO_STR_VALUE(x) DEF_TO_STR_NAME(x)
 
-// clang-format off
-// This is required to format enum classes with fmt as they're not implicitly
-// convertible to int.
-// This operator has to be declared before including format.h and ostream.h.
-// We keep clang format disabled to avoid reordering and breaking things
-// https://github.com/fmtlib/fmt/issues/391
-template<typename T, typename std::enable_if_t<std::is_enum<T>::value, int> = 0>
-std::ostream& operator<<(std::ostream& os, const T& value)
+template<typename T, std::enable_if_t<!std::is_enum<T>::value, int> = 0>
+constexpr auto&& EnumToInt(T&& arg) noexcept
 {
-  return os << static_cast<int>(value);
+  return arg;
 }
-
-// workaround for broken [[deprecated]] in coverity
-#if defined(__COVERITY__)
-#undef FMT_DEPRECATED
-#define FMT_DEPRECATED
-#endif
-#include <fmt/format.h>
-
-#if FMT_VERSION >= 30000
-#include <fmt/ostream.h>
-#endif
-
-#if FMT_VERSION >= 40000
-#include <fmt/printf.h>
-#endif
-// clang-format on
+template<typename T, std::enable_if_t<std::is_enum<T>::value, int> = 0>
+constexpr auto EnumToInt(T&& arg) noexcept
+{
+  return static_cast<int>(arg);
+}
 
 class StringUtils
 {
 public:
   /*! \brief Get a formatted string similar to sprintf
+
+  Beware that this does not support directly passing in
+  std::string objects. You need to call c_str() to pass
+  the const char* buffer representing the value of the
+  std::string object.
 
   \param fmt Format of the resulting string
   \param ... variable number of value type arguments
@@ -88,9 +85,9 @@ public:
   static std::string Format(const std::string& fmt, Args&&... args)
   {
     // coverity[fun_call_w_exception : FALSE]
-    auto result = ::fmt::format(fmt, std::forward<Args>(args)...);
+    auto result = ::fmt::format(fmt, EnumToInt(std::forward<Args>(args))...);
     if (result == fmt)
-      result = ::fmt::sprintf(fmt, std::forward<Args>(args)...);
+      result = ::fmt::sprintf(fmt, EnumToInt(std::forward<Args>(args))...);
 
     return result;
   }
@@ -98,9 +95,9 @@ public:
   static std::wstring Format(const std::wstring& fmt, Args&&... args)
   {
     // coverity[fun_call_w_exception : FALSE]
-    auto result = ::fmt::format(fmt, std::forward<Args>(args)...);
+    auto result = ::fmt::format(fmt, EnumToInt(std::forward<Args>(args))...);
     if (result == fmt)
-      result = ::fmt::sprintf(fmt, std::forward<Args>(args)...);
+      result = ::fmt::sprintf(fmt, EnumToInt(std::forward<Args>(args))...);
 
     return result;
   }
