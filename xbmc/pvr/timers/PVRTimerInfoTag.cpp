@@ -963,7 +963,7 @@ std::shared_ptr<CPVRTimerInfoTag> CPVRTimerInfoTag::CreateFromEpg(
 
 namespace
 {
-  #define IsLeapYear(y) ((!(y % 4)) ? (((!(y % 400)) && (y % 100)) ? 1 : 0) : 0)
+  #define IsLeapYear(y) ((y % 4 == 0) && (y % 100 != 0 || y % 400 == 0))
 
   int days_from_0(int year)
   {
