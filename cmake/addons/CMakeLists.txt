@@ -389,9 +389,6 @@ foreach(addon ${addons})
                                    DEPENDERS build
                                    ALWAYS 1)
 
-          # add "kodi-platform" as a dependency to every addon
-          add_dependencies(${id} kodi-platform)
-
           set(${id}_DEPENDS_DIR ${SOURCE_DIR}/depends)
 
           if(EXISTS ${${id}_DEPENDS_DIR})
