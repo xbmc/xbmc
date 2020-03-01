@@ -23,14 +23,6 @@
 #include "cores/VideoPlayer/Interface/Addon/DemuxPacket.h"
 #endif
 
-namespace kodi
-{
-namespace addon
-{
-class CInstanceInputStream;
-}
-} // namespace kodi
-
 //Increment this level always if you add features which can lead to compile failures in the addon
 #define INPUTSTREAM_VERSION_LEVEL 2
 
@@ -316,7 +308,7 @@ extern "C"
   struct AddonInstance_InputStream;
   typedef struct KodiToAddonFuncTable_InputStream /* internal */
   {
-    kodi::addon::CInstanceInputStream* addonInstance;
+    KODI_HANDLE addonInstance;
 
     bool(__cdecl* open)(const AddonInstance_InputStream* instance, INPUTSTREAM* props);
     void(__cdecl* close)(const AddonInstance_InputStream* instance);
@@ -720,63 +712,66 @@ private:
 
   inline static bool ADDON_Open(const AddonInstance_InputStream* instance, INPUTSTREAM* props)
   {
-    return instance->toAddon.addonInstance->Open(*props);
+    return static_cast<CInstanceInputStream*>(instance->toAddon.addonInstance)->Open(*props);
   }
 
   inline static void ADDON_Close(const AddonInstance_InputStream* instance)
   {
-    instance->toAddon.addonInstance->Close();
+    static_cast<CInstanceInputStream*>(instance->toAddon.addonInstance)->Close();
   }
 
   inline static void ADDON_GetCapabilities(const AddonInstance_InputStream* instance,
                                            INPUTSTREAM_CAPABILITIES* capabilities)
   {
-    instance->toAddon.addonInstance->GetCapabilities(*capabilities);
+    static_cast<CInstanceInputStream*>(instance->toAddon.addonInstance)
+        ->GetCapabilities(*capabilities);
   }
 
 
   // IDemux
   inline static struct INPUTSTREAM_IDS ADDON_GetStreamIds(const AddonInstance_InputStream* instance)
   {
-    return instance->toAddon.addonInstance->GetStreamIds();
+    return static_cast<CInstanceInputStream*>(instance->toAddon.addonInstance)->GetStreamIds();
   }
 
   inline static struct INPUTSTREAM_INFO ADDON_GetStream(const AddonInstance_InputStream* instance,
                                                         int streamid)
   {
-    return instance->toAddon.addonInstance->GetStream(streamid);
+    return static_cast<CInstanceInputStream*>(instance->toAddon.addonInstance)->GetStream(streamid);
   }
 
   inline static void ADDON_EnableStream(const AddonInstance_InputStream* instance,
                                         int streamid,
                                         bool enable)
   {
-    instance->toAddon.addonInstance->EnableStream(streamid, enable);
+    static_cast<CInstanceInputStream*>(instance->toAddon.addonInstance)
+        ->EnableStream(streamid, enable);
   }
 
   inline static bool ADDON_OpenStream(const AddonInstance_InputStream* instance, int streamid)
   {
-    return instance->toAddon.addonInstance->OpenStream(streamid);
+    return static_cast<CInstanceInputStream*>(instance->toAddon.addonInstance)
+        ->OpenStream(streamid);
   }
 
   inline static void ADDON_DemuxReset(const AddonInstance_InputStream* instance)
   {
-    instance->toAddon.addonInstance->DemuxReset();
+    static_cast<CInstanceInputStream*>(instance->toAddon.addonInstance)->DemuxReset();
   }
 
   inline static void ADDON_DemuxAbort(const AddonInstance_InputStream* instance)
   {
-    instance->toAddon.addonInstance->DemuxAbort();
+    static_cast<CInstanceInputStream*>(instance->toAddon.addonInstance)->DemuxAbort();
   }
 
   inline static void ADDON_DemuxFlush(const AddonInstance_InputStream* instance)
   {
-    instance->toAddon.addonInstance->DemuxFlush();
+    static_cast<CInstanceInputStream*>(instance->toAddon.addonInstance)->DemuxFlush();
   }
 
   inline static DemuxPacket* ADDON_DemuxRead(const AddonInstance_InputStream* instance)
   {
-    return instance->toAddon.addonInstance->DemuxRead();
+    return static_cast<CInstanceInputStream*>(instance->toAddon.addonInstance)->DemuxRead();
   }
 
   inline static bool ADDON_DemuxSeekTime(const AddonInstance_InputStream* instance,
@@ -784,80 +779,82 @@ private:
                                          bool backwards,
                                          double* startpts)
   {
-    return instance->toAddon.addonInstance->DemuxSeekTime(time, backwards, *startpts);
+    return static_cast<CInstanceInputStream*>(instance->toAddon.addonInstance)
+        ->DemuxSeekTime(time, backwards, *startpts);
   }
 
   inline static void ADDON_DemuxSetSpeed(const AddonInstance_InputStream* instance, int speed)
   {
-    instance->toAddon.addonInstance->DemuxSetSpeed(speed);
+    static_cast<CInstanceInputStream*>(instance->toAddon.addonInstance)->DemuxSetSpeed(speed);
   }
 
   inline static void ADDON_SetVideoResolution(const AddonInstance_InputStream* instance,
                                               int width,
                                               int height)
   {
-    instance->toAddon.addonInstance->SetVideoResolution(width, height);
+    static_cast<CInstanceInputStream*>(instance->toAddon.addonInstance)
+        ->SetVideoResolution(width, height);
   }
 
 
   // IDisplayTime
   inline static int ADDON_GetTotalTime(const AddonInstance_InputStream* instance)
   {
-    return instance->toAddon.addonInstance->GetTotalTime();
+    return static_cast<CInstanceInputStream*>(instance->toAddon.addonInstance)->GetTotalTime();
   }
 
   inline static int ADDON_GetTime(const AddonInstance_InputStream* instance)
   {
-    return instance->toAddon.addonInstance->GetTime();
+    return static_cast<CInstanceInputStream*>(instance->toAddon.addonInstance)->GetTime();
   }
 
   // ITime
   inline static bool ADDON_GetTimes(const AddonInstance_InputStream* instance,
                                     INPUTSTREAM_TIMES* times)
   {
-    return instance->toAddon.addonInstance->GetTimes(*times);
+    return static_cast<CInstanceInputStream*>(instance->toAddon.addonInstance)->GetTimes(*times);
   }
 
   // IPosTime
   inline static bool ADDON_PosTime(const AddonInstance_InputStream* instance, int ms)
   {
-    return instance->toAddon.addonInstance->PosTime(ms);
+    return static_cast<CInstanceInputStream*>(instance->toAddon.addonInstance)->PosTime(ms);
   }
 
   inline static int ADDON_GetChapter(const AddonInstance_InputStream* instance)
   {
-    return instance->toAddon.addonInstance->GetChapter();
+    return static_cast<CInstanceInputStream*>(instance->toAddon.addonInstance)->GetChapter();
   }
 
   inline static int ADDON_GetChapterCount(const AddonInstance_InputStream* instance)
   {
-    return instance->toAddon.addonInstance->GetChapterCount();
+    return static_cast<CInstanceInputStream*>(instance->toAddon.addonInstance)->GetChapterCount();
   }
 
   inline static const char* ADDON_GetChapterName(const AddonInstance_InputStream* instance, int ch)
   {
-    return instance->toAddon.addonInstance->GetChapterName(ch);
+    return static_cast<CInstanceInputStream*>(instance->toAddon.addonInstance)->GetChapterName(ch);
   }
 
   inline static int64_t ADDON_GetChapterPos(const AddonInstance_InputStream* instance, int ch)
   {
-    return instance->toAddon.addonInstance->GetChapterPos(ch);
+    return static_cast<CInstanceInputStream*>(instance->toAddon.addonInstance)->GetChapterPos(ch);
   }
 
   inline static bool ADDON_SeekChapter(const AddonInstance_InputStream* instance, int ch)
   {
-    return instance->toAddon.addonInstance->SeekChapter(ch);
+    return static_cast<CInstanceInputStream*>(instance->toAddon.addonInstance)->SeekChapter(ch);
   }
 
   // Seekable (mandatory)
   inline static bool ADDON_CanPauseStream(const AddonInstance_InputStream* instance)
   {
-    return instance->toAddon.addonInstance->CanPauseStream();
+    return static_cast<CInstanceInputStream*>(instance->toAddon.addonInstance)->CanPauseStream();
   }
 
   inline static bool ADDON_CanSeekStream(const AddonInstance_InputStream* instance)
   {
-    return instance->toAddon.addonInstance->CanSeekStream();
+    return static_cast<CInstanceInputStream*>(instance->toAddon.addonInstance)->CanSeekStream();
   }
 
 
@@ -865,34 +862,36 @@ private:
                                      uint8_t* buffer,
                                      unsigned int bufferSize)
   {
-    return instance->toAddon.addonInstance->ReadStream(buffer, bufferSize);
+    return static_cast<CInstanceInputStream*>(instance->toAddon.addonInstance)
+        ->ReadStream(buffer, bufferSize);
   }
 
   inline static int64_t ADDON_SeekStream(const AddonInstance_InputStream* instance,
                                          int64_t position,
                                          int whence)
   {
-    return instance->toAddon.addonInstance->SeekStream(position, whence);
+    return static_cast<CInstanceInputStream*>(instance->toAddon.addonInstance)
+        ->SeekStream(position, whence);
   }
 
   inline static int64_t ADDON_PositionStream(const AddonInstance_InputStream* instance)
   {
-    return instance->toAddon.addonInstance->PositionStream();
+    return static_cast<CInstanceInputStream*>(instance->toAddon.addonInstance)->PositionStream();
   }
 
   inline static int64_t ADDON_LengthStream(const AddonInstance_InputStream* instance)
   {
-    return instance->toAddon.addonInstance->LengthStream();
+    return static_cast<CInstanceInputStream*>(instance->toAddon.addonInstance)->LengthStream();
   }
 
   inline static void ADDON_PauseStream(const AddonInstance_InputStream* instance, double time)
   {
-    instance->toAddon.addonInstance->PauseStream(time);
+    static_cast<CInstanceInputStream*>(instance->toAddon.addonInstance)->PauseStream(time);
   }
 
   inline static bool ADDON_IsRealTimeStream(const AddonInstance_InputStream* instance)
   {
-    return instance->toAddon.addonInstance->IsRealTimeStream();
+    return static_cast<CInstanceInputStream*>(instance->toAddon.addonInstance)->IsRealTimeStream();
   }
 
   AddonInstance_InputStream* m_instanceData;
