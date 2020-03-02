@@ -7,17 +7,14 @@ VERSION=3.6.11.1
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.xz
 
-ifeq (darwin, $(findstring darwin, $(HOST)))
-# darwins tar doesn't know about xz - so we need our native version of tar here
-ARCHIVE_TOOL=$(ARCHIVE_TOOL_NATIVE)
-CONFIGURE_HACKS = ac_cv_func_vfork_works=no
-CONFIGURE_HACKS+= ac_cv_func_fork=no
+ifeq ($(OS),darwin_embedded)
+CONFIGURE_OPTIONS = --disable-hardware-acceleration
 endif
 
 # configuration settings
 CONFIGURE=./configure --prefix=$(PREFIX) --disable-shared --without-p11-kit --disable-nls --with-included-unistring \
                       --with-included-libtasn1 --enable-local-libopts --disable-doc --disable-tests --disable-guile \
-                      --disable-tools $(CONFIGURE_HACKS)
+                      --disable-tools $(CONFIGURE_OPTIONS)
 
 LIBDYLIB=$(PLATFORM)/lib/.libs/lib$(LIBNAME).a
 

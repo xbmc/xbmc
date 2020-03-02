@@ -606,9 +606,7 @@ bool CAddonInfoBuilder::PlatformSupportsAddon(const AddonInfoPtr& addon)
     "darwin_embedded",
 #if defined(TARGET_DARWIN_IOS)
     "ios",
-#if defined(__ARM_ARCH_7A__)
-    "ios-armv7",
-#elif defined(__aarch64__)
+#if defined(__aarch64__)
     "ios-aarch64",
 #else
 #warning no architecture dependant platform tag

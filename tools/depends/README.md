@@ -23,14 +23,11 @@ Paths below are examples. If you want to build Kodi, follow our **[build guides]
 **macOS (x86_64)**  
 `./configure --host=x86_64-apple-darwin`
 
-**iOS (armv7)**  
-`./configure --host=arm-apple-darwin`
-
 **iOS (arm64)**  
-`./configure --host=arm-apple-darwin --with-cpu=arm64`
+`./configure --host=aarch64-apple-darwin`
 
 **tvOS**  
-`./configure --host=arm-apple-darwin --with-platform=tvos`
+`./configure --host=aarch64-apple-darwin --with-platform=tvos`
 
 **NOTE:** You can target the same `--prefix=` path. Each setup will be done in an isolated directory. The last configure/make you do is the one used for Kodi/Xcode.
  

@@ -48,12 +48,7 @@ ifeq ($(OS), android)
   ffmpg_config += --target-os=linux --extra-libs=-liconv --disable-linux-perf
 endif
 ifeq ($(OS), darwin_embedded)
-  ifneq ($(CPU), arm64)
-    ffmpg_config += --cpu=cortex-a8
-    ffmpg_config += --as="$(NATIVEPREFIX)/bin/gas-preprocessor.pl -- $(CC)"
-  else
-    ffmpg_config += --as="$(NATIVEPREFIX)/bin/gas-preprocessor.pl -arch aarch64 -- $(CC)"
-  endif
+  ffmpg_config += --as="$(NATIVEPREFIX)/bin/gas-preprocessor.pl -arch aarch64 -- $(CC)"
   ffmpg_config += --yasmexe=$(NATIVEPREFIX)/bin/yasm
   ffmpg_config += --disable-decoder=mpeg_xvmc --disable-crystalhd --enable-videotoolbox
   ffmpg_config += --target-os=darwin
@@ -85,9 +80,6 @@ $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 	cd $(PLATFORM);\
 	CFLAGS="$(CFLAGS)" CXXFLAGS="$(CXXFLAGS)" CPPFLAGS="$(CPPFLAGS)" LDFLAGS="$(LDFLAGS)" \
 	./configure $(ffmpg_config)
-ifeq ($(OS), darwin_embedded)
-	cd $(PLATFORM); sed -i -- 's/HAVE_CLOCK_GETTIME 1/HAVE_CLOCK_GETTIME 0/g' config.h
-endif
 
 .build-$(PLATFORM): $(PLATFORM)
 	$(MAKE) -C $(PLATFORM)

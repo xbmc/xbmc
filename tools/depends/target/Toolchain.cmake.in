@@ -3,10 +3,6 @@ set(NATIVEPREFIX "@prefix@/@tool_dir@")
 
 set(OS "@platform_os@")
 set(CMAKE_SYSTEM_PROCESSOR @host_cpu@)
-# TODO: remove this after the host triplet for arm64 darwin builds is corrected to aarch64-apple-darwin
-if(@platform_os@ STREQUAL darwin_embedded AND @use_cpu@ STREQUAL arm64)
-  set(CMAKE_SYSTEM_PROCESSOR aarch64)
-endif()
 set(CPU "@use_cpu@")
 set(PLATFORM "@target_platform@")
 
@@ -66,7 +62,7 @@ if(CORE_SYSTEM_NAME STREQUAL darwin_embedded)
       # set this to YES once we have a deployment target of at least iOS 6.0
       set(CMAKE_XCODE_ATTRIBUTE_ENABLE_BITCODE "NO")
       set(CMAKE_XCODE_ATTRIBUTE_TARGETED_DEVICE_FAMILY "1,2")
-      set(CMAKE_XCODE_ATTRIBUTE_IPHONEOS_DEPLOYMENT_TARGET 9.0)
+      set(CMAKE_XCODE_ATTRIBUTE_IPHONEOS_DEPLOYMENT_TARGET 11.0)
     endif()
   endif()
 endif()

@@ -341,56 +341,37 @@ case $host in
         platform_os="osx"
       ;;
 
-      arm-apple-darwin*)
+      aarch64-apple-darwin*)
         MC_CHECK_NOT_CPU([$use_cpu], "*86")
 
         # setup which sdk to use
         if test "$use_platform" = "tvos"; then
-          use_cpu=arm64
           target_platform=appletvos
-          platform_min_version="$target_platform-version-min=11.0"
         else
-          # setup which cpu to use
-          if test "x$use_cpu" = "xauto"; then
-            use_cpu=armv7
-          fi
-
           target_platform=iphoneos
-          platform_min_version="$target_platform-version-min=9.0"
+        fi
+        platform_min_version="$target_platform-version-min=11.0"
+
+        # setup which cpu to use
+        if test "x$use_cpu" = "xauto"; then
+          use_cpu=arm64
         fi
 
         found_sdk_version=[`$use_xcodebuild -showsdks | grep "\-sdk $target_platform" | awk '{ print $2}'`]
         use_sdk="${use_sdk:-$found_sdk_version}"
         sdk_name=$target_platform$use_sdk
 
-        if test "$use_platform" = "tvos"; then
-          case $use_sdk in
-            11.*);;
-            12.*);;
-            13.*);;
-              *)
-                AC_MSG_ERROR(error in configure of --with-sdk=$use_sdk)
-              ;;
-          esac
-        else
-          case $use_sdk in
-            9.*);;
-            10.*);;
-            11.*);;
-            12.*);;
-            13.*);;
-              *)
-                AC_MSG_ERROR(error in configure of --with-sdk=$use_sdk)
-              ;;
-          esac
-        fi
+        case $use_sdk in
+          11.*);;
+          12.*);;
+          13.*);;
+            *)
+              AC_MSG_ERROR(error in configure of --with-sdk=$use_sdk)
+            ;;
+        esac
 
         platform_os="darwin_embedded"
 
-        if [ ! test "x$use_cpu" = "xarm64" ]; then
-          platform_cflags+=" -mcpu=cortex-a8 -mfpu=neon"
-          platform_ldflags+=" -Wl,-segalign,4000"
-        fi
         platform_cflags+=" -ftree-vectorize -pipe -Wno-trigraphs -fpascal-strings"
         platform_cflags+=" -Wreturn-type -Wunused-variable -fmessage-length=0 -gdwarf-2"
         platform_cflags+=" -Wno-error=implicit-function-declaration"
