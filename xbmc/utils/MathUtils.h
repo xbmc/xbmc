@@ -23,6 +23,7 @@
 
 // clang-format off
 #if defined(__aarch64__) || \
+    defined(__alpha__) || \
     defined(__arc__) || \
     defined(__arm__) || \
     defined(_M_ARM) || \

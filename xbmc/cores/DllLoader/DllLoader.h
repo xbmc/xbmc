@@ -14,6 +14,7 @@
 // clang-format off
 #if defined(__linux__) && \
     !defined(__aarch64__) && \
+    !defined(__alpha__) && \
     !defined(__arc__) && \
     !defined(__arm__) && \
     !defined(__mips__) && \
