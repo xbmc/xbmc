@@ -349,16 +349,16 @@
 					</focusedlayout>
 				</control>
 				<control type="grouplist" id="9000">
-					<left>-30</left>
+					<left>-80</left>
 					<top>864</top>
-					<width>1760</width>
+					<width>1920</width>
 					<height>300</height>
 					<onleft>9000</onleft>
 					<onright>9000</onright>
 					<onup>130</onup>
 					<ondown>50</ondown>
 					<align>center</align>
-					<itemgap>-13</itemgap>
+					<itemgap>-15</itemgap>
 					<orientation>horizontal</orientation>
 					<control type="radiobutton" id="155">
 						<include content="VideoInfoButtonsCommon">
@@ -376,7 +376,7 @@
 						<visible>!String.IsEqual(ListItem.DBType,artist)</visible>
 					</control>
 					<control type="group" id="420">
-						<width>262</width>
+						<width>264</width>
 						<visible>String.IsEqual(ListItem.DBType,album) | String.IsEqual(ListItem.DBType,song)</visible>
 						<control type="button" id="7">
 							<include content="VideoInfoButtonsCommon">
@@ -394,12 +394,12 @@
 							<font>font45_title</font>
 							<left>0</left>
 							<top>24</top>
-							<width>262</width>
+							<width>264</width>
 							<align>center</align>
 						</control>
 						<control type="image">
 							<texture>icons/infodialogs/rating.png</texture>
-							<left>107</left>
+							<left>108</left>
 							<top>30</top>
 							<width>48</width>
 							<height>48</height>
@@ -430,7 +430,7 @@
 					<include content="InfoDialogButton">
 						<param name="id" value="12" />
 						<param name="icon" value="icons/infodialogs/info.png" />
-						<param name="label" value="$LOCALIZE[20413]" />
+						<param name="label" value="" />
 					</include>
 				</control>
 				<include content="LeftRightArrows">
@@ -467,17 +467,10 @@
 								<control type="label">
 									<left>10</left>
 									<top>0</top>
-									<width>150</width>
+									<width>410</width>
 									<height>30</height>
 									<font>font27_narrow</font>
-									<label>$INFO[ListItem.Label,[COLOR button_focus], [/COLOR]]</label>
-								</control>
-								<control type="label">
-									<left>170</left>
-									<width>240</width>
-									<height>30</height>
-									<font>font27_narrow</font>
-									<label>$INFO[ListItem.Label2]</label>
+									<label>$INFO[ListItem.Label,[COLOR button_focus],[/COLOR]] $INFO[ListItem.Label2]</label>
 								</control>
 							</itemlayout>
 							<focusedlayout height="35">
@@ -492,38 +485,22 @@
 								<control type="label">
 									<left>10</left>
 									<top>0</top>
-									<width>150</width>
+									<width>410</width>
 									<height>30</height>
 									<font>font27_narrow</font>
-									<label>$INFO[ListItem.Label]</label>
+									<label>$INFO[ListItem.Label] $INFO[ListItem.Label2]</label>
+									<scroll>true</scroll>
 									<visible>Control.HasFocus(41)</visible>
 								</control>
 								<control type="label">
 									<left>10</left>
 									<top>0</top>
-									<width>150</width>
+									<width>410</width>
 									<height>30</height>
 									<font>font27_narrow</font>
-									<label>$INFO[ListItem.Label,[COLOR button_focus], [/COLOR]]</label>
-									<visible>!Control.HasFocus(41)</visible>
-								</control>
-								<control type="label">
-									<left>170</left>
-									<width>240</width>
-									<height>30</height>
-									<font>font27_narrow</font>
-									<label>$INFO[ListItem.Label2]</label>
+									<label>$INFO[ListItem.Label,[COLOR button_focus],[/COLOR]] $INFO[ListItem.Label2]</label>
 									<scroll>false</scroll>
 									<visible>!Control.HasFocus(41)</visible>
-								</control>
-								<control type="label">
-									<left>170</left>
-									<width>240</width>
-									<height>30</height>
-									<font>font27_narrow</font>
-									<label>$INFO[ListItem.Label2]</label>
-									<scroll>true</scroll>
-									<visible>Control.HasFocus(41)</visible>
 								</control>
 							</focusedlayout>
 							<content>
