@@ -28,6 +28,7 @@
     !defined(__ppc__) && \
     !defined(__riscv) && \
     !defined(__SH4__) && \
+    !defined(__s390x__) && \
     !defined(__sparc__) && \
     !defined(__xtensa__)
 // clang-format on
