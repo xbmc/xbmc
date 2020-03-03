@@ -10680,6 +10680,7 @@ bool CMusicDatabase::ImportSongHistory(const std::string& xmlFile, const int tot
 
     BeginTransaction();
     // Match albums first on mbid then artist string and album title, setting idAlbum 
+    // mbid is unique so subquery can only return one result at most
     strSQL = "UPDATE HistSong "
       "SET idAlbum = (SELECT album.idAlbum FROM album "
       "WHERE album.strMusicBrainzAlbumID = HistSong.strMusicBrainzAlbumID) "
@@ -10687,11 +10688,32 @@ bool CMusicDatabase::ImportSongHistory(const std::string& xmlFile, const int tot
       "WHERE album.strMusicBrainzAlbumID = HistSong.strMusicBrainzAlbumID) AND idAlbum < 0";
     m_pDS->exec(strSQL);
 
+    // Can only be one album with same title and artist(s) and no mbid. 
+    // But could have 2 releases one with and one without mbid, match up those without mbid
     strSQL = "UPDATE HistSong "
       "SET idAlbum = (SELECT album.idAlbum FROM album "
-      "WHERE HistSong.strAlbumArtistDisp = album.strArtistDisp AND HistSong.strAlbum = album.strAlbum) "
+      "WHERE HistSong.strAlbumArtistDisp = album.strArtistDisp "
+      "AND HistSong.strAlbum = album.strAlbum "
+      "AND album.strMusicBrainzAlbumID IS NULL "
+      "AND HistSong.strMusicBrainzAlbumID IS NULL) "
       "WHERE EXISTS(SELECT 1 FROM album "
-      "WHERE HistSong.strAlbumArtistDisp = album.strArtistDisp AND HistSong.strAlbum = album.strAlbum)"
+      "WHERE HistSong.strAlbumArtistDisp = album.strArtistDisp "
+      "AND HistSong.strAlbum = album.strAlbum "
+      "AND album.strMusicBrainzAlbumID IS NULL "
+      "AND HistSong.strMusicBrainzAlbumID IS NULL) "
+      "AND idAlbum < 0";
+    m_pDS->exec(strSQL);
+
+    // Try match rest by title and artist(s), prioritise one without mbid
+    // Target could have multiple releases - with mbid (non-matching) or one without mbid
+    strSQL = "UPDATE HistSong "
+      "SET idAlbum = (SELECT album.idAlbum FROM album "
+      "WHERE HistSong.strAlbumArtistDisp = album.strArtistDisp "
+      "AND HistSong.strAlbum = album.strAlbum "
+      "ORDER BY album.strMusicBrainzAlbumID LIMIT 1) "
+      "WHERE EXISTS(SELECT 1 FROM album "
+      "WHERE HistSong.strAlbumArtistDisp = album.strArtistDisp "
+      "AND HistSong.strAlbum = album.strAlbum) "
       "AND idAlbum < 0";
     m_pDS->exec(strSQL);
     if (progressDialog)
@@ -10717,14 +10739,19 @@ bool CMusicDatabase::ImportSongHistory(const std::string& xmlFile, const int tot
       "HistSong.strMusicBrainzTrackID = song.strMusicBrainzTrackID) AND idSong < 0";
     m_pDS->exec(strSQL);
 
+    // An album can have more than one song with same track and title (although idAlbum, track and
+    // title is often unique), but not using filename as an identifier to allow for import of song
+    // history for renamed files. It is about song playback not file playback.
+    // Pick the first
     strSQL = "UPDATE HistSong "
       "SET idSong = (SELECT idsong FROM song "
       "WHERE HistSong.idAlbum = song.idAlbum AND "
-      "HistSong.iTrack = song.iTrack AND HistSong.strTitle = song.strTitle) "
+      "HistSong.iTrack = song.iTrack AND HistSong.strTitle = song.strTitle LIMIT 1) "
       "WHERE EXISTS(SELECT 1 FROM song "
       "WHERE HistSong.idAlbum = song.idAlbum AND "
       "HistSong.iTrack = song.iTrack AND HistSong.strTitle = song.strTitle) AND idSong < 0";
     m_pDS->exec(strSQL);
+
     CommitTransaction();
     if (progressDialog)
     {
