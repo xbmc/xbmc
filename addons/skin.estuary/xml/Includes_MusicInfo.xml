@@ -123,12 +123,22 @@
 			<label2>$INFO[ListItem.FilenameAndPath]</label2>
 			<visible>!String.IsEmpty(ListItem.FilenameAndPath)</visible>
 		</item>
+		<item>
+			<label>$LOCALIZE[567]</label>
+			<label2>$INFO[ListItem.PlayCount]</label2>
+			<visible>!String.IsEmpty(ListItem.PlayCount)</visible>
+		</item>
+		<item>
+			<label>$LOCALIZE[568]</label>
+			<label2>$INFO[ListItem.LastPlayed]</label2>
+			<visible>!String.IsEmpty(ListItem.LastPlayed)</visible>
+		</item>
 	</include>
 	<include name="MusicInfoSongInfo">
 		<item>
 			<label>$LOCALIZE[568]</label>
 			<label2>$INFO[ListItem.LastPlayed]</label2>
-			<visible>!String.IsEmpty(ListItem.Playcount)</visible>
+			<visible>!String.IsEmpty(ListItem.LastPlayed)</visible>
 		</item>
 		<item>
 			<label>$LOCALIZE[557]:</label>
@@ -224,6 +234,11 @@
 			<label>$LOCALIZE[15311]</label>
 			<label2>$INFO[ListItem.FilenameAndPath]</label2>
 			<visible>!String.IsEmpty(ListItem.FilenameAndPath)</visible>
+		</item>
+		<item>
+			<label>$LOCALIZE[567]</label>
+			<label2>$INFO[ListItem.PlayCount]</label2>
+			<visible>!String.IsEmpty(ListItem.PlayCount)</visible>
 		</item>
 	</include>
 </includes>
