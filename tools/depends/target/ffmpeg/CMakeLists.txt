@@ -86,12 +86,19 @@ if(GNUTLS_FOUND)
   list(APPEND ffmpeg_conf --enable-gnutls)
 endif()
 
+if(ENABLE_DAV1D)
+  list(APPEND ffmpeg_conf --enable-libdav1d)
+  set(pkgconf_path "PKG_CONFIG_PATH=${PKG_CONFIG_PATH}")
+else()
+  list(APPEND ffmpeg_conf --disable-libdav1d)
+endif()
+
 message(STATUS "FFMPEG_CONF: ${ffmpeg_conf}")
 
 include(ExternalProject)
 externalproject_add(ffmpeg
                     SOURCE_DIR ${CMAKE_SOURCE_DIR}
-                    CONFIGURE_COMMAND ${pkgconf} <SOURCE_DIR>/configure
+                    CONFIGURE_COMMAND ${pkgconf} ${pkgconf_path} <SOURCE_DIR>/configure
                       --prefix=${CMAKE_INSTALL_PREFIX}
                       --extra-version="kodi-${FFMPEG_VER}"
                       --disable-devices

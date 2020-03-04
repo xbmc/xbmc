@@ -5,22 +5,17 @@ ifneq ($(shell test -f $(NATIVEPREFIX)/share/config.site && echo 1),1)
 endif
 
 NATIVE= m4 gettext heimdal autoconf automake \
-        libtool pkg-config yasm cmake \
+        libtool pkg-config yasm nasm cmake \
         gas-preprocessor libffi python3 zlib \
         pcre swig \
         libpng libjpeg-turbo liblzo2 giflib \
         setuptools distutilscross JsonSchemaBuilder TexturePacker \
-        flatbuffers
+        flatbuffers \
+        meson ninja
 
 
 ifeq ($(OS),darwin_embedded)
   NATIVE += dpkg xz tar gen_entitlements ldid
-endif
-
-ifeq ($(OS),linux)
-  ifeq ($(TARGET_PLATFORM),$(filter $(TARGET_PLATFORM),raspberry-pi gbm))
-    NATIVE += meson ninja
-  endif
 endif
 
 ifeq ($(TARGET_PLATFORM),wayland)
