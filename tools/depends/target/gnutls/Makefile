@@ -1,9 +1,9 @@
 include ../../Makefile.include
-DEPS= ../../Makefile.include Makefile size-max.patch 02-darwin-getentropy.patch
+DEPS= ../../Makefile.include Makefile size-max.patch 02-darwin-getentropy.patch remove-weak_import-check-for-osx.patch add-dl-as-private-lib.patch
 
 # lib name, version
 LIBNAME=gnutls
-VERSION=3.5.10
+VERSION=3.6.11.1
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.xz
 
@@ -15,10 +15,9 @@ CONFIGURE_HACKS+= ac_cv_func_fork=no
 endif
 
 # configuration settings
-CONFIGURE=cp -f $(CONFIG_SUB) $(CONFIG_GUESS) .; \
-          ./configure --prefix=$(PREFIX) --disable-shared --without-p11-kit --disable-nls --with-included-unistring \
+CONFIGURE=./configure --prefix=$(PREFIX) --disable-shared --without-p11-kit --disable-nls --with-included-unistring \
                       --with-included-libtasn1 --enable-local-libopts --disable-doc --disable-tests --disable-guile \
-                      $(CONFIGURE_HACKS)
+                      --disable-tools $(CONFIGURE_HACKS)
 
 LIBDYLIB=$(PLATFORM)/lib/.libs/lib$(LIBNAME).a
 
@@ -32,6 +31,8 @@ $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
 	cd $(PLATFORM); patch -p0 < ../size-max.patch
 	cd $(PLATFORM); patch -p1 -i ../02-darwin-getentropy.patch
+	cd $(PLATFORM); patch -p1 -i ../remove-weak_import-check-for-osx.patch
+	cd $(PLATFORM); patch -p1 -i ../add-dl-as-private-lib.patch
 	cd $(PLATFORM); $(AUTORECONF) -vif
 	cd $(PLATFORM); $(CONFIGURE)
 
