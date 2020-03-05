@@ -154,7 +154,9 @@ msgctxt "#31026"
 msgid "Timeshift"
 msgstr ""
 
-#empty string with id 31027
+msgctxt "#31027"
+msgid "Next aired"
+msgstr ""
 
 #: /xml/DialogAlbumInfo.xml /xml/DialogVideoInfo.xml
 msgctxt "#31028"
@@ -657,7 +659,13 @@ msgctxt "#31145"
 msgid "Search add-ons"
 msgstr ""
 
-#empty strings from id 31146 to 31147
+msgctxt "#31146"
+msgid "In cinemas"
+msgstr ""
+
+msgctxt "#31147"
+msgid "In cinemas soon"
+msgstr ""
 
 #: /xml/Home.xml
 msgctxt "#31148"
