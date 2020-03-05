@@ -1002,9 +1002,9 @@ bool CDateTime::SetFromW3CDateTime(const std::string &dateTime, bool ignoreTimez
       if (zoneSpan.GetSecondsTotal() != 0)
       {
         if (StringUtils::StartsWith(zone, "+"))
-          tmpDateTime += zoneSpan;
-        else if (StringUtils::StartsWith(zone, "-"))
           tmpDateTime -= zoneSpan;
+        else if (StringUtils::StartsWith(zone, "-"))
+          tmpDateTime += zoneSpan;
       }
     }
   }
@@ -1482,6 +1482,8 @@ std::string CDateTime::GetAsLocalizedTime(TIME_FORMAT format, bool withSeconds /
       return GetAsLocalizedTime("mm:ss", true);
     case TIME_FORMAT_HH:  // this forces it to a 12 hour clock
       return GetAsLocalizedTime(use12hourclock ? "h" : "HH", false);
+    case TIME_FORMAT_HH_SS:
+      return GetAsLocalizedTime(use12hourclock ? "h:ss" : "HH:ss", true);
     case TIME_FORMAT_HH_MM:
       return GetAsLocalizedTime(use12hourclock ? "h:mm" : "HH:mm", false);
     case TIME_FORMAT_HH_MM_XX:
