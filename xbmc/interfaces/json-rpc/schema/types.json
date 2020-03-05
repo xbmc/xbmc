@@ -108,7 +108,7 @@
                   "album", "albumtype", "genre", "country", "year", "rating", "userrating", "votes", "top250", "programcount",
                   "playlist", "episode", "season", "totalepisodes", "watchedepisodes", "tvshowstatus", "tvshowtitle",
                   "sorttitle", "productioncode", "mpaa", "studio", "dateadded", "lastplayed", "playcount", "listeners",
-                  "bitrate", "random", "totaldiscs" ]
+                  "bitrate", "random", "totaldiscs", "originalyear", "bpm" ]
       },
       "order": { "type": "string", "default": "ascending", "enum": [ "ascending", "descending" ] },
       "ignorearticle": { "type": "boolean", "default": false },
@@ -516,7 +516,8 @@
                 "playcount", "artistid", "displayartist",
                 "compilation", "releasetype", "dateadded",
                 "sortartist", "musicbrainzreleasegroupid", "songgenres", "art",
-                "lastplayed", "sourceid","isboxset", "totaldiscs"]
+                "lastplayed", "sourceid","isboxset", "totaldiscs",
+                "releasedate", "originaldate"]
     }
   },
   "Audio.Fields.Song": {
@@ -532,7 +533,8 @@
                 "albumartistid", "albumreleasetype", "dateadded",
                 "votes", "userrating", "mood", "contributors",
                 "displaycomposer", "displayconductor", "displayorchestra", "displaylyricist",
-                "sortartist", "art", "sourceid", "disctitle"]
+                "sortartist", "art", "sourceid", "disctitle", "releasedate", "originaldate",
+                "bpm"]
     }
   },
   "Audio.Album.ReleaseType": {
@@ -593,7 +595,9 @@
       "displayartist": { "type" : "string" },
       "votes": { "type": "integer" },
       "userrating": { "type": "integer" },
-      "sortartist": { "type" : "string" }
+      "sortartist": { "type" : "string" },
+      "releasedate": { "type" : "string" },
+      "originaldate": { "type" : "string" }
     }
   },
   "Audio.Details.Artist": {
@@ -641,7 +645,7 @@
       "lastplayed": { "type": "string" },
       "sourceid": { "$ref": "Array.Integer" }, 
       "isboxset" : { "type": "boolean" },
-      "totaldiscs" : { "type": "integer"}
+      "totaldiscs": { "type": "integer" }
     }
   },
   "Audio.Details.Song": {
@@ -671,7 +675,8 @@
       "displaylyricist": { "type": "string"},
       "genreid": { "$ref": "Array.Integer"},
       "sourceid": { "$ref": "Array.Integer" },
-      "disctitle": { "type": "string" }
+      "disctitle": { "type": "string" },
+      "bpm": { "type": "Integer" }
     }
   },
   "Audio.Property.Name": {
@@ -1497,7 +1502,10 @@
       "dynpath": { "type": "string", "description": "An experimental property for debug purposes, often same as mediapath but when different gives the actual file playing that should also be in file property"},
       "isboxset": { "type": "boolean" },
       "totaldiscs": { "type": "integer" },
-      "disctitle": { "type": "string" }
+      "disctitle": { "type": "string" },
+      "releasedate": { "type": "string" },
+      "originaldate": { "type": "string" },
+      "bpm": { "type": "integer" }
     }
   },
   "List.Fields.All": {
@@ -1519,7 +1527,7 @@
                 "specialsortepisode", "compilation", "releasetype", "albumreleasetype",
                 "contributors", "displaycomposer", "displayconductor", "displayorchestra", "displaylyricist",
                 "userrating", "votes", "sortartist", "musicbrainzreleasegroupid", "mediapath", "dynpath",
-                "isboxset", "totaldiscs", "disctitle"]
+                "isboxset", "totaldiscs", "disctitle", "releasedate", "originaldate", "bpm"]
     }
   },
   "List.Item.All": {
@@ -1550,7 +1558,7 @@
                 "description", "theme", "mood", "style", "albumlabel", "sorttitle",
                 "episodeguide", "uniqueid", "dateadded", "size", "lastmodified", "mimetype",
                 "specialsortseason", "specialsortepisode", "sortartist", "musicbrainzreleasegroupid",
-                "isboxset", "totaldiscs", "disctitle"]
+                "isboxset", "totaldiscs", "disctitle", "releasedate", "originaldate", "bpm"]
     }
   },
   "List.Item.File": {
