@@ -2790,13 +2790,29 @@ bool CApplication::PlayFile(CFileItem item, const std::string& player, bool bRes
   if (!bRestart)
   {
     // bRestart will be true when called from PlayStack(), skipping this block
-    m_appPlayer.SetPlaySpeed(1);
+    if (item.IsVideo())
+    {
+      // check lock from any screen but WINDOW_VIDEO_NAV
+      if (WINDOW_VIDEO_NAV != CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow())
+      {
+        if (CServiceBroker::GetSettingsComponent()
+                ->GetProfileManager()
+                ->GetCurrentProfile()
+                .videoLocked())
+        {
+          if (!g_passwordManager.IsMasterLockUnlocked(true))
+          {
+            return true; // exit func without starting playback
+          }
+        }
+      }
 
+      CUtil::ClearSubtitles();
+    }
+
+    m_appPlayer.SetPlaySpeed(1);
     m_nextPlaylistItem = -1;
     m_stackHelper.Clear();
-
-    if (item.IsVideo())
-      CUtil::ClearSubtitles();
   }
 
   if (item.IsDiscStub())
