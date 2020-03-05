@@ -142,6 +142,7 @@ set(optional_deps Alsa
                   CEC
                   ClangFormat
                   DBus
+                  Iso9660pp
                   LCMS2
                   LircClient
                   MDNS

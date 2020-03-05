@@ -23,9 +23,6 @@ set(SOURCES AddonsDirectory.cpp
             IDirectory.cpp
             IFile.cpp
             ImageFile.cpp
-            iso9660.cpp
-            ISO9660Directory.cpp
-            ISOFile.cpp
             LibraryDirectory.cpp
             MultiPathDirectory.cpp
             MultiPathFile.cpp
@@ -93,9 +90,6 @@ set(HEADERS AddonsDirectory.h
             IFileDirectory.h
             IFileTypes.h
             ImageFile.h
-            ISO9660Directory.h
-            ISOFile.h
-            iso9660.h
             LibraryDirectory.h
             MultiPathDirectory.h
             MultiPathFile.h
@@ -134,6 +128,13 @@ set(HEADERS AddonsDirectory.h
             ZipDirectory.h
             ZipFile.h
             ZipManager.h)
+
+if(ISO9660PP_FOUND)
+  list(APPEND SOURCES ISO9660Directory.cpp
+                      ISO9660File.cpp)
+  list(APPEND HEADERS ISO9660Directory.h
+                      ISO9660File.h)
+endif()
 
 if(BLURAY_FOUND)
   list(APPEND SOURCES BlurayCallback.cpp

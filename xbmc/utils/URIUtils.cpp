@@ -276,12 +276,9 @@ void URIUtils::GetCommonPath(std::string& strParent, const std::string& strPath)
 
 bool URIUtils::HasParentInHostname(const CURL& url)
 {
-  return url.IsProtocol("zip")
-      || url.IsProtocol("apk")
-      || url.IsProtocol("bluray")
-      || url.IsProtocol("udf")
-      || url.IsProtocol("xbt")
-      || (CServiceBroker::IsBinaryAddonCacheUp() &&
+  return url.IsProtocol("zip") || url.IsProtocol("apk") || url.IsProtocol("bluray") ||
+         url.IsProtocol("udf") || url.IsProtocol("iso9660") || url.IsProtocol("xbt") ||
+         (CServiceBroker::IsBinaryAddonCacheUp() &&
           CServiceBroker::GetFileExtensionProvider().EncodedHostName(url.GetProtocol()));
 }
 

@@ -23,7 +23,6 @@
 #include <map>
 #include <utility>
 #include "DetectDVDType.h"
-#include "filesystem/iso9660.h"
 #endif
 #endif
 #include "Autorun.h"
@@ -603,7 +602,6 @@ void CMediaManager::EjectTray( const bool bEject, const char cDriveLetter )
 #else
   std::shared_ptr<CLibcdio> c_cdio = CLibcdio::GetInstance();
   char* dvdDevice = c_cdio->GetDeviceFileName();
-  m_isoReader.Reset();
   int nRetries=3;
   while (nRetries-- > 0)
   {
