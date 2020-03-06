@@ -487,7 +487,7 @@ bool CPeripherals::LoadMappings()
   }
 
   TiXmlElement *pRootElement = xmlDoc.RootElement();
-  if (!pRootElement || strcmpi(pRootElement->Value(), "peripherals") != 0)
+  if (!pRootElement || StringUtils::CompareNoCase(pRootElement->Value(), "peripherals") != 0)
   {
     CLog::Log(LOGERROR, "%s - peripherals.xml does not contain <peripherals>", __FUNCTION__);
     return false;

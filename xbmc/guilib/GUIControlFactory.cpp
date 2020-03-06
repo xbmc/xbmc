@@ -340,9 +340,11 @@ bool CGUIControlFactory::GetTexture(const TiXmlNode* pRootNode, const char* strT
     GetRectFromString(border, image.border);
   image.orientation = 0;
   const char *flipX = pNode->Attribute("flipx");
-  if (flipX && strcmpi(flipX, "true") == 0) image.orientation = 1;
+  if (flipX && StringUtils::CompareNoCase(flipX, "true") == 0)
+    image.orientation = 1;
   const char *flipY = pNode->Attribute("flipy");
-  if (flipY && strcmpi(flipY, "true") == 0) image.orientation = 3 - image.orientation;  // either 3 or 2
+  if (flipY && StringUtils::CompareNoCase(flipY, "true") == 0)
+    image.orientation = 3 - image.orientation; // either 3 or 2
   image.diffuse = XMLUtils::GetAttribute(pNode, "diffuse");
   image.diffuseColor.Parse(XMLUtils::GetAttribute(pNode, "colordiffuse"), 0);
   const char *background = pNode->Attribute("background");
@@ -453,7 +455,7 @@ bool CGUIControlFactory::GetAnimations(TiXmlNode *control, const CRect &rect, in
       CAnimation anim;
       anim.Create(node, rect, context);
       animations.push_back(anim);
-      if (strcmpi(node->FirstChild()->Value(), "VisibleChange") == 0)
+      if (StringUtils::CompareNoCase(node->FirstChild()->Value(), "VisibleChange") == 0)
       { // add the hidden one as well
         TiXmlElement hidden(*node);
         hidden.FirstChild()->SetValue("hidden");

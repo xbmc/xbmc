@@ -94,7 +94,7 @@ bool CGUIDialogPlayEject::ShowAndGetInput(const CFileItem & item,
   if (discStubXML.LoadFile(item.GetPath()))
   {
     TiXmlElement * pRootElement = discStubXML.RootElement();
-    if (!pRootElement || strcmpi(pRootElement->Value(), "discstub") != 0)
+    if (!pRootElement || StringUtils::CompareNoCase(pRootElement->Value(), "discstub") != 0)
       CLog::Log(LOGERROR, "Error loading %s, no <discstub> node", item.GetPath().c_str());
     else
     {
