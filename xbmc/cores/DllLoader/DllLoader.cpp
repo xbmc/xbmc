@@ -620,7 +620,7 @@ bool DllLoader::Load()
       // but the export isn't really needed for normal operation
       // and dll works anyway, so let's ignore it
 
-      if(stricmp(GetName(), "vp7vfw.dll") != 0)
+      if (StringUtils::CompareNoCase(GetName(), "vp7vfw.dll") != 0)
         return false;
 
 

@@ -1053,7 +1053,7 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prioritise)
         thumb = thumb->NextSiblingElement("thumb");
       }
       const char* clear=node->Attribute("clear");
-      if (clear && stricmp(clear,"true"))
+      if (clear && StringUtils::CompareNoCase(clear, "true"))
         m_cast.clear();
       m_cast.push_back(info);
     }
@@ -1102,7 +1102,7 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prioritise)
     if (pValue)
     {
       const char* clear=node->Attribute("clear");
-      if (clear && stricmp(clear,"true")==0)
+      if (clear && StringUtils::CompareNoCase(clear, "true") == 0)
         artist.clear();
       std::vector<std::string> newArtists = StringUtils::Split(pValue, itemSeparator);
       artist.insert(artist.end(), newArtists.begin(), newArtists.end());

@@ -1607,7 +1607,8 @@ extern "C"
       return 0;
     }
 #endif
-    if (!stricmp(path, "\\Device\\Cdrom0") || !stricmp(path, "\\Device\\Cdrom0\\"))
+    if (!StringUtils::CompareNoCase(path, "\\Device\\Cdrom0") ||
+        !StringUtils::CompareNoCase(path, "\\Device\\Cdrom0\\"))
     {
       buffer->st_mode = _S_IFDIR;
       return 0;
@@ -1650,7 +1651,8 @@ extern "C"
       return 0;
     }
 #endif
-    if (!stricmp(path, "\\Device\\Cdrom0") || !stricmp(path, "\\Device\\Cdrom0\\"))
+    if (!StringUtils::CompareNoCase(path, "\\Device\\Cdrom0") ||
+        !StringUtils::CompareNoCase(path, "\\Device\\Cdrom0\\"))
     {
       buffer->st_mode = _S_IFDIR;
       return 0;

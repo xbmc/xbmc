@@ -381,11 +381,11 @@ bool CPlayerCoreFactory::LoadConfiguration(const std::string &file, bool clear)
     const char* szAction = pRule->Attribute("action");
     if (szAction)
     {
-      if (stricmp(szAction, "append") == 0)
+      if (StringUtils::CompareNoCase(szAction, "append") == 0)
       {
         m_vecCoreSelectionRules.push_back(new CPlayerSelectionRule(pRule));
       }
-      else if (stricmp(szAction, "prepend") == 0)
+      else if (StringUtils::CompareNoCase(szAction, "prepend") == 0)
       {
         m_vecCoreSelectionRules.insert(m_vecCoreSelectionRules.begin(), 1, new CPlayerSelectionRule(pRule));
       }

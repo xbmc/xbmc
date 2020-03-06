@@ -1221,16 +1221,16 @@ void CAdvancedSettings::GetCustomTVRegexps(TiXmlElement *pRootElement, SETTINGS_
     int iAction = 0; // overwrite
     // for backward compatibility
     const char* szAppend = pElement->Attribute("append");
-    if ((szAppend && stricmp(szAppend, "yes") == 0))
+    if ((szAppend && StringUtils::CompareNoCase(szAppend, "yes") == 0))
       iAction = 1;
     // action takes precedence if both attributes exist
     const char* szAction = pElement->Attribute("action");
     if (szAction)
     {
       iAction = 0; // overwrite
-      if (stricmp(szAction, "append") == 0)
+      if (StringUtils::CompareNoCase(szAction, "append") == 0)
         iAction = 1; // append
-      else if (stricmp(szAction, "prepend") == 0)
+      else if (StringUtils::CompareNoCase(szAction, "prepend") == 0)
         iAction = 2; // prepend
     }
     if (iAction == 0)
@@ -1277,16 +1277,16 @@ void CAdvancedSettings::GetCustomRegexps(TiXmlElement *pRootElement, std::vector
     int iAction = 0; // overwrite
     // for backward compatibility
     const char* szAppend = pElement->Attribute("append");
-    if ((szAppend && stricmp(szAppend, "yes") == 0))
+    if ((szAppend && StringUtils::CompareNoCase(szAppend, "yes") == 0))
       iAction = 1;
     // action takes precedence if both attributes exist
     const char* szAction = pElement->Attribute("action");
     if (szAction)
     {
       iAction = 0; // overwrite
-      if (stricmp(szAction, "append") == 0)
+      if (StringUtils::CompareNoCase(szAction, "append") == 0)
         iAction = 1; // append
-      else if (stricmp(szAction, "prepend") == 0)
+      else if (StringUtils::CompareNoCase(szAction, "prepend") == 0)
         iAction = 2; // prepend
     }
     if (iAction == 0)
