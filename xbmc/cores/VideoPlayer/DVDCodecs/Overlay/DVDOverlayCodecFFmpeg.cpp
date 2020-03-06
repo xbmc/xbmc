@@ -91,7 +91,7 @@ bool CDVDOverlayCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &optio
       if (!strncmp(ptr, "palette:", 8))
         if (sscanf(ptr, "palette: %x, %x, %x, %x, %x, %x, %x, %x,"
                                 " %x, %x, %x, %x, %x, %x, %x, %x", ...
-      if (!strncasecmp(ptr, "forced subs: on", 15))
+      if (!StringUtils::CompareNoCase(ptr, "forced subs: on", 15))
         forced_subs_only = 1;
       */
       // if tried all possibilities, then read newline char and move to next line
