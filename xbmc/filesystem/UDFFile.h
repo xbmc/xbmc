@@ -1,8 +1,5 @@
 /*
- *  Copyright (C) 2010 Team Boxee
- *      http://www.boxee.tv
- *
- *  Copyright (C) 2010-2018 Team Kodi
+ *  Copyright (C) 2005-2018 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -12,7 +9,9 @@
 #pragma once
 
 #include "IFile.h"
-#include "udf25.h"
+
+typedef struct udf_s udf_t;
+typedef struct udf_dirent_s udf_dirent_t;
 
 namespace XFILE
 {
@@ -20,20 +19,29 @@ namespace XFILE
 class CUDFFile : public IFile
 {
 public:
-  CUDFFile();
-  ~CUDFFile() override;
-  int64_t GetPosition() override;
-  int64_t GetLength() override;
-  bool Open(const CURL& url) override;
-  bool Exists(const CURL& url) override;
-  int Stat(const CURL& url, struct __stat64* buffer) override;
-  ssize_t Read(void* lpBuf, size_t uiBufSize) override;
-  int64_t Seek(int64_t iFilePosition, int iWhence = SEEK_SET) override;
-  void Close() override;
-protected:
-  bool m_bOpened = false;
-  HANDLE m_hFile;
-  udf25 m_udfIsoReaderLocal;
-};
-}
+  CUDFFile() = default;
+  ~CUDFFile() override = default;
 
+  bool Open(const CURL& url) override;
+  void Close() override;
+
+  int Stat(const CURL& url, struct __stat64* buffer) override;
+
+  ssize_t Read(void* buffer, size_t size) override;
+  int64_t Seek(int64_t filePosition, int whence) override;
+
+  int64_t GetLength() override;
+  int64_t GetPosition() override;
+
+  bool Exists(const CURL& url) override;
+
+  int GetChunkSize() override;
+
+private:
+  udf_t* m_udf{nullptr};
+  udf_dirent_t* m_path{nullptr};
+
+  uint32_t m_current;
+};
+
+} // namespace XFILE

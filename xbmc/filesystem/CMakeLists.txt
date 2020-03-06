@@ -49,9 +49,6 @@ set(SOURCES AddonsDirectory.cpp
             SpecialProtocolDirectory.cpp
             SpecialProtocolFile.cpp
             StackDirectory.cpp
-            udf25.cpp
-            UDFDirectory.cpp
-            UDFFile.cpp
             VideoDatabaseDirectory.cpp
             VideoDatabaseFile.cpp
             VirtualDirectory.cpp
@@ -116,9 +113,6 @@ set(HEADERS AddonsDirectory.h
             SpecialProtocolDirectory.h
             SpecialProtocolFile.h
             StackDirectory.h
-            udf25.h
-            UDFDirectory.h
-            UDFFile.h
             VideoDatabaseDirectory.h
             VirtualDirectory.h
             XbtDirectory.h
@@ -134,6 +128,13 @@ if(ISO9660PP_FOUND)
                       ISO9660File.cpp)
   list(APPEND HEADERS ISO9660Directory.h
                       ISO9660File.h)
+endif()
+
+if(UDF_FOUND)
+  list(APPEND SOURCES UDFDirectory.cpp
+                      UDFFile.cpp)
+  list(APPEND HEADERS UDFDirectory.h
+                      UDFFile.h)
 endif()
 
 if(BLURAY_FOUND)
