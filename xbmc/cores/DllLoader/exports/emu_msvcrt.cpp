@@ -1601,7 +1601,7 @@ extern "C"
       return -1;
 
 #ifdef TARGET_POSIX
-    if (!_stricmp(path, "D:") || !_stricmp(path, "D:\\"))
+    if (!StringUtils::CompareNoCase(path, "D:") || !StringUtils::CompareNoCase(path, "D:\\"))
     {
       buffer->st_mode = S_IFDIR;
       return 0;
@@ -1644,7 +1644,7 @@ extern "C"
       return -1;
 
 #ifdef TARGET_POSIX
-    if (!_stricmp(path, "D:") || !_stricmp(path, "D:\\"))
+    if (!StringUtils::CompareNoCase(path, "D:") || !StringUtils::CompareNoCase(path, "D:\\"))
     {
       buffer->st_mode = _S_IFDIR;
       return 0;
