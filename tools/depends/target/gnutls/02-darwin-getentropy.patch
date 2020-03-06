@@ -1,14 +1,15 @@
---- a/configure.ac
-+++ b/configure.ac
-@@ -220,6 +220,7 @@
- 		   rnd_variant=getrandom],
- 		  [AC_MSG_RESULT(no)])
+diff -Naur a/configure.ac b/configure.ac
+--- a/configure.ac	2019-12-02 08:32:16.000000000 -0800
++++ b/configure.ac	2020-01-31 10:25:36.473631501 -0800
+@@ -278,6 +278,7 @@
+ 
+ AM_CONDITIONAL(HAVE_KERN_ARND, test "$rnd_variant" = "kern_arnd")
  
 +if test "x$have_macosx" != "xyes"; then
  AC_MSG_CHECKING([for getentropy])
  AC_LINK_IFELSE([AC_LANG_PROGRAM([
  	   #include <unistd.h>
-@@ -233,6 +234,7 @@
+@@ -294,6 +295,7 @@
  		   AC_DEFINE([HAVE_GETENTROPY], 1, [Enable the OpenBSD getentropy function])
  		   rnd_variant=getentropy],
  		  [AC_MSG_RESULT(no)])
