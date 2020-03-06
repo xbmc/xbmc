@@ -123,7 +123,8 @@ bool CRssManager::Load()
     if (pSet->QueryIntAttribute("id", &iId) == TIXML_SUCCESS)
     {
       RssSet set;
-      set.rtl = pSet->Attribute("rtl") != NULL && strcasecmp(pSet->Attribute("rtl"), "true") == 0;
+      set.rtl = pSet->Attribute("rtl") != NULL &&
+                StringUtils::CompareNoCase(pSet->Attribute("rtl"), "true") == 0;
       const TiXmlElement* pFeed = pSet->FirstChildElement("feed");
       while (pFeed != NULL)
       {

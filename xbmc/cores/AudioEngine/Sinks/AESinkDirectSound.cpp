@@ -139,7 +139,7 @@ bool CAESinkDirectSound::Initialize(AEAudioFormat &format, std::string &device)
       hr = (UuidToString((*itt).lpGuid, &wszUuid));
       std::string sztmp = KODI::PLATFORM::WINDOWS::FromW(reinterpret_cast<wchar_t*>(wszUuid));
       std::string szGUID = "{" + std::string(sztmp.begin(), sztmp.end()) + "}";
-      if (strcasecmp(szGUID.c_str(), strDeviceGUID.c_str()) == 0)
+      if (StringUtils::CompareNoCase(szGUID, strDeviceGUID) == 0)
       {
         deviceGUID = (*itt).lpGuid;
         deviceFriendlyName = (*itt).name.c_str();

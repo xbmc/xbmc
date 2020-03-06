@@ -62,9 +62,6 @@
 #define PATH_MAX MAX_PATH
 #endif
 
-#ifndef strcasecmp
-#define strcasecmp stricmp
-#endif
 #ifndef strncasecmp
 #define strncasecmp strnicmp
 #endif

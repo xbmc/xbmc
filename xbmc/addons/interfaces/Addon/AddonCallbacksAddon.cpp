@@ -189,12 +189,12 @@ bool CAddonCallbacksAddon::GetAddonSetting(void *addonData, const char *strSetti
   {
     CLog::Log(LOGDEBUG, "CAddonCallbacksAddon - %s - add-on '%s' requests setting '%s'", __FUNCTION__, addonHelper->m_addon->Name().c_str(), strSettingName);
 
-    if (strcasecmp(strSettingName, "__addonpath__") == 0)
+    if (StringUtils::CompareNoCase(strSettingName, "__addonpath__") == 0)
     {
       strcpy((char*) settingValue, addonHelper->m_addon->Path().c_str());
       return true;
     }
-    else if (strcasecmp(strSettingName, "__addonname__") == 0)
+    else if (StringUtils::CompareNoCase(strSettingName, "__addonname__") == 0)
     {
       strcpy((char*)settingValue, addonHelper->m_addon->Name().c_str());
       return true;

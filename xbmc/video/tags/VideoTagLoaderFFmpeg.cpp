@@ -184,14 +184,14 @@ CInfoScanner::INFO_TYPE CVideoTagLoaderFFmpeg::LoadMKV(CVideoInfoTag& tag,
   bool hastag = false;
   while ((avtag = av_dict_get(m_fctx->metadata, "", avtag, AV_DICT_IGNORE_SUFFIX)))
   {
-    if (strcasecmp(avtag->key, "title") == 0)
+    if (StringUtils::CompareNoCase(avtag->key, "title") == 0)
       tag.SetTitle(avtag->value);
-    else if (strcasecmp(avtag->key, "director") == 0)
+    else if (StringUtils::CompareNoCase(avtag->key, "director") == 0)
     {
       std::vector<std::string> dirs = StringUtils::Split(avtag->value, " / ");
       tag.SetDirector(dirs);
     }
-    else if (strcasecmp(avtag->key, "date_released") == 0)
+    else if (StringUtils::CompareNoCase(avtag->key, "date_released") == 0)
       tag.SetYear(atoi(avtag->value));
     hastag = true;
   }

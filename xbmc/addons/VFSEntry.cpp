@@ -353,9 +353,9 @@ static void VFSDirEntriesToCFileItemList(int num_entries,
       item->m_strTitle = entries[i].title;
     for (unsigned int j=0;j<entries[i].num_props;++j)
     {
-      if (strcasecmp(entries[i].properties[j].name, "propmisusepreformatted") == 0)
+      if (StringUtils::CompareNoCase(entries[i].properties[j].name, "propmisusepreformatted") == 0)
       {
-        if (strcasecmp(entries[i].properties[j].name, "true") == 0)
+        if (StringUtils::CompareNoCase(entries[i].properties[j].name, "true") == 0)
           item->SetLabelPreformatted(true);
         else
           item->SetLabelPreformatted(false);
