@@ -53,7 +53,6 @@
 
 #define _fdopen fdopen
 #define _vsnprintf vsnprintf
-#define strnicmp  strncasecmp
 
 #define __stdcall
 #define __cdecl

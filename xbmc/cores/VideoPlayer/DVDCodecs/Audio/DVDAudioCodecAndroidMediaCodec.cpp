@@ -53,7 +53,7 @@ static bool IsDownmixDecoder(const std::string &name)
   };
   for (const char **ptr = downmixDecoders; *ptr; ptr++)
   {
-    if (!strnicmp(*ptr, name.c_str(), strlen(*ptr)))
+    if (!StringUtils::CompareNoCase(*ptr, name, strlen(*ptr)))
       return true;
   }
   return false;
@@ -67,7 +67,7 @@ static bool IsDecoderWhitelisted(const std::string &name)
   };
   for (const char **ptr = whitelistDecoders; *ptr; ptr++)
   {
-    if (!strnicmp(*ptr, name.c_str(), strlen(*ptr)))
+    if (!StringUtils::CompareNoCase(*ptr, name, strlen(*ptr)))
       return true;
   }
   return false;

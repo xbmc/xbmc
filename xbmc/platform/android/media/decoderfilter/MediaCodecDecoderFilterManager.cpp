@@ -49,7 +49,7 @@ CMediaCodecDecoderFilterManager::CMediaCodecDecoderFilterManager()
     uint32_t flags = CDecoderFilter::FLAG_GENERAL_ALLOWED | CDecoderFilter::FLAG_DVD_ALLOWED;
     for (const char **ptr = blacklisted_decoders; *ptr && flags; ptr++)
     {
-      if (!strnicmp(*ptr, codecname.c_str(), strlen(*ptr)))
+      if (!StringUtils::CompareNoCase(*ptr, codecname, strlen(*ptr)))
         flags = 0;
     }
     add(CDecoderFilter(codecname, flags, 0));

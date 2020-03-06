@@ -581,7 +581,7 @@ void CGUIBaseContainer::OnJumpLetter(char letter, bool skip /*=false*/)
     std::string label = item->GetLabel();
     if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_FILELISTS_IGNORETHEWHENSORTING))
       label = SortUtils::RemoveArticles(label);
-    if (0 == strnicmp(label.c_str(), m_match.c_str(), m_match.size()))
+    if (0 == StringUtils::CompareNoCase(label, m_match, m_match.size()))
     {
       SelectItem(i);
       return;

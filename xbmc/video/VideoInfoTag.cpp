@@ -1171,7 +1171,8 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prioritise)
   if (epguide)
   {
     // DEPRECIATE ME - support for old XML-encoded <episodeguide> blocks.
-    if (epguide->FirstChild() && strnicmp("<episodeguide", epguide->FirstChild()->Value(), 13) == 0)
+    if (epguide->FirstChild() &&
+        StringUtils::CompareNoCase("<episodeguide", epguide->FirstChild()->Value(), 13) == 0)
       m_strEpisodeGuide = epguide->FirstChild()->Value();
     else
     {

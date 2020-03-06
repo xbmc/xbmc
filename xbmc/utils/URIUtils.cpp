@@ -263,7 +263,8 @@ void URIUtils::GetCommonPath(std::string& strParent, const std::string& strPath)
 {
   // find the common path of parent and path
   unsigned int j = 1;
-  while (j <= std::min(strParent.size(), strPath.size()) && strnicmp(strParent.c_str(), strPath.c_str(), j) == 0)
+  while (j <= std::min(strParent.size(), strPath.size()) &&
+         StringUtils::CompareNoCase(strParent, strPath, j) == 0)
     j++;
   strParent.erase(j - 1);
   // they should at least share a / at the end, though for things such as path/cd1 and path/cd2 there won't be
