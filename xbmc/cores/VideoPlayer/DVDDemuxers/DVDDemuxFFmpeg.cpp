@@ -261,6 +261,35 @@ bool CDVDDemuxFFmpeg::Open(std::shared_ptr<CDVDInputStream> pInput, bool streami
         strFile = url.Get();
       }
     }
+    else if (url.IsProtocol("udp") || url.IsProtocol("rtp"))
+    {
+      std::string strURL = url.Get();
+      CLog::Log(LOGDEBUG,
+                "CDVDDemuxFFmpeg::Open() UDP/RTP Original URL '%s'",
+                strURL.c_str());
+      size_t found = strURL.find("://");
+      if (found != std::string::npos)
+      {
+        size_t start = found + 3;
+        found = strURL.find("@");
+
+        if (found != std::string::npos && found > start)
+        {
+          // sourceip found
+          std::string strSourceIp = strURL.substr(start, found - start);
+
+          strFile = strURL.substr(0, start);
+          strFile += strURL.substr(found);
+          if (strFile.back() == '/')
+            strFile.pop_back();
+          strFile += "?sources=";
+          strFile += strSourceIp;
+          CLog::Log(LOGDEBUG,
+                    "CDVDDemuxFFmpeg::Open() UDP/RTP URL '%s'",
+                    strFile.c_str());
+        }
+      }
+    }
     if (result < 0)
     {
       m_pFormatContext->flags |= AVFMT_FLAG_PRIV_OPT;

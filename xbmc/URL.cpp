@@ -205,9 +205,12 @@ void CURL::Parse(const std::string& strURL1)
   if(iSlash >= iEnd)
     iSlash = std::string::npos; // was an invalid slash as it was contained in options
 
+  // also skip parsing username:password@ for udp/rtp as it not valid
+  // and conflicts with the following example: rtp://sourceip@multicastip
   size_t iAlphaSign = strURL.find("@", iPos);
   if (iAlphaSign != std::string::npos && iAlphaSign < iEnd &&
-      (iAlphaSign < iSlash || iSlash == std::string::npos))
+      (iAlphaSign < iSlash || iSlash == std::string::npos) &&
+      !IsProtocol("udp") && !IsProtocol("rtp"))
   {
     // username/password found
     std::string strUserNamePassword = strURL.substr(iPos, iAlphaSign - iPos);
