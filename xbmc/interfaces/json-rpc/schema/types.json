@@ -108,7 +108,7 @@
                   "album", "albumtype", "genre", "country", "year", "rating", "userrating", "votes", "top250", "programcount",
                   "playlist", "episode", "season", "totalepisodes", "watchedepisodes", "tvshowstatus", "tvshowtitle",
                   "sorttitle", "productioncode", "mpaa", "studio", "dateadded", "lastplayed", "playcount", "listeners",
-                  "bitrate", "random", "totaldiscs", "originalyear", "bpm" ]
+                  "bitrate", "random", "totaldiscs", "originaldate", "bpm" ]
       },
       "order": { "type": "string", "default": "ascending", "enum": [ "ascending", "descending" ] },
       "ignorearticle": { "type": "boolean", "default": false },
@@ -534,7 +534,7 @@
                 "votes", "userrating", "mood", "contributors",
                 "displaycomposer", "displayconductor", "displayorchestra", "displaylyricist",
                 "sortartist", "art", "sourceid", "disctitle", "releasedate", "originaldate",
-                "bpm"]
+                "bpm", "samplerate", "bitrate", "channels"]
     }
   },
   "Audio.Album.ReleaseType": {
@@ -676,7 +676,10 @@
       "genreid": { "$ref": "Array.Integer"},
       "sourceid": { "$ref": "Array.Integer" },
       "disctitle": { "type": "string" },
-      "bpm": { "type": "Integer" }
+      "bpm": { "type": "Integer" },
+      "samplerate": { "type": "Integer" },
+      "bitrate": { "type": "Integer"},
+      "channels": { "type": "Integer"}
     }
   },
   "Audio.Property.Name": {
@@ -1505,7 +1508,10 @@
       "disctitle": { "type": "string" },
       "releasedate": { "type": "string" },
       "originaldate": { "type": "string" },
-      "bpm": { "type": "integer" }
+      "bpm": { "type": "integer" },
+      "bitrate": { "type": "integer" },
+      "samplerate": { "type": "integer" },
+      "channels": { "type": "integer"}
     }
   },
   "List.Fields.All": {
@@ -1527,7 +1533,8 @@
                 "specialsortepisode", "compilation", "releasetype", "albumreleasetype",
                 "contributors", "displaycomposer", "displayconductor", "displayorchestra", "displaylyricist",
                 "userrating", "votes", "sortartist", "musicbrainzreleasegroupid", "mediapath", "dynpath",
-                "isboxset", "totaldiscs", "disctitle", "releasedate", "originaldate", "bpm"]
+                "isboxset", "totaldiscs", "disctitle", "releasedate", "originaldate", "bpm",
+                "bitrate", "samplerate", "channels"]
     }
   },
   "List.Item.All": {
@@ -1558,7 +1565,8 @@
                 "description", "theme", "mood", "style", "albumlabel", "sorttitle",
                 "episodeguide", "uniqueid", "dateadded", "size", "lastmodified", "mimetype",
                 "specialsortseason", "specialsortepisode", "sortartist", "musicbrainzreleasegroupid",
-                "isboxset", "totaldiscs", "disctitle", "releasedate", "originaldate", "bpm"]
+                "isboxset", "totaldiscs", "disctitle", "releasedate", "originaldate", "bpm",
+                "bitrate", "samplerate", "channels"]
     }
   },
   "List.Item.File": {

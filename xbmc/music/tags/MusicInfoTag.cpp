@@ -902,6 +902,9 @@ void CMusicInfoTag::Serialize(CVariant& value) const
   value["releasedate"] = m_strReleaseDate;
   value["originaldate"] = m_strOriginalDate;
   value["bpm"] = m_iBPM;
+  value["bitrate"] = m_bitrate;
+  value["samplerate"] = m_samplerate;
+  value["channels"] = m_channels;
 }
 
 void CMusicInfoTag::ToSortable(SortItem& sortable, Field field) const

@@ -321,6 +321,7 @@ bool CMusicGUIInfo::GetLabel(std::string& value, const CFileItem *item, int cont
           value = StringUtils::Format("%i", BitRate);
           return true;
         }
+        break;
       }
       case LISTITEM_SAMPLERATE:
       {
@@ -330,6 +331,7 @@ bool CMusicGUIInfo::GetLabel(std::string& value, const CFileItem *item, int cont
           value = StringUtils::Format("%.5g", static_cast<double>(sampleRate) / 1000.0);
           return true;
         }
+        break;
       }
       case LISTITEM_MUSICCHANNELS:
       {
@@ -339,6 +341,7 @@ bool CMusicGUIInfo::GetLabel(std::string& value, const CFileItem *item, int cont
           value = StringUtils::Format("%i", channels);
           return true;
         }
+        break;
       }
       case LISTITEM_FILENAME:
       case LISTITEM_FILE_EXTENSION:
