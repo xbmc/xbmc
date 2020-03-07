@@ -1142,6 +1142,7 @@ void CGUIWindowMusicBase::OnRemoveSource(int iItem)
     MAPSONGS songs;
     database.RemoveSongsFromPath(m_vecItems->Get(iItem)->GetPath(), songs, false);
     database.CleanupOrphanedItems();
+    database.CheckArtistLinksChanged();
     CServiceBroker::GetGUI()->GetInfoManager().GetInfoProviders().GetLibraryInfoProvider().ResetLibraryBools();
     m_vecItems->RemoveDiscCache(GetID());
   }

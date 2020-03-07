@@ -115,6 +115,8 @@ public:
   // Song CRUD
   /////////////////////////////////////////////////
   /*! \brief Add a song to the database
+   \param idSong [in] the original database ID of the song to reuse (-1 when new)
+   \param dtDateNew [in] the datetime the original ID was new
    \param idAlbum [in] the database ID of the album for the song
    \param strTitle [in] the title of the song (required to be non-empty)
    \param strMusicBrainzTrackID [in] the MusicBrainz track ID of the song
@@ -140,7 +142,8 @@ public:
    \param replayGain [in] album and track replaygain and peak values
    \return the id of the song
    */
-  int AddSong(const int idAlbum,
+  int AddSong(const int idSong, const CDateTime& dtDateNew,
+              const int idAlbum,
               const std::string& strTitle,
               const std::string& strMusicBrainzTrackID,
               const std::string& strPathAndFileName,
@@ -162,9 +165,10 @@ public:
    /*! \brief Update a song and all its nested entities (genres, artists, contributors)
     \param song [in/out] the song to update, artist ids are returned in artist credits
     \param bArtists to update artist credits and contributors, default is true
+    \param bArtists to check and log if artist links have changed, default is true
     \return true if sucessfull
    */
-  bool UpdateSong(CSong& song, bool bArtists = true);
+  bool UpdateSong(CSong& song, bool bArtists = true, bool bArtistLinks = true);
 
   /*! \brief Update a song in the database
    \param idSong [in] the database ID of the song to update
@@ -216,6 +220,7 @@ public:
   bool GetSongsByPath(const std::string& strPath, MAPSONGS& songs, bool bAppendToMap = false);
   bool Search(const std::string& search, CFileItemList &items);
   bool RemoveSongsFromPath(const std::string &path, MAPSONGS& songs, bool exact=true);
+  void CheckArtistLinksChanged();
   bool SetSongUserrating(const std::string &filePath, int userrating);
   bool SetSongUserrating(int idSong, int userrating);
   bool SetSongVotes(const std::string &filePath, int votes);
@@ -405,6 +410,7 @@ public:
   bool AddAlbumArtist(int idArtist, int idAlbum, std::string strArtist, int iOrder);
   bool GetAlbumsByArtist(int idArtist, std::vector<int>& albums);
   bool GetArtistsByAlbum(int idAlbum, CFileItem* item);
+  bool GetArtistsByAlbum(int idAlbum, std::vector<std::string>& artistIDs);
   bool DeleteAlbumArtistsByAlbum(int idAlbum);
 
   int AddRole(const std::string &strRole);
@@ -679,6 +685,18 @@ public:
 
 std::string GetLibraryLastUpdated();
 void SetLibraryLastUpdated();
+std::string GetLibraryLastCleaned();
+void SetLibraryLastCleaned();
+std::string GetArtistLinksUpdated();
+void SetArtistLinksUpdated();
+std::string GetGenresLastAdded();
+std::string GetSongsLastAdded();
+std::string GetAlbumsLastAdded();
+std::string GetArtistsLastAdded();
+std::string GetSongsLastModified();
+std::string GetAlbumsLastModified();
+std::string GetArtistsLastModified();
+
 
 protected:
   std::map<std::string, int> m_genreCache;
@@ -696,6 +714,7 @@ private:
    */
   virtual void CreateViews();
   void CreateNativeDBFunctions();
+  void CreateRemovedLinkTriggers();
 
   void SplitPath(const std::string& strFileNameAndPath, std::string& strPath, std::string& strFileName);
 
@@ -707,16 +726,13 @@ private:
   CAlbum GetAlbumFromDataset(const dbiplus::sql_record* const record, int offset = 0, bool imageURL = false);
   CArtistCredit GetArtistCreditFromDataset(const dbiplus::sql_record* const record, int offset = 0);
   CMusicRole GetArtistRoleFromDataset(const dbiplus::sql_record* const record, int offset = 0);
-  /*! \brief Updates the dateAdded field in the song table for the file
-  with the given songId and the given path based on the files modification date
-  \param songId id of the song in the song table
-  \param strFileNameAndPath path to the file
-  */
-  void UpdateFileDateAdded(int songId, const std::string& strFileNameAndPath);
+  std::string GetMediaDateFromFile(const std::string& strFileNameAndPath);
   void GetFileItemFromDataset(CFileItem* item, const CMusicDbUrl &baseUrl);
   void GetFileItemFromDataset(const dbiplus::sql_record* const record, CFileItem* item, const CMusicDbUrl &baseUrl);
   void GetFileItemFromArtistCredits(VECARTISTCREDITS& artistCredits, CFileItem* item);
     
+  bool DeleteRemovedLinks();
+
   bool CleanupSongs(CGUIDialogProgress* progressDialog = nullptr);
   bool CleanupSongsByIds(const std::string &strSongIds);
   bool CleanupPaths();
@@ -808,12 +824,14 @@ private:
     song_strAlbumArtistSort,
     song_strAlbumReleaseType,
     song_mood,
-    song_dateAdded,
     song_strReplayGain,
     song_iBPM,
     song_iBitRate,
     song_iSampleRate,
     song_iChannels,
+    song_dateAdded,
+    song_dateNew,
+    song_dateModified,
     song_enumCount // end of the enum, do not add past here
   } SongFields;
 
@@ -845,10 +863,12 @@ private:
     album_bCompilation,
     album_bScrapedMBID,
     album_lastScraped,
+    album_dateAdded,
+    album_dateNew,
+    album_dateModified,
     album_iTimesPlayed,
     album_strReleaseType,
     album_iTotalDiscs,
-    album_dtDateAdded,
     album_dtLastPlayed,
     album_enumCount // end of the enum, do not add past here
   } AlbumFields;
@@ -894,7 +914,9 @@ private:
     artist_strFanart,
     artist_bScrapedMBID,
     artist_lastScraped,
-    artist_dtDateAdded,
+    artist_dateAdded,
+    artist_dateNew,
+    artist_dateModified,
     artist_enumCount // end of the enum, do not add past here
   } ArtistFields;
 

@@ -271,6 +271,8 @@ void CSong::Clear()
   iTimesPlayed = 0;
   lastPlayed.Reset();
   dateAdded.Reset();
+  dateUpdated.Reset();
+  dateNew.Reset();
   idAlbum = -1;
   bCompilation = false;
   embeddedArt.Clear();

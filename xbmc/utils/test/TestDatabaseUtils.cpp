@@ -35,7 +35,7 @@ public:
     album_fRating = CMusicDatabase::album_fRating;
     album_iVotes = CMusicDatabase::album_iVotes;
     album_iUserrating = CMusicDatabase::album_iUserrating;
-    album_dtDateAdded = CMusicDatabase::album_dtDateAdded;
+    album_dtDateAdded = CMusicDatabase::album_dateAdded;
 
     song_idSong = CMusicDatabase::song_idSong;
     song_strTitle = CMusicDatabase::song_strTitle;

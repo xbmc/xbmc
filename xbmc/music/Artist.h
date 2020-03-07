@@ -65,6 +65,8 @@ public:
     idArtist = -1;
     strPath.clear();
     dateAdded.Reset();
+    dateUpdated.Reset();
+    dateNew.Reset();
     bScrapedMBID = false;
     strLastScraped.clear();
   }
@@ -80,6 +82,8 @@ public:
   bool Save(TiXmlNode *node, const std::string &tag, const std::string& strPath);
 
   void SetDateAdded(const std::string& strDateAdded);
+  void SetDateUpdated(const std::string& strDateUpdated);
+  void SetDateNew(const std::string& strDateNew);
 
   std::string strArtist;
   std::string strSortName;
@@ -102,7 +106,9 @@ public:
   CFanart fanart;  // Data for available fanart, urls etc.
   std::map<std::string, std::string> art;  // Current artwork - thumb, fanart etc.
   std::vector<std::pair<std::string,std::string> > discography;
-  CDateTime dateAdded;
+  CDateTime dateAdded; // From related file creation or modification times, or when (re-)scanned
+  CDateTime dateUpdated; // Time db record Last modified
+  CDateTime dateNew;  // Time db record created
   bool bScrapedMBID = false;
   std::string strLastScraped;
 };

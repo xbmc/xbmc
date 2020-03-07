@@ -77,6 +77,8 @@ static const translateField fields[] = {
   { "top250",            FieldTop250,                  CDatabaseQueryRule::NUMERIC_FIELD,  NULL,                                 false, 13409 },
   { "mpaarating",        FieldMPAA,                    CDatabaseQueryRule::TEXT_FIELD,     NULL,                                 false, 20074 },
   { "dateadded",         FieldDateAdded,               CDatabaseQueryRule::DATE_FIELD,     NULL,                                 false, 570 },
+  { "datemodified",      FieldDateModified,            CDatabaseQueryRule::DATE_FIELD,     NULL,                                 false, 39119 },
+  { "datenew",           FieldDateNew,                 CDatabaseQueryRule::DATE_FIELD,     NULL,                                 false, 21877 },
   { "genre",             FieldGenre,                   CDatabaseQueryRule::TEXT_FIELD,     NULL,                                 true,  515 },
   { "plot",              FieldPlot,                    CDatabaseQueryRule::TEXT_FIELD,     NULL,                                 false, 207 },
   { "plotoutline",       FieldPlotOutline,             CDatabaseQueryRule::TEXT_FIELD,     NULL,                                 false, 203 },
@@ -330,6 +332,9 @@ std::vector<Field> CSmartPlaylistRule::GetFields(const std::string &type)
     fields.push_back(FieldSampleRate);
     fields.push_back(FieldMusicBitRate);
     fields.push_back(FieldNoOfChannels);
+    fields.push_back(FieldDateAdded);
+    fields.push_back(FieldDateModified);
+    fields.push_back(FieldDateNew);
   }
   else if (type == "albums")
   {
@@ -358,6 +363,9 @@ std::vector<Field> CSmartPlaylistRule::GetFields(const std::string &type)
     fields.push_back(FieldLastPlayed);
     fields.push_back(FieldPath);
     fields.push_back(FieldAlbumStatus);
+    fields.push_back(FieldDateAdded);
+    fields.push_back(FieldDateModified);
+    fields.push_back(FieldDateNew);
   }
   else if (type == "artists")
   {
@@ -377,6 +385,9 @@ std::vector<Field> CSmartPlaylistRule::GetFields(const std::string &type)
     fields.push_back(FieldDied);
     fields.push_back(FieldRole);
     fields.push_back(FieldPath);
+    fields.push_back(FieldDateAdded);
+    fields.push_back(FieldDateModified);
+    fields.push_back(FieldDateNew);
   }
   else if (type == "tvshows")
   {

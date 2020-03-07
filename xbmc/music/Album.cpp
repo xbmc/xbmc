@@ -55,6 +55,7 @@ CAlbum::CAlbum(const CFileItem& item)
   iTimesPlayed = 0;
   bBoxedSet = tag.GetBoxset();
   dateAdded.Reset();
+  dateUpdated.Reset();
   lastPlayed.Reset();
   releaseType = tag.GetAlbumReleaseType();
   strReleaseStatus = tag.GetAlbumReleaseStatus();
@@ -419,6 +420,16 @@ void CAlbum::SetReleaseType(const std::string& strReleaseType)
 void CAlbum::SetDateAdded(const std::string& strDateAdded)
 {
   dateAdded.SetFromDBDateTime(strDateAdded);
+}
+
+void CAlbum::SetDateUpdated(const std::string& strDateUpdated)
+{
+  dateUpdated.SetFromDBDateTime(strDateUpdated);
+}
+
+void CAlbum::SetDateNew(const std::string& strDateNew)
+{
+  dateNew.SetFromDBDateTime(strDateNew);
 }
 
 void CAlbum::SetLastPlayed(const std::string& strLastPlayed)
