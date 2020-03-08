@@ -75,7 +75,7 @@ namespace XBMCAddon
       // Construct a Player proxying the given generated binding. The
       //  construction of a Player needs to identify whether or not any
       //  callbacks will be executed asynchronously or not.
-      explicit Player(int playerCore = 0);
+      explicit Player();
       ~Player(void) override;
 #endif
 
