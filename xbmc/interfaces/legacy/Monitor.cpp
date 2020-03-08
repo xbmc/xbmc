@@ -26,13 +26,6 @@ namespace XBMCAddon
       }
     }
 
-    void Monitor::OnAbortRequested()
-    {
-      XBMC_TRACE;
-      abortEvent.Set();
-      invokeCallback(new CallbackFunction<Monitor>(this,&Monitor::onAbortRequested));
-    }
-
     bool Monitor::waitForAbort(double timeout)
     {
       XBMC_TRACE;
