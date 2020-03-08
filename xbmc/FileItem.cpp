@@ -141,9 +141,9 @@ void CFileItem::FillMusicInfoTag(const std::shared_ptr<CPVRChannel>& channel, co
       musictag->SetGenre(tag->Genre());
       musictag->SetDuration(tag->GetDuration());
     }
-    else if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_EPG_HIDENOINFOAVAILABLE))
+    else
     {
-      musictag->SetTitle(g_localizeStrings.Get(19055)); // no information available
+      musictag->SetTitle(channel->ChannelName()); // can be overwritten by PVRGUIInfo
     }
     musictag->SetURL(channel->Path());
     musictag->SetArtist(channel->ChannelName());
