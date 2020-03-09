@@ -306,6 +306,7 @@ public:
   static size_t FindWords(const char *str, const char *wordLowerCase);
   static int FindEndBracket(const std::string &str, char opener, char closer, int startPos = 0);
   static int DateStringToYYYYMMDD(const std::string &dateString);
+  static std::string ISODateToLocalizedDate (const std::string& strIsoDate);
   static void WordToDigits(std::string &word);
   static std::string CreateUUID();
   static bool ValidateUUID(const std::string &uuid); // NB only validates syntax

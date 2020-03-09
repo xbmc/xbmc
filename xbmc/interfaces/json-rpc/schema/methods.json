@@ -1063,7 +1063,9 @@
       { "name": "displayartist", "$ref": "Optional.String" },
       { "name": "musicbrainzalbumartistid", "type": [ "null", { "$ref": "Array.String", "required": true } ], "default": null },
       { "name": "art", "type": [ "null", { "$ref": "Media.Artwork.Set", "required": true } ], "default": null },
-      { "name": "isboxset", "$ref": "Optional.Boolean" }
+      { "name": "isboxset", "$ref": "Optional.Boolean" },
+      { "name": "releasedate", "$ref": "Optional.String" },
+      { "name": "originaldate", "$ref": "Optional.String" }
     ],
     "returns": "string"
   },
@@ -1093,7 +1095,10 @@
       { "name": "sortartist", "$ref": "Optional.String" },
       { "name": "mood", "$ref": "Optional.String" },
       { "name": "art", "type": [ "null", { "$ref": "Media.Artwork.Set", "required": true } ], "default": null },
-      { "name": "disctitle", "$ref": "Optional.String" }
+      { "name": "disctitle", "$ref": "Optional.String" },
+      { "name": "releasedate", "$ref": "Optional.String" },
+      { "name": "originaldate", "$ref": "Optional.String" },
+      { "name": "bpm", "$ref": "Optional.Integer" }
     ],
     "returns": "string"
   },

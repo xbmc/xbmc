@@ -36,8 +36,6 @@ CAlbum::CAlbum(const CFileItem& item)
 {
   Reset();
   const CMusicInfoTag& tag = *item.GetMusicInfoTag();
-  KODI::TIME::SystemTime stTime;
-  tag.GetReleaseDate(stTime);
   strAlbum = tag.GetAlbum();
   strMusicBrainzAlbumID = tag.GetMusicBrainzAlbumID();
   strReleaseGroupMBID = tag.GetMusicBrainzReleaseGroupID();
@@ -49,7 +47,8 @@ CAlbum::CAlbum(const CFileItem& item)
   SetArtistCredits(tag.GetAlbumArtist(), tag.GetMusicBrainzAlbumArtistHints(), tag.GetMusicBrainzAlbumArtistID(),
                    tag.GetArtist(), tag.GetMusicBrainzArtistHints(), tag.GetMusicBrainzArtistID());
 
-  iYear = stTime.year;
+  strOrigReleaseDate = tag.GetOriginalDate();
+  strReleaseDate = tag.GetReleaseDate();
   strLabel = tag.GetRecordLabel();
   strType = tag.GetMusicBrainzReleaseType();
   bCompilation = tag.GetCompilation();
@@ -288,8 +287,13 @@ void CAlbum::MergeScrapedAlbum(const CAlbum& source, bool override /* = true */)
     genre = source.genre;
   if ((override && !source.strAlbum.empty()) || strAlbum.empty())
     strAlbum = source.strAlbum;
-  if ((override && source.iYear > 0) || iYear == 0)
-    iYear = source.iYear;
+  //@todo: validate ISO8601 format YYYY, YYYY-MM, or YYYY-MM-DD
+  if ((override && !source.strReleaseDate.empty()) || strReleaseDate.empty())
+    strReleaseDate = source.strReleaseDate;
+  //@todo: can scraper return original release date??
+  if ((override && !source.strOrigReleaseDate.empty()) || strOrigReleaseDate.empty())
+    strOrigReleaseDate = source.strOrigReleaseDate;
+
   if (override)
     bCompilation = source.bCompilation;
   //  iTimesPlayed = source.iTimesPlayed; // times played is derived from songs
@@ -311,7 +315,6 @@ void CAlbum::MergeScrapedAlbum(const CAlbum& source, bool override /* = true */)
   if ((override && !source.strType.empty()) || strType.empty())
     strType = source.strType;
 //  strPath = source.strPath; // don't merge the path
-  m_strDateOfRelease = source.m_strDateOfRelease;
   fRating = source.fRating;
   iUserrating = source.iUserrating;
   iVotes = source.iVotes;
@@ -484,11 +487,21 @@ bool CAlbum::Load(const TiXmlElement *album, bool append, bool prioritise)
   XMLUtils::GetBoolean(album, "boxset", bBoxedSet);
 
   XMLUtils::GetString(album,"review",strReview);
-  XMLUtils::GetString(album,"releasedate",m_strDateOfRelease);
   XMLUtils::GetString(album,"label",strLabel);
   XMLUtils::GetString(album,"type",strType);
 
-  XMLUtils::GetInt(album,"year",iYear);
+  XMLUtils::GetString(album, "releasedate", strReleaseDate);
+  StringUtils::Trim(strReleaseDate);  // @todo: validate ISO8601 format
+  // Support old style <year></year> for backwards compatibility
+  if (strReleaseDate.empty())
+  {
+    int year;
+    XMLUtils::GetInt(album, "year", year);
+    if (year > 0)
+      strReleaseDate = StringUtils::Format("%04i", year);
+  }
+  XMLUtils::GetString(album, "originalreleasedate", strOrigReleaseDate);
+  
   const TiXmlElement* rElement = album->FirstChildElement("rating");
   if (rElement)
   {
@@ -600,7 +613,8 @@ bool CAlbum::Save(TiXmlNode *node, const std::string &tag, const std::string& st
 
   XMLUtils::SetString(album,      "review", strReview);
   XMLUtils::SetString(album,        "type", strType);
-  XMLUtils::SetString(album, "releasedate", m_strDateOfRelease);
+  XMLUtils::SetString(album, "releasedate", strReleaseDate);
+  XMLUtils::SetString(album, "originalreleasedate", strOrigReleaseDate);
   XMLUtils::SetString(album,       "label", strLabel);
   if (!thumbURL.m_xml.empty())
   {
@@ -624,8 +638,7 @@ bool CAlbum::Save(TiXmlNode *node, const std::string &tag, const std::string& st
     userrating->ToElement()->SetAttribute("max", 10);
 
   XMLUtils::SetInt(album,           "votes", iVotes);
-  XMLUtils::SetInt(album,           "year", iYear);
-
+  
   for (const auto& artistCredit : artistCredits)
   {
     // add an <albumArtistCredits> tag

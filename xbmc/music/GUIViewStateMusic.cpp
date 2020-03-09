@@ -173,6 +173,12 @@ CGUIViewStateMusicDatabase::CGUIViewStateMusicDatabase(const CFileItemList& item
           LABEL_MASKS("%F", "", strAlbum, "%b")); // Filename, empty | Userdefined, Total discs
       // year
       AddSortMethod(SortByYear, 562, LABEL_MASKS("%F", "", strAlbum, "%Y"));  // Filename, empty | Userdefined, Year
+      // original release year
+      if (!CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+              CSettings::SETTING_MUSICLIBRARY_USEORIGINALDATE))
+        AddSortMethod(
+          SortByOrigDate, sortAttribute, 38079,
+          LABEL_MASKS("%F", "", strAlbum, "%e")); // Filename, empty | Userdefined, Original date
       // album date added
       AddSortMethod(SortByDateAdded, sortAttribute, 570, LABEL_MASKS("%F", "", strAlbum, "%a"));  // Filename, empty | Userdefined, dateAdded
       // play count
@@ -243,7 +249,13 @@ CGUIViewStateMusicDatabase::CGUIViewStateMusicDatabase(const CFileItemList& item
       AddSortMethod(SortByRating, 563, LABEL_MASKS("%T - %A", "%R"));  // Title - Artist, Rating
       AddSortMethod(SortByUserRating, 38018, LABEL_MASKS("%T - %A", "%r"));  // Title - Artist, UserRating
       AddSortMethod(SortByYear, 562, LABEL_MASKS("%T - %A", "%Y")); // Title, Artist, Year
-      AddSortMethod(SortByDateAdded, 570, LABEL_MASKS("%T - %A", "%a"));  // Title - Artist, DateAdded | empty, empty
+      // original release date  (singles can be re-released)
+      if (!CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+        CSettings::SETTING_MUSICLIBRARY_USEORIGINALDATE))
+          AddSortMethod(SortByOrigDate, 38079,
+                      LABEL_MASKS("%T - %A", "%e")); // Title, Artist, Original Date
+      AddSortMethod(SortByDateAdded, 570,
+                    LABEL_MASKS("%T - %A", "%a")); // Title - Artist, DateAdded | empty, empty
       AddSortMethod(SortByPlaycount, 567, LABEL_MASKS("%T - %A", "%V"));  // Title - Artist, PlayCount
       AddSortMethod(SortByLastPlayed, 568, LABEL_MASKS(strTrack, "%p"));  // Userdefined, last played | empty, empty
 
@@ -266,9 +278,15 @@ CGUIViewStateMusicDatabase::CGUIViewStateMusicDatabase(const CFileItemList& item
       AddSortMethod(SortByRating, 563, LABEL_MASKS("%T - %A", "%R"));  // Title - Artist, Rating
       AddSortMethod(SortByUserRating, 38018, LABEL_MASKS("%T - %A", "%r"));  // Title - Artist, UserRating
       AddSortMethod(SortByYear, 562, LABEL_MASKS("%T - %A", "%Y")); // Title, Artist, Year
+      // original release date
+      if (!CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+        CSettings::SETTING_MUSICLIBRARY_USEORIGINALDATE))
+        AddSortMethod(SortByOrigDate, 38079,
+          LABEL_MASKS("%T - %A", "%e")); // Title, Artist, Original Date
       AddSortMethod(SortByDateAdded, 570, LABEL_MASKS("%T - %A", "%a"));  // Title - Artist, DateAdded | empty, empty
       AddSortMethod(SortByPlaycount, 567, LABEL_MASKS("%T - %A", "%V"));  // Title - Artist, PlayCount
       AddSortMethod(SortByLastPlayed, 568, LABEL_MASKS(strTrack, "%p"));  // Userdefined, last played | empty, empty
+      AddSortMethod(SortByBPM, 38080, LABEL_MASKS(strTrack, "%f")); // Userdefined, bpm, empty,empty
 
       const CViewState *viewState = CViewStateSettings::GetInstance().Get("musicnavsongs");
       // the "All Albums" entries always default to SortByAlbum as this is most logical - user can always
@@ -353,6 +371,12 @@ CGUIViewStateMusicSmartPlaylist::CGUIViewStateMusicSmartPlaylist(const CFileItem
     AddSortMethod(SortByYear, 562, LABEL_MASKS("%T - %A", "%Y")); // Title, Artist, Year
     AddSortMethod(SortByDateAdded, 570, LABEL_MASKS("%T - %A", "%a"));  // Title - Artist, DateAdded | empty, empty
     AddSortMethod(SortByPlaycount, 567, LABEL_MASKS("%T - %A", "%V"));  // Titel - Artist, PlayCount
+    if (!CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+        CSettings::SETTING_MUSICLIBRARY_USEORIGINALDATE))
+      AddSortMethod(SortByOrigDate, 38079,
+                    LABEL_MASKS("%T - %A", "%e")); // Title - Artist, original date, empty, empty
+    AddSortMethod(SortByBPM, 38080,
+                  LABEL_MASKS("%T - %A", "%f")); // Title - Artist, bpm, empty, empty
 
     if (items.IsSmartPlayList() || items.IsLibraryFolder())
       AddPlaylistOrder(items, LABEL_MASKS(strTrack, "%D"));
@@ -381,6 +405,12 @@ CGUIViewStateMusicSmartPlaylist::CGUIViewStateMusicSmartPlaylist(const CFileItem
         LABEL_MASKS("%F", "", strAlbum, "%b")); // Filename, empty | Userdefined, Total discs
     // year
     AddSortMethod(SortByYear, 562, LABEL_MASKS("%F", "", strAlbum, "%Y"));
+    // original release date
+    if (!CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+            CSettings::SETTING_MUSICLIBRARY_USEORIGINALDATE))
+      AddSortMethod(
+          SortByOrigDate, 38079,
+          LABEL_MASKS("%F", "", strAlbum, "%e")); // Filename, empty | Userdefined, Original date
     // album date added
     AddSortMethod(SortByDateAdded, sortAttribute, 570, LABEL_MASKS("%F", "", strAlbum, "%a"));  // Filename, empty | Userdefined, dateAdded
     // play count
@@ -435,7 +465,6 @@ CGUIViewStateMusicPlaylist::CGUIViewStateMusicPlaylist(const CFileItemList& item
   AddSortMethod(SortByTime, 180, LABEL_MASKS("%T - %A", "%D"));  // Titel - Artist, Duration| empty, empty
   AddSortMethod(SortByRating, 563, LABEL_MASKS("%T - %A", "%R"));  // Titel - Artist, Rating| empty, empty
   AddSortMethod(SortByUserRating, 38018, LABEL_MASKS("%T - %A", "%r"));  // Title - Artist, UserRating
-
   SetSortMethod(SortByPlaylistOrder);
   const CViewState *viewState = CViewStateSettings::GetInstance().Get("musicfiles");
   SetViewAsControl(viewState->m_viewMode);

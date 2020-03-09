@@ -162,7 +162,7 @@ std::string ByArtistThenYear(SortAttribute attributes, const SortItem &values)
 
   const CVariant &year = values.at(FieldYear);
   if (!year.isNull())
-    label += StringUtils::Format(" %i", (int)year.asInteger());
+    label += StringUtils::Format(" %i", static_cast<int>(year.asInteger()));
 
   const CVariant &album = values.at(FieldAlbum);
   if (!album.isNull())
@@ -233,6 +233,24 @@ std::string ByYear(SortAttribute attributes, const SortItem &values)
   const CVariant &track = values.at(FieldTrackNumber);
   if (!track.isNull())
     label += StringUtils::Format(" %i", (int)track.asInteger());
+
+  label += " " + ByLabel(attributes, values);
+
+  return label;
+}
+
+std::string ByOrigDate(SortAttribute attributes, const SortItem& values)
+{  
+  std::string label;
+  label = values.at(FieldOrigDate).asString();
+
+  const CVariant &album = values.at(FieldAlbum); 
+  if (!album.isNull())
+    label += " " + SortUtils::RemoveArticles(album.asString());
+
+  const CVariant &track = values.at(FieldTrackNumber);
+  if (!track.isNull())
+    label += StringUtils::Format(" %i", static_cast<int>(track.asInteger()));
 
   label += " " + ByLabel(attributes, values);
 
@@ -434,6 +452,12 @@ std::string ByLastUsed(SortAttribute attributes, const SortItem &values)
   return values.at(FieldLastUsed).asString();
 }
 
+std::string ByBPM(SortAttribute attributes, const SortItem& values)
+{
+  return StringUtils::Format("%d %s", static_cast<int>(values.at(FieldBPM).asInteger()),
+                             ByLabel(attributes, values));
+}
+
 bool preliminarySort(const SortItem &left, const SortItem &right, bool handleFolder, bool &result, std::wstring &labelLeft, std::wstring &labelRight)
 {
   // make sure both items have the necessary data to do the sorting
@@ -560,6 +584,7 @@ bool SorterIndirectIgnoreFoldersDescending(const SortItemPtr &left, const SortIt
   return SorterIgnoreFoldersDescending(*left, *right);
 }
 
+//clang format off
 std::map<SortBy, SortUtils::SortPreparator> fillPreparators()
 {
   std::map<SortBy, SortUtils::SortPreparator> preparators;
@@ -618,10 +643,13 @@ std::map<SortBy, SortUtils::SortPreparator> fillPreparators()
   preparators[SortByInstallDate]              = ByInstallDate;
   preparators[SortByLastUpdated]              = ByLastUpdated;
   preparators[SortByLastUsed]                 = ByLastUsed;
-  preparators[SortByTotalDiscs] = ByTotalDiscs;
+  preparators[SortByTotalDiscs]               = ByTotalDiscs;
+  preparators[SortByOrigDate]                 = ByOrigDate;
+  preparators[SortByBPM]                      = ByBPM;
 
   return preparators;
 }
+//clang format on
 
 std::map<SortBy, Fields> fillSortingFields()
 {
@@ -648,6 +676,7 @@ std::map<SortBy, Fields> fillSortingFields()
   sortingFields[SortByArtistThenYear].insert(FieldArtist);
   sortingFields[SortByArtistThenYear].insert(FieldArtistSort);
   sortingFields[SortByArtistThenYear].insert(FieldYear);
+  sortingFields[SortByArtistThenYear].insert(FieldOrigDate);
   sortingFields[SortByArtistThenYear].insert(FieldAlbum);
   sortingFields[SortByArtistThenYear].insert(FieldTrackNumber);
   sortingFields[SortByAlbum].insert(FieldAlbum);
@@ -661,6 +690,7 @@ std::map<SortBy, Fields> fillSortingFields()
   sortingFields[SortByYear].insert(FieldAirDate);
   sortingFields[SortByYear].insert(FieldAlbum);
   sortingFields[SortByYear].insert(FieldTrackNumber);
+  sortingFields[SortByYear].insert(FieldOrigDate);
   sortingFields[SortByRating].insert(FieldRating);
   sortingFields[SortByUserRating].insert(FieldUserRating);
   sortingFields[SortByVotes].insert(FieldVotes);
@@ -706,6 +736,10 @@ std::map<SortBy, Fields> fillSortingFields()
   sortingFields[SortByLastUpdated].insert(FieldLastUpdated);
   sortingFields[SortByLastUsed].insert(FieldLastUsed);
   sortingFields[SortByTotalDiscs].insert(FieldTotalDiscs);
+  sortingFields[SortByOrigDate].insert(FieldOrigDate);
+  sortingFields[SortByOrigDate].insert(FieldAlbum);
+  sortingFields[SortByOrigDate].insert(FieldTrackNumber);
+  sortingFields[SortByBPM].insert(FieldBPM);
   sortingFields.insert(std::pair<SortBy, Fields>(SortByRandom, Fields()));
 
   return sortingFields;
@@ -877,6 +911,7 @@ typedef struct
   int           label;
 } sort_map;
 
+//clang format off
 const sort_map table[] = {
   { SortByLabel,                    SORT_METHOD_LABEL,                        SortAttributeNone,          551 },
   { SortByLabel,                    SORT_METHOD_LABEL_IGNORE_THE,             SortAttributeIgnoreArticle, 551 },
@@ -923,7 +958,9 @@ const sort_map table[] = {
   { SortByChannel,                  SORT_METHOD_CLIENT_CHANNEL_ORDER,         SortAttributeNone,          19315 },
   { SortByDateTaken,                SORT_METHOD_DATE_TAKEN,                   SortAttributeIgnoreFolders, 577 },
   { SortByNone,                     SORT_METHOD_NONE,                         SortAttributeNone,          16018 },
-  { SortByTotalDiscs, SORT_METHOD_TOTAL_DISCS, SortAttributeNone, 38077 },
+  { SortByTotalDiscs,               SORT_METHOD_TOTAL_DISCS,                  SortAttributeNone,          38077 },
+  { SortByOrigDate,                 SORT_METHOD_ORIG_DATE,                    SortAttributeNone,          38079 },
+  { SortByBPM,                      SORT_METHOD_BPM,                          SortAttributeNone,          38080 },
 
   // the following have no corresponding SORT_METHOD_*
   { SortByAlbumType,                SORT_METHOD_NONE,                         SortAttributeNone,          564 },
@@ -945,6 +982,7 @@ const sort_map table[] = {
   { SortBySubtitleLanguage,         SORT_METHOD_NONE,                         SortAttributeNone,          21448 },
   { SortByRandom,                   SORT_METHOD_NONE,                         SortAttributeNone,          590 }
 };
+//clang format on
 
 SORT_METHOD SortUtils::TranslateOldSortMethod(SortBy sortBy, bool ignoreArticle)
 {
@@ -1074,6 +1112,8 @@ const std::map<std::string, SortBy> sortMethods = {
   { "lastupdated",      SortByLastUpdated },
   { "lastused",         SortByLastUsed },
   { "totaldiscs",       SortByTotalDiscs },
+  { "originaldate",     SortByOrigDate },
+  { "bpm",              SortByBPM },
 };
 
 SortBy SortUtils::SortMethodFromString(const std::string& sortMethod)

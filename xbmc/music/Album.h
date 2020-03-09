@@ -50,11 +50,11 @@ public:
     strLabel.clear();
     strType.clear();
     strPath.clear();
-    m_strDateOfRelease.clear();
     fRating = -1;
     iUserrating = -1;
     iVotes = -1;
-    iYear = -1;
+    strOrigReleaseDate.clear();
+    strReleaseDate.clear();
     bCompilation = false;
     bBoxedSet = false;
     iTimesPlayed = 0;
@@ -152,11 +152,11 @@ public:
   std::string strLabel;
   std::string strType;
   std::string strPath;
-  std::string m_strDateOfRelease;
   float fRating = -1;
   int iUserrating = -1;
   int iVotes = -1;
-  int iYear = -1;
+  std::string strReleaseDate;
+  std::string strOrigReleaseDate;
   bool bBoxedSet = false;
   bool bCompilation = false;
   int iTimesPlayed = 0;

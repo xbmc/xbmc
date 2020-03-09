@@ -127,8 +127,9 @@ public:
    \param genres [in] a vector of genres to which this song belongs
    \param iTrack [in] the track number and disc number of the song
    \param iDuration [in] the duration of the song
-   \param iYear [in] the year of the song
-  \param strDiscSubtitle [in] subtitle of a disc
+   \param strReleaseDate [in] the release date of the song ISO8601 format
+   \param strOrigReleaseDate [in] the original release date of the song ISO8601 format
+   \param strDiscSubtitle [in] subtitle of a disc
    \param iTimesPlayed [in] the number of times the song has been played
    \param iStartOffset [in] the start offset of the song (when using a single audio file with a .cue)
    \param iEndOffset [in] the end offset of the song (when using a single audio file with .cue)
@@ -148,10 +149,13 @@ public:
               const std::string& strThumb,
               const std::string &artistDisp, const std::string &artistSort,
               const std::vector<std::string>& genres,
-              int iTrack, int iDuration, int iYear,
+              int iTrack, int iDuration,
+              const std::string& strReleaseDate,
+              const std::string& strOrigReleaseDate,
               std::string& strDiscSubtitle,
               const int iTimesPlayed, int iStartOffset, int iEndOffset,
               const CDateTime& dtLastPlayed, float rating, int userrating, int votes,
+              int iBPM,
               const ReplayGain& replayGain);
   bool GetSong(int idSong, CSong& song);
 
@@ -175,7 +179,8 @@ public:
    \param genres [in] a vector of genres to which this song belongs
    \param iTrack [in] the track number and disc number of the song
    \param iDuration [in] the duration of the song
-   \param iYear [in] the year of the song
+   \param strReleaseDate [in] the release date of the song ISO8601 format
+   \param strOrigReleaseDate [in] the original release date of the song ISO8601 format
    \param strDiscSubtitle [in] subtitle of a disc
    \param iTimesPlayed [in] the number of times the song has been played
    \param iStartOffset [in] the start offset of the song (when using a single audio file with a .cue)
@@ -191,12 +196,16 @@ public:
                  const std::string& strTitle, const std::string& strMusicBrainzTrackID,
                  const std::string& strPathAndFileName, const std::string& strComment,
                  const std::string& strMood, const std::string& strThumb,
-                 const std::string &artistDisp, const std::string &artistSort,
+                 const std::string& artistDisp, const std::string& artistSort,
                  const std::vector<std::string>& genres,
-                 int iTrack, int iDuration, int iYear,
+                 int iTrack, int iDuration,
+                 const std::string& strReleaseDate,
+                 const std::string& strOrigReleaseDate,
                  const std::string& strDiscSubtitle,
                  int iTimesPlayed, int iStartOffset, int iEndOffset,
-                 const CDateTime& dtLastPlayed, float rating, int userrating, int votes, const ReplayGain& replayGain);
+                 const CDateTime& dtLastPlayed, float rating, int userrating, int votes,
+                 const ReplayGain& replayGain,
+                 int iBPM);
 
   //// Misc Song
   bool GetSongByFileName(const std::string& strFileName, CSong& song, int64_t startOffset = 0);
@@ -230,7 +239,8 @@ public:
    \param strArtist the album artist name(s) display string
    \param strArtistSort the album artist name(s) sort string
    \param strGenre the album genre(s)
-   \param year the year
+   \param strReleaseDate [in] the release date of the album ISO8601 format
+   \param strOrigReleaseDate [in] the original release date of the album ISO8601 format
    \param bBoxedSet if the album is a boxset
    \param strRecordLabel the recording label
    \param strType album type (Musicbrainz release type e.g. "Broadcast, Soundtrack, live"),
@@ -241,7 +251,9 @@ public:
   int  AddAlbum(const std::string& strAlbum, const std::string& strMusicBrainzAlbumID,
                 const std::string& strReleaseGroupMBID,
                 const std::string& strArtist, const std::string& strArtistSort,
-                const std::string& strGenre, int year, bool bBoxedSet,
+                const std::string& strGenre,
+                const std::string& strReleaseDate, const std::string& strOrigReleaseDate,
+                bool bBoxedSet,
                 const std::string& strRecordLabel, const std::string& strType,
                 bool bCompilation, CAlbum::ReleaseType releaseType);
 
@@ -261,7 +273,9 @@ public:
                    const std::string& strThemes, const std::string& strReview,
                    const std::string& strImage, const std::string& strLabel,
                    const std::string& strType,
-                   float fRating, int iUserrating, int iVotes, int iYear, bool bBoxedSet,
+                   float fRating, int iUserrating, int iVotes,
+                   const std::string& strReleaseDate, const std::string& strOrigReleaseDate,
+                   bool bBoxedSet,
                    bool bCompilation,
                    CAlbum::ReleaseType releaseType,
                    bool bScrapedMBID);
@@ -707,6 +721,7 @@ private:
   bool SearchAlbums(const std::string& search, CFileItemList &albums);
   bool SearchSongs(const std::string& strSearch, CFileItemList &songs);
   int GetSongIDFromPath(const std::string &filePath);
+  void NormaliseSongDates(std::string& strRelease, std::string& strOriginal);
 
   /*! \brief Build SQL  for sort subquery from ignore article token list
   \param strField original name or title field that articles could be removed from
@@ -761,7 +776,8 @@ private:
     song_strTitle,
     song_iTrack,
     song_iDuration,
-    song_iYear,
+    song_strReleaseDate,
+    song_strOrigReleaseDate,
     song_strDiscSubtitle,
     song_strFileName,
     song_strMusicBrainzTrackID,
@@ -784,6 +800,7 @@ private:
     song_mood,
     song_dateAdded,
     song_strReplayGain,
+    song_iBPM,
     song_enumCount // end of the enum, do not add past here
   } SongFields;
 
@@ -798,7 +815,8 @@ private:
     album_strArtists,
     album_strArtistSort,
     album_strGenres,
-    album_iYear,
+    album_strReleaseDate,
+    album_strOrigReleaseDate,
     album_bBoxedSet,
     album_strMoods,
     album_strStyles,

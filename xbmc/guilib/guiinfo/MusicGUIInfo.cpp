@@ -12,6 +12,7 @@
 #include "FileItem.h"
 #include "PartyModeManager.h"
 #include "PlayListPlayer.h"
+#include "ServiceBroker.h"
 #include "URL.h"
 #include "Util.h"
 #include "guilib/LocalizeStrings.h"
@@ -266,6 +267,14 @@ bool CMusicGUIInfo::GetLabel(std::string& value, const CFileItem *item, int cont
         }
         break;
       }
+      case MUSICPLAYER_BPM:
+      case LISTITEM_BPM:
+        if (tag->GetBPM() > 0)
+        {
+          value = StringUtils::Format("%i", tag->GetBPM());
+          return true;
+        }
+        break;
 
       /////////////////////////////////////////////////////////////////////////////////////////////
       // LISTITEM_*
@@ -283,6 +292,27 @@ bool CMusicGUIInfo::GetLabel(std::string& value, const CFileItem *item, int cont
       case LISTITEM_VOTES:
         value = StringUtils::FormatNumber(tag->GetVotes());
         return true;
+      case MUSICPLAYER_ORIGINALDATE:
+      case LISTITEM_ORIGINALDATE:
+      {
+        value = tag->GetOriginalDate();
+        if (!CServiceBroker::GetSettingsComponent()
+                ->GetAdvancedSettings()
+                ->m_bMusicLibraryUseISODates)
+          value = StringUtils::ISODateToLocalizedDate(value);
+        return true;
+      }
+      case MUSICPLAYER_RELEASEDATE:
+      case LISTITEM_RELEASEDATE:
+      {
+        value = tag->GetReleaseDate();
+        if (!CServiceBroker::GetSettingsComponent()
+                ->GetAdvancedSettings()
+                ->m_bMusicLibraryUseISODates)
+          value = StringUtils::ISODateToLocalizedDate(value);
+        return true;
+      }
+      break;
       case LISTITEM_FILENAME:
       case LISTITEM_FILE_EXTENSION:
         if (item->IsMusicDb())

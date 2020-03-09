@@ -157,6 +157,10 @@ typedef enum {
   SortByClientChannelOrder,
   /// __54__ : Sort by total number of discs      <em>(String: <b><c>totaldiscs</c></b>)</em>
   SortByTotalDiscs,
+  /// __55__ : Sort by original release date      <em>(String: <b><c>Originaldate</c></b>)</em>
+  SortByOrigDate,
+  /// __56__ : Sort by BPM                        <em>(String: <b><c>bpm</c></b>)</em>
+  SortByBPM,
 } SortBy;
 ///@}
 
