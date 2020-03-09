@@ -8,6 +8,9 @@
 
 #pragma once
 
+#include <inttypes.h>
+#include <string.h>
+
 typedef struct CRYPTO_INFO
 {
   enum CRYPTO_KEY_SYSTEM : uint8_t
