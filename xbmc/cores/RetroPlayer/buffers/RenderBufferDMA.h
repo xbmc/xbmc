@@ -23,12 +23,11 @@ namespace RETRO
 {
   class CRenderContext;
 
-  class CRenderBufferGBM : public CBaseRenderBuffer
+  class CRenderBufferDMA : public CBaseRenderBuffer
   {
   public:
-    CRenderBufferGBM(CRenderContext &context,
-                     int fourcc);
-    ~CRenderBufferGBM() override;
+    CRenderBufferDMA(CRenderContext& context, int fourcc);
+    ~CRenderBufferDMA() override;
 
     // implementation of IRenderBuffer via CRenderBufferSysMem
     bool Allocate(AVPixelFormat format, unsigned int width, unsigned int height) override;

@@ -6,37 +6,35 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include "RenderBufferPoolGBM.h"
+#include "RenderBufferPoolDMA.h"
 
-#include "RenderBufferGBM.h"
-#include "cores/RetroPlayer/rendering/VideoRenderers/RPRendererGBM.h"
+#include "RenderBufferDMA.h"
+#include "cores/RetroPlayer/rendering/VideoRenderers/RPRendererDMA.h"
 
 #include <drm_fourcc.h>
 
 using namespace KODI;
 using namespace RETRO;
 
-CRenderBufferPoolGBM::CRenderBufferPoolGBM(CRenderContext &context)
-  : m_context(context)
+CRenderBufferPoolDMA::CRenderBufferPoolDMA(CRenderContext& context) : m_context(context)
 {
 }
 
-bool CRenderBufferPoolGBM::IsCompatible(const CRenderVideoSettings &renderSettings) const
+bool CRenderBufferPoolDMA::IsCompatible(const CRenderVideoSettings& renderSettings) const
 {
-  if (!CRPRendererGBM::SupportsScalingMethod(renderSettings.GetScalingMethod()))
+  if (!CRPRendererDMA::SupportsScalingMethod(renderSettings.GetScalingMethod()))
     return false;
 
   return true;
 }
 
 
-IRenderBuffer *CRenderBufferPoolGBM::CreateRenderBuffer(void *header /* = nullptr */)
+IRenderBuffer* CRenderBufferPoolDMA::CreateRenderBuffer(void* header /* = nullptr */)
 {
-  return new CRenderBufferGBM(m_context,
-                              m_fourcc);
+  return new CRenderBufferDMA(m_context, m_fourcc);
 }
 
-bool CRenderBufferPoolGBM::ConfigureInternal()
+bool CRenderBufferPoolDMA::ConfigureInternal()
 {
   switch (m_format)
   {

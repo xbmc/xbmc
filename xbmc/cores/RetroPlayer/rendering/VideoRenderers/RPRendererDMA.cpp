@@ -6,10 +6,10 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include "RPRendererGBM.h"
+#include "RPRendererDMA.h"
 
-#include "cores/RetroPlayer/buffers/RenderBufferGBM.h"
-#include "cores/RetroPlayer/buffers/RenderBufferPoolGBM.h"
+#include "cores/RetroPlayer/buffers/RenderBufferDMA.h"
+#include "cores/RetroPlayer/buffers/RenderBufferPoolDMA.h"
 #include "cores/RetroPlayer/rendering/RenderContext.h"
 #include "cores/RetroPlayer/rendering/RenderVideoSettings.h"
 #include "utils/GLUtils.h"
@@ -20,38 +20,34 @@
 using namespace KODI;
 using namespace RETRO;
 
-// --- CRendererFactoryGBM ------------------------------------------------
-
-std::string CRendererFactoryGBM::RenderSystemName() const
+std::string CRendererFactoryDMA::RenderSystemName() const
 {
-  return "GBM";
+  return "DMA";
 }
 
-CRPBaseRenderer *CRendererFactoryGBM::CreateRenderer(const CRenderSettings &settings, CRenderContext &context, std::shared_ptr<IRenderBufferPool> bufferPool)
+CRPBaseRenderer* CRendererFactoryDMA::CreateRenderer(const CRenderSettings& settings,
+                                                     CRenderContext& context,
+                                                     std::shared_ptr<IRenderBufferPool> bufferPool)
 {
-  return new CRPRendererGBM(settings, context, std::move(bufferPool));
+  return new CRPRendererDMA(settings, context, std::move(bufferPool));
 }
 
-RenderBufferPoolVector CRendererFactoryGBM::CreateBufferPools(CRenderContext &context)
+RenderBufferPoolVector CRendererFactoryDMA::CreateBufferPools(CRenderContext& context)
 {
-  return {
-#if defined(HAS_GBM_BO_MAP)
-    std::make_shared<CRenderBufferPoolGBM>(context)
-#endif
-  };
+  return {std::make_shared<CRenderBufferPoolDMA>(context)};
 }
 
-// --- CRPRendererGBM -----------------------------------------------------
-
-CRPRendererGBM::CRPRendererGBM(const CRenderSettings &renderSettings, CRenderContext &context, std::shared_ptr<IRenderBufferPool> bufferPool) :
-  CRPRendererOpenGLES(renderSettings, context, std::move(bufferPool))
+CRPRendererDMA::CRPRendererDMA(const CRenderSettings& renderSettings,
+                               CRenderContext& context,
+                               std::shared_ptr<IRenderBufferPool> bufferPool)
+  : CRPRendererOpenGLES(renderSettings, context, std::move(bufferPool))
 {
   m_textureTarget = GL_TEXTURE_EXTERNAL_OES;
 }
 
-void CRPRendererGBM::Render(uint8_t alpha)
+void CRPRendererDMA::Render(uint8_t alpha)
 {
-  CRenderBufferGBM *renderBuffer = static_cast<CRenderBufferGBM*>(m_renderBuffer);
+  auto renderBuffer = static_cast<CRenderBufferDMA*>(m_renderBuffer);
   assert(renderBuffer != nullptr);
 
   CRect rect = m_sourceRect;
