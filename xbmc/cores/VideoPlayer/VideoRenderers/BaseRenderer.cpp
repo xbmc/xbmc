@@ -54,8 +54,6 @@ void CBaseRenderer::GetVideoRect(CRect &source, CRect &dest, CRect &view)
 
 inline void CBaseRenderer::ReorderDrawPoints()
 {
-
-
   float origMat[4][2] = {{m_destRect.x1, m_destRect.y1},
                          {m_destRect.x2, m_destRect.y1},
                          {m_destRect.x2, m_destRect.y2},
