@@ -196,6 +196,11 @@ if(CORE_PLATFORM_NAME_LC STREQUAL gbm)
                       BufferObjectFactory.h
                       DumbBufferObject.h)
 
+  if(HAVE_LINUX_MEMFD AND HAVE_LINUX_UDMABUF)
+    list(APPEND SOURCES UDMABufferObject.cpp)
+    list(APPEND HEADERS UDMABufferObject.h)
+  endif()
+
   if(GBM_HAS_BO_MAP)
     list(APPEND SOURCES GBMBufferObject.cpp)
     list(APPEND HEADERS GBMBufferObject.h)
