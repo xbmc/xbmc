@@ -2587,7 +2587,7 @@ namespace XBMCAddon
     ///--------------------------------------------------------------------------
     /// @python_v13 New function added.
     /// @python_v18 Deprecated **focusTexture** and **noFocusTexture**. Use **focusOnTexture** and **noFocusOnTexture**.
-    /// @python_v19 Removed **focusTexture** and **noFocusTexture**. Use **focusOnTexture** and **noFocusOnTexture**.
+    /// @python_v19 Removed **focusTexture** and **noFocusTexture**.
     ///
     /// **Example:**
     /// ~~~~~~~~~~~~~{.py}
