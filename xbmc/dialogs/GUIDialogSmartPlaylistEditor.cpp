@@ -324,6 +324,16 @@ void CGUIDialogSmartPlaylistEditor::OnType()
     return;
 
   m_playlist.SetType(ConvertType(allowedTypes[newSelected]));
+  
+  // Remove any invalid grouping left over when changing the type
+  Field currentGroup = CSmartPlaylistRule::TranslateGroup(m_playlist.GetGroup().c_str());
+  if (currentGroup != FieldNone && currentGroup != FieldUnknown)
+  {
+    std::vector<Field> groups = CSmartPlaylistRule::GetGroups(m_playlist.GetType());
+    if (std::find(groups.begin(), groups.end(), currentGroup) == groups.end())
+      m_playlist.SetGroup(CSmartPlaylistRule::TranslateGroup(FieldUnknown));
+  }
+
   UpdateButtons();
 }
 
