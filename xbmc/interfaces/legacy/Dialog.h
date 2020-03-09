@@ -52,7 +52,7 @@ constexpr int ALPHANUM_HIDE_INPUT{2};
 #ifdef DOXYGEN_SHOULD_USE_THIS
       ///
       /// \ingroup python_Dialog
-      /// \python_func{ xbmcgui.Dialog().yesno(heading, line1[, line2, line3, nolabel, yeslabel, autoclose]) }
+      /// \python_func{ xbmcgui.Dialog().yesno(heading, message, nolabel, yeslabel, autoclose]) }
       ///------------------------------------------------------------------------
       ///
       /// **Yes / no dialog**
@@ -61,19 +61,19 @@ constexpr int ALPHANUM_HIDE_INPUT{2};
       /// get the answer.
       ///
       /// @param heading        string or unicode - dialog heading.
-      /// @param line1          string or unicode - line #1 multi-line text.
-      /// @param line2          [opt] string or unicode - line #2 text.
-      /// @param line3          [opt] string or unicode - line #3 text.
+      /// @param message        string or unicode - message text.
       /// @param nolabel        [opt] label to put on the no button.
       /// @param yeslabel       [opt] label to put on the yes button.
       /// @param autoclose      [opt] integer - milliseconds to autoclose dialog. (default=do not autoclose)
       /// @return Returns True if 'Yes' was pressed, else False.
       ///
-      /// @note It is preferred to only use line1 as it is actually a multi-line text. In this case line2 and line3 must be omitted.
       ///
       ///
       ///------------------------------------------------------------------------
       /// @python_v13 Added new option **autoclose**.
+      /// @python_v19 Renamed option **line1** to **message**.
+      /// @python_v19 Removed option **line2**.
+      /// @python_v19 Removed option **line3**.
       ///
       /// **Example:**
       /// ~~~~~~~~~~~~~{.py}
@@ -85,9 +85,7 @@ constexpr int ALPHANUM_HIDE_INPUT{2};
       ///
       yesno(...);
 #else
-      bool yesno(const String& heading, const String& line1,
-                 const String& line2 = emptyString,
-                 const String& line3 = emptyString,
+      bool yesno(const String& heading, const String& message,
                  const String& nolabel = emptyString,
                  const String& yeslabel = emptyString,
                  int autoclose = 0);
@@ -229,7 +227,7 @@ constexpr int ALPHANUM_HIDE_INPUT{2};
 #ifdef DOXYGEN_SHOULD_USE_THIS
       ///
       /// \ingroup python_Dialog
-      /// \python_func{ xbmcgui.Dialog().ok(heading, line1[, line2, line3]) }
+      /// \python_func{ xbmcgui.Dialog().ok(heading, message) }
       ///------------------------------------------------------------------------
       ///
       /// **OK dialog**
@@ -238,15 +236,14 @@ constexpr int ALPHANUM_HIDE_INPUT{2};
       /// confirmation of the user by press from OK required.
       ///
       /// @param heading        string or unicode - dialog heading.
-      /// @param line1          string or unicode - line #1 multi-line text.
-      /// @param line2          [opt] string or unicode - line #2 text.
-      /// @param line3          [opt] string or unicode - line #3 text.
+      /// @param message        string or unicode - message text.
       /// @return Returns True if 'Ok' was pressed, else False.
-      ///
-      /// @note It is preferred to only use line1 as it is actually a multi-line text. In this case line2 and line3 must be omitted.
       ///
       ///
       ///------------------------------------------------------------------------
+      /// @python_v19 Renamed option **line1** to **message**.
+      /// @python_v19 Removed option **line2**.
+      /// @python_v19 Removed option **line3**.
       ///
       /// **Example:**
       /// ~~~~~~~~~~~~~{.py}
@@ -258,9 +255,7 @@ constexpr int ALPHANUM_HIDE_INPUT{2};
       ///
       ok(...);
 #else
-      bool ok(const String& heading, const String& line1,
-              const String& line2 = emptyString,
-              const String& line3 = emptyString);
+      bool ok(const String& heading, const String& message);
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -632,21 +627,21 @@ constexpr int ALPHANUM_HIDE_INPUT{2};
 #ifdef DOXYGEN_SHOULD_USE_THIS
       ///
       /// \ingroup python_DialogProgress
-      /// \python_func{ xbmcgui.DialogProgress().create(heading[, line1, line2, line3]) }
+      /// \python_func{ xbmcgui.DialogProgress().create(heading[, message]) }
       ///------------------------------------------------------------------------
       ///
       /// Create and show a progress dialog.
       ///
       /// @param heading        string or unicode - dialog heading.
-      /// @param line1          [opt] string or unicode - line #1 multi-line text.
-      /// @param line2          [opt] string or unicode - line #2 text.
-      /// @param line3          [opt] string or unicode - line #3 text.
+      /// @param message        [opt] string or unicode - message text.
       ///
-      /// @note It is preferred to only use line1 as it is actually a multi-line text. In this case line2 and line3 must be omitted.
       /// @note Use update() to update lines and progressbar.
       ///
       ///
       ///------------------------------------------------------------------------
+      /// @python_v19 Renamed option **line1** to **message**.
+      /// @python_v19 Removed option **line2**.
+      /// @python_v19 Removed option **line3**.
       ///
       /// **Example:**
       /// ~~~~~~~~~~~~~{.py}
@@ -658,28 +653,26 @@ constexpr int ALPHANUM_HIDE_INPUT{2};
       ///
       create(...);
 #else
-      void create(const String& heading, const String& line1 = emptyString,
-                  const String& line2 = emptyString,
-                  const String& line3 = emptyString);
+      void create(const String& heading, const String& message = emptyString);
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
       ///
       /// \ingroup python_DialogProgress
-      /// \python_func{ xbmcgui.DialogProgress().update(percent[, line1, line2, line3]) }
+      /// \python_func{ xbmcgui.DialogProgress().update(percent[, message]) }
       ///------------------------------------------------------------------------
       ///
       /// Updates the progress dialog.
       ///
       /// @param percent        integer - percent complete. (0:100)
-      /// @param line1          [opt] string or unicode - line #1 multi-line text.
-      /// @param line2          [opt] string or unicode - line #2 text.
-      /// @param line3          [opt] string or unicode - line #3 text.
+      /// @param message        [opt] string or unicode - message text.
       ///
-      /// @note It is preferred to only use line1 as it is actually a multi-line text. In this case line2 and line3 must be omitted.
       ///
       ///
       ///------------------------------------------------------------------------
+      /// @python_v19 Renamed option **line1** to **message**.
+      /// @python_v19 Removed option **line2**.
+      /// @python_v19 Removed option **line3**.
       ///
       /// **Example:**
       /// ~~~~~~~~~~~~~{.py}
@@ -690,9 +683,7 @@ constexpr int ALPHANUM_HIDE_INPUT{2};
       ///
       update(...);
 #else
-      void update(int percent, const String& line1 = emptyString,
-                  const String& line2 = emptyString,
-                  const String& line3 = emptyString);
+      void update(int percent, const String& message = emptyString);
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -741,112 +732,6 @@ constexpr int ALPHANUM_HIDE_INPUT{2};
       iscanceled(...);
 #else
       bool iscanceled();
-#endif
-    };
-
-    //@}
-
-    ///
-    /// \defgroup python_DialogBusy DialogBusy
-    /// \ingroup python_xbmcgui
-    /// @{
-    /// @brief <b>Kodi's busy dialog class</b>
-    ///
-    ///-----------------------------------------------------------------------
-    /// @python_v18 removed, usage results in nop!
-    ///
-    class DialogBusy : public AddonClass
-    {
-
-    protected:
-      void deallocating() override;
-
-    public:
-      DialogBusy() = default;
-      ~DialogBusy() override;
-
-#ifdef DOXYGEN_SHOULD_USE_THIS
-      ///
-      /// \ingroup python_DialogBusy
-      /// \python_func{ xbmcgui.DialogBusy().create() }
-      ///------------------------------------------------------------------------
-      ///
-      /// Create and show a busy dialog.
-      ///
-      /// @note Use update() to update the progressbar.
-      ///
-      ///
-      ///------------------------------------------------------------------------
-      /// @python_v18 removed, usage results in nop!
-      ///
-      /// **Example:**
-      /// ~~~~~~~~~~~~~{.py}
-      /// ..
-      /// dialog = xbmcgui.DialogBusy()
-      /// dialog.create()
-      /// ..
-      /// ~~~~~~~~~~~~~
-      ///
-      create(...);
-#else
-      void create();
-#endif
-
-#ifdef DOXYGEN_SHOULD_USE_THIS
-      ///
-      /// \ingroup python_DialogBusy
-      /// \python_func{ xbmcgui.DialogBusy().update(percent) }
-      ///------------------------------------------------------------------------
-      ///
-      /// Updates the busy dialog.
-      ///
-      /// @param percent        integer - percent complete. (-1:100)
-      ///
-      /// @note If percent == -1 (default), the progressbar will be hidden.
-      ///
-      ///
-      ///------------------------------------------------------------------------
-      /// @python_v18 removed, usage results in nop!
-      ///
-      update(...);
-#else
-      void update(int percent) const;
-#endif
-
-#ifdef DOXYGEN_SHOULD_USE_THIS
-      ///
-      /// \ingroup python_DialogBusy
-      /// \python_func{ xbmcgui.DialogBusy().close() }
-      ///------------------------------------------------------------------------
-      ///
-      /// Close the progress dialog.
-      ///
-      ///
-      ///------------------------------------------------------------------------
-      /// @python_v18 removed, usage results in nop!
-      ///
-      close(...);
-#else
-      void close();
-#endif
-
-#ifdef DOXYGEN_SHOULD_USE_THIS
-      ///
-      /// \ingroup python_DialogBusy
-      /// \python_func{ xbmcgui.DialogBusy().iscanceled() }
-      ///------------------------------------------------------------------------
-      ///
-      /// Checks if busy dialog is canceled.
-      ///
-      /// @return True if the user pressed cancel.
-      ///
-      ///
-      ///------------------------------------------------------------------------
-      /// @python_v18 removed, usage results in nop!
-      ///
-      iscanceled(...);
-#else
-      bool iscanceled() const;
 #endif
     };
 

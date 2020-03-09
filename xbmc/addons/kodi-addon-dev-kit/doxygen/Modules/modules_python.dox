@@ -163,6 +163,26 @@ web applications or frameworks for the Python programming language.
       "",
       <b>xbmc.monitor().onAbortRequested()</b> function was removed completely.
 }
+\python_removed_function{
+      create,
+      "",
+      <b>xbmcgui.DialogBusy().create()</b> function was removed completely.
+}
+\python_removed_function{
+      update,
+      "",
+      <b>xbmcgui.DialogBusy().update()</b> function was removed completely.
+}
+\python_removed_function{
+      close,
+      "",
+      <b>xbmcgui.DialogBusy().close()</b> function was removed completely.
+}
+\python_removed_function{
+      iscanceled,
+      "",
+      <b>xbmcgui.DialogBusy().iscanceled()</b> function was removed completely.
+}
 */
 /*!
 @page python_v18 Python API v18
