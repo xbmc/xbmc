@@ -208,6 +208,16 @@ web applications or frameworks for the Python programming language.
       "",
       <b>xbmcgui.ListItem().getfilename()</b> function was removed completely.
 }
+\python_removed_function{
+      getfilename,
+      "",
+      <b>xbmcgui.Window().getResolution()</b> function was removed completely.
+}
+\python_removed_function{
+      setCoordinateResolution,
+      "",
+      <b>xbmcgui.Window().setCoordinateResolution()</b> function was removed completely.
+}
 */
 /*!
 @page python_v18 Python API v18
