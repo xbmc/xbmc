@@ -16,6 +16,7 @@ set(SOURCES android_main.cpp
             JNIXBMCNsdManagerResolveListener.cpp
             JNIXBMCJsonHandler.cpp
             JNIXBMCFile.cpp
+            JNIXBMCTextureCache.cpp
             JNIXBMCURIUtils.cpp
             JNIXBMCDisplayManagerDisplayListener.cpp
             JNIXBMCSpeechRecognitionListener.cpp
@@ -42,6 +43,7 @@ set(HEADERS AndroidFeatures.h
             JNIXBMCNsdManagerResolveListener.h
             JNIXBMCJsonHandler.h
             JNIXBMCFile.h
+            JNIXBMCTextureCache.h
             JNIXBMCURIUtils.h
             JNIXBMCDisplayManagerDisplayListener.h
             JNIXBMCSpeechRecognitionListener.h
