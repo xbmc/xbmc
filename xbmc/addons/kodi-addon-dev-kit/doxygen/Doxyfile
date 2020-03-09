@@ -828,6 +828,9 @@ INPUT                  = main.txt \
                          Modules/modules_python.dox \
                          Skin/skin.dox \
                          ../../../../cmake/scripts/common/AddonHelpers.dox \
+                         ../../../cores/VideoPlayer/Interface/Addon/DemuxPacket.h \
+                         ../../../cores/VideoPlayer/Interface/Addon/InputStreamConstants.h \
+                         ../../../cores/VideoPlayer/Interface/Addon/TimingConstants.h \
                          ../../../guilib/GUIRenderingControl.dox \
                          ../../../guilib/GUIButtonControl.dox \
                          ../../../guilib/GUIEditControl.dox \
@@ -2208,7 +2211,8 @@ INCLUDE_FILE_PATTERNS  =
 # This tag requires that the tag ENABLE_PREPROCESSING is set to YES.
 
 PREDEFINED             = DOXYGEN_SHOULD_SKIP_THIS \
-                         DOXYGEN_SHOULD_USE_THIS
+                         DOXYGEN_SHOULD_USE_THIS \
+                         __cplusplus
 
 # If the MACRO_EXPANSION and EXPAND_ONLY_PREDEF tags are set to YES then this
 # tag can be used to specify a list of macro names that should be expanded. The
