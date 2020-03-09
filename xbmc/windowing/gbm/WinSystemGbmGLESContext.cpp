@@ -23,6 +23,7 @@
 #include "utils/BufferObjectFactory.h"
 #include "utils/DumbBufferObject.h"
 #include "utils/GBMBufferObject.h"
+#include "utils/UDMABufferObject.h"
 #include "utils/XTimeUtils.h"
 #include "utils/log.h"
 
@@ -77,6 +78,9 @@ bool CWinSystemGbmGLESContext::InitWindowSystem()
   CDumbBufferObject::Register();
 #if defined(HAS_GBM_BO_MAP)
   CGBMBufferObject::Register();
+#endif
+#if defined(HAVE_LINUX_MEMFD) && defined(HAVE_LINUX_UDMABUF)
+  CUDMABufferObject::Register();
 #endif
 
   return true;
