@@ -17,9 +17,10 @@
 #include <EGL/eglext.h>
 
 using namespace KODI::WINDOWING::WAYLAND;
+using namespace KODI::WINDOWING::LINUX;
 
 CWinSystemWaylandEGLContext::CWinSystemWaylandEGLContext()
-: m_eglContext{EGL_PLATFORM_WAYLAND_EXT, "EGL_EXT_platform_wayland"}
+  : CWinSystemEGL{EGL_PLATFORM_WAYLAND_EXT, "EGL_EXT_platform_wayland"}
 {}
 
 bool CWinSystemWaylandEGLContext::InitWindowSystemEGL(EGLint renderableType, EGLint apiType)
@@ -145,9 +146,4 @@ void CWinSystemWaylandEGLContext::PresentFrame(bool rendered)
   }
 
   FinishFramePresentation();
-}
-
-EGLDisplay CWinSystemWaylandEGLContext::GetEGLDisplay() const
-{
-  return m_eglContext.GetEGLDisplay();
 }
