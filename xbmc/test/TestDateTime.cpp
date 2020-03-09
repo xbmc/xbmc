@@ -559,7 +559,7 @@ TEST_F(TestDateTime, GetAsTm)
 
 // disabled on freebsd, I assume because the timezone isn't set properly
 // will investigate later
-#if defined(TARGET_FREEBSD)
+#if defined(TARGET_DARWIN_OSX) || defined(TARGET_FREEBSD)
 TEST_F(TestDateTime, DISABLED_GetAsTimeStamp)
 #else
 TEST_F(TestDateTime, GetAsTimeStamp)
