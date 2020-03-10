@@ -49,7 +49,8 @@
   <addon>xbmc.gui</addon>
   <addon>xbmc.json</addon>
   <addon>xbmc.metadata</addon>
-  <addon>xbmc.python</addon>
+  <addon optional="true">xbmc.python</addon>
+  <addon>xbmc.python3</addon>
   <addon>xbmc.webinterface</addon>
   <addon optional="true">peripheral.joystick</addon>
 </addons>

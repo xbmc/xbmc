@@ -17,6 +17,7 @@ addons/xbmc.gui/*
 addons/xbmc.metadata/*
 addons/xbmc.pvr/*
 addons/xbmc.python/*
+addons/xbmc.python3/*
 addons/xbmc.webinterface/*
 addons/repository.xbmc.org/*
 addons/webinterface.default/*

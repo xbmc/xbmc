@@ -188,6 +188,8 @@ bool CAddonInfoBuilder::ParseXML(const AddonInfoPtr& addon, const TiXmlElement* 
     }
   }
 
+  CheckPythonDepend(addon);
+
   std::string assetBasePath;
   if (repo.artdir.empty() && !addonPath.empty())
   {
@@ -637,4 +639,21 @@ bool CAddonInfoBuilder::PlatformSupportsAddon(const AddonInfoPtr& addon)
       supportedPlatforms.begin(), supportedPlatforms.end()) != addon->m_platforms.end();
 }
 
+/*!
+ * @brief Check addon supports also python3, if yes set them as mandatory
+ * and if old python is included, set them as optional.
+ */
+void CAddonInfoBuilder::CheckPythonDepend(const AddonInfoPtr& addon)
+{
+  auto it = std::find_if(addon->m_dependencies.begin(), addon->m_dependencies.end(),
+                         [&](const DependencyInfo& other) { return other.id == "xbmc.python3"; });
+  if (it != addon->m_dependencies.end())
+  {
+    it->optional = false;
+    auto it2 = std::find_if(addon->m_dependencies.begin(), addon->m_dependencies.end(),
+                            [&](const DependencyInfo& other) { return other.id == "xbmc.python"; });
+    if (it2 != addon->m_dependencies.end())
+      it2->optional = true;
+  }
+}
 }

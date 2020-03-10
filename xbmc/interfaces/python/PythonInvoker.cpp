@@ -664,7 +664,9 @@ void CPythonInvoker::onPythonModuleInitialization(void* moduleDict)
   PyObject* pyaddonid = PyUnicode_FromString(m_addon->ID().c_str());
   PyDict_SetItemString(moduleDictionary, "__xbmcaddonid__", pyaddonid);
 
-  ADDON::AddonVersion version = m_addon->GetDependencyVersion("xbmc.python");
+  ADDON::AddonVersion version = m_addon->GetDependencyVersion("xbmc.python3");
+  if (version.empty())
+    version = m_addon->GetDependencyVersion("xbmc.python");
   PyObject* pyxbmcapiversion = PyUnicode_FromString(version.asString().c_str());
   PyDict_SetItemString(moduleDictionary, "__xbmcapiversion__", pyxbmcapiversion);
 
