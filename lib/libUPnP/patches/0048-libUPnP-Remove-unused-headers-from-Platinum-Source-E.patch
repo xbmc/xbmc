@@ -1,0 +1,29 @@
+From: Olaf Hering <olaf@aepfle.de>
+Date: Thu, 28 Mar 2019 18:07:31 +0100
+Subject: [libUPnP] Remove unused headers from Platinum/Source/Extras
+
+No code from the Extras directory is compiled, so it is unlikely that
+any of the interfaces will be used. Remove the headers and remove
+Platinum/Source/Extras from the list of include directories.
+
+Signed-off-by: Olaf Hering <olaf@aepfle.de>
+---
+ lib/libUPnP/Platinum/Source/Platinum/Platinum.h | 7 -------
+ 1 file changed, 7 deletions(-)
+
+diff --git a/lib/libUPnP/Platinum/Source/Platinum/Platinum.h b/lib/libUPnP/Platinum/Source/Platinum/Platinum.h
+index a7f47a6241..970cb8bd95 100644
+--- a/lib/libUPnP/Platinum/Source/Platinum/Platinum.h
++++ b/lib/libUPnP/Platinum/Source/Platinum/Platinum.h
+@@ -108,11 +108,4 @@ cross-platform logging system.
+ #include "PltXbox360.h"
+ #include "PltMediaConnect.h"
+ 
+-#include "PltDownloader.h"
+-#include "PltStreamPump.h"
+-#include "PltFrameBuffer.h"
+-#include "PltFrameServer.h"
+-#include "PltFrameStream.h"
+-#include "PltRingBufferStream.h"
+-
+ #endif /* _PLATINUM_H_ */

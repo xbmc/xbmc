@@ -58,7 +58,6 @@ if(ENABLE_UPNP)
                                                      ${CMAKE_SOURCE_DIR}/lib/libUPnP/Platinum/Source/Devices/MediaConnect
                                                      ${CMAKE_SOURCE_DIR}/lib/libUPnP/Platinum/Source/Devices/MediaRenderer
                                                      ${CMAKE_SOURCE_DIR}/lib/libUPnP/Platinum/Source/Devices/MediaServer
-                                                     ${CMAKE_SOURCE_DIR}/lib/libUPnP/Platinum/Source/Extras
                                                      ${CMAKE_SOURCE_DIR}/lib/libUPnP/Neptune/Source/System/Posix
                                                      ${CMAKE_SOURCE_DIR}/lib/libUPnP/Neptune/Source/Core)
 endif()
