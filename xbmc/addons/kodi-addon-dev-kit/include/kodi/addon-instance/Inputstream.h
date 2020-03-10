@@ -368,6 +368,8 @@ extern "C"
     const char*(__cdecl* get_chapter_name)(const AddonInstance_InputStream* instance, int ch);
     int64_t(__cdecl* get_chapter_pos)(const AddonInstance_InputStream* instance, int ch);
     bool(__cdecl* seek_chapter)(const AddonInstance_InputStream* instance, int ch);
+
+    int(__cdecl* block_size_stream)(const AddonInstance_InputStream* instance);
   } KodiToAddonFuncTable_InputStream;
 
   typedef struct AddonInstance_InputStream /* internal */
@@ -604,6 +606,11 @@ public:
      */
   virtual int64_t LengthStream() { return -1; }
 
+  /*!
+     * @return Obtain the chunk size to use when reading streams.
+     * @remarks Return 0 if this add-on won't provide this function.
+     */
+  virtual int GetBlockSize() { return 0; }
 
   /*!
      * @brief Notify the InputStream addon that Kodi (un)paused the currently playing stream
@@ -707,6 +714,12 @@ private:
       m_instanceData->toAddon.get_chapter_name = ADDON_GetChapterName;
       m_instanceData->toAddon.get_chapter_pos = ADDON_GetChapterPos;
       m_instanceData->toAddon.seek_chapter = ADDON_SeekChapter;
+    }
+
+    int minBlockSizeVersion[3] = {2, 0, 12};
+    if (compareVersion(api, minBlockSizeVersion) >= 0)
+    {
+      m_instanceData->toAddon.block_size_stream = ADDON_GetBlockSize;
     }
   }
 
@@ -882,6 +895,11 @@ private:
   inline static int64_t ADDON_LengthStream(const AddonInstance_InputStream* instance)
   {
     return static_cast<CInstanceInputStream*>(instance->toAddon.addonInstance)->LengthStream();
+  }
+
+  inline static int ADDON_GetBlockSize(const AddonInstance_InputStream* instance)
+  {
+    return static_cast<CInstanceInputStream*>(instance->toAddon.addonInstance)->GetBlockSize();
   }
 
   inline static void ADDON_PauseStream(const AddonInstance_InputStream* instance, double time)

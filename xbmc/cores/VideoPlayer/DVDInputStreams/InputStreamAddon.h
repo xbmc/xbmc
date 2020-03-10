@@ -55,6 +55,7 @@ public:
   int64_t Seek(int64_t offset, int whence) override;
   bool Pause(double dTime) override;
   int64_t GetLength() override;
+  int GetBlockSize() override;
   bool IsEOF() override;
   bool CanSeek() override; //! @todo drop this
   bool CanPause() override;
