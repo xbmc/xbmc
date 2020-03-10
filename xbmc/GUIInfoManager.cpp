@@ -5800,7 +5800,7 @@ const infomap container_str[]  = {{ "property",         CONTAINER_PROPERTY },
 ///   \table_row3{   <b>`ListItem.IsNew`</b>,
 ///                  \anchor ListItem_IsNew
 ///                  _boolean_,
-///     @return **True** if the item is new (for example, a Live TV show that will be first aired).
+///     @return **True** if the item is new (for example\, a Live TV show that will be first aired).
 ///     <p><hr>
 ///     @skinning_v19 **[New Infolabel]** \link ListItem_IsNew `ListItem.IsNew`\endlink
 ///     <p>
