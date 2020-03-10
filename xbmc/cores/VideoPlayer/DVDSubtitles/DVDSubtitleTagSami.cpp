@@ -10,6 +10,8 @@
 
 #include "DVDCodecs/Overlay/DVDOverlayText.h"
 #include "DVDSubtitleStream.h"
+#include "utils/CharsetConverter.h"
+#include "utils/HTMLUtil.h"
 #include "utils/RegExp.h"
 #include "utils/StringUtils.h"
 
@@ -184,6 +186,11 @@ void CDVDSubtitleTagSami::ConvertLine(CDVDOverlayText* pOverlay, const char* lin
 
   if( strUTF8[strUTF8.size()-1] == '\n' )
     strUTF8.erase(strUTF8.size()-1);
+
+  std::wstring wStrHtml, wStr;
+  g_charsetConverter.utf8ToW(strUTF8, wStrHtml, false);
+  HTML::CHTMLUtil::ConvertHTMLToW(wStrHtml, wStr);
+  g_charsetConverter.wToUTF8(wStr, strUTF8);
 
   // add a new text element to our container
   pOverlay->AddElement(new CDVDOverlayText::CElementText(strUTF8.c_str()));
