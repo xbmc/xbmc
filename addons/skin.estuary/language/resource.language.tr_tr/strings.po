@@ -156,6 +156,10 @@ msgctxt "#31036"
 msgid "items"
 msgstr "Öğe"
 
+msgctxt "#31037"
+msgid "Selected track"
+msgstr "Seçilen parça"
+
 msgctxt "#31038"
 msgid "Rewind"
 msgstr "Geri sar"
@@ -259,6 +263,10 @@ msgstr "yazan:"
 msgctxt "#31072"
 msgid "Power Options"
 msgstr "Güç Seçenekleri"
+
+msgctxt "#31073"
+msgid "Total length"
+msgstr "Toplam uzunluk"
 
 msgctxt "#31074"
 msgid "Total duration"
@@ -434,11 +442,11 @@ msgstr "Dış görünüm için fanart paketi seçin"
 
 msgctxt "#31132"
 msgid "Select Program"
-msgstr "Programı Seçiniz"
+msgstr "Program Seçin"
 
 msgctxt "#31133"
 msgid "Select Resolution"
-msgstr "Çözünürlük Seç"
+msgstr "Çözünürlük Seçin"
 
 msgctxt "#31134"
 msgid "Remaining"

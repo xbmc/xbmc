@@ -156,6 +156,10 @@ msgctxt "#31036"
 msgid "items"
 msgstr "itens"
 
+msgctxt "#31037"
+msgid "Selected track"
+msgstr "Faixa selecionada"
+
 msgctxt "#31038"
 msgid "Rewind"
 msgstr "Retroceder"
@@ -259,6 +263,10 @@ msgstr "por"
 msgctxt "#31072"
 msgid "Power Options"
 msgstr "Opções de Energia"
+
+msgctxt "#31073"
+msgid "Total length"
+msgstr "Duração total"
 
 msgctxt "#31074"
 msgid "Total duration"

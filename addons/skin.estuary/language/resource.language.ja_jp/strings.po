@@ -156,6 +156,10 @@ msgctxt "#31036"
 msgid "items"
 msgstr "アイテム"
 
+msgctxt "#31037"
+msgid "Selected track"
+msgstr "選択したトラック"
+
 msgctxt "#31038"
 msgid "Rewind"
 msgstr "巻き戻し"
@@ -259,6 +263,10 @@ msgstr "by"
 msgctxt "#31072"
 msgid "Power Options"
 msgstr "電源オプション"
+
+msgctxt "#31073"
+msgid "Total length"
+msgstr "全長"
 
 msgctxt "#31074"
 msgid "Total duration"

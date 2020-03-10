@@ -156,6 +156,10 @@ msgctxt "#31036"
 msgid "items"
 msgstr "éléments"
 
+msgctxt "#31037"
+msgid "Selected track"
+msgstr "Piste sélectionnée"
+
 msgctxt "#31038"
 msgid "Rewind"
 msgstr "Retour rapide"
@@ -259,6 +263,10 @@ msgstr "par"
 msgctxt "#31072"
 msgid "Power Options"
 msgstr "Options d'alimentation"
+
+msgctxt "#31073"
+msgid "Total length"
+msgstr "Longueur totale"
 
 msgctxt "#31074"
 msgid "Total duration"

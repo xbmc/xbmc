@@ -156,6 +156,10 @@ msgctxt "#31036"
 msgid "items"
 msgstr "항목"
 
+msgctxt "#31037"
+msgid "Selected track"
+msgstr "선택된 트랙"
+
 msgctxt "#31038"
 msgid "Rewind"
 msgstr "되감기"
@@ -259,6 +263,10 @@ msgstr "-"
 msgctxt "#31072"
 msgid "Power Options"
 msgstr "전원 옵션"
+
+msgctxt "#31073"
+msgid "Total length"
+msgstr "총 길이"
 
 msgctxt "#31074"
 msgid "Total duration"

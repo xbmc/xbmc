@@ -156,6 +156,10 @@ msgctxt "#31036"
 msgid "items"
 msgstr "kohdetta"
 
+msgctxt "#31037"
+msgid "Selected track"
+msgstr "Valittu raita"
+
 msgctxt "#31038"
 msgid "Rewind"
 msgstr "Kelaus taaksepäin"
@@ -259,6 +263,10 @@ msgstr "Tekijä:"
 msgctxt "#31072"
 msgid "Power Options"
 msgstr "Virta-asetukset"
+
+msgctxt "#31073"
+msgid "Total length"
+msgstr "Kokonaiskesto"
 
 msgctxt "#31074"
 msgid "Total duration"

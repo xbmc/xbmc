@@ -156,6 +156,10 @@ msgctxt "#31036"
 msgid "items"
 msgstr "елемента"
 
+msgctxt "#31037"
+msgid "Selected track"
+msgstr "Избран запис"
+
 msgctxt "#31038"
 msgid "Rewind"
 msgstr "Превъртане назад"
@@ -259,6 +263,10 @@ msgstr "от"
 msgctxt "#31072"
 msgid "Power Options"
 msgstr "Захранване"
+
+msgctxt "#31073"
+msgid "Total length"
+msgstr "Обща дължина"
 
 msgctxt "#31074"
 msgid "Total duration"

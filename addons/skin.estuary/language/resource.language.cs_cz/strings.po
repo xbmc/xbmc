@@ -156,6 +156,10 @@ msgctxt "#31036"
 msgid "items"
 msgstr "položky"
 
+msgctxt "#31037"
+msgid "Selected track"
+msgstr "Vybraná stopa"
+
 msgctxt "#31038"
 msgid "Rewind"
 msgstr "Přetočit zpět"
@@ -259,6 +263,10 @@ msgstr "od"
 msgctxt "#31072"
 msgid "Power Options"
 msgstr "Možnosti napájení"
+
+msgctxt "#31073"
+msgid "Total length"
+msgstr "Celková délka"
 
 msgctxt "#31074"
 msgid "Total duration"

@@ -156,6 +156,10 @@ msgctxt "#31036"
 msgid "items"
 msgstr "emner"
 
+msgctxt "#31037"
+msgid "Selected track"
+msgstr "Valgt nummer"
+
 msgctxt "#31038"
 msgid "Rewind"
 msgstr "Spol tilbage"
@@ -259,6 +263,10 @@ msgstr "af"
 msgctxt "#31072"
 msgid "Power Options"
 msgstr "Strømstyring"
+
+msgctxt "#31073"
+msgid "Total length"
+msgstr "Total længde"
 
 msgctxt "#31074"
 msgid "Total duration"
