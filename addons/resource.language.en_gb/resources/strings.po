@@ -21379,7 +21379,7 @@ msgctxt "#38079"
 msgid "Original date"
 msgstr ""
 
-#. Music property - Beats Per Minute 
+#. Music property - Beats Per Minute
 #: xbmc/utils/SortUtils.cpp
 #: xbmc/music/GUIViewStateMusic.cpp
 #: xbmc/playlists/SmartPlaylist.cpp
