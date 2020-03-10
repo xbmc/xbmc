@@ -164,7 +164,7 @@
 					<wrapmultiline>true</wrapmultiline>
 					<animation effect="fade" time="200">VisibleChange</animation>
 					<label>$INFO[Player.TimeRemaining,[COLOR button_focus]$LOCALIZE[31134]:[CR][/COLOR]]</label>
-					<visible>![Player.ShowInfo | Window.IsVisible(playerprocessinfo) | VideoPlayer.HasEpg]</visible>
+					<visible>![Player.ShowInfo | Window.IsVisible(playerprocessinfo) | VideoPlayer.HasEpg] + !Window.IsActive(fullscreeninfo)</visible>
 				</control>
 				<control type="label">
 					<top>110</top>
@@ -177,7 +177,7 @@
 					<wrapmultiline>true</wrapmultiline>
 					<animation effect="fade" time="200">VisibleChange</animation>
 					<label>$INFO[PVR.EpgEventRemainingTime,[COLOR button_focus]$LOCALIZE[31134]:[CR][/COLOR]]</label>
-					<visible>![Player.ShowInfo | Window.IsVisible(playerprocessinfo)] + VideoPlayer.HasEpg</visible>
+					<visible>![Player.ShowInfo | Window.IsVisible(playerprocessinfo)] + VideoPlayer.HasEpg + !Window.IsActive(fullscreeninfo)</visible>
 				</control>
 			</control>
 			<control type="label">
