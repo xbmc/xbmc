@@ -52,20 +52,31 @@ bool CPosixUDPSocket::Bind(bool localOnly, int port, int range)
         m_addr = CAddress("::");
 
         SOCKET testSocket = socket(AF_INET6, SOCK_DGRAM, IPPROTO_UDP);
-        setsockopt(testSocket, IPPROTO_IPV6, IPV6_V6ONLY, &zero, sizeof(&zero));
-        // Try to bind a socket to validate ipv6 status
-        for (m_iPort = port; m_iPort <= port + range; ++m_iPort)
+        if (testSocket != INVALID_SOCKET)
         {
-          m_addr.saddr.saddr6.sin6_port = htons(m_iPort);
-          if (bind(testSocket, (struct sockaddr*)&m_addr.saddr, m_addr.size) >= 0)
+          setsockopt(testSocket, IPPROTO_IPV6, IPV6_V6ONLY, &zero, sizeof(&zero));
+          // Try to bind a socket to validate ipv6 status
+          for (m_iPort = port; m_iPort <= port + range; ++m_iPort)
           {
-            m_ipv6Socket = true;
-            break;
+            m_addr.saddr.saddr6.sin6_port = htons(m_iPort);
+            if (bind(testSocket, reinterpret_cast<struct sockaddr*>(&m_addr.saddr), m_addr.size) >= 0)
+            {
+              m_ipv6Socket = true;
+              break;
+            }
           }
+          if (!m_ipv6Socket)
+          {
+            CLog::Log(LOGWARNING, "UDP: Unable to bind to advertised ipv6, fallback to ipv4");
+            close(m_iSock);
+            m_iSock = INVALID_SOCKET;
+          }
+
+          closesocket(testSocket);
         }
-        if (!m_ipv6Socket)
+        else
         {
-          CLog::Log(LOGWARNING, "UDP: Unable to bind to advertised ipv6, fallback to ipv4");
+          CLog::Log(LOGWARNING, "UDP: Could not create testSocket");
           close(m_iSock);
           m_iSock = INVALID_SOCKET;
         }
