@@ -200,6 +200,14 @@ int64_t CInputStreamAddon::GetLength()
   return m_struct.toAddon.length_stream(&m_struct);
 }
 
+int CInputStreamAddon::GetBlockSize()
+{
+  if (!m_struct.toAddon.block_size_stream)
+    return 0;
+
+  return m_struct.toAddon.block_size_stream(&m_struct);
+}
+
 bool CInputStreamAddon::Pause(double time)
 {
   if (!m_struct.toAddon.pause_stream)
