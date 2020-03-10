@@ -79,9 +79,19 @@
 			<visible>!String.IsEmpty(ListItem.Property(Album_Type))</visible>
 		</item>
 		<item>
+			<label>$LOCALIZE[172]:</label>
+			<label2>$INFO[ListItem.ReleaseDate]</label2>
+			<visible>!String.IsEmpty(ListItem.ReleaseDate)</visible>
+		</item>
+		<item>
+			<label>$LOCALIZE[38079]:</label>
+			<label2>$INFO[ListItem.OriginalDate]</label2>
+			<visible>!String.IsEmpty(ListItem.OriginalDate) + !String.IsEqual(ListItem.ReleaseDate, ListItem.OriginalDate)</visible>
+		</item>
+		<item>
 			<label>$LOCALIZE[562]:</label>
 			<label2>$INFO[ListItem.Year]</label2>
-			<visible>!String.IsEmpty(ListItem.Year)</visible>
+			<visible>!String.IsEmpty(ListItem.Year) + String.IsEmpty(ListItem.ReleaseDate) + String.IsEmpty(ListItem.OriginalDate)</visible>
 		</item>
 		<item>
 			<label>$LOCALIZE[515]:</label>
@@ -161,14 +171,29 @@
 			<visible>!String.IsEmpty(ListItem.Mood)</visible>
 		</item>
 		<item>
+			<label>$LOCALIZE[172]:</label>
+			<label2>$INFO[ListItem.ReleaseDate]</label2>
+			<visible>!String.IsEmpty(ListItem.ReleaseDate)</visible>
+		</item>
+		<item>
+			<label>$LOCALIZE[38079]:</label>
+			<label2>$INFO[ListItem.OriginalDate]</label2>
+			<visible>!String.IsEmpty(ListItem.OriginalDate) + !String.IsEqual(ListItem.ReleaseDate, ListItem.OriginalDate)</visible>
+		</item>
+		<item>
 			<label>$LOCALIZE[562]:</label>
 			<label2>$INFO[ListItem.Year]</label2>
-			<visible>!String.IsEmpty(ListItem.Year)</visible>
+			<visible>!String.IsEmpty(ListItem.Year) + String.IsEmpty(ListItem.ReleaseDate) + String.IsEmpty(ListItem.OriginalDate)</visible>
 		</item>
 		<item>
 			<label>$LOCALIZE[554]:</label>
 			<label2>$INFO[ListItem.TrackNumber]</label2>
 			<visible>!String.IsEmpty(ListItem.TrackNumber)</visible>
+		</item>
+		<item>
+			<label>$LOCALIZE[38080]:</label>
+			<label2>$INFO[ListItem.Bpm]</label2>
+			<visible>!String.IsEmpty(ListItem.Bpm)</visible>
 		</item>
 		<item>
 			<label>$LOCALIZE[563]:</label>
