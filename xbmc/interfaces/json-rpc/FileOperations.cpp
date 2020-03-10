@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2018 Team Kodi
+ *  Copyright (C) 2005-2020 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -7,21 +7,23 @@
  */
 
 #include "FileOperations.h"
-#include "VideoLibrary.h"
+
 #include "AudioLibrary.h"
+#include "FileItem.h"
 #include "MediaSource.h"
 #include "ServiceBroker.h"
+#include "URL.h"
+#include "Util.h"
+#include "VideoLibrary.h"
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"
-#include "FileItem.h"
+#include "media/MediaLockState.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/MediaSourceSettings.h"
 #include "settings/SettingsComponent.h"
-#include "Util.h"
-#include "URL.h"
 #include "utils/FileExtensionProvider.h"
-#include "utils/URIUtils.h"
 #include "utils/FileUtils.h"
+#include "utils/URIUtils.h"
 #include "utils/Variant.h"
 #include "video/VideoDatabase.h"
 
@@ -40,7 +42,7 @@ JSONRPC_STATUS CFileOperations::GetRootDirectory(const std::string &method, ITra
     for (unsigned int i = 0; i < (unsigned int)sources->size(); i++)
     {
       // Do not show sources which are locked
-      if (sources->at(i).m_iHasLock == 2)
+      if (sources->at(i).m_iHasLock == LOCK_STATE_LOCKED)
         continue;
 
       items.Add(CFileItemPtr(new CFileItem(sources->at(i))));

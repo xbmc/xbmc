@@ -1,41 +1,43 @@
 /*
- *  Copyright (C) 2005-2018 Team Kodi
+ *  Copyright (C) 2005-2020 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
  *  See LICENSES/README.md for more information.
  */
 
-#include "threads/SystemClock.h"
 #include "GUIWindowPictures.h"
+
+#include "Application.h"
+#include "Autorun.h"
+#include "GUIDialogPictureInfo.h"
+#include "GUIPassword.h"
+#include "GUIWindowSlideShow.h"
+#include "PictureInfoLoader.h"
+#include "PlayListPlayer.h"
 #include "ServiceBroker.h"
 #include "URL.h"
 #include "Util.h"
-#include "Application.h"
-#include "GUIPassword.h"
-#include "GUIDialogPictureInfo.h"
 #include "addons/GUIDialogAddonInfo.h"
 #include "dialogs/GUIDialogMediaSource.h"
 #include "dialogs/GUIDialogProgress.h"
-#include "playlists/PlayListFactory.h"
-#include "PictureInfoLoader.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
-#include "view/GUIViewState.h"
+#include "interfaces/AnnouncementManager.h"
+#include "media/MediaLockState.h"
 #include "messaging/helpers/DialogOKHelper.h"
-#include "PlayListPlayer.h"
 #include "playlists/PlayList.h"
+#include "playlists/PlayListFactory.h"
 #include "settings/MediaSourceSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
-#include "utils/log.h"
-#include "utils/URIUtils.h"
-#include "utils/Variant.h"
-#include "Autorun.h"
-#include "interfaces/AnnouncementManager.h"
+#include "threads/SystemClock.h"
 #include "utils/SortUtils.h"
 #include "utils/StringUtils.h"
-#include "GUIWindowSlideShow.h"
+#include "utils/URIUtils.h"
+#include "utils/Variant.h"
+#include "utils/log.h"
+#include "view/GUIViewState.h"
 
 #ifdef TARGET_POSIX
 #include "platform/linux/XTimeUtils.h"
@@ -602,7 +604,7 @@ std::string CGUIWindowPictures::GetStartFolder(const std::string &dir)
   int iIndex = CUtil::GetMatchingSource(dir, shares, bIsSourceName);
   if (iIndex > -1)
   {
-    if (iIndex < (int)shares.size() && shares[iIndex].m_iHasLock == 2)
+    if (iIndex < static_cast<int>(shares.size()) && shares[iIndex].m_iHasLock == LOCK_STATE_LOCKED)
     {
       CFileItem item(shares[iIndex]);
       if (!g_passwordManager.IsItemUnlocked(&item,"pictures"))

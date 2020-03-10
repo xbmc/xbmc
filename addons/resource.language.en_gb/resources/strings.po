@@ -5753,7 +5753,7 @@ msgstr ""
 #: xbmc/dialogs/GUIDialogGamepad.cpp
 #: xbmc/dialogs/GUIDialogNumeric.cpp
 msgctxt "#12343"
-msgid "retries left "
+msgid "retries left"
 msgstr ""
 
 #: xbmc/dialogs/GUIDialogGamepad.cpp

@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2011-2018 Team Kodi
+ *  Copyright (C) 2011-2020 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -11,6 +11,7 @@
 #include "URL.h"
 #include "Util.h"
 #include "filesystem/File.h"
+#include "media/MediaLockState.h"
 #include "network/WebServer.h"
 #include "settings/MediaSourceSettings.h"
 #include "storage/MediaManager.h"
@@ -52,7 +53,7 @@ CHTTPVfsHandler::CHTTPVfsHandler(const HTTPRequest &request)
           for (VECSOURCES::const_iterator source = sources->begin(); source != sources->end() && !accessible; ++source)
           {
             // don't allow access to locked / disabled sharing sources
-            if (source->m_iHasLock == 2 || !source->m_allowSharing)
+            if (source->m_iHasLock == LOCK_STATE_LOCKED || !source->m_allowSharing)
               continue;
 
             for (std::vector<std::string>::const_iterator path = source->vecPaths.begin(); path != source->vecPaths.end(); ++path)
@@ -74,8 +75,8 @@ CHTTPVfsHandler::CHTTPVfsHandler(const HTTPRequest &request)
             g_mediaManager.GetRemovableDrives(removableSources);
             int sourceIndex = CUtil::GetMatchingSource(realPath, removableSources, isSource);
             if (sourceIndex >= 0 && sourceIndex < static_cast<int>(removableSources.size()) &&
-              removableSources.at(sourceIndex).m_iHasLock != 2 &&
-              removableSources.at(sourceIndex).m_allowSharing)
+                removableSources.at(sourceIndex).m_iHasLock != LOCK_STATE_LOCKED &&
+                removableSources.at(sourceIndex).m_allowSharing)
               accessible = true;
           }
         }

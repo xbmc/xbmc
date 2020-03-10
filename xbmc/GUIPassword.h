@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2018 Team Kodi
+ *  Copyright (C) 2005-2020 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -25,7 +25,22 @@ class CGUIPassword : public ISettingCallback
 public:
   CGUIPassword(void);
   ~CGUIPassword(void) override;
+  template<typename T>
+  bool IsItemUnlocked(T pItem,
+                      const std::string& strType,
+                      const std::string& strLabel,
+                      const std::string& strHeading);
+  /*! \brief Tests if the user is allowed to access the share folder
+   \param pItem The share folder item to access
+   \param strType The type of share being accessed, e.g. "music", "video", etc. See CSettings::UpdateSources()
+   \return If access is granted, returns \e true
+   */
   bool IsItemUnlocked(CFileItem* pItem, const std::string &strType);
+  /*! \brief Tests if the user is allowed to access the Mediasource
+   \param pItem The share folder item to access
+   \param strType The type of share being accessed, e.g. "music", "video", etc. See CSettings::UpdateSources()
+   \return If access is granted, returns \e true
+   */
   bool IsItemUnlocked(CMediaSource* pItem, const std::string &strType);
   bool CheckLock(LockType btnType, const std::string& strPassword, int iHeading);
   bool CheckLock(LockType btnType, const std::string& strPassword, int iHeading, bool& bCanceled);
@@ -49,11 +64,18 @@ public:
   void LockSources(bool lock);
   void RemoveSourceLocks();
   bool IsDatabasePathUnlocked(const std::string& strPath, VECSOURCES& vecSources);
+  /*! \brief Tests if the user is allowed to access the path by looking up the matching Mediasource
+   \param strPath The folder path to access
+   \param strType The type of share being accessed, e.g. "music", "video", etc. See CSettings::UpdateSources()
+   \return If access is granted, returns \e true
+   */
+  bool IsMediaPathUnlocked(const std::string& strPath, const std::string& strType);
 
   void OnSettingAction(std::shared_ptr<const CSetting> setting) override;
 
   bool bMasterUser;
   int iMasterLockRetriesLeft;
+  std::string strMediasourcePath;
 
 private:
   int VerifyPassword(LockType btnType, const std::string& strPassword, const std::string& strHeading);

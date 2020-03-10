@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2018 Team Kodi
+ *  Copyright (C) 2005-2020 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -7,13 +7,15 @@
  */
 
 #include "PlayListXML.h"
-#include "filesystem/File.h"
+
 #include "Util.h"
-#include "utils/log.h"
+#include "filesystem/File.h"
+#include "media/MediaLockState.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
-#include "utils/XMLUtils.h"
 #include "utils/Variant.h"
+#include "utils/XMLUtils.h"
+#include "utils/log.h"
 
 using namespace PLAYLIST;
 using namespace XFILE;
@@ -135,7 +137,7 @@ bool CPlayListXML::Load( const std::string& strFileName )
        if ( !lockpass.empty() )
        {
          newItem->m_strLockCode = lockpass;
-         newItem->m_iHasLock = 2;
+         newItem->m_iHasLock = LOCK_STATE_LOCKED;
          newItem->m_iLockMode = LOCK_MODE_NUMERIC;
        }
 
@@ -180,7 +182,7 @@ void CPlayListXML::Save(const std::string& strFileName) const
     if ( !item->GetProperty("remotechannel").empty() )
       write += StringUtils::Format("    <channel>%s</channel>", item->GetProperty("remotechannel").c_str() );
 
-    if ( item->m_iHasLock > 0 )
+    if (item->m_iHasLock > LOCK_STATE_NO_LOCK)
       write += StringUtils::Format("    <lockpassword>%s<lockpassword>", item->m_strLockCode.c_str() );
 
     write += StringUtils::Format("  </stream>\n\n" );

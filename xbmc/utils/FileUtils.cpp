@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2010-2018 Team Kodi
+ *  Copyright (C) 2010-2020 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -7,24 +7,26 @@
  */
 
 #include "FileUtils.h"
-#include "ServiceBroker.h"
-#include "guilib/GUIKeyboardFactory.h"
-#include "utils/log.h"
-#include "guilib/LocalizeStrings.h"
-#include "JobManager.h"
+
 #include "FileOperationJob.h"
+#include "JobManager.h"
+#include "ServiceBroker.h"
+#include "StringUtils.h"
 #include "URIUtils.h"
+#include "URL.h"
+#include "Util.h"
 #include "filesystem/MultiPathDirectory.h"
 #include "filesystem/SpecialProtocol.h"
 #include "filesystem/StackDirectory.h"
+#include "guilib/GUIKeyboardFactory.h"
+#include "guilib/LocalizeStrings.h"
+#include "media/MediaLockState.h"
 #include "settings/MediaSourceSettings.h"
-#include "Util.h"
-#include "StringUtils.h"
-#include "URL.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "storage/MediaManager.h"
 #include "utils/Variant.h"
+#include "utils/log.h"
 
 #if defined(TARGET_WINDOWS)
 #include "platform/win32/WIN32Util.h"
@@ -144,7 +146,9 @@ bool CFileUtils::RemoteAccessAllowed(const std::string &strPath)
   {
     VECSOURCES* sources = CMediaSourceSettings::GetInstance().GetSources(sourceName);
     int sourceIndex = CUtil::GetMatchingSource(realPath, *sources, isSource);
-    if (sourceIndex >= 0 && sourceIndex < (int)sources->size() && sources->at(sourceIndex).m_iHasLock != 2 && sources->at(sourceIndex).m_allowSharing)
+    if (sourceIndex >= 0 && sourceIndex < static_cast<int>(sources->size()) &&
+        sources->at(sourceIndex).m_iHasLock != LOCK_STATE_LOCKED &&
+        sources->at(sourceIndex).m_allowSharing)
       return true;
   }  
   // Check auto-mounted sources
@@ -152,8 +156,9 @@ bool CFileUtils::RemoteAccessAllowed(const std::string &strPath)
   g_mediaManager.GetRemovableDrives(sources);   // Sources returned allways have m_allowsharing = true
   //! @todo Make sharing of auto-mounted sources user configurable
   int sourceIndex = CUtil::GetMatchingSource(realPath, sources, isSource);
-  if (sourceIndex >= 0 && sourceIndex < static_cast<int>(sources.size()) && 
-      sources.at(sourceIndex).m_iHasLock != 2 && sources.at(sourceIndex).m_allowSharing)
+  if (sourceIndex >= 0 && sourceIndex < static_cast<int>(sources.size()) &&
+      sources.at(sourceIndex).m_iHasLock != LOCK_STATE_LOCKED &&
+      sources.at(sourceIndex).m_allowSharing)
     return true;
 
   return false;

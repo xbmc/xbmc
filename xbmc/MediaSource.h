@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2018 Team Kodi
+ *  Copyright (C) 2005-2020 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -8,9 +8,11 @@
 
 #pragma once
 
+#include "LockType.h"
+#include "media/MediaLockState.h"
+
 #include <string>
 #include <vector>
-#include "LockType.h"
 
 /*!
 \ingroup windows
@@ -78,7 +80,7 @@ public:
   */
   LockType m_iLockMode = LOCK_MODE_EVERYONE;
   std::string m_strLockCode;  ///< Input code for Lock UI to verify, can be chosen freely.
-  int m_iHasLock = 0;
+  int m_iHasLock = LOCK_STATE_NO_LOCK;
   int m_iBadPwdCount = 0; ///< Number of wrong passwords user has entered since share was last unlocked
 
   std::string m_strThumbnailImage; ///< Path to a thumbnail image for the share, or blank for default
