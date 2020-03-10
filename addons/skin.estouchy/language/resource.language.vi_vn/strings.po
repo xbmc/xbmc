@@ -48,9 +48,33 @@ msgctxt "#31013"
 msgid "Movies"
 msgstr "Phim"
 
+msgctxt "#31014"
+msgid "Episodes"
+msgstr "Tập"
+
 msgctxt "#31016"
 msgid "Albums"
 msgstr "Album"
+
+msgctxt "#31017"
+msgid "PVR info"
+msgstr "Thông tin PVR"
+
+msgctxt "#31018"
+msgid "Player process info"
+msgstr "Thông tin trình phát"
+
+msgctxt "#31019"
+msgid "Video decoder"
+msgstr "Bộ giải mã video"
+
+msgctxt "#31020"
+msgid "Pixel format"
+msgstr "Định dạng điểm ảnh"
+
+msgctxt "#31021"
+msgid "System memory usage"
+msgstr "Sử dụng bộ nhớ hệ thống"
 
 msgctxt "#31024"
 msgid "Page"
@@ -75,6 +99,10 @@ msgstr "TUA NHANH"
 msgctxt "#31045"
 msgid "REWIND"
 msgstr "TUA LÙI"
+
+msgctxt "#31046"
+msgid "Play speed"
+msgstr "Tốc độ phát"
 
 msgctxt "#31049"
 msgid "End Time"
@@ -179,6 +207,10 @@ msgstr "TV trực tuyến"
 msgctxt "#31559"
 msgid "Channel settings"
 msgstr "Cài đặt kênh"
+
+msgctxt "#31560"
+msgid "Available groups"
+msgstr "Nhóm có sẵn"
 
 msgctxt "#31561"
 msgid "Add Group"
