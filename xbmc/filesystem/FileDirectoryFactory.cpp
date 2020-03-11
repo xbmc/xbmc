@@ -88,7 +88,7 @@ IFileDirectory* CFileDirectoryFactory::Create(const CURL& url, CFileItem* pItem,
             else
             {
               // compressed or more than one file -> create a dir
-              *pItem = wrap->m_items;
+              pItem->SetPath(wrap->m_items.GetPath());
             }
 
             // Check for folder, if yes return also wrap.
