@@ -765,3 +765,8 @@ msgstr ""
 msgctxt "#31167"
 msgid "Animate background"
 msgstr ""
+
+#: /xml/SkinSettings.xml
+msgctxt "#31168"
+msgid "Display as a list"
+msgstr ""

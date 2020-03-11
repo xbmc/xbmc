@@ -232,6 +232,13 @@
 					<selected>!Skin.HasSetting(HomeMenuNoFavButton)</selected>
 					<onclick>Skin.ToggleSetting(HomeMenuNoFavButton)</onclick>
 				</control>
+				<control type="radiobutton" id="6161">
+					<label>- $LOCALIZE[31168]</label>
+					<include>DefaultSettingButton</include>
+					<selected>Skin.HasSetting(DisplayFavouritesAsList)</selected>
+					<onclick>Skin.ToggleSetting(DisplayFavouritesAsList)</onclick>
+					<enable>!Skin.HasSetting(HomeMenuNoFavButton)</enable>
+				</control>
 				<control type="radiobutton" id="617">
 					<label>$LOCALIZE[8]</label>
 					<include>DefaultSettingButton</include>
