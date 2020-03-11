@@ -10,7 +10,8 @@ Several other distributions have **[specific build guides](README.md)** and a ge
 2. **[Get the source code](#2-get-the-source-code)**
 3. **[Install the required packages](#3-install-the-required-packages)**  
   3.1. **[Get build dependencies automagically](#31-get-build-dependencies-automagically)**  
-  3.2. **[Get build dependencies manually](#32-get-build-dependencies-manually)**
+  3.2. **[Get build dependencies manually](#32-get-build-dependencies-manually)**   
+  3.3. **[Ubuntu <= 18.04](#33-ubuntu--1804)**
 4. **[Build Kodi](#4-build-kodi)**
 
 ## 1. Document conventions
@@ -146,6 +147,28 @@ sudo apt install doxygen libcap-dev libsndio-dev libmariadbd-dev
 ```
 
 **[back to top](#table-of-contents)**
+
+### 3.3 Ubuntu <= 18.04
+Ubuntu 18.04 and lower ship an outdated [Meson](https://mesonbuild.com/) and [nasm](https://nasm.us/) package. 
+In order to compile Kodi with AV1 support, you have to manually update both Meson and nasm.
+
+> This is a requirement by the [dav1d](https://code.videolan.org/videolan/dav1d) AV1 decoder used in ffmpeg.
+
+#### Meson
+```
+pip3 install --user meson
+```
+
+Make sure `~/.local/bin` is in your PATH.
+
+Verify your Meson version by running `meson -v`. The version displayed should be >= 0.47.0.
+
+#### nasm (x86_64 / amd64)
+```
+wget https://mirrors.edge.kernel.org/ubuntu/pool/universe/n/nasm/nasm_2.14-1_amd64.deb && sudo apt install ./nasm_2.14-1_amd64.deb
+```
+
+Verify your nasm version by running `nasm -v`. The version displayed should be >= 2.14.
 
 ## 4. Build Kodi
 See the general **[Linux build guide](README.Linux.md)** for reference.
