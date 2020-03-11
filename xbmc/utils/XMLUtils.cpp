@@ -67,7 +67,7 @@ bool XMLUtils::GetInt(const TiXmlNode* pRootNode, const char* strTag, int &value
   return false;
 }
 
-bool XMLUtils::GetDouble(const TiXmlNode *root, const char *tag, double &value)
+bool XMLUtils::GetDouble(const TiXmlNode* root, const char* tag, double& value)
 {
   const TiXmlNode* node = root->FirstChild(tag);
   if (!node || !node->FirstChild()) return false;
@@ -303,6 +303,12 @@ void XMLUtils::SetLong(TiXmlNode* pRootNode, const char *strTag, long value)
 TiXmlNode* XMLUtils::SetFloat(TiXmlNode* pRootNode, const char *strTag, float value)
 {
   std::string strValue = StringUtils::Format("%f", value);
+  return SetString(pRootNode, strTag, strValue);
+}
+
+TiXmlNode* XMLUtils::SetDouble(TiXmlNode* pRootNode, const char* strTag, double value)
+{
+  std::string strValue = StringUtils::Format("%lf", value);
   return SetString(pRootNode, strTag, strValue);
 }
 

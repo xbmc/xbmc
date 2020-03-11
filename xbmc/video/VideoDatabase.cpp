@@ -2290,8 +2290,8 @@ bool CVideoDatabase::GetFileInfo(const std::string& strFilenameAndPath, CVideoIn
       details.m_dateAdded.SetFromDBDateTime(m_pDS->fv("files.dateAdded").get_asString());
     if (!details.GetResumePoint().IsSet())
     {
-      details.SetResumePoint(m_pDS->fv("bookmark.timeInSeconds").get_asInt(),
-                             m_pDS->fv("bookmark.totalTimeInSeconds").get_asInt(),
+      details.SetResumePoint(m_pDS->fv("bookmark.timeInSeconds").get_asDouble(),
+                             m_pDS->fv("bookmark.totalTimeInSeconds").get_asDouble(),
                              m_pDS->fv("bookmark.playerState").get_asString());
     }
 
