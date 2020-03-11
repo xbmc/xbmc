@@ -82,31 +82,31 @@ char* Interface_General::get_addon_info(void* kodiBase, const char* id)
   }
 
   std::string str;
-  if (strcmpi(id, "author") == 0)
+  if (StringUtils::CompareNoCase(id, "author") == 0)
     str = addon->Author();
-  else if (strcmpi(id, "changelog") == 0)
+  else if (StringUtils::CompareNoCase(id, "changelog") == 0)
     str = addon->ChangeLog();
-  else if (strcmpi(id, "description") == 0)
+  else if (StringUtils::CompareNoCase(id, "description") == 0)
     str = addon->Description();
-  else if (strcmpi(id, "disclaimer") == 0)
+  else if (StringUtils::CompareNoCase(id, "disclaimer") == 0)
     str = addon->Disclaimer();
-  else if (strcmpi(id, "fanart") == 0)
+  else if (StringUtils::CompareNoCase(id, "fanart") == 0)
     str = addon->FanArt();
-  else if (strcmpi(id, "icon") == 0)
+  else if (StringUtils::CompareNoCase(id, "icon") == 0)
     str = addon->Icon();
-  else if (strcmpi(id, "id") == 0)
+  else if (StringUtils::CompareNoCase(id, "id") == 0)
     str = addon->ID();
-  else if (strcmpi(id, "name") == 0)
+  else if (StringUtils::CompareNoCase(id, "name") == 0)
     str = addon->Name();
-  else if (strcmpi(id, "path") == 0)
+  else if (StringUtils::CompareNoCase(id, "path") == 0)
     str = addon->Path();
-  else if (strcmpi(id, "profile") == 0)
+  else if (StringUtils::CompareNoCase(id, "profile") == 0)
     str = addon->Profile();
-  else if (strcmpi(id, "summary") == 0)
+  else if (StringUtils::CompareNoCase(id, "summary") == 0)
     str = addon->Summary();
-  else if (strcmpi(id, "type") == 0)
+  else if (StringUtils::CompareNoCase(id, "type") == 0)
     str = ADDON::CAddonInfo::TranslateType(addon->Type());
-  else if (strcmpi(id, "version") == 0)
+  else if (StringUtils::CompareNoCase(id, "version") == 0)
     str = addon->Version().asString();
   else
   {
@@ -338,7 +338,7 @@ char* Interface_General::get_region(void* kodiBase, const char* id)
   }
 
   std::string result;
-  if (strcmpi(id, "datelong") == 0)
+  if (StringUtils::CompareNoCase(id, "datelong") == 0)
   {
     result = g_langInfo.GetDateFormat(true);
     StringUtils::Replace(result, "DDDD", "%A");
@@ -346,7 +346,7 @@ char* Interface_General::get_region(void* kodiBase, const char* id)
     StringUtils::Replace(result, "D", "%d");
     StringUtils::Replace(result, "YYYY", "%Y");
   }
-  else if (strcmpi(id, "dateshort") == 0)
+  else if (StringUtils::CompareNoCase(id, "dateshort") == 0)
   {
     result = g_langInfo.GetDateFormat(false);
     StringUtils::Replace(result, "MM", "%m");
@@ -360,11 +360,11 @@ char* Interface_General::get_region(void* kodiBase, const char* id)
 #endif
     StringUtils::Replace(result, "YYYY", "%Y");
   }
-  else if (strcmpi(id, "tempunit") == 0)
+  else if (StringUtils::CompareNoCase(id, "tempunit") == 0)
     result = g_langInfo.GetTemperatureUnitString();
-  else if (strcmpi(id, "speedunit") == 0)
+  else if (StringUtils::CompareNoCase(id, "speedunit") == 0)
     result = g_langInfo.GetSpeedUnitString();
-  else if (strcmpi(id, "time") == 0)
+  else if (StringUtils::CompareNoCase(id, "time") == 0)
   {
     result = g_langInfo.GetTimeFormat();
     StringUtils::Replace(result, "H", "%H");
@@ -373,7 +373,7 @@ char* Interface_General::get_region(void* kodiBase, const char* id)
     StringUtils::Replace(result, "ss", "%S");
     StringUtils::Replace(result, "xx", "%p");
   }
-  else if (strcmpi(id, "meridiem") == 0)
+  else if (StringUtils::CompareNoCase(id, "meridiem") == 0)
     result = StringUtils::Format("%s/%s",
                                   g_langInfo.GetMeridiemSymbol(MeridiemSymbolAM).c_str(),
                                   g_langInfo.GetMeridiemSymbol(MeridiemSymbolPM).c_str());

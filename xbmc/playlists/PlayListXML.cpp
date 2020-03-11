@@ -86,7 +86,7 @@ bool CPlayListXML::Load( const std::string& strFileName )
   TiXmlElement *pRootElement = xmlDoc.RootElement();
 
   // If the stream does not contain "streams", still ok. Not an error.
-  if ( !pRootElement || stricmp( pRootElement->Value(), "streams" ) )
+  if (!pRootElement || StringUtils::CompareNoCase(pRootElement->Value(), "streams"))
   {
     CLog::Log(LOGERROR, "Playlist %s has no <streams> root", strFileName.c_str());
     return false;

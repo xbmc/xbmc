@@ -1595,19 +1595,20 @@ extern "C"
   //SLOW CODE SHOULD BE REVISED
   int dll_stat(const char *path, struct stat *buffer)
   {
-    if (!strnicmp(path, "shout://", 8)) // don't stat shoutcast
+    if (!StringUtils::CompareNoCase(path, "shout://", 8)) // don't stat shoutcast
       return -1;
-    if (!strnicmp(path, "mms://", 6)) // don't stat mms
+    if (!StringUtils::CompareNoCase(path, "mms://", 6)) // don't stat mms
       return -1;
 
 #ifdef TARGET_POSIX
-    if (!_stricmp(path, "D:") || !_stricmp(path, "D:\\"))
+    if (!StringUtils::CompareNoCase(path, "D:") || !StringUtils::CompareNoCase(path, "D:\\"))
     {
       buffer->st_mode = S_IFDIR;
       return 0;
     }
 #endif
-    if (!stricmp(path, "\\Device\\Cdrom0") || !stricmp(path, "\\Device\\Cdrom0\\"))
+    if (!StringUtils::CompareNoCase(path, "\\Device\\Cdrom0") ||
+        !StringUtils::CompareNoCase(path, "\\Device\\Cdrom0\\"))
     {
       buffer->st_mode = _S_IFDIR;
       return 0;
@@ -1638,19 +1639,20 @@ extern "C"
 
   int dll_stat64(const char *path, struct __stat64 *buffer)
   {
-    if (!strnicmp(path, "shout://", 8)) // don't stat shoutcast
+    if (!StringUtils::CompareNoCase(path, "shout://", 8)) // don't stat shoutcast
       return -1;
-    if (!strnicmp(path, "mms://", 6)) // don't stat mms
+    if (!StringUtils::CompareNoCase(path, "mms://", 6)) // don't stat mms
       return -1;
 
 #ifdef TARGET_POSIX
-    if (!_stricmp(path, "D:") || !_stricmp(path, "D:\\"))
+    if (!StringUtils::CompareNoCase(path, "D:") || !StringUtils::CompareNoCase(path, "D:\\"))
     {
       buffer->st_mode = _S_IFDIR;
       return 0;
     }
 #endif
-    if (!stricmp(path, "\\Device\\Cdrom0") || !stricmp(path, "\\Device\\Cdrom0\\"))
+    if (!StringUtils::CompareNoCase(path, "\\Device\\Cdrom0") ||
+        !StringUtils::CompareNoCase(path, "\\Device\\Cdrom0\\"))
     {
       buffer->st_mode = _S_IFDIR;
       return 0;
@@ -1838,7 +1840,7 @@ extern "C"
             if (dll__environ[i] != NULL)
             {
               // we only support overwriting the old values
-              if (strnicmp(dll__environ[i], var, strlen(var)) == 0)
+              if (StringUtils::CompareNoCase(dll__environ[i], var, strlen(var)) == 0)
               {
                 // free it first
                 free(dll__environ[i]);
@@ -1889,7 +1891,7 @@ extern "C"
       {
         if (dll__environ[i])
         {
-          if (strnicmp(dll__environ[i], szKey, strlen(szKey)) == 0)
+          if (StringUtils::CompareNoCase(dll__environ[i], szKey, strlen(szKey)) == 0)
           {
             // found it
             value = dll__environ[i] + strlen(szKey) + 1;

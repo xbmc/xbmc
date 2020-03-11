@@ -170,7 +170,7 @@ char* Cocoa_MountPoint2DeviceName(char *path)
   // path will get realloc'ed and replaced IF this is a physical DVD.
   char* strDVDDevice;
   strDVDDevice = strdup(path);
-  if (strncasecmp(strDVDDevice, "/Volumes/", 9) == 0)
+  if (StringUtils::CompareNoCase(strDVDDevice, "/Volumes/", 9) == 0)
   {
     struct statfs *mntbufp;
     int i, mounts;
@@ -179,7 +179,7 @@ char* Cocoa_MountPoint2DeviceName(char *path)
     mounts = getmntinfo(&mntbufp, MNT_WAIT);  // NOT THREAD SAFE!
     for (i = 0; i < mounts; i++)
     {
-      if( !strcasecmp(mntbufp[i].f_mntonname, strDVDDevice) )
+      if (!StringUtils::CompareNoCase(mntbufp[i].f_mntonname, strDVDDevice))
       {
         // Replace "/dev/" with "/dev/r"
         path = (char*)realloc(path, strlen(mntbufp[i].f_mntfromname) + 2 );

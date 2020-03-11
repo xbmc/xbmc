@@ -307,7 +307,7 @@ void CFileItemHandler::HandleFileItem(const char *ID, bool allowFile, const char
       else if (item->HasVideoInfoTag() && item->GetVideoInfoTag()->m_iDbId > 0)
         object[ID] = item->GetVideoInfoTag()->m_iDbId;
 
-      if (stricmp(ID, "id") == 0)
+      if (StringUtils::CompareNoCase(ID, "id") == 0)
       {
         if (item->HasPVRChannelInfoTag())
           object["type"] = "channel";

@@ -338,7 +338,7 @@ namespace XBMCAddon
     {
       XBMCAddonUtils::GuiLock lock(languageHook, m_offscreen);
 
-      if (strcmpi(type, "video") == 0)
+      if (StringUtils::CompareNoCase(type, "video") == 0)
       {
         auto& videotag = *GetVideoInfoTag();
         for (const auto& it: infoLabels)
@@ -505,7 +505,7 @@ namespace XBMCAddon
             CLog::Log(LOGERROR,"NEWADDON Unknown Video Info Key \"%s\"", key.c_str());
         }
       }
-      else if (strcmpi(type, "music") == 0)
+      else if (StringUtils::CompareNoCase(type, "music") == 0)
       {
         std::string type;
         for (auto it = infoLabels.begin(); it != infoLabels.end(); ++it)
@@ -598,7 +598,7 @@ namespace XBMCAddon
           musictag.SetLoaded(true);
         }
       }
-      else if (strcmpi(type,"pictures") == 0)
+      else if (StringUtils::CompareNoCase(type, "pictures") == 0)
       {
         for (const auto& it: infoLabels)
         {
@@ -742,7 +742,7 @@ namespace XBMCAddon
     {
       XBMCAddonUtils::GuiLock lock(languageHook, m_offscreen);
 
-      if (strcmpi(cType, "video") == 0)
+      if (StringUtils::CompareNoCase(cType, "video") == 0)
       {
         CStreamDetailVideo* video = new CStreamDetailVideo;
         for (const auto& it: dictionary)
@@ -767,7 +767,7 @@ namespace XBMCAddon
         }
         GetVideoInfoTag()->m_streamDetails.AddStream(video);
       }
-      else if (strcmpi(cType, "audio") == 0)
+      else if (StringUtils::CompareNoCase(cType, "audio") == 0)
       {
         CStreamDetailAudio* audio = new CStreamDetailAudio;
         for (const auto& it: dictionary)
@@ -784,7 +784,7 @@ namespace XBMCAddon
         }
         GetVideoInfoTag()->m_streamDetails.AddStream(audio);
       }
-      else if (strcmpi(cType, "subtitle") == 0)
+      else if (StringUtils::CompareNoCase(cType, "subtitle") == 0)
       {
         CStreamDetailSubtitle* subtitle = new CStreamDetailSubtitle;
         for (const auto& it: dictionary)

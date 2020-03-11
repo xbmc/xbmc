@@ -413,15 +413,15 @@ namespace XBMCAddon
       XBMC_TRACE;
       std::string result;
 
-      if (strcmpi(id, "datelong") == 0)
-        {
-          result = g_langInfo.GetDateFormat(true);
-          StringUtils::Replace(result, "DDDD", "%A");
-          StringUtils::Replace(result, "MMMM", "%B");
-          StringUtils::Replace(result, "D", "%d");
-          StringUtils::Replace(result, "YYYY", "%Y");
+      if (StringUtils::CompareNoCase(id, "datelong") == 0)
+      {
+        result = g_langInfo.GetDateFormat(true);
+        StringUtils::Replace(result, "DDDD", "%A");
+        StringUtils::Replace(result, "MMMM", "%B");
+        StringUtils::Replace(result, "D", "%d");
+        StringUtils::Replace(result, "YYYY", "%Y");
         }
-      else if (strcmpi(id, "dateshort") == 0)
+        else if (StringUtils::CompareNoCase(id, "dateshort") == 0)
         {
           result = g_langInfo.GetDateFormat(false);
           StringUtils::Replace(result, "MM", "%m");
@@ -435,11 +435,11 @@ namespace XBMCAddon
 #endif
           StringUtils::Replace(result, "YYYY", "%Y");
         }
-      else if (strcmpi(id, "tempunit") == 0)
-        result = g_langInfo.GetTemperatureUnitString();
-      else if (strcmpi(id, "speedunit") == 0)
-        result = g_langInfo.GetSpeedUnitString();
-      else if (strcmpi(id, "time") == 0)
+        else if (StringUtils::CompareNoCase(id, "tempunit") == 0)
+          result = g_langInfo.GetTemperatureUnitString();
+        else if (StringUtils::CompareNoCase(id, "speedunit") == 0)
+          result = g_langInfo.GetSpeedUnitString();
+        else if (StringUtils::CompareNoCase(id, "time") == 0)
         {
           result = g_langInfo.GetTimeFormat();
           if (StringUtils::StartsWith(result, "HH"))
@@ -451,12 +451,12 @@ namespace XBMCAddon
           StringUtils::Replace(result, "ss", "%S");
           StringUtils::Replace(result, "xx", "%p");
         }
-      else if (strcmpi(id, "meridiem") == 0)
-        result = StringUtils::Format("%s/%s",
-                                     g_langInfo.GetMeridiemSymbol(MeridiemSymbolAM).c_str(),
-                                     g_langInfo.GetMeridiemSymbol(MeridiemSymbolPM).c_str());
+        else if (StringUtils::CompareNoCase(id, "meridiem") == 0)
+          result =
+              StringUtils::Format("%s/%s", g_langInfo.GetMeridiemSymbol(MeridiemSymbolAM).c_str(),
+                                  g_langInfo.GetMeridiemSymbol(MeridiemSymbolPM).c_str());
 
-      return result;
+        return result;
     }
 
     //! @todo Add a mediaType enum
@@ -464,11 +464,11 @@ namespace XBMCAddon
     {
       XBMC_TRACE;
       String result;
-      if (strcmpi(mediaType, "video") == 0)
+      if (StringUtils::CompareNoCase(mediaType, "video") == 0)
         result = CServiceBroker::GetFileExtensionProvider().GetVideoExtensions();
-      else if (strcmpi(mediaType, "music") == 0)
+      else if (StringUtils::CompareNoCase(mediaType, "music") == 0)
         result = CServiceBroker::GetFileExtensionProvider().GetMusicExtensions();
-      else if (strcmpi(mediaType, "picture") == 0)
+      else if (StringUtils::CompareNoCase(mediaType, "picture") == 0)
         result = CServiceBroker::GetFileExtensionProvider().GetPictureExtensions();
 
       //! @todo implement

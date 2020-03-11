@@ -89,31 +89,31 @@ std::shared_ptr<Tweener> CAnimEffect::GetTweener(const TiXmlElement *pAnimationN
   const char *tween = pAnimationNode->Attribute("tween");
   if (tween)
   {
-    if (strcmpi(tween, "linear")==0)
+    if (StringUtils::CompareNoCase(tween, "linear") == 0)
       m_pTweener = std::shared_ptr<Tweener>(new LinearTweener());
-    else if (strcmpi(tween, "quadratic")==0)
+    else if (StringUtils::CompareNoCase(tween, "quadratic") == 0)
       m_pTweener = std::shared_ptr<Tweener>(new QuadTweener());
-    else if (strcmpi(tween, "cubic")==0)
+    else if (StringUtils::CompareNoCase(tween, "cubic") == 0)
       m_pTweener = std::shared_ptr<Tweener>(new CubicTweener());
-    else if (strcmpi(tween, "sine")==0)
+    else if (StringUtils::CompareNoCase(tween, "sine") == 0)
       m_pTweener = std::shared_ptr<Tweener>(new SineTweener());
-    else if (strcmpi(tween, "back")==0)
+    else if (StringUtils::CompareNoCase(tween, "back") == 0)
       m_pTweener = std::shared_ptr<Tweener>(new BackTweener());
-    else if (strcmpi(tween, "circle")==0)
+    else if (StringUtils::CompareNoCase(tween, "circle") == 0)
       m_pTweener = std::shared_ptr<Tweener>(new CircleTweener());
-    else if (strcmpi(tween, "bounce")==0)
+    else if (StringUtils::CompareNoCase(tween, "bounce") == 0)
       m_pTweener = std::shared_ptr<Tweener>(new BounceTweener());
-    else if (strcmpi(tween, "elastic")==0)
+    else if (StringUtils::CompareNoCase(tween, "elastic") == 0)
       m_pTweener = std::shared_ptr<Tweener>(new ElasticTweener());
 
     const char *easing = pAnimationNode->Attribute("easing");
     if (m_pTweener && easing)
     {
-      if (strcmpi(easing, "in")==0)
+      if (StringUtils::CompareNoCase(easing, "in") == 0)
         m_pTweener->SetEasing(EASE_IN);
-      else if (strcmpi(easing, "out")==0)
+      else if (StringUtils::CompareNoCase(easing, "out") == 0)
         m_pTweener->SetEasing(EASE_OUT);
-      else if (strcmpi(easing, "inout")==0)
+      else if (StringUtils::CompareNoCase(easing, "inout") == 0)
         m_pTweener->SetEasing(EASE_INOUT);
     }
   }
@@ -210,7 +210,7 @@ CRotateEffect::CRotateEffect(const TiXmlElement *node, EFFECT_TYPE effect) : CAn
   const char *centerPos = node->Attribute("center");
   if (centerPos)
   {
-    if (strcmpi(centerPos, "auto") == 0)
+    if (StringUtils::CompareNoCase(centerPos, "auto") == 0)
       m_autoCenter = true;
     else
     {
@@ -304,7 +304,7 @@ CZoomEffect::CZoomEffect(const TiXmlElement *node, const CRect &rect) : CAnimEff
   const char *centerPos = node->Attribute("center");
   if (centerPos)
   {
-    if (strcmpi(centerPos, "auto") == 0)
+    if (StringUtils::CompareNoCase(centerPos, "auto") == 0)
       m_autoCenter = true;
     else
     {
@@ -606,7 +606,7 @@ void CAnimation::Create(const TiXmlElement *node, const CRect &rect, int context
   if (condition)
     m_condition = CServiceBroker::GetGUI()->GetInfoManager().Register(condition, context);
   const char *reverse = node->Attribute("reversible");
-  if (reverse && strcmpi(reverse, "false") == 0)
+  if (reverse && StringUtils::CompareNoCase(reverse, "false") == 0)
     m_reversible = false;
 
   const TiXmlElement *effect = node->FirstChildElement("effect");
@@ -633,10 +633,10 @@ void CAnimation::Create(const TiXmlElement *node, const CRect &rect, int context
 
     // pulsed or loop animations
     const char *pulse = node->Attribute("pulse");
-    if (pulse && strcmpi(pulse, "true") == 0)
+    if (pulse && StringUtils::CompareNoCase(pulse, "true") == 0)
       m_repeatAnim = ANIM_REPEAT_PULSE;
     const char *loop = node->Attribute("loop");
-    if (loop && strcmpi(loop, "true") == 0)
+    if (loop && StringUtils::CompareNoCase(loop, "true") == 0)
       m_repeatAnim = ANIM_REPEAT_LOOP;
   }
 

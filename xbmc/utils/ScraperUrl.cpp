@@ -74,12 +74,12 @@ bool CScraperUrl::ParseElement(const TiXmlElement* element)
   url.m_url = element->FirstChild()->Value();
   url.m_spoof = XMLUtils::GetAttribute(element, "spoof");
   const char* szPost=element->Attribute("post");
-  if (szPost && stricmp(szPost,"yes") == 0)
+  if (szPost && StringUtils::CompareNoCase(szPost, "yes") == 0)
     url.m_post = true;
   else
     url.m_post = false;
   const char* szIsGz=element->Attribute("gzip");
-  if (szIsGz && stricmp(szIsGz,"yes") == 0)
+  if (szIsGz && StringUtils::CompareNoCase(szIsGz, "yes") == 0)
     url.m_isgz = true;
   else
     url.m_isgz = false;
@@ -88,7 +88,7 @@ bool CScraperUrl::ParseElement(const TiXmlElement* element)
   const char* szType = element->Attribute("type");
   url.m_type = URL_TYPE_GENERAL;
   url.m_season = -1;
-  if (szType && stricmp(szType,"season") == 0)
+  if (szType && StringUtils::CompareNoCase(szType, "season") == 0)
   {
     url.m_type = URL_TYPE_SEASON;
     const char* szSeason = element->Attribute("season");

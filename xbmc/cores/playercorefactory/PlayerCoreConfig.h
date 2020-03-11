@@ -37,8 +37,8 @@ public:
       m_config = static_cast<TiXmlElement*>(pConfig->Clone());
       const char *sAudio = pConfig->Attribute("audio");
       const char *sVideo = pConfig->Attribute("video");
-      m_bPlaysAudio = sAudio && stricmp(sAudio, "true") == 0;
-      m_bPlaysVideo = sVideo && stricmp(sVideo, "true") == 0;
+      m_bPlaysAudio = sAudio && StringUtils::CompareNoCase(sAudio, "true") == 0;
+      m_bPlaysVideo = sVideo && StringUtils::CompareNoCase(sVideo, "true") == 0;
     }
     else
     {

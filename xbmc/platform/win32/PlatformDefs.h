@@ -28,12 +28,6 @@ typedef intptr_t      ssize_t;
 
 #define ftello64 _ftelli64
 #define fseeko64 _fseeki64
-#ifndef strcasecmp
-#define strcasecmp strcmpi
-#endif
-#ifndef strncasecmp
-#define strncasecmp strnicmp
-#endif
 
 #if defined TARGET_WINDOWS_DESKTOP
 #define popen   _popen

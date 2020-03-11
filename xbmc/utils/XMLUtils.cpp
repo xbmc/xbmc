@@ -9,9 +9,6 @@
 #include "XMLUtils.h"
 #include "URL.h"
 #include "StringUtils.h"
-#ifdef TARGET_WINDOWS
-#include "PlatformDefs.h" //for strcasecmp
-#endif
 
 bool XMLUtils::GetHex(const TiXmlNode* pRootNode, const char* strTag, uint32_t& hexValue)
 {
@@ -121,7 +118,7 @@ bool XMLUtils::GetString(const TiXmlNode* pRootNode, const char* strTag, std::st
   if (pNode != NULL)
   {
     strStringValue = pNode->ValueStr();
-    if (encoded && strcasecmp(encoded,"yes") == 0)
+    if (encoded && StringUtils::CompareNoCase(encoded, "yes") == 0)
       strStringValue = CURL::Decode(strStringValue);
     return true;
   }
@@ -160,7 +157,7 @@ bool XMLUtils::GetAdditiveString(const TiXmlNode* pRootNode, const char* strTag,
       bResult = true;
       strTemp = node->FirstChild()->Value();
       const char* clear=node->Attribute("clear");
-      if (strStringValue.empty() || (clear && strcasecmp(clear,"true")==0))
+      if (strStringValue.empty() || (clear && StringUtils::CompareNoCase(clear, "true") == 0))
         strStringValue = strTemp;
       else
         strStringValue += strSeparator+strTemp;
@@ -190,7 +187,7 @@ bool XMLUtils::GetStringArray(const TiXmlNode* pRootNode, const char* strTag, st
       strTemp = node->FirstChild()->ValueStr();
 
       const char* clearAttr = node->Attribute("clear");
-      if (clearAttr && strcasecmp(clearAttr, "true") == 0)
+      if (clearAttr && StringUtils::CompareNoCase(clearAttr, "true") == 0)
         arrayValue.clear();
 
       if (strTemp.empty())
@@ -220,7 +217,7 @@ bool XMLUtils::GetPath(const TiXmlNode* pRootNode, const char* strTag, std::stri
   if (pNode != NULL)
   {
     strStringValue = pNode->Value();
-    if (encoded && strcasecmp(encoded,"yes") == 0)
+    if (encoded && StringUtils::CompareNoCase(encoded, "yes") == 0)
       strStringValue = CURL::Decode(strStringValue);
     return true;
   }
