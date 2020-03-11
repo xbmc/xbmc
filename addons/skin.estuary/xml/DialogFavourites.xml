@@ -20,17 +20,8 @@
 				<param name="up_posy" value="-40" />
 				<param name="down_posy" value="876" />
 			</include>
-			<control type="scrollbar" id="60">
-				<right>0</right>
-				<top>70</top>
-				<width>12</width>
-				<bottom>0</bottom>
-				<onleft>450</onleft>
-				<onright>450</onright>
-				<orientation>vertical</orientation>
-			</control>
 			<control type="panel" id="450">
-				<left>10</left>
+				<left>0</left>
 				<top>70</top>
 				<width>1600</width>
 				<bottom>0</bottom>
@@ -42,9 +33,50 @@
 				<pagecontrol>60</pagecontrol>
 				<scrolltime tween="sine">200</scrolltime>
 				<orientation>vertical</orientation>
+				<itemlayout height="list_item_height" condition="Skin.HasSetting(DisplayFavouritesAsList)">
+					<control type="group">
+						<control type="image">
+							<bordersize>5</bordersize>
+							<width max="160">auto</width>
+							<aspectratio>keep</aspectratio>
+							<texture fallback="DefaultFavourites.png">$INFO[ListItem.Thumb]</texture>
+						</control>
+						<control type="label">
+							<left>160</left>
+							<aligny>center</aligny>
+							<width>auto</width>
+							<label>$INFO[ListItem.Label]</label>
+						</control>
+					</control>
+				</itemlayout>
+				<focusedlayout height="list_item_height" condition="Skin.HasSetting(DisplayFavouritesAsList)">
+					<control type="group">
+						<control type="image">
+							<left>0</left>
+							<right>60</right>
+							<top>0</top>
+							<bottom>0</bottom>
+							<texture colordiffuse="button_focus">lists/focus.png</texture>
+							<visible>Control.HasFocus(450)</visible>
+						</control>
+						<control type="image">
+							<bordersize>5</bordersize>
+							<width max="160">auto</width>
+							<aspectratio>keep</aspectratio>
+							<texture fallback="DefaultFavourites.png">$INFO[ListItem.Thumb]</texture>
+						</control>
+						<control type="label">
+							<left>160</left>
+							<aligny>center</aligny>
+							<width>auto</width>
+							<label>$INFO[ListItem.Label]</label>
+						</control>
+					</control>
+				</focusedlayout>
 				<itemlayout width="300" height="380">
 					<control type="group">
 						<top>10</top>
+						<left>10</left>
 						<include content="InfoWallMusicLayout">
 							<param name="fallback_image" value="DefaultFavourites.png" />
 						</include>
@@ -53,12 +85,22 @@
 				<focusedlayout width="300">
 					<control type="group">
 						<top>10</top>
+						<left>10</left>
 						<include content="InfoWallMusicLayout">
 							<param name="fallback_image" value="DefaultFavourites.png" />
 							<param name="focused" value="true" />
 						</include>
 					</control>
 				</focusedlayout>
+			</control>
+			<control type="scrollbar" id="60">
+				<right>0</right>
+				<top>70</top>
+				<width>12</width>
+				<bottom>0</bottom>
+				<onleft>450</onleft>
+				<onright>450</onright>
+				<orientation>vertical</orientation>
 			</control>
 			<control type="textbox">
 				<left>300</left>
