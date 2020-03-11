@@ -330,21 +330,6 @@ bool CAddonInfoBuilder::ParseXML(const AddonInfoPtr& addon, const TiXmlElement* 
       if (element && element->GetText() != nullptr)
         addon->AddExtraInfo("reuselanguageinvoker", element->GetText());
 
-      /* Parse addon.xml "<noicon">...</noicon>" */
-      if (addon->m_icon.empty())
-      {
-        element = child->FirstChildElement("noicon");
-        addon->m_icon = (element && strcmp(element->GetText() , "true") == 0) ? "" : URIUtils::AddFileToFolder(assetBasePath, "icon.png");
-      }
-
-      /* Parse addon.xml "<nofanart">...</nofanart>" */
-      if (addon->m_art.empty())
-      {
-        element = child->FirstChildElement("nofanart");
-        if (!element || strcmp(element->GetText(), "true") != 0)
-          addon->m_art["fanart"] = URIUtils::AddFileToFolder(assetBasePath, "fanart.jpg");
-      }
-
       /* Parse addon.xml "<size">...</size>" */
       element = child->FirstChildElement("size");
       if (element && element->GetText() != nullptr)
