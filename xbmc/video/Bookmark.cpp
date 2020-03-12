@@ -17,18 +17,18 @@ void CBookmark::Reset()
 {
   episodeNumber = 0;
   seasonNumber = 0;
-  timeInSeconds = 0.0f;
-  totalTimeInSeconds = 0.0f;
+  timeInSeconds = 0.0;
+  totalTimeInSeconds = 0.0;
   partNumber = 0;
   type = STANDARD;
 }
 
 bool CBookmark::IsSet() const
 {
-  return totalTimeInSeconds > 0.0f;
+  return totalTimeInSeconds > 0.0;
 }
 
 bool CBookmark::IsPartWay() const
 {
-  return totalTimeInSeconds > 0.0f && timeInSeconds > 0.0f;
+  return totalTimeInSeconds > 0.0 && timeInSeconds > 0.0;
 }

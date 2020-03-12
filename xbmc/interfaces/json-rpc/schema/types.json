@@ -804,8 +804,8 @@
   "Video.Resume": {
     "type": "object",
     "properties": {
-      "position": { "type": "number", "minimum": 0 },
-      "total": { "type": "number", "minimum": 0 }
+      "position": { "type": "number", "minimum": 0.0 },
+      "total": { "type": "number", "minimum": 0.0 }
     },
     "additionalProperties": false
   },
