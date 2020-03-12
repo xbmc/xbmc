@@ -51,9 +51,6 @@
 #include "Autorun.h"
 #include "URL.h"
 #include "platform/Filesystem.h"
-#ifdef TARGET_POSIX
-#include "platform/posix/XFileUtils.h"
-#endif
 
 using namespace XFILE;
 using namespace PLAYLIST;

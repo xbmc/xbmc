@@ -40,7 +40,6 @@
 #include <signal.h>
 #ifdef TARGET_POSIX
 #include "PlatformDefs.h" // for __stat64
-#include "platform/posix/XFileUtils.h"
 #endif
 #include "FileItem.h"
 #include "ServiceBroker.h"
@@ -621,7 +620,11 @@ extern "C"
     if (pFile != NULL)
       return pFile->Stat(buf);
     else if (IS_STD_DESCRIPTOR(fd))
+#if defined(TARGET_WINDOWS)
       return _fstat64(fd, buf);
+#else
+      return fstat64(fd, buf);
+#endif
     CLog::Log(LOGERROR, "%s emulated function failed",  __FUNCTION__);
     return -1;
   }

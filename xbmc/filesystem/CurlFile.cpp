@@ -27,7 +27,6 @@
 #ifdef TARGET_POSIX
 #include <errno.h>
 #include <inttypes.h>
-#include "platform/posix/XFileUtils.h"
 #include "platform/posix/ConvUtils.h"
 #endif
 

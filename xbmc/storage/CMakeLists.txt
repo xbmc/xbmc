@@ -1,9 +1,7 @@
 set(SOURCES AutorunMediaJob.cpp
-            IoSupport.cpp
             MediaManager.cpp)
 
 set(HEADERS AutorunMediaJob.h
-            IoSupport.h
             IStorageProvider.h
             MediaManager.h)
 
