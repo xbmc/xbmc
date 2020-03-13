@@ -50,7 +50,7 @@ protected:
                                       int encoding,
                                       bool isRaw = false);
   static void UpdateAvailablePCMCapabilities();
-  static void UpdateAvailablePassthroughCapabilities();
+  static void UpdateAvailablePassthroughCapabilities(bool isRaw = false);
 
   int AudioTrackWrite(char* audioData, int offsetInBytes, int sizeInBytes);
   int AudioTrackWrite(char* audioData, int sizeInBytes, int64_t timestamp);
@@ -73,6 +73,9 @@ private:
   std::deque<double>   m_linearmovingaverage;
 
   static CAEDeviceInfo m_info;
+  static CAEDeviceInfo m_info_raw;
+  static CAEDeviceInfo m_info_iec;
+  static bool m_hasIEC;
   static std::set<unsigned int>       m_sink_sampleRates;
   static bool m_sinkSupportsFloat;
   static bool m_sinkSupportsMultiChannelFloat;
