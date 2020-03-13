@@ -75,7 +75,6 @@ private:
   static CAEDeviceInfo m_info;
   static std::set<unsigned int>       m_sink_sampleRates;
   static bool m_sinkSupportsFloat;
-  static bool m_sinkSupportsMultiChannelFloat;
 
   AEAudioFormat      m_format;
   double             m_volume;
