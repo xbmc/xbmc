@@ -860,6 +860,9 @@ void PLAYLIST::CPlayListPlayer::OnApplicationMessage(KODI::MESSAGING::ThreadMess
 
   case TMSG_MEDIA_PLAY:
   {
+    g_application.ResetScreenSaver();
+    g_application.WakeUpScreenSaverAndDPMS();
+
     // first check if we were called from the PlayFile() function
     if (pMsg->lpVoid && pMsg->param2 == 0)
     {
@@ -872,9 +875,6 @@ void PLAYLIST::CPlayListPlayer::OnApplicationMessage(KODI::MESSAGING::ThreadMess
       delete item;
       return;
     }
-
-    g_application.ResetScreenSaver();
-    g_application.WakeUpScreenSaverAndDPMS();
 
     //g_application.StopPlaying();
     // play file
