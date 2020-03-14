@@ -26,8 +26,10 @@
 //Increment this level always if you add features which can lead to compile failures in the addon
 #define INPUTSTREAM_VERSION_LEVEL 2
 
+#ifdef __cplusplus
 extern "C"
 {
+#endif /* __cplusplus */
 
   /*!
    * @brief InputStream add-on capabilities. All capabilities are set to "false" as default.
@@ -285,7 +287,7 @@ extern "C"
   };
 
   /*!
-   * @brief Structure to transfer the methods from xbmc_inputstream_dll.h to XBMC
+   * @brief "C" ABI Structures to transfer the methods from this to Kodi
    */
 
   // this are properties given to the addon on create
@@ -379,6 +381,7 @@ extern "C"
     KodiToAddonFuncTable_InputStream toAddon;
   } AddonInstance_InputStream;
 
+#ifdef __cplusplus
 } /* extern "C" */
 
 namespace kodi
@@ -917,3 +920,5 @@ private:
 
 } /* namespace addon */
 } /* namespace kodi */
+
+#endif /* __cplusplus */
