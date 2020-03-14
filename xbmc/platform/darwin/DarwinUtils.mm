@@ -245,11 +245,6 @@ bool CFStringRefToStringWithEncoding(CFStringRef source, std::string &destinatio
   return true;
 }
 
-void CDarwinUtils::PrintDebugString(std::string debugString)
-{
-  NSLog(@"Debug Print: %s", debugString.c_str());
-}
-
 
 bool CDarwinUtils::CFStringRefToString(CFStringRef source, std::string &destination)
 {

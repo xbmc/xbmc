@@ -111,6 +111,7 @@ set(HEADERS ActorProtocol.h
             IBufferObject.h
             ILocalizer.h
             InfoLoader.h
+            IPlatformLog.h
             IRssObserver.h
             IScreenshotSurface.h
             ISerializable.h
@@ -125,6 +126,7 @@ set(HEADERS ActorProtocol.h
             LegacyPathTranslation.h
             Locale.h
             log.h
+            logtypes.h
             MathUtils.h
             MemUtils.h
             Mime.h

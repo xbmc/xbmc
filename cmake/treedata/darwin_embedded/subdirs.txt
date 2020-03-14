@@ -7,6 +7,7 @@ xbmc/platform/darwin/ios-common       platform/ios-common
 xbmc/platform/darwin/ios-common/network  platform/ios-common/network
 xbmc/platform/darwin/ios-common/storage platform/ios-common/storage
 xbmc/platform/darwin/network          platform/darwin/network
+xbmc/platform/darwin/utils            platform/darwin/utils
 xbmc/platform/posix                   posix
 xbmc/platform/posix/filesystem        platform/posix/filesystem
 xbmc/platform/posix/utils             platform/posix/utils

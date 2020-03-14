@@ -68,7 +68,7 @@ void CAdvancedSettings::OnSettingsLoaded()
     m_logLevel = std::min(m_logLevelHint, LOG_LEVEL_DEBUG/*LOG_LEVEL_NORMAL*/);
     CLog::Log(LOGNOTICE, "Disabled debug logging due to GUI setting. Level %d.", m_logLevel);
   }
-  CLog::SetLogLevel(m_logLevel);
+  CServiceBroker::GetLogging().SetLogLevel(m_logLevel);
 
   m_extraLogEnabled = settings->GetBool(CSettings::SETTING_DEBUG_EXTRALOGGING);
   SetExtraLogLevel(settings->GetList(CSettings::SETTING_DEBUG_SETEXTRALOGLEVEL));
@@ -867,7 +867,7 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
         setting->SetVisible(false);
     }
     m_logLevel = std::max(m_logLevel, m_logLevelHint);
-    CLog::SetLogLevel(m_logLevel);
+    CServiceBroker::GetLogging().SetLogLevel(m_logLevel);
   }
 
   XMLUtils::GetString(pRootElement, "cddbaddress", m_cddbAddress);
@@ -1351,7 +1351,7 @@ void CAdvancedSettings::SetDebugMode(bool debug)
   {
     int level = std::max(m_logLevelHint, LOG_LEVEL_DEBUG_FREEMEM);
     m_logLevel = level;
-    CLog::SetLogLevel(level);
+    CServiceBroker::GetLogging().SetLogLevel(level);
     CLog::Log(LOGNOTICE, "Enabled debug logging due to GUI setting. Level %d.", level);
   }
   else
@@ -1359,7 +1359,7 @@ void CAdvancedSettings::SetDebugMode(bool debug)
     int level = std::min(m_logLevelHint, LOG_LEVEL_DEBUG/*LOG_LEVEL_NORMAL*/);
     CLog::Log(LOGNOTICE, "Disabled debug logging due to GUI setting. Level %d.", level);
     m_logLevel = level;
-    CLog::SetLogLevel(level);
+    CServiceBroker::GetLogging().SetLogLevel(level);
   }
 }
 
