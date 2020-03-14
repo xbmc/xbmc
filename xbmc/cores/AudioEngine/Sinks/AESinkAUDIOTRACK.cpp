@@ -622,7 +622,7 @@ void CAESinkAUDIOTRACK::GetDelay(AEDelayStatus& status)
   {
     if (CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->CanLogComponent(LOGAUDIO))
     {
-      CLog::Log(LOGDEBUG, "Framecounter: {} Time: {} Current-Time: {}",
+      CLog::Log(LOGNOTICE, "Framecounter: {} Time: {} Current-Time: {}",
                 (m_timestamp.get_framePosition() & UINT64_LOWER_BYTES), m_timestamp.get_nanoTime(),
                 CurrentHostCounter());
     }
@@ -647,11 +647,11 @@ void CAESinkAUDIOTRACK::GetDelay(AEDelayStatus& status)
 
     if (CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->CanLogComponent(LOGAUDIO))
     {
-      CLog::Log(LOGDEBUG,
+      CLog::Log(LOGNOTICE,
                 "Delay - Timestamp: {} (ms) delta: {} (ms) playtime: {} (ms) Duration: {} ms",
                 1000.0 * (m_duration_written - playtime), delta / 1000000.0, playtime * 1000,
                 m_duration_written * 1000);
-      CLog::Log(LOGDEBUG, "Head-Position {} Timestamp Position {} Delay-Offset: {} ms", m_headPos,
+      CLog::Log(LOGNOTICE, "Head-Position {} Timestamp Position {} Delay-Offset: {} ms", m_headPos,
                 m_timestampPos, 1000.0 * (m_headPos - m_timestampPos) / m_sink_sampleRate);
     }
     double hw_delay = m_duration_written - playtime;
@@ -665,14 +665,14 @@ void CAESinkAUDIOTRACK::GetDelay(AEDelayStatus& status)
       m_hw_delay = 0.0;
     if (CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->CanLogComponent(LOGAUDIO))
     {
-      CLog::Log(LOGDEBUG, "HW-Delay (1): {}", hw_delay);
+      CLog::Log(LOGNOTICE, "HW-Delay (1): {} ms", hw_delay * 1000);
     }
   }
 
   delay += m_hw_delay;
   if (CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->CanLogComponent(LOGAUDIO))
   {
-    CLog::Log(LOGDEBUG, "Combined Delay: {}", delay);
+    CLog::Log(LOGNOTICE, "Combined Delay: {} ms", delay * 1000);
   }
   if (delay < 0.0)
     delay = 0.0;
@@ -687,7 +687,7 @@ void CAESinkAUDIOTRACK::GetDelay(AEDelayStatus& status)
   m_delay = d;
   if (CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->CanLogComponent(LOGAUDIO))
   {
-    CLog::Log(LOGDEBUG, "Delay Current: %lf", d * 1000);
+    CLog::Log(LOGNOTICE, "Delay Current: %lf ms", d * 1000);
   }
   status.SetDelay(d);
 }
