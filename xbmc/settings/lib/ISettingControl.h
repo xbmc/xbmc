@@ -8,14 +8,16 @@
 
 #pragma once
 
+#include "utils/StaticLoggerBase.h"
+
 #include <string>
 
 class TiXmlNode;
 
-class ISettingControl
+class ISettingControl : public CStaticLoggerBase
 {
 public:
-  ISettingControl() = default;
+  ISettingControl();
   virtual ~ISettingControl() = default;
 
   virtual std::string GetType() const = 0;

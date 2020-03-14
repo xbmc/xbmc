@@ -11,6 +11,7 @@
 #include "Setting.h"
 #include "SettingDefinitions.h"
 #include "SettingsManager.h"
+#include "ServiceBroker.h"
 #include "utils/StringUtils.h"
 #include "utils/XBMCTinyXML.h"
 #include "utils/log.h"
@@ -22,12 +23,14 @@
 
 CSettingDependencyCondition::CSettingDependencyCondition(CSettingsManager *settingsManager /* = nullptr */)
   : CSettingConditionItem(settingsManager)
+  , CStaticLoggerBase("CSettingDependencyCondition")
 { }
 
 CSettingDependencyCondition::CSettingDependencyCondition(const std::string &setting, const std::string &value,
                             SettingDependencyOperator op, bool negated /* = false */,
                             CSettingsManager *settingsManager /* = nullptr */)
   : CSettingConditionItem(settingsManager)
+  , CStaticLoggerBase("CSettingDependencyCondition")
   , m_target(SettingDependencyTarget::Setting)
   , m_operator(op)
 {
@@ -40,6 +43,7 @@ CSettingDependencyCondition::CSettingDependencyCondition(const std::string &strP
                             const std::string &setting /* = "" */, bool negated /* = false */,
                             CSettingsManager *settingsManager /* = nullptr */)
   : CSettingConditionItem(settingsManager)
+  , CStaticLoggerBase("CSettingDependencyCondition")
   , m_target(SettingDependencyTarget::Property)
 {
   m_name = strProperty;
@@ -61,13 +65,13 @@ bool CSettingDependencyCondition::Deserialize(const TiXmlNode *node)
   auto strTarget = elem->Attribute(SETTING_XML_ATTR_ON);
   if (strTarget != nullptr && !setTarget(strTarget))
   {
-    CLog::Log(LOGWARNING, "CSettingDependencyCondition: unknown target \"%s\"", strTarget);
+    s_logger->warn("unknown target \"{}\"", strTarget);
     return false;
   }
 
   if (m_target != SettingDependencyTarget::Setting && m_name.empty())
   {
-    CLog::Log(LOGWARNING, "CSettingDependencyCondition: missing name for dependency");
+    s_logger->warn("missing name for dependency");
     return false;
   }
 
@@ -75,7 +79,7 @@ bool CSettingDependencyCondition::Deserialize(const TiXmlNode *node)
   {
     if (m_setting.empty())
     {
-      CLog::Log(LOGWARNING, "CSettingDependencyCondition: missing setting for dependency");
+      s_logger->warn("missing setting for dependency");
       return false;
     }
 
@@ -86,7 +90,7 @@ bool CSettingDependencyCondition::Deserialize(const TiXmlNode *node)
   auto strOperator = elem->Attribute(SETTING_XML_ATTR_OPERATOR);
   if (strOperator != nullptr && !setOperator(strOperator))
   {
-    CLog::Log(LOGWARNING, "CSettingDependencyCondition: unknown operator \"%s\"", strOperator);
+    s_logger->warn("unknown operator \"{}\"", strOperator);
     return false;
   }
 
@@ -112,7 +116,7 @@ bool CSettingDependencyCondition::Check() const
       auto setting = m_settingsManager->GetSetting(m_setting);
       if (setting == nullptr)
       {
-        CLog::Log(LOGWARNING, "CSettingDependencyCondition: unable to check condition on unknown setting \"%s\"", m_setting.c_str());
+        s_logger->warn("unable to check condition on unknown setting \"{}\"", m_setting);
         return false;
       }
 
@@ -162,7 +166,7 @@ bool CSettingDependencyCondition::Check() const
         setting = m_settingsManager->GetSetting(m_setting);
         if (setting == nullptr)
         {
-          CLog::Log(LOGWARNING, "CSettingDependencyCondition: unable to check condition on unknown setting \"%s\"", m_setting.c_str());
+          s_logger->warn("unable to check condition on unknown setting \"{}\"", m_setting);
           return false;
         }
       }
@@ -311,12 +315,14 @@ CSettingDependencyConditionCombination* CSettingDependencyConditionCombination::
 
 CSettingDependency::CSettingDependency(CSettingsManager *settingsManager /* = nullptr */)
   : CSettingCondition(settingsManager)
+  , CStaticLoggerBase("CSettingDependency")
 {
   m_operation = CBooleanLogicOperationPtr(new CSettingDependencyConditionCombination(m_settingsManager));
 }
 
 CSettingDependency::CSettingDependency(SettingDependencyType type, CSettingsManager *settingsManager /* = nullptr */)
   : CSettingCondition(settingsManager)
+  , CStaticLoggerBase("CSettingDependency")
   , m_type(type)
 {
   m_operation = CBooleanLogicOperationPtr(new CSettingDependencyConditionCombination(m_settingsManager));
@@ -334,7 +340,7 @@ bool CSettingDependency::Deserialize(const TiXmlNode *node)
   auto strType = elem->Attribute(SETTING_XML_ATTR_TYPE);
   if (strType == nullptr || strlen(strType) <= 0 || !setType(strType))
   {
-    CLog::Log(LOGWARNING, "CSettingDependency: missing or unknown dependency type definition");
+    s_logger->warn("missing or unknown dependency type definition");
     return false;
   }
 

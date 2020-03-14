@@ -18,6 +18,7 @@
 #include "SettingDefinitions.h"
 #include "SettingDependency.h"
 #include "threads/SharedSection.h"
+#include "utils/StaticLoggerBase.h"
 
 #include <map>
 #include <set>
@@ -38,13 +39,14 @@ class TiXmlNode;
  all settings.
  */
 class CSettingsManager : public ISettingCreator, public ISettingControlCreator,
+                         protected CStaticLoggerBase,
                          private ISettingCallback, private ISettingsHandler
 {
 public:
   /*!
    \brief Creates a new (uninitialized) settings manager.
    */
-  CSettingsManager() = default;
+  CSettingsManager();
   ~CSettingsManager() override;
 
   static const uint32_t Version;

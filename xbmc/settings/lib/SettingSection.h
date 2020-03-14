@@ -11,6 +11,7 @@
 #include "ISetting.h"
 #include "Setting.h"
 #include "SettingCategoryAccess.h"
+#include "utils/StaticLoggerBase.h"
 
 #include <string>
 #include <vector>
@@ -23,7 +24,7 @@ class CSettingsManager;
  \sa CSettingCategory
  \sa CSetting
  */
-class CSettingGroup : public ISetting
+class CSettingGroup : public ISetting, protected CStaticLoggerBase
 {
 public:
   /*!
@@ -77,7 +78,7 @@ using SettingGroupList = std::vector<SettingGroupPtr>;
  \sa CSettingSection
  \sa CSettingGroup
  */
-class CSettingCategory : public ISetting
+class CSettingCategory : public ISetting, protected CStaticLoggerBase
 {
 public:
   /*!
@@ -133,7 +134,7 @@ using SettingCategoryList = std::vector<SettingCategoryPtr>;
  \sa CSettings
  \sa CSettingCategory
  */
-class CSettingSection : public ISetting
+class CSettingSection : public ISetting, protected CStaticLoggerBase
 {
 public:
   /*!
