@@ -69,4 +69,4 @@ const TestURLGetWithoutUserDetailsData values[] = {
   { std::string("smb://milkyway;@example.com/example"), std::string("smb://example.com/example"), false },
 };
 
-INSTANTIATE_TEST_CASE_P(URL, TestURLGetWithoutUserDetails, ValuesIn(values));
+INSTANTIATE_TEST_SUITE_P(URL, TestURLGetWithoutUserDetails, ValuesIn(values));

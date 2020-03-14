@@ -30,7 +30,7 @@ class TestTagParser : public ::testing::Test, public CTagLoaderTagLib {
 
 
 typedef ::testing::Types<ID3v2::Tag, ID3v1::Tag, ASF::Tag, APE::Tag, Ogg::XiphComment, MP4::Tag> TagTypes;
-TYPED_TEST_CASE(TestTagParser, TagTypes);
+TYPED_TEST_SUITE(TestTagParser, TagTypes);
 
 TYPED_TEST(TestTagParser, ParsesBasicTag) {
   // Create a basic tag
@@ -105,7 +105,7 @@ class EmptyTagParser : public ::testing::Test, public CTagLoaderTagLib {
   public:
     T value_;
 };
-TYPED_TEST_CASE(EmptyTagParser, EmptyPropertiesTagTypes);
+TYPED_TEST_SUITE(EmptyTagParser, EmptyPropertiesTagTypes);
 
 TYPED_TEST(EmptyTagParser, EmptyProperties) {
   TypeParam *tg  = &this->value_;
