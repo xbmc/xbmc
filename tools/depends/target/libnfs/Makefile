@@ -3,12 +3,12 @@ DEPS= ../../Makefile.include Makefile
 
 # lib name, version
 LIBNAME=libnfs
-VERSION=2.0.0
+VERSION=4.0.0
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
 
 # configuration settings
-CONFIGURE=./configure --prefix=$(PREFIX) --disable-shared --disable-utils --disable-werror
+CONFIGURE=./configure --prefix=$(PREFIX) --disable-shared --disable-utils --disable-examples
 
 LIBDYLIB=$(PLATFORM)/lib/.libs/$(LIBNAME).a
 
