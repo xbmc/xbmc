@@ -108,9 +108,9 @@ const std::string& CBinaryAddonBase::Disclaimer() const
 }
 
 bool CBinaryAddonBase::MeetsVersion(const AddonVersion& versionMin,
-                                    const AddonVersion& version) const
+                                    const AddonVersion& version, const AddonVersion& versionTarget) const
 {
-  return m_addonInfo->MeetsVersion(versionMin, version);
+  return m_addonInfo->MeetsVersion(versionMin, version, versionTarget);
 }
 
 AddonDllPtr CBinaryAddonBase::GetAddon(const IAddonInstanceHandler* handler)

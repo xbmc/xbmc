@@ -727,7 +727,7 @@ bool CAddonMgr::IsCompatible(const IAddon& addon)
       {
         AddonPtr addon;
         bool haveAddon = GetAddon(dependency.id, addon);
-        if (!haveAddon || !addon->MeetsVersion(dependency.versionMin, dependency.version))
+        if (!haveAddon || !addon->MeetsVersion(dependency.versionMin, dependency.version, dependency.versionTarget))
           return false;
       }
     }

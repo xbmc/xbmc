@@ -29,7 +29,7 @@ TEST_F(TestAddonBuilder, ShouldFailWhenEmpty)
 TEST_F(TestAddonBuilder, ShouldBuildDependencyAddons)
 {
   std::vector<DependencyInfo> deps;
-  deps.emplace_back("a", AddonVersion("1.0.0"), AddonVersion("1.0.10"), false);
+  deps.emplace_back("a", AddonVersion("1.0.0"), AddonVersion("1.0.10"), AddonVersion("3.0.0"), false);
 
   CAddonInfoBuilder::CFromDB builder;
   builder.SetId("aa");

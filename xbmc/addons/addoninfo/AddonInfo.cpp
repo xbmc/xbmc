@@ -177,9 +177,10 @@ bool CAddonInfo::ProvidesSeveralSubContents() const
   return contents > 0 ? true : false;
 }
 
-bool CAddonInfo::MeetsVersion(const AddonVersion& versionMin, const AddonVersion& version) const
+bool CAddonInfo::MeetsVersion(const AddonVersion& versionMin, const AddonVersion& version,
+                              const AddonVersion& versionTarget) const
 {
-  return !(versionMin > m_version || version < m_minversion);
+  return versionMin <= m_version && (version >= m_minversion || versionTarget >= m_minversion);
 }
 
 const AddonVersion& CAddonInfo::DependencyMinVersion(const std::string& dependencyID) const

@@ -55,6 +55,7 @@ static std::string SerializeMetadata(const IAddon& addon)
     info["addonId"] = dep.id;
     info["version"] = dep.version.asString();
     info["minversion"] = dep.versionMin.asString();
+    info["targetversion"] = dep.versionTarget.asString();
     info["optional"] = dep.optional;
     variant["dependencies"].push_back(std::move(info));
   }
@@ -104,7 +105,8 @@ static void DeserializeMetadata(const std::string& document, CAddonInfoBuilder::
     for (auto it = variant["dependencies"].begin_array(); it != variant["dependencies"].end_array(); ++it)
     {
       deps.emplace_back((*it)["addonId"].asString(), AddonVersion((*it)["minversion"].asString()),
-                        AddonVersion((*it)["version"].asString()), (*it)["optional"].asBoolean());
+                        AddonVersion((*it)["version"].asString()), AddonVersion((*it)["targetversion"].asString()),
+                        (*it)["optional"].asBoolean());
     }
     builder.SetDependencies(std::move(deps));
   }
