@@ -649,6 +649,8 @@ std::vector<Field> CSmartPlaylistRule::GetGroups(const std::string &type)
         CSettings::SETTING_MUSICLIBRARY_USEORIGINALDATE))
       groups.push_back(FieldOrigYear);
   }
+  else if (type == "songs")
+    groups.push_back(FieldAlbum);
   if (type == "movies")
   {
     groups.push_back(FieldNone);
