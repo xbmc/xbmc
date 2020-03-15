@@ -576,6 +576,8 @@ void CAESinkAUDIOTRACK::GetDelay(AEDelayStatus& status)
     return;
   }
 
+  bool usesAdvancedLogging =
+      CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->CanLogComponent(LOGAUDIO);
   // In their infinite wisdom, Google decided to make getPlaybackHeadPosition
   // return a 32bit "int" that you should "interpret as unsigned."  As such,
   // for wrap safety, we need to do all ops on it in 32bit integer math.
@@ -620,7 +622,7 @@ void CAESinkAUDIOTRACK::GetDelay(AEDelayStatus& status)
   if (m_timestamp.get_framePosition() > 0 &&
       (CurrentHostCounter() - m_timestamp.get_nanoTime()) < 2 * 1000 * 1000 * 1000)
   {
-    if (CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->CanLogComponent(LOGAUDIO))
+    if (usesAdvancedLogging)
     {
       CLog::Log(LOGNOTICE, "Framecounter: {} Time: {} Current-Time: {}",
                 (m_timestamp.get_framePosition() & UINT64_LOWER_BYTES), m_timestamp.get_nanoTime(),
@@ -645,7 +647,7 @@ void CAESinkAUDIOTRACK::GetDelay(AEDelayStatus& status)
 
     double playtime = m_timestampPos / static_cast<double>(m_sink_sampleRate);
 
-    if (CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->CanLogComponent(LOGAUDIO))
+    if (usesAdvancedLogging)
     {
       CLog::Log(LOGNOTICE,
                 "Delay - Timestamp: {} (ms) delta: {} (ms) playtime: {} (ms) Duration: {} ms",
@@ -663,14 +665,14 @@ void CAESinkAUDIOTRACK::GetDelay(AEDelayStatus& status)
       m_hw_delay = hw_delay;
     else
       m_hw_delay = 0.0;
-    if (CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->CanLogComponent(LOGAUDIO))
+    if (usesAdvancedLogging)
     {
       CLog::Log(LOGNOTICE, "HW-Delay (1): {} ms", hw_delay * 1000);
     }
   }
 
   delay += m_hw_delay;
-  if (CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->CanLogComponent(LOGAUDIO))
+  if (usesAdvancedLogging)
   {
     CLog::Log(LOGNOTICE, "Combined Delay: {} ms", delay * 1000);
   }
@@ -685,7 +687,7 @@ void CAESinkAUDIOTRACK::GetDelay(AEDelayStatus& status)
 
   // track delay in local member
   m_delay = d;
-  if (CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->CanLogComponent(LOGAUDIO))
+  if (usesAdvancedLogging)
   {
     CLog::Log(LOGNOTICE, "Delay Current: %lf ms", d * 1000);
   }
