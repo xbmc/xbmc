@@ -86,6 +86,12 @@ JSONRPC_STATUS CFavouritesOperations::GetFavourites(const std::string &method, I
       if (fields.find("path") !=  fields.end())
         object["path"] = parameters[0];
     }
+    else if (StringUtils::EqualsNoCase(function, "StartAndroidActivity"))
+    {
+      object["type"] = "androidapp";
+      if (fields.find("path") !=  fields.end())
+        object["path"] = parameters[0];
+    }
     else
       object["type"] = "unknown";
 
@@ -106,7 +112,7 @@ JSONRPC_STATUS CFavouritesOperations::AddFavourite(const std::string &method, IT
   if (type.compare("unknown") == 0)
     return InvalidParams;
 
-  if ((type.compare("media") == 0 || type.compare("script") == 0) && !ParameterNotNull(parameterObject, "path"))
+  if ((type.compare("media") == 0 || type.compare("script") == 0 || type.compare("androidapp") == 0) && !ParameterNotNull(parameterObject, "path"))
   {
     result["method"] = "Favourites.AddFavourite";
     result["stack"]["message"] = "Missing parameter";
@@ -140,6 +146,12 @@ JSONRPC_STATUS CFavouritesOperations::AddFavourite(const std::string &method, IT
   {
     if (!URIUtils::IsScript(path))
       path = "script://" + path;
+    item = CFileItem(path, false);
+  }
+  else if (type.compare("androidapp") == 0)
+  {
+    if (!URIUtils::IsAndroidApp(path))
+      path = "androidapp://" + path;
     item = CFileItem(path, false);
   }
   else if (type.compare("media") == 0)
