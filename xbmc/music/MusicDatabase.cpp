@@ -5839,9 +5839,10 @@ static const translateJSONField JSONtoDBArtist[] = {
   { "gender",                    "string", true,  "strGender",              "" },
   { "disambiguation",            "string", true,  "strDisambiguation",      "" },
   { "musicbrainzartistid",        "array", true,  "strMusicBrainzArtistId", "" }, // Array in schema, but only ever one element
+  { "dateadded",                 "string", true,  "dateAdded",              "" },
+  { "datenew",                   "string", true,  "dateNew",                "" },
+  { "datemodified",              "string", true,  "dateModified",           "" },
 
-  // Scalar subquery fields
-  { "dateadded",                 "string", true,  "dateAdded",              "(SELECT MAX(song.dateAdded) FROM song_artist JOIN song ON song.idSong = song_artist.idSong WHERE song_artist.idArtist = artist.idArtist) AS dateAdded" },
   // JOIN fields (multivalue), same order as _JoinToArtistFields
   { "",                                "", false, "isSong",                 "" },
   { "sourceid",                  "string", false, "idSourceAlbum",          "album_source.idSource AS idSourceAlbum" },
@@ -6518,7 +6519,9 @@ static const translateJSONField JSONtoDBAlbum[] = {
   { "sortartist",                "string", true,  "strArtistSort",          "" },
   { "musicbrainzreleasegroupid", "string", true,  "strReleaseGroupMBID",    "" },
   { "playcount",                "integer", true,  "iTimesPlayed",           "" },  // Scalar subquery in view
-  { "dateadded",                 "string", true,  "dateAdded",              "" },  // Scalar subquery in view
+  { "dateadded",                 "string", true,  "dateAdded",              "" },
+  { "datenew",                   "string", true,  "dateNew",                "" },
+  { "datemodified",              "string", true,  "dateModified",           "" },
   { "lastplayed",                "string", true,  "lastPlayed",             "" },  // Scalar subquery in view
   { "originaldate",              "string", true,  "strOrigReleaseDate",     "" },
   { "releasedate",               "string", true,  "strReleaseDate",         "" },
@@ -6540,7 +6543,7 @@ static const translateJSONField JSONtoDBAlbum[] = {
    and separate queries to allow for fallback strategy.
 
    Using albmview, rather than album table, as view has scalar subqueries for
-   playcount, dateadded and lastplayed already defined. Needed as MySQL does
+   playcount and lastplayed already defined. Needed as MySQL does
    not support use of scalar subquery field alias names in where clauses (they
    have to be repeated) and these fields can be used by filter rules. 
    Using this view is no slower than the album table as these scalar fields are
@@ -6896,7 +6899,9 @@ static const translateJSONField JSONtoDBSong[] = {
   { "votes",                    "integer", true,  "votes",                  "" },
   { "userrating",              "unsigned", true,  "song.userrating",        "" },
   { "mood",                       "array", true,  "mood",                   "" },
-  { "dateadded",                 "string", true,  "dateAdded",              "" },
+  { "dateadded",                 "string", true,  "song.dateAdded",         "" },
+  { "datenew",                   "string", true,  "song.dateNew",           "" },
+  { "datemodified",              "string", true,  "song.dateModified",      "" },
   { "file",                      "string", true,  "strPathFile",            "CONCAT(path.strPath, strFilename) AS strPathFile" }, 
   { "",                          "string", true,  "strPath",                "path.strPath AS strPath" },
   { "album",                     "string", true,  "strAlbum",               "album.strAlbum AS strAlbum" },
