@@ -67,6 +67,11 @@ extern "C" {
   const unsigned int EPG_TAG_INVALID_UID = 0;
 
   /*!
+   * @brief special EPG_TAG.iSeriesNumber, EPG_TAG.iEpisodeNumber and EPG_TAG.iEpisodePartNumber value to indicate it is not to be used
+   */
+  const int EPG_TAG_INVALID_SERIES_EPISODE = -1;
+
+  /*!
    * @brief EPG event states. Used with EpgEventStateChange callback.
    */
   typedef enum
@@ -100,9 +105,9 @@ extern "C" {
     time_t        firstAired;          /*!< @brief (optional) first aired in UTC */
     int           iParentalRating;     /*!< @brief (optional) parental rating */
     int           iStarRating;         /*!< @brief (optional) star rating */
-    int           iSeriesNumber;       /*!< @brief (optional) series number. Set to "0" for specials/pilot. For 'invalid' set to -1 */
-    int           iEpisodeNumber;      /*!< @brief (optional) episode number. For 'invalid' set to -1 */
-    int           iEpisodePartNumber;  /*!< @brief (optional) episode part number. For 'invalid' set to -1 */
+    int           iSeriesNumber;       /*!< @brief (optional) series number. Set to "0" for specials/pilot. For 'invalid' set to EPG_TAG_INVALID_SERIES_EPISODE */
+    int           iEpisodeNumber;      /*!< @brief (optional) episode number. For 'invalid' set to EPG_TAG_INVALID_SERIES_EPISODE */
+    int           iEpisodePartNumber;  /*!< @brief (optional) episode part number. For 'invalid' set to EPG_TAG_INVALID_SERIES_EPISODE */
     const char *  strEpisodeName;      /*!< @brief (optional) episode name */
     unsigned int  iFlags;              /*!< @brief (optional) bit field of independent flags associated with the EPG entry */
     const char *  strSeriesLink;       /*!< @brief (optional) series link for this event */
