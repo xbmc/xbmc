@@ -202,6 +202,8 @@ void GetSubDirectories(const CPVRRecordingsPath& recParentPath,
       item->SetLabel(strCurrent);
       item->SetLabelPreformatted(true);
       item->m_dateTime = recording->RecordingTimeAsLocalTime();
+      item->SetProperty("totalepisodes", 0);
+      item->SetProperty("watchedepisodes", 0);
       item->SetProperty("unwatchedepisodes", 0);
 
       // Assume all folders are watched, we'll change the overlay later
@@ -215,11 +217,19 @@ void GetSubDirectories(const CPVRRecordingsPath& recParentPath,
         item->m_dateTime = recording->RecordingTimeAsLocalTime();
     }
 
+    item->IncrementProperty("totalepisodes", 1);
     if (recording->GetPlayCount() == 0)
     {
       unwatchedFolders.insert(item);
       item->IncrementProperty("unwatchedepisodes", 1);
     }
+    else
+    {
+      item->IncrementProperty("watchedepisodes", 1);
+    }
+    item->SetLabel2(StringUtils::Format("%s / %s",
+        item->GetProperty("watchedepisodes").asString().c_str(),
+        item->GetProperty("totalepisodes").asString().c_str()));
   }
 
   // Change the watched overlay to unwatched for folders containing unwatched entries
