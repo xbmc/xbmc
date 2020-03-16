@@ -7932,12 +7932,13 @@ void CMusicDatabase::UpdateTables(int version)
   if (version < 73)
   {
     // add bBoxedSet to album table
-    m_pDS->exec("ALTER TABLE album ADD bBoxedSet INTEGER \n");
+    m_pDS->exec("ALTER TABLE album ADD bBoxedSet INTEGER NOT NULL DEFAULT 0 \n");
     //  add iDiscTotal to album table
-    m_pDS->exec("ALTER TABLE album ADD iDiscTotal INTEGER \n");
+    m_pDS->exec("ALTER TABLE album ADD iDiscTotal INTEGER NOT NULL DEFAULT 0 \n");
     // populate iDiscTotal from the data already in the song table
     m_pDS->exec("UPDATE album SET iDisctotal = (SELECT COUNT(DISTINCT (iTrack >> 16)) "
-                "FROM song WHERE song.idAlbum = album.idAlbum GROUP BY idAlbum ) ");
+                "FROM song WHERE song.idAlbum = album.idAlbum GROUP BY idAlbum ) "
+                "WHERE EXISTS (SELECT 1 FROM song WHERE song.idAlbum = album.idAlbum)");
     // add strDiscSubtitles to song table
     m_pDS->exec("ALTER TABLE song ADD strDiscSubtitle TEXT \n");
   }
