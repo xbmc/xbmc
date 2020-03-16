@@ -564,7 +564,7 @@ bool CPVRGUIInfo::GetListItemAndPlayerLabel(const CFileItem* item, const CGUIInf
         return false;
       case VIDEOPLAYER_SEASON:
       case LISTITEM_SEASON:
-        if (epgTag->SeriesNumber() > 0)
+        if (epgTag->SeriesNumber() >= 0)
         {
           strValue = StringUtils::Format("%i", epgTag->SeriesNumber());
           return true;
@@ -572,12 +572,9 @@ bool CPVRGUIInfo::GetListItemAndPlayerLabel(const CFileItem* item, const CGUIInf
         return false;
       case VIDEOPLAYER_EPISODE:
       case LISTITEM_EPISODE:
-        if (epgTag->EpisodeNumber() > 0)
+        if (epgTag->EpisodeNumber() >= 0)
         {
-          if (epgTag->SeriesNumber() == 0) // prefix episode with 'S'
-            strValue = StringUtils::Format("S%i", epgTag->EpisodeNumber());
-          else
-            strValue = StringUtils::Format("%i", epgTag->EpisodeNumber());
+          strValue = StringUtils::Format("%i", epgTag->EpisodeNumber());
           return true;
         }
         return false;

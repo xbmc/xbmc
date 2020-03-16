@@ -442,9 +442,9 @@ namespace PVR
     int m_iGenreSubType = 0; /*!< genre subtype */
     int m_iParentalRating = 0; /*!< parental rating */
     int m_iStarRating = 0; /*!< star rating */
-    int m_iSeriesNumber = 0; /*!< series number */
-    int m_iEpisodeNumber = 0; /*!< episode number */
-    int m_iEpisodePart = 0; /*!< episode part number */
+    int m_iSeriesNumber = -1; /*!< series number */
+    int m_iEpisodeNumber = -1; /*!< episode number */
+    int m_iEpisodePart = -1; /*!< episode part number */
     unsigned int m_iUniqueBroadcastID = 0; /*!< unique broadcast ID */
     std::string m_strTitle; /*!< title */
     std::string m_strPlotOutline; /*!< plot outline */
