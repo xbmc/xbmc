@@ -80,8 +80,8 @@ find_package_handle_standard_args(Dav1d
                                   VERSION_VAR DAV1D_VERSION)
 
 if(DAV1D_FOUND)
-  set(DAV1D_INCLUDE_DIRS ${DAVID_INCLUDE_DIR})
+  set(DAV1D_INCLUDE_DIRS ${DAV1D_INCLUDE_DIR})
   set(DAV1D_LIBRARIES ${DAV1D_LIBRARY})
 endif()
 
-mark_as_advanced(DAVID_INCLUDE_DIR DAV1D_LIBRARY)
+mark_as_advanced(DAV1D_INCLUDE_DIR DAV1D_LIBRARY)
