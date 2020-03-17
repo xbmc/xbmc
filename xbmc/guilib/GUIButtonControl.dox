@@ -35,7 +35,7 @@ action(s) should be performed when pushed.
       <textoffsetx></textoffsetx>
       <textoffsety></textoffsety>
       <pulseonselect></pulseonselect>
-      <onclick>XBMC.ActivateWindow(MyVideos)</onclick>
+      <onclick>ActivateWindow(MyVideos)</onclick>
       <onfocus>-</onfocus>
       <onunfocus>-</onunfocus>
       <onup>2</onup>

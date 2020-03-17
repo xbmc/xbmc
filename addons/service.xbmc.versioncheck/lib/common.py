@@ -76,7 +76,7 @@ def get_password_from_user():
     return pwd
 
 def message_upgrade_success():
-    xbmc.executebuiltin("XBMC.Notification(%s, %s, %d, %s)" %(ADDONNAME,
+    xbmc.executebuiltin("Notification(%s, %s, %d, %s)" %(ADDONNAME,
                                                               localise(32013),
                                                               15000,
                                                               ICON))
