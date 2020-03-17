@@ -17,8 +17,10 @@
 #include "PlatformDefs.h"
 #endif
 
+#ifdef __cplusplus
 extern "C"
 {
+#endif /* __cplusplus */
 
   struct VFSURL
   {
@@ -98,6 +100,7 @@ extern "C"
     KodiToAddonFuncTable_VFSEntry toAddon;
   } AddonInstance_VFSEntry;
 
+#ifdef __cplusplus
 } /* extern "C" */
 
 namespace kodi
@@ -659,3 +662,5 @@ private:
 
 } /* namespace addon */
 } /* namespace kodi */
+
+#endif /* __cplusplus */
