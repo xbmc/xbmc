@@ -100,40 +100,63 @@ extern "C"
   {
     KODI_HANDLE addonInstance;
 
-    void* (__cdecl* open) (const AddonInstance_VFSEntry* instance, const VFSURL* url);
-    void* (__cdecl* open_for_write) (const AddonInstance_VFSEntry* instance, const VFSURL* url, bool overwrite);
-    ssize_t (__cdecl* read) (const AddonInstance_VFSEntry* instance, void* context, void* buffer, size_t buf_size);
-    ssize_t (__cdecl* write) (const AddonInstance_VFSEntry* instance, void* context, const void* buffer, size_t buf_size);
-    int64_t (__cdecl* seek) (const AddonInstance_VFSEntry* instance, void* context, int64_t position, int whence);
-    int (__cdecl* truncate) (const AddonInstance_VFSEntry* instance, void* context, int64_t size);
-    int64_t (__cdecl* get_length) (const AddonInstance_VFSEntry* instance, void* context);
-    int64_t (__cdecl* get_position) (const AddonInstance_VFSEntry* instance, void* context);
-    int (__cdecl* get_chunk_size) (const AddonInstance_VFSEntry* instance, void* context);
-    int(__cdecl* io_control)(const AddonInstance_VFSEntry* instance,
+    void*(__cdecl* open)(const struct AddonInstance_VFSEntry* instance, const struct VFSURL* url);
+    void*(__cdecl* open_for_write)(const struct AddonInstance_VFSEntry* instance,
+                                   const struct VFSURL* url,
+                                   bool overwrite);
+    ssize_t(__cdecl* read)(const struct AddonInstance_VFSEntry* instance,
+                           void* context,
+                           void* buffer,
+                           size_t buf_size);
+    ssize_t(__cdecl* write)(const struct AddonInstance_VFSEntry* instance,
+                            void* context,
+                            const void* buffer,
+                            size_t buf_size);
+    int64_t(__cdecl* seek)(const struct AddonInstance_VFSEntry* instance,
+                           void* context,
+                           int64_t position,
+                           int whence);
+    int(__cdecl* truncate)(const struct AddonInstance_VFSEntry* instance,
+                           void* context,
+                           int64_t size);
+    int64_t(__cdecl* get_length)(const struct AddonInstance_VFSEntry* instance, void* context);
+    int64_t(__cdecl* get_position)(const struct AddonInstance_VFSEntry* instance, void* context);
+    int(__cdecl* get_chunk_size)(const struct AddonInstance_VFSEntry* instance, void* context);
+    int(__cdecl* io_control)(const struct AddonInstance_VFSEntry* instance,
                              void* context,
                              enum VFS_IOCTRL request,
                              void* param);
-    int (__cdecl* stat) (const AddonInstance_VFSEntry* instance, const VFSURL* url, struct __stat64* buffer);
-    bool (__cdecl* close) (const AddonInstance_VFSEntry* instance, void* context);
-    bool (__cdecl* exists) (const AddonInstance_VFSEntry* instance, const VFSURL* url);
-    void (__cdecl* clear_out_idle) (const AddonInstance_VFSEntry* instance);
-    void (__cdecl* disconnect_all) (const AddonInstance_VFSEntry* instance);
-    bool (__cdecl* delete_it) (const AddonInstance_VFSEntry* instance, const VFSURL* url);
-    bool (__cdecl* rename) (const AddonInstance_VFSEntry* instance, const VFSURL* url, const VFSURL* url2);
-    bool (__cdecl* directory_exists) (const AddonInstance_VFSEntry* instance, const VFSURL* url);
-    bool (__cdecl* remove_directory) (const AddonInstance_VFSEntry* instance, const VFSURL* url);
-    bool (__cdecl* create_directory) (const AddonInstance_VFSEntry* instance, const VFSURL* url);
-    bool (__cdecl* get_directory) (const AddonInstance_VFSEntry* instance,
-                                  const VFSURL* url,
-                                  VFSDirEntry** entries,
+    int(__cdecl* stat)(const struct AddonInstance_VFSEntry* instance,
+                       const struct VFSURL* url,
+                       struct __stat64* buffer);
+    bool(__cdecl* close)(const struct AddonInstance_VFSEntry* instance, void* context);
+    bool(__cdecl* exists)(const struct AddonInstance_VFSEntry* instance, const struct VFSURL* url);
+    void(__cdecl* clear_out_idle)(const struct AddonInstance_VFSEntry* instance);
+    void(__cdecl* disconnect_all)(const struct AddonInstance_VFSEntry* instance);
+    bool(__cdecl* delete_it)(const struct AddonInstance_VFSEntry* instance,
+                             const struct VFSURL* url);
+    bool(__cdecl* rename)(const struct AddonInstance_VFSEntry* instance,
+                          const struct VFSURL* url,
+                          const struct VFSURL* url2);
+    bool(__cdecl* directory_exists)(const struct AddonInstance_VFSEntry* instance,
+                                    const struct VFSURL* url);
+    bool(__cdecl* remove_directory)(const struct AddonInstance_VFSEntry* instance,
+                                    const struct VFSURL* url);
+    bool(__cdecl* create_directory)(const struct AddonInstance_VFSEntry* instance,
+                                    const struct VFSURL* url);
+    bool(__cdecl* get_directory)(const struct AddonInstance_VFSEntry* instance,
+                                 const struct VFSURL* url,
+                                 struct VFSDirEntry** entries,
+                                 int* num_entries,
+                                 VFSGetDirectoryCallbacks* callbacks);
+    bool(__cdecl* contains_files)(const struct AddonInstance_VFSEntry* instance,
+                                  const struct VFSURL* url,
+                                  struct VFSDirEntry** entries,
                                   int* num_entries,
-                                  VFSGetDirectoryCallbacks* callbacks);
-    bool (__cdecl* contains_files) (const AddonInstance_VFSEntry* instance,
-                                   const VFSURL* url,
-                                   VFSDirEntry** entries,
-                                   int* num_entries,
-                                   char* rootpath);
-    void (__cdecl* free_directory) (const AddonInstance_VFSEntry* instance, VFSDirEntry* entries, int num_entries);
+                                  char* rootpath);
+    void(__cdecl* free_directory)(const struct AddonInstance_VFSEntry* instance,
+                                  struct VFSDirEntry* entries,
+                                  int num_entries);
   } KodiToAddonFuncTable_VFSEntry;
 
   typedef struct AddonInstance_VFSEntry /* internal */
