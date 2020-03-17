@@ -17,8 +17,6 @@
 #include "PlatformDefs.h"
 #endif
 
-namespace kodi { namespace addon { class CInstanceVFS; }}
-
 extern "C"
 {
 
@@ -58,7 +56,7 @@ extern "C"
   struct AddonInstance_VFSEntry;
   typedef struct KodiToAddonFuncTable_VFSEntry /* internal */
   {
-    kodi::addon::CInstanceVFS* addonInstance;
+    KODI_HANDLE addonInstance;
 
     void* (__cdecl* open) (const AddonInstance_VFSEntry* instance, const VFSURL* url);
     void* (__cdecl* open_for_write) (const AddonInstance_VFSEntry* instance, const VFSURL* url, bool overwrite);
@@ -417,14 +415,15 @@ private:
 
   inline static void* ADDON_Open(const AddonInstance_VFSEntry* instance, const VFSURL* url)
   {
-    return instance->toAddon.addonInstance->Open(*url);
+    return static_cast<CInstanceVFS*>(instance->toAddon.addonInstance)->Open(*url);
   }
 
   inline static void* ADDON_OpenForWrite(const AddonInstance_VFSEntry* instance,
                                          const VFSURL* url,
                                          bool overWrite)
   {
-    return instance->toAddon.addonInstance->OpenForWrite(*url, overWrite);
+    return static_cast<CInstanceVFS*>(instance->toAddon.addonInstance)
+        ->OpenForWrite(*url, overWrite);
   }
 
   inline static ssize_t ADDON_Read(const AddonInstance_VFSEntry* instance,
@@ -432,7 +431,8 @@ private:
                                    void* buffer,
                                    size_t uiBufSize)
   {
-    return instance->toAddon.addonInstance->Read(context, buffer, uiBufSize);
+    return static_cast<CInstanceVFS*>(instance->toAddon.addonInstance)
+        ->Read(context, buffer, uiBufSize);
   }
 
   inline static ssize_t ADDON_Write(const AddonInstance_VFSEntry* instance,
@@ -440,7 +440,8 @@ private:
                                     const void* buffer,
                                     size_t uiBufSize)
   {
-    return instance->toAddon.addonInstance->Write(context, buffer, uiBufSize);
+    return static_cast<CInstanceVFS*>(instance->toAddon.addonInstance)
+        ->Write(context, buffer, uiBufSize);
   }
 
   inline static int64_t ADDON_Seek(const AddonInstance_VFSEntry* instance,
@@ -448,29 +449,30 @@ private:
                                    int64_t position,
                                    int whence)
   {
-    return instance->toAddon.addonInstance->Seek(context, position, whence);
+    return static_cast<CInstanceVFS*>(instance->toAddon.addonInstance)
+        ->Seek(context, position, whence);
   }
 
   inline static int ADDON_Truncate(const AddonInstance_VFSEntry* instance,
                                    void* context,
                                    int64_t size)
   {
-    return instance->toAddon.addonInstance->Truncate(context, size);
+    return static_cast<CInstanceVFS*>(instance->toAddon.addonInstance)->Truncate(context, size);
   }
 
   inline static int64_t ADDON_GetLength(const AddonInstance_VFSEntry* instance, void* context)
   {
-    return instance->toAddon.addonInstance->GetLength(context);
+    return static_cast<CInstanceVFS*>(instance->toAddon.addonInstance)->GetLength(context);
   }
 
   inline static int64_t ADDON_GetPosition(const AddonInstance_VFSEntry* instance, void* context)
   {
-    return instance->toAddon.addonInstance->GetPosition(context);
+    return static_cast<CInstanceVFS*>(instance->toAddon.addonInstance)->GetPosition(context);
   }
 
   inline static int ADDON_GetChunkSize(const AddonInstance_VFSEntry* instance, void* context)
   {
-    return instance->toAddon.addonInstance->GetChunkSize(context);
+    return static_cast<CInstanceVFS*>(instance->toAddon.addonInstance)->GetChunkSize(context);
   }
 
   inline static int ADDON_IoControl(const AddonInstance_VFSEntry* instance,
@@ -478,64 +480,65 @@ private:
                                     XFILE::EIoControl request,
                                     void* param)
   {
-    return instance->toAddon.addonInstance->IoControl(context, request, param);
+    return static_cast<CInstanceVFS*>(instance->toAddon.addonInstance)
+        ->IoControl(context, request, param);
   }
 
   inline static int ADDON_Stat(const AddonInstance_VFSEntry* instance,
                                const VFSURL* url,
                                struct __stat64* buffer)
   {
-    return instance->toAddon.addonInstance->Stat(*url, buffer);
+    return static_cast<CInstanceVFS*>(instance->toAddon.addonInstance)->Stat(*url, buffer);
   }
 
   inline static bool ADDON_Close(const AddonInstance_VFSEntry* instance, void* context)
   {
-    return instance->toAddon.addonInstance->Close(context);
+    return static_cast<CInstanceVFS*>(instance->toAddon.addonInstance)->Close(context);
   }
 
   inline static bool ADDON_Exists(const AddonInstance_VFSEntry* instance, const VFSURL* url)
   {
-    return instance->toAddon.addonInstance->Exists(*url);
+    return static_cast<CInstanceVFS*>(instance->toAddon.addonInstance)->Exists(*url);
   }
 
   inline static void ADDON_ClearOutIdle(const AddonInstance_VFSEntry* instance)
   {
-    return instance->toAddon.addonInstance->ClearOutIdle();
+    return static_cast<CInstanceVFS*>(instance->toAddon.addonInstance)->ClearOutIdle();
   }
 
   inline static void ADDON_DisconnectAll(const AddonInstance_VFSEntry* instance)
   {
-    return instance->toAddon.addonInstance->DisconnectAll();
+    return static_cast<CInstanceVFS*>(instance->toAddon.addonInstance)->DisconnectAll();
   }
 
   inline static bool ADDON_Delete(const AddonInstance_VFSEntry* instance, const VFSURL* url)
   {
-    return instance->toAddon.addonInstance->Delete(*url);
+    return static_cast<CInstanceVFS*>(instance->toAddon.addonInstance)->Delete(*url);
   }
 
   inline static bool ADDON_Rename(const AddonInstance_VFSEntry* instance,
                                   const VFSURL* url,
                                   const VFSURL* url2)
   {
-    return instance->toAddon.addonInstance->Rename(*url, *url2);
+    return static_cast<CInstanceVFS*>(instance->toAddon.addonInstance)->Rename(*url, *url2);
   }
 
   inline static bool ADDON_DirectoryExists(const AddonInstance_VFSEntry* instance,
                                            const VFSURL* url)
   {
-    return instance->toAddon.addonInstance->DirectoryExists(*url);
+    return static_cast<CInstanceVFS*>(instance->toAddon.addonInstance)->DirectoryExists(*url);
   }
 
   inline static bool ADDON_RemoveDirectory(const AddonInstance_VFSEntry* instance,
                                            const VFSURL* url)
   {
-    return instance->toAddon.addonInstance->RemoveDirectory(*url);
+    return static_cast<CInstanceVFS*>(instance->toAddon.addonInstance)->RemoveDirectory(*url);
   }
 
   inline static bool ADDON_CreateDirectory(const AddonInstance_VFSEntry* instance,
                                            const VFSURL* url)
   {
-    return instance->toAddon.addonInstance->CreateDirectory(*url);
+    return static_cast<CInstanceVFS*>(instance->toAddon.addonInstance)->CreateDirectory(*url);
   }
 
   inline static bool ADDON_GetDirectory(const AddonInstance_VFSEntry* instance,
@@ -545,8 +548,8 @@ private:
                                         VFSGetDirectoryCallbacks* callbacks)
   {
     std::vector<kodi::vfs::CDirEntry> addonEntries;
-    bool ret =
-        instance->toAddon.addonInstance->GetDirectory(*url, addonEntries, CVFSCallbacks(callbacks));
+    bool ret = static_cast<CInstanceVFS*>(instance->toAddon.addonInstance)
+                   ->GetDirectory(*url, addonEntries, CVFSCallbacks(callbacks));
     if (ret)
     {
       VFSDirEntry* entries =
@@ -612,7 +615,8 @@ private:
   {
     std::string cppRootPath;
     std::vector<kodi::vfs::CDirEntry> addonEntries;
-    bool ret = instance->toAddon.addonInstance->ContainsFiles(*url, addonEntries, cppRootPath);
+    bool ret = static_cast<CInstanceVFS*>(instance->toAddon.addonInstance)
+                   ->ContainsFiles(*url, addonEntries, cppRootPath);
     if (ret)
     {
       strncpy(rootpath, cppRootPath.c_str(), ADDON_STANDARD_STRING_LENGTH);
