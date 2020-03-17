@@ -576,6 +576,8 @@ void CAESinkAUDIOTRACK::GetDelay(AEDelayStatus& status)
     return;
   }
 
+  bool usesAdvancedLogging =
+      CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->CanLogComponent(LOGAUDIO);
   // In their infinite wisdom, Google decided to make getPlaybackHeadPosition
   // return a 32bit "int" that you should "interpret as unsigned."  As such,
   // for wrap safety, we need to do all ops on it in 32bit integer math.
@@ -599,15 +601,6 @@ void CAESinkAUDIOTRACK::GetDelay(AEDelayStatus& status)
   if (m_pause_ms > 0.0)
     delay = m_audiotrackbuffer_sec;
 
-  const double d = GetMovingAverageDelay(delay);
-
-  // Audiotrack is caching more than we though it would
-  if (d > m_audiotrackbuffer_sec)
-    m_audiotrackbuffer_sec = d;
-
-  // track delay in local member
-  m_delay = d;
-
   if (m_stampTimer.IsTimePast())
   {
     if (!m_at_jni->getTimestamp(m_timestamp))
@@ -625,72 +618,85 @@ void CAESinkAUDIOTRACK::GetDelay(AEDelayStatus& status)
         m_stampTimer.Set(100);
     }
   }
-  else
+  // check if last value was received less than 2 seconds ago
+  if (m_timestamp.get_framePosition() > 0 &&
+      (CurrentHostCounter() - m_timestamp.get_nanoTime()) < 2 * 1000 * 1000 * 1000)
   {
-    // check if last value was received less than 2 seconds ago
-    if (m_timestamp.get_framePosition() > 0 &&
-        (CurrentHostCounter() - m_timestamp.get_nanoTime()) < 2 * 1000 * 1000 * 1000)
+    if (usesAdvancedLogging)
     {
-      if (CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->CanLogComponent(LOGAUDIO))
-      {
-        CLog::Log(LOGDEBUG, "Framecounter: {} Time: {} Current-Time: {}",
-                  (m_timestamp.get_framePosition() & UINT64_LOWER_BYTES),
-                  m_timestamp.get_nanoTime(), CurrentHostCounter());
-      }
-      uint64_t delta = static_cast<uint64_t>(CurrentHostCounter() - m_timestamp.get_nanoTime());
-      uint64_t stamphead =
-          static_cast<uint64_t>(m_timestamp.get_framePosition() & UINT64_LOWER_BYTES) +
-          delta * m_sink_sampleRate / 1000000000.0;
+      CLog::Log(LOGNOTICE, "Framecounter: {} Time: {} Current-Time: {}",
+                (m_timestamp.get_framePosition() & UINT64_LOWER_BYTES), m_timestamp.get_nanoTime(),
+                CurrentHostCounter());
+    }
+    uint64_t delta = static_cast<uint64_t>(CurrentHostCounter() - m_timestamp.get_nanoTime());
+    uint64_t stamphead =
+        static_cast<uint64_t>(m_timestamp.get_framePosition() & UINT64_LOWER_BYTES) +
+        delta * m_sink_sampleRate / 1000000000.0;
+    // wrap around
+    // e.g. 0xFFFFFFFFFFFF0123 -> 0x0000000000002478
+    // because we only query each second the simple smaller comparison won't suffice
+    // as delay can fluctuate minimally
+    if (stamphead < m_timestampPos && (m_timestampPos - stamphead) > 0x7FFFFFFFFFFFFFFFULL)
+    {
+      uint64_t stamp = m_timestampPos;
+      stamp += (1ULL << 32);
+      stamphead = (stamp & UINT64_UPPER_BYTES) | stamphead;
+      CLog::Log(LOGDEBUG, "Wraparound happend old: {} new: {}", m_timestampPos, stamphead);
+    }
+    m_timestampPos = stamphead;
 
-      // wrap around
-      // e.g. 0xFFFFFFFFFFFF0123 -> 0x0000000000002478
-      // because we only query each second the simple smaller comparison won't suffice
-      // as delay can fluctuate minimally
-      if (stamphead < m_timestampPos && (m_timestampPos - stamphead) > 0x7FFFFFFFFFFFFFFFULL)
-      {
-        uint64_t stamp = m_timestampPos;
-        stamp += (1ULL << 32);
-        stamphead = (stamp & UINT64_UPPER_BYTES) | stamphead;
-        CLog::Log(LOGDEBUG, "Wraparound happend old: {} new: {}", m_timestampPos, stamphead);
-      }
-      m_timestampPos = stamphead;
+    double playtime = m_timestampPos / static_cast<double>(m_sink_sampleRate);
 
-      double playtime = m_timestampPos / static_cast<double>(m_sink_sampleRate);
-
-      if (CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->CanLogComponent(LOGAUDIO))
-      {
-        CLog::Log(LOGDEBUG,
-                  "Delay - Timestamp: {} (ms) delta: {} (ms) playtime: {} (ms) Duration: {} ms",
-                  1000.0 * (m_duration_written - playtime), delta / 1000000.0, playtime * 1000,
-                  m_duration_written * 1000);
-        CLog::Log(LOGDEBUG, "Head-Position {} Timestamp Position {} Delay-Offset: {} ms", m_headPos,
-                  m_timestampPos, 1000.0 * (m_headPos - m_timestampPos) / m_sink_sampleRate);
-      }
-      double hw_delay =
-          m_duration_written - m_timestampPos / static_cast<double>(m_sink_sampleRate);
-      // sadly we smooth the delay, so only compensate here what we did not yet smooth away
-      hw_delay -= d;
-      // sometimes at the beginning of the stream m_timestampPos is more accurate and ahead of
-      // m_headPos - don't use the computed value then and wait
-      if (hw_delay >= 0.0 && hw_delay < 1.0)
-        m_hw_delay = hw_delay;
-      if (CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->CanLogComponent(LOGAUDIO))
-      {
-        CLog::Log(LOGDEBUG, "HW-Delay (1): {}", hw_delay);
-      }
+    if (usesAdvancedLogging)
+    {
+      CLog::Log(LOGNOTICE,
+                "Delay - Timestamp: {} (ms) delta: {} (ms) playtime: {} (ms) Duration: {} ms",
+                1000.0 * (m_duration_written - playtime), delta / 1000000.0, playtime * 1000,
+                m_duration_written * 1000);
+      CLog::Log(LOGNOTICE, "Head-Position {} Timestamp Position {} Delay-Offset: {} ms", m_headPos,
+                m_timestampPos, 1000.0 * (m_headPos - m_timestampPos) / m_sink_sampleRate);
+    }
+    double hw_delay = m_duration_written - playtime;
+    // correct by subtracting above measured delay, if lower delay gets automatically reduced
+    hw_delay -= delay;
+    // sometimes at the beginning of the stream m_timestampPos is more accurate and ahead of
+    // m_headPos - don't use the computed value then and wait
+    if (hw_delay > -1.0 && hw_delay < 1.0)
+      m_hw_delay = hw_delay;
+    else
+      m_hw_delay = 0.0;
+    if (usesAdvancedLogging)
+    {
+      CLog::Log(LOGNOTICE, "HW-Delay (1): {} ms", hw_delay * 1000);
     }
   }
-  if (CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->CanLogComponent(LOGAUDIO))
-  {
-    CLog::Log(LOGDEBUG, "Delay Current: %lf", d * 1000);
-  }
 
+  delay += m_hw_delay;
+  if (usesAdvancedLogging)
+  {
+    CLog::Log(LOGNOTICE, "Combined Delay: {} ms", delay * 1000);
+  }
+  if (delay < 0.0)
+    delay = 0.0;
+
+  const double d = GetMovingAverageDelay(delay);
+
+  // Audiotrack is caching more than we though it would
+  if (d > m_audiotrackbuffer_sec)
+    m_audiotrackbuffer_sec = d;
+
+  // track delay in local member
+  m_delay = d;
+  if (usesAdvancedLogging)
+  {
+    CLog::Log(LOGNOTICE, "Delay Current: %lf ms", d * 1000);
+  }
   status.SetDelay(d);
 }
 
 double CAESinkAUDIOTRACK::GetLatency()
 {
-  return m_hw_delay;
+  return 0.0;
 }
 
 double CAESinkAUDIOTRACK::GetCacheTotal()
