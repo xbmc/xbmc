@@ -26,6 +26,7 @@ addons/script.module.pil/*
 addons/script.module.pycryptodome/*
 addons/script.module.pysqlite/*
 addons/resource.language.en_gb/*
+addons/resource.timezone/*
 addons/resource.uisounds.kodi/*
 addons/resource.images.weathericons.default/*
 addons/service.xbmc.versioncheck/*

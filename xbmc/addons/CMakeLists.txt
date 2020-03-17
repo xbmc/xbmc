@@ -26,6 +26,7 @@ set(SOURCES Addon.cpp
             ScreenSaver.cpp
             Service.cpp
             Skin.cpp
+            TimeZoneResource.cpp
             UISoundsResource.cpp
             VFSEntry.cpp
             Visualization.cpp
@@ -64,6 +65,7 @@ set(HEADERS Addon.h
             ScreenSaver.h
             Service.h
             Skin.h
+            TimeZoneResource.h
             UISoundsResource.h
             VFSEntry.h
             Visualization.h
