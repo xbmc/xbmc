@@ -317,6 +317,12 @@ namespace PVR
      */
    const std::string GetGenresLabel() const;
 
+   /*!
+    * @brief Get the first air date of this event.
+    * @return The first air date.
+    */
+   CDateTime FirstAired() const;
+
   private:
     CDateTime m_recordingTime; /*!< start time of the recording */
     bool m_bGotMetaData;

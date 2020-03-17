@@ -428,6 +428,19 @@ bool CPVRGUIInfo::GetListItemAndPlayerLabel(const CFileItem* item, const CGUIInf
         strValue = recording->IsRadio() ? m_strPlayingRadioGroup : m_strPlayingTVGroup;
         return true;
       }
+      case VIDEOPLAYER_PREMIERED:
+      case LISTITEM_PREMIERED:
+        if (recording->FirstAired().IsValid())
+        {
+          strValue = recording->FirstAired().GetAsLocalizedDate(true);
+          return true;
+        }
+        else if (recording->HasYear())
+        {
+          strValue = StringUtils::Format("%i", recording->GetYear());
+          return true;
+        }
+        return false;
     }
     return false;
   }

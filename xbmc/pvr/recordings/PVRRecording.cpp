@@ -94,6 +94,8 @@ CPVRRecording::CPVRRecording(const PVR_RECORDING& recording, unsigned int iClien
   m_bIsDeleted = recording.bIsDeleted;
   m_iEpgEventId = recording.iEpgEventId;
   m_iChannelUid = recording.iChannelUid;
+  if (strlen(recording.strFirstAired) > 0)
+    m_firstAired.SetFromW3CDateTime(recording.strFirstAired);
 
   SetGenre(recording.iGenreType, recording.iGenreSubType, recording.strGenreDescription);
   CVideoInfoTag::SetPlayCount(recording.iPlayCount);
@@ -161,7 +163,8 @@ bool CPVRRecording::operator ==(const CPVRRecording& right) const
        m_bRadio == right.m_bRadio &&
        m_genre == right.m_genre &&
        m_iGenreType == right.m_iGenreType &&
-       m_iGenreSubType == right.m_iGenreSubType);
+       m_iGenreSubType == right.m_iGenreSubType &&
+       m_firstAired == right.m_firstAired);
 }
 
 bool CPVRRecording::operator !=(const CPVRRecording& right) const
@@ -364,6 +367,7 @@ void CPVRRecording::Update(const CPVRRecording& tag)
   m_iEpgEventId = tag.m_iEpgEventId;
   m_iChannelUid = tag.m_iChannelUid;
   m_bRadio = tag.m_bRadio;
+  m_firstAired = tag.m_firstAired;
 
   CVideoInfoTag::SetPlayCount(tag.GetLocalPlayCount());
   CVideoInfoTag::SetResumePoint(tag.GetLocalResumePoint());
@@ -521,4 +525,9 @@ void CPVRRecording::SetGenre(int iGenreType, int iGenreSubType, const std::strin
 const std::string CPVRRecording::GetGenresLabel() const
 {
   return StringUtils::Join(m_genre, CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoItemSeparator);
+}
+
+CDateTime CPVRRecording::FirstAired() const
+{
+  return m_firstAired;
 }

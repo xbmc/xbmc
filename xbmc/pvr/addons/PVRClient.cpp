@@ -301,6 +301,9 @@ void CPVRClient::WriteClientRecordingInfo(const CPVRRecording& xbmcRecording, PV
   addonRecording.bIsDeleted = xbmcRecording.IsDeleted();
   addonRecording.iChannelUid = xbmcRecording.ChannelUid();
   addonRecording.channelType = xbmcRecording.IsRadio() ? PVR_RECORDING_CHANNEL_TYPE_RADIO : PVR_RECORDING_CHANNEL_TYPE_TV;
+  if (xbmcRecording.FirstAired().IsValid())
+    strncpy(addonRecording.strFirstAired, xbmcRecording.FirstAired().GetAsW3CDate().c_str(),
+            sizeof(addonRecording.strFirstAired) - 1);
 }
 
 /*!
