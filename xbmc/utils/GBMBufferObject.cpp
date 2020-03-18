@@ -28,6 +28,9 @@ CGBMBufferObject::~CGBMBufferObject()
 
 bool CGBMBufferObject::CreateBufferObject(uint32_t format, uint32_t width, uint32_t height)
 {
+  if (m_fd >= 0)
+    return true;
+
   m_width = width;
   m_height = height;
 
@@ -49,6 +52,7 @@ void CGBMBufferObject::DestroyBufferObject()
     gbm_bo_destroy(m_bo);
 
   m_bo = nullptr;
+  m_fd = -1;
 }
 
 uint8_t* CGBMBufferObject::GetMemory()
