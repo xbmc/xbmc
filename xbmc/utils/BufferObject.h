@@ -13,9 +13,19 @@
 #include <memory>
 #include <stdint.h>
 
+/**
+ * @brief base class for using the IBufferObject interface. Derived classes
+ *        should be based on this class.
+ *
+ */
 class CBufferObject : public IBufferObject
 {
 public:
+  /**
+   * @brief Get a BufferObject from CBufferObjectFactory
+   *
+   * @return std::unique_ptr<CBufferObject>
+   */
   static std::unique_ptr<CBufferObject> GetBufferObject();
 
   virtual int GetFd() override;
