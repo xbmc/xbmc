@@ -26,7 +26,7 @@ CGBMBufferObject::~CGBMBufferObject()
   DestroyBufferObject();
 }
 
-bool CGBMBufferObject::CreateBufferObject(int format, int width, int height)
+bool CGBMBufferObject::CreateBufferObject(uint32_t format, int width, int height)
 {
   m_width = width;
   m_height = height;

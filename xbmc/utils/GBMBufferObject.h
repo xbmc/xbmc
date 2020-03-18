@@ -21,7 +21,7 @@ public:
   CGBMBufferObject();
   ~CGBMBufferObject() override;
 
-  bool CreateBufferObject(int format, int width, int height) override;
+  bool CreateBufferObject(uint32_t format, int width, int height) override;
   void DestroyBufferObject() override;
   uint8_t* GetMemory() override;
   void ReleaseMemory() override;
