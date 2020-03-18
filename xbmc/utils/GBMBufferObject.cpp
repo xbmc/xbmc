@@ -43,6 +43,8 @@ bool CGBMBufferObject::CreateBufferObject(uint32_t format, uint32_t width, uint3
 
 void CGBMBufferObject::DestroyBufferObject()
 {
+  close(m_fd);
+
   if (m_bo)
     gbm_bo_destroy(m_bo);
 }
