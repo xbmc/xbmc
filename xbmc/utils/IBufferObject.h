@@ -20,5 +20,5 @@ public:
   virtual uint8_t *GetMemory() = 0;
   virtual void ReleaseMemory() { }
   virtual int GetFd() { return -1; }
-  virtual int GetStride() = 0;
+  virtual uint32_t GetStride() = 0;
 };

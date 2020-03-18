@@ -74,7 +74,7 @@ int CGBMBufferObject::GetFd()
   return m_fd;
 }
 
-int CGBMBufferObject::GetStride()
+uint32_t CGBMBufferObject::GetStride()
 {
   return m_stride;
 }

@@ -26,7 +26,7 @@ public:
   uint8_t* GetMemory() override;
   void ReleaseMemory() override;
   int GetFd() override;
-  int GetStride() override;
+  uint32_t GetStride() override;
   uint64_t GetModifier();
 
 private:
