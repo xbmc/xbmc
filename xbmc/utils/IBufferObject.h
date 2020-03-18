@@ -15,14 +15,10 @@ class IBufferObject
 public:
   virtual ~IBufferObject() = default;
 
-  virtual bool CreateBufferObject(uint32_t format, int width, int height) = 0;
+  virtual bool CreateBufferObject(uint32_t format, uint32_t width, uint32_t height) = 0;
   virtual void DestroyBufferObject() { }
   virtual uint8_t *GetMemory() = 0;
   virtual void ReleaseMemory() { }
   virtual int GetFd() { return -1; }
   virtual int GetStride() = 0;
-
-protected:
-  int m_width = 0;
-  int m_height = 0;
 };
