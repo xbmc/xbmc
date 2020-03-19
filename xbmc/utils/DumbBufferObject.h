@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2018 Team Kodi
+ *  Copyright (C) 2005-2020 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -13,14 +13,11 @@
 #include <memory>
 #include <stdint.h>
 
-struct gbm_bo;
-struct gbm_device;
-
-class CGBMBufferObject : public CBufferObject
+class CDumbBufferObject : public CBufferObject
 {
 public:
-  CGBMBufferObject();
-  ~CGBMBufferObject() override;
+  CDumbBufferObject();
+  virtual ~CDumbBufferObject() override;
 
   // Registration
   static std::unique_ptr<CBufferObject> Create();
@@ -32,16 +29,9 @@ public:
   uint8_t* GetMemory() override;
   void ReleaseMemory() override;
 
-  // CBufferObject overrides
-  uint64_t GetModifier() override;
-
 private:
-  gbm_device* m_device{nullptr};
-  gbm_bo* m_bo{nullptr};
-
-  uint32_t m_width{0};
-  uint32_t m_height{0};
-
+  int m_device{-1};
+  uint64_t m_size{0};
+  uint64_t m_offset{0};
   uint8_t* m_map{nullptr};
-  void* m_map_data{nullptr};
 };

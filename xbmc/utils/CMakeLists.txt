@@ -189,6 +189,13 @@ if(CORE_PLATFORM_NAME_LC STREQUAL gbm)
   list(APPEND SOURCES EGLImage.cpp)
   list(APPEND HEADERS EGLImage.h)
 
+  list(APPEND SOURCES BufferObject.cpp
+                      BufferObjectFactory.cpp
+                      DumbBufferObject.cpp)
+  list(APPEND HEADERS BufferObject.h
+                      BufferObjectFactory.h
+                      DumbBufferObject.h)
+
   if(GBM_HAS_BO_MAP)
     list(APPEND SOURCES GBMBufferObject.cpp)
     list(APPEND HEADERS GBMBufferObject.h)

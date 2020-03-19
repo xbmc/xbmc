@@ -8,6 +8,7 @@
 
 #include "GBMBufferObject.h"
 
+#include "BufferObjectFactory.h"
 #include "ServiceBroker.h"
 #include "windowing/gbm/WinSystemGbmEGLContext.h"
 
@@ -15,8 +16,17 @@
 
 using namespace KODI::WINDOWING::GBM;
 
-CGBMBufferObject::CGBMBufferObject(int format) :
-  m_format(format)
+std::unique_ptr<CBufferObject> CGBMBufferObject::Create()
+{
+  return std::make_unique<CGBMBufferObject>();
+}
+
+void CGBMBufferObject::Register()
+{
+  CBufferObjectFactory::RegisterBufferObject(CGBMBufferObject::Create);
+}
+
+CGBMBufferObject::CGBMBufferObject()
 {
   m_device = static_cast<CWinSystemGbmEGLContext*>(CServiceBroker::GetWinSystem())->GetGBMDevice();
 }
@@ -27,12 +37,15 @@ CGBMBufferObject::~CGBMBufferObject()
   DestroyBufferObject();
 }
 
-bool CGBMBufferObject::CreateBufferObject(int width, int height)
+bool CGBMBufferObject::CreateBufferObject(uint32_t format, uint32_t width, uint32_t height)
 {
+  if (m_fd >= 0)
+    return true;
+
   m_width = width;
   m_height = height;
 
-  m_bo = gbm_bo_create(m_device, m_width, m_height, m_format, GBM_BO_USE_LINEAR);
+  m_bo = gbm_bo_create(m_device, m_width, m_height, format, GBM_BO_USE_LINEAR);
 
   if (!m_bo)
     return false;
@@ -44,8 +57,13 @@ bool CGBMBufferObject::CreateBufferObject(int width, int height)
 
 void CGBMBufferObject::DestroyBufferObject()
 {
+  close(m_fd);
+
   if (m_bo)
     gbm_bo_destroy(m_bo);
+
+  m_bo = nullptr;
+  m_fd = -1;
 }
 
 uint8_t* CGBMBufferObject::GetMemory()
@@ -68,16 +86,6 @@ void CGBMBufferObject::ReleaseMemory()
     m_map_data = nullptr;
     m_map = nullptr;
   }
-}
-
-int CGBMBufferObject::GetFd()
-{
-  return m_fd;
-}
-
-int CGBMBufferObject::GetStride()
-{
-  return m_stride;
 }
 
 uint64_t CGBMBufferObject::GetModifier()

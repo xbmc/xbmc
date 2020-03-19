@@ -9,20 +9,20 @@
 #include "RenderBufferGBM.h"
 
 #include "ServiceBroker.h"
+#include "utils/BufferObject.h"
 #include "utils/EGLImage.h"
-#include "utils/GBMBufferObject.h"
 #include "windowing/gbm/WinSystemGbmEGLContext.h"
 
 using namespace KODI::WINDOWING::GBM;
 using namespace KODI;
 using namespace RETRO;
 
-CRenderBufferGBM::CRenderBufferGBM(CRenderContext &context,
-                                   int fourcc) :
-  m_context(context),
-  m_fourcc(fourcc),
-  m_egl(new CEGLImage(static_cast<CWinSystemGbmEGLContext*>(CServiceBroker::GetWinSystem())->GetEGLDisplay())),
-  m_bo(new CGBMBufferObject(fourcc))
+CRenderBufferGBM::CRenderBufferGBM(CRenderContext& context, int fourcc)
+  : m_context(context),
+    m_fourcc(fourcc),
+    m_egl(new CEGLImage(
+        static_cast<CWinSystemGbmEGLContext*>(CServiceBroker::GetWinSystem())->GetEGLDisplay())),
+    m_bo(CBufferObject::GetBufferObject())
 {
 }
 
@@ -38,7 +38,7 @@ bool CRenderBufferGBM::Allocate(AVPixelFormat format, unsigned int width, unsign
   m_width = width;
   m_height = height;
 
-  m_bo->CreateBufferObject(m_width, m_height);
+  m_bo->CreateBufferObject(m_fourcc, m_width, m_height);
 
   return true;
 }
