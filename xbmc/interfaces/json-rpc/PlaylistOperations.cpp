@@ -154,7 +154,7 @@ JSONRPC_STATUS CPlaylistOperations::Insert(const std::string &method, ITransport
 
   auto tmpList = new CFileItemList();
   tmpList->Copy(list);
-  CApplicationMessenger::GetInstance().PostMsg(TMSG_PLAYLISTPLAYER_INSERT, GetPlaylist(parameterObject["playlistid"]),
+  CApplicationMessenger::GetInstance().PostMsg(TMSG_PLAYLISTPLAYER_INSERT, playlist,
     static_cast<int>(parameterObject["position"].asInteger()), static_cast<void*>(tmpList));
 
   return ACK;
