@@ -308,6 +308,8 @@
 		<param name="icon">$INFO[ListItem.Icon]</param>
 		<param name="icon_height">120</param>
 		<param name="pvr_submenu">false</param>
+		<param name="additional_movie_items">false</param>
+		<param name="additional_tvshow_items">false</param>
 		<param name="pvr_type">TV</param>
 		<param name="visible">true</param>
 		<definition>
@@ -414,6 +416,8 @@
 				<include condition="$PARAM[pvr_submenu]" content="PVRSubMenuContent">
 					<param name="pvr_type" value="$PARAM[pvr_type]"/>
 				</include>
+				<include condition="$PARAM[additional_movie_items]" content="MovieSubmenuItems" />
+				<include condition="$PARAM[additional_tvshow_items]" content="TVShowSubmenuItems" />
 			</control>
 		</definition>
 	</include>
@@ -451,6 +455,32 @@
 				<label>$LOCALIZE[137]</label>
 				<onclick>ActivateWindow($PARAM[pvr_type]Search)</onclick>
 				<thumb>DefaultAddonsSearch.png</thumb>
+			</item>
+		</content>
+	</include>
+	<include name="MovieSubmenuItems">
+		<content>
+			<item>
+				<label>$LOCALIZE[31146]</label>
+				<onclick>ActivateWindow(videos,plugin://script.embuary.info/movie/now_playing,return)</onclick>
+				<thumb>DefaultStudios.png</thumb>
+				<visible>System.AddonIsEnabled(script.embuary.info)</visible>
+			</item>
+			<item>
+				<label>$LOCALIZE[31147]</label>
+				<onclick>ActivateWindow(videos,plugin://script.embuary.info/movie/upcoming,return)</onclick>
+				<thumb>DefaultYear.png</thumb>
+				<visible>System.AddonIsEnabled(script.embuary.info)</visible>
+			</item>
+		</content>
+	</include>
+	<include name="TVShowSubmenuItems">
+		<content>
+			<item>
+				<label>$LOCALIZE[31027]</label>
+				<onclick>ActivateWindow(videos,plugin://script.embuary.info/nextaired,return)</onclick>
+				<thumb>DefaultYear.png</thumb>
+				<visible>System.AddonIsEnabled(script.embuary.info)</visible>
 			</item>
 		</content>
 	</include>
