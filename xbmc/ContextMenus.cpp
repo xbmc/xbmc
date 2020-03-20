@@ -84,7 +84,8 @@ bool CAddRemoveFavourite::IsVisible(const CFileItem& item) const
          !URIUtils::IsProtocol(item.GetPath(), "newtag") &&
          !URIUtils::IsProtocol(item.GetPath(), "musicsearch") &&
          !StringUtils::StartsWith(item.GetPath(), "pvr://guide/") &&
-         !StringUtils::StartsWith(item.GetPath(), "pvr://timers/");
+         !StringUtils::StartsWith(item.GetPath(), "pvr://timers/") &&
+         !item.GetPath().empty();
 }
 
 bool CAddRemoveFavourite::Execute(const CFileItemPtr& item) const
