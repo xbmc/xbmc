@@ -491,8 +491,8 @@ bool CSettingsOperations::SerializeSettingInt(std::shared_ptr<const CSettingInt>
       for (const auto& itOption : options)
       {
         CVariant varOption(CVariant::VariantTypeObject);
-        varOption["label"] = g_localizeStrings.Get(itOption.first);
-        varOption["value"] = itOption.second;
+        varOption["label"] = g_localizeStrings.Get(itOption.label);
+        varOption["value"] = itOption.value;
         obj["options"].push_back(varOption);
       }
       break;

@@ -24,6 +24,7 @@ public:
     int defaultPort;       //!< Default port to use for protocol
     std::string type;      //!< URL type for protocol
     int label;             //!< String ID to use as label in dialog
+    std::string addonId; //!< Addon identifier, leaved empty if inside Kodi
   };
 
   CGUIDialogNetworkSetup(void);

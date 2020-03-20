@@ -850,10 +850,12 @@ bool CSettingInt::Deserialize(const TiXmlNode *node, bool update /* = false */)
         auto optionElement = options->FirstChildElement(SETTING_XML_ELM_OPTION);
         while (optionElement != nullptr)
         {
-          std::pair<int, int> entry;
-          if (optionElement->QueryIntAttribute(SETTING_XML_ATTR_LABEL, &entry.first) == TIXML_SUCCESS && entry.first > 0)
+          TranslatableIntegerSettingOption entry;
+          if (optionElement->QueryIntAttribute(SETTING_XML_ATTR_LABEL, &entry.label) ==
+                  TIXML_SUCCESS &&
+              entry.label > 0)
           {
-            entry.second = strtol(optionElement->FirstChild()->Value(), nullptr, 10);
+            entry.value = strtol(optionElement->FirstChild()->Value(), nullptr, 10);
             m_translatableOptions.push_back(entry);
           }
           else

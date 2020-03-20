@@ -213,7 +213,9 @@ void CMediaManager::GetNetworkLocations(VECSOURCES &locations, bool autolocation
         if (!info.type.empty() && info.supportBrowsing)
         {
           share.strPath = info.type + "://";
-          share.strName = g_localizeStrings.Get(info.label);
+          share.strName = g_localizeStrings.GetAddonString(addon->ID(), info.label);
+          if (share.strName.empty())
+            share.strName = g_localizeStrings.Get(info.label);
           locations.push_back(share);
         }
       }

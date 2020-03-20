@@ -346,21 +346,23 @@ void CGUIDialogLibExportSettings::InitializeSettings()
 
   TranslatableIntegerSettingOptions entries;
 
-  entries.push_back(std::make_pair(38301, ELIBEXPORT_SINGLEFILE));
-  entries.push_back(std::make_pair(38303, ELIBEXPORT_TOLIBRARYFOLDER));
-  entries.push_back(std::make_pair(38302, ELIBEXPORT_SEPARATEFILES));
-  entries.push_back(std::make_pair(38321, ELIBEXPORT_ARTISTFOLDERS));
+  entries.push_back(TranslatableIntegerSettingOption(38301, ELIBEXPORT_SINGLEFILE));
+  entries.push_back(TranslatableIntegerSettingOption(38303, ELIBEXPORT_TOLIBRARYFOLDER));
+  entries.push_back(TranslatableIntegerSettingOption(38302, ELIBEXPORT_SEPARATEFILES));
+  entries.push_back(TranslatableIntegerSettingOption(38321, ELIBEXPORT_ARTISTFOLDERS));
   AddList(groupDetails, CSettings::SETTING_MUSICLIBRARY_EXPORT_FILETYPE, 38304, SettingLevel::Basic, m_settings.GetExportType(), entries, 38304); // "Choose kind of export output"
   AddButton(groupDetails, CSettings::SETTING_MUSICLIBRARY_EXPORT_FOLDER, 38305, SettingLevel::Basic);
 
   entries.clear();
   if (!m_settings.IsArtistFoldersOnly())
-    entries.push_back(std::make_pair(132, ELIBEXPORT_ALBUMS));  //ablums
+    entries.push_back(TranslatableIntegerSettingOption(132, ELIBEXPORT_ALBUMS)); //ablums
   if (m_settings.IsSingleFile())
-    entries.push_back(std::make_pair(134, ELIBEXPORT_SONGS));  //songs
-  entries.push_back(std::make_pair(38043, ELIBEXPORT_ALBUMARTISTS)); //album artists
-  entries.push_back(std::make_pair(38312, ELIBEXPORT_SONGARTISTS)); //song artists
-  entries.push_back(std::make_pair(38313, ELIBEXPORT_OTHERARTISTS)); //other artists
+    entries.push_back(TranslatableIntegerSettingOption(134, ELIBEXPORT_SONGS)); //songs
+  entries.push_back(
+      TranslatableIntegerSettingOption(38043, ELIBEXPORT_ALBUMARTISTS)); //album artists
+  entries.push_back(TranslatableIntegerSettingOption(38312, ELIBEXPORT_SONGARTISTS)); //song artists
+  entries.push_back(
+      TranslatableIntegerSettingOption(38313, ELIBEXPORT_OTHERARTISTS)); //other artists
 
   std::vector<int> items;
   if (m_settings.IsArtistFoldersOnly())
