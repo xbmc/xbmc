@@ -109,8 +109,8 @@
 #define ADDON_INSTANCE_VERSION_SCREENSAVER_XML_ID     "kodi.binary.instance.screensaver"
 #define ADDON_INSTANCE_VERSION_SCREENSAVER_DEPENDS    "addon-instance/Screensaver.h"
 
-#define ADDON_INSTANCE_VERSION_VFS                    "2.2.0"
-#define ADDON_INSTANCE_VERSION_VFS_MIN                "2.1.0"
+#define ADDON_INSTANCE_VERSION_VFS                    "2.3.0"
+#define ADDON_INSTANCE_VERSION_VFS_MIN                "2.3.0"
 #define ADDON_INSTANCE_VERSION_VFS_XML_ID             "kodi.binary.instance.vfs"
 #define ADDON_INSTANCE_VERSION_VFS_DEPENDS            "addon-instance/VFS.h"
 
