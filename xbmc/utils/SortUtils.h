@@ -206,6 +206,7 @@ public:
   static void Sort(const SortDescription &sortDescription, SortItems& items);
   static bool SortFromDataset(const SortDescription &sortDescription, const MediaType &mediaType, const std::unique_ptr<dbiplus::Dataset> &dataset, DatabaseResults &results);
 
+  static void GetFieldsForSQLSort(const MediaType& mediaType, SortBy sortMethod, FieldList& fields);
   static const Fields& GetFieldsForSorting(SortBy sortBy);
   static std::string RemoveArticles(const std::string &label);
 
