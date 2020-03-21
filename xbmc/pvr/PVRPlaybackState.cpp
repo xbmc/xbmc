@@ -258,6 +258,11 @@ std::shared_ptr<CPVREpgInfoTag> CPVRPlaybackState::GetPlayingEpgTag() const
   return m_playingEpgTag;
 }
 
+int CPVRPlaybackState::GetPlayingChannelUniqueID() const
+{
+  return m_playingChannelUniqueId;
+}
+
 std::string CPVRPlaybackState::GetPlayingClientName() const
 {
   return m_strPlayingClientName;

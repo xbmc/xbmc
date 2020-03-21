@@ -137,6 +137,12 @@ public:
   std::shared_ptr<CPVREpgInfoTag> GetPlayingEpgTag() const;
 
   /*!
+   * @brief Return playing channel unique identifier
+   * @return The channel id or -1 if not present
+   */
+  int GetPlayingChannelUniqueID() const;
+
+  /*!
    * @brief Get the name of the playing client, if there is one.
    * @return The name of the client or an empty string if nothing is playing.
    */
