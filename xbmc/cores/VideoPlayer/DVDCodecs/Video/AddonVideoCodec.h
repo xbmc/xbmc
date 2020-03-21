@@ -42,10 +42,10 @@ private:
    * In case buffer allocation fails, return false.
    */
   bool GetFrameBuffer(VIDEOCODEC_PICTURE &picture);
-  void ReleaseFrameBuffer(void *buffer);
+  void ReleaseFrameBuffer(KODI_HANDLE videoBufferHandle);
 
   static bool get_frame_buffer(void* kodiInstance, VIDEOCODEC_PICTURE *picture);
-  static void release_frame_buffer(void* kodiInstance, void *buffer);
+  static void release_frame_buffer(void* kodiInstance, KODI_HANDLE videoBufferHandle);
 
   AddonInstance_VideoCodec m_struct;
   int m_codecFlags;

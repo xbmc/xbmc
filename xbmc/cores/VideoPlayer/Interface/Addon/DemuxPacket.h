@@ -16,26 +16,36 @@
 #define DMX_SPECIALID_STREAMINFO    -10
 #define DMX_SPECIALID_STREAMCHANGE  -11
 
-struct DemuxCryptoInfo;
-
-typedef struct DemuxPacket
+#ifdef __cplusplus
+extern "C"
 {
-  DemuxPacket() = default;
+#endif /* __cplusplus */
 
-  uint8_t *pData = nullptr;
-  int iSize = 0;
-  int iStreamId = -1;
-  int64_t demuxerId = -1; // id of the demuxer that created the packet
-  int iGroupId = -1; // the group this data belongs to, used to group data from different streams together
+  struct DemuxCryptoInfo;
 
-  void *pSideData = nullptr;
-  int iSideDataElems = 0;
+  typedef struct DemuxPacket
+  {
+    DemuxPacket() = default;
 
-  double pts = DVD_NOPTS_VALUE;
-  double dts = DVD_NOPTS_VALUE;
-  double duration = 0; // duration in DVD_TIME_BASE if available
-  int dispTime = 0;
-  bool recoveryPoint = false;
+    uint8_t* pData = nullptr;
+    int iSize = 0;
+    int iStreamId = -1;
+    int64_t demuxerId = -1; // id of the demuxer that created the packet
+    int iGroupId =
+        -1; // the group this data belongs to, used to group data from different streams together
 
-  std::shared_ptr<DemuxCryptoInfo> cryptoInfo;
-} DemuxPacket;
+    void* pSideData = nullptr;
+    int iSideDataElems = 0;
+
+    double pts = DVD_NOPTS_VALUE;
+    double dts = DVD_NOPTS_VALUE;
+    double duration = 0; // duration in DVD_TIME_BASE if available
+    int dispTime = 0;
+    bool recoveryPoint = false;
+
+    std::shared_ptr<DemuxCryptoInfo> cryptoInfo;
+  } DemuxPacket;
+
+#ifdef __cplusplus
+} /* extern "C" */
+#endif /* __cplusplus */
