@@ -21,6 +21,7 @@
 #include "cores/VideoPlayer/VideoRenderers/RenderFactory.h"
 #include "rendering/gles/ScreenshotSurfaceGLES.h"
 #include "utils/BufferObjectFactory.h"
+#include "utils/DMAHeapBufferObject.h"
 #include "utils/DumbBufferObject.h"
 #include "utils/GBMBufferObject.h"
 #include "utils/UDMABufferObject.h"
@@ -81,6 +82,9 @@ bool CWinSystemGbmGLESContext::InitWindowSystem()
 #endif
 #if defined(HAVE_LINUX_MEMFD) && defined(HAVE_LINUX_UDMABUF)
   CUDMABufferObject::Register();
+#endif
+#if defined(HAVE_LINUX_DMA_HEAP)
+  CDMAHeapBufferObject::Register();
 #endif
 
   return true;
