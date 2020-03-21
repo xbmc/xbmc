@@ -369,7 +369,8 @@ extern "C"
                                     INPUTSTREAM_CAPABILITIES* capabilities);
 
     // IDemux
-    struct INPUTSTREAM_IDS(__cdecl* get_stream_ids)(const AddonInstance_InputStream* instance);
+    bool(__cdecl* get_stream_ids)(const AddonInstance_InputStream* instance,
+                                  struct INPUTSTREAM_IDS* ids);
     struct INPUTSTREAM_INFO(__cdecl* get_stream)(const AddonInstance_InputStream* instance,
                                                  int streamid);
     void(__cdecl* enable_stream)(const AddonInstance_InputStream* instance,
@@ -476,7 +477,7 @@ public:
      * Get IDs of available streams
      * @remarks
      */
-  virtual INPUTSTREAM_IDS GetStreamIds() = 0;
+  virtual bool GetStreamIds(std::vector<unsigned int>& ids) = 0;
 
   /*!
      * Get stream properties of a stream.
@@ -771,9 +772,21 @@ private:
 
 
   // IDemux
-  inline static struct INPUTSTREAM_IDS ADDON_GetStreamIds(const AddonInstance_InputStream* instance)
+  inline static bool ADDON_GetStreamIds(const AddonInstance_InputStream* instance,
+                                        struct INPUTSTREAM_IDS* ids)
   {
-    return static_cast<CInstanceInputStream*>(instance->toAddon->addonInstance)->GetStreamIds();
+    std::vector<unsigned int> idList;
+    bool ret =
+        static_cast<CInstanceInputStream*>(instance->toAddon->addonInstance)->GetStreamIds(idList);
+    if (ret)
+    {
+      for (size_t i = 0; i < idList.size() && i < INPUTSTREAM_IDS::MAX_STREAM_COUNT; ++i)
+      {
+        ids->m_streamCount++;
+        ids->m_streamIds[i] = idList[i];
+      }
+    }
+    return ret;
   }
 
   inline static struct INPUTSTREAM_INFO ADDON_GetStream(const AddonInstance_InputStream* instance,
