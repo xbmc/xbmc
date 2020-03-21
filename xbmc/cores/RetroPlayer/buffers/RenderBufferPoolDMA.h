@@ -16,6 +16,11 @@ namespace RETRO
 {
   class CRenderContext;
 
+  /**
+   * @brief Special IRenderBufferPool implementation that converts
+   *        AVPixelFormat to DRM_FORMAT_* for use with CRenderBufferDMA.
+   *
+   */
   class CRenderBufferPoolDMA : public CBaseRenderBufferPool
   {
   public:
