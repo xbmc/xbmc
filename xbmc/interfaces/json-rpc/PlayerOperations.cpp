@@ -1697,6 +1697,7 @@ JSONRPC_STATUS CPlayerOperations::GetPropertyValue(PlayerType player, const std:
             result["codec"] = info.codecName;
             result["bitrate"] = info.bitrate;
             result["channels"] = info.channels;
+            result["samplerate"] = info.samplerate;
             AppendAudioStreamFlagsAsBooleans(result, info.flags);
           }
         }
@@ -1716,6 +1717,7 @@ JSONRPC_STATUS CPlayerOperations::GetPropertyValue(PlayerType player, const std:
     switch (player)
     {
       case Video:
+      case Audio:
         if (g_application.GetAppPlayer().HasPlayer())
         {
           for (int index = 0; index < g_application.GetAppPlayer().GetAudioStreamCount(); index++)
@@ -1730,6 +1732,7 @@ JSONRPC_STATUS CPlayerOperations::GetPropertyValue(PlayerType player, const std:
             audioStream["codec"] = info.codecName;
             audioStream["bitrate"] = info.bitrate;
             audioStream["channels"] = info.channels;
+            audioStream["samplerate"] = info.samplerate;
             AppendAudioStreamFlagsAsBooleans(audioStream, info.flags);
 
             result.append(audioStream);
@@ -1737,7 +1740,6 @@ JSONRPC_STATUS CPlayerOperations::GetPropertyValue(PlayerType player, const std:
         }
         break;
 
-      case Audio:
       case Picture:
       default:
         break;
