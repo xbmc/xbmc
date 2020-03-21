@@ -94,10 +94,11 @@ void CGUIDialogFavourites::OnClick(int item)
   if (item < 0 || item >= m_favourites->Size())
     return;
 
-  Close();
-
   CGUIMessage message(GUI_MSG_EXECUTE, 0, GetID());
   message.SetStringParam(m_favouritesService.GetExecutePath(*(*m_favourites)[item], GetID()));
+
+  Close();
+
   CServiceBroker::GetGUI()->GetWindowManager().SendMessage(message);
 }
 
