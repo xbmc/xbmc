@@ -73,7 +73,7 @@ void CPVRClient::StopRunningInstance()
   {
     // stop the pvr manager and stop and unload the running pvr addon. pvr manager will be restarted on demand.
     CServiceBroker::GetPVRManager().Stop();
-    CServiceBroker::GetPVRManager().Clients()->StopClient(addon, false);
+    CServiceBroker::GetPVRManager().Clients()->StopClient(addon->ID(), false);
   }
 }
 

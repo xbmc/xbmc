@@ -84,7 +84,7 @@ void CAddonStatusHandler::Process()
   if (m_status == ADDON_STATUS_NEED_RESTART)
   {
     HELPERS::ShowOKDialogLines(CVariant{heading}, CVariant{24074});
-    CServiceBroker::GetAddonMgr().GetCallbackForType(m_addon->Type())->RequestRestart(m_addon, true);
+    CServiceBroker::GetAddonMgr().GetCallbackForType(m_addon->Type())->RequestRestart(m_addon->ID(), true);
   }
   /* Some required settings are missing/invalid */
   else if (m_status == ADDON_STATUS_NEED_SETTINGS)
@@ -107,7 +107,7 @@ void CAddonStatusHandler::Process()
     {
       //! @todo Doesn't dialogaddonsettings save these automatically? It should do this.
       m_addon->SaveSettings();
-      CServiceBroker::GetAddonMgr().GetCallbackForType(m_addon->Type())->RequestRestart(m_addon, true);
+      CServiceBroker::GetAddonMgr().GetCallbackForType(m_addon->Type())->RequestRestart(m_addon->ID(), true);
     }
   }
 }

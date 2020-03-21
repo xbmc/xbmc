@@ -42,7 +42,7 @@ namespace ADDON
   {
     public:
       virtual ~IAddonMgrCallback() = default;
-      virtual bool RequestRestart(AddonPtr addon, bool datachanged)=0;
+      virtual bool RequestRestart(const std::string& id, bool datachanged)=0;
   };
 
   /**

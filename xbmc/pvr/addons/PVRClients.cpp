@@ -118,12 +118,12 @@ void CPVRClients::UpdateAddons(const std::string& changedAddonId /*= ""*/)
       AddonPtr addon = addonWithStatus.first;
       bool bEnabled = addonWithStatus.second;
 
-      if (bEnabled && (!IsKnownClient(addon) || !IsCreatedClient(addon)))
+      if (bEnabled && (!IsKnownClient(addon->ID()) || !IsCreatedClient(addon->ID())))
       {
         int iClientId = ClientIdFromAddonId(addon->ID());
 
         std::shared_ptr<CPVRClient> client;
-        if (IsKnownClient(addon))
+        if (IsKnownClient(addon->ID()))
         {
           GetClient(iClientId, client);
         }
@@ -138,7 +138,7 @@ void CPVRClients::UpdateAddons(const std::string& changedAddonId /*= ""*/)
         }
         addonsToCreate.emplace_back(std::make_pair(client, iClientId));
       }
-      else if (IsCreatedClient(addon))
+      else if (IsCreatedClient(addon->ID()))
       {
         if (bEnabled)
           addonsToReCreate.emplace_back(addon);
@@ -170,13 +170,13 @@ void CPVRClients::UpdateAddons(const std::string& changedAddonId /*= ""*/)
     for (const auto& addon : addonsToReCreate)
     {
       // recreate client
-      StopClient(addon, true);
+      StopClient(addon->ID(), true);
     }
 
     for (const auto& addon : addonsToDestroy)
     {
       // destroy client
-      StopClient(addon, false);
+      StopClient(addon->ID(), false);
     }
 
     if (!addonsToCreate.empty())
@@ -196,12 +196,12 @@ void CPVRClients::UpdateAddons(const std::string& changedAddonId /*= ""*/)
   }
 }
 
-bool CPVRClients::RequestRestart(AddonPtr addon, bool bDataChanged)
+bool CPVRClients::RequestRestart(const std::string& id, bool bDataChanged)
 {
-  return StopClient(addon, true);
+  return StopClient(id, true);
 }
 
-bool CPVRClients::StopClient(const AddonPtr& addon, bool bRestart)
+bool CPVRClients::StopClient(const std::string& id, bool bRestart)
 {
   // stop playback if needed
   if (CServiceBroker::GetPVRManager().PlaybackState()->IsPlaying())
@@ -209,7 +209,7 @@ bool CPVRClients::StopClient(const AddonPtr& addon, bool bRestart)
 
   CSingleLock lock(m_critSection);
 
-  int iId = GetClientId(addon->ID());
+  int iId = GetClientId(id);
   std::shared_ptr<CPVRClient> mappedClient;
   if (GetClient(iId, mappedClient))
   {
@@ -325,10 +325,10 @@ bool CPVRClients::HasCreatedClients() const
   return false;
 }
 
-bool CPVRClients::IsKnownClient(const AddonPtr& client) const
+bool CPVRClients::IsKnownClient(const std::string& id) const
 {
   // valid client IDs start at 1
-  return GetClientId(client->ID()) > 0;
+  return GetClientId(id) > 0;
 }
 
 bool CPVRClients::IsCreatedClient(int iClientId) const
@@ -337,12 +337,12 @@ bool CPVRClients::IsCreatedClient(int iClientId) const
   return GetCreatedClient(iClientId, client);
 }
 
-bool CPVRClients::IsCreatedClient(const AddonPtr& addon)
+bool CPVRClients::IsCreatedClient(const std::string& id)
 {
   CSingleLock lock(m_critSection);
   for (const auto& client : m_clientMap)
   {
-    if (client.second->ID() == addon->ID())
+    if (client.second->ID() == id)
       return client.second->ReadyToUse();
   }
   return false;
