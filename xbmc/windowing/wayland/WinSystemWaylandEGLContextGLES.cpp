@@ -14,6 +14,8 @@
 #include "cores/VideoPlayer/VideoRenderers/LinuxRendererGLES.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderFactory.h"
 #include "rendering/gles/ScreenshotSurfaceGLES.h"
+#include "utils/BufferObjectFactory.h"
+#include "utils/UDMABufferObject.h"
 #include "utils/log.h"
 
 #include <EGL/egl.h>
@@ -45,6 +47,11 @@ bool CWinSystemWaylandEGLContextGLES::InitWindowSystem()
   {
     ::WAYLAND::VAAPIRegister(m_vaapiProxy.get(), deepColor);
   }
+
+  CBufferObjectFactory::ClearBufferObjects();
+#if defined(HAVE_LINUX_MEMFD) && defined(HAVE_LINUX_UDMABUF)
+  CUDMABufferObject::Register();
+#endif
 
   CScreenshotSurfaceGLES::Register();
 
