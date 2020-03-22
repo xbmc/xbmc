@@ -185,16 +185,18 @@ if(NOT CORE_SYSTEM_NAME STREQUAL windows AND NOT CORE_SYSTEM_NAME STREQUAL windo
   list(APPEND HEADERS GLUtils.h)
 endif()
 
-if(CORE_PLATFORM_NAME_LC STREQUAL gbm)
-  list(APPEND SOURCES EGLImage.cpp)
-  list(APPEND HEADERS EGLImage.h)
-
+if(CORE_PLATFORM_NAME_LC STREQUAL gbm OR CORE_PLATFORM_NAME_LC STREQUAL wayland)
   list(APPEND SOURCES BufferObject.cpp
                       BufferObjectFactory.cpp
-                      DumbBufferObject.cpp)
+                      EGLImage.cpp)
   list(APPEND HEADERS BufferObject.h
                       BufferObjectFactory.h
-                      DumbBufferObject.h)
+                      EGLImage.h)
+
+  if(CORE_PLATFORM_NAME_LC STREQUAL gbm)
+    list(APPEND SOURCES DumbBufferObject.cpp)
+    list(APPEND SOURCES DumbBufferObject.h)
+  endif()
 
   if(HAVE_LINUX_MEMFD AND HAVE_LINUX_UDMABUF)
     list(APPEND SOURCES UDMABufferObject.cpp)

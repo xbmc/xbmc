@@ -19,6 +19,8 @@ namespace RETRO
 class CRendererFactoryDMA : public IRendererFactory
 {
 public:
+  ~CRendererFactoryDMA() override = default;
+
   // implementation of IRendererFactory
   std::string RenderSystemName() const override;
   CRPBaseRenderer* CreateRenderer(const CRenderSettings& settings,
