@@ -12,13 +12,15 @@
 #define SPDLOG_LEVEL_NAMES {"TRACE", "DEBUG", "INFO", "WARNING", "ERROR", "FATAL", "OFF"};
 
 #include "commons/ilog.h"
-#include "settings/AdvancedSettings.h"
-#include "settings/SettingsComponent.h"
+#include "settings/lib/ISettingCallback.h"
+#include "settings/lib/ISettingsHandler.h"
+#include "settings/lib/SettingDefinitions.h"
 #include "utils/IPlatformLog.h"
 #include "utils/StringUtils.h"
 #include "utils/logtypes.h"
 
 #include <string>
+#include <vector>
 
 #include <spdlog/spdlog.h>
 
@@ -34,11 +36,17 @@ class dist_sink;
 } // namespace sinks
 } // namespace spdlog
 
-class CLog
+class CLog : public ISettingsHandler, public ISettingCallback
 {
 public:
   CLog();
   ~CLog() = default;
+
+  // implementation of ISettingsHandler
+  void OnSettingsLoaded() override;
+
+  // implementation of ISettingCallback
+  void OnSettingChanged(std::shared_ptr<const CSetting> setting) override;
 
   void Initialize(const std::string& path);
   void Uninitialize();
@@ -46,6 +54,12 @@ public:
   void SetLogLevel(int level);
   int GetLogLevel() { return m_logLevel; }
   bool IsLogLevelLogged(int loglevel);
+
+  bool CanLogComponent(uint32_t component) const;
+  static void SettingOptionsLoggingComponentsFiller(std::shared_ptr<const CSetting> setting,
+                                                    std::vector<IntegerSettingOption>& list,
+                                                    int& current,
+                                                    void* data);
 
   Logger GetLogger(const std::string& loggerName);
 
@@ -56,9 +70,9 @@ public:
   }
 
   template<typename Char, typename... Args>
-  static inline void Log(int level, int component, const Char* format, Args&&... args)
+  static inline void Log(int level, uint32_t component, const Char* format, Args&&... args)
   {
-    if (!CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->CanLogComponent(component))
+    if (!GetInstance().CanLogComponent(component))
       return;
 
     Log(level, format, std::forward<Args>(args)...);
@@ -72,11 +86,11 @@ public:
 
   template<typename Char, typename... Args>
   static inline void Log(spdlog::level::level_enum level,
-                         int component,
+                         uint32_t component,
                          const Char* format,
                          Args&&... args)
   {
-    if (!CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->CanLogComponent(component))
+    if (!GetInstance().CanLogComponent(component))
       return;
 
     Log(level, format, std::forward<Args>(args)...);
@@ -93,9 +107,9 @@ public:
 
   template<typename Char, typename... Args>
   static inline void LogFunction(
-      int level, const char* functionName, int component, const Char* format, Args&&... args)
+      int level, const char* functionName, uint32_t component, const Char* format, Args&&... args)
   {
-    if (!CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->CanLogComponent(component))
+    if (!GetInstance().CanLogComponent(component))
       return;
 
     LogFunction(level, functionName, format, std::forward<Args>(args)...);
@@ -117,11 +131,11 @@ public:
   template<typename Char, typename... Args>
   static inline void LogFunction(spdlog::level::level_enum level,
                                  const char* functionName,
-                                 int component,
+                                 uint32_t component,
                                  const Char* format,
                                  Args&&... args)
   {
-    if (!CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->CanLogComponent(component))
+    if (!GetInstance().CanLogComponent(component))
       return;
 
     LogFunction(level, functionName, format, std::forward<Args>(args)...);
@@ -175,6 +189,8 @@ private:
 
   Logger CreateLogger(const std::string& loggerName);
 
+  void SetComponentLogLevel(const std::vector<CVariant>& components);
+
   std::unique_ptr<IPlatformLog> m_platform;
   std::shared_ptr<spdlog::sinks::dist_sink<std::mutex>> m_sinks;
   Logger m_defaultLogger;
@@ -182,6 +198,9 @@ private:
   std::shared_ptr<spdlog::sinks::basic_file_sink<std::mutex>> m_fileSink;
 
   int m_logLevel;
+
+  bool m_componentLogEnabled;
+  uint32_t m_componentLogLevels;
 };
 
 namespace XbmcUtils

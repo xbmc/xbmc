@@ -59,7 +59,7 @@ extern "C" int debug_callback(CURL_HANDLE *handle, curl_infotype info, char *out
   if (info == CURLINFO_DATA_IN || info == CURLINFO_DATA_OUT)
     return 0;
 
-  if (!CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->CanLogComponent(LOGCURL))
+  if (!CServiceBroker::GetLogging().CanLogComponent(LOGCURL))
     return 0;
 
   std::string strLine;
@@ -1008,7 +1008,7 @@ bool CCurlFile::Open(const CURL& url)
                                 &m_state->m_multiHandle);
 
   // setup common curl options
-  SetCommonOptions(m_state, m_failOnError && !CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->CanLogComponent(LOGCURL));
+  SetCommonOptions(m_state, m_failOnError && !CServiceBroker::GetLogging().CanLogComponent(LOGCURL));
   SetRequestHeaders(m_state);
   m_state->m_sendRange = m_seekable;
   m_state->m_bRetry = m_allowRetry;
@@ -1018,7 +1018,7 @@ bool CCurlFile::Open(const CURL& url)
   if (m_httpresponse <= 0 || (m_failOnError && m_httpresponse >= 400))
   {
     std::string error;
-    if (m_httpresponse >= 400 && CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->CanLogComponent(LOGCURL))
+    if (m_httpresponse >= 400 && CServiceBroker::GetLogging().CanLogComponent(LOGCURL))
     {
       error.resize(4096);
       ReadString(&error[0], 4095);

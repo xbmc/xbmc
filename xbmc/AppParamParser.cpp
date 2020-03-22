@@ -10,6 +10,7 @@
 
 #include "CompileInfo.h"
 #include "FileItem.h"
+#include "ServiceBroker.h"
 #include "settings/AdvancedSettings.h"
 #include "utils/StringUtils.h"
 #include "utils/SystemInfo.h"

@@ -11,8 +11,7 @@
 #include "CompileInfo.h"
 #include "ServiceBroker.h"
 #include "filesystem/File.h"
-#include "utils/URIUtils.h"
-
+#include "guilib/LocalizeStrings.h"
 #if defined(TARGET_ANDROID)
 #include "platform/android/utils/AndroidInterfaceForCLog.h"
 #elif defined(TARGET_DARWIN)
@@ -22,8 +21,15 @@
 #else
 #include "platform/posix/utils/PosixInterfaceForCLog.h"
 #endif
+#include "settings/SettingUtils.h"
+#include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
+#include "settings/lib/Setting.h"
+#include "settings/lib/SettingsManager.h"
+#include "utils/URIUtils.h"
 
 #include <cstring>
+#include <set>
 
 #include <spdlog/sinks/basic_file_sink.h>
 #include <spdlog/sinks/dist_sink.h>
@@ -36,7 +42,9 @@ CLog::CLog()
   : m_platform(IPlatformLog::CreatePlatformLog()),
     m_sinks(std::make_shared<spdlog::sinks::dist_sink_mt>()),
     m_defaultLogger(CreateLogger("general")),
-    m_logLevel(LOG_LEVEL_DEBUG)
+    m_logLevel(LOG_LEVEL_DEBUG),
+    m_componentLogEnabled(false),
+    m_componentLogLevels(0)
 {
   // add platform-specific debug sinks
   m_platform->AddSinks(m_sinks);
@@ -54,10 +62,41 @@ CLog::CLog()
   SetLogLevel(m_logLevel);
 }
 
-void CLog::Initialize(const std::string& path)
+void CLog::OnSettingsLoaded()
+{
+  const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
+  m_componentLogEnabled = settings->GetBool(CSettings::SETTING_DEBUG_EXTRALOGGING);
+  SetComponentLogLevel(settings->GetList(CSettings::SETTING_DEBUG_SETEXTRALOGLEVEL));
+}
+
+void CLog::OnSettingChanged(std::shared_ptr<const CSetting> setting)
+{
+  if (setting == NULL)
+    return;
+
+  const std::string& settingId = setting->GetId();
+  if (settingId == CSettings::SETTING_DEBUG_EXTRALOGGING)
+    m_componentLogEnabled = std::static_pointer_cast<const CSettingBool>(setting)->GetValue();
+  else if (settingId == CSettings::SETTING_DEBUG_SETEXTRALOGLEVEL)
+    SetComponentLogLevel(
+        CSettingUtils::GetList(std::static_pointer_cast<const CSettingList>(setting)));
+}
+
+void CLog::Initialize(const std::string& path) 
 {
   if (m_fileSink != nullptr)
     return;
+
+  // register setting callbacks
+  auto settingsManager =
+      CServiceBroker::GetSettingsComponent()->GetSettings()->GetSettingsManager();
+  settingsManager->RegisterSettingOptionsFiller("loggingcomponents",
+                                                SettingOptionsLoggingComponentsFiller);
+  settingsManager->RegisterSettingsHandler(this);
+  std::set<std::string> settingSet;
+  settingSet.insert(CSettings::SETTING_DEBUG_EXTRALOGGING);
+  settingSet.insert(CSettings::SETTING_DEBUG_SETEXTRALOGLEVEL);
+  settingsManager->RegisterCallback(this, settingSet);
 
   if (path.empty())
     return;
@@ -93,6 +132,13 @@ void CLog::Uninitialize()
 {
   if (m_fileSink == nullptr)
     return;
+
+  // unregister setting callbacks
+  auto settingsManager =
+      CServiceBroker::GetSettingsComponent()->GetSettings()->GetSettingsManager();
+  settingsManager->UnregisterSettingOptionsFiller("loggingcomponents");
+  settingsManager->UnregisterSettingsHandler(this);
+  settingsManager->UnregisterCallback(this);
 
   // flush all loggers
   spdlog::apply_all([](std::shared_ptr<spdlog::logger> logger) { logger->flush(); });
@@ -140,6 +186,48 @@ bool CLog::IsLogLevelLogged(int loglevel)
     return false;
 
   return (loglevel & LOGMASK) >= LOGNOTICE;
+}
+
+bool CLog::CanLogComponent(uint32_t component) const
+{
+  if (!m_componentLogEnabled || component == 0)
+    return false;
+
+  return ((m_componentLogLevels & component) == component);
+}
+
+void CLog::SettingOptionsLoggingComponentsFiller(SettingConstPtr setting,
+                                                 std::vector<IntegerSettingOption>& list,
+                                                 int& current,
+                                                 void* data)
+{
+  list.emplace_back(g_localizeStrings.Get(669), LOGSAMBA);
+  list.emplace_back(g_localizeStrings.Get(670), LOGCURL);
+  list.emplace_back(g_localizeStrings.Get(672), LOGFFMPEG);
+  list.emplace_back(g_localizeStrings.Get(675), LOGJSONRPC);
+  list.emplace_back(g_localizeStrings.Get(676), LOGAUDIO);
+  list.emplace_back(g_localizeStrings.Get(680), LOGVIDEO);
+  list.emplace_back(g_localizeStrings.Get(683), LOGAVTIMING);
+  list.emplace_back(g_localizeStrings.Get(684), LOGWINDOWING);
+  list.emplace_back(g_localizeStrings.Get(685), LOGPVR);
+  list.emplace_back(g_localizeStrings.Get(686), LOGEPG);
+  list.emplace_back(g_localizeStrings.Get(39117), LOGANNOUNCE);
+#ifdef HAS_DBUS
+  list.emplace_back(g_localizeStrings.Get(674), LOGDBUS);
+#endif
+#ifdef HAS_WEB_SERVER
+  list.emplace_back(g_localizeStrings.Get(681), LOGWEBSERVER);
+#endif
+#ifdef HAS_AIRTUNES
+  list.emplace_back(g_localizeStrings.Get(677), LOGAIRTUNES);
+#endif
+#ifdef HAS_UPNP
+  list.emplace_back(g_localizeStrings.Get(678), LOGUPNP);
+#endif
+#ifdef HAVE_LIBCEC
+  list.emplace_back(g_localizeStrings.Get(679), LOGCEC);
+#endif
+  list.emplace_back(g_localizeStrings.Get(682), LOGDATABASE);
 }
 
 Logger CLog::GetLogger(const std::string& loggerName)
@@ -191,4 +279,16 @@ Logger CLog::CreateLogger(const std::string& loggerName)
   spdlog::initialize_logger(logger);
 
   return logger;
+}
+
+void CLog::SetComponentLogLevel(const std::vector<CVariant>& components)
+{
+  m_componentLogLevels = 0;
+  for (const auto& component : components)
+  {
+    if (!component.isInteger())
+      continue;
+
+    m_componentLogLevels |= static_cast<uint32_t>(component.asInteger());
+  }
 }

@@ -18,7 +18,6 @@
 #include "ServiceBroker.h"
 #include "filesystem/File.h"
 #include "filesystem/SpecialProtocol.h"
-#include "guilib/LocalizeStrings.h"
 #include "LangInfo.h"
 #include "network/DNSNameCache.h"
 #include "profiles/ProfileManager.h"
@@ -69,9 +68,6 @@ void CAdvancedSettings::OnSettingsLoaded()
     CLog::Log(LOGNOTICE, "Disabled debug logging due to GUI setting. Level %d.", m_logLevel);
   }
   CServiceBroker::GetLogging().SetLogLevel(m_logLevel);
-
-  m_extraLogEnabled = settings->GetBool(CSettings::SETTING_DEBUG_EXTRALOGGING);
-  SetExtraLogLevel(settings->GetList(CSettings::SETTING_DEBUG_SETEXTRALOGLEVEL));
 }
 
 void CAdvancedSettings::OnSettingsUnloaded()
@@ -87,10 +83,6 @@ void CAdvancedSettings::OnSettingChanged(std::shared_ptr<const CSetting> setting
   const std::string &settingId = setting->GetId();
   if (settingId == CSettings::SETTING_DEBUG_SHOWLOGINFO)
     SetDebugMode(std::static_pointer_cast<const CSettingBool>(setting)->GetValue());
-  else if (settingId == CSettings::SETTING_DEBUG_EXTRALOGGING)
-    m_extraLogEnabled = std::static_pointer_cast<const CSettingBool>(setting)->GetValue();
-  else if (settingId == CSettings::SETTING_DEBUG_SETEXTRALOGLEVEL)
-    SetExtraLogLevel(CSettingUtils::GetList(std::static_pointer_cast<const CSettingList>(setting)));
 }
 
 void CAdvancedSettings::Initialize(const CAppParamParser &params, CSettingsManager& settingsMgr)
@@ -99,12 +91,9 @@ void CAdvancedSettings::Initialize(const CAppParamParser &params, CSettingsManag
 
   params.SetAdvancedSettings(*this);
 
-  settingsMgr.RegisterSettingOptionsFiller("loggingcomponents", SettingOptionsLoggingComponentsFiller);
   settingsMgr.RegisterSettingsHandler(this, true);
   std::set<std::string> settingSet;
   settingSet.insert(CSettings::SETTING_DEBUG_SHOWLOGINFO);
-  settingSet.insert(CSettings::SETTING_DEBUG_EXTRALOGGING);
-  settingSet.insert(CSettings::SETTING_DEBUG_SETEXTRALOGLEVEL);
   settingsMgr.RegisterCallback(this, settingSet);
 }
 
@@ -425,8 +414,6 @@ void CAdvancedSettings::Initialize()
   m_videoAssFixedWorks = false;
 
   m_logLevelHint = m_logLevel = LOG_LEVEL_NORMAL;
-  m_extraLogEnabled = false;
-  m_extraLogLevels = 0;
 
   m_openGlDebugging = false;
 
@@ -1360,57 +1347,6 @@ void CAdvancedSettings::SetDebugMode(bool debug)
     CLog::Log(LOGNOTICE, "Disabled debug logging due to GUI setting. Level %d.", level);
     m_logLevel = level;
     CServiceBroker::GetLogging().SetLogLevel(level);
-  }
-}
-
-bool CAdvancedSettings::CanLogComponent(int component) const
-{
-  if (!m_extraLogEnabled || component <= 0)
-    return false;
-
-  return ((m_extraLogLevels & component) == component);
-}
-
-void CAdvancedSettings::SettingOptionsLoggingComponentsFiller(SettingConstPtr setting, std::vector<IntegerSettingOption> &list, int &current, void *data)
-{
-  list.emplace_back(g_localizeStrings.Get(669), LOGSAMBA);
-  list.emplace_back(g_localizeStrings.Get(670), LOGCURL);
-  list.emplace_back(g_localizeStrings.Get(672), LOGFFMPEG);
-  list.emplace_back(g_localizeStrings.Get(675), LOGJSONRPC);
-  list.emplace_back(g_localizeStrings.Get(676), LOGAUDIO);
-  list.emplace_back(g_localizeStrings.Get(680), LOGVIDEO);
-  list.emplace_back(g_localizeStrings.Get(683), LOGAVTIMING);
-  list.emplace_back(g_localizeStrings.Get(684), LOGWINDOWING);
-  list.emplace_back(g_localizeStrings.Get(685), LOGPVR);
-  list.emplace_back(g_localizeStrings.Get(686), LOGEPG);
-  list.emplace_back(g_localizeStrings.Get(39117), LOGANNOUNCE);
-#ifdef HAS_DBUS
-  list.emplace_back(g_localizeStrings.Get(674), LOGDBUS);
-#endif
-#ifdef HAS_WEB_SERVER
-  list.emplace_back(g_localizeStrings.Get(681), LOGWEBSERVER);
-#endif
-#ifdef HAS_AIRTUNES
-  list.emplace_back(g_localizeStrings.Get(677), LOGAIRTUNES);
-#endif
-#ifdef HAS_UPNP
-  list.emplace_back(g_localizeStrings.Get(678), LOGUPNP);
-#endif
-#ifdef HAVE_LIBCEC
-  list.emplace_back(g_localizeStrings.Get(679), LOGCEC);
-#endif
-  list.emplace_back(g_localizeStrings.Get(682), LOGDATABASE);
-}
-
-void CAdvancedSettings::SetExtraLogLevel(const std::vector<CVariant> &components)
-{
-  m_extraLogLevels = 0;
-  for (std::vector<CVariant>::const_iterator it = components.begin(); it != components.end(); ++it)
-  {
-    if (!it->isInteger())
-      continue;
-
-    m_extraLogLevels |= static_cast<int>(it->asInteger());
   }
 }
 

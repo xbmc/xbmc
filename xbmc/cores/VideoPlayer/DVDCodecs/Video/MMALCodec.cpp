@@ -30,7 +30,6 @@
 #include "Application.h"
 #include "guilib/GUIWindowManager.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderFlags.h"
-#include "settings/AdvancedSettings.h"
 #include "settings/DisplaySettings.h"
 #include "settings/SettingsComponent.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderManager.h"
@@ -588,7 +587,7 @@ bool CMMALVideo::AddData(const DemuxPacket &packet)
   uint8_t* pData = packet.pData;
   int iSize = packet.iSize;
   CSingleLock lock(m_sharedSection);
-  //if (CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->CanLogComponent(LOGVIDEO))
+  //if (CServiceBroker::GetLogging().CanLogComponent(LOGVIDEO))
   //  CLog::Log(LOGDEBUG, "%s::%s - %-8p %-6d dts:%.3f pts:%.3f ready_queue(%d)",
   //    CLASSNAME, __func__, pData, iSize, dts == DVD_NOPTS_VALUE ? 0.0 : packet.dts*1e-6, packet.pts == DVD_NOPTS_VALUE ? 0.0 : packet.pts*1e-6, m_output_ready.size());
 
