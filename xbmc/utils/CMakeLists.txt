@@ -54,6 +54,7 @@ set(SOURCES ActorProtocol.cpp
             Screenshot.cpp
             SortUtils.cpp
             Speed.cpp
+            StaticLoggerBase.cpp
             Stopwatch.cpp
             StreamDetails.cpp
             StreamUtils.cpp
@@ -147,6 +148,7 @@ set(HEADERS ActorProtocol.h
             Screenshot.h
             SortUtils.h
             Speed.h
+            StaticLoggerBase.h
             Stopwatch.h
             StreamDetails.h
             StreamUtils.h
