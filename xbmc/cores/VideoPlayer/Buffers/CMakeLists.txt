@@ -1,7 +1,7 @@
 set(SOURCES VideoBuffer.cpp)
 set(HEADERS VideoBuffer.h)
 
-if(CORE_PLATFORM_NAME_LC STREQUAL gbm)
+if(CORE_PLATFORM_NAME_LC STREQUAL gbm OR CORE_PLATFORM_NAME_LC STREQUAL wayland)
   list(APPEND SOURCES VideoBufferDMA.cpp
                       VideoBufferDRMPRIME.cpp
                       VideoBufferPoolDMA.cpp)

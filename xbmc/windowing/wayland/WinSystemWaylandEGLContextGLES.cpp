@@ -13,6 +13,7 @@
 #include "cores/RetroPlayer/rendering/VideoRenderers/RPRendererDMA.h"
 #include "cores/RetroPlayer/rendering/VideoRenderers/RPRendererOpenGLES.h"
 #include "cores/VideoPlayer/DVDCodecs/Video/DVDVideoCodecDRMPRIME.h"
+#include "cores/VideoPlayer/VideoRenderers/HwDecRender/RendererDRMPRIMEGLES.h"
 #include "cores/VideoPlayer/VideoRenderers/LinuxRendererGLES.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderFactory.h"
 #include "rendering/gles/ScreenshotSurfaceGLES.h"
@@ -41,6 +42,7 @@ bool CWinSystemWaylandEGLContextGLES::InitWindowSystem()
   CLinuxRendererGLES::Register();
 
   CDVDVideoCodecDRMPRIME::Register();
+  CRendererDRMPRIMEGLES::Register();
 
   RETRO::CRPProcessInfo::RegisterRendererFactory(new RETRO::CRendererFactoryDMA);
   RETRO::CRPProcessInfo::RegisterRendererFactory(new RETRO::CRendererFactoryOpenGLES);
