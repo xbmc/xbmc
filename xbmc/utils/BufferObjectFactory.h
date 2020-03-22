@@ -11,8 +11,8 @@
 #include "BufferObject.h"
 
 #include <functional>
+#include <list>
 #include <memory>
-#include <vector>
 
 /**
  * @brief Factory that provides CBufferObject registration and creation
@@ -44,5 +44,5 @@ public:
   static void ClearBufferObjects();
 
 protected:
-  static std::vector<std::function<std::unique_ptr<CBufferObject>()>> m_bufferObjects;
+  static std::list<std::function<std::unique_ptr<CBufferObject>()>> m_bufferObjects;
 };

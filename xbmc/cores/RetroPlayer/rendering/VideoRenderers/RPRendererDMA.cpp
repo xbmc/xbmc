@@ -12,6 +12,7 @@
 #include "cores/RetroPlayer/buffers/RenderBufferPoolDMA.h"
 #include "cores/RetroPlayer/rendering/RenderContext.h"
 #include "cores/RetroPlayer/rendering/RenderVideoSettings.h"
+#include "utils/BufferObjectFactory.h"
 #include "utils/GLUtils.h"
 
 #include <cassert>
@@ -34,6 +35,9 @@ CRPBaseRenderer* CRendererFactoryDMA::CreateRenderer(const CRenderSettings& sett
 
 RenderBufferPoolVector CRendererFactoryDMA::CreateBufferPools(CRenderContext& context)
 {
+  if (!CBufferObjectFactory::CreateBufferObject())
+    return {};
+
   return {std::make_shared<CRenderBufferPoolDMA>(context)};
 }
 
