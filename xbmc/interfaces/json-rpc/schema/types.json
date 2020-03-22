@@ -1708,7 +1708,7 @@
   },
   "Favourite.Type": {
     "type": "string",
-    "enum": [ "media", "window", "script", "unknown" ]
+    "enum": [ "media", "window", "script", "androidapp", "unknown" ]
   },
   "Favourite.Details.Favourite": {
     "type": "object",

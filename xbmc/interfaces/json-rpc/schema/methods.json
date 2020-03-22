@@ -2555,7 +2555,7 @@
     "params": [
       { "name": "title", "type": "string", "required": true },
       { "name": "type", "$ref": "Favourite.Type", "required": true },
-      { "name": "path", "$ref": "Optional.String", "description": "Required for media and script favourites types" },
+      { "name": "path", "$ref": "Optional.String", "description": "Required for media, script and androidapp favourites types" },
       { "name": "window", "$ref": "Optional.String", "description": "Required for window favourite type" },
       { "name": "windowparameter", "$ref": "Optional.String" },
       { "name": "thumbnail", "$ref": "Optional.String" }
