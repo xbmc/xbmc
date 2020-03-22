@@ -6,6 +6,11 @@ if(DBUS_FOUND)
   list(APPEND HEADERS OSScreenSaverFreedesktop.h)
 endif()
 
+if(EGL_FOUND)
+  list(APPEND SOURCES WinSystemEGL.cpp)
+  list(APPEND HEADERS WinSystemEGL.h)
+endif()
+
 if(SOURCES)
   core_add_library(windowing_linux)
 endif()

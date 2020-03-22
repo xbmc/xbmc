@@ -10,6 +10,7 @@
 
 #include "WinSystemGbm.h"
 #include "utils/EGLUtils.h"
+#include "windowing/linux/WinSystemEGL.h"
 
 #include <memory>
 
@@ -22,7 +23,7 @@ namespace GBM
 
 class CVaapiProxy;
 
-class CWinSystemGbmEGLContext : public CWinSystemGbm
+class CWinSystemGbmEGLContext : public KODI::WINDOWING::LINUX::CWinSystemEGL, public CWinSystemGbm
 {
 public:
   ~CWinSystemGbmEGLContext() override = default;
@@ -33,13 +34,9 @@ public:
                        RESOLUTION_INFO& res) override;
   bool DestroyWindow() override;
 
-  EGLDisplay GetEGLDisplay() const;
-  EGLSurface GetEGLSurface() const;
-  EGLContext GetEGLContext() const;
-  EGLConfig  GetEGLConfig() const;
 protected:
-  CWinSystemGbmEGLContext(EGLenum platform, std::string const& platformExtension) :
-    m_eglContext(platform, platformExtension)
+  CWinSystemGbmEGLContext(EGLenum platform, std::string const& platformExtension)
+    : CWinSystemEGL{platform, platformExtension}
   {}
 
   /**
@@ -48,8 +45,6 @@ protected:
    */
   bool InitWindowSystemEGL(EGLint renderableType, EGLint apiType);
   virtual bool CreateContext() = 0;
-
-  CEGLContextUtils m_eglContext;
 
   struct delete_CVaapiProxy
   {
