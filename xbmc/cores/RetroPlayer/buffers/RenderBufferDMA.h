@@ -52,7 +52,7 @@ namespace RETRO
     CRenderContext &m_context;
     const int m_fourcc = 0;
 
-    const GLenum m_textureTarget = GL_TEXTURE_EXTERNAL_OES;
+    const GLenum m_textureTarget = GL_TEXTURE_2D;
     GLuint m_textureId = 0;
 
   private:
