@@ -45,6 +45,7 @@ namespace XBMCAddon
     bool Dialog::yesno(const String& heading, const String& message,
                        const String& nolabel,
                        const String& yeslabel,
+                       const String& customlabel,
                        int autoclose)
     {
       DelayedCallGuard dcguard(languageHook);
@@ -62,6 +63,8 @@ namespace XBMCAddon
         pDialog->SetChoice(0, CVariant{nolabel});
       if (!yeslabel.empty())
         pDialog->SetChoice(1, CVariant{yeslabel});
+      if (!customlabel.empty())
+        pDialog->SetChoice(2, CVariant{customlabel});
 
       if (autoclose > 0)
         pDialog->SetAutoClose(autoclose);
