@@ -1,4 +1,5 @@
 xbmc/cores/VideoPlayer                             cores/VideoPlayer
+xbmc/cores/VideoPlayer/Buffers                     cores/VideoPlayer/Buffers
 xbmc/cores/VideoPlayer/DVDCodecs                   cores/VideoPlayer/codecs
 xbmc/cores/VideoPlayer/DVDCodecs/Audio             cores/VideoPlayer/codecs/audio
 xbmc/cores/VideoPlayer/DVDCodecs/Overlay           cores/VideoPlayer/codecs/overlay

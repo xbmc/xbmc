@@ -10,7 +10,7 @@
 
 #include "DVDStreamInfo.h"
 #include "DVDVideoCodec.h"
-#include "cores/VideoPlayer/Process/VideoBuffer.h"
+#include "cores/VideoPlayer/Buffers/VideoBuffer.h"
 #include "threads/SingleLock.h"
 #include "threads/Thread.h"
 #include "utils/Geometry.h"

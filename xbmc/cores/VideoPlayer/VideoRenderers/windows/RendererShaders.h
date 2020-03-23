@@ -7,8 +7,8 @@
  */
 #pragma once
 
-#include "Process/VideoBuffer.h"
 #include "RendererHQ.h"
+#include "cores/VideoPlayer/Buffers/VideoBuffer.h"
 
 #include <map>
 

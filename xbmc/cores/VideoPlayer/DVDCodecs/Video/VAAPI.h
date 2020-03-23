@@ -9,20 +9,23 @@
 #pragma once
 
 #include "DVDVideoCodec.h"
-#include "cores/VideoPlayer/Process/VideoBuffer.h"
+#include "cores/VideoPlayer/Buffers/VideoBuffer.h"
 #include "cores/VideoSettings.h"
 #include "threads/CriticalSection.h"
-#include "threads/SharedSection.h"
 #include "threads/Event.h"
+#include "threads/SharedSection.h"
 #include "threads/Thread.h"
 #include "utils/ActorProtocol.h"
 #include "utils/Geometry.h"
+
+#include "platform/linux/sse4/DllLibSSE4.h"
+
 #include <list>
 #include <map>
 #include <memory>
 #include <vector>
+
 #include <va/va.h>
-#include "platform/linux/sse4/DllLibSSE4.h"
 
 extern "C" {
 #include <libavutil/avutil.h>

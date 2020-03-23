@@ -8,12 +8,13 @@
 
 #pragma once
 
+#include "cores/VideoPlayer/Buffers/VideoBuffer.h"
 #include "cores/VideoPlayer/DVDCodecs/Video/DVDVideoCodec.h"
-#include "cores/VideoPlayer/Process/VideoBuffer.h"
 #include "guilib/D3DResource.h"
 #include "threads/Event.h"
 
 #include <vector>
+
 #include <wrl/client.h>
 extern "C"
 {
