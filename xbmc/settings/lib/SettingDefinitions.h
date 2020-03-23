@@ -25,6 +25,7 @@
 #define SETTING_XML_ELM_VISIBLE "visible"
 #define SETTING_XML_ELM_REQUIREMENT "requirement"
 #define SETTING_XML_ELM_CONDITION "condition"
+#define SETTING_XML_ELM_ENABLED "enable"
 #define SETTING_XML_ELM_LEVEL "level"
 #define SETTING_XML_ELM_DEFAULT "default"
 #define SETTING_XML_ELM_VALUE "value"

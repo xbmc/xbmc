@@ -105,6 +105,11 @@ bool CSetting::Deserialize(const TiXmlNode *node, bool update /* = false */)
   if (parentSetting != nullptr)
     m_parentSetting = parentSetting;
 
+  // get <enable>
+  bool value;
+  if (XMLUtils::GetBoolean(node, SETTING_XML_ELM_ENABLED, value))
+    m_enabled = value;
+
   // get the <level>
   int level = -1;
   if (XMLUtils::GetInt(node, SETTING_XML_ELM_LEVEL, level))
