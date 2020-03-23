@@ -485,7 +485,7 @@ std::vector<std::shared_ptr<CPVREpgInfoTag>> CPVREpgTagsContainer::GetTimeline(
                       CreateGapTag(maxEnd, result.front()->StartAsUTC() - ONE_SECOND));
       }
 
-      if (result.back()->EndAsUTC() < maxEventStart)
+      if (result.back()->EndAsUTC() <= maxEventStart)
       {
         // append gap tag
         CDateTime minStart = m_database->GetMinStartTime(m_iEpgID, maxEventStart);
