@@ -85,7 +85,7 @@ class CXBMCApp
     , public CJNISurfaceHolderCallback
 {
 public:
-  explicit CXBMCApp(ANativeActivity *nativeActivity);
+  explicit CXBMCApp(ANativeActivity* nativeActivity, IInputHandler& inputhandler);
   ~CXBMCApp() override;
   static CXBMCApp* get() { return m_xbmcappinstance; }
 
@@ -224,6 +224,7 @@ private:
   static void RegisterDisplayListener(CVariant*);
 
   static ANativeActivity *m_activity;
+  IInputHandler& m_inputHandler;
   static CJNIWakeLock *m_wakeLock;
   static int m_batteryLevel;
   static bool m_hasFocus;
