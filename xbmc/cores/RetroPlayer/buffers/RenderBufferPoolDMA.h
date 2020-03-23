@@ -16,11 +16,16 @@ namespace RETRO
 {
   class CRenderContext;
 
-  class CRenderBufferPoolGBM : public CBaseRenderBufferPool
+  /**
+   * @brief Special IRenderBufferPool implementation that converts
+   *        AVPixelFormat to DRM_FORMAT_* for use with CRenderBufferDMA.
+   *
+   */
+  class CRenderBufferPoolDMA : public CBaseRenderBufferPool
   {
   public:
-    CRenderBufferPoolGBM(CRenderContext &context);
-    ~CRenderBufferPoolGBM() override = default;
+    CRenderBufferPoolDMA(CRenderContext& context);
+    ~CRenderBufferPoolDMA() override = default;
 
     // implementation of IRenderBufferPool via CBaseRenderBufferPool
     bool IsCompatible(const CRenderVideoSettings &renderSettings) const override;

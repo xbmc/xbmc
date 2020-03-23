@@ -19,8 +19,8 @@ if(OPENGL_FOUND)
 endif()
 
 if(CORE_PLATFORM_NAME_LC STREQUAL gbm AND OPENGLES_FOUND)
-  list(APPEND SOURCES RPRendererGBM.cpp)
-  list(APPEND HEADERS RPRendererGBM.h)
+  list(APPEND SOURCES RPRendererDMA.cpp)
+  list(APPEND HEADERS RPRendererDMA.h)
 endif()
 
 core_add_library(rp-videorenderers)
