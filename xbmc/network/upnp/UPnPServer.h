@@ -116,7 +116,6 @@ private:
                              const char*                   parent_id /* = NULL */);
 
     // class methods
-    static bool SortItems(CFileItemList& items, const char* sort_criteria, Logger logger);
     static void DefaultSortItems(CFileItemList& items);
     static NPT_String GetParentFolder(NPT_String file_path) {
         int index = file_path.ReverseFind("\\");
