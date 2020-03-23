@@ -86,8 +86,6 @@ void CGUIBaseContainer::Process(unsigned int currentTime, CDirtyRegionList &dirt
   // update our auto-scrolling as necessary
   UpdateAutoScrolling(currentTime);
 
-  ValidateOffset();
-
   if (m_bInvalidated)
     UpdateLayout();
 
@@ -690,7 +688,6 @@ CGUIListItemLayout *CGUIBaseContainer::GetFocusedLayout() const
 bool CGUIBaseContainer::OnMouseOver(const CPoint &point)
 {
   // select the item under the pointer
-  SelectItemFromPoint(point - CPoint(m_posX, m_posY));
   return CGUIControl::OnMouseOver(point);
 }
 
@@ -700,9 +697,11 @@ EVENT_RESULT CGUIBaseContainer::OnMouseEvent(const CPoint &point, const CMouseEv
       event.m_id == ACTION_MOUSE_DOUBLE_CLICK ||
       event.m_id == ACTION_MOUSE_RIGHT_CLICK)
   {
+    int select = GetSelectedItem();
     if (SelectItemFromPoint(point - CPoint(m_posX, m_posY)))
     {
-      OnClick(event.m_id);
+      if (event.m_id != ACTION_MOUSE_RIGHT_CLICK || select == GetSelectedItem())
+        OnClick(event.m_id);
       return EVENT_RESULT_HANDLED;
     }
   }
@@ -718,6 +717,8 @@ EVENT_RESULT CGUIBaseContainer::OnMouseEvent(const CPoint &point, const CMouseEv
   }
   else if (event.m_id == ACTION_GESTURE_NOTIFY)
   {
+    m_waitForScrollEnd = true;
+    m_lastScrollValue = m_scroller.GetValue();
     return (m_orientation == HORIZONTAL) ? EVENT_RESULT_PAN_HORIZONTAL : EVENT_RESULT_PAN_VERTICAL;
   }
   else if (event.m_id == ACTION_GESTURE_BEGIN)
@@ -733,8 +734,21 @@ EVENT_RESULT CGUIBaseContainer::OnMouseEvent(const CPoint &point, const CMouseEv
     int offset = MathUtils::round_int(m_scroller.GetValue() / size);
     m_lastScrollStartTimer.Stop();
     m_scrollTimer.Start();
+    const int absCursor = GetCursor() + GetOffset();
     SetOffset(offset);
     ValidateOffset();
+    SetCursor(absCursor - GetOffset());
+    // Notify Application if Inertial scrolling reaches lists end
+    if (m_waitForScrollEnd)
+    {
+      if (fabs(m_scroller.GetValue() - m_lastScrollValue) < 0.001f)
+      {
+        m_waitForScrollEnd = false;
+        return EVENT_RESULT_UNHANDLED;
+      }
+      else
+        m_lastScrollValue = m_scroller.GetValue();
+    }
     return EVENT_RESULT_HANDLED;
   }
   else if (event.m_id == ACTION_GESTURE_END || event.m_id == ACTION_GESTURE_ABORT)
@@ -751,6 +765,9 @@ EVENT_RESULT CGUIBaseContainer::OnMouseEvent(const CPoint &point, const CMouseEv
     else
       SetOffset(toOffset-1);
     ScrollToOffset(toOffset);
+    ValidateOffset();
+    SetFocus(true);
+    m_waitForScrollEnd = false;
     return EVENT_RESULT_HANDLED;
   }
   return EVENT_RESULT_UNHANDLED;

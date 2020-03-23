@@ -95,8 +95,6 @@ bool CInertialScrollingHandler::CheckForInertialScrolling(const CAction* action)
     auto velocityX = velocitySum.x / m_panPoints.size();
     auto velocityY = velocitySum.y / m_panPoints.size();
 
-    CLog::LogF(LOGDEBUG, "Avg touch velocity: %f,%f up to and including touch at %u ms ago", velocityX, velocityY, m_panPoints.front().TimeElapsed());
-
     if (std::abs(velocityX) > MINIMUM_SPEED_FOR_INERTIA || std::abs(velocityY) > MINIMUM_SPEED_FOR_INERTIA)
     {
       bool inertialRequested = false;
@@ -133,7 +131,6 @@ bool CInertialScrollingHandler::CheckForInertialScrolling(const CAction* action)
         m_inertialDeacceleration.x = -1*m_iFlickVelocity.x/TIME_TO_ZERO_SPEED;
         m_inertialDeacceleration.y = -1*m_iFlickVelocity.y/TIME_TO_ZERO_SPEED;
 
-        //CLog::Log(LOGDEBUG, "initial pos: %f,%f velocity: %f,%f dec: %f,%f", m_iLastGesturePoint.x, m_iLastGesturePoint.y, m_iFlickVelocity.x, m_iFlickVelocity.y, m_inertialDeacceleration.x, m_inertialDeacceleration.y);
         m_inertialStartTime = CTimeUtils::GetFrameTime();//start time of inertial scrolling
         ret = true;
         m_bScrolling = true;//activate the inertial scrolling animation
@@ -172,9 +169,13 @@ bool CInertialScrollingHandler::ProcessInertialScroll(float frameTime)
       m_iLastGesturePoint.x += xMovement;
       m_iLastGesturePoint.y += yMovement;
 
-      //CLog::Log(LOGDEBUG, "@%f: %f,%f offset: %f, %f velocity: %f,%f dec: %f,%f", absoluteInertialTime,  m_iLastGesturePoint.x, m_iLastGesturePoint.y, xMovement, yMovement, m_iFlickVelocity.x, m_iFlickVelocity.y, m_inertialDeacceleration.x, m_inertialDeacceleration.y);
       //fire the pan action
-      g_application.OnAction(CAction(ACTION_GESTURE_PAN, 0, m_iLastGesturePoint.x, m_iLastGesturePoint.y, xMovement, yMovement, m_iFlickVelocity.x, m_iFlickVelocity.y));
+      if (!g_application.OnAction(CAction(ACTION_GESTURE_PAN, 0, m_iLastGesturePoint.x,
+                                          m_iLastGesturePoint.y, xMovement, yMovement,
+                                          m_iFlickVelocity.x, m_iFlickVelocity.y)))
+      {
+        m_bAborting = true; // we are done
+      }
 
       //calc new velocity based on deacceleration
       //v = a*t + v0
