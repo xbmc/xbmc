@@ -63,8 +63,8 @@ public:
 
   virtual void SetPictureParams(const VideoPicture& picture) { m_picture.SetParams(picture); }
   virtual const VideoPicture& GetPicture() const { return m_picture; }
-  uint32_t GetWidth() const { return GetPicture().iWidth; }
-  uint32_t GetHeight() const { return GetPicture().iHeight; }
+  virtual uint32_t GetWidth() const { return GetPicture().iWidth; }
+  virtual uint32_t GetHeight() const { return GetPicture().iHeight; }
 
   virtual AVDRMFrameDescriptor* GetDescriptor() const = 0;
   virtual bool IsValid() const { return true; }
