@@ -201,6 +201,11 @@ if(CORE_PLATFORM_NAME_LC STREQUAL gbm)
     list(APPEND HEADERS UDMABufferObject.h)
   endif()
 
+  if(HAVE_LINUX_DMA_HEAP)
+    list(APPEND SOURCES DMAHeapBufferObject.cpp)
+    list(APPEND HEADERS DMAHeapBufferObject.h)
+  endif()
+
   if(GBM_HAS_BO_MAP)
     list(APPEND SOURCES GBMBufferObject.cpp)
     list(APPEND HEADERS GBMBufferObject.h)
