@@ -15,6 +15,7 @@
 #include "settings/lib/ISettingCallback.h"
 #include "settings/lib/SettingDependency.h"
 #include "settings/lib/SettingSection.h"
+#include "utils/logtypes.h"
 
 #include <map>
 #include <memory>
@@ -121,5 +122,7 @@ namespace ADDON
     uint32_t m_unidentifiedSettingId;
     int m_unknownSettingLabelId;
     std::map<int, std::string> m_unknownSettingLabels;
+
+    Logger m_logger;
   };
 }
