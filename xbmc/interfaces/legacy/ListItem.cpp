@@ -31,8 +31,6 @@ namespace XBMCAddon
   {
     ListItem::ListItem(const String& label,
                        const String& label2,
-                       const String& iconImage,
-                       const String& thumbnailImage,
                        const String& path,
                        bool offscreen) :
       m_offscreen(offscreen)
@@ -48,10 +46,6 @@ namespace XBMCAddon
         item->SetLabel( label );
       if (!label2.empty())
         item->SetLabel2( label2 );
-      if (!iconImage.empty())
-        CLog::Log(LOGWARNING, "Using iconImage in ListItem constructor results in NOP. Use setArt.");
-      if (!thumbnailImage.empty())
-        CLog::Log(LOGWARNING, "Using thumbnailImage in ListItem constructor results in NOP. Use setArt.");
       if (!path.empty())
         item->SetPath(path);
     }
@@ -105,16 +99,6 @@ namespace XBMCAddon
         XBMCAddonUtils::GuiLock lock(languageHook, m_offscreen);
         item->SetLabel2(label);
       }
-    }
-
-    void ListItem::setIconImage(const String& iconImage)
-    {
-      CLog::Log(LOGWARNING, "setIconImage results in NOP. Use setArt.");
-    }
-
-    void ListItem::setThumbnailImage(const String& thumbFilename)
-    {
-      CLog::Log(LOGWARNING, "setThumbnailImage results in NOP. Use setArt.");
     }
 
     void ListItem::setArt(const Properties& dictionary)
@@ -298,34 +282,6 @@ namespace XBMCAddon
     {
       XBMCAddonUtils::GuiLock lock(languageHook, m_offscreen);
       item->SetContentLookup(enable);
-    }
-
-    String ListItem::getdescription()
-    {
-      return item->GetLabel();
-    }
-
-    String ListItem::getduration()
-    {
-      if (item->LoadMusicTag())
-      {
-        std::ostringstream oss;
-        oss << item->GetMusicInfoTag()->GetDuration();
-        return oss.str();
-      }
-
-      if (item->HasVideoInfoTag())
-      {
-        std::ostringstream oss;
-        oss << GetVideoInfoTag()->GetDuration();
-        return oss.str();
-      }
-      return "0";
-    }
-
-    String ListItem::getfilename()
-    {
-      return item->GetPath();
     }
 
     String ListItem::getPath()

@@ -597,18 +597,6 @@ namespace XBMCAddon
       return resInfo.iWidth;
     }
 
-    long Window::getResolution()
-    {
-      XBMC_TRACE;
-      return (long)CServiceBroker::GetWinSystem()->GetGfxContext().GetVideoResolution();
-    }
-
-    void Window::setCoordinateResolution(long res)
-    {
-      XBMC_TRACE;
-      throw WindowException("not implemented.");
-    }
-
     void Window::setProperty(const char* key, const String& value)
     {
       XBMC_TRACE;

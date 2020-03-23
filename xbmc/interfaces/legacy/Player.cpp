@@ -31,13 +31,9 @@ namespace XBMCAddon
   {
 	PlayParameter Player::defaultPlayParameter;
 
-    Player::Player(int _playerCore)
+    Player::Player()
     {
       iPlayList = PLAYLIST_MUSIC;
-
-      if (_playerCore != 0)
-        CLog::Log(LOGERROR, "xbmc.Player: Requested non-default player. This behavior is deprecated, plugins may no longer specify a player");
-
 
       // now that we're done, register hook me into the system
       if (languageHook)

@@ -48,17 +48,16 @@ namespace XBMCAddon
     ///
     /// The list item control is used for creating item lists in Kodi
     ///
-    /// \python_class{ ListItem([label, label2, iconImage, thumbnailImage, path]) }
+    /// \python_class{ ListItem([label, label2, path]) }
     ///
     /// @param label                [opt] string
     /// @param label2               [opt] string
-    /// @param iconImage            __Deprecated. Use setArt__
-    /// @param thumbnailImage       __Deprecated. Use setArt__
     /// @param path                 [opt] string
     ///
     ///
     ///-----------------------------------------------------------------------
     /// @python_v16 **iconImage** and **thumbnailImage** are deprecated. Use **setArt()**.
+    /// @python_v19 Removed **iconImage** and **thumbnailImage**. Use **setArt()**.
     ///
     /// **Example:**
     /// ~~~~~~~~~~~~~{.py}
@@ -76,8 +75,6 @@ namespace XBMCAddon
 
       ListItem(const String& label = emptyString,
                const String& label2 = emptyString,
-               const String& iconImage = emptyString,
-               const String& thumbnailImage = emptyString,
                const String& path = emptyString,
                bool offscreen = false);
 
@@ -194,38 +191,6 @@ namespace XBMCAddon
       setLabel2(...);
 #else
       void setLabel2(const String& label);
-#endif
-
-#ifdef DOXYGEN_SHOULD_USE_THIS
-      ///
-      /// \ingroup python_xbmcgui_listitem
-      /// @brief \python_func{ setIconImage(iconImage) }
-      ///-----------------------------------------------------------------------
-      /// @python_v16 Deprecated. Use **setArt()**.
-      /// @python_v19 setIconImage results in nop and will be removed in future
-      /// versions. Use **setArt()**.
-      ///
-      /// @todo Remove in future kodi versions
-      ///
-      setIconImage(...);
-#else
-      void setIconImage(const String& iconImage);
-#endif
-
-#ifdef DOXYGEN_SHOULD_USE_THIS
-      ///
-      /// \ingroup python_xbmcgui_listitem
-      /// @brief \python_func{ setThumbnailImage(thumbFilename) }
-      ///-----------------------------------------------------------------------
-      /// @python_v16 Deprecated. Use **setArt()**.
-      /// @python_v19 setThumbnailImage results in nop and will be removed in future
-      /// versions. Use **setArt()**.
-      ///
-      /// @todo Remove in future kodi versions
-      ///
-      setThumbnailImage(...);
-#else
-      void setThumbnailImage(const String& thumbFilename);
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -1081,45 +1046,6 @@ namespace XBMCAddon
       setSubtitles(...);
 #else
       void setSubtitles(const std::vector<String>& subtitleFiles);
-#endif
-
-#ifdef DOXYGEN_SHOULD_USE_THIS
-      ///
-      /// \ingroup python_xbmcgui_listitem
-      /// @brief \python_func{ getdescription() }
-      ///-----------------------------------------------------------------------
-      /// @python_v17 Deprecated.
-      ///
-      ///
-      getdescription();
-#else
-      String getdescription();
-#endif
-
-#ifdef DOXYGEN_SHOULD_USE_THIS
-      ///
-      /// \ingroup python_xbmcgui_listitem
-      /// @brief \python_func{ getduration() }
-      ///-----------------------------------------------------------------------
-      /// @python_v17 Deprecated. Use **InfoTagMusic**.
-      ///
-      ///
-      getduration();
-#else
-      String getduration();
-#endif
-
-#ifdef DOXYGEN_SHOULD_USE_THIS
-      ///
-      /// \ingroup python_xbmcgui_listitem
-      /// @brief \python_func{ getfilename() }
-      ///-----------------------------------------------------------------------
-      /// @python_v17 Deprecated.
-      ///
-      ///
-      getfilename();
-#else
-      String getfilename();
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS

@@ -902,7 +902,6 @@ namespace XBMCAddon
     /// | XBFONT_JUSTIFIED  | 0x00000010 | Justify text
     /// @param focusTexture         [opt] string - filename for focus texture.
     /// @param noFocusTexture       [opt] string - filename for no focus texture.
-    /// @param isPassword           [opt] bool - True=mask text value with `****`(deprecated, use setType()).
     ///
     /// @note You can use the above as keywords for arguments and skip certain
     /// optional arguments.\n
@@ -914,6 +913,7 @@ namespace XBMCAddon
     ///
     ///-------------------------------------------------------------------------
     /// @python_v18 Deprecated **isPassword**
+    /// @python_v19 Removed **isPassword**
     ///
     /// **Example:**
     /// ~~~~~~~~~~~~~{.py}
@@ -929,7 +929,7 @@ namespace XBMCAddon
                   const char* font = NULL, const char* textColor = NULL,
                   const char* disabledColor = NULL,
                   long _alignment = XBFONT_LEFT, const char* focusTexture = NULL,
-                  const char* noFocusTexture = NULL, bool isPassword = false);
+                  const char* noFocusTexture = NULL);
 
 
       // setLabel() Method
@@ -1056,7 +1056,6 @@ namespace XBMCAddon
       UTILS::Color textColor;
       UTILS::Color disabledColor;
       uint32_t align;
-      bool bIsPassword = false;
 
       CGUIControl* Create() override;
 #endif
@@ -2533,7 +2532,7 @@ namespace XBMCAddon
     /// @brief **For control a radio button (as used for on/off settings).**
     ///
     /// \python_class{ ControlRadioButton(x, y, width, height, label[, focusOnTexture, noFocusOnTexture,
-    ///                   focusOffTexture, noFocusOffTexture, focusTexture, noFocusTexture,
+    ///                   focusOffTexture, noFocusOffTexture,
     ///                   textOffsetX, textOffsetY, alignment, font, textColor, disabledColor]) }
     ///
     /// The radio button control is used for creating push button on/off
@@ -2557,12 +2556,6 @@ namespace XBMCAddon
     ///                             focused texture.
     /// @param noFocusOffTexture    [opt] string - filename for radio OFF
     ///                             not focused texture.
-    /// @param focusTexture         [opt] string - filename for radio ON
-    ///                             texture (deprecated, use focusOnTexture
-    ///                             and noFocusOnTexture).
-    /// @param noFocusTexture       [opt] string - filename for radio OFF
-    ///                             texture (deprecated, use focusOffTexture
-    ///                             and noFocusOffTexture).
     /// @param textOffsetX          [opt] integer - horizontal text offset
     /// @param textOffsetY          [opt] integer - vertical text offset
     /// @param alignment            [opt] integer - alignment of label
@@ -2593,7 +2586,8 @@ namespace XBMCAddon
     ///
     ///--------------------------------------------------------------------------
     /// @python_v13 New function added.
-    /// @python_v16 Deprecated **focusTexture** and **noFocusTexture**. Use **focusOnTexture** and **noFocusOnTexture**.
+    /// @python_v18 Deprecated **focusTexture** and **noFocusTexture**. Use **focusOnTexture** and **noFocusOnTexture**.
+    /// @python_v19 Removed **focusTexture** and **noFocusTexture**.
     ///
     /// **Example:**
     /// ~~~~~~~~~~~~~{.py}
@@ -2608,7 +2602,6 @@ namespace XBMCAddon
       ControlRadioButton(long x, long y, long width, long height, const String& label,
                          const char* focusOnTexture = NULL, const char* noFocusOnTexture = NULL,
                          const char* focusOffTexture = NULL, const char* noFocusOffTexture = NULL,
-                         const char* focusTexture = NULL, const char* noFocusTexture = NULL,
                          long textOffsetX = CONTROL_TEXT_OFFSET_X,
                          long textOffsetY = CONTROL_TEXT_OFFSET_Y,
                          long _alignment = (XBFONT_LEFT | XBFONT_CENTER_Y),

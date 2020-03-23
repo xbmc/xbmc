@@ -55,7 +55,6 @@ protected:
 
   virtual void pulseGlobalEvent();
   virtual bool onExecutionInitialized();
-  virtual void onAbortRequested();
   virtual void onExecutionFailed();
   virtual void onExecutionDone();
   virtual void onExecutionFinalized();
