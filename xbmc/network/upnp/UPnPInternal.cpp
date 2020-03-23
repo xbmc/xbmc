@@ -354,11 +354,13 @@ BuildObject(CFileItem&                    item,
             CUPnPServer*                  upnp_server /* = NULL */,
             UPnPService                   upnp_service /* = UPnPServiceNone */)
 {
+  static Logger logger = CServiceBroker::GetLogging().GetLogger("UPNP::BuildObject");
+
     PLT_MediaItemResource resource;
     PLT_MediaObject*      object = NULL;
     std::string thumb;
 
-    CLog::Log(LOGDEBUG, "UPnP: Building didl for object '%s'", item.GetPath().c_str());
+    logger->debug("Building didl for object '{}'", item.GetPath());
 
     EClientQuirks quirks = GetClientQuirks(context);
 
@@ -1036,6 +1038,8 @@ struct ResourcePrioritySort
 
 bool GetResource(const PLT_MediaObject* entry, CFileItem& item)
 {
+  static Logger logger = CServiceBroker::GetLogging().GetLogger("CUPnPDirectory::GetResource");
+
   PLT_MediaItemResource resource;
 
   // store original path so we remember it
@@ -1061,15 +1065,13 @@ bool GetResource(const PLT_MediaObject* entry, CFileItem& item)
 
   // look for content type in protocol info
   if (resource.m_ProtocolInfo.IsValid()) {
-    CLog::Log(LOGDEBUG, "CUPnPDirectory::GetResource - resource protocol info '%s'",
-              (const char*)(resource.m_ProtocolInfo.ToString()));
+    logger->debug("resource protocol info '{}'", (const char*)(resource.m_ProtocolInfo.ToString()));
 
     if (resource.m_ProtocolInfo.GetContentType().Compare("application/octet-stream") != 0) {
       item.SetMimeType((const char*)resource.m_ProtocolInfo.GetContentType());
     }
   } else {
-    CLog::Log(LOGERROR, "CUPnPDirectory::GetResource - invalid protocol info '%s'",
-              (const char*)(resource.m_ProtocolInfo.ToString()));
+    logger->error("invalid protocol info '{}'", (const char*)(resource.m_ProtocolInfo.ToString()));
   }
 
   // look for subtitles

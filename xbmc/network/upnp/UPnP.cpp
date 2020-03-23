@@ -29,6 +29,7 @@
 #include "profiles/ProfileManager.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
+#include "utils/StaticLoggerBase.h"
 #include "utils/SystemInfo.h"
 #include "utils/TimeUtils.h"
 #include "utils/URIUtils.h"
@@ -89,26 +90,28 @@ DLNA_ORG_FLAGS_VAL = '01500000000000000000000000000000'
 void
 NPT_Console::Output(const char* msg) { }
 
-int ConvertLogLevel(int nptLogLevel)
+spdlog::level::level_enum ConvertLogLevel(int nptLogLevel)
 {
     if (nptLogLevel >= NPT_LOG_LEVEL_FATAL)
-        return LOGFATAL;
+        return spdlog::level::critical;
     if (nptLogLevel >= NPT_LOG_LEVEL_SEVERE)
-        return LOGERROR;
+        return spdlog::level::err;
     if (nptLogLevel >= NPT_LOG_LEVEL_WARNING)
-        return LOGWARNING;
-    if (nptLogLevel >= NPT_LOG_LEVEL_INFO)
-        return LOGNOTICE;
+        return spdlog::level::warn;
     if (nptLogLevel >= NPT_LOG_LEVEL_FINE)
-        return LOGINFO;
+      return spdlog::level::info;
+    if (nptLogLevel >= NPT_LOG_LEVEL_FINER)
+      return spdlog::level::debug;
 
-    return LOGDEBUG;
+    return spdlog::level::trace;
 }
 
 void
 UPnPLogger(const NPT_LogRecord* record)
 {
-    CLog::Log(ConvertLogLevel(record->m_Level), LOGUPNP, "Platinum [%s]: %s", record->m_LoggerName, record->m_Message);
+    static Logger logger = CServiceBroker::GetLogging().GetLogger("Platinum");
+    if (CServiceBroker::GetLogging().CanLogComponent(LOGUPNP))
+        logger->log(ConvertLogLevel(record->m_Level), "[{}]: {}", record->m_LoggerName, record->m_Message);
 }
 
 namespace UPNP
@@ -157,11 +160,13 @@ public:
 |   CMediaBrowser class
 +---------------------------------------------------------------------*/
 class CMediaBrowser : public PLT_SyncMediaBrowser,
-                      public PLT_MediaContainerChangesListener
+                      public PLT_MediaContainerChangesListener,
+                      protected CStaticLoggerBase
 {
 public:
     explicit CMediaBrowser(PLT_CtrlPointReference& ctrlPoint)
         : PLT_SyncMediaBrowser(ctrlPoint, true)
+        , CStaticLoggerBase("UPNP::CMediaBrowser")
     {
         SetContainerListener(this);
     }
@@ -198,7 +203,7 @@ public:
             path += id.c_str();
         }
 
-        CLog::Log(LOGDEBUG, "UPNP: notified container update %s", (const char*)path);
+        s_logger->debug("notified container update {}", (const char*)path);
         CGUIMessage message(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_PATH);
         message.SetStringParam(path.GetChars());
         CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(message);
@@ -212,7 +217,7 @@ public:
             return SaveFileState(temp, CBookmark(), watched);
         }
         else {
-            CLog::Log(LOGDEBUG, "UPNP: Marking video item %s as watched", item.GetPath().c_str());
+          s_logger->debug("Marking video item {} as watched", item.GetPath());
             return InvokeUpdateObject(item.GetPath().c_str(), "<upnp:playCount>1</upnp:playCount>", "<upnp:playCount>0</upnp:playCount>");
         }
     }
@@ -228,7 +233,7 @@ public:
         NPT_String new_value;
 
         if (item.GetVideoInfoTag()->GetResumePoint().timeInSeconds != bookmark.timeInSeconds) {
-            CLog::Log(LOGDEBUG, "UPNP: Updating resume point for item %s", path.c_str());
+          s_logger->debug("Updating resume point for item {}", path);
             long time = (long)bookmark.timeInSeconds;
             if (time < 0) time = 0;
             curr_value.Append(NPT_String::Format("<upnp:lastPlaybackPosition>%ld</upnp:lastPlaybackPosition>",
@@ -242,7 +247,7 @@ public:
             new_value += "</xbmc:lastPlayerState>";
         }
         if (updatePlayCount) {
-            CLog::Log(LOGDEBUG, "UPNP: Marking video item %s as watched", path.c_str());
+          s_logger->debug("Marking video item {} as watched", path);
             if (!curr_value.IsEmpty()) curr_value.Append(",");
             if (!new_value.IsEmpty()) new_value.Append(",");
             curr_value.Append("<upnp:playCount>0</upnp:playCount>");
@@ -259,7 +264,7 @@ public:
         PLT_Service* cds;
         PLT_ActionReference action;
 
-        CLog::Log(LOGDEBUG, "UPNP: attempting to invoke UpdateObject for %s", id);
+        s_logger->debug("attempting to invoke UpdateObject for {}", id);
 
         // check this server supports UpdateObject action
         NPT_CHECK_LABEL(FindServer(url.GetHostName().c_str(), device),failed);
@@ -277,11 +282,11 @@ public:
 
         NPT_CHECK_LABEL(m_CtrlPoint->InvokeAction(action, NULL),failed);
 
-        CLog::Log(LOGDEBUG, "UPNP: invoked UpdateObject successfully");
+        s_logger->debug("invoked UpdateObject successfully");
         return true;
 
     failed:
-        CLog::Log(LOGINFO, "UPNP: invoking UpdateObject failed");
+        s_logger->info("invoking UpdateObject failed");
         return false;
     }
 };
