@@ -10,13 +10,6 @@
 #include "../AddonBase.h"
 #include "../Filesystem.h"
 
-#ifdef BUILD_KODI_ADDON
-#include "../IFileTypes.h"
-#else
-#include "filesystem/IFileTypes.h"
-#include "PlatformDefs.h"
-#endif
-
 #ifdef __cplusplus
 extern "C"
 {
@@ -35,6 +28,53 @@ extern "C"
     const char* redacted;
     const char* sharename;
     const char* protocol;
+  };
+
+  struct VFS_IOCTRL_NATIVE_DATA
+  {
+    unsigned long int request;
+    void* param;
+  };
+
+  struct VFS_IOCTRL_CACHE_STATUS_DATA
+  {
+    /// @brief Number of bytes cached forward of current position.
+    uint64_t forward;
+
+    /// @brief Maximum number of bytes per second cache is allowed to fill.
+    unsigned int maxrate;
+
+    /// @brief Average read rate from source file since last position change.
+    unsigned int currate;
+
+    /// @brief Cache low speed condition detected?
+    bool lowspeed;
+  };
+
+  enum VFS_IOCTRL
+  {
+    /// @brief For cases where not supported control becomes asked.
+    ///
+    /// @note Should normally not given to addon.
+    VFS_IOCTRL_INVALID = 0,
+
+    /// @brief @ref VFS_IOCTRL_NATIVE_DATA structure, containing what should be
+    /// passed to native ioctrl.
+    VFS_IOCTRL_NATIVE = 1,
+
+    /// @brief To check seek is possible.
+    ///
+    //// Return 0 if known not to work, 1 if it should work on related calls.
+    VFS_IOCTRL_SEEK_POSSIBLE = 2,
+
+    /// @brief @ref VFS_IOCTRL_CACHE_STATUS_DATA structure structure on related call
+    VFS_IOCTRL_CACHE_STATUS = 3,
+
+    /// @brief Unsigned int with speed limit for caching in bytes per second
+    VFS_IOCTRL_CACHE_SETRATE = 4,
+
+    /// @brief Enable/disable retry within the protocol handler (if supported)
+    VFS_IOCTRL_SET_RETRY = 16,
   };
 
   typedef struct VFSGetDirectoryCallbacks /* internal */
@@ -69,7 +109,7 @@ extern "C"
     int64_t (__cdecl* get_length) (const AddonInstance_VFSEntry* instance, void* context);
     int64_t (__cdecl* get_position) (const AddonInstance_VFSEntry* instance, void* context);
     int (__cdecl* get_chunk_size) (const AddonInstance_VFSEntry* instance, void* context);
-    int (__cdecl* io_control) (const AddonInstance_VFSEntry* instance, void* context, XFILE::EIoControl request, void* param);
+    int (__cdecl* io_control) (const AddonInstance_VFSEntry* instance, void* context, enum VFS_IOCTRL request, void* param);
     int (__cdecl* stat) (const AddonInstance_VFSEntry* instance, const VFSURL* url, struct __stat64* buffer);
     bool (__cdecl* close) (const AddonInstance_VFSEntry* instance, void* context);
     bool (__cdecl* exists) (const AddonInstance_VFSEntry* instance, const VFSURL* url);
@@ -199,7 +239,7 @@ public:
   /// @param[in] param Parameter attached to the IO-control
   /// @return -1 on error, >= 0 on success
   ///
-  virtual int IoControl(void* context, XFILE::EIoControl request, void* param) { return -1; }
+  virtual int IoControl(void* context, VFS_IOCTRL request, void* param) { return -1; }
 
   /// @brief Close a file
   ///
@@ -480,7 +520,7 @@ private:
 
   inline static int ADDON_IoControl(const AddonInstance_VFSEntry* instance,
                                     void* context,
-                                    XFILE::EIoControl request,
+                                    enum VFS_IOCTRL request,
                                     void* param)
   {
     return static_cast<CInstanceVFS*>(instance->toAddon.addonInstance)

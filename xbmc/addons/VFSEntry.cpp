@@ -11,6 +11,7 @@
 #include "URL.h"
 #include "addons/binary-addons/BinaryAddonBase.h"
 #include "addons/binary-addons/BinaryAddonManager.h"
+#include "addons/interfaces/Filesystem.h"
 #include "network/ZeroconfBrowser.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
@@ -276,7 +277,44 @@ int CVFSEntry::IoControl(void* ctx, XFILE::EIoControl request, void* param)
   if (!m_struct.toAddon.io_control)
     return -1;
 
-  return m_struct.toAddon.io_control(&m_struct, ctx, request, param);
+  VFS_IOCTRL ctrl = TranslateIOCTRLToAddon(request);
+  if (ctrl == VFS_IOCTRL_INVALID)
+    return -1;
+
+  /*! @note @ref VFS_IOCTRL_NATIVE a call to addon to give data! */
+  if (ctrl == VFS_IOCTRL_NATIVE)
+  {
+    XFILE::SNativeIoControl* kodiData = static_cast<XFILE::SNativeIoControl*>(param);
+    if (!kodiData)
+      return -1;
+
+    VFS_IOCTRL_NATIVE_DATA data;
+    data.request = kodiData->request;
+    data.param = kodiData->param;
+    return m_struct.toAddon.io_control(&m_struct, ctx, ctrl, &data);
+  }
+
+  /*! @note @ref VFS_IOCTRL_CACHE_STATUS a call to addon to become data from him! */
+  if (ctrl == VFS_IOCTRL_CACHE_STATUS)
+  {
+    XFILE::SCacheStatus* kodiData = static_cast<XFILE::SCacheStatus*>(param);
+    if (!kodiData)
+      return -1;
+
+    VFS_IOCTRL_CACHE_STATUS_DATA data;
+    int ret = m_struct.toAddon.io_control(&m_struct, ctx, ctrl, &data);
+    if (ret >= 0)
+    {
+      kodiData->forward = data.forward;
+      kodiData->maxrate = data.maxrate;
+      kodiData->currate = data.currate;
+      kodiData->lowspeed = data.lowspeed;
+    }
+    return ret;
+  }
+
+  /*! Do the rest for IoControl, the "param" should normally "nullptr" for this. */
+  return m_struct.toAddon.io_control(&m_struct, ctx, ctrl, param);
 }
 
 bool CVFSEntry::Delete(const CURL& url)
@@ -413,6 +451,44 @@ bool CVFSEntry::ContainsFiles(const CURL& url, CFileItemList& items)
     items.SetPath(rootpath);
 
   return true;
+}
+
+int CVFSEntry::TranslateIOCTRLToKodi(VFS_IOCTRL ioctrl)
+{
+  switch(ioctrl)
+  {
+    case VFS_IOCTRL_NATIVE:
+      return XFILE::EIoControl::IOCTRL_NATIVE;
+    case VFS_IOCTRL_SEEK_POSSIBLE:
+      return XFILE::EIoControl::IOCTRL_SEEK_POSSIBLE;
+    case VFS_IOCTRL_CACHE_STATUS:
+      return XFILE::EIoControl::IOCTRL_CACHE_STATUS;
+    case VFS_IOCTRL_CACHE_SETRATE:
+      return XFILE::EIoControl::IOCTRL_CACHE_SETRATE;
+    case VFS_IOCTRL_SET_RETRY:
+      return XFILE::EIoControl::IOCTRL_SET_RETRY;
+    default:
+      return XFILE::EIoControl::IOCTRL_INVALID;
+  }
+}
+
+VFS_IOCTRL CVFSEntry::TranslateIOCTRLToAddon(int ioctrl)
+{
+  switch(ioctrl)
+  {
+    case XFILE::EIoControl::IOCTRL_NATIVE:
+      return VFS_IOCTRL_NATIVE;
+    case XFILE::EIoControl::IOCTRL_SEEK_POSSIBLE:
+      return VFS_IOCTRL_SEEK_POSSIBLE;
+    case XFILE::EIoControl::IOCTRL_CACHE_STATUS:
+      return VFS_IOCTRL_CACHE_STATUS;
+    case XFILE::EIoControl::IOCTRL_CACHE_SETRATE:
+      return VFS_IOCTRL_CACHE_SETRATE;
+    case XFILE::EIoControl::IOCTRL_SET_RETRY:
+      return VFS_IOCTRL_SET_RETRY;
+    default:
+      return VFS_IOCTRL_INVALID;
+  }
 }
 
 CVFSEntryIFileWrapper::CVFSEntryIFileWrapper(VFSEntryPtr ptr) :

@@ -55,6 +55,7 @@ struct SCacheStatus
 };
 
 typedef enum {
+  IOCTRL_INVALID = 0, /**< For cases between addon and Kodi where addon bring not supported part */
   IOCTRL_NATIVE        = 1,  /**< SNativeIoControl structure, containing what should be passed to native ioctrl */
   IOCTRL_SEEK_POSSIBLE = 2,  /**< return 0 if known not to work, 1 if it should work */
   IOCTRL_CACHE_STATUS  = 3,  /**< SCacheStatus structure */
