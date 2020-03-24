@@ -139,10 +139,11 @@ float CXBMCApp::m_refreshRate = 0.0f;
 
 uint32_t CXBMCApp::m_playback_state = PLAYBACK_STATE_STOPPED;
 
-CXBMCApp::CXBMCApp(ANativeActivity* nativeActivity)
-  : CJNIMainActivity(nativeActivity)
-  , CJNIBroadcastReceiver(CJNIContext::getPackageName() + ".XBMCBroadcastReceiver")
-  , m_videosurfaceInUse(false)
+CXBMCApp::CXBMCApp(ANativeActivity* nativeActivity, IInputHandler& inputHandler)
+  : CJNIMainActivity(nativeActivity),
+    CJNIBroadcastReceiver(CJNIContext::getPackageName() + ".XBMCBroadcastReceiver"),
+    m_inputHandler(inputHandler),
+    m_videosurfaceInUse(false)
 {
   m_xbmcappinstance = this;
   m_activity = nativeActivity;
@@ -371,6 +372,7 @@ void CXBMCApp::Initialize()
   CServiceBroker::GetAnnouncementManager()->AddAnnouncer(CXBMCApp::get());
   runNativeOnUiThread(RegisterDisplayListener, nullptr);
   m_activityManager.reset(new CJNIActivityManager(getSystemService(CJNIContext::ACTIVITY_SERVICE)));
+  m_inputHandler.setDPI(GetDPI());
 }
 
 void CXBMCApp::Deinitialize()
@@ -1440,6 +1442,7 @@ void CXBMCApp::onDisplayChanged(int displayId)
     winSystemAndroid->UpdateDisplayModes();
 
   m_displayChangeEvent.Set();
+  m_inputHandler.setDPI(GetDPI());
   android_printf("%s: ", __PRETTY_FUNCTION__);
 }
 
