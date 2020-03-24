@@ -491,6 +491,14 @@ bool CPythonInvoker::stop(bool abort)
 
       PyEval_RestoreThread((PyThreadState*)m_threadState);
 
+      //tell xbmc.Monitor to call onAbortRequested()
+      if (m_addon)
+      {
+        CLog::Log(LOGDEBUG, "CPythonInvoker(%d, %s): trigger Monitor abort request", GetId(),
+                  m_sourceFile.c_str());
+        onAbortRequested();
+      }
+
       PyObject* m;
       m = PyImport_AddModule("xbmc");
       if (m == NULL || PyObject_SetAttrString(m, "abortRequested", PyBool_FromLong(1)))

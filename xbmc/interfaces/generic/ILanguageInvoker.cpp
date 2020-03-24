@@ -63,6 +63,12 @@ bool ILanguageInvoker::onExecutionInitialized()
   return m_invocationHandler->OnScriptInitialized(this);
 }
 
+void ILanguageInvoker::onAbortRequested()
+{
+  if (m_invocationHandler)
+    m_invocationHandler->OnScriptAbortRequested(this);
+}
+
 void ILanguageInvoker::onExecutionFailed()
 {
   if (m_invocationHandler)
