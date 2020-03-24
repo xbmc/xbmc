@@ -628,6 +628,25 @@ void XBPython::OnScriptStarted(ILanguageInvoker *invoker)
   m_vecPyList.push_back(inf);
 }
 
+void XBPython::OnScriptAbortRequested(ILanguageInvoker *invoker)
+{
+  XBMC_TRACE;
+
+  long invokerId(-1);
+  if (invoker != NULL)
+    invokerId = invoker->GetId();
+
+  LOCK_AND_COPY(std::vector<XBMCAddon::xbmc::Monitor*>, tmp, m_vecMonitorCallbackList);
+  for (auto& it : tmp)
+  {
+    if (CHECK_FOR_ENTRY(m_vecMonitorCallbackList, it))
+    {
+      if (invokerId < 0 || it->GetInvokerId() == invokerId)
+        it->OnAbortRequested();
+    }
+  }
+}
+
 void XBPython::OnExecutionEnded(ILanguageInvoker* invoker)
 {
   CSingleLock lock(m_vecPyList);

@@ -90,6 +90,7 @@ public:
   void Uninitialize() override;
   bool OnScriptInitialized(ILanguageInvoker *invoker) override;
   void OnScriptStarted(ILanguageInvoker *invoker) override;
+  void OnScriptAbortRequested(ILanguageInvoker *invoker) override;
   void OnExecutionEnded(ILanguageInvoker* invoker) override;
   void OnScriptFinalized(ILanguageInvoker *invoker) override;
   ILanguageInvoker* CreateInvoker() override;
