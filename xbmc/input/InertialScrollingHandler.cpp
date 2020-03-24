@@ -14,6 +14,7 @@
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "input/Key.h"
+#include "input/touch/generic/GenericTouchInputHandler.h"
 #include "utils/TimeUtils.h"
 #include "utils/log.h"
 #include "windowing/WinSystem.h"
@@ -21,11 +22,13 @@
 #include <cmath>
 #include <numeric>
 
-//time for reaching velocity 0 in secs
+// time for reaching velocity 0 in secs
 #define TIME_TO_ZERO_SPEED 1.0f
-//minimum speed for doing inertial scroll is 100 pixels / s
-#define MINIMUM_SPEED_FOR_INERTIA 100
-//maximum time between last movement and gesture end in ms to consider as moving
+// minimum speed for doing inertial scroll is 100 pixels / s
+#define MINIMUM_SPEED_FOR_INERTIA 200
+// maximum speed for reducing time to zero
+#define MAXIMUM_SPEED_FOR_REDUCTION 750
+// maximum time between last movement and gesture end in ms to consider as moving
 #define MAXIMUM_DELAY_FOR_INERTIA 200
 
 CInertialScrollingHandler::CInertialScrollingHandler()
@@ -95,8 +98,18 @@ bool CInertialScrollingHandler::CheckForInertialScrolling(const CAction* action)
     auto velocityX = velocitySum.x / m_panPoints.size();
     auto velocityY = velocitySum.y / m_panPoints.size();
 
-    if (std::abs(velocityX) > MINIMUM_SPEED_FOR_INERTIA || std::abs(velocityY) > MINIMUM_SPEED_FOR_INERTIA)
+    m_timeToZero = TIME_TO_ZERO_SPEED;
+    auto velocityMax = std::max(std::abs(velocityX), std::abs(velocityY));
+#ifdef TARGET_DARWIN_OSX
+    float dpiScale = 1.0;
+#else
+    float dpiScale = CGenericTouchInputHandler::GetInstance().GetScreenDPI() / 160.0f;
+#endif
+    if (velocityMax > MINIMUM_SPEED_FOR_INERTIA * dpiScale)
     {
+      if (velocityMax < MAXIMUM_SPEED_FOR_REDUCTION * dpiScale)
+        m_timeToZero = (m_timeToZero * velocityMax) / (MAXIMUM_SPEED_FOR_REDUCTION * dpiScale);
+
       bool inertialRequested = false;
       CGUIMessage message(GUI_MSG_GESTURE_NOTIFY, 0, 0, static_cast<int> (velocityX), static_cast<int> (velocityY));
 
@@ -128,8 +141,8 @@ bool CInertialScrollingHandler::CheckForInertialScrolling(const CAction* action)
         //calc deacceleration for fullstop in TIME_TO_ZERO_SPEED secs
         //v = a*t + v0 -> set v = 0 because we want to stop scrolling
         //a = -v0 / t
-        m_inertialDeacceleration.x = -1*m_iFlickVelocity.x/TIME_TO_ZERO_SPEED;
-        m_inertialDeacceleration.y = -1*m_iFlickVelocity.y/TIME_TO_ZERO_SPEED;
+        m_inertialDeacceleration.x = -1 * m_iFlickVelocity.x / m_timeToZero;
+        m_inertialDeacceleration.y = -1 * m_iFlickVelocity.y / m_timeToZero;
 
         m_inertialStartTime = CTimeUtils::GetFrameTime();//start time of inertial scrolling
         ret = true;
@@ -159,7 +172,7 @@ bool CInertialScrollingHandler::ProcessInertialScroll(float frameTime)
     float absoluteInertialTime = (CTimeUtils::GetFrameTime() - m_inertialStartTime)/(float)1000;
 
     //as long as we aren't over the overall inertial scroll time - do the deacceleration
-    if ( absoluteInertialTime < TIME_TO_ZERO_SPEED )
+    if (absoluteInertialTime < m_timeToZero)
     {
       //v = s/t -> s = t * v
       xMovement = frameTime * m_iFlickVelocity.x;
