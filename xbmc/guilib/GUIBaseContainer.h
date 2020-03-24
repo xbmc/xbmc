@@ -225,8 +225,11 @@ private:
   CStopWatch m_matchTimer;
   std::string m_match;
   float m_scrollItemsPerFrame;
-
   static const int letter_match_timeout = 1000;
+
+  // early inertial scroll cancellation
+  bool m_waitForScrollEnd = false;
+  float m_lastScrollValue;
 };
 
 
