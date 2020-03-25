@@ -161,6 +161,7 @@ public:
   static std::string GetLanguagePath() { return "resource://"; }
   static std::string GetLanguagePath(const std::string &language);
   static std::string GetLanguageInfoPath(const std::string &language);
+  bool UseLocaleCollation();
 
   static void LoadTokens(const TiXmlNode* pTokens, std::set<std::string>& vecTokens);
 
@@ -242,7 +243,7 @@ protected:
   CRegion m_defaultRegion; // default, will be used if no region available via langinfo.xml
   std::locale m_systemLocale;     // current locale, matching GUI settings
   std::locale m_originalLocale; // original locale, without changes of collate
-
+  int m_collationtype;
   LanguageResourcePtr m_languageAddon;
 
   std::string m_strGuiCharSet;

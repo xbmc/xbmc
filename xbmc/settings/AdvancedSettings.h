@@ -322,6 +322,8 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     DatabaseSettings m_databaseTV;    // advanced tv database setup
     DatabaseSettings m_databaseEpg;   /*!< advanced EPG database setup */
 
+    bool m_useLocaleCollation;
+
     bool m_guiVisualizeDirtyRegions;
     int  m_guiAlgorithmDirtyRegions;
     bool m_guiSmartRedraw;
