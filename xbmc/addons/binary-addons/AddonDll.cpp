@@ -471,8 +471,11 @@ bool CAddonDll::CheckAPIVersion(int type)
       addonMinVersion.asString(),
       addonVersion.asString());
 
-    CEventLog &eventLog = CServiceBroker::GetEventLog();
-    eventLog.AddWithNotification(EventPtr(new CNotificationEvent(Name(), 24152, EventLevel::Error)));
+    if (CServiceBroker::GetGUI())
+    {
+      CEventLog &eventLog = CServiceBroker::GetEventLog();
+      eventLog.AddWithNotification(EventPtr(new CNotificationEvent(Name(), 24152, EventLevel::Error)));
+    }
 
     return false;
   }
