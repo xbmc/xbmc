@@ -195,8 +195,8 @@ void CPVRGUIInfo::UpdateQualityData()
 
   if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_PVRPLAYBACK_SIGNALQUALITY))
   {
-    bool bIsPlayingRecording = CServiceBroker::GetPVRManager().PlaybackState()->IsPlayingRecording();
-    if (!bIsPlayingRecording)
+    const int channelUid = CServiceBroker::GetPVRManager().PlaybackState()->GetPlayingChannelUniqueID();
+    if (channelUid > 0)
     {
       std::shared_ptr<CPVRClient> client;
       CServiceBroker::GetPVRManager().Clients()->GetCreatedClient(CServiceBroker::GetPVRManager().PlaybackState()->GetPlayingClientID(), client);
@@ -213,8 +213,8 @@ void CPVRGUIInfo::UpdateDescrambleData()
   PVR_DESCRAMBLE_INFO descrambleInfo;
   ClearDescrambleInfo(descrambleInfo);
 
-  bool bIsPlayingRecording = CServiceBroker::GetPVRManager().PlaybackState()->IsPlayingRecording();
-  if (!bIsPlayingRecording)
+  const int channelUid = CServiceBroker::GetPVRManager().PlaybackState()->GetPlayingChannelUniqueID();
+  if (channelUid > 0)
   {
     std::shared_ptr<CPVRClient> client;
     CServiceBroker::GetPVRManager().Clients()->GetCreatedClient(CServiceBroker::GetPVRManager().PlaybackState()->GetPlayingClientID(), client);
