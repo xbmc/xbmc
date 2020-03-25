@@ -29,7 +29,7 @@ public:
    *
    * @return std::unique_ptr<CBufferObject>
    */
-  static std::unique_ptr<CBufferObject> CreateBufferObject();
+  static std::unique_ptr<CBufferObject> CreateBufferObject(bool needsCreateBySize);
 
   /**
    * @brief Registers a CBufferObject class to class to the factory.

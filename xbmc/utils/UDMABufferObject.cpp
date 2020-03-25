@@ -79,9 +79,15 @@ bool CUDMABufferObject::CreateBufferObject(uint32_t format, uint32_t width, uint
       throw std::system_error(errno, std::generic_category(), "pixel format not implemented");
   }
 
-  // Must be rounded to the system page size
-  m_size = RoundUp(width * height * bpp, PAGESIZE);
   m_stride = width * bpp;
+
+  return CreateBufferObject(width * height * bpp);
+}
+
+bool CUDMABufferObject::CreateBufferObject(uint64_t size)
+{
+  // Must be rounded to the system page size
+  m_size = RoundUp(size, PAGESIZE);
 
   m_memfd = memfd_create("kodi", MFD_CLOEXEC | MFD_ALLOW_SEALING);
   if (m_memfd < 0)

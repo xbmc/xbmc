@@ -20,7 +20,7 @@ using namespace RETRO;
 CRenderBufferDMA::CRenderBufferDMA(CRenderContext& context, int fourcc)
   : m_context(context),
     m_fourcc(fourcc),
-    m_bo(CBufferObject::GetBufferObject())
+    m_bo(CBufferObject::GetBufferObject(false))
 {
   auto winSystemEGL =
       dynamic_cast<KODI::WINDOWING::LINUX::CWinSystemEGL*>(CServiceBroker::GetWinSystem());
