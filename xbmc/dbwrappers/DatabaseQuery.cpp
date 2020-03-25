@@ -397,7 +397,7 @@ std::string CDatabaseQueryRule::FormatWhereClause(const std::string &negate, con
   {
     std::string fmt = "%s";
     if (GetFieldType(m_field) == NUMERIC_FIELD)
-      fmt = "CAST(%s as DECIMAL(5,1))";
+      fmt = "CAST(%s as DECIMAL(6,1))";
     else if (GetFieldType(m_field) == SECONDS_FIELD)
       fmt = "CAST(%s as INTEGER)";
 

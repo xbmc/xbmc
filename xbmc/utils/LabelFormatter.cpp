@@ -371,6 +371,7 @@ std::string CLabelFormatter::GetMaskContent(const CMaskString &mask, const CFile
   case 'f': // BPM
     if (music)
       value = StringUtils::Format("%i", music->GetBPM());
+    break;
   }
   if (!value.empty())
     return mask.m_prefix + value + mask.m_postfix;

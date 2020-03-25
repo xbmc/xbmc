@@ -106,6 +106,12 @@ std::string DatabaseUtils::GetField(Field field, const MediaType &mediaType, Dat
       return "songview.strDiscSubtitle";
     else if (field == FieldBPM)
         return "songview.iBPM";
+    else if (field == FieldMusicBitRate)
+        return "songview.iBitRate";
+    else if (field == FieldSampleRate)
+        return "songview.iSampleRate";
+    else if (field == FieldNoOfChannels)
+        return "songview.iChannels";
   }
   else if (mediaType == MediaTypeArtist)
   {
@@ -539,6 +545,12 @@ int DatabaseUtils::GetField(Field field, const MediaType &mediaType, bool asInde
     else if (field == FieldDateAdded) return CMusicDatabase::song_dateAdded;
     else if (field == FieldBPM)
       return CMusicDatabase::song_iBPM;
+    else if (field == FieldMusicBitRate)
+        return CMusicDatabase::song_iBitRate;
+    else if (field == FieldSampleRate)
+        return CMusicDatabase::song_iSampleRate;
+    else if (field == FieldNoOfChannels)
+        return CMusicDatabase::song_iChannels;
   }
   else if (mediaType == MediaTypeArtist)
   {

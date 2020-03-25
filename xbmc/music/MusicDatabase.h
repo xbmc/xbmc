@@ -155,7 +155,7 @@ public:
               std::string& strDiscSubtitle,
               const int iTimesPlayed, int iStartOffset, int iEndOffset,
               const CDateTime& dtLastPlayed, float rating, int userrating, int votes,
-              int iBPM,
+              int iBPM, int iBitRate, int iSampleRate, int iChannels,
               const ReplayGain& replayGain);
   bool GetSong(int idSong, CSong& song);
 
@@ -190,6 +190,10 @@ public:
    \param userrating [in] a userrating (my rating) for the song
    \param votes [in] a vote counter for the song rating
    \param replayGain [in] album and track replaygain and peak values
+   \param iBPM [in] the beats per minute of a song
+   \param iBitRate [in] the bitrate of the song file
+   \param iSampleRate [in] the sample rate of the song file
+   \param iChannels [in] the number of audio channels in the song file
    \return the id of the song
    */
   int UpdateSong(int idSong,
@@ -205,7 +209,7 @@ public:
                  int iTimesPlayed, int iStartOffset, int iEndOffset,
                  const CDateTime& dtLastPlayed, float rating, int userrating, int votes,
                  const ReplayGain& replayGain,
-                 int iBPM);
+                 int iBPM, int iBitRate, int iSampleRate, int iChannels);
 
   //// Misc Song
   bool GetSongByFileName(const std::string& strFileName, CSong& song, int64_t startOffset = 0);
@@ -802,6 +806,9 @@ private:
     song_dateAdded,
     song_strReplayGain,
     song_iBPM,
+    song_iBitRate,
+    song_iSampleRate,
+    song_iChannels,
     song_enumCount // end of the enum, do not add past here
   } SongFields;
 

@@ -123,6 +123,9 @@ static const translateField fields[] = {
   { "totaldiscs",        FieldTotalDiscs,              CDatabaseQueryRule::NUMERIC_FIELD,  StringValidation::IsPositiveInteger,  false, 38077 },
   { "originalyear",      FieldOrigYear,                CDatabaseQueryRule::NUMERIC_FIELD,  StringValidation::IsPositiveInteger,  true,  38078 },
   { "bpm",               FieldBPM,                     CDatabaseQueryRule::NUMERIC_FIELD,  NULL,                                 false, 38080 },
+  { "samplerate",        FieldSampleRate,              CDatabaseQueryRule::NUMERIC_FIELD,  NULL,                                 false, 613 },
+  { "bitrate",           FieldMusicBitRate,            CDatabaseQueryRule::NUMERIC_FIELD,  NULL,                                 false, 623 },
+  { "channels",          FieldNoOfChannels,            CDatabaseQueryRule::NUMERIC_FIELD,  StringValidation::IsPositiveInteger,  false, 253 },
 };
 // clang format on
 
@@ -323,6 +326,9 @@ std::vector<Field> CSmartPlaylistRule::GetFields(const std::string &type)
     fields.push_back(FieldComment);
     fields.push_back(FieldMoods);
     fields.push_back(FieldBPM);
+    fields.push_back(FieldSampleRate);
+    fields.push_back(FieldMusicBitRate);
+    fields.push_back(FieldNoOfChannels);
   }
   else if (type == "albums")
   {

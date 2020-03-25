@@ -313,6 +313,36 @@ bool CMusicGUIInfo::GetLabel(std::string& value, const CFileItem *item, int cont
         return true;
       }
       break;
+      case LISTITEM_BITRATE:
+      {
+        int BitRate = tag->GetBitRate();
+        if (BitRate > 0)
+        {
+          value = StringUtils::Format("%i", BitRate);
+          return true;
+        }
+        break;
+      }
+      case LISTITEM_SAMPLERATE:
+      {
+        int sampleRate = tag->GetSampleRate();
+        if (sampleRate > 0)
+        {
+          value = StringUtils::Format("%.5g", static_cast<double>(sampleRate) / 1000.0);
+          return true;
+        }
+        break;
+      }
+      case LISTITEM_MUSICCHANNELS:
+      {
+        int channels = tag->GetNoOfChannels();
+        if (channels > 0)
+        {
+          value = StringUtils::Format("%i", channels);
+          return true;
+        }
+        break;
+      }
       case LISTITEM_FILENAME:
       case LISTITEM_FILE_EXTENSION:
         if (item->IsMusicDb())

@@ -138,6 +138,9 @@ typedef enum {
   FieldRelevance, // Used for actors' appearances
   FieldClientChannelOrder,
   FieldBPM,
+  FieldMusicBitRate,
+  FieldSampleRate,
+  FieldNoOfChannels,
   FieldMax
 } Field;
 
