@@ -32,6 +32,9 @@ public:
   virtual uint32_t GetStride() override;
   virtual uint64_t GetModifier() override;
 
+  void SyncStart() override;
+  void SyncEnd() override;
+
 protected:
   int m_fd{-1};
   uint32_t m_stride{0};
