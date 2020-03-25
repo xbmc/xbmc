@@ -1,6 +1,29 @@
-include ../../Makefile.include
+-include ../../Makefile.include
 include DAV1D-VERSION
-DEPS = ../../Makefile.include Makefile DAV1D-VERSION
+DEPS = Makefile DAV1D-VERSION
+
+ifeq ($(CROSS_COMPILING), yes)
+  DEPS += ../../Makefile.include
+  PYTHON = $(NATIVEPREFIX)/bin/python3
+  MESON = $(NATIVEPREFIX)/bin/meson
+  NINJA = $(NATIVEPREFIX)/bin/ninja
+else
+  ROOT_DIR := $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
+  PREFIX ?= $(ROOT_DIR)/dav1d-install
+  BASE_URL ?= http://mirrors.kodi.tv/build-deps/sources
+  AUTORECONF := autoreconf
+  RETRIEVE_TOOL := curl -Ls --retry 10 --retry-delay 3 -o $(ARCHIVE)
+  ARCHIVE_TOOL := tar --strip-components=1 -xf
+
+  ifeq ($(PLATFORM),)
+    PLATFORM = native
+    TARBALLS_LOCATION = $(ROOT_DIR)
+    DAV1D_INSTALL_PREFIX = --prefix $(PREFIX)
+    MESON = meson
+    NINJA = ninja
+  endif
+endif
+
 
 MESON_BUILD_TYPE=release
 
@@ -9,7 +32,7 @@ ifeq ($(DEBUG_BUILD), yes)
 endif
 
 # configuration settings
-CONFIGURE = $(NATIVEPREFIX)/bin/python3 $(NATIVEPREFIX)/bin/meson \
+CONFIGURE = $(PYTHON) $(MESON) $(DAV1D_INSTALL_PREFIX) \
 	--buildtype=$(MESON_BUILD_TYPE) \
 	--default-library=static \
 	-Denable_asm=true \
@@ -32,6 +55,8 @@ LIBDYLIB=$(PLATFORM)/lib/lib$(LIBNAME).a
 
 all: .installed-$(PLATFORM)
 
+download: $(TARBALLS_LOCATION)/$(ARCHIVE)
+
 $(TARBALLS_LOCATION)/$(ARCHIVE):
 	cd $(TARBALLS_LOCATION); $(RETRIEVE_TOOL) $(RETRIEVE_TOOL_FLAGS) $(BASE_URL)/$(ARCHIVE)
 
@@ -42,10 +67,10 @@ $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 	cd $(PLATFORM); $(CONFIGURE) . build
 
 $(LIBDYLIB): $(PLATFORM)
-	cd $(PLATFORM)/build; $(NATIVEPREFIX)/bin/ninja -v
+	cd $(PLATFORM)/build; $(NINJA) -v
 
 .installed-$(PLATFORM): $(LIBDYLIB)
-	cd $(PLATFORM)/build; $(NATIVEPREFIX)/bin/ninja -v install
+	cd $(PLATFORM)/build; $(NINJA) -v install
 	touch $@
 
 clean:
