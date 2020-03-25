@@ -15,6 +15,8 @@
 #include "cores/VideoPlayer/VideoRenderers/LinuxRendererGL.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderFactory.h"
 #include "rendering/gl/ScreenshotSurfaceGL.h"
+#include "utils/BufferObjectFactory.h"
+#include "utils/DumbBufferObject.h"
 #include "utils/XTimeUtils.h"
 #include "utils/log.h"
 
@@ -57,6 +59,9 @@ bool CWinSystemGbmGLContext::InitWindowSystem()
   }
 
   CScreenshotSurfaceGL::Register();
+
+  CBufferObjectFactory::ClearBufferObjects();
+  CDumbBufferObject::Register();
 
   return true;
 }
