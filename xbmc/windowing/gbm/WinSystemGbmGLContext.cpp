@@ -17,6 +17,7 @@
 #include "rendering/gl/ScreenshotSurfaceGL.h"
 #include "utils/BufferObjectFactory.h"
 #include "utils/DumbBufferObject.h"
+#include "utils/GBMBufferObject.h"
 #include "utils/XTimeUtils.h"
 #include "utils/log.h"
 
@@ -62,6 +63,9 @@ bool CWinSystemGbmGLContext::InitWindowSystem()
 
   CBufferObjectFactory::ClearBufferObjects();
   CDumbBufferObject::Register();
+#if defined(HAS_GBM_BO_MAP)
+  CGBMBufferObject::Register();
+#endif
 
   return true;
 }
