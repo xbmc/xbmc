@@ -200,7 +200,7 @@
 							<top>35</top>
 							<width>60%</width>
 							<height>30</height>
-							<label>[I][COLOR grey]$VAR[SeasonEpisodeLabel][/COLOR]$INFO[ListItem.EpisodeName,[COLOR white],[/COLOR]][/I]</label>
+							<label>$VAR[FlagDashLabel][I][COLOR grey]$VAR[SeasonEpisodeLabel][/COLOR]$INFO[ListItem.EpisodeName,[COLOR white],[/COLOR]][/I]</label>
 						</control>
 						<control type="label">
 							<top>35</top>

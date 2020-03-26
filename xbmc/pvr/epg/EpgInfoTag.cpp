@@ -665,6 +665,21 @@ bool CPVREpgInfoTag::IsNew() const
   return (m_iFlags & EPG_TAG_FLAG_IS_NEW) > 0;
 }
 
+bool CPVREpgInfoTag::IsPremiere() const
+{
+  return (m_iFlags & EPG_TAG_FLAG_IS_PREMIERE) > 0;
+}
+
+bool CPVREpgInfoTag::IsFinale() const
+{
+  return (m_iFlags & EPG_TAG_FLAG_IS_FINALE) > 0;
+}
+
+bool CPVREpgInfoTag::IsLive() const
+{
+  return (m_iFlags & EPG_TAG_FLAG_IS_LIVE) > 0;
+}
+
 const std::vector<std::string> CPVREpgInfoTag::Tokenize(const std::string& str)
 {
   return StringUtils::Split(str.c_str(), EPG_STRING_TOKEN_SEPARATOR);

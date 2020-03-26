@@ -5815,6 +5815,30 @@ const infomap container_str[]  = {{ "property",         CONTAINER_PROPERTY },
 ///     @skinning_v19 **[New Infolabel]** \link ListItem_IsNew `ListItem.IsNew`\endlink
 ///     <p>
 ///   }
+///   \table_row3{   <b>`ListItem.IsPremiere`</b>,
+///                  \anchor ListItem_IsPremiere
+///                  _boolean_,
+///     @return **True** if the item is a premiere (for example\, a Movie first showing or season first on Live TV).
+///     <p><hr>
+///     @skinning_v19 **[New Infolabel]** \link ListItem_IsPremiere `ListItem.IsPremiere`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`ListItem.IsFinale`</b>,
+///                  \anchor ListItem_IsFinale
+///                  _boolean_,
+///     @return **True** if the item is a finale (for example\, a season finale showing on Live TV).
+///     <p><hr>
+///     @skinning_v19 **[New Infolabel]** \link ListItem_IsFinale `ListItem.IsFinale`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`ListItem.IsLive`</b>,
+///                  \anchor ListItem_IsLive
+///                  _boolean_,
+///     @return **True** if the item is live (for example\, a Live TV sports event).
+///     <p><hr>
+///     @skinning_v19 **[New Infolabel]** \link ListItem_IsLive `ListItem.IsLive`\endlink
+///     <p>
+///   }
 ///   \table_row3{   <b>`ListItem.DiscTitle`</b>,
 ///                  \anchor ListItem_DiscTitle
 ///                  _string_,
@@ -6096,6 +6120,9 @@ const infomap listitem_labels[]= {{ "thumb",            LISTITEM_THUMB },
                                   { "bitrate",          LISTITEM_BITRATE },
                                   { "samplerate",       LISTITEM_SAMPLERATE },
                                   { "musicchannels",    LISTITEM_MUSICCHANNELS },
+                                  { "ispremiere",       LISTITEM_IS_PREMIERE },
+                                  { "isfinale",         LISTITEM_IS_FINALE },
+                                  { "islive",           LISTITEM_IS_LIVE },
 };
 
 /// \page modules__infolabels_boolean_conditions

@@ -56,9 +56,12 @@ extern "C" {
 #endif
 
   /* EPG_TAG.iFlags values */
-  const unsigned int EPG_TAG_FLAG_UNDEFINED = 0x00000000; /*!< @brief nothing special to say about this entry */
-  const unsigned int EPG_TAG_FLAG_IS_SERIES = 0x00000001; /*!< @brief this EPG entry is part of a series */
-  const unsigned int EPG_TAG_FLAG_IS_NEW    = 0x00000002; /*!< @brief this EPG entry will be flagged as new */
+  const unsigned int EPG_TAG_FLAG_UNDEFINED   = 0x00000000; /*!< @brief nothing special to say about this entry */
+  const unsigned int EPG_TAG_FLAG_IS_SERIES   = 0x00000001; /*!< @brief this EPG entry is part of a series */
+  const unsigned int EPG_TAG_FLAG_IS_NEW      = 0x00000002; /*!< @brief this EPG entry will be flagged as new */
+  const unsigned int EPG_TAG_FLAG_IS_PREMIERE = 0x00000004; /*!< @brief this EPG entry will be flagged as a premiere */
+  const unsigned int EPG_TAG_FLAG_IS_FINALE   = 0x00000008; /*!< @brief this EPG entry will be flagged as a finale */
+  const unsigned int EPG_TAG_FLAG_IS_LIVE     = 0x00000010; /*!< @brief this EPG entry will be flagged as live */
 
   /* Special EPG_TAG.iUniqueBroadcastId value */
 

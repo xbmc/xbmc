@@ -1270,7 +1270,91 @@ bool CPVRGUIInfo::GetListItemAndPlayerBool(const CFileItem* item, const CGUIInfo
     case LISTITEM_IS_NEW:
       if (item->IsEPG())
       {
-        bValue = item->GetEPGInfoTag()->IsNew();
+        if (item->GetEPGInfoTag())
+        {
+          bValue = item->GetEPGInfoTag()->IsNew();
+          return true;
+        }
+      }
+      else if (item->IsPVRRecording())
+      {
+        bValue = item->GetPVRRecordingInfoTag()->IsNew();
+        return true;
+      }
+      else if (item->IsPVRTimer() && item->GetPVRTimerInfoTag()->GetEpgInfoTag())
+      {
+        bValue = item->GetPVRTimerInfoTag()->GetEpgInfoTag()->IsNew();
+        return true;
+      }
+      else if (item->IsPVRChannel() && item->GetPVRChannelInfoTag()->GetEPGNow())
+      {
+        bValue = item->GetPVRChannelInfoTag()->GetEPGNow()->IsNew();
+        return true;
+      }
+      break;
+    case LISTITEM_IS_PREMIERE:
+      if (item->IsEPG())
+      {
+        bValue = item->GetEPGInfoTag()->IsPremiere();
+        return true;
+      }
+      else if (item->IsPVRRecording())
+      {
+        bValue = item->GetPVRRecordingInfoTag()->IsPremiere();
+        return true;
+      }
+      else if (item->IsPVRTimer() && item->GetPVRTimerInfoTag()->GetEpgInfoTag())
+      {
+        bValue = item->GetPVRTimerInfoTag()->GetEpgInfoTag()->IsPremiere();
+        return true;
+      }
+      else if (item->IsPVRChannel() && item->GetPVRChannelInfoTag()->GetEPGNow())
+      {
+        bValue = item->GetPVRChannelInfoTag()->GetEPGNow()->IsPremiere();
+        return true;
+      }
+      break;
+    case LISTITEM_IS_FINALE:
+      if (item->IsEPG())
+      {
+        bValue = item->GetEPGInfoTag()->IsFinale();
+        return true;
+      }
+      else if (item->IsPVRRecording())
+      {
+        bValue = item->GetPVRRecordingInfoTag()->IsFinale();
+        return true;
+      }
+      else if (item->IsPVRTimer() && item->GetPVRTimerInfoTag()->GetEpgInfoTag())
+      {
+        bValue = item->GetPVRTimerInfoTag()->GetEpgInfoTag()->IsFinale();
+        return true;
+      }
+      else if (item->IsPVRChannel() && item->GetPVRChannelInfoTag()->GetEPGNow())
+      {
+        bValue = item->GetPVRChannelInfoTag()->GetEPGNow()->IsFinale();
+        return true;
+      }
+      break;
+    case LISTITEM_IS_LIVE:
+      if (item->IsEPG())
+      {
+        bValue = item->GetEPGInfoTag()->IsLive();
+        return true;
+      }
+      else if (item->IsPVRRecording())
+      {
+        bValue = item->GetPVRRecordingInfoTag()->IsLive();
+        return true;
+      }
+      else if (item->IsPVRTimer() && item->GetPVRTimerInfoTag()->GetEpgInfoTag())
+      {
+        bValue = item->GetPVRTimerInfoTag()->GetEpgInfoTag()->IsLive();
+        return true;
+      }
+      else if (item->IsPVRChannel() && item->GetPVRChannelInfoTag()->GetEPGNow())
+      {
+        bValue = item->GetPVRChannelInfoTag()->GetEPGNow()->IsLive();
         return true;
       }
       break;
