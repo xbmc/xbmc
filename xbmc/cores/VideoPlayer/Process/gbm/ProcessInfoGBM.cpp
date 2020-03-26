@@ -8,6 +8,8 @@
 
 #include "ProcessInfoGBM.h"
 
+#include "cores/VideoPlayer/Buffers/VideoBufferPoolDMA.h"
+
 using namespace VIDEOPLAYER;
 
 CProcessInfo* CProcessInfoGBM::Create()
@@ -18,6 +20,11 @@ CProcessInfo* CProcessInfoGBM::Create()
 void CProcessInfoGBM::Register()
 {
   CProcessInfo::RegisterProcessControl("gbm", CProcessInfoGBM::Create);
+}
+
+CProcessInfoGBM::CProcessInfoGBM()
+{
+  m_videoBufferManager.RegisterPool(std::make_shared<CVideoBufferPoolDMA>());
 }
 
 EINTERLACEMETHOD CProcessInfoGBM::GetFallbackDeintMethod()
