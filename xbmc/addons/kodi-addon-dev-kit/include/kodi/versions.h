@@ -35,7 +35,6 @@
 #define ADDON_GLOBAL_VERSION_MAIN_XML_ID              "kodi.binary.global.main"
 #define ADDON_GLOBAL_VERSION_MAIN_DEPENDS             "AddonBase.h" \
                                                       "xbmc_addon_dll.h" \
-                                                      "xbmc_addon_types.h" \
                                                       "libXBMC_addon.h" \
                                                       "addon-instance/"
 

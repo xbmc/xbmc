@@ -17,7 +17,7 @@
 #endif
 
 #include <stdint.h>
-#include "xbmc_addon_types.h"
+#include "AddonBase.h"
 #ifdef BUILD_KODI_ADDON
 #include "IFileTypes.h"
 #else
