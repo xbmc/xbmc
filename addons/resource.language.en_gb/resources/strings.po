@@ -3765,7 +3765,17 @@ msgctxt "#837"
 msgid "Sundays"
 msgstr ""
 
-#empty strings from id 838 to 839
+#. Label for a TV show Premiere
+#: addons/skin.estuary/xml/DialogPVRInfo.xml
+msgctxt "#838"
+msgid "Première"
+msgstr ""
+
+#. Label for a Live TV show
+#: addons/skin.estuary/xml/DialogPVRInfo.xml
+msgctxt "#839"
+msgid "Live"
+msgstr ""
 
 #. Message in a dialog when a user wants to delete a timer that was scheduled by a timer rule
 #: xbmc/pvr/PVRGUIActions.cpp
@@ -3782,7 +3792,7 @@ msgstr ""
 #. Label for a first aired TV show
 #: addons/skin.estuary/xml/DialogPVRInfo.xml
 msgctxt "#842"
-msgid "New!"
+msgid "New"
 msgstr ""
 
 #. Label for a context menu entry to activate a currently inactive timer
@@ -3821,7 +3831,11 @@ msgctxt "#848"
 msgid "Are you sure you want to stop this recording?"
 msgstr ""
 
-#empty string with id 849
+#. Label for a finale of a TV show
+#: addons/skin.estuary/xml/DialogPVRInfo.xml
+msgctxt "#849"
+msgid "Finale"
+msgstr ""
 
 msgctxt "#850"
 msgid "Invalid port number entered"

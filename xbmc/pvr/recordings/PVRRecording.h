@@ -323,6 +323,36 @@ namespace PVR
     */
    CDateTime FirstAired() const;
 
+   /*!
+    * @brief Check whether this recording will be flagged as new.
+    * @return True if this recording will be flagged as new, false otherwise
+    */
+   bool IsNew() const;
+
+   /*!
+    * @brief Check whether this recording will be flagged as a premiere.
+    * @return True if this recording will be flagged as a premiere, false otherwise
+    */
+   bool IsPremiere() const;
+
+   /*!
+    * @brief Check whether this recording will be flagged as a finale.
+    * @return True if this recording will be flagged as a finale, false otherwise
+    */
+   bool IsFinale() const;
+
+   /*!
+    * @brief Check whether this recording will be flagged as live.
+    * @return True if this recording will be flagged as live, false otherwise
+    */
+   bool IsLive() const;
+
+   /*!
+    * @brief Return the flags (PVR_RECORDING_FLAG_*) of this recording as a bitfield.
+    * @return the flags.
+    */
+   unsigned int Flags() const { return m_iFlags; }
+
   private:
     CDateTime m_recordingTime; /*!< start time of the recording */
     bool m_bGotMetaData;
@@ -333,6 +363,7 @@ namespace PVR
     int m_iGenreType = 0; /*!< genre type */
     int m_iGenreSubType = 0; /*!< genre subtype */
     mutable XbmcThreads::EndTime m_resumePointRefetchTimeout;
+    unsigned int m_iFlags = 0; /*!< the flags applicable to this recording */
 
     void UpdatePath();
   };

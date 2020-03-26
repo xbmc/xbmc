@@ -394,6 +394,24 @@ namespace PVR
     bool IsNew() const;
 
     /*!
+     * @brief Check whether this tag will be flagged as a premiere.
+     * @return True if this tag will be flagged as a premiere, false otherwise
+     */
+    bool IsPremiere() const;
+
+    /*!
+     * @brief Check whether this tag will be flagged as a finale.
+     * @return True if this tag will be flagged as a finale, false otherwise
+     */
+    bool IsFinale() const;
+
+    /*!
+     * @brief Check whether this tag will be flagged as live.
+     * @return True if this tag will be flagged as live, false otherwise
+     */
+    bool IsLive() const;
+
+    /*!
      * @brief Return the flags (EPG_TAG_FLAG_*) of this event as a bitfield.
      * @return the flags.
      */

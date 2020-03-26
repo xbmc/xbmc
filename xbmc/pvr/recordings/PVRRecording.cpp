@@ -96,6 +96,7 @@ CPVRRecording::CPVRRecording(const PVR_RECORDING& recording, unsigned int iClien
   m_iChannelUid = recording.iChannelUid;
   if (strlen(recording.strFirstAired) > 0)
     m_firstAired.SetFromW3CDateTime(recording.strFirstAired);
+  m_iFlags = recording.iFlags;
 
   SetGenre(recording.iGenreType, recording.iGenreSubType, recording.strGenreDescription);
   CVideoInfoTag::SetPlayCount(recording.iPlayCount);
@@ -164,7 +165,8 @@ bool CPVRRecording::operator ==(const CPVRRecording& right) const
        m_genre == right.m_genre &&
        m_iGenreType == right.m_iGenreType &&
        m_iGenreSubType == right.m_iGenreSubType &&
-       m_firstAired == right.m_firstAired);
+       m_firstAired == right.m_firstAired &&
+       m_iFlags == right.m_iFlags);
 }
 
 bool CPVRRecording::operator !=(const CPVRRecording& right) const
@@ -217,6 +219,7 @@ void CPVRRecording::Reset()
   m_iEpisode = -1;
   m_iChannelUid = PVR_CHANNEL_INVALID_UID;
   m_bRadio = false;
+  m_iFlags = PVR_RECORDING_FLAG_UNDEFINED;
 
   m_recordingTime.Reset();
   CVideoInfoTag::Reset();
@@ -368,6 +371,7 @@ void CPVRRecording::Update(const CPVRRecording& tag)
   m_iChannelUid = tag.m_iChannelUid;
   m_bRadio = tag.m_bRadio;
   m_firstAired = tag.m_firstAired;
+  m_iFlags = tag.m_iFlags;
 
   CVideoInfoTag::SetPlayCount(tag.GetLocalPlayCount());
   CVideoInfoTag::SetResumePoint(tag.GetLocalResumePoint());
@@ -530,4 +534,24 @@ const std::string CPVRRecording::GetGenresLabel() const
 CDateTime CPVRRecording::FirstAired() const
 {
   return m_firstAired;
+}
+
+bool CPVRRecording::IsNew() const
+{
+  return (m_iFlags & PVR_RECORDING_FLAG_IS_NEW) > 0;
+}
+
+bool CPVRRecording::IsPremiere() const
+{
+  return (m_iFlags & PVR_RECORDING_FLAG_IS_PREMIERE) > 0;
+}
+
+bool CPVRRecording::IsLive() const
+{
+  return (m_iFlags & PVR_RECORDING_FLAG_IS_LIVE) > 0;
+}
+
+bool CPVRRecording::IsFinale() const
+{
+  return (m_iFlags & PVR_RECORDING_FLAG_IS_FINALE) > 0;
 }

@@ -528,6 +528,14 @@ extern "C" {
 
   } ATTRIBUTE_PACKED PVR_TIMER;
 
+  /* PVR_RECORDING.iFlags values */
+  const unsigned int PVR_RECORDING_FLAG_UNDEFINED   = 0x00000000; /*!< @brief nothing special to say about this recording */
+  const unsigned int PVR_RECORDING_FLAG_IS_SERIES   = 0x00000001; /*!< @brief this recording is part of a series */
+  const unsigned int PVR_RECORDING_FLAG_IS_NEW      = 0x00000002; /*!< @brief this recording will be flagged as new */
+  const unsigned int PVR_RECORDING_FLAG_IS_PREMIERE = 0x00000004; /*!< @brief this recording will be flagged as a premiere */
+  const unsigned int PVR_RECORDING_FLAG_IS_FINALE   = 0x00000008; /*!< @brief this recording will be flagged as a finale */
+  const unsigned int PVR_RECORDING_FLAG_IS_LIVE     = 0x00000010; /*!< @brief this recording will be flagged as live */
+
   /*!
    * @brief special PVR_RECORDING.iSeriesNumber and PVR_RECORDING.iEpisodeNumber value to indicate it is not to be used
    * 
@@ -566,6 +574,7 @@ extern "C" {
     int    iChannelUid;                                   /*!< @brief (optional) unique identifier of the channel for this recording. PVR_CHANNEL_INVALID_UID denotes that channel uid is not available. */
     PVR_RECORDING_CHANNEL_TYPE channelType;               /*!< @brief (optional) channel type. Set to PVR_RECORDING_CHANNEL_TYPE_UNKNOWN if the type cannot be determined. */
     char   strFirstAired[PVR_ADDON_DATE_STRING_LENGTH];   /*!< @brief (optional) first aired date of this recording. Used only for display purposes. Specify in W3C date format "YYYY-MM-DD". */
+    unsigned int iFlags;                                  /*!< @brief (optional) bit field of independent flags associated with the recording */
   } ATTRIBUTE_PACKED PVR_RECORDING;
 
   /*!
