@@ -19,6 +19,7 @@ public:
   static CProcessInfo* Create();
   static void Register();
 
+  CProcessInfoWayland();
   void SetSwDeinterlacingMethods() override;
   std::vector<AVPixelFormat> GetRenderFormats() override;
 };
