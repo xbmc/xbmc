@@ -52,6 +52,9 @@ public:
   void SeekTime(int64_t iTime = 0) override;
   void GetAudioCapabilities(std::vector<int> &audioCaps) override {}
 
+  int GetAudioStreamCount() override { return 1; }
+  int GetAudioStream() override { return 0; }
+
   static bool HandlesType(const std::string &type);
 
   // implementation of IJobCallback

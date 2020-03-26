@@ -233,7 +233,8 @@
       "channels": { "type": "integer", "required": true },
       "isdefault": { "type": "boolean", "required": true },
       "isoriginal": { "type": "boolean", "required": true },
-      "isimpaired": { "type": "boolean", "required": true }
+      "isimpaired": { "type": "boolean", "required": true },
+      "samplerate": { "type": "integer", "required": true }
     }
   },
   "Player.Video.Stream": {
