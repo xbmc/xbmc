@@ -76,6 +76,30 @@ void CPVRRecordings::Update()
   CServiceBroker::GetPVRManager().PublishEvent(PVREvent::RecordingsInvalidated);
 }
 
+void CPVRRecordings::UpdateInProgressSize()
+{
+  CSingleLock lock(m_critSection);
+  if (m_bIsUpdating)
+    return;
+  m_bIsUpdating = true;
+
+  CLog::LogFC(LOGDEBUG, LOGPVR, "Updating recordings size");
+  bool bHaveUpdatedInProgessRecording = false;
+  for (auto& recording : m_recordings)
+  {
+    if (recording.second->IsInProgress())
+    {
+      if (recording.second->UpdateRecordingSize())
+        bHaveUpdatedInProgessRecording = true;
+    }
+  }
+
+  m_bIsUpdating = false;
+
+  if (bHaveUpdatedInProgessRecording)
+    CServiceBroker::GetPVRManager().PublishEvent(PVREvent::RecordingsInvalidated);
+}
+
 int CPVRRecordings::GetNumTVRecordings() const
 {
   CSingleLock lock(m_critSection);

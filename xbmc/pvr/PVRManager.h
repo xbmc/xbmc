@@ -266,6 +266,11 @@ namespace PVR
     void TriggerRecordingsUpdate();
 
     /*!
+     * @brief Let the background thread update the size for any in progress recordings.
+     */
+    void TriggerRecordingsSizeInProgressUpdate();
+
+    /*!
      * @brief Let the background thread update the timer list.
      */
     void TriggerTimersUpdate();

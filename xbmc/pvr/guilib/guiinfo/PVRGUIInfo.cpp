@@ -441,6 +441,13 @@ bool CPVRGUIInfo::GetListItemAndPlayerLabel(const CFileItem* item, const CGUIInf
           return true;
         }
         return false;
+      case LISTITEM_SIZE:
+        if (recording->GetSizeInBytes() > 0)
+        {
+          strValue = StringUtils::SizeToString(recording->GetSizeInBytes());
+          return true;
+        }
+        return false;
     }
     return false;
   }

@@ -923,6 +923,15 @@ PVR_ERROR CPVRClient::GetRecordingEdl(const CPVRRecording& recording, std::vecto
   }, m_clientCapabilities.SupportsRecordingsEdl());
 }
 
+PVR_ERROR CPVRClient::GetRecordingSize(const CPVRRecording& recording, int64_t& sizeInBytes)
+{
+  return DoAddonCall(__FUNCTION__, [&recording, &sizeInBytes](const AddonInstance* addon) {
+    PVR_RECORDING tag;
+    WriteClientRecordingInfo(recording, tag);
+    return addon->GetRecordingSize(&tag, &sizeInBytes);
+  }, m_clientCapabilities.SupportsRecordingsSize());
+}
+
 PVR_ERROR CPVRClient::GetTimersAmount(int& iTimers)
 {
   iTimers = -1;

@@ -267,6 +267,12 @@ namespace PVR
      */
     std::vector<std::shared_ptr<CPVRClient>> GetClientsSupportingChannelSettings(bool bRadio) const;
 
+    /*!
+     * @brief Get whether or not any client supports recording size.
+     * @return True if any client supports recording size.
+     */
+    bool AnyClientSupportingRecordingsSize() const;
+
     //@}
 
     /*! @name Power management methods */

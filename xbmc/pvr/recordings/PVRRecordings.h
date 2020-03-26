@@ -48,6 +48,11 @@ namespace PVR
      */
     void Update();
 
+    /*!
+     * @brief refresh the size of any in progress recordings from the clients.
+     */
+    void UpdateInProgressSize();
+
     int GetNumTVRecordings() const;
     bool HasDeletedTVRecordings() const;
     int GetNumRadioRecordings() const;

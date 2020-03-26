@@ -531,6 +531,10 @@ void CPVRManager::Process()
       /* try to play channel on startup */
       TriggerPlayChannelOnStartup();
     }
+
+    if (m_addons->AnyClientSupportingRecordingsSize())
+      TriggerRecordingsSizeInProgressUpdate();
+
     /* execute the next pending jobs if there are any */
     try
     {
@@ -755,6 +759,13 @@ void CPVRManager::TriggerRecordingsUpdate()
 {
   m_pendingUpdates->Append("pvr-update-recordings", [this]() {
     return Recordings()->Update();
+  });
+}
+
+void CPVRManager::TriggerRecordingsSizeInProgressUpdate()
+{
+  m_pendingUpdates->Append("pvr-update-recordings-size", [this]() {
+    return Recordings()->UpdateInProgressSize();
   });
 }
 

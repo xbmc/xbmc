@@ -205,6 +205,7 @@ void GetSubDirectories(const CPVRRecordingsPath& recParentPath,
       item->SetProperty("totalepisodes", 0);
       item->SetProperty("watchedepisodes", 0);
       item->SetProperty("unwatchedepisodes", 0);
+      item->SetProperty("sizeinbytes", UINT64_C(0));
 
       // Assume all folders are watched, we'll change the overlay later
       item->SetOverlayImage(CGUIListItem::ICON_OVERLAY_WATCHED, false);
@@ -230,6 +231,18 @@ void GetSubDirectories(const CPVRRecordingsPath& recParentPath,
     item->SetLabel2(StringUtils::Format("%s / %s",
         item->GetProperty("watchedepisodes").asString().c_str(),
         item->GetProperty("totalepisodes").asString().c_str()));
+
+    item->IncrementProperty("sizeinbytes", recording->GetSizeInBytes());
+  }
+
+  // Replace the incremental size of the recordings with a string equivalent
+  for (auto& item : results.GetList())
+  {
+    int64_t size = item->GetProperty("sizeinbytes").asInteger();
+    item->ClearProperty("sizeinbytes");
+    item->m_dwSize = size; // We'll also sort recording folders by size
+    if (size > 0)
+      item->SetProperty("recordingsize", StringUtils::SizeToString(size));
   }
 
   // Change the watched overlay to unwatched for folders containing unwatched entries
