@@ -216,6 +216,7 @@ CFileItem::CFileItem(const std::shared_ptr<CPVRRecording>& record)
   m_strPath = record->m_strFileNameAndPath;
   SetLabel(record->m_strTitle);
   m_dateTime = record->RecordingTimeAsLocalTime();
+  m_dwSize = record->GetSizeInBytes();
 
   // Set art
   if (!record->m_strIconPath.empty())

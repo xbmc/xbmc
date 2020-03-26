@@ -344,6 +344,16 @@ extern "C"
   PVR_ERROR GetRecordingEdl(const PVR_RECORDING& recording, PVR_EDL_ENTRY edl[], int *size);
 
   /*!
+   * Retrieve the size of a recording on the backend.
+   * @param[in] recording in: The recording to get the size in bytes for.
+   * @param[out] sizeInBytes out: The size in bytes of the recording
+   * @return PVR_ERROR_NO_ERROR if the recording's size has been set successfully.
+   * @remarks Required if bSupportsRecordingSize is set to true.
+   *          Return PVR_ERROR_NOT_IMPLEMENTED if this add-on won't provide this function.
+   */
+  PVR_ERROR GetRecordingSize(const PVR_RECORDING* recording, int64_t* sizeInBytes);
+
+  /*!
    * Retrieve the timer types supported by the backend.
    * @param types out: The function has to write the definition of the supported timer types into this array.
    * @param typesCount in: The maximum size of the list, out: the actual size of the list. default: PVR_ADDON_TIMERTYPE_ARRAY_SIZE
@@ -732,6 +742,7 @@ extern "C"
     pClient->toAddon.SetRecordingLastPlayedPosition = SetRecordingLastPlayedPosition;
     pClient->toAddon.GetRecordingLastPlayedPosition = GetRecordingLastPlayedPosition;
     pClient->toAddon.GetRecordingEdl                = GetRecordingEdl;
+    pClient->toAddon.GetRecordingSize               = GetRecordingSize;
 
     pClient->toAddon.GetTimerTypes                  = GetTimerTypes;
     pClient->toAddon.GetTimersAmount                = GetTimersAmount;

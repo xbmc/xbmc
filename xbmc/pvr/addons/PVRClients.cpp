@@ -552,6 +552,17 @@ std::vector<std::shared_ptr<CPVRClient>> CPVRClients::GetClientsSupportingChanne
   return possibleSettingsClients;
 }
 
+bool CPVRClients::AnyClientSupportingRecordingsSize() const
+{
+  std::vector<std::shared_ptr<CPVRClient>> recordingSizeClients;
+  ForCreatedClients(__FUNCTION__, [&recordingSizeClients](const std::shared_ptr<CPVRClient>& client) {
+    if (client->GetClientCapabilities().SupportsRecordingsSize())
+      recordingSizeClients.emplace_back(client);
+    return PVR_ERROR_NO_ERROR;
+  });
+  return recordingSizeClients.size() != 0;
+}
+
 void CPVRClients::OnSystemSleep()
 {
   ForCreatedClients(__FUNCTION__, [](const std::shared_ptr<CPVRClient>& client) {

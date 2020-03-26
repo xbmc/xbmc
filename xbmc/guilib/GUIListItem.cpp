@@ -410,6 +410,13 @@ void CGUIListItem::IncrementProperty(const std::string &strKey, int nVal)
   SetProperty(strKey, i);
 }
 
+void CGUIListItem::IncrementProperty(const std::string& strKey, int64_t nVal)
+{
+  int64_t i = GetProperty(strKey).asInteger();
+  i += nVal;
+  SetProperty(strKey, i);
+}
+
 void CGUIListItem::IncrementProperty(const std::string &strKey, double dVal)
 {
   double d = GetProperty(strKey).asDouble();

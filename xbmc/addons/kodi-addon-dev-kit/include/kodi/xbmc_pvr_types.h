@@ -316,6 +316,7 @@ extern "C" {
     bool bSupportsRecordingsLifetimeChange; /*!< @brief true if the backend supports changing lifetime for recordings. */
     bool bSupportsDescrambleInfo;       /*!< @brief true if the backend supports descramble information for playing channels. */
     bool bSupportsAsyncEPGTransfer;     /*!< @brief true if this addon-on supports asynchronous transfer of epg events to Kodi using the callback function EpgEventStateChange. */
+    bool bSupportsRecordingSize;        /*!< @brief true if this addon-on supports retrieving size of recordings. */
 
     unsigned int iRecordingsLifetimesSize; /*!< @brief (required) Count of possible values for PVR_RECORDING.iLifetime. 0 means lifetime is not supported for recordings or no own value definition wanted, but to use Kodi defaults of 1..365. */
     PVR_ATTRIBUTE_INT_VALUE recordingsLifetimeValues[PVR_ADDON_ATTRIBUTE_VALUES_ARRAY_SIZE]; /*!< @brief (optional) Array containing the possible values for PVR_RECORDING.iLifetime. Must be filled if iLifetimesSize > 0 */
@@ -575,6 +576,7 @@ extern "C" {
     PVR_RECORDING_CHANNEL_TYPE channelType;               /*!< @brief (optional) channel type. Set to PVR_RECORDING_CHANNEL_TYPE_UNKNOWN if the type cannot be determined. */
     char   strFirstAired[PVR_ADDON_DATE_STRING_LENGTH];   /*!< @brief (optional) first aired date of this recording. Used only for display purposes. Specify in W3C date format "YYYY-MM-DD". */
     unsigned int iFlags;                                  /*!< @brief (optional) bit field of independent flags associated with the recording */
+    int64_t sizeInBytes;                                  /*!< @brief (optional) size of the recording in bytes */
   } ATTRIBUTE_PACKED PVR_RECORDING;
 
   /*!
@@ -689,6 +691,7 @@ extern "C" {
     PVR_ERROR (__cdecl* SetRecordingLastPlayedPosition)(const PVR_RECORDING&, int);
     int (__cdecl* GetRecordingLastPlayedPosition)(const PVR_RECORDING&);
     PVR_ERROR (__cdecl* GetRecordingEdl)(const PVR_RECORDING&, PVR_EDL_ENTRY[], int*);
+    PVR_ERROR (__cdecl* GetRecordingSize)(const PVR_RECORDING*, int64_t*);
     PVR_ERROR (__cdecl* GetTimerTypes)(PVR_TIMER_TYPE[], int*);
     int (__cdecl* GetTimersAmount)(void);
     PVR_ERROR (__cdecl* GetTimers)(ADDON_HANDLE);

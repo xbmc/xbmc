@@ -181,6 +181,16 @@ namespace PVR
      */
     void GetRecordingsLifetimeValues(std::vector<std::pair<std::string, int>>& list) const;
 
+    /*!
+     * @brief Check whether this add-on supports retrieving the size recordings..
+     * @return True if supported, false otherwise.
+     */
+    bool SupportsRecordingsSize() const
+    {
+      return m_addonCapabilities && m_addonCapabilities->bSupportsRecordings &&
+             m_addonCapabilities->bSupportsRecordingSize;
+    }
+
     /////////////////////////////////////////////////////////////////////////////////
     //
     // Streams
@@ -549,6 +559,14 @@ namespace PVR
     * @return PVR_ERROR_NO_ERROR on success, respective error code otherwise.
     */
     PVR_ERROR GetRecordingEdl(const CPVRRecording& recording, std::vector<PVR_EDL_ENTRY>& edls);
+
+    /*!
+    * @brief Retrieve the size of a recording on the backend.
+    * @param recording The recording.
+    * @param sizeInBytes The size in bytes
+    * @return PVR_ERROR_NO_ERROR on success, respective error code otherwise.
+    */
+    PVR_ERROR GetRecordingSize(const CPVRRecording& recording, int64_t& sizeInBytes);
 
     /*!
     * @brief Retrieve the edit decision list (EDL) from the backend.
