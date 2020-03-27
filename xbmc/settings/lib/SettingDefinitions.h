@@ -89,7 +89,19 @@ struct StringSettingOption
   std::vector<std::pair<std::string, CVariant>> properties;
 };
 
-using TranslatableIntegerSettingOption = std::pair<int, int>;
+struct TranslatableIntegerSettingOption
+{
+  TranslatableIntegerSettingOption() = default;
+  TranslatableIntegerSettingOption(int _label, int _value, const std::string& _addonId = "")
+    : label(_label), value(_value), addonId(_addonId)
+  {
+  }
+
+  int label = 0;
+  int value = 0;
+  std::string addonId; // Leaved empty for Kodi labels
+};
+
 using TranslatableIntegerSettingOptions = std::vector<TranslatableIntegerSettingOption>;
 using IntegerSettingOptions = std::vector<IntegerSettingOption>;
 using TranslatableStringSettingOption = std::pair<int, std::string>;

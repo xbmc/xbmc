@@ -46,10 +46,19 @@
 
 using namespace ADDON;
 
-static std::string Localize(std::uint32_t code, ILocalizer* localizer)
+static std::string Localize(std::uint32_t code,
+                            ILocalizer* localizer,
+                            const std::string& addonId = "")
 {
   if (localizer == nullptr)
     return "";
+
+  if (!addonId.empty())
+  {
+    std::string label = g_localizeStrings.GetAddonString(addonId, code);
+    if (!label.empty())
+      return label;
+  }
 
   return localizer->Localize(code);
 }
@@ -113,7 +122,8 @@ static bool GetIntegerOptions(SettingConstPtr setting, IntegerSettingOptions& op
     {
       const TranslatableIntegerSettingOptions& settingOptions = pSettingInt->GetTranslatableOptions();
       for (const auto& option : settingOptions)
-        options.push_back(IntegerSettingOption(Localize(option.first, localizer), option.second));
+        options.push_back(
+            IntegerSettingOption(Localize(option.label, localizer, option.addonId), option.value));
       break;
     }
 

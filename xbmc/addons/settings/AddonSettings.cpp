@@ -959,7 +959,8 @@ SettingPtr CAddonSettings::InitializeFromOldSettingSelect(const std::string& set
 
       TranslatableIntegerSettingOptions options;
       for (uint32_t i = 0; i < values.size(); ++i)
-        options.push_back(std::make_pair(static_cast<int>(strtol(values[i].c_str(), nullptr, 0)), i));
+        options.push_back(TranslatableIntegerSettingOption(
+            static_cast<int>(strtol(values[i].c_str(), nullptr, 0)), i));
       settingInt->SetTranslatableOptions(options);
 
       setting = settingInt;
@@ -1104,7 +1105,7 @@ SettingPtr CAddonSettings::InitializeFromOldSettingEnums(const std::string& sett
         if (settingEntries.size() > i)
           value = static_cast<int>(strtol(settingEntries[i].c_str(), nullptr, 0));
 
-        options.push_back(std::make_pair(label, value));
+        options.push_back(TranslatableIntegerSettingOption(label, value));
       }
 
       settingInt->SetTranslatableOptions(options);
