@@ -14,7 +14,7 @@
 
 <p align="Top&Center">
 
-  <a href="https://github.com/xmbc/xbmc/LICENSE.md"><img alt="License" src="https://img.shields.io/badge/license-GPLv2-purple.svg?style=Purple&label=Licence&style=plastic></a>
+  <a href="https://github.com/xmbc/xbmc/LICENSE.md"><img src="License" src="https://img.shields.io/badge/license-GPLv2-purple.svg?style=Purple&label=Licence&style=plastic></a>
   <a href="https://docs.kodi.tv/"><img alt="Documentation" src="https://img.shields.io/badge/code-documents-purple.svg?style=Purple&label=Documents&style=plastic"></a>
   <a href="https://github.com/xbmc/xbmc/pulls"><img alt="PRs Welcome" src="https://img.shields.io/badge/PRs-welcome-purple.svg?style=plastic"></a>
   <a href="#how-to-contribute"><img alt="Contributions Welcome" src="https://img.shields.io/badge/contributions-welcome-purple.svg?Purple&label=Contributions&style=plastic"></a>
