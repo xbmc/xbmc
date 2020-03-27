@@ -12,15 +12,15 @@
   </strong>
 </p>
 
-<p align="center">
-  <a href="LICENSE.md"><img alt="License" src="https://img.shields.io/badge/license-GPLv2-purple.svg?style=Purple&label=Licence&style=plastic></a>
-  <a href="https://docs.kodi.tv/"><img alt="Documentation" src="https://img.shields.io/badge/code-documented-purple.svg?style=Purple&label=Documentation&style=plastic"></a>
+<p align="Top&Center">
+  <a href="https://github.com/xmbc/xbmc/LICENSE.md"><img alt="License" src="https://img.shields.io/badge/license-GPLv2-purple.svg?style=Purple&label=Licence&style=plastic></a>
+  <a href="https://docs.kodi.tv/"><img alt="Documentation" src="https://img.shields.io/badge/code-documents-purple.svg?style=Purple&label=Documents&style=plastic"></a>
   <a href="https://github.com/xbmc/xbmc/pulls"><img alt="PRs Welcome" src="https://img.shields.io/badge/PRs-welcome-purple.svg?style=plastic"></a>
   <a href="#how-to-contribute"><img alt="Contributions Welcome" src="https://img.shields.io/badge/contributions-welcome-purple.svg?Purple&label=Contributions&style=plastic"></a>
   <a href="http://jenkins.kodi.tv/"><img alt="Build" src="https://img.shields.io/badge/CI-jenkins-purple.svg?Purple&label=jenkins&style=plastic"></a>
   <a href="https://github.com/xbmc/xbmc/commits/master"><img alt="Commits" src="https://img.shields.io/github/commits-since/xbmc/xbmc/latest.svg?Purple&label=Commits&style=plastic"></a>
-  </a>
   <a href="https://github.com/xbmc/xbmc/commits/issues"><img alt="Issues" src="https://img.shields.io/github/issues/xbmc/xbmc/latest.savg?color=Purple&label=issues&style=plastic">
+  </a>
 </p>
 
 <a href="https://play.google.com/store/apps/details?id=org.xbmc.kodi" target="_blank">
@@ -79,7 +79,7 @@ Kodi couldn't exist without
 * **[Our sponsors](https://kodi.tv/sponsors)**. Without them, keeping a huge project like this alive would be next to impossible.
 
 ## License
-Kodi is **[GPLv2 licensed](LICENSE.md)**. You may use, distribute and copy it under the license terms.
+*Kodi is **[GPLv2 licensed](LICENSE.md)**. You may use, distribute and copy it under the license terms.
 
 <a href="https://github.com/xbmc/xbmc/graphs/contributors"><img src="https://forthebadge.com/images/badges/built-by-developers.svg" height="25"></a>
 <a href="https://github.com/xbmc/xbmc"><img src="https://forthebadge.com/images/badges/certified-cousin-terio.svg" height="25"></a>
