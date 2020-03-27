@@ -13,6 +13,7 @@
 </p>
 
 <p align="Top&Center">
+
   <a href="https://github.com/xmbc/xbmc/LICENSE.md"><img alt="License" src="https://img.shields.io/badge/license-GPLv2-purple.svg?style=Purple&label=Licence&style=plastic></a>
   <a href="https://docs.kodi.tv/"><img alt="Documentation" src="https://img.shields.io/badge/code-documents-purple.svg?style=Purple&label=Documents&style=plastic"></a>
   <a href="https://github.com/xbmc/xbmc/pulls"><img alt="PRs Welcome" src="https://img.shields.io/badge/PRs-welcome-purple.svg?style=plastic"></a>
@@ -78,7 +79,7 @@ Kodi couldn't exist without
 * Our **[fantastic community](https://forum.kodi.tv/)** for the never ending support, inspiration, feedback, and for keeping us on our toes when we screw up!
 * **[Our sponsors](https://kodi.tv/sponsors)**. Without them, keeping a huge project like this alive would be next to impossible.
 
-## License
+## [License] 
 *Kodi is **[GPLv2 licensed](LICENSE.md)**. You may use, distribute and copy it under the license terms.
 
 <a href="https://github.com/xbmc/xbmc/graphs/contributors"><img src="https://forthebadge.com/images/badges/built-by-developers.svg" height="25"></a>
