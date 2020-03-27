@@ -1371,10 +1371,18 @@
     </category>
     <category id="pvrplayback" label="19177" help="36226">
       <group id="1" label="128">
-        <setting id="pvrplayback.switchtofullscreen" type="boolean" label="19171" help="36227">
+        <setting id="pvrplayback.switchtofullscreenchanneltypes" type="integer" label="19171" help="36227">
           <level>1</level>
-          <default>true</default>
-          <control type="toggle" />
+          <default>3</default> <!-- TV and radio channels -->
+          <constraints>
+            <options>
+              <option label="20420">0</option> <!-- Never -->
+              <option label="19180">1</option> <!-- TV channels -->
+              <option label="19183">2</option> <!-- Radio channels -->
+              <option label="19250">3</option> <!-- TV and radio channels -->
+            </options>
+          </constraints>
+          <control type="list" format="string" />
         </setting>
         <setting id="pvrplayback.signalquality" type="boolean" label="19037" help="36229">
           <level>2</level>

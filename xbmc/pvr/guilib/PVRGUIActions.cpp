@@ -222,7 +222,7 @@ namespace PVR
       CSettings::SETTING_PVRRECORD_INSTANTRECORDTIME,
       CSettings::SETTING_PVRRECORD_INSTANTRECORDACTION,
       CSettings::SETTING_PVRPLAYBACK_CONFIRMCHANNELSWITCH,
-      CSettings::SETTING_PVRPLAYBACK_SWITCHTOFULLSCREEN,
+      CSettings::SETTING_PVRPLAYBACK_SWITCHTOFULLSCREENCHANNELTYPES,
       CSettings::SETTING_PVRPARENTAL_PIN,
       CSettings::SETTING_PVRPARENTAL_ENABLED,
       CSettings::SETTING_PVRPOWERMANAGEMENT_DAILYWAKEUPTIME,
@@ -1384,7 +1384,24 @@ namespace PVR
         }
       }
 
-      StartPlayback(new CFileItem(channel), m_settings.GetBoolValue(CSettings::SETTING_PVRPLAYBACK_SWITCHTOFULLSCREEN));
+      bool bFullscreen;
+      switch (m_settings.GetIntValue(CSettings::SETTING_PVRPLAYBACK_SWITCHTOFULLSCREENCHANNELTYPES))
+      {
+        case 0: // never
+          bFullscreen = false;
+          break;
+        case 1: // TV channels
+          bFullscreen = !channel->IsRadio();
+          break;
+        case 2: // Radio channels
+          bFullscreen = channel->IsRadio();
+          break;
+        case 3: // TV and radio channels
+        default:
+          bFullscreen = true;
+          break;
+      }
+      StartPlayback(new CFileItem(channel), bFullscreen);
       return true;
     }
     else if (result == ParentalCheckResult::FAILED)

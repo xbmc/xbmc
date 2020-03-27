@@ -170,7 +170,7 @@ public:
   static const std::string SETTING_EPG_EPGUPDATE;
   static const std::string SETTING_EPG_PREVENTUPDATESWHILEPLAYINGTV;
   static const std::string SETTING_EPG_RESETEPG;
-  static const std::string SETTING_PVRPLAYBACK_SWITCHTOFULLSCREEN;
+  static const std::string SETTING_PVRPLAYBACK_SWITCHTOFULLSCREENCHANNELTYPES;
   static const std::string SETTING_PVRPLAYBACK_SIGNALQUALITY;
   static const std::string SETTING_PVRPLAYBACK_CONFIRMCHANNELSWITCH;
   static const std::string SETTING_PVRPLAYBACK_CHANNELENTRYTIMEOUT;
