@@ -65,8 +65,10 @@ namespace network
 ///
 inline bool WakeOnLan(const std::string& mac)
 {
-  return ::kodi::addon::CAddonBase::m_interface->toKodi->kodi_network->wake_on_lan(
-      ::kodi::addon::CAddonBase::m_interface->toKodi->kodiBase, mac.c_str());
+  using namespace ::kodi::addon;
+
+  return CAddonBase::m_interface->toKodi->kodi_network->wake_on_lan(
+      CAddonBase::m_interface->toKodi->kodiBase, mac.c_str());
 }
 //----------------------------------------------------------------------------
 
@@ -91,14 +93,15 @@ inline bool WakeOnLan(const std::string& mac)
 ///
 inline std::string GetIPAddress()
 {
+  using namespace ::kodi::addon;
+
   std::string ip;
-  char* string = ::kodi::addon::CAddonBase::m_interface->toKodi->kodi_network->get_ip_address(
-      ::kodi::addon::CAddonBase::m_interface->toKodi->kodiBase);
+  char* string = CAddonBase::m_interface->toKodi->kodi_network->get_ip_address(
+      CAddonBase::m_interface->toKodi->kodiBase);
   if (string != nullptr)
   {
     ip = string;
-    ::kodi::addon::CAddonBase::m_interface->toKodi->free_string(
-        ::kodi::addon::CAddonBase::m_interface->toKodi->kodiBase, string);
+    CAddonBase::m_interface->toKodi->free_string(CAddonBase::m_interface->toKodi->kodiBase, string);
   }
   return ip;
 }
@@ -132,14 +135,15 @@ inline std::string GetIPAddress()
 ///
 inline std::string URLEncode(const std::string& url)
 {
+  using namespace ::kodi::addon;
+
   std::string retString;
-  char* string = ::kodi::addon::CAddonBase::m_interface->toKodi->kodi_network->url_encode(
-      ::kodi::addon::CAddonBase::m_interface->toKodi->kodiBase, url.c_str());
+  char* string = CAddonBase::m_interface->toKodi->kodi_network->url_encode(
+      CAddonBase::m_interface->toKodi->kodiBase, url.c_str());
   if (string != nullptr)
   {
     retString = string;
-    ::kodi::addon::CAddonBase::m_interface->toKodi->free_string(
-        ::kodi::addon::CAddonBase::m_interface->toKodi->kodiBase, string);
+    CAddonBase::m_interface->toKodi->free_string(CAddonBase::m_interface->toKodi->kodiBase, string);
   }
   return retString;
 }
@@ -174,14 +178,15 @@ inline std::string URLEncode(const std::string& url)
 ///
 inline bool DNSLookup(const std::string& hostName, std::string& ipAddress)
 {
+  using namespace ::kodi::addon;
+
   bool ret = false;
-  char* string = ::kodi::addon::CAddonBase::m_interface->toKodi->kodi_network->dns_lookup(
-      ::kodi::addon::CAddonBase::m_interface->toKodi->kodiBase, hostName.c_str(), &ret);
+  char* string = CAddonBase::m_interface->toKodi->kodi_network->dns_lookup(
+      CAddonBase::m_interface->toKodi->kodiBase, hostName.c_str(), &ret);
   if (string != nullptr)
   {
     ipAddress = string;
-    ::kodi::addon::CAddonBase::m_interface->toKodi->free_string(
-        ::kodi::addon::CAddonBase::m_interface->toKodi->kodiBase, string);
+    CAddonBase::m_interface->toKodi->free_string(CAddonBase::m_interface->toKodi->kodiBase, string);
   }
   return ret;
 }
