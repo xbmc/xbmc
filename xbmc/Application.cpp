@@ -2101,10 +2101,7 @@ void CApplication::OnApplicationMessage(ThreadMessage* pMsg)
 
 
   case TMSG_SWITCHTOFULLSCREEN:
-    if (CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() != WINDOW_FULLSCREEN_VIDEO &&
-        CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() != WINDOW_FULLSCREEN_GAME &&
-        CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() != WINDOW_VISUALISATION)
-      SwitchToFullScreen(true);
+    SwitchToFullScreen(true);
     break;
 
   case TMSG_VIDEORESIZE:
