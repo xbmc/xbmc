@@ -97,6 +97,7 @@ public:
   static int  GetLogLevel();
   static void SetExtraLogLevels(int level);
   static bool IsLogLevelLogged(int loglevel);
+  static bool IsLogLevelLogged(int logLevel, int component);
 
 protected:
   static void LogString(int logLevel, std::string&& logString);

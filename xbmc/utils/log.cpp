@@ -181,6 +181,14 @@ bool CLog::IsLogLevelLogged(int loglevel)
   return (loglevel & LOGMASK) >= LOGNOTICE;
 }
 
+bool CLog::IsLogLevelLogged(int logLevel, int component)
+{
+  if (CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->CanLogComponent(component) &&
+      IsLogLevelLogged(logLevel))
+    return true;
+
+  return false;
+}
 
 void CLog::PrintDebugString(const std::string& line)
 {
