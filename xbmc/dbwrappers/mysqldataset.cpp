@@ -435,7 +435,33 @@ int MysqlDatabase::drop_analytics(void) {
       if ( (ret=query_with_reconnect(sql)) != MYSQL_OK )
       {
         mysql_free_result(res);
-        throw DbErrors("Can't create trigger '%s'\nError: %d", row[0], ret);
+        throw DbErrors("Can't drop trigger '%s'\nError: %d", row[0], ret);
+      }
+    }
+    mysql_free_result(res);
+  }
+
+  // Native functions
+  sprintf(sql,
+          "SELECT routine_name "
+          "FROM information_schema.routines "
+          "WHERE routine_type = 'FUNCTION' and routine_schema = '%s'",
+          db.c_str());
+  if ((ret = query_with_reconnect(sql)) != MYSQL_OK)
+    throw DbErrors("Can't determine list of routines to drop.");
+
+  res = mysql_store_result(conn);
+
+  if (res)
+  {
+    while ((row = mysql_fetch_row(res)) != NULL)
+    {
+      sprintf(sql, "DROP FUNCTION `%s`.%s", db.c_str(), row[0]);
+
+      if ((ret = query_with_reconnect(sql)) != MYSQL_OK)
+      {
+        mysql_free_result(res);
+        throw DbErrors("Can't drop function '%s'\nError: %d", row[0], ret);
       }
     }
     mysql_free_result(res);
@@ -613,7 +639,6 @@ std::string MysqlDatabase::vprepare(const char *format, va_list args)
     strResult.erase(pos++, 15);
 
   // Remove COLLATE ALPHANUM the SQLite custom collation.
-  // No cutom collation defined for MySQL yet
   pos = 0;
   while ((pos = strResult.find(" COLLATE ALPHANUM", pos)) != std::string::npos)
     strResult.erase(pos++, 15);

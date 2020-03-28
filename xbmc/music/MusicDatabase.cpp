@@ -191,7 +191,8 @@ void CMusicDatabase::CreateTables()
               " lastplayed varchar(20) default NULL, "
               " rating FLOAT NOT NULL DEFAULT 0, votes INTEGER NOT NULL DEFAULT 0, "
               " userrating INTEGER NOT NULL DEFAULT 0, "
-              " comment text, mood text, iBPM integer, iBitRate INTEGER NOT NULL DEFAULT 0, "
+              " comment text, mood text, iBPM INTEGER NOT NULL DEFAULT 0, "
+              " iBitRate INTEGER NOT NULL DEFAULT 0, "
               " iSampleRate INTEGER NOT NULL DEFAULT 0, iChannels INTEGER NOT NULL DEFAULT 0, "
               " strReplayGain text, dateAdded text)");
   CLog::Log(LOGINFO, "create song_artist table");
@@ -288,7 +289,10 @@ void CMusicDatabase::CreateAnalytics()
               "  DELETE FROM source_path WHERE source_path.idSource = old.idSource;"
               "  DELETE FROM album_source WHERE album_source.idSource = old.idSource;"
               " END");
-  
+
+  // Create native functions stored in DB (MySQL/MariaDB only)
+  CreateNativeDBFunctions();
+
   // we create views last to ensure all indexes are rolled in
   CreateViews();
 
@@ -412,6 +416,120 @@ void CMusicDatabase::CreateViews()
               "     song_artist.idArtist = artist.idArtist "
               "JOIN role ON "
               "     song_artist.idRole = role.idRole");
+}
+
+void CMusicDatabase::CreateNativeDBFunctions()
+{
+  // Create native functions in MySQL/MariaDB database only
+  if (!StringUtils::EqualsNoCase(
+          CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_databaseMusic.type,
+          "mysql"))
+    return;
+  CLog::Log(LOGINFO, "Create native MySQL/MariaDB functions");
+  /* Functions to do the natural number sorting and all ascii symbol char at top adjustments to
+     default utf8_general_ci collation that SQLite does via a collation sequence callback
+     function to StringUtils::AlphaNumericCompare
+     !@todo: the video needs these defined too for sorting in DB, then creation can be made common
+  */
+  // clang-format off
+  // udfFirstNumberPos finds the position of the first digit in a string
+  m_pDS->exec("DROP FUNCTION IF EXISTS udfFirstNumberPos");
+  m_pDS->exec("CREATE FUNCTION udfFirstNumberPos (instring VARCHAR(256))\n"
+    "RETURNS int \n"
+    "LANGUAGE SQL \n"
+    "DETERMINISTIC \n"
+    "NO SQL \n"
+    "SQL SECURITY INVOKER \n"
+    "BEGIN \n"
+    "  DECLARE position int; \n"
+    "  DECLARE tmppos int; \n"
+    "  SET position = 1000; \n"
+    "  SET tmppos = LOCATE('0', instring); IF(tmppos > 0 AND tmppos < position) THEN SET position = tmppos; END IF;\n"
+    "  SET tmppos = LOCATE('1', instring); IF(tmppos > 0 AND tmppos < position) THEN SET position = tmppos; END IF;\n"
+    "  SET tmppos = LOCATE('2', instring); IF(tmppos > 0 AND tmppos < position) THEN SET position = tmppos; END IF;\n"
+    "  SET tmppos = LOCATE('3', instring); IF(tmppos > 0 AND tmppos < position) THEN SET position = tmppos; END IF;\n"
+    "  SET tmppos = LOCATE('4', instring); IF(tmppos > 0 AND tmppos < position) THEN SET position = tmppos; END IF;\n"
+    "  SET tmppos = LOCATE('5', instring); IF(tmppos > 0 AND tmppos < position) THEN SET position = tmppos; END IF;\n"
+    "  SET tmppos = LOCATE('6', instring); IF(tmppos > 0 AND tmppos < position) THEN SET position = tmppos; END IF;\n"
+    "  SET tmppos = LOCATE('7', instring); IF(tmppos > 0 AND tmppos < position) THEN SET position = tmppos; END IF;\n"
+    "  SET tmppos = LOCATE('8', instring); IF(tmppos > 0 AND tmppos < position) THEN SET position = tmppos; END IF;\n"
+    "  SET tmppos = LOCATE('9', instring); IF(tmppos > 0 AND tmppos < position) THEN SET position = tmppos; END IF;\n"
+    "  IF(position = 1000) THEN RETURN 0; END IF;\n"
+    "  RETURN position; \n"
+    "END\n");
+
+  // udfSymbolShift adds "/" (the  last symbol before "0"), in front any of the chars input
+  m_pDS->exec("DROP FUNCTION IF EXISTS udfSymbolShift");
+  m_pDS->exec("CREATE FUNCTION udfSymbolShift(instring varchar(256), symbolChars char(25))\n"
+    "RETURNS varchar(256)\n"
+    "LANGUAGE SQL\n"
+    "DETERMINISTIC\n"
+    "NO SQL\n"
+    "SQL SECURITY INVOKER\n"
+    "BEGIN\n"
+    "  DECLARE sortString varchar(256);\n"
+    "  DECLARE i int;\n"
+    "  DECLARE symbolCharsLen int;\n"
+    "  DECLARE symbol char(1);\n"
+    "  SET sortString = instring;\n"
+    "  SET i = 1;\n"
+    "  SET symbolCharsLen = CHAR_LENGTH(symbolChars);\n"
+    "  WHILE(i <= symbolCharsLen) DO\n"
+    "    SET symbol = SUBSTRING(symbolChars, i, 1);\n"
+    "    SET sortString = REPLACE(sortString, symbol, CONCAT('/', symbol));\n"
+    "    SET i = i + 1;\n"
+    "  END WHILE;\n"
+    "  RETURN sortString;\n"
+    "END\n");
+
+  // udfNaturalSortFormat - provide natural number sorting and ascii symbols above numbers
+  m_pDS->exec("DROP FUNCTION IF EXISTS udfNaturalSortFormat");
+  m_pDS->exec("CREATE FUNCTION udfNaturalSortFormat(instring varchar(256), numberLength int, "
+    "sameOrderChars char(25))\n"
+    "RETURNS varchar(256)\n"
+    "LANGUAGE SQL\n"
+    "DETERMINISTIC\n"
+    "NO SQL\n"
+    "SQL SECURITY INVOKER\n"
+    "BEGIN\n"
+    "  DECLARE sortString varchar(256);\n"
+    "  DECLARE numStartIndex int; \n"
+    "  DECLARE numEndIndex int; \n"
+    "  DECLARE padLength int; \n"
+    "  DECLARE totalPadLength int; \n"
+    "  DECLARE i int; \n"
+    "  DECLARE sameOrderCharsLen int;\n"
+    "  SET totalPadLength = 0; \n"
+    "  SET instring = TRIM(instring); \n"
+    "  SET sortString = instring; \n"
+    "  SET numStartIndex = udfFirstNumberPos(instring); \n"
+    "  SET numEndIndex = 0; \n"
+    "  SET i = 1; \n"
+    "  SET sameOrderCharsLen = CHAR_LENGTH(sameOrderChars); \n"
+    "  WHILE(i <= sameOrderCharsLen) DO \n"
+    "    SET sortString = REPLACE(sortString, SUBSTRING(sameOrderChars, i, 1), ' '); \n"
+    "    SET i = i + 1; \n"
+    "  END WHILE; \n"
+    "  WHILE(numStartIndex <> 0) DO \n"
+    "    SET numStartIndex = numStartIndex + numEndIndex; \n"
+    "    SET numEndIndex = numStartIndex; \n"
+    "    WHILE(udfFirstNumberPos(SUBSTRING(instring, numEndIndex, 1)) = 1) DO \n"
+    "      SET numEndIndex = numEndIndex + 1; \n"
+    "    END WHILE; \n"
+    "    SET numEndIndex = numEndIndex - 1; \n"
+    "    SET padLength = numberLength - (numEndIndex + 1 - numStartIndex); \n"
+    "    IF padLength < 0 THEN \n"
+    "      SET padLength = 0; \n"
+    "    END IF; \n"
+    "    SET sortString = INSERT(sortString, numStartIndex + totalPadLength, 0, REPEAT('0', padLength)); \n"
+    "    SET totalPadLength = totalPadLength + padLength; \n"
+    "    SET numStartIndex = udfFirstNumberPos(RIGHT(instring, CHAR_LENGTH(instring) - numEndIndex)); \n"
+    "  END WHILE; \n"
+    // Shift ascii symbols :;<=>?@[\]^_ `{|}~ above 0, note "\" needs escaping
+    "  SET sortString = udfSymbolShift(sortString, ':;<=>?@[\\]^_`{|}~'); \n"
+    "  RETURN sortString; \n"
+    "END\n");
+  // clang-format on
 }
 
 void CMusicDatabase::SplitPath(const std::string& strFileNameAndPath, std::string& strPath, std::string& strFileName)
@@ -7175,13 +7293,15 @@ std::string CMusicDatabase::SortnameBuildSQL(const std::string& strAlias,
 std::string CMusicDatabase::AlphanumericSortSQL(const std::string& strField, const SortOrder& sortOrder)
 {
   /*
-  Use custom collation ALPHANUM in SQLite instead of NOCASE. This handles
-  natural number order, case sensitivity and locale UFT-8 order for accents
-  Would more efficient done in table create than per query especially once
-  sorting at db is done for GUI results too.
-  MySQL does not have custom collation defined (yet), but all tables are defined
-  with case insensitive utf8_general_ci collation. Make sort of numbers natural 
-  in SQL. No need to PrepareSQL as syntax is specific to db type.
+  Use custom collation ALPHANUM in SQLite. This handles natural number order, case sensitivity
+  and locale UFT-8 order for accents using the same functionality as fileitem list sorting.
+  Natural number order is not significant for where clause comparison and use of calculated fields
+  means there is no advantage in defining as column defualt in table create than per query (which
+  also makes looking at the db with other tools difficult).
+
+  MySQL does not have callback collation, but all tables are defined with utf8_general_ci an
+  "ascii folding" case insensitive collation. Natural sorting is provided via native functions
+  stored in the db.
   */
   std::string DESC;
   if (sortOrder == SortOrderDescending)
@@ -7191,10 +7311,7 @@ std::string CMusicDatabase::AlphanumericSortSQL(const std::string& strField, con
   if (StringUtils::EqualsNoCase(
           CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_databaseMusic.type,
           "mysql"))
-    strSort = PrepareSQL("CASE WHEN CAST(%s AS UNSIGNED INTEGER) = 0 "
-                         "THEN 100000000 ELSE CAST(%s AS UNSIGNED INTEGER) END%s, %s%s",
-                         strField.c_str(), strField.c_str(), DESC.c_str(), strField.c_str(),
-                         DESC.c_str());
+    strSort = PrepareSQL("udfNaturalSortFormat(%s, 8, '.')%s", strField.c_str(), DESC.c_str());
   else
     strSort = PrepareSQL("%s COLLATE ALPHANUM%s", strField.c_str(), DESC.c_str());
   return strSort;
@@ -7972,7 +8089,7 @@ void CMusicDatabase::UpdateTables(int version)
 
 int CMusicDatabase::GetSchemaVersion() const
 {
-  return 75;
+  return 76; // Bumped for addition of functions to MySQL, SQLite v76 = v75
 }
 
 int CMusicDatabase::GetMusicNeedsTagScan()
