@@ -9,6 +9,7 @@
 
 #include "FileItem.h"
 #include "filesystem/Directory.h"
+#include "filesystem/DirectoryCache.h"
 #include "filesystem/SpecialProtocol.h"
 #include "utils/FileOperationJob.h"
 #include "utils/StringUtils.h"
@@ -38,7 +39,15 @@ bool CFilesystemInstaller::InstallToFilesystem(const std::string& archive, const
     return false;
   }
 
-  bool hasOldData = CDirectory::Exists(addonFolder);
+  bool hasOldData = false;
+  bool bPathInCache = false;
+  if (g_directoryCache.FileExists(addonFolder, bPathInCache))
+    hasOldData = true;
+  else if (bPathInCache)
+    hasOldData = false;
+  else
+    hasOldData = CDirectory::Exists(addonFolder, false);
+
   if (hasOldData)
   {
     if (!CFile::Rename(addonFolder, oldAddonData))
