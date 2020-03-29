@@ -11,16 +11,14 @@
     <a href="https://kodi.tv/addons">add-ons</a>
   </strong>
 </p>
-
 <p align="Top&Center">
-
-  <a href="https://docs.kodi.tv/"><img alt="Documentation" src="https://img.shields.io/badge/code-documents-purple.svg?style=Purple&label=Documents&style=plastic"></a>
+   <a href="LICENSE.md"><img alt="License" src="https://img.shields.io/badge/license-GPLv2-green.svg?style=style=plastic"></a>
+  <a href="https://docs.kodi.tv/"><img alt="Documentation" src="https://img.shields.io/badge/code-documents-purple.svg?style=Purple&label=&style=plastic"></a>
   <a href="https://github.com/xbmc/xbmc/pulls"><img alt="PRs Welcome" src="https://img.shields.io/badge/PRs-welcome-purple.svg?style=plastic"></a>
   <a href="#how-to-contribute"><img alt="Contributions Welcome" src="https://img.shields.io/badge/contributions-welcome-purple.svg?Purple&label=Contributions&style=plastic"></a>
   <a href="http://jenkins.kodi.tv/"><img alt="Build" src="https://img.shields.io/badge/CI-jenkins-purple.svg?Purple&label=jenkins&style=plastic"></a>
   <a href="https://github.com/xbmc/xbmc/commits/master"><img alt="Commits" src="https://img.shields.io/github/commits-since/xbmc/xbmc/latest.svg?Purple&label=Commits&style=plastic"></a>
-  <a href="https://github.com/xbmc/xbmc/commits/issues"><img alt="Issues" src="https://img.shields.io/github/issues/xbmc/xbmc/latest.savg?color=Purple&label=issues&style=plastic">
-  </a>
+    <a href="https://github.com/xbmc/xbmc/commits/issues"><img alt="Issues" src="https://img.shields.io/github/issues/xbmc/xbmc/latest.savg?color=Purple&label=issues&style=plastic"></a>
 </p>
 
 <a href="https://play.google.com/store/apps/details?id=org.xbmc.kodi" target="_blank">
@@ -29,7 +27,8 @@
 <a href="https://f-droid.org/en/packages/org.xbmc.kodi/" target="_blank">
   <img src="https://f-droid.org/badge/get-it-on.png" height="80"/>
 </a>
-
+<a href="/download" title="" class="active-trail active">Download</a>
+<img src="https://kodi.tv/download" height="80"/>
 <h1 align="center">
   Welcome to Kodi Home Theater Software!
 </h1>
@@ -81,8 +80,8 @@ Kodi couldn't exist without
 ## [License] 
 *Kodi is **[GPLv2 licensed](LICENSE.md)**. You may use, distribute and copy it under the license terms.
 
-<a href="https://github.com/xbmc/xbmc/graphs/contributors"><img src="https://forthebadge.com/images/badges/built-by-developers.svg" height="25"></a>
+<a href="https://github.com/xbmc/xbmc/graphs/contributors"><img src="https://forthebadge.com/images/badges/built-by-developers.svg" height="25"></a> 
 <a href="https://github.com/xbmc/xbmc"><img src="https://forthebadge.com/images/badges/certified-cousin-terio.svg" height="25"></a>
-<a href="https://github.com/xbmc/xbmc"><img src="https://forthebadge.com/images/badges/approved-by-george-costanza.svg" height="25"></a>
+<a href="https://github.com/xbmc/xbmc"><img src="https://forthebadge.com/images/badges/approved-by-Team-Kodi.svg" height="25"></a>
 <a href="https://kodi.tv/download"><img src="https://forthebadge.com/images/badges/check-it-out.svg" height="25"></a>
-<a href="https://github.com/xbmc/xbmc"><img src="https://forthebadge.com/images/badges/winter-is-coming.svg" height="25"></a>
+<a href=""https://github.com/I-Cat/xbmc""><img src="https://forthebadge.com/images/badges/contains-cat-gifs.svg" height="25"</a>/
