@@ -3568,6 +3568,14 @@ const infomap musicplayer[] =    {{ "title",            MUSICPLAYER_TITLE },
 ///     @skinning_v19 **[New Infolabel]** \link VideoPlayer_UniqueID `VideoPlayer.UniqueID(name)`\endlink
 ///     <p>
 ///   }
+///   \table_row3{   <b>`VideoPlayer.TvShowDBID`</b>,
+///                  \anchor VideoPlayer_TvShowDBID
+///                  _string_,
+///     @return The database id of the TvShow for the currently playing Episode
+///     <p><hr>
+///     @skinning_v19 **[New Infolabel]** \link VideoPlayer_TvShowDBID `VideoPlayer.TvShowDBID`\endlink
+///     <p>
+///   }
 /// \table_end
 ///
 /// -----------------------------------------------------------------------------
@@ -3639,6 +3647,7 @@ const infomap videoplayer[] =    {{ "title",            VIDEOPLAYER_TITLE },
                                   { "episodename",      VIDEOPLAYER_EPISODENAME },
                                   { "dbid",             VIDEOPLAYER_DBID },
                                   { "uniqueid",         VIDEOPLAYER_UNIQUEID },
+                                  { "tvshowdbid",       VIDEOPLAYER_TVSHOWDBID },
 };
 
 /// \page modules__infolabels_boolean_conditions
@@ -6384,6 +6393,14 @@ const infomap container_str[]  = {{ "property",         CONTAINER_PROPERTY },
 ///     @skinning_v19 **[New Infolabel]** \link ListItem_No_Of_Channels `ListItem.NoOfChannels`\endlink
 ///     <p>
 ///   }
+///   \table_row3{   <b>`ListItem.TvShowDBID`</b>,
+///                  \anchor ListItem_TvShowDBID
+///                  _string_,
+///     @return The database id of the TvShow for the currently selected Season or Episode.
+///     <p><hr>
+///     @skinning_v19 **[New Infolabel]** \link ListItem_TvShowDBID `ListItem.TvShowDBID`\endlink
+///     <p>
+///   }
 /// \table_end
 ///
 /// -----------------------------------------------------------------------------
@@ -6590,6 +6607,7 @@ const infomap listitem_labels[]= {{ "thumb",            LISTITEM_THUMB },
                                   { "ispremiere",       LISTITEM_IS_PREMIERE },
                                   { "isfinale",         LISTITEM_IS_FINALE },
                                   { "islive",           LISTITEM_IS_LIVE },
+                                  { "tvshowdbid",       LISTITEM_TVSHOWDBID },
 };
 
 /// \page modules__infolabels_boolean_conditions
