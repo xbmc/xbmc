@@ -4558,8 +4558,10 @@ void CApplication::SeekPercentage(float percent)
 // SwitchToFullScreen() returns true if a switch is made, else returns false
 bool CApplication::SwitchToFullScreen(bool force /* = false */)
 {
+  const int activeWindowID = CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow();
+
   // don't switch if the slideshow is active
-  if (CServiceBroker::GetGUI()->GetWindowManager().IsWindowActive(WINDOW_SLIDESHOW))
+  if (activeWindowID == WINDOW_SLIDESHOW)
     return false;
 
   // if playing from the video info window, close it first!
@@ -4589,25 +4591,25 @@ bool CApplication::SwitchToFullScreen(bool force /* = false */)
 
   int windowID = WINDOW_INVALID;
 
-  // See if we're playing a game, and are in GUI mode
-  if (m_appPlayer.IsPlayingGame() && CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() != WINDOW_FULLSCREEN_GAME)
+  // See if we're playing a game
+  if (activeWindowID != WINDOW_FULLSCREEN_GAME && m_appPlayer.IsPlayingGame())
     windowID = WINDOW_FULLSCREEN_GAME;
 
-  // See if we're playing a video, and are in GUI mode
-  else if (m_appPlayer.IsPlayingVideo() && CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() != WINDOW_FULLSCREEN_VIDEO)
+  // See if we're playing a video
+  else if (activeWindowID != WINDOW_FULLSCREEN_VIDEO && m_appPlayer.IsPlayingVideo())
     windowID = WINDOW_FULLSCREEN_VIDEO;
 
-  // special case for switching between GUI & visualisation mode. (only if we're playing an audio song)
-  if (m_appPlayer.IsPlayingAudio() && CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() != WINDOW_VISUALISATION)
+  // See if we're playing an audio song
+  if (activeWindowID != WINDOW_VISUALISATION && m_appPlayer.IsPlayingAudio())
     windowID = WINDOW_VISUALISATION;
 
-
-  if (windowID != WINDOW_INVALID)
+  if (windowID != WINDOW_INVALID && (force || windowID != activeWindowID))
   {
     if (force)
       CServiceBroker::GetGUI()->GetWindowManager().ForceActivateWindow(windowID);
     else
       CServiceBroker::GetGUI()->GetWindowManager().ActivateWindow(windowID);
+
     return true;
   }
 
