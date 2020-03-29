@@ -12,6 +12,7 @@
   </strong>
 </p>
 <p align="Top&Center">
+    <a href="http://hits.dwyl.io/xbmc/xbmc"><img alt="HitCount" src="http://hits.dwyl.io/I-Cat/xbmc.svg"></a>
    <a href="LICENSE.md"><img alt="License" src="https://img.shields.io/badge/license-GPLv2-green.svg?style=style=plastic"></a>
   <a href="https://docs.kodi.tv/"><img alt="Documentation" src="https://img.shields.io/badge/code-documents-purple.svg?style=Purple&label=&style=plastic"></a>
   <a href="https://github.com/xbmc/xbmc/pulls"><img alt="PRs Welcome" src="https://img.shields.io/badge/PRs-welcome-purple.svg?style=plastic"></a>
@@ -83,5 +84,5 @@ Kodi couldn't exist without
 <a href="https://github.com/xbmc/xbmc/graphs/contributors"><img src="https://forthebadge.com/images/badges/built-by-developers.svg" height="25"></a> 
 <a href="https://github.com/xbmc/xbmc"><img src="https://forthebadge.com/images/badges/certified-cousin-terio.svg" height="25"></a>
 <a href="https://github.com/xbmc/xbmc"><img src="https://forthebadge.com/images/badges/approved-by-Team-Kodi.svg" height="25"></a>
-<a href="https://kodi.tv/download"><img src="https://forthebadge.com/images/badges/check-it-out.svg" height="25"></a>
-<a href=""https://github.com/I-Cat/xbmc""><img src="https://forthebadge.com/images/badges/contains-cat-gifs.svg" height="25"</a>/
+<a href="https://kodi.tv/download"><img src="https://img.shields.io/github/download/xbmc/xbmc/latest.svg?color=Purple&label=Downloads&style=plastic"><img src="https://forthebadge.com/images/badges/Downloads.svg" height="25"></a>
+<a href=""https://github.com/I-Cat/xbmc""><img src="https://img.shields.io/badge/images/contains-cat-gifs.svg?" height="25"</a>/
