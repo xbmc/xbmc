@@ -13,7 +13,6 @@
 #include <stdio.h>
 
 #include "AddonBase.h"
-#include "xbmc_epg_types.h"
 
 /*! @note Define "USE_DEMUX" at compile time if demuxing in the PVR add-on is used.
  *        Also, "DVDDemuxPacket.h" file must be in the include path of the add-on,
@@ -76,6 +75,104 @@ extern "C" {
     xbmc_codec_type_t codec_type;
     xbmc_codec_id_t   codec_id;
   } xbmc_codec_t;
+
+  //--==----==----==----==----==----==----==----==----==----==----==----==----==
+  //                             PVR EPG "C" definitions
+
+  /*! @name EPG entry content event types */
+  //@{
+  /* These IDs come from the DVB-SI EIT table "content descriptor"
+   * Also known under the name "E-book genre assignments"
+   */
+  typedef enum
+  {
+    EPG_EVENT_CONTENTMASK_UNDEFINED = 0x00,
+    EPG_EVENT_CONTENTMASK_MOVIEDRAMA = 0x10,
+    EPG_EVENT_CONTENTMASK_NEWSCURRENTAFFAIRS = 0x20,
+    EPG_EVENT_CONTENTMASK_SHOW = 0x30,
+    EPG_EVENT_CONTENTMASK_SPORTS = 0x40,
+    EPG_EVENT_CONTENTMASK_CHILDRENYOUTH = 0x50,
+    EPG_EVENT_CONTENTMASK_MUSICBALLETDANCE = 0x60,
+    EPG_EVENT_CONTENTMASK_ARTSCULTURE = 0x70,
+    EPG_EVENT_CONTENTMASK_SOCIALPOLITICALECONOMICS = 0x80,
+    EPG_EVENT_CONTENTMASK_EDUCATIONALSCIENCE = 0x90,
+    EPG_EVENT_CONTENTMASK_LEISUREHOBBIES = 0xA0,
+    EPG_EVENT_CONTENTMASK_SPECIAL = 0xB0,
+    EPG_EVENT_CONTENTMASK_USERDEFINED = 0xF0
+  } EPG_EVENT_CONTENTMASK;
+  //@}
+
+  /* Set EPGTAG.iGenreType or EPGTAG.iGenreSubType to EPG_GENRE_USE_STRING to transfer genre strings to Kodi */
+  #define EPG_GENRE_USE_STRING 0x100
+
+  /* Separator to use in strings containing different tokens, for example writers, directors, actors of an event. */
+  #define EPG_STRING_TOKEN_SEPARATOR ","
+
+  /* EPG_TAG.iFlags values */
+  const unsigned int EPG_TAG_FLAG_UNDEFINED   = 0x00000000; /*!< nothing special to say about this entry */
+  const unsigned int EPG_TAG_FLAG_IS_SERIES   = 0x00000001; /*!< this EPG entry is part of a series */
+  const unsigned int EPG_TAG_FLAG_IS_NEW      = 0x00000002; /*!< this EPG entry will be flagged as new */
+  const unsigned int EPG_TAG_FLAG_IS_PREMIERE = 0x00000004; /*!< this EPG entry will be flagged as a premiere */
+  const unsigned int EPG_TAG_FLAG_IS_FINALE   = 0x00000008; /*!< this EPG entry will be flagged as a finale */
+  const unsigned int EPG_TAG_FLAG_IS_LIVE     = 0x00000010; /*!< this EPG entry will be flagged as live */
+
+  /* Special EPG_TAG.iUniqueBroadcastId value */
+
+  /*!
+   * @brief special EPG_TAG.iUniqueBroadcastId value to indicate that a tag has not a valid EPG event uid.
+   */
+  const unsigned int EPG_TAG_INVALID_UID = 0;
+
+  /*!
+   * @brief special EPG_TAG.iSeriesNumber, EPG_TAG.iEpisodeNumber and EPG_TAG.iEpisodePartNumber value to indicate it is not to be used
+   */
+  const int EPG_TAG_INVALID_SERIES_EPISODE = -1;
+
+  /*!
+   * @brief EPG event states. Used with EpgEventStateChange callback.
+   */
+  typedef enum
+  {
+    EPG_EVENT_CREATED = 0,  /*!< event created */
+    EPG_EVENT_UPDATED = 1,  /*!< event updated */
+    EPG_EVENT_DELETED = 2,  /*!< event deleted */
+  } EPG_EVENT_STATE;
+
+  /*!
+   * @brief Representation of an EPG event.
+   */
+  typedef struct EPG_TAG
+  {
+    unsigned int  iUniqueBroadcastId;  /*!< (required) identifier for this event. Event uids must be unique for a channel. Valid uids must be greater than EPG_TAG_INVALID_UID. */
+    unsigned int  iUniqueChannelId;    /*!< (required) unique identifier of the channel this event belongs to. */
+    const char *  strTitle;            /*!< (required) this event's title */
+    time_t        startTime;           /*!< (required) start time in UTC */
+    time_t        endTime;             /*!< (required) end time in UTC */
+    const char *  strPlotOutline;      /*!< (optional) plot outline */
+    const char *  strPlot;             /*!< (optional) plot */
+    const char *  strOriginalTitle;    /*!< (optional) originaltitle */
+    const char *  strCast;             /*!< (optional) cast. Use EPG_STRING_TOKEN_SEPARATOR to separate different persons. */
+    const char *  strDirector;         /*!< (optional) director(s). Use EPG_STRING_TOKEN_SEPARATOR to separate different persons. */
+    const char *  strWriter;           /*!< (optional) writer(s). Use EPG_STRING_TOKEN_SEPARATOR to separate different persons. */
+    int           iYear;               /*!< (optional) year */
+    const char *  strIMDBNumber;       /*!< (optional) IMDBNumber */
+    const char *  strIconPath;         /*!< (optional) icon path */
+    int           iGenreType;          /*!< (optional) genre type */
+    int           iGenreSubType;       /*!< (optional) genre sub type */
+    const char *  strGenreDescription; /*!< (optional) genre. Will be used only when iGenreType == EPG_GENRE_USE_STRING or iGenreSubType == EPG_GENRE_USE_STRING. Use EPG_STRING_TOKEN_SEPARATOR to separate different genres. */
+    const char *  strFirstAired;       /*!< (optional) first aired date of the event. Used only for display purposes. Specify in W3C date format "YYYY-MM-DD". */
+    int           iParentalRating;     /*!< (optional) parental rating */
+    int           iStarRating;         /*!< (optional) star rating */
+    int           iSeriesNumber;       /*!< (optional) series number. Set to "0" for specials/pilot. For 'invalid' set to EPG_TAG_INVALID_SERIES_EPISODE */
+    int           iEpisodeNumber;      /*!< (optional) episode number. For 'invalid' set to EPG_TAG_INVALID_SERIES_EPISODE */
+    int           iEpisodePartNumber;  /*!< (optional) episode part number. For 'invalid' set to EPG_TAG_INVALID_SERIES_EPISODE */
+    const char *  strEpisodeName;      /*!< (optional) episode name */
+    unsigned int  iFlags;              /*!< (optional) bit field of independent flags associated with the EPG entry */
+    const char *  strSeriesLink;       /*!< (optional) series link for this event */
+  } ATTRIBUTE_PACKED EPG_TAG;
+
+  //--==----==----==----==----==----==----==----==----==----==----==----==----==
+  //                            PVR timers "C" definitions
 
   /*!
    * @brief numeric PVR timer type definitions (PVR_TIMER.iTimerType values)
