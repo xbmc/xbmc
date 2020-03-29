@@ -9610,6 +9610,10 @@ int CGUIInfoManager::TranslateSingleString(const std::string &strCondition, bool
       {
         return AddMultiInfo(CGUIInfo(VIDEOPLAYER_CONTENT, prop.param(), 0));
       }
+      if (prop.name == "uniqueid" && prop.num_params())
+      {
+        return AddMultiInfo(CGUIInfo(VIDEOPLAYER_UNIQUEID, prop.param(), 0));
+      }
       return TranslateVideoPlayerString(prop.name);
     }
     else if (cat.name == "retroplayer")
