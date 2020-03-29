@@ -34,6 +34,9 @@ enum PeripheralBusType
 #ifdef TARGET_ANDROID
   PERIPHERAL_BUS_ANDROID,
 #endif
+#if defined(TARGET_DARWIN_EMBEDDED)
+  PERIPHERAL_BUS_DARWINEMBEDDED,
+#endif
   PERIPHERAL_BUS_APPLICATION,
 };
 
@@ -190,6 +193,10 @@ public:
       case PERIPHERAL_BUS_ANDROID:
         return "android";
 #endif
+#if defined(TARGET_DARWIN_EMBEDDED)
+      case PERIPHERAL_BUS_DARWINEMBEDDED:
+        return "darwin_embedded";
+#endif
       case PERIPHERAL_BUS_APPLICATION:
         return "application";
       default:
@@ -215,6 +222,10 @@ public:
 #ifdef TARGET_ANDROID
     else if (strTypeLowerCase == "android")
       return PERIPHERAL_BUS_ANDROID;
+#endif
+#if defined(TARGET_DARWIN_EMBEDDED)
+    else if (strTypeLowerCase == "darwin_embedded")
+      return PERIPHERAL_BUS_DARWINEMBEDDED;
 #endif
     else if (strTypeLowerCase == "application")
       return PERIPHERAL_BUS_APPLICATION;
