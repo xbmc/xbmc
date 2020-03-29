@@ -49,10 +49,6 @@ namespace ADDON
     \*/
     static void*        PVRLib_RegisterMe              (void* addonData);
     static void         PVRLib_UnRegisterMe            (void* addonData, void* cbTable);
-    /*\_________________________________________________________________________
-    \*/
-    static void*        GameLib_RegisterMe             (void *addonData);
-    static void         GameLib_UnRegisterMe           (void *addonData, void* cbTable);
     /*
      * API level independent functions for Kodi
      */

@@ -49,20 +49,10 @@ typedef intptr_t      ssize_t;
 
 typedef void* (*KODIAddOnLib_RegisterMe)(void *addonData);
 typedef void (*KODIAddOnLib_UnRegisterMe)(void *addonData, void *cbTable);
-typedef void* (*KODIAudioEngineLib_RegisterMe)(void *addonData);
-typedef void (*KODIAudioEngineLib_UnRegisterMe)(void *addonData, void *cbTable);
 typedef void* (*KODIGUILib_RegisterMe)(void *addonData);
 typedef void (*KODIGUILib_UnRegisterMe)(void *addonData, void *cbTable);
 typedef void* (*KODIPVRLib_RegisterMe)(void *addonData);
 typedef void (*KODIPVRLib_UnRegisterMe)(void *addonData, void *cbTable);
-typedef void* (*KODICodecLib_RegisterMe)(void *addonData);
-typedef void (*KODICodecLib_UnRegisterMe)(void *addonData, void *cbTable);
-typedef void* (*KODIINPUTSTREAMLib_RegisterMe)(void *addonData);
-typedef void (*KODIINPUTSTREAMLib_UnRegisterMe)(void *addonData, void *cbTable);
-typedef void* (*KODIPeripheralLib_RegisterMe)(void *addonData);
-typedef void (*KODIPeripheralLib_UnRegisterMe)(void *addonData, void *cbTable);
-typedef void* (*KODIGameLib_RegisterMe)(void *addonData);
-typedef void (*KODIGameLib_UnRegisterMe)(void *addonData, void *cbTable);
 
 typedef struct AddonCB
 {
@@ -70,20 +60,10 @@ typedef struct AddonCB
   void*       addonData;
   KODIAddOnLib_RegisterMe           AddOnLib_RegisterMe;
   KODIAddOnLib_UnRegisterMe         AddOnLib_UnRegisterMe;
-  KODIAudioEngineLib_RegisterMe     AudioEngineLib_RegisterMe;
-  KODIAudioEngineLib_UnRegisterMe   AudioEngineLib_UnRegisterMe;
-  KODICodecLib_RegisterMe           CodecLib_RegisterMe;
-  KODICodecLib_UnRegisterMe         CodecLib_UnRegisterMe;
   KODIGUILib_RegisterMe             GUILib_RegisterMe;
   KODIGUILib_UnRegisterMe           GUILib_UnRegisterMe;
   KODIPVRLib_RegisterMe             PVRLib_RegisterMe;
   KODIPVRLib_UnRegisterMe           PVRLib_UnRegisterMe;
-  KODIINPUTSTREAMLib_RegisterMe     INPUTSTREAMLib_RegisterMe;
-  KODIINPUTSTREAMLib_UnRegisterMe   INPUTSTREAMLib_UnRegisterMe;
-  KODIPeripheralLib_RegisterMe      PeripheralLib_RegisterMe;
-  KODIPeripheralLib_UnRegisterMe    PeripheralLib_UnRegisterMe;
-  KODIGameLib_RegisterMe            GameLib_RegisterMe;
-  KODIGameLib_UnRegisterMe          GameLib_UnRegisterMe;
 } AddonCB;
 
 struct VFSProperty

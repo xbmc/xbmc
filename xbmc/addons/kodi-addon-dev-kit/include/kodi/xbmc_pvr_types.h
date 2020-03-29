@@ -8,14 +8,6 @@
 
 #pragma once
 
-#ifndef TARGET_WINDOWS
-#ifndef __cdecl
-#define __cdecl
-#endif
-#ifndef __declspec
-#define __declspec(X)
-#endif
-#endif
 #include <string.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -31,20 +23,6 @@
 #include "DemuxPacket.h"
 #else
 struct DemuxPacket;
-#endif
-
-#undef ATTRIBUTE_PACKED
-#undef PRAGMA_PACK_BEGIN
-#undef PRAGMA_PACK_END
-
-#if defined(__GNUC__)
-#define ATTRIBUTE_PACKED __attribute__ ((packed))
-#define PRAGMA_PACK 0
-#endif
-
-#if !defined(ATTRIBUTE_PACKED)
-#define ATTRIBUTE_PACKED
-#define PRAGMA_PACK 1
 #endif
 
 #define PVR_ADDON_NAME_STRING_LENGTH          1024
