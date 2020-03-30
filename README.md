@@ -19,7 +19,7 @@
   <a href="#how-to-contribute"><img alt="Contributions Welcome" src="https://img.shields.io/badge/contributions-welcome-purple.svg?Purple&label=Contributions&style=plastic"></a>
   <a href="http://jenkins.kodi.tv/"><img alt="Build" src="https://img.shields.io/badge/CI-jenkins-brightgreen.svg?style=flat-square">
   <a href="https://github.com/xbmc/xbmc/commits/master"><img alt="Commits" src="https://img.shields.io/github/commits-since/xbmc/xbmc/latest.svg?style=flat-square"></a>	  <a href="https://github.com/xbmc/xbmc/commits/master"><img alt="Commits" src="https://img.shields.io/github/commits-since/xbmc/xbmc/latest.svg?style=flat-square"></a>
-  <a href="https://github.com/I-Cat/xbmc/commits/issues"><img alt="Issues" src="https://img.shields.io/github/issues/xbmc/xbmc/latest.savg?color=Purple&label=issues&style=plastic"></a>
+  <a href="https://github.com/xmbc/xbmc/commits/issues"><img alt="Issues" src="https://img.shields.io/github/issues/xbmc/xbmc/latest.savg?color=Purple&label=issues&style=plastic"></a>
 </p>
 
 <a href="https://play.google.com/store/apps/details?id=org.xbmc.kodi" target="_blank">
@@ -88,4 +88,4 @@ Kodi is **[GPLv2 licensed](LICENSE.md)**. You may use, distribute and copy it un
 <a href="https://kodi.tv/download"><img src="https://forthebadge.com/images/badges/check-it-out.svg" height="25"></a>
 <a href="https://github.com/xbmc/xbmc"><img src="https://forthebadge.com/images/badges/winter-is-coming.svg" height="25"></a>
 
-<a href=""https://github.com/I-Cat/xbmc""><img src="https://img.shields.io/badge/images/contains-cat-gifs.svg?" height="25"</a>/
+<a href="https://img.shields.io/badge/I-Cat-gifs.svg"><img src="https://img.shields.io/badge/I-Cat-gifs.svg" height="25"</a>
