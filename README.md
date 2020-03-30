@@ -17,9 +17,9 @@
   <a href="https://docs.kodi.tv/"><img alt="Documentation" src="https://img.shields.io/badge/code-documents-purple.svg?style=Purple&label=&style=plastic"></a>
   <a href="https://github.com/xbmc/xbmc/pulls"><img alt="PRs Welcome" src="https://img.shields.io/badge/PRs-welcome-purple.svg?style=plastic"></a>
   <a href="#how-to-contribute"><img alt="Contributions Welcome" src="https://img.shields.io/badge/contributions-welcome-purple.svg?Purple&label=Contributions&style=plastic"></a>
-  <a href="http://jenkins.kodi.tv/"><img alt="Build" src="https://img.shields.io/badge/CI-jenkins-purple.svg?Purple&label=jenkins&style=plastic"></a>
-  <a href="https://github.com/xbmc/xbmc/commits/master"><img alt="Commits" src="https://img.shields.io/github/commits-since/xbmc/xbmc/latest.svg?Purple&label=Commits&style=plastic"></a>
-  <a href="https://github.com/xbmc/xbmc/commits/issues"><img alt="Issues" src="https://img.shields.io/github/issues/xbmc/xbmc/latest.savg?color=Purple&label=issues&style=plastic"></a>
+  <a href="http://jenkins.kodi.tv/"><img alt="Build" src="https://img.shields.io/badge/CI-jenkins-brightgreen.svg?style=flat-square">
+  <a href="https://github.com/xbmc/xbmc/commits/master"><img alt="Commits" src="https://img.shields.io/github/commits-since/xbmc/xbmc/latest.svg?style=flat-square"></a>	  <a href="https://github.com/xbmc/xbmc/commits/master"><img alt="Commits" src="https://img.shields.io/github/commits-since/xbmc/xbmc/latest.svg?style=flat-square"></a>
+  <a href="https://github.com/I-Cat/xbmc/commits/issues"><img alt="Issues" src="https://img.shields.io/github/issues/xbmc/xbmc/latest.savg?color=Purple&label=issues&style=plastic"></a>
 </p>
 
 <a href="https://play.google.com/store/apps/details?id=org.xbmc.kodi" target="_blank">
@@ -28,8 +28,9 @@
 <a href="https://f-droid.org/en/packages/org.xbmc.kodi/" target="_blank">
   <img src="https://f-droid.org/badge/get-it-on.png" height="80"/>
 </a>
-<a href="https://kodi.tv/download" title="" class="active-trail active">Download</a>
+<a href="https://kodi.tv/download" target="_blank"> Download
 <img src="https://kodi.tv/sites/default/themes/kodi/icon.png" With=80 height="80"/>
+ <a/>
 <h1 align="center">
   Welcome to Kodi Home Theater Software!
 </h1>
@@ -78,11 +79,13 @@ Kodi couldn't exist without
 * Our **[fantastic community](https://forum.kodi.tv/)** for the never ending support, inspiration, feedback, and for keeping us on our toes when we screw up!
 * **[Our sponsors](https://kodi.tv/sponsors)**. Without them, keeping a huge project like this alive would be next to impossible.
 
-## [License] 
-*Kodi is **[GPLv2 licensed](LICENSE.md)**. You may use, distribute and copy it under the license terms.
+## [License]
+Kodi is **[GPLv2 licensed](LICENSE.md)**. You may use, distribute and copy it under the license terms.
 
-<a href="https://github.com/xbmc/xbmc/graphs/contributors"><img src="https://forthebadge.com/images/badges/built-by-developers.svg" height="25"></a> 
+<a href="https://github.com/xbmc/xbmc/graphs/contributors"><img src="https://forthebadge.com/images/badges/built-by-developers.svg" height="25"></a>
 <a href="https://github.com/xbmc/xbmc"><img src="https://forthebadge.com/images/badges/certified-cousin-terio.svg" height="25"></a>
-<a href="https://github.com/xbmc/xbmc"><img src="https://forthebadge.com/images/badges/approved-by-Team-Kodi.svg" height="25"></a>
-<a href="https://kodi.tv/download"><img src="https://img.shields.io/github/download/xbmc/xbmc/latest.svg?color=Purple&label=Downloads&style=plastic"><img src="https://forthebadge.com/images/badges/Downloads.svg" height="25"></a>
+<a href="https://github.com/xbmc/xbmc"><img src="https://forthebadge.com/images/badges/approved-by-george-costanza.svg" height="25"></a>
+<a href="https://kodi.tv/download"><img src="https://forthebadge.com/images/badges/check-it-out.svg" height="25"></a>
+<a href="https://github.com/xbmc/xbmc"><img src="https://forthebadge.com/images/badges/winter-is-coming.svg" height="25"></a>
+
 <a href=""https://github.com/I-Cat/xbmc""><img src="https://img.shields.io/badge/images/contains-cat-gifs.svg?" height="25"</a>/
