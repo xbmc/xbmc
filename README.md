@@ -28,8 +28,8 @@
 <a href="https://f-droid.org/en/packages/org.xbmc.kodi/" target="_blank">
   <img src="https://f-droid.org/badge/get-it-on.png" height="80"/>
 </a>
-<a href="/download" title="" class="active-trail active">Download</a>
-<img src="https://kodi.tv/download" height="80"/>
+<a href="https://kodi.tv/download" title="" class="active-trail active">Download</a>
+<img src="https://kodi.tv/sites/default/themes/kodi/icon.png" With=80 height="80"/>
 <h1 align="center">
   Welcome to Kodi Home Theater Software!
 </h1>
