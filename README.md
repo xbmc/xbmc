@@ -12,14 +12,14 @@
   </strong>
 </p>
 <p align="Top&Center">
-    <a href="http://hits.dwyl.io/xbmc/xbmc"><img alt="HitCount" src="http://hits.dwyl.io/I-Cat/xbmc.svg"></a>
-   <a href="LICENSE.md"><img alt="License" src="https://img.shields.io/badge/license-GPLv2-green.svg?style=style=plastic"></a>
+  <a href="http://hits.dwyl.io/xbmc/xbmc"><img alt="HitCount" src="http://hits.dwyl.io/I-Cat/xbmc.svg"></a>
+  <a href="LICENSE.md"><img alt="License" src="https://img.shields.io/badge/license-GPLv2-green.svg?style=style=plastic"></a>
   <a href="https://docs.kodi.tv/"><img alt="Documentation" src="https://img.shields.io/badge/code-documents-purple.svg?style=Purple&label=&style=plastic"></a>
   <a href="https://github.com/xbmc/xbmc/pulls"><img alt="PRs Welcome" src="https://img.shields.io/badge/PRs-welcome-purple.svg?style=plastic"></a>
   <a href="#how-to-contribute"><img alt="Contributions Welcome" src="https://img.shields.io/badge/contributions-welcome-purple.svg?Purple&label=Contributions&style=plastic"></a>
   <a href="http://jenkins.kodi.tv/"><img alt="Build" src="https://img.shields.io/badge/CI-jenkins-purple.svg?Purple&label=jenkins&style=plastic"></a>
   <a href="https://github.com/xbmc/xbmc/commits/master"><img alt="Commits" src="https://img.shields.io/github/commits-since/xbmc/xbmc/latest.svg?Purple&label=Commits&style=plastic"></a>
-    <a href="https://github.com/xbmc/xbmc/commits/issues"><img alt="Issues" src="https://img.shields.io/github/issues/xbmc/xbmc/latest.savg?color=Purple&label=issues&style=plastic"></a>
+  <a href="https://github.com/xbmc/xbmc/commits/issues"><img alt="Issues" src="https://img.shields.io/github/issues/xbmc/xbmc/latest.savg?color=Purple&label=issues&style=plastic"></a>
 </p>
 
 <a href="https://play.google.com/store/apps/details?id=org.xbmc.kodi" target="_blank">
