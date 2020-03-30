@@ -559,7 +559,7 @@ PVR_ERROR CPVRClient::GetDriveSpace(long long& iTotal, long long& iUsed)
   return DoAddonCall(__FUNCTION__, [this, &iTotal, &iUsed](const AddonInstance* addon) {
     long long iTotalSpace = 0;
     long long iUsedSpace = 0;
-    PVR_ERROR error = m_struct.toAddon->GetDriveSpace(&iTotalSpace, &iUsedSpace);
+    PVR_ERROR error = addon->toAddon->GetDriveSpace(&iTotalSpace, &iUsedSpace);
     if (error == PVR_ERROR_NO_ERROR)
     {
       iTotal = iTotalSpace;
