@@ -34,7 +34,8 @@ void CGUIPanelContainer::Process(unsigned int currentTime, CDirtyRegionList &dir
   if (m_bInvalidated)
     UpdateLayout();
 
-  if (!m_layout || !m_focusedLayout) return;
+  if (!m_layout || !m_focusedLayout)
+    return;
 
   UpdateScrollOffset(currentTime);
 
@@ -91,7 +92,8 @@ void CGUIPanelContainer::Process(unsigned int currentTime, CDirtyRegionList &dir
 
 void CGUIPanelContainer::Render()
 {
-  if (!m_layout || !m_focusedLayout) return;
+  if (!m_layout || !m_focusedLayout)
+    return;
 
   int offset = (int)(m_scroller.GetValue() / m_layout->Size(m_orientation));
 
@@ -397,8 +399,8 @@ void CGUIPanelContainer::ValidateOffset()
 
 void CGUIPanelContainer::SetCursor(int cursor)
 {
-  // +1 to ensure we're OK if we have a half item
-  if (cursor > (m_itemsPerPage + 1)*m_itemsPerRow - 1) cursor = (m_itemsPerPage + 1)*m_itemsPerRow - 1;
+  if (cursor > m_itemsPerPage * m_itemsPerRow - 1)
+    cursor = m_itemsPerPage * m_itemsPerRow - 1;
   if (cursor < 0) cursor = 0;
   if (!m_wasReset)
     SetContainerMoving(cursor - GetCursor());
