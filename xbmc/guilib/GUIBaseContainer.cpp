@@ -688,6 +688,8 @@ CGUIListItemLayout *CGUIBaseContainer::GetFocusedLayout() const
 bool CGUIBaseContainer::OnMouseOver(const CPoint &point)
 {
   // select the item under the pointer
+  if (!m_waitForScrollEnd)
+    SelectItemFromPoint(point - CPoint(m_posX, m_posY));
   return CGUIControl::OnMouseOver(point);
 }
 
@@ -697,6 +699,8 @@ EVENT_RESULT CGUIBaseContainer::OnMouseEvent(const CPoint &point, const CMouseEv
       event.m_id == ACTION_MOUSE_DOUBLE_CLICK ||
       event.m_id == ACTION_MOUSE_RIGHT_CLICK)
   {
+    // Cancel touch
+    m_waitForScrollEnd = false;
     int select = GetSelectedItem();
     if (SelectItemFromPoint(point - CPoint(m_posX, m_posY)))
     {
@@ -734,10 +738,10 @@ EVENT_RESULT CGUIBaseContainer::OnMouseEvent(const CPoint &point, const CMouseEv
     int offset = MathUtils::round_int(m_scroller.GetValue() / size);
     m_lastScrollStartTimer.Stop();
     m_scrollTimer.Start();
-    const int absCursor = GetCursor() + GetOffset();
+    const int absCursor = CorrectOffset(GetOffset(), GetCursor());
     SetOffset(offset);
     ValidateOffset();
-    SetCursor(absCursor - GetOffset());
+    CGUIBaseContainer::SetCursor(absCursor - CorrectOffset(GetOffset(), 0));
     // Notify Application if Inertial scrolling reaches lists end
     if (m_waitForScrollEnd)
     {
@@ -766,6 +770,7 @@ EVENT_RESULT CGUIBaseContainer::OnMouseEvent(const CPoint &point, const CMouseEv
       SetOffset(toOffset-1);
     ScrollToOffset(toOffset);
     ValidateOffset();
+    SetCursor(GetCursor());
     SetFocus(true);
     m_waitForScrollEnd = false;
     return EVENT_RESULT_HANDLED;
@@ -1148,6 +1153,7 @@ void CGUIBaseContainer::UpdateScrollOffset(unsigned int currentTime)
   {
     m_scrollTimer.Stop();
     m_lastScrollStartTimer.Stop();
+    SetCursor(GetCursor());
   }
 }
 
