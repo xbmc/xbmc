@@ -191,8 +191,13 @@ XBMCController* g_xbmcController;
 
 #pragma mark - AppFocus
 
-- (void)becomeInactive
+- (void)enterBackground
 {
+  m_bgTask = [self enableBackGroundTask];
+  m_bgTaskActive = YES;
+
+  CLog::Log(LOGNOTICE, "%s: Running sleep jobs", __FUNCTION__);
+
   // if we were interrupted, already paused here
   // else if user background us or lock screen, only pause video here, audio keep playing.
   if (g_application.GetAppPlayer().IsPlayingVideo() && !g_application.GetAppPlayer().IsPaused())
@@ -204,14 +209,6 @@ XBMCController* g_xbmcController;
     CApplicationMessenger::GetInstance().SendMsg(TMSG_MEDIA_PAUSE_IF_PLAYING);
     g_application.CurrentFileItem().m_lStartOffset = g_application.GetAppPlayer().GetTime() - 2.50;
   }
-}
-
-- (void)enterBackground
-{
-  m_bgTask = [self enableBackGroundTask];
-  m_bgTaskActive = YES;
-
-  CLog::Log(LOGNOTICE, "%s: Running sleep jobs", __FUNCTION__);
 
   CWinSystemTVOS* winSystem = dynamic_cast<CWinSystemTVOS*>(CServiceBroker::GetWinSystem());
   winSystem->OnAppFocusChange(false);

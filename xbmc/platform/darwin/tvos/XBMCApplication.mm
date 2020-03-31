@@ -26,15 +26,19 @@
 
 - (void)applicationWillResignActive:(UIApplication*)application
 {
-  [self.xbmcController pauseAnimation];
-  [self.xbmcController becomeInactive];
+  // Occurs when Kodi is interrupted by something
+  // (e.g. Siri triggered by user, Control center opened by user, Mutlitask opened by user ...)
 }
 
 - (void)applicationDidEnterBackground:(UIApplication*)application
 {
+  // Occurs when Kodi has been backgrounded
+  // (e.g. when user uses remote to go to tvOS homescreen)
+  // applicationWillResignActive() will always be called before this method
   if (application.applicationState == UIApplicationStateBackground)
   {
     // the app is turn into background, not in by screen lock which has app state inactive.
+    [self.xbmcController pauseAnimation];
     [self.xbmcController enterBackground];
   }
 }
@@ -48,6 +52,15 @@
 
 - (void)applicationDidBecomeActive:(UIApplication*)application
 {
+  // This function occurs:
+  //  * on the first start of Kodi
+  //  * when Kodi has been activated after a beeing suspending by applicationWillResignActive()
+  //  * when Kodi has been foregrounded after applicationDidEnterBackground()
+}
+
+- (void)applicationWillEnterForeground:(UIApplication*)application
+{
+  // Occurs only after an applicationDidEnterBackground()
   [self.xbmcController resumeAnimation];
   [self.xbmcController enterForeground];
 }
