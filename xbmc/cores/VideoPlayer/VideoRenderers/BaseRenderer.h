@@ -12,6 +12,7 @@
 #include "VideoShaders/ShaderFormats.h"
 #include "cores/IPlayer.h"
 #include "cores/VideoPlayer/Process/VideoBuffer.h"
+#include "cores/VideoSettings.h"
 #include "utils/Geometry.h"
 
 #include <utility>
@@ -105,6 +106,7 @@ protected:
 
   unsigned int m_sourceWidth = 720;
   unsigned int m_sourceHeight = 480;
+  unsigned int m_flipMode = VS_FLIP_OFF;
   float m_sourceFrameRatio = 1.0f;
   float m_fps = 0.0f;
 

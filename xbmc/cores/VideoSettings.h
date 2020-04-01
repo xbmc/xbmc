@@ -65,6 +65,14 @@ enum ETONEMAPMETHOD
   VS_TONEMAPMETHOD_MAX
 };
 
+enum FlipMode
+{
+  VS_FLIP_OFF=0,
+  VS_FLIP_HORIZONTAL,
+  VS_FLIP_VERTICAL,
+  VS_FLIP_BOTH	
+};
+
 enum ViewMode
 {
   ViewModeNormal = 0,
@@ -114,6 +122,7 @@ public:
   int m_ToneMapMethod = VS_TONEMAPMETHOD_REINHARD;
   float m_ToneMapParam = 1.0;
   int m_Orientation = 0;
+  int m_VideoFlip = VS_FLIP_OFF;
   int m_CenterMixLevel = 0; // relative to metadata or default
 };
 
