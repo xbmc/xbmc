@@ -734,9 +734,9 @@ extern "C" {
 
   typedef struct AddonInstance_PVR
   {
-    PVR_PROPERTIES props;
-    AddonToKodiFuncTable_PVR toKodi;
-    KodiToAddonFuncTable_PVR toAddon;
+    PVR_PROPERTIES* props;
+    AddonToKodiFuncTable_PVR* toKodi;
+    KodiToAddonFuncTable_PVR* toAddon;
   } AddonInstance_PVR;
 
 #ifdef __cplusplus

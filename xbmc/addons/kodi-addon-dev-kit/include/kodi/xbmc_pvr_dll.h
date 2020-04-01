@@ -703,93 +703,93 @@ extern "C"
   {
     AddonInstance_PVR* pClient = static_cast<AddonInstance_PVR*>(ptr);
 
-    pClient->toAddon.addonInstance = nullptr; // used in future
+    pClient->toAddon->addonInstance = nullptr; // used in future
 
-    pClient->toAddon.GetAddonCapabilities           = GetAddonCapabilities;
-    pClient->toAddon.GetStreamProperties            = GetStreamProperties;
-    pClient->toAddon.GetConnectionString            = GetConnectionString;
-    pClient->toAddon.GetBackendName                 = GetBackendName;
-    pClient->toAddon.GetBackendVersion              = GetBackendVersion;
-    pClient->toAddon.GetDriveSpace                  = GetDriveSpace;
-    pClient->toAddon.OpenDialogChannelScan          = OpenDialogChannelScan;
-    pClient->toAddon.MenuHook                       = CallMenuHook;
+    pClient->toAddon->GetAddonCapabilities = GetAddonCapabilities;
+    pClient->toAddon->GetStreamProperties = GetStreamProperties;
+    pClient->toAddon->GetConnectionString = GetConnectionString;
+    pClient->toAddon->GetBackendName = GetBackendName;
+    pClient->toAddon->GetBackendVersion = GetBackendVersion;
+    pClient->toAddon->GetDriveSpace = GetDriveSpace;
+    pClient->toAddon->OpenDialogChannelScan = OpenDialogChannelScan;
+    pClient->toAddon->MenuHook = CallMenuHook;
 
-    pClient->toAddon.GetEPGForChannel               = GetEPGForChannel;
-    pClient->toAddon.IsEPGTagRecordable             = IsEPGTagRecordable;
-    pClient->toAddon.IsEPGTagPlayable               = IsEPGTagPlayable;
-    pClient->toAddon.GetEPGTagEdl                   = GetEPGTagEdl;
-    pClient->toAddon.GetEPGTagStreamProperties      = GetEPGTagStreamProperties;
+    pClient->toAddon->GetEPGForChannel = GetEPGForChannel;
+    pClient->toAddon->IsEPGTagRecordable = IsEPGTagRecordable;
+    pClient->toAddon->IsEPGTagPlayable = IsEPGTagPlayable;
+    pClient->toAddon->GetEPGTagEdl = GetEPGTagEdl;
+    pClient->toAddon->GetEPGTagStreamProperties = GetEPGTagStreamProperties;
 
-    pClient->toAddon.GetChannelGroupsAmount         = GetChannelGroupsAmount;
-    pClient->toAddon.GetChannelGroups               = GetChannelGroups;
-    pClient->toAddon.GetChannelGroupMembers         = GetChannelGroupMembers;
+    pClient->toAddon->GetChannelGroupsAmount = GetChannelGroupsAmount;
+    pClient->toAddon->GetChannelGroups = GetChannelGroups;
+    pClient->toAddon->GetChannelGroupMembers = GetChannelGroupMembers;
 
-    pClient->toAddon.GetChannelsAmount              = GetChannelsAmount;
-    pClient->toAddon.GetChannels                    = GetChannels;
-    pClient->toAddon.DeleteChannel                  = DeleteChannel;
-    pClient->toAddon.RenameChannel                  = RenameChannel;
-    pClient->toAddon.OpenDialogChannelSettings      = OpenDialogChannelSettings;
-    pClient->toAddon.OpenDialogChannelAdd           = OpenDialogChannelAdd;
+    pClient->toAddon->GetChannelsAmount = GetChannelsAmount;
+    pClient->toAddon->GetChannels = GetChannels;
+    pClient->toAddon->DeleteChannel = DeleteChannel;
+    pClient->toAddon->RenameChannel = RenameChannel;
+    pClient->toAddon->OpenDialogChannelSettings = OpenDialogChannelSettings;
+    pClient->toAddon->OpenDialogChannelAdd = OpenDialogChannelAdd;
 
-    pClient->toAddon.GetRecordingsAmount            = GetRecordingsAmount;
-    pClient->toAddon.GetRecordings                  = GetRecordings;
-    pClient->toAddon.DeleteRecording                = DeleteRecording;
-    pClient->toAddon.UndeleteRecording              = UndeleteRecording;
-    pClient->toAddon.DeleteAllRecordingsFromTrash   = DeleteAllRecordingsFromTrash;
-    pClient->toAddon.RenameRecording                = RenameRecording;
-    pClient->toAddon.SetRecordingLifetime           = SetRecordingLifetime;
-    pClient->toAddon.SetRecordingPlayCount          = SetRecordingPlayCount;
-    pClient->toAddon.SetRecordingLastPlayedPosition = SetRecordingLastPlayedPosition;
-    pClient->toAddon.GetRecordingLastPlayedPosition = GetRecordingLastPlayedPosition;
-    pClient->toAddon.GetRecordingEdl                = GetRecordingEdl;
-    pClient->toAddon.GetRecordingSize               = GetRecordingSize;
+    pClient->toAddon->GetRecordingsAmount = GetRecordingsAmount;
+    pClient->toAddon->GetRecordings = GetRecordings;
+    pClient->toAddon->DeleteRecording = DeleteRecording;
+    pClient->toAddon->UndeleteRecording = UndeleteRecording;
+    pClient->toAddon->DeleteAllRecordingsFromTrash = DeleteAllRecordingsFromTrash;
+    pClient->toAddon->RenameRecording = RenameRecording;
+    pClient->toAddon->SetRecordingLifetime = SetRecordingLifetime;
+    pClient->toAddon->SetRecordingPlayCount = SetRecordingPlayCount;
+    pClient->toAddon->SetRecordingLastPlayedPosition = SetRecordingLastPlayedPosition;
+    pClient->toAddon->GetRecordingLastPlayedPosition = GetRecordingLastPlayedPosition;
+    pClient->toAddon->GetRecordingEdl = GetRecordingEdl;
+    pClient->toAddon->GetRecordingSize = GetRecordingSize;
 
-    pClient->toAddon.GetTimerTypes                  = GetTimerTypes;
-    pClient->toAddon.GetTimersAmount                = GetTimersAmount;
-    pClient->toAddon.GetTimers                      = GetTimers;
-    pClient->toAddon.AddTimer                       = AddTimer;
-    pClient->toAddon.DeleteTimer                    = DeleteTimer;
-    pClient->toAddon.UpdateTimer                    = UpdateTimer;
+    pClient->toAddon->GetTimerTypes = GetTimerTypes;
+    pClient->toAddon->GetTimersAmount = GetTimersAmount;
+    pClient->toAddon->GetTimers = GetTimers;
+    pClient->toAddon->AddTimer = AddTimer;
+    pClient->toAddon->DeleteTimer = DeleteTimer;
+    pClient->toAddon->UpdateTimer = UpdateTimer;
 
-    pClient->toAddon.OpenLiveStream                 = OpenLiveStream;
-    pClient->toAddon.CloseLiveStream                = CloseLiveStream;
-    pClient->toAddon.ReadLiveStream                 = ReadLiveStream;
-    pClient->toAddon.SeekLiveStream                 = SeekLiveStream;
-    pClient->toAddon.LengthLiveStream               = LengthLiveStream;
-    pClient->toAddon.SignalStatus                   = SignalStatus;
-    pClient->toAddon.GetDescrambleInfo              = GetDescrambleInfo;
-    pClient->toAddon.GetChannelStreamProperties     = GetChannelStreamProperties;
-    pClient->toAddon.GetRecordingStreamProperties   = GetRecordingStreamProperties;
-    pClient->toAddon.CanPauseStream                 = CanPauseStream;
-    pClient->toAddon.PauseStream                    = PauseStream;
-    pClient->toAddon.CanSeekStream                  = CanSeekStream;
-    pClient->toAddon.SeekTime                       = SeekTime;
-    pClient->toAddon.SetSpeed                       = SetSpeed;
-    pClient->toAddon.FillBuffer                     = FillBuffer;
+    pClient->toAddon->OpenLiveStream = OpenLiveStream;
+    pClient->toAddon->CloseLiveStream = CloseLiveStream;
+    pClient->toAddon->ReadLiveStream = ReadLiveStream;
+    pClient->toAddon->SeekLiveStream = SeekLiveStream;
+    pClient->toAddon->LengthLiveStream = LengthLiveStream;
+    pClient->toAddon->SignalStatus = SignalStatus;
+    pClient->toAddon->GetDescrambleInfo = GetDescrambleInfo;
+    pClient->toAddon->GetChannelStreamProperties = GetChannelStreamProperties;
+    pClient->toAddon->GetRecordingStreamProperties = GetRecordingStreamProperties;
+    pClient->toAddon->CanPauseStream = CanPauseStream;
+    pClient->toAddon->PauseStream = PauseStream;
+    pClient->toAddon->CanSeekStream = CanSeekStream;
+    pClient->toAddon->SeekTime = SeekTime;
+    pClient->toAddon->SetSpeed = SetSpeed;
+    pClient->toAddon->FillBuffer = FillBuffer;
 
-    pClient->toAddon.OpenRecordedStream             = OpenRecordedStream;
-    pClient->toAddon.CloseRecordedStream            = CloseRecordedStream;
-    pClient->toAddon.ReadRecordedStream             = ReadRecordedStream;
-    pClient->toAddon.SeekRecordedStream             = SeekRecordedStream;
-    pClient->toAddon.LengthRecordedStream           = LengthRecordedStream;
+    pClient->toAddon->OpenRecordedStream = OpenRecordedStream;
+    pClient->toAddon->CloseRecordedStream = CloseRecordedStream;
+    pClient->toAddon->ReadRecordedStream = ReadRecordedStream;
+    pClient->toAddon->SeekRecordedStream = SeekRecordedStream;
+    pClient->toAddon->LengthRecordedStream = LengthRecordedStream;
 
-    pClient->toAddon.DemuxReset                     = DemuxReset;
-    pClient->toAddon.DemuxAbort                     = DemuxAbort;
-    pClient->toAddon.DemuxFlush                     = DemuxFlush;
-    pClient->toAddon.DemuxRead                      = DemuxRead;
+    pClient->toAddon->DemuxReset = DemuxReset;
+    pClient->toAddon->DemuxAbort = DemuxAbort;
+    pClient->toAddon->DemuxFlush = DemuxFlush;
+    pClient->toAddon->DemuxRead = DemuxRead;
 
-    pClient->toAddon.GetBackendHostname             = GetBackendHostname;
+    pClient->toAddon->GetBackendHostname = GetBackendHostname;
 
-    pClient->toAddon.IsRealTimeStream               = IsRealTimeStream;
+    pClient->toAddon->IsRealTimeStream = IsRealTimeStream;
 
-    pClient->toAddon.SetEPGTimeFrame                = SetEPGTimeFrame;
+    pClient->toAddon->SetEPGTimeFrame = SetEPGTimeFrame;
 
-    pClient->toAddon.OnSystemSleep                  = OnSystemSleep;
-    pClient->toAddon.OnSystemWake                   = OnSystemWake;
-    pClient->toAddon.OnPowerSavingActivated         = OnPowerSavingActivated;
-    pClient->toAddon.OnPowerSavingDeactivated       = OnPowerSavingDeactivated;
-    pClient->toAddon.GetStreamTimes                 = GetStreamTimes;
+    pClient->toAddon->OnSystemSleep = OnSystemSleep;
+    pClient->toAddon->OnSystemWake = OnSystemWake;
+    pClient->toAddon->OnPowerSavingActivated = OnPowerSavingActivated;
+    pClient->toAddon->OnPowerSavingDeactivated = OnPowerSavingDeactivated;
+    pClient->toAddon->GetStreamTimes = GetStreamTimes;
 
-    pClient->toAddon.GetStreamReadChunkSize         = GetStreamReadChunkSize;
+    pClient->toAddon->GetStreamReadChunkSize = GetStreamReadChunkSize;
   };
 };
