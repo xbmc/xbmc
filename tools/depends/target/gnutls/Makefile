@@ -7,10 +7,6 @@ VERSION=3.6.14
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.xz
 
-ifeq ($(OS),darwin_embedded)
-CONFIGURE_OPTIONS = --disable-hardware-acceleration
-endif
-
 # configuration settings
 CONFIGURE=./configure --prefix=$(PREFIX) --disable-shared --without-p11-kit --disable-nls --with-included-unistring \
                       --with-included-libtasn1 --enable-local-libopts --disable-doc --disable-tests --disable-guile \
