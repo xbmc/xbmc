@@ -3,11 +3,8 @@ DEPS= ../../Makefile.include Makefile size-max.patch add-dl-as-private-lib.patch
 
 # lib name, version
 LIBNAME=gnutls
-VERSION=3.6.11.1
-ifeq ($(OS),darwin_embedded)
 VERSION=3.6.13
 BASE_URL := https://www.gnupg.org/ftp/gcrypt/gnutls/v3.6
-endif
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.xz
 
