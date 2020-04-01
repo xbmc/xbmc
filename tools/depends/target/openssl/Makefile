@@ -15,9 +15,9 @@ endif
 ifeq ($(OS), darwin_embedded)
   ifeq ($(TARGET_PLATFORM),appletvos)
     # Need to add "no-async" to avoid "'setcontext' is unavailable: not available on tvOS" error
-    CONFIGURE=./Configure iphoneos-cross no-shared zlib no-asm no-async --prefix=$(PREFIX)
+    CONFIGURE=./Configure iphoneos-cross no-shared zlib no-async --prefix=$(PREFIX)
   else
-    CONFIGURE=./Configure iphoneos-cross no-shared zlib no-asm --prefix=$(PREFIX)
+    CONFIGURE=./Configure iphoneos-cross no-shared zlib --prefix=$(PREFIX)
   endif
 endif
 ifeq ($(OS), osx)
