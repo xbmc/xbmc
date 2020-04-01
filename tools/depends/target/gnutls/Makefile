@@ -4,12 +4,12 @@ DEPS= ../../Makefile.include Makefile size-max.patch add-dl-as-private-lib.patch
 # lib name, version
 LIBNAME=gnutls
 VERSION=3.6.11.1
+ifeq ($(OS),darwin_embedded)
+VERSION=3.6.13
+BASE_URL := https://www.gnupg.org/ftp/gcrypt/gnutls/v3.6
+endif
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.xz
-
-ifeq ($(OS),darwin_embedded)
-CONFIGURE_OPTIONS = --disable-hardware-acceleration
-endif
 
 # configuration settings
 CONFIGURE=./configure --prefix=$(PREFIX) --disable-shared --without-p11-kit --disable-nls --with-included-unistring \
@@ -28,6 +28,10 @@ $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
 	cd $(PLATFORM); patch -p1 -i ../size-max.patch
 	cd $(PLATFORM); patch -p1 -i ../add-dl-as-private-lib.patch
+ifeq ($(OS),darwin_embedded)
+	# Apple CCAS requires stripping ; from comment block # to build successfully
+	cd $(PLATFORM); sed -ie "s|\(^# .*\)[;]\(.*\)|\1\2|g" lib/accelerated/aarch64/macosx/*.s
+endif
 	cd $(PLATFORM); $(AUTORECONF) -vif
 	cd $(PLATFORM); $(CONFIGURE)
 
