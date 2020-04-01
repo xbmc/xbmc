@@ -44,6 +44,22 @@ std::shared_ptr<CFileItem> CGUIEPGGridContainerModel::CreateGapItem(int iChannel
   return std::make_shared<CFileItem>(gapTag);
 }
 
+std::vector<std::shared_ptr<CPVREpgInfoTag>> CGUIEPGGridContainerModel::GetEPGTimeline(
+    int iChannel, const CDateTime& minEventEnd, const CDateTime& maxEventStart) const
+{
+  CDateTime min = minEventEnd - CDateTimeSpan(0, 0, MINSPERBLOCK, 0);
+  CDateTime max = maxEventStart + CDateTimeSpan(0, 0, MINSPERBLOCK, 0);
+
+  if (min < m_gridStart)
+    min = m_gridStart;
+
+  if (max > m_gridEnd)
+    max = m_gridEnd;
+
+  return m_channelItems[iChannel]->GetPVRChannelInfoTag()->GetEPGTimeline(m_gridStart, m_gridEnd,
+                                                                          min, max);
+}
+
 void CGUIEPGGridContainerModel::Initialize(const std::unique_ptr<CFileItemList>& items,
                                            const CDateTime& gridStart,
                                            const CDateTime& gridEnd,
@@ -138,8 +154,8 @@ std::shared_ptr<CFileItem> CGUIEPGGridContainerModel::CreateEpgTags(int iChannel
   const int firstBlock = iBlock < m_firstActiveBlock ? iBlock : m_firstActiveBlock;
   const int lastBlock = iBlock > m_lastActiveBlock ? iBlock : m_lastActiveBlock;
 
-  const auto tags = m_channelItems[iChannel]->GetPVRChannelInfoTag()->GetEPGTimeline(
-      m_gridStart, m_gridEnd, GetStartTimeForBlock(firstBlock), GetStartTimeForBlock(lastBlock));
+  const auto tags =
+      GetEPGTimeline(iChannel, GetStartTimeForBlock(firstBlock), GetStartTimeForBlock(lastBlock));
 
   epgTags.firstBlock = GetFirstEventBlock(tags.front());
   epgTags.lastBlock = GetLastEventBlock(tags.back());
@@ -197,8 +213,8 @@ std::shared_ptr<CFileItem> CGUIEPGGridContainerModel::GetEpgTagsBefore(EpgTags& 
   if (lastBlock < 0)
     lastBlock = 0;
 
-  const auto tags = m_channelItems[iChannel]->GetPVRChannelInfoTag()->GetEPGTimeline(
-      m_gridStart, m_gridEnd, GetStartTimeForBlock(iBlock), GetStartTimeForBlock(lastBlock));
+  const auto tags =
+      GetEPGTimeline(iChannel, GetStartTimeForBlock(iBlock), GetStartTimeForBlock(lastBlock));
 
   if (epgTags.lastBlock == -1)
     epgTags.lastBlock = lastBlock;
@@ -251,8 +267,8 @@ std::shared_ptr<CFileItem> CGUIEPGGridContainerModel::GetEpgTagsAfter(EpgTags& e
   if (firstBlock >= GetLastBlock())
     firstBlock = GetLastBlock();
 
-  const auto tags = m_channelItems[iChannel]->GetPVRChannelInfoTag()->GetEPGTimeline(
-      m_gridStart, m_gridEnd, GetStartTimeForBlock(firstBlock), GetStartTimeForBlock(iBlock));
+  const auto tags =
+      GetEPGTimeline(iChannel, GetStartTimeForBlock(firstBlock), GetStartTimeForBlock(iBlock));
 
   if (epgTags.firstBlock == -1)
     epgTags.firstBlock = firstBlock;
@@ -505,8 +521,7 @@ bool CGUIEPGGridContainerModel::FreeProgrammeMemory(int firstChannel,
 
         (*it).second.tags.clear();
 
-        tags = m_channelItems[i]->GetPVRChannelInfoTag()->GetEPGTimeline(m_gridStart, m_gridEnd,
-                                                                         maxEnd, minStart);
+        tags = GetEPGTimeline(i, maxEnd, minStart);
         for (const auto& tag : tags)
           epgTags.tags.emplace_back(std::make_shared<CFileItem>(tag));
 

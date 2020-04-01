@@ -115,6 +115,9 @@ namespace PVR
     std::shared_ptr<CFileItem> CreateGapItem(int iChannel) const;
     std::shared_ptr<CFileItem> GetItem(int iChannel, int iBlock) const;
 
+    std::vector<std::shared_ptr<CPVREpgInfoTag>> GetEPGTimeline(
+        int iChannel, const CDateTime& minEventEnd, const CDateTime& maxEventStart) const;
+
     struct EpgTags
     {
       std::vector<std::shared_ptr<CFileItem>> tags;
