@@ -1,7 +1,4 @@
-set(SOURCES ProcessInfo.cpp
-            VideoBuffer.cpp)
-
-set(HEADERS ProcessInfo.h
-            VideoBuffer.h)
+set(SOURCES ProcessInfo.cpp)
+set(HEADERS ProcessInfo.h)
 
 core_add_library(process)

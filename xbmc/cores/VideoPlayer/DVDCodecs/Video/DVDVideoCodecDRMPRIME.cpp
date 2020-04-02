@@ -9,9 +9,9 @@
 #include "DVDVideoCodecDRMPRIME.h"
 
 #include "ServiceBroker.h"
+#include "cores/VideoPlayer/Buffers/VideoBufferDRMPRIME.h"
 #include "cores/VideoPlayer/DVDCodecs/DVDCodecs.h"
 #include "cores/VideoPlayer/DVDCodecs/DVDFactoryCodec.h"
-#include "cores/VideoPlayer/Process/gbm/VideoBufferDRMPRIME.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "settings/lib/Setting.h"

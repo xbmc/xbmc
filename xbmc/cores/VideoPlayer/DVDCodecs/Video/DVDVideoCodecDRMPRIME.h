@@ -8,9 +8,9 @@
 
 #pragma once
 
+#include "cores/VideoPlayer/Buffers/VideoBuffer.h"
 #include "cores/VideoPlayer/DVDCodecs/Video/DVDVideoCodec.h"
 #include "cores/VideoPlayer/DVDStreamInfo.h"
-#include "cores/VideoPlayer/Process/VideoBuffer.h"
 
 #include <memory>
 
