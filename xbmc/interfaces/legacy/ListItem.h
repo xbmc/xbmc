@@ -411,6 +411,28 @@ namespace XBMCAddon
 #ifdef DOXYGEN_SHOULD_USE_THIS
       ///
       /// \ingroup python_xbmcgui_listitem
+      /// @brief \python_func{ isFolder() }
+      ///-----------------------------------------------------------------------
+      /// Returns whether the item is a folder or not.
+      ///
+      ///-----------------------------------------------------------------------
+      /// @python_v20 New function added.
+      ///
+      /// **Example:**
+      /// ~~~~~~~~~~~~~{.py}
+      /// ...
+      /// isFolder = listitem.isFolder()
+      /// ...
+      /// ~~~~~~~~~~~~~
+      ///
+      isFolder();
+#else
+      bool isFolder() const;
+#endif
+
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_xbmcgui_listitem
       /// @brief \python_func{ getUniqueID(key) }
       /// Returns a listitem uniqueID as a string, similar to an infolabel.\n
       ///

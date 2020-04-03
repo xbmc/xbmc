@@ -252,6 +252,12 @@ namespace XBMCAddon
       return item->GetArt(key);
     }
 
+    bool ListItem::isFolder() const
+    {
+      XBMCAddonUtils::GuiLock lock(languageHook, m_offscreen);
+      return item->m_bIsFolder;
+    }
+
     String ListItem::getUniqueID(const char* key)
     {
       XBMCAddonUtils::GuiLock lock(languageHook, m_offscreen);
