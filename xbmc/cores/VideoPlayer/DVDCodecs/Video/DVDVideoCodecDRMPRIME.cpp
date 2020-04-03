@@ -35,6 +35,8 @@ using namespace KODI::WINDOWING::GBM;
 namespace
 {
 
+constexpr const char* SETTING_VIDEOPLAYER_USEPRIMEDECODERFORHW{"videoplayer.useprimedecoderforhw"};
+
 static void ReleaseBuffer(void* opaque, uint8_t* data)
 {
   CVideoBufferDMA* buffer = static_cast<CVideoBufferDMA*>(opaque);
@@ -102,7 +104,10 @@ void CDVDVideoCodecDRMPRIME::Register()
 
 static bool IsSupportedHwFormat(const enum AVPixelFormat fmt)
 {
-  return fmt == AV_PIX_FMT_DRM_PRIME;
+  bool hw = CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+      SETTING_VIDEOPLAYER_USEPRIMEDECODERFORHW);
+
+  return fmt == AV_PIX_FMT_DRM_PRIME && hw;
 }
 
 static bool IsSupportedSwFormat(const enum AVPixelFormat fmt)
@@ -112,6 +117,10 @@ static bool IsSupportedSwFormat(const enum AVPixelFormat fmt)
 
 static const AVCodecHWConfig* FindHWConfig(const AVCodec* codec)
 {
+  if (!CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+          SETTING_VIDEOPLAYER_USEPRIMEDECODERFORHW))
+    return nullptr;
+
   const AVCodecHWConfig* config = nullptr;
   for (int n = 0; (config = avcodec_get_hw_config(codec, n)); n++)
   {
