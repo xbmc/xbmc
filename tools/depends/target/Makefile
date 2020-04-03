@@ -14,7 +14,7 @@ DEPENDS = \
 	libplist libcec libbluray tinyxml \
 	taglib libusb libnfs meson-cross-file \
 	pythonmodule-pil pythonmodule-pycryptodome pythonmodule-setuptools \
-	libxslt ffmpeg crossguid \
+	libxslt ffmpeg crossguid libudfread \
 	libdvdread libdvdnav libdvdcss p8-platform flatbuffers dav1d
 
 ifeq ($(ENABLE_GPLV3),yes)
