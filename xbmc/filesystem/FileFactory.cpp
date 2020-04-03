@@ -56,7 +56,7 @@
 #include "PluginFile.h"
 #include "SpecialProtocolFile.h"
 #include "MultiPathFile.h"
-#if defined(HAS_UDF)
+#if defined(HAS_UDFREAD)
 #include "UDFFile.h"
 #endif
 #include "ImageFile.h"
@@ -136,7 +136,7 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
   else if (url.IsProtocol("iso9660"))
     return new CISO9660File();
 #endif
-#if defined(HAS_UDF)
+#if defined(HAS_UDFREAD)
   else if(url.IsProtocol("udf"))
     return new CUDFFile();
 #endif

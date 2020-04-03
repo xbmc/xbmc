@@ -25,7 +25,7 @@
 #include "FTPDirectory.h"
 #include "HTTPDirectory.h"
 #include "DAVDirectory.h"
-#if defined(HAS_UDF)
+#if defined(HAS_UDFREAD)
 #include "UDFDirectory.h"
 #endif
 #include "utils/log.h"
@@ -135,7 +135,7 @@ IDirectory* CDirectoryFactory::Create(const CURL& url)
 #if defined(HAS_ISO9660PP)
   if (url.IsProtocol("iso9660")) return new CISO9660Directory();
 #endif
-#if defined(HAS_UDF)
+#if defined(HAS_UDFREAD)
   if (url.IsProtocol("udf")) return new CUDFDirectory();
 #endif
   if (url.IsProtocol("plugin")) return new CPluginDirectory();

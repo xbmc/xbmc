@@ -130,10 +130,12 @@ if(ISO9660PP_FOUND)
                       ISO9660File.h)
 endif()
 
-if(UDF_FOUND)
-  list(APPEND SOURCES UDFDirectory.cpp
+if(UDFREAD_FOUND)
+  list(APPEND SOURCES UDFBlockInput.cpp
+                      UDFDirectory.cpp
                       UDFFile.cpp)
-  list(APPEND HEADERS UDFDirectory.h
+  list(APPEND HEADERS UDFBlockInput.h
+                      UDFDirectory.h
                       UDFFile.h)
 endif()
 
