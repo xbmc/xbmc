@@ -13,7 +13,6 @@
 #include "FileItem.h"
 #include "LangInfo.h"
 #include "ServiceBroker.h"
-#include "addons/kodi-addon-dev-kit/include/kodi/kodi_vfs_types.h"
 #include "addons/settings/AddonSettings.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "filesystem/Directory.h"

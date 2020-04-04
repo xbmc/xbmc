@@ -15,6 +15,7 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <stdarg.h>
+#include <time.h>
 
 #include "versions.h"
 #if defined(BUILD_KODI_ADDON)
@@ -23,7 +24,6 @@
 #include "filesystem/IFileTypes.h"
 #endif
 
-struct VFSDirEntry;
 struct __stat64;
 
 #ifdef _WIN32                   // windows
@@ -85,6 +85,24 @@ typedef struct AddonCB
   KODIGameLib_RegisterMe            GameLib_RegisterMe;
   KODIGameLib_UnRegisterMe          GameLib_UnRegisterMe;
 } AddonCB;
+
+struct VFSProperty
+{
+  char* name;
+  char* val;
+};
+
+struct VFSDirEntry
+{
+  char* label;             //!< item label
+  char* title;             //!< item title
+  char* path;              //!< item path
+  unsigned int num_props;  //!< Number of properties attached to item
+  VFSProperty* properties; //!< Properties
+  time_t date_time;        //!< file creation date & time
+  bool folder;             //!< Item is a folder
+  uint64_t size;           //!< Size of file represented by item
+};
 
 namespace ADDON
 {
