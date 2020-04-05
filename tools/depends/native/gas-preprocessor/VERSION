@@ -1,0 +1,4 @@
+LIBNAME=gas-preprocessor
+BASE_URL=https://github.com/libav/gas-preprocessor
+COMMIT=d09971fad329d32df19f5bbafe88cf2f0ed04ed7
+COMMIT_DATE=2019/10/04
