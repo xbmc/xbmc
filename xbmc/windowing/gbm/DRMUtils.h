@@ -51,7 +51,11 @@ struct plane : drm_object
   void SetFormat(uint32_t newFormat) { format = newFormat; }
   uint32_t GetFormat() { return format; }
 
+  bool SupportsFormatAndModifier(uint32_t format, uint64_t modifier);
+
 private:
+  bool SupportsFormat(uint32_t format);
+
   uint32_t format{DRM_FORMAT_XRGB8888};
 };
 

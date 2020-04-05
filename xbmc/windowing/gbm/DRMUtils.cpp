@@ -934,3 +934,48 @@ std::string CDRMUtils::FourCCToString(uint32_t fourcc)
 
   return ss.str();
 }
+
+bool plane::SupportsFormat(uint32_t format)
+{
+  for (uint32_t i = 0; i < plane->count_formats; i++)
+    if (plane->formats[i] == format)
+      return true;
+
+  return false;
+}
+
+bool plane::SupportsFormatAndModifier(uint32_t format, uint64_t modifier)
+{
+  if (modifier == DRM_FORMAT_MOD_LINEAR)
+  {
+    if (!SupportsFormat(format))
+    {
+      CLog::Log(LOGDEBUG, "plane::{} - format not supported: {}", __FUNCTION__,
+                CDRMUtils::FourCCToString(format));
+      return false;
+    }
+  }
+  else
+  {
+    auto formatModifiers = &modifiers_map[format];
+    if (formatModifiers->empty())
+    {
+      CLog::Log(LOGDEBUG, "plane::{} - format not supported: {}", __FUNCTION__,
+                CDRMUtils::FourCCToString(format));
+      return false;
+    }
+
+    auto formatModifier = std::find(formatModifiers->begin(), formatModifiers->end(), modifier);
+    if (formatModifier == formatModifiers->end())
+    {
+      CLog::Log(LOGDEBUG, "plane::{} - modifier ({:#x}) not supported for format ({})",
+                __FUNCTION__, modifier, CDRMUtils::FourCCToString(format));
+      return false;
+    }
+  }
+
+  CLog::Log(LOGDEBUG, "plane::{} - found plane format ({}) and modifier ({:#x})", __FUNCTION__,
+            CDRMUtils::FourCCToString(format), modifier);
+
+  return true;
+}
