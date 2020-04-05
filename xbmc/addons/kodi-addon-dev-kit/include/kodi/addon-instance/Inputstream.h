@@ -349,10 +349,6 @@ extern "C"
     // IPosTime
     bool(__cdecl* pos_time)(const AddonInstance_InputStream* instance, int ms);
 
-    // Seekable (mandatory)
-    bool(__cdecl* can_pause_stream)(const AddonInstance_InputStream* instance);
-    bool(__cdecl* can_seek_stream)(const AddonInstance_InputStream* instance);
-
     int(__cdecl* read_stream)(const AddonInstance_InputStream* instance,
                               uint8_t* buffer,
                               unsigned int bufferSize);
@@ -566,20 +562,6 @@ public:
   virtual bool SeekChapter(int ch) { return false; };
 
   /*!
-     * Check if the backend support pausing the currently playing stream
-     * This will enable/disable the pause button in Kodi based on the return value
-     * @return false if the InputStream addon/backend does not support pausing, true if possible
-     */
-  virtual bool CanPauseStream() { return false; }
-
-  /*!
-     * Check if the backend supports seeking for the currently playing stream
-     * This will enable/disable the rewind/forward buttons in Kodi based on the return value
-     * @return false if the InputStream addon/backend does not support seeking, true if possible
-     */
-  virtual bool CanSeekStream() { return false; }
-
-  /*!
      * Read from an open stream.
      * @param buffer The buffer to store the data in.
      * @param bufferSize The amount of bytes to read.
@@ -698,9 +680,6 @@ private:
 
     m_instanceData->toAddon.get_times = ADDON_GetTimes;
     m_instanceData->toAddon.pos_time = ADDON_PosTime;
-
-    m_instanceData->toAddon.can_pause_stream = ADDON_CanPauseStream;
-    m_instanceData->toAddon.can_seek_stream = ADDON_CanSeekStream;
 
     m_instanceData->toAddon.read_stream = ADDON_ReadStream;
     m_instanceData->toAddon.seek_stream = ADDON_SeekStream;
@@ -861,18 +840,6 @@ private:
   {
     return static_cast<CInstanceInputStream*>(instance->toAddon.addonInstance)->SeekChapter(ch);
   }
-
-  // Seekable (mandatory)
-  inline static bool ADDON_CanPauseStream(const AddonInstance_InputStream* instance)
-  {
-    return static_cast<CInstanceInputStream*>(instance->toAddon.addonInstance)->CanPauseStream();
-  }
-
-  inline static bool ADDON_CanSeekStream(const AddonInstance_InputStream* instance)
-  {
-    return static_cast<CInstanceInputStream*>(instance->toAddon.addonInstance)->CanSeekStream();
-  }
-
 
   inline static int ADDON_ReadStream(const AddonInstance_InputStream* instance,
                                      uint8_t* buffer,
