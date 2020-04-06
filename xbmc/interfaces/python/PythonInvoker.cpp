@@ -327,7 +327,7 @@ bool CPythonInvoker::execute(const std::string& script, const std::vector<std::w
         return false;
       }
 #endif
-      FILE* fp = _Py_fopen(nativeFilename.c_str(), "r");
+      FILE* fp = _Py_fopen(nativeFilename.c_str(), "rb");
 
       if (fp != NULL)
       {
