@@ -10,8 +10,8 @@ if(PKG_CONFIG_FOUND)
 endif()
 
 find_program(PYTHON_EXECUTABLE python3 ONLY_CMAKE_FIND_ROOT_PATH)
-find_library(PYTHON_LIBRARY NAMES python3.7 python3.6 python3.5 PATHS ${PC_PYTHON_LIBDIR})
-find_path(PYTHON_INCLUDE_DIR NAMES Python.h PATHS ${PC_PYTHON_INCLUDE_DIRS} PATH_SUFFIXES python3.7 python3.6 python3.5)
+find_library(PYTHON_LIBRARY NAMES python3.8 python3.7 python3.6 python3.5 PATHS ${PC_PYTHON_LIBDIR})
+find_path(PYTHON_INCLUDE_DIR NAMES Python.h PATHS ${PC_PYTHON_INCLUDE_DIRS} PATH_SUFFIXES python3.8 python3.7 python3.6 python3.5)
 
 if(KODI_DEPENDSBUILD)
   find_library(FFI_LIBRARY ffi REQUIRED)
