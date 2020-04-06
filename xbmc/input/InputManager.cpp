@@ -548,7 +548,8 @@ bool CInputManager::HandleKey(const CKey& key)
 
         // If the key pressed is shift-A to shift-Z set usekeyboard to true.
         // This causes the keypress to be used for list navigation.
-        if (control->IsContainer() && key.GetModifiers() == CKey::MODIFIER_SHIFT && key.GetVKey() >= XBMCVK_A && key.GetVKey() <= XBMCVK_Z)
+        if (control->IsContainer() && key.GetModifiers() == CKey::MODIFIER_SHIFT &&
+            key.GetUnicode())
           useKeyboard = true;
       }
     }
