@@ -14,6 +14,7 @@
 #include "cores/VideoPlayer/VideoRenderers/LinuxRendererGL.h"
 #include "rendering/gl/ScreenshotSurfaceGL.h"
 #include "utils/BufferObjectFactory.h"
+#include "utils/DMAHeapBufferObject.h"
 #include "utils/UDMABufferObject.h"
 #include "utils/log.h"
 
@@ -51,6 +52,9 @@ bool CWinSystemWaylandEGLContextGL::InitWindowSystem()
   CBufferObjectFactory::ClearBufferObjects();
 #if defined(HAVE_LINUX_MEMFD) && defined(HAVE_LINUX_UDMABUF)
   CUDMABufferObject::Register();
+#endif
+#if defined(HAVE_LINUX_DMA_HEAP)
+  CDMAHeapBufferObject::Register();
 #endif
 
   CScreenshotSurfaceGL::Register();
