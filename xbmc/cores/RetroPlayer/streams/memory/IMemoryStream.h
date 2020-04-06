@@ -49,7 +49,7 @@ namespace RETRO
      * \brief Initialize memory stream
      *
      * \param frameSize The size of the serialized memory state
-     * \param maxFrameCount The maximum number of frames this steam can hold
+     * \param maxFrameCount The maximum number of frames this stream can hold
      */
     virtual void Init(size_t frameSize, uint64_t maxFrameCount) = 0;
 
