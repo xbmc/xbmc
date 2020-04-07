@@ -1,6 +1,5 @@
-diff -Naur a/lib/driver/image/bincue.c b/lib/driver/image/bincue.c
---- a/lib/driver/image/bincue.c	2018-12-30 15:44:21.000000000 -0800
-+++ b/lib/driver/image/bincue.c	2020-03-05 09:27:25.906767475 -0800
+--- a/lib/driver/image/bincue.c
++++ b/lib/driver/image/bincue.c
 @@ -1,3 +1,4 @@
 +
  /*
@@ -15,9 +14,8 @@ diff -Naur a/lib/driver/image/bincue.c b/lib/driver/image/bincue.c
    unsigned int i;
    glob_t globbuf;
    globbuf.gl_offs = 0;
-diff -Naur a/lib/driver/image/cdrdao.c b/lib/driver/image/cdrdao.c
---- a/lib/driver/image/cdrdao.c	2018-08-12 09:33:48.000000000 -0700
-+++ b/lib/driver/image/cdrdao.c	2020-03-05 09:28:25.873265269 -0800
+--- a/lib/driver/image/cdrdao.c
++++ b/lib/driver/image/cdrdao.c
 @@ -1149,7 +1149,7 @@
  {
    char **drives = NULL;
@@ -27,9 +25,8 @@ diff -Naur a/lib/driver/image/cdrdao.c b/lib/driver/image/cdrdao.c
    unsigned int i;
    glob_t globbuf;
    globbuf.gl_offs = 0;
-diff -Naur a/lib/driver/image/nrg.c b/lib/driver/image/nrg.c
---- a/lib/driver/image/nrg.c	2018-08-12 09:33:48.000000000 -0700
-+++ b/lib/driver/image/nrg.c	2020-03-05 09:27:59.899482793 -0800
+--- a/lib/driver/image/nrg.c
++++ b/lib/driver/image/nrg.c
 @@ -1167,7 +1167,7 @@
  {
    char **drives = NULL;
