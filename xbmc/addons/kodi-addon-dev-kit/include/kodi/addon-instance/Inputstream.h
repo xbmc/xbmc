@@ -598,7 +598,9 @@ public:
   virtual int GetBlockSize() { return 0; }
 
   /*!
-     * @brief Notify the InputStream addon that Kodi (un)paused the currently playing stream
+     * @brief Notify the InputStream addon that Kodi (un)paused the currently playing stream.
+     * Only called when an inpustream DOES NOT have its own demuxer.
+     * @param time The time that Kodi (un)paused the stream
      */
   virtual void PauseStream(double time) {}
 
