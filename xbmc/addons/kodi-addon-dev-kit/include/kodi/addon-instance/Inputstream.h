@@ -69,7 +69,7 @@ extern "C"
    */
   struct INPUTSTREAM
   {
-    static const unsigned int MAX_INFO_COUNT = 8;
+    static const unsigned int MAX_INFO_COUNT = 30;
 
     const char* m_strURL;
 
