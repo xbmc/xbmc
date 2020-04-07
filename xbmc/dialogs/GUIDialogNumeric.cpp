@@ -109,7 +109,7 @@ bool CGUIDialogNumeric::OnAction(const CAction &action)
     OnOK();
   else if (action.GetID() >= REMOTE_0 && action.GetID() <= REMOTE_9)
     OnNumber(action.GetID() - REMOTE_0);
-  else if (action.GetID() >= KEY_VKEY && action.GetID() < KEY_ASCII)
+  else if (action.GetID() >= KEY_VKEY && action.GetID() < KEY_UNICODE)
   {
     // input from the keyboard (vkey, not ascii)
     uint8_t b = action.GetID() & 0xFF;
@@ -124,7 +124,7 @@ bool CGUIDialogNumeric::OnAction(const CAction &action)
     else if (b == XBMCVK_ESCAPE)
       OnCancel();
   }
-  else if (action.GetID() >= KEY_ASCII) // FIXME make it KEY_UNICODE
+  else if (action.GetID() == KEY_UNICODE)
   { // input from the keyboard
     if (action.GetUnicode() == 10 || action.GetUnicode() == 13)
       OnOK(); // enter

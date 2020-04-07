@@ -602,7 +602,7 @@ bool CInputManager::HandleKey(const CKey& key)
             action = CAction(ACTION_PASTE);
           // If the unicode is non-zero the keypress is a non-printing character
           else if (key.GetUnicode())
-            action = CAction(key.GetAscii() | KEY_ASCII, key.GetUnicode());
+            action = CAction(KEY_UNICODE, key.GetUnicode());
           // The keypress is a non-printing character
           else
             action = CAction(key.GetVKey() | KEY_VKEY);

@@ -291,7 +291,7 @@ void CGUIBaseContainer::RenderItem(float posX, float posY, CGUIListItem *item, b
 
 bool CGUIBaseContainer::OnAction(const CAction &action)
 {
-  if (action.GetID() >= KEY_ASCII)
+  if (action.GetID() == KEY_UNICODE)
   {
     std::string letter;
     g_charsetConverter.wToUTF8({action.GetUnicode()}, letter);
