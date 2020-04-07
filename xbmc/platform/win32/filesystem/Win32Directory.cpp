@@ -96,7 +96,7 @@ bool CWin32Directory::GetDirectory(const CURL& url, CFileItemList &items)
     // so DIR_FLAG_NO_FILE_INFO flag is ignored
     KODI::TIME::FileTime fileTime;
     fileTime.lowDateTime = findData.ftLastWriteTime.dwLowDateTime;
-    fileTime.lowDateTime = findData.ftLastWriteTime.dwHighDateTime;
+    fileTime.highDateTime = findData.ftLastWriteTime.dwHighDateTime;
     KODI::TIME::FileTime localTime;
     if (KODI::TIME::FileTimeToLocalFileTime(&fileTime, &localTime) == TRUE)
       pItem->m_dateTime = localTime;
