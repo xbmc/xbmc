@@ -52,7 +52,7 @@ bool CContextMenuItem::Execute(const CFileItemPtr& item) const
 
 #ifdef HAS_PYTHON
   LanguageInvokerPtr invoker(new CContextItemAddonInvoker(&g_pythonParser, item));
-  return (CScriptInvocationManager::GetInstance().ExecuteAsync(m_library, invoker, addon) != -1);
+  return (CScriptInvocationManager::GetInstance().ExecuteAsync(m_library, invoker, addon, m_args) != -1);
 #else
   return false;
 #endif
@@ -66,7 +66,8 @@ bool CContextMenuItem::operator==(const CContextMenuItem& other) const
   return (IsGroup() == other.IsGroup())
       && (m_parent == other.m_parent)
       && (m_library == other.m_library)
-      && (m_addonId == other.m_addonId);
+      && (m_addonId == other.m_addonId)
+      && (m_args == other.m_args);
 }
 
 std::string CContextMenuItem::ToString() const
@@ -91,7 +92,7 @@ CContextMenuItem CContextMenuItem::CreateGroup(const std::string& label, const s
 }
 
 CContextMenuItem CContextMenuItem::CreateItem(const std::string& label, const std::string& parent,
-    const std::string& library, const std::string& condition, const std::string& addonId)
+    const std::string& library, const std::string& condition, const std::string& addonId, const std::vector<std::string>& args)
 {
   CContextMenuItem menuItem;
   menuItem.m_label = label;
@@ -99,5 +100,6 @@ CContextMenuItem CContextMenuItem::CreateItem(const std::string& label, const st
   menuItem.m_library = library;
   menuItem.m_visibilityCondition = condition;
   menuItem.m_addonId = addonId;
+  menuItem.m_args = args;
   return menuItem;
 }
