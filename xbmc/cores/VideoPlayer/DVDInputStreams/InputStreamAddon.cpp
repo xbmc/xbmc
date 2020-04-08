@@ -19,6 +19,7 @@
 #include "filesystem/SpecialProtocol.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
+#include "utils/log.h"
 
 CInputStreamProvider::CInputStreamProvider(ADDON::BinaryAddonBasePtr addonBase,
                                            KODI_HANDLE parentInstance)
@@ -137,6 +138,17 @@ bool CInputStreamAddon::Open()
     props.m_ListItemProperties[props.m_nCountInfoValues].m_strKey = pair.first.c_str();
     props.m_ListItemProperties[props.m_nCountInfoValues].m_strValue = pair.second.c_str();
     props.m_nCountInfoValues++;
+
+    if (props.m_nCountInfoValues >= STREAM_MAX_PROPERTY_COUNT)
+    {
+      CLog::Log(LOGERROR,
+                "CInputStreamAddon::%s - Hit max count of stream properties, "
+                "have %d, actual count: %d",
+                __func__,
+                STREAM_MAX_PROPERTY_COUNT,
+                propsMap.size());
+      break;
+    }
   }
 
   props.m_strURL = m_item.GetDynPath().c_str();

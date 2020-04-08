@@ -19,8 +19,10 @@
 
 #ifdef BUILD_KODI_ADDON
 #include "../DemuxPacket.h"
+#include "../InputStreamConstants.h"
 #else
 #include "cores/VideoPlayer/Interface/Addon/DemuxPacket.h"
+#include "cores/VideoPlayer/Interface/Addon/InputStreamConstants.h"
 #endif
 
 //Increment this level always if you add features which can lead to compile failures in the addon
@@ -69,8 +71,6 @@ extern "C"
    */
   struct INPUTSTREAM
   {
-    static const unsigned int MAX_INFO_COUNT = 30;
-
     const char* m_strURL;
 
     unsigned int m_nCountInfoValues;
@@ -78,7 +78,7 @@ extern "C"
     {
       const char* m_strKey;
       const char* m_strValue;
-    } m_ListItemProperties[MAX_INFO_COUNT];
+    } m_ListItemProperties[STREAM_MAX_PROPERTY_COUNT];
 
     const char* m_libFolder;
     const char* m_profileFolder;

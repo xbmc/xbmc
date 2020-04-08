@@ -28,3 +28,8 @@
  * ffmpeg to directly play a stream URL.
  */
 #define STREAM_PROPERTY_VALUE_INPUTSTREAMFFMPEG "inputstream.ffmpeg"
+
+/*!
+ * @brief Max number of properties that can be sent to an Inputstream addon
+ */
+#define STREAM_MAX_PROPERTY_COUNT 30
