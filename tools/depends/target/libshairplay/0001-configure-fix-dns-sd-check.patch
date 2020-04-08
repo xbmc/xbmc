@@ -8,11 +8,9 @@ Subject: [PATCH] [configure] - only check for dns_sd.h in case libdl was not
  configure.ac | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/configure.ac b/configure.ac
-index 5a4b8ad..682d74b 100644
 --- a/configure.ac
 +++ b/configure.ac
-@@ -19,7 +19,7 @@ LT_LIB_DLLOAD
+@@ -19,7 +19,7 @@
  
  # Checks for header files.
  AC_HEADER_STDC
@@ -21,6 +19,3 @@ index 5a4b8ad..682d74b 100644
  then
    AC_CHECK_HEADERS([dns_sd.h], [],
                     [AC_MSG_ERROR([Could not find dns_sd.h header, please install libavahi-compat-libdnssd-dev or equivalent.])])
--- 
-2.17.1
-
