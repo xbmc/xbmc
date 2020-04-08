@@ -25,7 +25,7 @@ typedef struct LCENTRY
 } LCENTRY;
 
 extern const std::array<struct LCENTRY, 185> g_iso639_1;
-extern const std::array<struct LCENTRY, 538> g_iso639_2;
+extern const std::array<struct LCENTRY, 539> g_iso639_2;
 
 struct ISO639
 {
@@ -735,7 +735,7 @@ const std::array<struct LCENTRY, 185> g_iso639_1 = {{
     {MAKECODE('\0', '\0', 'z', 'u'), "Zulu"},
 }};
 
-const std::array<struct LCENTRY, 538> g_iso639_2 = {{
+const std::array<struct LCENTRY, 539> g_iso639_2 = {{
     {MAKECODE('\0', 'a', 'b', 'k'), "Abkhaz"},
     {MAKECODE('\0', 'a', 'b', 'k'), "Abkhazian"},
     {MAKECODE('\0', 'a', 'c', 'e'), "Achinese"},
@@ -911,6 +911,7 @@ const std::array<struct LCENTRY, 538> g_iso639_2 = {{
     {MAKECODE('\0', 'n', 'd', 's'), "German, Low"},
     {MAKECODE('\0', 'g', 'm', 'h'), "German, Middle High (ca.1050-1500)"},
     {MAKECODE('\0', 'g', 'o', 'h'), "German, Old High (ca.750-1050)"},
+    {MAKECODE('\0', 'g', 's', 'w'), "German, Swiss German"},
     {MAKECODE('\0', 'g', 'e', 'm'), "Germanic (Other)"},
     {MAKECODE('\0', 'k', 'i', 'k'), "Gikuyu"},
     {MAKECODE('\0', 'g', 'i', 'l'), "Gilbertese"},
