@@ -50,9 +50,13 @@ bool CContextMenuItem::Execute(const CFileItemPtr& item) const
   if (!CServiceBroker::GetAddonMgr().GetAddon(m_addonId, addon))
     return false;
 
+  bool reuseLanguageInvoker = false;
+  if (addon->ExtraInfo().find("reuselanguageinvoker") != addon->ExtraInfo().end())
+    reuseLanguageInvoker = addon->ExtraInfo().at("reuselanguageinvoker") == "true";
+
 #ifdef HAS_PYTHON
   LanguageInvokerPtr invoker(new CContextItemAddonInvoker(&g_pythonParser, item));
-  return (CScriptInvocationManager::GetInstance().ExecuteAsync(m_library, invoker, addon, m_args) != -1);
+  return (CScriptInvocationManager::GetInstance().ExecuteAsync(m_library, invoker, addon, m_args, reuseLanguageInvoker) != -1);
 #else
   return false;
 #endif
