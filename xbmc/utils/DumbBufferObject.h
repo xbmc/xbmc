@@ -28,6 +28,7 @@ public:
   void DestroyBufferObject() override;
   uint8_t* GetMemory() override;
   void ReleaseMemory() override;
+  std::string GetName() const override { return "CDumbBufferObject"; }
 
 private:
   int m_device{-1};

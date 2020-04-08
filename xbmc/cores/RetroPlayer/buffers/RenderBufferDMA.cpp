@@ -11,6 +11,7 @@
 #include "ServiceBroker.h"
 #include "utils/BufferObject.h"
 #include "utils/EGLImage.h"
+#include "utils/log.h"
 #include "windowing/WinSystem.h"
 #include "windowing/linux/WinSystemEGL.h"
 
@@ -31,6 +32,8 @@ CRenderBufferDMA::CRenderBufferDMA(CRenderContext& context, int fourcc)
                              "specifically platforms that implement CWinSystemEGL");
 
   m_egl = std::make_unique<CEGLImage>(winSystemEGL->GetEGLDisplay());
+
+  CLog::Log(LOGDEBUG, "CRenderBufferDMA: using BufferObject type: {}", m_bo->GetName());
 }
 
 CRenderBufferDMA::~CRenderBufferDMA()
