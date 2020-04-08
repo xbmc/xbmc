@@ -8,17 +8,22 @@
 
 #include "BufferObjectFactory.h"
 
-std::vector<std::function<std::unique_ptr<CBufferObject>()>> CBufferObjectFactory::m_bufferObjects;
+std::list<std::function<std::unique_ptr<CBufferObject>()>> CBufferObjectFactory::m_bufferObjects;
 
 std::unique_ptr<CBufferObject> CBufferObjectFactory::CreateBufferObject()
 {
-  return m_bufferObjects.back()();
+  for (const auto bufferObject : m_bufferObjects)
+  {
+    return bufferObject();
+  }
+
+  return nullptr;
 }
 
 void CBufferObjectFactory::RegisterBufferObject(
     std::function<std::unique_ptr<CBufferObject>()> createFunc)
 {
-  m_bufferObjects.emplace_back(createFunc);
+  m_bufferObjects.emplace_front(createFunc);
 }
 
 void CBufferObjectFactory::ClearBufferObjects()
