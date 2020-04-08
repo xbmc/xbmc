@@ -291,9 +291,11 @@ void CGUIBaseContainer::RenderItem(float posX, float posY, CGUIListItem *item, b
 
 bool CGUIBaseContainer::OnAction(const CAction &action)
 {
-  if (action.GetID() >= KEY_ASCII)
+  if (action.GetID() == KEY_UNICODE)
   {
-    OnJumpLetter((char)(action.GetID() & 0xff));
+    std::string letter;
+    g_charsetConverter.wToUTF8({action.GetUnicode()}, letter);
+    OnJumpLetter(std::move(letter));
     return true;
   }
   // stop the timer on any other action
@@ -557,12 +559,12 @@ void CGUIBaseContainer::OnPrevLetter()
   }
 }
 
-void CGUIBaseContainer::OnJumpLetter(char letter, bool skip /*=false*/)
+void CGUIBaseContainer::OnJumpLetter(std::string letter, bool skip /*=false*/)
 {
   if (m_matchTimer.GetElapsedMilliseconds() < letter_match_timeout)
-    m_match.push_back(letter);
+    m_match += letter;
   else
-    m_match = StringUtils::Format("%c", letter);
+    m_match = letter;
 
   m_matchTimer.StartZero();
 
@@ -586,8 +588,11 @@ void CGUIBaseContainer::OnJumpLetter(char letter, bool skip /*=false*/)
     }
     i = (i+1) % m_items.size();
   } while (i != offset);
+
   // no match found - repeat with a single letter
-  if (m_match.size() > 1)
+  std::wstring wmatch;
+  g_charsetConverter.utf8ToW(m_match, wmatch);
+  if (wmatch.length() > 1)
   {
     m_match.clear();
     OnJumpLetter(letter, true);

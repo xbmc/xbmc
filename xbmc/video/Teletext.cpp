@@ -519,7 +519,7 @@ bool CTeletextDecoder::HandleAction(const CAction &action)
     PageInput(action.GetID() - REMOTE_0);
     return true;
   }
-  else if (action.GetID() >= KEY_ASCII) // FIXME make it KEY_UNICODE
+  else if (action.GetID() == KEY_UNICODE)
   { // input from the keyboard
     if (action.GetUnicode() >= 48 && action.GetUnicode() < 58)
     {
