@@ -89,7 +89,7 @@ extern "C"
    */
   struct INPUTSTREAM_IDS
   {
-    static const unsigned int MAX_STREAM_COUNT = 32;
+    static const unsigned int MAX_STREAM_COUNT = 256;
     unsigned int m_streamCount;
     unsigned int m_streamIds[MAX_STREAM_COUNT];
   };
