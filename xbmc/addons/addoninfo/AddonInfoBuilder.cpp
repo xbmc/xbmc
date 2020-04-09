@@ -579,7 +579,6 @@ bool CAddonInfoBuilder::PlatformSupportsAddon(const AddonInfoPtr& addon)
 #endif
 #elif defined(TARGET_FREEBSD)
     "freebsd",
-    "linux",
 #elif defined(TARGET_LINUX)
     "linux",
 #elif defined(TARGET_WINDOWS_DESKTOP)
