@@ -535,7 +535,7 @@ bool CBitstreamConverter::Convert(uint8_t *pData, int iSize)
         if (m_convert_bitstream)
         {
           // convert demuxer packet from bitstream to bytestream (AnnexB)
-          int bytestream_size = 0;
+          uint32_t bytestream_size = 0;
           uint8_t *bytestream_buff = NULL;
 
           BitstreamConvert(demuxer_content, demuxer_bytes, &bytestream_buff, &bytestream_size);
@@ -868,7 +868,7 @@ bool CBitstreamConverter::IsSlice(uint8_t unit_type)
   }
 }
 
-bool CBitstreamConverter::BitstreamConvert(uint8_t* pData, int iSize, uint8_t **poutbuf, int *poutbuf_size)
+bool CBitstreamConverter::BitstreamConvert(uint8_t* pData, int iSize, uint8_t **poutbuf, uint32_t *poutbuf_size)
 {
   // based on h264_mp4toannexb_bsf.c (ffmpeg)
   // which is Copyright (c) 2007 Benoit Fouet <benoit.fouet@free.fr>
@@ -878,7 +878,7 @@ bool CBitstreamConverter::BitstreamConvert(uint8_t* pData, int iSize, uint8_t **
   uint8_t *buf = pData;
   uint32_t buf_size = iSize;
   uint8_t  unit_type, nal_sps, nal_pps, nal_sei;
-  int32_t  nal_size;
+  uint32_t  nal_size;
   uint32_t cumul_size = 0;
   const uint8_t *buf_end = buf + buf_size;
 
@@ -916,7 +916,7 @@ bool CBitstreamConverter::BitstreamConvert(uint8_t* pData, int iSize, uint8_t **
         unit_type = (*buf >> 1) & 0x3f;
     }
 
-    if (buf + nal_size > buf_end || nal_size <= 0)
+    if (nal_size > (buf_end - buf) || nal_size == 0)
       goto fail;
 
     // Don't add sps/pps if the unit already contain them
@@ -956,7 +956,7 @@ fail:
 }
 
 void CBitstreamConverter::BitstreamAllocAndCopy(uint8_t** poutbuf,
-                                                int* poutbuf_size,
+                                                uint32_t* poutbuf_size,
                                                 const uint8_t* sps_pps,
                                                 uint32_t sps_pps_size,
                                                 const uint8_t* in,
