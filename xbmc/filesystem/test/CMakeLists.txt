@@ -1,6 +1,7 @@
 set(SOURCES TestDirectory.cpp
             TestFile.cpp
             TestFileFactory.cpp
+            TestHTTPDirectory.cpp
             TestZipFile.cpp
             TestZipManager.cpp)
 
