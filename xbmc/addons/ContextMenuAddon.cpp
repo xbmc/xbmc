@@ -87,10 +87,17 @@ void CContextMenuAddon::ParseMenu(
     if (StringUtils::IsNaturalNumber(label))
       label = g_localizeStrings.GetAddonString(ID(), atoi(label.c_str()));
 
+    std::vector<std::string> args;
+    args.push_back(ID());
+ 
+    std::string arg = element.second.GetValue("@args").asString();
+    if (!arg.empty())
+      args.push_back(arg);
+
     if (!label.empty() && !library.empty() && !visCondition.empty())
     {
       auto menu = CContextMenuItem::CreateItem(label, menuId,
-          URIUtils::AddFileToFolder(Path(), library), visCondition, ID());
+          URIUtils::AddFileToFolder(Path(), library), visCondition, ID(), args);
       m_items.push_back(menu);
     }
   }
