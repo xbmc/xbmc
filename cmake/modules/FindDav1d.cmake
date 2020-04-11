@@ -36,6 +36,8 @@ if(ENABLE_INTERNAL_DAV1D)
   list(GET DAV1D_VER 0 DAV1D_VER)
   string(SUBSTRING "${DAV1D_VER}" 8 -1 DAV1D_VER)
 
+  string(REGEX MATCH "SHA256=[^ ;]*" DAV1D_SHA256 "${VER}")
+
   # allow user to override the download URL with a local tarball
   # needed for offline build envs
   if(DAV1D_URL)
@@ -54,6 +56,7 @@ if(ENABLE_INTERNAL_DAV1D)
 
   externalproject_add(dav1d
                       URL ${DAV1D_URL}
+                      URL_HASH ${DAV1D_SHA256}
                       DOWNLOAD_NAME dav1d-${DAV1D_VER}.tar.gz
                       DOWNLOAD_DIR ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/download
                       PREFIX ${CORE_BUILD_DIR}/dav1d
