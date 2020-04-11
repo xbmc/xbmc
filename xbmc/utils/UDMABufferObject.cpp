@@ -11,7 +11,7 @@
 #include "utils/BufferObjectFactory.h"
 #include "utils/log.h"
 
-#include <drm/drm_fourcc.h>
+#include <drm_fourcc.h>
 #include <linux/udmabuf.h>
 #include <sys/ioctl.h>
 #include <sys/mman.h>
