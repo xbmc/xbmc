@@ -17,6 +17,8 @@ if(ENABLE_INTERNAL_FSTRCMP)
   list(GET FSTRCMP_VER 0 FSTRCMP_VER)
   string(SUBSTRING "${FSTRCMP_VER}" 8 -1 FSTRCMP_VER)
 
+  string(REGEX MATCH "SHA256=[^ ;]*" FSTRCMP_SHA256 "${VER}")
+
   # allow user to override the download URL with a local tarball
   # needed for offline build envs
   if(FSTRCMP_URL)
@@ -32,6 +34,7 @@ if(ENABLE_INTERNAL_FSTRCMP)
   set(FSTRCMP_INCLUDE_DIR ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/include)
   externalproject_add(fstrcmp
                       URL ${FSTRCMP_URL}
+                      URL_HASH ${FSTRCMP_SHA256}
                       DOWNLOAD_DIR ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/download
                       PREFIX ${CORE_BUILD_DIR}/fstrcmp
                       CONFIGURE_COMMAND autoreconf -vif && ./configure --prefix ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}

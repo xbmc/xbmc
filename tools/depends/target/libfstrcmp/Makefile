@@ -4,6 +4,7 @@ DEPS= ../../Makefile.include Makefile
 # lib name, version
 LIBNAME=fstrcmp
 VERSION=0.7.D001
+SHA256=e4018e850f80700acee8da296e56e15b1eef711ab15157e542e7d7e1237c3476
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
 
