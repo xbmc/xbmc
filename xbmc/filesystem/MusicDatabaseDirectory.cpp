@@ -275,6 +275,7 @@ bool CMusicDatabaseDirectory::ContainsSongs(const std::string &path)
   if (type == MUSICDATABASEDIRECTORY::NODE_TYPE_ALBUM_RECENTLY_PLAYED_SONGS) return true;
   if (type == MUSICDATABASEDIRECTORY::NODE_TYPE_ALBUM_TOP100_SONGS) return true;
   if (type == MUSICDATABASEDIRECTORY::NODE_TYPE_SONG_TOP100) return true;
+  if (type == MUSICDATABASEDIRECTORY::NODE_TYPE_DISC) return true;
   return false;
 }
 
