@@ -13,7 +13,7 @@ if(PKG_CONFIG_FOUND)
   pkg_check_modules(PC_DAV1D dav1d QUIET)
 endif()
 
-find_library(DAV1D_LIBRARY NAMES dav1d
+find_library(DAV1D_LIBRARY NAMES dav1d libdav1d
                            PATHS ${PC_DAV1D_LIBDIR})
 
 find_path(DAV1D_INCLUDE_DIR NAMES dav1d/dav1d.h
