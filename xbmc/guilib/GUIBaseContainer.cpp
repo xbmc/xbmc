@@ -93,6 +93,9 @@ void CGUIBaseContainer::Process(unsigned int currentTime, CDirtyRegionList &dirt
 
   UpdateScrollOffset(currentTime);
 
+  if (m_scroller.IsScrolling())
+    MarkDirtyRegion();
+
   int offset = (int)floorf(m_scroller.GetValue() / m_layout->Size(m_orientation));
 
   int cacheBefore, cacheAfter;
