@@ -4,6 +4,7 @@ DEPS = Makefile 0001-remove_custom_cxx_flags.patch
 # lib name, version
 LIBNAME=rapidjson
 VERSION=1.1.0
+SHA256=bf7ced29704a1e696fbccf2a2b4ea068e7774fa37f6d7dd4039d0787f8bed98e
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
 
