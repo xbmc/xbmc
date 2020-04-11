@@ -1,4 +1,4 @@
 LIBNAME=libdvdread
 BASE_URL=https://github.com/xbmc/libdvdread
 VERSION=6.0.0-Leia-Alpha-3
-
+SHA256=a30b6aa0aad0f2c505bc77948af2d5531a80b6e68112addb4c123fca24d5d3bf

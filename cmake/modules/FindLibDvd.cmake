@@ -59,6 +59,8 @@ else()
     string(SUBSTRING "${${dvdlib}_BASE_URL}" 9 -1 ${dvdlib}_BASE_URL)
     string(TOUPPER ${dvdlib} DVDLIB)
 
+    string(REGEX MATCH "SHA256=[^ ;]*" ${DVDLIB}_SHA256 "${VER}")
+
     # allow user to override the download URL with a local tarball
     # needed for offline build envs
     # allow upper and lowercase var name
@@ -100,6 +102,7 @@ else()
     if(NOT CORE_SYSTEM_NAME MATCHES windows)
       set(DVDCSS_LIBRARY ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/libdvd/lib/libdvdcss.a)
       ExternalProject_Add(dvdcss URL ${LIBDVDCSS_URL}
+                                  URL_HASH ${LIBDVDCSS_SHA256}
                                   DOWNLOAD_NAME libdvdcss-${libdvdcss_VER}.tar.gz
                                   DOWNLOAD_DIR ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/download
                                   PREFIX ${CORE_BUILD_DIR}/libdvd
@@ -142,6 +145,7 @@ else()
   if(NOT CORE_SYSTEM_NAME MATCHES windows)
     set(DVDREAD_LIBRARY ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/libdvd/lib/libdvdread.a)
     ExternalProject_Add(dvdread URL ${LIBDVDREAD_URL}
+                                URL_HASH ${LIBDVDREAD_SHA256}
                                 DOWNLOAD_NAME libdvdread-${libdvdread_VER}.tar.gz
                                 DOWNLOAD_DIR ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/download
                                 PREFIX ${CORE_BUILD_DIR}/libdvd
@@ -186,6 +190,7 @@ else()
   if(NOT CORE_SYSTEM_NAME MATCHES windows)
     set(DVDNAV_LIBRARY ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/libdvd/lib/libdvdnav.a)
     ExternalProject_Add(dvdnav URL ${LIBDVDNAV_URL}
+                                URL_HASH ${LIBDVDNAV_SHA256}
                                 DOWNLOAD_NAME libdvdnav-${libdvdnav_VER}.tar.gz
                                 DOWNLOAD_DIR ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/download
                                 PREFIX ${CORE_BUILD_DIR}/libdvd
