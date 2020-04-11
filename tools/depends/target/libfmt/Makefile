@@ -4,6 +4,7 @@ DEPS = Makefile
 # lib name, version
 LIBNAME=fmt
 VERSION=6.1.2
+SHA256=1cafc80701b746085dddf41bd9193e6d35089e1c6ec1940e037fcb9c98f62365
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
 

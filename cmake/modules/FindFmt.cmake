@@ -14,8 +14,11 @@
 
 if(ENABLE_INTERNAL_FMT)
   include(ExternalProject)
-  file(STRINGS ${CMAKE_SOURCE_DIR}/tools/depends/target/libfmt/Makefile VER REGEX "^[ ]*VERSION[ ]*=.+$")
-  string(REGEX REPLACE "^[ ]*VERSION[ ]*=[ ]*" "" FMT_VERSION "${VER}")
+  file(STRINGS ${CMAKE_SOURCE_DIR}/tools/depends/target/libfmt/Makefile VER)
+  string(REGEX MATCH "VERSION=([^ ;]*)" FMT_VERSION "${VER}")
+  set(FMT_VERSION ${CMAKE_MATCH_1})
+
+  string(REGEX MATCH "SHA256=[^ ;]*" FMT_SHA256 "${VER}")
 
   # allow user to override the download URL with a local tarball
   # needed for offline build envs
@@ -36,6 +39,7 @@ if(ENABLE_INTERNAL_FMT)
   set(FMT_INCLUDE_DIR ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/include)
   externalproject_add(fmt
                       URL ${FMT_URL}
+                      URL_HASH ${FMT_SHA256}
                       DOWNLOAD_DIR ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/download
                       PREFIX ${CORE_BUILD_DIR}/fmt
                       CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}
