@@ -11,6 +11,8 @@
 #include <inttypes.h>
 #include <string.h>
 
+#define STREAMCRYPTO_VERSION_LEVEL 1
+
 #ifdef __cplusplus
 extern "C"
 {
@@ -23,6 +25,7 @@ extern "C"
       CRYPTO_KEY_SYSTEM_NONE = 0,
       CRYPTO_KEY_SYSTEM_WIDEVINE,
       CRYPTO_KEY_SYSTEM_PLAYREADY,
+      CRYPTO_KEY_SYSTEM_WISEPLAY,
       CRYPTO_KEY_SYSTEM_COUNT
     } m_CryptoKeySystem; /*!< @brief keysystem for encrypted media, KEY_SYSTEM_NONE for unencrypted media */
 

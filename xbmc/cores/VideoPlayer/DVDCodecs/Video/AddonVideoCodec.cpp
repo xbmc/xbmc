@@ -125,6 +125,9 @@ bool CAddonVideoCodec::CopyToInitData(VIDEOCODEC_INITDATA &initData, CDVDStreamI
     case CRYPTO_SESSION_SYSTEM_PLAYREADY:
       initData.cryptoInfo.m_CryptoKeySystem = CRYPTO_INFO::CRYPTO_KEY_SYSTEM_PLAYREADY;
       break;
+    case CRYPTO_SESSION_SYSTEM_WISEPLAY:
+      initData.cryptoInfo.m_CryptoKeySystem = CRYPTO_INFO::CRYPTO_KEY_SYSTEM_WISEPLAY;
+      break;
     default:
       return false;
     }

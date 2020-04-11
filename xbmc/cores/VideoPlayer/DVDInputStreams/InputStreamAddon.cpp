@@ -458,11 +458,11 @@ CDemuxStream* CInputStreamAddon::GetStream(int streamId) const
   if (stream.m_cryptoInfo.m_CryptoKeySystem != CRYPTO_INFO::CRYPTO_KEY_SYSTEM_NONE &&
     stream.m_cryptoInfo.m_CryptoKeySystem < CRYPTO_INFO::CRYPTO_KEY_SYSTEM_COUNT)
   {
-    static const CryptoSessionSystem map[] =
-    {
-      CRYPTO_SESSION_SYSTEM_NONE,
-      CRYPTO_SESSION_SYSTEM_WIDEVINE,
-      CRYPTO_SESSION_SYSTEM_PLAYREADY
+    static const CryptoSessionSystem map[] = {
+        CRYPTO_SESSION_SYSTEM_NONE,
+        CRYPTO_SESSION_SYSTEM_WIDEVINE,
+        CRYPTO_SESSION_SYSTEM_PLAYREADY,
+        CRYPTO_SESSION_SYSTEM_WISEPLAY,
     };
     demuxStream->cryptoSession = std::shared_ptr<DemuxCryptoSession>(new DemuxCryptoSession(
       map[stream.m_cryptoInfo.m_CryptoKeySystem], stream.m_cryptoInfo.m_CryptoSessionIdSize, stream.m_cryptoInfo.m_CryptoSessionId, stream.m_cryptoInfo.flags));
