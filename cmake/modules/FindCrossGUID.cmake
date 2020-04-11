@@ -5,6 +5,8 @@ if(ENABLE_INTERNAL_CROSSGUID)
   list(GET CGUID_VER 0 CGUID_VER)
   string(SUBSTRING "${CGUID_VER}" 8 -1 CGUID_VER)
 
+  string(REGEX MATCH "SHA256=[^ ;]*" CROSSGUID_SHA256 "${VER}")
+
   # allow user to override the download URL with a local tarball
   # needed for offline build envs
   if(CROSSGUID_URL)
@@ -24,6 +26,7 @@ if(ENABLE_INTERNAL_CROSSGUID)
   set(CROSSGUID_INCLUDE_DIR ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/include)
   externalproject_add(crossguid
                       URL ${CROSSGUID_URL}
+                      URL_HASH ${CROSSGUID_SHA256}
                       DOWNLOAD_DIR ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/download
                       PREFIX ${CORE_BUILD_DIR}/crossguid
                       CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}

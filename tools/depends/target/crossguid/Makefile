@@ -4,6 +4,7 @@ DEPS = Makefile
 # lib name, version
 LIBNAME=crossguid
 VERSION=8f399e8bd4
+SHA256=3d77d09a5df0de510aeeb940df4cb534787ddff3bb1828779753f5dfa1229d10
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
 
