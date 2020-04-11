@@ -311,6 +311,12 @@ namespace XBMCAddon
           if (!CGUIDialogNumeric::ShowAndGetIPAddress(value, heading))
             return emptyString;
         }
+        else if (inputtype == 4)
+        {
+          value = defaultt;
+          if (!CGUIDialogNumeric::ShowAndVerifyNewPassword(value))
+            return emptyString;
+        }
         else
         {
           value = defaultt;

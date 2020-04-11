@@ -492,19 +492,21 @@ constexpr int ALPHANUM_HIDE_INPUT{2};
       /// of a numeric keyboard around an input.
       ///
       /// @param type           integer - the type of numeric dialog.
-      /// | Param | Name                | Format                       |
-      /// |:-----:|:--------------------|:-----------------------------|
-      /// |  0    | ShowAndGetNumber    | (default format: #)
-      /// |  1    | ShowAndGetDate      | (default format: DD/MM/YYYY)
-      /// |  2    | ShowAndGetTime      | (default format: HH:MM)
-      /// |  3    | ShowAndGetIPAddress | (default format: #.#.#.#)
-      /// @param heading        string or unicode - dialog heading.
+      /// | Param | Name                     | Format                       |
+      /// |:-----:|:-------------------------|:-----------------------------|
+      /// |  0    | ShowAndGetNumber         | (default format: #)
+      /// |  1    | ShowAndGetDate           | (default format: DD/MM/YYYY)
+      /// |  2    | ShowAndGetTime           | (default format: HH:MM)
+      /// |  3    | ShowAndGetIPAddress      | (default format: #.#.#.#)
+      /// |  4    | ShowAndVerifyNewPassword | (default format: *)
+      /// @param heading        string or unicode - dialog heading (will be ignored for type 4).
       /// @param defaultt       [opt] string - default value.
       /// @return Returns the entered data as a string.
       ///         Returns the default value if dialog was canceled.
       ///
       ///
       ///------------------------------------------------------------------------
+      /// @python_v19 New option added to mask numeric input.
       ///
       /// **Example:**
       /// ~~~~~~~~~~~~~{.py}
