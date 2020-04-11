@@ -11,8 +11,11 @@
 
 if(ENABLE_INTERNAL_FLATBUFFERS)
   include(ExternalProject)
-  file(STRINGS ${CMAKE_SOURCE_DIR}/tools/depends/native/flatbuffers/Makefile VER REGEX "^[ ]*VERSION[ ]*=.+$")
-  string(REGEX REPLACE "^[ ]*VERSION[ ]*=[ ]*" "" FLATBUFFERS_VER "${VER}")
+  file(STRINGS ${CMAKE_SOURCE_DIR}/tools/depends/native/flatbuffers/Makefile VER)
+  string(REGEX MATCH "VERSION=([^ ;]*)" FLATBUFFERS_VER "${VER}")
+  set(FLATBUFFERS_VER ${CMAKE_MATCH_1})
+
+  string(REGEX MATCH "SHA256=[^ ;]*" FLATBUFFERS_SHA256 "${VER}")
 
   # Allow user to override the download URL with a local tarball
   # Needed for offline build envs
@@ -30,6 +33,7 @@ if(ENABLE_INTERNAL_FLATBUFFERS)
 
   externalproject_add(flatbuffers
                       URL ${FLATBUFFERS_URL}
+                      URL_HASH ${FLATBUFFERS_SHA256}
                       DOWNLOAD_DIR ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/download
                       PREFIX ${CORE_BUILD_DIR}/flatbuffers
                       CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}

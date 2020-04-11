@@ -6,6 +6,7 @@ DEPS=../../Makefile.include Makefile
 # lib name, version
 LIBNAME=flatbuffers
 VERSION=1.11.0
+SHA256=1789b97e790da8f2cb5ff827d15580878c8629fd889f5f038d7524dca43eacc9
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
 
