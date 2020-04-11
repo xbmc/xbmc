@@ -1130,7 +1130,7 @@ const std::array<struct LCENTRY, 540> g_iso639_2 = {{
     {MAKECODE('\0', 'p', 'h', 'i'), "Philippine (Other)"},
     {MAKECODE('\0', 'p', 'h', 'n'), "Phoenician"},
     {MAKECODE('\0', 'f', 'i', 'l'), "Pilipino"},
-    {MAKECODE('\0', 'p', 'o', 'b'), "Portuguese Brazil"},
+    {MAKECODE('\0', 'p', 'o', 'b'), "Portuguese (Brazil)"},
     {MAKECODE('\0', 'p', 'o', 'n'), "Pohnpeian"},
     {MAKECODE('\0', 'p', 'o', 'l'), "Polish"},
     {MAKECODE('\0', 'p', 'o', 'r'), "Portuguese"},
