@@ -1,4 +1,5 @@
 LIBNAME=ffmpeg
 BASE_URL=https://github.com/xbmc/FFmpeg
 VERSION=4.2.2-Matrix-Alpha1
+SHA256=0dba571f9809588cfbdc29d6a551dab4cd5736701653d9263847c9ac67bcde86
 ARCHIVE=$(LIBNAME)-$(VERSION).tar.gz

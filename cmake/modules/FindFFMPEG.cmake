@@ -218,6 +218,8 @@ if(NOT FFMPEG_FOUND)
   list(GET FFMPEG_BASE_URL 0 FFMPEG_BASE_URL)
   string(SUBSTRING "${FFMPEG_BASE_URL}" 9 -1 FFMPEG_BASE_URL)
 
+  string(REGEX MATCH "SHA256=[^ ;]*" FFMPEG_SHA256 "${VER}")
+
   # allow user to override the download URL with a local tarball
   # needed for offline build envs
   if(FFMPEG_URL)
@@ -250,6 +252,7 @@ if(NOT FFMPEG_FOUND)
 
   externalproject_add(ffmpeg
                       URL ${FFMPEG_URL}
+                      URL_HASH ${FFMPEG_SHA256}
                       DOWNLOAD_NAME ffmpeg-${FFMPEG_VER}.tar.gz
                       DOWNLOAD_DIR ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/download
                       PREFIX ${CORE_BUILD_DIR}/ffmpeg
