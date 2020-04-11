@@ -1411,7 +1411,7 @@ const std::array<ISO639, 190> LanguageCodes = {{
     {"om", "orm", NULL, NULL},
     {"os", "oss", NULL, NULL},
     {"pa", "pan", NULL, NULL},
-	{"pb", "pob", NULL, NULL},
+    {"pb", "pob", NULL, NULL},
     {"pi", "pli", NULL, NULL},
     {"pl", "pol", "plk", NULL},
     {"pt", "por", "ptg", NULL},
