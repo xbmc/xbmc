@@ -3800,8 +3800,14 @@ const infomap retroplayer[] =
 ///   }
 ///   \table_row3{   <b>`Container.SortMethod`</b>,
 ///                  \anchor Container_SortMethod
+///                  _string_,
+///     @return The current sort method (name\, year\, rating\, etc).
+///     <p>
+///   }
+///   \table_row3{   <b>`Container.SortMethod(parameter)`</b>,
+///                  \anchor Container_SortMethod_parameter
 ///                  _boolean_,
-///     @return **True** the current sort method (name\, year\, rating\, etc).
+///     @return **True** if the current sort method matches the specified parameter (name\, year\, rating\, etc).
 ///     <p>
 ///   }
 ///   \table_row3{   <b>`Container.SortOrder`</b>,
@@ -4000,12 +4006,24 @@ const infomap container_bools[] ={{ "onnext",           CONTAINER_MOVE_NEXT },
 ///     @skinning_v16 **[New Infolabel]** \link Container_Row `Container(id).Row`\endlink
 ///     <p>
 ///   }
+///   \table_row3{   <b>`Container(id).Row(parameter)`</b>,
+///                  \anchor Container_Row_parameter
+///                  _boolean_,
+///     @return **True** if the row number of the focused position matches the specified parameter.
+///     <p>
+///   }
 ///   \table_row3{   <b>`Container(id).Column`</b>,
 ///                  \anchor Container_Column
 ///                  _integer_,
 ///     @return The column number of the focused position in a panel container.
 ///     <p><hr>
 ///     @skinning_v16 **[New Infolabel]** \link Container_Column `Container(id).Column`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`Container(id).Column(parameter)`</b>,
+///                  \anchor Container_Column_parameter
+///                  _boolean_,
+///     @return **True** if the column number of the focused position matches the specified parameter.
 ///     <p>
 ///   }
 ///   \table_row3{   <b>`Container(id).Position`</b>,
@@ -4016,6 +4034,12 @@ const infomap container_bools[] ={{ "onnext",           CONTAINER_MOVE_NEXT },
 ///     <p><hr>
 ///     @skinning_v16 **[Infolabel Updated]** \link Container_Position `Container(id).Position`\endlink
 ///     now also returns the position for items inside a grouplist.
+///     <p>
+///   }
+///   \table_row3{   <b>`Container(id).Position(parameter)`</b>,
+///                  \anchor Container_Position_parameter
+///                  _boolean_,
+///     @return **True** if the container with id (or current container if id is omitted) is focused on the specified position.
 ///     <p>
 ///   }
 ///   \table_row3{   <b>`Container(id).CurrentItem`</b>,
