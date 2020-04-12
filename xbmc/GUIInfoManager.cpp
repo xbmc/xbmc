@@ -3960,10 +3960,11 @@ const infomap mediacontainer[] = {{ "hasfiles",         CONTAINER_HASFILES },
 ///     @return **True** if the container or textbox with id (id) has a next page.
 ///     <p>
 ///   }
-///   \table_row3{   <b>`Container.HasParent`</b>,
+///   \table_row3{   <b>`Container(id).HasParent`</b>,
 ///                  \anchor Container_HasParent
 ///                  _boolean_,
-///     @return **True** when the container contains a parent ('..') item.
+///     @return **True** when the container with given id contains a parent ('..') item.
+///     @note If no id is specified it grabs the current container.
 ///     <p><hr>
 ///     @skinning_v16 **[New Boolean Condition]** \link Container_HasParent `Container.HasParent`\endlink
 ///     <p>
