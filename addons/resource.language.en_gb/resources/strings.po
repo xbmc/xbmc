@@ -7256,7 +7256,17 @@ msgctxt "#13465"
 msgid "EGL"
 msgstr ""
 
-#empty strings from id 13466 to 13504
+#: system/settings/gbm.xml
+msgctxt "#13466"
+msgid "1080 / 720 (>30Hz)"
+msgstr ""
+
+#: system/settings/gbm.xml
+msgctxt "#13467"
+msgid "Unlimited / 1080 (>30Hz)"
+msgstr ""
+
+#empty strings from id 13468 to 13504
 
 #: system/settings/settings.xml
 msgctxt "#13505"
@@ -20306,6 +20316,7 @@ msgid "Use higher quality textures for covers and fanart (uses more memory)"
 msgstr ""
 
 #: system/settings/rbp.xml
+#: system/settings/gbm.xml
 msgctxt "#36548"
 msgid "Limits resolution of GUI to save memory. Does not affect video playback. Requires restart."
 msgstr ""
@@ -20923,6 +20934,7 @@ msgid "Enable higher colour depth artwork"
 msgstr ""
 
 #: system/settings/rbp.xml
+#: system/settings/gbm.xml
 msgctxt "#37021"
 msgid "Set GUI resolution limit"
 msgstr ""
@@ -20960,6 +20972,7 @@ msgstr ""
 
 #: system/settings/rbp.xml
 #: system/settings/android.xml
+#: system/settings/gbm.xml
 msgctxt "#37028"
 msgid "720"
 msgstr ""
@@ -20971,6 +20984,7 @@ msgstr ""
 
 #: system/settings/rbp.xml
 #: system/settings/android.xml
+#: system/settings/gbm.xml
 msgctxt "#37030"
 msgid "Unlimited"
 msgstr ""
@@ -21066,6 +21080,7 @@ msgid "Extract chapter thumbnails for presentation in the chapters / bookmarks d
 msgstr ""
 
 #: system/settings/android.xml
+#: system/settings/gbm.xml
 msgctxt "#37046"
 msgid "1080"
 msgstr ""
