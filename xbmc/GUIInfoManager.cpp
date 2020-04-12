@@ -3706,25 +3706,22 @@ const infomap retroplayer[] =
 /// \subsection modules__infolabels_boolean_conditions_Container Container
 /// \table_start
 ///   \table_h3{ Labels, Type, Description }
-///   \table_row3{   <b>`Container(id).HasFiles`</b>,
+///   \table_row3{   <b>`Container.HasFiles`</b>,
 ///                  \anchor Container_HasFiles
 ///                  _boolean_,
-///     @return **True** if the container contains files (or current container if
-///     id is omitted).
+///     @return **True** if the container contains files.
 ///     <p>
 ///   }
-///   \table_row3{   <b>`Container(id).HasFolders`</b>,
+///   \table_row3{   <b>`Container.HasFolders`</b>,
 ///                  \anchor Container_HasFolders
 ///                  _boolean_,
-///     @return **True** if the container contains folders (or current container if
-///     id is omitted).
+///     @return **True** if the container contains folders.
 ///     <p>
 ///   }
-///   \table_row3{   <b>`Container(id).IsStacked`</b>,
+///   \table_row3{   <b>`Container.IsStacked`</b>,
 ///                  \anchor Container_IsStacked
 ///                  _boolean_,
-///     @return **True** if the container is currently in stacked mode (or current
-///     container if id is omitted).
+///     @return **True** if the container is currently in stacked mode.
 ///     <p>
 ///   }
 ///   \table_row3{   <b>`Container.FolderPath`</b>,
@@ -3767,13 +3764,13 @@ const infomap retroplayer[] =
 ///     @skinning_v17 **[New Infolabel]** \link Container_ViewCount `Container.ViewCount`\endlink
 ///     <p>
 ///   }
-///   \table_row3{   <b>`Container(id).Totaltime`</b>,
+///   \table_row3{   <b>`Container.Totaltime`</b>,
 ///                  \anchor Container_Totaltime
 ///                  _string_,
 ///     @return The total time of all items in the current container.
 ///     <p>
 ///   }
-///   \table_row3{   <b>`Container(id).TotalWatched`</b>,
+///   \table_row3{   <b>`Container.TotalWatched`</b>,
 ///                  \anchor Container_TotalWatched
 ///                  _string_,
 ///     @return The number of watched items in the container.
@@ -3782,7 +3779,7 @@ const infomap retroplayer[] =
 ///     @skinning_v16 **[New Infolabel]** \link Container_TotalWatched `Container(id).TotalWatched`\endlink
 ///     <p>
 ///   }
-///   \table_row3{   <b>`Container(id).TotalUnWatched`</b>,
+///   \table_row3{   <b>`Container.TotalUnWatched`</b>,
 ///                  \anchor Container_TotalUnWatched
 ///                  _string_,
 ///     @return The number of unwatched items in the container.
