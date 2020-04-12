@@ -14,7 +14,7 @@
 #include "windowing/gbm/WinSystemGbm.h"
 #include "windowing/gbm/WinSystemGbmEGLContext.h"
 
-#include <drm/drm_fourcc.h>
+#include <drm_fourcc.h>
 #include <sys/mman.h>
 
 using namespace KODI::WINDOWING::GBM;

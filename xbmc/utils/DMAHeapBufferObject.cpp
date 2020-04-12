@@ -14,7 +14,7 @@
 
 #include <array>
 
-#include <drm/drm_fourcc.h>
+#include <drm_fourcc.h>
 #include <linux/dma-heap.h>
 #include <sys/ioctl.h>
 #include <sys/mman.h>
