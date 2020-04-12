@@ -10,11 +10,17 @@
 
 #include "OptionalsReg.h"
 #include "cores/RetroPlayer/process/gbm/RPProcessInfoGbm.h"
+#include "cores/RetroPlayer/rendering/VideoRenderers/RPRendererDMA.h"
 #include "cores/RetroPlayer/rendering/VideoRenderers/RPRendererOpenGL.h"
 #include "cores/VideoPlayer/DVDCodecs/DVDFactoryCodec.h"
 #include "cores/VideoPlayer/VideoRenderers/LinuxRendererGL.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderFactory.h"
 #include "rendering/gl/ScreenshotSurfaceGL.h"
+#include "utils/BufferObjectFactory.h"
+#include "utils/DMAHeapBufferObject.h"
+#include "utils/DumbBufferObject.h"
+#include "utils/GBMBufferObject.h"
+#include "utils/UDMABufferObject.h"
 #include "utils/XTimeUtils.h"
 #include "utils/log.h"
 
@@ -39,6 +45,7 @@ bool CWinSystemGbmGLContext::InitWindowSystem()
   CDVDFactoryCodec::ClearHWAccels();
   CLinuxRendererGL::Register();
   RETRO::CRPProcessInfoGbm::Register();
+  RETRO::CRPProcessInfoGbm::RegisterRendererFactory(new RETRO::CRendererFactoryDMA);
   RETRO::CRPProcessInfoGbm::RegisterRendererFactory(new RETRO::CRendererFactoryOpenGL);
 
   if (!CWinSystemGbmEGLContext::InitWindowSystemEGL(EGL_OPENGL_BIT, EGL_OPENGL_API))
@@ -57,6 +64,18 @@ bool CWinSystemGbmGLContext::InitWindowSystem()
   }
 
   CScreenshotSurfaceGL::Register();
+
+  CBufferObjectFactory::ClearBufferObjects();
+  CDumbBufferObject::Register();
+#if defined(HAS_GBM_BO_MAP)
+  CGBMBufferObject::Register();
+#endif
+#if defined(HAVE_LINUX_MEMFD) && defined(HAVE_LINUX_UDMABUF)
+  CUDMABufferObject::Register();
+#endif
+#if defined(HAVE_LINUX_DMA_HEAP)
+  CDMAHeapBufferObject::Register();
+#endif
 
   return true;
 }

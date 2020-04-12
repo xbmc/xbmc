@@ -10,9 +10,13 @@
 
 #include "OptionalsReg.h"
 #include "cores/RetroPlayer/process/RPProcessInfo.h"
+#include "cores/RetroPlayer/rendering/VideoRenderers/RPRendererDMA.h"
 #include "cores/RetroPlayer/rendering/VideoRenderers/RPRendererOpenGL.h"
 #include "cores/VideoPlayer/VideoRenderers/LinuxRendererGL.h"
 #include "rendering/gl/ScreenshotSurfaceGL.h"
+#include "utils/BufferObjectFactory.h"
+#include "utils/DMAHeapBufferObject.h"
+#include "utils/UDMABufferObject.h"
 #include "utils/log.h"
 
 #include <EGL/egl.h>
@@ -34,6 +38,7 @@ bool CWinSystemWaylandEGLContextGL::InitWindowSystem()
   }
 
   CLinuxRendererGL::Register();
+  RETRO::CRPProcessInfo::RegisterRendererFactory(new RETRO::CRendererFactoryDMA);
   RETRO::CRPProcessInfo::RegisterRendererFactory(new RETRO::CRendererFactoryOpenGL);
 
   bool general, deepColor;
@@ -45,6 +50,14 @@ bool CWinSystemWaylandEGLContextGL::InitWindowSystem()
   {
     ::WAYLAND::VAAPIRegister(m_vaapiProxy.get(), deepColor);
   }
+
+  CBufferObjectFactory::ClearBufferObjects();
+#if defined(HAVE_LINUX_MEMFD) && defined(HAVE_LINUX_UDMABUF)
+  CUDMABufferObject::Register();
+#endif
+#if defined(HAVE_LINUX_DMA_HEAP)
+  CDMAHeapBufferObject::Register();
+#endif
 
   CScreenshotSurfaceGL::Register();
 
