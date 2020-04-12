@@ -26,6 +26,8 @@
 
 using namespace ADDON;
 
+static const std::string OVERRIDE_REPOSITORY = "repository.xbmc.org";
+
 static std::string SerializeMetadata(const IAddon& addon)
 {
   CVariant variant;
@@ -446,6 +448,20 @@ bool CAddonDatabase::GetAvailableVersions(const std::string& addonId,
       versionsInfo.emplace_back(version, repo);
       m_pDS->next();
     }
+
+    // at least one version is from override repository, so remove all versions not coming from override repository
+    if (versionsInfo.size() > 1 &&
+        std::find_if(versionsInfo.begin(), versionsInfo.end(),
+                     [](std::pair<ADDON::AddonVersion, std::string> const& p) {
+                       return p.second == OVERRIDE_REPOSITORY;
+                     }) != versionsInfo.end())
+      versionsInfo.erase(std::remove_if(versionsInfo.begin(), versionsInfo.end(),
+                                        [](std::pair<ADDON::AddonVersion, std::string> p) {
+                                          return !p.second.empty() &&
+                                                 p.second != OVERRIDE_REPOSITORY;
+                                        }),
+                         versionsInfo.end());
+
     return true;
   }
   catch (...)
@@ -497,21 +513,39 @@ bool CAddonDatabase::GetAddon(const std::string& id, AddonPtr& addon)
     // there may be multiple addons with this id (eg from different repositories) in the database,
     // so we want to retrieve the latest version.  Order by version won't work as the database
     // won't know that 1.10 > 1.2, so grab them all and order outside
-    std::string sql = PrepareSQL("select id,version from addons where addonID='%s'",id.c_str());
+    std::string sql = PrepareSQL("SELECT addons.id, addons.version, repo.addonID FROM addons "
+                                 "JOIN addonlinkrepo ON addons.id=addonlinkrepo.idAddon "
+                                 "JOIN repo ON repo.id=addonlinkrepo.idRepo "
+                                 "WHERE addons.addonID='%s'",
+                                 id.c_str());
     m_pDS2->query(sql);
 
     if (m_pDS2->eof())
       return false;
 
     AddonVersion maxversion;
+    std::string maxRepository = "";
     int maxid = 0;
     while (!m_pDS2->eof())
     {
+      // max version is coming from override repository, if this version doesn't come from override repository, skip it
+      if (maxRepository == OVERRIDE_REPOSITORY && !m_pDS2->fv(2).get_isNull() &&
+          m_pDS2->fv(2).get_asString() != OVERRIDE_REPOSITORY)
+      {
+        CLog::Log(LOGFATAL, "%s:%d - skipped - addon: %s, repository: %s", __FUNCTION__, __LINE__,
+                  id.c_str(), m_pDS2->fv(2).get_asString().c_str());
+        m_pDS2->next();
+        continue;
+      }
+
       AddonVersion version(m_pDS2->fv(1).get_asString());
-      if (version > maxversion)
+      // ignore version check if version comes from override repository and max version isn't already coming from override repository
+      if (version > maxversion || (m_pDS2->fv(2).get_asString() == OVERRIDE_REPOSITORY &&
+                                   maxRepository != OVERRIDE_REPOSITORY))
       {
         maxid = m_pDS2->fv(0).get_asInt();
         maxversion = version;
+        maxRepository = m_pDS2->fv(2).get_asString();
       }
       m_pDS2->next();
     }
