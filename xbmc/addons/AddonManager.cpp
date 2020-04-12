@@ -8,6 +8,7 @@
 
 #include "AddonManager.h"
 
+#include "CompileInfo.h"
 #include "LangInfo.h"
 #include "ServiceBroker.h"
 #include "addons/addoninfo/AddonInfoBuilder.h"
@@ -684,7 +685,10 @@ bool CAddonMgr::LoadAddonDescription(const std::string &directory, AddonPtr &add
   return addon != nullptr;
 }
 
-bool CAddonMgr::AddonsFromRepoXML(const CRepository::DirInfo& repo, const std::string& xml, VECADDONS& addons)
+bool CAddonMgr::AddonsFromRepoXML(const CRepository::DirInfo& repo,
+                                  const std::string& xml,
+                                  VECADDONS& addons,
+                                  const std::string& repoId)
 {
   CXBMCTinyXML doc;
   if (!doc.Parse(xml))
@@ -706,8 +710,23 @@ bool CAddonMgr::AddonsFromRepoXML(const CRepository::DirInfo& repo, const std::s
     auto addonInfo = CAddonInfoBuilder::Generate(element, repo);
     auto addon = CAddonBuilder::Generate(addonInfo, ADDON_UNKNOWN);
     if (addon)
-      addons.push_back(std::move(addon));
-
+    {
+      if (repoId.empty() || repoId == std::string(CCompileInfo::GetOverrideRepository()))
+        addons.push_back(std::move(addon));
+      else
+      {
+        ADDON::VECADDONS addonsFind;
+        m_database.FindByAddonId(addon.get()->ID(), addonsFind);
+        if (std::find_if(addonsFind.cbegin(), addonsFind.cend(), [](AddonPtr const& p) {
+              return p.get()->Origin() == std::string(CCompileInfo::GetOverrideRepository());
+            }) == addonsFind.cend())
+          addons.push_back(std::move(addon));
+        else
+          CLog::Log(LOGNOTICE, "CAddonMgr: %s served by %s, skipping version from %s",
+                    addon.get()->ID().c_str(), CCompileInfo::GetOverrideRepository(),
+                    repoId.c_str());
+      }
+    }
     element = element->NextSiblingElement("addon");
   }
 

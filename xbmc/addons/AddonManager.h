@@ -225,7 +225,10 @@ namespace ADDON
      \param addons [out] returned list of addons.
      \return true if the repository XML file is parsed, false otherwise.
      */
-    bool AddonsFromRepoXML(const CRepository::DirInfo& repo, const std::string& xml, VECADDONS& addons);
+    bool AddonsFromRepoXML(const CRepository::DirInfo& repo,
+                           const std::string& xml,
+                           VECADDONS& addons,
+                           const std::string& repoId);
 
     bool ServicesHasStarted() const;
 
