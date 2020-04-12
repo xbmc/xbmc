@@ -60,12 +60,14 @@ size_t CRenderBufferDMA::GetFrameSize() const
 
 uint8_t* CRenderBufferDMA::GetMemory()
 {
+  m_bo->SyncStart();
   return m_bo->GetMemory();
 }
 
 void CRenderBufferDMA::ReleaseMemory()
 {
   m_bo->ReleaseMemory();
+  m_bo->SyncEnd();
 }
 
 void CRenderBufferDMA::CreateTexture()

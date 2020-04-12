@@ -100,6 +100,18 @@ public:
   virtual uint64_t GetModifier() = 0;
 
   /**
+   * @brief Must be called before reading/writing data to the BufferObject.
+   *
+   */
+  virtual void SyncStart() = 0;
+
+  /**
+   * @brief Must be called after reading/writing data to the BufferObject.
+   *
+   */
+  virtual void SyncEnd() = 0;
+
+  /**
    * @brief Get the Name of the BufferObject type in use
    *
    * @return std::string name of the BufferObject type in use

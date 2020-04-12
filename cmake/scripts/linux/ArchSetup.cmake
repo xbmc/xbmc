@@ -103,6 +103,13 @@ else()
   message(WARNING, "dma-heap: include/linux/dma-heap.h not found")
 endif()
 
+check_include_files("linux/dma-buf.h" HAVE_LINUX_DMA_BUF)
+if(HAVE_LINUX_DMA_BUF)
+  list(APPEND ARCH_DEFINES "-DHAVE_LINUX_DMA_BUF=1")
+else()
+  message(STATUS "include/linux/dma-buf.h not found")
+endif()
+
 include(CheckSymbolExists)
 set(CMAKE_REQUIRED_DEFINITIONS "-D_GNU_SOURCE")
 check_symbol_exists("mkostemp" "stdlib.h" HAVE_MKOSTEMP)
