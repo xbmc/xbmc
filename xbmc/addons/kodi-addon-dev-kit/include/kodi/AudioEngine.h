@@ -36,8 +36,10 @@
 ///
 //------------------------------------------------------------------------------
 
+#ifdef __cplusplus
 extern "C"
 {
+#endif /* __cplusplus */
 
 //============================================================================
 /// \ingroup cpp_kodi_audioengine_Defs
@@ -171,6 +173,7 @@ typedef struct AddonToKodiFuncTable_kodi_audioengine
   void (*aestream_set_resample_ratio)(void *kodiBase, AEStreamHandle *handle, double ratio);
 } AddonToKodiFuncTable_kodi_audioengine;
 
+#ifdef __cplusplus
 } /* extern "C" */
 
 namespace kodi
@@ -584,3 +587,4 @@ inline bool GetCurrentSinkFormat(AudioEngineFormat &format)
 
 } /* audioengine */
 } /* kodi */
+#endif /* __cplusplus */
