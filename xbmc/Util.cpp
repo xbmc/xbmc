@@ -1972,7 +1972,7 @@ void CUtil::ScanForExternalSubtitles(const std::string& strMovie, std::vector<st
   unsigned int startTimer = XbmcThreads::SystemClockMillis();
 
   CFileItem item(strMovie, false);
-  if (item.IsInternetStream()
+  if ((item.IsInternetStream() && !URIUtils::IsOnLAN(item.GetDynPath()))
     || item.IsPlayList()
     || item.IsLiveTV()
     || !item.IsVideo())
