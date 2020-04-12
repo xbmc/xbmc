@@ -3818,6 +3818,24 @@ const infomap retroplayer[] =
 ///     @skinning_v16 **[New Infolabel]** \link Container_SortOrder `Container.SortOrder`\endlink
 ///     <p>
 ///   }
+///   \table_row3{   <b>`Container.CanFilter`</b>,
+///                  \anchor Container_CanFilter
+///                  _boolean_,
+///     @return **True** when the current container can be filtered.
+///     <p>
+///   }
+///   \table_row3{   <b>`Container.CanFilterAdvanced`</b>,
+///                  \anchor Container_CanFilterAdvanced
+///                  _boolean_,
+///     @return **True** when advanced filtering can be applied to the current container.
+///     <p>
+///   }
+///   \table_row3{   <b>`Container.Filtered`</b>,
+///                  \anchor Container_Filtered
+///                  _boolean_,
+///     @return **True** when a mediafilter is applied to the current container.
+///     <p>
+///   }
 ///   \table_row3{   <b>`Container.ShowPlot`</b>,
 ///                  \anchor Container_ShowPlot
 ///                  _string_,
@@ -3849,6 +3867,9 @@ const infomap mediacontainer[] = {{ "hasfiles",         CONTAINER_HASFILES },
                                   { "hasthumb",         CONTAINER_HAS_THUMB },
                                   { "sortmethod",       CONTAINER_SORT_METHOD },
                                   { "sortorder",        CONTAINER_SORT_ORDER },
+                                  { "canfilter",        CONTAINER_CAN_FILTER },
+                                  { "canfilteradvanced",CONTAINER_CAN_FILTERADVANCED },
+                                  { "filtered",         CONTAINER_FILTERED },
                                   { "showplot",         CONTAINER_SHOWPLOT },
                                   { "showtitle",        CONTAINER_SHOWTITLE }};
 
@@ -3956,24 +3977,6 @@ const infomap mediacontainer[] = {{ "hasfiles",         CONTAINER_HASFILES },
 ///     @return **True** if the container or textbox with id (id) has a previous page.
 ///     <p>
 ///   }
-///   \table_row3{   <b>`Container.CanFilter`</b>,
-///                  \anchor Container_CanFilter
-///                  _boolean_,
-///     @return **True** when the current container can be filtered.
-///     <p>
-///   }
-///   \table_row3{   <b>`Container.CanFilterAdvanced`</b>,
-///                  \anchor Container_CanFilterAdvanced
-///                  _boolean_,
-///     @return **True** when advanced filtering can be applied to the current container.
-///     <p>
-///   }
-///   \table_row3{   <b>`Container.Filtered`</b>,
-///                  \anchor Container_Filtered
-///                  _boolean_,
-///     @return **True** when a mediafilter is applied to the current container.
-///     <p>
-///   }
 ///   \table_row3{   <b>`Container(id).IsUpdating`</b>,
 ///                  \anchor Container_IsUpdating
 ///                  _boolean_,
@@ -3992,9 +3995,6 @@ const infomap container_bools[] ={{ "onnext",           CONTAINER_MOVE_NEXT },
                                   { "hasnext",          CONTAINER_HAS_NEXT },
                                   { "hasparent",        CONTAINER_HAS_PARENT_ITEM },
                                   { "hasprevious",      CONTAINER_HAS_PREVIOUS },
-                                  { "canfilter",        CONTAINER_CAN_FILTER },
-                                  { "canfilteradvanced",CONTAINER_CAN_FILTERADVANCED },
-                                  { "filtered",         CONTAINER_FILTERED },
                                   { "isupdating",       CONTAINER_ISUPDATING }};
 
 /// \page modules__infolabels_boolean_conditions
