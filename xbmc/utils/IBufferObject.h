@@ -9,6 +9,7 @@
 #pragma once
 
 #include <stdint.h>
+#include <string>
 
 /**
  * @brief Interface to describe CBufferObjects.
@@ -97,4 +98,11 @@ public:
    * @return uint64_t modifier of the BufferObject. 0 means the layout is linear (default).
    */
   virtual uint64_t GetModifier() = 0;
+
+  /**
+   * @brief Get the Name of the BufferObject type in use
+   *
+   * @return std::string name of the BufferObject type in use
+   */
+  virtual std::string GetName() const = 0;
 };
