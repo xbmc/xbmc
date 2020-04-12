@@ -404,24 +404,6 @@ drmModePlanePtr CDRMUtils::FindPlane(drmModePlaneResPtr resources, int crtc_inde
 
               break;
             }
-            case KODI_GUI_10_PLANE:
-            {
-              uint32_t plane_id = 0;
-              if (m_video_plane->plane)
-                plane_id = m_video_plane->plane->plane_id;
-
-              if (plane->plane_id != plane_id &&
-                  (plane_id == 0 || SupportsFormat(plane, DRM_FORMAT_ARGB2101010)) &&
-                  SupportsFormat(plane, DRM_FORMAT_XRGB2101010))
-              {
-                CLog::Log(LOGDEBUG, "CDRMUtils::%s - found gui 10 plane %u", __FUNCTION__, plane->plane_id);
-                drmModeFreeProperty(p);
-                drmModeFreeObjectProperties(props);
-                return plane;
-              }
-
-              break;
-            }
           }
         }
 
@@ -448,15 +430,7 @@ bool CDRMUtils::FindPlanes()
   }
 
   m_video_plane->plane = FindPlane(plane_resources, m_crtc_index, KODI_VIDEO_PLANE);
-  m_gui_plane->plane = FindPlane(plane_resources, m_crtc_index, KODI_GUI_10_PLANE);
-
-  /* fallback to 8bit plane if 10bit plane doesn't exist */
-  if (m_gui_plane->plane == nullptr)
-  {
-    drmModeFreePlane(m_gui_plane->plane);
-    m_gui_plane->plane = FindPlane(plane_resources, m_crtc_index, KODI_GUI_PLANE);
-    m_gui_plane->SetFormat(DRM_FORMAT_XRGB8888);
-  }
+  m_gui_plane->plane = FindPlane(plane_resources, m_crtc_index, KODI_GUI_PLANE);
 
   drmModeFreePlaneResources(plane_resources);
 
@@ -487,8 +461,6 @@ bool CDRMUtils::FindPlanes()
     CLog::Log(LOGDEBUG, "CDRMUtils::%s - no drm modifiers present for the gui plane", __FUNCTION__);
     m_gui_plane->modifiers_map.emplace(DRM_FORMAT_ARGB8888, std::vector<uint64_t>{DRM_FORMAT_MOD_LINEAR});
     m_gui_plane->modifiers_map.emplace(DRM_FORMAT_XRGB8888, std::vector<uint64_t>{DRM_FORMAT_MOD_LINEAR});
-    m_gui_plane->modifiers_map.emplace(DRM_FORMAT_ARGB2101010, std::vector<uint64_t>{DRM_FORMAT_MOD_LINEAR});
-    m_gui_plane->modifiers_map.emplace(DRM_FORMAT_XRGB2101010, std::vector<uint64_t>{DRM_FORMAT_MOD_LINEAR});
   }
 
   return true;
