@@ -120,7 +120,8 @@ void CHTTPPythonWsgiInvoker::executeScript(FILE* fp, const std::string& script, 
       fp == NULL || script.empty() || moduleDict == NULL)
     return;
 
-  auto logger = CServiceBroker::GetLogging().GetLogger(StringUtils::Format("CHTTPPythonWsgiInvoker[{}]", script));
+  auto logger = CServiceBroker::GetLogging().GetLogger(
+      StringUtils::Format("CHTTPPythonWsgiInvoker[{}]", script));
 
   ADDON::CWebinterface* webinterface = static_cast<ADDON::CWebinterface*>(m_addon.get());
   if (webinterface->GetType() != ADDON::WebinterfaceTypeWsgi)
@@ -206,7 +207,8 @@ void CHTTPPythonWsgiInvoker::executeScript(FILE* fp, const std::string& script, 
   }
   catch (const XBMCAddon::WrongTypeException& e)
   {
-    logger->error("failed to prepare WsgiResponse object with wrong type exception: {}", e.GetMessage());
+    logger->error("failed to prepare WsgiResponse object with wrong type exception: {}",
+                  e.GetMessage());
     goto cleanup;
   }
   catch (const XbmcCommons::Exception& e)
@@ -252,7 +254,8 @@ void CHTTPPythonWsgiInvoker::executeScript(FILE* fp, const std::string& script, 
     }
     catch (const XBMCAddon::WrongTypeException& e)
     {
-      logger->error("failed to parse result iterable object with wrong type exception: {}", e.GetMessage());
+      logger->error("failed to parse result iterable object with wrong type exception: {}",
+                    e.GetMessage());
       goto cleanup;
     }
     catch (const XbmcCommons::Exception& e)

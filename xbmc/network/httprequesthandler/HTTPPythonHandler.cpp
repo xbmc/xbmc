@@ -234,7 +234,10 @@ bool CHTTPPythonHandler::appendPostData(const char *data, size_t size)
 {
   if (m_requestData.size() + size > MAX_STRING_POST_SIZE)
   {
-    CServiceBroker::GetLogging().GetLogger("CHTTPPythonHandler")->error("Stopped uploading post since it exceeded size limitations ({})", MAX_STRING_POST_SIZE);
+    CServiceBroker::GetLogging()
+        .GetLogger("CHTTPPythonHandler")
+        ->error("Stopped uploading post since it exceeded size limitations ({})",
+                MAX_STRING_POST_SIZE);
     return false;
   }
 
