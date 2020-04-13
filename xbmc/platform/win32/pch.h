@@ -8,12 +8,21 @@
 
 #pragma once
 
+// The times in comments are how much time was spent parsing
+// the header file according to C++ Build Insights in VS2019
 #define _CRT_RAND_S
 #include <vector>
 #include <map>
 #include <string>
 #include <iostream>
 #include <fstream>
+#include <chrono> // 72 seconds
+#include <mutex> // 19 seconds
+#include <algorithm> // 32 seconds
+#include <ppltasks.h> // 87seconds, not included by us
+#include <intrin.h>  // 97 seconds
+#include <fmt/format.h> // 53 seconds
+#include <fmt/core.h>
 #if !(defined(_WINSOCKAPI_) || defined(_WINSOCK_H))
 #include <winsock2.h>
 #endif
@@ -40,3 +49,6 @@ WINRT_WARNING_PUSH
 // anything below here should be headers that very rarely (hopefully never)
 // change yet are included almost everywhere.
 /* empty */
+
+#include "FileItem.h" //63 seconds
+#include "addons/addoninfo/AddonInfo.h" // 62 seconds
