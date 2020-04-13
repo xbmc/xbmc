@@ -1619,7 +1619,7 @@ bool CAESinkALSA::GetELD(snd_hctl_t *hctl, int device, CAEDeviceInfo& info, bool
 
 void CAESinkALSA::sndLibErrorHandler(const char *file, int line, const char *function, int err, const char *fmt, ...)
 {
-  if(!CServiceBroker::GetLogging().CanLogComponent(LOGAUDIO))
+  if (!CServiceBroker::GetLogging().CanLogComponent(LOGAUDIO))
     return;
 
   va_list arg;

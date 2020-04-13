@@ -529,7 +529,7 @@ void  CAirTunesServer::AudioOutputFunctions::audio_destroy(void *cls, void *sess
 void shairplay_log(void *cls, int level, const char *msg)
 {
   int xbmcLevel = LOGINFO;
-  if(!CServiceBroker::GetLogging().CanLogComponent(LOGAIRTUNES))
+  if (!CServiceBroker::GetLogging().CanLogComponent(LOGAIRTUNES))
     return;
 
   switch(level)

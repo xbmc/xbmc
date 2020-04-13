@@ -364,16 +364,16 @@ CMMALBuffer *CMMALPool::GetBuffer(uint32_t timeout)
                 __FUNCTION__, static_cast<void*>(m_mmal_pool), static_cast<void*>(omvb),
                 static_cast<void*>(buffer), timeout);
     }
-  else if (VERBOSE && CServiceBroker::GetLogging().CanLogComponent(LOGVIDEO))
-  {
-    CLog::Log(LOGDEBUG,
-              "%s::%s pool:%p omvb:%p mmal:%p gmem:%p new:%d id:%d to:%d %dx%d (%dx%d) size:%d "
-              "pool:%p:%p enc:%.4s",
-              CLASSNAME, __FUNCTION__, static_cast<void*>(m_mmal_pool), static_cast<void*>(omvb),
-              static_cast<void*>(buffer), static_cast<void*>(gmem), newbuf, id, timeout, m_width,
-              m_height, AlignedWidth(), AlignedHeight(), buffer ? buffer->alloc_size : 0,
-              omvb ? static_cast<void*>(omvb->Pool().get()) : nullptr, static_cast<void*>(GetPtr().get()),
-              (char*)&m_mmal_format);
+    else if (VERBOSE && CServiceBroker::GetLogging().CanLogComponent(LOGVIDEO))
+    {
+      CLog::Log(LOGDEBUG,
+                "%s::%s pool:%p omvb:%p mmal:%p gmem:%p new:%d id:%d to:%d %dx%d (%dx%d) size:%d "
+                "pool:%p:%p enc:%.4s",
+                CLASSNAME, __FUNCTION__, static_cast<void*>(m_mmal_pool), static_cast<void*>(omvb),
+                static_cast<void*>(buffer), static_cast<void*>(gmem), newbuf, id, timeout, m_width,
+                m_height, AlignedWidth(), AlignedHeight(), buffer ? buffer->alloc_size : 0,
+                omvb ? static_cast<void*>(omvb->Pool().get()) : nullptr,
+                static_cast<void*>(GetPtr().get()), (char*)&m_mmal_format);
   }
   return omvb;
 }
