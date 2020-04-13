@@ -134,7 +134,8 @@ private:
     bool m_scanning;
 
     Logger m_logger;
-public:
+
+  public:
     // class members
     static NPT_UInt32 m_MaxReturnedItems;
 };

@@ -25,8 +25,7 @@
 
 using namespace XFILE;
 
-CUPnPSettings::CUPnPSettings()
-  : m_logger(CServiceBroker::GetLogging().GetLogger("CUPnPSettings"))
+CUPnPSettings::CUPnPSettings() : m_logger(CServiceBroker::GetLogging().GetLogger("CUPnPSettings"))
 {
   Clear();
 }

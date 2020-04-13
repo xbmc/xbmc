@@ -356,25 +356,27 @@ BuildObject(CFileItem&                    item,
 {
   static Logger logger = CServiceBroker::GetLogging().GetLogger("UPNP::BuildObject");
 
-    PLT_MediaItemResource resource;
-    PLT_MediaObject*      object = NULL;
-    std::string thumb;
+  PLT_MediaItemResource resource;
+  PLT_MediaObject* object = NULL;
+  std::string thumb;
 
-    logger->debug("Building didl for object '{}'", item.GetPath());
+  logger->debug("Building didl for object '{}'", item.GetPath());
 
-    EClientQuirks quirks = GetClientQuirks(context);
+  EClientQuirks quirks = GetClientQuirks(context);
 
-    // get list of ip addresses
-    NPT_List<NPT_IpAddress> ips;
-    NPT_HttpUrl rooturi;
-    NPT_CHECK_LABEL(PLT_UPnPMessageHelper::GetIPAddresses(ips), failure);
+  // get list of ip addresses
+  NPT_List<NPT_IpAddress> ips;
+  NPT_HttpUrl rooturi;
+  NPT_CHECK_LABEL(PLT_UPnPMessageHelper::GetIPAddresses(ips), failure);
 
-    // if we're passed an interface where we received the request from
-    // move the ip to the top
-    if (context && context->GetLocalAddress().GetIpAddress().ToString() != "0.0.0.0") {
-        rooturi = NPT_HttpUrl(context->GetLocalAddress().GetIpAddress().ToString(), context->GetLocalAddress().GetPort(), "/");
-        ips.Remove(context->GetLocalAddress().GetIpAddress());
-        ips.Insert(ips.GetFirstItem(), context->GetLocalAddress().GetIpAddress());
+  // if we're passed an interface where we received the request from
+  // move the ip to the top
+  if (context && context->GetLocalAddress().GetIpAddress().ToString() != "0.0.0.0")
+  {
+    rooturi = NPT_HttpUrl(context->GetLocalAddress().GetIpAddress().ToString(),
+                          context->GetLocalAddress().GetPort(), "/");
+    ips.Remove(context->GetLocalAddress().GetIpAddress());
+    ips.Insert(ips.GetFirstItem(), context->GetLocalAddress().GetIpAddress());
     } else if(upnp_server) {
         rooturi = NPT_HttpUrl("localhost", upnp_server->GetPort(), "/");
     }

@@ -63,11 +63,12 @@ const char* video_containers[] = { "library://video/movies/titles.xml/", "librar
 /*----------------------------------------------------------------------
 |   CUPnPServer::CUPnPServer
 +---------------------------------------------------------------------*/
-CUPnPServer::CUPnPServer(const char* friendly_name, const char* uuid /*= NULL*/, int port /*= 0*/) :
-    PLT_MediaConnect(friendly_name, false, uuid, port),
+CUPnPServer::CUPnPServer(const char* friendly_name, const char* uuid /*= NULL*/, int port /*= 0*/)
+  : PLT_MediaConnect(friendly_name, false, uuid, port),
     PLT_FileMediaConnectDelegate("/", "/"),
     m_scanning(g_application.IsMusicScanning() || g_application.IsVideoScanning()),
-    m_logger(CServiceBroker::GetLogging().GetLogger(StringUtils::Format("CUPnPServer[{}]", friendly_name)))
+    m_logger(CServiceBroker::GetLogging().GetLogger(
+        StringUtils::Format("CUPnPServer[{}]", friendly_name)))
 {
 }
 
@@ -535,7 +536,7 @@ CUPnPServer::OnBrowseMetadata(PLT_ActionReference&          action,
 
     NPT_String                     didl;
     NPT_Reference<PLT_MediaObject> object;
-    NPT_String                     id = TranslateWMPObjectId(object_id, m_logger);
+    NPT_String id = TranslateWMPObjectId(object_id, m_logger);
     CFileItemPtr                   item;
     NPT_Reference<CThumbLoader>    thumb_loader;
 
@@ -635,9 +636,10 @@ CUPnPServer::OnBrowseDirectChildren(PLT_ActionReference&          action,
                                     const PLT_HttpRequestContext& context)
 {
     CFileItemList items;
-    NPT_String    parent_id = TranslateWMPObjectId(object_id, m_logger);
+    NPT_String parent_id = TranslateWMPObjectId(object_id, m_logger);
 
-   m_logger->info("Received Browse DirectChildren request for object '{}', with sort criteria {}", object_id, sort_criteria);
+    m_logger->info("Received Browse DirectChildren request for object '{}', with sort criteria {}",
+                   object_id, sort_criteria);
 
     if(NPT_FAILED(ObjectIDValidate(parent_id))) {
         action->SetError(701, "Incorrect ObjectID.");
@@ -738,9 +740,7 @@ CUPnPServer::BuildResponse(PLT_ActionReference&          action,
     NPT_COMPILER_UNUSED(sort_criteria);
 
     m_logger->debug("Building UPnP response with filter '{}', starting @ {} with {} requested",
-        filter,
-        starting_index,
-        requested_count);
+                    filter, starting_index, requested_count);
 
     // we will reuse this ThumbLoader for all items
     NPT_Reference<CThumbLoader> thumb_loader;
@@ -799,9 +799,7 @@ CUPnPServer::BuildResponse(PLT_ActionReference&          action,
 
     didl += didl_footer;
 
-    m_logger->debug("Returning UPnP response with {} items out of {} total matches",
-        count,
-        total);
+    m_logger->debug("Returning UPnP response with {} items out of {} total matches", count, total);
 
     NPT_CHECK(action->SetArgumentValue("Result", didl));
     NPT_CHECK(action->SetArgumentValue("NumberReturned", NPT_String::FromInteger(count)));
@@ -846,43 +844,52 @@ CUPnPServer::OnSearchContainer(PLT_ActionReference&          action,
                                const char*                   sort_criteria,
                                const PLT_HttpRequestContext& context)
 {
-  m_logger->debug("Received Search request for object '{}' with search '{}'",
-        object_id,
-        search_criteria);
+  m_logger->debug("Received Search request for object '{}' with search '{}'", object_id,
+                  search_criteria);
 
-    NPT_String id = object_id;
-    if (id.StartsWith("musicdb://")) {
-        // we browse for all tracks given a genre, artist or album
-        if (NPT_String(search_criteria).Find("object.item.audioItem") >= 0) {
-            if (!id.EndsWith("/")) id += "/";
-            NPT_Cardinal count = id.SubString(10).Split("/").GetItemCount();
-            // remove extra empty node count
-            count = count?count-1:0;
+  NPT_String id = object_id;
+  if (id.StartsWith("musicdb://"))
+  {
+    // we browse for all tracks given a genre, artist or album
+    if (NPT_String(search_criteria).Find("object.item.audioItem") >= 0)
+    {
+      if (!id.EndsWith("/"))
+        id += "/";
+      NPT_Cardinal count = id.SubString(10).Split("/").GetItemCount();
+      // remove extra empty node count
+      count = count ? count - 1 : 0;
 
-            // genre
-            if (id.StartsWith("musicdb://genres/")) {
-                // all tracks of all genres
-                if (count == 1)
-                    id += "-1/-1/-1/";
-                // all tracks of a specific genre
-                else if (count == 2)
-                    id += "-1/-1/";
-                // all tracks of a specific genre of a specific artist
-                else if (count == 3)
-                    id += "-1/";
-            } else if (id.StartsWith("musicdb://artists/")) {
-                // all tracks by all artists
-                if (count == 1)
-                    id += "-1/-1/";
-                // all tracks of a specific artist
-                else if (count == 2)
-                    id += "-1/";
-            } else if (id.StartsWith("musicdb://albums/")) {
-                // all albums ?
-                if (count == 1) id += "-1/";
-            }
-        }
-        return OnBrowseDirectChildren(action, id, filter, starting_index, requested_count, sort_criteria, context);
+      // genre
+      if (id.StartsWith("musicdb://genres/"))
+      {
+        // all tracks of all genres
+        if (count == 1)
+          id += "-1/-1/-1/";
+        // all tracks of a specific genre
+        else if (count == 2)
+          id += "-1/-1/";
+        // all tracks of a specific genre of a specific artist
+        else if (count == 3)
+          id += "-1/";
+      }
+      else if (id.StartsWith("musicdb://artists/"))
+      {
+        // all tracks by all artists
+        if (count == 1)
+          id += "-1/-1/";
+        // all tracks of a specific artist
+        else if (count == 2)
+          id += "-1/";
+      }
+      else if (id.StartsWith("musicdb://albums/"))
+      {
+        // all albums ?
+        if (count == 1)
+          id += "-1/";
+      }
+    }
+    return OnBrowseDirectChildren(action, id, filter, starting_index, requested_count,
+                                  sort_criteria, context);
     } else if (NPT_String(search_criteria).Find("object.item.audioItem") >= 0) {
         // look for artist, album & genre filters
         NPT_String genre = FindSubCriteria(search_criteria, "upnp:genre");
@@ -1014,8 +1021,8 @@ CUPnPServer::OnUpdateObject(PLT_ActionReference&             action,
     std::string path(CURL::Decode(object_id));
     CFileItem updated;
     updated.SetPath(path);
-    m_logger->info("OnUpdateObject: {} from {}",
-      path, (const char*) context.GetRemoteAddress().GetIpAddress().ToString());
+    m_logger->info("OnUpdateObject: {} from {}", path,
+                   (const char*)context.GetRemoteAddress().GetIpAddress().ToString());
 
     NPT_String playCount, position;
     int err;
@@ -1132,10 +1139,10 @@ error:
     msg = "Internal error";
 
 failure:
-    m_logger->error("OnUpdateObject failed with err {}: {}", err, msg);
-    action->SetError(err, msg);
-    service->PauseEventing(false);
-    return NPT_FAILURE;
+  m_logger->error("OnUpdateObject failed with err {}: {}", err, msg);
+  action->SetError(err, msg);
+  service->PauseEventing(false);
+  return NPT_FAILURE;
 }
 
 /*----------------------------------------------------------------------
@@ -1152,7 +1159,8 @@ CUPnPServer::ServeFile(const NPT_HttpRequest&              request,
     { NPT_AutoLock lock(m_FileMutex);
       if(NPT_SUCCEEDED(m_FileMap.Get(md5, file_path2))) {
         file_path = *file_path2;
-        m_logger->debug("Received request to serve '{}' = '{}'", (const char*)md5, (const char*)file_path);
+        m_logger->debug("Received request to serve '{}' = '{}'", (const char*)md5,
+                        (const char*)file_path);
       } else {
         m_logger->debug("Received request to serve unknown md5 '{}'", (const char*)md5);
         response.SetStatus(404, "File Not Found");
@@ -1227,8 +1235,7 @@ CUPnPServer::ServeFile(const NPT_HttpRequest&              request,
 |
 |   return true if sort criteria was matched
 +---------------------------------------------------------------------*/
-bool
-CUPnPServer::SortItems(CFileItemList& items, const char* sort_criteria, Logger logger)
+bool CUPnPServer::SortItems(CFileItemList& items, const char* sort_criteria, Logger logger)
 {
   std::string criteria(sort_criteria);
   if (criteria.empty()) {
@@ -1289,7 +1296,8 @@ CUPnPServer::SortItems(CFileItemList& items, const char* sort_criteria, Logger l
       continue; // needed so unidentified sort methods don't re-sort by label
     }
 
-    logger->info("Sorting by method {}, order {}, attributes {}", sorting.sortBy, sorting.sortOrder, sorting.sortAttributes);
+    logger->info("Sorting by method {}, order {}, attributes {}", sorting.sortBy, sorting.sortOrder,
+                 sorting.sortAttributes);
     items.Sort(sorting);
     sorted = true;
   }

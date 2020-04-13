@@ -45,19 +45,19 @@ NPT_SET_LOCAL_LOGGER("xbmc.upnp.player")
 namespace UPNP
 {
 
-class CUPnPPlayerController
-  : public PLT_MediaControllerDelegate
-  , protected CStaticLoggerBase
+class CUPnPPlayerController : public PLT_MediaControllerDelegate, protected CStaticLoggerBase
 {
 public:
-  CUPnPPlayerController(PLT_MediaController* control, PLT_DeviceDataReference& device, IPlayerCallback& callback)
-    : CStaticLoggerBase("CUPnPPlayerController")
-    , m_control(control)
-    , m_transport(NULL)
-    , m_device(device)
-    , m_instance(0)
-    , m_callback(callback)
-    , m_postime(0)
+  CUPnPPlayerController(PLT_MediaController* control,
+                        PLT_DeviceDataReference& device,
+                        IPlayerCallback& callback)
+    : CStaticLoggerBase("CUPnPPlayerController"),
+      m_control(control),
+      m_transport(NULL),
+      m_device(device),
+      m_instance(0),
+      m_callback(callback),
+      m_postime(0)
   {
     m_posinfo = {};
     m_device->FindServiceByType("urn:schemas-upnp-org:service:AVTransport:1", m_transport);
@@ -158,12 +158,12 @@ public:
 };
 
 CUPnPPlayer::CUPnPPlayer(IPlayerCallback& callback, const char* uuid)
-: IPlayer(callback)
-, m_control(NULL)
-, m_delegate(NULL)
-, m_started(false)
-, m_stopremote(false)
-, m_logger(CServiceBroker::GetLogging().GetLogger(StringUtils::Format("CUPnPPlayer[{}]", uuid)))
+  : IPlayer(callback),
+    m_control(NULL),
+    m_delegate(NULL),
+    m_started(false),
+    m_stopremote(false),
+    m_logger(CServiceBroker::GetLogging().GetLogger(StringUtils::Format("CUPnPPlayer[{}]", uuid)))
 {
   m_control  = CUPnP::GetInstance()->m_MediaController;
 

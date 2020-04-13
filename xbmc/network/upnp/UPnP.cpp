@@ -93,11 +93,11 @@ NPT_Console::Output(const char* msg) { }
 spdlog::level::level_enum ConvertLogLevel(int nptLogLevel)
 {
     if (nptLogLevel >= NPT_LOG_LEVEL_FATAL)
-        return spdlog::level::critical;
+      return spdlog::level::critical;
     if (nptLogLevel >= NPT_LOG_LEVEL_SEVERE)
-        return spdlog::level::err;
+      return spdlog::level::err;
     if (nptLogLevel >= NPT_LOG_LEVEL_WARNING)
-        return spdlog::level::warn;
+      return spdlog::level::warn;
     if (nptLogLevel >= NPT_LOG_LEVEL_FINE)
       return spdlog::level::info;
     if (nptLogLevel >= NPT_LOG_LEVEL_FINER)
@@ -109,9 +109,10 @@ spdlog::level::level_enum ConvertLogLevel(int nptLogLevel)
 void
 UPnPLogger(const NPT_LogRecord* record)
 {
-    static Logger logger = CServiceBroker::GetLogging().GetLogger("Platinum");
-    if (CServiceBroker::GetLogging().CanLogComponent(LOGUPNP))
-        logger->log(ConvertLogLevel(record->m_Level), "[{}]: {}", record->m_LoggerName, record->m_Message);
+  static Logger logger = CServiceBroker::GetLogging().GetLogger("Platinum");
+  if (CServiceBroker::GetLogging().CanLogComponent(LOGUPNP))
+    logger->log(ConvertLogLevel(record->m_Level), "[{}]: {}", record->m_LoggerName,
+                record->m_Message);
 }
 
 namespace UPNP
@@ -164,11 +165,10 @@ class CMediaBrowser : public PLT_SyncMediaBrowser,
                       protected CStaticLoggerBase
 {
 public:
-    explicit CMediaBrowser(PLT_CtrlPointReference& ctrlPoint)
-        : PLT_SyncMediaBrowser(ctrlPoint, true)
-        , CStaticLoggerBase("UPNP::CMediaBrowser")
-    {
-        SetContainerListener(this);
+  explicit CMediaBrowser(PLT_CtrlPointReference& ctrlPoint)
+    : PLT_SyncMediaBrowser(ctrlPoint, true), CStaticLoggerBase("UPNP::CMediaBrowser")
+  {
+    SetContainerListener(this);
     }
 
     // PLT_MediaBrowser methods
@@ -218,7 +218,8 @@ public:
         }
         else {
           s_logger->debug("Marking video item {} as watched", item.GetPath());
-            return InvokeUpdateObject(item.GetPath().c_str(), "<upnp:playCount>1</upnp:playCount>", "<upnp:playCount>0</upnp:playCount>");
+          return InvokeUpdateObject(item.GetPath().c_str(), "<upnp:playCount>1</upnp:playCount>",
+                                    "<upnp:playCount>0</upnp:playCount>");
         }
     }
 
@@ -234,24 +235,30 @@ public:
 
         if (item.GetVideoInfoTag()->GetResumePoint().timeInSeconds != bookmark.timeInSeconds) {
           s_logger->debug("Updating resume point for item {}", path);
-            long time = (long)bookmark.timeInSeconds;
-            if (time < 0) time = 0;
-            curr_value.Append(NPT_String::Format("<upnp:lastPlaybackPosition>%ld</upnp:lastPlaybackPosition>",
-                                                 (long)item.GetVideoInfoTag()->GetResumePoint().timeInSeconds));
-            curr_value += "<xbmc:lastPlayerState>";
-            PLT_Didl::AppendXmlEscape(curr_value, item.GetVideoInfoTag()->GetResumePoint().playerState.c_str());
-            curr_value += "</xbmc:lastPlayerState>";
-            new_value.Append(NPT_String::Format("<upnp:lastPlaybackPosition>%ld</upnp:lastPlaybackPosition>", time));
-            new_value += "<xbmc:lastPlayerState>";
-            PLT_Didl::AppendXmlEscape(new_value, bookmark.playerState.c_str());
-            new_value += "</xbmc:lastPlayerState>";
+          long time = (long)bookmark.timeInSeconds;
+          if (time < 0)
+            time = 0;
+          curr_value.Append(
+              NPT_String::Format("<upnp:lastPlaybackPosition>%ld</upnp:lastPlaybackPosition>",
+                                 (long)item.GetVideoInfoTag()->GetResumePoint().timeInSeconds));
+          curr_value += "<xbmc:lastPlayerState>";
+          PLT_Didl::AppendXmlEscape(curr_value,
+                                    item.GetVideoInfoTag()->GetResumePoint().playerState.c_str());
+          curr_value += "</xbmc:lastPlayerState>";
+          new_value.Append(NPT_String::Format(
+              "<upnp:lastPlaybackPosition>%ld</upnp:lastPlaybackPosition>", time));
+          new_value += "<xbmc:lastPlayerState>";
+          PLT_Didl::AppendXmlEscape(new_value, bookmark.playerState.c_str());
+          new_value += "</xbmc:lastPlayerState>";
         }
         if (updatePlayCount) {
           s_logger->debug("Marking video item {} as watched", path);
-            if (!curr_value.IsEmpty()) curr_value.Append(",");
-            if (!new_value.IsEmpty()) new_value.Append(",");
-            curr_value.Append("<upnp:playCount>0</upnp:playCount>");
-            new_value.Append("<upnp:playCount>1</upnp:playCount>");
+          if (!curr_value.IsEmpty())
+            curr_value.Append(",");
+          if (!new_value.IsEmpty())
+            new_value.Append(",");
+          curr_value.Append("<upnp:playCount>0</upnp:playCount>");
+          new_value.Append("<upnp:playCount>1</upnp:playCount>");
         }
 
         return InvokeUpdateObject(path.c_str(), (const char*)curr_value, (const char*)new_value);
@@ -286,8 +293,8 @@ public:
         return true;
 
     failed:
-        s_logger->info("invoking UpdateObject failed");
-        return false;
+      s_logger->info("invoking UpdateObject failed");
+      return false;
     }
 };
 
