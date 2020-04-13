@@ -8,15 +8,15 @@
 
 #include "SettingUpdate.h"
 
-#include "SettingDefinitions.h"
 #include "ServiceBroker.h"
+#include "SettingDefinitions.h"
 #include "utils/StringUtils.h"
 #include "utils/XBMCTinyXML.h"
 #include "utils/log.h"
 
-CSettingUpdate::CSettingUpdate()
-  : CStaticLoggerBase("CSettingUpdate")
-{}
+CSettingUpdate::CSettingUpdate() : CStaticLoggerBase("CSettingUpdate")
+{
+}
 
 bool CSettingUpdate::Deserialize(const TiXmlNode *node)
 {

@@ -8,9 +8,9 @@
 
 #include "SettingSection.h"
 
+#include "ServiceBroker.h"
 #include "SettingDefinitions.h"
 #include "SettingsManager.h"
-#include "ServiceBroker.h"
 #include "utils/StringUtils.h"
 #include "utils/XBMCTinyXML.h"
 #include "utils/log.h"
@@ -53,9 +53,9 @@ template<class T> void addISetting(const TiXmlNode *node, const T &item, std::ve
   items.push_back(item);
 }
 
-CSettingGroup::CSettingGroup(const std::string &id, CSettingsManager *settingsManager /* = nullptr */)
-  : ISetting(id, settingsManager)
-  , CStaticLoggerBase("CSettingGroup")
+CSettingGroup::CSettingGroup(const std::string& id,
+                             CSettingsManager* settingsManager /* = nullptr */)
+  : ISetting(id, settingsManager), CStaticLoggerBase("CSettingGroup")
 { }
 
 bool CSettingGroup::Deserialize(const TiXmlNode *node, bool update /* = false */)
@@ -174,10 +174,11 @@ bool CSettingGroup::ReplaceSetting(std::shared_ptr<const CSetting> currentSettin
   return false;
 }
 
-CSettingCategory::CSettingCategory(const std::string &id, CSettingsManager *settingsManager /* = nullptr */)
-  : ISetting(id, settingsManager)
-  , CStaticLoggerBase("CSettingCategory")
-  , m_accessCondition(settingsManager)
+CSettingCategory::CSettingCategory(const std::string& id,
+                                   CSettingsManager* settingsManager /* = nullptr */)
+  : ISetting(id, settingsManager),
+    CStaticLoggerBase("CSettingCategory"),
+    m_accessCondition(settingsManager)
 { }
 
 bool CSettingCategory::Deserialize(const TiXmlNode *node, bool update /* = false */)
@@ -253,9 +254,9 @@ void CSettingCategory::AddGroups(const SettingGroupList &groups)
     addISetting(nullptr, group, m_groups);
 }
 
-CSettingSection::CSettingSection(const std::string &id, CSettingsManager *settingsManager /* = nullptr */)
-  : ISetting(id, settingsManager)
-  , CStaticLoggerBase("CSettingSection")
+CSettingSection::CSettingSection(const std::string& id,
+                                 CSettingsManager* settingsManager /* = nullptr */)
+  : ISetting(id, settingsManager), CStaticLoggerBase("CSettingSection")
 { }
 
 bool CSettingSection::Deserialize(const TiXmlNode *node, bool update /* = false */)

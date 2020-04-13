@@ -38,9 +38,11 @@ class TiXmlNode;
  \brief Settings manager responsible for initializing, loading and handling
  all settings.
  */
-class CSettingsManager : public ISettingCreator, public ISettingControlCreator,
+class CSettingsManager : public ISettingCreator,
+                         public ISettingControlCreator,
                          protected CStaticLoggerBase,
-                         private ISettingCallback, private ISettingsHandler
+                         private ISettingCallback,
+                         private ISettingsHandler
 {
 public:
   /*!

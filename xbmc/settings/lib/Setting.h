@@ -47,8 +47,10 @@ class CSetting : public ISetting,
                  protected CStaticLoggerBase
 {
 public:
-  CSetting(const std::string &id, CSettingsManager *settingsManager = nullptr, const std::string& name = "CSetting");
-  CSetting(const std::string &id, const CSetting &setting, const std::string& name = "CSetting");
+  CSetting(const std::string& id,
+           CSettingsManager* settingsManager = nullptr,
+           const std::string& name = "CSetting");
+  CSetting(const std::string& id, const CSetting& setting, const std::string& name = "CSetting");
   ~CSetting() override = default;
 
   virtual std::shared_ptr<CSetting> Clone(const std::string &id) const = 0;
@@ -133,10 +135,14 @@ public:
   static SettingType Type() { return TSettingType; }
 
 protected:
-  CTraitedSetting(const std::string &id, CSettingsManager *settingsManager = nullptr, const std::string& name = "CTraitedSetting")
+  CTraitedSetting(const std::string& id,
+                  CSettingsManager* settingsManager = nullptr,
+                  const std::string& name = "CTraitedSetting")
     : CSetting(id, settingsManager, name)
   { }
-  CTraitedSetting(const std::string &id, const CTraitedSetting &setting, const std::string& name = "CTraitedSetting")
+  CTraitedSetting(const std::string& id,
+                  const CTraitedSetting& setting,
+                  const std::string& name = "CTraitedSetting")
     : CSetting(id, setting, name)
   { }
   ~CTraitedSetting() override = default;

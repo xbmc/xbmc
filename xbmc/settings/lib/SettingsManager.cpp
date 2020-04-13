@@ -8,10 +8,10 @@
 
 #include "SettingsManager.h"
 
+#include "ServiceBroker.h"
 #include "Setting.h"
 #include "SettingDefinitions.h"
 #include "SettingSection.h"
-#include "ServiceBroker.h"
 #include "utils/StringUtils.h"
 #include "utils/XBMCTinyXML.h"
 #include "utils/log.h"
@@ -51,9 +51,9 @@ bool ParseSettingIdentifier(const std::string& settingId, std::string& categoryT
   return true;
 }
 
-CSettingsManager::CSettingsManager()
-  : CStaticLoggerBase("CSettingsManager")
-{}
+CSettingsManager::CSettingsManager() : CStaticLoggerBase("CSettingsManager")
+{
+}
 
 CSettingsManager::~CSettingsManager()
 {
@@ -84,7 +84,8 @@ bool CSettingsManager::Initialize(const TiXmlElement *root)
 
   if (!StringUtils::EqualsNoCase(root->ValueStr(), SETTING_XML_ROOT))
   {
-    s_logger->error("error reading settings definition: doesn't contain <" SETTING_XML_ROOT "> tag");
+    s_logger->error("error reading settings definition: doesn't contain <" SETTING_XML_ROOT
+                    "> tag");
     return false;
   }
 
@@ -95,12 +96,14 @@ bool CSettingsManager::Initialize(const TiXmlElement *root)
 
   if (MinimumSupportedVersion >= version+1)
   {
-    s_logger->error("unable to read setting definitions from version {} (minimum version: {})", version, MinimumSupportedVersion);
+    s_logger->error("unable to read setting definitions from version {} (minimum version: {})",
+                    version, MinimumSupportedVersion);
     return false;
   }
   if (version > Version)
   {
-    s_logger->error("unable to read setting definitions from version {} (current version: {})", version, Version);
+    s_logger->error("unable to read setting definitions from version {} (current version: {})",
+                    version, Version);
     return false;
   }
 
@@ -149,12 +152,14 @@ bool CSettingsManager::Load(const TiXmlElement *root, bool &updated, bool trigge
 
   if (MinimumSupportedVersion >= version+1)
   {
-    s_logger->error("unable to read setting values from version {} (minimum version: {})", version, MinimumSupportedVersion);
+    s_logger->error("unable to read setting values from version {} (minimum version: {})", version,
+                    MinimumSupportedVersion);
     return false;
   }
   if (version > Version)
   {
-    s_logger->error("unable to read setting values from version {} (current version: {})", version, Version);
+    s_logger->error("unable to read setting values from version {} (current version: {})", version,
+                    Version);
     return false;
   }
 
@@ -759,7 +764,8 @@ bool CSettingsManager::Serialize(TiXmlNode *parent) const
 
     if (parent->InsertEndChild(settingElement) == nullptr)
     {
-      s_logger->warn("unable to write <" SETTING_XML_ELM_SETTING " id=\"{}\"> tag", setting.second.setting->GetId());
+      s_logger->warn("unable to write <" SETTING_XML_ELM_SETTING " id=\"{}\"> tag",
+                     setting.second.setting->GetId());
       continue;
     }
   }
@@ -1142,7 +1148,8 @@ bool CSettingsManager::UpdateSetting(const TiXmlNode *node, SettingPtr setting, 
     if (setting->FromString(oldSettingNode->FirstChild() != nullptr ? oldSettingNode->FirstChild()->ValueStr() : StringUtils::Empty))
       updated = true;
     else
-      s_logger->warn("unable to update \"{}\" through automatically renaming from \"{}\"", setting->GetId(), oldSetting);
+      s_logger->warn("unable to update \"{}\" through automatically renaming from \"{}\"",
+                     setting->GetId(), oldSetting);
   }
 
   updated |= OnSettingUpdate(setting, oldSetting, oldSettingNode);

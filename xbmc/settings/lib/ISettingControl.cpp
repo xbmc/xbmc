@@ -8,15 +8,15 @@
 
 #include "ISettingControl.h"
 
-#include "SettingDefinitions.h"
 #include "ServiceBroker.h"
+#include "SettingDefinitions.h"
 #include "utils/StringUtils.h"
 #include "utils/XBMCTinyXML.h"
 #include "utils/log.h"
 
-ISettingControl::ISettingControl()
-  : CStaticLoggerBase("ISettingControl")
-{}
+ISettingControl::ISettingControl() : CStaticLoggerBase("ISettingControl")
+{
+}
 
 bool ISettingControl::Deserialize(const TiXmlNode *node, bool update /* = false */)
 {
