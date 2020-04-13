@@ -414,7 +414,8 @@ int CWebServer::FinalizeRequest(const std::shared_ptr<IHTTPRequestHandler>& hand
 
   // add MHD_HTTP_HEADER_CONTENT_LENGTH
   if (responseDetails.totalLength > 0)
-    handler->AddResponseHeader(MHD_HTTP_HEADER_CONTENT_LENGTH, StringUtils::Format("{}", responseDetails.totalLength));
+    handler->AddResponseHeader(MHD_HTTP_HEADER_CONTENT_LENGTH,
+                               StringUtils::Format("{}", responseDetails.totalLength));
 
   // add all headers set by the request handler
   for (const auto& it : responseDetails.headers)
@@ -521,7 +522,9 @@ bool CWebServer::ProcessPostData(const HTTPRequest& request, ConnectionHandler *
 {
   if (connectionHandler->requestHandler == nullptr)
   {
-    m_logger->error("cannot handle partial HTTP POST for {} request because there is no valid request handler available", request.pathUrl);
+    m_logger->error("cannot handle partial HTTP POST for {} request because there is no valid "
+                    "request handler available",
+                    request.pathUrl);
     connectionHandler->errorStatus = MHD_HTTP_INTERNAL_SERVER_ERROR;
   }
 
@@ -586,7 +589,9 @@ int CWebServer::CreateMemoryDownloadResponse(const std::shared_ptr<IHTTPRequestH
   if ((request.ranges.IsEmpty() && responseRanges.size() > 1) ||
      (!request.ranges.IsEmpty() && responseRanges.size() > request.ranges.Size()))
   {
-    m_logger->warn("response contains more ranges ({}) than the request asked for ({})", static_cast<int>(responseRanges.size()), static_cast<int>(request.ranges.Size()));
+    m_logger->warn("response contains more ranges ({}) than the request asked for ({})",
+                   static_cast<int>(responseRanges.size()),
+                   static_cast<int>(request.ranges.Size()));
     return SendErrorResponse(request, MHD_HTTP_INTERNAL_SERVER_ERROR, request.method);
   }
 
@@ -598,7 +603,8 @@ int CWebServer::CreateMemoryDownloadResponse(const std::shared_ptr<IHTTPRequestH
     // check if the range is valid
     if (!responseRange.IsValid())
     {
-      m_logger->warn("invalid response data with range start at {} and end at {}", responseRange.GetFirstPosition(), responseRange.GetLastPosition());
+      m_logger->warn("invalid response data with range start at {} and end at {}",
+                     responseRange.GetFirstPosition(), responseRange.GetLastPosition());
       return SendErrorResponse(request, MHD_HTTP_INTERNAL_SERVER_ERROR, request.method);
     }
 
@@ -701,7 +707,8 @@ int CWebServer::CreateRangedMemoryDownloadResponse(const std::shared_ptr<IHTTPRe
   result += HttpRangeUtils::GenerateMultipartBoundaryEnd(multipartBoundary);
 
   // add Content-Length header
-  handler->AddResponseHeader(MHD_HTTP_HEADER_CONTENT_LENGTH, StringUtils::Format("{}", static_cast<uint64_t>(result.size())));
+  handler->AddResponseHeader(MHD_HTTP_HEADER_CONTENT_LENGTH,
+                             StringUtils::Format("{}", static_cast<uint64_t>(result.size())));
 
   // finally create the response
   return CreateMemoryDownloadResponse(request.connection, result.c_str(), result.size(), false, true, response);
@@ -828,7 +835,8 @@ int CWebServer::CreateFileDownloadResponse(const std::shared_ptr<IHTTPRequestHan
                                                   &CWebServer::ContentReaderFreeCallback);
     if (response == nullptr)
     {
-      m_logger->error("failed to create a HTTP response for {} to be filled from{}", request.pathUrl, filePath);
+      m_logger->error("failed to create a HTTP response for {} to be filled from{}",
+                      request.pathUrl, filePath);
       return MHD_NO;
     }
 
@@ -847,7 +855,8 @@ int CWebServer::CreateFileDownloadResponse(const std::shared_ptr<IHTTPRequestHan
       return MHD_NO;
     }
 
-    handler->AddResponseHeader(MHD_HTTP_HEADER_CONTENT_LENGTH, StringUtils::Format("{}", fileLength));
+    handler->AddResponseHeader(MHD_HTTP_HEADER_CONTENT_LENGTH,
+                               StringUtils::Format("{}", fileLength));
   }
 
   // set the Content-Type header
@@ -1019,7 +1028,8 @@ ssize_t CWebServer::ContentReaderCallback(void *cls, uint64_t pos, char *buf, si
   written += res;
 
   if (CServiceBroker::GetLogging().CanLogComponent(LOGWEBSERVER))
-    s_logger->debug("[OUT] wrote {} bytes from {} in range ({} - {})", written, context->writePosition, start, end);
+    s_logger->debug("[OUT] wrote {} bytes from {} in range ({} - {})", written,
+                    context->writePosition, start, end);
 
   // update the current write position
   context->writePosition += res;
@@ -1054,8 +1064,8 @@ static Logger GetMhdLogger()
 // local helper
 static void panicHandlerForMHD(void* unused, const char* file, unsigned int line, const char *reason)
 {
-  GetMhdLogger()->critical("serious error: reason \"{}\" in file \"{}\" at line {}", reason ? reason : "",
-            file ? file : "", line);
+  GetMhdLogger()->critical("serious error: reason \"{}\" in file \"{}\" at line {}",
+                           reason ? reason : "", file ? file : "", line);
   throw std::runtime_error("MHD serious error"); // FIXME: better solution?
 }
 
@@ -1074,7 +1084,7 @@ static void logFromMHD(void* unused, const char* fmt, va_list ap)
     {
       if (errDsc.at(errDsc.length() - 1) == '\n')
         errDsc.erase(errDsc.length() - 1);
-      
+
       // Most common error is "aborted connection", so log it at LOGDEBUG level
       GetMhdLogger()->debug(errDsc);
     }
@@ -1111,7 +1121,8 @@ bool CWebServer::LoadCert(std::string &skey, std::string &scert)
 
   if (!skey.empty() && !scert.empty())
   {
-    m_logger->info("{}: found server key: {}, certificate: {}, HTTPS support enabled", __FUNCTION__, keyFile, certFile);
+    m_logger->info("{}: found server key: {}, certificate: {}, HTTPS support enabled", __FUNCTION__,
+                   keyFile, certFile);
     return true;
   }
   return false;
@@ -1278,7 +1289,8 @@ void CWebServer::LogRequest(const HTTPRequest& request) const
   std::multimap<std::string, std::string> getValues;
   HTTPRequestHandlerUtils::GetRequestHeaderValues(request.connection, MHD_GET_ARGUMENT_KIND, getValues);
 
-  m_logger->debug(" [IN] {} {} {}", request.version, GetHTTPMethod(request.method), request.pathUrlFull);
+  m_logger->debug(" [IN] {} {} {}", request.version, GetHTTPMethod(request.method),
+                  request.pathUrlFull);
 
   if (!getValues.empty())
   {
