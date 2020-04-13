@@ -300,7 +300,7 @@ int DllLoader::ResolveImports(void)
           {
             bResult = 0;
             char szBuf[128];
-            CLog::Log(LOGDEBUG,"Unable to resolve ordinal %s %lu", Name, *Table&0x7ffffff);
+            CLog::Log(LOGDEBUG, "Unable to resolve ordinal %s %lu", Name, *Table & 0x7ffffff);
             sprintf(szBuf, "%lu", *Table&0x7ffffff);
             *Addr = create_dummy_function(Name, szBuf);
             tracker_dll_data_track(this, *Addr);
@@ -321,7 +321,7 @@ int DllLoader::ResolveImports(void)
             *Addr=get_win_function_address(Name, ImpName);
             if(!*Addr)
             {
-              CLog::Log(LOGDEBUG,"Unable to resolve %s %s", Name, ImpName);
+              CLog::Log(LOGDEBUG, "Unable to resolve %s %s", Name, ImpName);
               *Addr = create_dummy_function(Name, ImpName);
               tracker_dll_data_track(this, *Addr);
               bResult = 0;

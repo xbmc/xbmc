@@ -228,7 +228,8 @@ bool CColorManager::GetVideo3dLut(int videoFlags, int *cmsToken, CMS_DATA_FORMAT
 #endif  //defined(HAVE_LCMS2)
 
   default:
-    CLog::Log(LOGDEBUG, "ColorManager: unknown CMS mode %d", settings->GetInt("videoscreen.cmsmode"));
+    CLog::Log(LOGDEBUG, "ColorManager: unknown CMS mode %d",
+              settings->GetInt("videoscreen.cmsmode"));
     return false;
   }
 
@@ -468,9 +469,7 @@ cmsToneCurve* CColorManager::CreateToneCurve(CMS_TRC_TYPE gammaType, float gamma
       }
       gammaValue = gammaGuess;
       CLog::Log(LOGINFO, "calculated technical gamma %0.3f (50%% target %0.4f, output %0.4f)",
-        gammaValue,
-        TARGET(effectiveGamma),
-        HALFPT(blackPoint.Y, gammaValue));
+                gammaValue, TARGET(effectiveGamma), HALFPT(blackPoint.Y, gammaValue));
 #undef TARGET
 #undef GAIN
 #undef LIFT
@@ -601,11 +600,9 @@ void CColorManager::Create3dLut(cmsHTRANSFORM transform, CMS_DATA_FORMAT format,
   for (int y=0; y<lutResolution; y+=1)
   {
     int index = components*(y*lutResolution*lutResolution + y*lutResolution + y);
-    CLog::Log(LOGDEBUG, "  %d (%d): %d %d %d",
-        (int)round(y * 255 / (lutResolution-1.0)), y,
-        (int)round(clutData[index+0]),
-        (int)round(clutData[index+1]),
-        (int)round(clutData[index+2]));
+    CLog::Log(LOGDEBUG, "  %d (%d): %d %d %d", (int)round(y * 255 / (lutResolution - 1.0)), y,
+              (int)round(clutData[index + 0]), (int)round(clutData[index + 1]),
+              (int)round(clutData[index + 2]));
   }
   delete[] input;
   delete[] output;

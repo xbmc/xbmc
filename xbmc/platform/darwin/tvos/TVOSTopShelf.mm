@@ -56,8 +56,8 @@ void CTVOSTopShelf::SetTopShelfItems(CFileItemList& movies, CFileItemList& tv)
 
     storeUrl = [storeUrl URLByAppendingPathComponent:@"RA" isDirectory:YES];
     const BOOL isJailbroken = [tvosShared isJailbroken];
-    CLog::Log(LOGDEBUG, "TopShelf: using shared path {} (jailbroken: {})",
-              storeUrl.path.UTF8String, isJailbroken ? "yes" : "no");
+    CLog::Log(LOGDEBUG, "TopShelf: using shared path {} (jailbroken: {})", storeUrl.path.UTF8String,
+              isJailbroken ? "yes" : "no");
 
     auto sharedDefaults = [[NSUserDefaults alloc] initWithSuiteName:[tvosShared getSharedID]];
     auto sharedDictJailbreak = isJailbroken ? [[NSMutableDictionary alloc] initWithCapacity:2 + 2]

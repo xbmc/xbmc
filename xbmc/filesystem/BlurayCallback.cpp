@@ -57,7 +57,8 @@ BD_DIR_H* CBlurayCallback::dir_open(void *handle, const char* rel_path)
   if (!CDirectory::GetDirectory(strDirname, st->list, "", DIR_FLAG_DEFAULTS))
   {
     if (!CFile::Exists(strDirname))
-      CLog::Log(LOGDEBUG, "CBlurayCallback - Error opening dir! (%s)", CURL::GetRedacted(strDirname).c_str());
+      CLog::Log(LOGDEBUG, "CBlurayCallback - Error opening dir! (%s)",
+                CURL::GetRedacted(strDirname).c_str());
     delete st;
     return nullptr;
   }
