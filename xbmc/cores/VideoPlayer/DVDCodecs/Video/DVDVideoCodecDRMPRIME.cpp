@@ -356,9 +356,7 @@ void CDVDVideoCodecDRMPRIME::SetPictureParams(VideoPicture* pVideoPicture)
   pVideoPicture->iFlags |= m_pFrame->interlaced_frame ? DVP_FLAG_INTERLACED : 0;
   pVideoPicture->iFlags |= m_pFrame->top_field_first ? DVP_FLAG_TOP_FIELD_FIRST : 0;
 
-  int64_t pts = m_pFrame->pts;
-  if (pts == AV_NOPTS_VALUE)
-    pts = m_pFrame->best_effort_timestamp;
+  int64_t pts = m_pFrame->best_effort_timestamp;
   pVideoPicture->pts = (pts == AV_NOPTS_VALUE)
                            ? DVD_NOPTS_VALUE
                            : static_cast<double>(pts) * DVD_TIME_BASE / AV_TIME_BASE;
