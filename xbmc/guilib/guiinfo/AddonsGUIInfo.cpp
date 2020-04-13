@@ -6,15 +6,15 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include "guilib/guiinfo/AddonsGUIInfo.h"
-
-#include "FileItem.h"
-#include "ServiceBroker.h"
 #include "addons/Addon.h"
 #include "addons/AddonManager.h"
 #include "guilib/LocalizeStrings.h"
+#include "guilib/guiinfo/AddonsGUIInfo.h"
 #include "guilib/guiinfo/GUIInfo.h"
 #include "guilib/guiinfo/GUIInfoLabels.h"
+#include "FileItem.h"
+#include "plugins/CPluginExecutor.h"
+#include "ServiceBroker.h"
 #include "utils/StringUtils.h"
 
 using namespace KODI::GUILIB::GUIINFO;
@@ -176,6 +176,9 @@ bool CAddonsGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int context
         value = !CServiceBroker::GetAddonMgr().IsAddonDisabled(info.GetData3());
       return true;
     }
+    case SYSTEM_ADDON_IS_BUSY:
+      value = CServiceBroker::GetPluginExecutor().IsBusy();
+      return true;
   }
 
   return false;

@@ -40,6 +40,7 @@ xbmc/messaging/helpers                          messagingHelpers
 xbmc/pictures                                   pictures
 xbmc/platform                                   platform
 xbmc/playlists                                  playlists
+xbmc/plugins                                    plugins
 xbmc/powermanagement                            powermanagement
 xbmc/programs                                   programs
 xbmc/rendering                                  rendering

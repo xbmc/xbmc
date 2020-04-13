@@ -309,6 +309,10 @@ bool CPlayListPlayer::Play(int iSong, std::string player, bool bAutoPlay /* = fa
 
   unsigned int playAttempt = XbmcThreads::SystemClockMillis();
   bool ret = g_application.PlayFile(*item, player, bAutoPlay);
+  // Plugin items must have been resolved asyncronously when we get here!
+  if (URIUtils::IsPlugin(item->GetDynPath()))
+    return false;
+  
   if (!ret)
   {
     CLog::Log(LOGERROR,"Playlist Player: skipping unplayable item: %i, path [%s]", m_iCurrentSong, CURL::GetRedacted(item->GetPath()).c_str());
@@ -863,7 +867,7 @@ void PLAYLIST::CPlayListPlayer::OnApplicationMessage(KODI::MESSAGING::ThreadMess
     g_application.ResetScreenSaver();
     g_application.WakeUpScreenSaverAndDPMS();
 
-    // first check if we were called from the PlayFile() function
+    // first check if we were called from the PlayFile() function or from an async plugin resolution
     if (pMsg->lpVoid && pMsg->param2 == 0)
     {
       // Discard the current playlist, if TMSG_MEDIA_PLAY gets posted with just a single item.
@@ -899,13 +903,17 @@ void PLAYLIST::CPlayListPlayer::OnApplicationMessage(KODI::MESSAGING::ThreadMess
         if (list->Size() == 1 && !(*list)[0]->IsPlayList())
         {
           CFileItemPtr item = (*list)[0];
+
           // if the item is a plugin we need to resolve the URL to ensure the infotags are filled.
-          // resolve only for a maximum of 5 times to avoid deadlocks (plugin:// paths can resolve to plugin:// paths)
-          for (int i = 0; URIUtils::IsPlugin(item->GetDynPath()) && i < 5; ++i)
+          if (URIUtils::IsPlugin(item->GetDynPath()))
           {
-            if (!XFILE::CPluginDirectory::GetPluginResult(item->GetDynPath(), *item, true))
-              return;
+            CApplicationMessenger::GetInstance().PostMsg(TMSG_PLUGIN_EXECUTOR_GET_RESULT,
+                                                         TMSG_MEDIA_PLAY,
+                                                         true,
+            static_cast<void*>(item.get()));
+            return;
           }
+
           if (item->IsAudio() || item->IsVideo())
             Play(item, pMsg->strParam);
           else

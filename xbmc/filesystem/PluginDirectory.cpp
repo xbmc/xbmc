@@ -8,7 +8,6 @@
 
 #include "PluginDirectory.h"
 
-#include "Application.h"
 #include "FileItem.h"
 #include "ServiceBroker.h"
 #include "URL.h"
@@ -16,10 +15,6 @@
 #include "addons/AddonManager.h"
 #include "addons/IAddon.h"
 #include "addons/PluginSource.h"
-#include "dialogs/GUIDialogBusy.h"
-#include "dialogs/GUIDialogProgress.h"
-#include "guilib/GUIComponent.h"
-#include "guilib/GUIWindowManager.h"
 #include "interfaces/generic/ScriptInvocationManager.h"
 #include "messaging/ApplicationMessenger.h"
 #include "settings/Settings.h"
@@ -109,17 +104,19 @@ CPluginDirectory *CPluginDirectory::dirFromHandle(int handle)
   return NULL;
 }
 
-bool CPluginDirectory::StartScript(const std::string& strPath, bool retrievingDir, bool resume)
+const CPluginDirectory::SCRIPT_EXECUTION_INFO CPluginDirectory::TriggerScriptExecution(
+    const std::string& strPath, const bool resume)
 {
-  CURL url(strPath);
+  SCRIPT_EXECUTION_INFO scriptExecutionInfo;
 
+  CURL url(strPath);
   // try the plugin type first, and if not found, try an unknown type
   if (!CServiceBroker::GetAddonMgr().GetAddon(url.GetHostName(), m_addon, ADDON_PLUGIN) &&
       !CServiceBroker::GetAddonMgr().GetAddon(url.GetHostName(), m_addon, ADDON_UNKNOWN) &&
       !CAddonInstaller::GetInstance().InstallModal(url.GetHostName(), m_addon))
   {
     CLog::Log(LOGERROR, "Unable to find plugin %s", url.GetHostName().c_str());
-    return false;
+    return scriptExecutionInfo;
   }
 
   // get options
@@ -160,7 +157,6 @@ bool CPluginDirectory::StartScript(const std::string& strPath, bool retrievingDi
 
   // run the script
   CLog::Log(LOGDEBUG, "%s - calling plugin %s('%s','%s','%s','%s')", __FUNCTION__, m_addon->Name().c_str(), argv[0].c_str(), argv[1].c_str(), argv[2].c_str(), argv[3].c_str());
-  bool success = false;
   std::string file = m_addon->LibPath();
   bool reuseLanguageInvoker = false;
   if (m_addon->ExtraInfo().find("reuselanguageinvoker") != m_addon->ExtraInfo().end())
@@ -168,40 +164,54 @@ bool CPluginDirectory::StartScript(const std::string& strPath, bool retrievingDi
 
   int id = CScriptInvocationManager::GetInstance().ExecuteAsync(file, m_addon, argv,
                                                                 reuseLanguageInvoker, handle);
-  if (id >= 0)
-  { // wait for our script to finish
-    std::string scriptName = m_addon->Name();
-    success = WaitOnScriptResult(file, id, scriptName, retrievingDir);
+
+  scriptExecutionInfo.Handle = handle;
+  scriptExecutionInfo.Id = id;
+  return scriptExecutionInfo;
+}
+
+bool CPluginDirectory::ExecuteScriptAndWaitOnResult(const std::string& strPath, const bool resume)
+{
+  const auto& scriptExecutionInfo = TriggerScriptExecution(strPath, resume);
+  bool success = false;
+
+  // verify a valid id was assigned to the script execution
+  if (scriptExecutionInfo.Id < 0)
+  {
+    if (m_addon)
+      CLog::Log(LOGERROR, "Unable to run plugin %s", m_addon->Name().c_str());
+    return false;
   }
-  else
-    CLog::Log(LOGERROR, "Unable to run plugin %s", m_addon->Name().c_str());
 
-  // free our handle
-  removeHandle(handle);
+  // Wait for directory fetch to complete, end, or be cancelled
+  while (!m_cancelled &&
+         CScriptInvocationManager::GetInstance().IsRunning(scriptExecutionInfo.Id) &&
+         !m_fetchComplete.WaitMSec(20))
+    ;
 
+  // wait for 30 secs for script to finish and force stop it if has been canceled
+  WaitForScriptToFinish(scriptExecutionInfo, 30000, m_cancelled);
+  success = !m_cancelled && m_success;
+
+  // free our handle and return the success of the operation
+  removeHandle(scriptExecutionInfo.Handle);
   return success;
 }
 
-bool CPluginDirectory::GetPluginResult(const std::string& strPath, CFileItem &resultItem, bool resume)
+void CPluginDirectory::UpdateResultItem(CFileItem& finalItem, const CFileItem* resultItem)
 {
-  CURL url(strPath);
-  CPluginDirectory newDir;
+  // update the play path and metadata, saving the old one as needed
+  if (!finalItem.HasProperty("original_listitem_url"))
+    finalItem.SetProperty("original_listitem_url", finalItem.GetPath());
 
-  bool success = newDir.StartScript(strPath, false, resume);
+  finalItem.SetDynPath(resultItem->GetPath());
+  finalItem.SetMimeType(resultItem->GetMimeType());
+  finalItem.SetContentLookup(resultItem->ContentLookup());
+  finalItem.UpdateInfo(*resultItem);
 
-  if (success)
-  { // update the play path and metadata, saving the old one as needed
-    if (!resultItem.HasProperty("original_listitem_url"))
-      resultItem.SetProperty("original_listitem_url", resultItem.GetPath());
-    resultItem.SetDynPath(newDir.m_fileResult->GetPath());
-    resultItem.SetMimeType(newDir.m_fileResult->GetMimeType());
-    resultItem.SetContentLookup(newDir.m_fileResult->ContentLookup());
-    resultItem.UpdateInfo(*newDir.m_fileResult);
-    if (newDir.m_fileResult->HasVideoInfoTag() && newDir.m_fileResult->GetVideoInfoTag()->GetResumePoint().IsSet())
-      resultItem.m_lStartOffset = STARTOFFSET_RESUME; // resume point set in the resume item, so force resume
-  }
-
-  return success;
+  if (resultItem->HasVideoInfoTag() && resultItem->GetVideoInfoTag()->GetResumePoint().IsSet())
+    finalItem.m_lStartOffset =
+        STARTOFFSET_RESUME; // resume point set in the resume item, so force resume
 }
 
 bool CPluginDirectory::AddItem(int handle, const CFileItem *item, int totalItems)
@@ -442,7 +452,7 @@ void CPluginDirectory::AddSortMethod(int handle, SORT_METHOD sortMethod, const s
 bool CPluginDirectory::GetDirectory(const CURL& url, CFileItemList& items)
 {
   const std::string pathToUrl(url.Get());
-  bool success = StartScript(pathToUrl, true, false);
+  bool success = ExecuteScriptAndWaitOnResult(pathToUrl, false);
 
   // append the items to the list
   items.Assign(*m_listItems, true); // true to keep the current items
@@ -492,57 +502,33 @@ bool CPluginDirectory::RunScriptWithParams(const std::string& strPath, bool resu
   return false;
 }
 
-bool CPluginDirectory::WaitOnScriptResult(const std::string &scriptPath, int scriptId, const std::string &scriptName, bool retrievingDir)
+void CPluginDirectory::WaitForScriptToFinish(const SCRIPT_EXECUTION_INFO& scriptExecutionInfo,
+                                             const int mSecs,
+                                             const bool bForceStop)
 {
-  // CPluginDirectory::GetDirectory can be called from the main and other threads.
-  // If called form the main thread, we need to bring up the BusyDialog in order to
-  // keep the render loop alive
-  if (g_application.IsCurrentThread())
+  // Give the script mSecs miliseconds to exit before we attempt to stop it
+  XbmcThreads::EndTime timer(mSecs);
+  while (!timer.IsTimePast() &&
+         CScriptInvocationManager::GetInstance().IsRunning(scriptExecutionInfo.Id) &&
+         !m_fetchComplete.WaitMSec(20))
+    ;
+
+  if (bForceStop)
   {
-    if (!m_fetchComplete.WaitMSec(20))
-    {
-      CScriptObserver scriptObs(scriptId, m_fetchComplete);
-
-      CGUIDialogProgress* progress = nullptr;
-      CGUIWindowManager& wm = CServiceBroker::GetGUI()->GetWindowManager();
-      if (wm.IsModalDialogTopmost(WINDOW_DIALOG_PROGRESS))
-        progress = wm.GetWindow<CGUIDialogProgress>(WINDOW_DIALOG_PROGRESS);
-
-      if (progress != nullptr)
-      {
-        if (!progress->WaitOnEvent(m_fetchComplete))
-          m_cancelled = true;
-      }
-      else if (!CGUIDialogBusy::WaitOnEvent(m_fetchComplete, 200))
-        m_cancelled = true;
-
-      scriptObs.Abort();
-    }
+    // cancel our script
+    ForceStopRunningScript(scriptExecutionInfo);
   }
-  else
+}
+
+void CPluginDirectory::ForceStopRunningScript(const SCRIPT_EXECUTION_INFO& scriptExecutionInfo)
+{
+  if (scriptExecutionInfo.Id != -1 &&
+      CScriptInvocationManager::GetInstance().IsRunning(scriptExecutionInfo.Id))
   {
-    // Wait for directory fetch to complete, end, or be cancelled
-    while (!m_cancelled
-        && CScriptInvocationManager::GetInstance().IsRunning(scriptId)
-        && !m_fetchComplete.WaitMSec(20));
-
-    // Give the script 30 seconds to exit before we attempt to stop it
-    XbmcThreads::EndTime timer(30000);
-    while (!timer.IsTimePast()
-          && CScriptInvocationManager::GetInstance().IsRunning(scriptId)
-          && !m_fetchComplete.WaitMSec(20));
+    CLog::Log(LOGDEBUG, "%s- cancelling plugin %s (id=%d)", __FUNCTION__, m_addon->Name().c_str(),
+              scriptExecutionInfo.Id);
+    CScriptInvocationManager::GetInstance().Stop(scriptExecutionInfo.Id);
   }
-
-  if (m_cancelled)
-  { // cancel our script
-    if (scriptId != -1 && CScriptInvocationManager::GetInstance().IsRunning(scriptId))
-    {
-      CLog::Log(LOGDEBUG, "%s- cancelling plugin %s (id=%d)", __FUNCTION__, scriptName.c_str(), scriptId);
-      CScriptInvocationManager::GetInstance().Stop(scriptId);
-    }
-  }
-
-  return !m_cancelled && m_success;
 }
 
 void CPluginDirectory::SetResolvedUrl(int handle, bool success, const CFileItem *resultItem)
@@ -650,5 +636,8 @@ bool CPluginDirectory::CheckExists(const std::string& content, const std::string
   CURL url(strPath);
   url.SetOption("kodi_action", "check_exists");
   CFileItem item;
-  return CPluginDirectory::GetPluginResult(url.Get(), item, false);
+  item.SetPath(url.Get());
+  // TODO - This is part of medialibrary with metadata local scrapper
+  // can't be executed synchronously since it is called from the mainthread
+  return PLUGIN::AsyncGetPluginResult(item, false).ExecuteAndWait();
 }

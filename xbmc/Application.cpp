@@ -1834,10 +1834,13 @@ bool CApplication::OnAction(const CAction &action)
       return true;
   }
 
-  // stop : stops playing current audio song
   if (action.GetID() == ACTION_STOP)
   {
+    // stop : stops playing current audio song
     StopPlaying();
+    // cancel any plugin resolution tasks that might be busy in the background
+    // do it via a message to avoid locking the main thread
+    CApplicationMessenger::GetInstance().PostMsg(TMSG_PLUGIN_EXECUTOR_STOP_ALL);
     return true;
   }
 
@@ -2226,6 +2229,104 @@ void CApplication::OnApplicationMessage(ThreadMessage* pMsg)
   case TMSG_EXECUTE_BUILT_IN:
     CBuiltins::GetInstance().Execute(pMsg->strParam.c_str());
     break;
+      
+  case TMSG_PLUGIN_RESULT_READY:
+    if (pMsg->lpVoid)
+    {
+      std::unique_ptr<CFileItem> item{static_cast<CFileItem*>(pMsg->lpVoid)};
+      PlayFile(*item, pMsg->strParam);
+    }
+    break;
+      
+  case TMSG_QUEUE_NEXT_ITEM:
+  {
+    // notify GUI
+    CGUIMessage msg(GUI_MSG_QUEUE_NEXT_ITEM, 0, 0);
+    CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg);
+
+    // Check to see if our playlist player has a new item for us,
+    // and if so, we check whether our current player wants the file
+    int iNext = CServiceBroker::GetPlaylistPlayer().GetNextSong();
+    CPlayList& playlist = CServiceBroker::GetPlaylistPlayer().GetPlaylist(CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist());
+    if (iNext < 0 || iNext >= playlist.size())
+    {
+      m_appPlayer.OnNothingToQueueNotify();
+      return; // nothing to do
+    }
+
+    // ok, grab the next song
+    CFileItem file(*playlist[iNext]);
+    
+    // check if we just received an item (e.g. a plugin async resolution)
+    if (pMsg->lpVoid)
+    {
+      std::unique_ptr<CFileItem> item{static_cast<CFileItem*>(pMsg->lpVoid)};
+      
+      // if the item is still a plugin return (should never happen)
+      if (URIUtils::IsPlugin(file.GetDynPath()))
+        return;
+      
+      // if the resolved item and the next item in the queue have different unique paths ignore
+      // as we might be playing a different item already while the item was still resolving
+      if (file.GetPath() != item->GetPath())
+        return;
+      
+      file = *item;
+        
+    }
+    else
+    {
+      // If item is a plugin, send the plugin resolution request to PluginExecutor (async resolution
+      // will be sent back to application when ready)
+      if (URIUtils::IsPlugin(file.GetDynPath()))
+      {
+        auto ptr = new CFileItem(file);
+        CApplicationMessenger::GetInstance().PostMsg(TMSG_PLUGIN_EXECUTOR_GET_RESULT,
+                                                     TMSG_QUEUE_NEXT_ITEM, // destination
+                                                     false, // resume
+                                                     static_cast<void*>(ptr));
+        return;
+      }
+    }
+
+    // Don't queue if next media type is different from current one
+    bool bNothingToQueue = false;
+
+    if (!file.IsVideo() && m_appPlayer.IsPlayingVideo())
+      bNothingToQueue = true;
+    else if ((!file.IsAudio() || file.IsVideo()) && m_appPlayer.IsPlayingAudio())
+      bNothingToQueue = true;
+
+    if (bNothingToQueue)
+    {
+      m_appPlayer.OnNothingToQueueNotify();
+      return;
+    }
+
+    #ifdef HAS_UPNP
+      if (URIUtils::IsUPnP(file.GetDynPath()))
+      {
+        if (!XFILE::CUPnPDirectory::GetResource(file.GetDynURL(), file))
+          return;
+      }
+    #endif
+
+    // ok - send the file to the player, if it accepts it
+    if (m_appPlayer.QueueNextFile(file))
+    {
+      // player accepted the next file
+      m_nextPlaylistItem = iNext;
+    }
+    else
+    {
+      /* Player didn't accept next file: *ALWAYS* advance playlist in this case so the player can
+      queue the next (if it wants to) and it doesn't keep looping on this song */
+      CServiceBroker::GetPlaylistPlayer().SetCurrentSong(iNext);
+    }
+
+    return;
+  }
+  break;
 
   case TMSG_PICTURE_SHOW:
   {
@@ -2702,20 +2803,19 @@ void CApplication::Stop(int exitCode)
   KODI::TIME::Sleep(200);
 }
 
-bool CApplication::PlayMedia(CFileItem& item, const std::string &player, int iPlaylist)
+bool CApplication::PlayMedia(CFileItem& item, const std::string& player, int iPlaylist)
 {
-  // If item is a plugin, expand out
-  for (int i=0; URIUtils::IsPlugin(item.GetDynPath()) && i<5; ++i)
-  {
-    bool resume = item.m_lStartOffset == STARTOFFSET_RESUME;
-
-    if (!XFILE::CPluginDirectory::GetPluginResult(item.GetDynPath(), item, resume) ||
-        item.GetDynPath() == item.GetPath()) // GetPluginResult resolved to an empty path
-      return false;
-  }
-  // if after the 5 resolution attempts the item is still a plugin just return, it isn't playable
+  // If item is a plugin, send the plugin resolution request to PluginExecutor
   if (URIUtils::IsPlugin(item.GetDynPath()))
+  {
+    auto ptr = new CFileItem(item);
+    CApplicationMessenger::GetInstance().PostMsg(TMSG_PLUGIN_EXECUTOR_GET_RESULT,
+                                                 TMSG_PLUGIN_RESULT_READY, // destination
+                                                 item.m_lStartOffset == STARTOFFSET_RESUME, // resume
+                                                 static_cast<void*>(ptr), // item
+                                                 player);
     return false;
+  }
 
   if (item.IsSmartPlayList())
   {
@@ -2840,17 +2940,17 @@ bool CApplication::PlayFile(CFileItem item, const std::string& player, bool bRes
   if (item.IsPlayList())
     return false;
 
-  for (int i=0; URIUtils::IsPlugin(item.GetDynPath()) && i<5; ++i)
-  { // we modify the item so that it becomes a real URL
-    bool resume = item.m_lStartOffset == STARTOFFSET_RESUME;
-
-    if (!XFILE::CPluginDirectory::GetPluginResult(item.GetDynPath(), item, resume) ||
-        item.GetDynPath() == item.GetPath()) // GetPluginResult resolved to an empty path
-      return false;
-  }
-  // if after the 5 resolution attempts the item is still a plugin just return, it isn't playable
+  // If item is a plugin, send the plugin resolution request to PluginExecutor
   if (URIUtils::IsPlugin(item.GetDynPath()))
+  {
+    auto ptr = new CFileItemPtr(new CFileItem(item));
+    CApplicationMessenger::GetInstance().PostMsg(TMSG_PLUGIN_EXECUTOR_GET_RESULT,
+                                                 TMSG_PLUGIN_RESULT_READY,
+                                                 item.m_lStartOffset == STARTOFFSET_RESUME,
+                                                 static_cast<void*>(ptr->get()),
+                                                 player);
     return false;
+  }
 
 #ifdef HAS_UPNP
   if (URIUtils::IsUPnP(item.GetPath()))
@@ -3212,8 +3312,7 @@ void CApplication::OnQueueNextItem()
   CServiceBroker::GetXBPython().OnQueueNextItem(); // currently unimplemented
 #endif
 
-  CGUIMessage msg(GUI_MSG_QUEUE_NEXT_ITEM, 0, 0);
-  CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg);
+  CApplicationMessenger::GetInstance().PostMsg(TMSG_QUEUE_NEXT_ITEM);
 }
 
 void CApplication::OnPlayBackStopped()
@@ -3902,64 +4001,6 @@ bool CApplication::OnMessage(CGUIMessage& message)
         CGUIDialogBusy* dialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogBusy>(WINDOW_DIALOG_BUSY);
         if (dialog && !dialog->IsDialogRunning())
           dialog->WaitOnEvent(m_playerEvent);
-      }
-
-      return true;
-    }
-    break;
-
-  case GUI_MSG_QUEUE_NEXT_ITEM:
-    {
-      // Check to see if our playlist player has a new item for us,
-      // and if so, we check whether our current player wants the file
-      int iNext = CServiceBroker::GetPlaylistPlayer().GetNextSong();
-      CPlayList& playlist = CServiceBroker::GetPlaylistPlayer().GetPlaylist(CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist());
-      if (iNext < 0 || iNext >= playlist.size())
-      {
-        m_appPlayer.OnNothingToQueueNotify();
-        return true; // nothing to do
-      }
-
-      // ok, grab the next song
-      CFileItem file(*playlist[iNext]);
-      // handle plugin://
-      CURL url(file.GetDynPath());
-      if (url.IsProtocol("plugin"))
-        XFILE::CPluginDirectory::GetPluginResult(url.Get(), file, false);
-
-      // Don't queue if next media type is different from current one
-      bool bNothingToQueue = false;
-
-      if (!file.IsVideo() && m_appPlayer.IsPlayingVideo())
-        bNothingToQueue = true;
-      else if ((!file.IsAudio() || file.IsVideo()) && m_appPlayer.IsPlayingAudio())
-        bNothingToQueue = true;
-
-      if (bNothingToQueue)
-      {
-        m_appPlayer.OnNothingToQueueNotify();
-        return true;
-      }
-
-#ifdef HAS_UPNP
-      if (URIUtils::IsUPnP(file.GetDynPath()))
-      {
-        if (!XFILE::CUPnPDirectory::GetResource(file.GetDynURL(), file))
-          return true;
-      }
-#endif
-
-      // ok - send the file to the player, if it accepts it
-      if (m_appPlayer.QueueNextFile(file))
-      {
-        // player accepted the next file
-        m_nextPlaylistItem = iNext;
-      }
-      else
-      {
-        /* Player didn't accept next file: *ALWAYS* advance playlist in this case so the player can
-            queue the next (if it wants to) and it doesn't keep looping on this song */
-        CServiceBroker::GetPlaylistPlayer().SetCurrentSong(iNext);
       }
 
       return true;

@@ -1664,6 +1664,15 @@ const infomap weather[] =        {{ "isfetched",        WEATHER_IS_FETCHED },
 ///     @skinning_v19 **[New Boolean Condition]** \link  System_SupportsCPUUsage `
 ///     System.SupportsCPUUsage`\endlink <p>
 ///   }
+///   \table_row3{   <b>`System.IsAddonBusy`</b>,
+///                  \anchor System_Addon_Is_Busy
+///                  _boolean_,
+///     @return **true** If an addon is performing some busytask that should provide visual feedback to the user
+///     @note **Example:** When Kodi depends on plugin resolution tasks to finish before starting playback
+///     <p><hr>
+///     @skinning_v19 **[New Boolean Condition]** \link System_Addon_Is_Busy  `System.IsAddonBusy`\endlink
+///     <p>
+///   }
 const infomap system_labels[] = {{"hasnetwork", SYSTEM_ETHERNET_LINK_ACTIVE},
                                  {"hasmediadvd", SYSTEM_MEDIA_DVD},
                                  {"hasmediaaudiocd", SYSTEM_MEDIA_AUDIO_CD},
@@ -1734,7 +1743,8 @@ const infomap system_labels[] = {{"hasnetwork", SYSTEM_ETHERNET_LINK_ACTIVE},
                                  {"hascms", SYSTEM_HAS_CMS},
                                  {"privacypolicy", SYSTEM_PRIVACY_POLICY},
                                  {"haspvraddon", SYSTEM_HAS_PVR_ADDON},
-                                 {"supportscpuusage", SYSTEM_SUPPORTS_CPU_USAGE}};
+                                 {"supportscpuusage", SYSTEM_SUPPORTS_CPU_USAGE},
+                                 {"isaddonbusy", SYSTEM_ADDON_IS_BUSY}};
 
 /// \page modules__infolabels_boolean_conditions
 ///   \table_row3{   <b>`System.HasAddon(id)`</b>,
