@@ -71,7 +71,7 @@ public:
 private:
   ADDON::AddonPtr m_addon;
   bool StartScript(const std::string& strPath, bool retrievingDir, bool resume);
-  bool WaitOnScriptResult(const std::string &scriptPath, int scriptId, const std::string &scriptName, bool retrievingDir);
+  bool WaitOnScriptResult(int scriptId, const std::string& scriptName);
 
   static std::map<int,CPluginDirectory*> globalHandles;
   static int getNewHandle(CPluginDirectory *cp);
