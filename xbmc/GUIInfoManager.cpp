@@ -4592,6 +4592,14 @@ const infomap container_str[]  = {{ "property",         CONTAINER_PROPERTY },
 ///     @skinning_v19 **[New Infobool]** \link ListItem.Property(Album_Isboxset) `ListItem.Property(Album_Isboxset)`\endlink
 ///     <p>
 ///   }
+///   \table_row3{   <b>`ListItem.Property(Album_Duration)`</b>,
+///                  \anchor ListItem_Property_Album_Duration
+///                  _string_,
+///     @return The duration of the album in HH:MM:SS.
+///     <p><hr>
+///     @skinning_v19 **[New Infolabel]** \link ListItem_Property_Album_Duration `ListItem.Property(Album_Duration)`\endlink
+///     <p>
+///   }
 ///   \table_row3{   <b>`ListItem.DiscNumber`</b>,
 ///                  \anchor ListItem_DiscNumber
 ///                  _string_,
@@ -6472,7 +6480,6 @@ const infomap container_str[]  = {{ "property",         CONTAINER_PROPERTY },
 ///     @return The Musicbrainz release status of the album (offical, bootleg, promotion etc)
 ///     <p><hr>
 ///     @skinning_v19 **[New Infolabel]** \link ListItem_AlbumStatus `ListItem.AlbumStatus`\endlink
-///     <p>
 ///   }
 /// \table_end
 ///

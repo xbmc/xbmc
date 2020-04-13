@@ -156,6 +156,7 @@ void CMusicDatabase::CreateTables()
               " bScrapedMBID INTEGER NOT NULL DEFAULT 0, "
               " strReleaseType text, "
               " iDiscTotal INTEGER NOT NULL DEFAULT 0, "
+              " iAlbumDuration INTEGER NOT NULL DEFAULT 0, "
               " idInfoSetting INTEGER NOT NULL DEFAULT 0, "
               " dateAdded TEXT, dateNew TEXT, dateModified TEXT)");
 
@@ -446,6 +447,7 @@ void CMusicDatabase::CreateViews()
               "        song.dateAdded as dateAdded, "
               "        song.dateNew AS dateNew, "
               "        song.dateModified AS dateModified "
+              "        album.iAlbumDuration AS iAlbumDuration "
               "FROM song"
               "  JOIN album ON"
               "    song.idAlbum=album.idAlbum"
@@ -482,7 +484,8 @@ void CMusicDatabase::CreateViews()
               "        (SELECT ROUND(AVG(song.iTimesPlayed)) FROM song WHERE song.idAlbum = album.idAlbum) AS iTimesPlayed, "
               "        strReleaseType, "
               "        iDiscTotal, "
-              "        (SELECT MAX(song.lastplayed) FROM song WHERE song.idAlbum = album.idAlbum) AS lastplayed "
+              "        (SELECT MAX(song.lastplayed) FROM song WHERE song.idAlbum = album.idAlbum) AS lastplayed, "
+              "        iAlbumDuration "
               "FROM album"
               );
 
@@ -684,6 +687,7 @@ bool CMusicDatabase::AddAlbum(CAlbum& album, int idSource)
                    std::distance(album.artistCredits.begin(), artistCredit));
   }
 
+  int albumDuration = 0;
   for (auto song = album.songs.begin(); song != album.songs.end(); ++song)
   {
     song->idAlbum = album.idAlbum;
@@ -725,6 +729,7 @@ bool CMusicDatabase::AddAlbum(CAlbum& album, int idSource)
     // Having added artist credits (maybe with MBID) add the other contributing artists (no MBID)
     // and use COMPOSERSORT tag data to provide sort names for artists that are composers
     AddSongContributors(song->idSong, song->GetContributors(), song->GetComposerSort());
+    albumDuration += song->iDuration;
   }
 
   // Add album sources
@@ -763,6 +768,7 @@ bool CMusicDatabase::AddAlbum(CAlbum& album, int idSource)
   m_pDS->exec(PrepareSQL("UPDATE album SET strOrigReleaseDate = (SELECT DISTINCT strOrigReleaseDate "
                          "FROM song WHERE song.idAlbum = album.idAlbum LIMIT 1) WHERE idAlbum = %i",
                          album.idAlbum));
+<<<<<<< HEAD
 
   std::string albumdateadded =
       GetSingleValue("song", "MAX(dateAdded)", PrepareSQL("idAlbum = %i", album.idAlbum));
@@ -785,6 +791,8 @@ bool CMusicDatabase::AddAlbum(CAlbum& album, int idSource)
                       albumdateadded.c_str(), strIDs.c_str(), albumdateadded.c_str());
   m_pDS->exec(strSQL);
 
+  m_pDS->exec(PrepareSQL("UPDATE album SET iAlbumDuration = %i WHERE idAlbum = %i", albumDuration,
+                         album.idAlbum));
   CommitTransaction();
   return true;
 }
@@ -879,8 +887,15 @@ bool CMusicDatabase::UpdateAlbum(CAlbum& album)
        Also updates nested data e.g. song artists, song genres and contributors
        Do not check for artist link changes, that is done later for all songs and album
     */
+    int albumDuration = 0;
     for (auto &song : album.songs)
-      UpdateSong(song, true, false);
+    {
+      UpdateSong(song);
+      albumDuration += song.iDuration;
+    }
+    if (albumDuration > 0)
+      m_pDS->exec(PrepareSQL("UPDATE album SET iAlbumDuration = %i WHERE album.idAlbum = %i",
+                             albumDuration, album.idAlbum));
   }
 
   if (!album.art.empty())
@@ -2908,6 +2923,7 @@ CAlbum CMusicDatabase::GetAlbumFromDataset(const dbiplus::sql_record* const reco
   album.SetDateNew(record->at(offset + album_dateNew).get_asString());
   album.SetDateUpdated(record->at(offset + album_dateModified).get_asString());
   album.SetLastPlayed(record->at(offset + album_dtLastPlayed).get_asString());
+  album.iAlbumDuration = record->at(offset + album_iAlbumDuration).get_asInt();
   return album;
 }
 
@@ -6623,7 +6639,7 @@ static const translateJSONField JSONtoDBAlbum[] = {
   { "originaldate",              "string", true,  "strOrigReleaseDate",     "" },
   { "releasedate",               "string", true,  "strReleaseDate",         "" },
   { "albumstatus",               "string", true,  "strReleaseStatus",       "" },
-
+  { "albumduration",             "integer", true,  "iAlbumDuration",        "" },
   // Scalar subquery fields
   { "year",                     "integer", true,  "iYear",                  "CAST(<datefield> AS INTEGER) AS iYear" }, //From strReleaseDate or strOrigReleaseDate
   { "sourceid",                  "string", true,  "sourceid",               "(SELECT GROUP_CONCAT(album_source.idSource SEPARATOR '; ') FROM album_source WHERE album_source.idAlbum = albumview.idAlbum) AS sources" },
@@ -8549,6 +8565,13 @@ void CMusicDatabase::UpdateTables(int version)
     // Set new and modified to now UTC as not worth complexity of estimating from song dates
     m_pDS->exec(PrepareSQL("UPDATE artist SET dateNew = '%s'", strUTCNow.c_str()));
     m_pDS->exec("UPDATE artist SET dateModified = dateNew");
+  if (version < 79)
+  {
+    m_pDS->exec("ALTER TABLE album ADD iAlbumDuration INTEGER NOT NULL DEFAULT 0");
+    // update duration for all current albums
+    m_pDS->exec("UPDATE album SET iAlbumDuration = (SELECT SUM(song.iDuration) FROM song "
+                "WHERE song.idAlbum = album.idAlbum) "
+                "WHERE EXISTS (SELECT 1 FROM song WHERE song.idAlbum = album.idAlbum)");
   }
   if (version < 79)
   {
@@ -11702,6 +11725,9 @@ void CMusicDatabase::SetPropertiesFromAlbum(CFileItem& item, const CAlbum& album
   item.SetProperty("album_isboxset", album.bBoxedSet);
   item.SetProperty("album_totaldiscs", album.iTotalDiscs);
   item.SetProperty("album_releasetype", CAlbum::ReleaseTypeToString(album.releaseType));
+  item.SetProperty("album_duration",
+                   StringUtils::SecondsToTimeString(
+                       album.iAlbumDuration, static_cast<TIME_FORMAT>(TIME_FORMAT_GUESS)));
 }
 
 void CMusicDatabase::SetPropertiesForFileItem(CFileItem& item)

@@ -871,6 +871,7 @@ private:
     album_strReleaseType,
     album_iTotalDiscs,
     album_dtLastPlayed,
+    album_iAlbumDuration,
     album_enumCount // end of the enum, do not add past here
   } AlbumFields;
 
