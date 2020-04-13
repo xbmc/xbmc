@@ -49,7 +49,7 @@ public:
   static bool ShowAndGetTime(KODI::TIME::SystemTime& time, const std::string& heading);
   static bool ShowAndGetDate(KODI::TIME::SystemTime& date, const std::string& heading);
   static bool ShowAndGetIPAddress(std::string &IPAddress, const std::string &heading);
-  static bool ShowAndGetNumber(std::string& strInput, const std::string &strHeading, unsigned int iAutoCloseTimeoutMs = 0);
+  static bool ShowAndGetNumber(std::string& strInput, const std::string &strHeading, unsigned int iAutoCloseTimeoutMs = 0, bool bSetHidden = false);
   static bool ShowAndGetSeconds(std::string& timeString, const std::string &heading);
 
 protected:

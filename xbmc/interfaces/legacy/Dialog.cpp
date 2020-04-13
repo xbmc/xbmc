@@ -269,7 +269,7 @@ namespace XBMCAddon
       return valuelist;
     }
 
-    String Dialog::numeric(int inputtype, const String& heading, const String& defaultt)
+    String Dialog::numeric(int inputtype, const String& heading, const String& defaultt, bool bHiddenInput)
     {
       DelayedCallGuard dcguard(languageHook);
       std::string value;
@@ -320,7 +320,7 @@ namespace XBMCAddon
         else
         {
           value = defaultt;
-          if (!CGUIDialogNumeric::ShowAndGetNumber(value, heading))
+          if (!CGUIDialogNumeric::ShowAndGetNumber(value, heading, 0, bHiddenInput))
             return emptyString;
         }
       }

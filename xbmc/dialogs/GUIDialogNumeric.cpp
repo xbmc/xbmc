@@ -533,13 +533,16 @@ bool CGUIDialogNumeric::ShowAndGetIPAddress(std::string &IPAddress, const std::s
   return true;
 }
 
-bool CGUIDialogNumeric::ShowAndGetNumber(std::string& strInput, const std::string &strHeading, unsigned int iAutoCloseTimeoutMs /* = 0 */)
+bool CGUIDialogNumeric::ShowAndGetNumber(std::string& strInput, const std::string &strHeading, unsigned int iAutoCloseTimeoutMs /* = 0 */, bool bSetHidden /* = false */)
 {
   // Prompt user for password input
   CGUIDialogNumeric *pDialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogNumeric>(WINDOW_DIALOG_NUMERIC);
   pDialog->SetHeading( strHeading );
 
-  pDialog->SetMode(INPUT_NUMBER, strInput);
+  if (bSetHidden)
+    pDialog->SetMode(INPUT_PASSWORD, strInput);
+  else
+    pDialog->SetMode(INPUT_NUMBER, strInput);
   if (iAutoCloseTimeoutMs)
     pDialog->SetAutoClose(iAutoCloseTimeoutMs);
 
