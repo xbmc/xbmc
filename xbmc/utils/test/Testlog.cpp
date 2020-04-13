@@ -23,10 +23,7 @@ class Testlog : public testing::Test
 {
 protected:
   Testlog() = default;
-  ~Testlog() override
-  {
-    CServiceBroker::GetLogging().Uninitialize();
-  }
+  ~Testlog() override { CServiceBroker::GetLogging().Uninitialize(); }
 };
 
 TEST_F(Testlog, Log)
@@ -40,7 +37,8 @@ TEST_F(Testlog, Log)
   std::string appName = CCompileInfo::GetAppName();
   StringUtils::ToLower(appName);
   logfile = CSpecialProtocol::TranslatePath("special://temp/") + appName + ".log";
-  CServiceBroker::GetLogging().Initialize(CSpecialProtocol::TranslatePath("special://temp/").c_str());
+  CServiceBroker::GetLogging().Initialize(
+      CSpecialProtocol::TranslatePath("special://temp/").c_str());
   EXPECT_TRUE(XFILE::CFile::Exists(logfile));
 
   CLog::Log(LOGDEBUG, "debug log message");
@@ -91,7 +89,8 @@ TEST_F(Testlog, SetLogLevel)
   std::string appName = CCompileInfo::GetAppName();
   StringUtils::ToLower(appName);
   logfile = CSpecialProtocol::TranslatePath("special://temp/") + appName + ".log";
-  CServiceBroker::GetLogging().Initialize(CSpecialProtocol::TranslatePath("special://temp/").c_str());
+  CServiceBroker::GetLogging().Initialize(
+      CSpecialProtocol::TranslatePath("special://temp/").c_str());
   EXPECT_TRUE(XFILE::CFile::Exists(logfile));
 
   EXPECT_EQ(LOG_LEVEL_DEBUG, CServiceBroker::GetLogging().GetLogLevel());

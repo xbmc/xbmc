@@ -127,10 +127,7 @@ class TestRegExpLog : public testing::Test
 {
 protected:
   TestRegExpLog() = default;
-  ~TestRegExpLog() override
-  {
-    CServiceBroker::GetLogging().Uninitialize();
-  }
+  ~TestRegExpLog() override { CServiceBroker::GetLogging().Uninitialize(); }
 };
 
 TEST_F(TestRegExpLog, DumpOvector)
@@ -144,7 +141,8 @@ TEST_F(TestRegExpLog, DumpOvector)
   std::string appName = CCompileInfo::GetAppName();
   StringUtils::ToLower(appName);
   logfile = CSpecialProtocol::TranslatePath("special://temp/") + appName + ".log";
-  CServiceBroker::GetLogging().Initialize(CSpecialProtocol::TranslatePath("special://temp/").c_str());
+  CServiceBroker::GetLogging().Initialize(
+      CSpecialProtocol::TranslatePath("special://temp/").c_str());
   EXPECT_TRUE(XFILE::CFile::Exists(logfile));
 
   EXPECT_TRUE(regex.RegComp("^(?<first>Test)\\s*(?<second>.*)\\."));
