@@ -72,8 +72,12 @@ bool CVideoLayerBridgeDRMPRIME::Map(CVideoBufferDRMPRIME* buffer)
   if (buffer->m_fb_id)
     return true;
 
-  if (!buffer->Map())
+  if (!buffer->AcquireDescriptor())
+  {
+    CLog::Log(LOGERROR, "CVideoLayerBridgeDRMPRIME::{} - failed to acquire descriptor",
+              __FUNCTION__);
     return false;
+  }
 
   AVDRMFrameDescriptor* descriptor = buffer->GetDescriptor();
   uint32_t handles[4] = {0}, pitches[4] = {0}, offsets[4] = {0}, flags = 0;
@@ -146,7 +150,7 @@ void CVideoLayerBridgeDRMPRIME::Unmap(CVideoBufferDRMPRIME* buffer)
     }
   }
 
-  buffer->Unmap();
+  buffer->ReleaseDescriptor();
 }
 
 void CVideoLayerBridgeDRMPRIME::Configure(CVideoBufferDRMPRIME* buffer)
