@@ -659,7 +659,11 @@ namespace XBMCAddon
           else if (key == "role")
             info.strRole = value;
           else if (key == "thumbnail")
+          {
             info.thumbUrl = CScraperUrl(value);
+            if (!info.thumbUrl.GetFirstThumbUrl().empty())
+              info.thumb = CScraperUrl::GetThumbUrl(info.thumbUrl.GetFirstUrlByType());
+          }
           else if (key == "order")
             info.order = strtol(value.c_str(), nullptr, 10);
         }
