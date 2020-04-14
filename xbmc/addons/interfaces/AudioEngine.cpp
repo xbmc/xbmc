@@ -12,7 +12,6 @@
 #include "addons/kodi-addon-dev-kit/include/kodi/AddonBase.h"
 #include "cores/AudioEngine/Interfaces/AE.h"
 #include "cores/AudioEngine/Interfaces/AEStream.h"
-#include "cores/AudioEngine/Utils/AEChannelData.h"
 #include "cores/AudioEngine/Utils/AEStreamData.h"
 #include "utils/log.h"
 
@@ -65,6 +64,238 @@ void Interface_AudioEngine::DeInit(AddonGlobalInterface* addonInterface)
   }
 }
 
+AEChannel Interface_AudioEngine::TranslateAEChannelToKodi(AudioEngineChannel channel)
+{
+  switch (channel)
+  {
+    case AUDIOENGINE_CH_RAW:
+      return AE_CH_RAW;
+    case AUDIOENGINE_CH_FL:
+      return AE_CH_FL;
+    case AUDIOENGINE_CH_FR:
+      return AE_CH_FR;
+    case AUDIOENGINE_CH_FC:
+      return AE_CH_FC;
+    case AUDIOENGINE_CH_LFE:
+      return AE_CH_LFE;
+    case AUDIOENGINE_CH_BL:
+      return AE_CH_BL;
+    case AUDIOENGINE_CH_BR:
+      return AE_CH_BR;
+    case AUDIOENGINE_CH_FLOC:
+      return AE_CH_FLOC;
+    case AUDIOENGINE_CH_FROC:
+      return AE_CH_FROC;
+    case AUDIOENGINE_CH_BC:
+      return AE_CH_BC;
+    case AUDIOENGINE_CH_SL:
+      return AE_CH_SL;
+    case AUDIOENGINE_CH_SR:
+      return AE_CH_SR;
+    case AUDIOENGINE_CH_TFL:
+      return AE_CH_TFL;
+    case AUDIOENGINE_CH_TFR:
+      return AE_CH_TFR;
+    case AUDIOENGINE_CH_TFC:
+      return AE_CH_TFC;
+    case AUDIOENGINE_CH_TC:
+      return AE_CH_TC;
+    case AUDIOENGINE_CH_TBL:
+      return AE_CH_TBL;
+    case AUDIOENGINE_CH_TBR:
+      return AE_CH_TBR;
+    case AUDIOENGINE_CH_TBC:
+      return AE_CH_TBC;
+    case AUDIOENGINE_CH_BLOC:
+      return AE_CH_BLOC;
+    case AUDIOENGINE_CH_BROC:
+      return AE_CH_BROC;
+    case AUDIOENGINE_CH_MAX:
+      return AE_CH_MAX;
+    case AUDIOENGINE_CH_NULL:
+    default:
+      return AE_CH_NULL;
+  }
+}
+
+AudioEngineChannel Interface_AudioEngine::TranslateAEChannelToAddon(AEChannel channel)
+{
+  switch (channel)
+  {
+    case AE_CH_RAW:
+      return AUDIOENGINE_CH_RAW;
+    case AE_CH_FL:
+      return AUDIOENGINE_CH_FL;
+    case AE_CH_FR:
+      return AUDIOENGINE_CH_FR;
+    case AE_CH_FC:
+      return AUDIOENGINE_CH_FC;
+    case AE_CH_LFE:
+      return AUDIOENGINE_CH_LFE;
+    case AE_CH_BL:
+      return AUDIOENGINE_CH_BL;
+    case AE_CH_BR:
+      return AUDIOENGINE_CH_BR;
+    case AE_CH_FLOC:
+      return AUDIOENGINE_CH_FLOC;
+    case AE_CH_FROC:
+      return AUDIOENGINE_CH_FROC;
+    case AE_CH_BC:
+      return AUDIOENGINE_CH_BC;
+    case AE_CH_SL:
+      return AUDIOENGINE_CH_SL;
+    case AE_CH_SR:
+      return AUDIOENGINE_CH_SR;
+    case AE_CH_TFL:
+      return AUDIOENGINE_CH_TFL;
+    case AE_CH_TFR:
+      return AUDIOENGINE_CH_TFR;
+    case AE_CH_TFC:
+      return AUDIOENGINE_CH_TFC;
+    case AE_CH_TC:
+      return AUDIOENGINE_CH_TC;
+    case AE_CH_TBL:
+      return AUDIOENGINE_CH_TBL;
+    case AE_CH_TBR:
+      return AUDIOENGINE_CH_TBR;
+    case AE_CH_TBC:
+      return AUDIOENGINE_CH_TBC;
+    case AE_CH_BLOC:
+      return AUDIOENGINE_CH_BLOC;
+    case AE_CH_BROC:
+      return AUDIOENGINE_CH_BROC;
+    case AE_CH_MAX:
+      return AUDIOENGINE_CH_MAX;
+    case AE_CH_NULL:
+    default:
+      return AUDIOENGINE_CH_NULL;
+  }
+}
+
+AEDataFormat Interface_AudioEngine::TranslateAEFormatToKodi(AudioEngineDataFormat format)
+{
+  switch (format)
+  {
+    case AUDIOENGINE_FMT_U8:
+      return AE_FMT_U8;
+    case AUDIOENGINE_FMT_S16BE:
+      return AE_FMT_S16BE;
+    case AUDIOENGINE_FMT_S16LE:
+      return AE_FMT_S16LE;
+    case AUDIOENGINE_FMT_S16NE:
+      return AE_FMT_S16NE;
+    case AUDIOENGINE_FMT_S32BE:
+      return AE_FMT_S32BE;
+    case AUDIOENGINE_FMT_S32LE:
+      return AE_FMT_S32LE;
+    case AUDIOENGINE_FMT_S32NE:
+      return AE_FMT_S32NE;
+    case AUDIOENGINE_FMT_S24BE4:
+      return AE_FMT_S24BE4;
+    case AUDIOENGINE_FMT_S24LE4:
+      return AE_FMT_S24LE4;
+    case AUDIOENGINE_FMT_S24NE4:
+      return AE_FMT_S24NE4;
+    case AUDIOENGINE_FMT_S24NE4MSB:
+      return AE_FMT_S24NE4MSB;
+    case AUDIOENGINE_FMT_S24BE3:
+      return AE_FMT_S24BE3;
+    case AUDIOENGINE_FMT_S24LE3:
+      return AE_FMT_S24LE3;
+    case AUDIOENGINE_FMT_S24NE3:
+      return AE_FMT_S24NE3;
+    case AUDIOENGINE_FMT_DOUBLE:
+      return AE_FMT_DOUBLE;
+    case AUDIOENGINE_FMT_FLOAT:
+      return AE_FMT_FLOAT;
+    case AUDIOENGINE_FMT_RAW:
+      return AE_FMT_RAW;
+    case AUDIOENGINE_FMT_U8P:
+      return AE_FMT_U8P;
+    case AUDIOENGINE_FMT_S16NEP:
+      return AE_FMT_S16NEP;
+    case AUDIOENGINE_FMT_S32NEP:
+      return AE_FMT_S32NEP;
+    case AUDIOENGINE_FMT_S24NE4P:
+      return AE_FMT_S24NE4P;
+    case AUDIOENGINE_FMT_S24NE4MSBP:
+      return AE_FMT_S24NE4MSBP;
+    case AUDIOENGINE_FMT_S24NE3P:
+      return AE_FMT_S24NE3P;
+    case AUDIOENGINE_FMT_DOUBLEP:
+      return AE_FMT_DOUBLEP;
+    case AUDIOENGINE_FMT_FLOATP:
+      return AE_FMT_FLOATP;
+    case AUDIOENGINE_FMT_MAX:
+      return AE_FMT_MAX;
+    case AUDIOENGINE_FMT_INVALID:
+    default:
+      return AE_FMT_INVALID;
+  }
+}
+
+AudioEngineDataFormat Interface_AudioEngine::TranslateAEFormatToAddon(AEDataFormat format)
+{
+  switch (format)
+  {
+    case AE_FMT_U8:
+      return AUDIOENGINE_FMT_U8;
+    case AE_FMT_S16BE:
+      return AUDIOENGINE_FMT_S16BE;
+    case AE_FMT_S16LE:
+      return AUDIOENGINE_FMT_S16LE;
+    case AE_FMT_S16NE:
+      return AUDIOENGINE_FMT_S16NE;
+    case AE_FMT_S32BE:
+      return AUDIOENGINE_FMT_S32BE;
+    case AE_FMT_S32LE:
+      return AUDIOENGINE_FMT_S32LE;
+    case AE_FMT_S32NE:
+      return AUDIOENGINE_FMT_S32NE;
+    case AE_FMT_S24BE4:
+      return AUDIOENGINE_FMT_S24BE4;
+    case AE_FMT_S24LE4:
+      return AUDIOENGINE_FMT_S24LE4;
+    case AE_FMT_S24NE4:
+      return AUDIOENGINE_FMT_S24NE4;
+    case AE_FMT_S24NE4MSB:
+      return AUDIOENGINE_FMT_S24NE4MSB;
+    case AE_FMT_S24BE3:
+      return AUDIOENGINE_FMT_S24BE3;
+    case AE_FMT_S24LE3:
+      return AUDIOENGINE_FMT_S24LE3;
+    case AE_FMT_S24NE3:
+      return AUDIOENGINE_FMT_S24NE3;
+    case AE_FMT_DOUBLE:
+      return AUDIOENGINE_FMT_DOUBLE;
+    case AE_FMT_FLOAT:
+      return AUDIOENGINE_FMT_FLOAT;
+    case AE_FMT_RAW:
+      return AUDIOENGINE_FMT_RAW;
+    case AE_FMT_U8P:
+      return AUDIOENGINE_FMT_U8P;
+    case AE_FMT_S16NEP:
+      return AUDIOENGINE_FMT_S16NEP;
+    case AE_FMT_S32NEP:
+      return AUDIOENGINE_FMT_S32NEP;
+    case AE_FMT_S24NE4P:
+      return AUDIOENGINE_FMT_S24NE4P;
+    case AE_FMT_S24NE4MSBP:
+      return AUDIOENGINE_FMT_S24NE4MSBP;
+    case AE_FMT_S24NE3P:
+      return AUDIOENGINE_FMT_S24NE3P;
+    case AE_FMT_DOUBLEP:
+      return AUDIOENGINE_FMT_DOUBLEP;
+    case AE_FMT_FLOATP:
+      return AUDIOENGINE_FMT_FLOATP;
+    case AE_FMT_MAX:
+      return AUDIOENGINE_FMT_MAX;
+    case AE_FMT_INVALID:
+    default:
+      return AUDIOENGINE_FMT_INVALID;
+  }
+}
+
 AEStreamHandle* Interface_AudioEngine::audioengine_make_stream(void* kodiBase, AUDIO_ENGINE_FORMAT* streamFormat, unsigned int options)
 {
   if (!kodiBase || !streamFormat)
@@ -79,10 +310,18 @@ AEStreamHandle* Interface_AudioEngine::audioengine_make_stream(void* kodiBase, A
   if (!engine)
     return nullptr;
 
+  CAEChannelInfo layout;
+  for (unsigned int ch = 0; ch < AUDIOENGINE_CH_MAX; ++ch)
+  {
+    if (streamFormat->m_channels[ch] == AUDIOENGINE_CH_NULL)
+      break;
+    layout += TranslateAEChannelToKodi(streamFormat->m_channels[ch]);
+  }
+
   AEAudioFormat format;
-  format.m_dataFormat = streamFormat->m_dataFormat;
+  format.m_channelLayout = layout;
+  format.m_dataFormat = TranslateAEFormatToKodi(streamFormat->m_dataFormat);
   format.m_sampleRate = streamFormat->m_sampleRate;
-  format.m_channelLayout = streamFormat->m_channels;
 
   /* Translate addon options to kodi's options */
   int kodiOption = 0;
@@ -132,16 +371,15 @@ bool Interface_AudioEngine::audioengine_get_current_sink_format(void* kodiBase, 
     return false;
   }
 
-  format->m_channelCount = sinkFormat.m_channelLayout.Count();
-  for (unsigned int ch = 0; ch < format->m_channelCount; ++ch)
-  {
-    format->m_channels[ch] = sinkFormat.m_channelLayout[ch];
-  }
-
-  format->m_dataFormat = sinkFormat.m_dataFormat;
+  format->m_dataFormat = TranslateAEFormatToAddon(sinkFormat.m_dataFormat);
   format->m_sampleRate = sinkFormat.m_sampleRate;
   format->m_frames = sinkFormat.m_frames;
   format->m_frameSize = sinkFormat.m_frameSize;
+  format->m_channelCount = sinkFormat.m_channelLayout.Count();
+  for (unsigned int ch = 0; ch < format->m_channelCount && ch < AUDIOENGINE_CH_MAX; ++ch)
+  {
+    format->m_channels[ch] = TranslateAEChannelToAddon(sinkFormat.m_channelLayout[ch]);
+  }
 
   return true;
 }
@@ -450,20 +688,20 @@ unsigned int Interface_AudioEngine::aestream_get_sample_rate(void* kodiBase, AES
   return static_cast<IAEStream*>(streamHandle)->GetSampleRate();
 }
 
-AEDataFormat Interface_AudioEngine::aestream_get_data_format(void* kodiBase, AEStreamHandle* streamHandle)
+AudioEngineDataFormat Interface_AudioEngine::aestream_get_data_format(void* kodiBase, AEStreamHandle* streamHandle)
 {
   if (!kodiBase || !streamHandle)
   {
     CLog::Log(LOGERROR,
               "Interface_AudioEngine::{} - invalid stream data (kodiBase='{}', streamHandle='{}')",
               __FUNCTION__, kodiBase, static_cast<void*>(streamHandle));
-    return AE_FMT_INVALID;
+    return AUDIOENGINE_FMT_INVALID;
   }
 
   if (!CServiceBroker::GetActiveAE())
-    return AE_FMT_INVALID;
+    return AUDIOENGINE_FMT_INVALID;
 
-  return static_cast<IAEStream*>(streamHandle)->GetDataFormat();
+  return TranslateAEFormatToAddon(static_cast<IAEStream*>(streamHandle)->GetDataFormat());
 }
 
 double Interface_AudioEngine::aestream_get_resample_ratio(void* kodiBase, AEStreamHandle* streamHandle)

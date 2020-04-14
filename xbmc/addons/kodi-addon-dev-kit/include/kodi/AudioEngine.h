@@ -10,12 +10,6 @@
 
 #include "AddonBase.h"
 
-#ifdef BUILD_KODI_ADDON
-#include "AEChannelData.h"
-#else
-#include "cores/AudioEngine/Utils/AEChannelData.h"
-#endif
-
 //==============================================================================
 ///
 /// \defgroup cpp_kodi_audioengine  Interface - kodi::audioengine
@@ -56,10 +50,92 @@ typedef enum AudioEngineStreamOptions
 } AudioEngineStreamOptions;
 //----------------------------------------------------------------------------
 
+//============================================================================
+/// \ingroup cpp_kodi_audioengine_Defs
+/// @brief The possible channels
+///
+enum AudioEngineChannel
+{
+  AUDIOENGINE_CH_NULL = -1,
+  AUDIOENGINE_CH_RAW,
+
+  AUDIOENGINE_CH_FL,
+  AUDIOENGINE_CH_FR,
+  AUDIOENGINE_CH_FC,
+  AUDIOENGINE_CH_LFE,
+  AUDIOENGINE_CH_BL,
+  AUDIOENGINE_CH_BR,
+  AUDIOENGINE_CH_FLOC,
+  AUDIOENGINE_CH_FROC,
+  AUDIOENGINE_CH_BC,
+  AUDIOENGINE_CH_SL,
+  AUDIOENGINE_CH_SR,
+  AUDIOENGINE_CH_TFL,
+  AUDIOENGINE_CH_TFR,
+  AUDIOENGINE_CH_TFC,
+  AUDIOENGINE_CH_TC,
+  AUDIOENGINE_CH_TBL,
+  AUDIOENGINE_CH_TBR,
+  AUDIOENGINE_CH_TBC,
+  AUDIOENGINE_CH_BLOC,
+  AUDIOENGINE_CH_BROC,
+
+  AUDIOENGINE_CH_MAX
+};
+
+//============================================================================
+/// \ingroup cpp_kodi_audioengine_Defs
+/// @brief The various data formats
+///
+/// LE = Little Endian, BE = Big Endian, NE = Native Endian
+/// @note This is ordered from the worst to best preferred formats
+///
+enum AudioEngineDataFormat
+{
+  AUDIOENGINE_FMT_INVALID = -1,
+
+  AUDIOENGINE_FMT_U8,
+
+  AUDIOENGINE_FMT_S16BE,
+  AUDIOENGINE_FMT_S16LE,
+  AUDIOENGINE_FMT_S16NE,
+
+  AUDIOENGINE_FMT_S32BE,
+  AUDIOENGINE_FMT_S32LE,
+  AUDIOENGINE_FMT_S32NE,
+
+  AUDIOENGINE_FMT_S24BE4,
+  AUDIOENGINE_FMT_S24LE4,
+  AUDIOENGINE_FMT_S24NE4, // 24 bits in lower 3 bytes
+  AUDIOENGINE_FMT_S24NE4MSB, // S32 with bits_per_sample < 32
+
+  AUDIOENGINE_FMT_S24BE3,
+  AUDIOENGINE_FMT_S24LE3,
+  AUDIOENGINE_FMT_S24NE3, /* S24 in 3 bytes */
+
+  AUDIOENGINE_FMT_DOUBLE,
+  AUDIOENGINE_FMT_FLOAT,
+
+  // Bitstream
+  AUDIOENGINE_FMT_RAW,
+
+  /* planar formats */
+  AUDIOENGINE_FMT_U8P,
+  AUDIOENGINE_FMT_S16NEP,
+  AUDIOENGINE_FMT_S32NEP,
+  AUDIOENGINE_FMT_S24NE4P,
+  AUDIOENGINE_FMT_S24NE4MSBP,
+  AUDIOENGINE_FMT_S24NE3P,
+  AUDIOENGINE_FMT_DOUBLEP,
+  AUDIOENGINE_FMT_FLOATP,
+
+  AUDIOENGINE_FMT_MAX
+};
+
 struct AUDIO_ENGINE_FORMAT
 {
-  /// The stream's data format (eg, AE_FMT_S16LE)
-  enum AEDataFormat m_dataFormat;
+  /// The stream's data format (eg, AUDIOENGINE_FMT_S16LE)
+  enum AudioEngineDataFormat m_dataFormat;
 
   /// The stream's sample rate (eg, 48000)
   unsigned int m_sampleRate;
@@ -71,7 +147,7 @@ struct AUDIO_ENGINE_FORMAT
   unsigned int m_channelCount;
 
   /// The stream's channel layout
-  enum AEChannel m_channels[AE_CH_MAX];
+  enum AudioEngineChannel m_channels[AUDIOENGINE_CH_MAX];
 
   /// The number of frames per period
   unsigned int m_frames;
@@ -115,7 +191,7 @@ typedef struct AddonToKodiFuncTable_kodi_audioengine
   unsigned int (*aestream_get_frame_size)(void *kodiBase, AEStreamHandle *handle);
   unsigned int (*aestream_get_channel_count)(void *kodiBase, AEStreamHandle *handle);
   unsigned int (*aestream_get_sample_rate)(void *kodiBase, AEStreamHandle *handle);
-  enum AEDataFormat (*aestream_get_data_format)(void *kodiBase, AEStreamHandle *handle);
+  enum AudioEngineDataFormat (*aestream_get_data_format)(void* kodiBase, AEStreamHandle* handle);
   double (*aestream_get_resample_ratio)(void *kodiBase, AEStreamHandle *handle);
   void (*aestream_set_resample_ratio)(void *kodiBase, AEStreamHandle *handle, double ratio);
 } AddonToKodiFuncTable_kodi_audioengine;
@@ -140,24 +216,24 @@ class AudioEngineFormat : public addon::CStructHdl<AudioEngineFormat, AUDIO_ENGI
 public:
   AudioEngineFormat()
   {
-    m_cStructure->m_dataFormat = AE_FMT_INVALID;
+    m_cStructure->m_dataFormat = AUDIOENGINE_FMT_INVALID;
     m_cStructure->m_sampleRate = 0;
     m_cStructure->m_encodedRate = 0;
     m_cStructure->m_frames = 0;
     m_cStructure->m_frameSize = 0;
     m_cStructure->m_channelCount = 0;
 
-    for (size_t ch = 0; ch < AE_CH_MAX; ++ch)
-      m_cStructure->m_channels[ch] = AE_CH_NULL;
+    for (size_t ch = 0; ch < AUDIOENGINE_CH_MAX; ++ch)
+      m_cStructure->m_channels[ch] = AUDIOENGINE_CH_NULL;
   }
   AudioEngineFormat(const AudioEngineFormat& channel) : CStructHdl(channel) {}
   AudioEngineFormat(const AUDIO_ENGINE_FORMAT* channel) : CStructHdl(channel) {}
   AudioEngineFormat(AUDIO_ENGINE_FORMAT* channel) : CStructHdl(channel) {}
 
-  /// The stream's data format (eg, AE_FMT_S16LE)
-  void SetDataFormat(enum AEDataFormat format) { m_cStructure->m_dataFormat = format; }
+  /// The stream's data format (eg, AUDIOENGINE_FMT_S16LE)
+  void SetDataFormat(enum AudioEngineDataFormat format) { m_cStructure->m_dataFormat = format; }
 
-  enum AEDataFormat GetDataFormat() const { return m_cStructure->m_dataFormat; }
+  enum AudioEngineDataFormat GetDataFormat() const { return m_cStructure->m_dataFormat; }
 
   /// The stream's sample rate (eg, 48000)
   void SetSampleRate(unsigned int rate) { m_cStructure->m_sampleRate = rate; }
@@ -169,26 +245,26 @@ public:
 
   unsigned int GetEncodedRate() const { return m_cStructure->m_encodedRate; }
 
-  /// The amount of used speaker channels
-  void SetChannelCount(unsigned int count) { m_cStructure->m_channelCount = count; }
-
-  unsigned int GetChannelCount() const { return m_cStructure->m_channelCount; }
-
   /// The stream's channel layout
-  void SetChannelLayout(const std::vector<enum AEChannel>& layout)
+  void SetChannelLayout(const std::vector<enum AudioEngineChannel>& layout)
   {
-    // Reset first all to empty values to AE_CH_NULL, in case given list is empty
-    for (size_t ch = 0; ch < AE_CH_MAX; ++ch)
-      m_cStructure->m_channels[ch] = AE_CH_NULL;
-    for (size_t ch = 0; ch < layout.size() && ch < AE_CH_MAX-1; ++ch)
-      m_cStructure->m_channels[ch] = layout[ch];
-  }
-  std::vector<enum AEChannel> GetChannelLayout() const
-  {
-    std::vector<enum AEChannel> channels;
-    for (size_t ch = 0; ch < AE_CH_MAX; ++ch)
+    // Reset first all to empty values to AUDIOENGINE_CH_NULL, in case given list is empty
+    m_cStructure->m_channelCount = 0;
+    for (size_t ch = 0; ch < AUDIOENGINE_CH_MAX; ++ch)
+      m_cStructure->m_channels[ch] = AUDIOENGINE_CH_NULL;
+
+    for (size_t ch = 0; ch < layout.size() && ch < AUDIOENGINE_CH_MAX; ++ch)
     {
-      if (m_cStructure->m_channels[ch] == AE_CH_NULL)
+      m_cStructure->m_channels[ch] = layout[ch];
+      m_cStructure->m_channelCount++;
+    }
+  }
+  std::vector<enum AudioEngineChannel> GetChannelLayout() const
+  {
+    std::vector<enum AudioEngineChannel> channels;
+    for (size_t ch = 0; ch < AUDIOENGINE_CH_MAX; ++ch)
+    {
+      if (m_cStructure->m_channels[ch] == AUDIOENGINE_CH_NULL)
         break;
 
       channels.push_back(m_cStructure->m_channels[ch]);
@@ -224,7 +300,7 @@ public:
       return false;
     }
 
-    for (unsigned int ch = 0; ch < AE_CH_MAX; ++ch)
+    for (unsigned int ch = 0; ch < AUDIOENGINE_CH_MAX; ++ch)
     {
       if (fmt->m_cStructure->m_channels[ch] != m_cStructure->m_channels[ch])
       {
@@ -257,7 +333,7 @@ public:
   /// @brief Contructs new class to an Kodi IAEStream in the format specified.
   ///
   /// @param[in] format       The data format the incoming audio will be in
-  ///                         (e.g. \ref AE_FMT_S16LE)
+  ///                         (e.g. \ref AUDIOENGINE_FMT_S16LE)
   /// @param[in] options      [opt] A bit field of stream options (see: enum \ref AudioEngineStreamOptions)
   ///
   ///
@@ -586,7 +662,7 @@ public:
   ///
   /// @return The stream's data format (eg, AUDIOENGINE_FMT_S16LE)
   ///
-  AEDataFormat GetDataFormat() const
+  AudioEngineDataFormat GetDataFormat() const
   {
     return m_cb->aestream_get_data_format(m_kodiBase, m_StreamHandle);
   }

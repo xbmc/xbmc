@@ -9,6 +9,7 @@
 #pragma once
 
 #include "addons/kodi-addon-dev-kit/include/kodi/AudioEngine.h"
+#include "cores/AudioEngine/Utils/AEChannelData.h"
 
 extern "C"
 {
@@ -19,6 +20,20 @@ struct Interface_AudioEngine
 {
   static void Init(AddonGlobalInterface* addonInterface);
   static void DeInit(AddonGlobalInterface* addonInterface);
+
+  /**
+   * @brief Translation functions to separate Kodi and addons
+   *
+   * This thought to make it more safe for cases as something changed inside
+   * Kodi, addons overseen and breaks API, further to have on addons a better
+   * documentation about this parts.
+   */
+  //@{
+  static AEChannel TranslateAEChannelToKodi(AudioEngineChannel channel);
+  static AudioEngineChannel TranslateAEChannelToAddon(AEChannel channel);
+  static AEDataFormat TranslateAEFormatToKodi(AudioEngineDataFormat format);
+  static AudioEngineDataFormat TranslateAEFormatToAddon(AEDataFormat format);
+  //@}
 
   /**
    * Creates and returns a new handle to an IAEStream in the format specified, this function should never fail
@@ -173,7 +188,8 @@ struct Interface_AudioEngine
    * Return the data format the stream has been configured with
    * @return The stream's data format (eg, AE_FMT_S16LE)
    */
-  static AEDataFormat aestream_get_data_format(void* kodiBase, AEStreamHandle* streamHandle);
+  static AudioEngineDataFormat aestream_get_data_format(void* kodiBase,
+                                                        AEStreamHandle* streamHandle);
 
   /**
    * Return the resample ratio
