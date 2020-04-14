@@ -1,5 +1,0 @@
-Run the target Platinum-iPhone-Framework-Universal of Platinum.xcodeproj project to build the Platinum framework which this sample needs.
-The framework will end up in Targets/universal-apple-iphoneos/Debug (or Release)
-
-Alternatively you can use scons :
-> scons build_config=Debug target=universal-apple-macosx-xcode
