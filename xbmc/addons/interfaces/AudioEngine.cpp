@@ -65,7 +65,7 @@ void Interface_AudioEngine::DeInit(AddonGlobalInterface* addonInterface)
   }
 }
 
-AEStreamHandle* Interface_AudioEngine::audioengine_make_stream(void* kodiBase, AudioEngineFormat* streamFormat, unsigned int options)
+AEStreamHandle* Interface_AudioEngine::audioengine_make_stream(void* kodiBase, AUDIO_ENGINE_FORMAT* streamFormat, unsigned int options)
 {
   if (!kodiBase || !streamFormat)
   {
@@ -111,7 +111,7 @@ void Interface_AudioEngine::audioengine_free_stream(void* kodiBase, AEStreamHand
     engine->FreeStream(static_cast<IAEStream*>(streamHandle), true);
 }
 
-bool Interface_AudioEngine::audioengine_get_current_sink_format(void* kodiBase, AudioEngineFormat *format)
+bool Interface_AudioEngine::audioengine_get_current_sink_format(void* kodiBase, AUDIO_ENGINE_FORMAT *format)
 {
   if (!kodiBase || !format)
   {

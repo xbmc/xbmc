@@ -56,14 +56,7 @@ typedef enum AudioEngineStreamOptions
 } AudioEngineStreamOptions;
 //----------------------------------------------------------------------------
 
-//============================================================================
-/// \defgroup cpp_kodi_audioengine_Defs_AudioEngineFormat struct AudioEngineFormat
-/// \ingroup cpp_kodi_audioengine_Defs
-/// @brief The audio format structure that fully defines a stream's audio
-/// information
-///
-//@{
-struct AudioEngineFormat
+struct AUDIO_ENGINE_FORMAT
 {
   /// The stream's data format (eg, AE_FMT_S16LE)
   enum AEDataFormat m_dataFormat;
@@ -85,53 +78,7 @@ struct AudioEngineFormat
 
   /// The size of one frame in bytes
   unsigned int m_frameSize;
-
-  AudioEngineFormat()
-  {
-    m_dataFormat = AE_FMT_INVALID;
-    m_sampleRate = 0;
-    m_encodedRate = 0;
-    m_frames = 0;
-    m_frameSize = 0;
-    m_channelCount = 0;
-
-    for (unsigned int ch = 0; ch < AE_CH_MAX; ++ch)
-    {
-      m_channels[ch] = AE_CH_MAX;
-    }
-  }
-
-  /// Function to compare the format structure with another
-  bool compareFormat(const AudioEngineFormat *fmt)
-  {
-    if (!fmt)
-    {
-      return false;
-    }
-
-    if (m_dataFormat    != fmt->m_dataFormat    ||
-        m_sampleRate    != fmt->m_sampleRate    ||
-        m_encodedRate   != fmt->m_encodedRate   ||
-        m_frames        != fmt->m_frames        ||
-        m_frameSize     != fmt->m_frameSize     ||
-        m_channelCount  != fmt->m_channelCount)
-    {
-      return false;
-    }
-
-    for (unsigned int ch = 0; ch < AE_CH_MAX; ++ch)
-    {
-      if (fmt->m_channels[ch] != m_channels[ch])
-      {
-        return false;
-      }
-    }
-
-    return true;
-  }
 };
-//@}
-//----------------------------------------------------------------------------
 
 /* A stream handle pointer, which is only used internally by the addon stream handle */
 typedef void AEStreamHandle;
@@ -142,9 +89,9 @@ typedef void AEStreamHandle;
   */
 typedef struct AddonToKodiFuncTable_kodi_audioengine
 {
-  AEStreamHandle* (*make_stream)(void *kodiBase, AudioEngineFormat* format, unsigned int options);
+  AEStreamHandle* (*make_stream)(void *kodiBase, struct AUDIO_ENGINE_FORMAT* format, unsigned int options);
   void (*free_stream)(void *kodiBase, AEStreamHandle *stream);
-  bool (*get_current_sink_format)(void *kodiBase, AudioEngineFormat* sink_format);
+  bool (*get_current_sink_format)(void *kodiBase, struct AUDIO_ENGINE_FORMAT* sink_format);
 
   // Audio Engine Stream definitions
   unsigned int (*aestream_get_space)(void *kodiBase, AEStreamHandle *handle);
@@ -168,7 +115,7 @@ typedef struct AddonToKodiFuncTable_kodi_audioengine
   unsigned int (*aestream_get_frame_size)(void *kodiBase, AEStreamHandle *handle);
   unsigned int (*aestream_get_channel_count)(void *kodiBase, AEStreamHandle *handle);
   unsigned int (*aestream_get_sample_rate)(void *kodiBase, AEStreamHandle *handle);
-  AEDataFormat (*aestream_get_data_format)(void *kodiBase, AEStreamHandle *handle);
+  enum AEDataFormat (*aestream_get_data_format)(void *kodiBase, AEStreamHandle *handle);
   double (*aestream_get_resample_ratio)(void *kodiBase, AEStreamHandle *handle);
   void (*aestream_set_resample_ratio)(void *kodiBase, AEStreamHandle *handle, double ratio);
 } AddonToKodiFuncTable_kodi_audioengine;
@@ -180,6 +127,116 @@ namespace kodi
 {
 namespace audioengine
 {
+
+//============================================================================
+/// \defgroup cpp_kodi_audioengine_Defs_AudioEngineFormat struct AudioEngineFormat
+/// \ingroup cpp_kodi_audioengine_Defs
+/// @brief The audio format structure that fully defines a stream's audio
+/// information
+///
+//@{
+class AudioEngineFormat : public addon::CStructHdl<AudioEngineFormat, AUDIO_ENGINE_FORMAT>
+{
+public:
+  AudioEngineFormat()
+  {
+    m_cStructure->m_dataFormat = AE_FMT_INVALID;
+    m_cStructure->m_sampleRate = 0;
+    m_cStructure->m_encodedRate = 0;
+    m_cStructure->m_frames = 0;
+    m_cStructure->m_frameSize = 0;
+    m_cStructure->m_channelCount = 0;
+
+    for (size_t ch = 0; ch < AE_CH_MAX; ++ch)
+      m_cStructure->m_channels[ch] = AE_CH_NULL;
+  }
+  AudioEngineFormat(const AudioEngineFormat& channel) : CStructHdl(channel) {}
+  AudioEngineFormat(const AUDIO_ENGINE_FORMAT* channel) : CStructHdl(channel) {}
+  AudioEngineFormat(AUDIO_ENGINE_FORMAT* channel) : CStructHdl(channel) {}
+
+  /// The stream's data format (eg, AE_FMT_S16LE)
+  void SetDataFormat(enum AEDataFormat format) { m_cStructure->m_dataFormat = format; }
+
+  enum AEDataFormat GetDataFormat() const { return m_cStructure->m_dataFormat; }
+
+  /// The stream's sample rate (eg, 48000)
+  void SetSampleRate(unsigned int rate) { m_cStructure->m_sampleRate = rate; }
+
+  unsigned int GetSampleRate() const { return m_cStructure->m_sampleRate; }
+
+  /// The encoded streams sample rate if a bitstream, otherwise undefined
+  void SetEncodedRate(unsigned int rate) { m_cStructure->m_encodedRate = rate; }
+
+  unsigned int GetEncodedRate() const { return m_cStructure->m_encodedRate; }
+
+  /// The amount of used speaker channels
+  void SetChannelCount(unsigned int count) { m_cStructure->m_channelCount = count; }
+
+  unsigned int GetChannelCount() const { return m_cStructure->m_channelCount; }
+
+  /// The stream's channel layout
+  void SetChannelLayout(const std::vector<enum AEChannel>& layout)
+  {
+    // Reset first all to empty values to AE_CH_NULL, in case given list is empty
+    for (size_t ch = 0; ch < AE_CH_MAX; ++ch)
+      m_cStructure->m_channels[ch] = AE_CH_NULL;
+    for (size_t ch = 0; ch < layout.size() && ch < AE_CH_MAX-1; ++ch)
+      m_cStructure->m_channels[ch] = layout[ch];
+  }
+  std::vector<enum AEChannel> GetChannelLayout() const
+  {
+    std::vector<enum AEChannel> channels;
+    for (size_t ch = 0; ch < AE_CH_MAX; ++ch)
+    {
+      if (m_cStructure->m_channels[ch] == AE_CH_NULL)
+        break;
+
+      channels.push_back(m_cStructure->m_channels[ch]);
+    }
+    return channels;
+  }
+
+  /// The number of frames per period
+  void SetFramesAmount(unsigned int frames) { m_cStructure->m_frames = frames; }
+
+  unsigned int GetFramesAmount() const { return m_cStructure->m_frames; }
+
+  /// The size of one frame in bytes
+  void SetFrameSize(unsigned int frameSize) { m_cStructure->m_frameSize = frameSize; }
+
+  unsigned int GetFrameSize() const { return m_cStructure->m_frameSize; }
+
+  /// Function to compare the format structure with another
+  bool CompareFormat(const AudioEngineFormat *fmt)
+  {
+    if (!fmt)
+    {
+      return false;
+    }
+
+    if (m_cStructure->m_dataFormat    != fmt->m_cStructure->m_dataFormat    ||
+        m_cStructure->m_sampleRate    != fmt->m_cStructure->m_sampleRate    ||
+        m_cStructure->m_encodedRate   != fmt->m_cStructure->m_encodedRate   ||
+        m_cStructure->m_frames        != fmt->m_cStructure->m_frames        ||
+        m_cStructure->m_frameSize     != fmt->m_cStructure->m_frameSize     ||
+        m_cStructure->m_channelCount  != fmt->m_cStructure->m_channelCount)
+    {
+      return false;
+    }
+
+    for (unsigned int ch = 0; ch < AE_CH_MAX; ++ch)
+    {
+      if (fmt->m_cStructure->m_channels[ch] != m_cStructure->m_channels[ch])
+      {
+        return false;
+      }
+    }
+
+    return true;
+  }
+};
+//@}
+//----------------------------------------------------------------------------
 
 //============================================================================
 ///
@@ -264,11 +321,11 @@ public:
   ///
   /// ~~~~~~~~~~~~~
   ///
-  CAddonAEStream(AudioEngineFormat format, unsigned int options = 0)
+  CAddonAEStream(AudioEngineFormat& format, unsigned int options = 0)
     : m_kodiBase(::kodi::addon::CAddonBase::m_interface->toKodi->kodiBase),
       m_cb(::kodi::addon::CAddonBase::m_interface->toKodi->kodi_audioengine)
   {
-    m_StreamHandle = m_cb->make_stream(m_kodiBase, &format, options);
+    m_StreamHandle = m_cb->make_stream(m_kodiBase, format, options);
     if (m_StreamHandle == nullptr)
     {
       kodi::Log(ADDON_LOG_FATAL, "CAddonAEStream: make_stream failed!");
@@ -578,10 +635,10 @@ private:
 /// @param[in] format Current sink data format. For more details see AudioEngineFormat.
 /// @return Returns true on success, else false.
 ///
-inline bool GetCurrentSinkFormat(AudioEngineFormat &format)
+inline bool GetCurrentSinkFormat(AudioEngineFormat& format)
 {
   using namespace kodi::addon;
-  return CAddonBase::m_interface->toKodi->kodi_audioengine->get_current_sink_format(CAddonBase::m_interface->toKodi->kodiBase, &format);
+  return CAddonBase::m_interface->toKodi->kodi_audioengine->get_current_sink_format(CAddonBase::m_interface->toKodi->kodiBase, format);
 }
 //----------------------------------------------------------------------------
 

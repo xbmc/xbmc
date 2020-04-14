@@ -27,7 +27,7 @@ struct Interface_AudioEngine
    * @return a new Handle to an IAEStream that will accept data in the requested format
    */
   static AEStreamHandle* audioengine_make_stream(void* kodiBase,
-                                                 AudioEngineFormat* streamFormat,
+                                                 AUDIO_ENGINE_FORMAT* streamFormat,
                                                  unsigned int options);
 
   /**
@@ -40,10 +40,10 @@ struct Interface_AudioEngine
   /**
    * Get the current sink data format
    *
-   * @param[in] sinkFormat sink data format. For more details see AudioEngineFormat.
+   * @param[in] sinkFormat sink data format. For more details see AUDIO_ENGINE_FORMAT.
    * @return Returns true on success, else false.
    */
-  static bool audioengine_get_current_sink_format(void* kodiBase, AudioEngineFormat* sinkFormat);
+  static bool audioengine_get_current_sink_format(void* kodiBase, AUDIO_ENGINE_FORMAT* sinkFormat);
 
   /**
    * Returns the amount of space available in the stream
