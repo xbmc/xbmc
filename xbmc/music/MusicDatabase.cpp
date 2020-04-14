@@ -444,10 +444,10 @@ void CMusicDatabase::CreateViews()
               "        iBitRate, "
               "        iSampleRate, "
               "        iChannels, "
+              "        album.iAlbumDuration AS iAlbumDuration, "
               "        song.dateAdded as dateAdded, "
               "        song.dateNew AS dateNew, "
               "        song.dateModified AS dateModified "
-              "        album.iAlbumDuration AS iAlbumDuration "
               "FROM song"
               "  JOIN album ON"
               "    song.idAlbum=album.idAlbum"
@@ -768,7 +768,6 @@ bool CMusicDatabase::AddAlbum(CAlbum& album, int idSource)
   m_pDS->exec(PrepareSQL("UPDATE album SET strOrigReleaseDate = (SELECT DISTINCT strOrigReleaseDate "
                          "FROM song WHERE song.idAlbum = album.idAlbum LIMIT 1) WHERE idAlbum = %i",
                          album.idAlbum));
-<<<<<<< HEAD
 
   std::string albumdateadded =
       GetSingleValue("song", "MAX(dateAdded)", PrepareSQL("idAlbum = %i", album.idAlbum));
@@ -8565,17 +8564,18 @@ void CMusicDatabase::UpdateTables(int version)
     // Set new and modified to now UTC as not worth complexity of estimating from song dates
     m_pDS->exec(PrepareSQL("UPDATE artist SET dateNew = '%s'", strUTCNow.c_str()));
     m_pDS->exec("UPDATE artist SET dateModified = dateNew");
+  }
   if (version < 79)
+  {
+    m_pDS->exec("ALTER TABLE discography ADD strReleaseGroupMBID TEXT");
+  }
+  if (version < 80)
   {
     m_pDS->exec("ALTER TABLE album ADD iAlbumDuration INTEGER NOT NULL DEFAULT 0");
     // update duration for all current albums
     m_pDS->exec("UPDATE album SET iAlbumDuration = (SELECT SUM(song.iDuration) FROM song "
                 "WHERE song.idAlbum = album.idAlbum) "
                 "WHERE EXISTS (SELECT 1 FROM song WHERE song.idAlbum = album.idAlbum)");
-  }
-  if (version < 79)
-  {
-    m_pDS->exec("ALTER TABLE discography ADD strReleaseGroupMBID TEXT");
   }
 
   // Set the verion of tag scanning required.
@@ -8598,7 +8598,7 @@ void CMusicDatabase::UpdateTables(int version)
 
 int CMusicDatabase::GetSchemaVersion() const
 {
-  return 79;
+  return 80;
 }
 
 int CMusicDatabase::GetMusicNeedsTagScan()

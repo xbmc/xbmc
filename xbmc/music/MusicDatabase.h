@@ -830,6 +830,7 @@ private:
     song_iBitRate,
     song_iSampleRate,
     song_iChannels,
+    song_iAlbumDuration,
     song_dateAdded,
     song_dateNew,
     song_dateModified,
