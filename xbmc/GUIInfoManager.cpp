@@ -4036,10 +4036,10 @@ const infomap container_bools[] ={{ "onnext",           CONTAINER_MOVE_NEXT },
 ///     @skinning_v15 **[New Infolabel]** \link Container_CurrentItem `Container(id).CurrentItem`\endlink
 ///     <p>
 ///   }
-///   \table_row3{   <b>`Container(id).SubItem`</b>,
+///   \table_row3{   <b>`Container(id).SubItem(item_number)`</b>,
 ///                  \anchor Container_SubItem
-///                  _integer_,
-///     @return Sub-item in the container or grouplist with given id.
+///                  _boolean_,
+///     @return **True** if the container with id (or current container if id is omitted) is focused on the specified subitem.
 ///     @note If no id is specified it grabs the current container.
 ///     <p>
 ///   }
