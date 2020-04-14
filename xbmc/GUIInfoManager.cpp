@@ -3795,18 +3795,6 @@ const infomap retroplayer[] =
 ///     to it.
 ///     <p>
 ///   }
-///   \table_row3{   <b>`Container.SortMethod`</b>,
-///                  \anchor Container_SortMethod
-///                  _string_,
-///     @return The current sort method (name\, year\, rating\, etc).
-///     <p>
-///   }
-///   \table_row3{   <b>`Container.SortMethod(parameter)`</b>,
-///                  \anchor Container_SortMethod_parameter
-///                  _boolean_,
-///     @return **True** if the current sort method matches the specified parameter (name\, year\, rating\, etc).
-///     <p>
-///   }
 ///   \table_row3{   <b>`Container.SortOrder`</b>,
 ///                  \anchor Container_SortOrder
 ///                  _string_,
@@ -3862,7 +3850,6 @@ const infomap mediacontainer[] = {{ "hasfiles",         CONTAINER_HASFILES },
                                   { "totalwatched",     CONTAINER_TOTALWATCHED },
                                   { "totalunwatched",   CONTAINER_TOTALUNWATCHED },
                                   { "hasthumb",         CONTAINER_HAS_THUMB },
-                                  { "sortmethod",       CONTAINER_SORT_METHOD },
                                   { "sortorder",        CONTAINER_SORT_ORDER },
                                   { "canfilter",        CONTAINER_CAN_FILTER },
                                   { "canfilteradvanced",CONTAINER_CAN_FILTERADVANCED },
@@ -4064,12 +4051,26 @@ const infomap container_bools[] ={{ "onnext",           CONTAINER_MOVE_NEXT },
 ///     item_number.
 ///     <p>
 ///   }
+///   \table_row3{   <b>`Container.SortMethod`</b>,
+///                  \anchor Container_SortMethod
+///                  _string_,
+///     @return The current sort method (returns a localized value).
+///     <p>
+///   }
+///   \table_row3{   <b>`Container.SortMethod(sortid)`</b>,
+///                  \anchor Container_SortMethod_sortid
+///                  _boolean_,
+///     @return **True** if the current sort method matches the specified SortID (see \ref List_of_sort_methods "SortUtils").
+///     <p>
+///   }
 const infomap container_ints[] = {{ "row",              CONTAINER_ROW },
                                   { "column",           CONTAINER_COLUMN },
                                   { "position",         CONTAINER_POSITION },
                                   { "currentitem",      CONTAINER_CURRENT_ITEM },
                                   { "subitem",          CONTAINER_SUBITEM },
-                                  { "hasfocus",         CONTAINER_HAS_FOCUS }};
+                                  { "hasfocus",         CONTAINER_HAS_FOCUS },
+                                  { "sortmethod",       CONTAINER_SORT_METHOD },
+};
 
 /// \page modules__infolabels_boolean_conditions
 ///   \table_row3{   <b>`Container.Property(addoncategory)`</b>,
