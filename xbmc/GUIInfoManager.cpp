@@ -3930,6 +3930,15 @@ const infomap mediacontainer[] = {{ "hasfiles",         CONTAINER_HASFILES },
 ///     @note If no id is specified it grabs the current container.
 ///     <p>
 ///   }
+///   \table_row3{   <b>`Container(id).CurrentItem`</b>,
+///                  \anchor Container_CurrentItem
+///                  _integer_,
+///     @return The current item in the container or grouplist with given id.
+///     @note If no id is specified it grabs the current container.
+///     <p><hr>
+///     @skinning_v15 **[New Infolabel]** \link Container_CurrentItem `Container(id).CurrentItem`\endlink
+///     <p>
+///   }
 ///   \table_row3{   <b>`Container(id).Scrolling`</b>,
 ///                  \anchor Container_Scrolling
 ///                  _boolean_,
@@ -3976,6 +3985,7 @@ const infomap container_bools[] ={{ "onnext",           CONTAINER_MOVE_NEXT },
                                   { "numnonfolderitems", CONTAINER_NUM_NONFOLDER_ITEMS },
                                   { "numallitems",      CONTAINER_NUM_ALL_ITEMS },
                                   { "currentpage",      CONTAINER_CURRENT_PAGE },
+                                  { "currentitem",      CONTAINER_CURRENT_ITEM },
                                   { "scrolling",        CONTAINER_SCROLLING },
                                   { "hasnext",          CONTAINER_HAS_NEXT },
                                   { "hasparent",        CONTAINER_HAS_PARENT_ITEM },
@@ -4027,15 +4037,6 @@ const infomap container_bools[] ={{ "onnext",           CONTAINER_MOVE_NEXT },
 ///     @return **True** if the container with id (or current container if id is omitted) is focused on the specified position.
 ///     <p>
 ///   }
-///   \table_row3{   <b>`Container(id).CurrentItem`</b>,
-///                  \anchor Container_CurrentItem
-///                  _integer_,
-///     @return The current item in the container or grouplist with given id. 
-///     @note If no id is specified it grabs the current container.
-///     <p><hr>
-///     @skinning_v15 **[New Infolabel]** \link Container_CurrentItem `Container(id).CurrentItem`\endlink
-///     <p>
-///   }
 ///   \table_row3{   <b>`Container(id).SubItem(item_number)`</b>,
 ///                  \anchor Container_SubItem
 ///                  _boolean_,
@@ -4066,7 +4067,6 @@ const infomap container_bools[] ={{ "onnext",           CONTAINER_MOVE_NEXT },
 const infomap container_ints[] = {{ "row",              CONTAINER_ROW },
                                   { "column",           CONTAINER_COLUMN },
                                   { "position",         CONTAINER_POSITION },
-                                  { "currentitem",      CONTAINER_CURRENT_ITEM },
                                   { "subitem",          CONTAINER_SUBITEM },
                                   { "hasfocus",         CONTAINER_HAS_FOCUS },
                                   { "sortmethod",       CONTAINER_SORT_METHOD },
