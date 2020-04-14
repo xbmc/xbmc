@@ -521,6 +521,9 @@ void CCurlFile::SetCommonOptions(CReadState* state, bool failOnError /* = true *
   if (!m_verifyPeer)
     g_curlInterface.easy_setopt(h, CURLOPT_SSL_VERIFYPEER, 0);
 
+  if (!m_verifyHost)
+    g_curlInterface.easy_setopt(h, CURLOPT_SSL_VERIFYHOST, 0);
+
   g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_URL, m_url.c_str());
   g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_TRANSFERTEXT, CURL_OFF);
 
@@ -743,6 +746,11 @@ void CCurlFile::ParseAndCorrectUrl(CURL &url2)
       if (url2.GetProtocolOption("verifypeer") == "false")
         m_verifyPeer = false;
     }
+    if (url2.HasProtocolOption("verifyhost"))
+    {
+      if (url2.GetProtocolOption("verifyhost") == "false")
+        m_verifyHost = false;
+    }
     m_ftppasvip = url2.HasProtocolOption("pasvip") && url2.GetProtocolOption("pasvip") != "0";
   }
   else if(url2.IsProtocol("http") ||
@@ -829,6 +837,11 @@ void CCurlFile::ParseAndCorrectUrl(CURL &url2)
         {
           if (value == "false")
             m_verifyPeer = false;
+        }
+        else if (name == "verifyhost")
+        {
+          if (value == "false")
+            m_verifyHost = false;
         }
         else
         {

@@ -184,6 +184,7 @@ namespace XFILE
       bool m_postdataset;
       bool m_allowRetry;
       bool m_verifyPeer = true;
+      bool m_verifyHost = true;
       bool m_failOnError = true;
 
       CRingBuffer m_buffer; // our ringhold buffer
