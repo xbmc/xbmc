@@ -134,7 +134,7 @@ private:
   bool GetResources();
   bool FindConnector();
   bool FindEncoder();
-  bool FindCrtc();
+  bool FindCrtcs();
   bool FindPlanes();
   bool FindModifiersForPlane(struct plane *object);
   bool FindPreferredMode();
@@ -144,11 +144,12 @@ private:
   bool CheckConnector(int connectorId);
 
   KODI::UTILS::POSIX::CFileHandle m_renderFd;
-  int m_crtc_index;
   std::string m_module;
 
   drmModeResPtr m_drm_resources = nullptr;
   drmModeCrtcPtr m_orig_crtc = nullptr;
+
+  std::vector<crtc*> m_crtcs;
 };
 
 }
