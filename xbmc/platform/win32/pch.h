@@ -11,18 +11,19 @@
 // The times in comments are how much time was spent parsing
 // the header file according to C++ Build Insights in VS2019
 #define _CRT_RAND_S
-#include <vector>
-#include <map>
-#include <string>
-#include <iostream>
-#include <fstream>
-#include <chrono> // 72 seconds
-#include <mutex> // 19 seconds
 #include <algorithm> // 32 seconds
-#include <ppltasks.h> // 87seconds, not included by us
-#include <intrin.h>  // 97 seconds
-#include <fmt/format.h> // 53 seconds
+#include <chrono> // 72 seconds
+#include <fstream>
+#include <iostream>
+#include <map>
+#include <mutex> // 19 seconds
+#include <string>
+#include <vector>
+
 #include <fmt/core.h>
+#include <fmt/format.h> // 53 seconds
+#include <intrin.h> // 97 seconds
+#include <ppltasks.h> // 87seconds, not included by us
 #if !(defined(_WINSOCKAPI_) || defined(_WINSOCK_H))
 #include <winsock2.h>
 #endif
