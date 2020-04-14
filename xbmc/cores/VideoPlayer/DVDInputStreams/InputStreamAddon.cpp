@@ -220,15 +220,6 @@ int CInputStreamAddon::GetBlockSize()
   return m_struct.toAddon.block_size_stream(&m_struct);
 }
 
-bool CInputStreamAddon::Pause(double time)
-{
-  if (!m_struct.toAddon.pause_stream)
-    return false;
-
-  m_struct.toAddon.pause_stream(&m_struct, time);
-  return true;
-}
-
 bool CInputStreamAddon::CanSeek()
 {
   return (m_caps.m_mask & INPUTSTREAM_CAPABILITIES::SUPPORTS_SEEK) != 0;

@@ -53,7 +53,6 @@ public:
   void Close() override;
   int Read(uint8_t* buf, int buf_size) override;
   int64_t Seek(int64_t offset, int whence) override;
-  bool Pause(double dTime) override;
   int64_t GetLength() override;
   int GetBlockSize() override;
   bool IsEOF() override;

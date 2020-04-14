@@ -357,7 +357,6 @@ extern "C"
                                   int whence);
     int64_t(__cdecl* position_stream)(const AddonInstance_InputStream* instance);
     int64_t(__cdecl* length_stream)(const AddonInstance_InputStream* instance);
-    void(__cdecl* pause_stream)(const AddonInstance_InputStream* instance, double time);
     bool(__cdecl* is_real_time_stream)(const AddonInstance_InputStream* instance);
 
     // IChapter
@@ -598,14 +597,6 @@ public:
   virtual int GetBlockSize() { return 0; }
 
   /*!
-     * @brief Notify the InputStream addon that Kodi (un)paused the currently playing stream.
-     * Only called when an inpustream DOES NOT have its own demuxer.
-     * @param time The time that Kodi (un)paused the stream
-     */
-  virtual void PauseStream(double time) {}
-
-
-  /*!
      *  Check for real-time streaming
      *  @return true if current stream is real-time
      */
@@ -687,7 +678,6 @@ private:
     m_instanceData->toAddon.seek_stream = ADDON_SeekStream;
     m_instanceData->toAddon.position_stream = ADDON_PositionStream;
     m_instanceData->toAddon.length_stream = ADDON_LengthStream;
-    m_instanceData->toAddon.pause_stream = ADDON_PauseStream;
     m_instanceData->toAddon.is_real_time_stream = ADDON_IsRealTimeStream;
 
     int minChapterVersion[3] = { 2, 0, 10 };
@@ -872,11 +862,6 @@ private:
   inline static int ADDON_GetBlockSize(const AddonInstance_InputStream* instance)
   {
     return static_cast<CInstanceInputStream*>(instance->toAddon.addonInstance)->GetBlockSize();
-  }
-
-  inline static void ADDON_PauseStream(const AddonInstance_InputStream* instance, double time)
-  {
-    static_cast<CInstanceInputStream*>(instance->toAddon.addonInstance)->PauseStream(time);
   }
 
   inline static bool ADDON_IsRealTimeStream(const AddonInstance_InputStream* instance)
