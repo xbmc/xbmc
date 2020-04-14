@@ -12,9 +12,9 @@
 
 #include <string>
 
-#include <Neptune/Source/Core/NptReferences.h>
-#include <Neptune/Source/Core/NptStrings.h>
-#include <Neptune/Source/Core/NptTypes.h>
+#include <Neptune/NptReferences.h>
+#include <Neptune/NptStrings.h>
+#include <Neptune/NptTypes.h>
 
 class CUPnPServer;
 class CFileItem;

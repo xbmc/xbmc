@@ -43,7 +43,6 @@ include(ExternalProject)
 # general
 option(VERBOSE            "Enable verbose output?" OFF)
 option(ENABLE_DVDCSS      "Enable libdvdcss support?" ON)
-option(ENABLE_UPNP        "Enable UPnP support?" ON)
 option(ENABLE_AIRTUNES    "Enable AirTunes support?" ON)
 option(ENABLE_OPTICAL     "Enable optical support?" ON)
 option(ENABLE_PYTHON      "Enable python support?" ON)
@@ -154,6 +153,7 @@ set(optional_deps Alsa
                   MDNS
                   MicroHttpd
                   NFS
+                  Platinum
                   Plist
                   PulseAudio
                   Python
@@ -187,10 +187,6 @@ endif()
 
 if(NOT UDEV_FOUND)
   core_optional_dep(LibUSB)
-endif()
-
-if(ENABLE_UPNP)
-  list(APPEND DEP_DEFINES "-DHAS_UPNP=1")
 endif()
 
 if(ENABLE_OPTICAL)

@@ -37,7 +37,8 @@
 
 #ifdef HAS_UPNP
 #include "network/upnp/UPnP.h"
-#include <Platinum/Source/Platinum/Platinum.h>
+
+#include <Platinum/Platinum.h>
 #endif
 
 #include "WakeOnAccess.h"

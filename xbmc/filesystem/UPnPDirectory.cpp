@@ -23,8 +23,8 @@
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 
-#include <Platinum/Source/Devices/MediaServer/PltSyncMediaBrowser.h>
-#include <Platinum/Source/Platinum/Platinum.h>
+#include <Platinum/Platinum.h>
+#include <Platinum/PltSyncMediaBrowser.h>
 
 using namespace MUSIC_INFO;
 using namespace XFILE;

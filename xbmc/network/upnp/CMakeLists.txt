@@ -12,7 +12,6 @@ set(HEADERS UPnP.h
             UPnPServer.h
             UPnPSettings.h)
 
-core_add_library(network_upnp)
-if(ENABLE_STATIC_LIBS)
-  target_link_libraries(network_upnp PRIVATE upnp)
+if(PLATINUM_FOUND)
+  core_add_library(network_upnp)
 endif()

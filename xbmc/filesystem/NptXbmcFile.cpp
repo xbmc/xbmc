@@ -18,10 +18,10 @@
 
 #include <limits>
 
-#include <Neptune/Source/Core/NptDebug.h>
-#include <Neptune/Source/Core/NptFile.h>
-#include <Neptune/Source/Core/NptStrings.h>
-#include <Neptune/Source/Core/NptUtils.h>
+#include <Neptune/NptDebug.h>
+#include <Neptune/NptFile.h>
+#include <Neptune/NptStrings.h>
+#include <Neptune/NptUtils.h>
 
 #ifdef TARGET_WINDOWS
 #define S_IWUSR _S_IWRITE

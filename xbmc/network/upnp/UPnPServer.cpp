@@ -40,7 +40,7 @@
 #include "video/VideoThumbLoader.h"
 #include "view/GUIViewState.h"
 
-#include <Platinum/Source/Platinum/Platinum.h>
+#include <Platinum/Platinum.h>
 
 NPT_SET_LOCAL_LOGGER("xbmc.upnp.server")
 
