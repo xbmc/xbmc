@@ -109,7 +109,7 @@ CPluginDirectory *CPluginDirectory::dirFromHandle(int handle)
   return NULL;
 }
 
-bool CPluginDirectory::StartScript(const std::string& strPath, bool retrievingDir, bool resume)
+bool CPluginDirectory::StartScript(const std::string& strPath, bool resume)
 {
   CURL url(strPath);
 
@@ -187,7 +187,7 @@ bool CPluginDirectory::GetPluginResult(const std::string& strPath, CFileItem &re
   CURL url(strPath);
   CPluginDirectory newDir;
 
-  bool success = newDir.StartScript(strPath, false, resume);
+  bool success = newDir.StartScript(strPath, resume);
 
   if (success)
   { // update the play path and metadata, saving the old one as needed
@@ -442,7 +442,7 @@ void CPluginDirectory::AddSortMethod(int handle, SORT_METHOD sortMethod, const s
 bool CPluginDirectory::GetDirectory(const CURL& url, CFileItemList& items)
 {
   const std::string pathToUrl(url.Get());
-  bool success = StartScript(pathToUrl, true, false);
+  bool success = StartScript(pathToUrl, false);
 
   // append the items to the list
   items.Assign(*m_listItems, true); // true to keep the current items

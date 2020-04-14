@@ -70,7 +70,7 @@ public:
 
 private:
   ADDON::AddonPtr m_addon;
-  bool StartScript(const std::string& strPath, bool retrievingDir, bool resume);
+  bool StartScript(const std::string& strPath, bool resume);
   bool WaitOnScriptResult(int scriptId, const std::string& scriptName);
 
   static std::map<int,CPluginDirectory*> globalHandles;
