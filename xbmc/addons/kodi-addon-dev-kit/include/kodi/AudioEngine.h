@@ -37,7 +37,7 @@ extern "C"
 
   //============================================================================
   /// \ingroup cpp_kodi_audioengine_Defs
-  /// @brief Bit options to pass to CAddonAEStream
+  /// @brief Bit options to pass to CAEStream
   ///
   typedef enum AudioEngineStreamOptions
   {
@@ -323,7 +323,7 @@ public:
 
 //============================================================================
 ///
-/// \defgroup cpp_kodi_audioengine_CAddonAEStream class CAddonAEStream
+/// \defgroup cpp_kodi_audioengine_CAEStream class CAEStream
 /// \ingroup cpp_kodi_audioengine
 /// @brief **Audio Engine Stream Class**
 ///
@@ -332,11 +332,11 @@ public:
 /// included to enjoy it.
 ///
 //----------------------------------------------------------------------------
-class CAddonAEStream
+class CAEStream
 {
 public:
   //==========================================================================
-  /// @ingroup cpp_kodi_audioengine_CAddonAEStream
+  /// @ingroup cpp_kodi_audioengine_CAEStream
   /// @brief Contructs new class to an Kodi IAEStream in the format specified.
   ///
   /// @param[in] format       The data format the incoming audio will be in
@@ -404,23 +404,23 @@ public:
   ///
   /// ~~~~~~~~~~~~~
   ///
-  CAddonAEStream(AudioEngineFormat& format, unsigned int options = 0)
+  CAEStream(AudioEngineFormat& format, unsigned int options = 0)
     : m_kodiBase(::kodi::addon::CAddonBase::m_interface->toKodi->kodiBase),
       m_cb(::kodi::addon::CAddonBase::m_interface->toKodi->kodi_audioengine)
   {
     m_StreamHandle = m_cb->make_stream(m_kodiBase, format, options);
     if (m_StreamHandle == nullptr)
     {
-      kodi::Log(ADDON_LOG_FATAL, "CAddonAEStream: make_stream failed!");
+      kodi::Log(ADDON_LOG_FATAL, "CAEStream: make_stream failed!");
     }
   }
   //--------------------------------------------------------------------------
 
   //==========================================================================
-  /// @ingroup cpp_kodi_audioengine_CAddonAEStream
+  /// @ingroup cpp_kodi_audioengine_CAEStream
   /// @brief Class destructor
   ///
-  ~CAddonAEStream()
+  ~CAEStream()
   {
     if (m_StreamHandle)
     {
@@ -431,7 +431,7 @@ public:
   //--------------------------------------------------------------------------
 
   //==========================================================================
-  /// @ingroup cpp_kodi_audioengine_CAddonAEStream
+  /// @ingroup cpp_kodi_audioengine_CAEStream
   /// @brief Returns the amount of space available in the stream
   ///
   /// @return                 The number of bytes AddData will consume
@@ -440,7 +440,7 @@ public:
   //--------------------------------------------------------------------------
 
   //==========================================================================
-  /// @ingroup cpp_kodi_audioengine_CAddonAEStream
+  /// @ingroup cpp_kodi_audioengine_CAEStream
   /// @brief Add planar or interleaved PCM data to the stream
   ///
   /// @param[in] data           array of pointers to the planes
@@ -464,7 +464,7 @@ public:
   //--------------------------------------------------------------------------
 
   //==========================================================================
-  /// @ingroup cpp_kodi_audioengine_CAddonAEStream
+  /// @ingroup cpp_kodi_audioengine_CAEStream
   /// @brief Returns the time in seconds that it will take for the next added
   /// packet to be heard from the speakers.
   ///
@@ -474,7 +474,7 @@ public:
   //--------------------------------------------------------------------------
 
   //==========================================================================
-  /// @ingroup cpp_kodi_audioengine_CAddonAEStream
+  /// @ingroup cpp_kodi_audioengine_CAEStream
   /// @brief Returns if the stream is buffering
   ///
   /// @return True if the stream is buffering
@@ -483,7 +483,7 @@ public:
   //--------------------------------------------------------------------------
 
   //==========================================================================
-  /// @ingroup cpp_kodi_audioengine_CAddonAEStream
+  /// @ingroup cpp_kodi_audioengine_CAEStream
   /// @brief Returns the time in seconds of the stream's cached audio samples.
   /// Engine buffers excluded.
   ///
@@ -493,7 +493,7 @@ public:
   //--------------------------------------------------------------------------
 
   //==========================================================================
-  /// @ingroup cpp_kodi_audioengine_CAddonAEStream
+  /// @ingroup cpp_kodi_audioengine_CAEStream
   /// @brief Returns the total time in seconds of the cache
   ///
   /// @return seconds
@@ -502,21 +502,21 @@ public:
   //--------------------------------------------------------------------------
 
   //==========================================================================
-  /// @ingroup cpp_kodi_audioengine_CAddonAEStream
+  /// @ingroup cpp_kodi_audioengine_CAEStream
   /// @brief Pauses the stream playback
   ///
   void Pause() { return m_cb->aestream_pause(m_kodiBase, m_StreamHandle); }
   //--------------------------------------------------------------------------
 
   //==========================================================================
-  /// @ingroup cpp_kodi_audioengine_CAddonAEStream
+  /// @ingroup cpp_kodi_audioengine_CAEStream
   /// @brief Resumes the stream after pausing
   ///
   void Resume() { return m_cb->aestream_resume(m_kodiBase, m_StreamHandle); }
   //--------------------------------------------------------------------------
 
   //==========================================================================
-  /// @ingroup cpp_kodi_audioengine_CAddonAEStream
+  /// @ingroup cpp_kodi_audioengine_CAEStream
   /// @brief Start draining the stream
   ///
   /// @param[in] wait         [opt] Wait until drain is finished if set to
@@ -528,28 +528,28 @@ public:
   //--------------------------------------------------------------------------
 
   //==========================================================================
-  /// @ingroup cpp_kodi_audioengine_CAddonAEStream
+  /// @ingroup cpp_kodi_audioengine_CAEStream
   /// @brief Returns true if the is stream draining
   ///
   bool IsDraining() { return m_cb->aestream_is_draining(m_kodiBase, m_StreamHandle); }
   //--------------------------------------------------------------------------
 
   //==========================================================================
-  /// @ingroup cpp_kodi_audioengine_CAddonAEStream
+  /// @ingroup cpp_kodi_audioengine_CAEStream
   /// @brief Returns true if the is stream has finished draining
   ///
   bool IsDrained() { return m_cb->aestream_is_drained(m_kodiBase, m_StreamHandle); }
   //--------------------------------------------------------------------------
 
   //==========================================================================
-  /// @ingroup cpp_kodi_audioengine_CAddonAEStream
+  /// @ingroup cpp_kodi_audioengine_CAEStream
   /// @brief Flush all buffers dropping the audio data
   ///
   void Flush() { return m_cb->aestream_flush(m_kodiBase, m_StreamHandle); }
   //--------------------------------------------------------------------------
 
   //==========================================================================
-  /// @ingroup cpp_kodi_audioengine_CAddonAEStream
+  /// @ingroup cpp_kodi_audioengine_CAEStream
   /// @brief Return the stream's current volume level
   ///
   /// @return The volume level between 0.0 and 1.0
@@ -558,7 +558,7 @@ public:
   //--------------------------------------------------------------------------
 
   //==========================================================================
-  /// @ingroup cpp_kodi_audioengine_CAddonAEStream
+  /// @ingroup cpp_kodi_audioengine_CAEStream
   /// @brief Set the stream's volume level
   ///
   /// @param[in] volume               The new volume level between 0.0 and 1.0
@@ -570,7 +570,7 @@ public:
   //--------------------------------------------------------------------------
 
   //==========================================================================
-  /// @ingroup cpp_kodi_audioengine_CAddonAEStream
+  /// @ingroup cpp_kodi_audioengine_CAEStream
   /// @brief Gets the stream's volume amplification in linear units.
   ///
   /// @return The volume amplification factor between 1.0 and 1000.0
@@ -579,7 +579,7 @@ public:
   //--------------------------------------------------------------------------
 
   //==========================================================================
-  /// @ingroup cpp_kodi_audioengine_CAddonAEStream
+  /// @ingroup cpp_kodi_audioengine_CAEStream
   /// @brief Sets the stream's volume amplification in linear units.
   ///
   /// @param[in] amplify              The volume amplification factor between
@@ -592,7 +592,7 @@ public:
   //--------------------------------------------------------------------------
 
   //==========================================================================
-  /// @ingroup cpp_kodi_audioengine_CAddonAEStream
+  /// @ingroup cpp_kodi_audioengine_CAEStream
   /// @brief Returns the size of one audio frame in bytes (channelCount * resolution)
   ///
   /// @return The size in bytes of one frame
@@ -604,7 +604,7 @@ public:
   //--------------------------------------------------------------------------
 
   //==========================================================================
-  /// @ingroup cpp_kodi_audioengine_CAddonAEStream
+  /// @ingroup cpp_kodi_audioengine_CAEStream
   /// @brief Returns the number of channels the stream is configured to accept
   ///
   /// @return The channel count
@@ -616,7 +616,7 @@ public:
   //--------------------------------------------------------------------------
 
   //==========================================================================
-  /// @ingroup cpp_kodi_audioengine_CAddonAEStream
+  /// @ingroup cpp_kodi_audioengine_CAEStream
   /// @brief Returns the stream's sample rate, if the stream is using a dynamic
   /// sample rate, this value will NOT reflect any changes made by calls to
   /// SetResampleRatio()
@@ -630,7 +630,7 @@ public:
   //--------------------------------------------------------------------------
 
   //==========================================================================
-  /// @ingroup cpp_kodi_audioengine_CAddonAEStream
+  /// @ingroup cpp_kodi_audioengine_CAEStream
   /// @brief Return the data format the stream has been configured with
   ///
   /// @return The stream's data format (eg, AUDIOENGINE_FMT_S16LE)
@@ -642,7 +642,7 @@ public:
   //--------------------------------------------------------------------------
 
   //==========================================================================
-  /// @ingroup cpp_kodi_audioengine_CAddonAEStream
+  /// @ingroup cpp_kodi_audioengine_CAEStream
   /// @brief Return the resample ratio
   ///
   /// @note This will return an undefined value if the stream is not resampling
@@ -656,7 +656,7 @@ public:
   //--------------------------------------------------------------------------
 
   //==========================================================================
-  /// @ingroup cpp_kodi_audioengine_CAddonAEStream
+  /// @ingroup cpp_kodi_audioengine_CAEStream
   /// @brief Sets the resample ratio
   ///
   /// @note This function may return false if the stream is not resampling, if
