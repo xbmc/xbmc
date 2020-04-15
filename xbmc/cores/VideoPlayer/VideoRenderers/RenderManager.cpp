@@ -357,6 +357,12 @@ void CRenderManager::PreInit()
     if (!m_initEvent.WaitMSec(2000))
     {
       CLog::Log(LOGERROR, "%s - timed out waiting for renderer to preinit", __FUNCTION__);
+      return;
+    }
+    else
+    {
+      // Mainthread did it's work, we're done!
+      return;
     }
   }
 
@@ -379,6 +385,12 @@ void CRenderManager::PreInit()
 
 void CRenderManager::UnInit()
 {
+  {
+    CSingleLock lock(m_statelock);
+    if (m_renderState == STATE_UNCONFIGURED)
+      return;
+  }
+
   if (!g_application.IsCurrentThread())
   {
     m_initEvent.Reset();
@@ -386,6 +398,12 @@ void CRenderManager::UnInit()
     if (!m_initEvent.WaitMSec(2000))
     {
       CLog::Log(LOGERROR, "%s - timed out waiting for renderer to uninit", __FUNCTION__);
+      return;
+    }
+    else
+    {
+      // Mainthread did it's work, we're done!
+      return;
     }
   }
 

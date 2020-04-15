@@ -2025,6 +2025,14 @@ void CApplication::OnApplicationMessage(ThreadMessage* pMsg)
     m_appPlayer.FlushRenderer();
     break;
 
+  case TMSG_RENDERER_PREINIT:
+    m_appPlayer.PreInitRenderer();
+    break;
+
+  case TMSG_RENDERER_UNINIT:
+    m_appPlayer.UnInitRenderer();
+    break;
+
   case TMSG_HIBERNATE:
     CServiceBroker::GetPowerManager().Hibernate();
     break;

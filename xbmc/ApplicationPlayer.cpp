@@ -835,6 +835,20 @@ void CApplicationPlayer::FlushRenderer()
     player->FlushRenderer();
 }
 
+void CApplicationPlayer::PreInitRenderer()
+{
+  std::shared_ptr<IPlayer> player = GetInternal();
+  if (player)
+    player->PreInitRenderer();
+}
+
+void CApplicationPlayer::UnInitRenderer()
+{
+  std::shared_ptr<IPlayer> player = GetInternal();
+  if (player)
+    player->UnInitRenderer();
+}
+
 void CApplicationPlayer::SetRenderViewMode(int mode, float zoom, float par, float shift, bool stretch)
 {
   std::shared_ptr<IPlayer> player = GetInternal();

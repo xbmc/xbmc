@@ -310,6 +310,8 @@ public:
   void FrameMove() override;
   void Render(bool clear, uint32_t alpha = 255, bool gui = true) override;
   void FlushRenderer() override;
+  void PreInitRenderer() override;
+  void UnInitRenderer() override;
   void SetRenderViewMode(int mode, float zoom, float par, float shift, bool stretch) override;
   float GetRenderAspectRatio() override;
   void TriggerUpdateResolution() override;

@@ -4755,6 +4755,16 @@ void CVideoPlayer::FlushRenderer()
   m_renderManager.Flush(true, true);
 }
 
+void CVideoPlayer::PreInitRenderer()
+{
+  m_renderManager.PreInit();
+}
+
+void CVideoPlayer::UnInitRenderer()
+{
+  m_renderManager.UnInit();
+}
+
 void CVideoPlayer::SetRenderViewMode(int mode, float zoom, float par, float shift, bool stretch)
 {
   m_processInfo->UpdateVideoSettings().SetViewMode(mode, zoom, par, shift, stretch);

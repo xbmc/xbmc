@@ -208,6 +208,8 @@ public:
    */
   virtual void Render(bool clear, uint32_t alpha = 255, bool gui = true) {};
   virtual void FlushRenderer() {};
+  virtual void PreInitRenderer() {};
+  virtual void UnInitRenderer() {};
   virtual void SetRenderViewMode(int mode, float zoom, float par, float shift, bool stretch) {};
   virtual float GetRenderAspectRatio() { return 1.0; };
   virtual void TriggerUpdateResolution() {};
