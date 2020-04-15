@@ -58,7 +58,7 @@ struct Interface_AudioEngine
    * @param[in] sinkFormat sink data format. For more details see AUDIO_ENGINE_FORMAT.
    * @return Returns true on success, else false.
    */
-  static bool audioengine_get_current_sink_format(void* kodiBase, AUDIO_ENGINE_FORMAT* sinkFormat);
+  static bool get_current_sink_format(void* kodiBase, AUDIO_ENGINE_FORMAT* sinkFormat);
 
   /**
    * Returns the amount of space available in the stream

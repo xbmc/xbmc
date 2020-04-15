@@ -23,12 +23,12 @@ namespace ADDON
 
 void Interface_AudioEngine::Init(AddonGlobalInterface* addonInterface)
 {
-  addonInterface->toKodi->kodi_audioengine = static_cast<AddonToKodiFuncTable_kodi_audioengine*>(malloc(sizeof(AddonToKodiFuncTable_kodi_audioengine)));
+  addonInterface->toKodi->kodi_audioengine = new AddonToKodiFuncTable_kodi_audioengine();
 
   // write KODI audio DSP specific add-on function addresses to callback table
   addonInterface->toKodi->kodi_audioengine->make_stream = audioengine_make_stream;
   addonInterface->toKodi->kodi_audioengine->free_stream = audioengine_free_stream;
-  addonInterface->toKodi->kodi_audioengine->get_current_sink_format = audioengine_get_current_sink_format;
+  addonInterface->toKodi->kodi_audioengine->get_current_sink_format = get_current_sink_format;
 
   // AEStream add-on function callback table
   addonInterface->toKodi->kodi_audioengine->aestream_get_space = aestream_get_space;
@@ -51,15 +51,17 @@ void Interface_AudioEngine::Init(AddonGlobalInterface* addonInterface)
   addonInterface->toKodi->kodi_audioengine->aestream_get_channel_count = aestream_get_channel_count;
   addonInterface->toKodi->kodi_audioengine->aestream_get_sample_rate = aestream_get_sample_rate;
   addonInterface->toKodi->kodi_audioengine->aestream_get_data_format = aestream_get_data_format;
-  addonInterface->toKodi->kodi_audioengine->aestream_get_resample_ratio = aestream_get_resample_ratio;
-  addonInterface->toKodi->kodi_audioengine->aestream_set_resample_ratio = aestream_set_resample_ratio;
+  addonInterface->toKodi->kodi_audioengine->aestream_get_resample_ratio =
+      aestream_get_resample_ratio;
+  addonInterface->toKodi->kodi_audioengine->aestream_set_resample_ratio =
+      aestream_set_resample_ratio;
 }
 
 void Interface_AudioEngine::DeInit(AddonGlobalInterface* addonInterface)
 {
   if (addonInterface->toKodi) /* <-- Safe check, needed so long old addon way is present */
   {
-    free(addonInterface->toKodi->kodi_audioengine);
+    delete addonInterface->toKodi->kodi_audioengine;
     addonInterface->toKodi->kodi_audioengine = nullptr;
   }
 }
@@ -296,7 +298,9 @@ AudioEngineDataFormat Interface_AudioEngine::TranslateAEFormatToAddon(AEDataForm
   }
 }
 
-AEStreamHandle* Interface_AudioEngine::audioengine_make_stream(void* kodiBase, AUDIO_ENGINE_FORMAT* streamFormat, unsigned int options)
+AEStreamHandle* Interface_AudioEngine::audioengine_make_stream(void* kodiBase,
+                                                               AUDIO_ENGINE_FORMAT* streamFormat,
+                                                               unsigned int options)
 {
   if (!kodiBase || !streamFormat)
   {
@@ -350,7 +354,7 @@ void Interface_AudioEngine::audioengine_free_stream(void* kodiBase, AEStreamHand
     engine->FreeStream(static_cast<IAEStream*>(streamHandle), true);
 }
 
-bool Interface_AudioEngine::audioengine_get_current_sink_format(void* kodiBase, AUDIO_ENGINE_FORMAT *format)
+bool Interface_AudioEngine::get_current_sink_format(void* kodiBase, AUDIO_ENGINE_FORMAT* format)
 {
   if (!kodiBase || !format)
   {
@@ -367,7 +371,8 @@ bool Interface_AudioEngine::audioengine_get_current_sink_format(void* kodiBase, 
   AEAudioFormat sinkFormat;
   if (!engine->GetCurrentSinkFormat(sinkFormat))
   {
-    CLog::Log(LOGERROR, "Interface_AudioEngine::{} - failed to get current sink format from AE!", __FUNCTION__);
+    CLog::Log(LOGERROR, "Interface_AudioEngine::{} - failed to get current sink format from AE!",
+              __FUNCTION__);
     return false;
   }
 
@@ -397,8 +402,13 @@ unsigned int Interface_AudioEngine::aestream_get_space(void* kodiBase, AEStreamH
   return static_cast<IAEStream*>(streamHandle)->GetSpace();
 }
 
-unsigned int Interface_AudioEngine::aestream_add_data(void* kodiBase, AEStreamHandle* streamHandle, uint8_t* const *data,
-                                                      unsigned int offset, unsigned int frames, double pts, bool hasDownmix,
+unsigned int Interface_AudioEngine::aestream_add_data(void* kodiBase,
+                                                      AEStreamHandle* streamHandle,
+                                                      uint8_t* const* data,
+                                                      unsigned int offset,
+                                                      unsigned int frames,
+                                                      double pts,
+                                                      bool hasDownmix,
                                                       double centerMixLevel)
 {
   if (!kodiBase || !streamHandle)
@@ -592,7 +602,9 @@ float Interface_AudioEngine::aestream_get_volume(void* kodiBase, AEStreamHandle*
   return static_cast<IAEStream*>(streamHandle)->GetVolume();
 }
 
-void  Interface_AudioEngine::aestream_set_volume(void* kodiBase, AEStreamHandle* streamHandle, float volume)
+void Interface_AudioEngine::aestream_set_volume(void* kodiBase,
+                                                AEStreamHandle* streamHandle,
+                                                float volume)
 {
   if (!kodiBase || !streamHandle)
   {
@@ -608,7 +620,8 @@ void  Interface_AudioEngine::aestream_set_volume(void* kodiBase, AEStreamHandle*
   static_cast<IAEStream*>(streamHandle)->SetVolume(volume);
 }
 
-float Interface_AudioEngine::aestream_get_amplification(void* kodiBase, AEStreamHandle* streamHandle)
+float Interface_AudioEngine::aestream_get_amplification(void* kodiBase,
+                                                        AEStreamHandle* streamHandle)
 {
   if (!kodiBase || !streamHandle)
   {
@@ -624,7 +637,9 @@ float Interface_AudioEngine::aestream_get_amplification(void* kodiBase, AEStream
   return static_cast<IAEStream*>(streamHandle)->GetAmplification();
 }
 
-void Interface_AudioEngine::aestream_set_amplification(void* kodiBase, AEStreamHandle* streamHandle, float amplify)
+void Interface_AudioEngine::aestream_set_amplification(void* kodiBase,
+                                                       AEStreamHandle* streamHandle,
+                                                       float amplify)
 {
   if (!kodiBase || !streamHandle)
   {
@@ -640,7 +655,8 @@ void Interface_AudioEngine::aestream_set_amplification(void* kodiBase, AEStreamH
   static_cast<IAEStream*>(streamHandle)->SetAmplification(amplify);
 }
 
-unsigned int Interface_AudioEngine::aestream_get_frame_size(void* kodiBase, AEStreamHandle* streamHandle)
+unsigned int Interface_AudioEngine::aestream_get_frame_size(void* kodiBase,
+                                                            AEStreamHandle* streamHandle)
 {
   if (!kodiBase || !streamHandle)
   {
@@ -656,7 +672,8 @@ unsigned int Interface_AudioEngine::aestream_get_frame_size(void* kodiBase, AESt
   return static_cast<IAEStream*>(streamHandle)->GetFrameSize();
 }
 
-unsigned int Interface_AudioEngine::aestream_get_channel_count(void* kodiBase, AEStreamHandle* streamHandle)
+unsigned int Interface_AudioEngine::aestream_get_channel_count(void* kodiBase,
+                                                               AEStreamHandle* streamHandle)
 {
   if (!kodiBase || !streamHandle)
   {
@@ -672,7 +689,8 @@ unsigned int Interface_AudioEngine::aestream_get_channel_count(void* kodiBase, A
   return static_cast<IAEStream*>(streamHandle)->GetChannelCount();
 }
 
-unsigned int Interface_AudioEngine::aestream_get_sample_rate(void* kodiBase, AEStreamHandle* streamHandle)
+unsigned int Interface_AudioEngine::aestream_get_sample_rate(void* kodiBase,
+                                                             AEStreamHandle* streamHandle)
 {
   if (!kodiBase || !streamHandle)
   {
@@ -688,7 +706,8 @@ unsigned int Interface_AudioEngine::aestream_get_sample_rate(void* kodiBase, AES
   return static_cast<IAEStream*>(streamHandle)->GetSampleRate();
 }
 
-AudioEngineDataFormat Interface_AudioEngine::aestream_get_data_format(void* kodiBase, AEStreamHandle* streamHandle)
+AudioEngineDataFormat Interface_AudioEngine::aestream_get_data_format(void* kodiBase,
+                                                                      AEStreamHandle* streamHandle)
 {
   if (!kodiBase || !streamHandle)
   {
@@ -704,7 +723,8 @@ AudioEngineDataFormat Interface_AudioEngine::aestream_get_data_format(void* kodi
   return TranslateAEFormatToAddon(static_cast<IAEStream*>(streamHandle)->GetDataFormat());
 }
 
-double Interface_AudioEngine::aestream_get_resample_ratio(void* kodiBase, AEStreamHandle* streamHandle)
+double Interface_AudioEngine::aestream_get_resample_ratio(void* kodiBase,
+                                                          AEStreamHandle* streamHandle)
 {
   if (!kodiBase || !streamHandle)
   {
@@ -720,7 +740,9 @@ double Interface_AudioEngine::aestream_get_resample_ratio(void* kodiBase, AEStre
   return static_cast<IAEStream*>(streamHandle)->GetResampleRatio();
 }
 
-void Interface_AudioEngine::aestream_set_resample_ratio(void* kodiBase, AEStreamHandle* streamHandle, double ratio)
+void Interface_AudioEngine::aestream_set_resample_ratio(void* kodiBase,
+                                                        AEStreamHandle* streamHandle,
+                                                        double ratio)
 {
   if (!kodiBase || !streamHandle)
   {
