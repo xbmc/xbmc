@@ -53,11 +53,10 @@ namespace XBMCAddon
       if (pDialog == NULL)
         throw WindowException("Error: Window is NULL, this is not possible :-)");
 
-      // get lines, last 4 lines are optional.
       if (!heading.empty())
         pDialog->SetHeading(CVariant{heading});
       if (!message.empty())
-        pDialog->SetLine(0, CVariant{message});
+        pDialog->SetText(CVariant{message});
 
       if (!nolabel.empty())
         pDialog->SetChoice(0, CVariant{nolabel});
@@ -449,7 +448,7 @@ namespace XBMCAddon
       pDialog->SetHeading(CVariant{heading});
 
       if (!message.empty())
-        pDialog->SetLine(0, CVariant{message});
+        pDialog->SetText(CVariant{message});
 
       pDialog->Open();
     }
@@ -473,7 +472,7 @@ namespace XBMCAddon
       }
 
       if (!message.empty())
-        pDialog->SetLine(0, CVariant{message});
+        pDialog->SetText(CVariant{message});
     }
 
     void DialogProgress::close()
