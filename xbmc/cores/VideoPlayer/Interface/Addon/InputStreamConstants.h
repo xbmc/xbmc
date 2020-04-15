@@ -14,7 +14,7 @@
  * Kodi's built-in playing capabilities or to allow ffmpeg to handle directly
  * set to STREAM_PROPERTY_VALUE_INPUTSTREAMFFMPEG.
  */
-#define STREAM_PROPERTY_INPUTSTREAMCLASS "inputstreamclass"
+#define STREAM_PROPERTY_INPUTSTREAM "inputstream"
 
 /*!
  * @brief "true" to denote that the stream that should be played is a
@@ -24,7 +24,7 @@
 #define STREAM_PROPERTY_ISREALTIMESTREAM "isrealtimestream"
 
 /*!
- * @brief special value for STREAM_PROPERTY_INPUTSTREAMCLASS to use
+ * @brief special value for STREAM_PROPERTY_INPUTSTREAM to use
  * ffmpeg to directly play a stream URL.
  */
 #define STREAM_PROPERTY_VALUE_INPUTSTREAMFFMPEG "inputstream.ffmpeg"

@@ -69,11 +69,16 @@ CInputStreamAddon::~CInputStreamAddon()
 bool CInputStreamAddon::Supports(BinaryAddonBasePtr& addonBase, const CFileItem &fileitem)
 {
   // check if a specific inputstream addon is requested
-  CVariant addon = fileitem.GetProperty(STREAM_PROPERTY_INPUTSTREAMCLASS);
+  CVariant addon = fileitem.GetProperty(STREAM_PROPERTY_INPUTSTREAM);
   if (!addon.isNull())
     return (addon.asString() == addonBase->ID());
 
-  // TODO: to be deprecated for the above - all addons must change
+  // TODO: to be deprecated for the above prior to Matrix release - all addons must change
+  addon = fileitem.GetProperty("inputstreamclass");
+  if (!addon.isNull())
+    return (addon.asString() == addonBase->ID());
+
+  // TODO: to be deprecated for the above prior to Matrix release - all addons must change
   addon = fileitem.GetProperty("inputstreamaddon");
   if (!addon.isNull())
     return (addon.asString() == addonBase->ID());
