@@ -146,6 +146,7 @@ set(optional_deps Alsa
                   CCache
                   CEC
                   ClangFormat
+                  Dav1d
                   DBus
                   Iso9660pp
                   LCMS2
