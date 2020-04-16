@@ -705,8 +705,6 @@ bool CVideoPlayer::CloseFile(bool reopen)
   if(m_pInputStream)
     m_pInputStream->Abort();
 
-  m_renderManager.UnInit();
-
   CLog::Log(LOGNOTICE, "VideoPlayer: waiting for threads to exit");
 
   // wait for the main thread to finish up
@@ -2385,6 +2383,9 @@ void CVideoPlayer::SendPlayerMessage(CDVDMsg* pMsg, unsigned int target)
 void CVideoPlayer::OnExit()
 {
   CLog::Log(LOGNOTICE, "CVideoPlayer::OnExit()");
+
+  if (m_bAbortRequest || m_error)
+    m_renderManager.UnInit();
 
   // set event to inform openfile something went wrong in case openfile is still waiting for this event
   SetCaching(CACHESTATE_DONE);
