@@ -4,6 +4,7 @@ DEPS = Makefile
 # lib name, version
 LIBNAME=spdlog
 VERSION=1.5.0
+SHA256=b38e0bbef7faac2b82fed550a0c19b0d4e7f6737d5321d4fd8f216b80f8aee8a
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
 

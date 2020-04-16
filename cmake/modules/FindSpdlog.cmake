@@ -15,8 +15,11 @@
 
 if(ENABLE_INTERNAL_SPDLOG)
   include(ExternalProject)
-  file(STRINGS ${CMAKE_SOURCE_DIR}/tools/depends/target/libspdlog/Makefile VER REGEX "^[ ]*VERSION[ ]*=.+$")
-  string(REGEX REPLACE "^[ ]*VERSION[ ]*=[ ]*" "" SPDLOG_VERSION "${VER}")
+  file(STRINGS ${CMAKE_SOURCE_DIR}/tools/depends/target/libspdlog/Makefile VER)
+  string(REGEX MATCH "VERSION=([^ ;]*)" SPDLOG_VERSION "${VER}")
+  set(SPDLOG_VERSION ${CMAKE_MATCH_1})
+
+  string(REGEX MATCH "SHA256=[^ ;]*" SPDLOG_SHA256 "${VER}")
 
   # allow user to override the download URL with a local tarball
   # needed for offline build envs
@@ -37,6 +40,7 @@ if(ENABLE_INTERNAL_SPDLOG)
   set(SPDLOG_INCLUDE_DIR ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/include)
   externalproject_add(spdlog
                       URL ${SPDLOG_URL}
+                      URL_HASH ${SPDLOG_SHA256}
                       DOWNLOAD_DIR ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/download
                       PREFIX ${CORE_BUILD_DIR}/spdlog
                       CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}
