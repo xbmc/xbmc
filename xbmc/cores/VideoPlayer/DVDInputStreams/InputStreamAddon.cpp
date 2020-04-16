@@ -19,6 +19,7 @@
 #include "filesystem/SpecialProtocol.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
+#include "utils/log.h"
 
 CInputStreamProvider::CInputStreamProvider(ADDON::BinaryAddonBasePtr addonBase,
                                            KODI_HANDLE parentInstance)
@@ -68,11 +69,16 @@ CInputStreamAddon::~CInputStreamAddon()
 bool CInputStreamAddon::Supports(BinaryAddonBasePtr& addonBase, const CFileItem &fileitem)
 {
   // check if a specific inputstream addon is requested
-  CVariant addon = fileitem.GetProperty(STREAM_PROPERTY_INPUTSTREAMCLASS);
+  CVariant addon = fileitem.GetProperty(STREAM_PROPERTY_INPUTSTREAM);
   if (!addon.isNull())
     return (addon.asString() == addonBase->ID());
 
-  // TODO: to be deprecated for the above - all addons must change
+  // TODO: to be deprecated for the above prior to Matrix release - all addons must change
+  addon = fileitem.GetProperty("inputstreamclass");
+  if (!addon.isNull())
+    return (addon.asString() == addonBase->ID());
+
+  // TODO: to be deprecated for the above prior to Matrix release - all addons must change
   addon = fileitem.GetProperty("inputstreamaddon");
   if (!addon.isNull())
     return (addon.asString() == addonBase->ID());
@@ -137,6 +143,17 @@ bool CInputStreamAddon::Open()
     props.m_ListItemProperties[props.m_nCountInfoValues].m_strKey = pair.first.c_str();
     props.m_ListItemProperties[props.m_nCountInfoValues].m_strValue = pair.second.c_str();
     props.m_nCountInfoValues++;
+
+    if (props.m_nCountInfoValues >= STREAM_MAX_PROPERTY_COUNT)
+    {
+      CLog::Log(LOGERROR,
+                "CInputStreamAddon::%s - Hit max count of stream properties, "
+                "have %d, actual count: %d",
+                __func__,
+                STREAM_MAX_PROPERTY_COUNT,
+                propsMap.size());
+      break;
+    }
   }
 
   props.m_strURL = m_item.GetDynPath().c_str();
@@ -206,15 +223,6 @@ int CInputStreamAddon::GetBlockSize()
     return 0;
 
   return m_struct.toAddon.block_size_stream(&m_struct);
-}
-
-bool CInputStreamAddon::Pause(double time)
-{
-  if (!m_struct.toAddon.pause_stream)
-    return false;
-
-  m_struct.toAddon.pause_stream(&m_struct, time);
-  return true;
 }
 
 bool CInputStreamAddon::CanSeek()

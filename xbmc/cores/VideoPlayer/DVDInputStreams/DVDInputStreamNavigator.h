@@ -49,7 +49,6 @@ public:
   void Close() override;
   int Read(uint8_t* buf, int buf_size) override;
   int64_t Seek(int64_t offset, int whence) override;
-  bool Pause(double dTime) override { return false; };
   int GetBlockSize() override { return DVDSTREAM_BLOCK_SIZE_DVD; }
   bool IsEOF() override { return m_bEOF; }
   int64_t GetLength() override { return 0; }
