@@ -489,7 +489,7 @@ namespace PVR
     /*!
      * @brief Init class
      */
-    virtual void OnInit();
+    void OnInit();
 
     /*!
      * @brief Load the channels stored in the database.
@@ -528,7 +528,7 @@ namespace PVR
     /*!
      * @brief Clear this channel list.
      */
-    virtual void Unload();
+    void Unload();
 
     /*!
      * @brief Load the channels from the clients.
