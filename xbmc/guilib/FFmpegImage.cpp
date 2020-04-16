@@ -275,7 +275,7 @@ AVFrame* CFFmpegImage::ExtractFrame()
   ret = av_read_frame(m_fctx, &pkt);
   if (ret < 0)
   {
-    CLog::Log(LOGDEBUG, "Error [%d] while reading frame: %s\n", ret, strerror(AVERROR(ret)));
+    CLog::Log(LOGDEBUG, "Error [%d] while reading frame: %s", ret, strerror(AVERROR(ret)));
     av_frame_free(&frame);
     av_packet_unref(&pkt);
     return nullptr;
@@ -284,7 +284,7 @@ AVFrame* CFFmpegImage::ExtractFrame()
   ret = DecodeFFmpegFrame(m_codec_ctx, frame, &frame_decoded, &pkt);
   if (ret < 0 || frame_decoded == 0 || !frame)
   {
-    CLog::Log(LOGDEBUG, "Error [%d] while decoding frame: %s\n", ret, strerror(AVERROR(ret)));
+    CLog::Log(LOGDEBUG, "Error [%d] while decoding frame: %s", ret, strerror(AVERROR(ret)));
     av_frame_free(&frame);
     av_packet_unref(&pkt);
     return nullptr;

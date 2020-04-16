@@ -10,7 +10,7 @@ DEPENDS = \
 	openssl gmp nettle gnutls curl nghttp2 \
 	libjpeg-turbo libpng fribidi libass \
 	libxml2 rapidjson libmicrohttpd mariadb libffi \
-	python3 libshairplay libfmt \
+	python3 libshairplay libfmt libspdlog \
 	libplist libcec libbluray tinyxml \
 	taglib libusb libnfs meson-cross-file \
 	pythonmodule-pil pythonmodule-pycryptodome pythonmodule-setuptools \
@@ -117,6 +117,7 @@ libevdev: libudev
 samba-gplv3: gnutls
 taglib: $(ZLIB)
 dav1d: meson-cross-file
+libspdlog: libfmt
 
 .installed-$(PLATFORM): $(DEPENDS)
 	touch $@

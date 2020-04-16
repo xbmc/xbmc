@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2014-2018 Team Kodi
+ *  Copyright (C) 2020 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -8,20 +8,17 @@
 
 #pragma once
 
-#include <string>
+#include "utils/IPlatformLog.h"
 
-struct FILEWRAP; // forward declaration, wrapper for FILE
-
-class CPosixInterfaceForCLog
+class CPosixInterfaceForCLog : public IPlatformLog
 {
 public:
-  CPosixInterfaceForCLog();
-  ~CPosixInterfaceForCLog();
-  bool OpenLogFile(const std::string& logFilename, const std::string& backupOldLogToFilename);
-  void CloseLogFile(void);
-  bool WriteStringToLog(const std::string& logString);
-  void PrintDebugString(const std::string& debugString);
-  static void GetCurrentLocalTime(int& year, int& month, int& day, int& hour, int& minute, int& second, double& millisecond);
-private:
-  FILEWRAP* m_file;
+  CPosixInterfaceForCLog() = default;
+  virtual ~CPosixInterfaceForCLog() = default;
+
+  spdlog_filename_t GetLogFilename(const std::string& filename) const override { return filename; }
+  void AddSinks(
+      std::shared_ptr<spdlog::sinks::dist_sink<std::mutex>> distributionSink) const override
+  {
+  }
 };

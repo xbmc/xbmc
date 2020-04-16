@@ -10,6 +10,7 @@
 
 #include "settings/lib/ISettingsHandler.h"
 #include "threads/CriticalSection.h"
+#include "utils/logtypes.h"
 
 #include <string>
 
@@ -50,4 +51,6 @@ private:
   int m_rendererPort;
 
   mutable CCriticalSection m_critical;
+
+  Logger m_logger;
 };

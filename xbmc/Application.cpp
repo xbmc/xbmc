@@ -363,6 +363,8 @@ bool CApplication::Create(const CAppParamParser &params)
   m_bTestMode = params.m_testmode;
   m_bStandalone = params.m_standAlone;
 
+  CServiceBroker::CreateLogging();
+
   CServiceBroker::RegisterCPUInfo(CCPUInfo::GetCPUInfo());
 
   m_pSettingsComponent.reset(new CSettingsComponent());
@@ -420,11 +422,7 @@ bool CApplication::Create(const CAppParamParser &params)
     CopyUserDataIfNeeded("special://masterprofile/", "iOS/sources.xml", "sources.xml");
   #endif
 
-  if (!CLog::Init(CSpecialProtocol::TranslatePath("special://logpath").c_str()))
-  {
-    fprintf(stderr,"Could not init logging classes. Log folder error (%s)\n", CSpecialProtocol::TranslatePath("special://logpath").c_str());
-    return false;
-  }
+    CServiceBroker::GetLogging().Initialize(CSpecialProtocol::TranslatePath("special://logpath"));
 
 #ifdef TARGET_POSIX //! @todo Win32 has no special://home/ mapping by default, so we
   //!       must create these here. Ideally this should be using special://home/ and

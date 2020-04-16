@@ -1171,7 +1171,7 @@ int CAirPlayServer::CTCPClient::ProcessRequest( std::string& responseHeader,
   }
   else
   {
-    CLog::Log(LOGERROR, "AIRPLAY Server: unhandled request [%s]\n", uri.c_str());
+    CLog::Log(LOGERROR, "AIRPLAY Server: unhandled request [%s]", uri.c_str());
     status = AIRPLAY_STATUS_NOT_IMPLEMENTED;
   }
 

@@ -10,6 +10,7 @@
 
 #include "CompileInfo.h"
 #include "FileItem.h"
+#include "ServiceBroker.h"
 #include "settings/AdvancedSettings.h"
 #include "utils/StringUtils.h"
 #include "utils/SystemInfo.h"
@@ -97,7 +98,7 @@ void CAppParamParser::SetAdvancedSettings(CAdvancedSettings& advancedSettings) c
   {
     advancedSettings.m_logLevel = LOG_LEVEL_DEBUG;
     advancedSettings.m_logLevelHint = LOG_LEVEL_DEBUG;
-    CLog::SetLogLevel(LOG_LEVEL_DEBUG);
+    CServiceBroker::GetLogging().SetLogLevel(LOG_LEVEL_DEBUG);
   }
 
   if (!m_settingsFile.empty())

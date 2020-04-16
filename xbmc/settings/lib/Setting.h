@@ -17,6 +17,7 @@
 #include "SettingType.h"
 #include "SettingUpdate.h"
 #include "threads/SharedSection.h"
+#include "utils/StaticLoggerBase.h"
 
 #include <memory>
 #include <set>
@@ -42,11 +43,14 @@ using SettingList = std::vector<SettingPtr>;
  */
 class CSetting : public ISetting,
                  protected ISettingCallback,
-                 public std::enable_shared_from_this<CSetting>
+                 public std::enable_shared_from_this<CSetting>,
+                 protected CStaticLoggerBase
 {
 public:
-  CSetting(const std::string &id, CSettingsManager *settingsManager = nullptr);
-  CSetting(const std::string &id, const CSetting &setting);
+  CSetting(const std::string& id,
+           CSettingsManager* settingsManager = nullptr,
+           const std::string& name = "CSetting");
+  CSetting(const std::string& id, const CSetting& setting, const std::string& name = "CSetting");
   ~CSetting() override = default;
 
   virtual std::shared_ptr<CSetting> Clone(const std::string &id) const = 0;
@@ -131,11 +135,15 @@ public:
   static SettingType Type() { return TSettingType; }
 
 protected:
-  CTraitedSetting(const std::string &id, CSettingsManager *settingsManager = nullptr)
-    : CSetting(id, settingsManager)
+  CTraitedSetting(const std::string& id,
+                  CSettingsManager* settingsManager = nullptr,
+                  const std::string& name = "CTraitedSetting")
+    : CSetting(id, settingsManager, name)
   { }
-  CTraitedSetting(const std::string &id, const CTraitedSetting &setting)
-    : CSetting(id, setting)
+  CTraitedSetting(const std::string& id,
+                  const CTraitedSetting& setting,
+                  const std::string& name = "CTraitedSetting")
+    : CSetting(id, setting, name)
   { }
   ~CTraitedSetting() override = default;
 };

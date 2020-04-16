@@ -12,6 +12,7 @@
 #include "cores/IPlayer.h"
 #include "guilib/DispResource.h"
 #include "threads/SystemClock.h"
+#include "utils/logtypes.h"
 
 #include <string>
 
@@ -74,6 +75,8 @@ private:
   bool m_started;
   bool m_stopremote;
   XbmcThreads::EndTime m_updateTimer;
+
+  Logger m_logger;
 };
 
 } /* namespace UPNP */
