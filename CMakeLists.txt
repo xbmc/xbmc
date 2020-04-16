@@ -426,6 +426,8 @@ if(CORE_HOST_IS_TARGET AND ENABLE_TESTING)
                                                    -DCMAKE_BINARY_DIR=${CMAKE_BINARY_DIR})
   set_target_properties(check-commits PROPERTIES FOLDER "Build Utilities")
 
+  include(${CMAKE_SOURCE_DIR}/cmake/scripts/common/StaticAnalysis.cmake)
+
   # code coverage
   if(CMAKE_BUILD_TYPE STREQUAL Coverage)
     if(EXISTS ${CMAKE_SOURCE_DIR}/cmake/scripts/${CORE_SYSTEM_NAME}/CodeCoverage.cmake)
