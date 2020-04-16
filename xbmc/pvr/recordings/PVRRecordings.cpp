@@ -140,7 +140,7 @@ std::vector<std::shared_ptr<CPVRRecording>> CPVRRecordings::GetAll() const
 std::shared_ptr<CPVRRecording> CPVRRecordings::GetById(unsigned int iId) const
 {
   CSingleLock lock(m_critSection);
-  for (const auto recording : m_recordings)
+  for (const auto& recording : m_recordings)
   {
     if (iId == recording.second->m_iRecordingId)
       return recording.second;
@@ -159,7 +159,7 @@ std::shared_ptr<CPVRRecording> CPVRRecordings::GetByPath(const std::string& path
     bool bDeleted = recPath.IsDeleted();
     bool bRadio = recPath.IsRadio();
 
-    for (const auto recording : m_recordings)
+    for (const auto& recording : m_recordings)
     {
       std::shared_ptr<CPVRRecording> current = recording.second;
       // Omit recordings not matching criteria
@@ -221,7 +221,7 @@ std::shared_ptr<CPVRRecording> CPVRRecordings::GetRecordingForEpgTag(const std::
 
   CSingleLock lock(m_critSection);
 
-  for (const auto recording : m_recordings)
+  for (const auto& recording : m_recordings)
   {
     if (recording.second->IsDeleted())
       continue;

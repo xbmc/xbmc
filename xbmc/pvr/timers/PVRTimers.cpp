@@ -53,9 +53,9 @@ bool CPVRTimersContainer::UpdateFromClient(const std::shared_ptr<CPVRTimerInfoTa
 std::shared_ptr<CPVRTimerInfoTag> CPVRTimersContainer::GetByClient(int iClientId, int iClientIndex) const
 {
   CSingleLock lock(m_critSection);
-  for (const auto startDates : m_tags)
+  for (const auto& startDates : m_tags)
   {
-    for (const auto timer : startDates.second)
+    for (const auto& timer : startDates.second)
     {
       if (timer->m_iClientId == iClientId && timer->m_iClientIndex == iClientIndex)
       {

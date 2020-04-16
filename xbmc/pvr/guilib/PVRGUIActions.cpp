@@ -1589,7 +1589,7 @@ namespace PVR
       pDialog->Reset();
       pDialog->SetHeading(CVariant{19119}); // "On which backend do you want to search?"
 
-      for (const auto client : possibleScanClients)
+      for (const auto& client : possibleScanClients)
         pDialog->Add(client->GetFriendlyName());
 
       pDialog->Open();

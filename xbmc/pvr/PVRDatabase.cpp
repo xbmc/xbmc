@@ -780,7 +780,7 @@ bool CPVRDatabase::Persist(CPVRChannelGroup& group)
   }
 
   std::string strQuery;
-  bReturn = true;
+
   CSingleLock lock(m_critSection);
   {
     /* insert a new entry when this is a new group, or replace the existing one otherwise */
