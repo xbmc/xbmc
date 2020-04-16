@@ -9,9 +9,12 @@
 #pragma once
 
 #include "IFile.h"
+#include "filesystem/UDFBlockInput.h"
 
-typedef struct udf_s udf_t;
-typedef struct udf_dirent_s udf_dirent_t;
+#include <memory>
+
+class udfread;
+typedef struct udfread_file UDFFILE;
 
 namespace XFILE
 {
@@ -19,7 +22,7 @@ namespace XFILE
 class CUDFFile : public IFile
 {
 public:
-  CUDFFile() = default;
+  CUDFFile();
   ~CUDFFile() override = default;
 
   bool Open(const CURL& url) override;
@@ -35,13 +38,11 @@ public:
 
   bool Exists(const CURL& url) override;
 
-  int GetChunkSize() override;
-
 private:
-  udf_t* m_udf{nullptr};
-  udf_dirent_t* m_path{nullptr};
+  std::unique_ptr<CUDFBlockInput> m_bi{nullptr};
 
-  uint32_t m_current;
+  udfread* m_udf{nullptr};
+  UDFFILE* m_file{nullptr};
 };
 
 } // namespace XFILE
