@@ -32,6 +32,8 @@ if(ENABLE_INTERNAL_UDFREAD)
   list(GET UDFREAD_VER 0 UDFREAD_VER)
   string(SUBSTRING "${UDFREAD_VER}" 8 -1 UDFREAD_VER)
 
+  string(REGEX MATCH "SHA256=[^ ;]*" UDFREAD_SHA256 "${VER}")
+
   # allow user to override the download URL with a local tarball
   # needed for offline build envs
   if(UDFREAD_URL)
@@ -50,6 +52,7 @@ if(ENABLE_INTERNAL_UDFREAD)
 
   externalproject_add(udfread
                       URL ${UDFREAD_URL}
+                      URL_HASH ${UDFREAD_SHA256}
                       DOWNLOAD_NAME libudfread-${UDFREAD_VER}.tar.gz
                       DOWNLOAD_DIR ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/download
                       PREFIX ${CORE_BUILD_DIR}/libudfread
