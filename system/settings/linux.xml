@@ -26,7 +26,7 @@
           <requirement>HAVE_LIBVDPAU</requirement>
           <visible>false</visible>
           <level>3</level>
-          <default>true</default>
+          <default>false</default>
           <dependencies>
             <dependency type="enable">
               <condition setting="videoplayer.usevdpau" operator="is">true</condition> <!-- USE VDPAU -->
@@ -74,7 +74,7 @@
             </dependency>
           </dependencies>
           <level>3</level>
-          <default>true</default>
+          <default>false</default>
           <control type="toggle" />
         </setting>
         <setting id="videoplayer.usevaapimpeg4" type="boolean" parent="videoplayer.usevaapi" label="13449" help="13450">
