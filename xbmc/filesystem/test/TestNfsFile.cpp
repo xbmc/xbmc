@@ -81,4 +81,4 @@ TEST_P(TestNfs, splitUrlIntoExportAndPath)
     EXPECT_STRNE(GetParam().relativePath.c_str(), relativePath.c_str());
 }
 
-INSTANTIATE_TEST_CASE_P(NfsFile, TestNfs, ValuesIn(g_TestData));
+INSTANTIATE_TEST_SUITE_P(NfsFile, TestNfs, ValuesIn(g_TestData));
