@@ -136,6 +136,7 @@
 #include "video/dialogs/GUIDialogFullScreenInfo.h"
 #include "dialogs/GUIDialogCache.h"
 #include "dialogs/GUIDialogPlayEject.h"
+#include "utils/JobManager.h"
 #include "utils/URIUtils.h"
 #include "utils/XMLUtils.h"
 #include "addons/AddonInstaller.h"
@@ -225,7 +226,9 @@ CApplication::CApplication(void)
   , m_pInertialScrollingHandler(new CInertialScrollingHandler())
   , m_WaitingExternalCalls(0)
   , m_playerEvent(true, true)
+  , m_playerCloseEvent(true, true)
 {
+  m_actionQueue.reset(new CJobQueue(false, 1, CJob::PRIORITY_NORMAL));
   TiXmlBase::SetCondenseWhiteSpace(false);
 
 #ifdef HAVE_X11
@@ -2528,7 +2531,7 @@ bool CApplication::Cleanup()
 void CApplication::Stop(int exitCode)
 {
   CLog::Log(LOGNOTICE, "Stopping player");
-  m_appPlayer.ClosePlayer();
+  ClosePlayer();
 
   {
     // close inbound port
@@ -2961,7 +2964,6 @@ bool CApplication::PlayFile(CFileItem item, const std::string& player, bool bRes
     int previousMsgsIgnoredByNewPlaying[] = {
       GUI_MSG_PLAYBACK_STARTED,
       GUI_MSG_PLAYBACK_ENDED,
-      GUI_MSG_PLAYBACK_STOPPED,
       GUI_MSG_PLAYLIST_CHANGED,
       GUI_MSG_PLAYLISTPLAYER_STOPPED,
       GUI_MSG_PLAYLISTPLAYER_STARTED,
@@ -2974,9 +2976,11 @@ bool CApplication::PlayFile(CFileItem item, const std::string& player, bool bRes
       CLog::LogF(LOGDEBUG,"Ignored %d playback thread messages", dMsgCount);
   }
 
-  m_appPlayer.OpenFile(item, options, m_ServiceManager->GetPlayerCoreFactory(), player, *this);
-  m_appPlayer.SetVolume(m_volumeLevel);
-  m_appPlayer.SetMute(m_muted);
+  m_actionQueue->Submit([=]() {
+    m_appPlayer.OpenFile(item, options, m_ServiceManager->GetPlayerCoreFactory(), player, *this);
+    m_appPlayer.SetVolume(m_volumeLevel);
+    m_appPlayer.SetMute(m_muted);
+  });
 
 #if !defined(TARGET_POSIX)
   CGUIComponent *gui = CServiceBroker::GetGUI();
@@ -3041,6 +3045,8 @@ void CApplication::PlaybackCleanup()
     m_stackHelper.Clear();
     m_appPlayer.ResetPlayer();
   }
+
+  m_playerCloseEvent.Set();
 
   if (IsEnableTestMode())
     CApplicationMessenger::GetInstance().PostMsg(TMSG_QUIT);
@@ -3333,7 +3339,7 @@ void CApplication::StopPlaying()
     int iWin = gui->GetWindowManager().GetActiveWindow();
     if (m_appPlayer.IsPlaying())
     {
-      m_appPlayer.ClosePlayer();
+      ClosePlayer();
 
       // turn off visualisation window when stopping
       if ((iWin == WINDOW_VISUALISATION ||
@@ -3928,9 +3934,10 @@ bool CApplication::OnMessage(CGUIMessage& message)
     m_itemCurrentFile->Reset();
     CServiceBroker::GetGUI()->GetInfoManager().ResetCurrentItem();
     if (!CServiceBroker::GetPlaylistPlayer().PlayNext(1, true))
-      m_appPlayer.ClosePlayer();
-
-    PlaybackCleanup();
+    {
+      m_appPlayer.UnInitRenderer();
+      ClosePlayer();
+    }
 
 #ifdef HAS_PYTHON
       g_pythonParser.OnPlayBackEnded();
@@ -4911,4 +4918,14 @@ bool CApplication::NotifyActionListeners(const CAction &action) const
   }
 
   return false;
+}
+
+void CApplication::ClosePlayer()
+{
+  m_playerCloseEvent.Reset();
+  m_actionQueue->Submit([=]() {
+    m_appPlayer.ClosePlayer();
+    if (!m_playerCloseEvent.WaitMSec(5000))
+      CLog::Log(LOGDEBUG, "CApplication::ClosePlayer - Async player close: timed out");
+  });
 }

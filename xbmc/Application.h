@@ -54,6 +54,7 @@ class IActionListener;
 class CGUIComponent;
 class CAppInboundProtocol;
 class CSettingsComponent;
+class CJobQueue;
 
 namespace ADDON
 {
@@ -468,6 +469,8 @@ protected:
   */
   void HandleShutdownMessage();
 
+  void ClosePlayer();
+
   CInertialScrollingHandler *m_pInertialScrollingHandler;
 
   ReplayGainSettings m_replayGainSettings;
@@ -484,6 +487,8 @@ private:
   CApplicationPlayer m_appPlayer;
   CEvent m_playerEvent;
   CApplicationStackHelper m_stackHelper;
+  CEvent m_playerCloseEvent;
+  std::unique_ptr<CJobQueue> m_actionQueue;
 };
 
 XBMC_GLOBAL_REF(CApplication,g_application);
