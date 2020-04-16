@@ -28,12 +28,7 @@ std::shared_ptr<IPlayer> CApplicationPlayer::GetInternal() const
 void CApplicationPlayer::ClosePlayer()
 {
   m_nextItem.pItem.reset();
-  std::shared_ptr<IPlayer> player = GetInternal();
-  if (player)
-  {
-    CloseFile();
-    ResetPlayer();
-  }
+  CloseFile();
 }
 
 void CApplicationPlayer::ResetPlayer()
