@@ -35,7 +35,7 @@ CRPBaseRenderer* CRendererFactoryDMA::CreateRenderer(const CRenderSettings& sett
 
 RenderBufferPoolVector CRendererFactoryDMA::CreateBufferPools(CRenderContext& context)
 {
-  if (!CBufferObjectFactory::CreateBufferObject())
+  if (!CBufferObjectFactory::CreateBufferObject(false))
     return {};
 
   return {std::make_shared<CRenderBufferPoolDMA>(context)};

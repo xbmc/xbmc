@@ -25,6 +25,7 @@ public:
 
   // IBufferObject overrides via CBufferObject
   bool CreateBufferObject(uint32_t format, uint32_t width, uint32_t height) override;
+  bool CreateBufferObject(uint64_t size) override;
   void DestroyBufferObject() override;
   uint8_t* GetMemory() override;
   void ReleaseMemory() override;

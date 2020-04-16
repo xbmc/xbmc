@@ -91,8 +91,14 @@ bool CDMAHeapBufferObject::CreateBufferObject(uint32_t format, uint32_t width, u
       throw std::runtime_error("CDMAHeapBufferObject: pixel format not implemented");
   }
 
-  m_size = width * height * bpp;
   m_stride = width * bpp;
+
+  return CreateBufferObject(width * height * bpp);
+}
+
+bool CDMAHeapBufferObject::CreateBufferObject(uint64_t size)
+{
+  m_size = size;
 
   if (m_dmaheapfd < 0)
   {

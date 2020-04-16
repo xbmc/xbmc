@@ -15,7 +15,7 @@
 #include "system_gl.h"
 
 class CEGLImage;
-class CBufferObject;
+class IBufferObject;
 
 namespace KODI
 {
@@ -60,7 +60,7 @@ namespace RETRO
     void DeleteTexture();
 
     std::unique_ptr<CEGLImage> m_egl;
-    std::unique_ptr<CBufferObject> m_bo;
+    std::unique_ptr<IBufferObject> m_bo;
   };
 }
 }

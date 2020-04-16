@@ -16,9 +16,9 @@
 #include <sys/ioctl.h>
 #endif
 
-std::unique_ptr<CBufferObject> CBufferObject::GetBufferObject()
+std::unique_ptr<CBufferObject> CBufferObject::GetBufferObject(bool needsCreateBySize)
 {
-  return CBufferObjectFactory::CreateBufferObject();
+  return CBufferObjectFactory::CreateBufferObject(needsCreateBySize);
 }
 
 int CBufferObject::GetFd()
