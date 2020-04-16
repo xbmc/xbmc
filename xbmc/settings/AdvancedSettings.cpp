@@ -237,6 +237,7 @@ void CAdvancedSettings::Initialize()
   m_tvshowEnumRegExps.push_back(
       TVShowRegexp(true, "([0-9]{4})[\\.-]([0-1][0-9])[\\.-]([0-3][0-9])"));
   // foo.mm.dd.yyyy.* (byDate=true)
+  // foo.dd.mm.yyyy.* or foo.mm-dd-yyyy.* (byDate=true)
   m_tvshowEnumRegExps.push_back(
       TVShowRegexp(true, "([0-3][0-9])[\\.-]([0-3][0-9])[\\.-]([0-9]{4})"));
   // foo.1x09* or just /1x09*
