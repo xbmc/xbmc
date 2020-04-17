@@ -90,7 +90,7 @@ using namespace KODI::MESSAGING;
 
 - (CGFloat)getScreenScale:(UIScreen *)screen
 {
-  CLog::Log(LOGDEBUG, "nativeScale {}, scale {}, traitScale {}", screen.nativeScale, screen.scale,
+  LOG(@"nativeScale %lf, scale %lf, traitScale %lf", screen.nativeScale, screen.scale,
             screen.traitCollection.displayScale);
   return std::max({screen.nativeScale, screen.scale, screen.traitCollection.displayScale});
 }
