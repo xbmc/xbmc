@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2018 Team Kodi
+ *  Copyright (C) 2005-2020 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -24,8 +24,8 @@ typedef struct LCENTRY
   const char* name;
 } LCENTRY;
 
-extern const std::array<struct LCENTRY, 185> g_iso639_1;
-extern const std::array<struct LCENTRY, 539> g_iso639_2;
+extern const std::array<struct LCENTRY, 186> g_iso639_1;
+extern const std::array<struct LCENTRY, 540> g_iso639_2;
 
 struct ISO639
 {
@@ -42,7 +42,7 @@ struct ISO3166_1
 };
 
 // declared as extern to allow forward declaration
-extern const std::array<ISO639, 189> LanguageCodes;
+extern const std::array<ISO639, 190> LanguageCodes;
 extern const std::array<ISO3166_1, 245> RegionCodes;
 
 CLangCodeExpander::CLangCodeExpander() = default;
@@ -548,7 +548,7 @@ std::string CLangCodeExpander::ConvertToISO6392T(const std::string& lang)
 }
 
 // clang-format off
-const std::array<struct LCENTRY, 185> g_iso639_1 = {{
+const std::array<struct LCENTRY, 186> g_iso639_1 = {{
     {MAKECODE('\0', '\0', 'a', 'a'), "Afar"},
     {MAKECODE('\0', '\0', 'a', 'b'), "Abkhazian"},
     {MAKECODE('\0', '\0', 'a', 'e'), "Avestan"},
@@ -680,6 +680,8 @@ const std::array<struct LCENTRY, 185> g_iso639_1 = {{
     {MAKECODE('\0', '\0', 'p', 'l'), "Polish"},
     {MAKECODE('\0', '\0', 'p', 's'), "Pashto, Pushto"},
     {MAKECODE('\0', '\0', 'p', 't'), "Portuguese"},
+    // pb = unofficial language code for Brazilian Portuguese
+    {MAKECODE('\0', '\0', 'p', 'b'), "Portuguese (Brazil)"},
     {MAKECODE('\0', '\0', 'q', 'u'), "Quechua"},
     {MAKECODE('\0', '\0', 'r', 'm'), "Romansh"},
     {MAKECODE('\0', '\0', 'r', 'n'), "Kirundi"},
@@ -738,7 +740,7 @@ const std::array<struct LCENTRY, 185> g_iso639_1 = {{
 // clang-format on
 
 // clang-format off
-const std::array<struct LCENTRY, 539> g_iso639_2 = {{
+const std::array<struct LCENTRY, 540> g_iso639_2 = {{
     {MAKECODE('\0', 'a', 'b', 'k'), "Abkhaz"},
     {MAKECODE('\0', 'a', 'b', 'k'), "Abkhazian"},
     {MAKECODE('\0', 'a', 'c', 'e'), "Achinese"},
@@ -1135,6 +1137,8 @@ const std::array<struct LCENTRY, 539> g_iso639_2 = {{
     {MAKECODE('\0', 'p', 'o', 'n'), "Pohnpeian"},
     {MAKECODE('\0', 'p', 'o', 'l'), "Polish"},
     {MAKECODE('\0', 'p', 'o', 'r'), "Portuguese"},
+    // pob = unofficial language code for Brazilian Portuguese
+    {MAKECODE('\0', 'p', 'o', 'b'), "Portuguese (Brazil)"},
     {MAKECODE('\0', 'p', 'r', 'a'), "Prakrit languages"},
     {MAKECODE('\0', 'o', 'c', 'i'), "Proven\xC3\xA7"
                                     "al"},
@@ -1285,7 +1289,7 @@ const std::array<struct LCENTRY, 539> g_iso639_2 = {{
 // clang-format on
 
 // clang-format off
-const std::array<ISO639, 189> LanguageCodes = {{
+const std::array<ISO639, 190> LanguageCodes = {{
     {"aa", "aar", NULL, NULL},
     {"ab", "abk", NULL, NULL},
     {"af", "afr", NULL, NULL},
@@ -1413,6 +1417,8 @@ const std::array<ISO639, 189> LanguageCodes = {{
     {"om", "orm", NULL, NULL},
     {"os", "oss", NULL, NULL},
     {"pa", "pan", NULL, NULL},
+    // pb / pob = unofficial language code for Brazilian Portuguese
+    {"pb", "pob", NULL, NULL},
     {"pi", "pli", NULL, NULL},
     {"pl", "pol", "plk", NULL},
     {"pt", "por", "ptg", NULL},
