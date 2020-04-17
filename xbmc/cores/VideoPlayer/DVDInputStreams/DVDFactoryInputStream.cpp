@@ -59,7 +59,12 @@ std::shared_ptr<CDVDInputStream> CDVDFactoryInputStream::CreateInputStream(IVide
       return std::shared_ptr<CInputStreamAddon>(new CInputStreamAddon(addonInfo, pPlayer, fileitem));
   }
 
-  if (fileitem.GetProperty(STREAM_PROPERTY_INPUTSTREAMCLASS).asString() ==
+  if (fileitem.GetProperty(STREAM_PROPERTY_INPUTSTREAM).asString() ==
+      STREAM_PROPERTY_VALUE_INPUTSTREAMFFMPEG)
+    return std::shared_ptr<CDVDInputStreamFFmpeg>(new CDVDInputStreamFFmpeg(fileitem));
+
+  // TODO; Retire for the above instead prior to Matrix release
+  if (fileitem.GetProperty("inputstreamclass").asString() ==
       STREAM_PROPERTY_VALUE_INPUTSTREAMFFMPEG)
     return std::shared_ptr<CDVDInputStreamFFmpeg>(new CDVDInputStreamFFmpeg(fileitem));
 

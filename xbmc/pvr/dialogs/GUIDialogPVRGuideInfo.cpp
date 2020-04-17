@@ -58,8 +58,6 @@ bool CGUIDialogPVRGuideInfo::OnClickButtonRecord(CGUIMessage& message)
 
   if (message.GetSenderId() == CONTROL_BTN_RECORD)
   {
-    bReturn = true;
-
     const std::shared_ptr<CPVRTimerInfoTag> timerTag = CServiceBroker::GetPVRManager().Timers()->GetTimerForEpgTag(m_progItem);
     if (timerTag)
     {

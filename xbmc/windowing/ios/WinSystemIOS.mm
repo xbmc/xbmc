@@ -303,7 +303,7 @@ void CWinSystemIOS::FillInVideoModes(int screenIdx)
     h = mode.size.height;
 
     UpdateDesktopResolution(res, screenIdx == 0 ? CONST_TOUCHSCREEN : CONST_EXTERNAL, w, h, refreshrate, 0);
-    CLog::Log(LOGNOTICE, "Found possible resolution for display %d with %d x %d\n", screenIdx, w, h);
+    CLog::Log(LOGNOTICE, "Found possible resolution for display %d with %d x %d", screenIdx, w, h);
 
     CServiceBroker::GetWinSystem()->GetGfxContext().ResetOverscan(res);
     CDisplaySettings::GetInstance().AddResolutionInfo(res);

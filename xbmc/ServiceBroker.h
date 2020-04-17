@@ -55,6 +55,7 @@ class CSettingsComponent;
 class CDecoderFilterManager;
 class CMediaManager;
 class CCPUInfo;
+class CLog;
 
 namespace KODI
 {
@@ -78,6 +79,9 @@ namespace PERIPHERALS
 class CServiceBroker
 {
 public:
+  static CLog& GetLogging();
+  static void CreateLogging();
+
   static std::shared_ptr<ANNOUNCEMENT::CAnnouncementManager> GetAnnouncementManager();
   static void RegisterAnnouncementManager(std::shared_ptr<ANNOUNCEMENT::CAnnouncementManager> announcementManager);
   static void UnregisterAnnouncementManager();
@@ -139,6 +143,7 @@ public:
   static void UnregisterCPUInfo();
 
 private:
+  static std::unique_ptr<CLog> m_logging;
   static std::shared_ptr<ANNOUNCEMENT::CAnnouncementManager> m_pAnnouncementManager;
   static CGUIComponent* m_pGUI;
   static CWinSystemBase* m_pWinSystem;

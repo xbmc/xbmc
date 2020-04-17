@@ -47,6 +47,7 @@ option(ENABLE_UPNP        "Enable UPnP support?" ON)
 option(ENABLE_AIRTUNES    "Enable AirTunes support?" ON)
 option(ENABLE_OPTICAL     "Enable optical support?" ON)
 option(ENABLE_PYTHON      "Enable python support?" ON)
+option(ENABLE_TESTING     "Enable testing support?" ON)
 # use ffmpeg from depends or system
 option(ENABLE_INTERNAL_FFMPEG "Enable internal ffmpeg?" OFF)
 if(UNIX)
@@ -57,6 +58,9 @@ if(UNIX)
   option(ENABLE_INTERNAL_FSTRCMP "Enable internal fstrcmp?" OFF)
   option(ENABLE_INTERNAL_FLATBUFFERS "Enable internal flatbuffers?" OFF)
   option(ENABLE_INTERNAL_DAV1D "Enable internal dav1d?" OFF)
+  option(ENABLE_INTERNAL_GTEST "Enable internal gtest?" OFF)
+  option(ENABLE_INTERNAL_UDFREAD "Enable internal udfread?" OFF)
+  option(ENABLE_INTERNAL_SPDLOG "Enable internal spdlog?" OFF)
 endif()
 # System options
 if(NOT WIN32)
@@ -83,11 +87,11 @@ mark_as_advanced(LIBRARY_FILES)
 
 set(INCLUDES ${CMAKE_SOURCE_DIR}
              ${CMAKE_SOURCE_DIR}/lib
-             ${CMAKE_SOURCE_DIR}/lib/gtest/include
              ${CMAKE_SOURCE_DIR}/xbmc
              ${CMAKE_SOURCE_DIR}/xbmc/${PLATFORM_DIR}
              ${CMAKE_SOURCE_DIR}/xbmc/cores/VideoPlayer
-             ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR})
+             ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}
+             ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/include)
 
 if (NOT PLATFORMDEFS_DIR STREQUAL "")
   list(APPEND INCLUDES ${CMAKE_SOURCE_DIR}/xbmc/${PLATFORMDEFS_DIR})
@@ -126,6 +130,7 @@ set(required_deps ASS
                   OpenSSL>=1.0.2
                   PCRE
                   RapidJSON
+                  Spdlog
                   Sqlite3
                   TagLib
                   TinyXML
@@ -154,7 +159,7 @@ set(optional_deps Alsa
                   SmbClient
                   Sndio
                   UDEV
-                  Udf
+                  Udfread
                   XSLT
                   ${PLATFORM_OPTIONAL_DEPS})
 
@@ -254,9 +259,6 @@ mark_as_advanced(core_DEPENDS)
 mark_as_advanced(test_archives)
 mark_as_advanced(test_sources)
 
-add_subdirectory(${CMAKE_SOURCE_DIR}/lib/gtest ${CORE_BUILD_DIR}/gtest EXCLUDE_FROM_ALL)
-set_target_properties(gtest PROPERTIES FOLDER "External Projects")
-
 # copy files to build tree
 copy_files_from_filelist_to_buildtree(${CMAKE_SOURCE_DIR}/cmake/installdata/common/*.txt
                                       ${CMAKE_SOURCE_DIR}/cmake/installdata/${CORE_SYSTEM_NAME}/*.txt)
@@ -286,7 +288,7 @@ elseif(CORE_SYSTEM_NAME STREQUAL android)
                  ${CORE_BUILD_DIR}/DllPaths_generated_android.h @ONLY)
 endif()
 
-set(GLOBAL_TARGET_DEPS ffmpeg dvdnav crossguid fmt fstrcmp flatbuffers ${PLATFORM_GLOBAL_TARGET_DEPS})
+set(GLOBAL_TARGET_DEPS ffmpeg dvdnav crossguid fmt Spdlog::Spdlog fstrcmp flatbuffers ${PLATFORM_GLOBAL_TARGET_DEPS})
 
 # main library (used for main binary and tests)
 add_library(lib${APP_NAME_LC} STATIC $<TARGET_OBJECTS:compileinfo>)
@@ -352,16 +354,23 @@ else()
 endif()
 
 # testing
-copy_files_from_filelist_to_buildtree(${CMAKE_SOURCE_DIR}/cmake/installdata/test-reference-data.txt NO_INSTALL)
-add_executable(${APP_NAME_LC}-test EXCLUDE_FROM_ALL ${CMAKE_SOURCE_DIR}/xbmc/test/xbmc-test.cpp ${test_sources})
-set_target_properties(${APP_NAME_LC}-test PROPERTIES ENABLE_EXPORTS ON)
-whole_archive(_TEST_LIBRARIES ${core_DEPENDS} gtest)
-target_link_libraries(${APP_NAME_LC}-test PRIVATE ${SYSTEM_LDFLAGS} ${_TEST_LIBRARIES} lib${APP_NAME_LC} ${DEPLIBS} ${CMAKE_DL_LIBS})
-unset(_TEST_LIBRARIES)
-add_dependencies(${APP_NAME_LC}-test ${APP_NAME_LC}-libraries export-files)
+if(CORE_HOST_IS_TARGET AND ENABLE_TESTING)
+  find_package(Gtest)
 
-# Enable unit-test related targets
-if(CORE_HOST_IS_TARGET)
+  copy_files_from_filelist_to_buildtree(${CMAKE_SOURCE_DIR}/cmake/installdata/test-reference-data.txt NO_INSTALL)
+  add_executable(${APP_NAME_LC}-test EXCLUDE_FROM_ALL ${CMAKE_SOURCE_DIR}/xbmc/test/xbmc-test.cpp ${test_sources})
+
+  set_target_properties(PROPERTIES ENABLE_EXPORTS ON)
+
+  whole_archive(_TEST_LIBRARIES ${core_DEPENDS} ${GTEST_LIBRARY})
+  target_link_libraries(${APP_NAME_LC}-test PRIVATE ${SYSTEM_LDFLAGS} ${_TEST_LIBRARIES} lib${APP_NAME_LC} ${DEPLIBS} ${CMAKE_DL_LIBS})
+  unset(_TEST_LIBRARIES)
+
+  if (ENABLE_INTERNAL_GTEST)
+    add_dependencies(${APP_NAME_LC}-test ${APP_NAME_LC}-libraries export-files gtest)
+  endif()
+
+  # Enable unit-test related targets
   enable_testing()
   gtest_add_tests(${APP_NAME_LC}-test "" ${test_sources})
   if(NOT WIN32)

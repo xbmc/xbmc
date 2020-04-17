@@ -8,6 +8,8 @@
 
 #pragma once
 
+#include "utils/StaticLoggerBase.h"
+
 #include <string>
 
 class TiXmlNode;
@@ -18,10 +20,10 @@ enum class SettingUpdateType {
   Change
 };
 
-class CSettingUpdate
+class CSettingUpdate : protected CStaticLoggerBase
 {
 public:
-  CSettingUpdate() = default;
+  CSettingUpdate();
   virtual ~CSettingUpdate() = default;
 
   inline bool operator<(const CSettingUpdate& rhs) const

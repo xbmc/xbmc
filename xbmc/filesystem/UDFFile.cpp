@@ -9,136 +9,97 @@
 #include "UDFFile.h"
 
 #include "URL.h"
-#include "utils/log.h"
 
-#include <cmath>
-
-#include <cdio/udf.h>
-#include <sys/stat.h>
+#include <udfread/udfread.h>
 
 using namespace XFILE;
 
+CUDFFile::CUDFFile() : m_bi{std::make_unique<CUDFBlockInput>()}
+{
+}
+
 bool CUDFFile::Open(const CURL& url)
 {
-  if (m_udf && m_path)
+  if (m_udf && m_file)
     return true;
 
-  m_udf = udf_open(url.GetHostName().c_str());
+  m_udf = udfread_init();
 
   if (!m_udf)
     return false;
 
-  udf_dirent_t* root = udf_get_root(m_udf, true, 0);
+  auto bi = m_bi->GetBlockInput(url.GetHostName());
 
-  if (!root)
+  if (!bi)
+  {
+    udfread_close(m_udf);
+    return false;
+  }
+
+  if (udfread_open_input(m_udf, bi) < 0)
+  {
+    bi->close(bi);
+    udfread_close(m_udf);
+    return false;
+  }
+
+  m_file = udfread_file_open(m_udf, url.GetFileName().c_str());
+  if (!m_file)
   {
     Close();
     return false;
   }
-
-  m_path = udf_fopen(root, url.GetFileName().c_str());
-
-  udf_dirent_free(root);
-
-  if (!m_path)
-  {
-    Close();
-    return false;
-  }
-
-  m_current = 0;
 
   return true;
 }
 
 void CUDFFile::Close()
 {
-  if (m_path)
+  if (m_file)
   {
-    udf_dirent_free(m_path);
-    m_path = nullptr;
+    udfread_file_close(m_file);
+    m_file = nullptr;
   }
 
   if (m_udf)
   {
-    udf_close(m_udf);
+    udfread_close(m_udf);
     m_udf = nullptr;
   }
 }
 
 int CUDFFile::Stat(const CURL& url, struct __stat64* buffer)
 {
-  if (!m_udf || !m_path)
+  if (!m_udf || !m_file)
     return -1;
 
   buffer = {};
   buffer->st_size = GetLength();
-
-  if (m_path->b_dir)
-  {
-    buffer->st_mode = S_IFDIR;
-  }
-  else
-  {
-    buffer->st_mode = S_IFREG;
-  }
 
   return 0;
 }
 
 ssize_t CUDFFile::Read(void* buffer, size_t size)
 {
-  const int maxSize = std::min(size, static_cast<size_t>(GetLength()));
-  const int blocks = std::ceil(maxSize / UDF_BLOCKSIZE);
-
-  if (m_current > std::ceil(GetLength() / UDF_BLOCKSIZE))
-  {
-    return -1;
-  }
-
-  auto read = udf_read_block(m_path, buffer, blocks);
-
-  m_current += blocks;
-
-  return read;
+  return udfread_file_read(m_file, buffer, size);
 }
 
 int64_t CUDFFile::Seek(int64_t filePosition, int whence)
 {
-  int block = std::floor(filePosition / UDF_BLOCKSIZE);
-
-  switch (whence)
-  {
-    case SEEK_SET:
-      m_current = block;
-      break;
-    case SEEK_CUR:
-      m_current += block;
-      break;
-    case SEEK_END:
-      m_current = std::ceil(GetLength() / UDF_BLOCKSIZE) + block;
-      break;
-  }
-
-  return m_current * UDF_BLOCKSIZE;
+  return udfread_file_seek(m_file, filePosition, whence);
 }
 
 int64_t CUDFFile::GetLength()
 {
-  return udf_get_file_length(m_path);
+  return udfread_file_size(m_file);
 }
 
 int64_t CUDFFile::GetPosition()
 {
-  return m_current * UDF_BLOCKSIZE;
+  return udfread_file_tell(m_file);
 }
 
 bool CUDFFile::Exists(const CURL& url)
 {
   return Open(url);
-}
-
-int CUDFFile::GetChunkSize()
-{
-  return UDF_BLOCKSIZE;
 }

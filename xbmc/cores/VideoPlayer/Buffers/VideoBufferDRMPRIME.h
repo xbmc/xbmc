@@ -68,8 +68,8 @@ public:
 
   virtual AVDRMFrameDescriptor* GetDescriptor() const = 0;
   virtual bool IsValid() const { return true; }
-  virtual bool Map() { return true; }
-  virtual void Unmap() {}
+  virtual bool AcquireDescriptor() { return true; }
+  virtual void ReleaseDescriptor() {}
 
   uint32_t m_fb_id = 0;
   uint32_t m_handles[AV_DRM_MAX_PLANES] = {};

@@ -476,7 +476,7 @@ bool CGUIDialogPVRChannelManager::OnClickButtonNewChannel()
 
     pDlgSelect->SetHeading(CVariant{19213}); // Select Client
 
-    for (const auto client : m_clientsWithSettingsList)
+    for (const auto& client : m_clientsWithSettingsList)
       pDlgSelect->Add(client->Name());
     pDlgSelect->Open();
 

@@ -73,8 +73,7 @@ void ff_avutil_log(void* ptr, int level, const char* format, va_list va)
   if (CFFmpegLog::GetLogLevel() > 0)
     maxLevel = AV_LOG_INFO;
 
-  if (level > maxLevel &&
-     !CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->CanLogComponent(LOGFFMPEG))
+  if (level > maxLevel && !CServiceBroker::GetLogging().CanLogComponent(LOGFFMPEG))
     return;
   else if (CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_logLevel <= LOG_LEVEL_NORMAL)
     return;

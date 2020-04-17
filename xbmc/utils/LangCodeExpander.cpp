@@ -547,6 +547,7 @@ std::string CLangCodeExpander::ConvertToISO6392T(const std::string& lang)
   return lang;
 }
 
+// clang-format off
 const std::array<struct LCENTRY, 186> g_iso639_1 = {{
     {MAKECODE('\0', '\0', 'a', 'a'), "Afar"},
     {MAKECODE('\0', '\0', 'a', 'b'), "Abkhazian"},
@@ -735,9 +736,11 @@ const std::array<struct LCENTRY, 186> g_iso639_1 = {{
     {MAKECODE('\0', '\0', 'z', 'h'), "Chinese"},
     {MAKECODE('\0', '\0', 'z', 'u'), "Zulu"},
 }};
+// clang-format on
 
+// clang-format off
 const std::array<struct LCENTRY, 540> g_iso639_2 = {{
-    {MAKECODE('\0', 'a', 'b', 'k'), "Abkhaz"},
+    {MAKE>>>>>> masterCODE('\0', 'a', 'b', 'k'), "Abkhaz"},
     {MAKECODE('\0', 'a', 'b', 'k'), "Abkhazian"},
     {MAKECODE('\0', 'a', 'c', 'e'), "Achinese"},
     {MAKECODE('\0', 'a', 'c', 'h'), "Acoli"},
@@ -1281,8 +1284,9 @@ const std::array<struct LCENTRY, 540> g_iso639_2 = {{
     {MAKECODE('\0', 'z', 'u', 'l'), "Zulu"},
     {MAKECODE('\0', 'z', 'u', 'n'), "Zuni"},
 }};
+// clang-format on
 
-
+// clang-format off
 const std::array<ISO639, 190> LanguageCodes = {{
     {"aa", "aar", NULL, NULL},
     {"ab", "abk", NULL, NULL},
@@ -1477,6 +1481,7 @@ const std::array<ISO639, 190> LanguageCodes = {{
      NULL}, // Kodi intern mapping for missing "Miscellaneous languages" iso639-1 code
     {"zz", "mul", NULL, NULL} // Kodi intern mapping for missing "Multiple languages" iso639-1 code
 }};
+// clang-format on
 
 // Based on ISO 3166
 // clang-format off

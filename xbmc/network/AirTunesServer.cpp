@@ -32,7 +32,6 @@
 #include "network/Network.h"
 #include "network/Zeroconf.h"
 #include "network/ZeroconfBrowser.h"
-#include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "URL.h"
@@ -530,7 +529,7 @@ void  CAirTunesServer::AudioOutputFunctions::audio_destroy(void *cls, void *sess
 void shairplay_log(void *cls, int level, const char *msg)
 {
   int xbmcLevel = LOGINFO;
-  if(!CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->CanLogComponent(LOGAIRTUNES))
+  if (!CServiceBroker::GetLogging().CanLogComponent(LOGAIRTUNES))
     return;
 
   switch(level)
@@ -706,7 +705,7 @@ bool CAirTunesServer::Initialize(const std::string &password)
     unsigned short port = (unsigned short)m_port;
 
     raop_set_log_level(m_pRaop, RAOP_LOG_WARNING);
-    if (CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->CanLogComponent(LOGAIRTUNES))
+    if (CServiceBroker::GetLogging().CanLogComponent(LOGAIRTUNES))
     {
       raop_set_log_level(m_pRaop, RAOP_LOG_DEBUG);
     }

@@ -10,6 +10,7 @@
 
 #include "FileItem.h"
 #include "interfaces/IAnnouncer.h"
+#include "utils/logtypes.h"
 
 #include <utility>
 
@@ -115,7 +116,6 @@ private:
                              const char*                   parent_id /* = NULL */);
 
     // class methods
-    static bool SortItems(CFileItemList& items, const char* sort_criteria);
     static void DefaultSortItems(CFileItemList& items);
     static NPT_String GetParentFolder(NPT_String file_path) {
         int index = file_path.ReverseFind("\\");
@@ -131,7 +131,10 @@ private:
 
     std::map<std::string, std::pair<bool, unsigned long> > m_UpdateIDs;
     bool m_scanning;
-public:
+
+    Logger m_logger;
+
+  public:
     // class members
     static NPT_UInt32 m_MaxReturnedItems;
 };

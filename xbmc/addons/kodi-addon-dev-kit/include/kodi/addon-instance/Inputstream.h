@@ -19,8 +19,10 @@
 
 #ifdef BUILD_KODI_ADDON
 #include "../DemuxPacket.h"
+#include "../InputStreamConstants.h"
 #else
 #include "cores/VideoPlayer/Interface/Addon/DemuxPacket.h"
+#include "cores/VideoPlayer/Interface/Addon/InputStreamConstants.h"
 #endif
 
 //Increment this level always if you add features which can lead to compile failures in the addon
@@ -69,8 +71,6 @@ extern "C"
    */
   struct INPUTSTREAM
   {
-    static const unsigned int MAX_INFO_COUNT = 30;
-
     const char* m_strURL;
 
     unsigned int m_nCountInfoValues;
@@ -78,7 +78,7 @@ extern "C"
     {
       const char* m_strKey;
       const char* m_strValue;
-    } m_ListItemProperties[MAX_INFO_COUNT];
+    } m_ListItemProperties[STREAM_MAX_PROPERTY_COUNT];
 
     const char* m_libFolder;
     const char* m_profileFolder;
@@ -89,7 +89,7 @@ extern "C"
    */
   struct INPUTSTREAM_IDS
   {
-    static const unsigned int MAX_STREAM_COUNT = 32;
+    static const unsigned int MAX_STREAM_COUNT = 256;
     unsigned int m_streamCount;
     unsigned int m_streamIds[MAX_STREAM_COUNT];
   };
@@ -357,7 +357,6 @@ extern "C"
                                   int whence);
     int64_t(__cdecl* position_stream)(const AddonInstance_InputStream* instance);
     int64_t(__cdecl* length_stream)(const AddonInstance_InputStream* instance);
-    void(__cdecl* pause_stream)(const AddonInstance_InputStream* instance, double time);
     bool(__cdecl* is_real_time_stream)(const AddonInstance_InputStream* instance);
 
     // IChapter
@@ -598,14 +597,6 @@ public:
   virtual int GetBlockSize() { return 0; }
 
   /*!
-     * @brief Notify the InputStream addon that Kodi (un)paused the currently playing stream.
-     * Only called when an inpustream DOES NOT have its own demuxer.
-     * @param time The time that Kodi (un)paused the stream
-     */
-  virtual void PauseStream(double time) {}
-
-
-  /*!
      *  Check for real-time streaming
      *  @return true if current stream is real-time
      */
@@ -687,7 +678,6 @@ private:
     m_instanceData->toAddon.seek_stream = ADDON_SeekStream;
     m_instanceData->toAddon.position_stream = ADDON_PositionStream;
     m_instanceData->toAddon.length_stream = ADDON_LengthStream;
-    m_instanceData->toAddon.pause_stream = ADDON_PauseStream;
     m_instanceData->toAddon.is_real_time_stream = ADDON_IsRealTimeStream;
 
     int minChapterVersion[3] = { 2, 0, 10 };
@@ -872,11 +862,6 @@ private:
   inline static int ADDON_GetBlockSize(const AddonInstance_InputStream* instance)
   {
     return static_cast<CInstanceInputStream*>(instance->toAddon.addonInstance)->GetBlockSize();
-  }
-
-  inline static void ADDON_PauseStream(const AddonInstance_InputStream* instance, double time)
-  {
-    static_cast<CInstanceInputStream*>(instance->toAddon.addonInstance)->PauseStream(time);
   }
 
   inline static bool ADDON_IsRealTimeStream(const AddonInstance_InputStream* instance)

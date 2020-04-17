@@ -54,6 +54,7 @@ set(SOURCES ActorProtocol.cpp
             Screenshot.cpp
             SortUtils.cpp
             Speed.cpp
+            StaticLoggerBase.cpp
             Stopwatch.cpp
             StreamDetails.cpp
             StreamUtils.cpp
@@ -111,6 +112,7 @@ set(HEADERS ActorProtocol.h
             IBufferObject.h
             ILocalizer.h
             InfoLoader.h
+            IPlatformLog.h
             IRssObserver.h
             IScreenshotSurface.h
             ISerializable.h
@@ -125,6 +127,7 @@ set(HEADERS ActorProtocol.h
             LegacyPathTranslation.h
             Locale.h
             log.h
+            logtypes.h
             MathUtils.h
             MemUtils.h
             Mime.h
@@ -145,6 +148,7 @@ set(HEADERS ActorProtocol.h
             Screenshot.h
             SortUtils.h
             Speed.h
+            StaticLoggerBase.h
             Stopwatch.h
             StreamDetails.h
             StreamUtils.h

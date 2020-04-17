@@ -8,6 +8,7 @@
 
 #include "SettingsManager.h"
 
+#include "ServiceBroker.h"
 #include "Setting.h"
 #include "SettingDefinitions.h"
 #include "SettingSection.h"
@@ -50,6 +51,10 @@ bool ParseSettingIdentifier(const std::string& settingId, std::string& categoryT
   return true;
 }
 
+CSettingsManager::CSettingsManager() : CStaticLoggerBase("CSettingsManager")
+{
+}
+
 CSettingsManager::~CSettingsManager()
 {
   // first clear all registered settings handler and subsettings
@@ -79,23 +84,26 @@ bool CSettingsManager::Initialize(const TiXmlElement *root)
 
   if (!StringUtils::EqualsNoCase(root->ValueStr(), SETTING_XML_ROOT))
   {
-    CLog::Log(LOGERROR, "CSettingsManager: error reading settings definition: doesn't contain <settings> tag");
+    s_logger->error("error reading settings definition: doesn't contain <" SETTING_XML_ROOT
+                    "> tag");
     return false;
   }
 
   // try to get and check the version
   uint32_t version = ParseVersion(root);
   if (version == 0)
-    CLog::Log(LOGWARNING, "CSettingsManager: missing %s attribute", SETTING_XML_ROOT_VERSION);
+    s_logger->warn("missing " SETTING_XML_ROOT_VERSION " attribute", SETTING_XML_ROOT_VERSION);
 
   if (MinimumSupportedVersion >= version+1)
   {
-    CLog::Log(LOGERROR, "CSettingsManager: unable to read setting definitions from version %u (minimum version: %u)", version, MinimumSupportedVersion);
+    s_logger->error("unable to read setting definitions from version {} (minimum version: {})",
+                    version, MinimumSupportedVersion);
     return false;
   }
   if (version > Version)
   {
-    CLog::Log(LOGERROR, "CSettingsManager: unable to read setting definitions from version %u (current version: %u)", version, Version);
+    s_logger->error("unable to read setting definitions from version {} (current version: {})",
+                    version, Version);
     return false;
   }
 
@@ -117,7 +125,7 @@ bool CSettingsManager::Initialize(const TiXmlElement *root)
         AddSection(section);
       else
       {
-        CLog::Log(LOGWARNING, "CSettingsManager: unable to read section \"%s\"", sectionId.c_str());
+        s_logger->warn("unable to read section \"{}\"", sectionId);
       }
     }
 
@@ -140,16 +148,18 @@ bool CSettingsManager::Load(const TiXmlElement *root, bool &updated, bool trigge
   // try to get and check the version
   uint32_t version = ParseVersion(root);
   if (version == 0)
-    CLog::Log(LOGWARNING, "CSettingsManager: missing %s attribute", SETTING_XML_ROOT_VERSION);
+    s_logger->warn("missing {} attribute", SETTING_XML_ROOT_VERSION);
 
   if (MinimumSupportedVersion >= version+1)
   {
-    CLog::Log(LOGERROR, "CSettingsManager: unable to read setting values from version %u (minimum version: %u)", version, MinimumSupportedVersion);
+    s_logger->error("unable to read setting values from version {} (minimum version: {})", version,
+                    MinimumSupportedVersion);
     return false;
   }
   if (version > Version)
   {
-    CLog::Log(LOGERROR, "CSettingsManager: unable to read setting values from version %u (current version: %u)", version, Version);
+    s_logger->error("unable to read setting values from version {} (current version: {})", version,
+                    Version);
     return false;
   }
 
@@ -517,7 +527,7 @@ SettingPtr CSettingsManager::GetSetting(const std::string &id) const
     return setting->second.setting;
   }
 
-  CLog::Log(LOGDEBUG, "CSettingsManager: requested setting (%s) was not found.", id.c_str());
+  s_logger->debug("requested setting ({}) was not found.", id);
   return nullptr;
 }
 
@@ -543,7 +553,7 @@ SettingSectionPtr CSettingsManager::GetSection(std::string section) const
   if (sectionIt != m_sections.end())
     return sectionIt->second;
 
-  CLog::Log(LOGDEBUG, "CSettingsManager: requested setting section (%s) was not found.", section.c_str());
+  s_logger->debug("requested setting section ({}) was not found.", section);
   return nullptr;
 }
 
@@ -754,7 +764,8 @@ bool CSettingsManager::Serialize(TiXmlNode *parent) const
 
     if (parent->InsertEndChild(settingElement) == nullptr)
     {
-      CLog::Log(LOGWARNING, "CSetting: unable to write <" SETTING_XML_ELM_SETTING " id=\"%s\"> tag", setting.second.setting->GetId().c_str());
+      s_logger->warn("unable to write <" SETTING_XML_ELM_SETTING " id=\"{}\"> tag",
+                     setting.second.setting->GetId());
       continue;
     }
   }
@@ -1087,7 +1098,7 @@ bool CSettingsManager::LoadSetting(const TiXmlNode *node, SettingPtr setting, bo
 
   if (!setting->FromString(settingElement->FirstChild() != nullptr ? settingElement->FirstChild()->ValueStr() : StringUtils::Empty))
   {
-    CLog::Log(LOGWARNING, "CSettingsManager: unable to read value of setting \"%s\"", settingId.c_str());
+    s_logger->warn("unable to read value of setting \"{}\"", settingId);
     return false;
   }
 
@@ -1137,7 +1148,8 @@ bool CSettingsManager::UpdateSetting(const TiXmlNode *node, SettingPtr setting, 
     if (setting->FromString(oldSettingNode->FirstChild() != nullptr ? oldSettingNode->FirstChild()->ValueStr() : StringUtils::Empty))
       updated = true;
     else
-      CLog::Log(LOGWARNING, "CSetting: unable to update \"%s\" through automatically renaming from \"%s\"", setting->GetId().c_str(), oldSetting);
+      s_logger->warn("unable to update \"{}\" through automatically renaming from \"{}\"",
+                     setting->GetId(), oldSetting);
   }
 
   updated |= OnSettingUpdate(setting, oldSetting, oldSettingNode);
@@ -1246,8 +1258,7 @@ void CSettingsManager::ResolveReferenceSettings(std::shared_ptr<CSettingSection>
             auto itReferencedSetting = FindSetting(referencedSettingId);
             if (itReferencedSetting == m_settings.end())
             {
-              CLog::Log(LOGWARNING, "CSettingsManager: missing referenced setting \"%s\"",
-                referencedSettingId.c_str());
+              s_logger->warn("missing referenced setting \"{}\"", referencedSettingId);
               continue;
             }
 
@@ -1325,7 +1336,7 @@ void CSettingsManager::CleanupIncompleteSettings()
     auto tmpIterator = setting++;
     if (tmpIterator->second.setting == nullptr)
     {
-      CLog::Log(LOGWARNING, "CSettingsManager: removing empty setting \"%s\"", tmpIterator->first.c_str());
+      s_logger->warn("removing empty setting \"{}\"", tmpIterator->first);
       m_settings.erase(tmpIterator);
     }
   }

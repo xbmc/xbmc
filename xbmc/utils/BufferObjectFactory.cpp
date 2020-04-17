@@ -10,11 +10,21 @@
 
 std::list<std::function<std::unique_ptr<CBufferObject>()>> CBufferObjectFactory::m_bufferObjects;
 
-std::unique_ptr<CBufferObject> CBufferObjectFactory::CreateBufferObject()
+std::unique_ptr<CBufferObject> CBufferObjectFactory::CreateBufferObject(bool needsCreateBySize)
 {
   for (const auto bufferObject : m_bufferObjects)
   {
-    return bufferObject();
+    auto bo = bufferObject();
+
+    if (needsCreateBySize)
+    {
+      if (!bo->CreateBufferObject(1))
+        continue;
+
+      bo->DestroyBufferObject();
+    }
+
+    return bo;
   }
 
   return nullptr;

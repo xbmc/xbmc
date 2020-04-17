@@ -8,6 +8,8 @@
 
 #include "DRMUtils.h"
 
+#include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "utils/StringUtils.h"
 #include "utils/XTimeUtils.h"
 #include "utils/log.h"
@@ -25,6 +27,11 @@
 #include <unistd.h>
 
 using namespace KODI::WINDOWING::GBM;
+
+namespace
+{
+const std::string SETTING_VIDEOSCREEN_LIMITGUISIZE = "videoscreen.limitguisize";
+}
 
 CDRMUtils::CDRMUtils()
   : m_connector(new connector)
@@ -397,24 +404,6 @@ drmModePlanePtr CDRMUtils::FindPlane(drmModePlaneResPtr resources, int crtc_inde
 
               break;
             }
-            case KODI_GUI_10_PLANE:
-            {
-              uint32_t plane_id = 0;
-              if (m_video_plane->plane)
-                plane_id = m_video_plane->plane->plane_id;
-
-              if (plane->plane_id != plane_id &&
-                  (plane_id == 0 || SupportsFormat(plane, DRM_FORMAT_ARGB2101010)) &&
-                  SupportsFormat(plane, DRM_FORMAT_XRGB2101010))
-              {
-                CLog::Log(LOGDEBUG, "CDRMUtils::%s - found gui 10 plane %u", __FUNCTION__, plane->plane_id);
-                drmModeFreeProperty(p);
-                drmModeFreeObjectProperties(props);
-                return plane;
-              }
-
-              break;
-            }
           }
         }
 
@@ -441,15 +430,7 @@ bool CDRMUtils::FindPlanes()
   }
 
   m_video_plane->plane = FindPlane(plane_resources, m_crtc_index, KODI_VIDEO_PLANE);
-  m_gui_plane->plane = FindPlane(plane_resources, m_crtc_index, KODI_GUI_10_PLANE);
-
-  /* fallback to 8bit plane if 10bit plane doesn't exist */
-  if (m_gui_plane->plane == nullptr)
-  {
-    drmModeFreePlane(m_gui_plane->plane);
-    m_gui_plane->plane = FindPlane(plane_resources, m_crtc_index, KODI_GUI_PLANE);
-    m_gui_plane->SetFormat(DRM_FORMAT_XRGB8888);
-  }
+  m_gui_plane->plane = FindPlane(plane_resources, m_crtc_index, KODI_GUI_PLANE);
 
   drmModeFreePlaneResources(plane_resources);
 
@@ -480,8 +461,6 @@ bool CDRMUtils::FindPlanes()
     CLog::Log(LOGDEBUG, "CDRMUtils::%s - no drm modifiers present for the gui plane", __FUNCTION__);
     m_gui_plane->modifiers_map.emplace(DRM_FORMAT_ARGB8888, std::vector<uint64_t>{DRM_FORMAT_MOD_LINEAR});
     m_gui_plane->modifiers_map.emplace(DRM_FORMAT_XRGB8888, std::vector<uint64_t>{DRM_FORMAT_MOD_LINEAR});
-    m_gui_plane->modifiers_map.emplace(DRM_FORMAT_ARGB2101010, std::vector<uint64_t>{DRM_FORMAT_MOD_LINEAR});
-    m_gui_plane->modifiers_map.emplace(DRM_FORMAT_XRGB2101010, std::vector<uint64_t>{DRM_FORMAT_MOD_LINEAR});
   }
 
   return true;
@@ -761,6 +740,31 @@ RESOLUTION_INFO CDRMUtils::GetResolutionInfo(drmModeModeInfoPtr mode)
   res.iScreenHeight = mode->vdisplay;
   res.iWidth = res.iScreenWidth;
   res.iHeight = res.iScreenHeight;
+
+  int limit = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
+      SETTING_VIDEOSCREEN_LIMITGUISIZE);
+  if (limit > 0 && res.iScreenWidth > 1920 && res.iScreenHeight > 1080)
+  {
+    switch (limit)
+    {
+      case 1: // 720p
+        res.iWidth = 1280;
+        res.iHeight = 720;
+        break;
+      case 2: // 1080p / 720p (>30hz)
+        res.iWidth = mode->vrefresh > 30 ? 1280 : 1920;
+        res.iHeight = mode->vrefresh > 30 ? 720 : 1080;
+        break;
+      case 3: // 1080p
+        res.iWidth = 1920;
+        res.iHeight = 1080;
+        break;
+      case 4: // Unlimited / 1080p (>30hz)
+        res.iWidth = mode->vrefresh > 30 ? 1920 : res.iScreenWidth;
+        res.iHeight = mode->vrefresh > 30 ? 1080 : res.iScreenHeight;
+        break;
+    }
+  }
 
   if (mode->clock % 5 != 0)
     res.fRefreshRate = static_cast<float>(mode->vrefresh) * (1000.0f/1001.0f);

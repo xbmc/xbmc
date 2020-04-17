@@ -8,10 +8,15 @@
 
 #include "SettingUpdate.h"
 
+#include "ServiceBroker.h"
 #include "SettingDefinitions.h"
 #include "utils/StringUtils.h"
 #include "utils/XBMCTinyXML.h"
 #include "utils/log.h"
+
+CSettingUpdate::CSettingUpdate() : CStaticLoggerBase("CSettingUpdate")
+{
+}
 
 bool CSettingUpdate::Deserialize(const TiXmlNode *node)
 {
@@ -25,7 +30,7 @@ bool CSettingUpdate::Deserialize(const TiXmlNode *node)
   auto strType = elem->Attribute(SETTING_XML_ATTR_TYPE);
   if (strType == nullptr || strlen(strType) <= 0 || !setType(strType))
   {
-    CLog::Log(LOGWARNING, "CSettingUpdate: missing or unknown update type definition");
+    s_logger->warn("missing or unknown update type definition");
     return false;
   }
 
@@ -33,7 +38,7 @@ bool CSettingUpdate::Deserialize(const TiXmlNode *node)
   {
     if (node->FirstChild() == nullptr || node->FirstChild()->Type() != TiXmlNode::TINYXML_TEXT)
     {
-      CLog::Log(LOGWARNING, "CSettingUpdate: missing or invalid setting id for rename update definition");
+      s_logger->warn("missing or invalid setting id for rename update definition");
       return false;
     }
 

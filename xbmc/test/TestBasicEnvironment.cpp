@@ -38,6 +38,9 @@ void TestBasicEnvironment::SetUp()
 {
   CAppParamParser params;
   params.m_platformDirectories = false;
+
+  CServiceBroker::CreateLogging();
+
   m_pSettingsComponent.reset(new CSettingsComponent());
   m_pSettingsComponent->Init(params);
 

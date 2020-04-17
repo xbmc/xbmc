@@ -26,11 +26,16 @@ public:
    *
    * @return std::unique_ptr<CBufferObject>
    */
-  static std::unique_ptr<CBufferObject> GetBufferObject();
+  static std::unique_ptr<CBufferObject> GetBufferObject(bool needsCreateBySize);
+
+  virtual bool CreateBufferObject(uint64_t size) override { return false; }
 
   virtual int GetFd() override;
   virtual uint32_t GetStride() override;
   virtual uint64_t GetModifier() override;
+
+  void SyncStart() override;
+  void SyncEnd() override;
 
 protected:
   int m_fd{-1};

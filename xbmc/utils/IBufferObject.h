@@ -9,6 +9,7 @@
 #pragma once
 
 #include <stdint.h>
+#include <string>
 
 /**
  * @brief Interface to describe CBufferObjects.
@@ -41,16 +42,27 @@ public:
   virtual ~IBufferObject() = default;
 
   /**
-   * @brief Create a BufferObject.
+   * @brief Create a BufferObject based on the format, width, and height of the desired buffer
    *
    * @param format framebuffer pixel formats are described using the fourcc codes defined in
    *               https://github.com/torvalds/linux/blob/master/include/uapi/drm/drm_fourcc.h
-   * @param width width of the requested buffer object.
-   * @param height height of the requested buffer object.
+   * @param width width of the requested buffer.
+   * @param height height of the requested buffer.
    * @return true BufferObject creation was successful.
    * @return false BufferObject creation was unsuccessful.
    */
   virtual bool CreateBufferObject(uint32_t format, uint32_t width, uint32_t height) = 0;
+
+  /**
+   * @brief Create a BufferObject based only on the size of the desired buffer. Not all
+   *        CBufferObject implementations may support this. This method is required for
+   *        use with the CAddonVideoCodec as it only knows the decoded buffer size.
+   *
+   * @param size of the requested buffer.
+   * @return true BufferObject creation was successful.
+   * @return false BufferObject creation was unsuccessful.
+   */
+  virtual bool CreateBufferObject(uint64_t size) = 0;
 
   /**
    * @brief Destroy a BufferObject.
@@ -97,4 +109,23 @@ public:
    * @return uint64_t modifier of the BufferObject. 0 means the layout is linear (default).
    */
   virtual uint64_t GetModifier() = 0;
+
+  /**
+   * @brief Must be called before reading/writing data to the BufferObject.
+   *
+   */
+  virtual void SyncStart() = 0;
+
+  /**
+   * @brief Must be called after reading/writing data to the BufferObject.
+   *
+   */
+  virtual void SyncEnd() = 0;
+
+  /**
+   * @brief Get the Name of the BufferObject type in use
+   *
+   * @return std::string name of the BufferObject type in use
+   */
+  virtual std::string GetName() const = 0;
 };

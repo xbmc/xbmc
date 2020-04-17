@@ -11,7 +11,7 @@
 #include "utils/BufferObjectFactory.h"
 #include "utils/log.h"
 
-#include <drm/drm_fourcc.h>
+#include <drm_fourcc.h>
 #include <linux/udmabuf.h>
 #include <sys/ioctl.h>
 #include <sys/mman.h>
@@ -38,7 +38,8 @@ void CUDMABufferObject::Register()
   int fd = open("/dev/udmabuf", O_RDWR);
   if (fd < 0)
   {
-    CLog::LogF(LOGERROR, "unable to open /dev/udmabuf (check your permissions)");
+    CLog::Log(LOGDEBUG, "CUDMABufferObject::{} - unable to open /dev/udmabuf: {}", __FUNCTION__,
+              strerror(errno));
     return;
   }
 
@@ -54,7 +55,8 @@ CUDMABufferObject::~CUDMABufferObject()
 
   int ret = close(m_udmafd);
   if (ret < 0)
-    CLog::LogF(LOGERROR, "close /dev/udmabuf failed, errno={}", strerror(errno));
+    CLog::Log(LOGERROR, "CUDMABufferObject::{} - close /dev/udmabuf failed, errno={}", __FUNCTION__,
+              strerror(errno));
 
   m_udmafd = -1;
 }
@@ -76,29 +78,37 @@ bool CUDMABufferObject::CreateBufferObject(uint32_t format, uint32_t width, uint
       bpp = 2;
       break;
     default:
-      throw std::system_error(errno, std::generic_category(), "pixel format not implemented");
+      throw std::runtime_error("CUDMABufferObject: pixel format not implemented");
   }
 
-  // Must be rounded to the system page size
-  m_size = RoundUp(width * height * bpp, PAGESIZE);
   m_stride = width * bpp;
+
+  return CreateBufferObject(width * height * bpp);
+}
+
+bool CUDMABufferObject::CreateBufferObject(uint64_t size)
+{
+  // Must be rounded to the system page size
+  m_size = RoundUp(size, PAGESIZE);
 
   m_memfd = memfd_create("kodi", MFD_CLOEXEC | MFD_ALLOW_SEALING);
   if (m_memfd < 0)
   {
-    CLog::LogF(LOGERROR, "memfd_create failed: {}", strerror(errno));
+    CLog::Log(LOGERROR, "CUDMABufferObject::{} - memfd_create failed: {}", __FUNCTION__,
+              strerror(errno));
     return false;
   }
 
   if (ftruncate(m_memfd, m_size) < 0)
   {
-    CLog::LogF(LOGERROR, "ftruncate failed: {}", strerror(errno));
+    CLog::Log(LOGERROR, "CUDMABufferObject::{} - ftruncate failed: {}", __FUNCTION__,
+              strerror(errno));
     return false;
   }
 
   if (fcntl(m_memfd, F_ADD_SEALS, F_SEAL_SHRINK) < 0)
   {
-    CLog::LogF(LOGERROR, "fcntl failed: {}", strerror(errno));
+    CLog::Log(LOGERROR, "CUDMABufferObject::{} - fcntl failed: {}", __FUNCTION__, strerror(errno));
     close(m_memfd);
     return false;
   }
@@ -108,7 +118,8 @@ bool CUDMABufferObject::CreateBufferObject(uint32_t format, uint32_t width, uint
     m_udmafd = open("/dev/udmabuf", O_RDWR);
     if (m_udmafd < 0)
     {
-      CLog::LogF(LOGERROR, "unable to open /dev/udmabuf: {}", strerror(errno));
+      CLog::Log(LOGERROR, "CUDMABufferObject::{} - unable to open /dev/udmabuf: {}", __FUNCTION__,
+                strerror(errno));
       close(m_memfd);
       return false;
     }
@@ -123,7 +134,8 @@ bool CUDMABufferObject::CreateBufferObject(uint32_t format, uint32_t width, uint
   m_fd = ioctl(m_udmafd, UDMABUF_CREATE, &create);
   if (m_fd < 0)
   {
-    CLog::LogF(LOGERROR, "ioctl UDMABUF_CREATE failed: {}", strerror(errno));
+    CLog::Log(LOGERROR, "CUDMABufferObject::{} - ioctl UDMABUF_CREATE failed: {}", __FUNCTION__,
+              strerror(errno));
     close(m_memfd);
     return false;
   }
@@ -138,11 +150,13 @@ void CUDMABufferObject::DestroyBufferObject()
 
   int ret = close(m_fd);
   if (ret < 0)
-    CLog::LogF(LOGERROR, "close fd failed, errno={}", strerror(errno));
+    CLog::Log(LOGERROR, "CUDMABufferObject::{} - close fd failed, errno={}", __FUNCTION__,
+              strerror(errno));
 
   ret = close(m_memfd);
   if (ret < 0)
-    CLog::LogF(LOGERROR, "close memfd failed, errno={}", strerror(errno));
+    CLog::Log(LOGERROR, "CUDMABufferObject::{} - close memfd failed, errno={}", __FUNCTION__,
+              strerror(errno));
 
   m_memfd = -1;
   m_fd = -1;
@@ -157,14 +171,16 @@ uint8_t* CUDMABufferObject::GetMemory()
 
   if (m_map)
   {
-    CLog::LogF(LOGDEBUG, "already mapped fd={} map={}", m_fd, fmt::ptr(m_map));
+    CLog::Log(LOGDEBUG, "CUDMABufferObject::{} - already mapped fd={} map={}", __FUNCTION__, m_fd,
+              fmt::ptr(m_map));
     return m_map;
   }
 
   m_map = static_cast<uint8_t*>(mmap(nullptr, m_size, PROT_WRITE, MAP_SHARED, m_memfd, 0));
   if (m_map == MAP_FAILED)
   {
-    CLog::LogF(LOGERROR, "mmap failed, errno={}", strerror(errno));
+    CLog::Log(LOGERROR, "CUDMABufferObject::{} - mmap failed, errno={}", __FUNCTION__,
+              strerror(errno));
     return nullptr;
   }
 
@@ -178,7 +194,8 @@ void CUDMABufferObject::ReleaseMemory()
 
   int ret = munmap(m_map, m_size);
   if (ret < 0)
-    CLog::LogF(LOGERROR, "munmap failed, errno={}", strerror(errno));
+    CLog::Log(LOGERROR, "CUDMABufferObject::{} - munmap failed, errno={}", __FUNCTION__,
+              strerror(errno));
 
   m_map = nullptr;
 }

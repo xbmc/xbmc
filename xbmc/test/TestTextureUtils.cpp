@@ -47,6 +47,5 @@ TEST_P(TestTextureUtils, GetWrappedImageURL)
   EXPECT_EQ(expected, out);
 }
 
-INSTANTIATE_TEST_CASE_P(SampleFiles, TestTextureUtils,
-                        ValuesIn(test_files));
+INSTANTIATE_TEST_SUITE_P(SampleFiles, TestTextureUtils, ValuesIn(test_files));
 }

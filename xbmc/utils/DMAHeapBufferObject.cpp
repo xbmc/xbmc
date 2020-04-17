@@ -14,7 +14,7 @@
 
 #include <array>
 
-#include <drm/drm_fourcc.h>
+#include <drm_fourcc.h>
 #include <linux/dma-heap.h>
 #include <sys/ioctl.h>
 #include <sys/mman.h>
@@ -44,7 +44,8 @@ void CDMAHeapBufferObject::Register()
     int fd = open(path, O_RDWR);
     if (fd < 0)
     {
-      CLog::LogF(LOGERROR, "unable to open {}: {}", path, strerror(errno));
+      CLog::Log(LOGDEBUG, "CDMAHeapBufferObject::{} unable to open {}: {}", __FUNCTION__, path,
+                strerror(errno));
       continue;
     }
 
@@ -56,7 +57,7 @@ void CDMAHeapBufferObject::Register()
   if (!DMA_HEAP_PATH)
     return;
 
-  CLog::LogF(LOGDEBUG, "using {}: for dma-heap", DMA_HEAP_PATH);
+  CLog::Log(LOGDEBUG, "CDMAHeapBufferObject::{} - using {}", __FUNCTION__, DMA_HEAP_PATH);
 
   CBufferObjectFactory::RegisterBufferObject(CDMAHeapBufferObject::Create);
 }
@@ -87,11 +88,17 @@ bool CDMAHeapBufferObject::CreateBufferObject(uint32_t format, uint32_t width, u
       bpp = 2;
       break;
     default:
-      throw std::system_error(errno, std::generic_category(), "pixel format not implemented");
+      throw std::runtime_error("CDMAHeapBufferObject: pixel format not implemented");
   }
 
-  m_size = width * height * bpp;
   m_stride = width * bpp;
+
+  return CreateBufferObject(width * height * bpp);
+}
+
+bool CDMAHeapBufferObject::CreateBufferObject(uint64_t size)
+{
+  m_size = size;
 
   if (m_dmaheapfd < 0)
   {
@@ -109,8 +116,8 @@ bool CDMAHeapBufferObject::CreateBufferObject(uint32_t format, uint32_t width, u
   int ret = ioctl(m_dmaheapfd, DMA_HEAP_IOCTL_ALLOC, &allocData);
   if (ret < 0)
   {
-    CLog::LogF(LOGERROR, "ioctl DMA_HEAP_IOCTL_ALLOC failed, ret={} errno={}", ret,
-               strerror(errno));
+    CLog::Log(LOGERROR, "CDMAHeapBufferObject::{} - ioctl DMA_HEAP_IOCTL_ALLOC failed, errno={}",
+              __FUNCTION__, strerror(errno));
     return false;
   }
 
@@ -119,7 +126,8 @@ bool CDMAHeapBufferObject::CreateBufferObject(uint32_t format, uint32_t width, u
 
   if (m_fd < 0 || m_size <= 0)
   {
-    CLog::LogF(LOGERROR, "invalid allocation data: fd={} len={}", m_fd, m_size);
+    CLog::Log(LOGERROR, "CDMAHeapBufferObject::{} - invalid allocation data: fd={} len={}",
+              __FUNCTION__, m_fd, m_size);
     return false;
   }
 
@@ -133,7 +141,8 @@ void CDMAHeapBufferObject::DestroyBufferObject()
 
   int ret = close(m_fd);
   if (ret < 0)
-    CLog::LogF(LOGERROR, "close failed, errno={}", __FUNCTION__, strerror(errno));
+    CLog::Log(LOGERROR, "CDMAHeapBufferObject::{} - close failed, errno={}", __FUNCTION__,
+              strerror(errno));
 
   m_fd = -1;
   m_stride = 0;
@@ -147,14 +156,16 @@ uint8_t* CDMAHeapBufferObject::GetMemory()
 
   if (m_map)
   {
-    CLog::LogF(LOGDEBUG, "already mapped fd={} map={}", m_fd, fmt::ptr(m_map));
+    CLog::Log(LOGDEBUG, "CDMAHeapBufferObject::{} - already mapped fd={} map={}", __FUNCTION__,
+              m_fd, fmt::ptr(m_map));
     return m_map;
   }
 
   m_map = static_cast<uint8_t*>(mmap(nullptr, m_size, PROT_WRITE, MAP_SHARED, m_fd, 0));
   if (m_map == MAP_FAILED)
   {
-    CLog::LogF(LOGERROR, "mmap failed, errno={}", strerror(errno));
+    CLog::Log(LOGERROR, "CDMAHeapBufferObject::{} - mmap failed, errno={}", __FUNCTION__,
+              strerror(errno));
     return nullptr;
   }
 
@@ -168,7 +179,8 @@ void CDMAHeapBufferObject::ReleaseMemory()
 
   int ret = munmap(m_map, m_size);
   if (ret < 0)
-    CLog::LogF(LOGERROR, "munmap failed, errno={}", strerror(errno));
+    CLog::Log(LOGERROR, "CDMAHeapBufferObject::{} - munmap failed, errno={}", __FUNCTION__,
+              strerror(errno));
 
   m_map = nullptr;
 }

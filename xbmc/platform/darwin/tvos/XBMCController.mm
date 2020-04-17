@@ -421,7 +421,8 @@ int KODI_Run(bool renderGUI)
   CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_logLevel = LOG_LEVEL_NORMAL;
   CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_logLevelHint = LOG_LEVEL_NORMAL;
 #endif
-  CLog::SetLogLevel(CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_logLevel);
+  CServiceBroker::GetLogging().SetLogLevel(
+      CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_logLevel);
 
   // not a failure if returns false, just means someone
   // did the init before us.

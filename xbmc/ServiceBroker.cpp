@@ -11,9 +11,21 @@
 #include "Application.h"
 #include "profiles/ProfileManager.h"
 #include "settings/SettingsComponent.h"
+#include "utils/log.h"
 #include "windowing/WinSystem.h"
 
 using namespace KODI;
+
+std::unique_ptr<CLog> CServiceBroker::m_logging;
+CLog& CServiceBroker::GetLogging()
+{
+  return *m_logging;
+}
+
+void CServiceBroker::CreateLogging()
+{
+  m_logging = std::make_unique<CLog>();
+}
 
 // announcement
 std::shared_ptr<ANNOUNCEMENT::CAnnouncementManager> CServiceBroker::m_pAnnouncementManager;

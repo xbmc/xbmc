@@ -32,7 +32,6 @@ enum EPLANETYPE
 {
   KODI_VIDEO_PLANE,
   KODI_GUI_PLANE,
-  KODI_GUI_10_PLANE
 };
 
 struct drm_object
@@ -49,25 +48,11 @@ struct plane : drm_object
   bool useFallbackFormat{false};
   std::map<uint32_t, std::vector<uint64_t>> modifiers_map;
 
-  void SetFormat(uint32_t newFormat)
-  {
-    if (useFallbackFormat)
-      fallbackFormat = newFormat;
-    else
-      format = newFormat;
-  }
-
-  uint32_t GetFormat()
-  {
-    if (useFallbackFormat)
-      return fallbackFormat;
-
-    return format;
-  }
+  void SetFormat(uint32_t newFormat) { format = newFormat; }
+  uint32_t GetFormat() { return format; }
 
 private:
-  uint32_t format{DRM_FORMAT_XRGB2101010};
-  uint32_t fallbackFormat{DRM_FORMAT_XRGB8888};
+  uint32_t format{DRM_FORMAT_XRGB8888};
 };
 
 struct connector : drm_object

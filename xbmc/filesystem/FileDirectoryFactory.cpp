@@ -11,7 +11,7 @@
 #if defined(HAS_ISO9660PP)
 #include "ISO9660Directory.h"
 #endif
-#if defined(HAS_UDF)
+#if defined(HAS_UDFREAD)
 #include "UDFDirectory.h"
 #endif
 #include "RSSDirectory.h"
@@ -130,7 +130,7 @@ IFileDirectory* CFileDirectoryFactory::Create(const CURL& url, CFileItem* pItem,
     delete iso;
 #endif
 
-#if defined(HAS_UDF)
+#if defined(HAS_UDFREAD)
     return new CUDFDirectory();
 #endif
 

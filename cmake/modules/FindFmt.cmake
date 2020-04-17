@@ -59,12 +59,7 @@ if(ENABLE_INTERNAL_FMT)
 
 else()
 
-if(CORE_SYSTEM_NAME STREQUAL windows OR CORE_SYSTEM_NAME STREQUAL windowsstore)
-  # TODO: fix windows fmt package to include fmt-config.cmake and fmt-config-version.cmake
-  set(FMT_VERSION 3.0.1)
-else()
-  find_package(FMT 3.0.1 CONFIG REQUIRED QUIET)
-endif()
+find_package(FMT 6.1.2 CONFIG REQUIRED QUIET)
 
 if(PKG_CONFIG_FOUND)
   pkg_check_modules(PC_FMT libfmt QUIET)

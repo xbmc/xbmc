@@ -10,11 +10,11 @@ DEPENDS = \
 	openssl gmp nettle gnutls curl nghttp2 \
 	libjpeg-turbo libpng fribidi libass \
 	libxml2 rapidjson libmicrohttpd mariadb libffi \
-	python3 libshairplay libfmt \
+	python3 libshairplay libfmt libspdlog \
 	libplist libcec libbluray tinyxml \
 	taglib libusb libnfs meson-cross-file \
 	pythonmodule-pil pythonmodule-pycryptodome pythonmodule-setuptools \
-	libxslt ffmpeg crossguid \
+	libxslt ffmpeg crossguid libudfread \
 	libdvdread libdvdnav libdvdcss p8-platform flatbuffers dav1d
 
 ifeq ($(ENABLE_GPLV3),yes)
@@ -117,6 +117,7 @@ libevdev: libudev
 samba-gplv3: gnutls
 taglib: $(ZLIB)
 dav1d: meson-cross-file
+libspdlog: libfmt
 
 .installed-$(PLATFORM): $(DEPENDS)
 	touch $@

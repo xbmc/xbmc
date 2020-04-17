@@ -27,13 +27,13 @@ TEST_F(TestSysfsPath, SysfsPathTestInt)
 
   CSysfsPath path("/tmp/kodi-test");
   ASSERT_TRUE(path.Exists());
-  ASSERT_TRUE(path.Get<int>() == 1234);
-  ASSERT_TRUE(path.Get<float>() == 1234);
-  ASSERT_TRUE(path.Get<double>() == 1234);
-  ASSERT_TRUE(path.Get<uint64_t>() == 1234);
-  ASSERT_TRUE(path.Get<uint16_t>() == 1234);
-  ASSERT_TRUE(path.Get<unsigned int>() == 1234);
-  ASSERT_TRUE(path.Get<unsigned long int>() == 1234);
+  EXPECT_EQ(path.Get<int>(), 1234);
+  EXPECT_EQ(path.Get<float>(), 1234);
+  EXPECT_EQ(path.Get<double>(), 1234);
+  EXPECT_EQ(path.Get<uint64_t>(), 1234);
+  EXPECT_EQ(path.Get<uint16_t>(), 1234);
+  EXPECT_EQ(path.Get<unsigned int>(), 1234);
+  EXPECT_EQ(path.Get<unsigned long int>(), 1234);
 }
 
 TEST_F(TestSysfsPath, SysfsPathTestString)
@@ -44,7 +44,7 @@ TEST_F(TestSysfsPath, SysfsPathTestString)
 
   CSysfsPath path("/tmp/kodi-test");
   ASSERT_TRUE(path.Exists());
-  ASSERT_TRUE(path.Get<std::string>() == "test");
+  EXPECT_EQ(path.Get<std::string>(), "test");
 }
 
 TEST_F(TestSysfsPath, SysfsPathTestLongString)
@@ -55,7 +55,7 @@ TEST_F(TestSysfsPath, SysfsPathTestLongString)
 
   CSysfsPath path("/tmp/kodi-test");
   ASSERT_TRUE(path.Exists());
-  ASSERT_TRUE(path.Get<std::string>() == "test with spaces");
+  EXPECT_EQ(path.Get<std::string>(), "test with spaces");
 }
 
 TEST_F(TestSysfsPath, SysfsPathTestPathDoesNotExist)

@@ -14,9 +14,10 @@
 #include "FileItem.h"
 #include "URL.h"
 #include "Util.h"
+#include "filesystem/UDFBlockInput.h"
 #include "utils/URIUtils.h"
 
-#include <cdio/udf.h>
+#include <udfread/udfread.h>
 
 using namespace XFILE;
 
@@ -36,36 +37,35 @@ bool CUDFDirectory::GetDirectory(const CURL& url, CFileItemList& items)
   URIUtils::AddSlashAtEnd(strRoot);
   URIUtils::AddSlashAtEnd(strSub);
 
-  udf_t* udf = udf_open(url2.GetHostName().c_str());
+  auto udf = udfread_init();
 
   if (!udf)
     return false;
 
-  udf_dirent_t* root = udf_get_root(udf, true, 0);
+  CUDFBlockInput udfbi;
 
-  if (!root)
+  auto bi = udfbi.GetBlockInput(url2.GetHostName());
+
+  if (udfread_open_input(udf, bi) < 0)
   {
-    udf_close(udf);
+    udfread_close(udf);
     return false;
   }
 
-  udf_dirent_t* path = udf_fopen(root, strSub.c_str());
-
+  auto path = udfread_opendir(udf, strSub.c_str());
   if (!path)
   {
-    udf_dirent_free(root);
-    udf_close(udf);
+    udfread_close(udf);
     return false;
   }
 
-  while (udf_readdir(path))
-  {
-    if (path->b_parent)
-      continue;
+  struct udfread_dirent dirent;
 
-    if (udf_is_dir(path))
+  while (udfread_readdir(path, &dirent))
+  {
+    if (dirent.d_type == UDF_DT_DIR)
     {
-      std::string filename = udf_get_filename(path);
+      std::string filename = dirent.d_name;
       if (filename != "." && filename != "..")
       {
         CFileItemPtr pItem(new CFileItem(filename));
@@ -79,18 +79,24 @@ bool CUDFDirectory::GetDirectory(const CURL& url, CFileItemList& items)
     }
     else
     {
-      std::string filename = udf_get_filename(path);
+      std::string filename = dirent.d_name;
+      std::string filenameWithPath{strSub + filename};
+      auto file = udfread_file_open(udf, filenameWithPath.c_str());
+      if (!file)
+        continue;
+
       CFileItemPtr pItem(new CFileItem(filename));
       pItem->SetPath(strRoot + filename);
       pItem->m_bIsFolder = false;
-      pItem->m_dwSize = udf_get_file_length(path);
-
+      pItem->m_dwSize = udfread_file_size(file);
       items.Add(pItem);
+
+      udfread_file_close(file);
     }
   }
 
-  udf_dirent_free(root);
-  udf_close(udf);
+  udfread_closedir(path);
+  udfread_close(udf);
 
   return true;
 }
