@@ -29,8 +29,10 @@ endif()
 if(ENABLE_INTERNAL_GTEST)
   include(ExternalProject)
 
-  set(GTEST_VERSION 1.10.0)
-  set(GTEST_HASH SHA256=9dc9157a9a1551ec7a7e43daea9a694a0bb5fb8bec81235d8a1e6ef64c716dcb)
+  file(STRINGS ${CMAKE_SOURCE_DIR}/tools/depends/target/googletest/Makefile VER)
+  string(REGEX MATCH "VERSION=[^ ]*" GTEST_VERSION "${VER}")
+  list(GET GTEST_VERSION 0 GTEST_VERSION)
+  string(SUBSTRING "${GTEST_VERSION}" 8 -1 GTEST_VERSION)
 
   # allow user to override the download URL with a local tarball
   # needed for offline build envs
@@ -49,8 +51,6 @@ if(ENABLE_INTERNAL_GTEST)
 
   externalproject_add(gtest
                       URL ${GTEST_URL}
-                      URL_HASH ${GTEST_HASH}
-                      DOWNLOAD_NAME gtest-${GTEST_VERSION}.tar.gz
                       DOWNLOAD_DIR ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/download
                       PREFIX ${CORE_BUILD_DIR}/gtest
                       INSTALL_DIR ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}
