@@ -261,7 +261,7 @@ bool CGUIEditControl::OnAction(const CAction &action)
     {
       m_edit.clear();
       std::wstring str;
-      g_charsetConverter.utf8ToW(action.GetText(), str);
+      g_charsetConverter.utf8ToW(action.GetText(), str, false);
       m_text2.insert(m_cursorPos, str);
       m_cursorPos += str.size();
       UpdateText();
@@ -587,7 +587,7 @@ void CGUIEditControl::SetLabel2(const std::string &text)
 {
   m_edit.clear();
   std::wstring newText;
-  g_charsetConverter.utf8ToW(text, newText);
+  g_charsetConverter.utf8ToW(text, newText, false);
   if (newText != m_text2)
   {
     m_isMD5 = (m_inputType == INPUT_TYPE_PASSWORD_MD5 || m_inputType == INPUT_TYPE_PASSWORD_NUMBER_VERIFY_NEW);
