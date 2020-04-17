@@ -3706,25 +3706,22 @@ const infomap retroplayer[] =
 /// \subsection modules__infolabels_boolean_conditions_Container Container
 /// \table_start
 ///   \table_h3{ Labels, Type, Description }
-///   \table_row3{   <b>`Container(id).HasFiles`</b>,
+///   \table_row3{   <b>`Container.HasFiles`</b>,
 ///                  \anchor Container_HasFiles
 ///                  _boolean_,
-///     @return **True** if the container contains files (or current container if
-///     id is omitted).
+///     @return **True** if the container contains files.
 ///     <p>
 ///   }
-///   \table_row3{   <b>`Container(id).HasFolders`</b>,
+///   \table_row3{   <b>`Container.HasFolders`</b>,
 ///                  \anchor Container_HasFolders
 ///                  _boolean_,
-///     @return **True** if the container contains folders (or current container if
-///     id is omitted).
+///     @return **True** if the container contains folders.
 ///     <p>
 ///   }
-///   \table_row3{   <b>`Container(id).IsStacked`</b>,
+///   \table_row3{   <b>`Container.IsStacked`</b>,
 ///                  \anchor Container_IsStacked
 ///                  _boolean_,
-///     @return **True** if the container is currently in stacked mode (or current
-///     container if id is omitted).
+///     @return **True** if the container is currently in stacked mode.
 ///     <p>
 ///   }
 ///   \table_row3{   <b>`Container.FolderPath`</b>,
@@ -3767,13 +3764,13 @@ const infomap retroplayer[] =
 ///     @skinning_v17 **[New Infolabel]** \link Container_ViewCount `Container.ViewCount`\endlink
 ///     <p>
 ///   }
-///   \table_row3{   <b>`Container(id).Totaltime`</b>,
+///   \table_row3{   <b>`Container.Totaltime`</b>,
 ///                  \anchor Container_Totaltime
 ///                  _string_,
 ///     @return The total time of all items in the current container.
 ///     <p>
 ///   }
-///   \table_row3{   <b>`Container(id).TotalWatched`</b>,
+///   \table_row3{   <b>`Container.TotalWatched`</b>,
 ///                  \anchor Container_TotalWatched
 ///                  _string_,
 ///     @return The number of watched items in the container.
@@ -3782,7 +3779,7 @@ const infomap retroplayer[] =
 ///     @skinning_v16 **[New Infolabel]** \link Container_TotalWatched `Container(id).TotalWatched`\endlink
 ///     <p>
 ///   }
-///   \table_row3{   <b>`Container(id).TotalUnWatched`</b>,
+///   \table_row3{   <b>`Container.TotalUnWatched`</b>,
 ///                  \anchor Container_TotalUnWatched
 ///                  _string_,
 ///     @return The number of unwatched items in the container.
@@ -3798,18 +3795,30 @@ const infomap retroplayer[] =
 ///     to it.
 ///     <p>
 ///   }
-///   \table_row3{   <b>`Container.SortMethod`</b>,
-///                  \anchor Container_SortMethod
-///                  _boolean_,
-///     @return **True** the current sort method (name\, year\, rating\, etc).
-///     <p>
-///   }
 ///   \table_row3{   <b>`Container.SortOrder`</b>,
 ///                  \anchor Container_SortOrder
 ///                  _string_,
 ///     @return The current sort order (Ascending/Descending).
 ///     <p><hr>
 ///     @skinning_v16 **[New Infolabel]** \link Container_SortOrder `Container.SortOrder`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`Container.CanFilter`</b>,
+///                  \anchor Container_CanFilter
+///                  _boolean_,
+///     @return **True** when the current container can be filtered.
+///     <p>
+///   }
+///   \table_row3{   <b>`Container.CanFilterAdvanced`</b>,
+///                  \anchor Container_CanFilterAdvanced
+///                  _boolean_,
+///     @return **True** when advanced filtering can be applied to the current container.
+///     <p>
+///   }
+///   \table_row3{   <b>`Container.Filtered`</b>,
+///                  \anchor Container_Filtered
+///                  _boolean_,
+///     @return **True** when a mediafilter is applied to the current container.
 ///     <p>
 ///   }
 ///   \table_row3{   <b>`Container.ShowPlot`</b>,
@@ -3841,8 +3850,10 @@ const infomap mediacontainer[] = {{ "hasfiles",         CONTAINER_HASFILES },
                                   { "totalwatched",     CONTAINER_TOTALWATCHED },
                                   { "totalunwatched",   CONTAINER_TOTALUNWATCHED },
                                   { "hasthumb",         CONTAINER_HAS_THUMB },
-                                  { "sortmethod",       CONTAINER_SORT_METHOD },
                                   { "sortorder",        CONTAINER_SORT_ORDER },
+                                  { "canfilter",        CONTAINER_CAN_FILTER },
+                                  { "canfilteradvanced",CONTAINER_CAN_FILTERADVANCED },
+                                  { "filtered",         CONTAINER_FILTERED },
                                   { "showplot",         CONTAINER_SHOWPLOT },
                                   { "showtitle",        CONTAINER_SHOWTITLE }};
 
@@ -3919,6 +3930,15 @@ const infomap mediacontainer[] = {{ "hasfiles",         CONTAINER_HASFILES },
 ///     @note If no id is specified it grabs the current container.
 ///     <p>
 ///   }
+///   \table_row3{   <b>`Container(id).CurrentItem`</b>,
+///                  \anchor Container_CurrentItem
+///                  _integer_,
+///     @return The current item in the container or grouplist with given id.
+///     @note If no id is specified it grabs the current container.
+///     <p><hr>
+///     @skinning_v15 **[New Infolabel]** \link Container_CurrentItem `Container(id).CurrentItem`\endlink
+///     <p>
+///   }
 ///   \table_row3{   <b>`Container(id).Scrolling`</b>,
 ///                  \anchor Container_Scrolling
 ///                  _boolean_,
@@ -3936,10 +3956,11 @@ const infomap mediacontainer[] = {{ "hasfiles",         CONTAINER_HASFILES },
 ///     @return **True** if the container or textbox with id (id) has a next page.
 ///     <p>
 ///   }
-///   \table_row3{   <b>`Container.HasParent`</b>,
+///   \table_row3{   <b>`Container(id).HasParent`</b>,
 ///                  \anchor Container_HasParent
 ///                  _boolean_,
-///     @return **True** when the container contains a parent ('..') item.
+///     @return **True** when the container with given id contains a parent ('..') item.
+///     @note If no id is specified it grabs the current container.
 ///     <p><hr>
 ///     @skinning_v16 **[New Boolean Condition]** \link Container_HasParent `Container.HasParent`\endlink
 ///     <p>
@@ -3948,24 +3969,6 @@ const infomap mediacontainer[] = {{ "hasfiles",         CONTAINER_HASFILES },
 ///                  \anchor Container_HasPrevious
 ///                  _boolean_,
 ///     @return **True** if the container or textbox with id (id) has a previous page.
-///     <p>
-///   }
-///   \table_row3{   <b>`Container.CanFilter`</b>,
-///                  \anchor Container_CanFilter
-///                  _boolean_,
-///     @return **True** when the current container can be filtered.
-///     <p>
-///   }
-///   \table_row3{   <b>`Container.CanFilterAdvanced`</b>,
-///                  \anchor Container_CanFilterAdvanced
-///                  _boolean_,
-///     @return **True** when advanced filtering can be applied to the current container.
-///     <p>
-///   }
-///   \table_row3{   <b>`Container.Filtered`</b>,
-///                  \anchor Container_Filtered
-///                  _boolean_,
-///     @return **True** when a mediafilter is applied to the current container.
 ///     <p>
 ///   }
 ///   \table_row3{   <b>`Container(id).IsUpdating`</b>,
@@ -3982,13 +3985,11 @@ const infomap container_bools[] ={{ "onnext",           CONTAINER_MOVE_NEXT },
                                   { "numnonfolderitems", CONTAINER_NUM_NONFOLDER_ITEMS },
                                   { "numallitems",      CONTAINER_NUM_ALL_ITEMS },
                                   { "currentpage",      CONTAINER_CURRENT_PAGE },
+                                  { "currentitem",      CONTAINER_CURRENT_ITEM },
                                   { "scrolling",        CONTAINER_SCROLLING },
                                   { "hasnext",          CONTAINER_HAS_NEXT },
                                   { "hasparent",        CONTAINER_HAS_PARENT_ITEM },
                                   { "hasprevious",      CONTAINER_HAS_PREVIOUS },
-                                  { "canfilter",        CONTAINER_CAN_FILTER },
-                                  { "canfilteradvanced",CONTAINER_CAN_FILTERADVANCED },
-                                  { "filtered",         CONTAINER_FILTERED },
                                   { "isupdating",       CONTAINER_ISUPDATING }};
 
 /// \page modules__infolabels_boolean_conditions
@@ -4000,12 +4001,24 @@ const infomap container_bools[] ={{ "onnext",           CONTAINER_MOVE_NEXT },
 ///     @skinning_v16 **[New Infolabel]** \link Container_Row `Container(id).Row`\endlink
 ///     <p>
 ///   }
+///   \table_row3{   <b>`Container(id).Row(parameter)`</b>,
+///                  \anchor Container_Row_parameter
+///                  _boolean_,
+///     @return **True** if the row number of the focused position matches the specified parameter.
+///     <p>
+///   }
 ///   \table_row3{   <b>`Container(id).Column`</b>,
 ///                  \anchor Container_Column
 ///                  _integer_,
 ///     @return The column number of the focused position in a panel container.
 ///     <p><hr>
 ///     @skinning_v16 **[New Infolabel]** \link Container_Column `Container(id).Column`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`Container(id).Column(parameter)`</b>,
+///                  \anchor Container_Column_parameter
+///                  _boolean_,
+///     @return **True** if the column number of the focused position matches the specified parameter.
 ///     <p>
 ///   }
 ///   \table_row3{   <b>`Container(id).Position`</b>,
@@ -4018,19 +4031,16 @@ const infomap container_bools[] ={{ "onnext",           CONTAINER_MOVE_NEXT },
 ///     now also returns the position for items inside a grouplist.
 ///     <p>
 ///   }
-///   \table_row3{   <b>`Container(id).CurrentItem`</b>,
-///                  \anchor Container_CurrentItem
-///                  _integer_,
-///     @return The current item in the container or grouplist with given id. 
-///     @note If no id is specified it grabs the current container.
-///     <p><hr>
-///     @skinning_v15 **[New Infolabel]** \link Container_CurrentItem `Container(id).CurrentItem`\endlink
+///   \table_row3{   <b>`Container(id).Position(parameter)`</b>,
+///                  \anchor Container_Position_parameter
+///                  _boolean_,
+///     @return **True** if the container with id (or current container if id is omitted) is focused on the specified position.
 ///     <p>
 ///   }
-///   \table_row3{   <b>`Container(id).SubItem`</b>,
+///   \table_row3{   <b>`Container(id).SubItem(item_number)`</b>,
 ///                  \anchor Container_SubItem
-///                  _integer_,
-///     @return Sub-item in the container or grouplist with given id.
+///                  _boolean_,
+///     @return **True** if the container with id (or current container if id is omitted) is focused on the specified subitem.
 ///     @note If no id is specified it grabs the current container.
 ///     <p>
 ///   }
@@ -4042,12 +4052,25 @@ const infomap container_bools[] ={{ "onnext",           CONTAINER_MOVE_NEXT },
 ///     item_number.
 ///     <p>
 ///   }
+///   \table_row3{   <b>`Container.SortMethod`</b>,
+///                  \anchor Container_SortMethod
+///                  _string_,
+///     @return The current sort method (returns a localized value).
+///     <p>
+///   }
+///   \table_row3{   <b>`Container.SortMethod(sortid)`</b>,
+///                  \anchor Container_SortMethod_sortid
+///                  _boolean_,
+///     @return **True** if the current sort method matches the specified SortID (see \ref List_of_sort_methods "SortUtils").
+///     <p>
+///   }
 const infomap container_ints[] = {{ "row",              CONTAINER_ROW },
                                   { "column",           CONTAINER_COLUMN },
                                   { "position",         CONTAINER_POSITION },
-                                  { "currentitem",      CONTAINER_CURRENT_ITEM },
                                   { "subitem",          CONTAINER_SUBITEM },
-                                  { "hasfocus",         CONTAINER_HAS_FOCUS }};
+                                  { "hasfocus",         CONTAINER_HAS_FOCUS },
+                                  { "sortmethod",       CONTAINER_SORT_METHOD },
+};
 
 /// \page modules__infolabels_boolean_conditions
 ///   \table_row3{   <b>`Container.Property(addoncategory)`</b>,
