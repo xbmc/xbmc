@@ -229,7 +229,9 @@ if(NOT FFMPEG_FOUND)
     message(STATUS "FFMPEG_URL: ${FFMPEG_URL}")
   endif()
 
-  find_package(Dav1d)
+  if (NOT DAV1D_FOUND)
+    message(STATUS "dav1d not found, internal ffmpeg build will be missing AV1 support!")
+  endif()
 
   set(FFMPEG_OPTIONS -DENABLE_CCACHE=${ENABLE_CCACHE}
                      -DCCACHE_PROGRAM=${CCACHE_PROGRAM}

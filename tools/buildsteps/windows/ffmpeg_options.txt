@@ -16,3 +16,4 @@
 --enable-runtime-cpudetect
 --enable-static
 --enable-zlib
+--enable-libdav1d

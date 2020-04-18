@@ -13,18 +13,13 @@ if(PKG_CONFIG_FOUND)
   pkg_check_modules(PC_DAV1D dav1d QUIET)
 endif()
 
-find_library(DAV1D_LIBRARY NAMES dav1d
+find_library(DAV1D_LIBRARY NAMES dav1d libdav1d
                            PATHS ${PC_DAV1D_LIBDIR})
 
 find_path(DAV1D_INCLUDE_DIR NAMES dav1d/dav1d.h
                             PATHS ${PC_DAV1D_INCLUDEDIR})
 
 set(DAV1D_VERSION ${PC_DAV1D_VERSION})
-
-if (NOT DAV1D_LIBRARY AND NOT DAV1D_INCLUDE_DIR AND NOT DAV1D_VERSION)
-  set(ENABLE_INTERNAL_DAV1D ON)
-  message(STATUS "libdav1d not found, falling back to internal build")
-endif()
 
 if(ENABLE_INTERNAL_DAV1D)
   include(ExternalProject)
