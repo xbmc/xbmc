@@ -7,7 +7,7 @@ endif
 DEPENDS = \
 	pcre expat gettext sqlite3 libgpg-error \
 	libgcrypt bzip2 libfstrcmp liblzo2 libzip freetype2 fontconfig \
-	openssl gmp nettle gnutls curl nghttp2 \
+	openssl gmp nettle gnutls googletest curl nghttp2 \
 	libjpeg-turbo libpng fribidi libass \
 	libxml2 rapidjson libmicrohttpd mariadb libffi \
 	python3 libshairplay libfmt libspdlog \
