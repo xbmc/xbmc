@@ -832,8 +832,6 @@ void SortUtils::GetFieldsForSQLSort(const MediaType& mediaType,
   {
     if (sortMethod == SortByLabel || sortMethod == SortByTrackNumber)
       fields.emplace_back(FieldTrackNumber);
-    else if (sortMethod == SortByTrackNumber)
-      fields.emplace_back(FieldTrackNumber);
     else if (sortMethod == SortByTitle)
       fields.emplace_back(FieldTitle);
     else if (sortMethod == SortByAlbum)
