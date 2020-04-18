@@ -6,7 +6,7 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include "DllLibCurl.h"
+#include "Curl.h"
 
 #include "threads/SingleLock.h"
 #include "threads/SystemClock.h"
@@ -14,7 +14,9 @@
 
 #include <assert.h>
 
-namespace XCURL
+namespace KODI
+{
+namespace PLATFORM
 {
 CURLcode DllLibCurl::global_init(long flags)
 {
@@ -311,4 +313,5 @@ void DllLibCurlGlobal::easy_duplicate(CURL_HANDLE* easy,
     }
   }
 }
-} // namespace XCURL
+} // namespace PLATFORM
+} // namespace KODI

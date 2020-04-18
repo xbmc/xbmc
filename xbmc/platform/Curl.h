@@ -21,7 +21,9 @@
 #include <curl/curl.h>
 #undef CURL
 
-namespace XCURL
+namespace KODI
+{
+namespace PLATFORM
 {
 
 class DllLibCurl
@@ -95,6 +97,6 @@ public:
   VEC_CURLSESSIONS m_sessions;
   CCriticalSection m_critSection;
 };
-} // namespace XCURL
-
-extern XCURL::DllLibCurlGlobal g_curlInterface;
+} // namespace PLATFORM
+} // namespace KODI
+extern KODI::PLATFORM::DllLibCurlGlobal g_curlInterface;

@@ -30,14 +30,14 @@
 #include "platform/posix/ConvUtils.h"
 #endif
 
-#include "DllLibCurl.h"
+#include "platform/Curl.h"
 #include "ShoutcastFile.h"
 #include "utils/CharsetConverter.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 
 using namespace XFILE;
-using namespace XCURL;
+using namespace KODI::PLATFORM;
 
 #define FITS_INT(a) (((a) <= INT_MAX) && ((a) >= INT_MIN))
 

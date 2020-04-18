@@ -9,14 +9,14 @@
 #include "DAVFile.h"
 
 #include "DAVCommon.h"
-#include "DllLibCurl.h"
+#include "platform/Curl.h"
 #include "URL.h"
 #include "utils/RegExp.h"
 #include "utils/XBMCTinyXML.h"
 #include "utils/log.h"
 
 using namespace XFILE;
-using namespace XCURL;
+using namespace KODI::PLATFORM;
 
 CDAVFile::CDAVFile(void)
   : CCurlFile()
