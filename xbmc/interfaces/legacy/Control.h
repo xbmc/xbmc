@@ -1068,22 +1068,24 @@ namespace XBMCAddon
       /// Sets the type of this edit control.
       ///
       /// @param type              integer - type of the edit control.
-      /// | Param                            | Definition                                  |
-      /// |----------------------------------|:--------------------------------------------|
-      /// | xbmcgui.INPUT_TYPE_TEXT          | (standard keyboard)
-      /// | xbmcgui.INPUT_TYPE_NUMBER        | (format: #)
-      /// | xbmcgui.INPUT_TYPE_DATE          | (format: DD/MM/YYYY)
-      /// | xbmcgui.INPUT_TYPE_TIME          | (format: HH:MM)
-      /// | xbmcgui.INPUT_TYPE_IPADDRESS     | (format: #.#.#.#)
-      /// | xbmcgui.INPUT_TYPE_PASSWORD      | (input is masked)
-      /// | xbmcgui.INPUT_TYPE_PASSWORD_MD5  | (input is masked, return md5 hash of input)
-      /// | xbmcgui.INPUT_TYPE_SECONDS       | (format: SS or MM:SS or HH:MM:SS or MM min)
+      /// | Param                                         | Definition                                  |
+      /// |-----------------------------------------------|:--------------------------------------------|
+      /// | xbmcgui.INPUT_TYPE_TEXT                       | (standard keyboard)
+      /// | xbmcgui.INPUT_TYPE_NUMBER                     | (format: #)
+      /// | xbmcgui.INPUT_TYPE_DATE                       | (format: DD/MM/YYYY)
+      /// | xbmcgui.INPUT_TYPE_TIME                       | (format: HH:MM)
+      /// | xbmcgui.INPUT_TYPE_IPADDRESS                  | (format: #.#.#.#)
+      /// | xbmcgui.INPUT_TYPE_PASSWORD                   | (input is masked)
+      /// | xbmcgui.INPUT_TYPE_PASSWORD_MD5               | (input is masked, return md5 hash of input)
+      /// | xbmcgui.INPUT_TYPE_SECONDS                    | (format: SS or MM:SS or HH:MM:SS or MM min)
+      /// | xbmcgui.INPUT_TYPE_PASSWORD_NUMBER_VERIFY_NEW | (numeric input is masked)
       /// @param heading           string or unicode - heading that will be used for to numeric or
       ///                                              keyboard dialog when the edit control is clicked.
       ///
       ///
       ///-----------------------------------------------------------------------
       /// @python_v18 New function added.
+      /// @python_v19 New option added to mask numeric input.
       ///
       /// **Example:**
       /// ~~~~~~~~~~~~~{.py}

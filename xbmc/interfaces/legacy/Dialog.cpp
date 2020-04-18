@@ -269,7 +269,7 @@ namespace XBMCAddon
       return valuelist;
     }
 
-    String Dialog::numeric(int inputtype, const String& heading, const String& defaultt)
+    String Dialog::numeric(int inputtype, const String& heading, const String& defaultt, bool bHiddenInput)
     {
       DelayedCallGuard dcguard(languageHook);
       std::string value;
@@ -311,10 +311,16 @@ namespace XBMCAddon
           if (!CGUIDialogNumeric::ShowAndGetIPAddress(value, heading))
             return emptyString;
         }
+        else if (inputtype == 4)
+        {
+          value = defaultt;
+          if (!CGUIDialogNumeric::ShowAndVerifyNewPassword(value))
+            return emptyString;
+        }
         else
         {
           value = defaultt;
-          if (!CGUIDialogNumeric::ShowAndGetNumber(value, heading))
+          if (!CGUIDialogNumeric::ShowAndGetNumber(value, heading, 0, bHiddenInput))
             return emptyString;
         }
       }
