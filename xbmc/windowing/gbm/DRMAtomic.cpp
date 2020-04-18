@@ -39,6 +39,19 @@ void CDRMAtomic::DrmAtomicCommit(int fb_id, int flags, bool rendered, bool video
       return;
     }
 
+    if (m_active && m_orig_crtc && m_orig_crtc->crtc->crtc_id != m_crtc->crtc->crtc_id)
+    {
+      // if using a different CRTC than the original, disable original to avoid EINVAL
+      if (!AddProperty(m_orig_crtc, "MODE_ID", 0))
+      {
+        return;
+      }
+      if (!AddProperty(m_orig_crtc, "ACTIVE", 0))
+      {
+        return;
+      }
+    }
+
     if (!AddProperty(m_crtc, "MODE_ID", blob_id))
     {
       return;

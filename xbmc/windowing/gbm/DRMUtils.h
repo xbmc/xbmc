@@ -120,6 +120,7 @@ protected:
   struct connector *m_connector = nullptr;
   struct encoder *m_encoder = nullptr;
   struct crtc *m_crtc = nullptr;
+  struct crtc* m_orig_crtc = nullptr;
   struct plane *m_video_plane = nullptr;
   struct plane *m_gui_plane = nullptr;
   drmModeModeInfo *m_mode = nullptr;
@@ -147,7 +148,6 @@ private:
   std::string m_module;
 
   drmModeResPtr m_drm_resources = nullptr;
-  drmModeCrtcPtr m_orig_crtc = nullptr;
 
   std::vector<crtc*> m_crtcs;
 };
