@@ -24,6 +24,7 @@
 #include "filesystem/File.h"
 #include "utils/log.h"
 
+#import "platform/darwin/NSLogDebugHelpers.h"
 #import "platform/darwin/ios-common/DarwinNSUserDefaults.h"
 #import "platform/darwin/tvos/filesystem/TVOSFile.h"
 #import "platform/darwin/tvos/filesystem/TVOSFileUtils.h"
@@ -56,7 +57,7 @@ void CPreflightHandler::NSUserDefaultsPurge(const char* prefix)
     if ([aKey hasPrefix:@(prefix)])
     {
       [defaults removeObjectForKey:aKey];
-      CLog::Log(LOGDEBUG, "nsuserdefaults: removing {}", aKey.UTF8String);
+      LOG(@"nsuserdefaults: removing %@", aKey);
     }
   }
 }
@@ -79,10 +80,7 @@ void CPreflightHandler::CheckForRemovedCacheFolder()
 
 void CPreflightHandler::MigrateUserdataXMLToNSUserDefaults()
 {
-  CLog::Log(LOGDEBUG,
-            "MigrateUserdataXMLToNSUserDefaults: "
-            "NSUserDefaultsSize({})",
-            NSUserDefaultsSize());
+  LOG(@"MigrateUserdataXMLToNSUserDefaults: NSUserDefaultsSize(%llu)", NSUserDefaultsSize());
 
   auto defaults = [NSUserDefaults standardUserDefaults];
 
@@ -94,7 +92,7 @@ void CPreflightHandler::MigrateUserdataXMLToNSUserDefaults()
     return;
   }
 
-  CLog::Log(LOGDEBUG, "MigrateUserdataXMLToNSUserDefaults: migration starting");
+  LOG(@"MigrateUserdataXMLToNSUserDefaults: migration starting");
 
   NSUserDefaultsPurge("/userdata");
   // now search for all xxx.xml files in the
@@ -122,16 +120,14 @@ void CPreflightHandler::MigrateUserdataXMLToNSUserDefaults()
     if ([file.pathExtension isEqualToString:@"xml"])
     {
       // log what we are doing
-      CLog::Log(LOGDEBUG, "MigrateUserdataXMLToNSUserDefaults: Found -> {}}",
-                [fullPath UTF8String]);
+      LOG(@"MigrateUserdataXMLToNSUserDefaults: Found -> %@", fullPath);
 
       // we cannot use a Cfile for src, it will get mapped into a CTVOSFile
       const CURL srcUrl(fullPath.UTF8String);
       XFILE::CPosixFile srcfile;
       if (!srcfile.Open(srcUrl))
       {
-        CLog::Log(LOGDEBUG, "MigrateUserdataXMLToNSUserDefaults: Failed opening file {}",
-                  srcUrl.Get().c_str());
+        LOG(@"MigrateUserdataXMLToNSUserDefaults: Failed opening file %s", srcUrl.Get().c_str());
         continue;
       }
 
@@ -150,8 +146,8 @@ void CPreflightHandler::MigrateUserdataXMLToNSUserDefaults()
             break;
           else if (iread < 0)
           {
-            CLog::Log(LOGERROR, "MigrateUserdataXMLToNSUserDefaults: Failed read from file {}",
-                      srcUrl.Get().c_str());
+            LOG(@"MigrateUserdataXMLToNSUserDefaults: Failed read from file %s",
+                srcUrl.Get().c_str());
             break;
           }
 
@@ -167,10 +163,8 @@ void CPreflightHandler::MigrateUserdataXMLToNSUserDefaults()
 
           if (iwrite != iread)
           {
-            CLog::Log(LOGERROR,
-                      "MigrateUserdataXMLToNSUserDefaults: "
-                      "Failed write to file {}",
-                      dtsUrl.Get().c_str());
+            LOG(@"MigrateUserdataXMLToNSUserDefaults: Failed write to file %s",
+                dtsUrl.Get().c_str());
             break;
           }
         }
@@ -185,7 +179,6 @@ void CPreflightHandler::MigrateUserdataXMLToNSUserDefaults()
   [defaults setObject:@"1" forKey:migration_key];
   [defaults synchronize];
 
-  CLog::Log(LOGDEBUG, "MigrateUserdataXMLToNSUserDefaults: migration finished");
-  CLog::Log(LOGDEBUG, "MigrateUserdataXMLToNSUserDefaults: NSUserDefaultsSize({})",
-            NSUserDefaultsSize());
+  LOG(@"MigrateUserdataXMLToNSUserDefaults: migration finished");
+  LOG(@"MigrateUserdataXMLToNSUserDefaults: NSUserDefaultsSize(%llu)", NSUserDefaultsSize());
 }
