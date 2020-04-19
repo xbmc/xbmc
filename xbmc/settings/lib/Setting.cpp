@@ -351,7 +351,19 @@ void CSettingList::MergeDetails(const CSetting& other)
   if (other.GetType() != SettingType::List)
     return;
 
-  // TODO(smontellese)
+  const auto& listSetting = static_cast<const CSettingList&>(other);
+  if (m_definition == nullptr && listSetting.m_definition != nullptr)
+    m_definition = listSetting.m_definition;
+  if (m_defaults.empty() && !listSetting.m_defaults.empty())
+    m_defaults = listSetting.m_defaults;
+  if (m_values.empty() && !listSetting.m_values.empty())
+    m_values = listSetting.m_values;
+  if (m_delimiter == "|" && listSetting.m_delimiter != "|")
+    m_delimiter = listSetting.m_delimiter;
+  if (m_minimumItems == 0 && listSetting.m_minimumItems != 0)
+    m_minimumItems = listSetting.m_minimumItems;
+  if (m_maximumItems == -1 && listSetting.m_maximumItems != -1)
+    m_maximumItems = listSetting.m_maximumItems;
 }
 
 bool CSettingList::Deserialize(const TiXmlNode *node, bool update /* = false */)
@@ -657,10 +669,10 @@ void CSettingBool::MergeDetails(const CSetting& other)
     return;
 
   const auto& boolSetting = static_cast<const CSettingBool&>(other);
-  if (m_value == false && boolSetting.m_value == true)
-    m_value = true;
   if (m_default == false && boolSetting.m_default == true)
-    m_default = true;
+    m_default = boolSetting.m_default;
+  if (m_value == m_default && boolSetting.m_value != m_default)
+    m_value = boolSetting.m_value;
 }
 
 bool CSettingBool::Deserialize(const TiXmlNode *node, bool update /* = false */)
@@ -828,7 +840,32 @@ void CSettingInt::MergeDetails(const CSetting& other)
   if (other.GetType() != SettingType::Integer)
     return;
 
-  // TODO(smontellese)
+  const auto& intSetting = static_cast<const CSettingInt&>(other);
+  if (m_default == 0.0 && intSetting.m_default != 0.0)
+    m_default = intSetting.m_default;
+  if (m_value == m_default && intSetting.m_value != m_default)
+    m_value = intSetting.m_value;
+  if (m_min == 0.0 && intSetting.m_min != 0.0)
+    m_min = intSetting.m_min;
+  if (m_step == 1.0 && intSetting.m_step != 1.0)
+    m_step = intSetting.m_step;
+  if (m_max == 0.0 && intSetting.m_max != 0.0)
+    m_max = intSetting.m_max;
+  if (m_translatableOptions.empty() && !intSetting.m_translatableOptions.empty())
+    m_translatableOptions = intSetting.m_translatableOptions;
+  if (m_options.empty() && !intSetting.m_options.empty())
+    m_options = intSetting.m_options;
+  if (m_optionsFillerName.empty() && !intSetting.m_optionsFillerName.empty())
+    m_optionsFillerName = intSetting.m_optionsFillerName;
+  if (m_optionsFiller == nullptr && intSetting.m_optionsFiller != nullptr)
+    m_optionsFiller = intSetting.m_optionsFiller;
+  if (m_optionsFillerData == nullptr && intSetting.m_optionsFillerData != nullptr)
+    m_optionsFillerData = intSetting.m_optionsFillerData;
+  if (m_dynamicOptions.empty() && !intSetting.m_dynamicOptions.empty())
+    m_dynamicOptions = intSetting.m_dynamicOptions;
+  if (m_optionsSort == SettingOptionsSort::NoSorting &&
+      intSetting.m_optionsSort != SettingOptionsSort::NoSorting)
+    m_optionsSort = intSetting.m_optionsSort;
 }
 
 bool CSettingInt::Deserialize(const TiXmlNode *node, bool update /* = false */)
@@ -1138,10 +1175,10 @@ void CSettingNumber::MergeDetails(const CSetting& other)
     return;
 
   const auto& numberSetting = static_cast<const CSettingNumber&>(other);
-  if (m_value == 0.0 && numberSetting.m_value != 0.0)
-    m_value = numberSetting.m_value;
   if (m_default == 0.0 && numberSetting.m_default != 0.0)
     m_default = numberSetting.m_default;
+  if (m_value == m_default && numberSetting.m_value != m_default)
+    m_value = numberSetting.m_value;
   if (m_min == 0.0 && numberSetting.m_min != 0.0)
     m_min = numberSetting.m_min;
   if (m_step == 1.0 && numberSetting.m_step != 1.0)
@@ -1318,7 +1355,28 @@ void CSettingString::MergeDetails(const CSetting& other)
   if (other.GetType() != SettingType::String)
     return;
 
-  // TODO(smontellese)
+  const auto& stringSetting = static_cast<const CSettingString&>(other);
+  if (m_default.empty() && !stringSetting.m_default.empty())
+    m_default = stringSetting.m_default;
+  if (m_value == m_default && stringSetting.m_value != m_default)
+    m_value = stringSetting.m_value;
+  if (m_allowEmpty == false && stringSetting.m_allowEmpty == true)
+    m_allowEmpty = stringSetting.m_allowEmpty;
+  if (m_translatableOptions.empty() && !stringSetting.m_translatableOptions.empty())
+    m_translatableOptions = stringSetting.m_translatableOptions;
+  if (m_options.empty() && !stringSetting.m_options.empty())
+    m_options = stringSetting.m_options;
+  if (m_optionsFillerName.empty() && !stringSetting.m_optionsFillerName.empty())
+    m_optionsFillerName = stringSetting.m_optionsFillerName;
+  if (m_optionsFiller == nullptr && stringSetting.m_optionsFiller != nullptr)
+    m_optionsFiller = stringSetting.m_optionsFiller;
+  if (m_optionsFillerData == nullptr && stringSetting.m_optionsFillerData != nullptr)
+    m_optionsFillerData = stringSetting.m_optionsFillerData;
+  if (m_dynamicOptions.empty() && !stringSetting.m_dynamicOptions.empty())
+    m_dynamicOptions = stringSetting.m_dynamicOptions;
+  if (m_optionsSort == SettingOptionsSort::NoSorting &&
+      stringSetting.m_optionsSort != SettingOptionsSort::NoSorting)
+    m_optionsSort = stringSetting.m_optionsSort;
 }
 
 bool CSettingString::Deserialize(const TiXmlNode *node, bool update /* = false */)
