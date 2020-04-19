@@ -398,12 +398,47 @@ int CZipFile::UnpackFromMemory(std::string& strDest, const std::string& strInput
     if (!isGZ)
     {
       CZipManager::readHeader(strInput.data()+iPos,mZipItem);
-      if( mZipItem.header != ZIP_LOCAL_HEADER )
+      if (mZipItem.header == ZIP_DATA_RECORD_HEADER)
+      {
+        // this header concerns a file we already processed, so we can just skip it
+        iPos += DREC_SIZE;
+        continue;
+      }
+      if (mZipItem.header != ZIP_LOCAL_HEADER)
         return iResult;
       if( (mZipItem.flags & 8) == 8 )
       {
-        CLog::Log(LOGERROR,"FileZip: extended local header, not supported!");
-        return iResult;
+        // if an extended local header (=data record header) is present,
+        // the following fields are 0 in the local header and we need to read
+        // them from the extended local header
+
+        // search for the extended local header
+        unsigned int i = iPos + LHDR_SIZE + mZipItem.flength + mZipItem.elength;
+        while (1)
+        {
+          if (i + DREC_SIZE > strInput.size())
+          {
+            CLog::Log(LOGERROR, "FileZip: extended local header expected, but not present!");
+            return iResult;
+          }
+          if ((strInput[i] == 0x50) && (strInput[i + 1] == 0x4b) &&
+            (strInput[i + 2] == 0x07) && (strInput[i + 3] == 0x08))
+            break; // header found
+          i++;
+        }
+        // ZIP is little endian:
+        mZipItem.crc32 = static_cast<uint8_t>(strInput[i + 4]) |
+                         static_cast<uint8_t>(strInput[i + 5]) << 8 |
+                         static_cast<uint8_t>(strInput[i + 6]) << 16 |
+                         static_cast<uint8_t>(strInput[i + 7]) << 24;
+        mZipItem.csize = static_cast<uint8_t>(strInput[i + 8]) |
+                         static_cast<uint8_t>(strInput[i + 9]) << 8 |
+                         static_cast<uint8_t>(strInput[i + 10]) << 16 |
+                         static_cast<uint8_t>(strInput[i + 11]) << 24;
+        mZipItem.usize = static_cast<uint8_t>(strInput[i + 12]) |
+                         static_cast<uint8_t>(strInput[i + 13]) << 8 |
+                         static_cast<uint8_t>(strInput[i + 14]) << 16 |
+                         static_cast<uint8_t>(strInput[i + 15]) << 24;
       }
     }
     if (!InitDecompress())
