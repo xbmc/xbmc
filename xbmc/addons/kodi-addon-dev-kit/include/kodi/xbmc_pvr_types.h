@@ -8,11 +8,13 @@
 
 #pragma once
 
-#include <string.h>
-#include <stdint.h>
-#include <stdio.h>
-
 #include "AddonBase.h"
+
+#ifdef BUILD_KODI_ADDON
+#include "InputStreamConstants.h"
+#else
+#include "cores/VideoPlayer/Interface/Addon/InputStreamConstants.h"
+#endif
 
 /*! @note Define "USE_DEMUX" at compile time if demuxing in the PVR add-on is used.
  *        Also, "DVDDemuxPacket.h" file must be in the include path of the add-on,
@@ -23,6 +25,10 @@
 #else
 struct DemuxPacket;
 #endif
+
+#include <stdint.h>
+#include <stdio.h>
+#include <string.h>
 
 #define PVR_ADDON_NAME_STRING_LENGTH          1024
 #define PVR_ADDON_URL_STRING_LENGTH           1024
@@ -41,12 +47,52 @@ struct DemuxPacket;
 #define XBMC_INVALID_CODEC_ID   0
 #define XBMC_INVALID_CODEC      { XBMC_CODEC_TYPE_UNKNOWN, XBMC_INVALID_CODEC_ID }
 
-#define PVR_STREAM_PROPERTY_STREAMURL "streamurl" /*!< @brief the URL of the stream that should be played. */
-#define PVR_STREAM_PROPERTY_INPUTSTREAMCLASS  "inputstreamclass" /*!< @brief the name of the inputstream add-on that should be used by Kodi to play the stream denoted by PVR_STREAM_PROPERTY_STREAMURL. Leave blank to use Kodi's built-in playing capabilities or to allow ffmpeg to handle directly set to `inputstream.ffmpeg`. */
-#define PVR_STREAM_PROPERTY_MIMETYPE "mimetype" /*!< @brief the MIME type of the stream that should be played. */
-#define PVR_STREAM_PROPERTY_ISREALTIMESTREAM "isrealtimestream" /*!< @brief "true" to denote that the stream that should be played is a realtime stream. Any other value indicates that this is no realtime stream.*/
-#define PVR_STREAM_PROPERTY_EPGPLAYBACKASLIVE "epgplaybackaslive" /*!< @brief "true" to denote that if the stream is from an EPG tag that it should be played is a live stream. Otherwise if it's a EPG tag it will play as normal video.*/
-#define PVR_STREAM_PROPERTY_VALUE_INPUTSTREAMFFMPEG  "inputstream.ffmpeg" /*!< @brief special value for PVR_STREAM_PROPERTY_INPUTSTREAMCLASS to use ffmpeg to directly play a stream URL. */
+//============================================================================
+/// @brief **PVR related stream property values**
+///
+/// This is used to pass additional data to Kodi on a given PVR stream.
+///
+/// Then transferred to livestream, recordings or EPG Tag stream using the
+/// properties.
+///
+//@{
+
+/// @brief the URL of the stream that should be played.
+///
+#define PVR_STREAM_PROPERTY_STREAMURL "streamurl"
+
+/// @brief To define in stream properties the name of the inputstream add-on
+/// that should be used.
+///
+/// Leave blank to use Kodi's built-in playing capabilities or to allow ffmpeg
+/// to handle directly set to @ref PVR_STREAM_PROPERTY_VALUE_INPUTSTREAMFFMPEG.
+///
+#define PVR_STREAM_PROPERTY_INPUTSTREAM STREAM_PROPERTY_INPUTSTREAM
+
+/// @brief the MIME type of the stream that should be played.
+///
+#define PVR_STREAM_PROPERTY_MIMETYPE "mimetype"
+
+/// @brief "true" to denote that the stream that should be played is a realtime
+/// stream.
+///
+/// Any other value indicates that this is no realtime stream.
+///
+#define PVR_STREAM_PROPERTY_ISREALTIMESTREAM STREAM_PROPERTY_ISREALTIMESTREAM
+
+/// @brief "true" to denote that if the stream is from an EPG tag.
+///
+/// It should be played is a live stream. Otherwise if it's a EPG tag it will
+/// play as normal video.
+///
+#define PVR_STREAM_PROPERTY_EPGPLAYBACKASLIVE "epgplaybackaslive"
+
+/// @brief Special value for @ref PVR_STREAM_PROPERTY_INPUTSTREAM to use
+/// ffmpeg to directly play a stream URL.
+#define PVR_STREAM_PROPERTY_VALUE_INPUTSTREAMFFMPEG STREAM_PROPERTY_VALUE_INPUTSTREAMFFMPEG
+
+//@}
+//-------------------------------------------------------------------------------
 
 /* using the default avformat's MAX_STREAMS value to be safe */
 #define PVR_STREAM_MAX_STREAMS 20
