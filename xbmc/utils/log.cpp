@@ -168,7 +168,7 @@ void CLog::SetLogLevel(int level)
     return;
 
   spdlog::set_level(spdLevel);
-  FormatAndLogInternal(spdlog::level::info, "Log level changed to \"%s\"",
+  FormatAndLogInternal(spdlog::level::info, "Log level changed to \"{}\"",
                        spdlog::level::to_string_view(spdLevel));
 }
 
