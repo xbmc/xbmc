@@ -12,9 +12,7 @@
 #endif
 
 #include <clocale>
-#include <GL/gl.h>
-#include <GL/glu.h>
-#include <GL/glext.h>
+#include "system_gl.h"
 #include "GLContextEGL.h"
 #include "utils/log.h"
 #include <EGL/eglext.h>
