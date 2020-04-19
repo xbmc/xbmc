@@ -5454,6 +5454,7 @@ bool CMusicDatabase::GetArtistsByWhereJSON(const std::set<std::string>& fields, 
   {
     total = -1;
 
+    size_t resultcount = 0;
     Filter extFilter;
     CMusicDbUrl musicUrl;
     SortDescription sorting = sortDescription;
@@ -5472,6 +5473,7 @@ bool CMusicDatabase::GetArtistsByWhereJSON(const std::set<std::string>& fields, 
     // Count number of artists that satisfy selection criteria 
     //(includes xsp limits from filter, but not sort limits)
     total = static_cast<int>(strtol(GetSingleValue("SELECT COUNT(1) FROM artist " + strSQLExtra, m_pDS).c_str(), NULL, 10));
+    resultcount = static_cast<size_t>(total);
 
     // Process albumartistsonly option
     const CUrlOptions::UrlOptions& options = musicUrl.GetOptions();
@@ -5578,6 +5580,9 @@ bool CMusicDatabase::GetArtistsByWhereJSON(const std::set<std::string>& fields, 
       (sortDescription.limitStart > 0 || sortDescription.limitEnd > 0))
     {
       strSQLExtra += DatabaseUtils::BuildLimitClause(sortDescription.limitEnd, sortDescription.limitStart);
+      resultcount = std::min(
+        DatabaseUtils::GetLimitCount(sortDescription.limitEnd, sortDescription.limitStart),
+        resultcount);
     }
 
     // Setup multivalue JOINs, GROUP BY and ORDER BY
@@ -5804,6 +5809,7 @@ bool CMusicDatabase::GetArtistsByWhereJSON(const std::set<std::string>& fields, 
     bool bIsAlbumArtist(true);
     bool bGenreFoundViaAlbum(false);
     CVariant artistObj;
+    result["artists"].reserve(resultcount);
     while (!m_pDS->eof() || bHaveArtist)
     {
       const dbiplus::sql_record* const record = m_pDS->get_sql_record();
@@ -6122,6 +6128,7 @@ bool CMusicDatabase::GetAlbumsByWhereJSON(const std::set<std::string>& fields, c
   {
     total = -1;
 
+    size_t resultcount = 0;
     Filter extFilter;
     CMusicDbUrl musicUrl;
     SortDescription sorting = sortDescription;
@@ -6139,6 +6146,7 @@ bool CMusicDatabase::GetAlbumsByWhereJSON(const std::set<std::string>& fields, c
     // (includes xsp limits from filter, but not sort limits)
     // Use albumview as filter rules in where clause may use scalar query fields
     total = static_cast<int>(strtol(GetSingleValue("SELECT COUNT(1) FROM albumview " + strSQLExtra, m_pDS).c_str(), nullptr, 10));
+    resultcount = static_cast<size_t>(total);
 
     // Get order by (and any scalar query artist fields
     int iAddedFields = GetOrderFilter(MediaTypeAlbum, sortDescription, extFilter);
@@ -6227,6 +6235,9 @@ bool CMusicDatabase::GetAlbumsByWhereJSON(const std::set<std::string>& fields, c
       (sortDescription.limitStart > 0 || sortDescription.limitEnd > 0))
     {
       strSQLExtra += DatabaseUtils::BuildLimitClause(sortDescription.limitEnd, sortDescription.limitStart);
+      resultcount = std::min(
+          DatabaseUtils::GetLimitCount(sortDescription.limitEnd, sortDescription.limitStart),
+          resultcount);
     }
 
     // Setup multivalue JOINs, GROUP BY and ORDER BY
@@ -6310,6 +6321,7 @@ bool CMusicDatabase::GetAlbumsByWhereJSON(const std::set<std::string>& fields, c
     int albumId = -1;
     int artistId = -1;
     CVariant albumObj;
+    result["albums"].reserve(resultcount);
     while (!m_pDS->eof() || !albumObj.empty())
     {
       const dbiplus::sql_record* const record = m_pDS->get_sql_record();
@@ -6521,6 +6533,7 @@ bool CMusicDatabase::GetSongsByWhereJSON(const std::set<std::string>& fields, co
   {
     total = -1;
 
+    size_t resultcount = 0;
     Filter extFilter;
     CMusicDbUrl musicUrl;
     SortDescription sorting = sortDescription;
@@ -6685,6 +6698,9 @@ bool CMusicDatabase::GetSongsByWhereJSON(const std::set<std::string>& fields, co
       (sortDescription.limitStart > 0 || sortDescription.limitEnd > 0))
     {
       strSQLExtra += DatabaseUtils::BuildLimitClause(sortDescription.limitEnd, sortDescription.limitStart);
+      resultcount = std::min(
+        DatabaseUtils::GetLimitCount(sortDescription.limitEnd, sortDescription.limitStart),
+        resultcount);
     }
     
     // Setup multivalue JOINs, GROUP BY and ORDER BY
@@ -6870,6 +6886,7 @@ bool CMusicDatabase::GetSongsByWhereJSON(const std::set<std::string>& fields, co
     bool bSongArtistDone(false);
     bool bHaveSong(false);
     CVariant songObj;
+    result["songs"].reserve(resultcount);
     while (!m_pDS->eof() || bHaveSong)
     {
       const dbiplus::sql_record* const record = m_pDS->get_sql_record();
