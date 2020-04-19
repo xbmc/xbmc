@@ -116,6 +116,7 @@ void CDirectoryCache::ClearFile(const std::string& strFile)
 {
   // Get rid of any URL options, else the compare may be wrong
   std::string strFile2 = CURL(strFile).GetWithoutOptions();
+  URIUtils::RemoveSlashAtEnd(strFile2);
 
   ClearDirectory(URIUtils::GetDirectory(strFile2));
 }
