@@ -9,8 +9,8 @@
 #include "DAVFile.h"
 
 #include "DAVCommon.h"
-#include "platform/Curl.h"
 #include "URL.h"
+#include "platform/Curl.h"
 #include "utils/RegExp.h"
 #include "utils/XBMCTinyXML.h"
 #include "utils/log.h"
@@ -32,13 +32,6 @@ bool CDAVFile::Execute(const CURL& url)
 
   CLog::Log(LOGDEBUG, "CDAVFile::Execute(%p) %s", (void*)this, m_url.c_str());
 
-  assert(!(!m_state->m_easyHandle ^ !m_state->m_multiHandle));
-  if( m_state->m_easyHandle == NULL )
-    g_curlInterface.easy_acquire(url2.GetProtocol().c_str(),
-                                url2.GetHostName().c_str(),
-                                &m_state->m_easyHandle,
-                                &m_state->m_multiHandle);
-
   // setup common curl options
   SetCommonOptions(m_state);
   SetRequestHeaders(m_state);
@@ -47,8 +40,9 @@ bool CDAVFile::Execute(const CURL& url)
   if (m_lastResponseCode < 0 || m_lastResponseCode >= 400)
     return false;
 
-  char* efurl;
-  if (CURLE_OK == g_curlInterface.easy_getinfo(m_state->m_easyHandle, CURLINFO_EFFECTIVE_URL,&efurl) && efurl)
+  std::error_code ec;
+  auto efurl = m_state->m_curl.GetEffectiveUrl(ec);
+  if (!ec && !efurl.empty())
     m_url = efurl;
 
   if (m_lastResponseCode == 207)

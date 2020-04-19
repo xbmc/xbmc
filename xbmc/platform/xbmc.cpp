@@ -22,12 +22,17 @@
 #include "platform/android/activity/XBMCApp.h"
 #endif
 
+#include "commons/Exception.h"
+#include "platform/CurlGlobalInit.h"
 #include "platform/MessagePrinter.h"
 #include "utils/log.h"
-#include "commons/Exception.h"
+
 
 extern "C" int XBMC_Run(bool renderGUI, const CAppParamParser &params)
 {
+  // This calls the curl global startup / teardown methods.
+  KODI::PLATFORM::CCurlGlobalInit curlInit;
+
   int status = -1;
 
   if (!g_application.Create(params))

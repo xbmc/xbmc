@@ -9,31 +9,27 @@
 #pragma once
 
 #include "IFile.h"
+#include "platform/Curl.h"
 #include "utils/HttpHeader.h"
 #include "utils/RingBuffer.h"
 
 #include <map>
 #include <string>
 
-typedef void CURL_HANDLE;
-typedef void CURLM;
-struct curl_slist;
-
 namespace XFILE
 {
 class CCurlFile : public IFile
 {
-private:
-  typedef enum
-  {
-    PROXY_HTTP = 0,
-    PROXY_SOCKS4,
-    PROXY_SOCKS4A,
-    PROXY_SOCKS5,
-    PROXY_SOCKS5_REMOTE,
-  } ProxyType;
-
 public:
+  enum class ProxyType
+  {
+    HTTP = 0,
+    SOCKS4,
+    SOCKS4A,
+    SOCKS5,
+    SOCKS5_REMOTE,
+  };
+
   CCurlFile();
   ~CCurlFile() override;
   bool Open(const CURL& url) override;
@@ -63,7 +59,7 @@ public:
   bool ReadData(std::string& strHTML);
   bool Download(const std::string& strURL,
                 const std::string& strFileName,
-                unsigned int* pdwSize = NULL);
+                ssize_t* pdwSize = nullptr);
   bool IsInternet();
   void Cancel();
   void Reset();
@@ -105,34 +101,30 @@ public:
   class CReadState
   {
   public:
-    CReadState();
+    CReadState() = default;
     ~CReadState();
-    CURL_HANDLE* m_easyHandle;
-    CURLM* m_multiHandle;
+    KODI::PLATFORM::CCurl m_curl;
 
     CRingBuffer m_buffer; // our ringhold buffer
-    unsigned int m_bufferSize;
+    unsigned int m_bufferSize{0};
 
-    char* m_overflowBuffer; // in the rare case we would overflow the above buffer
-    unsigned int m_overflowSize; // size of the overflow buffer
-    int m_stillRunning; // Is background url fetch still in progress
-    bool m_cancelled;
-    int64_t m_fileSize;
-    int64_t m_filePos;
-    bool m_bFirstLoop;
-    bool m_isPaused;
-    bool m_sendRange;
-    bool m_bLastError;
-    bool m_bRetry;
+    char* m_overflowBuffer{nullptr}; // in the rare case we would overflow the above buffer
+    size_t m_overflowSize{0}; // size of the overflow buffer
+    int m_stillRunning{0}; // Is background url fetch still in progress
+    bool m_cancelled{false};
+    int64_t m_fileSize{0};
+    int64_t m_filePos{0};
+    bool m_bFirstLoop{true};
+    bool m_isPaused{false};
+    bool m_sendRange{true};
+    bool m_bLastError{false};
+    bool m_bRetry{true};
 
-    char* m_readBuffer;
+    char* m_readBuffer{nullptr};
 
     /* returned http header */
     CHttpHeader m_httpheader;
     bool IsHeaderDone(void) { return m_httpheader.IsHeaderDone(); }
-
-    curl_slist* m_curlHeaderList;
-    curl_slist* m_curlAliasList;
 
     size_t ReadCallback(char* buffer, size_t size, size_t nitems);
     size_t WriteCallback(char* buffer, size_t size, size_t nitems);
@@ -155,19 +147,18 @@ protected:
   void SetRequestHeaders(CReadState* state);
   void SetCorrectHeaders(CReadState* state);
   bool Service(const std::string& strURL, std::string& strHTML);
-  std::string GetInfoString(int infoType);
 
 protected:
-  CReadState* m_state;
-  CReadState* m_oldState;
-  unsigned int m_bufferSize;
-  int64_t m_writeOffset = 0;
+  CReadState* m_state{nullptr};
+  CReadState* m_oldState{nullptr};
+  int64_t m_writeOffset{0};
+  unsigned int m_bufferSize{32768};
 
   std::string m_url;
   std::string m_userAgent;
-  ProxyType m_proxytype = PROXY_HTTP;
+  ProxyType m_proxytype{ProxyType::HTTP};
   std::string m_proxyhost;
-  uint16_t m_proxyport = 3128;
+  uint16_t m_proxyport{3128};
   std::string m_proxyuser;
   std::string m_proxypassword;
   std::string m_customrequest;
@@ -183,30 +174,30 @@ protected:
   std::string m_password;
   std::string m_httpauth;
   std::string m_cipherlist;
-  bool m_ftppasvip;
-  int m_connecttimeout;
-  int m_redirectlimit;
-  int m_lowspeedtime;
-  bool m_opened;
-  bool m_forWrite;
-  bool m_inError;
-  bool m_seekable;
-  bool m_multisession;
-  bool m_skipshout;
-  bool m_postdataset;
-  bool m_allowRetry;
-  bool m_verifyPeer = true;
-  bool m_failOnError = true;
+  int m_connecttimeout{0};
+  int m_redirectlimit{5};
+  int m_lowspeedtime{0};
+  bool m_ftppasvip{false};
+  bool m_opened{false};
+  bool m_forWrite{false};
+  bool m_inError{false};
+  bool m_seekable{true};
+  bool m_multisession{false};
+  bool m_skipshout{false};
+  bool m_postdataset{false};
+  bool m_allowRetry{true};
+  bool m_verifyPeer{true};
+  bool m_failOnError{true};
 
   CRingBuffer m_buffer; // our ringhold buffer
-  char* m_overflowBuffer; // in the rare case we would overflow the above buffer
-  unsigned int m_overflowSize = 0; // size of the overflow buffer
+  char* m_overflowBuffer{nullptr}; // in the rare case we would overflow the above buffer
+  unsigned int m_overflowSize{0}; // size of the overflow buffer
 
-  int m_stillRunning; // Is background url fetch still in progress?
+  int m_stillRunning{0}; // Is background url fetch still in progress?
 
   typedef std::map<std::string, std::string> MAPHTTPHEADERS;
   MAPHTTPHEADERS m_requestheaders;
 
-  long m_httpresponse;
+  long m_httpresponse{-1};
 };
 } // namespace XFILE

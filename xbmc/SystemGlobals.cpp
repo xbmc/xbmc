@@ -8,7 +8,6 @@
 #include "SectionLoader.h"
 #include "utils/AlarmClock.h"
 #include "GUIInfoManager.h"
-#include "platform/Curl.h"
 #include "filesystem/DirectoryCache.h"
 #include "GUIPassword.h"
 #include "utils/LangCodeExpander.h"
@@ -36,7 +35,6 @@ std::map<std::string, std::string> CSpecialProtocol::m_pathMap;
 
   CGUIPassword       g_passwordManager;
 
-  KODI::PLATFORM::DllLibCurlGlobal g_curlInterface;
   CPartyModeManager     g_partyModeManager;
 
   CAlarmClock        g_alarmClock;

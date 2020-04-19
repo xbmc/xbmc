@@ -8,310 +8,685 @@
 
 #include "Curl.h"
 
-#include "threads/SingleLock.h"
-#include "threads/SystemClock.h"
+#include "ServiceBroker.h"
+#include "commons/ilog.h" // for LOGERROR, LOGCURL, LOGDEBUG, LOG_LEVEL_DEBUG
+#include "settings/AdvancedSettings.h"
+#include "settings/SettingsComponent.h"
+#include "utils/StringUtils.h"
 #include "utils/log.h"
 
-#include <assert.h>
+#include <cassert>
+#include <map> // for map
+#include <memory> // for unique_ptr
+#include <string> // for char_traits
+#include <system_error> // for error_code, error_category
+#include <type_traits> // for move
+#include <utility> // for pair
+#include <vector> // for vector
+
+// Needed for now because our CURL is not namespaced
+// and is included in the pch on Windows
+#define CURL CURL_HANDLE
+#include <curl/curl.h>
+#undef CURL
+
+namespace
+{
+struct SCurlEasyErrorCategory : std::error_category
+{
+  const char* name() const noexcept override { return "curl_easy_error"; }
+
+  std::string message(int ev) const override
+  {
+    return curl_easy_strerror(static_cast<CURLcode>(ev));
+  }
+};
+
+struct SCurlMultiErrorCategory : std::error_category
+{
+  const char* name() const noexcept override { return "curl_multi_error"; }
+
+  std::string message(int ev) const override
+  {
+    return curl_multi_strerror(static_cast<CURLMcode>(ev));
+  }
+};
+
+const SCurlEasyErrorCategory g_curlEasyErrorCategory{};
+const SCurlMultiErrorCategory g_curlMultiErrorCategory{};
+
+} // namespace
+
+// curl calls this routine to debug
+extern "C" int debug_callback(
+    CURL_HANDLE* handle, curl_infotype info, char* output, size_t size, void* data)
+{
+  if (info == CURLINFO_DATA_IN || info == CURLINFO_DATA_OUT)
+    return 0;
+
+  if (!CServiceBroker::GetLogging().CanLogComponent(LOGCURL))
+    return 0;
+
+  std::string strLine;
+  strLine.append(output, size);
+  std::vector<std::string> vecLines;
+  StringUtils::Tokenize(strLine, vecLines, "\r\n");
+
+  const char* infotype;
+  switch (info)
+  {
+    case CURLINFO_TEXT:
+      infotype = "TEXT: ";
+      break;
+    case CURLINFO_HEADER_IN:
+      infotype = "HEADER_IN: ";
+      break;
+    case CURLINFO_HEADER_OUT:
+      infotype = "HEADER_OUT: ";
+      break;
+    case CURLINFO_SSL_DATA_IN:
+      infotype = "SSL_DATA_IN: ";
+      break;
+    case CURLINFO_SSL_DATA_OUT:
+      infotype = "SSL_DATA_OUT: ";
+      break;
+    case CURLINFO_END:
+      infotype = "END: ";
+      break;
+    default:
+      infotype = "";
+      break;
+  }
+
+  for (const auto& it : vecLines)
+  {
+    CLog::Log(LOGDEBUG, "Curl::Debug - %s%s", infotype, it.c_str());
+  }
+  return 0;
+}
 
 namespace KODI
 {
 namespace PLATFORM
 {
-CURLcode DllLibCurl::global_init(long flags)
+
+std::error_code make_error_code(CURLcode code)
 {
-  return curl_global_init(flags);
+  return {static_cast<int>(code), g_curlEasyErrorCategory};
 }
 
-void DllLibCurl::global_cleanup()
+std::error_code make_error_code(CurlCode code)
 {
-  curl_global_cleanup();
+  return {static_cast<int>(code), g_curlEasyErrorCategory};
 }
 
-CURL_HANDLE* DllLibCurl::easy_init()
+std::error_code make_error_code(CURLMcode code)
 {
-  return curl_easy_init();
+  return {static_cast<int>(code), g_curlMultiErrorCategory};
 }
 
-CURLcode DllLibCurl::easy_perform(CURL_HANDLE* handle)
+std::error_code make_error_code(CurlMCode code)
 {
-  return curl_easy_perform(handle);
+  return {static_cast<int>(code), g_curlMultiErrorCategory};
 }
+struct CCurl::SSession
+{
+  SSession() { m_easy = curl_easy_init(); }
 
-CURLcode DllLibCurl::easy_pause(CURL_HANDLE* handle, int bitmask)
-{
-  return curl_easy_pause(handle, bitmask);
-}
-
-void DllLibCurl::easy_reset(CURL_HANDLE* handle)
-{
-  curl_easy_reset(handle);
-}
-
-void DllLibCurl::easy_cleanup(CURL_HANDLE* handle)
-{
-  curl_easy_cleanup(handle);
-}
-
-CURL_HANDLE* DllLibCurl::easy_duphandle(CURL_HANDLE* handle)
-{
-  return curl_easy_duphandle(handle);
-}
-
-CURLM* DllLibCurl::multi_init()
-{
-  return curl_multi_init();
-}
-
-CURLMcode DllLibCurl::multi_add_handle(CURLM* multi_handle, CURL_HANDLE* easy_handle)
-{
-  return curl_multi_add_handle(multi_handle, easy_handle);
-}
-
-CURLMcode DllLibCurl::multi_perform(CURLM* multi_handle, int* running_handles)
-{
-  return curl_multi_perform(multi_handle, running_handles);
-}
-
-CURLMcode DllLibCurl::multi_remove_handle(CURLM* multi_handle, CURL_HANDLE* easy_handle)
-{
-  return curl_multi_remove_handle(multi_handle, easy_handle);
-}
-
-CURLMcode DllLibCurl::multi_fdset(
-    CURLM* multi_handle, fd_set* read_fd_set, fd_set* write_fd_set, fd_set* exc_fd_set, int* max_fd)
-{
-  return curl_multi_fdset(multi_handle, read_fd_set, write_fd_set, exc_fd_set, max_fd);
-}
-
-CURLMcode DllLibCurl::multi_timeout(CURLM* multi_handle, long* timeout)
-{
-  return curl_multi_timeout(multi_handle, timeout);
-}
-
-CURLMsg* DllLibCurl::multi_info_read(CURLM* multi_handle, int* msgs_in_queue)
-{
-  return curl_multi_info_read(multi_handle, msgs_in_queue);
-}
-
-CURLMcode DllLibCurl::multi_cleanup(CURLM* handle)
-{
-  return curl_multi_cleanup(handle);
-}
-
-curl_slist* DllLibCurl::slist_append(curl_slist* list, const char* to_append)
-{
-  return curl_slist_append(list, to_append);
-}
-
-void DllLibCurl::slist_free_all(curl_slist* list)
-{
-  curl_slist_free_all(list);
-}
-
-const char* DllLibCurl::easy_strerror(CURLcode code)
-{
-  return curl_easy_strerror(code);
-}
-
-#if defined(HAS_CURL_STATIC)
-void DllLibCurl::crypto_set_id_callback(unsigned long (*cb)())
-{
-  CRYPTO_set_id_callback(cb);
-}
-void DllLibCurl::crypto_set_locking_callback(void (*cb)(int, int, const char*, int))
-{
-  CRYPTO_set_locking_callback(cb);
-}
-#endif
-
-DllLibCurlGlobal::DllLibCurlGlobal()
-{
-  /* we handle this ourself */
-  if (curl_global_init(CURL_GLOBAL_ALL))
+  ~SSession()
   {
-    CLog::Log(LOGERROR, "Error initializing libcurl");
+    if (m_multi && m_easy)
+      curl_multi_remove_handle(m_multi, m_easy);
+    if (m_easy)
+      curl_easy_cleanup(m_easy);
+    if (m_multi)
+      curl_multi_cleanup(m_multi);
+
+    curl_slist_free_all(m_header);
+    curl_slist_free_all(m_alias);
   }
+
+  SSession(const SSession&) = delete;
+  SSession(SSession&&) = default;
+
+  SSession& operator=(const SSession&) = delete;
+  SSession& operator=(SSession&&) = default;
+
+  CURL_HANDLE* m_easy;
+  CURLM* m_multi{nullptr};
+  curl_slist* m_header{nullptr};
+  curl_slist* m_alias{nullptr};
+};
+
+static constexpr int CURL_OFF = 0L;
+static constexpr int CURL_ON = 1L;
+
+CCurl::CCurl() : m_session{new SSession()}
+{
 }
 
-DllLibCurlGlobal::~DllLibCurlGlobal()
+CCurl::~CCurl() = default;
+
+std::error_code CCurl::EasyPerform()
 {
-  // close libcurl
-  curl_global_cleanup();
+  return make_error_code(curl_easy_perform(m_session->m_easy));
 }
 
-void DllLibCurlGlobal::CheckIdle()
+std::error_code CCurl::EasyPause(CurlPause type)
 {
-  CSingleLock lock(m_critSection);
-  /* 20 seconds idle time before closing handle */
-  const unsigned int idletime = 30000;
+  return make_error_code(curl_easy_pause(m_session->m_easy, static_cast<int>(type)));
+}
 
-  VEC_CURLSESSIONS::iterator it = m_sessions.begin();
-  while (it != m_sessions.end())
+std::error_code CCurl::EasyResume()
+{
+  return make_error_code(curl_easy_pause(m_session->m_easy, CURLPAUSE_CONT));
+}
+
+void CCurl::EasyReset()
+{
+  curl_easy_reset(m_session->m_easy);
+
+  curl_easy_setopt(m_session->m_easy, CURLOPT_DEBUGFUNCTION, debug_callback);
+
+  if (CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_logLevel >= LOG_LEVEL_DEBUG)
+    curl_easy_setopt(m_session->m_easy, CURLOPT_VERBOSE, CURL_ON);
+  else
+    curl_easy_setopt(m_session->m_easy, CURLOPT_VERBOSE, CURL_OFF);
+}
+
+std::error_code CCurl::MultiPerform(int& running_handles)
+{
+  return make_error_code(curl_multi_perform(m_session->m_multi, &running_handles));
+}
+
+std::error_code CCurl::MultiFdSet(fd_set* read_fd_set,
+                                  fd_set* write_fd_set,
+                                  fd_set* exc_fd_set,
+                                  int* max_fd)
+{
+  return make_error_code(
+      curl_multi_fdset(m_session->m_multi, read_fd_set, write_fd_set, exc_fd_set, max_fd));
+}
+
+int64_t CCurl::GetContentLength(std::error_code& ec)
+{
+  double length;
+  ec = make_error_code(
+      curl_easy_getinfo(m_session->m_easy, CURLINFO_CONTENT_LENGTH_DOWNLOAD, &length));
+
+  return static_cast<int64_t>(length);
+}
+
+std::string CCurl::GetContentType(std::error_code& ec)
+{
+  char* content;
+
+  ec = make_error_code(curl_easy_getinfo(m_session->m_easy, CURLINFO_CONTENT_TYPE, &content));
+
+  return content != nullptr ? std::string(content) : std::string();
+}
+
+long CCurl::GetFileTime(std::error_code& ec)
+{
+  long time = 0;
+
+  ec = make_error_code(curl_easy_getinfo(m_session->m_easy, CURLINFO_FILETIME, &time));
+
+  return time;
+}
+
+long CCurl::GetResponseCode(std::error_code& ec)
+{
+  long response;
+
+  ec = make_error_code(curl_easy_getinfo(m_session->m_easy, CURLINFO_RESPONSE_CODE, &response));
+
+  return response;
+}
+
+std::string CCurl::GetEffectiveUrl(std::error_code& ec)
+{
+  char* url = nullptr;
+
+  ec = make_error_code(curl_easy_getinfo(m_session->m_easy, CURLINFO_EFFECTIVE_URL, &url));
+
+  return url != nullptr ? std::string(url) : std::string();
+}
+
+std::string CCurl::GetRedirectURL(std::error_code& ec)
+{
+  char* url = nullptr;
+
+  ec = make_error_code(curl_easy_getinfo(m_session->m_easy, CURLINFO_REDIRECT_URL, &url));
+
+  return url != nullptr ? std::string(url) : std::string();
+}
+
+std::string CCurl::GetCookies(std::error_code& ec)
+{
+  std::string cookiesStr;
+  struct curl_slist* curlCookies;
+
+  ec = make_error_code(curl_easy_getinfo(m_session->m_easy, CURLINFO_COOKIELIST, &curlCookies));
+  if (ec)
+    return std::string();
+
+  // iterate over each cookie and format it into an RFC 2109 formatted Set-Cookie string
+  auto curlCookieIter = curlCookies;
+  while (curlCookieIter)
   {
-    if (!it->m_busy && (XbmcThreads::SystemClockMillis() - it->m_idletimestamp) > idletime)
+    // tokenize the CURL cookie string
+    auto valuesVec = StringUtils::Split(curlCookieIter->data, "\t");
+
+    // ensure the length is valid
+    if (valuesVec.size() < 7)
     {
-      CLog::Log(LOGINFO, "%s - Closing session to %s://%s (easy=%p, multi=%p)", __FUNCTION__,
-                it->m_protocol.c_str(), it->m_hostname.c_str(), static_cast<void*>(it->m_easy),
-                static_cast<void*>(it->m_multi));
-
-      if (it->m_multi && it->m_easy)
-        multi_remove_handle(it->m_multi, it->m_easy);
-      if (it->m_easy)
-        easy_cleanup(it->m_easy);
-      if (it->m_multi)
-        multi_cleanup(it->m_multi);
-
-      it = m_sessions.erase(it);
+      CLog::Log(LOGERROR, "CCurlFile::GetCookies - invalid cookie: '%s'", curlCookieIter->data);
+      curlCookieIter = curlCookieIter->next;
       continue;
     }
-    ++it;
+
+    // create a http-header formatted cookie string
+    std::string cookieStr =
+        valuesVec[5] + "=" + valuesVec[6] + "; path=" + valuesVec[2] + "; domain=" + valuesVec[0];
+
+    // append this cookie to the string containing all cookies
+    if (!cookiesStr.empty())
+      cookiesStr += "\n";
+    cookiesStr += cookieStr;
+
+    // move on to the next cookie
+    curlCookieIter = curlCookieIter->next;
   }
+
+  // free the curl cookies
+  curl_slist_free_all(curlCookies);
+
+  return cookiesStr;
 }
 
-void DllLibCurlGlobal::easy_acquire(const char* protocol,
-                                    const char* hostname,
-                                    CURL_HANDLE** easy_handle,
-                                    CURLM** multi_handle)
+double CCurl::GetDownloadSpeed(std::error_code& ec)
 {
-  assert(easy_handle != NULL);
-
-  CSingleLock lock(m_critSection);
-
-  for (auto& it : m_sessions)
+  double speed = 0.0;
+#if LIBCURL_VERSION_NUM >= 0x073a00 // 0.7.58.0
+  ec = make_error_code(curl_easy_getinfo(m_session->m_easy, CURLINFO_SPEED_DOWNLOAD, &speed));
+#else
+  double time = 0.0, size = 0.0;
+  ec = make_error_code(curl_easy_getinfo(m_session->m_easy, CURLINFO_TOTAL_TIME, &time));
+  if (!ec)
   {
-    if (!it.m_busy)
-    {
-      /* allow reuse of requester is trying to connect to same host */
-      /* curl will take care of any differences in username/password */
-      if (it.m_protocol.compare(protocol) == 0 && it.m_hostname.compare(hostname) == 0)
-      {
-        it.m_busy = true;
-        if (easy_handle)
-        {
-          if (!it.m_easy)
-            it.m_easy = easy_init();
-
-          *easy_handle = it.m_easy;
-        }
-
-        if (multi_handle)
-        {
-          if (!it.m_multi)
-            it.m_multi = multi_init();
-
-          *multi_handle = it.m_multi;
-        }
-
-        return;
-      }
-    }
+    ec = make_error_code(curl_easy_getinfo(m_session->m_easy, CURLINFO_SIZE_DOWNLOAD, &size));
+    if (!ec && time > 0.0)
+      speed = size / time;
   }
+#endif
 
-  SSession session = {};
-  session.m_busy = true;
-  session.m_protocol = protocol;
-  session.m_hostname = hostname;
-
-  if (easy_handle)
-  {
-    session.m_easy = easy_init();
-    *easy_handle = session.m_easy;
-  }
-
-  if (multi_handle)
-  {
-    session.m_multi = multi_init();
-    *multi_handle = session.m_multi;
-  }
-
-  m_sessions.push_back(session);
-
-  CLog::Log(LOGINFO, "%s - Created session to %s://%s", __FUNCTION__, protocol, hostname);
+  return speed;
 }
 
-void DllLibCurlGlobal::easy_release(CURL_HANDLE** easy_handle, CURLM** multi_handle)
+long CCurl::GetTimeout(std::error_code& ec)
 {
-  CSingleLock lock(m_critSection);
+  long timeout = 0;
+  ec = make_error_code(curl_multi_timeout(m_session->m_multi, &timeout));
 
-  CURL_HANDLE* easy = NULL;
-  CURLM* multi = NULL;
-
-  if (easy_handle)
-  {
-    easy = *easy_handle;
-    *easy_handle = NULL;
-  }
-
-  if (multi_handle)
-  {
-    multi = *multi_handle;
-    *multi_handle = NULL;
-  }
-
-  for (auto& it : m_sessions)
-  {
-    if (it.m_easy == easy && (multi == nullptr || it.m_multi == multi))
-    {
-      /* reset session so next caller doesn't reuse options, only connections */
-      /* will reset verbose too so it won't print that it closed connections on cleanup*/
-      easy_reset(easy);
-      it.m_busy = false;
-      it.m_idletimestamp = XbmcThreads::SystemClockMillis();
-      return;
-    }
-  }
+  return timeout;
 }
 
-CURL_HANDLE* DllLibCurlGlobal::easy_duphandle(CURL_HANDLE* easy_handle)
+std::error_code CCurl::GetMultiMessage(int& messages)
 {
-  CSingleLock lock(m_critSection);
+  // Curl docs says msg->msg is always DONE so we can safely ignore it
+  // We don't use the whatever union member so we can ignore that as well.
+  // We only use one handle per multi so we can safely ignore the handle param as well.
 
-  for (const auto& it : m_sessions)
-  {
-    if (it.m_easy == easy_handle)
-    {
-      SSession session = it;
-      session.m_easy = DllLibCurl::easy_duphandle(easy_handle);
-      m_sessions.push_back(session);
-      return session.m_easy;
-    }
-  }
-  return DllLibCurl::easy_duphandle(easy_handle);
+  auto msg = curl_multi_info_read(m_session->m_multi, &messages);
+  if (!msg || msg->msg == CURLMSG_DONE)
+    return make_error_code(CurlMCode::OK);
+
+  return make_error_code(msg->data.result);
 }
 
-void DllLibCurlGlobal::easy_duplicate(CURL_HANDLE* easy,
-                                      CURLM* multi,
-                                      CURL_HANDLE** easy_out,
-                                      CURLM** multi_out)
+void CCurl::UseMulti()
 {
-  CSingleLock lock(m_critSection);
+  if (!m_session->m_multi)
+    m_session->m_multi = curl_multi_init();
 
-  if (easy_out && easy)
-    *easy_out = DllLibCurl::easy_duphandle(easy);
-
-  if (multi_out && multi)
-    *multi_out = DllLibCurl::multi_init();
-
-  for (const auto& it : m_sessions)
-  {
-    if (it.m_easy == easy)
-    {
-      SSession session = it;
-      if (easy_out && easy)
-        session.m_easy = *easy_out;
-      else
-        session.m_easy = NULL;
-
-      if (multi_out && multi)
-        session.m_multi = *multi_out;
-      else
-        session.m_multi = NULL;
-
-      m_sessions.push_back(session);
-      return;
-    }
-  }
+  curl_multi_add_handle(m_session->m_multi, m_session->m_easy);
 }
+
+void CCurl::RemoveMulti()
+{
+  curl_multi_remove_handle(m_session->m_multi, m_session->m_easy);
+}
+
+bool CCurl::IsMulti()
+{
+  return m_session->m_multi != nullptr;
+}
+
+std::error_code CCurl::DisableBody()
+{
+  return make_error_code(curl_easy_setopt(m_session->m_easy, CURLOPT_NOBODY, 1));
+}
+
+std::error_code CCurl::EnableBody()
+{
+  return make_error_code(curl_easy_setopt(m_session->m_easy, CURLOPT_NOBODY, 0));
+}
+
+std::error_code CCurl::DisableFtpEPSV()
+{
+  return make_error_code(curl_easy_setopt(m_session->m_easy, CURLOPT_FTP_USE_EPSV, 0));
+}
+
+std::error_code CCurl::DisableSignals()
+{
+  return make_error_code(curl_easy_setopt(m_session->m_easy, CURLOPT_NOSIGNAL, CURL_ON));
+}
+
+std::error_code CCurl::DisableSslVerifypeer()
+{
+  return make_error_code(curl_easy_setopt(m_session->m_easy, CURLOPT_SSL_VERIFYPEER, CURL_OFF));
+}
+
+std::error_code CCurl::DisableTransferText()
+{
+  return make_error_code(curl_easy_setopt(m_session->m_easy, CURLOPT_TRANSFERTEXT, CURL_OFF));
+}
+
+std::error_code CCurl::DisableIPV6()
+{
+  return make_error_code(curl_easy_setopt(m_session->m_easy, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4));
+}
+
+std::error_code CCurl::WriteData(void* data)
+{
+  return make_error_code(curl_easy_setopt(m_session->m_easy, CURLOPT_WRITEDATA, data));
+}
+
+std::error_code CCurl::FlushCookies()
+{
+  return make_error_code(curl_easy_setopt(m_session->m_easy, CURLOPT_COOKIELIST, "FLUSH"));
+}
+
+std::error_code CCurl::FailOnError()
+{
+  return make_error_code(curl_easy_setopt(m_session->m_easy, CURLOPT_FAILONERROR, 1));
+}
+
+std::error_code CCurl::IgnoreContentLength()
+{
+  return make_error_code(curl_easy_setopt(m_session->m_easy, CURLOPT_IGNORE_CONTENT_LENGTH, 1));
+}
+
+std::error_code CCurl::EnableFileTime()
+{
+  return make_error_code(curl_easy_setopt(m_session->m_easy, CURLOPT_FILETIME, 1));
+}
+
+std::error_code CCurl::EnableUpload()
+{
+  return make_error_code(curl_easy_setopt(m_session->m_easy, CURLOPT_UPLOAD, 1));
+}
+
+std::error_code CCurl::EnableCookies()
+{
+  return make_error_code(curl_easy_setopt(m_session->m_easy, CURLOPT_COOKIEFILE, ""));
+}
+
+std::error_code CCurl::FollowRedirects(int max)
+{
+  int enable = max != 0 ? 1 : 0;
+
+  auto ec = make_error_code(curl_easy_setopt(m_session->m_easy, CURLOPT_FOLLOWLOCATION, enable));
+  if (ec)
+    return ec;
+
+  return make_error_code(curl_easy_setopt(m_session->m_easy, CURLOPT_MAXREDIRS, max));
+}
+
+std::error_code CCurl::SetTimeout(int timeout)
+{
+  return make_error_code(curl_easy_setopt(m_session->m_easy, CURLOPT_TIMEOUT, timeout));
+}
+
+std::error_code CCurl::SetConnectTimeout(int timeout)
+{
+  return make_error_code(curl_easy_setopt(m_session->m_easy, CURLOPT_CONNECTTIMEOUT, timeout));
+}
+
+std::error_code CCurl::SetFtpFileMethod(CurlFtpMethod method)
+{
+  return make_error_code(curl_easy_setopt(m_session->m_easy, CURLOPT_FTP_FILEMETHOD,
+                                          static_cast<curl_ftpmethod>(method)));
+}
+
+std::error_code CCurl::SetProgressCallback(ProgressCallback cb)
+{
+  std::error_code ec;
+#if LIBCURL_VERSION_NUM >= 0x072000 // 0.7.32
+  ec = make_error_code(curl_easy_setopt(m_session->m_easy, CURLOPT_XFERINFOFUNCTION, cb));
+#else
+  ec = make_error_code(curl_easy_setopt(m_session->m_easy, CURLOPT_PROGRESSFUNCTION, cb));
+#endif
+  if (ec)
+    return ec;
+
+  return make_error_code(curl_easy_setopt(m_session->m_easy, CURLOPT_NOPROGRESS, 0));
+}
+
+std::error_code CCurl::SetCallbacks(void* state,
+                                    ReadWriteCallback write,
+                                    ReadWriteCallback read,
+                                    HeaderCallback header)
+{
+  std::error_code ec;
+
+  ec = make_error_code(curl_easy_setopt(m_session->m_easy, CURLOPT_WRITEDATA, state));
+  if (ec)
+    return ec;
+
+  ec = make_error_code(curl_easy_setopt(m_session->m_easy, CURLOPT_WRITEFUNCTION, write));
+  if (ec)
+    return ec;
+
+  ec = make_error_code(curl_easy_setopt(m_session->m_easy, CURLOPT_READDATA, state));
+  if (ec)
+    return ec;
+
+  ec = make_error_code(curl_easy_setopt(m_session->m_easy, CURLOPT_READFUNCTION, read));
+  if (ec)
+    return ec;
+
+  ec = make_error_code(curl_easy_setopt(m_session->m_easy, CURLOPT_HEADERDATA, state));
+  if (ec)
+    return ec;
+
+  ec = make_error_code(curl_easy_setopt(m_session->m_easy, CURLOPT_HEADERFUNCTION, header));
+  if (ec)
+    return ec;
+
+  return make_error_code(curl_easy_setopt(m_session->m_easy, CURLOPT_HEADER, CURL_OFF));
+}
+
+std::error_code CCurl::SetUsernamePassword(const std::string& user, const std::string& pass)
+{
+  assert(!user.empty() && !pass.empty());
+
+  auto up = user + ":" + pass;
+  return make_error_code(curl_easy_setopt(m_session->m_easy, CURLOPT_USERPWD, up.c_str()));
+}
+
+std::error_code CCurl::SetCookies(const std::string& cookies)
+{
+  return make_error_code(curl_easy_setopt(m_session->m_easy, CURLOPT_COOKIE, cookies.c_str()));
+}
+
+std::error_code CCurl::SetAlias(const std::string& alias)
+{
+  if (m_session->m_alias)
+  {
+    curl_slist_free_all(m_session->m_alias);
+    m_session->m_alias = nullptr;
+  }
+
+  m_session->m_alias = curl_slist_append(m_session->m_alias, alias.c_str());
+
+  return make_error_code(
+      curl_easy_setopt(m_session->m_easy, CURLOPT_HTTP200ALIASES, m_session->m_alias));
+}
+
+std::error_code CCurl::SetUrl(const std::string& url)
+{
+  return make_error_code(curl_easy_setopt(m_session->m_easy, CURLOPT_URL, url.c_str()));
+}
+
+std::error_code CCurl::SetPostData(const std::string& data)
+{
+  auto ec = make_error_code(curl_easy_setopt(m_session->m_easy, CURLOPT_POST, 1));
+  if (ec)
+    return ec;
+
+  ec = make_error_code(curl_easy_setopt(m_session->m_easy, CURLOPT_POSTFIELDSIZE, data.length()));
+  if (ec)
+    return ec;
+
+  return make_error_code(curl_easy_setopt(m_session->m_easy, CURLOPT_POSTFIELDS, data.c_str()));
+}
+
+std::error_code CCurl::SetOrClearReferer(const std::string& referer)
+{
+  if (!referer.empty())
+    return make_error_code(curl_easy_setopt(m_session->m_easy, CURLOPT_REFERER, referer.c_str()));
+
+  auto ec = make_error_code(curl_easy_setopt(m_session->m_easy, CURLOPT_REFERER, NULL));
+  if (ec)
+    return ec;
+
+  return make_error_code(curl_easy_setopt(m_session->m_easy, CURLOPT_AUTOREFERER, CURL_ON));
+}
+
+std::error_code CCurl::SetFtpAuth(CurlFtpAuth auth)
+{
+  auto ec = make_error_code(curl_easy_setopt(m_session->m_easy, CURLOPT_USE_SSL, CURLUSESSL_TRY));
+  if (ec)
+    return ec;
+
+  return make_error_code(
+      curl_easy_setopt(m_session->m_easy, CURLOPT_FTPSSLAUTH, static_cast<curl_ftpauth>(auth)));
+}
+
+std::error_code CCurl::SetHttpAuth(CurlHttpAuth auth)
+{
+  return make_error_code(
+      curl_easy_setopt(m_session->m_easy, CURLOPT_HTTPAUTH, static_cast<unsigned long>(auth)));
+}
+std::error_code CCurl::SetHttpVersion(CurlHttpVersion version)
+{
+  return make_error_code(
+      curl_easy_setopt(m_session->m_easy, CURLOPT_HTTP_VERSION, static_cast<int>(version)));
+}
+
+std::error_code CCurl::SetFtpPort(const std::string& port)
+{
+  return make_error_code(
+      curl_easy_setopt(m_session->m_easy, CURLOPT_FTPPORT, port.empty() ? nullptr : port.c_str()));
+}
+
+std::error_code CCurl::SetSkipFtpPassiveIp(bool skip)
+{
+  return make_error_code(
+      curl_easy_setopt(m_session->m_easy, CURLOPT_FTP_SKIP_PASV_IP, skip ? 1 : 0));
+}
+
+std::error_code CCurl::SetAcceptEncoding(const std::string& encoding)
+{
+  return make_error_code(
+      curl_easy_setopt(m_session->m_easy, CURLOPT_ACCEPT_ENCODING, encoding.c_str()));
+}
+
+std::error_code CCurl::SetUserAgent(const std::string& useragent)
+{
+  return make_error_code(curl_easy_setopt(m_session->m_easy, CURLOPT_USERAGENT, useragent.c_str()));
+}
+
+std::error_code CCurl::SetLowSpeedLimit(int bps, int time)
+{
+  auto ec = make_error_code(curl_easy_setopt(m_session->m_easy, CURLOPT_LOW_SPEED_LIMIT, bps));
+  if (ec)
+    return ec;
+
+  return make_error_code(curl_easy_setopt(m_session->m_easy, CURLOPT_LOW_SPEED_TIME, time));
+}
+
+std::error_code CCurl::SetCipherList(const std::string& ciphers)
+{
+  return make_error_code(
+      curl_easy_setopt(m_session->m_easy, CURLOPT_SSL_CIPHER_LIST, ciphers.c_str()));
+}
+
+std::error_code CCurl::SetProxyOptions(CurlProxy proxy,
+                                       const std::string& host,
+                                       int port,
+                                       const std::string& user,
+                                       const std::string& password)
+{
+  auto ec = make_error_code(
+      curl_easy_setopt(m_session->m_easy, CURLOPT_PROXYTYPE, static_cast<curl_proxytype>(proxy)));
+  if (ec)
+    return ec;
+
+  const auto hostport = StringUtils::Format("%s:%d", host, port);
+  ec = make_error_code(curl_easy_setopt(m_session->m_easy, CURLOPT_PROXY, hostport.c_str()));
+  if (ec)
+    return ec;
+
+  const auto up = user + ":" + password;
+  return make_error_code(curl_easy_setopt(m_session->m_easy, CURLOPT_PROXYUSERPWD, up.c_str()));
+}
+
+std::error_code CCurl::SetCustomRequest(const std::string& request)
+{
+  return make_error_code(
+      curl_easy_setopt(m_session->m_easy, CURLOPT_CUSTOMREQUEST, request.c_str()));
+}
+
+std::error_code CCurl::SetResumeRange(const char* start, int64_t end)
+{
+  auto ec = make_error_code(curl_easy_setopt(m_session->m_easy, CURLOPT_RANGE, start));
+  if (ec)
+    return ec;
+
+  return make_error_code(curl_easy_setopt(m_session->m_easy, CURLOPT_RESUME_FROM_LARGE, end));
+}
+
+std::error_code CCurl::SetHeaders(const std::map<std::string, std::string>& headers)
+{
+  if (m_session->m_header)
+  {
+    curl_slist_free_all(m_session->m_header);
+    m_session->m_header = nullptr;
+  }
+
+  for (const auto& it : headers)
+  {
+    m_session->m_header =
+        curl_slist_append(m_session->m_header, std::string(it.first + ":" + it.second).c_str());
+  }
+
+  // add user defined headers
+  return make_error_code(
+      curl_easy_setopt(m_session->m_easy, CURLOPT_HTTPHEADER, m_session->m_header));
+}
+std::error_code CCurl::AddHeader(const std::string& header)
+{
+  if (m_session->m_header)
+    curl_slist_append(m_session->m_header, header.c_str());
+  else
+    m_session->m_header = curl_slist_append(nullptr, header.c_str());
+
+  return make_error_code(
+      curl_easy_setopt(m_session->m_easy, CURLOPT_HTTPHEADER, m_session->m_header));
+}
+
 } // namespace PLATFORM
 } // namespace KODI

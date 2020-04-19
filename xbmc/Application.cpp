@@ -55,7 +55,6 @@
 #include "cores/DllLoader/DllLoaderContainer.h"
 #include "filesystem/Directory.h"
 #include "filesystem/DirectoryCache.h"
-#include "platform/Curl.h"
 #include "filesystem/PluginDirectory.h"
 #include "filesystem/SpecialProtocol.h"
 #include "filesystem/StackDirectory.h"
@@ -69,6 +68,7 @@
 #include "messaging/ThreadMessage.h"
 #include "messaging/helpers/DialogHelper.h"
 #include "messaging/helpers/DialogOKHelper.h"
+#include "platform/Curl.h"
 #include "playlists/PlayList.h"
 #include "playlists/SmartPlayList.h"
 #include "powermanagement/DPMSSupport.h"
@@ -4160,9 +4160,6 @@ void CApplication::ProcessSlow()
   // Pass the slow loop to droid
   CXBMCApp::get()->ProcessSlow();
 #endif
-
-  // check for any idle curl connections
-  g_curlInterface.CheckIdle();
 
   CServiceBroker::GetGUI()->GetLargeTextureManager().CleanupUnusedImages();
 
