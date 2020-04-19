@@ -120,6 +120,7 @@ protected:
   struct connector *m_connector = nullptr;
   struct encoder *m_encoder = nullptr;
   struct crtc *m_crtc = nullptr;
+  struct crtc* m_orig_crtc = nullptr;
   struct plane *m_video_plane = nullptr;
   struct plane *m_gui_plane = nullptr;
   drmModeModeInfo *m_mode = nullptr;
@@ -134,7 +135,7 @@ private:
   bool GetResources();
   bool FindConnector();
   bool FindEncoder();
-  bool FindCrtc();
+  bool FindCrtcs();
   bool FindPlanes();
   bool FindModifiersForPlane(struct plane *object);
   bool FindPreferredMode();
@@ -144,11 +145,11 @@ private:
   bool CheckConnector(int connectorId);
 
   KODI::UTILS::POSIX::CFileHandle m_renderFd;
-  int m_crtc_index;
   std::string m_module;
 
   drmModeResPtr m_drm_resources = nullptr;
-  drmModeCrtcPtr m_orig_crtc = nullptr;
+
+  std::vector<crtc*> m_crtcs;
 };
 
 }
