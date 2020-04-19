@@ -603,7 +603,7 @@ void CCurlFile::SetCommonOptions(CReadState* state, bool failOnError /* = true *
 
     const std::string userpass =
       m_proxyuser + std::string(":") + m_proxypassword;
-    if (!userpass.empty())
+    if (userpass != ":")
       g_curlInterface.easy_setopt(h, CURLOPT_PROXYUSERPWD, userpass.c_str());
   }
   if (m_customrequest.length() > 0)
