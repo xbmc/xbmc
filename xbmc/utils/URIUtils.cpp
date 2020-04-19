@@ -1371,7 +1371,8 @@ std::string URIUtils::resolvePath(const std::string &path)
   // put together the path
   realPath += StringUtils::Join(realParts, delim);
   // re-add any / or \ at the end
-  if (path.at(path.size() - 1) == delim.at(0) && realPath.at(realPath.size() - 1) != delim.at(0))
+  if (path.at(path.size() - 1) == delim.at(0) &&
+      realPath.size() > 0 && realPath.at(realPath.size() - 1) != delim.at(0))
     realPath += delim;
 
   return realPath;
