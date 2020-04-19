@@ -10,6 +10,7 @@
 
 #include "ServiceBroker.h"
 #include "cores/VideoPlayer/DVDDemuxers/DVDDemuxUtils.h"
+#include "cores/VideoPlayer/Interface/Addon/InputStreamConstants.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "events/EventLog.h"
 #include "events/NotificationEvent.h"
@@ -742,7 +743,7 @@ PVR_ERROR CPVRClient::GetEpgTagStreamProperties(const std::shared_ptr<CPVREpgInf
   return DoAddonCall(__FUNCTION__, [&tag, &props](const AddonInstance* addon) {
     CAddonEpgTag addonTag(tag);
 
-    unsigned int iPropertyCount = PVR_STREAM_MAX_PROPERTIES;
+    unsigned int iPropertyCount = STREAM_MAX_PROPERTY_COUNT;
     std::unique_ptr<PVR_NAMED_VALUE[]> properties(new PVR_NAMED_VALUE[iPropertyCount]);
     memset(properties.get(), 0, iPropertyCount * sizeof(PVR_NAMED_VALUE));
 
@@ -1092,7 +1093,7 @@ PVR_ERROR CPVRClient::GetChannelStreamProperties(const std::shared_ptr<CPVRChann
     PVR_CHANNEL tag = {0};
     WriteClientChannelInfo(channel, tag);
 
-    unsigned int iPropertyCount = PVR_STREAM_MAX_PROPERTIES;
+    unsigned int iPropertyCount = STREAM_MAX_PROPERTY_COUNT;
     std::unique_ptr<PVR_NAMED_VALUE[]> properties(new PVR_NAMED_VALUE[iPropertyCount]);
     memset(properties.get(), 0, iPropertyCount * sizeof(PVR_NAMED_VALUE));
 
@@ -1114,7 +1115,7 @@ PVR_ERROR CPVRClient::GetRecordingStreamProperties(const std::shared_ptr<CPVRRec
     PVR_RECORDING tag = {{0}};
     WriteClientRecordingInfo(*recording, tag);
 
-    unsigned int iPropertyCount = PVR_STREAM_MAX_PROPERTIES;
+    unsigned int iPropertyCount = STREAM_MAX_PROPERTY_COUNT;
     std::unique_ptr<PVR_NAMED_VALUE[]> properties(new PVR_NAMED_VALUE[iPropertyCount]);
     memset(properties.get(), 0, iPropertyCount * sizeof(PVR_NAMED_VALUE));
 
