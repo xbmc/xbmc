@@ -203,6 +203,32 @@ bool CDRMUtils::SupportsProperty(struct drm_object *object, const char *name)
   return false;
 }
 
+bool CDRMUtils::SupportsPropertyAndValue(struct drm_object* object,
+                                         const char* name,
+                                         uint64_t value)
+{
+  for (uint32_t i = 0; i < object->props->count_props; i++)
+  {
+    if (!StringUtils::EqualsNoCase(object->props_info[i]->name, name))
+      continue;
+
+    if (drm_property_type_is(object->props_info[i], DRM_MODE_PROP_ENUM) != 0)
+    {
+      for (int j = 0; j < object->props_info[i]->count_enums; j++)
+      {
+        if (object->props_info[i]->enums[j].value == value)
+          return true;
+      }
+    }
+
+    CLog::Log(LOGDEBUG, "CDRMUtils::{} - property '{}' does not support value '{}'", __FUNCTION__,
+              name, value);
+    break;
+  }
+
+  return false;
+}
+
 uint32_t CDRMUtils::GetPropertyId(struct drm_object *object, const char *name)
 {
   for (uint32_t i = 0; i < object->props->count_props; i++)
