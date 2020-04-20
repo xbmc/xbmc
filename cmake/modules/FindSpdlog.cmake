@@ -35,6 +35,7 @@ if(ENABLE_INTERNAL_SPDLOG)
 
   set(SPDLOG_LIBRARY ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/lib/libspdlog.a)
   set(SPDLOG_INCLUDE_DIR ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/include)
+
   externalproject_add(spdlog
                       URL ${SPDLOG_URL}
                       DOWNLOAD_DIR ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/download
@@ -49,6 +50,7 @@ if(ENABLE_INTERNAL_SPDLOG)
                                  -DSPDLOG_BUILD_TESTS=OFF
                                  -DSPDLOG_BUILD_BENCH=OFF
                                  -DSPDLOG_FMT_EXTERNAL=ON
+                                 -DCMAKE_PREFIX_PATH=${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}
                                  "${EXTRA_ARGS}"
                       BUILD_BYPRODUCTS ${SPDLOG_LIBRARY})
   set_target_properties(spdlog PROPERTIES FOLDER "External Projects")
