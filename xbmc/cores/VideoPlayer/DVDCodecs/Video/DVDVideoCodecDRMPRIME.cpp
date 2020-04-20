@@ -19,7 +19,10 @@
 #include "threads/SingleLock.h"
 #include "utils/CPUInfo.h"
 #include "utils/log.h"
+
+#if defined(HAVE_GBM)
 #include "windowing/gbm/WinSystemGbm.h"
+#endif
 
 extern "C"
 {
@@ -29,8 +32,6 @@ extern "C"
 #include <libavutil/opt.h>
 #include <libavutil/pixdesc.h>
 }
-
-using namespace KODI::WINDOWING::GBM;
 
 namespace
 {
@@ -242,13 +243,49 @@ bool CDVDVideoCodecDRMPRIME::Open(CDVDStreamInfo& hints, CDVDCodecOptions& optio
   if (pConfig && (pConfig->methods & AV_CODEC_HW_CONFIG_METHOD_HW_DEVICE_CTX) &&
       pConfig->device_type == AV_HWDEVICE_TYPE_DRM)
   {
-    CWinSystemGbm* winSystem = dynamic_cast<CWinSystemGbm*>(CServiceBroker::GetWinSystem());
-    if (av_hwdevice_ctx_create(&m_pCodecContext->hw_device_ctx, AV_HWDEVICE_TYPE_DRM,
-                               drmGetDeviceNameFromFd2(winSystem->GetDrm()->GetFileDescriptor()),
-                               nullptr, 0) < 0)
+    const char* device = nullptr;
+
+    if (getenv("KODI_RENDER_NODE"))
+      device = getenv("KODI_RENDER_NODE");
+
+#if defined(HAVE_GBM)
+    auto winSystem = dynamic_cast<KODI::WINDOWING::GBM::CWinSystemGbm*>(CServiceBroker::GetWinSystem());
+
+    if (!winSystem)
+      return false;
+
+    auto drm = winSystem->GetDrm();
+
+    if (!drm)
+      return false;
+
+    int fd = drm->GetFileDescriptor();
+
+    if (fd < 0)
+      return false;
+
+    if (!device)
+      device = drmGetRenderDeviceNameFromFd(fd);
+
+    if (!device)
+      device = drmGetDeviceNameFromFd2(fd);
+
+    if (!device)
+      device = drmGetDeviceNameFromFd(fd);
+#endif
+
+    //! @todo: fix with proper device when dma-hints wayland protocol works
+    if (!device)
+      device = "/dev/dri/renderD128";
+
+    CLog::Log(LOGDEBUG, "CDVDVideoCodecDRMPRIME::{} - using drm device for av_hwdevice_ctx: {}", __FUNCTION__, device);
+
+    if (av_hwdevice_ctx_create(&m_pCodecContext->hw_device_ctx, pConfig->device_type,
+                               device, nullptr, 0) < 0)
     {
-      CLog::Log(LOGINFO, "CDVDVideoCodecDRMPRIME::{} - unable to create hwdevice context",
-                __FUNCTION__);
+      CLog::Log(LOGERROR,
+                "CDVDVideoCodecDRMPRIME::{} - unable to create hwdevice context using device: {}",
+                __FUNCTION__, device);
       avcodec_free_context(&m_pCodecContext);
       return false;
     }
