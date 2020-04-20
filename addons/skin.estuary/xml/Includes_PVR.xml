@@ -213,7 +213,7 @@
 					<top>60</top>
 					<height>200</height>
 					<wrapmultiline>true</wrapmultiline>
-					<label>$INFO[ListItem.TimerType,[COLOR grey]$LOCALIZE[803]:[/COLOR] ,[CR]]$INFO[ListItem.Duration,[COLOR grey]$LOCALIZE[180]:[/COLOR] ,[CR]]$VAR[ExpirationDateTimeLabel,[CR]]$VAR[FlagLabel]</label>
+					<label>$INFO[ListItem.TimerType,[COLOR grey]$LOCALIZE[803]:[/COLOR] ,[CR]]$VAR[DateDurationLabel]$VAR[ExpirationDateTimeLabel]$VAR[FlagLabel]</label>
 				</control>
 				<control type="group">
 					<visible>Integer.IsGreater(ListItem.Progress,0)</visible>
