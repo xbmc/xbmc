@@ -159,6 +159,11 @@ web applications or frameworks for the Python programming language.
       <b>xbmc.monitor().onDatabaseScanStarted()</b> function was removed completely.
 }
 \python_removed_function{
+      onAbortRequested,
+      "",
+      <b>xbmc.monitor().onAbortRequested()</b> function was removed completely.
+}
+\python_removed_function{
       create,
       "",
       <b>xbmcgui.DialogBusy().create()</b> function was removed completely.
