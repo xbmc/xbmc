@@ -10,6 +10,8 @@
 
 #include <memory>
 
+#include "utils/GlobalsHandling.h"
+
 namespace ADDON {
 class CAddonMgr;
 class CBinaryAddonManager;
@@ -79,6 +81,9 @@ namespace PERIPHERALS
 class CServiceBroker
 {
 public:
+  ~CServiceBroker();
+  CServiceBroker();
+
   static CLog& GetLogging();
   static void CreateLogging();
 
@@ -143,13 +148,18 @@ public:
   static void UnregisterCPUInfo();
 
 private:
-  static std::unique_ptr<CLog> m_logging;
-  static std::shared_ptr<ANNOUNCEMENT::CAnnouncementManager> m_pAnnouncementManager;
-  static CGUIComponent* m_pGUI;
-  static CWinSystemBase* m_pWinSystem;
-  static IAE* m_pActiveAE;
-  static std::shared_ptr<CAppInboundProtocol> m_pAppPort;
-  static CSettingsComponent* m_pSettingsComponent;
-  static CDecoderFilterManager* m_decoderFilterManager;
-  static std::shared_ptr<CCPUInfo> m_cpuInfo;
+  std::unique_ptr<CLog> m_logging;
+  std::shared_ptr<ANNOUNCEMENT::CAnnouncementManager> m_pAnnouncementManager;
+  CGUIComponent* m_pGUI;
+  CWinSystemBase* m_pWinSystem;
+  IAE* m_pActiveAE;
+  std::shared_ptr<CAppInboundProtocol> m_pAppPort;
+  CSettingsComponent* m_pSettingsComponent;
+  CDecoderFilterManager* m_decoderFilterManager;
+  std::shared_ptr<CCPUInfo> m_cpuInfo;
 };
+
+XBMC_GLOBAL_REF(CServiceBroker, g_serviceBroker);
+#define g_serviceBroker XBMC_GLOBAL_USE(CServiceBroker)
+
+
