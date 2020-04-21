@@ -28,7 +28,7 @@ else
     RETRIEVE_TOOL_FLAGS := -Ls --create-dirs -f -O
     ARCHIVE_TOOL := tar
     ARCHIVE_TOOL_FLAGS := --strip-components=1 -xf
-    CMAKE := cmake -DCMAKE_INSTALL_PREFIX=$(PREFIX)
+    CMAKE := cmake -DCMAKE_INSTALL_PREFIX=$(PREFIX) -DCMAKE_PREFIX_PATH=$(PREFIX)
   endif
 endif
 
