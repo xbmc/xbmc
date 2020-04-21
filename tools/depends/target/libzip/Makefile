@@ -3,15 +3,11 @@ DEPS= ../../Makefile.include Makefile
 
 # lib name, version
 LIBNAME=libzip
-VERSION=1.1.2
+VERSION=1.6.1
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
 
-# configuration settings
-CONFIGURE=cp -f $(CONFIG_SUB) $(CONFIG_GUESS) .; \
-        ./configure --prefix=$(PREFIX) --disable-shared
-
-LIBDYLIB=$(PLATFORM)/lib/.libs/$(LIBNAME).a
+LIBDYLIB=$(PLATFORM)/build/lib/libzip.a
 
 all: .installed-$(PLATFORM)
 
@@ -21,14 +17,13 @@ $(TARBALLS_LOCATION)/$(ARCHIVE):
 $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 	rm -rf $(PLATFORM)/*; mkdir -p $(PLATFORM)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
-	cd $(PLATFORM); $(CONFIGURE)
+	cd $(PLATFORM); $(CMAKE) -B build -DBUILD_DOC:BOOL=OFF -DBUILD_EXAMPLES:BOOL=OFF -DBUILD_REGRESS:BOOL=OFF -DBUILD_SHARED_LIBS:BOOL=OFF -DBUILD_TOOLS:BOOL=OFF
 
 $(LIBDYLIB): $(PLATFORM)
-	$(MAKE) -C $(PLATFORM)
+	$(MAKE) -C $(PLATFORM)/build
 
 .installed-$(PLATFORM): $(LIBDYLIB)
-	$(MAKE) -C $(PLATFORM) install
-	rm -f $(PREFIX)/lib/libzip.la $(PREFIX)/lib/libzip*.so*
+	$(MAKE) -C $(PLATFORM)/build install
 	touch $@
 
 clean:

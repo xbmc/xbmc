@@ -6,7 +6,7 @@ endif
 
 DEPENDS = \
 	pcre expat gettext sqlite3 libgpg-error \
-	libgcrypt bzip2 libfstrcmp liblzo2 libzip freetype2 fontconfig \
+	libgcrypt bzip2 libfstrcmp liblzo2 freetype2 fontconfig \
 	openssl gmp nettle gnutls googletest curl nghttp2 \
 	libjpeg-turbo libpng fribidi libass \
 	libxml2 rapidjson libmicrohttpd mariadb libffi \
@@ -39,7 +39,7 @@ endif
 
 ifeq ($(OS),android)
   EXCLUDED_DEPENDS = libcec libusb
-  DEPENDS += dummy-libxbmc libuuid libandroidjni
+  DEPENDS += dummy-libxbmc libuuid libandroidjni libzip
   PYMODULE_DEPS = dummy-libxbmc
   LIBUUID = libuuid
 endif
@@ -95,7 +95,7 @@ libcdio-gplv3: $(ICONV)
 libplist: $(ZLIB)
 libbluray: fontconfig freetype2 $(ICONV) libxml2
 mariadb: openssl $(ICONV) $(ZLIB)
-libzip: $(ZLIB)
+libzip: bzip2 gnutls $(ZLIB)
 libpng: $(ZLIB)
 openssl: $(ZLIB)
 gnutls: nettle $(ZLIB)
