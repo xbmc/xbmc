@@ -480,7 +480,7 @@ bool CSettings::Load(const std::string &file)
   CXBMCTinyXML xmlDoc;
   bool updated = false;
   if (!XFILE::CFile::Exists(file) || !xmlDoc.LoadFile(file) ||
-      !Load(xmlDoc.RootElement(), updated) || !Load(xmlDoc.RootElement()))
+      !Load(xmlDoc.RootElement(), updated))
   {
     CLog::Log(LOGERROR, "CSettings: unable to load settings from %s, creating new default settings", file.c_str());
     if (!Reset())
