@@ -48,6 +48,13 @@ public:
    */
   bool InstallOrUpdate(const std::string &addonID, bool background = true, bool modal = false);
 
+  /*! \brief Installs a vector of addons
+   \param addons the list of addons to install
+   \param wait if the method should wait for all the DoInstall jobs to finish or if it should return right away
+   \sa DoInstall
+   */
+  void InstallAddons(const ADDON::VECADDONS& addons, bool wait);
+
   /*! \brief Install an addon from the given zip path
    \param path the zip file to install from
    \return true if successful, false otherwise
@@ -82,10 +89,6 @@ public:
    *  \return true if a job exists, false otherwise
    */
   bool HasJob(const std::string& ID) const;
-
-  /*! Install update and block until all updates have installed. */
-  void InstallUpdatesAndWait();
-  void InstallUpdates();
 
   void OnJobComplete(unsigned int jobID, bool success, CJob* job) override;
   void OnJobProgress(unsigned int jobID, unsigned int progress, unsigned int total, const CJob *job) override;

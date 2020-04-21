@@ -416,30 +416,24 @@ void CAddonInstaller::PrunePackageCache()
     delete it->second;
 }
 
-void CAddonInstaller::InstallUpdates()
+void CAddonInstaller::InstallAddons(const VECADDONS& addons, bool wait)
 {
-  auto updates = CServiceBroker::GetAddonMgr().GetAvailableUpdates();
-  for (const auto& addon : updates)
+  for (const auto& addon : addons)
   {
-    if (!CServiceBroker::GetAddonMgr().IsBlacklisted(addon->ID()))
-    {
-      AddonPtr toInstall;
-      RepositoryPtr repo;
-      if (CAddonInstallJob::GetAddon(addon->ID(), repo, toInstall))
-        DoInstall(toInstall, repo, true, false, true);
-    }
+    AddonPtr toInstall;
+    RepositoryPtr repo;
+    if (CAddonInstallJob::GetAddon(addon->ID(), repo, toInstall))
+      DoInstall(toInstall, repo, true, false, true);
   }
-}
-
-void CAddonInstaller::InstallUpdatesAndWait()
-{
-  InstallUpdates();
-  CSingleLock lock(m_critSection);
-  if (!m_downloadJobs.empty())
+  if (wait)
   {
-    m_idle.Reset();
-    lock.Leave();
-    m_idle.Wait();
+    CSingleLock lock(m_critSection);
+    if (!m_downloadJobs.empty())
+    {
+      m_idle.Reset();
+      lock.Leave();
+      m_idle.Wait();
+    }
   }
 }
 
