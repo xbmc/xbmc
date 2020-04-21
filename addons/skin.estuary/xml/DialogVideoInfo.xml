@@ -488,7 +488,6 @@
 								<align>center</align>
 								<aligny>center</aligny>
 								<font>font23_narrow</font>
-								<scroll>true</scroll>
 								<label>$INFO[ListItem.Label]</label>
 							</control>
 							<control type="image">
