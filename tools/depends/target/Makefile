@@ -95,7 +95,7 @@ libcdio-gplv3: $(ICONV)
 libplist: $(ZLIB)
 libbluray: fontconfig freetype2 $(ICONV) libxml2
 mariadb: openssl $(ICONV) $(ZLIB)
-libzip: $(ZLIB)
+libzip: bzip2 gnutls $(ZLIB)
 libpng: $(ZLIB)
 openssl: $(ZLIB)
 gnutls: nettle $(ZLIB)
