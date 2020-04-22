@@ -42,7 +42,7 @@ bool CPosixUDPSocket::Bind(bool localOnly, int port, int range)
 #else
       int zero = 0;
 #endif
-      if (setsockopt(m_iSock, IPPROTO_IPV6, IPV6_V6ONLY, &zero, sizeof(&zero)) == -1)
+      if (setsockopt(m_iSock, IPPROTO_IPV6, IPV6_V6ONLY, &zero, sizeof(zero)) == -1)
       {
         close(m_iSock);
         m_iSock = INVALID_SOCKET;
@@ -54,7 +54,7 @@ bool CPosixUDPSocket::Bind(bool localOnly, int port, int range)
         SOCKET testSocket = socket(AF_INET6, SOCK_DGRAM, IPPROTO_UDP);
         if (testSocket != INVALID_SOCKET)
         {
-          setsockopt(testSocket, IPPROTO_IPV6, IPV6_V6ONLY, &zero, sizeof(&zero));
+          setsockopt(testSocket, IPPROTO_IPV6, IPV6_V6ONLY, &zero, sizeof(zero));
           // Try to bind a socket to validate ipv6 status
           for (m_iPort = port; m_iPort <= port + range; ++m_iPort)
           {
@@ -73,6 +73,7 @@ bool CPosixUDPSocket::Bind(bool localOnly, int port, int range)
           }
 
           closesocket(testSocket);
+          testSocket = INVALID_SOCKET;
         }
         else
         {
@@ -81,7 +82,8 @@ bool CPosixUDPSocket::Bind(bool localOnly, int port, int range)
           m_iSock = INVALID_SOCKET;
         }
 
-        closesocket(testSocket);
+        if (testSocket != INVALID_SOCKET)
+          closesocket(testSocket);
       }
     }
   }
