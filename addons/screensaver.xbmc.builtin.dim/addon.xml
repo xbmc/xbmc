@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="screensaver.xbmc.builtin.dim"
        name="Dim"
-       version="1.0.58"
+       version="1.0.59"
        provider-name="Team Kodi">
   <extension point="xbmc.ui.screensaver" library="dummy.so"/>
   <extension point="xbmc.addon.metadata">
@@ -126,5 +126,8 @@
     <description lang="zh_CN">淡出屏保是一个简单的屏幕保护程序，它使你的屏幕显示内容变暗（淡出效果），暗化度可在20%至100%之间调节。</description>
     <description lang="zh_TW">暗化螢幕保護程式單純將螢幕變暗，暗化值可設定在20%至100%之間。</description>
     <platform>all</platform>
+    <assets>
+      <icon>icon.png</icon>
+    </assets>
   </extension>
 </addon>
