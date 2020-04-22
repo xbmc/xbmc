@@ -52,25 +52,28 @@ namespace XBMCAddon
     ///  |----------------:|---------------------------------------------------|
     ///  | xbmc.LOGDEBUG   | In depth information about the status of Kodi. This information can pretty much only be deciphered by a developer or long time Kodi power user.
     ///  | xbmc.LOGINFO    | Something has happened. It's not a problem, we just thought you might want to know. Fairly excessive output that most people won't care about.
-    ///  | xbmc.LOGNOTICE  | Similar to INFO but the average Joe might want to know about these events. This level and above are logged by default.
     ///  | xbmc.LOGWARNING | Something potentially bad has happened. If Kodi did something you didn't expect, this is probably why. Watch for errors to follow.
     ///  | xbmc.LOGERROR   | This event is bad. Something has failed. You likely noticed problems with the application be it skin artifacts, failure of playback a crash, etc.
     ///  | xbmc.LOGFATAL   | We're screwed. Kodi is about to crash.
     ///
-    /// @note You can use the above as keywords for arguments and skip certain
-    ///       optional arguments. Once you use a keyword, all following
-    ///       arguments require the keyword.
+    /// @note Addon developers are advised to keep `LOGDEBUG` as the default
+    /// logging level and to use conservative logging (log only if needed).
+    /// Excessive logging makes it harder to debug kodi itself.
     ///
-    /// Text is written to the log for the following conditions.
-    ///           - loglevel == -1 (NONE, nothing at all is logged)
-    ///           - loglevel == 0 (NORMAL, shows LOGNOTICE, LOGERROR, LOGSEVERE
-    ///             and LOGFATAL)
-    ///           - loglevel == 1 (DEBUG, shows all)
-    ///           See pydocs for valid values for level.
+    /// Logging in kodi has a global configuration level that controls how text
+    /// is written to the log. This global logging behaviour can be changed in
+    /// the GUI (**Settings -> System -> Logging**) (debug toggle) or furthered
+    /// configured in advancedsettings (loglevel setting).
+    ///
+    /// Text is written to the log for the following conditions:
+    ///  - loglevel == -1 (NONE, nothing at all is logged to the log)
+    ///  - loglevel == 0 (NORMAL, shows `LOGINFO`, `LOGWARNING`, `LOGERROR` and `LOGFATAL`) - Default kodi behaviour
+    ///  - loglevel == 1 (DEBUG, shows all) - Behaviour if you toggle debug log in the GUI
     ///
     ///
     /// ------------------------------------------------------------------------
-    /// @python_v17 Default level changed from LOGNOTICE to LOGDEBUG
+    /// @python_v17 Default level changed from `LOGNOTICE` to `LOGDEBUG`
+    /// @python_v19 Removed `LOGNOTICE` (use `LOGINFO`) and `LOGSEVERE` (use `LOGFATAL`)
     ///
     /// **Example:**
     /// ~~~~~~~~~~~~~{.py}
