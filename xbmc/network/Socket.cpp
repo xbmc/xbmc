@@ -73,6 +73,7 @@ bool CPosixUDPSocket::Bind(bool localOnly, int port, int range)
           }
 
           closesocket(testSocket);
+          testSocket = INVALID_SOCKET;
         }
         else
         {
@@ -81,7 +82,8 @@ bool CPosixUDPSocket::Bind(bool localOnly, int port, int range)
           m_iSock = INVALID_SOCKET;
         }
 
-        closesocket(testSocket);
+        if (testSocket != INVALID_SOCKET)
+          closesocket(testSocket);
       }
     }
   }
