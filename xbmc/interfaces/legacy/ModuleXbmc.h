@@ -212,14 +212,22 @@ namespace XBMCAddon
     /// \ingroup python_xbmc
     /// @brief \python_func{ xbmc.sleep(time) }
     ///-----------------------------------------------------------------------
-    /// Sleeps for 'time' msec.
+    /// Sleeps for 'time' (msec).
+    /// \anchor xbmc_Sleep
     ///
     /// @param time                 integer - number of msec to sleep.
     ///
     /// @throws PyExc_TypeError     If time is not an integer.
     ///
-    /// @note This is useful if you have for example a Player class that is
-    ///       waiting for onPlayBackEnded() calls.
+    /// @warning This is useful if you need to sleep for a small amount of time
+    /// (milisecond range) somewhere in your addon logic. Please note that Kodi
+    /// will attempt to stop any running scripts when signaled to exit and wait for a maximum
+    /// of 5 seconds before trying to force stop your script. If your addon makes use
+    /// of \ref xbmc_Sleep "xbmc.sleep()" incorrectly (long periods of time, e.g. that exceed
+    /// the force stop waiting time) it may lead to Kodi hanging on shutdown.
+    /// In case your addon needs long sleep/idle periods use
+    /// \ref xbmc_Monitor_waitForAbort "xbmc.Monitor().waitForAbort(secs)"
+    /// instead.
     ///
     ///
     /// ------------------------------------------------------------------------

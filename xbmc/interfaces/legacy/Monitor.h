@@ -257,6 +257,7 @@ namespace XBMCAddon
       /// @brief \python_func{ waitForAbort([timeout]) }
       ///-----------------------------------------------------------------------
       /// Wait for Abort
+      /// \anchor xbmc_Monitor_waitForAbort
       ///
       /// Block until abort is requested, or until timeout occurs. If an
       /// abort requested have already been made, return immediately.
@@ -271,6 +272,17 @@ namespace XBMCAddon
       ///
       ///-----------------------------------------------------------------------
       /// @python_v14 New function added.
+      ///
+      /// **Example:**
+      /// ~~~~~~~~~~~~~{.py}
+      /// ..
+      /// monitor = xbmc.Monitor()
+      /// # do something
+      /// monitor.waitForAbort(10) # sleeps for 10 secs or returns early if kodi aborts
+      /// if monitor.abortRequested():
+      ///     # abort was requested to Kodi (e.g. shutdown), do your cleanup logic
+      /// ..
+      /// ~~~~~~~~~~~~~
       ///
       waitForAbort(...);
 #else
