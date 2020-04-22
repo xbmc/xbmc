@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <addon
   id="audioencoder.kodi.builtin.wma"
-  version="1.0.0"
+  version="1.0.1"
   name="WMA encoder"
   provider-name="spiff">
   <extension
@@ -12,5 +12,8 @@
     <summary lang="en">WMA Audio Encoder</summary>
     <description lang="en">Windows Media Audio, Microsoft’s lossy audio format.</description>
     <platform>all</platform>
+    <assets>
+      <icon>icon.png</icon>
+    </assets>
   </extension>
 </addon>

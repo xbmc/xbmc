@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="screensaver.xbmc.builtin.black"
        name="Black"
-       version="1.0.33"
+       version="1.0.34"
        provider-name="Team Kodi">
   <extension point="xbmc.ui.screensaver" library="dummy.so"/>
   <extension point="xbmc.addon.metadata">
@@ -122,5 +122,8 @@
     <description lang="zh_CN">黑屏屏保是一个简单的屏幕保护程序，它使你的显示器进入黑屏状态。</description>
     <description lang="zh_TW">Black 是一個讓螢幕變全黑的螢幕保護程式。</description>
     <platform>all</platform>
+    <assets>
+      <icon>icon.png</icon>
+    </assets>
   </extension>
 </addon>
