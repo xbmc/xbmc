@@ -357,7 +357,7 @@ static void SinkInfoCallback(pa_context *c, const pa_sink_info *i, int eol, void
       sinkStruct->isBTDevice =
           StringUtils::EndsWithNoCase(std::string(i->name), std::string("a2dp_sink"));
       if (sinkStruct->isBTDevice)
-        CLog::Log(LOGNOTICE, "Found BT Device - will adjust buffers to larger values");
+        CLog::Log(LOGINFO, "Found BT Device - will adjust buffers to larger values");
 
       sinkStruct->samplerate = i->sample_spec.rate;
       sinkStruct->device_found = true;
@@ -646,7 +646,7 @@ bool CDriverMonitor::Start()
 {
   if (!SetupContext(nullptr, "KodiDriver", &m_pContext, &m_pMainLoop))
   {
-    CLog::Log(LOGNOTICE, "PulseAudio might not be running. Context was not created.");
+    CLog::Log(LOGINFO, "PulseAudio might not be running. Context was not created.");
     return false;
   }
 
@@ -684,12 +684,12 @@ bool CAESinkPULSE::Register()
   s = pa_simple_new(NULL, "Kodi-Tester", PA_STREAM_PLAYBACK, NULL, "Test", &ss, NULL, NULL, NULL);
   if (!s)
   {
-    CLog::Log(LOGNOTICE, "PulseAudio: Server not running");
+    CLog::Log(LOGINFO, "PulseAudio: Server not running");
     return false;
   }
   else
   {
-    CLog::Log(LOGNOTICE, "PulseAudio: Server found running - will try to use Pulse");
+    CLog::Log(LOGINFO, "PulseAudio: Server found running - will try to use Pulse");
     pa_simple_free(s);
   }
 
@@ -754,7 +754,7 @@ bool CAESinkPULSE::Initialize(AEAudioFormat &format, std::string &device)
 
   if (!SetupContext(NULL, "KodiSink", &m_Context, &m_MainLoop))
   {
-    CLog::Log(LOGNOTICE, "PulseAudio might not be running. Context was not created.");
+    CLog::Log(LOGINFO, "PulseAudio might not be running. Context was not created.");
     Deinitialize();
     return false;
   }
@@ -1010,7 +1010,7 @@ bool CAESinkPULSE::Initialize(AEAudioFormat &format, std::string &device)
   m_format = format;
   format.m_dataFormat = m_passthrough ? AE_FMT_S16NE : format.m_dataFormat;
 
-  CLog::Log(LOGNOTICE,
+  CLog::Log(LOGINFO,
             "PulseAudio: Opened device %s in %s mode with Buffersize %u ms Periodsize %u ms",
             device.c_str(), m_passthrough ? "passthrough" : "pcm",
             static_cast<unsigned int>(1000.0 * m_BufferSize / m_BytesPerSecond),
@@ -1235,7 +1235,7 @@ void CAESinkPULSE::EnumerateDevicesEx(AEDeviceInfoList &list, bool force)
 
   if (!SetupContext(NULL, "KodiSink", &context, &mainloop))
   {
-    CLog::Log(LOGNOTICE, "PulseAudio might not be running. Context was not created.");
+    CLog::Log(LOGINFO, "PulseAudio might not be running. Context was not created.");
     return;
   }
 

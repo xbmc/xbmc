@@ -655,7 +655,7 @@ CVideoPlayer::~CVideoPlayer()
 
 bool CVideoPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
 {
-  CLog::Log(LOGNOTICE, "VideoPlayer::OpenFile: %s", CURL::GetRedacted(file.GetPath()).c_str());
+  CLog::Log(LOGINFO, "VideoPlayer::OpenFile: %s", CURL::GetRedacted(file.GetPath()).c_str());
 
   if (IsRunning())
   {
@@ -689,7 +689,7 @@ bool CVideoPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options
 
 bool CVideoPlayer::CloseFile(bool reopen)
 {
-  CLog::Log(LOGNOTICE, "CVideoPlayer::CloseFile()");
+  CLog::Log(LOGINFO, "CVideoPlayer::CloseFile()");
 
   // set the abort request so that other threads can finish up
   m_bAbortRequest = true;
@@ -707,7 +707,7 @@ bool CVideoPlayer::CloseFile(bool reopen)
 
   m_renderManager.UnInit();
 
-  CLog::Log(LOGNOTICE, "VideoPlayer: waiting for threads to exit");
+  CLog::Log(LOGINFO, "VideoPlayer: waiting for threads to exit");
 
   // wait for the main thread to finish up
   // since this main thread cleans up all other resources and threads
@@ -723,7 +723,7 @@ bool CVideoPlayer::CloseFile(bool reopen)
   m_HasVideo = false;
   m_HasAudio = false;
 
-  CLog::Log(LOGNOTICE, "VideoPlayer: finished waiting");
+  CLog::Log(LOGINFO, "VideoPlayer: finished waiting");
   return true;
 }
 
@@ -749,7 +749,7 @@ bool CVideoPlayer::OpenInputStream()
     throw std::runtime_error("m_pInputStream reference count is greater than 1");
   m_pInputStream.reset();
 
-  CLog::Log(LOGNOTICE, "Creating InputStream");
+  CLog::Log(LOGINFO, "Creating InputStream");
 
   // correct the filename if needed
   std::string filename(m_item.GetPath());
@@ -814,7 +814,7 @@ bool CVideoPlayer::OpenDemuxStream()
 {
   CloseDemuxer();
 
-  CLog::Log(LOGNOTICE, "Creating Demuxer");
+  CLog::Log(LOGINFO, "Creating Demuxer");
 
   int attempts = 10;
   while (!m_bStop && attempts-- > 0)
@@ -1211,7 +1211,7 @@ void CVideoPlayer::Prepare()
   bool discStateRestored = false;
   if (std::shared_ptr<CDVDInputStream::IMenus> ptr = std::dynamic_pointer_cast<CDVDInputStream::IMenus>(m_pInputStream))
   {
-    CLog::Log(LOGNOTICE, "VideoPlayer: playing a file with menu's");
+    CLog::Log(LOGINFO, "VideoPlayer: playing a file with menu's");
     if(std::dynamic_pointer_cast<CDVDInputStreamNavigator>(m_pInputStream))
       m_playerOptions.starttime = 0;
 
@@ -1456,7 +1456,7 @@ void CVideoPlayer::Process()
         CloseDemuxer();
 
         SetCaching(CACHESTATE_DONE);
-        CLog::Log(LOGNOTICE, "VideoPlayer: next stream, wait for old streams to be finished");
+        CLog::Log(LOGINFO, "VideoPlayer: next stream, wait for old streams to be finished");
         CloseStream(m_CurrentAudio, true);
         CloseStream(m_CurrentVideo, true);
 
@@ -2384,14 +2384,14 @@ void CVideoPlayer::SendPlayerMessage(CDVDMsg* pMsg, unsigned int target)
 
 void CVideoPlayer::OnExit()
 {
-  CLog::Log(LOGNOTICE, "CVideoPlayer::OnExit()");
+  CLog::Log(LOGINFO, "CVideoPlayer::OnExit()");
 
   // set event to inform openfile something went wrong in case openfile is still waiting for this event
   SetCaching(CACHESTATE_DONE);
 
   // close each stream
   if (!m_bAbortRequest)
-    CLog::Log(LOGNOTICE, "VideoPlayer: eof, waiting for queues to empty");
+    CLog::Log(LOGINFO, "VideoPlayer: eof, waiting for queues to empty");
 
   CFileItem fileItem(m_item);
   UpdateFileItemStreamDetails(fileItem);
@@ -3377,7 +3377,7 @@ bool CVideoPlayer::OpenStream(CCurrentStream& current, int64_t demuxerId, int iS
   CDemuxStream* stream = NULL;
   CDVDStreamInfo hint;
 
-  CLog::Log(LOGNOTICE, "Opening stream: %i source: %i", iStream, source);
+  CLog::Log(LOGINFO, "Opening stream: %i source: %i", iStream, source);
 
   if(STREAM_SOURCE_MASK(source) == STREAM_SOURCE_DEMUX_SUB)
   {
@@ -3386,13 +3386,12 @@ bool CVideoPlayer::OpenStream(CCurrentStream& current, int64_t demuxerId, int iS
       return false;
     const SelectionStream& st = m_SelectionStreams.Get(current.type, index);
 
-    CLog::Log(LOGNOTICE, "Opening Subtitle file: %s", CURL::GetRedacted(st.filename).c_str());
+    CLog::Log(LOGINFO, "Opening Subtitle file: %s", CURL::GetRedacted(st.filename).c_str());
     m_pSubtitleDemuxer.reset();
     const auto demux = m_subtitleDemuxerMap.find(demuxerId);
     if (demux == m_subtitleDemuxerMap.end())
     {
-      CLog::Log(LOGNOTICE, "No demuxer found for file %s",
-                CURL::GetRedacted(st.filename).c_str());
+      CLog::Log(LOGINFO, "No demuxer found for file %s", CURL::GetRedacted(st.filename).c_str());
       return false;
     }
 
@@ -3727,7 +3726,7 @@ bool CVideoPlayer::CloseStream(CCurrentStream& current, bool bWaitForBuffers)
   if (current.id < 0)
     return false;
 
-  CLog::Log(LOGNOTICE, "Closing stream player %d", current.player);
+  CLog::Log(LOGINFO, "Closing stream player %d", current.player);
 
   if(bWaitForBuffers)
     SetCaching(CACHESTATE_DONE);
@@ -4862,7 +4861,7 @@ void CVideoPlayer::UpdateVideoRender(bool video)
 // IDispResource interface
 void CVideoPlayer::OnLostDisplay()
 {
-  CLog::Log(LOGNOTICE, "VideoPlayer: OnLostDisplay received");
+  CLog::Log(LOGINFO, "VideoPlayer: OnLostDisplay received");
   m_VideoPlayerAudio->SendMessage(new CDVDMsgBool(CDVDMsg::GENERAL_PAUSE, true), 1);
   m_VideoPlayerVideo->SendMessage(new CDVDMsgBool(CDVDMsg::GENERAL_PAUSE, true), 1);
   m_clock.Pause(true);
@@ -4875,7 +4874,7 @@ void CVideoPlayer::OnResetDisplay()
   if (!m_displayLost)
     return;
 
-  CLog::Log(LOGNOTICE, "VideoPlayer: OnResetDisplay received");
+  CLog::Log(LOGINFO, "VideoPlayer: OnResetDisplay received");
   m_VideoPlayerAudio->SendMessage(new CDVDMsgBool(CDVDMsg::GENERAL_PAUSE, false), 1);
   m_VideoPlayerVideo->SendMessage(new CDVDMsgBool(CDVDMsg::GENERAL_PAUSE, false), 1);
   m_clock.Pause(false);

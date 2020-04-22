@@ -335,7 +335,7 @@ void CNfsConnection::CheckIfIdle()
       }
       else
       {
-        CLog::Log(LOGNOTICE, "NFS is idle. Closing the remaining connections.");
+        CLog::Log(LOGINFO, "NFS is idle. Closing the remaining connections.");
         gNfsConnection.Deinit();
       }
     }
@@ -403,7 +403,7 @@ void CNfsConnection::keepAlive(std::string _exportPath, struct nfsfh  *_pFileHan
   if (!pContext)// this should normally never happen - paranoia
     pContext = m_pNfsContext;
 
-  CLog::Log(LOGNOTICE, "NFS: sending keep alive after %i s.",KEEP_ALIVE_TIMEOUT/2);
+  CLog::Log(LOGINFO, "NFS: sending keep alive after %i s.", KEEP_ALIVE_TIMEOUT / 2);
   CSingleLock lock(*this);
   nfs_lseek(pContext, _pFileHandle, 0, SEEK_CUR, &offset);
   nfs_read(pContext, _pFileHandle, 32, buffer);
@@ -511,7 +511,7 @@ bool CNFSFile::Open(const CURL& url)
   // if a file matches the if below return false, it can't exist on a nfs share.
   if (!IsValidFile(url.GetFileName()))
   {
-    CLog::Log(LOGNOTICE,"NFS: Bad URL : '%s'",url.GetFileName().c_str());
+    CLog::Log(LOGINFO, "NFS: Bad URL : '%s'", url.GetFileName().c_str());
     return false;
   }
 

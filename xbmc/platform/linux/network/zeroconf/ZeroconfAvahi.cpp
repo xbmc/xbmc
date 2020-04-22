@@ -300,7 +300,8 @@ void CZeroconfAvahi::groupCallback(AvahiEntryGroup *fp_group, AvahiEntryGroupSta
       char* alt_name = avahi_alternative_service_name( it->second->m_name.c_str() );
       it->second->m_name = alt_name;
       avahi_free(alt_name);
-      CLog::Log(LOGNOTICE, "CZeroconfAvahi::groupCallback: Service name collision. Renamed to: %s", it->second->m_name.c_str());
+      CLog::Log(LOGINFO, "CZeroconfAvahi::groupCallback: Service name collision. Renamed to: %s",
+                it->second->m_name.c_str());
       p_instance->addService(it->second, p_instance->mp_client);
     }
     break;
@@ -405,7 +406,8 @@ void CZeroconfAvahi::addService(tServiceMap::mapped_type fp_service_info, AvahiC
         char* alt_name = avahi_alternative_service_name(fp_service_info->m_name.c_str());
         fp_service_info->m_name = alt_name;
         avahi_free(alt_name);
-        CLog::Log(LOGNOTICE, "CZeroconfAvahi::addService: Service name collision. Renamed to: %s", fp_service_info->m_name.c_str());
+        CLog::Log(LOGINFO, "CZeroconfAvahi::addService: Service name collision. Renamed to: %s",
+                  fp_service_info->m_name.c_str());
         addService(fp_service_info, fp_client);
         return;
       }

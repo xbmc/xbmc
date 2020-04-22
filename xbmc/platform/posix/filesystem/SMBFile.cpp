@@ -292,8 +292,8 @@ void CSMB::CheckIfIdle()
       }
 	  else
 	  {
-        CLog::Log(LOGNOTICE, "Samba is idle. Closing the remaining connections");
-        smb.Deinit();
+            CLog::Log(LOGINFO, "Samba is idle. Closing the remaining connections");
+            smb.Deinit();
       }
     }
   }
@@ -361,8 +361,8 @@ bool CSMBFile::Open(const CURL& url)
   // if a file matches the if below return false, it can't exist on a samba share.
   if (!IsValidFile(url.GetFileName()))
   {
-      CLog::Log(LOGNOTICE,"SMBFile->Open: Bad URL : '%s'",url.GetRedacted().c_str());
-      return false;
+    CLog::Log(LOGINFO, "SMBFile->Open: Bad URL : '%s'", url.GetRedacted().c_str());
+    return false;
   }
   m_url = url;
 

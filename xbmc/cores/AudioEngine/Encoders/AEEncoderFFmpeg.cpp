@@ -172,7 +172,8 @@ bool CAEEncoderFFmpeg::Initialize(AEAudioFormat &format, bool allow_planar_input
       m_CodecCtx->sample_fmt = codec->sample_fmts[0];
       format.m_dataFormat = AE_FMT_FLOAT;
       m_NeedConversion = true;
-      CLog::Log(LOGNOTICE, "CAEEncoderFFmpeg::Initialize - Unknown audio format, it will be resampled.");
+      CLog::Log(LOGINFO,
+                "CAEEncoderFFmpeg::Initialize - Unknown audio format, it will be resampled.");
     }
     else
     {
@@ -214,7 +215,7 @@ bool CAEEncoderFFmpeg::Initialize(AEAudioFormat &format, bool allow_planar_input
       return false;
     }
   }
-  CLog::Log(LOGNOTICE, "CAEEncoderFFmpeg::Initialize - %s encoder ready", m_CodecName.c_str());
+  CLog::Log(LOGINFO, "CAEEncoderFFmpeg::Initialize - %s encoder ready", m_CodecName.c_str());
   return true;
 }
 

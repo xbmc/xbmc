@@ -775,18 +775,18 @@ bool CNetworkServices::StopEventServer(bool bWait, bool promptuser)
       if (HELPERS::ShowYesNoDialogText(CVariant{13140}, CVariant{13141}, CVariant{""}, CVariant{""}, 10000) !=
         DialogResponse::YES)
       {
-        CLog::Log(LOGNOTICE, "ES: Not stopping event server");
+        CLog::Log(LOGINFO, "ES: Not stopping event server");
         return false;
       }
     }
-    CLog::Log(LOGNOTICE, "ES: Stopping event server with confirmation");
+    CLog::Log(LOGINFO, "ES: Stopping event server with confirmation");
 
     CEventServer::GetInstance()->StopServer(true);
   }
   else
   {
     if (!bWait)
-      CLog::Log(LOGNOTICE, "ES: Stopping event server");
+      CLog::Log(LOGINFO, "ES: Stopping event server");
 
     CEventServer::GetInstance()->StopServer(bWait);
   }
@@ -835,7 +835,7 @@ bool CNetworkServices::StopUPnP(bool bWait)
   if (!CUPnP::IsInstantiated())
     return true;
 
-  CLog::Log(LOGNOTICE, "stopping upnp");
+  CLog::Log(LOGINFO, "stopping upnp");
   CUPnP::ReleaseInstance(bWait);
 
   return true;
@@ -849,7 +849,7 @@ bool CNetworkServices::StartUPnPClient()
   if (!m_settings->GetBool(CSettings::SETTING_SERVICES_UPNP))
     return false;
 
-  CLog::Log(LOGNOTICE, "starting upnp client");
+  CLog::Log(LOGINFO, "starting upnp client");
   CUPnP::GetInstance()->StartClient();
   return IsUPnPClientRunning();
 #endif // HAS_UPNP
@@ -870,7 +870,7 @@ bool CNetworkServices::StopUPnPClient()
   if (!IsUPnPClientRunning())
     return true;
 
-  CLog::Log(LOGNOTICE, "stopping upnp client");
+  CLog::Log(LOGINFO, "stopping upnp client");
   CUPnP::GetInstance()->StopClient();
 
   return true;
@@ -886,7 +886,7 @@ bool CNetworkServices::StartUPnPController()
       !m_settings->GetBool(CSettings::SETTING_SERVICES_UPNP))
     return false;
 
-  CLog::Log(LOGNOTICE, "starting upnp controller");
+  CLog::Log(LOGINFO, "starting upnp controller");
   CUPnP::GetInstance()->StartController();
   return IsUPnPControllerRunning();
 #endif // HAS_UPNP
@@ -907,7 +907,7 @@ bool CNetworkServices::StopUPnPController()
   if (!IsUPnPControllerRunning())
     return true;
 
-  CLog::Log(LOGNOTICE, "stopping upnp controller");
+  CLog::Log(LOGINFO, "stopping upnp controller");
   CUPnP::GetInstance()->StopController();
 
   return true;
@@ -922,7 +922,7 @@ bool CNetworkServices::StartUPnPRenderer()
       !m_settings->GetBool(CSettings::SETTING_SERVICES_UPNP))
     return false;
 
-  CLog::Log(LOGNOTICE, "starting upnp renderer");
+  CLog::Log(LOGINFO, "starting upnp renderer");
   return CUPnP::GetInstance()->StartRenderer();
 #endif // HAS_UPNP
   return false;
@@ -942,7 +942,7 @@ bool CNetworkServices::StopUPnPRenderer()
   if (!IsUPnPRendererRunning())
     return true;
 
-  CLog::Log(LOGNOTICE, "stopping upnp renderer");
+  CLog::Log(LOGINFO, "stopping upnp renderer");
   CUPnP::GetInstance()->StopRenderer();
 
   return true;
@@ -957,7 +957,7 @@ bool CNetworkServices::StartUPnPServer()
       !m_settings->GetBool(CSettings::SETTING_SERVICES_UPNP))
     return false;
 
-  CLog::Log(LOGNOTICE, "starting upnp server");
+  CLog::Log(LOGINFO, "starting upnp server");
   return CUPnP::GetInstance()->StartServer();
 #endif // HAS_UPNP
   return false;
@@ -979,7 +979,7 @@ bool CNetworkServices::StopUPnPServer()
 
   StopUPnPController();
 
-  CLog::Log(LOGNOTICE, "stopping upnp server");
+  CLog::Log(LOGINFO, "stopping upnp server");
   CUPnP::GetInstance()->StopServer();
 
   return true;
@@ -1019,7 +1019,7 @@ bool CNetworkServices::StartZeroconf()
   if (IsZeroconfRunning())
     return true;
 
-  CLog::Log(LOGNOTICE, "starting zeroconf publishing");
+  CLog::Log(LOGINFO, "starting zeroconf publishing");
   return CZeroconf::GetInstance()->Start();
 #endif // HAS_ZEROCONF
   return false;
@@ -1039,7 +1039,7 @@ bool CNetworkServices::StopZeroconf()
   if (!IsZeroconfRunning())
     return true;
 
-  CLog::Log(LOGNOTICE, "stopping zeroconf publishing");
+  CLog::Log(LOGINFO, "stopping zeroconf publishing");
   CZeroconf::GetInstance()->Stop();
 
   return true;

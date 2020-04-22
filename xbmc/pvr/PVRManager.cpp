@@ -363,7 +363,7 @@ void CPVRManager::Start()
   if (!m_addons->HasCreatedClients())
     return;
 
-  CLog::Log(LOGNOTICE, "PVR Manager: Starting");
+  CLog::Log(LOGINFO, "PVR Manager: Starting");
   SetState(ManagerStateStarting);
 
   /* create the pvrmanager thread, which will ensure that all data will be loaded */
@@ -386,7 +386,7 @@ void CPVRManager::Stop()
     CApplicationMessenger::GetInstance().SendMsg(TMSG_MEDIA_STOP);
   }
 
-  CLog::Log(LOGNOTICE, "PVR Manager: Stopping");
+  CLog::Log(LOGINFO, "PVR Manager: Stopping");
   SetState(ManagerStateStopping);
 
   m_addons->Stop();
@@ -403,7 +403,7 @@ void CPVRManager::Stop()
 
   ResetProperties();
 
-  CLog::Log(LOGNOTICE, "PVR Manager: Stopped");
+  CLog::Log(LOGINFO, "PVR Manager: Stopped");
   SetState(ManagerStateStopped);
 }
 
@@ -500,7 +500,7 @@ void CPVRManager::Process()
 
   if (!IsInitialising())
   {
-    CLog::Log(LOGNOTICE, "PVR Manager: Start aborted");
+    CLog::Log(LOGINFO, "PVR Manager: Start aborted");
     return;
   }
 
@@ -509,7 +509,7 @@ void CPVRManager::Process()
   m_pendingUpdates->Start();
 
   SetState(ManagerStateStarted);
-  CLog::Log(LOGNOTICE, "PVR Manager: Started");
+  CLog::Log(LOGINFO, "PVR Manager: Started");
 
   /* main loop */
   CLog::LogFC(LOGDEBUG, LOGPVR, "PVR Manager entering main loop");

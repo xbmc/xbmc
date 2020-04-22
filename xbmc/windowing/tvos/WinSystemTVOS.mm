@@ -284,7 +284,7 @@ void CWinSystemTVOS::FillInVideoModes(int screenIdx)
   {
     RESOLUTION_INFO res;
     UpdateDesktopResolution(res, CONST_HDMI, w, h, refreshrate, 0);
-    CLog::Log(LOGNOTICE, "Found possible resolution for display {} with {} x {} RefreshRate:{} ",
+    CLog::Log(LOGINFO, "Found possible resolution for display {} with {} x {} RefreshRate:{} ",
               screenIdx, w, h, refreshrate);
 
     CServiceBroker::GetWinSystem()->GetGfxContext().ResetOverscan(res);

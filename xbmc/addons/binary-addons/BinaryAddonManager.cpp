@@ -30,7 +30,10 @@ bool CBinaryAddonManager::Init()
   BINARY_ADDON_LIST binaryAddonList;
   if (!CServiceBroker::GetAddonMgr().GetInstalledBinaryAddons(binaryAddonList))
   {
-    CLog::Log(LOGNOTICE, "CBinaryAddonManager::%s: No binary addons present and related manager, init not necessary", __FUNCTION__);
+    CLog::Log(
+        LOGINFO,
+        "CBinaryAddonManager::%s: No binary addons present and related manager, init not necessary",
+        __FUNCTION__);
     return true;
   }
 

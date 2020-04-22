@@ -418,7 +418,8 @@ bool CAddonMgr::FindAddons()
   for (const auto& addon : installedAddons)
   {
     m_database.GetInstallData(addon.second);
-    CLog::Log(LOGNOTICE, "CAddonMgr::{}: {} v{} installed", __FUNCTION__, addon.second->ID(), addon.second->Version().asString());
+    CLog::Log(LOGINFO, "CAddonMgr::{}: {} v{} installed", __FUNCTION__, addon.second->ID(),
+              addon.second->Version().asString());
   }
 
   m_installedAddons = std::move(installedAddons);

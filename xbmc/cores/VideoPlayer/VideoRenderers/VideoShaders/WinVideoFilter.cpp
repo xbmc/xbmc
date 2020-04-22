@@ -928,7 +928,7 @@ bool CConvolutionShaderSeparable::ChooseIntermediateD3DFormat()
     m_IntermediateFormat = DXGI_FORMAT_R32G32B32A32_FLOAT;
   else
   {
-    CLog::LogF(LOGNOTICE, "no float format available for the intermediate render target");
+    CLog::LogF(LOGINFO, "no float format available for the intermediate render target");
     return false;
   }
 

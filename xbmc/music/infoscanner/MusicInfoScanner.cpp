@@ -189,7 +189,8 @@ void CMusicInfoScanner::Process()
       m_musicDatabase.EmptyCache();
 
       tick = XbmcThreads::SystemClockMillis() - tick;
-      CLog::Log(LOGNOTICE, "My Music: Scanning for music info using worker thread, operation took %s", StringUtils::SecondsToTimeString(tick / 1000).c_str());
+      CLog::Log(LOGINFO, "My Music: Scanning for music info using worker thread, operation took %s",
+                StringUtils::SecondsToTimeString(tick / 1000).c_str());
     }
     if (m_scanType == 1) // load album info
     {

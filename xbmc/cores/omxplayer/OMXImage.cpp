@@ -101,7 +101,8 @@ bool COMXImage::CreateThumbnailFromSurface(unsigned char* buffer, unsigned int w
   COMXImageEnc omxImageEnc;
   bool ret = omxImageEnc.CreateThumbnailFromSurface(buffer, width, height, format, pitch, destFile);
   if (!ret)
-    CLog::Log(LOGNOTICE, "%s: unable to create thumbnail %s %dx%d", __func__, destFile.c_str(), width, height);
+    CLog::Log(LOGINFO, "%s: unable to create thumbnail %s %dx%d", __func__, destFile.c_str(), width,
+              height);
   return ret;
 }
 
@@ -110,7 +111,7 @@ COMXImageFile *COMXImage::LoadJpeg(const std::string& texturePath)
   COMXImageFile *file = new COMXImageFile();
   if (!file->ReadFile(texturePath))
   {
-    CLog::Log(LOGNOTICE, "%s: unable to load %s", __func__, CURL::GetRedacted(texturePath).c_str());
+    CLog::Log(LOGINFO, "%s: unable to load %s", __func__, CURL::GetRedacted(texturePath).c_str());
     delete file;
     file = NULL;
   }
@@ -134,7 +135,8 @@ bool COMXImage::DecodeJpeg(COMXImageFile *file, unsigned int width, unsigned int
     ret = true;
   }
   else
-    CLog::Log(LOGNOTICE, "%s: unable to decode %s %dx%d", __func__, file->GetFilename(), width, height);
+    CLog::Log(LOGINFO, "%s: unable to decode %s %dx%d", __func__, file->GetFilename(), width,
+              height);
   omx_image.Close();
   return ret;
 }
@@ -287,7 +289,7 @@ bool COMXImage::DestroyTextureInternal(EGLDisplay egl_display, EGLContext egl_co
   {
     s = eglDestroyImageKHR(egl_display, tex->egl_image);
     if (!s)
-      CLog::Log(LOGNOTICE, "%s: failed to destroy texture", __func__);
+      CLog::Log(LOGINFO, "%s: failed to destroy texture", __func__);
   }
   if (tex->texture)
     glDeleteTextures(1, (GLuint*) &tex->texture);
@@ -319,7 +321,8 @@ bool COMXImage::DecodeJpegToTexture(COMXImageFile *file, unsigned int width, uns
   }
   else
   {
-    CLog::Log(LOGNOTICE, "%s: unable to decode to texture %s %dx%d", __func__, file->GetFilename(), width, height);
+    CLog::Log(LOGINFO, "%s: unable to decode to texture %s %dx%d", __func__, file->GetFilename(),
+              width, height);
     DestroyTexture(tex);
   }
   return ret;

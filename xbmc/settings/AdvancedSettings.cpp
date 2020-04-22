@@ -52,20 +52,20 @@ void CAdvancedSettings::OnSettingsLoaded()
   Load(*profileManager);
 
   // default players?
-  CLog::Log(LOGNOTICE, "Default Video Player: %s", m_videoDefaultPlayer.c_str());
-  CLog::Log(LOGNOTICE, "Default Audio Player: %s", m_audioDefaultPlayer.c_str());
+  CLog::Log(LOGINFO, "Default Video Player: %s", m_videoDefaultPlayer.c_str());
+  CLog::Log(LOGINFO, "Default Audio Player: %s", m_audioDefaultPlayer.c_str());
 
   // setup any logging...
   const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
   if (settings->GetBool(CSettings::SETTING_DEBUG_SHOWLOGINFO))
   {
     m_logLevel = std::max(m_logLevelHint, LOG_LEVEL_DEBUG_FREEMEM);
-    CLog::Log(LOGNOTICE, "Enabled debug logging due to GUI setting (%d)", m_logLevel);
+    CLog::Log(LOGINFO, "Enabled debug logging due to GUI setting (%d)", m_logLevel);
   }
   else
   {
     m_logLevel = std::min(m_logLevelHint, LOG_LEVEL_DEBUG/*LOG_LEVEL_NORMAL*/);
-    CLog::Log(LOGNOTICE, "Disabled debug logging due to GUI setting. Level %d.", m_logLevel);
+    CLog::Log(LOGINFO, "Disabled debug logging due to GUI setting. Level %d.", m_logLevel);
   }
   CServiceBroker::GetLogging().SetLogLevel(m_logLevel);
 }
@@ -446,7 +446,7 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
   CXBMCTinyXML advancedXML;
   if (!CFile::Exists(file))
   {
-    CLog::Log(LOGNOTICE, "No settings file to load (%s)", file.c_str());
+    CLog::Log(LOGINFO, "No settings file to load (%s)", file.c_str());
     return;
   }
 
@@ -464,7 +464,7 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
   }
 
   // succeeded - tell the user it worked
-  CLog::Log(LOGNOTICE, "Loaded settings file from %s", file.c_str());
+  CLog::Log(LOGINFO, "Loaded settings file from %s", file.c_str());
 
   //Make a copy of the AS.xml and hide advancedsettings passwords
   CXBMCTinyXML advancedXMLCopy(advancedXML);
@@ -506,7 +506,7 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
   printer.SetLineBreak("\n");
   printer.SetIndent("  ");
   advancedXMLCopy.Accept(&printer);
-  CLog::Log(LOGNOTICE, "Contents of %s are...\n%s", file.c_str(), printer.CStr());
+  CLog::Log(LOGINFO, "Contents of %s are...\n%s", file.c_str(), printer.CStr());
 
   TiXmlElement *pElement = pRootElement->FirstChildElement("audio");
   if (pElement)
@@ -1339,12 +1339,12 @@ void CAdvancedSettings::SetDebugMode(bool debug)
     int level = std::max(m_logLevelHint, LOG_LEVEL_DEBUG_FREEMEM);
     m_logLevel = level;
     CServiceBroker::GetLogging().SetLogLevel(level);
-    CLog::Log(LOGNOTICE, "Enabled debug logging due to GUI setting. Level %d.", level);
+    CLog::Log(LOGINFO, "Enabled debug logging due to GUI setting. Level %d.", level);
   }
   else
   {
     int level = std::min(m_logLevelHint, LOG_LEVEL_DEBUG/*LOG_LEVEL_NORMAL*/);
-    CLog::Log(LOGNOTICE, "Disabled debug logging due to GUI setting. Level %d.", level);
+    CLog::Log(LOGINFO, "Disabled debug logging due to GUI setting. Level %d.", level);
     m_logLevel = level;
     CServiceBroker::GetLogging().SetLogLevel(level);
   }

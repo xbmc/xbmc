@@ -163,10 +163,10 @@ bool CPeripheralAddon::Register(unsigned int peripheralIndex, const PeripheralPt
     {
       m_peripherals[peripheralIndex] = std::static_pointer_cast<CPeripheralJoystick>(peripheral);
 
-      CLog::Log(LOGNOTICE, "%s - new %s device registered on %s->%s: %s",
-          __FUNCTION__, PeripheralTypeTranslator::TypeToString(peripheral->Type()),
-          PeripheralTypeTranslator::BusTypeToString(PERIPHERAL_BUS_ADDON),
-          peripheral->Location().c_str(), peripheral->DeviceName().c_str());
+      CLog::Log(LOGINFO, "%s - new %s device registered on %s->%s: %s", __FUNCTION__,
+                PeripheralTypeTranslator::TypeToString(peripheral->Type()),
+                PeripheralTypeTranslator::BusTypeToString(PERIPHERAL_BUS_ADDON),
+                peripheral->Location().c_str(), peripheral->DeviceName().c_str());
 
       return true;
     }
@@ -197,7 +197,10 @@ void CPeripheralAddon::UnregisterRemovedDevices(const PeripheralScanResults &res
   {
     auto it = m_peripherals.find(index);
     const PeripheralPtr& peripheral = it->second;
-    CLog::Log(LOGNOTICE, "%s - device removed from %s/%s: %s (%s:%s)", __FUNCTION__, PeripheralTypeTranslator::TypeToString(peripheral->Type()), peripheral->Location().c_str(), peripheral->DeviceName().c_str(), peripheral->VendorIdAsString(), peripheral->ProductIdAsString());
+    CLog::Log(LOGINFO, "%s - device removed from %s/%s: %s (%s:%s)", __FUNCTION__,
+              PeripheralTypeTranslator::TypeToString(peripheral->Type()),
+              peripheral->Location().c_str(), peripheral->DeviceName().c_str(),
+              peripheral->VendorIdAsString(), peripheral->ProductIdAsString());
     UnregisterButtonMap(peripheral.get());
     peripheral->OnDeviceRemoved();
     removedPeripherals.push_back(peripheral);

@@ -38,8 +38,9 @@ extern "C" {
 #define LOGTIME(n) \
   clock_gettime(CLOCK_MONOTONIC, &now); \
   End = ((int64_t)now.tv_sec * 1000000000L) + now.tv_nsec; \
-  CLog::Log(LOGNOTICE, "ActiveAE::%s %d - resample %s took %.0fms", __FUNCTION__, n, _filename, (End-Start)*1e-6); \
-  Start=End;
+  CLog::Log(LOGINFO, "ActiveAE::%s %d - resample %s took %.0fms", __FUNCTION__, n, _filename, \
+            (End - Start) * 1e-6); \
+  Start = End;
 #else
 #define LOGTIMEINIT(f)
 #define LOGTIME(n)

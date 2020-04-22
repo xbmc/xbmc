@@ -141,7 +141,7 @@ bool CGLContextEGL::Refresh(bool force, int screen, Window glWindow, bool &newCo
     return false;
   }
 
-  CLog::Log(LOGNOTICE, "Using visual 0x%x", visualid);
+  CLog::Log(LOGINFO, "Using visual 0x%x", visualid);
 
   m_eglSurface = eglCreateWindowSurface(m_eglDisplay, m_eglConfig, glWindow, NULL);
   if (m_eglSurface == EGL_NO_SURFACE)

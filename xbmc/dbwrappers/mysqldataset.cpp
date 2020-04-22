@@ -178,7 +178,7 @@ int MysqlDatabase::connect(bool create_new) {
       if (!showed_ver_info)
       {
         std::string version_string = mysql_get_server_info(conn);
-        CLog::Log(LOGNOTICE, "MYSQL: Connected to version {}", version_string);
+        CLog::Log(LOGINFO, "MYSQL: Connected to version {}", version_string);
         showed_ver_info = true;
         unsigned long version = mysql_get_server_version(conn);
         // Minimum for MySQL: 5.6 (5.5 is EOL)

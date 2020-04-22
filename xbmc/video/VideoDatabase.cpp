@@ -8919,7 +8919,7 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle, const st
       return;
 
     unsigned int time = XbmcThreads::SystemClockMillis();
-    CLog::Log(LOGNOTICE, "%s: Starting videodatabase cleanup ..", __FUNCTION__);
+    CLog::Log(LOGINFO, "%s: Starting videodatabase cleanup ..", __FUNCTION__);
     CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::VideoLibrary, "xbmc", "OnCleanStarted");
 
     BeginTransaction();
@@ -9250,7 +9250,8 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle, const st
     CUtil::DeleteVideoDatabaseDirectoryCache();
 
     time = XbmcThreads::SystemClockMillis() - time;
-    CLog::Log(LOGNOTICE, "%s: Cleaning videodatabase done. Operation took %s", __FUNCTION__, StringUtils::SecondsToTimeString(time / 1000).c_str());
+    CLog::Log(LOGINFO, "%s: Cleaning videodatabase done. Operation took %s", __FUNCTION__,
+              StringUtils::SecondsToTimeString(time / 1000).c_str());
 
     for (const auto &i : movieIDs)
       AnnounceRemove(MediaTypeMovie, i, true);

@@ -275,7 +275,7 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
         if (UnregisterDeviceNotification(hDeviceNotify))
           hDeviceNotify = nullptr;
         else
-          CLog::LogF(LOGNOTICE, "UnregisterDeviceNotification failed (%d)", GetLastError());
+          CLog::LogF(LOGINFO, "UnregisterDeviceNotification failed (%d)", GetLastError());
       }
       newEvent.type = XBMC_QUIT;
       if (appPort)

@@ -389,7 +389,7 @@ bool CBitstreamConverter::Open(enum AVCodecID codec, uint8_t *in_extradata, int 
           }
           else
           {
-            CLog::Log(LOGNOTICE, "CBitstreamConverter::Open invalid avcC atom data");
+            CLog::Log(LOGINFO, "CBitstreamConverter::Open invalid avcC atom data");
             return false;
           }
         }
@@ -459,7 +459,7 @@ bool CBitstreamConverter::Open(enum AVCodecID codec, uint8_t *in_extradata, int 
           }
           else
           {
-            CLog::Log(LOGNOTICE, "CBitstreamConverter::Open invalid hvcC atom data");
+            CLog::Log(LOGINFO, "CBitstreamConverter::Open invalid hvcC atom data");
             return false;
           }
         }

@@ -104,7 +104,7 @@ namespace VIDEO
 
       m_bCanInterrupt = true;
 
-      CLog::Log(LOGNOTICE, "VideoInfoScanner: Starting scan ..");
+      CLog::Log(LOGINFO, "VideoInfoScanner: Starting scan ..");
       CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::VideoLibrary, "xbmc", "OnScanStarted");
 
       // Database operations should not be canceled
@@ -156,7 +156,8 @@ namespace VIDEO
       m_database.Close();
 
       tick = XbmcThreads::SystemClockMillis() - tick;
-      CLog::Log(LOGNOTICE, "VideoInfoScanner: Finished scan. Scanning for video info took %s", StringUtils::SecondsToTimeString(tick / 1000).c_str());
+      CLog::Log(LOGINFO, "VideoInfoScanner: Finished scan. Scanning for video info took %s",
+                StringUtils::SecondsToTimeString(tick / 1000).c_str());
     }
     catch (...)
     {
@@ -264,7 +265,10 @@ namespace VIDEO
 
     if (URIUtils::IsPlugin(strDirectory) && !CPluginDirectory::IsMediaLibraryScanningAllowed(TranslateContent(content), strDirectory))
     {
-      CLog::Log(LOGNOTICE, "VideoInfoScanner: Plugin '%s' does not support media library scanning for '%s' content", CURL::GetRedacted(strDirectory).c_str(), TranslateContent(content));
+      CLog::Log(
+          LOGINFO,
+          "VideoInfoScanner: Plugin '%s' does not support media library scanning for '%s' content",
+          CURL::GetRedacted(strDirectory).c_str(), TranslateContent(content));
       return true;
     }
 

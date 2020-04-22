@@ -94,7 +94,7 @@ bool CWinSystemAndroid::InitWindowSystem()
 
 bool CWinSystemAndroid::DestroyWindowSystem()
 {
-  CLog::Log(LOGNOTICE, "CWinSystemAndroid::%s", __FUNCTION__);
+  CLog::Log(LOGINFO, "CWinSystemAndroid::%s", __FUNCTION__);
 
   delete m_android;
   m_android = nullptr;
@@ -150,7 +150,7 @@ bool CWinSystemAndroid::CreateNewWindow(const std::string& name,
 
 bool CWinSystemAndroid::DestroyWindow()
 {
-  CLog::Log(LOGNOTICE, "CWinSystemAndroid::%s", __FUNCTION__);
+  CLog::Log(LOGINFO, "CWinSystemAndroid::%s", __FUNCTION__);
   m_nativeWindow = nullptr;
   m_bWindowCreated = false;
   return true;

@@ -103,7 +103,7 @@ void CVAAPIContext::Release(CDecoder *decoder)
 
 void CVAAPIContext::Close()
 {
-  CLog::Log(LOGNOTICE, "VAAPI::Close - closing decoder context");
+  CLog::Log(LOGINFO, "VAAPI::Close - closing decoder context");
   if (m_renderNodeFD >= 0)
   {
     close(m_renderNodeFD);
@@ -719,7 +719,7 @@ bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, const enum A
 
 void CDecoder::Close()
 {
-  CLog::Log(LOGNOTICE, "VAAPI::%s", __FUNCTION__);
+  CLog::Log(LOGINFO, "VAAPI::%s", __FUNCTION__);
 
   CSingleLock lock(m_DecoderSection);
 
@@ -1458,12 +1458,12 @@ void COutput::Dispose()
 
 void COutput::OnStartup()
 {
-  CLog::Log(LOGNOTICE, "COutput::OnStartup: Output Thread created");
+  CLog::Log(LOGINFO, "COutput::OnStartup: Output Thread created");
 }
 
 void COutput::OnExit()
 {
-  CLog::Log(LOGNOTICE, "COutput::OnExit: Output Thread terminated");
+  CLog::Log(LOGINFO, "COutput::OnExit: Output Thread terminated");
 }
 
 enum OUTPUT_STATES

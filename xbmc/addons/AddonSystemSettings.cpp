@@ -145,7 +145,8 @@ std::vector<std::string> CAddonSystemSettings::MigrateAddons(std::function<void(
 
   auto incompatible = getIncompatible();
   for (const auto& addon : incompatible)
-    CLog::Log(LOGNOTICE, "ADDON: %s version %s is incompatible", addon->ID().c_str(), addon->Version().asString().c_str());
+    CLog::Log(LOGINFO, "ADDON: %s version %s is incompatible", addon->ID().c_str(),
+              addon->Version().asString().c_str());
 
   std::vector<std::string> changed;
   for (const auto& addon : incompatible)

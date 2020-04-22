@@ -479,7 +479,7 @@ unsigned int CAESinkPi::AddPackets(uint8_t **data, unsigned int frames, unsigned
   GetDelay(status);
   double delay = status.GetDelay();
   if (delay <= 0.0 && m_submitted)
-    CLog::Log(LOGNOTICE, "%s:%s Underrun (delay:%.2f frames:%d)", CLASSNAME, __func__, delay, frames);
+    CLog::Log(LOGINFO, "%s:%s Underrun (delay:%.2f frames:%d)", CLASSNAME, __func__, delay, frames);
 
   omx_buffer = m_omx_output->GetInputBuffer(1000);
   if (omx_buffer == NULL)

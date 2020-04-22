@@ -241,7 +241,7 @@ bool CWinSystemX11::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
       if (currmode.w != mode.w || currmode.h != mode.h ||
           currmode.hz != mode.hz || currmode.id != mode.id)
       {
-        CLog::Log(LOGNOTICE, "CWinSystemX11::SetFullScreen - calling xrandr");
+        CLog::Log(LOGINFO, "CWinSystemX11::SetFullScreen - calling xrandr");
 
         // remember last position of mouse
         Window root_return, child_return;

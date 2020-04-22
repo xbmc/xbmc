@@ -154,7 +154,7 @@ bool CWinSystemX11GLESContext::SetWindow(int width, int height, bool fullscreen,
 
 bool CWinSystemX11GLESContext::CreateNewWindow(const std::string& name, bool fullScreen, RESOLUTION_INFO& res)
 {
-  CLog::Log(LOGNOTICE, "CWinSystemX11GLESContext::CreateNewWindow");
+  CLog::Log(LOGINFO, "CWinSystemX11GLESContext::CreateNewWindow");
   if (!CWinSystemX11::CreateNewWindow(name, fullScreen, res) || !m_pGLContext)
     return false;
 

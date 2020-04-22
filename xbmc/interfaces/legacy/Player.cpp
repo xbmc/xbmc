@@ -170,7 +170,7 @@ namespace XBMCAddon
 
       CApplicationMessenger::GetInstance().SendMsg(TMSG_PLAYLISTPLAYER_PLAY, selected);
       //CServiceBroker::GetPlaylistPlayer().Play(selected);
-      //CLog::Log(LOGNOTICE, "Current Song After Play: %i", CServiceBroker::GetPlaylistPlayer().GetCurrentSong());
+      //CLog::Log(LOGINFO, "Current Song After Play: %i", CServiceBroker::GetPlaylistPlayer().GetCurrentSong());
     }
 
     void Player::OnPlayBackStarted(const CFileItem &file)

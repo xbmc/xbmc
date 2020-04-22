@@ -121,7 +121,8 @@ bool CDVDAudioCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
 
   m_codecName = "ff-" + std::string(m_pCodecContext->codec->name);
 
-  CLog::Log(LOGNOTICE,"CDVDAudioCodecFFmpeg::Open() Successful opened audio decoder %s", m_pCodecContext->codec->name);
+  CLog::Log(LOGINFO, "CDVDAudioCodecFFmpeg::Open() Successful opened audio decoder %s",
+            m_pCodecContext->codec->name);
 
   return true;
 }

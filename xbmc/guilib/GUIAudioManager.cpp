@@ -229,7 +229,7 @@ std::string GetSoundSkinPath()
   ADDON::AddonPtr addon;
   if (!CServiceBroker::GetAddonMgr().GetAddon(value, addon, ADDON::ADDON_RESOURCE_UISOUNDS))
   {
-    CLog::Log(LOGNOTICE, "Unknown sounds addon '%s'. Setting default sounds.", value.c_str());
+    CLog::Log(LOGINFO, "Unknown sounds addon '%s'. Setting default sounds.", value.c_str());
     setting->Reset();
   }
   return URIUtils::AddFileToFolder("resource://", setting->GetValue());
@@ -257,7 +257,8 @@ bool CGUIAudioManager::Load()
   //  Load the config file
   if (!xmlDoc.LoadFile(strSoundsXml))
   {
-    CLog::Log(LOGNOTICE, "%s, Line %d\n%s", strSoundsXml.c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
+    CLog::Log(LOGINFO, "%s, Line %d\n%s", strSoundsXml.c_str(), xmlDoc.ErrorRow(),
+              xmlDoc.ErrorDesc());
     return false;
   }
 
@@ -265,7 +266,7 @@ bool CGUIAudioManager::Load()
   std::string strValue = pRoot->Value();
   if ( strValue != "sounds")
   {
-    CLog::Log(LOGNOTICE, "%s Doesn't contain <sounds>", strSoundsXml.c_str());
+    CLog::Log(LOGINFO, "%s Doesn't contain <sounds>", strSoundsXml.c_str());
     return false;
   }
 

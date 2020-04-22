@@ -577,7 +577,7 @@ bool CMusicDatabase::UpdateAlbum(CAlbum& album)
       }
       if (!canBeBoxset && album.bBoxedSet)
       {
-        CLog::Log(LOGNOTICE, "%s : Album with id [%i] does not meet the requirements for a boxset.",
+        CLog::Log(LOGINFO, "%s : Album with id [%i] does not meet the requirements for a boxset.",
                   __FUNCTION__, album.idAlbum);
         album.bBoxedSet = false;
       }
@@ -3619,7 +3619,7 @@ int CMusicDatabase::Cleanup(CGUIDialogProgress* progressDialog /*= nullptr*/)
 
   int ret = ERROR_OK;
   unsigned int time = XbmcThreads::SystemClockMillis();
-  CLog::Log(LOGNOTICE, "%s: Starting musicdatabase cleanup ..", __FUNCTION__);
+  CLog::Log(LOGINFO, "%s: Starting musicdatabase cleanup ..", __FUNCTION__);
   CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::AudioLibrary, "xbmc", "OnCleanStarted");
 
   // first cleanup any songs with invalid paths
@@ -3738,7 +3738,8 @@ int CMusicDatabase::Cleanup(CGUIDialogProgress* progressDialog /*= nullptr*/)
     progressDialog->Close();
   }
   time = XbmcThreads::SystemClockMillis() - time;
-  CLog::Log(LOGNOTICE, "%s: Cleaning musicdatabase done. Operation took %s", __FUNCTION__, StringUtils::SecondsToTimeString(time / 1000).c_str());
+  CLog::Log(LOGINFO, "%s: Cleaning musicdatabase done. Operation took %s", __FUNCTION__,
+            StringUtils::SecondsToTimeString(time / 1000).c_str());
   CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::AudioLibrary, "xbmc", "OnCleanFinished");
 
   if (!Compress(false))

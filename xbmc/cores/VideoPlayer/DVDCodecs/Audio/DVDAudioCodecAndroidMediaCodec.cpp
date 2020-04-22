@@ -133,7 +133,7 @@ bool CDVDAudioCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
     case AV_CODEC_ID_AAC_LATM:
       if (!m_hints.extrasize)
       {
-        CLog::Log(LOGNOTICE, "CDVDAudioCodecAndroidMediaCodec: extradata required for aac decoder!");
+        CLog::Log(LOGINFO, "CDVDAudioCodecAndroidMediaCodec: extradata required for aac decoder!");
         return false;
       }
 
@@ -189,7 +189,7 @@ bool CDVDAudioCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
       break;
 
     default:
-      CLog::Log(LOGNOTICE, "CDVDAudioCodecAndroidMediaCodec: Unknown hints.codec(%d)", hints.codec);
+      CLog::Log(LOGINFO, "CDVDAudioCodecAndroidMediaCodec: Unknown hints.codec(%d)", hints.codec);
       return false;
       break;
   }
