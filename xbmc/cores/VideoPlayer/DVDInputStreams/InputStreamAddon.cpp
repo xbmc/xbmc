@@ -157,6 +157,7 @@ bool CInputStreamAddon::Open()
   }
 
   props.m_strURL = m_item.GetDynPath().c_str();
+  props.m_mimeType = m_item.GetMimeType().c_str();
 
   std::string libFolder = URIUtils::GetDirectory(Addon()->Path());
   std::string profileFolder = CSpecialProtocol::TranslatePath(Addon()->Profile());
