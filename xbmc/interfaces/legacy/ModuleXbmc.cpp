@@ -377,12 +377,6 @@ namespace XBMCAddon
       return StringUtils::Format("%08x.tbn", crc);
     }
 
-    String makeLegalFilename(const String& filename, bool fatX)
-    {
-      XBMC_TRACE;
-      return CUtil::MakeLegalPath(filename);
-    }
-
     String translatePath(const String& path)
     {
       XBMC_TRACE;

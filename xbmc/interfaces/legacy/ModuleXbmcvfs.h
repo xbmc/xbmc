@@ -138,6 +138,43 @@ namespace XBMCAddon
 #ifdef DOXYGEN_SHOULD_USE_THIS
     ///
     /// \ingroup python_xbmcvfs
+    /// @brief \python_func{ xbmcvfs.makeLegalFilename(filename) }
+    ///-----------------------------------------------------------------------
+    /// Returns a legal filename or path as a string.
+    ///
+    /// @param filename              string - filename/path to make legal
+    /// @return              Legal filename or path as a string
+    ///
+    ///
+    /// @note The returned value is platform-specific. This is due to the fact that
+    /// the chars that need to be replaced to make a path legal depend on the
+    /// underlying OS filesystem. This is useful, for example, if you want to create
+    /// a file or folder based on data over which you have no control (e.g. an external API).
+    ///
+    ///
+    ///-------------------------------------------------------------------------
+    /// @python_v19 New function added (replaces old **xbmc.makeLegalFilename**)
+    ///
+    /// **Example:**
+    /// ~~~~~~~~~~~~~{.py}
+    /// ..
+    /// # windows
+    /// >> xbmcvfs.makeLegalFilename('C://Trailers/Ice Age: The Meltdown.avi')
+    /// C:\Trailers\Ice Age_ The Meltdown.avi
+    /// # non-windows
+    /// >> xbmcvfs.makeLegalFilename("///\\jk???lj????.mpg")
+    /// /jk___lj____.mpg
+    /// ..
+    /// ~~~~~~~~~~~~~
+    ///
+    makeLegalFilename(...);
+#else
+    String makeLegalFilename(const String& filename);
+#endif
+
+#ifdef DOXYGEN_SHOULD_USE_THIS
+    ///
+    /// \ingroup python_xbmcvfs
     /// @brief \python_func{ xbmcvfs.mkdir(path) }
     ///-------------------------------------------------------------------------
     /// Create a folder.

@@ -633,39 +633,6 @@ namespace XBMCAddon
 #ifdef DOXYGEN_SHOULD_USE_THIS
     ///
     /// \ingroup python_xbmc
-    /// @brief \python_func{ xbmc.makeLegalFilename(filename[, fatX]) }
-    ///-----------------------------------------------------------------------
-    /// Returns a legal filename or path as a string.
-    ///
-    /// @param filename              string or unicode - filename/path to
-    ///                              make legal
-    /// @param fatX                  [opt] bool - True=Xbox file system(Default)
-    /// @return                      Legal filename or path as a string
-    ///
-    ///
-    /// @note If fatX is true you should pass a full path. If fatX is false only pass
-    ///       the basename of the path.\n\n
-    ///       You can use the above as keywords for arguments and skip certain optional arguments.
-    ///       Once you use a keyword, all following arguments require the keyword.
-    ///
-    ///
-    /// ------------------------------------------------------------------------
-    ///
-    /// **Example:**
-    /// ~~~~~~~~~~~~~{.py}
-    /// ..
-    /// filename = xbmc.makeLegalFilename('F:\\Trailers\\Ice Age: The Meltdown.avi')
-    /// ..
-    /// ~~~~~~~~~~~~~
-    ///
-    makeLegalFilename(...);
-#else
-    String makeLegalFilename(const String& filename,bool fatX = true);
-#endif
-
-#ifdef DOXYGEN_SHOULD_USE_THIS
-    ///
-    /// \ingroup python_xbmc
     /// @brief \python_func{ xbmc.translatePath(path)  }
     ///-----------------------------------------------------------------------
     /// Returns the translated path.

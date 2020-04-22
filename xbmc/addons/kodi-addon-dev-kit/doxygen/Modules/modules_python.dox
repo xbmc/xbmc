@@ -213,6 +213,11 @@ web applications or frameworks for the Python programming language.
       "",
       <b>xbmcgui.Window().setCoordinateResolution()</b> function was removed completely.
 }
+\python_removed_function{
+      makeLegalFilename,
+      "",
+      <b>xbmc.makeLegalFilename()</b> function was moved to the xbmcvfs module.
+}
 */
 /*!
 @page python_v18 Python API v18
