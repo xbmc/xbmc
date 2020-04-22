@@ -81,8 +81,8 @@ namespace PERIPHERALS
 class CServiceBroker
 {
 public:
-  ~CServiceBroker();
   CServiceBroker();
+  ~CServiceBroker();
 
   static CLog& GetLogging();
   static void CreateLogging();
@@ -161,5 +161,3 @@ private:
 
 XBMC_GLOBAL_REF(CServiceBroker, g_serviceBroker);
 #define g_serviceBroker XBMC_GLOBAL_USE(CServiceBroker)
-
-
