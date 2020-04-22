@@ -253,7 +253,7 @@ CRegExp& CRegExp::operator=(const CRegExp& re)
         m_iOptions = re.m_iOptions;
       }
       else
-        CLog::Log(LOGSEVERE, "%s: Failed to allocate memory", __FUNCTION__);
+        CLog::Log(LOGFATAL, "%s: Failed to allocate memory", __FUNCTION__);
     }
   }
   return *this;
