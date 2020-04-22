@@ -75,7 +75,11 @@ echo "Conflicts: $PACKAGE"                      >> $DIRNAME/$PACKAGE/DEBIAN/cont
 echo "Replaces: $PACKAGE"                       >> $DIRNAME/$PACKAGE/DEBIAN/control
 echo "Priority: Extra"                            >> $DIRNAME/$PACKAGE/DEBIAN/control
 echo "Version: $VERSION-$REVISION"                >> $DIRNAME/$PACKAGE/DEBIAN/control
-echo "Architecture: @CMAKE_SYSTEM_NAME@-@CPU@"                 >> $DIRNAME/$PACKAGE/DEBIAN/control
+if [ "@PLATFORM@" == "iphoneos" ]; then
+  echo "Architecture: iphoneos-arm"                 >> $DIRNAME/$PACKAGE/DEBIAN/control
+else
+  echo "Architecture: appletvos-arm64"                 >> $DIRNAME/$PACKAGE/DEBIAN/control
+fi
 echo "Installed-Size: $SIZE"                      >> $DIRNAME/$PACKAGE/DEBIAN/control
 echo "Description: @APP_NAME@ Entertainment Center for iOS" >> $DIRNAME/$PACKAGE/DEBIAN/control
 echo "Homepage: @APP_WEBSITE@"                    >> $DIRNAME/$PACKAGE/DEBIAN/control
