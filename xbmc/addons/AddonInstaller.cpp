@@ -334,7 +334,10 @@ bool CAddonInstaller::CheckDependencies(const AddonPtr &addon,
     // need to enable the dependency
     if (dep && CServiceBroker::GetAddonMgr().IsAddonDisabled(addonID))
       if (!CServiceBroker::GetAddonMgr().EnableAddon(addonID))
+      {
+        database.Close();
         return false;
+      }
 
     // at this point we have our dep, or the dep is optional (and we don't have it) so check that it's OK as well
     //! @todo should we assume that installed deps are OK?
