@@ -72,6 +72,7 @@ extern "C"
   struct INPUTSTREAM
   {
     const char* m_strURL;
+    const char* m_mimeType;
 
     unsigned int m_nCountInfoValues;
     struct LISTITEMPROPERTY
