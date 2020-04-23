@@ -261,7 +261,7 @@ bool CGUIEditControl::OnAction(const CAction &action)
     {
       m_edit.clear();
       std::wstring str;
-      g_charsetConverter.utf8ToW(action.GetText(), str);
+      g_charsetConverter.utf8ToW(action.GetText(), str, false);
       m_text2.insert(m_cursorPos, str);
       m_cursorPos += str.size();
       UpdateText();
@@ -565,7 +565,7 @@ bool CGUIEditControl::SetStyledText(const std::wstring &text)
   // show the cursor
   unsigned int ch = L'|';
   if ((++m_cursorBlink % 64) > 32)
-    ch |= (3 << 16);
+    ch = L' ';
   styled.insert(styled.begin() + m_cursorPos, ch);
 
   return m_label2.SetStyledText(styled, colors);
@@ -587,7 +587,7 @@ void CGUIEditControl::SetLabel2(const std::string &text)
 {
   m_edit.clear();
   std::wstring newText;
-  g_charsetConverter.utf8ToW(text, newText);
+  g_charsetConverter.utf8ToW(text, newText, false);
   if (newText != m_text2)
   {
     m_isMD5 = (m_inputType == INPUT_TYPE_PASSWORD_MD5 || m_inputType == INPUT_TYPE_PASSWORD_NUMBER_VERIFY_NEW);
