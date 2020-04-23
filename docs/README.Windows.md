@@ -80,7 +80,7 @@ Start the VS2017 installer and click `Individual components`.
   * `VC++ 2017 version 15.x v14.x latest v141 tools`
   * `Visual C++ 2017 Redistributable Update`
   * `Visual C++ compilers and libraries for ARM` (if compiling for ARM)
-  * `Visual C++ compilers and libraries for ARM64` (if compiling for ARM64)
+  * `Visual C++ compilers and libraries for ARM64` (if compiling for ARM64 or UWP)
   * `Visual C++ runtime for UWP` (if compiling for UWP)
   * `Windows Universal CRT SDK`
 * Under **Development activities** select
@@ -239,4 +239,3 @@ UWP builds generate `appx`, `appxsym` and `cer` files, located inside directorie
 
 
 **[back to top](#table-of-contents)** | **[back to section top](#6-build-kodi-manually)**
-
