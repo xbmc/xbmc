@@ -209,6 +209,8 @@ namespace SOCKETS
     CAddress m_addr;
 
   private:
+    bool CheckIPv6(int port, int range);
+
     bool m_ipv6Socket;
   };
 
