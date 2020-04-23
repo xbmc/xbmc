@@ -79,7 +79,7 @@ Start the VS2017 installer and click `Individual components`.
   * `Msbuild`
   * `VC++ 2017 version 15.x v14.x latest v141 tools`
   * `Visual C++ 2017 Redistributable Update`
-  * `Visual C++ compilers and libraries for ARM` (if compiling for ARM)
+  * `Visual C++ compilers and libraries for ARM` (if compiling for ARM or UWP)
   * `Visual C++ compilers and libraries for ARM64` (if compiling for ARM64 or UWP)
   * `Visual C++ runtime for UWP` (if compiling for UWP)
   * `Windows Universal CRT SDK`
