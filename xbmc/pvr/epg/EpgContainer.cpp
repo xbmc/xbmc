@@ -663,7 +663,8 @@ bool CPVREpgContainer::UpdateEPG(bool bOnlyPending /* = false */)
       continue;
 
     if (bShowProgress && !bOnlyPending)
-      progressHandler->UpdateProgress(epg->Name(), ++iCounter, m_epgIdToEpgMap.size());
+      progressHandler->UpdateProgress(epg->GetChannelData()->ChannelName(), ++iCounter,
+                                      m_epgIdToEpgMap.size());
 
     if ((!bOnlyPending || epg->UpdatePending()) &&
         epg->Update(start,
