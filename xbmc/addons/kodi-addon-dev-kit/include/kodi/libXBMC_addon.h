@@ -84,23 +84,21 @@ struct VFSDirEntry
   uint64_t size;           //!< Size of file represented by item
 };
 
-namespace ADDON
+typedef enum addon_log
 {
-  typedef enum addon_log
-  {
-    LOG_DEBUG,
-    LOG_INFO,
-    LOG_NOTICE,
-    LOG_ERROR
-  } addon_log_t;
+  LOG_DEBUG,
+  LOG_INFO,
+  LOG_WARNING,
+  LOG_ERROR,
+  LOG_FATAL
+} addon_log_t;
 
-  typedef enum queue_msg
-  {
-    QUEUE_INFO,
-    QUEUE_WARNING,
-    QUEUE_ERROR
-  } queue_msg_t;
-}
+typedef enum queue_msg
+{
+  QUEUE_INFO,
+  QUEUE_WARNING,
+  QUEUE_ERROR
+} queue_msg_t;
 
 namespace KodiAPI
 {
@@ -108,8 +106,8 @@ namespace AddOn
 {
 typedef struct CB_AddOn
 {
-  void (*Log)(void *addonData, const ADDON::addon_log_t loglevel, const char *msg);
-  void (*QueueNotification)(void *addonData, const ADDON::queue_msg_t type, const char *msg);
+  void (*Log)(void *addonData, const int loglevel, const char *msg);
+  void (*QueueNotification)(void *addonData, const int type, const char *msg);
   bool (*WakeOnLan)(const char* mac);
   bool (*GetSetting)(void *addonData, const char *settingName, void *settingValue);
   char* (*TranslateSpecialProtocol)(const char *strSource);
