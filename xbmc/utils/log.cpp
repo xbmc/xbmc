@@ -159,22 +159,16 @@ void CLog::SetLogLevel(int level)
   m_logLevel = level;
 
   auto spdLevel = spdlog::level::info;
-#if defined(_DEBUG) || defined(PROFILE)
-  spdLevel = spdlog::level::trace;
-#else
   if (level <= LOG_LEVEL_NONE)
     spdLevel = spdlog::level::off;
   else if (level >= LOG_LEVEL_DEBUG)
     spdLevel = spdlog::level::trace;
-  else
-    spdLevel = spdlog::level::info;
-#endif
 
   if (m_defaultLogger != nullptr && m_defaultLogger->level() == spdLevel)
     return;
 
   spdlog::set_level(spdLevel);
-  FormatAndLogInternal(spdlog::level::info, "Log level changed to \"%s\"",
+  FormatAndLogInternal(spdlog::level::info, "Log level changed to \"{}\"",
                        spdlog::level::to_string_view(spdLevel));
 }
 
