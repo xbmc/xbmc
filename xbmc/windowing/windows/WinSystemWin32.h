@@ -106,6 +106,7 @@ public:
   // CWinSystemWin32
   HWND GetHwnd() const { return m_hWnd; }
   bool IsAlteringWindow() const { return m_IsAlteringWindow; }
+  void SetAlteringWindow(bool altering) { m_IsAlteringWindow = altering; }
   virtual bool DPIChanged(WORD dpi, RECT windowRect) const;
   bool IsMinimized() const { return m_bMinimized; }
   void SetMinimized(bool minimized) { m_bMinimized = minimized; }

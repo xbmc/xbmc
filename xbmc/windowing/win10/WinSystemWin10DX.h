@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include "HDRStatus.h"
 #include "WinSystemWin10.h"
 #include "rendering/dx/RenderSystemDX.h"
 
@@ -61,6 +62,16 @@ public:
   void Unregister(IDispResource *resource) override { CWinSystemWin10::Unregister(resource); };
 
   void ShowSplash(const std::string& message) override;
+
+  // HDR OS/display override
+  bool IsHDRDisplay() override;
+  HDR_STATUS ToggleHDR() override;
+  HDR_STATUS GetOSHDRStatus() override;
+
+  // HDR support
+  bool IsHDROutput() const;
+  void SetHdrMetaData(DXGI_HDR_METADATA_HDR10& hdr10) const;
+  void SetHdrColorSpace(const DXGI_COLOR_SPACE_TYPE colorSpace) const;
 
 protected:
   void SetDeviceFullScreen(bool fullScreen, RESOLUTION_INFO& res) override;

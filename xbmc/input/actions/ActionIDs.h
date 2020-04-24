@@ -327,6 +327,8 @@
 #define ACTION_VOLUME_SET 245
 #define ACTION_TOGGLE_COMMSKIP 246
 
+#define ACTION_HDR_TOGGLE 247 //!< Toggle display HDR on/off
+
 #define ACTION_PLAYER_RESET 248 //!< Send a reset command to the active game
 
 #define ACTION_TOGGLE_FONT 249 //!< Toggle font. Used in TextViewer dialog

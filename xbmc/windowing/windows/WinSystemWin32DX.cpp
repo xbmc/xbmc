@@ -19,6 +19,7 @@
 #include "windowing/GraphicContext.h"
 
 #include "platform/win32/CharsetConverter.h"
+#include "platform/win32/WIN32Util.h"
 
 #include "system.h"
 
@@ -379,4 +380,34 @@ HRESULT APIENTRY HookOpenAdapter10_2(D3D10DDIARG_OPENADAPTER *pOpenData)
     pOpenData->pAdapterFuncs->pfnCreateDevice = HookCreateDevice;
   }
   return hr;
+}
+
+bool CWinSystemWin32DX::IsHDRDisplay()
+{
+  return (CWIN32Util::GetWindowsHDRStatus() != HDR_STATUS::HDR_UNSUPPORTED);
+}
+
+HDR_STATUS CWinSystemWin32DX::GetOSHDRStatus()
+{
+  return CWIN32Util::GetWindowsHDRStatus();
+}
+
+HDR_STATUS CWinSystemWin32DX::ToggleHDR()
+{
+  return m_deviceResources->ToggleHDR();
+}
+
+bool CWinSystemWin32DX::IsHDROutput() const
+{
+  return m_deviceResources->IsHDROutput();
+}
+
+void CWinSystemWin32DX::SetHdrMetaData(DXGI_HDR_METADATA_HDR10& hdr10) const
+{
+  m_deviceResources->SetHdrMetaData(hdr10);
+}
+
+void CWinSystemWin32DX::SetHdrColorSpace(const DXGI_COLOR_SPACE_TYPE colorSpace) const
+{
+  m_deviceResources->SetHdrColorSpace(colorSpace);
 }

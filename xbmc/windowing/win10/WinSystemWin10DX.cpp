@@ -14,6 +14,8 @@
 #include "utils/XTimeUtils.h"
 #include "utils/log.h"
 
+#include "platform/win32/WIN32Util.h"
+
 std::unique_ptr<CWinSystemBase> CWinSystemBase::CreateWinSystem()
 {
   return std::make_unique<CWinSystemWin10DX>();
@@ -152,4 +154,34 @@ void CWinSystemWin10DX::UninitHooks()
 
 void CWinSystemWin10DX::InitHooks(IDXGIOutput* pOutput)
 {
+}
+
+bool CWinSystemWin10DX::IsHDRDisplay()
+{
+  return (CWIN32Util::GetWindowsHDRStatus() != HDR_STATUS::HDR_UNSUPPORTED);
+}
+
+HDR_STATUS CWinSystemWin10DX::GetOSHDRStatus()
+{
+  return CWIN32Util::GetWindowsHDRStatus();
+}
+
+HDR_STATUS CWinSystemWin10DX::ToggleHDR()
+{
+  return m_deviceResources->ToggleHDR();
+}
+
+bool CWinSystemWin10DX::IsHDROutput() const
+{
+  return m_deviceResources->IsHDROutput();
+}
+
+void CWinSystemWin10DX::SetHdrMetaData(DXGI_HDR_METADATA_HDR10& hdr10) const
+{
+  m_deviceResources->SetHdrMetaData(hdr10);
+}
+
+void CWinSystemWin10DX::SetHdrColorSpace(const DXGI_COLOR_SPACE_TYPE colorSpace) const
+{
+  m_deviceResources->SetHdrColorSpace(colorSpace);
 }

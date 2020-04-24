@@ -12,17 +12,16 @@
 #define DEFAULT_STREAM_INDEX (0)
 
 #include "DXVAHD.h"
-#include "platform/win32/WIN32Util.h"
-#include "rendering/dx/RenderContext.h"
-#include "rendering/dx/DeviceResources.h"
-#include "VideoRenderers/RenderManager.h"
+
 #include "VideoRenderers/RenderFlags.h"
+#include "VideoRenderers/RenderManager.h"
 #include "VideoRenderers/windows/RendererBase.h"
+#include "rendering/dx/RenderContext.h"
 #include "utils/log.h"
 
 #include <Windows.h>
-#include <dxgi1_5.h>
 #include <d3d11_4.h>
+#include <dxgi1_5.h>
 
 using namespace DXVA;
 using namespace Microsoft::WRL;
@@ -35,12 +34,6 @@ do { \
     CLog::LogF(LOGERROR, "failed executing "#a" at line %d with error %x", __LINE__, res); \
   } \
 } while(0);
-
-template<typename T>
-T from_rational(uint64_t default_factor, AVRational rat)
-{
-  return static_cast<T>(default_factor * rat.num / rat.den);
-}
 
 CProcessorHD::CProcessorHD()
 {
@@ -146,7 +139,7 @@ bool CProcessorHD::InitProcessor()
   CLog::LogF(LOGDEBUG, "video processor has %#x input format caps.", m_vcaps.InputFormatCaps);
   CLog::LogF(LOGDEBUG, "video processor has %d max input streams.", m_vcaps.MaxInputStreams);
   CLog::LogF(LOGDEBUG, "video processor has %d max stream states.", m_vcaps.MaxStreamStates);
-  if ((m_bSupportHDR10 = m_vcaps.FeatureCaps & D3D11_VIDEO_PROCESSOR_FEATURE_CAPS_METADATA_HDR10))
+  if (m_vcaps.FeatureCaps & D3D11_VIDEO_PROCESSOR_FEATURE_CAPS_METADATA_HDR10)
     CLog::LogF(LOGDEBUG, "video processor supports HDR10.");
 
   if (0 != (m_vcaps.FeatureCaps & D3D11_VIDEO_PROCESSOR_FEATURE_CAPS_LEGACY))
@@ -331,7 +324,7 @@ ID3D11VideoProcessorInputView* CProcessorHD::GetInputView(CRenderBuffer* view) c
   return inputView.Detach();
 }
 
-DXGI_COLOR_SPACE_TYPE CProcessorHD::GetDXGIColorSpace(CRenderBuffer* view, bool supportHDR)
+DXGI_COLOR_SPACE_TYPE CProcessorHD::GetDXGIColorSpaceSource(CRenderBuffer* view, bool supportHDR)
 {
   // RGB
   if (view->color_space == AVCOL_SPC_RGB)
@@ -364,10 +357,13 @@ DXGI_COLOR_SPACE_TYPE CProcessorHD::GetDXGIColorSpace(CRenderBuffer* view, bool 
   // UHDTV
   if (view->primaries == AVCOL_PRI_BT2020)
   {
-    if (view->color_transfer == AVCOL_TRC_SMPTEST2084 && supportHDR) // HDR
+    if (view->color_transfer == AVCOL_TRC_SMPTEST2084 && supportHDR) // HDR10
       // Could also be:
       // DXGI_COLOR_SPACE_YCBCR_STUDIO_G2084_TOPLEFT_P2020
       return DXGI_COLOR_SPACE_YCBCR_STUDIO_G2084_LEFT_P2020;
+
+    if (view->color_transfer == AVCOL_TRC_ARIB_STD_B67) // HLG
+      return DXGI_COLOR_SPACE_YCBCR_STUDIO_GHLG_TOPLEFT_P2020;
 
     if (view->full_range)
       return DXGI_COLOR_SPACE_YCBCR_FULL_G22_LEFT_P2020;
@@ -395,6 +391,38 @@ DXGI_COLOR_SPACE_TYPE CProcessorHD::GetDXGIColorSpace(CRenderBuffer* view, bool 
   }
 
   return DXGI_COLOR_SPACE_YCBCR_STUDIO_G22_LEFT_P709;
+}
+
+DXGI_COLOR_SPACE_TYPE CProcessorHD::GetDXGIColorSpaceTarget(CRenderBuffer* view)
+{
+  DXGI_COLOR_SPACE_TYPE color;
+
+  // HDR10
+  if (view->color_transfer == AVCOL_TRC_SMPTE2084 && DX::Windowing()->IsHDROutput())
+  {
+    color = DX::Windowing()->UseLimitedColor() ? DXGI_COLOR_SPACE_RGB_STUDIO_G2084_NONE_P2020
+                                               : DXGI_COLOR_SPACE_RGB_FULL_G2084_NONE_P2020;
+  }
+  // HLG
+  else if (view->color_transfer == AVCOL_TRC_ARIB_STD_B67 && view->primaries == AVCOL_PRI_BT2020)
+  {
+    color = DX::Windowing()->UseLimitedColor() ? DXGI_COLOR_SPACE_YCBCR_STUDIO_GHLG_TOPLEFT_P2020
+                                               : DXGI_COLOR_SPACE_YCBCR_FULL_GHLG_TOPLEFT_P2020;
+  }
+  // Rec.2020
+  else if (view->color_transfer != AVCOL_TRC_SMPTE2084 && view->primaries == AVCOL_PRI_BT2020)
+  {
+    color = DX::Windowing()->UseLimitedColor() ? DXGI_COLOR_SPACE_RGB_STUDIO_G22_NONE_P2020
+                                               : DXGI_COLOR_SPACE_RGB_FULL_G22_NONE_P2020;
+  }
+  // SRD - Default
+  else
+  {
+    color = DX::Windowing()->UseLimitedColor() ? DXGI_COLOR_SPACE_RGB_STUDIO_G22_NONE_P709
+                                               : DXGI_COLOR_SPACE_RGB_FULL_G22_NONE_P709;
+  }
+
+  return color;
 }
 
 bool CProcessorHD::Render(CRect src, CRect dst, ID3D11Resource* target, CRenderBuffer** views, DWORD flags, UINT frameIdx, UINT rotation, float contrast, float brightness)
@@ -504,47 +532,15 @@ bool CProcessorHD::Render(CRect src, CRect dst, ID3D11Resource* target, CRenderB
   ComPtr<ID3D11VideoContext1> videoCtx1;
   if (SUCCEEDED(m_pVideoContext.As(&videoCtx1)))
   {
-    const DXGI_COLOR_SPACE_TYPE source_color = GetDXGIColorSpace(views[2], m_bSupportHDR10);
-    const DXGI_COLOR_SPACE_TYPE target_color = DX::Windowing()->UseLimitedColor() 
-                                               ? DXGI_COLOR_SPACE_RGB_STUDIO_G22_NONE_P709 
-                                               : DXGI_COLOR_SPACE_RGB_FULL_G22_NONE_P709;
+    const DXGI_COLOR_SPACE_TYPE sourceColor =
+        GetDXGIColorSpaceSource(views[2], DX::Windowing()->IsHDROutput());
+    const DXGI_COLOR_SPACE_TYPE targetColor = GetDXGIColorSpaceTarget(views[2]);
 
-    videoCtx1->VideoProcessorSetStreamColorSpace1(m_pVideoProcessor.Get(), DEFAULT_STREAM_INDEX, source_color);
-    videoCtx1->VideoProcessorSetOutputColorSpace1(m_pVideoProcessor.Get(), target_color);
+    videoCtx1->VideoProcessorSetStreamColorSpace1(m_pVideoProcessor.Get(), DEFAULT_STREAM_INDEX,
+                                                  sourceColor);
+    videoCtx1->VideoProcessorSetOutputColorSpace1(m_pVideoProcessor.Get(), targetColor);
     // makes target available for processing in shaders
     videoCtx1->VideoProcessorSetOutputShaderUsage(m_pVideoProcessor.Get(), 1);
-
-    if (m_bSupportHDR10)
-    {
-      ComPtr<ID3D11VideoContext2> videoCtx2;
-      if (SUCCEEDED(m_pVideoContext.As(&videoCtx2)) && views[2]->hasDisplayMetadata)
-      {
-        DXGI_HDR_METADATA_HDR10 hdr10 = {};
-        hdr10.WhitePoint[0] = from_rational<uint16_t>(50000, views[2]->displayMetadata.white_point[0]);
-        hdr10.WhitePoint[1] = from_rational<uint16_t>(50000, views[2]->displayMetadata.white_point[1]);
-        if (views[2]->displayMetadata.has_primaries)
-        {
-          hdr10.RedPrimary[0] = from_rational<uint16_t>(50000, views[2]->displayMetadata.display_primaries[0][0]);
-          hdr10.RedPrimary[1] = from_rational<uint16_t>(50000, views[2]->displayMetadata.display_primaries[0][1]);
-          hdr10.GreenPrimary[0] = from_rational<uint16_t>(50000, views[2]->displayMetadata.display_primaries[1][0]);
-          hdr10.GreenPrimary[1] = from_rational<uint16_t>(50000, views[2]->displayMetadata.display_primaries[1][1]);
-          hdr10.BluePrimary[0] = from_rational<uint16_t>(50000, views[2]->displayMetadata.display_primaries[2][0]);
-          hdr10.BluePrimary[1] = from_rational<uint16_t>(50000, views[2]->displayMetadata.display_primaries[2][1]);
-        }
-        if (views[2]->displayMetadata.has_luminance)
-        {
-          hdr10.MinMasteringLuminance = from_rational<uint32_t>(10000, views[2]->displayMetadata.min_luminance);
-          hdr10.MaxMasteringLuminance = from_rational<uint32_t>(10000, views[2]->displayMetadata.max_luminance);
-        }
-        if (views[2]->hasLightMetadata)
-        {
-          hdr10.MaxContentLightLevel = static_cast<uint16_t>(views[2]->lightMetadata.MaxCLL);
-          hdr10.MaxFrameAverageLightLevel = static_cast<uint16_t>(views[2]->lightMetadata.MaxFALL);
-        }
-        videoCtx2->VideoProcessorSetStreamHDRMetaData(m_pVideoProcessor.Get(), DEFAULT_STREAM_INDEX, 
-                                                      DXGI_HDR_METADATA_TYPE_HDR10, sizeof(hdr10), &hdr10);
-      }
-    }
   }
   else
   {

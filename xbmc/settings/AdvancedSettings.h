@@ -356,6 +356,7 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     std::string m_stereoscopicregex_tab;
 
     bool m_allowUseSeparateDeviceForDecoding;
+    bool m_disableDXVAdiscreteDecoding;
 
     /*!< @brief position behavior of ass subtitles when setting "subtitle position on screen" set to "fixed"
     True to show at the fixed position set in video calibration

@@ -201,6 +201,9 @@ static const std::map<ActionName, ActionID> ActionMappings = {
     {"togglestereomode", ACTION_STEREOMODE_TOGGLE},
     {"stereomodetomono", ACTION_STEREOMODE_TOMONO},
 
+    // HDR display support
+    {"hdrtoggle", ACTION_HDR_TOGGLE},
+
     // PVR actions
     {"channelup", ACTION_CHANNEL_UP},
     {"channeldown", ACTION_CHANNEL_DOWN},
