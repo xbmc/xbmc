@@ -557,12 +557,12 @@ bool CAddonDatabase::GetAddon(int id, AddonPtr &addon)
   return false;
 }
 
-bool CAddonDatabase::GetRepositoryContent(VECADDONS& addons)
+bool CAddonDatabase::GetRepositoryContent(VECADDONS& addons) const
 {
   return GetRepositoryContent("", addons);
 }
 
-bool CAddonDatabase::GetRepositoryContent(const std::string& id, VECADDONS& addons)
+bool CAddonDatabase::GetRepositoryContent(const std::string& id, VECADDONS& addons) const
 {
   try
   {

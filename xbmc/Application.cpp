@@ -783,26 +783,39 @@ bool CApplication::Initialize()
 
     std::vector<std::string> incompatibleAddons;
     event.Reset();
-    std::atomic<bool> isMigratingAddons(false);
-    CJobManager::GetInstance().Submit([&event, &incompatibleAddons, &isMigratingAddons]() {
-        incompatibleAddons = CAddonSystemSettings::GetInstance().MigrateAddons([&isMigratingAddons]() {
-          isMigratingAddons = true;
-        });
-        event.Set();
-      }, CJob::PRIORITY_DEDICATED);
-    localizedStr = g_localizeStrings.Get(24151);
-    iDots = 1;
-    while (!event.WaitMSec(1000))
+
+    // Addon migration
+    ADDON::VECADDONS incompatible;
+    if (CServiceBroker::GetAddonMgr().GetIncompatibleAddons(incompatible))
     {
-      if (isMigratingAddons)
-        CServiceBroker::GetRenderSystem()->ShowSplash(std::string(iDots, ' ') + localizedStr + std::string(iDots, '.'));
-      if (iDots == 3)
+      if (CAddonSystemSettings::GetInstance().GetAddonAutoUpdateMode() == AUTO_UPDATES_ON)
+      {
+        CJobManager::GetInstance().Submit(
+            [&event, &incompatibleAddons]() {
+              if (CServiceBroker::GetRepositoryUpdater().CheckForUpdates())
+                CServiceBroker::GetRepositoryUpdater().Await();
+
+              incompatibleAddons = CServiceBroker::GetAddonMgr().MigrateAddons();
+              event.Set();
+            },
+            CJob::PRIORITY_DEDICATED);
+        localizedStr = g_localizeStrings.Get(24151);
         iDots = 1;
-      else
-        ++iDots;
+        while (!event.WaitMSec(1000))
+        {
+          CServiceBroker::GetRenderSystem()->ShowSplash(std::string(iDots, ' ') + localizedStr +
+                                                        std::string(iDots, '.'));
+          if (iDots == 3)
+            iDots = 1;
+          else
+            ++iDots;
+        }
+        m_incompatibleAddons = incompatibleAddons;
+      }
     }
+
+    // Start splashscreen and load skin
     CServiceBroker::GetRenderSystem()->ShowSplash("");
-    m_incompatibleAddons = incompatibleAddons;
     m_confirmSkinChange = true;
 
     std::string defaultSkin = std::static_pointer_cast<const CSettingString>(settings->GetSetting(CSettings::SETTING_LOOKANDFEEL_SKIN))->GetDefault();

@@ -52,10 +52,10 @@ public:
    \param id id of the repository
    \returns true on success, false on error or if repository have never been synced.
    */
-  bool GetRepositoryContent(const std::string& id, ADDON::VECADDONS& addons);
+  bool GetRepositoryContent(const std::string& id, ADDON::VECADDONS& addons) const;
 
   /*! Get addons across all repositories */
-  bool GetRepositoryContent(ADDON::VECADDONS& addons);
+  bool GetRepositoryContent(ADDON::VECADDONS& addons) const;
 
   /*!
    \brief Set repo last checked date, and create the repo if needed
