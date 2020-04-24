@@ -243,7 +243,7 @@ bool CUDevProvider::PumpDriveChangeEvents(IStorageEventsCallback *callback)
       const char *fs_usage = udev_device_get_property_value(dev, "ID_FS_USAGE");
       if (mountpoint && strcmp(action, "add") == 0 && (fs_usage && strcmp(fs_usage, "filesystem") == 0))
       {
-        CLog::Log(LOGNOTICE, "UDev: Added %s", mountpoint);
+        CLog::Log(LOGINFO, "UDev: Added %s", mountpoint);
         if (callback)
           callback->OnStorageAdded(label, mountpoint);
         changed = true;
@@ -261,7 +261,7 @@ bool CUDevProvider::PumpDriveChangeEvents(IStorageEventsCallback *callback)
         const char *optical = udev_device_get_property_value(dev, "ID_CDROM");
         if (mountpoint && (optical && strcmp(optical, "1") == 0))
         {
-          CLog::Log(LOGNOTICE, "UDev: Changed / Added %s", mountpoint);
+          CLog::Log(LOGINFO, "UDev: Changed / Added %s", mountpoint);
           if (callback)
             callback->OnStorageAdded(label, mountpoint);
           changed = true;

@@ -402,7 +402,8 @@ bool CAESinkAUDIOTRACK::Initialize(AEAudioFormat &format, std::string &device)
 
   while (!m_at_jni)
   {
-    CLog::Log(LOGNOTICE, "Trying to open: samplerate: %u, channelMask: %d, encoding: %d", m_sink_sampleRate, atChannelMask, m_encoding);
+    CLog::Log(LOGINFO, "Trying to open: samplerate: %u, channelMask: %d, encoding: %d",
+              m_sink_sampleRate, atChannelMask, m_encoding);
     int min_buffer = CJNIAudioTrack::getMinBufferSize(m_sink_sampleRate,
                                                          atChannelMask,
                                                          m_encoding);
@@ -525,9 +526,13 @@ bool CAESinkAUDIOTRACK::Initialize(AEAudioFormat &format, std::string &device)
       return false;
     }
     const char* method = m_passthrough ? (m_info.m_wantsIECPassthrough ? "IEC (PT)" : "RAW (PT)") : "PCM";
-    CLog::Log(LOGNOTICE, "CAESinkAUDIOTRACK::Initializing with: m_sampleRate: %u format: %s (AE) method: %s stream-type: %s min_buffer_size: %u m_frames: %u m_frameSize: %u channels: %d",
-                          m_sink_sampleRate, CAEUtil::DataFormatToStr(m_format.m_dataFormat), method, m_passthrough ? CAEUtil::StreamTypeToStr(m_format.m_streamInfo.m_type) : "PCM-STREAM",
-                          m_min_buffer_size, m_format.m_frames, m_format.m_frameSize, m_format.m_channelLayout.Count());
+    CLog::Log(LOGINFO,
+              "CAESinkAUDIOTRACK::Initializing with: m_sampleRate: %u format: %s (AE) method: %s "
+              "stream-type: %s min_buffer_size: %u m_frames: %u m_frameSize: %u channels: %d",
+              m_sink_sampleRate, CAEUtil::DataFormatToStr(m_format.m_dataFormat), method,
+              m_passthrough ? CAEUtil::StreamTypeToStr(m_format.m_streamInfo.m_type) : "PCM-STREAM",
+              m_min_buffer_size, m_format.m_frames, m_format.m_frameSize,
+              m_format.m_channelLayout.Count());
   }
   format = m_format;
 
@@ -621,7 +626,7 @@ void CAESinkAUDIOTRACK::GetDelay(AEDelayStatus& status)
   {
     if (usesAdvancedLogging)
     {
-      CLog::Log(LOGNOTICE, "Framecounter: {} Time: {} Current-Time: {}",
+      CLog::Log(LOGINFO, "Framecounter: {} Time: {} Current-Time: {}",
                 (m_timestamp.get_framePosition() & UINT64_LOWER_BYTES), m_timestamp.get_nanoTime(),
                 CurrentHostCounter());
     }
@@ -646,11 +651,11 @@ void CAESinkAUDIOTRACK::GetDelay(AEDelayStatus& status)
 
     if (usesAdvancedLogging)
     {
-      CLog::Log(LOGNOTICE,
+      CLog::Log(LOGINFO,
                 "Delay - Timestamp: {} (ms) delta: {} (ms) playtime: {} (ms) Duration: {} ms",
                 1000.0 * (m_duration_written - playtime), delta / 1000000.0, playtime * 1000,
                 m_duration_written * 1000);
-      CLog::Log(LOGNOTICE, "Head-Position {} Timestamp Position {} Delay-Offset: {} ms", m_headPos,
+      CLog::Log(LOGINFO, "Head-Position {} Timestamp Position {} Delay-Offset: {} ms", m_headPos,
                 m_timestampPos, 1000.0 * (m_headPos - m_timestampPos) / m_sink_sampleRate);
     }
     double hw_delay = m_duration_written - playtime;
@@ -664,14 +669,14 @@ void CAESinkAUDIOTRACK::GetDelay(AEDelayStatus& status)
       m_hw_delay = 0.0;
     if (usesAdvancedLogging)
     {
-      CLog::Log(LOGNOTICE, "HW-Delay (1): {} ms", hw_delay * 1000);
+      CLog::Log(LOGINFO, "HW-Delay (1): {} ms", hw_delay * 1000);
     }
   }
 
   delay += m_hw_delay;
   if (usesAdvancedLogging)
   {
-    CLog::Log(LOGNOTICE, "Combined Delay: {} ms", delay * 1000);
+    CLog::Log(LOGINFO, "Combined Delay: {} ms", delay * 1000);
   }
   if (delay < 0.0)
     delay = 0.0;
@@ -686,7 +691,7 @@ void CAESinkAUDIOTRACK::GetDelay(AEDelayStatus& status)
   m_delay = d;
   if (usesAdvancedLogging)
   {
-    CLog::Log(LOGNOTICE, "Delay Current: %lf ms", d * 1000);
+    CLog::Log(LOGINFO, "Delay Current: %lf ms", d * 1000);
   }
   status.SetDelay(d);
 }
@@ -1061,7 +1066,7 @@ void CAESinkAUDIOTRACK::UpdateAvailablePCMCapabilities()
   {
     encoding = CJNIAudioFormat::ENCODING_PCM_FLOAT;
     m_info.m_dataFormats.push_back(AE_FMT_FLOAT);
-    CLog::Log(LOGNOTICE, "Float is supported");
+    CLog::Log(LOGINFO, "Float is supported");
   }
 
   int test_sample[] = { 32000, 44100, 48000, 88200, 96000, 176400, 192000 };

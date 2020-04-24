@@ -1100,7 +1100,7 @@ void CXBMCApp::onNewIntent(CJNIIntent intent)
 {
   if (!intent)
   {
-    CLog::Log(LOGNOTICE, "CXBMCApp::onNewIntent - Got invalid intent.");
+    CLog::Log(LOGINFO, "CXBMCApp::onNewIntent - Got invalid intent.");
     return;
   }
 

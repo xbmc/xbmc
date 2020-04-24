@@ -153,7 +153,8 @@ bool CPosixUDPSocket::Bind(bool localOnly, int port, int range)
     }
     else
     {
-      CLog::Log(LOGNOTICE, "UDP: Listening on port %d (ipv6 : %s)", m_iPort, m_ipv6Socket ? "true" : "false");
+      CLog::Log(LOGINFO, "UDP: Listening on port %d (ipv6 : %s)", m_iPort,
+                m_ipv6Socket ? "true" : "false");
       SetBound();
       SetReady();
       break;

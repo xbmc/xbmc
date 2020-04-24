@@ -1494,7 +1494,8 @@ int CCurlFile::Stat(const CURL& url, struct __stat64* buffer)
     if (url.IsProtocol("ftp"))
     {
       g_curlInterface.easy_release(&m_state->m_easyHandle, NULL);
-      CLog::Log(LOGNOTICE, "CCurlFile::Stat - Content length failed: %s(%d) for %s", g_curlInterface.easy_strerror(result), result, url.GetRedacted().c_str());
+      CLog::Log(LOGINFO, "CCurlFile::Stat - Content length failed: %s(%d) for %s",
+                g_curlInterface.easy_strerror(result), result, url.GetRedacted().c_str());
       errno = ENOENT;
       return -1;
     }
@@ -1510,7 +1511,8 @@ int CCurlFile::Stat(const CURL& url, struct __stat64* buffer)
     result = g_curlInterface.easy_getinfo(m_state->m_easyHandle, CURLINFO_CONTENT_TYPE, &content);
     if (result != CURLE_OK)
     {
-      CLog::Log(LOGNOTICE, "CCurlFile::Stat - Content type failed: %s(%d) for %s", g_curlInterface.easy_strerror(result), result, url.GetRedacted().c_str());
+      CLog::Log(LOGINFO, "CCurlFile::Stat - Content type failed: %s(%d) for %s",
+                g_curlInterface.easy_strerror(result), result, url.GetRedacted().c_str());
       g_curlInterface.easy_release(&m_state->m_easyHandle, NULL);
       errno = ENOENT;
       return -1;
@@ -1528,7 +1530,8 @@ int CCurlFile::Stat(const CURL& url, struct __stat64* buffer)
     result = g_curlInterface.easy_getinfo(m_state->m_easyHandle, CURLINFO_FILETIME, &filetime);
     if (result != CURLE_OK)
     {
-      CLog::Log(LOGNOTICE, "CCurlFile::Stat - Filetime failed: %s(%d) for %s", g_curlInterface.easy_strerror(result), result, url.GetRedacted().c_str());
+      CLog::Log(LOGINFO, "CCurlFile::Stat - Filetime failed: %s(%d) for %s",
+                g_curlInterface.easy_strerror(result), result, url.GetRedacted().c_str());
     }
     else
     {

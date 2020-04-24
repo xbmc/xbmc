@@ -696,7 +696,7 @@ void CWinSystemOSX::OnTimeout()
 
 bool CWinSystemOSX::InitWindowSystem()
 {
-  CLog::LogF(LOGNOTICE, "Setup SDL");
+  CLog::LogF(LOGINFO, "Setup SDL");
 
   /* Clean up on exit, exit on window close and interrupt */
   std::atexit(SDL_Quit);
@@ -1368,7 +1368,7 @@ void CWinSystemOSX::FillInVideoModes()
     CFArrayRef displayModes = GetAllDisplayModes(GetDisplayID(disp));
     NSString *dispName = screenNameForDisplay(GetDisplayID(disp));
 
-    CLog::Log(LOGNOTICE, "Display %i has name %s", disp, [dispName UTF8String]);
+    CLog::Log(LOGINFO, "Display %i has name %s", disp, [dispName UTF8String]);
 
     if (NULL == displayModes)
       continue;
@@ -1397,8 +1397,8 @@ void CWinSystemOSX::FillInVideoModes()
           // NOTE: The refresh rate will be REPORTED AS 0 for many DVI and notebook displays.
           refreshrate = 60.0;
         }
-        CLog::Log(LOGNOTICE, "Found possible resolution for display %d with %d x %d @ %f Hz", disp,
-                  w, h, refreshrate);
+        CLog::Log(LOGINFO, "Found possible resolution for display %d with %d x %d @ %f Hz", disp, w,
+                  h, refreshrate);
 
         // only add the resolution if it belongs to "our" screen
         // all others are only logged above...

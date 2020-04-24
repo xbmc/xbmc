@@ -371,8 +371,8 @@ bool CCharsetConverter::CInnerConverter::convert(iconv_t type, int multiplier, c
   char*       outBuf     = (char*)malloc(outBufSize);
   if (outBuf == NULL)
   {
-      CLog::Log(LOGSEVERE, "%s: malloc failed", __FUNCTION__);
-      return false;
+    CLog::Log(LOGFATAL, "%s: malloc failed", __FUNCTION__);
+    return false;
   }
 
   size_t      inBytesAvail  = inBufSize;  //how many bytes iconv() can read
@@ -398,8 +398,8 @@ bool CCharsetConverter::CInnerConverter::convert(iconv_t type, int multiplier, c
         char* newBuf  = (char*)realloc(outBuf, outBufSize);
         if (!newBuf)
         {
-          CLog::Log(LOGSEVERE, "%s realloc failed with errno=%d(%s)",
-                    __FUNCTION__, errno, strerror(errno));
+          CLog::Log(LOGFATAL, "%s realloc failed with errno=%d(%s)", __FUNCTION__, errno,
+                    strerror(errno));
           break;
         }
         outBuf = newBuf;
@@ -489,7 +489,7 @@ bool CCharsetConverter::CInnerConverter::logicalToVisualBiDi(const std::u32strin
     if (visual == NULL)
     {
       free(visual);
-      CLog::Log(LOGSEVERE, "%s: can't allocate memory", __FUNCTION__);
+      CLog::Log(LOGFATAL, "%s: can't allocate memory", __FUNCTION__);
       return false;
     }
 

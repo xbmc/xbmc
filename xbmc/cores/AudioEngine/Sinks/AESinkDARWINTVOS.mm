@@ -53,21 +53,21 @@ static std::string getAudioRoute()
 static void dumpAVAudioSessionProperties()
 {
   std::string route = getAudioRoute();
-  CLog::Log(LOGNOTICE, "%s audio route = %s", __PRETTY_FUNCTION__,
+  CLog::Log(LOGINFO, "%s audio route = %s", __PRETTY_FUNCTION__,
             route.empty() ? "NONE" : route.c_str());
 
   AVAudioSession* mySession = [AVAudioSession sharedInstance];
 
-  CLog::Log(LOGNOTICE, "%s sampleRate %f", __PRETTY_FUNCTION__, [mySession sampleRate]);
-  CLog::Log(LOGNOTICE, "%s outputLatency %f", __PRETTY_FUNCTION__, [mySession outputLatency]);
-  CLog::Log(LOGNOTICE, "%s IOBufferDuration %f", __PRETTY_FUNCTION__, [mySession IOBufferDuration]);
-  CLog::Log(LOGNOTICE, "%s outputNumberOfChannels %ld", __PRETTY_FUNCTION__,
+  CLog::Log(LOGINFO, "%s sampleRate %f", __PRETTY_FUNCTION__, [mySession sampleRate]);
+  CLog::Log(LOGINFO, "%s outputLatency %f", __PRETTY_FUNCTION__, [mySession outputLatency]);
+  CLog::Log(LOGINFO, "%s IOBufferDuration %f", __PRETTY_FUNCTION__, [mySession IOBufferDuration]);
+  CLog::Log(LOGINFO, "%s outputNumberOfChannels %ld", __PRETTY_FUNCTION__,
             static_cast<long>([mySession outputNumberOfChannels]));
   // maximumOutputNumberOfChannels provides hints to tvOS audio settings
   // if 2, then audio is set to two channel stereo. iOS return this unless hdmi connected
   // if 6, then audio is set to Digial Dolby 5.1 OR hdmi path detected sink can only handle 6 channels.
   // if 8, then audio is set to Best Quality AND hdmi path detected sink can handle 8 channels.
-  CLog::Log(LOGNOTICE, "%s maximumOutputNumberOfChannels %ld", __PRETTY_FUNCTION__,
+  CLog::Log(LOGINFO, "%s maximumOutputNumberOfChannels %ld", __PRETTY_FUNCTION__,
             static_cast<long>([mySession maximumOutputNumberOfChannels]));
 
   //CDarwinUtils::DumpAudioDescriptions(__PRETTY_FUNCTION__);
@@ -432,16 +432,16 @@ bool CAAudioUnitSink::setupAudio()
   int channels = m_outputFormat.mChannelsPerFrame;
   NSTimeInterval bufferseconds =
       1024 * m_outputFormat.mChannelsPerFrame / m_outputFormat.mSampleRate;
-  CLog::Log(LOGNOTICE, "%s setting channels %d", __PRETTY_FUNCTION__, channels);
-  CLog::Log(LOGNOTICE, "%s setting samplerate %f", __PRETTY_FUNCTION__, samplerate);
-  CLog::Log(LOGNOTICE, "%s setting buffer duration to %f", __PRETTY_FUNCTION__, bufferseconds);
+  CLog::Log(LOGINFO, "%s setting channels %d", __PRETTY_FUNCTION__, channels);
+  CLog::Log(LOGINFO, "%s setting samplerate %f", __PRETTY_FUNCTION__, samplerate);
+  CLog::Log(LOGINFO, "%s setting buffer duration to %f", __PRETTY_FUNCTION__, bufferseconds);
   setAVAudioSessionProperties(bufferseconds, samplerate, channels);
 
   // Get the real output samplerate, the requested might not avaliable
   Float64 realisedSampleRate = [[AVAudioSession sharedInstance] sampleRate];
   if (m_outputFormat.mSampleRate != realisedSampleRate)
   {
-    CLog::Log(LOGNOTICE,
+    CLog::Log(LOGINFO,
               "%s couldn't set requested samplerate %d, AudioUnit will resample to %d instead",
               __PRETTY_FUNCTION__, static_cast<int>(m_outputFormat.mSampleRate),
               static_cast<int>(realisedSampleRate));
@@ -490,11 +490,11 @@ bool CAAudioUnitSink::setupAudio()
   m_outputLatency = [mySession outputLatency];
   m_bufferDuration = [mySession IOBufferDuration];
   m_totalLatency = m_outputLatency + m_bufferDuration;
-  CLog::Log(LOGNOTICE, "%s total latency = %f", __PRETTY_FUNCTION__, m_totalLatency);
+  CLog::Log(LOGINFO, "%s total latency = %f", __PRETTY_FUNCTION__, m_totalLatency);
 
   m_setup = true;
   std::string formatString;
-  CLog::Log(LOGNOTICE, "%s setup audio format: %s", __PRETTY_FUNCTION__,
+  CLog::Log(LOGINFO, "%s setup audio format: %s", __PRETTY_FUNCTION__,
             StreamDescriptionToString(m_outputFormat, formatString));
 
   dumpAVAudioSessionProperties();

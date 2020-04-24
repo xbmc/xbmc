@@ -526,7 +526,7 @@ bool CDVDRadioRDSData::OpenStream(CDVDStreamInfo hints)
   if (hints.type == STREAM_RADIO_RDS)
   {
     Flush();
-    CLog::Log(LOGNOTICE, "Creating UECP (RDS) data thread");
+    CLog::Log(LOGINFO, "Creating UECP (RDS) data thread");
     Create();
   }
   return true;
@@ -541,7 +541,7 @@ void CDVDRadioRDSData::CloseStream(bool bWaitForBuffers)
   m_messageQueue.Abort();
 
   // wait for decode_video thread to end
-  CLog::Log(LOGNOTICE, "Radio UECP (RDS) Processor - waiting for data thread to exit");
+  CLog::Log(LOGINFO, "Radio UECP (RDS) Processor - waiting for data thread to exit");
 
   StopThread(); // will set this->m_bStop to true
 
@@ -624,7 +624,7 @@ void CDVDRadioRDSData::ResetRDSCache()
 
 void CDVDRadioRDSData::Process()
 {
-  CLog::Log(LOGNOTICE, "Radio UECP (RDS) Processor - running thread");
+  CLog::Log(LOGINFO, "Radio UECP (RDS) Processor - running thread");
 
   while (!m_bStop)
   {
@@ -678,7 +678,7 @@ void CDVDRadioRDSData::Flush()
 
 void CDVDRadioRDSData::OnExit()
 {
-  CLog::Log(LOGNOTICE, "Radio UECP (RDS) Processor - thread end");
+  CLog::Log(LOGINFO, "Radio UECP (RDS) Processor - thread end");
 }
 
 std::string CDVDRadioRDSData::GetRadioText(unsigned int line)

@@ -1511,7 +1511,7 @@ namespace PVR
       channel = channels.front()->channel;
     }
 
-    CLog::Log(LOGNOTICE, "PVR is starting playback of channel '%s'", channel->ChannelName().c_str());
+    CLog::Log(LOGINFO, "PVR is starting playback of channel '%s'", channel->ChannelName().c_str());
     CServiceBroker::GetPVRManager().PlaybackState()->SetPlayingGroup(group);
     return SwitchToChannel(std::make_shared<CFileItem>(channel), true);
   }
@@ -1715,7 +1715,8 @@ namespace PVR
 
     if (CServiceBroker::GetPVRManager().PlaybackState()->IsPlaying())
     {
-      CLog::Log(LOGNOTICE, "PVR is stopping playback for %s database reset", bResetEPGOnly ? "EPG" : "PVR and EPG");
+      CLog::Log(LOGINFO, "PVR is stopping playback for %s database reset",
+                bResetEPGOnly ? "EPG" : "PVR and EPG");
       CApplicationMessenger::GetInstance().SendMsg(TMSG_MEDIA_STOP);
     }
 
@@ -1780,7 +1781,8 @@ namespace PVR
 
     CLog::LogFC(LOGDEBUG, LOGPVR, "%s database cleared", bResetEPGOnly ? "EPG" : "PVR and EPG");
 
-    CLog::Log(LOGNOTICE, "Restarting the PVR Manager after %s database reset", bResetEPGOnly ? "EPG" : "PVR and EPG");
+    CLog::Log(LOGINFO, "Restarting the PVR Manager after %s database reset",
+              bResetEPGOnly ? "EPG" : "PVR and EPG");
     CServiceBroker::GetPVRManager().Start();
 
     pDlgProgress->SetPercentage(100);

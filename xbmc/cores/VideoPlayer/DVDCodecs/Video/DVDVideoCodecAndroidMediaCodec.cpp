@@ -591,9 +591,10 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
         crypto.requiresSecureDecoderComponent(m_mime) &&
         (m_hints.cryptoSession->flags & DemuxCryptoSession::FLAG_SECURE_DECODER) != 0;
 
-    CLog::Log(LOGNOTICE,
-              "CDVDVideoCodecAndroidMediaCodec::Open: Secure decoder requested: %s (stream flags: %d)",
-              m_needSecureDecoder ? "true" : "false", m_hints.cryptoSession->flags);
+    CLog::Log(
+        LOGINFO,
+        "CDVDVideoCodecAndroidMediaCodec::Open: Secure decoder requested: %s (stream flags: %d)",
+        m_needSecureDecoder ? "true" : "false", m_hints.cryptoSession->flags);
   }
 
   m_codec = nullptr;
@@ -610,7 +611,8 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
     if (!CServiceBroker::GetDecoderFilterManager()->isValid(m_codecname, m_hints))
       continue;
 
-    CLog::Log(LOGNOTICE, "CDVDVideoCodecAndroidMediaCodec::Open Testing codec:%s", m_codecname.c_str());
+    CLog::Log(LOGINFO, "CDVDVideoCodecAndroidMediaCodec::Open Testing codec:%s",
+              m_codecname.c_str());
 
     CJNIMediaCodecInfoCodecCapabilities codec_caps = codec_info.getCapabilitiesForType(m_mime);
     if (xbmc_jnienv()->ExceptionCheck())
@@ -630,8 +632,8 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
     }
     else if (codecIsSecure)
     {
-      CLog::Log(LOGNOTICE, "CDVDVideoCodecAndroidMediaCodec::Open: skipping insecure decoder while "
-                           "secure decoding is required");
+      CLog::Log(LOGINFO, "CDVDVideoCodecAndroidMediaCodec::Open: skipping insecure decoder while "
+                         "secure decoding is required");
       continue;
     }
 

@@ -71,16 +71,17 @@ RESOLUTION CResolutionUtils::ChooseBestResolution(float fps, int width, int heig
     }
   }
 
-  CLog::Log(LOGNOTICE, "Display resolution ADJUST : %s (%d) (weight: %.3f)",
-            CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo(res).strMode.c_str(), res, weight);
+  CLog::Log(LOGINFO, "Display resolution ADJUST : %s (%d) (weight: %.3f)",
+            CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo(res).strMode.c_str(), res,
+            weight);
   return res;
 }
 
 void CResolutionUtils::FindResolutionFromWhitelist(float fps, int width, int height, bool is3D, RESOLUTION &resolution)
 {
   RESOLUTION_INFO curr = CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo(resolution);
-  CLog::Log(LOGNOTICE, "Whitelist search for: width: %d, height: %d, fps: %0.3f, 3D: %s",
-    width, height, fps, is3D ? "true" : "false");
+  CLog::Log(LOGINFO, "Whitelist search for: width: %d, height: %d, fps: %0.3f, 3D: %s", width,
+            height, fps, is3D ? "true" : "false");
 
   std::vector<CVariant> indexList = CServiceBroker::GetSettingsComponent()->GetSettings()->GetList(CSettings::SETTING_VIDEOSCREEN_WHITELIST);
   if (indexList.empty())

@@ -471,7 +471,8 @@ bool CWakeOnAccess::WakeUpHost(const std::string& hostName, const std::string& c
 
   if (FindOrTouchHostEntry(hostName, upnpMode, server))
   {
-    CLog::Log(LOGNOTICE, "WakeOnAccess [%s] trigged by accessing : %s", server.friendlyName.c_str(), customMessage.c_str());
+    CLog::Log(LOGINFO, "WakeOnAccess [%s] trigged by accessing : %s", server.friendlyName.c_str(),
+              customMessage.c_str());
 
     NestDetect nesting ; // detect recursive calls on gui thread..
 
@@ -508,7 +509,7 @@ bool CWakeOnAccess::WakeUpHost(const WakeUpEntry& server)
       }
       else
       {
-        CLog::Log(LOGNOTICE, "WakeOnAccess timeout/cancel while waiting for network");
+        CLog::Log(LOGINFO, "WakeOnAccess timeout/cancel while waiting for network");
         return false; // timedout or canceled ; give up
       }
     }
@@ -516,7 +517,7 @@ bool CWakeOnAccess::WakeUpHost(const WakeUpEntry& server)
 
   if (PingResponseWaiter::Ping(server, 500)) // quick ping with short timeout to not block too long
   {
-    CLog::Log(LOGNOTICE,"WakeOnAccess success exit, server already running");
+    CLog::Log(LOGINFO, "WakeOnAccess success exit, server already running");
     return true;
   }
 
@@ -540,7 +541,7 @@ bool CWakeOnAccess::WakeUpHost(const WakeUpEntry& server)
 
     if (result != ProgressDialogHelper::Success)
     {
-      CLog::Log(LOGNOTICE,"WakeOnAccess timeout/cancel while waiting for response");
+      CLog::Log(LOGINFO, "WakeOnAccess timeout/cancel while waiting for response");
       return false; // timedout or canceled
     }
   }
@@ -552,7 +553,7 @@ bool CWakeOnAccess::WakeUpHost(const WakeUpEntry& server)
 
     dlg.ShowAndWait (waitObj, server.wait_services_sec, LOCALIZED(13032));
 
-    CLog::Log(LOGNOTICE,"WakeOnAccess sequence completed, server started");
+    CLog::Log(LOGINFO, "WakeOnAccess sequence completed, server started");
   }
   return true;
 }
@@ -640,7 +641,8 @@ void CWakeOnAccess::QueueMACDiscoveryForHost(const std::string& host)
     if (URIUtils::IsHostOnLAN(host, true))
       CJobManager::GetInstance().AddJob(new CMACDiscoveryJob(host), this);
     else
-      CLog::Log(LOGNOTICE, "%s - skip Mac discovery for non-local host '%s'", __FUNCTION__, host.c_str());
+      CLog::Log(LOGINFO, "%s - skip Mac discovery for non-local host '%s'", __FUNCTION__,
+                host.c_str());
   }
 }
 
@@ -705,7 +707,8 @@ void CWakeOnAccess::QueueMACDiscoveryForAllRemotes()
 
 void CWakeOnAccess::SaveMACDiscoveryResult(const std::string& host, const std::string& mac)
 {
-  CLog::Log(LOGNOTICE, "%s - Mac discovered for host '%s' -> '%s'", __FUNCTION__, host.c_str(), mac.c_str());
+  CLog::Log(LOGINFO, "%s - Mac discovered for host '%s' -> '%s'", __FUNCTION__, host.c_str(),
+            mac.c_str());
 
   for (auto& i : m_entries)
   {
@@ -790,7 +793,7 @@ void CWakeOnAccess::SetEnabled(bool enabled)
 {
   m_enabled = enabled;
 
-  CLog::Log(LOGNOTICE,"WakeOnAccess - Enabled:%s", m_enabled ? "TRUE" : "FALSE");
+  CLog::Log(LOGINFO, "WakeOnAccess - Enabled:%s", m_enabled ? "TRUE" : "FALSE");
 }
 
 void CWakeOnAccess::LoadFromXML()
@@ -801,7 +804,7 @@ void CWakeOnAccess::LoadFromXML()
   if (!xmlDoc.LoadFile(GetSettingFile()))
   {
     if (enabled)
-      CLog::Log(LOGNOTICE, "%s - unable to load:%s", __FUNCTION__, GetSettingFile().c_str());
+      CLog::Log(LOGINFO, "%s - unable to load:%s", __FUNCTION__, GetSettingFile().c_str());
     return;
   }
 
@@ -814,18 +817,18 @@ void CWakeOnAccess::LoadFromXML()
 
   m_entries.clear();
 
-  CLog::Log(LOGNOTICE,"WakeOnAccess - Load settings :");
+  CLog::Log(LOGINFO, "WakeOnAccess - Load settings :");
 
   SetEnabled(enabled);
 
   int tmp;
   if (XMLUtils::GetInt(pRootElement, "netinittimeout", tmp, 0, 5 * 60))
     m_netinit_sec = tmp;
-  CLog::Log(LOGNOTICE,"  -Network init timeout : [%d] sec", m_netinit_sec);
+  CLog::Log(LOGINFO, "  -Network init timeout : [%d] sec", m_netinit_sec);
 
   if (XMLUtils::GetInt(pRootElement, "netsettletime", tmp, 0, 5 * 1000))
     m_netsettle_ms = tmp;
-  CLog::Log(LOGNOTICE,"  -Network settle time  : [%d] ms", m_netsettle_ms);
+  CLog::Log(LOGINFO, "  -Network settle time  : [%d] ms", m_netsettle_ms);
 
   const TiXmlNode* pWakeUp = pRootElement->FirstChildElement("wakeup");
   while (pWakeUp)
@@ -863,15 +866,15 @@ void CWakeOnAccess::LoadFromXML()
       if (XMLUtils::GetInt(pWakeUp, "waitservices", tmp, 0, 5 * 60)) // max 5 minutes
         entry.wait_services_sec = tmp;
 
-      CLog::Log(LOGNOTICE,"  Registering wakeup entry:");
-      CLog::Log(LOGNOTICE,"    HostName        : %s", entry.host.c_str());
-      CLog::Log(LOGNOTICE,"    MacAddress      : %s", entry.mac.c_str());
-      CLog::Log(LOGNOTICE,"    PingPort        : %d", entry.ping_port);
-      CLog::Log(LOGNOTICE,"    PingMode        : %d", entry.ping_mode);
-      CLog::Log(LOGNOTICE,"    Timeout         : %d (sec)", GetTotalSeconds(entry.timeout));
-      CLog::Log(LOGNOTICE,"    WaitForOnline   : %d (sec)", entry.wait_online1_sec);
-      CLog::Log(LOGNOTICE,"    WaitForOnlineEx : %d (sec)", entry.wait_online2_sec);
-      CLog::Log(LOGNOTICE,"    WaitForServices : %d (sec)", entry.wait_services_sec);
+      CLog::Log(LOGINFO, "  Registering wakeup entry:");
+      CLog::Log(LOGINFO, "    HostName        : %s", entry.host.c_str());
+      CLog::Log(LOGINFO, "    MacAddress      : %s", entry.mac.c_str());
+      CLog::Log(LOGINFO, "    PingPort        : %d", entry.ping_port);
+      CLog::Log(LOGINFO, "    PingMode        : %d", entry.ping_mode);
+      CLog::Log(LOGINFO, "    Timeout         : %d (sec)", GetTotalSeconds(entry.timeout));
+      CLog::Log(LOGINFO, "    WaitForOnline   : %d (sec)", entry.wait_online1_sec);
+      CLog::Log(LOGINFO, "    WaitForOnlineEx : %d (sec)", entry.wait_online2_sec);
+      CLog::Log(LOGINFO, "    WaitForServices : %d (sec)", entry.wait_services_sec);
 
       m_entries.push_back(entry);
     }
@@ -898,7 +901,8 @@ void CWakeOnAccess::LoadFromXML()
       CLog::Log(LOGERROR, "%s - Missing or empty <upnp_map> entry", __FUNCTION__);
     else
     {
-      CLog::Log(LOGNOTICE, "  Registering upnp_map entry [%s : %s] -> [%s]", server.m_name.c_str(), server.m_uuid.c_str(), server.m_mac.c_str());
+      CLog::Log(LOGINFO, "  Registering upnp_map entry [%s : %s] -> [%s]", server.m_name.c_str(),
+                server.m_uuid.c_str(), server.m_mac.c_str());
 
       m_UPnPServers.push_back(server);
     }

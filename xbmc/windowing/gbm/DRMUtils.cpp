@@ -730,7 +730,7 @@ bool CDRMUtils::InitDrm()
       return false;
     }
 
-    CLog::Log(LOGNOTICE, "CDRMUtils::%s - successfully authorized drm magic", __FUNCTION__);
+    CLog::Log(LOGINFO, "CDRMUtils::%s - successfully authorized drm magic", __FUNCTION__);
   }
 
   return true;

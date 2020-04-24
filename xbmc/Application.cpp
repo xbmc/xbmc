@@ -436,9 +436,10 @@ bool CApplication::Create(const CAppParamParser &params)
   // Init our DllLoaders emu env
   init_emu_environ();
 
-  CLog::Log(LOGNOTICE, "-----------------------------------------------------------------------");
-  CLog::Log(LOGNOTICE, "Starting %s (%s). Platform: %s %s %d-bit", CSysInfo::GetAppName().c_str(), CSysInfo::GetVersion().c_str(),
-            g_sysinfo.GetBuildTargetPlatformName().c_str(), g_sysinfo.GetBuildTargetCpuFamily().c_str(), g_sysinfo.GetXbmcBitness());
+  CLog::Log(LOGINFO, "-----------------------------------------------------------------------");
+  CLog::Log(LOGINFO, "Starting %s (%s). Platform: %s %s %d-bit", CSysInfo::GetAppName().c_str(),
+            CSysInfo::GetVersion().c_str(), g_sysinfo.GetBuildTargetPlatformName().c_str(),
+            g_sysinfo.GetBuildTargetCpuFamily().c_str(), g_sysinfo.GetXbmcBitness());
 
   std::string buildType;
 #if defined(_DEBUG)
@@ -456,66 +457,80 @@ bool CApplication::Create(const CAppParamParser &params)
 //#elif defined(some_ID) // uncomment for special version/fork
 //  specialVersion = " (version for XXXX)";
 #endif
-  CLog::Log(LOGNOTICE, "Using %s %s x%d build%s", buildType.c_str(), CSysInfo::GetAppName().c_str(), g_sysinfo.GetXbmcBitness(), specialVersion.c_str());
-  CLog::Log(LOGNOTICE, "%s compiled %s by %s for %s %s %d-bit %s (%s)", CSysInfo::GetAppName().c_str(), CSysInfo::GetBuildDate(), g_sysinfo.GetUsedCompilerNameAndVer().c_str(), g_sysinfo.GetBuildTargetPlatformName().c_str(),
-            g_sysinfo.GetBuildTargetCpuFamily().c_str(), g_sysinfo.GetXbmcBitness(), g_sysinfo.GetBuildTargetPlatformVersionDecoded().c_str(),
-            g_sysinfo.GetBuildTargetPlatformVersion().c_str());
+  CLog::Log(LOGINFO, "Using %s %s x%d build%s", buildType.c_str(), CSysInfo::GetAppName().c_str(),
+            g_sysinfo.GetXbmcBitness(), specialVersion.c_str());
+  CLog::Log(
+      LOGINFO, "%s compiled %s by %s for %s %s %d-bit %s (%s)", CSysInfo::GetAppName().c_str(),
+      CSysInfo::GetBuildDate(), g_sysinfo.GetUsedCompilerNameAndVer().c_str(),
+      g_sysinfo.GetBuildTargetPlatformName().c_str(), g_sysinfo.GetBuildTargetCpuFamily().c_str(),
+      g_sysinfo.GetXbmcBitness(), g_sysinfo.GetBuildTargetPlatformVersionDecoded().c_str(),
+      g_sysinfo.GetBuildTargetPlatformVersion().c_str());
 
   std::string deviceModel(g_sysinfo.GetModelName());
   if (!g_sysinfo.GetManufacturerName().empty())
     deviceModel = g_sysinfo.GetManufacturerName() + " " + (deviceModel.empty() ? std::string("device") : deviceModel);
   if (!deviceModel.empty())
-    CLog::Log(LOGNOTICE, "Running on %s with %s, kernel: %s %s %d-bit version %s", deviceModel.c_str(), g_sysinfo.GetOsPrettyNameWithVersion().c_str(),
-              g_sysinfo.GetKernelName().c_str(), g_sysinfo.GetKernelCpuFamily().c_str(), g_sysinfo.GetKernelBitness(), g_sysinfo.GetKernelVersionFull().c_str());
+    CLog::Log(LOGINFO, "Running on %s with %s, kernel: %s %s %d-bit version %s",
+              deviceModel.c_str(), g_sysinfo.GetOsPrettyNameWithVersion().c_str(),
+              g_sysinfo.GetKernelName().c_str(), g_sysinfo.GetKernelCpuFamily().c_str(),
+              g_sysinfo.GetKernelBitness(), g_sysinfo.GetKernelVersionFull().c_str());
   else
-    CLog::Log(LOGNOTICE, "Running on %s, kernel: %s %s %d-bit version %s", g_sysinfo.GetOsPrettyNameWithVersion().c_str(),
-              g_sysinfo.GetKernelName().c_str(), g_sysinfo.GetKernelCpuFamily().c_str(), g_sysinfo.GetKernelBitness(), g_sysinfo.GetKernelVersionFull().c_str());
+    CLog::Log(LOGINFO, "Running on %s, kernel: %s %s %d-bit version %s",
+              g_sysinfo.GetOsPrettyNameWithVersion().c_str(), g_sysinfo.GetKernelName().c_str(),
+              g_sysinfo.GetKernelCpuFamily().c_str(), g_sysinfo.GetKernelBitness(),
+              g_sysinfo.GetKernelVersionFull().c_str());
 
-  CLog::Log(LOGNOTICE, "FFmpeg version/source: %s", av_version_info());
+  CLog::Log(LOGINFO, "FFmpeg version/source: %s", av_version_info());
 
   std::string cpuModel(CServiceBroker::GetCPUInfo()->GetCPUModel());
   if (!cpuModel.empty())
-    CLog::Log(LOGNOTICE, "Host CPU: %s, %d core%s available", cpuModel.c_str(),
+    CLog::Log(LOGINFO, "Host CPU: %s, %d core%s available", cpuModel.c_str(),
               CServiceBroker::GetCPUInfo()->GetCPUCount(),
               (CServiceBroker::GetCPUInfo()->GetCPUCount() == 1) ? "" : "s");
   else
-    CLog::Log(LOGNOTICE, "%d CPU core%s available", CServiceBroker::GetCPUInfo()->GetCPUCount(),
+    CLog::Log(LOGINFO, "%d CPU core%s available", CServiceBroker::GetCPUInfo()->GetCPUCount(),
               (CServiceBroker::GetCPUInfo()->GetCPUCount() == 1) ? "" : "s");
 
-  //! @todo - move to CPlatformXXX ???
+    //! @todo - move to CPlatformXXX ???
 #if defined(TARGET_WINDOWS)
-  CLog::Log(LOGNOTICE, "%s", CWIN32Util::GetResInfoString().c_str());
-  CLog::Log(LOGNOTICE, "Running with %s rights", (CWIN32Util::IsCurrentUserLocalAdministrator() == TRUE) ? "administrator" : "restricted");
-  CLog::Log(LOGNOTICE, "Aero is %s", (g_sysinfo.IsAeroDisabled() == true) ? "disabled" : "enabled");
+  CLog::Log(LOGINFO, "%s", CWIN32Util::GetResInfoString().c_str());
+  CLog::Log(LOGINFO, "Running with %s rights",
+            (CWIN32Util::IsCurrentUserLocalAdministrator() == TRUE) ? "administrator"
+                                                                    : "restricted");
+  CLog::Log(LOGINFO, "Aero is %s", (g_sysinfo.IsAeroDisabled() == true) ? "disabled" : "enabled");
 #endif
 #if defined(TARGET_ANDROID)
-  CLog::Log(LOGNOTICE,
-        "Product: %s, Device: %s, Board: %s - Manufacturer: %s, Brand: %s, Model: %s, Hardware: %s",
-        CJNIBuild::PRODUCT.c_str(), CJNIBuild::DEVICE.c_str(), CJNIBuild::BOARD.c_str(),
-        CJNIBuild::MANUFACTURER.c_str(), CJNIBuild::BRAND.c_str(), CJNIBuild::MODEL.c_str(), CJNIBuild::HARDWARE.c_str());
+  CLog::Log(
+      LOGINFO,
+      "Product: %s, Device: %s, Board: %s - Manufacturer: %s, Brand: %s, Model: %s, Hardware: %s",
+      CJNIBuild::PRODUCT.c_str(), CJNIBuild::DEVICE.c_str(), CJNIBuild::BOARD.c_str(),
+      CJNIBuild::MANUFACTURER.c_str(), CJNIBuild::BRAND.c_str(), CJNIBuild::MODEL.c_str(),
+      CJNIBuild::HARDWARE.c_str());
   std::string extstorage;
   bool extready = CXBMCApp::GetExternalStorage(extstorage);
-  CLog::Log(LOGNOTICE, "External storage path = %s; status = %s", extstorage.c_str(), extready ? "ok" : "nok");
+  CLog::Log(LOGINFO, "External storage path = %s; status = %s", extstorage.c_str(),
+            extready ? "ok" : "nok");
 #endif
 
 #if defined(__arm__) || defined(__aarch64__)
   if (CServiceBroker::GetCPUInfo()->GetCPUFeatures() & CPU_FEATURE_NEON)
-    CLog::Log(LOGNOTICE, "ARM Features: Neon enabled");
+    CLog::Log(LOGINFO, "ARM Features: Neon enabled");
   else
-    CLog::Log(LOGNOTICE, "ARM Features: Neon disabled");
+    CLog::Log(LOGINFO, "ARM Features: Neon disabled");
 #endif
   CSpecialProtocol::LogPaths();
 
   std::string executable = CUtil::ResolveExecutablePath();
-  CLog::Log(LOGNOTICE, "The executable running is: %s", executable.c_str());
+  CLog::Log(LOGINFO, "The executable running is: %s", executable.c_str());
   std::string hostname("[unknown]");
   m_ServiceManager->GetNetwork().GetHostName(hostname);
-  CLog::Log(LOGNOTICE, "Local hostname: %s", hostname.c_str());
+  CLog::Log(LOGINFO, "Local hostname: %s", hostname.c_str());
   std::string lowerAppName = CCompileInfo::GetAppName();
   StringUtils::ToLower(lowerAppName);
-  CLog::Log(LOGNOTICE, "Log File is located: %s.log", CSpecialProtocol::TranslatePath("special://logpath/" + lowerAppName).c_str());
+  CLog::Log(LOGINFO, "Log File is located: %s.log",
+            CSpecialProtocol::TranslatePath("special://logpath/" + lowerAppName).c_str());
   CRegExp::LogCheckUtf8Support();
-  CLog::Log(LOGNOTICE, "-----------------------------------------------------------------------");
+  CLog::Log(LOGINFO, "-----------------------------------------------------------------------");
 
   std::string strExecutablePath = CUtil::GetHomePath();
 
@@ -615,10 +630,11 @@ bool CApplication::CreateGUI()
   // Retrieve the matching resolution based on GUI settings
   bool sav_res = false;
   CDisplaySettings::GetInstance().SetCurrentResolution(CDisplaySettings::GetInstance().GetDisplayResolution());
-  CLog::Log(LOGNOTICE, "Checking resolution %i", CDisplaySettings::GetInstance().GetCurrentResolution());
+  CLog::Log(LOGINFO, "Checking resolution %i",
+            CDisplaySettings::GetInstance().GetCurrentResolution());
   if (!CServiceBroker::GetWinSystem()->GetGfxContext().IsValidResolution(CDisplaySettings::GetInstance().GetCurrentResolution()))
   {
-    CLog::Log(LOGNOTICE, "Setting safe mode %i", RES_DESKTOP);
+    CLog::Log(LOGINFO, "Setting safe mode %i", RES_DESKTOP);
     // defer saving resolution after window was created
     CDisplaySettings::GetInstance().SetCurrentResolution(RES_DESKTOP);
     sav_res = true;
@@ -865,7 +881,7 @@ bool CApplication::Initialize()
   if (!profileManager->UsingLoginScreen())
     CServiceBroker::GetServiceAddons().Start();
 
-  CLog::Log(LOGNOTICE, "initialize done");
+  CLog::Log(LOGINFO, "initialize done");
 
   CheckOSScreenSaverInhibitionSetting();
   // reset our screensaver (starts timers etc.)
@@ -935,7 +951,7 @@ void CApplication::StartServices()
 {
 #if !defined(TARGET_WINDOWS) && defined(HAS_DVD_DRIVE)
   // Start Thread for DVD Mediatype detection
-  CLog::Log(LOGNOTICE, "start dvd mediatype detection");
+  CLog::Log(LOGINFO, "start dvd mediatype detection");
   m_DetectDVDType.Create(false);
 #endif
 }
@@ -945,7 +961,7 @@ void CApplication::StopServices()
   m_ServiceManager->GetNetwork().NetworkMessage(CNetwork::SERVICES_DOWN, 0);
 
 #if !defined(TARGET_WINDOWS) && defined(HAS_DVD_DRIVE)
-  CLog::Log(LOGNOTICE, "stop dvd detect media");
+  CLog::Log(LOGINFO, "stop dvd detect media");
   m_DetectDVDType.StopThread();
 #endif
 }
@@ -1255,7 +1271,8 @@ bool CApplication::LoadSkin(const std::string& skinID)
     return false;
   }
 
-  CLog::Log(LOGNOTICE, "  load skin from: %s (version: %s)", skin->Path().c_str(), skin->Version().asString().c_str());
+  CLog::Log(LOGINFO, "  load skin from: %s (version: %s)", skin->Path().c_str(),
+            skin->Version().asString().c_str());
   g_SkinInfo = skin;
 
   CLog::Log(LOGINFO, "  load fonts for skin...");
@@ -2136,11 +2153,12 @@ void CApplication::OnApplicationMessage(ThreadMessage* pMsg)
     {
       if (!audioengine->Suspend())
       {
-        CLog::Log(LOGNOTICE, "%s: Failed to suspend AudioEngine before launching external program", __FUNCTION__);
+        CLog::Log(LOGINFO, "%s: Failed to suspend AudioEngine before launching external program",
+                  __FUNCTION__);
       }
     }
 #if defined(TARGET_DARWIN)
-    CLog::Log(LOGNOTICE, "ExecWait is not implemented on this platform");
+    CLog::Log(LOGINFO, "ExecWait is not implemented on this platform");
 #elif defined(TARGET_POSIX)
     CUtil::RunCommandLine(pMsg->strParam.c_str(), (pMsg->param1 == 1));
 #elif defined(TARGET_WINDOWS)
@@ -2422,7 +2440,7 @@ bool CApplication::Cleanup()
     if (m_ServiceManager)
       m_ServiceManager->DeinitStageThree();
 
-    CLog::Log(LOGNOTICE, "unload skin");
+    CLog::Log(LOGINFO, "unload skin");
     UnloadSkin();
 
     // stop all remaining scripts; must be done after skin has been unloaded,
@@ -2444,7 +2462,7 @@ bool CApplication::Cleanup()
     if (m_pGUI)
       m_pGUI->GetWindowManager().DestroyWindows();
 
-    CLog::Log(LOGNOTICE, "unload sections");
+    CLog::Log(LOGINFO, "unload sections");
 
     //  Shutdown as much as possible of the
     //  application, to reduce the leaks dumped
@@ -2517,7 +2535,7 @@ bool CApplication::Cleanup()
 
 void CApplication::Stop(int exitCode)
 {
-  CLog::Log(LOGNOTICE, "Stopping player");
+  CLog::Log(LOGINFO, "Stopping player");
   m_appPlayer.ClosePlayer();
 
   {
@@ -2549,22 +2567,22 @@ void CApplication::Stop(int exitCode)
 
     g_alarmClock.StopThread();
 
-    CLog::Log(LOGNOTICE, "Storing total System Uptime");
+    CLog::Log(LOGINFO, "Storing total System Uptime");
     g_sysinfo.SetTotalUptime(g_sysinfo.GetTotalUptime() + (int)(CTimeUtils::GetFrameTime() / 60000));
 
     // Update the settings information (volume, uptime etc. need saving)
     if (CFile::Exists(CServiceBroker::GetSettingsComponent()->GetProfileManager()->GetSettingsFile()))
     {
-      CLog::Log(LOGNOTICE, "Saving settings");
+      CLog::Log(LOGINFO, "Saving settings");
       CServiceBroker::GetSettingsComponent()->GetSettings()->Save();
     }
     else
-      CLog::Log(LOGNOTICE, "Not saving settings (settings.xml is not present)");
+      CLog::Log(LOGINFO, "Not saving settings (settings.xml is not present)");
 
     // kodi may crash or deadlock during exit (shutdown / reboot) due to
     // either a bug in core or misbehaving addons. so try saving
     // skin settings early
-    CLog::Log(LOGNOTICE, "Saving skin settings");
+    CLog::Log(LOGINFO, "Saving skin settings");
     if (g_SkinInfo != nullptr)
       g_SkinInfo->SaveSettings();
 
@@ -2574,7 +2592,7 @@ void CApplication::Stop(int exitCode)
     CApplicationMessenger::GetInstance().Stop();
     m_AppFocused = false;
     m_ExitCode = exitCode;
-    CLog::Log(LOGNOTICE, "Stopping all");
+    CLog::Log(LOGINFO, "Stopping all");
 
     // cancel any jobs from the jobmanager
     CJobManager::GetInstance().CancelJobs();
@@ -2593,7 +2611,7 @@ void CApplication::Stop(int exitCode)
 #ifdef HAS_ZEROCONF
     if(CZeroconfBrowser::IsInstantiated())
     {
-      CLog::Log(LOGNOTICE, "Stopping zeroconf browser");
+      CLog::Log(LOGINFO, "Stopping zeroconf browser");
       CZeroconfBrowser::GetInstance()->Stop();
       CZeroconfBrowser::ReleaseInstance();
     }
@@ -2627,7 +2645,7 @@ void CApplication::Stop(int exitCode)
     m_pActiveAE->Shutdown();
     m_pActiveAE.reset();
 
-    CLog::Log(LOGNOTICE, "Application stopped");
+    CLog::Log(LOGINFO, "Application stopped");
   }
   catch (...)
   {
@@ -4144,7 +4162,7 @@ void CApplication::ProcessSlow()
 #if defined(TARGET_POSIX)
   if (CPlatformPosix::TestQuitFlag())
   {
-    CLog::Log(LOGNOTICE, "Quitting due to POSIX signal");
+    CLog::Log(LOGINFO, "Quitting due to POSIX signal");
     CApplicationMessenger::GetInstance().PostMsg(TMSG_QUIT);
   }
 #endif
@@ -4639,13 +4657,13 @@ void CApplication::UpdateLibraries()
   const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
   if (settings->GetBool(CSettings::SETTING_VIDEOLIBRARY_UPDATEONSTARTUP))
   {
-    CLog::LogF(LOGNOTICE, "Starting video library startup scan");
+    CLog::LogF(LOGINFO, "Starting video library startup scan");
     StartVideoScan("", !settings->GetBool(CSettings::SETTING_VIDEOLIBRARY_BACKGROUNDUPDATE));
   }
 
   if (settings->GetBool(CSettings::SETTING_MUSICLIBRARY_UPDATEONSTARTUP))
   {
-    CLog::LogF(LOGNOTICE, "Starting music library startup scan");
+    CLog::LogF(LOGINFO, "Starting music library startup scan");
     StartMusicScan("", !settings->GetBool(CSettings::SETTING_MUSICLIBRARY_BACKGROUNDUPDATE));
   }
 }

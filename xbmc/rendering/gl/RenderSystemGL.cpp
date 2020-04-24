@@ -43,7 +43,8 @@ bool CRenderSystemGL::InitRenderSystem()
     m_RenderVersion = ver;
   }
 
-  CLog::Log(LOGNOTICE, "CRenderSystemGL::%s - Version: %s, Major: %d, Minor: %d", __FUNCTION__, ver, m_RenderVersionMajor, m_RenderVersionMinor);
+  CLog::Log(LOGINFO, "CRenderSystemGL::%s - Version: %s, Major: %d, Minor: %d", __FUNCTION__, ver,
+            m_RenderVersionMajor, m_RenderVersionMinor);
 
   m_RenderExtensions  = " ";
   if (m_RenderVersionMajor > 3 ||

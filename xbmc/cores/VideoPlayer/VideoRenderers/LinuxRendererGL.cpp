@@ -192,9 +192,9 @@ bool CLinuxRendererGL::ValidateRenderTarget()
       return false;
 
     if (m_textureTarget == GL_TEXTURE_RECTANGLE)
-      CLog::Log(LOGNOTICE, "Using GL_TEXTURE_RECTANGLE");
+      CLog::Log(LOGINFO, "Using GL_TEXTURE_RECTANGLE");
     else
-      CLog::Log(LOGNOTICE, "Using GL_TEXTURE_2D");
+      CLog::Log(LOGINFO, "Using GL_TEXTURE_2D");
 
     for (int i = 0 ; i < m_NumYV12Buffers ; i++)
       CreateTexture(i);
@@ -903,7 +903,7 @@ void CLinuxRendererGL::LoadShaders(int field)
         if (!m_cmsOn)
           m_pYUVShader->SetConvertFullColorRange(m_fullRange);
 
-        CLog::Log(LOGNOTICE, "GL: Selecting YUV 2 RGB shader with filter");
+        CLog::Log(LOGINFO, "GL: Selecting YUV 2 RGB shader with filter");
 
         if (m_pYUVShader && m_pYUVShader->CompileAndLink())
         {
@@ -928,7 +928,7 @@ void CLinuxRendererGL::LoadShaders(int field)
       if (!m_cmsOn)
         m_pYUVShader->SetConvertFullColorRange(m_fullRange);
 
-      CLog::Log(LOGNOTICE, "GL: Selecting YUV 2 RGB shader");
+      CLog::Log(LOGINFO, "GL: Selecting YUV 2 RGB shader");
 
       if (m_pYUVShader && m_pYUVShader->CompileAndLink())
       {
@@ -944,7 +944,7 @@ void CLinuxRendererGL::LoadShaders(int field)
 
   if (m_pboSupported)
   {
-    CLog::Log(LOGNOTICE, "GL: Using GL_ARB_pixel_buffer_object");
+    CLog::Log(LOGINFO, "GL: Using GL_ARB_pixel_buffer_object");
     m_pboUsed = true;
   }
   else

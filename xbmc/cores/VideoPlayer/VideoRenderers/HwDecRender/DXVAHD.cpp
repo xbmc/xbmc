@@ -177,12 +177,12 @@ bool CProcessorHD::InitProcessor()
   m_max_fwd_refs  = std::min(m_rateCaps.FutureFrames, 2u);
   m_max_back_refs = std::min(m_rateCaps.PastFrames,  4u);
 
-  CLog::LogF(LOGNOTICE, "supported deinterlace methods: blend:%s, bob:%s, adaptive:%s, mocomp:%s.",
-    (m_rateCaps.ProcessorCaps & 0x1) != 0 ? "yes" : "no", // BLEND
-    (m_rateCaps.ProcessorCaps & 0x2) != 0 ? "yes" : "no", // BOB
-    (m_rateCaps.ProcessorCaps & 0x4) != 0 ? "yes" : "no", // ADAPTIVE
-    (m_rateCaps.ProcessorCaps & 0x8) != 0 ? "yes" : "no"  // MOTION_COMPENSATION
-    );
+  CLog::LogF(LOGINFO, "supported deinterlace methods: blend:%s, bob:%s, adaptive:%s, mocomp:%s.",
+             (m_rateCaps.ProcessorCaps & 0x1) != 0 ? "yes" : "no", // BLEND
+             (m_rateCaps.ProcessorCaps & 0x2) != 0 ? "yes" : "no", // BOB
+             (m_rateCaps.ProcessorCaps & 0x4) != 0 ? "yes" : "no", // ADAPTIVE
+             (m_rateCaps.ProcessorCaps & 0x8) != 0 ? "yes" : "no" // MOTION_COMPENSATION
+  );
 
   CLog::LogF(LOGDEBUG, "selected video processor allows %d future frames and %d past frames.", m_rateCaps.FutureFrames, m_rateCaps.PastFrames);
 

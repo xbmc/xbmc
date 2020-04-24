@@ -467,7 +467,8 @@ void CNetworkBase::WaitForNet()
   if (!IsAvailable())
     return;
 
-  CLog::Log(LOGNOTICE, "%s: Waiting for a network interface to come up (Timeout: %d s)", __FUNCTION__, timeout);
+  CLog::Log(LOGINFO, "%s: Waiting for a network interface to come up (Timeout: %d s)", __FUNCTION__,
+            timeout);
 
   const static int intervalMs = 200;
   const int numMaxTries = (timeout * 1000) / intervalMs;
@@ -479,12 +480,14 @@ void CNetworkBase::WaitForNet()
 
     if (IsConnected())
     {
-      CLog::Log(LOGNOTICE, "%s: A network interface is up after waiting %d ms", __FUNCTION__, i * intervalMs);
+      CLog::Log(LOGINFO, "%s: A network interface is up after waiting %d ms", __FUNCTION__,
+                i * intervalMs);
       return;
     }
   }
 
-  CLog::Log(LOGNOTICE, "%s: No network interface did come up within %d s... Giving up...", __FUNCTION__, timeout);
+  CLog::Log(LOGINFO, "%s: No network interface did come up within %d s... Giving up...",
+            __FUNCTION__, timeout);
 }
 
 std::string CNetworkBase::GetIpStr(const struct sockaddr* sa)

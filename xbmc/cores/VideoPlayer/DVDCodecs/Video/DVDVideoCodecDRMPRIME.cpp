@@ -130,7 +130,7 @@ bool CDVDVideoCodecDRMPRIME::Open(CDVDStreamInfo& hints, CDVDCodecOptions& optio
     return false;
   }
 
-  CLog::Log(LOGNOTICE, "CDVDVideoCodecDRMPRIME::{} - using decoder {}", __FUNCTION__,
+  CLog::Log(LOGINFO, "CDVDVideoCodecDRMPRIME::{} - using decoder {}", __FUNCTION__,
             pCodec->long_name ? pCodec->long_name : pCodec->name);
 
   m_pCodecContext = avcodec_alloc_context3(pCodec);
@@ -148,7 +148,7 @@ bool CDVDVideoCodecDRMPRIME::Open(CDVDStreamInfo& hints, CDVDCodecOptions& optio
                                drmGetDeviceNameFromFd2(winSystem->GetDrm()->GetFileDescriptor()),
                                nullptr, 0) < 0)
     {
-      CLog::Log(LOGNOTICE, "CDVDVideoCodecDRMPRIME::{} - unable to create hwdevice context",
+      CLog::Log(LOGINFO, "CDVDVideoCodecDRMPRIME::{} - unable to create hwdevice context",
                 __FUNCTION__);
       avcodec_free_context(&m_pCodecContext);
       return false;
@@ -178,7 +178,7 @@ bool CDVDVideoCodecDRMPRIME::Open(CDVDStreamInfo& hints, CDVDCodecOptions& optio
 
   if (avcodec_open2(m_pCodecContext, pCodec, nullptr) < 0)
   {
-    CLog::Log(LOGNOTICE, "CDVDVideoCodecDRMPRIME::{} - unable to open codec", __FUNCTION__);
+    CLog::Log(LOGINFO, "CDVDVideoCodecDRMPRIME::{} - unable to open codec", __FUNCTION__);
     avcodec_free_context(&m_pCodecContext);
     return false;
   }

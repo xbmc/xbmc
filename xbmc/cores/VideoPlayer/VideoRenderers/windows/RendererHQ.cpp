@@ -119,7 +119,7 @@ void CRendererHQ::UpdateVideoFilters()
     if (!m_scalerShader->Create(m_scalingMethod, m_outputShader))
     {
       m_scalerShader.reset();
-      CLog::LogF(LOGNOTICE, "two pass convolution shader init problem, falling back to one pass.");
+      CLog::LogF(LOGINFO, "two pass convolution shader init problem, falling back to one pass.");
     }
 
     // fallback on the one pass version

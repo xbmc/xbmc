@@ -79,7 +79,7 @@ bool CMediaSourceSettings::Load(const std::string &file)
   if (!CFile::Exists(file))
     return false;
 
-  CLog::Log(LOGNOTICE, "CMediaSourceSettings: loading media sources from %s", file.c_str());
+  CLog::Log(LOGINFO, "CMediaSourceSettings: loading media sources from %s", file.c_str());
 
   // load xml file
   CXBMCTinyXML xmlDoc;

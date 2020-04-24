@@ -31,7 +31,7 @@ CXBApplicationEx::~CXBApplicationEx() = default;
 /* Destroy the app */
 void CXBApplicationEx::Destroy()
 {
-  CLog::Log(LOGNOTICE, "XBApplicationEx: destroying...");
+  CLog::Log(LOGINFO, "XBApplicationEx: destroying...");
   // Perform app-specific cleanup
   Cleanup();
 }
@@ -39,7 +39,7 @@ void CXBApplicationEx::Destroy()
 /* Function that runs the application */
 int CXBApplicationEx::Run(const CAppParamParser &params)
 {
-  CLog::Log(LOGNOTICE, "Running the application..." );
+  CLog::Log(LOGINFO, "Running the application...");
 
   unsigned int lastFrameTime = 0;
   unsigned int frameTime = 0;
@@ -81,6 +81,6 @@ int CXBApplicationEx::Run(const CAppParamParser &params)
   }
   Destroy();
 
-  CLog::Log(LOGNOTICE, "XBApplicationEx: application stopped!" );
+  CLog::Log(LOGINFO, "XBApplicationEx: application stopped!");
   return m_ExitCode;
 }

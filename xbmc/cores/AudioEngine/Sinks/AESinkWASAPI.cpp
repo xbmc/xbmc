@@ -438,7 +438,7 @@ void CAESinkWASAPI::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bool fo
       hr = pClient->IsFormatSupported(AUDCLNT_SHAREMODE_EXCLUSIVE, &wfxex.Format, NULL);
       if (hr == AUDCLNT_E_EXCLUSIVE_MODE_NOT_ALLOWED)
       {
-        CLog::LogF(LOGNOTICE,
+        CLog::LogF(LOGINFO,
                    "Exclusive mode is not allowed on device \"%s\", check device settings.",
                    details.strDescription);
         SafeRelease(&pDevice);
@@ -448,7 +448,7 @@ void CAESinkWASAPI::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bool fo
       {
         if(FAILED(hr))
         {
-          CLog::LogF(LOGNOTICE, "stream type \"%s\" on device \"%s\" seems to be not supported.",
+          CLog::LogF(LOGINFO, "stream type \"%s\" on device \"%s\" seems to be not supported.",
                      CAEUtil::StreamTypeToStr(CAEStreamInfo::STREAM_TYPE_DTSHD),
                      details.strDescription);
         }
@@ -471,7 +471,7 @@ void CAESinkWASAPI::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bool fo
       hr = pClient->IsFormatSupported(AUDCLNT_SHAREMODE_EXCLUSIVE, &wfxex.Format, NULL);
       if (hr == AUDCLNT_E_EXCLUSIVE_MODE_NOT_ALLOWED)
       {
-        CLog::LogF(LOGNOTICE,
+        CLog::LogF(LOGINFO,
                    "Exclusive mode is not allowed on device \"%s\", check device settings.",
                    details.strDescription);
         SafeRelease(&pDevice);
@@ -481,7 +481,7 @@ void CAESinkWASAPI::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bool fo
       {
         if(FAILED(hr))
         {
-          CLog::LogF(LOGNOTICE, "stream type \"%s\" on device \"%s\" seems to be not supported.",
+          CLog::LogF(LOGINFO, "stream type \"%s\" on device \"%s\" seems to be not supported.",
                      CAEUtil::StreamTypeToStr(CAEStreamInfo::STREAM_TYPE_DTSHD_MA),
                      details.strDescription);
         }
@@ -497,9 +497,9 @@ void CAESinkWASAPI::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bool fo
       {
         if(FAILED(hr))
         {
-          CLog::LogF(LOGNOTICE, "stream type \"%s\" on device \"%s\" seems to be not supported.",
-                    CAEUtil::StreamTypeToStr(CAEStreamInfo::STREAM_TYPE_TRUEHD),
-                    details.strDescription);
+          CLog::LogF(LOGINFO, "stream type \"%s\" on device \"%s\" seems to be not supported.",
+                     CAEUtil::StreamTypeToStr(CAEStreamInfo::STREAM_TYPE_TRUEHD),
+                     details.strDescription);
         }
 
         deviceInfo.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_TRUEHD);
@@ -516,10 +516,9 @@ void CAESinkWASAPI::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bool fo
       {
         if(FAILED(hr))
         {
-          CLog::LogF(LOGNOTICE,
-                    "stream type \"%s\" on device \"%s\" seems to be not supported.",
-                    CAEUtil::StreamTypeToStr(CAEStreamInfo::STREAM_TYPE_EAC3),
-                    details.strDescription);
+          CLog::LogF(LOGINFO, "stream type \"%s\" on device \"%s\" seems to be not supported.",
+                     CAEUtil::StreamTypeToStr(CAEStreamInfo::STREAM_TYPE_EAC3),
+                     details.strDescription);
         }
 
         deviceInfo.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_EAC3);
@@ -537,7 +536,7 @@ void CAESinkWASAPI::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bool fo
       {
         if(FAILED(hr))
         {
-          CLog::LogF(LOGNOTICE, "stream type \"%s\" on device \"%s\" seems to be not supported.",
+          CLog::LogF(LOGINFO, "stream type \"%s\" on device \"%s\" seems to be not supported.",
                      "STREAM_TYPE_DTS", details.strDescription);
         }
 
@@ -554,7 +553,7 @@ void CAESinkWASAPI::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bool fo
       {
         if(FAILED(hr))
         {
-          CLog::LogF(LOGNOTICE, "stream type \"%s\" on device \"%s\" seems to be not supported.",
+          CLog::LogF(LOGINFO, "stream type \"%s\" on device \"%s\" seems to be not supported.",
                      CAEUtil::StreamTypeToStr(CAEStreamInfo::STREAM_TYPE_AC3),
                      details.strDescription);
         }
@@ -615,7 +614,7 @@ void CAESinkWASAPI::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bool fo
         else if (wfxex.Format.nSamplesPerSec == 192000 && add192)
         {
           deviceInfo.m_sampleRates.push_back(WASAPISampleRates[j]);
-          CLog::LogF(LOGNOTICE, "sample rate 192khz on device \"%s\" seems to be not supported.",
+          CLog::LogF(LOGINFO, "sample rate 192khz on device \"%s\" seems to be not supported.",
                      details.strDescription);
         }
       }

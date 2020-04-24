@@ -67,7 +67,7 @@ bool CPeripheralBusUSB::PerformDeviceScan(const GUID *guid, const PeripheralType
   {
     free(devicedetailData);
     free(deviceProperty);
-    CLog::Log(LOGSEVERE, "%s: memory allocation failed", __FUNCTION__);
+    CLog::Log(LOGFATAL, "%s: memory allocation failed", __FUNCTION__);
     return false;
   }
 
@@ -101,7 +101,7 @@ bool CPeripheralBusUSB::PerformDeviceScan(const GUID *guid, const PeripheralType
         if (!devicedetailData)
         {
           free(deviceProperty);
-          CLog::Log(LOGSEVERE, "%s: memory allocation failed", __FUNCTION__);
+          CLog::Log(LOGFATAL, "%s: memory allocation failed", __FUNCTION__);
           return false;
         }
         devicedetailData->cbSize = sizeof(SP_INTERFACE_DEVICE_DETAIL_DATA);
@@ -119,7 +119,7 @@ bool CPeripheralBusUSB::PerformDeviceScan(const GUID *guid, const PeripheralType
           if (!deviceProperty)
           {
             free(devicedetailData);
-            CLog::Log(LOGSEVERE, "%s: memory allocation failed", __FUNCTION__);
+            CLog::Log(LOGFATAL, "%s: memory allocation failed", __FUNCTION__);
             return false;
           }
           nPropertyBufferSize = required;

@@ -25,7 +25,7 @@
 
 CRendererMediaCodecSurface::CRendererMediaCodecSurface()
 {
-  CLog::Log(LOGNOTICE, "Instancing CRendererMediaCodecSurface");
+  CLog::Log(LOGINFO, "Instancing CRendererMediaCodecSurface");
 }
 
 CRendererMediaCodecSurface::~CRendererMediaCodecSurface()
@@ -48,7 +48,7 @@ bool CRendererMediaCodecSurface::Register()
 
 bool CRendererMediaCodecSurface::Configure(const VideoPicture &picture, float fps, unsigned int orientation)
 {
-  CLog::Log(LOGNOTICE, "CRendererMediaCodecSurface::Configure");
+  CLog::Log(LOGINFO, "CRendererMediaCodecSurface::Configure");
 
   m_sourceWidth = picture.iWidth;
   m_sourceHeight = picture.iHeight;

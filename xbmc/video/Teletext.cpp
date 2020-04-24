@@ -713,7 +713,7 @@ void CTeletextDecoder::EndDecoder()
 
   if (!m_txtCache)
   {
-    CLog::Log(LOGNOTICE, "%s: called without cache", __FUNCTION__);
+    CLog::Log(LOGINFO, "%s: called without cache", __FUNCTION__);
   }
   else
   {
@@ -1872,7 +1872,7 @@ FT_Error CTeletextDecoder::MyFaceRequester(FTC_FaceID face_id, FT_Library librar
   FT_Error result = FT_New_Face(library, (const char*)face_id, 0, aface);
 
   if (!result)
-    CLog::Log(LOGNOTICE, "Teletext font %s loaded", (char*)face_id);
+    CLog::Log(LOGINFO, "Teletext font %s loaded", (char*)face_id);
   else
     CLog::Log(LOGERROR, "Opening of Teletext font %s failed", (char*)face_id);
 

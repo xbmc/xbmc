@@ -1026,7 +1026,7 @@ DemuxPacket* CDVDDemuxFFmpeg::Read()
 
       if (IsProgramChange())
       {
-        CLog::Log(LOGNOTICE, "CDVDDemuxFFmpeg::Read() stream change");
+        CLog::Log(LOGINFO, "CDVDDemuxFFmpeg::Read() stream change");
         av_dump_format(m_pFormatContext, 0, CURL::GetRedacted(m_pInput->GetFileName()).c_str(), 0);
 
         // update streams

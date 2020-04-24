@@ -143,7 +143,7 @@ void CEventServer::Run()
   CSocketListener listener;
   int packetSize = 0;
 
-  CLog::Log(LOGNOTICE, "ES: Starting UDP Event server on port %d", m_iPort);
+  CLog::Log(LOGINFO, "ES: Starting UDP Event server on port %d", m_iPort);
 
   Cleanup();
 
@@ -219,7 +219,7 @@ void CEventServer::Run()
     // BroadcastBeacon();
   }
 
-  CLog::Log(LOGNOTICE, "ES: UDP Event server stopped");
+  CLog::Log(LOGINFO, "ES: UDP Event server stopped");
   m_bRunning = false;
   Cleanup();
 }
@@ -284,7 +284,7 @@ void CEventServer::RefreshClients()
   {
     if (! (iter->second->Alive()))
     {
-      CLog::Log(LOGNOTICE, "ES: Client %s from %s timed out", iter->second->Name().c_str(),
+      CLog::Log(LOGINFO, "ES: Client %s from %s timed out", iter->second->Name().c_str(),
                 iter->second->Address().Address());
       delete iter->second;
       m_clients.erase(iter);

@@ -286,10 +286,10 @@ bool CPlayerCoreFactory::LoadConfiguration(const std::string &file, bool clear)
 {
   CSingleLock lock(m_section);
 
-  CLog::Log(LOGNOTICE, "Loading player core factory settings from %s.", file.c_str());
+  CLog::Log(LOGINFO, "Loading player core factory settings from %s.", file.c_str());
   if (!XFILE::CFile::Exists(file))
   { // tell the user it doesn't exist
-    CLog::Log(LOGNOTICE, "%s does not exist. Skipping.", file.c_str());
+    CLog::Log(LOGINFO, "%s does not exist. Skipping.", file.c_str());
     return false;
   }
 
@@ -404,7 +404,7 @@ bool CPlayerCoreFactory::LoadConfiguration(const std::string &file, bool clear)
   }
 
   // succeeded - tell the user it worked
-  CLog::Log(LOGNOTICE, "Loaded playercorefactory configuration");
+  CLog::Log(LOGINFO, "Loaded playercorefactory configuration");
 
   return true;
 }

@@ -219,7 +219,8 @@ void CDVDVideoCodecFFmpeg::CDropControl::Process(int64_t pts, bool drop)
       m_diffPTS = m_diffPTS / m_count;
       if (m_diffPTS > 0)
       {
-        CLog::Log(LOGNOTICE, "CDVDVideoCodecFFmpeg::CDropControl: calculated diff time: %" PRId64, m_diffPTS);
+        CLog::Log(LOGINFO, "CDVDVideoCodecFFmpeg::CDropControl: calculated diff time: %" PRId64,
+                  m_diffPTS);
         m_state = CDropControl::VALID;
         m_count = 0;
       }
@@ -232,7 +233,7 @@ void CDVDVideoCodecFFmpeg::CDropControl::Process(int64_t pts, bool drop)
       m_count++;
       if (m_count > 5)
       {
-        CLog::Log(LOGNOTICE, "CDVDVideoCodecFFmpeg::CDropControl: lost diff");
+        CLog::Log(LOGINFO, "CDVDVideoCodecFFmpeg::CDropControl: lost diff");
         Reset(true);
       }
     }
@@ -345,7 +346,8 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
     return false;
   }
 
-  CLog::Log(LOGNOTICE,"CDVDVideoCodecFFmpeg::Open() Using codec: %s",pCodec->long_name ? pCodec->long_name : pCodec->name);
+  CLog::Log(LOGINFO, "CDVDVideoCodecFFmpeg::Open() Using codec: %s",
+            pCodec->long_name ? pCodec->long_name : pCodec->name);
 
   m_pCodecContext = avcodec_alloc_context3(pCodec);
   if (!m_pCodecContext)

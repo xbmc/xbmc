@@ -191,7 +191,7 @@ bool CRendererVDPAU::LoadShadersHook()
 {
   if (!m_isYuv)
   {
-    CLog::Log(LOGNOTICE, "GL: Using VDPAU render method");
+    CLog::Log(LOGINFO, "GL: Using VDPAU render method");
     m_renderMethod = RENDER_CUSTOM;
     m_fullRange = false;
     return true;

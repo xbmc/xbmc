@@ -488,14 +488,14 @@ void CLinuxRendererGLES::UpdateVideoFilter()
   {
   case VS_SCALINGMETHOD_NEAREST:
   {
-    CLog::Log(LOGNOTICE, "GLES: Selecting single pass rendering");
+    CLog::Log(LOGINFO, "GLES: Selecting single pass rendering");
     SetTextureFilter(GL_NEAREST);
     m_renderQuality = RQ_SINGLEPASS;
     return;
   }
   case VS_SCALINGMETHOD_LINEAR:
   {
-    CLog::Log(LOGNOTICE, "GLES: Selecting single pass rendering");
+    CLog::Log(LOGINFO, "GLES: Selecting single pass rendering");
     SetTextureFilter(GL_LINEAR);
     m_renderQuality = RQ_SINGLEPASS;
     return;
@@ -529,7 +529,7 @@ void CLinuxRendererGLES::UpdateVideoFilter()
       break;
     }
 
-    CLog::Log(LOGNOTICE, "GLES: Selecting multi pass rendering");
+    CLog::Log(LOGINFO, "GLES: Selecting multi pass rendering");
     SetTextureFilter(GL_LINEAR);
     m_renderQuality = RQ_MULTIPASS;
       return;
@@ -579,7 +579,7 @@ void CLinuxRendererGLES::LoadShaders(int field)
         if (glCreateProgram())
         {
           // create regular scan shader
-          CLog::Log(LOGNOTICE, "GLES: Selecting YUV 2 RGB shader");
+          CLog::Log(LOGINFO, "GLES: Selecting YUV 2 RGB shader");
 
           EShaderFormat shaderFormat = GetShaderFormat();
           m_pYUVProgShader = new YUV2RGBProgressiveShader(shaderFormat, m_passthroughHDR ? m_srcPrimaries : AVColorPrimaries::AVCOL_PRI_BT709, m_srcPrimaries, m_toneMap);

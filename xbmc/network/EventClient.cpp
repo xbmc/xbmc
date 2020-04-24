@@ -252,7 +252,7 @@ bool CEventClient::OnPacketHELO(CEventPacket *packet)
   if (!ParseString(payload, psize, m_deviceName))
     return false;
 
-  CLog::Log(LOGNOTICE, "ES: Incoming connection from %s", m_deviceName.c_str());
+  CLog::Log(LOGINFO, "ES: Incoming connection from %s", m_deviceName.c_str());
 
   // icon type
   unsigned char ltype;

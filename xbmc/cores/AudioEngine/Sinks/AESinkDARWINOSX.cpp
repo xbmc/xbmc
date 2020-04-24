@@ -194,7 +194,7 @@ bool CAESinkDARWINOSX::Initialize(AEAudioFormat &format, std::string &device)
   {
     CCoreAudioHardware::GetOutputDeviceName(device);
     deviceID = CCoreAudioHardware::GetDefaultOutputDevice();
-    CLog::Log(LOGNOTICE, "%s: Opening default device %s", __PRETTY_FUNCTION__, device.c_str());
+    CLog::Log(LOGINFO, "%s: Opening default device %s", __PRETTY_FUNCTION__, device.c_str());
   }
   else
   {
@@ -207,9 +207,11 @@ bool CAESinkDARWINOSX::Initialize(AEAudioFormat &format, std::string &device)
         requestedStreamIndex = deviceInstance.streamIndex;
         requestedSourceId = deviceInstance.sourceId;
         if (requestedStreamIndex != INT_MAX)
-          CLog::Log(LOGNOTICE, "%s pseudo device - requesting stream %d", __FUNCTION__, (unsigned int)requestedStreamIndex);
+          CLog::Log(LOGINFO, "%s pseudo device - requesting stream %d", __FUNCTION__,
+                    (unsigned int)requestedStreamIndex);
         if (requestedSourceId != INT_MAX)
-          CLog::Log(LOGNOTICE, "%s device - requesting audiosource %d", __FUNCTION__, (unsigned int)requestedSourceId);
+          CLog::Log(LOGINFO, "%s device - requesting audiosource %d", __FUNCTION__,
+                    (unsigned int)requestedSourceId);
         break;
       }
     }

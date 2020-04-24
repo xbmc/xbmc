@@ -121,7 +121,7 @@ bool CDecoderFilterManager::Load()
   if (!XFILE::CFile::Exists(fileName))
     return true;
 
-  CLog::Log(LOGNOTICE, "%s: loading filters from %s", CLASSNAME, fileName.c_str());
+  CLog::Log(LOGINFO, "%s: loading filters from %s", CLASSNAME, fileName.c_str());
 
   CXBMCTinyXML xmlDoc;
   if (!xmlDoc.LoadFile(fileName))

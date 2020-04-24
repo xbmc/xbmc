@@ -208,7 +208,7 @@ double CActiveAEStream::CalcResampleRatio(double error)
   }
 
   double ret = 1.0 / clockspeed + proportional + m_resampleIntegral;
-  //CLog::Log(LOGNOTICE,"----- error: %f, rr: %f, prop: %f, int: %f",
+  //CLog::Log(LOGINFO,"----- error: %f, rr: %f, prop: %f, int: %f",
   //                    error, ret, proportional, m_resampleIntegral);
   return ret;
 }
@@ -273,7 +273,10 @@ unsigned int CActiveAEStream::AddData(const uint8_t* const *data, unsigned int o
             {
               diff += 1000;
               diff = std::min(diff, 6000);
-              CLog::Log(LOGNOTICE, "CActiveAEStream::AddData - messy timestamps, increasing interval for measuring average error to %d ms", diff);
+              CLog::Log(LOGINFO,
+                        "CActiveAEStream::AddData - messy timestamps, increasing interval for "
+                        "measuring average error to %d ms",
+                        diff);
               m_errorInterval = diff;
             }
           }

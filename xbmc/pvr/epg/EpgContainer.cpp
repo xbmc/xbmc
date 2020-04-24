@@ -216,7 +216,7 @@ void CPVREpgContainer::Start(bool bAsync)
   if (!bStop)
   {
     CServiceBroker::GetPVRManager().TriggerEpgsCreate();
-    CLog::Log(LOGNOTICE, "EPG thread started");
+    CLog::Log(LOGINFO, "EPG thread started");
   }
 }
 
@@ -282,7 +282,7 @@ bool CPVREpgContainer::PersistAll(unsigned int iMaxTimeslice) const
   {
     if (epg.second && epg.second->NeedsSave())
     {
-      CLog::Log(LOGNOTICE, "EPG Container: Persisting events for channel '%s'...",
+      CLog::Log(LOGINFO, "EPG Container: Persisting events for channel '%s'...",
                 epg.second->GetChannelData()->ChannelName().c_str());
 
       bReturn &= epg.second->Persist(database);
@@ -407,9 +407,9 @@ void CPVREpgContainer::Process()
   }
 
   // store data on exit
-  CLog::Log(LOGNOTICE, "EPG Container: Persisting unsaved events...");
+  CLog::Log(LOGINFO, "EPG Container: Persisting unsaved events...");
   PersistAll(XbmcThreads::EndTime::InfiniteValue);
-  CLog::Log(LOGNOTICE, "EPG Container: Persisting events done");
+  CLog::Log(LOGINFO, "EPG Container: Persisting events done");
 }
 
 std::vector<std::shared_ptr<CPVREpg>> CPVREpgContainer::GetAllEpgs() const
