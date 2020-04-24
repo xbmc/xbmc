@@ -96,12 +96,11 @@
 #define ADDON_INSTANCE_VERSION_PERIPHERAL_DEPENDS     "addon-instance/Peripheral.h" \
                                                       "addon-instance/PeripheralUtils.h"
 
-#define ADDON_INSTANCE_VERSION_PVR                    "6.3.0"
-#define ADDON_INSTANCE_VERSION_PVR_MIN                "6.3.0"
+#define ADDON_INSTANCE_VERSION_PVR                    "6.4.0"
+#define ADDON_INSTANCE_VERSION_PVR_MIN                "6.4.0"
 #define ADDON_INSTANCE_VERSION_PVR_XML_ID             "kodi.binary.instance.pvr"
 #define ADDON_INSTANCE_VERSION_PVR_DEPENDS            "xbmc_pvr_dll.h" \
                                                       "xbmc_pvr_types.h" \
-                                                      "xbmc_epg_types.h" \
                                                       "libXBMC_pvr.h"
 
 #define ADDON_INSTANCE_VERSION_SCREENSAVER            "2.0.0"

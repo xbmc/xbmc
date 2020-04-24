@@ -42,10 +42,10 @@ public:
    */
   CB_AddOnLib *GetCallbacks() { return m_callbacks; }
 
-  static void AddOnLog(void *addonData, const ADDON::addon_log_t addonLogLevel, const char *strMessage);
+  static void AddOnLog(void *addonData, const int addonLogLevel, const char *strMessage);
   static bool GetAddonSetting(void *addonData, const char *strSettingName, void *settingValue);
   static char *TranslateSpecialProtocol(const char *strSource);
-  static void QueueNotification(void *addonData, const ADDON::queue_msg_t type, const char *strMessage);
+  static void QueueNotification(void *addonData, const int type, const char *strMessage);
   static bool WakeOnLan(const char *mac);
   static char* UnknownToUTF8(const char *strSource);
   static char* GetLocalizedString(const void* addonData, long dwCode);

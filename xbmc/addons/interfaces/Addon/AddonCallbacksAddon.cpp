@@ -13,7 +13,6 @@
 #include "FileItem.h"
 #include "LangInfo.h"
 #include "ServiceBroker.h"
-#include "addons/kodi-addon-dev-kit/include/kodi/kodi_vfs_types.h"
 #include "addons/settings/AddonSettings.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "filesystem/Directory.h"
@@ -89,7 +88,7 @@ CAddonCallbacksAddon::~CAddonCallbacksAddon()
   delete m_callbacks;
 }
 
-void CAddonCallbacksAddon::AddOnLog(void *addonData, const addon_log_t addonLogLevel, const char *strMessage)
+void CAddonCallbacksAddon::AddOnLog(void *addonData, const int addonLogLevel, const char *strMessage)
 {
   CAddonInterfaces* addon = (CAddonInterfaces*) addonData;
   if (addon == NULL || strMessage == NULL)
@@ -102,19 +101,24 @@ void CAddonCallbacksAddon::AddOnLog(void *addonData, const addon_log_t addonLogL
 
   try
   {
-    int xbmcLogLevel = LOGNONE;
+    int xbmcLogLevel;
     switch (addonLogLevel)
     {
-      case LOG_ERROR:
-        xbmcLogLevel = LOGERROR;
+      case LOG_DEBUG:
+        xbmcLogLevel = LOGDEBUG;
         break;
       case LOG_INFO:
         xbmcLogLevel = LOGINFO;
         break;
-      case LOG_NOTICE:
-        xbmcLogLevel = LOGNOTICE;
+      case LOG_WARNING:
+        xbmcLogLevel = LOGWARNING;
         break;
-      case LOG_DEBUG:
+      case LOG_ERROR:
+        xbmcLogLevel = LOGERROR;
+        break;
+      case LOG_FATAL:
+        xbmcLogLevel = LOGFATAL;
+        break;
       default:
         xbmcLogLevel = LOGDEBUG;
         break;
@@ -130,7 +134,7 @@ void CAddonCallbacksAddon::AddOnLog(void *addonData, const addon_log_t addonLogL
   }
 }
 
-void CAddonCallbacksAddon::QueueNotification(void *addonData, const queue_msg_t type, const char *strMessage)
+void CAddonCallbacksAddon::QueueNotification(void *addonData, const int type, const char *strMessage)
 {
   CAddonInterfaces* addon = (CAddonInterfaces*) addonData;
   if (addon == NULL || strMessage == NULL)

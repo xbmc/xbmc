@@ -61,7 +61,7 @@ public:
    */
   void TransferEpgEntry(const ADDON_HANDLE handle, const EPG_TAG* entry)
   {
-    return m_Callbacks->toKodi.TransferEpgEntry(m_Callbacks->toKodi.kodiInstance, handle, entry);
+    return m_Callbacks->toKodi->TransferEpgEntry(m_Callbacks->toKodi->kodiInstance, handle, entry);
   }
 
   /*!
@@ -71,7 +71,8 @@ public:
    */
   void TransferChannelEntry(const ADDON_HANDLE handle, const PVR_CHANNEL* entry)
   {
-    return m_Callbacks->toKodi.TransferChannelEntry(m_Callbacks->toKodi.kodiInstance, handle, entry);
+    return m_Callbacks->toKodi->TransferChannelEntry(m_Callbacks->toKodi->kodiInstance, handle,
+                                                     entry);
   }
 
   /*!
@@ -81,7 +82,8 @@ public:
    */
   void TransferTimerEntry(const ADDON_HANDLE handle, const PVR_TIMER* entry)
   {
-    return m_Callbacks->toKodi.TransferTimerEntry(m_Callbacks->toKodi.kodiInstance, handle, entry);
+    return m_Callbacks->toKodi->TransferTimerEntry(m_Callbacks->toKodi->kodiInstance, handle,
+                                                   entry);
   }
 
   /*!
@@ -91,7 +93,8 @@ public:
    */
   void TransferRecordingEntry(const ADDON_HANDLE handle, const PVR_RECORDING* entry)
   {
-    return m_Callbacks->toKodi.TransferRecordingEntry(m_Callbacks->toKodi.kodiInstance, handle, entry);
+    return m_Callbacks->toKodi->TransferRecordingEntry(m_Callbacks->toKodi->kodiInstance, handle,
+                                                       entry);
   }
 
   /*!
@@ -101,7 +104,8 @@ public:
    */
   void TransferChannelGroup(const ADDON_HANDLE handle, const PVR_CHANNEL_GROUP* entry)
   {
-    return m_Callbacks->toKodi.TransferChannelGroup(m_Callbacks->toKodi.kodiInstance, handle, entry);
+    return m_Callbacks->toKodi->TransferChannelGroup(m_Callbacks->toKodi->kodiInstance, handle,
+                                                     entry);
   }
 
   /*!
@@ -111,7 +115,8 @@ public:
    */
   void TransferChannelGroupMember(const ADDON_HANDLE handle, const PVR_CHANNEL_GROUP_MEMBER* entry)
   {
-    return m_Callbacks->toKodi.TransferChannelGroupMember(m_Callbacks->toKodi.kodiInstance, handle, entry);
+    return m_Callbacks->toKodi->TransferChannelGroupMember(m_Callbacks->toKodi->kodiInstance,
+                                                           handle, entry);
   }
 
   /*!
@@ -120,7 +125,7 @@ public:
    */
   void AddMenuHook(PVR_MENUHOOK* hook)
   {
-    return m_Callbacks->toKodi.AddMenuHook(m_Callbacks->toKodi.kodiInstance, hook);
+    return m_Callbacks->toKodi->AddMenuHook(m_Callbacks->toKodi->kodiInstance, hook);
   }
 
   /*!
@@ -131,7 +136,8 @@ public:
    */
   void Recording(const char* strRecordingName, const char* strFileName, bool bOn)
   {
-    return m_Callbacks->toKodi.Recording(m_Callbacks->toKodi.kodiInstance, strRecordingName, strFileName, bOn);
+    return m_Callbacks->toKodi->Recording(m_Callbacks->toKodi->kodiInstance, strRecordingName,
+                                          strFileName, bOn);
   }
 
   /*!
@@ -139,7 +145,7 @@ public:
    */
   void TriggerTimerUpdate(void)
   {
-    return m_Callbacks->toKodi.TriggerTimerUpdate(m_Callbacks->toKodi.kodiInstance);
+    return m_Callbacks->toKodi->TriggerTimerUpdate(m_Callbacks->toKodi->kodiInstance);
   }
 
   /*!
@@ -147,7 +153,7 @@ public:
    */
   void TriggerRecordingUpdate(void)
   {
-    return m_Callbacks->toKodi.TriggerRecordingUpdate(m_Callbacks->toKodi.kodiInstance);
+    return m_Callbacks->toKodi->TriggerRecordingUpdate(m_Callbacks->toKodi->kodiInstance);
   }
 
   /*!
@@ -155,7 +161,7 @@ public:
    */
   void TriggerChannelUpdate(void)
   {
-    return m_Callbacks->toKodi.TriggerChannelUpdate(m_Callbacks->toKodi.kodiInstance);
+    return m_Callbacks->toKodi->TriggerChannelUpdate(m_Callbacks->toKodi->kodiInstance);
   }
 
   /*!
@@ -164,7 +170,7 @@ public:
    */
   void TriggerEpgUpdate(unsigned int iChannelUid)
   {
-    return m_Callbacks->toKodi.TriggerEpgUpdate(m_Callbacks->toKodi.kodiInstance, iChannelUid);
+    return m_Callbacks->toKodi->TriggerEpgUpdate(m_Callbacks->toKodi->kodiInstance, iChannelUid);
   }
 
   /*!
@@ -172,7 +178,7 @@ public:
    */
   void TriggerChannelGroupsUpdate(void)
   {
-    return m_Callbacks->toKodi.TriggerChannelGroupsUpdate(m_Callbacks->toKodi.kodiInstance);
+    return m_Callbacks->toKodi->TriggerChannelGroupsUpdate(m_Callbacks->toKodi->kodiInstance);
   }
 
 #ifdef USE_DEMUX
@@ -182,7 +188,7 @@ public:
    */
   void FreeDemuxPacket(DemuxPacket* pPacket)
   {
-    return m_Callbacks->toKodi.FreeDemuxPacket(m_Callbacks->toKodi.kodiInstance, pPacket);
+    return m_Callbacks->toKodi->FreeDemuxPacket(m_Callbacks->toKodi->kodiInstance, pPacket);
   }
 
   /*!
@@ -192,7 +198,7 @@ public:
    */
   DemuxPacket* AllocateDemuxPacket(int iDataSize)
   {
-    return m_Callbacks->toKodi.AllocateDemuxPacket(m_Callbacks->toKodi.kodiInstance, iDataSize);
+    return m_Callbacks->toKodi->AllocateDemuxPacket(m_Callbacks->toKodi->kodiInstance, iDataSize);
   }
 #endif
 
@@ -205,7 +211,8 @@ public:
    */
   void ConnectionStateChange(const char *strConnectionString, PVR_CONNECTION_STATE newState, const char *strMessage)
   {
-    return m_Callbacks->toKodi.ConnectionStateChange(m_Callbacks->toKodi.kodiInstance, strConnectionString, newState, strMessage);
+    return m_Callbacks->toKodi->ConnectionStateChange(m_Callbacks->toKodi->kodiInstance,
+                                                      strConnectionString, newState, strMessage);
   }
 
   /*!
@@ -216,7 +223,8 @@ public:
    */
   void EpgEventStateChange(EPG_TAG *tag, EPG_EVENT_STATE newState)
   {
-    return m_Callbacks->toKodi.EpgEventStateChange(m_Callbacks->toKodi.kodiInstance, tag, newState);
+    return m_Callbacks->toKodi->EpgEventStateChange(m_Callbacks->toKodi->kodiInstance, tag,
+                                                    newState);
   }
 
   /*!
@@ -226,7 +234,7 @@ public:
    */
   xbmc_codec_t GetCodecByName(const char* strCodecName)
   {
-    return m_Callbacks->toKodi.GetCodecByName(m_Callbacks->toKodi.kodiInstance, strCodecName);
+    return m_Callbacks->toKodi->GetCodecByName(m_Callbacks->toKodi->kodiInstance, strCodecName);
   }
 
 private:

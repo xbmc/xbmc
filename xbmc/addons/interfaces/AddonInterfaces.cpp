@@ -15,9 +15,7 @@
 #include "addons/interfaces/gui/AddonGUIWindow.h"
 #include "addons/interfaces/gui/Window.h"
 #include "filesystem/SpecialProtocol.h"
-#include "games/addons/GameClient.h"
 #include "messaging/ApplicationMessenger.h"
-#include "peripherals/addons/PeripheralAddon.h"
 #include "pvr/addons/PVRClient.h"
 #include "utils/log.h"
 
@@ -42,8 +40,6 @@ CAddonInterfaces::CAddonInterfaces(CAddon* addon)
   m_callbacks->GUILib_UnRegisterMe          = CAddonInterfaces::GUILib_UnRegisterMe;
   m_callbacks->PVRLib_RegisterMe            = CAddonInterfaces::PVRLib_RegisterMe;
   m_callbacks->PVRLib_UnRegisterMe          = CAddonInterfaces::PVRLib_UnRegisterMe;
-  m_callbacks->GameLib_RegisterMe           = CAddonInterfaces::GameLib_RegisterMe;
-  m_callbacks->GameLib_UnRegisterMe         = CAddonInterfaces::GameLib_UnRegisterMe;
 }
 
 CAddonInterfaces::~CAddonInterfaces()
@@ -125,23 +121,6 @@ void* CAddonInterfaces::PVRLib_RegisterMe(void *addonData)
 }
 
 void CAddonInterfaces::PVRLib_UnRegisterMe(void *addonData, void *cbTable)
-{
-}
-/*\_____________________________________________________________________________
-\*/
-void* CAddonInterfaces::GameLib_RegisterMe(void *addonData)
-{
-  CAddonInterfaces* addon = static_cast<CAddonInterfaces*>(addonData);
-  if (addon == nullptr)
-  {
-    CLog::Log(LOGERROR, "CAddonInterfaces - %s - called with a null pointer", __FUNCTION__);
-    return nullptr;
-  }
-
-  return dynamic_cast<GAME::CGameClient*>(addon->m_addon)->GetInstanceInterface();
-}
-
-void CAddonInterfaces::GameLib_UnRegisterMe(void *addonData, void *cbTable)
 {
 }
 /*\_____________________________________________________________________________

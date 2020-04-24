@@ -977,7 +977,7 @@ namespace PVR
      * @param bCheckReadyToUse If true, this method will check whether this instance is ready for use and return PVR_ERROR_SERVER_ERROR if it is not.
      * @return PVR_ERROR_NO_ERROR on success, any other PVR_ERROR_* value otherwise.
      */
-    typedef KodiToAddonFuncTable_PVR AddonInstance;
+    typedef AddonInstance_PVR AddonInstance;
     PVR_ERROR DoAddonCall(const char* strFunctionName,
                           std::function<PVR_ERROR(const AddonInstance*)> function,
                           bool bIsImplemented = true,
