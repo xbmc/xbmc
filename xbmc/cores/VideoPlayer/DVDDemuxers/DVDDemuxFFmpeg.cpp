@@ -1964,7 +1964,7 @@ std::string CDVDDemuxFFmpeg::GetStreamCodecName(int iStreamId)
 
     AVCodec* codec = avcodec_find_decoder(stream->codec);
     if (codec)
-      strName = codec->name;
+      strName = avcodec_get_name(codec->id);
   }
   return strName;
 }
