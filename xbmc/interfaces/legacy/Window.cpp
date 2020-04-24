@@ -704,7 +704,7 @@ namespace XBMCAddon
       if(pControl->iControlId != 0)
         throw WindowException("Control is already used");
 
-      // lock xbmc GUI before accessing data from it
+      // lock kodi GUI before accessing data from it
       pControl->iParentId = iWindowId;
 
       {
