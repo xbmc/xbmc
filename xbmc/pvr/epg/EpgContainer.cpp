@@ -112,8 +112,9 @@ CPVREpgContainer::~CPVREpgContainer(void)
 CPVREpgDatabasePtr CPVREpgContainer::GetEpgDatabase() const
 {
   CSingleLock lock(m_critSection);
-  if (!m_database || !m_database->IsOpen())
-    CLog::LogF(LOGERROR, "Failed to open the EPG database");
+
+  if (!m_database->IsOpen())
+    m_database->Open();
 
   return m_database;
 }
@@ -190,8 +191,6 @@ void CPVREpgContainer::Start(bool bAsync)
   {
     CSingleLock lock(m_critSection);
 
-    m_database->Open();
-
     m_bIsInitialising = true;
     m_bStop = false;
 
@@ -267,11 +266,12 @@ void CPVREpgContainer::LoadFromDB(void)
   CPVRGUIProgressHandler* progressHandler = new CPVRGUIProgressHandler(g_localizeStrings.Get(19250)); // Loading guide from database
   const CDateTime cleanupTime(CDateTime::GetUTCDateTime() - CDateTimeSpan(GetPastDaysToDisplay(), 0, 0, 0));
 
-  m_database->Lock();
-  m_iNextEpgId = m_database->GetLastEPGId();
-  m_database->DeleteEpgEntries(cleanupTime);
-  const std::vector<std::shared_ptr<CPVREpg>> result = m_database->GetAll();
-  m_database->Unlock();
+  const std::shared_ptr<CPVREpgDatabase> database = GetEpgDatabase();
+  database->Lock();
+  m_iNextEpgId = database->GetLastEPGId();
+  database->DeleteEpgEntries(cleanupTime);
+  const std::vector<std::shared_ptr<CPVREpg>> result = database->GetAll();
+  database->Unlock();
 
   for (const auto& entry : result)
     InsertFromDB(entry);
@@ -284,7 +284,7 @@ void CPVREpgContainer::LoadFromDB(void)
     progressHandler->UpdateProgress(epgEntry.second->Name(), ++iCounter, m_epgIdToEpgMap.size());
 
     lock.Leave();
-    epgEntry.second->Load(GetEpgDatabase());
+    epgEntry.second->Load(database);
     lock.Enter();
   }
 
@@ -574,7 +574,7 @@ bool CPVREpgContainer::RemoveOldEntries(void)
 
   /* remove the old entries from the database */
   if (!IgnoreDB())
-    m_database->DeleteEpgEntries(cleanupTime);
+    GetEpgDatabase()->DeleteEpgEntries(cleanupTime);
 
   CSingleLock lock(m_critSection);
   CDateTime::GetCurrentDateTime().GetAsUTCDateTime().GetAsTime(m_iLastEpgCleanup);
@@ -600,7 +600,7 @@ bool CPVREpgContainer::DeleteEpg(const CPVREpgPtr &epg, bool bDeleteFromDatabase
 
   CLog::LogFC(LOGDEBUG, LOGEPG, "Deleting EPG table %s (%d)", epg->Name().c_str(), epg->EpgID());
   if (bDeleteFromDatabase && !IgnoreDB())
-    m_database->Delete(*epgEntry->second);
+    GetEpgDatabase()->Delete(*epgEntry->second);
 
   epgEntry->second->UnregisterObserver(this);
   m_epgIdToEpgMap.erase(epgEntry);
