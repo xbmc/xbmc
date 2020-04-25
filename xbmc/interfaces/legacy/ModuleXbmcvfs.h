@@ -175,6 +175,36 @@ namespace XBMCAddon
 #ifdef DOXYGEN_SHOULD_USE_THIS
     ///
     /// \ingroup python_xbmcvfs
+    /// @brief \python_func{ xbmcvfs.validatePath(path) }
+    ///-----------------------------------------------------------------------
+    /// Returns the validated path.
+    ///
+    /// @param path                  string  - Path to format
+    /// @return            Validated path
+    ///
+    /// @note The result is platform-specific. Only useful if you are coding
+    ///       for multiple platfforms for fixing slash problems
+    ///         (e.g. Corrects 'Z://something' -> 'Z:\something').
+    ///
+    ///
+    /// ------------------------------------------------------------------------
+    /// @python_v19 New function added (replaces old **xbmc.validatePath**)
+    ///
+    /// **Example:**
+    /// ~~~~~~~~~~~~~{.py}
+    /// ..
+    /// fpath = xbmcvfs.validatePath(somepath)
+    /// ..
+    /// ~~~~~~~~~~~~~
+    ///
+    validatePath(...);
+#else
+    String validatePath(const String& path);
+#endif
+
+#ifdef DOXYGEN_SHOULD_USE_THIS
+    ///
+    /// \ingroup python_xbmcvfs
     /// @brief \python_func{ xbmcvfs.mkdir(path) }
     ///-------------------------------------------------------------------------
     /// Create a folder.

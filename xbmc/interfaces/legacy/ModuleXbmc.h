@@ -693,34 +693,6 @@ namespace XBMCAddon
 #ifdef DOXYGEN_SHOULD_USE_THIS
     ///
     /// \ingroup python_xbmc
-    /// @brief \python_func{ xbmc.validatePath(path) }
-    ///-----------------------------------------------------------------------
-    /// Returns the validated path.
-    ///
-    /// @param path                  string or unicode - Path to format
-    /// @return                      Validated path
-    ///
-    /// @note Only useful if you are coding for both Linux and Windows for fixing slash problems.
-    ///       e.g. Corrects 'Z://something' -> 'Z:\something'
-    ///
-    ///
-    /// ------------------------------------------------------------------------
-    ///
-    /// **Example:**
-    /// ~~~~~~~~~~~~~{.py}
-    /// ..
-    /// fpath = xbmc.validatePath(somepath)
-    /// ..
-    /// ~~~~~~~~~~~~~
-    ///
-    validatePath(...);
-#else
-    String validatePath(const String& path);
-#endif
-
-#ifdef DOXYGEN_SHOULD_USE_THIS
-    ///
-    /// \ingroup python_xbmc
     /// @brief \python_func{ xbmc.getRegion(id) }
     ///-----------------------------------------------------------------------
     /// Returns your regions setting as a string for the specified id.

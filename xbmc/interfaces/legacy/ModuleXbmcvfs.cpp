@@ -57,6 +57,13 @@ namespace XBMCAddon
       return CUtil::MakeLegalPath(filename);
     }
 
+    // validate path
+    String validatePath(const String& path)
+    {
+      XBMC_TRACE;
+      return CUtil::ValidatePath(path, true);
+    }
+
     // make a directory
     bool mkdir(const String& path)
     {
