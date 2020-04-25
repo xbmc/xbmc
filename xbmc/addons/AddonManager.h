@@ -281,6 +281,12 @@ namespace ADDON
 
     void FindAddons(ADDON_INFO_LIST& addonmap, const std::string& path);
 
+    /*!\brief Sort a list of addons for installation, i.e., defines the order of installation depending
+     * of each addon dependencies.
+     * \param[in,out] updates the vector of addons to sort
+     */
+    void SortByDependencies(VECADDONS& updates) const;
+
     std::set<std::string> m_disabled;
     std::set<std::string> m_updateBlacklist;
     static std::map<TYPE, IAddonMgrCallback*> m_managers;
