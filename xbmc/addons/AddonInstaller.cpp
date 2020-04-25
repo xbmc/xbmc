@@ -423,7 +423,7 @@ void CAddonInstaller::InstallAddons(const VECADDONS& addons, bool wait)
     AddonPtr toInstall;
     RepositoryPtr repo;
     if (CAddonInstallJob::GetAddon(addon->ID(), repo, toInstall))
-      DoInstall(toInstall, repo, true, false, true);
+      DoInstall(toInstall, repo, false, false, true);
   }
   if (wait)
   {
