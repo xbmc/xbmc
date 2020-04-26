@@ -130,6 +130,7 @@ Build a specific group of add-ons:
 ```
 make -j$(getconf _NPROCESSORS_ONLN) -C tools/depends/target/binary-addons ADDONS="pvr.*"
 ```
+For additional information on regular expression usage for ADDONS_TO_BUILD, view ADDONS_TO_BUILD section located here [Kodi add-ons CMake based buildsystem](../cmake/addons/README.md)
 
 ## 5.2. Xcode project building
 
@@ -146,9 +147,7 @@ Generate Xcode project to build a specific group of add-ons:
 make -C tools/depends/target/cmakebuildsys CMAKE_EXTRA_ARGUMENTS="-DENABLE_XCODE_ADDONBUILD=ON -DADDONS_TO_BUILD='pvr.*'"
 ```
 
-**TIP:** When using addontype.* for -DADDONS_TO_BUILD argument, you cannot have multiple 
-addon types. ie -DADDONS_TO_BUILD='game.libretro.* peripheral.*' is not valid. You will 
-need to individually list the addons as per the first example for specific addon building.
+For additional information on regular expression usage for ADDONS_TO_BUILD, view ADDONS_TO_BUILD section located at [Kodi add-ons CMake based buildsystem](../cmake/addons/README.md)
 
 Generate Xcode project to build all add-ons automatically:
 ```sh
