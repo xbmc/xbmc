@@ -72,6 +72,22 @@
 					<texture>OverlayWatched.png</texture>
 					<visible>Window.IsVisible(AddonBrowser) + String.IsEqual(ListItem.Label2,$LOCALIZE[305])</visible>
 				</control>
+				<control type="image">
+					<posx>182</posx>
+					<posy>4</posy>
+					<width>26</width>
+					<height>26</height>
+					<aspectratio>keep</aspectratio>
+					<texture>OverlayWatching.png</texture>
+					<visible>ListItem.IsResumable</visible>
+				</control>
+				<control type="image">
+					<posx>180</posx>
+					<posy>2</posy>
+					<width>30</width>
+					<height>30</height>
+					<texture>$INFO[ListItem.Overlay]</texture>
+				</control>
 			</itemlayout>
 			<focusedlayout condition="!Container.Content(Movies) + !Container.Content(Seasons) + !Container.Content(Episodes) + !Container.Content(TVShows) + !Container.Content(MusicVideos) + !Container.Content(Videos)" height="250" width="218">
 				<control type="image">
@@ -128,6 +144,23 @@
 					<texture>OverlayWatched.png</texture>
 					<visible>Window.IsVisible(AddonBrowser) + String.IsEqual(ListItem.Label2,$LOCALIZE[305])</visible>
 				</control>
+				<control type="image">
+					<posx>182</posx>
+					<posy>4</posy>
+					<width>26</width>
+					<height>26</height>
+					<aspectratio>keep</aspectratio>
+					<texture>OverlayWatching.png</texture>
+					<visible>ListItem.IsResumable</visible>
+				</control>
+				<control type="image">
+					<posx>180</posx>
+					<posy>2</posy>
+					<width>30</width>
+					<height>30</height>
+					<texture>$INFO[ListItem.Overlay]</texture>
+					<visible>!ListItem.IsResumable</visible>
+				</control>
 			</focusedlayout>
 			<itemlayout condition="Container.Content(Movies) | Container.Content(Seasons) | Container.Content(TVShows)" height="375" width="218">
 				<control type="image">
@@ -181,11 +214,21 @@
 					<visible>ListItem.IsCollection</visible>
 				</control>
 				<control type="image">
+					<posx>172</posx>
+					<posy>262</posy>
+					<width>26</width>
+					<height>26</height>
+					<aspectratio>keep</aspectratio>
+					<texture>OverlayWatching.png</texture>
+					<visible>ListItem.IsResumable</visible>
+				</control>
+				<control type="image">
 					<posx>170</posx>
 					<posy>260</posy>
 					<width>30</width>
 					<height>30</height>
 					<texture>$INFO[ListItem.Overlay]</texture>
+					<visible>!ListItem.IsResumable</visible>
 				</control>
 			</itemlayout>
 			<focusedlayout condition="Container.Content(Movies) | Container.Content(Seasons) | Container.Content(TVShows)" height="375" width="218">
@@ -240,11 +283,21 @@
 					<visible>ListItem.IsCollection</visible>
 				</control>
 				<control type="image">
+					<posx>172</posx>
+					<posy>262</posy>
+					<width>26</width>
+					<height>26</height>
+					<aspectratio>keep</aspectratio>
+					<texture>OverlayWatching.png</texture>
+					<visible>ListItem.IsResumable</visible>
+				</control>
+				<control type="image">
 					<posx>170</posx>
 					<posy>260</posy>
 					<width>30</width>
 					<height>30</height>
 					<texture>$INFO[ListItem.Overlay]</texture>
+					<visible>!ListItem.IsResumable</visible>
 				</control>
 			</focusedlayout>
 			<itemlayout condition="Container.Content(Episodes) | Container.Content(MusicVideos) | Container.Content(Videos)" height="250" width="$PARAM[layout-width]">
@@ -291,11 +344,21 @@
 					<texture>$INFO[ListItem.VideoResolution,flagging/resolution/,.png]</texture>
 				</control>
 				<control type="image">
+					<posx>265</posx>
+					<posy>147</posy>
+					<width>26</width>
+					<height>26</height>
+					<aspectratio>keep</aspectratio>
+					<texture>OverlayWatching.png</texture>
+					<visible>ListItem.IsResumable</visible>
+				</control>
+				<control type="image">
 					<posx>263</posx>
 					<posy>145</posy>
 					<width>30</width>
 					<height>30</height>
 					<texture>$INFO[ListItem.Overlay]</texture>
+					<visible>!ListItem.IsResumable</visible>
 				</control>
 			</itemlayout>
 			<focusedlayout condition="Container.Content(Episodes) | Container.Content(MusicVideos) | Container.Content(Videos)" height="250" width="$PARAM[layout-width]">
@@ -342,11 +405,21 @@
 					<texture>$INFO[ListItem.VideoResolution,flagging/resolution/,.png]</texture>
 				</control>
 				<control type="image">
+					<posx>265</posx>
+					<posy>147</posy>
+					<width>26</width>
+					<height>26</height>
+					<aspectratio>keep</aspectratio>
+					<texture>OverlayWatching.png</texture>
+					<visible>ListItem.IsResumable</visible>
+				</control>
+				<control type="image">
 					<posx>263</posx>
 					<posy>145</posy>
 					<width>30</width>
 					<height>30</height>
 					<texture>$INFO[ListItem.Overlay]</texture>
+					<visible>!ListItem.IsResumable</visible>
 				</control>
 			</focusedlayout>
 		</control>
