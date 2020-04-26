@@ -39,6 +39,8 @@ public:
   void SetInfo(const std::vector<KODI::GUILIB::GUIINFO::CGUIInfoLabel> &vecInfo);
   void SetScrolling(bool scroll) { m_scroll = scroll; }
 
+  bool AllLabelsShown() const { return m_allLabelsShown; }
+
 protected:
   bool UpdateColors() override;
   std::string GetDescription() const override;
@@ -71,5 +73,6 @@ protected:
   unsigned int m_scrollSpeed;
   bool m_resetOnLabelChange;
   bool m_randomized;
+  bool m_allLabelsShown = true;
 };
 
