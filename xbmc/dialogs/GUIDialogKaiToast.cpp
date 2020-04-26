@@ -9,6 +9,7 @@
 #include "GUIDialogKaiToast.h"
 
 #include "ServiceBroker.h"
+#include "guilib/GUIFadeLabelControl.h"
 #include "guilib/GUIMessage.h"
 #include "peripherals/Peripherals.h"
 #include "threads/SingleLock.h"
@@ -90,6 +91,13 @@ bool CGUIDialogKaiToast::DoWork()
   if (!m_notifications.empty() &&
       CTimeUtils::GetFrameTime() - m_timer > m_toastMessageTime)
   {
+    // if we have a fade label control for the text to display, ensure the whole text was shown
+    // (scrolled to the end) before we move on to the next message
+    const CGUIFadeLabelControl* notificationText =
+        dynamic_cast<const CGUIFadeLabelControl*>(GetControl(POPUP_NOTIFICATION_BUTTON));
+    if (notificationText && !notificationText->AllLabelsShown())
+      return false;
+
     Notification toast = m_notifications.front();
     m_notifications.pop();
     lock.Leave();
@@ -148,7 +156,22 @@ void CGUIDialogKaiToast::FrameMove()
 
   // now check if we should exit
   if (CTimeUtils::GetFrameTime() - m_timer > m_toastDisplayTime)
-    Close();
+  {
+    bool bClose = true;
+
+    // if we have a fade label control for the text to display, ensure the whole text was shown
+    // (scrolled to the end) before we're closing the toast dialog
+    const CGUIFadeLabelControl* notificationText =
+        dynamic_cast<const CGUIFadeLabelControl*>(GetControl(POPUP_NOTIFICATION_BUTTON));
+    if (notificationText)
+    {
+      CSingleLock lock(m_critical);
+      bClose = notificationText->AllLabelsShown() && m_notifications.empty();
+    }
+
+    if (bClose)
+      Close();
+  }
 
   CGUIDialog::FrameMove();
 }
