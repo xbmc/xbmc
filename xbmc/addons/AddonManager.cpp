@@ -382,9 +382,14 @@ bool CAddonMgr::GetIncompatibleAddons(VECADDONS& incompatible) const
 
 std::vector<std::string> CAddonMgr::MigrateAddons()
 {
+  // install all addon updates
+  std::lock_guard<std::mutex> lock(m_installAddonsMutex);
   CLog::Log(LOGINFO, "ADDON: waiting for add-ons to update...");
-  CheckAndInstallAddonUpdates(true);
+  VECADDONS updates;
+  GetAddonUpdateCandidates(updates);
+  InstallAddonUpdates(updates, true);
 
+  // get addons that became incompatible and disable them
   VECADDONS incompatible;
   GetIncompatibleAddons(incompatible);
   std::vector<std::string> changed;
@@ -411,15 +416,21 @@ std::vector<std::string> CAddonMgr::MigrateAddons()
 
 void CAddonMgr::CheckAndInstallAddonUpdates(bool wait) const
 {
-  // Get Addons in need of an update and remove all the blacklisted ones
-  auto updates = GetAvailableUpdates();
-  updates.erase(std::remove_if(updates.begin(), updates.end(), [this](const AddonPtr& addon) {
-    return IsBlacklisted(addon->ID());
-  }), updates.end());
+  std::lock_guard<std::mutex> lock(m_installAddonsMutex);
+  VECADDONS updates;
+  GetAddonUpdateCandidates(updates);
+  InstallAddonUpdates(updates, wait);
+}
 
-  // sort addons by dependencies (ensure install order) and install all
-  SortByDependencies(updates);
-  CAddonInstaller::GetInstance().InstallAddons(updates, wait);
+bool CAddonMgr::GetAddonUpdateCandidates(VECADDONS& updates) const
+{
+  // Get Addons in need of an update and remove all the blacklisted ones
+  updates = GetAvailableUpdates();
+  updates.erase(
+      std::remove_if(updates.begin(), updates.end(),
+                     [this](const AddonPtr& addon) { return IsBlacklisted(addon->ID()); }),
+      updates.end());
+  return updates.empty();
 }
 
 void CAddonMgr::SortByDependencies(VECADDONS& updates) const
@@ -465,6 +476,13 @@ void CAddonMgr::SortByDependencies(VECADDONS& updates) const
     }
   }
   updates = sorted;
+}
+
+void CAddonMgr::InstallAddonUpdates(VECADDONS& updates, bool wait) const
+{
+  // sort addons by dependencies (ensure install order) and install all
+  SortByDependencies(updates);
+  CAddonInstaller::GetInstance().InstallAddons(updates, wait);
 }
 
 bool CAddonMgr::GetAddon(const std::string& str,
