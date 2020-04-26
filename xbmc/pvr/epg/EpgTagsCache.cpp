@@ -127,7 +127,7 @@ void CPVREpgTagsCache::RefreshLastEndedTag(const CDateTime& activeTime)
 {
   if (m_database)
   {
-    m_lastEndedTag = m_database->GetEpgTagByMaxEndTime(m_iEpgID, activeTime - ONE_SECOND);
+    m_lastEndedTag = m_database->GetEpgTagByMaxEndTime(m_iEpgID, activeTime);
     if (m_lastEndedTag)
       m_lastEndedTag->SetChannelData(m_channelData);
   }
