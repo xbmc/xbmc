@@ -396,12 +396,6 @@ namespace XBMCAddon
       return Tuple<String,String>(strTitle,strYear);
     }
 
-    String validatePath(const String& path)
-    {
-      XBMC_TRACE;
-      return CUtil::ValidatePath(path, true);
-    }
-
     String getRegion(const char* id)
     {
       XBMC_TRACE;

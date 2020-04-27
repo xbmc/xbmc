@@ -218,6 +218,11 @@ web applications or frameworks for the Python programming language.
       "",
       <b>xbmc.makeLegalFilename()</b> function was moved to the xbmcvfs module.
 }
+\python_removed_function{
+      validatePath,
+      "",
+      <b>xbmc.validatePath()</b> function was moved to the xbmcvfs module.
+}
 */
 /*!
 @page python_v18 Python API v18
