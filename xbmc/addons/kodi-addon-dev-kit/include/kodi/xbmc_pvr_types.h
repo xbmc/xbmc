@@ -393,12 +393,12 @@ extern "C" {
   /*!
    * @brief Properties passed to the Create() method of an add-on.
    */
-  typedef struct PVR_PROPERTIES
+  typedef struct AddonProperties_PVR
   {
     const char* strUserPath;           /*!< @brief path to the user profile */
     const char* strClientPath;         /*!< @brief path to this add-on */
     int iEpgMaxDays;                   /*!< @brief if > EPG_TIMEFRAME_UNLIMITED, in async epg mode, deliver only events in the range from 'end time > now' to 'start time < now + iEpgMaxDays. EPG_TIMEFRAME_UNLIMITED, notify all events. */
-  } PVR_PROPERTIES;
+  } AddonProperties_PVR;
 
   /*!
    * @brief Representation of a general attribute integer value.
@@ -853,9 +853,9 @@ extern "C" {
 
   typedef struct AddonInstance_PVR
   {
-    PVR_PROPERTIES* props;
-    AddonToKodiFuncTable_PVR* toKodi;
-    KodiToAddonFuncTable_PVR* toAddon;
+    struct AddonProperties_PVR* props;
+    struct AddonToKodiFuncTable_PVR* toKodi;
+    struct KodiToAddonFuncTable_PVR* toAddon;
   } AddonInstance_PVR;
 
 #ifdef __cplusplus

@@ -672,7 +672,7 @@ extern "C"
   /*!
    * Tell the client the time frame to use when notifying epg events back to Kodi. The client might push epg events asynchronously
    * to Kodi using the callback function EpgEventStateChange. To be able to only push events that are actually of interest for Kodi,
-   * client needs to know about the epg time frame Kodi uses. Kodi supplies the current epg time frame value in PVR_PROPERTIES.iEpgMaxDays
+   * client needs to know about the epg time frame Kodi uses. Kodi supplies the current epg time frame value in AddonProperties_PVR.iEpgMaxDays
    * when creating the addon and calls SetEPGTimeFrame later whenever Kodi's epg time frame value changes.
    * @param iDays number of days from "now". EPG_TIMEFRAME_UNLIMITED means that Kodi is interested in all epg events, regardless of event times.
    * @return PVR_ERROR_NO_ERROR if new value was successfully set.

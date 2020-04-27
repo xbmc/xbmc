@@ -61,7 +61,7 @@ CPVRClient::CPVRClient(const AddonInfoPtr& addonInfo)
 {
   // Create all interface parts independent to make API changes easier if
   // something is added
-  m_struct.props = new PVR_PROPERTIES();
+  m_struct.props = new AddonProperties_PVR();
   m_struct.toKodi = new AddonToKodiFuncTable_PVR();
   m_struct.toAddon = new KodiToAddonFuncTable_PVR();
 

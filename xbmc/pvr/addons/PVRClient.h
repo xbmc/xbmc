@@ -1143,7 +1143,7 @@ namespace PVR
     CPVRClientCapabilities m_clientCapabilities; /*!< the cached add-on's capabilities */
     std::shared_ptr<CPVRClientMenuHooks> m_menuhooks; /*!< the menu hooks for this add-on */
 
-    /* stored strings to make sure const char* members in PVR_PROPERTIES stay valid */
+    /* stored strings to make sure const char* members in AddonProperties_PVR stay valid */
     std::string m_strUserPath; /*!< @brief translated path to the user profile */
     std::string m_strClientPath; /*!< @brief translated path to this add-on */
 
