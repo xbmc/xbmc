@@ -1842,6 +1842,21 @@ namespace XBMCAddon
     /// ...
     /// ~~~~~~~~~~~~~
     ///
+    /// As stated above, the GUI control is only created once added to a window. The example
+    /// below shows how a ControlTextBox can be created, added to the current window and
+    /// have some of its properties changed.
+    ///
+    /// /// **Extended example:**
+    /// ~~~~~~~~~~~~~{.py}
+    /// ...
+    /// textbox = xbmcgui.ControlTextBox(100, 250, 300, 300, textColor='0xFFFFFFFF')
+    /// window = xbmcgui.Window(xbmcgui.getCurrentWindowId())
+    /// window.addControl(textbox)
+    /// textbox.setText("My Text Box")
+    /// textbox.scroll()
+    /// ...
+    /// ~~~~~~~~~~~~~
+    ///
     class ControlTextBox : public Control
     {
     public:
@@ -1856,9 +1871,11 @@ namespace XBMCAddon
       /// @brief \python_func{ setText(text) }
       ///-----------------------------------------------------------------------
       /// Set's the text for this textbox.
+      /// \anchor python_xbmcgui_control_textbox_settext
       ///
-      /// @param text                 string or unicode - text string.
+      /// @param text                 string  - text string.
       ///
+      /// @note setText only has effect after the control is added to a window
       ///
       ///--------------------------------------------------------------------------
       ///
@@ -1885,6 +1902,9 @@ namespace XBMCAddon
       ///
       /// @return                       To get text from box
       ///
+      /// @note getText only works after you add the control to a window
+      /// and set the control text (using \ref python_xbmcgui_control_textbox_settext
+      /// "setText").
       ///
       ///-----------------------------------------------------------------------
       ///
@@ -1909,6 +1929,7 @@ namespace XBMCAddon
       ///-----------------------------------------------------------------------
       /// Clear's this textbox.
       ///
+      /// @note reset only works after you add the control to a window.
       ///
       ///-----------------------------------------------------------------------
       ///
@@ -1935,6 +1956,7 @@ namespace XBMCAddon
       ///
       /// @param id                 integer - position to scroll to.
       ///
+      /// @note scroll() only works after the control is added to a window.
       ///
       ///-----------------------------------------------------------------------
       ///
@@ -1963,6 +1985,7 @@ namespace XBMCAddon
       /// @param time                  integer - Scroll time (in ms)
       /// @param repeat                integer - Repeat time
       ///
+      /// @note autoScroll only works after you add the control to a window.
       ///
       ///-----------------------------------------------------------------------
       /// @python_v15 New function added.
