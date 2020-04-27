@@ -110,13 +110,13 @@ bool CRendererDXVA::Configure(const VideoPicture& picture, float fps, unsigned o
 
 bool CRendererDXVA::NeedBuffer(int idx)
 {
-  if (m_renderBuffers[idx]->IsLoaded())
+  if (m_renderBuffers[idx]->IsLoaded() && m_renderBuffers[idx]->pictureFlags & DVP_FLAG_INTERLACED)
   {
-    const int numPast = m_processor->PastRefs();
-    if (m_renderBuffers[idx]->pictureFlags & DVP_FLAG_INTERLACED &&
-      m_renderBuffers[idx]->frameIdx + numPast * 2 >=
-      m_renderBuffers[m_iBufferIndex]->frameIdx)
-      return true;
+    const uint64_t currentFrameIndex = m_renderBuffers[m_iBufferIndex]->frameIdx;
+    const uint64_t bufferFrameIndex = m_renderBuffers[idx]->frameIdx;
+
+    return bufferFrameIndex < currentFrameIndex &&
+           bufferFrameIndex + (m_processor->PastRefs() * 2) >= currentFrameIndex;
   }
   return false;
 }
