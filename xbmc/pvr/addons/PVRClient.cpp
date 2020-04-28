@@ -1073,7 +1073,7 @@ PVR_ERROR CPVRClient::GetRecordedStreamLength(int64_t& iLength)
 PVR_ERROR CPVRClient::SignalQuality(int channelUid, PVR_SIGNAL_STATUS& qualityinfo)
 {
   return DoAddonCall(__FUNCTION__, [channelUid, &qualityinfo](const AddonInstance* addon) {
-    return addon->toAddon->SignalStatus(channelUid, &qualityinfo);
+    return addon->toAddon->GetSignalStatus(channelUid, &qualityinfo);
   });
 }
 

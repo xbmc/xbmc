@@ -470,7 +470,7 @@ extern "C"
    * @remarks Optional, and only used if PVR_ADDON_CAPABILITIES::bHandlesInputStream or PVR_ADDON_CAPABILITIES::bHandlesDemuxing is set to true.
    *          Return PVR_ERROR_NOT_IMPLEMENTED if this add-on won't provide this function.
    */
-  PVR_ERROR SignalStatus(int channelUid, PVR_SIGNAL_STATUS* signalStatus);
+  PVR_ERROR GetSignalStatus(int channelUid, PVR_SIGNAL_STATUS* signalStatus);
 
   /*!
    * Get the descramble information of the stream that's currently open.
@@ -758,7 +758,7 @@ extern "C"
     pClient->toAddon->ReadLiveStream = ReadLiveStream;
     pClient->toAddon->SeekLiveStream = SeekLiveStream;
     pClient->toAddon->LengthLiveStream = LengthLiveStream;
-    pClient->toAddon->SignalStatus = SignalStatus;
+    pClient->toAddon->GetSignalStatus = GetSignalStatus;
     pClient->toAddon->GetDescrambleInfo = GetDescrambleInfo;
     pClient->toAddon->GetChannelStreamProperties = GetChannelStreamProperties;
     pClient->toAddon->GetRecordingStreamProperties = GetRecordingStreamProperties;

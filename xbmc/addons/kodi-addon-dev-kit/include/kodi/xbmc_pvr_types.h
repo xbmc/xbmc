@@ -815,12 +815,13 @@ extern "C" {
 
     //--==----==----==----==----==----==----==----==----==----==----==----==----==
     // Channel interface functions
+
     int(__cdecl* GetChannelsAmount)(void);
     PVR_ERROR(__cdecl* GetChannels)(ADDON_HANDLE, bool);
     PVR_ERROR(__cdecl* GetChannelStreamProperties)(const PVR_CHANNEL*,
                                                    PVR_NAMED_VALUE*,
                                                    unsigned int*);
-    PVR_ERROR(__cdecl* SignalStatus)(int, PVR_SIGNAL_STATUS*);
+    PVR_ERROR(__cdecl* GetSignalStatus)(int, PVR_SIGNAL_STATUS*);
     PVR_ERROR(__cdecl* GetDescrambleInfo)(int, PVR_DESCRAMBLE_INFO*);
 
     //--==----==----==----==----==----==----==----==----==----==----==----==----==
