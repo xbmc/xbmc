@@ -464,21 +464,23 @@ extern "C"
 
   /*!
    * Get the signal status of the stream that's currently open.
+   * @param channelUid Channel unique identifier
    * @param signalStatus The signal status.
    * @return PVR_ERROR_NO_ERROR if the signal status has been read successfully, false otherwise.
    * @remarks Optional, and only used if PVR_ADDON_CAPABILITIES::bHandlesInputStream or PVR_ADDON_CAPABILITIES::bHandlesDemuxing is set to true.
    *          Return PVR_ERROR_NOT_IMPLEMENTED if this add-on won't provide this function.
    */
-  PVR_ERROR SignalStatus(PVR_SIGNAL_STATUS& signalStatus);
+  PVR_ERROR SignalStatus(int channelUid, PVR_SIGNAL_STATUS* signalStatus);
 
   /*!
    * Get the descramble information of the stream that's currently open.
+   * @param channelUid Channel unique identifier
    * @param [out] descrambleInfo The descramble information.
    * @return PVR_ERROR_NO_ERROR if the descramble information has been read successfully, false otherwise.
    * @remarks Optional, and only used if PVR_ADDON_CAPABILITIES::bSupportsDescrambleInfo is set to true.
    *          Return PVR_ERROR_NOT_IMPLEMENTED if this add-on won't provide this function.
    */
-  PVR_ERROR GetDescrambleInfo(PVR_DESCRAMBLE_INFO* descrambleInfo);
+  PVR_ERROR GetDescrambleInfo(int channelUid, PVR_DESCRAMBLE_INFO* descrambleInfo);
 
   /*!
    * Get the stream properties for a channel from the backend.

@@ -674,17 +674,19 @@ namespace PVR
 
     /*!
      * @brief Get the signal quality of the stream that's currently open.
+     * @param channelUid Channel unique identifier
      * @param qualityinfo The signal quality.
      * @return PVR_ERROR_NO_ERROR on success, respective error code otherwise.
      */
-    PVR_ERROR SignalQuality(PVR_SIGNAL_STATUS& qualityinfo);
+    PVR_ERROR SignalQuality(int channelUid, PVR_SIGNAL_STATUS& qualityinfo);
 
     /*!
      * @brief Get the descramble information of the stream that's currently open.
+     * @param channelUid Channel unique identifier
      * @param descrambleinfo The descramble information.
      * @return PVR_ERROR_NO_ERROR on success, respective error code otherwise.
      */
-    PVR_ERROR GetDescrambleInfo(PVR_DESCRAMBLE_INFO& descrambleinfo) const;
+    PVR_ERROR GetDescrambleInfo(int channelUid, PVR_DESCRAMBLE_INFO& descrambleinfo) const;
 
     /*!
      * @brief Fill the given container with the properties required for playback of the given channel. Values are obtained from the PVR backend.

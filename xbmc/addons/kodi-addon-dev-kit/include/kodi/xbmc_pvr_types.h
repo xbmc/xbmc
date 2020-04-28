@@ -820,8 +820,8 @@ extern "C" {
     PVR_ERROR(__cdecl* GetChannelStreamProperties)(const PVR_CHANNEL*,
                                                    PVR_NAMED_VALUE*,
                                                    unsigned int*);
-    PVR_ERROR(__cdecl* SignalStatus)(PVR_SIGNAL_STATUS&);
-    PVR_ERROR(__cdecl* GetDescrambleInfo)(PVR_DESCRAMBLE_INFO*);
+    PVR_ERROR(__cdecl* SignalStatus)(int, PVR_SIGNAL_STATUS*);
+    PVR_ERROR(__cdecl* GetDescrambleInfo)(int, PVR_DESCRAMBLE_INFO*);
 
     //--==----==----==----==----==----==----==----==----==----==----==----==----==
     // Channel group interface functions

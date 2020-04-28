@@ -1070,17 +1070,17 @@ PVR_ERROR CPVRClient::GetRecordedStreamLength(int64_t& iLength)
   });
 }
 
-PVR_ERROR CPVRClient::SignalQuality(PVR_SIGNAL_STATUS& qualityinfo)
+PVR_ERROR CPVRClient::SignalQuality(int channelUid, PVR_SIGNAL_STATUS& qualityinfo)
 {
-  return DoAddonCall(__FUNCTION__, [&qualityinfo](const AddonInstance* addon) {
-    return addon->toAddon->SignalStatus(qualityinfo);
+  return DoAddonCall(__FUNCTION__, [channelUid, &qualityinfo](const AddonInstance* addon) {
+    return addon->toAddon->SignalStatus(channelUid, &qualityinfo);
   });
 }
 
-PVR_ERROR CPVRClient::GetDescrambleInfo(PVR_DESCRAMBLE_INFO& descrambleinfo) const
+PVR_ERROR CPVRClient::GetDescrambleInfo(int channelUid, PVR_DESCRAMBLE_INFO& descrambleinfo) const
 {
-  return DoAddonCall(__FUNCTION__, [&descrambleinfo](const AddonInstance* addon) {
-    return addon->toAddon->GetDescrambleInfo(&descrambleinfo);
+  return DoAddonCall(__FUNCTION__, [channelUid, &descrambleinfo](const AddonInstance* addon) {
+    return addon->toAddon->GetDescrambleInfo(channelUid, &descrambleinfo);
   }, m_clientCapabilities.SupportsDescrambleInfo());
 }
 
