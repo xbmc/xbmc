@@ -309,9 +309,11 @@ bool CDRMUtils::FindCrtcs()
 {
   for (auto i = 0; i < m_drm_resources->count_crtcs; i++)
   {
+    struct crtc* object = nullptr;
+
     if (m_encoder->encoder->possible_crtcs & (1 << i))
     {
-      struct crtc* object = new struct crtc;
+      object = new struct crtc;
       object->crtc = drmModeGetCrtc(m_fd, m_drm_resources->crtcs[i]);
 
       CLog::Log(LOGDEBUG, "CDRMUtils::{} - found possible crtc: {}", __FUNCTION__,
@@ -323,14 +325,14 @@ bool CDRMUtils::FindCrtcs()
                   object->crtc->crtc_id, strerror(errno));
         drmModeFreeCrtc(object->crtc);
         delete object;
-        continue;
+        object = nullptr;
       }
 
-      m_crtcs.emplace_back(object);
-
-      if (object->crtc->crtc_id == m_encoder->encoder->crtc_id)
+      if (object && object->crtc->crtc_id == m_encoder->encoder->crtc_id)
         m_orig_crtc = object;
     }
+
+    m_crtcs.emplace_back(object);
   }
 
   if (m_crtcs.empty())
@@ -467,6 +469,8 @@ bool CDRMUtils::FindPlanes()
   for (size_t i = 0; i < m_crtcs.size(); i++)
   {
     const auto crtc = m_crtcs[i];
+    if (!crtc)
+      continue;
 
     m_video_plane->plane = FindPlane(plane_resources, i, KODI_VIDEO_PLANE);
     m_gui_plane->plane = FindPlane(plane_resources, i, KODI_GUI_PLANE);
