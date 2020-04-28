@@ -44,6 +44,7 @@ void CRenderBuffer::ReleasePicture()
   if (videoBuffer)
     videoBuffer->Release();
   videoBuffer = nullptr;
+  m_bLoaded = false;
 }
 
 CRenderBuffer::CRenderBuffer(AVPixelFormat av_pix_format, unsigned width, unsigned height)

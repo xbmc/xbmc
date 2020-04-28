@@ -179,21 +179,17 @@ void CRendererSoftware::CRenderBufferImpl::ReleasePicture()
   __super::ReleasePicture();
 }
 
-bool CRendererSoftware::CRenderBufferImpl::IsLoaded()
-{
-  if (!videoBuffer)
-    return false;
-
-  if (videoBuffer->GetFormat() == AV_PIX_FMT_D3D11VA_VLD)
-    return m_msr.pData != nullptr;
-  return true;
-}
-
 bool CRendererSoftware::CRenderBufferImpl::UploadBuffer()
 {
   if (!m_staging)
     return false;
 
-  // map will finish copying data from GPU to CPU
-  return SUCCEEDED(SUCCEEDED(DX::DeviceResources::Get()->GetImmediateContext()->Map(m_staging.Get(), 0, D3D11_MAP_READ, 0, &m_msr)));
+  if (videoBuffer->GetFormat() == AV_PIX_FMT_D3D11VA_VLD && m_msr.pData == nullptr)
+  {
+    // map will finish copying data from GPU to CPU
+    m_bLoaded = SUCCEEDED(DX::DeviceResources::Get()->GetImmediateContext()->Map(
+        m_staging.Get(), 0, D3D11_MAP_READ, 0, &m_msr));
+  }
+
+  return m_bLoaded;
 }
