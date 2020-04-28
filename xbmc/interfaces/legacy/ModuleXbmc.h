@@ -90,7 +90,7 @@ namespace XBMCAddon
 #ifdef DOXYGEN_SHOULD_USE_THIS
     ///
     /// \ingroup python_xbmc
-    /// @brief \python_func{ xbmc.Shutdown() }
+    /// @brief \python_func{ xbmc.shutdown() }
     ///-----------------------------------------------------------------------
     /// Shutdown the htpc.
     ///
@@ -165,7 +165,7 @@ namespace XBMCAddon
     /// @param function                string - builtin function to execute.
     ///
     ///
-    /// List of functions - http://kodi.wiki/view/List_of_Built_In_Functions
+    /// \ref page_List_of_built_in_functions "List of builtin functions"
     ///
     ///
     /// ------------------------------------------------------------------------
@@ -193,7 +193,6 @@ namespace XBMCAddon
     /// @return                     jsonrpc return string
     ///
     ///
-    /// List of commands -
     ///
     ///
     /// ------------------------------------------------------------------------
@@ -429,7 +428,7 @@ namespace XBMCAddon
     ///                              returned.
     /// @return                      InfoLabel as a string
     ///
-    /// List of InfoTags - http://kodi.wiki/view/InfoLabels
+    /// \ref modules__infolabels_boolean_conditions "List of InfoTags"
     ///
     ///
     /// ------------------------------------------------------------------------
@@ -536,7 +535,7 @@ namespace XBMCAddon
     ///-----------------------------------------------------------------------
     /// Enables/Disables nav sounds
     ///
-    /// @param yesNo                 integer - enable (True) or disable
+    /// @param yesNo                 bool - enable (True) or disable
     ///                              (False) nav sounds
     ///
     ///
@@ -562,9 +561,9 @@ namespace XBMCAddon
     /// Get visibility conditions
     ///
     /// @param condition             string - condition to check
-    /// @return                      True (1) or False (0) as a bool
+    /// @return                      True (if the condition is verified) or False (otherwise)
     ///
-    /// List of Conditions - http://kodi.wiki/view/List_of_Boolean_Conditions
+    /// \ref modules__infolabels_boolean_conditions "List of boolean conditions"
     ///
     /// @note You can combine two (or more) of the above settings by using <b>"+"</b> as an AND operator,
     /// <b>"|"</b> as an OR operator, <b>"!"</b> as a NOT operator, and <b>"["</b> and <b>"]"</b> to bracket expressions.
@@ -615,7 +614,7 @@ namespace XBMCAddon
     ///-----------------------------------------------------------------------
     /// Get thumb cache filename.
     ///
-    /// @param path                  string or unicode - path to file
+    /// @param path                  string - path to file
     /// @return                      Thumb cache filename
     ///
     ///
@@ -640,11 +639,11 @@ namespace XBMCAddon
     ///-----------------------------------------------------------------------
     /// Returns the translated path.
     ///
-    /// @param path                  string or unicode - Path to format
+    /// @param path                  string - Path to format
     /// @return                      Translated path
     ///
     /// @note Only useful if you are coding for both Linux and Windows.
-    ///        e.g. Converts 'special://masterprofile/script_data' -> '/home/user/XBMC/UserData/script_data'
+    ///        e.g. Converts 'special://home' -> '/home/[username]/.kodi'
     ///        on Linux.
     ///
     ///
@@ -653,7 +652,7 @@ namespace XBMCAddon
     /// **Example:**
     /// ~~~~~~~~~~~~~{.py}
     /// ..
-    /// fpath = xbmc.translatePath('special://masterprofile/script_data')
+    /// fpath = xbmc.translatePath('special://home')
     /// ..
     /// ~~~~~~~~~~~~~
     ///
@@ -669,7 +668,7 @@ namespace XBMCAddon
     ///-----------------------------------------------------------------------
     /// Get clean movie title and year string if available.
     ///
-    /// @param path                  string or unicode - String to clean
+    /// @param path                  string - String to clean
     /// @param usefoldername         [opt] bool - use folder names (defaults
     ///                              to false)
     /// @return                      Clean movie title and year string if
@@ -732,7 +731,7 @@ namespace XBMCAddon
     ///
     /// @note Media type can be (video, music, picture).
     ///       The return value is a pipe separated string of filetypes
-    ///       (eg. '.mov|.avi').\n
+    ///       (eg. '.mov |.avi').\n
     ///       You can use the above as keywords for arguments.
     ///
     ///
