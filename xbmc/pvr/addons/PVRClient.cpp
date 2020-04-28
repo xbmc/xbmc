@@ -392,7 +392,7 @@ bool CPVRClient::GetAddonProperties()
 
   /* get the capabilities */
   PVR_ERROR retVal = DoAddonCall(__FUNCTION__, [&addonCapabilities](const AddonInstance* addon) {
-    return addon->toAddon->GetAddonCapabilities(&addonCapabilities);
+    return addon->toAddon->GetCapabilities(&addonCapabilities);
   }, true, false);
 
   if (retVal != PVR_ERROR_NO_ERROR)

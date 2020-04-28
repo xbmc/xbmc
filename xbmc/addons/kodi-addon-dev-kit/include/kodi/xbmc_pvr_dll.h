@@ -30,7 +30,7 @@ extern "C"
    * @return PVR_ERROR_NO_ERROR if the properties were fetched successfully.
    * @remarks Valid implementation required.
    */
-  PVR_ERROR GetAddonCapabilities(PVR_ADDON_CAPABILITIES *pCapabilities);
+  PVR_ERROR GetCapabilities(PVR_ADDON_CAPABILITIES* pCapabilities);
 
   /*!
    * @return The name reported by the backend that will be displayed in the UI.
@@ -705,7 +705,7 @@ extern "C"
 
     pClient->toAddon->addonInstance = nullptr; // used in future
 
-    pClient->toAddon->GetAddonCapabilities = GetAddonCapabilities;
+    pClient->toAddon->GetCapabilities = GetCapabilities;
     pClient->toAddon->GetStreamProperties = GetStreamProperties;
     pClient->toAddon->GetConnectionString = GetConnectionString;
     pClient->toAddon->GetBackendName = GetBackendName;

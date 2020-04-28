@@ -805,7 +805,7 @@ extern "C" {
 
     //--==----==----==----==----==----==----==----==----==----==----==----==----==
     // General interface functions
-    PVR_ERROR(__cdecl* GetAddonCapabilities)(PVR_ADDON_CAPABILITIES*);
+    PVR_ERROR(__cdecl* GetCapabilities)(PVR_ADDON_CAPABILITIES*);
     const char*(__cdecl* GetBackendName)(void);
     const char*(__cdecl* GetBackendVersion)(void);
     const char*(__cdecl* GetBackendHostname)(void);
