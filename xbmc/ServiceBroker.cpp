@@ -16,30 +16,43 @@
 
 using namespace KODI;
 
-std::unique_ptr<CLog> CServiceBroker::m_logging;
+
+CServiceBroker::CServiceBroker() :
+    m_pGUI(nullptr),
+    m_pWinSystem(nullptr),
+    m_pActiveAE(nullptr),
+    m_pSettingsComponent(nullptr),
+    m_decoderFilterManager(nullptr)
+{
+}
+
+CServiceBroker::~CServiceBroker()
+{
+}
+
 CLog& CServiceBroker::GetLogging()
 {
-  return *m_logging;
+  return *(g_serviceBroker.m_logging);
 }
 
 void CServiceBroker::CreateLogging()
 {
-  m_logging = std::make_unique<CLog>();
+  g_serviceBroker.m_logging = std::make_unique<CLog>();
 }
 
 // announcement
-std::shared_ptr<ANNOUNCEMENT::CAnnouncementManager> CServiceBroker::m_pAnnouncementManager;
 std::shared_ptr<ANNOUNCEMENT::CAnnouncementManager> CServiceBroker::GetAnnouncementManager()
 {
-  return m_pAnnouncementManager;
+  return g_serviceBroker.m_pAnnouncementManager;
 }
 void CServiceBroker::RegisterAnnouncementManager(std::shared_ptr<ANNOUNCEMENT::CAnnouncementManager> port)
 {
-  m_pAnnouncementManager = port;
+  g_serviceBroker.m_pAnnouncementManager = port;
 }
+
 void CServiceBroker::UnregisterAnnouncementManager()
 {
-  m_pAnnouncementManager.reset();
+  g_serviceBroker.m_pAnnouncementManager.reset();
 }
 
 ADDON::CAddonMgr &CServiceBroker::GetAddonMgr()
@@ -89,21 +102,19 @@ PLAYLIST::CPlayListPlayer &CServiceBroker::GetPlaylistPlayer()
   return g_application.m_ServiceManager->GetPlaylistPlayer();
 }
 
-CSettingsComponent* CServiceBroker::m_pSettingsComponent = nullptr;
-
 void CServiceBroker::RegisterSettingsComponent(CSettingsComponent *settings)
 {
-  m_pSettingsComponent = settings;
+  g_serviceBroker.m_pSettingsComponent = settings;
 }
 
 void CServiceBroker::UnregisterSettingsComponent()
 {
-  m_pSettingsComponent = nullptr;
+  g_serviceBroker.m_pSettingsComponent = nullptr;
 }
 
 CSettingsComponent* CServiceBroker::GetSettingsComponent()
 {
-  return m_pSettingsComponent;
+  return g_serviceBroker.m_pSettingsComponent;
 }
 
 GAME::CControllerManager& CServiceBroker::GetGameControllerManager()
@@ -168,27 +179,25 @@ bool CServiceBroker::IsServiceManagerUp()
          g_application.m_ServiceManager->init_level == 3;
 }
 
-CWinSystemBase* CServiceBroker::m_pWinSystem = nullptr;
-
 CWinSystemBase* CServiceBroker::GetWinSystem()
 {
-  return m_pWinSystem;
+  return g_serviceBroker.m_pWinSystem;
 }
 
 void CServiceBroker::RegisterWinSystem(CWinSystemBase *winsystem)
 {
-  m_pWinSystem = winsystem;
+  g_serviceBroker.m_pWinSystem = winsystem;
 }
 
 void CServiceBroker::UnregisterWinSystem()
 {
-  m_pWinSystem = nullptr;
+  g_serviceBroker.m_pWinSystem = nullptr;
 }
 
 CRenderSystemBase* CServiceBroker::GetRenderSystem()
 {
-  if (m_pWinSystem)
-    return m_pWinSystem->GetRenderSystem();
+  if (g_serviceBroker.m_pWinSystem)
+    return g_serviceBroker.m_pWinSystem->GetRenderSystem();
 
   return nullptr;
 }
@@ -215,7 +224,7 @@ CDatabaseManager& CServiceBroker::GetDatabaseManager()
 
 CEventLog& CServiceBroker::GetEventLog()
 {
-  return m_pSettingsComponent->GetProfileManager()->GetEventLog();
+  return g_serviceBroker.m_pSettingsComponent->GetProfileManager()->GetEventLog();
 }
 
 CMediaManager& CServiceBroker::GetMediaManager()
@@ -223,76 +232,70 @@ CMediaManager& CServiceBroker::GetMediaManager()
   return g_application.m_ServiceManager->GetMediaManager();
 }
 
-CGUIComponent* CServiceBroker::m_pGUI = nullptr;
-
 CGUIComponent* CServiceBroker::GetGUI()
 {
-  return m_pGUI;
+  return g_serviceBroker.m_pGUI;
 }
 
 void CServiceBroker::RegisterGUI(CGUIComponent *gui)
 {
-  m_pGUI = gui;
+  g_serviceBroker.m_pGUI = gui;
 }
 
 void CServiceBroker::UnregisterGUI()
 {
-  m_pGUI = nullptr;
+  g_serviceBroker.m_pGUI = nullptr;
 }
 
 // audio
-IAE* CServiceBroker::m_pActiveAE = nullptr;
 IAE* CServiceBroker::GetActiveAE()
 {
-  return m_pActiveAE;
+  return g_serviceBroker.m_pActiveAE;
 }
 void CServiceBroker::RegisterAE(IAE *ae)
 {
-  m_pActiveAE = ae;
+  g_serviceBroker.m_pActiveAE = ae;
 }
 void CServiceBroker::UnregisterAE()
 {
-  m_pActiveAE = nullptr;
+  g_serviceBroker.m_pActiveAE = nullptr;
 }
 
 // application
-std::shared_ptr<CAppInboundProtocol> CServiceBroker::m_pAppPort;
 std::shared_ptr<CAppInboundProtocol> CServiceBroker::GetAppPort()
 {
-  return m_pAppPort;
+  return g_serviceBroker.m_pAppPort;
 }
 void CServiceBroker::RegisterAppPort(std::shared_ptr<CAppInboundProtocol> port)
 {
-  m_pAppPort = port;
+  g_serviceBroker.m_pAppPort = port;
 }
 void CServiceBroker::UnregisterAppPort()
 {
-  m_pAppPort.reset();
+  g_serviceBroker.m_pAppPort.reset();
 }
 
-CDecoderFilterManager* CServiceBroker::m_decoderFilterManager = nullptr;
 void CServiceBroker::RegisterDecoderFilterManager(CDecoderFilterManager* manager)
 {
-  m_decoderFilterManager = manager;
+  g_serviceBroker.m_decoderFilterManager = manager;
 }
 
 CDecoderFilterManager* CServiceBroker::GetDecoderFilterManager()
 {
-  return m_decoderFilterManager;
+  return g_serviceBroker.m_decoderFilterManager;
 }
 
-std::shared_ptr<CCPUInfo> CServiceBroker::m_cpuInfo;
 std::shared_ptr<CCPUInfo> CServiceBroker::GetCPUInfo()
 {
-  return m_cpuInfo;
+  return g_serviceBroker.m_cpuInfo;
 }
 
 void CServiceBroker::RegisterCPUInfo(std::shared_ptr<CCPUInfo> cpuInfo)
 {
-  m_cpuInfo = cpuInfo;
+  g_serviceBroker.m_cpuInfo = cpuInfo;
 }
 
 void CServiceBroker::UnregisterCPUInfo()
 {
-  m_cpuInfo.reset();
+  g_serviceBroker.m_cpuInfo.reset();
 }
