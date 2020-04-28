@@ -8,9 +8,9 @@
 
 #pragma once
 
-#include <memory>
-
 #include "utils/GlobalsHandling.h"
+
+#include <memory>
 
 namespace ADDON {
 class CAddonMgr;
