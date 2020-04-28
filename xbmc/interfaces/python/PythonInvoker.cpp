@@ -496,7 +496,7 @@ bool CPythonInvoker::stop(bool abort)
       {
         CLog::Log(LOGDEBUG, "CPythonInvoker(%d, %s): trigger Monitor abort request", GetId(),
                   m_sourceFile.c_str());
-        onAbortRequested();
+        AbortNotification();
       }
 
       PyObject* m;

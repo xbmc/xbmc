@@ -142,7 +142,7 @@ private:
   LanguageInvocationHandlerMap m_invocationHandlers;
   LanguageInvokerThreadMap m_scripts;
   CLanguageInvokerThreadPtr m_lastInvokerThread;
-  int m_lastPluginHandle;
+  int m_lastPluginHandle = -1;
 
   std::map<std::string, int> m_scriptPaths;
   int m_nextId = 0;

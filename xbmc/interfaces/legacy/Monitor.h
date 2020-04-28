@@ -57,7 +57,10 @@ namespace XBMCAddon
       inline const String& GetId() { return Id; }
       inline long GetInvokerId() { return invokerId; }
 
-      void OnAbortRequested();
+      /**
+       * Called from XBPython to notify registered monitors that a script is aborting/ending.
+       */
+      void AbortNotify();
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -216,18 +219,6 @@ namespace XBMCAddon
       onCleanFinished(...);
 #else
       virtual void onCleanFinished(const String library) { XBMC_TRACE; }
-#endif
-
-#ifdef DOXYGEN_SHOULD_USE_THIS
-      ///
-      /// \ingroup python_monitor
-      /// @brief \python_func{ onAbortRequested() }
-      ///-----------------------------------------------------------------------
-      /// @python_v14 Deprecated. Use **waitForAbort()** to be notified about this event.
-      ///
-      onAbortRequested();
-#else
-      virtual void    onAbortRequested() { XBMC_TRACE; }
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
