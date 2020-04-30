@@ -296,7 +296,6 @@ bool CSettingsComponent::InitDirectoriesOSX(bool bPlatformDirectories)
   std::string frameworksPath = CUtil::GetFrameworksPath();
   CSpecialProtocol::SetXBMCFrameworksPath(frameworksPath);
 
-  // OSX always runs with bPlatformDirectories == true
   if (bPlatformDirectories)
   {
     // map our special drives
@@ -347,6 +346,7 @@ bool CSettingsComponent::InitDirectoriesOSX(bool bPlatformDirectories)
     std::string strTempPath = URIUtils::AddFileToFolder(appPath, "portable_data/temp");
     CSpecialProtocol::SetTempPath(strTempPath);
     CSpecialProtocol::SetLogPath(strTempPath);
+    CreateUserDirs();
   }
   CSpecialProtocol::SetXBMCBinAddonPath(appPath + "/addons");
   return true;
