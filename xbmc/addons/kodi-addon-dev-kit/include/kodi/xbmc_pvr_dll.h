@@ -30,7 +30,7 @@ extern "C"
    * @return PVR_ERROR_NO_ERROR if the properties were fetched successfully.
    * @remarks Valid implementation required.
    */
-  PVR_ERROR GetAddonCapabilities(PVR_ADDON_CAPABILITIES *pCapabilities);
+  PVR_ERROR GetCapabilities(PVR_ADDON_CAPABILITIES* pCapabilities);
 
   /*!
    * @return The name reported by the backend that will be displayed in the UI.
@@ -464,21 +464,23 @@ extern "C"
 
   /*!
    * Get the signal status of the stream that's currently open.
+   * @param channelUid Channel unique identifier
    * @param signalStatus The signal status.
    * @return PVR_ERROR_NO_ERROR if the signal status has been read successfully, false otherwise.
    * @remarks Optional, and only used if PVR_ADDON_CAPABILITIES::bHandlesInputStream or PVR_ADDON_CAPABILITIES::bHandlesDemuxing is set to true.
    *          Return PVR_ERROR_NOT_IMPLEMENTED if this add-on won't provide this function.
    */
-  PVR_ERROR SignalStatus(PVR_SIGNAL_STATUS& signalStatus);
+  PVR_ERROR GetSignalStatus(int channelUid, PVR_SIGNAL_STATUS* signalStatus);
 
   /*!
    * Get the descramble information of the stream that's currently open.
+   * @param channelUid Channel unique identifier
    * @param [out] descrambleInfo The descramble information.
    * @return PVR_ERROR_NO_ERROR if the descramble information has been read successfully, false otherwise.
    * @remarks Optional, and only used if PVR_ADDON_CAPABILITIES::bSupportsDescrambleInfo is set to true.
    *          Return PVR_ERROR_NOT_IMPLEMENTED if this add-on won't provide this function.
    */
-  PVR_ERROR GetDescrambleInfo(PVR_DESCRAMBLE_INFO* descrambleInfo);
+  PVR_ERROR GetDescrambleInfo(int channelUid, PVR_DESCRAMBLE_INFO* descrambleInfo);
 
   /*!
    * Get the stream properties for a channel from the backend.
@@ -672,7 +674,7 @@ extern "C"
   /*!
    * Tell the client the time frame to use when notifying epg events back to Kodi. The client might push epg events asynchronously
    * to Kodi using the callback function EpgEventStateChange. To be able to only push events that are actually of interest for Kodi,
-   * client needs to know about the epg time frame Kodi uses. Kodi supplies the current epg time frame value in PVR_PROPERTIES.iEpgMaxDays
+   * client needs to know about the epg time frame Kodi uses. Kodi supplies the current epg time frame value in AddonProperties_PVR.iEpgMaxDays
    * when creating the addon and calls SetEPGTimeFrame later whenever Kodi's epg time frame value changes.
    * @param iDays number of days from "now". EPG_TIMEFRAME_UNLIMITED means that Kodi is interested in all epg events, regardless of event times.
    * @return PVR_ERROR_NO_ERROR if new value was successfully set.
@@ -705,7 +707,7 @@ extern "C"
 
     pClient->toAddon->addonInstance = nullptr; // used in future
 
-    pClient->toAddon->GetAddonCapabilities = GetAddonCapabilities;
+    pClient->toAddon->GetCapabilities = GetCapabilities;
     pClient->toAddon->GetStreamProperties = GetStreamProperties;
     pClient->toAddon->GetConnectionString = GetConnectionString;
     pClient->toAddon->GetBackendName = GetBackendName;
@@ -756,7 +758,7 @@ extern "C"
     pClient->toAddon->ReadLiveStream = ReadLiveStream;
     pClient->toAddon->SeekLiveStream = SeekLiveStream;
     pClient->toAddon->LengthLiveStream = LengthLiveStream;
-    pClient->toAddon->SignalStatus = SignalStatus;
+    pClient->toAddon->GetSignalStatus = GetSignalStatus;
     pClient->toAddon->GetDescrambleInfo = GetDescrambleInfo;
     pClient->toAddon->GetChannelStreamProperties = GetChannelStreamProperties;
     pClient->toAddon->GetRecordingStreamProperties = GetRecordingStreamProperties;

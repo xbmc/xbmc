@@ -17,6 +17,8 @@
 #include <stdarg.h>
 #include <time.h>
 
+#include "Filesystem.h"
+#include "General.h"
 #include "versions.h"
 #if defined(BUILD_KODI_ADDON)
 #include "IFileTypes.h"
@@ -66,24 +68,6 @@ typedef struct AddonCB
   KODIPVRLib_UnRegisterMe           PVRLib_UnRegisterMe;
 } AddonCB;
 
-struct VFSProperty
-{
-  char* name;
-  char* val;
-};
-
-struct VFSDirEntry
-{
-  char* label;             //!< item label
-  char* title;             //!< item title
-  char* path;              //!< item path
-  unsigned int num_props;  //!< Number of properties attached to item
-  VFSProperty* properties; //!< Properties
-  time_t date_time;        //!< file creation date & time
-  bool folder;             //!< Item is a folder
-  uint64_t size;           //!< Size of file represented by item
-};
-
 typedef enum addon_log
 {
   LOG_DEBUG,
@@ -92,13 +76,6 @@ typedef enum addon_log
   LOG_ERROR,
   LOG_FATAL
 } addon_log_t;
-
-typedef enum queue_msg
-{
-  QUEUE_INFO,
-  QUEUE_WARNING,
-  QUEUE_ERROR
-} queue_msg_t;
 
 namespace KodiAPI
 {
@@ -224,7 +201,7 @@ namespace ADDON
      * @param type The message type.
      * @param format The format of the message to pass to display in XBMC.
      */
-    void QueueNotification(const queue_msg_t type, const char *format, ... )
+    void QueueNotification(const QueueMsg& type, const char* format, ... )
     {
       char buffer[16384];
       va_list args;

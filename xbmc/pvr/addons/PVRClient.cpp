@@ -61,7 +61,7 @@ CPVRClient::CPVRClient(const AddonInfoPtr& addonInfo)
 {
   // Create all interface parts independent to make API changes easier if
   // something is added
-  m_struct.props = new PVR_PROPERTIES();
+  m_struct.props = new AddonProperties_PVR();
   m_struct.toKodi = new AddonToKodiFuncTable_PVR();
   m_struct.toAddon = new KodiToAddonFuncTable_PVR();
 
@@ -392,7 +392,7 @@ bool CPVRClient::GetAddonProperties()
 
   /* get the capabilities */
   PVR_ERROR retVal = DoAddonCall(__FUNCTION__, [&addonCapabilities](const AddonInstance* addon) {
-    return addon->toAddon->GetAddonCapabilities(&addonCapabilities);
+    return addon->toAddon->GetCapabilities(&addonCapabilities);
   }, true, false);
 
   if (retVal != PVR_ERROR_NO_ERROR)
@@ -1070,17 +1070,17 @@ PVR_ERROR CPVRClient::GetRecordedStreamLength(int64_t& iLength)
   });
 }
 
-PVR_ERROR CPVRClient::SignalQuality(PVR_SIGNAL_STATUS& qualityinfo)
+PVR_ERROR CPVRClient::SignalQuality(int channelUid, PVR_SIGNAL_STATUS& qualityinfo)
 {
-  return DoAddonCall(__FUNCTION__, [&qualityinfo](const AddonInstance* addon) {
-    return addon->toAddon->SignalStatus(qualityinfo);
+  return DoAddonCall(__FUNCTION__, [channelUid, &qualityinfo](const AddonInstance* addon) {
+    return addon->toAddon->GetSignalStatus(channelUid, &qualityinfo);
   });
 }
 
-PVR_ERROR CPVRClient::GetDescrambleInfo(PVR_DESCRAMBLE_INFO& descrambleinfo) const
+PVR_ERROR CPVRClient::GetDescrambleInfo(int channelUid, PVR_DESCRAMBLE_INFO& descrambleinfo) const
 {
-  return DoAddonCall(__FUNCTION__, [&descrambleinfo](const AddonInstance* addon) {
-    return addon->toAddon->GetDescrambleInfo(&descrambleinfo);
+  return DoAddonCall(__FUNCTION__, [channelUid, &descrambleinfo](const AddonInstance* addon) {
+    return addon->toAddon->GetDescrambleInfo(channelUid, &descrambleinfo);
   }, m_clientCapabilities.SupportsDescrambleInfo());
 }
 

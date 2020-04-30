@@ -674,17 +674,19 @@ namespace PVR
 
     /*!
      * @brief Get the signal quality of the stream that's currently open.
+     * @param channelUid Channel unique identifier
      * @param qualityinfo The signal quality.
      * @return PVR_ERROR_NO_ERROR on success, respective error code otherwise.
      */
-    PVR_ERROR SignalQuality(PVR_SIGNAL_STATUS& qualityinfo);
+    PVR_ERROR SignalQuality(int channelUid, PVR_SIGNAL_STATUS& qualityinfo);
 
     /*!
      * @brief Get the descramble information of the stream that's currently open.
+     * @param channelUid Channel unique identifier
      * @param descrambleinfo The descramble information.
      * @return PVR_ERROR_NO_ERROR on success, respective error code otherwise.
      */
-    PVR_ERROR GetDescrambleInfo(PVR_DESCRAMBLE_INFO& descrambleinfo) const;
+    PVR_ERROR GetDescrambleInfo(int channelUid, PVR_DESCRAMBLE_INFO& descrambleinfo) const;
 
     /*!
      * @brief Fill the given container with the properties required for playback of the given channel. Values are obtained from the PVR backend.
@@ -1143,7 +1145,7 @@ namespace PVR
     CPVRClientCapabilities m_clientCapabilities; /*!< the cached add-on's capabilities */
     std::shared_ptr<CPVRClientMenuHooks> m_menuhooks; /*!< the menu hooks for this add-on */
 
-    /* stored strings to make sure const char* members in PVR_PROPERTIES stay valid */
+    /* stored strings to make sure const char* members in AddonProperties_PVR stay valid */
     std::string m_strUserPath; /*!< @brief translated path to the user profile */
     std::string m_strClientPath; /*!< @brief translated path to this add-on */
 
