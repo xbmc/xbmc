@@ -95,7 +95,7 @@ macro (build_addon target prefix libs)
     message(STATUS "Addon dependency check ...")
     # Set defines used in addon.xml.in and read from versions.h to set add-on
     # version parts automatically
-    file(STRINGS ${KODI_INCLUDE_DIR}/versions.h BIN_ADDON_PARTS)
+    file(STRINGS ${${APP_NAME_UC}_INCLUDE_DIR}/versions.h BIN_ADDON_PARTS)
     foreach(loop_var ${BIN_ADDON_PARTS})
       # Only pass strings with "#define ADDON_" from versions.h
       if(loop_var MATCHES "#define ADDON_")
@@ -122,7 +122,7 @@ macro (build_addon target prefix libs)
             foreach(src_file ${USED_SOURCES})
               file(STRINGS ${src_file} BIN_ADDON_SRC_PARTS)
               foreach(loop_var ${BIN_ADDON_SRC_PARTS})
-                string(REGEX MATCH "^[ \t]*#[ \t]*(include|import)[ \t]*[<\"](kodi\/)?(.+)[\">]" include_name "${loop_var}")
+                string(REGEX MATCH "^[ \t]*#[ \t]*(include|import)[ \t]*[<\"](${APP_NAME_LC}\/)?(.+)[\">]" include_name "${loop_var}")
                 if(include_name AND CMAKE_MATCH_3 MATCHES ^${depend_header})
                   get_directory_property(CURRENT_DEFS COMPILE_DEFINITIONS)
                   if(NOT used_type_name IN_LIST CURRENT_DEFS)

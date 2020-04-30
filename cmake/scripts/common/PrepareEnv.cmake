@@ -81,7 +81,7 @@ elseif(CORE_SYSTEM_NAME STREQUAL windows)
 endif()
 
 # generate the proper KodiConfig.cmake file
-configure_file(${CORE_SOURCE_DIR}/cmake/KodiConfig.cmake.in ${APP_LIB_DIR}/KodiConfig.cmake @ONLY)
+configure_file(${CORE_SOURCE_DIR}/cmake/KodiConfig.cmake.in ${APP_LIB_DIR}/${APP_NAME}Config.cmake @ONLY)
 
 # copy cmake helpers to lib/kodi
 file(COPY ${CORE_SOURCE_DIR}/cmake/scripts/common/AddonHelpers.cmake
