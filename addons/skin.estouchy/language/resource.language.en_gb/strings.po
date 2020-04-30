@@ -113,7 +113,17 @@ msgctxt "#31039"
 msgid "Updated:"
 msgstr ""
 
-#empty strings from id 31040 to 31042
+msgctxt "#31040"
+msgid "Select + X"
+msgstr ""
+
+msgctxt "#31041"
+msgid "Select + B"
+msgstr ""
+
+msgctxt "#31042"
+msgid "Select + Start"
+msgstr ""
 
 msgctxt "#31043"
 msgid "PAUSED"

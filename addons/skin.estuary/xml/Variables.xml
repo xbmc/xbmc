@@ -81,8 +81,8 @@
 		<value>$INFO[ListItem.Label]</value>
 	</variable>
 	<variable name="ListLabel2Var">
-		<value condition="String.IsEmpty(Container.PluginName) + Container.Content(tvshows) + String.IsEqual(Container.SortMethod,$LOCALIZE[556])">$INFO[ListItem.Property(WatchedEpisodes)]$INFO[ListItem.Property(TotalEpisodes), / ,]</value>
-		<value condition="String.IsEqual(Container.SortMethod,$LOCALIZE[556])">$INFO[ListItem.Year]</value>
+		<value condition="String.IsEmpty(Container.PluginName) + Container.Content(tvshows) + Container.SortMethod(7)">$INFO[ListItem.Property(WatchedEpisodes)]$INFO[ListItem.Property(TotalEpisodes), / ,]</value>
+		<value condition="Container.SortMethod(7)">$INFO[ListItem.Year]</value>
 		<value condition="!String.isempty(ListItem.Appearances)">$LOCALIZE[38026]: $INFO[ListItem.Appearances]</value>
 		<value condition="Window.IsActive(musicplaylist) | Window.IsActive(videoplaylist)">$INFO[ListItem.Duration]</value>
 		<value>$INFO[ListItem.Label2]</value>
@@ -145,7 +145,7 @@
 	</variable>
 	<variable name="AddonsLabel2Var">
 		<value condition="ListItem.Property(addon.downloading)">$INFO[ListItem.Property(addon.status)]</value>
-		<value condition="!String.IsEqual(Container.SortMethod,$LOCALIZE[551])">$INFO[ListItem.Label2]</value>
+		<value condition="Container.SortMethod(1)">$INFO[ListItem.Label2]</value>
 		<value>$INFO[ListItem.AddonCreator,, - ]$INFO[ListItem.AddonVersion]</value>
 	</variable>
 	<variable name="RatingSettingLabel2Var">

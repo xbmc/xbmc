@@ -63,7 +63,6 @@
 						<aligny>center</aligny>
 						<texturefocus colordiffuse="button_focus">lists/focus.png</texturefocus>
 						<texturenofocus />
-						<radioposx>280</radioposx>
 						<textoffsetx>20</textoffsetx>
 						<label></label>
 					</control>
@@ -73,7 +72,6 @@
 						<aligny>center</aligny>
 						<texturefocus colordiffuse="button_focus">lists/focus.png</texturefocus>
 						<texturenofocus />
-						<radioposx>280</radioposx>
 						<textoffsetx>20</textoffsetx>
 						<label>$LOCALIZE[190]</label>
 					</control>
@@ -83,7 +81,6 @@
 						<aligny>center</aligny>
 						<texturefocus colordiffuse="button_focus">lists/focus.png</texturefocus>
 						<texturenofocus />
-						<radioposx>280</radioposx>
 						<textoffsetx>20</textoffsetx>
 						<label>$LOCALIZE[192]</label>
 					</control>
