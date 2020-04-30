@@ -56,7 +56,6 @@ public:
   ~CRenderBufferImpl();
 
   void AppendPicture(const VideoPicture& picture) override;
-  bool IsLoaded() override;
   bool UploadBuffer() override;
   unsigned GetViewCount() const override;
   ID3D11View* GetView(unsigned viewIdx) override;
@@ -66,7 +65,6 @@ private:
   bool UploadFromGPU();
   bool UploadFromBuffer() const;
 
-  bool m_bLoaded = false;
   unsigned m_viewCount = 0;
   CD3DTexture m_textures[YuvImage::MAX_PLANES];
   Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_planes[2];
