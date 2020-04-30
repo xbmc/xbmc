@@ -519,17 +519,6 @@ extern "C" {
     enum PVR_EDL_TYPE type;
   } ATTRIBUTE_PACKED PVR_EDL_ENTRY;
 
-  typedef struct PVR_MENUHOOK_DATA
-  {
-    enum PVR_MENUHOOK_CAT cat;
-    union data {
-      int iEpgUid;
-      struct PVR_CHANNEL channel;
-      struct PVR_TIMER timer;
-      struct PVR_RECORDING recording;
-    } data;
-  } ATTRIBUTE_PACKED PVR_MENUHOOK_DATA;
-
   typedef struct PVR_STREAM_TIMES
   {
     time_t startTime;
@@ -547,7 +536,7 @@ extern "C" {
 
     //--==----==----==----==----==----==----==----==----==----==----==----==----==
     // General callback functions
-    void (*AddMenuHook)(void* kodiInstance, PVR_MENUHOOK* hook);
+    void (*AddMenuHook)(void* kodiInstance, struct PVR_MENUHOOK* hook);
     void (*Recording)(void* kodiInstance, const char* Name, const char* FileName, bool On);
     void (*ConnectionStateChange)(void* kodiInstance,
                                   const char* strConnectionString,
@@ -614,9 +603,8 @@ extern "C" {
     const char*(__cdecl* GetBackendHostname)(const struct AddonInstance_PVR*);
     const char*(__cdecl* GetConnectionString)(const struct AddonInstance_PVR*);
     enum PVR_ERROR(__cdecl* GetDriveSpace)(const struct AddonInstance_PVR*, long long*, long long*);
-    enum PVR_ERROR(__cdecl* MenuHook)(const struct AddonInstance_PVR*,
-                                      const struct PVR_MENUHOOK*,
-                                      const struct PVR_MENUHOOK_DATA*);
+    enum PVR_ERROR(__cdecl* CallSettingsMenuHook)(const struct AddonInstance_PVR*,
+                                                  const struct PVR_MENUHOOK*);
 
     //--==----==----==----==----==----==----==----==----==----==----==----==----==
     // Channel interface functions
@@ -653,6 +641,9 @@ extern "C" {
     enum PVR_ERROR(__cdecl* OpenDialogChannelAdd)(const struct AddonInstance_PVR*,
                                                   const struct PVR_CHANNEL*);
     enum PVR_ERROR(__cdecl* OpenDialogChannelScan)(const struct AddonInstance_PVR*);
+    enum PVR_ERROR(__cdecl* CallChannelMenuHook)(const struct AddonInstance_PVR*,
+                                                 const PVR_MENUHOOK*,
+                                                 const PVR_CHANNEL*);
 
     //--==----==----==----==----==----==----==----==----==----==----==----==----==
     // EPG interface functions
@@ -676,6 +667,9 @@ extern "C" {
                                                        struct PVR_NAMED_VALUE*,
                                                        unsigned int*);
     enum PVR_ERROR(__cdecl* SetEPGTimeFrame)(const struct AddonInstance_PVR*, int);
+    enum PVR_ERROR(__cdecl* CallEPGMenuHook)(const struct AddonInstance_PVR*,
+                                             const struct PVR_MENUHOOK*,
+                                             const struct EPG_TAG*);
 
     //--==----==----==----==----==----==----==----==----==----==----==----==----==
     // Recording interface functions
@@ -709,6 +703,9 @@ extern "C" {
                                                           const struct PVR_RECORDING*,
                                                           struct PVR_NAMED_VALUE*,
                                                           unsigned int*);
+    enum PVR_ERROR(__cdecl* CallRecordingMenuHook)(const struct AddonInstance_PVR*,
+                                                   const struct PVR_MENUHOOK*,
+                                                   const struct PVR_RECORDING*);
 
     //--==----==----==----==----==----==----==----==----==----==----==----==----==
     // Timer interface functions
@@ -722,6 +719,9 @@ extern "C" {
                                          const struct PVR_TIMER*,
                                          bool);
     enum PVR_ERROR(__cdecl* UpdateTimer)(const struct AddonInstance_PVR*, const struct PVR_TIMER*);
+    enum PVR_ERROR(__cdecl* CallTimerMenuHook)(const struct AddonInstance_PVR*,
+                                               const struct PVR_MENUHOOK*,
+                                               const struct PVR_TIMER*);
 
     //--==----==----==----==----==----==----==----==----==----==----==----==----==
     // Powersaving interface functions

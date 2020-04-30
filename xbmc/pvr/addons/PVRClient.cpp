@@ -1382,79 +1382,71 @@ std::shared_ptr<CPVRClientMenuHooks> CPVRClient::GetMenuHooks()
 PVR_ERROR CPVRClient::CallEpgTagMenuHook(const CPVRClientMenuHook& hook, const std::shared_ptr<CPVREpgInfoTag>& tag)
 {
   return DoAddonCall(__FUNCTION__, [&hook, &tag](const AddonInstance* addon) {
-    PVR_MENUHOOK_DATA hookData = {};
-    hookData.cat = PVR_MENUHOOK_EPG;
-    hookData.data.iEpgUid = tag->UniqueBroadcastID();
+    CAddonEpgTag addonTag(tag);
 
-    PVR_MENUHOOK menuHook = {0};
-    menuHook.category = hookData.cat;
+    PVR_MENUHOOK menuHook;
+    menuHook.category = PVR_MENUHOOK_EPG;
     menuHook.iHookId = hook.GetId();
     menuHook.iLocalizedStringId = hook.GetLabelId();
 
-    return addon->toAddon->MenuHook(addon, &menuHook, &hookData);
+    return addon->toAddon->CallEPGMenuHook(addon, &menuHook, &addonTag);
   });
 }
 
 PVR_ERROR CPVRClient::CallChannelMenuHook(const CPVRClientMenuHook& hook, const std::shared_ptr<CPVRChannel>& channel)
 {
   return DoAddonCall(__FUNCTION__, [&hook, &channel](const AddonInstance* addon) {
-    PVR_MENUHOOK_DATA hookData = {};
-    hookData.cat = PVR_MENUHOOK_CHANNEL;
-    WriteClientChannelInfo(channel, hookData.data.channel);
+    PVR_CHANNEL tag;
+    WriteClientChannelInfo(channel, tag);
 
-    PVR_MENUHOOK menuHook = {0};
-    menuHook.category = hookData.cat;
+    PVR_MENUHOOK menuHook;
+    menuHook.category = PVR_MENUHOOK_CHANNEL;
     menuHook.iHookId = hook.GetId();
     menuHook.iLocalizedStringId = hook.GetLabelId();
 
-    return addon->toAddon->MenuHook(addon, &menuHook, &hookData);
+    return addon->toAddon->CallChannelMenuHook(addon, &menuHook, &tag);
   });
 }
 
 PVR_ERROR CPVRClient::CallRecordingMenuHook(const CPVRClientMenuHook& hook, const std::shared_ptr<CPVRRecording>& recording, bool bDeleted)
 {
   return DoAddonCall(__FUNCTION__, [&hook, &recording, &bDeleted](const AddonInstance* addon) {
-    PVR_MENUHOOK_DATA hookData = {};
-    hookData.cat = bDeleted ? PVR_MENUHOOK_DELETED_RECORDING : PVR_MENUHOOK_RECORDING;
-    WriteClientRecordingInfo(*recording, hookData.data.recording);
+    PVR_RECORDING tag;
+    WriteClientRecordingInfo(*recording, tag);
 
-    PVR_MENUHOOK menuHook = {0};
-    menuHook.category = hookData.cat;
+    PVR_MENUHOOK menuHook;
+    menuHook.category = bDeleted ? PVR_MENUHOOK_DELETED_RECORDING : PVR_MENUHOOK_RECORDING;
     menuHook.iHookId = hook.GetId();
     menuHook.iLocalizedStringId = hook.GetLabelId();
 
-    return addon->toAddon->MenuHook(addon, &menuHook, &hookData);
+    return addon->toAddon->CallRecordingMenuHook(addon, &menuHook, &tag);
   });
 }
 
 PVR_ERROR CPVRClient::CallTimerMenuHook(const CPVRClientMenuHook& hook, const std::shared_ptr<CPVRTimerInfoTag>& timer)
 {
   return DoAddonCall(__FUNCTION__, [&hook, &timer](const AddonInstance* addon) {
-    PVR_MENUHOOK_DATA hookData = {};
-    hookData.cat = PVR_MENUHOOK_TIMER;
-    WriteClientTimerInfo(*timer, hookData.data.timer);
+    PVR_TIMER tag;
+    WriteClientTimerInfo(*timer, tag);
 
-    PVR_MENUHOOK menuHook = {0};
-    menuHook.category = hookData.cat;
+    PVR_MENUHOOK menuHook;
+    menuHook.category = PVR_MENUHOOK_TIMER;
     menuHook.iHookId = hook.GetId();
     menuHook.iLocalizedStringId = hook.GetLabelId();
 
-    return addon->toAddon->MenuHook(addon, &menuHook, &hookData);
+    return addon->toAddon->CallTimerMenuHook(addon, &menuHook, &tag);
   });
 }
 
 PVR_ERROR CPVRClient::CallSettingsMenuHook(const CPVRClientMenuHook& hook)
 {
   return DoAddonCall(__FUNCTION__, [&hook](const AddonInstance* addon) {
-    PVR_MENUHOOK_DATA hookData = {};
-    hookData.cat = PVR_MENUHOOK_SETTING;
-
-    PVR_MENUHOOK menuHook = {0};
-    menuHook.category = hookData.cat;
+    PVR_MENUHOOK menuHook;
+    menuHook.category = PVR_MENUHOOK_SETTING;
     menuHook.iHookId = hook.GetId();
     menuHook.iLocalizedStringId = hook.GetLabelId();
 
-    return addon->toAddon->MenuHook(addon, &menuHook, &hookData);
+    return addon->toAddon->CallSettingsMenuHook(addon, &menuHook);
   });
 }
 
