@@ -265,6 +265,7 @@ public:
   static const std::string SETTING_SERVICES_UPNPRENDERER;
   static const std::string SETTING_SERVICES_WEBSERVER;
   static const std::string SETTING_SERVICES_WEBSERVERPORT;
+  static const std::string SETTING_SERVICES_WEBSERVERAUTHENTICATION;
   static const std::string SETTING_SERVICES_WEBSERVERUSERNAME;
   static const std::string SETTING_SERVICES_WEBSERVERPASSWORD;
   static const std::string SETTING_SERVICES_WEBSERVERSSL;

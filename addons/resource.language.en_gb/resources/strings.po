@@ -1193,6 +1193,7 @@ msgstr ""
 
 #: xbmc/dialogs/GUIDialogFileBrowser.cpp
 #: xbmc/games/dialogs/GUIDialogSelectGameClient.cpp
+#: xbmc/network/NetworkServices.cpp
 #: xbmc/pvr/PVRGUIActions.cpp
 #: xbmc/video/dialogs/GUIDialogVideoInfo.cpp
 #: xbmc/music/windows/GUIWindowMusicBase.cpp
@@ -4096,7 +4097,17 @@ msgctxt "#1051"
 msgid "Enter web address"
 msgstr ""
 
-#empty strings from id 1052 to 1179
+#: system/settings/settings.xml
+msgctxt "#1052"
+msgid "Require authentication"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#1053"
+msgid "Choose whether requests to the web server require a username and a password, which must be set below if enabled. It is recommended to always leave this setting enabled."
+msgstr ""
+
+#empty strings from id 1054 to 1179
 
 #: system/settings/settings.xml
 msgctxt "#1180"
@@ -16741,7 +16752,12 @@ msgctxt "#33103"
 msgid "Remote communication server"
 msgstr ""
 
-#empty strings from id 33104 to 33199
+#: xbmc/network/NetworkServices.cpp
+msgctxt "#33104"
+msgid "You have previously enabled the web interface without setting up a password. The web server has been disabled until you either explicitly allow this or set up authentication. Please review your settings."
+msgstr ""
+
+#empty strings from id 33105 to 33199
 
 #: xbmc/network/eventclient.cpp
 msgctxt "#33200"
@@ -19447,13 +19463,13 @@ msgstr ""
 #. Description of setting with label #1048 "Username"
 #: system/settings/settings.xml
 msgctxt "#36330"
-msgid "Define the web server username. This only takes effect when both the username and the password are set."
+msgid "Define the web server username. Must be set when authentication is enabled."
 msgstr ""
 
 #. Description of setting with label #1048 "Password"
 #: system/settings/settings.xml
 msgctxt "#36331"
-msgid "Define the web server password. This only takes effect when both the username and the password are set."
+msgid "Define the web server password. Must be set when authentication is enabled."
 msgstr ""
 
 #. Description of setting with label #199 "Web interface"
@@ -20766,7 +20782,7 @@ msgstr ""
 #. Text in confirm dialog when enabling setting "Services -> Control -> Allow remote control via HTTP"
 #: xbmc/network/NetworkServices.cpp
 msgctxt "#36632"
-msgid "Anyone who has access to the web interface will be able to completely control this application and, therefore, this device, so it should never be exposed on the Internet. A password must be set below. Proceed?"
+msgid "Anyone who has access to the web interface will be able to completely control this application and, therefore, this device, so it should never be exposed on the Internet. A password should be set below. Proceed?"
 msgstr ""
 
 #. Text in confirm dialog when enabling setting "Services -> Control -> Allow remote control from applications on other systems"
@@ -20775,7 +20791,25 @@ msgctxt "#36633"
 msgid "These services offer neither authentication nor encryption. Anyone who can connect to them will be able to completely control this application and, therefore, this device, so they should never be exposed to the Internet. Proceed?"
 msgstr ""
 
-#empty strings from id 36634 to 36898
+#. Text in confirm dialog when disabling setting "Services -> Control -> Require authentication"
+#: xbmc/network/NetworkServices.cpp
+msgctxt "#36634"
+msgid "Anyone who has access to the web interface will be able to completely control this application and, therefore, this device, so it should be secured by a password. Are you sure you want to disable authentication?"
+msgstr ""
+
+#. Text in error dialog when trying to enter an invalid web server configuration
+#: xbmc/network/NetworkServices.cpp
+msgctxt "#36635"
+msgid "If web server authentication is enabled, a password must be entered as well."
+msgstr ""
+
+#. Text in error dialog when trying to enter an invalid web server configuration by enabling authentication without a password set
+#: xbmc/network/NetworkServices.cpp
+msgctxt "#36636"
+msgid "You must first enter a password before web server authentication can be enabled."
+msgstr ""
+
+#empty strings from id 36637 to 36898
 
 #. Description of setting with label #729 "Enable SSL"
 #: system/settings/settings.xml
