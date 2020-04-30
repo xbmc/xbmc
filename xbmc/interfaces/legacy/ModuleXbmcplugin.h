@@ -181,7 +181,7 @@ namespace XBMCAddon
     /// @param handle               integer - handle the plugin was started
     ///                             with.
     /// @param sortMethod           integer - see available sort methods at
-    ///                             the bottom (or see SortFileItem.h).
+    ///                             the bottom (or see \ref List_of_sort_methods "SortUtils").
     /// | Value                                        | Description           |
     /// |----------------------------------------------|-----------------------|
     /// | xbmcplugin.SORT_METHOD_NONE                  | Do not sort

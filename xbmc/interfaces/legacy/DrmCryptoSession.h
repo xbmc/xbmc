@@ -80,6 +80,7 @@ namespace XBMCAddon
     /// @throws RuntimeException If the session can not be established
     ///
     ///
+    ///
     ///------------------------------------------------------------------------
     /// @python_v18 New class added.
     ///
@@ -118,13 +119,14 @@ namespace XBMCAddon
       ///                             the key request.
       /// @param      mimeType        string - Type of media which is exchanged
       ///                             (e.g. "application/xml", "video/mp4")
-      /// @param      offlineKey      bool - Specifes the type of the request.
+      /// @param      offlineKey      bool - Specifies the type of the request.
       ///                             The request may be to acquire keys for Streaming or Offline content
       /// @param      optionalParameters [opt] map - Will be included in the key request message
-      ///                                to allow a client application to provide additional 
+      ///                                to allow a client application to provide additional
       ///                                message parameters to the server
       ///
       /// @return     byte - The opaque key request data (challenge) which is send to key server
+      ///
       ///
       ///------------------------------------------------------------------------
       /// @python_v18 New function added.
@@ -146,6 +148,7 @@ namespace XBMCAddon
       /// @param      Name    string - Name of the property to query
       ///
       /// @return     Value of the requested property
+      ///
       ///
       ///------------------------------------------------------------------------
       /// @python_v18 New function added.
@@ -171,6 +174,7 @@ namespace XBMCAddon
       ///             can be used later with restoreKeys,
       ///             else return empty for streaming key requests.
       ///
+      ///
       ///------------------------------------------------------------------------
       /// @python_v18 New function added.
       /// @python_v19 With python 3 the response argument must be a bytearray instead of byte.
@@ -186,6 +190,7 @@ namespace XBMCAddon
       /// @brief \python_func{ RemoveKeys() }
       ///-----------------------------------------------------------------------
       /// Removes all keys currently loaded in a session.
+      ///
       ///
       ///------------------------------------------------------------------------
       /// @python_v18 New function added.
@@ -207,6 +212,7 @@ namespace XBMCAddon
       /// @param     keySetId   string - Identifies the saved key set to restore.
       ///                                This value must never be null.
       ///
+      ///
       ///------------------------------------------------------------------------
       /// @python_v18 New function added.
       ///
@@ -225,6 +231,7 @@ namespace XBMCAddon
       ///
       /// @param     name   string - Name of the property. This value must never be null.
       /// @param     value  string - Value of the property to set. This value must never be null.
+      ///
       ///
       ///------------------------------------------------------------------------
       /// @python_v18 New function added.
@@ -250,6 +257,7 @@ namespace XBMCAddon
       ///
       /// @return    Decrypted input data
       ///
+      ///
       ///------------------------------------------------------------------------
       /// @python_v18 New function added.
       /// @python_v19 With python 3 all arguments need to be of type bytearray instead of byte.
@@ -273,6 +281,7 @@ namespace XBMCAddon
       ///
       /// @return    byte - Encrypted input data
       ///
+      ///
       ///------------------------------------------------------------------------
       /// @python_v18 New function added.
       /// @python_v19 With python 3 all arguments need to be of type bytearray instead of byte.
@@ -294,6 +303,7 @@ namespace XBMCAddon
       /// @param     message   byte - Message text on which to base the signature
       ///
       /// @return    byte - Signature
+      ///
       ///
       ///------------------------------------------------------------------------
       /// @python_v18 New function added.
@@ -317,6 +327,7 @@ namespace XBMCAddon
       /// @param     signature byte - The signature to verify
       ///
       /// @return    true when the signature is valid
+      ///
       ///
       ///------------------------------------------------------------------------
       /// @python_v18 New function added.

@@ -84,6 +84,7 @@ namespace XBMCAddon
     ///
     /// @return                       Screen height
     ///
+    ///
     ///-------------------------------------------------------------------------
     /// @python_v18 New function added.
     ///
@@ -100,6 +101,7 @@ namespace XBMCAddon
     /// Returns the width of this screen.
     ///
     /// @return                       Screen width
+    ///
     ///
     ///-------------------------------------------------------------------------
     /// @python_v18 New function added.
