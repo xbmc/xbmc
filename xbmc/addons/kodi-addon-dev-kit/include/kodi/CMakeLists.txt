@@ -10,7 +10,6 @@ set(HEADERS AddonBase.h
             libXBMC_pvr.h
             versions.h
             xbmc_addon_dll.h
-            xbmc_pvr_dll.h
             xbmc_pvr_types.h)
 
 if(CORE_SYSTEM_NAME STREQUAL android)

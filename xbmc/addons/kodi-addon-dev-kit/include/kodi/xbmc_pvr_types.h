@@ -598,7 +598,7 @@ extern "C" {
   } AddonToKodiFuncTable_PVR;
 
   /*!
-   * @brief Structure to transfer the methods from xbmc_pvr_dll.h to Kodi
+   * @brief Structure to transfer the methods from addon to Kodi
    */
   typedef struct KodiToAddonFuncTable_PVR
   {
