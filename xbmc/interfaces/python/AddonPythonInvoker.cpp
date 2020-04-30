@@ -19,7 +19,6 @@
 #define RUNSCRIPT_PREAMBLE \
         "" \
         "import " MODULE "\n" \
-        "xbmc.abortRequested = False\n" \
         "class xbmcout:\n" \
         "  def __init__(self, loglevel=" MODULE ".LOGDEBUG):\n" \
         "    self.ll=loglevel\n" \
