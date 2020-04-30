@@ -22,9 +22,11 @@
 struct DemuxPacket;
 #endif
 
+#include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <string.h>
+#include <time.h>
 
 #define PVR_ADDON_NAME_STRING_LENGTH 1024
 #define PVR_ADDON_URL_STRING_LENGTH 1024
@@ -41,7 +43,10 @@ struct DemuxPacket;
 #define PVR_ADDON_DATE_STRING_LENGTH 32
 
 #define XBMC_INVALID_CODEC_ID 0
-#define XBMC_INVALID_CODEC { XBMC_CODEC_TYPE_UNKNOWN, XBMC_INVALID_CODEC_ID }
+#define XBMC_INVALID_CODEC \
+  { \
+    XBMC_CODEC_TYPE_UNKNOWN, XBMC_INVALID_CODEC_ID \
+  }
 
 #define PVR_STREAM_PROPERTY_STREAMURL "streamurl"
 #define PVR_STREAM_PROPERTY_INPUTSTREAM STREAM_PROPERTY_INPUTSTREAM
@@ -58,7 +63,7 @@ extern "C" {
 
   typedef unsigned int xbmc_codec_id_t;
 
-  typedef enum
+  typedef enum xbmc_codec_type_t
   {
     XBMC_CODEC_TYPE_UNKNOWN = -1,
     XBMC_CODEC_TYPE_VIDEO,
@@ -69,13 +74,13 @@ extern "C" {
     XBMC_CODEC_TYPE_NB
   } xbmc_codec_type_t;
 
-  typedef struct
+  typedef struct xbmc_codec_t
   {
-    xbmc_codec_type_t codec_type;
-    xbmc_codec_id_t   codec_id;
+    enum xbmc_codec_type_t codec_type;
+    xbmc_codec_id_t codec_id;
   } xbmc_codec_t;
 
-  typedef enum
+  typedef enum EPG_EVENT_CONTENTMASK
   {
     EPG_EVENT_CONTENTMASK_UNDEFINED = 0x00,
     EPG_EVENT_CONTENTMASK_MOVIEDRAMA = 0x10,
@@ -95,18 +100,18 @@ extern "C" {
   #define EPG_GENRE_USE_STRING 0x100
   #define EPG_STRING_TOKEN_SEPARATOR ","
 
-  const unsigned int EPG_TAG_FLAG_UNDEFINED = 0x00000000;
-  const unsigned int EPG_TAG_FLAG_IS_SERIES = 0x00000001;
-  const unsigned int EPG_TAG_FLAG_IS_NEW = 0x00000002;
-  const unsigned int EPG_TAG_FLAG_IS_PREMIERE = 0x00000004;
-  const unsigned int EPG_TAG_FLAG_IS_FINALE = 0x00000008;
-  const unsigned int EPG_TAG_FLAG_IS_LIVE = 0x00000010;
+  #define EPG_TAG_FLAG_UNDEFINED 0x00000000
+  #define EPG_TAG_FLAG_IS_SERIES 0x00000001
+  #define EPG_TAG_FLAG_IS_NEW 0x00000002
+  #define EPG_TAG_FLAG_IS_PREMIERE 0x00000004
+  #define EPG_TAG_FLAG_IS_FINALE 0x00000008
+  #define EPG_TAG_FLAG_IS_LIVE 0x00000010
 
-  const unsigned int EPG_TAG_INVALID_UID = 0;
+  #define EPG_TAG_INVALID_UID 0
 
-  const int EPG_TAG_INVALID_SERIES_EPISODE = -1;
+  #define EPG_TAG_INVALID_SERIES_EPISODE -1
 
-  typedef enum
+  typedef enum EPG_EVENT_STATE
   {
     EPG_EVENT_CREATED = 0,
     EPG_EVENT_UPDATED = 1,
@@ -143,63 +148,65 @@ extern "C" {
     const char* strSeriesLink;
   } ATTRIBUTE_PACKED EPG_TAG;
 
-  const unsigned int PVR_TIMER_TYPE_NONE = 0;
-  const unsigned int PVR_TIMER_NO_CLIENT_INDEX = 0;
-  const unsigned int PVR_TIMER_NO_PARENT = PVR_TIMER_NO_CLIENT_INDEX;
-  const unsigned int PVR_TIMER_NO_EPG_UID = EPG_TAG_INVALID_UID;
-  const int PVR_TIMER_ANY_CHANNEL = -1;
+  #define PVR_TIMER_TYPE_NONE 0
+  #define PVR_TIMER_NO_CLIENT_INDEX 0
+  #define PVR_TIMER_NO_PARENT PVR_TIMER_NO_CLIENT_INDEX
+  #define PVR_TIMER_NO_EPG_UID EPG_TAG_INVALID_UID
+  #define PVR_TIMER_ANY_CHANNEL -1
 
-  const unsigned int PVR_TIMER_TYPE_ATTRIBUTE_NONE = 0x00000000;
+  #define PVR_TIMER_TYPE_ATTRIBUTE_NONE 0x00000000
 
-  const unsigned int PVR_TIMER_TYPE_IS_MANUAL = 0x00000001;
-  const unsigned int PVR_TIMER_TYPE_IS_REPEATING = 0x00000002;
-  const unsigned int PVR_TIMER_TYPE_IS_READONLY = 0x00000004;
-  const unsigned int PVR_TIMER_TYPE_FORBIDS_NEW_INSTANCES = 0x00000008;
-  const unsigned int PVR_TIMER_TYPE_SUPPORTS_ENABLE_DISABLE = 0x00000010;
-  const unsigned int PVR_TIMER_TYPE_SUPPORTS_CHANNELS = 0x00000020;
-  const unsigned int PVR_TIMER_TYPE_SUPPORTS_START_TIME = 0x00000040;
-  const unsigned int PVR_TIMER_TYPE_SUPPORTS_TITLE_EPG_MATCH = 0x00000080;
-  const unsigned int PVR_TIMER_TYPE_SUPPORTS_FULLTEXT_EPG_MATCH = 0x00000100;
-  const unsigned int PVR_TIMER_TYPE_SUPPORTS_FIRST_DAY = 0x00000200;
-  const unsigned int PVR_TIMER_TYPE_SUPPORTS_WEEKDAYS = 0x00000400;
-  const unsigned int PVR_TIMER_TYPE_SUPPORTS_RECORD_ONLY_NEW_EPISODES = 0x00000800;
-  const unsigned int PVR_TIMER_TYPE_SUPPORTS_START_END_MARGIN = 0x00001000;
-  const unsigned int PVR_TIMER_TYPE_SUPPORTS_PRIORITY = 0x00002000;
-  const unsigned int PVR_TIMER_TYPE_SUPPORTS_LIFETIME = 0x00004000;
-  const unsigned int PVR_TIMER_TYPE_SUPPORTS_RECORDING_FOLDERS = 0x00008000;
-  const unsigned int PVR_TIMER_TYPE_SUPPORTS_RECORDING_GROUP = 0x00010000;
-  const unsigned int PVR_TIMER_TYPE_SUPPORTS_END_TIME = 0x00020000;
-  const unsigned int PVR_TIMER_TYPE_SUPPORTS_START_ANYTIME = 0x00040000;
-  const unsigned int PVR_TIMER_TYPE_SUPPORTS_END_ANYTIME = 0x00080000;
-  const unsigned int PVR_TIMER_TYPE_SUPPORTS_MAX_RECORDINGS = 0x00100000;
-  const unsigned int PVR_TIMER_TYPE_REQUIRES_EPG_TAG_ON_CREATE = 0x00200000;
-  const unsigned int PVR_TIMER_TYPE_FORBIDS_EPG_TAG_ON_CREATE = 0x00400000;
-  const unsigned int PVR_TIMER_TYPE_REQUIRES_EPG_SERIES_ON_CREATE = 0x00800000;
-  const unsigned int PVR_TIMER_TYPE_SUPPORTS_ANY_CHANNEL = 0x01000000;
-  const unsigned int PVR_TIMER_TYPE_REQUIRES_EPG_SERIESLINK_ON_CREATE = 0x02000000;
-  const unsigned int PVR_TIMER_TYPE_SUPPORTS_READONLY_DELETE = 0x04000000;
-  const unsigned int PVR_TIMER_TYPE_IS_REMINDER = 0x08000000;
-  const unsigned int PVR_TIMER_TYPE_SUPPORTS_START_MARGIN = 0x10000000;
-  const unsigned int PVR_TIMER_TYPE_SUPPORTS_END_MARGIN = 0x20000000;
+  #define PVR_TIMER_TYPE_IS_MANUAL 0x00000001
+  #define PVR_TIMER_TYPE_IS_REPEATING 0x00000002
+  #define PVR_TIMER_TYPE_IS_READONLY 0x00000004
+  #define PVR_TIMER_TYPE_FORBIDS_NEW_INSTANCES 0x00000008
+  #define PVR_TIMER_TYPE_SUPPORTS_ENABLE_DISABLE 0x00000010
+  #define PVR_TIMER_TYPE_SUPPORTS_CHANNELS 0x00000020
+  #define PVR_TIMER_TYPE_SUPPORTS_START_TIME 0x00000040
+  #define PVR_TIMER_TYPE_SUPPORTS_TITLE_EPG_MATCH 0x00000080
+  #define PVR_TIMER_TYPE_SUPPORTS_FULLTEXT_EPG_MATCH 0x00000100
+  #define PVR_TIMER_TYPE_SUPPORTS_FIRST_DAY 0x00000200
+  #define PVR_TIMER_TYPE_SUPPORTS_WEEKDAYS 0x00000400
+  #define PVR_TIMER_TYPE_SUPPORTS_RECORD_ONLY_NEW_EPISODES 0x00000800
+  #define PVR_TIMER_TYPE_SUPPORTS_START_END_MARGIN 0x00001000
+  #define PVR_TIMER_TYPE_SUPPORTS_PRIORITY 0x00002000
+  #define PVR_TIMER_TYPE_SUPPORTS_LIFETIME 0x00004000
+  #define PVR_TIMER_TYPE_SUPPORTS_RECORDING_FOLDERS 0x00008000
+  #define PVR_TIMER_TYPE_SUPPORTS_RECORDING_GROUP 0x00010000
+  #define PVR_TIMER_TYPE_SUPPORTS_END_TIME 0x00020000
+  #define PVR_TIMER_TYPE_SUPPORTS_START_ANYTIME 0x00040000
+  #define PVR_TIMER_TYPE_SUPPORTS_END_ANYTIME 0x00080000
+  #define PVR_TIMER_TYPE_SUPPORTS_MAX_RECORDINGS 0x00100000
+  #define PVR_TIMER_TYPE_REQUIRES_EPG_TAG_ON_CREATE 0x00200000
+  #define PVR_TIMER_TYPE_FORBIDS_EPG_TAG_ON_CREATE 0x00400000
+  #define PVR_TIMER_TYPE_REQUIRES_EPG_SERIES_ON_CREATE 0x00800000
+  #define PVR_TIMER_TYPE_SUPPORTS_ANY_CHANNEL 0x01000000
+  #define PVR_TIMER_TYPE_REQUIRES_EPG_SERIESLINK_ON_CREATE 0x02000000
+  #define PVR_TIMER_TYPE_SUPPORTS_READONLY_DELETE 0x04000000
+  #define PVR_TIMER_TYPE_IS_REMINDER 0x08000000
+  #define PVR_TIMER_TYPE_SUPPORTS_START_MARGIN 0x10000000
+  #define PVR_TIMER_TYPE_SUPPORTS_END_MARGIN 0x20000000
 
-  const unsigned int PVR_WEEKDAY_NONE      = 0x00;
-  const unsigned int PVR_WEEKDAY_MONDAY    = 0x01;
-  const unsigned int PVR_WEEKDAY_TUESDAY   = 0x02;
-  const unsigned int PVR_WEEKDAY_WEDNESDAY = 0x04;
-  const unsigned int PVR_WEEKDAY_THURSDAY  = 0x08;
-  const unsigned int PVR_WEEKDAY_FRIDAY    = 0x10;
-  const unsigned int PVR_WEEKDAY_SATURDAY  = 0x20;
-  const unsigned int PVR_WEEKDAY_SUNDAY    = 0x40;
-  const unsigned int PVR_WEEKDAY_ALLDAYS   = PVR_WEEKDAY_MONDAY   | PVR_WEEKDAY_TUESDAY | PVR_WEEKDAY_WEDNESDAY |
-                                             PVR_WEEKDAY_THURSDAY | PVR_WEEKDAY_FRIDAY  | PVR_WEEKDAY_SATURDAY  |
-                                             PVR_WEEKDAY_SUNDAY;
+  #define PVR_WEEKDAY_NONE 0x00
+  #define PVR_WEEKDAY_MONDAY 0x01
+  #define PVR_WEEKDAY_TUESDAY 0x02
+  #define PVR_WEEKDAY_WEDNESDAY 0x04
+  #define PVR_WEEKDAY_THURSDAY 0x08
+  #define PVR_WEEKDAY_FRIDAY 0x10
+  #define PVR_WEEKDAY_SATURDAY 0x20
+  #define PVR_WEEKDAY_SUNDAY 0x40
+  #define PVR_WEEKDAY_ALLDAYS \
+    ( \
+      PVR_WEEKDAY_MONDAY | PVR_WEEKDAY_TUESDAY | PVR_WEEKDAY_WEDNESDAY | PVR_WEEKDAY_THURSDAY | \
+      PVR_WEEKDAY_FRIDAY | PVR_WEEKDAY_SATURDAY | PVR_WEEKDAY_SUNDAY \
+    )
 
 
-  const int EPG_TIMEFRAME_UNLIMITED = -1;
-  const int PVR_CHANNEL_INVALID_UID = -1;
-  const int PVR_DESCRAMBLE_INFO_NOT_AVAILABLE = -1;
+  #define EPG_TIMEFRAME_UNLIMITED -1
+  #define PVR_CHANNEL_INVALID_UID -1
+  #define PVR_DESCRAMBLE_INFO_NOT_AVAILABLE -1
 
-  typedef enum
+  typedef enum PVR_ERROR
   {
     PVR_ERROR_NO_ERROR = 0,
     PVR_ERROR_UNKNOWN = -1,
@@ -213,7 +220,7 @@ extern "C" {
     PVR_ERROR_FAILED = -9,
   } PVR_ERROR;
 
-  typedef enum
+  typedef enum PVR_TIMER_STATE
   {
     PVR_TIMER_STATE_NEW = 0,
     PVR_TIMER_STATE_SCHEDULED = 1,
@@ -227,7 +234,7 @@ extern "C" {
     PVR_TIMER_STATE_DISABLED = 9,
   } PVR_TIMER_STATE;
 
-  typedef enum
+  typedef enum PVR_MENUHOOK_CAT
   {
     PVR_MENUHOOK_UNKNOWN = -1,
     PVR_MENUHOOK_ALL = 0,
@@ -239,7 +246,7 @@ extern "C" {
     PVR_MENUHOOK_SETTING = 6,
   } PVR_MENUHOOK_CAT;
 
-  typedef enum
+  typedef enum PVR_CONNECTION_STATE
   {
     PVR_CONNECTION_STATE_UNKNOWN = 0,
     PVR_CONNECTION_STATE_SERVER_UNREACHABLE = 1,
@@ -251,14 +258,15 @@ extern "C" {
     PVR_CONNECTION_STATE_CONNECTING = 7,
   } PVR_CONNECTION_STATE;
 
-  typedef enum
+  typedef enum PVR_RECORDING_CHANNEL_TYPE
   {
     PVR_RECORDING_CHANNEL_TYPE_UNKNOWN = 0,
     PVR_RECORDING_CHANNEL_TYPE_TV = 1,
     PVR_RECORDING_CHANNEL_TYPE_RADIO = 2,
   } PVR_RECORDING_CHANNEL_TYPE;
 
-  typedef struct PVR_NAMED_VALUE {
+  typedef struct PVR_NAMED_VALUE
+  {
     char strName[PVR_ADDON_NAME_STRING_LENGTH];
     char strValue[PVR_ADDON_NAME_STRING_LENGTH];
   } ATTRIBUTE_PACKED PVR_NAMED_VALUE;
@@ -356,10 +364,10 @@ extern "C" {
   {
     unsigned int iHookId;
     unsigned int iLocalizedStringId;
-    PVR_MENUHOOK_CAT category;
+    enum PVR_MENUHOOK_CAT category;
   } ATTRIBUTE_PACKED PVR_MENUHOOK;
 
-  const int PVR_CHANNEL_UNKNOWN_ORDER = 0;
+  #define PVR_CHANNEL_UNKNOWN_ORDER 0
 
   typedef struct PVR_CHANNEL
   {
@@ -422,7 +430,8 @@ extern "C" {
     int iMaxRecordingsDefault;
   } ATTRIBUTE_PACKED PVR_TIMER_TYPE;
 
-  typedef struct PVR_TIMER {
+  typedef struct PVR_TIMER
+  {
     unsigned int iClientIndex;
     unsigned int iParentClientIndex;
     int iClientChannelUid;
@@ -430,7 +439,7 @@ extern "C" {
     time_t endTime;
     bool bStartAnyTime;
     bool bEndAnyTime;
-    PVR_TIMER_STATE state;
+    enum PVR_TIMER_STATE state;
     unsigned int iTimerType;
     char strTitle[PVR_ADDON_NAME_STRING_LENGTH];
     char strEpgSearchString[PVR_ADDON_NAME_STRING_LENGTH];
@@ -450,20 +459,20 @@ extern "C" {
     int iGenreType;
     int iGenreSubType;
     char strSeriesLink[PVR_ADDON_URL_STRING_LENGTH];
-
   } ATTRIBUTE_PACKED PVR_TIMER;
 
   /* PVR_RECORDING.iFlags values */
-  const unsigned int PVR_RECORDING_FLAG_UNDEFINED = 0x00000000;
-  const unsigned int PVR_RECORDING_FLAG_IS_SERIES = 0x00000001;
-  const unsigned int PVR_RECORDING_FLAG_IS_NEW = 0x00000002;
-  const unsigned int PVR_RECORDING_FLAG_IS_PREMIERE = 0x00000004;
-  const unsigned int PVR_RECORDING_FLAG_IS_FINALE = 0x00000008;
-  const unsigned int PVR_RECORDING_FLAG_IS_LIVE = 0x00000010;
+  #define PVR_RECORDING_FLAG_UNDEFINED 0x00000000
+  #define PVR_RECORDING_FLAG_IS_SERIES 0x00000001
+  #define PVR_RECORDING_FLAG_IS_NEW 0x00000002
+  #define PVR_RECORDING_FLAG_IS_PREMIERE 0x00000004
+  #define PVR_RECORDING_FLAG_IS_FINALE 0x00000008
+  #define PVR_RECORDING_FLAG_IS_LIVE 0x00000010
 
-  const unsigned int PVR_RECORDING_INVALID_SERIES_EPISODE = EPG_TAG_INVALID_SERIES_EPISODE;
+  #define PVR_RECORDING_INVALID_SERIES_EPISODE EPG_TAG_INVALID_SERIES_EPISODE
 
-  typedef struct PVR_RECORDING {
+  typedef struct PVR_RECORDING
+  {
     char strRecordingId[PVR_ADDON_NAME_STRING_LENGTH];
     char strTitle[PVR_ADDON_NAME_STRING_LENGTH];
     char strEpisodeName[PVR_ADDON_NAME_STRING_LENGTH];
@@ -495,7 +504,7 @@ extern "C" {
     int64_t sizeInBytes;
   } ATTRIBUTE_PACKED PVR_RECORDING;
 
-  typedef enum
+  typedef enum PVR_EDL_TYPE
   {
     PVR_EDL_TYPE_CUT = 0,
     PVR_EDL_TYPE_MUTE = 1,
@@ -507,17 +516,17 @@ extern "C" {
   {
     int64_t start;
     int64_t end;
-    PVR_EDL_TYPE type;
+    enum PVR_EDL_TYPE type;
   } ATTRIBUTE_PACKED PVR_EDL_ENTRY;
 
   typedef struct PVR_MENUHOOK_DATA
   {
-    PVR_MENUHOOK_CAT cat;
+    enum PVR_MENUHOOK_CAT cat;
     union data {
       int iEpgUid;
-      PVR_CHANNEL channel;
-      PVR_TIMER timer;
-      PVR_RECORDING recording;
+      struct PVR_CHANNEL channel;
+      struct PVR_TIMER timer;
+      struct PVR_RECORDING recording;
     } data;
   } ATTRIBUTE_PACKED PVR_MENUHOOK_DATA;
 
@@ -542,30 +551,32 @@ extern "C" {
     void (*Recording)(void* kodiInstance, const char* Name, const char* FileName, bool On);
     void (*ConnectionStateChange)(void* kodiInstance,
                                   const char* strConnectionString,
-                                  PVR_CONNECTION_STATE newState,
+                                  enum PVR_CONNECTION_STATE newState,
                                   const char* strMessage);
-    void (*EpgEventStateChange)(void* kodiInstance, EPG_TAG* tag, EPG_EVENT_STATE newState);
+    void (*EpgEventStateChange)(void* kodiInstance,
+                                struct EPG_TAG* tag,
+                                enum EPG_EVENT_STATE newState);
 
     //--==----==----==----==----==----==----==----==----==----==----==----==----==
     // Transfer functions where give data back to Kodi, e.g. GetChannels calls TransferChannelEntry
     void (*TransferChannelEntry)(void* kodiInstance,
                                  const ADDON_HANDLE handle,
-                                 const PVR_CHANNEL* chan);
+                                 const struct PVR_CHANNEL* chan);
     void (*TransferChannelGroup)(void* kodiInstance,
                                  const ADDON_HANDLE handle,
-                                 const PVR_CHANNEL_GROUP* group);
+                                 const struct PVR_CHANNEL_GROUP* group);
     void (*TransferChannelGroupMember)(void* kodiInstance,
                                        const ADDON_HANDLE handle,
-                                       const PVR_CHANNEL_GROUP_MEMBER* member);
+                                       const struct PVR_CHANNEL_GROUP_MEMBER* member);
     void (*TransferEpgEntry)(void* kodiInstance,
                              const ADDON_HANDLE handle,
-                             const EPG_TAG* epgentry);
+                             const struct EPG_TAG* epgentry);
     void (*TransferRecordingEntry)(void* kodiInstance,
                                    const ADDON_HANDLE handle,
-                                   const PVR_RECORDING* recording);
+                                   const struct PVR_RECORDING* recording);
     void (*TransferTimerEntry)(void* kodiInstance,
                                const ADDON_HANDLE handle,
-                               const PVR_TIMER* timer);
+                               const struct PVR_TIMER* timer);
 
     //--==----==----==----==----==----==----==----==----==----==----==----==----==
     // Kodi inform interface functions
@@ -577,9 +588,9 @@ extern "C" {
 
     //--==----==----==----==----==----==----==----==----==----==----==----==----==
     // Stream demux interface functions
-    void (*FreeDemuxPacket)(void* kodiInstance, DemuxPacket* pPacket);
-    DemuxPacket* (*AllocateDemuxPacket)(void* kodiInstance, int iDataSize);
-    xbmc_codec_t (*GetCodecByName)(const void* kodiInstance, const char* strCodecName);
+    void (*FreeDemuxPacket)(void* kodiInstance, struct DemuxPacket* pPacket);
+    struct DemuxPacket* (*AllocateDemuxPacket)(void* kodiInstance, int iDataSize);
+    struct xbmc_codec_t (*GetCodecByName)(const void* kodiInstance, const char* strCodecName);
 
     //--==----==----==----==----==----==----==----==----==----==----==----==----==
     // New functions becomes added below and can be on another API change (where
@@ -596,138 +607,166 @@ extern "C" {
 
     //--==----==----==----==----==----==----==----==----==----==----==----==----==
     // General interface functions
-    PVR_ERROR(__cdecl* GetCapabilities)(const AddonInstance_PVR*, PVR_ADDON_CAPABILITIES*);
-    const char*(__cdecl* GetBackendName)(const AddonInstance_PVR*);
-    const char*(__cdecl* GetBackendVersion)(const AddonInstance_PVR*);
-    const char*(__cdecl* GetBackendHostname)(const AddonInstance_PVR*);
-    const char*(__cdecl* GetConnectionString)(const AddonInstance_PVR*);
-    PVR_ERROR(__cdecl* GetDriveSpace)(const AddonInstance_PVR*, long long*, long long*);
-    PVR_ERROR(__cdecl* MenuHook)(const AddonInstance_PVR*,
-                                 const PVR_MENUHOOK&,
-                                 const PVR_MENUHOOK_DATA&);
+    enum PVR_ERROR(__cdecl* GetCapabilities)(const struct AddonInstance_PVR*,
+                                             struct PVR_ADDON_CAPABILITIES*);
+    const char*(__cdecl* GetBackendName)(const struct AddonInstance_PVR*);
+    const char*(__cdecl* GetBackendVersion)(const struct AddonInstance_PVR*);
+    const char*(__cdecl* GetBackendHostname)(const struct AddonInstance_PVR*);
+    const char*(__cdecl* GetConnectionString)(const struct AddonInstance_PVR*);
+    enum PVR_ERROR(__cdecl* GetDriveSpace)(const struct AddonInstance_PVR*, long long*, long long*);
+    enum PVR_ERROR(__cdecl* MenuHook)(const struct AddonInstance_PVR*,
+                                      const struct PVR_MENUHOOK*,
+                                      const struct PVR_MENUHOOK_DATA*);
 
     //--==----==----==----==----==----==----==----==----==----==----==----==----==
     // Channel interface functions
 
-    int(__cdecl* GetChannelsAmount)(const AddonInstance_PVR*);
-    PVR_ERROR(__cdecl* GetChannels)(const AddonInstance_PVR*, ADDON_HANDLE, bool);
-    PVR_ERROR(__cdecl* GetChannelStreamProperties)(const AddonInstance_PVR*,
-                                                   const PVR_CHANNEL*,
-                                                   PVR_NAMED_VALUE*,
-                                                   unsigned int*);
-    PVR_ERROR(__cdecl* GetSignalStatus)(const AddonInstance_PVR*, int, PVR_SIGNAL_STATUS*);
-    PVR_ERROR(__cdecl* GetDescrambleInfo)(const AddonInstance_PVR*, int, PVR_DESCRAMBLE_INFO*);
+    int(__cdecl* GetChannelsAmount)(const struct AddonInstance_PVR*);
+    enum PVR_ERROR(__cdecl* GetChannels)(const struct AddonInstance_PVR*, ADDON_HANDLE, bool);
+    enum PVR_ERROR(__cdecl* GetChannelStreamProperties)(const struct AddonInstance_PVR*,
+                                                        const struct PVR_CHANNEL*,
+                                                        struct PVR_NAMED_VALUE*,
+                                                        unsigned int*);
+    enum PVR_ERROR(__cdecl* GetSignalStatus)(const struct AddonInstance_PVR*,
+                                             int,
+                                             struct PVR_SIGNAL_STATUS*);
+    enum PVR_ERROR(__cdecl* GetDescrambleInfo)(const struct AddonInstance_PVR*,
+                                               int,
+                                               struct PVR_DESCRAMBLE_INFO*);
 
     //--==----==----==----==----==----==----==----==----==----==----==----==----==
     // Channel group interface functions
-    int(__cdecl* GetChannelGroupsAmount)(const AddonInstance_PVR*);
-    PVR_ERROR(__cdecl* GetChannelGroups)(const AddonInstance_PVR*, ADDON_HANDLE, bool);
-    PVR_ERROR(__cdecl* GetChannelGroupMembers)(const AddonInstance_PVR*,
-                                               ADDON_HANDLE,
-                                               const PVR_CHANNEL_GROUP&);
+    int(__cdecl* GetChannelGroupsAmount)(const struct AddonInstance_PVR*);
+    enum PVR_ERROR(__cdecl* GetChannelGroups)(const struct AddonInstance_PVR*, ADDON_HANDLE, bool);
+    enum PVR_ERROR(__cdecl* GetChannelGroupMembers)(const struct AddonInstance_PVR*,
+                                                    ADDON_HANDLE,
+                                                    const struct PVR_CHANNEL_GROUP*);
 
     //--==----==----==----==----==----==----==----==----==----==----==----==----==
     // Channel edit interface functions
-    PVR_ERROR(__cdecl* DeleteChannel)(const AddonInstance_PVR*, const PVR_CHANNEL&);
-    PVR_ERROR(__cdecl* RenameChannel)(const AddonInstance_PVR*, const PVR_CHANNEL&);
-    PVR_ERROR(__cdecl* OpenDialogChannelSettings)(const AddonInstance_PVR*, const PVR_CHANNEL&);
-    PVR_ERROR(__cdecl* OpenDialogChannelAdd)(const AddonInstance_PVR*, const PVR_CHANNEL&);
-    PVR_ERROR(__cdecl* OpenDialogChannelScan)(const AddonInstance_PVR*);
+    enum PVR_ERROR(__cdecl* DeleteChannel)(const struct AddonInstance_PVR*,
+                                           const struct PVR_CHANNEL*);
+    enum PVR_ERROR(__cdecl* RenameChannel)(const struct AddonInstance_PVR*,
+                                           const struct PVR_CHANNEL*);
+    enum PVR_ERROR(__cdecl* OpenDialogChannelSettings)(const struct AddonInstance_PVR*,
+                                                       const struct PVR_CHANNEL*);
+    enum PVR_ERROR(__cdecl* OpenDialogChannelAdd)(const struct AddonInstance_PVR*,
+                                                  const struct PVR_CHANNEL*);
+    enum PVR_ERROR(__cdecl* OpenDialogChannelScan)(const struct AddonInstance_PVR*);
 
     //--==----==----==----==----==----==----==----==----==----==----==----==----==
     // EPG interface functions
-    PVR_ERROR(__cdecl* GetEPGForChannel)(const AddonInstance_PVR*,
-                                         ADDON_HANDLE,
-                                         int,
-                                         time_t,
-                                         time_t);
-    PVR_ERROR(__cdecl* IsEPGTagRecordable)(const AddonInstance_PVR*, const EPG_TAG*, bool*);
-    PVR_ERROR(__cdecl* IsEPGTagPlayable)(const AddonInstance_PVR*, const EPG_TAG*, bool*);
-    PVR_ERROR(__cdecl* GetEPGTagEdl)(const AddonInstance_PVR*,
-                                     const EPG_TAG*,
-                                     PVR_EDL_ENTRY[],
-                                     int*);
-    PVR_ERROR(__cdecl* GetEPGTagStreamProperties)(const AddonInstance_PVR*,
-                                                  const EPG_TAG*,
-                                                  PVR_NAMED_VALUE*,
-                                                  unsigned int*);
-    PVR_ERROR(__cdecl* SetEPGTimeFrame)(const AddonInstance_PVR*, int);
+    enum PVR_ERROR(__cdecl* GetEPGForChannel)(const struct AddonInstance_PVR*,
+                                              ADDON_HANDLE,
+                                              int,
+                                              time_t,
+                                              time_t);
+    enum PVR_ERROR(__cdecl* IsEPGTagRecordable)(const struct AddonInstance_PVR*,
+                                                const struct EPG_TAG*,
+                                                bool*);
+    enum PVR_ERROR(__cdecl* IsEPGTagPlayable)(const struct AddonInstance_PVR*,
+                                              const struct EPG_TAG*,
+                                              bool*);
+    enum PVR_ERROR(__cdecl* GetEPGTagEdl)(const struct AddonInstance_PVR*,
+                                          const struct EPG_TAG*,
+                                          struct PVR_EDL_ENTRY[],
+                                          int*);
+    enum PVR_ERROR(__cdecl* GetEPGTagStreamProperties)(const struct AddonInstance_PVR*,
+                                                       const struct EPG_TAG*,
+                                                       struct PVR_NAMED_VALUE*,
+                                                       unsigned int*);
+    enum PVR_ERROR(__cdecl* SetEPGTimeFrame)(const struct AddonInstance_PVR*, int);
 
     //--==----==----==----==----==----==----==----==----==----==----==----==----==
     // Recording interface functions
-    int(__cdecl* GetRecordingsAmount)(const AddonInstance_PVR*, bool);
-    PVR_ERROR(__cdecl* GetRecordings)(const AddonInstance_PVR*, ADDON_HANDLE, bool);
-    PVR_ERROR(__cdecl* DeleteRecording)(const AddonInstance_PVR*, const PVR_RECORDING&);
-    PVR_ERROR(__cdecl* UndeleteRecording)(const AddonInstance_PVR*, const PVR_RECORDING&);
-    PVR_ERROR(__cdecl* DeleteAllRecordingsFromTrash)(const AddonInstance_PVR*);
-    PVR_ERROR(__cdecl* RenameRecording)(const AddonInstance_PVR*, const PVR_RECORDING&);
-    PVR_ERROR(__cdecl* SetRecordingLifetime)(const AddonInstance_PVR*, const PVR_RECORDING*);
-    PVR_ERROR(__cdecl* SetRecordingPlayCount)(const AddonInstance_PVR*, const PVR_RECORDING&, int);
-    PVR_ERROR(__cdecl* SetRecordingLastPlayedPosition)(const AddonInstance_PVR*,
-                                                       const PVR_RECORDING&,
-                                                       int);
-    int(__cdecl* GetRecordingLastPlayedPosition)(const AddonInstance_PVR*, const PVR_RECORDING&);
-    PVR_ERROR(__cdecl* GetRecordingEdl)(const AddonInstance_PVR*,
-                                        const PVR_RECORDING&,
-                                        PVR_EDL_ENTRY[],
-                                        int*);
-    PVR_ERROR(__cdecl* GetRecordingSize)(const AddonInstance_PVR*, const PVR_RECORDING*, int64_t*);
-    PVR_ERROR(__cdecl* GetRecordingStreamProperties)(const AddonInstance_PVR*,
-                                                     const PVR_RECORDING*,
-                                                     PVR_NAMED_VALUE*,
-                                                     unsigned int*);
+    int(__cdecl* GetRecordingsAmount)(const struct AddonInstance_PVR*, bool);
+    enum PVR_ERROR(__cdecl* GetRecordings)(const struct AddonInstance_PVR*, ADDON_HANDLE, bool);
+    enum PVR_ERROR(__cdecl* DeleteRecording)(const struct AddonInstance_PVR*,
+                                             const struct PVR_RECORDING*);
+    enum PVR_ERROR(__cdecl* UndeleteRecording)(const struct AddonInstance_PVR*,
+                                               const struct PVR_RECORDING*);
+    enum PVR_ERROR(__cdecl* DeleteAllRecordingsFromTrash)(const struct AddonInstance_PVR*);
+    enum PVR_ERROR(__cdecl* RenameRecording)(const struct AddonInstance_PVR*,
+                                             const struct PVR_RECORDING*);
+    enum PVR_ERROR(__cdecl* SetRecordingLifetime)(const struct AddonInstance_PVR*,
+                                                  const struct PVR_RECORDING*);
+    enum PVR_ERROR(__cdecl* SetRecordingPlayCount)(const struct AddonInstance_PVR*,
+                                                   const struct PVR_RECORDING*,
+                                                   int);
+    enum PVR_ERROR(__cdecl* SetRecordingLastPlayedPosition)(const struct AddonInstance_PVR*,
+                                                            const struct PVR_RECORDING*,
+                                                            int);
+    int(__cdecl* GetRecordingLastPlayedPosition)(const struct AddonInstance_PVR*,
+                                                 const struct PVR_RECORDING*);
+    enum PVR_ERROR(__cdecl* GetRecordingEdl)(const struct AddonInstance_PVR*,
+                                             const struct PVR_RECORDING*,
+                                             struct PVR_EDL_ENTRY[],
+                                             int*);
+    enum PVR_ERROR(__cdecl* GetRecordingSize)(const struct AddonInstance_PVR*,
+                                              const PVR_RECORDING*,
+                                              int64_t*);
+    enum PVR_ERROR(__cdecl* GetRecordingStreamProperties)(const struct AddonInstance_PVR*,
+                                                          const struct PVR_RECORDING*,
+                                                          struct PVR_NAMED_VALUE*,
+                                                          unsigned int*);
 
     //--==----==----==----==----==----==----==----==----==----==----==----==----==
     // Timer interface functions
-    PVR_ERROR(__cdecl* GetTimerTypes)(const AddonInstance_PVR*, PVR_TIMER_TYPE[], int*);
-    int(__cdecl* GetTimersAmount)(const AddonInstance_PVR*);
-    PVR_ERROR(__cdecl* GetTimers)(const AddonInstance_PVR*, ADDON_HANDLE);
-    PVR_ERROR(__cdecl* AddTimer)(const AddonInstance_PVR*, const PVR_TIMER&);
-    PVR_ERROR(__cdecl* DeleteTimer)(const AddonInstance_PVR*, const PVR_TIMER&, bool);
-    PVR_ERROR(__cdecl* UpdateTimer)(const AddonInstance_PVR*, const PVR_TIMER&);
+    enum PVR_ERROR(__cdecl* GetTimerTypes)(const struct AddonInstance_PVR*,
+                                           struct PVR_TIMER_TYPE[],
+                                           int*);
+    int(__cdecl* GetTimersAmount)(const struct AddonInstance_PVR*);
+    enum PVR_ERROR(__cdecl* GetTimers)(const struct AddonInstance_PVR*, ADDON_HANDLE);
+    enum PVR_ERROR(__cdecl* AddTimer)(const struct AddonInstance_PVR*, const struct PVR_TIMER*);
+    enum PVR_ERROR(__cdecl* DeleteTimer)(const struct AddonInstance_PVR*,
+                                         const struct PVR_TIMER*,
+                                         bool);
+    enum PVR_ERROR(__cdecl* UpdateTimer)(const struct AddonInstance_PVR*, const struct PVR_TIMER*);
 
     //--==----==----==----==----==----==----==----==----==----==----==----==----==
     // Powersaving interface functions
-    void(__cdecl* OnSystemSleep)(const AddonInstance_PVR*);
-    void(__cdecl* OnSystemWake)(const AddonInstance_PVR*);
-    void(__cdecl* OnPowerSavingActivated)(const AddonInstance_PVR*);
-    void(__cdecl* OnPowerSavingDeactivated)(const AddonInstance_PVR*);
+    void(__cdecl* OnSystemSleep)(const struct AddonInstance_PVR*);
+    void(__cdecl* OnSystemWake)(const struct AddonInstance_PVR*);
+    void(__cdecl* OnPowerSavingActivated)(const struct AddonInstance_PVR*);
+    void(__cdecl* OnPowerSavingDeactivated)(const struct AddonInstance_PVR*);
 
     //--==----==----==----==----==----==----==----==----==----==----==----==----==
     // Live stream read interface functions
-    bool(__cdecl* OpenLiveStream)(const AddonInstance_PVR*, const PVR_CHANNEL&);
-    void(__cdecl* CloseLiveStream)(const AddonInstance_PVR*);
-    int(__cdecl* ReadLiveStream)(const AddonInstance_PVR*, unsigned char*, unsigned int);
-    long long(__cdecl* SeekLiveStream)(const AddonInstance_PVR*, long long, int);
-    long long(__cdecl* LengthLiveStream)(const AddonInstance_PVR*);
+    bool(__cdecl* OpenLiveStream)(const struct AddonInstance_PVR*, const struct PVR_CHANNEL*);
+    void(__cdecl* CloseLiveStream)(const struct AddonInstance_PVR*);
+    int(__cdecl* ReadLiveStream)(const struct AddonInstance_PVR*, unsigned char*, unsigned int);
+    long long(__cdecl* SeekLiveStream)(const struct AddonInstance_PVR*, long long, int);
+    long long(__cdecl* LengthLiveStream)(const struct AddonInstance_PVR*);
 
     //--==----==----==----==----==----==----==----==----==----==----==----==----==
     // Recording stream read interface functions
-    bool(__cdecl* OpenRecordedStream)(const AddonInstance_PVR*, const PVR_RECORDING&);
-    void(__cdecl* CloseRecordedStream)(const AddonInstance_PVR*);
-    int(__cdecl* ReadRecordedStream)(const AddonInstance_PVR*, unsigned char*, unsigned int);
-    long long(__cdecl* SeekRecordedStream)(const AddonInstance_PVR*, long long, int);
-    long long(__cdecl* LengthRecordedStream)(const AddonInstance_PVR*);
+    bool(__cdecl* OpenRecordedStream)(const struct AddonInstance_PVR*, const struct PVR_RECORDING*);
+    void(__cdecl* CloseRecordedStream)(const struct AddonInstance_PVR*);
+    int(__cdecl* ReadRecordedStream)(const struct AddonInstance_PVR*, unsigned char*, unsigned int);
+    long long(__cdecl* SeekRecordedStream)(const struct AddonInstance_PVR*, long long, int);
+    long long(__cdecl* LengthRecordedStream)(const struct AddonInstance_PVR*);
 
     //--==----==----==----==----==----==----==----==----==----==----==----==----==
     // Stream demux interface functions
-    PVR_ERROR(__cdecl* GetStreamProperties)(const AddonInstance_PVR*, PVR_STREAM_PROPERTIES*);
-    DemuxPacket*(__cdecl* DemuxRead)(const AddonInstance_PVR*);
-    void(__cdecl* DemuxReset)(const AddonInstance_PVR*);
-    void(__cdecl* DemuxAbort)(const AddonInstance_PVR*);
-    void(__cdecl* DemuxFlush)(const AddonInstance_PVR*);
-    void(__cdecl* SetSpeed)(const AddonInstance_PVR*, int);
-    void(__cdecl* FillBuffer)(const AddonInstance_PVR*, bool);
-    bool(__cdecl* SeekTime)(const AddonInstance_PVR*, double, bool, double*);
+    enum PVR_ERROR(__cdecl* GetStreamProperties)(const struct AddonInstance_PVR*,
+                                                 struct PVR_STREAM_PROPERTIES*);
+    struct DemuxPacket*(__cdecl* DemuxRead)(const struct AddonInstance_PVR*);
+    void(__cdecl* DemuxReset)(const struct AddonInstance_PVR*);
+    void(__cdecl* DemuxAbort)(const struct AddonInstance_PVR*);
+    void(__cdecl* DemuxFlush)(const struct AddonInstance_PVR*);
+    void(__cdecl* SetSpeed)(const struct AddonInstance_PVR*, int);
+    void(__cdecl* FillBuffer)(const struct AddonInstance_PVR*, bool);
+    bool(__cdecl* SeekTime)(const struct AddonInstance_PVR*, double, bool, double*);
 
     //--==----==----==----==----==----==----==----==----==----==----==----==----==
     // General stream interface functions
-    bool(__cdecl* CanPauseStream)(const AddonInstance_PVR*);
-    void(__cdecl* PauseStream)(const AddonInstance_PVR*, bool);
-    bool(__cdecl* CanSeekStream)(const AddonInstance_PVR*);
-    bool(__cdecl* IsRealTimeStream)(const AddonInstance_PVR*);
-    PVR_ERROR(__cdecl* GetStreamTimes)(const AddonInstance_PVR*, PVR_STREAM_TIMES*);
-    PVR_ERROR(__cdecl* GetStreamReadChunkSize)(const AddonInstance_PVR*, int*);
+    bool(__cdecl* CanPauseStream)(const struct AddonInstance_PVR*);
+    void(__cdecl* PauseStream)(const struct AddonInstance_PVR*, bool);
+    bool(__cdecl* CanSeekStream)(const struct AddonInstance_PVR*);
+    bool(__cdecl* IsRealTimeStream)(const struct AddonInstance_PVR*);
+    enum PVR_ERROR(__cdecl* GetStreamTimes)(const struct AddonInstance_PVR*,
+                                            struct PVR_STREAM_TIMES*);
+    enum PVR_ERROR(__cdecl* GetStreamReadChunkSize)(const struct AddonInstance_PVR*, int*);
 
     //--==----==----==----==----==----==----==----==----==----==----==----==----==
     // New functions becomes added below and can be on another API change (where

@@ -582,7 +582,7 @@ PVR_ERROR CPVRClient::OpenDialogChannelAdd(const std::shared_ptr<CPVRChannel>& c
   return DoAddonCall(__FUNCTION__, [channel](const AddonInstance* addon) {
     PVR_CHANNEL addonChannel;
     WriteClientChannelInfo(channel, addonChannel);
-    return addon->toAddon->OpenDialogChannelAdd(addon, addonChannel);
+    return addon->toAddon->OpenDialogChannelAdd(addon, &addonChannel);
   }, m_clientCapabilities.SupportsChannelSettings());
 }
 
@@ -591,7 +591,7 @@ PVR_ERROR CPVRClient::OpenDialogChannelSettings(const std::shared_ptr<CPVRChanne
   return DoAddonCall(__FUNCTION__, [channel] (const AddonInstance* addon){
     PVR_CHANNEL addonChannel;
     WriteClientChannelInfo(channel, addonChannel);
-    return addon->toAddon->OpenDialogChannelSettings(addon, addonChannel);
+    return addon->toAddon->OpenDialogChannelSettings(addon, &addonChannel);
   }, m_clientCapabilities.SupportsChannelSettings());
 }
 
@@ -600,7 +600,7 @@ PVR_ERROR CPVRClient::DeleteChannel(const std::shared_ptr<CPVRChannel>& channel)
   return DoAddonCall(__FUNCTION__, [channel](const AddonInstance* addon) {
     PVR_CHANNEL addonChannel;
     WriteClientChannelInfo(channel, addonChannel);
-    return addon->toAddon->DeleteChannel(addon, addonChannel);
+    return addon->toAddon->DeleteChannel(addon, &addonChannel);
   }, m_clientCapabilities.SupportsChannelSettings());
 }
 
@@ -609,7 +609,7 @@ PVR_ERROR CPVRClient::RenameChannel(const std::shared_ptr<CPVRChannel>& channel)
   return DoAddonCall(__FUNCTION__, [channel](const AddonInstance* addon) {
     PVR_CHANNEL addonChannel;
     WriteClientChannelInfo(channel, addonChannel);
-    return addon->toAddon->RenameChannel(addon, addonChannel);
+    return addon->toAddon->RenameChannel(addon, &addonChannel);
   }, m_clientCapabilities.SupportsChannelSettings());
 }
 
@@ -803,7 +803,7 @@ PVR_ERROR CPVRClient::GetChannelGroupMembers(CPVRChannelGroup* group)
 
     PVR_CHANNEL_GROUP tag;
     WriteClientGroupInfo(*group, tag);
-    return addon->toAddon->GetChannelGroupMembers(addon, &handle, tag);
+    return addon->toAddon->GetChannelGroupMembers(addon, &handle, &tag);
   }, m_clientCapabilities.SupportsChannelGroups());
 }
 
@@ -851,7 +851,7 @@ PVR_ERROR CPVRClient::DeleteRecording(const CPVRRecording& recording)
   return DoAddonCall(__FUNCTION__, [&recording](const AddonInstance* addon) {
     PVR_RECORDING tag;
     WriteClientRecordingInfo(recording, tag);
-    return addon->toAddon->DeleteRecording(addon, tag);
+    return addon->toAddon->DeleteRecording(addon, &tag);
   }, m_clientCapabilities.SupportsRecordings());
 }
 
@@ -860,7 +860,7 @@ PVR_ERROR CPVRClient::UndeleteRecording(const CPVRRecording& recording)
   return DoAddonCall(__FUNCTION__, [&recording](const AddonInstance* addon) {
     PVR_RECORDING tag;
     WriteClientRecordingInfo(recording, tag);
-    return addon->toAddon->UndeleteRecording(addon, tag);
+    return addon->toAddon->UndeleteRecording(addon, &tag);
   }, m_clientCapabilities.SupportsRecordingsUndelete());
 }
 
@@ -876,7 +876,7 @@ PVR_ERROR CPVRClient::RenameRecording(const CPVRRecording& recording)
   return DoAddonCall(__FUNCTION__, [&recording](const AddonInstance* addon) {
     PVR_RECORDING tag;
     WriteClientRecordingInfo(recording, tag);
-    return addon->toAddon->RenameRecording(addon, tag);
+    return addon->toAddon->RenameRecording(addon, &tag);
   }, m_clientCapabilities.SupportsRecordings());
 }
 
@@ -894,7 +894,7 @@ PVR_ERROR CPVRClient::SetRecordingPlayCount(const CPVRRecording& recording, int 
   return DoAddonCall(__FUNCTION__, [&recording, count](const AddonInstance* addon) {
     PVR_RECORDING tag;
     WriteClientRecordingInfo(recording, tag);
-    return addon->toAddon->SetRecordingPlayCount(addon, tag, count);
+    return addon->toAddon->SetRecordingPlayCount(addon, &tag, count);
   }, m_clientCapabilities.SupportsRecordingsPlayCount());
 }
 
@@ -903,7 +903,7 @@ PVR_ERROR CPVRClient::SetRecordingLastPlayedPosition(const CPVRRecording& record
   return DoAddonCall(__FUNCTION__, [&recording, lastplayedposition](const AddonInstance* addon) {
     PVR_RECORDING tag;
     WriteClientRecordingInfo(recording, tag);
-    return addon->toAddon->SetRecordingLastPlayedPosition(addon, tag, lastplayedposition);
+    return addon->toAddon->SetRecordingLastPlayedPosition(addon, &tag, lastplayedposition);
   }, m_clientCapabilities.SupportsRecordingsLastPlayedPosition());
  }
 
@@ -913,7 +913,7 @@ PVR_ERROR CPVRClient::GetRecordingLastPlayedPosition(const CPVRRecording& record
   return DoAddonCall(__FUNCTION__, [&recording, &iPosition](const AddonInstance* addon) {
     PVR_RECORDING tag;
     WriteClientRecordingInfo(recording, tag);
-    iPosition = addon->toAddon->GetRecordingLastPlayedPosition(addon, tag);
+    iPosition = addon->toAddon->GetRecordingLastPlayedPosition(addon, &tag);
     return (iPosition == -1) ? PVR_ERROR_NOT_IMPLEMENTED : PVR_ERROR_NO_ERROR;
   }, m_clientCapabilities.SupportsRecordingsLastPlayedPosition());
 }
@@ -927,7 +927,7 @@ PVR_ERROR CPVRClient::GetRecordingEdl(const CPVRRecording& recording, std::vecto
 
     PVR_EDL_ENTRY edl_array[PVR_ADDON_EDL_LENGTH];
     int size = PVR_ADDON_EDL_LENGTH;
-    PVR_ERROR error = addon->toAddon->GetRecordingEdl(addon, tag, edl_array, &size);
+    PVR_ERROR error = addon->toAddon->GetRecordingEdl(addon, &tag, edl_array, &size);
     if (error == PVR_ERROR_NO_ERROR)
     {
       edls.reserve(size);
@@ -971,7 +971,7 @@ PVR_ERROR CPVRClient::AddTimer(const CPVRTimerInfoTag& timer)
   return DoAddonCall(__FUNCTION__, [&timer](const AddonInstance* addon) {
     PVR_TIMER tag;
     WriteClientTimerInfo(timer, tag);
-    return addon->toAddon->AddTimer(addon, tag);
+    return addon->toAddon->AddTimer(addon, &tag);
   }, m_clientCapabilities.SupportsTimers());
 }
 
@@ -980,7 +980,7 @@ PVR_ERROR CPVRClient::DeleteTimer(const CPVRTimerInfoTag& timer, bool bForce /* 
   return DoAddonCall(__FUNCTION__, [&timer, bForce](const AddonInstance* addon) {
     PVR_TIMER tag;
     WriteClientTimerInfo(timer, tag);
-    return addon->toAddon->DeleteTimer(addon, tag, bForce);
+    return addon->toAddon->DeleteTimer(addon, &tag, bForce);
   }, m_clientCapabilities.SupportsTimers());
 }
 
@@ -989,7 +989,7 @@ PVR_ERROR CPVRClient::UpdateTimer(const CPVRTimerInfoTag& timer)
   return DoAddonCall(__FUNCTION__, [&timer](const AddonInstance* addon) {
     PVR_TIMER tag;
     WriteClientTimerInfo(timer, tag);
-    return addon->toAddon->UpdateTimer(addon, tag);
+    return addon->toAddon->UpdateTimer(addon, &tag);
   }, m_clientCapabilities.SupportsTimers());
 }
 
@@ -1243,8 +1243,8 @@ PVR_ERROR CPVRClient::OpenLiveStream(const std::shared_ptr<CPVRChannel>& channel
       CLog::LogFC(LOGDEBUG, LOGPVR, "Opening live stream for channel '%s'", channel->ChannelName().c_str());
       PVR_CHANNEL tag;
       WriteClientChannelInfo(channel, tag);
-      return addon->toAddon->OpenLiveStream(addon, tag) ? PVR_ERROR_NO_ERROR
-                                                        : PVR_ERROR_NOT_IMPLEMENTED;
+      return addon->toAddon->OpenLiveStream(addon, &tag) ? PVR_ERROR_NO_ERROR
+                                                         : PVR_ERROR_NOT_IMPLEMENTED;
     }
   });
 }
@@ -1260,8 +1260,8 @@ PVR_ERROR CPVRClient::OpenRecordedStream(const std::shared_ptr<CPVRRecording>& r
     PVR_RECORDING tag;
     WriteClientRecordingInfo(*recording, tag);
     CLog::LogFC(LOGDEBUG, LOGPVR, "Opening stream for recording '%s'", recording->m_strTitle.c_str());
-    return addon->toAddon->OpenRecordedStream(addon, tag) ? PVR_ERROR_NO_ERROR
-                                                          : PVR_ERROR_NOT_IMPLEMENTED;
+    return addon->toAddon->OpenRecordedStream(addon, &tag) ? PVR_ERROR_NO_ERROR
+                                                           : PVR_ERROR_NOT_IMPLEMENTED;
   }, m_clientCapabilities.SupportsRecordings());
 }
 
@@ -1391,7 +1391,7 @@ PVR_ERROR CPVRClient::CallEpgTagMenuHook(const CPVRClientMenuHook& hook, const s
     menuHook.iHookId = hook.GetId();
     menuHook.iLocalizedStringId = hook.GetLabelId();
 
-    return addon->toAddon->MenuHook(addon, menuHook, hookData);
+    return addon->toAddon->MenuHook(addon, &menuHook, &hookData);
   });
 }
 
@@ -1407,7 +1407,7 @@ PVR_ERROR CPVRClient::CallChannelMenuHook(const CPVRClientMenuHook& hook, const 
     menuHook.iHookId = hook.GetId();
     menuHook.iLocalizedStringId = hook.GetLabelId();
 
-    return addon->toAddon->MenuHook(addon, menuHook, hookData);
+    return addon->toAddon->MenuHook(addon, &menuHook, &hookData);
   });
 }
 
@@ -1423,7 +1423,7 @@ PVR_ERROR CPVRClient::CallRecordingMenuHook(const CPVRClientMenuHook& hook, cons
     menuHook.iHookId = hook.GetId();
     menuHook.iLocalizedStringId = hook.GetLabelId();
 
-    return addon->toAddon->MenuHook(addon, menuHook, hookData);
+    return addon->toAddon->MenuHook(addon, &menuHook, &hookData);
   });
 }
 
@@ -1439,7 +1439,7 @@ PVR_ERROR CPVRClient::CallTimerMenuHook(const CPVRClientMenuHook& hook, const st
     menuHook.iHookId = hook.GetId();
     menuHook.iLocalizedStringId = hook.GetLabelId();
 
-    return addon->toAddon->MenuHook(addon, menuHook, hookData);
+    return addon->toAddon->MenuHook(addon, &menuHook, &hookData);
   });
 }
 
@@ -1454,7 +1454,7 @@ PVR_ERROR CPVRClient::CallSettingsMenuHook(const CPVRClientMenuHook& hook)
     menuHook.iHookId = hook.GetId();
     menuHook.iLocalizedStringId = hook.GetLabelId();
 
-    return addon->toAddon->MenuHook(addon, menuHook, hookData);
+    return addon->toAddon->MenuHook(addon, &menuHook, &hookData);
   });
 }
 
