@@ -39,6 +39,20 @@ include(cmake/scripts/${CORE_SYSTEM_NAME}/PathSetup.cmake)
 include(cmake/scripts/common/CompilerSettings.cmake)
 include(ExternalProject)
 
+# CMake depends
+
+set(WITH_KODI_DEPENDS ${PROJECT_SOURCE_DIR}/cmake/depends CACHE STRING "Path to kodi-depends")
+set(WITH_PREFIX ${CMAKE_BINARY_DIR}/depends CACHE STRING "Path for kodi-depends prefix" FORCE)
+set(WITH_ARCHIVES ${WITH_PREFIX}/kodi-archives CACHE STRING "Path to where archives will be saved")
+set(ENABLE_CONSOLE_LOGGING ON CACHE BOOL "Enable console logging")
+
+# hack to handle separate repos
+set(WITH_KODI_SOURCE ${CMAKE_SOURCE_DIR} CACHE FILEPATH "Path to Kodi source")
+
+include(${WITH_KODI_DEPENDS}/cmake/DefaultURL.cmake)
+include(${WITH_KODI_DEPENDS}/cmake/ValidPlatforms.cmake)
+include(${WITH_KODI_DEPENDS}/cmake/CreateConfiguration.cmake)
+include(${WITH_KODI_DEPENDS}/cmake/Macros.cmake)
 
 # general
 option(VERBOSE            "Enable verbose output?" OFF)
