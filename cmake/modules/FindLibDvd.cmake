@@ -1,4 +1,4 @@
-if(KODI_DEPENDSBUILD)
+if(KODI_DEPENDSBUILD OR NOT ENABLE_INTERNAL_LIBDVD)
   set(_dvdlibs dvdread dvdnav)
   set(_handlevars LIBDVD_INCLUDE_DIRS DVDREAD_LIBRARY DVDNAV_LIBRARY)
   if(ENABLE_DVDCSS)
@@ -75,52 +75,20 @@ else()
     endif()
   endforeach()
 
-  set(DVDREAD_CFLAGS "${DVDREAD_CFLAGS} -I${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/libdvd/include")
-
-  if(APPLE)
-    set(CMAKE_LD_FLAGS "-framework IOKit -framework CoreFoundation")
-  endif()
-
-  set(HOST_ARCH ${ARCH})
-  if(CORE_SYSTEM_NAME STREQUAL android)
-    if(ARCH STREQUAL arm)
-      set(HOST_ARCH arm-linux-androideabi)
-    elseif(ARCH STREQUAL aarch64)
-      set(HOST_ARCH aarch64-linux-android)
-    elseif(ARCH STREQUAL i486-linux)
-      set(HOST_ARCH i686-linux-android)
-    elseif(ARCH STREQUAL x86_64)
-      set(HOST_ARCH x86_64-linux-android)
-    endif()
-  elseif(CORE_SYSTEM_NAME STREQUAL windowsstore)
+  if(CORE_SYSTEM_NAME STREQUAL windowsstore)
     set(LIBDVD_ADDITIONAL_ARGS "-DCMAKE_SYSTEM_NAME=${CMAKE_SYSTEM_NAME}" "-DCMAKE_SYSTEM_VERSION=${CMAKE_SYSTEM_VERSION}")
   endif()
 
   if(ENABLE_DVDCSS)
     if(NOT CORE_SYSTEM_NAME MATCHES windows)
-      set(DVDCSS_LIBRARY ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/libdvd/lib/libdvdcss.a)
-      ExternalProject_Add(dvdcss URL ${LIBDVDCSS_URL}
-                                  DOWNLOAD_NAME libdvdcss-${libdvdcss_VER}.tar.gz
-                                  DOWNLOAD_DIR ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/download
-                                  PREFIX ${CORE_BUILD_DIR}/libdvd
-                                  CONFIGURE_COMMAND ac_cv_path_GIT= <SOURCE_DIR>/configure
-                                                    --target=${HOST_ARCH}
-                                                    --host=${HOST_ARCH}
-                                                    --disable-doc
-                                                    --enable-static
-                                                    --disable-shared
-                                                    --with-pic
-                                                    --prefix=<INSTALL_DIR>
-                                                    --libdir=<INSTALL_DIR>/lib
-                                                    "CC=${CMAKE_C_COMPILER}"
-                                                    "CFLAGS=${CMAKE_C_FLAGS} ${DVDREAD_CFLAGS}"
-                                                    "LDFLAGS=${CMAKE_LD_FLAGS}"
-                                  BUILD_BYPRODUCTS ${DVDCSS_LIBRARY})
-      ExternalProject_Add_Step(dvdcss autoreconf
-                                      DEPENDEES download update patch
-                                      DEPENDERS configure
-                                      COMMAND PATH=${NATIVEPREFIX}/bin:$ENV{PATH} autoreconf -vif
-                                      WORKING_DIRECTORY <SOURCE_DIR>)
+
+      include(${WITH_KODI_DEPENDS}/packages/libdvdcss/package.cmake)
+      add_depends_for_targets("HOST")
+
+      add_custom_target(dvdcss ALL DEPENDS libdvdcss-host)
+
+      set(DVDCSS_LIBRARY ${INSTALL_PREFIX_HOST}/lib/libdvdcss.a)
+
     else()
       ExternalProject_Add(dvdcss
         URL ${LIBDVDCSS_URL}
@@ -134,34 +102,15 @@ else()
     set_target_properties(dvdcss PROPERTIES FOLDER "External Projects")
   endif()
 
-  set(DVDREAD_CFLAGS "-D_XBMC -I${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/libdvd/include")
-  if(ENABLE_DVDCSS)
-    set(DVDREAD_CFLAGS "${DVDREAD_CFLAGS} -DHAVE_DVDCSS_DVDCSS_H")
-  endif()
-
   if(NOT CORE_SYSTEM_NAME MATCHES windows)
-    set(DVDREAD_LIBRARY ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/libdvd/lib/libdvdread.a)
-    ExternalProject_Add(dvdread URL ${LIBDVDREAD_URL}
-                                DOWNLOAD_NAME libdvdread-${libdvdread_VER}.tar.gz
-                                DOWNLOAD_DIR ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/download
-                                PREFIX ${CORE_BUILD_DIR}/libdvd
-                                CONFIGURE_COMMAND ac_cv_path_GIT= <SOURCE_DIR>/configure
-                                                  --target=${HOST_ARCH}
-                                                  --host=${HOST_ARCH}
-                                                  --enable-static
-                                                  --disable-shared
-                                                  --with-pic
-                                                  --prefix=<INSTALL_DIR>
-                                                  --libdir=<INSTALL_DIR>/lib
-                                                  "CC=${CMAKE_C_COMPILER}"
-                                                  "CFLAGS=${CMAKE_C_FLAGS} ${DVDREAD_CFLAGS}"
-                                                  "LDFLAGS=${CMAKE_LD_FLAGS}"
-                              BUILD_BYPRODUCTS ${DVDREAD_LIBRARY})
-    ExternalProject_Add_Step(dvdread autoreconf
-                                      DEPENDEES download update patch
-                                      DEPENDERS configure
-                                      COMMAND PATH=${NATIVEPREFIX}/bin:$ENV{PATH} autoreconf -vif
-                                      WORKING_DIRECTORY <SOURCE_DIR>)
+
+    include(${WITH_KODI_DEPENDS}/packages/libdvdread/package.cmake)
+    add_depends_for_targets("HOST")
+
+    add_custom_target(dvdread ALL DEPENDS libdvdread-host)
+
+    set(DVDREAD_LIBRARY ${INSTALL_PREFIX_HOST}/lib/libdvdread.a)
+
   else()
     ExternalProject_Add(dvdread
       URL ${LIBDVDREAD_URL}
@@ -179,36 +128,15 @@ else()
 
   set_target_properties(dvdread PROPERTIES FOLDER "External Projects")
 
-  if(ENABLE_DVDCSS)
-    set(DVDNAV_LIBS -ldvdcss)
-  endif()
-
   if(NOT CORE_SYSTEM_NAME MATCHES windows)
-    set(DVDNAV_LIBRARY ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/libdvd/lib/libdvdnav.a)
-    ExternalProject_Add(dvdnav URL ${LIBDVDNAV_URL}
-                                DOWNLOAD_NAME libdvdnav-${libdvdnav_VER}.tar.gz
-                                DOWNLOAD_DIR ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/download
-                                PREFIX ${CORE_BUILD_DIR}/libdvd
-                                CONFIGURE_COMMAND ac_cv_path_GIT= <SOURCE_DIR>/configure
-                                                  --target=${HOST_ARCH}
-                                                  --host=${HOST_ARCH}
-                                                  --enable-static
-                                                  --disable-shared
-                                                  --with-pic
-                                                  --prefix=${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/libdvd
-                                                  --libdir=${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/libdvd/lib
-                                                  "CC=${CMAKE_C_COMPILER}"
-                                                  "LDFLAGS=${CMAKE_LD_FLAGS} -L${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/libdvd/lib"
-                                                  "CFLAGS=${CMAKE_C_FLAGS} ${DVDREAD_CFLAGS}"
-                                                  "DVDREAD_CFLAGS=${DVDREAD_CFLAGS}"
-                                                  "DVDREAD_LIBS=${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/libdvd/lib/libdvdread.la"
-                                                  "LIBS=${DVDNAV_LIBS}"
-                                BUILD_BYPRODUCTS ${DVDNAV_LIBRARY})
-    ExternalProject_Add_Step(dvdnav autoreconf
-                                    DEPENDEES download update patch
-                                    DEPENDERS configure
-                                    COMMAND PATH=${NATIVEPREFIX}/bin:$ENV{PATH} autoreconf -vif
-                                    WORKING_DIRECTORY <SOURCE_DIR>)
+
+    include(${WITH_KODI_DEPENDS}/packages/libdvdnav/package.cmake)
+    add_depends_for_targets("HOST")
+
+    set(DVDNAV_LIBRARY ${INSTALL_PREFIX_HOST}/lib/libdvdnav.a)
+
+    add_custom_target(dvdnav ALL DEPENDS libdvdnav-host)
+
   else()
     set(DVDNAV_LIBRARY ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/libdvd/lib/libdvdnav.lib)
     ExternalProject_Add(dvdnav
@@ -222,7 +150,8 @@ else()
     )
   endif()
   add_dependencies(dvdnav dvdread)
-  set_target_properties(dvdnav PROPERTIES FOLDER "External Projects")
+  set_target_properties(dvdnav PROPERTIES FOLDER "External Projects"
+                                          IMPORTED_LOCATION "${DVDNAV_LIBRARY}")
 
   set(_dvdlibs ${DVDREAD_LIBRARY} ${DVDCSS_LIBRARY})
   if(NOT CORE_SYSTEM_NAME MATCHES windows)
