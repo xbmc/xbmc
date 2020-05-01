@@ -14,45 +14,14 @@
 #   Spdlog::Spdlog   - The Spdlog library
 
 if(ENABLE_INTERNAL_SPDLOG)
-  include(ExternalProject)
-  file(STRINGS ${CMAKE_SOURCE_DIR}/tools/depends/target/libspdlog/Makefile VER REGEX "^[ ]*VERSION[ ]*=.+$")
-  string(REGEX REPLACE "^[ ]*VERSION[ ]*=[ ]*" "" SPDLOG_VERSION "${VER}")
+  include(${WITH_KODI_DEPENDS}/packages/spdlog/package.cmake)
+  add_depends_for_targets("HOST")
 
-  # allow user to override the download URL with a local tarball
-  # needed for offline build envs
-  if(SPDLOG_URL)
-      get_filename_component(SPDLOG_URL "${SPDLOG_URL}" ABSOLUTE)
-  else()
-      set(SPDLOG_URL http://mirrors.kodi.tv/build-deps/sources/spdlog-${SPDLOG_VERSION}.tar.gz)
-  endif()
-  if(VERBOSE)
-      message(STATUS "SPDLOG_URL: ${SPDLOG_URL}")
-  endif()
+  add_custom_target(spdlog ALL DEPENDS spdlog-host)
 
-  if(APPLE)
-    set(EXTRA_ARGS "-DCMAKE_OSX_ARCHITECTURES=${CMAKE_OSX_ARCHITECTURES}")
-  endif()
+  set(SPDLOG_LIBRARY ${INSTALL_PREFIX_HOST}/lib/libspdlog.a)
+  set(SPDLOG_INCLUDE_DIR ${INSTALL_PREFIX_HOST}/include)
 
-  set(SPDLOG_LIBRARY ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/lib/libspdlog.a)
-  set(SPDLOG_INCLUDE_DIR ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/include)
-
-  externalproject_add(spdlog
-                      URL ${SPDLOG_URL}
-                      DOWNLOAD_DIR ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/download
-                      PATCH_COMMAND patch -p1 -i ${CMAKE_SOURCE_DIR}/tools/depends/target/libspdlog/0001-fix_fmt_version.patch
-                      PREFIX ${CORE_BUILD_DIR}/spdlog
-                      CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}
-                                 -DCMAKE_CXX_EXTENSIONS=${CMAKE_CXX_EXTENSIONS}
-                                 -DCMAKE_CXX_STANDARD=${CMAKE_CXX_STANDARD}
-                                 -DCMAKE_TOOLCHAIN_FILE=${CMAKE_TOOLCHAIN_FILE}
-                                 -DCMAKE_INSTALL_LIBDIR=lib
-                                 -DSPDLOG_BUILD_EXAMPLE=OFF
-                                 -DSPDLOG_BUILD_TESTS=OFF
-                                 -DSPDLOG_BUILD_BENCH=OFF
-                                 -DSPDLOG_FMT_EXTERNAL=ON
-                                 -DCMAKE_PREFIX_PATH=${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}
-                                 "${EXTRA_ARGS}"
-                      BUILD_BYPRODUCTS ${SPDLOG_LIBRARY})
   set_target_properties(spdlog PROPERTIES FOLDER "External Projects")
 
   if(ENABLE_INTERNAL_FMT)
