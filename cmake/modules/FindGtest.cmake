@@ -10,35 +10,15 @@
 # GTEST_LIBRARIES - the gtest libraries
 
 if(ENABLE_INTERNAL_GTEST)
-  include(ExternalProject)
 
-  file(STRINGS ${CMAKE_SOURCE_DIR}/tools/depends/target/googletest/Makefile VER)
-  string(REGEX MATCH "VERSION=[^ ]*" GTEST_VERSION "${VER}")
-  list(GET GTEST_VERSION 0 GTEST_VERSION)
-  string(SUBSTRING "${GTEST_VERSION}" 8 -1 GTEST_VERSION)
+  include(${WITH_KODI_DEPENDS}/packages/googletest/package.cmake)
+  set(GTEST_VERSION "${PKG_VERSION}")
+  add_depends_for_targets("HOST")
 
-  # allow user to override the download URL with a local tarball
-  # needed for offline build envs
-  if(GTEST_URL)
-    get_filename_component(GTEST_URL "${GTEST_URL}" ABSOLUTE)
-  else()
-    set(GTEST_URL http://mirrors.kodi.tv/build-deps/sources/googletest-${GTEST_VERSION}.tar.gz)
-  endif()
+  add_custom_target(googletest ALL DEPENDS googletest-host)
 
-  if(VERBOSE)
-    message(STATUS "GTEST_URL: ${GTEST_URL}")
-  endif()
-
-  set(GTEST_LIBRARY ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/lib/libgtest.a)
-  set(GTEST_INCLUDE_DIR ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/include)
-
-  externalproject_add(gtest
-                      URL ${GTEST_URL}
-                      DOWNLOAD_DIR ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/download
-                      PREFIX ${CORE_BUILD_DIR}/gtest
-                      INSTALL_DIR ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}
-                      CMAKE_ARGS -DCMAKE_TOOLCHAIN_FILE=${CMAKE_TOOLCHAIN_FILE} -DBUILD_GMOCK=OFF -DINSTALL_GTEST=ON -DBUILD_SHARED_LIBS=OFF -DCMAKE_INSTALL_PREFIX=<INSTALL_DIR> -DCMAKE_INSTALL_LIBDIR=lib
-                      BUILD_BYPRODUCTS ${GTEST_LIBRARY})
+  set(GTEST_LIBRARY ${INSTALL_PREFIX_HOST}/lib/libgtest.a)
+  set(GTEST_INCLUDE_DIR ${INSTALL_PREFIX_HOST}include)
 
   include(FindPackageHandleStandardArgs)
   find_package_handle_standard_args(Gtest
