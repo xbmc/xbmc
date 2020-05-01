@@ -10,40 +10,14 @@
 # FLATBUFFERS_MESSAGES_INCLUDE_DIR - the directory for generated headers
 
 if(ENABLE_INTERNAL_FLATBUFFERS)
-  include(ExternalProject)
-  file(STRINGS ${CMAKE_SOURCE_DIR}/tools/depends/native/flatbuffers/Makefile VER REGEX "^[ ]*VERSION[ ]*=.+$")
-  string(REGEX REPLACE "^[ ]*VERSION[ ]*=[ ]*" "" FLATBUFFERS_VER "${VER}")
+  include(${WITH_KODI_DEPENDS}/packages/flatbuffers/package.cmake)
+  add_depends_for_targets("HOST")
 
-  # Allow user to override the download URL with a local tarball
-  # Needed for offline build envs
-  if(FLATBUFFERS_URL)
-    get_filename_component(FLATBUFFERS_URL "${FLATBUFFERS_URL}" ABSOLUTE)
-  else()
-    set(FLATBUFFERS_URL http://mirrors.kodi.tv/build-deps/sources/flatbuffers-${FLATBUFFERS_VER}.tar.gz)
-  endif()
-  if(VERBOSE)
-    message(STATUS "FLATBUFFERS_URL: ${FLATBUFFERS_URL}")
-  endif()
+  add_custom_target(flatbuffers ALL DEPENDS flatbuffers-host)
 
-  set(FLATBUFFERS_FLATC_EXECUTABLE ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/bin/flatc CACHE INTERNAL "FlatBuffer compiler")
-  set(FLATBUFFERS_INCLUDE_DIR ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/include CACHE INTERNAL "FlatBuffer include dir")
+  set(FLATBUFFERS_FLATC_EXECUTABLE ${INSTALL_PREFIX_HOST}/bin/flatc CACHE INTERNAL "FlatBuffer compiler")
+  set(FLATBUFFERS_INCLUDE_DIR ${INSTALL_PREFIX_HOST}/include CACHE INTERNAL "FlatBuffer include dir")
 
-  externalproject_add(flatbuffers
-                      URL ${FLATBUFFERS_URL}
-                      DOWNLOAD_DIR ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/download
-                      PREFIX ${CORE_BUILD_DIR}/flatbuffers
-                      CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}
-                                 -DCMAKE_BUILD_TYPE=Release
-                                 -DFLATBUFFERS_CODE_COVERAGE=OFF
-                                 -DFLATBUFFERS_BUILD_TESTS=OFF
-                                 -DFLATBUFFERS_INSTALL=ON
-                                 -DFLATBUFFERS_BUILD_FLATLIB=OFF
-                                 -DFLATBUFFERS_BUILD_FLATC=ON
-                                 -DFLATBUFFERS_BUILD_FLATHASH=OFF
-                                 -DFLATBUFFERS_BUILD_GRPCTEST=OFF
-                                 -DFLATBUFFERS_BUILD_SHAREDLIB=OFF
-                                 "${EXTRA_ARGS}"
-                      BUILD_BYPRODUCTS ${FLATBUFFERS_FLATC_EXECUTABLE})
   set_target_properties(flatbuffers PROPERTIES FOLDER "External Projects"
                                     INTERFACE_INCLUDE_DIRECTORIES ${FLATBUFFERS_INCLUDE_DIR})
 else()
