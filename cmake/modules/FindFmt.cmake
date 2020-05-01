@@ -13,41 +13,13 @@
 #   Fmt::Fmt   - The Fmt library
 
 if(ENABLE_INTERNAL_FMT)
-  include(ExternalProject)
-  file(STRINGS ${CMAKE_SOURCE_DIR}/tools/depends/target/libfmt/Makefile VER REGEX "^[ ]*VERSION[ ]*=.+$")
-  string(REGEX REPLACE "^[ ]*VERSION[ ]*=[ ]*" "" FMT_VERSION "${VER}")
+  include(${WITH_KODI_DEPENDS}/packages/fmt/package.cmake)
+  add_depends_for_targets("HOST")
 
-  # allow user to override the download URL with a local tarball
-  # needed for offline build envs
-  if(FMT_URL)
-      get_filename_component(FMT_URL "${FMT_URL}" ABSOLUTE)
-  else()
-      set(FMT_URL http://mirrors.kodi.tv/build-deps/sources/fmt-${FMT_VERSION}.tar.gz)
-  endif()
-  if(VERBOSE)
-      message(STATUS "FMT_URL: ${FMT_URL}")
-  endif()
+  add_custom_target(fmt ALL DEPENDS fmt-host)
 
-  if(APPLE)
-    set(EXTRA_ARGS "-DCMAKE_OSX_ARCHITECTURES=${CMAKE_OSX_ARCHITECTURES}")
-  endif()
-
-  set(FMT_LIBRARY ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/lib/libfmt.a)
-  set(FMT_INCLUDE_DIR ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/include)
-  externalproject_add(fmt
-                      URL ${FMT_URL}
-                      DOWNLOAD_DIR ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/download
-                      PREFIX ${CORE_BUILD_DIR}/fmt
-                      CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}
-                                 -DCMAKE_CXX_EXTENSIONS=${CMAKE_CXX_EXTENSIONS}
-                                 -DCMAKE_CXX_STANDARD=${CMAKE_CXX_STANDARD}
-                                 -DCMAKE_TOOLCHAIN_FILE=${CMAKE_TOOLCHAIN_FILE}
-                                 -DCMAKE_INSTALL_LIBDIR=lib
-                                 -DFMT_DOC=OFF
-                                 -DFMT_TEST=OFF
-                                 "${EXTRA_ARGS}"
-                      BUILD_BYPRODUCTS ${FMT_LIBRARY})
-  set_target_properties(fmt PROPERTIES FOLDER "External Projects")
+  set(FMT_LIBRARY ${INSTALL_PREFIX_HOST}/lib/libfmt.a)
+  set(FMT_INCLUDE_DIR ${INSTALL_PREFIX_HOST}/include)
 
   include(FindPackageHandleStandardArgs)
   find_package_handle_standard_args(Fmt
