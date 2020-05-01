@@ -9,40 +9,14 @@
 # RapidJSON_INCLUDE_DIRS - the RapidJSON parser include directory
 #
 if(ENABLE_INTERNAL_RapidJSON)
-  include(ExternalProject)
-  file(STRINGS ${CMAKE_SOURCE_DIR}/tools/depends/target/rapidjson/Makefile VER REGEX "^[ ]*VERSION[ ]*=.+$")
-  string(REGEX REPLACE "^[ ]*VERSION[ ]*=[ ]*" "" RJSON_VER "${VER}")
+  include(${WITH_KODI_DEPENDS}/packages/rapidjson/package.cmake)
+  add_depends_for_targets("HOST")
 
-  # allow user to override the download URL with a local tarball
-  # needed for offline build envs
-  if(RapidJSON_URL)
-    get_filename_component(RapidJSON_URL "${RapidJSON_URL}" ABSOLUTE)
-  else()
-    set(RapidJSON_URL http://mirrors.kodi.tv/build-deps/sources/rapidjson-${RJSON_VER}.tar.gz)
-  endif()
-  if(VERBOSE)
-    message(STATUS "RapidJSON_URL: ${RapidJSON_URL}")
-  endif()
+  add_custom_target(rapidjson ALL DEPENDS rapidjson-host)
 
-  if(APPLE)
-    set(EXTRA_ARGS "-DCMAKE_OSX_ARCHITECTURES=${CMAKE_OSX_ARCHITECTURES}")
-  endif()
+  set(RapidJSON_LIBRARY ${INSTALL_PREFIX_HOST}/lib/librapidjson.a)
+  set(RapidJSON_INCLUDE_DIR ${INSTALL_PREFIX_HOST}/include)
 
-  set(RapidJSON_LIBRARY ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/lib/librapidjson.a)
-  set(RapidJSON_INCLUDE_DIR ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/include)
-  externalproject_add(rapidjson
-                      URL ${RapidJSON_URL}
-                      DOWNLOAD_DIR ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/download
-                      PREFIX ${CORE_BUILD_DIR}/rapidjson
-                      CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}
-                                 -DCMAKE_TOOLCHAIN_FILE=${CMAKE_TOOLCHAIN_FILE}
-                                 -DRAPIDJSON_BUILD_DOC=OFF
-                                 -DRAPIDJSON_BUILD_EXAMPLES=OFF
-                                 -DRAPIDJSON_BUILD_TESTS=OFF
-                                 -DRAPIDJSON_BUILD_THIRDPARTY_GTEST=OFF
-                                 "${EXTRA_ARGS}"
-                      PATCH_COMMAND patch -p1 < ${CORE_SOURCE_DIR}/tools/depends/target/rapidjson/0001-remove_custom_cxx_flags.patch
-                      BUILD_BYPRODUCTS ${RapidJSON_LIBRARY})
   set_target_properties(rapidjson PROPERTIES FOLDER "External Projects")
 
   include(FindPackageHandleStandardArgs)
