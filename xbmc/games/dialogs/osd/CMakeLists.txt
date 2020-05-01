@@ -18,4 +18,6 @@ set(HEADERS DialogGameAdvancedSettings.h
             DialogGameVolume.h
 )
 
+set(UNITY_EXCLUDES ${SOURCES})
+
 core_add_library(gameosddialogs)

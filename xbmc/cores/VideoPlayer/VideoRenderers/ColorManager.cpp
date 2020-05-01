@@ -606,6 +606,8 @@ void CColorManager::Create3dLut(cmsHTRANSFORM transform, CMS_DATA_FORMAT format,
   }
   delete[] input;
   delete[] output;
+
+#undef clamp
 }
 
 #endif //defined(HAVE_LCMS2)

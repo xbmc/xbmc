@@ -8,4 +8,7 @@ set(HEADERS DarwinUtils.h
             NSLogDebugHelpers.h
             PlatformDarwin.h)
 
+set(UNITY_EXCLUDES DarwinUtils.mm
+                   DictionaryUtils.mm)
+
 core_add_library(platform_darwin)

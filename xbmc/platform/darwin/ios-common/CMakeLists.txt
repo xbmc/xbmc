@@ -14,4 +14,6 @@ set(HEADERS AnnounceReceiver.h
             DarwinNSUserDefaults.h
             NSData+GZIP.h)
 
+set(UNITY_EXCLUDES ${SOURCES})
+
 core_add_library(platform_ios-common)

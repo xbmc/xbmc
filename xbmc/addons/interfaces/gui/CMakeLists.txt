@@ -12,4 +12,8 @@ set(HEADERS General.h
             AddonGUIRenderingControl.h
             AddonGUIWindow.h)
 
+set(UNITY_EXCLUDES AddonCallbacksGUI.cpp
+                   AddonGUIRenderingControl.cpp
+                   AddonGUIWindow.cpp)
+
 core_add_library(addons_interfaces_gui)

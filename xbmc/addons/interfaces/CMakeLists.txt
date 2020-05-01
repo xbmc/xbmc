@@ -17,4 +17,6 @@ if(CORE_SYSTEM_NAME STREQUAL android)
   list(APPEND HEADERS platform/android/System.h)
 endif()
 
+set(UNITY_EXCLUDES AddonInterfaces.cpp)
+
 core_add_library(addons_interfaces)

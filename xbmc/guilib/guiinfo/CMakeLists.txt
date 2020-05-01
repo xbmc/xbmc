@@ -39,4 +39,8 @@ set(HEADERS GUIInfo.h
             VisualisationGUIInfo.h
             WeatherGUIInfo.h)
 
+
+set(UNITY_EXCLUDES GUIControlsGUIInfo.cpp
+                   SystemGUIInfo.cpp)
+
 core_add_library(guilib_guiinfo)

@@ -44,4 +44,6 @@ if(BLURAY_FOUND)
   list(APPEND SOURCES DiscSettings.cpp)
 endif()
 
+set(UNITY_EXCLUDES SettingsBase.cpp)
+
 core_add_library(settings)

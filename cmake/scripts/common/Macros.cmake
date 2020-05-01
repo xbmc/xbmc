@@ -62,12 +62,21 @@ endfunction()
 # Implicit arguments:
 #   ENABLE_STATIC_LIBS Build static libraries per directory
 #   SOURCES the sources of the library
+#   UNITY_EXCLUDES sources to exclude from unity build
 #   HEADERS the headers of the library (only for IDE support)
 #   OTHERS  other library related files (only for IDE support)
 # On return:
 #   Library will be built, optionally added to ${core_DEPENDS}
 #   Sets CORE_LIBRARY for calls for setting target specific options
+#   Sets ${name}_UNITY_EXCLUDES
 function(core_add_library name)
+  if(ENABLE_UNITY_BUILD)
+    foreach(exclude IN LISTS UNITY_EXCLUDES)
+      get_filename_component(src_path "${exclude}" ABSOLUTE)
+      list(APPEND excludes ${src_path})
+    endforeach()
+  endif()
+
   if(ENABLE_STATIC_LIBS)
     add_library(${name} STATIC ${SOURCES} ${HEADERS} ${OTHERS})
     set_target_properties(${name} PROPERTIES PREFIX "")
@@ -81,13 +90,26 @@ function(core_add_library name)
       set_language_cxx(${name})
       target_link_libraries(${name} PUBLIC effects11)
     endif()
+    if(ENABLE_UNITY_BUILD)
+      set_target_properties(${name} PROPERTIES UNITY_BUILD ON)
+      set_target_properties(${name} PROPERTIES UNITY_BUILD_BATCH_SIZE ${UNITY_BATCH_SIZE})
+      set_source_files_properties(${excludes} PROPERTIES SKIP_UNITY_BUILD_INCLUSION ON)
+      set(${name}_UNITY_EXCLUDES ${excludes} CACHE STRING "" FORCE)
+    endif()
   else()
     foreach(src IN LISTS SOURCES HEADERS OTHERS)
       get_filename_component(src_path "${src}" ABSOLUTE)
       list(APPEND FILES ${src_path})
     endforeach()
     target_sources(lib${APP_NAME_LC} PRIVATE ${FILES})
+    set_source_files_properties(${UNITY_EXCLUDES} PROPERTIES SKIP_UNITY_BUILD_INCLUSION ON)
     set(CORE_LIBRARY lib${APP_NAME_LC} PARENT_SCOPE)
+    if(ENABLE_UNITY_BUILD)
+      set(_UNITY_EXCLUDES ${lib${APP_NAME_LC}_UNITY_EXCLUDES})
+      list(APPEND _UNITY_EXCLUDES ${excludes})
+      list(REMOVE_DUPLICATES _UNITY_EXCLUDES)
+      set(lib${APP_NAME_LC}_UNITY_EXCLUDES ${_UNITY_EXCLUDES} CACHE STRING "" FORCE)
+    endif()
   endif()
   foreach(src ${SOURCES})
     list(APPEND sca_sources ${CMAKE_CURRENT_SOURCE_DIR}/${src})

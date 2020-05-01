@@ -48,4 +48,6 @@ if(CORE_PLATFORM_NAME_LC STREQUAL gbm)
   list(APPEND HEADERS DVDVideoCodecDRMPRIME.h)
 endif()
 
+set(UNITY_EXCLUDES VAAPI.cpp)
+
 core_add_library(dvdvideocodecs)

@@ -10,4 +10,6 @@ set(HEADERS AudioDecoder.h
             PAPlayer.h
             VideoPlayerCodec.h)
 
+set(UNITY_EXCLUDES CodecFactory.cpp)
+
 core_add_library(paplayer)

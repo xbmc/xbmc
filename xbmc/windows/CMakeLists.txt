@@ -22,4 +22,6 @@ set(HEADERS GUIMediaWindow.h
             GUIWindowStartup.h
             GUIWindowSystemInfo.h)
 
+set(UNITY_EXCLUDES GUIWindowFileManager.cpp)
+
 core_add_library(windows)

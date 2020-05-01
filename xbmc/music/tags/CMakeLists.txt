@@ -19,4 +19,6 @@ set(HEADERS ImusicInfoTagLoader.h
             TagLibVFSStream.h
             TagLoaderTagLib.h)
 
+set(UNITY_EXCLUDES MusicInfoTagLoaderFactory.cpp)
+
 core_add_library(music_tags)

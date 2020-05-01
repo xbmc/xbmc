@@ -92,6 +92,10 @@ if(ENABLE_OPTICAL)
   list(APPEND HEADERS Autorun.h)
 endif()
 
+set(UNITY_EXCLUDES PartyModeManager.cpp
+                   PlayListPlayer.cpp
+                   SectionLoader.cpp)
+
 core_add_library(xbmc)
 if(CAP_FOUND)
   target_compile_definitions(${CORE_LIBRARY} PRIVATE -DHAVE_LIBCAP=1)
