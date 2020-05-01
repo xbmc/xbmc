@@ -1,41 +1,12 @@
-if(ENABLE_INTERNAL_CROSSGUID)
-  include(ExternalProject)
-  file(STRINGS ${CMAKE_SOURCE_DIR}/tools/depends/target/crossguid/Makefile VER)
-  string(REGEX MATCH "VERSION=[^ ]*" CGUID_VER "${VER}")
-  list(GET CGUID_VER 0 CGUID_VER)
-  string(SUBSTRING "${CGUID_VER}" 8 -1 CGUID_VER)
+if(NOT KODI_DEPENDSBUILD AND ENABLE_INTERNAL_CROSSGUID)
+  include(${WITH_KODI_DEPENDS}/packages/crossguid/package.cmake)
+  add_depends_for_targets("HOST")
 
-  # allow user to override the download URL with a local tarball
-  # needed for offline build envs
-  if(CROSSGUID_URL)
-    get_filename_component(CROSSGUID_URL "${CROSSGUID_URL}" ABSOLUTE)
-  else()
-    set(CROSSGUID_URL http://mirrors.kodi.tv/build-deps/sources/crossguid-${CGUID_VER}.tar.gz)
-  endif()
-  if(VERBOSE)
-    message(STATUS "CROSSGUID_URL: ${CROSSGUID_URL}")
-  endif()
+  add_custom_target(crossguid ALL DEPENDS crossguid-host)
 
-  if(APPLE)
-    set(EXTRA_ARGS "-DCMAKE_OSX_ARCHITECTURES=${CMAKE_OSX_ARCHITECTURES}")
-  endif()
+  set(CROSSGUID_LIBRARY ${INSTALL_PREFIX_HOST}/lib/libcrossguid.a)
+  set(CROSSGUID_INCLUDE_DIR ${INSTALL_PREFIX_HOST}/include)
 
-  set(CROSSGUID_LIBRARY ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/lib/libcrossguid.a)
-  set(CROSSGUID_INCLUDE_DIR ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/include)
-  externalproject_add(crossguid
-                      URL ${CROSSGUID_URL}
-                      DOWNLOAD_DIR ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/download
-                      PREFIX ${CORE_BUILD_DIR}/crossguid
-                      CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}
-                                 -DCMAKE_TOOLCHAIN_FILE=${CMAKE_TOOLCHAIN_FILE}
-                                 "${EXTRA_ARGS}"
-                      PATCH_COMMAND ${CMAKE_COMMAND} -E copy
-                                    ${CMAKE_SOURCE_DIR}/tools/depends/target/crossguid/CMakeLists.txt
-                                    <SOURCE_DIR> &&
-                                    ${CMAKE_COMMAND} -E copy
-                                    ${CMAKE_SOURCE_DIR}/tools/depends/target/crossguid/FindUUID.cmake
-                                    <SOURCE_DIR>
-                      BUILD_BYPRODUCTS ${CROSSGUID_LIBRARY})
   set_target_properties(crossguid PROPERTIES FOLDER "External Projects")
 
   include(FindPackageHandleStandardArgs)
