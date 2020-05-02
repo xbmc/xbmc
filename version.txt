@@ -7,7 +7,7 @@ VERSION_MINOR 0
 VERSION_TAG ALPHA1
 VERSION_CODE 18.9.701
 ADDON_API 18.9.701
-APP_PACKAGE org.xbmc.kodi
+APP_PACKAGE org.xbmc.kodimatrix
 PACKAGE_IDENTITY XBMCFoundation.Kodi
 PACKAGE_PUBLISHER C62BD90A-CDD8-477F-96C3-B25992247B97
 PACKAGE_DESCRIPTION Kodi is an open source (GPL) software media center for playing videos, music, pictures, games, and more.
