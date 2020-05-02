@@ -580,7 +580,13 @@ BuildObject(CFileItem&                    item,
             thumb_loader->LoadItem(&item);
 
         // finally apply the found artwork
-        thumb = item.GetArt("thumb");
+        // note: movies should use poster as the preferred "thumb" image
+        if (item.HasVideoInfoTag() && item.GetVideoInfoTag()->m_type == MediaTypeMovie &&
+            item.HasArt("poster"))
+          thumb = item.GetArt("poster");
+        else
+          thumb = item.GetArt("thumb");
+
         if (!thumb.empty()) {
             PLT_AlbumArtInfo art;
             art.uri = upnp_server->BuildSafeResourceUri(
