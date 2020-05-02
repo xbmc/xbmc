@@ -130,3 +130,6 @@ void CGUIDialogTextViewer::ShowForFile(const std::string& path, bool useMonoFont
     }
   }
 }
+
+#undef CONTROL_HEADING
+#undef CONTROL_TEXTAREA

@@ -360,3 +360,10 @@ void CGUIDialogSelect::OnWindowUnload()
   CGUIDialogBoxBase::OnWindowUnload();
   m_viewControl.Reset();
 }
+
+#undef CONTROL_HEADING
+#undef CONTROL_NUMBER_OF_ITEMS
+#undef CONTROL_SIMPLE_LIST
+#undef CONTROL_DETAILED_LIST
+#undef CONTROL_EXTRA_BUTTON
+#undef CONTROL_CANCEL_BUTTON

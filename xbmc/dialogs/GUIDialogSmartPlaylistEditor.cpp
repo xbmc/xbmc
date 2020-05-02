@@ -645,3 +645,20 @@ bool CGUIDialogSmartPlaylistEditor::EditPlaylist(const std::string &path, const 
   editor->Open();
   return !editor->m_cancelled;
 }
+
+#undef CONTROL_HEADING
+#undef CONTROL_RULE_LIST
+#undef CONTROL_NAME
+#undef CONTROL_RULE_ADD
+#undef CONTROL_RULE_REMOVE
+#undef CONTROL_RULE_EDIT
+#undef CONTROL_MATCH
+#undef CONTROL_LIMIT
+#undef CONTROL_ORDER_FIELD
+#undef CONTROL_ORDER_DIRECTION
+#undef CONTROL_GROUP_BY
+#undef CONTROL_GROUP_MIXED
+
+#undef CONTROL_OK
+#undef CONTROL_CANCEL
+#undef CONTROL_TYPE
