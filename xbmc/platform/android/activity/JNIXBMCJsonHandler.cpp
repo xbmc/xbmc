@@ -18,11 +18,11 @@
 
 using namespace jni;
 
-static std::string s_className = std::string(CCompileInfo::GetClass()) + "/XBMCJsonRPC";
+static std::string s_classNameJson = std::string(CCompileInfo::GetClass()) + "/XBMCJsonRPC";
 
 void CJNIXBMCJsonHandler::RegisterNatives(JNIEnv *env)
 {
-  jclass cClass = env->FindClass(s_className.c_str());
+  jclass cClass = env->FindClass(s_classNameJson.c_str());
   if(cClass)
   {
     JNINativeMethod methods[] =

@@ -21,13 +21,13 @@
 
 using namespace jni;
 
-static std::string s_className = std::string(CCompileInfo::GetClass()) + "/XBMCMainView";
+static std::string s_classNameMv = std::string(CCompileInfo::GetClass()) + "/XBMCMainView";
 CEvent CJNIXBMCMainView::m_surfaceCreated;
 CJNIXBMCMainView* CJNIXBMCMainView::m_instance = nullptr;
 
 void CJNIXBMCMainView::RegisterNatives(JNIEnv* env)
 {
-  jclass cClass = env->FindClass(s_className.c_str());
+  jclass cClass = env->FindClass(s_classNameMv.c_str());
   if(cClass)
   {
     JNINativeMethod methods[] =

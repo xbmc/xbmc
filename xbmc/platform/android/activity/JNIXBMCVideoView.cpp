@@ -21,11 +21,11 @@
 
 using namespace jni;
 
-static std::string s_className = std::string(CCompileInfo::GetClass()) + "/XBMCVideoView";
+static std::string s_classNameVv = std::string(CCompileInfo::GetClass()) + "/XBMCVideoView";
 
 void CJNIXBMCVideoView::RegisterNatives(JNIEnv* env)
 {
-  jclass cClass = env->FindClass(s_className.c_str());
+  jclass cClass = env->FindClass(s_classNameVv.c_str());
   if(cClass)
   {
     JNINativeMethod methods[] =
@@ -46,10 +46,11 @@ CJNIXBMCVideoView::CJNIXBMCVideoView(const jni::jhobject &object)
 
 CJNIXBMCVideoView* CJNIXBMCVideoView::createVideoView(CJNISurfaceHolderCallback* callback)
 {
-  std::string signature = "()L" + s_className + ";";
+  std::string signature = "()L" + s_classNameVv + ";";
 
-  CJNIXBMCVideoView* pvw = new CJNIXBMCVideoView(call_static_method<jhobject>(xbmc_jnienv(), CJNIContext::getClassLoader().loadClass(GetDotClassName(s_className)),
-                                                                              "createVideoView", signature.c_str()));
+  CJNIXBMCVideoView* pvw = new CJNIXBMCVideoView(call_static_method<jhobject>(
+      xbmc_jnienv(), CJNIContext::getClassLoader().loadClass(GetDotClassName(s_classNameVv)),
+      "createVideoView", signature.c_str()));
   if (!*pvw)
   {
     CLog::Log(LOGERROR, "Cannot instantiate VideoView!!");
