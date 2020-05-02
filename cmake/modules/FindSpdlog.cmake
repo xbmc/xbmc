@@ -35,9 +35,11 @@ if(ENABLE_INTERNAL_SPDLOG)
 
   set(SPDLOG_LIBRARY ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/lib/libspdlog.a)
   set(SPDLOG_INCLUDE_DIR ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/include)
+
   externalproject_add(spdlog
                       URL ${SPDLOG_URL}
                       DOWNLOAD_DIR ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/download
+                      PATCH_COMMAND patch -p1 -i ${CMAKE_SOURCE_DIR}/tools/depends/target/libspdlog/0001-fix_fmt_version.patch
                       PREFIX ${CORE_BUILD_DIR}/spdlog
                       CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}
                                  -DCMAKE_CXX_EXTENSIONS=${CMAKE_CXX_EXTENSIONS}
@@ -48,6 +50,7 @@ if(ENABLE_INTERNAL_SPDLOG)
                                  -DSPDLOG_BUILD_TESTS=OFF
                                  -DSPDLOG_BUILD_BENCH=OFF
                                  -DSPDLOG_FMT_EXTERNAL=ON
+                                 -DCMAKE_PREFIX_PATH=${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}
                                  "${EXTRA_ARGS}"
                       BUILD_BYPRODUCTS ${SPDLOG_LIBRARY})
   set_target_properties(spdlog PROPERTIES FOLDER "External Projects")

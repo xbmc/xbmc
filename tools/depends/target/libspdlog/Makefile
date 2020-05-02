@@ -1,5 +1,5 @@
 -include ../../Makefile.include
-DEPS = Makefile
+DEPS = Makefile 0001-fix_fmt_version.patch
 
 # lib name, version
 LIBNAME=spdlog
@@ -28,7 +28,7 @@ else
     RETRIEVE_TOOL_FLAGS := -Ls --create-dirs -f -O
     ARCHIVE_TOOL := tar
     ARCHIVE_TOOL_FLAGS := --strip-components=1 -xf
-    CMAKE := cmake -DCMAKE_INSTALL_PREFIX=$(PREFIX)
+    CMAKE := cmake -DCMAKE_INSTALL_PREFIX=$(PREFIX) -DCMAKE_PREFIX_PATH=$(PREFIX)
   endif
 endif
 
@@ -52,6 +52,7 @@ endif
 	rm -rf $(PLATFORM); mkdir -p $(PLATFORM)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
 	cd $(PLATFORM); rm -rf build; mkdir -p build
+	cd $(PLATFORM); patch -p1 -i ../0001-fix_fmt_version.patch
 	cd $(PLATFORM)/build; $(CMAKE) $(CMAKE_OPTIONS) ..
 
 $(LIBDYLIB): $(PLATFORM)
