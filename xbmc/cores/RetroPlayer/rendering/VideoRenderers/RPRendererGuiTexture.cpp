@@ -270,3 +270,5 @@ void CRPRendererGuiTexture::RenderInternal(bool clear, uint8_t alpha)
 
 #endif
 }
+
+#undef BUFFER_OFFSET

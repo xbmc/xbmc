@@ -312,3 +312,5 @@ void CRPRendererOpenGLES::Render(uint8_t alpha)
 
   m_context.DisableGUIShader();
 }
+
+#undef BUFFER_OFFSET
