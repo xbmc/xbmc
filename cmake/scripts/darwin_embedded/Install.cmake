@@ -101,6 +101,8 @@ add_custom_command(TARGET ${APP_NAME_LC} POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/DllPaths_generated.h
                                      ${CMAKE_BINARY_DIR}/xbmc/DllPaths_generated.h
     COMMAND "ACTION=build"
+            "APP_NAME=${APP_NAME}"
+            "XBMC_DEPENDS=${DEPENDS_PATH}"
             ${CMAKE_SOURCE_DIR}/tools/darwin/Support/CopyRootFiles-darwin_embedded.command
     COMMAND "XBMC_DEPENDS=${DEPENDS_PATH}"
             "PYTHON_VERSION=${PYTHON_VERSION}"

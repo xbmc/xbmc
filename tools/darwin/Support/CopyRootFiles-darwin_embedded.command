@@ -33,6 +33,9 @@ ${SYNC} "$BUILD_ROOT/xbmc/platform/darwin/Credits.html"  "$TARGET_BUILD_DIR/$EXE
 ${ADDONSYNC} "$BUILD_ROOT/addons"  "$TARGET_BUILD_DIR/$EXECUTABLE_FOLDER_PATH/AppData/AppHome"
 ${SYNC} "$BUILD_ROOT/media"    "$TARGET_BUILD_DIR/$EXECUTABLE_FOLDER_PATH/AppData/AppHome"
 
+# extracted eggs
+${SYNC} "$XBMC_DEPENDS/share/$APP_NAME/addons" "$TARGET_BUILD_DIR/$EXECUTABLE_FOLDER_PATH/AppData/AppHome"
+
 # sync skin.estouchy
 SYNCSKIN_A=${SKINSYNC}
 if [ -f "$BUILD_ROOT/addons/skin.estouchy/media/Textures.xbt" ]; then
