@@ -607,7 +607,7 @@ extern "C" {
     const char*(__cdecl* GetBackendVersion)(const struct AddonInstance_PVR*);
     const char*(__cdecl* GetBackendHostname)(const struct AddonInstance_PVR*);
     const char*(__cdecl* GetConnectionString)(const struct AddonInstance_PVR*);
-    enum PVR_ERROR(__cdecl* GetDriveSpace)(const struct AddonInstance_PVR*, long long*, long long*);
+    enum PVR_ERROR(__cdecl* GetDriveSpace)(const struct AddonInstance_PVR*, uint64_t*, uint64_t*);
     enum PVR_ERROR(__cdecl* CallSettingsMenuHook)(const struct AddonInstance_PVR*,
                                                   const struct PVR_MENUHOOK*);
 
@@ -740,16 +740,16 @@ extern "C" {
     bool(__cdecl* OpenLiveStream)(const struct AddonInstance_PVR*, const struct PVR_CHANNEL*);
     void(__cdecl* CloseLiveStream)(const struct AddonInstance_PVR*);
     int(__cdecl* ReadLiveStream)(const struct AddonInstance_PVR*, unsigned char*, unsigned int);
-    long long(__cdecl* SeekLiveStream)(const struct AddonInstance_PVR*, long long, int);
-    long long(__cdecl* LengthLiveStream)(const struct AddonInstance_PVR*);
+    int64_t(__cdecl* SeekLiveStream)(const struct AddonInstance_PVR*, int64_t, int);
+    int64_t(__cdecl* LengthLiveStream)(const struct AddonInstance_PVR*);
 
     //--==----==----==----==----==----==----==----==----==----==----==----==----==
     // Recording stream read interface functions
     bool(__cdecl* OpenRecordedStream)(const struct AddonInstance_PVR*, const struct PVR_RECORDING*);
     void(__cdecl* CloseRecordedStream)(const struct AddonInstance_PVR*);
     int(__cdecl* ReadRecordedStream)(const struct AddonInstance_PVR*, unsigned char*, unsigned int);
-    long long(__cdecl* SeekRecordedStream)(const struct AddonInstance_PVR*, long long, int);
-    long long(__cdecl* LengthRecordedStream)(const struct AddonInstance_PVR*);
+    int64_t(__cdecl* SeekRecordedStream)(const struct AddonInstance_PVR*, int64_t, int);
+    int64_t(__cdecl* LengthRecordedStream)(const struct AddonInstance_PVR*);
 
     //--==----==----==----==----==----==----==----==----==----==----==----==----==
     // Stream demux interface functions

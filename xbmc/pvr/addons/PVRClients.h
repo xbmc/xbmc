@@ -48,8 +48,8 @@ namespace PVR
     int numRecordings = 0;
     int numDeletedRecordings = 0;
     int numChannels = 0;
-    long long diskUsed = 0;
-    long long diskTotal = 0;
+    uint64_t diskUsed = 0;
+    uint64_t diskTotal = 0;
   };
 
   class CPVRClients : public ADDON::IAddonMgrCallback

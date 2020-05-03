@@ -533,15 +533,15 @@ const std::string& CPVRClient::GetFriendlyName() const
   return m_strFriendlyName;
 }
 
-PVR_ERROR CPVRClient::GetDriveSpace(long long& iTotal, long long& iUsed)
+PVR_ERROR CPVRClient::GetDriveSpace(uint64_t& iTotal, uint64_t& iUsed)
 {
   /* default to 0 in case of error */
   iTotal = 0;
   iUsed = 0;
 
   return DoAddonCall(__FUNCTION__, [&iTotal, &iUsed](const AddonInstance* addon) {
-    long long iTotalSpace = 0;
-    long long iUsedSpace = 0;
+    uint64_t iTotalSpace = 0;
+    uint64_t iUsedSpace = 0;
     PVR_ERROR error = addon->toAddon->GetDriveSpace(addon, &iTotalSpace, &iUsedSpace);
     if (error == PVR_ERROR_NO_ERROR)
     {
