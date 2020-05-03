@@ -30,25 +30,26 @@ extern "C"
    * @return PVR_ERROR_NO_ERROR if the properties were fetched successfully.
    * @remarks Valid implementation required.
    */
-  PVR_ERROR GetCapabilities(PVR_ADDON_CAPABILITIES* pCapabilities);
+  PVR_ERROR GetCapabilities(const AddonInstance_PVR* instance,
+                            PVR_ADDON_CAPABILITIES* pCapabilities);
 
   /*!
    * @return The name reported by the backend that will be displayed in the UI.
    * @remarks Valid implementation required.
    */
-  const char* GetBackendName(void);
+  const char* GetBackendName(const AddonInstance_PVR* instance);
 
   /*!
    * @return The version string reported by the backend that will be displayed in the UI.
    * @remarks Valid implementation required.
    */
-  const char* GetBackendVersion(void);
+  const char* GetBackendVersion(const AddonInstance_PVR* instance);
 
   /*!
    * @return The connection string reported by the backend that will be displayed in the UI.
    * @remarks Valid implementation required.
    */
-  const char* GetConnectionString(void);
+  const char* GetConnectionString(const AddonInstance_PVR* instance);
 
   /*!
    * Get the disk space reported by the backend (if supported).
@@ -57,7 +58,7 @@ extern "C"
    * @return PVR_ERROR_NO_ERROR if the drive space has been fetched successfully.
    * @remarks Optional. Return PVR_ERROR_NOT_IMPLEMENTED if this add-on won't provide this function.
    */
-  PVR_ERROR GetDriveSpace(long long* iTotal, long long* iUsed);
+  PVR_ERROR GetDriveSpace(const AddonInstance_PVR* instance, long long* iTotal, long long* iUsed);
 
   /*!
    * Call one of the menu hooks (if supported).
@@ -67,7 +68,9 @@ extern "C"
    * @return PVR_ERROR_NO_ERROR if the hook was called successfully.
    * @remarks Optional. Return PVR_ERROR_NOT_IMPLEMENTED if this add-on won't provide this function.
    */
-  PVR_ERROR CallMenuHook(const PVR_MENUHOOK& menuhook, const PVR_MENUHOOK_DATA &item);
+  PVR_ERROR CallMenuHook(const AddonInstance_PVR* instance,
+                         const PVR_MENUHOOK& menuhook,
+                         const PVR_MENUHOOK_DATA& item);
   //@}
 
   /*! @name PVR EPG methods
@@ -85,7 +88,11 @@ extern "C"
    * @remarks Required if bSupportsEPG is set to true.
    *          Return PVR_ERROR_NOT_IMPLEMENTED if this add-on won't provide this function.
    */
-  PVR_ERROR GetEPGForChannel(ADDON_HANDLE handle, int iChannelUid, time_t iStart, time_t iEnd);
+  PVR_ERROR GetEPGForChannel(const AddonInstance_PVR* instance,
+                             ADDON_HANDLE handle,
+                             int iChannelUid,
+                             time_t iStart,
+                             time_t iEnd);
 
   /*
    * Check if the given EPG tag can be recorded.
@@ -94,7 +101,9 @@ extern "C"
    * @return PVR_ERROR_NO_ERROR if bIsRecordable has been set successfully.
    * @remarks Optional, return PVR_ERROR_NOT_IMPLEMENTED to let Kodi decide.
    */
-  PVR_ERROR IsEPGTagRecordable(const EPG_TAG* tag, bool* bIsRecordable);
+  PVR_ERROR IsEPGTagRecordable(const AddonInstance_PVR* instance,
+                               const EPG_TAG* tag,
+                               bool* bIsRecordable);
 
   /*
    * Check if the given EPG tag can be played.
@@ -104,7 +113,9 @@ extern "C"
    * @remarks Required if add-on supports playing epg tags.
    *          Return PVR_ERROR_NOT_IMPLEMENTED if this add-on won't provide this function.
    */
-  PVR_ERROR IsEPGTagPlayable(const EPG_TAG* tag, bool* bIsPlayable);
+  PVR_ERROR IsEPGTagPlayable(const AddonInstance_PVR* instance,
+                             const EPG_TAG* tag,
+                             bool* bIsPlayable);
 
   /*!
    * Retrieve the edit decision list (EDL) of an EPG tag on the backend.
@@ -115,7 +126,10 @@ extern "C"
    * @remarks Required if bSupportsEpgEdl is set to true.
    *          Return PVR_ERROR_NOT_IMPLEMENTED if this add-on won't provide this function.
    */
-  PVR_ERROR GetEPGTagEdl(const EPG_TAG* epgTag, PVR_EDL_ENTRY edl[], int *size);
+  PVR_ERROR GetEPGTagEdl(const AddonInstance_PVR* instance,
+                         const EPG_TAG* epgTag,
+                         PVR_EDL_ENTRY edl[],
+                         int* size);
 
   /*!
    * Get the stream properties for an epg tag from the backend.
@@ -127,7 +141,10 @@ extern "C"
    *          In this case your implementation must fill the property PVR_STREAM_PROPERTY_STREAMURL with the URL Kodi should resolve to playback the epg tag.
    *          Return PVR_ERROR_NOT_IMPLEMENTED if this add-on won't provide this function.
    */
-  PVR_ERROR GetEPGTagStreamProperties(const EPG_TAG* tag, PVR_NAMED_VALUE* properties, unsigned int* iPropertiesCount);
+  PVR_ERROR GetEPGTagStreamProperties(const AddonInstance_PVR* instance,
+                                      const EPG_TAG* tag,
+                                      PVR_NAMED_VALUE* properties,
+                                      unsigned int* iPropertiesCount);
 
   //@}
 
@@ -143,7 +160,7 @@ extern "C"
    * @remarks Required if bSupportsChannelGroups is set to true.
    *          Return -1 if this add-on won't provide this function.
    */
-  int GetChannelGroupsAmount(void);
+  int GetChannelGroupsAmount(const AddonInstance_PVR* instance);
 
   /*!
    * Request the list of all channel groups from the backend if it supports channel groups.
@@ -154,7 +171,7 @@ extern "C"
    * @remarks Required if bSupportsChannelGroups is set to true.
    *          Return PVR_ERROR_NOT_IMPLEMENTED if this add-on won't provide this function.
    */
-  PVR_ERROR GetChannelGroups(ADDON_HANDLE handle, bool bRadio);
+  PVR_ERROR GetChannelGroups(const AddonInstance_PVR* instance, ADDON_HANDLE handle, bool bRadio);
 
   /*!
    * Request the list of all group members of a group from the backend if it supports channel groups.
@@ -165,7 +182,9 @@ extern "C"
    * @remarks Required if bSupportsChannelGroups is set to true.
    *          Return PVR_ERROR_NOT_IMPLEMENTED if this add-on won't provide this function.
    */
-  PVR_ERROR GetChannelGroupMembers(ADDON_HANDLE handle, const PVR_CHANNEL_GROUP& group);
+  PVR_ERROR GetChannelGroupMembers(const AddonInstance_PVR* instance,
+                                   ADDON_HANDLE handle,
+                                   const PVR_CHANNEL_GROUP& group);
   //@}
 
   /** @name PVR channel methods
@@ -181,13 +200,13 @@ extern "C"
    *          Return PVR_ERROR_NOT_IMPLEMENTED if this add-on won't provide this function.
    * @note see libKODI_guilib.h about related parts
    */
-  PVR_ERROR OpenDialogChannelScan(void);
+  PVR_ERROR OpenDialogChannelScan(const AddonInstance_PVR* instance);
 
   /*!
    * @return The total amount of channels on the backend, or -1 on error.
    * @remarks Valid implementation required.
    */
-  int GetChannelsAmount(void);
+  int GetChannelsAmount(const AddonInstance_PVR* instance);
 
   /*!
    * Request the list of all channels from the backend.
@@ -199,7 +218,7 @@ extern "C"
    *          If bSupportsRadio is set to true, a valid result set needs to be provided for bRadio = true.
    *          At least one of these two must provide a valid result set.
    */
-  PVR_ERROR GetChannels(ADDON_HANDLE handle, bool bRadio);
+  PVR_ERROR GetChannels(const AddonInstance_PVR* instance, ADDON_HANDLE handle, bool bRadio);
 
   /*!
    * Delete a channel from the backend.
@@ -207,7 +226,7 @@ extern "C"
    * @return PVR_ERROR_NO_ERROR if the channel has been deleted successfully.
    * @remarks Required if bSupportsChannelSettings is set to true.
    */
-  PVR_ERROR DeleteChannel(const PVR_CHANNEL& channel);
+  PVR_ERROR DeleteChannel(const AddonInstance_PVR* instance, const PVR_CHANNEL& channel);
 
   /*!
    * Rename a channel on the backend.
@@ -216,7 +235,7 @@ extern "C"
    * @remarks Optional, and only used if bSupportsChannelSettings is set to true.
    *          Return PVR_ERROR_NOT_IMPLEMENTED if this add-on won't provide this function.
    */
-  PVR_ERROR RenameChannel(const PVR_CHANNEL& channel);
+  PVR_ERROR RenameChannel(const AddonInstance_PVR* instance, const PVR_CHANNEL& channel);
 
   /*!
    * Show the channel settings dialog, if supported by the backend.
@@ -225,7 +244,8 @@ extern "C"
    * @remarks Required if bSupportsChannelSettings is set to true.
    * @note see libKODI_guilib.h about related parts
    */
-  PVR_ERROR OpenDialogChannelSettings(const PVR_CHANNEL& channel);
+  PVR_ERROR OpenDialogChannelSettings(const AddonInstance_PVR* instance,
+                                      const PVR_CHANNEL& channel);
 
   /*!
    * Show the dialog to add a channel on the backend, if supported by the backend.
@@ -234,7 +254,7 @@ extern "C"
    * @remarks Required if bSupportsChannelSettings is set to true.
    * @note see libKODI_guilib.h about related parts
    */
-  PVR_ERROR OpenDialogChannelAdd(const PVR_CHANNEL& channel);
+  PVR_ERROR OpenDialogChannelAdd(const AddonInstance_PVR* instance, const PVR_CHANNEL& channel);
   //@}
 
   /** @name PVR recording methods
@@ -248,7 +268,7 @@ extern "C"
    * @param deleted if set return deleted recording (called if bSupportsRecordingsUndelete set to true)
    * @remarks Required if bSupportsRecordings is set to true. Return -1 if this add-on won't provide this function.
    */
-  int GetRecordingsAmount(bool deleted);
+  int GetRecordingsAmount(const AddonInstance_PVR* instance, bool deleted);
 
   /*!
    * Request the list of all recordings from the backend, if supported.
@@ -259,7 +279,7 @@ extern "C"
    * @remarks Required if bSupportsRecordings is set to true.
    *          Return PVR_ERROR_NOT_IMPLEMENTED if this add-on won't provide this function.
    */
-  PVR_ERROR GetRecordings(ADDON_HANDLE handle, bool deleted);
+  PVR_ERROR GetRecordings(const AddonInstance_PVR* instance, ADDON_HANDLE handle, bool deleted);
 
   /*!
    * Delete a recording on the backend.
@@ -268,7 +288,7 @@ extern "C"
    * @remarks Optional, and only used if bSupportsRecordings is set to true.
    *          Return PVR_ERROR_NOT_IMPLEMENTED if this add-on won't provide this function.
    */
-  PVR_ERROR DeleteRecording(const PVR_RECORDING& recording);
+  PVR_ERROR DeleteRecording(const AddonInstance_PVR* instance, const PVR_RECORDING& recording);
 
   /*!
    * Undelete a recording on the backend.
@@ -277,13 +297,13 @@ extern "C"
    * @remarks Optional, and only used if bSupportsRecordingsUndelete is set to true.
    *          Return PVR_ERROR_NOT_IMPLEMENTED if this add-on won't provide this function.
    */
-  PVR_ERROR UndeleteRecording(const PVR_RECORDING& recording);
+  PVR_ERROR UndeleteRecording(const AddonInstance_PVR* instance, const PVR_RECORDING& recording);
 
   /*!
    * @brief Delete all recordings permanent which in the deleted folder on the backend.
    * @return PVR_ERROR_NO_ERROR if the recordings has been deleted successfully.
    */
-  PVR_ERROR DeleteAllRecordingsFromTrash();
+  PVR_ERROR DeleteAllRecordingsFromTrash(const AddonInstance_PVR* instance);
 
   /*!
    * Rename a recording on the backend.
@@ -292,7 +312,7 @@ extern "C"
    * @remarks Optional, and only used if bSupportsRecordings is set to true.
    *          Return PVR_ERROR_NOT_IMPLEMENTED if this add-on won't provide this function.
    */
-  PVR_ERROR RenameRecording(const PVR_RECORDING& recording);
+  PVR_ERROR RenameRecording(const AddonInstance_PVR* instance, const PVR_RECORDING& recording);
 
   /*!
    * Set the lifetime of a recording on the backend.
@@ -301,7 +321,7 @@ extern "C"
    * @remarks Required if bSupportsRecordingsLifetimeChange is set to true.
    *          Return PVR_ERROR_NOT_IMPLEMENTED if this add-on won't provide this function.
    */
-  PVR_ERROR SetRecordingLifetime(const PVR_RECORDING* recording);
+  PVR_ERROR SetRecordingLifetime(const AddonInstance_PVR* instance, const PVR_RECORDING* recording);
 
   /*!
    * Set the play count of a recording on the backend.
@@ -311,7 +331,9 @@ extern "C"
    * @remarks Required if bSupportsRecordingPlayCount is set to true.
    *          Return PVR_ERROR_NOT_IMPLEMENTED if this add-on won't provide this function.
    */
-  PVR_ERROR SetRecordingPlayCount(const PVR_RECORDING& recording, int count);
+  PVR_ERROR SetRecordingPlayCount(const AddonInstance_PVR* instance,
+                                  const PVR_RECORDING& recording,
+                                  int count);
 
   /*!
    * Set the last watched position of a recording on the backend.
@@ -321,7 +343,9 @@ extern "C"
    * @remarks Required if bSupportsLastPlayedPosition is set to true.
    *          Return PVR_ERROR_NOT_IMPLEMENTED if this add-on won't provide this function.
    */
-  PVR_ERROR SetRecordingLastPlayedPosition(const PVR_RECORDING& recording, int lastplayedposition);
+  PVR_ERROR SetRecordingLastPlayedPosition(const AddonInstance_PVR* instance,
+                                           const PVR_RECORDING& recording,
+                                           int lastplayedposition);
 
   /*!
    * Retrieve the last watched position of a recording on the backend.
@@ -330,7 +354,8 @@ extern "C"
    * @remarks Required if bSupportsRecordingPlayCount is set to true.
    *          Return -1 if this add-on won't provide this function.
    */
-  int GetRecordingLastPlayedPosition(const PVR_RECORDING& recording);
+  int GetRecordingLastPlayedPosition(const AddonInstance_PVR* instance,
+                                     const PVR_RECORDING& recording);
 
   /*!
    * Retrieve the edit decision list (EDL) of a recording on the backend.
@@ -341,7 +366,10 @@ extern "C"
    * @remarks Required if bSupportsRecordingEdl is set to true.
    *          Return PVR_ERROR_NOT_IMPLEMENTED if this add-on won't provide this function.
    */
-  PVR_ERROR GetRecordingEdl(const PVR_RECORDING& recording, PVR_EDL_ENTRY edl[], int *size);
+  PVR_ERROR GetRecordingEdl(const AddonInstance_PVR* instance,
+                            const PVR_RECORDING& recording,
+                            PVR_EDL_ENTRY edl[],
+                            int* size);
 
   /*!
    * Retrieve the size of a recording on the backend.
@@ -351,7 +379,9 @@ extern "C"
    * @remarks Required if bSupportsRecordingSize is set to true.
    *          Return PVR_ERROR_NOT_IMPLEMENTED if this add-on won't provide this function.
    */
-  PVR_ERROR GetRecordingSize(const PVR_RECORDING* recording, int64_t* sizeInBytes);
+  PVR_ERROR GetRecordingSize(const AddonInstance_PVR* instance,
+                             const PVR_RECORDING* recording,
+                             int64_t* sizeInBytes);
 
   /*!
    * Retrieve the timer types supported by the backend.
@@ -361,7 +391,9 @@ extern "C"
    * @remarks Required if bSupportsTimers is set to true.
    *          Return PVR_ERROR_NOT_IMPLEMENTED if this add-on won't provide this function.
    */
-  PVR_ERROR GetTimerTypes(PVR_TIMER_TYPE types[], int *typesCount);
+  PVR_ERROR GetTimerTypes(const AddonInstance_PVR* instance,
+                          PVR_TIMER_TYPE types[],
+                          int* typesCount);
 
   //@}
   /** @name PVR timer methods
@@ -374,7 +406,7 @@ extern "C"
    * @return The total amount of timers on the backend or -1 on error.
    * @remarks Required if bSupportsTimers is set to true. Return -1 if this add-on won't provide this function.
    */
-  int GetTimersAmount(void);
+  int GetTimersAmount(const AddonInstance_PVR* instance);
 
   /*!
    * Request the list of all timers from the backend if supported.
@@ -384,7 +416,7 @@ extern "C"
    * @remarks Required if bSupportsTimers is set to true.
    *          Return PVR_ERROR_NOT_IMPLEMENTED if this add-on won't provide this function.
    */
-  PVR_ERROR GetTimers(ADDON_HANDLE handle);
+  PVR_ERROR GetTimers(const AddonInstance_PVR* instance, ADDON_HANDLE handle);
 
   /*!
    * Add a timer on the backend.
@@ -393,7 +425,7 @@ extern "C"
    * @remarks Required if bSupportsTimers is set to true.
    *          Return PVR_ERROR_NOT_IMPLEMENTED if this add-on won't provide this function.
    */
-  PVR_ERROR AddTimer(const PVR_TIMER& timer);
+  PVR_ERROR AddTimer(const AddonInstance_PVR* instance, const PVR_TIMER& timer);
 
   /*!
    * Delete a timer on the backend.
@@ -403,7 +435,9 @@ extern "C"
    * @remarks Required if bSupportsTimers is set to true.
    *          Return PVR_ERROR_NOT_IMPLEMENTED if this add-on won't provide this function.
    */
-  PVR_ERROR DeleteTimer(const PVR_TIMER& timer, bool bForceDelete);
+  PVR_ERROR DeleteTimer(const AddonInstance_PVR* instance,
+                        const PVR_TIMER& timer,
+                        bool bForceDelete);
 
   /*!
    * Update the timer information on the backend.
@@ -412,7 +446,7 @@ extern "C"
    * @remarks Required if bSupportsTimers is set to true.
    *          Return PVR_ERROR_NOT_IMPLEMENTED if this add-on won't provide this function.
    */
-  PVR_ERROR UpdateTimer(const PVR_TIMER& timer);
+  PVR_ERROR UpdateTimer(const AddonInstance_PVR* instance, const PVR_TIMER& timer);
 
   //@}
 
@@ -426,13 +460,13 @@ extern "C"
    *          CloseLiveStream() will always be called by Kodi prior to calling this function.
    *          Return false if this add-on won't provide this function.
    */
-  bool OpenLiveStream(const PVR_CHANNEL& channel);
+  bool OpenLiveStream(const AddonInstance_PVR* instance, const PVR_CHANNEL& channel);
 
   /*!
    * Close an open live stream.
    * @remarks Required if bHandlesInputStream or bHandlesDemuxing is set to true.
    */
-  void CloseLiveStream(void);
+  void CloseLiveStream(const AddonInstance_PVR* instance);
 
   /*!
    * Read from an open live stream.
@@ -442,7 +476,9 @@ extern "C"
    * @remarks Required if bHandlesInputStream is set to true.
    *          Return -1 if this add-on won't provide this function.
    */
-  int ReadLiveStream(unsigned char* pBuffer, unsigned int iBufferSize);
+  int ReadLiveStream(const AddonInstance_PVR* instance,
+                     unsigned char* pBuffer,
+                     unsigned int iBufferSize);
 
   /*!
    * Seek in a live stream on a backend that supports timeshifting.
@@ -452,7 +488,9 @@ extern "C"
    * @remarks Optional, and only used if bHandlesInputStream is set to true.
    *          Return -1 if this add-on won't provide this function.
    */
-  long long SeekLiveStream(long long iPosition, int iWhence = SEEK_SET);
+  long long SeekLiveStream(const AddonInstance_PVR* instance,
+                           long long iPosition,
+                           int iWhence = SEEK_SET);
 
   /*!
    * Obtain the length of a live stream.
@@ -460,7 +498,7 @@ extern "C"
    * @remarks Optional, and only used if bHandlesInputStream is set to true.
    *          Return -1 if this add-on won't provide this function.
    */
-  long long LengthLiveStream(void);
+  long long LengthLiveStream(const AddonInstance_PVR* instance);
 
   /*!
    * Get the signal status of the stream that's currently open.
@@ -470,7 +508,7 @@ extern "C"
    * @remarks Optional, and only used if PVR_ADDON_CAPABILITIES::bHandlesInputStream or PVR_ADDON_CAPABILITIES::bHandlesDemuxing is set to true.
    *          Return PVR_ERROR_NOT_IMPLEMENTED if this add-on won't provide this function.
    */
-  PVR_ERROR GetSignalStatus(int channelUid, PVR_SIGNAL_STATUS* signalStatus);
+  PVR_ERROR GetSignalStatus(const AddonInstance_PVR* instance, int channelUid, PVR_SIGNAL_STATUS* signalStatus);
 
   /*!
    * Get the descramble information of the stream that's currently open.
@@ -480,7 +518,8 @@ extern "C"
    * @remarks Optional, and only used if PVR_ADDON_CAPABILITIES::bSupportsDescrambleInfo is set to true.
    *          Return PVR_ERROR_NOT_IMPLEMENTED if this add-on won't provide this function.
    */
-  PVR_ERROR GetDescrambleInfo(int channelUid, PVR_DESCRAMBLE_INFO* descrambleInfo);
+  PVR_ERROR GetDescrambleInfo(const AddonInstance_PVR* instance, int channelUid,
+                              PVR_DESCRAMBLE_INFO* descrambleInfo);
 
   /*!
    * Get the stream properties for a channel from the backend.
@@ -492,7 +531,10 @@ extern "C"
    *          In this case the implementation must fill the property PVR_STREAM_PROPERTY_STREAMURL with the URL Kodi should resolve to playback the channel.
    *          Return PVR_ERROR_NOT_IMPLEMENTED if this add-on won't provide this function.
    */
-  PVR_ERROR GetChannelStreamProperties(const PVR_CHANNEL* channel, PVR_NAMED_VALUE* properties, unsigned int* iPropertiesCount);
+  PVR_ERROR GetChannelStreamProperties(const AddonInstance_PVR* instance,
+                                       const PVR_CHANNEL* channel,
+                                       PVR_NAMED_VALUE* properties,
+                                       unsigned int* iPropertiesCount);
 
   /*!
    * Get the stream properties for a recording from the backend.
@@ -504,7 +546,10 @@ extern "C"
    *          In this case your implementation must fill the property PVR_STREAM_PROPERTY_STREAMURL with the URL Kodi should resolve to playback the recording.
    *          Return PVR_ERROR_NOT_IMPLEMENTED if this add-on won't provide this function.
    */
-  PVR_ERROR GetRecordingStreamProperties(const PVR_RECORDING* recording, PVR_NAMED_VALUE* properties, unsigned int* iPropertiesCount);
+  PVR_ERROR GetRecordingStreamProperties(const AddonInstance_PVR* instance,
+                                         const PVR_RECORDING* recording,
+                                         PVR_NAMED_VALUE* properties,
+                                         unsigned int* iPropertiesCount);
 
   /*!
    * Get the stream properties of the stream that's currently being read.
@@ -513,7 +558,8 @@ extern "C"
    * @remarks Required if bHandlesDemuxing is set to true.
    *          Return PVR_ERROR_NOT_IMPLEMENTED if this add-on won't provide this function.
    */
-  PVR_ERROR GetStreamProperties(PVR_STREAM_PROPERTIES* pProperties);
+  PVR_ERROR GetStreamProperties(const AddonInstance_PVR* instance,
+                                PVR_STREAM_PROPERTIES* pProperties);
   //@}
 
   /** @name PVR recording stream methods, used to open and close a stream to a recording, and perform read operations on the stream.
@@ -529,7 +575,7 @@ extern "C"
    *          PVR_ADDON_CAPABILITIES::bHandlesInputStream is true (=> ReadLiveStream).
    *          Return PVR_ERROR_NOT_IMPLEMENTED if this add-on won't provide this function. In this case Kodi will decide on the chunk size to use.
    */
-  PVR_ERROR GetStreamReadChunkSize(int* chunksize);
+  PVR_ERROR GetStreamReadChunkSize(const AddonInstance_PVR* instance, int* chunksize);
 
   /*!
    * Open a stream to a recording on the backend.
@@ -539,13 +585,13 @@ extern "C"
    *          CloseRecordedStream() will always be called by Kodi prior to calling this function.
    *          Return false if this add-on won't provide this function.
    */
-  bool OpenRecordedStream(const PVR_RECORDING& recording);
+  bool OpenRecordedStream(const AddonInstance_PVR* instance, const PVR_RECORDING& recording);
 
   /*!
    * Close an open stream from a recording.
    * @remarks Optional, and only used if bSupportsRecordings is set to true.
    */
-  void CloseRecordedStream(void);
+  void CloseRecordedStream(const AddonInstance_PVR* instance);
 
   /*!
    * Read from a recording.
@@ -555,7 +601,9 @@ extern "C"
    * @remarks Optional, and only used if bSupportsRecordings is set to true, but required if OpenRecordedStream() is implemented.
    *          Return -1 if this add-on won't provide this function.
    */
-  int ReadRecordedStream(unsigned char* pBuffer, unsigned int iBufferSize);
+  int ReadRecordedStream(const AddonInstance_PVR* instance,
+                         unsigned char* pBuffer,
+                         unsigned int iBufferSize);
 
   /*!
    * Seek in a recorded stream.
@@ -565,7 +613,9 @@ extern "C"
    * @remarks Optional, and only used if bSupportsRecordings is set to true.
    *          Return -1 if this add-on won't provide this function.
    */
-  long long SeekRecordedStream(long long iPosition, int iWhence = SEEK_SET);
+  long long SeekRecordedStream(const AddonInstance_PVR* instance,
+                               long long iPosition,
+                               int iWhence = SEEK_SET);
 
   /*!
    * Obtain the length of a recorded stream.
@@ -573,7 +623,7 @@ extern "C"
    * @remarks Optional, and only used if bSupportsRecordings is set to true.
    *          Return -1 if this add-on won't provide this function.
    */
-  long long LengthRecordedStream(void);
+  long long LengthRecordedStream(const AddonInstance_PVR* instance);
 
   //@}
 
@@ -585,19 +635,19 @@ extern "C"
    * Reset the demultiplexer in the add-on.
    * @remarks Required if bHandlesDemuxing is set to true.
    */
-  void DemuxReset(void);
+  void DemuxReset(const AddonInstance_PVR* instance);
 
   /*!
    * Abort the demultiplexer thread in the add-on.
    * @remarks Required if bHandlesDemuxing is set to true.
    */
-  void DemuxAbort(void);
+  void DemuxAbort(const AddonInstance_PVR* instance);
 
   /*!
    * Flush all data that's currently in the demultiplexer buffer in the add-on.
    * @remarks Required if bHandlesDemuxing is set to true.
    */
-  void DemuxFlush(void);
+  void DemuxFlush(const AddonInstance_PVR* instance);
 
   /*!
    * Read the next packet from the demultiplexer, if there is one.
@@ -612,7 +662,7 @@ extern "C"
    * @remarks Required if bHandlesDemuxing is set to true.
    *          Return NULL if this add-on won't provide this function.
    */
-  DemuxPacket* DemuxRead(void);
+  DemuxPacket* DemuxRead(const AddonInstance_PVR* instance);
   //@}
 
   /*!
@@ -620,19 +670,19 @@ extern "C"
    * This will enable/disable the pause button in Kodi based on the return value
    * @return false if the PVR addon/backend does not support pausing, true if possible
    */
-  bool CanPauseStream();
+  bool CanPauseStream(const AddonInstance_PVR* instance);
 
   /*!
    * Check if the backend supports seeking for the currently playing stream
    * This will enable/disable the rewind/forward buttons in Kodi based on the return value
    * @return false if the PVR addon/backend does not support seeking, true if possible
    */
-  bool CanSeekStream();
+  bool CanSeekStream(const AddonInstance_PVR* instance);
 
   /*!
    * @brief Notify the pvr addon that Kodi (un)paused the currently playing stream
    */
-  void PauseStream(bool bPaused);
+  void PauseStream(const AddonInstance_PVR* instance, bool bPaused);
 
   /*!
    * Notify the pvr addon/demuxer that Kodi wishes to seek the stream by time
@@ -643,33 +693,33 @@ extern "C"
    * @remarks Optional, and only used if addon has its own demuxer.
    *          Return False if this add-on won't provide this function.
    */
-  bool SeekTime(double time, bool backwards, double *startpts);
+  bool SeekTime(const AddonInstance_PVR* instance, double time, bool backwards, double* startpts);
 
   /*!
    * Notify the pvr addon/demuxer that Kodi wishes to change playback speed
    * @param speed The requested playback speed
    * @remarks Optional, and only used if addon has its own demuxer.
    */
-  void SetSpeed(int speed);
+  void SetSpeed(const AddonInstance_PVR* instance, int speed);
 
   /*!
    * Notify the pvr addon/demuxer that Kodi wishes to fill demux queue
    * @param mode The requested filling mode
    * @remarks Optional, and only used if addon has its own demuxer.
    */
-  void FillBuffer(bool mode);
+  void FillBuffer(const AddonInstance_PVR* instance, bool mode);
 
   /*!
    *  Get the hostname of the pvr backend server
    *  @return hostname as ip address or alias. If backend does not utilize a server, return empty string.
    */
-  const char* GetBackendHostname();
+  const char* GetBackendHostname(const AddonInstance_PVR* instance);
 
   /*!
    *  Check for real-time streaming
    *  @return true if current stream is real-time
    */
-  bool IsRealTimeStream();
+  bool IsRealTimeStream(const AddonInstance_PVR* instance);
 
   /*!
    * Tell the client the time frame to use when notifying epg events back to Kodi. The client might push epg events asynchronously
@@ -680,22 +730,22 @@ extern "C"
    * @return PVR_ERROR_NO_ERROR if new value was successfully set.
    * @remarks Required if bSupportsEPG is set to true. Return PVR_ERROR_NOT_IMPLEMENTED if this add-on won't provide this function.
    */
-  PVR_ERROR SetEPGTimeFrame(int iDays);
+  PVR_ERROR SetEPGTimeFrame(const AddonInstance_PVR* instance, int iDays);
 
   /*!
    * Notify the pvr addon for power management events
    */
-  void OnSystemSleep();
-  void OnSystemWake();
-  void OnPowerSavingActivated();
-  void OnPowerSavingDeactivated();
+  void OnSystemSleep(const AddonInstance_PVR* instance);
+  void OnSystemWake(const AddonInstance_PVR* instance);
+  void OnPowerSavingActivated(const AddonInstance_PVR* instance);
+  void OnPowerSavingDeactivated(const AddonInstance_PVR* instance);
 
   /*!
    * Get stream times.
    * @param times A pointer to the data to be filled by the implementation.
    * @return PVR_ERROR_NO_ERROR on success.
    */
-  PVR_ERROR GetStreamTimes(PVR_STREAM_TIMES *times);
+  PVR_ERROR GetStreamTimes(const AddonInstance_PVR* instance, PVR_STREAM_TIMES* times);
 
   /*!
    * Called by Kodi to assign the function pointers of this add-on to pClient.

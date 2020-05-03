@@ -742,6 +742,8 @@ extern "C" {
     int64_t ptsEnd;   /*!< @brief latest pts player can seek forward. Value is in micro seconds, relative to ptsStart. For recordings, this must be the total length. For Live TV, this must be zero if not timeshifting and must point to end of the timeshift buffer, otherwise. */
   } ATTRIBUTE_PACKED PVR_STREAM_TIMES;
 
+  struct AddonInstance_PVR;
+
   typedef struct AddonToKodiFuncTable_PVR
   {
     // Pointer inside Kodi where used from him to find his class
@@ -807,116 +809,119 @@ extern "C" {
 
     //--==----==----==----==----==----==----==----==----==----==----==----==----==
     // General interface functions
-    PVR_ERROR(__cdecl* GetCapabilities)(PVR_ADDON_CAPABILITIES*);
-    const char*(__cdecl* GetBackendName)(void);
-    const char*(__cdecl* GetBackendVersion)(void);
-    const char*(__cdecl* GetBackendHostname)(void);
-    const char*(__cdecl* GetConnectionString)(void);
-    PVR_ERROR(__cdecl* GetDriveSpace)(long long*, long long*);
-    PVR_ERROR(__cdecl* MenuHook)(const PVR_MENUHOOK&, const PVR_MENUHOOK_DATA&);
+    PVR_ERROR(__cdecl* GetCapabilities)(const AddonInstance_PVR*, PVR_ADDON_CAPABILITIES*);
+    const char*(__cdecl* GetBackendName)(const AddonInstance_PVR*);
+    const char*(__cdecl* GetBackendVersion)(const AddonInstance_PVR*);
+    const char*(__cdecl* GetBackendHostname)(const AddonInstance_PVR*);
+    const char*(__cdecl* GetConnectionString)(const AddonInstance_PVR*);
+    PVR_ERROR(__cdecl* GetDriveSpace)(const AddonInstance_PVR*, long long*, long long*);
+    PVR_ERROR(__cdecl* MenuHook)(const AddonInstance_PVR*, const PVR_MENUHOOK&, const PVR_MENUHOOK_DATA&);
 
     //--==----==----==----==----==----==----==----==----==----==----==----==----==
     // Channel interface functions
 
-    int(__cdecl* GetChannelsAmount)(void);
-    PVR_ERROR(__cdecl* GetChannels)(ADDON_HANDLE, bool);
-    PVR_ERROR(__cdecl* GetChannelStreamProperties)(const PVR_CHANNEL*,
+    int(__cdecl* GetChannelsAmount)(const AddonInstance_PVR*);
+    PVR_ERROR(__cdecl* GetChannels)(const AddonInstance_PVR*, ADDON_HANDLE, bool);
+    PVR_ERROR(__cdecl* GetChannelStreamProperties)(const AddonInstance_PVR*,
+                                                   const PVR_CHANNEL*,
                                                    PVR_NAMED_VALUE*,
                                                    unsigned int*);
-    PVR_ERROR(__cdecl* GetSignalStatus)(int, PVR_SIGNAL_STATUS*);
-    PVR_ERROR(__cdecl* GetDescrambleInfo)(int, PVR_DESCRAMBLE_INFO*);
+    PVR_ERROR(__cdecl* GetSignalStatus)(const AddonInstance_PVR*, int, PVR_SIGNAL_STATUS*);
+    PVR_ERROR(__cdecl* GetDescrambleInfo)(const AddonInstance_PVR*, int, PVR_DESCRAMBLE_INFO*);
 
     //--==----==----==----==----==----==----==----==----==----==----==----==----==
     // Channel group interface functions
-    int(__cdecl* GetChannelGroupsAmount)(void);
-    PVR_ERROR(__cdecl* GetChannelGroups)(ADDON_HANDLE, bool);
-    PVR_ERROR(__cdecl* GetChannelGroupMembers)(ADDON_HANDLE, const PVR_CHANNEL_GROUP&);
+    int(__cdecl* GetChannelGroupsAmount)(const AddonInstance_PVR*);
+    PVR_ERROR(__cdecl* GetChannelGroups)(const AddonInstance_PVR*, ADDON_HANDLE, bool);
+    PVR_ERROR(__cdecl* GetChannelGroupMembers)(const AddonInstance_PVR*, ADDON_HANDLE, const PVR_CHANNEL_GROUP&);
 
     //--==----==----==----==----==----==----==----==----==----==----==----==----==
     // Channel edit interface functions
-    PVR_ERROR(__cdecl* DeleteChannel)(const PVR_CHANNEL&);
-    PVR_ERROR(__cdecl* RenameChannel)(const PVR_CHANNEL&);
-    PVR_ERROR(__cdecl* OpenDialogChannelSettings)(const PVR_CHANNEL&);
-    PVR_ERROR(__cdecl* OpenDialogChannelAdd)(const PVR_CHANNEL&);
-    PVR_ERROR(__cdecl* OpenDialogChannelScan)(void);
+    PVR_ERROR(__cdecl* DeleteChannel)(const AddonInstance_PVR*, const PVR_CHANNEL&);
+    PVR_ERROR(__cdecl* RenameChannel)(const AddonInstance_PVR*, const PVR_CHANNEL&);
+    PVR_ERROR(__cdecl* OpenDialogChannelSettings)(const AddonInstance_PVR*, const PVR_CHANNEL&);
+    PVR_ERROR(__cdecl* OpenDialogChannelAdd)(const AddonInstance_PVR*, const PVR_CHANNEL&);
+    PVR_ERROR(__cdecl* OpenDialogChannelScan)(const AddonInstance_PVR*);
 
     //--==----==----==----==----==----==----==----==----==----==----==----==----==
     // EPG interface functions
-    PVR_ERROR(__cdecl* GetEPGForChannel)(ADDON_HANDLE, int, time_t, time_t);
-    PVR_ERROR(__cdecl* IsEPGTagRecordable)(const EPG_TAG*, bool*);
-    PVR_ERROR(__cdecl* IsEPGTagPlayable)(const EPG_TAG*, bool*);
-    PVR_ERROR(__cdecl* GetEPGTagEdl)(const EPG_TAG*, PVR_EDL_ENTRY[], int*);
-    PVR_ERROR(__cdecl* GetEPGTagStreamProperties)(const EPG_TAG*, PVR_NAMED_VALUE*, unsigned int*);
-    PVR_ERROR(__cdecl* SetEPGTimeFrame)(int);
+    PVR_ERROR(__cdecl* GetEPGForChannel)(const AddonInstance_PVR*, ADDON_HANDLE, int, time_t, time_t);
+    PVR_ERROR(__cdecl* IsEPGTagRecordable)(const AddonInstance_PVR*, const EPG_TAG*, bool*);
+    PVR_ERROR(__cdecl* IsEPGTagPlayable)(const AddonInstance_PVR*, const EPG_TAG*, bool*);
+    PVR_ERROR(__cdecl* GetEPGTagEdl)(const AddonInstance_PVR*, const EPG_TAG*, PVR_EDL_ENTRY[], int*);
+    PVR_ERROR(__cdecl* GetEPGTagStreamProperties)(const AddonInstance_PVR*, const EPG_TAG*, PVR_NAMED_VALUE*, unsigned int*);
+    PVR_ERROR(__cdecl* SetEPGTimeFrame)(const AddonInstance_PVR*, int);
 
     //--==----==----==----==----==----==----==----==----==----==----==----==----==
     // Recording interface functions
-    int(__cdecl* GetRecordingsAmount)(bool);
-    PVR_ERROR(__cdecl* GetRecordings)(ADDON_HANDLE, bool);
-    PVR_ERROR(__cdecl* DeleteRecording)(const PVR_RECORDING&);
-    PVR_ERROR(__cdecl* UndeleteRecording)(const PVR_RECORDING&);
-    PVR_ERROR(__cdecl* DeleteAllRecordingsFromTrash)(void);
-    PVR_ERROR(__cdecl* RenameRecording)(const PVR_RECORDING&);
-    PVR_ERROR(__cdecl* SetRecordingLifetime)(const PVR_RECORDING*);
-    PVR_ERROR(__cdecl* SetRecordingPlayCount)(const PVR_RECORDING&, int);
-    PVR_ERROR(__cdecl* SetRecordingLastPlayedPosition)(const PVR_RECORDING&, int);
-    int(__cdecl* GetRecordingLastPlayedPosition)(const PVR_RECORDING&);
-    PVR_ERROR(__cdecl* GetRecordingEdl)(const PVR_RECORDING&, PVR_EDL_ENTRY[], int*);
-    PVR_ERROR(__cdecl* GetRecordingSize)(const PVR_RECORDING*, int64_t*);
-    PVR_ERROR(__cdecl* GetRecordingStreamProperties)
-    (const PVR_RECORDING*, PVR_NAMED_VALUE*, unsigned int*);
+    int(__cdecl* GetRecordingsAmount)(const AddonInstance_PVR*, bool);
+    PVR_ERROR(__cdecl* GetRecordings)(const AddonInstance_PVR*, ADDON_HANDLE, bool);
+    PVR_ERROR(__cdecl* DeleteRecording)(const AddonInstance_PVR*, const PVR_RECORDING&);
+    PVR_ERROR(__cdecl* UndeleteRecording)(const AddonInstance_PVR*, const PVR_RECORDING&);
+    PVR_ERROR(__cdecl* DeleteAllRecordingsFromTrash)(const AddonInstance_PVR*);
+    PVR_ERROR(__cdecl* RenameRecording)(const AddonInstance_PVR*, const PVR_RECORDING&);
+    PVR_ERROR(__cdecl* SetRecordingLifetime)(const AddonInstance_PVR*, const PVR_RECORDING*);
+    PVR_ERROR(__cdecl* SetRecordingPlayCount)(const AddonInstance_PVR*, const PVR_RECORDING&, int);
+    PVR_ERROR(__cdecl* SetRecordingLastPlayedPosition)(const AddonInstance_PVR*, const PVR_RECORDING&, int);
+    int(__cdecl* GetRecordingLastPlayedPosition)(const AddonInstance_PVR*, const PVR_RECORDING&);
+    PVR_ERROR(__cdecl* GetRecordingEdl)(const AddonInstance_PVR*, const PVR_RECORDING&, PVR_EDL_ENTRY[], int*);
+    PVR_ERROR(__cdecl* GetRecordingSize)(const AddonInstance_PVR*, const PVR_RECORDING*, int64_t*);
+    PVR_ERROR(__cdecl* GetRecordingStreamProperties)(const AddonInstance_PVR*,
+                                                     const PVR_RECORDING*,
+                                                     PVR_NAMED_VALUE*,
+                                                     unsigned int*);
 
     //--==----==----==----==----==----==----==----==----==----==----==----==----==
     // Timer interface functions
-    PVR_ERROR(__cdecl* GetTimerTypes)(PVR_TIMER_TYPE[], int*);
-    int(__cdecl* GetTimersAmount)(void);
-    PVR_ERROR(__cdecl* GetTimers)(ADDON_HANDLE);
-    PVR_ERROR(__cdecl* AddTimer)(const PVR_TIMER&);
-    PVR_ERROR(__cdecl* DeleteTimer)(const PVR_TIMER&, bool);
-    PVR_ERROR(__cdecl* UpdateTimer)(const PVR_TIMER&);
+    PVR_ERROR(__cdecl* GetTimerTypes)(const AddonInstance_PVR*, PVR_TIMER_TYPE[], int*);
+    int(__cdecl* GetTimersAmount)(const AddonInstance_PVR*);
+    PVR_ERROR(__cdecl* GetTimers)(const AddonInstance_PVR*, ADDON_HANDLE);
+    PVR_ERROR(__cdecl* AddTimer)(const AddonInstance_PVR*, const PVR_TIMER&);
+    PVR_ERROR(__cdecl* DeleteTimer)(const AddonInstance_PVR*, const PVR_TIMER&, bool);
+    PVR_ERROR(__cdecl* UpdateTimer)(const AddonInstance_PVR*, const PVR_TIMER&);
 
     //--==----==----==----==----==----==----==----==----==----==----==----==----==
     // Powersaving interface functions
-    void(__cdecl* OnSystemSleep)(void);
-    void(__cdecl* OnSystemWake)(void);
-    void(__cdecl* OnPowerSavingActivated)(void);
-    void(__cdecl* OnPowerSavingDeactivated)(void);
+    void(__cdecl* OnSystemSleep)(const AddonInstance_PVR*);
+    void(__cdecl* OnSystemWake)(const AddonInstance_PVR*);
+    void(__cdecl* OnPowerSavingActivated)(const AddonInstance_PVR*);
+    void(__cdecl* OnPowerSavingDeactivated)(const AddonInstance_PVR*);
 
     //--==----==----==----==----==----==----==----==----==----==----==----==----==
     // Live stream read interface functions
-    bool(__cdecl* OpenLiveStream)(const PVR_CHANNEL&);
-    void(__cdecl* CloseLiveStream)(void);
-    int(__cdecl* ReadLiveStream)(unsigned char*, unsigned int);
-    long long(__cdecl* SeekLiveStream)(long long, int);
-    long long(__cdecl* LengthLiveStream)(void);
+    bool(__cdecl* OpenLiveStream)(const AddonInstance_PVR*, const PVR_CHANNEL&);
+    void(__cdecl* CloseLiveStream)(const AddonInstance_PVR*);
+    int(__cdecl* ReadLiveStream)(const AddonInstance_PVR*, unsigned char*, unsigned int);
+    long long(__cdecl* SeekLiveStream)(const AddonInstance_PVR*, long long, int);
+    long long(__cdecl* LengthLiveStream)(const AddonInstance_PVR*);
 
     //--==----==----==----==----==----==----==----==----==----==----==----==----==
     // Recording stream read interface functions
-    bool(__cdecl* OpenRecordedStream)(const PVR_RECORDING&);
-    void(__cdecl* CloseRecordedStream)(void);
-    int(__cdecl* ReadRecordedStream)(unsigned char*, unsigned int);
-    long long(__cdecl* SeekRecordedStream)(long long, int);
-    long long(__cdecl* LengthRecordedStream)(void);
+    bool(__cdecl* OpenRecordedStream)(const AddonInstance_PVR*, const PVR_RECORDING&);
+    void(__cdecl* CloseRecordedStream)(const AddonInstance_PVR*);
+    int(__cdecl* ReadRecordedStream)(const AddonInstance_PVR*, unsigned char*, unsigned int);
+    long long(__cdecl* SeekRecordedStream)(const AddonInstance_PVR*, long long, int);
+    long long(__cdecl* LengthRecordedStream)(const AddonInstance_PVR*);
 
     //--==----==----==----==----==----==----==----==----==----==----==----==----==
     // Stream demux interface functions
-    PVR_ERROR(__cdecl* GetStreamProperties)(PVR_STREAM_PROPERTIES*);
-    DemuxPacket*(__cdecl* DemuxRead)(void);
-    void(__cdecl* DemuxReset)(void);
-    void(__cdecl* DemuxAbort)(void);
-    void(__cdecl* DemuxFlush)(void);
-    void(__cdecl* SetSpeed)(int);
-    void(__cdecl* FillBuffer)(bool);
-    bool(__cdecl* SeekTime)(double, bool, double*);
+    PVR_ERROR(__cdecl* GetStreamProperties)(const AddonInstance_PVR*, PVR_STREAM_PROPERTIES*);
+    DemuxPacket*(__cdecl* DemuxRead)(const AddonInstance_PVR*);
+    void(__cdecl* DemuxReset)(const AddonInstance_PVR*);
+    void(__cdecl* DemuxAbort)(const AddonInstance_PVR*);
+    void(__cdecl* DemuxFlush)(const AddonInstance_PVR*);
+    void(__cdecl* SetSpeed)(const AddonInstance_PVR*, int);
+    void(__cdecl* FillBuffer)(const AddonInstance_PVR*, bool);
+    bool(__cdecl* SeekTime)(const AddonInstance_PVR*, double, bool, double*);
 
     //--==----==----==----==----==----==----==----==----==----==----==----==----==
     // General stream interface functions
-    bool(__cdecl* CanPauseStream)(void);
-    void(__cdecl* PauseStream)(bool);
-    bool(__cdecl* CanSeekStream)(void);
-    bool(__cdecl* IsRealTimeStream)(void);
-    PVR_ERROR(__cdecl* GetStreamTimes)(PVR_STREAM_TIMES*);
-    PVR_ERROR(__cdecl* GetStreamReadChunkSize)(int*);
+    bool(__cdecl* CanPauseStream)(const AddonInstance_PVR*);
+    void(__cdecl* PauseStream)(const AddonInstance_PVR*, bool);
+    bool(__cdecl* CanSeekStream)(const AddonInstance_PVR*);
+    bool(__cdecl* IsRealTimeStream)(const AddonInstance_PVR*);
+    PVR_ERROR(__cdecl* GetStreamTimes)(const AddonInstance_PVR*, PVR_STREAM_TIMES*);
+    PVR_ERROR(__cdecl* GetStreamReadChunkSize)(const AddonInstance_PVR*, int*);
 
     //--==----==----==----==----==----==----==----==----==----==----==----==----==
     // New functions becomes added below and can be on another API change (where
