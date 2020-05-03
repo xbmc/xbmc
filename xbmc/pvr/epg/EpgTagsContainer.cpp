@@ -8,7 +8,7 @@
 
 #include "EpgTagsContainer.h"
 
-#include "addons/kodi-addon-dev-kit/include/kodi/xbmc_pvr_types.h"
+#include "addons/kodi-addon-dev-kit/include/kodi/addon-instance/PVR.h"
 #include "pvr/epg/EpgDatabase.h"
 #include "pvr/epg/EpgInfoTag.h"
 #include "pvr/epg/EpgTagsCache.h"

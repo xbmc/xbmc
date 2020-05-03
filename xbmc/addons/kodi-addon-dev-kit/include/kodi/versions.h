@@ -113,8 +113,7 @@
 #define ADDON_INSTANCE_VERSION_PVR                    "6.5.2"
 #define ADDON_INSTANCE_VERSION_PVR_MIN                "6.5.1"
 #define ADDON_INSTANCE_VERSION_PVR_XML_ID             "kodi.binary.instance.pvr"
-#define ADDON_INSTANCE_VERSION_PVR_DEPENDS            "xbmc_pvr_types.h" \
-                                                      "libXBMC_pvr.h"
+#define ADDON_INSTANCE_VERSION_PVR_DEPENDS            "addon-instance/PVR.h"
 
 #define ADDON_INSTANCE_VERSION_SCREENSAVER            "2.0.1"
 #define ADDON_INSTANCE_VERSION_SCREENSAVER_MIN        "2.0.1"

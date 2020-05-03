@@ -8,11 +8,11 @@
 
 #pragma once
 
-#include "AddonBase.h"
+#include "../AddonBase.h"
 
 #ifdef BUILD_KODI_ADDON
-#include "DemuxPacket.h"
-#include "InputStreamConstants.h"
+#include "../DemuxPacket.h"
+#include "../InputStreamConstants.h"
 #else
 #include "cores/VideoPlayer/Interface/Addon/DemuxPacket.h"
 #include "cores/VideoPlayer/Interface/Addon/InputStreamConstants.h"

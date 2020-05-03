@@ -8,7 +8,7 @@
 
 #include "PVRClientMenuHooks.h"
 
-#include "addons/kodi-addon-dev-kit/include/kodi/xbmc_pvr_types.h"
+#include "addons/kodi-addon-dev-kit/include/kodi/addon-instance/PVR.h"
 #include "guilib/LocalizeStrings.h"
 #include "pvr/PVRContextMenus.h"
 #include "utils/log.h"

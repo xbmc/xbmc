@@ -13,7 +13,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include "xbmc_pvr_types.h"
+#include "addon-instance/PVR.h"
 #include "libXBMC_addon.h"
 
 #define DVD_TIME_BASE 1000000

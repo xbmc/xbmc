@@ -5,6 +5,7 @@ set(HEADERS AudioDecoder.h
             Inputstream.h
             Peripheral.h
             PeripheralUtils.h
+            PVR.h
             Screensaver.h
             VFS.h
             VideoCodec.h

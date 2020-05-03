@@ -9,7 +9,7 @@
 #pragma once
 
 #include "addons/binary-addons/AddonDll.h"
-#include "addons/kodi-addon-dev-kit/include/kodi/xbmc_pvr_types.h"
+#include "addons/kodi-addon-dev-kit/include/kodi/addon-instance/PVR.h"
 
 #include <atomic>
 #include <functional>
