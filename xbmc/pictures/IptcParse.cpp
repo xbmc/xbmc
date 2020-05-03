@@ -210,3 +210,4 @@ bool CIptcParse::Process (const unsigned char* const Data, const unsigned short 
   return true;
 }
 
+#undef min

@@ -944,3 +944,5 @@ void CExifParse::ProcessGpsInfo(
   }
 }
 
+#undef min
+#undef max

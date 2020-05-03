@@ -314,3 +314,4 @@ bool CJpegParse::Process (const char *picFileName)
   return result;
 }
 
+#undef min
