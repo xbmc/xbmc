@@ -6,6 +6,8 @@
  *  See COPYING file for more information.
  */
 
+#pragma once
+
 #ifndef KISS_FFT_H
 #define KISS_FFT_H
 

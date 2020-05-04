@@ -6,6 +6,8 @@
  *  See COPYING file for more information.
  */
 
+#pragma once
+
 /* kiss_fft.h
    defines kiss_fft_scalar as either short or a float type
    and defines
