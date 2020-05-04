@@ -1018,8 +1018,12 @@ void CDVDInputStreamBluray::GetStreamInfo(int pid, std::string &language)
     find_stream(pid, m_clip->audio_streams, m_clip->audio_stream_count, language);
   else if (HDMV_PID_PG_FIRST <= pid && pid <= HDMV_PID_PG_LAST)
     find_stream(pid, m_clip->pg_streams, m_clip->pg_stream_count, language);
+  else if (HDMV_PID_PG_HDR_FIRST <= pid && pid <= HDMV_PID_PG_HDR_LAST)
+    find_stream(pid, m_clip->pg_streams, m_clip->pg_stream_count, language);
   else if (HDMV_PID_IG_FIRST <= pid && pid <= HDMV_PID_IG_LAST)
     find_stream(pid, m_clip->ig_streams, m_clip->ig_stream_count, language);
+  else
+    CLog::Log(LOGDEBUG, "CDVDInputStreamBluray::GetStreamInfo - unhandled pid %d", pid);
 }
 
 CDVDInputStream::ENextStream CDVDInputStreamBluray::NextStream()
