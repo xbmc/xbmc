@@ -282,7 +282,7 @@ bool CPVREpgContainer::PersistAll(unsigned int iMaxTimeslice) const
   {
     if (epg.second && epg.second->NeedsSave())
     {
-      CLog::Log(LOGINFO, "EPG Container: Persisting events for channel '%s'...",
+      CLog::Log(LOGDEBUG, "EPG Container: Persisting events for channel '%s'...",
                 epg.second->GetChannelData()->ChannelName().c_str());
 
       bReturn &= epg.second->Persist(database);
