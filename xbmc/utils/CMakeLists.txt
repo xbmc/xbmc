@@ -148,6 +148,7 @@ set(HEADERS ActorProtocol.h
             ScraperParser.h
             ScraperUrl.h
             Screenshot.h
+            SerializedProperty.h
             SortUtils.h
             Speed.h
             StaticLoggerBase.h
