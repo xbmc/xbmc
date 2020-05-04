@@ -134,6 +134,7 @@ set(HEADERS ActorProtocol.h
             Mime.h
             Observer.h
             params_check_macros.h
+            PerformanceMeasurement.h
             POUtils.h
             ProgressJob.h
             RecentlyAddedJob.h
