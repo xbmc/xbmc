@@ -498,8 +498,8 @@ bool CPVRChannelGroup::AddAndUpdateChannels(const CPVRChannelGroup& channels, bo
                  bUseBackendChannelNumbers, newMember->clientChannelNumber);
 
       bReturn = true;
-      CLog::Log(LOGINFO, "Added %s channel '%s' to group '%s'",
-                IsRadio() ? "radio" : "TV", existingAllChannelsMember->channel->ChannelName().c_str(), GroupName().c_str());
+      CLog::Log(LOGDEBUG, "Added %s channel '%s' to group '%s'", IsRadio() ? "radio" : "TV",
+                existingAllChannelsMember->channel->ChannelName().c_str(), GroupName().c_str());
     }
     else
     {
@@ -516,8 +516,8 @@ bool CPVRChannelGroup::AddAndUpdateChannels(const CPVRChannelGroup& channels, bo
         bReturn = true;
       }
 
-      CLog::Log(LOGINFO, "Updated %s channel '%s' in group '%s'",
-                IsRadio() ? "radio" : "TV", existingMember->channel->ChannelName().c_str(), GroupName().c_str());
+      CLog::Log(LOGDEBUG, "Updated %s channel '%s' in group '%s'", IsRadio() ? "radio" : "TV",
+                existingMember->channel->ChannelName().c_str(), GroupName().c_str());
     }
   }
 
