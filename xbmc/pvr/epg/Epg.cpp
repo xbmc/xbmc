@@ -291,7 +291,7 @@ std::vector<std::shared_ptr<CPVREpgInfoTag>> CPVREpg::GetTags() const
   return m_tags.GetAllTags();
 }
 
-bool CPVREpg::Persist(const std::shared_ptr<CPVREpgDatabase>& database)
+bool CPVREpg::Persist(const std::shared_ptr<CPVREpgDatabase>& database, bool bQueueWrite)
 {
   if (!database)
   {
@@ -315,10 +315,10 @@ bool CPVREpg::Persist(const std::shared_ptr<CPVREpgDatabase>& database)
     }
 
     if (m_tags.NeedsSave())
-      m_tags.Persist(false);
+      m_tags.Persist(!bQueueWrite);
 
     if (m_bUpdateLastScanTime)
-      database->PersistLastEpgScanTime(m_iEpgID, m_lastScanTime, true);
+      database->PersistLastEpgScanTime(m_iEpgID, m_lastScanTime, bQueueWrite);
 
     if (bEpgIdChanged)
       m_tags.SetEpgID(m_iEpgID);
@@ -327,7 +327,7 @@ bool CPVREpg::Persist(const std::shared_ptr<CPVREpgDatabase>& database)
     m_bUpdateLastScanTime = false;
   }
 
-  bool bRet = database->CommitInsertQueries();
+  bool bRet = bQueueWrite || database->CommitInsertQueries();
 
   database->Unlock();
 
