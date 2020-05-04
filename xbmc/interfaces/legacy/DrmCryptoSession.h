@@ -63,7 +63,7 @@ namespace XBMCAddon
     ///
     /// An example where such functionality is useful is the Message
     /// Security Layer (MSL) transmission protocol used in some VOD applications.
-    /// This protocol (or rather framework) is used to increase the level of security 
+    /// This protocol (or rather framework) is used to increase the level of security
     /// in the exchange of messages (such as licences, manifests or other data),
     /// which defines a security extension / layer on top of the HTTP protocol.
     ///
@@ -104,13 +104,14 @@ namespace XBMCAddon
       ///
       /// \ingroup python_xbmcdrm
       /// @brief \python_func{ GetKeyRequest(init, mimeType, offlineKey, optionalParameters) }
-      ///-----------------------------------------------------------------------
-      /// \anchor xbmcdrm_GetKeyRequest
+      /// Generate a key request
+      ///
       /// Generate a key request, used for request/response exchange between the app
       /// and a license server to obtain or release keys used to decrypt encrypted content.
       /// After the app has received the key request response from the license server,
       /// it should deliver to the response to the %DRM instance using
       /// the method \ref xbmcdrm_ProvideKeyResponse "ProvideKeyResponse", to activate the keys.
+      // \anchor xbmcdrm_GetKeyRequest
       ///
       /// @param      init            byte - Initialization bytes container-specific data,
       ///                             its meaning is interpreted based on the mime type provided
@@ -141,10 +142,9 @@ namespace XBMCAddon
       ///
       /// \ingroup python_xbmcdrm
       /// @brief \python_func{ GetPropertyString(name) }
-      ///-----------------------------------------------------------------------
-      /// \anchor xbmcdrm_GetPropertyString
       /// Request a system specific property value of the %DRM system.
       ///
+      ///\anchor xbmcdrm_GetPropertyString
       /// @param      Name    string - Name of the property to query
       ///
       /// @return     Value of the requested property
@@ -162,7 +162,8 @@ namespace XBMCAddon
       ///
       /// \ingroup python_xbmcdrm
       /// @brief \python_func{ ProvideKeyResponse(response) }
-      ///-----------------------------------------------------------------------
+      /// Provide a key response
+      ///
       /// \anchor xbmcdrm_ProvideKeyResponse
       /// When a key response is received from the license server,
       /// must be sent to the %DRM instance by using provideKeyResponse.
@@ -188,7 +189,6 @@ namespace XBMCAddon
       ///
       /// \ingroup python_xbmcdrm
       /// @brief \python_func{ RemoveKeys() }
-      ///-----------------------------------------------------------------------
       /// Removes all keys currently loaded in a session.
       ///
       ///
@@ -204,10 +204,9 @@ namespace XBMCAddon
       ///
       /// \ingroup python_xbmcdrm
       /// @brief \python_func{ RestoreKeys(keySetId) }
-      ///-----------------------------------------------------------------------
-      /// \anchor xbmcdrm_RestoreKeys
       /// Restores session keys stored during previous
       /// \ref xbmcdrm_ProvideKeyResponse "ProvideKeyResponse" call.
+      /// \anchor xbmcdrm_RestoreKeys
       ///
       /// @param     keySetId   string - Identifies the saved key set to restore.
       ///                                This value must never be null.
@@ -225,9 +224,9 @@ namespace XBMCAddon
       ///
       /// \ingroup python_xbmcdrm
       /// @brief \python_func{ SetPropertyString(name, value) }
-      ///-----------------------------------------------------------------------
-      /// \anchor xbmcdrm_SetPropertyString
       /// Set a system specific property value in the %DRM system.
+      ///
+      /// \anchor xbmcdrm_SetPropertyString
       ///
       /// @param     name   string - Name of the property. This value must never be null.
       /// @param     value  string - Value of the property to set. This value must never be null.
@@ -247,9 +246,9 @@ namespace XBMCAddon
       ///
       /// \ingroup python_xbmcdrm
       /// @brief \python_func{ Decrypt(cipherKeyId, input, iv) }
-      ///-----------------------------------------------------------------------
-      /// \anchor xbmcdrm_Decrypt
       /// Decrypt an encrypted data by using session keys.
+      ///
+      /// \anchor xbmcdrm_Decrypt
       ///
       /// @param     cipherKeyId byte - Encryption key id (provided from a service handshake)
       /// @param     input       byte - Cipher text to decrypt
@@ -271,9 +270,9 @@ namespace XBMCAddon
       ///
       /// \ingroup python_xbmcdrm
       /// @brief \python_func{ Encrypt(cipherKeyId, input, iv) }
-      ///-----------------------------------------------------------------------
-      /// \anchor xbmcdrm_Encrypt
       /// Encrypt data by using session keys.
+      ///
+      /// \anchor xbmcdrm_Encrypt
       ///
       /// @param     cipherKeyId byte - Encryption key id (provided from a service handshake)
       /// @param     input       byte - Encrypted text
@@ -295,9 +294,9 @@ namespace XBMCAddon
       ///
       /// \ingroup python_xbmcdrm
       /// @brief \python_func{ Sign(macKeyId, message) }
-      ///-----------------------------------------------------------------------
-      /// \anchor xbmcdrm_Sign
       /// Generate a %DRM encrypted signature for a text message.
+      ///
+      /// \anchor xbmcdrm_Sign
       ///
       /// @param     macKeyId  byte - HMAC key id (provided from a service handshake)
       /// @param     message   byte - Message text on which to base the signature
@@ -318,9 +317,9 @@ namespace XBMCAddon
       ///
       /// \ingroup python_xbmcdrm
       /// @brief \python_func{ Verify(macKeyId, message, signature) }
-      ///-----------------------------------------------------------------------
-      /// \anchor xbmcdrm_Verify
       /// Verify the validity of a %DRM signature of a text message.
+      ///
+      /// \anchor xbmcdrm_Verify
       ///
       /// @param     macKeyId  byte - HMAC key id (provided from a service handshake)
       /// @param     message   byte - Message text on which the signature is based

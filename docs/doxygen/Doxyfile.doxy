@@ -244,12 +244,14 @@ ALIASES                = "table_start=<table width=\"100%\" style=\"border\" bgc
                          "table_row2_l{2}=<tr bgcolor=white><td width= 40% align=left>\1</td><td width= 60% align=left>\2</td></tr>" \
                          "table_h3{3}=<tr bgcolor=576f9f><th width=30% align=left valign=middle><b>\1</b></th><th width=10% align=left valign=middle><b>\2</b></th><th width=60% align=left valign=middle><span><b>\3</b></span></th></tr>" \
                          "table_row3{3}=\htmlonly<tr bgcolor=white><td width= 30% align=left>\endhtmlonly\1\htmlonly</td><td width= 10% align=left>\endhtmlonly\2\htmlonly</td><td width= 60% align=left>\endhtmlonly\3\htmlonly</td></tr>\endhtmlonly" \
-                         "python_func{1}=\htmlonly <h4><code><span style=\"font-style: italic;\">Function: </span><span style=\"font-style: bold;\"><font color=31363b><big>\1</big></font></span></code></h4> \endhtmlonly" \
+                         "python_func{1}=\htmlonly <h4><code><span style=\"font-style: italic;\">Function: </span><span style=\"font-style: bold;\"><font color=31363b><big>\1</big></font></span></code></h4><hr> \endhtmlonly" \
                          "python_func_with_rev{2}=\htmlonly <h4><code><span style=\"font-style: italic;\">Function: </span><span style=\"font-style: bold;\"><font color=31363b><big>\1</big></font></span></code><span style="float:right;"><small>\2</small></span></h4> \endhtmlonly" \
                          "python_class{1}=\htmlonly <h4><code><span style=\"font-style: italic;\">Class: </span><span style=\"font-style: bold;\"><font color=31363b><big>\1</big></font></span></code></h4> \endhtmlonly" \
                          "python_class_with_rev{2}=\htmlonly <h4><code><span style=\"font-style: italic;\">Class: </span><span style=\"font-style: bold;\"><font color=31363b><big>\1</big></font></span></code><span style="float:right;"><small>\2</small></span></h4> \endhtmlonly" \
                          "doc_header{1}=\htmlonly <h3><span style=\"text-decoration: underline;\"><span  style=\"font-style: italic;\"><span style=\"color: rgb(102, 102, 102);\">\1</span></span></span></h3> \endhtmlonly" \
                          "python_removed_function{3}=\htmlonly <dl class=\"reflist\"><dt>Member <a class=\"el\" href=\"\2\">\1</a> (...)</dt><dd>\3</dd></dl>\endhtmlonly" \
+                         "cpp_class{1}=\htmlonly <h4><code><span style=\"font-style: italic;\">Class: </span><span style=\"font-style: bold;\"><font color=31363b><big>\1</big></font></span></code></h4> \endhtmlonly" \
+                         "cpp_namespace{1}=\htmlonly <h4><code><span style=\"font-style: italic;\">Namespace: </span><span style=\"font-style: bold;\"><font color=31363b><big>\1</big></font></span></code></h4> \endhtmlonly" \
                          "python_v12=\xrefitem python_v12 \"v12 Python API changes\" \"\"" \
                          "python_v13=\xrefitem python_v13 \"v13 Python API changes\" \"\"" \
                          "python_v14=\xrefitem python_v14 \"v14 Python API changes\" \"\"" \

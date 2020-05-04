@@ -76,7 +76,6 @@ namespace XBMCAddon
 #ifdef DOXYGEN_SHOULD_USE_THIS
       /// \ingroup python_xbmcgui_control
       /// @brief \python_func{ getId() }
-      ///-----------------------------------------------------------------------
       /// Returns the control's current id as an integer.
       ///
       /// @return                       int - Current id
@@ -104,7 +103,6 @@ namespace XBMCAddon
 #ifdef DOXYGEN_SHOULD_USE_THIS
       /// \ingroup python_xbmcgui_control
       /// @brief \python_func{ getPosition() }
-      ///-----------------------------------------------------------------------
       /// Returns the control's current position as a x,y integer tuple.
       ///
       /// @return                       Current position as a x,y integer tuple
@@ -127,7 +125,6 @@ namespace XBMCAddon
 #ifdef DOXYGEN_SHOULD_USE_THIS
       /// \ingroup python_xbmcgui_control
       /// @brief \python_func{ getX() }
-      ///-----------------------------------------------------------------------
       /// Returns the control's current X position.
       ///
       /// @return                       int - Current X position
@@ -150,7 +147,6 @@ namespace XBMCAddon
 #ifdef DOXYGEN_SHOULD_USE_THIS
       /// \ingroup python_xbmcgui_control
       /// @brief \python_func{ getY() }
-      ///-----------------------------------------------------------------------
       /// Returns the control's current Y position.
       ///
       /// @return                       int - Current Y position
@@ -173,7 +169,6 @@ namespace XBMCAddon
 #ifdef DOXYGEN_SHOULD_USE_THIS
       /// \ingroup python_xbmcgui_control
       /// @brief \python_func{ getHeight() }
-      ///-----------------------------------------------------------------------
       /// Returns the control's current height as an integer.
       ///
       /// @return                       int - Current height
@@ -197,7 +192,6 @@ namespace XBMCAddon
 #ifdef DOXYGEN_SHOULD_USE_THIS
       /// \ingroup python_xbmcgui_control
       /// @brief \python_func{ getWidth() }
-      ///-----------------------------------------------------------------------
       /// Returns the control's current width as an integer.
       ///
       /// @return                       int - Current width
@@ -221,7 +215,6 @@ namespace XBMCAddon
 #ifdef DOXYGEN_SHOULD_USE_THIS
       /// \ingroup python_xbmcgui_control
       /// @brief \python_func{ setEnabled(enabled) }
-      ///-----------------------------------------------------------------------
       /// Set's the control's enabled/disabled state.
       ///
       /// @param enabled            bool - True=enabled / False=disabled.
@@ -245,7 +238,6 @@ namespace XBMCAddon
 #ifdef DOXYGEN_SHOULD_USE_THIS
       /// \ingroup python_xbmcgui_control
       /// @brief \python_func{ setVisible(visible) }
-      ///-----------------------------------------------------------------------
       /// Set's the control's visible/hidden state.
       ///
       /// @param visible            bool - True=visible / False=hidden.
@@ -269,7 +261,6 @@ namespace XBMCAddon
 #ifdef DOXYGEN_SHOULD_USE_THIS
       /// \ingroup python_xbmcgui_control
       /// @brief \python_func{ isVisible() }
-      ///-----------------------------------------------------------------------
       /// Get the control's visible/hidden state.
       ///
       ///-----------------------------------------------------------------------
@@ -291,7 +282,6 @@ namespace XBMCAddon
 #ifdef DOXYGEN_SHOULD_USE_THIS
       /// \ingroup python_xbmcgui_control
       /// @brief \python_func{ setVisibleCondition(visible[,allowHiddenFocus]) }
-      ///-----------------------------------------------------------------------
       /// Set's the control's visible condition.
       ///
       /// Allows Kodi to control the visible status of the control.
@@ -322,7 +312,6 @@ namespace XBMCAddon
 #ifdef DOXYGEN_SHOULD_USE_THIS
       /// \ingroup python_xbmcgui_control
       /// @brief \python_func{ setEnableCondition(enable) }
-      ///-----------------------------------------------------------------------
       /// Set's the control's enabled condition.
       ///
       /// Allows Kodi to control the enabled status of the control.
@@ -351,7 +340,6 @@ namespace XBMCAddon
 #ifdef DOXYGEN_SHOULD_USE_THIS
       /// \ingroup python_xbmcgui_control
       /// @brief \python_func{ setAnimations([(event, attr,)*]) }
-      ///-----------------------------------------------------------------------
       /// Set's the control's animations.
       ///
       /// <b>[(event,attr,)*]</b>: list - A list of tuples consisting of event
@@ -383,7 +371,6 @@ namespace XBMCAddon
 #ifdef DOXYGEN_SHOULD_USE_THIS
       /// \ingroup python_xbmcgui_control
       /// @brief \python_func{ setPosition(x, y) }
-      ///-----------------------------------------------------------------------
       /// Set's the controls position.
       ///
       /// @param x                  integer - x coordinate of control.
@@ -410,7 +397,6 @@ namespace XBMCAddon
 #ifdef DOXYGEN_SHOULD_USE_THIS
       /// \ingroup python_xbmcgui_control
       /// @brief \python_func{ setWidth(width) }
-      ///-----------------------------------------------------------------------
       /// Set's the controls width.
       ///
       /// @param width                integer - width of control.
@@ -434,7 +420,6 @@ namespace XBMCAddon
 #ifdef DOXYGEN_SHOULD_USE_THIS
       /// \ingroup python_xbmcgui_control
       /// @brief \python_func{ setHeight(height) }
-      ///-----------------------------------------------------------------------
       /// Set's the controls height.
       ///
       /// @param height               integer - height of control.
@@ -458,7 +443,6 @@ namespace XBMCAddon
 #ifdef DOXYGEN_SHOULD_USE_THIS
       /// \ingroup python_xbmcgui_control
       /// @brief \python_func{ setNavigation(up, down, left, right) }
-      ///-----------------------------------------------------------------------
       /// Set's the controls navigation.
       ///
       /// @param up                 control object - control to navigate to on up.
@@ -493,7 +477,6 @@ namespace XBMCAddon
 #ifdef DOXYGEN_SHOULD_USE_THIS
       /// \ingroup python_xbmcgui_control
       /// @brief \python_func{ controlUp(control) }
-      ///-----------------------------------------------------------------------
       /// Set's the controls up navigation.
       ///
       /// @param control            control object - control to navigate to on up.
@@ -524,7 +507,6 @@ namespace XBMCAddon
 #ifdef DOXYGEN_SHOULD_USE_THIS
       /// \ingroup python_xbmcgui_control
       /// @brief \python_func{ controlDown(control) }
-      ///-----------------------------------------------------------------------
       /// Set's the controls down navigation.
       ///
       /// @param control            control object - control to navigate to on down.
@@ -555,7 +537,6 @@ namespace XBMCAddon
 #ifdef DOXYGEN_SHOULD_USE_THIS
       /// \ingroup python_xbmcgui_control
       /// @brief \python_func{ controlLeft(control) }
-      ///-----------------------------------------------------------------------
       /// Set's the controls left navigation.
       ///
       /// @param control            control object - control to navigate to on left.
@@ -586,7 +567,6 @@ namespace XBMCAddon
 #ifdef DOXYGEN_SHOULD_USE_THIS
       /// \ingroup python_xbmcgui_control
       /// @brief \python_func{ controlRight(control) }
-      ///-----------------------------------------------------------------------
       /// Set's the controls right navigation.
       ///
       /// @param control            control object - control to navigate to on right.
@@ -664,7 +644,6 @@ namespace XBMCAddon
 #ifdef DOXYGEN_SHOULD_USE_THIS
       /// \ingroup python_xbmcgui_control_spin
       /// @brief \python_func{ setTextures(up, down, upFocus, downFocus) }
-      ///-----------------------------------------------------------------------
       /// Set's textures for this control.
       ///
       /// Texture are image files that are used for example in the skin
@@ -788,7 +767,6 @@ namespace XBMCAddon
 #ifdef DOXYGEN_SHOULD_USE_THIS
       /// \ingroup python_xbmcgui_control_label
       /// @brief \python_func{ getLabel() }
-      ///-----------------------------------------------------------------------
       /// Returns the text value for this label.
       ///
       /// @return                       This label
@@ -811,7 +789,6 @@ namespace XBMCAddon
 #ifdef DOXYGEN_SHOULD_USE_THIS
       /// \ingroup python_xbmcgui_control_label
       /// @brief \python_func{ setLabel(label[, font, textColor, disabledColor, shadowColor, focusedColor, label2]) }
-      ///-----------------------------------------------------------------------
       /// Set's text for this label.
       ///
       /// @param label              string or unicode - text string.
@@ -936,7 +913,6 @@ namespace XBMCAddon
 #ifdef DOXYGEN_SHOULD_USE_THIS
       /// \ingroup python_xbmcgui_control_edit
       /// @brief \python_func{ setLabel(label[, font, textColor, disabledColor, shadowColor, focusedColor, label2]) }
-      ///-----------------------------------------------------------------------
       /// Set's text heading for this edit control.
       ///
       /// @param label              string or unicode - text string.
@@ -977,7 +953,6 @@ namespace XBMCAddon
 #ifdef DOXYGEN_SHOULD_USE_THIS
       /// \ingroup python_xbmcgui_control_edit
       /// @brief \python_func{ getLabel() }
-      ///-----------------------------------------------------------------------
       /// Returns the text heading for this edit control.
       ///
       /// @return                       Heading text
@@ -1001,7 +976,6 @@ namespace XBMCAddon
 #ifdef DOXYGEN_SHOULD_USE_THIS
       /// \ingroup python_xbmcgui_control_edit
       /// @brief \python_func{ setText(value) }
-      ///-----------------------------------------------------------------------
       /// Set's text value for this edit control.
       ///
       /// @param value              string or unicode - text string.
@@ -1025,7 +999,6 @@ namespace XBMCAddon
 #ifdef DOXYGEN_SHOULD_USE_THIS
       /// \ingroup python_xbmcgui_control_edit
       /// @brief \python_func{ getText() }
-      ///-----------------------------------------------------------------------
       /// Returns the text value for this edit control.
       ///
       /// @return                       Text value of control
@@ -1064,7 +1037,6 @@ namespace XBMCAddon
 #ifdef DOXYGEN_SHOULD_USE_THIS
       /// \ingroup python_xbmcgui_control_edit
       /// @brief \python_func{ setType(type, heading) }
-      ///-----------------------------------------------------------------------
       /// Sets the type of this edit control.
       ///
       /// @param type              integer - type of the edit control.
@@ -1182,7 +1154,6 @@ namespace XBMCAddon
 #ifdef DOXYGEN_SHOULD_USE_THIS
       /// \ingroup python_xbmcgui_control_list
       /// @brief \python_func{ addItem(item) }
-      ///-----------------------------------------------------------------------
       /// Add a new item to this list control.
       ///
       /// @param item                     string, unicode or ListItem - item to add.
@@ -1205,7 +1176,6 @@ namespace XBMCAddon
 #ifdef DOXYGEN_SHOULD_USE_THIS
       /// \ingroup python_xbmcgui_control_list
       /// @brief \python_func{ addItems(items) }
-      ///-----------------------------------------------------------------------
       /// Adds a list of listitems or strings to this list control.
       ///
       /// @param items                      List - list of strings, unicode objects or ListItems to add.
@@ -1232,7 +1202,6 @@ namespace XBMCAddon
 #ifdef DOXYGEN_SHOULD_USE_THIS
       /// \ingroup python_xbmcgui_control_list
       /// @brief \python_func{ selectItem(item) }
-      ///-----------------------------------------------------------------------
       /// Select an item by index number.
       ///
       /// @param item                     integer - index number of the item to select.
@@ -1255,7 +1224,6 @@ namespace XBMCAddon
 #ifdef DOXYGEN_SHOULD_USE_THIS
       /// \ingroup python_xbmcgui_control_list
       /// @brief \python_func{ removeItem(index) }
-      ///-----------------------------------------------------------------------
       /// Remove an item by index number.
       ///
       /// @param index                    integer - index number of the item to remove.
@@ -1279,7 +1247,6 @@ namespace XBMCAddon
 #ifdef DOXYGEN_SHOULD_USE_THIS
       /// \ingroup python_xbmcgui_control_list
       /// @brief \python_func{ reset() }
-      ///-----------------------------------------------------------------------
       /// Clear all ListItems in this control list.
       ///
       /// @warning Calling `reset()` will destroy any `ListItem` objects in the
@@ -1326,8 +1293,7 @@ namespace XBMCAddon
 #ifdef DOXYGEN_SHOULD_USE_THIS
       /// \ingroup python_xbmcgui_control_list
       /// @brief \python_func{ getSpinControl() }
-      ///-----------------------------------------------------------------------
-      /// @brief Returns the associated ControlSpin object.
+      /// Returns the associated ControlSpin object.
       ///
       /// @warning Not working completely yet\n
       ///        After adding this control list to a window it is not possible to change
@@ -1351,8 +1317,7 @@ namespace XBMCAddon
 #ifdef DOXYGEN_SHOULD_USE_THIS
       /// \ingroup python_xbmcgui_control_list
       /// @brief \python_func{ getSelectedPosition() }
-      ///-----------------------------------------------------------------------
-      /// @brief Returns the position of the selected item as an integer.
+      /// Returns the position of the selected item as an integer.
       ///
       /// @note Returns -1 for empty lists.
       ///
@@ -1374,7 +1339,6 @@ namespace XBMCAddon
 #ifdef DOXYGEN_SHOULD_USE_THIS
       /// \ingroup python_xbmcgui_control_list
       /// @brief \python_func{ getSelectedItem() }
-      ///-----------------------------------------------------------------------
       /// Returns the selected item as a ListItem object.
       ///
       /// @return                       The selected item
@@ -1403,7 +1367,6 @@ namespace XBMCAddon
 #ifdef DOXYGEN_SHOULD_USE_THIS
       /// \ingroup python_xbmcgui_control_list
       /// @brief \python_func{ setImageDimensions(imageWidth, imageHeight) }
-      ///-----------------------------------------------------------------------
       /// Sets the width/height of items icon or thumbnail.
       ///
       /// @param imageWidth               [opt] integer - width of items icon or thumbnail.
@@ -1428,8 +1391,7 @@ namespace XBMCAddon
 #ifdef DOXYGEN_SHOULD_USE_THIS
       ///
       /// @brief \python_func{ setItemHeight(itemHeight) }
-      ///-----------------------------------------------------------------------
-      ///  Sets the height of items.
+      /// Sets the height of items.
       ///
       /// @param itemHeight               integer - height of items.
       ///
@@ -1453,7 +1415,6 @@ namespace XBMCAddon
       ///
       /// \ingroup python_xbmcgui_control_list
       /// @brief \python_func{ setSpace(space) }
-      ///-----------------------------------------------------------------------
       /// Set's the space between items.
       ///
       /// @param space                    [opt] integer - space between items.
@@ -1478,7 +1439,6 @@ namespace XBMCAddon
       ///
       /// \ingroup python_xbmcgui_control_list
       /// @brief \python_func{ setPageControlVisible(visible) }
-      ///-----------------------------------------------------------------------
       /// Sets the spin control's visible/hidden state.
       ///
       /// @param visible                  boolean - True=visible / False=hidden.
@@ -1503,8 +1463,7 @@ namespace XBMCAddon
       ///
       /// \ingroup python_xbmcgui_control_list
       /// @brief \python_func{ size() }
-      ///-----------------------------------------------------------------------
-      /// @brief Returns the total number of items in this list control as an integer.
+      /// Returns the total number of items in this list control as an integer.
       ///
       /// @return                       Total number of items
       ///
@@ -1528,7 +1487,6 @@ namespace XBMCAddon
       ///
       /// \ingroup python_xbmcgui_control_list
       /// @brief \python_func{ getItemHeight() }
-      ///-----------------------------------------------------------------------
       /// Returns the control's current item height as an integer.
       ///
       /// @return                       Current item heigh
@@ -1553,7 +1511,6 @@ namespace XBMCAddon
       ///
       /// \ingroup python_xbmcgui_control_list
       /// @brief \python_func{ getSpace() }
-      ///-----------------------------------------------------------------------
       /// Returns the control's space between items as an integer.
       ///
       /// @return                       Space between items
@@ -1578,7 +1535,6 @@ namespace XBMCAddon
       ///
       /// \ingroup python_xbmcgui_control_list
       /// @brief \python_func{ getListItem(index) }
-      ///-----------------------------------------------------------------------
       /// Returns a given ListItem in this List.
       ///
       /// @param index              integer - index number of item to return.
@@ -1604,7 +1560,6 @@ namespace XBMCAddon
       ///
       /// \ingroup python_xbmcgui_control_list
       /// @brief \python_func{ setStaticContent(items) }
-      ///-----------------------------------------------------------------------
       /// Fills a static list with a list of listitems.
       ///
       /// @param items                      List - list of listitems to add.
@@ -1725,7 +1680,6 @@ namespace XBMCAddon
 #ifdef DOXYGEN_SHOULD_USE_THIS
       /// \ingroup python_xbmcgui_control_fadelabel
       /// @brief \python_func{ addLabel(label) }
-      ///-----------------------------------------------------------------------
       /// Add a label to this control for scrolling.
       ///
       /// @param label                string or unicode - text string to add.
@@ -1751,7 +1705,6 @@ namespace XBMCAddon
       ///
       /// \ingroup python_xbmcgui_control_fadelabel
       /// @brief \python_func{ setScrolling(scroll) }
-      ///-----------------------------------------------------------------------
       /// Set scrolling. If set to false, the labels won't scroll.
       /// Defaults to true.
       ///
@@ -1776,7 +1729,6 @@ namespace XBMCAddon
       ///
       /// \ingroup python_xbmcgui_control_label
       /// @brief \python_func{ reset() }
-      ///-----------------------------------------------------------------------
       /// Clear this fade label.
       ///
       ///-----------------------------------------------------------------------
@@ -1869,7 +1821,6 @@ namespace XBMCAddon
       ///
       /// \ingroup python_xbmcgui_control_textbox
       /// @brief \python_func{ setText(text) }
-      ///-----------------------------------------------------------------------
       /// Set's the text for this textbox.
       /// \anchor python_xbmcgui_control_textbox_settext
       ///
@@ -1897,7 +1848,6 @@ namespace XBMCAddon
       ///
       /// \ingroup python_xbmcgui_control_textbox
       /// @brief \python_func{ getText() }
-      ///-----------------------------------------------------------------------
       /// Returns the text value for this textbox.
       ///
       /// @return                       To get text from box
@@ -1926,7 +1876,6 @@ namespace XBMCAddon
       ///
       /// \ingroup python_xbmcgui_control_textbox
       /// @brief \python_func{ reset() }
-      ///-----------------------------------------------------------------------
       /// Clear's this textbox.
       ///
       /// @note reset only works after you add the control to a window.
@@ -1951,7 +1900,6 @@ namespace XBMCAddon
       ///
       /// \ingroup python_xbmcgui_control_textbox
       /// @brief \python_func{ scroll(id) }
-      ///-----------------------------------------------------------------------
       /// Scrolls to the given position.
       ///
       /// @param id                 integer - position to scroll to.
@@ -1978,7 +1926,6 @@ namespace XBMCAddon
       ///
       /// \ingroup python_xbmcgui_control_textbox
       /// @brief \python_func{ autoScroll(delay, time, repeat) }
-      ///-----------------------------------------------------------------------
       /// Set autoscrolling times.
       ///
       /// @param delay                 integer - Scroll delay (in ms)
@@ -2067,7 +2014,6 @@ namespace XBMCAddon
       ///
       /// \ingroup python_xbmcgui_control_image
       /// @brief \python_func{ setImage(filename[, useCache]) }
-      ///-----------------------------------------------------------------------
       /// Changes the image.
       ///
       /// @param filename             string - image filename.
@@ -2096,7 +2042,6 @@ namespace XBMCAddon
       ///
       /// \ingroup python_xbmcgui_control_image
       /// @brief \python_func{ setColorDiffuse(colorDiffuse) }
-      ///-----------------------------------------------------------------------
       /// Changes the images color.
       ///
       /// @param colorDiffuse         hexString - (example, '0xC0FF0000'
@@ -2210,7 +2155,6 @@ namespace XBMCAddon
       ///
       /// \ingroup python_xbmcgui_control_progress
       /// @brief \python_func{ setPercent(percent) }
-      ///-----------------------------------------------------------------------
       /// Sets the percentage of the progressbar to show.
       ///
       /// @param percent             float - percentage of the bar to show.
@@ -2238,7 +2182,6 @@ namespace XBMCAddon
       ///
       /// \ingroup python_xbmcgui_control_progress
       /// @brief \python_func{ getPercent() }
-      ///-----------------------------------------------------------------------
       /// Returns a float of the percent of the progress.
       ///
       /// @return                       Percent position
@@ -2360,7 +2303,6 @@ namespace XBMCAddon
       ///
       /// \ingroup python_xbmcgui_control_button
       /// @brief \python_func{ setLabel([label, font, textColor, disabledColor, shadowColor, focusedColor, label2]) }
-      ///-----------------------------------------------------------------------
       /// Set's this buttons text attributes.
       ///
       /// @param label                [opt] string or unicode - text string.
@@ -2402,8 +2344,7 @@ namespace XBMCAddon
       ///
       /// \ingroup python_xbmcgui_control_button
       /// @brief \python_func{ setDisabledColor(disabledColor) }
-      ///-----------------------------------------------------------------------
-      /// @brief Set's this buttons disabled color.
+      /// Set's this buttons disabled color.
       ///
       /// @param disabledColor        hexstring - color of disabled button's label. (e.g. '0xFFFF3300')
       ///
@@ -2428,7 +2369,6 @@ namespace XBMCAddon
       ///
       /// \ingroup python_xbmcgui_control_button
       /// @brief \python_func{ getLabel() }
-      ///-----------------------------------------------------------------------
       /// Returns the buttons label as a unicode string.
       ///
       /// @return                       Unicode string
@@ -2454,10 +2394,9 @@ namespace XBMCAddon
       ///
       /// \ingroup python_xbmcgui_control_button
       /// @brief \python_func{ getLabel2() }
-      ///-----------------------------------------------------------------------
-      /// Returns the buttons label2 as a unicode string.
+      /// Returns the buttons label2 as a string.
       ///
-      /// @return                       Unicode string of label 2
+      /// @return                       string of label 2
       ///
       ///
       ///-----------------------------------------------------------------------
@@ -2640,7 +2579,6 @@ namespace XBMCAddon
       ///
       /// \ingroup python_xbmcgui_control_radiobutton
       /// @brief \python_func{ setSelected(selected) }
-      ///-----------------------------------------------------------------------
       /// **Sets the radio buttons's selected status.**
       ///
       /// @param selected           bool - True=selected (on) / False=not
@@ -2670,7 +2608,6 @@ namespace XBMCAddon
       ///
       /// \ingroup python_xbmcgui_control_radiobutton
       /// @brief \python_func{ isSelected() }
-      ///-----------------------------------------------------------------------
       /// Returns the radio buttons's selected status.
       ///
       /// @return                       True if selected on
@@ -2695,7 +2632,6 @@ namespace XBMCAddon
       ///
       /// \ingroup python_xbmcgui_control_radiobutton
       /// @brief \python_func{ setLabel(label[, font, textColor, disabledColor, shadowColor, focusedColor]) }
-      ///-----------------------------------------------------------------------
       /// Set's the radio buttons text attributes.
       ///
       /// @param label              string or unicode - text string.
@@ -2744,7 +2680,6 @@ namespace XBMCAddon
       ///
       /// \ingroup python_xbmcgui_control_radiobutton
       /// @brief \python_func{ setRadioDimension(x, y, width, height) }
-      ///-----------------------------------------------------------------------
       /// Sets the radio buttons's radio texture's position and size.
       ///
       /// @param x                  integer - x coordinate of radio texture.
@@ -2853,7 +2788,6 @@ namespace XBMCAddon
       ///
       /// \ingroup python_xbmcgui_control_slider
       /// @brief \python_func{ getPercent() }
-      ///-----------------------------------------------------------------------
       /// Returns a float of the percent of the slider.
       ///
       /// @return                       float - Percent of slider
@@ -2877,7 +2811,6 @@ namespace XBMCAddon
       ///
       /// \ingroup python_xbmcgui_control_slider
       /// @brief \python_func{ setPercent(pct) }
-      ///-----------------------------------------------------------------------
       /// Sets the percent of the slider.
       ///
       /// @param pct                float - Percent value of slider
@@ -2901,7 +2834,6 @@ namespace XBMCAddon
       ///
       /// \ingroup python_xbmcgui_control_slider
       /// @brief \python_func{ getInt() }
-      ///-----------------------------------------------------------------------
       /// Returns the value of the slider.
       ///
       /// @return                   int - value of slider
@@ -2926,7 +2858,6 @@ namespace XBMCAddon
       ///
       /// \ingroup python_xbmcgui_control_slider
       /// @brief \python_func{ setInt(value, min, delta, max) }
-      ///-----------------------------------------------------------------------
       /// Sets the range, value and step size of the slider.
       ///
       /// @param value              int - value of slider
@@ -2954,7 +2885,6 @@ namespace XBMCAddon
       ///
       /// \ingroup python_xbmcgui_control_slider
       /// @brief \python_func{ getFloat() }
-      ///-----------------------------------------------------------------------
       /// Returns the value of the slider.
       ///
       /// @return                   float - value of slider
@@ -2979,7 +2909,6 @@ namespace XBMCAddon
       ///
       /// \ingroup python_xbmcgui_control_slider
       /// @brief \python_func{ setFloat(value, min, delta, max) }
-      ///-----------------------------------------------------------------------
       /// Sets the range, value and step size of the slider.
       ///
       /// @param value              float - value of slider

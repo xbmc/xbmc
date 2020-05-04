@@ -640,7 +640,6 @@ namespace kodi {
 ///
 /// \ingroup cpp_kodi
 /// @brief Get the currently used skin identification name from Kodi
-///-----------------------------------------------------------------------
 ///
 /// @return The active skin id name as a string
 ///

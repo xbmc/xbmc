@@ -589,7 +589,7 @@ public:
 
   //==========================================================================
   ///
-  /// @defgroup cpp_kodi_addon_vfs_general **1. General access functions**
+  /// @defgroup cpp_kodi_addon_vfs_general 1. General access functions
   /// @ingroup cpp_kodi_addon_vfs
   /// @brief **General access functions**
   ///
@@ -599,7 +599,7 @@ public:
 
   //==========================================================================
   ///
-  /// @defgroup cpp_kodi_addon_vfs_filecontrol **2. File editing functions**
+  /// @defgroup cpp_kodi_addon_vfs_filecontrol 2. File editing functions
   /// @ingroup cpp_kodi_addon_vfs
   /// @brief **File editing functions.**
   ///

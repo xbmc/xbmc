@@ -33,7 +33,6 @@ namespace XBMCAddon
     ///
     /// \ingroup python_xbmcvfs
     /// @brief \python_func{ xbmcvfs.copy(source, destination) }
-    ///-------------------------------------------------------------------------
     /// Copy file to destination, returns true/false.
     ///
     /// @param source                file to copy.
@@ -59,8 +58,7 @@ namespace XBMCAddon
     ///
     /// \ingroup python_xbmcvfs
     /// @brief \python_func{ xbmcvfs.delete(file) }
-    ///-------------------------------------------------------------------------
-    /// @brief Delete a file
+    /// Delete a file
     ///
     /// @param file                  File to delete
     /// @return                      True if successed
@@ -84,8 +82,7 @@ namespace XBMCAddon
     ///
     /// \ingroup python_xbmcvfs
     /// @brief \python_func{ xbmcvfs.rename(file, newFileName) }
-    ///-------------------------------------------------------------------------
-    /// @brief Rename a file
+    /// Rename a file
     ///
     /// @param file                  File to rename
     /// @param newFileName           New filename, including the full path
@@ -113,8 +110,7 @@ namespace XBMCAddon
     ///
     /// \ingroup python_xbmcvfs
     /// @brief \python_func{ xbmcvfs.exists(path) }
-    ///-------------------------------------------------------------------------
-    /// @brief Check for a file or folder existence
+    /// Check for a file or folder existence
     ///
     /// @param path                  File or folder (folder must end with
     ///                              slash or backslash)
@@ -139,7 +135,6 @@ namespace XBMCAddon
     ///
     /// \ingroup python_xbmcvfs
     /// @brief \python_func{ xbmcvfs.makeLegalFilename(filename) }
-    ///-----------------------------------------------------------------------
     /// Returns a legal filename or path as a string.
     ///
     /// @param filename              string - filename/path to make legal
@@ -176,7 +171,6 @@ namespace XBMCAddon
     ///
     /// \ingroup python_xbmcvfs
     /// @brief \python_func{ xbmcvfs.validatePath(path) }
-    ///-----------------------------------------------------------------------
     /// Returns the validated path.
     ///
     /// @param path                  string  - Path to format
@@ -206,7 +200,6 @@ namespace XBMCAddon
     ///
     /// \ingroup python_xbmcvfs
     /// @brief \python_func{ xbmcvfs.mkdir(path) }
-    ///-------------------------------------------------------------------------
     /// Create a folder.
     ///
     /// @param path                  Folder to create
@@ -231,7 +224,6 @@ namespace XBMCAddon
     ///
     /// \ingroup python_xbmcvfs
     /// @brief \python_func{ xbmcvfs.mkdirs(path) }
-    ///-------------------------------------------------------------------------
     /// Make all directories along the path
     ///
     /// Create folder(s) - it will create all folders in the path.
@@ -258,7 +250,6 @@ namespace XBMCAddon
     ///
     /// \ingroup python_xbmcvfs
     /// @brief \python_func{ xbmcvfs.rmdir(path) }
-    ///-------------------------------------------------------------------------
     /// Remove a folder.
     ///
     /// @param path                  Folder to remove
@@ -283,7 +274,6 @@ namespace XBMCAddon
     ///
     /// \ingroup python_xbmcvfs
     /// @brief \python_func{ xbmcvfs.listdir(path) }
-    ///-------------------------------------------------------------------------
     /// Lists content of a folder.
     ///
     /// @param path                  Folder to get list from

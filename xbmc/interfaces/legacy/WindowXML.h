@@ -113,7 +113,6 @@ namespace XBMCAddon
       ///
       /// \ingroup python_xbmcgui_window_xml
       /// @brief \python_func{ addItem(item[, position]) }
-      ///-----------------------------------------------------------------------
       /// Add a new item to this Window List.
       ///
       /// @param item            string, unicode or ListItem - item to add.
@@ -140,7 +139,6 @@ namespace XBMCAddon
       ///
       /// \ingroup python_xbmcgui_window_xml
       /// @brief \python_func{ addItems(items) }
-      ///-----------------------------------------------------------------------
       /// Add a list of items to to the window list.
       ///
       ///
@@ -165,7 +163,6 @@ namespace XBMCAddon
       ///
       /// \ingroup python_xbmcgui_window_xml
       /// @brief \python_func{ removeItem(position) }
-      ///-----------------------------------------------------------------------
       /// Removes a specified item based on position, from the Window List.
       ///
       /// @param position        integer - position of item to remove.
@@ -190,7 +187,6 @@ namespace XBMCAddon
       ///
       /// \ingroup python_xbmcgui_window_xml
       /// @brief \python_func{ getCurrentListPosition() }
-      ///-----------------------------------------------------------------------
       /// Gets the current position in the Window List.
       ///
       ///
@@ -213,7 +209,6 @@ namespace XBMCAddon
       ///
       /// \ingroup python_xbmcgui_window_xml
       /// @brief \python_func{ setCurrentListPosition(position) }
-      ///-----------------------------------------------------------------------
       /// Set the current position in the Window List.
       ///
       /// @param position        integer - position of item to set.
@@ -238,7 +233,6 @@ namespace XBMCAddon
       ///
       /// \ingroup python_xbmcgui_window_xml
       /// @brief \python_func{ getListItem(position) }
-      ///-----------------------------------------------------------------------
       /// Returns a given ListItem in this Window List.
       ///
       /// @param position        integer - position of item to return.
@@ -263,7 +257,6 @@ namespace XBMCAddon
       ///
       /// \ingroup python_xbmcgui_window_xml
       /// @brief \python_func{ getListSize() }
-      ///-----------------------------------------------------------------------
       /// Returns the number of items in this Window List.
       ///
       ///
@@ -286,10 +279,7 @@ namespace XBMCAddon
       ///
       /// \ingroup python_xbmcgui_window_xml
       /// @brief \python_func{ clearList() }
-      ///-----------------------------------------------------------------------
       /// Clear the Window List.
-      ///
-      ///
       ///
       /// ------------------------------------------------------------------------
       ///
@@ -302,12 +292,6 @@ namespace XBMCAddon
       ///
       clearList();
 #else
-      /**
-       * clearList() -- Clear the Window List.
-       *
-       * example:\n
-       *   - self.clearList()
-       */
       SWIGHIDDENVIRTUAL void clearList();
 #endif
 
@@ -315,7 +299,6 @@ namespace XBMCAddon
       ///
       /// \ingroup python_xbmcgui_window_xml
       /// @brief \python_func{ setContainerProperty(key, value) }
-      ///-----------------------------------------------------------------------
       /// Sets a container property, similar to an infolabel.
       ///
       /// @param key            string - property name.
@@ -346,7 +329,6 @@ namespace XBMCAddon
       ///
       /// \ingroup python_xbmcgui_window_xml
       /// @brief \python_func{ setContent(value) }
-      ///-----------------------------------------------------------------------
       /// Sets the content type of the container.
       ///
       /// @param value          string or unicode - content value.
@@ -396,7 +378,6 @@ namespace XBMCAddon
       ///
       /// \ingroup python_xbmcgui_window_xml
       /// @brief \python_func{ getCurrentContainerId() }
-      ///-----------------------------------------------------------------------
       /// Get the id of the currently visible container.
       ///
       /// ------------------------------------------------------------------------

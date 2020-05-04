@@ -122,7 +122,6 @@ public:
 
   /// @defgroup cpp_kodi_audioengine_Defs_AudioEngineFormat_Help *Value Help*
   /// @ingroup cpp_kodi_audioengine_Defs_AudioEngineFormat
-  /// ----------------------------------------------------------------------------
   ///
   /// <b>The following table contains values that can be set with @ref cpp_kodi_audioengine_Defs_AudioEngineFormat :</b>
   /// | Name | Type | Set call | Get call
@@ -267,7 +266,6 @@ public:
   ///
   /// ------------------------------------------------------------------------
   ///
-  /// **Audio engine format information:**
   /// @copydetails cpp_kodi_audioengine_Defs_AudioEngineFormat_Help
   ///
   /// ------------------------------------------------------------------------

@@ -29,7 +29,6 @@ namespace XBMCAddon
 #ifdef DOXYGEN_SHOULD_USE_THIS
       /// \ingroup python_xbmcwsgi_WsgiInputStream
       /// \python_func{ read([size]) }
-      ///------------------------------------------------------------------------
       ///
       /// Read a maximum of `<size>` bytes from the wsgi.input stream.
       ///
@@ -44,7 +43,6 @@ namespace XBMCAddon
 #ifdef DOXYGEN_SHOULD_USE_THIS
       /// \ingroup python_xbmcwsgi_WsgiInputStream
       /// \python_func{ readline([size]) }
-      ///------------------------------------------------------------------------
       ///
       /// Read a full line up to a maximum of `<size>` bytes from the wsgi.input
       /// stream.
@@ -60,7 +58,6 @@ namespace XBMCAddon
 #ifdef DOXYGEN_SHOULD_USE_THIS
       /// \ingroup python_xbmcwsgi_WsgiInputStream
       /// \python_func{ readlines([sizehint]) }
-      ///------------------------------------------------------------------------
       ///
       /// Read multiple full lines up to at least `<sizehint>` bytes from the
       /// wsgi.input stream and return them as a list.

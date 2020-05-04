@@ -59,7 +59,6 @@ namespace XBMCAddon
       ///
       /// \ingroup python_PlayList
       /// @brief \python_func{ getPlayListId() }
-      ///-----------------------------------------------------------------------
       /// Get the PlayList Identifier
       ///
       /// @return                    Id as an integer.
@@ -73,7 +72,6 @@ namespace XBMCAddon
       ///
       /// \ingroup python_PlayList
       /// @brief \python_func{ add(url[, listitem, index]) }
-      ///-----------------------------------------------------------------------
       /// Adds a new file to the playlist.
       ///
       /// @param url                 string or unicode - filename or url to add.
@@ -106,7 +104,6 @@ namespace XBMCAddon
       ///
       /// \ingroup python_PlayList
       /// @brief \python_func{ load(filename) }
-      ///-----------------------------------------------------------------------
       /// Load a playlist.
       ///
       /// Clear current playlist and copy items from the file to this Playlist
@@ -124,7 +121,6 @@ namespace XBMCAddon
       ///
       /// \ingroup python_PlayList
       /// @brief \python_func{ remove(filename) }
-      ///-----------------------------------------------------------------------
       /// Remove an item with this filename from the playlist.
       ///
       /// @param filename            The file to remove from list.
@@ -138,7 +134,6 @@ namespace XBMCAddon
       ///
       /// \ingroup python_PlayList
       /// @brief \python_func{ clear() }
-      ///-----------------------------------------------------------------------
       /// Clear all items in the playlist.
       ///
       clear();
@@ -150,7 +145,6 @@ namespace XBMCAddon
       ///
       /// \ingroup python_PlayList
       /// @brief \python_func{ size() }
-      ///-----------------------------------------------------------------------
       /// Returns the total number of PlayListItems in this playlist.
       ///
       /// @return                    Amount of playlist entries.
@@ -164,7 +158,6 @@ namespace XBMCAddon
       ///
       /// \ingroup python_PlayList
       /// @brief \python_func{ shuffle() }
-      ///-----------------------------------------------------------------------
       /// Shuffle the playlist.
       ///
       shuffle();
@@ -176,7 +169,6 @@ namespace XBMCAddon
       ///
       /// \ingroup python_PlayList
       /// @brief \python_func{ unshuffle() }
-      ///-----------------------------------------------------------------------
       /// Unshuffle the playlist.
       ///
       unshuffle();
@@ -188,7 +180,6 @@ namespace XBMCAddon
       ///
       /// \ingroup python_PlayList
       /// @brief \python_func{ getposition() }
-      ///-----------------------------------------------------------------------
       /// Returns the position of the current song in this playlist.
       ///
       /// @return                    Position of the current song
@@ -202,12 +193,13 @@ namespace XBMCAddon
       ///
       /// \ingroup python_PlayList
       /// @brief \python_func{ [] }
-      ///-----------------------------------------------------------------------
-      /// Retrieve the item at the given position. A negative index means
-      /// from the ending rather than from the start.
+      /// Retrieve the item at the given position.
       ///
       /// @param i                   Pointer in list
       /// @return                    The selected item on list
+      ///
+      /// @note A negative index means
+      /// from the end rather than from the start.
       ///
       [](...);
 #else
