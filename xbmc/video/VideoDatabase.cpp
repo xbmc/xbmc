@@ -47,6 +47,7 @@
 #include "utils/FileUtils.h"
 #include "utils/GroupUtils.h"
 #include "utils/LabelFormatter.h"
+#include "utils/SerializedProperty.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
@@ -2351,6 +2352,9 @@ std::string CVideoDatabase::GetValueString(const CVideoInfoTag &details, int min
     case VIDEODB_TYPE_DATETIME:
       conditions.emplace_back(PrepareSQL("c%02d='%s'", i, ((const CDateTime*)(((const char*)&details)+offsets[i].offset))->GetAsDBDateTime().c_str()));
       break;
+    case VIDEODB_TYPE_SERIALIZED:
+      conditions.emplace_back(PrepareSQL("c%02d='%s'", i, ((const ISerializedProperty*)(((const char*)&details) + offsets[i].offset))->ToString().c_str()));
+      break;
     case VIDEODB_TYPE_UNUSED: // Skip the unused field to avoid populating unused data
       continue;
     }
@@ -3799,6 +3803,9 @@ void CVideoDatabase::GetDetailsFromDB(const dbiplus::sql_record* const record, i
       break;
     case VIDEODB_TYPE_DATETIME:
       ((CDateTime*)(((char*)&details)+offsets[i].offset))->SetFromDBDateTime(record->at(i+idxOffset).get_asString());
+      break;
+    case VIDEODB_TYPE_SERIALIZED:
+      ((ISerializedProperty*)(((char*)&details) + offsets[i].offset))->FromString(record->at(i + idxOffset).get_asString());
       break;
     case VIDEODB_TYPE_UNUSED: // Skip the unused field to avoid populating unused data
       continue;

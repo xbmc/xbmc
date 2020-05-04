@@ -151,6 +151,7 @@ enum VideoDbDetails
 #define VIDEODB_TYPE_STRINGARRAY 6
 #define VIDEODB_TYPE_DATE 7
 #define VIDEODB_TYPE_DATETIME 8
+#define VIDEODB_TYPE_SERIALIZED 9
 
 typedef enum
 {
