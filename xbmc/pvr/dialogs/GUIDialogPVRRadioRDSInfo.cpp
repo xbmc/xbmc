@@ -21,33 +21,33 @@
 
 using namespace PVR;
 
-#define CONTROL_BTN_OK    10
-#define SPIN_CONTROL_INFO 21
-#define TEXT_INFO         22
-#define CONTROL_NEXT_PAGE 60
-#define CONTROL_INFO_LIST 70
+#define PVR_RDS_INFO_CONTROL_BTN_OK 10
+#define PVR_RDS_INFO_SPIN_CONTROL_INFO 21
+#define PVR_RDS_INFO_TEXT_INFO 22
+#define PVR_RDS_INFO_CONTROL_NEXT_PAGE 60
+#define PVR_RDS_INFO_CONTROL_INFO_LIST 70
 
-#define INFO_NEWS         1
-#define INFO_NEWS_LOCAL   2
-#define INFO_SPORT        3
-#define INFO_WEATHER      4
-#define INFO_LOTTERY      5
-#define INFO_STOCK        6
-#define INFO_OTHER        7
-#define INFO_CINEMA       8
-#define INFO_HOROSCOPE    9
+#define PVR_RDS_INFO_INFO_NEWS 1
+#define PVR_RDS_INFO_INFO_NEWS_LOCAL 2
+#define PVR_RDS_INFO_INFO_SPORT 3
+#define PVR_RDS_INFO_INFO_WEATHER 4
+#define PVR_RDS_INFO_INFO_LOTTERY 5
+#define PVR_RDS_INFO_INFO_STOCK 6
+#define PVR_RDS_INFO_INFO_OTHER 7
+#define PVR_RDS_INFO_INFO_CINEMA 8
+#define PVR_RDS_INFO_INFO_HOROSCOPE 9
 
 CGUIDialogPVRRadioRDSInfo::CGUIDialogPVRRadioRDSInfo()
-  : CGUIDialog(WINDOW_DIALOG_PVR_RADIO_RDS_INFO, "DialogPVRRadioRDSInfo.xml")
-  , m_InfoNews(29916, INFO_NEWS)
-  , m_InfoNewsLocal(29917, INFO_NEWS_LOCAL)
-  , m_InfoSport(29918, INFO_SPORT)
-  , m_InfoWeather(400, INFO_WEATHER)
-  , m_InfoLottery(29919, INFO_LOTTERY)
-  , m_InfoStock(29920, INFO_STOCK)
-  , m_InfoOther(29921, INFO_OTHER)
-  , m_InfoCinema(19602, INFO_CINEMA)
-  , m_InfoHoroscope(29922, INFO_HOROSCOPE)
+  : CGUIDialog(WINDOW_DIALOG_PVR_RADIO_RDS_INFO, "DialogPVRRadioRDSInfo.xml"),
+    m_InfoNews(29916, PVR_RDS_INFO_INFO_NEWS),
+    m_InfoNewsLocal(29917, PVR_RDS_INFO_INFO_NEWS_LOCAL),
+    m_InfoSport(29918, PVR_RDS_INFO_INFO_SPORT),
+    m_InfoWeather(400, PVR_RDS_INFO_INFO_WEATHER),
+    m_InfoLottery(29919, PVR_RDS_INFO_INFO_LOTTERY),
+    m_InfoStock(29920, PVR_RDS_INFO_INFO_STOCK),
+    m_InfoOther(29921, PVR_RDS_INFO_INFO_OTHER),
+    m_InfoCinema(19602, PVR_RDS_INFO_INFO_CINEMA),
+    m_InfoHoroscope(29922, PVR_RDS_INFO_INFO_HOROSCOPE)
 {
 }
 
@@ -57,12 +57,12 @@ bool CGUIDialogPVRRadioRDSInfo::OnMessage(CGUIMessage& message)
   {
     int iControl = message.GetSenderId();
 
-    if (iControl == CONTROL_BTN_OK)
+    if (iControl == PVR_RDS_INFO_CONTROL_BTN_OK)
     {
       Close();
       return true;
     }
-    else if (iControl == SPIN_CONTROL_INFO)
+    else if (iControl == PVR_RDS_INFO_SPIN_CONTROL_INFO)
     {
       const std::shared_ptr<CPVRChannel> channel = CServiceBroker::GetPVRManager().PlaybackState()->GetPlayingChannel();
       if (!channel)
@@ -72,46 +72,47 @@ bool CGUIDialogPVRRadioRDSInfo::OnMessage(CGUIMessage& message)
       if (!currentRDS)
         return false;
 
-      const CGUISpinControl* spin = static_cast<CGUISpinControl*>(GetControl(SPIN_CONTROL_INFO));
+      const CGUISpinControl* spin =
+          static_cast<CGUISpinControl*>(GetControl(PVR_RDS_INFO_SPIN_CONTROL_INFO));
       if (!spin)
         return false;
 
-      CGUITextBox* textbox = static_cast<CGUITextBox*>(GetControl(TEXT_INFO));
+      CGUITextBox* textbox = static_cast<CGUITextBox*>(GetControl(PVR_RDS_INFO_TEXT_INFO));
       if (!textbox)
         return false;
 
       switch (spin->GetValue())
       {
-        case INFO_NEWS:
+        case PVR_RDS_INFO_INFO_NEWS:
           textbox->SetInfo(currentRDS->GetInfoNews());
           break;
-        case INFO_NEWS_LOCAL:
+        case PVR_RDS_INFO_INFO_NEWS_LOCAL:
           textbox->SetInfo(currentRDS->GetInfoNewsLocal());
           break;
-        case INFO_SPORT:
+        case PVR_RDS_INFO_INFO_SPORT:
           textbox->SetInfo(currentRDS->GetInfoSport());
           break;
-        case INFO_WEATHER:
+        case PVR_RDS_INFO_INFO_WEATHER:
           textbox->SetInfo(currentRDS->GetInfoWeather());
           break;
-        case INFO_LOTTERY:
+        case PVR_RDS_INFO_INFO_LOTTERY:
           textbox->SetInfo(currentRDS->GetInfoLottery());
           break;
-        case INFO_STOCK:
+        case PVR_RDS_INFO_INFO_STOCK:
           textbox->SetInfo(currentRDS->GetInfoStock());
           break;
-        case INFO_OTHER:
+        case PVR_RDS_INFO_INFO_OTHER:
           textbox->SetInfo(currentRDS->GetInfoOther());
           break;
-        case INFO_CINEMA:
+        case PVR_RDS_INFO_INFO_CINEMA:
           textbox->SetInfo(currentRDS->GetInfoCinema());
           break;
-        case INFO_HOROSCOPE:
+        case PVR_RDS_INFO_INFO_HOROSCOPE:
           textbox->SetInfo(currentRDS->GetInfoHoroscope());
           break;
       }
 
-      SET_CONTROL_VISIBLE(CONTROL_INFO_LIST);
+      SET_CONTROL_VISIBLE(PVR_RDS_INFO_CONTROL_INFO_LIST);
     }
   }
   else if (message.GetMessage() == GUI_MSG_NOTIFY_ALL)
@@ -134,13 +135,13 @@ void CGUIDialogPVRRadioRDSInfo::OnInitWindow()
 
 void CGUIDialogPVRRadioRDSInfo::InitInfoControls()
 {
-  SET_CONTROL_HIDDEN(CONTROL_INFO_LIST);
+  SET_CONTROL_HIDDEN(PVR_RDS_INFO_CONTROL_INFO_LIST);
 
-  CGUISpinControl* spin = static_cast<CGUISpinControl*>(GetControl(SPIN_CONTROL_INFO));
+  CGUISpinControl* spin = static_cast<CGUISpinControl*>(GetControl(PVR_RDS_INFO_SPIN_CONTROL_INFO));
   if (spin)
     spin->Clear();
 
-  CGUITextBox* textbox = static_cast<CGUITextBox*>(GetControl(TEXT_INFO));
+  CGUITextBox* textbox = static_cast<CGUITextBox*>(GetControl(PVR_RDS_INFO_TEXT_INFO));
 
   m_InfoNews.Init(spin, textbox);
   m_InfoNewsLocal.Init(spin, textbox);
@@ -177,7 +178,7 @@ void CGUIDialogPVRRadioRDSInfo::UpdateInfoControls()
   bInfoPresent |= m_InfoHoroscope.Update(currentRDS->GetInfoHoroscope());
 
   if (bInfoPresent)
-    SET_CONTROL_VISIBLE(CONTROL_INFO_LIST);
+    SET_CONTROL_VISIBLE(PVR_RDS_INFO_CONTROL_INFO_LIST);
 }
 
 CGUIDialogPVRRadioRDSInfo::InfoControl::InfoControl(uint32_t iSpinLabelId, uint32_t iSpinControlId)

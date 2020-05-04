@@ -16,9 +16,9 @@
 
 using namespace PVR;
 
-#define CONTROL_BTN_FIND 4
-#define CONTROL_BTN_OK  7
-#define CONTROL_BTN_PLAY_RECORDING  8
+#define PVR_RECORDING_INFO_CONTROL_BTN_FIND 4
+#define PVR_RECORDING_INFO_CONTROL_BTN_OK 7
+#define PVR_RECORDING_INFO_CONTROL_BTN_PLAY_RECORDING 8
 
 CGUIDialogPVRRecordingInfo::CGUIDialogPVRRecordingInfo()
   : CGUIDialog(WINDOW_DIALOG_PVR_RECORDING_INFO, "DialogPVRInfo.xml")
@@ -43,7 +43,7 @@ bool CGUIDialogPVRRecordingInfo::OnClickButtonOK(CGUIMessage& message)
 {
   bool bReturn = false;
 
-  if (message.GetSenderId() == CONTROL_BTN_OK)
+  if (message.GetSenderId() == PVR_RECORDING_INFO_CONTROL_BTN_OK)
   {
     Close();
     bReturn = true;
@@ -56,7 +56,7 @@ bool CGUIDialogPVRRecordingInfo::OnClickButtonPlay(CGUIMessage& message)
 {
   bool bReturn = false;
 
-  if (message.GetSenderId() == CONTROL_BTN_PLAY_RECORDING)
+  if (message.GetSenderId() == PVR_RECORDING_INFO_CONTROL_BTN_PLAY_RECORDING)
   {
     Close();
 
@@ -73,7 +73,7 @@ bool CGUIDialogPVRRecordingInfo::OnClickButtonFind(CGUIMessage& message)
 {
   bool bReturn = false;
 
-  if (message.GetSenderId() == CONTROL_BTN_FIND)
+  if (message.GetSenderId() == PVR_RECORDING_INFO_CONTROL_BTN_FIND)
   {
     Close();
 

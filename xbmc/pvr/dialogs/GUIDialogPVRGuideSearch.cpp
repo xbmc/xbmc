@@ -26,26 +26,26 @@
 
 using namespace PVR;
 
-#define CONTROL_EDIT_SEARCH       9
-#define CONTROL_BTN_INC_DESC      10
-#define CONTROL_BTN_CASE_SENS     11
-#define CONTROL_SPIN_MIN_DURATION 12
-#define CONTROL_SPIN_MAX_DURATION 13
-#define CONTROL_EDIT_START_DATE   14
-#define CONTROL_EDIT_STOP_DATE    15
-#define CONTROL_EDIT_START_TIME   16
-#define CONTROL_EDIT_STOP_TIME    17
-#define CONTROL_SPIN_GENRE        18
-#define CONTROL_SPIN_NO_REPEATS   19
-#define CONTROL_BTN_UNK_GENRE     20
-#define CONTROL_SPIN_GROUPS       21
-#define CONTROL_BTN_FTA_ONLY      22
-#define CONTROL_SPIN_CHANNELS     23
-#define CONTROL_BTN_IGNORE_TMR    24
-#define CONTROL_BTN_CANCEL        25
-#define CONTROL_BTN_SEARCH        26
-#define CONTROL_BTN_IGNORE_REC    27
-#define CONTROL_BTN_DEFAULTS      28
+#define PVR_GUIDE_SEARCH_CONTROL_EDIT_SEARCH 9
+#define PVR_GUIDE_SEARCH_CONTROL_BTN_INC_DESC 10
+#define PVR_GUIDE_SEARCH_CONTROL_BTN_CASE_SENS 11
+#define PVR_GUIDE_SEARCH_CONTROL_SPIN_MIN_DURATION 12
+#define PVR_GUIDE_SEARCH_CONTROL_SPIN_MAX_DURATION 13
+#define PVR_GUIDE_SEARCH_CONTROL_EDIT_START_DATE 14
+#define PVR_GUIDE_SEARCH_CONTROL_EDIT_STOP_DATE 15
+#define PVR_GUIDE_SEARCH_CONTROL_EDIT_START_TIME 16
+#define PVR_GUIDE_SEARCH_CONTROL_EDIT_STOP_TIME 17
+#define PVR_GUIDE_SEARCH_CONTROL_SPIN_GENRE 18
+#define PVR_GUIDE_SEARCH_CONTROL_SPIN_NO_REPEATS 19
+#define PVR_GUIDE_SEARCH_CONTROL_BTN_UNK_GENRE 20
+#define PVR_GUIDE_SEARCH_CONTROL_SPIN_GROUPS 21
+#define PVR_GUIDE_SEARCH_CONTROL_BTN_FTA_ONLY 22
+#define PVR_GUIDE_SEARCH_CONTROL_SPIN_CHANNELS 23
+#define PVR_GUIDE_SEARCH_CONTROL_BTN_IGNORE_TMR 24
+#define PVR_GUIDE_SEARCH_CONTROL_BTN_CANCEL 25
+#define PVR_GUIDE_SEARCH_CONTROL_BTN_SEARCH 26
+#define PVR_GUIDE_SEARCH_CONTROL_BTN_IGNORE_REC 27
+#define PVR_GUIDE_SEARCH_CONTROL_BTN_DEFAULTS 28
 
 CGUIDialogPVRGuideSearch::CGUIDialogPVRGuideSearch() :
     CGUIDialog(WINDOW_DIALOG_PVR_GUIDE_SEARCH, "DialogPVRGuideSearch.xml"),
@@ -55,7 +55,7 @@ CGUIDialogPVRGuideSearch::CGUIDialogPVRGuideSearch() :
 
 void CGUIDialogPVRGuideSearch::UpdateChannelSpin()
 {
-  int iChannelGroup = GetSpinValue(CONTROL_SPIN_GROUPS);
+  int iChannelGroup = GetSpinValue(PVR_GUIDE_SEARCH_CONTROL_SPIN_GROUPS);
 
   std::vector< std::pair<std::string, int> > labels;
   labels.emplace_back(g_localizeStrings.Get(19217), EPG_SEARCH_UNSET);
@@ -87,7 +87,7 @@ void CGUIDialogPVRGuideSearch::UpdateChannelSpin()
     }
   }
 
-  SET_CONTROL_LABELS(CONTROL_SPIN_CHANNELS, iSelectedChannel, &labels);
+  SET_CONTROL_LABELS(PVR_GUIDE_SEARCH_CONTROL_SPIN_CHANNELS, iSelectedChannel, &labels);
 }
 
 void CGUIDialogPVRGuideSearch::UpdateGroupsSpin()
@@ -99,7 +99,8 @@ void CGUIDialogPVRGuideSearch::UpdateGroupsSpin()
   for (std::vector<std::shared_ptr<CPVRChannelGroup>>::const_iterator it = groups.begin(); it != groups.end(); ++it)
     labels.emplace_back((*it)->GroupName(), (*it)->GroupID());
 
-  SET_CONTROL_LABELS(CONTROL_SPIN_GROUPS, m_searchFilter->GetChannelGroup(), &labels);
+  SET_CONTROL_LABELS(PVR_GUIDE_SEARCH_CONTROL_SPIN_GROUPS, m_searchFilter->GetChannelGroup(),
+                     &labels);
 }
 
 void CGUIDialogPVRGuideSearch::UpdateGenreSpin()
@@ -119,7 +120,7 @@ void CGUIDialogPVRGuideSearch::UpdateGenreSpin()
   labels.emplace_back(g_localizeStrings.Get(19660), EPG_EVENT_CONTENTMASK_SPECIAL);
   labels.emplace_back(g_localizeStrings.Get(19499), EPG_EVENT_CONTENTMASK_USERDEFINED);
 
-  SET_CONTROL_LABELS(CONTROL_SPIN_GENRE, m_searchFilter->GetGenreType(), &labels);
+  SET_CONTROL_LABELS(PVR_GUIDE_SEARCH_CONTROL_SPIN_GENRE, m_searchFilter->GetGenreType(), &labels);
 }
 
 void CGUIDialogPVRGuideSearch::UpdateDurationSpin()
@@ -131,7 +132,8 @@ void CGUIDialogPVRGuideSearch::UpdateDurationSpin()
   for (int i = 1; i < 12*60/5; ++i)
     labels.emplace_back(StringUtils::Format(g_localizeStrings.Get(14044).c_str(), i * 5), i * 5);
 
-  SET_CONTROL_LABELS(CONTROL_SPIN_MIN_DURATION, m_searchFilter->GetMinimumDuration(), &labels);
+  SET_CONTROL_LABELS(PVR_GUIDE_SEARCH_CONTROL_SPIN_MIN_DURATION,
+                     m_searchFilter->GetMinimumDuration(), &labels);
 
   /* maximum duration */
   labels.clear();
@@ -140,7 +142,8 @@ void CGUIDialogPVRGuideSearch::UpdateDurationSpin()
   for (int i = 1; i < 12*60/5; ++i)
     labels.emplace_back(StringUtils::Format(g_localizeStrings.Get(14044).c_str(), i * 5), i * 5);
 
-  SET_CONTROL_LABELS(CONTROL_SPIN_MAX_DURATION, m_searchFilter->GetMaximumDuration(), &labels);
+  SET_CONTROL_LABELS(PVR_GUIDE_SEARCH_CONTROL_SPIN_MAX_DURATION,
+                     m_searchFilter->GetMaximumDuration(), &labels);
 }
 
 bool CGUIDialogPVRGuideSearch::OnMessage(CGUIMessage& message)
@@ -152,7 +155,7 @@ bool CGUIDialogPVRGuideSearch::OnMessage(CGUIMessage& message)
     case GUI_MSG_CLICKED:
     {
       int iControl = message.GetSenderId();
-      if (iControl == CONTROL_BTN_SEARCH)
+      if (iControl == PVR_GUIDE_SEARCH_CONTROL_BTN_SEARCH)
       {
         OnSearch();
         m_bConfirmed = true;
@@ -160,13 +163,13 @@ bool CGUIDialogPVRGuideSearch::OnMessage(CGUIMessage& message)
         Close();
         return true;
       }
-      else if (iControl == CONTROL_BTN_CANCEL)
+      else if (iControl == PVR_GUIDE_SEARCH_CONTROL_BTN_CANCEL)
       {
         Close();
         m_bCanceled = true;
         return true;
       }
-      else if (iControl == CONTROL_BTN_DEFAULTS)
+      else if (iControl == PVR_GUIDE_SEARCH_CONTROL_BTN_DEFAULTS)
       {
         if (m_searchFilter)
         {
@@ -176,7 +179,7 @@ bool CGUIDialogPVRGuideSearch::OnMessage(CGUIMessage& message)
 
         return true;
       }
-      else if (iControl == CONTROL_SPIN_GROUPS)
+      else if (iControl == PVR_GUIDE_SEARCH_CONTROL_SPIN_GROUPS)
       {
         UpdateChannelSpin();
         return true;
@@ -238,27 +241,32 @@ void CGUIDialogPVRGuideSearch::OnSearch()
   if (!m_searchFilter)
     return;
 
-  m_searchFilter->SetSearchTerm(GetEditValue(CONTROL_EDIT_SEARCH));
+  m_searchFilter->SetSearchTerm(GetEditValue(PVR_GUIDE_SEARCH_CONTROL_EDIT_SEARCH));
 
-  m_searchFilter->SetSearchInDescription(IsRadioSelected(CONTROL_BTN_INC_DESC));
-  m_searchFilter->SetCaseSensitive(IsRadioSelected(CONTROL_BTN_CASE_SENS));
-  m_searchFilter->SetFreeToAirOnly(IsRadioSelected(CONTROL_BTN_FTA_ONLY));
-  m_searchFilter->SetIncludeUnknownGenres(IsRadioSelected(CONTROL_BTN_UNK_GENRE));
-  m_searchFilter->SetIgnorePresentRecordings(IsRadioSelected(CONTROL_BTN_IGNORE_REC));
-  m_searchFilter->SetIgnorePresentTimers(IsRadioSelected(CONTROL_BTN_IGNORE_TMR));
-  m_searchFilter->SetRemoveDuplicates(IsRadioSelected(CONTROL_SPIN_NO_REPEATS));
+  m_searchFilter->SetSearchInDescription(IsRadioSelected(PVR_GUIDE_SEARCH_CONTROL_BTN_INC_DESC));
+  m_searchFilter->SetCaseSensitive(IsRadioSelected(PVR_GUIDE_SEARCH_CONTROL_BTN_CASE_SENS));
+  m_searchFilter->SetFreeToAirOnly(IsRadioSelected(PVR_GUIDE_SEARCH_CONTROL_BTN_FTA_ONLY));
+  m_searchFilter->SetIncludeUnknownGenres(IsRadioSelected(PVR_GUIDE_SEARCH_CONTROL_BTN_UNK_GENRE));
+  m_searchFilter->SetIgnorePresentRecordings(
+      IsRadioSelected(PVR_GUIDE_SEARCH_CONTROL_BTN_IGNORE_REC));
+  m_searchFilter->SetIgnorePresentTimers(IsRadioSelected(PVR_GUIDE_SEARCH_CONTROL_BTN_IGNORE_TMR));
+  m_searchFilter->SetRemoveDuplicates(IsRadioSelected(PVR_GUIDE_SEARCH_CONTROL_SPIN_NO_REPEATS));
 
-  m_searchFilter->SetGenreType(GetSpinValue(CONTROL_SPIN_GENRE));
-  m_searchFilter->SetMinimumDuration(GetSpinValue(CONTROL_SPIN_MIN_DURATION));
-  m_searchFilter->SetMaximumDuration(GetSpinValue(CONTROL_SPIN_MAX_DURATION));
+  m_searchFilter->SetGenreType(GetSpinValue(PVR_GUIDE_SEARCH_CONTROL_SPIN_GENRE));
+  m_searchFilter->SetMinimumDuration(GetSpinValue(PVR_GUIDE_SEARCH_CONTROL_SPIN_MIN_DURATION));
+  m_searchFilter->SetMaximumDuration(GetSpinValue(PVR_GUIDE_SEARCH_CONTROL_SPIN_MAX_DURATION));
 
-  auto it = m_channelNumbersMap.find(GetSpinValue(CONTROL_SPIN_CHANNELS));
+  auto it = m_channelNumbersMap.find(GetSpinValue(PVR_GUIDE_SEARCH_CONTROL_SPIN_CHANNELS));
   m_searchFilter->SetChannelNumber(it == m_channelNumbersMap.end() ? CPVRChannelNumber() : (*it).second);
 
-  m_searchFilter->SetChannelGroup(GetSpinValue(CONTROL_SPIN_GROUPS));
+  m_searchFilter->SetChannelGroup(GetSpinValue(PVR_GUIDE_SEARCH_CONTROL_SPIN_GROUPS));
 
-  m_searchFilter->SetStartDateTime(ReadDateTime(GetEditValue(CONTROL_EDIT_START_DATE), GetEditValue(CONTROL_EDIT_START_TIME)));
-  m_searchFilter->SetEndDateTime(ReadDateTime(GetEditValue(CONTROL_EDIT_STOP_DATE), GetEditValue(CONTROL_EDIT_STOP_TIME)));
+  m_searchFilter->SetStartDateTime(
+      ReadDateTime(GetEditValue(PVR_GUIDE_SEARCH_CONTROL_EDIT_START_DATE),
+                   GetEditValue(PVR_GUIDE_SEARCH_CONTROL_EDIT_START_TIME)));
+  m_searchFilter->SetEndDateTime(
+      ReadDateTime(GetEditValue(PVR_GUIDE_SEARCH_CONTROL_EDIT_STOP_DATE),
+                   GetEditValue(PVR_GUIDE_SEARCH_CONTROL_EDIT_STOP_TIME)));
 }
 
 void CGUIDialogPVRGuideSearch::Update()
@@ -266,39 +274,55 @@ void CGUIDialogPVRGuideSearch::Update()
   if (!m_searchFilter)
     return;
 
-  SET_CONTROL_LABEL2(CONTROL_EDIT_SEARCH, m_searchFilter->GetSearchTerm());
+  SET_CONTROL_LABEL2(PVR_GUIDE_SEARCH_CONTROL_EDIT_SEARCH, m_searchFilter->GetSearchTerm());
   {
-    CGUIMessage msg(GUI_MSG_SET_TYPE, GetID(), CONTROL_EDIT_SEARCH, CGUIEditControl::INPUT_TYPE_TEXT, 16017);
+    CGUIMessage msg(GUI_MSG_SET_TYPE, GetID(), PVR_GUIDE_SEARCH_CONTROL_EDIT_SEARCH,
+                    CGUIEditControl::INPUT_TYPE_TEXT, 16017);
     OnMessage(msg);
   }
 
-  SET_CONTROL_SELECTED(GetID(), CONTROL_BTN_CASE_SENS, m_searchFilter->IsCaseSensitive());
-  SET_CONTROL_SELECTED(GetID(), CONTROL_BTN_INC_DESC, m_searchFilter->ShouldSearchInDescription());
-  SET_CONTROL_SELECTED(GetID(), CONTROL_BTN_FTA_ONLY, m_searchFilter->IsFreeToAirOnly());
-  SET_CONTROL_SELECTED(GetID(), CONTROL_BTN_UNK_GENRE, m_searchFilter->ShouldIncludeUnknownGenres());
-  SET_CONTROL_SELECTED(GetID(), CONTROL_BTN_IGNORE_REC, m_searchFilter->ShouldIgnorePresentRecordings());
-  SET_CONTROL_SELECTED(GetID(), CONTROL_BTN_IGNORE_TMR, m_searchFilter->ShouldIgnorePresentTimers());
-  SET_CONTROL_SELECTED(GetID(), CONTROL_SPIN_NO_REPEATS, m_searchFilter->ShouldRemoveDuplicates());
+  SET_CONTROL_SELECTED(GetID(), PVR_GUIDE_SEARCH_CONTROL_BTN_CASE_SENS,
+                       m_searchFilter->IsCaseSensitive());
+  SET_CONTROL_SELECTED(GetID(), PVR_GUIDE_SEARCH_CONTROL_BTN_INC_DESC,
+                       m_searchFilter->ShouldSearchInDescription());
+  SET_CONTROL_SELECTED(GetID(), PVR_GUIDE_SEARCH_CONTROL_BTN_FTA_ONLY,
+                       m_searchFilter->IsFreeToAirOnly());
+  SET_CONTROL_SELECTED(GetID(), PVR_GUIDE_SEARCH_CONTROL_BTN_UNK_GENRE,
+                       m_searchFilter->ShouldIncludeUnknownGenres());
+  SET_CONTROL_SELECTED(GetID(), PVR_GUIDE_SEARCH_CONTROL_BTN_IGNORE_REC,
+                       m_searchFilter->ShouldIgnorePresentRecordings());
+  SET_CONTROL_SELECTED(GetID(), PVR_GUIDE_SEARCH_CONTROL_BTN_IGNORE_TMR,
+                       m_searchFilter->ShouldIgnorePresentTimers());
+  SET_CONTROL_SELECTED(GetID(), PVR_GUIDE_SEARCH_CONTROL_SPIN_NO_REPEATS,
+                       m_searchFilter->ShouldRemoveDuplicates());
 
   /* Set time fields */
-  SET_CONTROL_LABEL2(CONTROL_EDIT_START_TIME, m_searchFilter->GetStartDateTime().GetAsLocalizedTime("", false));
+  SET_CONTROL_LABEL2(PVR_GUIDE_SEARCH_CONTROL_EDIT_START_TIME,
+                     m_searchFilter->GetStartDateTime().GetAsLocalizedTime("", false));
   {
-    CGUIMessage msg(GUI_MSG_SET_TYPE, GetID(), CONTROL_EDIT_START_TIME, CGUIEditControl::INPUT_TYPE_TIME, 14066);
+    CGUIMessage msg(GUI_MSG_SET_TYPE, GetID(), PVR_GUIDE_SEARCH_CONTROL_EDIT_START_TIME,
+                    CGUIEditControl::INPUT_TYPE_TIME, 14066);
     OnMessage(msg);
   }
-  SET_CONTROL_LABEL2(CONTROL_EDIT_STOP_TIME, m_searchFilter->GetEndDateTime().GetAsLocalizedTime("", false));
+  SET_CONTROL_LABEL2(PVR_GUIDE_SEARCH_CONTROL_EDIT_STOP_TIME,
+                     m_searchFilter->GetEndDateTime().GetAsLocalizedTime("", false));
   {
-    CGUIMessage msg(GUI_MSG_SET_TYPE, GetID(), CONTROL_EDIT_STOP_TIME, CGUIEditControl::INPUT_TYPE_TIME, 14066);
+    CGUIMessage msg(GUI_MSG_SET_TYPE, GetID(), PVR_GUIDE_SEARCH_CONTROL_EDIT_STOP_TIME,
+                    CGUIEditControl::INPUT_TYPE_TIME, 14066);
     OnMessage(msg);
   }
-  SET_CONTROL_LABEL2(CONTROL_EDIT_START_DATE, m_searchFilter->GetStartDateTime().GetAsDBDate());
+  SET_CONTROL_LABEL2(PVR_GUIDE_SEARCH_CONTROL_EDIT_START_DATE,
+                     m_searchFilter->GetStartDateTime().GetAsDBDate());
   {
-    CGUIMessage msg(GUI_MSG_SET_TYPE, GetID(), CONTROL_EDIT_START_DATE, CGUIEditControl::INPUT_TYPE_DATE, 14067);
+    CGUIMessage msg(GUI_MSG_SET_TYPE, GetID(), PVR_GUIDE_SEARCH_CONTROL_EDIT_START_DATE,
+                    CGUIEditControl::INPUT_TYPE_DATE, 14067);
     OnMessage(msg);
   }
-  SET_CONTROL_LABEL2(CONTROL_EDIT_STOP_DATE, m_searchFilter->GetEndDateTime().GetAsDBDate());
+  SET_CONTROL_LABEL2(PVR_GUIDE_SEARCH_CONTROL_EDIT_STOP_DATE,
+                     m_searchFilter->GetEndDateTime().GetAsDBDate());
   {
-    CGUIMessage msg(GUI_MSG_SET_TYPE, GetID(), CONTROL_EDIT_STOP_DATE, CGUIEditControl::INPUT_TYPE_DATE, 14067);
+    CGUIMessage msg(GUI_MSG_SET_TYPE, GetID(), PVR_GUIDE_SEARCH_CONTROL_EDIT_STOP_DATE,
+                    CGUIEditControl::INPUT_TYPE_DATE, 14067);
     OnMessage(msg);
   }
 
