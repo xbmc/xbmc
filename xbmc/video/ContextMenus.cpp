@@ -10,10 +10,15 @@
 
 #include "Application.h"
 #include "Autorun.h"
+#include "ServiceBroker.h"
+#include "filesystem/Directory.h"
+#include "guilib/GUIComponent.h"
+#include "guilib/GUIWindowManager.h"
+#include "settings/MediaSettings.h"
 #include "utils/URIUtils.h"
 #include "video/dialogs/GUIDialogVideoInfo.h"
 #include "video/windows/GUIWindowVideoBase.h"
-
+#include "view/GUIViewState.h"
 
 namespace CONTEXTMENU
 {
@@ -119,7 +124,54 @@ bool CResume::IsVisible(const CFileItem& itemIn) const
   return CGUIWindowVideoBase::HasResumeItemOffset(&item);
 }
 
-static void SetPathAndPlay(CFileItem& item)
+namespace
+{
+
+void AddRecordingsToPlayList(const std::shared_ptr<CFileItem>& item, CFileItemList& queuedItems)
+{
+  if (item->m_bIsFolder)
+  {
+    CFileItemList items;
+    XFILE::CDirectory::GetDirectory(item->GetPath(), items, "", XFILE::DIR_FLAG_DEFAULTS);
+
+    const int watchedMode = CMediaSettings::GetInstance().GetWatchedMode("recordings");
+    const bool unwatchedOnly = watchedMode == WatchedModeUnwatched;
+    const bool watchedOnly = watchedMode == WatchedModeWatched;
+    for (const auto& currItem : items)
+    {
+      if (currItem->HasVideoInfoTag() &&
+          ((unwatchedOnly && currItem->GetVideoInfoTag()->GetPlayCount() > 0) ||
+           (watchedOnly && currItem->GetVideoInfoTag()->GetPlayCount() <= 0)))
+        continue;
+
+      AddRecordingsToPlayList(currItem, queuedItems);
+    }
+  }
+  else
+  {
+    queuedItems.Add(item);
+  }
+}
+
+void AddRecordingsToPlayListAndSort(const std::shared_ptr<CFileItem>& item,
+                                    CFileItemList& queuedItems)
+{
+  queuedItems.SetPath(item->GetPath());
+  AddRecordingsToPlayList(item, queuedItems);
+
+  if (!queuedItems.IsEmpty())
+  {
+    const int windowId = CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow();
+    if (windowId == WINDOW_TV_RECORDINGS || windowId == WINDOW_RADIO_RECORDINGS)
+    {
+      const CGUIViewState* viewState = CGUIViewState::GetViewState(windowId, queuedItems);
+      if (viewState)
+        queuedItems.Sort(viewState->GetSortMethod());
+    }
+  }
+}
+
+void SetPathAndPlay(CFileItem& item)
 {
   if (item.IsVideoDb())
   {
@@ -129,10 +181,31 @@ static void SetPathAndPlay(CFileItem& item)
   item.SetProperty("check_resume", false);
 
   if (item.IsLiveTV()) // pvr tv or pvr radio?
+  {
     g_application.PlayMedia(item, "", PLAYLIST_NONE);
+  }
+  else if (item.m_bIsFolder && StringUtils::StartsWith(item.GetPath(), "pvr://recordings/"))
+  {
+    // recursively add items to play list
+    CFileItemList queuedItems;
+    AddRecordingsToPlayListAndSort(std::make_shared<CFileItem>(item), queuedItems);
+
+    PLAYLIST::CPlayListPlayer& player = CServiceBroker::GetPlaylistPlayer();
+
+    player.ClearPlaylist(PLAYLIST_VIDEO);
+    player.Reset();
+    player.Add(PLAYLIST_VIDEO, queuedItems);
+    player.SetCurrentPlaylist(PLAYLIST_VIDEO);
+
+    player.Play();
+  }
   else
+  {
     CServiceBroker::GetPlaylistPlayer().Play(std::make_shared<CFileItem>(item), "");
+  }
 }
+
+} // unnamed namespace
 
 bool CResume::Execute(const CFileItemPtr& itemIn) const
 {
@@ -164,7 +237,17 @@ bool CPlay::IsVisible(const CFileItem& itemIn) const
     return false;
 
   if (item.m_bIsFolder)
-    return false; //! @todo implement
+  {
+    if (StringUtils::StartsWith(item.GetPath(), "pvr://recordings/"))
+    {
+      // Note: Recordings contained in the folder must be sorted properly, thus this
+      //       item is only available if one of the recordings windows is active.
+      const int windowId = CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow();
+      return windowId == WINDOW_TV_RECORDINGS || windowId == WINDOW_RADIO_RECORDINGS;
+    }
+    else
+      return false; //! @todo implement
+  }
 
   return item.IsVideo() || item.IsLiveTV() || item.IsDVD() || item.IsCDDA();
 }
