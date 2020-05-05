@@ -232,6 +232,7 @@ void CFileItemHandler::HandleFileItemList(const char *ID, bool allowFile, const 
       fields.insert(field->asString());
   }
 
+  result[resultname].reserve(static_cast<size_t>(end - start));
   for (int i = start; i < end; i++)
   {
     CFileItemPtr item = items.Get(i);

@@ -536,6 +536,7 @@ std::string SqliteDatabase::vprepare(const char *format, va_list args)
   // Strip SEPARATOR from all GROUP_CONCAT statements:
   // before: GROUP_CONCAT(field SEPARATOR '; ')
   // after:  GROUP_CONCAT(field, '; ')
+  // Can not specify separator when have DISTINCT, comma used by default
   pos = strResult.find("GROUP_CONCAT(");
   while (pos != std::string::npos)
   {
@@ -545,24 +546,37 @@ std::string SqliteDatabase::vprepare(const char *format, va_list args)
     pos = strResult.find("GROUP_CONCAT(", pos + 1);
   }
   // Replace CONCAT with || to concatenate text fields:
-  // before: CONCAT(field1, field2)
-  // after:  field1 || field2
+  // before: CONCAT(field1, field2, field3)
+  // after: field1 || field2 || field3
+  // Avoid commas in substatements and within single quotes
+  // before: CONCAT(field1, ',', REPLACE(field2, ',', '-'), field3)
+  // after: field1 || ',' || REPLACE(field2, ',', '-') || field3
   pos = strResult.find("CONCAT(");
   while (pos != std::string::npos)
   {
     if (pos == 0 || strResult[pos - 1] == ' ') // Not GROUP_CONCAT
     {
-      size_t pos2 = strResult.find(",", pos + 1);
-      if (pos2 != std::string::npos)
+      // Check each char for other bracket or single quote pairs
+      unsigned int brackets = 1;
+      bool quoted = false;
+      size_t index = pos + 7; // start after "CONCAT("
+      while (index < strResult.size() && brackets != 0)
       {
-        size_t pos3 = strResult.find(")", pos2 + 1);
-        if (pos3 != std::string::npos)
+        if (strResult[index] == '(')
+          brackets++;
+        else if (strResult[index] == ')')
         {
-          strResult.erase(pos3, 1);
-          strResult.replace(pos2, 1, " || ");
-          strResult.erase(pos, 7);
+          brackets--;
+          if (brackets == 0)
+            strResult.erase(index, 1); //Remove closing bracket of CONCAT
         }
+        else if (strResult[index] == '\'')
+          quoted = !quoted;
+        else if (strResult[index] == ',' && brackets == 1 && !quoted)
+          strResult.replace(index, 1, "||");
+        index++;
       }
+      strResult.erase(pos, 7); //Remove "CONCAT("
     }
     pos = strResult.find("CONCAT(", pos + 1);
   }

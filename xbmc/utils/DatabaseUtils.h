@@ -171,6 +171,7 @@ public:
 
   static std::string BuildLimitClause(int end, int start = 0);
   static std::string BuildLimitClauseOnly(int end, int start = 0);
+  static size_t GetLimitCount(int end, int start);
 
 private:
   static int GetField(Field field, const MediaType &mediaType, bool asIndex);

@@ -920,8 +920,6 @@ private:
     joinToAlbum_idArtist = 0,
     joinToAlbum_strArtist,
     joinToAlbum_strArtistMBID,
-    joinToAlbum_idSongGenre,
-    joinToAlbum_strSongGenre,
     joinToAlbum_enumCount // end of the enum, do not add past here
   } JoinToAlbumFields;
 
