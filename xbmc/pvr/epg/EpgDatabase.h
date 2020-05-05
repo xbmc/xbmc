@@ -224,7 +224,7 @@ namespace PVR
      * @param bQueueWrite Don't execute the query immediately but queue it if true.
      * @return True if it was updated successfully, false otherwise.
      */
-    bool PersistLastEpgScanTime(int iEpgId, const CDateTime& lastScanTime, bool bQueueWrite = false);
+    bool PersistLastEpgScanTime(int iEpgId, const CDateTime& lastScanTime, bool bQueueWrite);
 
     /*!
      * @brief Persist an EPG table. It's entries are not persisted.
@@ -232,7 +232,7 @@ namespace PVR
      * @param bQueueWrite Don't execute the query immediately but queue it if true.
      * @return The database ID of this entry or 0 if bSingleUpdate is false and the query was queued.
      */
-    int Persist(const CPVREpg& epg, bool bQueueWrite = false);
+    int Persist(const CPVREpg& epg, bool bQueueWrite);
 
     /*!
      * @brief Erase all EPG tags with the given epg ID and an end time less than the given time.

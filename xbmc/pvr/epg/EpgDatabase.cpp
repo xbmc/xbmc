@@ -958,7 +958,9 @@ bool CPVREpgDatabase::GetLastEpgScanTime(int iEpgId, CDateTime* lastScan)
   return bReturn;
 }
 
-bool CPVREpgDatabase::PersistLastEpgScanTime(int iEpgId, const CDateTime& lastScanTime, bool bQueueWrite /* = false */)
+bool CPVREpgDatabase::PersistLastEpgScanTime(int iEpgId,
+                                             const CDateTime& lastScanTime,
+                                             bool bQueueWrite)
 {
   CSingleLock lock(m_critSection);
   std::string strQuery = PrepareSQL("REPLACE INTO lastepgscan(idEpg, sLastScan) VALUES (%u, '%s');",
@@ -967,7 +969,7 @@ bool CPVREpgDatabase::PersistLastEpgScanTime(int iEpgId, const CDateTime& lastSc
   return bQueueWrite ? QueueInsertQuery(strQuery) : ExecuteQuery(strQuery);
 }
 
-int CPVREpgDatabase::Persist(const CPVREpg& epg, bool bQueueWrite /* = false */)
+int CPVREpgDatabase::Persist(const CPVREpg& epg, bool bQueueWrite)
 {
   int iReturn(-1);
   std::string strQuery;
