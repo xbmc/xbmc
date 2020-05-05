@@ -4818,6 +4818,7 @@ msgid "System information"
 msgstr ""
 
 #: xbmc/music/windows/GUIWindowMusicBase.cpp
+#: xbmc/video/ContextMenus.cpp
 #: xbmc/video/windows/GUIWindowVideoBase.cpp
 msgctxt "#10008"
 msgid "Play next"
@@ -6752,6 +6753,8 @@ msgid "Movie information"
 msgstr ""
 
 #: system/settings/settings.xml
+#: xbmc/video/ContextMenus.cpp
+#: xbmc/video/windows/GUIWindowVideoBase.cpp
 msgctxt "#13347"
 msgid "Queue item"
 msgstr ""

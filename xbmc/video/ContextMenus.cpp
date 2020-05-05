@@ -171,6 +171,28 @@ void AddRecordingsToPlayListAndSort(const std::shared_ptr<CFileItem>& item,
   }
 }
 
+void QueueRecordings(const std::shared_ptr<CFileItem>& item, bool bPlayNext)
+{
+  CFileItemList queuedItems;
+  AddRecordingsToPlayListAndSort(item, queuedItems);
+
+  PLAYLIST::CPlayListPlayer& player = CServiceBroker::GetPlaylistPlayer();
+
+  // Determine the proper list to queue this element
+  int playlist = player.GetCurrentPlaylist();
+  if (playlist == PLAYLIST_NONE)
+    playlist = g_application.GetAppPlayer().GetPreferredPlaylist();
+  if (playlist == PLAYLIST_NONE)
+    playlist = PLAYLIST_VIDEO;
+
+  if (bPlayNext && g_application.GetAppPlayer().IsPlaying())
+    player.Insert(playlist, queuedItems, player.GetCurrentSong() + 1);
+  else
+    player.Add(playlist, queuedItems);
+
+  player.SetCurrentPlaylist(playlist);
+}
+
 void SetPathAndPlay(CFileItem& item)
 {
   if (item.IsVideoDb())
@@ -263,4 +285,45 @@ bool CPlay::Execute(const CFileItemPtr& itemIn) const
   return true;
 };
 
+bool CQueue::IsVisible(const CFileItem& item) const
+{
+  if (item.m_bIsFolder && StringUtils::StartsWith(item.GetPath(), "pvr://recordings/"))
+    return true;
+
+  return false; //! @todo implement
 }
+
+bool CQueue::Execute(const CFileItemPtr& item) const
+{
+  if (item->m_bIsFolder && StringUtils::StartsWith(item->GetPath(), "pvr://recordings/"))
+  {
+    // recursively add items to play list
+    QueueRecordings(item, false);
+    return true;
+  }
+
+  return true; //! @todo implement
+};
+
+bool CPlayNext::IsVisible(const CFileItem& item) const
+{
+  if (item.m_bIsFolder && StringUtils::StartsWith(item.GetPath(), "pvr://recordings/"))
+    return true;
+
+  return false; //! @todo implement
+}
+
+bool CPlayNext::Execute(const CFileItemPtr& item) const
+{
+  if (item->m_bIsFolder && StringUtils::StartsWith(item->GetPath(), "pvr://recordings/"))
+  {
+    // recursively add items to play list
+    QueueRecordings(item, true);
+    return true;
+  }
+
+  return true; //! @todo implement
+};
+
+}
+
