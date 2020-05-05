@@ -193,6 +193,19 @@ void QueueRecordings(const std::shared_ptr<CFileItem>& item, bool bPlayNext)
   player.SetCurrentPlaylist(playlist);
 }
 
+bool IsActiveRecordingsFolder(const CFileItem& item)
+{
+  if (item.m_bIsFolder && StringUtils::StartsWith(item.GetPath(), "pvr://recordings/"))
+  {
+    // Note: Recordings contained in the folder must be sorted properly, thus this
+    //       item is only available if one of the recordings windows is active.
+    const int windowId = CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow();
+    return windowId == WINDOW_TV_RECORDINGS || windowId == WINDOW_RADIO_RECORDINGS;
+  }
+
+  return false;
+}
+
 void SetPathAndPlay(CFileItem& item)
 {
   if (item.IsVideoDb())
@@ -206,7 +219,7 @@ void SetPathAndPlay(CFileItem& item)
   {
     g_application.PlayMedia(item, "", PLAYLIST_NONE);
   }
-  else if (item.m_bIsFolder && StringUtils::StartsWith(item.GetPath(), "pvr://recordings/"))
+  else if (IsActiveRecordingsFolder(item))
   {
     // recursively add items to play list
     CFileItemList queuedItems;
@@ -258,18 +271,11 @@ bool CPlay::IsVisible(const CFileItem& itemIn) const
   if (item.IsDeleted()) // e.g. trashed pvr recording
     return false;
 
+  if (IsActiveRecordingsFolder(item))
+    return true;
+
   if (item.m_bIsFolder)
-  {
-    if (StringUtils::StartsWith(item.GetPath(), "pvr://recordings/"))
-    {
-      // Note: Recordings contained in the folder must be sorted properly, thus this
-      //       item is only available if one of the recordings windows is active.
-      const int windowId = CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow();
-      return windowId == WINDOW_TV_RECORDINGS || windowId == WINDOW_RADIO_RECORDINGS;
-    }
-    else
-      return false; //! @todo implement
-  }
+    return false; //! @todo implement
 
   return item.IsVideo() || item.IsLiveTV() || item.IsDVD() || item.IsCDDA();
 }
@@ -287,7 +293,10 @@ bool CPlay::Execute(const CFileItemPtr& itemIn) const
 
 bool CQueue::IsVisible(const CFileItem& item) const
 {
-  if (item.m_bIsFolder && StringUtils::StartsWith(item.GetPath(), "pvr://recordings/"))
+  if (CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() == WINDOW_VIDEO_PLAYLIST)
+    return false; // Already queued
+
+  if (item.IsUsablePVRRecording() || IsActiveRecordingsFolder(item))
     return true;
 
   return false; //! @todo implement
@@ -295,7 +304,10 @@ bool CQueue::IsVisible(const CFileItem& item) const
 
 bool CQueue::Execute(const CFileItemPtr& item) const
 {
-  if (item->m_bIsFolder && StringUtils::StartsWith(item->GetPath(), "pvr://recordings/"))
+  if (CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() == WINDOW_VIDEO_PLAYLIST)
+    return false; // Already queued
+
+  if (item->IsUsablePVRRecording() || IsActiveRecordingsFolder(*item))
   {
     // recursively add items to play list
     QueueRecordings(item, false);
@@ -307,7 +319,10 @@ bool CQueue::Execute(const CFileItemPtr& item) const
 
 bool CPlayNext::IsVisible(const CFileItem& item) const
 {
-  if (item.m_bIsFolder && StringUtils::StartsWith(item.GetPath(), "pvr://recordings/"))
+  if (CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() == WINDOW_VIDEO_PLAYLIST)
+    return false; // Already queued
+
+  if (item.IsUsablePVRRecording() || IsActiveRecordingsFolder(item))
     return true;
 
   return false; //! @todo implement
@@ -315,7 +330,10 @@ bool CPlayNext::IsVisible(const CFileItem& item) const
 
 bool CPlayNext::Execute(const CFileItemPtr& item) const
 {
-  if (item->m_bIsFolder && StringUtils::StartsWith(item->GetPath(), "pvr://recordings/"))
+  if (CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() == WINDOW_VIDEO_PLAYLIST)
+    return false; // Already queued
+
+  if (item->IsUsablePVRRecording() || IsActiveRecordingsFolder(*item))
   {
     // recursively add items to play list
     QueueRecordings(item, true);
@@ -326,4 +344,3 @@ bool CPlayNext::Execute(const CFileItemPtr& item) const
 };
 
 }
-
