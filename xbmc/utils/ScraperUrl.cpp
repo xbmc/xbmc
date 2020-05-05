@@ -49,7 +49,6 @@ CScraperUrl::~CScraperUrl() = default;
 void CScraperUrl::Clear()
 {
   m_url.clear();
-  m_spoof.clear();
   m_xml.clear();
   relevance = 0;
 }

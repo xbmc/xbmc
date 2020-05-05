@@ -215,7 +215,7 @@ const struct SDbTableOffsets
   { VIDEODB_TYPE_STRINGARRAY, my_offsetof(CVideoInfoTag,m_genre) },
   { VIDEODB_TYPE_STRINGARRAY, my_offsetof(CVideoInfoTag,m_director) },
   { VIDEODB_TYPE_STRING, my_offsetof(CVideoInfoTag,m_strOriginalTitle) },
-  { VIDEODB_TYPE_STRING, my_offsetof(CVideoInfoTag,m_strPictureURL.m_spoof) },
+  { VIDEODB_TYPE_UNUSED, 0 }, // unused
   { VIDEODB_TYPE_STRINGARRAY, my_offsetof(CVideoInfoTag,m_studio) },
   { VIDEODB_TYPE_STRING, my_offsetof(CVideoInfoTag,m_strTrailer) },
   { VIDEODB_TYPE_STRING, my_offsetof(CVideoInfoTag,m_fanart.m_xml) },
@@ -256,7 +256,7 @@ const struct SDbTableOffsets DbTvShowOffsets[] =
   { VIDEODB_TYPE_INT, my_offsetof(CVideoInfoTag,m_iIdRating) },
   { VIDEODB_TYPE_DATE, my_offsetof(CVideoInfoTag,m_premiered) },
   { VIDEODB_TYPE_STRING, my_offsetof(CVideoInfoTag,m_strPictureURL.m_xml) },
-  { VIDEODB_TYPE_STRING, my_offsetof(CVideoInfoTag,m_strPictureURL.m_spoof) },
+  { VIDEODB_TYPE_UNUSED, 0 }, // unused
   { VIDEODB_TYPE_STRINGARRAY, my_offsetof(CVideoInfoTag,m_genre) },
   { VIDEODB_TYPE_STRING, my_offsetof(CVideoInfoTag,m_strOriginalTitle)},
   { VIDEODB_TYPE_STRING, my_offsetof(CVideoInfoTag,m_strEpisodeGuide)},
@@ -326,7 +326,7 @@ const struct SDbTableOffsets DbEpisodeOffsets[] =
   { VIDEODB_TYPE_STRINGARRAY, my_offsetof(CVideoInfoTag,m_writingCredits) },
   { VIDEODB_TYPE_DATE, my_offsetof(CVideoInfoTag,m_firstAired) },
   { VIDEODB_TYPE_STRING, my_offsetof(CVideoInfoTag,m_strPictureURL.m_xml) },
-  { VIDEODB_TYPE_STRING, my_offsetof(CVideoInfoTag,m_strPictureURL.m_spoof) },
+  { VIDEODB_TYPE_UNUSED, 0 }, // unused
   { VIDEODB_TYPE_UNUSED, 0 }, // unused
   { VIDEODB_TYPE_INT, my_offsetof(CVideoInfoTag,m_duration) },
   { VIDEODB_TYPE_STRINGARRAY, my_offsetof(CVideoInfoTag,m_director) },
@@ -367,7 +367,7 @@ const struct SDbTableOffsets DbMusicVideoOffsets[] =
 {
   { VIDEODB_TYPE_STRING, my_offsetof(class CVideoInfoTag,m_strTitle) },
   { VIDEODB_TYPE_STRING, my_offsetof(CVideoInfoTag,m_strPictureURL.m_xml) },
-  { VIDEODB_TYPE_STRING, my_offsetof(CVideoInfoTag,m_strPictureURL.m_spoof) },
+  { VIDEODB_TYPE_UNUSED, 0 }, // unused
   { VIDEODB_TYPE_UNUSED, 0 }, // unused
   { VIDEODB_TYPE_INT, my_offsetof(CVideoInfoTag,m_duration) },
   { VIDEODB_TYPE_STRINGARRAY, my_offsetof(CVideoInfoTag,m_director) },

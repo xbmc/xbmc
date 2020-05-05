@@ -69,7 +69,6 @@ public:
                  const std::string& cacheContext);
 
   std::string m_xml;
-  std::string m_spoof; // for backwards compatibility only!
   std::string strTitle;
   std::string strId;
   double relevance;

@@ -332,7 +332,6 @@ void CVideoInfoTag::Archive(CArchive& ar)
     ar << m_strTagLine;
     ar << m_strPlotOutline;
     ar << m_strPlot;
-    ar << m_strPictureURL.m_spoof;
     ar << m_strPictureURL.m_xml;
     ar << m_fanart.m_xml;
     ar << m_strTitle;
@@ -427,7 +426,6 @@ void CVideoInfoTag::Archive(CArchive& ar)
     ar >> m_strTagLine;
     ar >> m_strPlotOutline;
     ar >> m_strPlot;
-    ar >> m_strPictureURL.m_spoof;
     ar >> m_strPictureURL.m_xml;
     ar >> m_fanart.m_xml;
     ar >> m_strTitle;
