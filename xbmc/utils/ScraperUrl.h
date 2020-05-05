@@ -46,6 +46,10 @@ public:
   explicit CScraperUrl(const TiXmlElement* element);
   ~CScraperUrl();
 
+  bool HasData() const { return !m_data.empty(); }
+  const std::string& GetData() const { return m_data; }
+  void SetData(std::string data) { m_data = std::move(data); }
+
   const std::string& GetTitle() const { return m_title; }
   void SetTitle(std::string title) { m_title = std::move(title); }
 
@@ -94,7 +98,9 @@ public:
                   XFILE::CCurlFile& http,
                   const std::string& cacheContext);
 
-  std::string m_xml;
+  // ATTENTION: this member MUST NOT be used directly except from databases
+  std::string m_data;
+
   std::vector<SUrlEntry> m_url;
 
 private:

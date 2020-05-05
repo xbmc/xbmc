@@ -161,10 +161,10 @@ bool CVideoInfoTag::Save(TiXmlNode *node, const std::string &tag, bool savePathI
   XMLUtils::SetString(movie, "plot", m_strPlot);
   XMLUtils::SetString(movie, "tagline", m_strTagLine);
   XMLUtils::SetInt(movie, "runtime", GetDuration() / 60);
-  if (!m_strPictureURL.m_xml.empty())
+  if (m_strPictureURL.HasData())
   {
     CXBMCTinyXML doc;
-    doc.Parse(m_strPictureURL.m_xml);
+    doc.Parse(m_strPictureURL.GetData());
     const TiXmlNode* thumb = doc.FirstChild("thumb");
     while (thumb)
     {
@@ -332,7 +332,7 @@ void CVideoInfoTag::Archive(CArchive& ar)
     ar << m_strTagLine;
     ar << m_strPlotOutline;
     ar << m_strPlot;
-    ar << m_strPictureURL.m_xml;
+    ar << m_strPictureURL.GetData();
     ar << m_fanart.m_xml;
     ar << m_strTitle;
     ar << m_strSortTitle;
@@ -345,7 +345,7 @@ void CVideoInfoTag::Archive(CArchive& ar)
       ar << m_cast[i].strRole;
       ar << m_cast[i].order;
       ar << m_cast[i].thumb;
-      ar << m_cast[i].thumbUrl.m_xml;
+      ar << m_cast[i].thumbUrl.GetData();
     }
 
     ar << m_set.title;
@@ -426,7 +426,9 @@ void CVideoInfoTag::Archive(CArchive& ar)
     ar >> m_strTagLine;
     ar >> m_strPlotOutline;
     ar >> m_strPlot;
-    ar >> m_strPictureURL.m_xml;
+    std::string data;
+    ar >> data;
+    m_strPictureURL.SetData(data);
     ar >> m_fanart.m_xml;
     ar >> m_strTitle;
     ar >> m_strSortTitle;
@@ -967,7 +969,7 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prioritise)
     SetBasePath(value);
 
   size_t iThumbCount = m_strPictureURL.m_url.size();
-  std::string xmlAdd = m_strPictureURL.m_xml;
+  std::string xmlAdd = m_strPictureURL.GetData();
 
   const TiXmlElement* thumb = movie->FirstChildElement("thumb");
   while (thumb)
@@ -988,7 +990,7 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prioritise)
     rotate(m_strPictureURL.m_url.begin(),
            m_strPictureURL.m_url.begin()+iThumbCount,
            m_strPictureURL.m_url.end());
-    m_strPictureURL.m_xml = xmlAdd;
+    m_strPictureURL.SetData(xmlAdd);
   }
 
   const std::string itemSeparator = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoItemSeparator;

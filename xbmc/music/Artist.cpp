@@ -92,7 +92,7 @@ bool CArtist::Load(const TiXmlElement *artist, bool append, bool prioritise)
   XMLUtils::GetString(artist, "disbanded", strDisbanded);
 
   size_t iThumbCount = thumbURL.m_url.size();
-  std::string xmlAdd = thumbURL.m_xml;
+  std::string xmlAdd = thumbURL.GetData();
 
   // Available artist thumbs
   const TiXmlElement* thumb = artist->FirstChildElement("thumb");
@@ -113,7 +113,7 @@ bool CArtist::Load(const TiXmlElement *artist, bool append, bool prioritise)
     rotate(thumbURL.m_url.begin(),
            thumbURL.m_url.begin()+iThumbCount,
            thumbURL.m_url.end());
-    thumbURL.m_xml = xmlAdd;
+    thumbURL.SetData(xmlAdd);
   }
 
   // Discography
@@ -191,10 +191,10 @@ bool CArtist::Save(TiXmlNode *node, const std::string &tag, const std::string& s
   XMLUtils::SetString(artist,                      "died", strDied);
   XMLUtils::SetString(artist,                 "disbanded", strDisbanded);
   // Available thumbs
-  if (!thumbURL.m_xml.empty())
+  if (thumbURL.HasData())
   {
     CXBMCTinyXML doc;
-    doc.Parse(thumbURL.m_xml);
+    doc.Parse(thumbURL.GetData());
     const TiXmlNode* thumb = doc.FirstChild("thumb");
     while (thumb)
     {

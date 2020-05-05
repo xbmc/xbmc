@@ -529,7 +529,7 @@ bool CAlbum::Load(const TiXmlElement *album, bool append, bool prioritise)
   XMLUtils::GetInt(album, "votes", iVotes);
 
   size_t iThumbCount = thumbURL.m_url.size();
-  std::string xmlAdd = thumbURL.m_xml;
+  std::string xmlAdd = thumbURL.GetData();
   const TiXmlElement* thumb = album->FirstChildElement("thumb");
   while (thumb)
   {
@@ -548,7 +548,7 @@ bool CAlbum::Load(const TiXmlElement *album, bool append, bool prioritise)
     rotate(thumbURL.m_url.begin(),
            thumbURL.m_url.begin()+iThumbCount,
            thumbURL.m_url.end());
-    thumbURL.m_xml = xmlAdd;
+    thumbURL.SetData(xmlAdd);
   }
 
   const TiXmlElement* albumArtistCreditsNode = album->FirstChildElement("albumArtistCredits");
@@ -616,10 +616,10 @@ bool CAlbum::Save(TiXmlNode *node, const std::string &tag, const std::string& st
   XMLUtils::SetString(album, "releasedate", strReleaseDate);
   XMLUtils::SetString(album, "originalreleasedate", strOrigReleaseDate);
   XMLUtils::SetString(album,       "label", strLabel);
-  if (!thumbURL.m_xml.empty())
+  if (thumbURL.HasData())
   {
     CXBMCTinyXML doc;
-    doc.Parse(thumbURL.m_xml);
+    doc.Parse(thumbURL.GetData());
     const TiXmlNode* thumb = doc.FirstChild("thumb");
     while (thumb)
     {

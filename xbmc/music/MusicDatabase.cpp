@@ -592,7 +592,7 @@ bool CMusicDatabase::UpdateAlbum(CAlbum& album)
               StringUtils::Join(album.styles, itemSeparator),
               StringUtils::Join(album.themes, itemSeparator),
               album.strReview,
-              album.thumbURL.m_xml.c_str(),
+              album.thumbURL.GetData(),
               album.strLabel, album.strType,
               album.fRating, album.iUserrating, album.iVotes, 
               album.strReleaseDate, album.strOrigReleaseDate,
@@ -1311,7 +1311,7 @@ bool CMusicDatabase::UpdateArtist(const CArtist& artist)
                artist.strBiography, artist.strDied,
                artist.strDisbanded,
                StringUtils::Join(artist.yearsActive, itemSeparator).c_str(),
-               artist.thumbURL.m_xml.c_str(),
+               artist.thumbURL.GetData(),
                artist.fanart.m_xml.c_str());
 
   DeleteArtistDiscography(artist.idArtist);

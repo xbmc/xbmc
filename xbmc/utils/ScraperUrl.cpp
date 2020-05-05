@@ -46,14 +46,14 @@ CScraperUrl::~CScraperUrl() = default;
 void CScraperUrl::Clear()
 {
   m_url.clear();
-  m_xml.clear();
+  m_data.clear();
   m_relevance = 0.0;
 }
 
 bool CScraperUrl::Parse()
 {
-  auto strToParse = m_xml;
-  m_xml.clear();
+  auto strToParse = m_data;
+  m_data.clear();
   return ParseString(std::move(strToParse));
 }
 
@@ -64,7 +64,7 @@ bool CScraperUrl::ParseElement(const TiXmlElement* element)
 
   std::stringstream stream;
   stream << *element;
-  m_xml += stream.str();
+  m_data += stream.str();
 
   SUrlEntry url;
   url.m_url = element->FirstChild()->Value();
@@ -118,7 +118,7 @@ bool CScraperUrl::ParseString(std::string strUrl)
     url.m_post = false;
     url.m_isgz = false;
     m_url.push_back(url);
-    m_xml = strUrl;
+    m_data = strUrl;
   }
   else
   {
@@ -357,7 +357,7 @@ void CScraperUrl::AddElement(std::string url,
   thumb.SetAttribute("preview", preview);
   TiXmlText text(url);
   thumb.InsertEndChild(text);
-  m_xml << thumb;
+  m_data << thumb;
   SUrlEntry nUrl;
   nUrl.m_url = url;
   nUrl.m_spoof = referrer;

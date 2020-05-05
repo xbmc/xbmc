@@ -1835,7 +1835,7 @@ void CVideoDatabase::AddCast(int mediaId, const char *mediaType, const std::vect
   int order = std::max_element(cast.begin(), cast.end())->order;
   for (const auto &i : cast)
   {
-    int idActor = AddActor(i.strName, i.thumbUrl.m_xml, i.thumb);
+    int idActor = AddActor(i.strName, i.thumbUrl.GetData(), i.thumb);
     AddLinkToActor(mediaId, mediaType, idActor, i.strRole, i.order >= 0 ? i.order : ++order);
   }
 }

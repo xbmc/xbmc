@@ -1071,7 +1071,7 @@ std::vector<CMusicAlbumInfo> CScraper::FindAlbum(CCurlFile &fcurl,
         TiXmlElement *pxeLink = pxeAlbum->FirstChildElement("url");
         CScraperUrl scurlAlbum;
         if (!pxeLink)
-          scurlAlbum.ParseString(scurl.m_xml);
+          scurlAlbum.ParseString(scurl.GetData());
         for (; pxeLink && pxeLink->FirstChild(); pxeLink = pxeLink->NextSiblingElement("url"))
           scurlAlbum.ParseElement(pxeLink);
 
@@ -1160,7 +1160,7 @@ std::vector<CMusicArtistInfo> CScraper::FindArtist(CCurlFile &fcurl, const std::
 
         TiXmlElement *pxeLink = pxeArtist->FirstChildElement("url");
         if (!pxeLink)
-          scurlArtist.ParseString(scurl.m_xml);
+          scurlArtist.ParseString(scurl.GetData());
         for (; pxeLink && pxeLink->FirstChild(); pxeLink = pxeLink->NextSiblingElement("url"))
           scurlArtist.ParseElement(pxeLink);
 
