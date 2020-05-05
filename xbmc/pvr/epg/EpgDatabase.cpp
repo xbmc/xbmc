@@ -990,7 +990,7 @@ int CPVREpgDatabase::Persist(const CPVREpg& epg, bool bQueueWrite)
   else
   {
     if (ExecuteQuery(strQuery))
-      iReturn = epg.EpgID() <= 0 ? (int) m_pDS->lastinsertid() : epg.EpgID();
+      iReturn = epg.EpgID() <= 0 ? static_cast<int>(m_pDS->lastinsertid()) : epg.EpgID();
   }
 
   return iReturn;
@@ -1080,7 +1080,7 @@ int CPVREpgDatabase::Persist(const CPVREpgInfoTag& tag, bool bSingleUpdate /* = 
   if (bSingleUpdate)
   {
     if (ExecuteQuery(strQuery))
-      iReturn = (int) m_pDS->lastinsertid();
+      iReturn = static_cast<int>(m_pDS->lastinsertid());
   }
   else
   {
