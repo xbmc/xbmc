@@ -256,56 +256,68 @@ void CGUITextLayout::UpdateStyled(const vecText &text, const std::vector<UTILS::
 }
 
 // BidiTransform is used to handle RTL text flipping in the string
-void CGUITextLayout::BidiTransform(std::vector<CGUIString> &lines, bool forceLTRReadingOrder)
+void CGUITextLayout::BidiTransform(std::vector<CGUIString>& lines, bool forceLTRReadingOrder)
 {
-  for (unsigned int i=0; i<lines.size(); i++)
+  for (unsigned int i = 0; i < lines.size(); i++)
   {
-    CGUIString &line = lines[i];
+    CGUIString& line = lines[i];
+    unsigned int lineLength = line.m_text.size();
+    std::wstring logicalText;
+    vecText style;
 
-    // reserve enough space in the flipped text
-    vecText flippedText;
-    flippedText.reserve(line.m_text.size());
+    logicalText.reserve(lineLength);
+    style.reserve(lineLength);
 
-    character_t sectionStyle = 0xffff0000; // impossible to achieve
-    std::wstring sectionText;
+    // Separate the text and style for the input styled text
     for (const auto& it : line.m_text)
     {
-      character_t style = it & 0xffff0000;
-      if (style != sectionStyle)
-      {
-        if (!sectionText.empty())
-        { // style has changed, bidi flip text
-          std::wstring sectionFlipped = BidiFlip(sectionText, forceLTRReadingOrder);
-          for (unsigned int j = 0; j < sectionFlipped.size(); j++)
-            flippedText.push_back(sectionStyle | sectionFlipped[j]);
-        }
-        sectionStyle = style;
-        sectionText.clear();
-      }
-      sectionText.push_back((wchar_t)(it & 0xffff));
+      logicalText.push_back((wchar_t)(it & 0xffff));
+      style.push_back(it & 0xffff0000);
     }
 
-    // handle the last section
-    if (!sectionText.empty())
+    // Allocate memory for visual to logical map and call bidi
+    int* visualToLogicalMap = new int[lineLength + 1];
+    std::wstring visualText = BidiFlip(logicalText, forceLTRReadingOrder, visualToLogicalMap);
+
+    vecText styledVisualText;
+    styledVisualText.reserve(lineLength);
+
+    // If memory allocation failed, fallback to text with no styling
+    if (!visualToLogicalMap)
     {
-      std::wstring sectionFlipped = BidiFlip(sectionText, forceLTRReadingOrder);
-      for (unsigned int j = 0; j < sectionFlipped.size(); j++)
-        flippedText.push_back(sectionStyle | sectionFlipped[j]);
+      for (unsigned int j = 0; j < visualText.size(); j++)
+      {
+        styledVisualText.push_back(visualText[j]);
+      }
     }
+    else
+    {
+      for (unsigned int j = 0; j < visualText.size(); j++)
+      {
+        styledVisualText.push_back(style[visualToLogicalMap[j]] | visualText[j]);
+      }
+    }
+
+    delete[] visualToLogicalMap;
 
     // replace the original line with the processed one
-    lines[i] = CGUIString(flippedText.begin(), flippedText.end(), line.m_carriageReturn);
+    lines[i] = CGUIString(styledVisualText.begin(), styledVisualText.end(), line.m_carriageReturn);
   }
 }
 
-std::wstring CGUITextLayout::BidiFlip(const std::wstring &text, bool forceLTRReadingOrder)
+std::wstring CGUITextLayout::BidiFlip(const std::wstring& text,
+                                      bool forceLTRReadingOrder,
+                                      int* visualToLogicalMap /*= nullptr*/)
 {
-  std::string utf8text;
   std::wstring visualText;
+  std::u32string utf32logical;
+  std::u32string utf32visual;
 
-  // convert to utf8, and back to utf16 with bidi flipping
-  g_charsetConverter.wToUTF8(text, utf8text);
-  g_charsetConverter.utf8ToW(utf8text, visualText, true, forceLTRReadingOrder);
+  // Convert to utf32, call bidi then convert the result back to utf16
+  g_charsetConverter.wToUtf32(text, utf32logical);
+  g_charsetConverter.utf32logicalToVisualBiDi(utf32logical, utf32visual, false, false,
+                                              visualToLogicalMap);
+  g_charsetConverter.utf32ToW(utf32visual, visualText);
 
   return visualText;
 }
