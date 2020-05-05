@@ -232,7 +232,7 @@ public:
    * @param strCodecName The name of the codec
    * @return The codec_id, or a codec_id with 0 values when not supported
    */
-  xbmc_codec_t GetCodecByName(const char* strCodecName)
+  PVR_CODEC GetCodecByName(const char* strCodecName)
   {
     return m_Callbacks->toKodi->GetCodecByName(m_Callbacks->toKodi->kodiInstance, strCodecName);
   }

@@ -104,7 +104,7 @@ extern "C" {
     bool bSupportsRecordingSize;
 
     unsigned int iRecordingsLifetimesSize;
-    PVR_ATTRIBUTE_INT_VALUE recordingsLifetimeValues[PVR_ADDON_ATTRIBUTE_VALUES_ARRAY_SIZE];
+    struct PVR_ATTRIBUTE_INT_VALUE recordingsLifetimeValues[PVR_ADDON_ATTRIBUTE_VALUES_ARRAY_SIZE];
   } PVR_ADDON_CAPABILITIES;
 
   typedef struct PVR_CHANNEL
@@ -285,7 +285,7 @@ extern "C" {
     bool bIsDeleted;
     unsigned int iEpgEventId;
     int iChannelUid;
-    PVR_RECORDING_CHANNEL_TYPE channelType;
+    enum PVR_RECORDING_CHANNEL_TYPE channelType;
     char strFirstAired[PVR_ADDON_DATE_STRING_LENGTH];
     unsigned int iFlags;
     int64_t sizeInBytes;
@@ -399,23 +399,23 @@ extern "C" {
     char strDescription[PVR_ADDON_TIMERTYPE_STRING_LENGTH];
 
     unsigned int iPrioritiesSize;
-    PVR_ATTRIBUTE_INT_VALUE priorities[PVR_ADDON_TIMERTYPE_VALUES_ARRAY_SIZE];
+    struct PVR_ATTRIBUTE_INT_VALUE priorities[PVR_ADDON_TIMERTYPE_VALUES_ARRAY_SIZE];
     int iPrioritiesDefault;
 
     unsigned int iLifetimesSize;
-    PVR_ATTRIBUTE_INT_VALUE lifetimes[PVR_ADDON_TIMERTYPE_VALUES_ARRAY_SIZE];
+    struct PVR_ATTRIBUTE_INT_VALUE lifetimes[PVR_ADDON_TIMERTYPE_VALUES_ARRAY_SIZE];
     int iLifetimesDefault;
 
     unsigned int iPreventDuplicateEpisodesSize;
-    PVR_ATTRIBUTE_INT_VALUE preventDuplicateEpisodes[PVR_ADDON_TIMERTYPE_VALUES_ARRAY_SIZE];
+    struct PVR_ATTRIBUTE_INT_VALUE preventDuplicateEpisodes[PVR_ADDON_TIMERTYPE_VALUES_ARRAY_SIZE];
     unsigned int iPreventDuplicateEpisodesDefault;
 
     unsigned int iRecordingGroupSize;
-    PVR_ATTRIBUTE_INT_VALUE recordingGroup[PVR_ADDON_TIMERTYPE_VALUES_ARRAY_SIZE];
+    struct PVR_ATTRIBUTE_INT_VALUE recordingGroup[PVR_ADDON_TIMERTYPE_VALUES_ARRAY_SIZE];
     unsigned int iRecordingGroupDefault;
 
     unsigned int iMaxRecordingsSize;
-    PVR_ATTRIBUTE_INT_VALUE maxRecordings[PVR_ADDON_TIMERTYPE_VALUES_ARRAY_SIZE_SMALL];
+    struct PVR_ATTRIBUTE_INT_VALUE maxRecordings[PVR_ADDON_TIMERTYPE_VALUES_ARRAY_SIZE_SMALL];
     int iMaxRecordingsDefault;
   } PVR_TIMER_TYPE;
 
@@ -455,30 +455,28 @@ extern "C" {
 
   #define PVR_STREAM_MAX_STREAMS 20
 
-  #define XBMC_INVALID_CODEC_ID 0
-  #define XBMC_INVALID_CODEC \
+  #define PVR_INVALID_CODEC_ID 0
+  #define PVR_INVALID_CODEC \
     { \
-      XBMC_CODEC_TYPE_UNKNOWN, XBMC_INVALID_CODEC_ID \
+      PVR_CODEC_TYPE_UNKNOWN, PVR_INVALID_CODEC_ID \
     }
 
-  typedef unsigned int xbmc_codec_id_t;
-
-  typedef enum xbmc_codec_type_t
+  typedef enum PVR_CODEC_TYPE
   {
-    XBMC_CODEC_TYPE_UNKNOWN = -1,
-    XBMC_CODEC_TYPE_VIDEO,
-    XBMC_CODEC_TYPE_AUDIO,
-    XBMC_CODEC_TYPE_DATA,
-    XBMC_CODEC_TYPE_SUBTITLE,
-    XBMC_CODEC_TYPE_RDS,
-    XBMC_CODEC_TYPE_NB
-  } xbmc_codec_type_t;
+    PVR_CODEC_TYPE_UNKNOWN = -1,
+    PVR_CODEC_TYPE_VIDEO,
+    PVR_CODEC_TYPE_AUDIO,
+    PVR_CODEC_TYPE_DATA,
+    PVR_CODEC_TYPE_SUBTITLE,
+    PVR_CODEC_TYPE_RDS,
+    PVR_CODEC_TYPE_NB
+  } PVR_CODEC_TYPE;
 
-  typedef struct xbmc_codec_t
+  typedef struct PVR_CODEC
   {
-    enum xbmc_codec_type_t codec_type;
-    xbmc_codec_id_t codec_id;
-  } xbmc_codec_t;
+    enum PVR_CODEC_TYPE codec_type;
+    unsigned int codec_id;
+  } PVR_CODEC;
 
   typedef struct PVR_STREAM_PROPERTIES
   {
@@ -486,8 +484,8 @@ extern "C" {
     struct PVR_STREAM
     {
       unsigned int iPID;
-      xbmc_codec_type_t iCodecType;
-      xbmc_codec_id_t iCodecId;
+      enum PVR_CODEC_TYPE iCodecType;
+      unsigned int iCodecId;
       char strLanguage[4];
       int iSubtitleInfo;
       int iFPSScale;
@@ -585,7 +583,7 @@ extern "C" {
     // Stream demux interface functions
     void (*FreeDemuxPacket)(void* kodiInstance, struct DemuxPacket* pPacket);
     struct DemuxPacket* (*AllocateDemuxPacket)(void* kodiInstance, int iDataSize);
-    struct xbmc_codec_t (*GetCodecByName)(const void* kodiInstance, const char* strCodecName);
+    struct PVR_CODEC (*GetCodecByName)(const void* kodiInstance, const char* strCodecName);
 
     //--==----==----==----==----==----==----==----==----==----==----==----==----==
     // New functions becomes added below and can be on another API change (where

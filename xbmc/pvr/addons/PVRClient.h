@@ -1123,7 +1123,7 @@ namespace PVR
     /*! @todo remove the use complete from them, or add as generl function?!
      * Returns the ffmpeg codec id from given ffmpeg codec string name
      */
-    static xbmc_codec_t cb_get_codec_by_name(const void* kodiInstance, const char* strCodecName);
+    static PVR_CODEC cb_get_codec_by_name(const void* kodiInstance, const char* strCodecName);
     //@}
 
     std::atomic<bool> m_bReadyToUse; /*!< true if this add-on is initialised (ADDON_Create returned true), false otherwise */
