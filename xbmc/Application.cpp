@@ -2672,14 +2672,18 @@ void CApplication::Stop(int exitCode)
 
 bool CApplication::PlayMedia(CFileItem& item, const std::string &player, int iPlaylist)
 {
-  //If item is a plugin, expand out
+  // If item is a plugin, expand out
   for (int i=0; URIUtils::IsPlugin(item.GetDynPath()) && i<5; ++i)
   {
     bool resume = item.m_lStartOffset == STARTOFFSET_RESUME;
 
-    if (!XFILE::CPluginDirectory::GetPluginResult(item.GetDynPath(), item, resume))
+    if (!XFILE::CPluginDirectory::GetPluginResult(item.GetDynPath(), item, resume) ||
+        item.GetDynPath() == item.GetPath()) // GetPluginResult resolved to an empty path
       return false;
   }
+  // if after the 5 resolution attempts the item is still a plugin just return, it isn't playable
+  if (URIUtils::IsPlugin(item.GetDynPath()))
+    return false;
 
   if (item.IsSmartPlayList())
   {
@@ -2821,9 +2825,13 @@ bool CApplication::PlayFile(CFileItem item, const std::string& player, bool bRes
   { // we modify the item so that it becomes a real URL
     bool resume = item.m_lStartOffset == STARTOFFSET_RESUME;
 
-    if (!XFILE::CPluginDirectory::GetPluginResult(item.GetDynPath(), item, resume))
+    if (!XFILE::CPluginDirectory::GetPluginResult(item.GetDynPath(), item, resume) ||
+        item.GetDynPath() == item.GetPath()) // GetPluginResult resolved to an empty path
       return false;
   }
+  // if after the 5 resolution attempts the item is still a plugin just return, it isn't playable
+  if (URIUtils::IsPlugin(item.GetDynPath()))
+    return false;
 
 #ifdef HAS_UPNP
   if (URIUtils::IsUPnP(item.GetPath()))
