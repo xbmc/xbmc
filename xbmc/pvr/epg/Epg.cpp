@@ -299,37 +299,52 @@ bool CPVREpg::Persist(const std::shared_ptr<CPVREpgDatabase>& database, bool bQu
     return false;
   }
 
-  database->Lock();
+  bool bLastScanTimeNeedsSave = false;
+  bool bTagsNeedSave = false;
+  bool bEpgNeedsSave = false;
+  int iEpgID = -1;
+  std::string name;
+  std::string scraper;
+  CDateTime lastScanTime;
 
   {
     CSingleLock lock(m_critSection);
-    bool bEpgIdChanged = false;
-    if (m_iEpgID <= 0 || m_bChanged)
-    {
-      int iId = database->Persist(*this, m_iEpgID > 0);
-      if (iId > 0 && m_iEpgID != iId)
-      {
-        m_iEpgID = iId;
-        bEpgIdChanged = true;
-      }
-    }
 
-    if (m_tags.NeedsSave())
-      m_tags.Persist(!bQueueWrite);
-
-    if (m_bUpdateLastScanTime)
-      database->PersistLastEpgScanTime(m_iEpgID, m_lastScanTime, bQueueWrite);
-
-    if (bEpgIdChanged)
-      m_tags.SetEpgID(m_iEpgID);
+    bLastScanTimeNeedsSave = m_bUpdateLastScanTime;
+    bTagsNeedSave = m_tags.NeedsSave();
+    bEpgNeedsSave = m_iEpgID <= 0 || m_bChanged;
+    iEpgID = m_iEpgID;
+    name = m_strName;
+    scraper = m_strScraperName;
+    lastScanTime = m_lastScanTime;
 
     m_bChanged = false;
     m_bUpdateLastScanTime = false;
   }
 
+  database->Lock();
+
+  int iNewEpgID = iEpgID;
+  if (bEpgNeedsSave)
+    iNewEpgID = database->Persist(iEpgID, name, scraper, iEpgID > 0);
+
+  if (bLastScanTimeNeedsSave)
+    database->PersistLastEpgScanTime(iNewEpgID, lastScanTime, bQueueWrite);
+
   bool bRet = bQueueWrite || database->CommitInsertQueries();
 
   database->Unlock();
+
+  if (iNewEpgID > 0 && iNewEpgID != iEpgID)
+  {
+    CSingleLock lock(m_critSection);
+
+    m_iEpgID = iNewEpgID;
+    m_tags.SetEpgID(iNewEpgID);
+  }
+
+  if (bTagsNeedSave)
+    m_tags.Persist(!bQueueWrite);
 
   return bRet;
 }
