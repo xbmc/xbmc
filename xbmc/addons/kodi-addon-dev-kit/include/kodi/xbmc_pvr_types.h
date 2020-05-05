@@ -46,13 +46,13 @@ extern "C" {
   {
     int iValue;
     char strDescription[PVR_ADDON_ATTRIBUTE_DESC_LENGTH];
-  } ATTRIBUTE_PACKED PVR_ATTRIBUTE_INT_VALUE;
+  } PVR_ATTRIBUTE_INT_VALUE;
 
   typedef struct PVR_NAMED_VALUE
   {
     char strName[PVR_ADDON_NAME_STRING_LENGTH];
     char strValue[PVR_ADDON_NAME_STRING_LENGTH];
-  } ATTRIBUTE_PACKED PVR_NAMED_VALUE;
+  } PVR_NAMED_VALUE;
 
   typedef enum PVR_ERROR
   {
@@ -105,7 +105,7 @@ extern "C" {
 
     unsigned int iRecordingsLifetimesSize;
     PVR_ATTRIBUTE_INT_VALUE recordingsLifetimeValues[PVR_ADDON_ATTRIBUTE_VALUES_ARRAY_SIZE];
-  } ATTRIBUTE_PACKED PVR_ADDON_CAPABILITIES;
+  } PVR_ADDON_CAPABILITIES;
 
   typedef struct PVR_CHANNEL
   {
@@ -120,7 +120,7 @@ extern "C" {
     bool bIsHidden;
     bool bHasArchive;
     int iOrder;
-  } ATTRIBUTE_PACKED PVR_CHANNEL;
+  } PVR_CHANNEL;
 
   typedef struct PVR_SIGNAL_STATUS
   {
@@ -133,7 +133,7 @@ extern "C" {
     int iSignal;
     long iBER;
     long iUNC;
-  } ATTRIBUTE_PACKED PVR_SIGNAL_STATUS;
+  } PVR_SIGNAL_STATUS;
 
   #define PVR_DESCRAMBLE_INFO_NOT_AVAILABLE -1
 
@@ -148,14 +148,14 @@ extern "C" {
     char strReader[PVR_ADDON_DESCRAMBLE_INFO_STRING_LENGTH];
     char strFrom[PVR_ADDON_DESCRAMBLE_INFO_STRING_LENGTH];
     char strProtocol[PVR_ADDON_DESCRAMBLE_INFO_STRING_LENGTH];
-  } ATTRIBUTE_PACKED PVR_DESCRAMBLE_INFO;
+  } PVR_DESCRAMBLE_INFO;
 
   typedef struct PVR_CHANNEL_GROUP
   {
     char strGroupName[PVR_ADDON_NAME_STRING_LENGTH];
     bool bIsRadio;
     unsigned int iPosition;
-  } ATTRIBUTE_PACKED PVR_CHANNEL_GROUP;
+  } PVR_CHANNEL_GROUP;
 
   typedef struct PVR_CHANNEL_GROUP_MEMBER
   {
@@ -164,7 +164,7 @@ extern "C" {
     unsigned int iChannelNumber;
     unsigned int iSubChannelNumber;
     int iOrder;
-  } ATTRIBUTE_PACKED PVR_CHANNEL_GROUP_MEMBER;
+  } PVR_CHANNEL_GROUP_MEMBER;
 
   typedef enum EPG_EVENT_CONTENTMASK
   {
@@ -237,7 +237,7 @@ extern "C" {
     const char* strEpisodeName;
     unsigned int iFlags;
     const char* strSeriesLink;
-  } ATTRIBUTE_PACKED EPG_TAG;
+  } EPG_TAG;
 
   typedef enum PVR_RECORDING_FLAG
   {
@@ -289,7 +289,7 @@ extern "C" {
     char strFirstAired[PVR_ADDON_DATE_STRING_LENGTH];
     unsigned int iFlags;
     int64_t sizeInBytes;
-  } ATTRIBUTE_PACKED PVR_RECORDING;
+  } PVR_RECORDING;
 
   #define PVR_TIMER_TYPE_NONE 0
   #define PVR_TIMER_NO_CLIENT_INDEX 0
@@ -390,7 +390,7 @@ extern "C" {
     int iGenreType;
     int iGenreSubType;
     char strSeriesLink[PVR_ADDON_URL_STRING_LENGTH];
-  } ATTRIBUTE_PACKED PVR_TIMER;
+  } PVR_TIMER;
 
   typedef struct PVR_TIMER_TYPE
   {
@@ -417,7 +417,7 @@ extern "C" {
     unsigned int iMaxRecordingsSize;
     PVR_ATTRIBUTE_INT_VALUE maxRecordings[PVR_ADDON_TIMERTYPE_VALUES_ARRAY_SIZE_SMALL];
     int iMaxRecordingsDefault;
-  } ATTRIBUTE_PACKED PVR_TIMER_TYPE;
+  } PVR_TIMER_TYPE;
 
   typedef enum PVR_MENUHOOK_CAT
   {
@@ -436,7 +436,7 @@ extern "C" {
     unsigned int iHookId;
     unsigned int iLocalizedStringId;
     enum PVR_MENUHOOK_CAT category;
-  } ATTRIBUTE_PACKED PVR_MENUHOOK;
+  } PVR_MENUHOOK;
 
   typedef enum PVR_EDL_TYPE
   {
@@ -451,7 +451,7 @@ extern "C" {
     int64_t start;
     int64_t end;
     enum PVR_EDL_TYPE type;
-  } ATTRIBUTE_PACKED PVR_EDL_ENTRY;
+  } PVR_EDL_ENTRY;
 
   #define PVR_STREAM_MAX_STREAMS 20
 
@@ -501,7 +501,7 @@ extern "C" {
       int iBitRate;
       int iBitsPerSample;
     } stream[PVR_STREAM_MAX_STREAMS];
-  } ATTRIBUTE_PACKED PVR_STREAM_PROPERTIES;
+  } PVR_STREAM_PROPERTIES;
 
   typedef struct PVR_STREAM_TIMES
   {
@@ -509,7 +509,7 @@ extern "C" {
     int64_t ptsStart;
     int64_t ptsBegin;
     int64_t ptsEnd;
-  } ATTRIBUTE_PACKED PVR_STREAM_TIMES;
+  } PVR_STREAM_TIMES;
 
   #define PVR_STREAM_PROPERTY_STREAMURL "streamurl"
   #define PVR_STREAM_PROPERTY_INPUTSTREAM STREAM_PROPERTY_INPUTSTREAM
