@@ -487,7 +487,7 @@ CScraperUrl CScraper::NfoUrl(const std::string &sNfoContent)
         pxeUrl = doc.FirstChildElement("url");
       }
       if (pId && pId->FirstChild())
-        scurlRet.m_id = pId->FirstChild()->Value();
+        scurlRet.SetId(pId->FirstChild()->ValueStr());
 
       if (pxeUrl && pxeUrl->Attribute("function"))
         continue;
@@ -563,7 +563,7 @@ CScraperUrl CScraper::ResolveIDToUrl(const std::string &externalID)
         pxeUrl = doc.FirstChildElement("url");
       }
       if (pId && pId->FirstChild())
-        scurlRet.m_id = pId->FirstChild()->Value();
+        scurlRet.SetId(pId->FirstChild()->ValueStr());
 
       if (pxeUrl && pxeUrl->Attribute("function"))
         continue;
@@ -936,7 +936,9 @@ std::vector<CScraperUrl> CScraper::FindMovie(XFILE::CCurlFile &fcurl,
       {
         CScraperUrl scurlMovie;
         auto title = pxnTitle->FirstChild()->ValueStr();
-        XMLUtils::GetString(pxeMovie, "id", scurlMovie.m_id);
+        std::string id;
+        if (XMLUtils::GetString(pxeMovie, "id", id))
+          scurlMovie.SetId(id);
 
         for (; pxeLink && pxeLink->FirstChild(); pxeLink = pxeLink->NextSiblingElement("url"))
           scurlMovie.ParseElement(pxeLink);
@@ -1257,7 +1259,9 @@ EPISODELIST CScraper::GetEpisodeList(XFILE::CCurlFile &fcurl, const CScraperUrl 
         if (!XMLUtils::GetString(pxeMovie, "title", title) || title.empty())
           title = g_localizeStrings.Get(10005); // Not available
         scurlEp.SetTitle(title);
-        XMLUtils::GetString(pxeMovie, "id", scurlEp.m_id);
+        std::string id;
+        if (XMLUtils::GetString(pxeMovie, "id", id))
+          scurlEp.SetId(id);
 
         for (; pxeLink && pxeLink->FirstChild(); pxeLink = pxeLink->NextSiblingElement("url"))
           scurlEp.ParseElement(pxeLink);
@@ -1300,7 +1304,7 @@ bool CScraper::GetVideoDetails(XFILE::CCurlFile &fcurl,
 
   std::string sFunc = fMovie ? "GetDetails" : "GetEpisodeDetails";
   std::vector<std::string> vcsIn;
-  vcsIn.push_back(scurl.m_id);
+  vcsIn.push_back(scurl.GetId());
   vcsIn.push_back(scurl.m_url[0].m_url);
   std::vector<std::string> vcsOut = RunNoThrow(sFunc, scurl, fcurl, &vcsIn);
 

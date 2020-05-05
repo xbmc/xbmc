@@ -49,6 +49,9 @@ public:
   const std::string& GetTitle() const { return m_title; }
   void SetTitle(std::string title) { m_title = std::move(title); }
 
+  const std::string& GetId() const { return m_id; }
+  void SetId(std::string id) { m_id = std::move(id); }
+
   double GetRelevance() const { return m_relevance; }
   void SetRelevance(double relevance) { m_relevance = relevance; }
 
@@ -92,10 +95,10 @@ public:
                   const std::string& cacheContext);
 
   std::string m_xml;
-  std::string m_id;
   std::vector<SUrlEntry> m_url;
 
 private:
   std::string m_title;
+  std::string m_id;
   double m_relevance;
 };
