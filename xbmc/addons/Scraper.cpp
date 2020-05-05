@@ -593,7 +593,7 @@ CScraperUrl FromFileItem<CScraperUrl>(const CFileItem &item)
 {
   CScraperUrl url;
 
-  url.m_title = item.GetLabel();
+  url.SetTitle(item.GetLabel());
   if (item.HasProperty("relevance"))
     url.SetRelevance(item.GetProperty("relevance").asDouble());
   CScraperUrl::SUrlEntry surl;
@@ -930,19 +930,19 @@ std::vector<CScraperUrl> CScraper::FindMovie(XFILE::CCurlFile &fcurl,
     for (TiXmlElement *pxeMovie = xhResults.FirstChild("entity").Element(); pxeMovie;
          pxeMovie = pxeMovie->NextSiblingElement())
     {
-      CScraperUrl scurlMovie;
       TiXmlNode *pxnTitle = pxeMovie->FirstChild("title");
       TiXmlElement *pxeLink = pxeMovie->FirstChildElement("url");
       if (pxnTitle && pxnTitle->FirstChild() && pxeLink && pxeLink->FirstChild())
       {
-        scurlMovie.m_title = pxnTitle->FirstChild()->Value();
+        CScraperUrl scurlMovie;
+        auto title = pxnTitle->FirstChild()->ValueStr();
         XMLUtils::GetString(pxeMovie, "id", scurlMovie.m_id);
 
         for (; pxeLink && pxeLink->FirstChild(); pxeLink = pxeLink->NextSiblingElement("url"))
           scurlMovie.ParseElement(pxeLink);
 
         // calculate the relevance of this hit
-        std::string sCompareTitle = scurlMovie.m_title;
+        std::string sCompareTitle = scurlMovie.GetTitle();
         StringUtils::ToLower(sCompareTitle);
         std::string sMatchTitle = sTitle;
         StringUtils::ToLower(sMatchTitle);
@@ -965,15 +965,18 @@ std::vector<CScraperUrl> CScraper::FindMovie(XFILE::CCurlFile &fcurl,
 
         // reconstruct a title for the user
         if (!sCompareYear.empty())
-          scurlMovie.m_title += StringUtils::Format(" (%s)", sCompareYear.c_str());
+          title += StringUtils::Format(" (%s)", sCompareYear.c_str());
 
         std::string sLanguage;
         if (XMLUtils::GetString(pxeMovie, "language", sLanguage) && !sLanguage.empty())
-          scurlMovie.m_title += StringUtils::Format(" (%s)", sLanguage.c_str());
+          title += StringUtils::Format(" (%s)", sLanguage.c_str());
 
         // filter for dupes from naughty scrapers
-        if (stsDupeCheck.insert(scurlMovie.m_url[0].m_url + " " + scurlMovie.m_title).second)
+        if (stsDupeCheck.insert(scurlMovie.m_url[0].m_url + " " + title).second)
+        {
+          scurlMovie.SetTitle(title);
           vcscurl.push_back(scurlMovie);
+        }
       }
     }
   }
@@ -1250,8 +1253,10 @@ EPISODELIST CScraper::GetEpisodeList(XFILE::CCurlFile &fcurl, const CScraperUrl 
         size_t dot = strEpNum.find(".");
         ep.iEpisode = atoi(strEpNum.c_str());
         ep.iSubepisode = (dot != std::string::npos) ? atoi(strEpNum.substr(dot + 1).c_str()) : 0;
-        if (!XMLUtils::GetString(pxeMovie, "title", scurlEp.m_title) || scurlEp.m_title.empty())
-          scurlEp.m_title = g_localizeStrings.Get(10005); // Not available
+        std::string title;
+        if (!XMLUtils::GetString(pxeMovie, "title", title) || title.empty())
+          title = g_localizeStrings.Get(10005); // Not available
+        scurlEp.SetTitle(title);
         XMLUtils::GetString(pxeMovie, "id", scurlEp.m_id);
 
         for (; pxeLink && pxeLink->FirstChild(); pxeLink = pxeLink->NextSiblingElement("url"))

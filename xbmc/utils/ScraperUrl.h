@@ -46,6 +46,9 @@ public:
   explicit CScraperUrl(const TiXmlElement* element);
   ~CScraperUrl();
 
+  const std::string& GetTitle() const { return m_title; }
+  void SetTitle(std::string title) { m_title = std::move(title); }
+
   double GetRelevance() const { return m_relevance; }
   void SetRelevance(double relevance) { m_relevance = relevance; }
 
@@ -89,10 +92,10 @@ public:
                   const std::string& cacheContext);
 
   std::string m_xml;
-  std::string m_title;
   std::string m_id;
   std::vector<SUrlEntry> m_url;
 
 private:
+  std::string m_title;
   double m_relevance;
 };

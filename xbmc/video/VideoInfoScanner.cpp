@@ -1729,8 +1729,8 @@ namespace VIDEO
           matches.push_back(*guide);
           continue;
         }
-        if (!guide->cScraperUrl.m_title.empty() &&
-            StringUtils::EqualsNoCase(guide->cScraperUrl.m_title, file->strTitle))
+        if (!guide->cScraperUrl.GetTitle().empty() &&
+            StringUtils::EqualsNoCase(guide->cScraperUrl.GetTitle(), file->strTitle))
         {
           bFound = true;
           break;
@@ -1766,8 +1766,10 @@ namespace VIDEO
           std::vector<std::string> titles;
           for (guide = candidates->begin(); guide != candidates->end(); ++guide)
           {
-            StringUtils::ToLower(guide->cScraperUrl.m_title);
-            titles.push_back(guide->cScraperUrl.m_title);
+            auto title = guide->cScraperUrl.GetTitle();
+            StringUtils::ToLower(title);
+            guide->cScraperUrl.SetTitle(title);
+            titles.push_back(title);
           }
 
           double matchscore;
@@ -1818,8 +1820,8 @@ namespace VIDEO
   {
     CVideoInfoTag movieDetails;
 
-    if (m_handle && !url.m_title.empty())
-      m_handle->SetText(url.m_title);
+    if (m_handle && !url.GetTitle().empty())
+      m_handle->SetText(url.GetTitle());
 
     CVideoInfoDownloader imdb(scraper);
     bool ret = imdb.GetDetails(url, movieDetails, pDialog);
@@ -1829,7 +1831,7 @@ namespace VIDEO
       if (loader)
         loader->Load(movieDetails, true);
 
-      if (m_handle && url.m_title.empty())
+      if (m_handle && url.GetTitle().empty())
         m_handle->SetText(movieDetails.m_strTitle);
 
       if (pDialog)
