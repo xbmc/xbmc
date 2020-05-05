@@ -241,7 +241,7 @@ namespace addon
 ///   provider-name="Your Name">
 ///   <requires>@ADDON_DEPENDS@</requires>
 ///   <extension
-///     point="xbmc.pvrclient"
+///     point="kodi.pvrclient"
 ///     library_@PLATFORM@="@LIBRARY_FILENAME@"/>
 ///   <extension point="xbmc.addon.metadata">
 ///     <summary lang="en_GB">My PVR addon addon</summary>
@@ -252,10 +252,10 @@ namespace addon
 /// ~~~~~~~~~~~~~
 ///
 ///
-/// At <b>`<extension point="xbmc.pvrclient" ...>`</b> the basic instance definition is declared, this is intended to identify the addon as an PVR and to see its supported types:
+/// At <b>`<extension point="kodi.pvrclient" ...>`</b> the basic instance definition is declared, this is intended to identify the addon as an PVR and to see its supported types:
 /// | Name | Description
 /// |------|----------------------
-/// | <b>`point`</b> | The identification of the addon instance to inputstream is mandatory <b>`xbmc.pvrclient`</b>. In addition, the instance declared in the first <b>`<extension ... />`</b> is also the main type of addon.
+/// | <b>`point`</b> | The identification of the addon instance to inputstream is mandatory <b>`kodi.pvrclient`</b>. In addition, the instance declared in the first <b>`<extension ... />`</b> is also the main type of addon.
 /// | <b>`library_@PLATFORM@`</b> | The runtime library used for the addon. This is usually declared by cmake and correctly displayed in the translated `addon.xml`.
 ///
 ///
