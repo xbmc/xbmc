@@ -46,6 +46,9 @@ public:
   explicit CScraperUrl(const TiXmlElement* element);
   ~CScraperUrl();
 
+  double GetRelevance() const { return m_relevance; }
+  void SetRelevance(double relevance) { m_relevance = relevance; }
+
   bool Parse();
   bool ParseString(std::string strUrl); // copies by intention
   bool ParseElement(const TiXmlElement* element);
@@ -88,6 +91,8 @@ public:
   std::string m_xml;
   std::string m_title;
   std::string m_id;
-  double m_relevance;
   std::vector<SUrlEntry> m_url;
+
+private:
+  double m_relevance;
 };

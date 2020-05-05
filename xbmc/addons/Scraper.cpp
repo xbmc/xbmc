@@ -582,7 +582,7 @@ CScraperUrl CScraper::ResolveIDToUrl(const std::string &externalID)
 
 static bool RelevanceSortFunction(const CScraperUrl &left, const CScraperUrl &right)
 {
-  return left.m_relevance > right.m_relevance;
+  return left.GetRelevance() > right.GetRelevance();
 }
 
 template<class T>
@@ -595,7 +595,7 @@ CScraperUrl FromFileItem<CScraperUrl>(const CFileItem &item)
 
   url.m_title = item.GetLabel();
   if (item.HasProperty("relevance"))
-    url.m_relevance = item.GetProperty("relevance").asDouble();
+    url.SetRelevance(item.GetProperty("relevance").asDouble());
   CScraperUrl::SUrlEntry surl;
   surl.m_type = CScraperUrl::UrlType::General;
   surl.m_url = item.GetDynPath();
@@ -961,7 +961,7 @@ std::vector<CScraperUrl> CScraper::FindMovie(XFILE::CCurlFile &fcurl,
           yearScore =
               std::max(0.0, 1 - 0.5 * abs(atoi(sYear.c_str()) - atoi(sCompareYear.c_str())));
 
-        scurlMovie.m_relevance = fstrcmp(sMatchTitle.c_str(), sCompareTitle.c_str()) + yearScore;
+        scurlMovie.SetRelevance(fstrcmp(sMatchTitle.c_str(), sCompareTitle.c_str()) + yearScore);
 
         // reconstruct a title for the user
         if (!sCompareYear.empty())
