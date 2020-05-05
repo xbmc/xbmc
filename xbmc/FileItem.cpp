@@ -1483,7 +1483,7 @@ void CFileItem::FillInMimeType(bool lookup /*= true*/)
     if( m_bIsFolder )
       m_mimetype = "x-directory/normal";
     else if( m_pvrChannelInfoTag )
-      m_mimetype = m_pvrChannelInfoTag->InputFormat();
+      m_mimetype = m_pvrChannelInfoTag->MimeType();
     else if( StringUtils::StartsWithNoCase(GetDynPath(), "shout://")
           || StringUtils::StartsWithNoCase(GetDynPath(), "http://")
           || StringUtils::StartsWithNoCase(GetDynPath(), "https://"))

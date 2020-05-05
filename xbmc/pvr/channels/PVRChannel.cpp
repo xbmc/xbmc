@@ -58,7 +58,7 @@ CPVRChannel::CPVRChannel(const PVR_CHANNEL& channel, unsigned int iClientId)
   m_iClientId(iClientId),
   m_clientChannelNumber(channel.iChannelNumber, channel.iSubChannelNumber),
   m_strClientChannelName(channel.strChannelName),
-  m_strInputFormat(channel.strInputFormat),
+  m_strMimeType(channel.strMimeType),
   m_iClientEncryptionSystem(channel.iEncryptionSystem)
 {
   if (m_strChannelName.empty())
@@ -158,14 +158,14 @@ bool CPVRChannel::UpdateFromClient(const std::shared_ptr<CPVRChannel>& channel)
 
   CSingleLock lock(m_critSection);
 
-  if (m_clientChannelNumber     != channel->m_clientChannelNumber ||
-      m_strInputFormat          != channel->InputFormat() ||
+  if (m_clientChannelNumber != channel->m_clientChannelNumber ||
+      m_strMimeType != channel->MimeType() ||
       m_iClientEncryptionSystem != channel->EncryptionSystem() ||
-      m_strClientChannelName    != channel->ClientChannelName() ||
-      m_bHasArchive             != channel->HasArchive())
+      m_strClientChannelName != channel->ClientChannelName() ||
+      m_bHasArchive != channel->HasArchive())
   {
     m_clientChannelNumber = channel->m_clientChannelNumber;
-    m_strInputFormat = channel->InputFormat();
+    m_strMimeType = channel->MimeType();
     m_iClientEncryptionSystem = channel->EncryptionSystem();
     m_strClientChannelName = channel->ClientChannelName();
     m_bHasArchive = channel->HasArchive();
@@ -743,10 +743,10 @@ std::string CPVRChannel::ClientChannelName() const
   return m_strClientChannelName;
 }
 
-std::string CPVRChannel::InputFormat() const
+std::string CPVRChannel::MimeType() const
 {
   CSingleLock lock(m_critSection);
-  return m_strInputFormat;
+  return m_strMimeType;
 }
 
 std::string CPVRChannel::Path() const
