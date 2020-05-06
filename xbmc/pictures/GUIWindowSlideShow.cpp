@@ -315,12 +315,12 @@ void CGUIWindowSlideShow::Select(const std::string& strPicture)
       if (!m_Image[m_iCurrentPic].IsLoaded() && (!m_pBackgroundLoader || !m_pBackgroundLoader->IsLoading()))
       {
         // will trigger loading current slide when next Process call.
-        m_iCurrentSlide = i;
+        m_iCurrentSlide = int(i);
         m_iNextSlide = GetNextSlide();
       }
       else
       {
-        m_iNextSlide = i;
+        m_iNextSlide = int(i);
         m_bLoadNextPic = true;
       }
       return ;
@@ -372,7 +372,7 @@ void CGUIWindowSlideShow::Process(unsigned int currentTime, CDirtyRegionList &re
   // (unless we are the screensaver!)
   if (m_bSlideShow && !m_bPause && !g_application.IsInScreenSaver())
     g_application.ResetScreenSaver();
-  int iSlides = m_slides.size();
+  int iSlides = int(m_slides.size());
   if (!iSlides)
     return;
 
