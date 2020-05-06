@@ -157,7 +157,6 @@ public:
   static bool IsPVRChannel(const std::string& strFile);
   static bool IsPVRChannelGroup(const std::string& strFile);
   static bool IsPVRGuideItem(const std::string& strFile);
-  static bool IsUsingFastSwitch(const std::string& strFile);
 
   static std::string AppendSlash(std::string strFolder);
   static void AddSlashAtEnd(std::string& strFolder);
