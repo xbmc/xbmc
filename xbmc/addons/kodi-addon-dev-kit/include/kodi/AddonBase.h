@@ -341,7 +341,7 @@ class CStructHdl
 {
 public:
   CStructHdl()
-    : m_cStructure(new C_STRUCT)
+    : m_cStructure(new C_STRUCT())
     , m_owner(true)
   {
   }
@@ -353,7 +353,7 @@ public:
   }
 
   CStructHdl(const C_STRUCT* cStructure)
-    : m_cStructure(new C_STRUCT({*cStructure}))
+    : m_cStructure(new C_STRUCT(*cStructure))
     , m_owner(true)
   {
   }
@@ -367,20 +367,34 @@ public:
   const CStructHdl& operator=(const CStructHdl& right)
   {
     assert(&right.m_cStructure);
-    if (m_owner)
-      delete m_cStructure;
-    m_owner = true;
-    m_cStructure = new C_STRUCT(*right.m_cStructure);
+    if (m_cStructure && !m_owner)
+    {
+      memcpy(m_cStructure, right.m_cStructure, sizeof(C_STRUCT));
+    }
+    else
+    {
+      if (m_owner)
+        delete m_cStructure;
+      m_owner = true;
+      m_cStructure = new C_STRUCT(*right.m_cStructure);
+    }
     return *this;
   }
 
   const CStructHdl& operator=(const C_STRUCT& right)
   {
     assert(&right);
-    if (m_owner)
-      delete m_cStructure;
-    m_owner = true;
-    m_cStructure = new C_STRUCT(*right);
+    if (m_cStructure && !m_owner)
+    {
+      memcpy(m_cStructure, &right, sizeof(C_STRUCT));
+    }
+    else
+    {
+      if (m_owner)
+        delete m_cStructure;
+      m_owner = true;
+      m_cStructure = new C_STRUCT(*right);
+    }
     return *this;
   }
 
