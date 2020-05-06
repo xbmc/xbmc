@@ -29,7 +29,10 @@ public:
 
   struct SUrlEntry
   {
-    SUrlEntry() : m_type(UrlType::General), m_post(false), m_isgz(false), m_season(-1) {}
+    explicit SUrlEntry(std::string url = "")
+      : m_url(std::move(url)), m_type(UrlType::General), m_post(false), m_isgz(false), m_season(-1)
+    {
+    }
 
     std::string m_spoof;
     std::string m_url;
@@ -46,6 +49,8 @@ public:
   explicit CScraperUrl(const TiXmlElement* element);
   ~CScraperUrl();
 
+  void Clear();
+
   bool HasData() const { return !m_data.empty(); }
   const std::string& GetData() const { return m_data; }
   void SetData(std::string data) { m_data = std::move(data); }
@@ -58,6 +63,28 @@ public:
 
   double GetRelevance() const { return m_relevance; }
   void SetRelevance(double relevance) { m_relevance = relevance; }
+
+  bool HasUrls() const { return !m_urls.empty(); }
+  const std::vector<SUrlEntry>& GetUrls() const { return m_urls; }
+  void SetUrls(std::vector<SUrlEntry> urls) { m_urls = std::move(urls); }
+  void AppendUrl(SUrlEntry url) { m_urls.push_back(std::move(url)); }
+
+  const SUrlEntry GetFirstUrlByType(const std::string& type = "") const;
+  const SUrlEntry GetSeasonUrl(int season, const std::string& type = "") const;
+  unsigned int GetMaxSeasonUrl() const;
+
+  std::string GetFirstThumbUrl() const;
+
+  /*! \brief fetch the full URLs (including referrer) of thumbs
+   \param thumbs [out] vector of thumb URLs to fill
+   \param type the type of thumb URLs to fetch, if empty (the default) picks any
+   \param season number of season that we want thumbs for, -1 indicates no season (the default)
+   \param unique avoid adding duplicate URLs when adding to a thumbs vector with existing items
+   */
+  void GetThumbUrls(std::vector<std::string>& thumbs,
+                    const std::string& type = "",
+                    int season = -1,
+                    bool unique = false) const;
 
   bool Parse();
   bool ParseString(std::string strUrl); // copies by intention
@@ -72,27 +99,12 @@ public:
                   bool isgz = false,
                   int season = -1);
 
-  const SUrlEntry GetFirstThumb(const std::string& type = "") const;
-  const SUrlEntry GetSeasonThumb(int season, const std::string& type = "") const;
-  unsigned int GetMaxSeasonThumb() const;
-
   /*! \brief fetch the full URL (including referrer) of a thumb
    \param URL entry to use to create the full URL
    \return the full URL, including referrer
    */
-  static std::string GetThumbURL(const CScraperUrl::SUrlEntry& entry);
+  static std::string GetThumbUrl(const CScraperUrl::SUrlEntry& entry);
 
-  /*! \brief fetch the full URLs (including referrer) of thumbs
-   \param thumbs [out] vector of thumb URLs to fill
-   \param type the type of thumb URLs to fetch, if empty (the default) picks any
-   \param season number of season that we want thumbs for, -1 indicates no season (the default)
-   \param unique avoid adding duplicate URLs when adding to a thumbs vector with existing items
-   */
-  void GetThumbURLs(std::vector<std::string>& thumbs,
-                    const std::string& type = "",
-                    int season = -1,
-                    bool unique = false) const;
-  void Clear();
   static bool Get(const SUrlEntry& scrURL,
                   std::string& strHTML,
                   XFILE::CCurlFile& http,
@@ -101,10 +113,9 @@ public:
   // ATTENTION: this member MUST NOT be used directly except from databases
   std::string m_data;
 
-  std::vector<SUrlEntry> m_url;
-
 private:
   std::string m_title;
   std::string m_id;
   double m_relevance;
+  std::vector<SUrlEntry> m_urls;
 };

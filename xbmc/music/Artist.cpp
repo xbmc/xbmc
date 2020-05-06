@@ -91,7 +91,7 @@ bool CArtist::Load(const TiXmlElement *artist, bool append, bool prioritise)
   XMLUtils::GetString(artist,      "died", strDied);
   XMLUtils::GetString(artist, "disbanded", strDisbanded);
 
-  size_t iThumbCount = thumbURL.m_url.size();
+  size_t iThumbCount = thumbURL.GetUrls().size();
   std::string xmlAdd = thumbURL.GetData();
 
   // Available artist thumbs
@@ -108,11 +108,11 @@ bool CArtist::Load(const TiXmlElement *artist, bool append, bool prioritise)
     thumb = thumb->NextSiblingElement("thumb");
   }
   // prefix thumbs from nfos
-  if (prioritise && iThumbCount && iThumbCount != thumbURL.m_url.size())
+  if (prioritise && iThumbCount && iThumbCount != thumbURL.GetUrls().size())
   {
-    rotate(thumbURL.m_url.begin(),
-           thumbURL.m_url.begin()+iThumbCount,
-           thumbURL.m_url.end());
+    auto thumbUrls = thumbURL.GetUrls();
+    rotate(thumbUrls.begin(), thumbUrls.begin() + iThumbCount, thumbUrls.end());
+    thumbURL.SetUrls(thumbUrls);
     thumbURL.SetData(xmlAdd);
   }
 

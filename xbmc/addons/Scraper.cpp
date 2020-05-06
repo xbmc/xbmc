@@ -311,10 +311,11 @@ std::string CScraper::InternalRun(const std::string &function,
                                   const std::vector<std::string> *extras)
 {
   // walk the list of input URLs and fetch each into parser parameters
+  const auto& urls = scrURL.GetUrls();
   size_t i;
-  for (i = 0; i < scrURL.m_url.size(); ++i)
+  for (i = 0; i < urls.size(); ++i)
   {
-    if (!CScraperUrl::Get(scrURL.m_url[i], m_parser.m_param[i], http, ID()) ||
+    if (!CScraperUrl::Get(urls[i], m_parser.m_param[i], http, ID()) ||
         m_parser.m_param[i].empty())
       return "";
   }
@@ -442,7 +443,7 @@ CScraperUrl CScraper::NfoUrl(const std::string &sNfoContent)
     CScraperUrl::SUrlEntry surl;
     surl.m_type = CScraperUrl::UrlType::General;
     surl.m_url = items[0]->GetDynPath();
-    scurlRet.m_url.emplace_back(surl);
+    scurlRet.AppendUrl(surl);
     return scurlRet;
   }
 
@@ -599,7 +600,7 @@ CScraperUrl FromFileItem<CScraperUrl>(const CFileItem &item)
   CScraperUrl::SUrlEntry surl;
   surl.m_type = CScraperUrl::UrlType::General;
   surl.m_url = item.GetDynPath();
-  url.m_url.push_back(surl);
+  url.AppendUrl(surl);
 
   return url;
 }
@@ -621,8 +622,7 @@ CMusicAlbumInfo FromFileItem<CMusicAlbumInfo>(const CFileItem &item)
     sAlbumName = StringUtils::Format("%s (%s)", sAlbumName.c_str(), sYear.c_str());
 
   CScraperUrl url;
-  url.m_url.resize(1);
-  url.m_url[0].m_url = item.GetDynPath();
+  url.AppendUrl(CScraperUrl::SUrlEntry(item.GetDynPath()));
 
   info = CMusicAlbumInfo(sTitle, sArtist, sAlbumName, url);
   if (item.HasProperty("relevance"))
@@ -638,8 +638,7 @@ CMusicArtistInfo FromFileItem<CMusicArtistInfo>(const CFileItem &item)
   std::string sTitle = item.GetLabel();
 
   CScraperUrl url;
-  url.m_url.resize(1);
-  url.m_url[0].m_url = item.GetDynPath();
+  url.AppendUrl(CScraperUrl::SUrlEntry(item.GetDynPath()));
 
   info = CMusicArtistInfo(sTitle, url);
   if (item.HasProperty("artist.genre"))
@@ -895,7 +894,7 @@ std::vector<CScraperUrl> CScraper::FindMovie(XFILE::CCurlFile &fcurl,
 
   // do the search, and parse the result into a list
   vcsIn.clear();
-  vcsIn.push_back(scurl.m_url[0].m_url);
+  vcsIn.push_back(scurl.GetFirstThumbUrl());
   vcsOut = Run("GetSearchResults", scurl, fcurl, &vcsIn);
 
   bool fSort(true);
@@ -974,7 +973,7 @@ std::vector<CScraperUrl> CScraper::FindMovie(XFILE::CCurlFile &fcurl,
           title += StringUtils::Format(" (%s)", sLanguage.c_str());
 
         // filter for dupes from naughty scrapers
-        if (stsDupeCheck.insert(scurlMovie.m_url[0].m_url + " " + title).second)
+        if (stsDupeCheck.insert(scurlMovie.GetFirstThumbUrl() + " " + title).second)
         {
           scurlMovie.SetTitle(title);
           vcscurl.push_back(scurlMovie);
@@ -1075,7 +1074,7 @@ std::vector<CMusicAlbumInfo> CScraper::FindAlbum(CCurlFile &fcurl,
         for (; pxeLink && pxeLink->FirstChild(); pxeLink = pxeLink->NextSiblingElement("url"))
           scurlAlbum.ParseElement(pxeLink);
 
-        if (!scurlAlbum.m_url.size())
+        if (!scurlAlbum.HasUrls())
           continue;
 
         CMusicAlbumInfo ali(sTitle, sArtist, sAlbumName, scurlAlbum);
@@ -1164,7 +1163,7 @@ std::vector<CMusicArtistInfo> CScraper::FindArtist(CCurlFile &fcurl, const std::
         for (; pxeLink && pxeLink->FirstChild(); pxeLink = pxeLink->NextSiblingElement("url"))
           scurlArtist.ParseElement(pxeLink);
 
-        if (!scurlArtist.m_url.size())
+        if (!scurlArtist.HasUrls())
           continue;
 
         CMusicArtistInfo ari(pxnTitle->FirstChild()->Value(), scurlArtist);
@@ -1187,20 +1186,20 @@ std::vector<CMusicArtistInfo> CScraper::FindArtist(CCurlFile &fcurl, const std::
 EPISODELIST CScraper::GetEpisodeList(XFILE::CCurlFile &fcurl, const CScraperUrl &scurl)
 {
   EPISODELIST vcep;
-  if (scurl.m_url.empty())
+  if (!scurl.HasUrls())
     return vcep;
 
   CLog::Log(LOGDEBUG,
             "%s: Searching '%s' using %s scraper "
             "(file: '%s', content: '%s', version: '%s')",
-            __FUNCTION__, scurl.m_url[0].m_url.c_str(), Name().c_str(), Path().c_str(),
+            __FUNCTION__, scurl.GetFirstThumbUrl(), Name().c_str(), Path().c_str(),
             ADDON::TranslateContent(Content()).c_str(), Version().asString().c_str());
 
   if (m_isPython)
   {
     std::stringstream str;
     str << "plugin://" << ID()
-        << "?action=getepisodelist&url=" << CURL::Encode(scurl.m_url.front().m_url)
+        << "?action=getepisodelist&url=" << CURL::Encode(scurl.GetFirstThumbUrl())
         << "&pathSettings=" << CURL::Encode(GetPathSettingsAsJSON());
 
     CFileItemList items;
@@ -1219,7 +1218,7 @@ EPISODELIST CScraper::GetEpisodeList(XFILE::CCurlFile &fcurl, const CScraperUrl 
       CScraperUrl::SUrlEntry surl;
       surl.m_type = CScraperUrl::UrlType::General;
       surl.m_url = items[i]->GetURL().Get();
-      ep.cScraperUrl.m_url.push_back(surl);
+      ep.cScraperUrl.AppendUrl(surl);
       vcep.push_back(ep);
     }
 
@@ -1227,7 +1226,7 @@ EPISODELIST CScraper::GetEpisodeList(XFILE::CCurlFile &fcurl, const CScraperUrl 
   }
 
   std::vector<std::string> vcsIn;
-  vcsIn.push_back(scurl.m_url[0].m_url);
+  vcsIn.push_back(scurl.GetFirstThumbUrl());
   std::vector<std::string> vcsOut = RunNoThrow("GetEpisodeList", scurl, fcurl, &vcsIn);
 
   // parse the XML response
@@ -1292,20 +1291,20 @@ bool CScraper::GetVideoDetails(XFILE::CCurlFile &fcurl,
   CLog::Log(LOGDEBUG,
             "%s: Reading %s '%s' using %s scraper "
             "(file: '%s', content: '%s', version: '%s')",
-            __FUNCTION__, fMovie ? MediaTypeMovie : MediaTypeEpisode, scurl.m_url[0].m_url.c_str(),
+            __FUNCTION__, fMovie ? MediaTypeMovie : MediaTypeEpisode, scurl.GetFirstThumbUrl(),
             Name().c_str(), Path().c_str(), ADDON::TranslateContent(Content()).c_str(),
             Version().asString().c_str());
 
   video.Reset();
 
   if (m_isPython)
-    return PythonDetails(ID(), "url", scurl.m_url.front().m_url,
+    return PythonDetails(ID(), "url", scurl.GetFirstThumbUrl(),
       fMovie ? "getdetails" : "getepisodedetails", GetPathSettingsAsJSON(), video);
 
   std::string sFunc = fMovie ? "GetDetails" : "GetEpisodeDetails";
   std::vector<std::string> vcsIn;
   vcsIn.push_back(scurl.GetId());
-  vcsIn.push_back(scurl.m_url[0].m_url);
+  vcsIn.push_back(scurl.GetFirstThumbUrl());
   std::vector<std::string> vcsOut = RunNoThrow(sFunc, scurl, fcurl, &vcsIn);
 
   // parse XML output
@@ -1339,11 +1338,11 @@ bool CScraper::GetAlbumDetails(CCurlFile &fcurl, const CScraperUrl &scurl, CAlbu
   CLog::Log(LOGDEBUG,
             "%s: Reading '%s' using %s scraper "
             "(file: '%s', content: '%s', version: '%s')",
-            __FUNCTION__, scurl.m_url[0].m_url.c_str(), Name().c_str(), Path().c_str(),
+            __FUNCTION__, scurl.GetFirstThumbUrl(), Name().c_str(), Path().c_str(),
             ADDON::TranslateContent(Content()).c_str(), Version().asString().c_str());
 
   if (m_isPython)
-    return PythonDetails(ID(), "url", scurl.m_url.front().m_url,
+    return PythonDetails(ID(), "url", scurl.GetFirstThumbUrl(),
       "getdetails", GetPathSettingsAsJSON(), album);
 
   std::vector<std::string> vcsOut = RunNoThrow("GetAlbumDetails", scurl, fcurl);
@@ -1371,18 +1370,18 @@ bool CScraper::GetArtistDetails(CCurlFile &fcurl,
                                 const std::string &sSearch,
                                 CArtist &artist)
 {
-  if (!scurl.m_url.size())
+  if (!scurl.HasUrls())
     return false;
 
   CLog::Log(LOGDEBUG,
             "%s: Reading '%s' ('%s') using %s scraper "
             "(file: '%s', content: '%s', version: '%s')",
-            __FUNCTION__, scurl.m_url[0].m_url.c_str(), sSearch.c_str(), Name().c_str(),
+            __FUNCTION__, scurl.GetFirstThumbUrl(), sSearch.c_str(), Name().c_str(),
             Path().c_str(), ADDON::TranslateContent(Content()).c_str(),
             Version().asString().c_str());
 
   if (m_isPython)
-    return PythonDetails(ID(), "url", scurl.m_url.front().m_url,
+    return PythonDetails(ID(), "url", scurl.GetFirstThumbUrl(),
       "getdetails", GetPathSettingsAsJSON(), artist);
 
   // pass in the original search string for chaining to search other sites

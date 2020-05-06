@@ -1312,10 +1312,12 @@ CMusicInfoScanner::UpdateDatabaseAlbumInfo(CAlbum& album,
       }
       else
       {
-        CServiceBroker::GetEventLog().Add(EventPtr(new CMediaLibraryEvent(
-          MediaTypeAlbum, album.strPath, 24146,
-          StringUtils::Format(g_localizeStrings.Get(24147).c_str(), MediaTypeAlbum, album.strAlbum.c_str()),
-          CScraperUrl::GetThumbURL(album.thumbURL.GetFirstThumb()), CURL::GetRedacted(album.strPath), EventLevel::Warning)));
+        CServiceBroker::GetEventLog().Add(EventPtr(
+            new CMediaLibraryEvent(MediaTypeAlbum, album.strPath, 24146,
+                                   StringUtils::Format(g_localizeStrings.Get(24147).c_str(),
+                                                       MediaTypeAlbum, album.strAlbum.c_str()),
+                                   CScraperUrl::GetThumbUrl(album.thumbURL.GetFirstUrlByType()),
+                                   CURL::GetRedacted(album.strPath), EventLevel::Warning)));
       }
     }
   }
@@ -1380,10 +1382,12 @@ CMusicInfoScanner::UpdateDatabaseArtistInfo(CArtist& artist,
       }
       else
       {
-        CServiceBroker::GetEventLog().Add(EventPtr(new CMediaLibraryEvent(
-          MediaTypeArtist, artist.strPath, 24146,
-          StringUtils::Format(g_localizeStrings.Get(24147).c_str(), MediaTypeArtist, artist.strArtist.c_str()),
-          CScraperUrl::GetThumbURL(artist.thumbURL.GetFirstThumb()), CURL::GetRedacted(artist.strPath), EventLevel::Warning)));
+        CServiceBroker::GetEventLog().Add(EventPtr(
+            new CMediaLibraryEvent(MediaTypeArtist, artist.strPath, 24146,
+                                   StringUtils::Format(g_localizeStrings.Get(24147).c_str(),
+                                                       MediaTypeArtist, artist.strArtist.c_str()),
+                                   CScraperUrl::GetThumbUrl(artist.thumbURL.GetFirstUrlByType()),
+                                   CURL::GetRedacted(artist.strPath), EventLevel::Warning)));
       }
     }
   }
@@ -1500,7 +1504,7 @@ CMusicInfoScanner::DownloadAlbumInfo(const CAlbum& album,
       CMusicAlbumInfo albumNfo("nfo",scrUrl);
       ADDON::ScraperPtr nfoReaderScraper = nfoReader.GetScraperInfo();
       CLog::Log(LOGDEBUG,"-- nfo-scraper: %s", nfoReaderScraper->Name().c_str());
-      CLog::Log(LOGDEBUG,"-- nfo url: %s", scrUrl.m_url[0].m_url.c_str());
+      CLog::Log(LOGDEBUG, "-- nfo url: %s", scrUrl.GetFirstThumbUrl());
       scraper.SetScraperInfo(nfoReaderScraper);
       scraper.GetAlbums().clear();
       scraper.GetAlbums().push_back(albumNfo);
@@ -1675,7 +1679,7 @@ CMusicInfoScanner::DownloadAlbumInfo(const CAlbum& album,
 
 void CMusicInfoScanner::GetAlbumArtwork(long id, const CAlbum &album)
 {
-  if (album.thumbURL.m_url.size())
+  if (album.thumbURL.HasUrls())
   {
     // Check current album thumb
     std::string artURL = m_musicDatabase.GetArtForItem(id, MediaTypeAlbum, "thumb");
@@ -1686,7 +1690,7 @@ void CMusicInfoScanner::GetAlbumArtwork(long id, const CAlbum &album)
         (StringUtils::StartsWith(artURL, "image://") &&
          CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_MUSICLIBRARY_PREFERONLINEALBUMART)))
     {
-      std::string thumb = CScraperUrl::GetThumbURL(album.thumbURL.GetFirstThumb("thumb"));
+      std::string thumb = CScraperUrl::GetThumbUrl(album.thumbURL.GetFirstUrlByType("thumb"));
       if (!thumb.empty())
       {
         CTextureCache::GetInstance().BackgroundCacheImage(thumb);
@@ -1787,7 +1791,7 @@ CMusicInfoScanner::DownloadArtistInfo(const CArtist& artist,
       CMusicArtistInfo artistNfo("nfo", scrUrl);
       ADDON::ScraperPtr nfoReaderScraper = nfoReader.GetScraperInfo();
       CLog::Log(LOGDEBUG, "-- nfo-scraper: %s", nfoReaderScraper->Name().c_str());
-      CLog::Log(LOGDEBUG, "-- nfo url: %s", scrUrl.m_url[0].m_url.c_str());
+      CLog::Log(LOGDEBUG, "-- nfo url: %s", scrUrl.GetFirstThumbUrl());
       scraper.SetScraperInfo(nfoReaderScraper);
       scraper.GetArtists().push_back(artistNfo);
     }
@@ -1931,10 +1935,10 @@ bool CMusicInfoScanner::ResolveMusicBrainz(const std::string &strMusicBrainzID, 
       return false;
   }
 
-  if (!musicBrainzURL.m_url.empty())
+  if (musicBrainzURL.HasUrls())
   {
     CLog::Log(LOGDEBUG,"-- nfo-scraper: %s",preferredScraper->Name().c_str());
-    CLog::Log(LOGDEBUG,"-- nfo url: %s", musicBrainzURL.m_url[0].m_url.c_str());
+    CLog::Log(LOGDEBUG, "-- nfo url: %s", musicBrainzURL.GetFirstThumbUrl());
     bMusicBrainz = true;
   }
 
@@ -2034,7 +2038,7 @@ bool CMusicInfoScanner::SetArtistArtwork(CArtist& artist, const std::vector<std:
       if (type == "fanart")
         strArt = artist.fanart.GetImageURL();
       else
-        strArt = CScraperUrl::GetThumbURL(artist.thumbURL.GetFirstThumb(type));
+        strArt = CScraperUrl::GetThumbUrl(artist.thumbURL.GetFirstUrlByType(type));
     }
     // Add art to artist and library
     if (!strArt.empty())
@@ -2051,7 +2055,7 @@ bool CMusicInfoScanner::SetArtistArtwork(CArtist& artist, const std::vector<std:
 
 bool CMusicInfoScanner::SetAlbumArtwork(CAlbum& album, std::vector<std::string>& missing, const std::string& artfolder)
 {
-  if (album.thumbURL.m_url.empty())
+  if (!album.thumbURL.HasUrls())
   {
     if (artfolder.empty())
       return false; // No local or scraped art to process
@@ -2123,7 +2127,7 @@ bool CMusicInfoScanner::SetAlbumArtwork(CAlbum& album, std::vector<std::string>&
     // of scraper results for it (unlike artist).
     if (strArt.empty())
     {
-      strArt = CScraperUrl::GetThumbURL(album.thumbURL.GetFirstThumb(type));
+      strArt = CScraperUrl::GetThumbUrl(album.thumbURL.GetFirstUrlByType(type));
     }
     // Add art to album and library
     if (!strArt.empty())

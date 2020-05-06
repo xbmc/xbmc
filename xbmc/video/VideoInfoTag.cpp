@@ -276,7 +276,7 @@ bool CVideoInfoTag::Save(TiXmlNode *node, const std::string &tag, bool savePathI
     XMLUtils::SetString(node, "name", it->strName);
     XMLUtils::SetString(node, "role", it->strRole);
     XMLUtils::SetInt(node, "order", it->order);
-    XMLUtils::SetString(node, "thumb", it->thumbUrl.GetFirstThumb().m_url);
+    XMLUtils::SetString(node, "thumb", it->thumbUrl.GetFirstUrlByType().m_url);
   }
   XMLUtils::SetStringArray(movie, "artist", m_artist);
   XMLUtils::SetStringArray(movie, "showlink", m_showLink);
@@ -968,7 +968,7 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prioritise)
   if (XMLUtils::GetString(movie, "basepath", value))
     SetBasePath(value);
 
-  size_t iThumbCount = m_strPictureURL.m_url.size();
+  size_t iThumbCount = m_strPictureURL.GetUrls().size();
   std::string xmlAdd = m_strPictureURL.GetData();
 
   const TiXmlElement* thumb = movie->FirstChildElement("thumb");
@@ -985,11 +985,11 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prioritise)
   }
 
   // prioritise thumbs from nfos
-  if (prioritise && iThumbCount && iThumbCount != m_strPictureURL.m_url.size())
+  if (prioritise && iThumbCount && iThumbCount != m_strPictureURL.GetUrls().size())
   {
-    rotate(m_strPictureURL.m_url.begin(),
-           m_strPictureURL.m_url.begin()+iThumbCount,
-           m_strPictureURL.m_url.end());
+    auto thumbUrls = m_strPictureURL.GetUrls();
+    rotate(thumbUrls.begin(), thumbUrls.begin() + iThumbCount, thumbUrls.end());
+    m_strPictureURL.SetUrls(thumbUrls);
     m_strPictureURL.SetData(xmlAdd);
   }
 

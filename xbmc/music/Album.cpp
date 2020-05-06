@@ -528,7 +528,7 @@ bool CAlbum::Load(const TiXmlElement *album, bool append, bool prioritise)
   }
   XMLUtils::GetInt(album, "votes", iVotes);
 
-  size_t iThumbCount = thumbURL.m_url.size();
+  size_t iThumbCount = thumbURL.GetUrls().size();
   std::string xmlAdd = thumbURL.GetData();
   const TiXmlElement* thumb = album->FirstChildElement("thumb");
   while (thumb)
@@ -543,11 +543,11 @@ bool CAlbum::Load(const TiXmlElement *album, bool append, bool prioritise)
     thumb = thumb->NextSiblingElement("thumb");
   }
   // prioritise thumbs from nfos
-  if (prioritise && iThumbCount && iThumbCount != thumbURL.m_url.size())
+  if (prioritise && iThumbCount && iThumbCount != thumbURL.GetUrls().size())
   {
-    rotate(thumbURL.m_url.begin(),
-           thumbURL.m_url.begin()+iThumbCount,
-           thumbURL.m_url.end());
+    auto thumbUrls = thumbURL.GetUrls();
+    rotate(thumbUrls.begin(), thumbUrls.begin() + iThumbCount, thumbUrls.end());
+    thumbURL.SetUrls(thumbUrls);
     thumbURL.SetData(xmlAdd);
   }
 

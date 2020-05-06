@@ -11304,7 +11304,7 @@ std::vector<std::string> CMusicDatabase::GetAvailableArtTypesForItem(int mediaId
         result.emplace_back("fanart");
 
       // all other images
-      for (const auto& urlEntry : artist.thumbURL.m_url)
+      for (const auto& urlEntry : artist.thumbURL.GetUrls())
       {
         std::string artType = urlEntry.m_aspect;
         if (artType.empty())
@@ -11319,7 +11319,7 @@ std::vector<std::string> CMusicDatabase::GetAvailableArtTypesForItem(int mediaId
     CAlbum album;
     if (GetAlbum(mediaId, album))
     {
-      for (const auto& urlEntry : album.thumbURL.m_url)
+      for (const auto& urlEntry : album.thumbURL.GetUrls())
       {
         std::string artType = urlEntry.m_aspect;
         if (artType.empty())

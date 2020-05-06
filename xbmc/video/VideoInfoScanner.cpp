@@ -592,14 +592,14 @@ namespace VIDEO
       movieTitle = tag->GetTitle();
       movieYear = tag->GetYear(); // movieYear is expected to be >= 0
     }
-    if (pURL && !pURL->m_url.empty())
+    if (pURL && pURL->HasUrls())
       url = *pURL;
     else if ((retVal = FindVideo(movieTitle, movieYear, info2, url, pDlgProgress)) <= 0)
       return retVal < 0 ? INFO_CANCELLED : INFO_NOT_FOUND;
 
     CLog::Log(LOGDEBUG,
               "VideoInfoScanner: Fetching url '%s' using %s scraper (content: '%s')",
-              url.m_url[0].m_url.c_str(), info2->Name().c_str(),
+              url.GetFirstThumbUrl(), info2->Name().c_str(),
               TranslateContent(info2->Content()).c_str());
 
     long lResult = -1;
@@ -676,14 +676,14 @@ namespace VIDEO
       movieTitle = tag->GetTitle();
       movieYear = tag->GetYear(); // movieYear is expected to be >= 0
     }
-    if (pURL && !pURL->m_url.empty())
+    if (pURL && pURL->HasUrls())
       url = *pURL;
     else if ((retVal = FindVideo(movieTitle, movieYear, info2, url, pDlgProgress)) <= 0)
       return retVal < 0 ? INFO_CANCELLED : INFO_NOT_FOUND;
 
     CLog::Log(LOGDEBUG,
               "VideoInfoScanner: Fetching url '%s' using %s scraper (content: '%s')",
-              url.m_url[0].m_url.c_str(), info2->Name().c_str(),
+              url.GetFirstThumbUrl(), info2->Name().c_str(),
               TranslateContent(info2->Content()).c_str());
 
     if (GetDetails(pItem, url, info2,
@@ -755,14 +755,14 @@ namespace VIDEO
       movieTitle = tag->GetTitle();
       movieYear = tag->GetYear(); // movieYear is expected to be >= 0
     }
-    if (pURL && !pURL->m_url.empty())
+    if (pURL && pURL->HasUrls())
       url = *pURL;
     else if ((retVal = FindVideo(movieTitle, movieYear, info2, url, pDlgProgress)) <= 0)
       return retVal < 0 ? INFO_CANCELLED : INFO_NOT_FOUND;
 
     CLog::Log(LOGDEBUG,
               "VideoInfoScanner: Fetching url '%s' using %s scraper (content: '%s')",
-              url.m_url[0].m_url.c_str(), info2->Name().c_str(),
+              url.GetFirstThumbUrl(), info2->Name().c_str(),
               TranslateContent(info2->Content()).c_str());
 
     if (GetDetails(pItem, url, info2,
@@ -1554,7 +1554,7 @@ namespace VIDEO
     }
 
     // add online art
-    for (const auto& url : pItem->GetVideoInfoTag()->m_strPictureURL.m_url)
+    for (const auto& url : pItem->GetVideoInfoTag()->m_strPictureURL.GetUrls())
     {
       if (url.m_type != CScraperUrl::UrlType::General)
         continue;
@@ -1584,7 +1584,7 @@ namespace VIDEO
 
   std::string CVideoInfoScanner::GetImage(const CScraperUrl::SUrlEntry &image, const std::string& itemPath)
   {
-    std::string thumb = CScraperUrl::GetThumbURL(image);
+    std::string thumb = CScraperUrl::GetThumbUrl(image);
     if (!thumb.empty() &&
       thumb.find("/") == std::string::npos &&
       thumb.find("\\") == std::string::npos)
@@ -2030,7 +2030,7 @@ namespace VIDEO
       }
     }
     // add online art
-    for (const auto& url : show.m_strPictureURL.m_url)
+    for (const auto& url : show.m_strPictureURL.GetUrls())
     {
       if (url.m_type != CScraperUrl::UrlType::Season)
         continue;
@@ -2040,7 +2040,7 @@ namespace VIDEO
       std::map<std::string, std::string>& art = seasonArt[url.m_season];
       if (find(artTypes.begin(), artTypes.end(), aspect) == artTypes.end() || art.find(aspect) != art.end())
         continue;
-      std::string image = CScraperUrl::GetThumbURL(url);
+      std::string image = CScraperUrl::GetThumbUrl(url);
       if (!image.empty())
         art.insert(std::make_pair(aspect, image));
     }
@@ -2073,8 +2073,8 @@ namespace VIDEO
             break;
           }
         }
-        if (i->thumb.empty() && !i->thumbUrl.GetFirstThumb().m_url.empty())
-          i->thumb = CScraperUrl::GetThumbURL(i->thumbUrl.GetFirstThumb());
+        if (i->thumb.empty() && !i->thumbUrl.GetFirstUrlByType().m_url.empty())
+          i->thumb = CScraperUrl::GetThumbUrl(i->thumbUrl.GetFirstUrlByType());
         if (!i->thumb.empty())
           CTextureCache::GetInstance().BackgroundCacheImage(i->thumb);
       }

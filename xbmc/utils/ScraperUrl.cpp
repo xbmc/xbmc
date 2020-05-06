@@ -45,9 +45,72 @@ CScraperUrl::~CScraperUrl() = default;
 
 void CScraperUrl::Clear()
 {
-  m_url.clear();
+  m_urls.clear();
   m_data.clear();
   m_relevance = 0.0;
+}
+
+const CScraperUrl::SUrlEntry CScraperUrl::GetFirstUrlByType(const std::string& type) const
+{
+  const auto url = std::find_if(m_urls.begin(), m_urls.end(), [type](const SUrlEntry& url) {
+    return url.m_type == UrlType::General && (type.empty() || url.m_aspect == type);
+  });
+  if (url != m_urls.end())
+    return *url;
+
+  return SUrlEntry();
+}
+
+const CScraperUrl::SUrlEntry CScraperUrl::GetSeasonUrl(int season, const std::string& type) const
+{
+  const auto url = std::find_if(m_urls.begin(), m_urls.end(), [season, type](const SUrlEntry& url) {
+    return url.m_type == UrlType::Season && url.m_season == season &&
+           (type.empty() || type == "thumb" || url.m_aspect == type);
+  });
+  if (url != m_urls.end())
+    return *url;
+
+  return SUrlEntry();
+}
+
+unsigned int CScraperUrl::GetMaxSeasonUrl() const
+{
+  unsigned int maxSeason = 0;
+  for (const auto& url : m_urls)
+  {
+    if (url.m_type == UrlType::Season && url.m_season > 0 &&
+        static_cast<unsigned int>(url.m_season) > maxSeason)
+      maxSeason = url.m_season;
+  }
+  return maxSeason;
+}
+
+std::string CScraperUrl::GetFirstThumbUrl() const
+{
+  if (m_urls.empty())
+    return {};
+
+  return GetThumbUrl(m_urls.front());
+}
+
+void CScraperUrl::GetThumbUrls(std::vector<std::string>& thumbs,
+                               const std::string& type,
+                               int season,
+                               bool unique) const
+{
+  for (const auto& url : m_urls)
+  {
+    if (url.m_aspect == type || type.empty() || url.m_aspect.empty())
+    {
+      if ((url.m_type == CScraperUrl::UrlType::General && season == -1) ||
+          (url.m_type == CScraperUrl::UrlType::Season && url.m_season == season))
+      {
+        std::string thumbUrl = GetThumbUrl(url);
+        if (!unique || std::find(thumbs.begin(), thumbs.end(), thumbUrl) == thumbs.end())
+          thumbs.push_back(thumbUrl);
+      }
+    }
+  }
 }
 
 bool CScraperUrl::Parse()
@@ -93,7 +156,7 @@ bool CScraperUrl::ParseElement(const TiXmlElement* element)
   }
   url.m_aspect = XMLUtils::GetAttribute(element, "aspect");
 
-  m_url.push_back(url);
+  m_urls.push_back(url);
 
   return true;
 }
@@ -117,7 +180,7 @@ bool CScraperUrl::ParseString(std::string strUrl)
     url.m_season = -1;
     url.m_post = false;
     url.m_isgz = false;
-    m_url.push_back(url);
+    m_urls.push_back(url);
     m_data = strUrl;
   }
   else
@@ -132,39 +195,86 @@ bool CScraperUrl::ParseString(std::string strUrl)
   return true;
 }
 
-const CScraperUrl::SUrlEntry CScraperUrl::GetFirstThumb(const std::string& type) const
+// XML format is of strUrls is:
+// <TAG><url>...</url>...</TAG> (parsed by ParseElement) or <url>...</url> (ditto)
+bool CScraperUrl::ParseEpisodeGuide(std::string strUrls)
 {
-  const auto url = std::find_if(m_url.begin(), m_url.end(), [type](const SUrlEntry& url) {
-    return url.m_type == UrlType::General && (type.empty() || url.m_aspect == type);
-  });
-  if (url != m_url.end())
-    return *url;
+  if (strUrls.empty())
+    return false;
 
-  return {};
-}
-
-const CScraperUrl::SUrlEntry CScraperUrl::GetSeasonThumb(int season, const std::string& type) const
-{
-  const auto url = std::find_if(m_url.begin(), m_url.end(), [season, type](const SUrlEntry& url) {
-    return url.m_type == UrlType::Season && url.m_season == season &&
-           (type.empty() || type == "thumb" || url.m_aspect == type);
-  });
-  if (url != m_url.end())
-    return *url;
-
-  return {};
-}
-
-unsigned int CScraperUrl::GetMaxSeasonThumb() const
-{
-  unsigned int maxSeason = 0;
-  for (const auto& url : m_url)
+  // ok, now parse the xml file
+  CXBMCTinyXML doc;
+  /* strUrls is coming from internal sources so strUrls is always in UTF-8 */
+  doc.Parse(strUrls, TIXML_ENCODING_UTF8);
+  if (doc.RootElement() != nullptr)
   {
-    if (url.m_type == UrlType::Season && url.m_season > 0 &&
-        static_cast<unsigned int>(url.m_season) > maxSeason)
-      maxSeason = url.m_season;
+    TiXmlHandle docHandle(&doc);
+    auto link = docHandle.FirstChild("episodeguide").Element();
+    if (link->FirstChildElement("url"))
+    {
+      for (link = link->FirstChildElement("url"); link; link = link->NextSiblingElement("url"))
+        ParseElement(link);
+    }
+    else if (link->FirstChild() && link->FirstChild()->Value())
+      ParseElement(link);
   }
-  return maxSeason;
+  else
+    return false;
+
+  return true;
+}
+
+void CScraperUrl::AddElement(std::string url,
+                             std::string aspect,
+                             std::string preview,
+                             std::string referrer,
+                             std::string cache,
+                             bool post,
+                             bool isgz,
+                             int season)
+{
+  TiXmlElement thumb("thumb");
+  thumb.SetAttribute("spoof", referrer);
+  thumb.SetAttribute("cache", cache);
+  if (post)
+    thumb.SetAttribute("post", "yes");
+  if (isgz)
+    thumb.SetAttribute("gzip", "yes");
+  if (season >= 0)
+  {
+    thumb.SetAttribute("season", StringUtils::Format("%i", season));
+    thumb.SetAttribute("type", "season");
+  }
+  thumb.SetAttribute("aspect", aspect);
+  thumb.SetAttribute("preview", preview);
+  TiXmlText text(url);
+  thumb.InsertEndChild(text);
+  m_data << thumb;
+  SUrlEntry nUrl;
+  nUrl.m_url = url;
+  nUrl.m_spoof = referrer;
+  nUrl.m_post = post;
+  nUrl.m_isgz = isgz;
+  nUrl.m_cache = cache;
+  if (season >= 0)
+  {
+    nUrl.m_type = UrlType::Season;
+    nUrl.m_season = season;
+  }
+  else
+    nUrl.m_type = UrlType::General;
+
+  nUrl.m_aspect = aspect;
+
+  m_urls.push_back(nUrl);
+}
+
+std::string CScraperUrl::GetThumbUrl(const CScraperUrl::SUrlEntry& entry)
+{
+  if (entry.m_spoof.empty())
+    return entry.m_url;
+
+  return entry.m_url + "|Referer=" + CURL::Encode(entry.m_spoof);
 }
 
 bool CScraperUrl::Get(const SUrlEntry& scrURL,
@@ -301,106 +411,4 @@ bool CScraperUrl::Get(const SUrlEntry& scrURL,
       return false;
   }
   return true;
-}
-
-// XML format is of strUrls is:
-// <TAG><url>...</url>...</TAG> (parsed by ParseElement) or <url>...</url> (ditto)
-bool CScraperUrl::ParseEpisodeGuide(std::string strUrls)
-{
-  if (strUrls.empty())
-    return false;
-
-  // ok, now parse the xml file
-  CXBMCTinyXML doc;
-  /* strUrls is coming from internal sources so strUrls is always in UTF-8 */
-  doc.Parse(strUrls, TIXML_ENCODING_UTF8);
-  if (doc.RootElement() != nullptr)
-  {
-    TiXmlHandle docHandle(&doc);
-    auto link = docHandle.FirstChild("episodeguide").Element();
-    if (link->FirstChildElement("url"))
-    {
-      for (link = link->FirstChildElement("url"); link; link = link->NextSiblingElement("url"))
-        ParseElement(link);
-    }
-    else if (link->FirstChild() && link->FirstChild()->Value())
-      ParseElement(link);
-  }
-  else
-    return false;
-
-  return true;
-}
-
-void CScraperUrl::AddElement(std::string url,
-                             std::string aspect,
-                             std::string preview,
-                             std::string referrer,
-                             std::string cache,
-                             bool post,
-                             bool isgz,
-                             int season)
-{
-  TiXmlElement thumb("thumb");
-  thumb.SetAttribute("spoof", referrer);
-  thumb.SetAttribute("cache", cache);
-  if (post)
-    thumb.SetAttribute("post", "yes");
-  if (isgz)
-    thumb.SetAttribute("gzip", "yes");
-  if (season >= 0)
-  {
-    thumb.SetAttribute("season", StringUtils::Format("%i", season));
-    thumb.SetAttribute("type", "season");
-  }
-  thumb.SetAttribute("aspect", aspect);
-  thumb.SetAttribute("preview", preview);
-  TiXmlText text(url);
-  thumb.InsertEndChild(text);
-  m_data << thumb;
-  SUrlEntry nUrl;
-  nUrl.m_url = url;
-  nUrl.m_spoof = referrer;
-  nUrl.m_post = post;
-  nUrl.m_isgz = isgz;
-  nUrl.m_cache = cache;
-  if (season >= 0)
-  {
-    nUrl.m_type = UrlType::Season;
-    nUrl.m_season = season;
-  }
-  else
-    nUrl.m_type = UrlType::General;
-
-  nUrl.m_aspect = aspect;
-
-  m_url.push_back(nUrl);
-}
-
-std::string CScraperUrl::GetThumbURL(const CScraperUrl::SUrlEntry& entry)
-{
-  if (entry.m_spoof.empty())
-    return entry.m_url;
-
-  return entry.m_url + "|Referer=" + CURL::Encode(entry.m_spoof);
-}
-
-void CScraperUrl::GetThumbURLs(std::vector<std::string>& thumbs,
-                               const std::string& type,
-                               int season,
-                               bool unique) const
-{
-  for (const auto& url : m_url)
-  {
-    if (url.m_aspect == type || type.empty() || url.m_aspect.empty())
-    {
-      if ((url.m_type == CScraperUrl::UrlType::General && season == -1) ||
-          (url.m_type == CScraperUrl::UrlType::Season && url.m_season == season))
-      {
-        std::string thumbUrl = GetThumbURL(url);
-        if (!unique || std::find(thumbs.begin(), thumbs.end(), thumbUrl) == thumbs.end())
-          thumbs.push_back(thumbUrl);
-      }
-    }
-  }
 }

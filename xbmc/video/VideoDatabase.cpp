@@ -4773,7 +4773,7 @@ std::vector<std::string> GetBasicItemAvailableArtTypes(const CVideoInfoTag& tag)
     result.emplace_back("fanart");
 
   // all other images
-  for (const auto& urlEntry : tag.m_strPictureURL.m_url)
+  for (const auto& urlEntry : tag.m_strPictureURL.GetUrls())
   {
     std::string artType = urlEntry.m_aspect;
     if (artType.empty())
@@ -4797,7 +4797,7 @@ std::vector<std::string> GetSeasonAvailableArtTypes(int mediaId, CVideoDatabase&
 
   CVideoInfoTag sourceShow;
   db.GetTvShowInfo("", sourceShow, tag.m_iIdShow);
-  for (const auto& urlEntry : sourceShow.m_strPictureURL.m_url)
+  for (const auto& urlEntry : sourceShow.m_strPictureURL.GetUrls())
   {
     std::string artType = urlEntry.m_aspect;
     if (artType.empty())
@@ -4823,7 +4823,7 @@ std::vector<std::string> GetMovieSetAvailableArtTypes(int mediaId, CVideoDatabas
       CVideoInfoTag* pTag = item->GetVideoInfoTag();
       pTag->m_strPictureURL.Parse();
 
-      for (const auto& urlEntry : pTag->m_strPictureURL.m_url)
+      for (const auto& urlEntry : pTag->m_strPictureURL.GetUrls())
       {
         if (!StringUtils::StartsWith(urlEntry.m_aspect, "set."))
           continue;
