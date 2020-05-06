@@ -56,7 +56,7 @@ void CGUIFadeLabelControl::SetInfo(const std::vector<GUIINFO::CGUIInfoLabel> &in
   m_infoLabels = infoLabels;
   m_allLabelsShown = m_infoLabels.empty();
   if (m_randomized)
-    KODI::UTILS::RandomShuffle(m_infoLabels.begin(), m_infoLabels.end());
+    KODI::RANDOMUTILS::RandomShuffle(m_infoLabels.begin(), m_infoLabels.end());
 }
 
 void CGUIFadeLabelControl::AddLabel(const std::string &label)

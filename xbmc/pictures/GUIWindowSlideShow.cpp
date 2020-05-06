@@ -1179,7 +1179,7 @@ void CGUIWindowSlideShow::OnLoadPic(int iPic, int iSlideNumber, const std::strin
 
 void CGUIWindowSlideShow::Shuffle()
 {
-  KODI::UTILS::RandomShuffle(m_slides.begin(), m_slides.end());
+  KODI::RANDOMUTILS::RandomShuffle(m_slides.begin(), m_slides.end());
   m_iCurrentSlide = 0;
   m_iNextSlide = GetNextSlide();
   m_bShuffled = true;

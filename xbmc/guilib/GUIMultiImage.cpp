@@ -242,7 +242,7 @@ void CGUIMultiImage::OnDirectoryLoaded()
 {
   // Randomize or sort our images if necessary
   if (m_randomized)
-    KODI::UTILS::RandomShuffle(m_files.begin(), m_files.end());
+    KODI::RANDOMUTILS::RandomShuffle(m_files.begin(), m_files.end());
   else
     sort(m_files.begin(), m_files.end());
 

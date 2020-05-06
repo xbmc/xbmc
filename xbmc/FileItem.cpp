@@ -2305,7 +2305,7 @@ void CFileItemList::Sort(SortDescription sortDescription)
 void CFileItemList::Randomize()
 {
   CSingleLock lock(m_lock);
-  KODI::UTILS::RandomShuffle(m_items.begin(), m_items.end());
+  KODI::RANDOMUTILS::RandomShuffle(m_items.begin(), m_items.end());
 }
 
 void CFileItemList::Archive(CArchive& ar)
