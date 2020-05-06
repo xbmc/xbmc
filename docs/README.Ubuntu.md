@@ -1,7 +1,7 @@
 ![Kodi Logo](resources/banner_slim.png)
 
 # Debian/Ubuntu build guide
-This guide has been tested with Ubuntu 16.04.4 (Xenial) x86_64 and 18.04 (Bionic). Please read it in full before you proceed to familiarize yourself with the build procedure.
+This guide has been tested with Ubuntu 16.04.4 (Xenial) x86_64, 18.04 (Bionic) and 20.04 (Focal). Please read it in full before you proceed to familiarize yourself with the build procedure.
 
 Several other distributions have **[specific build guides](README.md)** and a general **[Linux build guide](README.Linux.md)** is also available.
 
