@@ -60,7 +60,7 @@
 #define ADDON_GLOBAL_VERSION_FILESYSTEM_DEPENDS       "Filesystem.h" \
                                                       "gui/gl/Shader.h"
 
-#define ADDON_GLOBAL_VERSION_NETWORK                  "1.0.0"
+#define ADDON_GLOBAL_VERSION_NETWORK                  "1.0.1"
 #define ADDON_GLOBAL_VERSION_NETWORK_MIN              "1.0.0"
 #define ADDON_GLOBAL_VERSION_NETWORK_XML_ID           "kodi.binary.global.network"
 #define ADDON_GLOBAL_VERSION_NETWORK_DEPENDS          "Network.h" \
