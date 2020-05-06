@@ -205,9 +205,10 @@ namespace PVR
     /*!
      * @brief Persist this table in the given database
      * @param database The database.
+     * @param bQueueWrite Don't execute the query immediately but queue it if true.
      * @return True if the table was persisted, false otherwise.
      */
-    bool Persist(const std::shared_ptr<CPVREpgDatabase>& database);
+    bool Persist(const std::shared_ptr<CPVREpgDatabase>& database, bool bQueueWrite);
 
     /*!
      * @brief Delete this table from the given database
