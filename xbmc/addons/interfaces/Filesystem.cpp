@@ -159,7 +159,7 @@ static void CFileItemListToVFSDirEntries(VFSDirEntry* entries,
   }
 }
 
-bool Interface_Filesystem::get_directory(void* kodiBase, const char *path, const char* mask, VFSDirEntry** items, unsigned int* num_items)
+bool Interface_Filesystem::get_directory(void* kodiBase, const char *path, const char* mask, struct VFSDirEntry** items, unsigned int* num_items)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   if (addon == nullptr || path == nullptr || mask == nullptr|| items == nullptr || num_items == nullptr)
@@ -192,7 +192,7 @@ bool Interface_Filesystem::get_directory(void* kodiBase, const char *path, const
   return true;
 }
 
-void Interface_Filesystem::free_directory(void* kodiBase, VFSDirEntry* items, unsigned int num_items)
+void Interface_Filesystem::free_directory(void* kodiBase, struct VFSDirEntry* items, unsigned int num_items)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   if (addon == nullptr || items == nullptr)

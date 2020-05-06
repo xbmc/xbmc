@@ -10,10 +10,15 @@
 
 #include "AddonBase.h"
 
+#include <stdint.h>
+#include <time.h>
+
+#ifdef __cplusplus
 #include <map>
 #include <vector>
+#endif /* __cplusplus */
 
-#ifdef _WIN32                   // windows
+#ifdef _WIN32 // windows
 #ifndef _SSIZE_T_DEFINED
 typedef intptr_t ssize_t;
 #define _SSIZE_T_DEFINED
@@ -31,8 +36,161 @@ typedef intptr_t ssize_t;
  *
  * Note: For add-on development itself this is not needed
  */
+
+#ifdef __cplusplus
 extern "C"
 {
+#endif /* __cplusplus */
+
+  //==============================================================================
+  ///
+  /// \defgroup cpp_kodi_vfs  Interface - kodi::vfs
+  /// \ingroup cpp
+  /// @brief **Virtual filesystem functions**
+  ///
+  ///
+  /// It has the header \ref Filesystem.h "#include <kodi/Filesystem.h>" be
+  /// included to enjoy it.
+  ///
+  //------------------------------------------------------------------------------
+
+  //==============================================================================
+  /// \defgroup cpp_kodi_vfs_Defs Definitions, structures and enumerators
+  /// \ingroup cpp_kodi_vfs
+  /// @brief **Virtual file Server definition values**
+  //------------------------------------------------------------------------------
+
+  //==============================================================================
+  ///
+  /// @ingroup cpp_kodi_vfs_Defs
+  /// Flags to define way how file becomes opened with kodi::vfs::CFile::OpenFile()
+  ///
+  /// The values can be used together, e.g. <b>`file.Open("myfile", READ_TRUNCATED | READ_CHUNKED);`</b>
+  ///
+  typedef enum OpenFileFlags
+  {
+    /// indicate that caller can handle truncated reads, where function returns
+    /// before entire buffer has been filled
+    READ_TRUNCATED = 0x01,
+
+    /// indicate that that caller support read in the minimum defined chunk size,
+    /// this disables internal cache then
+    READ_CHUNKED = 0x02,
+
+    /// use cache to access this file
+    READ_CACHED = 0x04,
+
+    /// open without caching. regardless to file type
+    READ_NO_CACHE = 0x08,
+
+    /// calcuate bitrate for file while reading
+    READ_BITRATE = 0x10,
+
+    /// indicate to the caller we will seek between multiple streams in the file
+    /// frequently
+    READ_MULTI_STREAM = 0x20,
+
+    /// indicate to the caller file is audio and/or video (and e.g. may grow)
+    READ_AUDIO_VIDEO = 0x40,
+
+    /// indicate that caller will do write operations before reading
+    READ_AFTER_WRITE = 0x80,
+
+    /// indicate that caller want to reopen a file if its already open
+    READ_REOPEN = 0x100
+  } OpenFileFlags;
+  //------------------------------------------------------------------------------
+
+  //==============================================================================
+  /// \ingroup cpp_kodi_vfs_Defs
+  /// @brief CURL message types
+  ///
+  /// Used on kodi::vfs::CFile::CURLAddOption()
+  ///
+  typedef enum CURLOptiontype
+  {
+    /// Set a general option
+    ADDON_CURL_OPTION_OPTION,
+
+    /// Set a protocol option
+    ///
+    /// The following names for *ADDON_CURL_OPTION_PROTOCOL* are possible:
+    ///
+    /// | Option name                | Description
+    /// |---------------------------:|:----------------------------------------------------------
+    /// | accept-charset             | Set the "accept-charset" header
+    /// | acceptencoding or encoding | Set the "accept-encoding" header
+    /// | active-remote              | Set the "active-remote" header
+    /// | auth                       | Set the authentication method. Possible values: any, anysafe, digest, ntlm
+    /// | connection-timeout         | Set the connection timeout in seconds
+    /// | cookie                     | Set the "cookie" header
+    /// | customrequest              | Set a custom HTTP request like DELETE
+    /// | noshout                    | Set to true if kodi detects a stream as shoutcast by mistake.
+    /// | postdata                   | Set the post body (value needs to be base64 encoded). (Implicitly sets the request to POST)
+    /// | referer                    | Set the "referer" header
+    /// | user-agent                 | Set the "user-agent" header
+    /// | seekable                   | Set the stream seekable. 1: enable, 0: disable
+    /// | sslcipherlist              | Set list of accepted SSL ciphers.
+    ///
+    ADDON_CURL_OPTION_PROTOCOL,
+
+    /// Set User and password
+    ADDON_CURL_OPTION_CREDENTIALS,
+
+    /// Add a Header
+    ADDON_CURL_OPTION_HEADER
+  } CURLOptiontype;
+  //------------------------------------------------------------------------------
+
+  //==============================================================================
+  /// \ingroup cpp_kodi_vfs_Defs
+  /// @brief CURL message types
+  ///
+  /// Used on kodi::vfs::CFile::GetPropertyValue() and kodi::vfs::CFile::GetPropertyValues()
+  ///
+  typedef enum FilePropertyTypes
+  {
+    /// Get protocol response line
+    ADDON_FILE_PROPERTY_RESPONSE_PROTOCOL,
+    /// Get a response header
+    ADDON_FILE_PROPERTY_RESPONSE_HEADER,
+    /// Get file content type
+    ADDON_FILE_PROPERTY_CONTENT_TYPE,
+    /// Get file content charset
+    ADDON_FILE_PROPERTY_CONTENT_CHARSET,
+    /// Get file mime type
+    ADDON_FILE_PROPERTY_MIME_TYPE,
+    /// Get file effective URL (last one if redirected)
+    ADDON_FILE_PROPERTY_EFFECTIVE_URL
+  } FilePropertyTypes;
+  //------------------------------------------------------------------------------
+
+  //============================================================================
+  ///
+  /// \ingroup cpp_kodi_vfs_Defs
+  /// @brief File information status
+  ///
+  /// Used on kodi::vfs::StatFile(), all of these calls return a this stat
+  /// structure, which contains the following fields:
+  ///
+  struct STAT_STRUCTURE
+  {
+    /// ID of device containing file
+    uint32_t deviceId;
+    /// Total size, in bytes
+    uint64_t size;
+    /// Time of last access
+    time_t accessTime;
+    /// Time of last modification
+    time_t modificationTime;
+    /// Time of last status change
+    time_t statusTime;
+    /// The stat url is a directory
+    bool isDirectory;
+    /// The stat url is a symbolic link
+    bool isSymLink;
+  };
+  //------------------------------------------------------------------------------
 
   struct VFSProperty
   {
@@ -46,7 +204,7 @@ extern "C"
     char* title;             //!< item title
     char* path;              //!< item path
     unsigned int num_props;  //!< Number of properties attached to item
-    VFSProperty* properties; //!< Properties
+    struct VFSProperty* properties; //!< Properties
     time_t date_time;        //!< file creation date & time
     bool folder;             //!< Item is a folder
     uint64_t size;           //!< Size of file represented by item
@@ -58,8 +216,8 @@ extern "C"
     bool (*create_directory)(void* kodiBase, const char* path);
     bool (*remove_directory)(void* kodiBase, const char* path);
     bool (*directory_exists)(void* kodiBase, const char* path);
-    bool (*get_directory)(void* kodiBase, const char* path, const char* mask, VFSDirEntry** items, unsigned int* num_items);
-    void (*free_directory)(void* kodiBase, VFSDirEntry* items, unsigned int num_items);
+    bool (*get_directory)(void* kodiBase, const char* path, const char* mask, struct VFSDirEntry** items, unsigned int* num_items);
+    void (*free_directory)(void* kodiBase, struct VFSDirEntry* items, unsigned int num_items);
 
     bool (*file_exists)(void* kodiBase, const char *filename, bool useCache);
     bool (*stat_file)(void* kodiBase, const char* filename, struct STAT_STRUCTURE* buffer);
@@ -93,157 +251,13 @@ extern "C"
     bool (*curl_open)(void* kodiBase, void* file, unsigned int flags);
   } AddonToKodiFuncTable_kodi_filesystem;
 
+#ifdef __cplusplus
 } /* extern "C" */
+#endif /* __cplusplus */
 
-//==============================================================================
-///
-/// \defgroup cpp_kodi_vfs  Interface - kodi::vfs
-/// \ingroup cpp
-/// @brief **Virtual filesystem functions**
-///
-///
-/// It has the header \ref Filesystem.h "#include <kodi/Filesystem.h>" be
-/// included to enjoy it.
-///
-//------------------------------------------------------------------------------
+//··············································································
 
-//==============================================================================
-/// \defgroup cpp_kodi_vfs_Defs Definitions, structures and enumerators
-/// \ingroup cpp_kodi_vfs
-/// @brief **Virtual file Server definition values**
-//------------------------------------------------------------------------------
-
-//==============================================================================
-///
-/// @ingroup cpp_kodi_vfs_Defs
-/// Flags to define way how file becomes opened with kodi::vfs::CFile::OpenFile()
-///
-/// The values can be used together, e.g. <b>`file.Open("myfile", READ_TRUNCATED | READ_CHUNKED);`</b>
-///
-typedef enum OpenFileFlags
-{
-  /// indicate that caller can handle truncated reads, where function returns
-  /// before entire buffer has been filled
-  READ_TRUNCATED = 0x01,
-
-  /// indicate that that caller support read in the minimum defined chunk size,
-  /// this disables internal cache then
-  READ_CHUNKED = 0x02,
-
-  /// use cache to access this file
-  READ_CACHED = 0x04,
-
-  /// open without caching. regardless to file type
-  READ_NO_CACHE = 0x08,
-
-  /// calcuate bitrate for file while reading
-  READ_BITRATE = 0x10,
-
-  /// indicate to the caller we will seek between multiple streams in the file
-  /// frequently
-  READ_MULTI_STREAM = 0x20,
-
-  /// indicate to the caller file is audio and/or video (and e.g. may grow)
-  READ_AUDIO_VIDEO = 0x40,
-
-  /// indicate that caller will do write operations before reading
-  READ_AFTER_WRITE = 0x80,
-
-  /// indicate that caller want to reopen a file if its already open
-  READ_REOPEN = 0x100
-} OpenFileFlags;
-//------------------------------------------------------------------------------
-
-//==============================================================================
-/// \ingroup cpp_kodi_vfs_Defs
-/// @brief CURL message types
-///
-/// Used on kodi::vfs::CFile::CURLAddOption()
-///
-typedef enum CURLOptiontype
-{
-  /// Set a general option
-  ADDON_CURL_OPTION_OPTION,
-
-  /// Set a protocol option
-  ///
-  /// The following names for *ADDON_CURL_OPTION_PROTOCOL* are possible:
-  ///
-  /// | Option name                | Description
-  /// |---------------------------:|:----------------------------------------------------------
-  /// | accept-charset             | Set the "accept-charset" header
-  /// | acceptencoding or encoding | Set the "accept-encoding" header
-  /// | active-remote              | Set the "active-remote" header
-  /// | auth                       | Set the authentication method. Possible values: any, anysafe, digest, ntlm
-  /// | connection-timeout         | Set the connection timeout in seconds
-  /// | cookie                     | Set the "cookie" header
-  /// | customrequest              | Set a custom HTTP request like DELETE
-  /// | noshout                    | Set to true if kodi detects a stream as shoutcast by mistake.
-  /// | postdata                   | Set the post body (value needs to be base64 encoded). (Implicitly sets the request to POST)
-  /// | referer                    | Set the "referer" header
-  /// | user-agent                 | Set the "user-agent" header
-  /// | seekable                   | Set the stream seekable. 1: enable, 0: disable
-  /// | sslcipherlist              | Set list of accepted SSL ciphers.
-  ///
-  ADDON_CURL_OPTION_PROTOCOL,
-
-  /// Set User and password
-  ADDON_CURL_OPTION_CREDENTIALS,
-
-  /// Add a Header
-  ADDON_CURL_OPTION_HEADER
-} CURLOptiontype;
-//------------------------------------------------------------------------------
-
-//==============================================================================
-/// \ingroup cpp_kodi_vfs_Defs
-/// @brief CURL message types
-///
-/// Used on kodi::vfs::CFile::GetPropertyValue() and kodi::vfs::CFile::GetPropertyValues()
-///
-typedef enum FilePropertyTypes
-{
-  /// Get protocol response line
-  ADDON_FILE_PROPERTY_RESPONSE_PROTOCOL,
-  /// Get a response header
-  ADDON_FILE_PROPERTY_RESPONSE_HEADER,
-  /// Get file content type
-  ADDON_FILE_PROPERTY_CONTENT_TYPE,
-  /// Get file content charset
-  ADDON_FILE_PROPERTY_CONTENT_CHARSET,
-  /// Get file mime type
-  ADDON_FILE_PROPERTY_MIME_TYPE,
-  /// Get file effective URL (last one if redirected)
-  ADDON_FILE_PROPERTY_EFFECTIVE_URL
-} FilePropertyTypes;
-//------------------------------------------------------------------------------
-
-//============================================================================
-///
-/// \ingroup cpp_kodi_vfs_Defs
-/// @brief File information status
-///
-/// Used on kodi::vfs::StatFile(), all of these calls return a this stat
-/// structure, which contains the following fields:
-///
-struct STAT_STRUCTURE
-{
-  /// ID of device containing file
-  uint32_t deviceId;
-  /// Total size, in bytes
-  uint64_t size;
-  /// Time of last access
-  time_t accessTime;
-  /// Time of last modification
-  time_t modificationTime;
-  /// Time of last status change
-  time_t statusTime;
-  /// The stat url is a directory
-  bool isDirectory;
-  /// The stat url is a symbolic link
-  bool isSymLink;
-};
-//------------------------------------------------------------------------------
+#ifdef __cplusplus
 
 namespace kodi
 {
@@ -1628,3 +1642,5 @@ public:
 
 } /* namespace vfs */
 } /* namespace kodi */
+
+#endif /* __cplusplus */

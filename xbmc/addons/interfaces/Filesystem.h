@@ -42,9 +42,9 @@ struct Interface_Filesystem
   static bool get_directory(void* kodiBase,
                             const char* path,
                             const char* mask,
-                            VFSDirEntry** items,
+                            struct VFSDirEntry** items,
                             unsigned int* num_items);
-  static void free_directory(void* kodiBase, VFSDirEntry* items, unsigned int num_items);
+  static void free_directory(void* kodiBase, struct VFSDirEntry* items, unsigned int num_items);
 
   static bool file_exists(void* kodiBase, const char* filename, bool useCache);
   static bool stat_file(void* kodiBase, const char* filename, struct STAT_STRUCTURE* buffer);
