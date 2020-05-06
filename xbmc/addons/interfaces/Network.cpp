@@ -22,7 +22,7 @@ namespace ADDON
 
 void Interface_Network::Init(AddonGlobalInterface *addonInterface)
 {
-  addonInterface->toKodi->kodi_network = static_cast<AddonToKodiFuncTable_kodi_network*>(malloc(sizeof(AddonToKodiFuncTable_kodi_network)));
+  addonInterface->toKodi->kodi_network = new AddonToKodiFuncTable_kodi_network();
 
   addonInterface->toKodi->kodi_network->wake_on_lan = wake_on_lan;
   addonInterface->toKodi->kodi_network->get_ip_address = get_ip_address;
@@ -35,10 +35,9 @@ void Interface_Network::Init(AddonGlobalInterface *addonInterface)
 
 void Interface_Network::DeInit(AddonGlobalInterface* addonInterface)
 {
-  if (addonInterface->toKodi && /* <-- needed as long as the old addon way is used */
-      addonInterface->toKodi->kodi_network)
+  if (addonInterface->toKodi) /* <-- needed as long as the old addon way is used */
   {
-    free(addonInterface->toKodi->kodi_network);
+    delete addonInterface->toKodi->kodi_network;
     addonInterface->toKodi->kodi_network = nullptr;
   }
 }

@@ -41,14 +41,12 @@ extern "C"
 } /* extern "C" */
 
 //==============================================================================
-///
-/// \defgroup cpp_kodi_network  Interface - kodi::network
-/// \ingroup cpp
-/// @brief **Network functions**
-///
+/// @defgroup cpp_kodi_network  Interface - kodi::network
+/// @ingroup cpp
+/// @brief **Network functions**\n
 /// The network module offers functions that allow you to control it.
 ///
-/// It has the header \ref Network.h "#include <kodi/Network.h>" be included
+/// It has the header @ref Network.h "#include <kodi/Network.h>" be included
 /// to enjoy it.
 ///
 //------------------------------------------------------------------------------
@@ -59,8 +57,7 @@ namespace network
 {
 
 //============================================================================
-///
-/// \ingroup cpp_kodi_network
+/// @ingroup cpp_kodi_network
 /// @brief Send WakeOnLan magic packet.
 ///
 /// @param[in] mac Network address of the host to wake.
@@ -76,8 +73,7 @@ inline bool WakeOnLan(const std::string& mac)
 //----------------------------------------------------------------------------
 
 //============================================================================
-///
-/// \ingroup cpp_kodi_network
+/// @ingroup cpp_kodi_network
 /// @brief To the current own ip address as a string.
 ///
 /// @return Own system ip.
@@ -190,8 +186,7 @@ inline bool IsHostOnLAN(const std::string& hostname, bool offLineCheck = false)
 //------------------------------------------------------------------------------
 
 //============================================================================
-///
-/// \ingroup cpp_kodi_network
+/// @ingroup cpp_kodi_network
 /// @brief URL encodes the given string
 ///
 /// This function converts the given input string to a URL encoded string and
@@ -232,8 +227,7 @@ inline std::string URLEncode(const std::string& url)
 //----------------------------------------------------------------------------
 
 //============================================================================
-///
-/// \ingroup cpp_kodi_network
+/// @ingroup cpp_kodi_network
 /// @brief Lookup URL in DNS cache
 ///
 /// This test will get DNS record for a domain. The DNS lookup is done directly
