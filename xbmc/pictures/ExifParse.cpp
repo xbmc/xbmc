@@ -101,18 +101,18 @@ static void ErrNonfatal(const char* const msg, int a1, int a2);
 
 //--------------------------------------------------------------------------
 // Exif format descriptor stuff
-#define FMT_BYTE       1
-#define FMT_STRING     2
-#define FMT_USHORT     3
-#define FMT_ULONG      4
-#define FMT_URATIONAL  5
-#define FMT_SBYTE      6
-#define FMT_UNDEFINED  7
-#define FMT_SSHORT     8
-#define FMT_SLONG      9
-#define FMT_SRATIONAL 10
-#define FMT_SINGLE    11
-#define FMT_DOUBLE    12
+#define EXIF_FMT_BYTE 1
+#define EXIF_FMT_STRING 2
+#define EXIF_FMT_USHORT 3
+#define EXIF_FMT_ULONG 4
+#define EXIF_FMT_URATIONAL 5
+#define EXIF_FMT_SBYTE 6
+#define EXIF_FMT_UNDEFINED 7
+#define EXIF_FMT_SSHORT 8
+#define EXIF_FMT_SLONG 9
+#define EXIF_FMT_SRATIONAL 10
+#define EXIF_FMT_SINGLE 11
+#define EXIF_FMT_DOUBLE 12
 // NOTE: Remember to change NUM_FORMATS if you define a new format
 #define NUM_FORMATS   12
 
@@ -244,14 +244,22 @@ double CExifParse::ConvertAnyFormat(const void* const ValuePtr, int Format)
 
   switch(Format)
   {
-    case FMT_SBYTE:     Value = *(const   signed char*)ValuePtr;          break;
-    case FMT_BYTE:      Value = *(const unsigned char*)ValuePtr;          break;
+    case EXIF_FMT_SBYTE:
+      Value = *(const signed char*)ValuePtr;
+      break;
+    case EXIF_FMT_BYTE:
+      Value = *(const unsigned char*)ValuePtr;
+      break;
 
-    case FMT_USHORT:    Value = Get16(ValuePtr, m_MotorolaOrder);   break;
-    case FMT_ULONG:     Value = (unsigned)Get32(ValuePtr, m_MotorolaOrder);   break;
+    case EXIF_FMT_USHORT:
+      Value = Get16(ValuePtr, m_MotorolaOrder);
+      break;
+    case EXIF_FMT_ULONG:
+      Value = (unsigned)Get32(ValuePtr, m_MotorolaOrder);
+      break;
 
-    case FMT_URATIONAL:
-    case FMT_SRATIONAL:
+    case EXIF_FMT_URATIONAL:
+    case EXIF_FMT_SRATIONAL:
     {
       int Num,Den;
       Num = Get32(ValuePtr, m_MotorolaOrder);
@@ -262,12 +270,20 @@ double CExifParse::ConvertAnyFormat(const void* const ValuePtr, int Format)
     }
     break;
 
-    case FMT_SSHORT:    Value = (signed short)Get16(ValuePtr, m_MotorolaOrder);    break;
-    case FMT_SLONG:     Value = Get32(ValuePtr, m_MotorolaOrder);                  break;
+    case EXIF_FMT_SSHORT:
+      Value = (signed short)Get16(ValuePtr, m_MotorolaOrder);
+      break;
+    case EXIF_FMT_SLONG:
+      Value = Get32(ValuePtr, m_MotorolaOrder);
+      break;
 
     // Not sure if this is correct (never seen float used in Exif format)
-    case FMT_SINGLE:    Value = (double)*(const float*)ValuePtr;          break;
-    case FMT_DOUBLE:    Value = *(const double*)ValuePtr;                 break;
+    case EXIF_FMT_SINGLE:
+      Value = (double)*(const float*)ValuePtr;
+      break;
+    case EXIF_FMT_DOUBLE:
+      Value = *(const double*)ValuePtr;
+      break;
 
     default:
       ErrNonfatal("Illegal format code %d",Format,0);
@@ -835,7 +851,7 @@ void CExifParse::GetLatLong(
         const int ComponentSize,
         char *latLongString)
 {
-  if (Format != FMT_URATIONAL)
+  if (Format != EXIF_FMT_URATIONAL)
   {
     ErrNonfatal("Illegal number format %d for GPS Lat/Long", Format, 0);
   }
