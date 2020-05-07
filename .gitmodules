@@ -1,0 +1,3 @@
+[submodule "cmake/depends"]
+	path = cmake/depends
+	url = https://github.com/lrusak/kodi-depends
