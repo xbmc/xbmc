@@ -21,7 +21,7 @@ TEST(TestScraperUrl, General)
               "  <someotherurl>\n"
               "  </someotherurl>\n"
               "</data>\n";
-  EXPECT_TRUE(a.ParseString(xmlstring));
+  EXPECT_TRUE(a.ParseFromData(xmlstring));
 
   const auto url = a.GetFirstUrlByType();
   EXPECT_STREQ("blah", url.m_spoof.c_str());

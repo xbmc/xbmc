@@ -533,7 +533,7 @@ bool CAlbum::Load(const TiXmlElement *album, bool append, bool prioritise)
   const TiXmlElement* thumb = album->FirstChildElement("thumb");
   while (thumb)
   {
-    thumbURL.ParseElement(thumb);
+    thumbURL.ParseAndAppendUrl(thumb);
     if (prioritise)
     {
       std::string temp;

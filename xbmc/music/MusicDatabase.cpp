@@ -2468,7 +2468,7 @@ CAlbum CMusicDatabase::GetAlbumFromDataset(const dbiplus::sql_record* const reco
   album.strOrigReleaseDate = record->at(offset + album_strOrigReleaseDate).get_asString();
   album.bBoxedSet = record->at(offset + album_bBoxedSet).get_asInt() == 1;
   if (imageURL)
-    album.thumbURL.ParseString(record->at(offset + album_strThumbURL).get_asString());
+    album.thumbURL.ParseFromData(record->at(offset + album_strThumbURL).get_asString());
   album.fRating = record->at(offset + album_fRating).get_asFloat();
   album.iUserrating = record->at(offset + album_iUserrating).get_asInt();
   album.iVotes = record->at(offset + album_iVotes).get_asInt();
@@ -2550,7 +2550,7 @@ CArtist CMusicDatabase::GetArtistFromDataset(const dbiplus::sql_record* const re
   {
     artist.fanart.m_xml = record->at(artist_strFanart).get_asString();
     artist.fanart.Unpack();
-    artist.thumbURL.ParseString(record->at(artist_strImage).get_asString());
+    artist.thumbURL.ParseFromData(record->at(artist_strImage).get_asString());
   }
 
   return artist;

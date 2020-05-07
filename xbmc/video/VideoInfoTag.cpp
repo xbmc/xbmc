@@ -446,7 +446,7 @@ void CVideoInfoTag::Archive(CArchive& ar)
       ar >> info.thumb;
       std::string strXml;
       ar >> strXml;
-      info.thumbUrl.ParseString(strXml);
+      info.thumbUrl.ParseFromData(strXml);
       m_cast.push_back(info);
     }
 
@@ -974,7 +974,7 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prioritise)
   const TiXmlElement* thumb = movie->FirstChildElement("thumb");
   while (thumb)
   {
-    m_strPictureURL.ParseElement(thumb);
+    m_strPictureURL.ParseAndAppendUrl(thumb);
     if (prioritise)
     {
       std::string temp;
@@ -1049,7 +1049,7 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prioritise)
       const TiXmlElement* thumb = node->FirstChildElement("thumb");
       while (thumb)
       {
-        info.thumbUrl.ParseElement(thumb);
+        info.thumbUrl.ParseAndAppendUrl(thumb);
         thumb = thumb->NextSiblingElement("thumb");
       }
       const char* clear=node->Attribute("clear");

@@ -1679,7 +1679,7 @@ namespace VIDEO
         if (!showInfo.m_strEpisodeGuide.empty())
         {
           CScraperUrl url;
-          url.ParseEpisodeGuide(showInfo.m_strEpisodeGuide);
+          url.ParseAndAppendUrlsFromEpisodeGuide(showInfo.m_strEpisodeGuide);
 
           if (pDlgProgress)
           {

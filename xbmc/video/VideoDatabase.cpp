@@ -4312,7 +4312,7 @@ void CVideoDatabase::GetCast(int media_id, const std::string &media_type, std::v
       info.strName = m_pDS2->fv(0).get_asString();
       info.strRole = m_pDS2->fv(1).get_asString();
       info.order = m_pDS2->fv(2).get_asInt();
-      info.thumbUrl.ParseString(m_pDS2->fv(3).get_asString());
+      info.thumbUrl.ParseFromData(m_pDS2->fv(3).get_asString());
       info.thumb = m_pDS2->fv(4).get_asString();
       cast.emplace_back(std::move(info));
 
@@ -6669,7 +6669,7 @@ bool CVideoDatabase::GetPeopleNav(const std::string& strBaseDir, CFileItemList& 
 
         pItem->m_bIsFolder=true;
         pItem->GetVideoInfoTag()->SetPlayCount(i.second.playcount);
-        pItem->GetVideoInfoTag()->m_strPictureURL.ParseString(i.second.thumb);
+        pItem->GetVideoInfoTag()->m_strPictureURL.ParseFromData(i.second.thumb);
         pItem->GetVideoInfoTag()->m_iDbId = i.first;
         pItem->GetVideoInfoTag()->m_type = type;
         pItem->GetVideoInfoTag()->m_relevance = i.second.appearances;
@@ -6690,7 +6690,7 @@ bool CVideoDatabase::GetPeopleNav(const std::string& strBaseDir, CFileItemList& 
           pItem->SetPath(itemUrl.ToString());
 
           pItem->m_bIsFolder=true;
-          pItem->GetVideoInfoTag()->m_strPictureURL.ParseString(m_pDS->fv(2).get_asString());
+          pItem->GetVideoInfoTag()->m_strPictureURL.ParseFromData(m_pDS->fv(2).get_asString());
           pItem->GetVideoInfoTag()->m_iDbId = m_pDS->fv(0).get_asInt();
           pItem->GetVideoInfoTag()->m_type = type;
           if (idContent != VIDEODB_CONTENT_TVSHOWS)

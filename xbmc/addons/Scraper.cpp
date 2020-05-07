@@ -267,7 +267,7 @@ std::vector<std::string> CScraper::Run(const std::string &function,
           extras.emplace_back(xchain->FirstChild()->Value());
       }
       else
-        scrURL2.ParseElement(xchain);
+        scrURL2.ParseAndAppendUrl(xchain);
       // Fix for empty chains. $$1 would still contain the
       // previous value as there is no child of the xml node.
       // since $$1 will always either contain the data from an
@@ -494,9 +494,9 @@ CScraperUrl CScraper::NfoUrl(const std::string &sNfoContent)
         continue;
 
       if (pxeUrl)
-        scurlRet.ParseElement(pxeUrl);
+        scurlRet.ParseAndAppendUrl(pxeUrl);
       else if (!strcmp(doc.RootElement()->Value(), "url"))
-        scurlRet.ParseElement(doc.RootElement());
+        scurlRet.ParseAndAppendUrl(doc.RootElement());
       else
         continue;
       break;
@@ -518,7 +518,7 @@ CScraperUrl CScraper::ResolveIDToUrl(const std::string &externalID)
     CFileItem item("resolve me", false);
 
     if (XFILE::CPluginDirectory::GetPluginResult(str.str(), item, false))
-      scurlRet.ParseString(item.GetDynPath());
+      scurlRet.ParseFromData(item.GetDynPath());
 
     return scurlRet;
   }
@@ -570,9 +570,9 @@ CScraperUrl CScraper::ResolveIDToUrl(const std::string &externalID)
         continue;
 
       if (pxeUrl)
-        scurlRet.ParseElement(pxeUrl);
+        scurlRet.ParseAndAppendUrl(pxeUrl);
       else if (!strcmp(doc.RootElement()->Value(), "url"))
-        scurlRet.ParseElement(doc.RootElement());
+        scurlRet.ParseAndAppendUrl(doc.RootElement());
       else
         continue;
       break;
@@ -700,7 +700,7 @@ static void ParseThumbs(CScraperUrl &scurl,
     std::string url = FromString(item, prefix.str() + ".url");
     std::string aspect = FromString(item, prefix.str() + ".aspect");
     std::string preview = FromString(item, prefix.str() + ".preview");
-    scurl.AddElement(url, aspect, preview);
+    scurl.AddParsedUrl(url, aspect, preview);
   }
 }
 
@@ -890,7 +890,7 @@ std::vector<CScraperUrl> CScraper::FindMovie(XFILE::CCurlFile &fcurl,
     CLog::Log(LOGDEBUG, "%s: CreateSearchUrl failed", __FUNCTION__);
     throw CScraperError();
   }
-  scurl.ParseString(vcsOut[0]);
+  scurl.ParseFromData(vcsOut[0]);
 
   // do the search, and parse the result into a list
   vcsIn.clear();
@@ -940,7 +940,7 @@ std::vector<CScraperUrl> CScraper::FindMovie(XFILE::CCurlFile &fcurl,
           scurlMovie.SetId(id);
 
         for (; pxeLink && pxeLink->FirstChild(); pxeLink = pxeLink->NextSiblingElement("url"))
-          scurlMovie.ParseElement(pxeLink);
+          scurlMovie.ParseAndAppendUrl(pxeLink);
 
         // calculate the relevance of this hit
         std::string sCompareTitle = scurlMovie.GetTitle();
@@ -1025,7 +1025,7 @@ std::vector<CMusicAlbumInfo> CScraper::FindAlbum(CCurlFile &fcurl,
 
   if (vcsOut.empty() || vcsOut[0].empty())
     return vcali;
-  scurl.ParseString(vcsOut[0]);
+  scurl.ParseFromData(vcsOut[0]);
 
   // the next function is passed the contents of the returned URL, and returns
   // an empty string on failure; on success, returns XML matches in the form:
@@ -1070,9 +1070,9 @@ std::vector<CMusicAlbumInfo> CScraper::FindAlbum(CCurlFile &fcurl,
         TiXmlElement *pxeLink = pxeAlbum->FirstChildElement("url");
         CScraperUrl scurlAlbum;
         if (!pxeLink)
-          scurlAlbum.ParseString(scurl.GetData());
+          scurlAlbum.ParseFromData(scurl.GetData());
         for (; pxeLink && pxeLink->FirstChild(); pxeLink = pxeLink->NextSiblingElement("url"))
-          scurlAlbum.ParseElement(pxeLink);
+          scurlAlbum.ParseAndAppendUrl(pxeLink);
 
         if (!scurlAlbum.HasUrls())
           continue;
@@ -1122,7 +1122,7 @@ std::vector<CMusicArtistInfo> CScraper::FindArtist(CCurlFile &fcurl, const std::
 
   if (vcsOut.empty() || vcsOut[0].empty())
     return vcari;
-  scurl.ParseString(vcsOut[0]);
+  scurl.ParseFromData(vcsOut[0]);
 
   // the next function is passed the contents of the returned URL, and returns
   // an empty string on failure; on success, returns XML matches in the form:
@@ -1159,9 +1159,9 @@ std::vector<CMusicArtistInfo> CScraper::FindArtist(CCurlFile &fcurl, const std::
 
         TiXmlElement *pxeLink = pxeArtist->FirstChildElement("url");
         if (!pxeLink)
-          scurlArtist.ParseString(scurl.GetData());
+          scurlArtist.ParseFromData(scurl.GetData());
         for (; pxeLink && pxeLink->FirstChild(); pxeLink = pxeLink->NextSiblingElement("url"))
-          scurlArtist.ParseElement(pxeLink);
+          scurlArtist.ParseAndAppendUrl(pxeLink);
 
         if (!scurlArtist.HasUrls())
           continue;
@@ -1263,7 +1263,7 @@ EPISODELIST CScraper::GetEpisodeList(XFILE::CCurlFile &fcurl, const CScraperUrl 
           scurlEp.SetId(id);
 
         for (; pxeLink && pxeLink->FirstChild(); pxeLink = pxeLink->NextSiblingElement("url"))
-          scurlEp.ParseElement(pxeLink);
+          scurlEp.ParseAndAppendUrl(pxeLink);
 
         // date must be the format of yyyy-mm-dd
         ep.cDate.SetValid(false);

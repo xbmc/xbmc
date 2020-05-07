@@ -98,7 +98,7 @@ bool CArtist::Load(const TiXmlElement *artist, bool append, bool prioritise)
   const TiXmlElement* thumb = artist->FirstChildElement("thumb");
   while (thumb)
   {
-    thumbURL.ParseElement(thumb);
+    thumbURL.ParseAndAppendUrl(thumb);
     if (prioritise)
     {
       std::string temp;
