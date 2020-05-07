@@ -267,7 +267,7 @@ void CVideoDatabase::CreateAnalytics()
   m_pDS->exec("CREATE UNIQUE INDEX ix_actor_1 ON actor (name(255))");
   m_pDS->exec("CREATE INDEX ix_actor_link_1 ON actor_link (media_type(20))");
   m_pDS->exec("CREATE UNIQUE INDEX ix_actor_link_2 ON "
-              "actor_link (actor_id, media_id, media_type, role)");
+              "actor_link (actor_id, media_id, media_type(20), role(255))");
 
   CreateLinkIndex("tag");
   CreateForeignLinkIndex("director", "actor");
