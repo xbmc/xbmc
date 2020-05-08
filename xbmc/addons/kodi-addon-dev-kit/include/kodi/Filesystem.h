@@ -25,154 +25,136 @@ typedef intptr_t ssize_t;
 #endif // !_SSIZE_T_DEFINED
 #endif
 
-/*
- * For interface between add-on and kodi.
- *
- * This structure defines the addresses of functions stored inside Kodi which
- * are then available for the add-on to call
- *
- * All function pointers there are used by the C++ interface functions below.
- * You find the set of them on xbmc/addons/interfaces/General.cpp
- *
- * Note: For add-on development itself this is not needed
- */
-
 #ifdef __cplusplus
 extern "C"
 {
 #endif /* __cplusplus */
 
-  //==============================================================================
-  ///
-  /// \defgroup cpp_kodi_vfs  Interface - kodi::vfs
-  /// \ingroup cpp
-  /// @brief **Virtual filesystem functions**
-  ///
-  ///
-  /// It has the header \ref Filesystem.h "#include <kodi/Filesystem.h>" be
-  /// included to enjoy it.
-  ///
-  //------------------------------------------------------------------------------
+  //¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯
+  // "C" Definitions, structures and enumerators of filesystem
+  //{{{
 
-  //==============================================================================
-  /// \defgroup cpp_kodi_vfs_Defs Definitions, structures and enumerators
-  /// \ingroup cpp_kodi_vfs
-  /// @brief **Virtual file Server definition values**
-  //------------------------------------------------------------------------------
-
-  //==============================================================================
-  ///
+  //============================================================================
+  /// @defgroup cpp_kodi_vfs_Defs_OpenFileFlags enum OpenFileFlags
   /// @ingroup cpp_kodi_vfs_Defs
-  /// Flags to define way how file becomes opened with kodi::vfs::CFile::OpenFile()
-  ///
+  /// @brief **Flags to define way how file becomes opened**\n
   /// The values can be used together, e.g. <b>`file.Open("myfile", READ_TRUNCATED | READ_CHUNKED);`</b>
   ///
+  /// Used on @ref kodi::vfs::CFile::OpenFile().
+  ///
+  //@{
   typedef enum OpenFileFlags
   {
-    /// indicate that caller can handle truncated reads, where function returns
-    /// before entire buffer has been filled
+    /// @brief Indicate that caller can handle truncated reads, where function
+    /// returns before entire buffer has been filled.
     READ_TRUNCATED = 0x01,
 
-    /// indicate that that caller support read in the minimum defined chunk size,
-    /// this disables internal cache then
+    /// @brief Indicate that that caller support read in the minimum defined
+    /// chunk size, this disables internal cache then.
     READ_CHUNKED = 0x02,
 
-    /// use cache to access this file
+    /// @brief Use cache to access this file.
     READ_CACHED = 0x04,
 
-    /// open without caching. regardless to file type
+    /// @brief Open without caching. regardless to file type.
     READ_NO_CACHE = 0x08,
 
-    /// calcuate bitrate for file while reading
+    /// @brief Calcuate bitrate for file while reading.
     READ_BITRATE = 0x10,
 
-    /// indicate to the caller we will seek between multiple streams in the file
-    /// frequently
+    /// @brief Indicate to the caller we will seek between multiple streams in
+    /// the file frequently.
     READ_MULTI_STREAM = 0x20,
 
-    /// indicate to the caller file is audio and/or video (and e.g. may grow)
+    /// @brief indicate to the caller file is audio and/or video (and e.g. may
+    /// grow).
     READ_AUDIO_VIDEO = 0x40,
 
-    /// indicate that caller will do write operations before reading
+    /// @brief Indicate that caller will do write operations before reading.
     READ_AFTER_WRITE = 0x80,
 
-    /// indicate that caller want to reopen a file if its already open
+    /// @brief Indicate that caller want to reopen a file if its already open.
     READ_REOPEN = 0x100
   } OpenFileFlags;
-  //------------------------------------------------------------------------------
+  //@}
+  //----------------------------------------------------------------------------
 
-  //==============================================================================
-  /// \ingroup cpp_kodi_vfs_Defs
-  /// @brief CURL message types
+  //============================================================================
+  /// @defgroup cpp_kodi_vfs_Defs_CURLOptiontype enum CURLOptiontype
+  /// @ingroup cpp_kodi_vfs_Defs
+  /// @brief **CURL message types**\n
+  /// Used on kodi::vfs::CFile::CURLAddOption().
   ///
-  /// Used on kodi::vfs::CFile::CURLAddOption()
-  ///
+  //@{
   typedef enum CURLOptiontype
   {
-    /// Set a general option
+    /// @brief Set a general option.
     ADDON_CURL_OPTION_OPTION,
 
-    /// Set a protocol option
+    /// @brief Set a protocol option.
     ///
     /// The following names for *ADDON_CURL_OPTION_PROTOCOL* are possible:
     ///
-    /// | Option name                | Description
-    /// |---------------------------:|:----------------------------------------------------------
-    /// | accept-charset             | Set the "accept-charset" header
-    /// | acceptencoding or encoding | Set the "accept-encoding" header
-    /// | active-remote              | Set the "active-remote" header
-    /// | auth                       | Set the authentication method. Possible values: any, anysafe, digest, ntlm
-    /// | connection-timeout         | Set the connection timeout in seconds
-    /// | cookie                     | Set the "cookie" header
-    /// | customrequest              | Set a custom HTTP request like DELETE
-    /// | noshout                    | Set to true if kodi detects a stream as shoutcast by mistake.
-    /// | postdata                   | Set the post body (value needs to be base64 encoded). (Implicitly sets the request to POST)
-    /// | referer                    | Set the "referer" header
-    /// | user-agent                 | Set the "user-agent" header
-    /// | seekable                   | Set the stream seekable. 1: enable, 0: disable
-    /// | sslcipherlist              | Set list of accepted SSL ciphers.
+    /// | Option name                         | Description
+    /// |------------------------------------:|:--------------------------------
+    /// | <b>`accept-charset`</b>             | Set the "accept-charset" header
+    /// | <b>`acceptencoding or encoding`</b> | Set the "accept-encoding" header
+    /// | <b>`active-remote`</b>              | Set the "active-remote" header
+    /// | <b>`auth`</b>                       | Set the authentication method. Possible values: any, anysafe, digest, ntlm
+    /// | <b>`connection-timeout`</b>         | Set the connection timeout in seconds
+    /// | <b>`cookie`</b>                     | Set the "cookie" header
+    /// | <b>`customrequest`</b>              | Set a custom HTTP request like DELETE
+    /// | <b>`noshout`</b>                    | Set to true if kodi detects a stream as shoutcast by mistake.
+    /// | <b>`postdata`</b>                   | Set the post body (value needs to be base64 encoded). (Implicitly sets the request to POST)
+    /// | <b>`referer`</b>                    | Set the "referer" header
+    /// | <b>`user-agent`</b>                 | Set the "user-agent" header
+    /// | <b>`seekable`</b>                   | Set the stream seekable. 1: enable, 0: disable
+    /// | <b>`sslcipherlist`</b>              | Set list of accepted SSL ciphers.
     ///
     ADDON_CURL_OPTION_PROTOCOL,
 
-    /// Set User and password
+    /// @brief Set User and password
     ADDON_CURL_OPTION_CREDENTIALS,
 
-    /// Add a Header
+    /// @brief Add a Header
     ADDON_CURL_OPTION_HEADER
   } CURLOptiontype;
-  //------------------------------------------------------------------------------
-
-  //==============================================================================
-  /// \ingroup cpp_kodi_vfs_Defs
-  /// @brief CURL message types
-  ///
-  /// Used on kodi::vfs::CFile::GetPropertyValue() and kodi::vfs::CFile::GetPropertyValues()
-  ///
-  typedef enum FilePropertyTypes
-  {
-    /// Get protocol response line
-    ADDON_FILE_PROPERTY_RESPONSE_PROTOCOL,
-    /// Get a response header
-    ADDON_FILE_PROPERTY_RESPONSE_HEADER,
-    /// Get file content type
-    ADDON_FILE_PROPERTY_CONTENT_TYPE,
-    /// Get file content charset
-    ADDON_FILE_PROPERTY_CONTENT_CHARSET,
-    /// Get file mime type
-    ADDON_FILE_PROPERTY_MIME_TYPE,
-    /// Get file effective URL (last one if redirected)
-    ADDON_FILE_PROPERTY_EFFECTIVE_URL
-  } FilePropertyTypes;
-  //------------------------------------------------------------------------------
+  //@}
+  //----------------------------------------------------------------------------
 
   //============================================================================
+  /// @defgroup cpp_kodi_vfs_Defs_FilePropertyTypes enum FilePropertyTypes
+  /// @ingroup cpp_kodi_vfs_Defs
+  /// @brief **File property types**\n
+  /// Mostly to read internet sources.
   ///
-  /// \ingroup cpp_kodi_vfs_Defs
-  /// @brief File information status
+  /// Used on kodi::vfs::CFile::GetPropertyValue() and kodi::vfs::CFile::GetPropertyValues().
   ///
-  /// Used on kodi::vfs::StatFile(), all of these calls return a this stat
-  /// structure, which contains the following fields:
-  ///
+  //@{
+  typedef enum FilePropertyTypes
+  {
+    /// @brief Get protocol response line.
+    ADDON_FILE_PROPERTY_RESPONSE_PROTOCOL,
+    /// @brief Get a response header.
+    ADDON_FILE_PROPERTY_RESPONSE_HEADER,
+    /// @brief Get file content type.
+    ADDON_FILE_PROPERTY_CONTENT_TYPE,
+    /// @brief Get file content charset.
+    ADDON_FILE_PROPERTY_CONTENT_CHARSET,
+    /// @brief Get file mime type.
+    ADDON_FILE_PROPERTY_MIME_TYPE,
+    /// @brief Get file effective URL (last one if redirected).
+    ADDON_FILE_PROPERTY_EFFECTIVE_URL
+  } FilePropertyTypes;
+  //@}
+  //----------------------------------------------------------------------------
+
+  //}}}
+
+  //¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯
+  // "C" Internal interface tables for intercommunications between addon and kodi
+  //{{{
+
   struct STAT_STRUCTURE
   {
     /// ID of device containing file
@@ -190,7 +172,6 @@ extern "C"
     /// The stat url is a symbolic link
     bool isSymLink;
   };
-  //------------------------------------------------------------------------------
 
   struct VFSProperty
   {
@@ -257,6 +238,8 @@ extern "C"
     bool (*curl_open)(void* kodiBase, void* file, unsigned int flags);
   } AddonToKodiFuncTable_kodi_filesystem;
 
+  //}}}
+
 #ifdef __cplusplus
 } /* extern "C" */
 #endif /* __cplusplus */
@@ -270,6 +253,77 @@ namespace kodi
 namespace vfs
 {
 
+//¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯
+// Main page text for filesystem group by Doxygen.
+//{{{
+
+//==============================================================================
+///
+/// @defgroup cpp_kodi_vfs  Interface - kodi::vfs
+/// @ingroup cpp
+/// @brief **Virtual filesystem functions**\n
+/// Offers classes and functions for access to the Virtual File Server (VFS)
+/// which you can use to manipulate files and folders.
+///
+/// This system allow the use of ["Special Protocol"](https://kodi.wiki/view/Special_protocol)
+/// where is Kodi's solution to platform dependent directories. Common directory
+/// names are assigned a <b>`special://[name]`</b> path which is passed around
+/// inside Kodi and then translated to the platform specific path before the
+/// operating system sees it. This helps keep most of the platform mess
+/// centralized in the code.\n
+/// To become a correct path back can be @ref TranslateSpecialProtocol() used.
+///
+/// It has the header @ref Filesystem.h "#include <kodi/Filesystem.h>" be
+/// included to enjoy it.
+///
+//------------------------------------------------------------------------------
+
+//==============================================================================
+/// @defgroup cpp_kodi_vfs_Defs Definitions, structures and enumerators
+/// @ingroup cpp_kodi_vfs
+/// @brief **Virtual file Server definition values**\n
+/// All to VFS system functions associated data structures.
+///
+//------------------------------------------------------------------------------
+
+//==============================================================================
+/// @defgroup cpp_kodi_vfs_Directory 1. Directory functions
+/// @ingroup cpp_kodi_vfs
+/// @brief **Globally available directories related functions**\n
+/// Used to perform typical operations with it.
+///
+//------------------------------------------------------------------------------
+
+//==============================================================================
+/// @defgroup cpp_kodi_vfs_File 2. File functions
+/// @ingroup cpp_kodi_vfs
+/// @brief **Globally available file related functions**\n
+/// Used to perform typical operations with it.
+///
+//------------------------------------------------------------------------------
+
+//==============================================================================
+/// @defgroup cpp_kodi_vfs_General 3. General functions
+/// @ingroup cpp_kodi_vfs
+/// @brief **Other globally available functions**\n
+/// Used to perform typical operations with it.
+///
+//------------------------------------------------------------------------------
+
+//}}}
+
+//¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯
+// "C++" related filesystem definitions
+//{{{
+
+//==============================================================================
+/// @defgroup cpp_kodi_vfs_Defs_FileStatus class FileStatus
+/// @ingroup cpp_kodi_vfs_Defs
+/// @brief **File information status**\n
+/// Used on kodi::vfs::StatFile(), all of these calls return a this stat
+/// structure, which contains the following fields:
+///
+//@{
 class FileStatus : public kodi::addon::CStructHdl<FileStatus, STAT_STRUCTURE>
 {
 public:
@@ -280,38 +334,81 @@ public:
   FileStatus(STAT_STRUCTURE* channel) : CStructHdl(channel) {}
   /*! \endcond */
 
-  uint32_t GetDeviceId() const { return m_cStructure->deviceId; }
-  void GetDeviceId(uint32_t deviceId) { m_cStructure->deviceId = deviceId; }
+  /// @defgroup cpp_kodi_vfs_Defs_FileStatus_Help *Value Help*
+  /// @ingroup cpp_kodi_vfs_Defs_FileStatus
+  /// ----------------------------------------------------------------------------
+  ///
+  /// <b>The following table contains values that can be set with @ref cpp_kodi_vfs_Defs_FileStatus :</b>
+  /// | Name | Type | Set call | Get call
+  /// |------|------|----------|----------
+  /// | **ID of device containing file** | `uint32_t` | @ref FileStatus::SetDeviceId "SetDeviceId" | @ref FileStatus::GetDeviceId "GetDeviceId"
+  /// | **Total size, in bytes** | `uint64_t` | @ref FileStatus::SetSize "SetSize" | @ref FileStatus::GetSize "GetSize"
+  /// | **Time of last access** | `time_t` | @ref FileStatus::SetAccessTime "SetAccessTime" | @ref FileStatus::GetAccessTime "GetAccessTime"
+  /// | **Time of last modification** | `time_t` | @ref FileStatus::SetModificationTime "SetModificationTime" | @ref FileStatus::GetModificationTime "GetModificationTime"
+  /// | **Time of last status change** | `time_t` | @ref FileStatus::SetStatusTime "SetStatusTime" | @ref FileStatus::GetStatusTime "GetStatusTime"
+  /// | **Stat url is a directory** | `bool` | @ref FileStatus::SetIsDirectory "SetIsDirectory" | @ref FileStatus::GetIsDirectory "GetIsDirectory"
+  /// | **Stat url as a symbolic link** | `bool` | @ref FileStatus::SetIsSymLink "SetIsSymLink" | @ref FileStatus::GetIsSymLink "GetIsSymLink"
+  ///
 
-  uint64_t GetSize() const { return m_cStructure->size; }
+  /// @addtogroup cpp_kodi_vfs_Defs_FileStatus
+  /// @copydetails cpp_kodi_vfs_Defs_FileStatus_Help
+  //@{
+
+  /// @brief Set ID of device containing file.
+  void SetDeviceId(uint32_t deviceId) { m_cStructure->deviceId = deviceId; }
+
+  /// @brief Get ID of device containing file.
+  uint32_t GetDeviceId() const { return m_cStructure->deviceId; }
+
+  /// @brief Set total size, in bytes.
   void SetSize(uint64_t size) { m_cStructure->size = size; }
 
-  time_t GetAccessTime() const { return m_cStructure->accessTime; }
+  /// @brief Get total size, in bytes.
+  uint64_t GetSize() const { return m_cStructure->size; }
+
+  /// @brief Set time of last access.
   void SetAccessTime(time_t accessTime) { m_cStructure->accessTime = accessTime; }
 
-  time_t GetModificationTime() const { return m_cStructure->modificationTime; }
+  /// @brief Get time of last access.
+  time_t GetAccessTime() const { return m_cStructure->accessTime; }
+
+  /// @brief Set time of last modification.
   void SetModificationTime(time_t modificationTime)
   {
     m_cStructure->modificationTime = modificationTime;
   }
 
-  time_t GetStatusTime() const { return m_cStructure->statusTime; }
+  /// @brief Get time of last modification.
+  time_t GetModificationTime() const { return m_cStructure->modificationTime; }
+
+  /// @brief Set time of last status change.
   void SetStatusTime(time_t statusTime) { m_cStructure->statusTime = statusTime; }
 
-  bool GetIsDirectory() const { return m_cStructure->isDirectory; }
+  /// @brief Get time of last status change.
+  time_t GetStatusTime() const { return m_cStructure->statusTime; }
+
+  /// @brief Set the stat url is a directory.
   void SetIsDirectory(bool isDirectory) { m_cStructure->isDirectory = isDirectory; }
 
-  bool GetIsSymLink() const { return m_cStructure->isSymLink; }
-  void SetIsSymLink(bool isSymLink) { m_cStructure->isSymLink = isSymLink; }
-};
+  /// @brief The stat url is a directory if returns true.
+  bool GetIsDirectory() const { return m_cStructure->isDirectory; }
 
-//============================================================================
+  /// @brief Set stat url as a symbolic link.
+  void SetIsSymLink(bool isSymLink) { m_cStructure->isSymLink = isSymLink; }
+
+  /// @brief Get stat url is a symbolic link.
+  bool GetIsSymLink() const { return m_cStructure->isSymLink; }
+
+  //@}
+};
+//@}
+//------------------------------------------------------------------------------
+
+//==============================================================================
+/// @defgroup cpp_kodi_vfs_CDirEntry class CDirEntry
+/// @ingroup cpp_kodi_vfs_Defs
 ///
-/// \defgroup cpp_kodi_vfs_CDirEntry class CDirEntry
-/// \ingroup cpp_kodi_vfs
-///
-/// @brief **Virtual file server directory entry**
-///
+/// @brief **Virtual file server directory entry**\n
 /// This class is used as an entry for files and folders in
 /// kodi::vfs::GetDirectory().
 ///
@@ -342,7 +439,7 @@ public:
 /// }
 /// ~~~~~~~~~~~~~
 ///
-/// It has the header \ref Filesystem.h "#include <kodi/Filesystem.h>" be included
+/// It has the header @ref Filesystem.h "#include <kodi/Filesystem.h>" be included
 /// to enjoy it.
 ///
 //@{
@@ -350,7 +447,6 @@ class CDirEntry
 {
 public:
   //============================================================================
-  ///
   /// @ingroup cpp_kodi_vfs_CDirEntry
   /// @brief Constructor for VFS directory entry
   ///
@@ -389,10 +485,28 @@ public:
   }
   //----------------------------------------------------------------------------
 
-  //============================================================================
-  ///
+  /// @defgroup cpp_kodi_vfs_CDirEntry_Help *Value Help*
   /// @ingroup cpp_kodi_vfs_CDirEntry
-  /// @brief Get the directory entry name
+  /// --------------------------------------------------------------------------
+  ///
+  /// <b>The following table contains values that can be set with @ref cpp_kodi_vfs_CDirEntry :</b>
+  /// | Name | Type | Set call | Get call | Clear call |
+  /// |------|------|----------|----------|------------|
+  /// | **Directory entry name** | `std::string` | @ref CDirEntry::SetLabel "SetLabel" | @ref CDirEntry::Label "Label" | |
+  /// | **Title of entry** | `std::string` | @ref CDirEntry::SetTitle "SetTitle" | @ref CDirEntry::Title "Title" | |
+  /// | **Path of the entry** | `std::string` | @ref CDirEntry::SetPath "SetPath" | @ref CDirEntry::Path "Path" | |
+  /// | **Entry is folder** | `bool` | @ref CDirEntry::SetFolder "SetFolder" | @ref CDirEntry::IsFolder "IsFolder" | |
+  /// | **The size of the file** | `int64_t` | @ref CDirEntry::SetSize "SetSize" | @ref CDirEntry::Size "Size" | |
+  /// | **File time and date** | `time_t` | @ref CDirEntry::SetDateTime "SetDateTime" | @ref CDirEntry::DateTime "DateTime" | |
+  /// | **Property entries** | `std::string, std::string` | @ref CDirEntry::AddProperty "AddProperty" | @ref CDirEntry::GetProperties "GetProperties" | @ref CDirEntry::ClearProperties "ClearProperties"
+  ///
+
+  /// @addtogroup cpp_kodi_vfs_CDirEntry
+  /// @copydetails cpp_kodi_vfs_CDirEntry_Help
+  //@{
+
+  //============================================================================
+  /// @brief Get the directory entry name.
   ///
   /// @return Name of the entry
   ///
@@ -400,9 +514,7 @@ public:
   //----------------------------------------------------------------------------
 
   //============================================================================
-  ///
-  /// @ingroup cpp_kodi_vfs_CDirEntry
-  /// @brief Get the optional title of entry
+  /// @brief Get the optional title of entry.
   ///
   /// @return Title of the entry, if exists
   ///
@@ -410,9 +522,7 @@ public:
   //----------------------------------------------------------------------------
 
   //============================================================================
-  ///
-  /// @ingroup cpp_kodi_vfs_CDirEntry
-  /// @brief Get the path of the entry
+  /// @brief Get the path of the entry.
   ///
   /// @return File system path of the entry
   ///
@@ -420,9 +530,7 @@ public:
   //----------------------------------------------------------------------------
 
   //============================================================================
-  ///
-  /// @ingroup cpp_kodi_vfs_CDirEntry
-  /// @brief Used to check entry is folder
+  /// @brief Used to check entry is folder.
   ///
   /// @return true if entry is a folder
   ///
@@ -430,9 +538,7 @@ public:
   //----------------------------------------------------------------------------
 
   //============================================================================
-  ///
-  /// @ingroup cpp_kodi_vfs_CDirEntry
-  /// @brief If file, the size of the file
+  /// @brief If file, the size of the file.
   ///
   /// @return Defined file size
   ///
@@ -440,9 +546,7 @@ public:
   //----------------------------------------------------------------------------
 
   //============================================================================
-  ///
-  /// @ingroup cpp_kodi_vfs_CDirEntry
-  /// @brief Get file time and date for a new entry
+  /// @brief Get file time and date for a new entry.
   ///
   /// @return The with time_t defined date and time of file
   ///
@@ -450,9 +554,7 @@ public:
   //----------------------------------------------------------------------------
 
   //============================================================================
-  ///
-  /// @ingroup cpp_kodi_vfs_CDirEntry
-  /// @brief Set the label name
+  /// @brief Set the label name.
   ///
   /// @param[in] label name of entry
   ///
@@ -460,9 +562,7 @@ public:
   //----------------------------------------------------------------------------
 
   //============================================================================
-  ///
-  /// @ingroup cpp_kodi_vfs_CDirEntry
-  /// @brief Set the title name
+  /// @brief Set the title name.
   ///
   /// @param[in] title title name of entry
   ///
@@ -470,9 +570,7 @@ public:
   //----------------------------------------------------------------------------
 
   //============================================================================
-  ///
-  /// @ingroup cpp_kodi_vfs_CDirEntry
-  /// @brief Set the path of the entry
+  /// @brief Set the path of the entry.
   ///
   /// @param[in] path path of entry
   ///
@@ -480,9 +578,7 @@ public:
   //----------------------------------------------------------------------------
 
   //============================================================================
-  ///
-  /// @ingroup cpp_kodi_vfs_CDirEntry
-  /// @brief Set the entry defined as folder
+  /// @brief Set the entry defined as folder.
   ///
   /// @param[in] folder If true becomes entry defined as folder
   ///
@@ -490,9 +586,7 @@ public:
   //----------------------------------------------------------------------------
 
   //============================================================================
-  ///
-  /// @ingroup cpp_kodi_vfs_CDirEntry
-  /// @brief Set a file size for a new entry
+  /// @brief Set a file size for a new entry.
   ///
   /// @param[in] size Size to set for dir entry
   ///
@@ -500,9 +594,7 @@ public:
   //----------------------------------------------------------------------------
 
   //============================================================================
-  ///
-  /// @ingroup cpp_kodi_vfs_CDirEntry
-  /// @brief Set file time and date for a new entry
+  /// @brief Set file time and date for a new entry.
   ///
   /// @param[in] dateTime The with time_t defined date and time of file
   ///
@@ -510,9 +602,7 @@ public:
   //----------------------------------------------------------------------------
 
   //============================================================================
-  ///
-  /// @ingroup cpp_kodi_vfs_CDirEntry
-  /// @brief Add a by string defined property entry to directory entry
+  /// @brief Add a by string defined property entry to directory entry.
   ///
   /// @note A property can be used to add some special information about a file
   /// or directory entry, this can be used on other places to do the right work
@@ -525,22 +615,20 @@ public:
   //----------------------------------------------------------------------------
 
   //============================================================================
-  ///
-  /// @ingroup cpp_kodi_vfs_CDirEntry
-  /// @brief Clear all present properties
+  /// @brief Clear all present properties.
   ///
   void ClearProperties() { m_properties.clear(); }
   //----------------------------------------------------------------------------
 
   //============================================================================
-  ///
-  /// @ingroup cpp_kodi_vfs_CDirEntry
-  /// @brief Get the present properties list on directory entry
+  /// @brief Get the present properties list on directory entry.
   ///
   /// @return map with all present properties
   ///
   const std::map<std::string, std::string>& GetProperties() const { return m_properties; }
   //----------------------------------------------------------------------------
+
+  //@}
 
 private:
   std::string m_label;
@@ -552,21 +640,26 @@ private:
   time_t m_dateTime;
 };
 //@}
-//----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
-//============================================================================
-///
-/// @ingroup cpp_kodi_vfs
-/// @brief Make a directory
+//}}}
+
+//¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯
+// "C++" Directory related functions
+//{{{
+
+//==============================================================================
+/// @ingroup cpp_kodi_vfs_Directory
+/// @brief Make a directory.
 ///
 /// The kodi::vfs::CreateDirectory() function shall create a
 /// new directory with name path.
 ///
 /// The newly created directory shall be an empty directory.
 ///
-/// @param[in] path           Path to the directory.
-/// @return  Upon successful completion, CreateDirectory() shall return true.
-///          Otherwise false shall be returned, no directory shall be created.
+/// @param[in] path Path to the directory.
+/// @return Upon successful completion, CreateDirectory() shall return true.
+///         Otherwise false shall be returned, no directory shall be created.
 ///
 ///
 /// -------------------------------------------------------------------------
@@ -588,12 +681,11 @@ inline bool CreateDirectory(const std::string& path)
   return CAddonBase::m_interface->toKodi->kodi_filesystem->create_directory(
       CAddonBase::m_interface->toKodi->kodiBase, path.c_str());
 }
-//----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
-//============================================================================
-///
-/// @ingroup cpp_kodi_vfs
-/// @brief Verifying the Existence of a Directory
+//==============================================================================
+/// @ingroup cpp_kodi_vfs_Directory
+/// @brief Verifying the Existence of a Directory.
 ///
 /// The kodi::vfs::DirectoryExists() method determines whether
 /// a specified folder exists.
@@ -621,21 +713,20 @@ inline bool DirectoryExists(const std::string& path)
   return CAddonBase::m_interface->toKodi->kodi_filesystem->directory_exists(
       CAddonBase::m_interface->toKodi->kodiBase, path.c_str());
 }
-//----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
-//============================================================================
-///
-/// @ingroup cpp_kodi_vfs
+//==============================================================================
+/// @ingroup cpp_kodi_vfs_Directory
 /// @brief Removes a directory.
 ///
 /// The kodi::vfs::RemoveDirectory() function shall remove a
 /// directory whose name is given by path.
 ///
 /// @param[in] path Path to the directory.
-/// @return  Upon successful completion, the function RemoveDirectory() shall
-///          return true. Otherwise, false shall be returned, and errno set
-///          to indicate the error. If false is returned, the named directory
-///          shall not be changed.
+/// @return Upon successful completion, the function RemoveDirectory() shall
+///         return true. Otherwise, false shall be returned, and errno set
+///         to indicate the error. If false is returned, the named directory
+///         shall not be changed.
 ///
 ///
 /// -------------------------------------------------------------------------
@@ -655,11 +746,10 @@ inline bool RemoveDirectory(const std::string& path)
   return CAddonBase::m_interface->toKodi->kodi_filesystem->remove_directory(
       CAddonBase::m_interface->toKodi->kodiBase, path.c_str());
 }
-//----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
-//============================================================================
-///
-/// @ingroup cpp_kodi_vfs
+//==============================================================================
+/// @ingroup cpp_kodi_vfs_Directory
 /// @brief Lists a directory.
 ///
 /// Return the list of files and directories which have been found in the
@@ -696,7 +786,7 @@ inline bool RemoveDirectory(const std::string& path)
 /// ~~~~~~~~~~~~~
 inline bool GetDirectory(const std::string& path,
                          const std::string& mask,
-                         std::vector<CDirEntry>& items)
+                         std::vector<kodi::vfs::CDirEntry>& items)
 {
   using namespace kodi::addon;
 
@@ -719,15 +809,181 @@ inline bool GetDirectory(const std::string& path,
   }
   return false;
 }
-//----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
-//============================================================================
+//}}}
+
+//¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯
+// "C++" File related functions
+//{{{
+
+//==============================================================================
+/// @ingroup cpp_kodi_vfs_File
+/// @brief Check if a file exists.
 ///
-/// @ingroup cpp_kodi_vfs
-/// @brief Retrieve MD5sum of a file
+/// @param[in] filename The filename to check.
+/// @param[in] usecache Check in file cache.
+/// @return true if the file exists false otherwise.
 ///
-/// @param[in] path path to the file to MD5sum
-/// @return md5 sum of the file
+///
+/// -------------------------------------------------------------------------
+///
+/// **Example:**
+/// ~~~~~~~~~~~~~{.cpp}
+/// #include <kodi/Filesystem.h>
+/// ...
+/// bool exists = kodi::vfs::FileExists("special://temp/kodi.log");
+/// fprintf(stderr, "Log file should be always present, is it present? %s\n", exists ? "yes" : "no");
+/// ~~~~~~~~~~~~~
+///
+inline bool FileExists(const std::string& filename, bool usecache = false)
+{
+  using namespace kodi::addon;
+
+  return CAddonBase::m_interface->toKodi->kodi_filesystem->file_exists(
+      CAddonBase::m_interface->toKodi->kodiBase, filename.c_str(), usecache);
+}
+//------------------------------------------------------------------------------
+
+//==============================================================================
+/// @ingroup cpp_kodi_vfs_File
+/// @brief Get file status.
+///
+/// These function return information about a file. Execute (search)
+/// permission is required on all of the directories in path that
+/// lead to the file.
+///
+/// The call return a stat structure, which contains the on
+/// @ref cpp_kodi_vfs_Defs_FileStatus defined values.
+///
+/// @warning Not all of the OS file systems implement all of the time fields.
+///
+/// @param[in] filename The filename to read the status from.
+/// @param[out] buffer The file status is written into this buffer.
+/// @return On success, trur is returned. On error, false is returned
+///
+///
+/// -------------------------------------------------------------------------
+///
+/// **Example:**
+/// ~~~~~~~~~~~~~{.cpp}
+/// #include <kodi/Filesystem.h>
+/// ...
+/// kodi::vfs::FileStatus statFile;
+/// int ret = kodi::vfs::StatFile("special://temp/kodi.log", statFile);
+/// fprintf(stderr, "deviceId (ID of device containing file)       = %u\n"
+///                 "size (total size, in bytes)                   = %lu\n"
+///                 "accessTime (time of last access)              = %lu\n"
+///                 "modificationTime (time of last modification)  = %lu\n"
+///                 "statusTime (time of last status change)       = %lu\n"
+///                 "isDirectory (The stat url is a directory)     = %s\n"
+///                 "isSymLink (The stat url is a symbolic link)   = %s\n"
+///                 "Return value                                  = %i\n",
+///                      statFile.GetDeviceId(),
+///                      statFile.GetSize(),
+///                      statFile.GetAccessTime(),
+///                      statFile.GetModificationTime(),
+///                      statFile.GetStatusTime(),
+///                      statFile.GetIsDirectory() ? "true" : "false",
+///                      statFile.GetIsSymLink() ? "true" : "false",
+///                      ret);
+/// ~~~~~~~~~~~~~
+///
+inline bool StatFile(const std::string& filename, kodi::vfs::FileStatus& buffer)
+{
+  using namespace kodi::addon;
+
+  return CAddonBase::m_interface->toKodi->kodi_filesystem->stat_file(
+      CAddonBase::m_interface->toKodi->kodiBase, filename.c_str(), buffer);
+}
+//------------------------------------------------------------------------------
+
+//==============================================================================
+/// @ingroup cpp_kodi_vfs_File
+/// @brief Deletes a file.
+///
+/// @param[in] filename The filename to delete.
+/// @return The file was successfully deleted.
+///
+///
+/// -------------------------------------------------------------------------
+///
+/// **Example:**
+/// ~~~~~~~~~~~~~{.cpp}
+/// #include <kodi/Filesystem.h>
+/// #include <kodi/gui/DialogFileBrowser.h>
+/// #include <kodi/gui/DialogOK.h>
+/// ...
+/// std::string filename;
+/// if (kodi::gui::DialogFileBrowser::ShowAndGetFile("local", "",
+///                                                  "Test File selection and delete of them!",
+///                                                  filename))
+/// {
+///   bool successed = kodi::vfs::DeleteFile(filename);
+///   if (!successed)
+///     kodi::gui::DialogOK::ShowAndGetInput("Error", "Delete of File", filename, "failed!");
+///   else
+///     kodi::gui::DialogOK::ShowAndGetInput("Information", "Delete of File", filename, "successfull done.");
+/// }
+/// ~~~~~~~~~~~~~
+///
+inline bool DeleteFile(const std::string& filename)
+{
+  using namespace kodi::addon;
+
+  return CAddonBase::m_interface->toKodi->kodi_filesystem->delete_file(
+      CAddonBase::m_interface->toKodi->kodiBase, filename.c_str());
+}
+//------------------------------------------------------------------------------
+
+//==============================================================================
+/// @ingroup cpp_kodi_vfs_File
+/// @brief Rename a file name.
+///
+/// @param[in] filename The filename to copy.
+/// @param[in] newFileName The new filename
+/// @return true if successfully renamed
+///
+///
+inline bool RenameFile(const std::string& filename, const std::string& newFileName)
+{
+  using namespace kodi::addon;
+
+  return CAddonBase::m_interface->toKodi->kodi_filesystem->rename_file(
+      CAddonBase::m_interface->toKodi->kodiBase, filename.c_str(), newFileName.c_str());
+}
+//------------------------------------------------------------------------------
+
+//==============================================================================
+/// @ingroup cpp_kodi_vfs_File
+/// @brief Copy a file from source to destination.
+///
+/// @param[in] filename The filename to copy.
+/// @param[in] destination The destination to copy file to
+/// @return true if successfully copied
+///
+///
+inline bool CopyFile(const std::string& filename, const std::string& destination)
+{
+  using namespace kodi::addon;
+
+  return CAddonBase::m_interface->toKodi->kodi_filesystem->copy_file(
+      CAddonBase::m_interface->toKodi->kodiBase, filename.c_str(), destination.c_str());
+}
+//------------------------------------------------------------------------------
+
+//}}}
+
+//¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯
+// "C++" General filesystem functions
+//{{{
+
+//==============================================================================
+/// @ingroup cpp_kodi_vfs_General
+/// @brief Retrieve MD5sum of a file.
+///
+/// @param[in] path Path to the file to MD5sum
+/// @return MD5 sum of the file
 ///
 ///
 /// -------------------------------------------------------------------------
@@ -763,15 +1019,14 @@ inline std::string GetFileMD5(const std::string& path)
   }
   return strReturn;
 }
-//----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
-//============================================================================
+//==============================================================================
+/// @ingroup cpp_kodi_vfs_General
+/// @brief Returns a thumb cache filename.
 ///
-/// @ingroup cpp_kodi_vfs
-/// @brief Returns a thumb cache filename
-///
-/// @param[in] filename path to file
-/// @return cache filename
+/// @param[in] filename Path to file
+/// @return Cache filename
 ///
 ///
 /// ------------------------------------------------------------------------
@@ -808,19 +1063,18 @@ inline std::string GetCacheThumbName(const std::string& filename)
   }
   return strReturn;
 }
-//----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
-//============================================================================
-///
-/// @ingroup cpp_kodi_vfs
-/// @brief Make filename valid
+//==============================================================================
+/// @ingroup cpp_kodi_vfs_General
+/// @brief Make filename valid.
 ///
 /// Function to replace not valid characters with '_'. It can be also
 /// compared with original before in a own loop until it is equal
 /// (no invalid characters).
 ///
 /// @param[in] filename Filename to check and fix
-/// @return            The legal filename
+/// @return The legal filename
 ///
 ///
 /// ------------------------------------------------------------------------
@@ -852,19 +1106,18 @@ inline std::string MakeLegalFileName(const std::string& filename)
   }
   return strReturn;
 }
-//----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
-//============================================================================
-///
-/// @ingroup cpp_kodi_vfs
-/// @brief Make directory name valid
+//==============================================================================
+/// @ingroup cpp_kodi_vfs_General
+/// @brief Make directory name valid.
 ///
 /// Function to replace not valid characters with '_'. It can be also
 /// compared with original before in a own loop until it is equal
 /// (no invalid characters).
 ///
 /// @param[in] path Directory name to check and fix
-/// @return        The legal directory name
+/// @return The legal directory name
 ///
 ///
 /// ------------------------------------------------------------------------
@@ -896,19 +1149,18 @@ inline std::string MakeLegalPath(const std::string& path)
   }
   return strReturn;
 }
-//----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
-//============================================================================
+//==============================================================================
+/// @ingroup cpp_kodi_vfs_General
+/// @brief Returns the translated path.
 ///
-/// @ingroup cpp_kodi_vfs
-/// @brief Returns the translated path
+/// @param[in] source String or unicode - Path to format
+/// @return A human-readable string suitable for logging
 ///
-/// @param[in] source  string or unicode - Path to format
-/// @return      A human-readable string suitable for logging
-///
-/// @note        Only useful if you are coding for both Linux and Windows.
-///              e.g. Converts 'special://masterprofile/script_data' -> '/home/user/.kodi/UserData/script_data'
-///              on Linux.
+/// @note Only useful if you are coding for both Linux and Windows. e.g.
+/// Converts 'special://masterprofile/script_data' ->
+/// '/home/user/.kodi/UserData/script_data' on Linux.
 ///
 ///
 /// ------------------------------------------------------------------------
@@ -945,12 +1197,11 @@ inline std::string TranslateSpecialProtocol(const std::string& source)
   }
   return strReturn;
 }
-//----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
-//============================================================================
-///
-/// @ingroup cpp_kodi_vfs
-/// @brief Return the file name from given complate path string
+//==============================================================================
+/// @ingroup cpp_kodi_vfs_General
+/// @brief Return the file name from given complate path string.
 ///
 /// @param[in] path The complete path include file and directory
 /// @return Filename from path
@@ -972,12 +1223,11 @@ inline std::string GetFileName(const std::string& path)
   const size_t slash = path.find_last_of("/\\");
   return path.substr(slash + 1);
 }
-//----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
-//============================================================================
-///
-/// @ingroup cpp_kodi_vfs
-/// @brief Return the directory name from given complate path string
+//==============================================================================
+/// @ingroup cpp_kodi_vfs_General
+/// @brief Return the directory name from given complate path string.
 ///
 /// @param[in] path The complete path include file and directory
 /// @return Directory name from path
@@ -1008,13 +1258,12 @@ inline std::string GetDirectoryName(const std::string& path)
 
   return path.substr(0, iPosSlash + 1) + path.substr(iPosBar); // Path + options
 }
-//----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
 
-//============================================================================
-///
-/// @ingroup cpp_kodi_vfs
-/// @brief Remove the slash on given path name
+//==============================================================================
+/// @ingroup cpp_kodi_vfs_General
+/// @brief Remove the slash on given path name.
 ///
 /// @param[in,out] path The complete path
 ///
@@ -1039,12 +1288,12 @@ inline void RemoveSlashAtEnd(std::string& path)
       path.erase(path.size() - 1);
   }
 }
-//----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
-//============================================================================
-///
-/// @ingroup cpp_kodi_vfs
-/// @brief Return a size aligned to the chunk size at least as large as the chunk size.
+//==============================================================================
+/// @ingroup cpp_kodi_vfs_General
+/// @brief Return a size aligned to the chunk size at least as large as the
+/// chunk size.
 ///
 /// @param[in] chunk The chunk size
 /// @param[in] minimum The minimum size (or maybe the minimum number of chunks?)
@@ -1057,179 +1306,25 @@ inline unsigned int GetChunkSize(unsigned int chunk, unsigned int minimum)
   else
     return minimum;
 }
-//----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
-//============================================================================
-///
+//}}}
+
+//¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯
+// "C++" CFile class
+//{{{
+
+//==============================================================================
+/// @defgroup cpp_kodi_vfs_CFile 4. class CFile
 /// @ingroup cpp_kodi_vfs
-/// @brief Check if a file exists.
 ///
-/// @param[in] filename       The filename to check.
-/// @param[in] usecache       Check in file cache.
-/// @return                   true if the file exists false otherwise.
-///
-///
-/// -------------------------------------------------------------------------
-///
-/// **Example:**
-/// ~~~~~~~~~~~~~{.cpp}
-/// #include <kodi/Filesystem.h>
-/// ...
-/// bool exists = kodi::vfs::FileExists("special://temp/kodi.log");
-/// fprintf(stderr, "Log file should be always present, is it present? %s\n", exists ? "yes" : "no");
-/// ~~~~~~~~~~~~~
-///
-inline bool FileExists(const std::string& filename, bool usecache = false)
-{
-  using namespace kodi::addon;
-
-  return CAddonBase::m_interface->toKodi->kodi_filesystem->file_exists(
-      CAddonBase::m_interface->toKodi->kodiBase, filename.c_str(), usecache);
-}
-//----------------------------------------------------------------------------
-
-//============================================================================
-///
-/// @ingroup cpp_kodi_vfs
-/// @brief Get file status.
-///
-/// These function return information about a file. Execute (search)
-/// permission is required on all of the directories in path that
-/// lead to the file.
-///
-/// The call return a stat structure, which contains the on \ref FileStatus
-/// defined values.
-///
-/// @warning Not all of the OS file systems implement all of the time fields.
-///
-/// @param[in] filename The filename to read the status from.
-/// @param[out] buffer The file status is written into this buffer.
-/// @return On success, tru is returned. On error, fale is returned
-///
-///
-/// -------------------------------------------------------------------------
-///
-/// **Example:**
-/// ~~~~~~~~~~~~~{.cpp}
-/// #include <kodi/Filesystem.h>
-/// ...
-/// kodi::vfs::FileStatus statFile;
-/// int ret = kodi::vfs::StatFile("special://temp/kodi.log", statFile);
-/// fprintf(stderr, "deviceId (ID of device containing file)       = %u\n"
-///                 "size (total size, in bytes)                   = %lu\n"
-///                 "accessTime (time of last access)              = %lu\n"
-///                 "modificationTime (time of last modification)  = %lu\n"
-///                 "statusTime (time of last status change)       = %lu\n"
-///                 "isDirectory (The stat url is a directory)     = %s\n"
-///                 "isSymLink (The stat url is a symbolic link)   = %s\n"
-///                 "Return value                                  = %i\n",
-///                      statFile.deviceId,
-///                      statFile.size,
-///                      statFile.accessTime,
-///                      statFile.modificationTime,
-///                      statFile.statusTime,
-///                      statFile.isDirectory ? "true" : "false",
-///                      statFile.isSymLink ? "true" : "false",
-///                      ret);
-/// ~~~~~~~~~~~~~
-///
-inline bool StatFile(const std::string& filename, kodi::vfs::FileStatus& buffer)
-{
-  using namespace kodi::addon;
-
-  return CAddonBase::m_interface->toKodi->kodi_filesystem->stat_file(
-      CAddonBase::m_interface->toKodi->kodiBase, filename.c_str(), buffer);
-}
-//----------------------------------------------------------------------------
-
-//============================================================================
-///
-/// @ingroup cpp_kodi_vfs
-/// @brief Deletes a file.
-///
-/// @param[in] filename The filename to delete.
-/// @return The file was successfully deleted.
-///
-///
-/// -------------------------------------------------------------------------
-///
-/// **Example:**
-/// ~~~~~~~~~~~~~{.cpp}
-/// #include <kodi/Filesystem.h>
-/// #include <kodi/gui/DialogFileBrowser.h>
-/// #include <kodi/gui/DialogOK.h>
-/// ...
-/// std::string filename;
-/// if (kodi::gui::DialogFileBrowser::ShowAndGetFile("local", "",
-///                                                  "Test File selection and delete of them!",
-///                                                  filename))
-/// {
-///   bool successed = kodi::vfs::DeleteFile(filename);
-///   if (!successed)
-///     kodi::gui::DialogOK::ShowAndGetInput("Error", "Delete of File", filename, "failed!");
-///   else
-///     kodi::gui::DialogOK::ShowAndGetInput("Information", "Delete of File", filename, "successfull done.");
-/// }
-/// ~~~~~~~~~~~~~
-///
-inline bool DeleteFile(const std::string& filename)
-{
-  using namespace kodi::addon;
-
-  return CAddonBase::m_interface->toKodi->kodi_filesystem->delete_file(
-      CAddonBase::m_interface->toKodi->kodiBase, filename.c_str());
-}
-//----------------------------------------------------------------------------
-
-//============================================================================
-///
-/// @ingroup cpp_kodi_vfs
-/// @brief Rename a file name
-///
-/// @param[in] filename       The filename to copy.
-/// @param[in] newFileName    The new filename
-/// @return                   true if successfully renamed
-///
-///
-inline bool RenameFile(const std::string& filename, const std::string& newFileName)
-{
-  using namespace kodi::addon;
-
-  return CAddonBase::m_interface->toKodi->kodi_filesystem->rename_file(
-      CAddonBase::m_interface->toKodi->kodiBase, filename.c_str(), newFileName.c_str());
-}
-//----------------------------------------------------------------------------
-
-//============================================================================
-///
-/// @ingroup cpp_kodi_vfs
-/// @brief Copy a file from source to destination
-///
-/// @param[in] filename       The filename to copy.
-/// @param[in] destination    The destination to copy file to
-/// @return                   true if successfully copied
-///
-///
-inline bool CopyFile(const std::string& filename, const std::string& destination)
-{
-  using namespace kodi::addon;
-
-  return CAddonBase::m_interface->toKodi->kodi_filesystem->copy_file(
-      CAddonBase::m_interface->toKodi->kodiBase, filename.c_str(), destination.c_str());
-}
-//----------------------------------------------------------------------------
-
-//============================================================================
-///
-/// \defgroup cpp_kodi_vfs_CFile class CFile
-/// \ingroup cpp_kodi_vfs
-///
-/// @brief **Virtual file server control**
+/// @brief **Creatable class for virtual file server control**\n
+/// To perform file read/write with Kodi's filesystem parts.
 ///
 /// CFile is the class used for handling Files in Kodi. This class can be used
 /// for creating, reading, writing and modifying files. It directly provides unbuffered, binary disk input/output services
 ///
-/// It has the header \ref Filesystem.h "#include <kodi/Filesystem.h>" be included
+/// It has the header @ref Filesystem.h "#include <kodi/Filesystem.h>" be included
 /// to enjoy it.
 ///
 ///
@@ -1263,32 +1358,29 @@ inline bool CopyFile(const std::string& filename, const std::string& destination
 class CFile
 {
 public:
-  //==========================================================================
-  ///
+  //============================================================================
   /// @ingroup cpp_kodi_vfs_CFile
-  /// @brief Construct a new, unopened file
+  /// @brief Construct a new, unopened file.
   ///
   CFile() = default;
-  //--------------------------------------------------------------------------
+  //----------------------------------------------------------------------------
 
-  //==========================================================================
-  ///
+  //============================================================================
   /// @ingroup cpp_kodi_vfs_CFile
-  /// @brief Close() is called from the destructor, so explicitly closing the
-  /// file isn't required
+  /// @brief <b>`Close()`</b> is called from the destructor, so explicitly
+  /// closing the file isn't required.
   ///
   virtual ~CFile() { Close(); }
   //--------------------------------------------------------------------------
 
   //==========================================================================
-  ///
   /// @ingroup cpp_kodi_vfs_CFile
-  /// @brief Open the file with filename via Kodi's \ref cpp_kodi_vfs_CFile
+  /// @brief Open the file with filename via Kodi's @ref cpp_kodi_vfs_CFile
   /// "CFile". Needs to be closed by calling Close() when done.
   ///
-  /// @param[in] filename     The filename to open.
-  /// @param[in] flags        [opt] The flags to pass, see \ref OpenFileFlags
-  /// @return                 True on success or false on failure
+  /// @param[in] filename The filename to open.
+  /// @param[in] flags [opt] The flags to pass, see @ref OpenFileFlags
+  /// @return True on success or false on failure
   ///
   bool OpenFile(const std::string& filename, unsigned int flags = 0)
   {
@@ -1302,17 +1394,16 @@ public:
   //--------------------------------------------------------------------------
 
   //==========================================================================
-  ///
   /// @ingroup cpp_kodi_vfs_CFile
-  /// @brief Open the file with filename via Kodi's \ref cpp_kodi_vfs_CFile
+  /// @brief Open the file with filename via Kodi's @ref cpp_kodi_vfs_CFile
   /// "CFile" in write mode. Needs to be closed by calling Close() when
   /// done.
   ///
   /// @note Related folders becomes created if not present.
   ///
-  /// @param[in] filename     The filename to open.
-  /// @param[in] overwrite    True to overwrite, false otherwise.
-  /// @return                 True on success or false on failure
+  /// @param[in] filename The filename to open.
+  /// @param[in] overwrite True to overwrite, false otherwise.
+  /// @return True on success or false on failure
   ///
   bool OpenFileForWrite(const std::string& filename, bool overwrite = false)
   {
@@ -1339,9 +1430,8 @@ public:
   //--------------------------------------------------------------------------
 
   //==========================================================================
-  ///
   /// @ingroup cpp_kodi_vfs_CFile
-  /// @brief Check file is opened
+  /// @brief Check file is opened.
   ///
   /// @return True on open or false on closed or failure
   ///
@@ -1349,12 +1439,27 @@ public:
   //--------------------------------------------------------------------------
 
   //==========================================================================
+  /// @ingroup cpp_kodi_vfs_CFile
+  /// @brief Close an open file.
   ///
+  void Close()
+  {
+    using namespace kodi::addon;
+
+    if (!m_file)
+      return;
+    CAddonBase::m_interface->toKodi->kodi_filesystem->close_file(
+        CAddonBase::m_interface->toKodi->kodiBase, m_file);
+    m_file = nullptr;
+  }
+  //--------------------------------------------------------------------------
+
+  //==========================================================================
   /// @ingroup cpp_kodi_vfs_CFile
   /// @brief Create a Curl representation
   ///
-  /// @param[in] url          the URL of the Type.
-  /// @return                 True on success or false on failure
+  /// @param[in] url The URL of the Type.
+  /// @return True on success or false on failure
   ///
   bool CURLCreate(const std::string& url)
   {
@@ -1367,14 +1472,13 @@ public:
   //--------------------------------------------------------------------------
 
   //==========================================================================
-  ///
   /// @ingroup cpp_kodi_vfs_CFile
-  /// @brief Add options to the curl file created with CURLCreate
+  /// @brief Add options to the curl file created with CURLCreate.
   ///
-  /// @param[in] type         option type to set, see \ref CURLOptiontype
-  /// @param[in] name         name of the option
-  /// @param[in] value        value of the option
-  /// @return                 True on success or false on failure
+  /// @param[in] type Option type to set, see @ref CURLOptiontype
+  /// @param[in] name Name of the option
+  /// @param[in] value Value of the option
+  /// @return True on success or false on failure
   ///
   bool CURLAddOption(CURLOptiontype type, const std::string& name, const std::string& value)
   {
@@ -1391,12 +1495,11 @@ public:
   //--------------------------------------------------------------------------
 
   //==========================================================================
-  ///
   /// @ingroup cpp_kodi_vfs_CFile
-  /// @brief Open the curl file created with CURLCreate
+  /// @brief Open the curl file created with CURLCreate.
   ///
-  /// @param[in] flags        [opt] The flags to pass, see \ref OpenFileFlags
-  /// @return                 True on success or false on failure
+  /// @param[in] flags [opt] The flags to pass, see @ref OpenFileFlags
+  /// @return True on success or false on failure
   ///
   bool CURLOpen(unsigned int flags = 0)
   {
@@ -1413,17 +1516,15 @@ public:
   //--------------------------------------------------------------------------
 
   //==========================================================================
-  ///
   /// @ingroup cpp_kodi_vfs_CFile
   /// @brief Read from an open file.
   ///
-  /// @param[in] ptr          The buffer to store the data in.
-  /// @param[in] size         The size of the buffer.
-  /// @return                 number of successfully read bytes if any bytes
-  ///                         were read and stored in buffer, zero if no bytes
-  ///                         are available to read (end of file was reached)
-  ///                         or undetectable error occur, -1 in case of any
-  ///                         explicit error
+  /// @param[in] ptr The buffer to store the data in.
+  /// @param[in] size The size of the buffer.
+  /// @return number of successfully read bytes if any bytes were read and
+  ///         stored in buffer, zero if no bytes are available to read (end of
+  ///         file was reached) or undetectable error occur, -1 in case of any
+  ///         explicit error
   ///
   ssize_t Read(void* ptr, size_t size)
   {
@@ -1437,12 +1538,11 @@ public:
   //--------------------------------------------------------------------------
 
   //==========================================================================
-  ///
   /// @ingroup cpp_kodi_vfs_CFile
   /// @brief Read a string from an open file.
   ///
-  /// @param[out] line        The buffer to store the data in.
-  /// @return                 True when a line was read, false otherwise.
+  /// @param[out] line The buffer to store the data in.
+  /// @return True when a line was read, false otherwise.
   ///
   bool ReadLine(std::string& line)
   {
@@ -1466,17 +1566,14 @@ public:
   //--------------------------------------------------------------------------
 
   //==========================================================================
-  ///
   /// @ingroup cpp_kodi_vfs_CFile
   /// @brief Write to a file opened in write mode.
   ///
-  /// @param[in] ptr          Pointer to the data to write, converted to a
-  ///                         const void*.
-  /// @param[in] size         Size of the data to write.
-  /// @return                 number of successfully written bytes if any
-  ///                         bytes were written, zero if no bytes were
-  ///                         written and no detectable error occur,-1 in case
-  ///                         of any explicit error
+  /// @param[in] ptr Pointer to the data to write, converted to a <b>`const void*`</b>.
+  /// @param[in] size Size of the data to write.
+  /// @return number of successfully written bytes if any bytes were written,
+  ///         zero if no bytes were written and no detectable error occur,-1
+  ///         in case of any explicit error
   ///
   ssize_t Write(const void* ptr, size_t size)
   {
@@ -1490,7 +1587,6 @@ public:
   //--------------------------------------------------------------------------
 
   //==========================================================================
-  ///
   /// @ingroup cpp_kodi_vfs_CFile
   /// @brief Flush buffered data.
   ///
@@ -1516,26 +1612,22 @@ public:
   //--------------------------------------------------------------------------
 
   //==========================================================================
-  ///
   /// @ingroup cpp_kodi_vfs_CFile
   /// @brief Set the file's current position.
   ///
   /// The whence argument is optional and defaults to SEEK_SET (0)
   ///
-  /// @param[in] position             the position that you want to seek to
-  /// @param[in] whence               [optional] offset relative to
-  ///                                 You can set the value of whence to one.
-  ///                                 of three things:
+  /// @param[in] position the position that you want to seek to
+  /// @param[in] whence [optional] offset relative to You can set the value of
+  ///                              whence to one of three things:
   /// |   Value  | int | Description                                         |
   /// |:--------:|:---:|:----------------------------------------------------|
   /// | SEEK_SET |  0  | position is relative to the beginning of the file. This is probably what you had in mind anyway, and is the most commonly used value for whence.
   /// | SEEK_CUR |  1  | position is relative to the current file pointer position. So, in effect, you can say, "Move to my current position plus 30 bytes," or, "move to my current position minus 20 bytes."
   /// | SEEK_END |  2  | position is relative to the end of the file. Just like SEEK_SET except from the other end of the file. Be sure to use negative values for offset if you want to back up from the end of the file, instead of going past the end into oblivion.
   ///
-  /// @return                         Returns the resulting offset location as
-  ///                                 measured in bytes from the beginning of
-  ///                                 the file. On error, the value -1 is
-  ///                                 returned.
+  /// @return Returns the resulting offset location as measured in bytes from
+  ///         the beginning of the file. On error, the value -1 is returned.
   ///
   int64_t Seek(int64_t position, int whence = SEEK_SET)
   {
@@ -1549,13 +1641,11 @@ public:
   //--------------------------------------------------------------------------
 
   //==========================================================================
-  ///
   /// @ingroup cpp_kodi_vfs_CFile
   /// @brief Truncate a file to the requested size.
   ///
-  /// @param[in] size                 The new max size.
-  /// @return                         New size? On error, the value -1 is
-  ///                                 returned.
+  /// @param[in] size The new max size.
+  /// @return New size? On error, the value -1 is returned.
   ///
   int Truncate(int64_t size)
   {
@@ -1569,12 +1659,10 @@ public:
   //--------------------------------------------------------------------------
 
   //==========================================================================
-  ///
   /// @ingroup cpp_kodi_vfs_CFile
   /// @brief The current offset in an open file.
   ///
-  /// @return                 The requested offset. On error, the value -1 is
-  ///                         returned.
+  /// @return The requested offset. On error, the value -1 is returned.
   ///
   int64_t GetPosition()
   {
@@ -1588,12 +1676,10 @@ public:
   //--------------------------------------------------------------------------
 
   //==========================================================================
-  ///
   /// @ingroup cpp_kodi_vfs_CFile
   /// @brief Get the file size of an open file.
   ///
-  /// @return                 The requested size. On error, the value -1 is
-  ///                         returned.
+  /// @return The requested size. On error, the value -1 is returned.
   ///
   int64_t GetLength()
   {
@@ -1607,11 +1693,10 @@ public:
   //--------------------------------------------------------------------------
 
   //==========================================================================
-  ///
   /// @ingroup cpp_kodi_vfs_CFile
   /// @brief Checks the file access is on end position.
   ///
-  /// @return                 If you've reached the end of the file, AtEnd() returns true.
+  /// @return If you've reached the end of the file, AtEnd() returns true.
   ///
   bool AtEnd()
   {
@@ -1628,29 +1713,10 @@ public:
   //--------------------------------------------------------------------------
 
   //==========================================================================
-  ///
-  /// @ingroup cpp_kodi_vfs_CFile
-  /// @brief Close an open file.
-  ///
-  void Close()
-  {
-    using namespace kodi::addon;
-
-    if (!m_file)
-      return;
-    CAddonBase::m_interface->toKodi->kodi_filesystem->close_file(
-        CAddonBase::m_interface->toKodi->kodiBase, m_file);
-    m_file = nullptr;
-  }
-  //--------------------------------------------------------------------------
-
-  //==========================================================================
-  ///
   /// @ingroup cpp_kodi_vfs_CFile
   /// @brief Get the chunk size for an open file.
   ///
-  /// @return                 The requested size. On error, the value -1 is
-  ///                         returned.
+  /// @return The requested size. On error, the value -1 is returned.
   ///
   int GetChunkSize()
   {
@@ -1664,13 +1730,12 @@ public:
   //--------------------------------------------------------------------------
 
   //==========================================================================
-  ///
   /// @ingroup cpp_kodi_vfs_CFile
-  /// @brief retrieve a file property
+  /// @brief Retrieve a file property.
   ///
-  /// @param[in] type         The type of the file property to retrieve the value for
-  /// @param[in] name         The name of a named property value (e.g. Header)
-  /// @return                 value of requested property, empty on failure / non-existance
+  /// @param[in] type The type of the file property to retrieve the value for
+  /// @param[in] name The name of a named property value (e.g. Header)
+  /// @return value of requested property, empty on failure / non-existance
   ///
   const std::string GetPropertyValue(FilePropertyTypes type, const std::string& name) const
   {
@@ -1692,13 +1757,12 @@ public:
   //--------------------------------------------------------------------------
 
   //==========================================================================
-  ///
   /// @ingroup cpp_kodi_vfs_CFile
-  /// @brief retrieve file property values
+  /// @brief Retrieve file property values.
   ///
-  /// @param[in] type         The type of the file property values to retrieve the value for
-  /// @param[in] name         The name of the named property (e.g. Header)
-  /// @return                 values of requested property, empty vector on failure / non-existance
+  /// @param[in] type The type of the file property values to retrieve the value for
+  /// @param[in] name The name of the named property (e.g. Header)
+  /// @return values of requested property, empty vector on failure / non-existance
   ///
   const std::vector<std::string> GetPropertyValues(FilePropertyTypes type,
                                                    const std::string& name) const
@@ -1730,11 +1794,10 @@ public:
   //--------------------------------------------------------------------------
 
   //==========================================================================
-  ///
   /// @ingroup cpp_kodi_vfs_CFile
   /// @brief Get the current download speed of file if loaded from web.
   ///
-  /// @return                 The current download speed.
+  /// @return The current download speed.
   ///
   double GetFileDownloadSpeed()
   {
@@ -1751,7 +1814,9 @@ private:
   void* m_file = nullptr;
 };
 //@}
-//----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
+
+//}}}
 
 } /* namespace vfs */
 } /* namespace kodi */
