@@ -56,6 +56,11 @@ struct Interface_Filesystem
   static char* make_legal_filename(void* kodiBase, const char* filename);
   static char* make_legal_path(void* kodiBase, const char* path);
   static char* translate_special_protocol(void* kodiBase, const char* strSource);
+  static bool is_internet_stream(void* kodiBase, const char* path, bool strictCheck);
+  static bool is_on_lan(void* kodiBase, const char* path);
+  static bool is_remote(void* kodiBase, const char* path);
+  static bool is_local(void* kodiBase, const char* path);
+  static bool is_url(void* kodiBase, const char* path);
 
   static void* open_file(void* kodiBase, const char* filename, unsigned int flags);
   static void* open_file_for_write(void* kodiBase, const char* filename, bool overwrite);

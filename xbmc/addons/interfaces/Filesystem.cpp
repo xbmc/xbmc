@@ -56,6 +56,11 @@ void Interface_Filesystem::Init(AddonGlobalInterface* addonInterface)
   addonInterface->toKodi->kodi_filesystem->make_legal_filename = make_legal_filename;
   addonInterface->toKodi->kodi_filesystem->make_legal_path = make_legal_path;
   addonInterface->toKodi->kodi_filesystem->translate_special_protocol = translate_special_protocol;
+  addonInterface->toKodi->kodi_filesystem->is_internet_stream = is_internet_stream;
+  addonInterface->toKodi->kodi_filesystem->is_on_lan = is_on_lan;
+  addonInterface->toKodi->kodi_filesystem->is_remote = is_remote;
+  addonInterface->toKodi->kodi_filesystem->is_local = is_local;
+  addonInterface->toKodi->kodi_filesystem->is_url = is_url;
 
   addonInterface->toKodi->kodi_filesystem->open_file = open_file;
   addonInterface->toKodi->kodi_filesystem->open_file_for_write = open_file_for_write;
@@ -383,6 +388,71 @@ char* Interface_Filesystem::translate_special_protocol(void* kodiBase, const cha
   }
 
   return strdup(CSpecialProtocol::TranslatePath(strSource).c_str());
+}
+
+bool Interface_Filesystem::is_internet_stream(void* kodiBase, const char* path, bool strictCheck)
+{
+  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
+  if (addon == nullptr || path == nullptr)
+  {
+    CLog::Log(LOGERROR, "Interface_Filesystem::{} - invalid data (addon='{}', path='{})",
+              __FUNCTION__, kodiBase, static_cast<const void*>(path));
+    return false;
+  }
+
+  return URIUtils::IsInternetStream(path, strictCheck);
+}
+
+bool Interface_Filesystem::is_on_lan(void* kodiBase, const char* path)
+{
+  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
+  if (addon == nullptr || path == nullptr)
+  {
+    CLog::Log(LOGERROR, "Interface_Filesystem::{} - invalid data (addon='{}', path='{})",
+              __FUNCTION__, kodiBase, static_cast<const void*>(path));
+    return false;
+  }
+
+  return URIUtils::IsOnLAN(path);
+}
+
+bool Interface_Filesystem::is_remote(void* kodiBase, const char* path)
+{
+  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
+  if (addon == nullptr || path == nullptr)
+  {
+    CLog::Log(LOGERROR, "Interface_Filesystem::{} - invalid data (addon='{}', path='{})",
+              __FUNCTION__, kodiBase, static_cast<const void*>(path));
+    return false;
+  }
+
+  return URIUtils::IsRemote(path);
+}
+
+bool Interface_Filesystem::is_local(void* kodiBase, const char* path)
+{
+  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
+  if (addon == nullptr || path == nullptr)
+  {
+    CLog::Log(LOGERROR, "Interface_Filesystem::{} - invalid data (addon='{}', path='{})",
+              __FUNCTION__, kodiBase, static_cast<const void*>(path));
+    return false;
+  }
+
+  return CURL(path).IsLocal();
+}
+
+bool Interface_Filesystem::is_url(void* kodiBase, const char* path)
+{
+  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
+  if (addon == nullptr || path == nullptr)
+  {
+    CLog::Log(LOGERROR, "Interface_Filesystem::{} - invalid data (addon='{}', path='{})",
+              __FUNCTION__, kodiBase, static_cast<const void*>(path));
+    return false;
+  }
+
+  return URIUtils::IsURL(path);
 }
 
 //------------------------------------------------------------------------------

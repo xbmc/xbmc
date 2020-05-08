@@ -223,6 +223,11 @@ extern "C"
     char* (*make_legal_filename)(void* kodiBase, const char* filename);
     char* (*make_legal_path)(void* kodiBase, const char* path);
     char* (*translate_special_protocol)(void* kodiBase, const char* strSource);
+    bool (*is_internet_stream)(void* kodiBase, const char* path, bool strictCheck);
+    bool (*is_on_lan)(void* kodiBase, const char* path);
+    bool (*is_remote)(void* kodiBase, const char* path);
+    bool (*is_local)(void* kodiBase, const char* path);
+    bool (*is_url)(void* kodiBase, const char* path);
 
     void* (*open_file)(void* kodiBase, const char* filename, unsigned int flags);
     void* (*open_file_for_write)(void* kodiBase, const char* filename, bool overwrite);
@@ -1386,6 +1391,171 @@ inline unsigned int GetChunkSize(unsigned int chunk, unsigned int minimum)
     return minimum;
 }
 //------------------------------------------------------------------------------
+
+//==============================================================================
+/// @ingroup cpp_kodi_vfs_General
+/// @brief Checks the given path contains a known internet protocol.
+///
+/// About following protocols are the path checked:
+/// | Protocol | Return true condition | Protocol | Return true condition
+/// |----------|-----------------------|----------|-----------------------
+/// | **dav**  | strictCheck = true    | **rtmps**    | always
+/// | **davs** | strictCheck = true    | **rtmpt**    | always
+/// | **ftp**  | strictCheck = true    | **rtmpte**   | always
+/// | **ftps** | strictCheck = true    | **rtp**      | always
+/// | **http** | always                | **rtsp**     | always
+/// | **https**| always                | **sdp**      | always
+/// | **mms**  | always                | **sftp**     | strictCheck = true
+/// | **mmsh** | always                | **stack**    | always
+/// | **mmst** | always                | **tcp**      | always
+/// | **rtmp** | always                | **udp**      | always
+/// | **rtmpe**| always                |              | |
+///
+/// @param[in] path To checked path/URL
+/// @param[in] strictCheck [opt] If True the set of protocols used will be
+///                        extended to include ftp, ftps, dav, davs and sftp.
+/// @return True if path is to a internet stream, false otherwise
+///
+///
+/// ------------------------------------------------------------------------
+///
+/// **Example:**
+/// ~~~~~~~~~~~~~{.cpp}
+/// #include <kodi/Filesystem.h>
+/// ...
+/// // Check should return false
+/// fprintf(stderr, "File name 1 is internet stream '%s' (should no)\n",
+///                     kodi::vfs::IsInternetStream("D:/my-file.mkv") ? "yes" : "no");
+///
+/// // Check should return true
+/// fprintf(stderr, "File name 2 is internet stream '%s' (should yes)\n",
+///                     kodi::vfs::IsInternetStream("http://distribution.bbb3d.renderfarming.net/video/mp4/bbb_sunflower_1080p_30fps_normal.mp4") ? "yes" : "no");
+///
+/// // Check should return false
+/// fprintf(stderr, "File name 1 is internet stream '%s' (should no)\n",
+///                     kodi::vfs::IsInternetStream("ftp://do-somewhere.com/the-file.mkv") ? "yes" : "no", false);
+///
+/// // Check should return true
+/// fprintf(stderr, "File name 1 is internet stream '%s' (should yes)\n",
+///                     kodi::vfs::IsInternetStream("ftp://do-somewhere.com/the-file.mkv") ? "yes" : "no", true);
+/// ~~~~~~~~~~~~~
+///
+inline bool IsInternetStream(const std::string& path, bool strictCheck = false)
+{
+  using namespace kodi::addon;
+
+  return CAddonBase::m_interface->toKodi->kodi_filesystem->is_internet_stream(
+      CAddonBase::m_interface->toKodi->kodiBase, path.c_str(), strictCheck);
+}
+//------------------------------------------------------------------------------
+
+//==============================================================================
+/// @ingroup cpp_kodi_vfs_General
+/// @brief Checks whether the specified path refers to a local network.
+///
+/// In difference to @ref IsHostOnLAN() include this more deeper checks where
+/// also handle Kodi's special protocol and stacks.
+///
+/// @param[in] path To checked path
+/// @return True if path is on LAN, false otherwise
+///
+/// @note Check includes @ref IsHostOnLAN() too.
+///
+///
+/// ------------------------------------------------------------------------
+///
+/// **Example:**
+/// ~~~~~~~~~~~~~{.cpp}
+/// #include <kodi/Filesystem.h>
+/// ...
+/// // Check should return true
+/// bool lan = kodi::vfs::IsOnLAN("smb://path/to/file");
+/// ~~~~~~~~~~~~~
+///
+inline bool IsOnLAN(const std::string& path)
+{
+  using namespace kodi::addon;
+
+  return CAddonBase::m_interface->toKodi->kodi_filesystem->is_on_lan(
+      CAddonBase::m_interface->toKodi->kodiBase, path.c_str());
+}
+//------------------------------------------------------------------------------
+
+//==============================================================================
+/// @ingroup cpp_kodi_vfs_General
+/// @brief Checks specified path for external network.
+///
+/// @param[in] path To checked path
+/// @return True if path is remote, false otherwise
+///
+/// @note This does not apply to the local network.
+///
+///
+/// ------------------------------------------------------------------------
+///
+/// **Example:**
+/// ~~~~~~~~~~~~~{.cpp}
+/// #include <kodi/Filesystem.h>
+/// ...
+/// // Check should return true
+/// bool remote = kodi::vfs::IsRemote("http://path/to/file");
+/// ~~~~~~~~~~~~~
+///
+inline bool IsRemote(const std::string& path)
+{
+  using namespace kodi::addon;
+
+  return CAddonBase::m_interface->toKodi->kodi_filesystem->is_remote(
+      CAddonBase::m_interface->toKodi->kodiBase, path.c_str());
+}
+//------------------------------------------------------------------------------
+
+//==============================================================================
+/// @ingroup cpp_kodi_vfs_General
+/// @brief Checks whether the given path refers to the own system.
+///
+/// @param[in] path To checked path
+/// @return True if path is local, false otherwise
+///
+inline bool IsLocal(const std::string& path)
+{
+  using namespace kodi::addon;
+
+  return CAddonBase::m_interface->toKodi->kodi_filesystem->is_local(
+      CAddonBase::m_interface->toKodi->kodiBase, path.c_str());
+}
+//------------------------------------------------------------------------------
+
+//==============================================================================
+/// @ingroup cpp_kodi_vfs_General
+/// @brief Checks specified path is a regular URL, e.g. "someprotocol://path/to/file"
+///
+/// @return True if file item is URL, false otherwise
+///
+///
+/// ------------------------------------------------------------------------
+///
+/// **Example:**
+/// ~~~~~~~~~~~~~{.cpp}
+/// #include <kodi/Filesystem.h>
+/// ...
+///
+/// bool isURL;
+/// // Check should return true
+/// isURL = kodi::vfs::IsURL("someprotocol://path/to/file");
+///
+/// // Check should return false
+/// isURL = kodi::vfs::IsURL("/path/to/file");
+/// ~~~~~~~~~~~~~
+///
+inline bool IsURL(const std::string& path)
+{
+  using namespace kodi::addon;
+
+  return CAddonBase::m_interface->toKodi->kodi_filesystem->is_url(
+      CAddonBase::m_interface->toKodi->kodiBase, path.c_str());
+}
+//--------------------------------------------------------------------------
 
 //}}}
 
