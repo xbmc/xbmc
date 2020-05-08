@@ -14,6 +14,7 @@
 #include "addons/kodi-addon-dev-kit/include/kodi/Network.h"
 #include "network/DNSNameCache.h"
 #include "network/Network.h"
+#include "utils/URIUtils.h"
 #include "utils/log.h"
 
 namespace ADDON
@@ -25,6 +26,9 @@ void Interface_Network::Init(AddonGlobalInterface *addonInterface)
 
   addonInterface->toKodi->kodi_network->wake_on_lan = wake_on_lan;
   addonInterface->toKodi->kodi_network->get_ip_address = get_ip_address;
+  addonInterface->toKodi->kodi_network->get_hostname = get_hostname;
+  addonInterface->toKodi->kodi_network->is_local_host = is_local_host;
+  addonInterface->toKodi->kodi_network->is_host_on_lan = is_host_on_lan;
   addonInterface->toKodi->kodi_network->dns_lookup = dns_lookup;
   addonInterface->toKodi->kodi_network->url_encode = url_encode;
 }
@@ -73,6 +77,52 @@ char* Interface_Network::get_ip_address(void* kodiBase)
   if (!titleIP.empty())
     buffer = strdup(titleIP.c_str());
   return buffer;
+}
+
+char* Interface_Network::get_hostname(void* kodiBase)
+{
+  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
+  if (addon == nullptr)
+  {
+    CLog::Log(LOGERROR, "Interface_Network::{} - invalid data (addon='{}')", __FUNCTION__,
+              kodiBase);
+    return nullptr;
+  }
+
+  std::string hostname;
+  if (!CServiceBroker::GetNetwork().GetHostName(hostname))
+    return nullptr;
+
+  char* buffer = nullptr;
+  if (!hostname.empty())
+    buffer = strdup(hostname.c_str());
+  return buffer;
+}
+
+bool Interface_Network::is_local_host(void* kodiBase, const char* hostname)
+{
+  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
+  if (addon == nullptr || hostname == nullptr)
+  {
+    CLog::Log(LOGERROR, "Interface_Network::{} - invalid data (addon='{}', hostname='{}')",
+              __FUNCTION__, kodiBase, static_cast<const void*>(hostname));
+    return false;
+  }
+
+  return CServiceBroker::GetNetwork().IsLocalHost(hostname);
+}
+
+bool Interface_Network::is_host_on_lan(void* kodiBase, const char* hostname, bool offLineCheck)
+{
+  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
+  if (addon == nullptr || hostname == nullptr)
+  {
+    CLog::Log(LOGERROR, "Interface_Network::{} - invalid data (addon='{}', hostname='{}')",
+              __FUNCTION__, kodiBase, static_cast<const void*>(hostname));
+    return false;
+  }
+
+  return URIUtils::IsHostOnLAN(hostname, offLineCheck);
 }
 
 char* Interface_Network::dns_lookup(void* kodiBase, const char* url, bool* ret)
