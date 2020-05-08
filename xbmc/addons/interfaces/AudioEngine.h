@@ -9,6 +9,7 @@
 #pragma once
 
 #include "addons/kodi-addon-dev-kit/include/kodi/AudioEngine.h"
+#include "cores/AudioEngine/Utils/AEChannelData.h"
 
 extern "C"
 {
@@ -21,13 +22,27 @@ struct Interface_AudioEngine
   static void DeInit(AddonGlobalInterface* addonInterface);
 
   /**
+   * @brief Translation functions to separate Kodi and addons
+   *
+   * This thought to make it more safe for cases as something changed inside
+   * Kodi, addons overseen and breaks API, further to have on addons a better
+   * documentation about this parts.
+   */
+  //@{
+  static AEChannel TranslateAEChannelToKodi(AudioEngineChannel channel);
+  static AudioEngineChannel TranslateAEChannelToAddon(AEChannel channel);
+  static AEDataFormat TranslateAEFormatToKodi(AudioEngineDataFormat format);
+  static AudioEngineDataFormat TranslateAEFormatToAddon(AEDataFormat format);
+  //@}
+
+  /**
    * Creates and returns a new handle to an IAEStream in the format specified, this function should never fail
    * @param[in] streamFormat Format to use for stream
    * @param[in] options A bit field of stream options (see: enum AEStreamOptions)
    * @return a new Handle to an IAEStream that will accept data in the requested format
    */
   static AEStreamHandle* audioengine_make_stream(void* kodiBase,
-                                                 AudioEngineFormat* streamFormat,
+                                                 AUDIO_ENGINE_FORMAT* streamFormat,
                                                  unsigned int options);
 
   /**
@@ -40,10 +55,10 @@ struct Interface_AudioEngine
   /**
    * Get the current sink data format
    *
-   * @param[in] sinkFormat sink data format. For more details see AudioEngineFormat.
+   * @param[in] sinkFormat sink data format. For more details see AUDIO_ENGINE_FORMAT.
    * @return Returns true on success, else false.
    */
-  static bool audioengine_get_current_sink_format(void* kodiBase, AudioEngineFormat* sinkFormat);
+  static bool get_current_sink_format(void* kodiBase, AUDIO_ENGINE_FORMAT* sinkFormat);
 
   /**
    * Returns the amount of space available in the stream
@@ -173,7 +188,8 @@ struct Interface_AudioEngine
    * Return the data format the stream has been configured with
    * @return The stream's data format (eg, AE_FMT_S16LE)
    */
-  static AEDataFormat aestream_get_data_format(void* kodiBase, AEStreamHandle* streamHandle);
+  static AudioEngineDataFormat aestream_get_data_format(void* kodiBase,
+                                                        AEStreamHandle* streamHandle);
 
   /**
    * Return the resample ratio
