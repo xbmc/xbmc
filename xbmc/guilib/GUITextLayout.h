@@ -108,7 +108,9 @@ protected:
   void LineBreakText(const vecText &text, std::vector<CGUIString> &lines);
   void WrapText(const vecText &text, float maxWidth);
   static void BidiTransform(std::vector<CGUIString> &lines, bool forceLTRReadingOrder);
-  static std::wstring BidiFlip(const std::wstring &text, bool forceLTRReadingOrder);
+  static std::wstring BidiFlip(const std::wstring& text,
+                               bool forceLTRReadingOrder,
+                               int* visualToLogicalMap = nullptr);
   void CalcTextExtent();
   void UpdateCommon(const std::wstring &text, float maxWidth, bool forceLTRReadingOrder);
 
