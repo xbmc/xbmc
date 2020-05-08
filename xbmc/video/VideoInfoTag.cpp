@@ -968,6 +968,8 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prioritise)
   if (XMLUtils::GetString(movie, "basepath", value))
     SetBasePath(value);
 
+  // make sure the picture URLs have been parsed
+  m_strPictureURL.Parse();
   size_t iThumbCount = m_strPictureURL.GetUrls().size();
   std::string xmlAdd = m_strPictureURL.GetData();
 

@@ -824,6 +824,7 @@ void CGUIDialogVideoInfo::OnGetArt()
     }
 
     // Grab the thumbnails from the web
+    m_movieItem->GetVideoInfoTag()->m_strPictureURL.Parse();
     std::vector<std::string> thumbs;
     int season = (m_movieItem->GetVideoInfoTag()->m_type == MediaTypeSeason) ? m_movieItem->GetVideoInfoTag()->m_iSeason : -1;
     m_movieItem->GetVideoInfoTag()->m_strPictureURL.GetThumbUrls(thumbs, type, season);
@@ -1951,6 +1952,7 @@ bool CGUIDialogVideoInfo::ManageVideoItemArtwork(const CFileItemPtr &item, const
     if (type == MediaTypeSeason)
     {
       videodb.GetTvShowInfo("", tag, item->GetVideoInfoTag()->m_iIdShow);
+      tag.m_strPictureURL.Parse();
       tag.m_strPictureURL.GetThumbUrls(thumbs, artType, item->GetVideoInfoTag()->m_iSeason);
     }
     else if (type == MediaTypeVideoCollection)
@@ -1970,6 +1972,7 @@ bool CGUIDialogVideoInfo::ManageVideoItemArtwork(const CFileItemPtr &item, const
     else
     {
       tag = *item->GetVideoInfoTag();
+      tag.m_strPictureURL.Parse();
       tag.m_strPictureURL.GetThumbUrls(thumbs, artType);
     }
 

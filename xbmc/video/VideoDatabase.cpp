@@ -4039,8 +4039,6 @@ CVideoInfoTag CVideoDatabase::GetDetailsForMovie(const dbiplus::sql_record* cons
     if (getDetails & VideoDbDetailsUniqueID)
      GetUniqueIDs(details.m_iDbId, MediaTypeMovie, details);
 
-    details.m_strPictureURL.Parse();
-
     if (getDetails & VideoDbDetailsShowLink)
     {
       // create tvshowlink string
@@ -4118,8 +4116,6 @@ CVideoInfoTag CVideoDatabase::GetDetailsForTvShow(const dbiplus::sql_record* con
 
     if (getDetails & VideoDbDetailsUniqueID)
       GetUniqueIDs(details.m_iDbId, MediaTypeTvShow, details);
-
-    details.m_strPictureURL.Parse();
 
     details.m_parsedDetails = getDetails;
   }
@@ -4218,8 +4214,6 @@ CVideoInfoTag CVideoDatabase::GetDetailsForEpisode(const dbiplus::sql_record* co
     if (getDetails & VideoDbDetailsUniqueID)
       GetUniqueIDs(details.m_iDbId, MediaTypeEpisode, details);
 
-    details.m_strPictureURL.Parse();
-
     if (getDetails &  VideoDbDetailsBookmark)
       GetBookMarkForEpisode(details, details.m_EpBookmark);
 
@@ -4273,8 +4267,6 @@ CVideoInfoTag CVideoDatabase::GetDetailsForMusicVideo(const dbiplus::sql_record*
   {
     if (getDetails & VideoDbDetailsTag)
       GetTags(details.m_iDbId, MediaTypeMusicVideo, details.m_tags);
-
-    details.m_strPictureURL.Parse();
 
     if (getDetails & VideoDbDetailsStream)
       GetStreamDetails(details);
@@ -4764,15 +4756,19 @@ bool CVideoDatabase::GetArtTypes(const MediaType &mediaType, std::vector<std::st
 
 namespace
 {
-std::vector<std::string> GetBasicItemAvailableArtTypes(const CVideoInfoTag& tag)
+std::vector<std::string> GetBasicItemAvailableArtTypes(int mediaId,
+                                                       VIDEODB_CONTENT_TYPE dbType,
+                                                       CVideoDatabase& db)
 {
   std::vector<std::string> result;
+  CVideoInfoTag tag = db.GetDetailsByTypeAndId(dbType, mediaId);
 
   //! @todo artwork: fanart stored separately, doesn't need to be
   if (tag.m_fanart.GetNumFanarts() && std::find(result.cbegin(), result.cend(), "fanart") == result.cend())
     result.emplace_back("fanart");
 
   // all other images
+  tag.m_strPictureURL.Parse();
   for (const auto& urlEntry : tag.m_strPictureURL.GetUrls())
   {
     std::string artType = urlEntry.m_aspect;
@@ -4797,6 +4793,7 @@ std::vector<std::string> GetSeasonAvailableArtTypes(int mediaId, CVideoDatabase&
 
   CVideoInfoTag sourceShow;
   db.GetTvShowInfo("", sourceShow, tag.m_iIdShow);
+  sourceShow.m_strPictureURL.Parse();
   for (const auto& urlEntry : sourceShow.m_strPictureURL.GetUrls())
   {
     std::string artType = urlEntry.m_aspect;
@@ -4852,10 +4849,7 @@ std::vector<std::string> CVideoDatabase::GetAvailableArtTypesForItem(int mediaId
     dbType = VIDEODB_CONTENT_MUSICVIDEOS;
 
   if (dbType != VIDEODB_CONTENT_UNKNOWN)
-  {
-    CVideoInfoTag tag = GetDetailsByTypeAndId(dbType, mediaId);
-    return GetBasicItemAvailableArtTypes(tag);
-  }
+    return GetBasicItemAvailableArtTypes(mediaId, dbType, *this);
   if (mediaType == MediaTypeSeason)
     return GetSeasonAvailableArtTypes(mediaId, *this);
   if (mediaType == MediaTypeVideoCollection)
