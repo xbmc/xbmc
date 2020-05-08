@@ -8,44 +8,17 @@
 
 #pragma once
 
-#include "AddonBase.h"
+#include "c-api/network.h"
 
 #ifdef __cplusplus
-extern "C"
-{
-#endif /* __cplusplus */
-
-  /*
-   * For interface between add-on and kodi.
-   *
-   * This structure defines the addresses of functions stored inside Kodi which
-   * are then available for the add-on to call
-   *
-   * All function pointers there are used by the C++ interface functions below.
-   * You find the set of them on xbmc/addons/interfaces/General.cpp
-   *
-   * Note: For add-on development itself this is not needed
-   */
-  typedef struct AddonToKodiFuncTable_kodi_network
-  {
-    bool (*wake_on_lan)(KODI_HANDLE kodiBase, const char* mac);
-    char* (*get_ip_address)(KODI_HANDLE kodiBase);
-    char* (*dns_lookup)(KODI_HANDLE kodiBase, const char* url, bool* ret);
-    char* (*url_encode)(KODI_HANDLE kodiBase, const char* url);
-  } AddonToKodiFuncTable_kodi_network;
-
-#ifdef __cplusplus
-} /* extern "C" */
 
 //==============================================================================
-///
-/// \defgroup cpp_kodi_network  Interface - kodi::network
-/// \ingroup cpp
-/// @brief **Network functions**
-///
+/// @defgroup cpp_kodi_network  Interface - kodi::network
+/// @ingroup cpp
+/// @brief **Network functions**\n
 /// The network module offers functions that allow you to control it.
 ///
-/// It has the header \ref Network.h "#include <kodi/Network.h>" be included
+/// It has the header @ref Network.h "#include <kodi/Network.h>" be included
 /// to enjoy it.
 ///
 //------------------------------------------------------------------------------
@@ -56,8 +29,7 @@ namespace network
 {
 
 //============================================================================
-///
-/// \ingroup cpp_kodi_network
+/// @ingroup cpp_kodi_network
 /// @brief Send WakeOnLan magic packet.
 ///
 /// @param[in] mac Network address of the host to wake.
@@ -73,8 +45,7 @@ inline bool WakeOnLan(const std::string& mac)
 //----------------------------------------------------------------------------
 
 //============================================================================
-///
-/// \ingroup cpp_kodi_network
+/// @ingroup cpp_kodi_network
 /// @brief To the current own ip address as a string.
 ///
 /// @return Own system ip.
@@ -108,8 +79,86 @@ inline std::string GetIPAddress()
 //----------------------------------------------------------------------------
 
 //============================================================================
+/// @ingroup cpp_kodi_network
+/// @brief Return our hostname.
 ///
-/// \ingroup cpp_kodi_network
+/// @return String about hostname, empty in case of error
+///
+///
+/// ------------------------------------------------------------------------
+///
+/// **Example:**
+/// ~~~~~~~~~~~~~{.cpp}
+/// #include <kodi/Network.h>
+/// ...
+/// std::string hostname = kodi::network::GetHostname();
+/// fprintf(stderr, "My hostname is '%s'\n", hostname.c_str());
+/// ...
+/// ~~~~~~~~~~~~~
+///
+inline std::string GetHostname()
+{
+  using namespace ::kodi::addon;
+
+  std::string ip;
+  char* string = CAddonBase::m_interface->toKodi->kodi_network->get_hostname(
+      CAddonBase::m_interface->toKodi->kodiBase);
+  if (string != nullptr)
+  {
+    ip = string;
+    CAddonBase::m_interface->toKodi->free_string(CAddonBase::m_interface->toKodi->kodiBase, string);
+  }
+  return ip;
+}
+//----------------------------------------------------------------------------
+
+//============================================================================
+/// @ingroup cpp_kodi_network
+/// @brief Check given name or ip address corresponds to localhost.
+///
+/// @param[in] hostname Hostname to check
+/// @return Return true if given name or ip address corresponds to localhost
+///
+///
+/// ------------------------------------------------------------------------
+///
+/// **Example:**
+/// ~~~~~~~~~~~~~{.cpp}
+/// #include <kodi/Network.h>
+/// ...
+/// if (kodi::network::IsLocalHost("127.0.0.1"))
+///   fprintf(stderr, "Is localhost\n");
+/// ...
+/// ~~~~~~~~~~~~~
+///
+inline bool IsLocalHost(const std::string& hostname)
+{
+  using namespace ::kodi::addon;
+
+  return CAddonBase::m_interface->toKodi->kodi_network->is_local_host(
+      CAddonBase::m_interface->toKodi->kodiBase, hostname.c_str());
+}
+//----------------------------------------------------------------------------
+
+//==============================================================================
+/// @ingroup cpp_kodi_network
+/// @brief Checks whether the specified path refers to a local network.
+///
+/// @param[in] hostname Hostname to check
+/// @param[in] offLineCheck Check if in private range, see https://en.wikipedia.org/wiki/Private_network
+/// @return True if host is on a LAN, false otherwise
+///
+inline bool IsHostOnLAN(const std::string& hostname, bool offLineCheck = false)
+{
+  using namespace kodi::addon;
+
+  return CAddonBase::m_interface->toKodi->kodi_network->is_host_on_lan(
+      CAddonBase::m_interface->toKodi->kodiBase, hostname.c_str(), offLineCheck);
+}
+//------------------------------------------------------------------------------
+
+//============================================================================
+/// @ingroup cpp_kodi_network
 /// @brief URL encodes the given string
 ///
 /// This function converts the given input string to a URL encoded string and
@@ -150,8 +199,7 @@ inline std::string URLEncode(const std::string& url)
 //----------------------------------------------------------------------------
 
 //============================================================================
-///
-/// \ingroup cpp_kodi_network
+/// @ingroup cpp_kodi_network
 /// @brief Lookup URL in DNS cache
 ///
 /// This test will get DNS record for a domain. The DNS lookup is done directly
