@@ -113,7 +113,7 @@ bool CBinaryAddonBase::MeetsVersion(const AddonVersion& versionMin,
   return m_addonInfo->MeetsVersion(versionMin, version);
 }
 
-AddonDllPtr CBinaryAddonBase::GetAddon(const IAddonInstanceHandler* handler)
+AddonDllPtr CBinaryAddonBase::GetAddon(IAddonInstanceHandler* handler)
 {
   if (handler == nullptr)
   {
@@ -133,7 +133,7 @@ AddonDllPtr CBinaryAddonBase::GetAddon(const IAddonInstanceHandler* handler)
   return m_activeAddon;
 }
 
-void CBinaryAddonBase::ReleaseAddon(const IAddonInstanceHandler* handler)
+void CBinaryAddonBase::ReleaseAddon(IAddonInstanceHandler* handler)
 {
   if (handler == nullptr)
   {
@@ -162,3 +162,30 @@ AddonDllPtr CBinaryAddonBase::GetActiveAddon()
   return m_activeAddon;
 }
 
+void CBinaryAddonBase::OnPreInstall()
+{
+  const std::unordered_set<IAddonInstanceHandler*> activeAddonHandlers = m_activeAddonHandlers;
+  for (const auto& instance : activeAddonHandlers)
+    instance->OnPreInstall();
+}
+
+void CBinaryAddonBase::OnPostInstall(bool update, bool modal)
+{
+  const std::unordered_set<IAddonInstanceHandler*> activeAddonHandlers = m_activeAddonHandlers;
+  for (const auto& instance : activeAddonHandlers)
+    instance->OnPostInstall(update, modal);
+}
+
+void CBinaryAddonBase::OnPreUnInstall()
+{
+  const std::unordered_set<IAddonInstanceHandler*> activeAddonHandlers = m_activeAddonHandlers;
+  for (const auto& instance : activeAddonHandlers)
+    instance->OnPreUnInstall();
+}
+
+void CBinaryAddonBase::OnPostUnInstall()
+{
+  const std::unordered_set<IAddonInstanceHandler*> activeAddonHandlers = m_activeAddonHandlers;
+  for (const auto& instance : activeAddonHandlers)
+    instance->OnPostUnInstall();
+}

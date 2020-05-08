@@ -337,6 +337,30 @@ AddonPtr CAddonDll::GetRunningInstance() const
   return AddonPtr();
 }
 
+void CAddonDll::OnPreInstall()
+{
+  if (m_binaryAddonBase)
+    m_binaryAddonBase->OnPreInstall();
+}
+
+void CAddonDll::OnPostInstall(bool update, bool modal)
+{
+  if (m_binaryAddonBase)
+    m_binaryAddonBase->OnPostInstall(update, modal);
+}
+
+void CAddonDll::OnPreUnInstall()
+{
+  if (m_binaryAddonBase)
+    m_binaryAddonBase->OnPreUnInstall();
+}
+
+void CAddonDll::OnPostUnInstall()
+{
+  if (m_binaryAddonBase)
+    m_binaryAddonBase->OnPostUnInstall();
+}
+
 bool CAddonDll::DllLoaded(void) const
 {
   return m_pDll != nullptr;

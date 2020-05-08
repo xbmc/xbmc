@@ -102,14 +102,6 @@ namespace PVR
     void OnAddonEvent(const ADDON::AddonEvent& event);
 
     /*!
-     * @brief Get a client given its ID.
-     * @param strId The ID of the client.
-     * @param addon On success, filled with the client matching the given ID, null otherwise.
-     * @return True if the client was found, false otherwise.
-     */
-    bool GetClient(const std::string& strId, ADDON::AddonPtr& addon) const;
-
-    /*!
      * @brief Get a client's numeric ID given its string ID.
      * @param strId The string ID.
      * @return The numeric ID matching the given string ID, -1 on error.
@@ -344,7 +336,7 @@ namespace PVR
      * @param id The addon id.
      * @return True if the the addon represents a created client, false otherwise.
      */
-    bool IsCreatedClient(const std::string& id);
+    bool IsCreatedClient(const std::string& id) const;
 
     /*!
      * @brief Get all created clients and clients not (yet) ready to use.

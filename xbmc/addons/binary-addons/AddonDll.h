@@ -102,6 +102,11 @@ public:
 
   AddonPtr GetRunningInstance() const override;
 
+  void OnPreInstall() override;
+  void OnPostInstall(bool update, bool modal) override;
+  void OnPreUnInstall() override;
+  void OnPostUnInstall() override;
+
   bool Initialized() const { return m_initialized; }
 
 protected:

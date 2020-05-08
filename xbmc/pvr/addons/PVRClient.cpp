@@ -56,8 +56,8 @@ namespace PVR
 
 #define DEFAULT_INFO_STRING_VALUE "unknown"
 
-CPVRClient::CPVRClient(const AddonInfoPtr& addonInfo)
-  : CAddonDll(addonInfo, ADDON_PVRDLL)
+CPVRClient::CPVRClient(ADDON::BinaryAddonBasePtr addonBase)
+  : IAddonInstanceHandler(ADDON_INSTANCE_PVR, addonBase)
 {
   // Create all interface parts independent to make API changes easier if
   // something is added
@@ -79,33 +79,20 @@ CPVRClient::~CPVRClient()
 
 void CPVRClient::StopRunningInstance()
 {
-  const ADDON::AddonPtr addon(GetRunningInstance());
-  if (addon)
-  {
-    // stop the pvr manager and stop and unload the running pvr addon. pvr manager will be restarted on demand.
-    CServiceBroker::GetPVRManager().Stop();
-    CServiceBroker::GetPVRManager().Clients()->StopClient(addon->ID(), false);
-  }
+  // stop the pvr manager and stop and unload the running pvr addon. pvr manager will be restarted on demand.
+  CServiceBroker::GetPVRManager().Stop();
+  CServiceBroker::GetPVRManager().Clients()->StopClient(ID(), false);
 }
 
 void CPVRClient::OnPreInstall()
 {
   // note: this method is also called on update; thus stop and unload possibly running instance
   StopRunningInstance();
-  CAddon::OnPreInstall();
 }
 
 void CPVRClient::OnPreUnInstall()
 {
   StopRunningInstance();
-  CAddon::OnPreUnInstall();
-}
-
-ADDON::AddonPtr CPVRClient::GetRunningInstance() const
-{
-  ADDON::AddonPtr addon;
-  CServiceBroker::GetPVRManager().Clients()->GetClient(ID(), addon);
-  return addon;
 }
 
 void CPVRClient::ResetProperties(int iClientId /* = PVR_INVALID_CLIENT_ID */)
@@ -173,16 +160,11 @@ ADDON_STATUS CPVRClient::Create(int iClientId)
   /* initialise the add-on */
   bool bReadyToUse(false);
   CLog::LogFC(LOGDEBUG, LOGPVR, "Creating PVR add-on instance '%s'", Name().c_str());
-  if ((status = CAddonDll::Create(ADDON_INSTANCE_PVR, &m_struct, m_struct.props)) == ADDON_STATUS_OK)
+  if ((status = CreateInstance(&m_struct)) == ADDON_STATUS_OK)
     bReadyToUse = GetAddonProperties();
 
   m_bReadyToUse = bReadyToUse;
   return status;
-}
-
-bool CPVRClient::DllLoaded() const
-{
-  return CAddonDll::DllLoaded();
 }
 
 void CPVRClient::Destroy()
@@ -196,7 +178,7 @@ void CPVRClient::Destroy()
   CLog::LogFC(LOGDEBUG, LOGPVR, "Destroying PVR add-on instance '%s'", GetFriendlyName().c_str());
 
   /* destroy the add-on */
-  CAddonDll::Destroy();
+  DestroyInstance();
 
   if (m_menuhooks)
     m_menuhooks->Clear();

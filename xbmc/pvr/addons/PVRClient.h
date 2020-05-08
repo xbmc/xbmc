@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include "addons/binary-addons/AddonDll.h"
+#include "addons/binary-addons/AddonInstanceHandler.h"
 #include "addons/kodi-addon-dev-kit/include/kodi/addon-instance/PVR.h"
 
 #include <atomic>
@@ -221,15 +221,14 @@ namespace PVR
    *
    * Also translates Kodi's C++ structures to the add-on's C structures.
    */
-  class CPVRClient : public ADDON::CAddonDll
+  class CPVRClient : public ADDON::IAddonInstanceHandler
   {
   public:
-    explicit CPVRClient(const ADDON::AddonInfoPtr& addonInfo);
+    explicit CPVRClient(ADDON::BinaryAddonBasePtr addonBase);
     ~CPVRClient() override;
 
     void OnPreInstall() override;
     void OnPreUnInstall() override;
-    ADDON::AddonPtr GetRunningInstance() const override;
 
     /** @name PVR add-on methods */
     //@{
@@ -239,11 +238,6 @@ namespace PVR
      * @param iClientId The ID of this add-on.
      */
     ADDON_STATUS Create(int iClientId);
-
-    /*!
-     * @return True when the dll for this add-on was loaded, false otherwise (e.g. unresolved symbols)
-     */
-    bool DllLoaded() const;
 
     /*!
      * @brief Stop this add-on instance. No more client add-on access after this call.

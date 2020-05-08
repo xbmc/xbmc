@@ -9,7 +9,7 @@
 #include "PVRClients.h"
 
 #include "ServiceBroker.h"
-#include "addons/BinaryAddonCache.h"
+#include "addons/binary-addons/BinaryAddonBase.h"
 #include "guilib/LocalizeStrings.h"
 #include "messaging/ApplicationMessenger.h"
 #include "pvr/PVREventLogJob.h"
@@ -85,17 +85,17 @@ void CPVRClients::Continue()
 
 void CPVRClients::UpdateAddons(const std::string& changedAddonId /*= ""*/)
 {
-  VECADDONS addons;
-  CServiceBroker::GetAddonMgr().GetInstalledAddons(addons, ADDON_PVRDLL);
+  BinaryAddonBaseList addons;
+  CServiceBroker::GetBinaryAddonManager().GetAddonInfos(addons, false, ADDON_PVRDLL);
 
   if (addons.empty())
     return;
 
   bool bFoundChangedAddon = changedAddonId.empty();
-  std::vector<std::pair<AddonPtr, bool>> addonsWithStatus;
-  for (const auto& addon : addons)
+  std::vector<std::pair<BinaryAddonBasePtr, bool>> addonsWithStatus;
+  for (const auto &addon : addons)
   {
-    bool bEnabled = !CServiceBroker::GetAddonMgr().IsAddonDisabled(addon->ID());
+    bool bEnabled = CServiceBroker::GetBinaryAddonManager().IsAddonEnabled(addon->ID());
     addonsWithStatus.emplace_back(std::make_pair(addon, bEnabled));
 
     if (!bFoundChangedAddon && addon->ID() == changedAddonId)
@@ -108,14 +108,14 @@ void CPVRClients::UpdateAddons(const std::string& changedAddonId /*= ""*/)
   addons.clear();
 
   std::vector<std::pair<std::shared_ptr<CPVRClient>, int>> addonsToCreate;
-  std::vector<AddonPtr> addonsToReCreate;
-  std::vector<AddonPtr> addonsToDestroy;
+  std::vector<BinaryAddonBasePtr> addonsToReCreate;
+  std::vector<BinaryAddonBasePtr> addonsToDestroy;
 
   {
     CSingleLock lock(m_critSection);
     for (const auto& addonWithStatus : addonsWithStatus)
     {
-      AddonPtr addon = addonWithStatus.first;
+      BinaryAddonBasePtr addon = addonWithStatus.first;
       bool bEnabled = addonWithStatus.second;
 
       if (bEnabled && (!IsKnownClient(addon->ID()) || !IsCreatedClient(addon->ID())))
@@ -129,7 +129,7 @@ void CPVRClients::UpdateAddons(const std::string& changedAddonId /*= ""*/)
         }
         else
         {
-          client = std::dynamic_pointer_cast<CPVRClient>(addon);
+          client = std::make_shared<CPVRClient>(addon);
           if (!client)
           {
             CLog::LogF(LOGERROR, "Severe error, incorrect add-on type");
@@ -254,20 +254,6 @@ void CPVRClients::OnAddonEvent(const AddonEvent& event)
 // client access
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-bool CPVRClients::GetClient(const std::string& strId, AddonPtr& addon) const
-{
-  CSingleLock lock(m_critSection);
-  for (const auto& client : m_clientMap)
-  {
-    if (client.second->ID() == strId)
-    {
-      addon = client.second;
-      return true;
-    }
-  }
-  return false;
-}
-
 bool CPVRClients::GetClient(int iClientId, std::shared_ptr<CPVRClient>& addon) const
 {
   bool bReturn = false;
@@ -337,7 +323,7 @@ bool CPVRClients::IsCreatedClient(int iClientId) const
   return GetCreatedClient(iClientId, client);
 }
 
-bool CPVRClients::IsCreatedClient(const std::string& id)
+bool CPVRClients::IsCreatedClient(const std::string& id) const
 {
   CSingleLock lock(m_critSection);
   for (const auto& client : m_clientMap)
@@ -377,9 +363,8 @@ PVR_ERROR CPVRClients::GetCreatedClients(CPVRClientMap& clientsReady, std::vecto
 {
   clientsNotReady.clear();
 
-  VECADDONS addons;
-  CBinaryAddonCache& addonCache = CServiceBroker::GetBinaryAddonCache();
-  addonCache.GetAddons(addons, ADDON::ADDON_PVRDLL);
+  BinaryAddonBaseList addons;
+  CServiceBroker::GetBinaryAddonManager().GetAddonInfos(addons, true, ADDON::ADDON_PVRDLL);
 
   for (const auto& addon : addons)
   {
