@@ -173,6 +173,14 @@ extern "C"
     bool isSymLink;
   };
 
+  struct VFS_CACHE_STATUS_DATA
+  {
+    uint64_t forward;
+    unsigned int maxrate;
+    unsigned int currate;
+    bool lowspeed;
+  };
+
   struct VFSProperty
   {
     char* name;
@@ -229,6 +237,12 @@ extern "C"
     double (*get_file_download_speed)(void* kodiBase, void* file);
     void (*close_file)(void* kodiBase, void* file);
     int (*get_file_chunk_size)(void* kodiBase, void* file);
+    bool (*io_control_get_seek_possible)(void* kodiBase, void* file);
+    bool (*io_control_get_cache_status)(void* kodiBase,
+                                        void* file,
+                                        struct VFS_CACHE_STATUS_DATA* status);
+    bool (*io_control_set_cache_rate)(void* kodiBase, void* file, unsigned int rate);
+    bool (*io_control_set_retry)(void* kodiBase, void* file, bool retry);
     char** (*get_property_values)(
         void* kodiBase, void* file, int type, const char* name, int* numValues);
 
@@ -320,8 +334,7 @@ namespace vfs
 /// @defgroup cpp_kodi_vfs_Defs_FileStatus class FileStatus
 /// @ingroup cpp_kodi_vfs_Defs
 /// @brief **File information status**\n
-/// Used on kodi::vfs::StatFile(), all of these calls return a this stat
-/// structure, which contains the following fields:
+/// Used on kodi::vfs::StatFile() to get detailed information about a file.
 ///
 //@{
 class FileStatus : public kodi::addon::CStructHdl<FileStatus, STAT_STRUCTURE>
@@ -398,6 +411,70 @@ public:
 
   /// @brief Get stat url is a symbolic link.
   bool GetIsSymLink() const { return m_cStructure->isSymLink; }
+
+  //@}
+};
+//@}
+//------------------------------------------------------------------------------
+
+//==============================================================================
+/// @defgroup cpp_kodi_vfs_Defs_CacheStatus class CacheStatus
+/// @ingroup cpp_kodi_vfs_Defs
+/// @brief **Cache information status**\n
+/// Used on kodi::vfs::CFile::IoControlGetCacheStatus() to get running cache
+/// status of proccessed stream.
+///
+//@{
+class CacheStatus : public kodi::addon::CStructHdl<CacheStatus, VFS_CACHE_STATUS_DATA>
+{
+public:
+  /*! \cond PRIVATE */
+  CacheStatus() { memset(m_cStructure, 0, sizeof(VFS_CACHE_STATUS_DATA)); }
+  CacheStatus(const CacheStatus& channel) : CStructHdl(channel) {}
+  CacheStatus(const VFS_CACHE_STATUS_DATA* channel) : CStructHdl(channel) {}
+  CacheStatus(VFS_CACHE_STATUS_DATA* channel) : CStructHdl(channel) {}
+  /*! \endcond */
+
+  /// @defgroup cpp_kodi_vfs_Defs_CacheStatus_Help *Value Help*
+  /// @ingroup cpp_kodi_vfs_Defs_CacheStatus
+  /// ----------------------------------------------------------------------------
+  ///
+  /// <b>The following table contains values that can be set with @ref cpp_kodi_vfs_Defs_CacheStatus :</b>
+  /// | Name | Type | Set call | Get call
+  /// |------|------|----------|----------
+  /// | **Number of bytes cached** | `uint64_t` | @ref CacheStatus::SetForward "SetForward" | @ref CacheStatus::GetForward "GetForward"
+  /// | **Maximum number of bytes per second** | `unsigned int` | @ref CacheStatus::SetMaxRate "SetMaxRate" | @ref CacheStatus::GetMaxRate "GetMaxRate"
+  /// | **Average read rate from source file** | `unsigned int` | @ref CacheStatus::SetCurrentRate "SetCurrentRate" | @ref CacheStatus::GetCurrentRate "GetCurrentRate"
+  /// | **Cache low speed condition detected** | `bool` | @ref CacheStatus::SetLowspeed "SetLowspeed" | @ref CacheStatus::GetLowspeed "GetLowspeed"
+  ///
+
+  /// @addtogroup cpp_kodi_vfs_Defs_CacheStatus
+  /// @copydetails cpp_kodi_vfs_Defs_CacheStatus_Help
+  //@{
+
+  /// @brief Set number of bytes cached forward of current position.
+  void SetForward(uint64_t forward) { m_cStructure->forward = forward; }
+
+  /// @brief Get number of bytes cached forward of current position.
+  uint64_t GetForward() { return m_cStructure->forward; }
+
+  /// @brief Set maximum number of bytes per second cache is allowed to fill.
+  void SetMaxRate(unsigned int maxrate) { m_cStructure->maxrate = maxrate; }
+
+  /// @brief Set maximum number of bytes per second cache is allowed to fill.
+  unsigned int GetMaxRate() { return m_cStructure->maxrate; }
+
+  /// @brief Set average read rate from source file since last position change.
+  void SetCurrentRate(unsigned int currate) { m_cStructure->currate = currate; }
+
+  /// @brief Get average read rate from source file since last position change.
+  unsigned int GetCurrentRate() { return m_cStructure->currate; }
+
+  /// @brief Set cache low speed condition detected.
+  void SetLowspeed(bool lowspeed) { m_cStructure->lowspeed = lowspeed; }
+
+  /// @brief Get cache low speed condition detected.
+  bool GetLowspeed() { return m_cStructure->lowspeed; }
 
   //@}
 };
@@ -862,6 +939,8 @@ inline bool FileExists(const std::string& filename, bool usecache = false)
 /// @param[out] buffer The file status is written into this buffer.
 /// @return On success, trur is returned. On error, false is returned
 ///
+///
+/// @copydetails cpp_kodi_vfs_Defs_FileStatus_Help
 ///
 /// -------------------------------------------------------------------------
 ///
@@ -1726,6 +1805,80 @@ public:
       return -1;
     return CAddonBase::m_interface->toKodi->kodi_filesystem->get_file_chunk_size(
         CAddonBase::m_interface->toKodi->kodiBase, m_file);
+  }
+  //--------------------------------------------------------------------------
+
+  //==========================================================================
+  /// @ingroup cpp_kodi_vfs_CFile
+  /// @brief To check seek possible on current stream by file.
+  ///
+  /// @return true if seek possible, false if not
+  ///
+  bool IoControlGetSeekPossible()
+  {
+    using namespace kodi::addon;
+
+    if (!m_file)
+      return -1;
+    return CAddonBase::m_interface->toKodi->kodi_filesystem->io_control_get_seek_possible(
+        CAddonBase::m_interface->toKodi->kodiBase, m_file);
+  }
+  //--------------------------------------------------------------------------
+
+  //==========================================================================
+  /// @ingroup cpp_kodi_vfs_CFile
+  /// @brief To check a running stream on file for state of his cache.
+  ///
+  /// @param[in] status Information about current cache status
+  /// @return true if successfull done, false otherwise
+  ///
+  ///
+  /// @copydetails cpp_kodi_vfs_Defs_CacheStatus_Help
+  ///
+  bool IoControlGetCacheStatus(CacheStatus& status)
+  {
+    using namespace kodi::addon;
+
+    if (!m_file)
+      return -1;
+    return CAddonBase::m_interface->toKodi->kodi_filesystem->io_control_get_cache_status(
+        CAddonBase::m_interface->toKodi->kodiBase, m_file, status);
+  }
+  //--------------------------------------------------------------------------
+
+  //==========================================================================
+  /// @ingroup cpp_kodi_vfs_CFile
+  /// @brief Unsigned int with speed limit for caching in bytes per second.
+  ///
+  /// @param[in] rate Cache rate size to use
+  /// @return true if successfull done, false otherwise
+  ///
+  bool IoControlSetCacheRate(unsigned int rate)
+  {
+    using namespace kodi::addon;
+
+    if (!m_file)
+      return -1;
+    return CAddonBase::m_interface->toKodi->kodi_filesystem->io_control_set_cache_rate(
+        CAddonBase::m_interface->toKodi->kodiBase, m_file, rate);
+  }
+  //--------------------------------------------------------------------------
+
+  //==========================================================================
+  /// @ingroup cpp_kodi_vfs_CFile
+  /// @brief Enable/disable retry within the protocol handler (if supported).
+  ///
+  /// @param[in] retry To set the retry, true for use, false for not
+  /// @return true if successfull done, false otherwise
+  ///
+  bool IoControlSetRetry(bool retry)
+  {
+    using namespace kodi::addon;
+
+    if (!m_file)
+      return -1;
+    return CAddonBase::m_interface->toKodi->kodi_filesystem->io_control_set_retry(
+        CAddonBase::m_interface->toKodi->kodiBase, m_file, retry);
   }
   //--------------------------------------------------------------------------
 

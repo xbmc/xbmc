@@ -70,6 +70,12 @@ struct Interface_Filesystem
   static double get_file_download_speed(void* kodiBase, void* file);
   static void close_file(void* kodiBase, void* file);
   static int get_file_chunk_size(void* kodiBase, void* file);
+  static bool io_control_get_seek_possible(void* kodiBase, void* file);
+  static bool io_control_get_cache_status(void* kodiBase,
+                                          void* file,
+                                          struct VFS_CACHE_STATUS_DATA* status);
+  static bool io_control_set_cache_rate(void* kodiBase, void* file, unsigned int rate);
+  static bool io_control_set_retry(void* kodiBase, void* file, bool retry);
   static char** get_property_values(
       void* kodiBase, void* file, int type, const char* name, int* numValues);
 

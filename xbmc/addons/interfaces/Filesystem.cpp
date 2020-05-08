@@ -70,6 +70,12 @@ void Interface_Filesystem::Init(AddonGlobalInterface* addonInterface)
   addonInterface->toKodi->kodi_filesystem->get_file_download_speed = get_file_download_speed;
   addonInterface->toKodi->kodi_filesystem->close_file = close_file;
   addonInterface->toKodi->kodi_filesystem->get_file_chunk_size = get_file_chunk_size;
+  addonInterface->toKodi->kodi_filesystem->io_control_get_seek_possible =
+      io_control_get_seek_possible;
+  addonInterface->toKodi->kodi_filesystem->io_control_get_cache_status =
+      io_control_get_cache_status;
+  addonInterface->toKodi->kodi_filesystem->io_control_set_cache_rate = io_control_set_cache_rate;
+  addonInterface->toKodi->kodi_filesystem->io_control_set_retry = io_control_set_retry;
   addonInterface->toKodi->kodi_filesystem->get_property_values = get_property_values;
 
   addonInterface->toKodi->kodi_filesystem->curl_create = curl_create;
@@ -559,12 +565,80 @@ int Interface_Filesystem::get_file_chunk_size(void* kodiBase, void* file)
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   if (addon == nullptr || file == nullptr)
   {
-    CLog::Log(LOGERROR, "Interface_VFS::{} - invalid data (addon='{}', file='{})", __FUNCTION__,
+    CLog::Log(LOGERROR, "Interface_VFS::{} - invalid data (addon='{}', file='{}')", __FUNCTION__,
               kodiBase, file);
     return -1;
   }
 
   return static_cast<CFile*>(file)->GetChunkSize();
+}
+
+bool Interface_Filesystem::io_control_get_seek_possible(void* kodiBase, void* file)
+{
+  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
+  if (addon == nullptr || file == nullptr)
+  {
+    CLog::Log(LOGERROR, "Interface_VFS::{} - invalid data (addon='{}', file='{}')", __FUNCTION__,
+              kodiBase, file);
+    return -1;
+  }
+
+  return static_cast<CFile*>(file)->IoControl(EIoControl::IOCTRL_SEEK_POSSIBLE, nullptr) != 0
+             ? true
+             : false;
+}
+
+bool Interface_Filesystem::io_control_get_cache_status(void* kodiBase,
+                                                       void* file,
+                                                       struct VFS_CACHE_STATUS_DATA* status)
+{
+  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
+  if (addon == nullptr || file == nullptr || status == nullptr)
+  {
+    CLog::Log(LOGERROR, "Interface_VFS::{} - invalid data (addon='{}', file='{}, status='{}')",
+              __FUNCTION__, kodiBase, file, static_cast<const void*>(status));
+    return -1;
+  }
+
+  SCacheStatus data = {0};
+  int ret = static_cast<CFile*>(file)->IoControl(EIoControl::IOCTRL_CACHE_STATUS, &data);
+  if (ret >= 0)
+  {
+    status->forward = data.forward;
+    status->maxrate = data.maxrate;
+    status->currate = data.currate;
+    status->lowspeed = data.lowspeed;
+    return true;
+  }
+  return false;
+}
+
+bool Interface_Filesystem::io_control_set_cache_rate(void* kodiBase, void* file, unsigned int rate)
+{
+  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
+  if (addon == nullptr || file == nullptr)
+  {
+    CLog::Log(LOGERROR, "Interface_VFS::{} - invalid data (addon='{}', file='{}')", __FUNCTION__,
+              kodiBase, file);
+    return -1;
+  }
+
+  return static_cast<CFile*>(file)->IoControl(EIoControl::IOCTRL_CACHE_SETRATE, &rate) >= 0 ? true
+                                                                                            : false;
+}
+
+bool Interface_Filesystem::io_control_set_retry(void* kodiBase, void* file, bool retry)
+{
+  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
+  if (addon == nullptr || file == nullptr)
+  {
+    CLog::Log(LOGERROR, "Interface_VFS::{} - invalid data (addon='{}', file='{}')", __FUNCTION__,
+              kodiBase, file);
+    return -1;
+  }
+
+  return static_cast<CFile*>(file)->IoControl(EIoControl::IOCTRL_SET_RETRY, &retry) >= 0 ? true
+                                                                                         : false;
 }
 
 char** Interface_Filesystem::get_property_values(
