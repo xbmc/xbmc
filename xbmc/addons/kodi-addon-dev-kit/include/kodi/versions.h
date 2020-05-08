@@ -52,7 +52,8 @@
 #define ADDON_GLOBAL_VERSION_AUDIOENGINE              "1.0.2"
 #define ADDON_GLOBAL_VERSION_AUDIOENGINE_MIN          "1.0.2"
 #define ADDON_GLOBAL_VERSION_AUDIOENGINE_XML_ID       "kodi.binary.global.audioengine"
-#define ADDON_GLOBAL_VERSION_AUDIOENGINE_DEPENDS      "AudioEngine.h"
+#define ADDON_GLOBAL_VERSION_AUDIOENGINE_DEPENDS      "AudioEngine.h" \
+                                                      "c-api/audio_engine.h"
 
 #define ADDON_GLOBAL_VERSION_FILESYSTEM               "1.0.3"
 #define ADDON_GLOBAL_VERSION_FILESYSTEM_MIN           "1.0.3"
