@@ -1,4 +1,5 @@
 set(HEADERS audio_engine.h
+            filesystem.h
             network.h)
 
 if(NOT ENABLE_STATIC_LIBS)

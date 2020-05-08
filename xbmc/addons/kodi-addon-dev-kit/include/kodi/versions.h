@@ -59,6 +59,7 @@
 #define ADDON_GLOBAL_VERSION_FILESYSTEM_MIN           "1.0.3"
 #define ADDON_GLOBAL_VERSION_FILESYSTEM_XML_ID        "kodi.binary.global.filesystem"
 #define ADDON_GLOBAL_VERSION_FILESYSTEM_DEPENDS       "Filesystem.h" \
+                                                      "c-api/filesystem.h" \
                                                       "gui/gl/Shader.h"
 
 #define ADDON_GLOBAL_VERSION_NETWORK                  "1.0.1"
