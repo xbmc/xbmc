@@ -53,7 +53,7 @@ public:
 
   bool HasData() const { return !m_data.empty(); }
   const std::string& GetData() const { return m_data; }
-  void SetData(std::string data) { m_data = std::move(data); }
+  void SetData(std::string data);
 
   const std::string& GetTitle() const { return m_title; }
   void SetTitle(std::string title) { m_title = std::move(title); }
@@ -118,4 +118,5 @@ private:
   std::string m_id;
   double m_relevance;
   std::vector<SUrlEntry> m_urls;
+  bool m_parsed;
 };

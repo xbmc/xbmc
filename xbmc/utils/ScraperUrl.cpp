@@ -27,7 +27,7 @@
 #include <cstring>
 #include <sstream>
 
-CScraperUrl::CScraperUrl() : m_relevance(0.0)
+CScraperUrl::CScraperUrl() : m_relevance(0.0), m_parsed(false)
 {
 }
 
@@ -48,6 +48,13 @@ void CScraperUrl::Clear()
   m_urls.clear();
   m_data.clear();
   m_relevance = 0.0;
+  m_parsed = false;
+}
+
+void CScraperUrl::SetData(std::string data)
+{
+  m_data = std::move(data);
+  m_parsed = false;
 }
 
 const CScraperUrl::SUrlEntry CScraperUrl::GetFirstUrlByType(const std::string& type) const
@@ -115,6 +122,9 @@ void CScraperUrl::GetThumbUrls(std::vector<std::string>& thumbs,
 
 bool CScraperUrl::Parse()
 {
+  if (m_parsed)
+    return true;
+
   auto dataToParse = m_data;
   m_data.clear();
   return ParseFromData(std::move(dataToParse));
@@ -145,6 +155,7 @@ bool CScraperUrl::ParseFromData(std::string data)
     }
   }
 
+  m_parsed = true;
   return true;
 }
 
@@ -153,6 +164,8 @@ bool CScraperUrl::ParseAndAppendUrl(const TiXmlElement* element)
   if (element == nullptr || element->FirstChild() == nullptr ||
       element->FirstChild()->Value() == nullptr)
     return false;
+
+  bool wasEmpty = m_data.empty();
 
   std::stringstream stream;
   stream << *element;
@@ -188,6 +201,9 @@ bool CScraperUrl::ParseAndAppendUrl(const TiXmlElement* element)
 
   m_urls.push_back(url);
 
+  if (wasEmpty)
+    m_parsed = true;
+
   return true;
 }
 
@@ -202,20 +218,23 @@ bool CScraperUrl::ParseAndAppendUrlsFromEpisodeGuide(std::string episodeGuide)
   CXBMCTinyXML doc;
   /* strUrls is coming from internal sources so strUrls is always in UTF-8 */
   doc.Parse(episodeGuide, TIXML_ENCODING_UTF8);
-  if (doc.RootElement() != nullptr)
+  if (doc.RootElement() == nullptr)
+    return false;
+
+  bool wasEmpty = m_data.empty();
+
+  TiXmlHandle docHandle(&doc);
+  auto link = docHandle.FirstChild("episodeguide").Element();
+  if (link->FirstChildElement("url"))
   {
-    TiXmlHandle docHandle(&doc);
-    auto link = docHandle.FirstChild("episodeguide").Element();
-    if (link->FirstChildElement("url"))
-    {
-      for (link = link->FirstChildElement("url"); link; link = link->NextSiblingElement("url"))
-        ParseAndAppendUrl(link);
-    }
-    else if (link->FirstChild() && link->FirstChild()->Value())
+    for (link = link->FirstChildElement("url"); link; link = link->NextSiblingElement("url"))
       ParseAndAppendUrl(link);
   }
-  else
-    return false;
+  else if (link->FirstChild() && link->FirstChild()->Value())
+    ParseAndAppendUrl(link);
+
+  if (wasEmpty)
+    m_parsed = true;
 
   return true;
 }
@@ -229,6 +248,8 @@ void CScraperUrl::AddParsedUrl(std::string url,
                                bool isgz,
                                int season)
 {
+  bool wasEmpty = m_data.empty();
+
   TiXmlElement thumb("thumb");
   thumb.SetAttribute("spoof", referrer);
   thumb.SetAttribute("cache", cache);
@@ -261,6 +282,9 @@ void CScraperUrl::AddParsedUrl(std::string url,
   nUrl.m_aspect = aspect;
 
   m_urls.push_back(nUrl);
+
+  if (wasEmpty)
+    m_parsed = true;
 }
 
 std::string CScraperUrl::GetThumbUrl(const CScraperUrl::SUrlEntry& entry)
