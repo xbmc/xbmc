@@ -93,4 +93,11 @@ struct CPlayNext : CStaticContextMenuAction
   bool Execute(const CFileItemPtr& item) const override;
 };
 
+struct CPlayAndQueue : CStaticContextMenuAction
+{
+  CPlayAndQueue() : CStaticContextMenuAction(13412) {} // Play from here
+  bool IsVisible(const CFileItem& item) const override;
+  bool Execute(const CFileItemPtr& item) const override;
+};
+
 }

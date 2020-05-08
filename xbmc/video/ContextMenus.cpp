@@ -14,6 +14,7 @@
 #include "filesystem/Directory.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
+#include "playlists/PlayList.h"
 #include "settings/MediaSettings.h"
 #include "utils/URIUtils.h"
 #include "video/dialogs/GUIDialogVideoInfo.h"
@@ -193,6 +194,44 @@ void QueueRecordings(const std::shared_ptr<CFileItem>& item, bool bPlayNext)
   player.SetCurrentPlaylist(playlist);
 }
 
+void PlayAndQueueRecordings(const std::shared_ptr<CFileItem>& item, int windowId)
+{
+  const std::shared_ptr<CFileItem> parentFolderItem =
+      std::make_shared<CFileItem>(URIUtils::GetParentPath(item->GetPath()), true);
+
+  // add all items of given item's directory to a temporary playlist, start playback of given item
+  CFileItemList queuedItems;
+  AddRecordingsToPlayListAndSort(parentFolderItem, queuedItems);
+
+  PLAYLIST::CPlayListPlayer& player = CServiceBroker::GetPlaylistPlayer();
+
+  player.ClearPlaylist(PLAYLIST_VIDEO);
+  player.Reset();
+  player.Add(PLAYLIST_VIDEO, queuedItems);
+
+  // figure out where to start playback
+  PLAYLIST::CPlayList& playList = player.GetPlaylist(PLAYLIST_VIDEO);
+  int itemToPlay = 0;
+
+  for (int i = 0; i < queuedItems.Size(); ++i)
+  {
+    if (item->IsSamePath(queuedItems.Get(i).get()))
+    {
+      itemToPlay = i;
+      break;
+    }
+  }
+
+  if (player.IsShuffled(PLAYLIST_VIDEO))
+  {
+    playList.Swap(0, playList.FindOrder(itemToPlay));
+    itemToPlay = 0;
+  }
+
+  player.SetCurrentPlaylist(PLAYLIST_VIDEO);
+  player.Play(itemToPlay, "");
+}
+
 bool IsActiveRecordingsFolder(const CFileItem& item)
 {
   if (item.m_bIsFolder && StringUtils::StartsWith(item.GetPath(), "pvr://recordings/"))
@@ -337,6 +376,36 @@ bool CPlayNext::Execute(const CFileItemPtr& item) const
   {
     // recursively add items to play list
     QueueRecordings(item, true);
+    return true;
+  }
+
+  return true; //! @todo implement
+};
+
+bool CPlayAndQueue::IsVisible(const CFileItem& item) const
+{
+  const int windowId = CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow();
+  if (windowId == WINDOW_VIDEO_PLAYLIST)
+    return false; // Already queued
+
+  if ((windowId == WINDOW_TV_RECORDINGS || windowId == WINDOW_RADIO_RECORDINGS) &&
+      item.IsUsablePVRRecording())
+    return true;
+
+  return false; //! @todo implement
+}
+
+bool CPlayAndQueue::Execute(const CFileItemPtr& item) const
+{
+  const int windowId = CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow();
+  if (windowId == WINDOW_VIDEO_PLAYLIST)
+    return false; // Already queued
+
+  if ((windowId == WINDOW_TV_RECORDINGS || windowId == WINDOW_RADIO_RECORDINGS) &&
+      item->IsUsablePVRRecording())
+  {
+    // recursively add items located in the same folder as item to play list, starting with item
+    PlayAndQueueRecordings(item, windowId);
     return true;
   }
 
