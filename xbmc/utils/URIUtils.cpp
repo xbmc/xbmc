@@ -1417,8 +1417,3 @@ bool URIUtils::UpdateUrlEncoding(std::string &strFilename)
   strFilename = newFilename;
   return true;
 }
-
-bool URIUtils::IsUsingFastSwitch(const std::string& strFile)
-{
-  return IsUDP(strFile) || IsTCP(strFile) || IsPVRChannel(strFile);
-}
