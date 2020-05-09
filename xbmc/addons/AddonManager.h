@@ -14,6 +14,8 @@
 #include "threads/CriticalSection.h"
 #include "utils/EventStream.h"
 
+#include <mutex>
+
 namespace ADDON
 {
   typedef std::map<TYPE, VECADDONS> MAPADDONS;
@@ -280,6 +282,33 @@ namespace ADDON
     bool EnableSingle(const std::string& id);
 
     void FindAddons(ADDON_INFO_LIST& addonmap, const std::string& path);
+
+    /*!
+     * Get the list of of available updates
+     * \param[in,out] updates the vector of addons to be filled with addons that need to be updated (not blacklisted)
+     * \return if there are any addons needing updates
+     */
+    bool GetAddonUpdateCandidates(VECADDONS& updates) const;
+
+    /*!\brief Sort a list of addons for installation, i.e., defines the order of installation depending
+     * of each addon dependencies.
+     * \param[in,out] updates the vector of addons to sort
+     */
+    void SortByDependencies(VECADDONS& updates) const;
+
+    /*!
+     * Install the list of addon updates via AddonInstaller
+     * \param[in,out] updates the vector of addons to install (will be sorted)
+     * \param wait if the process should wait for all addons to install
+     */
+    void InstallAddonUpdates(VECADDONS& updates, bool wait) const;
+
+    // This guards the addon installation process to make sure
+    // addon updates are not installed concurrently
+    // while the migration is running. Addon updates can be triggered
+    // as a result of a repository update event.
+    // (migration will install any available update anyway)
+    mutable std::mutex m_installAddonsMutex;
 
     std::set<std::string> m_disabled;
     std::set<std::string> m_updateBlacklist;

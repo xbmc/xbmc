@@ -382,9 +382,14 @@ bool CAddonMgr::GetIncompatibleAddons(VECADDONS& incompatible) const
 
 std::vector<std::string> CAddonMgr::MigrateAddons()
 {
+  // install all addon updates
+  std::lock_guard<std::mutex> lock(m_installAddonsMutex);
   CLog::Log(LOGINFO, "ADDON: waiting for add-ons to update...");
-  CheckAndInstallAddonUpdates(true);
+  VECADDONS updates;
+  GetAddonUpdateCandidates(updates);
+  InstallAddonUpdates(updates, true);
 
+  // get addons that became incompatible and disable them
   VECADDONS incompatible;
   GetIncompatibleAddons(incompatible);
   std::vector<std::string> changed;
@@ -411,13 +416,72 @@ std::vector<std::string> CAddonMgr::MigrateAddons()
 
 void CAddonMgr::CheckAndInstallAddonUpdates(bool wait) const
 {
-  // Get Addons in need of an update and remove all the blacklisted ones
-  auto updates = GetAvailableUpdates();
-  updates.erase(std::remove_if(updates.begin(), updates.end(), [this](const AddonPtr& addon) {
-    return IsBlacklisted(addon->ID());
-  }), updates.end());
+  std::lock_guard<std::mutex> lock(m_installAddonsMutex);
+  VECADDONS updates;
+  GetAddonUpdateCandidates(updates);
+  InstallAddonUpdates(updates, wait);
+}
 
-  // install all
+bool CAddonMgr::GetAddonUpdateCandidates(VECADDONS& updates) const
+{
+  // Get Addons in need of an update and remove all the blacklisted ones
+  updates = GetAvailableUpdates();
+  updates.erase(
+      std::remove_if(updates.begin(), updates.end(),
+                     [this](const AddonPtr& addon) { return IsBlacklisted(addon->ID()); }),
+      updates.end());
+  return updates.empty();
+}
+
+void CAddonMgr::SortByDependencies(VECADDONS& updates) const
+{
+  std::vector<std::shared_ptr<ADDON::IAddon>> sorted;
+  while (!updates.empty())
+  {
+    for (auto it = updates.begin(); it != updates.end();)
+    {
+      const auto& addon = *it;
+
+      const auto& dependencies = addon->GetDependencies();
+      bool addToSortedList = true;
+      // if the addon has dependencies we need to check for each dependency if it also has
+      // an update to be installed (and in that case, if it is already in the sorted vector).
+      // if all dependency match the said conditions, the addon doesn't depend on other addons
+      // waiting to be updated. Hence, the addon being processed can be installed (i.e. added to
+      // the end of the sorted vector of addon updates)
+      for (const auto& dep : dependencies)
+      {
+        auto comparator = [&dep](const std::shared_ptr<ADDON::IAddon>& addon) {
+          return addon->ID() == dep.id;
+        };
+
+        if ((std::any_of(updates.begin(), updates.end(), comparator)) &&
+            (!std::any_of(sorted.begin(), sorted.end(), comparator)))
+        {
+          addToSortedList = false;
+          break;
+        }
+      }
+
+      // add to the end of sorted list of addons
+      if (addToSortedList)
+      {
+        sorted.emplace_back(std::move(addon));
+        it = updates.erase(it);
+      }
+      else
+      {
+        ++it;
+      }
+    }
+  }
+  updates = sorted;
+}
+
+void CAddonMgr::InstallAddonUpdates(VECADDONS& updates, bool wait) const
+{
+  // sort addons by dependencies (ensure install order) and install all
+  SortByDependencies(updates);
   CAddonInstaller::GetInstance().InstallAddons(updates, wait);
 }
 
