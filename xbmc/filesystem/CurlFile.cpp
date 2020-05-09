@@ -538,7 +538,8 @@ void CCurlFile::SetCommonOptions(CReadState* state, bool failOnError /* = true *
   else
   {
     g_curlInterface.easy_setopt(h, CURLOPT_REFERER, NULL);
-    g_curlInterface.easy_setopt(h, CURLOPT_AUTOREFERER, CURL_ON);
+    // Do not send referer header on redirects (same behaviour as ffmpeg and browsers)
+    g_curlInterface.easy_setopt(h, CURLOPT_AUTOREFERER, CURL_OFF);
   }
 
   // setup any requested authentication
