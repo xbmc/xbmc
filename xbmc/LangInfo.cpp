@@ -833,6 +833,11 @@ const std::locale& CLangInfo::GetOriginalLocale() const
   return m_originalLocale;
 }
 
+const std::string CLangInfo::GetISOLocale() const
+{
+  return m_currentRegion->m_strLangLocaleCodeTwoChar + "_" + m_currentRegion->m_strRegionLocaleName;
+}
+
 // Returns the format string for the date of the current language
 const std::string& CLangInfo::GetDateFormat(bool bLongDate /* = false */) const
 {

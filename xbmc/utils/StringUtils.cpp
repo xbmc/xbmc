@@ -24,12 +24,15 @@
 
 #if defined(TARGET_ANDROID)
 #include <androidjni/JNIThreading.h>
+#include <unicode/ucol.h>
+#include <unicode/ustring.h>
 #endif
 
 #include "CharsetConverter.h"
 #include "LangInfo.h"
 #include "StringUtils.h"
 #include "Util.h"
+#include "utils/log.h"
 
 #include <algorithm>
 #include <array>
@@ -38,6 +41,7 @@
 #include <inttypes.h>
 #include <iomanip>
 #include <math.h>
+#include <memory>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -1071,6 +1075,49 @@ int64_t StringUtils::AlphaNumericCompare(const wchar_t* left, const wchar_t* rig
   wchar_t lc, rc;
   int64_t lnum, rnum;
   bool lsym, rsym;
+
+  #ifdef TARGET_ANDROID
+  if (!g_langInfo.UseLocaleCollation())
+  {
+    UErrorCode ustatus = U_ZERO_ERROR;
+    try
+    {
+      auto ucoll = std::unique_ptr<UCollator, decltype(&ucol_close)>(
+        ucol_open(g_langInfo.GetISOLocale().c_str(), &ustatus),
+        &ucol_close);
+      if (U_FAILURE(ustatus))
+        throw std::runtime_error("StringUtils: ucol_open failed.");
+
+      std::vector<UChar> uleft(2 * wcslen(left) + 1);
+      std::vector<UChar> uright(2 * wcslen(right) + 1);
+
+      int32_t ulsize{0};
+      int32_t ursize{0};
+
+      u_strFromWCS(&uleft.front(), uleft.size(), &ulsize, left, -1, &ustatus);
+      if (U_FAILURE(ustatus))
+        throw std::runtime_error("StringUtils: failed to convert left string to UTF16.");
+      u_strFromWCS(&uright.front(), uright.size(), &ursize, right, -1, &ustatus);
+      if (U_FAILURE(ustatus))
+        throw std::runtime_error("StringUtils: failed to convert right string to UTF16.");
+
+      switch (ucol_strcoll(ucoll.get(), &uleft.front(), -1, &uright.front(), -1))
+      {
+        case UCOL_LESS:
+          return -1;
+        case UCOL_GREATER:
+          return 1;
+        case UCOL_EQUAL:
+          return 0;
+      }
+    }
+    catch (std::runtime_error& e)
+    {
+      CLog::Log(LOGERROR, e.what());
+      CLog::Log(LOGERROR, "Error code: {}", ustatus);
+    }
+  }
+  #endif
   while (*l != 0 && *r != 0)
   {
     // check if we have a numerical value
