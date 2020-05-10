@@ -165,7 +165,7 @@ void AddRecordingsToPlayListAndSort(const std::shared_ptr<CFileItem>& item,
     const int windowId = CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow();
     if (windowId == WINDOW_TV_RECORDINGS || windowId == WINDOW_RADIO_RECORDINGS)
     {
-      const CGUIViewState* viewState = CGUIViewState::GetViewState(windowId, queuedItems);
+      std::unique_ptr<CGUIViewState> viewState(CGUIViewState::GetViewState(windowId, queuedItems));
       if (viewState)
         queuedItems.Sort(viewState->GetSortMethod());
     }
