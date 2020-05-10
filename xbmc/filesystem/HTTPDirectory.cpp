@@ -32,7 +32,6 @@ bool CHTTPDirectory::GetDirectory(const CURL& url, CFileItemList &items)
 {
   CCurlFile http;
 
-  std::string strName, strLink;
   std::string strBasePath = url.GetFileName();
 
   if(!http.Open(url))
@@ -42,31 +41,36 @@ bool CHTTPDirectory::GetDirectory(const CURL& url, CFileItemList &items)
   }
 
   CRegExp reItem(true); // HTML is case-insensitive
-  reItem.RegComp("<a href=\"(.*)\">(.*)</a>");
+  reItem.RegComp("<a href=\"(.*?)\">\\s*(.*?)\\s*</a>(.+?)(?=<a|</tr|$)");
 
-  CRegExp reDateTime(true);
-  reDateTime.RegComp("<td align=\"right\">([0-9]{2})-([A-Z]{3})-([0-9]{4}) ([0-9]{2}):([0-9]{2}) +</td>");
+  CRegExp reDateTimeHtml(true);
+  reDateTimeHtml.RegComp(
+      "<td align=\"right\">([0-9]{2})-([A-Z]{3})-([0-9]{4}) ([0-9]{2}):([0-9]{2}) +</td>");
 
   CRegExp reDateTimeLighttp(true);
-  reDateTimeLighttp.RegComp("<td class=\"m\">([0-9]{4})-([A-Z]{3})-([0-9]{2}) ([0-9]{2}):([0-9]{2}):([0-9]{2})</td>");
+  reDateTimeLighttp.RegComp(
+      "<td class=\"m\">([0-9]{4})-([A-Z]{3})-([0-9]{2}) ([0-9]{2}):([0-9]{2}):([0-9]{2})</td>");
 
   CRegExp reDateTimeNginx(true);
-  reDateTimeNginx.RegComp("</a> +([0-9]{2})-([A-Z]{3})-([0-9]{4}) ([0-9]{2}):([0-9]{2}) ");
+  reDateTimeNginx.RegComp("([0-9]{2})-([A-Z]{3})-([0-9]{4}) ([0-9]{2}):([0-9]{2})");
 
   CRegExp reDateTimeApacheNewFormat(true);
-  reDateTimeApacheNewFormat.RegComp("<td align=\"right\">([0-9]{4})-([0-9]{2})-([0-9]{2}) ([0-9]{2}):([0-9]{2}) +</td>");
+  reDateTimeApacheNewFormat.RegComp(
+      "<td align=\"right\">([0-9]{4})-([0-9]{2})-([0-9]{2}) ([0-9]{2}):([0-9]{2}) +</td>");
+
+  CRegExp reDateTime(true);
+  reDateTime.RegComp("([0-9]{4})-([0-9]{2})-([0-9]{2}) ([0-9]{2}):([0-9]{2})");
+
+  CRegExp reSizeHtml(true);
+  reSizeHtml.RegComp("> *([0-9.]+)(B|K|M|G| )</td>");
 
   CRegExp reSize(true);
-  reSize.RegComp("> *([0-9.]+)(B|K|M|G| )</td>");
-
-  CRegExp reSizeNginx(true);
-  reSizeNginx.RegComp(" +([0-9]+)(B|K|M|G)?$");
+  reSize.RegComp(" +([0-9]+)(B|K|M|G)?(?=\\s|<|$)");
 
   /* read response from server into string buffer */
-  char buffer[MAX_PATH + 1024];
-  while(http.ReadString(buffer, sizeof(buffer)-1))
+  std::string strBuffer;
+  if (http.ReadData(strBuffer) && strBuffer.length() > 0)
   {
-    std::string strBuffer = buffer;
     std::string fileCharset(http.GetProperty(XFILE::FILE_PROPERTY_CONTENT_CHARSET));
     if (!fileCharset.empty() && fileCharset != "UTF-8")
     {
@@ -75,12 +79,19 @@ bool CHTTPDirectory::GetDirectory(const CURL& url, CFileItemList &items)
         strBuffer = converted;
     }
 
-    StringUtils::RemoveCRLF(strBuffer);
-
-    if (reItem.RegFind(strBuffer.c_str()) >= 0)
+    unsigned int bufferOffset = 0;
+    while (bufferOffset < strBuffer.length())
     {
-      strLink = reItem.GetMatch(1);
-      strName = reItem.GetMatch(2);
+      int matchOffset = reItem.RegFind(strBuffer.c_str(), bufferOffset);
+      if (matchOffset < 0)
+        break;
+
+      bufferOffset = matchOffset + reItem.GetSubLength(0);
+
+      std::string strLink = reItem.GetMatch(1);
+      std::string strName = reItem.GetMatch(2);
+      std::string strMetadata = reItem.GetMatch(3);
+      StringUtils::Trim(strMetadata);
 
       if(strLink[0] == '/')
         strLink = strLink.substr(1);
@@ -158,15 +169,15 @@ bool CHTTPDirectory::GetDirectory(const CURL& url, CFileItemList &items)
         std::string day, month, year, hour, minute;
         int monthNum = 0;
 
-        if (reDateTime.RegFind(strBuffer.c_str()) >= 0)
+        if (reDateTimeHtml.RegFind(strMetadata.c_str()) >= 0)
         {
-          day = reDateTime.GetMatch(1);
-          month = reDateTime.GetMatch(2);
-          year = reDateTime.GetMatch(3);
-          hour = reDateTime.GetMatch(4);
-          minute = reDateTime.GetMatch(5);
+          day = reDateTimeHtml.GetMatch(1);
+          month = reDateTimeHtml.GetMatch(2);
+          year = reDateTimeHtml.GetMatch(3);
+          hour = reDateTimeHtml.GetMatch(4);
+          minute = reDateTimeHtml.GetMatch(5);
         }
-        else if (reDateTimeNginx.RegFind(strBuffer.c_str()) >= 0)
+        else if (reDateTimeNginx.RegFind(strMetadata.c_str()) >= 0)
         {
           day = reDateTimeNginx.GetMatch(1);
           month = reDateTimeNginx.GetMatch(2);
@@ -174,7 +185,7 @@ bool CHTTPDirectory::GetDirectory(const CURL& url, CFileItemList &items)
           hour = reDateTimeNginx.GetMatch(4);
           minute = reDateTimeNginx.GetMatch(5);
         }
-        else if (reDateTimeLighttp.RegFind(strBuffer.c_str()) >= 0)
+        else if (reDateTimeLighttp.RegFind(strMetadata.c_str()) >= 0)
         {
           day = reDateTimeLighttp.GetMatch(3);
           month = reDateTimeLighttp.GetMatch(2);
@@ -182,13 +193,21 @@ bool CHTTPDirectory::GetDirectory(const CURL& url, CFileItemList &items)
           hour = reDateTimeLighttp.GetMatch(4);
           minute = reDateTimeLighttp.GetMatch(5);
         }
-        else if (reDateTimeApacheNewFormat.RegFind(strBuffer.c_str()) >= 0)
+        else if (reDateTimeApacheNewFormat.RegFind(strMetadata.c_str()) >= 0)
         {
           day = reDateTimeApacheNewFormat.GetMatch(3);
           monthNum = atoi(reDateTimeApacheNewFormat.GetMatch(2).c_str());
           year = reDateTimeApacheNewFormat.GetMatch(1);
           hour = reDateTimeApacheNewFormat.GetMatch(4);
           minute = reDateTimeApacheNewFormat.GetMatch(5);
+        }
+        else if (reDateTime.RegFind(strMetadata.c_str()) >= 0)
+        {
+          day = reDateTime.GetMatch(3);
+          monthNum = atoi(reDateTime.GetMatch(2).c_str());
+          year = reDateTime.GetMatch(1);
+          hour = reDateTime.GetMatch(4);
+          minute = reDateTime.GetMatch(5);
         }
 
         if (month.length() > 0)
@@ -201,10 +220,10 @@ bool CHTTPDirectory::GetDirectory(const CURL& url, CFileItemList &items)
 
         if (!pItem->m_bIsFolder)
         {
-          if (reSize.RegFind(strBuffer.c_str()) >= 0)
+          if (reSizeHtml.RegFind(strMetadata.c_str()) >= 0)
           {
-            double Size = atof(reSize.GetMatch(1).c_str());
-            std::string strUnit(reSize.GetMatch(2));
+            double Size = atof(reSizeHtml.GetMatch(1).c_str());
+            std::string strUnit(reSizeHtml.GetMatch(2));
 
             if (strUnit == "K")
               Size = Size * 1024;
@@ -215,10 +234,10 @@ bool CHTTPDirectory::GetDirectory(const CURL& url, CFileItemList &items)
 
             pItem->m_dwSize = (int64_t)Size;
           }
-          else if (reSizeNginx.RegFind(strBuffer.c_str()) >= 0)
+          else if (reSize.RegFind(strMetadata.c_str()) >= 0)
           {
-            double Size = atof(reSizeNginx.GetMatch(1).c_str());
-            std::string strUnit(reSizeNginx.GetMatch(2));
+            double Size = atof(reSize.GetMatch(1).c_str());
+            std::string strUnit(reSize.GetMatch(2));
 
             if (strUnit == "K")
               Size = Size * 1024;
