@@ -1087,6 +1087,9 @@ int64_t StringUtils::AlphaNumericCompare(const wchar_t* left, const wchar_t* rig
         &ucol_close);
       if (U_FAILURE(ustatus))
         throw std::runtime_error("StringUtils: ucol_open failed.");
+      ucol_setAttribute(ucoll.get(), UCOL_NUMERIC_COLLATION, UCOL_ON, &ustatus);
+      if (U_FAILURE(ustatus))
+        throw std::runtime_error("StringUtils: failed to set UCOL_NUMERIC_COLLATION.");
 
       std::vector<UChar> uleft(2 * wcslen(left) + 1);
       std::vector<UChar> uright(2 * wcslen(right) + 1);
