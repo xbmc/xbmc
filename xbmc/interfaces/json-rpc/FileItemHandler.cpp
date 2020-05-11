@@ -15,6 +15,7 @@
 #include "VideoLibrary.h"
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"
+#include "addons/kodi-addon-dev-kit/include/kodi/c-api/addon-instance/pvr/pvr_epg.h" // EPG_TAG_INVALID_UID
 #include "music/MusicThumbLoader.h"
 #include "music/tags/MusicInfoTag.h"
 #include "pictures/PictureInfoTag.h"

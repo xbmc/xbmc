@@ -9,7 +9,7 @@
 #pragma once
 
 #include "addons/AddonManager.h"
-#include "addons/kodi-addon-dev-kit/include/kodi/addon-instance/PVR.h"
+#include "addons/kodi-addon-dev-kit/include/kodi/c-api/addon-instance/pvr/pvr_general.h"
 #include "threads/CriticalSection.h"
 
 #include <functional>
