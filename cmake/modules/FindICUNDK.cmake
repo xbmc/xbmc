@@ -5,7 +5,7 @@
 # This will define the following variables::
 #
 # ICUNDK_FOUND - system has ICUNDK
-# ICUNDK_INCLUDE_DIRS - the UCINDK include directory
+# ICUNDK_INCLUDE_DIRS - the ICUNDK include directory
 # ICUNDK_LIBRARIES - the ICUNDK libraries
 
 find_path(ICUNDK_INCLUDE_DIR NAMES unicode/utypes.h)
