@@ -1046,7 +1046,10 @@ namespace PVR
      * @param strFileName The filename of the recording
      * @param bOnOff True when recording started, false when it stopped
      */
-    static void cb_recording(void* kodiInstance, const char* strName, const char* strFileName, bool bOnOff);
+    static void cb_recording_notification(void* kodiInstance,
+                                          const char* strName,
+                                          const char* strFileName,
+                                          bool bOnOff);
 
     /*!
      * @brief Request Kodi to update it's list of channels

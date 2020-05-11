@@ -46,7 +46,10 @@ extern "C"
     //--==----==----==----==----==----==----==----==----==----==----==----==----==
     // General callback functions
     void (*AddMenuHook)(void* kodiInstance, struct PVR_MENUHOOK* hook);
-    void (*Recording)(void* kodiInstance, const char* Name, const char* FileName, bool On);
+    void (*RecordingNotification)(void* kodiInstance,
+                                  const char* name,
+                                  const char* fileName,
+                                  bool on);
     void (*ConnectionStateChange)(void* kodiInstance,
                                   const char* strConnectionString,
                                   enum PVR_CONNECTION_STATE newState,
@@ -107,10 +110,10 @@ extern "C"
     // General interface functions
     enum PVR_ERROR(__cdecl* GetCapabilities)(const struct AddonInstance_PVR*,
                                              struct PVR_ADDON_CAPABILITIES*);
-    const char*(__cdecl* GetBackendName)(const struct AddonInstance_PVR*);
-    const char*(__cdecl* GetBackendVersion)(const struct AddonInstance_PVR*);
-    const char*(__cdecl* GetBackendHostname)(const struct AddonInstance_PVR*);
-    const char*(__cdecl* GetConnectionString)(const struct AddonInstance_PVR*);
+    enum PVR_ERROR(__cdecl* GetBackendName)(const struct AddonInstance_PVR*, char*, int);
+    enum PVR_ERROR(__cdecl* GetBackendVersion)(const struct AddonInstance_PVR*, char*, int);
+    enum PVR_ERROR(__cdecl* GetBackendHostname)(const struct AddonInstance_PVR*, char*, int);
+    enum PVR_ERROR(__cdecl* GetConnectionString)(const struct AddonInstance_PVR*, char*, int);
     enum PVR_ERROR(__cdecl* GetDriveSpace)(const struct AddonInstance_PVR*, uint64_t*, uint64_t*);
     enum PVR_ERROR(__cdecl* CallSettingsMenuHook)(const struct AddonInstance_PVR*,
                                                   const struct PVR_MENUHOOK*);
@@ -118,7 +121,7 @@ extern "C"
     //--==----==----==----==----==----==----==----==----==----==----==----==----==
     // Channel interface functions
 
-    int(__cdecl* GetChannelsAmount)(const struct AddonInstance_PVR*);
+    enum PVR_ERROR(__cdecl* GetChannelsAmount)(const struct AddonInstance_PVR*, int*);
     enum PVR_ERROR(__cdecl* GetChannels)(const struct AddonInstance_PVR*, ADDON_HANDLE, bool);
     enum PVR_ERROR(__cdecl* GetChannelStreamProperties)(const struct AddonInstance_PVR*,
                                                         const struct PVR_CHANNEL*,
@@ -133,7 +136,7 @@ extern "C"
 
     //--==----==----==----==----==----==----==----==----==----==----==----==----==
     // Channel group interface functions
-    int(__cdecl* GetChannelGroupsAmount)(const struct AddonInstance_PVR*);
+    enum PVR_ERROR(__cdecl* GetChannelGroupsAmount)(const struct AddonInstance_PVR*, int*);
     enum PVR_ERROR(__cdecl* GetChannelGroups)(const struct AddonInstance_PVR*, ADDON_HANDLE, bool);
     enum PVR_ERROR(__cdecl* GetChannelGroupMembers)(const struct AddonInstance_PVR*,
                                                     ADDON_HANDLE,
@@ -179,7 +182,7 @@ extern "C"
 
     //--==----==----==----==----==----==----==----==----==----==----==----==----==
     // Recording interface functions
-    int(__cdecl* GetRecordingsAmount)(const struct AddonInstance_PVR*, bool);
+    enum PVR_ERROR(__cdecl* GetRecordingsAmount)(const struct AddonInstance_PVR*, bool, int*);
     enum PVR_ERROR(__cdecl* GetRecordings)(const struct AddonInstance_PVR*, ADDON_HANDLE, bool);
     enum PVR_ERROR(__cdecl* DeleteRecording)(const struct AddonInstance_PVR*,
                                              const struct PVR_RECORDING*);
@@ -196,8 +199,9 @@ extern "C"
     enum PVR_ERROR(__cdecl* SetRecordingLastPlayedPosition)(const struct AddonInstance_PVR*,
                                                             const struct PVR_RECORDING*,
                                                             int);
-    int(__cdecl* GetRecordingLastPlayedPosition)(const struct AddonInstance_PVR*,
-                                                 const struct PVR_RECORDING*);
+    enum PVR_ERROR(__cdecl* GetRecordingLastPlayedPosition)(const struct AddonInstance_PVR*,
+                                                            const struct PVR_RECORDING*,
+                                                            int*);
     enum PVR_ERROR(__cdecl* GetRecordingEdl)(const struct AddonInstance_PVR*,
                                              const struct PVR_RECORDING*,
                                              struct PVR_EDL_ENTRY[],
@@ -218,7 +222,7 @@ extern "C"
     enum PVR_ERROR(__cdecl* GetTimerTypes)(const struct AddonInstance_PVR*,
                                            struct PVR_TIMER_TYPE[],
                                            int*);
-    int(__cdecl* GetTimersAmount)(const struct AddonInstance_PVR*);
+    enum PVR_ERROR(__cdecl* GetTimersAmount)(const struct AddonInstance_PVR*, int*);
     enum PVR_ERROR(__cdecl* GetTimers)(const struct AddonInstance_PVR*, ADDON_HANDLE);
     enum PVR_ERROR(__cdecl* AddTimer)(const struct AddonInstance_PVR*, const struct PVR_TIMER*);
     enum PVR_ERROR(__cdecl* DeleteTimer)(const struct AddonInstance_PVR*,
@@ -231,10 +235,10 @@ extern "C"
 
     //--==----==----==----==----==----==----==----==----==----==----==----==----==
     // Powersaving interface functions
-    void(__cdecl* OnSystemSleep)(const struct AddonInstance_PVR*);
-    void(__cdecl* OnSystemWake)(const struct AddonInstance_PVR*);
-    void(__cdecl* OnPowerSavingActivated)(const struct AddonInstance_PVR*);
-    void(__cdecl* OnPowerSavingDeactivated)(const struct AddonInstance_PVR*);
+    enum PVR_ERROR(__cdecl* OnSystemSleep)(const struct AddonInstance_PVR*);
+    enum PVR_ERROR(__cdecl* OnSystemWake)(const struct AddonInstance_PVR*);
+    enum PVR_ERROR(__cdecl* OnPowerSavingActivated)(const struct AddonInstance_PVR*);
+    enum PVR_ERROR(__cdecl* OnPowerSavingDeactivated)(const struct AddonInstance_PVR*);
 
     //--==----==----==----==----==----==----==----==----==----==----==----==----==
     // Live stream read interface functions
