@@ -1076,15 +1076,14 @@ int64_t StringUtils::AlphaNumericCompare(const wchar_t* left, const wchar_t* rig
   int64_t lnum, rnum;
   bool lsym, rsym;
 
-  #ifdef TARGET_ANDROID
+#ifdef TARGET_ANDROID
   if (!g_langInfo.UseLocaleCollation())
   {
     UErrorCode ustatus = U_ZERO_ERROR;
     try
     {
       auto ucoll = std::unique_ptr<UCollator, decltype(&ucol_close)>(
-        ucol_open(g_langInfo.GetISOLocale().c_str(), &ustatus),
-        &ucol_close);
+          ucol_open(g_langInfo.GetISOLocale().c_str(), &ustatus), &ucol_close);
       if (U_FAILURE(ustatus))
         throw std::runtime_error("StringUtils: ucol_open failed.");
       ucol_setAttribute(ucoll.get(), UCOL_NUMERIC_COLLATION, UCOL_ON, &ustatus);
@@ -1120,7 +1119,7 @@ int64_t StringUtils::AlphaNumericCompare(const wchar_t* left, const wchar_t* rig
       CLog::Log(LOGERROR, "Error code: {}", ustatus);
     }
   }
-  #endif
+#endif
   while (*l != 0 && *r != 0)
   {
     // check if we have a numerical value
