@@ -11,15 +11,11 @@
 #include "AddonBase.h"
 
 #ifdef BUILD_KODI_ADDON
+#include "DemuxPacket.h"
 #include "InputStreamConstants.h"
 #else
+#include "cores/VideoPlayer/Interface/Addon/DemuxPacket.h"
 #include "cores/VideoPlayer/Interface/Addon/InputStreamConstants.h"
-#endif
-
-#ifdef USE_DEMUX
-#include "DemuxPacket.h"
-#else
-struct DemuxPacket;
 #endif
 
 #include <stdbool.h>
@@ -28,57 +24,147 @@ struct DemuxPacket;
 #include <string.h>
 #include <time.h>
 
-#define PVR_ADDON_NAME_STRING_LENGTH 1024
-#define PVR_ADDON_URL_STRING_LENGTH 1024
-#define PVR_ADDON_DESC_STRING_LENGTH 1024
-#define PVR_ADDON_INPUT_FORMAT_STRING_LENGTH 32
-#define PVR_ADDON_EDL_LENGTH 32
-#define PVR_ADDON_TIMERTYPE_ARRAY_SIZE 32
-#define PVR_ADDON_TIMERTYPE_VALUES_ARRAY_SIZE 512
-#define PVR_ADDON_TIMERTYPE_VALUES_ARRAY_SIZE_SMALL 128
-#define PVR_ADDON_TIMERTYPE_STRING_LENGTH 128
-#define PVR_ADDON_ATTRIBUTE_DESC_LENGTH 128
-#define PVR_ADDON_ATTRIBUTE_VALUES_ARRAY_SIZE 512
-#define PVR_ADDON_DESCRAMBLE_INFO_STRING_LENGTH 64
-#define PVR_ADDON_DATE_STRING_LENGTH 32
-
-#define XBMC_INVALID_CODEC_ID 0
-#define XBMC_INVALID_CODEC \
-  { \
-    XBMC_CODEC_TYPE_UNKNOWN, XBMC_INVALID_CODEC_ID \
-  }
-
-#define PVR_STREAM_PROPERTY_STREAMURL "streamurl"
-#define PVR_STREAM_PROPERTY_INPUTSTREAM STREAM_PROPERTY_INPUTSTREAM
-#define PVR_STREAM_PROPERTY_MIMETYPE "mimetype"
-#define PVR_STREAM_PROPERTY_ISREALTIMESTREAM STREAM_PROPERTY_ISREALTIMESTREAM
-#define PVR_STREAM_PROPERTY_EPGPLAYBACKASLIVE "epgplaybackaslive"
-#define PVR_STREAM_PROPERTY_VALUE_INPUTSTREAMFFMPEG STREAM_PROPERTY_VALUE_INPUTSTREAMFFMPEG
-
-#define PVR_STREAM_MAX_STREAMS 20
-
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-  typedef unsigned int xbmc_codec_id_t;
+  #define PVR_ADDON_NAME_STRING_LENGTH 1024
+  #define PVR_ADDON_URL_STRING_LENGTH 1024
+  #define PVR_ADDON_DESC_STRING_LENGTH 1024
+  #define PVR_ADDON_INPUT_FORMAT_STRING_LENGTH 32
+  #define PVR_ADDON_EDL_LENGTH 32
+  #define PVR_ADDON_TIMERTYPE_ARRAY_SIZE 32
+  #define PVR_ADDON_TIMERTYPE_VALUES_ARRAY_SIZE 512
+  #define PVR_ADDON_TIMERTYPE_VALUES_ARRAY_SIZE_SMALL 128
+  #define PVR_ADDON_TIMERTYPE_STRING_LENGTH 128
+  #define PVR_ADDON_ATTRIBUTE_DESC_LENGTH 128
+  #define PVR_ADDON_ATTRIBUTE_VALUES_ARRAY_SIZE 512
+  #define PVR_ADDON_DESCRAMBLE_INFO_STRING_LENGTH 64
+  #define PVR_ADDON_DATE_STRING_LENGTH 32
 
-  typedef enum xbmc_codec_type_t
+  typedef struct PVR_ATTRIBUTE_INT_VALUE
   {
-    XBMC_CODEC_TYPE_UNKNOWN = -1,
-    XBMC_CODEC_TYPE_VIDEO,
-    XBMC_CODEC_TYPE_AUDIO,
-    XBMC_CODEC_TYPE_DATA,
-    XBMC_CODEC_TYPE_SUBTITLE,
-    XBMC_CODEC_TYPE_RDS,
-    XBMC_CODEC_TYPE_NB
-  } xbmc_codec_type_t;
+    int iValue;
+    char strDescription[PVR_ADDON_ATTRIBUTE_DESC_LENGTH];
+  } ATTRIBUTE_PACKED PVR_ATTRIBUTE_INT_VALUE;
 
-  typedef struct xbmc_codec_t
+  typedef struct PVR_NAMED_VALUE
   {
-    enum xbmc_codec_type_t codec_type;
-    xbmc_codec_id_t codec_id;
-  } xbmc_codec_t;
+    char strName[PVR_ADDON_NAME_STRING_LENGTH];
+    char strValue[PVR_ADDON_NAME_STRING_LENGTH];
+  } ATTRIBUTE_PACKED PVR_NAMED_VALUE;
+
+  typedef enum PVR_ERROR
+  {
+    PVR_ERROR_NO_ERROR = 0,
+    PVR_ERROR_UNKNOWN = -1,
+    PVR_ERROR_NOT_IMPLEMENTED = -2,
+    PVR_ERROR_SERVER_ERROR = -3,
+    PVR_ERROR_SERVER_TIMEOUT = -4,
+    PVR_ERROR_REJECTED = -5,
+    PVR_ERROR_ALREADY_PRESENT = -6,
+    PVR_ERROR_INVALID_PARAMETERS = -7,
+    PVR_ERROR_RECORDING_RUNNING = -8,
+    PVR_ERROR_FAILED = -9,
+  } PVR_ERROR;
+
+  typedef enum PVR_CONNECTION_STATE
+  {
+    PVR_CONNECTION_STATE_UNKNOWN = 0,
+    PVR_CONNECTION_STATE_SERVER_UNREACHABLE = 1,
+    PVR_CONNECTION_STATE_SERVER_MISMATCH = 2,
+    PVR_CONNECTION_STATE_VERSION_MISMATCH = 3,
+    PVR_CONNECTION_STATE_ACCESS_DENIED = 4,
+    PVR_CONNECTION_STATE_CONNECTED = 5,
+    PVR_CONNECTION_STATE_DISCONNECTED = 6,
+    PVR_CONNECTION_STATE_CONNECTING = 7,
+  } PVR_CONNECTION_STATE;
+
+  typedef struct PVR_ADDON_CAPABILITIES
+  {
+    bool bSupportsEPG;
+    bool bSupportsEPGEdl;
+    bool bSupportsTV;
+    bool bSupportsRadio;
+    bool bSupportsRecordings;
+    bool bSupportsRecordingsUndelete;
+    bool bSupportsTimers;
+    bool bSupportsChannelGroups;
+    bool bSupportsChannelScan;
+    bool bSupportsChannelSettings;
+    bool bHandlesInputStream;
+    bool bHandlesDemuxing;
+    bool bSupportsRecordingPlayCount;
+    bool bSupportsLastPlayedPosition;
+    bool bSupportsRecordingEdl;
+    bool bSupportsRecordingsRename;
+    bool bSupportsRecordingsLifetimeChange;
+    bool bSupportsDescrambleInfo;
+    bool bSupportsAsyncEPGTransfer;
+    bool bSupportsRecordingSize;
+
+    unsigned int iRecordingsLifetimesSize;
+    PVR_ATTRIBUTE_INT_VALUE recordingsLifetimeValues[PVR_ADDON_ATTRIBUTE_VALUES_ARRAY_SIZE];
+  } ATTRIBUTE_PACKED PVR_ADDON_CAPABILITIES;
+
+  typedef struct PVR_CHANNEL
+  {
+    unsigned int iUniqueId;
+    bool bIsRadio;
+    unsigned int iChannelNumber;
+    unsigned int iSubChannelNumber;
+    char strChannelName[PVR_ADDON_NAME_STRING_LENGTH];
+    char strInputFormat[PVR_ADDON_INPUT_FORMAT_STRING_LENGTH];
+    unsigned int iEncryptionSystem;
+    char strIconPath[PVR_ADDON_URL_STRING_LENGTH];
+    bool bIsHidden;
+    bool bHasArchive;
+    int iOrder;
+  } ATTRIBUTE_PACKED PVR_CHANNEL;
+
+  typedef struct PVR_SIGNAL_STATUS
+  {
+    char strAdapterName[PVR_ADDON_NAME_STRING_LENGTH];
+    char strAdapterStatus[PVR_ADDON_NAME_STRING_LENGTH];
+    char strServiceName[PVR_ADDON_NAME_STRING_LENGTH];
+    char strProviderName[PVR_ADDON_NAME_STRING_LENGTH];
+    char strMuxName[PVR_ADDON_NAME_STRING_LENGTH];
+    int iSNR;
+    int iSignal;
+    long iBER;
+    long iUNC;
+  } ATTRIBUTE_PACKED PVR_SIGNAL_STATUS;
+
+  #define PVR_DESCRAMBLE_INFO_NOT_AVAILABLE -1
+
+  typedef struct PVR_DESCRAMBLE_INFO
+  {
+    int iPid;
+    int iCaid;
+    int iProvid;
+    int iEcmTime;
+    int iHops;
+    char strCardSystem[PVR_ADDON_DESCRAMBLE_INFO_STRING_LENGTH];
+    char strReader[PVR_ADDON_DESCRAMBLE_INFO_STRING_LENGTH];
+    char strFrom[PVR_ADDON_DESCRAMBLE_INFO_STRING_LENGTH];
+    char strProtocol[PVR_ADDON_DESCRAMBLE_INFO_STRING_LENGTH];
+  } ATTRIBUTE_PACKED PVR_DESCRAMBLE_INFO;
+
+  typedef struct PVR_CHANNEL_GROUP
+  {
+    char strGroupName[PVR_ADDON_NAME_STRING_LENGTH];
+    bool bIsRadio;
+    unsigned int iPosition;
+  } ATTRIBUTE_PACKED PVR_CHANNEL_GROUP;
+
+  typedef struct PVR_CHANNEL_GROUP_MEMBER
+  {
+    char strGroupName[PVR_ADDON_NAME_STRING_LENGTH];
+    unsigned int iChannelUniqueId;
+    unsigned int iChannelNumber;
+    unsigned int iSubChannelNumber;
+    int iOrder;
+  } ATTRIBUTE_PACKED PVR_CHANNEL_GROUP_MEMBER;
 
   typedef enum EPG_EVENT_CONTENTMASK
   {
@@ -94,22 +180,27 @@ extern "C" {
     EPG_EVENT_CONTENTMASK_EDUCATIONALSCIENCE = 0x90,
     EPG_EVENT_CONTENTMASK_LEISUREHOBBIES = 0xA0,
     EPG_EVENT_CONTENTMASK_SPECIAL = 0xB0,
-    EPG_EVENT_CONTENTMASK_USERDEFINED = 0xF0
+    EPG_EVENT_CONTENTMASK_USERDEFINED = 0xF0,
+    EPG_GENRE_USE_STRING = 0x100
   } EPG_EVENT_CONTENTMASK;
 
-  #define EPG_GENRE_USE_STRING 0x100
   #define EPG_STRING_TOKEN_SEPARATOR ","
 
-  #define EPG_TAG_FLAG_UNDEFINED 0x00000000
-  #define EPG_TAG_FLAG_IS_SERIES 0x00000001
-  #define EPG_TAG_FLAG_IS_NEW 0x00000002
-  #define EPG_TAG_FLAG_IS_PREMIERE 0x00000004
-  #define EPG_TAG_FLAG_IS_FINALE 0x00000008
-  #define EPG_TAG_FLAG_IS_LIVE 0x00000010
+  typedef enum EPG_TAG_FLAG
+  {
+    EPG_TAG_FLAG_UNDEFINED = 0,
+    EPG_TAG_FLAG_IS_SERIES = (1 << 0),
+    EPG_TAG_FLAG_IS_NEW = (1 << 1),
+    EPG_TAG_FLAG_IS_PREMIERE = (1 << 2),
+    EPG_TAG_FLAG_IS_FINALE = (1 << 3),
+    EPG_TAG_FLAG_IS_LIVE = (1 << 4),
+  } EPG_TAG_FLAG;
 
   #define EPG_TAG_INVALID_UID 0
 
   #define EPG_TAG_INVALID_SERIES_EPISODE -1
+
+  #define EPG_TIMEFRAME_UNLIMITED -1
 
   typedef enum EPG_EVENT_STATE
   {
@@ -148,115 +239,17 @@ extern "C" {
     const char* strSeriesLink;
   } ATTRIBUTE_PACKED EPG_TAG;
 
-  #define PVR_TIMER_TYPE_NONE 0
-  #define PVR_TIMER_NO_CLIENT_INDEX 0
-  #define PVR_TIMER_NO_PARENT PVR_TIMER_NO_CLIENT_INDEX
-  #define PVR_TIMER_NO_EPG_UID EPG_TAG_INVALID_UID
-  #define PVR_TIMER_ANY_CHANNEL -1
-
-  #define PVR_TIMER_TYPE_ATTRIBUTE_NONE 0x00000000
-
-  #define PVR_TIMER_TYPE_IS_MANUAL 0x00000001
-  #define PVR_TIMER_TYPE_IS_REPEATING 0x00000002
-  #define PVR_TIMER_TYPE_IS_READONLY 0x00000004
-  #define PVR_TIMER_TYPE_FORBIDS_NEW_INSTANCES 0x00000008
-  #define PVR_TIMER_TYPE_SUPPORTS_ENABLE_DISABLE 0x00000010
-  #define PVR_TIMER_TYPE_SUPPORTS_CHANNELS 0x00000020
-  #define PVR_TIMER_TYPE_SUPPORTS_START_TIME 0x00000040
-  #define PVR_TIMER_TYPE_SUPPORTS_TITLE_EPG_MATCH 0x00000080
-  #define PVR_TIMER_TYPE_SUPPORTS_FULLTEXT_EPG_MATCH 0x00000100
-  #define PVR_TIMER_TYPE_SUPPORTS_FIRST_DAY 0x00000200
-  #define PVR_TIMER_TYPE_SUPPORTS_WEEKDAYS 0x00000400
-  #define PVR_TIMER_TYPE_SUPPORTS_RECORD_ONLY_NEW_EPISODES 0x00000800
-  #define PVR_TIMER_TYPE_SUPPORTS_START_END_MARGIN 0x00001000
-  #define PVR_TIMER_TYPE_SUPPORTS_PRIORITY 0x00002000
-  #define PVR_TIMER_TYPE_SUPPORTS_LIFETIME 0x00004000
-  #define PVR_TIMER_TYPE_SUPPORTS_RECORDING_FOLDERS 0x00008000
-  #define PVR_TIMER_TYPE_SUPPORTS_RECORDING_GROUP 0x00010000
-  #define PVR_TIMER_TYPE_SUPPORTS_END_TIME 0x00020000
-  #define PVR_TIMER_TYPE_SUPPORTS_START_ANYTIME 0x00040000
-  #define PVR_TIMER_TYPE_SUPPORTS_END_ANYTIME 0x00080000
-  #define PVR_TIMER_TYPE_SUPPORTS_MAX_RECORDINGS 0x00100000
-  #define PVR_TIMER_TYPE_REQUIRES_EPG_TAG_ON_CREATE 0x00200000
-  #define PVR_TIMER_TYPE_FORBIDS_EPG_TAG_ON_CREATE 0x00400000
-  #define PVR_TIMER_TYPE_REQUIRES_EPG_SERIES_ON_CREATE 0x00800000
-  #define PVR_TIMER_TYPE_SUPPORTS_ANY_CHANNEL 0x01000000
-  #define PVR_TIMER_TYPE_REQUIRES_EPG_SERIESLINK_ON_CREATE 0x02000000
-  #define PVR_TIMER_TYPE_SUPPORTS_READONLY_DELETE 0x04000000
-  #define PVR_TIMER_TYPE_IS_REMINDER 0x08000000
-  #define PVR_TIMER_TYPE_SUPPORTS_START_MARGIN 0x10000000
-  #define PVR_TIMER_TYPE_SUPPORTS_END_MARGIN 0x20000000
-
-  #define PVR_WEEKDAY_NONE 0x00
-  #define PVR_WEEKDAY_MONDAY 0x01
-  #define PVR_WEEKDAY_TUESDAY 0x02
-  #define PVR_WEEKDAY_WEDNESDAY 0x04
-  #define PVR_WEEKDAY_THURSDAY 0x08
-  #define PVR_WEEKDAY_FRIDAY 0x10
-  #define PVR_WEEKDAY_SATURDAY 0x20
-  #define PVR_WEEKDAY_SUNDAY 0x40
-  #define PVR_WEEKDAY_ALLDAYS \
-    ( \
-      PVR_WEEKDAY_MONDAY | PVR_WEEKDAY_TUESDAY | PVR_WEEKDAY_WEDNESDAY | PVR_WEEKDAY_THURSDAY | \
-      PVR_WEEKDAY_FRIDAY | PVR_WEEKDAY_SATURDAY | PVR_WEEKDAY_SUNDAY \
-    )
-
-
-  #define EPG_TIMEFRAME_UNLIMITED -1
-  #define PVR_CHANNEL_INVALID_UID -1
-  #define PVR_DESCRAMBLE_INFO_NOT_AVAILABLE -1
-
-  typedef enum PVR_ERROR
+  typedef enum PVR_RECORDING_FLAG
   {
-    PVR_ERROR_NO_ERROR = 0,
-    PVR_ERROR_UNKNOWN = -1,
-    PVR_ERROR_NOT_IMPLEMENTED = -2,
-    PVR_ERROR_SERVER_ERROR = -3,
-    PVR_ERROR_SERVER_TIMEOUT = -4,
-    PVR_ERROR_REJECTED = -5,
-    PVR_ERROR_ALREADY_PRESENT = -6,
-    PVR_ERROR_INVALID_PARAMETERS = -7,
-    PVR_ERROR_RECORDING_RUNNING = -8,
-    PVR_ERROR_FAILED = -9,
-  } PVR_ERROR;
+    PVR_RECORDING_FLAG_UNDEFINED = 0,
+    PVR_RECORDING_FLAG_IS_SERIES = (1 << 0),
+    PVR_RECORDING_FLAG_IS_NEW = (1 << 1),
+    PVR_RECORDING_FLAG_IS_PREMIERE = (1 << 2),
+    PVR_RECORDING_FLAG_IS_FINALE = (1 << 3),
+    PVR_RECORDING_FLAG_IS_LIVE = (1 << 4),
+  } PVR_RECORDING_FLAG;
 
-  typedef enum PVR_TIMER_STATE
-  {
-    PVR_TIMER_STATE_NEW = 0,
-    PVR_TIMER_STATE_SCHEDULED = 1,
-    PVR_TIMER_STATE_RECORDING = 2,
-    PVR_TIMER_STATE_COMPLETED = 3,
-    PVR_TIMER_STATE_ABORTED = 4,
-    PVR_TIMER_STATE_CANCELLED = 5,
-    PVR_TIMER_STATE_CONFLICT_OK = 6,
-    PVR_TIMER_STATE_CONFLICT_NOK = 7,
-    PVR_TIMER_STATE_ERROR = 8,
-    PVR_TIMER_STATE_DISABLED = 9,
-  } PVR_TIMER_STATE;
-
-  typedef enum PVR_MENUHOOK_CAT
-  {
-    PVR_MENUHOOK_UNKNOWN = -1,
-    PVR_MENUHOOK_ALL = 0,
-    PVR_MENUHOOK_CHANNEL = 1,
-    PVR_MENUHOOK_TIMER = 2,
-    PVR_MENUHOOK_EPG = 3,
-    PVR_MENUHOOK_RECORDING = 4,
-    PVR_MENUHOOK_DELETED_RECORDING = 5,
-    PVR_MENUHOOK_SETTING = 6,
-  } PVR_MENUHOOK_CAT;
-
-  typedef enum PVR_CONNECTION_STATE
-  {
-    PVR_CONNECTION_STATE_UNKNOWN = 0,
-    PVR_CONNECTION_STATE_SERVER_UNREACHABLE = 1,
-    PVR_CONNECTION_STATE_SERVER_MISMATCH = 2,
-    PVR_CONNECTION_STATE_VERSION_MISMATCH = 3,
-    PVR_CONNECTION_STATE_ACCESS_DENIED = 4,
-    PVR_CONNECTION_STATE_CONNECTED = 5,
-    PVR_CONNECTION_STATE_DISCONNECTED = 6,
-    PVR_CONNECTION_STATE_CONNECTING = 7,
-  } PVR_CONNECTION_STATE;
+  #define PVR_RECORDING_INVALID_SERIES_EPISODE EPG_TAG_INVALID_SERIES_EPISODE
 
   typedef enum PVR_RECORDING_CHANNEL_TYPE
   {
@@ -264,212 +257,6 @@ extern "C" {
     PVR_RECORDING_CHANNEL_TYPE_TV = 1,
     PVR_RECORDING_CHANNEL_TYPE_RADIO = 2,
   } PVR_RECORDING_CHANNEL_TYPE;
-
-  typedef struct PVR_NAMED_VALUE
-  {
-    char strName[PVR_ADDON_NAME_STRING_LENGTH];
-    char strValue[PVR_ADDON_NAME_STRING_LENGTH];
-  } ATTRIBUTE_PACKED PVR_NAMED_VALUE;
-
-  typedef struct AddonProperties_PVR
-  {
-    const char* strUserPath;
-    const char* strClientPath;
-    int iEpgMaxDays;
-  } AddonProperties_PVR;
-
-  typedef struct PVR_ATTRIBUTE_INT_VALUE
-  {
-    int iValue;
-    char strDescription[PVR_ADDON_ATTRIBUTE_DESC_LENGTH];
-  } ATTRIBUTE_PACKED PVR_ATTRIBUTE_INT_VALUE;
-
-  typedef struct PVR_ADDON_CAPABILITIES
-  {
-    bool bSupportsEPG;
-    bool bSupportsEPGEdl;
-    bool bSupportsTV;
-    bool bSupportsRadio;
-    bool bSupportsRecordings;
-    bool bSupportsRecordingsUndelete;
-    bool bSupportsTimers;
-    bool bSupportsChannelGroups;
-    bool bSupportsChannelScan;
-    bool bSupportsChannelSettings;
-    bool bHandlesInputStream;
-    bool bHandlesDemuxing;
-    bool bSupportsRecordingPlayCount;
-    bool bSupportsLastPlayedPosition;
-    bool bSupportsRecordingEdl;
-    bool bSupportsRecordingsRename;
-    bool bSupportsRecordingsLifetimeChange;
-    bool bSupportsDescrambleInfo;
-    bool bSupportsAsyncEPGTransfer;
-    bool bSupportsRecordingSize;
-
-    unsigned int iRecordingsLifetimesSize;
-    PVR_ATTRIBUTE_INT_VALUE recordingsLifetimeValues[PVR_ADDON_ATTRIBUTE_VALUES_ARRAY_SIZE];
-  } ATTRIBUTE_PACKED PVR_ADDON_CAPABILITIES;
-
-  typedef struct PVR_STREAM_PROPERTIES
-  {
-    unsigned int iStreamCount;
-    struct PVR_STREAM
-    {
-      unsigned int iPID;
-      xbmc_codec_type_t iCodecType;
-      xbmc_codec_id_t iCodecId;
-      char strLanguage[4];
-      int iSubtitleInfo;
-      int iFPSScale;
-      int iFPSRate;
-      int iHeight;
-      int iWidth;
-      float fAspect;
-      int iChannels;
-      int iSampleRate;
-      int iBlockAlign;
-      int iBitRate;
-      int iBitsPerSample;
-    } stream[PVR_STREAM_MAX_STREAMS];
-  } ATTRIBUTE_PACKED PVR_STREAM_PROPERTIES;
-
-  typedef struct PVR_SIGNAL_STATUS
-  {
-    char strAdapterName[PVR_ADDON_NAME_STRING_LENGTH];
-    char strAdapterStatus[PVR_ADDON_NAME_STRING_LENGTH];
-    char strServiceName[PVR_ADDON_NAME_STRING_LENGTH];
-    char strProviderName[PVR_ADDON_NAME_STRING_LENGTH];
-    char strMuxName[PVR_ADDON_NAME_STRING_LENGTH];
-    int iSNR;
-    int iSignal;
-    long iBER;
-    long iUNC;
-  } ATTRIBUTE_PACKED PVR_SIGNAL_STATUS;
-
-  typedef struct PVR_DESCRAMBLE_INFO
-  {
-    int iPid;
-    int iCaid;
-    int iProvid;
-    int iEcmTime;
-    int iHops;
-    char strCardSystem[PVR_ADDON_DESCRAMBLE_INFO_STRING_LENGTH];
-    char strReader[PVR_ADDON_DESCRAMBLE_INFO_STRING_LENGTH];
-    char strFrom[PVR_ADDON_DESCRAMBLE_INFO_STRING_LENGTH];
-    char strProtocol[PVR_ADDON_DESCRAMBLE_INFO_STRING_LENGTH];
-  } ATTRIBUTE_PACKED PVR_DESCRAMBLE_INFO;
-
-  typedef struct PVR_MENUHOOK
-  {
-    unsigned int iHookId;
-    unsigned int iLocalizedStringId;
-    enum PVR_MENUHOOK_CAT category;
-  } ATTRIBUTE_PACKED PVR_MENUHOOK;
-
-  #define PVR_CHANNEL_UNKNOWN_ORDER 0
-
-  typedef struct PVR_CHANNEL
-  {
-    unsigned int iUniqueId;
-    bool bIsRadio;
-    unsigned int iChannelNumber;
-    unsigned int iSubChannelNumber;
-    char strChannelName[PVR_ADDON_NAME_STRING_LENGTH];
-    char strInputFormat[PVR_ADDON_INPUT_FORMAT_STRING_LENGTH];
-    unsigned int iEncryptionSystem;
-    char strIconPath[PVR_ADDON_URL_STRING_LENGTH];
-    bool bIsHidden;
-    bool bHasArchive;
-    int iOrder;
-  } ATTRIBUTE_PACKED PVR_CHANNEL;
-
-  typedef struct PVR_CHANNEL_GROUP
-  {
-    char strGroupName[PVR_ADDON_NAME_STRING_LENGTH];
-    bool bIsRadio;
-    unsigned int iPosition;
-  } ATTRIBUTE_PACKED PVR_CHANNEL_GROUP;
-
-  typedef struct PVR_CHANNEL_GROUP_MEMBER
-  {
-    char strGroupName[PVR_ADDON_NAME_STRING_LENGTH];
-    unsigned int iChannelUniqueId;
-    unsigned int iChannelNumber;
-    unsigned int iSubChannelNumber;
-    int iOrder;
-  } ATTRIBUTE_PACKED PVR_CHANNEL_GROUP_MEMBER;
-
-  typedef PVR_ATTRIBUTE_INT_VALUE PVR_TIMER_TYPE_ATTRIBUTE_INT_VALUE;
-
-  typedef struct PVR_TIMER_TYPE
-  {
-    unsigned int iId;
-    unsigned int iAttributes;
-    char strDescription[PVR_ADDON_TIMERTYPE_STRING_LENGTH];
-
-    unsigned int iPrioritiesSize;
-    PVR_TIMER_TYPE_ATTRIBUTE_INT_VALUE priorities[PVR_ADDON_TIMERTYPE_VALUES_ARRAY_SIZE];
-    int iPrioritiesDefault;
-
-    unsigned int iLifetimesSize;
-    PVR_TIMER_TYPE_ATTRIBUTE_INT_VALUE lifetimes[PVR_ADDON_TIMERTYPE_VALUES_ARRAY_SIZE];
-    int iLifetimesDefault;
-
-    unsigned int iPreventDuplicateEpisodesSize;
-    PVR_TIMER_TYPE_ATTRIBUTE_INT_VALUE
-    preventDuplicateEpisodes[PVR_ADDON_TIMERTYPE_VALUES_ARRAY_SIZE];
-    unsigned int iPreventDuplicateEpisodesDefault;
-
-    unsigned int iRecordingGroupSize;
-    PVR_TIMER_TYPE_ATTRIBUTE_INT_VALUE recordingGroup[PVR_ADDON_TIMERTYPE_VALUES_ARRAY_SIZE];
-    unsigned int iRecordingGroupDefault;
-
-    unsigned int iMaxRecordingsSize;
-    PVR_TIMER_TYPE_ATTRIBUTE_INT_VALUE maxRecordings[PVR_ADDON_TIMERTYPE_VALUES_ARRAY_SIZE_SMALL];
-    int iMaxRecordingsDefault;
-  } ATTRIBUTE_PACKED PVR_TIMER_TYPE;
-
-  typedef struct PVR_TIMER
-  {
-    unsigned int iClientIndex;
-    unsigned int iParentClientIndex;
-    int iClientChannelUid;
-    time_t startTime;
-    time_t endTime;
-    bool bStartAnyTime;
-    bool bEndAnyTime;
-    enum PVR_TIMER_STATE state;
-    unsigned int iTimerType;
-    char strTitle[PVR_ADDON_NAME_STRING_LENGTH];
-    char strEpgSearchString[PVR_ADDON_NAME_STRING_LENGTH];
-    bool bFullTextEpgSearch;
-    char strDirectory[PVR_ADDON_URL_STRING_LENGTH];
-    char strSummary[PVR_ADDON_DESC_STRING_LENGTH];
-    int iPriority;
-    int iLifetime;
-    int iMaxRecordings;
-    unsigned int iRecordingGroup;
-    time_t firstDay;
-    unsigned int iWeekdays;
-    unsigned int iPreventDuplicateEpisodes;
-    unsigned int iEpgUid;
-    unsigned int iMarginStart;
-    unsigned int iMarginEnd;
-    int iGenreType;
-    int iGenreSubType;
-    char strSeriesLink[PVR_ADDON_URL_STRING_LENGTH];
-  } ATTRIBUTE_PACKED PVR_TIMER;
-
-  /* PVR_RECORDING.iFlags values */
-  #define PVR_RECORDING_FLAG_UNDEFINED 0x00000000
-  #define PVR_RECORDING_FLAG_IS_SERIES 0x00000001
-  #define PVR_RECORDING_FLAG_IS_NEW 0x00000002
-  #define PVR_RECORDING_FLAG_IS_PREMIERE 0x00000004
-  #define PVR_RECORDING_FLAG_IS_FINALE 0x00000008
-  #define PVR_RECORDING_FLAG_IS_LIVE 0x00000010
-
-  #define PVR_RECORDING_INVALID_SERIES_EPISODE EPG_TAG_INVALID_SERIES_EPISODE
 
   typedef struct PVR_RECORDING
   {
@@ -504,6 +291,153 @@ extern "C" {
     int64_t sizeInBytes;
   } ATTRIBUTE_PACKED PVR_RECORDING;
 
+  #define PVR_TIMER_TYPE_NONE 0
+  #define PVR_TIMER_NO_CLIENT_INDEX 0
+  #define PVR_TIMER_NO_PARENT PVR_TIMER_NO_CLIENT_INDEX
+  #define PVR_TIMER_NO_EPG_UID EPG_TAG_INVALID_UID
+  #define PVR_TIMER_ANY_CHANNEL -1
+
+  typedef enum PVR_TIMER_TYPES
+  {
+    PVR_TIMER_TYPE_ATTRIBUTE_NONE = 0,
+    PVR_TIMER_TYPE_IS_MANUAL = (1 << 0),
+    PVR_TIMER_TYPE_IS_REPEATING = (1 << 1),
+    PVR_TIMER_TYPE_IS_READONLY = (1 << 2),
+    PVR_TIMER_TYPE_FORBIDS_NEW_INSTANCES = (1 << 3),
+    PVR_TIMER_TYPE_SUPPORTS_ENABLE_DISABLE = (1 << 4),
+    PVR_TIMER_TYPE_SUPPORTS_CHANNELS = (1 << 5),
+    PVR_TIMER_TYPE_SUPPORTS_START_TIME = (1 << 6),
+    PVR_TIMER_TYPE_SUPPORTS_TITLE_EPG_MATCH = (1 << 7),
+    PVR_TIMER_TYPE_SUPPORTS_FULLTEXT_EPG_MATCH = (1 << 8),
+    PVR_TIMER_TYPE_SUPPORTS_FIRST_DAY = (1 << 9),
+    PVR_TIMER_TYPE_SUPPORTS_WEEKDAYS = (1 << 10),
+    PVR_TIMER_TYPE_SUPPORTS_RECORD_ONLY_NEW_EPISODES = (1 << 11),
+    PVR_TIMER_TYPE_SUPPORTS_START_END_MARGIN = (1 << 12),
+    PVR_TIMER_TYPE_SUPPORTS_PRIORITY = (1 << 13),
+    PVR_TIMER_TYPE_SUPPORTS_LIFETIME = (1 << 14),
+    PVR_TIMER_TYPE_SUPPORTS_RECORDING_FOLDERS = (1 << 15),
+    PVR_TIMER_TYPE_SUPPORTS_RECORDING_GROUP = (1 << 16),
+    PVR_TIMER_TYPE_SUPPORTS_END_TIME = (1 << 17),
+    PVR_TIMER_TYPE_SUPPORTS_START_ANYTIME = (1 << 18),
+    PVR_TIMER_TYPE_SUPPORTS_END_ANYTIME = (1 << 19),
+    PVR_TIMER_TYPE_SUPPORTS_MAX_RECORDINGS = (1 << 20),
+    PVR_TIMER_TYPE_REQUIRES_EPG_TAG_ON_CREATE = (1 << 21),
+    PVR_TIMER_TYPE_FORBIDS_EPG_TAG_ON_CREATE = (1 << 22),
+    PVR_TIMER_TYPE_REQUIRES_EPG_SERIES_ON_CREATE = (1 << 23),
+    PVR_TIMER_TYPE_SUPPORTS_ANY_CHANNEL = (1 << 24),
+    PVR_TIMER_TYPE_REQUIRES_EPG_SERIESLINK_ON_CREATE = (1 << 25),
+    PVR_TIMER_TYPE_SUPPORTS_READONLY_DELETE = (1 << 26),
+    PVR_TIMER_TYPE_IS_REMINDER = (1 << 27),
+    PVR_TIMER_TYPE_SUPPORTS_START_MARGIN = (1 << 28),
+    PVR_TIMER_TYPE_SUPPORTS_END_MARGIN = (1 << 29),
+  } PVR_TIMER_TYPES;
+
+  typedef enum PVR_WEEKDAYS
+  {
+    PVR_WEEKDAY_NONE = 0,
+    PVR_WEEKDAY_MONDAY = (1 << 0),
+    PVR_WEEKDAY_TUESDAY = (1 << 1),
+    PVR_WEEKDAY_WEDNESDAY = (1 << 2),
+    PVR_WEEKDAY_THURSDAY = (1 << 3),
+    PVR_WEEKDAY_FRIDAY = (1 << 4),
+    PVR_WEEKDAY_SATURDAY = (1 << 5),
+    PVR_WEEKDAY_SUNDAY = (1 << 6),
+    PVR_WEEKDAY_ALLDAYS = PVR_WEEKDAY_MONDAY | PVR_WEEKDAY_TUESDAY | PVR_WEEKDAY_WEDNESDAY |
+                          PVR_WEEKDAY_THURSDAY | PVR_WEEKDAY_FRIDAY | PVR_WEEKDAY_SATURDAY |
+                          PVR_WEEKDAY_SUNDAY
+  } PVR_WEEKDAY;
+
+  typedef enum PVR_TIMER_STATE
+  {
+    PVR_TIMER_STATE_NEW = 0,
+    PVR_TIMER_STATE_SCHEDULED = 1,
+    PVR_TIMER_STATE_RECORDING = 2,
+    PVR_TIMER_STATE_COMPLETED = 3,
+    PVR_TIMER_STATE_ABORTED = 4,
+    PVR_TIMER_STATE_CANCELLED = 5,
+    PVR_TIMER_STATE_CONFLICT_OK = 6,
+    PVR_TIMER_STATE_CONFLICT_NOK = 7,
+    PVR_TIMER_STATE_ERROR = 8,
+    PVR_TIMER_STATE_DISABLED = 9,
+  } PVR_TIMER_STATE;
+
+  typedef struct PVR_TIMER
+  {
+    unsigned int iClientIndex;
+    unsigned int iParentClientIndex;
+    int iClientChannelUid;
+    time_t startTime;
+    time_t endTime;
+    bool bStartAnyTime;
+    bool bEndAnyTime;
+    enum PVR_TIMER_STATE state;
+    unsigned int iTimerType;
+    char strTitle[PVR_ADDON_NAME_STRING_LENGTH];
+    char strEpgSearchString[PVR_ADDON_NAME_STRING_LENGTH];
+    bool bFullTextEpgSearch;
+    char strDirectory[PVR_ADDON_URL_STRING_LENGTH];
+    char strSummary[PVR_ADDON_DESC_STRING_LENGTH];
+    int iPriority;
+    int iLifetime;
+    int iMaxRecordings;
+    unsigned int iRecordingGroup;
+    time_t firstDay;
+    unsigned int iWeekdays;
+    unsigned int iPreventDuplicateEpisodes;
+    unsigned int iEpgUid;
+    unsigned int iMarginStart;
+    unsigned int iMarginEnd;
+    int iGenreType;
+    int iGenreSubType;
+    char strSeriesLink[PVR_ADDON_URL_STRING_LENGTH];
+  } ATTRIBUTE_PACKED PVR_TIMER;
+
+  typedef struct PVR_TIMER_TYPE
+  {
+    unsigned int iId;
+    unsigned int iAttributes;
+    char strDescription[PVR_ADDON_TIMERTYPE_STRING_LENGTH];
+
+    unsigned int iPrioritiesSize;
+    PVR_ATTRIBUTE_INT_VALUE priorities[PVR_ADDON_TIMERTYPE_VALUES_ARRAY_SIZE];
+    int iPrioritiesDefault;
+
+    unsigned int iLifetimesSize;
+    PVR_ATTRIBUTE_INT_VALUE lifetimes[PVR_ADDON_TIMERTYPE_VALUES_ARRAY_SIZE];
+    int iLifetimesDefault;
+
+    unsigned int iPreventDuplicateEpisodesSize;
+    PVR_ATTRIBUTE_INT_VALUE preventDuplicateEpisodes[PVR_ADDON_TIMERTYPE_VALUES_ARRAY_SIZE];
+    unsigned int iPreventDuplicateEpisodesDefault;
+
+    unsigned int iRecordingGroupSize;
+    PVR_ATTRIBUTE_INT_VALUE recordingGroup[PVR_ADDON_TIMERTYPE_VALUES_ARRAY_SIZE];
+    unsigned int iRecordingGroupDefault;
+
+    unsigned int iMaxRecordingsSize;
+    PVR_ATTRIBUTE_INT_VALUE maxRecordings[PVR_ADDON_TIMERTYPE_VALUES_ARRAY_SIZE_SMALL];
+    int iMaxRecordingsDefault;
+  } ATTRIBUTE_PACKED PVR_TIMER_TYPE;
+
+  typedef enum PVR_MENUHOOK_CAT
+  {
+    PVR_MENUHOOK_UNKNOWN = -1,
+    PVR_MENUHOOK_ALL = 0,
+    PVR_MENUHOOK_CHANNEL = 1,
+    PVR_MENUHOOK_TIMER = 2,
+    PVR_MENUHOOK_EPG = 3,
+    PVR_MENUHOOK_RECORDING = 4,
+    PVR_MENUHOOK_DELETED_RECORDING = 5,
+    PVR_MENUHOOK_SETTING = 6,
+  } PVR_MENUHOOK_CAT;
+
+  typedef struct PVR_MENUHOOK
+  {
+    unsigned int iHookId;
+    unsigned int iLocalizedStringId;
+    enum PVR_MENUHOOK_CAT category;
+  } ATTRIBUTE_PACKED PVR_MENUHOOK;
+
   typedef enum PVR_EDL_TYPE
   {
     PVR_EDL_TYPE_CUT = 0,
@@ -519,6 +453,56 @@ extern "C" {
     enum PVR_EDL_TYPE type;
   } ATTRIBUTE_PACKED PVR_EDL_ENTRY;
 
+  #define PVR_STREAM_MAX_STREAMS 20
+
+  #define XBMC_INVALID_CODEC_ID 0
+  #define XBMC_INVALID_CODEC \
+    { \
+      XBMC_CODEC_TYPE_UNKNOWN, XBMC_INVALID_CODEC_ID \
+    }
+
+  typedef unsigned int xbmc_codec_id_t;
+
+  typedef enum xbmc_codec_type_t
+  {
+    XBMC_CODEC_TYPE_UNKNOWN = -1,
+    XBMC_CODEC_TYPE_VIDEO,
+    XBMC_CODEC_TYPE_AUDIO,
+    XBMC_CODEC_TYPE_DATA,
+    XBMC_CODEC_TYPE_SUBTITLE,
+    XBMC_CODEC_TYPE_RDS,
+    XBMC_CODEC_TYPE_NB
+  } xbmc_codec_type_t;
+
+  typedef struct xbmc_codec_t
+  {
+    enum xbmc_codec_type_t codec_type;
+    xbmc_codec_id_t codec_id;
+  } xbmc_codec_t;
+
+  typedef struct PVR_STREAM_PROPERTIES
+  {
+    unsigned int iStreamCount;
+    struct PVR_STREAM
+    {
+      unsigned int iPID;
+      xbmc_codec_type_t iCodecType;
+      xbmc_codec_id_t iCodecId;
+      char strLanguage[4];
+      int iSubtitleInfo;
+      int iFPSScale;
+      int iFPSRate;
+      int iHeight;
+      int iWidth;
+      float fAspect;
+      int iChannels;
+      int iSampleRate;
+      int iBlockAlign;
+      int iBitRate;
+      int iBitsPerSample;
+    } stream[PVR_STREAM_MAX_STREAMS];
+  } ATTRIBUTE_PACKED PVR_STREAM_PROPERTIES;
+
   typedef struct PVR_STREAM_TIMES
   {
     time_t startTime;
@@ -527,8 +511,30 @@ extern "C" {
     int64_t ptsEnd;
   } ATTRIBUTE_PACKED PVR_STREAM_TIMES;
 
+  #define PVR_STREAM_PROPERTY_STREAMURL "streamurl"
+  #define PVR_STREAM_PROPERTY_INPUTSTREAM STREAM_PROPERTY_INPUTSTREAM
+  #define PVR_STREAM_PROPERTY_MIMETYPE "mimetype"
+  #define PVR_STREAM_PROPERTY_ISREALTIMESTREAM STREAM_PROPERTY_ISREALTIMESTREAM
+  #define PVR_STREAM_PROPERTY_EPGPLAYBACKASLIVE "epgplaybackaslive"
+  #define PVR_STREAM_PROPERTY_VALUE_INPUTSTREAMFFMPEG STREAM_PROPERTY_VALUE_INPUTSTREAMFFMPEG
+
+  #define PVR_CHANNEL_INVALID_UID -1
+
   struct AddonInstance_PVR;
 
+  /*!
+   * @brief Structure to define typical standard values
+   */
+  typedef struct AddonProperties_PVR
+  {
+    const char* strUserPath;
+    const char* strClientPath;
+    int iEpgMaxDays;
+  } AddonProperties_PVR;
+
+  /*!
+   * @brief Structure to transfer the methods from Kodi to addon
+   */
   typedef struct AddonToKodiFuncTable_PVR
   {
     // Pointer inside Kodi where used from him to find his class
