@@ -251,8 +251,11 @@ void CXBMCApp::onResume()
     RequestVisibleBehind(true);
 
   if (g_application.IsInitialized())
-    dynamic_cast<CAndroidPowerSyscall*>(CServiceBroker::GetPowerManager().GetPowerSyscall())
-        ->SetOnResume();
+  {
+    IPowerSyscall* syscall = CServiceBroker::GetPowerManager().GetPowerSyscall();
+    if (syscall)
+      static_cast<CAndroidPowerSyscall*>(syscall)->SetOnResume();
+  }
 }
 
 void CXBMCApp::onPause()
@@ -274,8 +277,9 @@ void CXBMCApp::onPause()
   EnableWakeLock(false);
   m_hasReqVisible = false;
 
-  dynamic_cast<CAndroidPowerSyscall*>(CServiceBroker::GetPowerManager().GetPowerSyscall())
-      ->SetOnPause();
+  IPowerSyscall* syscall = CServiceBroker::GetPowerManager().GetPowerSyscall();
+  if (syscall)
+    static_cast<CAndroidPowerSyscall*>(syscall)->SetOnPause();
 }
 
 void CXBMCApp::onStop()
