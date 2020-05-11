@@ -293,60 +293,35 @@ std::vector<std::shared_ptr<CPVREpgInfoTag>> CPVREpg::GetTags() const
 
 bool CPVREpg::Persist(const std::shared_ptr<CPVREpgDatabase>& database, bool bQueueWrite)
 {
+  // Note: It is guaranteed that both this EPG instance and database instance are already
+  //       locked when this method gets called! No additional locking is needed here!
+
   if (!database)
   {
     CLog::LogF(LOGERROR, "No EPG database");
     return false;
   }
 
-  bool bLastScanTimeNeedsSave = false;
-  bool bTagsNeedSave = false;
-  bool bEpgNeedsSave = false;
-  int iEpgID = -1;
-  std::string name;
-  std::string scraper;
-  CDateTime lastScanTime;
-
+  if (m_iEpgID <= 0 || m_bChanged)
   {
-    CSingleLock lock(m_critSection);
-
-    bLastScanTimeNeedsSave = m_bUpdateLastScanTime;
-    bTagsNeedSave = m_tags.NeedsSave();
-    bEpgNeedsSave = m_iEpgID <= 0 || m_bChanged;
-    iEpgID = m_iEpgID;
-    name = m_strName;
-    scraper = m_strScraperName;
-    lastScanTime = m_lastScanTime;
-
-    m_bChanged = false;
-    m_bUpdateLastScanTime = false;
+    const int iId = database->Persist(*this, m_iEpgID > 0);
+    if (iId > 0 && m_iEpgID != iId)
+    {
+      m_iEpgID = iId;
+      m_tags.SetEpgID(iId);
+    }
   }
 
-  database->Lock();
-
-  int iNewEpgID = iEpgID;
-  if (bEpgNeedsSave)
-    iNewEpgID = database->Persist(iEpgID, name, scraper, iEpgID > 0);
-
-  if (bLastScanTimeNeedsSave)
-    database->PersistLastEpgScanTime(iNewEpgID, lastScanTime, bQueueWrite);
-
-  bool bRet = bQueueWrite || database->CommitInsertQueries();
-
-  database->Unlock();
-
-  if (iNewEpgID > 0 && iNewEpgID != iEpgID)
-  {
-    CSingleLock lock(m_critSection);
-
-    m_iEpgID = iNewEpgID;
-    m_tags.SetEpgID(iNewEpgID);
-  }
-
-  if (bTagsNeedSave)
+  if (m_tags.NeedsSave())
     m_tags.Persist(!bQueueWrite);
 
-  return bRet;
+  if (m_bUpdateLastScanTime)
+    database->PersistLastEpgScanTime(m_iEpgID, m_lastScanTime, bQueueWrite);
+
+  m_bChanged = false;
+  m_bUpdateLastScanTime = false;
+
+  return bQueueWrite || database->CommitInsertQueries();
 }
 
 bool CPVREpg::Delete(const std::shared_ptr<CPVREpgDatabase>& database)

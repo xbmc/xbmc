@@ -969,31 +969,30 @@ bool CPVREpgDatabase::PersistLastEpgScanTime(int iEpgId,
   return bQueueWrite ? QueueInsertQuery(strQuery) : ExecuteQuery(strQuery);
 }
 
-int CPVREpgDatabase::Persist(int iEpgId,
-                             const std::string& name,
-                             const std::string& scraper,
-                             bool bQueueWrite)
+int CPVREpgDatabase::Persist(const CPVREpg& epg, bool bQueueWrite)
 {
-  int iReturn(-1);
+  int iReturn = -1;
   std::string strQuery;
 
   CSingleLock lock(m_critSection);
-  if (iEpgId > 0)
+  if (epg.EpgID() > 0)
     strQuery = PrepareSQL("REPLACE INTO epg (idEpg, sName, sScraperName) "
-        "VALUES (%u, '%s', '%s');", iEpgId, name.c_str(), scraper.c_str());
+                          "VALUES (%u, '%s', '%s');",
+                          epg.EpgID(), epg.Name().c_str(), epg.ScraperName().c_str());
   else
     strQuery = PrepareSQL("INSERT INTO epg (sName, sScraperName) "
-        "VALUES ('%s', '%s');", name.c_str(), scraper.c_str());
+                          "VALUES ('%s', '%s');",
+                          epg.Name().c_str(), epg.ScraperName().c_str());
 
   if (bQueueWrite)
   {
     if (QueueInsertQuery(strQuery))
-      iReturn = iEpgId <= 0 ? 0 : iEpgId;
+      iReturn = epg.EpgID() <= 0 ? 0 : epg.EpgID();
   }
   else
   {
     if (ExecuteQuery(strQuery))
-      iReturn = iEpgId <= 0 ? static_cast<int>(m_pDS->lastinsertid()) : iEpgId;
+      iReturn = epg.EpgID() <= 0 ? static_cast<int>(m_pDS->lastinsertid()) : epg.EpgID();
   }
 
   return iReturn;

@@ -282,7 +282,12 @@ bool CPVREpgContainer::PersistAll(unsigned int iMaxTimeslice) const
     for (const auto& epg : m_epgIdToEpgMap)
     {
       if (epg.second && epg.second->NeedsSave())
+      {
+        // Note: We need to obtain a lock for every epg instance before we can lock
+        //       the epg db. This order is important. Otherwise deadlocks may occure.
+        epg.second->Lock();
         changedEpgs.emplace_back(epg.second);
+      }
     }
   }
 
@@ -290,20 +295,27 @@ bool CPVREpgContainer::PersistAll(unsigned int iMaxTimeslice) const
 
   if (!changedEpgs.empty())
   {
+    // Note: We must lock the db the whole time, otherwise races may occure.
+    database->Lock();
+
     XbmcThreads::EndTime processTimeslice(iMaxTimeslice);
     for (const auto& epg : changedEpgs)
     {
-      CLog::Log(LOGDEBUG, "EPG Container: Persisting events for channel '%s'...",
-                epg->GetChannelData()->ChannelName().c_str());
+      if (!processTimeslice.IsTimePast())
+      {
+        CLog::Log(LOGDEBUG, "EPG Container: Persisting events for channel '%s'...",
+                  epg->GetChannelData()->ChannelName().c_str());
 
-      bReturn &= epg->Persist(database, true);
+        bReturn &= epg->Persist(database, true);
+      }
 
-      if (processTimeslice.IsTimePast())
-        break;
+      epg->Unlock();
     }
 
     if (bReturn)
       database->CommitInsertQueries();
+
+    database->Unlock();
   }
 
   return bReturn;
