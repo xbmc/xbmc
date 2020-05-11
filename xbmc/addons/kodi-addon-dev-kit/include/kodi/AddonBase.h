@@ -183,6 +183,9 @@ public:
   }
 
   operator C_STRUCT*() { return m_cStructure; }
+  operator const C_STRUCT*() const { return m_cStructure; }
+
+  const C_STRUCT* GetCStructure() const { return m_cStructure; }
 
 protected:
   C_STRUCT* m_cStructure = nullptr;
