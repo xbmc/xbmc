@@ -15,8 +15,8 @@ CMAKE_OPTIONS := -DCMAKE_BUILD_TYPE=Release \
                  -DCMAKE_CXX_FLAGS="$(CXXFLAGS)" \
                  -DCMAKE_EXE_LINKER_FLAGS="$(LDFLAGS)" \
                  $(CMAKE_OPTIONS)
-BUILDDIR = $(PLATFORM)/build-cmake
-LIBDYLIB=$(PLATFORM)/$(LIBNAME).a
+BUILDDIR=$(PLATFORM)/build-cmake
+LIBDYLIB=$(BUILDDIR)/$(LIBNAME).a
 
 all: .installed-$(PLATFORM)
 
