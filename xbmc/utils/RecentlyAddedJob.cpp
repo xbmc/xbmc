@@ -146,7 +146,7 @@ bool CRecentlyAddedJob::UpdateVideo()
 
 #if defined(TARGET_DARWIN_TVOS)
   // send recently added Movies and TvShows to TopShelf
-  CTVOSTopShelf::GetInstance().SetTopShelfItems(items, TVShowItems);
+  CTVOSTopShelf::GetInstance().SetTopShelfMoviesTvShowsItems(items, TVShowItems);
 #endif
 
   i = 0;

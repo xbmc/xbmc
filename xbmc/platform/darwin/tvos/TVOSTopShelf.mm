@@ -46,7 +46,7 @@ CTVOSTopShelf& CTVOSTopShelf::GetInstance()
   return sTopShelf;
 }
 
-void CTVOSTopShelf::SetTopShelfItems(CFileItemList& movies, CFileItemList& tv)
+void CTVOSTopShelf::SetTopShelfMoviesTvShowsItems(CFileItemList& movies, CFileItemList& tvshows)
 {
   @autoreleasepool
   {
@@ -129,7 +129,7 @@ void CTVOSTopShelf::SetTopShelfItems(CFileItemList& movies, CFileItemList& tv)
 
     CVideoDatabase videoDb;
     videoDb.Open();
-    fillSharedDicts(tv, @"tv", @"tvTitle", 20387,
+    fillSharedDicts(tvshows, @"tvshows", @"tvshowsTitle", 20387,
                     [&videoDb](CFileItemPtr videoItem) {
                       int season = videoItem->GetVideoInfoTag()->m_iIdSeason;
                       return season > 0 ? videoDb.GetArtForItem(season, MediaTypeSeason, "poster")

@@ -16,7 +16,7 @@ class CTVOSTopShelf
 public:
   static CTVOSTopShelf& GetInstance();
   void RunTopShelf();
-  void SetTopShelfItems(CFileItemList& movies, CFileItemList& tv);
+  void SetTopShelfMoviesTvShowsItems(CFileItemList& movies, CFileItemList& tvshows);
   void HandleTopShelfUrl(const std::string& url, const bool run);
 
 private:
