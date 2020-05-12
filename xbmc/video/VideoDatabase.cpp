@@ -2434,7 +2434,7 @@ int CVideoDatabase::SetDetailsForMovie(const std::string& strFilenameAndPath, CV
     AddActorLinksToItem(idMovie, MediaTypeMovie, "writer", details.m_writingCredits);
 
     // add ratingsu
-    details.m_iIdRating = AddRatings(idMovie, MediaTypeMovie, details.m_ratings, details.GetDefaultRating());
+    details.m_iIdRating = AddRatings(idMovie, MediaTypeMovie, details.GetRatings(), details.GetDefaultRating());
 
     // add unique ids
     details.m_iIdUniqueID = UpdateUniqueIDs(idMovie, MediaTypeMovie, details);
@@ -2544,7 +2544,7 @@ int CVideoDatabase::UpdateDetailsForMovie(int idMovie, CVideoInfoTag& details, c
     if (updatedDetails.find("art.altered") != updatedDetails.end())
       SetArtForItem(idMovie, MediaTypeMovie, artwork);
     if (updatedDetails.find("ratings") != updatedDetails.end())
-      details.m_iIdRating = UpdateRatings(idMovie, MediaTypeMovie, details.m_ratings, details.GetDefaultRating());
+      details.m_iIdRating = UpdateRatings(idMovie, MediaTypeMovie, details.GetRatings(), details.GetDefaultRating());
     if (updatedDetails.find("uniqueid") != updatedDetails.end())
       details.m_iIdUniqueID = UpdateUniqueIDs(idMovie, MediaTypeMovie, details);
     if (updatedDetails.find("dateadded") != updatedDetails.end() && details.m_dateAdded.IsValid())
@@ -2718,7 +2718,7 @@ bool CVideoDatabase::UpdateDetailsForTvShow(int idTvShow, CVideoInfoTag &details
   AddActorLinksToItem(idTvShow, MediaTypeTvShow, "director", details.m_director);
 
   // add ratings
-  details.m_iIdRating = AddRatings(idTvShow, MediaTypeTvShow, details.m_ratings, details.GetDefaultRating());
+  details.m_iIdRating = AddRatings(idTvShow, MediaTypeTvShow, details.GetRatings(), details.GetDefaultRating());
 
   // add unique ids
   details.m_iIdUniqueID = UpdateUniqueIDs(idTvShow, MediaTypeTvShow, details);
@@ -2850,7 +2850,7 @@ int CVideoDatabase::SetDetailsForEpisode(const std::string& strFilenameAndPath, 
     AddActorLinksToItem(idEpisode, MediaTypeEpisode, "writer", details.m_writingCredits);
 
     // add ratings
-    details.m_iIdRating = AddRatings(idEpisode, MediaTypeEpisode, details.m_ratings, details.GetDefaultRating());
+    details.m_iIdRating = AddRatings(idEpisode, MediaTypeEpisode, details.GetRatings(), details.GetDefaultRating());
 
     // add unique ids
     details.m_iIdUniqueID = UpdateUniqueIDs(idEpisode, MediaTypeEpisode, details);
@@ -4034,7 +4034,7 @@ CVideoInfoTag CVideoDatabase::GetDetailsForMovie(const dbiplus::sql_record* cons
       GetTags(details.m_iDbId, MediaTypeMovie, details.m_tags);
 
     if (getDetails & VideoDbDetailsRating)
-      GetRatings(details.m_iDbId, MediaTypeMovie, details.m_ratings);
+      GetRatings(details.m_iDbId, MediaTypeMovie, details);
 
     if (getDetails & VideoDbDetailsUniqueID)
      GetUniqueIDs(details.m_iDbId, MediaTypeMovie, details);
@@ -4112,7 +4112,7 @@ CVideoInfoTag CVideoDatabase::GetDetailsForTvShow(const dbiplus::sql_record* con
       GetTags(details.m_iDbId, MediaTypeTvShow, details.m_tags);
 
     if (getDetails & VideoDbDetailsRating)
-      GetRatings(details.m_iDbId, MediaTypeTvShow, details.m_ratings);
+      GetRatings(details.m_iDbId, MediaTypeTvShow, details);
 
     if (getDetails & VideoDbDetailsUniqueID)
       GetUniqueIDs(details.m_iDbId, MediaTypeTvShow, details);
@@ -4209,7 +4209,7 @@ CVideoInfoTag CVideoDatabase::GetDetailsForEpisode(const dbiplus::sql_record* co
     }
 
     if (getDetails & VideoDbDetailsRating)
-      GetRatings(details.m_iDbId, MediaTypeEpisode, details.m_ratings);
+      GetRatings(details.m_iDbId, MediaTypeEpisode, details);
 
     if (getDetails & VideoDbDetailsUniqueID)
       GetUniqueIDs(details.m_iDbId, MediaTypeEpisode, details);
@@ -4349,7 +4349,7 @@ void CVideoDatabase::GetTags(int media_id, const std::string &media_type, std::v
   }
 }
 
-void CVideoDatabase::GetRatings(int media_id, const std::string &media_type, RatingMap &ratings)
+void CVideoDatabase::GetRatings(int media_id, const std::string &media_type, CVideoInfoTag& details)
 {
   try
   {
@@ -4362,7 +4362,7 @@ void CVideoDatabase::GetRatings(int media_id, const std::string &media_type, Rat
     m_pDS2->query(sql);
     while (!m_pDS2->eof())
     {
-      ratings[m_pDS2->fv(0).get_asString()] = CRating(m_pDS2->fv(1).get_asFloat(), m_pDS2->fv(2).get_asInt());
+      details.SetRating(m_pDS2->fv(1).get_asFloat(), m_pDS2->fv(2).get_asInt(), m_pDS2->fv(0).get_asString());
       m_pDS2->next();
     }
     m_pDS2->close();

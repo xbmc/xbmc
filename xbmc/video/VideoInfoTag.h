@@ -9,6 +9,7 @@
 #pragma once
 
 #include "XBDateTime.h"
+#include "utils/DefaultedMap.h"
 #include "utils/EmbeddedArt.h"
 #include "utils/Fanart.h"
 #include "utils/ISortable.h"
@@ -43,6 +44,7 @@ public:
   CRating() = default;
   explicit CRating(float r): rating(r) {}
   CRating(float r, int v): rating(r), votes(v) {}
+
   float rating = 0.0f;
   int votes = 0;
 };
@@ -51,7 +53,7 @@ typedef std::map<std::string, CRating> RatingMap;
 class CVideoInfoTag : public IArchivable, public ISerializable, public ISortable
 {
 public:
-  CVideoInfoTag() { Reset(); };
+  CVideoInfoTag();
   virtual ~CVideoInfoTag() = default;
   void Reset();
   /* \brief Load information to a videoinfotag from an XML element
@@ -75,6 +77,7 @@ public:
   void Serialize(CVariant& value) const override;
   void ToSortable(SortItem& sortable, Field field) const override;
   const CRating GetRating(std::string type = "") const;
+  const std::map<std::string, CRating>& GetRatings() const;
   const std::string& GetDefaultRating() const;
   const std::string GetUniqueID(std::string type = "") const;
   const std::map<std::string, std::string>& GetUniqueIDs() const;
@@ -263,7 +266,7 @@ public:
   int m_iSpecialSortSeason;
   int m_iSpecialSortEpisode;
   int m_iTrack;
-  RatingMap m_ratings;
+  CDefaultedMap<std::string, CRating> m_ratings;
   int m_iIdRating;
   int m_iUserRating;
   CBookmark m_EpBookmark;
@@ -281,6 +284,8 @@ public:
   // TODO: cannot be private, because of 'struct SDbTableOffsets'
   unsigned int m_duration; ///< duration in seconds
 
+  CDefaultedMap<std::string, std::string> m_uniqueIDs;
+
 private:
   /* \brief Parse our native XML format for video info.
    See Load for a description of the available tag types.
@@ -291,9 +296,6 @@ private:
    */
   void ParseNative(const TiXmlElement* element, bool prioritise);
 
-  std::string m_strDefaultRating;
-  std::string m_strDefaultUniqueID;
-  std::map<std::string, std::string> m_uniqueIDs;
   std::string Trim(std::string &&value);
   std::vector<std::string> Trim(std::vector<std::string> &&items);
 

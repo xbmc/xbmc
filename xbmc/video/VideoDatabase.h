@@ -957,7 +957,7 @@ protected:
   bool GetNavCommon(const std::string& strBaseDir, CFileItemList& items, const char *type, int idContent=-1, const Filter &filter = Filter(), bool countOnly = false);
   void GetCast(int media_id, const std::string &media_type, std::vector<SActorInfo> &cast);
   void GetTags(int media_id, const std::string &media_type, std::vector<std::string> &tags);
-  void GetRatings(int media_id, const std::string &media_type, RatingMap &ratings);
+  void GetRatings(int media_id, const std::string &media_type, CVideoInfoTag& details);
   void GetUniqueIDs(int media_id, const std::string &media_type, CVideoInfoTag& details);
 
   void GetDetailsFromDB(std::unique_ptr<dbiplus::Dataset> &pDS, int min, int max, const SDbTableOffsets *offsets, CVideoInfoTag &details, int idxOffset = 2);
