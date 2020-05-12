@@ -14,6 +14,7 @@
 #include "FileItem.h"
 #include "ServiceBroker.h"
 #include "cores/AudioEngine/Interfaces/AE.h"
+#include "filesystem/Directory.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "interfaces/AnnouncementManager.h"
@@ -24,6 +25,7 @@
 #include "powermanagement/PowerManager.h"
 #include "pvr/PVRManager.h"
 #include "settings/AdvancedSettings.h"
+#include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/log.h"
 #import "windowing/tvos/WinEventsTVOS.h"
@@ -266,6 +268,14 @@ XBMCController* g_xbmcController;
   // this handles what to do if we got pushed
   // into foreground by a topshelf item select/play
   CTVOSTopShelf::GetInstance().RunTopShelf();
+  
+  //TEMPO
+  if(CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_VIDEOSCREEN_TOPSHELF_CONTENT) == 2)
+  {
+    CFileItemList tvchannels_items;
+    XFILE::CDirectory::GetDirectory("pvr://channels/tv/*", tvchannels_items, "", 0);
+    CTVOSTopShelf::GetInstance().SetTopShelfTVChannelsItems(tvchannels_items);
+  }
 }
 
 #pragma mark - ScreenSaver Idletimer

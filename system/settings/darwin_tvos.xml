@@ -112,6 +112,19 @@
           <visible>false</visible>
         </setting>
       </group>
+      <group id="4" label="24164">
+        <setting id="topshelf.contenttype" type="integer" label="24165">
+          <level>1</level>
+          <default>1</default> <!-- Recently added movies and TV shows -->
+          <constraints>
+            <options>
+              <option label="24166">1</option> <!-- Recently added movies and TV shows -->
+              <option label="24167">2</option> <!-- TV channels -->
+            </options>
+          </constraints>
+          <control type="spinner" format="string" />
+        </setting>
+      </group>
     </category>
     <category id="audio">
       <group id="1">

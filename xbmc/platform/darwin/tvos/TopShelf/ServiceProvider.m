@@ -45,6 +45,7 @@
 
   NSArray* moviesArray = nil;
   NSArray* tvshowsArray = nil;
+  NSArray* tvchannelsArray = nil;
   NSDictionary* sharedDict = nil;
 
   if ([tvosShared isJailbroken])
@@ -55,11 +56,13 @@
 
     moviesArray = [sharedDict valueForKey:@"movies"];
     tvshowsArray = [sharedDict valueForKey:@"tvshows"];
+    tvchannelsArray = [sharedDict valueForKey:@"tvchannels"];
   }
   else
   {
     moviesArray = [shared objectForKey:@"movies"];
     tvshowsArray = [shared valueForKey:@"tvshows"];
+    tvchannelsArray = [shared valueForKey:@"tvchannels"];
   }
 
   __auto_type mainAppBundle = [tvosShared mainAppBundle];
@@ -102,20 +105,31 @@
     return contentItems;
   };
 
-  if ([moviesArray count] > 0)
+  if([moviesArray count] > 0 || [tvshowsArray count] > 0)
   {
-    __auto_type itemMovie = [[TVContentItem alloc] initWithContentIdentifier:wrapperIdentifier];
-    itemMovie.title = [(sharedDict ?: shared) valueForKey:@"moviesTitle"];
-    itemMovie.topShelfItems = contentItemsFrom(moviesArray);
-    [topShelfItems addObject:itemMovie];
-  }
+    if ([moviesArray count] > 0)
+    {
+      __auto_type itemMovie = [[TVContentItem alloc] initWithContentIdentifier:wrapperIdentifier];
+      itemMovie.title = [(sharedDict ?: shared) valueForKey:@"moviesTitle"];
+      itemMovie.topShelfItems = contentItemsFrom(moviesArray);
+      [topShelfItems addObject:itemMovie];
+    }
 
-  if ([tvshowsArray count] > 0)
+    if ([tvshowsArray count] > 0)
+    {
+      __auto_type itemTvshow = [[TVContentItem alloc] initWithContentIdentifier:wrapperIdentifier];
+      itemTvshow.title = [(sharedDict ?: shared) valueForKey:@"tvshowsTitle"];
+      itemTvshow.topShelfItems = contentItemsFrom(tvshowsArray);
+      [topShelfItems addObject:itemTvshow];
+    }
+  }
+  
+  else if ([tvchannelsArray count] > 0)
   {
-    __auto_type itemTvshow = [[TVContentItem alloc] initWithContentIdentifier:wrapperIdentifier];
-    itemTvshow.title = [(sharedDict ?: shared) valueForKey:@"tvshowsTitle"];
-    itemTvshow.topShelfItems = contentItemsFrom(tvshowsArray);
-    [topShelfItems addObject:itemTvshow];
+    __auto_type itemTvchannel = [[TVContentItem alloc] initWithContentIdentifier:wrapperIdentifier];
+    itemTvchannel.title = [(sharedDict ?: shared) valueForKey:@"tvchannelsTitle"];
+    itemTvchannel.topShelfItems = contentItemsFrom(tvchannelsArray);
+    [topShelfItems addObject:itemTvchannel];
   }
 
   return topShelfItems;

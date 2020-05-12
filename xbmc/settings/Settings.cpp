@@ -338,6 +338,7 @@ const std::string CSettings::SETTING_VIDEOSCREEN_GUICALIBRATION = "videoscreen.g
 const std::string CSettings::SETTING_VIDEOSCREEN_TESTPATTERN = "videoscreen.testpattern";
 const std::string CSettings::SETTING_VIDEOSCREEN_LIMITEDRANGE = "videoscreen.limitedrange";
 const std::string CSettings::SETTING_VIDEOSCREEN_FRAMEPACKING = "videoscreen.framepacking";
+const std::string CSettings::SETTING_VIDEOSCREEN_TOPSHELF_CONTENT = "topshelf.contenttype";
 const std::string CSettings::SETTING_AUDIOOUTPUT_AUDIODEVICE = "audiooutput.audiodevice";
 const std::string CSettings::SETTING_AUDIOOUTPUT_CHANNELS = "audiooutput.channels";
 const std::string CSettings::SETTING_AUDIOOUTPUT_CONFIG = "audiooutput.config";

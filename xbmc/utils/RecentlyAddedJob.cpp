@@ -146,7 +146,8 @@ bool CRecentlyAddedJob::UpdateVideo()
 
 #if defined(TARGET_DARWIN_TVOS)
   // send recently added Movies and TvShows to TopShelf
-  CTVOSTopShelf::GetInstance().SetTopShelfMoviesTvShowsItems(items, TVShowItems);
+  if(CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_VIDEOSCREEN_TOPSHELF_CONTENT) == 1)
+    CTVOSTopShelf::GetInstance().SetTopShelfMoviesTvShowsItems(items, TVShowItems);
 #endif
 
   i = 0;

@@ -15698,6 +15698,22 @@ msgctxt "#24163"
 msgid "Match Apple tvOS Standard (Siri remote)"
 msgstr ""
 
+msgctxt "#24164"
+msgid "Apple TV Top Shelf"
+msgstr ""
+
+msgctxt "#24165"
+msgid "Content"
+msgstr ""
+
+msgctxt "#24166"
+msgid "Recently added movies and TV shows"
+msgstr ""
+
+msgctxt "#24167"
+msgid "TV channels"
+msgstr ""
+
 #empty strings from id 24164 to 24990
 
 #. Used as error message in add-on browser when add-on repository data could not be downloaded
