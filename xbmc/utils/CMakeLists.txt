@@ -92,6 +92,7 @@ set(HEADERS ActorProtocol.h
             Crc32.h
             CryptThreading.h
             DatabaseUtils.h
+            DefaultedMap.h
             Digest.h
             EndianSwap.h
             EventStream.h
