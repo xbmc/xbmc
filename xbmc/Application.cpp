@@ -4131,9 +4131,6 @@ void CApplication::Process()
     m_slowTimer.Reset();
     ProcessSlow();
   }
-#if !defined(TARGET_DARWIN)
-  CServiceBroker::GetCPUInfo()->GetUsedPercentage(); // must call it to recalculate pct values
-#endif
 }
 
 // We get called every 500ms
