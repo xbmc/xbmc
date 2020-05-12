@@ -4595,10 +4595,8 @@ void CApplication::SeekPercentage(float percent)
 // SwitchToFullScreen() returns true if a switch is made, else returns false
 bool CApplication::SwitchToFullScreen(bool force /* = false */)
 {
-  const int activeWindowID = CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow();
-
   // don't switch if the slideshow is active
-  if (activeWindowID == WINDOW_SLIDESHOW)
+  if (CServiceBroker::GetGUI()->GetWindowManager().IsWindowActive(WINDOW_SLIDESHOW))
     return false;
 
   // if playing from the video info window, close it first!
@@ -4626,6 +4624,7 @@ bool CApplication::SwitchToFullScreen(bool force /* = false */)
       pDialog->Close(true);
   }
 
+  const int activeWindowID = CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow();
   int windowID = WINDOW_INVALID;
 
   // See if we're playing a game
