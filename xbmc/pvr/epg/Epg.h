@@ -260,6 +260,16 @@ namespace PVR
      */
     CEventStream<PVREvent>& Events() { return m_events; }
 
+    /*!
+     * @brief Lock the instance. No other thread gets access to this EPG until Unlock was called.
+     */
+    void Lock() { m_critSection.lock(); }
+
+    /*!
+     * @brief Unlock the instance. Other threads may get access to this EPG again.
+     */
+    void Unlock() { m_critSection.unlock(); }
+
   private:
     CPVREpg() = delete;
     CPVREpg(const CPVREpg&) = delete;

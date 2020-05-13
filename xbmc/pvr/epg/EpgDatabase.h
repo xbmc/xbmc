@@ -228,13 +228,11 @@ namespace PVR
 
     /*!
      * @brief Persist an EPG table. It's entries are not persisted.
-     * @param iEpgId The ID of the EPG.
-     * @param name The name of the EPG.
-     * @param scraper The name of the scraper of the EPG.
+     * @param epg The table to persist.
      * @param bQueueWrite Don't execute the query immediately but queue it if true.
      * @return The database ID of this entry or 0 if bSingleUpdate is false and the query was queued.
      */
-    int Persist(int iEpgId, const std::string& name, const std::string& scraper, bool bQueueWrite);
+    int Persist(const CPVREpg& epg, bool bQueueWrite);
 
     /*!
      * @brief Erase all EPG tags with the given epg ID and an end time less than the given time.
