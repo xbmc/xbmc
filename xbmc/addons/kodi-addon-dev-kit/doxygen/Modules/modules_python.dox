@@ -228,6 +228,11 @@ web applications or frameworks for the Python programming language.
       "",
       <b>xbmc.validatePath()</b> function was moved to the xbmcvfs module.
 }
+\python_removed_function{
+      abortRequested,
+      "",
+      <b>xbmc.abortRequested</b> flag was removed completely. Use xbmc.Monitor().abortRequested().
+}
 */
 /*!
 @page python_v18 Python API v18
