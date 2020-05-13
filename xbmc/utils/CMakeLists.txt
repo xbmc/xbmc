@@ -125,6 +125,7 @@ set(HEADERS ActorProtocol.h
             JSONVariantWriter.h
             LabelFormatter.h
             LangCodeExpander.h
+            LazySerializedProperty.h
             LegacyPathTranslation.h
             Locale.h
             log.h
