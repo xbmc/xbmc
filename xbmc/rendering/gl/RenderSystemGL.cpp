@@ -599,97 +599,44 @@ void CRenderSystemGL::InitialiseShaders()
 {
   std::string defines;
   m_limitedColorRange = CServiceBroker::GetWinSystem()->UseLimitedColor();
-  if (m_limitedColorRange)
-  {
-    defines += "#define KODI_LIMITED_RANGE 1\n";
-  }
 
-  m_pShader[SM_DEFAULT].reset(new CGLShader("gl_shader_vert_default.glsl", "gl_shader_frag_default.glsl", defines));
-  if (!m_pShader[SM_DEFAULT]->CompileAndLink())
+  for (int i = SM_DEFAULT; i < SM_MAX; i++)
   {
-    m_pShader[SM_DEFAULT]->Free();
-    m_pShader[SM_DEFAULT].reset();
-    CLog::Log(LOGERROR, "GUI Shader gl_shader_frag_default.glsl - compile and link failed");
-  }
+    switch(i)
+    {
+      case SM_DEFAULT:          defines += "#define SM_DEFAULT 1\n";          break;
+      case SM_TEXTURE:          defines += "#define SM_TEXTURE 1\n";          break;
+      case SM_TEXTURE_LIM:      defines += "#define SM_TEXTURE_LIM 1\n";      break;
+      case SM_MULTI:            defines += "#define SM_MULTI 1\n";            break;
+      case SM_FONTS:            defines += "#define SM_FONTS 1\n";            break;
+      case SM_TEXTURE_NOBLEND:  defines += "#define SM_TEXTURE_NOBLEND 1\n";  break;
+      case SM_MULTI_BLENDCOLOR: defines += "#define SM_MULTI_BLENDCOLOR 1\n"; break;
+    }
+    
+    if (m_limitedColorRange)
+    {
+      defines += "#define KODI_LIMITED_RANGE 1\n";
+    }
 
-  m_pShader[SM_TEXTURE].reset(new CGLShader("gl_shader_frag_texture.glsl", defines));
-  if (!m_pShader[SM_TEXTURE]->CompileAndLink())
-  {
-    m_pShader[SM_TEXTURE]->Free();
-    m_pShader[SM_TEXTURE].reset();
-    CLog::Log(LOGERROR, "GUI Shader gl_shader_frag_texture.glsl - compile and link failed");
-  }
-
-  m_pShader[SM_TEXTURE_LIM].reset(new CGLShader("gl_shader_frag_texture_lim.glsl", defines));
-  if (!m_pShader[SM_TEXTURE_LIM]->CompileAndLink())
-  {
-    m_pShader[SM_TEXTURE_LIM]->Free();
-    m_pShader[SM_TEXTURE_LIM].reset();
-    CLog::Log(LOGERROR, "GUI Shader gl_shader_frag_texture_lim.glsl - compile and link failed");
-  }
-
-  m_pShader[SM_MULTI].reset(new CGLShader("gl_shader_frag_multi.glsl", defines));
-  if (!m_pShader[SM_MULTI]->CompileAndLink())
-  {
-    m_pShader[SM_MULTI]->Free();
-    m_pShader[SM_MULTI].reset();
-    CLog::Log(LOGERROR, "GUI Shader gl_shader_frag_multi.glsl - compile and link failed");
-  }
-
-  m_pShader[SM_FONTS].reset(new CGLShader("gl_shader_frag_fonts.glsl", defines));
-  if (!m_pShader[SM_FONTS]->CompileAndLink())
-  {
-    m_pShader[SM_FONTS]->Free();
-    m_pShader[SM_FONTS].reset();
-    CLog::Log(LOGERROR, "GUI Shader gl_shader_frag_fonts.glsl - compile and link failed");
-  }
-
-  m_pShader[SM_TEXTURE_NOBLEND].reset(new CGLShader("gl_shader_frag_texture_noblend.glsl", defines));
-  if (!m_pShader[SM_TEXTURE_NOBLEND]->CompileAndLink())
-  {
-    m_pShader[SM_TEXTURE_NOBLEND]->Free();
-    m_pShader[SM_TEXTURE_NOBLEND].reset();
-    CLog::Log(LOGERROR, "GUI Shader gl_shader_frag_texture_noblend.glsl - compile and link failed");
-  }
-
-  m_pShader[SM_MULTI_BLENDCOLOR].reset(new CGLShader("gl_shader_frag_multi_blendcolor.glsl", defines));
-  if (!m_pShader[SM_MULTI_BLENDCOLOR]->CompileAndLink())
-  {
-    m_pShader[SM_MULTI_BLENDCOLOR]->Free();
-    m_pShader[SM_MULTI_BLENDCOLOR].reset();
-    CLog::Log(LOGERROR, "GUI Shader gl_shader_frag_multi_blendcolor.glsl - compile and link failed");
+    m_pShader[i].reset(new CGLShader("gl_guishader_vert.glsl", "gl_guishader_frag.glsl", defines));
+    if (!m_pShader[i]->CompileAndLink())
+    {
+      m_pShader[i]->Free();
+      m_pShader[i].reset();
+      CLog::Log(LOGERROR, "GUI Shader - compile and link failed");
+    }
+    defines.clear();
   }
 }
 
 void CRenderSystemGL::ReleaseShaders()
 {
-  if (m_pShader[SM_DEFAULT])
-    m_pShader[SM_DEFAULT]->Free();
-  m_pShader[SM_DEFAULT].reset();
-
-  if (m_pShader[SM_TEXTURE])
-    m_pShader[SM_TEXTURE]->Free();
-  m_pShader[SM_TEXTURE].reset();
-
-  if (m_pShader[SM_TEXTURE_LIM])
-    m_pShader[SM_TEXTURE_LIM]->Free();
-  m_pShader[SM_TEXTURE_LIM].reset();
-
-  if (m_pShader[SM_MULTI])
-    m_pShader[SM_MULTI]->Free();
-  m_pShader[SM_MULTI].reset();
-
-  if (m_pShader[SM_FONTS])
-    m_pShader[SM_FONTS]->Free();
-  m_pShader[SM_FONTS].reset();
-
-  if (m_pShader[SM_TEXTURE_NOBLEND])
-    m_pShader[SM_TEXTURE_NOBLEND]->Free();
-  m_pShader[SM_TEXTURE_NOBLEND].reset();
-
-  if (m_pShader[SM_MULTI_BLENDCOLOR])
-    m_pShader[SM_MULTI_BLENDCOLOR]->Free();
-  m_pShader[SM_MULTI_BLENDCOLOR].reset();
+  for (int i = SM_DEFAULT; i < SM_MAX; i++)
+  {
+    if (m_pShader[i])
+      m_pShader[i]->Free();
+    m_pShader[i].reset();
+  }
 }
 
 void CRenderSystemGL::EnableShader(ESHADERMETHOD method)
