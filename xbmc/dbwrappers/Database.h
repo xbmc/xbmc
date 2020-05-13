@@ -67,6 +67,7 @@ public:
     void SetField(int fieldNo, const std::string &strField, bool bOutput = false);
     void AdjustRecordNumbers(int offset);
     bool GetFetch(int fieldno);
+    void SetFetch(int fieldno, bool bFetch = true);
     bool GetOutput(int fieldno);
     int GetRecNo(int fieldno);
     const std::string GetFields();

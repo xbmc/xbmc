@@ -173,6 +173,12 @@ bool CDatabase::DatasetLayout::GetFetch(int fieldno)
   return false;
 }
 
+void CDatabase::DatasetLayout::SetFetch(int fieldno, bool bFetch /*= true*/)
+{
+  if (fieldno >= 0 && fieldno < static_cast<int>(m_fields.size()))
+    m_fields[fieldno].fetch = bFetch;
+}
+
 bool CDatabase::DatasetLayout::GetOutput(int fieldno)
 {
   if (fieldno >= 0 && fieldno < static_cast<int>(m_fields.size()))
