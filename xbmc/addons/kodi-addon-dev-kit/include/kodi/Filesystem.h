@@ -236,6 +236,227 @@ public:
 //------------------------------------------------------------------------------
 
 //==============================================================================
+/// @defgroup cpp_kodi_vfs_Defs_HttpHeader class HttpHeader
+/// @ingroup cpp_kodi_vfs_Defs
+/// @brief **HTTP header information**\n
+/// The class used to access HTTP header information and get his information.
+///
+/// Used on @ref kodi::vfs::GetHttpHeader().
+///
+/// ----------------------------------------------------------------------------
+///
+/// @copydetails cpp_kodi_vfs_Defs_HttpHeader_Help
+///
+///@{
+class HttpHeader
+{
+public:
+  //==========================================================================
+  /// @brief Http header parser class constructor.
+  ///
+  HttpHeader()
+  {
+    using namespace ::kodi::addon;
+
+    CAddonBase::m_interface->toKodi->kodi_filesystem->http_header_create(
+        CAddonBase::m_interface->toKodi->kodiBase, &m_handle);
+  }
+  //--------------------------------------------------------------------------
+
+  //==========================================================================
+  /// @brief Class destructor.
+  ///
+  ~HttpHeader()
+  {
+    using namespace ::kodi::addon;
+
+    CAddonBase::m_interface->toKodi->kodi_filesystem->http_header_free(
+        CAddonBase::m_interface->toKodi->kodiBase, &m_handle);
+  }
+  //--------------------------------------------------------------------------
+
+  /// @defgroup cpp_kodi_vfs_Defs_HttpHeader_Help *Value Help*
+  /// @ingroup cpp_kodi_vfs_Defs_HttpHeader
+  ///
+  /// <b>The following table contains values that can be get with @ref cpp_kodi_vfs_Defs_HttpHeader :</b>
+  /// | Description | Type | Get call
+  /// |-------------|------|------------
+  /// | **Get the value associated with this parameter of these HTTP headers** | `std::string` | @ref HttpHeader::GetValue "GetValue"
+  /// | **Get the values as list associated with this parameter of these HTTP headers** | `std::vector<std::string>` | @ref HttpHeader::GetValues "GetValues"
+  /// | **Get the full header string associated with these HTTP headers** | `std::string` | @ref HttpHeader::GetHeader "GetHeader"
+  /// | **Get the mime type associated with these HTTP headers** | `std::string` | @ref HttpHeader::GetMimeType "GetMimeType"
+  /// | **Get the charset associated with these HTTP headers** | `std::string` | @ref HttpHeader::GetCharset "GetCharset"
+  /// | **The protocol line associated with these HTTP headers** | `std::string` | @ref HttpHeader::GetProtoLine "GetProtoLine"
+  ///
+
+  /// @addtogroup cpp_kodi_vfs_Defs_HttpHeader
+  ///@{
+
+  //==========================================================================
+  /// @brief Get the value associated with this parameter of these HTTP
+  /// headers.
+  ///
+  /// @param[in] param The name of the parameter a value is required for
+  /// @return The value found
+  ///
+  std::string GetValue(const std::string& param) const
+  {
+    using namespace ::kodi::addon;
+
+    if (!m_handle.handle)
+      return "";
+
+    std::string protoLine;
+    char* string = m_handle.get_value(CAddonBase::m_interface->toKodi->kodiBase, m_handle.handle,
+                                      param.c_str());
+    if (string != nullptr)
+    {
+      protoLine = string;
+      CAddonBase::m_interface->toKodi->free_string(CAddonBase::m_interface->toKodi->kodiBase,
+                                                   string);
+    }
+    return protoLine;
+  }
+  //--------------------------------------------------------------------------
+
+  //==========================================================================
+  /// @brief Get the values as list associated with this parameter of these
+  /// HTTP headers.
+  ///
+  /// @param[in] param The name of the parameter values are required for
+  /// @return The values found
+  ///
+  std::vector<std::string> GetValues(const std::string& param) const
+  {
+    using namespace kodi::addon;
+
+    if (!m_handle.handle)
+      return std::vector<std::string>();
+
+    int numValues;
+    char** res(m_handle.get_values(CAddonBase::m_interface->toKodi->kodiBase, m_handle.handle,
+                                   param.c_str(), &numValues));
+    if (res)
+    {
+      std::vector<std::string> vecReturn;
+      for (int i = 0; i < numValues; ++i)
+      {
+        vecReturn.emplace_back(res[i]);
+      }
+      CAddonBase::m_interface->toKodi->free_string_array(CAddonBase::m_interface->toKodi->kodiBase,
+                                                         res, numValues);
+      return vecReturn;
+    }
+    return std::vector<std::string>();
+  }
+  //--------------------------------------------------------------------------
+
+  //==========================================================================
+  /// @brief Get the full header string associated with these HTTP headers.
+  ///
+  /// @return The header as a string
+  ///
+  std::string GetHeader() const
+  {
+    using namespace ::kodi::addon;
+
+    if (!m_handle.handle)
+      return "";
+
+    std::string header;
+    char* string = m_handle.get_header(CAddonBase::m_interface->toKodi->kodiBase, m_handle.handle);
+    if (string != nullptr)
+    {
+      header = string;
+      CAddonBase::m_interface->toKodi->free_string(CAddonBase::m_interface->toKodi->kodiBase,
+                                                   string);
+    }
+    return header;
+  }
+  //--------------------------------------------------------------------------
+
+  //==========================================================================
+  /// @brief Get the mime type associated with these HTTP headers.
+  ///
+  /// @return The mime type
+  ///
+  std::string GetMimeType() const
+  {
+    using namespace ::kodi::addon;
+
+    if (!m_handle.handle)
+      return "";
+
+    std::string protoLine;
+    char* string =
+        m_handle.get_mime_type(CAddonBase::m_interface->toKodi->kodiBase, m_handle.handle);
+    if (string != nullptr)
+    {
+      protoLine = string;
+      CAddonBase::m_interface->toKodi->free_string(CAddonBase::m_interface->toKodi->kodiBase,
+                                                   string);
+    }
+    return protoLine;
+  }
+  //--------------------------------------------------------------------------
+
+  //==========================================================================
+  /// @brief Get the charset associated with these HTTP headers.
+  ///
+  /// @return The charset
+  ///
+  std::string GetCharset() const
+  {
+    using namespace ::kodi::addon;
+
+    if (!m_handle.handle)
+      return "";
+
+    std::string protoLine;
+    char* string = m_handle.get_charset(CAddonBase::m_interface->toKodi->kodiBase, m_handle.handle);
+    if (string != nullptr)
+    {
+      protoLine = string;
+      CAddonBase::m_interface->toKodi->free_string(CAddonBase::m_interface->toKodi->kodiBase,
+                                                   string);
+    }
+    return protoLine;
+  }
+  //--------------------------------------------------------------------------
+
+  //==========================================================================
+  /// @brief The protocol line associated with these HTTP headers.
+  ///
+  /// @return The protocol line
+  ///
+  std::string GetProtoLine() const
+  {
+    using namespace ::kodi::addon;
+
+    if (!m_handle.handle)
+      return "";
+
+    std::string protoLine;
+    char* string =
+        m_handle.get_proto_line(CAddonBase::m_interface->toKodi->kodiBase, m_handle.handle);
+    if (string != nullptr)
+    {
+      protoLine = string;
+      CAddonBase::m_interface->toKodi->free_string(CAddonBase::m_interface->toKodi->kodiBase,
+                                                   string);
+    }
+    return protoLine;
+  }
+  //--------------------------------------------------------------------------
+
+  ///@}
+
+  KODI_HTTP_HEADER m_handle;
+};
+///@}
+//----------------------------------------------------------------------------
+
+//==============================================================================
 /// @defgroup cpp_kodi_vfs_CDirEntry class CDirEntry
 /// @ingroup cpp_kodi_vfs_Defs
 ///
@@ -1305,6 +1526,161 @@ inline bool IsURL(const std::string& path)
       CAddonBase::m_interface->toKodi->kodiBase, path.c_str());
 }
 //--------------------------------------------------------------------------
+
+//============================================================================
+/// @ingroup cpp_kodi_vfs_General
+/// @brief To get HTTP header information.
+///
+/// @param[in] url URL source of the data
+/// @param[out] header The @ref cpp_kodi_vfs_Defs_HttpHeader
+/// @return true if successfully done, otherwise false
+///
+///
+/// ------------------------------------------------------------------------
+///
+/// @copydetails cpp_kodi_vfs_Defs_HttpHeader_Help
+///
+/// ------------------------------------------------------------------------
+///
+/// **Example:**
+/// ~~~~~~~~~~~~~{.cpp}
+/// #include <kodi/Filesystem.h>
+/// ...
+/// kodi::vfs::HttpHeader header;
+/// bool ret = kodi::vfs::GetHttpHeader(url, header);
+/// ...
+/// ~~~~~~~~~~~~~
+///
+inline bool GetHttpHeader(const std::string& url, HttpHeader& header)
+{
+  using namespace ::kodi::addon;
+
+  return CAddonBase::m_interface->toKodi->kodi_filesystem->get_http_header(
+      CAddonBase::m_interface->toKodi->kodiBase, url.c_str(), &header.m_handle);
+}
+//----------------------------------------------------------------------------
+
+//============================================================================
+/// @ingroup cpp_kodi_vfs_General
+/// @brief Get file mime type.
+///
+/// @param[in] url URL source of the data
+/// @param[out] mimeType the mime type of the URL
+/// @param[in] useragent to be used when retrieving the MimeType [opt]
+/// @return true if successfully done, otherwise false
+///
+///
+/// ------------------------------------------------------------------------
+///
+/// **Example:**
+/// ~~~~~~~~~~~~~{.cpp}
+/// #include <kodi/Filesystem.h>
+/// ...
+/// std::string mimeType;.
+/// if (kodi::vfs::GetMimeType(url, mimeType))
+///   fprintf(stderr, "The mime type is '%s'\n", mimeType.c_str());
+/// ...
+/// ~~~~~~~~~~~~~
+///
+inline bool GetMimeType(const std::string& url,
+                        std::string& mimeType,
+                        const std::string& useragent = "")
+{
+  using namespace ::kodi::addon;
+
+  char* cMimeType;
+  bool ret = CAddonBase::m_interface->toKodi->kodi_filesystem->get_mime_type(
+      CAddonBase::m_interface->toKodi->kodiBase, url.c_str(), &cMimeType, useragent.c_str());
+  if (cMimeType != nullptr)
+  {
+    mimeType = cMimeType;
+    CAddonBase::m_interface->toKodi->free_string(CAddonBase::m_interface->toKodi->kodiBase,
+                                                 cMimeType);
+  }
+  return ret;
+}
+//----------------------------------------------------------------------------
+
+//============================================================================
+/// @ingroup cpp_kodi_vfs_General
+/// @brief Get file content-type.
+///
+/// @param[in] url URL source of the data
+/// @param[out] content The returned type
+/// @param[in] useragent to be used when retrieving the MimeType [opt]
+/// @return true if successfully done, otherwise false
+///
+///
+/// ------------------------------------------------------------------------
+///
+/// **Example:**
+/// ~~~~~~~~~~~~~{.cpp}
+/// #include <kodi/Filesystem.h>
+/// ...
+/// std::string content;.
+/// if (kodi::vfs::GetContentType(url, content))
+///   fprintf(stderr, "The content type is '%s'\n", content.c_str());
+/// ...
+/// ~~~~~~~~~~~~~
+///
+inline bool GetContentType(const std::string& url,
+                           std::string& content,
+                           const std::string& useragent = "")
+{
+  using namespace ::kodi::addon;
+
+  char* cContent;
+  bool ret = CAddonBase::m_interface->toKodi->kodi_filesystem->get_content_type(
+      CAddonBase::m_interface->toKodi->kodiBase, url.c_str(), &cContent, useragent.c_str());
+  if (cContent != nullptr)
+  {
+    content = cContent;
+    CAddonBase::m_interface->toKodi->free_string(CAddonBase::m_interface->toKodi->kodiBase,
+                                                 cContent);
+  }
+  return ret;
+}
+//----------------------------------------------------------------------------
+
+//============================================================================
+/// @ingroup cpp_kodi_vfs_General
+/// @brief Get cookies stored by CURL in RFC 2109 format.
+///
+/// @param[in] url URL source of the data
+/// @param[out] cookies The text list of available cookies
+/// @return true if successfully done, otherwise false
+///
+///
+/// ------------------------------------------------------------------------
+///
+/// **Example:**
+/// ~~~~~~~~~~~~~{.cpp}
+/// #include <kodi/Filesystem.h>
+/// ...
+/// std::string url = "";
+/// std::string cookies;
+/// bool ret = kodi::vfs::GetCookies(url, cookies);
+/// fprintf(stderr, "Cookies from URL '%s' are '%s' (return was %s)\n",
+///         url.c_str(), cookies.c_str(), ret ? "true" : "false");
+/// ...
+/// ~~~~~~~~~~~~~
+///
+inline bool GetCookies(const std::string& url, std::string& cookies)
+{
+  using namespace ::kodi::addon;
+
+  char* cCookies;
+  bool ret = CAddonBase::m_interface->toKodi->kodi_filesystem->get_cookies(
+      CAddonBase::m_interface->toKodi->kodiBase, url.c_str(), &cCookies);
+  if (cCookies != nullptr)
+  {
+    cookies = cCookies;
+    CAddonBase::m_interface->toKodi->free_string(CAddonBase::m_interface->toKodi->kodiBase,
+                                                 cCookies);
+  }
+  return ret;
+}
+//----------------------------------------------------------------------------
 
 //}}}
 

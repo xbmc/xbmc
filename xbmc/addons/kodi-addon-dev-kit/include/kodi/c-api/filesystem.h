@@ -148,6 +148,18 @@ extern "C"
   // "C" Internal interface tables for intercommunications between addon and kodi
   //{{{
 
+  struct KODI_HTTP_HEADER
+  {
+    void* handle;
+
+    char* (*get_value)(void* kodiBase, void* handle, const char* param);
+    char** (*get_values)(void* kodiBase, void* handle, const char* param, int* length);
+    char* (*get_header)(void* kodiBase, void* handle);
+    char* (*get_mime_type)(void* kodiBase, void* handle);
+    char* (*get_charset)(void* kodiBase, void* handle);
+    char* (*get_proto_line)(void* kodiBase, void* handle);
+  };
+
   struct STAT_STRUCTURE
   {
     /// ID of device containing file
@@ -221,6 +233,15 @@ extern "C"
     bool (*is_remote)(void* kodiBase, const char* path);
     bool (*is_local)(void* kodiBase, const char* path);
     bool (*is_url)(void* kodiBase, const char* path);
+    bool (*get_http_header)(void* kodiBase, const char* url, struct KODI_HTTP_HEADER* headers);
+    bool (*get_mime_type)(void* kodiBase, const char* url, char** content, const char* useragent);
+    bool (*get_content_type)(void* kodiBase,
+                             const char* url,
+                             char** content,
+                             const char* useragent);
+    bool (*get_cookies)(void* kodiBase, const char* url, char** cookies);
+    bool (*http_header_create)(void* kodiBase, struct KODI_HTTP_HEADER* headers);
+    void (*http_header_free)(void* kodiBase, struct KODI_HTTP_HEADER* headers);
 
     void* (*open_file)(void* kodiBase, const char* filename, unsigned int flags);
     void* (*open_file_for_write)(void* kodiBase, const char* filename, bool overwrite);

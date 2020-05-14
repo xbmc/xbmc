@@ -34,7 +34,7 @@ struct Interface_Filesystem
    * The parameter `kodiBase` is used to become the pointer for a `CAddonDll`
    * class.
    */
-  //@{
+  ///@{
   static bool can_open_directory(void* kodiBase, const char* url);
   static bool create_directory(void* kodiBase, const char* path);
   static bool directory_exists(void* kodiBase, const char* path);
@@ -62,6 +62,36 @@ struct Interface_Filesystem
   static bool is_local(void* kodiBase, const char* path);
   static bool is_url(void* kodiBase, const char* path);
 
+  static bool get_http_header(void* kodiBase, const char* url, struct KODI_HTTP_HEADER* headers);
+  static bool get_mime_type(void* kodiBase, const char* url, char** content, const char* useragent);
+  static bool get_content_type(void* kodiBase,
+                               const char* url,
+                               char** content,
+                               const char* useragent);
+  static bool get_cookies(void* kodiBase, const char* url, char** cookies);
+
+  /*!
+   * @brief Callback functions addon class kodi::vfs::CFile
+   */
+  ///@{
+  static bool http_header_create(void* kodiBase, struct KODI_HTTP_HEADER* headers);
+  static void http_header_free(void* kodiBase, struct KODI_HTTP_HEADER* headers);
+
+  static char* http_header_get_value(void* kodiBase, void* handle, const char* param);
+  static char** http_header_get_values(void* kodiBase,
+                                       void* handle,
+                                       const char* param,
+                                       int* length);
+  static char* http_header_get_header(void* kodiBase, void* handle);
+  static char* http_header_get_mime_type(void* kodiBase, void* handle);
+  static char* http_header_get_charset(void* kodiBase, void* handle);
+  static char* http_header_get_proto_line(void* kodiBase, void* handle);
+  ///@}
+
+  /*!
+   * @brief Callback functions addon class kodi::vfs::CFile
+   */
+  ///@{
   static void* open_file(void* kodiBase, const char* filename, unsigned int flags);
   static void* open_file_for_write(void* kodiBase, const char* filename, bool overwrite);
   static ssize_t read_file(void* kodiBase, void* file, void* ptr, size_t size);
@@ -88,7 +118,8 @@ struct Interface_Filesystem
   static bool curl_add_option(
       void* kodiBase, void* file, int type, const char* name, const char* value);
   static bool curl_open(void* kodiBase, void* file, unsigned int flags);
-  //@}
+  ///@}
+  ///@}
 };
 
 } /* namespace ADDON */
