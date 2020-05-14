@@ -62,14 +62,15 @@ namespace gui
 inline std::shared_ptr<IRenderHelper> GetRenderHelper()
 {
   using namespace ::kodi::addon;
-  if (CAddonBase::m_interface->addonBase->m_renderHelper)
-    return CAddonBase::m_interface->addonBase->m_renderHelper;
+  if (static_cast<CAddonBase*>(CAddonBase::m_interface->addonBase)->m_renderHelper)
+    return static_cast<CAddonBase*>(CAddonBase::m_interface->addonBase)->m_renderHelper;
 
   const std::shared_ptr<kodi::gui::IRenderHelper> renderHelper(new CRenderHelper());
   if (!renderHelper->Init())
     return nullptr;
 
-  CAddonBase::m_interface->addonBase->m_renderHelper = renderHelper; // Hold on base for other types
+  static_cast<CAddonBase*>(CAddonBase::m_interface->addonBase)->m_renderHelper =
+      renderHelper; // Hold on base for other types
   return renderHelper;
 }
 
