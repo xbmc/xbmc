@@ -47,6 +47,7 @@
 #include "utils/FileUtils.h"
 #include "utils/GroupUtils.h"
 #include "utils/LabelFormatter.h"
+#include "utils/PerformanceMeasurement.h"
 #include "utils/SerializedProperty.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
@@ -7468,49 +7469,61 @@ bool CVideoDatabase::GetMoviesByWhere(const std::string& strBaseDir, const Filte
 
     strSQL = StringUtils::Format(strSQL, fields) + strSQLExtra;
 
-    int iRowsFound = RunQuery(strSQL);
-    if (iRowsFound <= 0)
-      return iRowsFound == 0;
+    CPerformanceMeasurement<> perf;
 
-    // store the total value of items as a property
-    if (total < iRowsFound)
-      total = iRowsFound;
-    items.SetProperty("total", total);
-
-    DatabaseResults results;
-    results.reserve(iRowsFound);
-
-    if (!SortUtils::SortFromDataset(sortDescription, MediaTypeMovie, m_pDS, results))
-      return false;
-
-    // get data from returned rows
-    items.Reserve(results.size());
-    const query_data &data = m_pDS->get_result_set().records;
-    for (const auto &i : results)
+    static constexpr size_t kIterations = 100;
+    for (size_t i = 0; i < kIterations; ++i)
     {
-      unsigned int targetRow = (unsigned int)i.at(FieldRow).asInteger();
-      const dbiplus::sql_record* const record = data.at(targetRow);
+      items.Clear();
 
-      CVideoInfoTag movie = GetDetailsForMovie(record, getDetails);
-      if (m_profileManager.GetMasterProfile().getLockMode() == LOCK_MODE_EVERYONE ||
-          g_passwordManager.bMasterUser                                   ||
-          g_passwordManager.IsDatabasePathUnlocked(movie.m_strPath, *CMediaSourceSettings::GetInstance().GetSources("video")))
+      int iRowsFound = RunQuery(strSQL);
+      if (iRowsFound <= 0)
+        return iRowsFound == 0;
+
+      // store the total value of items as a property
+      if (total < iRowsFound)
+        total = iRowsFound;
+      items.SetProperty("total", total);
+
+      DatabaseResults results;
+      results.reserve(iRowsFound);
+
+      if (!SortUtils::SortFromDataset(sortDescription, MediaTypeMovie, m_pDS, results))
+        return false;
+
+      // get data from returned rows
+      items.Reserve(results.size());
+      const query_data& data = m_pDS->get_result_set().records;
+      for (const auto& i : results)
       {
-        CFileItemPtr pItem(new CFileItem(movie));
+        unsigned int targetRow = (unsigned int)i.at(FieldRow).asInteger();
+        const dbiplus::sql_record* const record = data.at(targetRow);
 
-        CVideoDbUrl itemUrl = videoUrl;
-        std::string path = StringUtils::Format("%i", movie.m_iDbId);
-        itemUrl.AppendPath(path);
-        pItem->SetPath(itemUrl.ToString());
-        pItem->SetDynPath(movie.m_strFileNameAndPath);
+        CVideoInfoTag movie = GetDetailsForMovie(record, getDetails);
+        if (m_profileManager.GetMasterProfile().getLockMode() == LOCK_MODE_EVERYONE ||
+          g_passwordManager.bMasterUser ||
+          g_passwordManager.IsDatabasePathUnlocked(movie.m_strPath, *CMediaSourceSettings::GetInstance().GetSources("video")))
+        {
+          CFileItemPtr pItem(new CFileItem(movie));
 
-        pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED,movie.GetPlayCount() > 0);
-        items.Add(pItem);
+          CVideoDbUrl itemUrl = videoUrl;
+          std::string path = StringUtils::Format("%i", movie.m_iDbId);
+          itemUrl.AppendPath(path);
+          pItem->SetPath(itemUrl.ToString());
+          pItem->SetDynPath(movie.m_strFileNameAndPath);
+
+          pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, movie.GetPlayCount() > 0);
+          items.Add(pItem);
+        }
       }
+
+      // cleanup
+      m_pDS->close();
     }
 
-    // cleanup
-    m_pDS->close();
+    perf.Stop();
+    CLog::Log(LOGDEBUG, "{} iterations for {} movies took {}s", kIterations, items.Size(), perf.GetDurationInSeconds());
+
     return true;
   }
   catch (...)
