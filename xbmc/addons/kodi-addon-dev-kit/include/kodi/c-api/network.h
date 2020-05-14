@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include "../AddonBase.h"
+#include <stddef.h>
 
 #ifdef __cplusplus
 extern "C"
@@ -28,12 +28,12 @@ extern "C"
    */
   typedef struct AddonToKodiFuncTable_kodi_network
   {
-    bool (*wake_on_lan)(KODI_HANDLE kodiBase, const char* mac);
-    char* (*get_ip_address)(KODI_HANDLE kodiBase);
-    char* (*dns_lookup)(KODI_HANDLE kodiBase, const char* url, bool* ret);
-    char* (*url_encode)(KODI_HANDLE kodiBase, const char* url);
-    char* (*get_hostname)(KODI_HANDLE kodiBase);
-    bool (*is_local_host)(KODI_HANDLE kodiBase, const char* hostname);
+    bool (*wake_on_lan)(void* kodiBase, const char* mac);
+    char* (*get_ip_address)(void* kodiBase);
+    char* (*dns_lookup)(void* kodiBase, const char* url, bool* ret);
+    char* (*url_encode)(void* kodiBase, const char* url);
+    char* (*get_hostname)(void* kodiBase);
+    bool (*is_local_host)(void* kodiBase, const char* hostname);
     bool (*is_host_on_lan)(void* kodiBase, const char* hostname, bool offLineCheck);
   } AddonToKodiFuncTable_kodi_network;
 

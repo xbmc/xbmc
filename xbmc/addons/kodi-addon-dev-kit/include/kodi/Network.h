@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include "AddonBase.h"
 #include "c-api/network.h"
 
 #ifdef __cplusplus
