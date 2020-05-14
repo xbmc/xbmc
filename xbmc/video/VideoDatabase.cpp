@@ -4778,9 +4778,9 @@ std::vector<std::string> GetBasicItemAvailableArtTypes(const CVideoInfoTag& tag)
     std::string artType = urlEntry.m_aspect;
     if (artType.empty())
       artType = tag.m_type == MediaTypeEpisode ? "thumb" : "poster";
-    if (urlEntry.m_type == CScraperUrl::URL_TYPE_GENERAL && // exclude season artwork for TV shows
-      !StringUtils::StartsWith(artType, "set.") && // exclude movie set artwork for movies
-      std::find(result.cbegin(), result.cend(), artType) == result.cend())
+    if (urlEntry.m_type == CScraperUrl::UrlType::General && // exclude season artwork for TV shows
+        !StringUtils::StartsWith(artType, "set.") && // exclude movie set artwork for movies
+        std::find(result.cbegin(), result.cend(), artType) == result.cend())
     {
       result.push_back(artType);
     }
@@ -4802,8 +4802,8 @@ std::vector<std::string> GetSeasonAvailableArtTypes(int mediaId, CVideoDatabase&
     std::string artType = urlEntry.m_aspect;
     if (artType.empty())
       artType = "poster";
-    if (urlEntry.m_type == CScraperUrl::URL_TYPE_SEASON && urlEntry.m_season == tag.m_iSeason &&
-      std::find(result.cbegin(), result.cend(), artType) == result.cend())
+    if (urlEntry.m_type == CScraperUrl::UrlType::Season && urlEntry.m_season == tag.m_iSeason &&
+        std::find(result.cbegin(), result.cend(), artType) == result.cend())
     {
       result.push_back(artType);
     }

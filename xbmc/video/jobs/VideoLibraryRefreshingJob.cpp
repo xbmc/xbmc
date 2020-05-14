@@ -188,7 +188,7 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
             selectDialog->Reset();
             selectDialog->SetHeading(scraper->Content() == CONTENT_TVSHOWS ? 20356 : 196);
             for (const auto& itemResult : itemResultList)
-              selectDialog->Add(itemResult.strTitle);
+              selectDialog->Add(itemResult.m_title);
             selectDialog->EnableButton(true, 413); // "Manual"
             selectDialog->Open();
 
@@ -212,7 +212,8 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
               return false;
           }
 
-          CLog::Log(LOGDEBUG, "CVideoLibraryRefreshingJob: user selected item '%s' with URL '%s'", scraperUrl.strTitle.c_str(), scraperUrl.m_url.at(0).m_url.c_str());
+          CLog::Log(LOGDEBUG, "CVideoLibraryRefreshingJob: user selected item '%s' with URL '%s'",
+                    scraperUrl.m_title.c_str(), scraperUrl.m_url.at(0).m_url.c_str());
         }
       }
       else if (result < 0 || !VIDEO::CVideoInfoScanner::DownloadFailed(GetProgressDialog()))
@@ -296,7 +297,7 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
 
     // prepare the progress dialog for downloading all the necessary information
     SetTitle(g_localizeStrings.Get(headingLabel));
-    SetText(scraperUrl.strTitle);
+    SetText(scraperUrl.m_title);
     SetProgress(0);
 
     // remove any existing data for the item we're going to refresh

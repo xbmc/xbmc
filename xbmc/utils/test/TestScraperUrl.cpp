@@ -26,7 +26,7 @@ TEST(TestScraperUrl, General)
   EXPECT_STREQ("blah", a.GetFirstThumb().m_spoof.c_str());
   EXPECT_STREQ("someurl", a.GetFirstThumb().m_url.c_str());
   EXPECT_STREQ("", a.GetFirstThumb().m_cache.c_str());
-  EXPECT_EQ(CScraperUrl::URL_TYPE_GENERAL, a.GetFirstThumb().m_type);
+  EXPECT_EQ(CScraperUrl::UrlType::General, a.GetFirstThumb().m_type);
   EXPECT_FALSE(a.GetFirstThumb().m_post);
   EXPECT_TRUE(a.GetFirstThumb().m_isgz);
   EXPECT_EQ(-1, a.GetFirstThumb().m_season);

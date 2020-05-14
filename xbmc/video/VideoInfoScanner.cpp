@@ -1556,7 +1556,7 @@ namespace VIDEO
     // add online art
     for (const auto& url : pItem->GetVideoInfoTag()->m_strPictureURL.m_url)
     {
-      if (url.m_type != CScraperUrl::URLTYPES::URL_TYPE_GENERAL)
+      if (url.m_type != CScraperUrl::UrlType::General)
         continue;
       std::string aspect = url.m_aspect;
       if (aspect.empty())
@@ -1729,7 +1729,8 @@ namespace VIDEO
           matches.push_back(*guide);
           continue;
         }
-        if (!guide->cScraperUrl.strTitle.empty() && StringUtils::EqualsNoCase(guide->cScraperUrl.strTitle, file->strTitle))
+        if (!guide->cScraperUrl.m_title.empty() &&
+            StringUtils::EqualsNoCase(guide->cScraperUrl.m_title, file->strTitle))
         {
           bFound = true;
           break;
@@ -1765,8 +1766,8 @@ namespace VIDEO
           std::vector<std::string> titles;
           for (guide = candidates->begin(); guide != candidates->end(); ++guide)
           {
-            StringUtils::ToLower(guide->cScraperUrl.strTitle);
-            titles.push_back(guide->cScraperUrl.strTitle);
+            StringUtils::ToLower(guide->cScraperUrl.m_title);
+            titles.push_back(guide->cScraperUrl.m_title);
           }
 
           double matchscore;
@@ -1817,8 +1818,8 @@ namespace VIDEO
   {
     CVideoInfoTag movieDetails;
 
-    if (m_handle && !url.strTitle.empty())
-      m_handle->SetText(url.strTitle);
+    if (m_handle && !url.m_title.empty())
+      m_handle->SetText(url.m_title);
 
     CVideoInfoDownloader imdb(scraper);
     bool ret = imdb.GetDetails(url, movieDetails, pDialog);
@@ -1828,7 +1829,7 @@ namespace VIDEO
       if (loader)
         loader->Load(movieDetails, true);
 
-      if (m_handle && url.strTitle.empty())
+      if (m_handle && url.m_title.empty())
         m_handle->SetText(movieDetails.m_strTitle);
 
       if (pDialog)
@@ -2029,7 +2030,7 @@ namespace VIDEO
     // add online art
     for (const auto& url : show.m_strPictureURL.m_url)
     {
-      if (url.m_type != CScraperUrl::URLTYPES::URL_TYPE_SEASON)
+      if (url.m_type != CScraperUrl::UrlType::Season)
         continue;
       std::string aspect = url.m_aspect;
       if (aspect.empty())
