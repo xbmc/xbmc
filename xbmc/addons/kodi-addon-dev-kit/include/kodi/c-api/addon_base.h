@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include "stdbool.h"
 #include "stdint.h"
 
 #ifndef TARGET_WINDOWS
@@ -133,6 +134,116 @@ extern "C"
   } AddonLog;
   ///@}
   //----------------------------------------------------------------------------
+
+  /*! @brief Standard undefined pointer handle */
+  typedef void* KODI_HANDLE;
+
+  /*!
+   * @brief Handle used to return data from the PVR add-on to CPVRClient
+   */
+  struct ADDON_HANDLE_STRUCT
+  {
+    void* callerAddress; /*!< address of the caller */
+    void* dataAddress; /*!< address to store data in */
+    int dataIdentifier; /*!< parameter to pass back when calling the callback */
+  };
+  typedef struct ADDON_HANDLE_STRUCT* ADDON_HANDLE;
+
+  /*!
+   * @brief Callback function tables from addon to Kodi
+   * Set complete from Kodi!
+   */
+  struct AddonToKodiFuncTable_kodi;
+  struct AddonToKodiFuncTable_kodi_audioengine;
+  struct AddonToKodiFuncTable_kodi_filesystem;
+  struct AddonToKodiFuncTable_kodi_network;
+  struct AddonToKodiFuncTable_kodi_gui;
+  typedef struct AddonToKodiFuncTable_Addon
+  {
+    // Pointer inside Kodi, used on callback functions to give related handle
+    // class, for this ADDON::CAddonDll inside Kodi.
+    KODI_HANDLE kodiBase;
+
+    // Function addresses used for callbacks from addon to Kodi
+    void (*free_string)(void* kodiBase, char* str);
+    void (*free_string_array)(void* kodiBase, char** arr, int numElements);
+    char* (*get_addon_path)(void* kodiBase);
+    char* (*get_base_user_path)(void* kodiBase);
+    void (*addon_log_msg)(void* kodiBase, const int loglevel, const char* msg);
+
+    bool (*get_setting_bool)(void* kodiBase, const char* id, bool* value);
+    bool (*get_setting_int)(void* kodiBase, const char* id, int* value);
+    bool (*get_setting_float)(void* kodiBase, const char* id, float* value);
+    bool (*get_setting_string)(void* kodiBase, const char* id, char** value);
+
+    bool (*set_setting_bool)(void* kodiBase, const char* id, bool value);
+    bool (*set_setting_int)(void* kodiBase, const char* id, int value);
+    bool (*set_setting_float)(void* kodiBase, const char* id, float value);
+    bool (*set_setting_string)(void* kodiBase, const char* id, const char* value);
+
+    struct AddonToKodiFuncTable_kodi* kodi;
+    struct AddonToKodiFuncTable_kodi_audioengine* kodi_audioengine;
+    struct AddonToKodiFuncTable_kodi_filesystem* kodi_filesystem;
+    struct AddonToKodiFuncTable_kodi_gui* kodi_gui;
+    struct AddonToKodiFuncTable_kodi_network* kodi_network;
+
+    void* (*get_interface)(void* kodiBase, const char* name, const char* version);
+  } AddonToKodiFuncTable_Addon;
+
+  /*!
+   * @brief Function tables from Kodi to addon
+   */
+  typedef struct KodiToAddonFuncTable_Addon
+  {
+    void (*destroy)();
+    ADDON_STATUS (*get_status)();
+    ADDON_STATUS(*create_instance)
+    (int instanceType,
+     const char* instanceID,
+     KODI_HANDLE instance,
+     KODI_HANDLE* addonInstance,
+     KODI_HANDLE parent);
+    void (*destroy_instance)(int instanceType, KODI_HANDLE instance);
+    ADDON_STATUS (*set_setting)(const char* settingName, const void* settingValue);
+    ADDON_STATUS(*create_instance_ex)
+    (int instanceType,
+     const char* instanceID,
+     KODI_HANDLE instance,
+     KODI_HANDLE* addonInstance,
+     KODI_HANDLE parent,
+     const char* version);
+  } KodiToAddonFuncTable_Addon;
+
+  /*!
+   * @brief Main structure passed from kodi to addon with basic information needed to
+   * create add-on.
+   */
+  typedef struct AddonGlobalInterface
+  {
+    // String with full path where add-on is installed (without his name on end)
+    // Set from Kodi!
+    const char* libBasePath;
+
+    // Pointer of first created instance, used in case this add-on goes with single way
+    // Set from Kodi!
+    KODI_HANDLE firstKodiInstance;
+
+    // Pointer to master base class inside add-on
+    // Set from addon header (kodi::addon::CAddonBase)!
+    KODI_HANDLE addonBase;
+
+    // Pointer to a instance used on single way (together with this class)
+    // Set from addon header (kodi::addon::IAddonInstance)!
+    KODI_HANDLE globalSingleInstance;
+
+    // Callback function tables from addon to Kodi
+    // Set from Kodi!
+    AddonToKodiFuncTable_Addon* toKodi;
+
+    // Function tables from Kodi to addon
+    // Set from addon header!
+    KodiToAddonFuncTable_Addon* toAddon;
+  } AddonGlobalInterface;
 
 #ifdef __cplusplus
 }
