@@ -31,45 +31,54 @@ extern "C"
   /// @defgroup cpp_kodi_vfs_Defs_OpenFileFlags enum OpenFileFlags
   /// @ingroup cpp_kodi_vfs_Defs
   /// @brief **Flags to define way how file becomes opened**\n
-  /// The values can be used together, e.g. <b>`file.Open("myfile", READ_TRUNCATED | READ_CHUNKED);`</b>
+  /// The values can be used together, e.g. <b>`file.Open("myfile", ADDON_READ_TRUNCATED | ADDON_READ_CHUNKED);`</b>
   ///
   /// Used on @ref kodi::vfs::CFile::OpenFile().
   ///
-  //@{
+  ///@{
   typedef enum OpenFileFlags
   {
-    /// @brief Indicate that caller can handle truncated reads, where function
+    /// @brief **0000 0000 0001** :\n
+    /// Indicate that caller can handle truncated reads, where function
     /// returns before entire buffer has been filled.
-    READ_TRUNCATED = 0x01,
+    ADDON_READ_TRUNCATED = 0x01,
 
-    /// @brief Indicate that that caller support read in the minimum defined
+    /// @brief **0000 0000 0010** :\n
+    /// Indicate that that caller support read in the minimum defined
     /// chunk size, this disables internal cache then.
-    READ_CHUNKED = 0x02,
+    ADDON_READ_CHUNKED = 0x02,
 
-    /// @brief Use cache to access this file.
-    READ_CACHED = 0x04,
+    /// @brief **0000 0000 0100** :\n
+    /// Use cache to access this file.
+    ADDON_READ_CACHED = 0x04,
 
-    /// @brief Open without caching. regardless to file type.
-    READ_NO_CACHE = 0x08,
+    /// @brief **0000 0000 1000** :\n
+    /// Open without caching. regardless to file type.
+    ADDON_READ_NO_CACHE = 0x08,
 
-    /// @brief Calcuate bitrate for file while reading.
-    READ_BITRATE = 0x10,
+    /// @brief **0000 0001 0000** :\n
+    /// Calcuate bitrate for file while reading.
+    ADDON_READ_BITRATE = 0x10,
 
-    /// @brief Indicate to the caller we will seek between multiple streams in
+    /// @brief **0000 0010 0000** :\n
+    /// Indicate to the caller we will seek between multiple streams in
     /// the file frequently.
-    READ_MULTI_STREAM = 0x20,
+    ADDON_READ_MULTI_STREAM = 0x20,
 
-    /// @brief indicate to the caller file is audio and/or video (and e.g. may
+    /// @brief **0000 0100 0000** :\n
+    /// indicate to the caller file is audio and/or video (and e.g. may
     /// grow).
-    READ_AUDIO_VIDEO = 0x40,
+    ADDON_READ_AUDIO_VIDEO = 0x40,
 
-    /// @brief Indicate that caller will do write operations before reading.
-    READ_AFTER_WRITE = 0x80,
+    /// @brief **0000 1000 0000** :\n
+    /// Indicate that caller will do write operations before reading.
+    ADDON_READ_AFTER_WRITE = 0x80,
 
-    /// @brief Indicate that caller want to reopen a file if its already open.
-    READ_REOPEN = 0x100
+    /// @brief **0001 0000 0000** :\n
+    /// Indicate that caller want to reopen a file if its already open.
+    ADDON_READ_REOPEN = 0x100
   } OpenFileFlags;
-  //@}
+  ///@}
   //----------------------------------------------------------------------------
 
   //============================================================================

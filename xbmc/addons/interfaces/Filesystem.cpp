@@ -107,6 +107,32 @@ void Interface_Filesystem::DeInit(AddonGlobalInterface* addonInterface)
   }
 }
 
+unsigned int Interface_Filesystem::TranslateFileReadBitsToKodi(unsigned int addonFlags)
+{
+  unsigned int kodiFlags = 0;
+
+  if (addonFlags & ADDON_READ_TRUNCATED)
+    kodiFlags |= READ_TRUNCATED;
+  if (addonFlags & ADDON_READ_CHUNKED)
+    kodiFlags |= READ_CHUNKED;
+  if (addonFlags & ADDON_READ_CACHED)
+    kodiFlags |= READ_CACHED;
+  if (addonFlags & ADDON_READ_NO_CACHE)
+    kodiFlags |= READ_NO_CACHE;
+  if (addonFlags & ADDON_READ_BITRATE)
+    kodiFlags |= READ_BITRATE;
+  if (addonFlags & ADDON_READ_MULTI_STREAM)
+    kodiFlags |= READ_MULTI_STREAM;
+  if (addonFlags & ADDON_READ_AUDIO_VIDEO)
+    kodiFlags |= READ_AUDIO_VIDEO;
+  if (addonFlags & ADDON_READ_AFTER_WRITE)
+    kodiFlags |= READ_AFTER_WRITE;
+  if (addonFlags & READ_REOPEN)
+    kodiFlags |= READ_REOPEN;
+
+  return kodiFlags;
+}
+
 bool Interface_Filesystem::can_open_directory(void* kodiBase, const char* url)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
@@ -722,7 +748,7 @@ void* Interface_Filesystem::open_file(void* kodiBase, const char* filename, unsi
   }
 
   CFile* file = new CFile;
-  if (file->Open(filename, flags))
+  if (file->Open(filename, TranslateFileReadBitsToKodi(flags)))
     return static_cast<void*>(file);
 
   delete file;
@@ -1081,7 +1107,7 @@ bool Interface_Filesystem::curl_open(void* kodiBase, void* file, unsigned int fl
     return false;
   }
 
-  return static_cast<CFile*>(file)->CURLOpen(flags);
+  return static_cast<CFile*>(file)->CURLOpen(TranslateFileReadBitsToKodi(flags));
 }
 
 } /* namespace ADDON */

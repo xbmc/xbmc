@@ -24,6 +24,8 @@ struct Interface_Filesystem
   static void Init(AddonGlobalInterface* addonInterface);
   static void DeInit(AddonGlobalInterface* addonInterface);
 
+  static unsigned int TranslateFileReadBitsToKodi(unsigned int addonFlags);
+
   /*!
    * @brief callback functions from add-on to kodi
    *
