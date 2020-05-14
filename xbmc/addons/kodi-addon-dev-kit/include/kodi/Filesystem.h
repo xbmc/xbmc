@@ -13,6 +13,7 @@
 
 #ifdef __cplusplus
 
+#include <cstring>
 #include <map>
 #include <vector>
 

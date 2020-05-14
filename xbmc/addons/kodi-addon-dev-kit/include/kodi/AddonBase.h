@@ -68,7 +68,7 @@ public:
   virtual ~IAddonInstance() = default;
 
   virtual ADDON_STATUS CreateInstance(int instanceType,
-                                      std::string instanceID,
+                                      const std::string& instanceID,
                                       KODI_HANDLE instance,
                                       KODI_HANDLE& addonInstance)
   {
@@ -76,7 +76,7 @@ public:
   }
 
   virtual ADDON_STATUS CreateInstanceEx(int instanceType,
-                                        std::string instanceID,
+                                        const std::string& instanceID,
                                         KODI_HANDLE instance,
                                         KODI_HANDLE& addonInstance,
                                         const std::string& version)
@@ -85,6 +85,7 @@ public:
   }
 
   const ADDON_TYPE m_type;
+  std::string m_id;
 };
 
 /*
@@ -275,7 +276,7 @@ public:
   /// ~~~~~~~~~~~~~
   ///
   virtual ADDON_STATUS CreateInstance(int instanceType,
-                                      std::string instanceID,
+                                      const std::string& instanceID,
                                       KODI_HANDLE instance,
                                       KODI_HANDLE& addonInstance)
   {
@@ -300,13 +301,34 @@ public:
   //--------------------------------------------------------------------------
 
   virtual ADDON_STATUS CreateInstanceEx(int instanceType,
-                                        std::string instanceID,
+                                        const std::string& instanceID,
                                         KODI_HANDLE instance,
                                         KODI_HANDLE& addonInstance,
                                         const std::string& version)
   {
     return CreateInstance(instanceType, instanceID, instance, addonInstance);
   }
+
+  //==========================================================================
+  /// @ingroup cpp_kodi_addon_addonbase
+  /// @brief Instance destroy
+  ///
+  /// This function is optional and intended to notify addon that the instance
+  /// is terminating.
+  ///
+  /// @param[in] instanceType   The requested type of required instance, see \ref ADDON_TYPE.
+  /// @param[in] instanceID     An individual identification key string given by Kodi.
+  /// @param[in] addonInstance  The pointer to instance class created in addon.
+  ///
+  /// @warning This call is only used to inform that the associated instance
+  /// is terminated. The deletion is carried out in the background.
+  ///
+  virtual void DestroyInstance(int instanceType,
+                               const std::string& instanceID,
+                               KODI_HANDLE addonInstance)
+  {
+  }
+  //--------------------------------------------------------------------------
 
   /* Background helper for GUI render systems, e.g. Screensaver or Visualization */
   std::shared_ptr<kodi::gui::IRenderHelper> m_renderHelper;
@@ -368,6 +390,9 @@ private:
       throw std::logic_error("kodi::addon::CAddonBase CreateInstanceEx with difference on given "
                              "and returned instance type!");
 
+    // Store the used ID inside instance, to have on destroy calls by addon to identify
+    static_cast<IAddonInstance*>(*addonInstance)->m_id = instanceID;
+
     return status;
   }
 
@@ -378,12 +403,15 @@ private:
     if (m_interface->globalSingleInstance == nullptr && instance != base)
     {
       if (static_cast<IAddonInstance*>(instance)->m_type == instanceType)
+      {
+        base->DestroyInstance(instanceType, static_cast<IAddonInstance*>(instance)->m_id, instance);
         delete static_cast<IAddonInstance*>(instance);
+      }
       else
         throw std::logic_error("kodi::addon::CAddonBase DestroyInstance called with difference on "
                                "given and present instance type!");
     }
-    }
+  }
 };
 
 } /* namespace addon */
