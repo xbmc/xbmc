@@ -52,10 +52,49 @@
 #define ATTRIBUTE_FORCEINLINE inline
 #endif
 
+/*
+ * To have a on add-on and kodi itself handled string always on known size!
+ */
+#define ADDON_STANDARD_STRING_LENGTH 1024
+#define ADDON_STANDARD_STRING_LENGTH_SMALL 256
+
 #ifdef __cplusplus
 extern "C"
 {
 #endif /* __cplusplus */
+
+  //============================================================================
+  /// @ingroup cpp_kodi_addon_addonbase
+  /// @brief Return value of functions in @ref cpp_kodi_addon_addonbase "kodi::addon::CAddonBase"
+  /// and associated classes.
+  ///
+  ///@{
+  typedef enum ADDON_STATUS
+  {
+    /// @brief For everything OK and no error
+    ADDON_STATUS_OK,
+
+    /// @brief A needed connection was lost
+    ADDON_STATUS_LOST_CONNECTION,
+
+    /// @brief Addon needs a restart inside Kodi
+    ADDON_STATUS_NEED_RESTART,
+
+    /// @brief Necessary settings are not yet set
+    ADDON_STATUS_NEED_SETTINGS,
+
+    /// @brief Unknown and incomprehensible error
+    ADDON_STATUS_UNKNOWN,
+
+    /// @brief Permanent failure, like failing to resolve methods
+    ADDON_STATUS_PERMANENT_FAILURE,
+
+    /* internal used return error if function becomes not used from child on
+    * addon */
+    ADDON_STATUS_NOT_IMPLEMENTED
+  } ADDON_STATUS;
+  ///@}
+  //----------------------------------------------------------------------------
 
   //============================================================================
   /// @defgroup cpp_kodi_Defs_AddonLog enum AddonLog

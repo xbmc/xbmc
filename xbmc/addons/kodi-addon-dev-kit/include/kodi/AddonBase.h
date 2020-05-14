@@ -33,38 +33,6 @@ extern "C" {
 typedef void* KODI_HANDLE;
 //------------------------------------------------------------------------------
 
-//==============================================================================
-///
-/// @ingroup cpp_kodi_addon_addonbase
-/// @brief Return value of functions in \ref kodi::addon::CAddonBase and
-/// associated classes
-///
-typedef enum ADDON_STATUS
-{
-  /// For everything OK and no error
-  ADDON_STATUS_OK,
-
-  /// A needed connection was lost
-  ADDON_STATUS_LOST_CONNECTION,
-
-  /// Addon needs a restart inside Kodi
-  ADDON_STATUS_NEED_RESTART,
-
-  /// Necessary settings are not yet set
-  ADDON_STATUS_NEED_SETTINGS,
-
-  /// Unknown and incomprehensible error
-  ADDON_STATUS_UNKNOWN,
-
-  /// Permanent failure, like failing to resolve methods
-  ADDON_STATUS_PERMANENT_FAILURE,
-
-  /* internal used return error if function becomes not used from child on
-   * addon */
-  ADDON_STATUS_NOT_IMPLEMENTED
-} ADDON_STATUS;
-//------------------------------------------------------------------------------
-
 /*!
  * @brief Handle used to return data from the PVR add-on to CPVRClient
  */
@@ -75,12 +43,6 @@ struct ADDON_HANDLE_STRUCT
   int   dataIdentifier; /*!< parameter to pass back when calling the callback */
 };
 typedef ADDON_HANDLE_STRUCT *ADDON_HANDLE;
-
-/*
- * To have a on add-on and kodi itself handled string always on known size!
- */
-#define ADDON_STANDARD_STRING_LENGTH 1024
-#define ADDON_STANDARD_STRING_LENGTH_SMALL 256
 
 /*
  * Callback function tables from addon to Kodi
