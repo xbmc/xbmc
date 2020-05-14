@@ -16,7 +16,15 @@
 typedef intptr_t ssize_t;
 #define _SSIZE_T_DEFINED
 #endif // !_SSIZE_T_DEFINED
-#endif
+
+// Prevent conflicts with Windows macros where have this names.
+#ifdef CreateDirectory
+#undef CreateDirectory
+#endif // CreateDirectory
+#ifdef DeleteFile
+#undef DeleteFile
+#endif // DeleteFile
+#endif // _WIN32
 
 #ifdef __cplusplus
 extern "C"
