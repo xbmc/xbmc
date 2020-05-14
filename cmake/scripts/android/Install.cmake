@@ -20,12 +20,6 @@ if(NOT ZIP_EXECUTABLE)
   message(FATAL_ERROR "Could NOT find zip executable")
 endif()
 
-if(CMAKE_BUILD_TYPE STREQUAL Debug)
-  set(ANDROID_DEBUGGABLE true)
-else()
-  set(ANDROID_DEBUGGABLE false)
-endif()
-
 set(ANDROID_PACKAGING_SOURCE_DIR ${CMAKE_SOURCE_DIR}/tools/android/packaging)
 set(ANDROID_PACKAGING_BINARY_DIR ${CMAKE_BINARY_DIR}/tools/android/packaging)
 
