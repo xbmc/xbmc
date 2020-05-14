@@ -634,12 +634,15 @@ namespace kodi {
 ///
 inline void Log(const AddonLog loglevel, const char* format, ...)
 {
+  using namespace kodi::addon;
+
   char buffer[16384];
   va_list args;
   va_start(args, format);
-  vsprintf(buffer, format, args);
+  vsnprintf(buffer, sizeof(buffer), format, args);
   va_end(args);
-  ::kodi::addon::CAddonBase::m_interface->toKodi->addon_log_msg(::kodi::addon::CAddonBase::m_interface->toKodi->kodiBase, loglevel, buffer);
+  CAddonBase::m_interface->toKodi->addon_log_msg(CAddonBase::m_interface->toKodi->kodiBase,
+                                                 loglevel, buffer);
 }
 } /* namespace kodi */
 //------------------------------------------------------------------------------
