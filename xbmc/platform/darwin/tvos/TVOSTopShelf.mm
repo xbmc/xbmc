@@ -124,7 +124,14 @@ void CTVOSTopShelf::SetTopShelfItems(CFileItemList& movies, CFileItemList& tv)
         };
 
     fillSharedDicts(movies, @"movies", @"moviesTitle", 20386,
-                    [](CFileItemPtr videoItem) { return videoItem->GetArt("thumb"); },
+                    [](CFileItemPtr videoItem) {
+                      if (videoItem->HasArt("poster"))
+                      {
+                        return videoItem->GetArt("poster");
+                      }
+                      else
+                        return videoItem->GetArt("thumb");
+                    },
                     [](CFileItemPtr videoItem) { return videoItem->GetLabel(); });
 
     CVideoDatabase videoDb;
