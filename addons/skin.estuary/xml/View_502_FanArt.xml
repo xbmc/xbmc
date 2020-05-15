@@ -45,7 +45,7 @@
 					<right>50</right>
 					<top>769</top>
 					<bottom>105</bottom>
-					<label>$INFO[ListItem.Plot]</label>
+					<label>$VAR[PlotTextBoxVar]</label>
 					<autoscroll time="3000" delay="7000" repeat="5000">!System.HasActiveModalDialog + Skin.HasSetting(AutoScroll)</autoscroll>
 				</control>
 				<control type="scrollbar" id="502600">
@@ -61,7 +61,7 @@
 				<control type="group">
 					<left>40</left>
 					<top>770</top>
-					<visible>ListItem.IsCollection + String.IsEmpty(ListItem.Plot)</visible>
+					<visible>ListItem.IsCollection + String.IsEmpty(ListItem.PlotOutline) + String.IsEmpty(ListItem.Plot)</visible>
 					<include content="InfoList">
 						<param name="bottom" value="108" />
 						<param name="width" value="1000" />
