@@ -201,6 +201,7 @@ string(TOLOWER "${CMAKE_BUILD_TYPE}" CMAKE_BUILD_TYPE_LC)
 
 add_custom_command(OUTPUT ${ANDROID_PACKAGING_BINARY_DIR}/.copy-libs-done
                    COMMAND find ${CMAKE_INSTALL_PREFIX}/ -name \"*.so\" -exec cp -fp {} ${ANDROID_PACKAGING_BINARY_DIR}/xbmc/lib/${CPU}/ \\\;
+                   COMMAND find ${DEPENDS_PATH}/lib/${APP_NAME_LC}/addons -name \"*.so\" -exec cp -fp {} ${ANDROID_PACKAGING_BINARY_DIR}/xbmc/lib/${CPU}/ \\\;
                    COMMAND ${CMAKE_COMMAND} -E touch ${ANDROID_PACKAGING_BINARY_DIR}/.copy-libs-done
                    DEPENDS bundle
                    COMMENT "Copying libs for packaging")
