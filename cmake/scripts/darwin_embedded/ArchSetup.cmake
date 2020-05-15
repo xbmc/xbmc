@@ -8,25 +8,28 @@ set(PLATFORM_BUNDLE_INFO_PLIST ${CMAKE_SOURCE_DIR}/xbmc/platform/darwin/${CORE_P
 set(ARCH_DEFINES -DTARGET_POSIX -DTARGET_DARWIN -DTARGET_DARWIN_EMBEDDED)
 if(CORE_PLATFORM_NAME_LC STREQUAL tvos)
   list(APPEND ARCH_DEFINES -DTARGET_DARWIN_TVOS)
+  set(CMAKE_XCODE_ATTRIBUTE_ENABLE_BITCODE YES)
+  set(CMAKE_XCODE_ATTRIBUTE_TARGETED_DEVICE_FAMILY 3)
+  set(CMAKE_XCODE_ATTRIBUTE_TVOS_DEPLOYMENT_TARGET 11.0)
 else()
   list(APPEND ARCH_DEFINES -DTARGET_DARWIN_IOS)
+  set(CMAKE_XCODE_ATTRIBUTE_ENABLE_BITCODE NO)
+  set(CMAKE_XCODE_ATTRIBUTE_TARGETED_DEVICE_FAMILY 1,2)
+  set(CMAKE_XCODE_ATTRIBUTE_IPHONEOS_DEPLOYMENT_TARGET 11.0)
 endif()
 set(SYSTEM_DEFINES -D_REENTRANT -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE
                    -D__STDC_CONSTANT_MACROS -DHAS_IOS_NETWORK -DHAS_ZEROCONF)
 set(PLATFORM_DIR platform/darwin)
 set(PLATFORMDEFS_DIR platform/posix)
 set(CMAKE_SYSTEM_NAME Darwin)
-if(WITH_ARCH)
-  set(ARCH ${WITH_ARCH})
+if(CPU STREQUAL arm64)
+  set(ARCH aarch64)
 else()
-  if(CPU STREQUAL arm64)
-    set(ARCH aarch64)
-  else()
-    message(SEND_ERROR "Unknown CPU: ${CPU}")
-  endif()
-  set(CMAKE_OSX_ARCHITECTURES ${CPU})
-  set(NEON True)
+  message(SEND_ERROR "Unknown CPU: ${CPU}")
 endif()
+set(CMAKE_OSX_ARCHITECTURES ${CPU})
+set(NEON True)
+
 
 list(APPEND CMAKE_SYSTEM_PREFIX_PATH ${NATIVEPREFIX})
 
@@ -37,7 +40,7 @@ list(APPEND DEPLIBS "-framework CoreFoundation" "-framework CoreVideo"
                     "-framework Foundation" "-framework UIKit"
                     "-framework CoreMedia" "-framework AVFoundation"
                     "-framework VideoToolbox" "-lresolv" "-ObjC"
-                    "-framework AVKit")
+                    "-framework AVKit" "-liconv")
 
 set(ENABLE_OPTICAL OFF CACHE BOOL "" FORCE)
 
