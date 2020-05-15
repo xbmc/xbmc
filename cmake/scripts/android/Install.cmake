@@ -147,6 +147,17 @@ add_bundle_file(${ASS_LIBRARY} ${libdir} "")
 add_bundle_file(${SHAIRPLAY_LIBRARY} ${libdir} "")
 add_bundle_file(${SMBCLIENT_LIBRARY} ${libdir} "")
 
+if(CPU MATCHES "x86_64")
+  set(NDK_CPU x86_64)
+elseif(CPU MATCHES "i686")
+  set(CPU x86)
+  set(NDK_CPU x86)
+elseif(CPU MATCHES "arm64")
+  set(NDK_CPU arm64)
+elseif(CPU MATCHES "arm")
+  set(NDK_CPU arm)
+endif()
+
 # privacy policy
 configure_file(${CMAKE_SOURCE_DIR}/privacy-policy.txt
                ${ANDROID_PACKAGING_BINARY_DIR}/xbmc/assets/privacy-policy.txt COPYONLY)
@@ -180,16 +191,6 @@ configure_file(${ANDROID_PACKAGING_SOURCE_DIR}/xbmc/searchable.xml.in
 
 configure_file(${TOOLCHAIN}/sysroot/usr/lib/${HOST}/libc++_shared.so
                ${ANDROID_PACKAGING_BINARY_DIR}/xbmc/lib/${CPU}/libc++_shared.so COPYONLY)
-
-if(CPU MATCHES "x86_64")
-  set(NDK_CPU x86_64)
-elseif(CPU MATCHES "i686")
-  set(NDK_CPU x86)
-elseif(CPU MATCHES "arm64")
-  set(NDK_CPU arm64)
-elseif(CPU MATCHES "arm")
-  set(NDK_CPU arm)
-endif()
 
 configure_file(${NDKROOT}/prebuilt/android-${NDK_CPU}/gdbserver/gdbserver
                ${ANDROID_PACKAGING_BINARY_DIR}/xbmc/lib/${CPU}/gdbserver COPYONLY)
