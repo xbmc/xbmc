@@ -208,7 +208,7 @@ add_custom_command(OUTPUT ${ANDROID_PACKAGING_BINARY_DIR}/.copy-libs-done
 # hack: I don't like this step and I'm not sure why it's needed however gradle doesn't include
 # files in the libs/ directory that don't start with lib (maybe a gradle bug?)
 add_custom_command(OUTPUT ${ANDROID_PACKAGING_BINARY_DIR}/.rename-libs-done
-                   COMMAND ls _*.so | xargs -I {} mv {} lib{}
+                   COMMAND ls *.so | grep -v "^lib" | xargs -I {} mv {} lib{}
                    COMMAND ${CMAKE_COMMAND} -E touch ${ANDROID_PACKAGING_BINARY_DIR}/.rename-libs-done
                    WORKING_DIRECTORY ${ANDROID_PACKAGING_BINARY_DIR}/xbmc/lib/${CPU}/
                    DEPENDS ${ANDROID_PACKAGING_BINARY_DIR}/.copy-libs-done
