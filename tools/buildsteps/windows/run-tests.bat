@@ -5,7 +5,7 @@ REM setup all paths
 PUSHD %~dp0\..\..\..
 SET WORKSPACE=%CD%
 POPD
-cd %WORKSPACE%\kodi-build
+cd %WORKSPACE%\kodi-build.%TARGET_PLATFORM%
 SET builddeps_dir=%WORKSPACE%\project\BuildDependencies
 SET msys_dir=%builddeps_dir%\msys64
 IF NOT EXIST %msys_dir% (SET msys_dir=%builddeps_dir%\msys32)

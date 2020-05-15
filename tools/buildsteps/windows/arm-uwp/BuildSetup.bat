@@ -11,6 +11,7 @@ IF ERRORLEVEL 1 (
 
 SET cmakeGenerator=Visual Studio %vsver% ARM
 SET TARGET_ARCHITECTURE=arm
+SET TARGET_PLATFORM=%TARGET_ARCHITECTURE%-uwp
 SET cmakeProps=-DCMAKE_SYSTEM_NAME=WindowsStore -DCMAKE_SYSTEM_VERSION=%UCRTVersion%
 
 CALL BuildSetup.bat %*
