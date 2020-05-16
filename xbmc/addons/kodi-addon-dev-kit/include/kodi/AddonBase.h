@@ -605,6 +605,26 @@ inline std::string GetLibPath()
 
 //==============================================================================
 namespace kodi {
+/// @ingroup cpp_kodi
+/// @brief Add a message to Kodi's log.
+///
+/// @param[in] loglevel The log level of the message.
+/// @param[in] format The format of the message to pass to Kodi.
+/// @param[in] ... Additional text to insert in format text
+///
+///
+/// @note This method uses limited buffer (16k) for the formatted output.
+/// So data, which will not fit into it, will be silently discarded.
+///
+/// ----------------------------------------------------------------------------
+///
+/// **Example:**
+/// ~~~~~~~~~~~~~{.cpp}
+/// #include <kodi/General.h>
+///
+/// kodi::Log(ADDON_LOG_ERROR, "%s: There is an error occurred!", __func__);
+///
+/// ~~~~~~~~~~~~~
 ///
 inline void Log(const AddonLog loglevel, const char* format, ...)
 {
