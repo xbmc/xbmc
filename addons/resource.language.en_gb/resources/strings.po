@@ -17389,14 +17389,14 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#35100"
-msgid "Enable joystick and gamepad support"
+msgid "Enable controller support"
 msgstr ""
 
 #empty string with id 35101
 
 #: system/peripherals.xml
 msgctxt "#35102"
-msgid "Disable joystick when this device is present"
+msgid "Disable controllers when this device is present"
 msgstr ""
 
 #. Label for mouse buttons. Used in the controller mapping dialog.
@@ -19728,10 +19728,10 @@ msgctxt "#36377"
 msgid "Use a mouse or touch screen device to control the interface. Note: Disabling will cause you to lose control over this application when no keyboard or remote is present."
 msgstr ""
 
-#. Description of setting with label #35100 "Enable joystick and gamepad support"
+#. Description of setting with label #35100 "Enable controller support"
 #: system/settings/settings.xml
 msgctxt "#36378"
-msgid "Use a joystick to control the interface."
+msgid "Use a game controller to control the interface."
 msgstr ""
 
 #. Description of settings category with label #798 Internet access
