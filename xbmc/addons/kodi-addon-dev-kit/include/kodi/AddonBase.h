@@ -8,12 +8,14 @@
 
 #pragma once
 
+#include "c-api/addon_base.h"
+
 #include <assert.h> /* assert */
-#include <stdarg.h>     /* va_list, va_start, va_arg, va_end */
 #include <cstdlib>
 #include <cstring>
 #include <ctime>
 #include <memory>
+#include <stdarg.h> /* va_list, va_start, va_arg, va_end */
 #include <stdexcept>
 #include <string>
 #include <vector>
@@ -103,34 +105,6 @@ typedef enum ADDON_STATUS
    * addon */
   ADDON_STATUS_NOT_IMPLEMENTED
 } ADDON_STATUS;
-//------------------------------------------------------------------------------
-
-//==============================================================================
-/// @todo remove start with ADDON_* after old way on libXBMC_addon.h is removed
-///
-typedef enum AddonLog
-{
-  ///
-  ADDON_LOG_DEBUG = 0,
-
-  ///
-  ADDON_LOG_INFO = 1,
-
-  ///
-  ADDON_LOG_NOTICE = 2,
-
-  ///
-  ADDON_LOG_WARNING = 3,
-
-  ///
-  ADDON_LOG_ERROR = 4,
-
-  ///
-  ADDON_LOG_SEVERE = 5,
-
-  ///
-  ADDON_LOG_FATAL = 6
-} AddonLog;
 //------------------------------------------------------------------------------
 
 /*!

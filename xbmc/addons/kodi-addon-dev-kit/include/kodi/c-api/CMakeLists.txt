@@ -1,4 +1,5 @@
-set(HEADERS audio_engine.h
+set(HEADERS addon_base.h
+            audio_engine.h
             filesystem.h
             network.h)
 

@@ -167,28 +167,23 @@ void Interface_Base::addon_log_msg(void* kodiBase, const int addonLogLevel, cons
   int logLevel = LOGNONE;
   switch (addonLogLevel)
   {
-    case ADDON_LOG_FATAL:
-      logLevel = LOGFATAL;
-      break;
-    case ADDON_LOG_SEVERE:
-      logLevel = LOGSEVERE;
-      break;
-    case ADDON_LOG_ERROR:
-      logLevel = LOGERROR;
-      break;
-    case ADDON_LOG_WARNING:
-      logLevel = LOGWARNING;
-      break;
-    case ADDON_LOG_NOTICE:
-      logLevel = LOGNOTICE;
+    case ADDON_LOG_DEBUG:
+      logLevel = LOGDEBUG;
       break;
     case ADDON_LOG_INFO:
       logLevel = LOGINFO;
       break;
-    case ADDON_LOG_DEBUG:
-      logLevel = LOGDEBUG;
+    case ADDON_LOG_WARNING:
+      logLevel = LOGWARNING;
+      break;
+    case ADDON_LOG_ERROR:
+      logLevel = LOGERROR;
+      break;
+    case ADDON_LOG_FATAL:
+      logLevel = LOGFATAL;
       break;
     default:
+      logLevel = LOGDEBUG;
       break;
   }
 
