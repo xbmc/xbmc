@@ -300,6 +300,10 @@ msgctxt "#31134"
 msgid "Remaining"
 msgstr "Преостанува"
 
+msgctxt "#31138"
+msgid "Player process info"
+msgstr "Информации за процесот на плеерот"
+
 msgctxt "#31142"
 msgid "Play speed"
 msgstr "Брзина"

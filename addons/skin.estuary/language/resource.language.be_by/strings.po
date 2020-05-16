@@ -16,9 +16,81 @@ msgstr ""
 "Language: be_BY\n"
 "Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
+msgctxt "#31000"
+msgid "Now playing"
+msgstr "Зараз прайграецца"
+
 msgctxt "#31001"
 msgid "Search..."
 msgstr "Пошук..."
+
+msgctxt "#31002"
+msgid "Show media fanart as background"
+msgstr "Паказваць ілюстрацыі для медыяфайлаў як фон"
+
+msgctxt "#31003"
+msgid "Cinema mode"
+msgstr "Рэжым кінатэатра"
+
+msgctxt "#31004"
+msgid "Change mode"
+msgstr "Змяніць рэжым"
+
+msgctxt "#31005"
+msgid "Watch as 2D"
+msgstr "Глядзець у 2D"
+
+msgctxt "#31006"
+msgid "Random movies"
+msgstr "Выпадковыя фільмы"
+
+msgctxt "#31007"
+msgid "Unwatched movies"
+msgstr "Непрагледжаныя фільмы"
+
+msgctxt "#31008"
+msgid "Enable category widgets"
+msgstr "Уключыць віджэты катэгорый"
+
+msgctxt "#31009"
+msgid "Download icons"
+msgstr "Спампаваць значкі"
+
+msgctxt "#31010"
+msgid "In progress movies"
+msgstr "Вы глядзіце"
+
+msgctxt "#31011"
+msgid "Most played albums"
+msgstr "Самыя прайграваемыя альбомы"
+
+msgctxt "#31012"
+msgid "Random albums"
+msgstr "Выпадковыя альбомы"
+
+msgctxt "#31013"
+msgid "Random artists"
+msgstr "Выпадковыя выканаўцы"
+
+msgctxt "#31014"
+msgid "Unplayed albums"
+msgstr "Непраслуханыя альбомы"
+
+msgctxt "#31015"
+msgid "Recent recordings"
+msgstr "Нядаўнія запісы"
+
+msgctxt "#31016"
+msgid "Recently played channels"
+msgstr "Нядаўна гледжаныя каналы"
+
+msgctxt "#31017"
+msgid "Rated"
+msgstr "Ацэнена"
+
+msgctxt "#31018"
+msgid "Recently played channels"
+msgstr "Нядаўна гледжаныя каналы"
 
 msgctxt "#31019"
 msgid "Forecast"
@@ -28,41 +100,345 @@ msgctxt "#31020"
 msgid "Actions"
 msgstr "Дзеянні"
 
+msgctxt "#31021"
+msgid "Misc options"
+msgstr "Іншыя параметры"
+
+msgctxt "#31022"
+msgid "Sort by"
+msgstr "Упарадкаваць па"
+
+msgctxt "#31023"
+msgid "Viewtype"
+msgstr "Выгляд"
+
+msgctxt "#31024"
+msgid "Choose rating to display for media items"
+msgstr "Абраць рэйтынг для паказу мультымедыйных элементаў"
+
+msgctxt "#31025"
+msgid "No favourites found. You can add any item from media views to this list by using the context menu."
+msgstr "Спіс улюбёнага пусты. Вы можаце дадаць сюды медыяфайлы праз кантэкстнае меню."
+
+msgctxt "#31026"
+msgid "Timeshift"
+msgstr "Таймшыфт"
+
+msgctxt "#31028"
+msgid "Show fanart"
+msgstr "Паказваць ілюстрацыі"
+
+msgctxt "#31029"
+msgid "Last logged in"
+msgstr "Апошні ўваход"
+
+msgctxt "#31030"
+msgid "System memory usage"
+msgstr "Выкарыстанне памяці"
+
+msgctxt "#31031"
+msgid "Version info"
+msgstr "Інфармацыя пра версію"
+
+msgctxt "#31032"
+msgid "Order"
+msgstr "Чарга"
+
+msgctxt "#31033"
+msgid "Your rating"
+msgstr "Ваша ацэнка"
+
+msgctxt "#31035"
+msgid "Pages"
+msgstr "Старонкі"
+
+msgctxt "#31036"
+msgid "items"
+msgstr "элементы"
+
+msgctxt "#31037"
+msgid "Selected track"
+msgstr "Абраная кампазіцыя"
+
 msgctxt "#31038"
 msgid "Rewind"
-msgstr "Rewind"
+msgstr "Перамотка назад"
+
+msgctxt "#31039"
+msgid "Fast forward"
+msgstr "Перамотка ўперад"
+
+msgctxt "#31041"
+msgid "Camera manufacturer"
+msgstr "Вытворца камеры"
+
+msgctxt "#31042"
+msgid "Playlist options"
+msgstr "Параметры спіса прайгравання"
+
+msgctxt "#31043"
+msgid "Set the type and add rules to create a smart playlist. These playlists are dynamic and include all media items from your database which apply to your chosen rules."
+msgstr "Вызначце тып і дадайце правіла, каб стварыць разумны спіс прайгравання. Такія спісы дынамічныя і ўключаюць усе аб’екты з вашай бібліятэкі згодна вашых правіл."
+
+msgctxt "#31044"
+msgid "Add group"
+msgstr "Дадаць групу"
+
+msgctxt "#31045"
+msgid "Rename group"
+msgstr "Змяніць назву групы"
+
+msgctxt "#31046"
+msgid "Delete group"
+msgstr "Выдаліць групу"
+
+msgctxt "#31048"
+msgid "Available"
+msgstr "У сеціве"
+
+msgctxt "#31050"
+msgid "Press [B]OK[/B] to stop"
+msgstr "Націсніце [B]Добра[/B], каб спыніць"
+
+msgctxt "#31052"
+msgid "filtered"
+msgstr "адфільтравана"
 
 msgctxt "#31053"
 msgid "Arial based"
-msgstr "Падобны на Arial"
+msgstr "Заснаваны на Arial"
+
+msgctxt "#31054"
+msgid "Press [B]Left[/B] to rewind, or [B]Right[/B] to fast-forward"
+msgstr "Націсніце [B]Улева[/B] для перамоткі назад, альбо [B]Управа[/B] для перамоткі ўперад"
+
+msgctxt "#31056"
+msgid "Go to playlist"
+msgstr "Перайсці ў спіс прайгравання"
+
+msgctxt "#31057"
+msgid "Show login screen on startup"
+msgstr "Паказаць экран ўваходу падчас запуску"
+
+msgctxt "#31058"
+msgid "Automatic Login on startup"
+msgstr "Аўтаматычна ўваходзіць у сістэму падчас запуску"
+
+msgctxt "#31061"
+msgid "Main menu items"
+msgstr "Элементы галоўнага меню"
+
+msgctxt "#31062"
+msgid "Choose weather fanart pack"
+msgstr "Абраць набор ілюстрацый надвор’я"
+
+msgctxt "#31063"
+msgid "Sections"
+msgstr "Раздзелы"
+
+msgctxt "#31065"
+msgid "Video playlist"
+msgstr "Спіс прайгравання відэа"
 
 msgctxt "#31066"
 msgid "Music playlist"
-msgstr "Музычны спіс прайгравання"
+msgstr "Спіс прайгравання музыкі"
 
 msgctxt "#31067"
 msgid "Event log"
 msgstr "Журнал падзей"
 
+msgctxt "#31068"
+msgid "Choose presets"
+msgstr "Абраць перадналады"
+
 msgctxt "#31069"
 msgid "Last Updated"
-msgstr "Апошняе абнаўленьне"
+msgstr "Апошняе абнаўленне"
+
+msgctxt "#31071"
+msgid "by"
+msgstr "ад"
 
 msgctxt "#31072"
 msgid "Power Options"
-msgstr "Power Options"
+msgstr "Параметры сілкавання"
+
+msgctxt "#31073"
+msgid "Total length"
+msgstr "Агульная працягласць"
+
+msgctxt "#31074"
+msgid "Total duration"
+msgstr "Агульная працягласць"
+
+msgctxt "#31075"
+msgid "Movie sets"
+msgstr "Кінацыклы"
+
+msgctxt "#31079"
+msgid "Cast not available"
+msgstr "Акцёры недаступныя"
+
+msgctxt "#31080"
+msgid "Ends at"
+msgstr "Скончыцца а"
+
+msgctxt "#31082"
+msgid "Lyrics add-on"
+msgstr "Дапаўненне тэкстаў песень"
+
+msgctxt "#31083"
+msgid "Lyrics add-on settings"
+msgstr "Налады дапаўнення тэкстаў песень"
+
+msgctxt "#31084"
+msgid "Visualisation settings"
+msgstr "Налады візуалізацыі"
+
+msgctxt "#31089"
+msgid "Available groups"
+msgstr "Даступныя групы"
+
+msgctxt "#31092"
+msgid "Video menu"
+msgstr "Меню відэа"
+
+msgctxt "#31093"
+msgid "Show weather info in top bar"
+msgstr "Паказваць інфармацыю пра надвор'е на верхняй панэлі"
+
+msgctxt "#31095"
+msgid "Use slide animations"
+msgstr "Выкарыстоўваць анімацыю слізгання"
 
 msgctxt "#31096"
 msgid "Local subtitle available"
-msgstr "Даступныя лакальныя субтытры"
+msgstr "Даступныя лакальныя субцітры"
+
+msgctxt "#31097"
+msgid "Channel options"
+msgstr "Параметры канала"
+
+msgctxt "#31098"
+msgid "Select your Kodi user profile[CR]to login and continue"
+msgstr "Абярыце профіль карыстальніка Kodi[CR], каб увайсці і працягнуць"
+
+msgctxt "#31099"
+msgid "IconWall"
+msgstr "Значкі"
 
 msgctxt "#31100"
 msgid "Shift"
 msgstr "Shift"
 
+msgctxt "#31101"
+msgid "InfoWall"
+msgstr "Сцяна інфармацыі"
+
+msgctxt "#31102"
+msgid "Wall"
+msgstr "Сцяна"
+
+msgctxt "#31103"
+msgid "Enter text here..."
+msgstr "Увядзіце тут тэкст..."
+
+msgctxt "#31104"
+msgid "Your library is currently empty. In order to populate it with your personal media, enter \"Files\" section, add a media source and configure it. After the source has been added and indexed you will be able to browse your library."
+msgstr "Зараз ваша бібліятэка пустая. Для таго, каб запоўніць яе медыяфайламі, зайдзіце ў раздзел \"Файлы\", каб дадаць крыніцу медыяфайлаў і наладзіць яе. Пасля таго, як крыніца дадасца і праіндэксуецца, вы зможаце праглядаць сваю бібліятэку."
+
+msgctxt "#31105"
+msgid "Add video sources and set the appropriate content type in order to populate your video libraries."
+msgstr "Дадайце крыніцу відэафайлаў і вызначце правільны тып яе змесціва, каб запоўніць бібліятэку."
+
 msgctxt "#31106"
 msgid "Teletext"
 msgstr "Тэлетэкст"
+
+msgctxt "#31107"
+msgid "WideList"
+msgstr "Шырокі спіс"
+
+msgctxt "#31110"
+msgid "Enter files section"
+msgstr "Увайсці ў раздзел \"Файлы\""
+
+msgctxt "#31111"
+msgid "View your personal pictures or download one of the many image add-ons from the official repository."
+msgstr "Прагляд вашых малюнкаў альбо іх спампоўванне пры дапамозе дапаўненняў з афіцыйнага рэпазіторыя."
+
+msgctxt "#31112"
+msgid "Toggle audio stream"
+msgstr "Пераключыць аўдыяструмень"
+
+msgctxt "#31113"
+msgid "Search local library"
+msgstr "Пошук у бібліятэцы"
+
+msgctxt "#31114"
+msgid "Search YouTube"
+msgstr "Пошук на YouTube"
+
+msgctxt "#31116"
+msgid "Remove this main menu item"
+msgstr "Выдаліць гэты элемент галоўнага меню"
+
+msgctxt "#31117"
+msgid "Edit nodes"
+msgstr "Рэдагаваць раздзелы"
+
+msgctxt "#31118"
+msgid "Enter add-on browser"
+msgstr "Увайсці ў браўзер дапаўненняў"
+
+msgctxt "#31119"
+msgid "You do not have any add-ons installed yet. Visit our add-on browser to browse through our collection and improve your Kodi experience."
+msgstr "У вас яшчэ не ўсталявана дапаўненняў. Перайдзіце ў наш браўзер дапаўненняў, каб праглядзець нашу калекцыю і пашырыць магчымасці вашага Kodi."
+
+msgctxt "#31120"
+msgid "You did not set up a weather provider yet. In order to view weather information, choose a weather provider and set up your location."
+msgstr "Вы яшчэ не абралі службу надвор'я. Для таго, каб праглядаць інфармацыю пра надвор'е, абярыце службу і вызначце сваю мясцовасць."
+
+msgctxt "#31121"
+msgid "Set weather provider"
+msgstr "Вызначыць службу надвор'я"
+
+msgctxt "#31122"
+msgid "Unwatched TV Shows"
+msgstr "Непрагледжаныя серыялы"
+
+msgctxt "#31123"
+msgid "Same director"
+msgstr "Той самы рэжысёр"
+
+msgctxt "#31125"
+msgid "Press up for actor info"
+msgstr "Націсніце ўверх, каб атрымаць інфармацыю пра акцёра"
+
+msgctxt "#31126"
+msgid "Press OK to read plot"
+msgstr "Націсніце \"Добра\", каб прачытаць сюжэт"
+
+msgctxt "#31127"
+msgid "Show icons"
+msgstr "Паказваць значкі"
+
+msgctxt "#31128"
+msgid "Contributors"
+msgstr "Удзельнікі"
+
+msgctxt "#31129"
+msgid "General settings applying to all areas of the skin."
+msgstr "Агульныя параметры, што ўжываюцца ва ўсіх абласцях абалонкі."
+
+msgctxt "#31130"
+msgid "Main menu-related settings: Configure the home screen to your likings."
+msgstr "Налады галоўнага меню: наладзьце свой хатні экран."
+
+msgctxt "#31131"
+msgid "Choose skin fanart pack"
+msgstr "Абраць набор ілюстрацый абалонкі"
 
 msgctxt "#31132"
 msgid "Select Program"
@@ -72,14 +448,126 @@ msgctxt "#31133"
 msgid "Select Resolution"
 msgstr "Абраць раздзяляльную здольнасць"
 
+msgctxt "#31134"
+msgid "Remaining"
+msgstr "Засталося"
+
+msgctxt "#31136"
+msgid "Click here to see latest changes..."
+msgstr "Націсніце тут, каб праглядзець апошнія змены..."
+
 msgctxt "#31137"
 msgid "PVR info"
-msgstr "Звесткі PVR"
+msgstr "Інфармацыя PVR"
 
 msgctxt "#31138"
 msgid "Player process info"
 msgstr "Інфармацыя пра прайгравальнік"
 
+msgctxt "#31139"
+msgid "Video decoder"
+msgstr "Дэкадавальнік відэа"
+
+msgctxt "#31140"
+msgid "Pixel format"
+msgstr "Фармат пікселяў"
+
+msgctxt "#31141"
+msgid "Changes for version"
+msgstr "Змены ў версіі"
+
+msgctxt "#31142"
+msgid "Play speed"
+msgstr "Хуткасць прайгравання"
+
+msgctxt "#31143"
+msgid "You did not set up PVR yet. In order to use PVR, choose a PVR client addon and configure it. Please visit http://kodi.wiki/view/PVR to learn more."
+msgstr "Вы яшчэ не наладзілі PVR. Абярыце адпаведны кліент PVR і наладзьце яго. Наведайце http://kodi.wiki/view/PVR, каб даведацца больш."
+
+msgctxt "#31144"
+msgid "Enter add-on browser"
+msgstr "Увайсці ў браўзер дапаўненняў"
+
+msgctxt "#31145"
+msgid "Search add-ons"
+msgstr "Пошук дапаўненняў"
+
+msgctxt "#31148"
+msgid "Categories"
+msgstr "Катэгорыі"
+
+msgctxt "#31149"
+msgid "Select genre fanart pack"
+msgstr "Абраць набор ілюстрацый да жанраў"
+
+msgctxt "#31150"
+msgid "Repository"
+msgstr "Рэпазіторый"
+
+msgctxt "#31151"
+msgid "Unwatched music videos"
+msgstr "Непрагледжанае музычнае відэа"
+
+msgctxt "#31152"
+msgid "Random music videos"
+msgstr "Выпадковае музычнае відэа"
+
+msgctxt "#31153"
+msgid "You do not have any add-ons of this type installed. Enter the add-on browser to download add-ons created by our community."
+msgstr "У вас не ўсталявана дапаўненняў гэтага тыпу. Адкрыйце браўзер дапаўненняў, каб спампаваць створаныя суполкай дапаўненні."
+
+msgctxt "#31154"
+msgid "Press OK to switch between locations"
+msgstr "Націсніце \"Добра\" для пераключэння паміж мясцінамі"
+
+msgctxt "#31155"
+msgid "No bookmarks created yet."
+msgstr "Закладак яшчэ не створана."
+
+msgctxt "#31156"
+msgid "Choose background pattern"
+msgstr "Абраць фон"
+
+msgctxt "#31157"
+msgid "Edit categories"
+msgstr "Рэдагаваць катэгорыі"
+
+msgctxt "#31158"
+msgid "Touch mode"
+msgstr "Сэнсарны рэжым"
+
+msgctxt "#31159"
+msgid "Artwork"
+msgstr "Ілюстрацыі"
+
+msgctxt "#31160"
+msgid "Show media flags"
+msgstr "Сцягі медыяфайлаў"
+
+msgctxt "#31161"
+msgid "Numeric pad"
+msgstr "Лічбавая клавіятура"
+
+msgctxt "#31162"
+msgid "Play your personal games or download one of the many game add-ons from the official repository."
+msgstr "Гуляйце ў вашыя гульні альбо спампуйце гульнявыя дапаўненні з афіцыйнага рэпазіторыя."
+
+msgctxt "#31163"
+msgid "Show Fanart background"
+msgstr "Паказваць ілюстрацыі як фон"
+
+msgctxt "#31164"
+msgid "Choose kind of profile identification"
+msgstr "Абраць тып ідэнтыфікацыі профілю"
+
 msgctxt "#31165"
 msgid "Profile name"
-msgstr "Назва профіля"
+msgstr "Назва профілю"
+
+msgctxt "#31166"
+msgid "Profile avatar"
+msgstr "Выява профілю"
+
+msgctxt "#31167"
+msgid "Animate background"
+msgstr "Анімаваны фон"

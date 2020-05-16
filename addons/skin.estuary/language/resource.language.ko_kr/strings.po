@@ -22,7 +22,7 @@ msgstr "지금 재생 중"
 
 msgctxt "#31001"
 msgid "Search..."
-msgstr "찾기..."
+msgstr "검색..."
 
 msgctxt "#31002"
 msgid "Show media fanart as background"
@@ -378,7 +378,7 @@ msgstr "로컬 라이브러리 찾기"
 
 msgctxt "#31114"
 msgid "Search YouTube"
-msgstr "YouTube 찾기"
+msgstr "YouTube 검색"
 
 msgctxt "#31116"
 msgid "Remove this main menu item"

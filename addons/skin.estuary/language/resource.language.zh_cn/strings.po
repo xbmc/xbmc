@@ -156,6 +156,10 @@ msgctxt "#31036"
 msgid "items"
 msgstr "项"
 
+msgctxt "#31037"
+msgid "Selected track"
+msgstr "已选条目"
+
 msgctxt "#31038"
 msgid "Rewind"
 msgstr "回退"
@@ -259,6 +263,10 @@ msgstr "于"
 msgctxt "#31072"
 msgid "Power Options"
 msgstr "电源选项"
+
+msgctxt "#31073"
+msgid "Total length"
+msgstr "总长度"
 
 msgctxt "#31074"
 msgid "Total duration"

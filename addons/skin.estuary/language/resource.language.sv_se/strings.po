@@ -156,6 +156,10 @@ msgctxt "#31036"
 msgid "items"
 msgstr "objekt"
 
+msgctxt "#31037"
+msgid "Selected track"
+msgstr "Valda spår"
+
 msgctxt "#31038"
 msgid "Rewind"
 msgstr "Spolar bakåt"
@@ -259,6 +263,10 @@ msgstr "av"
 msgctxt "#31072"
 msgid "Power Options"
 msgstr "Energialternativ"
+
+msgctxt "#31073"
+msgid "Total length"
+msgstr "Total längd"
 
 msgctxt "#31074"
 msgid "Total duration"

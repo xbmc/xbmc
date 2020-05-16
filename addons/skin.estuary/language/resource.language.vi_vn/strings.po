@@ -22,11 +22,11 @@ msgstr "Đang phát"
 
 msgctxt "#31001"
 msgid "Search..."
-msgstr "Tìm Kiếm..."
+msgstr "Tìm kiếm..."
 
 msgctxt "#31002"
 msgid "Show media fanart as background"
-msgstr "Hiển thị phương tiện fanart làm ảnh nền"
+msgstr "Hiển thị fanart của đa phương tiện làm ảnh nền"
 
 msgctxt "#31003"
 msgid "Cinema mode"
@@ -114,11 +114,15 @@ msgstr "Kiểu xem"
 
 msgctxt "#31024"
 msgid "Choose rating to display for media items"
-msgstr "Chọn xếp hạng để hiển thị cho các mục phương tiện"
+msgstr "Chọn đánh giá để hiển thị cho các mục đa phương tiện"
 
 msgctxt "#31025"
 msgid "No favourites found. You can add any item from media views to this list by using the context menu."
-msgstr "Không tìm thấy yêu thích. Bạn có thể thêm bất kỳ mục nào từ chế độ xem phương tiện vào danh sách này bằng cách sử dụng menu ngữ cảnh."
+msgstr "Không tìm thấy yêu thích. Bạn có thể thêm bất kỳ mục nào từ chế độ xem đa phương tiện vào danh sách này bằng cách sử dụng menu ngữ cảnh."
+
+msgctxt "#31026"
+msgid "Timeshift"
+msgstr "Timeshift"
 
 msgctxt "#31028"
 msgid "Show fanart"
@@ -154,11 +158,15 @@ msgstr "mục"
 
 msgctxt "#31038"
 msgid "Rewind"
-msgstr "Quay Lại"
+msgstr "Quay lại"
 
 msgctxt "#31039"
 msgid "Fast forward"
 msgstr "Tua tới nhanh"
+
+msgctxt "#31041"
+msgid "Camera manufacturer"
+msgstr "Nhà sản xuất máy ảnh"
 
 msgctxt "#31042"
 msgid "Playlist options"
@@ -166,7 +174,7 @@ msgstr "Tùy chọn danh sách phát"
 
 msgctxt "#31043"
 msgid "Set the type and add rules to create a smart playlist. These playlists are dynamic and include all media items from your database which apply to your chosen rules."
-msgstr "Đặt kiểu và thêm quy tắc để tạo danh sách phát thông minh. Danh sách phát này linh động và bao gồm tất cả các mục phương tiện từ cơ sở dữ liệu của bạn áp dụng cho các quy tắc bạn đã chọn."
+msgstr "Đặt kiểu và thêm quy tắc để tạo danh sách phát thông minh. Danh sách phát này linh động và bao gồm tất cả các mục đa phương tiện từ cơ sở dữ liệu của bạn áp dụng cho các quy tắc bạn đã chọn."
 
 msgctxt "#31044"
 msgid "Add group"
@@ -260,6 +268,14 @@ msgctxt "#31074"
 msgid "Total duration"
 msgstr "Tổng thời gian"
 
+msgctxt "#31075"
+msgid "Movie sets"
+msgstr "Loạt phim"
+
+msgctxt "#31079"
+msgid "Cast not available"
+msgstr "Diễn viên không có sẵn"
+
 msgctxt "#31080"
 msgid "Ends at"
 msgstr "Kết thúc vào"
@@ -271,6 +287,10 @@ msgstr "Tiện ích lời bài hát"
 msgctxt "#31083"
 msgid "Lyrics add-on settings"
 msgstr "Cài đặt tiện ích lời bài hát"
+
+msgctxt "#31084"
+msgid "Visualisation settings"
+msgstr "Cài đặt trực quan"
 
 msgctxt "#31089"
 msgid "Available groups"
@@ -300,25 +320,45 @@ msgctxt "#31098"
 msgid "Select your Kodi user profile[CR]to login and continue"
 msgstr "Chọn hồ sơ người dùng Kodi[CR]để đăng nhập và tiếp tục"
 
+msgctxt "#31099"
+msgid "IconWall"
+msgstr "IconWall"
+
+msgctxt "#31100"
+msgid "Shift"
+msgstr "Shift"
+
+msgctxt "#31101"
+msgid "InfoWall"
+msgstr "InfoWall"
+
+msgctxt "#31102"
+msgid "Wall"
+msgstr "Wall"
+
 msgctxt "#31103"
 msgid "Enter text here..."
 msgstr "Nhập văn bản ở đây..."
 
 msgctxt "#31104"
 msgid "Your library is currently empty. In order to populate it with your personal media, enter \"Files\" section, add a media source and configure it. After the source has been added and indexed you will be able to browse your library."
-msgstr "Thư viện của bạn hiện đang trống. Để lắp đầy nó với phương tiện cá nhân của bạn, hãy chọn phần \"Tập tin\", thêm nguồn phương tiện và định cấu hình nó. Sau khi nguồn đã được thêm và lập chỉ mục, bạn sẽ có thể duyệt thư viện của mình."
+msgstr "Thư viện của bạn hiện đang trống. Để lắp đầy nó với đa phương tiện cá nhân của bạn, hãy chọn phần \"Tập tin\", thêm nguồn đa phương tiện và định cấu hình nó. Sau khi nguồn đã được thêm, bạn có thể duyệt thư viện của mình."
 
 msgctxt "#31105"
 msgid "Add video sources and set the appropriate content type in order to populate your video libraries."
 msgstr "Thêm nguồn video và đặt loại nội dung phù hợp để thêm vào thư viện video của bạn."
 
+msgctxt "#31106"
+msgid "Teletext"
+msgstr "Teletext"
+
 msgctxt "#31107"
 msgid "WideList"
-msgstr "Danh sách rộng"
+msgstr "WideList"
 
 msgctxt "#31110"
 msgid "Enter files section"
-msgstr "Nhập phần tập tin"
+msgstr "Truy cập phần tập tin"
 
 msgctxt "#31111"
 msgid "View your personal pictures or download one of the many image add-ons from the official repository."
@@ -364,6 +404,10 @@ msgctxt "#31122"
 msgid "Unwatched TV Shows"
 msgstr "Chương trình TV chưa xem"
 
+msgctxt "#31123"
+msgid "Same director"
+msgstr "Cùng đạo diễn"
+
 msgctxt "#31125"
 msgid "Press up for actor info"
 msgstr "Nhấn để biết thông tin diễn viên"
@@ -388,6 +432,10 @@ msgctxt "#31130"
 msgid "Main menu-related settings: Configure the home screen to your likings."
 msgstr "Cài đặt liên quan đến menu chính: Định cấu hình màn hình chính theo ý thích của bạn."
 
+msgctxt "#31131"
+msgid "Choose skin fanart pack"
+msgstr "Chọn gói giao diện fanart"
+
 msgctxt "#31132"
 msgid "Select Program"
 msgstr "Chọn chương trình"
@@ -395,6 +443,10 @@ msgstr "Chọn chương trình"
 msgctxt "#31133"
 msgid "Select Resolution"
 msgstr "Chọn độ phân giải"
+
+msgctxt "#31134"
+msgid "Remaining"
+msgstr "Còn lại"
 
 msgctxt "#31136"
 msgid "Click here to see latest changes..."
@@ -430,7 +482,7 @@ msgstr "Bạn chưa thiết lập PVR. Để sử dụng PVR, chọn một tiệ
 
 msgctxt "#31144"
 msgid "Enter add-on browser"
-msgstr "Nhập tiện ích trình duyệt"
+msgstr "Truy cập trình duyệt tiện ích"
 
 msgctxt "#31145"
 msgid "Search add-ons"
@@ -439,6 +491,10 @@ msgstr "Tìm kiếm tiện ích"
 msgctxt "#31148"
 msgid "Categories"
 msgstr "Danh mục"
+
+msgctxt "#31149"
+msgid "Select genre fanart pack"
+msgstr "Chọn thể loại của gói fanart"
 
 msgctxt "#31150"
 msgid "Repository"
@@ -480,10 +536,34 @@ msgctxt "#31159"
 msgid "Artwork"
 msgstr "Ảnh minh họa"
 
+msgctxt "#31160"
+msgid "Show media flags"
+msgstr "Hiển thị media flags"
+
+msgctxt "#31161"
+msgid "Numeric pad"
+msgstr "Bàn phím số"
+
 msgctxt "#31162"
 msgid "Play your personal games or download one of the many game add-ons from the official repository."
 msgstr "Chơi các trò chơi cá nhân của bạn hoặc tải xuống một trong nhiều tiện ích trò chơi từ kho lưu trữ chính thức."
 
+msgctxt "#31163"
+msgid "Show Fanart background"
+msgstr "Dùng fanart làm ảnh nền"
+
+msgctxt "#31164"
+msgid "Choose kind of profile identification"
+msgstr "Chọn loại định dạng hồ sơ"
+
 msgctxt "#31165"
 msgid "Profile name"
 msgstr "Tên tài khoản"
+
+msgctxt "#31166"
+msgid "Profile avatar"
+msgstr "Ảnh đại diện hồ sơ"
+
+msgctxt "#31167"
+msgid "Animate background"
+msgstr "Ảnh nền hoạt hình"

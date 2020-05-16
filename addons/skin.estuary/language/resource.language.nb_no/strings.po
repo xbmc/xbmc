@@ -156,6 +156,10 @@ msgctxt "#31036"
 msgid "items"
 msgstr "Elementer"
 
+msgctxt "#31037"
+msgid "Selected track"
+msgstr "Valgt spor"
+
 msgctxt "#31038"
 msgid "Rewind"
 msgstr "Spol bakover"
@@ -259,6 +263,10 @@ msgstr "av"
 msgctxt "#31072"
 msgid "Power Options"
 msgstr "Strømalternativer"
+
+msgctxt "#31073"
+msgid "Total length"
+msgstr "Total lengde"
 
 msgctxt "#31074"
 msgid "Total duration"

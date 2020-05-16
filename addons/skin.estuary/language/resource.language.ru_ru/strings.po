@@ -106,7 +106,7 @@ msgstr "Другие параметры"
 
 msgctxt "#31022"
 msgid "Sort by"
-msgstr "Сорт. по"
+msgstr "Порядок"
 
 msgctxt "#31023"
 msgid "Viewtype"
@@ -259,6 +259,10 @@ msgstr "от"
 msgctxt "#31072"
 msgid "Power Options"
 msgstr "Настройки питания"
+
+msgctxt "#31073"
+msgid "Total length"
+msgstr "Общая длительность"
 
 msgctxt "#31074"
 msgid "Total duration"

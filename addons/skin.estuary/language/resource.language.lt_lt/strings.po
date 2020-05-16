@@ -156,6 +156,10 @@ msgctxt "#31036"
 msgid "items"
 msgstr "elem."
 
+msgctxt "#31037"
+msgid "Selected track"
+msgstr "Pasirinktas takelis"
+
 msgctxt "#31038"
 msgid "Rewind"
 msgstr "Prasukti atgal"
@@ -259,6 +263,10 @@ msgstr "nuo"
 msgctxt "#31072"
 msgid "Power Options"
 msgstr "Maitinimo parinktys"
+
+msgctxt "#31073"
+msgid "Total length"
+msgstr "Bendra trukmė"
 
 msgctxt "#31074"
 msgid "Total duration"

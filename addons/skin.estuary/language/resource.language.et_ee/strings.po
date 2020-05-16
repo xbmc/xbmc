@@ -56,6 +56,10 @@ msgctxt "#31023"
 msgid "Viewtype"
 msgstr "Esitusviis"
 
+msgctxt "#31026"
+msgid "Timeshift"
+msgstr "Ajanihe"
+
 msgctxt "#31028"
 msgid "Show fanart"
 msgstr "Poster"
@@ -87,6 +91,14 @@ msgstr "Edasi"
 msgctxt "#31053"
 msgid "Arial based"
 msgstr "Arial-il põhinev"
+
+msgctxt "#31061"
+msgid "Main menu items"
+msgstr "Peamenüü elemendid"
+
+msgctxt "#31066"
+msgid "Music playlist"
+msgstr "Muusika pleilist"
 
 msgctxt "#31067"
 msgid "Event log"
@@ -140,9 +152,25 @@ msgctxt "#31126"
 msgid "Press OK to read plot"
 msgstr "Sisu täielikuks lugemiseks vajuta OK"
 
+msgctxt "#31132"
+msgid "Select Program"
+msgstr "Vali programm"
+
+msgctxt "#31133"
+msgid "Select Resolution"
+msgstr "Vali lahutus"
+
 msgctxt "#31134"
 msgid "Remaining"
 msgstr "Kestab veel"
+
+msgctxt "#31136"
+msgid "Click here to see latest changes..."
+msgstr "Viimaste muudatuste vaatamiseks kliki siia..."
+
+msgctxt "#31138"
+msgid "Player process info"
+msgstr "Pleieri protsesside teave"
 
 msgctxt "#31139"
 msgid "Video decoder"
@@ -156,9 +184,17 @@ msgctxt "#31148"
 msgid "Categories"
 msgstr "Kategooriad"
 
+msgctxt "#31154"
+msgid "Press OK to switch between locations"
+msgstr "Asukohtade vahel valimiseks vajuta OK"
+
 msgctxt "#31155"
 msgid "No bookmarks created yet."
 msgstr "Järjehoidjaid ei ole"
+
+msgctxt "#31157"
+msgid "Edit categories"
+msgstr "Redigeeri"
 
 msgctxt "#31165"
 msgid "Profile name"
