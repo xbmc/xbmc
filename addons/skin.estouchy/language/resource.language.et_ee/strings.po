@@ -56,6 +56,10 @@ msgctxt "#31016"
 msgid "Albums"
 msgstr "Albumid"
 
+msgctxt "#31018"
+msgid "Player process info"
+msgstr "Pleieri protsesside teave"
+
 msgctxt "#31019"
 msgid "Video decoder"
 msgstr "Videodekooder"

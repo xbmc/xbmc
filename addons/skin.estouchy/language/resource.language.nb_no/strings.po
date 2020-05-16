@@ -56,6 +56,10 @@ msgctxt "#31014"
 msgid "Episodes"
 msgstr "Episoder"
 
+msgctxt "#31015"
+msgid "Player info"
+msgstr "Avspiller informasjon"
+
 msgctxt "#31016"
 msgid "Albums"
 msgstr "Album"

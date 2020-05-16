@@ -56,29 +56,49 @@ msgctxt "#31014"
 msgid "Episodes"
 msgstr "Эпізоды"
 
+msgctxt "#31015"
+msgid "Player info"
+msgstr "Інфармацыя пра прайгравальнік"
+
 msgctxt "#31016"
 msgid "Albums"
 msgstr "Альбомы"
 
 msgctxt "#31017"
 msgid "PVR info"
-msgstr "Звесткі PVR"
+msgstr "Інфармацыя пра PVR"
 
 msgctxt "#31018"
 msgid "Player process info"
 msgstr "Інфармацыя пра прайгравальнік"
 
+msgctxt "#31019"
+msgid "Video decoder"
+msgstr "Дэкадавальнік відэа"
+
+msgctxt "#31020"
+msgid "Pixel format"
+msgstr "Фармат пікселяў"
+
+msgctxt "#31021"
+msgid "System memory usage"
+msgstr "Выкарыстанне памяці"
+
 msgctxt "#31024"
 msgid "Page"
-msgstr "Page"
+msgstr "Старонка"
 
 msgctxt "#31030"
 msgid "Info List"
-msgstr "Info List"
+msgstr "Спіс"
 
 msgctxt "#31038"
 msgid "Login"
-msgstr "Login"
+msgstr "Лагін"
+
+msgctxt "#31039"
+msgid "Updated:"
+msgstr "Абноўлена:"
 
 msgctxt "#31043"
 msgid "PAUSED"
@@ -86,39 +106,43 @@ msgstr "ПРЫПЫНЕНА"
 
 msgctxt "#31044"
 msgid "FAST FORWARD"
-msgstr "FAST FORWARD"
+msgstr "ПЕРАМОТКА ЎПЕРАД"
 
 msgctxt "#31045"
 msgid "REWIND"
-msgstr "REWIND"
+msgstr "ПЕРАМОТКА НАЗАД"
+
+msgctxt "#31046"
+msgid "Play speed"
+msgstr "Хуткасць прайгравання"
 
 msgctxt "#31049"
 msgid "End Time"
-msgstr "End Time"
+msgstr "Час завяршэння"
 
 msgctxt "#31050"
 msgid "Sort: Ascending"
-msgstr "Sort: Ascending"
+msgstr "Па ўзрастанні"
 
 msgctxt "#31051"
 msgid "Sort: Descending"
-msgstr "Sort: Descending"
+msgstr "Па ўбыванні"
 
 msgctxt "#31055"
 msgid "Open playlist"
-msgstr "Open playlist"
+msgstr "Адкрыць спіс прайгравання"
 
 msgctxt "#31056"
 msgid "Save playlist"
-msgstr "Save playlist"
+msgstr "Захаваць спіс прайгравання"
 
 msgctxt "#31057"
 msgid "Close playlist"
-msgstr "Close playlist"
+msgstr "Закрыць спіс прайгравання"
 
 msgctxt "#31058"
 msgid "System music files"
-msgstr "System music files"
+msgstr "Сістэмныя музычныя файлы"
 
 msgctxt "#31059"
 msgid "Current playlist"
@@ -126,11 +150,11 @@ msgstr "Бягучы спіс прайгравання"
 
 msgctxt "#31200"
 msgid "Back"
-msgstr "Back"
+msgstr "Назад"
 
 msgctxt "#31201"
 msgid "Location"
-msgstr "Location"
+msgstr "Мясціна"
 
 msgctxt "#31202"
 msgid "View"
@@ -138,15 +162,19 @@ msgstr "Выгляд"
 
 msgctxt "#31300"
 msgid "Current Temp"
-msgstr "Current Temp"
+msgstr "Бягучая тэмпература"
 
 msgctxt "#31301"
 msgid "Last Updated"
-msgstr "Last Updated"
+msgstr "Апошняе абнаўленне"
 
 msgctxt "#31303"
 msgid "Data provider"
-msgstr "Data provider"
+msgstr "Служба"
+
+msgctxt "#31309"
+msgid "System Memory Used:"
+msgstr "Выкарыстанне памяці:"
 
 msgctxt "#31320"
 msgid "Last Logged In"
@@ -154,15 +182,15 @@ msgstr "Апошні ўваход"
 
 msgctxt "#31322"
 msgid "Aired"
-msgstr "Aired"
+msgstr "Прэм’ера"
 
 msgctxt "#31355"
 msgid "Video Menu"
-msgstr "Video Menu"
+msgstr "Меню відэа"
 
 msgctxt "#31356"
 msgid "Download Subtitles"
-msgstr "Download Subtitles"
+msgstr "Спампаваць субцітры"
 
 msgctxt "#31358"
 msgid "Teletext"
@@ -174,15 +202,55 @@ msgstr "Прадвызначаная абалонка"
 
 msgctxt "#31391"
 msgid "Arial based"
-msgstr "Arial based"
+msgstr "На аснове Arial"
 
 msgctxt "#31400"
 msgid "Change the skin · Set language and region · Change file listing options · Set up a screensaver"
-msgstr "Change the skin · Set language and region · Change file listing options · Set up a screensaver"
+msgstr "Змена абалонкі  · Наладка мовы і рэгіёна  · Змена параметраў спіса файлаў  · Наладка ахоўніка экрана"
+
+msgctxt "#31405"
+msgid "Configure & manage media sharing services · Configure & manage the weather service"
+msgstr "Наладка і кіраванне службамі доступу да медыяфайлаў  · Наладка і кіраванне службай надвор'я"
+
+msgctxt "#31406"
+msgid "Configure display · Configure audio · Configure internet access · Configure power saving· Configure logging"
+msgstr "Наладка дысплея · Наладка аўдыё · Наладка доступу ў інтэрнэт · Наладка эканоміі энергіі · Наладка журналаў"
+
+msgctxt "#31407"
+msgid "Manage your installed add-ons · Browse for and install add-ons from kodi.tv · Modify add-on settings"
+msgstr "Кіраванне дапаўненнямі · Пошук і ўсталёўка дапаўненняў з kodi.tv · Наладка дапаўненняў"
+
+msgctxt "#31408"
+msgid "Configure actions that can be used during playback · Configure how media content is played"
+msgstr "Наладка дзеянняў, якія можна выкарыстоўваць падчас прайгравання · Наладка спосабу прайгравання медыяфайлаў"
+
+msgctxt "#31409"
+msgid "Configure library sources · Show the media lists display content · Configure how library lists are navigated"
+msgstr "Наладка крыніц бібліятэкі · Наладка адлюстравання змесціва · Наладка навігацыі па бібліятэцы"
+
+msgctxt "#31410"
+msgid "Configure skin · Configure region · Configure control · Configure screensaver · Configure master lock"
+msgstr "Наладка абалонкі · Наладка рэгіёна · Наладка кантролю · Наладка ахоўніка экрана · Наладка блакавання"
+
+msgctxt "#31411"
+msgid "Configure your profiles · Set locking options · Enable login screen"
+msgstr "Наладка профілю · Параметры блакавання · Экран уваходу"
+
+msgctxt "#31412"
+msgid "Display system information · Hardware statistics · Check storage availability · View network configuration"
+msgstr "Адлюстраванне сістэмнай інфармацыі · Абсталяванне · Праверка месца ў сховішчы · Канфігурацыя сеткі"
 
 msgctxt "#31421"
 msgid "Select your Kodi user Profile[CR]to login and continue"
-msgstr "Select your Kodi user Profile[CR]to login and continue"
+msgstr "Абярыце профіль Kodi[CR], каб увайсці і працягнуць"
+
+msgctxt "#31548"
+msgid "Home menu"
+msgstr "Галоўнае меню"
+
+msgctxt "#31549"
+msgid "Home Add-ons"
+msgstr "Хатнія дапаўненні"
 
 msgctxt "#31550"
 msgid "Backgrounds"
@@ -190,24 +258,80 @@ msgstr "Фоны"
 
 msgctxt "#31551"
 msgid "Add-on Shortcut"
-msgstr "Add-on Shortcut"
+msgstr "Цэтлікі дапаўненняў"
+
+msgctxt "#31552"
+msgid "SYNC"
+msgstr "Сінхранізацыя"
+
+msgctxt "#31553"
+msgid "Use Custom Background"
+msgstr "Выкарыстоўваць адвольны фон"
+
+msgctxt "#31554"
+msgid "Background:"
+msgstr "Фон:"
+
+msgctxt "#31555"
+msgid "Configure TV settings · Change full screen info · Manage EPG data settings"
+msgstr "Наладка ТБ · Змена поўнаэкраннай інфармацыі · Кіраванне наладамі тэлепраграмы"
 
 msgctxt "#31556"
 msgid "Live TV"
-msgstr "Жывое ТВ"
+msgstr "ТБ"
 
 msgctxt "#31557"
 msgid "Hide video background"
-msgstr "Hide video background"
+msgstr "Хаваць фонавае відэа"
+
+msgctxt "#31558"
+msgid "Hide visualization background"
+msgstr "Хаваць фонавую візуалізацыю"
+
+msgctxt "#31559"
+msgid "Channel settings"
+msgstr "Налады канала"
+
+msgctxt "#31560"
+msgid "Available groups"
+msgstr "Даступныя групы"
 
 msgctxt "#31561"
 msgid "Add Group"
-msgstr "Add Group"
+msgstr "Дадаць групу"
 
 msgctxt "#31562"
 msgid "Rename Group"
-msgstr "Rename Group"
+msgstr "Змяніць назву групы"
 
 msgctxt "#31563"
 msgid "Delete Group"
-msgstr "Delete Group"
+msgstr "Выдаліць групу"
+
+msgctxt "#31564"
+msgid "Show hidden"
+msgstr "Паказваць схаванае"
+
+msgctxt "#31565"
+msgid "Show deleted"
+msgstr "Паказваць выдаленае"
+
+msgctxt "#31900"
+msgid "First Run"
+msgstr "Першы запуск"
+
+msgctxt "#31901"
+msgid "There are two things to know about navigating Estouchy"
+msgstr "Ёсць два моманты, якія патрэбна ведаць пра навігацыю Estouchy"
+
+msgctxt "#31902"
+msgid "The Kodi logo functions as a 'HOME' button. Whenever you touch it, you will be taken back to the home screen."
+msgstr "Лагатып Kodi функцыянуе як кнопка \"Хатні экран\". Калі вы націснеце на яго, то вернецеся на хатні экран."
+
+msgctxt "#31903"
+msgid "When you are playing audio or video, the item title will appear at the top of the screen. Touching it will take you to the fullscreen visualization or video window."
+msgstr "Калі прайграецца відэа ці аўдыё, то яго назва паказваецца ўверсе экрана. Калі націснуць на яе, то вы перойдзеце ў поўнаэкранны рэжым відэа ці візуалізацыі."
+
+msgctxt "#31904"
+msgid "Now Playing Title..."
+msgstr "Зараз прайграецца…"

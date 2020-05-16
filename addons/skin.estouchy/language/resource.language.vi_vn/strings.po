@@ -18,7 +18,7 @@ msgstr ""
 
 msgctxt "#31002"
 msgid "Audio Settings"
-msgstr "Cài đặt audio"
+msgstr "Cài đặt âm thanh"
 
 msgctxt "#31003"
 msgid "IP"
@@ -44,6 +44,10 @@ msgctxt "#31009"
 msgid "Working..."
 msgstr "Đang chạy..."
 
+msgctxt "#31011"
+msgid "Recent"
+msgstr "Gần đây"
+
 msgctxt "#31013"
 msgid "Movies"
 msgstr "Phim"
@@ -51,6 +55,10 @@ msgstr "Phim"
 msgctxt "#31014"
 msgid "Episodes"
 msgstr "Tập"
+
+msgctxt "#31015"
+msgid "Player info"
+msgstr "Thông tin trình phát"
 
 msgctxt "#31016"
 msgid "Albums"
@@ -88,13 +96,17 @@ msgctxt "#31038"
 msgid "Login"
 msgstr "Đăng nhập"
 
+msgctxt "#31039"
+msgid "Updated:"
+msgstr "Đã cập nhật:"
+
 msgctxt "#31043"
 msgid "PAUSED"
 msgstr "Tạm dừng"
 
 msgctxt "#31044"
 msgid "FAST FORWARD"
-msgstr "TUA NHANH"
+msgstr "TUA TỚI NHANH"
 
 msgctxt "#31045"
 msgid "REWIND"
@@ -106,7 +118,7 @@ msgstr "Tốc độ phát"
 
 msgctxt "#31049"
 msgid "End Time"
-msgstr "Kết thúc"
+msgstr "Thời gian kết thúc"
 
 msgctxt "#31050"
 msgid "Sort: Ascending"
@@ -118,27 +130,27 @@ msgstr "Sắp xếp: Giảm dần"
 
 msgctxt "#31055"
 msgid "Open playlist"
-msgstr "Mở playlist"
+msgstr "Mở danh sách phát"
 
 msgctxt "#31056"
 msgid "Save playlist"
-msgstr "Lưu playlist"
+msgstr "Lưu danh sách phát"
 
 msgctxt "#31057"
 msgid "Close playlist"
-msgstr "Đóng playlist"
+msgstr "Đóng danh sách phát"
 
 msgctxt "#31058"
 msgid "System music files"
-msgstr "File nhạc trên hệ thống"
+msgstr "Tập tin nhạc trên hệ thống"
 
 msgctxt "#31059"
 msgid "Current playlist"
-msgstr "Playlist hiện tại"
+msgstr "Danh sách phát hiện tại"
 
 msgctxt "#31200"
 msgid "Back"
-msgstr "Lùi"
+msgstr "Trở lại"
 
 msgctxt "#31201"
 msgid "Location"
@@ -146,7 +158,7 @@ msgstr "Đường dẫn"
 
 msgctxt "#31202"
 msgid "View"
-msgstr "View"
+msgstr "Xem"
 
 msgctxt "#31300"
 msgid "Current Temp"
@@ -154,15 +166,19 @@ msgstr "Nhiệt độ hiện giờ"
 
 msgctxt "#31301"
 msgid "Last Updated"
-msgstr "Cập nhật cuối cùng"
+msgstr "Cập nhật mới nhất"
 
 msgctxt "#31303"
 msgid "Data provider"
 msgstr "Nhà cung cấp dữ liệu"
 
+msgctxt "#31309"
+msgid "System Memory Used:"
+msgstr "Bộ nhớ hệ thống đã dùng:"
+
 msgctxt "#31320"
 msgid "Last Logged In"
-msgstr "Lần truy cập cuối"
+msgstr "Đăng nhập lần cuối"
 
 msgctxt "#31322"
 msgid "Aired"
@@ -176,9 +192,13 @@ msgctxt "#31356"
 msgid "Download Subtitles"
 msgstr "Tải phụ đề"
 
+msgctxt "#31358"
+msgid "Teletext"
+msgstr "Teletext"
+
 msgctxt "#31390"
 msgid "Skin default"
-msgstr "Skin mặc định"
+msgstr "Giao diện mặc định"
 
 msgctxt "#31391"
 msgid "Arial based"
@@ -187,6 +207,22 @@ msgstr "Theo chuẩn Arial"
 msgctxt "#31400"
 msgid "Change the skin · Set language and region · Change file listing options · Set up a screensaver"
 msgstr "Thay đổi skin · Đặt ngôn ngữ và vùng · Thay đổi cách liệt kê file · Cài đặt trình bảo vệ màn hình"
+
+msgctxt "#31405"
+msgid "Configure & manage media sharing services · Configure & manage the weather service"
+msgstr "Định cấu hình và quản lý dịch vụ chia sẻ đa phương tiện · Cấu hình và quản lý dịch vụ thời tiết"
+
+msgctxt "#31406"
+msgid "Configure display · Configure audio · Configure internet access · Configure power saving· Configure logging"
+msgstr "Cấu hình hiển thị · Cấu hình âm thanh · Cấu hình truy cập internet · Cấu hình tiết kiệm năng lượng · Cấu hình ghi nhật ký"
+
+msgctxt "#31407"
+msgid "Manage your installed add-ons · Browse for and install add-ons from kodi.tv · Modify add-on settings"
+msgstr "Quản lý tiện ích đã cài đặt của bạn · Duyệt tìm và cài đặt các tiện ích từ kodi.tv · Sửa đổi cài đặt tiện ích"
+
+msgctxt "#31408"
+msgid "Configure actions that can be used during playback · Configure how media content is played"
+msgstr "Định cấu hình các hành động được sử dụng trong khi phát · Định cấu hình cách phát nội dung đa phương tiện"
 
 msgctxt "#31421"
 msgid "Select your Kodi user Profile[CR]to login and continue"
@@ -198,11 +234,19 @@ msgstr "Hình nền"
 
 msgctxt "#31551"
 msgid "Add-on Shortcut"
-msgstr "Phím nhanh add-on"
+msgstr "Phím tắt tiện ích"
+
+msgctxt "#31553"
+msgid "Use Custom Background"
+msgstr "Sử dụng nền tùy chọn"
+
+msgctxt "#31554"
+msgid "Background:"
+msgstr "Nền:"
 
 msgctxt "#31556"
 msgid "Live TV"
-msgstr "TV trực tuyến"
+msgstr "Kênh TV"
 
 msgctxt "#31559"
 msgid "Channel settings"
@@ -223,3 +267,7 @@ msgstr "Đổi tên nhóm"
 msgctxt "#31563"
 msgid "Delete Group"
 msgstr "Xoá nhóm"
+
+msgctxt "#31903"
+msgid "When you are playing audio or video, the item title will appear at the top of the screen. Touching it will take you to the fullscreen visualization or video window."
+msgstr "Khi bạn đang phát âm thanh hoặc video, tiêu đề mục sẽ xuất hiện ở phía trên màn hình. Chạm vào nó sẽ đưa bạn đến cửa sổ video hoặc hình ảnh toàn màn hình."

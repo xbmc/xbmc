@@ -56,6 +56,10 @@ msgctxt "#31016"
 msgid "Albums"
 msgstr "Албуми"
 
+msgctxt "#31018"
+msgid "Player process info"
+msgstr "Информации за процесот на плеерот"
+
 msgctxt "#31021"
 msgid "System memory usage"
 msgstr "Искористеност на меморија"

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<addon id="skin.estouchy" version="3.0.1" name="Estouchy" provider-name="Team Kodi">
+<addon id="skin.estouchy" version="3.0.2" name="Estouchy" provider-name="Team Kodi">
 	<requires>
 		<import addon="xbmc.gui" version="5.15.0"/>
 	</requires>
@@ -53,10 +53,11 @@
 		<summary lang="th_TH">หน้าตาสำหรับอุปกรณ์สัมผัส</summary>
 		<summary lang="tr_TR">Dokunmatik ekranlı aygıtlar için dış görünüm</summary>
 		<summary lang="uk_UA">Скін для сенсорних пристроїв</summary>
+		<summary lang="vi_VN">Giao diện cho thiết bị màn hình cảm ứng</summary>
 		<summary lang="zh_CN">针对触屏设备的皮肤</summary>
 		<summary lang="zh_TW">為具有觸控螢幕的裝置所製作的佈景主題</summary>
 		<description lang="af_ZA">Oortreksel ontwerp om op raakskerm toestelle soos tablette en slimfone te gebruik</description>
-		<description lang="be_BY">Абалонка распрацавана для выкарыстання на сэнсарных прыладах , такіх як планшэты і смартфоны</description>
+		<description lang="be_BY">Абалонка распрацаваная для выкарыстання на сэнсарных прыладах, такіх як планшэты і смартфоны</description>
 		<description lang="bg_BG">Обликът е разработен за ползване на устройства със сензорен екран, като таблети и телефони.</description>
 		<description lang="ca_ES">Aparença dissenyada perquè s'utilitzi en dispositius amb pantalla tàctil com taules i telèfons intel·ligents</description>
 		<description lang="cs_CZ">Vzhled navržený pro použití na zařízeních s dotykovou obrazovkou, jako jsou tablety a chytré telefony</description>
@@ -97,6 +98,7 @@
 		<description lang="th_TH">หน้าตาที่ออกแบบมาเพื่อใช้งานบนอุปกรณ์หน้าจอสัมผัส เช่น แท็บเล็ตและสมาร์ทโฟน</description>
 		<description lang="tr_TR">Bu dış görünüm tabletler ve akıllı telefonlar gibi dokunmatik ekranlı aygıtlarda kullanılmak üzere tasarlandı</description>
 		<description lang="uk_UA">Ця обкладинка призначена для пристроїв із сенсорним екраном, наприклад планшетів чи смартфонів.</description>
+		<description lang="vi_VN">Giao diện được thiết kế để sử dụng trên thiết bị màn hình cảm ứng như máy tính bảng và điện thoại thông minh</description>
 		<description lang="zh_CN">为触屏设备如平板电脑和智能手机而设计的皮肤</description>
 		<description lang="zh_TW">本佈景主題專為平板及手機等具有觸控螢幕的裝置而設計。</description>
 		<platform>all</platform>
