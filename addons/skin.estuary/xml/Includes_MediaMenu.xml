@@ -60,7 +60,7 @@
 					<height>50</height>
 					<control type="label">
 						<include>MediaMenuLabelCommon</include>
-						<label>$LOCALIZE[31063]</label>
+						<label>$LOCALIZE[31148]</label>
 					</control>
 					<control type="label">
 						<width>470</width>
