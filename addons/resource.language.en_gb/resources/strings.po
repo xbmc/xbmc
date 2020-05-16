@@ -6088,14 +6088,6 @@ msgctxt "#13023"
 msgid "Successfully removed storage device"
 msgstr ""
 
-msgctxt "#13024"
-msgid "Joystick plugged"
-msgstr ""
-
-msgctxt "#13025"
-msgid "Joystick unplugged"
-msgstr ""
-
 #: system/settings/settings.xml
 msgctxt "#13026"
 msgid "Try to wakeup remote servers on access"
