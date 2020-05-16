@@ -47,7 +47,7 @@ struct Interface_Filesystem
   static void free_directory(void* kodiBase, VFSDirEntry* items, unsigned int num_items);
 
   static bool file_exists(void* kodiBase, const char* filename, bool useCache);
-  static int stat_file(void* kodiBase, const char* filename, struct __stat64* buffer);
+  static bool stat_file(void* kodiBase, const char* filename, struct STAT_STRUCTURE* buffer);
   static bool delete_file(void* kodiBase, const char* filename);
   static bool rename_file(void* kodiBase, const char* filename, const char* newFileName);
   static bool copy_file(void* kodiBase, const char* filename, const char* dest);

@@ -13,29 +13,11 @@
 #include <map>
 #include <vector>
 
-#if !defined(_WIN32)
-  #include <sys/stat.h>
-  #if !defined(__stat64)
-    #if defined(TARGET_DARWIN) || defined(TARGET_FREEBSD)
-      #define __stat64 stat
-    #else
-      #define __stat64 stat64
-    #endif
-  #endif
-#endif
 #ifdef _WIN32                   // windows
 #ifndef _SSIZE_T_DEFINED
-  typedef intptr_t      ssize_t;
-  #define _SSIZE_T_DEFINED
+typedef intptr_t ssize_t;
+#define _SSIZE_T_DEFINED
 #endif // !_SSIZE_T_DEFINED
-#endif
-
-#ifndef S_ISDIR
-  #define S_ISDIR(mode)  ((((mode)) & 0170000) == (0040000))
-#endif
-
-#ifndef S_ISLNK
-  #define S_ISLNK(mode)  ((((mode)) & 0170000) == (0120000))
 #endif
 
 /*
@@ -80,7 +62,7 @@ extern "C"
     void (*free_directory)(void* kodiBase, VFSDirEntry* items, unsigned int num_items);
 
     bool (*file_exists)(void* kodiBase, const char *filename, bool useCache);
-    int (*stat_file)(void* kodiBase, const char *filename, struct __stat64* buffer);
+    bool (*stat_file)(void* kodiBase, const char* filename, struct STAT_STRUCTURE* buffer);
     bool (*delete_file)(void* kodiBase, const char *filename);
     bool (*rename_file)(void* kodiBase, const char *filename, const char *newFileName);
     bool (*copy_file)(void* kodiBase, const char *filename, const char *dest);
@@ -247,28 +229,19 @@ typedef enum FilePropertyTypes
 struct STAT_STRUCTURE
 {
   /// ID of device containing file
-  uint32_t    deviceId;
+  uint32_t deviceId;
   /// Total size, in bytes
-  uint64_t    size;
-#ifdef TARGET_WINDOWS
+  uint64_t size;
   /// Time of last access
-  __time64_t  accessTime;
+  time_t accessTime;
   /// Time of last modification
-  __time64_t  modificationTime;
+  time_t modificationTime;
   /// Time of last status change
-  __time64_t  statusTime;
-#else
-  /// Time of last access
-  timespec    accessTime;
-  /// Time of last modification
-  timespec    modificationTime;
-  /// Time of last status change
-  timespec    statusTime;
-#endif
+  time_t statusTime;
   /// The stat url is a directory
-  bool        isDirectory;
+  bool isDirectory;
   /// The stat url is a symbolic link
-  bool        isSymLink;
+  bool isSymLink;
 };
 //------------------------------------------------------------------------------
 
@@ -276,6 +249,41 @@ namespace kodi
 {
 namespace vfs
 {
+
+class FileStatus : public kodi::addon::CStructHdl<FileStatus, STAT_STRUCTURE>
+{
+public:
+  /*! \cond PRIVATE */
+  FileStatus() { memset(m_cStructure, 0, sizeof(STAT_STRUCTURE)); }
+  FileStatus(const FileStatus& channel) : CStructHdl(channel) {}
+  FileStatus(const STAT_STRUCTURE* channel) : CStructHdl(channel) {}
+  FileStatus(STAT_STRUCTURE* channel) : CStructHdl(channel) {}
+  /*! \endcond */
+
+  uint32_t GetDeviceId() const { return m_cStructure->deviceId; }
+  void GetDeviceId(uint32_t deviceId) { m_cStructure->deviceId = deviceId; }
+
+  uint64_t GetSize() const { return m_cStructure->size; }
+  void SetSize(uint64_t size) { m_cStructure->size = size; }
+
+  time_t GetAccessTime() const { return m_cStructure->accessTime; }
+  void SetAccessTime(time_t accessTime) { m_cStructure->accessTime = accessTime; }
+
+  time_t GetModificationTime() const { return m_cStructure->modificationTime; }
+  void SetModificationTime(time_t modificationTime)
+  {
+    m_cStructure->modificationTime = modificationTime;
+  }
+
+  time_t GetStatusTime() const { return m_cStructure->statusTime; }
+  void SetStatusTime(time_t statusTime) { m_cStructure->statusTime = statusTime; }
+
+  bool GetIsDirectory() const { return m_cStructure->isDirectory; }
+  void SetIsDirectory(bool isDirectory) { m_cStructure->isDirectory = isDirectory; }
+
+  bool GetIsSymLink() const { return m_cStructure->isSymLink; }
+  void SetIsSymLink(bool isSymLink) { m_cStructure->isSymLink = isSymLink; }
+};
 
   //============================================================================
   ///
@@ -1035,7 +1043,7 @@ namespace vfs
   /// permission is required on all of the directories in path that
   /// lead to the file.
   ///
-  /// The call return a stat structure, which contains the on \ref STAT_STRUCTURE
+  /// The call return a stat structure, which contains the on \ref FileStatus
   /// defined values.
   ///
   /// @warning Not all of the OS file systems implement all of the time fields.
@@ -1051,7 +1059,7 @@ namespace vfs
   /// ~~~~~~~~~~~~~{.cpp}
   /// #include <kodi/Filesystem.h>
   /// ...
-  /// STAT_STRUCTURE statFile;
+  /// kodi::vfs::FileStatus statFile;
   /// int ret = kodi::vfs::StatFile("special://temp/kodi.log", statFile);
   /// fprintf(stderr, "deviceId (ID of device containing file)       = %u\n"
   ///                 "size (total size, in bytes)                   = %lu\n"
@@ -1071,38 +1079,12 @@ namespace vfs
   ///                      ret);
   /// ~~~~~~~~~~~~~
   ///
-  inline bool StatFile(const std::string& filename, STAT_STRUCTURE& buffer)
+  inline bool StatFile(const std::string& filename, kodi::vfs::FileStatus& buffer)
   {
-    struct __stat64 frontendBuffer = { };
-    if (::kodi::addon::CAddonBase::m_interface->toKodi->kodi_filesystem->stat_file(::kodi::addon::CAddonBase::m_interface->toKodi->kodiBase, filename.c_str(), &frontendBuffer))
-    {
-      buffer.deviceId         = frontendBuffer.st_dev;
-      buffer.size             = frontendBuffer.st_size;
-#if defined(TARGET_DARWIN) || defined(TARGET_FREEBSD)
-      buffer.accessTime       = frontendBuffer.st_atimespec;
-      buffer.modificationTime = frontendBuffer.st_mtimespec;
-      buffer.statusTime       = frontendBuffer.st_ctimespec;
-#elif defined(TARGET_WINDOWS)
-      buffer.accessTime       = frontendBuffer.st_atime;
-      buffer.modificationTime = frontendBuffer.st_mtime;
-      buffer.statusTime       = frontendBuffer.st_ctime;
-#elif defined(TARGET_ANDROID)
-      buffer.accessTime.tv_sec = frontendBuffer.st_atime;
-      buffer.accessTime.tv_nsec = frontendBuffer.st_atime_nsec;
-      buffer.modificationTime.tv_sec = frontendBuffer.st_mtime;
-      buffer.modificationTime.tv_nsec = frontendBuffer.st_mtime_nsec;
-      buffer.statusTime.tv_sec = frontendBuffer.st_ctime;
-      buffer.statusTime.tv_nsec = frontendBuffer.st_ctime_nsec;
-#else
-      buffer.accessTime       = frontendBuffer.st_atim;
-      buffer.modificationTime = frontendBuffer.st_mtim;
-      buffer.statusTime       = frontendBuffer.st_ctim;
-#endif
-      buffer.isDirectory      = S_ISDIR(frontendBuffer.st_mode);
-      buffer.isSymLink        = S_ISLNK(frontendBuffer.st_mode);
-      return true;
-    }
-    return false;
+    using namespace kodi::addon;
+
+    return CAddonBase::m_interface->toKodi->kodi_filesystem->stat_file(
+        CAddonBase::m_interface->toKodi->kodiBase, filename.c_str(), buffer);
   }
   //----------------------------------------------------------------------------
 
