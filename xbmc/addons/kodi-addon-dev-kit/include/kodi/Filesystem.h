@@ -1287,6 +1287,16 @@ namespace vfs
     //==========================================================================
     ///
     /// @ingroup cpp_kodi_vfs_CFile
+    /// @brief Check file is opened
+    ///
+    /// @return True on open or false on closed or failure
+    ///
+    bool IsOpen() { return m_file != nullptr; }
+    //--------------------------------------------------------------------------
+
+    //==========================================================================
+    ///
+    /// @ingroup cpp_kodi_vfs_CFile
     /// @brief Create a Curl representation
     ///
     /// @param[in] url          the URL of the Type.
