@@ -15,13 +15,28 @@ extern "C"
 {
 #endif /* __cplusplus */
 
+  //============================================================================
+  /// @ingroup cpp_kodi_addon_imagedecoder_Defs
+  /// @brief **Image format types**\n
+  /// Used to define wanted target format where image decoder should give to
+  /// Kodi.
+  ///
   typedef enum ImageFormat
   {
+    /// @brief A 32-bit ARGB pixel format, with alpha, that uses 8 bits per
+    /// channel, ARGBARGB...
     ADDON_IMG_FMT_A8R8G8B8 = 1,
+
+    /// @brief A 8, alpha only, 8bpp, AAA...
     ADDON_IMG_FMT_A8 = 2,
+
+    /// @brief RGBA 8:8:8:8, with alpha, 32bpp, RGBARGBA...
     ADDON_IMG_FMT_RGBA8 = 3,
+
+    /// @brief RGB 8:8:8, with alpha, 24bpp, RGBRGB...
     ADDON_IMG_FMT_RGB8 = 4
   } ImageFormat;
+  //----------------------------------------------------------------------------
 
   typedef struct AddonProps_ImageDecoder
   {
