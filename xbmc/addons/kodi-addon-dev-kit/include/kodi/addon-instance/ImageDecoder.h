@@ -70,8 +70,14 @@ namespace addon
     /// @param[in] instance             The from Kodi given instance given be
     ///                                 add-on CreateInstance call with instance
     ///                                 id ADDON_INSTANCE_IMAGEDECODER.
-    explicit CInstanceImageDecoder(KODI_HANDLE instance)
-      : IAddonInstance(ADDON_INSTANCE_IMAGEDECODER)
+    /// @param[in] kodiVersion [opt] Version used in Kodi for this instance, to
+    ///                        allow compatibility to older Kodi versions.
+    ///                        @note Recommended to set.
+    ///
+    explicit CInstanceImageDecoder(KODI_HANDLE instance, const std::string& kodiVersion = "")
+      : IAddonInstance(ADDON_INSTANCE_IMAGEDECODER,
+                       !kodiVersion.empty() ? kodiVersion
+                                            : GetKodiTypeVersion(ADDON_INSTANCE_IMAGEDECODER))
     {
       if (CAddonBase::m_interface->globalSingleInstance != nullptr)
         throw std::logic_error("kodi::addon::CInstanceImageDecoder: Creation of multiple together with single instance way is not allowed!");

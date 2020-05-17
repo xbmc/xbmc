@@ -37,6 +37,7 @@ bool Interface_Base::InitInterface(CAddonDll* addon,
 
   addonInterface.libBasePath =
       strdup(CSpecialProtocol::TranslatePath("special://xbmcbinaddons").c_str());
+  addonInterface.kodi_base_api_version = strdup(kodi::addon::GetTypeVersion(ADDON_GLOBAL_MAIN));
   addonInterface.addonBase = nullptr;
   addonInterface.globalSingleInstance = nullptr;
   addonInterface.firstKodiInstance = firstKodiInstance;
@@ -45,6 +46,7 @@ bool Interface_Base::InitInterface(CAddonDll* addon,
   // compatible with other versions
   addonInterface.toKodi = new AddonToKodiFuncTable_Addon();
   addonInterface.toKodi->kodiBase = addon;
+  addonInterface.toKodi->get_type_version = get_type_version;
   addonInterface.toKodi->get_addon_path = get_addon_path;
   addonInterface.toKodi->get_base_user_path = get_base_user_path;
   addonInterface.toKodi->addon_log_msg = addon_log_msg;
@@ -58,6 +60,7 @@ bool Interface_Base::InitInterface(CAddonDll* addon,
   addonInterface.toKodi->set_setting_string = set_setting_string;
   addonInterface.toKodi->free_string = free_string;
   addonInterface.toKodi->free_string_array = free_string_array;
+  addonInterface.toKodi->get_interface = get_interface;
 
   // Related parts becomes set from addon headers, make here to nullptr to allow
   // checks for right set of them
@@ -69,8 +72,6 @@ bool Interface_Base::InitInterface(CAddonDll* addon,
   Interface_Filesystem::Init(&addonInterface);
   Interface_Network::Init(&addonInterface);
   Interface_GUIGeneral::Init(&addonInterface);
-
-  addonInterface.toKodi->get_interface = get_interface;
 
   return true;
 }
@@ -85,6 +86,8 @@ void Interface_Base::DeInitInterface(AddonGlobalInterface& addonInterface)
 
   if (addonInterface.libBasePath)
     free(const_cast<char*>(addonInterface.libBasePath));
+  if (addonInterface.kodi_base_api_version)
+    free(const_cast<char*>(addonInterface.kodi_base_api_version));
 
   delete addonInterface.toKodi;
   delete addonInterface.toAddon;
@@ -130,6 +133,11 @@ bool Interface_Base::UpdateSettingInActiveDialog(CAddonDll* addon,
  * part.
  */
 //@{
+
+char* Interface_Base::get_type_version(void* kodiBase, int type)
+{
+  return strdup(kodi::addon::GetTypeVersion(type));
+}
 
 char* Interface_Base::get_addon_path(void* kodiBase)
 {

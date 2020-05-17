@@ -165,6 +165,8 @@ extern "C"
     KODI_HANDLE kodiBase;
 
     // Function addresses used for callbacks from addon to Kodi
+    char* (*get_type_version)(void* kodiBase, int type);
+
     void (*free_string)(void* kodiBase, char* str);
     void (*free_string_array)(void* kodiBase, char** arr, int numElements);
     char* (*get_addon_path)(void* kodiBase);
@@ -181,13 +183,13 @@ extern "C"
     bool (*set_setting_float)(void* kodiBase, const char* id, float value);
     bool (*set_setting_string)(void* kodiBase, const char* id, const char* value);
 
+    void* (*get_interface)(void* kodiBase, const char* name, const char* version);
+
     struct AddonToKodiFuncTable_kodi* kodi;
     struct AddonToKodiFuncTable_kodi_audioengine* kodi_audioengine;
     struct AddonToKodiFuncTable_kodi_filesystem* kodi_filesystem;
     struct AddonToKodiFuncTable_kodi_gui* kodi_gui;
     struct AddonToKodiFuncTable_kodi_network* kodi_network;
-
-    void* (*get_interface)(void* kodiBase, const char* name, const char* version);
   } AddonToKodiFuncTable_Addon;
 
   /*!
@@ -201,17 +203,11 @@ extern "C"
     (int instanceType,
      const char* instanceID,
      KODI_HANDLE instance,
+     const char* version,
      KODI_HANDLE* addonInstance,
      KODI_HANDLE parent);
     void (*destroy_instance)(int instanceType, KODI_HANDLE instance);
     ADDON_STATUS (*set_setting)(const char* settingName, const void* settingValue);
-    ADDON_STATUS(*create_instance_ex)
-    (int instanceType,
-     const char* instanceID,
-     KODI_HANDLE instance,
-     KODI_HANDLE* addonInstance,
-     KODI_HANDLE parent,
-     const char* version);
   } KodiToAddonFuncTable_Addon;
 
   /*!
@@ -223,6 +219,9 @@ extern "C"
     // String with full path where add-on is installed (without his name on end)
     // Set from Kodi!
     const char* libBasePath;
+
+    // Master API version of Kodi itself (ADDON_GLOBAL_VERSION_MAIN)
+    const char* kodi_base_api_version;
 
     // Pointer of first created instance, used in case this add-on goes with single way
     // Set from Kodi!

@@ -185,9 +185,8 @@ ADDON_STATUS CAddonDll::Create(ADDON_TYPE type, void* funcTable, void* info)
 
   /* Call Create to make connections, initializing data or whatever is
      needed to become the AddOn running */
-  ADDON_STATUS status = m_pDll->CreateEx_available()
-    ? m_pDll->CreateEx(m_pHelpers->GetCallbacks(), kodi::addon::GetTypeVersion(ADDON_GLOBAL_MAIN), info)
-    : m_pDll->Create(m_pHelpers->GetCallbacks(), info);
+  ADDON_STATUS status = m_pDll->Create(m_pHelpers->GetCallbacks(),
+                                       kodi::addon::GetTypeVersion(ADDON_GLOBAL_MAIN), info);
 
   if (status == ADDON_STATUS_OK)
   {
@@ -236,9 +235,8 @@ ADDON_STATUS CAddonDll::Create(KODI_HANDLE firstKodiInstance)
 
   /* Call Create to make connections, initializing data or whatever is
      needed to become the AddOn running */
-  ADDON_STATUS status = m_pDll->CreateEx_available()
-    ? m_pDll->CreateEx(&m_interface, kodi::addon::GetTypeVersion(ADDON_GLOBAL_MAIN), nullptr)
-    : m_pDll->Create(&m_interface, nullptr);
+  ADDON_STATUS status =
+      m_pDll->Create(&m_interface, kodi::addon::GetTypeVersion(ADDON_GLOBAL_MAIN), nullptr);
 
   if (status == ADDON_STATUS_OK)
   {
@@ -303,10 +301,9 @@ ADDON_STATUS CAddonDll::CreateInstance(ADDON_TYPE instanceType,
     return ADDON_STATUS_PERMANENT_FAILURE;
 
   KODI_HANDLE addonInstance = nullptr;
-  if (!m_interface.toAddon->create_instance_ex)
-    status = m_interface.toAddon->create_instance(instanceType, instanceID.c_str(), instance, &addonInstance, parentInstance);
-  else
-    status = m_interface.toAddon->create_instance_ex(instanceType, instanceID.c_str(), instance, &addonInstance, parentInstance, kodi::addon::GetTypeVersion(instanceType));
+  status = m_interface.toAddon->create_instance(instanceType, instanceID.c_str(), instance,
+                                                kodi::addon::GetTypeVersion(instanceType),
+                                                &addonInstance, parentInstance);
 
   if (status == ADDON_STATUS_OK)
   {

@@ -512,20 +512,20 @@ namespace addon
 /// {
 /// public:
 ///   CMyAddon() { }
-///   ADDON_STATUS CreateInstanceEx(int instanceType,
-///                                 std::string instanceID,
-///                                 KODI_HANDLE instance,
-///                                 KODI_HANDLE& addonInstance,
-///                                 const std::string& version) override;
+///   ADDON_STATUS CreateInstance(int instanceType,
+///                               const std::string& instanceID,
+///                               KODI_HANDLE instance,
+///                               const std::string& version,
+///                               KODI_HANDLE& addonInstance) override;
 /// };
 ///
 /// // If you use only one instance in your add-on, can be instanceType and
 /// // instanceID ignored
-/// ADDON_STATUS CMyAddon::CreateInstanceEx(int instanceType,
-///                                         std::string instanceID,
-///                                         KODI_HANDLE instance,
-///                                         KODI_HANDLE& addonInstance,
-///                                         const std::string& version)
+/// ADDON_STATUS CMyAddon::CreateInstance(int instanceType,
+///                                       const std::string& instanceID,
+///                                       KODI_HANDLE instance,
+///                                       const std::string& version,
+///                                       KODI_HANDLE& addonInstance)
 /// {
 ///   if (instanceType == ADDON_INSTANCE_VFS)
 ///   {
@@ -558,23 +558,24 @@ public:
   ///
   /// @param[in] instance               The instance value given to
   ///                                   <b>`kodi::addon::CAddonBase::CreateInstance(...)`</b>.
-  /// @param[in] kodiVersion            [opt] given from Kodi by @ref CAddonBase::CreateInstanceEx
+  /// @param[in] kodiVersion            [opt] given from Kodi by @ref CAddonBase::CreateInstance
   ///                                   to identify his instance API version
   ///
   /// @note Instance path as a single is not supported by this type. It must
   /// ensure that it can be called up several times.
   ///
   /// @warning Only use `instance` from the @ref CAddonBase::CreateInstance or
-  /// @ref CAddonBase::CreateInstanceEx call.
+  /// @ref CAddonBase::CreateInstance call.
   ///
-  explicit CInstanceVFS(KODI_HANDLE instance, const std::string& kodiVersion = "0.0.0")
-    : IAddonInstance(ADDON_INSTANCE_VFS)
+  explicit CInstanceVFS(KODI_HANDLE instance, const std::string& kodiVersion = "")
+    : IAddonInstance(ADDON_INSTANCE_VFS,
+                     !kodiVersion.empty() ? kodiVersion : GetKodiTypeVersion(ADDON_INSTANCE_VFS))
   {
     if (CAddonBase::m_interface->globalSingleInstance != nullptr)
       throw std::logic_error("kodi::addon::CInstanceVFS: Creation of multiple together with single "
                              "instance way is not allowed!");
 
-    SetAddonStruct(instance, kodiVersion);
+    SetAddonStruct(instance);
   }
   //--------------------------------------------------------------------------
 
@@ -981,7 +982,7 @@ public:
   //@}
 
 private:
-  void SetAddonStruct(KODI_HANDLE instance, const std::string& kodiVersion)
+  void SetAddonStruct(KODI_HANDLE instance)
   {
     if (instance == nullptr)
       throw std::logic_error("kodi::addon::CInstanceVFS: Creation with empty addon structure not "

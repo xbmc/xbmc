@@ -1342,8 +1342,7 @@ public:
   /// ADDONCREATOR(CGameExample)
   /// ~~~~~~~~~~~~~
   ///
-  CInstanceGame()
-    : IAddonInstance(ADDON_INSTANCE_GAME)
+  CInstanceGame() : IAddonInstance(ADDON_INSTANCE_GAME, GetKodiTypeVersion(ADDON_INSTANCE_GAME))
   {
     if (CAddonBase::m_interface->globalSingleInstance != nullptr)
       throw std::logic_error("kodi::addon::CInstanceGame: Creation of more as one in single "

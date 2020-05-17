@@ -51,6 +51,7 @@ struct Interface_Base
    * class.
    */
   //@{
+  static char* get_type_version(void* kodiBase, int type);
   static char* get_addon_path(void* kodiBase);
   static char* get_base_user_path(void* kodiBase);
   static void addon_log_msg(void* kodiBase, const int addonLogLevel, const char* strMessage);
