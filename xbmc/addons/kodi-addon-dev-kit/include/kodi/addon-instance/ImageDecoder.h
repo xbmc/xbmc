@@ -43,9 +43,9 @@ extern "C"
 
   typedef struct AddonInstance_ImageDecoder
   {
-    AddonProps_ImageDecoder props;
-    AddonToKodiFuncTable_ImageDecoder toKodi;
-    KodiToAddonFuncTable_ImageDecoder toAddon;
+    AddonProps_ImageDecoder* props;
+    AddonToKodiFuncTable_ImageDecoder* toKodi;
+    KodiToAddonFuncTable_ImageDecoder* toAddon;
   } AddonInstance_ImageDecoder;
 
 } /* extern "C" */
@@ -128,7 +128,7 @@ public:
   ///
   /// @return the mimetype wanted from Kodi
   ///
-  inline std::string MimeType() { return m_instanceData->props.mimetype; }
+  inline std::string MimeType() { return m_instanceData->props->mimetype; }
   //--------------------------------------------------------------------------
 
 private:
@@ -139,9 +139,9 @@ private:
                              "structure not allowed, table must be given from Kodi!");
 
     m_instanceData = static_cast<AddonInstance_ImageDecoder*>(instance);
-    m_instanceData->toAddon.addonInstance = this;
-    m_instanceData->toAddon.load_image_from_memory = ADDON_LoadImageFromMemory;
-    m_instanceData->toAddon.decode = ADDON_Decode;
+    m_instanceData->toAddon->addonInstance = this;
+    m_instanceData->toAddon->load_image_from_memory = ADDON_LoadImageFromMemory;
+    m_instanceData->toAddon->decode = ADDON_Decode;
   }
 
   inline static bool ADDON_LoadImageFromMemory(const AddonInstance_ImageDecoder* instance,
@@ -150,7 +150,7 @@ private:
                                                unsigned int* width,
                                                unsigned int* height)
   {
-    return static_cast<CInstanceImageDecoder*>(instance->toAddon.addonInstance)
+    return static_cast<CInstanceImageDecoder*>(instance->toAddon->addonInstance)
         ->LoadImageFromMemory(buffer, bufSize, *width, *height);
   }
 
@@ -161,7 +161,7 @@ private:
                                   unsigned int pitch,
                                   unsigned int format)
   {
-    return static_cast<CInstanceImageDecoder*>(instance->toAddon.addonInstance)
+    return static_cast<CInstanceImageDecoder*>(instance->toAddon->addonInstance)
         ->Decode(pixels, width, height, pitch, static_cast<ImageFormat>(format));
   }
 
