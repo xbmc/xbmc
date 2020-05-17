@@ -8,6 +8,7 @@
 
 #include "WebServer.h"
 
+#include "CompileInfo.h"
 #include "ServiceBroker.h"
 #include "Util.h"
 #include "XBDateTime.h"
@@ -112,7 +113,8 @@ int CWebServer::AskForAuthentication(const HTTPRequest& request) const
 
   LogResponse(request, MHD_HTTP_UNAUTHORIZED);
 
-  ret = MHD_queue_basic_auth_fail_response(request.connection, "XBMC", response);
+  ret =
+      MHD_queue_basic_auth_fail_response(request.connection, CCompileInfo::GetAppName(), response);
   MHD_destroy_response(response);
 
   return ret;

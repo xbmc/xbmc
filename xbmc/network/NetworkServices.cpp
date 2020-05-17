@@ -109,6 +109,7 @@ CNetworkServices::CNetworkServices()
   std::set<std::string> settingSet{
     CSettings::SETTING_SERVICES_WEBSERVER,
     CSettings::SETTING_SERVICES_WEBSERVERPORT,
+    CSettings::SETTING_SERVICES_WEBSERVERAUTHENTICATION,
     CSettings::SETTING_SERVICES_WEBSERVERUSERNAME,
     CSettings::SETTING_SERVICES_WEBSERVERPASSWORD,
     CSettings::SETTING_SERVICES_WEBSERVERSSL,
@@ -171,15 +172,58 @@ bool CNetworkServices::OnSettingChanging(std::shared_ptr<const CSetting> setting
 
   const std::string &settingId = setting->GetId();
 #ifdef HAS_WEB_SERVER
+  // Ask user to confirm disabling the authentication requirement, but not when the configuration
+  // would be invalid when authentication was enabled (meaning that the change was triggered
+  // automatically)
+  if (settingId == CSettings::SETTING_SERVICES_WEBSERVERAUTHENTICATION &&
+      !std::static_pointer_cast<const CSettingBool>(setting)->GetValue() &&
+      (!m_settings->GetBool(CSettings::SETTING_SERVICES_WEBSERVER) ||
+       (m_settings->GetBool(CSettings::SETTING_SERVICES_WEBSERVER) &&
+        !m_settings->GetString(CSettings::SETTING_SERVICES_WEBSERVERPASSWORD).empty())) &&
+      HELPERS::ShowYesNoDialogText(19098, 36634) != DialogResponse::YES)
+  {
+    // Leave it as-is
+    return false;
+  }
+
   if (settingId == CSettings::SETTING_SERVICES_WEBSERVER ||
       settingId == CSettings::SETTING_SERVICES_WEBSERVERPORT ||
-      settingId == CSettings::SETTING_SERVICES_WEBSERVERSSL)
+      settingId == CSettings::SETTING_SERVICES_WEBSERVERSSL ||
+      settingId == CSettings::SETTING_SERVICES_WEBSERVERAUTHENTICATION ||
+      settingId == CSettings::SETTING_SERVICES_WEBSERVERUSERNAME ||
+      settingId == CSettings::SETTING_SERVICES_WEBSERVERPASSWORD)
   {
     if (IsWebserverRunning() && !StopWebserver())
       return false;
 
     if (m_settings->GetBool(CSettings::SETTING_SERVICES_WEBSERVER))
     {
+      // Prevent changing to an invalid configuration
+      if ((settingId == CSettings::SETTING_SERVICES_WEBSERVER ||
+           settingId == CSettings::SETTING_SERVICES_WEBSERVERAUTHENTICATION ||
+           settingId == CSettings::SETTING_SERVICES_WEBSERVERPASSWORD) &&
+          m_settings->GetBool(CSettings::SETTING_SERVICES_WEBSERVERAUTHENTICATION) &&
+          m_settings->GetString(CSettings::SETTING_SERVICES_WEBSERVERPASSWORD).empty())
+      {
+        if (settingId == CSettings::SETTING_SERVICES_WEBSERVERAUTHENTICATION)
+        {
+          HELPERS::ShowOKDialogText(CVariant{257}, CVariant{36636});
+        }
+        else
+        {
+          HELPERS::ShowOKDialogText(CVariant{257}, CVariant{36635});
+        }
+        return false;
+      }
+
+      // Ask for confirmation when enabling the web server
+      if (settingId == CSettings::SETTING_SERVICES_WEBSERVER &&
+          HELPERS::ShowYesNoDialogText(19098, 36632) != DialogResponse::YES)
+      {
+        // Revert change, do not start server
+        return false;
+      }
+
       if (!StartWebserver())
       {
         HELPERS::ShowOKDialogText(CVariant{33101}, CVariant{33100});
@@ -384,6 +428,13 @@ bool CNetworkServices::OnSettingChanging(std::shared_ptr<const CSetting> setting
   }
   else if (settingId == CSettings::SETTING_SERVICES_ESALLINTERFACES)
   {
+    if (m_settings->GetBool(CSettings::SETTING_SERVICES_ESALLINTERFACES) &&
+        HELPERS::ShowYesNoDialogText(19098, 36633) != DialogResponse::YES)
+    {
+      // Revert change, do not start server
+      return false;
+    }
+
     if (m_settings->GetBool(CSettings::SETTING_SERVICES_ESENABLED))
     {
       if (!StopEventServer(true, true))
@@ -424,16 +475,7 @@ void CNetworkServices::OnSettingChanged(std::shared_ptr<const CSetting> setting)
   if (setting == NULL)
     return;
 
-  const std::string &settingId = setting->GetId();
-#ifdef HAS_WEB_SERVER
-  if (settingId == CSettings::SETTING_SERVICES_WEBSERVERUSERNAME ||
-      settingId == CSettings::SETTING_SERVICES_WEBSERVERPASSWORD)
-  {
-    m_webserver.SetCredentials(m_settings->GetString(CSettings::SETTING_SERVICES_WEBSERVERUSERNAME),
-                               m_settings->GetString(CSettings::SETTING_SERVICES_WEBSERVERPASSWORD));
-  }
-  else
-#endif // HAS_WEB_SERVER
+  const std::string& settingId = setting->GetId();
   if (settingId == CSettings::SETTING_SMB_WINSSERVER ||
       settingId == CSettings::SETTING_SMB_WORKGROUP ||
       settingId == CSettings::SETTING_SMB_MINPROTOCOL ||
@@ -477,16 +519,38 @@ bool CNetworkServices::OnSettingUpdate(std::shared_ptr<CSetting> setting, const 
 void CNetworkServices::Start()
 {
   StartZeroconf();
-#ifdef HAS_WEB_SERVER
-  if (m_settings->GetBool(CSettings::SETTING_SERVICES_WEBSERVER) && !StartWebserver())
-    CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Warning, g_localizeStrings.Get(33101), g_localizeStrings.Get(33100));
-#endif // HAS_WEB_SERVER
   if (m_settings->GetBool(CSettings::SETTING_SERVICES_UPNP))
     StartUPnP();
   if (m_settings->GetBool(CSettings::SETTING_SERVICES_ESENABLED) && !StartEventServer())
     CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Warning, g_localizeStrings.Get(33102), g_localizeStrings.Get(33100));
   if (m_settings->GetBool(CSettings::SETTING_SERVICES_ESENABLED) && !StartJSONRPCServer())
     CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Warning, g_localizeStrings.Get(33103), g_localizeStrings.Get(33100));
+
+#ifdef HAS_WEB_SERVER
+  // Start web server after eventserver and JSON-RPC server, so users can use these interfaces
+  // to confirm the warning message below if it is shown
+  if (m_settings->GetBool(CSettings::SETTING_SERVICES_WEBSERVER))
+  {
+    // services.webserverauthentication setting was added in Kodi v18 and requires a valid password
+    // to be set, but on upgrade the setting will be activated automatically regardless of whether
+    // a password was set before -> this can lead to an invalid configuration
+    if (m_settings->GetBool(CSettings::SETTING_SERVICES_WEBSERVERAUTHENTICATION) &&
+        m_settings->GetString(CSettings::SETTING_SERVICES_WEBSERVERPASSWORD).empty())
+    {
+      // Alert user to new default security settings in new Kodi version
+      HELPERS::ShowOKDialogText(33101, 33104);
+      // Fix settings: Disable web server
+      m_settings->SetBool(CSettings::SETTING_SERVICES_WEBSERVER, false);
+      // Bring user to settings screen where authentication can be configured properly
+      CServiceBroker::GetGUI()->GetWindowManager().ActivateWindow(
+          WINDOW_SETTINGS_SERVICE, std::vector<std::string>{"services.webserverauthentication"});
+    }
+    // Only try to start server if configuration is OK
+    else if (!StartWebserver())
+      CGUIDialogKaiToast::QueueNotification(
+          CGUIDialogKaiToast::Warning, g_localizeStrings.Get(33101), g_localizeStrings.Get(33100));
+  }
+#endif // HAS_WEB_SERVER
 
   // note - airtunesserver has to start before airplay server (ios7 client detection bug)
   StartAirTunesServer();
@@ -519,6 +583,14 @@ bool CNetworkServices::StartWebserver()
   if (!m_settings->GetBool(CSettings::SETTING_SERVICES_WEBSERVER))
     return false;
 
+  if (m_settings->GetBool(CSettings::SETTING_SERVICES_WEBSERVERAUTHENTICATION) &&
+      m_settings->GetString(CSettings::SETTING_SERVICES_WEBSERVERPASSWORD).empty())
+  {
+    CLog::Log(LOGERROR, "Tried to start webserver with invalid configuration (authentication "
+                        "enabled, but no password set");
+    return false;
+  }
+
   int webPort = m_settings->GetInt(CSettings::SETTING_SERVICES_WEBSERVERPORT);
   if (!ValidatePort(webPort))
   {
@@ -529,7 +601,15 @@ bool CNetworkServices::StartWebserver()
   if (IsWebserverRunning())
     return true;
 
-  if (!m_webserver.Start(webPort, m_settings->GetString(CSettings::SETTING_SERVICES_WEBSERVERUSERNAME), m_settings->GetString(CSettings::SETTING_SERVICES_WEBSERVERPASSWORD)))
+  std::string username;
+  std::string password;
+  if (m_settings->GetBool(CSettings::SETTING_SERVICES_WEBSERVERAUTHENTICATION))
+  {
+    username = m_settings->GetString(CSettings::SETTING_SERVICES_WEBSERVERUSERNAME);
+    password = m_settings->GetString(CSettings::SETTING_SERVICES_WEBSERVERPASSWORD);
+  }
+
+  if (!m_webserver.Start(webPort, username, password))
     return false;
 
 #ifdef HAS_ZEROCONF

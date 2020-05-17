@@ -1710,18 +1710,17 @@
           </updates>
           <control type="edit" format="integer" />
         </setting>
+        <setting id="services.webserverauthentication" parent="services.webserver" type="boolean" label="1052" help="1053">
+          <level>1</level>
+          <default>true</default>
+          <control type="toggle" />
+        </setting>
         <setting id="services.webserverusername" type="string" parent="services.webserver" label="1048" help="36330">
           <level>1</level>
           <default>kodi</default>
-          <constraints>
-            <allowempty>true</allowempty>
-          </constraints>
           <updates>
             <update type="change" />
           </updates>
-          <dependencies>
-            <dependency type="enable" setting="services.webserver">true</dependency>
-          </dependencies>
           <control type="edit" format="string" />
         </setting>
         <setting id="services.webserverpassword" type="string" parent="services.webserver" label="733" help="36331">
@@ -1730,9 +1729,6 @@
           <constraints>
             <allowempty>true</allowempty>
           </constraints>
-          <dependencies>
-            <dependency type="enable" setting="services.webserver">true</dependency>
-          </dependencies>
           <control type="edit" format="string">
             <hidden>true</hidden>
           </control>
