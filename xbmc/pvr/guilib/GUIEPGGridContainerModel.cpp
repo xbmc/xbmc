@@ -47,7 +47,7 @@ std::shared_ptr<CFileItem> CGUIEPGGridContainerModel::CreateGapItem(int iChannel
 std::vector<std::shared_ptr<CPVREpgInfoTag>> CGUIEPGGridContainerModel::GetEPGTimeline(
     int iChannel, const CDateTime& minEventEnd, const CDateTime& maxEventStart) const
 {
-  CDateTime min = minEventEnd - CDateTimeSpan(0, 0, MINSPERBLOCK, 0);
+  CDateTime min = minEventEnd - CDateTimeSpan(0, 0, MINSPERBLOCK, 0) + CDateTimeSpan(0, 0, 0, 1);
   CDateTime max = maxEventStart + CDateTimeSpan(0, 0, MINSPERBLOCK, 0);
 
   if (min < m_gridStart)
