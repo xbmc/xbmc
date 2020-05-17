@@ -9,10 +9,11 @@
 
 #include "guilib/TextureFormats.h"
 
-static const std::map<int,int> KodiToAddonFormat = {{XB_FMT_A8R8G8B8, ADDON_IMG_FMT_A8R8G8B8},
-                                                    {XB_FMT_A8,       ADDON_IMG_FMT_A8},
-                                                    {XB_FMT_RGBA8,    ADDON_IMG_FMT_RGBA8},
-                                                    {XB_FMT_RGB8,     ADDON_IMG_FMT_RGB8}};
+static const std::map<int, ImageFormat> KodiToAddonFormat = {
+    {XB_FMT_A8R8G8B8, ADDON_IMG_FMT_A8R8G8B8},
+    {XB_FMT_A8, ADDON_IMG_FMT_A8},
+    {XB_FMT_RGBA8, ADDON_IMG_FMT_RGBA8},
+    {XB_FMT_RGB8, ADDON_IMG_FMT_RGB8}};
 
 namespace ADDON
 {

@@ -9,55 +9,9 @@
 #pragma once
 
 #include "../AddonBase.h"
+#include "../c-api/addon-instance/image_decoder.h"
 
-extern "C"
-{
-
-  typedef struct AddonProps_ImageDecoder
-  {
-    const char* mimetype;
-  } AddonProps_ImageDecoder;
-
-  typedef struct AddonToKodiFuncTable_ImageDecoder
-  {
-    KODI_HANDLE kodi_instance;
-  } AddonToKodiFuncTable_ImageDecoder;
-
-  struct AddonInstance_ImageDecoder;
-  typedef struct KodiToAddonFuncTable_ImageDecoder
-  {
-    KODI_HANDLE addonInstance;
-    bool(__cdecl* load_image_from_memory)(const AddonInstance_ImageDecoder* instance,
-                                          unsigned char* buffer,
-                                          unsigned int buf_size,
-                                          unsigned int* width,
-                                          unsigned int* height);
-
-    bool(__cdecl* decode)(const AddonInstance_ImageDecoder* instance,
-                          unsigned char* pixels,
-                          unsigned int width,
-                          unsigned int height,
-                          unsigned int pitch,
-                          unsigned int format);
-  } KodiToAddonFuncTable_ImageDecoder;
-
-  typedef struct AddonInstance_ImageDecoder
-  {
-    AddonProps_ImageDecoder* props;
-    AddonToKodiFuncTable_ImageDecoder* toKodi;
-    KodiToAddonFuncTable_ImageDecoder* toAddon;
-  } AddonInstance_ImageDecoder;
-
-} /* extern "C" */
-
-typedef enum ImageFormat : unsigned int
-{
-  ADDON_IMG_FMT_A8R8G8B8 = 1,
-  ADDON_IMG_FMT_A8 = 2,
-  ADDON_IMG_FMT_RGBA8 = 3,
-  ADDON_IMG_FMT_RGB8 = 4
-} ImageFormat;
-
+#ifdef __cplusplus
 namespace kodi
 {
 namespace addon
@@ -159,10 +113,10 @@ private:
                                   unsigned int width,
                                   unsigned int height,
                                   unsigned int pitch,
-                                  unsigned int format)
+                                  enum ImageFormat format)
   {
     return static_cast<CInstanceImageDecoder*>(instance->toAddon->addonInstance)
-        ->Decode(pixels, width, height, pitch, static_cast<ImageFormat>(format));
+        ->Decode(pixels, width, height, pitch, format);
   }
 
   AddonInstance_ImageDecoder* m_instanceData;
@@ -170,3 +124,4 @@ private:
 
 } /* namespace addon */
 } /* namespace kodi */
+#endif /* __cplusplus */
