@@ -10,14 +10,6 @@
 
 #include "../AddonBase.h"
 
-namespace kodi
-{
-namespace addon
-{
-class CInstanceImageDecoder;
-}
-} // namespace kodi
-
 extern "C"
 {
 
@@ -34,7 +26,7 @@ extern "C"
   struct AddonInstance_ImageDecoder;
   typedef struct KodiToAddonFuncTable_ImageDecoder
   {
-    kodi::addon::CInstanceImageDecoder* addonInstance;
+    KODI_HANDLE addonInstance;
     bool(__cdecl* load_image_from_memory)(const AddonInstance_ImageDecoder* instance,
                                           unsigned char* buffer,
                                           unsigned int buf_size,
@@ -158,7 +150,8 @@ private:
                                                unsigned int* width,
                                                unsigned int* height)
   {
-    return instance->toAddon.addonInstance->LoadImageFromMemory(buffer, bufSize, *width, *height);
+    return static_cast<CInstanceImageDecoder*>(instance->toAddon.addonInstance)
+        ->LoadImageFromMemory(buffer, bufSize, *width, *height);
   }
 
   inline static bool ADDON_Decode(const AddonInstance_ImageDecoder* instance,
@@ -168,8 +161,8 @@ private:
                                   unsigned int pitch,
                                   unsigned int format)
   {
-    return instance->toAddon.addonInstance->Decode(pixels, width, height, pitch,
-                                                   static_cast<ImageFormat>(format));
+    return static_cast<CInstanceImageDecoder*>(instance->toAddon.addonInstance)
+        ->Decode(pixels, width, height, pitch, static_cast<ImageFormat>(format));
   }
 
   AddonInstance_ImageDecoder* m_instanceData;
