@@ -57,6 +57,7 @@ typedef struct AddonToKodiFuncTable_kodi
   char* (*get_region)(void* kodiBase, const char* id);
   void (*get_free_mem)(void* kodiBase, long* free, long* total, bool as_bytes);
   int  (*get_global_idle_time)(void* kodiBase);
+  bool (*is_addon_avilable)(void* kodiBase, const char* id, char** version, bool* enabled);
   void (*kodi_version)(void* kodiBase, char** compile_name, int* major, int* minor, char** revision, char** tag, char** tagversion);
   char* (*get_current_skin_id)(void* kodiBase);
   bool (*get_keyboard_layout)(void* kodiBase, char** layout_name, int modifier_key, AddonKeyboardKeyTable* layout);
@@ -674,6 +675,48 @@ inline std::string GetCurrentSkinId()
 }
 } /* namespace kodi */
 //------------------------------------------------------------------------------
+
+namespace kodi
+{
+
+//==============================================================================
+/// @brief To check another addon is available and usable inside Kodi.
+///
+/// @param[in] id The wanted addon identification string to check
+/// @param[out] version Version string of addon if **installed** inside Kodi
+/// @param[out] enabled Set to true <b>`true* </b> if addon is enabled
+/// @return Returns <b>`true* </b> if addon is installed
+///
+///
+/// ------------------------------------------------------------------------
+///
+/// **Example:**
+/// ~~~~~~~~~~~~~{.cpp}
+/// #include <kodi/General.h>
+///
+/// bool enabled = false;
+/// std::string version;
+/// bool ret = kodi::IsAddonAvailable("inputstream.adaptive", version, enabled);
+/// fprintf(stderr, "Available inputstream.adaptive version '%s' and enabled '%s'\n",
+///            ret ? version.c_str() : "not installed", enabled ? "yes" : "no");
+/// ~~~~~~~~~~~~~
+///
+inline bool IsAddonAvailable(const std::string& id, std::string& version, bool& enabled)
+{
+  AddonToKodiFuncTable_Addon* toKodi = ::kodi::addon::CAddonBase::m_interface->toKodi;
+
+  char* cVersion = nullptr;
+  bool ret = toKodi->kodi->is_addon_avilable(toKodi->kodiBase, id.c_str(), &cVersion, &enabled);
+  if (cVersion)
+  {
+    version = cVersion;
+    toKodi->free_string(toKodi->kodiBase, cVersion);
+  }
+  return ret;
+}
+//------------------------------------------------------------------------------
+
+} /* namespace kodi */
 
 //==============================================================================
 namespace kodi {
