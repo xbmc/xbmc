@@ -52,6 +52,10 @@ ifeq ($(OS),android)
 	mkdir -p $(PREFIX)/share/$(APP_NAME)/addons/script.module.pil/lib
 	cd $(PLATFORM); $(CROSSFLAGS) $(NATIVEPREFIX)/bin/python3 setup.py install --install-lib  $(PREFIX)/share/$(APP_NAME)/addons/script.module.pil
 	cd $(PREFIX)/share/$(APP_NAME)/addons/script.module.pil/lib && unzip -o ../Pillow-*.egg
+	cd $(PREFIX)/share/$(APP_NAME)/addons/script.module.pil/lib/PIL && \
+          sed -i -e 's/import sys/import os, sys /' \
+                 -e '/__file__/ s/_imaging/lib_imaging/g' \
+                 -e 's/pkg_resources.resource_filename(__name__,/os.path.join(os.environ["KODI_ANDROID_LIBS"], /'  _imaging*.py
 	cd $(PREFIX)/share/$(APP_NAME)/addons/script.module.pil && rm -rf Pillow-*.egg
 else ifeq ($(TARGET_PLATFORM),appletvos)
 	mkdir -p $(PILPATH)/lib
