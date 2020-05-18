@@ -246,17 +246,17 @@ void CAlbum::MergeScrapedAlbum(const CAlbum& source, bool override /* = true */)
   }
 
   /*
-   Scraping can return different album artists from the originals derived from tags, even when doing
-   a lookup on name.
+   Scraping can return different album artists from the originals derived from tags, even when
+   doing a lookup on artist name.
 
    When overwritting the data derived from tags, AND the original and scraped album have the same
    Musicbrainz album ID, then merging an album replaces both the album artsts and the song artists
-   with those scraped.
+   with those scraped (providing they are not empty).
 
    When not doing that kind of merge, for any matching artist names the Musicbrainz artist id
    returned by the scraper can be used to populate any previously missing Musicbrainz artist id values.
   */
-  if (bArtistSongMerge)
+  if (bArtistSongMerge && !source.artistCredits.empty())
   {
     artistCredits = source.artistCredits; // Replace artists and store mbid returned by scraper
     strArtistDesc.clear();  // @todo: set artist display string e.g. "artist1 & artist2" when scraped
