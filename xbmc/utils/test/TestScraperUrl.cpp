@@ -21,13 +21,14 @@ TEST(TestScraperUrl, General)
               "  <someotherurl>\n"
               "  </someotherurl>\n"
               "</data>\n";
-  EXPECT_TRUE(a.ParseString(xmlstring));
+  EXPECT_TRUE(a.ParseFromData(xmlstring));
 
-  EXPECT_STREQ("blah", a.GetFirstThumb().m_spoof.c_str());
-  EXPECT_STREQ("someurl", a.GetFirstThumb().m_url.c_str());
-  EXPECT_STREQ("", a.GetFirstThumb().m_cache.c_str());
-  EXPECT_EQ(CScraperUrl::URL_TYPE_GENERAL, a.GetFirstThumb().m_type);
-  EXPECT_FALSE(a.GetFirstThumb().m_post);
-  EXPECT_TRUE(a.GetFirstThumb().m_isgz);
-  EXPECT_EQ(-1, a.GetFirstThumb().m_season);
+  const auto url = a.GetFirstUrlByType();
+  EXPECT_STREQ("blah", url.m_spoof.c_str());
+  EXPECT_STREQ("someurl", url.m_url.c_str());
+  EXPECT_STREQ("", url.m_cache.c_str());
+  EXPECT_EQ(CScraperUrl::UrlType::General, url.m_type);
+  EXPECT_FALSE(url.m_post);
+  EXPECT_TRUE(url.m_isgz);
+  EXPECT_EQ(-1, url.m_season);
 }

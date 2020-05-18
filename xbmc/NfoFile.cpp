@@ -88,7 +88,7 @@ CInfoScanner::INFO_TYPE CNfoFile::Create(const std::string& strPath,
     return CInfoScanner::ERROR_NFO;
   if (bNfo)
   {
-    if (m_scurl.m_url.empty())
+    if (!m_scurl.HasUrls())
     {
       if (m_doc.find("[scrape url]") != std::string::npos)
         return CInfoScanner::OVERRIDE_NFO;
@@ -98,7 +98,7 @@ CInfoScanner::INFO_TYPE CNfoFile::Create(const std::string& strPath,
     else
       return CInfoScanner::COMBINED_NFO;
   }
-  return m_scurl.m_url.empty() ? CInfoScanner::NO_NFO : CInfoScanner::URL_NFO;
+  return m_scurl.HasUrls() ? CInfoScanner::URL_NFO : CInfoScanner::NO_NFO;
 }
 
 // return value: 0 - success; 1 - no result; skip; 2 - error
@@ -124,7 +124,7 @@ int CNfoFile::Scrape(ScraperPtr& scraper, CScraperUrl& url,
       return 2;
   }
 
-  return url.m_url.empty() ? 1 : 0;
+  return url.HasUrls() ? 0 : 1;
 }
 
 int CNfoFile::Load(const std::string& strFile)

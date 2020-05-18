@@ -154,7 +154,7 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
       hasDetails = true;
 
     // if we don't have an url or need to refresh anyway do the web search
-    if (!hasDetails && (needsRefresh || scraperUrl.m_url.empty()))
+    if (!hasDetails && (needsRefresh || !scraperUrl.HasUrls()))
     {
       SetTitle(StringUtils::Format(g_localizeStrings.Get(197).c_str(), scraper->Name().c_str()));
       SetText(itemTitle);
@@ -188,7 +188,7 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
             selectDialog->Reset();
             selectDialog->SetHeading(scraper->Content() == CONTENT_TVSHOWS ? 20356 : 196);
             for (const auto& itemResult : itemResultList)
-              selectDialog->Add(itemResult.strTitle);
+              selectDialog->Add(itemResult.GetTitle());
             selectDialog->EnableButton(true, 413); // "Manual"
             selectDialog->Open();
 
@@ -212,7 +212,8 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
               return false;
           }
 
-          CLog::Log(LOGDEBUG, "CVideoLibraryRefreshingJob: user selected item '%s' with URL '%s'", scraperUrl.strTitle.c_str(), scraperUrl.m_url.at(0).m_url.c_str());
+          CLog::Log(LOGDEBUG, "CVideoLibraryRefreshingJob: user selected item '%s' with URL '%s'",
+                    scraperUrl.GetTitle().c_str(), scraperUrl.GetFirstThumbUrl());
         }
       }
       else if (result < 0 || !VIDEO::CVideoInfoScanner::DownloadFailed(GetProgressDialog()))
@@ -224,7 +225,7 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
 
     // if the URL is still empty, check whether or not we're allowed
     // to prompt and ask the user to input a new search title
-    if (!hasDetails && scraperUrl.m_url.empty())
+    if (!hasDetails && !scraperUrl.HasUrls())
     {
       if (IsModal())
       {
@@ -296,7 +297,7 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
 
     // prepare the progress dialog for downloading all the necessary information
     SetTitle(g_localizeStrings.Get(headingLabel));
-    SetText(scraperUrl.strTitle);
+    SetText(scraperUrl.GetTitle());
     SetProgress(0);
 
     // remove any existing data for the item we're going to refresh
@@ -332,7 +333,7 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
     CVideoInfoScanner scanner;
     if (!scanner.RetrieveVideoInfo(items, scanSettings.parent_name,
                                    scraper->Content(), !ignoreNfo,
-                                   scraperUrl.m_url.empty() ? NULL : &scraperUrl,
+                                   scraperUrl.HasUrls() ? &scraperUrl : nullptr,
                                    m_refreshAll, GetProgressDialog()))
     {
       // something went wrong

@@ -691,7 +691,8 @@ namespace XBMCAddon
     void ListItem::addAvailableArtwork(std::string url, std::string art_type, std::string preview, std::string referrer, std::string cache, bool post, bool isgz, int season)
     {
       XBMCAddonUtils::GuiLock lock(languageHook, m_offscreen);
-      GetVideoInfoTag()->m_strPictureURL.AddElement(url, art_type, preview, referrer, cache, post, isgz, season);
+      GetVideoInfoTag()->m_strPictureURL.AddParsedUrl(url, art_type, preview, referrer, cache, post,
+                                                      isgz, season);
     }
 
     void ListItem::addStreamInfo(const char* cType, const Properties& dictionary)
