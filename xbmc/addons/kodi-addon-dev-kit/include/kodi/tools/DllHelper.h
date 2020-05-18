@@ -8,6 +8,8 @@
 
 #pragma once
 
+#ifdef __cplusplus
+
 #include <string>
 
 #include <dlfcn.h>
@@ -17,13 +19,20 @@
 #define REGISTER_DLL_SYMBOL(functionPtr) \
   CDllHelper::RegisterSymbol(functionPtr, #functionPtr)
 
+namespace kodi
+{
+namespace tools
+{
+
 /// @brief Class to help with load of shared library functions
 ///
 /// You can add them as parent to your class and to help with load of shared
 /// library functions.
 ///
-/// @note To use on Windows must you also include [dlfcn-win32](https://github.com/dlfcn-win32/dlfcn-win32) on your addon!\n\n
-/// Furthermore, this allows the use of Android where the required library is copied to an EXE useable folder.
+/// @note To use on Windows must you also include [dlfcn-win32](https://github.com/dlfcn-win32/dlfcn-win32)
+/// on your addon!\n\n
+/// Furthermore, this allows the use of Android where the required library is
+/// copied to an EXE useable folder.
 ///
 ///
 /// ----------------------------------------------------------------------------
@@ -38,7 +47,7 @@
 ///                     private CDllHelper
 /// {
 /// public:
-///   CMyInstance(KODI_HANDLE instance);
+///   CMyInstance(KODI_HANDLE instance, const std::string& kodiVersion);
 ///   bool Start();
 ///
 ///   ...
@@ -49,8 +58,8 @@
 ///   int (*GetLength)();
 /// };
 ///
-/// CMyInstance::CMyInstance(KODI_HANDLE instance)
-///   : CInstanceAudioDecoder(instance)
+/// CMyInstance::CMyInstance(KODI_HANDLE instance, const std::string& kodiVersion)
+///   : CInstanceAudioDecoder(instance, kodiVersion)
 /// {
 /// }
 ///
@@ -157,3 +166,8 @@ public:
 private:
   void* m_dll = nullptr;
 };
+
+} /* namespace tools */
+} /* namespace kodi */
+
+#endif /* __cplusplus */
