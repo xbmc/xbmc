@@ -55,6 +55,7 @@ void Interface_General::Init(AddonGlobalInterface* addonInterface)
   addonInterface->toKodi->kodi->get_region = get_region;
   addonInterface->toKodi->kodi->get_free_mem = get_free_mem;
   addonInterface->toKodi->kodi->get_global_idle_time = get_global_idle_time;
+  addonInterface->toKodi->kodi->is_addon_avilable = is_addon_avilable;
   addonInterface->toKodi->kodi->kodi_version = kodi_version;
   addonInterface->toKodi->kodi->get_current_skin_id = get_current_skin_id;
   addonInterface->toKodi->kodi->get_keyboard_layout = get_keyboard_layout;
@@ -131,7 +132,7 @@ bool Interface_General::open_settings_dialog(void* kodiBase)
 
   // show settings dialog
   AddonPtr addonInfo;
-  if (CServiceBroker::GetAddonMgr().GetAddon(addon->ID(), addonInfo))
+  if (!CServiceBroker::GetAddonMgr().GetAddon(addon->ID(), addonInfo))
   {
     CLog::Log(LOGERROR, "Interface_General::{} - Could not get addon information for '{}'",
               __FUNCTION__, addon->ID());
@@ -422,6 +423,31 @@ int Interface_General::get_global_idle_time(void* kodiBase)
   return g_application.GlobalIdleTime();
 }
 
+bool Interface_General::is_addon_avilable(void* kodiBase,
+                                          const char* id,
+                                          char** version,
+                                          bool* enabled)
+{
+  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
+  if (addon == nullptr || id == nullptr || version == nullptr || enabled == nullptr)
+  {
+    CLog::Log(
+        LOGERROR,
+        "Interface_General::{} - invalid data (addon='{}', id='{}', version='{}', enabled='{}')",
+        __FUNCTION__, kodiBase, static_cast<const void*>(id), static_cast<void*>(version),
+        static_cast<void*>(enabled));
+    return false;
+  }
+
+  AddonPtr addonInfo;
+  if (!CServiceBroker::GetAddonMgr().GetAddon(id, addonInfo, ADDON_UNKNOWN, false))
+    return false;
+
+  *version = strdup(addonInfo->Version().asString().c_str());
+  *enabled = !CServiceBroker::GetAddonMgr().IsAddonDisabled(id);
+  return true;
+}
+
 void Interface_General::kodi_version(void* kodiBase, char** compile_name, int* major, int* minor, char** revision, char** tag, char** tagversion)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
@@ -436,7 +462,7 @@ void Interface_General::kodi_version(void* kodiBase, char** compile_name, int* m
               static_cast<void*>(tagversion));
     return;
   }
-    
+
   *compile_name = strdup(CCompileInfo::GetAppName());
   *major = CCompileInfo::GetMajor();
   *minor = CCompileInfo::GetMinor();

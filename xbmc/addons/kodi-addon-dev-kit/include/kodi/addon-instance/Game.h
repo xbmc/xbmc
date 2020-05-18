@@ -1342,8 +1342,7 @@ public:
   /// ADDONCREATOR(CGameExample)
   /// ~~~~~~~~~~~~~
   ///
-  CInstanceGame()
-    : IAddonInstance(ADDON_INSTANCE_GAME)
+  CInstanceGame() : IAddonInstance(ADDON_INSTANCE_GAME, GetKodiTypeVersion(ADDON_INSTANCE_GAME))
   {
     if (CAddonBase::m_interface->globalSingleInstance != nullptr)
       throw std::logic_error("kodi::addon::CInstanceGame: Creation of more as one in single "
@@ -1666,7 +1665,7 @@ public:
       }
 
       AddonToKodiFuncTable_Game& cb =
-          dynamic_cast<CInstanceGame*>(CAddonBase::m_interface->globalSingleInstance)
+          static_cast<CInstanceGame*>(CAddonBase::m_interface->globalSingleInstance)
               ->m_instanceData->toKodi;
       m_handle = cb.OpenStream(cb.kodiInstance, &properties);
       return m_handle != nullptr;
@@ -1686,7 +1685,7 @@ public:
         return;
 
       AddonToKodiFuncTable_Game& cb =
-          dynamic_cast<CInstanceGame*>(CAddonBase::m_interface->globalSingleInstance)
+          static_cast<CInstanceGame*>(CAddonBase::m_interface->globalSingleInstance)
               ->m_instanceData->toKodi;
       cb.CloseStream(cb.kodiInstance, m_handle);
       m_handle = nullptr;
@@ -1713,7 +1712,7 @@ public:
         return false;
 
       AddonToKodiFuncTable_Game& cb =
-          dynamic_cast<CInstanceGame*>(CAddonBase::m_interface->globalSingleInstance)
+          static_cast<CInstanceGame*>(CAddonBase::m_interface->globalSingleInstance)
               ->m_instanceData->toKodi;
       return cb.GetStreamBuffer(cb.kodiInstance, m_handle, width, height, &buffer);
     }
@@ -1734,7 +1733,7 @@ public:
         return;
 
       AddonToKodiFuncTable_Game& cb =
-          dynamic_cast<CInstanceGame*>(CAddonBase::m_interface->globalSingleInstance)
+          static_cast<CInstanceGame*>(CAddonBase::m_interface->globalSingleInstance)
               ->m_instanceData->toKodi;
       cb.AddStreamData(cb.kodiInstance, m_handle, &packet);
     }
@@ -1755,7 +1754,7 @@ public:
         return;
 
       AddonToKodiFuncTable_Game& cb =
-          dynamic_cast<CInstanceGame*>(CAddonBase::m_interface->globalSingleInstance)
+          static_cast<CInstanceGame*>(CAddonBase::m_interface->globalSingleInstance)
               ->m_instanceData->toKodi;
       cb.ReleaseStreamBuffer(cb.kodiInstance, m_handle, &buffer);
     }

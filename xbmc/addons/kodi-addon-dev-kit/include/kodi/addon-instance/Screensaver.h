@@ -230,7 +230,7 @@ namespace addon
     /// Used by an add-on that only supports screensavers.
     ///
     CInstanceScreensaver()
-      : IAddonInstance(ADDON_INSTANCE_SCREENSAVER)
+      : IAddonInstance(ADDON_INSTANCE_SCREENSAVER, GetKodiTypeVersion(ADDON_INSTANCE_SCREENSAVER))
     {
       if (CAddonBase::m_interface->globalSingleInstance != nullptr)
         throw std::logic_error("kodi::addon::CInstanceScreensaver: Creation of more as one in single instance way is not allowed!");
@@ -248,11 +248,16 @@ namespace addon
     ///
     /// @param[in] instance               The instance value given to
     ///                                   <b>`kodi::addon::CAddonBase::CreateInstance(...)`</b>.
+    /// @param[in] kodiVersion [opt] Version used in Kodi for this instance, to
+    ///                        allow compatibility to older Kodi versions.
+    ///                        @note Recommended to set.
     ///
     /// @warning Only use `instance` from the CreateInstance call
     ///
-    explicit CInstanceScreensaver(KODI_HANDLE instance)
-      : IAddonInstance(ADDON_INSTANCE_SCREENSAVER)
+    explicit CInstanceScreensaver(KODI_HANDLE instance, const std::string& kodiVersion = "")
+      : IAddonInstance(ADDON_INSTANCE_SCREENSAVER,
+                       !kodiVersion.empty() ? kodiVersion
+                                            : GetKodiTypeVersion(ADDON_INSTANCE_SCREENSAVER))
     {
       if (CAddonBase::m_interface->globalSingleInstance != nullptr)
         throw std::logic_error("kodi::addon::CInstanceScreensaver: Creation of multiple together with single instance way is not allowed!");
@@ -440,7 +445,7 @@ namespace addon
 
     /*
      * Background render helper holds here and in addon base.
-     * In addon base also to have for the others, and stored here for the worst 
+     * In addon base also to have for the others, and stored here for the worst
      * case where this class is independent from base and base becomes closed
      * before.
      *

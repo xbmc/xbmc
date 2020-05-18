@@ -388,14 +388,16 @@ namespace addon
 class CInstanceInputStream : public IAddonInstance
 {
 public:
-  explicit CInstanceInputStream(KODI_HANDLE instance, const std::string& kodiVersion = "0.0.0")
-    : IAddonInstance(ADDON_INSTANCE_INPUTSTREAM)
+  explicit CInstanceInputStream(KODI_HANDLE instance, const std::string& kodiVersion = "")
+    : IAddonInstance(ADDON_INSTANCE_INPUTSTREAM,
+                     !kodiVersion.empty() ? kodiVersion
+                                          : GetKodiTypeVersion(ADDON_INSTANCE_INPUTSTREAM))
   {
     if (CAddonBase::m_interface->globalSingleInstance != nullptr)
       throw std::logic_error("kodi::addon::CInstanceInputStream: Creation of multiple together "
                              "with single instance way is not allowed!");
 
-    SetAddonStruct(instance, kodiVersion);
+    SetAddonStruct(instance, m_kodiVersion);
   }
 
   ~CInstanceInputStream() override = default;

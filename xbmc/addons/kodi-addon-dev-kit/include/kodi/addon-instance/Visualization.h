@@ -309,7 +309,8 @@ namespace addon
     /// Used by an add-on that only supports visualizations.
     ///
     CInstanceVisualization()
-      : IAddonInstance(ADDON_INSTANCE_VISUALIZATION)
+      : IAddonInstance(ADDON_INSTANCE_VISUALIZATION,
+                       GetKodiTypeVersion(ADDON_INSTANCE_VISUALIZATION))
     {
       if (CAddonBase::m_interface->globalSingleInstance != nullptr)
         throw std::logic_error("kodi::addon::CInstanceVisualization: Cannot create multiple instances of add-on.");
@@ -327,11 +328,16 @@ namespace addon
     ///
     /// @param[in] instance               The instance value given to
     ///                                   <b>`kodi::addon::CAddonBase::CreateInstance(...)`</b>.
+    /// @param[in] kodiVersion [opt] Version used in Kodi for this instance, to
+    ///                        allow compatibility to older Kodi versions.
+    ///                        @note Recommended to set.
     ///
     /// @warning Only use `instance` from the CreateInstance call
     ///
-    explicit CInstanceVisualization(KODI_HANDLE instance)
-      : IAddonInstance(ADDON_INSTANCE_VISUALIZATION)
+    explicit CInstanceVisualization(KODI_HANDLE instance, const std::string& kodiVersion = "")
+      : IAddonInstance(ADDON_INSTANCE_VISUALIZATION,
+                       !kodiVersion.empty() ? kodiVersion
+                                            : GetKodiTypeVersion(ADDON_INSTANCE_VISUALIZATION))
     {
       if (CAddonBase::m_interface->globalSingleInstance != nullptr)
         throw std::logic_error("kodi::addon::CInstanceVisualization: Creation of multiple together with single instance way is not allowed!");

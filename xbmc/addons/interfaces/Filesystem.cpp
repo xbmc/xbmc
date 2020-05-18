@@ -11,14 +11,24 @@
 #include "Util.h"
 #include "addons/binary-addons/AddonDll.h"
 #include "addons/kodi-addon-dev-kit/include/kodi/Filesystem.h"
+#include "filesystem/CurlFile.h"
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"
 #include "filesystem/SpecialProtocol.h"
 #include "utils/Crc32.h"
+#include "utils/HttpHeader.h"
 #include "utils/StringUtils.h"
+#include "utils/URIUtils.h"
 #include "utils/log.h"
 
 #include <vector>
+
+#ifndef S_ISDIR
+#define S_ISDIR(mode) ((((mode)) & 0170000) == (0040000))
+#endif
+#ifndef S_ISLNK
+#define S_ISLNK(mode) ((((mode)) & 0170000) == (0120000))
+#endif
 
 using namespace kodi; // addon-dev-kit namespace
 using namespace XFILE;
@@ -30,7 +40,7 @@ namespace ADDON
 
 void Interface_Filesystem::Init(AddonGlobalInterface* addonInterface)
 {
-  addonInterface->toKodi->kodi_filesystem = static_cast<AddonToKodiFuncTable_kodi_filesystem*>(malloc(sizeof(AddonToKodiFuncTable_kodi_filesystem)));
+  addonInterface->toKodi->kodi_filesystem = new AddonToKodiFuncTable_kodi_filesystem();
 
   addonInterface->toKodi->kodi_filesystem->can_open_directory = can_open_directory;
   addonInterface->toKodi->kodi_filesystem->create_directory = create_directory;
@@ -49,6 +59,18 @@ void Interface_Filesystem::Init(AddonGlobalInterface* addonInterface)
   addonInterface->toKodi->kodi_filesystem->make_legal_filename = make_legal_filename;
   addonInterface->toKodi->kodi_filesystem->make_legal_path = make_legal_path;
   addonInterface->toKodi->kodi_filesystem->translate_special_protocol = translate_special_protocol;
+  addonInterface->toKodi->kodi_filesystem->is_internet_stream = is_internet_stream;
+  addonInterface->toKodi->kodi_filesystem->is_on_lan = is_on_lan;
+  addonInterface->toKodi->kodi_filesystem->is_remote = is_remote;
+  addonInterface->toKodi->kodi_filesystem->is_local = is_local;
+  addonInterface->toKodi->kodi_filesystem->is_url = is_url;
+  addonInterface->toKodi->kodi_filesystem->get_http_header = get_http_header;
+  addonInterface->toKodi->kodi_filesystem->get_mime_type = get_mime_type;
+  addonInterface->toKodi->kodi_filesystem->get_content_type = get_content_type;
+  addonInterface->toKodi->kodi_filesystem->get_cookies = get_cookies;
+
+  addonInterface->toKodi->kodi_filesystem->http_header_create = http_header_create;
+  addonInterface->toKodi->kodi_filesystem->http_header_free = http_header_free;
 
   addonInterface->toKodi->kodi_filesystem->open_file = open_file;
   addonInterface->toKodi->kodi_filesystem->open_file_for_write = open_file_for_write;
@@ -63,6 +85,12 @@ void Interface_Filesystem::Init(AddonGlobalInterface* addonInterface)
   addonInterface->toKodi->kodi_filesystem->get_file_download_speed = get_file_download_speed;
   addonInterface->toKodi->kodi_filesystem->close_file = close_file;
   addonInterface->toKodi->kodi_filesystem->get_file_chunk_size = get_file_chunk_size;
+  addonInterface->toKodi->kodi_filesystem->io_control_get_seek_possible =
+      io_control_get_seek_possible;
+  addonInterface->toKodi->kodi_filesystem->io_control_get_cache_status =
+      io_control_get_cache_status;
+  addonInterface->toKodi->kodi_filesystem->io_control_set_cache_rate = io_control_set_cache_rate;
+  addonInterface->toKodi->kodi_filesystem->io_control_set_retry = io_control_set_retry;
   addonInterface->toKodi->kodi_filesystem->get_property_values = get_property_values;
 
   addonInterface->toKodi->kodi_filesystem->curl_create = curl_create;
@@ -72,12 +100,37 @@ void Interface_Filesystem::Init(AddonGlobalInterface* addonInterface)
 
 void Interface_Filesystem::DeInit(AddonGlobalInterface* addonInterface)
 {
-  if (addonInterface->toKodi && /* <-- needed as long as the old addon way is used */
-      addonInterface->toKodi->kodi_filesystem)
+  if (addonInterface->toKodi) /* <-- Safe check, needed so long old addon way is present */
   {
-    free(addonInterface->toKodi->kodi_filesystem);
+    delete addonInterface->toKodi->kodi_filesystem;
     addonInterface->toKodi->kodi_filesystem = nullptr;
   }
+}
+
+unsigned int Interface_Filesystem::TranslateFileReadBitsToKodi(unsigned int addonFlags)
+{
+  unsigned int kodiFlags = 0;
+
+  if (addonFlags & ADDON_READ_TRUNCATED)
+    kodiFlags |= READ_TRUNCATED;
+  if (addonFlags & ADDON_READ_CHUNKED)
+    kodiFlags |= READ_CHUNKED;
+  if (addonFlags & ADDON_READ_CACHED)
+    kodiFlags |= READ_CACHED;
+  if (addonFlags & ADDON_READ_NO_CACHE)
+    kodiFlags |= READ_NO_CACHE;
+  if (addonFlags & ADDON_READ_BITRATE)
+    kodiFlags |= READ_BITRATE;
+  if (addonFlags & ADDON_READ_MULTI_STREAM)
+    kodiFlags |= READ_MULTI_STREAM;
+  if (addonFlags & ADDON_READ_AUDIO_VIDEO)
+    kodiFlags |= READ_AUDIO_VIDEO;
+  if (addonFlags & ADDON_READ_AFTER_WRITE)
+    kodiFlags |= READ_AFTER_WRITE;
+  if (addonFlags & READ_REOPEN)
+    kodiFlags |= READ_REOPEN;
+
+  return kodiFlags;
 }
 
 bool Interface_Filesystem::can_open_directory(void* kodiBase, const char* url)
@@ -94,7 +147,7 @@ bool Interface_Filesystem::can_open_directory(void* kodiBase, const char* url)
   return CDirectory::GetDirectory(url, items, "", DIR_FLAG_DEFAULTS);
 }
 
-bool Interface_Filesystem::create_directory(void* kodiBase, const char *path)
+bool Interface_Filesystem::create_directory(void* kodiBase, const char* path)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   if (addon == nullptr || path == nullptr)
@@ -107,7 +160,7 @@ bool Interface_Filesystem::create_directory(void* kodiBase, const char *path)
   return CDirectory::Create(path);
 }
 
-bool Interface_Filesystem::directory_exists(void* kodiBase, const char *path)
+bool Interface_Filesystem::directory_exists(void* kodiBase, const char* path)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   if (addon == nullptr || path == nullptr)
@@ -120,7 +173,7 @@ bool Interface_Filesystem::directory_exists(void* kodiBase, const char *path)
   return CDirectory::Exists(path);
 }
 
-bool Interface_Filesystem::remove_directory(void* kodiBase, const char *path)
+bool Interface_Filesystem::remove_directory(void* kodiBase, const char* path)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   if (addon == nullptr || path == nullptr)
@@ -139,8 +192,7 @@ bool Interface_Filesystem::remove_directory(void* kodiBase, const char *path)
   return CDirectory::Remove(path);
 }
 
-static void CFileItemListToVFSDirEntries(VFSDirEntry* entries,
-                                         const CFileItemList& items)
+static void CFileItemListToVFSDirEntries(VFSDirEntry* entries, const CFileItemList& items)
 {
   for (unsigned int i = 0; i < static_cast<unsigned int>(items.Size()); ++i)
   {
@@ -152,10 +204,15 @@ static void CFileItemListToVFSDirEntries(VFSDirEntry* entries,
   }
 }
 
-bool Interface_Filesystem::get_directory(void* kodiBase, const char *path, const char* mask, VFSDirEntry** items, unsigned int* num_items)
+bool Interface_Filesystem::get_directory(void* kodiBase,
+                                         const char* path,
+                                         const char* mask,
+                                         struct VFSDirEntry** items,
+                                         unsigned int* num_items)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  if (addon == nullptr || path == nullptr || mask == nullptr|| items == nullptr || num_items == nullptr)
+  if (addon == nullptr || path == nullptr || mask == nullptr || items == nullptr ||
+      num_items == nullptr)
   {
     CLog::Log(LOGERROR,
               "Interface_Filesystem::{} - invalid data (addon='{}', path='{}', mask='{}', "
@@ -185,7 +242,9 @@ bool Interface_Filesystem::get_directory(void* kodiBase, const char *path, const
   return true;
 }
 
-void Interface_Filesystem::free_directory(void* kodiBase, VFSDirEntry* items, unsigned int num_items)
+void Interface_Filesystem::free_directory(void* kodiBase,
+                                          struct VFSDirEntry* items,
+                                          unsigned int num_items)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   if (addon == nullptr || items == nullptr)
@@ -205,7 +264,7 @@ void Interface_Filesystem::free_directory(void* kodiBase, VFSDirEntry* items, un
 
 //------------------------------------------------------------------------------
 
-bool Interface_Filesystem::file_exists(void* kodiBase, const char *filename, bool useCache)
+bool Interface_Filesystem::file_exists(void* kodiBase, const char* filename, bool useCache)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   if (addon == nullptr || filename == nullptr)
@@ -218,7 +277,9 @@ bool Interface_Filesystem::file_exists(void* kodiBase, const char *filename, boo
   return CFile::Exists(filename, useCache);
 }
 
-int Interface_Filesystem::stat_file(void* kodiBase, const char *filename, struct __stat64* buffer)
+bool Interface_Filesystem::stat_file(void* kodiBase,
+                                     const char* filename,
+                                     struct STAT_STRUCTURE* buffer)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   if (addon == nullptr || filename == nullptr || buffer == nullptr)
@@ -230,10 +291,22 @@ int Interface_Filesystem::stat_file(void* kodiBase, const char *filename, struct
     return false;
   }
 
-  return CFile::Stat(filename, buffer);
+  struct __stat64 statBuffer;
+  if (CFile::Stat(filename, &statBuffer) != 0)
+    return false;
+
+  buffer->deviceId = statBuffer.st_dev;
+  buffer->size = statBuffer.st_size;
+  buffer->accessTime = statBuffer.st_atime;
+  buffer->modificationTime = statBuffer.st_mtime;
+  buffer->statusTime = statBuffer.st_ctime;
+  buffer->isDirectory = S_ISDIR(statBuffer.st_mode);
+  buffer->isSymLink = S_ISLNK(statBuffer.st_mode);
+
+  return true;
 }
 
-bool Interface_Filesystem::delete_file(void* kodiBase, const char *filename)
+bool Interface_Filesystem::delete_file(void* kodiBase, const char* filename)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   if (addon == nullptr || filename == nullptr)
@@ -246,7 +319,9 @@ bool Interface_Filesystem::delete_file(void* kodiBase, const char *filename)
   return CFile::Delete(filename);
 }
 
-bool Interface_Filesystem::rename_file(void* kodiBase, const char *filename, const char *newFileName)
+bool Interface_Filesystem::rename_file(void* kodiBase,
+                                       const char* filename,
+                                       const char* newFileName)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   if (addon == nullptr || filename == nullptr || newFileName == nullptr)
@@ -262,7 +337,7 @@ bool Interface_Filesystem::rename_file(void* kodiBase, const char *filename, con
   return CFile::Rename(filename, newFileName);
 }
 
-bool Interface_Filesystem::copy_file(void* kodiBase, const char *filename, const char *dest)
+bool Interface_Filesystem::copy_file(void* kodiBase, const char* filename, const char* dest)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   if (addon == nullptr || filename == nullptr || dest == nullptr)
@@ -338,7 +413,7 @@ char* Interface_Filesystem::make_legal_path(void* kodiBase, const char* path)
   return buffer;
 }
 
-char* Interface_Filesystem::translate_special_protocol(void* kodiBase, const char *strSource)
+char* Interface_Filesystem::translate_special_protocol(void* kodiBase, const char* strSource)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   if (addon == nullptr || strSource == nullptr)
@@ -349,6 +424,315 @@ char* Interface_Filesystem::translate_special_protocol(void* kodiBase, const cha
   }
 
   return strdup(CSpecialProtocol::TranslatePath(strSource).c_str());
+}
+
+bool Interface_Filesystem::is_internet_stream(void* kodiBase, const char* path, bool strictCheck)
+{
+  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
+  if (addon == nullptr || path == nullptr)
+  {
+    CLog::Log(LOGERROR, "Interface_Filesystem::{} - invalid data (addon='{}', path='{})",
+              __FUNCTION__, kodiBase, static_cast<const void*>(path));
+    return false;
+  }
+
+  return URIUtils::IsInternetStream(path, strictCheck);
+}
+
+bool Interface_Filesystem::is_on_lan(void* kodiBase, const char* path)
+{
+  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
+  if (addon == nullptr || path == nullptr)
+  {
+    CLog::Log(LOGERROR, "Interface_Filesystem::{} - invalid data (addon='{}', path='{})",
+              __FUNCTION__, kodiBase, static_cast<const void*>(path));
+    return false;
+  }
+
+  return URIUtils::IsOnLAN(path);
+}
+
+bool Interface_Filesystem::is_remote(void* kodiBase, const char* path)
+{
+  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
+  if (addon == nullptr || path == nullptr)
+  {
+    CLog::Log(LOGERROR, "Interface_Filesystem::{} - invalid data (addon='{}', path='{})",
+              __FUNCTION__, kodiBase, static_cast<const void*>(path));
+    return false;
+  }
+
+  return URIUtils::IsRemote(path);
+}
+
+bool Interface_Filesystem::is_local(void* kodiBase, const char* path)
+{
+  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
+  if (addon == nullptr || path == nullptr)
+  {
+    CLog::Log(LOGERROR, "Interface_Filesystem::{} - invalid data (addon='{}', path='{})",
+              __FUNCTION__, kodiBase, static_cast<const void*>(path));
+    return false;
+  }
+
+  return CURL(path).IsLocal();
+}
+
+bool Interface_Filesystem::is_url(void* kodiBase, const char* path)
+{
+  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
+  if (addon == nullptr || path == nullptr)
+  {
+    CLog::Log(LOGERROR, "Interface_Filesystem::{} - invalid data (addon='{}', path='{})",
+              __FUNCTION__, kodiBase, static_cast<const void*>(path));
+    return false;
+  }
+
+  return URIUtils::IsURL(path);
+}
+
+bool Interface_Filesystem::get_mime_type(void* kodiBase,
+                                         const char* url,
+                                         char** content,
+                                         const char* useragent)
+{
+  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
+  if (addon == nullptr || url == nullptr || content == nullptr || useragent == nullptr)
+  {
+    CLog::Log(LOGERROR,
+              "Interface_Filesystem::{} - invalid data (addon='{}', url='{}', content='{}', "
+              "useragent='{}')",
+              __FUNCTION__, kodiBase, static_cast<const void*>(url),
+              static_cast<const void*>(content), static_cast<const void*>(useragent));
+    return false;
+  }
+
+  std::string kodiContent;
+  bool ret = XFILE::CCurlFile::GetMimeType(CURL(url), kodiContent, useragent);
+  if (ret && !kodiContent.empty())
+  {
+    *content = strdup(kodiContent.c_str());
+  }
+  return ret;
+}
+
+bool Interface_Filesystem::get_content_type(void* kodiBase,
+                                            const char* url,
+                                            char** content,
+                                            const char* useragent)
+{
+  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
+  if (addon == nullptr || url == nullptr || content == nullptr || useragent == nullptr)
+  {
+    CLog::Log(LOGERROR,
+              "Interface_Filesystem::{} - invalid data (addon='{}', url='{}', content='{}', "
+              "useragent='{}')",
+              __FUNCTION__, kodiBase, static_cast<const void*>(url),
+              static_cast<const void*>(content), static_cast<const void*>(useragent));
+    return false;
+  }
+
+  std::string kodiContent;
+  bool ret = XFILE::CCurlFile::GetContentType(CURL(url), kodiContent, useragent);
+  if (ret && !kodiContent.empty())
+  {
+    *content = strdup(kodiContent.c_str());
+  }
+  return ret;
+}
+
+bool Interface_Filesystem::get_cookies(void* kodiBase, const char* url, char** cookies)
+{
+  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
+  if (addon == nullptr || url == nullptr || cookies == nullptr)
+  {
+    CLog::Log(
+        LOGERROR, "Interface_Filesystem::{} - invalid data (addon='{}', url='{}', cookies='{}')",
+        __FUNCTION__, kodiBase, static_cast<const void*>(url), static_cast<const void*>(cookies));
+    return false;
+  }
+
+  std::string kodiCookies;
+  bool ret = XFILE::CCurlFile::GetCookies(CURL(url), kodiCookies);
+  if (ret && !kodiCookies.empty())
+  {
+    *cookies = strdup(kodiCookies.c_str());
+  }
+  return ret;
+}
+
+bool Interface_Filesystem::get_http_header(void* kodiBase,
+                                           const char* url,
+                                           struct KODI_HTTP_HEADER* headers)
+{
+  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
+  if (addon == nullptr || url == nullptr || headers == nullptr || headers->handle == nullptr)
+  {
+    CLog::Log(LOGERROR,
+              "Interface_Filesystem::{} - invalid data (addon='{}', url='{}', headers='{}', "
+              "headers->handle='{}')",
+              __FUNCTION__, kodiBase, static_cast<const void*>(url),
+              static_cast<const void*>(headers), headers->handle);
+    return false;
+  }
+
+  CHttpHeader* httpHeader = static_cast<CHttpHeader*>(headers->handle);
+  return XFILE::CCurlFile::GetHttpHeader(CURL(url), *httpHeader);
+}
+
+//------------------------------------------------------------------------------
+
+bool Interface_Filesystem::http_header_create(void* kodiBase, struct KODI_HTTP_HEADER* headers)
+{
+  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
+  if (addon == nullptr || headers == nullptr)
+  {
+    CLog::Log(LOGERROR, "Interface_Filesystem::{} - invalid data (addon='{}', headers='{}')",
+              __FUNCTION__, kodiBase, static_cast<const void*>(headers));
+    return false;
+  }
+
+  headers->handle = new CHttpHeader;
+  headers->get_value = http_header_get_value;
+  headers->get_values = http_header_get_values;
+  headers->get_header = http_header_get_header;
+  headers->get_mime_type = http_header_get_mime_type;
+  headers->get_charset = http_header_get_charset;
+  headers->get_proto_line = http_header_get_proto_line;
+
+  return true;
+}
+
+void Interface_Filesystem::http_header_free(void* kodiBase, struct KODI_HTTP_HEADER* headers)
+{
+  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
+  if (addon == nullptr || headers == nullptr)
+  {
+    CLog::Log(LOGERROR, "Interface_Filesystem::{} - invalid data (addon='{}', headers='{}')",
+              __FUNCTION__, kodiBase, static_cast<const void*>(headers));
+    return;
+  }
+
+  delete static_cast<CHttpHeader*>(headers->handle);
+  headers->handle = nullptr;
+}
+
+char* Interface_Filesystem::http_header_get_value(void* kodiBase, void* handle, const char* param)
+{
+  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
+  if (addon == nullptr || handle == nullptr || param == nullptr)
+  {
+    CLog::Log(LOGERROR,
+              "Interface_Filesystem::{} - invalid data (addon='{}', handle='{}', param='{}')",
+              __FUNCTION__, kodiBase, handle, static_cast<const void*>(param));
+    return nullptr;
+  }
+
+  std::string string = static_cast<CHttpHeader*>(handle)->GetValue(param);
+
+  char* buffer = nullptr;
+  if (!string.empty())
+    buffer = strdup(string.c_str());
+  return buffer;
+}
+
+char** Interface_Filesystem::http_header_get_values(void* kodiBase,
+                                                    void* handle,
+                                                    const char* param,
+                                                    int* length)
+{
+  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
+  if (addon == nullptr || handle == nullptr || param == nullptr || length == nullptr)
+  {
+    CLog::Log(LOGERROR,
+              "Interface_Filesystem::{} - invalid data (addon='{}', handle='{}', param='{}', "
+              "length='{}')",
+              __FUNCTION__, kodiBase, handle, static_cast<const void*>(param),
+              static_cast<const void*>(length));
+    return nullptr;
+  }
+
+
+  std::vector<std::string> values = static_cast<CHttpHeader*>(handle)->GetValues(param);
+  *length = values.size();
+  char** ret = static_cast<char**>(malloc(sizeof(char*) * values.size()));
+  for (int i = 0; i < *length; ++i)
+  {
+    ret[i] = strdup(values[i].c_str());
+  }
+  return ret;
+}
+
+char* Interface_Filesystem::http_header_get_header(void* kodiBase, void* handle)
+{
+  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
+  if (addon == nullptr || handle == nullptr)
+  {
+    CLog::Log(LOGERROR, "Interface_Filesystem::{} - invalid data (addon='{}', handle='{}')",
+              __FUNCTION__, kodiBase, handle);
+    return nullptr;
+  }
+
+  std::string string = static_cast<CHttpHeader*>(handle)->GetHeader();
+
+  char* buffer = nullptr;
+  if (!string.empty())
+    buffer = strdup(string.c_str());
+  return buffer;
+}
+
+char* Interface_Filesystem::http_header_get_mime_type(void* kodiBase, void* handle)
+{
+  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
+  if (addon == nullptr || handle == nullptr)
+  {
+    CLog::Log(LOGERROR, "Interface_Filesystem::{} - invalid data (addon='{}', handle='{}')",
+              __FUNCTION__, kodiBase, handle);
+    return nullptr;
+  }
+
+  std::string string = static_cast<CHttpHeader*>(handle)->GetMimeType();
+
+  char* buffer = nullptr;
+  if (!string.empty())
+    buffer = strdup(string.c_str());
+  return buffer;
+}
+
+char* Interface_Filesystem::http_header_get_charset(void* kodiBase, void* handle)
+{
+  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
+  if (addon == nullptr || handle == nullptr)
+  {
+    CLog::Log(LOGERROR, "Interface_Filesystem::{} - invalid data (addon='{}', handle='{}')",
+              __FUNCTION__, kodiBase, handle);
+    return nullptr;
+  }
+
+  std::string string = static_cast<CHttpHeader*>(handle)->GetCharset();
+
+  char* buffer = nullptr;
+  if (!string.empty())
+    buffer = strdup(string.c_str());
+  return buffer;
+}
+
+char* Interface_Filesystem::http_header_get_proto_line(void* kodiBase, void* handle)
+{
+  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
+  if (addon == nullptr || handle == nullptr)
+  {
+    CLog::Log(LOGERROR, "Interface_Filesystem::{} - invalid data (addon='{}', handle='{}')",
+              __FUNCTION__, kodiBase, handle);
+    return nullptr;
+  }
+
+  std::string string = static_cast<CHttpHeader*>(handle)->GetProtoLine();
+
+  char* buffer = nullptr;
+  if (!string.empty())
+    buffer = strdup(string.c_str());
+  return buffer;
 }
 
 //------------------------------------------------------------------------------
@@ -364,14 +748,16 @@ void* Interface_Filesystem::open_file(void* kodiBase, const char* filename, unsi
   }
 
   CFile* file = new CFile;
-  if (file->Open(filename, flags))
+  if (file->Open(filename, TranslateFileReadBitsToKodi(flags)))
     return static_cast<void*>(file);
 
   delete file;
   return nullptr;
 }
 
-void* Interface_Filesystem::open_file_for_write(void* kodiBase, const char* filename, bool overwrite)
+void* Interface_Filesystem::open_file_for_write(void* kodiBase,
+                                                const char* filename,
+                                                bool overwrite)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   if (addon == nullptr || filename == nullptr)
@@ -402,7 +788,10 @@ ssize_t Interface_Filesystem::read_file(void* kodiBase, void* file, void* ptr, s
   return static_cast<CFile*>(file)->Read(ptr, size);
 }
 
-bool Interface_Filesystem::read_file_string(void* kodiBase, void* file, char *szLine, int lineLength)
+bool Interface_Filesystem::read_file_string(void* kodiBase,
+                                            void* file,
+                                            char* szLine,
+                                            int lineLength)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   if (addon == nullptr || file == nullptr || szLine == nullptr)
@@ -526,12 +915,80 @@ int Interface_Filesystem::get_file_chunk_size(void* kodiBase, void* file)
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   if (addon == nullptr || file == nullptr)
   {
-    CLog::Log(LOGERROR, "Interface_VFS::{} - invalid data (addon='{}', file='{})", __FUNCTION__,
+    CLog::Log(LOGERROR, "Interface_VFS::{} - invalid data (addon='{}', file='{}')", __FUNCTION__,
               kodiBase, file);
     return -1;
   }
 
   return static_cast<CFile*>(file)->GetChunkSize();
+}
+
+bool Interface_Filesystem::io_control_get_seek_possible(void* kodiBase, void* file)
+{
+  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
+  if (addon == nullptr || file == nullptr)
+  {
+    CLog::Log(LOGERROR, "Interface_VFS::{} - invalid data (addon='{}', file='{}')", __FUNCTION__,
+              kodiBase, file);
+    return -1;
+  }
+
+  return static_cast<CFile*>(file)->IoControl(EIoControl::IOCTRL_SEEK_POSSIBLE, nullptr) != 0
+             ? true
+             : false;
+}
+
+bool Interface_Filesystem::io_control_get_cache_status(void* kodiBase,
+                                                       void* file,
+                                                       struct VFS_CACHE_STATUS_DATA* status)
+{
+  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
+  if (addon == nullptr || file == nullptr || status == nullptr)
+  {
+    CLog::Log(LOGERROR, "Interface_VFS::{} - invalid data (addon='{}', file='{}, status='{}')",
+              __FUNCTION__, kodiBase, file, static_cast<const void*>(status));
+    return -1;
+  }
+
+  SCacheStatus data = {0};
+  int ret = static_cast<CFile*>(file)->IoControl(EIoControl::IOCTRL_CACHE_STATUS, &data);
+  if (ret >= 0)
+  {
+    status->forward = data.forward;
+    status->maxrate = data.maxrate;
+    status->currate = data.currate;
+    status->lowspeed = data.lowspeed;
+    return true;
+  }
+  return false;
+}
+
+bool Interface_Filesystem::io_control_set_cache_rate(void* kodiBase, void* file, unsigned int rate)
+{
+  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
+  if (addon == nullptr || file == nullptr)
+  {
+    CLog::Log(LOGERROR, "Interface_VFS::{} - invalid data (addon='{}', file='{}')", __FUNCTION__,
+              kodiBase, file);
+    return -1;
+  }
+
+  return static_cast<CFile*>(file)->IoControl(EIoControl::IOCTRL_CACHE_SETRATE, &rate) >= 0 ? true
+                                                                                            : false;
+}
+
+bool Interface_Filesystem::io_control_set_retry(void* kodiBase, void* file, bool retry)
+{
+  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
+  if (addon == nullptr || file == nullptr)
+  {
+    CLog::Log(LOGERROR, "Interface_VFS::{} - invalid data (addon='{}', file='{}')", __FUNCTION__,
+              kodiBase, file);
+    return -1;
+  }
+
+  return static_cast<CFile*>(file)->IoControl(EIoControl::IOCTRL_SET_RETRY, &retry) >= 0 ? true
+                                                                                         : false;
 }
 
 char** Interface_Filesystem::get_property_values(
@@ -551,32 +1008,33 @@ char** Interface_Filesystem::get_property_values(
   XFILE::FileProperty internalType;
   switch (type)
   {
-  case ADDON_FILE_PROPERTY_RESPONSE_PROTOCOL:
-    internalType = XFILE::FILE_PROPERTY_RESPONSE_PROTOCOL;
-    break;
-  case ADDON_FILE_PROPERTY_RESPONSE_HEADER:
-    internalType = XFILE::FILE_PROPERTY_RESPONSE_HEADER;
-    break;
-  case ADDON_FILE_PROPERTY_CONTENT_TYPE:
-    internalType = XFILE::FILE_PROPERTY_CONTENT_TYPE;
-    break;
-  case ADDON_FILE_PROPERTY_CONTENT_CHARSET:
-    internalType = XFILE::FILE_PROPERTY_CONTENT_CHARSET;
-    break;
-  case ADDON_FILE_PROPERTY_MIME_TYPE:
-    internalType = XFILE::FILE_PROPERTY_MIME_TYPE;
-    break;
-  case ADDON_FILE_PROPERTY_EFFECTIVE_URL:
-    internalType = XFILE::FILE_PROPERTY_EFFECTIVE_URL;
-    break;
-  default:
-    CLog::Log(LOGERROR, "Interface_Filesystem::{} - invalid data (addon='{}', file='{}')",
-              __FUNCTION__, kodiBase, file);
-    return nullptr;
+    case ADDON_FILE_PROPERTY_RESPONSE_PROTOCOL:
+      internalType = XFILE::FILE_PROPERTY_RESPONSE_PROTOCOL;
+      break;
+    case ADDON_FILE_PROPERTY_RESPONSE_HEADER:
+      internalType = XFILE::FILE_PROPERTY_RESPONSE_HEADER;
+      break;
+    case ADDON_FILE_PROPERTY_CONTENT_TYPE:
+      internalType = XFILE::FILE_PROPERTY_CONTENT_TYPE;
+      break;
+    case ADDON_FILE_PROPERTY_CONTENT_CHARSET:
+      internalType = XFILE::FILE_PROPERTY_CONTENT_CHARSET;
+      break;
+    case ADDON_FILE_PROPERTY_MIME_TYPE:
+      internalType = XFILE::FILE_PROPERTY_MIME_TYPE;
+      break;
+    case ADDON_FILE_PROPERTY_EFFECTIVE_URL:
+      internalType = XFILE::FILE_PROPERTY_EFFECTIVE_URL;
+      break;
+    default:
+      CLog::Log(LOGERROR, "Interface_Filesystem::{} - invalid data (addon='{}', file='{}')",
+                __FUNCTION__, kodiBase, file);
+      return nullptr;
   };
-  std::vector<std::string> values = static_cast<CFile*>(file)->GetPropertyValues(internalType, name);
+  std::vector<std::string> values =
+      static_cast<CFile*>(file)->GetPropertyValues(internalType, name);
   *numValues = values.size();
-  char **ret = static_cast<char**>(malloc(sizeof(char*)*values.size()));
+  char** ret = static_cast<char**>(malloc(sizeof(char*) * values.size()));
   for (int i = 0; i < *numValues; ++i)
   {
     ret[i] = strdup(values[i].c_str());
@@ -602,7 +1060,8 @@ void* Interface_Filesystem::curl_create(void* kodiBase, const char* url)
   return nullptr;
 }
 
-bool Interface_Filesystem::curl_add_option(void* kodiBase, void* file, int type, const char* name, const char* value)
+bool Interface_Filesystem::curl_add_option(
+    void* kodiBase, void* file, int type, const char* name, const char* value)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   if (addon == nullptr || file == nullptr || name == nullptr || value == nullptr)
@@ -618,21 +1077,21 @@ bool Interface_Filesystem::curl_add_option(void* kodiBase, void* file, int type,
   XFILE::CURLOPTIONTYPE internalType;
   switch (type)
   {
-  case ADDON_CURL_OPTION_OPTION:
-    internalType = XFILE::CURL_OPTION_OPTION;
-    break;
-  case ADDON_CURL_OPTION_PROTOCOL:
-    internalType = XFILE::CURL_OPTION_PROTOCOL;
-    break;
-  case ADDON_CURL_OPTION_CREDENTIALS:
-    internalType = XFILE::CURL_OPTION_CREDENTIALS;
-    break;
-  case ADDON_CURL_OPTION_HEADER:
-    internalType = XFILE::CURL_OPTION_HEADER;
-    break;
-  default:
-    throw std::logic_error("Interface_Filesystem::curl_add_option - invalid curl option type");
-    return false;
+    case ADDON_CURL_OPTION_OPTION:
+      internalType = XFILE::CURL_OPTION_OPTION;
+      break;
+    case ADDON_CURL_OPTION_PROTOCOL:
+      internalType = XFILE::CURL_OPTION_PROTOCOL;
+      break;
+    case ADDON_CURL_OPTION_CREDENTIALS:
+      internalType = XFILE::CURL_OPTION_CREDENTIALS;
+      break;
+    case ADDON_CURL_OPTION_HEADER:
+      internalType = XFILE::CURL_OPTION_HEADER;
+      break;
+    default:
+      throw std::logic_error("Interface_Filesystem::curl_add_option - invalid curl option type");
+      return false;
   };
 
   return static_cast<CFile*>(file)->CURLAddOption(internalType, name, value);
@@ -648,7 +1107,7 @@ bool Interface_Filesystem::curl_open(void* kodiBase, void* file, unsigned int fl
     return false;
   }
 
-  return static_cast<CFile*>(file)->CURLOpen(flags);
+  return static_cast<CFile*>(file)->CURLOpen(TranslateFileReadBitsToKodi(flags));
 }
 
 } /* namespace ADDON */
