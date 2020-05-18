@@ -178,8 +178,51 @@ static const auto RatingMapJsonDeserializer =
   return values;
 };
 
+static const auto StringVectorJsonSerializer =
+    [](const std::vector<std::string>& values) -> std::string {
+  rapidjson::StringBuffer stringBuffer;
+  rapidjson::Writer<rapidjson::StringBuffer> writer(stringBuffer);
+  if (!writer.StartArray())
+    return false;
+
+  for (const auto& value : values)
+  {
+    if (!writer.String(value.c_str(), value.size()))
+      return false;
+  }
+  writer.EndArray(values.size());
+
+  if (!writer.IsComplete())
+    return false;
+
+  return stringBuffer.GetString();
+};
+
+static const auto StringVectorJsonDeserializer =
+    [](const std::string& data) -> std::vector<std::string> {
+  if (data.empty())
+    return {};
+
+  rapidjson::Document doc;
+  doc.Parse<rapidjson::kParseIterativeFlag>(data.c_str(), data.size());
+  if (doc.HasParseError() || !doc.IsArray())
+    return {};
+
+  std::vector<std::string> values;
+  for (const auto& value : doc.GetArray())
+  {
+    if (!value.IsString())
+      continue;
+
+    values.emplace_back(value.GetString());
+  }
+
+  return values;
+};
+
 CVideoInfoTag::CVideoInfoTag()
-  : m_ratings(RatingMapJsonSerializer, RatingMapJsonDeserializer, "default"),
+  : m_tags(StringVectorJsonSerializer, StringVectorJsonDeserializer),
+    m_ratings(RatingMapJsonSerializer, RatingMapJsonDeserializer, "default"),
     m_uniqueIDs(UniqueIDMapJsonSerializer, UniqueIDMapJsonDeserializer, "unknown")
 {
   Reset();
@@ -203,7 +246,7 @@ void CVideoInfoTag::Reset()
   m_set.title.clear();
   m_set.id = -1;
   m_set.overview.clear();
-  m_tags.clear();
+  m_tags->clear();
   m_strFile.clear();
   m_strPath.clear();
   m_strMPAARating.clear();
@@ -731,7 +774,7 @@ void CVideoInfoTag::Serialize(CVariant& value) const
   value["set"] = m_set.title;
   value["setid"] = m_set.id;
   value["setoverview"] = m_set.overview;
-  value["tag"] = m_tags;
+  value["tag"] = *m_tags;
   value["runtime"] = GetDuration();
   value["file"] = m_strFile;
   value["path"] = m_strPath;
@@ -851,7 +894,7 @@ void CVideoInfoTag::ToSortable(SortItem& sortable, Field field) const
   case FieldUserRating:               sortable[FieldUserRating] = m_iUserRating; break;
   case FieldId:                       sortable[FieldId] = m_iDbId; break;
   case FieldTrackNumber:              sortable[FieldTrackNumber] = m_iTrack; break;
-  case FieldTag:                      sortable[FieldTag] = m_tags; break;
+  case FieldTag:                      sortable[FieldTag] = *m_tags; break;
 
   case FieldVideoResolution:          sortable[FieldVideoResolution] = m_streamDetails.GetVideoHeight(); break;
   case FieldVideoAspectRatio:         sortable[FieldVideoAspectRatio] = m_streamDetails.GetVideoAspect(); break;
@@ -870,6 +913,11 @@ void CVideoInfoTag::ToSortable(SortItem& sortable, Field field) const
   case FieldRelevance:                sortable[FieldRelevance] = m_relevance; break;
   default: break;
   }
+}
+
+const std::vector<std::string>& CVideoInfoTag::GetTags() const
+{
+  return m_tags.value();
 }
 
 const CRating CVideoInfoTag::GetRating(std::string type) const

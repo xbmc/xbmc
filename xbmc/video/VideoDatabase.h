@@ -60,7 +60,6 @@ namespace VIDEO
 enum VideoDbDetails
 {
   VideoDbDetailsNone = 0x00,
-  VideoDbDetailsTag = 0x01,
   VideoDbDetailsShowLink = 0x02,
   VideoDbDetailsStream = 0x04,
   VideoDbDetailsCast = 0x08,
@@ -174,7 +173,7 @@ typedef enum // this enum MUST match the offset struct further down!! and make s
   VIDEODB_ID_GENRE = 14,
   VIDEODB_ID_DIRECTOR = 15,
   VIDEODB_ID_ORIGINALTITLE = 16,
-  VIDEODB_ID_UNUSED2 = 17, // unused
+  VIDEODB_ID_TAGS = 17,
   VIDEODB_ID_STUDIOS = 18,
   VIDEODB_ID_TRAILER = 19,
   VIDEODB_ID_FANART = 20,
@@ -212,7 +211,7 @@ const struct SDbTableOffsets
   { VIDEODB_TYPE_STRINGARRAY, my_offsetof(CVideoInfoTag,m_genre) },
   { VIDEODB_TYPE_STRINGARRAY, my_offsetof(CVideoInfoTag,m_director) },
   { VIDEODB_TYPE_STRING, my_offsetof(CVideoInfoTag,m_strOriginalTitle) },
-  { VIDEODB_TYPE_UNUSED, 0 }, // unused
+  { VIDEODB_TYPE_SERIALIZED, my_offsetof(CVideoInfoTag, m_tags) },
   { VIDEODB_TYPE_STRINGARRAY, my_offsetof(CVideoInfoTag,m_studio) },
   { VIDEODB_TYPE_STRING, my_offsetof(CVideoInfoTag,m_strTrailer) },
   { VIDEODB_TYPE_STRING, my_offsetof(CVideoInfoTag,m_fanart.m_xml) },
@@ -231,7 +230,7 @@ typedef enum // this enum MUST match the offset struct further down!! and make s
   VIDEODB_ID_TV_RATING_ID = 4,
   VIDEODB_ID_TV_PREMIERED = 5,
   VIDEODB_ID_TV_THUMBURL = 6,
-  VIDEODB_ID_TV_UNUSED1 = 7, // unused
+  VIDEODB_ID_TV_TAGS = 7,
   VIDEODB_ID_TV_GENRE = 8,
   VIDEODB_ID_TV_ORIGINALTITLE = 9,
   VIDEODB_ID_TV_EPISODEGUIDE = 10,
@@ -257,7 +256,7 @@ const struct SDbTableOffsets DbTvShowOffsets[] =
   { VIDEODB_TYPE_INT, my_offsetof(CVideoInfoTag,m_iIdRating) },
   { VIDEODB_TYPE_DATE, my_offsetof(CVideoInfoTag,m_premiered) },
   { VIDEODB_TYPE_STRING, my_offsetof(CVideoInfoTag,m_strPictureURL.m_data) },
-  { VIDEODB_TYPE_UNUSED, 0 }, // unused
+  { VIDEODB_TYPE_SERIALIZED, my_offsetof(CVideoInfoTag, m_tags) },
   { VIDEODB_TYPE_STRINGARRAY, my_offsetof(CVideoInfoTag,m_genre) },
   { VIDEODB_TYPE_STRING, my_offsetof(CVideoInfoTag,m_strOriginalTitle)},
   { VIDEODB_TYPE_STRING, my_offsetof(CVideoInfoTag,m_strEpisodeGuide)},
@@ -352,7 +351,7 @@ typedef enum // this enum MUST match the offset struct further down!! and make s
   VIDEODB_ID_MUSICVIDEO_MIN = -1,
   VIDEODB_ID_MUSICVIDEO_TITLE = 0,
   VIDEODB_ID_MUSICVIDEO_THUMBURL = 1,
-  VIDEODB_ID_MUSICVIDEO_UNUSED1 = 2, // unused
+  VIDEODB_ID_MUSICVIDEO_TAGS = 2,
   VIDEODB_ID_MUSICVIDEO_UNUSED2 = 3, // unused
   VIDEODB_ID_MUSICVIDEO_RUNTIME = 4,
   VIDEODB_ID_MUSICVIDEO_DIRECTOR = 5,
@@ -375,7 +374,7 @@ const struct SDbTableOffsets DbMusicVideoOffsets[] =
 {
   { VIDEODB_TYPE_STRING, my_offsetof(class CVideoInfoTag,m_strTitle) },
   { VIDEODB_TYPE_STRING, my_offsetof(CVideoInfoTag,m_strPictureURL.m_data) },
-  { VIDEODB_TYPE_UNUSED, 0 }, // unused
+  { VIDEODB_TYPE_SERIALIZED, my_offsetof(CVideoInfoTag, m_tags) },
   { VIDEODB_TYPE_UNUSED, 0 }, // unused
   { VIDEODB_TYPE_INT, my_offsetof(CVideoInfoTag,m_duration) },
   { VIDEODB_TYPE_STRINGARRAY, my_offsetof(CVideoInfoTag,m_director) },

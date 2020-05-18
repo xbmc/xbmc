@@ -77,6 +77,8 @@ public:
   void Archive(CArchive& ar) override;
   void Serialize(CVariant& value) const override;
   void ToSortable(SortItem& sortable, Field field) const override;
+
+  const std::vector<std::string>& GetTags() const;
   const CRating GetRating(std::string type = "") const;
   const std::map<std::string, CRating>& GetRatings() const;
   const std::string& GetDefaultRating() const;
@@ -240,7 +242,7 @@ public:
     std::string overview; //!< Overview/description of the movie set
   };
   SetInfo m_set; //!< Assigned movie set
-  std::vector<std::string> m_tags;
+  CLazySerializedProperty<std::vector<std::string>> m_tags;
   std::string m_strFile;
   std::string m_strPath;
   std::string m_strMPAARating;

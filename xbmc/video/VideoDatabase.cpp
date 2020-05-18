@@ -2423,7 +2423,7 @@ int CVideoDatabase::SetDetailsForMovie(const std::string& strFilenameAndPath, CV
     AddLinksToItem(idMovie, MediaTypeMovie, "genre", details.m_genre);
     AddLinksToItem(idMovie, MediaTypeMovie, "studio", details.m_studio);
     AddLinksToItem(idMovie, MediaTypeMovie, "country", details.m_country);
-    AddLinksToItem(idMovie, MediaTypeMovie, "tag", details.m_tags);
+    AddLinksToItem(idMovie, MediaTypeMovie, "tag", details.GetTags());
     AddActorLinksToItem(idMovie, MediaTypeMovie, "director", details.m_director);
     AddActorLinksToItem(idMovie, MediaTypeMovie, "writer", details.m_writingCredits);
 
@@ -2530,7 +2530,7 @@ int CVideoDatabase::UpdateDetailsForMovie(int idMovie, CVideoInfoTag& details, c
     if (updatedDetails.find("country") != updatedDetails.end())
       UpdateLinksToItem(idMovie, MediaTypeMovie, "country", details.m_country);
     if (updatedDetails.find("tag") != updatedDetails.end())
-      UpdateLinksToItem(idMovie, MediaTypeMovie, "tag", details.m_tags);
+      UpdateLinksToItem(idMovie, MediaTypeMovie, "tag", details.GetTags());
     if (updatedDetails.find("director") != updatedDetails.end())
       UpdateActorLinksToItem(idMovie, MediaTypeMovie, "director", details.m_director);
     if (updatedDetails.find("writer") != updatedDetails.end())
@@ -2708,7 +2708,7 @@ bool CVideoDatabase::UpdateDetailsForTvShow(int idTvShow, CVideoInfoTag &details
   AddCast(idTvShow, "tvshow", details.m_cast);
   AddLinksToItem(idTvShow, MediaTypeTvShow, "genre", details.m_genre);
   AddLinksToItem(idTvShow, MediaTypeTvShow, "studio", details.m_studio);
-  AddLinksToItem(idTvShow, MediaTypeTvShow, "tag", details.m_tags);
+  AddLinksToItem(idTvShow, MediaTypeTvShow, "tag", details.GetTags());
   AddActorLinksToItem(idTvShow, MediaTypeTvShow, "director", details.m_director);
 
   // add ratings
@@ -2968,7 +2968,7 @@ int CVideoDatabase::SetDetailsForMusicVideo(const std::string& strFilenameAndPat
     AddActorLinksToItem(idMVideo, MediaTypeMusicVideo, "director", details.m_director);
     AddLinksToItem(idMVideo, MediaTypeMusicVideo, "genre", details.m_genre);
     AddLinksToItem(idMVideo, MediaTypeMusicVideo, "studio", details.m_studio);
-    AddLinksToItem(idMVideo, MediaTypeMusicVideo, "tag", details.m_tags);
+    AddLinksToItem(idMVideo, MediaTypeMusicVideo, "tag", details.GetTags());
 
     if (details.HasStreamDetails())
       SetStreamDetailsForFileId(details.m_streamDetails, GetFileId(strFilenameAndPath));
@@ -4023,9 +4023,6 @@ CVideoInfoTag CVideoDatabase::GetDetailsForMovie(const dbiplus::sql_record* cons
       castTime += XbmcThreads::SystemClockMillis() - time; time = XbmcThreads::SystemClockMillis();
     }
 
-    if (getDetails & VideoDbDetailsTag)
-      GetTags(details.m_iDbId, MediaTypeMovie, details.m_tags);
-
     if (getDetails & VideoDbDetailsShowLink)
     {
       // create tvshowlink string
@@ -4090,9 +4087,6 @@ CVideoInfoTag CVideoDatabase::GetDetailsForTvShow(const dbiplus::sql_record* con
       GetCast(details.m_iDbId, "tvshow", details.m_cast);
       castTime += XbmcThreads::SystemClockMillis() - time; time = XbmcThreads::SystemClockMillis();
     }
-
-    if (getDetails & VideoDbDetailsTag)
-      GetTags(details.m_iDbId, MediaTypeTvShow, details.m_tags);
 
     details.m_parsedDetails = getDetails;
   }
@@ -4232,9 +4226,6 @@ CVideoInfoTag CVideoDatabase::GetDetailsForMusicVideo(const dbiplus::sql_record*
 
   if (getDetails)
   {
-    if (getDetails & VideoDbDetailsTag)
-      GetTags(details.m_iDbId, MediaTypeMusicVideo, details.m_tags);
-
     if (getDetails & VideoDbDetailsStream)
       GetStreamDetails(details);
 
@@ -5711,6 +5702,51 @@ void CVideoDatabase::UpdateTables(int iVersion)
                        migrationDetail.idxRatings, videoInfoTag.m_ratings.ToString().c_str(),
                        migrationDetail.idxUniqueIds, videoInfoTag.m_uniqueIDs.ToString().c_str(),
                        migrationDetail.idField.c_str(), id);
+        m_pDS->exec(sqlUpdate);
+
+        pDS->next();
+      }
+      pDS->close();
+    }
+
+    // migrate tags
+    struct TagsMigrationDetails
+    {
+      const MediaType mediaType;
+      const std::string table;
+      const std::string idField;
+      const int idxTags;
+    };
+
+    // clang-format off
+    static const TagsMigrationDetails tagsMigrationDetails[] = {
+      { MediaTypeMovie, "movie", "idMovie", VIDEODB_ID_TAGS },
+      { MediaTypeTvShow, "tvshow", "idShow", VIDEODB_ID_TV_TAGS },
+      { MediaTypeMusicVideo, "musicvideo", "idMVideo", VIDEODB_ID_MUSICVIDEO_TAGS },
+    };
+    // clang-format on
+
+    for (const auto& migrationDetail : tagsMigrationDetails)
+    {
+      const auto sqlFetch = PrepareSQL("SELECT %s FROM %s", migrationDetail.idField.c_str(), migrationDetail.table.c_str());
+      pDS->query(sqlFetch);
+      while (!pDS->eof())
+      {
+        videoInfoTag.Reset();
+
+        const auto id = pDS->fv(0).get_asInt();
+
+        // get all tags
+        std::vector<std::string> tags;
+        GetTags(id, migrationDetail.mediaType, tags);
+        videoInfoTag.SetTags(tags);
+
+        // update the movie table with the serialized tags
+        const auto sqlUpdate =
+          PrepareSQL("UPDATE %s SET c%02d='%s' WHERE %s=%i",
+            migrationDetail.table.c_str(),
+            migrationDetail.idxTags, videoInfoTag.m_tags.ToString().c_str(),
+            migrationDetail.idField.c_str(), id);
         m_pDS->exec(sqlUpdate);
 
         pDS->next();

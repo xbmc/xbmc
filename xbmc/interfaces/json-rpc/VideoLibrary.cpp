@@ -1007,8 +1007,6 @@ int CVideoLibrary::RequiresAdditionalDetails(const MediaType& mediaType, const C
       details = details | VideoDbDetailsShowLink;
     else if (propertyValue == "streamdetails")
       details = details | VideoDbDetailsStream;
-    else if (propertyValue == "tag")
-      details = details | VideoDbDetailsTag;
   }
   return details;
 }
@@ -1221,7 +1219,7 @@ void CVideoLibrary::UpdateVideoTag(const CVariant &parameterObject, CVideoInfoTa
   UpdateVideoTagField(parameterObject, "showlink", showLink, updatedDetails);
   details.SetShowLink(showLink);
 
-  std::vector<std::string> tags(details.m_tags);
+  std::vector<std::string> tags(details.GetTags());
   UpdateVideoTagField(parameterObject, "tag", tags, updatedDetails);
   details.SetTags(tags);
 
