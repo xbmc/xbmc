@@ -553,12 +553,22 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
         if (resetHistory)
         {
           m_vecItems->RemoveDiscCache(GetID());
-          SetHistoryForPath(m_vecItems->GetPath());
+          // only compute the history for the provided path if "return" is not defined
+          // (otherwise the root level for the path will be added by default to the path history
+          // and we won't be able to move back to the path we came from)
+          if (!returning)
+            SetHistoryForPath(m_vecItems->GetPath());
         }
       }
       if (message.GetParam1() != WINDOW_INVALID)
-      { // first time to this window - make sure we set the root path
-        m_startDirectory = returning ? dir : GetRootPath();
+      {
+        // if this is the first time to this window - make sure we set the root path
+        // if "return" is defined make sure we set the startDirectory to the directory we are
+        // moving to (so that we can move back to where we were onBack). If we are activating
+        // the same window but with a different path, do nothing - we are simply adding to the
+        // window history.
+        if (message.GetParam1() != message.GetParam2())
+          m_startDirectory = returning ? dir : GetRootPath();
       }
       if (message.GetParam2() == PLUGIN_REFRESH_DELAY)
       {
