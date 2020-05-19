@@ -2705,7 +2705,12 @@
       </group>
       <group id="2" label="14094">
         <setting id="input.enablemouse" type="boolean" label="21369" help="36377">
-          <level>0</level>
+          <level>2</level>
+          <control type="toggle" />
+          <default>true</default>
+        </setting>
+        <setting id="input.enablejoystick" type="boolean" label="35100" help="36378">
+          <level>2</level>
           <control type="toggle" />
           <default>true</default>
         </setting>

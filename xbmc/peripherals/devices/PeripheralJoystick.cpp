@@ -192,8 +192,12 @@ IKeymap *CPeripheralJoystick::GetKeymap(const std::string &controllerId)
 
 bool CPeripheralJoystick::OnButtonMotion(unsigned int buttonIndex, bool bPressed)
 {
-  CLog::Log(LOGDEBUG, "BUTTON [ %u ] on \"%s\" %s", buttonIndex,
-            DeviceName().c_str(), bPressed ? "pressed" : "released");
+  // Silence debug log if controllers are not enabled
+  if (m_manager.GetInputManager().IsControllerEnabled())
+  {
+    CLog::Log(LOGDEBUG, "BUTTON [ %u ] on \"%s\" %s", buttonIndex, DeviceName().c_str(),
+              bPressed ? "pressed" : "released");
+  }
 
   // Avoid sending activated input if the app is in the background
   if (bPressed && !g_application.IsAppFocused())
@@ -202,6 +206,15 @@ bool CPeripheralJoystick::OnButtonMotion(unsigned int buttonIndex, bool bPressed
   m_lastActive = CDateTime::GetCurrentDateTime();
 
   CSingleLock lock(m_handlerMutex);
+
+  // Check GUI setting and send button release if controllers are disabled
+  if (!m_manager.GetInputManager().IsControllerEnabled())
+  {
+    for (std::vector<DriverHandler>::iterator it = m_driverHandlers.begin();
+         it != m_driverHandlers.end(); ++it)
+      it->handler->OnButtonMotion(buttonIndex, false);
+    return true;
+  }
 
   // Process promiscuous handlers
   for (auto& it : m_driverHandlers)
@@ -235,8 +248,12 @@ bool CPeripheralJoystick::OnButtonMotion(unsigned int buttonIndex, bool bPressed
 
 bool CPeripheralJoystick::OnHatMotion(unsigned int hatIndex, HAT_STATE state)
 {
-  CLog::Log(LOGDEBUG, "HAT [ %u ] on \"%s\" %s", hatIndex,
-            DeviceName().c_str(), CJoystickTranslator::HatStateToString(state));
+  // Silence debug log if controllers are not enabled
+  if (m_manager.GetInputManager().IsControllerEnabled())
+  {
+    CLog::Log(LOGDEBUG, "HAT [ %u ] on \"%s\" %s", hatIndex, DeviceName().c_str(),
+              CJoystickTranslator::HatStateToString(state));
+  }
 
   // Avoid sending activated input if the app is in the background
   if (state != HAT_STATE::NONE && !g_application.IsAppFocused())
@@ -245,6 +262,15 @@ bool CPeripheralJoystick::OnHatMotion(unsigned int hatIndex, HAT_STATE state)
   m_lastActive = CDateTime::GetCurrentDateTime();
 
   CSingleLock lock(m_handlerMutex);
+
+  // Check GUI setting and send hat unpressed if controllers are disabled
+  if (!m_manager.GetInputManager().IsControllerEnabled())
+  {
+    for (std::vector<DriverHandler>::iterator it = m_driverHandlers.begin();
+         it != m_driverHandlers.end(); ++it)
+      it->handler->OnHatMotion(hatIndex, HAT_STATE::NONE);
+    return true;
+  }
 
   // Process promiscuous handlers
   for (auto& it : m_driverHandlers)
@@ -293,6 +319,15 @@ bool CPeripheralJoystick::OnAxisMotion(unsigned int axisIndex, float position)
     return false;
 
   CSingleLock lock(m_handlerMutex);
+
+  // Check GUI setting and send analog axis centered if controllers are disabled
+  if (!m_manager.GetInputManager().IsControllerEnabled())
+  {
+    for (std::vector<DriverHandler>::iterator it = m_driverHandlers.begin();
+         it != m_driverHandlers.end(); ++it)
+      it->handler->OnAxisMotion(axisIndex, center, center, range);
+    return true;
+  }
 
   // Process promiscuous handlers
   for (auto& it : m_driverHandlers)

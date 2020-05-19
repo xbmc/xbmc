@@ -49,6 +49,8 @@ using EVENTSERVER::CEventServer;
 using namespace KODI;
 using namespace MESSAGING;
 
+const std::string CInputManager::SETTING_INPUT_ENABLE_CONTROLLER = "input.enablejoystick";
+
 CInputManager::CInputManager(const CAppParamParser &params) :
   m_keymapEnvironment(new CKeymapEnvironment),
   m_buttonTranslator(new CButtonTranslator),
@@ -66,6 +68,7 @@ CInputManager::CInputManager(const CAppParamParser &params) :
   // Register settings
   std::set<std::string> settingSet;
   settingSet.insert(CSettings::SETTING_INPUT_ENABLEMOUSE);
+  settingSet.insert(SETTING_INPUT_ENABLE_CONTROLLER);
   CServiceBroker::GetSettingsComponent()->GetSettings()->RegisterCallback(this, settingSet);
 }
 
@@ -89,6 +92,9 @@ void CInputManager::InitializeInputs()
 
   m_Mouse.Initialize();
   m_Mouse.SetEnabled(CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_INPUT_ENABLEMOUSE));
+
+  m_enableController = CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+      SETTING_INPUT_ENABLE_CONTROLLER);
 }
 
 void CInputManager::Deinitialize()
@@ -744,6 +750,11 @@ void CInputManager::SetMouseState(MOUSE_STATE mouseState)
   m_Mouse.SetState(mouseState);
 }
 
+bool CInputManager::IsControllerEnabled() const
+{
+  return m_enableController;
+}
+
 void CInputManager::OnSettingChanged(std::shared_ptr<const CSetting> setting)
 {
   if (setting == nullptr)
@@ -752,6 +763,9 @@ void CInputManager::OnSettingChanged(std::shared_ptr<const CSetting> setting)
   const std::string &settingId = setting->GetId();
   if (settingId == CSettings::SETTING_INPUT_ENABLEMOUSE)
     m_Mouse.SetEnabled(std::dynamic_pointer_cast<const CSettingBool>(setting)->GetValue());
+
+  else if (settingId == SETTING_INPUT_ENABLE_CONTROLLER)
+    m_enableController = std::dynamic_pointer_cast<const CSettingBool>(setting)->GetValue();
 }
 
 bool CInputManager::OnAction(const CAction& action)

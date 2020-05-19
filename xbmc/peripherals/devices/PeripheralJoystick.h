@@ -82,19 +82,19 @@ namespace PERIPHERALS
      * \brief Get the number of elements reported by the driver
      */
     unsigned int ButtonCount(void) const { return m_buttonCount; }
-    unsigned int HatCount(void) const    { return m_hatCount; }
-    unsigned int AxisCount(void) const   { return m_axisCount; }
-    unsigned int MotorCount(void) const  { return m_motorCount; }
-    bool SupportsPowerOff(void) const    { return m_supportsPowerOff; }
+    unsigned int HatCount(void) const { return m_hatCount; }
+    unsigned int AxisCount(void) const { return m_axisCount; }
+    unsigned int MotorCount(void) const { return m_motorCount; }
+    bool SupportsPowerOff(void) const { return m_supportsPowerOff; }
 
     /*!
      * \brief Set joystick properties
      */
-    void SetProvider(const std::string& provider) { m_strProvider   = provider; }
-    void SetRequestedPort(int port)               { m_requestedPort = port; }
-    void SetButtonCount(unsigned int buttonCount) { m_buttonCount   = buttonCount; }
-    void SetHatCount(unsigned int hatCount)       { m_hatCount      = hatCount; }
-    void SetAxisCount(unsigned int axisCount)     { m_axisCount     = axisCount; }
+    void SetProvider(const std::string& provider) { m_strProvider = provider; }
+    void SetRequestedPort(int port) { m_requestedPort = port; }
+    void SetButtonCount(unsigned int buttonCount) { m_buttonCount = buttonCount; }
+    void SetHatCount(unsigned int hatCount) { m_hatCount = hatCount; }
+    void SetAxisCount(unsigned int axisCount) { m_axisCount = axisCount; }
     void SetMotorCount(unsigned int motorCount); // specialized to update m_features
     void SetSupportsPowerOff(bool bSupportsPowerOff); // specialized to update m_features
 
@@ -109,20 +109,25 @@ namespace PERIPHERALS
       bool bPromiscuous;
     };
 
-    std::string                         m_strProvider;
-    int                                 m_requestedPort;
-    unsigned int                        m_buttonCount;
-    unsigned int                        m_hatCount;
-    unsigned int                        m_axisCount;
-    unsigned int                        m_motorCount;
-    bool                                m_supportsPowerOff;
+    // State parameters
+    std::string m_strProvider;
+    int m_requestedPort;
+    unsigned int m_buttonCount;
+    unsigned int m_hatCount;
+    unsigned int m_axisCount;
+    unsigned int m_motorCount;
+    bool m_supportsPowerOff;
+    CDateTime m_lastActive;
+
+    // Input clients
     std::unique_ptr<KODI::JOYSTICK::CKeymapHandling> m_appInput;
     std::unique_ptr<KODI::JOYSTICK::CRumbleGenerator> m_rumbleGenerator;
     std::unique_ptr<KODI::JOYSTICK::IInputHandler> m_joystickMonitor;
-    std::unique_ptr<KODI::JOYSTICK::IButtonMap>      m_buttonMap;
+    std::unique_ptr<KODI::JOYSTICK::IButtonMap> m_buttonMap;
     std::unique_ptr<KODI::JOYSTICK::CDeadzoneFilter> m_deadzoneFilter;
-    std::vector<DriverHandler>          m_driverHandlers;
-    CCriticalSection                    m_handlerMutex;
-    CDateTime m_lastActive;
+    std::vector<DriverHandler> m_driverHandlers;
+
+    // Synchronization parameters
+    CCriticalSection m_handlerMutex;
   };
 }
