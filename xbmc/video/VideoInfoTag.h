@@ -91,7 +91,8 @@ public:
   bool HasPremiered() const;
   const CDateTime& GetPremiered() const;
   const CDateTime& GetFirstAired() const;
-  const std::string GetCast(bool bIncludeRole = false) const;
+  const std::vector<SActorInfo>& GetCast() const;
+  const std::string GetCastAsString(bool bIncludeRole = false) const;
   bool HasStreamDetails() const;
   bool IsEmpty() const;
 
@@ -219,6 +220,10 @@ public:
    */
   virtual bool SetResumePoint(double timeInSeconds, double totalTimeInSeconds, const std::string &playerState);
 
+  void ClearCast();
+  void SetCast(std::vector<SActorInfo> cast);
+  void AddActor(SActorInfo actor);
+
   std::string m_basePath; // the base path of the video, for folder-based lookups
   int m_parentPathID;      // the parent path id where the base path of the video lies
   std::vector<std::string> m_director;
@@ -233,7 +238,7 @@ public:
   std::string m_strTitle;
   std::string m_strSortTitle;
   std::vector<std::string> m_artist;
-  std::vector< SActorInfo > m_cast;
+  CLazySerializedProperty<std::vector<SActorInfo>> m_cast;
   typedef std::vector< SActorInfo >::const_iterator iCast;
   struct SetInfo //!< Struct holding information about a movie set
   {

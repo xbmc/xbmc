@@ -345,14 +345,14 @@ void CGUIDialogVideoInfo::SetMovie(const CFileItem *item)
   }
   else
   { // movie/show/episode
-    for (CVideoInfoTag::iCast it = m_movieItem->GetVideoInfoTag()->m_cast.begin(); it != m_movieItem->GetVideoInfoTag()->m_cast.end(); ++it)
+    for (const auto& actor : m_movieItem->GetVideoInfoTag()->GetCast())
     {
-      CFileItemPtr item(new CFileItem(it->strName));
-      if (!it->thumb.empty())
-        item->SetArt("thumb", it->thumb);
+      CFileItemPtr item(new CFileItem(actor.strName));
+      if (!actor.thumb.empty())
+        item->SetArt("thumb", actor.thumb);
       else if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_VIDEOLIBRARY_ACTORTHUMBS))
       { // backward compatibility
-        std::string thumb = CScraperUrl::GetThumbUrl(it->thumbUrl.GetFirstUrlByType());
+        std::string thumb = CScraperUrl::GetThumbUrl(actor.thumbUrl.GetFirstUrlByType());
         if (!thumb.empty())
         {
           item->SetArt("thumb", thumb);
@@ -360,8 +360,8 @@ void CGUIDialogVideoInfo::SetMovie(const CFileItem *item)
         }
       }
       item->SetArt("icon", "DefaultActor.png");
-      item->SetLabel(it->strName);
-      item->SetLabel2(it->strRole);
+      item->SetLabel(actor.strName);
+      item->SetLabel2(actor.strRole);
       m_castList->Add(item);
     }
   }

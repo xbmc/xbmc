@@ -313,9 +313,8 @@ PopulateObjectFromTag(CVideoInfoTag&         tag,
     for (unsigned int index = 0; index < tag.m_genre.size(); index++)
       object.m_Affiliation.genres.Add(tag.m_genre.at(index).c_str());
 
-    for(CVideoInfoTag::iCast it = tag.m_cast.begin();it != tag.m_cast.end();it++) {
-        object.m_People.actors.Add(it->strName.c_str(), it->strRole.c_str());
-    }
+    for(const auto& actor : tag.GetCast())
+      object.m_People.actors.Add(actor.strName.c_str(), actor.strRole.c_str());
 
     for (unsigned int index = 0; index < tag.m_director.size(); index++)
       object.m_People.directors.Add(tag.m_director[index].c_str());
@@ -527,9 +526,8 @@ BuildObject(CFileItem&                    item,
                   for (unsigned int index = 0; index < tag.m_genre.size(); index++)
                     container->m_Affiliation.genres.Add(tag.m_genre.at(index).c_str());
 
-                  for(CVideoInfoTag::iCast it = tag.m_cast.begin();it != tag.m_cast.end();it++) {
-                      container->m_People.actors.Add(it->strName.c_str(), it->strRole.c_str());
-                  }
+                  for (const auto& actor : tag.GetCast())
+                    container->m_People.actors.Add(actor.strName.c_str(), actor.strRole.c_str());
 
                   for (unsigned int index = 0; index < tag.m_director.size(); index++)
                     container->m_People.directors.Add(tag.m_director[index].c_str());
@@ -846,7 +844,7 @@ PopulateTagFromObject(CVideoInfoTag&         tag,
       SActorInfo info;
       info.strName = object.m_People.actors.GetItem(index)->name;
       info.strRole = object.m_People.actors.GetItem(index)->role;
-      tag.m_cast.push_back(info);
+      tag.AddActor(std::move(info));
     }
     tag.m_strTagLine  = object.m_Description.description;
     tag.m_strPlot     = object.m_Description.long_description;

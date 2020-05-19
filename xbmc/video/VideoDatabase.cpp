@@ -2419,7 +2419,7 @@ int CVideoDatabase::SetDetailsForMovie(const std::string& strFilenameAndPath, CV
       UpdateFileDateAdded(details.m_iFileId, strFilenameAndPath, details.m_dateAdded);
     }
 
-    AddCast(idMovie, "movie", details.m_cast);
+    AddCast(idMovie, "movie", details.GetCast());
     AddLinksToItem(idMovie, MediaTypeMovie, "genre", details.m_genre);
     AddLinksToItem(idMovie, MediaTypeMovie, "studio", details.m_studio);
     AddLinksToItem(idMovie, MediaTypeMovie, "country", details.m_country);
@@ -2705,7 +2705,7 @@ bool CVideoDatabase::UpdateDetailsForTvShow(int idTvShow, CVideoInfoTag &details
 
   DeleteDetailsForTvShow(idTvShow);
 
-  AddCast(idTvShow, "tvshow", details.m_cast);
+  AddCast(idTvShow, "tvshow", details.GetCast());
   AddLinksToItem(idTvShow, MediaTypeTvShow, "genre", details.m_genre);
   AddLinksToItem(idTvShow, MediaTypeTvShow, "studio", details.m_studio);
   AddLinksToItem(idTvShow, MediaTypeTvShow, "tag", details.GetTags());
@@ -2839,7 +2839,7 @@ int CVideoDatabase::SetDetailsForEpisode(const std::string& strFilenameAndPath, 
       UpdateFileDateAdded(details.m_iFileId, strFilenameAndPath, details.m_dateAdded);
     }
 
-    AddCast(idEpisode, "episode", details.m_cast);
+    AddCast(idEpisode, "episode", details.GetCast());
     AddActorLinksToItem(idEpisode, MediaTypeEpisode, "director", details.m_director);
     AddActorLinksToItem(idEpisode, MediaTypeEpisode, "writer", details.m_writingCredits);
 
@@ -4017,12 +4017,6 @@ CVideoInfoTag CVideoDatabase::GetDetailsForMovie(const dbiplus::sql_record* cons
 
   if (getDetails)
   {
-    if (getDetails & VideoDbDetailsCast)
-    {
-      GetCast(details.m_iDbId, MediaTypeMovie, details.m_cast);
-      castTime += XbmcThreads::SystemClockMillis() - time; time = XbmcThreads::SystemClockMillis();
-    }
-
     if (getDetails & VideoDbDetailsShowLink)
     {
       // create tvshowlink string
@@ -4079,17 +4073,6 @@ CVideoInfoTag CVideoDatabase::GetDetailsForTvShow(const dbiplus::sql_record* con
   details.SetDuration(record->at(VIDEODB_DETAILS_TVSHOW_DURATION).get_asInt());
 
   movieTime += XbmcThreads::SystemClockMillis() - time; time = XbmcThreads::SystemClockMillis();
-
-  if (getDetails)
-  {
-    if (getDetails & VideoDbDetailsCast)
-    {
-      GetCast(details.m_iDbId, "tvshow", details.m_cast);
-      castTime += XbmcThreads::SystemClockMillis() - time; time = XbmcThreads::SystemClockMillis();
-    }
-
-    details.m_parsedDetails = getDetails;
-  }
 
   if (item != NULL)
   {
@@ -4170,8 +4153,9 @@ CVideoInfoTag CVideoDatabase::GetDetailsForEpisode(const dbiplus::sql_record* co
   {
     if (getDetails & VideoDbDetailsCast)
     {
-      GetCast(details.m_iDbId, MediaTypeEpisode, details.m_cast);
-      GetCast(details.m_iIdShow, MediaTypeTvShow, details.m_cast);
+      std::vector<SActorInfo> cast = details.GetCast();
+      GetCast(details.m_iIdShow, MediaTypeTvShow, cast);
+      details.SetCast(std::move(cast));
       castTime += XbmcThreads::SystemClockMillis() - time; time = XbmcThreads::SystemClockMillis();
     }
 
@@ -5746,6 +5730,51 @@ void CVideoDatabase::UpdateTables(int iVersion)
           PrepareSQL("UPDATE %s SET c%02d='%s' WHERE %s=%i",
             migrationDetail.table.c_str(),
             migrationDetail.idxTags, videoInfoTag.m_tags.ToString().c_str(),
+            migrationDetail.idField.c_str(), id);
+        m_pDS->exec(sqlUpdate);
+
+        pDS->next();
+      }
+      pDS->close();
+    }
+
+    // migrate cast
+    struct CastMigrationDetails
+    {
+      const MediaType mediaType;
+      const std::string table;
+      const std::string idField;
+      const int idxCast;
+    };
+
+    // clang-format off
+    static const CastMigrationDetails castMigrationDetails[] = {
+      { MediaTypeMovie, "movie", "idMovie", VIDEODB_ID_CAST },
+      { MediaTypeTvShow, "tvshow", "idShow", VIDEODB_ID_TV_CAST },
+      { MediaTypeEpisode, "episode", "idEpisode", VIDEODB_ID_EPISODE_CAST },
+    };
+    // clang-format on
+
+    for (const auto& migrationDetail : castMigrationDetails)
+    {
+      const auto sqlFetch = PrepareSQL("SELECT %s FROM %s", migrationDetail.idField.c_str(), migrationDetail.table.c_str());
+      pDS->query(sqlFetch);
+      while (!pDS->eof())
+      {
+        videoInfoTag.Reset();
+
+        const auto id = pDS->fv(0).get_asInt();
+
+        // get all tags
+        std::vector<SActorInfo> cast;
+        GetCast(id, migrationDetail.mediaType, cast);
+        videoInfoTag.SetCast(cast);
+
+        // update the movie table with the serialized tags
+        const auto sqlUpdate =
+          PrepareSQL("UPDATE %s SET c%02d='%s' WHERE %s=%i",
+            migrationDetail.table.c_str(),
+            migrationDetail.idxCast, videoInfoTag.m_cast.ToString().c_str(),
             migrationDetail.idField.c_str(), id);
         m_pDS->exec(sqlUpdate);
 
@@ -10111,7 +10140,7 @@ void CVideoDatabase::ExportActorThumbs(const std::string &strDir, const CVideoIn
     }
   }
 
-  for (const auto &i : tag.m_cast)
+  for (const auto &i : tag.GetCast())
   {
     CFileItem item;
     item.SetLabel(i.strName);

@@ -220,8 +220,85 @@ static const auto StringVectorJsonDeserializer =
   return values;
 };
 
+static const auto CastJsonSerializer = [](const std::vector<SActorInfo>& values) -> std::string
+{
+  rapidjson::StringBuffer stringBuffer;
+  rapidjson::Writer<rapidjson::StringBuffer> writer(stringBuffer);
+  if (!writer.StartArray())
+    return false;
+
+  for (const auto& actor : values)
+  {
+    if (!writer.StartObject())
+      return false;
+
+    if (!writer.Key("name") || !writer.String(actor.strName.c_str()) ||
+        !writer.Key("role") || !writer.String(actor.strRole.c_str()) ||
+        !writer.Key("order") || !writer.Int(actor.order) ||
+        !writer.Key("thumb") || !writer.String(actor.thumb.c_str()) ||
+        !writer.Key("thumbUrl") || !writer.String(actor.thumbUrl.GetData().c_str()))
+      return false;
+
+    writer.EndObject(5);
+  }
+  writer.EndArray(values.size());
+
+  if (!writer.IsComplete())
+    return false;
+
+  return stringBuffer.GetString();
+
+  return {};
+};
+
+static const auto CastJsonDeserializer = [](const std::string& data) -> std::vector<SActorInfo>
+{
+  if (data.empty())
+    return {};
+
+  rapidjson::Document doc;
+  doc.Parse<rapidjson::kParseIterativeFlag>(data.c_str(), data.size());
+  if (doc.HasParseError() || !doc.IsArray())
+    return {};
+
+  std::vector<SActorInfo> actors;
+  for (const auto& value : doc.GetArray())
+  {
+    if (!value.IsObject() || !value.HasMember("name") || !value.HasMember("role") ||
+        !value.HasMember("order") || !value.HasMember("thumb") || !value.HasMember("thumbUrl"))
+      continue;
+
+    const auto& name = value["name"];
+    if (!name.IsString())
+      continue;
+    const auto& role = value["role"];
+    if (!role.IsString())
+      continue;
+    const auto& order = value["order"];
+    if (!order.IsInt())
+      continue;
+    const auto& thumb = value["thumb"];
+    if (!thumb.IsString())
+      continue;
+    const auto& thumbUrl = value["thumbUrl"];
+    if (!thumbUrl.IsString())
+      continue;
+
+    SActorInfo actor;
+    actor.strName = name.GetString();
+    actor.strRole = role.GetString();
+    actor.order = order.GetInt();
+    actor.thumb = thumb.GetString();
+    actor.thumbUrl.ParseFromData(thumbUrl.GetString());
+    actors.emplace_back(actor);
+  }
+
+  return actors;
+};
+
 CVideoInfoTag::CVideoInfoTag()
-  : m_tags(StringVectorJsonSerializer, StringVectorJsonDeserializer),
+  : m_cast(CastJsonSerializer, CastJsonDeserializer),
+    m_tags(StringVectorJsonSerializer, StringVectorJsonDeserializer),
     m_ratings(RatingMapJsonSerializer, RatingMapJsonDeserializer, "default"),
     m_uniqueIDs(UniqueIDMapJsonSerializer, UniqueIDMapJsonDeserializer, "unknown")
 {
@@ -242,7 +319,7 @@ void CVideoInfoTag::Reset()
   m_strShowTitle.clear();
   m_strOriginalTitle.clear();
   m_strSortTitle.clear();
-  m_cast.clear();
+  m_cast->clear();
   m_set.title.clear();
   m_set.id = -1;
   m_set.overview.clear();
@@ -472,7 +549,7 @@ bool CVideoInfoTag::Save(TiXmlNode *node, const std::string &tag, bool savePathI
   }  /* if has stream details */
 
   // cast
-  for (iCast it = m_cast.begin(); it != m_cast.end(); ++it)
+  for (iCast it = m_cast->begin(); it != m_cast->end(); ++it)
   {
     // add a <actor> tag
     TiXmlElement cast("actor");
@@ -542,14 +619,14 @@ void CVideoInfoTag::Archive(CArchive& ar)
     ar << m_strSortTitle;
     ar << m_studio;
     ar << m_strTrailer;
-    ar << (int)m_cast.size();
-    for (unsigned int i=0;i<m_cast.size();++i)
+    ar << (int)m_cast->size();
+    for (const auto& actor : m_cast.value())
     {
-      ar << m_cast[i].strName;
-      ar << m_cast[i].strRole;
-      ar << m_cast[i].order;
-      ar << m_cast[i].thumb;
-      ar << m_cast[i].thumbUrl.GetData();
+      ar << actor.strName;
+      ar << actor.strRole;
+      ar << actor.order;
+      ar << actor.thumb;
+      ar << actor.thumbUrl.GetData();
     }
 
     ar << m_set.title;
@@ -642,7 +719,7 @@ void CVideoInfoTag::Archive(CArchive& ar)
     ar >> m_strTrailer;
     int iCastSize;
     ar >> iCastSize;
-    m_cast.reserve(iCastSize);
+    m_cast->reserve(iCastSize);
     for (int i=0;i<iCastSize;++i)
     {
       SActorInfo info;
@@ -653,7 +730,7 @@ void CVideoInfoTag::Archive(CArchive& ar)
       std::string strXml;
       ar >> strXml;
       info.thumbUrl.ParseFromData(strXml);
-      m_cast.push_back(info);
+      m_cast->push_back(info);
     }
 
     ar >> m_set.title;
@@ -761,15 +838,15 @@ void CVideoInfoTag::Serialize(CVariant& value) const
   value["studio"] = m_studio;
   value["trailer"] = m_strTrailer;
   value["cast"] = CVariant(CVariant::VariantTypeArray);
-  for (unsigned int i = 0; i < m_cast.size(); ++i)
+  for (const auto& actor : m_cast.value())
   {
-    CVariant actor;
-    actor["name"] = m_cast[i].strName;
-    actor["role"] = m_cast[i].strRole;
-    actor["order"] = m_cast[i].order;
-    if (!m_cast[i].thumb.empty())
-      actor["thumbnail"] = CTextureUtils::GetWrappedImageURL(m_cast[i].thumb);
-    value["cast"].push_back(actor);
+    CVariant actorVariant;
+    actorVariant["name"] = actor.strName;
+    actorVariant["role"] = actor.strRole;
+    actorVariant["order"] = actor.order;
+    if (!actor.thumb.empty())
+      actorVariant["thumbnail"] = CTextureUtils::GetWrappedImageURL(actor.thumb);
+    value["cast"].push_back(actorVariant);
   }
   value["set"] = m_set.title;
   value["setid"] = m_set.id;
@@ -984,10 +1061,15 @@ bool CVideoInfoTag::HasUniqueID() const
   return !m_uniqueIDs->Empty();
 }
 
-const std::string CVideoInfoTag::GetCast(bool bIncludeRole /*= false*/) const
+const std::vector<SActorInfo>& CVideoInfoTag::GetCast() const
+{
+  return m_cast.value();
+}
+
+const std::string CVideoInfoTag::GetCastAsString(bool bIncludeRole /*= false*/) const
 {
   std::string strLabel;
-  for (iCast it = m_cast.begin(); it != m_cast.end(); ++it)
+  for (iCast it = m_cast->begin(); it != m_cast->end(); ++it)
   {
     std::string character;
     if (it->strRole.empty() || !bIncludeRole)
@@ -1235,7 +1317,7 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prioritise)
   // cast
   node = movie->FirstChildElement("actor");
   if (node && node->FirstChild() && prioritise)
-    m_cast.clear();
+    m_cast->clear();
   while (node)
   {
     const TiXmlNode *actor = node->FirstChild("name");
@@ -1256,8 +1338,8 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prioritise)
       }
       const char* clear=node->Attribute("clear");
       if (clear && StringUtils::CompareNoCase(clear, "true"))
-        m_cast.clear();
-      m_cast.push_back(info);
+        m_cast->clear();
+      m_cast->push_back(info);
     }
     node = node->NextSiblingElement("actor");
   }
@@ -1782,4 +1864,19 @@ bool CVideoInfoTag::SetResumePoint(double timeInSeconds, double totalTimeInSecon
 
   m_resumePoint = resumePoint;
   return true;
+}
+
+void CVideoInfoTag::ClearCast()
+{
+  m_cast->clear();
+}
+
+void CVideoInfoTag::SetCast(std::vector<SActorInfo> cast)
+{
+  m_cast->swap(cast);
+}
+
+void CVideoInfoTag::AddActor(SActorInfo actor)
+{
+  m_cast->emplace_back(std::move(actor));
 }

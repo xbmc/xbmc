@@ -96,7 +96,7 @@ namespace XBMCAddon
 
     String InfoTagVideo::getCast()
     {
-      return infoTag->GetCast(true);
+      return infoTag->GetCastAsString(true);
     }
 
     String InfoTagVideo::getFile()

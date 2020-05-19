@@ -163,7 +163,7 @@ typedef enum // this enum MUST match the offset struct further down!! and make s
   VIDEODB_ID_RATINGS = 4,
   VIDEODB_ID_RATING_ID = 5,
   VIDEODB_ID_CREDITS = 6,
-  VIDEODB_ID_UNUSED1 = 7, // unused
+  VIDEODB_ID_CAST = 7,
   VIDEODB_ID_THUMBURL = 8,
   VIDEODB_ID_UNIQUEIDS = 9,
   VIDEODB_ID_SORTTITLE = 10,
@@ -201,7 +201,7 @@ const struct SDbTableOffsets
   { VIDEODB_TYPE_SERIALIZED, my_offsetof(CVideoInfoTag,m_ratings) },
   { VIDEODB_TYPE_INT, my_offsetof(CVideoInfoTag,m_iIdRating) },
   { VIDEODB_TYPE_STRINGARRAY, my_offsetof(CVideoInfoTag,m_writingCredits) },
-  { VIDEODB_TYPE_UNUSED, 0 }, // unused
+  { VIDEODB_TYPE_SERIALIZED, my_offsetof(CVideoInfoTag,m_cast) },
   { VIDEODB_TYPE_STRING, my_offsetof(CVideoInfoTag,m_strPictureURL.m_data) },
   { VIDEODB_TYPE_SERIALIZED, my_offsetof(CVideoInfoTag,m_uniqueIDs) },
   { VIDEODB_TYPE_STRING, my_offsetof(CVideoInfoTag,m_strSortTitle) },
@@ -240,6 +240,7 @@ typedef enum // this enum MUST match the offset struct further down!! and make s
   VIDEODB_ID_TV_STUDIOS = 14,
   VIDEODB_ID_TV_SORTTITLE = 15,
   VIDEODB_ID_TV_TRAILER = 16,
+  VIDEODB_ID_TV_CAST = 17,
   VIDEODB_ID_TV_MAX
 } VIDEODB_TV_IDS;
 
@@ -265,7 +266,8 @@ const struct SDbTableOffsets DbTvShowOffsets[] =
   { VIDEODB_TYPE_STRING, my_offsetof(CVideoInfoTag,m_strMPAARating)},
   { VIDEODB_TYPE_STRINGARRAY, my_offsetof(CVideoInfoTag,m_studio)},
   { VIDEODB_TYPE_STRING, my_offsetof(CVideoInfoTag,m_strSortTitle)},
-  { VIDEODB_TYPE_STRING, my_offsetof(CVideoInfoTag,m_strTrailer)}
+  { VIDEODB_TYPE_STRING, my_offsetof(CVideoInfoTag,m_strTrailer)},
+  { VIDEODB_TYPE_SERIALIZED, my_offsetof(CVideoInfoTag,m_cast) },
 };
 
 //! @todo is this comment valid for seasons? There is no offset structure or am I wrong?
@@ -301,7 +303,7 @@ typedef enum // this enum MUST match the offset struct further down!! and make s
   VIDEODB_ID_EPISODE_AIRED = 5,
   VIDEODB_ID_EPISODE_THUMBURL = 6,
   VIDEODB_ID_EPISODE_UNUSED1 = 7, // unused
-  VIDEODB_ID_EPISODE_UNUSED2 = 8, // unused
+  VIDEODB_ID_EPISODE_CAST = 8,
   VIDEODB_ID_EPISODE_RUNTIME = 9,
   VIDEODB_ID_EPISODE_DIRECTOR = 10,
   VIDEODB_ID_EPISODE_PRODUCTIONCODE = 11,
@@ -331,7 +333,7 @@ const struct SDbTableOffsets DbEpisodeOffsets[] =
   { VIDEODB_TYPE_DATE, my_offsetof(CVideoInfoTag,m_firstAired) },
   { VIDEODB_TYPE_STRING, my_offsetof(CVideoInfoTag,m_strPictureURL.m_data) },
   { VIDEODB_TYPE_UNUSED, 0 }, // unused
-  { VIDEODB_TYPE_UNUSED, 0 }, // unused
+  { VIDEODB_TYPE_SERIALIZED, my_offsetof(CVideoInfoTag,m_cast) },
   { VIDEODB_TYPE_INT, my_offsetof(CVideoInfoTag,m_duration) },
   { VIDEODB_TYPE_STRINGARRAY, my_offsetof(CVideoInfoTag,m_director) },
   { VIDEODB_TYPE_STRING, my_offsetof(CVideoInfoTag,m_strProductionCode) },

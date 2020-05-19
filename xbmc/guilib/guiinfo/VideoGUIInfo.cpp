@@ -286,11 +286,11 @@ bool CVideoGUIInfo::GetLabel(std::string& value, const CFileItem *item, int cont
         break;
       case VIDEOPLAYER_CAST:
       case LISTITEM_CAST:
-        value = tag->GetCast();
+        value = tag->GetCastAsString();
         return true;
       case VIDEOPLAYER_CAST_AND_ROLE:
       case LISTITEM_CAST_AND_ROLE:
-        value = tag->GetCast(true);
+        value = tag->GetCastAsString(true);
         return true;
       case VIDEOPLAYER_ARTIST:
       case LISTITEM_ARTIST:

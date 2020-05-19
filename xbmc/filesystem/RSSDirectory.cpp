@@ -203,7 +203,7 @@ static void ParseItemMRSS(CFileItem* item, SResources& resources, TiXmlElement* 
     {
       SActorInfo actor;
       actor.strName = text;
-      vtag->m_cast.push_back(actor);
+      vtag->AddActor(actor);
     }
   }
   else if(name == "copyright")

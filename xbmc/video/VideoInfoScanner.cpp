@@ -1577,7 +1577,11 @@ namespace VIDEO
     // parent folder to apply the thumb to and to search for local actor thumbs
     std::string parentDir = URIUtils::GetBasePath(pItem->GetPath());
     if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_VIDEOLIBRARY_ACTORTHUMBS))
-      FetchActorThumbs(movieDetails.m_cast, actorArtPath.empty() ? parentDir : actorArtPath);
+    {
+      auto cast = movieDetails.GetCast();
+      FetchActorThumbs(cast, actorArtPath.empty() ? parentDir : actorArtPath);
+      movieDetails.SetCast(cast);
+    }
     if (bApplyToDir)
       ApplyThumbToFolder(parentDir, art["thumb"]);
   }
