@@ -16,16 +16,27 @@
 #include <kodi/AddonBase.h>
 #include <kodi/Filesystem.h>
 
+//==============================================================================
+/// @ingroup cpp_kodi_tools_CDllHelper
+/// @brief Macro to translate the given pointer value name of functions to
+/// requested function name.
+///
+/// @note This should always be used and does the work of
+/// @ref kodi::tools::CDllHelper::RegisterSymbol().
+///
 #define REGISTER_DLL_SYMBOL(functionPtr) \
-  CDllHelper::RegisterSymbol(functionPtr, #functionPtr)
+  kodi::tools::CDllHelper::RegisterSymbol(functionPtr, #functionPtr)
+//------------------------------------------------------------------------------
 
 namespace kodi
 {
 namespace tools
 {
 
-/// @brief Class to help with load of shared library functions
-///
+//==============================================================================
+/// @defgroup cpp_kodi_tools_CDllHelper class CDllHelper
+/// @ingroup cpp_kodi_tools
+/// @brief **Class to help with load of shared library functions**\n
 /// You can add them as parent to your class and to help with load of shared
 /// library functions.
 ///
@@ -44,7 +55,7 @@ namespace tools
 ///
 /// ...
 /// class CMyInstance : public kodi::addon::CInstanceAudioDecoder,
-///                     private CDllHelper
+///                     private kodi::tools::CDllHelper
 /// {
 /// public:
 ///   CMyInstance(KODI_HANDLE instance, const std::string& kodiVersion);
@@ -52,7 +63,7 @@ namespace tools
 ///
 ///   ...
 ///
-///   /* The pointers for on shared library exported functions */
+///   // The pointers for on shared library exported functions
 ///   int (*Init)();
 ///   void (*Cleanup)();
 ///   int (*GetLength)();
@@ -77,20 +88,34 @@ namespace tools
 /// ...
 /// ~~~~~~~~~~~~~
 ///
+///@{
 class CDllHelper
 {
 public:
+  //============================================================================
+  /// @ingroup cpp_kodi_tools_CDllHelper
+  /// @brief Class constructor.
+  ///
   CDllHelper() = default;
+  //----------------------------------------------------------------------------
+
+  //============================================================================
+  /// @ingroup cpp_kodi_tools_CDllHelper
+  /// @brief Class destructor.
+  ///
   virtual ~CDllHelper()
   {
     if (m_dll)
       dlclose(m_dll);
   }
+  //----------------------------------------------------------------------------
 
-  /// @brief Function to load requested library
+  //============================================================================
+  /// @ingroup cpp_kodi_tools_CDllHelper
+  /// @brief Function to load requested library.
   ///
-  /// @param[in] path         The path with filename of shared library to load
-  /// @return                 true if load was successful done
+  /// @param[in] path The path with filename of shared library to load
+  /// @return true if load was successful done
   ///
   bool LoadDll(std::string path)
   {
@@ -145,11 +170,21 @@ public:
     }
     return true;
   }
+  //----------------------------------------------------------------------------
 
-  /// @brief Function to register requested library symbol
+  //============================================================================
+  /// @ingroup cpp_kodi_tools_CDllHelper
+  /// @brief Function to register requested library symbol.
   ///
-  /// @note This function should not be used, use instead the macro
-  /// REGISTER_DLL_SYMBOL to register the symbol pointer.
+  /// @warning This function should not be used, use instead the macro
+  /// @ref REGISTER_DLL_SYMBOL to register the symbol pointer.
+  ///
+  ///
+  /// Use this always via Macro, e.g.:
+  /// ~~~~~~~~~~~~~{.cpp}
+  /// if (!REGISTER_DLL_SYMBOL(Init))
+  ///   return false;
+  /// ~~~~~~~~~~~~~
   ///
   template <typename T>
   bool RegisterSymbol(T& functionPtr, const char* strFunctionPtr)
@@ -162,10 +197,13 @@ public:
     }
     return true;
   }
+  //----------------------------------------------------------------------------
 
 private:
   void* m_dll = nullptr;
 };
+///@}
+//------------------------------------------------------------------------------
 
 } /* namespace tools */
 } /* namespace kodi */
