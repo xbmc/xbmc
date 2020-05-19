@@ -169,10 +169,10 @@ typedef enum // this enum MUST match the offset struct further down!! and make s
   VIDEODB_ID_PLOT = 1,
   VIDEODB_ID_PLOTOUTLINE = 2,
   VIDEODB_ID_TAGLINE = 3,
-  VIDEODB_ID_VOTES = 4, // unused
+  VIDEODB_ID_UNUSED1 = 4, // unused
   VIDEODB_ID_RATING_ID = 5,
   VIDEODB_ID_CREDITS = 6,
-  VIDEODB_ID_YEAR = 7, // unused
+  VIDEODB_ID_UNUSED2 = 7, // unused
   VIDEODB_ID_THUMBURL = 8,
   VIDEODB_ID_IDENT_ID = 9,
   VIDEODB_ID_SORTTITLE = 10,
@@ -182,7 +182,7 @@ typedef enum // this enum MUST match the offset struct further down!! and make s
   VIDEODB_ID_GENRE = 14,
   VIDEODB_ID_DIRECTOR = 15,
   VIDEODB_ID_ORIGINALTITLE = 16,
-  VIDEODB_ID_THUMBURL_SPOOF = 17,
+  VIDEODB_ID_UNUSED3 = 17, // unused
   VIDEODB_ID_STUDIOS = 18,
   VIDEODB_ID_TRAILER = 19,
   VIDEODB_ID_FANART = 20,
@@ -191,6 +191,10 @@ typedef enum // this enum MUST match the offset struct further down!! and make s
   VIDEODB_ID_PARENTPATHID = 23,
   VIDEODB_ID_MAX
 } VIDEODB_IDS;
+
+// used for migration logic
+static const int VIDEODB_ID_VOTES = 4;
+static const int VIDEODB_ID_YEAR = 7;
 
 const struct SDbTableOffsets
 {
@@ -230,11 +234,11 @@ typedef enum // this enum MUST match the offset struct further down!! and make s
   VIDEODB_ID_TV_TITLE = 0,
   VIDEODB_ID_TV_PLOT = 1,
   VIDEODB_ID_TV_STATUS = 2,
-  VIDEODB_ID_TV_VOTES = 3, // unused
+  VIDEODB_ID_TV_UNUSED1 = 3, // unused
   VIDEODB_ID_TV_RATING_ID = 4,
   VIDEODB_ID_TV_PREMIERED = 5,
   VIDEODB_ID_TV_THUMBURL = 6,
-  VIDEODB_ID_TV_THUMBURL_SPOOF = 7,
+  VIDEODB_ID_TV_UNUSED2 = 7,  // unused
   VIDEODB_ID_TV_GENRE = 8,
   VIDEODB_ID_TV_ORIGINALTITLE = 9,
   VIDEODB_ID_TV_EPISODEGUIDE = 10,
@@ -247,12 +251,15 @@ typedef enum // this enum MUST match the offset struct further down!! and make s
   VIDEODB_ID_TV_MAX
 } VIDEODB_TV_IDS;
 
+// used for migration logic
+static const int VIDEODB_ID_TV_VOTES = 3;
+
 const struct SDbTableOffsets DbTvShowOffsets[] =
 {
   { VIDEODB_TYPE_STRING, my_offsetof(CVideoInfoTag,m_strTitle) },
   { VIDEODB_TYPE_STRING, my_offsetof(CVideoInfoTag,m_strPlot) },
   { VIDEODB_TYPE_STRING, my_offsetof(CVideoInfoTag,m_strStatus) },
-  { VIDEODB_TYPE_UNUSED, 0 }, //unused
+  { VIDEODB_TYPE_UNUSED, 0 }, // unused
   { VIDEODB_TYPE_INT, my_offsetof(CVideoInfoTag,m_iIdRating) },
   { VIDEODB_TYPE_DATE, my_offsetof(CVideoInfoTag,m_premiered) },
   { VIDEODB_TYPE_STRING, my_offsetof(CVideoInfoTag,m_strPictureURL.m_data) },
@@ -295,13 +302,13 @@ typedef enum // this enum MUST match the offset struct further down!! and make s
   VIDEODB_ID_EPISODE_MIN = -1,
   VIDEODB_ID_EPISODE_TITLE = 0,
   VIDEODB_ID_EPISODE_PLOT = 1,
-  VIDEODB_ID_EPISODE_VOTES = 2, // unused
+  VIDEODB_ID_EPISODE_UNUSED1 = 2, // unused
   VIDEODB_ID_EPISODE_RATING_ID = 3,
   VIDEODB_ID_EPISODE_CREDITS = 4,
   VIDEODB_ID_EPISODE_AIRED = 5,
   VIDEODB_ID_EPISODE_THUMBURL = 6,
-  VIDEODB_ID_EPISODE_THUMBURL_SPOOF = 7,
-  VIDEODB_ID_EPISODE_PLAYCOUNT = 8, // unused - feel free to repurpose
+  VIDEODB_ID_EPISODE_UNUSED2 = 7,  // unused
+  VIDEODB_ID_EPISODE_UNUSED3 = 8, // unused
   VIDEODB_ID_EPISODE_RUNTIME = 9,
   VIDEODB_ID_EPISODE_DIRECTOR = 10,
   VIDEODB_ID_EPISODE_PRODUCTIONCODE = 11,
@@ -316,6 +323,9 @@ typedef enum // this enum MUST match the offset struct further down!! and make s
   VIDEODB_ID_EPISODE_IDENT_ID = 20,
   VIDEODB_ID_EPISODE_MAX
 } VIDEODB_EPISODE_IDS;
+
+// used for migration logic
+static const int VIDEODB_ID_EPISODE_VOTES = 2;
 
 const struct SDbTableOffsets DbEpisodeOffsets[] =
 {
@@ -347,12 +357,12 @@ typedef enum // this enum MUST match the offset struct further down!! and make s
   VIDEODB_ID_MUSICVIDEO_MIN = -1,
   VIDEODB_ID_MUSICVIDEO_TITLE = 0,
   VIDEODB_ID_MUSICVIDEO_THUMBURL = 1,
-  VIDEODB_ID_MUSICVIDEO_THUMBURL_SPOOF = 2,
-  VIDEODB_ID_MUSICVIDEO_PLAYCOUNT = 3, // unused - feel free to repurpose
+  VIDEODB_ID_MUSICVIDEO_UNUSED1 = 2, // unused
+  VIDEODB_ID_MUSICVIDEO_UNUSED2 = 3, // unused
   VIDEODB_ID_MUSICVIDEO_RUNTIME = 4,
   VIDEODB_ID_MUSICVIDEO_DIRECTOR = 5,
   VIDEODB_ID_MUSICVIDEO_STUDIOS = 6,
-  VIDEODB_ID_MUSICVIDEO_YEAR = 7, // unused
+  VIDEODB_ID_MUSICVIDEO_UNUSED3 = 7, // unused
   VIDEODB_ID_MUSICVIDEO_PLOT = 8,
   VIDEODB_ID_MUSICVIDEO_ALBUM = 9,
   VIDEODB_ID_MUSICVIDEO_ARTIST = 10,
@@ -362,6 +372,9 @@ typedef enum // this enum MUST match the offset struct further down!! and make s
   VIDEODB_ID_MUSICVIDEO_PARENTPATHID = 14,
   VIDEODB_ID_MUSICVIDEO_MAX
 } VIDEODB_MUSICVIDEO_IDS;
+
+// used for migration logic
+static const int VIDEODB_ID_MUSICVIDEO_YEAR = 7;
 
 const struct SDbTableOffsets DbMusicVideoOffsets[] =
 {
