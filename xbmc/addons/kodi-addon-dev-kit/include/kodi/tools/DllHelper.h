@@ -9,13 +9,10 @@
 #pragma once
 
 #include <string>
-#include <kodi/AddonBase.h>
 
-#ifdef _WIN32                   // windows
-#include <p8-platform/windows/dlfcn-win32.h>
-#else
-#include <dlfcn.h>              // linux+osx
-#endif
+#include <dlfcn.h>
+#include <kodi/AddonBase.h>
+#include <kodi/Filesystem.h>
 
 #define REGISTER_DLL_SYMBOL(functionPtr) \
   CDllHelper::RegisterSymbol(functionPtr, #functionPtr)
@@ -25,7 +22,8 @@
 /// You can add them as parent to your class and to help with load of shared
 /// library functions.
 ///
-/// @note To use on Windows must you also include p8-platform on your addon!
+/// @note To use on Windows must you also include [dlfcn-win32](https://github.com/dlfcn-win32/dlfcn-win32) on your addon!\n\n
+/// Furthermore, this allows the use of Android where the required library is copied to an EXE useable folder.
 ///
 ///
 /// ----------------------------------------------------------------------------
@@ -73,7 +71,7 @@
 class CDllHelper
 {
 public:
-  CDllHelper() : m_dll(nullptr) { }
+  CDllHelper() = default;
   virtual ~CDllHelper()
   {
     if (m_dll)
@@ -85,8 +83,51 @@ public:
   /// @param[in] path         The path with filename of shared library to load
   /// @return                 true if load was successful done
   ///
-  bool LoadDll(const std::string& path)
+  bool LoadDll(std::string path)
   {
+#if defined(TARGET_ANDROID)
+    if (kodi::vfs::FileExists(path))
+    {
+      // Check already defined for "xbmcaltbinaddons", if yes no copy necassary.
+      std::string xbmcaltbinaddons =
+          kodi::vfs::TranslateSpecialProtocol("special://xbmcaltbinaddons/");
+      if (path.compare(0, xbmcaltbinaddons.length(), xbmcaltbinaddons) != 0)
+      {
+        bool doCopy = true;
+        std::string dstfile = xbmcaltbinaddons + kodi::vfs::GetFileName(path);
+
+        kodi::vfs::FileStatus dstFileStat;
+        if (kodi::vfs::StatFile(dstfile, dstFileStat))
+        {
+          kodi::vfs::FileStatus srcFileStat;
+          if (kodi::vfs::StatFile(path, srcFileStat))
+          {
+            if (dstFileStat.GetSize() == srcFileStat.GetSize() &&
+                dstFileStat.GetModificationTime() > srcFileStat.GetModificationTime())
+              doCopy = false;
+          }
+        }
+
+        if (doCopy)
+        {
+          kodi::Log(ADDON_LOG_DEBUG, "Caching '%s' to '%s'", path.c_str(), dstfile.c_str());
+          if (!kodi::vfs::CopyFile(path, dstfile))
+          {
+            kodi::Log(ADDON_LOG_ERROR, "Failed to cache '%s' to '%s'", path.c_str(),
+                      dstfile.c_str());
+            return false;
+          }
+        }
+
+        path = dstfile;
+      }
+    }
+    else
+    {
+      return false;
+    }
+#endif
+
     m_dll = dlopen(path.c_str(), RTLD_LAZY);
     if (m_dll == nullptr)
     {
@@ -114,5 +155,5 @@ public:
   }
 
 private:
-  void* m_dll;
+  void* m_dll = nullptr;
 };
