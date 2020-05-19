@@ -4303,10 +4303,17 @@ void CVideoDatabase::GetCast(int media_id, const std::string &media_type, std::v
       SActorInfo info;
       info.strName = m_pDS2->fv(0).get_asString();
       info.strRole = m_pDS2->fv(1).get_asString();
-      info.order = m_pDS2->fv(2).get_asInt();
-      info.thumbUrl.ParseFromData(m_pDS2->fv(3).get_asString());
-      info.thumb = m_pDS2->fv(4).get_asString();
-      cast.emplace_back(std::move(info));
+
+      // ignore identical actors (since cast might already be prefilled)
+      if (std::none_of(cast.begin(), cast.end(), [info](const SActorInfo& actor) {
+            return actor.strName == info.strName && actor.strRole == info.strRole;
+          }))
+      {
+        info.order = m_pDS2->fv(2).get_asInt();
+        info.thumbUrl.ParseFromData(m_pDS2->fv(3).get_asString());
+        info.thumb = m_pDS2->fv(4).get_asString();
+        cast.emplace_back(std::move(info));
+      }
 
       m_pDS2->next();
     }
