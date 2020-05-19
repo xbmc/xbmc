@@ -455,13 +455,8 @@ namespace PVR
     bool AddTimerRule::IsVisible(const CFileItem& item) const
     {
       const std::shared_ptr<CPVREpgInfoTag> epg = item.GetEPGInfoTag();
-      if (epg && !epg->IsGapTag() &&
-          !CServiceBroker::GetPVRManager().Timers()->GetTimerForEpgTag(epg))
-      {
-        const std::shared_ptr<CPVRClient> client = CServiceBroker::GetPVRManager().GetClient(item);
-        return client && client->GetClientCapabilities().SupportsTimers();
-      }
-      return false;
+      return (epg && !epg->IsGapTag() &&
+              !CServiceBroker::GetPVRManager().Timers()->GetTimerForEpgTag(epg));
     }
 
     bool AddTimerRule::Execute(const CFileItemPtr& item) const
