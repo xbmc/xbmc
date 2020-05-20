@@ -33,7 +33,7 @@
 // Ignore clang here, as this must be good in overview and as the main reason,
 // because cmake uses this area in this form to perform its addon dependency
 // check.
-// clang format off
+// clang-format off
 #define ADDON_GLOBAL_VERSION_MAIN                     "1.2.0"
 #define ADDON_GLOBAL_VERSION_MAIN_MIN                 "1.2.0"
 #define ADDON_GLOBAL_VERSION_MAIN_XML_ID              "kodi.binary.global.main"
@@ -132,7 +132,7 @@
 #define ADDON_INSTANCE_VERSION_VIDEOCODEC_DEPENDS     "addon-instance/VideoCodec.h" \
                                                       "StreamCodec.h" \
                                                       "StreamCrypto.h"
-// clang format on
+// clang-format on
 
 //==============================================================================
 ///
