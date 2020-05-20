@@ -2115,7 +2115,7 @@ public:
     using namespace kodi::addon;
 
     if (!m_file)
-      return -1;
+      return false;
     return CAddonBase::m_interface->toKodi->kodi_filesystem->io_control_get_seek_possible(
         CAddonBase::m_interface->toKodi->kodiBase, m_file);
   }
@@ -2136,7 +2136,7 @@ public:
     using namespace kodi::addon;
 
     if (!m_file)
-      return -1;
+      return false;
     return CAddonBase::m_interface->toKodi->kodi_filesystem->io_control_get_cache_status(
         CAddonBase::m_interface->toKodi->kodiBase, m_file, status);
   }
@@ -2154,7 +2154,7 @@ public:
     using namespace kodi::addon;
 
     if (!m_file)
-      return -1;
+      return false;
     return CAddonBase::m_interface->toKodi->kodi_filesystem->io_control_set_cache_rate(
         CAddonBase::m_interface->toKodi->kodiBase, m_file, rate);
   }
@@ -2172,7 +2172,7 @@ public:
     using namespace kodi::addon;
 
     if (!m_file)
-      return -1;
+      return false;
     return CAddonBase::m_interface->toKodi->kodi_filesystem->io_control_set_retry(
         CAddonBase::m_interface->toKodi->kodiBase, m_file, retry);
   }
