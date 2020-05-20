@@ -151,7 +151,9 @@ CGUIViewStateMusicDatabase::CGUIViewStateMusicDatabase(const CFileItemList& item
   case NODE_TYPE_ARTIST:
     {
       AddSortMethod(SortByArtist, sortAttribute, 557, LABEL_MASKS("%F", "", "%A", ""));  // Filename, empty | Artist, empty
-      AddSortMethod(SortByDateAdded, sortAttribute, 570, LABEL_MASKS("%F", "", "%A", "%a"));  // Filename, empty | Artist, dateAdded
+      AddSortMethod(
+          SortByDateAdded, sortAttribute,
+          12014, LABEL_MASKS("%F", "", "%A", "%a"));  // Filename, empty | Artist, dateAdded
       SetSortMethod(SortByArtist);
 
       const CViewState *viewState = CViewStateSettings::GetInstance().Get("musicnavartists");
@@ -180,7 +182,9 @@ CGUIViewStateMusicDatabase::CGUIViewStateMusicDatabase(const CFileItemList& item
           SortByOrigDate, sortAttribute, 38079,
           LABEL_MASKS("%F", "", strAlbum, "%e")); // Filename, empty | Userdefined, Original date
       // album date added
-      AddSortMethod(SortByDateAdded, sortAttribute, 570, LABEL_MASKS("%F", "", strAlbum, "%a"));  // Filename, empty | Userdefined, dateAdded
+      AddSortMethod(
+          SortByDateAdded, sortAttribute, 12014,
+          LABEL_MASKS("%F", "", strAlbum, "%a"));  // Filename, empty | Userdefined, dateAdded
       // play count
       AddSortMethod(SortByPlaycount, 567, LABEL_MASKS("%F", "", strAlbum, "%V"));  // Filename, empty | Userdefined, Play count
       // last played
@@ -412,7 +416,9 @@ CGUIViewStateMusicSmartPlaylist::CGUIViewStateMusicSmartPlaylist(const CFileItem
           SortByOrigDate, 38079,
           LABEL_MASKS("%F", "", strAlbum, "%e")); // Filename, empty | Userdefined, Original date
     // album date added
-    AddSortMethod(SortByDateAdded, sortAttribute, 570, LABEL_MASKS("%F", "", strAlbum, "%a"));  // Filename, empty | Userdefined, dateAdded
+    AddSortMethod(
+        SortByDateAdded, sortAttribute, 12014,
+        LABEL_MASKS("%F", "", strAlbum, "%a"));  // Filename, empty | Userdefined, dateAdded
     // play count
     AddSortMethod(SortByPlaycount, 567, LABEL_MASKS("%F", "", strAlbum, "%V"));  // Filename, empty | Userdefined, Play count
     // last played

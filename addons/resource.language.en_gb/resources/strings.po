@@ -5554,6 +5554,8 @@ msgid "Install date"
 msgstr ""
 
 #: xbmc/addons/GUIViewStateAddonBrowser.cpp
+#: xbmc/music/GUIViewStateMusic.cpp
+#: xbmc/video/GUIViewStateVideo.cpp
 msgctxt "#12014"
 msgid "Last updated"
 msgstr ""
