@@ -40,7 +40,7 @@ std::string CCPUInfo::GetCoresUsageString()
 
   if (SupportsCPUUsage())
   {
-	GetUsedPercentage(); // must call it to recalculate pct values
+    GetUsedPercentage(); // must call it to recalculate pct values
 
     if (!m_cores.empty())
     {
