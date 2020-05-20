@@ -11,7 +11,10 @@
 #include "FileItem.h"
 #include "ServiceBroker.h"
 #include "guilib/LocalizeStrings.h"
+#include "guilib/WindowIDs.h"
+#include "input/WindowTranslator.h"
 #include "pvr/PVRManager.h"
+#include "pvr/addons/PVRClients.h"
 #include "pvr/channels/PVRChannel.h"
 #include "pvr/channels/PVRChannelGroup.h"
 #include "pvr/channels/PVRChannelGroups.h"
@@ -53,6 +56,85 @@ bool CPVRGUIDirectory::SupportsWriteFileOperations() const
   return URIUtils::IsPVRRecording(filename);
 }
 
+namespace
+{
+
+bool GetRootDirectory(bool bRadio, CFileItemList& results)
+{
+  std::shared_ptr<CFileItem> item;
+
+  const std::shared_ptr<CPVRClients> clients = CServiceBroker::GetPVRManager().Clients();
+
+  // Channels
+  item.reset(new CFileItem(
+      bRadio ? CPVRChannelsPath::PATH_RADIO_CHANNELS : CPVRChannelsPath::PATH_TV_CHANNELS, true));
+  item->SetLabel(g_localizeStrings.Get(19019)); // Channels
+  item->SetProperty("node.target", CWindowTranslator::TranslateWindow(bRadio ? WINDOW_RADIO_CHANNELS
+                                                                             : WINDOW_TV_CHANNELS));
+  item->SetArt("icon", "DefaultPVRChannels.png");
+  results.Add(item);
+
+  // EPG
+  const bool bAnyClientSupportingEPG = clients->AnyClientSupportingEPG();
+  if (bAnyClientSupportingEPG)
+  {
+    item.reset(
+        new CFileItem(StringUtils::Format("pvr://guide/%s/", bRadio ? "radio" : "tv"), true));
+    item->SetLabel(g_localizeStrings.Get(19069)); // Guide
+    item->SetProperty("node.target", CWindowTranslator::TranslateWindow(bRadio ? WINDOW_RADIO_GUIDE
+                                                                               : WINDOW_TV_GUIDE));
+    item->SetArt("icon", "DefaultPVRGuide.png");
+    results.Add(item);
+  }
+
+  // Recordings
+  if (clients->AnyClientSupportingRecordings())
+  {
+    item.reset(new CFileItem(bRadio ? CPVRRecordingsPath::PATH_ACTIVE_RADIO_RECORDINGS
+                                    : CPVRRecordingsPath::PATH_ACTIVE_TV_RECORDINGS,
+                             true));
+    item->SetLabel(g_localizeStrings.Get(19017)); // Recordings
+    item->SetProperty("node.target", CWindowTranslator::TranslateWindow(
+                                         bRadio ? WINDOW_RADIO_RECORDINGS : WINDOW_TV_RECORDINGS));
+    item->SetArt("icon", "DefaultPVRRecordings.png");
+    results.Add(item);
+  }
+
+  // Timers/Timer rules
+  // - always present, because Reminders are always available, no client support needed for this
+  item.reset(new CFileItem(
+      bRadio ? CPVRTimersPath::PATH_RADIO_TIMERS : CPVRTimersPath::PATH_TV_TIMERS, true));
+  item->SetLabel(g_localizeStrings.Get(19040)); // Timers
+  item->SetProperty("node.target", CWindowTranslator::TranslateWindow(bRadio ? WINDOW_RADIO_TIMERS
+                                                                             : WINDOW_TV_TIMERS));
+  item->SetArt("icon", "DefaultPVRTimers.png");
+  results.Add(item);
+
+  item.reset(new CFileItem(
+      bRadio ? CPVRTimersPath::PATH_RADIO_TIMER_RULES : CPVRTimersPath::PATH_TV_TIMER_RULES, true));
+  item->SetLabel(g_localizeStrings.Get(19138)); // Timer rules
+  item->SetProperty("node.target", CWindowTranslator::TranslateWindow(
+                                       bRadio ? WINDOW_RADIO_TIMER_RULES : WINDOW_TV_TIMER_RULES));
+  item->SetArt("icon", "DefaultPVRTimerRules.png");
+  results.Add(item);
+
+  // Search
+  if (bAnyClientSupportingEPG)
+  {
+    item.reset(
+        new CFileItem(StringUtils::Format("pvr://search/%s/", bRadio ? "radio" : "tv"), true));
+    item->SetLabel(g_localizeStrings.Get(137)); // Search
+    item->SetProperty("node.target", CWindowTranslator::TranslateWindow(bRadio ? WINDOW_RADIO_SEARCH
+                                                                               : WINDOW_TV_SEARCH));
+    item->SetArt("icon", "DefaultPVRSearch.png");
+    results.Add(item);
+  }
+
+  return true;
+}
+
+} // unnamed namespace
+
 bool CPVRGUIDirectory::GetDirectory(CFileItemList& results) const
 {
   std::string base = m_url.Get();
@@ -86,6 +168,22 @@ bool CPVRGUIDirectory::GetDirectory(CFileItemList& results) const
 
       // Sort by name only. Labels are preformatted.
       results.AddSortMethod(SortByLabel, 551 /* Name */, LABEL_MASKS("%L", "", "%L", ""));
+    }
+    return true;
+  }
+  else if (StringUtils::StartsWith(fileName, "tv"))
+  {
+    if (CServiceBroker::GetPVRManager().IsStarted())
+    {
+      return GetRootDirectory(false, results);
+    }
+    return true;
+  }
+  else if (StringUtils::StartsWith(fileName, "radio"))
+  {
+    if (CServiceBroker::GetPVRManager().IsStarted())
+    {
+      return GetRootDirectory(true, results);
     }
     return true;
   }

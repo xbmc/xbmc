@@ -17,6 +17,10 @@ namespace PVR
   public:
     static const std::string PATH_ADDTIMER;
     static const std::string PATH_NEW;
+    static const std::string PATH_TV_TIMERS;
+    static const std::string PATH_TV_TIMER_RULES;
+    static const std::string PATH_RADIO_TIMERS;
+    static const std::string PATH_RADIO_TIMER_RULES;
 
     explicit CPVRTimersPath(const std::string& strPath);
     CPVRTimersPath(const std::string& strPath, int iClientId, int iParentId);

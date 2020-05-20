@@ -19,6 +19,10 @@ using namespace PVR;
 
 const std::string CPVRTimersPath::PATH_ADDTIMER = "pvr://timers/addtimer/";
 const std::string CPVRTimersPath::PATH_NEW = "pvr://timers/new/";
+const std::string CPVRTimersPath::PATH_TV_TIMERS = "pvr://timers/tv/timers/";
+const std::string CPVRTimersPath::PATH_TV_TIMER_RULES = "pvr://timers/radio/timers/";
+const std::string CPVRTimersPath::PATH_RADIO_TIMERS = "pvr://timers/tv/rules/";
+const std::string CPVRTimersPath::PATH_RADIO_TIMER_RULES = "pvr://timers/radio/rules/";
 
 CPVRTimersPath::CPVRTimersPath(const std::string& strPath)
 {

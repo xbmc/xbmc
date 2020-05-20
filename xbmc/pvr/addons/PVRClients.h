@@ -273,6 +273,17 @@ namespace PVR
      */
     bool AnyClientSupportingRecordingsSize() const;
 
+    /*!
+     * @brief Get whether or not any client supports EPG.
+     * @return True if any client supports EPG.
+     */
+    bool AnyClientSupportingEPG() const;
+
+    /*!
+     * @brief Get whether or not any client supports recordings.
+     * @return True if any client supports recordings.
+     */
+    bool AnyClientSupportingRecordings() const;
     //@}
 
     /*! @name Power management methods */

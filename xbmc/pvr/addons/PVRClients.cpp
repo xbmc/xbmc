@@ -563,6 +563,30 @@ bool CPVRClients::AnyClientSupportingRecordingsSize() const
   return recordingSizeClients.size() != 0;
 }
 
+bool CPVRClients::AnyClientSupportingEPG() const
+{
+  bool bHaveSupportingClient = false;
+  ForCreatedClients(__FUNCTION__,
+                    [&bHaveSupportingClient](const std::shared_ptr<CPVRClient>& client) {
+                      if (client->GetClientCapabilities().SupportsEPG())
+                        bHaveSupportingClient = true;
+                      return PVR_ERROR_NO_ERROR;
+                    });
+  return bHaveSupportingClient;
+}
+
+bool CPVRClients::AnyClientSupportingRecordings() const
+{
+  bool bHaveSupportingClient = false;
+  ForCreatedClients(__FUNCTION__,
+                    [&bHaveSupportingClient](const std::shared_ptr<CPVRClient>& client) {
+                      if (client->GetClientCapabilities().SupportsRecordings())
+                        bHaveSupportingClient = true;
+                      return PVR_ERROR_NO_ERROR;
+                    });
+  return bHaveSupportingClient;
+}
+
 void CPVRClients::OnSystemSleep()
 {
   ForCreatedClients(__FUNCTION__, [](const std::shared_ptr<CPVRClient>& client) {

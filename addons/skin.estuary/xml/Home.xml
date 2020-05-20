@@ -402,11 +402,12 @@
 							</control>
 						</control>
 						<include content="WidgetListCategories" condition="System.HasPVRAddon">
+							<param name="content_path" value="pvr://tv/"/>
 							<param name="widget_header" value="$LOCALIZE[31148]"/>
+							<param name="widget_target" value="pvr"/>
 							<param name="list_id" value="12900"/>
-							<param name="pvr_submenu" value="true"/>
-							<param name="pvr_type" value="TV"/>
 						</include>
+
 						<include content="WidgetListChannels" condition="System.HasPVRAddon">
 							<param name="content_path" value="pvr://channels/tv/*?view=lastplayed"/>
 							<param name="sortby" value="lastplayed"/>
@@ -482,10 +483,10 @@
 							</control>
 						</control>
 						<include content="WidgetListCategories" condition="System.HasPVRAddon">
+							<param name="content_path" value="pvr://radio/"/>
 							<param name="widget_header" value="$LOCALIZE[31148]"/>
+							<param name="widget_target" value="pvr"/>
 							<param name="list_id" value="13900"/>
-							<param name="pvr_submenu" value="true"/>
-							<param name="pvr_type" value="Radio"/>
 						</include>
 						<include content="WidgetListChannels" condition="System.HasPVRAddon">
 							<param name="content_path" value="pvr://channels/radio/*?view=lastplayed"/>

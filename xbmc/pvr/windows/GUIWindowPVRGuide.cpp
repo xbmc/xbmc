@@ -27,6 +27,7 @@
 #include "pvr/channels/PVRChannel.h"
 #include "pvr/channels/PVRChannelGroup.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
+#include "pvr/channels/PVRChannelsPath.h"
 #include "pvr/epg/EpgChannelData.h"
 #include "pvr/epg/EpgContainer.h"
 #include "pvr/epg/EpgInfoTag.h"
@@ -368,9 +369,16 @@ bool CGUIWindowPVRGuideBase::OnMessage(CGUIMessage& message)
   switch (message.GetMessage())
   {
     case GUI_MSG_WINDOW_INIT:
-      // if a path to a channel group is given we must init that group instead of last played/selected group
-      m_channelGroupPath = message.GetStringParam(0);
+    {
+      const CPVRChannelsPath path(message.GetStringParam(0));
+      if (path.IsValid() && path.IsChannelGroup())
+      {
+        // if a path to a channel group is given we must init
+        // that group instead of last played/selected group
+        m_channelGroupPath = message.GetStringParam(0);
+      }
       break;
+    }
 
     case GUI_MSG_ITEM_SELECTED:
       message.SetParam1(GetCurrentListItemIndex(GetCurrentListItem()));
