@@ -571,3 +571,7 @@ msgstr "Profiilin kuva"
 msgctxt "#31167"
 msgid "Animate background"
 msgstr "Animoitu taustakuva"
+
+msgctxt "#31168"
+msgid "Simplified fast forwarding view"
+msgstr "Yksinkertainen näkymä eteenpäin kelattaessa"
