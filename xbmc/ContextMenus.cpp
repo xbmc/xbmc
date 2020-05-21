@@ -76,16 +76,19 @@ std::string CAddRemoveFavourite::GetLabel(const CFileItem& item) const
 
 bool CAddRemoveFavourite::IsVisible(const CFileItem& item) const
 {
-  return !item.IsParentFolder() &&
-         !item.IsPath("add") &&
-         !item.IsPath("newplaylist://") &&
-         !URIUtils::IsProtocol(item.GetPath(), "favourites") &&
-         !URIUtils::IsProtocol(item.GetPath(), "newsmartplaylist") &&
-         !URIUtils::IsProtocol(item.GetPath(), "newtag") &&
-         !URIUtils::IsProtocol(item.GetPath(), "musicsearch") &&
-         !StringUtils::StartsWith(item.GetPath(), "pvr://guide/") &&
-         !StringUtils::StartsWith(item.GetPath(), "pvr://timers/") &&
-         !item.GetPath().empty();
+  return (!item.GetPath().empty() && !item.IsParentFolder() && !item.IsPath("add") &&
+          !item.IsPath("newplaylist://") && !URIUtils::IsProtocol(item.GetPath(), "favourites") &&
+          !URIUtils::IsProtocol(item.GetPath(), "newsmartplaylist") &&
+          !URIUtils::IsProtocol(item.GetPath(), "newtag") &&
+          !URIUtils::IsProtocol(item.GetPath(), "musicsearch") &&
+          // hide this item for all PVR timers/EPG except timer/timer rules/EPG root folders
+          !StringUtils::StartsWith(item.GetPath(), "pvr://guide/") &&
+          !StringUtils::StartsWith(item.GetPath(), "pvr://timers/")) ||
+         item.GetPath() == "pvr://guide/tv/" || item.GetPath() == "pvr://guide/radio/" ||
+         item.GetPath() == "pvr://timers/tv/timers/" ||
+         item.GetPath() == "pvr://timers/radio/timers/" ||
+         item.GetPath() == "pvr://timers/tv/rules/" ||
+         item.GetPath() == "pvr://timers/radio/rules/";
 }
 
 bool CAddRemoveFavourite::Execute(const CFileItemPtr& item) const

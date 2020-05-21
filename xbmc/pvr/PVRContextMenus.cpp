@@ -375,7 +375,7 @@ namespace PVR
       if (item.m_bIsFolder)
       {
         const CPVRRecordingsPath path(item.GetPath());
-        return path.IsValid();
+        return path.IsValid() && !path.IsRecordingsRoot();
       }
 
       return false;
