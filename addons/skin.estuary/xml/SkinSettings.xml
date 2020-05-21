@@ -61,6 +61,12 @@
 					<onclick>Skin.ToggleSetting(hide_mediaflags)</onclick>
 					<selected>!Skin.HasSetting(hide_mediaflags)</selected>
 				</control>
+				<control type="radiobutton" id="708">
+					<label>$LOCALIZE[31168]</label>
+					<include>DefaultSettingButton</include>
+					<onclick>Skin.ToggleSetting(simple_ff_view)</onclick>
+					<selected>Skin.HasSetting(simple_ff_view)</selected>
+				</control>
 				<control type="button" id="706">
 					<label>$LOCALIZE[31024]</label>
 					<include>DefaultSettingButton</include>
