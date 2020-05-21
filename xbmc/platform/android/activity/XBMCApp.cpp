@@ -725,6 +725,10 @@ void CXBMCApp::UpdateSessionState()
       m_playback_state |= PLAYBACK_STATE_AUDIO;
     else
       m_playback_state &= ~PLAYBACK_STATE_AUDIO;
+    if (!g_application.GetAppPlayer().CanPause())
+      m_playback_state |= PLAYBACK_STATE_CANNOT_PAUSE;
+    else
+      m_playback_state &= ~PLAYBACK_STATE_CANNOT_PAUSE;
     pos = g_application.GetAppPlayer().GetTime();
     speed = g_application.GetAppPlayer().GetPlaySpeed();
     if (m_playback_state & PLAYBACK_STATE_PLAYING)
