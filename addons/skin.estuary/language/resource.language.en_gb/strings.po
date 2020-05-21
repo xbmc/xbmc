@@ -778,3 +778,9 @@ msgstr ""
 msgctxt "#31167"
 msgid "Animate background"
 msgstr ""
+
+#. Label for the simplified fast forwarding view
+#: /xml/SkinSettings.xml
+msgctxt "#31168"
+msgid "Simplified fast forwarding view"
+msgstr ""
