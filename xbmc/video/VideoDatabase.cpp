@@ -6304,7 +6304,21 @@ bool CVideoDatabase::GetSetsByWhere(const std::string& strBaseDir, const Filter 
       return false;
 
     CFileItemList sets;
-    GroupAttribute groupingAttributes = ignoreSingleMovieSets ? GroupAttributeIgnoreSingleItems : GroupAttributeNone;
+    GroupAttribute groupingAttributes;
+    const CUrlOptions::UrlOptions& options = videoUrl.GetOptions();
+    auto option = options.find("ignoreSingleMovieSets");
+
+    if (option != options.end())
+    {
+      groupingAttributes =
+          option->second.asBoolean() ? GroupAttributeIgnoreSingleItems : GroupAttributeNone;
+    }
+    else
+    {
+      groupingAttributes =
+          ignoreSingleMovieSets ? GroupAttributeIgnoreSingleItems : GroupAttributeNone;
+    }
+
     if (!GroupUtils::Group(GroupBySet, strBaseDir, items, sets, groupingAttributes))
       return false;
 

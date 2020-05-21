@@ -1638,7 +1638,13 @@ bool CGUIDialogVideoInfo::GetSetForMovie(const CFileItem *movieItem, CFileItemPt
     return false;
 
   CFileItemList listItems;
-  std::string baseDir = "videodb://movies/sets/";
+
+  // " ignoreSingleMovieSets=false " as an option in the url is needed here
+  // to override the gui-setting "Include sets containing a single movie"
+  // and retrieve all moviesets
+
+  std::string baseDir = "videodb://movies/sets/?ignoreSingleMovieSets=false";
+
   if (!CDirectory::GetDirectory(baseDir, listItems, "", DIR_FLAG_DEFAULTS))
     return false;
   listItems.Sort(SortByLabel, SortOrderAscending, CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_FILELISTS_IGNORETHEWHENSORTING) ? SortAttributeIgnoreArticle : SortAttributeNone);
@@ -1654,6 +1660,15 @@ bool CGUIDialogVideoInfo::GetSetForMovie(const CFileItem *movieItem, CFileItemPt
 
   if (currentSetId > 0)
   {
+    // remove duplicate entry
+    for (int listIndex = 0; listIndex < listItems.Size(); listIndex++)
+    {
+      if (listItems.Get(listIndex)->GetVideoInfoTag()->m_iDbId == currentSetId)
+      {
+        listItems.Remove(listIndex);
+        break;
+      }
+    }
     // add clear item
     std::string strClear = StringUtils::Format(g_localizeStrings.Get(20467).c_str(), currentSetLabel.c_str());
     CFileItemPtr clearItem(new CFileItem(strClear));
