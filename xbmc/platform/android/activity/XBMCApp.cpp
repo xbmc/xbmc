@@ -1030,7 +1030,7 @@ void CXBMCApp::onReceive(CJNIIntent intent)
       // If we have unplugged headset and playing content then pause or stop
       if (!newstate && (m_playback_state & PLAYBACK_STATE_PLAYING))
       {
-        if (m_playback_state & PLAYBACK_STATE_CANNOT_PAUSE)
+        if (!g_application.GetAppPlayer().CanPause())
         {
           CApplicationMessenger::GetInstance().PostMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1,	
                                                     static_cast<void*>(new CAction(ACTION_STOP)));
