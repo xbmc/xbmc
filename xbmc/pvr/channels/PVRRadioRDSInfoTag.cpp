@@ -25,7 +25,7 @@
 
 using namespace PVR;
 
-CPVRRadioRDSInfoTag::CPVRRadioRDSInfoTag(void)
+CPVRRadioRDSInfoTag::CPVRRadioRDSInfoTag()
 {
   Clear();
 }

@@ -8,47 +8,27 @@
 # CDIO_FOUND - system has cdio
 # CDIO_INCLUDE_DIRS - the cdio include directory
 # CDIO_LIBRARIES - the cdio libraries
-#
-# and the following imported targets::
-#
-#   CDIO::CDIO - The cdio library
 
 if(PKG_CONFIG_FOUND)
-  pkg_check_modules(PC_CDIO libcdio>=0.78 libiso9660 QUIET)
+  pkg_check_modules(PC_CDIO libcdio>=0.80 QUIET)
 endif()
 
 find_path(CDIO_INCLUDE_DIR NAMES cdio/cdio.h
-                           PATHS ${PC_CDIO_libcdio_INCLUDEDIR}
-                                 ${PC_CDIO_libiso9660_INCLUDEDIR})
+                           PATHS ${PC_CDIO_INCLUDEDIR})
+
 find_library(CDIO_LIBRARY NAMES cdio libcdio
-                          PATHS ${CDIO_libcdio_LIBDIR} ${CDIO_libiso9660_LIBDIR})
+                          PATHS ${PC_CDIO_LIBDIR})
 
-if(NOT WIN32)
-  find_path(ISO9660_INCLUDE_DIR NAMES cdio/iso9660.h
-                                PATHS ${PC_CDIO_libcdio_INCLUDEDIR}
-                                      ${PC_CDIO_libiso9660_INCLUDEDIR})
-  find_library(ISO9660_LIBRARY NAMES iso9660
-                               PATHS ${CDIO_libcdio_LIBDIR} ${CDIO_libiso9660_LIBDIR})
-  list(APPEND ISO9660_VARS ISO9660_INCLUDE_DIR ISO9660_LIBRARY)
-endif()
-
-set(CDIO_VERSION ${PC_CDIO_libcdio_VERSION})
+set(CDIO_VERSION ${PC_CDIO_VERSION})
 
 include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(Cdio
-                                  REQUIRED_VARS CDIO_LIBRARY CDIO_INCLUDE_DIR ${ISO9660_VARS}
+                                  REQUIRED_VARS CDIO_LIBRARY CDIO_INCLUDE_DIR
                                   VERSION_VAR CDIO_VERSION)
 
 if(CDIO_FOUND)
-  set(CDIO_LIBRARIES ${CDIO_LIBRARY} ${ISO9660_LIBRARY})
-  set(CDIO_INCLUDE_DIRS ${CDIO_INCLUDE_DIR} ${ISO9660_INCLUDE_DIR})
-
-  if(NOT TARGET CDIO::CDIO)
-    add_library(CDIO::CDIO UNKNOWN IMPORTED)
-    set_target_properties(CDIO::CDIO PROPERTIES
-                                     IMPORTED_LOCATION "${CDIO_LIBRARY}"
-                                     INTERFACE_INCLUDE_DIRECTORIES "${CDIO_INCLUDE_DIR}")
-  endif()
+  set(CDIO_LIBRARIES ${CDIO_LIBRARY})
+  set(CDIO_INCLUDE_DIRS ${CDIO_INCLUDE_DIR})
 endif()
 
-mark_as_advanced(CDIO_INCLUDE_DIR CDIO_LIBRARY ISO9660_INCLUDE_DIR ISO9660_LIBRARY)
+mark_as_advanced(CDIO_INCLUDE_DIR CDIO_LIBRARY)

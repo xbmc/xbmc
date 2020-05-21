@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2010-2018 Team Kodi
+ *  Copyright (C) 2010-2020 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -71,7 +71,7 @@ bool CFileUtils::RenameFile(const std::string &strFile)
   if (CGUIKeyboardFactory::ShowAndGetInput(strFileName, CVariant{g_localizeStrings.Get(16013)}, false))
   {
     strPath = URIUtils::AddFileToFolder(strPath, strFileName);
-    CLog::Log(LOGINFO,"FileUtils: rename %s->%s\n", strFileAndPath.c_str(), strPath.c_str());
+    CLog::Log(LOGINFO, "FileUtils: rename %s->%s", strFileAndPath.c_str(), strPath.c_str());
     if (URIUtils::IsMultiPath(strFileAndPath))
     { // special case for multipath renames - rename all the paths.
       std::vector<std::string> paths;
@@ -144,16 +144,20 @@ bool CFileUtils::RemoteAccessAllowed(const std::string &strPath)
   {
     VECSOURCES* sources = CMediaSourceSettings::GetInstance().GetSources(sourceName);
     int sourceIndex = CUtil::GetMatchingSource(realPath, *sources, isSource);
-    if (sourceIndex >= 0 && sourceIndex < (int)sources->size() && sources->at(sourceIndex).m_iHasLock != 2 && sources->at(sourceIndex).m_allowSharing)
+    if (sourceIndex >= 0 && sourceIndex < static_cast<int>(sources->size()) &&
+        sources->at(sourceIndex).m_iHasLock != LOCK_STATE_LOCKED &&
+        sources->at(sourceIndex).m_allowSharing)
       return true;
-  }  
+  }
   // Check auto-mounted sources
   VECSOURCES sources;
-  g_mediaManager.GetRemovableDrives(sources);   // Sources returned allways have m_allowsharing = true
+  CServiceBroker::GetMediaManager().GetRemovableDrives(
+      sources); // Sources returned allways have m_allowsharing = true
   //! @todo Make sharing of auto-mounted sources user configurable
   int sourceIndex = CUtil::GetMatchingSource(realPath, sources, isSource);
-  if (sourceIndex >= 0 && sourceIndex < static_cast<int>(sources.size()) && 
-      sources.at(sourceIndex).m_iHasLock != 2 && sources.at(sourceIndex).m_allowSharing)
+  if (sourceIndex >= 0 && sourceIndex < static_cast<int>(sources.size()) &&
+      sources.at(sourceIndex).m_iHasLock != LOCK_STATE_LOCKED &&
+      sources.at(sourceIndex).m_allowSharing)
     return true;
 
   return false;

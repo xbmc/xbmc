@@ -60,7 +60,7 @@
 					<height>50</height>
 					<control type="label">
 						<include>MediaMenuLabelCommon</include>
-						<label>$LOCALIZE[31063]</label>
+						<label>$LOCALIZE[31148]</label>
 					</control>
 					<control type="label">
 						<width>470</width>
@@ -198,6 +198,18 @@
 					<label>$LOCALIZE[19077]</label>
 					<visible>Window.IsActive(MyPVRTimers.xml)</visible>
 				</control>
+				<control type="label" id="301">
+					<include>MediaMenuLabelCommon</include>
+					<label>$LOCALIZE[31020]</label>
+					<visible>Control.IsVisible(302)</visible>
+				</control>
+				<control type="button" id="302">
+					<description>Go to playlist</description>
+					<include>MediaMenuItemsCommon</include>
+					<label>$LOCALIZE[31056]</label>
+					<onclick>ActivateWindow(videoplaylist)</onclick>
+					<visible>Window.IsActive(MyPVRRecordings.xml) + Integer.IsGreater(Playlist.Length(video),0)</visible>
+				</control>
 				<control type="group" id="141000">
 					<control type="grouplist" id="14100">
 						<animation effect="fade" start="0" end="100" time="400">WindowOpen</animation>
@@ -207,7 +219,7 @@
 						<itemgap>-17</itemgap>
 						<left>5</left>
 						<onleft>14100</onleft>
-						<onup>8</onup>
+						<onup>302</onup>
 						<ondown>6056</ondown>
 						<visible>Player.HasMedia + [$EXP[sidebar_visible]]</visible>
 						<visible>!System.HasActiveModalDialog</visible>
@@ -337,7 +349,8 @@
 			<height>100%</height>
 			<onleft>9000</onleft>
 			<onup>9000</onup>
-			<onright>50</onright>
+			<onright condition="![Window.IsVisible(musicplaylist) | Window.IsVisible(videoplaylist)]">50</onright>
+			<onright condition="Window.IsVisible(musicplaylist) | Window.IsVisible(videoplaylist)">55</onright>
 			<ondown>9000</ondown>
 			<onback>50</onback>
 			<control type="label" id="200">

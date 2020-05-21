@@ -52,6 +52,9 @@ public:
   void SeekTime(int64_t iTime = 0) override;
   void GetAudioCapabilities(std::vector<int> &audioCaps) override {}
 
+  int GetAudioStreamCount() override { return 1; }
+  int GetAudioStream() override { return 0; }
+
   static bool HandlesType(const std::string &type);
 
   // implementation of IJobCallback
@@ -116,6 +119,7 @@ private:
   bool                m_isPlaying;
   bool                m_isPaused;
   bool                m_isFinished;          /* if there are no more songs in the queue */
+  bool m_fullScreen;
   unsigned int        m_defaultCrossfadeMS;  /* how long the default crossfade is in ms */
   unsigned int        m_upcomingCrossfadeMS; /* how long the upcoming crossfade is in ms */
   CEvent              m_startEvent;          /* event for playback start */

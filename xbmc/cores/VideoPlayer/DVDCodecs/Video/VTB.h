@@ -15,8 +15,9 @@
 #endif
 
 #include "DVDVideoCodecFFmpeg.h"
+#include "cores/VideoPlayer/Buffers/VideoBuffer.h"
 #include "cores/VideoPlayer/DVDCodecs/Video/DVDVideoCodec.h"
-#include "cores/VideoPlayer/Process/VideoBuffer.h"
+
 #include <CoreVideo/CVPixelBuffer.h>
 
 class CProcessInfo;

@@ -457,7 +457,7 @@ namespace addon
   {
   public:
     CInstancePeripheral()
-      : IAddonInstance(ADDON_INSTANCE_PERIPHERAL)
+      : IAddonInstance(ADDON_INSTANCE_PERIPHERAL, GetKodiTypeVersion(ADDON_INSTANCE_PERIPHERAL))
     {
       if (CAddonBase::m_interface->globalSingleInstance != nullptr)
         throw std::logic_error("kodi::addon::CInstancePeripheral: Creation of more as one in single instance way is not allowed!");
@@ -466,8 +466,10 @@ namespace addon
       CAddonBase::m_interface->globalSingleInstance = this;
     }
 
-    explicit CInstancePeripheral(KODI_HANDLE instance)
-      : IAddonInstance(ADDON_INSTANCE_PERIPHERAL)
+    explicit CInstancePeripheral(KODI_HANDLE instance, const std::string& kodiVersion = "")
+      : IAddonInstance(ADDON_INSTANCE_PERIPHERAL,
+                       !kodiVersion.empty() ? kodiVersion
+                                            : GetKodiTypeVersion(ADDON_INSTANCE_PERIPHERAL))
     {
       if (CAddonBase::m_interface->globalSingleInstance != nullptr)
         throw std::logic_error("kodi::addon::CInstancePeripheral: Creation of multiple together with single instance way is not allowed!");

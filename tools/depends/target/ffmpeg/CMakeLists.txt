@@ -59,16 +59,14 @@ elseif(CORE_SYSTEM_NAME STREQUAL android)
     list(APPEND ffmpeg_conf --cpu=cortex-a53 --arch=aarch64)
   elseif(CPU MATCHES arm)
     list(APPEND ffmpeg_conf --cpu=cortex-a9)
+  elseif(CPU MATCHES x86_64)
+    list(APPEND ffmpeg_conf --cpu=x86_64 --enable-pic)
   else()
     list(APPEND ffmpeg_conf --cpu=i686 --disable-mmx)
   endif()
   list(APPEND ffmpeg_conf --target-os=linux --extra-libs=-liconv --disable-linux-perf)
 elseif(CORE_SYSTEM_NAME STREQUAL darwin_embedded)
-  if(NOT CPU MATCHES arm64)
-    list(APPEND ffmpeg_conf --cpu=cortex-a8)
-  else()
-    list(APPEND ffmpeg_conf "--as=${NATIVEPREFIX}/bin/gas-preprocessor.pl -arch aarch64 -- ${CMAKE_C_COMPILER}")
-  endif()
+  list(APPEND ffmpeg_conf "--as=${NATIVEPREFIX}/bin/gas-preprocessor.pl -arch aarch64 -- ${CMAKE_C_COMPILER}")
   list(APPEND ffmpeg_conf --disable-decoder=mpeg_xvmc --disable-crystalhd --enable-videotoolbox
                           --target-os=darwin)
 elseif(CORE_SYSTEM_NAME STREQUAL osx)
@@ -88,12 +86,19 @@ if(GNUTLS_FOUND)
   list(APPEND ffmpeg_conf --enable-gnutls)
 endif()
 
+if(ENABLE_DAV1D)
+  list(APPEND ffmpeg_conf --enable-libdav1d)
+  set(pkgconf_path "PKG_CONFIG_PATH=${PKG_CONFIG_PATH}")
+else()
+  list(APPEND ffmpeg_conf --disable-libdav1d)
+endif()
+
 message(STATUS "FFMPEG_CONF: ${ffmpeg_conf}")
 
 include(ExternalProject)
 externalproject_add(ffmpeg
                     SOURCE_DIR ${CMAKE_SOURCE_DIR}
-                    CONFIGURE_COMMAND ${pkgconf} <SOURCE_DIR>/configure
+                    CONFIGURE_COMMAND ${pkgconf} ${pkgconf_path} <SOURCE_DIR>/configure
                       --prefix=${CMAKE_INSTALL_PREFIX}
                       --extra-version="kodi-${FFMPEG_VER}"
                       --disable-devices

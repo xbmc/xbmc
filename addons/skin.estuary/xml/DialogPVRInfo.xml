@@ -49,7 +49,7 @@
 					<width>1050</width>
 					<height>425</height>
 					<align>justify</align>
-					<label>$INFO[ListItem.ChannelName,[B],[/B][CR]]$INFO[ListItem.Date,[COLOR grey]$LOCALIZE[552]:[/COLOR] ,[CR]]$INFO[ListItem.Duration,[COLOR grey]$LOCALIZE[180]:[/COLOR] ,[CR]]$VAR[PremieredLabel]$INFO[ListItem.Rating,[COLOR grey]$LOCALIZE[563]:[/COLOR] ,[CR]]$VAR[ExpirationDateTimeLabel]$INFO[ListItem.Genre,[COLOR grey]$LOCALIZE[515]:[/COLOR] ,[CR]]$INFO[ListItem.Writer,[COLOR grey]$LOCALIZE[20417]:[/COLOR] ,[CR]]$INFO[ListItem.Director,[COLOR grey]$LOCALIZE[20339]:[/COLOR] ,[CR]]$INFO[ListItem.Cast,[COLOR grey]$LOCALIZE[206]:[/COLOR] ,[CR]][CR]$INFO[ListItem.Plot]</label>
+					<label>$INFO[ListItem.ChannelName,[B],[/B][CR]]$INFO[ListItem.Date,[COLOR grey]$LOCALIZE[552]:[/COLOR] ,[CR]]$INFO[ListItem.Duration,[COLOR grey]$LOCALIZE[180]:[/COLOR] ,[CR]]$VAR[RecordingSizeLabel]$VAR[PremieredLabel]$INFO[ListItem.Rating,[COLOR grey]$LOCALIZE[563]:[/COLOR] ,[CR]]$VAR[ExpirationDateTimeLabel]$INFO[ListItem.Genre,[COLOR grey]$LOCALIZE[515]:[/COLOR] ,[CR]]$INFO[ListItem.Writer,[COLOR grey]$LOCALIZE[20417]:[/COLOR] ,[CR]]$INFO[ListItem.Director,[COLOR grey]$LOCALIZE[20339]:[/COLOR] ,[CR]]$INFO[ListItem.Cast,[COLOR grey]$LOCALIZE[206]:[/COLOR] ,[CR]][CR]$INFO[ListItem.Plot]</label>
 					<autoscroll time="3000" delay="4000" repeat="5000">Skin.HasSetting(AutoScroll)</autoscroll>
 				</control>
 				<control type="grouplist" id="9000">
@@ -113,20 +113,11 @@
 						<param name="label" value="$LOCALIZE[19003]" />
 						<param name="visible" value="Window.IsActive(PVRGuideInfo) | Window.IsActive(PVRRecordingInfo)" />
 					</include>
-					<include content="InfoDialogButton">
-						<param name="width" value="275" />
-						<param name="id" value="440" />
-						<param name="icon" value="icons/infodialogs/youtube.png" />
-						<param name="label" value="$LOCALIZE[31114]" />
-						<param name="onclick_1" value="Action(close)" />
-						<param name="onclick_2" value="RunScript(script.extendedinfo,info=youtubebrowser,id=$INFO[ListItem.Title])" />
-						<param name="visible" value="System.hasAddon(script.extendedinfo)" />
-					</include>
 				</control>
 			</control>
 			<include content="InfoDialogTopBarInfo">
 				<param name="main_label" value="$INFO[ListItem.Title] $INFO[ListItem.Year,([COLOR grey],[/COLOR])]" />
-				<param name="sub_label" value="[COLOR grey]$VAR[SeasonEpisodeLabel][/COLOR]$INFO[ListItem.EpisodeName,[COLOR white][B],[/B][/COLOR]]" />
+				<param name="sub_label" value="$VAR[FlagDashLabel][COLOR grey]$VAR[SeasonEpisodeLabel][/COLOR]$INFO[ListItem.EpisodeName,[COLOR white][B],[/B][/COLOR]]" />
 				<param name="posy" value="40" />
 			</include>
 		</control>

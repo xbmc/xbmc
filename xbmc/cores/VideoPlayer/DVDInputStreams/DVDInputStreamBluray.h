@@ -33,6 +33,8 @@ extern "C"
 #define HDMV_PID_AUDIO_LAST       0x111f
 #define HDMV_PID_PG_FIRST         0x1200
 #define HDMV_PID_PG_LAST          0x121f
+#define HDMV_PID_PG_HDR_FIRST     0x12a0
+#define HDMV_PID_PG_HDR_LAST      0x12bf
 #define HDMV_PID_IG_FIRST         0x1400
 #define HDMV_PID_IG_LAST          0x141f
 
@@ -54,7 +56,6 @@ public:
   void Close() override;
   int Read(uint8_t* buf, int buf_size) override;
   int64_t Seek(int64_t offset, int whence) override;
-  bool Pause(double dTime) override { return false; };
   void Abort() override;
   bool IsEOF() override;
   int64_t GetLength() override;

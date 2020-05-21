@@ -1,0 +1,93 @@
+diff --git a/compat/w32pthreads.h b/compat/w32pthreads.h
+index 21acfd2ba1..62e22bd7c6 100644
+--- a/compat/w32pthreads.h
++++ b/compat/w32pthreads.h
+@@ -38,6 +38,7 @@
+ #define WIN32_LEAN_AND_MEAN
+ #include <windows.h>
+ #include <process.h>
++#include <time.h>
+ 
+ #include "libavutil/attributes.h"
+ #include "libavutil/common.h"
+@@ -61,6 +62,9 @@ typedef CONDITION_VARIABLE pthread_cond_t;
+ #define InitializeCriticalSection(x) InitializeCriticalSectionEx(x, 0, 0)
+ #define WaitForSingleObject(a, b) WaitForSingleObjectEx(a, b, FALSE)
+ 
++#define PTHREAD_CANCEL_ENABLE 1
++#define PTHREAD_CANCEL_DISABLE 0
++
+ static av_unused unsigned __stdcall attribute_align_arg win32thread_worker(void *arg)
+ {
+     pthread_t *h = (pthread_t*)arg;
+@@ -156,10 +160,22 @@ static inline int pthread_cond_wait(pthread_cond_t *cond, pthread_mutex_t *mutex
+     return 0;
+ }
+ 
++static inline int pthread_cond_timedwait(pthread_cond_t *cond, pthread_mutex_t *mutex,
++const struct timespec *abstime)
++{
++    const int milliseconds =  abstime->tv_sec * 1000 + abstime->tv_nsec / 1000 / 1000;
++    SleepConditionVariableSRW(cond, mutex, milliseconds, 0);
++}
++
+ static inline int pthread_cond_signal(pthread_cond_t *cond)
+ {
+     WakeConditionVariable(cond);
+     return 0;
+ }
+ 
++static inline int pthread_setcancelstate (int state, int *oldstate)
++{
++    return 0;
++}
++
+ #endif /* COMPAT_W32PTHREADS_H */
+diff --git a/libavformat/udp.c b/libavformat/udp.c
+index cf73d331e0..479b8d630f 100644
+--- a/libavformat/udp.c
++++ b/libavformat/udp.c
+@@ -61,10 +61,16 @@
+ #define IPPROTO_UDPLITE                                  136
+ #endif
+ 
+-#if HAVE_PTHREAD_CANCEL
++#if HAVE_PTHREAD_CANCEL && !defined(HAVE_W32THREADS)
+ #include <pthread.h>
+ #endif
+ 
++#if HAVE_W32THREADS 
++#include "compat/w32pthreads.h"
++#undef HAVE_PTHREAD_CANCEL 
++#define HAVE_PTHREAD_CANCEL 1
++#endif
++
+ #ifndef IPV6_ADD_MEMBERSHIP
+ #define IPV6_ADD_MEMBERSHIP IPV6_JOIN_GROUP
+ #define IPV6_DROP_MEMBERSHIP IPV6_LEAVE_GROUP
+@@ -473,6 +479,10 @@ static void *circular_buffer_task_rx( void *_URLContext)
+         socklen_t addr_len = sizeof(addr);
+ 
+         pthread_mutex_unlock(&s->mutex);
++
++        if (s->close_req)
++            goto end;
++
+         /* Blocking operations are always cancellation points;
+            see "General Information" / "Thread Cancelation Overview"
+            in Single Unix. */
+@@ -1071,8 +1081,12 @@ static int udp_close(URLContext *h)
+     if (s->thread_started) {
+         int ret;
+         // Cancel only read, as write has been signaled as success to the user
+-        if (h->flags & AVIO_FLAG_READ)
+-            pthread_cancel(s->circular_buffer_thread);
++        if (h->flags & AVIO_FLAG_READ) {
++            pthread_mutex_lock(&s->mutex);
++            s->close_req = 1;
++            pthread_cond_signal(&s->cond);
++            pthread_mutex_unlock(&s->mutex);
++        }
+         ret = pthread_join(s->circular_buffer_thread, NULL);
+         if (ret != 0)
+             av_log(h, AV_LOG_ERROR, "pthread_join(): %s\n", strerror(ret));

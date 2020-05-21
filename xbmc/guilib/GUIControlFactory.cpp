@@ -192,7 +192,7 @@ bool CGUIControlFactory::GetDimension(const TiXmlNode *pRootNode, const char* st
 {
   const TiXmlElement* pNode = pRootNode->FirstChildElement(strTag);
   if (!pNode || !pNode->FirstChild()) return false;
-  if (0 == strnicmp("auto", pNode->FirstChild()->Value(), 4))
+  if (0 == StringUtils::CompareNoCase("auto", pNode->FirstChild()->Value(), 4))
   { // auto-width - at least min must be set
     value = ParsePosition(pNode->Attribute("max"), parentSize);
     min = ParsePosition(pNode->Attribute("min"), parentSize);
@@ -340,13 +340,15 @@ bool CGUIControlFactory::GetTexture(const TiXmlNode* pRootNode, const char* strT
     GetRectFromString(border, image.border);
   image.orientation = 0;
   const char *flipX = pNode->Attribute("flipx");
-  if (flipX && strcmpi(flipX, "true") == 0) image.orientation = 1;
+  if (flipX && StringUtils::CompareNoCase(flipX, "true") == 0)
+    image.orientation = 1;
   const char *flipY = pNode->Attribute("flipy");
-  if (flipY && strcmpi(flipY, "true") == 0) image.orientation = 3 - image.orientation;  // either 3 or 2
+  if (flipY && StringUtils::CompareNoCase(flipY, "true") == 0)
+    image.orientation = 3 - image.orientation; // either 3 or 2
   image.diffuse = XMLUtils::GetAttribute(pNode, "diffuse");
   image.diffuseColor.Parse(XMLUtils::GetAttribute(pNode, "colordiffuse"), 0);
   const char *background = pNode->Attribute("background");
-  if (background && strnicmp(background, "true", 4) == 0)
+  if (background && StringUtils::CompareNoCase(background, "true", 4) == 0)
     image.useLarge = true;
   image.filename = pNode->FirstChild() ? pNode->FirstChild()->Value() : "";
   return true;
@@ -453,7 +455,7 @@ bool CGUIControlFactory::GetAnimations(TiXmlNode *control, const CRect &rect, in
       CAnimation anim;
       anim.Create(node, rect, context);
       animations.push_back(anim);
-      if (strcmpi(node->FirstChild()->Value(), "VisibleChange") == 0)
+      if (StringUtils::CompareNoCase(node->FirstChild()->Value(), "VisibleChange") == 0)
       { // add the hidden one as well
         TiXmlElement hidden(*node);
         hidden.FirstChild()->SetValue("hidden");
@@ -816,7 +818,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
   if (XMLUtils::GetInt(pControlNode, "defaultcontrol", defaultControl))
   {
     const char *always = pControlNode->FirstChildElement("defaultcontrol")->Attribute("always");
-    if (always && strnicmp(always, "true", 4) == 0)
+    if (always && StringUtils::CompareNoCase(always, "true", 4) == 0)
       defaultAlways = true;
   }
   XMLUtils::GetInt(pControlNode, "pagecontrol", pageControl);

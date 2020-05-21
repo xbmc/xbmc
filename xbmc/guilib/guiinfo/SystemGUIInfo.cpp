@@ -55,7 +55,7 @@ std::string CSystemGUIInfo::GetSystemHeatInfo(int info) const
   {
     m_lastSysHeatInfoTime = CTimeUtils::GetFrameTime();
 #if defined(TARGET_POSIX)
-    g_cpuInfo.getTemperature(m_cpuTemp);
+    CServiceBroker::GetCPUInfo()->GetTemperature(m_cpuTemp);
     m_gpuTemp = GetGPUTemperature();
 #endif
   }
@@ -71,11 +71,14 @@ std::string CSystemGUIInfo::GetSystemHeatInfo(int info) const
       text = StringUtils::Format("%i%%", m_fanSpeed * 2);
       break;
     case SYSTEM_CPU_USAGE:
+      if (CServiceBroker::GetCPUInfo()->SupportsCPUUsage())
 #if defined(TARGET_DARWIN) || defined(TARGET_WINDOWS)
-      text = StringUtils::Format("%d%%", g_cpuInfo.getUsedPercentage());
+        text = StringUtils::Format("%d%%", CServiceBroker::GetCPUInfo()->GetUsedPercentage());
 #else
-      text = StringUtils::Format("%s", g_cpuInfo.GetCoresUsageString().c_str());
+        text = CServiceBroker::GetCPUInfo()->GetCoresUsageString();
 #endif
+      else
+        text = g_localizeStrings.Get(10005); // Not available
       break;
   }
   return text;
@@ -232,7 +235,7 @@ bool CSystemGUIInfo::GetLabel(std::string& value, const CFileItem *item, int con
       return true;
 #ifdef HAS_DVD_DRIVE
     case SYSTEM_DVD_LABEL:
-      value = g_mediaManager.GetDiskLabel();
+      value = CServiceBroker::GetMediaManager().GetDiskLabel();
       return true;
 #endif
     case SYSTEM_ALARM_POS:
@@ -283,7 +286,9 @@ bool CSystemGUIInfo::GetLabel(std::string& value, const CFileItem *item, int con
       return true;
     }
     case SYSTEM_GET_CORE_USAGE:
-      value = StringUtils::Format("%4.2f", g_cpuInfo.GetCoreInfo(std::atoi(info.GetData3().c_str())).m_fPct);
+      value = StringUtils::Format("%4.2f", CServiceBroker::GetCPUInfo()
+                                               ->GetCoreInfo(std::atoi(info.GetData3().c_str()))
+                                               .m_usagePercent);
       return true;
     case SYSTEM_RENDER_VENDOR:
       value = CServiceBroker::GetRenderSystem()->GetRenderVendor();
@@ -398,7 +403,7 @@ bool CSystemGUIInfo::GetInt(int& value, const CGUIListItem *gitem, int contextWi
       return true;
     }
     case SYSTEM_CPU_USAGE:
-      value = g_cpuInfo.getUsedPercentage();
+      value = CServiceBroker::GetCPUInfo()->GetUsedPercentage();
       return true;
     case SYSTEM_BATTERY_LEVEL:
       value = CServiceBroker::GetPowerManager().BatteryLevel();
@@ -467,6 +472,13 @@ bool CSystemGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int context
       value = false;
 #endif
       return true;
+    case SYSTEM_PLATFORM_DARWIN_TVOS:
+#ifdef TARGET_DARWIN_TVOS
+      value = true;
+#else
+      value = false;
+#endif
+      return true;
     case SYSTEM_PLATFORM_ANDROID:
 #if defined(TARGET_ANDROID)
       value = true;
@@ -482,13 +494,13 @@ bool CSystemGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int context
 #endif
       return true;
     case SYSTEM_MEDIA_DVD:
-      value = g_mediaManager.IsDiscInDrive();
+      value = CServiceBroker::GetMediaManager().IsDiscInDrive();
       return true;
     case SYSTEM_MEDIA_AUDIO_CD:
     #ifdef HAS_DVD_DRIVE
-      if (g_mediaManager.IsDiscInDrive())
+      if (CServiceBroker::GetMediaManager().IsDiscInDrive())
       {
-        MEDIA_DETECT::CCdInfo *pCdInfo = g_mediaManager.GetCdInfo();
+        MEDIA_DETECT::CCdInfo* pCdInfo = CServiceBroker::GetMediaManager().GetCdInfo();
         value = pCdInfo && (pCdInfo->IsAudio(1) || pCdInfo->IsCDExtra(1) || pCdInfo->IsMixedMode(1));
       }
       else
@@ -499,10 +511,10 @@ bool CSystemGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int context
       return true;
 #ifdef HAS_DVD_DRIVE
     case SYSTEM_DVDREADY:
-      value = g_mediaManager.GetDriveStatus() != DRIVE_NOT_READY;
+      value = CServiceBroker::GetMediaManager().GetDriveStatus() != DRIVE_NOT_READY;
       return true;
     case SYSTEM_TRAYOPEN:
-      value = g_mediaManager.GetDriveStatus() == DRIVE_OPEN;
+      value = CServiceBroker::GetMediaManager().GetDriveStatus() == DRIVE_OPEN;
       return true;
 #endif
     case SYSTEM_CAN_POWERDOWN:
@@ -578,7 +590,7 @@ bool CSystemGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int context
       value = g_application.GlobalIdleTime() >= static_cast<int>(info.GetData1());
       return true;
     case SYSTEM_HAS_CORE_ID:
-      value = g_cpuInfo.HasCoreId(info.GetData1());
+      value = CServiceBroker::GetCPUInfo()->HasCoreId(info.GetData1());
       return true;
     case SYSTEM_DATE:
     {
@@ -619,6 +631,9 @@ bool CSystemGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int context
     }
     case SYSTEM_HAS_ALARM:
       value = g_alarmClock.HasAlarm(info.GetData3());
+      return true;
+    case SYSTEM_SUPPORTS_CPU_USAGE:
+      value = CServiceBroker::GetCPUInfo()->SupportsCPUUsage();
       return true;
     case SYSTEM_GET_BOOL:
       value = CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(info.GetData3());

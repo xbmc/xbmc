@@ -68,6 +68,10 @@ msgctxt "#31038"
 msgid "Login"
 msgstr "புகுபதிகை"
 
+msgctxt "#31043"
+msgid "PAUSED"
+msgstr "இடைநிறுத்தம்"
+
 msgctxt "#31044"
 msgid "FAST FORWARD"
 msgstr "முன்சுற்று"

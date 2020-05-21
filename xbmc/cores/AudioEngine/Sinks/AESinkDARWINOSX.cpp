@@ -129,16 +129,6 @@ OSStatus deviceChangedCB(AudioObjectID                       inObjectID,
 
 ////////////////////////////////////////////////////////////////////////////////////////////
 CAESinkDARWINOSX::CAESinkDARWINOSX()
-: m_latentFrames(0),
-  m_outputBufferIndex(0),
-  m_outputBitstream(false),
-  m_planes(1),
-  m_frameSizePerPlane(0),
-  m_framesPerSecond(0),
-  m_buffer(NULL),
-  m_started(false),
-  m_render_tick(0),
-  m_render_delay(0.0)
 {
   // By default, kAudioHardwarePropertyRunLoop points at the process's main thread on SnowLeopard,
   // If your process lacks such a run loop, you can set kAudioHardwarePropertyRunLoop to NULL which
@@ -204,7 +194,7 @@ bool CAESinkDARWINOSX::Initialize(AEAudioFormat &format, std::string &device)
   {
     CCoreAudioHardware::GetOutputDeviceName(device);
     deviceID = CCoreAudioHardware::GetDefaultOutputDevice();
-    CLog::Log(LOGNOTICE, "%s: Opening default device %s", __PRETTY_FUNCTION__, device.c_str());
+    CLog::Log(LOGINFO, "%s: Opening default device %s", __PRETTY_FUNCTION__, device.c_str());
   }
   else
   {
@@ -217,9 +207,11 @@ bool CAESinkDARWINOSX::Initialize(AEAudioFormat &format, std::string &device)
         requestedStreamIndex = deviceInstance.streamIndex;
         requestedSourceId = deviceInstance.sourceId;
         if (requestedStreamIndex != INT_MAX)
-          CLog::Log(LOGNOTICE, "%s pseudo device - requesting stream %d", __FUNCTION__, (unsigned int)requestedStreamIndex);
+          CLog::Log(LOGINFO, "%s pseudo device - requesting stream %d", __FUNCTION__,
+                    (unsigned int)requestedStreamIndex);
         if (requestedSourceId != INT_MAX)
-          CLog::Log(LOGNOTICE, "%s device - requesting audiosource %d", __FUNCTION__, (unsigned int)requestedSourceId);
+          CLog::Log(LOGINFO, "%s device - requesting audiosource %d", __FUNCTION__,
+                    (unsigned int)requestedSourceId);
         break;
       }
     }

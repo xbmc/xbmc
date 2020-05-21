@@ -1,4 +1,5 @@
 set(OS "@platform_os@")
+set(CMAKE_SYSTEM_PROCESSOR @host_cpu@)
 set(CPU "@use_cpu@")
 set(PLATFORM "@target_platform@")
 set(APP_RENDER_SYSTEM @app_rendersystem@)

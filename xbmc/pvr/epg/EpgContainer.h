@@ -34,6 +34,8 @@ namespace PVR
 
   enum class PVREvent;
 
+  struct PVREpgSearchData;
+
   class CPVREpgContainer : private CThread
   {
     friend class CPVREpgDatabase;
@@ -42,12 +44,12 @@ namespace PVR
     /*!
      * @brief Create a new EPG table container.
      */
-    CPVREpgContainer(void);
+    CPVREpgContainer();
 
     /*!
      * @brief Destroy this instance.
      */
-    ~CPVREpgContainer(void) override;
+    ~CPVREpgContainer() override;
 
     /*!
      * @brief Get a pointer to the database instance.
@@ -69,7 +71,7 @@ namespace PVR
     /*!
      * @brief Stop the EPG update thread.
      */
-    void Stop(void);
+    void Stop();
 
     /*!
      * @brief Clear all EPG entries.
@@ -80,15 +82,14 @@ namespace PVR
      * @brief Check whether the EpgContainer has fully started.
      * @return True if started, false otherwise.
      */
-    bool IsStarted(void) const;
+    bool IsStarted() const;
 
     /*!
      * @brief Delete an EPG table from this container.
      * @param epg The table to delete.
-     * @param bDeleteFromDatabase Delete this table from the database too if true.
      * @return True on success, false otherwise.
      */
-    bool DeleteEpg(const std::shared_ptr<CPVREpg>& epg, bool bDeleteFromDatabase = false);
+    bool DeleteEpg(const std::shared_ptr<CPVREpg>& epg);
 
     /*!
      * @brief CEventStream callback for PVR events.
@@ -109,13 +110,13 @@ namespace PVR
      * @brief Get the start time of the first entry.
      * @return The start time.
      */
-    const CDateTime GetFirstEPGDate(void);
+    const CDateTime GetFirstEPGDate();
 
     /*!
      * @brief Get the end time of the last entry.
      * @return The end time.
      */
-    const CDateTime GetLastEPGDate(void);
+    const CDateTime GetLastEPGDate();
 
     /*!
      * @brief Get all EPGs.
@@ -147,16 +148,11 @@ namespace PVR
     std::shared_ptr<CPVREpgInfoTag> GetTagById(const std::shared_ptr<CPVREpg>& epg, unsigned int iBroadcastId) const;
 
     /*!
-     * @brief Get all EPG tags.
-     * @return The tags.
+     * @brief Get all EPG tags matching the given search criteria.
+     * @param searchData The search criteria.
+     * @return The matching tags.
      */
-    std::vector<std::shared_ptr<CPVREpgInfoTag>> GetAllTags() const;
-
-    /*!
-     * @brief Check whether data should be persisted to the EPG database.
-     * @return True if data should be persisted to the EPG database, false otherwise.
-     */
-    bool UseDatabase() const;
+    std::vector<std::shared_ptr<CPVREpgInfoTag>> GetTags(const PVREpgSearchData& searchData) const;
 
     /*!
      * @brief Notify EPG container that there are pending manual EPG updates
@@ -205,13 +201,13 @@ namespace PVR
      * @brief Notify EPG table observers when the currently active tag changed.
      * @return True if the check was done, false if it was not the right time to check
      */
-    bool CheckPlayingEvents(void);
+    bool CheckPlayingEvents();
 
     /*!
      * @brief The next EPG ID to be given to a table when the db isn't being used.
      * @return The next ID.
      */
-    int NextEpgId(void);
+    int NextEpgId();
 
     /*!
      * @brief Wait for an EPG update to finish.
@@ -220,15 +216,17 @@ namespace PVR
 
     /*!
      * @brief Call Persist() on each table
+     * @param iMaxTimeslice time in milliseconds for max processing. Return after this time
+     *        even if not all data was persisted, unless value is -1
      * @return True when they all were persisted, false otherwise.
      */
-    bool PersistAll(void);
+    bool PersistAll(unsigned int iMaxTimeslice) const;
 
     /*!
      * @brief Remove old EPG entries.
      * @return True if the old entries were removed successfully, false otherwise.
      */
-    bool RemoveOldEntries(void);
+    bool RemoveOldEntries();
 
     /*!
      * @brief Load and update the EPG data.
@@ -241,17 +239,17 @@ namespace PVR
      * @brief Check whether a running update should be interrupted.
      * @return True if a running update should be interrupted, false otherwise.
      */
-    bool InterruptUpdate(void) const;
+    bool InterruptUpdate() const;
 
     /*!
      * @brief EPG update thread
      */
-    void Process(void) override;
+    void Process() override;
 
     /*!
      * @brief Load all tables from the database
      */
-    void LoadFromDB(void);
+    void LoadFromDB();
 
     /*!
      * @brief Insert data from database

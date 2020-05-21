@@ -48,7 +48,7 @@ IF NOT EXIST %FORMED_OK_FLAG% (
   ECHO.
   ECHO I tried to get the packages from %KODI_MIRROR%;
   ECHO if this download mirror seems to be having problems, try choosing another from
-  ECHO the list on http://mirrors.kodi.tv/list.html, and setting %%KODI_MIRROR%% to
+  ECHO the list on http://mirrors.kodi.tv/timestamp.txt?mirrorlist, and setting %%KODI_MIRROR%% to
   ECHO point to it, like so:
   ECHO   C:\^> SET KODI_MIRROR=http://example.com/pub/xbmc/
   ECHO.

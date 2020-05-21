@@ -64,32 +64,34 @@
 #include "windowing/GraphicContext.h"
 #include "guilib/GUIWindowManager.h"
 // Audio Engine includes for Factory and interfaces
-#include "cores/AudioEngine/Interfaces/AE.h"
-#include "cores/AudioEngine/AESinkFactory.h"
-#include "cores/AudioEngine/Sinks/AESinkAUDIOTRACK.h"
-
-#include "ServiceBroker.h"
 #include "GUIInfoManager.h"
-#include "guilib/guiinfo/GUIInfoLabels.h"
-#include "guilib/GUIComponent.h"
-#include "platform/android/activity/IInputDeviceCallbacks.h"
-#include "platform/android/activity/IInputDeviceEventHandler.h"
-#include "input/mouse/MouseStat.h"
-#include "input/Key.h"
-#include "utils/log.h"
-#include "utils/TimeUtils.h"
-#include "platform/android/network/NetworkAndroid.h"
+#include "ServiceBroker.h"
+#include "TextureCache.h"
+#include "cores/AudioEngine/AESinkFactory.h"
+#include "cores/AudioEngine/Interfaces/AE.h"
+#include "cores/AudioEngine/Sinks/AESinkAUDIOTRACK.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderManager.h"
 #include "filesystem/SpecialProtocol.h"
-#include "TextureCache.h"
-#include "utils/StringUtils.h"
 #include "filesystem/VideoDatabaseFile.h"
+#include "guilib/GUIComponent.h"
+#include "guilib/guiinfo/GUIInfoLabels.h"
+#include "input/Key.h"
+#include "input/mouse/MouseStat.h"
+#include "platform/xbmc.h"
+#include "powermanagement/PowerManager.h"
+#include "utils/StringUtils.h"
+#include "utils/TimeUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
+#include "utils/log.h"
+#include "windowing/WinEvents.h"
 #include "windowing/android/VideoSyncAndroid.h"
 #include "windowing/android/WinSystemAndroid.h"
-#include "windowing/WinEvents.h"
-#include "platform/xbmc.h"
+
+#include "platform/android/activity/IInputDeviceCallbacks.h"
+#include "platform/android/activity/IInputDeviceEventHandler.h"
+#include "platform/android/network/NetworkAndroid.h"
+#include "platform/android/powermanagement/AndroidPowerSyscall.h"
 
 #define GIGABYTES       1073741824
 
@@ -137,10 +139,11 @@ float CXBMCApp::m_refreshRate = 0.0f;
 
 uint32_t CXBMCApp::m_playback_state = PLAYBACK_STATE_STOPPED;
 
-CXBMCApp::CXBMCApp(ANativeActivity* nativeActivity)
-  : CJNIMainActivity(nativeActivity)
-  , CJNIBroadcastReceiver(CJNIContext::getPackageName() + ".XBMCBroadcastReceiver")
-  , m_videosurfaceInUse(false)
+CXBMCApp::CXBMCApp(ANativeActivity* nativeActivity, IInputHandler& inputHandler)
+  : CJNIMainActivity(nativeActivity),
+    CJNIBroadcastReceiver(CJNIContext::getPackageName() + ".XBMCBroadcastReceiver"),
+    m_inputHandler(inputHandler),
+    m_videosurfaceInUse(false)
 {
   m_xbmcappinstance = this;
   m_activity = nativeActivity;
@@ -215,6 +218,7 @@ void CXBMCApp::onStart()
     intentFilter.addAction("android.intent.action.BATTERY_CHANGED");
     intentFilter.addAction("android.intent.action.SCREEN_ON");
     intentFilter.addAction("android.intent.action.HEADSET_PLUG");
+    intentFilter.addAction("android.media.AUDIO_BECOMING_NOISY");
     // We currently use HDMI_AUDIO_PLUG for mode switch, don't use it on TV's (device_type = "0"
     if (m_hdmiSource)
       intentFilter.addAction("android.media.action.HDMI_AUDIO_PLUG");
@@ -245,6 +249,13 @@ void CXBMCApp::onResume()
   // Re-request Visible Behind
   if ((m_playback_state & PLAYBACK_STATE_PLAYING) && (m_playback_state & PLAYBACK_STATE_VIDEO))
     RequestVisibleBehind(true);
+
+  if (g_application.IsInitialized())
+  {
+    IPowerSyscall* syscall = CServiceBroker::GetPowerManager().GetPowerSyscall();
+    if (syscall)
+      static_cast<CAndroidPowerSyscall*>(syscall)->SetOnResume();
+  }
 }
 
 void CXBMCApp::onPause()
@@ -265,6 +276,10 @@ void CXBMCApp::onPause()
 
   EnableWakeLock(false);
   m_hasReqVisible = false;
+
+  IPowerSyscall* syscall = CServiceBroker::GetPowerManager().GetPowerSyscall();
+  if (syscall)
+    static_cast<CAndroidPowerSyscall*>(syscall)->SetOnPause();
 }
 
 void CXBMCApp::onStop()
@@ -361,6 +376,7 @@ void CXBMCApp::Initialize()
   CServiceBroker::GetAnnouncementManager()->AddAnnouncer(CXBMCApp::get());
   runNativeOnUiThread(RegisterDisplayListener, nullptr);
   m_activityManager.reset(new CJNIActivityManager(getSystemService(CJNIContext::ACTIVITY_SERVICE)));
+  m_inputHandler.setDPI(GetDPI());
 }
 
 void CXBMCApp::Deinitialize()
@@ -579,7 +595,7 @@ void CXBMCApp::SetRefreshRate(float rate)
   {
     m_displayChangeEvent.WaitMSec(5000);
     if (m_hdmiSource && g_application.GetAppPlayer().IsPlaying())
-      dynamic_cast<CWinSystemAndroid*>(CServiceBroker::GetWinSystem())->SetHDMIState(false);
+      dynamic_cast<CWinSystemAndroid*>(CServiceBroker::GetWinSystem())->InitiateModeChange();
   }
 }
 
@@ -607,7 +623,7 @@ void CXBMCApp::SetDisplayMode(int mode, float rate)
   {
     m_displayChangeEvent.WaitMSec(5000);
     if (m_hdmiSource && g_application.GetAppPlayer().IsPlaying())
-      dynamic_cast<CWinSystemAndroid*>(CServiceBroker::GetWinSystem())->SetHDMIState(false);
+      dynamic_cast<CWinSystemAndroid*>(CServiceBroker::GetWinSystem())->InitiateModeChange();
   }
 }
 
@@ -988,6 +1004,9 @@ void CXBMCApp::SetSystemVolume(float percent)
 
 void CXBMCApp::onReceive(CJNIIntent intent)
 {
+  if (!g_application.IsInitialized())
+    return;
+
   std::string action = intent.getAction();
   CLog::Log(LOGDEBUG, "CXBMCApp::onReceive - Got intent. Action: %s", action.c_str());
   if (action == "android.intent.action.BATTERY_CHANGED")
@@ -1022,13 +1041,19 @@ void CXBMCApp::onReceive(CJNIIntent intent)
     {
       CWinSystemBase* winSystem = CServiceBroker::GetWinSystem();
       if (winSystem && dynamic_cast<CWinSystemAndroid*>(winSystem))
-        dynamic_cast<CWinSystemAndroid*>(winSystem)->SetHDMIState(m_hdmiPlugged);
+        dynamic_cast<CWinSystemAndroid*>(winSystem)->SetHdmiState(m_hdmiPlugged);
     }
   }
   else if (action == "android.intent.action.SCREEN_OFF")
   {
     if (m_playback_state & PLAYBACK_STATE_VIDEO)
       CApplicationMessenger::GetInstance().PostMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_STOP)));
+  }
+  else if (action == "android.media.AUDIO_BECOMING_NOISY")
+  {
+    if ((m_playback_state & PLAYBACK_STATE_PLAYING) && (m_playback_state & PLAYBACK_STATE_AUDIO))
+      CApplicationMessenger::GetInstance().PostMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1,
+                                                   static_cast<void*>(new CAction(ACTION_PAUSE)));
   }
   else if (action == "android.intent.action.MEDIA_BUTTON")
   {
@@ -1079,7 +1104,7 @@ void CXBMCApp::onNewIntent(CJNIIntent intent)
 {
   if (!intent)
   {
-    CLog::Log(LOGNOTICE, "CXBMCApp::onNewIntent - Got invalid intent.");
+    CLog::Log(LOGINFO, "CXBMCApp::onNewIntent - Got invalid intent.");
     return;
   }
 
@@ -1183,10 +1208,9 @@ int CXBMCApp::WaitForActivityResult(const CJNIIntent &intent, int requestCode, C
 
 void CXBMCApp::onVolumeChanged(int volume)
 {
-  // System volume was used; Reset Kodi volume to 100% if it isn't, already
-  if (g_application.GetVolume(false) != 1.0)
-    CApplicationMessenger::GetInstance().PostMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(
-                                                 new CAction(ACTION_VOLUME_SET, static_cast<float>(CXBMCApp::GetMaxSystemVolume()))));
+  // don't do anything. User wants to use kodi's internal volume freely while
+  // using the external volume to change it relatively
+  // See: https://forum.kodi.tv/showthread.php?tid=350764
 }
 
 void CXBMCApp::onAudioFocusChange(int focusChange)
@@ -1425,6 +1449,7 @@ void CXBMCApp::onDisplayChanged(int displayId)
     winSystemAndroid->UpdateDisplayModes();
 
   m_displayChangeEvent.Set();
+  m_inputHandler.setDPI(GetDPI());
   android_printf("%s: ", __PRETTY_FUNCTION__);
 }
 

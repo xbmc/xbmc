@@ -21,7 +21,6 @@
 #ifndef __STDC_FORMAT_MACROS
   #define __STDC_FORMAT_MACROS
 #endif
-#include <inttypes.h>
 #include <sys/sysctl.h>
 #include <mach/mach.h>
 #if defined(TARGET_DARWIN_OSX)
@@ -52,41 +51,8 @@
 
 #include <stdint.h>
 
-#ifndef PRId64
-#ifdef TARGET_WINDOWS
-#define PRId64 "I64d"
-#else
-#if __WORDSIZE == 64
-#define PRId64 "ld"
-#else
-#define PRId64 "lld"
-#endif
-#endif
-#endif
-
-#ifndef PRIu64
-#ifdef TARGET_WINDOWS
-#define PRIu64 "I64u"
-#else
-#if __WORDSIZE == 64
-#define PRIu64 "lu"
-#else
-#define PRIu64 "llu"
-#endif
-#endif
-#endif
-
-#ifndef PRIdS
-#define PRIdS "zd"
-#endif
-
 #define _fdopen fdopen
 #define _vsnprintf vsnprintf
-#define _stricmp  strcasecmp
-#define stricmp   strcasecmp
-#define strcmpi strcasecmp
-#define strnicmp  strncasecmp
-#define _atoi64(x) atoll(x)
 
 #define __stdcall
 #define __cdecl
@@ -119,35 +85,6 @@ typedef union _LARGE_INTEGER
   } u;
   unsigned long long QuadPart;
 } ULARGE_INTEGER;
-
-// Date / Time
-
-typedef struct _SYSTEMTIME
-{
-  unsigned short wYear;
-  unsigned short wMonth;
-  unsigned short wDayOfWeek;
-  unsigned short wDay;
-  unsigned short wHour;
-  unsigned short wMinute;
-  unsigned short wSecond;
-  unsigned short wMilliseconds;
-} SYSTEMTIME, *PSYSTEMTIME, *LPSYSTEMTIME;
-
-typedef struct _TIME_ZONE_INFORMATION {
-  long Bias;
-  wchar_t StandardName[32];
-  SYSTEMTIME StandardDate;
-  long StandardBias;
-  wchar_t DaylightName[32];
-  SYSTEMTIME DaylightDate;
-  long DaylightBias;
-} TIME_ZONE_INFORMATION, *PTIME_ZONE_INFORMATION, *LPTIME_ZONE_INFORMATION;
-
-#define TIME_ZONE_ID_INVALID    ((DWORD)0xFFFFFFFF)
-#define TIME_ZONE_ID_UNKNOWN    0
-#define TIME_ZONE_ID_STANDARD   1
-#define TIME_ZONE_ID_DAYLIGHT   2
 
 // Network
 #define SOCKET_ERROR (-1)
@@ -193,28 +130,6 @@ struct _stati64 {
   time_t _st_mtime;
   time_t _st_ctime;
 };
-
-typedef struct _FILETIME
-{
-  DWORD dwLowDateTime;
-  DWORD dwHighDateTime;
-} FILETIME, *PFILETIME, *LPFILETIME;
-
-typedef struct _WIN32_FIND_DATA
-{
-    DWORD     dwFileAttributes;
-    FILETIME  ftCreationTime;
-    FILETIME  ftLastAccessTime;
-    FILETIME  ftLastWriteTime;
-    DWORD     nFileSizeHigh;
-    DWORD     nFileSizeLow;
-    DWORD     dwReserved0;
-    DWORD     dwReserved1;
-    char      cFileName[260];
-    char      cAlternateFileName[14];
-} WIN32_FIND_DATA, *PWIN32_FIND_DATA, *LPWIN32_FIND_DATA;
-
-#define FILE_ATTRIBUTE_DIRECTORY           0x00000010
 
 #define FILE_BEGIN              0
 #define FILE_CURRENT            1

@@ -32,7 +32,6 @@ enum EPLANETYPE
 {
   KODI_VIDEO_PLANE,
   KODI_GUI_PLANE,
-  KODI_GUI_10_PLANE
 };
 
 struct drm_object
@@ -49,25 +48,11 @@ struct plane : drm_object
   bool useFallbackFormat{false};
   std::map<uint32_t, std::vector<uint64_t>> modifiers_map;
 
-  void SetFormat(uint32_t newFormat)
-  {
-    if (useFallbackFormat)
-      fallbackFormat = newFormat;
-    else
-      format = newFormat;
-  }
-
-  uint32_t GetFormat()
-  {
-    if (useFallbackFormat)
-      return fallbackFormat;
-
-    return format;
-  }
+  void SetFormat(uint32_t newFormat) { format = newFormat; }
+  uint32_t GetFormat() { return format; }
 
 private:
-  uint32_t format{DRM_FORMAT_XRGB2101010};
-  uint32_t fallbackFormat{DRM_FORMAT_XRGB8888};
+  uint32_t format{DRM_FORMAT_XRGB8888};
 };
 
 struct connector : drm_object
@@ -111,12 +96,14 @@ public:
   std::vector<uint64_t> *GetVideoPlaneModifiersForFormat(uint32_t format) { return &m_video_plane->modifiers_map[format]; }
   std::vector<uint64_t> *GetGuiPlaneModifiersForFormat(uint32_t format) { return &m_gui_plane->modifiers_map[format]; }
   struct crtc* GetCrtc() const { return m_crtc; }
+  struct connector* GetConnector() const { return m_connector; }
 
   virtual RESOLUTION_INFO GetCurrentMode();
   virtual std::vector<RESOLUTION_INFO> GetModes();
   virtual bool SetMode(const RESOLUTION_INFO& res);
 
   bool SupportsProperty(struct drm_object *object, const char *name);
+  bool SupportsPropertyAndValue(struct drm_object* object, const char* name, uint64_t value);
   virtual bool AddProperty(struct drm_object *object, const char *name, uint64_t value) { return false; }
   virtual bool SetProperty(struct drm_object *object, const char *name, uint64_t value) { return false; }
 
@@ -134,6 +121,7 @@ protected:
   struct connector *m_connector = nullptr;
   struct encoder *m_encoder = nullptr;
   struct crtc *m_crtc = nullptr;
+  struct crtc* m_orig_crtc = nullptr;
   struct plane *m_video_plane = nullptr;
   struct plane *m_gui_plane = nullptr;
   drmModeModeInfo *m_mode = nullptr;
@@ -148,7 +136,7 @@ private:
   bool GetResources();
   bool FindConnector();
   bool FindEncoder();
-  bool FindCrtc();
+  bool FindCrtcs();
   bool FindPlanes();
   bool FindModifiersForPlane(struct plane *object);
   bool FindPreferredMode();
@@ -158,11 +146,11 @@ private:
   bool CheckConnector(int connectorId);
 
   KODI::UTILS::POSIX::CFileHandle m_renderFd;
-  int m_crtc_index;
   std::string m_module;
 
   drmModeResPtr m_drm_resources = nullptr;
-  drmModeCrtcPtr m_orig_crtc = nullptr;
+
+  std::vector<crtc*> m_crtcs;
 };
 
 }

@@ -26,6 +26,10 @@
 #include "video/VideoInfoTag.h"
 #include "video/VideoThumbLoader.h"
 
+#if defined(TARGET_DARWIN_TVOS)
+#include "platform/darwin/tvos/TVOSTopShelf.h"
+#endif
+
 #define NUM_ITEMS 10
 
 CRecentlyAddedJob::CRecentlyAddedJob(int flag)
@@ -139,6 +143,11 @@ bool CRecentlyAddedJob::UpdateVideo()
     home->SetProperty("LatestEpisode." + value + ".SeasonThumb"   , "");
     home->SetProperty("LatestEpisode." + value + ".Fanart"        , "");
   }
+
+#if defined(TARGET_DARWIN_TVOS)
+  // send recently added Movies and TvShows to TopShelf
+  CTVOSTopShelf::GetInstance().SetTopShelfItems(items, TVShowItems);
+#endif
 
   i = 0;
   CFileItemList MusicVideoItems;
@@ -280,7 +289,7 @@ bool CRecentlyAddedJob::UpdateMusic()
       std::string strDBpath = StringUtils::Format("musicdb://albums/%li/", album.idAlbum);
 
       home->SetProperty("LatestAlbum." + value + ".Title"   , album.strAlbum);
-      home->SetProperty("LatestAlbum." + value + ".Year"    , album.iYear);
+      home->SetProperty("LatestAlbum." + value + ".Year"    , album.strReleaseDate);
       home->SetProperty("LatestAlbum." + value + ".Artist"  , album.GetAlbumArtistString());
       home->SetProperty("LatestAlbum." + value + ".Rating"  , album.fRating);
       home->SetProperty("LatestAlbum." + value + ".Path"    , strDBpath);

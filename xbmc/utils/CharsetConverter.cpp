@@ -266,7 +266,11 @@ enum StdConversionType /* Keep it in sync with CCharsetConverter::CInnerConverte
 class CCharsetConverter::CInnerConverter
 {
 public:
-  static bool logicalToVisualBiDi(const std::u32string& stringSrc, std::u32string& stringDst, FriBidiCharType base = FRIBIDI_TYPE_LTR, const bool failOnBadString = false);
+  static bool logicalToVisualBiDi(const std::u32string& stringSrc,
+                                  std::u32string& stringDst,
+                                  FriBidiCharType base = FRIBIDI_TYPE_LTR,
+                                  const bool failOnBadString = false,
+                                  int* visualToLogicalMap = nullptr);
 
   template<class INPUT,class OUTPUT>
   static bool stdConvert(StdConversionType convertType, const INPUT& strSource, OUTPUT& strDest, bool failOnInvalidChar = false);
@@ -371,8 +375,8 @@ bool CCharsetConverter::CInnerConverter::convert(iconv_t type, int multiplier, c
   char*       outBuf     = (char*)malloc(outBufSize);
   if (outBuf == NULL)
   {
-      CLog::Log(LOGSEVERE, "%s: malloc failed", __FUNCTION__);
-      return false;
+    CLog::Log(LOGFATAL, "%s: malloc failed", __FUNCTION__);
+    return false;
   }
 
   size_t      inBytesAvail  = inBufSize;  //how many bytes iconv() can read
@@ -398,8 +402,8 @@ bool CCharsetConverter::CInnerConverter::convert(iconv_t type, int multiplier, c
         char* newBuf  = (char*)realloc(outBuf, outBufSize);
         if (!newBuf)
         {
-          CLog::Log(LOGSEVERE, "%s realloc failed with errno=%d(%s)",
-                    __FUNCTION__, errno, strerror(errno));
+          CLog::Log(LOGFATAL, "%s realloc failed with errno=%d(%s)", __FUNCTION__, errno,
+                    strerror(errno));
           break;
         }
         outBuf = newBuf;
@@ -462,7 +466,12 @@ bool CCharsetConverter::CInnerConverter::convert(iconv_t type, int multiplier, c
   return true;
 }
 
-bool CCharsetConverter::CInnerConverter::logicalToVisualBiDi(const std::u32string& stringSrc, std::u32string& stringDst, FriBidiCharType base /*= FRIBIDI_TYPE_LTR*/, const bool failOnBadString /*= false*/)
+bool CCharsetConverter::CInnerConverter::logicalToVisualBiDi(
+    const std::u32string& stringSrc,
+    std::u32string& stringDst,
+    FriBidiCharType base /*= FRIBIDI_TYPE_LTR*/,
+    const bool failOnBadString /*= false*/,
+    int* visualToLogicalMap /*= nullptr*/)
 {
   stringDst.clear();
 
@@ -489,13 +498,14 @@ bool CCharsetConverter::CInnerConverter::logicalToVisualBiDi(const std::u32strin
     if (visual == NULL)
     {
       free(visual);
-      CLog::Log(LOGSEVERE, "%s: can't allocate memory", __FUNCTION__);
+      CLog::Log(LOGFATAL, "%s: can't allocate memory", __FUNCTION__);
       return false;
     }
 
     bool bidiFailed = false;
     FriBidiCharType baseCopy = base; // preserve same value for all lines, required because fribidi_log2vis will modify parameter value
-    if (fribidi_log2vis((const FriBidiChar*)(stringSrc.c_str() + lineStart), lineLen, &baseCopy, visual, NULL, NULL, NULL))
+    if (fribidi_log2vis(reinterpret_cast<const FriBidiChar*>(stringSrc.c_str() + lineStart),
+                        lineLen, &baseCopy, visual, nullptr, visualToLogicalMap, nullptr))
     {
       // Removes bidirectional marks
       const int newLen = fribidi_remove_bidi_marks(visual, lineLen, NULL, NULL, NULL);
@@ -676,9 +686,15 @@ bool CCharsetConverter::utf32ToW(const std::u32string& utf32StringSrc, std::wstr
 #endif // !WCHAR_IS_UCS_4
 }
 
-bool CCharsetConverter::utf32logicalToVisualBiDi(const std::u32string& logicalStringSrc, std::u32string& visualStringDst, bool forceLTRReadingOrder /*= false*/, bool failOnBadString /*= false*/)
+bool CCharsetConverter::utf32logicalToVisualBiDi(const std::u32string& logicalStringSrc,
+                                                 std::u32string& visualStringDst,
+                                                 bool forceLTRReadingOrder /*= false*/,
+                                                 bool failOnBadString /*= false*/,
+                                                 int* visualToLogicalMap /*= nullptr*/)
 {
-  return CInnerConverter::logicalToVisualBiDi(logicalStringSrc, visualStringDst, forceLTRReadingOrder ? FRIBIDI_TYPE_LTR : FRIBIDI_TYPE_PDF, failOnBadString);
+  return CInnerConverter::logicalToVisualBiDi(
+      logicalStringSrc, visualStringDst, forceLTRReadingOrder ? FRIBIDI_TYPE_LTR : FRIBIDI_TYPE_PDF,
+      failOnBadString, visualToLogicalMap);
 }
 
 bool CCharsetConverter::wToUtf32(const std::wstring& wStringSrc, std::u32string& utf32StringDst, bool failOnBadChar /*= true*/)

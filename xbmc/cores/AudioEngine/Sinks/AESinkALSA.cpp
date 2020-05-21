@@ -6,29 +6,26 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include <stdint.h>
-#include <limits.h>
-#include <sys/utsname.h>
-#include <set>
-#include <sstream>
-#include <string>
-#include <algorithm>
-
 #include "AESinkALSA.h"
+
 #include "ServiceBroker.h"
 #include "cores/AudioEngine/AESinkFactory.h"
-#include "cores/AudioEngine/Utils/AEUtil.h"
 #include "cores/AudioEngine/Utils/AEELDParser.h"
-#include "utils/log.h"
+#include "cores/AudioEngine/Utils/AEUtil.h"
+#include "threads/SingleLock.h"
 #include "utils/MathUtils.h"
 #include "utils/SystemInfo.h"
-#include "threads/SingleLock.h"
-#include "settings/AdvancedSettings.h"
-#include "settings/SettingsComponent.h"
+#include "utils/XTimeUtils.h"
+#include "utils/log.h"
 
-#ifdef TARGET_POSIX
-#include "platform/posix/XTimeUtils.h"
-#endif
+#include <algorithm>
+#include <limits.h>
+#include <set>
+#include <sstream>
+#include <stdint.h>
+#include <string>
+
+#include <sys/utsname.h>
 
 #define ALSA_OPTIONS (SND_PCM_NO_AUTO_FORMAT | SND_PCM_NO_AUTO_CHANNELS | SND_PCM_NO_AUTO_RESAMPLE)
 
@@ -446,7 +443,7 @@ snd_pcm_chmap_t* CAESinkALSA::SelectALSAChannelMap(const CAEChannelInfo& info)
       chmap = CopyALSAchmap(&supportedMaps[best]->map);
   }
 
-  if (chmap && CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->CanLogComponent(LOGAUDIO))
+  if (chmap && CServiceBroker::GetLogging().CanLogComponent(LOGAUDIO))
     CLog::Log(LOGDEBUG, "CAESinkALSA::SelectALSAChannelMap - Selected ALSA map \"%s\"", ALSAchmapToString(chmap).c_str());
 
   snd_pcm_free_chmaps(supportedMaps);
@@ -943,7 +940,7 @@ void CAESinkALSA::HandleError(const char* name, int err)
 
       /* try to resume the stream */
       while((err = snd_pcm_resume(m_pcm)) == -EAGAIN)
-        Sleep(1);
+        KODI::TIME::Sleep(1);
 
       /* if the hardware doesnt support resume, prepare the stream */
       if (err == -ENOSYS)
@@ -1622,7 +1619,7 @@ bool CAESinkALSA::GetELD(snd_hctl_t *hctl, int device, CAEDeviceInfo& info, bool
 
 void CAESinkALSA::sndLibErrorHandler(const char *file, int line, const char *function, int err, const char *fmt, ...)
 {
-  if(!CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->CanLogComponent(LOGAUDIO))
+  if (!CServiceBroker::GetLogging().CanLogComponent(LOGAUDIO))
     return;
 
   va_list arg;

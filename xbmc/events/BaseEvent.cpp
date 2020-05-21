@@ -12,6 +12,7 @@
 #include "utils/StringUtils.h"
 
 #include <chrono>
+#include <inttypes.h>
 
 CBaseEvent::CBaseEvent(const std::string& identifier, const CVariant& label, const CVariant& description, EventLevel level /* = EventLevel::Information */)
   : m_level(level),

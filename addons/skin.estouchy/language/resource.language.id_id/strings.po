@@ -72,6 +72,10 @@ msgctxt "#31038"
 msgid "Login"
 msgstr "Masuk"
 
+msgctxt "#31043"
+msgid "PAUSED"
+msgstr "JEDA"
+
 msgctxt "#31044"
 msgid "FAST FORWARD"
 msgstr "MAJU CEPAT"

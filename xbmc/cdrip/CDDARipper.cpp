@@ -81,7 +81,7 @@ bool CCDDARipper::RipTrack(CFileItem* pItem)
 bool CCDDARipper::RipCD()
 {
   // return here if cd is not a CDDA disc
-  MEDIA_DETECT::CCdInfo* pInfo = g_mediaManager.GetCdInfo();
+  MEDIA_DETECT::CCdInfo* pInfo = CServiceBroker::GetMediaManager().GetCdInfo();
   if (pInfo == NULL || !pInfo->IsAudio(1))
   {
     CLog::Log(LOGDEBUG, "cddaripper: CD is not an audio cd");

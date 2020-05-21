@@ -80,7 +80,8 @@ ADDON_STATUS IAddonInstanceHandler::CreateInstance(KODI_HANDLE instance)
 
   CSingleLock lock(m_cdSec);
 
-  ADDON_STATUS status = m_addon->CreateInstance(m_type, m_instanceId, instance, m_parentInstance);
+  ADDON_STATUS status =
+      m_addon->CreateInstance(m_type, this, m_instanceId, instance, m_parentInstance);
   if (status != ADDON_STATUS_OK)
   {
     CLog::Log(LOGERROR, "IAddonInstanceHandler::%s: %s returned bad status \"%s\" during instance creation",
@@ -95,7 +96,7 @@ void IAddonInstanceHandler::DestroyInstance()
 {
   CSingleLock lock(m_cdSec);
   if (m_addon)
-    m_addon->DestroyInstance(m_instanceId);
+    m_addon->DestroyInstance(this);
 }
 
 } /* namespace ADDON */

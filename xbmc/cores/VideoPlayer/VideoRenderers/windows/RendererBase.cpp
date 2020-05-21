@@ -10,9 +10,9 @@
 
 #include "DVDCodecs/Video/DVDVideoCodec.h"
 #include "DVDCodecs/Video/DXVA.h"
-#include "Process/VideoBuffer.h"
 #include "VideoRenderers/BaseRenderer.h"
 #include "VideoRenderers/RenderFlags.h"
+#include "cores/VideoPlayer/Buffers/VideoBuffer.h"
 #include "rendering/dx/RenderContext.h"
 #include "utils/MemUtils.h"
 #include "utils/log.h"
@@ -44,6 +44,7 @@ void CRenderBuffer::ReleasePicture()
   if (videoBuffer)
     videoBuffer->Release();
   videoBuffer = nullptr;
+  m_bLoaded = false;
 }
 
 CRenderBuffer::CRenderBuffer(AVPixelFormat av_pix_format, unsigned width, unsigned height)

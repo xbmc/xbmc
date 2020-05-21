@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include "ServiceBroker.h"
 #include "utils/CPUInfo.h"
 
 extern "C" {
@@ -22,7 +23,7 @@ extern "C" {
 
 inline int PPCPUFlags()
 {
-  unsigned int cpuFeatures = g_cpuInfo.GetCPUFeatures();
+  unsigned int cpuFeatures = CServiceBroker::GetCPUInfo()->GetCPUFeatures();
   int flags = 0;
 
   if (cpuFeatures & CPU_FEATURE_MMX)

@@ -11,7 +11,7 @@
 #include "RenderInfo.h"
 #include "VideoShaders/ShaderFormats.h"
 #include "cores/IPlayer.h"
-#include "cores/VideoPlayer/Process/VideoBuffer.h"
+#include "cores/VideoPlayer/Buffers/VideoBuffer.h"
 #include "utils/Geometry.h"
 
 #include <utility>

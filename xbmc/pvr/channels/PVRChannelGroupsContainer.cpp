@@ -18,13 +18,13 @@
 
 using namespace PVR;
 
-CPVRChannelGroupsContainer::CPVRChannelGroupsContainer(void) :
+CPVRChannelGroupsContainer::CPVRChannelGroupsContainer() :
     m_groupsRadio(new CPVRChannelGroups(true)),
     m_groupsTV(new CPVRChannelGroups(false))
 {
 }
 
-CPVRChannelGroupsContainer::~CPVRChannelGroupsContainer(void)
+CPVRChannelGroupsContainer::~CPVRChannelGroupsContainer()
 {
   delete m_groupsRadio;
   delete m_groupsTV;
@@ -49,19 +49,19 @@ bool CPVRChannelGroupsContainer::Update(bool bChannelsOnly /* = false */)
   return bReturn;
 }
 
-bool CPVRChannelGroupsContainer::Load(void)
+bool CPVRChannelGroupsContainer::Load()
 {
   Unload();
   m_bLoaded = m_groupsTV->Load() && m_groupsRadio->Load();
   return m_bLoaded;
 }
 
-bool CPVRChannelGroupsContainer::Loaded(void) const
+bool CPVRChannelGroupsContainer::Loaded() const
 {
   return m_bLoaded;
 }
 
-void CPVRChannelGroupsContainer::Unload(void)
+void CPVRChannelGroupsContainer::Unload()
 {
   m_groupsRadio->Clear();
   m_groupsTV->Clear();
@@ -165,12 +165,12 @@ std::shared_ptr<CPVRChannelGroup> CPVRChannelGroupsContainer::GetLastPlayedGroup
   return groupTV;
 }
 
-bool CPVRChannelGroupsContainer::CreateChannelEpgs(void)
+bool CPVRChannelGroupsContainer::CreateChannelEpgs()
 {
   return m_groupsTV->CreateChannelEpgs() && m_groupsRadio->CreateChannelEpgs();
 }
 
-std::shared_ptr<CPVRChannelGroup> CPVRChannelGroupsContainer::GetPreviousPlayedGroup(void)
+std::shared_ptr<CPVRChannelGroup> CPVRChannelGroupsContainer::GetPreviousPlayedGroup()
 {
   CSingleLock lock(m_critSection);
   return m_lastPlayedGroups[0];

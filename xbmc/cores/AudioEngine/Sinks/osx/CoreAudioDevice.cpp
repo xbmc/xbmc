@@ -20,31 +20,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // CCoreAudioDevice
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-CCoreAudioDevice::CCoreAudioDevice()  :
-  m_Started             (false    ),
-  m_DeviceId            (0        ),
-  m_MixerRestore        (-1       ),
-  m_IoProc              (NULL     ),
-  m_ObjectListenerProc  (NULL     ),
-  m_SampleRateRestore   (0.0f     ),
-  m_HogPid              (-1       ),
-  m_frameSize           (0        ),
-  m_OutputBufferIndex   (0        ),
-  m_BufferSizeRestore   (0        )
-{
-}
-
-CCoreAudioDevice::CCoreAudioDevice(AudioDeviceID deviceId) :
-  m_Started             (false    ),
-  m_DeviceId            (deviceId ),
-  m_MixerRestore        (-1       ),
-  m_IoProc              (NULL     ),
-  m_ObjectListenerProc  (NULL     ),
-  m_SampleRateRestore   (0.0f     ),
-  m_HogPid              (-1       ),
-  m_frameSize           (0        ),
-  m_OutputBufferIndex   (0        ),
-  m_BufferSizeRestore   (0        )
+CCoreAudioDevice::CCoreAudioDevice(AudioDeviceID deviceId) : m_DeviceId(deviceId)
 {
 }
 

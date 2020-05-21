@@ -14,4 +14,4 @@ else()
 endif()
 
 # __GBM__ is needed by eglplatform.h in case it is included before gbm.h
-list(APPEND PLATFORM_DEFINES -DMESA_EGL_NO_X11_HEADERS -D__GBM__=1 -DPLATFORM_SETTINGS_FILE=gbm.xml)
+list(APPEND PLATFORM_DEFINES -DMESA_EGL_NO_X11_HEADERS -DEGL_NO_X11 -D__GBM__=1 -DPLATFORM_SETTINGS_FILE=gbm.xml)

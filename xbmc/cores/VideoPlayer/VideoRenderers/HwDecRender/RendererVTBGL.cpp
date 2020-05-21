@@ -71,7 +71,7 @@ EShaderFormat CRendererVTB::GetShaderFormat()
 
 bool CRendererVTB::LoadShadersHook()
 {
-  CLog::Log(LOGNOTICE, "GL: Using CVBREF render method");
+  CLog::Log(LOGINFO, "GL: Using CVBREF render method");
   m_textureTarget = GL_TEXTURE_RECTANGLE;
   return false;
 }

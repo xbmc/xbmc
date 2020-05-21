@@ -26,6 +26,8 @@
 #include "cores/omxplayer/OMXImage.h"
 #endif
 
+#include <inttypes.h>
+
 CTextureCacheJob::CTextureCacheJob(const std::string &url, const std::string &oldHash):
   m_url(url),
   m_oldHash(oldHash),

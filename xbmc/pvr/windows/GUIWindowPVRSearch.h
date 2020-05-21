@@ -38,7 +38,7 @@ namespace PVR
 
   protected:
     void OnPrepareFileItems(CFileItemList& items) override;
-    std::string GetDirectoryPath(void) override { return ""; }
+    std::string GetDirectoryPath() override { return ""; }
 
   private:
     bool OnContextButtonClear(CFileItem* item, CONTEXT_BUTTON button);

@@ -274,18 +274,6 @@ void CRendererShaders::CRenderBufferImpl::AppendPicture(const VideoPicture& pict
   }
 }
 
-bool CRendererShaders::CRenderBufferImpl::IsLoaded()
-{
-  if (!videoBuffer)
-    return false;
-
-  if (videoBuffer->GetFormat() == AV_PIX_FMT_D3D11VA_VLD &&
-    AV_PIX_FMT_D3D11VA_VLD == av_format)
-    return true;
-
-  return m_bLoaded;
-}
-
 bool CRendererShaders::CRenderBufferImpl::UploadBuffer()
 {
   if (!videoBuffer)
@@ -293,7 +281,9 @@ bool CRendererShaders::CRenderBufferImpl::UploadBuffer()
 
   if (videoBuffer->GetFormat() == AV_PIX_FMT_D3D11VA_VLD)
   {
-    if (AV_PIX_FMT_D3D11VA_VLD != av_format)
+    if (AV_PIX_FMT_D3D11VA_VLD == av_format)
+      m_bLoaded = true;
+    else
       m_bLoaded = UploadFromGPU();
   }
   else
@@ -353,7 +343,6 @@ void CRendererShaders::CRenderBufferImpl::ReleasePicture()
 
   m_planes[0] = nullptr;
   m_planes[1] = nullptr;
-  m_bLoaded = false;
 }
 
 bool CRendererShaders::CRenderBufferImpl::UploadFromGPU()
@@ -374,9 +363,9 @@ bool CRendererShaders::CRenderBufferImpl::UploadFromGPU()
 
   void* (*copy_func)(void* d, const void* s, size_t size) =
 #if defined(HAVE_SSE2)
-    ((g_cpuInfo.GetCPUFeatures() & CPU_FEATURE_SSE4) != 0) ? gpu_memcpy :
+      ((CServiceBroker::GetCPUInfo()->GetCPUFeatures() & CPU_FEATURE_SSE4) != 0) ? gpu_memcpy :
 #endif
-    memcpy;
+                                                                                 memcpy;
 
   auto* s_y = static_cast<uint8_t*>(mapGPU.pData);
   auto* s_uv = static_cast<uint8_t*>(mapGPU.pData) + m_sDesc.Height * mapGPU.RowPitch;

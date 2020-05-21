@@ -73,6 +73,7 @@ public:
     RECONFIGURE,
     SUSPEND,
     DEVICECHANGE,
+    DEVICECOUNTCHANGE,
     MUTE,
     VOLUME,
     PAUSESTREAM,
@@ -254,6 +255,7 @@ public:
   bool IsSettingVisible(const std::string &settingId) override;
   void KeepConfiguration(unsigned int millis) override;
   void DeviceChange() override;
+  void DeviceCountChange(std::string driver) override;
   bool GetCurrentSinkFormat(AEAudioFormat &SinkFormat) override;
 
   void RegisterAudioCallback(IAudioCallback* pCallback) override;

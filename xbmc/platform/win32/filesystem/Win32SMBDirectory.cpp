@@ -7,17 +7,19 @@
  */
 
 #include "Win32SMBDirectory.h"
+
 #include "FileItem.h"
-#include "platform/win32/WIN32Util.h"
-#include "platform/win32/CharsetConverter.h"
-#include "utils/CharsetConverter.h"
-#include "URL.h"
-#include "utils/log.h"
 #include "PasswordManager.h"
+#include "URL.h"
+#include "utils/CharsetConverter.h"
+#include "utils/XTimeUtils.h"
 #include "utils/auto_buffer.h"
+#include "utils/log.h"
+
+#include "platform/win32/CharsetConverter.h"
+#include "platform/win32/WIN32Util.h"
 
 #include <Windows.h>
-
 #include <Winnetwk.h>
 #pragma comment(lib, "mpr.lib")
 
@@ -166,8 +168,11 @@ bool CWin32SMBDirectory::GetDirectory(const CURL& url, CFileItemList &items)
 
     // calculation of size and date costs a little on win32
     // so DIR_FLAG_NO_FILE_INFO flag is ignored
-    FILETIME localTime;
-    if (FileTimeToLocalFileTime(&findData.ftLastWriteTime, &localTime) == TRUE)
+    KODI::TIME::FileTime fileTime;
+    fileTime.lowDateTime = findData.ftLastWriteTime.dwLowDateTime;
+    fileTime.highDateTime = findData.ftLastWriteTime.dwHighDateTime;
+    KODI::TIME::FileTime localTime;
+    if (KODI::TIME::FileTimeToLocalFileTime(&fileTime, &localTime) == TRUE)
       pItem->m_dateTime = localTime;
     else
       pItem->m_dateTime.SetValid(false);
@@ -387,7 +392,9 @@ static bool localGetNetworkResources(struct _NETRESOURCEW* basePathToScanPtr, co
     if (localGetShares(basePathToScanPtr->lpRemoteName, urlPrefixForItems, items))
       return true;
 
-    CLog::LogF(LOGNOTICE, "Can't read shares for \"%ls\" by localGetShares(), fallback to standard method", FromW(basePathToScanPtr->lpRemoteName));
+    CLog::LogF(LOGINFO,
+               "Can't read shares for \"%ls\" by localGetShares(), fallback to standard method",
+               FromW(basePathToScanPtr->lpRemoteName));
   }
 
   HANDLE netEnum;
@@ -400,8 +407,9 @@ static bool localGetNetworkResources(struct _NETRESOURCEW* basePathToScanPtr, co
       std::wstring providerName;
       if (basePathToScanPtr->lpProvider && basePathToScanPtr->lpProvider[0] != 0)
         providerName.assign(L" (provider \"").append(basePathToScanPtr->lpProvider).append(L"\")");
-      CLog::LogF(LOGNOTICE, "Can't open network enumeration for \"%ls\"%ls. Error: %lu",
-                  FromW(basePathToScanPtr->lpRemoteName), FromW(providerName), static_cast<unsigned long>(result));
+      CLog::LogF(LOGINFO, "Can't open network enumeration for \"%ls\"%ls. Error: %lu",
+                 FromW(basePathToScanPtr->lpRemoteName), FromW(providerName),
+                 static_cast<unsigned long>(result));
     }
     else
       CLog::LogF(LOGERROR, "Can't open network enumeration for network root. Error: %lu", static_cast<unsigned long>(result));
@@ -515,7 +523,7 @@ static bool localGetNetworkResources(struct _NETRESOURCEW* basePathToScanPtr, co
           {
             if (!localGetNetworkResources(&curResource, urlPrefixForItems, items, false))
             {
-              CLog::LogF(LOGNOTICE, "Can't get servers from \"%ls\", skipping",
+              CLog::LogF(LOGINFO, "Can't get servers from \"%ls\", skipping",
                          FromW(curResource.lpRemoteName));
             }
           }
@@ -706,7 +714,7 @@ bool CWin32SMBDirectory::ConnectAndAuthenticate(CURL& url, bool allowPromptForCr
       return false; // don't try any more
     }
     else if (connRes == ERROR_BUSY)
-      CLog::LogF(LOGNOTICE, "Network is busy for \"%s\"", serverShareName.c_str());
+      CLog::LogF(LOGINFO, "Network is busy for \"%s\"", serverShareName.c_str());
     else if (connRes == ERROR_SESSION_CREDENTIAL_CONFLICT)
     {
       CLog::LogF(LOGWARNING, "Can't connect to \"%s\" %s because of conflict of credential. Will try to close current connections.", serverShareName.c_str(), loginDescr.c_str());

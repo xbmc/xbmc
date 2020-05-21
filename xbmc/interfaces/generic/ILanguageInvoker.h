@@ -17,12 +17,14 @@
 class CLanguageInvokerThread;
 class ILanguageInvocationHandler;
 
-typedef enum {
+typedef enum
+{
   InvokerStateUninitialized,
   InvokerStateInitialized,
   InvokerStateRunning,
   InvokerStateStopping,
-  InvokerStateDone,
+  InvokerStateScriptDone,
+  InvokerStateExecutionDone,
   InvokerStateFailed
 } InvokerState;
 
@@ -43,16 +45,21 @@ public:
   InvokerState GetState() const { return m_state; }
   bool IsActive() const;
   bool IsRunning() const;
+  void Reset() { m_state = InvokerStateUninitialized; };
 
 protected:
   friend class CLanguageInvokerThread;
+
+  /**
+   * Called to notify the script is aborting.
+   */
+  virtual void AbortNotification();
 
   virtual bool execute(const std::string &script, const std::vector<std::string> &arguments) = 0;
   virtual bool stop(bool abort) = 0;
 
   virtual void pulseGlobalEvent();
   virtual bool onExecutionInitialized();
-  virtual void onAbortRequested();
   virtual void onExecutionFailed();
   virtual void onExecutionDone();
   virtual void onExecutionFinalized();

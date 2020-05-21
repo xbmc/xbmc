@@ -127,7 +127,9 @@ public:
    \param genres [in] a vector of genres to which this song belongs
    \param iTrack [in] the track number and disc number of the song
    \param iDuration [in] the duration of the song
-   \param iYear [in] the year of the song
+   \param strReleaseDate [in] the release date of the song ISO8601 format
+   \param strOrigReleaseDate [in] the original release date of the song ISO8601 format
+   \param strDiscSubtitle [in] subtitle of a disc
    \param iTimesPlayed [in] the number of times the song has been played
    \param iStartOffset [in] the start offset of the song (when using a single audio file with a .cue)
    \param iEndOffset [in] the end offset of the song (when using a single audio file with .cue)
@@ -147,9 +149,13 @@ public:
               const std::string& strThumb,
               const std::string &artistDisp, const std::string &artistSort,
               const std::vector<std::string>& genres,
-              int iTrack, int iDuration, int iYear,
+              int iTrack, int iDuration,
+              const std::string& strReleaseDate,
+              const std::string& strOrigReleaseDate,
+              std::string& strDiscSubtitle,
               const int iTimesPlayed, int iStartOffset, int iEndOffset,
               const CDateTime& dtLastPlayed, float rating, int userrating, int votes,
+              int iBPM, int iBitRate, int iSampleRate, int iChannels,
               const ReplayGain& replayGain);
   bool GetSong(int idSong, CSong& song);
 
@@ -173,7 +179,9 @@ public:
    \param genres [in] a vector of genres to which this song belongs
    \param iTrack [in] the track number and disc number of the song
    \param iDuration [in] the duration of the song
-   \param iYear [in] the year of the song
+   \param strReleaseDate [in] the release date of the song ISO8601 format
+   \param strOrigReleaseDate [in] the original release date of the song ISO8601 format
+   \param strDiscSubtitle [in] subtitle of a disc
    \param iTimesPlayed [in] the number of times the song has been played
    \param iStartOffset [in] the start offset of the song (when using a single audio file with a .cue)
    \param iEndOffset [in] the end offset of the song (when using a single audio file with .cue)
@@ -182,17 +190,26 @@ public:
    \param userrating [in] a userrating (my rating) for the song
    \param votes [in] a vote counter for the song rating
    \param replayGain [in] album and track replaygain and peak values
+   \param iBPM [in] the beats per minute of a song
+   \param iBitRate [in] the bitrate of the song file
+   \param iSampleRate [in] the sample rate of the song file
+   \param iChannels [in] the number of audio channels in the song file
    \return the id of the song
    */
   int UpdateSong(int idSong,
                  const std::string& strTitle, const std::string& strMusicBrainzTrackID,
                  const std::string& strPathAndFileName, const std::string& strComment,
                  const std::string& strMood, const std::string& strThumb,
-                 const std::string &artistDisp, const std::string &artistSort,
+                 const std::string& artistDisp, const std::string& artistSort,
                  const std::vector<std::string>& genres,
-                 int iTrack, int iDuration, int iYear,
+                 int iTrack, int iDuration,
+                 const std::string& strReleaseDate,
+                 const std::string& strOrigReleaseDate,
+                 const std::string& strDiscSubtitle,
                  int iTimesPlayed, int iStartOffset, int iEndOffset,
-                 const CDateTime& dtLastPlayed, float rating, int userrating, int votes, const ReplayGain& replayGain);
+                 const CDateTime& dtLastPlayed, float rating, int userrating, int votes,
+                 const ReplayGain& replayGain,
+                 int iBPM, int iBitRate, int iSampleRate, int iChannels);
 
   //// Misc Song
   bool GetSongByFileName(const std::string& strFileName, CSong& song, int64_t startOffset = 0);
@@ -226,7 +243,9 @@ public:
    \param strArtist the album artist name(s) display string
    \param strArtistSort the album artist name(s) sort string
    \param strGenre the album genre(s)
-   \param year the year
+   \param strReleaseDate [in] the release date of the album ISO8601 format
+   \param strOrigReleaseDate [in] the original release date of the album ISO8601 format
+   \param bBoxedSet if the album is a boxset
    \param strRecordLabel the recording label
    \param strType album type (Musicbrainz release type e.g. "Broadcast, Soundtrack, live"),
    \param bCompilation if the album is a compilation
@@ -236,7 +255,9 @@ public:
   int  AddAlbum(const std::string& strAlbum, const std::string& strMusicBrainzAlbumID,
                 const std::string& strReleaseGroupMBID,
                 const std::string& strArtist, const std::string& strArtistSort,
-                const std::string& strGenre, int year,
+                const std::string& strGenre,
+                const std::string& strReleaseDate, const std::string& strOrigReleaseDate,
+                bool bBoxedSet,
                 const std::string& strRecordLabel, const std::string& strType,
                 bool bCompilation, CAlbum::ReleaseType releaseType);
 
@@ -256,7 +277,10 @@ public:
                    const std::string& strThemes, const std::string& strReview,
                    const std::string& strImage, const std::string& strLabel,
                    const std::string& strType,
-                   float fRating, int iUserrating, int iVotes, int iYear, bool bCompilation,
+                   float fRating, int iUserrating, int iVotes,
+                   const std::string& strReleaseDate, const std::string& strOrigReleaseDate,
+                   bool bBoxedSet,
+                   bool bCompilation,
                    CAlbum::ReleaseType releaseType,
                    bool bScrapedMBID);
   bool ClearAlbumLastScrapedTime(int idAlbum);
@@ -281,7 +305,9 @@ public:
   int  GetAlbumByName(const std::string& strAlbum, const std::vector<std::string>& artist);
   int  GetAlbumByMatch(const CAlbum &album);
   std::string GetAlbumById(int id);
+  std::string GetAlbumDiscTitle(int idAlbum, int idDisc);
   bool SetAlbumUserrating(const int idAlbum, int userrating);
+  int GetAlbumDiscsCount(int idAlbum);
 
   /////////////////////////////////////////////////
   // Artist CRUD
@@ -417,6 +443,12 @@ public:
   /////////////////////////////////////////////////
   int  GetCompilationAlbumsCount();
 
+  ////////////////////////////////////////////////
+  // Boxsets
+  ////////////////////////////////////////////////
+  bool IsAlbumBoxset(int idAlbum);
+  int GetBoxsetsCount();
+
   int GetSinglesCount();
 
   int GetArtistCountForRole(int role);
@@ -441,15 +473,33 @@ public:
   bool GetAlbumTypesNav(const std::string &strBaseDir, CFileItemList &items, const Filter &filter = Filter(), bool countOnly = false);
   bool GetMusicLabelsNav(const std::string &strBaseDir, CFileItemList &items, const Filter &filter = Filter(), bool countOnly = false);
   bool GetAlbumsNav(const std::string& strBaseDir, CFileItemList& items, int idGenre = -1, int idArtist = -1, const Filter &filter = Filter(), const SortDescription &sortDescription = SortDescription(), bool countOnly = false);
-  bool GetAlbumsByYear(const std::string &strBaseDir, CFileItemList& items, int year);
+  bool GetDiscsNav(const std::string& strBaseDir,
+                   CFileItemList& items,
+                   int idAlbum,
+                   const Filter& filter = Filter(),
+                   const SortDescription& sortDescription = SortDescription(),
+                   bool countOnly = false);
+  bool GetAlbumsByYear(const std::string& strBaseDir, CFileItemList& items, int year);
   bool GetSongsNav(const std::string& strBaseDir, CFileItemList& items, int idGenre, int idArtist,int idAlbum, const SortDescription &sortDescription = SortDescription());
   bool GetSongsByYear(const std::string& baseDir, CFileItemList& items, int year);
   bool GetSongsByWhere(const std::string &baseDir, const Filter &filter, CFileItemList& items, const SortDescription &sortDescription = SortDescription());
   bool GetSongsFullByWhere(const std::string &baseDir, const Filter &filter, CFileItemList& items, const SortDescription &sortDescription = SortDescription(), bool artistData = false);
   bool GetAlbumsByWhere(const std::string &baseDir, const Filter &filter, CFileItemList &items, const SortDescription &sortDescription = SortDescription(), bool countOnly = false);
+  bool GetDiscsByWhere(const std::string& baseDir,
+                       const Filter& filter,
+                       CFileItemList& items,
+                       const SortDescription& sortDescription = SortDescription(),
+                       bool countOnly = false);
+  bool GetDiscsByWhere(CMusicDbUrl& musicUrl,
+                       const Filter& filter,
+                       CFileItemList& items,
+                       const SortDescription& sortDescription = SortDescription(),
+                       bool countOnly = false);
   bool GetArtistsByWhere(const std::string& strBaseDir, const Filter &filter, CFileItemList& items, const SortDescription &sortDescription = SortDescription(), bool countOnly = false);
+  int GetDiscsCount(const std::string& baseDir, const Filter& filter = Filter());
   int GetSongsCount(const Filter &filter = Filter());
   bool GetFilter(CDbUrl &musicUrl, Filter &filter, SortDescription &sorting) override;
+  int GetOrderFilter(const std::string& type, const SortDescription& sorting, Filter& filter);
 
   /////////////////////////////////////////////////
   // Party Mode
@@ -676,6 +726,7 @@ private:
   bool SearchAlbums(const std::string& search, CFileItemList &albums);
   bool SearchSongs(const std::string& strSearch, CFileItemList &songs);
   int GetSongIDFromPath(const std::string &filePath);
+  void NormaliseSongDates(std::string& strRelease, std::string& strOriginal);
 
   /*! \brief Build SQL  for sort subquery from ignore article token list
   \param strField original name or title field that articles could be removed from
@@ -730,7 +781,9 @@ private:
     song_strTitle,
     song_iTrack,
     song_iDuration,
-    song_iYear,
+    song_strReleaseDate,
+    song_strOrigReleaseDate,
+    song_strDiscSubtitle,
     song_strFileName,
     song_strMusicBrainzTrackID,
     song_iTimesPlayed,
@@ -745,12 +798,17 @@ private:
     song_strAlbum,
     song_strPath,
     song_bCompilation,
+    song_bBoxedSet,
     song_strAlbumArtists,
     song_strAlbumArtistSort,
     song_strAlbumReleaseType,
     song_mood,
     song_dateAdded,
     song_strReplayGain,
+    song_iBPM,
+    song_iBitRate,
+    song_iSampleRate,
+    song_iChannels,
     song_enumCount // end of the enum, do not add past here
   } SongFields;
 
@@ -765,7 +823,9 @@ private:
     album_strArtists,
     album_strArtistSort,
     album_strGenres,
-    album_iYear,
+    album_strReleaseDate,
+    album_strOrigReleaseDate,
+    album_bBoxedSet,
     album_strMoods,
     album_strStyles,
     album_strThemes,
@@ -781,6 +841,7 @@ private:
     album_lastScraped,
     album_iTimesPlayed,
     album_strReleaseType,
+    album_iTotalDiscs,
     album_dtDateAdded,
     album_dtLastPlayed,
     album_enumCount // end of the enum, do not add past here
@@ -859,8 +920,6 @@ private:
     joinToAlbum_idArtist = 0,
     joinToAlbum_strArtist,
     joinToAlbum_strArtistMBID,
-    joinToAlbum_idSongGenre,
-    joinToAlbum_strSongGenre,
     joinToAlbum_enumCount // end of the enum, do not add past here
   } JoinToAlbumFields;
 

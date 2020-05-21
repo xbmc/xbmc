@@ -209,6 +209,7 @@ public:
   bool IsDVDFile(bool bVobs = true, bool bIfos = true) const;
   bool IsBDFile() const;
   bool IsBluray() const;
+  bool IsProtectedBlurayDisc() const;
   bool IsRAR() const;
   bool IsAPK() const;
   bool IsZIP() const;
@@ -725,6 +726,8 @@ public:
    \sa Save,Load
    */
   void RemoveDiscCache(int windowID = 0) const;
+  void RemoveDiscCache(const std::string& cachefile) const;
+  void RemoveDiscCacheCRC(const std::string& crc) const;
   bool AlwaysCache() const;
 
   void Swap(unsigned int item1, unsigned int item2);
@@ -755,12 +758,12 @@ public:
 
   void ClearSortState();
 
-  VECFILEITEMS::const_iterator begin() { return m_items.cbegin(); }
-  VECFILEITEMS::const_iterator end() { return m_items.cend(); }
+  VECFILEITEMS::iterator begin() { return m_items.begin(); }
+  VECFILEITEMS::iterator end() { return m_items.end(); }
   VECFILEITEMS::const_iterator begin() const { return m_items.begin(); }
   VECFILEITEMS::const_iterator end() const { return m_items.end(); }
-  VECFILEITEMS::const_iterator cbegin() const { return m_items.begin(); }
-  VECFILEITEMS::const_iterator cend() const { return m_items.end(); }
+  VECFILEITEMS::const_iterator cbegin() const { return m_items.cbegin(); }
+  VECFILEITEMS::const_iterator cend() const { return m_items.cend(); }
 private:
   void Sort(FILEITEMLISTCOMPARISONFUNC func);
   void FillSortFields(FILEITEMFILLFUNC func);

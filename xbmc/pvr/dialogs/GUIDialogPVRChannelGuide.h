@@ -19,8 +19,8 @@ namespace PVR
   class CGUIDialogPVRChannelGuide : public CGUIDialogPVRItemsViewBase
   {
   public:
-    CGUIDialogPVRChannelGuide(void);
-    ~CGUIDialogPVRChannelGuide(void) override = default;
+    CGUIDialogPVRChannelGuide();
+    ~CGUIDialogPVRChannelGuide() override = default;
 
     void Open(const std::shared_ptr<CPVRChannel>& channel);
 

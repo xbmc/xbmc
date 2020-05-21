@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <window>
-	<visible>Player.Seeking | Player.DisplayAfterSeek | [Player.Paused + !Player.Caching] | Player.Forwarding | Player.Rewinding | Player.ShowInfo | Player.ShowTime | Window.IsActive(videoosd) | Window.IsActive(musicosd) | Window.IsActive(playerprocessinfo) | !String.IsEmpty(Player.SeekNumeric) | !String.IsEmpty(PVR.ChannelNumberInput)</visible>
+	<visible>Player.Seeking | Player.DisplayAfterSeek | [Player.Paused + !Player.Caching] | Player.Forwarding | Player.Rewinding | Player.ShowInfo | Window.IsActive(fullscreeninfo) | Player.ShowTime | Window.IsActive(videoosd) | Window.IsActive(musicosd) | Window.IsActive(playerprocessinfo) | !String.IsEmpty(Player.SeekNumeric) | !String.IsEmpty(PVR.ChannelNumberInput)</visible>
 	<visible>![Window.IsActive(sliderdialog) | Window.IsActive(pvrosdchannels) | Window.IsActive(pvrguideinfo)]</visible>
 	<visible>Window.IsActive(fullscreenvideo) | Window.IsActive(visualisation)</visible>
 	<include>Animation_BottomSlide</include>
@@ -22,7 +22,7 @@
 				<visible>!Window.IsVisible(videoosd) + !Window.IsVisible(musicosd)</visible>
 				<animation effect="fade" time="200">VisibleChange</animation>
 				<control type="image">
-					<left>200</left>
+					<left>20</left>
 					<top>120</top>
 					<width>264</width>
 					<height>40</height>
@@ -49,19 +49,22 @@
 					<include>Animation_BottomSlide</include>
 					<orientation>horizontal</orientation>
 					<itemgap>10</itemgap>
-					<visible>Player.ShowInfo + !Player.ChannelPreviewActive + Window.IsActive(fullscreenvideo)</visible>
+					<visible>[Player.ShowInfo | Window.IsActive(fullscreeninfo)] + !Player.ChannelPreviewActive + Window.IsActive(fullscreenvideo)</visible>
 					<animation effect="fade" start="0" end="100" time="200" delay="1000">Visible</animation>
 					<include content="MediaFlag">
-						<param name="texture" value="$INFO[VideoPlayer.AudioChannels,flags/audiochannel/,.png]" />
+					<param name="texture" value="$INFO[VideoPlayer.VideoCodec,flags/videocodec/,.png]" />
 					</include>
 					<include content="MediaFlag">
-						<param name="texture" value="$INFO[VideoPlayer.AudioCodec,flags/audiocodec/,.png]" />
+					<param name="texture" value="$INFO[VideoPlayer.VideoResolution,flags/videoresolution/,.png]" />
 					</include>
 					<include content="MediaFlag">
 						<param name="texture" value="$INFO[VideoPlayer.VideoAspect,flags/aspectratio/,.png]" />
 					</include>
 					<include content="MediaFlag">
-						<param name="texture" value="$INFO[VideoPlayer.VideoCodec,flags/videocodec/,.png]" />
+					<param name="texture" value="$INFO[VideoPlayer.AudioCodec,flags/audiocodec/,.png]" />
+					</include>
+					<include content="MediaFlag">
+					<param name="texture" value="$INFO[VideoPlayer.AudioChannels,flags/audiochannel/,.png]" />
 					</include>
 				</control>
 				<control type="grouplist">
@@ -76,12 +79,60 @@
 					<visible>Player.ShowInfo + !Player.ChannelPreviewActive + Window.IsActive(visualisation)</visible>
 					<animation effect="fade" start="0" end="100" time="200" delay="1000">Visible</animation>
 					<include content="MediaFlag">
-						<param name="texture" value="$INFO[MusicPlayer.Codec,flags/audiocodec/,.png]" />
-					</include>
-					<include content="MediaFlag">
 						<param name="texture" value="flags/rds/rds.png" />
 						<param name="visible" value="RDS.HasRDS" />
 					</include>
+					<include content="MediaFlag">
+						<param name="texture" value="$INFO[MusicPlayer.Codec,flags/audiocodec/,.png]" />
+					</include>
+					<include content="MediaFlag">
+						<param name="texture" value="$INFO[MusicPlayer.Channels,flags/audiochannel/,.png]" />
+					</include>
+					<control type="group">
+						<visible>!String.IsEmpty(MusicPlayer.SampleRate)</visible>
+						<width>115</width>
+						<control type="label">
+							<width>115</width>
+							<height>60</height>
+							<align>center</align>
+							<aligny>center</aligny>
+							<label>$INFO[MusicPlayer.SampleRate, ,kHz]</label>
+							<font>font_flag</font>
+						</control>
+						<include content="MediaFlag">
+							<param name="texture" value="flags/flag.png" />
+						</include>
+					</control>
+					<control type="group">
+						<visible>!String.IsEmpty(MusicPlayer.BitRate)</visible>
+						<width>115</width>
+						<control type="label">
+							<width>115</width>
+							<height>60</height>
+							<align>center</align>
+							<aligny>center</aligny>
+							<label>$INFO[MusicPlayer.BitRate, ,kbps ]</label>
+							<font>font_flag</font>
+						</control>
+						<include content="MediaFlag">
+							<param name="texture" value="flags/flag.png" />
+						</include>
+					</control>
+					<control type="group">
+						<visible>!String.IsEmpty(MusicPlayer.BitsPerSample)</visible>
+						<width>115</width>
+						<control type="label">
+							<width>115</width>
+							<height>60</height>
+							<align>center</align>
+							<aligny>center</aligny>
+							<label>$INFO[MusicPlayer.BitsPerSample, ,bit]</label>
+							<font>font_flag</font>
+						</control>
+						<include content="MediaFlag">
+							<param name="texture" value="flags/flag.png" />
+						</include>
+					</control>
 				</control>
 				<control type="group">
 					<visible>[PVR.IsRecordingPlayingChannel + !Player.ChannelPreviewActive] | PVR.IsPlayingActiveRecording</visible>
@@ -113,7 +164,7 @@
 					<wrapmultiline>true</wrapmultiline>
 					<animation effect="fade" time="200">VisibleChange</animation>
 					<label>$INFO[Player.TimeRemaining,[COLOR button_focus]$LOCALIZE[31134]:[CR][/COLOR]]</label>
-					<visible>![Player.ShowInfo | Window.IsVisible(playerprocessinfo) | VideoPlayer.HasEpg]</visible>
+					<visible>![Player.ShowInfo | Window.IsVisible(playerprocessinfo) | VideoPlayer.HasEpg] + !Window.IsActive(fullscreeninfo)</visible>
 				</control>
 				<control type="label">
 					<top>110</top>
@@ -126,7 +177,7 @@
 					<wrapmultiline>true</wrapmultiline>
 					<animation effect="fade" time="200">VisibleChange</animation>
 					<label>$INFO[PVR.EpgEventRemainingTime,[COLOR button_focus]$LOCALIZE[31134]:[CR][/COLOR]]</label>
-					<visible>![Player.ShowInfo | Window.IsVisible(playerprocessinfo)] + VideoPlayer.HasEpg</visible>
+					<visible>![Player.ShowInfo | Window.IsVisible(playerprocessinfo)] + VideoPlayer.HasEpg + !Window.IsActive(fullscreeninfo)</visible>
 				</control>
 			</control>
 			<control type="label">
@@ -246,7 +297,7 @@
 		</control>
 		<control type="group">
 			<visible>!Window.IsVisible(playerprocessinfo)</visible>
-			<visible>Player.ShowInfo + VideoPlayer.Content(LiveTV)</visible>
+			<visible>[Player.ShowInfo | Window.IsActive(fullscreeninfo)] + VideoPlayer.Content(LiveTV)</visible>
 			<animation effect="fade" time="400">VisibleChange</animation>
 			<animation effect="slide" end="0,-20" time="150" condition="VideoPlayer.Content(LiveTV)">conditional</animation>
 			<bottom>0</bottom>
@@ -324,7 +375,7 @@
 			<bottom>0</bottom>
 			<height>230</height>
 			<visible>!Window.IsVisible(playerprocessinfo)</visible>
-			<visible>Player.ShowInfo + !VideoPlayer.Content(LiveTV) + Window.IsActive(fullscreenvideo)</visible>
+			<visible>[Player.ShowInfo | Window.IsActive(fullscreeninfo)] + !VideoPlayer.Content(LiveTV) + Window.IsActive(fullscreenvideo)</visible>
 			<animation effect="fade" time="200">VisibleChange</animation>
 			<control type="group">
 				<control type="image">

@@ -8,4 +8,26 @@ import @APP_PACKAGE@.model.Media;
 
 public class TVShow extends Media
 {
+  private String year;
+  private String rating;
+
+  public String getYear()
+  {
+    return year;
+  }
+
+  public void setYear(String year)
+  {
+    this.year = year;
+  }
+
+  public String getRating()
+  {
+    return rating;
+  }
+
+  public void setRating(String rating)
+  {
+    this.rating = rating;
+  }  
 }

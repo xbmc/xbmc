@@ -34,12 +34,12 @@ bool SoLoader::Load()
   std::string strFileName= CSpecialProtocol::TranslatePath(GetFileName());
   if (strFileName == "xbmc.so")
   {
-    CLog::Log(LOGDEBUG, "Loading Internal Library\n");
+    CLog::Log(LOGDEBUG, "Loading Internal Library");
     m_soHandle = RTLD_DEFAULT;
   }
   else
   {
-    CLog::Log(LOGDEBUG, "Loading: %s\n", strFileName.c_str());
+    CLog::Log(LOGDEBUG, "Loading: %s", strFileName.c_str());
     int flags = RTLD_LAZY;
     m_soHandle = dlopen(strFileName.c_str(), flags);
     if (!m_soHandle)

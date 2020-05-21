@@ -15,6 +15,7 @@
 
 #include "MediaCodecDecoderFilterManager.h"
 
+#include "utils/StringUtils.h"
 #include "utils/log.h"
 
 #include <androidjni/MediaCodecList.h>
@@ -49,11 +50,21 @@ CMediaCodecDecoderFilterManager::CMediaCodecDecoderFilterManager()
     uint32_t flags = CDecoderFilter::FLAG_GENERAL_ALLOWED | CDecoderFilter::FLAG_DVD_ALLOWED;
     for (const char **ptr = blacklisted_decoders; *ptr && flags; ptr++)
     {
-      if (!strnicmp(*ptr, codecname.c_str(), strlen(*ptr)))
+      if (!StringUtils::CompareNoCase(*ptr, codecname, strlen(*ptr)))
         flags = 0;
     }
-    add(CDecoderFilter(codecname, flags, 0));
-    CLog::Log(LOGNOTICE, "Mediacodec decoder: %s", codecname.c_str());
+    std::string tmp(codecname);
+    StringUtils::ToLower(tmp);
+    int minheight = 0;
+    if (tmp.find("mpeg4") != std::string::npos)
+      minheight = 720;
+    else if (tmp.find("mpeg2") != std::string::npos)
+      minheight = 720;
+    else if (tmp.find("263") != std::string::npos)
+      minheight = 720;
+
+    add(CDecoderFilter(codecname, flags, minheight));
+    CLog::Log(LOGINFO, "Mediacodec decoder: %s", codecname.c_str());
   }
   Save();
 }

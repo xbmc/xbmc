@@ -101,6 +101,8 @@ namespace VIDEO
 
     bool EnumerateEpisodeItem(const CFileItem *item, EPISODELIST& episodeList);
 
+    static std::string GetMovieSetInfoFolder(const std::string& setTitle);
+
   protected:
     virtual void Process();
     bool DoScan(const std::string& strDirectory) override;
@@ -231,6 +233,10 @@ namespace VIDEO
     CVideoDatabase m_database;
     std::set<std::string> m_pathsToCount;
     std::set<int> m_pathsToClean;
+
+  private:
+    void GetLocalMovieSetArtwork(CGUIListItem::ArtMap& art,
+        const std::vector<std::string>& artTypes, const std::string& setTitle);
   };
 }
 

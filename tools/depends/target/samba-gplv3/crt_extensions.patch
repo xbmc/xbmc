@@ -1,11 +1,10 @@
 --- a/lib/replace/replace.h
 +++ b/lib/replace/replace.h
-@@ -257,7 +257,7 @@
+@@ -284,7 +284,6 @@
  
- #if !HAVE_DECL_ENVIRON
- #ifdef __APPLE__
--#include <crt_externs.h>
-+//#include <crt_externs.h>
- #define environ (*_NSGetEnviron())
- #else
+ #if !defined(HAVE_DECL_ENVIRON)
+ # ifdef __APPLE__
+-#   include <crt_externs.h>
+ #   define environ (*_NSGetEnviron())
+ # else /* __APPLE__ */
  extern char **environ;

@@ -5,4 +5,4 @@ XBMC_PLATFORM_DIR=freebsd
 
 mkdir -p $WORKSPACE/build
 cd $WORKSPACE/build
-cmake -DCMAKE_BUILD_TYPE=$Configuration -DENABLE_INTERNAL_FSTRCMP=1 ..
+cmake -DCMAKE_BUILD_TYPE=$Configuration -DENABLE_INTERNAL_SPDLOG=ON ..

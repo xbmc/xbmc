@@ -220,22 +220,22 @@ TEST_F(TestArchive, StringArchive)
   EXPECT_STREQ(string_ref.c_str(), string_var.c_str());
 }
 
-TEST_F(TestArchive, SYSTEMTIMEArchive)
+TEST_F(TestArchive, SystemTimeArchive)
 {
   ASSERT_NE(nullptr, file);
-  SYSTEMTIME SYSTEMTIME_ref = { 1, 2, 3, 4, 5, 6, 7, 8 };
-  SYSTEMTIME SYSTEMTIME_var = { 0, 0, 0, 0, 0, 0, 0, 0 };
+  KODI::TIME::SystemTime SystemTime_ref = {1, 2, 3, 4, 5, 6, 7, 8};
+  KODI::TIME::SystemTime SystemTime_var = {0, 0, 0, 0, 0, 0, 0, 0};
 
   CArchive arstore(file, CArchive::store);
-  arstore << SYSTEMTIME_ref;
+  arstore << SystemTime_ref;
   arstore.Close();
 
   ASSERT_EQ(0, file->Seek(0, SEEK_SET));
   CArchive arload(file, CArchive::load);
-  arload >> SYSTEMTIME_var;
+  arload >> SystemTime_var;
   arload.Close();
 
-  EXPECT_TRUE(!memcmp(&SYSTEMTIME_ref, &SYSTEMTIME_var, sizeof(SYSTEMTIME)));
+  EXPECT_TRUE(!memcmp(&SystemTime_ref, &SystemTime_var, sizeof(KODI::TIME::SystemTime)));
 }
 
 TEST_F(TestArchive, CVariantArchive)
@@ -335,8 +335,8 @@ TEST_F(TestArchive, MultiTypeArchive)
   char char_ref = 'A', char_var = '\0';
   std::string string_ref = "test string", string_var;
   std::wstring wstring_ref = L"test wstring", wstring_var;
-  SYSTEMTIME SYSTEMTIME_ref = { 1, 2, 3, 4, 5, 6, 7, 8 };
-  SYSTEMTIME SYSTEMTIME_var = { 0, 0, 0, 0, 0, 0, 0, 0 };
+  KODI::TIME::SystemTime SystemTime_ref = {1, 2, 3, 4, 5, 6, 7, 8};
+  KODI::TIME::SystemTime SystemTime_var = {0, 0, 0, 0, 0, 0, 0, 0};
   CVariant CVariant_ref((int)1), CVariant_var;
   std::vector<std::string> strArray_ref, strArray_var;
   strArray_ref.emplace_back("test strArray_ref 0");
@@ -362,7 +362,7 @@ TEST_F(TestArchive, MultiTypeArchive)
   arstore << char_ref;
   arstore << string_ref;
   arstore << wstring_ref;
-  arstore << SYSTEMTIME_ref;
+  arstore << SystemTime_ref;
   arstore << CVariant_ref;
   arstore << strArray_ref;
   arstore << iArray_ref;
@@ -382,7 +382,7 @@ TEST_F(TestArchive, MultiTypeArchive)
   arload >> char_var;
   arload >> string_var;
   arload >> wstring_var;
-  arload >> SYSTEMTIME_var;
+  arload >> SystemTime_var;
   arload >> CVariant_var;
   arload >> strArray_var;
   arload >> iArray_var;
@@ -398,7 +398,7 @@ TEST_F(TestArchive, MultiTypeArchive)
   EXPECT_EQ(char_ref, char_var);
   EXPECT_STREQ(string_ref.c_str(), string_var.c_str());
   EXPECT_STREQ(wstring_ref.c_str(), wstring_var.c_str());
-  EXPECT_TRUE(!memcmp(&SYSTEMTIME_ref, &SYSTEMTIME_var, sizeof(SYSTEMTIME)));
+  EXPECT_TRUE(!memcmp(&SystemTime_ref, &SystemTime_var, sizeof(KODI::TIME::SystemTime)));
   EXPECT_TRUE(CVariant_var.isInteger());
   EXPECT_STREQ("test strArray_ref 0", strArray_var.at(0).c_str());
   EXPECT_STREQ("test strArray_ref 1", strArray_var.at(1).c_str());

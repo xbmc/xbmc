@@ -159,7 +159,7 @@ bool CButtonTranslator::LoadKeymap(const std::string &keymapPath)
       const char *szWindow = pWindow->Value();
       if (szWindow != nullptr)
       {
-        if (strcmpi(szWindow, "global") == 0)
+        if (StringUtils::CompareNoCase(szWindow, "global") == 0)
           windowID = -1;
         else
           windowID = CWindowTranslator::TranslateWindow(szWindow);
@@ -405,5 +405,29 @@ void CButtonTranslator::UnregisterMapper(IButtonMapper *mapper)
       m_buttonMappers.erase(it);
       break;
     }
+  }
+}
+
+uint32_t CButtonTranslator::TranslateString(std::string strMap, std::string strButton)
+{
+  if (strMap == "KB") // standard keyboard map
+  {
+    return CKeyboardTranslator::TranslateString(strButton);
+  }
+  else if (strMap == "XG") // xbox gamepad map
+  {
+    return CGamepadTranslator::TranslateString(strButton);
+  }
+  else if (strMap == "R1") // xbox remote map
+  {
+    return CIRTranslator::TranslateString(strButton);
+  }
+  else if (strMap == "R2") // xbox universal remote map
+  {
+    return CIRTranslator::TranslateUniversalRemoteString(strButton);
+  }
+  else
+  {
+    return 0;
   }
 }

@@ -1,4 +1,2 @@
-xbmc/cores/RetroPlayer/process/ios    cores/RetroPlayer/process/ios
-xbmc/cores/VideoPlayer/Process/ios    cores/VideoPlayer/Process/ios
 xbmc/platform/darwin/ios              platform/ios
 xbmc/windowing/ios                    windowing/ios

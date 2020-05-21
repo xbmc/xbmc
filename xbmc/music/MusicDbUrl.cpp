@@ -50,6 +50,10 @@ bool CMusicDbUrl::parse()
       m_type = "albums";
       break;
 
+    case NODE_TYPE_DISC:
+      m_type = "discs";
+      break;
+
     case NODE_TYPE_ALBUM_RECENTLY_ADDED_SONGS:
     case NODE_TYPE_ALBUM_RECENTLY_PLAYED_SONGS:
     case NODE_TYPE_ALBUM_TOP100_SONGS:
@@ -74,6 +78,10 @@ bool CMusicDbUrl::parse()
     case NODE_TYPE_ALBUM_RECENTLY_PLAYED:
     case NODE_TYPE_ALBUM_TOP100:
       m_type = "albums";
+      break;
+
+    case NODE_TYPE_DISC:
+      m_type = "discs";
       break;
 
     case NODE_TYPE_SONG:

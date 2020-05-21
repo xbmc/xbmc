@@ -386,8 +386,7 @@ void CCdIoSupport::PrintAnalysis(int fs, int num_audio)
   {
   case FS_UDF:
   case FS_ISO_UDF:
-    CLog::Log(LOGINFO, "UDF: version %x.%2.2x\n",
-              m_nUDFVerMajor, m_nUDFVerMinor);
+    CLog::Log(LOGINFO, "UDF: version %x.%2.2x", m_nUDFVerMajor, m_nUDFVerMinor);
     break;
   }
 

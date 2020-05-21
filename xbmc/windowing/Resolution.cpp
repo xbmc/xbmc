@@ -20,6 +20,10 @@
 
 #include <cstdlib>
 
+EdgeInsets::EdgeInsets(float l, float t, float r, float b) : left(l), top(t), right(r), bottom(b)
+{
+}
+
 RESOLUTION_INFO::RESOLUTION_INFO(int width, int height, float aspect, const std::string &mode) :
   strMode(mode)
 {
@@ -34,11 +38,12 @@ RESOLUTION_INFO::RESOLUTION_INFO(int width, int height, float aspect, const std:
   dwFlags = iSubtitles = 0;
 }
 
-RESOLUTION_INFO::RESOLUTION_INFO(const RESOLUTION_INFO& res) :
-  Overscan(res.Overscan),
-  strMode(res.strMode),
-  strOutput(res.strOutput),
-  strId(res.strId)
+RESOLUTION_INFO::RESOLUTION_INFO(const RESOLUTION_INFO& res)
+  : Overscan(res.Overscan),
+    guiInsets(res.guiInsets),
+    strMode(res.strMode),
+    strOutput(res.strOutput),
+    strId(res.strId)
 {
   bFullScreen = res.bFullScreen;
   iWidth = res.iWidth; iHeight = res.iHeight;
@@ -66,16 +71,17 @@ RESOLUTION CResolutionUtils::ChooseBestResolution(float fps, int width, int heig
     }
   }
 
-  CLog::Log(LOGNOTICE, "Display resolution ADJUST : %s (%d) (weight: %.3f)",
-            CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo(res).strMode.c_str(), res, weight);
+  CLog::Log(LOGINFO, "Display resolution ADJUST : %s (%d) (weight: %.3f)",
+            CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo(res).strMode.c_str(), res,
+            weight);
   return res;
 }
 
 void CResolutionUtils::FindResolutionFromWhitelist(float fps, int width, int height, bool is3D, RESOLUTION &resolution)
 {
   RESOLUTION_INFO curr = CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo(resolution);
-  CLog::Log(LOGNOTICE, "Whitelist search for: width: %d, height: %d, fps: %0.3f, 3D: %s",
-    width, height, fps, is3D ? "true" : "false");
+  CLog::Log(LOGINFO, "Whitelist search for: width: %d, height: %d, fps: %0.3f, 3D: %s", width,
+            height, fps, is3D ? "true" : "false");
 
   std::vector<CVariant> indexList = CServiceBroker::GetSettingsComponent()->GetSettings()->GetList(CSettings::SETTING_VIDEOSCREEN_WHITELIST);
   if (indexList.empty())

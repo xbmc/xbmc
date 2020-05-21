@@ -202,7 +202,7 @@
 							<item id="2101">
 								<description>Pause / Resume button</description>
 								<label>$LOCALIZE[35224]</label>
-								<label2>Select + X</label2>
+								<label2>$LOCALIZE[31059]</label2>
 								<icon>osd/fullscreen/buttons/play.png</icon>
 								<onclick>Play</onclick>
 							</item>
@@ -215,7 +215,7 @@
 							<item id="2103">
 								<description>Stop button</description>
 								<label>$LOCALIZE[35222]</label>
-								<label2>Select + Start</label2>
+								<label2>$LOCALIZE[31060]</label2>
 								<icon>osd/fullscreen/buttons/stop.png</icon>
 								<onclick>Stop</onclick>
 							</item>

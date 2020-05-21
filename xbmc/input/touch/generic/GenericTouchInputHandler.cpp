@@ -19,7 +19,7 @@
 
 namespace
 {
-constexpr int TOUCH_HOLD_TIMEOUT = 1000;
+constexpr int TOUCH_HOLD_TIMEOUT = 500;
 }
 
 CGenericTouchInputHandler::CGenericTouchInputHandler()

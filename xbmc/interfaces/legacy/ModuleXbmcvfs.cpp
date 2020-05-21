@@ -50,6 +50,20 @@ namespace XBMCAddon
       return XFILE::CFile::Exists(path, false);
     }
 
+    // make legal file name
+    String makeLegalFilename(const String& filename)
+    {
+      XBMC_TRACE;
+      return CUtil::MakeLegalPath(filename);
+    }
+
+    // validate path
+    String validatePath(const String& path)
+    {
+      XBMC_TRACE;
+      return CUtil::ValidatePath(path, true);
+    }
+
     // make a directory
     bool mkdir(const String& path)
     {

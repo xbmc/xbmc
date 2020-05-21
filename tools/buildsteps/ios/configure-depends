@@ -6,8 +6,7 @@ if [ "$(pathChanged $WORKSPACE/tools/depends)" == "1" ]
 then
   cd $WORKSPACE/tools/depends;./configure \
     --with-tarballs=/Users/Shared/xbmc-depends/tarballs \
-    --host=arm-apple-darwin \
+    --host=aarch64-apple-darwin \
     --with-sdk=$SDK_VERSION \
-    --with-cpu=$DARWIN_ARM_CPU \
     --prefix=$XBMC_DEPENDS_ROOT $DEBUG_SWITCH
 fi

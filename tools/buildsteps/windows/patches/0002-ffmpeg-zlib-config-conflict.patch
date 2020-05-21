@@ -1,6 +1,7 @@
---- a/configure
-+++ b/configure
-@@ -7197,6 +7197,9 @@
+diff -ur ffmpeg/configure ffmpeg-patch/configure
+--- ffmpeg/configure	2020-01-31 13:06:00.000000000 +0000
++++ ffmpeg-patch/configure	2020-01-31 13:06:40.000000000 +0000
+@@ -7439,6 +7439,9 @@
                                       $CONFIG_EXTRA      \
                                       $ALL_COMPONENTS    \
  

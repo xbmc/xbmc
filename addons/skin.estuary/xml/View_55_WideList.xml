@@ -20,7 +20,7 @@
 				<onup>55</onup>
 				<ondown>55</ondown>
 				<viewtype label="$LOCALIZE[31107]">list</viewtype>
-				<focusedlayout height="list_item_height" condition="Container.Content(tvshows) | Container.Content(seasons) | Container.Content(episodes) | Container.Content(movies) | Container.Content(musicvideos) | Container.Content(videos) | Container.Content(games)">
+				<focusedlayout height="list_item_height" condition="Container.Content(tvshows) | Container.Content(seasons) | Container.Content(episodes) | Container.Content(movies) | Container.Content(musicvideos) | Container.Content(videos) | Container.Content(games) | Window.IsActive(videoplaylist) | Window.IsActive(musicplaylist)">
 					<control type="image">
 						<left>0</left>
 						<right>0</right>
@@ -42,7 +42,7 @@
 						<right>40</right>
 						<aligny>center</aligny>
 						<scroll>true</scroll>
-						<label>$INFO[ListItem.Label]</label>
+						<label>$VAR[ListLabelVar]</label>
 						<shadowcolor>text_shadow</shadowcolor>
 					</control>
 					<control type="label">
@@ -56,7 +56,7 @@
 						<shadowcolor>text_shadow</shadowcolor>
 					</control>
 				</focusedlayout>
-				<itemlayout height="list_item_height" condition="Container.Content(tvshows) | Container.Content(seasons) | Container.Content(episodes) | Container.Content(movies) | Container.Content(musicvideos) | Container.Content(videos) | Container.Content(games)">
+				<itemlayout height="list_item_height" condition="Container.Content(tvshows) | Container.Content(seasons) | Container.Content(episodes) | Container.Content(movies) | Container.Content(musicvideos) | Container.Content(videos) | Container.Content(games) | Window.IsActive(videoplaylist) | Window.IsActive(musicplaylist)">
 					<control type="image">
 						<left>35</left>
 						<centertop>50%</centertop>
@@ -70,7 +70,7 @@
 						<bottom>0</bottom>
 						<right>40</right>
 						<aligny>center</aligny>
-						<label>$INFO[ListItem.Label]</label>
+						<label>$VAR[ListLabelVar]</label>
 						<shadowcolor>text_shadow</shadowcolor>
 					</control>
 					<control type="label">
@@ -134,7 +134,7 @@
 						<bottom>0</bottom>
 						<right>40</right>
 						<aligny>center</aligny>
-						<label>$INFO[ListItem.Label]</label>
+						<label>$VAR[ListLabelVar]</label>
 						<shadowcolor>text_shadow</shadowcolor>
 					</control>
 					<control type="label">
@@ -148,7 +148,6 @@
 						<shadowcolor>text_shadow</shadowcolor>
 					</control>
 				</itemlayout>
-
 				<focusedlayout height="list_item_height" condition="Container.Content(playlists) | Container.Content()">
 					<control type="image">
 						<left>0</left>
@@ -215,7 +214,7 @@
 				<right>40</right>
 				<aligny>center</aligny>
 				<scroll>true</scroll>
-				<label>$INFO[ListItem.Label]</label>
+				<label>$VAR[ListLabelVar]</label>
 				<shadowcolor>text_shadow</shadowcolor>
 			</control>
 			<control type="label">
@@ -224,7 +223,7 @@
 				<right>40</right>
 				<align>right</align>
 				<aligny>center</aligny>
-				<label>$INFO[ListItem.Label2]</label>
+				<label>$VAR[ListLabel2Var]</label>
 				<shadowcolor>text_shadow</shadowcolor>
 			</control>
 		</focusedlayout>
@@ -234,7 +233,7 @@
 				<height>80</height>
 				<right>40</right>
 				<aligny>center</aligny>
-				<label>$INFO[ListItem.Label]</label>
+				<label>$VAR[ListLabelVar]</label>
 				<shadowcolor>text_shadow</shadowcolor>
 			</control>
 			<control type="label">
@@ -243,7 +242,7 @@
 				<right>40</right>
 				<align>right</align>
 				<aligny>center</aligny>
-				<label>$INFO[ListItem.Label2]</label>
+				<label>$VAR[ListLabel2Var]</label>
 				<textcolor>grey</textcolor>
 				<shadowcolor>text_shadow</shadowcolor>
 			</control>

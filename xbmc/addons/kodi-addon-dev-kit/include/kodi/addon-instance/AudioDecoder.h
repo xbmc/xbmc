@@ -200,9 +200,14 @@ public:
   ///
   /// @param[in] instance The addon instance class handler given by Kodi
   ///                     at \ref kodi::addon::CAddonBase::CreateInstance(...)
+  /// @param[in] kodiVersion [opt] Version used in Kodi for this instance, to
+  ///                        allow compatibility to older Kodi versions.
+  ///                        @note Recommended to set.
   ///
-  explicit CInstanceAudioDecoder(KODI_HANDLE instance)
-    : IAddonInstance(ADDON_INSTANCE_AUDIODECODER)
+  explicit CInstanceAudioDecoder(KODI_HANDLE instance, const std::string& kodiVersion = "")
+    : IAddonInstance(ADDON_INSTANCE_AUDIODECODER,
+                     !kodiVersion.empty() ? kodiVersion
+                                          : GetKodiTypeVersion(ADDON_INSTANCE_AUDIODECODER))
   {
     if (CAddonBase::m_interface->globalSingleInstance != nullptr)
       throw std::logic_error("kodi::addon::CInstanceAudioDecoder: Creation of multiple together with single instance way is not allowed!");

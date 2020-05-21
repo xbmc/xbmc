@@ -14,18 +14,22 @@
 #include "cores/VideoPlayer/DVDDemuxers/DVDDemux.h"
 #include "cores/VideoPlayer/DVDDemuxers/DVDDemuxUtils.h"
 #include "cores/VideoPlayer/Interface/Addon/DemuxCrypto.h"
+#include "cores/VideoPlayer/Interface/Addon/InputStreamConstants.h"
 #include "cores/VideoPlayer/Interface/Addon/TimingConstants.h"
 #include "filesystem/SpecialProtocol.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
+#include "utils/log.h"
 
-CInputStreamProvider::CInputStreamProvider(ADDON::BinaryAddonBasePtr addonBase, kodi::addon::IAddonInstance* parentInstance)
-  : m_addonBase(addonBase)
-  , m_parentInstance(parentInstance)
+CInputStreamProvider::CInputStreamProvider(ADDON::BinaryAddonBasePtr addonBase,
+                                           KODI_HANDLE parentInstance)
+  : m_addonBase(addonBase), m_parentInstance(parentInstance)
 {
 }
 
-void CInputStreamProvider::getAddonInstance(INSTANCE_TYPE instance_type, ADDON::BinaryAddonBasePtr& addonBase, kodi::addon::IAddonInstance*& parentInstance)
+void CInputStreamProvider::getAddonInstance(INSTANCE_TYPE instance_type,
+                                            ADDON::BinaryAddonBasePtr& addonBase,
+                                            KODI_HANDLE& parentInstance)
 {
   if (instance_type == ADDON::IAddonProvider::INSTANCE_VIDEOCODEC)
   {
@@ -54,7 +58,7 @@ CInputStreamAddon::CInputStreamAddon(BinaryAddonBasePtr& addonBase, IVideoPlayer
     key = name + "." + key;
   }
   m_struct = {{ 0 }};
-  m_caps.m_mask = 0;
+  m_caps = { 0 };
 }
 
 CInputStreamAddon::~CInputStreamAddon()
@@ -65,7 +69,17 @@ CInputStreamAddon::~CInputStreamAddon()
 bool CInputStreamAddon::Supports(BinaryAddonBasePtr& addonBase, const CFileItem &fileitem)
 {
   // check if a specific inputstream addon is requested
-  CVariant addon = fileitem.GetProperty("inputstreamaddon");
+  CVariant addon = fileitem.GetProperty(STREAM_PROPERTY_INPUTSTREAM);
+  if (!addon.isNull())
+    return (addon.asString() == addonBase->ID());
+
+  // TODO: to be deprecated for the above prior to Matrix release - all addons must change
+  addon = fileitem.GetProperty("inputstreamclass");
+  if (!addon.isNull())
+    return (addon.asString() == addonBase->ID());
+
+  // TODO: to be deprecated for the above prior to Matrix release - all addons must change
+  addon = fileitem.GetProperty("inputstreamaddon");
   if (!addon.isNull())
     return (addon.asString() == addonBase->ID());
 
@@ -114,7 +128,7 @@ bool CInputStreamAddon::Open()
   if (CreateInstance(&m_struct) != ADDON_STATUS_OK || !m_struct.toAddon.open)
     return false;
 
-  INPUTSTREAM props;
+  INPUTSTREAM props = { 0 };
   std::map<std::string, std::string> propsMap;
   for (auto &key : m_fileItemProps)
   {
@@ -129,9 +143,21 @@ bool CInputStreamAddon::Open()
     props.m_ListItemProperties[props.m_nCountInfoValues].m_strKey = pair.first.c_str();
     props.m_ListItemProperties[props.m_nCountInfoValues].m_strValue = pair.second.c_str();
     props.m_nCountInfoValues++;
+
+    if (props.m_nCountInfoValues >= STREAM_MAX_PROPERTY_COUNT)
+    {
+      CLog::Log(LOGERROR,
+                "CInputStreamAddon::%s - Hit max count of stream properties, "
+                "have %d, actual count: %d",
+                __func__,
+                STREAM_MAX_PROPERTY_COUNT,
+                propsMap.size());
+      break;
+    }
   }
 
   props.m_strURL = m_item.GetDynPath().c_str();
+  props.m_mimeType = m_item.GetMimeType().c_str();
 
   std::string libFolder = URIUtils::GetDirectory(Addon()->Path());
   std::string profileFolder = CSpecialProtocol::TranslatePath(Addon()->Profile());
@@ -147,7 +173,7 @@ bool CInputStreamAddon::Open()
   bool ret = m_struct.toAddon.open(&m_struct, &props);
   if (ret)
   {
-    memset(&m_caps, 0, sizeof(m_caps));
+    m_caps = { 0 };
     m_struct.toAddon.get_capabilities(&m_struct, &m_caps);
 
     m_subAddonProvider = std::shared_ptr<CInputStreamProvider>(new CInputStreamProvider(GetAddonBase(), m_struct.toAddon.addonInstance));
@@ -192,13 +218,12 @@ int64_t CInputStreamAddon::GetLength()
   return m_struct.toAddon.length_stream(&m_struct);
 }
 
-bool CInputStreamAddon::Pause(double time)
+int CInputStreamAddon::GetBlockSize()
 {
-  if (!m_struct.toAddon.pause_stream)
-    return false;
+  if (!m_struct.toAddon.block_size_stream)
+    return 0;
 
-  m_struct.toAddon.pause_stream(&m_struct, time);
-  return true;
+  return m_struct.toAddon.block_size_stream(&m_struct);
 }
 
 bool CInputStreamAddon::CanSeek()
@@ -327,10 +352,16 @@ CDemuxStream* CInputStreamAddon::GetStream(int streamId) const
     return nullptr;
 
   std::string codecName(stream.m_codecName);
-  StringUtils::ToLower(codecName);
-  AVCodec *codec = avcodec_find_decoder_by_name(codecName.c_str());
-  if (!codec)
-    return nullptr;
+  AVCodec* codec = nullptr;
+
+  if (stream.m_streamType != INPUTSTREAM_INFO::TYPE_TELETEXT &&
+      stream.m_streamType != INPUTSTREAM_INFO::TYPE_RDS)
+  {
+    StringUtils::ToLower(codecName);
+    codec = avcodec_find_decoder_by_name(codecName.c_str());
+    if (!codec)
+      return nullptr;
+  }
 
   CDemuxStream *demuxStream;
 
@@ -397,11 +428,24 @@ CDemuxStream* CInputStreamAddon::GetStream(int streamId) const
     CDemuxStreamSubtitle *subtitleStream = new CDemuxStreamSubtitle();
     demuxStream = subtitleStream;
   }
+  else if (stream.m_streamType == INPUTSTREAM_INFO::TYPE_TELETEXT)
+  {
+    CDemuxStreamTeletext* teletextStream = new CDemuxStreamTeletext();
+    demuxStream = teletextStream;
+  }
+  else if (stream.m_streamType == INPUTSTREAM_INFO::TYPE_RDS)
+  {
+    CDemuxStreamRadioRDS* rdsStream = new CDemuxStreamRadioRDS();
+    demuxStream = rdsStream;
+  }
   else
     return nullptr;
 
   demuxStream->name = stream.m_name;
-  demuxStream->codec = codec->id;
+  if (codec)
+    demuxStream->codec = codec->id;
+  else
+    demuxStream->codec = AV_CODEC_ID_DVB_TELETEXT;
   demuxStream->codecName = stream.m_codecInternalName;
   demuxStream->uniqueId = streamId;
   demuxStream->flags = static_cast<StreamFlags>(stream.m_flags);
@@ -423,11 +467,11 @@ CDemuxStream* CInputStreamAddon::GetStream(int streamId) const
   if (stream.m_cryptoInfo.m_CryptoKeySystem != CRYPTO_INFO::CRYPTO_KEY_SYSTEM_NONE &&
     stream.m_cryptoInfo.m_CryptoKeySystem < CRYPTO_INFO::CRYPTO_KEY_SYSTEM_COUNT)
   {
-    static const CryptoSessionSystem map[] =
-    {
-      CRYPTO_SESSION_SYSTEM_NONE,
-      CRYPTO_SESSION_SYSTEM_WIDEVINE,
-      CRYPTO_SESSION_SYSTEM_PLAYREADY
+    static const CryptoSessionSystem map[] = {
+        CRYPTO_SESSION_SYSTEM_NONE,
+        CRYPTO_SESSION_SYSTEM_WIDEVINE,
+        CRYPTO_SESSION_SYSTEM_PLAYREADY,
+        CRYPTO_SESSION_SYSTEM_WISEPLAY,
     };
     demuxStream->cryptoSession = std::shared_ptr<DemuxCryptoSession>(new DemuxCryptoSession(
       map[stream.m_cryptoInfo.m_CryptoKeySystem], stream.m_cryptoInfo.m_CryptoSessionIdSize, stream.m_cryptoInfo.m_CryptoSessionId, stream.m_cryptoInfo.flags));

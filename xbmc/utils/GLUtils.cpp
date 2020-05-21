@@ -158,29 +158,29 @@ void LogGraphicsInfo()
 
   s = glGetString(GL_VENDOR);
   if (s)
-    CLog::Log(LOGNOTICE, "GL_VENDOR = %s", s);
+    CLog::Log(LOGINFO, "GL_VENDOR = %s", s);
   else
-    CLog::Log(LOGNOTICE, "GL_VENDOR = NULL");
+    CLog::Log(LOGINFO, "GL_VENDOR = NULL");
 
   s = glGetString(GL_RENDERER);
   if (s)
-    CLog::Log(LOGNOTICE, "GL_RENDERER = %s", s);
+    CLog::Log(LOGINFO, "GL_RENDERER = %s", s);
   else
-    CLog::Log(LOGNOTICE, "GL_RENDERER = NULL");
+    CLog::Log(LOGINFO, "GL_RENDERER = NULL");
 
   s = glGetString(GL_VERSION);
   if (s)
-    CLog::Log(LOGNOTICE, "GL_VERSION = %s", s);
+    CLog::Log(LOGINFO, "GL_VERSION = %s", s);
   else
-    CLog::Log(LOGNOTICE, "GL_VERSION = NULL");
+    CLog::Log(LOGINFO, "GL_VERSION = NULL");
 
   s = glGetString(GL_SHADING_LANGUAGE_VERSION);
   if (s)
-    CLog::Log(LOGNOTICE, "GL_SHADING_LANGUAGE_VERSION = %s", s);
+    CLog::Log(LOGINFO, "GL_SHADING_LANGUAGE_VERSION = %s", s);
   else
-    CLog::Log(LOGNOTICE, "GL_SHADING_LANGUAGE_VERSION = NULL");
+    CLog::Log(LOGINFO, "GL_SHADING_LANGUAGE_VERSION = NULL");
 
-  //GL_NVX_gpu_memory_info extension
+    //GL_NVX_gpu_memory_info extension
 #define GL_GPU_MEMORY_INFO_DEDICATED_VIDMEM_NVX          0x9047
 #define GL_GPU_MEMORY_INFO_TOTAL_AVAILABLE_MEMORY_NVX    0x9048
 #define GL_GPU_MEMORY_INFO_CURRENT_AVAILABLE_VIDMEM_NVX  0x9049
@@ -192,11 +192,11 @@ void LogGraphicsInfo()
     GLint mem = 0;
 
     glGetIntegerv(GL_GPU_MEMORY_INFO_TOTAL_AVAILABLE_MEMORY_NVX, &mem);
-    CLog::Log(LOGNOTICE, "GL_GPU_MEMORY_INFO_TOTAL_AVAILABLE_MEMORY_NVX = %i", mem);
+    CLog::Log(LOGINFO, "GL_GPU_MEMORY_INFO_TOTAL_AVAILABLE_MEMORY_NVX = %i", mem);
 
     //this seems to be the amount of ram on the videocard
     glGetIntegerv(GL_GPU_MEMORY_INFO_DEDICATED_VIDMEM_NVX, &mem);
-    CLog::Log(LOGNOTICE, "GL_GPU_MEMORY_INFO_DEDICATED_VIDMEM_NVX = %i", mem);
+    CLog::Log(LOGINFO, "GL_GPU_MEMORY_INFO_DEDICATED_VIDMEM_NVX = %i", mem);
   }
 
   std::string extensions;
@@ -225,14 +225,13 @@ void LogGraphicsInfo()
   }
 
   if (!extensions.empty())
-    CLog::Log(LOGNOTICE, "GL_EXTENSIONS = %s", extensions.c_str());
+    CLog::Log(LOGINFO, "GL_EXTENSIONS = %s", extensions.c_str());
   else
-    CLog::Log(LOGNOTICE, "GL_EXTENSIONS = NULL");
+    CLog::Log(LOGINFO, "GL_EXTENSIONS = NULL");
 
 
 #else /* !HAS_GL */
-  CLog::Log(LOGNOTICE,
-            "Please define LogGraphicsInfo for your chosen graphics library");
+  CLog::Log(LOGINFO, "Please define LogGraphicsInfo for your chosen graphics library");
 #endif /* !HAS_GL */
 }
 

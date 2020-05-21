@@ -52,7 +52,6 @@ CWinSystemAndroid::CWinSystemAndroid()
 
   m_stereo_mode = RENDER_STEREO_MODE_OFF;
 
-  m_dispResetState = RESET_NOTWAITING;
   m_dispResetTimer = new CTimer(this);
 
   m_android = nullptr;
@@ -95,7 +94,7 @@ bool CWinSystemAndroid::InitWindowSystem()
 
 bool CWinSystemAndroid::DestroyWindowSystem()
 {
-  CLog::Log(LOGNOTICE, "CWinSystemAndroid::%s", __FUNCTION__);
+  CLog::Log(LOGINFO, "CWinSystemAndroid::%s", __FUNCTION__);
 
   delete m_android;
   m_android = nullptr;
@@ -132,11 +131,8 @@ bool CWinSystemAndroid::CreateNewWindow(const std::string& name,
     return true;
   }
 
-  if (m_dispResetState != RESET_NOTWAITING)
-  {
-    CLog::Log(LOGERROR, "CWinSystemAndroid::CreateNewWindow: cannot create window while resetting");
-    return false;
-  }
+  m_dispResetTimer->Stop();
+  m_HdmiModeTriggered = false;
 
   m_stereo_mode = stereo_mode;
   m_bFullScreen = fullScreen;
@@ -154,7 +150,7 @@ bool CWinSystemAndroid::CreateNewWindow(const std::string& name,
 
 bool CWinSystemAndroid::DestroyWindow()
 {
-  CLog::Log(LOGNOTICE, "CWinSystemAndroid::%s", __FUNCTION__);
+  CLog::Log(LOGINFO, "CWinSystemAndroid::%s", __FUNCTION__);
   m_nativeWindow = nullptr;
   m_bWindowCreated = false;
   return true;
@@ -215,46 +211,58 @@ void CWinSystemAndroid::UpdateResolutions(bool bUpdateDesktopRes)
       CDisplaySettings::GetInstance().GetResolutionInfo(RES_WINDOW) = res;
     }
   }
+
+  CDisplaySettings::GetInstance().ApplyCalibrations();
 }
 
 void CWinSystemAndroid::OnTimeout()
 {
-  m_dispResetState = RESET_WAITEVENT;
-  SetHDMIState(true);
+  m_HdmiModeTriggered = true;
 }
 
-void CWinSystemAndroid::SetHDMIState(bool connected)
+void CWinSystemAndroid::InitiateModeChange()
+{
+  int delay = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
+                  "videoscreen.delayrefreshchange") *
+              100;
+
+  if (delay < 2000)
+    delay = 2000;
+  m_dispResetTimer->Stop();
+  m_dispResetTimer->Start(delay);
+
+  SetHdmiState(false);
+}
+
+void CWinSystemAndroid::SetHdmiState(bool connected)
 {
   CSingleLock lock(m_resourceSection);
-  CLog::Log(LOGDEBUG, "CWinSystemAndroid::SetHDMIState: connected: %d, dispResetState: %d", static_cast<int>(connected), m_dispResetState);
-  if (connected && m_dispResetState != RESET_NOTWAITING)
+  CLog::Log(LOGDEBUG, "CWinSystemAndroid::SetHdmiState: state: %d", static_cast<int>(connected));
+
+  if (connected)
   {
+    if (m_dispResetTimer->IsRunning())
+    {
+      // We stop the timer if OS supports HDMI_AUDIO_PLUG intent
+      // and configured delay is smaller than the time HDMI_PLUG took.
+      // Note that timer is always started with minimum of 2 seconds
+      // regardless if the configured delay is smaller
+      if (m_dispResetTimer->GetElapsedMilliseconds() >=
+          CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
+              "videoscreen.delayrefreshchange") *
+              100)
+        m_dispResetTimer->Stop();
+      else
+        return;
+    }
+
     for (auto resource : m_resources)
       resource->OnResetDisplay();
-    m_dispResetState = RESET_NOTWAITING;
     m_dispResetTimer->Stop();
+    m_HdmiModeTriggered = false;
   }
-  else if (!connected)
+  else
   {
-    if (m_dispResetState == RESET_WAITTIMER)
-    {
-      //HDMI_AUDIOPLUG arrived, use this
-      m_dispResetTimer->Stop();
-      m_dispResetState = RESET_WAITEVENT;
-      return;
-    }
-    else if (m_dispResetState != RESET_NOTWAITING)
-      return;
-
-    int delay = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt("videoscreen.delayrefreshchange") * 100;
-
-    if (delay < 2000)
-      delay = 2000;
-
-    m_dispResetState = RESET_WAITTIMER;
-    m_dispResetTimer->Stop();
-    m_dispResetTimer->Start(delay);
-
     for (auto resource : m_resources)
       resource->OnLostDisplay();
   }

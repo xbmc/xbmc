@@ -35,7 +35,7 @@ namespace ADDON
     TYPE MainType() const;
     const std::string& MainLibName() const;
 
-    bool IsType(TYPE type) const;
+    bool HasType(TYPE type) const;
     const std::vector<CAddonType>& Types() const;
     const CAddonType* Type(TYPE type) const;
 

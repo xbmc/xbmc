@@ -19,23 +19,31 @@
 		<radioposy>0</radioposy>
 	</include>
 	<include name="InfoDialogMetadata">
-		<control type="togglebutton" id="$PARAM[control_id]">
-			<width>472</width>
-			<height>49</height>
-			<textoffsetx>16</textoffsetx>
-			<aligny>center</aligny>
-			<font>font12</font>
-			<texturefocus colordiffuse="button_focus">lists/focus.png</texturefocus>
-			<alttexturefocus colordiffuse="button_focus">lists/focus.png</alttexturefocus>
-			<texturenofocus />
-			<alttexturenofocus />
-			<onclick>noop</onclick>
-			<altclick>noop</altclick>
-			<label>$PARAM[label]</label>
-			<altlabel>$PARAM[altlabel]</altlabel>
-			<usealttexture>Control.HasFocus($PARAM[control_id])</usealttexture>
-			<visible>$PARAM[visible]</visible>
-		</control>
+		<param name="onclick_condition">false</param>
+		<param name="onclick">noop</param>
+		<param name="altclick_condition">false</param>
+		<param name="altclick">noop</param>
+		<definition>
+			<control type="togglebutton" id="$PARAM[control_id]">
+				<width>472</width>
+				<height>49</height>
+				<textoffsetx>16</textoffsetx>
+				<aligny>center</aligny>
+				<font>font12</font>
+				<texturefocus colordiffuse="button_focus">lists/focus.png</texturefocus>
+				<alttexturefocus colordiffuse="button_focus">lists/focus.png</alttexturefocus>
+				<texturenofocus />
+				<alttexturenofocus />
+				<onclick>noop</onclick>
+				<onclick condition="$PARAM[onclick_condition]">$PARAM[onclick]</onclick>
+				<altclick>noop</altclick>
+				<altclick condition="$PARAM[altclick_condition]">$PARAM[altclick]</altclick>
+				<label>$PARAM[label]</label>
+				<altlabel>$PARAM[altlabel]</altlabel>
+				<usealttexture>Control.HasFocus($PARAM[control_id])</usealttexture>
+				<visible>$PARAM[visible]</visible>
+			</control>
+		</definition>
 	</include>
 	<include name="DefaultSettingButton">
 		<param name="height">70</param>
@@ -195,7 +203,7 @@
 		</definition>
 	</include>
 	<include name="VideoInfoButtonsCommon">
-		<param name="width">262</param>
+		<param name="width">264</param>
 		<definition>
 			<width>$PARAM[width]</width>
 			<height>142</height>
@@ -203,7 +211,7 @@
 			<aligny>top</aligny>
 			<texturefocus border="21" colordiffuse="button_focus">buttons/button-fo.png</texturefocus>
 			<texturenofocus border="21">buttons/button-nofo.png</texturenofocus>
-			<textoffsetx>35</textoffsetx>
+			<textoffsetx>22</textoffsetx>
 			<textoffsety>78</textoffsety>
 			<radioposx>108</radioposx>
 			<radioposy>13</radioposy>
@@ -218,7 +226,10 @@
 		</definition>
 	</include>
 	<include name="InfoDialogButton">
-		<param name="width">262</param>
+		<param name="width">264</param>
+		<param name="onclick_1_condition">true</param>
+		<param name="onclick_2_condition">true</param>
+		<param name="onclick_3_condition">true</param>
 		<definition>
 			<control type="radiobutton" id="$PARAM[id]">
 				<width>$PARAM[width]</width>
@@ -227,7 +238,7 @@
 				<aligny>top</aligny>
 				<texturefocus border="21" colordiffuse="button_focus">buttons/button-fo.png</texturefocus>
 				<texturenofocus border="21">buttons/button-nofo.png</texturenofocus>
-				<textoffsetx>35</textoffsetx>
+				<textoffsetx>22</textoffsetx>
 				<textoffsety>78</textoffsety>
 				<radioposx>108</radioposx>
 				<radioposy>16</radioposy>
@@ -240,8 +251,9 @@
 				<textureradiooffdisabled colordiffuse="disabled">$PARAM[icon]</textureradiooffdisabled>
 				<textureradioondisabled colordiffuse="disabled">$PARAM[icon]</textureradioondisabled>
 				<label>$PARAM[label]</label>
-				<onclick>$PARAM[onclick_1]</onclick>
-				<onclick>$PARAM[onclick_2]</onclick>
+				<onclick condition="$PARAM[onclick_1_condition]">$PARAM[onclick_1]</onclick>
+				<onclick condition="$PARAM[onclick_2_condition]">$PARAM[onclick_2]</onclick>
+				<onclick condition="$PARAM[onclick_3_condition]">$PARAM[onclick_3]</onclick>
 				<visible>$PARAM[visible]</visible>
 				<animation effect="fade" start="100" end="0" time="300" delay="300">Hidden</animation>
 			</control>

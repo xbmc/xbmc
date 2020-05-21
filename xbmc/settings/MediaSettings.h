@@ -10,10 +10,10 @@
 
 #include "cores/VideoSettings.h"
 #include "settings/GameSettings.h"
+#include "settings/ISubSettings.h"
 #include "settings/LibExportSettings.h"
 #include "settings/lib/ISettingCallback.h"
 #include "settings/lib/ISettingsHandler.h"
-#include "settings/lib/ISubSettings.h"
 #include "threads/CriticalSection.h"
 
 #include <map>

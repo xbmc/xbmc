@@ -412,7 +412,8 @@ bool CGUIWindowMusicNav::GetDirectory(const std::string &strDirectory, CFileItem
     if (node == NODE_TYPE_ALBUM ||
         node == NODE_TYPE_ALBUM_RECENTLY_ADDED ||
         node == NODE_TYPE_ALBUM_RECENTLY_PLAYED ||
-        node == NODE_TYPE_ALBUM_TOP100)
+        node == NODE_TYPE_ALBUM_TOP100 ||
+        node == NODE_TYPE_DISC)  // ! @todo: own content type "discs"??
       items.SetContent("albums");
     else if (node == NODE_TYPE_ARTIST)
       items.SetContent("artists");
@@ -547,10 +548,10 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
       CGUIDialogContextMenu::GetContextButtons("music", item, buttons);
 #ifdef HAS_DVD_DRIVE
       // enable Rip CD an audio disc
-      if (g_mediaManager.IsDiscInDrive() && item->IsCDDA())
+      if (CServiceBroker::GetMediaManager().IsDiscInDrive() && item->IsCDDA())
       {
         // those cds can also include Audio Tracks: CDExtra and MixedMode!
-        MEDIA_DETECT::CCdInfo *pCdInfo = g_mediaManager.GetCdInfo();
+        MEDIA_DETECT::CCdInfo* pCdInfo = CServiceBroker::GetMediaManager().GetCdInfo();
         if (pCdInfo->IsAudio(1) || pCdInfo->IsCDExtra(1) || pCdInfo->IsMixedMode(1))
         {
           if (CJobManager::GetInstance().IsProcessing("cdrip"))
@@ -914,6 +915,8 @@ std::string CGUIWindowMusicNav::GetStartFolder(const std::string &dir)
     return "musicdb://years/";
   else if (lower == "files")
     return "sources://music/";
+  else if (lower == "boxsets")
+    return "musicdb://boxsets/";
 
   return CGUIWindowMusicBase::GetStartFolder(dir);
 }

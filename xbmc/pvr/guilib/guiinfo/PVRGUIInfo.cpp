@@ -46,13 +46,12 @@
 using namespace PVR;
 using namespace KODI::GUILIB::GUIINFO;
 
-CPVRGUIInfo::CPVRGUIInfo(void) :
-    CThread("PVRGUIInfo")
+CPVRGUIInfo::CPVRGUIInfo() : CThread("PVRGUIInfo")
 {
   ResetProperties();
 }
 
-void CPVRGUIInfo::ResetProperties(void)
+void CPVRGUIInfo::ResetProperties()
 {
   CSingleLock lock(m_critSection);
 
@@ -103,14 +102,14 @@ void CPVRGUIInfo::ClearDescrambleInfo(PVR_DESCRAMBLE_INFO& descrambleInfo)
   descrambleInfo = {0};
 }
 
-void CPVRGUIInfo::Start(void)
+void CPVRGUIInfo::Start()
 {
   ResetProperties();
   Create();
   SetPriority(-1);
 }
 
-void CPVRGUIInfo::Stop(void)
+void CPVRGUIInfo::Stop()
 {
   StopThread();
   CServiceBroker::GetPVRManager().Events().Unsubscribe(this);
@@ -129,7 +128,7 @@ void CPVRGUIInfo::Notify(const PVREvent& event)
     UpdateTimersCache();
 }
 
-void CPVRGUIInfo::Process(void)
+void CPVRGUIInfo::Process()
 {
   unsigned int iLoop = 0;
   int toggleInterval = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_iPVRInfoToggleInterval / 1000;
@@ -155,27 +154,27 @@ void CPVRGUIInfo::Process(void)
 
     if (!m_bStop)
       UpdateQualityData();
-    Sleep(0);
+    std::this_thread::yield();
 
     if (!m_bStop)
       UpdateDescrambleData();
-    Sleep(0);
+    std::this_thread::yield();
 
     if (!m_bStop)
       UpdateMisc();
-    Sleep(0);
+    std::this_thread::yield();
 
     if (!m_bStop)
       UpdateTimeshiftData();
-    Sleep(0);
+    std::this_thread::yield();
 
     if (!m_bStop)
       UpdateTimersToggle();
-    Sleep(0);
+    std::this_thread::yield();
 
     if (!m_bStop)
       UpdateNextTimer();
-    Sleep(0);
+    std::this_thread::yield();
 
     // Update the backend cache every toggleInterval seconds
     if (!m_bStop && iLoop % toggleInterval == 0)
@@ -185,23 +184,23 @@ void CPVRGUIInfo::Process(void)
       iLoop = 0;
 
     if (!m_bStop)
-      Sleep(500);
+      CThread::Sleep(500);
   }
 }
 
-void CPVRGUIInfo::UpdateQualityData(void)
+void CPVRGUIInfo::UpdateQualityData()
 {
   PVR_SIGNAL_STATUS qualityInfo;
   ClearQualityInfo(qualityInfo);
 
   if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_PVRPLAYBACK_SIGNALQUALITY))
   {
-    bool bIsPlayingRecording = CServiceBroker::GetPVRManager().PlaybackState()->IsPlayingRecording();
-    if (!bIsPlayingRecording)
+    const int channelUid = CServiceBroker::GetPVRManager().PlaybackState()->GetPlayingChannelUniqueID();
+    if (channelUid > 0)
     {
       std::shared_ptr<CPVRClient> client;
       CServiceBroker::GetPVRManager().Clients()->GetCreatedClient(CServiceBroker::GetPVRManager().PlaybackState()->GetPlayingClientID(), client);
-      if (client && client->SignalQuality(qualityInfo) == PVR_ERROR_NO_ERROR)
+      if (client && client->SignalQuality(channelUid, qualityInfo) == PVR_ERROR_NO_ERROR)
       {
         m_qualityInfo = qualityInfo;
       }
@@ -209,24 +208,24 @@ void CPVRGUIInfo::UpdateQualityData(void)
   }
 }
 
-void CPVRGUIInfo::UpdateDescrambleData(void)
+void CPVRGUIInfo::UpdateDescrambleData()
 {
   PVR_DESCRAMBLE_INFO descrambleInfo;
   ClearDescrambleInfo(descrambleInfo);
 
-  bool bIsPlayingRecording = CServiceBroker::GetPVRManager().PlaybackState()->IsPlayingRecording();
-  if (!bIsPlayingRecording)
+  const int channelUid = CServiceBroker::GetPVRManager().PlaybackState()->GetPlayingChannelUniqueID();
+  if (channelUid > 0)
   {
     std::shared_ptr<CPVRClient> client;
     CServiceBroker::GetPVRManager().Clients()->GetCreatedClient(CServiceBroker::GetPVRManager().PlaybackState()->GetPlayingClientID(), client);
-    if (client && client->GetDescrambleInfo(descrambleInfo) == PVR_ERROR_NO_ERROR)
+    if (client && client->GetDescrambleInfo(channelUid, descrambleInfo) == PVR_ERROR_NO_ERROR)
     {
       m_descrambleInfo = descrambleInfo;
     }
   }
 }
 
-void CPVRGUIInfo::UpdateMisc(void)
+void CPVRGUIInfo::UpdateMisc()
 {
   CPVRManager& mgr = CServiceBroker::GetPVRManager();
   bool bStarted = mgr.IsStarted();
@@ -267,7 +266,7 @@ void CPVRGUIInfo::UpdateMisc(void)
   m_bIsPlayingActiveRecording = bIsPlayingActiveRecording;
 }
 
-void CPVRGUIInfo::UpdateTimeshiftData(void)
+void CPVRGUIInfo::UpdateTimeshiftData()
 {
   m_timesInfo.Update();
 }
@@ -405,6 +404,8 @@ bool CPVRGUIInfo::GetListItemAndPlayerLabel(const CFileItem* item, const CGUIInf
       case VIDEOPLAYER_EPISODENAME:
       case LISTITEM_EPISODENAME:
         strValue = recording->EpisodeName();
+        // fixup multiline episode name strings (which do not fit in any way in our GUI)
+        StringUtils::Replace(strValue, "\n", ", ");
         return true;
       case VIDEOPLAYER_CHANNEL_NAME:
       case LISTITEM_CHANNEL_NAME:
@@ -427,6 +428,26 @@ bool CPVRGUIInfo::GetListItemAndPlayerLabel(const CFileItem* item, const CGUIInf
         strValue = recording->IsRadio() ? m_strPlayingRadioGroup : m_strPlayingTVGroup;
         return true;
       }
+      case VIDEOPLAYER_PREMIERED:
+      case LISTITEM_PREMIERED:
+        if (recording->FirstAired().IsValid())
+        {
+          strValue = recording->FirstAired().GetAsLocalizedDate(true);
+          return true;
+        }
+        else if (recording->HasYear())
+        {
+          strValue = StringUtils::Format("%i", recording->GetYear());
+          return true;
+        }
+        return false;
+      case LISTITEM_SIZE:
+        if (recording->GetSizeInBytes() > 0)
+        {
+          strValue = StringUtils::SizeToString(recording->GetSizeInBytes());
+          return true;
+        }
+        return false;
     }
     return false;
   }
@@ -563,7 +584,7 @@ bool CPVRGUIInfo::GetListItemAndPlayerLabel(const CFileItem* item, const CGUIInf
         return false;
       case VIDEOPLAYER_SEASON:
       case LISTITEM_SEASON:
-        if (epgTag->SeriesNumber() > 0)
+        if (epgTag->SeriesNumber() >= 0)
         {
           strValue = StringUtils::Format("%i", epgTag->SeriesNumber());
           return true;
@@ -571,19 +592,20 @@ bool CPVRGUIInfo::GetListItemAndPlayerLabel(const CFileItem* item, const CGUIInf
         return false;
       case VIDEOPLAYER_EPISODE:
       case LISTITEM_EPISODE:
-        if (epgTag->EpisodeNumber() > 0)
+        if (epgTag->EpisodeNumber() >= 0)
         {
-          if (epgTag->SeriesNumber() == 0) // prefix episode with 'S'
-            strValue = StringUtils::Format("S%i", epgTag->EpisodeNumber());
-          else
-            strValue = StringUtils::Format("%i", epgTag->EpisodeNumber());
+          strValue = StringUtils::Format("%i", epgTag->EpisodeNumber());
           return true;
         }
         return false;
       case VIDEOPLAYER_EPISODENAME:
       case LISTITEM_EPISODENAME:
         if (!CServiceBroker::GetPVRManager().IsParentalLocked(epgTag))
+        {
           strValue = epgTag->EpisodeName();
+          // fixup multiline episode name strings (which do not fit in any way in our GUI)
+          StringUtils::Replace(strValue, "\n", ", ");
+        }
         return true;
       case VIDEOPLAYER_CAST:
       case LISTITEM_CAST:
@@ -610,9 +632,14 @@ bool CPVRGUIInfo::GetListItemAndPlayerLabel(const CFileItem* item, const CGUIInf
         return false;
       case VIDEOPLAYER_PREMIERED:
       case LISTITEM_PREMIERED:
-        if (epgTag->FirstAiredAsLocalTime().IsValid())
+        if (epgTag->FirstAired().IsValid())
         {
-          strValue = epgTag->FirstAiredAsLocalTime().GetAsLocalizedDate(true);
+          strValue = epgTag->FirstAired().GetAsLocalizedDate(true);
+          return true;
+        }
+        else if (epgTag->Year() > 0)
+        {
+          strValue = StringUtils::Format("%i", epgTag->Year());
           return true;
         }
         return false;
@@ -1250,16 +1277,92 @@ bool CPVRGUIInfo::GetListItemAndPlayerBool(const CFileItem* item, const CGUIInfo
     case LISTITEM_IS_NEW:
       if (item->IsEPG())
       {
-        const std::shared_ptr<CPVREpgInfoTag> epgTag = item->GetEPGInfoTag();
-        const CDateTime firstAired = epgTag->FirstAiredAsUTC();
-        const CDateTime start = epgTag->StartAsUTC();
-        if (firstAired.IsValid() && start.IsValid())
+        if (item->GetEPGInfoTag())
         {
-          bValue = firstAired.GetYear() == start.GetYear() &&
-                   firstAired.GetMonth() == start.GetMonth() &&
-                   firstAired.GetDay() == start.GetDay();
+          bValue = item->GetEPGInfoTag()->IsNew();
           return true;
         }
+      }
+      else if (item->IsPVRRecording())
+      {
+        bValue = item->GetPVRRecordingInfoTag()->IsNew();
+        return true;
+      }
+      else if (item->IsPVRTimer() && item->GetPVRTimerInfoTag()->GetEpgInfoTag())
+      {
+        bValue = item->GetPVRTimerInfoTag()->GetEpgInfoTag()->IsNew();
+        return true;
+      }
+      else if (item->IsPVRChannel() && item->GetPVRChannelInfoTag()->GetEPGNow())
+      {
+        bValue = item->GetPVRChannelInfoTag()->GetEPGNow()->IsNew();
+        return true;
+      }
+      break;
+    case LISTITEM_IS_PREMIERE:
+      if (item->IsEPG())
+      {
+        bValue = item->GetEPGInfoTag()->IsPremiere();
+        return true;
+      }
+      else if (item->IsPVRRecording())
+      {
+        bValue = item->GetPVRRecordingInfoTag()->IsPremiere();
+        return true;
+      }
+      else if (item->IsPVRTimer() && item->GetPVRTimerInfoTag()->GetEpgInfoTag())
+      {
+        bValue = item->GetPVRTimerInfoTag()->GetEpgInfoTag()->IsPremiere();
+        return true;
+      }
+      else if (item->IsPVRChannel() && item->GetPVRChannelInfoTag()->GetEPGNow())
+      {
+        bValue = item->GetPVRChannelInfoTag()->GetEPGNow()->IsPremiere();
+        return true;
+      }
+      break;
+    case LISTITEM_IS_FINALE:
+      if (item->IsEPG())
+      {
+        bValue = item->GetEPGInfoTag()->IsFinale();
+        return true;
+      }
+      else if (item->IsPVRRecording())
+      {
+        bValue = item->GetPVRRecordingInfoTag()->IsFinale();
+        return true;
+      }
+      else if (item->IsPVRTimer() && item->GetPVRTimerInfoTag()->GetEpgInfoTag())
+      {
+        bValue = item->GetPVRTimerInfoTag()->GetEpgInfoTag()->IsFinale();
+        return true;
+      }
+      else if (item->IsPVRChannel() && item->GetPVRChannelInfoTag()->GetEPGNow())
+      {
+        bValue = item->GetPVRChannelInfoTag()->GetEPGNow()->IsFinale();
+        return true;
+      }
+      break;
+    case LISTITEM_IS_LIVE:
+      if (item->IsEPG())
+      {
+        bValue = item->GetEPGInfoTag()->IsLive();
+        return true;
+      }
+      else if (item->IsPVRRecording())
+      {
+        bValue = item->GetPVRRecordingInfoTag()->IsLive();
+        return true;
+      }
+      else if (item->IsPVRTimer() && item->GetPVRTimerInfoTag()->GetEpgInfoTag())
+      {
+        bValue = item->GetPVRTimerInfoTag()->GetEpgInfoTag()->IsLive();
+        return true;
+      }
+      else if (item->IsPVRChannel() && item->GetPVRChannelInfoTag()->GetEPGNow())
+      {
+        bValue = item->GetPVRChannelInfoTag()->GetEPGNow()->IsLive();
+        return true;
       }
       break;
     case MUSICPLAYER_CONTENT:
@@ -1582,7 +1685,7 @@ void CPVRGUIInfo::CharInfoProvider(std::string& strValue) const
     strValue = m_qualityInfo.strProviderName;
 }
 
-void CPVRGUIInfo::UpdateBackendCache(void)
+void CPVRGUIInfo::UpdateBackendCache()
 {
   CSingleLock lock(m_critSection);
 
@@ -1641,21 +1744,21 @@ void CPVRGUIInfo::UpdateBackendCache(void)
     m_iCurrentActiveClient = 0;
 }
 
-void CPVRGUIInfo::UpdateTimersCache(void)
+void CPVRGUIInfo::UpdateTimersCache()
 {
   m_anyTimersInfo.UpdateTimersCache();
   m_tvTimersInfo.UpdateTimersCache();
   m_radioTimersInfo.UpdateTimersCache();
 }
 
-void CPVRGUIInfo::UpdateTimersToggle(void)
+void CPVRGUIInfo::UpdateTimersToggle()
 {
   m_anyTimersInfo.UpdateTimersToggle();
   m_tvTimersInfo.UpdateTimersToggle();
   m_radioTimersInfo.UpdateTimersToggle();
 }
 
-void CPVRGUIInfo::UpdateNextTimer(void)
+void CPVRGUIInfo::UpdateNextTimer()
 {
   m_anyTimersInfo.UpdateNextTimer();
   m_tvTimersInfo.UpdateNextTimer();

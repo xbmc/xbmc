@@ -6,33 +6,31 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include <functional>
-#include <limits>
-
-#include "filesystem/BlurayCallback.h"
 #include "DVDInputStreamBluray.h"
-#include "IVideoPlayer.h"
+
 #include "DVDCodecs/Overlay/DVDOverlay.h"
 #include "DVDCodecs/Overlay/DVDOverlayImage.h"
-#include "settings/Settings.h"
-#include "settings/SettingsComponent.h"
+#include "IVideoPlayer.h"
 #include "LangInfo.h"
 #include "ServiceBroker.h"
-#include "utils/log.h"
-#include "utils/URIUtils.h"
-#include "filesystem/File.h"
-#include "filesystem/Directory.h"
 #include "URL.h"
-#include "utils/Geometry.h"
+#include "filesystem/BlurayCallback.h"
+#include "filesystem/Directory.h"
+#include "filesystem/File.h"
+#include "filesystem/SpecialProtocol.h"
 #include "guilib/LocalizeStrings.h"
 #include "settings/DiscSettings.h"
+#include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
+#include "utils/Geometry.h"
 #include "utils/LangCodeExpander.h"
-#include "filesystem/SpecialProtocol.h"
 #include "utils/StringUtils.h"
+#include "utils/URIUtils.h"
+#include "utils/XTimeUtils.h"
+#include "utils/log.h"
 
-#ifdef TARGET_POSIX
-#include "platform/posix/XTimeUtils.h"
-#endif
+#include <functional>
+#include <limits>
 
 #include <libbluray/bluray.h>
 #include <libbluray/log_control.h>
@@ -139,6 +137,7 @@ bool CDVDInputStreamBluray::Open()
   std::string root;
 
   bool openStream = false;
+  bool openDisc = false;
 
   // The item was selected via the simple menu
   if (URIUtils::IsProtocol(strPath, "bluray"))
@@ -146,6 +145,11 @@ bool CDVDInputStreamBluray::Open()
     CURL url(strPath);
     root = url.GetHostName();
     filename = URIUtils::GetFileName(url.GetFileName());
+
+    // Check whether disc is AACS protected
+    CURL url3(root);
+    CFileItem base(url3, false);
+    openDisc = base.IsProtectedBlurayDisc();
 
     // check for a menu call for an image file
     if (StringUtils::EqualsNoCase(filename, "menu"))
@@ -155,6 +159,11 @@ bool CDVDInputStreamBluray::Open()
       std::string root2 = url2.GetHostName();
       CURL url(root2);
       CFileItem item(url, false);
+
+      // Check whether disc is AACS protected
+      if (!openDisc)
+        openDisc = item.IsProtectedBlurayDisc();
+
       if (item.IsDiscImage())
       {
         if (!OpenStream(item))
@@ -170,6 +179,10 @@ bool CDVDInputStreamBluray::Open()
       return false;
 
     openStream = true;
+  }
+  else if (m_item.IsProtectedBlurayDisc())
+  {
+    openDisc = true;
   }
   else
   {
@@ -217,12 +230,25 @@ bool CDVDInputStreamBluray::Open()
       return false;
     }
   }
+  else if (openDisc)
+  {
+    // This special case is required for opening original AACS protected Blu-ray discs. Otherwise
+    // things like Bus Encryption might not be handled properly and playback will fail.
+    m_rootPath = root;
+    if (!bd_open_disc(m_bd, root.c_str(), nullptr))
+    {
+      CLog::Log(LOGERROR, "CDVDInputStreamBluray::Open - failed to open %s in disc mode",
+                CURL::GetRedacted(root).c_str());
+      return false;
+    }
+  }
   else
   {
     m_rootPath = root;
     if (!bd_open_files(m_bd, &m_rootPath, CBlurayCallback::dir_open, CBlurayCallback::file_open))
     {
-      CLog::Log(LOGERROR, "CDVDInputStreamBluray::Open - failed to open %s", CURL::GetRedacted(root).c_str());
+      CLog::Log(LOGERROR, "CDVDInputStreamBluray::Open - failed to open %s in files mode",
+                CURL::GetRedacted(root).c_str());
       return false;
     }
   }
@@ -472,6 +498,7 @@ void CDVDInputStreamBluray::ProcessEvent() {
       m_title = disc_info->titles[m_event.param];
     else
       m_title = nullptr;
+    m_menu = false;
 
     break;
   }
@@ -524,7 +551,7 @@ void CDVDInputStreamBluray::ProcessEvent() {
     break;
 
   case BD_EVENT_IDLE:
-    Sleep(100);
+    KODI::TIME::Sleep(100);
     break;
 
   case BD_EVENT_SOUND_EFFECT:
@@ -549,6 +576,8 @@ void CDVDInputStreamBluray::ProcessEvent() {
   case BD_EVENT_SECONDARY_VIDEO_SIZE:
   case BD_EVENT_SECONDARY_VIDEO_STREAM:
   case BD_EVENT_PLAYMARK:
+  case BD_EVENT_KEY_INTEREST_TABLE:
+  case BD_EVENT_UO_MASK_CHANGED:
     break;
 
   case BD_EVENT_PLAYLIST_STOP:
@@ -730,7 +759,6 @@ void CDVDInputStreamBluray::OverlayFlush(int64_t pts)
 
   m_player->OnDiscNavResult(static_cast<void*>(group), BD_EVENT_MENU_OVERLAY);
   group->Release();
-  m_menu = true;
 #endif
 }
 
@@ -990,8 +1018,12 @@ void CDVDInputStreamBluray::GetStreamInfo(int pid, std::string &language)
     find_stream(pid, m_clip->audio_streams, m_clip->audio_stream_count, language);
   else if (HDMV_PID_PG_FIRST <= pid && pid <= HDMV_PID_PG_LAST)
     find_stream(pid, m_clip->pg_streams, m_clip->pg_stream_count, language);
+  else if (HDMV_PID_PG_HDR_FIRST <= pid && pid <= HDMV_PID_PG_HDR_LAST)
+    find_stream(pid, m_clip->pg_streams, m_clip->pg_stream_count, language);
   else if (HDMV_PID_IG_FIRST <= pid && pid <= HDMV_PID_IG_LAST)
     find_stream(pid, m_clip->ig_streams, m_clip->ig_stream_count, language);
+  else
+    CLog::Log(LOGDEBUG, "CDVDInputStreamBluray::GetStreamInfo - unhandled pid %d", pid);
 }
 
 CDVDInputStream::ENextStream CDVDInputStreamBluray::NextStream()
@@ -1080,7 +1112,10 @@ void CDVDInputStreamBluray::OnMenu()
   }
 
   if(bd_user_input(m_bd, -1, BD_VK_POPUP) >= 0)
+  {
+    m_menu = !m_menu;
     return;
+  }
   CLog::Log(LOGDEBUG, "CDVDInputStreamBluray::OnMenu - popup failed, trying root");
 
   if(bd_user_input(m_bd, -1, BD_VK_ROOT_MENU) >= 0)
@@ -1133,8 +1168,15 @@ void CDVDInputStreamBluray::SetupPlayerSettings()
   }
   bd_set_player_setting(m_bd, BLURAY_PLAYER_SETTING_REGION_CODE, static_cast<uint32_t>(region));
   bd_set_player_setting(m_bd, BLURAY_PLAYER_SETTING_PARENTAL, 99);
-  bd_set_player_setting(m_bd, BLURAY_PLAYER_SETTING_PLAYER_PROFILE, BLURAY_PLAYER_PROFILE_5_v2_4);
   bd_set_player_setting(m_bd, BLURAY_PLAYER_SETTING_3D_CAP, 0xffffffff);
+#if (BLURAY_VERSION >= BLURAY_VERSION_CODE(1, 0, 2))  
+  bd_set_player_setting(m_bd, BLURAY_PLAYER_SETTING_PLAYER_PROFILE, BLURAY_PLAYER_PROFILE_6_v3_1);
+  bd_set_player_setting(m_bd, BLURAY_PLAYER_SETTING_UHD_CAP, 0xffffffff);
+  bd_set_player_setting(m_bd, BLURAY_PLAYER_SETTING_UHD_DISPLAY_CAP, 0xffffffff);
+  bd_set_player_setting(m_bd, BLURAY_PLAYER_SETTING_HDR_PREFERENCE, 0xffffffff);
+#else
+  bd_set_player_setting(m_bd, BLURAY_PLAYER_SETTING_PLAYER_PROFILE, BLURAY_PLAYER_PROFILE_5_v2_4);
+#endif
 
   std::string langCode;
   g_LangCodeExpander.ConvertToISO6392T(g_langInfo.GetDVDAudioLanguage(), langCode);

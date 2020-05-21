@@ -13,7 +13,7 @@
 
 #include "platform/android/activity/XBMCApp.h"
 
-CAndroidTouch::CAndroidTouch() : m_dpi(160)
+CAndroidTouch::CAndroidTouch()
 {
   CGenericTouchInputHandler::GetInstance().RegisterHandler(&CGenericTouchActionHandler::GetInstance());
 }
@@ -73,6 +73,10 @@ bool CAndroidTouch::onTouchEvent(AInputEvent* event)
   for (unsigned int pointer = 0; pointer < numPointers; pointer++)
     CGenericTouchInputHandler::GetInstance().UpdateTouchPointer(pointer, AMotionEvent_getX(event, pointer), AMotionEvent_getY(event, pointer),
     AMotionEvent_getEventTime(event));
+
+  // let system know that we are starting a guesture
+  if (touchEvent == TouchInputDown)
+    CGenericTouchActionHandler::GetInstance().QuerySupportedGestures(x, y);
 
   // now send the event
   return CGenericTouchInputHandler::GetInstance().HandleTouchInput(touchEvent, x, y, time, touchPointer);

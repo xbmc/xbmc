@@ -125,27 +125,12 @@
 					<left>420</left>
 					<orientation>vertical</orientation>
 					<control type="label">
-						<description>CPU Text</description>
-						<width>730</width>
-						<height>80</height>
-						<label>$LOCALIZE[13271] $INFO[System.CPUUsage]</label>
-						<aligny>top</aligny>
-						<textoffsety>40</textoffsety>
-						<shadowcolor>black</shadowcolor>
-						<font>font27</font>
-					</control>
-					<control type="progress">
-						<description>CPU BAR</description>
-						<width>730</width>
-						<height>16</height>
-						<info>System.CPUUsage</info>
-					</control>
-					<control type="label">
 						<description>Memory Text</description>
 						<width>730</width>
-						<height>40</height>
+						<height>80</height>
 						<label>$LOCALIZE[31030]: $INFO[system.memory(used)] [B]/[/B] $INFO[system.memory(total)] [B]-[/B] $INFO[system.memory(used.percent)]</label>
-						<aligny>center</aligny>
+						<aligny>top</aligny>
+						<textoffsety>40</textoffsety>
 						<shadowcolor>black</shadowcolor>
 						<font>font27</font>
 					</control>
@@ -154,6 +139,23 @@
 						<width>730</width>
 						<height>16</height>
 						<info>system.memory(used)</info>
+					</control>
+					<control type="label">
+						<description>CPU Text</description>
+						<width>730</width>
+						<height>40</height>
+						<label>$LOCALIZE[13271] $INFO[System.CPUUsage]</label>
+						<aligny>center</aligny>
+						<shadowcolor>black</shadowcolor>
+						<font>font27</font>
+						<visible>System.SupportsCPUUsage</visible>
+					</control>
+					<control type="progress">
+						<description>CPU BAR</description>
+						<width>730</width>
+						<height>16</height>
+						<info>System.CPUUsage</info>
+						<visible>System.SupportsCPUUsage</visible>
 					</control>
 				</control>
 				<control type="label">

@@ -13,6 +13,7 @@
 #include "dialogs/GUIDialogKaiToast.h"
 #include "filesystem/File.h"
 #include "guilib/LocalizeStrings.h"
+#include "input/ButtonTranslator.h"
 #include "input/GamepadTranslator.h"
 #include "input/IRTranslator.h"
 #include "input/Key.h"
@@ -59,30 +60,10 @@ void CEventButtonState::Load()
   {
     if ( (m_mapName.length() > 0) && (m_buttonName.length() > 0) )
     {
-      if ( m_mapName.compare("KB") == 0 ) // standard keyboard map
+      m_iKeyCode = CButtonTranslator::TranslateString(m_mapName, m_buttonName);
+      if (m_iKeyCode == 0)
       {
-        m_iKeyCode = CKeyboardTranslator::TranslateString( m_buttonName.c_str() );
-      }
-      else if  ( m_mapName.compare("XG") == 0 ) // xbox gamepad map
-      {
-        m_iKeyCode = CGamepadTranslator::TranslateString( m_buttonName.c_str() );
-      }
-      else if  ( m_mapName.compare("R1") == 0 ) // xbox remote map
-      {
-        m_iKeyCode = CIRTranslator::TranslateString( m_buttonName.c_str() );
-      }
-      else if  ( m_mapName.compare("R2") == 0 ) // xbox universal remote map
-      {
-        m_iKeyCode = CIRTranslator::TranslateUniversalRemoteString( m_buttonName.c_str() );
-      }
-      else if ( (m_mapName.length() > 3) &&
-                (StringUtils::StartsWith(m_mapName, "LI:")) ) // starts with LI: ?
-      {
-        CLog::Log(LOGNOTICE, "ES: LIRC support not implemented");
-      }
-      else
-      {
-        Reset(); // disable key since its invalid
+        Reset();
         CLog::Log(LOGERROR, "ES: Could not map %s : %s to a key", m_mapName.c_str(),
                   m_buttonName.c_str());
       }
@@ -271,7 +252,7 @@ bool CEventClient::OnPacketHELO(CEventPacket *packet)
   if (!ParseString(payload, psize, m_deviceName))
     return false;
 
-  CLog::Log(LOGNOTICE, "ES: Incoming connection from %s", m_deviceName.c_str());
+  CLog::Log(LOGINFO, "ES: Incoming connection from %s", m_deviceName.c_str());
 
   // icon type
   unsigned char ltype;
@@ -389,7 +370,11 @@ bool CEventClient::OnPacketBUTTON(CEventPacket *packet)
   float famount = 0;
   bool active = (flags & PTB_DOWN) ? true : false;
   
-  CLog::Log(LOGDEBUG, "EventClient: button code %d %s", bcode, active ? "pressed" : "released");
+  if (flags & PTB_USE_NAME)
+    CLog::Log(LOGDEBUG, "EventClient: button name \"%s\" map \"%s\" %s",
+              button.c_str(), map.c_str(), active ? "pressed" : "released");
+  else
+    CLog::Log(LOGDEBUG, "EventClient: button code %d %s", bcode, active ? "pressed" : "released");
 
   if(flags & PTB_USE_AMOUNT)
   {

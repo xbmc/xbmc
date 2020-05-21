@@ -7,6 +7,7 @@
  */
 
 #include "CompileInfo.h"
+#include "ServiceBroker.h"
 #include "filesystem/File.h"
 #include "filesystem/SpecialProtocol.h"
 #include "test/TestUtils.h"
@@ -22,10 +23,7 @@ class Testlog : public testing::Test
 {
 protected:
   Testlog() = default;
-  ~Testlog() override
-  {
-    CLog::Close();
-  }
+  ~Testlog() override { CServiceBroker::GetLogging().Uninitialize(); }
 };
 
 TEST_F(Testlog, Log)
@@ -39,7 +37,8 @@ TEST_F(Testlog, Log)
   std::string appName = CCompileInfo::GetAppName();
   StringUtils::ToLower(appName);
   logfile = CSpecialProtocol::TranslatePath("special://temp/") + appName + ".log";
-  EXPECT_TRUE(CLog::Init(CSpecialProtocol::TranslatePath("special://temp/").c_str()));
+  CServiceBroker::GetLogging().Initialize(
+      CSpecialProtocol::TranslatePath("special://temp/").c_str());
   EXPECT_TRUE(XFILE::CFile::Exists(logfile));
 
   CLog::Log(LOGDEBUG, "debug log message");
@@ -50,7 +49,7 @@ TEST_F(Testlog, Log)
   CLog::Log(LOGSEVERE, "severe log message");
   CLog::Log(LOGFATAL, "fatal log message");
   CLog::Log(LOGNONE, "none type log message");
-  CLog::Close();
+  CServiceBroker::GetLogging().Uninitialize();
 
   EXPECT_TRUE(file.Open(logfile));
   while ((bytesread = file.Read(buf, sizeof(buf) - 1)) > 0)
@@ -63,60 +62,21 @@ TEST_F(Testlog, Log)
 
   EXPECT_STREQ("\xEF\xBB\xBF", logstring.substr(0, 3).c_str());
 
-  EXPECT_TRUE(regex.RegComp(".*DEBUG: debug log message.*"));
+  EXPECT_TRUE(regex.RegComp(".*DEBUG <general>: debug log message.*"));
   EXPECT_GE(regex.RegFind(logstring), 0);
-  EXPECT_TRUE(regex.RegComp(".*INFO: info log message.*"));
+  EXPECT_TRUE(regex.RegComp(".*INFO <general>: info log message.*"));
   EXPECT_GE(regex.RegFind(logstring), 0);
-  EXPECT_TRUE(regex.RegComp(".*NOTICE: notice log message.*"));
+  EXPECT_TRUE(regex.RegComp(".*INFO <general>: notice log message.*"));
   EXPECT_GE(regex.RegFind(logstring), 0);
-  EXPECT_TRUE(regex.RegComp(".*WARNING: warning log message.*"));
+  EXPECT_TRUE(regex.RegComp(".*WARNING <general>: warning log message.*"));
   EXPECT_GE(regex.RegFind(logstring), 0);
-  EXPECT_TRUE(regex.RegComp(".*ERROR: error log message.*"));
+  EXPECT_TRUE(regex.RegComp(".*ERROR <general>: error log message.*"));
   EXPECT_GE(regex.RegFind(logstring), 0);
-  EXPECT_TRUE(regex.RegComp(".*SEVERE: severe log message.*"));
+  EXPECT_TRUE(regex.RegComp(".*FATAL <general>: severe log message.*"));
   EXPECT_GE(regex.RegFind(logstring), 0);
-  EXPECT_TRUE(regex.RegComp(".*FATAL: fatal log message.*"));
+  EXPECT_TRUE(regex.RegComp(".*FATAL <general>: fatal log message.*"));
   EXPECT_GE(regex.RegFind(logstring), 0);
-  EXPECT_TRUE(regex.RegComp(".*NONE: none type log message.*"));
-  EXPECT_GE(regex.RegFind(logstring), 0);
-
-  EXPECT_TRUE(XFILE::CFile::Delete(logfile));
-}
-
-TEST_F(Testlog, MemDump)
-{
-  std::string logfile, logstring;
-  char buf[100];
-  unsigned int bytesread;
-  XFILE::CFile file;
-  CRegExp regex;
-  char refdata[] = "0123456789abcdefghijklmnopqrstuvwxyz";
-
-  std::string appName = CCompileInfo::GetAppName();
-  StringUtils::ToLower(appName);
-  logfile = CSpecialProtocol::TranslatePath("special://temp/") + appName + ".log";
-  EXPECT_TRUE(CLog::Init(CSpecialProtocol::TranslatePath("special://temp/").c_str()));
-  EXPECT_TRUE(XFILE::CFile::Exists(logfile));
-
-  CLog::MemDump(refdata, sizeof(refdata));
-  CLog::Close();
-
-  EXPECT_TRUE(file.Open(logfile));
-  while ((bytesread = file.Read(buf, sizeof(buf) - 1)) > 0)
-  {
-    buf[bytesread] = '\0';
-    logstring.append(buf);
-  }
-  file.Close();
-  EXPECT_FALSE(logstring.empty());
-
-  EXPECT_STREQ("\xEF\xBB\xBF", logstring.substr(0, 3).c_str());
-
-  EXPECT_TRUE(regex.RegComp(".*DEBUG: MEM_DUMP: Dumping from.*"));
-  EXPECT_GE(regex.RegFind(logstring), 0);
-  EXPECT_TRUE(regex.RegComp(".*DEBUG: MEM_DUMP: 0000  30 31 32 33.*"));
-  EXPECT_GE(regex.RegFind(logstring), 0);
-  EXPECT_TRUE(regex.RegComp(".*73 74 75 76  ghijklmnopqrstuv.*"));
+  EXPECT_TRUE(regex.RegComp(".*OFF <general>: none type log message.*"));
   EXPECT_GE(regex.RegFind(logstring), 0);
 
   EXPECT_TRUE(XFILE::CFile::Delete(logfile));
@@ -129,13 +89,14 @@ TEST_F(Testlog, SetLogLevel)
   std::string appName = CCompileInfo::GetAppName();
   StringUtils::ToLower(appName);
   logfile = CSpecialProtocol::TranslatePath("special://temp/") + appName + ".log";
-  EXPECT_TRUE(CLog::Init(CSpecialProtocol::TranslatePath("special://temp/").c_str()));
+  CServiceBroker::GetLogging().Initialize(
+      CSpecialProtocol::TranslatePath("special://temp/").c_str());
   EXPECT_TRUE(XFILE::CFile::Exists(logfile));
 
-  EXPECT_EQ(LOG_LEVEL_DEBUG, CLog::GetLogLevel());
-  CLog::SetLogLevel(LOG_LEVEL_MAX);
-  EXPECT_EQ(LOG_LEVEL_MAX, CLog::GetLogLevel());
+  EXPECT_EQ(LOG_LEVEL_DEBUG, CServiceBroker::GetLogging().GetLogLevel());
+  CServiceBroker::GetLogging().SetLogLevel(LOG_LEVEL_MAX);
+  EXPECT_EQ(LOG_LEVEL_MAX, CServiceBroker::GetLogging().GetLogLevel());
 
-  CLog::Close();
+  CServiceBroker::GetLogging().Uninitialize();
   EXPECT_TRUE(XFILE::CFile::Delete(logfile));
 }

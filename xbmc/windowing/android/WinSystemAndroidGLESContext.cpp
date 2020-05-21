@@ -119,6 +119,10 @@ void CWinSystemAndroidGLESContext::PresentRenderImpl(bool rendered)
     return;
   }
 
+  // Mode change finalization was triggered by timer
+  if (IsHdmiModeTriggered())
+    SetHdmiState(true);
+
   // Ignore EGL_BAD_SURFACE: It seems to happen during/after mode changes, but
   // we can't actually do anything about it
   if (rendered && !m_pGLContext.TrySwapBuffers())

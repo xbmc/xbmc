@@ -19,10 +19,11 @@ endif
 ifeq (darwin, $(findstring darwin, $(HOST)))
 ifeq ($(OS),darwin_embedded)
 PYTHON_O=$(abs_top_srcdir)/target/python3/$(PLATFORM)/Programs/python.o
+PILPATH=$(PREFIX)/share/$(APP_NAME)/addons/script.module.pil
 endif
 #ensure that only our target ldflags are passed to the python build
 LDSHARED:=$(CC) -bundle -undefined dynamic_lookup $(LDFLAGS)
-CROSSFLAGS=PYTHONXCPREFIX="$(PREFIX)" CC="$(CC) $(CFLAGS)" CCSHARED="$(CC) $(CFLAGS) $(PYTHON_O)" LDFLAGS="$(LDFLAGS)" PYTHONPATH="$(PREFIX)/lib/python3.7/site-packages/" LDSHARED="$(LDSHARED)"
+CROSSFLAGS=PYTHONXCPREFIX="$(PREFIX)" CC="$(CC) $(CFLAGS)" CCSHARED="$(CC) $(CFLAGS) $(PYTHON_O)" LDFLAGS="$(LDFLAGS)" PYTHONPATH="$(PILPATH):$(PREFIX)/lib/python3.7/site-packages/" LDSHARED="$(LDSHARED)"
 endif
 
 LIBDYLIB=$(PLATFORM)/dist/Pillow-$(VERSION)-py3.7-$(OS)-$(CPU).egg
@@ -51,7 +52,16 @@ ifeq ($(OS),android)
 	mkdir -p $(PREFIX)/share/$(APP_NAME)/addons/script.module.pil/lib
 	cd $(PLATFORM); $(CROSSFLAGS) $(NATIVEPREFIX)/bin/python3 setup.py install --install-lib  $(PREFIX)/share/$(APP_NAME)/addons/script.module.pil
 	cd $(PREFIX)/share/$(APP_NAME)/addons/script.module.pil/lib && unzip -o ../Pillow-*.egg
+	cd $(PREFIX)/share/$(APP_NAME)/addons/script.module.pil/lib/PIL && \
+          sed -i -e 's/import sys/import os, sys /' \
+                 -e '/__file__/ s/_imaging/lib_imaging/g' \
+                 -e 's/pkg_resources.resource_filename(__name__,/os.path.join(os.environ["KODI_ANDROID_LIBS"], /'  _imaging*.py
 	cd $(PREFIX)/share/$(APP_NAME)/addons/script.module.pil && rm -rf Pillow-*.egg
+else ifeq ($(TARGET_PLATFORM),appletvos)
+	mkdir -p $(PILPATH)/lib
+	cd $(PLATFORM); $(CROSSFLAGS) $(NATIVEPREFIX)/bin/python3 setup.py install --install-lib  $(PILPATH)
+	cd $(PILPATH)/lib && unzip -o ../Pillow-*.egg
+	cd $(PILPATH) && rm -rf Pillow-*.egg
 else
 	cd $(PLATFORM); $(CROSSFLAGS) $(NATIVEPREFIX)/bin/python3 setup.py install --prefix=$(PREFIX)
 endif

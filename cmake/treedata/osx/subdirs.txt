@@ -3,9 +3,11 @@ xbmc/cores/VideoPlayer/Process/osx    cores/VideoPlayer/Process/osx
 xbmc/platform/darwin                  platform/darwin
 xbmc/platform/darwin/network          platform/darwin/network
 xbmc/platform/darwin/osx              platform/osx
+xbmc/platform/darwin/osx/network      platform/darwin/osx/network
 xbmc/platform/darwin/osx/peripherals  platform/osx/peripherals
 xbmc/platform/darwin/osx/powermanagement platform/darwin/osx/powermanagement
 xbmc/platform/darwin/osx/storage      platform/osx/storage
+xbmc/platform/darwin/utils            platform/darwin/utils
 xbmc/platform/posix                   posix
 xbmc/platform/posix/filesystem        platform/posix/filesystem
 xbmc/platform/posix/network           platform/posix/network

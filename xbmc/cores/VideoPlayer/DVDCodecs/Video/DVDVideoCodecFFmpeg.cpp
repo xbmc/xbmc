@@ -6,22 +6,26 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include "system.h"
 #include "DVDVideoCodecFFmpeg.h"
-#include "DVDStreamInfo.h"
-#include "cores/VideoPlayer/Interface/Addon/TimingConstants.h"
+
 #include "DVDCodecs/DVDCodecs.h"
 #include "DVDCodecs/DVDFactoryCodec.h"
+#include "DVDStreamInfo.h"
 #include "ServiceBroker.h"
-#include "utils/CPUInfo.h"
+#include "cores/VideoPlayer/Interface/Addon/TimingConstants.h"
+#include "cores/VideoPlayer/VideoRenderers/RenderManager.h"
+#include "cores/VideoSettings.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
-#include "cores/VideoSettings.h"
-#include "utils/log.h"
-#include "cores/VideoPlayer/VideoRenderers/RenderManager.h"
+#include "utils/CPUInfo.h"
 #include "utils/StringUtils.h"
+#include "utils/XTimeUtils.h"
+#include "utils/log.h"
+
 #include <memory>
+
+#include "system.h"
 
 extern "C" {
 #include <libavutil/opt.h>
@@ -36,7 +40,6 @@ extern "C" {
 #define RINT(x) ((x) >= 0 ? ((int)((x) + 0.5)) : ((int)((x) - 0.5)))
 #else
 #include <math.h>
-#include "platform/posix/XTimeUtils.h"
 #define RINT lrint
 #endif
 
@@ -216,7 +219,8 @@ void CDVDVideoCodecFFmpeg::CDropControl::Process(int64_t pts, bool drop)
       m_diffPTS = m_diffPTS / m_count;
       if (m_diffPTS > 0)
       {
-        CLog::Log(LOGNOTICE, "CDVDVideoCodecFFmpeg::CDropControl: calculated diff time: %" PRId64, m_diffPTS);
+        CLog::Log(LOGINFO, "CDVDVideoCodecFFmpeg::CDropControl: calculated diff time: %" PRId64,
+                  m_diffPTS);
         m_state = CDropControl::VALID;
         m_count = 0;
       }
@@ -229,7 +233,7 @@ void CDVDVideoCodecFFmpeg::CDropControl::Process(int64_t pts, bool drop)
       m_count++;
       if (m_count > 5)
       {
-        CLog::Log(LOGNOTICE, "CDVDVideoCodecFFmpeg::CDropControl: lost diff");
+        CLog::Log(LOGINFO, "CDVDVideoCodecFFmpeg::CDropControl: lost diff");
         Reset(true);
       }
     }
@@ -342,7 +346,8 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
     return false;
   }
 
-  CLog::Log(LOGNOTICE,"CDVDVideoCodecFFmpeg::Open() Using codec: %s",pCodec->long_name ? pCodec->long_name : pCodec->name);
+  CLog::Log(LOGINFO, "CDVDVideoCodecFFmpeg::Open() Using codec: %s",
+            pCodec->long_name ? pCodec->long_name : pCodec->name);
 
   m_pCodecContext = avcodec_alloc_context3(pCodec);
   if (!m_pCodecContext)
@@ -364,7 +369,7 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
     }
     else
     {
-      int num_threads = g_cpuInfo.getCPUCount() * 3 / 2;
+      int num_threads = CServiceBroker::GetCPUInfo()->GetCPUCount() * 3 / 2;
       num_threads = std::max(1, std::min(num_threads, 16));
       m_pCodecContext->thread_count = num_threads;
       m_pCodecContext->thread_safe_callbacks = 1;
@@ -1158,7 +1163,7 @@ int CDVDVideoCodecFFmpeg::FilterOpen(const std::string& filters, bool scale)
     return result;
   }
 
-  if (CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->CanLogComponent(LOGVIDEO))
+  if (CServiceBroker::GetLogging().CanLogComponent(LOGVIDEO))
   {
     char* graphDump = avfilter_graph_dump(m_pFilterGraph, nullptr);
     if (graphDump)

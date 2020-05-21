@@ -112,7 +112,7 @@ endmacro()
 
 macro(winstore_append_props target)
   # exclude debug dlls from packaging
-  set(DEBUG_DLLS zlibd.dll freetyped.dll sqlite3d.dll)
+  set(DEBUG_DLLS zlibd.dll)
   foreach(_dll ${DEBUG_DLLS})
     if (DEBUG_DLLS_EXCLUDE)
       list(APPEND DEBUG_DLLS_EXCLUDE "\;$(BuildRootPath)/dlls/${_dll}")

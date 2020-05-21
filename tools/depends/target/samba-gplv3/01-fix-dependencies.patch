@@ -1,0 +1,10 @@
+--- a/source3/libsmb/wscript
++++ b/source3/libsmb/wscript
+@@ -22,6 +22,7 @@
+                                    libsmb
+                                    KRBCLIENT
+                                    msrpc3
++                                   RPC_NDR_SRVSVC
+                                    libcli_lsa3''',
+                        public_headers='../include/libsmbclient.h',
+                        abi_directory='ABI',

@@ -13,10 +13,9 @@
 #include "cores/AudioEngine/Sinks/windows/AESinkFactoryWin.h"
 #include "cores/AudioEngine/Utils/AEDeviceInfo.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
-#include "settings/AdvancedSettings.h"
-#include "settings/SettingsComponent.h"
 #include "utils/StringUtils.h"
 #include "utils/TimeUtils.h"
+#include "utils/XTimeUtils.h"
 #include "utils/log.h"
 
 #include "platform/win10/AsyncHelpers.h"
@@ -371,7 +370,10 @@ void CAESinkXAudio::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bool fo
 
     if (FAILED(hr))
     {
-      CLog::Log(LOGNOTICE, __FUNCTION__": stream type \"%s\" on device \"%s\" seems to be not supported.", CAEUtil::StreamTypeToStr(CAEStreamInfo::STREAM_TYPE_DTSHD_MA), details.strDescription.c_str());
+      CLog::Log(LOGINFO,
+                __FUNCTION__ ": stream type \"%s\" on device \"%s\" seems to be not supported.",
+                CAEUtil::StreamTypeToStr(CAEStreamInfo::STREAM_TYPE_DTSHD_MA),
+                details.strDescription.c_str());
     }
     else
     {
@@ -398,7 +400,10 @@ void CAESinkXAudio::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bool fo
 
     if (FAILED(hr))
     {
-      CLog::Log(LOGNOTICE, __FUNCTION__": stream type \"%s\" on device \"%s\" seems to be not supported.", CAEUtil::StreamTypeToStr(CAEStreamInfo::STREAM_TYPE_DTSHD), details.strDescription.c_str());
+      CLog::Log(LOGINFO,
+                __FUNCTION__ ": stream type \"%s\" on device \"%s\" seems to be not supported.",
+                CAEUtil::StreamTypeToStr(CAEStreamInfo::STREAM_TYPE_DTSHD),
+                details.strDescription.c_str());
     }
     else
     {
@@ -415,7 +420,10 @@ void CAESinkXAudio::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bool fo
     hr = xaudio2->CreateSourceVoice(&mSourceVoice, &wfxex.Format);
     if (FAILED(hr))
     {
-      CLog::Log(LOGNOTICE, __FUNCTION__": stream type \"%s\" on device \"%s\" seems to be not supported.", CAEUtil::StreamTypeToStr(CAEStreamInfo::STREAM_TYPE_TRUEHD), details.strDescription.c_str());
+      CLog::Log(LOGINFO,
+                __FUNCTION__ ": stream type \"%s\" on device \"%s\" seems to be not supported.",
+                CAEUtil::StreamTypeToStr(CAEStreamInfo::STREAM_TYPE_TRUEHD),
+                details.strDescription.c_str());
     }
     else
     {
@@ -437,7 +445,10 @@ void CAESinkXAudio::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bool fo
 
     if (FAILED(hr))
     {
-      CLog::Log(LOGNOTICE, __FUNCTION__": stream type \"%s\" on device \"%s\" seems to be not supported.", CAEUtil::StreamTypeToStr(CAEStreamInfo::STREAM_TYPE_EAC3), details.strDescription.c_str());
+      CLog::Log(LOGINFO,
+                __FUNCTION__ ": stream type \"%s\" on device \"%s\" seems to be not supported.",
+                CAEUtil::StreamTypeToStr(CAEStreamInfo::STREAM_TYPE_EAC3),
+                details.strDescription.c_str());
     }
     else
     {
@@ -459,7 +470,9 @@ void CAESinkXAudio::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bool fo
     hr = xaudio2->CreateSourceVoice(&mSourceVoice, &wfxex.Format);
     if (FAILED(hr))
     {
-      CLog::Log(LOGNOTICE, __FUNCTION__": stream type \"%s\" on device \"%s\" seems to be not supported.", "STREAM_TYPE_DTS", details.strDescription.c_str());
+      CLog::Log(LOGINFO,
+                __FUNCTION__ ": stream type \"%s\" on device \"%s\" seems to be not supported.",
+                "STREAM_TYPE_DTS", details.strDescription.c_str());
     }
     else
     {
@@ -476,7 +489,9 @@ void CAESinkXAudio::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bool fo
     hr = xaudio2->CreateSourceVoice(&mSourceVoice, &wfxex.Format);
     if (FAILED(hr))
     {
-      CLog::Log(LOGNOTICE, __FUNCTION__": stream type \"%s\" on device \"%s\" seems to be not supported.", CAEUtil::StreamTypeToStr(CAEStreamInfo::STREAM_TYPE_AC3), details.strDescription.c_str());
+      CLog::Log(
+          LOGINFO, __FUNCTION__ ": stream type \"%s\" on device \"%s\" seems to be not supported.",
+          CAEUtil::StreamTypeToStr(CAEStreamInfo::STREAM_TYPE_AC3), details.strDescription.c_str());
     }
     else
     {
@@ -544,7 +559,9 @@ void CAESinkXAudio::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bool fo
       else if (wfxex.Format.nSamplesPerSec == 192000 && add192)
       {
         deviceInfo.m_sampleRates.push_back(WASAPISampleRates[j]);
-        CLog::Log(LOGNOTICE, __FUNCTION__": sample rate 192khz on device \"%s\" seems to be not supported.", details.strDescription.c_str());
+        CLog::Log(LOGINFO,
+                  __FUNCTION__ ": sample rate 192khz on device \"%s\" seems to be not supported.",
+                  details.strDescription.c_str());
       }
     }
     SafeDestroyVoice(&mSourceVoice);
@@ -660,7 +677,7 @@ bool CAESinkXAudio::InitializeInternal(std::string deviceId, AEAudioFormat &form
   if (format.m_dataFormat == AE_FMT_RAW) //No sense in trying other formats for passthrough.
     return false;
 
-  if (CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->CanLogComponent(LOGAUDIO))
+  if (CServiceBroker::GetLogging().CanLogComponent(LOGAUDIO))
     CLog::Log(LOGDEBUG, __FUNCTION__": CreateSourceVoice failed (%s) - trying to find a compatible format", WASAPIErrToStr(hr));
 
   int closestMatch;
@@ -820,7 +837,7 @@ void CAESinkXAudio::Drain()
   AEDelayStatus status;
   GetDelay(status);
 
-  Sleep((DWORD)(status.GetDelay() * 500));
+  KODI::TIME::Sleep(static_cast<int>(status.GetDelay() * 500));
 
   if (m_running)
   {

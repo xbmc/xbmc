@@ -1,0 +1,45 @@
+--- a/lib/ldb/wscript
++++ b/lib/ldb/wscript
+@@ -518,10 +518,6 @@
+                          install=False)
+ 
+         bld.SAMBA_BINARY('ldb_key_value_sub_txn_tdb_test',
+-                         bld.SUBDIR('ldb_key_value',
+-                             '''ldb_kv_search.c
+-                                ldb_kv_index.c
+-                                ldb_kv_cache.c''') +
+                          'tests/ldb_key_value_sub_txn_test.c',
+                          cflags='-DTEST_BE=\"tdb\"',
+                          deps='cmocka ldb ldb_tdb_err_map',
+--- a/source4/heimdal_build/wscript_build
++++ b/source4/heimdal_build/wscript_build
+@@ -4,6 +4,7 @@
+ from waflib import Context
+ from samba_utils import SET_TARGET_TYPE
+ from samba_autoconf import CURRENT_CFLAGS
++from samba_bundled import BUILTIN_LIBRARY
+ from samba_utils import LOAD_ENVIRONMENT
+ 
+ def to_list(str):
+@@ -223,7 +224,10 @@
+ def HEIMDAL_LIBRARY(libname, source, deps, vnum, version_script, includes=''):
+     '''define a Heimdal library'''
+ 
+-    obj_target = libname + '.objlist'
++    if BUILTIN_LIBRARY(bld, libname):
++        obj_target = libname
++    else:
++        obj_target = libname + '.objlist'
+ 
+     # first create a target for building the object files for this library
+     # by separating in this way, we avoid recompiling the C files
+@@ -234,6 +238,9 @@
+                         includes       = includes,
+                         group          = 'main')
+ 
++    if BUILTIN_LIBRARY(bld, libname):
++        return
++
+     if not SET_TARGET_TYPE(bld, libname, "LIBRARY"):
+         return
+ 

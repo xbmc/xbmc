@@ -394,7 +394,9 @@ static int UpdateLocals(const std::vector<std::string>& params)
 ///     ,
 ///     Enable the specified plugin/script
 ///     @param[in] id                    The add-on id
+///     <p><hr>
 ///     @skinning_v19 **[New builtin]**
+///     <p>
 ///   }
 ///   \table_row2_l{
 ///     <b>`InstallAddon(id)`</b>

@@ -30,12 +30,12 @@ import android.graphics.drawable.VectorDrawable;
 import android.media.tv.TvContract;
 import android.net.Uri;
 import android.os.PersistableBundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.WorkerThread;
-import android.support.media.tv.Channel;
-import android.support.media.tv.ChannelLogoUtils;
-import android.support.media.tv.TvContractCompat;
 import android.util.Log;
+import androidx.annotation.NonNull;
+import androidx.annotation.WorkerThread;
+import androidx.tvprovider.media.tv.Channel;
+import androidx.tvprovider.media.tv.ChannelLogoUtils;
+import androidx.tvprovider.media.tv.TvContractCompat;
 
 import @APP_PACKAGE@.Splash;
 import @APP_PACKAGE@.channels.SyncChannelJobService;

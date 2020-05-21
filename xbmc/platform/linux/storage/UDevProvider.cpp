@@ -21,20 +21,22 @@ static const char *get_mountpoint(const char *devnode)
 {
   static char buf[4096];
   const char *delim = " ";
-  const char *mountpoint = NULL;
+  const char *mountpoint = nullptr;
   FILE *fp = fopen("/proc/mounts", "r");
+  if (!fp)
+    return nullptr;
 
   while (fgets(buf, sizeof (buf), fp))
   {
     const char *node = strtok(buf, delim);
     if (strcmp(node, devnode) == 0)
     {
-      mountpoint = strtok(NULL, delim);
+      mountpoint = strtok(nullptr, delim);
       break;
     }
   }
 
-  if (mountpoint != NULL)
+  if (mountpoint)
   {
     // If mount point contain characters like space, it is converted to
     // "\040". This situation should be handled.
@@ -60,8 +62,8 @@ static const char *get_mountpoint(const char *devnode)
 
 CUDevProvider::CUDevProvider()
 {
-  m_udev    = NULL;
-  m_udevMon = NULL;
+  m_udev = nullptr;
+  m_udevMon = nullptr;
 }
 
 void CUDevProvider::Initialize()
@@ -80,7 +82,7 @@ void CUDevProvider::Initialize()
   udev_monitor_filter_add_match_subsystem_devtype(m_udevMon, "block", "partition");
   udev_monitor_enable_receiving(m_udevMon);
 
-  PumpDriveChangeEvents(NULL);
+  PumpDriveChangeEvents(nullptr);
 }
 
 void CUDevProvider::Stop()
@@ -93,7 +95,7 @@ void CUDevProvider::GetDisks(VECSOURCES& disks, bool removable)
 {
   // enumerate existing block devices
   struct udev_enumerate *u_enum = udev_enumerate_new(m_udev);
-  if (u_enum == NULL)
+  if (!u_enum)
   {
     fprintf(stderr, "Error: udev_enumerate_new(udev)\n");
     return;
@@ -112,7 +114,7 @@ void CUDevProvider::GetDisks(VECSOURCES& disks, bool removable)
     const char *name = udev_list_entry_get_name(u_list_ent);
     struct udev *context = udev_enumerate_get_udev(u_enum);
     struct udev_device *device = udev_device_new_from_syspath(context, name);
-    if (device == NULL)
+    if (!device)
       continue;
 
     // filter out devices that are not mounted
@@ -217,7 +219,7 @@ bool CUDevProvider::PumpDriveChangeEvents(IStorageEventsCallback *callback)
 
   // non-blocking, check the file descriptor for received data
   struct timeval tv = {0};
-  int count = select(udev_monitor_get_fd(m_udevMon) + 1, &readfds, NULL, NULL, &tv);
+  int count = select(udev_monitor_get_fd(m_udevMon) + 1, &readfds, nullptr, nullptr, &tv);
   if (count < 0)
     return false;
 
@@ -241,7 +243,7 @@ bool CUDevProvider::PumpDriveChangeEvents(IStorageEventsCallback *callback)
       const char *fs_usage = udev_device_get_property_value(dev, "ID_FS_USAGE");
       if (mountpoint && strcmp(action, "add") == 0 && (fs_usage && strcmp(fs_usage, "filesystem") == 0))
       {
-        CLog::Log(LOGNOTICE, "UDev: Added %s", mountpoint);
+        CLog::Log(LOGINFO, "UDev: Added %s", mountpoint);
         if (callback)
           callback->OnStorageAdded(label, mountpoint);
         changed = true;
@@ -259,7 +261,7 @@ bool CUDevProvider::PumpDriveChangeEvents(IStorageEventsCallback *callback)
         const char *optical = udev_device_get_property_value(dev, "ID_CDROM");
         if (mountpoint && (optical && strcmp(optical, "1") == 0))
         {
-          CLog::Log(LOGNOTICE, "UDev: Changed / Added %s", mountpoint);
+          CLog::Log(LOGINFO, "UDev: Changed / Added %s", mountpoint);
           if (callback)
             callback->OnStorageAdded(label, mountpoint);
           changed = true;

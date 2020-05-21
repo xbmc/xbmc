@@ -12,6 +12,8 @@ set(SOURCES AdvancedSettings.cpp
             SettingPath.cpp
             Settings.cpp
             SettingsBase.cpp
+            SettingsValueFlatJsonSerializer.cpp
+            SettingsValueXmlSerializer.cpp
             SettingUtils.cpp
             SkinSettings.cpp
             SettingsComponent.cpp)
@@ -20,6 +22,7 @@ set(HEADERS AdvancedSettings.h
             DiscSettings.h
             DisplaySettings.h
             GameSettings.h
+            ISubSettings.h
             LibExportSettings.h
             MediaSettings.h
             MediaSourceSettings.h
@@ -31,6 +34,8 @@ set(HEADERS AdvancedSettings.h
             SettingPath.h
             Settings.h
             SettingsBase.h
+            SettingsValueFlatJsonSerializer.h
+            SettingsValueXmlSerializer.h
             SettingUtils.h
             SkinSettings.h
             SettingsComponent.h)

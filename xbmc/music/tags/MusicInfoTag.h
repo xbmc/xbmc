@@ -12,9 +12,6 @@ class CSong;
 class CArtist;
 class CVariant;
 
-#include <string>
-#include <vector>
-
 #include "ReplayGain.h"
 #include "XBDateTime.h"
 #include "music/Album.h"
@@ -22,6 +19,8 @@ class CVariant;
 #include "utils/ISerializable.h"
 #include "utils/ISortable.h"
 
+#include <string>
+#include <vector>
 
 namespace MUSIC_INFO
 {
@@ -46,12 +45,17 @@ public:
   int GetTrackNumber() const;
   int GetDiscNumber() const;
   int GetTrackAndDiscNumber() const;
+  int GetTotalDiscs() const;
   int GetDuration() const;  // may be set even if Loaded() returns false
   int GetYear() const;
+  const std::string& GetReleaseDate() const;
+  const std::string GetReleaseYear() const;
+  const std::string& GetOriginalDate() const;
+  const std::string GetOriginalYear() const;
   int GetDatabaseId() const;
   const std::string &GetType() const;
-
-  void GetReleaseDate(SYSTEMTIME& dateTime) const;
+  const std::string& GetDiscSubtitle() const;
+  int GetBPM() const;
   std::string GetYearString() const;
   const std::string& GetMusicBrainzTrackID() const;
   const std::vector<std::string>& GetMusicBrainzArtistID() const;
@@ -69,11 +73,15 @@ public:
   const CDateTime& GetLastPlayed() const;
   const CDateTime& GetDateAdded() const;
   bool  GetCompilation() const;
+  bool GetBoxset() const;
   float GetRating() const;
   int GetUserrating() const;
   int GetVotes() const;
   int GetListeners() const;
   int GetPlayCount() const;
+  int GetBitRate() const;
+  int GetNoOfChannels() const;
+  int GetSampleRate() const;
   const EmbeddedArtInfo &GetCoverArtInfo() const;
   const ReplayGain& GetReplayGain() const;
   CAlbum::ReleaseType GetAlbumReleaseType() const;
@@ -94,8 +102,9 @@ public:
   void SetGenre(const std::string& strGenre, bool bTrim = false);
   void SetGenre(const std::vector<std::string>& genres, bool bTrim = false);
   void SetYear(int year);
+  void SetOriginalDate(const std::string& strOriginalDate);
+  void SetReleaseDate(const std::string& strReleaseDate);
   void SetDatabaseId(long id, const std::string &type);
-  void SetReleaseDate(SYSTEMTIME& dateTime);
   void SetTrackNumber(int iTrack);
   void SetDiscNumber(int iDiscNumber);
   void SetTrackAndDiscNumber(int iTrackAndDisc);
@@ -127,10 +136,17 @@ public:
   void SetDateAdded(const std::string& strDateAdded);
   void SetDateAdded(const CDateTime& strDateAdded);
   void SetCompilation(bool compilation);
+  void SetBoxset(bool boxset);
   void SetCoverArtInfo(size_t size, const std::string &mimeType);
   void SetReplayGain(const ReplayGain& aGain);
   void SetAlbumReleaseType(CAlbum::ReleaseType releaseType);
   void SetType(const MediaType mediaType);
+  void SetDiscSubtitle(const std::string& strDiscSubtitle);
+  void SetTotalDiscs(int iDiscTotal);
+  void SetBPM(int iBPM);
+  void SetBitRate(int bitrate);
+  void SetNoOfChannels(int channels);
+  void SetSampleRate(int samplerate);
 
   /*! \brief Append a unique artist to the artist list
    Checks if we have this artist already added, and if not adds it to the songs artist list.
@@ -149,6 +165,8 @@ public:
    \param genre genre to add.
    */
   void AppendGenre(const std::string &genre);
+  void AddOriginalDate(const std::string& strDateYear);
+  void AddReleaseDate(const std::string& strDateYear, bool isMonth = false);
 
   void AddArtistRole(const std::string& Role, const std::string& strArtist);
   void AddArtistRole(const std::string& Role, const std::vector<std::string>& artists);
@@ -198,6 +216,9 @@ protected:
   std::string m_strRecordLabel;
   std::string m_strLyrics;
   std::string m_cuesheet;
+  std::string m_strDiscSubtitle;
+  std::string m_strReleaseDate; //ISO8601 date YYYY, YYYY-MM or YYYY-MM-DD
+  std::string m_strOriginalDate; //ISO8601 date YYYY, YYYY-MM or YYYY-MM-DD
   CDateTime m_lastPlayed;
   CDateTime m_dateAdded;
   bool m_bCompilation;
@@ -212,8 +233,13 @@ protected:
   int m_listeners;
   int m_iTimesPlayed;
   int m_iAlbumId;
-  SYSTEMTIME m_dwReleaseDate;
+  int m_iDiscTotal;
+  bool m_bBoxset;
+  int m_iBPM;
   CAlbum::ReleaseType m_albumReleaseType;
+  int m_samplerate;
+  int m_channels;
+  int m_bitrate;
 
   EmbeddedArtInfo m_coverArt; ///< art information
 

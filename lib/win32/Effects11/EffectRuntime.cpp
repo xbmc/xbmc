@@ -5,12 +5,8 @@
 // These functions are expected to be called at high frequency
 // (when applying a pass).
 //
-// THIS CODE AND INFORMATION IS PROVIDED "AS IS" WITHOUT WARRANTY OF
-// ANY KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO
-// THE IMPLIED WARRANTIES OF MERCHANTABILITY AND/OR FITNESS FOR A
-// PARTICULAR PURPOSE.
-//
 // Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License.
 //
 // http://go.microsoft.com/fwlink/p/?LinkId=271568
 //--------------------------------------------------------------------------------------
@@ -643,11 +639,11 @@ void CEffect::IncrementTimer()
 {
     m_LocalTimer++;
 
-#ifndef _M_X64
+#if !defined(_M_X64) && !defined(_M_ARM64)
 #if _DEBUG
     if (m_LocalTimer > g_TimerRolloverCount)
     {
-        DPF(0, "Rolling over timer (current time: %u, rollover cap: %u).", m_LocalTimer, g_TimerRolloverCount);
+        DPF(0, "Rolling over timer (current time: %zu, rollover cap: %u).", m_LocalTimer, g_TimerRolloverCount);
 #else
     if (m_LocalTimer >= 0x80000000) // check to see if we've exceeded ~2 billion
     {

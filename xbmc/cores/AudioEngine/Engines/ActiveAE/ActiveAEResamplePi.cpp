@@ -38,8 +38,9 @@ extern "C" {
 #define LOGTIME(n) \
   clock_gettime(CLOCK_MONOTONIC, &now); \
   End = ((int64_t)now.tv_sec * 1000000000L) + now.tv_nsec; \
-  CLog::Log(LOGNOTICE, "ActiveAE::%s %d - resample %s took %.0fms", __FUNCTION__, n, _filename, (End-Start)*1e-6); \
-  Start=End;
+  CLog::Log(LOGINFO, "ActiveAE::%s %d - resample %s took %.0fms", __FUNCTION__, n, _filename, \
+            (End - Start) * 1e-6); \
+  Start = End;
 #else
 #define LOGTIMEINIT(f)
 #define LOGTIME(n)
@@ -338,8 +339,10 @@ bool CActiveAEResamplePi::Init(SampleConfig dstConfig, SampleConfig srcConfig, b
   omx_err = m_omx_mixer.SetConfig(OMX_IndexConfigBrcmAudioDownmixCoefficients8x8, &mix);
   if (omx_err != OMX_ErrorNone)
   {
-    CLog::Log(LOGERROR, "%s::%s - error setting mixer OMX_IndexConfigBrcmAudioDownmixCoefficients, error 0x%08x\n",
-              CLASSNAME, __func__, omx_err);
+    CLog::Log(
+        LOGERROR,
+        "%s::%s - error setting mixer OMX_IndexConfigBrcmAudioDownmixCoefficients, error 0x%08x",
+        CLASSNAME, __func__, omx_err);
     return false;
   }
 

@@ -127,7 +127,7 @@ bool CFile::Copy(const CURL& url2, const CURL& dest, XFILE::IFileCallback* pCall
       return false;
     }
 
-    int iBufferSize = GetChunkSize(file.GetChunkSize(), 128 * 1024);
+    int iBufferSize = DetermineChunkSize(file.GetChunkSize(), 128 * 1024);
 
     auto_buffer buffer(iBufferSize);
     ssize_t iRead, iWrite;
@@ -412,6 +412,13 @@ bool CFile::OpenForWrite(const CURL& file, bool bOverWrite)
   }
   CLog::Log(LOGERROR, "%s - Error opening %s", __FUNCTION__, file.GetRedacted().c_str());
   return false;
+}
+
+int CFile::DetermineChunkSize(const int srcChunkSize, const int reqChunkSize)
+{
+  // Determine cache chunk size: if source chunk size is bigger than 1
+  // use source chunk size else use requested chunk size
+  return (srcChunkSize > 1 ? srcChunkSize : reqChunkSize);
 }
 
 bool CFile::Exists(const std::string& strFileName, bool bUseCache /* = true */)
@@ -1037,7 +1044,9 @@ ssize_t CFile::LoadFile(const CURL& file, auto_buffer& outputBuffer)
   if (filesize > (int64_t)max_file_size)
     return 0; /* file is too large for this function */
 
-  size_t chunksize = (filesize > 0) ? (size_t)(filesize + 1) : (size_t) GetChunkSize(GetChunkSize(), min_chunk_size);
+  size_t chunksize = (filesize > 0) ? static_cast<size_t>(filesize + 1)
+                                    : static_cast<size_t>(DetermineChunkSize(GetChunkSize(),
+                                                                             min_chunk_size));
   size_t total_read = 0;
   while (true)
   {
@@ -1096,7 +1105,7 @@ void CFileStreamBuffer::Attach(IFile *file)
 {
   m_file = file;
 
-  m_frontsize = CFile::GetChunkSize(m_file->GetChunkSize(), 64*1024);
+  m_frontsize = CFile::DetermineChunkSize(m_file->GetChunkSize(), 64 * 1024);
 
   m_buffer = new char[m_frontsize+m_backsize];
   setg(0,0,0);

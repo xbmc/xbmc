@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include "addons/kodi-addon-dev-kit/include/kodi/kodi_game_types.h"
+#include "addons/kodi-addon-dev-kit/include/kodi/addon-instance/Game.h"
 
 #include <string>
 
@@ -40,7 +40,7 @@ namespace GAME
      * \param addon The game client implementation.
      * \param dllStruct The emulator or game for which the in-game saves are processed.
      */
-    CGameClientInGameSaves(CGameClient* addon, const KodiToAddonFuncTable_Game* dllStruct);
+    CGameClientInGameSaves(CGameClient* addon, const AddonInstance_Game* dllStruct);
 
     /*!
      * \brief Load in-game data.
@@ -59,7 +59,7 @@ namespace GAME
     void Save(GAME_MEMORY memoryType);
 
     const CGameClient* const m_gameClient;
-    const KodiToAddonFuncTable_Game* const m_dllStruct;
+    const AddonInstance_Game* const m_dllStruct;
   };
 }
 }

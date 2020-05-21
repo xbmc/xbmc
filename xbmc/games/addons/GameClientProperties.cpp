@@ -79,6 +79,7 @@ const char* CGameClientProperties::GetLibraryPath(void)
     // Get the parent add-on's real path
     std::string strLibPath = m_parent.CAddonDll::LibPath();
     m_strLibraryPath = CSpecialProtocol::TranslatePath(strLibPath);
+    URIUtils::RemoveSlashAtEnd(m_strLibraryPath);
   }
   return m_strLibraryPath.c_str();
 }
@@ -117,6 +118,7 @@ const char** CGameClientProperties::GetResourceDirectories(void)
         std::shared_ptr<CGameResource> resource = std::static_pointer_cast<CGameResource>(addon);
 
         std::string resourcePath = resource->GetFullPath("");
+        URIUtils::RemoveSlashAtEnd(resourcePath);
 
         char* resourceDir = new char[resourcePath.length() + 1];
         std::strcpy(resourceDir, resourcePath.c_str());
@@ -168,7 +170,10 @@ unsigned int CGameClientProperties::GetResourceDirectoryCount(void) const
 const char* CGameClientProperties::GetProfileDirectory(void)
 {
   if (m_strProfileDirectory.empty())
+  {
     m_strProfileDirectory = CSpecialProtocol::TranslatePath(m_parent.Profile());
+    URIUtils::RemoveSlashAtEnd(m_strProfileDirectory);
+  }
 
   return m_strProfileDirectory.c_str();
 }

@@ -115,7 +115,6 @@ target_include_directories(upnp PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}
                                        Platinum/Source/Devices/MediaConnect
                                        Platinum/Source/Devices/MediaRenderer
                                        Platinum/Source/Devices/MediaServer
-                                       Platinum/Source/Extras
                                        Neptune/Source/Core
                                        Neptune/Source/System/Posix)
 if(CORE_SYSTEM_NAME STREQUAL windows OR CORE_SYSTEM_NAME STREQUAL windowsstore)

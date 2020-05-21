@@ -8,46 +8,42 @@
 
 //! @todo Need a uniform way of returning an error status
 
-#include "network/Network.h"
-
 #include "ModuleXbmc.h"
 
+#include "AddonUtils.h"
 #include "Application.h"
-#include "ServiceBroker.h"
-#include "messaging/ApplicationMessenger.h"
-#include "aojsonrpc.h"
-#ifndef TARGET_WINDOWS
-#include "platform/posix/XTimeUtils.h"
-#endif
-#include "guilib/LocalizeStrings.h"
+#include "FileItem.h"
 #include "GUIInfoManager.h"
-#include "guilib/GUIAudioManager.h"
-#include "guilib/GUIWindowManager.h"
+#include "LangInfo.h"
+#include "LanguageHook.h"
+#include "PlayListPlayer.h"
+#include "ServiceBroker.h"
+#include "Util.h"
+#include "aojsonrpc.h"
+#include "cores/AudioEngine/Interfaces/AE.h"
 #include "filesystem/File.h"
 #include "filesystem/SpecialProtocol.h"
-#include "utils/Crc32.h"
-#include "FileItem.h"
-#include "LangInfo.h"
-#include "PlayListPlayer.h"
+#include "guilib/GUIAudioManager.h"
+#include "guilib/GUIWindowManager.h"
+#include "guilib/LocalizeStrings.h"
+#include "guilib/TextureManager.h"
+#include "input/WindowTranslator.h"
+#include "messaging/ApplicationMessenger.h"
+#include "network/Network.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
-#include "guilib/TextureManager.h"
-#include "Util.h"
-#include "cores/AudioEngine/Interfaces/AE.h"
-#include "input/WindowTranslator.h"
 #include "storage/MediaManager.h"
+#include "threads/SystemClock.h"
+#include "utils/Crc32.h"
 #include "utils/FileExtensionProvider.h"
 #include "utils/LangCodeExpander.h"
 #include "utils/MemUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/SystemInfo.h"
-#include "AddonUtils.h"
-
-#include "LanguageHook.h"
-
-#include "threads/SystemClock.h"
-#include <vector>
+#include "utils/XTimeUtils.h"
 #include "utils/log.h"
+
+#include <vector>
 
 using namespace KODI;
 using namespace KODI::MESSAGING;
@@ -150,7 +146,7 @@ namespace XBMCAddon
           long nextSleep = endTime.MillisLeft();
           if (nextSleep > 100)
             nextSleep = 100; // only sleep for 100 millis
-          ::Sleep(nextSleep);
+          KODI::TIME::Sleep(nextSleep);
         }
         if (lh != NULL)
           lh->MakePendingCalls();
@@ -242,7 +238,7 @@ namespace XBMCAddon
     long getDVDState()
     {
       XBMC_TRACE;
-      return g_mediaManager.GetDriveStatus();
+      return CServiceBroker::GetMediaManager().GetDriveStatus();
     }
 
     long getFreeMem()
@@ -381,12 +377,6 @@ namespace XBMCAddon
       return StringUtils::Format("%08x.tbn", crc);
     }
 
-    String makeLegalFilename(const String& filename, bool fatX)
-    {
-      XBMC_TRACE;
-      return CUtil::MakeLegalPath(filename);
-    }
-
     String translatePath(const String& path)
     {
       XBMC_TRACE;
@@ -406,26 +396,20 @@ namespace XBMCAddon
       return Tuple<String,String>(strTitle,strYear);
     }
 
-    String validatePath(const String& path)
-    {
-      XBMC_TRACE;
-      return CUtil::ValidatePath(path, true);
-    }
-
     String getRegion(const char* id)
     {
       XBMC_TRACE;
       std::string result;
 
-      if (strcmpi(id, "datelong") == 0)
-        {
-          result = g_langInfo.GetDateFormat(true);
-          StringUtils::Replace(result, "DDDD", "%A");
-          StringUtils::Replace(result, "MMMM", "%B");
-          StringUtils::Replace(result, "D", "%d");
-          StringUtils::Replace(result, "YYYY", "%Y");
+      if (StringUtils::CompareNoCase(id, "datelong") == 0)
+      {
+        result = g_langInfo.GetDateFormat(true);
+        StringUtils::Replace(result, "DDDD", "%A");
+        StringUtils::Replace(result, "MMMM", "%B");
+        StringUtils::Replace(result, "D", "%d");
+        StringUtils::Replace(result, "YYYY", "%Y");
         }
-      else if (strcmpi(id, "dateshort") == 0)
+        else if (StringUtils::CompareNoCase(id, "dateshort") == 0)
         {
           result = g_langInfo.GetDateFormat(false);
           StringUtils::Replace(result, "MM", "%m");
@@ -439,25 +423,28 @@ namespace XBMCAddon
 #endif
           StringUtils::Replace(result, "YYYY", "%Y");
         }
-      else if (strcmpi(id, "tempunit") == 0)
-        result = g_langInfo.GetTemperatureUnitString();
-      else if (strcmpi(id, "speedunit") == 0)
-        result = g_langInfo.GetSpeedUnitString();
-      else if (strcmpi(id, "time") == 0)
+        else if (StringUtils::CompareNoCase(id, "tempunit") == 0)
+          result = g_langInfo.GetTemperatureUnitString();
+        else if (StringUtils::CompareNoCase(id, "speedunit") == 0)
+          result = g_langInfo.GetSpeedUnitString();
+        else if (StringUtils::CompareNoCase(id, "time") == 0)
         {
           result = g_langInfo.GetTimeFormat();
-          StringUtils::Replace(result, "H", "%H");
+          if (StringUtils::StartsWith(result, "HH"))
+            StringUtils::Replace(result, "HH", "%H");
+          else
+            StringUtils::Replace(result, "H", "%H");
           StringUtils::Replace(result, "h", "%I");
           StringUtils::Replace(result, "mm", "%M");
           StringUtils::Replace(result, "ss", "%S");
           StringUtils::Replace(result, "xx", "%p");
         }
-      else if (strcmpi(id, "meridiem") == 0)
-        result = StringUtils::Format("%s/%s",
-                                     g_langInfo.GetMeridiemSymbol(MeridiemSymbolAM).c_str(),
-                                     g_langInfo.GetMeridiemSymbol(MeridiemSymbolPM).c_str());
+        else if (StringUtils::CompareNoCase(id, "meridiem") == 0)
+          result =
+              StringUtils::Format("%s/%s", g_langInfo.GetMeridiemSymbol(MeridiemSymbolAM).c_str(),
+                                  g_langInfo.GetMeridiemSymbol(MeridiemSymbolPM).c_str());
 
-      return result;
+        return result;
     }
 
     //! @todo Add a mediaType enum
@@ -465,11 +452,11 @@ namespace XBMCAddon
     {
       XBMC_TRACE;
       String result;
-      if (strcmpi(mediaType, "video") == 0)
+      if (StringUtils::CompareNoCase(mediaType, "video") == 0)
         result = CServiceBroker::GetFileExtensionProvider().GetVideoExtensions();
-      else if (strcmpi(mediaType, "music") == 0)
+      else if (StringUtils::CompareNoCase(mediaType, "music") == 0)
         result = CServiceBroker::GetFileExtensionProvider().GetMusicExtensions();
-      else if (strcmpi(mediaType, "picture") == 0)
+      else if (StringUtils::CompareNoCase(mediaType, "picture") == 0)
         result = CServiceBroker::GetFileExtensionProvider().GetPictureExtensions();
 
       //! @todo implement

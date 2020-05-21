@@ -771,11 +771,17 @@ JSONRPC_STATUS CAudioLibrary::SetAlbumDetails(const std::string &method, ITransp
   if (ParameterNotNull(parameterObject, "votes"))
     album.iVotes = parameterObject["votes"].asInteger();
   if (ParameterNotNull(parameterObject, "year"))
-    album.iYear = (int)parameterObject["year"].asInteger();
+    album.strReleaseDate = parameterObject["year"].asString();
   if (ParameterNotNull(parameterObject, "musicbrainzalbumid"))
     album.strMusicBrainzAlbumID = parameterObject["musicbrainzalbumid"].asString();
   if (ParameterNotNull(parameterObject, "musicbrainzreleasegroupid"))
     album.strReleaseGroupMBID = parameterObject["musicbrainzreleasegroupid"].asString();
+  if (ParameterNotNull(parameterObject, "isboxset"))
+    album.bBoxedSet = parameterObject["isboxset"].asBoolean();
+  if (ParameterNotNull(parameterObject, "originaldate"))
+    album.strOrigReleaseDate = parameterObject["originaldate"].asString();
+  if (ParameterNotNull(parameterObject, "releasedate"))
+    album.strReleaseDate = parameterObject["releasedate"].asString();
 
   // Update existing art. Any existing artwork that isn't specified in this request stays as is.
   // If the value is null then the existing art with that type is removed.
@@ -850,7 +856,7 @@ JSONRPC_STATUS CAudioLibrary::SetSongDetails(const std::string &method, ITranspo
   if (ParameterNotNull(parameterObject, "genre"))
     CopyStringArray(parameterObject["genre"], song.genre);
   if (ParameterNotNull(parameterObject, "year"))
-    song.iYear = (int)parameterObject["year"].asInteger();
+    song.strReleaseDate = parameterObject["year"].asString();
   if (ParameterNotNull(parameterObject, "rating"))
     song.rating = parameterObject["rating"].asFloat();
   if (ParameterNotNull(parameterObject, "userrating"))
@@ -870,7 +876,15 @@ JSONRPC_STATUS CAudioLibrary::SetSongDetails(const std::string &method, ITranspo
   if (ParameterNotNull(parameterObject, "lastplayed"))
     song.lastPlayed.SetFromDBDateTime(parameterObject["lastplayed"].asString());
   if (ParameterNotNull(parameterObject, "mood"))
-    song.strAlbum = parameterObject["mood"].asString();
+    song.strMood = parameterObject["mood"].asString();
+  if (ParameterNotNull(parameterObject, "disctitle"))
+    song.strDiscSubtitle = parameterObject["disctitle"].asString();
+  if (ParameterNotNull(parameterObject, "bpm"))
+    song.iBPM = static_cast<int>(parameterObject["bpm"].asInteger());
+  if (ParameterNotNull(parameterObject, "originaldate"))
+    song.strOrigReleaseDate = parameterObject["originaldate"].asString();
+  if (ParameterNotNull(parameterObject, "albumreleasedate"))
+    song.strReleaseDate = parameterObject["albumreleasedate"].asString();
 
   // Update existing art. Any existing artwork that isn't specified in this request stays as is.
   // If the value is null then the existing art with that type is removed.
@@ -923,9 +937,9 @@ JSONRPC_STATUS CAudioLibrary::Export(const std::string &method, ITransportLayer 
   else
   {
     cmd = "exportlibrary2(music, library, dummy, albums, albumartists";
-    if (parameterObject["options"].isMember("images"))
+    if (parameterObject["options"].asBoolean("images"))
       cmd += ", artwork";
-    if (parameterObject["options"].isMember("overwrite"))
+    if (parameterObject["options"].asBoolean("overwrite"))
       cmd += ", overwrite";
     cmd += ")";
   }

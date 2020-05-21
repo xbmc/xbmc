@@ -198,6 +198,7 @@ JsonRpcMethodMap CJSONServiceDescription::m_methodMaps[] = {
 // Input operations
   { "Input.SendText",                               CInputOperations::SendText },
   { "Input.ExecuteAction",                          CInputOperations::ExecuteAction },
+  { "Input.ButtonEvent",                            CInputOperations::ButtonEvent },
   { "Input.Left",                                   CInputOperations::Left },
   { "Input.Right",                                  CInputOperations::Right },
   { "Input.Down",                                   CInputOperations::Down },

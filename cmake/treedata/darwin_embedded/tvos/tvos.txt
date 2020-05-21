@@ -1,0 +1,5 @@
+xbmc/platform/darwin/tvos             platform/tvos
+xbmc/platform/darwin/tvos/filesystem  platform/darwin/tvos/filesystem
+xbmc/platform/darwin/tvos/input       platform/darwin/tvos/input
+xbmc/platform/darwin/tvos/powermanagement   platform/darwin/tvos/powermanagement
+xbmc/windowing/tvos                   windowing/tvos

@@ -75,7 +75,6 @@ bool CGUIKeyboardFactory::SendTextToActiveKeyboard(const std::string &aTextStrin
 bool CGUIKeyboardFactory::ShowAndGetInput(std::string& aTextString, CVariant heading, bool allowEmptyResult, bool hiddenInput /* = false */, unsigned int autoCloseMs /* = 0 */)
 {
   bool confirmed = false;
-  CGUIKeyboard *kb = NULL;
   //heading can be a string or a localization id
   std::string headingStr;
   if (heading.isString())
@@ -83,11 +82,24 @@ bool CGUIKeyboardFactory::ShowAndGetInput(std::string& aTextString, CVariant hea
   else if (heading.isInteger() && heading.asInteger())
     headingStr = g_localizeStrings.Get((uint32_t)heading.asInteger());
 
+  bool useKodiKeyboard = true;
 #if defined(TARGET_DARWIN_EMBEDDED)
-  kb = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogKeyboardTouch>(WINDOW_DIALOG_KEYBOARD_TOUCH);
+#if defined(TARGET_DARWIN_TVOS)
+  useKodiKeyboard = CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+      CSettings::SETTING_INPUT_APPLEUSEKODIKEYBOARD);
 #else
-  kb = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogKeyboardGeneric>(WINDOW_DIALOG_KEYBOARD);
+  useKodiKeyboard = false;
+#endif // defined(TARGET_DARWIN_TVOS)
 #endif
+
+  auto& winManager = CServiceBroker::GetGUI()->GetWindowManager();
+  CGUIKeyboard* kb = nullptr;
+  if (useKodiKeyboard)
+    kb = winManager.GetWindow<CGUIDialogKeyboardGeneric>(WINDOW_DIALOG_KEYBOARD);
+#if defined(TARGET_DARWIN_EMBEDDED)
+  else
+    kb = winManager.GetWindow<CGUIDialogKeyboardTouch>(WINDOW_DIALOG_KEYBOARD_TOUCH);
+#endif // defined(TARGET_DARWIN_EMBEDDED)
 
   if (kb)
   {

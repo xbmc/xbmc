@@ -8,19 +8,22 @@
 
 #pragma once
 
-#import "interfaces/AnnouncementManager.h"
+#include "interfaces/AnnouncementManager.h"
 
 class CVariant;
 
 class CAnnounceReceiver : public ANNOUNCEMENT::IAnnouncer
 {
 public:
-  static  CAnnounceReceiver* GetInstance();
+  static CAnnounceReceiver* GetInstance();
 
-  void    Initialize();
-  void    DeInitialize();
+  void Initialize();
+  void DeInitialize();
 
-  void Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char* sender, const char* message, const CVariant& data) override;
+  void Announce(ANNOUNCEMENT::AnnouncementFlag flag,
+                const char* sender,
+                const char* message,
+                const CVariant& data) override;
 
 private:
   CAnnounceReceiver() = default;

@@ -241,7 +241,7 @@ bool CWinSystemX11::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
       if (currmode.w != mode.w || currmode.h != mode.h ||
           currmode.hz != mode.hz || currmode.id != mode.id)
       {
-        CLog::Log(LOGNOTICE, "CWinSystemX11::SetFullScreen - calling xrandr");
+        CLog::Log(LOGINFO, "CWinSystemX11::SetFullScreen - calling xrandr");
 
         // remember last position of mouse
         Window root_return, child_return;
@@ -365,7 +365,7 @@ void CWinSystemX11::UpdateResolutions()
   XOutput *out = g_xrandr.GetOutput(m_userOutput);
   if (out != NULL)
   {
-    CLog::Log(LOGINFO, "Output '%s' has %" PRIdS" modes", out->name.c_str(), out->modes.size());
+    CLog::Log(LOGINFO, "Output '{}' has {} modes", out->name, out->modes.size());
 
     for (auto mode : out->modes)
     {

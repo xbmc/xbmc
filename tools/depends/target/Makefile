@@ -6,19 +6,16 @@ endif
 
 DEPENDS = \
 	pcre expat gettext sqlite3 libgpg-error \
-	libgcrypt bzip2 libfstrcmp liblzo2 libzip freetype2 fontconfig \
-	openssl gmp nettle gnutls curl nghttp2 \
+	libgcrypt bzip2 libfstrcmp liblzo2 freetype2 fontconfig \
+	openssl gmp nettle gnutls googletest curl nghttp2 \
 	libjpeg-turbo libpng fribidi libass \
 	libxml2 rapidjson libmicrohttpd mariadb libffi \
-	python3 libshairplay libfmt \
+	python3 libshairplay libfmt libspdlog \
 	libplist libcec libbluray tinyxml \
-	taglib libusb libnfs \
+	taglib libusb libnfs meson-cross-file \
 	pythonmodule-pil pythonmodule-pycryptodome pythonmodule-setuptools \
-	libxslt ffmpeg crossguid \
-	libdvdread libdvdnav libdvdcss p8-platform flatbuffers
-
-
-FFMPEG_DEPENDS = gnutls
+	libxslt ffmpeg crossguid libudfread \
+	libdvdread libdvdnav libdvdcss p8-platform flatbuffers dav1d
 
 ifeq ($(ENABLE_GPLV3),yes)
   DEPENDS+=samba-gplv3 libcdio-gplv3
@@ -30,6 +27,7 @@ ifeq ($(OS),darwin_embedded)
   EXCLUDED_DEPENDS = libcec libusb
   ifeq ($(TARGET_PLATFORM),appletvos)
     DEPENDS += boblight
+    EXCLUDED_DEPENDS += libshairplay libplist
   endif
   DEPENDS += iosentitlements
 endif
@@ -41,7 +39,7 @@ endif
 
 ifeq ($(OS),android)
   EXCLUDED_DEPENDS = libcec libusb
-  DEPENDS += dummy-libxbmc libuuid libandroidjni
+  DEPENDS += dummy-libxbmc libuuid libandroidjni libzip
   PYMODULE_DEPS = dummy-libxbmc
   LIBUUID = libuuid
 endif
@@ -97,7 +95,7 @@ libcdio-gplv3: $(ICONV)
 libplist: $(ZLIB)
 libbluray: fontconfig freetype2 $(ICONV) libxml2
 mariadb: openssl $(ICONV) $(ZLIB)
-libzip: $(ZLIB)
+libzip: bzip2 gnutls $(ZLIB)
 libpng: $(ZLIB)
 openssl: $(ZLIB)
 gnutls: nettle $(ZLIB)
@@ -106,7 +104,7 @@ pythonmodule-pycryptodome: $(PYMODULE_DEPS) python3 pythonmodule-setuptools
 pythonmodule-pil: bzip2 $(PYMODULE_DEPS) $(ZLIB) libjpeg-turbo libpng freetype2 python3 pythonmodule-setuptools
 pythonmodule-setuptools: $(PYMODULE_DEPS) python3
 libxslt: libgcrypt libxml2
-ffmpeg: $(ICONV) $(ZLIB) bzip2 $(FFMPEG_DEPENDS)
+ffmpeg: $(ICONV) $(ZLIB) bzip2 gnutls dav1d
 libcec: p8-platform
 crossguid: $(LIBUUID)
 libdvdnav: libdvdread
@@ -114,9 +112,12 @@ libdvdread: libdvdcss
 wayland: expat libffi
 waylandpp: wayland $(WAYLANDPP_DEPS)
 dbus: expat
-libinput: mtdev libevdev
+libinput: mtdev libevdev meson-cross-file
 libevdev: libudev
+samba-gplv3: gnutls
 taglib: $(ZLIB)
+dav1d: meson-cross-file
+libspdlog: libfmt
 
 .installed-$(PLATFORM): $(DEPENDS)
 	touch $@
@@ -182,3 +183,20 @@ linux-system-libs: linux-system-libs-egl
 	[ -f $(PREFIX)/lib/pkgconfig/xmu.pc ] || ln -sf /usr/lib/$(HOST)/pkgconfig/xmu.pc $(PREFIX)/lib/pkgconfig/xmu.pc
 	[ -f $(PREFIX)/lib/pkgconfig/libdrm.pc ] || ln -sf /usr/lib/$(HOST)/pkgconfig/libdrm.pc $(PREFIX)/lib/pkgconfig/libdrm.pc
 	[ -f $(PREFIX)/lib/pkgconfig/xkbcommon.pc ] || ln -sf /usr/lib/$(HOST)/pkgconfig/xkbcommon.pc $(PREFIX)/lib/pkgconfig/xkbcommon.pc
+	[ -f $(PREFIX)/lib/pkgconfig/libva.pc ] || ln -sf /usr/lib/$(HOST)/pkgconfig/libva.pc $(PREFIX)/lib/pkgconfig/libva.pc
+
+meson-cross-file:
+	PREFIX="$(PREFIX)" \
+	NATIVEPREFIX="$(NATIVEPREFIX)" \
+	CC="$(CC)" \
+	CXX="$(CXX)" \
+	AR="$(AR)" \
+	STRIP="$(STRIP)" \
+	MESON_SYSTEM="$(MESON_SYSTEM)" \
+	MESON_CPU="$(MESON_CPU)" \
+	CPU="$(CPU)" \
+	CFLAGS="$(CFLAGS)" \
+	CXXFLAGS="$(CXXFLAGS)" \
+	LDFLAGS="$(LDFLAGS)" \
+	./meson-cross-setup.sh
+

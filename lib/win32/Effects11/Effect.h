@@ -3,12 +3,8 @@
 //
 //  Direct3D 11 Effects Header for ID3DX11Effect Implementation
 //
-// THIS CODE AND INFORMATION IS PROVIDED "AS IS" WITHOUT WARRANTY OF
-// ANY KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO
-// THE IMPLIED WARRANTIES OF MERCHANTABILITY AND/OR FITNESS FOR A
-// PARTICULAR PURPOSE.
-//
 // Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License.
 //
 // http://go.microsoft.com/fwlink/p/?LinkId=271568
 //--------------------------------------------------------------------------------------
@@ -66,7 +62,7 @@ struct SConstantBuffer;
 class CEffect;
 class CEffectLoader;
 
-enum ELhsType;
+enum ELhsType : int;
 
 // Allows the use of 32-bit and 64-bit timers depending on platform type
 typedef size_t Timer;
@@ -201,18 +197,18 @@ struct SType : public ID3DX11EffectType
     };
 
 
-    SType() :
+    SType() noexcept :
        VarType(EVT_Invalid),
        Elements(0),
        pTypeName(nullptr),
        TotalSize(0),
        Stride(0),
-       PackedSize(0)
+       PackedSize(0),
+       StructType{}
     {
-        C_ASSERT( sizeof(NumericType) <= sizeof(StructType) );
-        C_ASSERT( sizeof(ObjectType) <= sizeof(StructType) );
-        C_ASSERT( sizeof(InterfaceType) <= sizeof(StructType) );
-        ZeroMemory( &StructType, sizeof(StructType) );
+        static_assert(sizeof(NumericType) <= sizeof(StructType), "SType union issue");
+        static_assert(sizeof(ObjectType) <= sizeof(StructType), "SType union issue");
+        static_assert(sizeof(InterfaceType) <= sizeof(StructType), "SType union issue");
     }
 
     bool IsEqual(SType *pOtherType) const;
@@ -293,6 +289,11 @@ struct SSingleElementType : public ID3DX11EffectType
     STDMETHOD_(LPCSTR, GetMemberSemantic)(uint32_t Index) override { return ((SType*)pType)->GetMemberSemantic(Index); }
 
     IUNKNOWN_IMP(SSingleElementType, ID3DX11EffectType, IUnknown);
+
+    SSingleElementType() noexcept :
+        pType(nullptr)
+    {
+    }
 };
 
 //////////////////////////////////////////////////////////////////////////
@@ -310,7 +311,7 @@ struct SBaseBlock
     uint32_t        AssignmentCount;
     SAssignment     *pAssignments;
 
-    SBaseBlock();
+    SBaseBlock() noexcept;
 
     bool ApplyAssignments(CEffect *pEffect);
 
@@ -358,7 +359,7 @@ struct STechnique : public ID3DX11EffectTechnique
     bool        InitiallyValid;
     bool        HasDependencies;
 
-    STechnique();
+    STechnique() noexcept;
 
     STDMETHOD_(bool, IsValid)() override;
     STDMETHOD(GetDesc)(_Out_ D3DX11_TECHNIQUE_DESC *pDesc) override;
@@ -387,7 +388,7 @@ struct SGroup : public ID3DX11EffectGroup
     bool        InitiallyValid;
     bool        HasDependencies;
 
-    SGroup();
+    SGroup() noexcept;
 
     STDMETHOD_(bool, IsValid)() override;
     STDMETHOD(GetDesc)(_Out_ D3DX11_GROUP_DESC *pDesc) override;
@@ -441,7 +442,7 @@ struct SPassBlock : SBaseBlock, public ID3DX11EffectPass
     bool        InitiallyValid;         // validity of all state objects and shaders in pass upon BindToDevice
     bool        HasDependencies;        // if pass expressions or pass state blocks have dependencies on variables (if true, IsValid != InitiallyValid possibly)
 
-    SPassBlock();
+    SPassBlock() noexcept;
 
     void ApplyPassAssignments();
     bool CheckShaderDependencies( _In_ const SShaderBlock* pBlock );
@@ -476,7 +477,7 @@ struct SDepthStencilBlock : SBaseBlock
     D3D11_DEPTH_STENCIL_DESC BackingStore;
     bool                     IsValid;
 
-    SDepthStencilBlock();
+    SDepthStencilBlock() noexcept;
 };
 
 struct SBlendBlock : SBaseBlock
@@ -485,7 +486,7 @@ struct SBlendBlock : SBaseBlock
     D3D11_BLEND_DESC        BackingStore;
     bool                    IsValid;
 
-    SBlendBlock();
+    SBlendBlock() noexcept;
 };
 
 struct SRasterizerBlock : SBaseBlock
@@ -494,7 +495,7 @@ struct SRasterizerBlock : SBaseBlock
     D3D11_RASTERIZER_DESC   BackingStore;
     bool                    IsValid;
 
-    SRasterizerBlock();
+    SRasterizerBlock() noexcept;
 };
 
 struct SSamplerBlock : SBaseBlock
@@ -507,16 +508,16 @@ struct SSamplerBlock : SBaseBlock
         SShaderResource     *pTexture;
     } BackingStore;
 
-    SSamplerBlock();
+    SSamplerBlock() noexcept;
 };
 
 struct SInterface
 {
     SClassInstanceGlobalVariable* pClassInstance;
 
-    SInterface()
+    SInterface() noexcept :
+        pClassInstance(nullptr)
     {
-        pClassInstance = nullptr;
     }
 };
 
@@ -524,36 +525,40 @@ struct SShaderResource
 {
     ID3D11ShaderResourceView *pShaderResource;
 
-    SShaderResource() 
+    SShaderResource() noexcept :
+        pShaderResource(nullptr)
     {
-        pShaderResource = nullptr;
     }
-
 };
 
 struct SUnorderedAccessView
 {
     ID3D11UnorderedAccessView *pUnorderedAccessView;
 
-    SUnorderedAccessView() 
+    SUnorderedAccessView() noexcept :
+        pUnorderedAccessView(nullptr)
     {
-        pUnorderedAccessView = nullptr;
     }
-
 };
 
 struct SRenderTargetView
 {
     ID3D11RenderTargetView *pRenderTargetView;
 
-    SRenderTargetView();
+    SRenderTargetView() noexcept :
+        pRenderTargetView(nullptr)
+    {
+    }
 };
 
 struct SDepthStencilView
 {
     ID3D11DepthStencilView *pDepthStencilView;
 
-    SDepthStencilView();
+    SDepthStencilView() noexcept :
+        pDepthStencilView(nullptr)
+    {
+    }
 };
 
 
@@ -565,12 +570,12 @@ template<class T, class D3DTYPE> struct SShaderDependency
     T       *ppFXPointers;              // Array of ptrs to FX objects (CBs, SShaderResources, etc)
     D3DTYPE *ppD3DObjects;              // Array of ptrs to matching D3D objects
 
-    SShaderDependency()
+    SShaderDependency() noexcept :
+        StartIndex(0),
+        Count(0),
+        ppFXPointers(nullptr),
+        ppD3DObjects(nullptr)
     {
-        StartIndex = Count = 0;
-
-        ppD3DObjects = nullptr;
-        ppFXPointers = nullptr;
     }
 };
 
@@ -649,7 +654,7 @@ struct SShaderBlock
     ID3DBlob                        *pInputSignatureBlob;   // The input signature is separated from the bytecode because it 
                                                             // is always available, even after Optimize() has been called.
 
-    SShaderBlock(SD3DShaderVTable *pVirtualTable = nullptr);
+    SShaderBlock(SD3DShaderVTable *pVirtualTable = nullptr) noexcept;
 
     EObjectType GetShaderType();
 
@@ -676,7 +681,10 @@ struct SString
 {
     char *pString;
 
-    SString();
+    SString() noexcept :
+        pString(nullptr)
+    {
+    }
 };
 
 
@@ -713,7 +721,7 @@ struct SVariable
     char                    *pSemantic;
     uint32_t                ExplicitBindPoint;
 
-    SVariable()
+    SVariable() noexcept
     {
         ZeroMemory(this, sizeof(*this));
         ExplicitBindPoint = uint32_t(-1);
@@ -732,7 +740,7 @@ struct SAnonymousShader : public TUncastableVariable<ID3DX11EffectShaderVariable
 {
     SShaderBlock    *pShaderBlock;
 
-    SAnonymousShader(_In_opt_ SShaderBlock *pBlock = nullptr);
+    SAnonymousShader(_In_opt_ SShaderBlock *pBlock = nullptr) noexcept;
 
     // ID3DX11EffectShaderVariable interface
     STDMETHOD_(bool, IsValid)() override;
@@ -820,27 +828,28 @@ struct SConstantBuffer : public TUncastableVariable<ID3DX11EffectConstantBuffer>
 
     CEffect                 *pEffect;
 
-    SConstantBuffer()
+    SConstantBuffer() noexcept :
+        pD3DObject(nullptr),
+        TBuffer{},
+        pBackingStore(nullptr),
+        Size(0),
+        pName(nullptr),
+        AnnotationCount(0),
+        pAnnotations(nullptr),
+        VariableCount(0),
+        pVariables(nullptr),
+        ExplicitBindPoint(uint32_t(-1)),
+        IsDirty(false),
+        IsTBuffer(false),
+        IsUserManaged(false),
+        IsEffectOptimized(false),
+        IsUsedByExpression(false),
+        IsUserPacked(false),
+        IsSingle(false),
+        IsNonUpdatable(false),
+        pMemberData(nullptr),
+        pEffect(nullptr)
     {
-        pD3DObject = nullptr;
-        ZeroMemory(&TBuffer, sizeof(TBuffer));
-        ExplicitBindPoint = uint32_t(-1);
-        pBackingStore = nullptr;
-        Size = 0;
-        pName = nullptr;
-        VariableCount = 0;
-        pVariables = nullptr;
-        AnnotationCount = 0;
-        pAnnotations = nullptr;
-        IsDirty = false;
-        IsTBuffer = false;
-        IsUserManaged = false;
-        IsEffectOptimized = false;
-        IsUsedByExpression = false;
-        IsUserPacked = false;
-        IsSingle = false;
-        IsNonUpdatable = false;
-        pEffect = nullptr;
     }
 
     bool ClonedSingle() const;
@@ -927,9 +936,9 @@ struct SAssignment
     {
         SGlobalVariable *pVariable;
 
-        SDependency()
+        SDependency() noexcept :
+            pVariable(nullptr)
         {
-            pVariable = nullptr;
         }
     };
 
@@ -958,19 +967,17 @@ struct SAssignment
         return IsObjectAssignmentHelper(LhsType);
     }
 
-    SAssignment()
+    SAssignment() noexcept :
+        LhsType(ELHS_Invalid),
+        AssignmentType(ERAT_Invalid),
+        LastRecomputedTime(0),
+        DependencyCount(0),
+        pDependencies(nullptr),
+        Destination{0},
+        Source{0},
+        DataSize(0),
+        MaxElements(0)
     {
-        LhsType = ELHS_Invalid;
-        AssignmentType = ERAT_Invalid;
-
-        Destination.pGeneric = nullptr;
-        Source.pGeneric = nullptr;
-
-        LastRecomputedTime = 0;
-        DependencyCount = 0;
-        pDependencies = nullptr;
-
-        DataSize = 0;
     }
 };
 
@@ -1039,7 +1046,7 @@ public:
         return (pData >= m_pData && pData < (m_pData + m_dwBufferSize));
     }
 
-    CEffectHeap();
+    CEffectHeap() noexcept;
     ~CEffectHeap();
 };
 
@@ -1201,7 +1208,7 @@ protected:
     friend struct SConstantBuffer;
 
 public:
-    CEffect( uint32_t Flags = 0 );
+    CEffect( uint32_t Flags = 0 ) noexcept;
     virtual ~CEffect();
     void ReleaseShaderRefection();
 

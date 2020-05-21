@@ -27,13 +27,16 @@ else()
   elseif(CPU STREQUAL i686)
     set(ARCH i486-linux)
     set(NEON False)
+  elseif(CPU STREQUAL x86_64)
+    set(ARCH x86_64)
+    set(NEON False)
   else()
     message(SEND_ERROR "Unknown CPU: ${CPU}")
   endif()
 endif()
 
 # Additional SYSTEM_DEFINES
-list(APPEND SYSTEM_DEFINES -DHAS_ZEROCONF -DHAS_LINUX_NETWORK)
+list(APPEND SYSTEM_DEFINES -DHAS_ZEROCONF)
 
 set(ENABLE_X11 OFF CACHE BOOL "" FORCE)
 set(ENABLE_OPTICAL OFF CACHE BOOL "" FORCE)

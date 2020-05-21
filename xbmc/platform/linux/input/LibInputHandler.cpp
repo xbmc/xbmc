@@ -116,7 +116,7 @@ void CLibInputHandler::Start()
 
 void CLibInputHandler::Process()
 {
-  int epollFd = epoll_create1(0);
+  int epollFd = epoll_create1(EPOLL_CLOEXEC);
   if (epollFd < 0)
   {
     CLog::Log(LOGERROR, "CLibInputHandler::%s - failed to create epoll file descriptor: %s", __FUNCTION__, strerror(-errno));

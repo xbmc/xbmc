@@ -1,9 +1,12 @@
-set(SOURCES OptionalsReg.cpp
+set(SOURCES CPUInfoLinux.cpp
             MemUtils.cpp
+            OptionalsReg.cpp
+            SysfsPath.cpp
             TimeUtils.cpp)
 
-set(HEADERS OptionalsReg.h
-            PlatformConstants.h
+set(HEADERS CPUInfoLinux.h
+            OptionalsReg.h
+            SysfsPath.h
             TimeUtils.h)
 
 if(ALSA_FOUND)

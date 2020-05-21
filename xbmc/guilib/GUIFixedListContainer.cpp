@@ -105,16 +105,17 @@ void CGUIFixedListContainer::Scroll(int amount)
   // increase or decrease the offset within [-minCursor, m_items.size() - maxCursor]
   int minCursor, maxCursor;
   GetCursorRange(minCursor, maxCursor);
+  const int nextCursor = GetCursor() + amount;
   int offset = GetOffset() + amount;
   if (offset < -minCursor)
   {
     offset = -minCursor;
-    SetCursor(minCursor);
+    SetCursor(nextCursor < minCursor ? minCursor : nextCursor);
   }
   if (offset > (int)m_items.size() - 1 - maxCursor)
   {
     offset = m_items.size() - 1 - maxCursor;
-    SetCursor(maxCursor);
+    SetCursor(nextCursor > maxCursor ? maxCursor : nextCursor);
   }
   ScrollToOffset(offset);
 }

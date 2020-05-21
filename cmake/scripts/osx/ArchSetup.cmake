@@ -24,7 +24,7 @@ else()
 endif()
 
 # Additional SYSTEM_DEFINES
-list(APPEND SYSTEM_DEFINES -DHAS_LINUX_NETWORK -DHAS_SDL -DHAS_ZEROCONF)
+list(APPEND SYSTEM_DEFINES -DHAS_POSIX_NETWORK -DHAS_OSX_NETWORK -DHAS_SDL -DHAS_ZEROCONF)
 
 list(APPEND CMAKE_SYSTEM_PREFIX_PATH ${NATIVEPREFIX})
 
@@ -33,9 +33,9 @@ list(APPEND DEPLIBS "-framework DiskArbitration" "-framework IOKit"
                     "-framework ApplicationServices" "-framework AppKit"
                     "-framework CoreAudio" "-framework AudioToolbox"
                     "-framework CoreGraphics" "-framework CoreMedia"
-                    "-framework VideoToolbox")
+                    "-framework VideoToolbox" "-framework Security")
 
-set(CMAKE_OSX_DEPLOYMENT_TARGET 10.9)
+set(CMAKE_OSX_DEPLOYMENT_TARGET 10.13)
 set(CMAKE_XCODE_ATTRIBUTE_CLANG_LINK_OBJC_RUNTIME OFF)
 
 include(cmake/scripts/darwin/Macros.cmake)

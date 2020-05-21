@@ -134,6 +134,12 @@ bool CEdl::ReadEdl(const std::string& strMovie, const float fFramesPerSecond)
       strFields[1] = strFields[0];
     }
 
+    if (StringUtils::StartsWith(strFields[0], "##"))
+    {
+      CLog::Log(LOGDEBUG, "Skipping comment line %i in EDL file: %s", iLine,
+                CURL::GetRedacted(edlFilename).c_str());
+      continue;
+    }
     /*
      * For each of the first two fields read, parse based on whether it is a time string
      * (HH:MM:SS.sss), frame marker (#12345), or normal seconds string (123.45).
@@ -622,9 +628,19 @@ bool CEdl::AddCut(const Cut& newCut)
     int autowind = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_iEdlCommBreakAutowind * 1000; // seconds -> ms
 
     if (cut.start > 0) // Only autowait if not at the start.
-     cut.start += autowait;
-    if (cut.end > cut.start + autowind) // Only autowind if it won't go back past the start (should never happen).
-     cut.end -= autowind;
+    {
+      /* get the cut length so we don't start skipping after the end */
+      int cutLength = cut.end - cut.start;
+      /* add the lesser of the cut length or the autowait to the start */
+      cut.start += autowait > cutLength ? cutLength : autowait;
+    }
+    if (cut.end > cut.start) // Only autowind if there is any cut time remaining.
+    {
+      /* get the remaining cut length so we don't rewind to before the start */
+      int cutLength = cut.end - cut.start;
+      /* subtract the lesser of the cut length or the autowind from the end */
+      cut.end -= autowind > cutLength ? cutLength : autowind;
+    }
   }
 
   /*

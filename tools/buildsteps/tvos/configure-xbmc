@@ -1,0 +1,5 @@
+WORKSPACE=${WORKSPACE:-$( cd $(dirname $0)/../../.. ; pwd -P )}
+XBMC_PLATFORM_DIR=tvos
+. $WORKSPACE/tools/buildsteps/defaultenv
+
+make -C $WORKSPACE/tools/depends/target/cmakebuildsys

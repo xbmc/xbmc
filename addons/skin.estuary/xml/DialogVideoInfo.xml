@@ -9,7 +9,7 @@
 			<height>1080</height>
 			<centerleft>50%</centerleft>
 			<width>1920</width>
-			<animation effect="fade" start="100" end="0" time="200" tween="sine" condition="Window.IsVisible(script-script.extendedinfo-DialogVideoInfo.xml) | Window.IsVisible(script-script.extendedinfo-DialogInfo.xml) | Window.IsVisible(script-script.extendedinfo-VideoList.xml)">Conditional</animation>
+			<animation effect="fade" start="100" end="0" time="200" tween="sine" condition="Window.IsVisible(script-embuary-video.xml) | Window.IsVisible(script-embuary-person.xml) | Window.IsVisible(script-embuary-image.xml)">Conditional</animation>
 			<control type="group">
 				<top>150</top>
 				<left>66</left>
@@ -157,12 +157,20 @@
 						<param name="control_id" value="147" />
 						<param name="label" value="$INFO[ListItem.Director,[COLOR button_focus]$LOCALIZE[20339]: [/COLOR]]" />
 						<param name="altlabel" value="$INFO[ListItem.Director,$LOCALIZE[20339]: ]" />
+						<param name="onclick_condition" value="System.hasAddon(script.embuary.info)" />
+						<param name="onclick" value="RunScript(script.embuary.info,call=person,query='$ESCINFO[ListItem.Director]')" />
+						<param name="altclick_condition" value="System.hasAddon(script.embuary.info)" />
+						<param name="altclick" value="RunScript(script.embuary.info,call=person,query='$ESCINFO[ListItem.Director]')" />
 						<param name="visible" value="!String.IsEmpty(ListItem.Director)" />
 					</include>
 					<include content="InfoDialogMetadata">
 						<param name="control_id" value="148" />
 						<param name="label" value="$INFO[ListItem.Writer,[COLOR button_focus]$LOCALIZE[20417]: [/COLOR]]" />
 						<param name="altlabel" value="$INFO[ListItem.Writer,$LOCALIZE[20417]: ]" />
+						<param name="onclick_condition" value="System.hasAddon(script.embuary.info)" />
+						<param name="onclick" value="RunScript(script.embuary.info,call=person,query='$ESCINFO[ListItem.Writer]')" />
+						<param name="altclick_condition" value="System.hasAddon(script.embuary.info)" />
+						<param name="altclick" value="RunScript(script.embuary.info,call=person,query='$ESCINFO[ListItem.Writer]')" />
 						<param name="visible" value="!String.IsEmpty(ListItem.Writer)" />
 					</include>
 					<include content="InfoDialogMetadata">
@@ -225,6 +233,30 @@
 						<param name="altlabel" value="$LOCALIZE[126]: $INFO[ListItem.Status]" />
 						<param name="visible" value="!String.IsEmpty(ListItem.Status)" />
 					</include>
+					<include content="InfoDialogMetadata">
+						<param name="control_id" value="161" />
+						<param name="label" value="[COLOR button_focus]$LOCALIZE[570]: [/COLOR]$INFO[ListItem.DateAdded]" />
+						<param name="altlabel" value="$LOCALIZE[570]: $INFO[ListItem.DateAdded]" />
+						<param name="visible" value="!String.IsEmpty(ListItem.DateAdded) + [String.IsEqual(ListItem.DBType,episode) | String.IsEqual(ListItem.DBType,movie) | String.IsEqual(ListItem.DBType,musicvideo) | String.IsEqual(ListItem.DBType,video)]" />
+					</include>
+					<include content="InfoDialogMetadata">
+						<param name="control_id" value="163" />
+						<param name="label" value="[COLOR button_focus]$LOCALIZE[576]: [/COLOR]$INFO[ListItem.PlayCount]" />
+						<param name="altlabel" value="$LOCALIZE[576]: $INFO[ListItem.PlayCount]" />
+						<param name="visible" value="!String.IsEmpty(ListItem.PlayCount)" />
+					</include>
+					<include content="InfoDialogMetadata">
+						<param name="control_id" value="164" />
+						<param name="label" value="[COLOR button_focus]$LOCALIZE[568]: [/COLOR]$INFO[ListItem.LastPlayed]" />
+						<param name="altlabel" value="$LOCALIZE[568]: $INFO[ListItem.LastPlayed]" />
+						<param name="visible" value="!String.IsEmpty(ListItem.LastPlayed)" />
+					</include>
+					<include content="InfoDialogMetadata">
+						<param name="control_id" value="165" />
+						<param name="label" value="[COLOR button_focus]$LOCALIZE[564]: [/COLOR]$INFO[ListItem.DBType]" />
+						<param name="altlabel" value="$LOCALIZE[564]: $INFO[ListItem.DBType]" />
+						<param name="visible" value="!String.IsEmpty(ListItem.DBType)" />
+					</include>
 				</control>
 				<control type="group">
 					<visible>Integer.IsEqual(Container(50).NumItems,0) + String.IsEmpty(ListItem.Art(tvshow.banner)) + String.IsEmpty(ListItem.Art(banner))</visible>
@@ -260,10 +292,10 @@
 					<top>158</top>
 					<width>1235</width>
 					<height>370</height>
+					<onup condition="System.hasAddon(script.embuary.info) + Control.HasFocus(50) + !String.IsEqual(ListItem.DBType,set)">RunScript(script.embuary.info,call=person,query='$ESCINFO[Container(50).ListItem.Label]')</onup>
+					<onup condition="!System.hasAddon(script.embuary.info) + !String.IsEqual(ListItem.DBType,set)">InstallAddon(script.embuary.info)</onup>
 					<onleft>50</onleft>
 					<onright>50</onright>
-					<onup condition="System.hasAddon(script.extendedinfo) + Control.HasFocus(50) + !String.IsEqual(ListItem.DBType,set)">RunScript(script.extendedinfo,info=extendedactorinfo,name=$INFO[Container(50).ListItem.Label])</onup>
-					<onup condition="!System.hasAddon(script.extendedinfo) + !String.IsEqual(ListItem.DBType,set)">InstallAddon(script.extendedinfo)</onup>
 					<ondown>140</ondown>
 					<scrolltime>200</scrolltime>
 					<orientation>horizontal</orientation>
@@ -456,7 +488,6 @@
 								<align>center</align>
 								<aligny>center</aligny>
 								<font>font23_narrow</font>
-								<scroll>true</scroll>
 								<label>$INFO[ListItem.Label]</label>
 							</control>
 							<control type="image">
@@ -479,7 +510,7 @@
 					<onup>140</onup>
 					<ondown condition="!Integer.IsGreater(Container(5000).Position,4)">SetFocus(50,$INFO[Container(5000).Position])</ondown>
 					<ondown condition="Integer.IsGreater(Container(5000).Position,4)">SetFocus(50,4)</ondown>
-					<itemgap>-16</itemgap>
+					<itemgap>-18</itemgap>
 					<align>center</align>
 					<orientation>horizontal</orientation>
 					<scrolltime tween="quadratic">200</scrolltime>
@@ -497,14 +528,6 @@
 						<param name="visible" value="!String.IsEmpty(ListItem.Trailer) + ![String.StartsWith(Container.FolderPath,plugin://) + String.Contains(Container.FolderPath,trailer)]" />
 					</include>
 					<include content="InfoDialogButton">
-						<param name="id" value="440" />
-						<param name="icon" value="icons/infodialogs/trailer_search.png" />
-						<param name="label" value="$LOCALIZE[31090]" />
-						<param name="onclick_1" value="Action(close)" />
-						<param name="onclick_2" value="RunScript(script.extendedinfo,info=youtubebrowser,id=$INFO[ListItem.Title] $INFO[ListItem.Year])" />
-						<param name="visible" value="System.hasAddon(script.extendedinfo) + String.IsEqual(ListItem.DBType,movie) + !Control.IsVisible(11)" />
-					</include>
-					<include content="InfoDialogButton">
 						<param name="id" value="441" />
 						<param name="icon" value="icons/infodialogs/cinema.png" />
 						<param name="onclick_1" value="Dialog.Close(MovieInformation)" />
@@ -513,7 +536,7 @@
 						<param name="visible" value="System.HasAddon(script.cinemavision) + [String.IsEqual(ListItem.DBType,movie) | String.IsEqual(ListItem.DBType,tvshow) | String.IsEqual(ListItem.DBType,season) | String.IsEqual(ListItem.DBType,episode)]" />
 					</include>
 					<control type="group" id="400">
-						<width>262</width>
+						<width>264</width>
 						<visible>Control.IsEnabled(7) | !String.IsEmpty(ListItem.UserRating)</visible>
 						<control type="button" id="7">
 							<include content="VideoInfoButtonsCommon">
@@ -535,12 +558,12 @@
 							<font>font45_title</font>
 							<left>0</left>
 							<top>24</top>
-							<width>262</width>
+							<width>264</width>
 							<align>center</align>
 						</control>
 						<control type="image">
 							<texture>icons/infodialogs/rating.png</texture>
-							<left>107</left>
+							<left>108</left>
 							<top>30</top>
 							<width>48</width>
 							<height>48</height>
@@ -552,8 +575,13 @@
 						<param name="id" value="101" />
 						<param name="icon" value="icons/infodialogs/info.png" />
 						<param name="label" value="$LOCALIZE[31034]" />
-						<param name="onclick_1" value="RunScript(script.extendedinfo,info=openinfodialog)" />
-						<param name="visible" value="System.hasAddon(script.extendedinfo) + [String.IsEqual(ListItem.DbType,movie) | String.IsEqual(ListItem.DbType,tvshow) | String.IsEqual(ListItem.DbType,season) | String.IsEqual(ListItem.DbType,episode)]" />
+						<param name="onclick_1_condition" value="!String.IsEmpty(ListItem.DBID) + String.IsEqual(ListItem.DBType,movie)" />
+						<param name="onclick_1" value="RunScript(script.embuary.info,call=movie,dbid=$INFO[ListItem.DBID])" />
+						<param name="onclick_2_condition" value="!String.IsEmpty(ListItem.DBID) + String.IsEqual(ListItem.DBType,tvshow)" />
+						<param name="onclick_2" value="RunScript(script.embuary.info,call=tv,dbid=$INFO[ListItem.DBID])" />
+						<param name="onclick_3_condition" value="!String.IsEmpty(ListItem.DBID) + String.IsEqual(ListItem.DBType,episode)" />
+						<param name="onclick_3" value="RunScript(script.embuary.info,call=tv,query='$ESCINFO[ListItem.TVShowTitle]',year=$INFO[ListItem.Year])" />
+						<param name="visible" value="System.hasAddon(script.embuary.info) + !String.IsEmpty(ListItem.DBID) + [String.IsEqual(ListItem.DbType,movie) | String.IsEqual(ListItem.DbType,tvshow) | String.IsEqual(ListItem.DbType,episode)]" />
 					</include>
 					<include content="InfoDialogButton">
 						<param name="id" value="102" />
@@ -629,9 +657,9 @@
 		<control type="group">
 			<animation effect="fade" start="0" end="100" time="300" delay="300">WindowOpen</animation>
 			<animation effect="fade" start="100" end="0" time="200">WindowClose</animation>
+			<animation effect="fade" start="100" end="0" time="200" tween="sine" condition="Window.IsVisible(script-embuary-video.xml) | Window.IsVisible(script-embuary-person.xml) | Window.IsVisible(script-embuary-image.xml)">Conditional</animation>
 			<centerleft>50%</centerleft>
 			<width>1920</width>
-			<animation effect="fade" start="100" end="0" time="200" tween="sine" condition="Window.IsVisible(script-script.extendedinfo-DialogVideoInfo.xml) | Window.IsVisible(script-script.extendedinfo-DialogInfo.xml) | Window.IsVisible(script-script.extendedinfo-VideoList.xml)">Conditional</animation>
 			<bottom>0</bottom>
 			<height>70</height>
 			<include>MediaFlags</include>

@@ -17,10 +17,9 @@
 
 #include "qry_dat.h"
 
+#include <inttypes.h>
 #include <stdio.h>
 #include <stdlib.h>
-
-#include "PlatformDefs.h" // for PRId64
 
 #ifndef __GNUC__
 #pragma warning (disable:4800)
@@ -534,7 +533,7 @@ double field_value::get_asDouble() const {
 int64_t field_value::get_asInt64() const {
     switch (field_type) {
     case ft_String: {
-      return _atoi64(str_value.c_str());
+      return std::stoll(str_value);
     }
     case ft_Boolean:{
       return (int64_t)bool_value;

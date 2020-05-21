@@ -19,6 +19,5 @@ enum class SettingType {
   Number,
   String,
   Action,
-  List,
-  Reference
+  List
 };

@@ -6,24 +6,23 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include "network/Network.h"
-#include "threads/SystemClock.h"
 #include "RssReader.h"
-#include "ServiceBroker.h"
-#include "utils/HTMLUtil.h"
+
 #include "CharsetConverter.h"
+#include "ServiceBroker.h"
 #include "URL.h"
-#include "filesystem/File.h"
 #include "filesystem/CurlFile.h"
+#include "filesystem/File.h"
+#include "guilib/GUIRSSControl.h"
+#include "guilib/LocalizeStrings.h"
+#include "log.h"
+#include "network/Network.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
-#include "guilib/LocalizeStrings.h"
-#include "guilib/GUIRSSControl.h"
 #include "threads/SingleLock.h"
-#include "log.h"
-#ifdef TARGET_POSIX
-#include "platform/posix/XTimeUtils.h"
-#endif
+#include "threads/SystemClock.h"
+#include "utils/HTMLUtil.h"
+#include "utils/XTimeUtils.h"
 
 #define RSS_COLOR_BODY      0
 #define RSS_COLOR_HEADLINE  1
@@ -72,8 +71,8 @@ void CRssReader::Create(IRssObserver* aObserver, const std::vector<std::string>&
   for (unsigned int i = 0; i < m_vecUpdateTimes.size(); ++i)
   {
     AddToQueue(i);
-    SYSTEMTIME* time = new SYSTEMTIME;
-    GetLocalTime(time);
+    KODI::TIME::SystemTime* time = new KODI::TIME::SystemTime;
+    KODI::TIME::GetLocalTime(time);
     m_vecTimeStamps.push_back(time);
   }
 }
@@ -168,7 +167,7 @@ void CRssReader::Process()
             break;
           }
           else if (nRetries > 0)
-            Sleep(5000); // Network problems? Retry, but not immediately.
+            CThread::Sleep(5000); // Network problems? Retry, but not immediately.
           else
             CLog::Log(LOGERROR, "Unable to obtain rss feed: %s", strUrl.c_str());
         }
@@ -394,16 +393,18 @@ void CRssReader::UpdateObserver()
 
 void CRssReader::CheckForUpdates()
 {
-  SYSTEMTIME time;
-  GetLocalTime(&time);
+  KODI::TIME::SystemTime time;
+  KODI::TIME::GetLocalTime(&time);
 
   for (unsigned int i = 0;i < m_vecUpdateTimes.size(); ++i )
   {
-    if (m_requestRefresh ||
-       ((time.wDay * 24 * 60) + (time.wHour * 60) + time.wMinute) - ((m_vecTimeStamps[i]->wDay * 24 * 60) + (m_vecTimeStamps[i]->wHour * 60) + m_vecTimeStamps[i]->wMinute) > m_vecUpdateTimes[i])
+    if (m_requestRefresh || ((time.day * 24 * 60) + (time.hour * 60) + time.minute) -
+                                    ((m_vecTimeStamps[i]->day * 24 * 60) +
+                                     (m_vecTimeStamps[i]->hour * 60) + m_vecTimeStamps[i]->minute) >
+                                m_vecUpdateTimes[i])
     {
       CLog::Log(LOGDEBUG, "Updating RSS");
-      GetLocalTime(m_vecTimeStamps[i]);
+      KODI::TIME::GetLocalTime(m_vecTimeStamps[i]);
       AddToQueue(i);
     }
   }

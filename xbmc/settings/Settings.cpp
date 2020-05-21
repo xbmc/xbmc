@@ -27,6 +27,9 @@
 #if defined(TARGET_DARWIN_OSX)
 #include "platform/darwin/osx/XBMCHelper.h"
 #endif // defined(TARGET_DARWIN_OSX)
+#if defined(TARGET_DARWIN_TVOS)
+#include "platform/darwin/tvos/TVOSSettingsHandler.h"
+#endif // defined(TARGET_DARWIN_TVOS)
 #if defined(TARGET_DARWIN_EMBEDDED)
 #include "SettingAddon.h"
 #endif
@@ -114,6 +117,7 @@ const std::string CSettings::SETTING_VIDEOLIBRARY_CLEANUP = "videolibrary.cleanu
 const std::string CSettings::SETTING_VIDEOLIBRARY_EXPORT = "videolibrary.export";
 const std::string CSettings::SETTING_VIDEOLIBRARY_IMPORT = "videolibrary.import";
 const std::string CSettings::SETTING_VIDEOLIBRARY_SHOWEMPTYTVSHOWS = "videolibrary.showemptytvshows";
+const std::string CSettings::SETTING_VIDEOLIBRARY_MOVIESETSFOLDER = "videolibrary.moviesetsfolder";
 const std::string CSettings::SETTING_LOCALE_AUDIOLANGUAGE = "locale.audiolanguage";
 const std::string CSettings::SETTING_VIDEOPLAYER_PREFERDEFAULTFLAG = "videoplayer.preferdefaultflag";
 const std::string CSettings::SETTING_VIDEOPLAYER_AUTOPLAYNEXTITEM = "videoplayer.autoplaynextitem";
@@ -200,9 +204,8 @@ const std::string CSettings::SETTING_EPG_SELECTACTION = "epg.selectaction";
 const std::string CSettings::SETTING_EPG_HIDENOINFOAVAILABLE = "epg.hidenoinfoavailable";
 const std::string CSettings::SETTING_EPG_EPGUPDATE = "epg.epgupdate";
 const std::string CSettings::SETTING_EPG_PREVENTUPDATESWHILEPLAYINGTV = "epg.preventupdateswhileplayingtv";
-const std::string CSettings::SETTING_EPG_STOREEPGINDATABASE = "epg.storeepgindatabase";
 const std::string CSettings::SETTING_EPG_RESETEPG = "epg.resetepg";
-const std::string CSettings::SETTING_PVRPLAYBACK_SWITCHTOFULLSCREEN = "pvrplayback.switchtofullscreen";
+const std::string CSettings::SETTING_PVRPLAYBACK_SWITCHTOFULLSCREENCHANNELTYPES = "pvrplayback.switchtofullscreenchanneltypes";
 const std::string CSettings::SETTING_PVRPLAYBACK_SIGNALQUALITY = "pvrplayback.signalquality";
 const std::string CSettings::SETTING_PVRPLAYBACK_CONFIRMCHANNELSWITCH = "pvrplayback.confirmchannelswitch";
 const std::string CSettings::SETTING_PVRPLAYBACK_CHANNELENTRYTIMEOUT = "pvrplayback.channelentrytimeout";
@@ -228,6 +231,8 @@ const std::string CSettings::SETTING_PVRPARENTAL_DURATION = "pvrparental.duratio
 const std::string CSettings::SETTING_PVRCLIENT_MENUHOOK = "pvrclient.menuhook";
 const std::string CSettings::SETTING_PVRTIMERS_HIDEDISABLEDTIMERS = "pvrtimers.hidedisabledtimers";
 const std::string CSettings::SETTING_MUSICLIBRARY_SHOWCOMPILATIONARTISTS = "musiclibrary.showcompilationartists";
+const std::string CSettings::SETTING_MUSICLIBRARY_SHOWDISCS = "musiclibrary.showdiscs";
+const std::string CSettings::SETTING_MUSICLIBRARY_USEORIGINALDATE = "musiclibrary.useoriginaldate";
 const std::string CSettings::SETTING_MUSICLIBRARY_USEARTISTSORTNAME = "musiclibrary.useartistsortname";
 const std::string CSettings::SETTING_MUSICLIBRARY_DOWNLOADINFO = "musiclibrary.downloadinfo";
 const std::string CSettings::SETTING_MUSICLIBRARY_ARTISTSFOLDER = "musiclibrary.artistsfolder";
@@ -259,6 +264,7 @@ const std::string CSettings::SETTING_MUSICPLAYER_REPLAYGAINAVOIDCLIPPING = "musi
 const std::string CSettings::SETTING_MUSICPLAYER_CROSSFADE = "musicplayer.crossfade";
 const std::string CSettings::SETTING_MUSICPLAYER_CROSSFADEALBUMTRACKS = "musicplayer.crossfadealbumtracks";
 const std::string CSettings::SETTING_MUSICPLAYER_VISUALISATION = "musicplayer.visualisation";
+const std::string CSettings::SETTING_MUSICFILES_SELECTACTION = "musicfiles.selectaction";
 const std::string CSettings::SETTING_MUSICFILES_USETAGS = "musicfiles.usetags";
 const std::string CSettings::SETTING_MUSICFILES_TRACKFORMAT = "musicfiles.trackformat";
 const std::string CSettings::SETTING_MUSICFILES_NOWPLAYINGTRACKFORMAT = "musicfiles.nowplayingtrackformat";
@@ -294,6 +300,8 @@ const std::string CSettings::SETTING_SERVICES_UPNPCONTROLLER = "services.upnpcon
 const std::string CSettings::SETTING_SERVICES_UPNPRENDERER = "services.upnprenderer";
 const std::string CSettings::SETTING_SERVICES_WEBSERVER = "services.webserver";
 const std::string CSettings::SETTING_SERVICES_WEBSERVERPORT = "services.webserverport";
+const std::string CSettings::SETTING_SERVICES_WEBSERVERAUTHENTICATION =
+    "services.webserverauthentication";
 const std::string CSettings::SETTING_SERVICES_WEBSERVERUSERNAME = "services.webserverusername";
 const std::string CSettings::SETTING_SERVICES_WEBSERVERPASSWORD = "services.webserverpassword";
 const std::string CSettings::SETTING_SERVICES_WEBSERVERSSL = "services.webserverssl";
@@ -363,6 +371,11 @@ const std::string CSettings::SETTING_INPUT_CONTROLLERPOWEROFF = "input.controlle
 const std::string CSettings::SETTING_INPUT_APPLEREMOTEMODE = "input.appleremotemode";
 const std::string CSettings::SETTING_INPUT_APPLEREMOTEALWAYSON = "input.appleremotealwayson";
 const std::string CSettings::SETTING_INPUT_APPLEREMOTESEQUENCETIME = "input.appleremotesequencetime";
+const std::string CSettings::SETTING_INPUT_APPLESIRI = "input.applesiri";
+const std::string CSettings::SETTING_INPUT_APPLESIRITIMEOUT = "input.applesiritimeout";
+const std::string CSettings::SETTING_INPUT_APPLESIRITIMEOUTENABLED =
+    "input.applesiritimeoutenabled";
+const std::string CSettings::SETTING_INPUT_APPLEUSEKODIKEYBOARD = "input.appleusekodikeyboard";
 const std::string CSettings::SETTING_NETWORK_USEHTTPPROXY = "network.usehttpproxy";
 const std::string CSettings::SETTING_NETWORK_HTTPPROXYTYPE = "network.httpproxytype";
 const std::string CSettings::SETTING_NETWORK_HTTPPROXYSERVER = "network.httpproxyserver";
@@ -439,6 +452,24 @@ bool CSettings::Initialize()
   return true;
 }
 
+void CSettings::RegisterSubSettings(ISubSettings* subSettings)
+{
+  if (subSettings == nullptr)
+    return;
+
+  CSingleLock lock(m_critical);
+  m_subSettings.insert(subSettings);
+}
+
+void CSettings::UnregisterSubSettings(ISubSettings* subSettings)
+{
+  if (subSettings == nullptr)
+    return;
+
+  CSingleLock lock(m_critical);
+  m_subSettings.erase(subSettings);
+}
+
 bool CSettings::Load()
 {
   const std::shared_ptr<CProfileManager> profileManager = CServiceBroker::GetSettingsComponent()->GetProfileManager();
@@ -451,7 +482,7 @@ bool CSettings::Load(const std::string &file)
   CXBMCTinyXML xmlDoc;
   bool updated = false;
   if (!XFILE::CFile::Exists(file) || !xmlDoc.LoadFile(file) ||
-      !LoadValuesFromXml(xmlDoc, updated))
+      !Load(xmlDoc.RootElement(), updated))
   {
     CLog::Log(LOGERROR, "CSettings: unable to load settings from %s, creating new default settings", file.c_str());
     if (!Reset())
@@ -467,6 +498,12 @@ bool CSettings::Load(const std::string &file)
   return true;
 }
 
+bool CSettings::Load(const TiXmlElement* root)
+{
+  bool updated = false;
+  return Load(root, updated);
+}
+
 bool CSettings::Save()
 {
   const std::shared_ptr<CProfileManager> profileManager = CServiceBroker::GetSettingsComponent()->GetProfileManager();
@@ -480,7 +517,27 @@ bool CSettings::Save(const std::string &file)
   if (!SaveValuesToXml(xmlDoc))
     return false;
 
+  TiXmlElement* root = xmlDoc.RootElement();
+  if (root == nullptr)
+    return false;
+
+  if (!Save(root))
+    return false;
+
   return xmlDoc.SaveFile(file);
+}
+
+bool CSettings::Save(TiXmlNode* root) const
+{
+  CSingleLock lock(m_critical);
+  // save any ISubSettings implementations
+  for (const auto& subSetting : m_subSettings)
+  {
+    if (!subSetting->Save(root))
+      return false;
+  }
+
+  return true;
 }
 
 bool CSettings::LoadSetting(const TiXmlNode *node, const std::string &settingId)
@@ -495,6 +552,41 @@ bool CSettings::GetBool(const std::string& id) const
     return CSettingsBase::GetBool(CSettings::SETTING_INPUT_ENABLEMOUSE);
 
   return CSettingsBase::GetBool(id);
+}
+
+void CSettings::Clear()
+{
+  CSingleLock lock(m_critical);
+  if (!m_initialized)
+    return;
+
+  GetSettingsManager()->Clear();
+
+  for (auto& subSetting : m_subSettings)
+    subSetting->Clear();
+
+  m_initialized = false;
+}
+
+bool CSettings::Load(const TiXmlElement* root, bool& updated)
+{
+  if (root == nullptr)
+    return false;
+
+  if (!CSettingsBase::LoadValuesFromXml(root, updated))
+    return false;
+
+  return Load(static_cast<const TiXmlNode*>(root));
+}
+
+bool CSettings::Load(const TiXmlNode* settings)
+{
+  bool ok = true;
+  CSingleLock lock(m_critical);
+  for (const auto& subSetting : m_subSettings)
+    ok &= subSetting->Load(settings);
+
+  return ok;
 }
 
 bool CSettings::Initialize(const std::string &file)
@@ -551,6 +643,10 @@ bool CSettings::InitializeDefinitions()
 #elif defined(TARGET_DARWIN_IOS)
   if (CFile::Exists(SETTINGS_XML_FOLDER "darwin_ios.xml") && !Initialize(SETTINGS_XML_FOLDER "darwin_ios.xml"))
     CLog::Log(LOGFATAL, "Unable to load ios-specific settings definitions");
+#elif defined(TARGET_DARWIN_TVOS)
+  if (CFile::Exists(SETTINGS_XML_FOLDER "darwin_tvos.xml") &&
+      !Initialize(SETTINGS_XML_FOLDER "darwin_tvos.xml"))
+    CLog::Log(LOGFATAL, "Unable to load tvos-specific settings definitions");
 #endif
 #endif
 
@@ -784,23 +880,23 @@ void CSettings::UninitializeISettingsHandlers()
 void CSettings::InitializeISubSettings()
 {
   // register ISubSettings implementations
-  GetSettingsManager()->RegisterSubSettings(&g_application);
-  GetSettingsManager()->RegisterSubSettings(&CDisplaySettings::GetInstance());
-  GetSettingsManager()->RegisterSubSettings(&CMediaSettings::GetInstance());
-  GetSettingsManager()->RegisterSubSettings(&CSkinSettings::GetInstance());
-  GetSettingsManager()->RegisterSubSettings(&g_sysinfo);
-  GetSettingsManager()->RegisterSubSettings(&CViewStateSettings::GetInstance());
+  RegisterSubSettings(&g_application);
+  RegisterSubSettings(&CDisplaySettings::GetInstance());
+  RegisterSubSettings(&CMediaSettings::GetInstance());
+  RegisterSubSettings(&CSkinSettings::GetInstance());
+  RegisterSubSettings(&g_sysinfo);
+  RegisterSubSettings(&CViewStateSettings::GetInstance());
 }
 
 void CSettings::UninitializeISubSettings()
 {
   // unregister ISubSettings implementations
-  GetSettingsManager()->UnregisterSubSettings(&g_application);
-  GetSettingsManager()->UnregisterSubSettings(&CDisplaySettings::GetInstance());
-  GetSettingsManager()->UnregisterSubSettings(&CMediaSettings::GetInstance());
-  GetSettingsManager()->UnregisterSubSettings(&CSkinSettings::GetInstance());
-  GetSettingsManager()->UnregisterSubSettings(&g_sysinfo);
-  GetSettingsManager()->UnregisterSubSettings(&CViewStateSettings::GetInstance());
+  UnregisterSubSettings(&g_application);
+  UnregisterSubSettings(&CDisplaySettings::GetInstance());
+  UnregisterSubSettings(&CMediaSettings::GetInstance());
+  UnregisterSubSettings(&CSkinSettings::GetInstance());
+  UnregisterSubSettings(&g_sysinfo);
+  UnregisterSubSettings(&CViewStateSettings::GetInstance());
 }
 
 void CSettings::InitializeISettingCallbacks()
@@ -903,6 +999,14 @@ void CSettings::InitializeISettingCallbacks()
   settingSet.insert(CSettings::SETTING_INPUT_APPLEREMOTEMODE);
   settingSet.insert(CSettings::SETTING_INPUT_APPLEREMOTEALWAYSON);
   GetSettingsManager()->RegisterCallback(&XBMCHelper::GetInstance(), settingSet);
+#endif
+
+#if defined(TARGET_DARWIN_TVOS)
+  settingSet.clear();
+  settingSet.insert(CSettings::SETTING_INPUT_APPLESIRI);
+  settingSet.insert(CSettings::SETTING_INPUT_APPLESIRITIMEOUT);
+  settingSet.insert(CSettings::SETTING_INPUT_APPLESIRITIMEOUTENABLED);
+  GetSettingsManager()->RegisterCallback(&CTVOSInputSettings::GetInstance(), settingSet);
 #endif
 
   settingSet.clear();

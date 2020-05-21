@@ -363,7 +363,7 @@ static int PlayDVD(const std::vector<std::string>& params)
   bool restart = false;
   if (!params.empty() && StringUtils::EqualsNoCase(params[0], "restart"))
     restart = true;
-  MEDIA_DETECT::CAutorun::PlayDisc(g_mediaManager.GetDiscPath(), true, restart);
+  MEDIA_DETECT::CAutorun::PlayDisc(CServiceBroker::GetMediaManager().GetDiscPath(), true, restart);
 #endif
 
   return 0;

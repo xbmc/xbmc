@@ -9,7 +9,6 @@
 #include "EpgSearchFilter.h"
 
 #include "ServiceBroker.h"
-#include "addons/kodi-addon-dev-kit/include/kodi/xbmc_pvr_types.h"
 #include "pvr/PVRManager.h"
 #include "pvr/channels/PVRChannel.h"
 #include "pvr/channels/PVRChannelGroup.h"
@@ -34,28 +33,12 @@ CPVREpgSearchFilter::CPVREpgSearchFilter(bool bRadio)
 
 void CPVREpgSearchFilter::Reset()
 {
-  m_strSearchTerm.clear();
+  m_searchData.Reset();
+  m_bEpgSearchDataFiltered = false;
+
   m_bIsCaseSensitive = false;
-  m_bSearchInDescription = false;
-  m_iGenreType = EPG_SEARCH_UNSET;
-  m_iGenreSubType = EPG_SEARCH_UNSET;
   m_iMinimumDuration = EPG_SEARCH_UNSET;
   m_iMaximumDuration = EPG_SEARCH_UNSET;
-
-  m_startDateTime.SetFromUTCDateTime(CServiceBroker::GetPVRManager().EpgContainer().GetFirstEPGDate());
-  if (!m_startDateTime.IsValid())
-  {
-    CLog::Log(LOGWARNING, "No valid epg start time. Defaulting search start time to 'now'");
-    m_startDateTime.SetFromUTCDateTime(CDateTime::GetUTCDateTime()); // default to 'now'
-  }
-
-  m_endDateTime.SetFromUTCDateTime(CServiceBroker::GetPVRManager().EpgContainer().GetLastEPGDate());
-  if (!m_endDateTime.IsValid())
-  {
-    CLog::Log(LOGWARNING, "No valid epg end time. Defaulting search end time to search start time plus 10 days");
-    m_endDateTime.SetFromUTCDateTime(m_startDateTime + CDateTimeSpan(10, 0, 0, 0)); // default to start + 10 days
-  }
-
   m_bIncludeUnknownGenres = false;
   m_bRemoveDuplicates = false;
 
@@ -65,18 +48,18 @@ void CPVREpgSearchFilter::Reset()
   m_iChannelGroup = EPG_SEARCH_UNSET;
   m_bIgnorePresentTimers = true;
   m_bIgnorePresentRecordings = true;
-  m_iUniqueBroadcastId = EPG_TAG_INVALID_UID;
 }
 
 bool CPVREpgSearchFilter::MatchGenre(const std::shared_ptr<CPVREpgInfoTag>& tag) const
 {
   bool bReturn(true);
 
-  if (m_iGenreType != EPG_SEARCH_UNSET)
+  if (m_searchData.m_iGenreType != EPG_SEARCH_UNSET)
   {
     bool bIsUnknownGenre(tag->GenreType() > EPG_EVENT_CONTENTMASK_USERDEFINED ||
                          tag->GenreType() < EPG_EVENT_CONTENTMASK_MOVIEDRAMA);
-    bReturn = ((m_bIncludeUnknownGenres && bIsUnknownGenre) || tag->GenreType() == m_iGenreType);
+    bReturn = ((m_bIncludeUnknownGenres && bIsUnknownGenre) || m_bEpgSearchDataFiltered ||
+               tag->GenreType() == m_searchData.m_iGenreType);
   }
 
   return bReturn;
@@ -97,29 +80,35 @@ bool CPVREpgSearchFilter::MatchDuration(const std::shared_ptr<CPVREpgInfoTag>& t
 
 bool CPVREpgSearchFilter::MatchStartAndEndTimes(const std::shared_ptr<CPVREpgInfoTag>& tag) const
 {
-  return (tag->StartAsLocalTime() >= m_startDateTime && tag->EndAsLocalTime() <= m_endDateTime);
+  if (m_bEpgSearchDataFiltered)
+    return true;
+
+  return (tag->StartAsLocalTime() >= m_searchData.m_startDateTime &&
+          tag->EndAsLocalTime() <= m_searchData.m_endDateTime);
 }
 
 void CPVREpgSearchFilter::SetSearchPhrase(const std::string& strSearchPhrase)
 {
   // match the exact phrase
-  m_strSearchTerm = "\"";
-  m_strSearchTerm.append(strSearchPhrase);
-  m_strSearchTerm.append("\"");
+  m_searchData.m_strSearchTerm = "\"";
+  m_searchData.m_strSearchTerm.append(strSearchPhrase);
+  m_searchData.m_strSearchTerm.append("\"");
 }
 
 bool CPVREpgSearchFilter::MatchSearchTerm(const std::shared_ptr<CPVREpgInfoTag>& tag) const
 {
   bool bReturn(true);
 
-  if (!m_strSearchTerm.empty())
+  if (!m_searchData.m_strSearchTerm.empty())
   {
-    CTextSearch search(m_strSearchTerm, m_bIsCaseSensitive, SEARCH_DEFAULT_OR);
     bReturn = !CServiceBroker::GetPVRManager().IsParentalLocked(tag);
-    if (bReturn)
-      bReturn = search.Search(tag->Title()) ||
-                search.Search(tag->PlotOutline()) ||
-                (m_bSearchInDescription && search.Search(tag->Plot()));
+    if (bReturn && (m_bIsCaseSensitive || !m_bEpgSearchDataFiltered))
+    {
+      CTextSearch search(m_searchData.m_strSearchTerm, m_bIsCaseSensitive, SEARCH_DEFAULT_OR);
+
+      bReturn = search.Search(tag->Title()) || search.Search(tag->PlotOutline()) ||
+                (m_searchData.m_bSearchInDescription && search.Search(tag->Plot()));
+    }
   }
 
   return bReturn;
@@ -127,8 +116,11 @@ bool CPVREpgSearchFilter::MatchSearchTerm(const std::shared_ptr<CPVREpgInfoTag>&
 
 bool CPVREpgSearchFilter::MatchBroadcastId(const std::shared_ptr<CPVREpgInfoTag>& tag) const
 {
-  if (m_iUniqueBroadcastId != EPG_TAG_INVALID_UID)
-    return (tag->UniqueBroadcastID() == m_iUniqueBroadcastId);
+  if (m_bEpgSearchDataFiltered)
+    return true;
+
+  if (m_searchData.m_iUniqueBroadcastId != EPG_TAG_INVALID_UID)
+    return (tag->UniqueBroadcastID() == m_searchData.m_iUniqueBroadcastId);
 
   return true;
 }

@@ -294,7 +294,7 @@ bool CPeripheralCecAdapter::OpenConnection(void)
         CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error, g_localizeStrings.Get(36000), g_localizeStrings.Get(36012));
       bConnectionFailedDisplayed = true;
 
-      Sleep(10000);
+      CThread::Sleep(10000);
     }
   }
 
@@ -345,7 +345,7 @@ void CPeripheralCecAdapter::Process(void)
       ProcessStandbyDevices();
 
     if (!m_bStop)
-      Sleep(5);
+      CThread::Sleep(5);
   }
 
   m_queryThread->StopThread(true);
@@ -1206,7 +1206,8 @@ void CPeripheralCecAdapter::CecLogMessage(void *cbParam, const cec_log_message* 
     break;
   }
 
-  if (iLevel >= CEC_LOG_NOTICE || (iLevel >= 0 && CLog::IsLogLevelLogged(LOGDEBUG)))
+  if (iLevel >= CEC_LOG_NOTICE ||
+      (iLevel >= 0 && CServiceBroker::GetLogging().IsLogLevelLogged(LOGDEBUG)))
     CLog::Log(iLevel, LOGCEC, "%s - %s", __FUNCTION__, message->message);
 }
 

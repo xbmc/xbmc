@@ -98,7 +98,7 @@ void CVDPAUContext::Release()
 
 void CVDPAUContext::Close()
 {
-  CLog::Log(LOGNOTICE, "VDPAU::Close - closing decoder context");
+  CLog::Log(LOGINFO, "VDPAU::Close - closing decoder context");
   DestroyContext();
 }
 
@@ -178,7 +178,7 @@ bool CVDPAUContext::LoadSymbols()
 
 bool CVDPAUContext::CreateContext()
 {
-  CLog::Log(LOGNOTICE,"VDPAU::CreateContext - creating decoder context");
+  CLog::Log(LOGINFO, "VDPAU::CreateContext - creating decoder context");
 
   int screen;
   { CSingleLock lock(CServiceBroker::GetWinSystem()->GetGfxContext());
@@ -199,7 +199,7 @@ bool CVDPAUContext::CreateContext()
                                    &m_vdpDevice,
                                    &m_vdpProcs.vdp_get_proc_address);
 
-  CLog::Log(LOGNOTICE,"vdp_device = 0x%08x vdp_st = 0x%08x",m_vdpDevice,vdp_st);
+  CLog::Log(LOGINFO, "vdp_device = 0x%08x vdp_st = 0x%08x", m_vdpDevice, vdp_st);
   if (vdp_st != VDP_STATUS_OK)
   {
     CLog::Log(LOGERROR,"(VDPAU) unable to init VDPAU - vdp_st = 0x%x.  Falling back.",vdp_st);
@@ -270,9 +270,9 @@ void CVDPAUContext::DestroyContext()
 void CVDPAUContext::SpewHardwareAvailable()  //Copyright (c) 2008 Wladimir J. van der Laan  -- VDPInfo
 {
   VdpStatus rv;
-  CLog::Log(LOGNOTICE,"VDPAU Decoder capabilities:");
-  CLog::Log(LOGNOTICE,"name          level macbs width height");
-  CLog::Log(LOGNOTICE,"------------------------------------");
+  CLog::Log(LOGINFO, "VDPAU Decoder capabilities:");
+  CLog::Log(LOGINFO, "name          level macbs width height");
+  CLog::Log(LOGINFO, "------------------------------------");
   for(const CDecoder::Desc& decoder_profile : decoder_profiles)
   {
     VdpBool is_supported = false;
@@ -281,20 +281,24 @@ void CVDPAUContext::SpewHardwareAvailable()  //Copyright (c) 2008 Wladimir J. va
                                 &is_supported, &max_level, &max_macroblocks, &max_width, &max_height);
     if(rv == VDP_STATUS_OK && is_supported)
     {
-      CLog::Log(LOGNOTICE,"%-16s %2i %5i %5i %5i\n", decoder_profile.name,
-                max_level, max_macroblocks, max_width, max_height);
+      CLog::Log(LOGINFO, "%-16s %2i %5i %5i %5i", decoder_profile.name, max_level, max_macroblocks,
+                max_width, max_height);
     }
   }
-  CLog::Log(LOGNOTICE,"------------------------------------");
+  CLog::Log(LOGINFO, "------------------------------------");
   m_featureCount = 0;
-#define CHECK_SUPPORT(feature)  \
-  do { \
+#define CHECK_SUPPORT(feature) \
+  do \
+  { \
     VdpBool supported; \
-    if(m_vdpProcs.vdp_video_mixer_query_feature_support(m_vdpDevice, feature, &supported) == VDP_STATUS_OK && supported) { \
-      CLog::Log(LOGNOTICE, "Mixer feature: "#feature);  \
+    if (m_vdpProcs.vdp_video_mixer_query_feature_support(m_vdpDevice, feature, &supported) == \
+            VDP_STATUS_OK && \
+        supported) \
+    { \
+      CLog::Log(LOGINFO, "Mixer feature: " #feature); \
       m_vdpFeatures[m_featureCount++] = feature; \
     } \
-  } while(false)
+  } while (false)
 
   CHECK_SUPPORT(VDP_VIDEO_MIXER_FEATURE_NOISE_REDUCTION);
   CHECK_SUPPORT(VDP_VIDEO_MIXER_FEATURE_SHARPNESS);
@@ -521,7 +525,7 @@ bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, const enum A
 
   if (!CServiceBroker::GetRenderSystem()->IsExtSupported("GL_NV_vdpau_interop"))
   {
-    CLog::Log(LOGNOTICE, "VDPAU::Open: required extension GL_NV_vdpau_interop not found");
+    CLog::Log(LOGINFO, "VDPAU::Open: required extension GL_NV_vdpau_interop not found");
     return false;
   }
 
@@ -608,7 +612,7 @@ CDecoder::~CDecoder()
 
 void CDecoder::Close()
 {
-  CLog::Log(LOGNOTICE, " (VDPAU) %s", __FUNCTION__);
+  CLog::Log(LOGINFO, " (VDPAU) %s", __FUNCTION__);
 
   CServiceBroker::GetWinSystem()->Unregister(this);
 
@@ -635,7 +639,7 @@ long CDecoder::Release()
   if (m_vdpauConfigured == true)
   {
     CSingleLock lock(m_DecoderSection);
-    CLog::Log(LOGNOTICE,"CVDPAU::Release pre-cleanup");
+    CLog::Log(LOGINFO, "CVDPAU::Release pre-cleanup");
 
     Message *reply;
     if (m_vdpauOutput.m_controlPort.SendOutMessageSync(COutputControlProtocol::PRECLEANUP,
@@ -700,7 +704,7 @@ void CDecoder::SetWidthHeight(int width, int height)
 
 void CDecoder::OnLostDisplay()
 {
-  CLog::Log(LOGNOTICE,"CVDPAU::OnLostDevice event");
+  CLog::Log(LOGINFO, "CVDPAU::OnLostDevice event");
 
   int count = CServiceBroker::GetWinSystem()->GetGfxContext().exit();
 
@@ -719,7 +723,7 @@ void CDecoder::OnLostDisplay()
 
 void CDecoder::OnResetDisplay()
 {
-  CLog::Log(LOGNOTICE,"CVDPAU::OnResetDevice event");
+  CLog::Log(LOGINFO, "CVDPAU::OnResetDevice event");
 
   int count = CServiceBroker::GetWinSystem()->GetGfxContext().exit();
 
@@ -744,7 +748,7 @@ CDVDVideoCodec::VCReturn CDecoder::Check(AVCodecContext* avctx)
 
   if (state == VDPAU_LOST)
   {
-    CLog::Log(LOGNOTICE,"CVDPAU::Check waiting for display reset event");
+    CLog::Log(LOGINFO, "CVDPAU::Check waiting for display reset event");
     if (!m_DisplayEvent.WaitMSec(4000))
     {
       CLog::Log(LOGERROR, "CVDPAU::Check - device didn't reset in reasonable time");
@@ -798,7 +802,7 @@ void CDecoder::FiniVDPAUOutput()
   if (!m_vdpauConfigured)
     return;
 
-  CLog::Log(LOGNOTICE, " (VDPAU) %s", __FUNCTION__);
+  CLog::Log(LOGINFO, " (VDPAU) %s", __FUNCTION__);
 
   // uninit output
   m_vdpauOutput.Dispose();
@@ -880,8 +884,10 @@ bool CDecoder::ConfigVDPAU(AVCodecContext* avctx, int ref_frames)
 
   SetWidthHeight(avctx->width,avctx->height);
 
-  CLog::Log(LOGNOTICE, " (VDPAU) screenWidth:%i vidWidth:%i surfaceWidth:%i",m_vdpauConfig.outWidth,m_vdpauConfig.vidWidth,m_vdpauConfig.surfaceWidth);
-  CLog::Log(LOGNOTICE, " (VDPAU) screenHeight:%i vidHeight:%i surfaceHeight:%i",m_vdpauConfig.outHeight,m_vdpauConfig.vidHeight,m_vdpauConfig.surfaceHeight);
+  CLog::Log(LOGINFO, " (VDPAU) screenWidth:%i vidWidth:%i surfaceWidth:%i", m_vdpauConfig.outWidth,
+            m_vdpauConfig.vidWidth, m_vdpauConfig.surfaceWidth);
+  CLog::Log(LOGINFO, " (VDPAU) screenHeight:%i vidHeight:%i surfaceHeight:%i",
+            m_vdpauConfig.outHeight, m_vdpauConfig.vidHeight, m_vdpauConfig.surfaceHeight);
 
   ReadFormatOf(avctx->codec_id, vdp_decoder_profile, m_vdpauConfig.vdpChromaType);
 
@@ -1258,7 +1264,9 @@ bool CDecoder::CheckStatus(VdpStatus vdp_st, int line)
 {
   if (vdp_st != VDP_STATUS_OK)
   {
-    CLog::Log(LOGERROR, " (VDPAU) Error: %s(%d) at %s:%d\n", m_vdpauConfig.context->GetProcs().vdp_get_error_string(vdp_st), vdp_st, __FILE__, line);
+    CLog::Log(LOGERROR, " (VDPAU) Error: %s(%d) at %s:%d",
+              m_vdpauConfig.context->GetProcs().vdp_get_error_string(vdp_st), vdp_st, __FILE__,
+              line);
 
     m_ErrorCount++;
 
@@ -1511,12 +1519,12 @@ bool CMixer::IsActive()
 
 void CMixer::OnStartup()
 {
-  CLog::Log(LOGNOTICE, "CMixer::OnStartup: Output Thread created");
+  CLog::Log(LOGINFO, "CMixer::OnStartup: Output Thread created");
 }
 
 void CMixer::OnExit()
 {
-  CLog::Log(LOGNOTICE, "CMixer::OnExit: Output Thread terminated");
+  CLog::Log(LOGINFO, "CMixer::OnExit: Output Thread terminated");
 }
 
 enum MIXER_STATES
@@ -1852,7 +1860,7 @@ void CMixer::Process()
 
 void CMixer::CreateVdpauMixer()
 {
-  CLog::Log(LOGNOTICE, " (VDPAU) Creating the video mixer");
+  CLog::Log(LOGINFO, " (VDPAU) Creating the video mixer");
 
   InitCSCMatrix(m_config.vidWidth);
 
@@ -2113,7 +2121,8 @@ void CMixer::SetNoiseReduction()
   CheckStatus(vdp_st, __LINE__);
   float noiseReduction = m_config.processInfo->GetVideoSettings().m_NoiseReduction;
   void* nr[] = { &noiseReduction };
-  CLog::Log(LOGNOTICE,"Setting Noise Reduction to %f", m_config.processInfo->GetVideoSettings().m_NoiseReduction);
+  CLog::Log(LOGINFO, "Setting Noise Reduction to %f",
+            m_config.processInfo->GetVideoSettings().m_NoiseReduction);
   vdp_st = m_config.context->GetProcs().vdp_video_mixer_set_attribute_values(m_videoMixer, ARSIZE(attributes), attributes, nr);
   CheckStatus(vdp_st, __LINE__);
 }
@@ -2139,7 +2148,8 @@ void CMixer::SetSharpness()
   CheckStatus(vdp_st, __LINE__);
   float sharpness = m_config.processInfo->GetVideoSettings().m_Sharpness;
   void* sh[] = { &sharpness };
-  CLog::Log(LOGNOTICE,"Setting Sharpness to %f", m_config.processInfo->GetVideoSettings().m_Sharpness);
+  CLog::Log(LOGINFO, "Setting Sharpness to %f",
+            m_config.processInfo->GetVideoSettings().m_Sharpness);
   vdp_st = m_config.context->GetProcs().vdp_video_mixer_set_attribute_values(m_videoMixer, ARSIZE(attributes), attributes, sh);
   CheckStatus(vdp_st, __LINE__);
 }
@@ -2731,7 +2741,8 @@ bool CMixer::CheckStatus(VdpStatus vdp_st, int line)
 {
   if (vdp_st != VDP_STATUS_OK)
   {
-    CLog::Log(LOGERROR, " (VDPAU) Error: %s(%d) at %s:%d\n", m_config.context->GetProcs().vdp_get_error_string(vdp_st), vdp_st, __FILE__, line);
+    CLog::Log(LOGERROR, " (VDPAU) Error: %s(%d) at %s:%d",
+              m_config.context->GetProcs().vdp_get_error_string(vdp_st), vdp_st, __FILE__, line);
     m_vdpError = true;
     return true;
   }
@@ -2774,12 +2785,12 @@ void COutput::Dispose()
 
 void COutput::OnStartup()
 {
-  CLog::Log(LOGNOTICE, "COutput::OnStartup: Output Thread created");
+  CLog::Log(LOGINFO, "COutput::OnStartup: Output Thread created");
 }
 
 void COutput::OnExit()
 {
-  CLog::Log(LOGNOTICE, "COutput::OnExit: Output Thread terminated");
+  CLog::Log(LOGINFO, "COutput::OnExit: Output Thread terminated");
 }
 
 enum OUTPUT_STATES
@@ -3293,7 +3304,7 @@ bool COutput::EnsureBufferPool()
     m_mixer.m_dataPort.SendOutMessage(CMixerDataProtocol::BUFFER,
                                       &outputSurface,
                                       sizeof(VdpOutputSurface));
-    CLog::Log(LOGNOTICE, "VDPAU::COutput::InitBufferPool - Output Surface created");
+    CLog::Log(LOGINFO, "VDPAU::COutput::InitBufferPool - Output Surface created");
   }
   return true;
 }
@@ -3365,7 +3376,8 @@ bool COutput::CheckStatus(VdpStatus vdp_st, int line)
 {
   if (vdp_st != VDP_STATUS_OK)
   {
-    CLog::Log(LOGERROR, " (VDPAU) Error: %s(%d) at %s:%d\n", m_config.context->GetProcs().vdp_get_error_string(vdp_st), vdp_st, __FILE__, line);
+    CLog::Log(LOGERROR, " (VDPAU) Error: %s(%d) at %s:%d",
+              m_config.context->GetProcs().vdp_get_error_string(vdp_st), vdp_st, __FILE__, line);
     m_vdpError = true;
     return true;
   }

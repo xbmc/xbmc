@@ -27,6 +27,7 @@
 #include "pvr/channels/PVRChannel.h"
 #include "pvr/channels/PVRChannelGroup.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
+#include "pvr/channels/PVRChannelsPath.h"
 #include "pvr/epg/EpgChannelData.h"
 #include "pvr/epg/EpgContainer.h"
 #include "pvr/epg/EpgInfoTag.h"
@@ -47,10 +48,8 @@
 using namespace KODI::MESSAGING;
 using namespace PVR;
 
-CGUIWindowPVRGuideBase::CGUIWindowPVRGuideBase(bool bRadio, int id, const std::string& xmlFile) :
-  CGUIWindowPVRBase(bRadio, id, xmlFile),
-  m_bChannelSelectionRestored(false),
-  m_bFirstOpen(true)
+CGUIWindowPVRGuideBase::CGUIWindowPVRGuideBase(bool bRadio, int id, const std::string& xmlFile)
+  : CGUIWindowPVRBase(bRadio, id, xmlFile), m_bChannelSelectionRestored(false)
 {
   m_bRefreshTimelineItems = false;
   m_bSyncRefreshTimelineItems = false;
@@ -77,7 +76,7 @@ void CGUIWindowPVRGuideBase::InitEpgGridControl()
   if (epgGridContainer)
   {
     m_bChannelSelectionRestored = epgGridContainer->SetChannel(CServiceBroker::GetPVRManager().GUIActions()->GetSelectedItemPath(m_bRadio));
-    epgGridContainer->GoToNow();
+    epgGridContainer->JumpToNow();
   }
 
   if (epgGridContainer && !epgGridContainer->HasData())
@@ -91,7 +90,6 @@ void CGUIWindowPVRGuideBase::ClearData()
   {
     CSingleLock lock(m_critSection);
     m_cachedChannelGroup.reset();
-    m_newTimeline.reset();
   }
 
   CGUIWindowPVRBase::ClearData();
@@ -113,16 +111,6 @@ void CGUIWindowPVRGuideBase::OnDeinitWindow(int nextWindowID)
   StopRefreshTimelineItemsThread();
 
   m_bChannelSelectionRestored = false;
-
-  {
-    CSingleLock lock(m_critSection);
-    if (m_vecItems && !m_newTimeline)
-    {
-      // speedup: save a copy of current items for reuse when re-opening the window
-      m_newTimeline.reset(new CFileItemList);
-      m_newTimeline->Assign(*m_vecItems);
-    }
-  }
 
   CGUIDialog* dialog = CServiceBroker::GetGUI()->GetWindowManager().GetDialog(WINDOW_DIALOG_PVR_GUIDE_CONTROLS);
   if (dialog && dialog->IsDialogRunning())
@@ -197,7 +185,7 @@ void CGUIWindowPVRGuideBase::UpdateSelectedItemPath()
   }
 }
 
-void CGUIWindowPVRGuideBase::UpdateButtons(void)
+void CGUIWindowPVRGuideBase::UpdateButtons()
 {
   CGUIWindowPVRBase::UpdateButtons();
 
@@ -238,20 +226,15 @@ bool CGUIWindowPVRGuideBase::GetDirectory(const std::string& strDirectory, CFile
     }
   }
 
-  // never call DoRefresh with locked mutex!
   if (m_bSyncRefreshTimelineItems)
     m_refreshTimelineItemsThread->DoRefresh(true);
 
+  const CGUIEPGGridContainer* epgGridContainer = GetGridControl();
+  if (epgGridContainer)
   {
-    CSingleLock lock(m_critSection);
-
-    // Note: no need to do anything if no new data available. items always contains previous data.
-    if (m_newTimeline)
-    {
-      items.RemoveDiscCache(GetID());
-      items.Assign(*m_newTimeline, false);
-      m_newTimeline.reset();
-    }
+    const std::unique_ptr<CFileItemList> newTimeline = GetGridControl()->GetCurrentTimeLineItems();
+    items.RemoveDiscCache(GetID());
+    items.Assign(*newTimeline, false);
   }
 
   return true;
@@ -259,25 +242,22 @@ bool CGUIWindowPVRGuideBase::GetDirectory(const std::string& strDirectory, CFile
 
 void CGUIWindowPVRGuideBase::FormatAndSort(CFileItemList& items)
 {
-  if (&items == m_vecItems)
-  {
-    // Speedup: Nothing to do here as sorting was already done in CGUIWindowPVRGuideBase::RefreshTimelineItems
-    return;
-  }
-  CGUIWindowPVRBase::FormatAndSort(items);
+  // Speedup: Nothing to do here as sorting was already done in RefreshTimelineItems
+  return;
 }
 
 CFileItemPtr CGUIWindowPVRGuideBase::GetCurrentListItem(int offset /*= 0*/)
 {
-  CFileItemPtr item = CGUIWindowPVRBase::GetCurrentListItem(offset);
-  if (!item)
-  {
-    // EPG "gap" item selected?
-    CGUIEPGGridContainer* epgGridContainer = GetGridControl();
-    if (epgGridContainer)
-      item = epgGridContainer->GetSelectedGridItem(offset);
-  }
-  return item;
+  const CGUIEPGGridContainer* epgGridContainer = GetGridControl();
+  if (epgGridContainer)
+    return epgGridContainer->GetSelectedGridItem(offset);
+
+  return {};
+}
+
+int CGUIWindowPVRGuideBase::GetCurrentListItemIndex(const std::shared_ptr<CFileItem>& item)
+{
+  return item ? item->GetProperty("TimelineIndex").asInteger() : -1;
 }
 
 bool CGUIWindowPVRGuideBase::ShouldNavigateToGridContainer(int iAction)
@@ -389,8 +369,20 @@ bool CGUIWindowPVRGuideBase::OnMessage(CGUIMessage& message)
   switch (message.GetMessage())
   {
     case GUI_MSG_WINDOW_INIT:
-      // if a path to a channel group is given we must init that group instead of last played/selected group
-      m_channelGroupPath = message.GetStringParam(0);
+    {
+      const CPVRChannelsPath path(message.GetStringParam(0));
+      if (path.IsValid() && path.IsChannelGroup())
+      {
+        // if a path to a channel group is given we must init
+        // that group instead of last played/selected group
+        m_channelGroupPath = message.GetStringParam(0);
+      }
+      break;
+    }
+
+    case GUI_MSG_ITEM_SELECTED:
+      message.SetParam1(GetCurrentListItemIndex(GetCurrentListItem()));
+      bReturn = true;
       break;
 
     case GUI_MSG_CLICKED:
@@ -408,19 +400,18 @@ bool CGUIWindowPVRGuideBase::OnMessage(CGUIMessage& message)
           }
         }
 
-        int iItem = m_viewControl.GetSelectedItem();
-        if (iItem >= 0 && iItem < m_vecItems->Size())
+        const std::shared_ptr<CFileItem> pItem = GetCurrentListItem();
+        if (pItem)
         {
-          CFileItemPtr pItem = m_vecItems->Get(iItem);
-          /* process actions */
           switch (message.GetParam1())
           {
             case ACTION_SELECT_ITEM:
             case ACTION_MOUSE_LEFT_CLICK:
-              switch(CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_EPG_SELECTACTION))
+              switch (CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
+                  CSettings::SETTING_EPG_SELECTACTION))
               {
                 case EPG_SELECT_ACTION_CONTEXT_MENU:
-                  OnPopupMenu(iItem);
+                  OnPopupMenu(GetCurrentListItemIndex(pItem));
                   bReturn = true;
                   break;
                 case EPG_SELECT_ACTION_SWITCH:
@@ -505,46 +496,9 @@ bool CGUIWindowPVRGuideBase::OnMessage(CGUIMessage& message)
               break;
             case ACTION_CONTEXT_MENU:
             case ACTION_MOUSE_RIGHT_CLICK:
-              OnPopupMenu(iItem);
+              OnPopupMenu(GetCurrentListItemIndex(pItem));
               bReturn = true;
               break;
-          }
-        }
-        else if (iItem == -1)
-        {
-          /* process actions */
-          switch (message.GetParam1())
-          {
-            case ACTION_SELECT_ITEM:
-            case ACTION_MOUSE_LEFT_CLICK:
-            case ACTION_PLAYER_PLAY:
-            {
-              // EPG "gap" selected => switch to associated channel.
-              CGUIEPGGridContainer* epgGridContainer = GetGridControl();
-              if (epgGridContainer)
-              {
-                const CFileItemPtr item(epgGridContainer->GetSelectedGridItem());
-                if (item)
-                {
-                  CServiceBroker::GetPVRManager().GUIActions()->SwitchToChannel(item, true);
-                  bReturn = true;
-                }
-              }
-              break;
-            }
-            case ACTION_CONTEXT_MENU:
-            {
-              // EPG "gap" selected => create and process special context menu with item independent entries.
-              CContextButtons buttons;
-              GetContextButtons(-1, buttons);
-
-              int iButton = CGUIDialogContextMenu::ShowAndGetChoice(buttons);
-              if (iButton >= 0)
-              {
-                bReturn = OnContextButton(-1, static_cast<CONTEXT_BUTTON>(iButton));
-              }
-              break;
-            }
           }
         }
       }
@@ -592,6 +546,10 @@ bool CGUIWindowPVRGuideBase::OnMessage(CGUIMessage& message)
       }
       break;
     }
+    case GUI_MSG_SYSTEM_WAKE:
+      GotoNow();
+      bReturn = true;
+      break;
   }
 
   return bReturn || CGUIWindowPVRBase::OnMessage(message);
@@ -703,37 +661,6 @@ bool CGUIWindowPVRGuideBase::RefreshTimelineItems()
       if (!group)
         return false;
 
-      std::unique_ptr<CFileItemList> timeline(new CFileItemList);
-
-      if (m_bFirstOpen)
-      {
-        m_bFirstOpen = false;
-
-        // very first open of the window. come up with some data very fast...
-        const std::vector<std::shared_ptr<PVRChannelGroupMember>> groupMembers = group->GetMembers(CPVRChannelGroup::Include::ONLY_VISIBLE);
-        for (const auto& groupMember : groupMembers)
-        {
-          // fake a channel without epg
-
-          const std::shared_ptr<CPVREpgInfoTag> gapTag
-            = std::make_shared<CPVREpgInfoTag>(std::make_shared<CPVREpgChannelData>(*(groupMember->channel)), -1);
-          timeline->Add(std::make_shared<CFileItem>(gapTag));
-        }
-
-        // next, fetch actual data.
-        m_bRefreshTimelineItems = true;
-        m_refreshTimelineItemsThread->DoRefresh(false);
-      }
-      else
-      {
-        // can be very expensive. never call with lock acquired.
-        const std::vector<std::shared_ptr<CPVREpgInfoTag>> tags = group->GetEPGAll(true);
-        for (const auto& tag : tags)
-        {
-          timeline->Add(std::make_shared<CFileItem>(tag));
-        }
-      }
-
       CDateTime startDate(group->GetFirstEPGDate());
       CDateTime endDate(group->GetLastEPGDate());
       const CDateTime currentDate(CDateTime::GetCurrentDateTime().GetAsUTCDateTime());
@@ -747,27 +674,33 @@ bool CGUIWindowPVRGuideBase::RefreshTimelineItems()
       CPVREpgContainer& epgContainer = CServiceBroker::GetPVRManager().EpgContainer();
 
       // limit start to past days to display
-      int iPastDays = epgContainer.GetPastDaysToDisplay();
+      const int iPastDays = epgContainer.GetPastDaysToDisplay();
       const CDateTime maxPastDate(currentDate - CDateTimeSpan(iPastDays, 0, 0, 0));
       if (startDate < maxPastDate)
         startDate = maxPastDate;
 
       // limit end to future days to display
-      int iFutureDays = epgContainer.GetFutureDaysToDisplay();
+      const int iFutureDays = epgContainer.GetFutureDaysToDisplay();
       const CDateTime maxFutureDate(currentDate + CDateTimeSpan(iFutureDays, 0, 0, 0));
       if (endDate > maxFutureDate)
         endDate = maxFutureDate;
 
-      if (m_guiState)
-        timeline->Sort(m_guiState->GetSortMethod());
+      std::unique_ptr<CFileItemList> channels(new CFileItemList);
+      const std::vector<std::shared_ptr<PVRChannelGroupMember>> groupMembers =
+          group->GetMembers(CPVRChannelGroup::Include::ONLY_VISIBLE);
 
-      // can be very expensive. never call with lock acquired.
-      epgGridContainer->SetTimelineItems(timeline, startDate, endDate);
+      for (const auto& groupMember : groupMembers)
+      {
+        channels->Add(std::make_shared<CFileItem>(groupMember->channel));
+      }
+
+      if (m_guiState)
+        channels->Sort(m_guiState->GetSortMethod());
+
+      epgGridContainer->SetTimelineItems(channels, startDate, endDate);
 
       {
         CSingleLock lock(m_critSection);
-
-        m_newTimeline = std::move(timeline);
         m_cachedChannelGroup = group;
       }
       return true;
@@ -798,7 +731,7 @@ bool CGUIWindowPVRGuideBase::OpenDateSelectionDialog()
 {
   bool bReturn = false;
 
-  SYSTEMTIME date;
+  KODI::TIME::SystemTime date;
   CGUIEPGGridContainer* epgGridContainer = GetGridControl();
   epgGridContainer->GetSelectedDate().GetAsSystemTime(date);
 
@@ -856,19 +789,7 @@ void CGUIWindowPVRGuideBase::OnInputDone()
   const CPVRChannelNumber channelNumber = GetChannelNumber();
   if (channelNumber.IsValid())
   {
-    CGUIEPGGridContainer* epgGridContainer = GetGridControl();
-    if (epgGridContainer)
-    {
-      for (const std::shared_ptr<CFileItem>& event : *m_vecItems)
-      {
-        const std::shared_ptr<CPVRChannel> channel = CServiceBroker::GetPVRManager().ChannelGroups()->GetChannelForEpgTag(event->GetEPGInfoTag());
-        if (channel && channel->ChannelNumber() == channelNumber)
-        {
-          epgGridContainer->SetChannel(channel);
-          return;
-        }
-      }
-    }
+    GetGridControl()->SetChannel(channelNumber);
   }
 }
 

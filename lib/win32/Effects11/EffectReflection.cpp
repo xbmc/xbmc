@@ -3,13 +3,8 @@
 //
 // Direct3D 11 Effects public reflection APIs
 //
-//
-// THIS CODE AND INFORMATION IS PROVIDED "AS IS" WITHOUT WARRANTY OF
-// ANY KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO
-// THE IMPLIED WARRANTIES OF MERCHANTABILITY AND/OR FITNESS FOR A
-// PARTICULAR PURPOSE.
-//
 // Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License.
 //
 // http://go.microsoft.com/fwlink/p/?LinkId=271568
 //--------------------------------------------------------------------------------------
@@ -601,7 +596,8 @@ lExit:
 // ID3DX11EffectShaderVariable (SAnonymousShader implementation)
 ////////////////////////////////////////////////////////////////////////////////
 
-SAnonymousShader::SAnonymousShader(_In_opt_ SShaderBlock *pBlock) : pShaderBlock(pBlock)
+SAnonymousShader::SAnonymousShader(_In_opt_ SShaderBlock *pBlock) noexcept :
+    pShaderBlock(pBlock)
 {
 }
 
@@ -2107,7 +2103,7 @@ ID3DX11EffectTechnique * CEffect::GetTechniqueByName(_In_z_ LPCSTR Name)
 
     if( FAILED( strcpy_s( NameCopy, MAX_GROUP_TECHNIQUE_SIZE, Name ) ) )
     {
-        DPF( 0, "Group|Technique name has a length greater than %u.", MAX_GROUP_TECHNIQUE_SIZE );
+        DPF( 0, "Group|Technique name has a length greater than %zu.", MAX_GROUP_TECHNIQUE_SIZE );
         return &g_InvalidTechnique;
     }
 

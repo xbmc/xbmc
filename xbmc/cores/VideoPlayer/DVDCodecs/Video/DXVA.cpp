@@ -11,6 +11,7 @@
 #define FF_API_OLD_SAMPLE_FMT 0
 
 #include "DXVA.h"
+
 #include "ServiceBroker.h"
 #include "cores/VideoPlayer/DVDCodecs/DVDCodecUtils.h"
 #include "cores/VideoPlayer/DVDCodecs/DVDFactoryCodec.h"
@@ -21,7 +22,7 @@
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
-#include "system.h"
+#include "utils/CPUInfo.h"
 #include "utils/StringUtils.h"
 #include "utils/SystemInfo.h"
 #include "utils/log.h"
@@ -30,6 +31,8 @@
 #include <d3d11.h>
 #include <dxva.h>
 #include <initguid.h>
+
+#include "system.h"
 
 using namespace DXVA;
 using namespace Microsoft::WRL;
@@ -244,7 +247,7 @@ void CContext::Release(CDecoder* decoder)
 
 void CContext::Close()
 {
-  CLog::LogFunction(LOGNOTICE, "DXVA", "closing decoder context.");
+  CLog::LogFunction(LOGINFO, "DXVA", "closing decoder context.");
   DestroyContext();
 }
 
@@ -364,7 +367,7 @@ void CContext::QueryCaps()
   {
     if (FAILED(m_pD3D11Device->GetVideoDecoderProfile(i, &m_input_list[i])))
     {
-      CLog::LogFunction(LOGNOTICE, "DXVA", "failed getting video decoder profile");
+      CLog::LogFunction(LOGINFO, "DXVA", "failed getting video decoder profile");
       return;
     }
     const dxva2_mode_t* mode = dxva2_find_mode(&m_input_list[i]);
@@ -426,7 +429,8 @@ bool CContext::GetFormatAndConfig(AVCodecContext* avctx, D3D11_VIDEO_DECODER_DES
       HRESULT res = m_pD3D11Device->CheckVideoDecoderFormat(mode.guid, render_targets_dxgi[j], &format_supported);
       if (FAILED(res) || !format_supported)
       {
-        CLog::LogFunction(LOGNOTICE, "DXVA", "Ouput format %d is not supported by '%s'", render_targets_dxgi[j], mode.name);
+        CLog::LogFunction(LOGINFO, "DXVA", "Ouput format %d is not supported by '%s'",
+                          render_targets_dxgi[j], mode.name);
         continue;
       }
 
@@ -454,12 +458,13 @@ bool CContext::GetConfig(const D3D11_VIDEO_DECODER_DESC &format, D3D11_VIDEO_DEC
   UINT cfg_count = 0;
   if (FAILED(m_pD3D11Device->GetVideoDecoderConfigCount(&format, &cfg_count)))
   {
-    CLog::LogF(LOGNOTICE, "failed getting decoder configuration count.");
+    CLog::LogF(LOGINFO, "failed getting decoder configuration count.");
     return false;
   }
   if (!cfg_count)
   {
-    CLog::LogF(LOGNOTICE, "no decoder configuration possible for %dx%d (%d).", format.SampleWidth, format.SampleHeight, format.OutputFormat);
+    CLog::LogF(LOGINFO, "no decoder configuration possible for %dx%d (%d).", format.SampleWidth,
+               format.SampleHeight, format.OutputFormat);
     return false;
   }
 
@@ -470,7 +475,7 @@ bool CContext::GetConfig(const D3D11_VIDEO_DECODER_DESC &format, D3D11_VIDEO_DEC
     D3D11_VIDEO_DECODER_CONFIG pConfig = {};
     if (FAILED(m_pD3D11Device->GetVideoDecoderConfig(&format, i, &pConfig)))
     {
-      CLog::LogF(LOGNOTICE, "failed getting decoder configuration.");
+      CLog::LogF(LOGINFO, "failed getting decoder configuration.");
       return false;
     }
 
@@ -598,7 +603,7 @@ bool CContext::CreateDecoder(const D3D11_VIDEO_DECODER_DESC &format, const D3D11
 
     if (retry == 0)
     {
-      CLog::LogF(LOGNOTICE, "hw may not support multiple decoders, releasing existing ones.");
+      CLog::LogF(LOGINFO, "hw may not support multiple decoders, releasing existing ones.");
       for (auto& m_decoder : m_decoders)
         m_decoder->CloseDXVADecoder();
     }
@@ -992,7 +997,7 @@ void CDecoder::Close()
   if (m_dxvaContext)
   {
     auto dxva_context = m_dxvaContext;
-    CLog::LogF(LOGNOTICE, "closing decoder.");
+    CLog::LogF(LOGINFO, "closing decoder.");
     m_dxvaContext = nullptr;
     dxva_context->Release(this);
   }
@@ -1167,10 +1172,10 @@ bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, enum AVPixel
     {
       m_surface_alignment = 128;
       // a driver may use multi-thread decoding internally
-      m_refs += CSysInfo::GetCPUCount();
+      m_refs += CServiceBroker::GetCPUInfo()->GetCPUCount();
     }
     else
-      m_refs += CSysInfo::GetCPUCount() / 2;
+      m_refs += CServiceBroker::GetCPUInfo()->GetCPUCount() / 2;
     // by specification hevc decoder can hold up to 8 unique refs
     m_refs += avctx->refs ? avctx->refs : 8;
     break;

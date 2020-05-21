@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2011-2018 Team Kodi
+ *  Copyright (C) 2011-2020 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -9,10 +9,14 @@
 #include "HTTPVfsHandler.h"
 
 #include "MediaSource.h"
+#include "ServiceBroker.h"
 #include "URL.h"
+#include "Util.h"
 #include "filesystem/File.h"
+#include "media/MediaLockState.h"
 #include "network/WebServer.h"
 #include "settings/MediaSourceSettings.h"
+#include "storage/MediaManager.h"
 #include "utils/URIUtils.h"
 
 CHTTPVfsHandler::CHTTPVfsHandler(const HTTPRequest &request)
@@ -40,6 +44,7 @@ CHTTPVfsHandler::CHTTPVfsHandler(const HTTPRequest &request)
         while (URIUtils::IsInArchive(realPath))
           realPath = CURL(realPath).GetHostName();
 
+        // Check manually configured sources
         VECSOURCES *sources = NULL;
         for (unsigned int index = 0; index < size && !accessible; index++)
         {
@@ -53,7 +58,7 @@ CHTTPVfsHandler::CHTTPVfsHandler(const HTTPRequest &request)
               break;
 
             // don't allow access to locked / disabled sharing sources
-            if (source.m_iHasLock == 2 || !source.m_allowSharing)
+            if (source.m_iHasLock == LOCK_STATE_LOCKED || !source.m_allowSharing)
               continue;
 
             for (const auto& path : source.vecPaths)
@@ -66,6 +71,19 @@ CHTTPVfsHandler::CHTTPVfsHandler(const HTTPRequest &request)
               }
             }
           }
+        }
+
+        // Check auto-mounted sources
+        if (!accessible)
+        {
+          bool isSource;
+          VECSOURCES removableSources;
+          CServiceBroker::GetMediaManager().GetRemovableDrives(removableSources);
+          int sourceIndex = CUtil::GetMatchingSource(realPath, removableSources, isSource);
+          if (sourceIndex >= 0 && sourceIndex < static_cast<int>(removableSources.size()) &&
+              removableSources.at(sourceIndex).m_iHasLock != LOCK_STATE_LOCKED &&
+              removableSources.at(sourceIndex).m_allowSharing)
+            accessible = true;
         }
       }
 

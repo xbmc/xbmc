@@ -7,6 +7,7 @@
  */
 #include "Win10StorageProvider.h"
 
+#include "ServiceBroker.h"
 #include "filesystem/SpecialProtocol.h"
 #include "guilib/LocalizeStrings.h"
 #include "storage/MediaManager.h"
@@ -47,7 +48,7 @@ void CStorageProvider::Initialize()
   VECSOURCES vShare;
   GetDrivesByType(vShare, DVD_DRIVES);
   if (!vShare.empty())
-    g_mediaManager.SetHasOpticalDrive(true);
+    CServiceBroker::GetMediaManager().SetHasOpticalDrive(true);
   else
     CLog::Log(LOGDEBUG, "%s: No optical drive found.", __FUNCTION__);
 
@@ -150,7 +151,9 @@ std::vector<std::string> CStorageProvider::GetDiskUsage()
 
   auto localfolder = ApplicationData::Current().LocalFolder().Path();
   GetDiskFreeSpaceExW(localfolder.c_str(), nullptr, &ULTotal, &ULTotalFree);
-  strRet = FromW(StringUtils::Format(L"%s: %d MB %s", g_localizeStrings.Get(21440), (ULTotalFree.QuadPart / (1024 * 1024)), g_localizeStrings.Get(160).c_str()));
+  strRet = StringUtils::Format("%s: %d MB %s", g_localizeStrings.Get(21440),
+                               (ULTotalFree.QuadPart / (1024 * 1024)),
+                               g_localizeStrings.Get(160).c_str());
   result.push_back(strRet);
 
   DWORD drivesBits = GetLogicalDrives();

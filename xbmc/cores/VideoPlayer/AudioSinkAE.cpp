@@ -7,17 +7,16 @@
  */
 
 #include "AudioSinkAE.h"
-#include "threads/SingleLock.h"
-#include "utils/log.h"
+
 #include "DVDClock.h"
 #include "DVDCodecs/Audio/DVDAudioCodec.h"
 #include "ServiceBroker.h"
 #include "cores/AudioEngine/Interfaces/AE.h"
 #include "cores/AudioEngine/Utils/AEAudioFormat.h"
 #include "cores/AudioEngine/Utils/AEStreamData.h"
-#ifdef TARGET_POSIX
-#include "platform/posix/XTimeUtils.h"
-#endif
+#include "threads/SingleLock.h"
+#include "utils/XTimeUtils.h"
+#include "utils/log.h"
 
 CAudioSinkAE::CAudioSinkAE(CDVDClock *clock) : m_pClock(clock)
 {
@@ -41,13 +40,9 @@ CAudioSinkAE::~CAudioSinkAE()
 
 bool CAudioSinkAE::Create(const DVDAudioFrame &audioframe, AVCodecID codec, bool needresampler)
 {
-  CLog::Log(LOGNOTICE,
-    "Creating audio stream (codec id: %i, channels: %i, sample rate: %i, %s)",
-    codec,
-    audioframe.format.m_channelLayout.Count(),
-    audioframe.format.m_sampleRate,
-    audioframe.passthrough ? "pass-through" : "no pass-through"
-  );
+  CLog::Log(LOGINFO, "Creating audio stream (codec id: %i, channels: %i, sample rate: %i, %s)",
+            codec, audioframe.format.m_channelLayout.Count(), audioframe.format.m_sampleRate,
+            audioframe.passthrough ? "pass-through" : "no pass-through");
 
   // if passthrough isset do something else
   CSingleLock lock(m_critSection);
@@ -148,7 +143,7 @@ unsigned int CAudioSinkAE::AddPackets(const DVDAudioFrame &audioframe)
     }
 
     lock.Leave();
-    Sleep(1);
+    KODI::TIME::Sleep(1);
     lock.Enter();
   } while (!m_bAbort);
 
@@ -337,7 +332,9 @@ double CAudioSinkAE::GetClockSpeed()
     return 1.0;
 }
 
-CAEStreamInfo::DataType CAudioSinkAE::GetPassthroughStreamType(AVCodecID codecId, int samplerate)
+CAEStreamInfo::DataType CAudioSinkAE::GetPassthroughStreamType(AVCodecID codecId,
+                                                               int samplerate,
+                                                               int profile)
 {
   AEAudioFormat format;
   format.m_dataFormat = AE_FMT_RAW;
@@ -356,7 +353,10 @@ CAEStreamInfo::DataType CAudioSinkAE::GetPassthroughStreamType(AVCodecID codecId
       break;
 
     case AV_CODEC_ID_DTS:
-      format.m_streamInfo.m_type = CAEStreamInfo::STREAM_TYPE_DTSHD;
+      if (profile == FF_PROFILE_DTS_HD_HRA)
+        format.m_streamInfo.m_type = CAEStreamInfo::STREAM_TYPE_DTSHD;
+      else
+        format.m_streamInfo.m_type = CAEStreamInfo::STREAM_TYPE_DTSHD_MA;
       format.m_streamInfo.m_sampleRate = samplerate;
       break;
 

@@ -7,25 +7,27 @@
  */
 
 #include "VAAPI.h"
-#include "ServiceBroker.h"
+
 #include "DVDVideoCodec.h"
+#include "ServiceBroker.h"
 #include "cores/VideoPlayer/DVDCodecs/DVDCodecUtils.h"
 #include "cores/VideoPlayer/DVDCodecs/DVDFactoryCodec.h"
 #include "cores/VideoPlayer/Interface/Addon/TimingConstants.h"
 #include "cores/VideoPlayer/Process/ProcessInfo.h"
-#include "utils/log.h"
-#include "utils/StringUtils.h"
-#include "threads/SingleLock.h"
+#include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "settings/lib/Setting.h"
+#include "threads/SingleLock.h"
+#include "utils/MemUtils.h"
+#include "utils/StringUtils.h"
+#include "utils/XTimeUtils.h"
+#include "utils/log.h"
 #include "windowing/GraphicContext.h"
-#include "settings/AdvancedSettings.h"
+
+#include <drm_fourcc.h>
 #include <va/va_drm.h>
 #include <va/va_drmcommon.h>
-#include <drm_fourcc.h>
-#include "platform/posix/XTimeUtils.h"
-#include "utils/MemUtils.h"
 
 extern "C" {
 #include <libavutil/avutil.h>
@@ -101,7 +103,7 @@ void CVAAPIContext::Release(CDecoder *decoder)
 
 void CVAAPIContext::Close()
 {
-  CLog::Log(LOGNOTICE, "VAAPI::Close - closing decoder context");
+  CLog::Log(LOGINFO, "VAAPI::Close - closing decoder context");
   if (m_renderNodeFD >= 0)
   {
     close(m_renderNodeFD);
@@ -225,12 +227,19 @@ void CVAAPIContext::DestroyContext()
 {
   delete[] m_profiles;
   if (m_display)
-    CheckSuccess(vaTerminate(m_display), "vaTerminate");
-
+  {
+    if (CheckSuccess(vaTerminate(m_display), "vaTerminate"))
+    {
+      m_display = NULL;
+    }
+    else
+    {
 #if VA_CHECK_VERSION(1, 0, 0)
-  vaSetErrorCallback(m_display, nullptr, nullptr);
-  vaSetInfoCallback(m_display, nullptr, nullptr);
+      vaSetErrorCallback(m_display, nullptr, nullptr);
+      vaSetInfoCallback(m_display, nullptr, nullptr);
 #endif
+    }
+  }
 }
 
 void CVAAPIContext::QueryCaps()
@@ -710,7 +719,7 @@ bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, const enum A
 
 void CDecoder::Close()
 {
-  CLog::Log(LOGNOTICE, "VAAPI::%s", __FUNCTION__);
+  CLog::Log(LOGINFO, "VAAPI::%s", __FUNCTION__);
 
   CSingleLock lock(m_DecoderSection);
 
@@ -997,7 +1006,7 @@ CDVDVideoCodec::VCReturn CDecoder::Check(AVCodecContext* avctx)
   {
     // if there is no other error, sleep for a short while
     // in order not to drain player's message queue
-    Sleep(10);
+    KODI::TIME::Sleep(10);
 
     return CDVDVideoCodec::VC_NOBUFFER;
   }
@@ -1449,12 +1458,12 @@ void COutput::Dispose()
 
 void COutput::OnStartup()
 {
-  CLog::Log(LOGNOTICE, "COutput::OnStartup: Output Thread created");
+  CLog::Log(LOGINFO, "COutput::OnStartup: Output Thread created");
 }
 
 void COutput::OnExit()
 {
-  CLog::Log(LOGNOTICE, "COutput::OnExit: Output Thread terminated");
+  CLog::Log(LOGINFO, "COutput::OnExit: Output Thread terminated");
 }
 
 enum OUTPUT_STATES

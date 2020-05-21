@@ -276,16 +276,16 @@ bool CEGLContextUtils::InitializeDisplay(EGLint renderingApi)
 
   const char* value;
   value = eglQueryString(m_eglDisplay, EGL_VERSION);
-  CLog::Log(LOGNOTICE, "EGL_VERSION = %s", value ? value : "NULL");
+  CLog::Log(LOGINFO, "EGL_VERSION = %s", value ? value : "NULL");
 
   value = eglQueryString(m_eglDisplay, EGL_VENDOR);
-  CLog::Log(LOGNOTICE, "EGL_VENDOR = %s", value ? value : "NULL");
+  CLog::Log(LOGINFO, "EGL_VENDOR = %s", value ? value : "NULL");
 
   value = eglQueryString(m_eglDisplay, EGL_EXTENSIONS);
-  CLog::Log(LOGNOTICE, "EGL_EXTENSIONS = %s", value ? value : "NULL");
+  CLog::Log(LOGINFO, "EGL_EXTENSIONS = %s", value ? value : "NULL");
 
   value = eglQueryString(EGL_NO_DISPLAY, EGL_EXTENSIONS);
-  CLog::Log(LOGNOTICE, "EGL_CLIENT_EXTENSIONS = %s", value ? value : "NULL");
+  CLog::Log(LOGINFO, "EGL_CLIENT_EXTENSIONS = %s", value ? value : "NULL");
 
   if (eglBindAPI(renderingApi) != EGL_TRUE)
   {

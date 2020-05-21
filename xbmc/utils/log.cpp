@@ -7,207 +7,282 @@
  */
 
 #include "log.h"
+
 #include "CompileInfo.h"
 #include "ServiceBroker.h"
-#include "settings/AdvancedSettings.h"
-#include "settings/SettingsComponent.h"
-#include "threads/CriticalSection.h"
-#include "threads/SingleLock.h"
-#include "threads/Thread.h"
-#include "utils/StringUtils.h"
-
-#if defined(TARGET_POSIX)
-#include "platform/posix/utils/PosixInterfaceForCLog.h"
-typedef class CPosixInterfaceForCLog PlatformInterfaceForCLog;
-#elif defined(TARGET_WINDOWS)
+#include "filesystem/File.h"
+#include "guilib/LocalizeStrings.h"
+#if defined(TARGET_ANDROID)
+#include "platform/android/utils/AndroidInterfaceForCLog.h"
+#elif defined(TARGET_DARWIN)
+#include "platform/darwin/utils/DarwinInterfaceForCLog.h"
+#elif defined(TARGET_WINDOWS) || defined(TARGET_WIN10)
 #include "platform/win32/utils/Win32InterfaceForCLog.h"
-typedef class CWin32InterfaceForCLog PlatformInterfaceForCLog;
+#else
+#include "platform/posix/utils/PosixInterfaceForCLog.h"
 #endif
+#include "settings/SettingUtils.h"
+#include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
+#include "settings/lib/Setting.h"
+#include "settings/lib/SettingsManager.h"
+#include "utils/URIUtils.h"
 
+#include <cstring>
+#include <set>
 
-static const char* const levelNames[] =
-{"DEBUG", "INFO", "NOTICE", "WARNING", "ERROR", "SEVERE", "FATAL", "NONE"};
+#include <spdlog/sinks/basic_file_sink.h>
+#include <spdlog/sinks/dist_sink.h>
 
-// add 1 to level number to get index of name
-static const char* const logLevelNames[] =
-{ "LOG_LEVEL_NONE" /*-1*/, "LOG_LEVEL_NORMAL" /*0*/, "LOG_LEVEL_DEBUG" /*1*/, "LOG_LEVEL_DEBUG_FREEMEM" /*2*/ };
+static constexpr unsigned char Utf8Bom[3] = {0xEF, 0xBB, 0xBF};
+static const std::string LogFileExtension = ".log";
+static const std::string LogPattern = "%Y-%m-%d %T.%e T:%-5t %7l <%n>: %v";
 
-namespace
+CLog::CLog()
+  : m_platform(IPlatformLog::CreatePlatformLog()),
+    m_sinks(std::make_shared<spdlog::sinks::dist_sink_mt>()),
+    m_defaultLogger(CreateLogger("general")),
+    m_logLevel(LOG_LEVEL_DEBUG),
+    m_componentLogEnabled(false),
+    m_componentLogLevels(0)
 {
-class CLogGlobals
-{
-public:
-  ~CLogGlobals() = default;
-  PlatformInterfaceForCLog m_platform;
-  int         m_repeatCount = 0;
-  int         m_repeatLogLevel = -1;
-  std::string m_repeatLine;
-  int         m_logLevel = LOG_LEVEL_DEBUG;
-  int         m_extraLogLevels = 0;
-  CCriticalSection critSec;
-};
+  // add platform-specific debug sinks
+  m_platform->AddSinks(m_sinks);
 
-static CLogGlobals g_logState;
+  // register the default logger with spdlog
+  spdlog::set_default_logger(m_defaultLogger);
+
+  // set the formatting pattern globally
+  spdlog::set_pattern(LogPattern);
+
+  // flush on debug logs
+  spdlog::flush_on(spdlog::level::debug);
+
+  // set the log level
+  SetLogLevel(m_logLevel);
 }
 
-CLog::CLog() = default;
-
-CLog::~CLog() = default;
-
-void CLog::Close()
+void CLog::OnSettingsLoaded()
 {
-  CSingleLock waitLock(g_logState.critSec);
-  g_logState.m_platform.CloseLogFile();
-  g_logState.m_repeatLine.clear();
+  const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
+  m_componentLogEnabled = settings->GetBool(CSettings::SETTING_DEBUG_EXTRALOGGING);
+  SetComponentLogLevel(settings->GetList(CSettings::SETTING_DEBUG_SETEXTRALOGLEVEL));
 }
 
-void CLog::LogString(int logLevel, std::string&& logString)
+void CLog::OnSettingChanged(std::shared_ptr<const CSetting> setting)
 {
-  CSingleLock waitLock(g_logState.critSec);
-  std::string strData(logString);
-  StringUtils::TrimRight(strData);
-  if (!strData.empty())
-  {
-    if (g_logState.m_repeatLogLevel == logLevel && g_logState.m_repeatLine == strData)
-    {
-      g_logState.m_repeatCount++;
-      return;
-    }
-    else if (g_logState.m_repeatCount)
-    {
-      std::string strData2 = StringUtils::Format("Previous line repeats %d times.",
-                                                g_logState.m_repeatCount);
-      PrintDebugString(strData2);
-      WriteLogString(g_logState.m_repeatLogLevel, strData2);
-      g_logState.m_repeatCount = 0;
-    }
+  if (setting == NULL)
+    return;
 
-    g_logState.m_repeatLine = strData;
-    g_logState.m_repeatLogLevel = logLevel;
-
-    PrintDebugString(strData);
-
-    WriteLogString(logLevel, strData);
-  }
+  const std::string& settingId = setting->GetId();
+  if (settingId == CSettings::SETTING_DEBUG_EXTRALOGGING)
+    m_componentLogEnabled = std::static_pointer_cast<const CSettingBool>(setting)->GetValue();
+  else if (settingId == CSettings::SETTING_DEBUG_SETEXTRALOGLEVEL)
+    SetComponentLogLevel(
+        CSettingUtils::GetList(std::static_pointer_cast<const CSettingList>(setting)));
 }
 
-void CLog::LogString(int logLevel, int component, std::string&& logString)
+void CLog::Initialize(const std::string& path) 
 {
-  if (CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->CanLogComponent(component) && IsLogLevelLogged(logLevel))
-    LogString(logLevel, std::move(logString));
-}
+  if (m_fileSink != nullptr)
+    return;
 
-bool CLog::Init(const std::string& path)
-{
-  CSingleLock waitLock(g_logState.critSec);
+  // register setting callbacks
+  auto settingsManager =
+      CServiceBroker::GetSettingsComponent()->GetSettings()->GetSettingsManager();
+  settingsManager->RegisterSettingOptionsFiller("loggingcomponents",
+                                                SettingOptionsLoggingComponentsFiller);
+  settingsManager->RegisterSettingsHandler(this);
+  std::set<std::string> settingSet;
+  settingSet.insert(CSettings::SETTING_DEBUG_EXTRALOGGING);
+  settingSet.insert(CSettings::SETTING_DEBUG_SETEXTRALOGLEVEL);
+  settingsManager->RegisterCallback(this, settingSet);
 
-  // the log folder location is initialized in the CAdvancedSettings
-  // constructor and changed in CApplication::Create()
+  if (path.empty())
+    return;
 
+  // put together the path to the log file(s)
   std::string appName = CCompileInfo::GetAppName();
   StringUtils::ToLower(appName);
-  return g_logState.m_platform.OpenLogFile(path + appName + ".log", path + appName + ".old.log");
+  const std::string filePathBase = URIUtils::AddFileToFolder(path, appName);
+  const std::string filePath = filePathBase + LogFileExtension;
+  const std::string oldFilePath = filePathBase + ".old" + LogFileExtension;
+
+  // handle old.log by deleting an existing old.log and renaming the last log to old.log
+  XFILE::CFile::Delete(oldFilePath);
+  XFILE::CFile::Rename(filePath, oldFilePath);
+
+  // write UTF-8 BOM
+  {
+    XFILE::CFile file;
+    if (file.OpenForWrite(filePath, true))
+      file.Write(Utf8Bom, sizeof(Utf8Bom));
+  }
+
+  // create the file sink
+  m_fileSink = std::make_shared<spdlog::sinks::basic_file_sink_mt>(
+      m_platform->GetLogFilename(filePath), false);
+  m_fileSink->set_pattern(LogPattern);
+
+  // add it to the existing sinks
+  m_sinks->add_sink(m_fileSink);
 }
 
-void CLog::MemDump(char *pData, int length)
+void CLog::Uninitialize()
 {
-  Log(LOGDEBUG, "MEM_DUMP: Dumping from %p", pData);
-  for (int i = 0; i < length; i+=16)
-  {
-    std::string strLine = StringUtils::Format("MEM_DUMP: %04x ", i);
-    char *alpha = pData;
-    for (int k=0; k < 4 && i + 4*k < length; k++)
-    {
-      for (int j=0; j < 4 && i + 4*k + j < length; j++)
-      {
-        std::string strFormat = StringUtils::Format(" %02x", (unsigned char)*pData++);
-        strLine += strFormat;
-      }
-      strLine += " ";
-    }
-    // pad with spaces
-    while (strLine.size() < 13*4 + 16)
-      strLine += " ";
-    for (int j=0; j < 16 && i + j < length; j++)
-    {
-      if (*alpha > 31)
-        strLine += *alpha;
-      else
-        strLine += '.';
-      alpha++;
-    }
-    Log(LOGDEBUG, "%s", strLine.c_str());
-  }
+  if (m_fileSink == nullptr)
+    return;
+
+  // unregister setting callbacks
+  auto settingsManager =
+      CServiceBroker::GetSettingsComponent()->GetSettings()->GetSettingsManager();
+  settingsManager->UnregisterSettingOptionsFiller("loggingcomponents");
+  settingsManager->UnregisterSettingsHandler(this);
+  settingsManager->UnregisterCallback(this);
+
+  // flush all loggers
+  spdlog::apply_all([](std::shared_ptr<spdlog::logger> logger) { logger->flush(); });
+
+  // flush the file sink
+  m_fileSink->flush();
+
+  // remove and destroy the file sink
+  m_sinks->remove_sink(m_fileSink);
+  m_fileSink.reset();
 }
 
 void CLog::SetLogLevel(int level)
 {
-  CSingleLock waitLock(g_logState.critSec);
-  if (level >= LOG_LEVEL_NONE && level <= LOG_LEVEL_MAX)
-  {
-    g_logState.m_logLevel = level;
-    CLog::Log(LOGNOTICE, "Log level changed to \"%s\"", logLevelNames[g_logState.m_logLevel + 1]);
-  }
-  else
-    CLog::Log(LOGERROR, "%s: Invalid log level requested: %d", __FUNCTION__, level);
-}
+  if (level < LOG_LEVEL_NONE || level > LOG_LEVEL_MAX)
+    return;
 
-int CLog::GetLogLevel()
-{
-  return g_logState.m_logLevel;
-}
+  m_logLevel = level;
 
-void CLog::SetExtraLogLevels(int level)
-{
-  CSingleLock waitLock(g_logState.critSec);
-  g_logState.m_extraLogLevels = level;
+  auto spdLevel = spdlog::level::info;
+  if (level <= LOG_LEVEL_NONE)
+    spdLevel = spdlog::level::off;
+  else if (level >= LOG_LEVEL_DEBUG)
+    spdLevel = spdlog::level::trace;
+
+  if (m_defaultLogger != nullptr && m_defaultLogger->level() == spdLevel)
+    return;
+
+  spdlog::set_level(spdLevel);
+  FormatAndLogInternal(spdlog::level::info, "Log level changed to \"{}\"",
+                       spdlog::level::to_string_view(spdLevel));
 }
 
 bool CLog::IsLogLevelLogged(int loglevel)
 {
-  const int extras = (loglevel & ~LOGMASK);
-  if (extras != 0 && (g_logState.m_extraLogLevels & extras) == 0)
-    return false;
-
-  if (g_logState.m_logLevel >= LOG_LEVEL_DEBUG)
+  if (m_logLevel >= LOG_LEVEL_DEBUG)
     return true;
-  if (g_logState.m_logLevel <= LOG_LEVEL_NONE)
+  if (m_logLevel <= LOG_LEVEL_NONE)
     return false;
 
-  // "m_logLevel" is "LOG_LEVEL_NORMAL"
   return (loglevel & LOGMASK) >= LOGNOTICE;
 }
 
-
-void CLog::PrintDebugString(const std::string& line)
+bool CLog::CanLogComponent(uint32_t component) const
 {
-#if defined(_DEBUG) || defined(PROFILE)
-  g_logState.m_platform.PrintDebugString(line);
-#endif // defined(_DEBUG) || defined(PROFILE)
+  if (!m_componentLogEnabled || component == 0)
+    return false;
+
+  return ((m_componentLogLevels & component) == component);
 }
 
-bool CLog::WriteLogString(int logLevel, const std::string& logString)
+void CLog::SettingOptionsLoggingComponentsFiller(SettingConstPtr setting,
+                                                 std::vector<IntegerSettingOption>& list,
+                                                 int& current,
+                                                 void* data)
 {
-  static const char* prefixFormat = "%02d-%02d-%02d %02d:%02d:%02d.%03d T:%" PRIu64" %7s: ";
+  list.emplace_back(g_localizeStrings.Get(669), LOGSAMBA);
+  list.emplace_back(g_localizeStrings.Get(670), LOGCURL);
+  list.emplace_back(g_localizeStrings.Get(672), LOGFFMPEG);
+  list.emplace_back(g_localizeStrings.Get(675), LOGJSONRPC);
+  list.emplace_back(g_localizeStrings.Get(676), LOGAUDIO);
+  list.emplace_back(g_localizeStrings.Get(680), LOGVIDEO);
+  list.emplace_back(g_localizeStrings.Get(683), LOGAVTIMING);
+  list.emplace_back(g_localizeStrings.Get(684), LOGWINDOWING);
+  list.emplace_back(g_localizeStrings.Get(685), LOGPVR);
+  list.emplace_back(g_localizeStrings.Get(686), LOGEPG);
+  list.emplace_back(g_localizeStrings.Get(39117), LOGANNOUNCE);
+#ifdef HAS_DBUS
+  list.emplace_back(g_localizeStrings.Get(674), LOGDBUS);
+#endif
+#ifdef HAS_WEB_SERVER
+  list.emplace_back(g_localizeStrings.Get(681), LOGWEBSERVER);
+#endif
+#ifdef HAS_AIRTUNES
+  list.emplace_back(g_localizeStrings.Get(677), LOGAIRTUNES);
+#endif
+#ifdef HAS_UPNP
+  list.emplace_back(g_localizeStrings.Get(678), LOGUPNP);
+#endif
+#ifdef HAVE_LIBCEC
+  list.emplace_back(g_localizeStrings.Get(679), LOGCEC);
+#endif
+  list.emplace_back(g_localizeStrings.Get(682), LOGDATABASE);
+}
 
-  std::string strData(logString);
-  /* fixup newline alignment, number of spaces should equal prefix length */
-  StringUtils::Replace(strData, "\n", "\n                                            ");
+Logger CLog::GetLogger(const std::string& loggerName)
+{
+  auto logger = spdlog::get(loggerName);
+  if (logger == nullptr)
+    logger = CreateLogger(loggerName);
 
-  int year, month, day, hour, minute, second;
-  double millisecond;
-  g_logState.m_platform.GetCurrentLocalTime(year, month, day, hour, minute, second, millisecond);
+  return logger;
+}
 
-  strData = StringUtils::Format(prefixFormat,
-                                  year,
-                                  month,
-                                  day,
-                                  hour,
-                                  minute,
-                                  second,
-                                  static_cast<int>(millisecond),
-                                  static_cast<uint64_t>(CThread::GetCurrentThreadNativeId()),
-                                  levelNames[logLevel]) + strData;
+CLog& CLog::GetInstance()
+{
+  return CServiceBroker::GetLogging();
+}
 
-  return g_logState.m_platform.WriteStringToLog(strData);
+spdlog::level::level_enum CLog::MapLogLevel(int level)
+{
+  switch (level)
+  {
+    case LOGDEBUG:
+      return spdlog::level::debug;
+    case LOGINFO:
+    case LOGNOTICE:
+      return spdlog::level::info;
+    case LOGWARNING:
+      return spdlog::level::warn;
+    case LOGERROR:
+      return spdlog::level::err;
+    case LOGSEVERE:
+    case LOGFATAL:
+      return spdlog::level::critical;
+    case LOGNONE:
+      return spdlog::level::off;
+
+    default:
+      break;
+  }
+
+  return spdlog::level::info;
+}
+
+Logger CLog::CreateLogger(const std::string& loggerName)
+{
+  // create the logger
+  auto logger = std::make_shared<spdlog::logger>(loggerName, m_sinks);
+
+  // initialize the logger
+  spdlog::initialize_logger(logger);
+
+  return logger;
+}
+
+void CLog::SetComponentLogLevel(const std::vector<CVariant>& components)
+{
+  m_componentLogLevels = 0;
+  for (const auto& component : components)
+  {
+    if (!component.isInteger())
+      continue;
+
+    m_componentLogLevels |= static_cast<uint32_t>(component.asInteger());
+  }
 }

@@ -15,7 +15,6 @@
 #include <dxgi1_3.h>
 #else
 #include <dxgi1_2.h>
-#include <easyhook/easyhook.h>
 #endif
 #include <functional>
 #include <memory>

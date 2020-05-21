@@ -26,6 +26,11 @@
 #include <sstream>
 #include <locale>
 
+// workaround for broken [[depreciated]] in coverity
+#if defined(__COVERITY__)
+#undef FMT_DEPRECATED
+#define FMT_DEPRECATED
+#endif
 #include <fmt/format.h>
 
 #if FMT_VERSION >= 40000
@@ -51,6 +56,17 @@ DEF_TO_STR_VALUE(foo) // outputs "4"
 #define DEF_TO_STR_NAME(x) #x
 #define DEF_TO_STR_VALUE(x) DEF_TO_STR_NAME(x)
 
+template<typename T, std::enable_if_t<!std::is_enum<T>::value, int> = 0>
+constexpr auto&& EnumToInt(T&& arg) noexcept
+{
+  return arg;
+}
+template<typename T, std::enable_if_t<std::is_enum<T>::value, int> = 0>
+constexpr auto EnumToInt(T&& arg) noexcept
+{
+  return static_cast<int>(arg);
+}
+
 class StringUtils
 {
 public:
@@ -69,9 +85,9 @@ public:
   static std::string Format(const std::string& fmt, Args&&... args)
   {
     // coverity[fun_call_w_exception : FALSE]
-    auto result = ::fmt::format(fmt, std::forward<Args>(args)...);
+    auto result = ::fmt::format(fmt, EnumToInt(std::forward<Args>(args))...);
     if (result == fmt)
-      result = ::fmt::sprintf(fmt, std::forward<Args>(args)...);
+      result = ::fmt::sprintf(fmt, EnumToInt(std::forward<Args>(args))...);
 
     return result;
   }
@@ -79,9 +95,9 @@ public:
   static std::wstring Format(const std::wstring& fmt, Args&&... args)
   {
     // coverity[fun_call_w_exception : FALSE]
-    auto result = ::fmt::format(fmt, std::forward<Args>(args)...);
+    auto result = ::fmt::format(fmt, EnumToInt(std::forward<Args>(args))...);
     if (result == fmt)
-      result = ::fmt::sprintf(fmt, std::forward<Args>(args)...);
+      result = ::fmt::sprintf(fmt, EnumToInt(std::forward<Args>(args))...);
 
     return result;
   }
@@ -97,8 +113,8 @@ public:
   static bool EqualsNoCase(const std::string &str1, const std::string &str2);
   static bool EqualsNoCase(const std::string &str1, const char *s2);
   static bool EqualsNoCase(const char *s1, const char *s2);
-  static int  CompareNoCase(const std::string &str1, const std::string &str2);
-  static int  CompareNoCase(const char *s1, const char *s2);
+  static int CompareNoCase(const std::string& str1, const std::string& str2, size_t n = 0);
+  static int CompareNoCase(const char* s1, const char* s2, size_t n = 0);
   static int ReturnDigits(const std::string &str);
   static std::string Left(const std::string &str, size_t count);
   static std::string Mid(const std::string &str, size_t first, size_t count = std::string::npos);
@@ -290,6 +306,7 @@ public:
   static size_t FindWords(const char *str, const char *wordLowerCase);
   static int FindEndBracket(const std::string &str, char opener, char closer, int startPos = 0);
   static int DateStringToYYYYMMDD(const std::string &dateString);
+  static std::string ISODateToLocalizedDate (const std::string& strIsoDate);
   static void WordToDigits(std::string &word);
   static std::string CreateUUID();
   static bool ValidateUUID(const std::string &uuid); // NB only validates syntax

@@ -783,9 +783,9 @@ void CGUIDialogMusicInfo::OnGetArt()
     // Type "thumb" returns URLs for all types of art including those without aspect.
     // Those URL without aspect are also returned for all other type values.
     if (m_bArtistInfo)
-      m_artist.thumbURL.GetThumbURLs(remotethumbs, type);
+      m_artist.thumbURL.GetThumbUrls(remotethumbs, type);
     else
-      m_album.thumbURL.GetThumbURLs(remotethumbs, type);
+      m_album.thumbURL.GetThumbUrls(remotethumbs, type);
 
     for (unsigned int i = 0; i < remotethumbs.size(); ++i)
     {
@@ -899,7 +899,7 @@ void CGUIDialogMusicInfo::OnGetArt()
   std::string result;
   VECSOURCES sources(*CMediaSourceSettings::GetInstance().GetSources("music"));
   CGUIDialogMusicInfo::AddItemPathToFileBrowserSources(sources, *m_item);
-  g_mediaManager.GetLocalDrives(sources);
+  CServiceBroker::GetMediaManager().GetLocalDrives(sources);
   if (CGUIDialogFileBrowser::ShowAndGetImage(items, sources, g_localizeStrings.Get(13511), result) &&
     result != "thumb://Current")
   {

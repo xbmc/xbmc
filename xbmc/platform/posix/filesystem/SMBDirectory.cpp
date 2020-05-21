@@ -29,9 +29,8 @@
 #include "threads/SingleLock.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
+#include "utils/XTimeUtils.h"
 #include "utils/log.h"
-
-#include "platform/posix/XTimeUtils.h"
 
 #include <libsmbclient.h>
 
@@ -158,9 +157,9 @@ bool CSMBDirectory::GetDirectory(const CURL& url, CFileItemList &items)
         }
       }
 
-      FILETIME fileTime, localTime;
-      TimeTToFileTime(lTimeDate, &fileTime);
-      FileTimeToLocalFileTime(&fileTime, &localTime);
+      KODI::TIME::FileTime fileTime, localTime;
+      KODI::TIME::TimeTToFileTime(lTimeDate, &fileTime);
+      KODI::TIME::FileTimeToLocalFileTime(&fileTime, &localTime);
 
       if (bIsDir)
       {

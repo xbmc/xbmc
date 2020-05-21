@@ -9,13 +9,14 @@ TARBALLS_LOCATION=@use_tarballs@
 PLATFORM=@deps_dir@
 HOST=@use_host@
 CPU=@use_cpu@
+MESON_CPU=@meson_cpu@
+MESON_SYSTEM=@meson_system@
 NATIVEPLATFORM=@build_cpu@-@build_os@-native
 NDK_LEVEL=@use_ndk_api@
 RETRIEVE_TOOL=@CURL@
 ARCHIVE_TOOL=@TAR@
 PREFIX=@prefix@/@deps_dir@
 NATIVEPREFIX=@prefix@/@tool_dir@
-ARCHIVE_TOOL_NATIVE=$(NATIVEPREFIX)/bin/tar
 OS=@platform_os@
 NATIVE_OS=@build_os@
 CROSS_COMPILING=@cross_compiling@
@@ -62,7 +63,7 @@ OBJDUMP=@OBJDUMP@
 
 CMAKE=@prefix@/@tool_dir@/bin/cmake -DCMAKE_TOOLCHAIN_FILE=$(PREFIX)/share/Toolchain.cmake -DCMAKE_INSTALL_PREFIX=$(PREFIX)
 CFLAGS=@platform_cflags@ @platform_includes@ -isystem @prefix@/@deps_dir@/include
-LDFLAGS=-L@prefix@/@deps_dir@/lib -L@prefix@/@deps_dir@/lib64 @platform_ldflags@
+LDFLAGS=-L@prefix@/@deps_dir@/lib @platform_ldflags@
 CXXFLAGS=@platform_cxxflags@ @platform_includes@ -isystem @prefix@/@deps_dir@/include
 CPPFLAGS=@platform_cflags@ @platform_includes@ -isystem @prefix@/@deps_dir@/include
 # set configured FFmpeg configure options

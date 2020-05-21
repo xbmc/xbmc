@@ -208,9 +208,9 @@ void CGUIDialogInfoProviderSettings::OnSettingAction(std::shared_ptr<const CSett
   else if (settingId == CSettings::SETTING_MUSICLIBRARY_ARTISTSFOLDER)
   {
     VECSOURCES shares;
-    g_mediaManager.GetLocalDrives(shares);
-    g_mediaManager.GetNetworkLocations(shares);
-    g_mediaManager.GetRemovableDrives(shares);
+    CServiceBroker::GetMediaManager().GetLocalDrives(shares);
+    CServiceBroker::GetMediaManager().GetNetworkLocations(shares);
+    CServiceBroker::GetMediaManager().GetRemovableDrives(shares);
     std::string strDirectory = m_strArtistInfoPath;
     if (!strDirectory.empty())
     {
@@ -384,15 +384,15 @@ void CGUIDialogInfoProviderSettings::InitializeSettings()
     entries.clear();
     if (m_singleScraperType == CONTENT_ALBUMS)
     {
-      entries.push_back(std::make_pair(38066, INFOPROVIDER_THISITEM));
-      entries.push_back(std::make_pair(38067, INFOPROVIDER_ALLVIEW));
+      entries.push_back(TranslatableIntegerSettingOption(38066, INFOPROVIDER_THISITEM));
+      entries.push_back(TranslatableIntegerSettingOption(38067, INFOPROVIDER_ALLVIEW));
     }
     else
     {
-      entries.push_back(std::make_pair(38064, INFOPROVIDER_THISITEM));
-      entries.push_back(std::make_pair(38065, INFOPROVIDER_ALLVIEW));
+      entries.push_back(TranslatableIntegerSettingOption(38064, INFOPROVIDER_THISITEM));
+      entries.push_back(TranslatableIntegerSettingOption(38065, INFOPROVIDER_ALLVIEW));
     }
-    entries.push_back(std::make_pair(38063, INFOPROVIDER_DEFAULT));
+    entries.push_back(TranslatableIntegerSettingOption(38063, INFOPROVIDER_DEFAULT));
     AddList(group1, SETTING_APPLYTOITEMS, 38338, SettingLevel::Basic, m_applyToItems, entries, 38339); // "Apply settings to"
   }
 

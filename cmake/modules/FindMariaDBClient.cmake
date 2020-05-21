@@ -28,11 +28,11 @@ endif()
 
 find_path(MARIADBCLIENT_INCLUDE_DIR NAMES mariadb/mysql.h mariadb/server/mysql.h
                                            PATHS ${PC_MARIADBCLIENT_INCLUDEDIR})
-find_library(MARIADBCLIENT_LIBRARY_RELEASE NAMES mariadbclient mariadb
+find_library(MARIADBCLIENT_LIBRARY_RELEASE NAMES mariadbclient mariadb libmariadb
                                            PATHS ${PC_MARIADBCLIENT_LIBDIR}
                                            PATH_SUFFIXES mariadb
                                            ${EXTRA_FIND_ARGS})
-find_library(MARIADBCLIENT_LIBRARY_DEBUG NAMES mariadbclient mariadb
+find_library(MARIADBCLIENT_LIBRARY_DEBUG NAMES mariadbclient mariadb libmariadbd
                                          PATHS ${PC_MARIADBCLIENT_LIBDIR}
                                          PATH_SUFFIXES mariadb
                                          ${EXTRA_FIND_ARGS})

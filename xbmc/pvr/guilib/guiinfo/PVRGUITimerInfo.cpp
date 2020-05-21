@@ -107,7 +107,7 @@ void CPVRGUITimerInfo::UpdateTimersToggle()
   m_strActiveTimerTime = strActiveTimerTime;
 }
 
-void CPVRGUITimerInfo::UpdateTimersCache(void)
+void CPVRGUITimerInfo::UpdateTimersCache()
 {
   int iTimerAmount = AmountActiveTimers();
   int iRecordingTimerAmount = AmountActiveRecordings();

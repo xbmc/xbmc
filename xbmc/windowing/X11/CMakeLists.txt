@@ -4,9 +4,7 @@ set(SOURCES GLContextEGL.cpp
             OSScreenSaverX11.cpp
             WinEventsX11.cpp
             WinSystemX11.cpp
-            WinSystemX11GLContext.cpp
             XRandR.cpp
-            VideoSyncOML.cpp
             X11DPMSSupport.cpp)
 
 set(HEADERS GLContext.h
@@ -15,9 +13,7 @@ set(HEADERS GLContext.h
             OSScreenSaverX11.h
             WinEventsX11.h
             WinSystemX11.h
-            WinSystemX11GLContext.h
             XRandR.h
-            VideoSyncOML.h
             X11DPMSSupport.h)
 
 if(GLX_FOUND)
@@ -25,6 +21,17 @@ if(GLX_FOUND)
                       VideoSyncGLX.cpp)
   list(APPEND HEADERS GLContextGLX.h
                       VideoSyncGLX.h)
+endif()
+
+if(OPENGL_FOUND)
+  list(APPEND SOURCES WinSystemX11GLContext.cpp)
+  list(APPEND HEADERS WinSystemX11GLContext.h)
+  list(APPEND SOURCES VideoSyncOML.cpp)
+  list(APPEND HEADERS VideoSyncOML.h)
+endif()
+if(OPENGLES_FOUND)
+  list(APPEND SOURCES WinSystemX11GLESContext.cpp)
+  list(APPEND HEADERS WinSystemX11GLESContext.h)
 endif()
 
 core_add_library(windowing_X11)

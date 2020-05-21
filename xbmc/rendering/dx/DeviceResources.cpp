@@ -607,7 +607,7 @@ void DX::DeviceResources::ResizeBuffers()
     {
       // switch to stereo mode failed, create mono swapchain
       CLog::LogF(LOGERROR, "creating stereo swap chain failed with error.");
-      CLog::LogF(LOGNOTICE, "fallback to monoscopic mode.");
+      CLog::LogF(LOGINFO, "fallback to monoscopic mode.");
 
       swapChainDesc.Stereo = false;
       bHWStereoEnabled = false;

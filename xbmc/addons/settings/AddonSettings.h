@@ -15,6 +15,7 @@
 #include "settings/lib/ISettingCallback.h"
 #include "settings/lib/SettingDependency.h"
 #include "settings/lib/SettingSection.h"
+#include "utils/logtypes.h"
 
 #include <map>
 #include <memory>
@@ -75,9 +76,9 @@ namespace ADDON
 
     bool ParseSettingVersion(const CXBMCTinyXML& doc, uint32_t& version) const;
 
-    std::shared_ptr<CSettingGroup> ParseOldSettingElement(const TiXmlElement *categoryElement, std::shared_ptr<CSettingCategory> category, std::set<std::string>& actionSettings, std::set<std::string>& settingIds);
+    std::shared_ptr<CSettingGroup> ParseOldSettingElement(const TiXmlElement *categoryElement, std::shared_ptr<CSettingCategory> category, std::set<std::string>& settingIds);
 
-    std::shared_ptr<CSettingCategory> ParseOldCategoryElement(uint32_t &categoryId, const TiXmlElement * categoryElement, std::set<std::string> &actionSettings, std::set<std::string>& settingIds);
+    std::shared_ptr<CSettingCategory> ParseOldCategoryElement(uint32_t &categoryId, const TiXmlElement * categoryElement, std::set<std::string>& settingIds);
 
     bool InitializeFromOldSettingDefinitions(const CXBMCTinyXML& doc);
     std::shared_ptr<CSetting> InitializeFromOldSettingAction(std::string settingId, const TiXmlElement *settingElement, const std::string& defaultValue);
@@ -121,5 +122,7 @@ namespace ADDON
     uint32_t m_unidentifiedSettingId;
     int m_unknownSettingLabelId;
     std::map<int, std::string> m_unknownSettingLabels;
+
+    Logger m_logger;
   };
 }

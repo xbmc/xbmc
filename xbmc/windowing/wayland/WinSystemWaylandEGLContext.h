@@ -10,6 +10,7 @@
 
 #include "WinSystemWayland.h"
 #include "utils/EGLUtils.h"
+#include "windowing/linux/WinSystemEGL.h"
 
 #include <wayland-egl.hpp>
 
@@ -20,7 +21,8 @@ namespace WINDOWING
 namespace WAYLAND
 {
 
-class CWinSystemWaylandEGLContext : public CWinSystemWayland
+class CWinSystemWaylandEGLContext : public KODI::WINDOWING::LINUX::CWinSystemEGL,
+                                    public CWinSystemWayland
 {
 public:
   CWinSystemWaylandEGLContext();
@@ -31,8 +33,6 @@ public:
                        RESOLUTION_INFO& res) override;
   bool DestroyWindow() override;
   bool DestroyWindowSystem() override;
-
-  EGLDisplay GetEGLDisplay() const;
 
 protected:
   /**
@@ -47,7 +47,6 @@ protected:
 
   virtual bool CreateContext() = 0;
 
-  CEGLContextUtils m_eglContext;
   wayland::egl_window_t m_nativeWindow;
 };
 

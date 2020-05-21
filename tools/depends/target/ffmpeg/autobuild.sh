@@ -161,6 +161,7 @@ CFLAGS="$CFLAGS" CXXFLAGS="$CXXFLAGS" LDFLAGS="$LDFLAGS" \
 	--enable-pthreads \
 	--enable-pic \
 	--enable-zlib \
+	--enable-libdav1d \
 	--disable-mipsdsp \
 	--disable-mipsdspr2 \
         ${FLAGS}

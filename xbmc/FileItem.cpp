@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2018 Team Kodi
+ *  Copyright (C) 2005-2020 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -25,6 +25,7 @@
 #include "games/addons/GameClient.h"
 #include "games/tags/GameInfoTag.h"
 #include "guilib/LocalizeStrings.h"
+#include "media/MediaLockState.h"
 #include "music/Album.h"
 #include "music/Artist.h"
 #include "music/MusicDatabase.h"
@@ -140,9 +141,9 @@ void CFileItem::FillMusicInfoTag(const std::shared_ptr<CPVRChannel>& channel, co
       musictag->SetGenre(tag->Genre());
       musictag->SetDuration(tag->GetDuration());
     }
-    else if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_EPG_HIDENOINFOAVAILABLE))
+    else
     {
-      musictag->SetTitle(g_localizeStrings.Get(19055)); // no information available
+      musictag->SetTitle(channel->ChannelName()); // can be overwritten by PVRGUIInfo
     }
     musictag->SetURL(channel->Path());
     musictag->SetArtist(channel->ChannelName());
@@ -215,6 +216,7 @@ CFileItem::CFileItem(const std::shared_ptr<CPVRRecording>& record)
   m_strPath = record->m_strFileNameAndPath;
   SetLabel(record->m_strTitle);
   m_dateTime = record->RecordingTimeAsLocalTime();
+  m_dwSize = record->GetSizeInBytes();
 
   // Set art
   if (!record->m_strIconPath.empty())
@@ -492,7 +494,7 @@ void CFileItem::Initialize()
   m_idepth = 1;
   m_iLockMode = LOCK_MODE_EVERYONE;
   m_iBadPwdCount = 0;
-  m_iHasLock = 0;
+  m_iHasLock = LOCK_STATE_NO_LOCK;
   m_bCanQueue = true;
   m_specialSort = SortSpecialNone;
   m_doContentLookup = true;
@@ -718,9 +720,6 @@ void CFileItem::ToSortable(SortItem &sortable, Field field) const
 
   if (HasPVRChannelInfoTag())
     GetPVRChannelInfoTag()->ToSortable(sortable, field);
-
-  if (HasEPGInfoTag())
-    GetEPGInfoTag()->ToSortable(sortable, field);
 
   if (HasAddonInfo())
   {
@@ -1201,6 +1200,16 @@ bool CFileItem::IsBluray() const
   CFileItem item = CFileItem(GetOpticalMediaPath(), false);
 
   return item.IsBDFile();
+}
+
+bool CFileItem::IsProtectedBlurayDisc() const
+{
+  std::string path;
+  path = URIUtils::AddFileToFolder(GetPath(), "AACS", "Unit_Key_RO.inf");
+  if (CFile::Exists(path))
+    return true;
+
+  return false;
 }
 
 bool CFileItem::IsCDDA() const
@@ -1873,10 +1882,8 @@ bool CFileItem::LoadTracksFromCueDocument(CFileItemList& scannedItems)
         if (!tag.GetCueSheet().empty())
           song.strCueSheet = tag.GetCueSheet();
 
-        SYSTEMTIME dateTime;
-        tag.GetReleaseDate(dateTime);
-        if (dateTime.wYear)
-          song.iYear = dateTime.wYear;
+        if (tag.GetYear())
+          song.strReleaseDate = tag.GetReleaseDate();
         if (song.embeddedArt.Empty() && !tag.GetCoverArtInfo().Empty())
           song.embeddedArt = tag.GetCoverArtInfo();
       }
@@ -2553,7 +2560,7 @@ void CFileItemList::FilterCueItems()
               for (int j = 0; j < (int)m_items.size(); j++)
               {
                 CFileItemPtr pItem = m_items[j];
-                if (stricmp(pItem->GetPath().c_str(), strMediaFile.c_str()) == 0)
+                if (StringUtils::CompareNoCase(pItem->GetPath(), strMediaFile) == 0)
                   pItem->SetCueDocument(cuesheet);
               }
             }
@@ -2569,7 +2576,7 @@ void CFileItemList::FilterCueItems()
     for (int j = 0; j < (int)m_items.size(); j++)
     {
       CFileItemPtr pItem = m_items[j];
-      if (stricmp(pItem->GetPath().c_str(), itemstodelete[i].c_str()) == 0)
+      if (StringUtils::CompareNoCase(pItem->GetPath(), itemstodelete[i]) == 0)
       { // delete this item
         m_items.erase(m_items.begin() + j);
         break;
@@ -2920,8 +2927,17 @@ bool CFileItemList::Save(int windowID)
   CLog::Log(LOGDEBUG,"Saving fileitems [%s]", CURL::GetRedacted(GetPath()).c_str());
 
   CFile file;
-  if (file.OpenForWrite(GetDiscFileCache(windowID), true)) // overwrite always
+  std::string cachefile = GetDiscFileCache(windowID);
+  if (file.OpenForWrite(cachefile, true)) // overwrite always
   {
+    // Before caching save simplified cache file name in every item so the cache file can be
+    // identifed and removed if the item is updated. List path and options (used for file
+    // name when list cached) can not be accurately derived from item path.
+    StringUtils::Replace(cachefile, "special://temp/archive_cache/", "");
+    StringUtils::Replace(cachefile, ".fi", "");
+    for (auto item : m_items)
+      item->SetProperty("cachefilename", cachefile);
+
     CArchive ar(&file, CArchive::store);
     ar << *this;
     CLog::Log(LOGDEBUG,"  -- items: %i, sort method: %i, ascending: %s", iSize, m_sortDescription.sortBy, m_sortDescription.sortOrder == SortOrderAscending ? "true" : "false");
@@ -2935,12 +2951,22 @@ bool CFileItemList::Save(int windowID)
 
 void CFileItemList::RemoveDiscCache(int windowID) const
 {
-  std::string cacheFile(GetDiscFileCache(windowID));
+  RemoveDiscCache(GetDiscFileCache(windowID));
+}
+
+void CFileItemList::RemoveDiscCache(const std::string& cacheFile) const
+{
   if (CFile::Exists(cacheFile))
   {
     CLog::Log(LOGDEBUG,"Clearing cached fileitems [%s]", CURL::GetRedacted(GetPath()).c_str());
     CFile::Delete(cacheFile);
   }
+}
+
+void CFileItemList::RemoveDiscCacheCRC(const std::string& crc) const
+{
+  std::string cachefile = StringUtils::Format("special://temp/archive_cache/%s.fi", crc);
+  RemoveDiscCache(cachefile);
 }
 
 std::string CFileItemList::GetDiscFileCache(int windowID) const

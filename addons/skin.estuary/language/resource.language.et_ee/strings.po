@@ -28,6 +28,18 @@ msgctxt "#31005"
 msgid "Watch as 2D"
 msgstr "Vaata 2Dna"
 
+msgctxt "#31006"
+msgid "Random movies"
+msgstr "Juhuslik film"
+
+msgctxt "#31010"
+msgid "In progress movies"
+msgstr "Vaatamine pooleli"
+
+msgctxt "#31017"
+msgid "Rated"
+msgstr "Vanusepiirang"
+
 msgctxt "#31019"
 msgid "Forecast"
 msgstr "Ilmateade"
@@ -36,13 +48,61 @@ msgctxt "#31020"
 msgid "Actions"
 msgstr "Tegevused"
 
+msgctxt "#31022"
+msgid "Sort by"
+msgstr "Järjesta"
+
+msgctxt "#31023"
+msgid "Viewtype"
+msgstr "Esitusviis"
+
+msgctxt "#31026"
+msgid "Timeshift"
+msgstr "Ajanihe"
+
+msgctxt "#31028"
+msgid "Show fanart"
+msgstr "Poster"
+
+msgctxt "#31030"
+msgid "System memory usage"
+msgstr "Mälu kasutus"
+
+msgctxt "#31031"
+msgid "Version info"
+msgstr "Versiooni info"
+
+msgctxt "#31032"
+msgid "Order"
+msgstr "Järjekord"
+
+msgctxt "#31033"
+msgid "Your rating"
+msgstr "Minu hinne"
+
 msgctxt "#31038"
 msgid "Rewind"
 msgstr "Tagasi"
 
+msgctxt "#31039"
+msgid "Fast forward"
+msgstr "Edasi"
+
 msgctxt "#31053"
 msgid "Arial based"
 msgstr "Arial-il põhinev"
+
+msgctxt "#31061"
+msgid "Main menu items"
+msgstr "Peamenüü elemendid"
+
+msgctxt "#31066"
+msgid "Music playlist"
+msgstr "Muusika pleilist"
+
+msgctxt "#31067"
+msgid "Event log"
+msgstr "Logimine"
 
 msgctxt "#31069"
 msgid "Last Updated"
@@ -50,7 +110,19 @@ msgstr "Viimati uuendatud"
 
 msgctxt "#31072"
 msgid "Power Options"
-msgstr "Energia valikud"
+msgstr "Toide"
+
+msgctxt "#31074"
+msgid "Total duration"
+msgstr "Kogukestvus"
+
+msgctxt "#31079"
+msgid "Cast not available"
+msgstr "Osatäitjad pole teada"
+
+msgctxt "#31080"
+msgid "Ends at"
+msgstr "Lõpeb"
 
 msgctxt "#31096"
 msgid "Local subtitle available"
@@ -58,11 +130,71 @@ msgstr "Lokaalsed subtiitrid on saadaval"
 
 msgctxt "#31100"
 msgid "Shift"
-msgstr "Nihe"
+msgstr "Riba"
 
 msgctxt "#31106"
 msgid "Teletext"
 msgstr "Teletekst"
+
+msgctxt "#31112"
+msgid "Toggle audio stream"
+msgstr "Vaheta heliriba"
+
+msgctxt "#31123"
+msgid "Same director"
+msgstr "Sama režissöör"
+
+msgctxt "#31125"
+msgid "Press up for actor info"
+msgstr "Näitleja info kuvamiseks liigu üles"
+
+msgctxt "#31126"
+msgid "Press OK to read plot"
+msgstr "Sisu täielikuks lugemiseks vajuta OK"
+
+msgctxt "#31132"
+msgid "Select Program"
+msgstr "Vali programm"
+
+msgctxt "#31133"
+msgid "Select Resolution"
+msgstr "Vali lahutus"
+
+msgctxt "#31134"
+msgid "Remaining"
+msgstr "Kestab veel"
+
+msgctxt "#31136"
+msgid "Click here to see latest changes..."
+msgstr "Viimaste muudatuste vaatamiseks kliki siia..."
+
+msgctxt "#31138"
+msgid "Player process info"
+msgstr "Pleieri protsesside teave"
+
+msgctxt "#31139"
+msgid "Video decoder"
+msgstr "Videodekooder"
+
+msgctxt "#31140"
+msgid "Pixel format"
+msgstr "Piksli vorming"
+
+msgctxt "#31148"
+msgid "Categories"
+msgstr "Kategooriad"
+
+msgctxt "#31154"
+msgid "Press OK to switch between locations"
+msgstr "Asukohtade vahel valimiseks vajuta OK"
+
+msgctxt "#31155"
+msgid "No bookmarks created yet."
+msgstr "Järjehoidjaid ei ole"
+
+msgctxt "#31157"
+msgid "Edit categories"
+msgstr "Redigeeri"
 
 msgctxt "#31165"
 msgid "Profile name"

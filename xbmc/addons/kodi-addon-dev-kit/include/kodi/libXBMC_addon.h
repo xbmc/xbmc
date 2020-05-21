@@ -15,7 +15,10 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <stdarg.h>
+#include <time.h>
 
+#include "Filesystem.h"
+#include "General.h"
 #include "versions.h"
 #if defined(BUILD_KODI_ADDON)
 #include "IFileTypes.h"
@@ -23,7 +26,6 @@
 #include "filesystem/IFileTypes.h"
 #endif
 
-struct VFSDirEntry;
 struct __stat64;
 
 #ifdef _WIN32                   // windows
@@ -49,20 +51,10 @@ typedef intptr_t      ssize_t;
 
 typedef void* (*KODIAddOnLib_RegisterMe)(void *addonData);
 typedef void (*KODIAddOnLib_UnRegisterMe)(void *addonData, void *cbTable);
-typedef void* (*KODIAudioEngineLib_RegisterMe)(void *addonData);
-typedef void (*KODIAudioEngineLib_UnRegisterMe)(void *addonData, void *cbTable);
 typedef void* (*KODIGUILib_RegisterMe)(void *addonData);
 typedef void (*KODIGUILib_UnRegisterMe)(void *addonData, void *cbTable);
 typedef void* (*KODIPVRLib_RegisterMe)(void *addonData);
 typedef void (*KODIPVRLib_UnRegisterMe)(void *addonData, void *cbTable);
-typedef void* (*KODICodecLib_RegisterMe)(void *addonData);
-typedef void (*KODICodecLib_UnRegisterMe)(void *addonData, void *cbTable);
-typedef void* (*KODIINPUTSTREAMLib_RegisterMe)(void *addonData);
-typedef void (*KODIINPUTSTREAMLib_UnRegisterMe)(void *addonData, void *cbTable);
-typedef void* (*KODIPeripheralLib_RegisterMe)(void *addonData);
-typedef void (*KODIPeripheralLib_UnRegisterMe)(void *addonData, void *cbTable);
-typedef void* (*KODIGameLib_RegisterMe)(void *addonData);
-typedef void (*KODIGameLib_UnRegisterMe)(void *addonData, void *cbTable);
 
 typedef struct AddonCB
 {
@@ -70,39 +62,20 @@ typedef struct AddonCB
   void*       addonData;
   KODIAddOnLib_RegisterMe           AddOnLib_RegisterMe;
   KODIAddOnLib_UnRegisterMe         AddOnLib_UnRegisterMe;
-  KODIAudioEngineLib_RegisterMe     AudioEngineLib_RegisterMe;
-  KODIAudioEngineLib_UnRegisterMe   AudioEngineLib_UnRegisterMe;
-  KODICodecLib_RegisterMe           CodecLib_RegisterMe;
-  KODICodecLib_UnRegisterMe         CodecLib_UnRegisterMe;
   KODIGUILib_RegisterMe             GUILib_RegisterMe;
   KODIGUILib_UnRegisterMe           GUILib_UnRegisterMe;
   KODIPVRLib_RegisterMe             PVRLib_RegisterMe;
   KODIPVRLib_UnRegisterMe           PVRLib_UnRegisterMe;
-  KODIINPUTSTREAMLib_RegisterMe     INPUTSTREAMLib_RegisterMe;
-  KODIINPUTSTREAMLib_UnRegisterMe   INPUTSTREAMLib_UnRegisterMe;
-  KODIPeripheralLib_RegisterMe      PeripheralLib_RegisterMe;
-  KODIPeripheralLib_UnRegisterMe    PeripheralLib_UnRegisterMe;
-  KODIGameLib_RegisterMe            GameLib_RegisterMe;
-  KODIGameLib_UnRegisterMe          GameLib_UnRegisterMe;
 } AddonCB;
 
-namespace ADDON
+typedef enum addon_log
 {
-  typedef enum addon_log
-  {
-    LOG_DEBUG,
-    LOG_INFO,
-    LOG_NOTICE,
-    LOG_ERROR
-  } addon_log_t;
-
-  typedef enum queue_msg
-  {
-    QUEUE_INFO,
-    QUEUE_WARNING,
-    QUEUE_ERROR
-  } queue_msg_t;
-}
+  LOG_DEBUG,
+  LOG_INFO,
+  LOG_WARNING,
+  LOG_ERROR,
+  LOG_FATAL
+} addon_log_t;
 
 namespace KodiAPI
 {
@@ -110,8 +83,8 @@ namespace AddOn
 {
 typedef struct CB_AddOn
 {
-  void (*Log)(void *addonData, const ADDON::addon_log_t loglevel, const char *msg);
-  void (*QueueNotification)(void *addonData, const ADDON::queue_msg_t type, const char *msg);
+  void (*Log)(void *addonData, const int loglevel, const char *msg);
+  void (*QueueNotification)(void *addonData, const int type, const char *msg);
   bool (*WakeOnLan)(const char* mac);
   bool (*GetSetting)(void *addonData, const char *settingName, void *settingValue);
   char* (*TranslateSpecialProtocol)(const char *strSource);
@@ -228,7 +201,7 @@ namespace ADDON
      * @param type The message type.
      * @param format The format of the message to pass to display in XBMC.
      */
-    void QueueNotification(const queue_msg_t type, const char *format, ... )
+    void QueueNotification(const QueueMsg& type, const char* format, ... )
     {
       char buffer[16384];
       va_list args;

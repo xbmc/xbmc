@@ -57,11 +57,11 @@ bool CAudioBookFileDirectory::GetDirectory(const CURL& url,
   AVDictionaryEntry* tag=nullptr;
   while ((tag = av_dict_get(m_fctx->metadata, "", tag, AV_DICT_IGNORE_SUFFIX)))
   {
-    if (strcasecmp(tag->key,"title") == 0)
+    if (StringUtils::CompareNoCase(tag->key, "title") == 0)
       title = tag->value;
-    else if (strcasecmp(tag->key,"album") == 0)
+    else if (StringUtils::CompareNoCase(tag->key, "album") == 0)
       album = tag->value;
-    else if (strcasecmp(tag->key,"artist") == 0)
+    else if (StringUtils::CompareNoCase(tag->key, "artist") == 0)
       author = tag->value;
   }
 
@@ -77,11 +77,11 @@ bool CAudioBookFileDirectory::GetDirectory(const CURL& url,
     std::string chapalbum;
     while ((tag=av_dict_get(m_fctx->chapters[i]->metadata, "", tag, AV_DICT_IGNORE_SUFFIX)))
     {
-      if (strcasecmp(tag->key,"title") == 0)
+      if (StringUtils::CompareNoCase(tag->key, "title") == 0)
         chaptitle = tag->value;
-      else if (strcasecmp(tag->key,"artist") == 0)
+      else if (StringUtils::CompareNoCase(tag->key, "artist") == 0)
         chapauthor = tag->value;
-      else if (strcasecmp(tag->key,"album") == 0)
+      else if (StringUtils::CompareNoCase(tag->key, "album") == 0)
         chapalbum = tag->value;
     }
     CFileItemPtr item(new CFileItem(url.Get(),false));

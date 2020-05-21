@@ -17,6 +17,7 @@
 #include "cores/AudioEngine/Utils/AEUtil.h"
 #include "cores/DataCacheCore.h"
 #include "cores/VideoPlayer/Process/ProcessInfo.h"
+#include "messaging/ApplicationMessenger.h"
 #include "music/tags/MusicInfoTag.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
@@ -24,6 +25,8 @@
 #include "utils/JobManager.h"
 #include "utils/log.h"
 #include "video/Bookmark.h"
+
+using namespace KODI::MESSAGING;
 
 #define TIME_TO_CACHE_NEXT_FILE 5000 /* 5 seconds before end of song, start caching the next song */
 #define FAST_XFADE_TIME           80 /* 80 milliseconds */
@@ -87,7 +90,7 @@ void PAPlayer::SoftStart(bool wait/* = false */)
   {
     /* wait for them to fade in */
     lock.Leave();
-    Sleep(FAST_XFADE_TIME);
+    CThread::Sleep(FAST_XFADE_TIME);
     lock.Enter();
 
     /* be sure they have faded in */
@@ -101,7 +104,7 @@ void PAPlayer::SoftStart(bool wait/* = false */)
         {
           lock.Leave();
           wait = true;
-          Sleep(1);
+          CThread::Sleep(1);
           lock.Enter();
           break;
         }
@@ -136,7 +139,7 @@ void PAPlayer::SoftStop(bool wait/* = false */, bool close/* = true */)
 
     /* wait for them to fade out */
     lock.Leave();
-    Sleep(FAST_XFADE_TIME);
+    CThread::Sleep(FAST_XFADE_TIME);
     lock.Enter();
 
     /* be sure they have faded out */
@@ -150,7 +153,7 @@ void PAPlayer::SoftStop(bool wait/* = false */, bool close/* = true */)
         {
           lock.Leave();
           wait = true;
-          Sleep(1);
+          CThread::Sleep(1);
           lock.Enter();
           break;
         }
@@ -218,6 +221,7 @@ void PAPlayer::CloseAllStreams(bool fade/* = true */)
 bool PAPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
 {
   m_defaultCrossfadeMS = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_MUSICPLAYER_CROSSFADE) * 1000;
+  m_fullScreen = options.fullscreen;
 
   if (m_streams.size() > 1 || !m_defaultCrossfadeMS || m_isPaused)
   {
@@ -256,8 +260,10 @@ bool PAPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
   m_isPlaying = true;
   m_startEvent.Set();
 
-  m_callback.OnPlayBackStarted(file);
+  // OnPlayBackStarted to be made only once. Callback processing may be slower than player process
+  // so clear signal flag first otherwise async stream processing could also make callback
   m_signalStarted = false;
+  m_callback.OnPlayBackStarted(file);
 
   return true;
 }
@@ -717,6 +723,11 @@ inline bool PAPlayer::ProcessStream(StreamInfo *si, double &freeBufferTime)
     if (m_signalStarted)
       m_callback.OnPlayBackStarted(si->m_fileItem);
     m_signalStarted = true;
+    if (m_fullScreen)
+    {
+      CApplicationMessenger::GetInstance().PostMsg(TMSG_SWITCHTOFULLSCREEN);
+      m_fullScreen = false;
+    }
     m_callback.OnAVStarted(si->m_fileItem);
   }
 

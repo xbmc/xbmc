@@ -89,20 +89,11 @@ kern_return_t SMCCall(int index, SMCKeyData_t *inputStructure, SMCKeyData_t *out
   structureInputSize = sizeof(SMCKeyData_t);
   structureOutputSize = sizeof(SMCKeyData_t);
 
-#if MAC_OS_X_VERSION_10_5
   return IOConnectCallStructMethod( conn, index,
                                    // inputStructure
                                    inputStructure, structureInputSize,
                                    // outputStructure
                                    outputStructure, &structureOutputSize );
-#else
-  return IOConnectMethodStructureIStructureO( conn, index,
-                                             structureInputSize, /* structureInputSize */
-                                             &structureOutputSize,   /* structureOutputSize */
-                                             inputStructure,        /* inputStructure */
-                                             outputStructure);       /* outputStructure */
-#endif
-
 }
 
 kern_return_t SMCReadKey(UInt32ConstChar_t key, SMCVal_t *val)

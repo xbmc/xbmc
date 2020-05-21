@@ -32,7 +32,8 @@ namespace CONTEXTMENU
   bool CEjectDisk::Execute(const CFileItemPtr& item) const
   {
 #ifdef HAS_DVD_DRIVE
-    g_mediaManager.ToggleTray(g_mediaManager.TranslateDevicePath(item->GetPath())[0]);
+    CServiceBroker::GetMediaManager().ToggleTray(
+        CServiceBroker::GetMediaManager().TranslateDevicePath(item->GetPath())[0]);
 #endif
     return true;
   }
@@ -45,7 +46,7 @@ namespace CONTEXTMENU
 
   bool CEjectDrive::Execute(const CFileItemPtr& item) const
   {
-    return g_mediaManager.Eject(item->GetPath());
+    return CServiceBroker::GetMediaManager().Eject(item->GetPath());
   }
 
 namespace
@@ -83,7 +84,8 @@ bool CAddRemoveFavourite::IsVisible(const CFileItem& item) const
          !URIUtils::IsProtocol(item.GetPath(), "newtag") &&
          !URIUtils::IsProtocol(item.GetPath(), "musicsearch") &&
          !StringUtils::StartsWith(item.GetPath(), "pvr://guide/") &&
-         !StringUtils::StartsWith(item.GetPath(), "pvr://timers/");
+         !StringUtils::StartsWith(item.GetPath(), "pvr://timers/") &&
+         !item.GetPath().empty();
 }
 
 bool CAddRemoveFavourite::Execute(const CFileItemPtr& item) const

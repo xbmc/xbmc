@@ -25,6 +25,7 @@
 #define SETTING_XML_ELM_VISIBLE "visible"
 #define SETTING_XML_ELM_REQUIREMENT "requirement"
 #define SETTING_XML_ELM_CONDITION "condition"
+#define SETTING_XML_ELM_ENABLED "enable"
 #define SETTING_XML_ELM_LEVEL "level"
 #define SETTING_XML_ELM_DEFAULT "default"
 #define SETTING_XML_ELM_VALUE "value"
@@ -88,7 +89,19 @@ struct StringSettingOption
   std::vector<std::pair<std::string, CVariant>> properties;
 };
 
-using TranslatableIntegerSettingOption = std::pair<int, int>;
+struct TranslatableIntegerSettingOption
+{
+  TranslatableIntegerSettingOption() = default;
+  TranslatableIntegerSettingOption(int _label, int _value, const std::string& _addonId = "")
+    : label(_label), value(_value), addonId(_addonId)
+  {
+  }
+
+  int label = 0;
+  int value = 0;
+  std::string addonId; // Leaved empty for Kodi labels
+};
+
 using TranslatableIntegerSettingOptions = std::vector<TranslatableIntegerSettingOption>;
 using IntegerSettingOptions = std::vector<IntegerSettingOption>;
 using TranslatableStringSettingOption = std::pair<int, std::string>;

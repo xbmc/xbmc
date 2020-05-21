@@ -56,6 +56,10 @@ msgctxt "#31014"
 msgid "Episodes"
 msgstr "Epizodai"
 
+msgctxt "#31015"
+msgid "Player info"
+msgstr "Grotuvo informacija"
+
 msgctxt "#31016"
 msgid "Albums"
 msgstr "Albumai"
@@ -95,6 +99,10 @@ msgstr "Prisijungimo vardas"
 msgctxt "#31039"
 msgid "Updated:"
 msgstr "Atnaujinta:"
+
+msgctxt "#31043"
+msgid "PAUSED"
+msgstr "PAUZĖ"
 
 msgctxt "#31044"
 msgid "FAST FORWARD"

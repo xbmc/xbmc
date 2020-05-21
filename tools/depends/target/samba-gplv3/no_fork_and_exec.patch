@@ -1,17 +1,17 @@
 --- a/lib/util/become_daemon.c
 +++ b/lib/util/become_daemon.c
-@@ -80,7 +80,7 @@
+@@ -68,7 +68,7 @@
  {
  	pid_t newpid;
  	if (do_fork) {
 -		newpid = fork();
 +		newpid = -1;
- 		if (newpid) {
- #if HAVE_SYSTEMD
- 			sd_notifyf(0, "READY=0\nSTATUS=Starting process...\nMAINPID=%lu", (unsigned long) newpid);
+ 		if (newpid == -1) {
+ 			exit_daemon("Fork failed", errno);
+ 		}
 --- a/lib/util/fault.c
 +++ b/lib/util/fault.c
-@@ -131,7 +131,7 @@
+@@ -147,7 +147,7 @@
  			snprintf(pidstr, sizeof(pidstr), "%d", (int) getpid());
  			all_string_sub(cmdstring, "%d", pidstr, sizeof(cmdstring));
  			DEBUG(0, ("smb_panic(): calling panic action [%s]\n", cmdstring));
@@ -20,6 +20,67 @@
  
  			if (result == -1)
  				DEBUG(0, ("smb_panic(): fork failed in panic action: %s\n",
+--- a/lib/util/sys_popen.c
++++ b/lib/util/sys_popen.c
+@@ -74,7 +74,7 @@
+ 		goto err_exit;
+ 	}
+ 
+-	entry->child_pid = fork();
++	entry->child_pid = -1;
+ 
+ 	if (entry->child_pid == -1) {
+ 		DBG_ERR("fork failed: %s\n", strerror(errno));
+@@ -105,7 +105,7 @@
+ 		for (p = popen_chain; p; p = p->next)
+ 			close(p->fd);
+ 
+-		ret = execv(argl[0], argl);
++		ret = -1;
+ 		if (ret == -1) {
+ 			DBG_ERR("ERROR executing command "
+ 			  "'%s': %s\n", command, strerror(errno));
+--- a/lib/util/tfork.c
++++ b/lib/util/tfork.c
+@@ -510,7 +510,7 @@
+ 	ready_pipe_worker_fd = p[0];
+ 	ready_pipe_caller_fd = p[1];
+ 
+-	pid = fork();
++	pid = -1;
+ 	if (pid == -1) {
+ 		close(status_sp_caller_fd);
+ 		close(status_sp_waiter_fd);
+@@ -578,7 +578,7 @@
+ 	close(event_pipe_caller_fd);
+ 	close(ready_pipe_caller_fd);
+ 
+-	pid = fork();
++	pid = -1;
+ 	if (pid == -1) {
+ 		state->waiter_errno = errno;
+ 		_exit(0);
+--- a/lib/util/util_runcmd.c
++++ b/lib/util/util_runcmd.c
+@@ -258,7 +258,6 @@
+ 	}
+ 	va_end(ap);
+ 
+-	(void)execvp(state->arg0, argv);
+ 	fprintf(stderr, "Failed to exec child - %s\n", strerror(errno));
+ 	_exit(255);
+ 	return NULL;
+--- a/source3/lib/background.c
++++ b/source3/lib/background.c
+@@ -159,7 +159,7 @@
+ 		return;
+ 	}
+ 
+-	res = fork();
++	res = -1;
+ 	if (res == -1) {
+ 		int err = errno;
+ 		close(fds[0]);
 --- a/source3/lib/server_prefork.c
 +++ b/source3/lib/server_prefork.c
 @@ -106,7 +106,7 @@
@@ -42,7 +103,7 @@
  			DEBUG(1, ("Failed to prefork child n. %d !\n", j));
 --- a/source3/lib/smbrun.c
 +++ b/source3/lib/smbrun.c
-@@ -97,7 +97,7 @@
+@@ -98,7 +98,7 @@
  
  	saved_handler = CatchChildLeaveStatus();
                                     	
@@ -51,18 +112,23 @@
  		DEBUG(0,("smbrun: fork failed with error %s\n", strerror(errno) ));
  		(void)CatchSignal(SIGCLD, saved_handler);
  		if (outfd) {
-@@ -197,8 +197,8 @@
+@@ -198,15 +198,6 @@
  				exit(82);
  		}
  
--		execl("/bin/sh","sh","-c",
--		    newcmd ? (const char *)newcmd : cmd, NULL);
-+		//execl("/bin/sh","sh","-c",
-+		//    newcmd ? (const char *)newcmd : cmd, NULL);
- 
+-		if (env != NULL) {
+-			execle("/bin/sh","sh","-c",
+-				newcmd ? (const char *)newcmd : cmd, NULL,
+-				env);
+-		} else {
+-			execl("/bin/sh","sh","-c",
+-				newcmd ? (const char *)newcmd : cmd, NULL);
+-		}
+-
  		SAFE_FREE(newcmd);
  	}
-@@ -261,7 +261,7 @@
+ 	
+@@ -268,7 +259,7 @@
  
  	saved_handler = CatchChildLeaveStatus();
                                     	
@@ -71,58 +137,18 @@
  		DEBUG(0, ("smbrunsecret: fork failed with error %s\n", strerror(errno)));
  		(void)CatchSignal(SIGCLD, saved_handler);
  		return errno;
-@@ -349,7 +349,7 @@
+@@ -356,8 +347,6 @@
  	}
  #endif
  
 -	execl("/bin/sh", "sh", "-c", cmd, NULL);  
-+	//execl("/bin/sh", "sh", "-c", cmd, NULL);  
- 
+-
  	/* not reached */
  	exit(82);
---- a/source3/lib/sock_exec.c
-+++ b/source3/lib/sock_exec.c
-@@ -101,7 +101,7 @@
- 		DEBUG(0,("socketpair_tcp failed (%s)\n", strerror(errno)));
- 		return -1;
- 	}
--	if (fork() == 0) {
-+	if (-1 == 0) {
- 		close(fd[0]);
- 		close(0);
- 		close(1);
-@@ -111,7 +111,7 @@
- 		if (dup(fd[1]) == -1) {
- 			exit(1);
- 		}
--		exit(system(prog));
-+		exit(-1);
- 	}
- 	close(fd[1]);
- 	return fd[0];
---- a/source3/lib/system.c
-+++ b/source3/lib/system.c
-@@ -1198,7 +1198,7 @@
- 		goto err_exit;
- 	}
- 
--	entry->child_pid = fork();
-+	entry->child_pid = -1;
- 
- 	if (entry->child_pid == -1) {
- 		DEBUG(0, ("sys_popen: fork failed: %s\n", strerror(errno)));
-@@ -1229,7 +1229,7 @@
- 		for (p = popen_chain; p; p = p->next)
- 			close(p->fd);
- 
--		ret = execv(argl[0], argl);
-+		ret = -1;
- 		if (ret == -1) {
- 			DEBUG(0, ("sys_popen: ERROR executing command "
- 				  "'%s': %s\n", command, strerror(errno)));
+ 	return 1;
 --- a/source3/lib/util.c
 +++ b/source3/lib/util.c
-@@ -795,7 +795,7 @@
+@@ -838,7 +838,7 @@
  	cmd = lp_panic_action(talloc_tos());
  	if (cmd && *cmd) {
  		DEBUG(0, ("smb_panic(): calling panic action [%s]\n", cmd));
@@ -131,3 +157,83 @@
  
  		if (result == -1)
  			DEBUG(0, ("smb_panic(): fork failed in panic action: %s\n",
+--- a/source4/heimdal/lib/roken/simple_exec.c
++++ b/source4/heimdal/lib/roken/simple_exec.c
+@@ -155,7 +155,7 @@
+ 	pipe(out_fd);
+     if(stderr_fd != NULL)
+ 	pipe(err_fd);
+-    pid = fork();
++    pid = -1;
+     switch(pid) {
+     case 0:
+ 	va_start(ap, file);
+@@ -196,7 +196,6 @@
+ 
+ 	closefrom(3);
+ 
+-	execv(file, argv);
+ 	exit((errno == ENOENT) ? EX_NOTFOUND : EX_NOEXEC);
+     case -1:
+ 	if(stdin_fd != NULL) {
+@@ -233,12 +232,11 @@
+ simple_execvp_timed(const char *file, char *const args[],
+ 		    time_t (*func)(void *), void *ptr, time_t timeout)
+ {
+-    pid_t pid = fork();
++    pid_t pid = -1;
+     switch(pid){
+     case -1:
+ 	return SE_E_FORKFAILED;
+     case 0:
+-	execvp(file, args);
+ 	exit((errno == ENOENT) ? EX_NOTFOUND : EX_NOEXEC);
+     default:
+ 	return wait_for_process_timed(pid, func, ptr, timeout);
+@@ -256,12 +254,11 @@
+ simple_execve_timed(const char *file, char *const args[], char *const envp[],
+ 		    time_t (*func)(void *), void *ptr, time_t timeout)
+ {
+-    pid_t pid = fork();
++    pid_t pid = -1;
+     switch(pid){
+     case -1:
+ 	return SE_E_FORKFAILED;
+     case 0:
+-	execve(file, args, envp);
+ 	exit((errno == ENOENT) ? EX_NOTFOUND : EX_NOEXEC);
+     default:
+ 	return wait_for_process_timed(pid, func, ptr, timeout);
+--- a/source4/libcli/resolve/dns_ex.c
++++ b/source4/libcli/resolve/dns_ex.c
+@@ -612,7 +612,7 @@
+ 	}
+ 	tevent_fd_set_auto_close(state->fde);
+ 
+-	state->child = fork();
++	state->child = -1;
+ 	if (state->child == (pid_t)-1) {
+ 		composite_error(c, map_nt_error_from_unix_common(errno));
+ 		return c;
+--- a/tests/fcntl_lock.c
++++ b/tests/fcntl_lock.c
+@@ -50,7 +50,7 @@
+ 
+ 	alarm(10);
+ 
+-	if (!(pid=fork())) {
++	if (!(pid=-1)) {
+ 		sleep(2);
+ 		fd = open(DATA, O_RDONLY);
+ 
+--- a/third_party/popt/popt.c
++++ b/third_party/popt/popt.c
+@@ -562,7 +562,7 @@
+ #endif
+ 
+ /*@-nullstate@*/
+-    rc = execvp(argv[0], (char *const *)argv);
++    rc = -1;
+ /*@=nullstate@*/
+ 
+ exit:

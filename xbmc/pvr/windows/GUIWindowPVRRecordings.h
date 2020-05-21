@@ -35,7 +35,7 @@ namespace PVR
     void UpdateButtons() override;
 
   protected:
-    std::string GetDirectoryPath(void) override;
+    std::string GetDirectoryPath() override;
     void OnPrepareFileItems(CFileItemList& items) override;
     bool GetFilteredItems(const std::string& filter, CFileItemList& items) override;
 

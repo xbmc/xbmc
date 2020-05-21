@@ -22,35 +22,99 @@
 						<param name="width" value="656" />
 						<param name="flipx" value="true" />
 					</include>
-					<control type="scrollbar" id="50600">
-						<left>20</left>
-						<top>list_y_offset</top>
-						<width>12</width>
-						<bottom>list_y_offset</bottom>
-						<onleft>50</onleft>
-						<onright>50</onright>
-						<orientation>vertical</orientation>
-						<animation effect="zoom" end="50,100" time="300" tween="sine" center="20,0" easing="inout" condition="!Control.HasFocus(50600)">conditional</animation>
-					</control>
+					<include content="RightListPanel">
+						<param name="list_id" value="50" />
+					</include>
+				</control>
+			</control>
+		</control>
+	</include>
+	<include name="RightListPanel">
+		<control type="group">
+			<depth>DepthContentPanel</depth>
+			<control type="group">
+				<right>-32</right>
+				<include content="ContentPanel">
+					<param name="left" value="0" />
+					<param name="top" value="-20" />
+					<param name="width" value="656" />
+					<param name="flipx" value="true" />
+				</include>
+				<control type="group">
+					<visible>!Container.Content(songs)</visible>
 					<control type="image">
 						<depth>DepthContentPopout</depth>
-						<left>38</left>
-						<right>36</right>
+						<left>48</left>
 						<top>120</top>
+						<width>540</width>
+						<height>850</height>
 						<bottom>124</bottom>
 						<fadetime>200</fadetime>
-						<aspectratio aligny="center">keep</aspectratio>
+						<aspectratio aligny="bottom">keep</aspectratio>
 						<texture fallback="DefaultVideo.png" background="true">$VAR[InfoWallThumbVar]</texture>
 					</control>
 					<control type="group">
-						<left>310</left>
-						<top>936</top>
+						<left>291</left>
+						<top>950</top>
 						<include content="RatingCircle">
 							<param name="animation" value="True" />
 						</include>
 					</control>
 				</control>
+				<control type="group">
+					<visible>Control.IsVisible(503) + Window.IsActive(musicplaylist)</visible>
+					<control type="image">
+						<left>58</left>
+						<top>110</top>
+						<width>540</width>
+						<height>470</height>
+						<aspectratio aligny="bottom">keep</aspectratio>
+						<fadetime>300</fadetime>
+						<texture fallback="DefaultAudio.png" background="true">$INFO[Player.Icon]</texture>
+					</control>
+					<control type="group">
+						<left>301</left>
+						<top>560</top>
+						<control type="group">
+							<animation effect="fade" time="0" condition="$PARAM[animation]">VisibleChange</animation>
+							<include content="UserRatingContent" condition="Skin.HasSetting(circle_userrating)">
+								<param name="infolabel" value="MusicPlayer.UserRating" />
+							</include>
+							<include content="UserRatingContent" condition="Skin.HasSetting(circle_rating)">
+								<param name="infolabel" value="MusicPlayer.Rating" />
+							</include>
+						</control>
+					</control>
+					<control type="textbox" id="15599">
+						<visible>Player.HasAudio + Window.IsActive(musicplaylist)</visible>
+						<left>58</left>
+						<top>600</top>
+						<width>540</width>
+						<bottom>70</bottom>
+						<autoscroll time="3000" delay="7000" repeat="5000">!System.HasModalDialog + Skin.HasSetting(AutoScroll)</autoscroll>
+						<label>[COLOR button_focus][B]$LOCALIZE[31000]: [/COLOR]$INFO[musicplayer.Playlistposition,]$INFO[musicplayer.Playlistlength,/][/B][CR]$VAR[NowPlayingInfoVar]</label>
+					</control>
+					<control type="textbox" id="15599">
+						<visible>!Player.HasAudio + Window.IsActive(musicplaylist)</visible>
+						<left>58</left>
+						<top>640</top>
+						<width>540</width>
+						<bottom>70</bottom>
+						<autoscroll time="3000" delay="7000" repeat="5000">!System.HasModalDialog + Skin.HasSetting(AutoScroll)</autoscroll>
+						<label>[COLOR button_focus][B]$LOCALIZE[31000]: [/COLOR]$LOCALIZE[36623][/B]</label>
+					</control>
+				</control>
 			</control>
+		</control>
+		<control type="scrollbar" id="$PARAM[list_id]600">
+			<left>20</left>
+			<top>list_y_offset</top>
+			<width>12</width>
+			<bottom>list_y_offset</bottom>
+			<onleft>$PARAM[list_id]</onleft>
+			<onright>$PARAM[list_id]</onright>
+			<orientation>vertical</orientation>
+			<animation effect="zoom" end="50,100" time="300" tween="sine" center="20,0" easing="inout" condition="!Control.HasFocus($PARAM[list_id]600)">conditional</animation>
 		</control>
 	</include>
 	<include name="ListContainer">
@@ -72,7 +136,7 @@
 				<onup>$PARAM[list_id]</onup>
 				<ondown>$PARAM[list_id]</ondown>
 				<viewtype label="$PARAM[viewtype_label]">list</viewtype>
-				<visible>Container.Content(movies) | Container.Content(sets) | Container.Content(tvshows) | Container.Content(seasons) | Container.Content(games) | Window.IsActive(MyPlaylist.xml)</visible>
+				<visible>Container.Content(movies) | Container.Content(sets) | Container.Content(tvshows) | Container.Content(seasons) | Container.Content(games) | Window.IsActive(videoplaylist) | Window.IsActive(musicplaylist)</visible>
 				<focusedlayout height="list_item_height">
 					<control type="image">
 						<left>0</left>
@@ -90,7 +154,7 @@
 						<aligny>center</aligny>
 						<scroll>true</scroll>
 						<font>font27</font>
-						<label>$INFO[ListItem.Label]</label>
+						<label>$VAR[ListLabelVar]</label>
 						<shadowcolor>text_shadow</shadowcolor>
 					</control>
 					<control type="label">
@@ -132,7 +196,7 @@
 						<bottom>0</bottom>
 						<aligny>center</aligny>
 						<font>font27</font>
-						<label>$INFO[ListItem.Label]</label>
+						<label>$VAR[ListLabelVar]</label>
 						<shadowcolor>text_shadow</shadowcolor>
 					</control>
 					<control type="label">
@@ -165,32 +229,42 @@
 			<control type="group">
 				<depth>DepthContentPanel</depth>
 				<include content="ContentPanel">
-					<param name="width" value="654" />
+					<param name="width" value="656" />
 					<param name="flipx" value="$PARAM[flip_bg]" />
 				</include>
 				<control type="image">
 					<left>30</left>
-					<top>140</top>
-					<width>530</width>
+					<top>110</top>
+					<width>540</width>
 					<height>470</height>
 					<aspectratio aligny="bottom">keep</aspectratio>
 					<fadetime>300</fadetime>
 					<texture fallback="$PARAM[fallback_image]" background="true">$VAR[IconWallThumbVar]</texture>
-					<visible>!String.IsEqual(ListItem.DbType,episode)</visible>
+					<visible>!String.IsEqual(ListItem.DbType,episode) + !String.IsEqual(ListItem.DBType,song)</visible>
 				</control>
 				<control type="image">
 					<left>30</left>
-					<top>140</top>
-					<width>530</width>
+					<top>110</top>
+					<width>540</width>
 					<height>330</height>
 					<aspectratio aligny="bottom">keep</aspectratio>
 					<fadetime>300</fadetime>
 					<texture background="true">$INFO[ListItem.Icon]</texture>
 					<visible>String.IsEqual(ListItem.DbType,episode)</visible>
 				</control>
+				<control type="image">
+					<left>30</left>
+					<top>110</top>
+					<width>540</width>
+					<height>470</height>
+					<aspectratio aligny="bottom">keep</aspectratio>
+					<fadetime>300</fadetime>
+					<texture fallback="DefaultAudio.png" background="true">$VAR[IconWallThumbVar]</texture>
+					<visible>String.IsEqual(ListItem.DBType,song)</visible>
+				</control>
 				<control type="group">
 					<left>273</left>
-					<top>590</top>
+					<top>560</top>
 					<include condition="Skin.HasSetting(circle_rating) | Skin.HasSetting(circle_userrating)">RatingCircle</include>
 					<animation effect="slide" end="0,-140" time="0" condition="String.IsEqual(ListItem.DbType,episode)">conditional</animation>
 				</control>
@@ -198,20 +272,28 @@
 					<visible>!Container.Content() | !String.isempty(ListItem.Plot)</visible>
 					<left>30</left>
 					<control type="textbox" id="15500">
-						<top>640</top>
-						<width>525</width>
-						<bottom>117</bottom>
+						<top>600</top>
+						<width>540</width>
+						<bottom>70</bottom>
 						<autoscroll time="3000" delay="7000" repeat="5000">!System.HasModalDialog + Skin.HasSetting(AutoScroll)</autoscroll>
 						<label>$VAR[ListBoxInfoVar]</label>
-						<visible>!String.IsEqual(ListItem.DbType,episode)</visible>
+						<visible>!String.IsEqual(ListItem.DbType,episode) + !String.IsEqual(ListItem.DBType,song)</visible>
 					</control>
 					<control type="textbox" id="15501">
-						<top>485</top>
-						<width>525</width>
-						<bottom>96</bottom>
+						<top>465</top>
+						<width>540</width>
+						<bottom>70</bottom>
 						<autoscroll time="3000" delay="7000" repeat="5000">!System.HasModalDialog + Skin.HasSetting(AutoScroll)</autoscroll>
 						<label>$INFO[ListItem.Plot]</label>
 						<visible>String.IsEqual(ListItem.DbType,episode)</visible>
+					</control>
+					<control type="textbox" id="15502">
+						<top>600</top>
+						<width>540</width>
+						<bottom>70</bottom>
+						<autoscroll time="3000" delay="3000" repeat="5000">!System.HasModalDialog + Skin.HasSetting(AutoScroll)</autoscroll>
+						<label>[COLOR button_focus][B]$LOCALIZE[31037]: [/COLOR]$INFO[Container.CurrentItem,,/]$INFO[Container.NumItems][/B][CR]$VAR[ListBoxInfoVar]</label>
+						<visible>String.IsEqual(ListItem.DBType,song)</visible>
 					</control>
 				</control>
 				<control type="group">
@@ -231,7 +313,7 @@
 					<control type="textbox">
 						<left>30</left>
 						<top>460</top>
-						<width>530</width>
+						<width>540</width>
 						<height>413</height>
 						<align>center</align>
 						<aligny>center</aligny>

@@ -115,7 +115,7 @@ static void ParseItemMRSS(CFileItem* item, SResources& resources, TiXmlElement* 
     item_child->Attribute("bitrate", &res.bitrate);
     item_child->Attribute("duration", &res.duration);
     if(item_child->Attribute("fileSize"))
-      res.size     = _atoi64(item_child->Attribute("fileSize"));
+      res.size = std::atoll(item_child->Attribute("fileSize"));
 
     resources.push_back(res);
     ParseItem(item, resources, item_child, path);
@@ -267,7 +267,7 @@ static void ParseItemRSS(CFileItem* item, SResources& resources, TiXmlElement* i
     res.path = XMLUtils::GetAttribute(item_child, "url");
     res.mime = XMLUtils::GetAttribute(item_child, "type");
     if(len)
-      res.size = _atoi64(len);
+      res.size = std::atoll(len);
 
     resources.push_back(res);
   }

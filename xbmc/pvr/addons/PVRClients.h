@@ -55,13 +55,13 @@ namespace PVR
   class CPVRClients : public ADDON::IAddonMgrCallback
   {
   public:
-    CPVRClients(void);
-    ~CPVRClients(void) override;
+    CPVRClients();
+    ~CPVRClients() override;
 
     /*!
      * @brief Start all clients.
      */
-    void Start(void);
+    void Start();
 
     /*!
      * @brief Stop all clients.
@@ -81,19 +81,19 @@ namespace PVR
 
     /*!
      * @brief Restart a single client add-on.
-     * @param addon The add-on to restart.
+     * @param id The add-on to restart.
      * @param bDataChanged True if the client's data changed, false otherwise (unused).
      * @return True if the client was found and restarted, false otherwise.
      */
-    bool RequestRestart(ADDON::AddonPtr addon, bool bDataChanged) override;
+    bool RequestRestart(const std::string& id, bool bDataChanged) override;
 
     /*!
      * @brief Stop a client.
-     * @param addon The client to stop.
+     * @param id The client to stop.
      * @param bRestart If true, restart the client.
      * @return True if the client was found, false otherwise.
      */
-    bool StopClient(const ADDON::AddonPtr& addon, bool bRestart);
+    bool StopClient(const std::string& id, bool bRestart);
 
     /*!
      * @brief Handle addon events (enable, disable, ...).
@@ -120,13 +120,13 @@ namespace PVR
      * @brief Get the number of created clients.
      * @return The amount of created clients.
      */
-    int CreatedClientAmount(void) const;
+    int CreatedClientAmount() const;
 
     /*!
      * @brief Check whether there are any created clients.
      * @return True if at least one client is created.
      */
-    bool HasCreatedClients(void) const;
+    bool HasCreatedClients() const;
 
     /*!
      * @brief Check whether a given client ID points to a created client.
@@ -154,13 +154,13 @@ namespace PVR
      * @brief Get the ID of the first created client.
      * @return the ID or -1 if no clients are created;
      */
-    int GetFirstCreatedClientID(void);
+    int GetFirstCreatedClientID();
 
     /*!
      * @brief Get the number of enabled clients.
      * @return The amount of enabled clients.
      */
-    int EnabledClientAmount(void) const;
+    int EnabledClientAmount() const;
 
     //@}
 
@@ -259,7 +259,7 @@ namespace PVR
      * @brief Get a list of clients providing a channel scan dialog.
      * @return All clients supporting channel scan.
      */
-    std::vector<std::shared_ptr<CPVRClient>> GetClientsSupportingChannelScan(void) const;
+    std::vector<std::shared_ptr<CPVRClient>> GetClientsSupportingChannelScan() const;
 
     /*!
      * @brief Get a list of clients providing a channel settings dialog.
@@ -267,6 +267,23 @@ namespace PVR
      */
     std::vector<std::shared_ptr<CPVRClient>> GetClientsSupportingChannelSettings(bool bRadio) const;
 
+    /*!
+     * @brief Get whether or not any client supports recording size.
+     * @return True if any client supports recording size.
+     */
+    bool AnyClientSupportingRecordingsSize() const;
+
+    /*!
+     * @brief Get whether or not any client supports EPG.
+     * @return True if any client supports EPG.
+     */
+    bool AnyClientSupportingEPG() const;
+
+    /*!
+     * @brief Get whether or not any client supports recordings.
+     * @return True if any client supports recordings.
+     */
+    bool AnyClientSupportingRecordings() const;
     //@}
 
     /*! @name Power management methods */
@@ -317,17 +334,17 @@ namespace PVR
 
     /*!
      * @brief Check whether a client is known.
-     * @param client The client to check.
+     * @param id The addon id to check.
      * @return True if this client is known, false otherwise.
      */
-    bool IsKnownClient(const ADDON::AddonPtr& client) const;
+    bool IsKnownClient(const std::string& id) const;
 
     /*!
      * @brief Check whether an given addon instance is a created pvr client.
-     * @param addon The addon.
+     * @param id The addon id.
      * @return True if the the addon represents a created client, false otherwise.
      */
-    bool IsCreatedClient(const ADDON::AddonPtr& addon);
+    bool IsCreatedClient(const std::string& id);
 
     /*!
      * @brief Get all created clients and clients not (yet) ready to use.

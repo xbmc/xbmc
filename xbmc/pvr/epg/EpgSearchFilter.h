@@ -10,6 +10,7 @@
 
 #include "XBDateTime.h"
 #include "pvr/channels/PVRChannelNumber.h"
+#include "pvr/epg/EpgSearchData.h"
 
 #include <memory>
 #include <string>
@@ -17,8 +18,6 @@
 
 namespace PVR
 {
-  #define EPG_SEARCH_UNSET (-1)
-
   class CPVREpgInfoTag;
 
   /** Filter to apply with on a CPVREpgInfoTag */
@@ -58,21 +57,24 @@ namespace PVR
      */
     bool IsRadio() const { return m_bIsRadio; }
 
-    const std::string& GetSearchTerm() const { return m_strSearchTerm; }
-    void SetSearchTerm(const std::string& strSearchTerm) { m_strSearchTerm = strSearchTerm; }
+    const std::string& GetSearchTerm() const { return m_searchData.m_strSearchTerm; }
+    void SetSearchTerm(const std::string& strSearchTerm)
+    {
+      m_searchData.m_strSearchTerm = strSearchTerm;
+    }
     void SetSearchPhrase(const std::string& strSearchPhrase);
 
     bool IsCaseSensitive() const { return m_bIsCaseSensitive; }
     void SetCaseSensitive(bool bIsCaseSensitive) { m_bIsCaseSensitive = bIsCaseSensitive; }
 
-    bool ShouldSearchInDescription() const { return m_bSearchInDescription; }
-    void SetSearchInDescription(bool bSearchInDescription) {m_bSearchInDescription = bSearchInDescription; }
+    bool ShouldSearchInDescription() const { return m_searchData.m_bSearchInDescription; }
+    void SetSearchInDescription(bool bSearchInDescription)
+    {
+      m_searchData.m_bSearchInDescription = bSearchInDescription;
+    }
 
-    int GetGenreType() const { return m_iGenreType; }
-    void SetGenreType(int iGenreType) { m_iGenreType = iGenreType; }
-
-    int GetGenreSubType() const { return m_iGenreSubType; }
-    void SetGenreSubType(int iGenreSubType) { m_iGenreSubType = iGenreSubType; }
+    int GetGenreType() const { return m_searchData.m_iGenreType; }
+    void SetGenreType(int iGenreType) { m_searchData.m_iGenreType = iGenreType; }
 
     int GetMinimumDuration() const { return m_iMinimumDuration; }
     void SetMinimumDuration(int iMinimumDuration) { m_iMinimumDuration = iMinimumDuration; }
@@ -80,11 +82,14 @@ namespace PVR
     int GetMaximumDuration() const { return m_iMaximumDuration; }
     void SetMaximumDuration(int iMaximumDuration) { m_iMaximumDuration = iMaximumDuration; }
 
-    const CDateTime& GetStartDateTime() const { return m_startDateTime; }
-    void SetStartDateTime(const CDateTime& startDateTime) { m_startDateTime = startDateTime; }
+    const CDateTime& GetStartDateTime() const { return m_searchData.m_startDateTime; }
+    void SetStartDateTime(const CDateTime& startDateTime)
+    {
+      m_searchData.m_startDateTime = startDateTime;
+    }
 
-    const CDateTime& GetEndDateTime() const  { return m_endDateTime; }
-    void SetEndDateTime(const CDateTime& endDateTime) { m_endDateTime = endDateTime; }
+    const CDateTime& GetEndDateTime() const { return m_searchData.m_endDateTime; }
+    void SetEndDateTime(const CDateTime& endDateTime) { m_searchData.m_endDateTime = endDateTime; }
 
     bool ShouldIncludeUnknownGenres() const { return m_bIncludeUnknownGenres; }
     void SetIncludeUnknownGenres(bool bIncludeUnknownGenres) { m_bIncludeUnknownGenres = bIncludeUnknownGenres; }
@@ -107,8 +112,14 @@ namespace PVR
     bool ShouldIgnorePresentRecordings() const { return m_bIgnorePresentRecordings; }
     void SetIgnorePresentRecordings(bool bIgnorePresentRecordings) { m_bIgnorePresentRecordings = bIgnorePresentRecordings; }
 
-    unsigned int GetUniqueBroadcastId() const { return m_iUniqueBroadcastId; }
-    void SetUniqueBroadcastId(unsigned int iUniqueBroadcastId) { m_iUniqueBroadcastId = iUniqueBroadcastId; }
+    unsigned int GetUniqueBroadcastId() const { return m_searchData.m_iUniqueBroadcastId; }
+    void SetUniqueBroadcastId(unsigned int iUniqueBroadcastId)
+    {
+      m_searchData.m_iUniqueBroadcastId = iUniqueBroadcastId;
+    }
+
+    const PVREpgSearchData& GetEpgSearchData() const { return m_searchData; }
+    void SetEpgSearchDataFiltered() { m_bEpgSearchDataFiltered = true; }
 
   private:
     bool MatchGenre(const std::shared_ptr<CPVREpgInfoTag>& tag) const;
@@ -123,25 +134,21 @@ namespace PVR
     bool MatchTimers(const std::shared_ptr<CPVREpgInfoTag>& tag) const;
     bool MatchRecordings(const std::shared_ptr<CPVREpgInfoTag>& tag) const;
 
-    std::string m_strSearchTerm; /*!< The term to search for */
+    PVREpgSearchData m_searchData;
+    bool m_bEpgSearchDataFiltered = false;
+
     bool m_bIsCaseSensitive; /*!< Do a case sensitive search */
-    bool m_bSearchInDescription; /*!< Search for strSearchTerm in the description too */
-    int m_iGenreType; /*!< The genre type for an entry */
-    int m_iGenreSubType; /*!< The genre subtype for an entry */
     int m_iMinimumDuration; /*!< The minimum duration for an entry */
     int m_iMaximumDuration; /*!< The maximum duration for an entry */
-    CDateTime m_startDateTime; /*!< The minimum start time for an entry */
-    CDateTime m_endDateTime; /*!< The maximum end time for an entry */
     bool m_bIncludeUnknownGenres; /*!< Include unknown genres or not */
     bool m_bRemoveDuplicates; /*!< True to remove duplicate events, false if not */
-    const bool m_bIsRadio; /*!< True to filter radio channels only, false to tv only */
 
-    /* PVR specific filters */
+    // PVR specific filters
+    const bool m_bIsRadio; /*!< True to filter radio channels only, false to tv only */
     CPVRChannelNumber m_channelNumber; /*!< The channel number in the selected channel group */
     bool m_bFreeToAirOnly; /*!< Include free to air channels only */
     int m_iChannelGroup; /*!< The group this channel belongs to */
     bool m_bIgnorePresentTimers; /*!< True to ignore currently present timers (future recordings), false if not */
     bool m_bIgnorePresentRecordings; /*!< True to ignore currently active recordings, false if not */
-    unsigned int m_iUniqueBroadcastId; /*!< The broadcastid to search for */
   };
 }

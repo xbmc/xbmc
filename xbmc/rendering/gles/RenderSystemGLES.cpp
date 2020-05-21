@@ -6,20 +6,19 @@
  *  See LICENSES/README.md for more information.
  */
 
+#include "RenderSystemGLES.h"
+
 #include "guilib/DirtyRegion.h"
-#include "windowing/GraphicContext.h"
+#include "rendering/MatrixGL.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
-#include "RenderSystemGLES.h"
-#include "rendering/MatrixGL.h"
 #include "utils/GLUtils.h"
-#include "utils/log.h"
-#include "utils/TimeUtils.h"
-#include "utils/SystemInfo.h"
 #include "utils/MathUtils.h"
-#ifdef TARGET_POSIX
-#include "platform/posix/XTimeUtils.h"
-#endif
+#include "utils/SystemInfo.h"
+#include "utils/TimeUtils.h"
+#include "utils/XTimeUtils.h"
+#include "utils/log.h"
+#include "windowing/GraphicContext.h"
 
 #if defined(TARGET_LINUX)
 #include "utils/EGLUtils.h"
@@ -228,7 +227,7 @@ void CRenderSystemGLES::PresentRender(bool rendered, bool videoLayer)
 
   // if video is rendered to a separate layer, we should not block this thread
   if (!rendered && !videoLayer)
-    Sleep(40);
+    KODI::TIME::Sleep(40);
 }
 
 void CRenderSystemGLES::SetVSync(bool enable)
@@ -477,6 +476,14 @@ void CRenderSystemGLES::InitialiseShaders()
       CLog::Log(LOGERROR, "GUI Shader gles_shader_rgba_bob_oes.frag - compile and link failed");
     }
   }
+
+  m_pShader[SM_TEXTURE_NOALPHA].reset(new CGLESShader("gles_shader_texture_noalpha.frag", defines));
+  if (!m_pShader[SM_TEXTURE_NOALPHA]->CompileAndLink())
+  {
+    m_pShader[SM_TEXTURE_NOALPHA]->Free();
+    m_pShader[SM_TEXTURE_NOALPHA].reset();
+    CLog::Log(LOGERROR, "GUI Shader gles_shader_texture_noalpha.frag - compile and link failed");
+  }
 }
 
 void CRenderSystemGLES::ReleaseShaders()
@@ -524,6 +531,10 @@ void CRenderSystemGLES::ReleaseShaders()
   if (m_pShader[SM_TEXTURE_RGBA_BOB_OES])
     m_pShader[SM_TEXTURE_RGBA_BOB_OES]->Free();
   m_pShader[SM_TEXTURE_RGBA_BOB_OES].reset();
+
+  if (m_pShader[SM_TEXTURE_NOALPHA])
+    m_pShader[SM_TEXTURE_NOALPHA]->Free();
+  m_pShader[SM_TEXTURE_NOALPHA].reset();
 }
 
 void CRenderSystemGLES::EnableGUIShader(ESHADERMETHOD method)

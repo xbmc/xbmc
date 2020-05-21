@@ -1,4 +1,5 @@
 set(SOURCES CharsetConverter.cpp
+            CPUInfoWin32.cpp
             Environment.cpp
             MemUtils.cpp
             MessagePrinter.cpp
@@ -6,9 +7,11 @@ set(SOURCES CharsetConverter.cpp
             Filesystem.cpp
             pch.cpp
             WIN32Util.cpp
-            WindowHelper.cpp)
+            WindowHelper.cpp
+            XTimeUtils.cpp)
 
 set(HEADERS CharsetConverter.h
+            CPUInfoWin32.h
             dirent.h
             dxerr.h
             IMMNotificationClient.h

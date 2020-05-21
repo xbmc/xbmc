@@ -487,7 +487,7 @@ bool CPeripherals::LoadMappings()
   }
 
   TiXmlElement *pRootElement = xmlDoc.RootElement();
-  if (!pRootElement || strcmpi(pRootElement->Value(), "peripherals") != 0)
+  if (!pRootElement || StringUtils::CompareNoCase(pRootElement->Value(), "peripherals") != 0)
   {
     CLog::Log(LOGERROR, "%s - peripherals.xml does not contain <peripherals>", __FUNCTION__);
     return false;
@@ -575,7 +575,7 @@ void CPeripherals::GetSettingsFromMappingsFile(TiXmlElement *xmlNode, std::map<s
       std::string strEnums = XMLUtils::GetAttribute(currentNode, "lvalues");
       if (!strEnums.empty())
       {
-        std::vector< std::pair<int,int> > enums;
+        TranslatableIntegerSettingOptions enums;
         std::vector<std::string> valuesVec;
         StringUtils::Tokenize(strEnums, valuesVec, "|");
         for (unsigned int i = 0; i < valuesVec.size(); i++)

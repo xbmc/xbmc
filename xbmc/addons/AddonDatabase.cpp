@@ -557,12 +557,12 @@ bool CAddonDatabase::GetAddon(int id, AddonPtr &addon)
   return false;
 }
 
-bool CAddonDatabase::GetRepositoryContent(VECADDONS& addons)
+bool CAddonDatabase::GetRepositoryContent(VECADDONS& addons) const
 {
   return GetRepositoryContent("", addons);
 }
 
-bool CAddonDatabase::GetRepositoryContent(const std::string& id, VECADDONS& addons)
+bool CAddonDatabase::GetRepositoryContent(const std::string& id, VECADDONS& addons) const
 {
   try
   {
@@ -836,7 +836,9 @@ bool CAddonDatabase::Search(const std::string& search, VECADDONS& addons)
       return false;
 
     std::string strSQL;
-    strSQL=PrepareSQL("SELECT addonID FROM addons WHERE name LIKE '%%%s%%' OR summary LIKE '%%%s%%' OR description LIKE '%%%s%%'", search.c_str(), search.c_str(), search.c_str());
+    strSQL = PrepareSQL("SELECT id FROM addons WHERE name LIKE '%%%s%%' OR summary LIKE '%%%s%%' "
+                  "OR description LIKE '%%%s%%'", search.c_str(), search.c_str(), search.c_str());
+
     CLog::Log(LOGDEBUG, "%s query: %s", __FUNCTION__, strSQL.c_str());
 
     if (!m_pDS->query(strSQL)) return false;
@@ -845,7 +847,7 @@ bool CAddonDatabase::Search(const std::string& search, VECADDONS& addons)
     while (!m_pDS->eof())
     {
       AddonPtr addon;
-      GetAddon(m_pDS->fv(0).get_asString(),addon);
+      GetAddon(m_pDS->fv(0).get_asInt(), addon);
       if (addon->Type() >= ADDON_UNKNOWN+1 && addon->Type() < ADDON_SCRAPER_LIBRARY)
         addons.push_back(addon);
       m_pDS->next();

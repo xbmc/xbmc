@@ -8,8 +8,22 @@ import @APP_PACKAGE@.model.Media;
 
 public class TVEpisode extends Media
 {
+  private String showtitle;
   private int season;
   private int episode;
+  private String rating;
+  private int duration;
+  private String firstaired;
+
+  public String getShowTitle()
+  {
+    return showtitle;
+  }
+
+  public void setShowTitle(String showtitle)
+  {
+    this.showtitle = showtitle;
+  }
 
   public int getSeason()
   {
@@ -29,5 +43,35 @@ public class TVEpisode extends Media
   public void setEpisode(int episode)
   {
     this.episode = episode;
+  }
+
+  public String getRating()
+  {
+    return rating;
+  }
+
+  public void setRating(String rating)
+  {
+    this.rating = rating;
+  }
+
+  public int getDuration()
+  {
+    return duration;
+  }
+
+  public void setDuration(int duration)
+  {
+    this.duration = duration;
+  }
+
+  public String getFirstaired()
+  {
+    return firstaired;
+  }
+
+  public void setFirstaired(String firstaired)
+  {
+    this.firstaired = firstaired;
   }
 }

@@ -262,6 +262,7 @@ void CLangInfo::CRegion::SetGlobalLocale()
   }
 
   g_langInfo.m_systemLocale = current_locale; //! @todo move to CLangInfo class
+  g_langInfo.m_collationtype = 0;
   std::locale::global(current_locale);
 #endif
 
@@ -308,6 +309,7 @@ CLangInfo::CLangInfo()
   m_use24HourClock = DetermineUse24HourClockFromTimeFormat(m_defaultRegion.m_strTimeFormat);
   m_temperatureUnit = m_defaultRegion.m_tempUnit;
   m_speedUnit = m_defaultRegion.m_speedUnit;
+  m_collationtype = 0;
 }
 
 CLangInfo::~CLangInfo() = default;
@@ -534,6 +536,34 @@ std::string CLangInfo::GetLanguageInfoPath(const std::string &language)
     return "";
 
   return URIUtils::AddFileToFolder(GetLanguagePath(language), "langinfo.xml");
+}
+
+bool CLangInfo::UseLocaleCollation()
+{
+  if (m_collationtype == 0)
+  {
+    // Determine collation to use. When using MySQL/MariaDB or a platform that does not support
+    // locale language collation then use accent folding internal equivalent of utf8_general_ci
+    m_collationtype = 1;
+    if (!StringUtils::EqualsNoCase(
+            CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_databaseMusic.type,
+            "mysql") &&
+        !StringUtils::EqualsNoCase(
+            CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_databaseVideo.type,
+            "mysql") &&
+        CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_useLocaleCollation)
+    {
+      // Check that locale collation facet is implemented on the platform
+      const std::collate<wchar_t>& coll = std::use_facet<std::collate<wchar_t>>(m_systemLocale);
+      wchar_t lc = L'z';
+      wchar_t rc = 0x00E2; // Latin small letter a with circumflex
+      int comp_result = coll.compare(&lc, &lc + 1, &rc, &rc + 1);
+      if (comp_result > 0)
+        // Latin small letter a with circumflex put before z - collation works
+        m_collationtype = 2;
+    }
+  }
+  return m_collationtype == 2;
 }
 
 void CLangInfo::LoadTokens(const TiXmlNode* pTokens, std::set<std::string>& vecTokens)

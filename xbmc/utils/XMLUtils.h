@@ -25,7 +25,7 @@ public:
   static bool GetUInt(const TiXmlNode* pRootNode, const char* strTag, uint32_t& dwUIntValue);
   static bool GetLong(const TiXmlNode* pRootNode, const char* strTag, long& lLongValue);
   static bool GetFloat(const TiXmlNode* pRootNode, const char* strTag, float& value);
-  static bool GetDouble(const TiXmlNode* pRootNode, const char* strTag, double &value);
+  static bool GetDouble(const TiXmlNode* pRootNode, const char* strTag, double& value);
   static bool GetInt(const TiXmlNode* pRootNode, const char* strTag, int& iIntValue);
   static bool GetBoolean(const TiXmlNode* pRootNode, const char* strTag, bool& bBoolValue);
 
@@ -82,6 +82,7 @@ public:
   static void SetStringArray(TiXmlNode* pRootNode, const char *strTag, const std::vector<std::string>& arrayValue);
   static TiXmlNode* SetInt(TiXmlNode* pRootNode, const char *strTag, int value);
   static TiXmlNode* SetFloat(TiXmlNode* pRootNode, const char *strTag, float value);
+  static TiXmlNode* SetDouble(TiXmlNode* pRootNode, const char* strTag, double value);
   static void SetBoolean(TiXmlNode* pRootNode, const char *strTag, bool value);
   static void SetHex(TiXmlNode* pRootNode, const char *strTag, uint32_t value);
   static void SetPath(TiXmlNode* pRootNode, const char *strTag, const std::string& strValue);

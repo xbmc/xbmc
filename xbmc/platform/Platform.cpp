@@ -8,6 +8,8 @@
 
 #include "Platform.h"
 
+#include "ServiceBroker.h"
+
 // Override for platform ports
 #if !defined(PLATFORM_OVERRIDE)
 
@@ -26,6 +28,5 @@ CPlatform::~CPlatform() = default;
 
 void CPlatform::Init()
 {
-  // nothing for now
 }
 

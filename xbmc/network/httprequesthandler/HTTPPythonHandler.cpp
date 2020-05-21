@@ -8,6 +8,7 @@
 
 #include "HTTPPythonHandler.h"
 
+#include "ServiceBroker.h"
 #include "URL.h"
 #include "addons/Webinterface.h"
 #include "filesystem/File.h"
@@ -148,7 +149,8 @@ int CHTTPPythonHandler::HandleRequest()
       pythonRequest->port = port;
     }
 
-    CHTTPPythonInvoker* pythonInvoker = new CHTTPPythonWsgiInvoker(&g_pythonParser, pythonRequest);
+    CHTTPPythonInvoker* pythonInvoker =
+        new CHTTPPythonWsgiInvoker(&CServiceBroker::GetXBPython(), pythonRequest);
     LanguageInvokerPtr languageInvokerPtr(pythonInvoker);
     int result = CScriptInvocationManager::GetInstance().ExecuteSync(m_scriptPath, languageInvokerPtr, m_addon, args, 30000, false);
 
@@ -233,7 +235,10 @@ bool CHTTPPythonHandler::appendPostData(const char *data, size_t size)
 {
   if (m_requestData.size() + size > MAX_STRING_POST_SIZE)
   {
-    CLog::Log(LOGERROR, "WebServer: Stopped uploading post since it exceeded size limitations");
+    CServiceBroker::GetLogging()
+        .GetLogger("CHTTPPythonHandler")
+        ->error("Stopped uploading post since it exceeded size limitations ({})",
+                MAX_STRING_POST_SIZE);
     return false;
   }
 

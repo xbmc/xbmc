@@ -54,11 +54,6 @@ XBMCHelper::GetInstance()
 
 /////////////////////////////////////////////////////////////////////////////
 XBMCHelper::XBMCHelper()
-  : m_alwaysOn(false)
-  , m_mode(APPLE_REMOTE_DISABLED)
-  , m_sequenceDelay(0)
-  , m_port(0)
-  , m_errorStarting(false)
 {
   // Compute the KODI_HOME path.
   std::string homePath;
@@ -158,7 +153,7 @@ void XBMCHelper::Stop()
   int pid = GetProcessPid(XBMC_HELPER_PROGRAM);
   if (pid != -1)
   {
-    CLog::Log(LOGDEBUG,"XBMCHelper: Sending SIGKILL to %s\n", XBMC_HELPER_PROGRAM);
+    CLog::Log(LOGDEBUG, "XBMCHelper: Sending SIGKILL to %s", XBMC_HELPER_PROGRAM);
     kill(pid, SIGKILL);
   }
 }

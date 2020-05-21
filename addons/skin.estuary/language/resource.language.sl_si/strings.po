@@ -144,6 +144,10 @@ msgctxt "#31072"
 msgid "Power Options"
 msgstr "Zapusti"
 
+msgctxt "#31074"
+msgid "Total duration"
+msgstr "Celotno trajanje"
+
 msgctxt "#31079"
 msgid "Cast not available"
 msgstr "Zasedba ni na voljo"

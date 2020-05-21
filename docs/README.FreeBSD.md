@@ -1,7 +1,7 @@
 ![Kodi Logo](resources/banner_slim.png)
 
 # FreeBSD build guide
-This guide has been tested with FreeBSD 11.1 x86_64. Please read it in full before you proceed to familiarize yourself with the build procedure.
+This guide has been tested with FreeBSD 12.1 x86_64. Please read it in full before you proceed to familiarize yourself with the build procedure.
 
 Several other distributions have **[specific build guides](README.md)** and a general **[Linux build guide](README.Linux.md)** is also available.
 
@@ -76,7 +76,7 @@ If you get a `package not found` type of message with the below command, remove 
 
 Install build dependencies:
 ```
-sudo pkg install autoconf automake avahi-app binutils cmake curl dbus doxygen e2fsprogs-libuuid enca encodings flac flatbuffers font-util fontconfig freetype2 fribidi gawk gettext-tools giflib git glew gmake gmp gnutls gperf gstreamer1-vaapi hal jpeg-turbo libaacs libass libbdplus libbluray libcapn libcdio libcec libedit libfmt libgcrypt libgpg-error libidn libinotify libmicrohttpd libnfs libogg libplist librtmp libtool libudev-devd libva libvdpau libvorbis libxslt lirc lzo2 m4 mesa-libs mysql57-client nasm openjdk8 p8-platform pkgconf python2 rapidjson samba46 shairplay sndio sqlite3 swig30 taglib tiff tinyxml xf86-input-keyboard xf86-input-mouse xorg-proto xorg-server xrandr zip
+sudo pkg install autoconf automake avahi-app binutils cmake curl dbus doxygen e2fsprogs-libuuid enca encodings flac flatbuffers font-util fontconfig freetype2 fribidi fstrcmp gawk gettext-tools giflib git glew gmake gmp gnutls googletest gperf gstreamer1-vaapi hal jpeg-turbo libaacs libass libbdplus libbluray libcapn libcdio libcec libedit libfmt libgcrypt libgpg-error libidn libinotify libmicrohttpd libnfs libogg libplist librtmp libtool libudev-devd libva libvdpau libvorbis libxslt lirc lzo2 m4 mesa-libs mysql57-client nasm openjdk8 p8-platform pkgconf python3 rapidjson shairplay sndio sqlite3 swig30 taglib tiff tinyxml xf86-input-keyboard xf86-input-mouse xorg-server xrandr zip
 ```
 
 **WARNING:** Make sure you copy paste the entire line or you might receive an error or miss a few dependencies.
@@ -116,10 +116,8 @@ cd $HOME/kodi-build
 
 Configure build:
 ```
-cmake ../kodi -DCMAKE_INSTALL_PREFIX=/usr/local -DENABLE_INTERNAL_FSTRCMP=1
+cmake ../kodi -DCMAKE_INSTALL_PREFIX=/usr/local
 ```
-
-Internal libfstrcmp is used since it is not available through pkg.
 
 ### 4.2. Build
 ```

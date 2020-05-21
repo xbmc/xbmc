@@ -9,6 +9,7 @@
 #include "PVRStreamProperties.h"
 
 #include "addons/kodi-addon-dev-kit/include/kodi/xbmc_pvr_types.h"
+#include "utils/StringUtils.h"
 
 using namespace PVR;
 
@@ -30,4 +31,14 @@ std::string CPVRStreamProperties::GetStreamMimeType() const
       return prop.second;
   }
   return {};
+}
+
+bool CPVRStreamProperties::EPGPlaybackAsLive() const
+{
+  for (const auto& prop : *this)
+  {
+    if (prop.first == PVR_STREAM_PROPERTY_EPGPLAYBACKASLIVE)
+      return StringUtils::EqualsNoCase(prop.second, "true");
+  }
+  return false;
 }

@@ -10,7 +10,6 @@
 
 #include "ServiceBroker.h"
 #include "addons/kodi-addon-dev-kit/include/kodi/xbmc_pvr_types.h"
-#include "cores/DataCacheCore.h"
 #include "pvr/PVRManager.h"
 #include "pvr/PVRPlaybackState.h"
 #include "pvr/addons/PVRClient.h"
@@ -37,15 +36,25 @@ CPVREpgInfoTag::CPVREpgInfoTag()
 {
 }
 
-CPVREpgInfoTag::CPVREpgInfoTag(const std::shared_ptr<CPVREpgChannelData>& channelData, int iEpgID)
-: m_iUniqueBroadcastID(EPG_TAG_INVALID_UID),
-  m_iFlags(EPG_TAG_FLAG_UNDEFINED),
-  m_iEpgID(iEpgID)
+CPVREpgInfoTag::CPVREpgInfoTag(const std::shared_ptr<CPVREpgChannelData>& channelData,
+                               int iEpgID,
+                               const CDateTime& start,
+                               const CDateTime& end,
+                               bool bIsGapTag)
+  : m_iUniqueBroadcastID(EPG_TAG_INVALID_UID),
+    m_iFlags(EPG_TAG_FLAG_UNDEFINED),
+    m_bIsGapTag(bIsGapTag),
+    m_iEpgID(iEpgID)
 {
   if (channelData)
     m_channelData = channelData;
   else
     m_channelData = std::make_shared<CPVREpgChannelData>();
+
+  const CDateTimeSpan correction(
+      0, 0, 0, CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_iPVRTimeCorrection);
+  m_startTime = start + correction;
+  m_endTime = end + correction;
 
   UpdatePath();
 }
@@ -63,9 +72,9 @@ CPVREpgInfoTag::CPVREpgInfoTag(const EPG_TAG& data, int iClientId, const std::sh
   m_iFlags(data.iFlags),
   m_iEpgID(iEpgID)
 {
-  // firstAired is optional, so check if supported before assigning it
-  if (data.firstAired > 0)
-    m_firstAired = time_t(data.firstAired + CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_iPVRTimeCorrection);
+  // strFirstAired is optional, so check if supported before assigning it
+  if (data.strFirstAired && strlen(data.strFirstAired) > 0)
+    m_firstAired.SetFromW3CDate(data.strFirstAired);
 
   if (channelData)
   {
@@ -128,35 +137,10 @@ bool CPVREpgInfoTag::operator ==(const CPVREpgInfoTag& right) const
     return true;
 
   CSingleLock lock(m_critSection);
-  return (m_iDatabaseID == right.m_iDatabaseID &&
-          m_iGenreType == right.m_iGenreType &&
-          m_iGenreSubType == right.m_iGenreSubType &&
-          m_iParentalRating == right.m_iParentalRating &&
-          m_firstAired == right.m_firstAired &&
-          m_iStarRating == right.m_iStarRating &&
-          m_iSeriesNumber == right.m_iSeriesNumber &&
-          m_iEpisodeNumber == right.m_iEpisodeNumber &&
-          m_iEpisodePart == right.m_iEpisodePart &&
-          m_iUniqueBroadcastID == right.m_iUniqueBroadcastID &&
-          m_strTitle == right.m_strTitle &&
-          m_strPlotOutline == right.m_strPlotOutline &&
-          m_strPlot == right.m_strPlot &&
-          m_strOriginalTitle == right.m_strOriginalTitle &&
-          m_cast == right.m_cast &&
-          m_directors == right.m_directors &&
-          m_writers == right.m_writers &&
-          m_iYear == right.m_iYear &&
-          m_strIMDBNumber == right.m_strIMDBNumber &&
-          m_genre == right.m_genre &&
-          m_strEpisodeName == right.m_strEpisodeName &&
-          m_iEpgID == right.m_iEpgID &&
-          m_strIconPath == right.m_strIconPath &&
-          m_strFileNameAndPath == right.m_strFileNameAndPath &&
-          m_startTime == right.m_startTime &&
-          m_endTime == right.m_endTime &&
-          m_iFlags == right.m_iFlags &&
-          m_strSeriesLink == right.m_strSeriesLink &&
-          m_channelData == right.m_channelData);
+  return (m_iUniqueBroadcastID == right.m_iUniqueBroadcastID && m_channelData &&
+          right.m_channelData &&
+          m_channelData->UniqueClientChannelId() == right.m_channelData->UniqueClientChannelId() &&
+          m_channelData->ClientId() == right.m_channelData->ClientId());
 }
 
 bool CPVREpgInfoTag::operator !=(const CPVREpgInfoTag& right) const
@@ -210,66 +194,35 @@ int CPVREpgInfoTag::ClientID() const
   return m_channelData->ClientId();
 }
 
-void CPVREpgInfoTag::ToSortable(SortItem& sortable, Field field) const
-{
-  CSingleLock lock(m_critSection);
-
-  switch (field)
-  {
-    case FieldChannelName:
-      sortable[FieldChannelName] = m_channelData->ChannelName();
-      break;
-    case FieldChannelNumber:
-      sortable[FieldChannelNumber] = m_channelData->SortableChannelNumber();
-      break;
-    case FieldClientChannelOrder:
-      if (m_channelData->ClientOrder())
-        sortable[FieldClientChannelOrder] = m_channelData->ClientOrder();
-      else
-        sortable[FieldClientChannelOrder] = m_channelData->SortableClientChannelNumber();
-      break;
-    case FieldLastPlayed:
-      sortable[FieldLastPlayed] = m_channelData->LastWatched();
-      break;
-    default:
-      break;
-  }
-}
-
 CDateTime CPVREpgInfoTag::GetCurrentPlayingTime() const
 {
-  if (CServiceBroker::GetPVRManager().PlaybackState()->IsPlayingChannel(ClientID(), UniqueChannelID()))
-  {
-    // start time valid?
-    time_t startTime = CServiceBroker::GetDataCacheCore().GetStartTime();
-    if (startTime > 0)
-    {
-      return CDateTime(startTime + CServiceBroker::GetDataCacheCore().GetPlayTime() / 1000);
-    }
-  }
-
-  return CDateTime::GetUTCDateTime();
+  const std::shared_ptr<CPVRPlaybackState> playbackState =
+      CServiceBroker::GetPVRManager().PlaybackState();
+  if (playbackState && playbackState->IsPlayingChannel(ClientID(), UniqueChannelID()))
+    return playbackState->GetPlaybackTime();
+  else
+    return CDateTime::GetUTCDateTime();
 }
 
-bool CPVREpgInfoTag::IsActive(void) const
+bool CPVREpgInfoTag::IsActive() const
 {
   CDateTime now = GetCurrentPlayingTime();
   return (m_startTime <= now && m_endTime > now);
 }
 
-bool CPVREpgInfoTag::WasActive(void) const
+bool CPVREpgInfoTag::WasActive() const
 {
   CDateTime now = GetCurrentPlayingTime();
   return (m_endTime < now);
 }
 
-bool CPVREpgInfoTag::IsUpcoming(void) const
+bool CPVREpgInfoTag::IsUpcoming() const
 {
   CDateTime now = GetCurrentPlayingTime();
   return (m_startTime > now);
 }
 
-float CPVREpgInfoTag::ProgressPercentage(void) const
+float CPVREpgInfoTag::ProgressPercentage() const
 {
   float fReturn = 0.0f;
 
@@ -287,7 +240,7 @@ float CPVREpgInfoTag::ProgressPercentage(void) const
   return fReturn;
 }
 
-int CPVREpgInfoTag::Progress(void) const
+int CPVREpgInfoTag::Progress() const
 {
   time_t currentTime, startTime;
   CDateTime::GetCurrentDateTime().GetAsUTCDateTime().GetAsTime(currentTime);
@@ -305,40 +258,40 @@ void CPVREpgInfoTag::SetUniqueBroadcastID(unsigned int iUniqueBroadcastID)
   m_iUniqueBroadcastID = iUniqueBroadcastID;
 }
 
-unsigned int CPVREpgInfoTag::UniqueBroadcastID(void) const
+unsigned int CPVREpgInfoTag::UniqueBroadcastID() const
 {
   return m_iUniqueBroadcastID;
 }
 
-int CPVREpgInfoTag::DatabaseID(void) const
+int CPVREpgInfoTag::DatabaseID() const
 {
   return m_iDatabaseID;
 }
 
-int CPVREpgInfoTag::UniqueChannelID(void) const
+int CPVREpgInfoTag::UniqueChannelID() const
 {
   CSingleLock lock(m_critSection);
   return m_channelData->UniqueClientChannelId();
 }
 
-CDateTime CPVREpgInfoTag::StartAsUTC(void) const
+CDateTime CPVREpgInfoTag::StartAsUTC() const
 {
   return m_startTime;
 }
 
-CDateTime CPVREpgInfoTag::StartAsLocalTime(void) const
+CDateTime CPVREpgInfoTag::StartAsLocalTime() const
 {
   CDateTime retVal;
   retVal.SetFromUTCDateTime(m_startTime);
   return retVal;
 }
 
-CDateTime CPVREpgInfoTag::EndAsUTC(void) const
+CDateTime CPVREpgInfoTag::EndAsUTC() const
 {
   return m_endTime;
 }
 
-CDateTime CPVREpgInfoTag::EndAsLocalTime(void) const
+CDateTime CPVREpgInfoTag::EndAsLocalTime() const
 {
   CDateTime retVal;
   retVal.SetFromUTCDateTime(m_endTime);
@@ -350,7 +303,7 @@ void CPVREpgInfoTag::SetEndFromUTC(const CDateTime& end)
   m_endTime = end;
 }
 
-int CPVREpgInfoTag::GetDuration(void) const
+int CPVREpgInfoTag::GetDuration() const
 {
   time_t start, end;
   m_startTime.GetAsTime(start);
@@ -378,17 +331,17 @@ std::string CPVREpgInfoTag::OriginalTitle() const
   return m_strOriginalTitle;
 }
 
-const std::vector<std::string> CPVREpgInfoTag::Cast(void) const
+const std::vector<std::string> CPVREpgInfoTag::Cast() const
 {
   return m_cast;
 }
 
-const std::vector<std::string> CPVREpgInfoTag::Directors(void) const
+const std::vector<std::string> CPVREpgInfoTag::Directors() const
 {
   return m_directors;
 }
 
-const std::vector<std::string> CPVREpgInfoTag::Writers(void) const
+const std::vector<std::string> CPVREpgInfoTag::Writers() const
 {
   return m_writers;
 }
@@ -418,7 +371,7 @@ const std::string CPVREpgInfoTag::GetGenresLabel() const
   return StringUtils::Join(m_genre, CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoItemSeparator);
 }
 
-int CPVREpgInfoTag::Year(void) const
+int CPVREpgInfoTag::Year() const
 {
   return m_iYear;
 }
@@ -440,52 +393,48 @@ void CPVREpgInfoTag::SetGenre(int iGenreType, int iGenreSubType, const char* str
        * EPG_GENRE_USE_STRING leaving type available for genre category, use the provided genre description for the text. */
       m_genre = Tokenize(strGenre);
     }
-    else
-    {
-      /* Determine the genre description from the type and subtype IDs */
-      m_genre = StringUtils::Split(CPVREpg::ConvertGenreIdToString(iGenreType, iGenreSubType), CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoItemSeparator);
-    }
+  }
+
+  if (m_genre.empty())
+  {
+    // Determine the genre description from the type and subtype IDs.
+    m_genre = StringUtils::Split(
+        CPVREpg::ConvertGenreIdToString(iGenreType, iGenreSubType),
+        CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoItemSeparator);
   }
 }
 
-int CPVREpgInfoTag::GenreType(void) const
+int CPVREpgInfoTag::GenreType() const
 {
   return m_iGenreType;
 }
 
-int CPVREpgInfoTag::GenreSubType(void) const
+int CPVREpgInfoTag::GenreSubType() const
 {
   return m_iGenreSubType;
 }
 
-const std::vector<std::string> CPVREpgInfoTag::Genre(void) const
+const std::vector<std::string> CPVREpgInfoTag::Genre() const
 {
   return m_genre;
 }
 
-CDateTime CPVREpgInfoTag::FirstAiredAsUTC(void) const
+CDateTime CPVREpgInfoTag::FirstAired() const
 {
   return m_firstAired;
 }
 
-CDateTime CPVREpgInfoTag::FirstAiredAsLocalTime(void) const
-{
-  CDateTime retVal;
-  retVal.SetFromUTCDateTime(m_firstAired);
-  return retVal;
-}
-
-int CPVREpgInfoTag::ParentalRating(void) const
+int CPVREpgInfoTag::ParentalRating() const
 {
   return m_iParentalRating;
 }
 
-int CPVREpgInfoTag::StarRating(void) const
+int CPVREpgInfoTag::StarRating() const
 {
   return m_iStarRating;
 }
 
-int CPVREpgInfoTag::SeriesNumber(void) const
+int CPVREpgInfoTag::SeriesNumber() const
 {
   return m_iSeriesNumber;
 }
@@ -495,12 +444,12 @@ std::string CPVREpgInfoTag::SeriesLink() const
   return m_strSeriesLink;
 }
 
-int CPVREpgInfoTag::EpisodeNumber(void) const
+int CPVREpgInfoTag::EpisodeNumber() const
 {
   return m_iEpisodeNumber;
 }
 
-int CPVREpgInfoTag::EpisodePart(void) const
+int CPVREpgInfoTag::EpisodePart() const
 {
   return m_iEpisodePart;
 }
@@ -510,12 +459,12 @@ std::string CPVREpgInfoTag::EpisodeName() const
   return m_strEpisodeName;
 }
 
-std::string CPVREpgInfoTag::Icon(void) const
+std::string CPVREpgInfoTag::Icon() const
 {
   return m_strIconPath;
 }
 
-std::string CPVREpgInfoTag::Path(void) const
+std::string CPVREpgInfoTag::Path() const
 {
   return m_strFileNameAndPath;
 }
@@ -641,12 +590,12 @@ std::vector<PVR_EDL_ENTRY> CPVREpgInfoTag::GetEdl() const
   return edls;
 }
 
-void CPVREpgInfoTag::UpdatePath(void)
+void CPVREpgInfoTag::UpdatePath()
 {
   m_strFileNameAndPath = StringUtils::Format("pvr://guide/%04i/%s.epg", EpgID(), m_startTime.GetAsDBDateTime().c_str());
 }
 
-int CPVREpgInfoTag::EpgID(void) const
+int CPVREpgInfoTag::EpgID() const
 {
   return m_iEpgID;
 }
@@ -657,7 +606,7 @@ void CPVREpgInfoTag::SetEpgID(int iEpgID)
   UpdatePath(); // Note: path contains epg id.
 }
 
-bool CPVREpgInfoTag::IsRecordable(void) const
+bool CPVREpgInfoTag::IsRecordable() const
 {
   bool bIsRecordable = false;
 
@@ -671,7 +620,7 @@ bool CPVREpgInfoTag::IsRecordable(void) const
   return bIsRecordable;
 }
 
-bool CPVREpgInfoTag::IsPlayable(void) const
+bool CPVREpgInfoTag::IsPlayable() const
 {
   bool bIsPlayable = false;
 
@@ -685,9 +634,9 @@ bool CPVREpgInfoTag::IsPlayable(void) const
   return bIsPlayable;
 }
 
-bool CPVREpgInfoTag::IsSeries(void) const
+bool CPVREpgInfoTag::IsSeries() const
 {
-  if ((m_iFlags & EPG_TAG_FLAG_IS_SERIES) > 0 || SeriesNumber() > 0 || EpisodeNumber() > 0 || EpisodePart() > 0)
+  if ((m_iFlags & EPG_TAG_FLAG_IS_SERIES) > 0 || SeriesNumber() >= 0 || EpisodeNumber() >= 0 || EpisodePart() >= 0)
     return true;
   else
     return false;
@@ -703,6 +652,32 @@ bool CPVREpgInfoTag::IsParentalLocked() const
 {
   CSingleLock lock(m_critSection);
   return m_channelData->IsLocked();
+}
+
+bool CPVREpgInfoTag::IsGapTag() const
+{
+  CSingleLock lock(m_critSection);
+  return m_bIsGapTag;
+}
+
+bool CPVREpgInfoTag::IsNew() const
+{
+  return (m_iFlags & EPG_TAG_FLAG_IS_NEW) > 0;
+}
+
+bool CPVREpgInfoTag::IsPremiere() const
+{
+  return (m_iFlags & EPG_TAG_FLAG_IS_PREMIERE) > 0;
+}
+
+bool CPVREpgInfoTag::IsFinale() const
+{
+  return (m_iFlags & EPG_TAG_FLAG_IS_FINALE) > 0;
+}
+
+bool CPVREpgInfoTag::IsLive() const
+{
+  return (m_iFlags & EPG_TAG_FLAG_IS_LIVE) > 0;
 }
 
 const std::vector<std::string> CPVREpgInfoTag::Tokenize(const std::string& str)

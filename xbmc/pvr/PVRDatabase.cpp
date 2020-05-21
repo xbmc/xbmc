@@ -17,7 +17,6 @@
 #include "pvr/timers/PVRTimerInfoTag.h"
 #include "pvr/timers/PVRTimerType.h"
 #include "settings/AdvancedSettings.h"
-#include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "threads/SingleLock.h"
 #include "utils/StringUtils.h"
@@ -280,7 +279,7 @@ int CPVRDatabase::GetPriority(const CPVRClient& client)
 
 /********** Channel methods **********/
 
-bool CPVRDatabase::DeleteChannels(void)
+bool CPVRDatabase::DeleteChannels()
 {
   CLog::LogFC(LOGDEBUG, LOGPVR, "Deleting all channels from the database");
 
@@ -305,9 +304,7 @@ bool CPVRDatabase::Delete(const CPVRChannel& channel)
 
 int CPVRDatabase::Get(CPVRChannelGroup& results, bool bCompressDB)
 {
-  int iReturn(0);
-  bool bUseEpgDB = CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_EPG_STOREEPGINDATABASE);
-
+  int iReturn = 0;
   std::string strQuery = PrepareSQL("SELECT channels.idChannel, channels.iUniqueId, channels.bIsRadio, channels.bIsHidden, channels.bIsUserSetIcon, channels.bIsUserSetName, "
       "channels.sIconPath, channels.sChannelName, channels.bIsVirtual, channels.bEPGEnabled, channels.sEPGScraper, channels.iLastWatched, channels.iClientId, channels.bIsLocked, "
       "map_channelgroups_channels.iChannelNumber, map_channelgroups_channels.iSubChannelNumber, map_channelgroups_channels.iOrder, map_channelgroups_channels.iClientChannelNumber, "
@@ -338,7 +335,7 @@ int CPVRDatabase::Get(CPVRChannelGroup& results, bool bCompressDB)
         channel->m_strEPGScraper = m_pDS->fv("sEPGScraper").get_asString();
         channel->m_iLastWatched = static_cast<time_t>(m_pDS->fv("iLastWatched").get_asInt());
         channel->m_iClientId = m_pDS->fv("iClientId").get_asInt();
-        channel->m_iEpgId = bUseEpgDB ? m_pDS->fv("idEpg").get_asInt() : -1;
+        channel->m_iEpgId = m_pDS->fv("idEpg").get_asInt();
         channel->m_bHasArchive = m_pDS->fv("bHasArchive").get_asBool();
         channel->UpdateEncryptionName();
 
@@ -536,7 +533,7 @@ bool CPVRDatabase::RemoveStaleChannelsFromGroup(const CPVRChannelGroup& group)
   return bDelete;
 }
 
-bool CPVRDatabase::DeleteChannelGroups(void)
+bool CPVRDatabase::DeleteChannelGroups()
 {
   CLog::LogFC(LOGDEBUG, LOGPVR, "Deleting all channel groups from the database");
 
@@ -766,7 +763,7 @@ bool CPVRDatabase::PersistGroupMembers(const CPVRChannelGroup& group)
 
 /********** Client methods **********/
 
-bool CPVRDatabase::ResetEPG(void)
+bool CPVRDatabase::ResetEPG()
 {
   CSingleLock lock(m_critSection);
   const std::string strQuery = PrepareSQL("UPDATE channels SET idEpg = 0");
@@ -783,7 +780,7 @@ bool CPVRDatabase::Persist(CPVRChannelGroup& group)
   }
 
   std::string strQuery;
-  bReturn = true;
+
   CSingleLock lock(m_critSection);
   {
     /* insert a new entry when this is a new group, or replace the existing one otherwise */

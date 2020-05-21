@@ -123,7 +123,7 @@ void CTCPServer::Process()
     if (res < 0)
     {
       CLog::Log(LOGERROR, "JSONRPC Server: Select failed");
-      Sleep(1000);
+      CThread::Sleep(1000);
       Initialize();
     }
     else if (res > 0)
@@ -189,7 +189,7 @@ void CTCPServer::Process()
             CLog::Log(LOGERROR, "JSONRPC Server: Accept of new connection failed: %d", errno);
             if (EBADF == errno)
             {
-              Sleep(1000);
+              CThread::Sleep(1000);
               Initialize();
               break;
             }

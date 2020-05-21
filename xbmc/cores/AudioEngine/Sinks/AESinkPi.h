@@ -10,9 +10,9 @@
 
 #include "cores/AudioEngine/Interfaces/AESink.h"
 #include "cores/AudioEngine/Utils/AEDeviceInfo.h"
+#include "utils/XTimeUtils.h"
 
 #include "platform/linux/OMXCore.h"
-#include "platform/posix/XTimeUtils.h"
 
 class CAESinkPi : public IAESink
 {

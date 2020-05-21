@@ -22,45 +22,42 @@
 #ifdef HAS_CDDA_RIPPER
 #include "cdrip/CDDARipper.h"
 #endif
+#include "Autorun.h"
+#include "FileItem.h"
+#include "GUIInfoManager.h"
 #include "GUIPassword.h"
 #include "PartyModeManager.h"
-#include "GUIInfoManager.h"
+#include "URL.h"
+#include "addons/GUIDialogAddonInfo.h"
+#include "cores/IPlayer.h"
+#include "cores/playercorefactory/PlayerCoreFactory.h"
+#include "dialogs/GUIDialogProgress.h"
+#include "dialogs/GUIDialogSmartPlaylistEditor.h"
+#include "dialogs/GUIDialogYesNo.h"
 #include "filesystem/Directory.h"
 #include "filesystem/MusicDatabaseDirectory.h"
-#include "addons/GUIDialogAddonInfo.h"
-#include "dialogs/GUIDialogSmartPlaylistEditor.h"
-#include "view/GUIViewState.h"
-#include "music/tags/MusicInfoTag.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
+#include "guilib/LocalizeStrings.h"
+#include "guilib/guiinfo/GUIInfoLabels.h"
 #include "input/Key.h"
-#include "dialogs/GUIDialogYesNo.h"
-#include "dialogs/GUIDialogProgress.h"
-#include "FileItem.h"
 #include "messaging/helpers/DialogHelper.h"
 #include "messaging/helpers/DialogOKHelper.h"
+#include "music/infoscanner/MusicInfoScanner.h"
+#include "music/tags/MusicInfoTag.h"
 #include "profiles/ProfileManager.h"
-#include "storage/MediaManager.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/MediaSourceSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
-#include "guilib/LocalizeStrings.h"
-#include "utils/log.h"
-#include "utils/URIUtils.h"
+#include "storage/MediaManager.h"
 #include "utils/StringUtils.h"
+#include "utils/URIUtils.h"
 #include "utils/Variant.h"
-#include "URL.h"
-#include "music/infoscanner/MusicInfoScanner.h"
-#include "guilib/guiinfo/GUIInfoLabels.h"
-#include "cores/IPlayer.h"
-#include "cores/playercorefactory/PlayerCoreFactory.h"
-#include "Autorun.h"
+#include "utils/XTimeUtils.h"
+#include "utils/log.h"
 #include "video/dialogs/GUIDialogVideoInfo.h"
-
-#ifdef TARGET_POSIX
-#include "platform/posix/XTimeUtils.h"
-#endif
+#include "view/GUIViewState.h"
 
 #include <algorithm>
 
@@ -500,7 +497,7 @@ void CGUIWindowMusicBase::AddItemToPlayList(const CFileItemPtr &pItem, CFileItem
 
 void CGUIWindowMusicBase::UpdateButtons()
 {
-  CONTROL_ENABLE_ON_CONDITION(CONTROL_BTNRIP, g_mediaManager.IsAudio());
+  CONTROL_ENABLE_ON_CONDITION(CONTROL_BTNRIP, CServiceBroker::GetMediaManager().IsAudio());
 
   CONTROL_ENABLE_ON_CONDITION(CONTROL_BTNSCAN,
                               !(m_vecItems->IsVirtualDirectoryRoot() ||
@@ -568,10 +565,10 @@ void CGUIWindowMusicBase::GetContextButtons(int itemNumber, CContextButtons &but
       }
 #ifdef HAS_DVD_DRIVE
       // enable Rip CD Audio or Track button if we have an audio disc
-      if (g_mediaManager.IsDiscInDrive() && m_vecItems->IsCDDA())
+      if (CServiceBroker::GetMediaManager().IsDiscInDrive() && m_vecItems->IsCDDA())
       {
         // those cds can also include Audio Tracks: CDExtra and MixedMode!
-        MEDIA_DETECT::CCdInfo *pCdInfo = g_mediaManager.GetCdInfo();
+        MEDIA_DETECT::CCdInfo* pCdInfo = CServiceBroker::GetMediaManager().GetCdInfo();
         if (pCdInfo->IsAudio(1) || pCdInfo->IsCDExtra(1) || pCdInfo->IsMixedMode(1))
           buttons.Add(CONTEXT_BUTTON_RIP_TRACK, 610);
       }
@@ -579,8 +576,8 @@ void CGUIWindowMusicBase::GetContextButtons(int itemNumber, CContextButtons &but
     }
 
     // enable CDDB lookup if the current dir is CDDA
-    if (g_mediaManager.IsDiscInDrive() && m_vecItems->IsCDDA() &&
-       (profileManager->GetCurrentProfile().canWriteDatabases() || g_passwordManager.bMasterUser))
+    if (CServiceBroker::GetMediaManager().IsDiscInDrive() && m_vecItems->IsCDDA() &&
+        (profileManager->GetCurrentProfile().canWriteDatabases() || g_passwordManager.bMasterUser))
     {
       buttons.Add(CONTEXT_BUTTON_CDDB, 16002);
     }
@@ -699,7 +696,7 @@ bool CGUIWindowMusicBase::OnAddMediaSource()
 
 void CGUIWindowMusicBase::OnRipCD()
 {
-  if(g_mediaManager.IsAudio())
+  if (CServiceBroker::GetMediaManager().IsAudio())
   {
     if (!g_application.CurrentFileItem().IsCDDA())
     {
@@ -714,7 +711,7 @@ void CGUIWindowMusicBase::OnRipCD()
 
 void CGUIWindowMusicBase::OnRipTrack(int iItem)
 {
-  if(g_mediaManager.IsAudio())
+  if (CServiceBroker::GetMediaManager().IsAudio())
   {
     if (!g_application.CurrentFileItem().IsCDDA())
     {
@@ -893,7 +890,7 @@ void CGUIWindowMusicBase::OnRetrieveMusicInfo(CFileItemList& items)
         m_dlgProgress->Progress();
       }
     } // if (bShowProgress)
-    Sleep(1);
+    KODI::TIME::Sleep(1);
   } // while (m_musicInfoLoader.IsLoading())
 
   if (bProgressVisible && m_dlgProgress)
@@ -906,8 +903,13 @@ bool CGUIWindowMusicBase::GetDirectory(const std::string &strDirectory, CFileIte
   bool bResult = CGUIMediaWindow::GetDirectory(strDirectory, items);
   if (bResult)
   {
-    // We always want to expand disc images in music windows.
-    CDirectory::FilterFileDirectories(items, ".iso", true);
+    // We want to expand disc images when browsing in file view but not on library, smartplaylist
+    // or node menu music windows
+    if (!items.GetPath().empty() && 
+        !StringUtils::StartsWithNoCase(items.GetPath(), "musicdb://") &&
+        !StringUtils::StartsWithNoCase(items.GetPath(), "special://") &&
+        !StringUtils::StartsWithNoCase(items.GetPath(), "library://"))
+      CDirectory::FilterFileDirectories(items, ".iso", true);
 
     CMusicThumbLoader loader;
     loader.FillThumb(items);
@@ -1128,16 +1130,16 @@ void CGUIWindowMusicBase::DoScan(const std::string &strPath, bool bRescan /*= fa
 
 void CGUIWindowMusicBase::OnRemoveSource(int iItem)
 {
-  
+
   //Remove music source from library, even when leaving songs
   CMusicDatabase database;
   database.Open();
   database.RemoveSource(m_vecItems->Get(iItem)->GetLabel());
-  
+
   bool bCanceled;
   if (CGUIDialogYesNo::ShowAndGetInput(CVariant{522}, CVariant{20340}, bCanceled, CVariant{""}, CVariant{""}, CGUIDialogYesNo::NO_TIMEOUT))
   {
-    MAPSONGS songs;    
+    MAPSONGS songs;
     database.RemoveSongsFromPath(m_vecItems->Get(iItem)->GetPath(), songs, false);
     database.CleanupOrphanedItems();
     CServiceBroker::GetGUI()->GetInfoManager().GetInfoProviders().GetLibraryInfoProvider().ResetLibraryBools();

@@ -76,6 +76,10 @@ msgctxt "#31053"
 msgid "Arial based"
 msgstr "Ibbażat fuq l-Arial"
 
+msgctxt "#31074"
+msgid "Total duration"
+msgstr "Tul totali"
+
 msgctxt "#31082"
 msgid "Lyrics add-on"
 msgstr "Add-on tal-lirika"

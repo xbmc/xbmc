@@ -167,6 +167,11 @@ public:
    */
   void SetMouseResolution(int maxX, int maxY, float speedX, float speedY);
 
+  /*! \brief Get the status of the controller-enable setting
+   * \return True if controller input is enabled for the UI, false otherwise
+   */
+  bool IsControllerEnabled() const;
+
   /*! \brief Returns whether or not we can handle a given built-in command.
    *
    */
@@ -289,6 +294,12 @@ private:
   std::vector<KODI::MOUSE::IMouseDriverHandler*> m_mouseHandlers;
 
   std::unique_ptr<KODI::KEYBOARD::IKeyboardDriverHandler> m_keyboardEasterEgg;
+
+  // Input state
+  bool m_enableController = true;
+
+  // Settings
+  static const std::string SETTING_INPUT_ENABLE_CONTROLLER;
 };
 
 /// \}

@@ -108,7 +108,11 @@ public:
   /*! \brief Toggle login screen use on and off
     Toggles the login screen state
     */
-  void ToggleLoginScreen() { m_usingLoginScreen = !m_usingLoginScreen; }
+  void ToggleLoginScreen()
+  {
+    m_usingLoginScreen = !m_usingLoginScreen;
+    Save();
+  }
 
   /*! \brief Are we the master user?
     \return true if the current profile is the master user, false otherwise
@@ -155,7 +159,11 @@ public:
     used profile will be loaded
     \return the id to the autologin profile
     */
-  void SetAutoLoginProfileId(const int profileId) { m_autoLoginProfile = profileId; }
+  void SetAutoLoginProfileId(const int profileId)
+  {
+    m_autoLoginProfile = profileId;
+    Save();
+  }
 
   /*! \brief Retrieve the name of a particular profile by index
     \param profileId profile index for which to retrieve the name
@@ -198,12 +206,15 @@ private:
   std::shared_ptr<CSettings> m_settings;
 
   std::vector<CProfile> m_profiles;
-  bool m_usingLoginScreen;
-  bool m_profileLoadedForLogin;
-  int m_autoLoginProfile;
-  unsigned int m_lastUsedProfile;
-  unsigned int m_currentProfile; // do not modify directly, use SetCurrentProfileId() function instead
-  int m_nextProfileId; // for tracking the next available id to give to a new profile to ensure id's are not re-used
+  bool m_usingLoginScreen = false;
+  bool m_profileLoadedForLogin = false;
+  bool m_previousProfileLoadedForLogin = false;
+  int m_autoLoginProfile = -1;
+  unsigned int m_lastUsedProfile = 0;
+  unsigned int m_currentProfile =
+      0; // do not modify directly, use SetCurrentProfileId() function instead
+  int m_nextProfileId =
+      0; // for tracking the next available id to give to a new profile to ensure id's are not re-used
   mutable CCriticalSection m_critical;
 
   // Event properties

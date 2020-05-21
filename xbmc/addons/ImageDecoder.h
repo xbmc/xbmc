@@ -32,12 +32,7 @@ namespace ADDON
                 unsigned int height, unsigned int pitch,
                 unsigned int format) override;
 
-    const std::string& GetMimetypes() const { return m_mimetype; }
-    const std::string& GetExtensions() const { return m_extension; }
-
   protected:
-    std::string m_mimetype;
-    std::string m_extension;
     AddonInstance_ImageDecoder m_struct = {};
   };
 

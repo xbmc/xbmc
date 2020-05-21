@@ -105,6 +105,7 @@ static CEvent screenChangeEvent;
     {
       [[IOSScreenManager sharedInstance] fadeFromBlack:timeSwitchingToInternalSecs];
     }
+    [g_xbmcController setGUIInsetsFromMainThread:YES];
 
     int w = [[newScreen currentMode] size].width;
     int h = [[newScreen currentMode] size].height;

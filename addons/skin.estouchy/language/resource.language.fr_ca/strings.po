@@ -56,6 +56,10 @@ msgctxt "#31014"
 msgid "Episodes"
 msgstr "Épisodes"
 
+msgctxt "#31015"
+msgid "Player info"
+msgstr "Informations sur le lecteur"
+
 msgctxt "#31016"
 msgid "Albums"
 msgstr "Albums"
@@ -94,7 +98,11 @@ msgstr "Connexion"
 
 msgctxt "#31039"
 msgid "Updated:"
-msgstr "Mis à jour :"
+msgstr "Mis à jour :"
+
+msgctxt "#31043"
+msgid "PAUSED"
+msgstr "EN PAUSE"
 
 msgctxt "#31044"
 msgid "FAST FORWARD"
@@ -114,11 +122,11 @@ msgstr "Heure de fin"
 
 msgctxt "#31050"
 msgid "Sort: Ascending"
-msgstr "Trier : croissant"
+msgstr "Trier : croissant"
 
 msgctxt "#31051"
 msgid "Sort: Descending"
-msgstr "Trier : décroissant"
+msgstr "Trier : décroissant"
 
 msgctxt "#31055"
 msgid "Open playlist"
@@ -166,7 +174,7 @@ msgstr "Fournisseur de données"
 
 msgctxt "#31309"
 msgid "System Memory Used:"
-msgstr "Mémoire système utilisée :"
+msgstr "Mémoire système utilisée :"
 
 msgctxt "#31320"
 msgid "Last Logged In"
@@ -262,7 +270,7 @@ msgstr "Utiliser un arrière-plan personnalisé"
 
 msgctxt "#31554"
 msgid "Background:"
-msgstr "Arrière-plan : "
+msgstr "Arrière-plan : "
 
 msgctxt "#31555"
 msgid "Configure TV settings · Change full screen info · Manage EPG data settings"
@@ -318,7 +326,7 @@ msgstr "Pour parcourir Estouchy, vous devez savoir deux choses"
 
 msgctxt "#31902"
 msgid "The Kodi logo functions as a 'HOME' button. Whenever you touch it, you will be taken back to the home screen."
-msgstr "Le logo Kodi fonctionne comme un bouton « ACCUEIL ». Lorsque vous le touchez, vous retournerez à l’écran d’accueil."
+msgstr "Le logo Kodi fonctionne comme un bouton «  ACCUEIL ». Lorsque vous le touchez, vous retournerez à l’écran d’accueil."
 
 msgctxt "#31903"
 msgid "When you are playing audio or video, the item title will appear at the top of the screen. Touching it will take you to the fullscreen visualization or video window."

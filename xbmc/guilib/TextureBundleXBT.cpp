@@ -21,15 +21,15 @@
 #include "utils/log.h"
 #include "windowing/GraphicContext.h"
 
+#include <inttypes.h>
+
 #include <lzo/lzo1x.h>
 
 #ifdef TARGET_WINDOWS_DESKTOP
 #ifdef NDEBUG
 #pragma comment(lib,"lzo2.lib")
-#elif defined _WIN64
-#pragma comment(lib, "lzo2d.lib")
 #else
-#pragma comment(lib, "lzo2-no_idb.lib")
+#pragma comment(lib, "lzo2d.lib")
 #endif
 #endif
 

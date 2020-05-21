@@ -79,7 +79,7 @@ void CRepositoryUpdater::OnJobComplete(unsigned int jobID, bool success, CJob* j
 
     VECADDONS updates = m_addonMgr.GetAvailableUpdates();
 
-    if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_ADDONS_AUTOUPDATES) == AUTO_UPDATES_NOTIFY)
+    if (CAddonSystemSettings::GetInstance().GetAddonAutoUpdateMode() == AUTO_UPDATES_NOTIFY)
     {
       if (!updates.empty())
       {
@@ -97,9 +97,9 @@ void CRepositoryUpdater::OnJobComplete(unsigned int jobID, bool success, CJob* j
       }
     }
 
-    if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_ADDONS_AUTOUPDATES) == AUTO_UPDATES_ON)
+    if (CAddonSystemSettings::GetInstance().GetAddonAutoUpdateMode() == AUTO_UPDATES_ON)
     {
-      CAddonInstaller::GetInstance().InstallUpdates();
+      m_addonMgr.CheckAndInstallAddonUpdates(false);
     }
 
     ScheduleUpdate();
@@ -207,7 +207,7 @@ void CRepositoryUpdater::ScheduleUpdate()
   CSingleLock lock(m_criticalSection);
   m_timer.Stop(true);
 
-  if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_ADDONS_AUTOUPDATES) == AUTO_UPDATES_NEVER)
+  if (CAddonSystemSettings::GetInstance().GetAddonAutoUpdateMode() == AUTO_UPDATES_NEVER)
     return;
 
   if (!m_addonMgr.HasAddons(ADDON_REPOSITORY))

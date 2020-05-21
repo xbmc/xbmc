@@ -6,6 +6,61 @@
       <h3><span  style="text-decoration: underline;"><span  style="font-style: italic;"><span
                style="color: rgb(102, 102, 102);">C++ Binary Add-On Development</span></span></span></h3>
        \endhtmlonly
+
+Kodi allows the use of **C++** addons to expand their possibilities. This gives you
+many options to expand it quickly and easily with new features.
+
+Here is a table of the types currently possible:
+\table_start
+  \table_h3{ Type, Class, Description }
+  \table_row3{   <b>Audio decoder</b>,
+                 @ref cpp_kodi_addon_audiodecoder "kodi::addon::CInstanceAudioDecoder",
+    For audio decoders as binary add-ons. This class implements a way to handle
+    special types of audio files.
+  }
+  \table_row3{   <b>Audio encoder</b>,
+                 @ref cpp_kodi_addon_audioencoder "kodi::addon::CInstanceAudioEncoder",
+    To convert audio data\, such as a CD\, to a new format and create files for this.
+  }
+  \table_row3{   <b>Game engine</b>,
+                 @ref cpp_kodi_addon_game "kodi::addon::CInstanceGame",
+    This is to provide support for games in the system.
+  }
+  \table_row3{   <b>Image decoder</b>,
+                 @ref cpp_kodi_addon_imagedecoder "kodi::addon::CInstanceImageDecoder",
+    This instance type is used to allow Kodi various additional image format types.
+  }
+  \table_row3{   <b>Inputstream</b>,
+                 @ref cpp_kodi_addon_inputstream "kodi::addon::CInstanceInputStream",
+    To process special video and/or audio streams. This allows addons to support newer species in Kodi.
+  }
+  \table_row3{   <b>Peripheral</b>,
+                 @ref cpp_kodi_addon_peripheral "kodi::addon::CInstancePeripheral",
+    Made to have Kodi controllable with new and different ways\, such as Joystick.
+  }
+  \table_row3{   <b>Screensaver</b>,
+                 @ref cpp_kodi_addon_screensaver "kodi::addon::CInstanceScreensaver",
+    A screensaver is a Kodi addon that fills the screen with moving images or
+    patterns when the computer is not in use.
+  }
+  \table_row3{   <b>PVR (TV / radio handling)</b>,
+                 @ref cpp_kodi_addon_pvr "kodi::addon::CInstancePVRClient",
+    Used to provide Kodi with various sources for TV and radio streams.
+  }
+  \table_row3{   <b>VFS (Virtual filesystem support)</b>,
+                 @ref cpp_kodi_addon_vfs "kodi::addon::CInstanceVFS",
+    This instance type is used to allow Kodi various additional file system types.
+  }
+  \table_row3{   <b>Video codec</b>,
+                 @ref cpp_kodi_addon_videocodec "kodi::addon::CInstanceVideoCodec",
+    Used to decode special video formats and make them usable for playback.
+    @note This can only be used in connection with @ref cpp_kodi_addon_inputstream "kodi::addon::CInstanceInputStream".
+  }
+  \table_row3{   <b>Visualization</b>,
+                 @ref cpp_kodi_addon_visualization "kodi::addon::CInstanceVisualization",
+    Music visualization is a feature in Kodi that generates animated imagery based on a piece of music.
+  }
+\table_end
 */
 /*!
 \defgroup cpp_cmake CMake addon creation structure

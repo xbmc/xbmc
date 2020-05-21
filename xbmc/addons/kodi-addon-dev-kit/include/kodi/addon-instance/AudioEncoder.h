@@ -64,8 +64,14 @@ namespace addon
     /// @param[in] instance             The from Kodi given instance given be
     ///                                 add-on CreateInstance call with instance
     ///                                 id ADDON_INSTANCE_AUDIOENCODER.
-    explicit CInstanceAudioEncoder(KODI_HANDLE instance)
-      : IAddonInstance(ADDON_INSTANCE_AUDIOENCODER)
+    /// @param[in] kodiVersion [opt] Version used in Kodi for this instance, to
+    ///                        allow compatibility to older Kodi versions.
+    ///                        @note Recommended to set.
+    ///
+    explicit CInstanceAudioEncoder(KODI_HANDLE instance, const std::string& kodiVersion = "")
+      : IAddonInstance(ADDON_INSTANCE_AUDIOENCODER,
+                       !kodiVersion.empty() ? kodiVersion
+                                            : GetKodiTypeVersion(ADDON_INSTANCE_AUDIOENCODER))
     {
       if (CAddonBase::m_interface->globalSingleInstance != nullptr)
         throw std::logic_error("kodi::addon::CInstanceAudioEncoder: Creation of multiple together with single instance way is not allowed!");

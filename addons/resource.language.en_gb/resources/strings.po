@@ -1193,6 +1193,7 @@ msgstr ""
 
 #: xbmc/dialogs/GUIDialogFileBrowser.cpp
 #: xbmc/games/dialogs/GUIDialogSelectGameClient.cpp
+#: xbmc/network/NetworkServices.cpp
 #: xbmc/pvr/PVRGUIActions.cpp
 #: xbmc/video/dialogs/GUIDialogVideoInfo.cpp
 #: xbmc/music/windows/GUIWindowMusicBase.cpp
@@ -2003,6 +2004,7 @@ msgid "No CD information found"
 msgstr ""
 
 #: addons/skin.estuary/xml/Variables.xml
+#: xbmc/music/MusicDatabase.cpp
 msgctxt "#427"
 msgid "Disc"
 msgstr ""
@@ -2391,8 +2393,8 @@ msgstr ""
 
 #empty string with id 520
 
-#: xbmc/filesystem/MusicDatabaseDirectory/DirectoryNodeOverview.cpp
 #. Node title for compilation albums, plural of #204
+#: xbmc/filesystem/MusicDatabaseDirectory/DirectoryNodeOverview.cpp
 #: system/library/music/compilations.xml
 msgctxt "#521"
 msgid "Compilations"
@@ -2632,6 +2634,7 @@ msgstr ""
 
 #. generic "play count" label used in different places
 #: xbmc/playlists/SmartPlaylist.cpp
+#: addons/skin.estuary/xml/Includes_MusicInfo.xml
 #: addons/skin.estuary/xml/Variables.xml
 #: xbmc/pvr/dialogs/GUIDialogPVRRecordingSettings.cpp
 msgctxt "#567"
@@ -2639,6 +2642,7 @@ msgid "Play count"
 msgstr ""
 
 #. generic "last played" label used in different places
+#: addons/skin.estuary/xml/Includes_MusicInfo.xml
 #: xbmc/dialogs/GUIDialogMediaFilter.cpp
 #: xbmc/playlists/SmartPlaylist.cpp
 #: xbmc/pvr/windows/GUIViewStatePVR.cpp
@@ -3464,7 +3468,7 @@ msgctxt "#768"
 msgid "Dark Grey"
 msgstr ""
 
-#empty string id 769
+#empty string with id 769
 #string 769 reserved for more subtitle colours
 
 msgctxt "#770"
@@ -3762,7 +3766,17 @@ msgctxt "#837"
 msgid "Sundays"
 msgstr ""
 
-#empty strings from id 838 to 839
+#. Label for a TV show Premiere
+#: addons/skin.estuary/xml/DialogPVRInfo.xml
+msgctxt "#838"
+msgid "Première"
+msgstr ""
+
+#. Label for a Live TV show
+#: addons/skin.estuary/xml/DialogPVRInfo.xml
+msgctxt "#839"
+msgid "Live"
+msgstr ""
 
 #. Message in a dialog when a user wants to delete a timer that was scheduled by a timer rule
 #: xbmc/pvr/PVRGUIActions.cpp
@@ -3779,7 +3793,7 @@ msgstr ""
 #. Label for a first aired TV show
 #: addons/skin.estuary/xml/DialogPVRInfo.xml
 msgctxt "#842"
-msgid "New!"
+msgid "New"
 msgstr ""
 
 #. Label for a context menu entry to activate a currently inactive timer
@@ -3818,7 +3832,11 @@ msgctxt "#848"
 msgid "Are you sure you want to stop this recording?"
 msgstr ""
 
-#empty string with id 849
+#. Label for a finale of a TV show
+#: addons/skin.estuary/xml/DialogPVRInfo.xml
+msgctxt "#849"
+msgid "Finale"
+msgstr ""
 
 msgctxt "#850"
 msgid "Invalid port number entered"
@@ -4079,7 +4097,17 @@ msgctxt "#1051"
 msgid "Enter web address"
 msgstr ""
 
-#empty strings from id 1052 to 1179
+#: system/settings/settings.xml
+msgctxt "#1052"
+msgid "Require authentication"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#1053"
+msgid "Choose whether requests to the web server require a username and a password, which must be set below if enabled. It is recommended to always leave this setting enabled."
+msgstr ""
+
+#empty strings from id 1054 to 1179
 
 #: system/settings/settings.xml
 msgctxt "#1180"
@@ -4801,6 +4829,7 @@ msgid "System information"
 msgstr ""
 
 #: xbmc/music/windows/GUIWindowMusicBase.cpp
+#: xbmc/video/ContextMenus.cpp
 #: xbmc/video/windows/GUIWindowVideoBase.cpp
 msgctxt "#10008"
 msgid "Play next"
@@ -5729,7 +5758,7 @@ msgstr ""
 #: xbmc/dialogs/GUIDialogGamepad.cpp
 #: xbmc/dialogs/GUIDialogNumeric.cpp
 msgctxt "#12343"
-msgid "retries left "
+msgid "retries left"
 msgstr ""
 
 #: xbmc/dialogs/GUIDialogGamepad.cpp
@@ -5838,7 +5867,12 @@ msgctxt "#12379"
 msgid "Use pan and zoom effects"
 msgstr ""
 
-#empty strings from id 12380 to 12381
+#empty string with id 12380
+
+#: system/settings/settings.xml
+msgctxt "#12381"
+msgid "Switch to visualisation on playback"
+msgstr ""
 
 #. time format with meridiem (xx) e.g. "HH:mm:ss xx"
 #: xbmc/LangInfo.cpp
@@ -6063,14 +6097,6 @@ msgstr ""
 #: xbmc/storage/MediaManager.cpp
 msgctxt "#13023"
 msgid "Successfully removed storage device"
-msgstr ""
-
-msgctxt "#13024"
-msgid "Joystick plugged"
-msgstr ""
-
-msgctxt "#13025"
-msgid "Joystick unplugged"
 msgstr ""
 
 #: system/settings/settings.xml
@@ -6730,6 +6756,8 @@ msgid "Movie information"
 msgstr ""
 
 #: system/settings/settings.xml
+#: xbmc/video/ContextMenus.cpp
+#: xbmc/video/windows/GUIWindowVideoBase.cpp
 msgctxt "#13347"
 msgid "Queue item"
 msgstr ""
@@ -7234,7 +7262,17 @@ msgctxt "#13465"
 msgid "EGL"
 msgstr ""
 
-#empty strings from id 13466 to 13504
+#: system/settings/gbm.xml
+msgctxt "#13466"
+msgid "1080 / 720 (>30Hz)"
+msgstr ""
+
+#: system/settings/gbm.xml
+msgctxt "#13467"
+msgid "Unlimited / 1080 (>30Hz)"
+msgstr ""
+
+#empty strings from id 13468 to 13504
 
 #: system/settings/settings.xml
 msgctxt "#13505"
@@ -7327,7 +7365,31 @@ msgctxt "#13521"
 msgid "Choose art type"
 msgstr ""
 
-#empty strings from id 13522 to 13549
+#. label of a setting that allows splitting of albums into component discs
+#: system/settings/settings.xml
+msgctxt "#13522"
+msgid "Split albums into individual discs"
+msgstr ""
+
+#. Description of setting with label #13522 "Split albums into individual discs"
+#: system/settings/settings.xml
+msgctxt "#13523"
+msgid "When enabled, opening a multi-disc album shows the discs as individual items instead of all the songs. Opening a disc then shows the songs on that disc."
+msgstr ""
+
+#. Label of a setting that allows original release dates to be used instead of album release date
+#: system/settings/settings.xml
+msgctxt "#13524"
+msgid "Use original release date of albums for year"
+msgstr ""
+
+#. Description of setting with label #13524
+#: system/settings/settings.xml
+msgctxt "#13525"
+msgid "When enabled, use the original year of release rather than the album release year (if available)."
+msgstr ""
+
+#empty strings from id 13526 to 13549
 
 #: system/settings/settings.xml
 msgctxt "#13550"
@@ -7795,6 +7857,7 @@ msgctxt "#14086"
 msgid "Playback"
 msgstr ""
 
+#: xbmc/filesystem/MusicDatabaseDirectory/DirectoryNodeOverview.cpp
 #: system/settings/settings.xml
 msgctxt "#14087"
 msgid "Discs"
@@ -8404,14 +8467,17 @@ msgstr ""
 
 #: xbmc/filesystem/MusicDatabaseDirectory/DirectoryNode.cpp
 #: xbmc/filesystem/MusicDatabaseDirectory/DirectoryNodeAlbum.cpp
-#: xbmc/filesystem/MusicDatabaseDirectory/DirectoryNodeRcentlyAdded.cpp
-#: xbmc/filesystem/MusicDatabaseDirectory/DirectoryNodeRcentlyPlayed.cpp
+#: xbmc/filesystem/MusicDatabaseDirectory/DirectoryNodeDisc.cpp
+#: xbmc/filesystem/MusicDatabaseDirectory/DirectoryNodeRecentlyAdded.cpp
+#: xbmc/filesystem/MusicDatabaseDirectory/DirectoryNodeRecentlyPlayed.cpp
+#: xbmc/music/windows/MusicFileItemListModifier.cpp
 msgctxt "#15102"
 msgid "* All albums"
 msgstr ""
 
 #: xbmc/filesystem/MusicDatabaseDirectory/DirectoryNode.cpp
 #: xbmc/filesystem/MusicDatabaseDirectory/DirectoryNodeArtist.cpp
+#: xbmc/music/windows/MusicFileItemListModifier.cpp
 msgctxt "#15103"
 msgid "* All artists"
 msgstr ""
@@ -9521,11 +9587,7 @@ msgctxt "#19071"
 msgid "Update interval"
 msgstr ""
 
-#. pvr settings "store epg data in database" setting label
-#: system/settings/settings.xml
-msgctxt "#19072"
-msgid "Store data in database"
-msgstr ""
+#empty string with id 19072
 
 #. pvr settings "delay channel switch" setting label
 #: system/settings/settings.xml
@@ -9680,6 +9742,7 @@ msgstr ""
 
 #. generic warning label used at several places
 #: xbmc/addons/AddonSystemSettings.cpp
+#: xbmc/network/NetworkServices.cpp
 #: xbmc/pvr/channels/PVRChannelGroupInternal.cpp
 #: xbmc/pvr/PVRManager.cpp
 msgctxt "#19098"
@@ -10168,6 +10231,7 @@ msgid "Deleted"
 msgstr ""
 
 #. Settings -> Interface -> Other -> Startup window value
+#. Settings -> PVR -> Playback -> Switch to fullscreen value
 #: system/settings/settings.xml
 msgctxt "#19180"
 msgid "TV channels"
@@ -10186,6 +10250,7 @@ msgid "Future days to display"
 msgstr ""
 
 #. Settings -> Interface -> Other -> Startup window value
+#. Settings -> PVR -> Playback -> Switch to fullscreen value
 #: system/settings/settings.xml
 msgctxt "#19183"
 msgid "Radio channels"
@@ -10581,10 +10646,10 @@ msgctxt "#19249"
 msgid "Filter channels"
 msgstr ""
 
-#. label 'loading epg data from database' for progress dialog text
-#: xbmc/pvr/epg/EpgContainer.cpp
+#. Settings -> PVR -> Playback -> Switch to fullscreen value
+#: system/settings/settings.xml
 msgctxt "#19250"
-msgid "Loading guide from database"
+msgid "TV and radio channels"
 msgstr ""
 
 #. label for 'update epg' context menu item and 'update epg' confirmation dialog header
@@ -12566,7 +12631,13 @@ msgctxt "#20225"
 msgid "Where no local album cover exists, online art will be used. Where neither is available, cover images embedded in music files will be used"
 msgstr ""
 
-#empty strings from id 20226 to 20227
+#: system/settings/settings.xml
+#: xbmc/music/dialogs/GUIDialogVideoInfo.cpp
+msgctxt "#20226"
+msgid "Movie set information folder"
+msgstr ""
+
+#empty string with id 20227
 
 #: system/settings/settings.xml
 msgctxt "#20228"
@@ -13250,6 +13321,7 @@ msgctxt "#20419"
 msgid "Replace file names with library titles"
 msgstr ""
 
+#. Settings -> PVR -> Playback -> Switch to fullscreen value
 #: system/settings/settings.xml
 msgctxt "#20420"
 msgid "Never"
@@ -15579,7 +15651,61 @@ msgctxt "#24152"
 msgid "The add-on is not compatible with this version of Kodi."
 msgstr ""
 
-#empty strings from id 24153 to 24990
+#: apple remote
+msgctxt "#24153"
+msgid "Enable to make the Siri remote match the normal Apple tvOS behavior"
+msgstr ""
+
+#: apple remote
+msgctxt "#24154"
+msgid "Idle remote handling after N seconds"
+msgstr ""
+
+#: apple remote
+msgctxt "#24155"
+msgid "After remote idles, the first tap/swipe received will wake it"
+msgstr ""
+
+#: apple remote
+msgctxt "#24156"
+msgid "30 Seconds"
+msgstr ""
+
+#: apple remote
+msgctxt "#24157"
+msgid "60 Seconds"
+msgstr ""
+
+#: apple remote
+msgctxt "#24158"
+msgid "90 Seconds"
+msgstr ""
+
+#: apple remote
+msgctxt "#24159"
+msgid "120 Seconds"
+msgstr ""
+
+#: apple remote
+msgctxt "#24160"
+msgid "Enable Siri remote timeout"
+msgstr ""
+
+#: apple remote
+msgctxt "#24161"
+msgid "Enable remote input timeout for tap/swipe"
+msgstr ""
+
+msgctxt "#24162"
+msgid "Use Kodi virtual keyboard"
+msgstr ""
+
+#: apple remote
+msgctxt "#24163"
+msgid "Match Apple tvOS Standard (Siri remote)"
+msgstr ""
+
+#empty strings from id 24164 to 24990
 
 #. Used as error message in add-on browser when add-on repository data could not be downloaded
 #: xbmc/filesystem/AddonsDirectory.cpp
@@ -16621,7 +16747,12 @@ msgctxt "#33103"
 msgid "Remote communication server"
 msgstr ""
 
-#empty strings from id 33104 to 33199
+#: xbmc/network/NetworkServices.cpp
+msgctxt "#33104"
+msgid "You have previously enabled the web interface without setting up a password. The web server has been disabled until you either explicitly allow this or set up authentication. Please review your settings."
+msgstr ""
+
+#empty strings from id 33105 to 33199
 
 #: xbmc/network/eventclient.cpp
 msgctxt "#33200"
@@ -17267,14 +17398,14 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#35100"
-msgid "Enable joystick and gamepad support"
+msgid "Enable controller support"
 msgstr ""
 
 #empty string with id 35101
 
 #: system/peripherals.xml
 msgctxt "#35102"
-msgid "Disable joystick when this device is present"
+msgid "Disable controllers when this device is present"
 msgstr ""
 
 #. Label for mouse buttons. Used in the controller mapping dialog.
@@ -18726,10 +18857,7 @@ msgctxt "#36222"
 msgid "Don't import the guide data while playing TV to minimise CPU usage."
 msgstr ""
 
-#: system/settings/settings.xml
-msgctxt "#36223"
-msgid "Activate to store epg data in a database. This may speedup importing epg data on startup."
-msgstr ""
+#empty string with id 36223
 
 #: system/settings/settings.xml
 msgctxt "#36224"
@@ -18748,7 +18876,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36227"
-msgid "Switch to full screen display when starting playback of channels and recordings."
+msgid "Switch to full screen display when starting playback of channels."
 msgstr ""
 
 #. Description of setting with label #745 "Background Colour"
@@ -19155,7 +19283,16 @@ msgctxt "#36299"
 msgid "Switch display into HDR mode if media with HDR information is played.\nIf disabled, HDR information are applied using Kodi's internal HDR path."
 msgstr ""
 
-#empty strings from id 36300 to 36301
+#. Description of setting with label #20226 "Movie set information folder"
+#: system/settings/settings.xml
+msgctxt "#36300"
+msgid "Select the folder where movie set information (images) are saved locally."
+msgstr ""
+
+#: xbmc/interfaces/builtins/LibraryBuiltins.cpp
+msgctxt "#36301"
+msgid "No 'Movie set information folder' is configured to store movie set images so they will not be exported. Do you want to proceed?"
+msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36302"
@@ -19309,7 +19446,7 @@ msgstr ""
 #. Description of setting with label #263 "Allow remote control via HTTP"
 #: system/settings/settings.xml
 msgctxt "#36328"
-msgid "Enable remote users to control this application through the built-in web server."
+msgid "Enable remote users to control this application through the built-in web server. Never expose the web server port to the Internet."
 msgstr ""
 
 #. Description of setting with label #730 "Port"
@@ -19321,13 +19458,13 @@ msgstr ""
 #. Description of setting with label #1048 "Username"
 #: system/settings/settings.xml
 msgctxt "#36330"
-msgid "Define the web server username. This only takes effect when both the username and the password are set."
+msgid "Define the web server username. Must be set when authentication is enabled."
 msgstr ""
 
 #. Description of setting with label #1048 "Password"
 #: system/settings/settings.xml
 msgctxt "#36331"
-msgid "Define the web server password. This only takes effect when both the username and the password are set."
+msgid "Define the web server password. Must be set when authentication is enabled."
 msgstr ""
 
 #. Description of setting with label #199 "Web interface"
@@ -19345,7 +19482,7 @@ msgstr ""
 #. Description of setting with label #791 "Allow remote control from programs on this system"
 #: system/settings/settings.xml
 msgctxt "#36334"
-msgid "Allow programs on this device to control this application via the web interface or the JSON-RPC interface protocol."
+msgid "Allow programs on this device to control this application via the JSON-RPC over WebSocket, JSON-RPC over TCP, or EventServer protocol, without authentication."
 msgstr ""
 
 #. Description of setting with label #792 "Port"
@@ -19369,7 +19506,7 @@ msgstr ""
 #. Description of setting with label #794 "Allow remote control from programs on other systems"
 #: system/settings/settings.xml
 msgctxt "#36338"
-msgid "Allow programs on the network to control this application."
+msgid "Allow programs on the network to control this application via the JSON-RPC over WebSocket, JSON-RPC over TCP, or EventServer protocol, without authentication. It allows anyone with access to the network to completely control this application and, therefore, this device. Never expose these interfaces to the Internet."
 msgstr ""
 
 #. Description of setting with label #795 "Initial repeat delay (ms)"
@@ -19600,10 +19737,10 @@ msgctxt "#36377"
 msgid "Use a mouse or touch screen device to control the interface. Note: Disabling will cause you to lose control over this application when no keyboard or remote is present."
 msgstr ""
 
-#. Description of setting with label #35100 "Enable joystick and gamepad support"
+#. Description of setting with label #35100 "Enable controller support"
 #: system/settings/settings.xml
 msgctxt "#36378"
-msgid "Use a joystick to control the interface."
+msgid "Use a game controller to control the interface."
 msgstr ""
 
 #. Description of settings category with label #798 Internet access
@@ -20191,6 +20328,7 @@ msgid "Use higher quality textures for covers and fanart (uses more memory)"
 msgstr ""
 
 #: system/settings/rbp.xml
+#: system/settings/gbm.xml
 msgctxt "#36548"
 msgid "Limits resolution of GUI to save memory. Does not affect video playback. Requires restart."
 msgstr ""
@@ -20583,6 +20721,7 @@ msgstr ""
 
 #. Values for setting with label #36621 and #36628 "Minimum/Maximum protocol version" - none means "no protocol version is forced"
 #: system/settings/settings.xml
+#: addons/skin.estuary/xml/View_50_List.xml
 msgctxt "#36623"
 msgid "None"
 msgstr ""
@@ -20635,7 +20774,37 @@ msgctxt "#36631"
 msgid "Force weak SMBv1 security for compatibility with the USB sharing features on some WiFi routers and NAS devices."
 msgstr ""
 
-#empty strings from id 36632 to 36898
+#. Text in confirm dialog when enabling setting "Services -> Control -> Allow remote control via HTTP"
+#: xbmc/network/NetworkServices.cpp
+msgctxt "#36632"
+msgid "Anyone who has access to the web interface will be able to completely control this application and, therefore, this device, so it should never be exposed on the Internet. A password should be set below. Proceed?"
+msgstr ""
+
+#. Text in confirm dialog when enabling setting "Services -> Control -> Allow remote control from applications on other systems"
+#: xbmc/network/NetworkServices.cpp
+msgctxt "#36633"
+msgid "These services offer neither authentication nor encryption. Anyone who can connect to them will be able to completely control this application and, therefore, this device, so they should never be exposed to the Internet. Proceed?"
+msgstr ""
+
+#. Text in confirm dialog when disabling setting "Services -> Control -> Require authentication"
+#: xbmc/network/NetworkServices.cpp
+msgctxt "#36634"
+msgid "Anyone who has access to the web interface will be able to completely control this application and, therefore, this device, so it should be secured by a password. Are you sure you want to disable authentication?"
+msgstr ""
+
+#. Text in error dialog when trying to enter an invalid web server configuration
+#: xbmc/network/NetworkServices.cpp
+msgctxt "#36635"
+msgid "If web server authentication is enabled, a password must be entered as well."
+msgstr ""
+
+#. Text in error dialog when trying to enter an invalid web server configuration by enabling authentication without a password set
+#: xbmc/network/NetworkServices.cpp
+msgctxt "#36636"
+msgid "You must first enter a password before web server authentication can be enabled."
+msgstr ""
+
+#empty strings from id 36637 to 36898
 
 #. Description of setting with label #729 "Enable SSL"
 #: system/settings/settings.xml
@@ -20807,6 +20976,7 @@ msgid "Enable higher colour depth artwork"
 msgstr ""
 
 #: system/settings/rbp.xml
+#: system/settings/gbm.xml
 msgctxt "#37021"
 msgid "Set GUI resolution limit"
 msgstr ""
@@ -20844,6 +21014,7 @@ msgstr ""
 
 #: system/settings/rbp.xml
 #: system/settings/android.xml
+#: system/settings/gbm.xml
 msgctxt "#37028"
 msgid "720"
 msgstr ""
@@ -20855,6 +21026,7 @@ msgstr ""
 
 #: system/settings/rbp.xml
 #: system/settings/android.xml
+#: system/settings/gbm.xml
 msgctxt "#37030"
 msgid "Unlimited"
 msgstr ""
@@ -20950,6 +21122,7 @@ msgid "Extract chapter thumbnails for presentation in the chapters / bookmarks d
 msgstr ""
 
 #: system/settings/android.xml
+#: system/settings/gbm.xml
 msgctxt "#37046"
 msgid "1080"
 msgstr ""
@@ -21248,8 +21421,52 @@ msgctxt "#38073"
 msgid "Do you want to refresh information for this item now?"
 msgstr ""
 
-#empty strings from id 38074 to 38099
-#strings 38074 to 38099 reserved for music library
+#: system/library/music/boxsets.xml
+#: xbmc/playlists/SmartPlaylist.cpp
+msgctxt "#38074"
+msgid "Boxsets"
+msgstr ""
+
+#: xbmc/music/windows/MusicFileItemListModifier.cpp
+msgctxt "#38075"
+msgid "* All discs"
+msgstr ""
+
+#: addons/skin.estuary/xml/Variables.xml
+msgctxt "#38076"
+msgid "Disc title"
+msgstr ""
+
+#: xbmc/playlists/SmartPlaylist.cpp
+msgctxt "#38077"
+msgid "Total discs"
+msgstr ""
+
+#: xbmc/dialogs/GUIDialogMediaFilter.cpp
+#: xbmc/dialogs/GUIDialogSmartPlaylistRule.cpp
+#: xbmc/filesystem/MusicDatabaseDirectory/DirectoryNodeOverview.cpp
+#: xbmc/music/GUIViewStateMusic.cpp
+#: xbmc/playlists/SmartPlaylist.cpp
+msgctxt "#38078"
+msgid "Original year"
+msgstr ""
+
+#: xbmc/utils/SortUtils.cpp
+#: xbmc/music/GUIViewStateMusic.cpp
+msgctxt "#38079"
+msgid "Original date"
+msgstr ""
+
+#. Music property - Beats Per Minute
+#: xbmc/utils/SortUtils.cpp
+#: xbmc/music/GUIViewStateMusic.cpp
+#: xbmc/playlists/SmartPlaylist.cpp
+msgctxt "#38080"
+msgid "BPM"
+msgstr ""
+
+#empty strings from id 38081 to 38099
+#strings 38081 to 38099 reserved for music library
 
 #. Description of section #14200 "Player""
 #: system/settings/settings.xml
@@ -21323,7 +21540,13 @@ msgctxt "#38111"
 msgid "This category contains other settings for the GUI interface"
 msgstr ""
 
-#empty strings from id 38112 to 38189
+#. Description of setting with label #12381 "Switch to visualisation on playback"
+#: system/settings/settings.xml
+msgctxt "#38112"
+msgid "Automatically go to the visualisation window when audio playback starts"
+msgstr ""
+
+#empty strings from id 38113 to 38189
 
 msgctxt "#38190"
 msgid "Extract thumbnails from video files"

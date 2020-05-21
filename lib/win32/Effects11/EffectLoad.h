@@ -4,12 +4,8 @@
 // Direct3D 11 Effects header for the FX file loader 
 // A CEffectLoader is created at load time to facilitate loading
 //
-// THIS CODE AND INFORMATION IS PROVIDED "AS IS" WITHOUT WARRANTY OF
-// ANY KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO
-// THE IMPLIED WARRANTIES OF MERCHANTABILITY AND/OR FITNESS FOR A
-// PARTICULAR PURPOSE.
-//
 // Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License.
 //
 // http://go.microsoft.com/fwlink/p/?LinkId=271568
 //--------------------------------------------------------------------------------------
@@ -36,6 +32,12 @@ struct SRange
     uint32_t              start;
     uint32_t              last;
     CEffectVector<void *> vResources; // should be (last - start) in length, resource type depends on the range type
+
+    SRange() noexcept :
+        start(0),
+        last(0)
+    {
+    }
 };
 
 // Used during load to validate assignments
@@ -77,7 +79,7 @@ protected:
     SRasterizerBlock            *m_pOldRS;
     SConstantBuffer             *m_pOldCBs;
     SSamplerBlock               *m_pOldSamplers;
-    uint32_t                        m_OldInterfaceCount;
+    uint32_t                     m_OldInterfaceCount;
     SInterface                  *m_pOldInterfaces;
     SShaderResource             *m_pOldShaderResources;
     SUnorderedAccessView        *m_pOldUnorderedAccessViews;
@@ -147,10 +149,11 @@ protected:
     HRESULT GetUnstructuredDataBlock(_In_ uint32_t offset, _Out_ uint32_t *pdwSize, _Outptr_result_buffer_(*pdwSize) void **ppData);
     // This function makes a copy of the array of SInterfaceParameters, but not a copy of the strings
     HRESULT GetInterfaceParametersAndAddToReflection( _In_ uint32_t InterfaceCount, _In_ uint32_t offset, _Outptr_result_buffer_all_maybenull_(InterfaceCount) SShaderBlock::SInterfaceParameter **ppInterfaces );
+
 public:
+    CEffectLoader() noexcept;
 
     HRESULT LoadEffect(_In_ CEffect *pEffect, _In_reads_bytes_(cbEffectBuffer) const void *pEffectBuffer, _In_ uint32_t cbEffectBuffer);
 };
-
 
 }

@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2018 Team Kodi
+ *  Copyright (C) 2005-2020 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -17,6 +17,7 @@
 #include "VideoLibrary.h"
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"
+#include "media/MediaLockState.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/MediaSourceSettings.h"
 #include "settings/SettingsComponent.h"
@@ -41,7 +42,7 @@ JSONRPC_STATUS CFileOperations::GetRootDirectory(const std::string &method, ITra
     for (unsigned int i = 0; i < (unsigned int)sources->size(); i++)
     {
       // Do not show sources which are locked
-      if (sources->at(i).m_iHasLock == 2)
+      if (sources->at(i).m_iHasLock == LOCK_STATE_LOCKED)
         continue;
 
       items.Add(CFileItemPtr(new CFileItem(sources->at(i))));
@@ -174,10 +175,15 @@ JSONRPC_STATUS CFileOperations::GetFileDetails(const std::string &method, ITrans
   std::string path = URIUtils::GetDirectory(file);
 
   CFileItemList items;
-  if (path.empty() || !CDirectory::GetDirectory(path, items, "", DIR_FLAG_DEFAULTS) || !items.Contains(file))
+  if (path.empty())
     return InvalidParams;
 
-  CFileItemPtr item = items.Get(file);
+  CFileItemPtr item;
+  if (CDirectory::GetDirectory(path, items, "", DIR_FLAG_DEFAULTS) && items.Contains(file))
+    item = items.Get(file);
+  else
+    item = CFileItemPtr(new CFileItem(file, false));
+
   if (!URIUtils::IsUPnP(file))
     FillFileItem(item, item, parameterObject["media"].asString(), parameterObject);
 
@@ -247,7 +253,7 @@ JSONRPC_STATUS CFileOperations::SetFileDetails(const std::string &method, ITrans
   CVideoLibrary::UpdateResumePoint(parameterObject, infos, videodatabase);
 
   videodatabase.GetFileInfo("", infos, fileId);
-  CJSONRPCUtils::NotifyItemUpdated(infos);
+  CJSONRPCUtils::NotifyItemUpdated(infos, std::map<std::string, std::string>{});
   return ACK;
 }
 

@@ -29,6 +29,7 @@
 #include "powermanagement/PowerManager.h"
 #include "profiles/ProfileManager.h"
 #include "pvr/PVRManager.h"
+#include "storage/MediaManager.h"
 #include "utils/FileExtensionProvider.h"
 #include "utils/log.h"
 #include "weather/WeatherManager.h"
@@ -86,6 +87,9 @@ void CServiceManager::DeinitTesting()
 
 bool CServiceManager::InitStageOne()
 {
+  m_Platform.reset(CPlatform::CreateInstance());
+  m_Platform->Init();
+
 #ifdef HAS_PYTHON
   m_XBPython.reset(new XBPython());
   CScriptInvocationManager::GetInstance().RegisterLanguageInvocationHandler(m_XBPython.get(), ".py");
@@ -103,9 +107,6 @@ bool CServiceManager::InitStageTwo(const CAppParamParser &params, const std::str
 {
   // Initialize the addon database (must be before the addon manager is init'd)
   m_databaseManager.reset(new CDatabaseManager);
-
-  m_Platform.reset(CPlatform::CreateInstance());
-  m_Platform->Init();
 
   m_binaryAddonManager.reset(new ADDON::CBinaryAddonManager()); /* Need to constructed before, GetRunningInstance() of binary CAddonDll need to call them */
   m_addonMgr.reset(new ADDON::CAddonMgr());
@@ -156,6 +157,9 @@ bool CServiceManager::InitStageTwo(const CAppParamParser &params, const std::str
   m_powerManager->SetDefaults();
 
   m_weatherManager.reset(new CWeatherManager());
+
+  m_mediaManager.reset(new CMediaManager());
+  m_mediaManager->Initialize();
 
   init_level = 2;
   return true;
@@ -215,6 +219,9 @@ void CServiceManager::DeinitStageTwo()
   m_addonMgr.reset();
   m_Platform.reset();
   m_databaseManager.reset();
+
+  m_mediaManager->Stop();
+  m_mediaManager.reset();
 }
 
 void CServiceManager::DeinitStageOne()
@@ -365,4 +372,9 @@ CPlayerCoreFactory &CServiceManager::GetPlayerCoreFactory()
 CDatabaseManager &CServiceManager::GetDatabaseManager()
 {
   return *m_databaseManager;
+}
+
+CMediaManager& CServiceManager::GetMediaManager()
+{
+  return *m_mediaManager;
 }

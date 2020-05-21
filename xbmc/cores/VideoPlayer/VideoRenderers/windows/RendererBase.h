@@ -49,10 +49,10 @@ public:
 
   unsigned GetWidth() const { return m_widthTex; }
   unsigned GetHeight() const { return m_heightTex; }
+  bool IsLoaded() { return m_bLoaded; }
 
   virtual void AppendPicture(const VideoPicture& picture);
   virtual void ReleasePicture();
-  virtual bool IsLoaded() { return false; }
   virtual bool UploadBuffer() { return false; }
   virtual HRESULT GetResource(ID3D11Resource** ppResource, unsigned* index) const;
 
@@ -92,6 +92,7 @@ protected:
   Microsoft::WRL::ComPtr<ID3D11Texture2D> m_staging;
   D3D11_TEXTURE2D_DESC m_sDesc{};
   bool m_bPending = false;
+  bool m_bLoaded = false;
 };
 
 class CRendererBase

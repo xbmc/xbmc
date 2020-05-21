@@ -106,7 +106,7 @@ msgstr "Другие параметры"
 
 msgctxt "#31022"
 msgid "Sort by"
-msgstr "Сорт. по"
+msgstr "Порядок"
 
 msgctxt "#31023"
 msgid "Viewtype"
@@ -147,10 +147,6 @@ msgstr "Порядок"
 msgctxt "#31033"
 msgid "Your rating"
 msgstr "Ваш рейтинг"
-
-msgctxt "#31034"
-msgid "Extended info"
-msgstr "Дополнительная информация"
 
 msgctxt "#31035"
 msgid "Pages"
@@ -264,6 +260,14 @@ msgctxt "#31072"
 msgid "Power Options"
 msgstr "Настройки питания"
 
+msgctxt "#31073"
+msgid "Total length"
+msgstr "Общая длительность"
+
+msgctxt "#31074"
+msgid "Total duration"
+msgstr "Общая длительность"
+
 msgctxt "#31075"
 msgid "Movie sets"
 msgstr "Киноциклы"
@@ -291,10 +295,6 @@ msgstr "Настройки визуализации"
 msgctxt "#31089"
 msgid "Available groups"
 msgstr "Доступные группы"
-
-msgctxt "#31090"
-msgid "Search trailer"
-msgstr "Искать трейлер"
 
 msgctxt "#31092"
 msgid "Video menu"
@@ -376,10 +376,6 @@ msgctxt "#31114"
 msgid "Search YouTube"
 msgstr "Искать в YouTube"
 
-msgctxt "#31115"
-msgid "Search TheMovieDB"
-msgstr "Искать в TheMovieDB"
-
 msgctxt "#31116"
 msgid "Remove this main menu item"
 msgstr "Убрать этот элемент главного меню"
@@ -411,10 +407,6 @@ msgstr "Не просмотренные сериалы"
 msgctxt "#31123"
 msgid "Same director"
 msgstr "Тот же режиссер "
-
-msgctxt "#31124"
-msgid "Show images on map"
-msgstr "Показывать изображения на карте"
 
 msgctxt "#31125"
 msgid "Press up for actor info"

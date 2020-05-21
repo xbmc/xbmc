@@ -20,6 +20,8 @@
 #include "messaging/helpers/DialogHelper.h"
 #include "music/MusicLibraryQueue.h"
 #include "settings/LibExportSettings.h"
+#include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "storage/MediaManager.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
@@ -77,9 +79,9 @@ static int ExportLibrary(const std::vector<std::string>& params)
     iHeading = 20196;
   std::string path;
   VECSOURCES shares;
-  g_mediaManager.GetLocalDrives(shares);
-  g_mediaManager.GetNetworkLocations(shares);
-  g_mediaManager.GetRemovableDrives(shares);
+  CServiceBroker::GetMediaManager().GetLocalDrives(shares);
+  CServiceBroker::GetMediaManager().GetNetworkLocations(shares);
+  CServiceBroker::GetMediaManager().GetRemovableDrives(shares);
   bool singleFile;
   bool thumbs=false;
   bool actorThumbs=false;
@@ -107,6 +109,20 @@ static int ExportLibrary(const std::vector<std::string>& params)
       HELPERS::DialogResponse result = HELPERS::ShowYesNoDialogText(CVariant{iHeading}, CVariant{20430});
       cancelled = result == HELPERS::DialogResponse::CANCELLED;
       thumbs = result == HELPERS::DialogResponse::YES;
+    }
+  }
+
+  if (cancelled)
+    return -1;
+
+  if (thumbs && !singleFile && StringUtils::EqualsNoCase(params[0], "video"))
+  {
+    std::string movieSetsInfoPath = CServiceBroker::GetSettingsComponent()->GetSettings()->
+        GetString(CSettings::SETTING_VIDEOLIBRARY_MOVIESETSFOLDER);
+    if (movieSetsInfoPath.empty())
+    {
+      auto result = HELPERS::ShowYesNoDialogText(CVariant{iHeading}, CVariant{36301});
+      cancelled = result != HELPERS::DialogResponse::YES;
     }
   }
 

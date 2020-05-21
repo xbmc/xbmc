@@ -76,12 +76,13 @@ CVideoPlayerAudio::~CVideoPlayerAudio()
 
 bool CVideoPlayerAudio::OpenStream(CDVDStreamInfo hints)
 {
-  CLog::Log(LOGNOTICE, "Finding audio codec for: %i", hints.codec);
+  CLog::Log(LOGINFO, "Finding audio codec for: %i", hints.codec);
   bool allowpassthrough = !CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_VIDEOPLAYER_USEDISPLAYASCLOCK);
   if (m_processInfo.IsRealtimeStream())
     allowpassthrough = false;
 
-  CAEStreamInfo::DataType streamType = m_audioSink.GetPassthroughStreamType(hints.codec, hints.samplerate);
+  CAEStreamInfo::DataType streamType =
+      m_audioSink.GetPassthroughStreamType(hints.codec, hints.samplerate, hints.profile);
   CDVDAudioCodec* codec = CDVDFactoryCodec::CreateAudioCodec(hints, m_processInfo,
                                                              allowpassthrough, m_processInfo.AllowDTSHDDecode(),
                                                              streamType);
@@ -97,7 +98,7 @@ bool CVideoPlayerAudio::OpenStream(CDVDStreamInfo hints)
   {
     OpenStream(hints, codec);
     m_messageQueue.Init();
-    CLog::Log(LOGNOTICE, "Creating audio thread");
+    CLog::Log(LOGINFO, "Creating audio thread");
     Create();
   }
   return true;
@@ -156,13 +157,13 @@ void CVideoPlayerAudio::CloseStream(bool bWaitForBuffers)
   // send abort message to the audio queue
   m_messageQueue.Abort();
 
-  CLog::Log(LOGNOTICE, "Waiting for audio thread to exit");
+  CLog::Log(LOGINFO, "Waiting for audio thread to exit");
 
   // shut down the adio_decode thread and wait for it
   StopThread(); // will set this->m_bStop to true
 
   // destroy audio device
-  CLog::Log(LOGNOTICE, "Closing audio device");
+  CLog::Log(LOGINFO, "Closing audio device");
   if (bWait)
   {
     m_bStop = false;
@@ -179,7 +180,7 @@ void CVideoPlayerAudio::CloseStream(bool bWaitForBuffers)
   // uninit queue
   m_messageQueue.End();
 
-  CLog::Log(LOGNOTICE, "Deleting audio codec");
+  CLog::Log(LOGINFO, "Deleting audio codec");
   if (m_pAudioCodec)
   {
     m_pAudioCodec->Dispose();
@@ -215,7 +216,7 @@ void CVideoPlayerAudio::UpdatePlayerInfo()
 
 void CVideoPlayerAudio::Process()
 {
-  CLog::Log(LOGNOTICE, "running thread: CVideoPlayerAudio::Process()");
+  CLog::Log(LOGINFO, "running thread: CVideoPlayerAudio::Process()");
 
   DVDAudioFrame audioframe;
   audioframe.nb_frames = 0;
@@ -277,12 +278,12 @@ void CVideoPlayerAudio::Process()
         // while AE sync is active, we still have time to fill buffers
         if (m_syncTimer.IsTimePast())
         {
-          CLog::Log(LOGNOTICE, "CVideoPlayerAudio::Process - stream stalled");
+          CLog::Log(LOGINFO, "CVideoPlayerAudio::Process - stream stalled");
           m_stalled = true;
         }
       }
       if (timeout == 0)
-        Sleep(10);
+        CThread::Sleep(10);
 
       continue;
     }
@@ -575,7 +576,7 @@ void CVideoPlayerAudio::OnExit()
   CoUninitialize();
 #endif
 
-  CLog::Log(LOGNOTICE, "thread end: CVideoPlayerAudio::OnExit()");
+  CLog::Log(LOGINFO, "thread end: CVideoPlayerAudio::OnExit()");
 }
 
 void CVideoPlayerAudio::SetSpeed(int speed)
@@ -607,7 +608,8 @@ bool CVideoPlayerAudio::SwitchCodecIfNeeded()
   if (m_processInfo.IsRealtimeStream() || m_synctype == SYNC_RESAMPLE)
     allowpassthrough = false;
 
-  CAEStreamInfo::DataType streamType = m_audioSink.GetPassthroughStreamType(m_streaminfo.codec, m_streaminfo.samplerate);
+  CAEStreamInfo::DataType streamType = m_audioSink.GetPassthroughStreamType(
+      m_streaminfo.codec, m_streaminfo.samplerate, m_streaminfo.profile);
   CDVDAudioCodec *codec = CDVDFactoryCodec::CreateAudioCodec(m_streaminfo, m_processInfo,
                                                              allowpassthrough, m_processInfo.AllowDTSHDDecode(),
                                                              streamType);

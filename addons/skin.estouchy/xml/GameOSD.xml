@@ -53,7 +53,7 @@
 					<texturefocus>list_focus.png</texturefocus>
 					<texturenofocus></texturenofocus>
 					<label>$LOCALIZE[13404]</label>
-					<label2>Select + X</label2>
+					<label2>$LOCALIZE[31040]</label2>
 					<onclick>Play</onclick>
 				</control>
 				<control type="button" id="11103">
@@ -63,7 +63,7 @@
 					<texturefocus>list_focus.png</texturefocus>
 					<texturenofocus></texturenofocus>
 					<label>$LOCALIZE[13007]</label>
-					<label2>Select + B</label2>
+					<label2>$LOCALIZE[31041]</label2>
 					<onclick>PlayerControl(Reset)</onclick>
 				</control>
 				<control type="button" id="11104">
@@ -73,7 +73,7 @@
 					<texturefocus>list_focus.png</texturefocus>
 					<texturenofocus></texturenofocus>
 					<label>$LOCALIZE[35222]</label>
-					<label2>Select + Start</label2>
+					<label2>$LOCALIZE[31042]</label2>
 					<onclick>Stop</onclick>
 				</control>
 				<control type="button" id="11107">

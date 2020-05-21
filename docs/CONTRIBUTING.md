@@ -11,6 +11,9 @@ Also, always keep in mind that for many of us English is not our native language
 Before you start coding we advise you to build Kodi's master branch. This will save you and us precious time by making sure a proper build environment is set up and all dependencies are met. For your convenience, **[build guides](README.md)** are available for most common platforms. A **[git guide](GIT-FU.md)** is also available, streamlined to Kodi's development workflow. Unless you're a *git ninja*, please read it carefully.  
 If you are a *git ninja*, we feel happy and sad for you at the same time. Your soul might be lost to the dark side already but worry not, we have cookies!
 
+## Reviews
+Reviews are a great way to get familiar with the codebase. If you would like to start with reviewing just use **[this handy github filter](https://github.com/xbmc/xbmc/pulls?q=is%3Apr+is%3Aopen+review%3Anone)** to see PRs that are in need of one (we have plenty!).
+
 ## Pull request guidelines
 * **Create topic branches**. Never ever open a pull request from your master branch. **Ever!**
 * **Code against master branch**. Unless release specific, all Kodi development occurs in the `master` branch. If it needs backporting it can be done after it hits master.

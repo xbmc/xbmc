@@ -24,8 +24,8 @@ import android.app.job.JobService;
 import android.content.Context;
 import android.database.Cursor;
 import android.os.AsyncTask;
-import android.support.media.tv.TvContractCompat;
 import android.util.Log;
+import androidx.tvprovider.media.tv.TvContractCompat;
 
 import @APP_PACKAGE@.R;
 import @APP_PACKAGE@.XBMCJsonRPC;

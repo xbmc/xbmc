@@ -6,17 +6,16 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include "FileItem.h"
-#include "messaging/ApplicationMessenger.h"
-#include "PlayListPlayer.h"
 #include "XBApplicationEx.h"
-#include "utils/log.h"
-#include "threads/SystemClock.h"
-#include "commons/Exception.h"
-#ifdef TARGET_POSIX
-#include "platform/posix/XTimeUtils.h"
-#endif
+
 #include "AppParamParser.h"
+#include "FileItem.h"
+#include "PlayListPlayer.h"
+#include "commons/Exception.h"
+#include "messaging/ApplicationMessenger.h"
+#include "threads/SystemClock.h"
+#include "utils/XTimeUtils.h"
+#include "utils/log.h"
 
 CXBApplicationEx::CXBApplicationEx()
 {
@@ -32,7 +31,7 @@ CXBApplicationEx::~CXBApplicationEx() = default;
 /* Destroy the app */
 void CXBApplicationEx::Destroy()
 {
-  CLog::Log(LOGNOTICE, "XBApplicationEx: destroying...");
+  CLog::Log(LOGINFO, "XBApplicationEx: destroying...");
   // Perform app-specific cleanup
   Cleanup();
 }
@@ -40,7 +39,7 @@ void CXBApplicationEx::Destroy()
 /* Function that runs the application */
 int CXBApplicationEx::Run(const CAppParamParser &params)
 {
-  CLog::Log(LOGNOTICE, "Running the application..." );
+  CLog::Log(LOGINFO, "Running the application...");
 
   unsigned int lastFrameTime = 0;
   unsigned int frameTime = 0;
@@ -76,12 +75,12 @@ int CXBApplicationEx::Run(const CAppParamParser &params)
     {
       frameTime = XbmcThreads::SystemClockMillis() - lastFrameTime;
       if(frameTime < noRenderFrameTime)
-        Sleep(noRenderFrameTime - frameTime);
+        KODI::TIME::Sleep(noRenderFrameTime - frameTime);
     }
 
   }
   Destroy();
 
-  CLog::Log(LOGNOTICE, "XBApplicationEx: application stopped!" );
+  CLog::Log(LOGINFO, "XBApplicationEx: application stopped!");
   return m_ExitCode;
 }

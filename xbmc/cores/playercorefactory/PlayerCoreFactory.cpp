@@ -286,10 +286,10 @@ bool CPlayerCoreFactory::LoadConfiguration(const std::string &file, bool clear)
 {
   CSingleLock lock(m_section);
 
-  CLog::Log(LOGNOTICE, "Loading player core factory settings from %s.", file.c_str());
+  CLog::Log(LOGINFO, "Loading player core factory settings from %s.", file.c_str());
   if (!XFILE::CFile::Exists(file))
   { // tell the user it doesn't exist
-    CLog::Log(LOGNOTICE, "%s does not exist. Skipping.", file.c_str());
+    CLog::Log(LOGINFO, "%s does not exist. Skipping.", file.c_str());
     return false;
   }
 
@@ -331,7 +331,7 @@ bool CPlayerCoreFactory::LoadConfiguration(const std::string &file, bool clear)
     m_vecPlayerConfigs.push_back(retroPlayer);
   }
 
-  if (!pConfig || strcmpi(pConfig->Value(), "playercorefactory") != 0)
+  if (!pConfig || StringUtils::CompareNoCase(pConfig->Value(), "playercorefactory") != 0)
   {
     CLog::Log(LOGERROR, "Error loading configuration, no <playercorefactory> node");
     return false;
@@ -381,11 +381,11 @@ bool CPlayerCoreFactory::LoadConfiguration(const std::string &file, bool clear)
     const char* szAction = pRule->Attribute("action");
     if (szAction)
     {
-      if (stricmp(szAction, "append") == 0)
+      if (StringUtils::CompareNoCase(szAction, "append") == 0)
       {
         m_vecCoreSelectionRules.push_back(new CPlayerSelectionRule(pRule));
       }
-      else if (stricmp(szAction, "prepend") == 0)
+      else if (StringUtils::CompareNoCase(szAction, "prepend") == 0)
       {
         m_vecCoreSelectionRules.insert(m_vecCoreSelectionRules.begin(), 1, new CPlayerSelectionRule(pRule));
       }
@@ -404,7 +404,7 @@ bool CPlayerCoreFactory::LoadConfiguration(const std::string &file, bool clear)
   }
 
   // succeeded - tell the user it worked
-  CLog::Log(LOGNOTICE, "Loaded playercorefactory configuration");
+  CLog::Log(LOGINFO, "Loaded playercorefactory configuration");
 
   return true;
 }

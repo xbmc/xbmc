@@ -49,6 +49,8 @@ using EVENTSERVER::CEventServer;
 using namespace KODI;
 using namespace MESSAGING;
 
+const std::string CInputManager::SETTING_INPUT_ENABLE_CONTROLLER = "input.enablejoystick";
+
 CInputManager::CInputManager(const CAppParamParser &params) :
   m_keymapEnvironment(new CKeymapEnvironment),
   m_buttonTranslator(new CButtonTranslator),
@@ -66,6 +68,7 @@ CInputManager::CInputManager(const CAppParamParser &params) :
   // Register settings
   std::set<std::string> settingSet;
   settingSet.insert(CSettings::SETTING_INPUT_ENABLEMOUSE);
+  settingSet.insert(SETTING_INPUT_ENABLE_CONTROLLER);
   CServiceBroker::GetSettingsComponent()->GetSettings()->RegisterCallback(this, settingSet);
 }
 
@@ -89,6 +92,9 @@ void CInputManager::InitializeInputs()
 
   m_Mouse.Initialize();
   m_Mouse.SetEnabled(CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_INPUT_ENABLEMOUSE));
+
+  m_enableController = CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+      SETTING_INPUT_ENABLE_CONTROLLER);
 }
 
 void CInputManager::Deinitialize()
@@ -234,6 +240,7 @@ bool CInputManager::ProcessEventServer(int windowId, float frameTime)
       if (wKeyID & ES_FLAG_UNICODE)
       {
         key = CKey(0u, 0u, static_cast<wchar_t>(wKeyID & ~ES_FLAG_UNICODE), 0, 0, 0, 0);
+        key.SetFromService(true);
         return OnKey(key);
       }
 
@@ -418,12 +425,6 @@ bool CInputManager::OnEvent(XBMC_Event& newEvent)
         CApplicationMessenger::GetInstance().PostMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(actionId)));
     }
 
-    // Post an unfocus message for touch device after the action.
-    if (newEvent.touch.action == ACTION_GESTURE_END || newEvent.touch.action == ACTION_TOUCH_TAP)
-    {
-      CGUIMessage msg(GUI_MSG_UNFOCUS_ALL, 0, 0, 0, 0);
-      CApplicationMessenger::GetInstance().SendGUIMessage(msg);
-    }
     break;
   } //case
   case XBMC_BUTTON:
@@ -467,7 +468,11 @@ bool CInputManager::OnKey(const CKey& key)
     }
     else
     {
-      if (!m_buttonTranslator->HasLongpressMapping(CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindowOrDialog(), key))
+      // Event server keyboard doesn't give normal key up and key down, so don't
+      // process for long press if that is the source
+      if (key.GetFromService() ||
+          !m_buttonTranslator->HasLongpressMapping(
+              CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindowOrDialog(), key))
       {
         m_LastKey.Reset();
         bHandled = HandleKey(key);
@@ -554,7 +559,8 @@ bool CInputManager::HandleKey(const CKey& key)
 
         // If the key pressed is shift-A to shift-Z set usekeyboard to true.
         // This causes the keypress to be used for list navigation.
-        if (control->IsContainer() && key.GetModifiers() == CKey::MODIFIER_SHIFT && key.GetVKey() >= XBMCVK_A && key.GetVKey() <= XBMCVK_Z)
+        if (control->IsContainer() && key.GetModifiers() == CKey::MODIFIER_SHIFT &&
+            key.GetUnicode())
           useKeyboard = true;
       }
     }
@@ -607,7 +613,7 @@ bool CInputManager::HandleKey(const CKey& key)
             action = CAction(ACTION_PASTE);
           // If the unicode is non-zero the keypress is a non-printing character
           else if (key.GetUnicode())
-            action = CAction(key.GetAscii() | KEY_ASCII, key.GetUnicode());
+            action = CAction(KEY_UNICODE, key.GetUnicode());
           // The keypress is a non-printing character
           else
             action = CAction(key.GetVKey() | KEY_VKEY);
@@ -744,6 +750,11 @@ void CInputManager::SetMouseState(MOUSE_STATE mouseState)
   m_Mouse.SetState(mouseState);
 }
 
+bool CInputManager::IsControllerEnabled() const
+{
+  return m_enableController;
+}
+
 void CInputManager::OnSettingChanged(std::shared_ptr<const CSetting> setting)
 {
   if (setting == nullptr)
@@ -752,6 +763,9 @@ void CInputManager::OnSettingChanged(std::shared_ptr<const CSetting> setting)
   const std::string &settingId = setting->GetId();
   if (settingId == CSettings::SETTING_INPUT_ENABLEMOUSE)
     m_Mouse.SetEnabled(std::dynamic_pointer_cast<const CSettingBool>(setting)->GetValue());
+
+  else if (settingId == SETTING_INPUT_ENABLE_CONTROLLER)
+    m_enableController = std::dynamic_pointer_cast<const CSettingBool>(setting)->GetValue();
 }
 
 bool CInputManager::OnAction(const CAction& action)

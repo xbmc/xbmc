@@ -100,12 +100,11 @@ extern void android_main(struct android_app* state)
     state->inputPollSource.process = process_input;
 
     CEventLoop eventLoop(state);
-    CXBMCApp xbmcApp(state->activity);
+    IInputHandler inputHandler;
+    CXBMCApp xbmcApp(state->activity, inputHandler);
     if (xbmcApp.isValid())
     {
       start_logger("Kodi");
-
-      IInputHandler inputHandler;
       eventLoop.run(xbmcApp, inputHandler);
     }
     else

@@ -120,10 +120,6 @@ msgctxt "#31033"
 msgid "Your rating"
 msgstr "Сопствена оцена"
 
-msgctxt "#31034"
-msgid "Extended info"
-msgstr "Детално инфо"
-
 msgctxt "#31035"
 msgid "Pages"
 msgstr "Страни"
@@ -220,6 +216,10 @@ msgctxt "#31072"
 msgid "Power Options"
 msgstr "Опции за напојување"
 
+msgctxt "#31074"
+msgid "Total duration"
+msgstr "Вкупно времетрање"
+
 msgctxt "#31075"
 msgid "Movie sets"
 msgstr "Филмски сетови"
@@ -284,10 +284,6 @@ msgctxt "#31114"
 msgid "Search YouTube"
 msgstr "Барај на YouTube"
 
-msgctxt "#31115"
-msgid "Search TheMovieDB"
-msgstr "Барај на TheMovieDB"
-
 msgctxt "#31122"
 msgid "Unwatched TV Shows"
 msgstr "Негледани ТВ шоуа"
@@ -303,6 +299,10 @@ msgstr "Одбери програм"
 msgctxt "#31134"
 msgid "Remaining"
 msgstr "Преостанува"
+
+msgctxt "#31138"
+msgid "Player process info"
+msgstr "Информации за процесот на плеерот"
 
 msgctxt "#31142"
 msgid "Play speed"

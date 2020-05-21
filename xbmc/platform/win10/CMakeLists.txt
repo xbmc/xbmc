@@ -1,4 +1,5 @@
-set(SOURCES input/RemoteControlXbox.cpp
+set(SOURCES CPUInfoWin10.cpp
+            input/RemoteControlXbox.cpp
             Environment.cpp
             Win10App.cpp
             MessagePrinter.cpp
@@ -7,10 +8,12 @@ set(SOURCES input/RemoteControlXbox.cpp
             ../win32/Filesystem.cpp
             ../win32/MemUtils.cpp
             ../win32/pch.cpp
-            ../win32/WIN32Util.cpp)
+            ../win32/WIN32Util.cpp
+            ../win32/XTimeUtils.cpp)
 
-set(HEADERS input/RemoteControlXbox.h
-            AsyncHelpers.h
+set(HEADERS AsyncHelpers.h
+            CPUInfoWin10.h
+            input/RemoteControlXbox.h
             Win10App.h
             ../win32/CharsetConverter.h
             ../win32/dirent.h

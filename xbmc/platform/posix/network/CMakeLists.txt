@@ -1,5 +1,5 @@
-set(SOURCES NetworkLinux.cpp)
+set(SOURCES NetworkPosix.cpp)
 
-set(HEADERS NetworkLinux.h)
+set(HEADERS NetworkPosix.h)
 
 core_add_library(platform_posix_network)

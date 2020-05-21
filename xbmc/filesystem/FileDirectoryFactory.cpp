@@ -6,10 +6,17 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include "utils/URIUtils.h"
 #include "FileDirectoryFactory.h"
+
+#if defined(HAS_ISO9660PP)
+#include "ISO9660Directory.h"
+#endif
+#if defined(HAS_UDFREAD)
 #include "UDFDirectory.h"
+#endif
 #include "RSSDirectory.h"
+#include "UDFDirectory.h"
+#include "utils/URIUtils.h"
 #if defined(TARGET_ANDROID)
 #include "platform/android/filesystem/APKDirectory.h"
 #endif
@@ -54,7 +61,7 @@ IFileDirectory* CFileDirectoryFactory::Create(const CURL& url, CFileItem* pItem,
       if (CAudioDecoder::HasTracks(addonInfo))
       {
         auto exts = StringUtils::Split(CAudioDecoder::GetExtensions(addonInfo), "|");
-        if (std::find(exts.begin(), exts.end(), "." + strExtension) != exts.end())
+        if (std::find(exts.begin(), exts.end(), strExtension) != exts.end())
         {
           CAudioDecoder* result = new CAudioDecoder(addonInfo);
           if (!result->CreateDecoder() || !result->ContainsFiles(url))
@@ -75,7 +82,7 @@ IFileDirectory* CFileDirectoryFactory::Create(const CURL& url, CFileItem* pItem,
       if (vfsAddon->HasFileDirectories())
       {
         auto exts = StringUtils::Split(vfsAddon->GetExtensions(), "|");
-        if (std::find(exts.begin(), exts.end(), "." + strExtension) != exts.end())
+        if (std::find(exts.begin(), exts.end(), strExtension) != exts.end())
         {
           CVFSEntryIFileDirectoryWrapper* wrap = new CVFSEntryIFileDirectoryWrapper(vfsAddon);
           if (wrap->ContainsFiles(url))
@@ -86,13 +93,21 @@ IFileDirectory* CFileDirectoryFactory::Create(const CURL& url, CFileItem* pItem,
               *pItem = *wrap->m_items[0];
             }
             else
-            { // compressed or more than one file -> create a dir
+            {
+              // compressed or more than one file -> create a dir
               pItem->SetPath(wrap->m_items.GetPath());
-              return wrap;
             }
+
+            // Check for folder, if yes return also wrap.
+            // Needed to fix for e.g. RAR files with only one file inside
+            pItem->m_bIsFolder = URIUtils::HasSlashAtEnd(pItem->GetPath());
+            if (pItem->m_bIsFolder)
+              return wrap;
           }
           else
+          {
             pItem->m_bIsFolder = true;
+          }
 
           delete wrap;
           return nullptr;
@@ -104,8 +119,23 @@ IFileDirectory* CFileDirectoryFactory::Create(const CURL& url, CFileItem* pItem,
   if (pItem->IsRSS())
     return new CRSSDirectory();
 
+
   if (pItem->IsDiscImage())
+  {
+#if defined(HAS_ISO9660PP)
+    CISO9660Directory* iso = new CISO9660Directory();
+    if (iso->Exists(pItem->GetURL()))
+      return iso;
+
+    delete iso;
+#endif
+
+#if defined(HAS_UDFREAD)
     return new CUDFDirectory();
+#endif
+
+    return nullptr;
+  }
 
 #if defined(TARGET_ANDROID)
   if (url.IsFileType("apk"))

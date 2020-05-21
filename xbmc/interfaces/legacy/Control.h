@@ -902,7 +902,6 @@ namespace XBMCAddon
     /// | XBFONT_JUSTIFIED  | 0x00000010 | Justify text
     /// @param focusTexture         [opt] string - filename for focus texture.
     /// @param noFocusTexture       [opt] string - filename for no focus texture.
-    /// @param isPassword           [opt] bool - True=mask text value with `****`(deprecated, use setType()).
     ///
     /// @note You can use the above as keywords for arguments and skip certain
     /// optional arguments.\n
@@ -914,6 +913,7 @@ namespace XBMCAddon
     ///
     ///-------------------------------------------------------------------------
     /// @python_v18 Deprecated **isPassword**
+    /// @python_v19 Removed **isPassword**
     ///
     /// **Example:**
     /// ~~~~~~~~~~~~~{.py}
@@ -929,7 +929,7 @@ namespace XBMCAddon
                   const char* font = NULL, const char* textColor = NULL,
                   const char* disabledColor = NULL,
                   long _alignment = XBFONT_LEFT, const char* focusTexture = NULL,
-                  const char* noFocusTexture = NULL, bool isPassword = false);
+                  const char* noFocusTexture = NULL);
 
 
       // setLabel() Method
@@ -1056,7 +1056,6 @@ namespace XBMCAddon
       UTILS::Color textColor;
       UTILS::Color disabledColor;
       uint32_t align;
-      bool bIsPassword = false;
 
       CGUIControl* Create() override;
 #endif
@@ -1069,22 +1068,24 @@ namespace XBMCAddon
       /// Sets the type of this edit control.
       ///
       /// @param type              integer - type of the edit control.
-      /// | Param                            | Definition                                  |
-      /// |----------------------------------|:--------------------------------------------|
-      /// | xbmcgui.INPUT_TYPE_TEXT          | (standard keyboard)
-      /// | xbmcgui.INPUT_TYPE_NUMBER        | (format: #)
-      /// | xbmcgui.INPUT_TYPE_DATE          | (format: DD/MM/YYYY)
-      /// | xbmcgui.INPUT_TYPE_TIME          | (format: HH:MM)
-      /// | xbmcgui.INPUT_TYPE_IPADDRESS     | (format: #.#.#.#)
-      /// | xbmcgui.INPUT_TYPE_PASSWORD      | (input is masked)
-      /// | xbmcgui.INPUT_TYPE_PASSWORD_MD5  | (input is masked, return md5 hash of input)
-      /// | xbmcgui.INPUT_TYPE_SECONDS       | (format: SS or MM:SS or HH:MM:SS or MM min)
+      /// | Param                                         | Definition                                  |
+      /// |-----------------------------------------------|:--------------------------------------------|
+      /// | xbmcgui.INPUT_TYPE_TEXT                       | (standard keyboard)
+      /// | xbmcgui.INPUT_TYPE_NUMBER                     | (format: #)
+      /// | xbmcgui.INPUT_TYPE_DATE                       | (format: DD/MM/YYYY)
+      /// | xbmcgui.INPUT_TYPE_TIME                       | (format: HH:MM)
+      /// | xbmcgui.INPUT_TYPE_IPADDRESS                  | (format: #.#.#.#)
+      /// | xbmcgui.INPUT_TYPE_PASSWORD                   | (input is masked)
+      /// | xbmcgui.INPUT_TYPE_PASSWORD_MD5               | (input is masked, return md5 hash of input)
+      /// | xbmcgui.INPUT_TYPE_SECONDS                    | (format: SS or MM:SS or HH:MM:SS or MM min)
+      /// | xbmcgui.INPUT_TYPE_PASSWORD_NUMBER_VERIFY_NEW | (numeric input is masked)
       /// @param heading           string or unicode - heading that will be used for to numeric or
       ///                                              keyboard dialog when the edit control is clicked.
       ///
       ///
       ///-----------------------------------------------------------------------
       /// @python_v18 New function added.
+      /// @python_v19 New option added to mask numeric input.
       ///
       /// **Example:**
       /// ~~~~~~~~~~~~~{.py}
@@ -1841,6 +1842,21 @@ namespace XBMCAddon
     /// ...
     /// ~~~~~~~~~~~~~
     ///
+    /// As stated above, the GUI control is only created once added to a window. The example
+    /// below shows how a ControlTextBox can be created, added to the current window and
+    /// have some of its properties changed.
+    ///
+    /// /// **Extended example:**
+    /// ~~~~~~~~~~~~~{.py}
+    /// ...
+    /// textbox = xbmcgui.ControlTextBox(100, 250, 300, 300, textColor='0xFFFFFFFF')
+    /// window = xbmcgui.Window(xbmcgui.getCurrentWindowId())
+    /// window.addControl(textbox)
+    /// textbox.setText("My Text Box")
+    /// textbox.scroll()
+    /// ...
+    /// ~~~~~~~~~~~~~
+    ///
     class ControlTextBox : public Control
     {
     public:
@@ -1855,9 +1871,11 @@ namespace XBMCAddon
       /// @brief \python_func{ setText(text) }
       ///-----------------------------------------------------------------------
       /// Set's the text for this textbox.
+      /// \anchor python_xbmcgui_control_textbox_settext
       ///
-      /// @param text                 string or unicode - text string.
+      /// @param text                 string  - text string.
       ///
+      /// @note setText only has effect after the control is added to a window
       ///
       ///--------------------------------------------------------------------------
       ///
@@ -1884,6 +1902,9 @@ namespace XBMCAddon
       ///
       /// @return                       To get text from box
       ///
+      /// @note getText only works after you add the control to a window
+      /// and set the control text (using \ref python_xbmcgui_control_textbox_settext
+      /// "setText").
       ///
       ///-----------------------------------------------------------------------
       ///
@@ -1908,6 +1929,7 @@ namespace XBMCAddon
       ///-----------------------------------------------------------------------
       /// Clear's this textbox.
       ///
+      /// @note reset only works after you add the control to a window.
       ///
       ///-----------------------------------------------------------------------
       ///
@@ -1934,6 +1956,7 @@ namespace XBMCAddon
       ///
       /// @param id                 integer - position to scroll to.
       ///
+      /// @note scroll() only works after the control is added to a window.
       ///
       ///-----------------------------------------------------------------------
       ///
@@ -1962,6 +1985,7 @@ namespace XBMCAddon
       /// @param time                  integer - Scroll time (in ms)
       /// @param repeat                integer - Repeat time
       ///
+      /// @note autoScroll only works after you add the control to a window.
       ///
       ///-----------------------------------------------------------------------
       /// @python_v15 New function added.
@@ -2533,7 +2557,7 @@ namespace XBMCAddon
     /// @brief **For control a radio button (as used for on/off settings).**
     ///
     /// \python_class{ ControlRadioButton(x, y, width, height, label[, focusOnTexture, noFocusOnTexture,
-    ///                   focusOffTexture, noFocusOffTexture, focusTexture, noFocusTexture,
+    ///                   focusOffTexture, noFocusOffTexture,
     ///                   textOffsetX, textOffsetY, alignment, font, textColor, disabledColor]) }
     ///
     /// The radio button control is used for creating push button on/off
@@ -2557,12 +2581,6 @@ namespace XBMCAddon
     ///                             focused texture.
     /// @param noFocusOffTexture    [opt] string - filename for radio OFF
     ///                             not focused texture.
-    /// @param focusTexture         [opt] string - filename for radio ON
-    ///                             texture (deprecated, use focusOnTexture
-    ///                             and noFocusOnTexture).
-    /// @param noFocusTexture       [opt] string - filename for radio OFF
-    ///                             texture (deprecated, use focusOffTexture
-    ///                             and noFocusOffTexture).
     /// @param textOffsetX          [opt] integer - horizontal text offset
     /// @param textOffsetY          [opt] integer - vertical text offset
     /// @param alignment            [opt] integer - alignment of label
@@ -2593,7 +2611,8 @@ namespace XBMCAddon
     ///
     ///--------------------------------------------------------------------------
     /// @python_v13 New function added.
-    /// @python_v16 Deprecated **focusTexture** and **noFocusTexture**. Use **focusOnTexture** and **noFocusOnTexture**.
+    /// @python_v18 Deprecated **focusTexture** and **noFocusTexture**. Use **focusOnTexture** and **noFocusOnTexture**.
+    /// @python_v19 Removed **focusTexture** and **noFocusTexture**.
     ///
     /// **Example:**
     /// ~~~~~~~~~~~~~{.py}
@@ -2608,7 +2627,6 @@ namespace XBMCAddon
       ControlRadioButton(long x, long y, long width, long height, const String& label,
                          const char* focusOnTexture = NULL, const char* noFocusOnTexture = NULL,
                          const char* focusOffTexture = NULL, const char* noFocusOffTexture = NULL,
-                         const char* focusTexture = NULL, const char* noFocusTexture = NULL,
                          long textOffsetX = CONTROL_TEXT_OFFSET_X,
                          long textOffsetY = CONTROL_TEXT_OFFSET_Y,
                          long _alignment = (XBFONT_LEFT | XBFONT_CENTER_Y),

@@ -1,20 +1,15 @@
 include ../../Makefile.include
 PREFIX=$(NATIVEPREFIX)
 PLATFORM=$(NATIVEPLATFORM)
-DEPS= ../../Makefile.include Makefile
+DEPS= ../../Makefile.include Makefile 01-disable-executables.patch
 
 # lib name, version
 LIBNAME=libjpeg-turbo
-VERSION=1.5.1
+VERSION=2.0.4
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(LIBNAME)-$(VERSION).tar.gz
-# configuration settings
-CONFIGURE=cp -f $(CONFIG_SUB) $(CONFIG_GUESS) .; \
-          ./configure --prefix=$(PREFIX) --with-jpeg8 --without-simd
 
-CFLAGS+=-O3
-
-LIBDYLIB=$(PLATFORM)/.libs/libjpeg.a
+LIBDYLIB=$(PLATFORM)/build/libjpeg.a
 
 all: .installed-$(PLATFORM)
 
@@ -24,14 +19,14 @@ $(TARBALLS_LOCATION)/$(ARCHIVE):
 $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 	rm -rf $(PLATFORM)/*; mkdir -p $(PLATFORM)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
-	cd $(PLATFORM); $(CONFIGURE)
+	cd $(PLATFORM); patch -p1 -i ../01-disable-executables.patch
+	cd $(PLATFORM); $(CMAKE) -B build -DCMAKE_TOOLCHAIN_FILE= -DCMAKE_ASM_NASM_COMPILER:FILEPATH=$(NATIVEPREFIX)/bin/yasm -DENABLE_SHARED:BOOL=OFF -DWITH_JPEG8:BOOL=ON
 
 $(LIBDYLIB): $(PLATFORM)
-	$(MAKE) -j 1 -C $(PLATFORM)
-	touch $@
+	$(MAKE) -C $(PLATFORM)/build
 
 .installed-$(PLATFORM): $(LIBDYLIB)
-	$(MAKE) -C $(PLATFORM) install
+	$(MAKE) -C $(PLATFORM)/build install
 	touch $@
 
 clean:

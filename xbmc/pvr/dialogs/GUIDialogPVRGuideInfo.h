@@ -21,8 +21,8 @@ namespace PVR
   class CGUIDialogPVRGuideInfo : public CGUIDialog
   {
   public:
-    CGUIDialogPVRGuideInfo(void);
-    ~CGUIDialogPVRGuideInfo(void) override;
+    CGUIDialogPVRGuideInfo();
+    ~CGUIDialogPVRGuideInfo() override;
     bool OnMessage(CGUIMessage& message) override;
     bool OnInfo(int actionID) override;
     bool HasListItems() const override { return true; }

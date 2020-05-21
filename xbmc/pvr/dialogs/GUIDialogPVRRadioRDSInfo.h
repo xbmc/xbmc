@@ -20,8 +20,8 @@ namespace PVR
   class CGUIDialogPVRRadioRDSInfo : public CGUIDialog
   {
   public:
-    CGUIDialogPVRRadioRDSInfo(void);
-    ~CGUIDialogPVRRadioRDSInfo(void) override = default;
+    CGUIDialogPVRRadioRDSInfo();
+    ~CGUIDialogPVRRadioRDSInfo() override = default;
     bool OnMessage(CGUIMessage& message) override;
 
   protected:

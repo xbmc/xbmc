@@ -13,6 +13,7 @@
 #include "guilib/GUIKeyboardFactory.h"
 #include "guilib/GUIWindow.h"
 #include "guilib/GUIWindowManager.h"
+#include "input/ButtonTranslator.h"
 #include "input/Key.h"
 #include "input/actions/ActionTranslator.h"
 #include "messaging/ApplicationMessenger.h"
@@ -82,6 +83,36 @@ JSONRPC_STATUS CInputOperations::ExecuteAction(const std::string &method, ITrans
     return InvalidParams;
 
   return SendAction(action);
+}
+
+JSONRPC_STATUS CInputOperations::ButtonEvent(const std::string& method,
+                                             ITransportLayer* transport,
+                                             IClient* client,
+                                             const CVariant& parameterObject,
+                                             CVariant& result)
+{
+  std::string button = parameterObject["button"].asString();
+  std::string keymap = parameterObject["keymap"].asString();
+  int holdtime = static_cast<int>(parameterObject["holdtime"].asInteger());
+  if (holdtime < 0)
+  {
+    return InvalidParams;
+  }
+
+  uint32_t keycode = CButtonTranslator::TranslateString(keymap, button);
+  if (keycode == 0)
+  {
+    return InvalidParams;
+  }
+
+  XBMC_Event* newEvent = new XBMC_Event;
+  newEvent->type = XBMC_BUTTON;
+  newEvent->keybutton.button = keycode;
+  newEvent->keybutton.holdtime = holdtime;
+
+  CApplicationMessenger::GetInstance().PostMsg(TMSG_EVENT, -1, -1, static_cast<void*>(newEvent));
+
+  return ACK;
 }
 
 JSONRPC_STATUS CInputOperations::Left(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)

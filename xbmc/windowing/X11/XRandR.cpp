@@ -8,22 +8,22 @@
 
 #include "XRandR.h"
 
-#include <string.h>
-#include <sys/wait.h>
-#include "PlatformDefs.h"
-#include "utils/XBMCTinyXML.h"
-#include "utils/StringUtils.h"
-#include "utils/log.h"
-#include "threads/SystemClock.h"
 #include "CompileInfo.h"
+#include "threads/SystemClock.h"
+#include "utils/StringUtils.h"
+#include "utils/XBMCTinyXML.h"
+#include "utils/XTimeUtils.h"
+#include "utils/log.h"
+
+#include <string.h>
+
+#include <sys/wait.h>
+
+#include "PlatformDefs.h"
 
 #if defined(TARGET_FREEBSD)
 #include <sys/types.h>
 #include <sys/wait.h>
-#endif
-
-#ifdef TARGET_POSIX
-#include "platform/posix/XTimeUtils.h"
 #endif
 
 CXRandR::CXRandR(bool query)
@@ -98,7 +98,7 @@ bool CXRandR::Query(bool force, int screennum, bool ignoreoff)
     XOutput xoutput;
     xoutput.name = output->Attribute("name");
     StringUtils::Trim(xoutput.name);
-    xoutput.isConnected = (strcasecmp(output->Attribute("connected"), "true") == 0);
+    xoutput.isConnected = (StringUtils::CompareNoCase(output->Attribute("connected"), "true") == 0);
     xoutput.screen = screennum;
     xoutput.w = (output->Attribute("w") != NULL ? atoi(output->Attribute("w")) : 0);
     xoutput.h = (output->Attribute("h") != NULL ? atoi(output->Attribute("h")) : 0);
@@ -107,8 +107,9 @@ bool CXRandR::Query(bool force, int screennum, bool ignoreoff)
     xoutput.crtc = (output->Attribute("crtc") != NULL ? atoi(output->Attribute("crtc")) : 0);
     xoutput.wmm = (output->Attribute("wmm") != NULL ? atoi(output->Attribute("wmm")) : 0);
     xoutput.hmm = (output->Attribute("hmm") != NULL ? atoi(output->Attribute("hmm")) : 0);
-    if (output->Attribute("rotation") != NULL
-        && (strcasecmp(output->Attribute("rotation"), "left") == 0 || strcasecmp(output->Attribute("rotation"), "right") == 0))
+    if (output->Attribute("rotation") != NULL &&
+        (StringUtils::CompareNoCase(output->Attribute("rotation"), "left") == 0 ||
+         StringUtils::CompareNoCase(output->Attribute("rotation"), "right") == 0))
     {
       xoutput.isRotated = true;
     }
@@ -127,8 +128,8 @@ bool CXRandR::Query(bool force, int screennum, bool ignoreoff)
       xmode.hz = atof(mode->Attribute("hz"));
       xmode.w = atoi(mode->Attribute("w"));
       xmode.h = atoi(mode->Attribute("h"));
-      xmode.isPreferred = (strcasecmp(mode->Attribute("preferred"), "true") == 0);
-      xmode.isCurrent = (strcasecmp(mode->Attribute("current"), "true") == 0);
+      xmode.isPreferred = (StringUtils::CompareNoCase(mode->Attribute("preferred"), "true") == 0);
+      xmode.isCurrent = (StringUtils::CompareNoCase(mode->Attribute("current"), "true") == 0);
       xoutput.modes.push_back(xmode);
       if (xmode.isCurrent)
         hascurrent = true;
@@ -210,7 +211,7 @@ bool CXRandR::TurnOnOutput(const std::string& name)
     if (output && output->h > 0)
       return true;
 
-    Sleep(200);
+    KODI::TIME::Sleep(200);
   }
 
   return false;
@@ -390,7 +391,7 @@ void CXRandR::LoadCustomModeLinesToAllOutputs(void)
   }
 
   TiXmlElement *pRootElement = xmlDoc.RootElement();
-  if (strcasecmp(pRootElement->Value(), "modelines") != 0)
+  if (StringUtils::CompareNoCase(pRootElement->Value(), "modelines") != 0)
   {
     //! @todo ERROR
     return;

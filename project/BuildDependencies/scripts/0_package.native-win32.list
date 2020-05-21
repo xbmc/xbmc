@@ -7,8 +7,8 @@
 ; -> ...
 ;PLEASE KEEP THIS LIST IN ALPHABETICAL ORDER!
 doxygen-1.8.2-win32.7z
-flatc-1.9.0-Win32-v141.7z
-jsonschemabuilder-1.0.0-win32-3.7z
-swig-3.0.10-win32.7z
-texturepacker-1.1.1-win32.7z
+flatc-1.11.0-win32-v141-20200105.7z
+JsonSchemaBuilder-win32-v141-20200105.7z
+swig-4.0.1-win32-v141-20200105.7z
+TexturePacker-win32-v141-20200105.7z
 vswhere-2.2.11-win32.7z

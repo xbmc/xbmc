@@ -158,6 +158,81 @@ web applications or frameworks for the Python programming language.
       "",
       <b>xbmc.monitor().onDatabaseScanStarted()</b> function was removed completely.
 }
+\python_removed_function{
+      onAbortRequested,
+      "",
+      <b>xbmc.monitor().onAbortRequested()</b> function was removed completely.
+}
+\python_removed_function{
+      create,
+      "",
+      <b>xbmcgui.DialogBusy().create()</b> function was removed completely.
+}
+\python_removed_function{
+      update,
+      "",
+      <b>xbmcgui.DialogBusy().update()</b> function was removed completely.
+}
+\python_removed_function{
+      close,
+      "",
+      <b>xbmcgui.DialogBusy().close()</b> function was removed completely.
+}
+\python_removed_function{
+      iscanceled,
+      "",
+      <b>xbmcgui.DialogBusy().iscanceled()</b> function was removed completely.
+}
+\python_removed_function{
+      setIconImage,
+      "",
+      <b>xbmcgui.ListItem().setIconImage()</b> function was removed completely.
+}
+\python_removed_function{
+      setThumbnailImage,
+      "",
+      <b>xbmcgui.ListItem().setThumbnailImage()</b> function was removed completely.
+}
+\python_removed_function{
+      getdescription,
+      "",
+      <b>xbmcgui.ListItem().getdescription()</b> function was removed completely.
+}
+\python_removed_function{
+      getduration,
+      "",
+      <b>xbmcgui.ListItem().getduration()</b> function was removed completely.
+}
+\python_removed_function{
+      getfilename,
+      "",
+      <b>xbmcgui.ListItem().getfilename()</b> function was removed completely.
+}
+\python_removed_function{
+      getfilename,
+      "",
+      <b>xbmcgui.Window().getResolution()</b> function was removed completely.
+}
+\python_removed_function{
+      setCoordinateResolution,
+      "",
+      <b>xbmcgui.Window().setCoordinateResolution()</b> function was removed completely.
+}
+\python_removed_function{
+      makeLegalFilename,
+      "",
+      <b>xbmc.makeLegalFilename()</b> function was moved to the xbmcvfs module.
+}
+\python_removed_function{
+      validatePath,
+      "",
+      <b>xbmc.validatePath()</b> function was moved to the xbmcvfs module.
+}
+\python_removed_function{
+      abortRequested,
+      "",
+      <b>xbmc.abortRequested</b> flag was removed completely. Use xbmc.Monitor().abortRequested().
+}
 */
 /*!
 @page python_v18 Python API v18

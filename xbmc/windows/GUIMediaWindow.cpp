@@ -426,7 +426,15 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
         { // need to remove the disc cache
           CFileItemList items;
           items.SetPath(URIUtils::GetDirectory(newItem->GetPath()));
-          items.RemoveDiscCache(GetID());
+          if (newItem->HasProperty("cachefilename"))
+          {
+            // Use stored cache file name
+            std::string crcfile = newItem->GetProperty("cachefilename").asString();
+            items.RemoveDiscCacheCRC(crcfile);
+          }
+          else
+            // No stored cache file name, attempt using truncated item path as list path
+            items.RemoveDiscCache(GetID());
         }
       }
       else if (message.GetParam1()==GUI_MSG_UPDATE_PATH)
@@ -840,7 +848,7 @@ bool CGUIMediaWindow::Update(const std::string &strDirectory, bool updateFilterP
   {
     // Removable sources
     VECSOURCES removables;
-    g_mediaManager.GetRemovableDrives(removables);
+    CServiceBroker::GetMediaManager().GetRemovableDrives(removables);
     for (auto s : removables)
     {
       if (URIUtils::CompareWithoutSlashAtEnd(s.strPath, m_vecItems->GetPath()))
@@ -1178,7 +1186,7 @@ bool CGUIMediaWindow::HaveDiscOrConnection(const std::string& strPath, int iDriv
 {
   if (iDriveType==CMediaSource::SOURCE_TYPE_DVD)
   {
-    if (!g_mediaManager.IsDiscInDrive(strPath))
+    if (!CServiceBroker::GetMediaManager().IsDiscInDrive(strPath))
     {
       HELPERS::ShowOKDialogText(CVariant{218}, CVariant{219});
       return false;

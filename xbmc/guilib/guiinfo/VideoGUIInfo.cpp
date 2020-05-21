@@ -10,6 +10,7 @@
 
 #include "Application.h"
 #include "FileItem.h"
+#include "PlayListPlayer.h"
 #include "ServiceBroker.h"
 #include "URL.h"
 #include "cores/DataCacheCore.h"
@@ -22,6 +23,7 @@
 #include "guilib/guiinfo/GUIInfo.h"
 #include "guilib/guiinfo/GUIInfoHelper.h"
 #include "guilib/guiinfo/GUIInfoLabels.h"
+#include "playlists/PlayList.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
@@ -83,6 +85,11 @@ bool CVideoGUIInfo::InitCurrentItem(CFileItem *item)
 
 bool CVideoGUIInfo::GetLabel(std::string& value, const CFileItem *item, int contextWindow, const CGUIInfo &info, std::string *fallback) const
 {
+  // For videoplayer "offset" and "position" info labels check playlist
+  if (info.GetData1() && info.m_info >= VIDEOPLAYER_OFFSET_POSITION_FIRST &&
+      info.m_info <= VIDEOPLAYER_OFFSET_POSITION_LAST)
+    return GetPlaylistInfo(value, info);
+
   const CVideoInfoTag* tag = item->GetVideoInfoTag();
   if (tag)
   {
@@ -139,6 +146,19 @@ bool CVideoGUIInfo::GetLabel(std::string& value, const CFileItem *item, int cont
           return true;
         }
         break;
+      case VIDEOPLAYER_TVSHOWDBID:
+      case LISTITEM_TVSHOWDBID:
+        if (tag->m_iIdShow > -1)
+        {
+          value = StringUtils::Format("%i", tag->m_iIdShow);
+          return true;
+        }
+        break;
+      case VIDEOPLAYER_UNIQUEID:
+      case LISTITEM_UNIQUEID:
+        if (!info.GetData3().empty())
+          value = tag->GetUniqueID(info.GetData3());
+        return true;
       case VIDEOPLAYER_RATING:
       case LISTITEM_RATING:
       {
@@ -154,14 +174,16 @@ bool CVideoGUIInfo::GetLabel(std::string& value, const CFileItem *item, int cont
       case LISTITEM_RATING_AND_VOTES:
       {
         CRating rating = tag->GetRating(info.GetData3());
-        if (rating.rating > 0.f)
+        if (rating.rating >= 0.f)
         {
-          if (rating.votes == 0)
+          if (rating.rating > 0.f && rating.votes == 0)
             value = StringUtils::FormatNumber(rating.rating);
-          else
+          else if (rating.votes > 0)
             value = StringUtils::Format(g_localizeStrings.Get(20350).c_str(),
                                         StringUtils::FormatNumber(rating.rating).c_str(),
                                         StringUtils::FormatNumber(rating.votes).c_str());
+          else
+            break;
           return true;
         }
         break;
@@ -216,26 +238,22 @@ bool CVideoGUIInfo::GetLabel(std::string& value, const CFileItem *item, int cont
       case VIDEOPLAYER_EPISODE:
       case LISTITEM_EPISODE:
       {
-        int iSeason = -1, iEpisode = -1;
+        int iEpisode = -1;
         if (tag->m_iEpisode > 0)
         {
-          iSeason = tag->m_iSeason;
           iEpisode = tag->m_iEpisode;
         }
 
         if (iEpisode >= 0)
         {
-          if (iSeason == 0) // prefix episode with 'S'
-            value = StringUtils::Format("S%d", iEpisode);
-          else
-            value = StringUtils::Format("%d", iEpisode);
+          value = StringUtils::Format("%d", iEpisode);
           return true;
         }
         break;
       }
       case VIDEOPLAYER_SEASON:
       case LISTITEM_SEASON:
-        if (tag->m_iSeason > 0)
+        if (tag->m_iSeason >= 0)
         {
           value = StringUtils::Format("%d", tag->m_iSeason);
           return true;
@@ -574,6 +592,48 @@ bool CVideoGUIInfo::GetLabel(std::string& value, const CFileItem *item, int cont
   }
 
   return false;
+}
+
+bool CVideoGUIInfo::GetPlaylistInfo(std::string& value, const CGUIInfo& info) const
+{
+  PLAYLIST::CPlayList& playlist = CServiceBroker::GetPlaylistPlayer().GetPlaylist(PLAYLIST_VIDEO);
+  if (playlist.size() < 1)
+    return false;
+
+  int index = info.GetData2();
+  if (info.GetData1() == 1)
+  { // relative index (requires current playlist is PLAYLIST_VIDEO)
+    if (CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist() != PLAYLIST_VIDEO)
+      return false;
+
+    index = CServiceBroker::GetPlaylistPlayer().GetNextSong(index);
+  }
+
+  if (index < 0 || index >= playlist.size())
+    return false;
+
+  const CFileItemPtr playlistItem = playlist[index];
+  // try to set a thumbnail
+  if (!playlistItem->HasArt("thumb"))
+  {
+    CVideoThumbLoader loader;
+    loader.LoadItem(playlistItem.get());
+    // still no thumb? then just the set the default cover
+    if (!playlistItem->HasArt("thumb"))
+      playlistItem->SetArt("thumb", "DefaultVideoCover.png");
+  }
+  if (info.m_info == VIDEOPLAYER_PLAYLISTPOS)
+  {
+    value = StringUtils::Format("%i", index + 1);
+    return true;
+  }
+  else if (info.m_info == VIDEOPLAYER_COVER)
+  {
+    value = playlistItem->GetArt("thumb");
+    return true;
+  }
+
+  return GetLabel(value, playlistItem.get(), 0, CGUIInfo(info.m_info), nullptr);
 }
 
 bool CVideoGUIInfo::GetInt(int& value, const CGUIListItem *gitem, int contextWindow, const CGUIInfo &info) const

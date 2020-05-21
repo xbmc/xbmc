@@ -1,52 +1,21 @@
---- a/lib/addns/dnsquery.c
-+++ b/lib/addns/dnsquery.c
-@@ -41,6 +41,16 @@
- 
- #define MAX_DNS_PACKET_SIZE 0xffff
- 
-+#if defined(ANDROID)
-+#  define NS_HFIXEDSZ   12
-+#  define C_IN          1
-+#  define T_A           1
-+#  define ns_t_srv      33
-+#  define ns_t_aaaa     28
-+#  define NS_PACKETSZ	512
-+#  define T_NS          2
-+#endif
-+
- #ifdef NS_HFIXEDSZ	/* Bind 8/9 interface */
- #if !defined(C_IN)	/* AIX 5.3 already defines C_IN */
- #  define C_IN		ns_c_in
---- a/lib/replace/system/network.h
-+++ b/lib/replace/system/network.h
-@@ -128,7 +128,7 @@
- struct hostent *rep_gethostbyname(const char *name);
- #endif
- 
--#ifdef HAVE_IFADDRS_H
-+#if defined(HAVE_IFADDRS_H) && (!defined(__ANDROID_API__) || __ANDROID_API__ >= 24)
- #include <ifaddrs.h>
- #endif
- 
 --- a/lib/util/charset/iconv.c
 +++ b/lib/util/charset/iconv.c
-@@ -24,6 +24,11 @@
- #include "system/filesys.h"
- #include "charset_proto.h"
+@@ -28,6 +28,10 @@
+ #include "libcli/util/ntstatus.h"
+ #include "lib/util/util_str_hex.h"
  
-+#if defined(ANDROID)
-+#include <stdint.h>
++#if defined(ANDROID) && (!defined(__ANDROID_API__) || __ANDROID_API__ < 28)
 +#include <byteswap.h>
 +#endif
 +
  #ifdef strcasecmp
  #undef strcasecmp
  #endif
-@@ -546,6 +551,19 @@
+@@ -592,6 +596,19 @@
  	return 0;
  }
  
-+#if defined(ANDROID)
++#if defined(ANDROID) && (!defined(__ANDROID_API__) || __ANDROID_API__ < 28)
 +void swab(const void *from, void*to, ssize_t n)
 +{
 +  ssize_t i;
@@ -62,35 +31,23 @@
  static size_t iconv_swab(void *cd, const char **inbuf, size_t *inbytesleft,
  			 char **outbuf, size_t *outbytesleft)
  {
---- a/lib/util/util_pw.c
-+++ b/lib/util/util_pw.c
-@@ -40,7 +40,9 @@
- 	ret->pw_passwd = talloc_strdup(ret, from->pw_passwd);
- 	ret->pw_uid = from->pw_uid;
- 	ret->pw_gid = from->pw_gid;
-+#if !defined(ANDROID)
- 	ret->pw_gecos = talloc_strdup(ret, from->pw_gecos);
-+#endif
- 	ret->pw_dir = talloc_strdup(ret, from->pw_dir);
- 	ret->pw_shell = talloc_strdup(ret, from->pw_shell);
- 
 --- a/nsswitch/libwbclient/wbc_pwd.c
 +++ b/nsswitch/libwbclient/wbc_pwd.c
-@@ -45,7 +45,9 @@
+@@ -46,7 +46,9 @@
  	struct passwd *pw = (struct passwd *)ptr;
  	free(pw->pw_name);
  	free(pw->pw_passwd);
-+#if !defined(ANDROID)
++#if !defined(ANDROID) || !defined(pw_gecos)
  	free(pw->pw_gecos);
 +#endif
  	free(pw->pw_shell);
  	free(pw->pw_dir);
  }
-@@ -67,10 +69,12 @@
+@@ -68,10 +70,12 @@
  	if (pw->pw_passwd == NULL) {
  		goto fail;
  	}
-+#if !defined(ANDROID)
++#if !defined(ANDROID) || !defined(pw_gecos)
  	pw->pw_gecos = strdup(p->pw_gecos);
  	if (pw->pw_gecos == NULL) {
  		goto fail;
@@ -101,13 +58,15 @@
  		goto fail;
 --- a/nsswitch/libwbclient/wbc_sid.c
 +++ b/nsswitch/libwbclient/wbc_sid.c
-@@ -957,9 +957,11 @@
+@@ -1052,9 +1052,13 @@
  
  		wbcFreeMemory(name);
  
-+#if !defined(ANDROID)
++#if !defined(ANDROID) || !defined(pw_gecos)
  		name = wbcStrDup(pwd->pw_gecos);
++#endif
  		wbcFreeMemory(pwd);
++#if !defined(ANDROID) || !defined(pw_gecos)
  		BAIL_ON_PTR_ERROR(name, wbc_status);
 +#endif
  	}
@@ -115,135 +74,26 @@
  	wbc_status = WBC_ERR_SUCCESS;
 --- a/nsswitch/winbind_struct_protocol.h
 +++ b/nsswitch/winbind_struct_protocol.h
-@@ -186,6 +186,10 @@
+@@ -188,6 +188,11 @@
  	WINBINDD_NUM_CMDS
  };
  
 +#if defined(ANDROID) && defined(pw_gecos)
++#define _pw_gecos pw_gecos
 +#undef pw_gecos
 +#endif
 +
  typedef struct winbindd_pw {
  	fstring pw_name;
  	fstring pw_passwd;
---- a/source3/Makefile.in
-+++ b/source3/Makefile.in
-@@ -2427,8 +2427,6 @@
- 		@SONAMEFLAG@`basename $@`
+@@ -198,6 +203,10 @@
+ 	fstring pw_shell;
+ } WINBINDD_PW;
  
- $(LIBSMBCLIENT_SHARED_TARGET): $(LIBSMBCLIENT_SHARED_TARGET_SONAME)
--	@rm -f $@
--	@ln -s `basename $(LIBSMBCLIENT_SHARED_TARGET_SONAME)` $@
- 
- $(LIBSMBCLIENT_STATIC_TARGET): $(BINARY_PREREQS) $(LIBSMBCLIENT_OBJ1)
- 	@echo Linking non-shared library $@
-@@ -2445,11 +2443,6 @@
- installlibsmbclient:: installdirs libsmbclient
- 	@$(SHELL) $(srcdir)/script/installdirs.sh $(INSTALLPERMS_BIN) $(DESTDIR) $(LIBDIR)
- 	-$(INSTALLLIBCMD_SH) $(LIBSMBCLIENT_SHARED_TARGET_SONAME) $(DESTDIR)$(LIBDIR)
--	@rm -f $(DESTDIR)$(LIBDIR)/`basename $(LIBSMBCLIENT_SHARED_TARGET)`
--	-if test -r $(LIBSMBCLIENT_SHARED_TARGET_SONAME) ; then \
--		ln -f -s `basename $(LIBSMBCLIENT_SHARED_TARGET_SONAME)` \
--			$(DESTDIR)$(LIBDIR)/`basename $(LIBSMBCLIENT_SHARED_TARGET)` ; \
--	fi
- 	-$(INSTALLLIBCMD_A) $(LIBSMBCLIENT_STATIC_TARGET) $(DESTDIR)$(LIBDIR)
- 	@$(SHELL) $(srcdir)/script/installdirs.sh $(INSTALLPERMS_BIN) $(DESTDIR) ${prefix}/include
- 	-$(INSTALLCMD) -m $(INSTALLPERMS_DATA) $(LIBSMBCLIENT_HEADERS) $(DESTDIR)${prefix}/include
---- a/source3/configure
-+++ b/source3/configure
-@@ -22426,7 +22426,7 @@
- LIBSMBCLIENT_SOVER=0
- LIBSMBCLIENT_FULLVER=$LIBSMBCLIENT_SOVER
- 
--LIBSMBCLIENT_SHARED_TARGET_SOVER=$LIBSMBCLIENT_SHARED_TARGET.$LIBSMBCLIENT_SOVER
-+LIBSMBCLIENT_SHARED_TARGET_SOVER=$LIBSMBCLIENT_SHARED_TARGET
- LIBSMBCLIENT_SHARED_TARGET_FULLVER=$LIBSMBCLIENT_SHARED_TARGET.$LIBSMBCLIENT_FULLVER
- 
- 
-@@ -37582,19 +37582,19 @@
- if test "x$ac_cv_lib_pthread_pthread_attr_init" = xyes; then :
- 
- 	     PTHREAD_CFLAGS="-D_REENTRANT -D_POSIX_PTHREAD_SEMANTICS"
--	     PTHREAD_LDFLAGS="-lpthread"
-+	     PTHREAD_LDFLAGS=""
- fi
- 
- fi
- 
- if test "x$PTHREAD_LDFLAGS" = xerror; then
--  { $as_echo "$as_me:${as_lineno-$LINENO}: checking for pthread_attr_init in -lpthreads" >&5
--$as_echo_n "checking for pthread_attr_init in -lpthreads... " >&6; }
-+  { $as_echo "$as_me:${as_lineno-$LINENO}: checking for pthread_attr_init in " >&5
-+$as_echo_n "checking for pthread_attr_init in ... " >&6; }
- if ${ac_cv_lib_pthreads_pthread_attr_init+:} false; then :
-   $as_echo_n "(cached) " >&6
- else
-   ac_check_lib_save_LIBS=$LIBS
--LIBS="-lpthreads  $LIBS"
-+LIBS="  $LIBS"
- cat confdefs.h - <<_ACEOF >conftest.$ac_ext
- /* end confdefs.h.  */
- 
-@@ -37627,7 +37627,7 @@
- if test "x$ac_cv_lib_pthreads_pthread_attr_init" = xyes; then :
- 
- 	     PTHREAD_CFLAGS="-D_THREAD_SAFE"
--	     PTHREAD_LDFLAGS="-lpthreads"
-+	     PTHREAD_LDFLAGS=""
- fi
- 
- fi
---- a/source3/lib/dumpcore.c
-+++ b/source3/lib/dumpcore.c
-@@ -320,7 +320,7 @@
- 	umask(~(0700));
- 	dbgflush();
- 
--#if defined(HAVE_PRCTL) && defined(PR_SET_DUMPABLE)
-+#if defined(HAVE_PRCTL) && defined(PR_SET_DUMPABLE) && !defined(ANDROID)
- 	/* On Linux we lose the ability to dump core when we change our user
- 	 * ID. We know how to dump core safely, so let's make sure we have our
- 	 * dumpable flag set.
---- a/source3/passdb/passdb.c
-+++ b/source3/passdb/passdb.c
-@@ -163,6 +163,7 @@
- 
- 	fullname = NULL;
- 
-+#if !defined(ANDROID)
- 	if (count_commas(pwd->pw_gecos) == 3) {
- 		/*
- 		 * Heuristic: This seems to be a gecos field that has been
-@@ -173,11 +174,14 @@
- 			talloc_tos(), pwd->pw_gecos,
- 			strchr(pwd->pw_gecos, ',') - pwd->pw_gecos);
- 	}
++#if defined(ANDROID) && defined(_pw_gecos)
++#define pw_gecos _pw_gecos
++#undef _pw_gecos
 +#endif
  
- 	if (fullname != NULL) {
- 		pdb_set_fullname(user, fullname, PDB_SET);
-+#if !defined(ANDROID)
- 	} else {
- 		pdb_set_fullname(user, pwd->pw_gecos, PDB_SET);
-+#endif
- 	}
- 	TALLOC_FREE(fullname);
- 
---- a/source3/passdb/pdb_interface.c
-+++ b/source3/passdb/pdb_interface.c
-@@ -1570,6 +1570,7 @@
- 	}
- 
- 	/* Primary group members */
-+#if !defined(ANDROID)
- 	setpwent();
- 	while ((pwd = getpwent()) != NULL) {
- 		if (pwd->pw_gid == gid) {
-@@ -1580,6 +1581,7 @@
- 		}
- 	}
- 	endpwent();
-+#endif
- 
- 	/* Secondary group members */
- 	for (gr = grp->gr_mem; (*gr != NULL) && ((*gr)[0] != '\0'); gr += 1) {
+ typedef struct winbindd_gr {
+ 	fstring gr_name;

@@ -1,6 +1,7 @@
---- a/configure
-+++ b/configure
-@@ -5131,6 +5131,8 @@
+diff -ur ffmpeg/configure ffmpeg-patch/configure
+--- ffmpeg/configure	2020-01-31 13:07:30.000000000 +0000
++++ ffmpeg-patch/configure	2020-01-31 13:08:30.000000000 +0000
+@@ -5312,6 +5312,8 @@
          enabled shared && ! enabled small && test_cmd $windres --version && enable gnu_windres
          enabled x86_32 && check_ldflags -Wl,--large-address-aware
          shlibdir_default="$bindir_default"
@@ -9,7 +10,7 @@
          SLIBPREF=""
          SLIBSUF=".dll"
          SLIBNAME_WITH_VERSION='$(SLIBPREF)$(FULLNAME)-$(LIBVERSION)$(SLIBSUF)'
-@@ -5180,6 +5182,8 @@
+@@ -5361,6 +5363,8 @@
          fi
          enabled x86_32 && check_ldflags -LARGEADDRESSAWARE
          shlibdir_default="$bindir_default"

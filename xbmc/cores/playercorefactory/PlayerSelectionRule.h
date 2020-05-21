@@ -35,13 +35,14 @@ private:
 
   int m_tAudio;
   int m_tVideo;
+  int m_tGame;
   int m_tInternetStream;
   int m_tRemote;
 
   int m_tBD;
   int m_tDVD;
   int m_tDVDFile;
-  int m_tDVDImage;
+  int m_tDiscImage;
 
   std::string m_protocols;
   std::string m_fileTypes;

@@ -27,7 +27,7 @@
 #include "cores/IPlayerCallback.h"
 #include "settings/lib/ISettingsHandler.h"
 #include "settings/lib/ISettingCallback.h"
-#include "settings/lib/ISubSettings.h"
+#include "settings/ISubSettings.h"
 #if !defined(TARGET_WINDOWS) && defined(HAS_DVD_DRIVE)
 #include "storage/DetectDVDType.h"
 #endif
@@ -210,7 +210,8 @@ public:
   void Process() override;
   void ProcessSlow();
   void ResetScreenSaver();
-  float GetVolume(bool percentage = true) const;
+  float GetVolumePercent() const;
+  float GetVolumeRatio() const;
   void SetVolume(float iValue, bool isPercentage = true);
   bool IsMuted() const;
   bool IsMutedInternal() const { return m_muted; }
@@ -393,6 +394,9 @@ protected:
 
 #if defined(TARGET_DARWIN_IOS)
   friend class CWinEventsIOS;
+#endif
+#if defined(TARGET_DARWIN_TVOS)
+  friend class CWinEventsTVOS;
 #endif
 #if defined(TARGET_ANDROID)
   friend class CWinEventsAndroid;

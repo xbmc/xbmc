@@ -5,7 +5,7 @@ Welcome to Kodi's CMake Based Build System. CMake is a cross-platform tool for g
 
 * Linux (several distros)
 * Windows
-* macOS and iOS
+* macOS, iOS and tvOS
 * Android
 * FreeBSD
 

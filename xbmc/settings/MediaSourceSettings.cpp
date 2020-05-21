@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2013-2018 Team Kodi
+ *  Copyright (C) 2013-2020 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -12,6 +12,7 @@
 #include "URL.h"
 #include "Util.h"
 #include "filesystem/File.h"
+#include "media/MediaLockState.h"
 #include "network/WakeOnAccess.h"
 #include "profiles/ProfileManager.h"
 #include "settings/SettingsComponent.h"
@@ -78,7 +79,7 @@ bool CMediaSourceSettings::Load(const std::string &file)
   if (!CFile::Exists(file))
     return false;
 
-  CLog::Log(LOGNOTICE, "CMediaSourceSettings: loading media sources from %s", file.c_str());
+  CLog::Log(LOGINFO, "CMediaSourceSettings: loading media sources from %s", file.c_str());
 
   // load xml file
   CXBMCTinyXML xmlDoc;
@@ -399,7 +400,7 @@ bool CMediaSourceSettings::GetSource(const std::string &category, const TiXmlNod
   if (pLockMode)
   {
     share.m_iLockMode = (LockType)std::strtol(pLockMode->FirstChild()->Value(), NULL, 10);
-    share.m_iHasLock = 2;
+    share.m_iHasLock = LOCK_STATE_LOCKED;
   }
 
   if (pLockCode && pLockCode->FirstChild())

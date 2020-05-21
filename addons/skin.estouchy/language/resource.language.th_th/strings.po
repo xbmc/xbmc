@@ -96,6 +96,10 @@ msgctxt "#31039"
 msgid "Updated:"
 msgstr "อัพเดต:"
 
+msgctxt "#31043"
+msgid "PAUSED"
+msgstr "หยุดชั่วขณะ"
+
 msgctxt "#31044"
 msgid "FAST FORWARD"
 msgstr "ไปหน้าแบบเร็ว"

@@ -597,18 +597,6 @@ namespace XBMCAddon
       return resInfo.iWidth;
     }
 
-    long Window::getResolution()
-    {
-      XBMC_TRACE;
-      return (long)CServiceBroker::GetWinSystem()->GetGfxContext().GetVideoResolution();
-    }
-
-    void Window::setCoordinateResolution(long res)
-    {
-      XBMC_TRACE;
-      throw WindowException("not implemented.");
-    }
-
     void Window::setProperty(const char* key, const String& value)
     {
       XBMC_TRACE;
@@ -716,7 +704,7 @@ namespace XBMCAddon
       if(pControl->iControlId != 0)
         throw WindowException("Control is already used");
 
-      // lock xbmc GUI before accessing data from it
+      // lock kodi GUI before accessing data from it
       pControl->iParentId = iWindowId;
 
       {

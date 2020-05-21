@@ -1,0 +1,3 @@
+LIBNAME=libudfread
+VERSION=1.0.0
+ARCHIVE=$(LIBNAME)-$(VERSION).tar.gz

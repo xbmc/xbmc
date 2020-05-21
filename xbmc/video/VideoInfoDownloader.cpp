@@ -69,7 +69,7 @@ void CVideoInfoDownloader::Process()
     return;
   }
 
-  if (m_url.m_url.empty())
+  if (!m_url.HasUrls())
   {
     // empty url when it's not supposed to be..
     // this might happen if the previously scraped item was removed from the site (see ticket #10537)
@@ -78,17 +78,20 @@ void CVideoInfoDownloader::Process()
   else if (m_state == GET_DETAILS)
   {
     if (!GetDetails(m_url, m_movieDetails))
-      CLog::Log(LOGERROR, "%s: Error getting details from %s", __FUNCTION__,m_url.m_url[0].m_url.c_str());
+      CLog::Log(LOGERROR, "%s: Error getting details from %s", __FUNCTION__,
+                m_url.GetFirstThumbUrl());
   }
   else if (m_state == GET_EPISODE_DETAILS)
   {
     if (!GetEpisodeDetails(m_url, m_movieDetails))
-      CLog::Log(LOGERROR, "%s: Error getting episode details from %s", __FUNCTION__, m_url.m_url[0].m_url.c_str());
+      CLog::Log(LOGERROR, "%s: Error getting episode details from %s", __FUNCTION__,
+                m_url.GetFirstThumbUrl());
   }
   else if (m_state == GET_EPISODE_LIST)
   {
     if (!GetEpisodeList(m_url, m_episode))
-      CLog::Log(LOGERROR, "%s: Error getting episode list from %s", __FUNCTION__, m_url.m_url[0].m_url.c_str());
+      CLog::Log(LOGERROR, "%s: Error getting episode list from %s", __FUNCTION__,
+                m_url.GetFirstThumbUrl());
   }
   m_found = 1;
   m_state = DO_NOTHING;
@@ -117,7 +120,7 @@ int CVideoInfoDownloader::FindMovie(const std::string &movieTitle, int movieYear
         CloseThread();
         return 0;
       }
-      Sleep(1);
+      CThread::Sleep(1);
     }
     // transfer to our movielist
     m_movieList.swap(movieList);
@@ -166,7 +169,7 @@ bool CVideoInfoDownloader::GetDetails(const CScraperUrl &url,
         CloseThread();
         return false;
       }
-      Sleep(1);
+      CThread::Sleep(1);
     }
     movieDetails = m_movieDetails;
     CloseThread();
@@ -201,7 +204,7 @@ bool CVideoInfoDownloader::GetEpisodeDetails(const CScraperUrl &url,
         CloseThread();
         return false;
       }
-      Sleep(1);
+      CThread::Sleep(1);
     }
     movieDetails = m_movieDetails;
     CloseThread();
@@ -236,7 +239,7 @@ bool CVideoInfoDownloader::GetEpisodeList(const CScraperUrl& url,
         CloseThread();
         return false;
       }
-      Sleep(1);
+      CThread::Sleep(1);
     }
     movieDetails = m_episode;
     CloseThread();

@@ -56,6 +56,10 @@ msgctxt "#31014"
 msgid "Episodes"
 msgstr "Episodios"
 
+msgctxt "#31015"
+msgid "Player info"
+msgstr "Información do xogador"
+
 msgctxt "#31016"
 msgid "Albums"
 msgstr "Álbumes"
@@ -66,7 +70,7 @@ msgstr "Info. do PVR"
 
 msgctxt "#31018"
 msgid "Player process info"
-msgstr "Información do procesado da Xogadora"
+msgstr "Información do proceso do reprodutor"
 
 msgctxt "#31019"
 msgid "Video decoder"
@@ -95,6 +99,10 @@ msgstr "Usuario"
 msgctxt "#31039"
 msgid "Updated:"
 msgstr "Actualizado:"
+
+msgctxt "#31043"
+msgid "PAUSED"
+msgstr "EN PAUSA"
 
 msgctxt "#31044"
 msgid "FAST FORWARD"

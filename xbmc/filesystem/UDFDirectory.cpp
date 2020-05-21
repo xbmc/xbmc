@@ -8,56 +8,68 @@
  *  SPDX-License-Identifier: GPL-2.0-or-later
  *  See LICENSES/README.md for more information.
  */
+
 #include "UDFDirectory.h"
 
 #include "FileItem.h"
 #include "URL.h"
 #include "Util.h"
-#include "udf25.h"
+#include "filesystem/UDFBlockInput.h"
 #include "utils/URIUtils.h"
+
+#include <udfread/udfread.h>
 
 using namespace XFILE;
 
-CUDFDirectory::CUDFDirectory(void) = default;
-
-CUDFDirectory::~CUDFDirectory(void) = default;
-
-bool CUDFDirectory::GetDirectory(const CURL& url,
-                                 CFileItemList &items)
+bool CUDFDirectory::GetDirectory(const CURL& url, CFileItemList& items)
 {
-  std::string strRoot, strSub;
   CURL url2(url);
   if (!url2.IsProtocol("udf"))
-  { // path to an image
+  {
     url2.Reset();
     url2.SetProtocol("udf");
     url2.SetHostName(url.Get());
   }
-  strRoot  = url2.Get();
-  strSub   = url2.GetFileName();
+
+  std::string strRoot(url2.Get());
+  std::string strSub(url2.GetFileName());
 
   URIUtils::AddSlashAtEnd(strRoot);
   URIUtils::AddSlashAtEnd(strSub);
 
-  udf25 udfIsoReader;
-  if(!udfIsoReader.Open(url2.GetHostName().c_str()))
-     return false;
+  auto udf = udfread_init();
 
-  udf_dir_t *dirp = udfIsoReader.OpenDir(strSub.c_str());
-
-  if (dirp == NULL)
+  if (!udf)
     return false;
 
-  udf_dirent_t *dp = NULL;
-  while ((dp = udfIsoReader.ReadDir(dirp)) != NULL)
+  CUDFBlockInput udfbi;
+
+  auto bi = udfbi.GetBlockInput(url2.GetHostName());
+
+  if (udfread_open_input(udf, bi) < 0)
   {
-    if (dp->d_type == DVD_DT_DIR)
+    udfread_close(udf);
+    return false;
+  }
+
+  auto path = udfread_opendir(udf, strSub.c_str());
+  if (!path)
+  {
+    udfread_close(udf);
+    return false;
+  }
+
+  struct udfread_dirent dirent;
+
+  while (udfread_readdir(path, &dirent))
+  {
+    if (dirent.d_type == UDF_DT_DIR)
     {
-      std::string strDir = (char*)dp->d_name;
-      if (strDir != "." && strDir != "..")
+      std::string filename = dirent.d_name;
+      if (filename != "." && filename != "..")
       {
-        CFileItemPtr pItem(new CFileItem((char*)dp->d_name));
-        strDir = strRoot + (char*)dp->d_name;
+        CFileItemPtr pItem(new CFileItem(filename));
+        std::string strDir(strRoot + filename);
         URIUtils::AddSlashAtEnd(strDir);
         pItem->SetPath(strDir);
         pItem->m_bIsFolder = true;
@@ -67,16 +79,24 @@ bool CUDFDirectory::GetDirectory(const CURL& url,
     }
     else
     {
-      CFileItemPtr pItem(new CFileItem((char*)dp->d_name));
-      pItem->SetPath(strRoot + (char*)dp->d_name);
-      pItem->m_bIsFolder = false;
-      pItem->m_dwSize = dp->d_filesize;
+      std::string filename = dirent.d_name;
+      std::string filenameWithPath{strSub + filename};
+      auto file = udfread_file_open(udf, filenameWithPath.c_str());
+      if (!file)
+        continue;
 
+      CFileItemPtr pItem(new CFileItem(filename));
+      pItem->SetPath(strRoot + filename);
+      pItem->m_bIsFolder = false;
+      pItem->m_dwSize = udfread_file_size(file);
       items.Add(pItem);
+
+      udfread_file_close(file);
     }
   }
 
-  udfIsoReader.CloseDir(dirp);
+  udfread_closedir(path);
+  udfread_close(udf);
 
   return true;
 }
@@ -84,8 +104,5 @@ bool CUDFDirectory::GetDirectory(const CURL& url,
 bool CUDFDirectory::Exists(const CURL& url)
 {
   CFileItemList items;
-  if (GetDirectory(url, items))
-    return true;
-
-  return false;
+  return GetDirectory(url, items);
 }

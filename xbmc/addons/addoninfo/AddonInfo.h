@@ -70,9 +70,51 @@ public:
 
   const std::string& ID() const { return m_id; }
 
+  /**
+   * @brief To get the main type of this addon
+   *
+   * This is the first type defined in addon.xml.
+   *
+   * @return The used main type of addon
+   */
   TYPE MainType() const { return m_mainType; }
-  bool IsType(TYPE type, bool mainOnly = false) const;
+
+  /**
+   * @brief To check addon contains a type
+   *
+   * @param[in] type The to checked type identifier
+   * @param[in] mainOnly to check only in first defined main addon inside addon.xml
+   * @return true in case the wanted type is supported, false if not
+   */
+  bool HasType(TYPE type, bool mainOnly = false) const;
+
+  /**
+   * @brief To get all available types inside the addon
+   *
+   * To have all `<extension point="..." />` defined in addon.xml inside a list.
+   *
+   * @return List of all supported types
+   */
   const std::vector<CAddonType>& Types() const { return m_types; }
+
+  /**
+   * @brief The get for given addon type information and extension data
+   *
+   * @param[in] type The wanted type data
+   * @return addon type class with @ref CAddonExtensions as information
+   *
+   * @note This function return never a "nullptr", in case the wanted type is
+   * not supported, becomes a dummy of @ref CAddonType given.
+   *
+   * ------------------------------------------------------------------------
+   *
+   * **Example:**
+   * ~~~~~~~~~~~~~{.cpp}
+   * // To get <extension ... name="blablabla" /> from addon.xml
+   * std::string name = Type(ADDON_...)->GetValue("@name").asString();
+   * ~~~~~~~~~~~~~
+   *
+   */
   const CAddonType* Type(TYPE type) const;
 
   bool ProvidesSubContent(const TYPE& content, const TYPE& mainType = ADDON_UNKNOWN) const;

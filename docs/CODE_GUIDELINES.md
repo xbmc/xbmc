@@ -244,6 +244,26 @@ void Test();
 void Test(void);
 ```
 
+### 3.7. Exceptions to the Formating Rules For Beter Readability
+There are some special situations where vertical alignment and longer lines does greatly aid readability, for example the initialization of some table-like multiple row structures. In these **rare** cases exceptions can be made to the formatting rules on vertical alignment, and the defined line length can be exceeded. 
+
+The layout can be protected from being reformatted when `clang-format` is applied by adding `// clang-format off` and `// clang-format on` statements either side of the lines of code.
+For example
+```
+// clang-format off
+static const CGUIDialogMediaFilter::Filter filterList[] = {
+  { "movies",       FieldTitle,         556,    SettingType::String,  "edit",   "string",   CDatabaseQueryRule::OPERATOR_CONTAINS },
+  { "movies",       FieldRating,        563,    SettingType::Number,  "range",  "number",   CDatabaseQueryRule::OPERATOR_BETWEEN },
+  { "movies",       FieldUserRating,    38018,  SettingType::Integer, "range",  "integer",  CDatabaseQueryRule::OPERATOR_BETWEEN },
+  ...
+  { "songs",        FieldSource,        39030,  SettingType::List,    "list",   "string",   CDatabaseQueryRule::OPERATOR_EQUALS },
+};  
+// clang-format on
+ ```
+The other code guidelines will still need to be applied within the delimited lines of code, but with `clang-format` off care will be needed to check these manually. Using vertical alignment means that sometimes the entire block of code may need to be realigned, good judgement should be used in each case with the objective of preserving readability yet minimising impact.
+ 
+This is to be used with discretion, marking large amounts of code to be left unformatted by `clang-format` without reasonable justification will be rejected.
+
 **[back to top](#table-of-contents)**
 
 ## 4. Statements
@@ -484,7 +504,7 @@ void MyDummyClass::DoSomething();
 Use CamelCase. Type prefixing (Systems Hungarian notation) is discouraged.
 
 #### Member variables
-Prefix nonstatic member variables with `m_`. Prefix static member variables with `ms_`.
+Prefix non-static member variables with `m_`. Prefix static member variables with `ms_`.
 ```cpp
 int m_variableA;
 static int ms_variableB;
@@ -631,7 +651,7 @@ class Foo
 
 ### 11.5. Destructors in interfaces
 
-A class with any virtual functions should have a destructor that is either public and virtual or else protected and nonvirtual (cf. [ISO C++ guidelines](http://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#Rc-dtor-virtual)).
+A class with any virtual functions should have a destructor that is either public and virtual or else protected and non-virtual (cf. [ISO C++ guidelines](http://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#Rc-dtor-virtual)).
 
 ### 11.6. Constructor Initialzation Lists
 

@@ -24,11 +24,11 @@ if(OPENGL_FOUND)
                       RenderBufferPoolOpenGL.cpp)
 endif()
 
-if(GBM_HAS_BO_MAP AND OPENGLES_FOUND)
-  list(APPEND SOURCES RenderBufferGBM.cpp
-                      RenderBufferPoolGBM.cpp)
-  list(APPEND HEADERS RenderBufferGBM.h
-                      RenderBufferPoolGBM.h)
+if(CORE_PLATFORM_NAME_LC STREQUAL gbm OR CORE_PLATFORM_NAME_LC STREQUAL wayland)
+  list(APPEND SOURCES RenderBufferDMA.cpp
+                      RenderBufferPoolDMA.cpp)
+  list(APPEND HEADERS RenderBufferDMA.h
+                      RenderBufferPoolDMA.h)
 endif()
 
 core_add_library(rp-buffers)

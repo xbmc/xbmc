@@ -495,7 +495,7 @@ bool CGUIControlsGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int co
         const CGUIViewState *viewState = window->GetViewState();
         if (viewState)
         {
-          value = (static_cast<unsigned int>(viewState->GetSortMethod().sortBy) == info.GetData1());
+          value = (static_cast<unsigned int>(viewState->GetSortMethod().sortBy) == info.GetData2());
           return true;
         }
       }

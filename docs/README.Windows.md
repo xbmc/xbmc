@@ -50,7 +50,7 @@ To build Kodi:
 * **[Git for Windows](https://gitforwindows.org/)**
 * **[Java Runtime Environment (JRE)](http://www.oracle.com/technetwork/java/javase/downloads/index.html)**
 * **[Nullsoft scriptable install system (NSIS)](http://nsis.sourceforge.net/Download)** (Only needed if you want to generate an installer file)
-* **[Visual Studio 2017](https://www.visualstudio.com/downloads/)** (Community Edition is fine)
+* **[Visual Studio 2017](https://visualstudio.microsoft.com/vs/older-downloads/)** (Community Edition is fine)
 
 To run Kodi you need a relatively recent CPU with integrated GPU or discrete GPU with up-to-date graphics device-drivers installed from the manufacturer's website.
 * **[AMD](https://support.amd.com/en-us/download)**
@@ -68,7 +68,7 @@ All install screens should remain at their default values with the exception of 
 
 ### JRE install notes
 Default options are fine.
-After install finishes, add java's executable file path to your `PATH` **[environment variable](http://www.java.com/en/download/help/path.xml)**. Should be similar to `C:\Program Files\Java\jre-10\bin`.
+After install finishes, add java's executable file path to your `PATH` **[environment variable](http://www.java.com/en/download/help/path.xml)**. Should be similar to `C:\Program Files (x86)\Java\jre1.8.0_251\bin`.
 
 ### NSIS install notes
 Default options are fine.
@@ -77,17 +77,17 @@ Default options are fine.
 Start the VS2017 installer and click `Individual components`.
 * Under **Compilers, build tools and runtimes** select
   * `Msbuild`
-  * `VC++ 2017 v141 toolset (x86,x64)`
+  * `VC++ 2017 version 15.x v14.x latest v141 tools`
   * `Visual C++ 2017 Redistributable Update`
-  * `Visual C++ compilers and libraries for ARM`
-  * `Visual C++ compilers and libraries for ARM64`
-  * `Visual C++ runtime for UWP`
+  * `Visual C++ compilers and libraries for ARM` (if compiling for ARM or UWP)
+  * `Visual C++ compilers and libraries for ARM64` (if compiling for ARM64 or UWP)
+  * `Visual C++ runtime for UWP` (if compiling for UWP)
   * `Windows Universal CRT SDK`
 * Under **Development activities** select
   * `Visual Studio C++ core features`
 * Under **SDKs, libraries, and frameworks** select
-  * `Windows 10 SDK (10.0.16299.0) for Desktop C++ [x86 and x64]`
-  * `Windows 10 SDK (10.0.17763.0) for UWP: C++`
+  * `Windows 10 SDK (10.0.x.0) for Desktop C++ [x86 and x64]`
+  * `Windows 10 SDK (10.0.x.0) for UWP: C++`
 
 Hit `Install`. Yes, it will download and install almost 7GB of stuff.
 
@@ -239,4 +239,3 @@ UWP builds generate `appx`, `appxsym` and `cer` files, located inside directorie
 
 
 **[back to top](#table-of-contents)** | **[back to section top](#6-build-kodi-manually)**
-

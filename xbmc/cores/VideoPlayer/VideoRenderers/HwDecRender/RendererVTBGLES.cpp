@@ -15,7 +15,13 @@
 #include "settings/MediaSettings.h"
 #include "utils/GLUtils.h"
 #include "utils/log.h"
+#if defined(TARGET_DARWIN_IOS)
 #include "windowing/ios/WinSystemIOS.h"
+#define WIN_SYSTEM_CLASS CWinSystemIOS
+#elif defined(TARGET_DARWIN_TVOS)
+#include "windowing/tvos/WinSystemTVOS.h"
+#define WIN_SYSTEM_CLASS CWinSystemTVOS
+#endif
 
 #include <CoreVideo/CVBuffer.h>
 #include <CoreVideo/CVPixelBuffer.h>
@@ -39,7 +45,7 @@ bool CRendererVTB::Register()
 CRendererVTB::CRendererVTB()
 {
   m_textureCache = nullptr;
-  CWinSystemIOS* winSystem = dynamic_cast<CWinSystemIOS*>(CServiceBroker::GetWinSystem());
+  auto winSystem = dynamic_cast<WIN_SYSTEM_CLASS*>(CServiceBroker::GetWinSystem());
   m_glContext = winSystem->GetEAGLContextObj();
   CVReturn ret = CVOpenGLESTextureCacheCreate(kCFAllocatorDefault,
                                               NULL,
@@ -94,13 +100,13 @@ EShaderFormat CRendererVTB::GetShaderFormat()
 
 bool CRendererVTB::LoadShadersHook()
 {
-  CLog::Log(LOGNOTICE, "GL: Using CVBREF render method");
+  CLog::Log(LOGINFO, "GL: Using CVBREF render method");
   m_textureTarget = GL_TEXTURE_2D;
   m_renderMethod = RENDER_CUSTOM;
 
   if (!m_textureCache)
   {
-    CLog::Log(LOGNOTICE, "CRendererVTB::LoadShadersHook: no texture cache");
+    CLog::Log(LOGINFO, "CRendererVTB::LoadShadersHook: no texture cache");
     return false;
   }
 

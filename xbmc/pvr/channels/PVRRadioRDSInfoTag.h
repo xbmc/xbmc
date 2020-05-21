@@ -21,7 +21,7 @@ namespace PVR
 class CPVRRadioRDSInfoTag final : public IArchivable, public ISerializable
 {
 public:
-  CPVRRadioRDSInfoTag(void);
+  CPVRRadioRDSInfoTag();
 
   bool operator ==(const CPVRRadioRDSInfoTag& right) const;
   bool operator !=(const CPVRRadioRDSInfoTag& right) const;

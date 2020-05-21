@@ -28,7 +28,7 @@ namespace PVR
   {
   public:
     CPVRRecordings();
-    virtual ~CPVRRecordings(void);
+    virtual ~CPVRRecordings();
 
     /*!
      * @brief (re)load the recordings from the clients.
@@ -46,7 +46,12 @@ namespace PVR
     /*!
      * @brief refresh the recordings list from the clients.
      */
-    void Update(void);
+    void Update();
+
+    /*!
+     * @brief refresh the size of any in progress recordings from the clients.
+     */
+    void UpdateInProgressSize();
 
     int GetNumTVRecordings() const;
     bool HasDeletedTVRecordings() const;
@@ -96,7 +101,7 @@ namespace PVR
     unsigned int m_iTVRecordings = 0;
     unsigned int m_iRadioRecordings = 0;
 
-    void UpdateFromClients(void);
+    void UpdateFromClients();
 
     /*!
      * @brief Get/Open the video database.

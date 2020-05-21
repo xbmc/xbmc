@@ -22,8 +22,8 @@ namespace PVR
   class CGUIDialogPVRGuideSearch : public CGUIDialog
   {
   public:
-    CGUIDialogPVRGuideSearch(void);
-    ~CGUIDialogPVRGuideSearch(void) override = default;
+    CGUIDialogPVRGuideSearch();
+    ~CGUIDialogPVRGuideSearch() override = default;
     bool OnMessage(CGUIMessage& message) override;
     void OnWindowLoaded() override;
 
@@ -36,10 +36,10 @@ namespace PVR
 
   private:
     void OnSearch();
-    void UpdateChannelSpin(void);
-    void UpdateGroupsSpin(void);
-    void UpdateGenreSpin(void);
-    void UpdateDurationSpin(void);
+    void UpdateChannelSpin();
+    void UpdateGroupsSpin();
+    void UpdateGenreSpin();
+    void UpdateDurationSpin();
     CDateTime ReadDateTime(const std::string& strDate, const std::string& strTime) const;
     void Update();
 

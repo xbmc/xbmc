@@ -132,7 +132,7 @@ bool CVideoInfoTag::Save(TiXmlNode *node, const std::string &tag, bool savePathI
   if (m_EpBookmark.timeInSeconds > 0)
   {
     TiXmlElement epbookmark("episodebookmark");
-    XMLUtils::SetFloat(&epbookmark, "position", (float)m_EpBookmark.timeInSeconds);
+    XMLUtils::SetDouble(&epbookmark, "position", m_EpBookmark.timeInSeconds);
     if (!m_EpBookmark.playerState.empty())
     {
       TiXmlElement playerstate("playerstate");
@@ -161,10 +161,10 @@ bool CVideoInfoTag::Save(TiXmlNode *node, const std::string &tag, bool savePathI
   XMLUtils::SetString(movie, "plot", m_strPlot);
   XMLUtils::SetString(movie, "tagline", m_strTagLine);
   XMLUtils::SetInt(movie, "runtime", GetDuration() / 60);
-  if (!m_strPictureURL.m_xml.empty())
+  if (m_strPictureURL.HasData())
   {
     CXBMCTinyXML doc;
-    doc.Parse(m_strPictureURL.m_xml);
+    doc.Parse(m_strPictureURL.GetData());
     const TiXmlNode* thumb = doc.FirstChild("thumb");
     while (thumb)
     {
@@ -276,7 +276,7 @@ bool CVideoInfoTag::Save(TiXmlNode *node, const std::string &tag, bool savePathI
     XMLUtils::SetString(node, "name", it->strName);
     XMLUtils::SetString(node, "role", it->strRole);
     XMLUtils::SetInt(node, "order", it->order);
-    XMLUtils::SetString(node, "thumb", it->thumbUrl.GetFirstThumb().m_url);
+    XMLUtils::SetString(node, "thumb", it->thumbUrl.GetFirstUrlByType().m_url);
   }
   XMLUtils::SetStringArray(movie, "artist", m_artist);
   XMLUtils::SetStringArray(movie, "showlink", m_showLink);
@@ -291,8 +291,8 @@ bool CVideoInfoTag::Save(TiXmlNode *node, const std::string &tag, bool savePathI
   }
 
   TiXmlElement resume("resume");
-  XMLUtils::SetFloat(&resume, "position", (float)m_resumePoint.timeInSeconds);
-  XMLUtils::SetFloat(&resume, "total", (float)m_resumePoint.totalTimeInSeconds);
+  XMLUtils::SetDouble(&resume, "position", m_resumePoint.timeInSeconds);
+  XMLUtils::SetDouble(&resume, "total", m_resumePoint.totalTimeInSeconds);
   if (!m_resumePoint.playerState.empty())
   {
     TiXmlElement playerstate("playerstate");
@@ -332,8 +332,7 @@ void CVideoInfoTag::Archive(CArchive& ar)
     ar << m_strTagLine;
     ar << m_strPlotOutline;
     ar << m_strPlot;
-    ar << m_strPictureURL.m_spoof;
-    ar << m_strPictureURL.m_xml;
+    ar << m_strPictureURL.GetData();
     ar << m_fanart.m_xml;
     ar << m_strTitle;
     ar << m_strSortTitle;
@@ -346,7 +345,7 @@ void CVideoInfoTag::Archive(CArchive& ar)
       ar << m_cast[i].strRole;
       ar << m_cast[i].order;
       ar << m_cast[i].thumb;
-      ar << m_cast[i].thumbUrl.m_xml;
+      ar << m_cast[i].thumbUrl.GetData();
     }
 
     ar << m_set.title;
@@ -427,8 +426,9 @@ void CVideoInfoTag::Archive(CArchive& ar)
     ar >> m_strTagLine;
     ar >> m_strPlotOutline;
     ar >> m_strPlot;
-    ar >> m_strPictureURL.m_spoof;
-    ar >> m_strPictureURL.m_xml;
+    std::string data;
+    ar >> data;
+    m_strPictureURL.SetData(data);
     ar >> m_fanart.m_xml;
     ar >> m_strTitle;
     ar >> m_strSortTitle;
@@ -446,7 +446,7 @@ void CVideoInfoTag::Archive(CArchive& ar)
       ar >> info.thumb;
       std::string strXml;
       ar >> strXml;
-      info.thumbUrl.ParseString(strXml);
+      info.thumbUrl.ParseFromData(strXml);
       m_cast.push_back(info);
     }
 
@@ -470,8 +470,6 @@ void CVideoInfoTag::Archive(CArchive& ar)
     ar >> m_strAlbum;
     ar >> m_artist;
     ar >> m_playCount;
-    //re-evaluate the playcount
-    m_playCount = PLAYCOUNT_NOT_SET;
     ar >> m_lastPlayed;
     ar >> m_iTop250;
     ar >> m_iSeason;
@@ -619,8 +617,8 @@ void CVideoInfoTag::Serialize(CVariant& value) const
   value["showlink"] = m_showLink;
   m_streamDetails.Serialize(value["streamdetails"]);
   CVariant resume = CVariant(CVariant::VariantTypeObject);
-  resume["position"] = (float)m_resumePoint.timeInSeconds;
-  resume["total"] = (float)m_resumePoint.totalTimeInSeconds;
+  resume["position"] = m_resumePoint.timeInSeconds;
+  resume["total"] = m_resumePoint.totalTimeInSeconds;
   value["resume"] = resume;
   value["tvshowid"] = m_iIdShow;
   value["dateadded"] = m_dateAdded.IsValid() ? m_dateAdded.GetAsDBDateTime() : StringUtils::Empty;
@@ -836,7 +834,10 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prioritise)
         r.rating = r.rating / max_value * 10; // Normalise the Movie Rating to between 1 and 10
       SetRating(r, name);
       bool isDefault = false;
-      if ((child->QueryBoolAttribute("default", &isDefault) == TIXML_SUCCESS) && isDefault)
+      // guard against assert in tinyxml
+      const char* rAtt = child->Attribute("default", static_cast<int*>(nullptr));
+      if (rAtt && strlen(rAtt) != 0 &&
+          (child->QueryBoolAttribute("default", &isDefault) == TIXML_SUCCESS) && isDefault)
         m_strDefaultRating = name;
     }
   }
@@ -967,13 +968,15 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prioritise)
   if (XMLUtils::GetString(movie, "basepath", value))
     SetBasePath(value);
 
-  size_t iThumbCount = m_strPictureURL.m_url.size();
-  std::string xmlAdd = m_strPictureURL.m_xml;
+  // make sure the picture URLs have been parsed
+  m_strPictureURL.Parse();
+  size_t iThumbCount = m_strPictureURL.GetUrls().size();
+  std::string xmlAdd = m_strPictureURL.GetData();
 
   const TiXmlElement* thumb = movie->FirstChildElement("thumb");
   while (thumb)
   {
-    m_strPictureURL.ParseElement(thumb);
+    m_strPictureURL.ParseAndAppendUrl(thumb);
     if (prioritise)
     {
       std::string temp;
@@ -984,12 +987,12 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prioritise)
   }
 
   // prioritise thumbs from nfos
-  if (prioritise && iThumbCount && iThumbCount != m_strPictureURL.m_url.size())
+  if (prioritise && iThumbCount && iThumbCount != m_strPictureURL.GetUrls().size())
   {
-    rotate(m_strPictureURL.m_url.begin(),
-           m_strPictureURL.m_url.begin()+iThumbCount,
-           m_strPictureURL.m_url.end());
-    m_strPictureURL.m_xml = xmlAdd;
+    auto thumbUrls = m_strPictureURL.GetUrls();
+    rotate(thumbUrls.begin(), thumbUrls.begin() + iThumbCount, thumbUrls.end());
+    m_strPictureURL.SetUrls(thumbUrls);
+    m_strPictureURL.SetData(xmlAdd);
   }
 
   const std::string itemSeparator = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoItemSeparator;
@@ -1048,11 +1051,11 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prioritise)
       const TiXmlElement* thumb = node->FirstChildElement("thumb");
       while (thumb)
       {
-        info.thumbUrl.ParseElement(thumb);
+        info.thumbUrl.ParseAndAppendUrl(thumb);
         thumb = thumb->NextSiblingElement("thumb");
       }
       const char* clear=node->Attribute("clear");
-      if (clear && stricmp(clear,"true"))
+      if (clear && StringUtils::CompareNoCase(clear, "true"))
         m_cast.clear();
       m_cast.push_back(info);
     }
@@ -1101,7 +1104,7 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prioritise)
     if (pValue)
     {
       const char* clear=node->Attribute("clear");
-      if (clear && stricmp(clear,"true")==0)
+      if (clear && StringUtils::CompareNoCase(clear, "true") == 0)
         artist.clear();
       std::vector<std::string> newArtists = StringUtils::Split(pValue, itemSeparator);
       artist.insert(artist.end(), newArtists.begin(), newArtists.end());
@@ -1170,7 +1173,8 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prioritise)
   if (epguide)
   {
     // DEPRECIATE ME - support for old XML-encoded <episodeguide> blocks.
-    if (epguide->FirstChild() && strnicmp("<episodeguide", epguide->FirstChild()->Value(), 13) == 0)
+    if (epguide->FirstChild() &&
+        StringUtils::CompareNoCase("<episodeguide", epguide->FirstChild()->Value(), 13) == 0)
       m_strEpisodeGuide = epguide->FirstChild()->Value();
     else
     {
@@ -1420,7 +1424,11 @@ void CVideoInfoTag::SetUniqueIDs(std::map<std::string, std::string> uniqueIDs)
       uniqueIDs.erase(uniqueid.first);
   }
   if (uniqueIDs.find(m_strDefaultUniqueID) == uniqueIDs.end())
-    uniqueIDs[m_strDefaultUniqueID] = GetUniqueID();
+  {
+    const auto defaultUniqueId = GetUniqueID();
+    if (!defaultUniqueId.empty())
+      uniqueIDs[m_strDefaultUniqueID] = defaultUniqueId;
+  }
   m_uniqueIDs = std::move(uniqueIDs);
 }
 
@@ -1504,10 +1512,11 @@ void CVideoInfoTag::SetShowLink(std::vector<std::string> showLink)
 
 void CVideoInfoTag::SetUniqueID(const std::string& uniqueid, const std::string& type /* = "" */, bool isDefaultID /* = false */)
 {
+  if (uniqueid.empty())
+    return;
+
   if (type.empty())
-  {
     m_uniqueIDs[m_strDefaultUniqueID] = uniqueid;
-  }
   else
   {
     m_uniqueIDs[type] = uniqueid;

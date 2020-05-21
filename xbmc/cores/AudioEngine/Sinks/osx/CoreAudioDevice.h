@@ -24,7 +24,7 @@ class CCoreAudioChannelLayout;
 class CCoreAudioDevice
 {
 public:
-  CCoreAudioDevice();
+  CCoreAudioDevice() = default;
   explicit CCoreAudioDevice(AudioDeviceID deviceId);
   virtual ~CCoreAudioDevice();
 
@@ -70,18 +70,17 @@ public:
   bool          AddIOProc(AudioDeviceIOProc ioProc, void* pCallbackData);
   bool          RemoveIOProc();
 protected:
+  bool m_Started = false;
+  AudioDeviceID m_DeviceId = 0;
+  int m_MixerRestore = -1;
+  AudioDeviceIOProc m_IoProc = nullptr;
+  AudioObjectPropertyListenerProc m_ObjectListenerProc = nullptr;
 
-  bool              m_Started;
-  AudioDeviceID     m_DeviceId;
-  int               m_MixerRestore;
-  AudioDeviceIOProc m_IoProc;
-  AudioObjectPropertyListenerProc m_ObjectListenerProc;
-
-  Float64           m_SampleRateRestore;
-  pid_t             m_HogPid;
-  unsigned int      m_frameSize;
-  unsigned int      m_OutputBufferIndex;
-  unsigned int      m_BufferSizeRestore;
+  Float64 m_SampleRateRestore = 0.0f;
+  pid_t m_HogPid = -1;
+  unsigned int m_frameSize = 0;
+  unsigned int m_OutputBufferIndex = 0;
+  unsigned int m_BufferSizeRestore = 0;
 
   static XbmcThreads::EndTime m_callbackSuppressTimer;
   static AudioObjectPropertyListenerProc m_defaultOutputDeviceChangedCB;

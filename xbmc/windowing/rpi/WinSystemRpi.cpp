@@ -54,6 +54,11 @@ CWinSystemRpi::CWinSystemRpi() :
   {
     OPTIONALS::PulseAudioRegister();
   }
+  else if (StringUtils::EqualsNoCase(envSink, "ALSA+PULSE"))
+  {
+    OPTIONALS::ALSARegister();
+    OPTIONALS::PulseAudioRegister();
+  }
   else
   {
     OPTIONALS::ALSARegister();
@@ -191,13 +196,10 @@ void CWinSystemRpi::UpdateResolutions()
     CServiceBroker::GetWinSystem()->GetGfxContext().ResetOverscan(resolutions[i]);
     CDisplaySettings::GetInstance().GetResolutionInfo(res_index) = resolutions[i];
 
-    CLog::Log(LOGNOTICE, "Found resolution %d x %d with %d x %d%s @ %f Hz\n",
-      resolutions[i].iWidth,
-      resolutions[i].iHeight,
-      resolutions[i].iScreenWidth,
-      resolutions[i].iScreenHeight,
-      resolutions[i].dwFlags & D3DPRESENTFLAG_INTERLACED ? "i" : "",
-      resolutions[i].fRefreshRate);
+    CLog::Log(LOGINFO, "Found resolution %d x %d with %d x %d%s @ %f Hz", resolutions[i].iWidth,
+              resolutions[i].iHeight, resolutions[i].iScreenWidth, resolutions[i].iScreenHeight,
+              resolutions[i].dwFlags & D3DPRESENTFLAG_INTERLACED ? "i" : "",
+              resolutions[i].fRefreshRate);
 
     if(resDesktop.iWidth == resolutions[i].iWidth &&
        resDesktop.iHeight == resolutions[i].iHeight &&
@@ -215,11 +217,9 @@ void CWinSystemRpi::UpdateResolutions()
   // set RES_DESKTOP
   if (ResDesktop != RES_INVALID)
   {
-    CLog::Log(LOGNOTICE, "Found (%dx%d%s@%f) at %d, setting to RES_DESKTOP at %d",
-      resDesktop.iWidth, resDesktop.iHeight,
-      resDesktop.dwFlags & D3DPRESENTFLAG_INTERLACED ? "i" : "",
-      resDesktop.fRefreshRate,
-      (int)ResDesktop, (int)RES_DESKTOP);
+    CLog::Log(LOGINFO, "Found (%dx%d%s@%f) at %d, setting to RES_DESKTOP at %d", resDesktop.iWidth,
+              resDesktop.iHeight, resDesktop.dwFlags & D3DPRESENTFLAG_INTERLACED ? "i" : "",
+              resDesktop.fRefreshRate, (int)ResDesktop, (int)RES_DESKTOP);
 
     CDisplaySettings::GetInstance().GetResolutionInfo(RES_DESKTOP) = CDisplaySettings::GetInstance().GetResolutionInfo(ResDesktop);
   }

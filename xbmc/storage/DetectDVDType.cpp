@@ -11,7 +11,6 @@
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 #include "cdioSupport.h"
-#include "filesystem/iso9660.h"
 #include "filesystem/File.h"
 #include "threads/SingleLock.h"
 #ifdef TARGET_POSIX
@@ -75,16 +74,17 @@ void CDetectDVDMedia::Process()
   {
     if (g_application.GetAppPlayer().IsPlayingVideo())
     {
-      Sleep(10000);
+      CThread::Sleep(10000);
     }
     else
     {
       UpdateDvdrom();
       m_bStartup = false;
-      Sleep(2000);
+      CThread::Sleep(2000);
       if ( m_bAutorun )
       {
-        Sleep(1500); // Media in drive, wait 1.5s more to be sure the device is ready for playback
+        CThread::Sleep(
+            1500); // Media in drive, wait 1.5s more to be sure the device is ready for playback
         m_evAutorun.Set();
         m_bAutorun = false;
       }
@@ -114,7 +114,6 @@ void CDetectDVDMedia::UpdateDvdrom()
         {
           // Send Message to GUI that disc been ejected
           SetNewDVDShareUrl("D:\\", false, g_localizeStrings.Get(502));
-          m_isoReader.Reset();
           CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_REMOVED_MEDIA);
           CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage( msg );
           waitLock.Leave();
@@ -126,7 +125,6 @@ void CDetectDVDMedia::UpdateDvdrom()
       case DRIVE_NOT_READY:
         {
           // Drive is not ready (closing, opening)
-          m_isoReader.Reset();
           SetNewDVDShareUrl("D:\\", false, g_localizeStrings.Get(503));
           m_DriveState = DRIVE_NOT_READY;
           // DVD-ROM in undefined state
@@ -140,7 +138,7 @@ void CDetectDVDMedia::UpdateDvdrom()
           CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_SOURCES);
           CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage( msg );
           // Do we really need sleep here? This will fix: [ 1530771 ] "Open tray" problem
-          // Sleep(6000);
+          // CThread::Sleep(6000);
           return ;
         }
         break;
@@ -148,7 +146,6 @@ void CDetectDVDMedia::UpdateDvdrom()
       case DRIVE_CLOSED_NO_MEDIA:
         {
           // Nothing in there...
-          m_isoReader.Reset();
           SetNewDVDShareUrl("D:\\", false, g_localizeStrings.Get(504));
           m_DriveState = DRIVE_CLOSED_NO_MEDIA;
           // Send Message to GUI that disc has changed
@@ -222,7 +219,6 @@ void CDetectDVDMedia::DetectMediaType()
   if (m_pCdInfo->IsISOHFS(1) || m_pCdInfo->IsIso9660(1) || m_pCdInfo->IsIso9660Interactive(1))
   {
     strNewUrl = "iso9660://";
-    m_isoReader.Scan();
   }
   else
   {
@@ -242,7 +238,6 @@ void CDetectDVDMedia::DetectMediaType()
     if (!CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_detectAsUdf)
     {
       strNewUrl = "iso9660://";
-      m_isoReader.Scan();
     }
     else
     {

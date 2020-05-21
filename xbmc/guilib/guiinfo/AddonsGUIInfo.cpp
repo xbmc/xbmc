@@ -165,7 +165,7 @@ bool CAddonsGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int context
     case SYSTEM_HAS_ADDON:
     {
       ADDON::AddonPtr addon;
-      value = CServiceBroker::GetAddonMgr().GetAddon(info.GetData3(), addon) && addon;
+      value = CServiceBroker::GetAddonMgr().IsAddonInstalled(info.GetData3());
       return true;
     }
     case SYSTEM_ADDON_IS_ENABLED:

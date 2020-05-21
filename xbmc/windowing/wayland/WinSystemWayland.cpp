@@ -8,12 +8,20 @@
 
 #include "WinSystemWayland.h"
 
-#include <algorithm>
-#include <limits>
-#include <numeric>
-
 #include "Application.h"
+#include "CompileInfo.h"
 #include "Connection.h"
+#include "OSScreenSaverIdleInhibitUnstableV1.h"
+#include "OptionalsReg.h"
+#include "Registry.h"
+#include "ServiceBroker.h"
+#include "ShellSurfaceWlShell.h"
+#include "ShellSurfaceXdgShell.h"
+#include "ShellSurfaceXdgShellUnstableV6.h"
+#include "Util.h"
+#include "VideoSyncWpPresentation.h"
+#include "WinEventsWayland.h"
+#include "WindowDecorator.h"
 #include "cores/RetroPlayer/process/wayland/RPProcessInfoWayland.h"
 #include "cores/VideoPlayer/Process/wayland/ProcessInfoWayland.h"
 #include "guilib/DispResource.h"
@@ -21,33 +29,27 @@
 #include "input/InputManager.h"
 #include "input/touch/generic/GenericTouchActionHandler.h"
 #include "input/touch/generic/GenericTouchInputHandler.h"
-#include "platform/linux/powermanagement/LinuxPowerSyscall.h"
-#include "platform/linux/OptionalsReg.h"
-#include "platform/linux/PlatformConstants.h"
-#include "platform/linux/TimeUtils.h"
 #include "messaging/ApplicationMessenger.h"
-#include "OptionalsReg.h"
-#include "OSScreenSaverIdleInhibitUnstableV1.h"
-#include "Registry.h"
-#include "ServiceBroker.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/DisplaySettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
-#include "ShellSurfaceWlShell.h"
-#include "ShellSurfaceXdgShell.h"
-#include "ShellSurfaceXdgShellUnstableV6.h"
 #include "threads/SingleLock.h"
-#include "Util.h"
-#include "utils/log.h"
+#include "utils/ActorProtocol.h"
 #include "utils/MathUtils.h"
 #include "utils/StringUtils.h"
-#include "VideoSyncWpPresentation.h"
-#include "WindowDecorator.h"
-#include "WinEventsWayland.h"
-#include "windowing/linux/OSScreenSaverFreedesktop.h"
-#include "utils/ActorProtocol.h"
 #include "utils/TimeUtils.h"
+#include "utils/log.h"
+#include "windowing/linux/OSScreenSaverFreedesktop.h"
+
+#include "platform/freebsd/OptionalsReg.h"
+#include "platform/linux/OptionalsReg.h"
+#include "platform/linux/TimeUtils.h"
+#include "platform/linux/powermanagement/LinuxPowerSyscall.h"
+
+#include <algorithm>
+#include <limits>
+#include <numeric>
 
 #if defined(HAS_DBUS)
 # include "windowing/linux/OSScreenSaverFreedesktop.h"
@@ -155,6 +157,11 @@ CWinSystemWayland::CWinSystemWayland()
   else if (StringUtils::EqualsNoCase(envSink, "SNDIO"))
   {
     OPTIONALS::SndioRegister();
+  }
+  else if (StringUtils::EqualsNoCase(envSink, "ALSA+PULSE"))
+  {
+    OPTIONALS::ALSARegister();
+    OPTIONALS::PulseAudioRegister();
   }
   else
   {
@@ -321,15 +328,19 @@ bool CWinSystemWayland::CreateNewWindow(const std::string& name,
   // Try with this resolution if compositor does not say otherwise
   UpdateSizeVariables({res.iWidth, res.iHeight}, m_scale, m_shellSurfaceState, false);
 
-  m_shellSurface.reset(CShellSurfaceXdgShell::TryCreate(*this, *m_connection, m_surface, name, KODI::LINUX::DESKTOP_FILE_NAME));
+  // Use AppName as the desktop file name. This is required to lookup the app icon of the same name.
+  m_shellSurface.reset(CShellSurfaceXdgShell::TryCreate(*this, *m_connection, m_surface, name,
+                                                        std::string(CCompileInfo::GetAppName())));
   if (!m_shellSurface)
   {
-    m_shellSurface.reset(CShellSurfaceXdgShellUnstableV6::TryCreate(*this, *m_connection, m_surface, name, KODI::LINUX::DESKTOP_FILE_NAME));
+    m_shellSurface.reset(CShellSurfaceXdgShellUnstableV6::TryCreate(
+        *this, *m_connection, m_surface, name, std::string(CCompileInfo::GetAppName())));
   }
   if (!m_shellSurface)
   {
     CLog::LogF(LOGWARNING, "Compositor does not support xdg_shell protocol (stable or unstable v6) - falling back to wl_shell, not all features might work");
-    m_shellSurface.reset(new CShellSurfaceWlShell(*this, *m_connection, m_surface, name, KODI::LINUX::DESKTOP_FILE_NAME));
+    m_shellSurface.reset(new CShellSurfaceWlShell(*this, *m_connection, m_surface, name,
+                                                  std::string(CCompileInfo::GetAppName())));
   }
 
   if (fullScreen)

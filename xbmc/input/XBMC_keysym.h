@@ -222,7 +222,6 @@ typedef enum {
   // Add any other keys here
 
 	/* Media keys */
-  XBMCK_EJECT             = 333,
   XBMCK_STOP              = 337,
   XBMCK_RECORD            = 338,
   XBMCK_REWIND            = 339,
@@ -230,6 +229,7 @@ typedef enum {
   XBMCK_PLAY              = 341,
   XBMCK_SHUFFLE           = 342,
   XBMCK_FASTFORWARD       = 343,
+  XBMCK_EJECT = 344,
 
   XBMCK_LAST
 } XBMCKey;

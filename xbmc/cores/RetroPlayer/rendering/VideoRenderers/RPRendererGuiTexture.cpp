@@ -17,6 +17,8 @@
 using namespace DirectX;
 #endif
 
+#include <cstddef>
+
 using namespace KODI;
 using namespace RETRO;
 

@@ -5,36 +5,34 @@
  *  SPDX-License-Identifier: GPL-2.0-or-later
  *  See LICENSES/README.md for more information.
  */
-#include "LanguageHook.h"
+#include "Dialog.h"
 
+#include "LanguageHook.h"
+#include "ListItem.h"
+#include "ModuleXbmcgui.h"
 #include "ServiceBroker.h"
-#include "dialogs/GUIDialogYesNo.h"
-#include "dialogs/GUIDialogSelect.h"
+#include "WindowException.h"
 #include "dialogs/GUIDialogContextMenu.h"
-#include "dialogs/GUIDialogTextViewer.h"
-#include "guilib/GUIComponent.h"
-#include "guilib/GUIWindowManager.h"
 #include "dialogs/GUIDialogFileBrowser.h"
+#include "dialogs/GUIDialogKaiToast.h"
 #include "dialogs/GUIDialogNumeric.h"
-#include "video/dialogs/GUIDialogVideoInfo.h"
+#include "dialogs/GUIDialogSelect.h"
+#include "dialogs/GUIDialogTextViewer.h"
+#include "dialogs/GUIDialogYesNo.h"
+#include "guilib/GUIComponent.h"
+#include "guilib/GUIKeyboardFactory.h"
+#include "guilib/GUIWindowManager.h"
+#include "messaging/helpers/DialogOKHelper.h"
 #include "music/dialogs/GUIDialogMusicInfo.h"
 #include "settings/MediaSourceSettings.h"
 #include "storage/MediaManager.h"
-#include "dialogs/GUIDialogKaiToast.h"
-#include "ModuleXbmcgui.h"
-#include "guilib/GUIKeyboardFactory.h"
-#include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
-#include "WindowException.h"
-#include "messaging/helpers/DialogOKHelper.h"
-#include "Dialog.h"
-#include "ListItem.h"
-#ifdef TARGET_POSIX
-#include "platform/posix/XTimeUtils.h"
-#endif
+#include "utils/XTimeUtils.h"
+#include "utils/log.h"
+#include "video/dialogs/GUIDialogVideoInfo.h"
 
-using namespace KODI::MESSAGING;
+ using namespace KODI::MESSAGING;
 
 #define ACTIVE_WINDOW CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow()
 
@@ -44,11 +42,10 @@ namespace XBMCAddon
   {
     Dialog::~Dialog() = default;
 
-    bool Dialog::yesno(const String& heading, const String& line1,
-                       const String& line2,
-                       const String& line3,
+    bool Dialog::yesno(const String& heading, const String& message,
                        const String& nolabel,
                        const String& yeslabel,
+                       const String& customlabel,
                        int autoclose)
     {
       DelayedCallGuard dcguard(languageHook);
@@ -56,20 +53,17 @@ namespace XBMCAddon
       if (pDialog == NULL)
         throw WindowException("Error: Window is NULL, this is not possible :-)");
 
-      // get lines, last 4 lines are optional.
       if (!heading.empty())
         pDialog->SetHeading(CVariant{heading});
-      if (!line1.empty())
-        pDialog->SetLine(0, CVariant{line1});
-      if (!line2.empty())
-        pDialog->SetLine(1, CVariant{line2});
-      if (!line3.empty())
-        pDialog->SetLine(2, CVariant{line3});
+      if (!message.empty())
+        pDialog->SetText(CVariant{message});
 
       if (!nolabel.empty())
         pDialog->SetChoice(0, CVariant{nolabel});
       if (!yeslabel.empty())
         pDialog->SetChoice(1, CVariant{yeslabel});
+      if (!customlabel.empty())
+        pDialog->SetChoice(2, CVariant{customlabel});
 
       if (autoclose > 0)
         pDialog->SetAutoClose(autoclose);
@@ -168,15 +162,10 @@ namespace XBMCAddon
         return std::unique_ptr<std::vector<int>>();
     }
 
-    bool Dialog::ok(const String& heading, const String& line1,
-                    const String& line2,
-                    const String& line3)
+    bool Dialog::ok(const String& heading, const String& message)
     {
       DelayedCallGuard dcguard(languageHook);
-      if (line2.empty() && line3.empty())
-        return HELPERS::ShowOKDialogText(CVariant{heading}, CVariant{line1});
-      else
-        return HELPERS::ShowOKDialogLines(CVariant{heading}, CVariant{line1}, CVariant{line2}, CVariant{line3});
+      return HELPERS::ShowOKDialogText(CVariant{heading}, CVariant{message});
     }
 
     void Dialog::textviewer(const String& heading, const String& text, bool usemono)
@@ -221,14 +210,14 @@ namespace XBMCAddon
       VECSOURCES localShares;
       if (!shares)
       {
-        g_mediaManager.GetLocalDrives(localShares);
-        if (strcmpi(s_shares.c_str(), "local") != 0)
-          g_mediaManager.GetNetworkLocations(localShares);
+        CServiceBroker::GetMediaManager().GetLocalDrives(localShares);
+        if (StringUtils::CompareNoCase(s_shares, "local") != 0)
+          CServiceBroker::GetMediaManager().GetNetworkLocations(localShares);
       }
       else // always append local drives
       {
         localShares = *shares;
-        g_mediaManager.GetLocalDrives(localShares);
+        CServiceBroker::GetMediaManager().GetLocalDrives(localShares);
       }
 
       if (useFileDirectories && !maskparam.empty())
@@ -256,14 +245,14 @@ namespace XBMCAddon
       VECSOURCES localShares;
       if (!shares)
       {
-        g_mediaManager.GetLocalDrives(localShares);
-        if (strcmpi(s_shares.c_str(), "local") != 0)
-          g_mediaManager.GetNetworkLocations(localShares);
+        CServiceBroker::GetMediaManager().GetLocalDrives(localShares);
+        if (StringUtils::CompareNoCase(s_shares, "local") != 0)
+          CServiceBroker::GetMediaManager().GetNetworkLocations(localShares);
       }
       else // always append local drives
       {
         localShares = *shares;
-        g_mediaManager.GetLocalDrives(localShares);
+        CServiceBroker::GetMediaManager().GetLocalDrives(localShares);
       }
 
       if (useFileDirectories && !lmask.empty())
@@ -279,12 +268,12 @@ namespace XBMCAddon
       return valuelist;
     }
 
-    String Dialog::numeric(int inputtype, const String& heading, const String& defaultt)
+    String Dialog::numeric(int inputtype, const String& heading, const String& defaultt, bool bHiddenInput)
     {
       DelayedCallGuard dcguard(languageHook);
       std::string value;
-      SYSTEMTIME timedate;
-      GetLocalTime(&timedate);
+      KODI::TIME::SystemTime timedate;
+      KODI::TIME::GetLocalTime(&timedate);
 
       if (!heading.empty())
       {
@@ -293,12 +282,12 @@ namespace XBMCAddon
           if (!defaultt.empty() && defaultt.size() == 10)
           {
             std::string sDefault = defaultt;
-            timedate.wDay = atoi(sDefault.substr(0, 2).c_str());
-            timedate.wMonth = atoi(sDefault.substr(3, 4).c_str());
-            timedate.wYear = atoi(sDefault.substr(sDefault.size() - 4).c_str());
+            timedate.day = atoi(sDefault.substr(0, 2).c_str());
+            timedate.month = atoi(sDefault.substr(3, 4).c_str());
+            timedate.year = atoi(sDefault.substr(sDefault.size() - 4).c_str());
           }
           if (CGUIDialogNumeric::ShowAndGetDate(timedate, heading))
-            value = StringUtils::Format("%2d/%2d/%4d", timedate.wDay, timedate.wMonth, timedate.wYear);
+            value = StringUtils::Format("%2d/%2d/%4d", timedate.day, timedate.month, timedate.year);
           else
             return emptyString;
         }
@@ -307,11 +296,11 @@ namespace XBMCAddon
           if (!defaultt.empty() && defaultt.size() == 5)
           {
             std::string sDefault = defaultt;
-            timedate.wHour = atoi(sDefault.substr(0, 2).c_str());
-            timedate.wMinute = atoi(sDefault.substr(3, 2).c_str());
+            timedate.hour = atoi(sDefault.substr(0, 2).c_str());
+            timedate.minute = atoi(sDefault.substr(3, 2).c_str());
           }
           if (CGUIDialogNumeric::ShowAndGetTime(timedate, heading))
-            value = StringUtils::Format("%2d:%02d", timedate.wHour, timedate.wMinute);
+            value = StringUtils::Format("%2d:%02d", timedate.hour, timedate.minute);
           else
             return emptyString;
         }
@@ -321,10 +310,16 @@ namespace XBMCAddon
           if (!CGUIDialogNumeric::ShowAndGetIPAddress(value, heading))
             return emptyString;
         }
+        else if (inputtype == 4)
+        {
+          value = defaultt;
+          if (!CGUIDialogNumeric::ShowAndVerifyNewPassword(value))
+            return emptyString;
+        }
         else
         {
           value = defaultt;
-          if (!CGUIDialogNumeric::ShowAndGetNumber(value, heading))
+          if (!CGUIDialogNumeric::ShowAndGetNumber(value, heading, 0, bHiddenInput))
             return emptyString;
         }
       }
@@ -357,8 +352,8 @@ namespace XBMCAddon
     {
       DelayedCallGuard dcguard(languageHook);
       std::string value(defaultt);
-      SYSTEMTIME timedate;
-      GetLocalTime(&timedate);
+      KODI::TIME::SystemTime timedate;
+      KODI::TIME::GetLocalTime(&timedate);
 
       switch (type)
       {
@@ -380,12 +375,13 @@ namespace XBMCAddon
             if (!defaultt.empty() && defaultt.size() == 10)
             {
               std::string sDefault = defaultt;
-              timedate.wDay = atoi(sDefault.substr(0, 2).c_str());
-              timedate.wMonth = atoi(sDefault.substr(3, 4).c_str());
-              timedate.wYear = atoi(sDefault.substr(sDefault.size() - 4).c_str());
+              timedate.day = atoi(sDefault.substr(0, 2).c_str());
+              timedate.month = atoi(sDefault.substr(3, 4).c_str());
+              timedate.year = atoi(sDefault.substr(sDefault.size() - 4).c_str());
             }
             if (CGUIDialogNumeric::ShowAndGetDate(timedate, heading))
-              value = StringUtils::Format("%2d/%2d/%4d", timedate.wDay, timedate.wMonth, timedate.wYear);
+              value =
+                  StringUtils::Format("%2d/%2d/%4d", timedate.day, timedate.month, timedate.year);
             else
               value = emptyString;
           }
@@ -395,11 +391,11 @@ namespace XBMCAddon
             if (!defaultt.empty() && defaultt.size() == 5)
             {
               std::string sDefault = defaultt;
-              timedate.wHour = atoi(sDefault.substr(0, 2).c_str());
-              timedate.wMinute = atoi(sDefault.substr(3, 2).c_str());
+              timedate.hour = atoi(sDefault.substr(0, 2).c_str());
+              timedate.minute = atoi(sDefault.substr(3, 2).c_str());
             }
             if (CGUIDialogNumeric::ShowAndGetTime(timedate, heading))
-              value = StringUtils::Format("%2d:%02d", timedate.wHour, timedate.wMinute);
+              value = StringUtils::Format("%2d:%02d", timedate.hour, timedate.minute);
             else
               value = emptyString;
           }
@@ -444,9 +440,7 @@ namespace XBMCAddon
       }
     }
 
-    void DialogProgress::create(const String& heading, const String& line1,
-                                const String& line2,
-                                const String& line3)
+    void DialogProgress::create(const String& heading, const String& message)
     {
       DelayedCallGuard dcguard(languageHook);
       CGUIDialogProgress* pDialog= CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogProgress>(WINDOW_DIALOG_PROGRESS);
@@ -459,19 +453,13 @@ namespace XBMCAddon
 
       pDialog->SetHeading(CVariant{heading});
 
-      if (!line1.empty())
-        pDialog->SetLine(0, CVariant{line1});
-      if (!line2.empty())
-        pDialog->SetLine(1, CVariant{line2});
-      if (!line3.empty())
-        pDialog->SetLine(2, CVariant{line3});
+      if (!message.empty())
+        pDialog->SetText(CVariant{message});
 
       pDialog->Open();
     }
 
-    void DialogProgress::update(int percent, const String& line1,
-                                const String& line2,
-                                const String& line3)
+    void DialogProgress::update(int percent, const String& message)
     {
       DelayedCallGuard dcguard(languageHook);
       CGUIDialogProgress* pDialog = dlg;
@@ -489,12 +477,8 @@ namespace XBMCAddon
         pDialog->ShowProgressBar(false);
       }
 
-      if (!line1.empty())
-        pDialog->SetLine(0, CVariant{line1});
-      if (!line2.empty())
-        pDialog->SetLine(1, CVariant{line2});
-      if (!line3.empty())
-        pDialog->SetLine(2, CVariant{line3});
+      if (!message.empty())
+        pDialog->SetText(CVariant{message});
     }
 
     void DialogProgress::close()
@@ -511,28 +495,6 @@ namespace XBMCAddon
       if (dlg == NULL)
         throw WindowException("Dialog not created.");
       return dlg->IsCanceled();
-    }
-
-    // deprecated because wrong
-    // modal dialogs can't be called from python using a proxy class with async
-    // messaging. there can only be one DialogBusy at a time.
-    DialogBusy::~DialogBusy() { XBMC_TRACE; deallocating(); }
-    void DialogBusy::deallocating()
-    {
-    }
-    void DialogBusy::create()
-    {
-      CLog::Log(LOGWARNING, "using DialogBusy from python results in nop now");
-    }
-    void DialogBusy::update(int percent) const
-    {
-    }
-    void DialogBusy::close()
-    {
-    }
-    bool DialogBusy::iscanceled() const
-    {
-      return false;
     }
 
     DialogProgressBG::~DialogProgressBG() { XBMC_TRACE; deallocating(); }

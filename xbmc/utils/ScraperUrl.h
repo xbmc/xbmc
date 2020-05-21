@@ -13,66 +13,110 @@
 #include <vector>
 
 class TiXmlElement;
-namespace XFILE { class CCurlFile; }
+namespace XFILE
+{
+class CCurlFile;
+}
 
 class CScraperUrl
 {
 public:
-  explicit CScraperUrl(const std::string&);
-  explicit CScraperUrl(const TiXmlElement*);
-  CScraperUrl();
-  ~CScraperUrl();
-
-  enum URLTYPES
+  enum class UrlType
   {
-    URL_TYPE_GENERAL = 1,
-    URL_TYPE_SEASON = 2
+    General = 1,
+    Season = 2
   };
 
   struct SUrlEntry
   {
+    explicit SUrlEntry(std::string url = "")
+      : m_url(std::move(url)), m_type(UrlType::General), m_post(false), m_isgz(false), m_season(-1)
+    {
+    }
+
     std::string m_spoof;
     std::string m_url;
     std::string m_cache;
     std::string m_aspect;
-    URLTYPES m_type;
+    UrlType m_type;
     bool m_post;
     bool m_isgz;
     int m_season;
   };
 
-  bool Parse();
-  bool ParseString(std::string); // copies by intention
-  bool ParseElement(const TiXmlElement*);
-  bool ParseEpisodeGuide(std::string strUrls); // copies by intention
-  void AddElement(std::string url, std::string aspect = "", std::string preview = "", std::string referrer = "", std::string cache = "", bool post = false, bool isgz = false, int season = -1);
+  CScraperUrl();
+  explicit CScraperUrl(std::string strUrl);
+  explicit CScraperUrl(const TiXmlElement* element);
+  ~CScraperUrl();
 
-  const SUrlEntry GetFirstThumb(const std::string &type = "") const;
-  const SUrlEntry GetSeasonThumb(int season, const std::string &type = "") const;
-  unsigned int GetMaxSeasonThumb() const;
+  void Clear();
 
-  /*! \brief fetch the full URL (including referrer) of a thumb
-   \param URL entry to use to create the full URL
-   \return the full URL, including referrer
-   */
-  static std::string GetThumbURL(const CScraperUrl::SUrlEntry &entry);
+  bool HasData() const { return !m_data.empty(); }
+  const std::string& GetData() const { return m_data; }
+  void SetData(std::string data);
 
-  /*! \brief fetch the full URL (including referrer) of thumbs
+  const std::string& GetTitle() const { return m_title; }
+  void SetTitle(std::string title) { m_title = std::move(title); }
+
+  const std::string& GetId() const { return m_id; }
+  void SetId(std::string id) { m_id = std::move(id); }
+
+  double GetRelevance() const { return m_relevance; }
+  void SetRelevance(double relevance) { m_relevance = relevance; }
+
+  bool HasUrls() const { return !m_urls.empty(); }
+  const std::vector<SUrlEntry>& GetUrls() const { return m_urls; }
+  void SetUrls(std::vector<SUrlEntry> urls) { m_urls = std::move(urls); }
+  void AppendUrl(SUrlEntry url) { m_urls.push_back(std::move(url)); }
+
+  const SUrlEntry GetFirstUrlByType(const std::string& type = "") const;
+  const SUrlEntry GetSeasonUrl(int season, const std::string& type = "") const;
+  unsigned int GetMaxSeasonUrl() const;
+
+  std::string GetFirstThumbUrl() const;
+
+  /*! \brief fetch the full URLs (including referrer) of thumbs
    \param thumbs [out] vector of thumb URLs to fill
    \param type the type of thumb URLs to fetch, if empty (the default) picks any
    \param season number of season that we want thumbs for, -1 indicates no season (the default)
    \param unique avoid adding duplicate URLs when adding to a thumbs vector with existing items
    */
-  void GetThumbURLs(std::vector<std::string> &thumbs, const std::string &type = "", int season = -1, bool unique = false) const;
-  void Clear();
-  static bool Get(const SUrlEntry&, std::string&, XFILE::CCurlFile& http,
-                 const std::string& cacheContext);
+  void GetThumbUrls(std::vector<std::string>& thumbs,
+                    const std::string& type = "",
+                    int season = -1,
+                    bool unique = false) const;
 
-  std::string m_xml;
-  std::string m_spoof; // for backwards compatibility only!
-  std::string strTitle;
-  std::string strId;
-  double relevance;
-  std::vector<SUrlEntry> m_url;
+  bool Parse();
+  bool ParseFromData(std::string data); // copies by intention
+  bool ParseAndAppendUrl(const TiXmlElement* element);
+  bool ParseAndAppendUrlsFromEpisodeGuide(std::string episodeGuide); // copies by intention
+  void AddParsedUrl(std::string url,
+                    std::string aspect = "",
+                    std::string preview = "",
+                    std::string referrer = "",
+                    std::string cache = "",
+                    bool post = false,
+                    bool isgz = false,
+                    int season = -1);
+
+  /*! \brief fetch the full URL (including referrer) of a thumb
+   \param URL entry to use to create the full URL
+   \return the full URL, including referrer
+   */
+  static std::string GetThumbUrl(const CScraperUrl::SUrlEntry& entry);
+
+  static bool Get(const SUrlEntry& scrURL,
+                  std::string& strHTML,
+                  XFILE::CCurlFile& http,
+                  const std::string& cacheContext);
+
+  // ATTENTION: this member MUST NOT be used directly except from databases
+  std::string m_data;
+
+private:
+  std::string m_title;
+  std::string m_id;
+  double m_relevance;
+  std::vector<SUrlEntry> m_urls;
+  bool m_parsed;
 };
-

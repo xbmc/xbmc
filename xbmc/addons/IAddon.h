@@ -33,9 +33,9 @@ namespace ADDON
   {
   public:
     virtual ~IAddon() = default;
+    virtual TYPE MainType() const = 0;
     virtual TYPE Type() const =0;
-    virtual TYPE FullType() const =0;
-    virtual bool IsType(TYPE type) const =0;
+    virtual bool HasType(TYPE type) const = 0;
     virtual std::string ID() const =0;
     virtual std::string Name() const =0;
     virtual bool IsInUse() const =0;

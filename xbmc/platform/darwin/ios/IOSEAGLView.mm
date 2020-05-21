@@ -60,7 +60,7 @@ using namespace KODI::MESSAGING;
 //--------------------------------------------------------------
 - (void) resizeFrameBuffer
 {
-  auto frame = self.bounds;
+  auto frame = currentScreen.bounds;
   CAEAGLLayer *eaglLayer = (CAEAGLLayer *)[self layer];
   //allow a maximum framebuffer size of 1080p
   //needed for tvout on iPad3/4 and iphone4/5 and maybe AppleTV3
@@ -90,7 +90,7 @@ using namespace KODI::MESSAGING;
 
 - (CGFloat)getScreenScale:(UIScreen *)screen
 {
-  CLog::Log(LOGDEBUG, "nativeScale {}, scale {}, traitScale {}", screen.nativeScale, screen.scale,
+  LOG(@"nativeScale %lf, scale %lf, traitScale %lf", screen.nativeScale, screen.scale,
             screen.traitCollection.displayScale);
   return std::max({screen.nativeScale, screen.scale, screen.traitCollection.displayScale});
 }

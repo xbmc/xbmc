@@ -143,6 +143,9 @@ bool CSettingControlButton::Deserialize(const TiXmlNode *node, bool update /* = 
     bool closeDialog = false;
     if (XMLUtils::GetBoolean(node, "close", closeDialog))
       m_closeDialog = closeDialog;
+    std::string strActionData;
+    if (XMLUtils::GetString(node, SETTING_XML_ELM_DATA, strActionData))
+      m_actionData = strActionData;
   }
   else if (m_format == "addon")
   {

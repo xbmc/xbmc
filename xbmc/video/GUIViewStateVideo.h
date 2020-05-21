@@ -44,6 +44,7 @@ protected:
   bool HideExtensions() override;
   bool HideParentDirItems() override;
   VECSOURCES& GetSources() override;
+  bool AutoPlayNextItem() override { return false; }
 };
 
 class CGUIViewStateVideoMovies : public CGUIViewStateWindowVideo

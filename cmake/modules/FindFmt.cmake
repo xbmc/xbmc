@@ -39,6 +39,8 @@ if(ENABLE_INTERNAL_FMT)
                       DOWNLOAD_DIR ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/download
                       PREFIX ${CORE_BUILD_DIR}/fmt
                       CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}
+                                 -DCMAKE_CXX_EXTENSIONS=${CMAKE_CXX_EXTENSIONS}
+                                 -DCMAKE_CXX_STANDARD=${CMAKE_CXX_STANDARD}
                                  -DCMAKE_TOOLCHAIN_FILE=${CMAKE_TOOLCHAIN_FILE}
                                  -DCMAKE_INSTALL_LIBDIR=lib
                                  -DFMT_DOC=OFF
@@ -57,12 +59,7 @@ if(ENABLE_INTERNAL_FMT)
 
 else()
 
-if(CORE_SYSTEM_NAME STREQUAL windows OR CORE_SYSTEM_NAME STREQUAL windowsstore)
-  # TODO: fix windows fmt package to include fmt-config.cmake and fmt-config-version.cmake
-  set(FMT_VERSION 3.0.1)
-else()
-  find_package(FMT 3.0.1 CONFIG REQUIRED QUIET)
-endif()
+find_package(FMT 6.1.2 CONFIG REQUIRED QUIET)
 
 if(PKG_CONFIG_FOUND)
   pkg_check_modules(PC_FMT libfmt QUIET)

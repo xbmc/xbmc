@@ -55,11 +55,9 @@ Several different strategies are used to draw your attention to certain pieces o
 ## 2. Prerequisites
 * **[Java Development Kit (JDK)](http://www.oracle.com/technetwork/java/javase/downloads/index.html)**
 * **[Xcode](https://developer.apple.com/xcode/)**. Install it from the AppStore or from the **[Apple Developer Homepage](https://developer.apple.com/)**.
-* Device with **OSX 10.9 or newer** to run Kodi after build.
+* Device with **OSX 10.13 or newer** to run Kodi after build.
 
 Building for OSX/macOS should work with the following constellations of Xcode and OSX/macOS versions:
-  * Xcode 8.x on OSX 10.11.x (El Capitan)
-  * Xcode 9.x on OSX 10.12.x (Sierra)
   * Xcode 9.x on macOS 10.13.x (High Sierra)
 
 **WARNING:** Start Xcode after installation finishes. You need to accept the licenses and install missing components.
@@ -84,18 +82,11 @@ Kodi can be built as either a 32bit or 64bit program. The dependencies are built
 
 **TIP:** Look for comments starting with `Or ...` and only execute the command(s) you need.
 
-Configure build for 64bit (**recommended**):
+Configure build:
 ```
 cd $HOME/kodi/tools/depends
 ./bootstrap
 ./configure --host=x86_64-apple-darwin
-```
-
-Or configure build for 32bit:
-```
-cd $HOME/kodi/tools/depends
-./bootstrap
-./configure --host=i386-apple-darwin
 ```
 
 Build tools and dependencies:
@@ -107,9 +98,9 @@ make -j$(getconf _NPROCESSORS_ONLN)
 
 **WARNING:** Look for the `Dependencies built successfully.` success message. If in doubt run a single threaded `make` command until the message appears. If the single make fails, clean the specific library by issuing `make -C target/<name_of_failed_lib> distclean` and run `make`again.
 
-**NOTE:** **Advanced developers** may want to specify an SDK version (if multiple versions are installed) in the configure line(s) shown above. The example below would use SDK 10.9:
+**NOTE:** **Advanced developers** may want to specify an SDK version (if multiple versions are installed) in the configure line(s) shown above. The example below would use SDK 10.13:
 ```
-./configure --host=x86_64-apple-darwin --with-sdk=10.9
+./configure --host=x86_64-apple-darwin --with-sdk=10.13
 ```
 
 **[back to top](#table-of-contents)** | **[back to section top](#4-configure-and-build-tools-and-dependencies)**
@@ -168,17 +159,12 @@ Change to build directory:
 cd $HOME/kodi-build
 ```
 
-Generate Xcode project for 64bit (**recommended**):
+Generate Xcode project:
 ```
 /Users/Shared/xbmc-depends/x86_64-darwin17.5.0-native/bin/cmake -G Xcode -DCMAKE_TOOLCHAIN_FILE=/Users/Shared/xbmc-depends/macosx10.13_x86_64-target-debug/share/Toolchain.cmake ../kodi
 ```
 
-Or generate Xcode project for 32bit:
-```
-/Users/Shared/xbmc-depends/x86_64-darwin17.5.0-native/bin/cmake -G Xcode -DCMAKE_TOOLCHAIN_FILE=/Users/Shared/xbmc-depends/macosx10.13_i386-target-debug/share/Toolchain.cmake ../kodi
-```
-
-**WARNING:** The toolchain file location differs depending on SDK version. You have to replace `x86_64-darwin17.5.0-native` and `macosx10.13_x86_64-target-debug` or `macosx10.13_i386-target-debug` in the paths above with the correct ones on your system.
+**WARNING:** The toolchain file location differs depending on SDK version. You have to replace `x86_64-darwin17.5.0-native` and `macosx10.13_x86_64-target-debug` in the paths above with the correct ones on your system.
 
 You can check `Users/Shared/xbmc-depends` directory content with:
 ```

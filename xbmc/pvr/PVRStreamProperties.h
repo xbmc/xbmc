@@ -32,6 +32,12 @@ public:
    * @return The stream's MIME type or empty string, if not found.
    */
   std::string GetStreamMimeType() const;
+
+  /*!
+   * @brief If props are from an EPG tag indicates if playback should be as live playback would be
+   * @return true if it should be played back as live, false otherwise.
+   */
+  bool EPGPlaybackAsLive() const;
 };
 
 } // namespace PVR

@@ -10,7 +10,7 @@
 
 #include "DVDStreamInfo.h"
 #include "DVDVideoCodec.h"
-#include "cores/VideoPlayer/Process/VideoBuffer.h"
+#include "cores/VideoPlayer/Buffers/VideoBuffer.h"
 #include "threads/SingleLock.h"
 #include "threads/Thread.h"
 #include "utils/Geometry.h"
@@ -25,17 +25,17 @@
 #include <android/native_window.h>
 #include <android/native_window_jni.h>
 #include <androidjni/Surface.h>
-#include <media/NdkMediaCodec.h>
 
 class CJNISurface;
 class CJNISurfaceTexture;
 class CJNIMediaCodec;
+class CJNIMediaCrypto;
 class CJNIMediaFormat;
+class CJNIMediaCodecBufferInfo;
 class CDVDMediaCodecOnFrameAvailable;
 class CJNIByteBuffer;
 class CBitstreamConverter;
 
-struct AMediaCrypto;
 struct DemuxCryptoInfo;
 struct mpeg2_sequence;
 
@@ -47,17 +47,6 @@ typedef struct amc_demux
   double dts;
   double pts;
 } amc_demux;
-
-struct CMediaCodec
-{
-  CMediaCodec(const char* name);
-  virtual ~CMediaCodec();
-
-  AMediaCodec* codec() const { return m_codec; };
-
-private:
-  AMediaCodec* m_codec;
-};
 
 class CMediaCodecVideoBufferPool;
 
@@ -101,22 +90,20 @@ private:
 class CMediaCodecVideoBufferPool : public IVideoBufferPool
 {
 public:
-  CMediaCodecVideoBufferPool(std::shared_ptr<CMediaCodec> mediaCodec)
-    : m_codec(mediaCodec){};
+  CMediaCodecVideoBufferPool(std::shared_ptr<CJNIMediaCodec> mediaCodec) : m_codec(mediaCodec){};
 
   ~CMediaCodecVideoBufferPool() override;
 
   CVideoBuffer* Get() override;
   void Return(int id) override;
 
-  std::shared_ptr<CMediaCodec> GetMediaCodec();
+  std::shared_ptr<CJNIMediaCodec> GetMediaCodec();
   void ResetMediaCodec();
   void ReleaseMediaCodecBuffers();
 
 private:
   CCriticalSection m_criticalSection;
-  ;
-  std::shared_ptr<CMediaCodec> m_codec;
+  std::shared_ptr<CJNIMediaCodec> m_codec;
 
   std::vector<CMediaCodecVideoBuffer*> m_videoBuffers;
   std::vector<int> m_freeBuffers;
@@ -146,11 +133,11 @@ protected:
   void Dispose();
   void FlushInternal(void);
   void SignalEndOfStream();
-  void InjectExtraData(AMediaFormat* mediaformat);
+  void InjectExtraData(CJNIMediaFormat& mediaformat);
   std::vector<uint8_t> GetHDRStaticMetadata();
   bool ConfigureMediaCodec(void);
   int GetOutputPicture(void);
-  void ConfigureOutputFormat(AMediaFormat* mediaformat);
+  void ConfigureOutputFormat(CJNIMediaFormat& mediaformat);
   void UpdateFpsDuration();
 
   // surface handling functions
@@ -172,10 +159,9 @@ protected:
   std::shared_ptr<CJNIXBMCVideoView> m_jnivideoview;
   CJNISurface* m_jnisurface;
   CJNISurface m_jnivideosurface;
-  AMediaCrypto* m_crypto;
   unsigned int m_textureId;
-  std::shared_ptr<CMediaCodec> m_codec;
-  ANativeWindow* m_surface;
+  std::shared_ptr<CJNIMediaCodec> m_codec;
+  CJNIMediaCrypto* m_crypto = nullptr;
   std::shared_ptr<CJNISurfaceTexture> m_surfaceTexture;
   std::shared_ptr<CDVDMediaCodecOnFrameAvailable> m_frameAvailable;
 

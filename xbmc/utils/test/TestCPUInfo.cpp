@@ -10,121 +10,63 @@
 #  include <windows.h>
 #endif
 
-#include "utils/CPUInfo.h"
-#include "utils/Temperature.h"
 #include "ServiceBroker.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
-
-#ifdef TARGET_POSIX
-#include "platform/posix/XTimeUtils.h"
-#endif
+#include "utils/CPUInfo.h"
+#include "utils/Temperature.h"
+#include "utils/XTimeUtils.h"
 
 #include <gtest/gtest.h>
 
-TEST(TestCPUInfo, getUsedPercentage)
+struct TestCPUInfo : public ::testing::Test
 {
-  EXPECT_GE(g_cpuInfo.getUsedPercentage(), 0);
-}
+  TestCPUInfo() { CServiceBroker::RegisterCPUInfo(CCPUInfo::GetCPUInfo()); }
 
-TEST(TestCPUInfo, getCPUCount)
-{
-  EXPECT_GT(g_cpuInfo.getCPUCount(), 0);
-}
-
-TEST(TestCPUInfo, getCPUFrequency)
-{
-  EXPECT_GE(g_cpuInfo.getCPUFrequency(), 0.f);
-}
-
-namespace
-{
-class TemporarySetting
-{
-public:
-
-  TemporarySetting(std::string &setting, const char *newValue) :
-    m_Setting(setting),
-    m_OldValue(setting)
-  {
-    m_Setting = newValue;
-  }
-
-  ~TemporarySetting()
-  {
-    m_Setting = m_OldValue;
-  }
-
-private:
-
-  std::string &m_Setting;
-  std::string m_OldValue;
+  ~TestCPUInfo() { CServiceBroker::UnregisterCPUInfo(); }
 };
+
+TEST_F(TestCPUInfo, GetUsedPercentage)
+{
+  EXPECT_GE(CServiceBroker::GetCPUInfo()->GetUsedPercentage(), 0);
 }
 
-//Disabled for windows because there is no implementation to get the CPU temp and there will probably never be one
-#ifndef TARGET_WINDOWS
-TEST(TestCPUInfo, getTemperature)
+TEST_F(TestCPUInfo, GetCPUCount)
 {
-  TemporarySetting command(CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_cpuTempCmd, "echo '50 c'");
+  EXPECT_GT(CServiceBroker::GetCPUInfo()->GetCPUCount(), 0);
+}
+
+TEST_F(TestCPUInfo, GetCPUFrequency)
+{
+  EXPECT_GE(CServiceBroker::GetCPUInfo()->GetCPUFrequency(), 0.f);
+}
+
+#if defined(TARGET_WINDOWS)
+TEST_F(TestCPUInfo, DISABLED_GetTemperature)
+#else
+TEST_F(TestCPUInfo, GetTemperature)
+#endif
+{
+  CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_cpuTempCmd = "echo '50 c'";
   CTemperature t;
-  EXPECT_TRUE(g_cpuInfo.getTemperature(t));
+  EXPECT_TRUE(CServiceBroker::GetCPUInfo()->GetTemperature(t));
   EXPECT_TRUE(t.IsValid());
 }
-#endif
 
-TEST(TestCPUInfo, getCPUModel)
+TEST_F(TestCPUInfo, CoreInfo)
 {
-  std::string s = g_cpuInfo.getCPUModel();
-  EXPECT_STRNE("", s.c_str());
+  ASSERT_TRUE(CServiceBroker::GetCPUInfo()->HasCoreId(0));
+  const CoreInfo c = CServiceBroker::GetCPUInfo()->GetCoreInfo(0);
+  EXPECT_TRUE(c.m_id == 0);
 }
 
-TEST(TestCPUInfo, getCPUBogoMips)
+TEST_F(TestCPUInfo, GetCoresUsageString)
 {
-  std::string s = g_cpuInfo.getCPUBogoMips();
-  EXPECT_STRNE("", s.c_str());
+  EXPECT_STRNE("", CServiceBroker::GetCPUInfo()->GetCoresUsageString().c_str());
 }
 
-TEST(TestCPUInfo, getCPUHardware)
+TEST_F(TestCPUInfo, GetCPUFeatures)
 {
-  std::string s = g_cpuInfo.getCPUHardware();
-  EXPECT_STRNE("", s.c_str());
-}
-
-TEST(TestCPUInfo, getCPURevision)
-{
-  std::string s = g_cpuInfo.getCPURevision();
-  EXPECT_STRNE("", s.c_str());
-}
-
-TEST(TestCPUInfo, getCPUSerial)
-{
-  std::string s = g_cpuInfo.getCPUSerial();
-  EXPECT_STRNE("", s.c_str());
-}
-
-TEST(TestCPUInfo, CoreInfo)
-{
-  ASSERT_TRUE(g_cpuInfo.HasCoreId(0));
-  const CoreInfo c = g_cpuInfo.GetCoreInfo(0);
-  EXPECT_FALSE(c.m_strModel.empty());
-}
-
-TEST(TestCPUInfo, GetCoresUsageString)
-{
-  EXPECT_STRNE("", g_cpuInfo.GetCoresUsageString().c_str());
-}
-
-TEST(TestCPUInfo, GetCPUFeatures)
-{
-  unsigned int a = g_cpuInfo.GetCPUFeatures();
+  unsigned int a = CServiceBroker::GetCPUInfo()->GetCPUFeatures();
   (void)a;
-}
-
-TEST(TestCPUInfo, getUsedPercentage_output)
-{
-  CCPUInfo c;
-  Sleep(1); //! @todo Support option from main that sets this parameter
-  int r = c.getUsedPercentage();
-  std::cout << "Percentage: " << testing::PrintToString(r) << std::endl;
 }

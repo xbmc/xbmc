@@ -271,7 +271,7 @@ void CGUIDialogPVRChannelsOSD::OnInputDone()
   if (channelNumber.IsValid())
   {
     int itemIndex = 0;
-    for (const CFileItemPtr channel : *m_vecItems)
+    for (const CFileItemPtr& channel : *m_vecItems)
     {
       if (channel->GetPVRChannelInfoTag()->ChannelNumber() == channelNumber)
       {

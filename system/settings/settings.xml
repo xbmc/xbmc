@@ -989,10 +989,25 @@
           <default>true</default>
           <control type="toggle" />
         </setting>
+        <setting id="videolibrary.moviesetsfolder" type="path" label="20226" help="36300">
+          <level>1</level>
+          <default></default>
+          <constraints>
+            <allowempty>true</allowempty>
+          </constraints>
+          <control type="button" format="path">
+            <heading>657</heading>
+          </control>
+        </setting>
       </group>
     </category>
     <category id="music" label="14216" help="38108">
       <group id="1" label="593">
+        <setting id="musicfiles.selectaction" type="boolean" label="12381" help="38112">
+          <level>0</level>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
         <setting id="musicfiles.trackformat" type="string" label="13307" help="36275">
           <level>3</level>
           <default>[%N. ]%A - %T</default>
@@ -1044,8 +1059,18 @@
           <default>true</default>
           <control type="toggle" />
         </setting>
+        <setting id="musiclibrary.showdiscs" type="boolean" label="13522" help="13523">
+          <level>0</level>
+          <default>true</default>
+          <control type="toggle" />
+        </setting>
         <setting id="musiclibrary.useartistsortname" type="boolean" label="20228" help="36294">
           <level>1</level>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
+        <setting id="musiclibrary.useoriginaldate" type="boolean" label="13524" help="13525">
+          <level>2</level>
           <default>false</default>
           <control type="toggle" />
         </setting>
@@ -1338,11 +1363,6 @@
           <default>false</default>
           <control type="toggle" />
         </setting>
-        <setting id="epg.storeepgindatabase" type="boolean" label="19072" help="36223">
-          <level>2</level>
-          <default>false</default>
-          <control type="toggle" />
-        </setting>
         <setting id="epg.resetepg" type="action" label="19185" help="36225">
           <level>1</level>
           <control type="button" format="action" />
@@ -1351,10 +1371,18 @@
     </category>
     <category id="pvrplayback" label="19177" help="36226">
       <group id="1" label="128">
-        <setting id="pvrplayback.switchtofullscreen" type="boolean" label="19171" help="36227">
+        <setting id="pvrplayback.switchtofullscreenchanneltypes" type="integer" label="19171" help="36227">
           <level>1</level>
-          <default>true</default>
-          <control type="toggle" />
+          <default>3</default> <!-- TV and radio channels -->
+          <constraints>
+            <options>
+              <option label="20420">0</option> <!-- Never -->
+              <option label="19180">1</option> <!-- TV channels -->
+              <option label="19183">2</option> <!-- Radio channels -->
+              <option label="19250">3</option> <!-- TV and radio channels -->
+            </options>
+          </constraints>
+          <control type="list" format="string" />
         </setting>
         <setting id="pvrplayback.signalquality" type="boolean" label="19037" help="36229">
           <level>2</level>
@@ -1682,18 +1710,17 @@
           </updates>
           <control type="edit" format="integer" />
         </setting>
+        <setting id="services.webserverauthentication" parent="services.webserver" type="boolean" label="1052" help="1053">
+          <level>1</level>
+          <default>true</default>
+          <control type="toggle" />
+        </setting>
         <setting id="services.webserverusername" type="string" parent="services.webserver" label="1048" help="36330">
           <level>1</level>
           <default>kodi</default>
-          <constraints>
-            <allowempty>true</allowempty>
-          </constraints>
           <updates>
             <update type="change" />
           </updates>
-          <dependencies>
-            <dependency type="enable" setting="services.webserver">true</dependency>
-          </dependencies>
           <control type="edit" format="string" />
         </setting>
         <setting id="services.webserverpassword" type="string" parent="services.webserver" label="733" help="36331">
@@ -1702,9 +1729,6 @@
           <constraints>
             <allowempty>true</allowempty>
           </constraints>
-          <dependencies>
-            <dependency type="enable" setting="services.webserver">true</dependency>
-          </dependencies>
           <control type="edit" format="string">
             <hidden>true</hidden>
           </control>
@@ -2681,7 +2705,12 @@
       </group>
       <group id="2" label="14094">
         <setting id="input.enablemouse" type="boolean" label="21369" help="36377">
-          <level>0</level>
+          <level>2</level>
+          <control type="toggle" />
+          <default>true</default>
+        </setting>
+        <setting id="input.enablejoystick" type="boolean" label="35100" help="36378">
+          <level>2</level>
           <control type="toggle" />
           <default>true</default>
         </setting>

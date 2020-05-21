@@ -308,9 +308,9 @@ void CMediaSettings::OnSettingAction(std::shared_ptr<const CSetting> setting)
   {
     std::string path;
     VECSOURCES shares;
-    g_mediaManager.GetLocalDrives(shares);
-    g_mediaManager.GetNetworkLocations(shares);
-    g_mediaManager.GetRemovableDrives(shares);
+    CServiceBroker::GetMediaManager().GetLocalDrives(shares);
+    CServiceBroker::GetMediaManager().GetNetworkLocations(shares);
+    CServiceBroker::GetMediaManager().GetRemovableDrives(shares);
 
     if (CGUIDialogFileBrowser::ShowAndGetFile(shares, "musicdb.xml", g_localizeStrings.Get(651) , path))
     {
@@ -329,9 +329,9 @@ void CMediaSettings::OnSettingAction(std::shared_ptr<const CSetting> setting)
   {
     std::string path;
     VECSOURCES shares;
-    g_mediaManager.GetLocalDrives(shares);
-    g_mediaManager.GetNetworkLocations(shares);
-    g_mediaManager.GetRemovableDrives(shares);
+    CServiceBroker::GetMediaManager().GetLocalDrives(shares);
+    CServiceBroker::GetMediaManager().GetNetworkLocations(shares);
+    CServiceBroker::GetMediaManager().GetRemovableDrives(shares);
 
     if (CGUIDialogFileBrowser::ShowAndGetDirectory(shares, g_localizeStrings.Get(651) , path))
     {

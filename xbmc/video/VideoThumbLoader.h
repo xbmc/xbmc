@@ -113,13 +113,6 @@ public:
    */
   void OnJobComplete(unsigned int jobID, bool success, CJob *job) override;
 
-  /*! \brief set the artwork map for an item
-   In addition, sets the standard fallbacks.
-   \param item the item on which to set art.
-   \param artwork the artwork map.
-   */
-  static void SetArt(CFileItem &item, const std::map<std::string, std::string> &artwork);
-
   static bool GetEmbeddedThumb(const std::string& path,
                                const std::string& type,
                                EmbeddedArt& art);

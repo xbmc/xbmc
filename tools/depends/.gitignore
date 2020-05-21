@@ -13,6 +13,7 @@
 /target/*/.installed-*
 /target/*/native/*
 /target/*/x86/*
+/target/*/x86_64-linux-android-*/*
 /target/*/x86_64-linux-gnu-*/*
 /target/*/armeabi-v7a-*/*
 /target/*/arm*-linux-gnueabihf-*/*
@@ -21,12 +22,9 @@
 /target/*/aarch64-linux-*/*
 /target/*/macosx*.*_x86_64-target-*/
 /target/*/macosx*.*_x86_64-target-*/*
-/target/*/macosx*.*_i386-target-*/
-/target/*/macosx*.*_i386-target-*/*
+/target/*/i686-linux-android-*/*
 /target/*/iphoneos*.*_arm*-target-*/
 /target/*/iphoneos*.*_arm*-target-*/*
-/target/*/iphonesimulator*.*_i386*-target-*/
-/target/*/iphonesimulator*.*_i386*-target-*/*
 /target/*/iphonesimulator*.*_x86_64*-target-*/
 /target/*/iphonesimulator*.*_x86_64*-target-*/*
 /target/*/appletvos*.*_arm64*-target-*/
@@ -53,3 +51,4 @@ config.site.native
 /target/libfmt/fmt-*.tar.gz
 /target/rapidjson/rapidjson-*.tar.gz
 /target/flatbuffers/*.tar.gz
+/target/libspdlog/spdlog-*.tar.gz

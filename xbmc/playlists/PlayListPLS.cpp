@@ -276,7 +276,7 @@ bool CPlayListASX::LoadAsxIniInfo(std::istream &stream)
 
 bool CPlayListASX::LoadData(std::istream& stream)
 {
-  CLog::Log(LOGNOTICE, "Parsing ASX");
+  CLog::Log(LOGINFO, "Parsing ASX");
 
   if(stream.peek() == '[')
   {

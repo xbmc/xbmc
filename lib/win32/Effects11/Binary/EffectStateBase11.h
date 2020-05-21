@@ -3,12 +3,8 @@
 //
 // Direct3D 11 Effects States Header
 //
-// THIS CODE AND INFORMATION IS PROVIDED "AS IS" WITHOUT WARRANTY OF
-// ANY KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO
-// THE IMPLIED WARRANTIES OF MERCHANTABILITY AND/OR FITNESS FOR A
-// PARTICULAR PURPOSE.
-//
 // Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License.
 //
 // http://go.microsoft.com/fwlink/p/?LinkId=271568
 //--------------------------------------------------------------------------------------
@@ -31,7 +27,7 @@ struct RValue
 #define RVALUE_END()    { nullptr, 0U }
 #define RVALUE_ENTRY(prefix, x)         { #x, (uint32_t)prefix##x }
 
-enum ELhsType;
+enum ELhsType : int;
 
 struct LValue
 {

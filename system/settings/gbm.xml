@@ -36,6 +36,21 @@
         <setting id="videoscreen.screen">
           <visible>false</visible>
         </setting>
+        <setting id="videoscreen.limitguisize" type="integer" label="37021" help="36548">
+          <visible>false</visible>
+          <level>3</level>
+          <default>0</default>
+          <constraints>
+            <options>
+              <option label="37030">0</option> <!-- Unlimited -->
+              <option label="37028">1</option> <!-- 720 -->
+              <option label="13466">2</option> <!-- 1080 / 720 (>30Hz) -->
+              <option label="37046">3</option> <!-- 1080 -->
+              <option label="13467">4</option> <!-- Unlimited / 1080 (>30Hz) -->
+            </options>
+          </constraints>
+          <control type="list" format="string" />
+        </setting>
         <setting id="videoscreen.limitedrange" type="boolean" label="36042" help="36359">
           <level>3</level>
           <default>false</default>

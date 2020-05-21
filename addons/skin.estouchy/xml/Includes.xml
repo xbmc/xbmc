@@ -640,7 +640,7 @@
 	<include name="ScrollOffsetLabel">
 		<control type="group">
 			<include>16x9_xPos_Relocation</include>
-			<visible>Container.Scrolling + [String.IsEqual(Container.SortMethod,$LOCALIZE[551]) | String.IsEqual(Container.SortMethod,$LOCALIZE[561]) | String.IsEqual(Container.SortMethod,$LOCALIZE[558]) | String.IsEqual(Container.SortMethod,$LOCALIZE[557]) | String.IsEqual(Container.SortMethod,$LOCALIZE[556])]</visible>
+			<visible>Container.Scrolling + [Container.SortMethod(1) | Container.SortMethod(4) | Container.SortMethod(12) | Container.SortMethod(10) | Container.SortMethod(7) | Container.SortMethod(29)]</visible>
 			<animation effect="fade" time="100">Visible</animation>
 			<animation effect="fade" time="300">Hidden</animation>
 			<posx>600</posx>

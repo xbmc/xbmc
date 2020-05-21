@@ -8,7 +8,6 @@
 
 #pragma once
 
-#include "ServiceBroker.h"
 #include "cores/IPlayerCallback.h"
 #include "interfaces/IAnnouncer.h"
 #include "interfaces/generic/ILanguageInvocationHandler.h"
@@ -18,8 +17,6 @@
 
 #include <memory>
 #include <vector>
-
-#define g_pythonParser CServiceBroker::GetXBPython()
 
 class CPythonInvoker;
 class CVariant;
@@ -90,8 +87,8 @@ public:
   void Uninitialize() override;
   bool OnScriptInitialized(ILanguageInvoker *invoker) override;
   void OnScriptStarted(ILanguageInvoker *invoker) override;
-  void OnScriptAbortRequested(ILanguageInvoker *invoker) override;
-  void OnScriptEnded(ILanguageInvoker* invoker) override;
+  void NotifyScriptAborting(ILanguageInvoker *invoker) override;
+  void OnExecutionEnded(ILanguageInvoker* invoker) override;
   void OnScriptFinalized(ILanguageInvoker *invoker) override;
   ILanguageInvoker* CreateInvoker() override;
 

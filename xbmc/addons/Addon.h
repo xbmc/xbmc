@@ -33,9 +33,52 @@ public:
   explicit CAddon(const AddonInfoPtr& addonInfo, TYPE addonType);
   ~CAddon() override = default;
 
-  TYPE Type() const override { return m_addonInfo->MainType(); }
-  TYPE FullType() const override { return Type(); }
-  bool IsType(TYPE type) const override { return type == m_addonInfo->MainType(); }
+  /**
+   * @brief To get the main type of this addon
+   *
+   * This is the first type defined in **addon.xml** and can be different to the
+   * on @ref Type() defined type.
+   *
+   * @return The used main type of addon
+   */
+  TYPE MainType() const override { return m_addonInfo->MainType(); }
+
+  /**
+   * @brief To get the on this CAddon class processed addon type
+   *
+   * @return For this class used addon type
+   */
+  TYPE Type() const override { return m_type; }
+
+  /**
+   * @brief To check complete addon (not only this) contains a type
+   *
+   * @note This can be overridden by a child e.g. plugin to check for subtype
+   * e.g. video or music.
+   *
+   * @param[in] type The to checked type identifier
+   * @return true in case the wanted type is supported, false if not
+   */
+  bool HasType(TYPE type) const override { return m_addonInfo->HasType(type); }
+
+  /**
+   * @brief The get for given addon type information and extension data
+   *
+   * @param[in] type The wanted type data
+   * @return addon type class with @ref CAddonExtensions as information
+   *
+   * @note This function return never a "nullptr", in case the wanted type is
+   * not supported, becomes a dummy of @ref CAddonType given.
+   *
+   * ------------------------------------------------------------------------
+   *
+   * **Example:**
+   * ~~~~~~~~~~~~~{.cpp}
+   * // To get e.g. <extension ... name="blablabla" /> from addon.xml
+   * std::string name = Type(ADDON_...)->GetValue("@name").asString();
+   * ~~~~~~~~~~~~~
+   *
+   */
   const CAddonType* Type(TYPE type) const { return m_addonInfo->Type(type); }
 
   std::string ID() const override{ return m_addonInfo->ID(); }

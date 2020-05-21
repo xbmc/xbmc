@@ -185,8 +185,8 @@ void CGUIWindowAddonBrowser::InstallFromZip()
   {
     // pop up filebrowser to grab an installed folder
     VECSOURCES shares = *CMediaSourceSettings::GetInstance().GetSources("files");
-    g_mediaManager.GetLocalDrives(shares);
-    g_mediaManager.GetNetworkLocations(shares);
+    CServiceBroker::GetMediaManager().GetLocalDrives(shares);
+    CServiceBroker::GetMediaManager().GetNetworkLocations(shares);
     std::string path;
     if (CGUIDialogFileBrowser::ShowAndGetFile(shares, "*.zip", g_localizeStrings.Get(24041), path))
     {
@@ -423,7 +423,7 @@ int CGUIWindowAddonBrowser::SelectAddonID(const std::vector<ADDON::TYPE> &types,
         bool matchesType = false;
         for (std::vector<ADDON::TYPE>::const_iterator type = validTypes.begin(); type != validTypes.end(); ++type)
         {
-          if (pAddon->IsType(*type))
+          if (pAddon->HasType(*type))
           {
             matchesType = true;
             break;

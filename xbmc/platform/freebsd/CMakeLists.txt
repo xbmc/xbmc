@@ -1,9 +1,12 @@
-set(SOURCES MemUtils.cpp
+set(SOURCES CPUInfoFreebsd.cpp
+            OptionalsReg.cpp
             ../linux/OptionalsReg.cpp
-            ../linux/TimeUtils.cpp)
+            ../linux/TimeUtils.cpp
+            MemUtils.cpp)
 
-set(HEADERS ../linux/OptionalsReg.h
-            ../linux/PlatformConstants.h
+set(HEADERS CPUInfoFreebsd.h
+            OptionalsReg.h
+            ../linux/OptionalsReg.h
             ../linux/TimeUtils.h)
 
 if(ALSA_FOUND)

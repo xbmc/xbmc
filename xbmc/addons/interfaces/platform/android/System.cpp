@@ -24,7 +24,7 @@ void Interface_Android::Register()
   function_table.get_jni_env = get_jni_env;
   function_table.get_sdk_version = get_sdk_version;
   function_table.get_class_name = get_class_name;
-  CAddonDll::RegisterInterface(Get);
+  Interface_Base::RegisterInterface(Get);
 }
 
 void* Interface_Android::Get(const std::string &name, const std::string &version)

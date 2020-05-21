@@ -136,7 +136,7 @@ void CURL::Parse(const std::string& strURL1)
     return;
   }
 
-  if (IsProtocol("udf"))
+  if (IsProtocol("udf") || IsProtocol("iso9660"))
   {
     std::string lower(strURL);
     StringUtils::ToLower(lower);
@@ -205,45 +205,46 @@ void CURL::Parse(const std::string& strURL1)
   if(iSlash >= iEnd)
     iSlash = std::string::npos; // was an invalid slash as it was contained in options
 
-  if( !IsProtocol("iso9660") )
+  // also skip parsing username:password@ for udp/rtp as it not valid
+  // and conflicts with the following example: rtp://sourceip@multicastip
+  size_t iAlphaSign = strURL.find("@", iPos);
+  if (iAlphaSign != std::string::npos && iAlphaSign < iEnd &&
+      (iAlphaSign < iSlash || iSlash == std::string::npos) &&
+      !IsProtocol("udp") && !IsProtocol("rtp"))
   {
-    size_t iAlphaSign = strURL.find("@", iPos);
-    if (iAlphaSign != std::string::npos && iAlphaSign < iEnd && (iAlphaSign < iSlash || iSlash == std::string::npos))
+    // username/password found
+    std::string strUserNamePassword = strURL.substr(iPos, iAlphaSign - iPos);
+
+    // first extract domain, if protocol is smb
+    if (IsProtocol("smb"))
     {
-      // username/password found
-      std::string strUserNamePassword = strURL.substr(iPos, iAlphaSign - iPos);
+      size_t iSemiColon = strUserNamePassword.find(";");
 
-      // first extract domain, if protocol is smb
-      if (IsProtocol("smb"))
+      if (iSemiColon != std::string::npos)
       {
-        size_t iSemiColon = strUserNamePassword.find(";");
-
-        if (iSemiColon != std::string::npos)
-        {
-          m_strDomain = strUserNamePassword.substr(0, iSemiColon);
-          strUserNamePassword.erase(0, iSemiColon + 1);
-        }
+        m_strDomain = strUserNamePassword.substr(0, iSemiColon);
+        strUserNamePassword.erase(0, iSemiColon + 1);
       }
-
-      // username:password
-      size_t iColon = strUserNamePassword.find(":");
-      if (iColon != std::string::npos)
-      {
-        m_strUserName = strUserNamePassword.substr(0, iColon);
-        m_strPassword = strUserNamePassword.substr(iColon + 1);
-      }
-      // username
-      else
-      {
-        m_strUserName = strUserNamePassword;
-      }
-
-      iPos = iAlphaSign + 1;
-      iSlash = strURL.find("/", iAlphaSign);
-
-      if(iSlash >= iEnd)
-        iSlash = std::string::npos;
     }
+
+    // username:password
+    size_t iColon = strUserNamePassword.find(":");
+    if (iColon != std::string::npos)
+    {
+      m_strUserName = strUserNamePassword.substr(0, iColon);
+      m_strPassword = strUserNamePassword.substr(iColon + 1);
+    }
+    // username
+    else
+    {
+      m_strUserName = strUserNamePassword;
+    }
+
+    iPos = iAlphaSign + 1;
+    iSlash = strURL.find("/", iAlphaSign);
+
+    if (iSlash >= iEnd)
+      iSlash = std::string::npos;
   }
 
   std::string strHostNameAndPort = strURL.substr(iPos, (iSlash == std::string::npos) ? iEnd - iPos : iSlash - iPos);
@@ -278,12 +279,7 @@ void CURL::Parse(const std::string& strURL1)
       m_strFileName = strURL.substr(iPos, iEnd - iPos);
   }
 
-  // iso9960 doesnt have an hostname;-)
-  if (IsProtocol("iso9660")
-   || IsProtocol("musicdb")
-   || IsProtocol("videodb")
-   || IsProtocol("sources")
-   || IsProtocol("pvr"))
+  if (IsProtocol("musicdb") || IsProtocol("videodb") || IsProtocol("sources") || IsProtocol("pvr"))
   {
     if (m_strHostName != "" && m_strFileName != "")
     {

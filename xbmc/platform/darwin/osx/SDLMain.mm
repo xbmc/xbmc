@@ -85,7 +85,7 @@ static void setupApplicationMenu(void)
   [appleMenu addItemWithTitle:title action:@selector(hide:) keyEquivalent:@"h"];
 
   menuItem = (NSMenuItem *)[appleMenu addItemWithTitle:@"Hide Others" action:@selector(hideOtherApplications:) keyEquivalent:@"h"];
-  [menuItem setKeyEquivalentModifierMask:(NSAlternateKeyMask|NSCommandKeyMask)];
+  [menuItem setKeyEquivalentModifierMask:(NSEventModifierFlagOption|NSEventModifierFlagCommand)];
 
   [appleMenu addItemWithTitle:@"Show All" action:@selector(unhideAllApplications:) keyEquivalent:@""];
 
@@ -115,6 +115,8 @@ static void setupWindowMenu(void)
 
   // "Full/Windowed Toggle" item
   menuItem = [[NSMenuItem alloc] initWithTitle:@"Full/Windowed Toggle" action:@selector(fullScreenToggle:) keyEquivalent:@"f"];
+  // this is just for display purposes, key handling is in CWinEventsSDL::ProcessOSXShortcuts()
+  menuItem.keyEquivalentModifierMask = NSEventModifierFlagCommand | NSEventModifierFlagControl;
   [windowMenu addItem:menuItem];
 
   // "Full/Windowed Toggle" item
@@ -191,8 +193,8 @@ static void setupWindowMenu(void)
 - (void)titlebarToggle:(id)sender
 {
   NSWindow* window = [[[NSOpenGLContext currentContext] view] window];
-  [window setStyleMask: [window styleMask] ^ NSTitledWindowMask ];
-  BOOL isSet = [window styleMask] & NSTitledWindowMask;
+  [window setStyleMask: [window styleMask] ^ NSWindowStyleMaskTitled ];
+  BOOL isSet = [window styleMask] & NSWindowStyleMaskTitled;
   [window setMovableByWindowBackground: !isSet];
   [sender setState: isSet];
 
@@ -331,7 +333,7 @@ static void setupWindowMenu(void)
 
   //post a NOP event, so the run loop actually stops
   //see http://www.cocoabuilder.com/archive/cocoa/219842-nsapp-stop.html
-  NSEvent* event = [NSEvent otherEventWithType: NSApplicationDefined
+  NSEvent* event = [NSEvent otherEventWithType: NSEventTypeApplicationDefined
     location: NSMakePoint(0,0)
     modifierFlags: 0
     timestamp: 0.0

@@ -13,6 +13,7 @@
 #include "addons/Scraper.h"
 #include "cores/FFmpeg.h"
 #include "filesystem/File.h"
+#include "filesystem/StackDirectory.h"
 #include "utils/StringUtils.h"
 #include "video/VideoInfoTag.h"
 
@@ -39,8 +40,12 @@ CVideoTagLoaderFFmpeg::CVideoTagLoaderFFmpeg(const CFileItem& item,
   : IVideoInfoTagLoader(item, info, lookInFolder)
   , m_info(info)
 {
+  std::string filename =
+      item.IsStack() ? CStackDirectory::GetFirstStackedFile(item.GetPath()) : item.GetPath();
+
   m_file = new CFile;
-  if (!m_file->Open(m_item.GetPath()))
+
+  if (!m_file->Open(filename))
   {
     delete m_file;
     m_file = nullptr;
@@ -179,14 +184,14 @@ CInfoScanner::INFO_TYPE CVideoTagLoaderFFmpeg::LoadMKV(CVideoInfoTag& tag,
   bool hastag = false;
   while ((avtag = av_dict_get(m_fctx->metadata, "", avtag, AV_DICT_IGNORE_SUFFIX)))
   {
-    if (strcasecmp(avtag->key, "title") == 0)
+    if (StringUtils::CompareNoCase(avtag->key, "title") == 0)
       tag.SetTitle(avtag->value);
-    else if (strcasecmp(avtag->key, "director") == 0)
+    else if (StringUtils::CompareNoCase(avtag->key, "director") == 0)
     {
       std::vector<std::string> dirs = StringUtils::Split(avtag->value, " / ");
       tag.SetDirector(dirs);
     }
-    else if (strcasecmp(avtag->key, "date_released") == 0)
+    else if (StringUtils::CompareNoCase(avtag->key, "date_released") == 0)
       tag.SetYear(atoi(avtag->value));
     hastag = true;
   }

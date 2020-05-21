@@ -12,8 +12,7 @@
 #include "cores/AudioEngine/Sinks/darwin/CoreAudioHelpers.h"
 #include "utils/log.h"
 
-CCoreAudioStream::CCoreAudioStream() :
-  m_StreamId  (0    )
+CCoreAudioStream::CCoreAudioStream()
 {
   m_OriginalVirtualFormat.mFormatID = 0;
   m_OriginalPhysicalFormat.mFormatID = 0;

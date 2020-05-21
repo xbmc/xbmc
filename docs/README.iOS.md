@@ -1,14 +1,16 @@
 ![Kodi Logo](resources/banner_slim.png)
 
 # iOS build guide
-This guide has been tested with macOS 10.13.4()17E199 High Sierra and Xcode 9.3(9E145). It is meant to cross-compile Kodi for iOS using **[Kodi's unified depends build system](../tools/depends/README.md)**. Please read it in full before you proceed to familiarize yourself with the build procedure.
+This guide has been tested with macOS 10.13.4(17E199) High Sierra and 10.14.4(18E226) Mojave on Xcode 9.4.1(9F2000) and Xcode 10.2(10E125). It is meant to cross-compile Kodi for iOS using **[Kodi's unified depends build system](../tools/depends/README.md)**. Please read it in full before you proceed to familiarize yourself with the build procedure.
 
 ## Table of Contents
 1. **[Document conventions](#1-document-conventions)**
 2. **[Prerequisites](#2-prerequisites)**
 3. **[Get the source code](#3-get-the-source-code)**
 4. **[Configure and build tools and dependencies](#4-configure-and-build-tools-and-dependencies)**
-5. **[Build binary add-ons](#5-build-binary-add-ons)**
+5. **[Build binary add-ons](#5-build-binary-add-ons)**  
+  5.1. **[Independent Add-on building](#51-Independent-Add-on-building)**  
+  5.2. **[Xcode project building](#52-Xcode-project-building)**  
 6. **[Build Kodi](#6-build-kodi)**  
   6.1. **[Generate Project Files](#61-Generate-Project-Files)**  
   6.2. **[Build with Xcode](#62-build)**  
@@ -52,13 +54,11 @@ Several different strategies are used to draw your attention to certain pieces o
 ## 2. Prerequisites
 * **[Java Development Kit (JDK)](http://www.oracle.com/technetwork/java/javase/downloads/index.html)**
 * **[Xcode](https://developer.apple.com/xcode/)**. Install it from the AppStore or from the **[Apple Developer Homepage](https://developer.apple.com/)**.
-* Device with **iOS 9.0 or newer** to install Kodi after build.
+* Device with **iOS 11.0 or newer** to install Kodi after build.
 
 Building for iOS should work with the following constellations of Xcode and macOS versions:
-  * Xcode 8.x against iOS SDK 10.x on 10.11.x (El Capitan)(recommended)
-  * Xcode 8.x against iOS SDK 10.x on 10.12.x (Sierra)(recommended)
-  * Xcode 9.x against iOS SDK 11.x on 10.12.x (Sierra)
   * Xcode 9.x against iOS SDK 11.x on 10.13.x (High Sierra)(recommended)
+  * Xcode 9.x against iOS SDK 11.x on 10.14.x (Mojave)(recommended)
 
 **WARNING:** Start Xcode after installation finishes. You need to accept the licenses and install missing components.
 
@@ -78,24 +78,16 @@ git clone https://github.com/xbmc/xbmc kodi
 **[back to top](#table-of-contents)**
 
 ## 4. Configure and build tools and dependencies
-Kodi can be built as either a 32bit or 64bit program. The dependencies are built in `$HOME/kodi/tools/depends` and installed into `/Users/Shared/xbmc-depends`.
+Kodi can be built as a 64bit program for iOS. The dependencies are built in `$HOME/kodi/tools/depends` and installed into `/Users/Shared/xbmc-depends`.
 
 **TIP:** Look for comments starting with `Or ...` and only execute the command(s) you need.
 
-Configure build for 64bit (**recommended**):
+Configure build:
 ```
 cd $HOME/kodi/tools/depends
 ./bootstrap
-./configure --host=arm-apple-darwin --with-cpu=arm64
+./configure --host=aarch64-apple-darwin
 ```
-
-Or configure build for 32bit:
-```
-cd $HOME/kodi/tools/depends
-./bootstrap
-./configure --host=arm-apple-darwin --with-sdk=9.3
-```
-**WARNING:** iOS SDK 11 no longer supports 32bit.
 
 Build tools and dependencies:
 ```
@@ -106,15 +98,18 @@ make -j$(getconf _NPROCESSORS_ONLN)
 
 **WARNING:** Look for the `Dependencies built successfully.` success message. If in doubt run a single threaded `make` command until the message appears. If the single make fails, clean the specific library by issuing `make -C target/<name_of_failed_lib> distclean` and run `make`again.
 
-**NOTE:** **Advanced developers** may want to specify an iOS SDK version (if multiple versions are installed) in the configure line(s) shown above. The example below would use the iOS SDK 9.0:
+**NOTE:** **Advanced developers** may want to specify an iOS SDK version (if multiple versions are installed) in the configure line(s) shown above. The example below would use the iOS SDK 11.0:
 ```
-./configure --host=arm-apple-darwin --with-cpu=arm64 --with-sdk=9.0
+./configure --host=aarch64-apple-darwin --with-sdk=11.0
 ```
 
 **[back to top](#table-of-contents)** | **[back to section top](#4-configure-and-build-tools-and-dependencies)**
 
 ## 5. Build binary add-ons
+
 You can find a complete list of available binary add-ons **[here](https://github.com/xbmc/repo-binary-addons)**.
+
+## 5.1. Independent Add-on building
 
 Change to Kodi's source code directory:
 ```
@@ -134,6 +129,41 @@ make -C tools/depends/target/binary-addons ADDONS="audioencoder.flac pvr.vdr.vns
 Build a specific group of add-ons:
 ```
 make -j$(getconf _NPROCESSORS_ONLN) -C tools/depends/target/binary-addons ADDONS="pvr.*"
+```
+
+## 5.2. Xcode project building
+
+Binary addons will be built as a dependency in the Xcode project. You can choose the addons 
+you wish to build during the Xcode project generation step
+
+Generate Xcode project to build specific add-ons:
+```sh
+make -C tools/depends/target/cmakebuildsys CMAKE_EXTRA_ARGUMENTS="-DENABLE_XCODE_ADDONBUILD=ON -DADDONS_TO_BUILD='audioencoder.flac pvr.vdr.vnsi audiodecoder.snesapu'"
+```
+
+Generate Xcode project to build a specific group of add-ons:
+```sh
+make -C tools/depends/target/cmakebuildsys CMAKE_EXTRA_ARGUMENTS="-DENABLE_XCODE_ADDONBUILD=ON -DADDONS_TO_BUILD='pvr.*'"
+```
+
+**TIP:** When using addontype.* for -DADDONS_TO_BUILD argument, you cannot have multiple 
+addon types. ie -DADDONS_TO_BUILD='game.libretro.* peripheral.*' is not valid. You will 
+need to individually list the addons as per the first example for specific addon building.
+
+Generate Xcode project to build all add-ons automatically:
+```sh
+make -C tools/depends/target/cmakebuildsys CMAKE_EXTRA_ARGUMENTS="-DENABLE_XCODE_ADDONBUILD=ON"
+```
+
+**TIP:** If you wish to not automatically build addons added to your xcode project, omit
+`-DENABLE_XCODE_ADDONBUILD=ON`. The target will be added to the project, but the dependency
+ will not be set to automatically build  
+**TIP:** Binary add-ons added to the generated Xcode project can be built independently of 
+the Kodi app by selecting the scheme/target `binary-addons` in the Xcode project.
+You can also build the binary-addons target via xcodebuild. This will not build the Kodi
+App, but will build any/all binary addons added for the project Generation.
+```sh
+xcodebuild -config "Debug" -target binary-addons
 ```
 
 **[back to top](#table-of-contents)**
@@ -166,12 +196,7 @@ cd $HOME/kodi-build
 /Users/Shared/xbmc-depends/x86_64-darwin17.5.0-native/bin/cmake -G Xcode -DCMAKE_TOOLCHAIN_FILE=/Users/Shared/xbmc-depends/iphoneos11.3_arm64-target-debug/share/Toolchain.cmake $HOME/kodi
 ```
 
-Or generate Xcode project for ARM 32bit:
-```
-/Users/Shared/xbmc-depends/x86_64-darwin15.6.0-native/bin/cmake -G Xcode -DCMAKE_TOOLCHAIN_FILE=/Users/Shared/xbmc-depends/iphoneos9.3_armv7-target/share/Toolchain.cmake $HOME/kodi
-```
-
-**WARNING:** The toolchain file location differs depending on your iOS and SDK version. You have to replace `x86_64-darwin15.6.0-native` and `iphoneos11.3_arm64-target-debug` or `iphoneos9.3_armv7-target` in the paths above with the correct ones on your system.
+**WARNING:** The toolchain file location differs depending on your iOS and SDK version. You have to replace `x86_64-darwin15.6.0-native` and `iphoneos11.3_arm64-target-debug` in the paths above with the correct ones on your system.
 
 You can check `Users/Shared/xbmc-depends` directory content with:
 ```

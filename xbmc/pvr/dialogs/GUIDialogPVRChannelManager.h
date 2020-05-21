@@ -27,24 +27,26 @@ namespace PVR
   class CGUIDialogPVRChannelManager : public CGUIDialog
   {
   public:
-    CGUIDialogPVRChannelManager(void);
-    ~CGUIDialogPVRChannelManager(void) override;
+    CGUIDialogPVRChannelManager();
+    ~CGUIDialogPVRChannelManager() override;
     bool OnMessage(CGUIMessage& message) override;
     bool OnAction(const CAction& action) override;
-    void OnWindowLoaded(void) override;
-    void OnWindowUnload(void) override;
+    void OnWindowLoaded() override;
+    void OnWindowUnload() override;
     bool HasListItems() const override{ return true; }
     CFileItemPtr GetCurrentListItem(int offset = 0) override;
+
+    void Open(const std::shared_ptr<CFileItem>& initialSelection);
 
   protected:
     void OnInitWindow() override;
     void OnDeinitWindow(int nextWindowID) override;
 
   private:
-    void Clear(void);
-    void Update(void);
-    void SaveList(void);
-    void Renumber(void);
+    void Clear();
+    void Update();
+    void SaveList();
+    void Renumber();
     void SetData(int iItem);
     void RenameChannel(const CFileItemPtr& pItem);
 
@@ -67,13 +69,14 @@ namespace PVR
     bool OnClickButtonNewChannel();
 
     bool PersistChannel(const CFileItemPtr& pItem, const std::shared_ptr<CPVRChannelGroup>& group, unsigned int* iChannelNumber);
-    void SetItemsUnchanged(void);
+    void SetItemsUnchanged();
 
     bool m_bIsRadio = false;
     bool m_bMovingMode = false;
     bool m_bContainsChanges = false;
     bool m_bAllowNewChannel = false;
 
+    std::shared_ptr<CFileItem> m_initialSelection;
     int m_iSelected = 0;
     CFileItemList* m_channelItems;
     CGUIViewControl m_viewControl;

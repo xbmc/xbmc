@@ -136,7 +136,7 @@ bool CCDDARipJob::DoWork()
     if (m_eject)
     {
       CLog::Log(LOGINFO, "Ejecting CD");
-      g_mediaManager.EjectTray();
+      CServiceBroker::GetMediaManager().EjectTray();
     }
   }
 

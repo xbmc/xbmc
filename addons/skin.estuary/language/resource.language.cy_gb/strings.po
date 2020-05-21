@@ -68,6 +68,10 @@ msgctxt "#31072"
 msgid "Power Options"
 msgstr "Dewisiadau pŵer"
 
+msgctxt "#31074"
+msgid "Total duration"
+msgstr "Cyfanswm hyd"
+
 msgctxt "#31096"
 msgid "Local subtitle available"
 msgstr "Is deitlau lleol ar gael"

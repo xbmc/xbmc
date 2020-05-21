@@ -24,8 +24,9 @@ public:
     album_strAlbum = CMusicDatabase::album_strAlbum;
     album_strArtists = CMusicDatabase::album_strArtists;
     album_strGenres = CMusicDatabase::album_strGenres;
-    album_iYear = CMusicDatabase::album_iYear;
     album_strMoods = CMusicDatabase::album_strMoods;
+    album_strReleaseDate = CMusicDatabase::album_strReleaseDate;
+    album_strOrigReleaseDate = CMusicDatabase::album_strOrigReleaseDate;
     album_strStyles = CMusicDatabase::album_strStyles;
     album_strThemes = CMusicDatabase::album_strThemes;
     album_strReview = CMusicDatabase::album_strReview;
@@ -40,7 +41,8 @@ public:
     song_strTitle = CMusicDatabase::song_strTitle;
     song_iTrack = CMusicDatabase::song_iTrack;
     song_iDuration = CMusicDatabase::song_iDuration;
-    song_iYear = CMusicDatabase::song_iYear;
+    song_strReleaseDate = CMusicDatabase::song_strReleaseDate;
+    song_strOrigReleaseDate = CMusicDatabase::song_strOrigReleaseDate;
     song_strFileName = CMusicDatabase::song_strFileName;
     song_iTimesPlayed = CMusicDatabase::song_iTimesPlayed;
     song_iStartOffset = CMusicDatabase::song_iStartOffset;
@@ -60,8 +62,9 @@ public:
   int album_strAlbum;
   int album_strArtists;
   int album_strGenres;
-  int album_iYear;
   int album_strMoods;
+  int album_strReleaseDate;
+  int album_strOrigReleaseDate;
   int album_strStyles;
   int album_strThemes;
   int album_strReview;
@@ -76,7 +79,8 @@ public:
   int song_strTitle;
   int song_iTrack;
   int song_iDuration;
-  int song_iYear;
+  int song_strReleaseDate;
+  int song_strOrigReleaseDate;
   int song_strFileName;
   int song_iTimesPlayed;
   int song_iStartOffset;
@@ -130,13 +134,18 @@ TEST(TestDatabaseUtils, GetField_MediaTypeAlbum)
                                    DatabaseQueryPartSelect);
   EXPECT_STREQ(refstr.c_str(), varstr.c_str());
 
-  refstr = "albumview.strGenre";
+  refstr = "albumview.strGenres";
   varstr = DatabaseUtils::GetField(FieldGenre, MediaTypeAlbum,
                                    DatabaseQueryPartSelect);
   EXPECT_STREQ(refstr.c_str(), varstr.c_str());
 
-  refstr = "albumview.iYear";
+  refstr = "albumview.strReleaseDate";
   varstr = DatabaseUtils::GetField(FieldYear, MediaTypeAlbum,
+                                   DatabaseQueryPartSelect);
+  EXPECT_STREQ(refstr.c_str(), varstr.c_str());
+
+refstr = "albumview.strOrigReleaseDate";
+  varstr = DatabaseUtils::GetField(FieldOrigYear, MediaTypeAlbum,
                                    DatabaseQueryPartSelect);
   EXPECT_STREQ(refstr.c_str(), varstr.c_str());
 
@@ -229,11 +238,6 @@ TEST(TestDatabaseUtils, GetField_MediaTypeSong)
                                    DatabaseQueryPartSelect);
   EXPECT_STREQ(refstr.c_str(), varstr.c_str());
 
-  refstr = "songview.iYear";
-  varstr = DatabaseUtils::GetField(FieldYear, MediaTypeSong,
-                                   DatabaseQueryPartSelect);
-  EXPECT_STREQ(refstr.c_str(), varstr.c_str());
-
   refstr = "songview.strFilename";
   varstr = DatabaseUtils::GetField(FieldFilename, MediaTypeSong,
                                    DatabaseQueryPartSelect);
@@ -279,6 +283,16 @@ TEST(TestDatabaseUtils, GetField_MediaTypeSong)
                                    DatabaseQueryPartSelect);
   EXPECT_STREQ(refstr.c_str(), varstr.c_str());
 
+  refstr = "songview.strReleaseDate";
+  varstr = DatabaseUtils::GetField(FieldYear, MediaTypeSong,
+                                   DatabaseQueryPartSelect);
+  EXPECT_STREQ(refstr.c_str(), varstr.c_str());
+
+  refstr = "songview.strOrigReleaseDate";
+  varstr = DatabaseUtils::GetField(FieldOrigYear, MediaTypeSong,
+                                   DatabaseQueryPartSelect);
+  EXPECT_STREQ(refstr.c_str(), varstr.c_str());
+
   refstr = "songview.strAlbum";
   varstr = DatabaseUtils::GetField(FieldAlbum, MediaTypeSong,
                                    DatabaseQueryPartSelect);
@@ -299,7 +313,7 @@ TEST(TestDatabaseUtils, GetField_MediaTypeSong)
                                    DatabaseQueryPartSelect);
   EXPECT_STREQ(refstr.c_str(), varstr.c_str());
 
-  refstr = "songview.strGenre";
+  refstr = "songview.strGenres";
   varstr = DatabaseUtils::GetField(FieldGenre, MediaTypeSong,
                                    DatabaseQueryPartSelect);
   EXPECT_STREQ(refstr.c_str(), varstr.c_str());
@@ -826,8 +840,12 @@ TEST(TestDatabaseUtils, GetFieldIndex_MediaTypeAlbum)
   varindex = DatabaseUtils::GetFieldIndex(FieldGenre, MediaTypeAlbum);
   EXPECT_EQ(refindex, varindex);
 
-  refindex = a.album_iYear;
+  refindex = a.album_strReleaseDate;
   varindex = DatabaseUtils::GetFieldIndex(FieldYear, MediaTypeAlbum);
+  EXPECT_EQ(refindex, varindex);
+
+  refindex = a.album_strOrigReleaseDate;
+  varindex = DatabaseUtils::GetFieldIndex(FieldOrigYear, MediaTypeAlbum);
   EXPECT_EQ(refindex, varindex);
 
   refindex = a.album_strMoods;
@@ -888,7 +906,7 @@ TEST(TestDatabaseUtils, GetFieldIndex_MediaTypeSong)
   varindex = DatabaseUtils::GetFieldIndex(FieldTime, MediaTypeSong);
   EXPECT_EQ(refindex, varindex);
 
-  refindex = a.song_iYear;
+  refindex = a.song_strReleaseDate;
   varindex = DatabaseUtils::GetFieldIndex(FieldYear, MediaTypeSong);
   EXPECT_EQ(refindex, varindex);
 

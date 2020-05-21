@@ -8,6 +8,7 @@
 
 #include "UPnPSettings.h"
 
+#include "ServiceBroker.h"
 #include "filesystem/File.h"
 #include "threads/SingleLock.h"
 #include "utils/StringUtils.h"
@@ -24,7 +25,7 @@
 
 using namespace XFILE;
 
-CUPnPSettings::CUPnPSettings()
+CUPnPSettings::CUPnPSettings() : m_logger(CServiceBroker::GetLogging().GetLogger("CUPnPSettings"))
 {
   Clear();
 }
@@ -57,14 +58,14 @@ bool CUPnPSettings::Load(const std::string &file)
   CXBMCTinyXML doc;
   if (!doc.LoadFile(file))
   {
-    CLog::Log(LOGERROR, "CUPnPSettings: error loading %s, Line %d\n%s", file.c_str(), doc.ErrorRow(), doc.ErrorDesc());
+    m_logger->error("error loading {}, Line {}\n{}", file, doc.ErrorRow(), doc.ErrorDesc());
     return false;
   }
 
   TiXmlElement *pRootElement = doc.RootElement();
   if (pRootElement == NULL || !StringUtils::EqualsNoCase(pRootElement->Value(), XML_UPNP))
   {
-    CLog::Log(LOGERROR, "CUPnPSettings: error loading %s, no <upnpserver> node", file.c_str());
+    m_logger->error("error loading {}, no <upnpserver> node", file);
     return false;
   }
 

@@ -40,24 +40,21 @@
 #include <signal.h>
 #ifdef TARGET_POSIX
 #include "PlatformDefs.h" // for __stat64
-#include "platform/posix/XFileUtils.h"
-#include "platform/posix/XTimeUtils.h"
 #endif
+#include "FileItem.h"
 #include "ServiceBroker.h"
-#include "Util.h"
-#include "filesystem/SpecialProtocol.h"
 #include "URL.h"
+#include "Util.h"
+#include "emu_dummy.h"
+#include "emu_msvcrt.h"
+#include "filesystem/Directory.h"
 #include "filesystem/File.h"
+#include "filesystem/SpecialProtocol.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
-#include "FileItem.h"
-#include "filesystem/Directory.h"
-
-#include "emu_msvcrt.h"
-#include "emu_dummy.h"
+#include "threads/SingleLock.h"
 #include "util/EmuFileWrapper.h"
 #include "utils/log.h"
-#include "threads/SingleLock.h"
 #ifndef TARGET_POSIX
 #include "utils/CharsetConverter.h"
 #include "utils/URIUtils.h"
@@ -67,6 +64,7 @@
 #endif
 #include "platform/Environment.h"
 #include "utils/StringUtils.h"
+#include "utils/XTimeUtils.h"
 
 #if defined(TARGET_WINDOWS)
 #include "platform/win32/CharsetConverter.h"
@@ -276,10 +274,7 @@ static void to_wfinddata64i32(_finddata64i32_t *data, _wfinddata64i32_t *wdata)
 
 extern "C"
 {
-  void dll_sleep(unsigned long imSec)
-  {
-    Sleep(imSec);
-  }
+  void dll_sleep(unsigned long imSec) { KODI::TIME::Sleep(imSec); }
 
   // FIXME, XXX, !!!!!!
   void dllReleaseAll( )
@@ -300,7 +295,7 @@ extern "C"
     void* pBlock = malloc(size);
     if (!pBlock)
     {
-      CLog::Log(LOGSEVERE, "malloc {0} bytes failed, crash imminent", size);
+      CLog::Log(LOGFATAL, "malloc {0} bytes failed, crash imminent", size);
     }
     return pBlock;
   }
@@ -315,7 +310,7 @@ extern "C"
     void* pBlock = calloc(num, size);
     if (!pBlock)
     {
-      CLog::Log(LOGSEVERE, "calloc {0} bytes failed, crash imminent", size);
+      CLog::Log(LOGFATAL, "calloc {0} bytes failed, crash imminent", size);
     }
     return pBlock;
   }
@@ -325,7 +320,7 @@ extern "C"
     void* pBlock =  realloc(memblock, size);
     if (!pBlock)
     {
-      CLog::Log(LOGSEVERE, "realloc {0} bytes failed, crash imminent", size);
+      CLog::Log(LOGFATAL, "realloc {0} bytes failed, crash imminent", size);
     }
     return pBlock;
   }
@@ -387,7 +382,7 @@ extern "C"
     if (szLine[strlen(szLine) - 1] != '\n')
       CLog::Log(LOGDEBUG,"  msg: %s", szLine);
     else
-      CLog::Log(LOGDEBUG,"  msg: %s\n", szLine);
+      CLog::Log(LOGDEBUG, "  msg: %s", szLine);
 
     // return a non negative value
     return 0;
@@ -625,7 +620,11 @@ extern "C"
     if (pFile != NULL)
       return pFile->Stat(buf);
     else if (IS_STD_DESCRIPTOR(fd))
+#if defined(TARGET_WINDOWS)
       return _fstat64(fd, buf);
+#else
+      return fstat64(fd, buf);
+#endif
     CLog::Log(LOGERROR, "%s emulated function failed",  __FUNCTION__);
     return -1;
   }
@@ -1599,19 +1598,20 @@ extern "C"
   //SLOW CODE SHOULD BE REVISED
   int dll_stat(const char *path, struct stat *buffer)
   {
-    if (!strnicmp(path, "shout://", 8)) // don't stat shoutcast
+    if (!StringUtils::CompareNoCase(path, "shout://", 8)) // don't stat shoutcast
       return -1;
-    if (!strnicmp(path, "mms://", 6)) // don't stat mms
+    if (!StringUtils::CompareNoCase(path, "mms://", 6)) // don't stat mms
       return -1;
 
 #ifdef TARGET_POSIX
-    if (!_stricmp(path, "D:") || !_stricmp(path, "D:\\"))
+    if (!StringUtils::CompareNoCase(path, "D:") || !StringUtils::CompareNoCase(path, "D:\\"))
     {
       buffer->st_mode = S_IFDIR;
       return 0;
     }
 #endif
-    if (!stricmp(path, "\\Device\\Cdrom0") || !stricmp(path, "\\Device\\Cdrom0\\"))
+    if (!StringUtils::CompareNoCase(path, "\\Device\\Cdrom0") ||
+        !StringUtils::CompareNoCase(path, "\\Device\\Cdrom0\\"))
     {
       buffer->st_mode = _S_IFDIR;
       return 0;
@@ -1642,19 +1642,20 @@ extern "C"
 
   int dll_stat64(const char *path, struct __stat64 *buffer)
   {
-    if (!strnicmp(path, "shout://", 8)) // don't stat shoutcast
+    if (!StringUtils::CompareNoCase(path, "shout://", 8)) // don't stat shoutcast
       return -1;
-    if (!strnicmp(path, "mms://", 6)) // don't stat mms
+    if (!StringUtils::CompareNoCase(path, "mms://", 6)) // don't stat mms
       return -1;
 
 #ifdef TARGET_POSIX
-    if (!_stricmp(path, "D:") || !_stricmp(path, "D:\\"))
+    if (!StringUtils::CompareNoCase(path, "D:") || !StringUtils::CompareNoCase(path, "D:\\"))
     {
       buffer->st_mode = _S_IFDIR;
       return 0;
     }
 #endif
-    if (!stricmp(path, "\\Device\\Cdrom0") || !stricmp(path, "\\Device\\Cdrom0\\"))
+    if (!StringUtils::CompareNoCase(path, "\\Device\\Cdrom0") ||
+        !StringUtils::CompareNoCase(path, "\\Device\\Cdrom0\\"))
     {
       buffer->st_mode = _S_IFDIR;
       return 0;
@@ -1842,7 +1843,7 @@ extern "C"
             if (dll__environ[i] != NULL)
             {
               // we only support overwriting the old values
-              if (strnicmp(dll__environ[i], var, strlen(var)) == 0)
+              if (StringUtils::CompareNoCase(dll__environ[i], var, strlen(var)) == 0)
               {
                 // free it first
                 free(dll__environ[i]);
@@ -1893,7 +1894,7 @@ extern "C"
       {
         if (dll__environ[i])
         {
-          if (strnicmp(dll__environ[i], szKey, strlen(szKey)) == 0)
+          if (StringUtils::CompareNoCase(dll__environ[i], szKey, strlen(szKey)) == 0)
           {
             // found it
             value = dll__environ[i] + strlen(szKey) + 1;

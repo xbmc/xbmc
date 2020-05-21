@@ -8,11 +8,11 @@
 
 #pragma once
 
+#include "XBDateTime.h"
+
 #include <memory>
 #include <string>
 #include <vector>
-
-#include "PlatformDefs.h" // for SYSTEMTIME
 
 #define CARCHIVE_BUFFER_MAX 4096
 
@@ -54,7 +54,7 @@ public:
   CArchive& operator<<(char c);
   CArchive& operator<<(const std::string &str);
   CArchive& operator<<(const std::wstring& wstr);
-  CArchive& operator<<(const SYSTEMTIME& time);
+  CArchive& operator<<(const KODI::TIME::SystemTime& time);
   CArchive& operator<<(IArchivable& obj);
   CArchive& operator<<(const CVariant& variant);
   CArchive& operator<<(const std::vector<std::string>& strArray);
@@ -123,7 +123,7 @@ public:
 
   CArchive& operator>>(std::string &str);
   CArchive& operator>>(std::wstring& wstr);
-  CArchive& operator>>(SYSTEMTIME& time);
+  CArchive& operator>>(KODI::TIME::SystemTime& time);
   CArchive& operator>>(IArchivable& obj);
   CArchive& operator>>(CVariant& variant);
   CArchive& operator>>(std::vector<std::string>& strArray);

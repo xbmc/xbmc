@@ -168,6 +168,7 @@ void CGUIDialogSelect::Reset()
   m_bButtonPressed = false;
   m_useDetails = false;
   m_multiSelection = false;
+  m_focusToButton = false;
   m_selectedItem = nullptr;
   m_vecList->Clear();
   m_selectedItems.clear();
@@ -279,6 +280,11 @@ void CGUIDialogSelect::SetMultiSelection(bool multiSelection)
   m_multiSelection = multiSelection;
 }
 
+void CGUIDialogSelect::SetButtonFocus(bool buttonFocus)
+{
+  m_focusToButton = buttonFocus;
+}
+
 CGUIControl *CGUIDialogSelect::GetFirstFocusableControl(int id)
 {
   if (m_viewControl.HasControl(id))
@@ -328,6 +334,16 @@ void CGUIDialogSelect::OnInitWindow()
   SET_CONTROL_LABEL(CONTROL_CANCEL_BUTTON, g_localizeStrings.Get(222));
 
   CGUIDialogBoxBase::OnInitWindow();
+
+  // focus one of the buttons if explicitly requested
+  // ATTENTION: this must be done after calling CGUIDialogBoxBase::OnInitWindow()
+  if (m_focusToButton)
+  {
+    if (m_bButtonEnabled)
+      SET_CONTROL_FOCUS(CONTROL_EXTRA_BUTTON, 0);
+    else
+      SET_CONTROL_FOCUS(CONTROL_CANCEL_BUTTON, 0);
+  }
 
   // if nothing is selected, select first item
   m_viewControl.SetSelectedItem(std::max(GetSelectedItem(), 0));

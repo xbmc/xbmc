@@ -47,11 +47,18 @@ void CPlayerSelectionRule::Initialize(TiXmlElement* pRule)
   m_tRemote = GetTristate(pRule->Attribute("remote"));
   m_tAudio = GetTristate(pRule->Attribute("audio"));
   m_tVideo = GetTristate(pRule->Attribute("video"));
+  m_tGame = GetTristate(pRule->Attribute("game"));
 
   m_tBD = GetTristate(pRule->Attribute("bd"));
   m_tDVD = GetTristate(pRule->Attribute("dvd"));
   m_tDVDFile = GetTristate(pRule->Attribute("dvdfile"));
-  m_tDVDImage = GetTristate(pRule->Attribute("dvdimage"));
+  m_tDiscImage = GetTristate(pRule->Attribute("discimage"));
+  if (m_tDiscImage < 0)
+  {
+    m_tDiscImage = GetTristate(pRule->Attribute("dvdimage"));
+    if (m_tDiscImage >= 0)
+      CLog::Log(LOGWARNING, "\"dvdimage\" tag is deprecated. use \"discimage\"");
+  }
 
   m_protocols = XMLUtils::GetAttribute(pRule, "protocols");
   m_fileTypes = XMLUtils::GetAttribute(pRule, "filetypes");
@@ -86,8 +93,10 @@ int CPlayerSelectionRule::GetTristate(const char* szValue)
 {
   if (szValue)
   {
-    if (stricmp(szValue, "true") == 0) return 1;
-    if (stricmp(szValue, "false") == 0) return 0;
+    if (StringUtils::CompareNoCase(szValue, "true") == 0)
+      return 1;
+    if (StringUtils::CompareNoCase(szValue, "false") == 0)
+      return 0;
   }
   return -1;
 }
@@ -112,6 +121,8 @@ void CPlayerSelectionRule::GetPlayers(const CFileItem& item, std::vector<std::st
     return;
   if (m_tVideo >= 0 && (m_tVideo > 0) != item.IsVideo())
     return;
+  if (m_tGame >= 0 && (m_tGame > 0) != item.IsGame())
+    return;
   if (m_tInternetStream >= 0 && (m_tInternetStream > 0) != item.IsInternetStream())
     return;
   if (m_tRemote >= 0 && (m_tRemote > 0) != item.IsRemote())
@@ -123,7 +134,7 @@ void CPlayerSelectionRule::GetPlayers(const CFileItem& item, std::vector<std::st
     return;
   if (m_tDVDFile >= 0 && (m_tDVDFile > 0) != item.IsDVDFile())
     return;
-  if (m_tDVDImage >= 0 && (m_tDVDImage > 0) != item.IsDiscImage())
+  if (m_tDiscImage >= 0 && (m_tDiscImage > 0) != item.IsDiscImage())
     return;
 
   CRegExp regExp(false, CRegExp::autoUtf8);

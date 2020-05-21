@@ -39,7 +39,7 @@ void CSpecialProtocol::UnregisterProfileManager()
 void CSpecialProtocol::SetProfilePath(const std::string &dir)
 {
   SetPath("profile", dir);
-  CLog::Log(LOGNOTICE, "special://profile/ is mapped to: %s", GetPath("profile").c_str());
+  CLog::Log(LOGINFO, "special://profile/ is mapped to: %s", GetPath("profile").c_str());
 }
 
 void CSpecialProtocol::SetXBMCPath(const std::string &dir)
@@ -122,8 +122,8 @@ std::string CSpecialProtocol::TranslatePath(const CURL &url)
     std::string path(url.Get());
     if (path.length() >= 2 && path[1] == ':')
     {
-      CLog::Log(LOGWARNING, "Trying to access old style dir: %s\n", path.c_str());
-     // printf("Trying to access old style dir: %s\n", path.c_str());
+      CLog::Log(LOGWARNING, "Trying to access old style dir: %s", path.c_str());
+      // printf("Trying to access old style dir: %s\n", path.c_str());
     }
 #endif
 
@@ -240,7 +240,7 @@ std::string CSpecialProtocol::TranslatePathConvertCase(const std::string& path)
         while ((de = readdir(dir)) != NULL)
         {
           // check if there's a file with same name but different case
-          if (strcasecmp(de->d_name, tokens[i].c_str()) == 0)
+          if (StringUtils::CompareNoCase(de->d_name, tokens[i]) == 0)
           {
             result += "/";
             result += de->d_name;
@@ -270,19 +270,19 @@ std::string CSpecialProtocol::TranslatePathConvertCase(const std::string& path)
 
 void CSpecialProtocol::LogPaths()
 {
-  CLog::Log(LOGNOTICE, "special://xbmc/ is mapped to: %s", GetPath("xbmc").c_str());
-  CLog::Log(LOGNOTICE, "special://xbmcbin/ is mapped to: %s", GetPath("xbmcbin").c_str());
-  CLog::Log(LOGNOTICE, "special://xbmcbinaddons/ is mapped to: %s", GetPath("xbmcbinaddons").c_str());
-  CLog::Log(LOGNOTICE, "special://masterprofile/ is mapped to: %s", GetPath("masterprofile").c_str());
+  CLog::Log(LOGINFO, "special://xbmc/ is mapped to: %s", GetPath("xbmc").c_str());
+  CLog::Log(LOGINFO, "special://xbmcbin/ is mapped to: %s", GetPath("xbmcbin").c_str());
+  CLog::Log(LOGINFO, "special://xbmcbinaddons/ is mapped to: %s", GetPath("xbmcbinaddons").c_str());
+  CLog::Log(LOGINFO, "special://masterprofile/ is mapped to: %s", GetPath("masterprofile").c_str());
 #if defined(TARGET_POSIX)
-  CLog::Log(LOGNOTICE, "special://envhome/ is mapped to: %s", GetPath("envhome").c_str());
+  CLog::Log(LOGINFO, "special://envhome/ is mapped to: %s", GetPath("envhome").c_str());
 #endif
-  CLog::Log(LOGNOTICE, "special://home/ is mapped to: %s", GetPath("home").c_str());
-  CLog::Log(LOGNOTICE, "special://temp/ is mapped to: %s", GetPath("temp").c_str());
-  CLog::Log(LOGNOTICE, "special://logpath/ is mapped to: %s", GetPath("logpath").c_str());
-  //CLog::Log(LOGNOTICE, "special://userhome/ is mapped to: %s", GetPath("userhome").c_str());
+  CLog::Log(LOGINFO, "special://home/ is mapped to: %s", GetPath("home").c_str());
+  CLog::Log(LOGINFO, "special://temp/ is mapped to: %s", GetPath("temp").c_str());
+  CLog::Log(LOGINFO, "special://logpath/ is mapped to: %s", GetPath("logpath").c_str());
+  //CLog::Log(LOGINFO, "special://userhome/ is mapped to: %s", GetPath("userhome").c_str());
   if (!CUtil::GetFrameworksPath().empty())
-    CLog::Log(LOGNOTICE, "special://frameworks/ is mapped to: %s", GetPath("frameworks").c_str());
+    CLog::Log(LOGINFO, "special://frameworks/ is mapped to: %s", GetPath("frameworks").c_str());
 }
 
 // private routines, to ensure we only set/get an appropriate path

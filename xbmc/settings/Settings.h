@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include "settings/ISubSettings.h"
 #include "settings/SettingControl.h"
 #include "settings/SettingCreator.h"
 #include "settings/SettingsBase.h"
@@ -24,6 +25,7 @@ class TiXmlNode;
  \sa CSettingsManager
  */
 class CSettings : public CSettingsBase, public CSettingCreator, public CSettingControlCreator
+                , private ISubSettings
 {
 public:
   static const std::string SETTING_LOOKANDFEEL_SKIN;
@@ -80,6 +82,7 @@ public:
   static const std::string SETTING_VIDEOLIBRARY_EXPORT;
   static const std::string SETTING_VIDEOLIBRARY_IMPORT;
   static const std::string SETTING_VIDEOLIBRARY_SHOWEMPTYTVSHOWS;
+  static const std::string SETTING_VIDEOLIBRARY_MOVIESETSFOLDER;
   static const std::string SETTING_LOCALE_AUDIOLANGUAGE;
   static const std::string SETTING_VIDEOPLAYER_PREFERDEFAULTFLAG;
   static const std::string SETTING_VIDEOPLAYER_AUTOPLAYNEXTITEM;
@@ -166,9 +169,8 @@ public:
   static const std::string SETTING_EPG_HIDENOINFOAVAILABLE;
   static const std::string SETTING_EPG_EPGUPDATE;
   static const std::string SETTING_EPG_PREVENTUPDATESWHILEPLAYINGTV;
-  static const std::string SETTING_EPG_STOREEPGINDATABASE;
   static const std::string SETTING_EPG_RESETEPG;
-  static const std::string SETTING_PVRPLAYBACK_SWITCHTOFULLSCREEN;
+  static const std::string SETTING_PVRPLAYBACK_SWITCHTOFULLSCREENCHANNELTYPES;
   static const std::string SETTING_PVRPLAYBACK_SIGNALQUALITY;
   static const std::string SETTING_PVRPLAYBACK_CONFIRMCHANNELSWITCH;
   static const std::string SETTING_PVRPLAYBACK_CHANNELENTRYTIMEOUT;
@@ -194,6 +196,8 @@ public:
   static const std::string SETTING_PVRCLIENT_MENUHOOK;
   static const std::string SETTING_PVRTIMERS_HIDEDISABLEDTIMERS;
   static const std::string SETTING_MUSICLIBRARY_SHOWCOMPILATIONARTISTS;
+  static const std::string SETTING_MUSICLIBRARY_SHOWDISCS;
+  static const std::string SETTING_MUSICLIBRARY_USEORIGINALDATE;
   static const std::string SETTING_MUSICLIBRARY_USEARTISTSORTNAME;
   static const std::string SETTING_MUSICLIBRARY_DOWNLOADINFO;
   static const std::string SETTING_MUSICLIBRARY_ARTISTSFOLDER;
@@ -225,6 +229,7 @@ public:
   static const std::string SETTING_MUSICPLAYER_CROSSFADE;
   static const std::string SETTING_MUSICPLAYER_CROSSFADEALBUMTRACKS;
   static const std::string SETTING_MUSICPLAYER_VISUALISATION;
+  static const std::string SETTING_MUSICFILES_SELECTACTION;
   static const std::string SETTING_MUSICFILES_USETAGS;
   static const std::string SETTING_MUSICFILES_TRACKFORMAT;
   static const std::string SETTING_MUSICFILES_NOWPLAYINGTRACKFORMAT;
@@ -260,6 +265,7 @@ public:
   static const std::string SETTING_SERVICES_UPNPRENDERER;
   static const std::string SETTING_SERVICES_WEBSERVER;
   static const std::string SETTING_SERVICES_WEBSERVERPORT;
+  static const std::string SETTING_SERVICES_WEBSERVERAUTHENTICATION;
   static const std::string SETTING_SERVICES_WEBSERVERUSERNAME;
   static const std::string SETTING_SERVICES_WEBSERVERPASSWORD;
   static const std::string SETTING_SERVICES_WEBSERVERSSL;
@@ -329,6 +335,10 @@ public:
   static const std::string SETTING_INPUT_APPLEREMOTEMODE;
   static const std::string SETTING_INPUT_APPLEREMOTEALWAYSON;
   static const std::string SETTING_INPUT_APPLEREMOTESEQUENCETIME;
+  static const std::string SETTING_INPUT_APPLESIRI;
+  static const std::string SETTING_INPUT_APPLESIRITIMEOUT;
+  static const std::string SETTING_INPUT_APPLESIRITIMEOUTENABLED;
+  static const std::string SETTING_INPUT_APPLEUSEKODIKEYBOARD;
   static const std::string SETTING_NETWORK_USEHTTPPROXY;
   static const std::string SETTING_NETWORK_HTTPPROXYTYPE;
   static const std::string SETTING_NETWORK_HTTPPROXYSERVER;
@@ -392,6 +402,19 @@ public:
   // specialization of CSettingsBase
   bool Initialize() override;
 
+  /*!
+   \brief Registers the given ISubSettings implementation.
+
+   \param subSettings ISubSettings implementation
+   */
+  void RegisterSubSettings(ISubSettings* subSettings);
+  /*!
+   \brief Unregisters the given ISubSettings implementation.
+
+   \param subSettings ISubSettings implementation
+   */
+  void UnregisterSubSettings(ISubSettings* subSettings);
+
   // implementations of CSettingsBase
   bool Load() override;
   bool Save() override;
@@ -409,7 +432,7 @@ public:
   \param root XML element containing setting values
   \return True if the setting values were successfully loaded, false otherwise
   */
-  bool Load(const TiXmlElement *root) { bool updated; return CSettingsBase::LoadValuesFromXml(root, updated); }
+  bool Load(const TiXmlElement* root);
   /*!
    \brief Loads setting values from the given XML element.
 
@@ -426,6 +449,13 @@ public:
    \return True if the setting values were successfully saved, false otherwise
    */
   bool Save(const std::string &file);
+  /*!
+   \brief Saves the setting values to the given XML node.
+
+   \param root XML node
+   \return True if the setting values were successfully saved, false otherwise
+   */
+  bool Save(TiXmlNode* root) const override;
 
   /*!
    \brief Loads the setting being represented by the given XML node with the
@@ -439,6 +469,15 @@ public:
 
   // overwrite (not override) from CSettingsBase
   bool GetBool(const std::string& id) const;
+
+  /*!
+   \brief Clears the complete settings.
+
+   This removes all initialized settings, groups, categories and sections and
+   returns to the uninitialized state. Any registered callbacks or
+   implementations stay registered.
+   */
+  void Clear() override;
 
 protected:
   // specializations of CSettingsBase
@@ -464,6 +503,13 @@ private:
   CSettings(const CSettings&) = delete;
   CSettings const& operator=(CSettings const&) = delete;
 
+  bool Load(const TiXmlElement* root, bool& updated);
+
+  // implementation of ISubSettings
+  bool Load(const TiXmlNode* settings) override;
+
   bool Initialize(const std::string &file);
   bool Reset();
+
+  std::set<ISubSettings*> m_subSettings;
 };

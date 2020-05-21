@@ -6,6 +6,7 @@
 	<include file="Includes_MediaMenu.xml" />
 	<include file="Includes_Buttons.xml" />
 	<include file="Includes_DialogSelect.xml" />
+	<include file="Includes_MusicInfo.xml" />
 	<include file="Includes_PVR.xml" />
 	<include file="View_50_List.xml" />
 	<include file="View_51_Poster.xml" />
@@ -13,6 +14,7 @@
 	<include file="View_53_Shift.xml" />
 	<include file="View_54_InfoWall.xml" />
 	<include file="View_55_WideList.xml" />
+	<include file="View_503_NowPlaying.xml" />
 	<include file="View_500_Wall.xml" />
 	<include file="View_501_Banner.xml" />
 	<include file="View_502_FanArt.xml" />
@@ -32,8 +34,8 @@
 	<constant name="dialogbuttons_itemgap">-20</constant>
 	<constant name="list_y_offset">0</constant>
 	<constant name="list_item_height">80</constant>
-	<expression name="infodialog_active">Window.IsActive(musicinformation) | Window.IsActive(songinformation) | Window.IsActive(movieinformation) | Window.IsActive(addoninformation) | Window.IsActive(pvrguideinfo) | Window.IsActive(pvrrecordinginfo) | Window.IsActive(pictureinfo) | Window.IsVisible(script-script.extendedinfo-DialogVideoInfo.xml) | Window.IsVisible(script-script.extendedinfo-DialogInfo.xml) | Window.IsVisible(script-script.extendedinfo-VideoList.xml)</expression>
-	<expression name="sidebar_visible">ControlGroup(9000).HasFocus | Control.HasFocus(6130) | Control.HasFocus(6131) | Window.IsActive(MyPlaylist.xml)</expression>
+	<expression name="infodialog_active">Window.IsActive(musicinformation) | Window.IsActive(songinformation) | Window.IsActive(movieinformation) | Window.IsActive(addoninformation) | Window.IsActive(pvrguideinfo) | Window.IsActive(pvrrecordinginfo) | Window.IsActive(pictureinfo) | Window.IsVisible(script-embuary-video.xml) | Window.IsVisible(script-embuary-person.xml) | Window.IsVisible(script-embuary-image.xml)</expression>
+	<expression name="sidebar_visible">ControlGroup(9000).HasFocus | Control.HasFocus(6130) | Control.HasFocus(6131)</expression>
 	<include name="CommonScrollbars">
 		<control type="group">
 			<animation effect="fade" start="100" end="0" time="150">WindowClose</animation>
@@ -49,8 +51,10 @@
 					<top>0</top>
 					<bottom>0</bottom>
 					<width>13</width>
-					<onleft>50</onleft>
-					<onright>50</onright>
+					<onleft condition="![Window.IsVisible(musicplaylist) | Window.IsVisible(videoplaylist)]">50</onleft>
+					<onleft condition="Window.IsVisible(musicplaylist) | Window.IsVisible(videoplaylist)">55</onleft>
+					<onright condition="![Window.IsVisible(musicplaylist) | Window.IsVisible(videoplaylist)]">50</onright>
+					<onright condition="Window.IsVisible(musicplaylist) | Window.IsVisible(videoplaylist)">55</onright>
 					<orientation>vertical</orientation>
 					<texturesliderbackground />
 					<animation effect="fade" start="0" end="100" time="200" delay="300">Visible</animation>
@@ -203,49 +207,16 @@
 		<param name="fontcolor">grey</param>
 		<definition>
 			<itemlayout width="$PARAM[width]" height="$PARAM[height]">
-				<control type="group">
-					<visible>ListItem.Property(PVR.IsRecordingTimer) | ListItem.Property(PVR.IsRemindingTimer)</visible>
-					<control type="image">
-						<left>20</left>
-						<width>40</width>
-						<aspectratio align="left">keep</aspectratio>
-						<aligny>center</aligny>
-						<texture>icons/pvr/timers/recording.png</texture>
-						<visible>ListItem.Property(PVR.IsRecordingTimer)</visible>
-					</control>
-					<control type="image">
-						<left>20</left>
-						<width>40</width>
-						<aspectratio align="left">keep</aspectratio>
-						<aligny>center</aligny>
-						<texture>icons/pvr/timers/bell.png</texture>
-						<visible>ListItem.Property(PVR.IsRemindingTimer)</visible>
-					</control>
-					<control type="label">
-						<left>80</left>
-						<top>0</top>
-						<right>20</right>
-						<bottom>0</bottom>
-						<align>$PARAM[align]</align>
-						<font>$PARAM[font]</font>
-						<aligny>center</aligny>
-						<textcolor>$PARAM[fontcolor]</textcolor>
-						<label>$INFO[ListItem.Label]</label>
-					</control>
-				</control>
-				<control type="group">
-					<visible>!ListItem.Property(PVR.IsRecordingTimer) + !ListItem.Property(PVR.IsRemindingTimer)</visible>
-					<control type="label">
-						<left>20</left>
-						<top>0</top>
-						<right>20</right>
-						<bottom>0</bottom>
-						<align>$PARAM[align]</align>
-						<font>$PARAM[font]</font>
-						<aligny>center</aligny>
-						<textcolor>$PARAM[fontcolor]</textcolor>
-						<label>$INFO[ListItem.Label]</label>
-					</control>
+				<control type="label">
+					<left>20</left>
+					<top>0</top>
+					<right>20</right>
+					<bottom>0</bottom>
+					<align>$PARAM[align]</align>
+					<font>$PARAM[font]</font>
+					<aligny>center</aligny>
+					<textcolor>$PARAM[fontcolor]</textcolor>
+					<label>$INFO[ListItem.Label]</label>
 				</control>
 			</itemlayout>
 			<focusedlayout width="$PARAM[width]" height="$PARAM[height]">
@@ -257,49 +228,16 @@
 					<texture colordiffuse="button_focus">lists/focus.png</texture>
 					<visible>Control.HasFocus($PARAM[list_id])</visible>
 				</control>
-				<control type="group">
-					<visible>ListItem.Property(PVR.IsRecordingTimer) | ListItem.Property(PVR.IsRemindingTimer)</visible>
-					<control type="image">
-						<left>20</left>
-						<width>40</width>
-						<aspectratio align="left">keep</aspectratio>
-						<aligny>center</aligny>
-						<texture>icons/pvr/timers/recording.png</texture>
-						<visible>ListItem.Property(PVR.IsRecordingTimer)</visible>
-					</control>
-					<control type="image">
-						<left>20</left>
-						<width>40</width>
-						<aspectratio align="left">keep</aspectratio>
-						<aligny>center</aligny>
-						<texture>icons/pvr/timers/bell.png</texture>
-						<visible>ListItem.Property(PVR.IsRemindingTimer)</visible>
-					</control>
-					<control type="label">
-						<left>80</left>
-						<top>0</top>
-						<right>20</right>
-						<bottom>0</bottom>
-						<align>$PARAM[align]</align>
-						<font>$PARAM[font]</font>
-						<aligny>center</aligny>
-						<label>$INFO[ListItem.Label]</label>
-						<scroll>true</scroll>
-					</control>
-				</control>
-				<control type="group">
-					<visible>!ListItem.Property(PVR.IsRecordingTimer) + !ListItem.Property(PVR.IsRemindingTimer)</visible>
-					<control type="label">
-						<left>20</left>
-						<top>0</top>
-						<right>20</right>
-						<bottom>0</bottom>
-						<align>$PARAM[align]</align>
-						<font>$PARAM[font]</font>
-						<aligny>center</aligny>
-						<label>$INFO[ListItem.Label]</label>
-						<scroll>true</scroll>
-					</control>
+				<control type="label">
+					<left>20</left>
+					<top>0</top>
+					<right>20</right>
+					<bottom>0</bottom>
+					<align>$PARAM[align]</align>
+					<font>$PARAM[font]</font>
+					<aligny>center</aligny>
+					<label>$INFO[ListItem.Label]</label>
+					<scroll>true</scroll>
 				</control>
 			</focusedlayout>
 		</definition>
@@ -350,7 +288,7 @@
 				<top>0</top>
 				<height>70</height>
 				<align>right</align>
-				<itemgap>28</itemgap>
+				<itemgap>10</itemgap>
 				<width>1900</width>
 				<usecontrolcoords>true</usecontrolcoords>
 				<control type="group">
@@ -385,19 +323,24 @@
 					</include>
 				</control>
 				<include content="MediaFlag">
-					<param name="texture" value="$INFO[$PARAM[infolabel_prefix]ListItem.AudioChannels,flags/audiochannel/,.png]" />
-					<param name="visible" value="!String.IsEmpty($PARAM[infolabel_prefix]ListItem.AudioChannels)" />
+					<param name="texture" value="$INFO[ListItem.VideoCodec,flags/videocodec/,.png]" />
+					<param name="visible" value="!String.IsEmpty($PARAM[infolabel_prefix]ListItem.VideoCodec)" />
+				</include>
+				<include content="MediaFlag">
+					<param name="texture" value="$PARAM[resolution_var]" />
+					<param name="visible" value="!String.IsEmpty($PARAM[infolabel_prefix]ListItem.VideoResolution)" />
+				</include>
+				<include content="MediaFlag">
+					<param name="texture" value="$INFO[ListItem.VideoAspect,flags/aspectratio/,.png]" />
+					<param name="visible" value="!String.IsEmpty($PARAM[infolabel_prefix]ListItem.VideoAspect)" />
 				</include>
 				<include content="MediaFlag">
 					<param name="texture" value="$INFO[$PARAM[infolabel_prefix]ListItem.AudioCodec,flags/audiocodec/,.png]" />
 					<param name="visible" value="!String.IsEmpty($PARAM[infolabel_prefix]ListItem.AudioCodec)" />
 				</include>
-				<!-- 			<include content="MediaFlag">
-																														<param name="texture" value="$INFO[ListItem.VideoAspect,flags/aspectratio/,.png]" />
-																													</include> -->
 				<include content="MediaFlag">
-					<param name="texture" value="$PARAM[resolution_var]" />
-					<param name="visible" value="!String.IsEmpty($PARAM[infolabel_prefix]ListItem.VideoResolution)" />
+					<param name="texture" value="$INFO[$PARAM[infolabel_prefix]ListItem.AudioChannels,flags/audiochannel/,.png]" />
+					<param name="visible" value="!String.IsEmpty($PARAM[infolabel_prefix]ListItem.AudioChannels)" />
 				</include>
 			</control>
 		</definition>
@@ -919,7 +862,7 @@
 					<animation effect="fade" time="150">VisibleChange</animation>
 					<control type="group">
 						<width>600</width>
-						<visible>Player.HasMedia + String.IsEmpty(Window(Videos).Property(PlayingBackgroundMedia))</visible>
+						<visible>!Control.IsVisible(503) + Player.HasMedia + String.IsEmpty(Window(Videos).Property(PlayingBackgroundMedia))</visible>
 						<animation effect="fade" time="200">VisibleChange</animation>
 						<control type="grouplist">
 							<left>-75</left>
@@ -1055,7 +998,7 @@
 					<visible>!System.HasActiveModalDialog</visible>
 					<visible>Container.Scrolling</visible>
 					<visible>!Container.Content(seasons)</visible>
-					<visible>String.IsEqual(Container.SortMethod,$LOCALIZE[551]) | String.IsEqual(Container.SortMethod,$LOCALIZE[561]) | String.IsEqual(Container.SortMethod,$LOCALIZE[558]) | String.IsEqual(Container.SortMethod,$LOCALIZE[557]) | String.IsEqual(Container.SortMethod,$LOCALIZE[556]) | String.IsEqual(Container.SortMethod,$LOCALIZE[563])</visible>
+					<visible>Container.SortMethod(1) | Container.SortMethod(4) | Container.SortMethod(12) | Container.SortMethod(10) | Container.SortMethod(7) | Container.SortMethod(29) | Container.SortMethod(17)</visible>
 					<animation effect="fade" start="0" end="100" time="200" reversible="true">VisibleChange</animation>
 					<animation effect="fade" start="100" end="0" time="200">WindowClose</animation>
 				</control>

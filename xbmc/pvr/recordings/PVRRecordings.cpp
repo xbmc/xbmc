@@ -33,7 +33,7 @@ CPVRRecordings::~CPVRRecordings()
     m_database->Close();
 }
 
-void CPVRRecordings::UpdateFromClients(void)
+void CPVRRecordings::UpdateFromClients()
 {
   CSingleLock lock(m_critSection);
   Unload();
@@ -41,7 +41,7 @@ void CPVRRecordings::UpdateFromClients(void)
   CServiceBroker::GetPVRManager().Clients()->GetRecordings(this, true);
 }
 
-int CPVRRecordings::Load(void)
+int CPVRRecordings::Load()
 {
   Unload();
   Update();
@@ -58,7 +58,7 @@ void CPVRRecordings::Unload()
   m_recordings.clear();
 }
 
-void CPVRRecordings::Update(void)
+void CPVRRecordings::Update()
 {
   CSingleLock lock(m_critSection);
   if (m_bIsUpdating)
@@ -74,6 +74,30 @@ void CPVRRecordings::Update(void)
   lock.Leave();
 
   CServiceBroker::GetPVRManager().PublishEvent(PVREvent::RecordingsInvalidated);
+}
+
+void CPVRRecordings::UpdateInProgressSize()
+{
+  CSingleLock lock(m_critSection);
+  if (m_bIsUpdating)
+    return;
+  m_bIsUpdating = true;
+
+  CLog::LogFC(LOGDEBUG, LOGPVR, "Updating recordings size");
+  bool bHaveUpdatedInProgessRecording = false;
+  for (auto& recording : m_recordings)
+  {
+    if (recording.second->IsInProgress())
+    {
+      if (recording.second->UpdateRecordingSize())
+        bHaveUpdatedInProgessRecording = true;
+    }
+  }
+
+  m_bIsUpdating = false;
+
+  if (bHaveUpdatedInProgessRecording)
+    CServiceBroker::GetPVRManager().PublishEvent(PVREvent::RecordingsInvalidated);
 }
 
 int CPVRRecordings::GetNumTVRecordings() const
@@ -116,7 +140,7 @@ std::vector<std::shared_ptr<CPVRRecording>> CPVRRecordings::GetAll() const
 std::shared_ptr<CPVRRecording> CPVRRecordings::GetById(unsigned int iId) const
 {
   CSingleLock lock(m_critSection);
-  for (const auto recording : m_recordings)
+  for (const auto& recording : m_recordings)
   {
     if (iId == recording.second->m_iRecordingId)
       return recording.second;
@@ -135,7 +159,7 @@ std::shared_ptr<CPVRRecording> CPVRRecordings::GetByPath(const std::string& path
     bool bDeleted = recPath.IsDeleted();
     bool bRadio = recPath.IsRadio();
 
-    for (const auto recording : m_recordings)
+    for (const auto& recording : m_recordings)
     {
       std::shared_ptr<CPVRRecording> current = recording.second;
       // Omit recordings not matching criteria
@@ -173,19 +197,17 @@ void CPVRRecordings::UpdateFromClient(const std::shared_ptr<CPVRRecording>& tag)
       m_bDeletedTVRecordings = true;
   }
 
-  std::shared_ptr<CPVRRecording> newTag = GetById(tag->m_iClientId, tag->m_strRecordingId);
-  if (newTag)
+  std::shared_ptr<CPVRRecording> existingTag = GetById(tag->m_iClientId, tag->m_strRecordingId);
+  if (existingTag)
   {
-    newTag->Update(*tag);
+    existingTag->Update(*tag);
   }
   else
   {
-    newTag = std::shared_ptr<CPVRRecording>(new CPVRRecording);
-    newTag->Update(*tag);
-    newTag->UpdateMetadata(GetVideoDatabase());
-    newTag->m_iRecordingId = ++m_iLastId;
-    m_recordings.insert(std::make_pair(CPVRRecordingUid(newTag->m_iClientId, newTag->m_strRecordingId), newTag));
-    if (newTag->IsRadio())
+    tag->UpdateMetadata(GetVideoDatabase());
+    tag->m_iRecordingId = ++m_iLastId;
+    m_recordings.insert({CPVRRecordingUid(tag->m_iClientId, tag->m_strRecordingId), tag});
+    if (tag->IsRadio())
       ++m_iRadioRecordings;
     else
       ++m_iTVRecordings;
@@ -199,7 +221,7 @@ std::shared_ptr<CPVRRecording> CPVRRecordings::GetRecordingForEpgTag(const std::
 
   CSingleLock lock(m_critSection);
 
-  for (const auto recording : m_recordings)
+  for (const auto& recording : m_recordings)
   {
     if (recording.second->IsDeleted())
       continue;

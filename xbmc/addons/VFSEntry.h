@@ -97,6 +97,18 @@ namespace ADDON
     const std::string& GetZeroconfType() const { return m_zeroconf; }
     const ProtocolInfo& GetProtocolInfo() const { return m_protocolInfo; }
   protected:
+    /*!
+     * @brief TO translate `enum XFILE::EIoControl` to/from `enum VFS_IOCTRL`.
+     *
+     * This is meant to interact securely between Kodi and addon.
+     *
+     * @note The `int` there is `enum XFILE::EIoControl`
+     */
+    //@{
+    static int TranslateIOCTRLToKodi(VFS_IOCTRL ioctrl);
+    static VFS_IOCTRL TranslateIOCTRLToAddon(int ioctrl);
+    //@}
+
     std::string m_protocols;  //!< Protocols for VFS entry.
     std::string m_extensions; //!< Extensions for VFS entry.
     std::string m_zeroconf;   //!< Zero conf announce string for VFS protocol.

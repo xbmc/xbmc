@@ -4,8 +4,7 @@ BUILD_TYPE:=@CMAKE_BUILD_TYPE@
 BUILD_TYPE_LC:=$(shell echo $(BUILD_TYPE) | tr A-Z a-z)
 
 OBJS = libshairplay.so \
-  libass.so \
-  libsmbclient.so
+  libass.so
 
 PLATFORM_OBJS =
 EXCLUDED_ADDONS =
@@ -28,7 +27,9 @@ endif
 #this fixes a android ndk fuckup where the paths to
 #prebuilt stuff follow different name schemes for
 #arm and x86
-ifeq ($(findstring x86,$(CPU)),x86)
+ifeq ($(findstring x86_64,$(CPU)),x86_64)
+  ARCH=x86_64
+else ifeq ($(findstring x86,$(CPU)),x86)
   ARCH=x86
 else ifeq ($(findstring arm64,$(CPU)),arm64)
   ARCH=arm64
@@ -76,8 +77,6 @@ shared:
 	find `pwd`/assets/ -name "*.so" -exec rm {} \;
 	find `pwd`/assets/addons/skin.*/media/* -depth -not -iname "Textures.xbt" -exec rm -rf {} \;
 	cd `pwd`/assets/addons; rm -rf $(EXCLUDED_ADDONS)
-	mkdir -p assets/system/certs
-	cp $(CMAKE_SOURCE_DIR)/tools/depends/target/openssl/cacert.pem assets/system/certs
 	cp $(CMAKE_SOURCE_DIR)/privacy-policy.txt assets
 
 sharedapk: shared | xbmc/assets
@@ -120,7 +119,7 @@ libs: $(PREFIX)/lib/@APP_NAME_LC@/lib@APP_NAME_LC@.so
 	find $(DEPENDS_PATH)/share/kodi/addons -name "*.so" -exec cp -fp {} xbmc/obj/local/$(CPU)/ \; || true
 	find $(DEPENDS_PATH)/lib/kodi/addons -name "*.so" -exec cp -fp {} xbmc/obj/local/$(CPU)/ \; || true
 	find $(PREFIX)/lib/@APP_NAME_LC@/system -name "*.so" -exec cp -fp {} xbmc/obj/local/$(CPU)/ \;
-	DIR=${CURDIR}; cd $(PREFIX)/lib/python@PYTHON_VERSION@/site-packages; for i in `find Cryptodome -name \*.so` ; do FN=`echo $$i | cut -c1- | tr "/" "_"` ; mv $$i $$DIR/xbmc/obj/local/$(CPU)/$$FN ; done
+	DIR=${CURDIR}; cd $(PREFIX)/lib/python@PYTHON_VERSION@/site-packages; for i in `find Cryptodome -name \*.so` ; do FN=`echo $$i | cut -c1- | tr "/" "_" | sed -e 's/\.cpython-[0-9]\{2\}-x86_64-linux-gnu\./\./g'` ;mv $$i $$DIR/xbmc/obj/local/$(CPU)/$$FN ; done
 	cd xbmc/obj/local/$(CPU)/; find . -name "*.so" -not -name "lib*.so" | sed "s/\.\///" | xargs -I@ mv @ lib@
 	cp -fp xbmc/obj/local/$(CPU)/*.so xbmc/lib/$(CPU)/
 	$(STRIP) --strip-unneeded xbmc/lib/$(CPU)/*.so

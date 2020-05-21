@@ -13,11 +13,12 @@
 
 //CryptoSession is usually obtained once per stream, but could change if an key expires
 
-enum CryptoSessionSystem :uint8_t
+enum CryptoSessionSystem : uint8_t
 {
   CRYPTO_SESSION_SYSTEM_NONE,
   CRYPTO_SESSION_SYSTEM_WIDEVINE,
-  CRYPTO_SESSION_SYSTEM_PLAYREADY
+  CRYPTO_SESSION_SYSTEM_PLAYREADY,
+  CRYPTO_SESSION_SYSTEM_WISEPLAY,
 };
 
 struct DemuxCryptoSession

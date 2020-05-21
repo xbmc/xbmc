@@ -3,7 +3,7 @@ AC_INIT([xbmc-depends], [2.00], [http://trac.xbmc.org])
 :${CFLAGS=""}
 AC_CONFIG_AUX_DIR([build-aux])
 AC_CONFIG_FILES([target/config.site native/config.site.native Makefile.include target/Toolchain.cmake
-                 target/config-binaddons.site target/Toolchain_binaddons.cmake target/cross-file.meson])
+                 target/config-binaddons.site target/Toolchain_binaddons.cmake])
 AC_CANONICAL_HOST
 
 m4_include([m4/xbmc_arch.m4])
@@ -152,6 +152,9 @@ tool_dir=$build_cpu-$build_os-native
 cross_compiling="yes"
 
 case $build in
+  aarch64*-*-linux-gnu*|aarch64*-*-linux-uclibc*)
+    build_os="linux"
+  ;;
   arm*-*-linux-gnu*|arm*-*-linux-uclibc*)
     build_os="linux"
   ;;
@@ -250,6 +253,7 @@ case $host in
           platform_cflags+=" -march=armv7-a -mtune=cortex-a9 -mfloat-abi=softfp -mfpu=neon"
         fi
         platform_ldflags+=" -Wl,--exclude-libs,libunwind.a"
+        meson_cpu="arm"
       ;;
       aarch64*-*linux-android*)
         if test "x$use_cpu" = "xauto"; then
@@ -258,11 +262,13 @@ case $host in
         if test "x$use_cpu" = "xarm64-v8a"; then
           platform_cflags+=" -march=armv8-a -mtune=cortex-a53"
         fi
+        meson_cpu="arch64"
       ;;
-      i*86*-linux-android*)
+      i*86*-linux-android*|x86_64*-linux-android*)
         if test "x$use_cpu" = "xauto"; then
           use_cpu=$host_cpu
         fi
+        meson_cpu="x86"
       ;;
       *)
         AC_MSG_ERROR(unsupported host ($use_host))
@@ -271,10 +277,19 @@ case $host in
     platform_cxxflags="$platform_cflags -frtti"
     platform_includes="-I$prefix/$deps_dir/include/android-$use_ndk_api"
     platform_os="android"
+    meson_system="android"
     #android builds are always cross
     cross_compiling="yes"
   ;;
   arm*-*-linux-gnu*|arm*-*-linux-uclibc*|aarch64*-*-linux-gnu*|aarch*-*-linux-be*)
+    case $host in
+      arm*-*-linux-gnu*|arm*-*-linux-uclibc*)
+        meson_cpu="arm"
+      ;;
+      aarch64*-*-linux-gnu*|aarch*-*-linux-be*)
+        meson_cpu="aarch64"
+      ;;
+    esac
     if test "x$use_cpu" = "xauto"; then
       use_cpu=$host_cpu
     fi
@@ -284,14 +299,24 @@ case $host in
     platform_ldflags="-Wl,-rpath-link=$prefix/$deps_dir/lib"
     platform_cxxflags="$platform_cflags"
     platform_os="linux"
+    meson_system="linux"
   ;;
   *i686*-linux-gnu*|i*86*-*-linux-uclibc*|x86_64*-linux-gnu*|x86_64-*-linux-uclibc*)
+    case $host in
+      *i686*-linux-gnu*|i*86*-*-linux-uclibc*)
+        meson_cpu="x86"
+      ;;
+      x86_64*-linux-gnu*|x86_64-*-linux-uclibc*)
+        meson_cpu="x86_64"
+      ;;
+    esac
     use_cpu=$host_cpu
     use_toolchain="${use_toolchain:-/usr}"
     platform_cflags="-fPIC -DPIC"
     optimize_flags="-O2"
     platform_cxxflags="$platform_cflags"
     platform_os="linux"
+    meson_system="linux"
     ffmpeg_options_default="--enable-vaapi --enable-vdpau --cpu=$use_cpu"
   ;;
   *darwin*)
@@ -305,30 +330,22 @@ case $host in
     # darwin builds are always cross
     cross_compiling="yes"
 
+    meson_system="darwin"
+
     platform_cflags="-fheinous-gnu-extensions -no-cpp-precomp"
     platform_ldflags="-Wl,-search_paths_first"
     platform_cxxflags="-no-cpp-precomp"
 
     case $host in
-      *86*-apple-darwin)
+      x86_64-apple-darwin)
         MC_CHECK_NOT_CPU([$use_cpu], "arm")
 
         # setup which cpu to use
-        case $host in
-          x86_64-apple-darwin*)
-            if test "x$use_cpu" = "xauto"; then
-              use_cpu=x86_64
-            fi
-          ;;
-          i*86-apple-darwin*)
-            if test "x$use_cpu" = "xauto"; then
-              use_cpu=i386
-            fi
-            platform_ldflags+=" -read_only_relocs suppress"
-         ;;
-          *)
-            AC_MSG_ERROR(error in configure of --with-arch=$use_cpu)
-        esac
+        if test "x$use_cpu" = "xauto"; then
+          use_cpu=x86_64
+        fi
+
+        meson_cpu="x86_64"
 
         # setup which sdk to use
         target_platform=macosx
@@ -337,10 +354,6 @@ case $host in
 
         # now that we know which sdk, error check sdk_name
         case $use_sdk in
-          10.9);;
-          10.10);;
-          10.11);;
-          10.12);;
           10.13);;
           10.14);;
           10.15);;
@@ -348,62 +361,49 @@ case $host in
             AC_MSG_ERROR(error in configure of --with-sdk=$use_sdk)
         esac
         sdk_name=$target_platform$use_sdk
-        platform_min_version="macosx-version-min=10.9"
+        platform_min_version="macosx-version-min=10.13"
 
         use_sdk_path=[`$use_xcodebuild -version -sdk $sdk_name Path`]
         platform_os="osx"
       ;;
 
-      arm-apple-darwin*)
+      aarch64-apple-darwin*)
         MC_CHECK_NOT_CPU([$use_cpu], "*86")
 
         # setup which sdk to use
         if test "$use_platform" = "tvos"; then
-          use_cpu=arm64
           target_platform=appletvos
-          platform_min_version="$target_platform-version-min=11.0"
         else
-          # setup which cpu to use
-          if test "x$use_cpu" = "xauto"; then
-            use_cpu=armv7
-          fi
-
           target_platform=iphoneos
-          platform_min_version="$target_platform-version-min=9.0"
+        fi
+        platform_min_version="$target_platform-version-min=11.0"
+
+        # setup which cpu to use
+        if test "x$use_cpu" = "xauto"; then
+          use_cpu=arm64
+        fi
+
+        if test "$use_cpu" = "arm64"; then
+          meson_cpu="aarch64"
+        else
+          meson_cpu="arm"
         fi
 
         found_sdk_version=[`$use_xcodebuild -showsdks | grep "\-sdk $target_platform" | awk '{ print $2}'`]
         use_sdk="${use_sdk:-$found_sdk_version}"
         sdk_name=$target_platform$use_sdk
 
-        if test "$use_platform" = "tvos"; then
-          case $use_sdk in
-            11.*);;
-            12.*);;
-            13.*);;
-              *)
-                AC_MSG_ERROR(error in configure of --with-sdk=$use_sdk)
-              ;;
-          esac
-        else
-          case $use_sdk in
-            9.*);;
-            10.*);;
-            11.*);;
-            12.*);;
-            13.*);;
-              *)
-                AC_MSG_ERROR(error in configure of --with-sdk=$use_sdk)
-              ;;
-          esac
-        fi
+        case $use_sdk in
+          11.*);;
+          12.*);;
+          13.*);;
+            *)
+              AC_MSG_ERROR(error in configure of --with-sdk=$use_sdk)
+            ;;
+        esac
 
         platform_os="darwin_embedded"
 
-        if [ ! test "x$use_cpu" = "xarm64" ]; then
-          platform_cflags+=" -mcpu=cortex-a8 -mfpu=neon"
-          platform_ldflags+=" -Wl,-segalign,4000"
-        fi
         platform_cflags+=" -ftree-vectorize -pipe -Wno-trigraphs -fpascal-strings"
         platform_cflags+=" -Wreturn-type -Wunused-variable -fmessage-length=0 -gdwarf-2"
         platform_cflags+=" -Wno-error=implicit-function-declaration"
@@ -534,7 +534,7 @@ if test "$platform_os" == "android"; then
     AC_MSG_ERROR("SDK path is required for android")
   fi
 
-  if [ ! test -f $use_sdk_path/tools/android ]; then
+  if [ ! test -f $use_sdk_path/tools/bin/sdkmanager ]; then
     AC_MSG_ERROR(verify sdk path)
   fi
 
@@ -654,6 +654,8 @@ echo -e
   AC_SUBST(build_tools_path)
 fi
 
+AC_SUBST(meson_system)
+AC_SUBST(meson_cpu)
 AC_SUBST(use_debug)
 AC_SUBST(use_host)
 AC_SUBST(deps_dir)
@@ -697,7 +699,6 @@ cp -vf target/config.site $prefix/$deps_dir/share
 cp -vf target/config-binaddons.site $prefix/$tool_dir/share
 cp -vf target/Toolchain.cmake $prefix/$deps_dir/share
 cp -vf target/Toolchain_binaddons.cmake $prefix/$deps_dir/share
-cp -vf target/cross-file.meson $prefix/$deps_dir/share
 cp -vf native/config.site.native $prefix/$tool_dir/share/config.site
 
 

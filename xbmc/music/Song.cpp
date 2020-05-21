@@ -22,8 +22,6 @@ using namespace MUSIC_INFO;
 CSong::CSong(CFileItem& item)
 {
   CMusicInfoTag& tag = *item.GetMusicInfoTag();
-  SYSTEMTIME stTime;
-  tag.GetReleaseDate(stTime);
   strTitle = tag.GetTitle();
   genre = tag.GetGenre();
   std::vector<std::string> artist = tag.GetArtist();
@@ -56,7 +54,9 @@ CSong::CSong(CFileItem& item)
   rating = tag.GetRating();
   userrating = tag.GetUserrating();
   votes = tag.GetVotes();
-  iYear = stTime.wYear;
+  strOrigReleaseDate = tag.GetOriginalDate();
+  strReleaseDate = tag.GetReleaseDate();
+  strDiscSubtitle = tag.GetDiscSubtitle();
   iTrack = tag.GetTrackAndDiscNumber();
   iDuration = tag.GetDuration();
   strRecordLabel = tag.GetRecordLabel();
@@ -72,6 +72,10 @@ CSong::CSong(CFileItem& item)
   idSong = -1;
   iTimesPlayed = 0;
   idAlbum = -1;
+  iBPM = tag.GetBPM();
+  iSampleRate = tag.GetSampleRate();
+  iBitRate = tag.GetBitRate();
+  iChannels = tag.GetNoOfChannels();
 }
 
 CSong::CSong()
@@ -220,7 +224,7 @@ void CSong::Serialize(CVariant& value) const
   value["genre"] = genre;
   value["duration"] = iDuration;
   value["track"] = iTrack;
-  value["year"] = iYear;
+  value["year"] = atoi(strReleaseDate.c_str());;
   value["musicbrainztrackid"] = strMusicBrainzTrackID;
   value["comment"] = strComment;
   value["mood"] = strMood;
@@ -231,6 +235,11 @@ void CSong::Serialize(CVariant& value) const
   value["lastplayed"] = lastPlayed.IsValid() ? lastPlayed.GetAsDBDateTime() : "";
   value["dateadded"] = dateAdded.IsValid() ? dateAdded.GetAsDBDateTime() : "";
   value["albumid"] = idAlbum;
+  value["albumreleasedate"] = strReleaseDate;
+  value["bpm"] = iBPM;
+  value["bitrate"] = iBitRate;
+  value["samplerate"] = iSampleRate;
+  value["channels"] = iChannels;
 }
 
 void CSong::Clear()
@@ -253,7 +262,9 @@ void CSong::Clear()
   votes = 0;
   iTrack = 0;
   iDuration = 0;
-  iYear = 0;
+  strOrigReleaseDate.clear();
+  strReleaseDate.clear();
+  strDiscSubtitle.clear();
   iStartOffset = 0;
   iEndOffset = 0;
   idSong = -1;
@@ -263,6 +274,11 @@ void CSong::Clear()
   idAlbum = -1;
   bCompilation = false;
   embeddedArt.Clear();
+  iBPM = 0;
+  iBitRate = 0;
+  iSampleRate = 0;
+  iChannels =  0;
+  
   replayGain = ReplayGain();
 }
 const std::vector<std::string> CSong::GetArtist() const
@@ -348,4 +364,9 @@ bool CSong::ArtMatches(const CSong &right) const
 {
   return (right.strThumb == strThumb &&
           embeddedArt.Matches(right.embeddedArt));
+}
+
+const std::string CSong::GetDiscSubtitle() const
+{
+  return strDiscSubtitle;
 }

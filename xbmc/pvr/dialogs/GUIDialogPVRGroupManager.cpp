@@ -73,7 +73,7 @@ void CGUIDialogPVRGroupManager::SetRadio(bool bIsRadio)
   SetProperty("IsRadio", m_bIsRadio ? "true" : "");
 }
 
-bool CGUIDialogPVRGroupManager::PersistChanges(void)
+bool CGUIDialogPVRGroupManager::PersistChanges()
 {
   return CServiceBroker::GetPVRManager().ChannelGroups()->Get(m_bIsRadio)->PersistAll();
 }
@@ -201,7 +201,8 @@ bool CGUIDialogPVRGroupManager::ActionButtonUngroupedChannels(CGUIMessage& messa
       else if (m_ungroupedChannels->GetFileCount() > 0)
       {
         CFileItemPtr pItemChannel = m_ungroupedChannels->Get(m_iSelectedUngroupedChannel);
-        if (m_selectedGroup->AddToGroup(pItemChannel->GetPVRChannelInfoTag(), CPVRChannelNumber(), 0, false))
+
+        if (m_selectedGroup->AppendToGroup(pItemChannel->GetPVRChannelInfoTag()))
         {
           ClearSelectedGroupsThumbnail();
           Update();

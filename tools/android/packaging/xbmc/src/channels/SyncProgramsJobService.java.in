@@ -22,15 +22,16 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.PersistableBundle;
-import android.support.annotation.NonNull;
-import android.support.media.tv.Channel;
-import android.support.media.tv.PreviewProgram;
-import android.support.media.tv.TvContractCompat;
 import android.util.Log;
+import androidx.annotation.NonNull;
+import androidx.tvprovider.media.tv.Channel;
+import androidx.tvprovider.media.tv.PreviewProgram;
+import androidx.tvprovider.media.tv.TvContractCompat;
 
 import @APP_PACKAGE@.Splash;
 import @APP_PACKAGE@.XBMCJsonRPC;
 import @APP_PACKAGE@.model.Movie;
+import @APP_PACKAGE@.model.TVShow;
 import @APP_PACKAGE@.model.TVEpisode;
 import @APP_PACKAGE@.model.File;
 import @APP_PACKAGE@.model.Media;
@@ -254,7 +255,7 @@ public class SyncProgramsJobService extends JobService
               .setIntent(detailsIntent);
 
       if(media.getCategory().equals(Media.MEDIA_TYPE_MOVIE))
-        builder.setType(TvContractCompat.PreviewProgramColumns.TYPE_CLIP);
+        builder.setType(TvContractCompat.PreviewProgramColumns.TYPE_MOVIE);
       else if(media.getCategory().equals(Media.MEDIA_TYPE_TVSHOW))
         builder.setType(TvContractCompat.PreviewProgramColumns.TYPE_TV_SERIES);
       else if(media.getCategory().equals(Media.MEDIA_TYPE_TVEPISODE))
@@ -286,12 +287,39 @@ public class SyncProgramsJobService extends JobService
 
       if (media instanceof Movie)
       {
-        builder.setLongDescription(((Movie)media).getPlot());
+        Movie movie = Movie.class.cast(media);
+        builder.setReleaseDate(movie.getYear());
+        builder.setDurationMillis(movie.getDuration());
+        if (movie.getRating() != null)
+        {
+          builder.setReviewRating(movie.getRating());
+          builder.setReviewRatingStyle(TvContractCompat.Programs.REVIEW_RATING_STYLE_STARS);
+        }
+      }
+      if (media instanceof TVShow)
+      {
+        TVShow tvshow = TVShow.class.cast(media);
+        builder.setReleaseDate(tvshow.getYear());
+        if (tvshow.getRating() != null)
+        {
+          builder.setReviewRating(tvshow.getRating());
+          builder.setReviewRatingStyle(TvContractCompat.Programs.REVIEW_RATING_STYLE_STARS);
+        }
       }
       if (media instanceof TVEpisode)
       {
-        builder.setSeasonNumber(((TVEpisode)media).getSeason());
-        builder.setEpisodeNumber(((TVEpisode)media).getEpisode());
+        TVEpisode tvepisode = TVEpisode.class.cast(media);
+        builder.setTitle(tvepisode.getShowTitle());
+        builder.setEpisodeTitle(tvepisode.getTitle());
+        builder.setSeasonNumber(tvepisode.getSeason());
+        builder.setEpisodeNumber(tvepisode.getEpisode());
+        builder.setDurationMillis(tvepisode.getDuration());
+        builder.setReleaseDate(tvepisode.getFirstaired());
+        if (tvepisode.getRating() != null)
+        {
+          builder.setReviewRating(tvepisode.getRating());
+          builder.setReviewRatingStyle(TvContractCompat.Programs.REVIEW_RATING_STYLE_STARS);
+        }
       }
 
       return builder.build();

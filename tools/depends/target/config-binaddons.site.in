@@ -59,55 +59,7 @@ ac_cv_header_sys_un_h=yes
 gl_cv_func_gettimeofday_clobber=no
 
 
-#samba
-SMB_BUILD_CC_NEGATIVE_ENUM_VALUES=yes
-samba_cv_CC_NEGATIVE_ENUM_VALUES=yes
-libreplace_cv_HAVE_C99_VSNPRINTF=yes
-samba_cv_HAVE_C99_VSNPRINTF=yes
-ac_cv_header_standards_h=no
-
-ac_cv_file__proc_sys_kernel_core_pattern=no
-samba_cv_SYSCONF_SC_NPROCESSORS_ONLN=no
-libreplace_cv_HAVE_GETADDRINFO=no
-
-if test "${PACKAGE_NAME}" = "Samba" -a "@platform_os@" = "darwin_embedded"; then
-  # disable python support
-  export PYTHON_VER=0.0
-  # ios/osx-10.6 issue with collision of _MD5 exported from a system lib
-  export LDFLAGS="${LDFLAGS} -Wl,-unexported_symbol,_MD5* -lc"
-fi
-
-if test "${PACKAGE_NAME}" = "Samba" -a "@platform_os@" = "osx"; then
-  # disable python support
-  export PYTHON_VER=0.0
-  # ios/osx-10.6 issue with collision of _MD5 exported from a system lib
-  export LDFLAGS="${LDFLAGS} -Wl,-unexported_symbol,_MD5* -lc"
-  # uses OPT instead of CFLAGS
-  export OPT="${CFLAGS}"
-  # various configure overrides
-  ac_cv_header_libunwind_h=no
-  ac_cv_header_execinfo_h=no
-fi
-
 if test "@platform_os@" = "android"; then
-  #samba
-  SMB_BUILD_CC_NEGATIVE_ENUM_VALUES=yes
-  libreplace_cv_READDIR_GETDIRENTRIES=no
-  libreplace_cv_READDIR_GETDENTS=no
-  samba_cv_REPLACE_READDIR=no
-  samba_cv_HAVE_WRFILE_KEYTAB=yes
-  samba_cv_HAVE_GETTIMEOFDAY_TZ=yes
-  samba_cv_USE_SETREUID=yes
-  samba_cv_HAVE_KERNEL_OPLOCKS_LINUX=yes
-  samba_cv_HAVE_IFACE_IFCONF=yes
-  samba_cv_HAVE_MMAP=yes
-  samba_cv_HAVE_FCNTL_LOCK=yes
-  samba_cv_HAVE_SECURE_MKSTEMP=yes
-  samba_cv_CC_NEGATIVE_ENUM_VALUES=yes
-  samba_cv_fpie=no
-  samba_cv_have_longlong=yes
-  samba_cv_HAVE_OFF64_T=yes
-  samba_cv_HAVE_UT_UT_TYPE=no
   ac_cv_func_srand=yes
   ac_cv_func_rand=yes
 
@@ -116,27 +68,17 @@ if test "@platform_os@" = "android"; then
 
 fi
 
-if test "@platform_os@" = "osx" ; then
-  # Xcode 8 + 10.11, clock_gettime getentropy is present
-  # in 10.12 but will get wrongly detected if building on 10.11
-  ac_cv_search_clock_gettime=no
-  ac_cv_func_clock_gettime=no
-  ac_cv_func_getentropy=no
-fi
-
-
 if test "@platform_os@" = "darwin_embedded"; then
-  # Xcode 8 + 10.11, clock_gettime getentropy is present
-  # in 10.12 but will get wrongly detected if building on 10.11
-  ac_cv_search_clock_gettime=no
-  ac_cv_func_clock_gettime=no
-  ac_cv_func_getentropy=no
-
   # tweaks for flac
   if test "${ac_unique_file}" = "src/flac/main.c" ; then
     # compiler barfs if we use -O3/O2 for flac
     export CFLAGS=`echo ${CFLAGS} | sed 's/-O3/-Os/'`
     export CPPFLAGS=`echo ${CPPFLAGS} | sed 's/-O3/-Os/'`
+  fi
+
+  if test "@target_platform@" = "appletvos"; then
+    ac_cv_func_vfork_works=no
+    ac_cv_func_fork=no
   fi
 fi
 

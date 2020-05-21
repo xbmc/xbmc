@@ -37,9 +37,9 @@ const std::string& CBinaryAddonBase::MainLibName() const
   return m_addonInfo->LibName();
 }
 
-bool CBinaryAddonBase::IsType(TYPE type) const
+bool CBinaryAddonBase::HasType(TYPE type) const
 {
-  return m_addonInfo->IsType(type);
+  return m_addonInfo->HasType(type);
 }
 
 const std::vector<CAddonType>& CBinaryAddonBase::Types() const

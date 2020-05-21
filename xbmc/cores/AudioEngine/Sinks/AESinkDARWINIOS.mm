@@ -75,7 +75,7 @@ static float SineWaveGeneratorNextSampleFloat(SineWaveGenerator *ctx)
 class CAAudioUnitSink
 {
   public:
-    CAAudioUnitSink();
+    CAAudioUnitSink() = default;
    ~CAAudioUnitSink();
 
     bool         open(AudioStreamBasicDescription outputFormat);
@@ -110,10 +110,10 @@ class CAAudioUnitSink
                   AudioBufferList *ioData);
 
     bool                m_setup;
-    bool                m_activated;
+    bool m_activated = false;
     AudioUnit           m_audioUnit;
     AudioStreamBasicDescription m_outputFormat;
-    AERingBuffer       *m_buffer;
+    AERingBuffer* m_buffer = nullptr;
 
     bool                m_mute;
     Float32             m_outputVolume;
@@ -123,23 +123,13 @@ class CAAudioUnitSink
     unsigned int        m_sampleRate;
     unsigned int        m_frameSize;
 
-    bool                m_playing;
-    volatile bool       m_started;
+    bool m_playing = false;
+    volatile bool m_started = false;
 
     CAESpinSection      m_render_section;
-    volatile int64_t    m_render_timestamp;
-    volatile uint32_t   m_render_frames;
+    volatile int64_t m_render_timestamp = 0;
+    volatile uint32_t m_render_frames = 0;
 };
-
-CAAudioUnitSink::CAAudioUnitSink()
-: m_activated(false)
-, m_buffer(NULL)
-, m_playing(false)
-, m_started(false)
-, m_render_timestamp(0)
-, m_render_frames(0)
-{
-}
 
 CAAudioUnitSink::~CAAudioUnitSink()
 {
@@ -281,7 +271,7 @@ void CAAudioUnitSink::setCoreAudioBuffersize()
   // set the buffer size, this affects the number of samples
   // that get rendered every time the audio callback is fired.
   Float32 preferredBufferSize = 512 * m_outputFormat.mChannelsPerFrame / m_outputFormat.mSampleRate;
-  CLog::Log(LOGNOTICE, "%s setting buffer duration to %f", __PRETTY_FUNCTION__, preferredBufferSize);
+  CLog::Log(LOGINFO, "%s setting buffer duration to %f", __PRETTY_FUNCTION__, preferredBufferSize);
   OSStatus status = AudioSessionSetProperty(kAudioSessionProperty_PreferredHardwareIOBufferDuration,
                                    sizeof(preferredBufferSize), &preferredBufferSize);
   if (status != noErr)
@@ -306,7 +296,7 @@ bool CAAudioUnitSink::setCoreAudioInputFormat()
 void CAAudioUnitSink::setCoreAudioPreferredSampleRate()
 {
   Float64 preferredSampleRate = m_outputFormat.mSampleRate;
-  CLog::Log(LOGNOTICE, "%s requesting hw samplerate %f", __PRETTY_FUNCTION__, preferredSampleRate);
+  CLog::Log(LOGINFO, "%s requesting hw samplerate %f", __PRETTY_FUNCTION__, preferredSampleRate);
   OSStatus status = AudioSessionSetProperty(kAudioSessionProperty_PreferredHardwareSampleRate,
                                    sizeof(preferredSampleRate), &preferredSampleRate);
   if (status != noErr)
@@ -358,7 +348,9 @@ bool CAAudioUnitSink::setupAudio()
   Float64 realisedSampleRate = getCoreAudioRealisedSampleRate();
   if (m_outputFormat.mSampleRate != realisedSampleRate)
   {
-    CLog::Log(LOGNOTICE, "%s couldn't set requested samplerate %d, coreaudio will resample to %d instead", __PRETTY_FUNCTION__, (int)m_outputFormat.mSampleRate, (int)realisedSampleRate);
+    CLog::Log(LOGINFO,
+              "%s couldn't set requested samplerate %d, coreaudio will resample to %d instead",
+              __PRETTY_FUNCTION__, (int)m_outputFormat.mSampleRate, (int)realisedSampleRate);
     // if we don't ca to resample - but instead let activeae resample -
     // reflect the realised samplerate to the outputformat here
     // well maybe it is handy in the future - as of writing this
@@ -395,7 +387,8 @@ bool CAAudioUnitSink::setupAudio()
 
   m_setup = true;
   std::string formatString;
-  CLog::Log(LOGNOTICE, "%s setup audio format: %s", __PRETTY_FUNCTION__, StreamDescriptionToString(m_outputFormat, formatString));
+  CLog::Log(LOGINFO, "%s setup audio format: %s", __PRETTY_FUNCTION__,
+            StreamDescriptionToString(m_outputFormat, formatString));
 
   return m_setup;
 }

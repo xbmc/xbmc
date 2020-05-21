@@ -136,10 +136,6 @@ msgctxt "#31033"
 msgid "Your rating"
 msgstr "เรตติ้งของคุณ"
 
-msgctxt "#31034"
-msgid "Extended info"
-msgstr "ข้อมูลเพิ่มเติม"
-
 msgctxt "#31035"
 msgid "Pages"
 msgstr "หน้า"
@@ -252,6 +248,10 @@ msgctxt "#31072"
 msgid "Power Options"
 msgstr "ตัวเลือก ด้านพลังงาน"
 
+msgctxt "#31074"
+msgid "Total duration"
+msgstr "รวมระยะเวลา"
+
 msgctxt "#31075"
 msgid "Movie sets"
 msgstr "ภาพยนตร์ชุด"
@@ -279,10 +279,6 @@ msgstr "การตั้งค่าแสดงแสงสี"
 msgctxt "#31089"
 msgid "Available groups"
 msgstr "กลุ่มที่พบ"
-
-msgctxt "#31090"
-msgid "Search trailer"
-msgstr "ค้นหาตัวอย่างหนัง"
 
 msgctxt "#31092"
 msgid "Video menu"
@@ -364,10 +360,6 @@ msgctxt "#31114"
 msgid "Search YouTube"
 msgstr "ค้นหาจากยูทูป"
 
-msgctxt "#31115"
-msgid "Search TheMovieDB"
-msgstr "ค้นหาจาก TheMovieDB"
-
 msgctxt "#31116"
 msgid "Remove this main menu item"
 msgstr "ลบรายการเมนูหลักนี้"
@@ -399,10 +391,6 @@ msgstr "รายการทีวีที่ยังไม่ได้ดู
 msgctxt "#31123"
 msgid "Same director"
 msgstr "ผู้กำกับเดียวกัน"
-
-msgctxt "#31124"
-msgid "Show images on map"
-msgstr "แสดงภาพบนแผนที่"
 
 msgctxt "#31125"
 msgid "Press up for actor info"

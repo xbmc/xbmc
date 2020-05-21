@@ -31,8 +31,8 @@ namespace PVR
     /*!
      * @brief Create a new instance of the PVR database.
      */
-    CPVRDatabase(void) = default;
-    ~CPVRDatabase(void) override = default;
+    CPVRDatabase() = default;
+    ~CPVRDatabase() override = default;
 
     /*!
      * @brief Open the database.
@@ -94,7 +94,7 @@ namespace PVR
      * @brief Remove all channels from the database.
      * @return True if all channels were removed, false otherwise.
      */
-    bool DeleteChannels(void);
+    bool DeleteChannels();
 
     /*!
      * @brief Add or update a channel entry in the database
@@ -128,7 +128,7 @@ namespace PVR
      * @brief Remove all channel groups from the database
      * @return True if all channel groups were removed.
      */
-    bool DeleteChannelGroups(void);
+    bool DeleteChannelGroups();
 
     /*!
      * @brief Delete a channel group from the database.
@@ -163,7 +163,7 @@ namespace PVR
      * @brief Reset all epg ids to 0
      * @return True when reset, false otherwise.
      */
-    bool ResetEPG(void);
+    bool ResetEPG();
 
     /*! @name Timer methods */
     //@{

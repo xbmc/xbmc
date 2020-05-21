@@ -34,12 +34,6 @@
 						<onclick condition="System.hasAddon(plugin.video.youtube)">ActivateWindow(videos,"plugin://plugin.video.youtube/kodion/search/list/",return)</onclick>
 						<onclick condition="!System.hasAddon(plugin.video.youtube)">InstallAddon(plugin.video.youtube)</onclick>
 					</item>
-					<item>
-						<label>$LOCALIZE[31115]</label>
-						<onclick>Dialog.Close(all)</onclick>
-						<onclick condition="System.hasAddon(script.extendedinfo)">RunScript(script.extendedinfo,info=moviedbbrowser,search=True)</onclick>
-						<onclick condition="!System.hasAddon(script.extendedinfo)">InstallAddon(script.extendedinfo)</onclick>
-					</item>
 				</content>
 			</control>
 		</control>

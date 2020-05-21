@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include "addons/kodi-addon-dev-kit/include/kodi/kodi_game_types.h"
+#include "addons/kodi-addon-dev-kit/include/kodi/addon-instance/Game.h"
 #include "cores/RetroPlayer/streams/RetroPlayerStreamTypes.h"
 #include "games/controllers/ControllerTypes.h"
 #include "input/keyboard/KeyboardTypes.h"

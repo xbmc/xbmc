@@ -39,14 +39,8 @@ void CJNIXBMCVideoView::RegisterNatives(JNIEnv* env)
   }
 }
 
-CJNIXBMCVideoView::CJNIXBMCVideoView()
-  : m_callback(nullptr)
-{
-}
-
 CJNIXBMCVideoView::CJNIXBMCVideoView(const jni::jhobject &object)
   : CJNIBase(object)
-  , m_callback(nullptr)
 {
 }
 

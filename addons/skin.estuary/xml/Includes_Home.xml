@@ -307,8 +307,8 @@
 		<param name="item_limit">20</param>
 		<param name="icon">$INFO[ListItem.Icon]</param>
 		<param name="icon_height">120</param>
-		<param name="pvr_submenu">false</param>
-		<param name="pvr_type">TV</param>
+		<param name="additional_movie_items">false</param>
+		<param name="additional_tvshow_items">false</param>
 		<param name="visible">true</param>
 		<definition>
 			<include content="CategoryLabel">
@@ -406,51 +406,35 @@
 						</control>
 					</control>
 				</focusedlayout>
-				<include condition="!$PARAM[pvr_submenu]" content="SubmenuContent">
-					<param name="widget_target" value="$PARAM[widget_target]"/>
-					<param name="item_limit" value="$PARAM[item_limit]"/>
-					<param name="content_path" value="$PARAM[content_path]"/>
-				</include>
-				<include condition="$PARAM[pvr_submenu]" content="PVRSubMenuContent">
-					<param name="pvr_type" value="$PARAM[pvr_type]"/>
-				</include>
+				<content target="$PARAM[widget_target]" limit="$PARAM[item_limit]">$PARAM[content_path]</content>
+				<include condition="$PARAM[additional_movie_items]" content="MovieSubmenuItems" />
+				<include condition="$PARAM[additional_tvshow_items]" content="TVShowSubmenuItems" />
 			</control>
 		</definition>
 	</include>
-	<include name="SubmenuContent">
-		<content target="$PARAM[widget_target]" limit="$PARAM[item_limit]">$PARAM[content_path]</content>
-	</include>
-	<include name="PVRSubMenuContent">
+	<include name="MovieSubmenuItems">
 		<content>
 			<item>
-				<label>$LOCALIZE[19019]</label>
-				<onclick>ActivateWindow($PARAM[pvr_type]Channels)</onclick>
-				<thumb>DefaultAddonPeripheral.png</thumb>
+				<label>$LOCALIZE[31146]</label>
+				<onclick>ActivateWindow(videos,plugin://script.embuary.info/movie/now_playing,return)</onclick>
+				<thumb>DefaultStudios.png</thumb>
+				<visible>System.AddonIsEnabled(script.embuary.info)</visible>
 			</item>
 			<item>
-				<label>$LOCALIZE[19069]</label>
-				<onclick>ActivateWindow($PARAM[pvr_type]Guide)</onclick>
-				<thumb>icons/pvr/epg.png</thumb>
+				<label>$LOCALIZE[31147]</label>
+				<onclick>ActivateWindow(videos,plugin://script.embuary.info/movie/upcoming,return)</onclick>
+				<thumb>DefaultYear.png</thumb>
+				<visible>System.AddonIsEnabled(script.embuary.info)</visible>
 			</item>
+		</content>
+	</include>
+	<include name="TVShowSubmenuItems">
+		<content>
 			<item>
-				<label>$LOCALIZE[19017]</label>
-				<onclick>ActivateWindow($PARAM[pvr_type]Recordings)</onclick>
-				<thumb>icons/pvr/recording.png</thumb>
-			</item>
-			<item>
-				<label>$LOCALIZE[19040]</label>
-				<onclick>ActivateWindow($PARAM[pvr_type]Timers)</onclick>
-				<thumb>icons/pvr/timer.png</thumb>
-			</item>
-			<item>
-				<label>$LOCALIZE[19138]</label>
-				<onclick>ActivateWindow($PARAM[pvr_type]TimerRules)</onclick>
-				<thumb>icons/pvr/timer-rule.png</thumb>
-			</item>
-			<item>
-				<label>$LOCALIZE[137]</label>
-				<onclick>ActivateWindow($PARAM[pvr_type]Search)</onclick>
-				<thumb>DefaultAddonsSearch.png</thumb>
+				<label>$LOCALIZE[31027]</label>
+				<onclick>ActivateWindow(videos,plugin://script.embuary.info/nextaired,return)</onclick>
+				<thumb>DefaultYear.png</thumb>
+				<visible>System.AddonIsEnabled(script.embuary.info)</visible>
 			</item>
 		</content>
 	</include>
@@ -872,7 +856,7 @@
 				<height>800</height>
 				<texture>$INFO[Window(weather).Property(Map.$PARAM[item_id].Layer)]</texture>
 				<aspectratio>scale</aspectratio>
-				<colordiffuse>70FFFFFF</colordiffuse>
+				<colordiffuse>B0FFFFFF</colordiffuse>
 			</control>
 			<control type="image" id="700$PARAM[item_id]4">
 				<left>1340</left>

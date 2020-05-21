@@ -9,20 +9,22 @@
 #include "AddonVideoCodec.h"
 
 #include "addons/binary-addons/BinaryAddonBase.h"
+#include "cores/VideoPlayer/Buffers/VideoBuffer.h"
 #include "cores/VideoPlayer/DVDCodecs/DVDCodecs.h"
 #include "cores/VideoPlayer/DVDStreamInfo.h"
 #include "cores/VideoPlayer/Interface/Addon/DemuxCrypto.h"
 #include "cores/VideoPlayer/Interface/Addon/TimingConstants.h"
-#include "cores/VideoPlayer/Process/VideoBuffer.h"
 #include "utils/log.h"
 
 using namespace kodi::addon;
 
-CAddonVideoCodec::CAddonVideoCodec(CProcessInfo &processInfo, ADDON::BinaryAddonBasePtr& addonInfo, kodi::addon::IAddonInstance* parentInstance)
+CAddonVideoCodec::CAddonVideoCodec(CProcessInfo& processInfo,
+                                   ADDON::BinaryAddonBasePtr& addonInfo,
+                                   KODI_HANDLE parentInstance)
   : CDVDVideoCodec(processInfo),
-    IAddonInstanceHandler(ADDON_INSTANCE_VIDEOCODEC, addonInfo, parentInstance)
-  , m_codecFlags(0)
-  , m_displayAspect(0.0f)
+    IAddonInstanceHandler(ADDON_INSTANCE_VIDEOCODEC, addonInfo, parentInstance),
+    m_codecFlags(0),
+    m_displayAspect(0.0f)
 {
   m_struct = { { 0 } };
   m_struct.toKodi.kodiInstance = this;
@@ -122,6 +124,9 @@ bool CAddonVideoCodec::CopyToInitData(VIDEOCODEC_INITDATA &initData, CDVDStreamI
       break;
     case CRYPTO_SESSION_SYSTEM_PLAYREADY:
       initData.cryptoInfo.m_CryptoKeySystem = CRYPTO_INFO::CRYPTO_KEY_SYSTEM_PLAYREADY;
+      break;
+    case CRYPTO_SESSION_SYSTEM_WISEPLAY:
+      initData.cryptoInfo.m_CryptoKeySystem = CRYPTO_INFO::CRYPTO_KEY_SYSTEM_WISEPLAY;
       break;
     default:
       return false;
@@ -255,8 +260,14 @@ CDVDVideoCodec::VCReturn CAddonVideoCodec::GetPicture(VideoPicture* pVideoPictur
       }
     }
 
-    CLog::Log(LOGDEBUG, LOGVIDEO, "CAddonVideoCodec: GetPicture::VC_PICTURE with pts %llu %dx%d (%dx%d) %f %p:%d offset:%d,%d,%d, stride:%d,%d,%d", picture.pts, pVideoPicture->iWidth, pVideoPicture->iHeight, pVideoPicture->iDisplayWidth, pVideoPicture->iDisplayHeight, m_displayAspect,
-          picture.decodedData, picture.decodedDataSize, picture.planeOffsets[0], picture.planeOffsets[1], picture.planeOffsets[2], picture.stride[0], picture.stride[1], picture.stride[2]);
+    CLog::Log(LOGDEBUG, LOGVIDEO,
+              "CAddonVideoCodec: GetPicture::VC_PICTURE with pts {} {}x{} ({}x{}) {} {}:{} "
+              "offset:{},{},{}, stride:{},{},{}",
+              picture.pts, pVideoPicture->iWidth, pVideoPicture->iHeight,
+              pVideoPicture->iDisplayWidth, pVideoPicture->iDisplayHeight, m_displayAspect,
+              fmt::ptr(picture.decodedData), picture.decodedDataSize, picture.planeOffsets[0],
+              picture.planeOffsets[1], picture.planeOffsets[2], picture.stride[0],
+              picture.stride[1], picture.stride[2]);
 
     if (picture.width != m_width || picture.height != m_height)
     {
@@ -319,10 +330,10 @@ bool CAddonVideoCodec::GetFrameBuffer(VIDEOCODEC_PICTURE &picture)
   return true;
 }
 
-void CAddonVideoCodec::ReleaseFrameBuffer(void *buffer)
+void CAddonVideoCodec::ReleaseFrameBuffer(KODI_HANDLE videoBufferHandle)
 {
-  if (buffer)
-    static_cast<CVideoBuffer*>(buffer)->Release();
+  if (videoBufferHandle)
+    static_cast<CVideoBuffer*>(videoBufferHandle)->Release();
 }
 
 /*********************     ADDON-TO-KODI    **********************/
@@ -335,10 +346,10 @@ bool CAddonVideoCodec::get_frame_buffer(void* kodiInstance, VIDEOCODEC_PICTURE *
   return static_cast<CAddonVideoCodec*>(kodiInstance)->GetFrameBuffer(*picture);
 }
 
-void CAddonVideoCodec::release_frame_buffer(void* kodiInstance, void *buffer)
+void CAddonVideoCodec::release_frame_buffer(void* kodiInstance, KODI_HANDLE videoBufferHandle)
 {
   if (!kodiInstance)
     return;
 
-  static_cast<CAddonVideoCodec*>(kodiInstance)->ReleaseFrameBuffer(buffer);
+  static_cast<CAddonVideoCodec*>(kodiInstance)->ReleaseFrameBuffer(videoBufferHandle);
 }

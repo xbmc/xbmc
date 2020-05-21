@@ -61,4 +61,4 @@ TEST_P(TestVideoInfoScanner, EnumerateEpisodeItem)
     EXPECT_EQ(expected[i], result[i]);
 }
 
-INSTANTIATE_TEST_CASE_P(VideoInfoScanner, TestVideoInfoScanner, ValuesIn(TestData));
+INSTANTIATE_TEST_SUITE_P(VideoInfoScanner, TestVideoInfoScanner, ValuesIn(TestData));

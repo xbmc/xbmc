@@ -27,7 +27,13 @@ const std::string VALID_ADDON_VERSION_CHARACTERS = "abcdefghijklmnopqrstuvwxyzAB
 namespace ADDON
 {
   AddonVersion::AddonVersion(const std::string& version)
-  : mEpoch(0), mUpstream(version.empty() ? "0.0.0" : version)
+  : mEpoch(0), mUpstream(version.empty() ?
+                         "0.0.0" :
+                         [&version] {
+                             auto versionLowerCase = std::string(version);
+                             StringUtils::ToLower(versionLowerCase);
+                             return versionLowerCase;
+                         }())
   {
     size_t pos = mUpstream.find(':');
     if (pos != std::string::npos)

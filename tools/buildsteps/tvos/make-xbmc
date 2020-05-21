@@ -1,0 +1,7 @@
+WORKSPACE=${WORKSPACE:-$( cd $(dirname $0)/../../.. ; pwd -P )}
+XBMC_PLATFORM_DIR=tvos
+. $WORKSPACE/tools/buildsteps/defaultenv
+
+cd $WORKSPACE/build;xcodebuild -target deb -configuration $Configuration build \
+  SDKROOT=appletvos$SDK_VERSION XBMC_DEPENDS_ROOT=$XBMC_DEPENDS_ROOT \
+  CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGN_ENTITLEMENTS="" -CODE_SIGNING_ALLOWED="NO"

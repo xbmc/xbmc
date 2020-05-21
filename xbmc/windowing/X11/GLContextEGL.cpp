@@ -25,15 +25,17 @@
 
 #define EGL_NO_CONFIG (EGLConfig)0
 
-CGLContextEGL::CGLContextEGL(Display *dpy) : CGLContext(dpy)
+CGLContextEGL::CGLContextEGL(Display *dpy, EGLint renderingApi) : CGLContext(dpy)
 {
   m_extPrefix = "EGL_";
+  m_renderingApi = renderingApi;
+
   m_eglDisplay = EGL_NO_DISPLAY;
   m_eglSurface = EGL_NO_SURFACE;
   m_eglContext = EGL_NO_CONTEXT;
   m_eglConfig = EGL_NO_CONFIG;
 
-  eglGetPlatformDisplayEXT = (PFNEGLGETPLATFORMDISPLAYEXTPROC)eglGetProcAddress("eglGetPlatformDisplayEXT");
+  m_eglGetPlatformDisplayEXT = (PFNEGLGETPLATFORMDISPLAYEXTPROC)eglGetProcAddress("eglGetPlatformDisplayEXT");
 
   CSettingsComponent *settings = CServiceBroker::GetSettingsComponent();
   if (settings)
@@ -59,7 +61,7 @@ bool CGLContextEGL::Refresh(bool force, int screen, Window glWindow, bool &newCo
       m_eglSurface = eglCreateWindowSurface(m_eglDisplay, m_eglConfig, glWindow, NULL);
       if (m_eglSurface == EGL_NO_SURFACE)
       {
-        CLog::Log(LOGERROR, "failed to create EGL window surface %d\n", eglGetError());
+        CLog::Log(LOGERROR, "failed to create EGL window surface %d", eglGetError());
         return false;
       }
     }
@@ -73,14 +75,14 @@ bool CGLContextEGL::Refresh(bool force, int screen, Window glWindow, bool &newCo
   Destroy();
   newContext = true;
 
-  if (eglGetPlatformDisplayEXT)
+  if (m_eglGetPlatformDisplayEXT)
   {
     EGLint attribs[] =
     {
       EGL_PLATFORM_X11_SCREEN_EXT, screen,
       EGL_NONE
     };
-    m_eglDisplay = eglGetPlatformDisplayEXT(EGL_PLATFORM_X11_EXT,(EGLNativeDisplayType)m_dpy,
+    m_eglDisplay = m_eglGetPlatformDisplayEXT(EGL_PLATFORM_X11_EXT,(EGLNativeDisplayType)m_dpy,
                                             attribs);
   }
   else
@@ -93,14 +95,13 @@ bool CGLContextEGL::Refresh(bool force, int screen, Window glWindow, bool &newCo
   }
   if (!eglInitialize(m_eglDisplay, NULL, NULL))
   {
-    CLog::Log(LOGERROR, "failed to initialize egl\n");
+    CLog::Log(LOGERROR, "failed to initialize egl");
     Destroy();
     return false;
   }
-
-  if (!eglBindAPI(EGL_OPENGL_API))
+  if (!eglBindAPI(m_renderingApi))
   {
-    CLog::Log(LOGERROR, "failed to initialize egl");
+    CLog::Log(LOGERROR, "failed to bind rendering API");
     Destroy();
     return false;
   }
@@ -140,7 +141,7 @@ bool CGLContextEGL::Refresh(bool force, int screen, Window glWindow, bool &newCo
     return false;
   }
 
-  CLog::Log(LOGNOTICE, "Using visual 0x%x", visualid);
+  CLog::Log(LOGINFO, "Using visual 0x%x", visualid);
 
   m_eglSurface = eglCreateWindowSurface(m_eglDisplay, m_eglConfig, glWindow, NULL);
   if (m_eglSurface == EGL_NO_SURFACE)
@@ -169,23 +170,24 @@ bool CGLContextEGL::Refresh(bool force, int screen, Window glWindow, bool &newCo
 
     if (m_eglContext == EGL_NO_CONTEXT)
     {
-      CLog::Log(LOGERROR, "failed to create EGL context\n");
+      CLog::Log(LOGERROR, "failed to create EGL context");
       Destroy();
       return false;
     }
 
-    CLog::Log(LOGWARNING, "Failed to get an OpenGL context supporting core profile 3.2,  \
-                             using legacy mode with reduced feature set");
+    CLog::Log(LOGWARNING, "Failed to get an OpenGL context supporting core profile 3.2, "
+                          "using legacy mode with reduced feature set");
   }
 
   if (!eglMakeCurrent(m_eglDisplay, m_eglSurface, m_eglSurface, m_eglContext))
   {
-    CLog::Log(LOGERROR, "Failed to make context current %p %p %p\n", m_eglDisplay, m_eglSurface, m_eglContext);
+    CLog::Log(LOGERROR, "Failed to make context current %p %p %p", m_eglDisplay, m_eglSurface,
+              m_eglContext);
     Destroy();
     return false;
   }
 
-  eglGetSyncValuesCHROMIUM = (PFNEGLGETSYNCVALUESCHROMIUMPROC)eglGetProcAddress("eglGetSyncValuesCHROMIUM");
+  m_eglGetSyncValuesCHROMIUM = (PFNEGLGETSYNCVALUESCHROMIUMPROC)eglGetProcAddress("eglGetSyncValuesCHROMIUM");
 
   m_usePB = false;
   return true;
@@ -213,9 +215,9 @@ bool CGLContextEGL::CreatePB()
 
   Destroy();
 
-  if (eglGetPlatformDisplayEXT)
+  if (m_eglGetPlatformDisplayEXT)
   {
-    m_eglDisplay = eglGetPlatformDisplayEXT(EGL_PLATFORM_X11_EXT,(EGLNativeDisplayType)m_dpy,
+    m_eglDisplay = m_eglGetPlatformDisplayEXT(EGL_PLATFORM_X11_EXT,(EGLNativeDisplayType)m_dpy,
                                             NULL);
   }
   else
@@ -228,13 +230,13 @@ bool CGLContextEGL::CreatePB()
   }
   if (!eglInitialize(m_eglDisplay, NULL, NULL))
   {
-    CLog::Log(LOGERROR, "failed to initialize egl\n");
+    CLog::Log(LOGERROR, "failed to initialize egl");
     Destroy();
     return false;
   }
-  if (!eglBindAPI(EGL_OPENGL_API))
+  if (!eglBindAPI(m_renderingApi))
   {
-    CLog::Log(LOGERROR, "failed to initialize egl");
+    CLog::Log(LOGERROR, "failed to bind rendering API");
     Destroy();
     return false;
   }
@@ -269,7 +271,7 @@ bool CGLContextEGL::CreatePB()
 
     if (m_eglContext == EGL_NO_CONTEXT)
     {
-      CLog::Log(LOGERROR, "failed to create EGL context\n");
+      CLog::Log(LOGERROR, "failed to create EGL context");
       Destroy();
       return false;
     }
@@ -277,7 +279,8 @@ bool CGLContextEGL::CreatePB()
 
   if (!eglMakeCurrent(m_eglDisplay, m_eglSurface, m_eglSurface, m_eglContext))
   {
-    CLog::Log(LOGERROR, "Failed to make context current %p %p %p\n", m_eglDisplay, m_eglSurface, m_eglContext);
+    CLog::Log(LOGERROR, "Failed to make context current %p %p %p", m_eglDisplay, m_eglSurface,
+              m_eglContext);
     Destroy();
     return false;
   }
@@ -419,14 +422,20 @@ void CGLContextEGL::SwapBuffers()
   uint64_t cont = m_sync.cont;
   uint64_t interval = m_sync.interval;
 
-  eglGetSyncValuesCHROMIUM(m_eglDisplay, m_eglSurface, &ust1, &msc1, &sbc1);
+  if (m_eglGetSyncValuesCHROMIUM)
+  {
+    m_eglGetSyncValuesCHROMIUM(m_eglDisplay, m_eglSurface, &ust1, &msc1, &sbc1);
+  }
 
   eglSwapBuffers(m_eglDisplay, m_eglSurface);
+
+  if (!m_eglGetSyncValuesCHROMIUM)
+    return;
 
   clock_gettime(CLOCK_MONOTONIC, &nowTs);
   now = static_cast<uint64_t>(nowTs.tv_sec) * 1000000000ULL + nowTs.tv_nsec;
 
-  eglGetSyncValuesCHROMIUM(m_eglDisplay, m_eglSurface, &ust2, &msc2, &sbc2);
+  m_eglGetSyncValuesCHROMIUM(m_eglDisplay, m_eglSurface, &ust2, &msc2, &sbc2);
 
   if ((msc1 - m_sync.msc1) > 2)
   {

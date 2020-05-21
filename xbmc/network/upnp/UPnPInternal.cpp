@@ -354,25 +354,29 @@ BuildObject(CFileItem&                    item,
             CUPnPServer*                  upnp_server /* = NULL */,
             UPnPService                   upnp_service /* = UPnPServiceNone */)
 {
-    PLT_MediaItemResource resource;
-    PLT_MediaObject*      object = NULL;
-    std::string thumb;
+  static Logger logger = CServiceBroker::GetLogging().GetLogger("UPNP::BuildObject");
 
-    CLog::Log(LOGDEBUG, "UPnP: Building didl for object '%s'", item.GetPath().c_str());
+  PLT_MediaItemResource resource;
+  PLT_MediaObject* object = NULL;
+  std::string thumb;
 
-    EClientQuirks quirks = GetClientQuirks(context);
+  logger->debug("Building didl for object '{}'", item.GetPath());
 
-    // get list of ip addresses
-    NPT_List<NPT_IpAddress> ips;
-    NPT_HttpUrl rooturi;
-    NPT_CHECK_LABEL(PLT_UPnPMessageHelper::GetIPAddresses(ips), failure);
+  EClientQuirks quirks = GetClientQuirks(context);
 
-    // if we're passed an interface where we received the request from
-    // move the ip to the top
-    if (context && context->GetLocalAddress().GetIpAddress().ToString() != "0.0.0.0") {
-        rooturi = NPT_HttpUrl(context->GetLocalAddress().GetIpAddress().ToString(), context->GetLocalAddress().GetPort(), "/");
-        ips.Remove(context->GetLocalAddress().GetIpAddress());
-        ips.Insert(ips.GetFirstItem(), context->GetLocalAddress().GetIpAddress());
+  // get list of ip addresses
+  NPT_List<NPT_IpAddress> ips;
+  NPT_HttpUrl rooturi;
+  NPT_CHECK_LABEL(PLT_UPnPMessageHelper::GetIPAddresses(ips), failure);
+
+  // if we're passed an interface where we received the request from
+  // move the ip to the top
+  if (context && context->GetLocalAddress().GetIpAddress().ToString() != "0.0.0.0")
+  {
+    rooturi = NPT_HttpUrl(context->GetLocalAddress().GetIpAddress().ToString(),
+                          context->GetLocalAddress().GetPort(), "/");
+    ips.Remove(context->GetLocalAddress().GetIpAddress());
+    ips.Insert(ips.GetFirstItem(), context->GetLocalAddress().GetIpAddress());
     } else if(upnp_server) {
         rooturi = NPT_HttpUrl("localhost", upnp_server->GetPort(), "/");
     }
@@ -576,7 +580,13 @@ BuildObject(CFileItem&                    item,
             thumb_loader->LoadItem(&item);
 
         // finally apply the found artwork
-        thumb = item.GetArt("thumb");
+        // note: movies should use poster as the preferred "thumb" image
+        if (item.HasVideoInfoTag() && item.GetVideoInfoTag()->m_type == MediaTypeMovie &&
+            item.HasArt("poster"))
+          thumb = item.GetArt("poster");
+        else
+          thumb = item.GetArt("thumb");
+
         if (!thumb.empty()) {
             PLT_AlbumArtInfo art;
             art.uri = upnp_server->BuildSafeResourceUri(
@@ -953,9 +963,9 @@ CFileItemPtr BuildObject(PLT_MediaObject* entry,
 
   // look for date?
   if(entry->m_Description.date.GetLength()) {
-    SYSTEMTIME time = {};
-    sscanf(entry->m_Description.date, "%hu-%hu-%huT%hu:%hu:%hu",
-           &time.wYear, &time.wMonth, &time.wDay, &time.wHour, &time.wMinute, &time.wSecond);
+    KODI::TIME::SystemTime time = {};
+    sscanf(entry->m_Description.date, "%hu-%hu-%huT%hu:%hu:%hu", &time.year, &time.month, &time.day,
+           &time.hour, &time.minute, &time.second);
     pItem->m_dateTime = time;
   }
 
@@ -1036,6 +1046,8 @@ struct ResourcePrioritySort
 
 bool GetResource(const PLT_MediaObject* entry, CFileItem& item)
 {
+  static Logger logger = CServiceBroker::GetLogging().GetLogger("CUPnPDirectory::GetResource");
+
   PLT_MediaItemResource resource;
 
   // store original path so we remember it
@@ -1061,15 +1073,13 @@ bool GetResource(const PLT_MediaObject* entry, CFileItem& item)
 
   // look for content type in protocol info
   if (resource.m_ProtocolInfo.IsValid()) {
-    CLog::Log(LOGDEBUG, "CUPnPDirectory::GetResource - resource protocol info '%s'",
-              (const char*)(resource.m_ProtocolInfo.ToString()));
+    logger->debug("resource protocol info '{}'", (const char*)(resource.m_ProtocolInfo.ToString()));
 
     if (resource.m_ProtocolInfo.GetContentType().Compare("application/octet-stream") != 0) {
       item.SetMimeType((const char*)resource.m_ProtocolInfo.GetContentType());
     }
   } else {
-    CLog::Log(LOGERROR, "CUPnPDirectory::GetResource - invalid protocol info '%s'",
-              (const char*)(resource.m_ProtocolInfo.ToString()));
+    logger->error("invalid protocol info '{}'", (const char*)(resource.m_ProtocolInfo.ToString()));
   }
 
   // look for subtitles

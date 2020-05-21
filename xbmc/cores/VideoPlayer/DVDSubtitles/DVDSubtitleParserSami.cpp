@@ -35,7 +35,7 @@ bool CDVDSubtitleParserSami::Open(CDVDStreamInfo &hints)
   char line[1024];
 
   CRegExp reg(true);
-  if (!reg.RegComp("<SYNC START=([0-9]+)>"))
+  if (!reg.RegComp("<SYNC START=\"?([0-9]+)\"?>"))
     return false;
 
   std::string strFileName;

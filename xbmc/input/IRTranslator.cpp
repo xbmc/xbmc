@@ -143,7 +143,7 @@ unsigned int CIRTranslator::TranslateButton(const std::string &szDevice, const s
     return 0;
 
   // Convert the button to code
-  if (strnicmp((*it2).second.c_str(), "obc", 3) == 0)
+  if (StringUtils::CompareNoCase((*it2).second, "obc", 3) == 0)
     return TranslateUniversalRemoteString((*it2).second);
 
   return TranslateString((*it2).second);
@@ -230,7 +230,7 @@ uint32_t CIRTranslator::TranslateString(std::string strButton)
 
 uint32_t CIRTranslator::TranslateUniversalRemoteString(const std::string &szButton)
 {
-  if (szButton.empty() || szButton.length() < 4 || strnicmp(szButton.c_str(), "obc", 3))
+  if (szButton.empty() || szButton.length() < 4 || StringUtils::CompareNoCase(szButton, "obc", 3))
     return 0;
 
   const char *szCode = szButton.c_str() + 3;

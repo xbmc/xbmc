@@ -172,7 +172,7 @@ protected:
   bool ScrollingUp() const { return m_scroller.IsScrollingUp(); };
   void OnNextLetter();
   void OnPrevLetter();
-  void OnJumpLetter(char letter, bool skip = false);
+  void OnJumpLetter(std::string letter, bool skip = false);
   void OnJumpSMS(int letter);
   std::vector< std::pair<int, std::string> > m_letterOffsets;
 
@@ -225,8 +225,11 @@ private:
   CStopWatch m_matchTimer;
   std::string m_match;
   float m_scrollItemsPerFrame;
-
   static const int letter_match_timeout = 1000;
+
+  // early inertial scroll cancellation
+  bool m_waitForScrollEnd = false;
+  float m_lastScrollValue = 0.0f;
 };
 
 

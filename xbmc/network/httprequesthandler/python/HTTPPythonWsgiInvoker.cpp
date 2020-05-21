@@ -8,6 +8,7 @@
 
 #include "HTTPPythonWsgiInvoker.h"
 
+#include "ServiceBroker.h"
 #include "URL.h"
 #include "addons/Webinterface.h"
 #include "interfaces/legacy/wsgi/WsgiErrorStream.h"
@@ -25,7 +26,6 @@
 #define RUNSCRIPT_PREAMBLE \
   "" \
   "import " MODULE "\n" \
-  "xbmc.abortRequested = False\n" \
   "class xbmcout:\n" \
   "  def __init__(self, loglevel=" MODULE ".LOGNOTICE):\n" \
   "    self.ll=loglevel\n" \
@@ -119,10 +119,13 @@ void CHTTPPythonWsgiInvoker::executeScript(FILE* fp, const std::string& script, 
       fp == NULL || script.empty() || moduleDict == NULL)
     return;
 
+  auto logger = CServiceBroker::GetLogging().GetLogger(
+      StringUtils::Format("CHTTPPythonWsgiInvoker[{}]", script));
+
   ADDON::CWebinterface* webinterface = static_cast<ADDON::CWebinterface*>(m_addon.get());
   if (webinterface->GetType() != ADDON::WebinterfaceTypeWsgi)
   {
-    CLog::Log(LOGERROR, "CHTTPPythonWsgiInvoker: trying to execute a non-WSGI script at %s", script.c_str());
+    logger->error("trying to execute a non-WSGI script");
     return;
   }
 
@@ -143,34 +146,34 @@ void CHTTPPythonWsgiInvoker::executeScript(FILE* fp, const std::string& script, 
   pyScript = PyUnicode_FromStringAndSize(scriptName.c_str(), scriptName.size());
   if (pyScript == NULL)
   {
-    CLog::Log(LOGERROR, "CHTTPPythonWsgiInvoker: failed to convert script \"%s\" to python string", script.c_str());
+    logger->error("failed to convert script to python string");
     return;
   }
 
   // load the script
-  CLog::Log(LOGDEBUG, "CHTTPPythonWsgiInvoker: loading WSGI script \"%s\"", script.c_str());
+  logger->debug("loading script");
   pyModule = PyImport_Import(pyScript);
   Py_DECREF(pyScript);
   if (pyModule == NULL)
   {
-    CLog::Log(LOGERROR, "CHTTPPythonWsgiInvoker: failed to load WSGI script \"%s\"", script.c_str());
+    logger->error("failed to load WSGI script");
     return;
   }
 
   // get the entry point
   const std::string& entryPoint = webinterface->EntryPoint();
-  CLog::Log(LOGDEBUG, "CHTTPPythonWsgiInvoker: loading entry point \"%s\" from WSGI script \"%s\"", entryPoint.c_str(), script.c_str());
+  logger->debug(R"(loading entry point "{}")", entryPoint);
   pyEntryPoint = PyObject_GetAttrString(pyModule, entryPoint.c_str());
   if (pyEntryPoint == NULL)
   {
-    CLog::Log(LOGERROR, "CHTTPPythonWsgiInvoker: failed to entry point \"%s\" from WSGI script \"%s\"", entryPoint.c_str(), script.c_str());
+    logger->error(R"(failed to load entry point "{}")", entryPoint);
     goto cleanup;
   }
 
   // check if the loaded entry point is a callable function
   if (!PyCallable_Check(pyEntryPoint))
   {
-    CLog::Log(LOGERROR, "CHTTPPythonWsgiInvoker: defined entry point \"%s\" from WSGI script \"%s\" is not callable", entryPoint.c_str(), script.c_str());
+    logger->error(R"(defined entry point "{}" is not callable)", entryPoint);
     goto cleanup;
   }
 
@@ -178,7 +181,7 @@ void CHTTPPythonWsgiInvoker::executeScript(FILE* fp, const std::string& script, 
   m_wsgiResponse = new XBMCAddon::xbmcwsgi::WsgiResponse();
   if (m_wsgiResponse == NULL)
   {
-    CLog::Log(LOGERROR, "CHTTPPythonWsgiInvoker: failed to create WsgiResponse object for WSGI script \"%s\"", script.c_str());
+    logger->error("failed to create WsgiResponse object");
     goto cleanup;
   }
 
@@ -203,17 +206,18 @@ void CHTTPPythonWsgiInvoker::executeScript(FILE* fp, const std::string& script, 
   }
   catch (const XBMCAddon::WrongTypeException& e)
   {
-    CLog::Log(LOGERROR, "CHTTPPythonWsgiInvoker: failed to prepare WsgiResponse object for WSGI script \"%s\" with wrong type exception: %s", script.c_str(), e.GetMessage());
+    logger->error("failed to prepare WsgiResponse object with wrong type exception: {}",
+                  e.GetMessage());
     goto cleanup;
   }
   catch (const XbmcCommons::Exception& e)
   {
-    CLog::Log(LOGERROR, "CHTTPPythonWsgiInvoker: failed to prepare WsgiResponse object for WSGI script \"%s\" with exception: %s", script.c_str(), e.GetMessage());
+    logger->error("failed to prepare WsgiResponse object with exception: {}", e.GetMessage());
     goto cleanup;
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "CHTTPPythonWsgiInvoker: failed to prepare WsgiResponse object for WSGI script \"%s\" with unknown exception", script.c_str());
+    logger->error("failed to prepare WsgiResponse object with unknown exception");
     goto cleanup;
   }
 
@@ -227,7 +231,7 @@ void CHTTPPythonWsgiInvoker::executeScript(FILE* fp, const std::string& script, 
   Py_DECREF(pyArgs);
   if (pyResult == NULL)
   {
-    CLog::Log(LOGERROR, "CHTTPPythonWsgiInvoker: no result for WSGI script \"%s\"", script.c_str());
+    logger->error("no result");
     goto cleanup;
   }
 
@@ -235,7 +239,7 @@ void CHTTPPythonWsgiInvoker::executeScript(FILE* fp, const std::string& script, 
   pyResultIterator = PyObject_GetIter(pyResult);
   if (pyResultIterator == NULL || !PyIter_Check(pyResultIterator))
   {
-    CLog::Log(LOGERROR, "CHTTPPythonWsgiInvoker: result of WSGI script \"%s\" is not iterable", script.c_str());
+    logger->error("result is not iterable");
     goto cleanup;
   }
 
@@ -249,17 +253,18 @@ void CHTTPPythonWsgiInvoker::executeScript(FILE* fp, const std::string& script, 
     }
     catch (const XBMCAddon::WrongTypeException& e)
     {
-      CLog::Log(LOGERROR, "CHTTPPythonWsgiInvoker: failed to parse result iterable object for WSGI script \"%s\" with wrong type exception: %s", script.c_str(), e.GetMessage());
+      logger->error("failed to parse result iterable object with wrong type exception: {}",
+                    e.GetMessage());
       goto cleanup;
     }
     catch (const XbmcCommons::Exception& e)
     {
-      CLog::Log(LOGERROR, "CHTTPPythonWsgiInvoker: failed to parse result iterable object for WSGI script \"%s\" with exception: %s", script.c_str(), e.GetMessage());
+      logger->error("failed to parse result iterable object with exception: {}", e.GetMessage());
       goto cleanup;
     }
     catch (...)
     {
-      CLog::Log(LOGERROR, "CHTTPPythonWsgiInvoker: failed to parse result iterable object for WSGI script \"%s\" with unknown exception", script.c_str());
+      logger->error("failed to parse result iterable object with unknown exception");
       goto cleanup;
     }
 
@@ -278,7 +283,7 @@ cleanup:
     if (PyObject_HasAttrString(pyResultIterator, "close") == 1)
     {
       if (PyObject_CallMethod(pyResultIterator, "close", NULL) == NULL)
-        CLog::Log(LOGERROR, "CHTTPPythonWsgiInvoker: failed to close iterator object for WSGI script \"%s\"", script.c_str());
+        logger->error("failed to close iterator object");
     }
     Py_DECREF(pyResultIterator);
   }

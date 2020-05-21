@@ -8,17 +8,18 @@
 
 #pragma once
 
-#include "IDirectory.h"
+#include "IFileDirectory.h"
 
 namespace XFILE
 {
-class CISO9660Directory :
-      public IDirectory
+
+class CISO9660Directory : public IFileDirectory
 {
 public:
-  CISO9660Directory(void);
-  ~CISO9660Directory(void) override;
-  bool GetDirectory(const CURL& url, CFileItemList &items) override;
+  CISO9660Directory() = default;
+  ~CISO9660Directory() = default;
+  bool GetDirectory(const CURL& url, CFileItemList& items) override;
   bool Exists(const CURL& url) override;
+  bool ContainsFiles(const CURL& url) override { return true; }
 };
 }

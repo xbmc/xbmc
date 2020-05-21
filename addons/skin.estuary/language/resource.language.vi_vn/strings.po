@@ -22,7 +22,15 @@ msgstr "Đang phát"
 
 msgctxt "#31001"
 msgid "Search..."
-msgstr "Tìm Kiếm..."
+msgstr "Tìm kiếm..."
+
+msgctxt "#31002"
+msgid "Show media fanart as background"
+msgstr "Hiển thị fanart của đa phương tiện làm ảnh nền"
+
+msgctxt "#31003"
+msgid "Cinema mode"
+msgstr "Chế độ chiếu phim"
 
 msgctxt "#31004"
 msgid "Change mode"
@@ -32,6 +40,58 @@ msgctxt "#31005"
 msgid "Watch as 2D"
 msgstr "Xem 2D"
 
+msgctxt "#31006"
+msgid "Random movies"
+msgstr "Phim ngẫu nhiên"
+
+msgctxt "#31007"
+msgid "Unwatched movies"
+msgstr "Phim chưa xem"
+
+msgctxt "#31008"
+msgid "Enable category widgets"
+msgstr "Bật danh mục tiện ích"
+
+msgctxt "#31009"
+msgid "Download icons"
+msgstr "Tải xuống biểu tượng"
+
+msgctxt "#31010"
+msgid "In progress movies"
+msgstr "Phim đang xem"
+
+msgctxt "#31011"
+msgid "Most played albums"
+msgstr "Album được phát nhiều nhất"
+
+msgctxt "#31012"
+msgid "Random albums"
+msgstr "Album ngẫu nhiên"
+
+msgctxt "#31013"
+msgid "Random artists"
+msgstr "Ca sĩ ngẫu nhiên"
+
+msgctxt "#31014"
+msgid "Unplayed albums"
+msgstr "Album chưa phát"
+
+msgctxt "#31015"
+msgid "Recent recordings"
+msgstr "Bản ghi gần đây"
+
+msgctxt "#31016"
+msgid "Recently played channels"
+msgstr "Kênh đã phát gần đây"
+
+msgctxt "#31017"
+msgid "Rated"
+msgstr "Đã xếp hạng"
+
+msgctxt "#31018"
+msgid "Recently played channels"
+msgstr "Kênh đã phát gần đây"
+
 msgctxt "#31019"
 msgid "Forecast"
 msgstr "Dự báo"
@@ -40,9 +100,81 @@ msgctxt "#31020"
 msgid "Actions"
 msgstr "Hành động"
 
+msgctxt "#31021"
+msgid "Misc options"
+msgstr "Tùy chọn linh tinh"
+
+msgctxt "#31022"
+msgid "Sort by"
+msgstr "Sắp xếp theo"
+
+msgctxt "#31023"
+msgid "Viewtype"
+msgstr "Kiểu xem"
+
+msgctxt "#31024"
+msgid "Choose rating to display for media items"
+msgstr "Chọn đánh giá để hiển thị cho các mục đa phương tiện"
+
+msgctxt "#31025"
+msgid "No favourites found. You can add any item from media views to this list by using the context menu."
+msgstr "Không tìm thấy yêu thích. Bạn có thể thêm bất kỳ mục nào từ chế độ xem đa phương tiện vào danh sách này bằng cách sử dụng menu ngữ cảnh."
+
+msgctxt "#31026"
+msgid "Timeshift"
+msgstr "Timeshift"
+
+msgctxt "#31028"
+msgid "Show fanart"
+msgstr "Hiển thị fanart"
+
+msgctxt "#31029"
+msgid "Last logged in"
+msgstr "Đăng nhập lần cuối"
+
+msgctxt "#31030"
+msgid "System memory usage"
+msgstr "Sử dụng bộ nhớ hệ thống"
+
+msgctxt "#31031"
+msgid "Version info"
+msgstr "Thông tin phiên bản"
+
+msgctxt "#31032"
+msgid "Order"
+msgstr "Sắp xếp"
+
+msgctxt "#31033"
+msgid "Your rating"
+msgstr "Đánh giá của bạn"
+
+msgctxt "#31035"
+msgid "Pages"
+msgstr "Trang"
+
+msgctxt "#31036"
+msgid "items"
+msgstr "mục"
+
 msgctxt "#31038"
 msgid "Rewind"
-msgstr "Quay Lại"
+msgstr "Quay lại"
+
+msgctxt "#31039"
+msgid "Fast forward"
+msgstr "Tua tới nhanh"
+
+msgctxt "#31041"
+msgid "Camera manufacturer"
+msgstr "Nhà sản xuất máy ảnh"
+
+msgctxt "#31042"
+msgid "Playlist options"
+msgstr "Tùy chọn danh sách phát"
+
+msgctxt "#31043"
+msgid "Set the type and add rules to create a smart playlist. These playlists are dynamic and include all media items from your database which apply to your chosen rules."
+msgstr "Đặt kiểu và thêm quy tắc để tạo danh sách phát thông minh. Danh sách phát này linh động và bao gồm tất cả các mục đa phương tiện từ cơ sở dữ liệu của bạn áp dụng cho các quy tắc bạn đã chọn."
 
 msgctxt "#31044"
 msgid "Add group"
@@ -56,17 +188,125 @@ msgctxt "#31046"
 msgid "Delete group"
 msgstr "Xóa nhóm"
 
+msgctxt "#31048"
+msgid "Available"
+msgstr "Có sẵn"
+
+msgctxt "#31050"
+msgid "Press [B]OK[/B] to stop"
+msgstr "Nhấn [B]OK[/B] để dừng"
+
+msgctxt "#31052"
+msgid "filtered"
+msgstr "đã lọc"
+
 msgctxt "#31053"
 msgid "Arial based"
 msgstr "Theo chuẩn Arial"
+
+msgctxt "#31054"
+msgid "Press [B]Left[/B] to rewind, or [B]Right[/B] to fast-forward"
+msgstr "Nhấn [B]Trái[/B] để tua lại hoặc [B]Phải[/B] để tua tới nhanh"
+
+msgctxt "#31056"
+msgid "Go to playlist"
+msgstr "Đi đến danh sách phát"
+
+msgctxt "#31057"
+msgid "Show login screen on startup"
+msgstr "Hiển thị màn hình đăng nhập khi khởi động"
+
+msgctxt "#31058"
+msgid "Automatic Login on startup"
+msgstr "Đăng nhập tự động khi khởi động"
+
+msgctxt "#31061"
+msgid "Main menu items"
+msgstr "Mục menu chính"
+
+msgctxt "#31062"
+msgid "Choose weather fanart pack"
+msgstr "Chọn gói fanart thời tiết"
+
+msgctxt "#31063"
+msgid "Sections"
+msgstr "Phần"
+
+msgctxt "#31065"
+msgid "Video playlist"
+msgstr "Danh sách phát video"
+
+msgctxt "#31066"
+msgid "Music playlist"
+msgstr "Danh sách nhạc"
+
+msgctxt "#31067"
+msgid "Event log"
+msgstr "Nhật ký sự kiện"
+
+msgctxt "#31068"
+msgid "Choose presets"
+msgstr "Chọn mẫu cài đặt"
 
 msgctxt "#31069"
 msgid "Last Updated"
 msgstr "Cập nhật cuối cùng"
 
+msgctxt "#31071"
+msgid "by"
+msgstr "bởi"
+
 msgctxt "#31072"
 msgid "Power Options"
 msgstr "Tùy chọn nguồn"
+
+msgctxt "#31073"
+msgid "Total length"
+msgstr "Tổng chiều dài"
+
+msgctxt "#31074"
+msgid "Total duration"
+msgstr "Tổng thời gian"
+
+msgctxt "#31075"
+msgid "Movie sets"
+msgstr "Loạt phim"
+
+msgctxt "#31079"
+msgid "Cast not available"
+msgstr "Diễn viên không có sẵn"
+
+msgctxt "#31080"
+msgid "Ends at"
+msgstr "Kết thúc vào"
+
+msgctxt "#31082"
+msgid "Lyrics add-on"
+msgstr "Tiện ích lời bài hát"
+
+msgctxt "#31083"
+msgid "Lyrics add-on settings"
+msgstr "Cài đặt tiện ích lời bài hát"
+
+msgctxt "#31084"
+msgid "Visualisation settings"
+msgstr "Cài đặt trực quan"
+
+msgctxt "#31089"
+msgid "Available groups"
+msgstr "Nhóm có sẵn"
+
+msgctxt "#31092"
+msgid "Video menu"
+msgstr "Menu video"
+
+msgctxt "#31093"
+msgid "Show weather info in top bar"
+msgstr "Hiển thị thông tin thời tiết ở thanh trên cùng"
+
+msgctxt "#31095"
+msgid "Use slide animations"
+msgstr "Sử dụng hoạt ảnh khi trượt"
 
 msgctxt "#31096"
 msgid "Local subtitle available"
@@ -76,6 +316,254 @@ msgctxt "#31097"
 msgid "Channel options"
 msgstr "Thiết lập kênh"
 
+msgctxt "#31098"
+msgid "Select your Kodi user profile[CR]to login and continue"
+msgstr "Chọn hồ sơ người dùng Kodi[CR]để đăng nhập và tiếp tục"
+
+msgctxt "#31099"
+msgid "IconWall"
+msgstr "IconWall"
+
+msgctxt "#31100"
+msgid "Shift"
+msgstr "Shift"
+
+msgctxt "#31101"
+msgid "InfoWall"
+msgstr "InfoWall"
+
+msgctxt "#31102"
+msgid "Wall"
+msgstr "Wall"
+
+msgctxt "#31103"
+msgid "Enter text here..."
+msgstr "Nhập văn bản ở đây..."
+
+msgctxt "#31104"
+msgid "Your library is currently empty. In order to populate it with your personal media, enter \"Files\" section, add a media source and configure it. After the source has been added and indexed you will be able to browse your library."
+msgstr "Thư viện của bạn hiện đang trống. Để lắp đầy nó với đa phương tiện cá nhân của bạn, hãy chọn phần \"Tập tin\", thêm nguồn đa phương tiện và định cấu hình nó. Sau khi nguồn đã được thêm, bạn có thể duyệt thư viện của mình."
+
+msgctxt "#31105"
+msgid "Add video sources and set the appropriate content type in order to populate your video libraries."
+msgstr "Thêm nguồn video và đặt loại nội dung phù hợp để thêm vào thư viện video của bạn."
+
+msgctxt "#31106"
+msgid "Teletext"
+msgstr "Teletext"
+
+msgctxt "#31107"
+msgid "WideList"
+msgstr "WideList"
+
+msgctxt "#31110"
+msgid "Enter files section"
+msgstr "Truy cập phần tập tin"
+
+msgctxt "#31111"
+msgid "View your personal pictures or download one of the many image add-ons from the official repository."
+msgstr "Xem ảnh cá nhân của bạn hoặc tải xuống một trong nhiều tiện ích hình ảnh từ kho lưu trữ chính thức."
+
+msgctxt "#31112"
+msgid "Toggle audio stream"
+msgstr "Chuyển đổi luồng âm thanh"
+
+msgctxt "#31113"
+msgid "Search local library"
+msgstr "Tìm kiếm thư viện nội bộ"
+
+msgctxt "#31114"
+msgid "Search YouTube"
+msgstr "Tìm kiếm Youtube"
+
+msgctxt "#31116"
+msgid "Remove this main menu item"
+msgstr "Xóa mục này khỏi menu chính"
+
+msgctxt "#31117"
+msgid "Edit nodes"
+msgstr "Chỉnh sửa nút"
+
+msgctxt "#31118"
+msgid "Enter add-on browser"
+msgstr "Truy cập trình duyệt tiện ích"
+
+msgctxt "#31119"
+msgid "You do not have any add-ons installed yet. Visit our add-on browser to browse through our collection and improve your Kodi experience."
+msgstr "Bạn chưa cài đặt bất kỳ tiện ích nào. Truy cập trình duyệt tiện ích để duyệt qua bộ sưu tập của chúng tôi và cải thiện trải nghiệm Kodi của bạn."
+
+msgctxt "#31120"
+msgid "You did not set up a weather provider yet. In order to view weather information, choose a weather provider and set up your location."
+msgstr "Bạn chưa thiết lập nhà cung cấp thời tiết nào. Để xem thông tin thời tiết, chọn nhà cung cấp thời tiết và thiết lập vị trí của bạn."
+
+msgctxt "#31121"
+msgid "Set weather provider"
+msgstr "Đặt nhà cung cấp thời tiết"
+
+msgctxt "#31122"
+msgid "Unwatched TV Shows"
+msgstr "Chương trình TV chưa xem"
+
+msgctxt "#31123"
+msgid "Same director"
+msgstr "Cùng đạo diễn"
+
+msgctxt "#31125"
+msgid "Press up for actor info"
+msgstr "Nhấn để biết thông tin diễn viên"
+
+msgctxt "#31126"
+msgid "Press OK to read plot"
+msgstr "Nhấn OK để đọc cốt truyện"
+
+msgctxt "#31127"
+msgid "Show icons"
+msgstr "Hiển thị biểu tượng"
+
+msgctxt "#31128"
+msgid "Contributors"
+msgstr "Người đóng góp"
+
+msgctxt "#31129"
+msgid "General settings applying to all areas of the skin."
+msgstr "Cài đặt chung áp dụng cho tất cả các khu vực của giao diện."
+
+msgctxt "#31130"
+msgid "Main menu-related settings: Configure the home screen to your likings."
+msgstr "Cài đặt liên quan đến menu chính: Định cấu hình màn hình chính theo ý thích của bạn."
+
+msgctxt "#31131"
+msgid "Choose skin fanart pack"
+msgstr "Chọn gói giao diện fanart"
+
+msgctxt "#31132"
+msgid "Select Program"
+msgstr "Chọn chương trình"
+
+msgctxt "#31133"
+msgid "Select Resolution"
+msgstr "Chọn độ phân giải"
+
+msgctxt "#31134"
+msgid "Remaining"
+msgstr "Còn lại"
+
+msgctxt "#31136"
+msgid "Click here to see latest changes..."
+msgstr "Nhấn vào đây để xem những thay đổi mới nhất..."
+
+msgctxt "#31137"
+msgid "PVR info"
+msgstr "Thông tin PVR"
+
+msgctxt "#31138"
+msgid "Player process info"
+msgstr "Thông tin trình phát"
+
+msgctxt "#31139"
+msgid "Video decoder"
+msgstr "Bộ giải mã video"
+
+msgctxt "#31140"
+msgid "Pixel format"
+msgstr "Định dạng điểm ảnh"
+
+msgctxt "#31141"
+msgid "Changes for version"
+msgstr "Thay đổi phiên bản"
+
+msgctxt "#31142"
+msgid "Play speed"
+msgstr "Tốc độ phát"
+
+msgctxt "#31143"
+msgid "You did not set up PVR yet. In order to use PVR, choose a PVR client addon and configure it. Please visit http://kodi.wiki/view/PVR to learn more."
+msgstr "Bạn chưa thiết lập PVR. Để sử dụng PVR, chọn một tiện ích máy khách PVR và cấu hình nó. Vui lòng truy cập http://kodi.wiki/view/PVR để tìm hiểu thêm."
+
+msgctxt "#31144"
+msgid "Enter add-on browser"
+msgstr "Truy cập trình duyệt tiện ích"
+
+msgctxt "#31145"
+msgid "Search add-ons"
+msgstr "Tìm kiếm tiện ích"
+
+msgctxt "#31148"
+msgid "Categories"
+msgstr "Danh mục"
+
+msgctxt "#31149"
+msgid "Select genre fanart pack"
+msgstr "Chọn thể loại của gói fanart"
+
+msgctxt "#31150"
+msgid "Repository"
+msgstr "Kho lưu trữ"
+
+msgctxt "#31151"
+msgid "Unwatched music videos"
+msgstr "Video nhạc chưa xem"
+
+msgctxt "#31152"
+msgid "Random music videos"
+msgstr "Video nhạc ngẫu nhiên"
+
+msgctxt "#31153"
+msgid "You do not have any add-ons of this type installed. Enter the add-on browser to download add-ons created by our community."
+msgstr "Bạn chưa cài đặt bất kỳ tiện ích nào. Truy cập trình duyệt tiện ích để tải xuống các tiện ích được tạo bởi cộng đồng của chúng tôi."
+
+msgctxt "#31154"
+msgid "Press OK to switch between locations"
+msgstr "Nhấn OK để di chuyển giữa các vị trí"
+
+msgctxt "#31155"
+msgid "No bookmarks created yet."
+msgstr "Chưa có đánh dấu nào được tạo."
+
+msgctxt "#31156"
+msgid "Choose background pattern"
+msgstr "Chọn mẫu nền"
+
+msgctxt "#31157"
+msgid "Edit categories"
+msgstr "Chỉnh sửa danh mục"
+
+msgctxt "#31158"
+msgid "Touch mode"
+msgstr "Chế độ cảm ứng"
+
+msgctxt "#31159"
+msgid "Artwork"
+msgstr "Ảnh minh họa"
+
+msgctxt "#31160"
+msgid "Show media flags"
+msgstr "Hiển thị media flags"
+
+msgctxt "#31161"
+msgid "Numeric pad"
+msgstr "Bàn phím số"
+
+msgctxt "#31162"
+msgid "Play your personal games or download one of the many game add-ons from the official repository."
+msgstr "Chơi các trò chơi cá nhân của bạn hoặc tải xuống một trong nhiều tiện ích trò chơi từ kho lưu trữ chính thức."
+
+msgctxt "#31163"
+msgid "Show Fanart background"
+msgstr "Dùng fanart làm ảnh nền"
+
+msgctxt "#31164"
+msgid "Choose kind of profile identification"
+msgstr "Chọn loại định dạng hồ sơ"
+
 msgctxt "#31165"
 msgid "Profile name"
 msgstr "Tên tài khoản"
+
+msgctxt "#31166"
+msgid "Profile avatar"
+msgstr "Ảnh đại diện hồ sơ"
+
+msgctxt "#31167"
+msgid "Animate background"
+msgstr "Ảnh nền hoạt hình"

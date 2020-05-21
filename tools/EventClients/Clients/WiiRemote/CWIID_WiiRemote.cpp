@@ -350,7 +350,8 @@ bool CWiiRemote::Connect()
       else
       {
         printf("Problem probing for status of WiiRemote; cwiid_get_state returned non-zero\n");
-        CPacketLOG log(LOGNOTICE, "Problem probing for status of WiiRemote; cwiid_get_state returned non-zero");
+        CPacketLOG log(
+            LOGINFO, "Problem probing for status of WiiRemote; cwiid_get_state returned non-zero");
         log.Send(m_Socket, m_MyAddr);
         CPacketNOTIFICATION notification("Wii Remote connected", "", ICON_PNG, g_BluetoothIconPath.c_str());
         notification.Send(m_Socket, m_MyAddr);
@@ -362,7 +363,7 @@ bool CWiiRemote::Connect()
 #endif
       m_connected = true;
 
-      CPacketLOG log(LOGNOTICE, "Successfully connected a WiiRemote");
+      CPacketLOG log(LOGINFO, "Successfully connected a WiiRemote");
       log.Send(m_Socket, m_MyAddr);
       return true;
     }
@@ -390,7 +391,7 @@ void CWiiRemote::DisconnectNow(bool startConnectThread)
       notification.Send(m_Socket, m_MyAddr);
     }
 
-    CPacketLOG log(LOGNOTICE, "Successfully disconnected a WiiRemote");
+    CPacketLOG log(LOGINFO, "Successfully disconnected a WiiRemote");
     log.Send(m_Socket, m_MyAddr);
   }
   m_connected = false;
@@ -404,7 +405,7 @@ bool CWiiRemote::CheckConnection()
 {
   if ((getTicks() - m_LastMsgTime) > 1000)
   {
-    CPacketLOG log(LOGNOTICE, "Lost connection to the WiiRemote");
+    CPacketLOG log(LOGINFO, "Lost connection to the WiiRemote");
     log.Send(m_Socket, m_MyAddr);
     return false;
   }

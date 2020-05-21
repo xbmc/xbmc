@@ -49,7 +49,7 @@ JSONRPC_STATUS CApplicationOperations::SetVolume(const std::string &method, ITra
   bool up = false;
   if (parameterObject["volume"].isInteger())
   {
-    int oldVolume = (int)g_application.GetVolume();
+    int oldVolume = (int)g_application.GetVolumePercent();
     int volume = (int)parameterObject["volume"].asInteger();
 
     g_application.SetVolume((float)volume, true);
@@ -104,7 +104,7 @@ JSONRPC_STATUS CApplicationOperations::Quit(const std::string &method, ITranspor
 JSONRPC_STATUS CApplicationOperations::GetPropertyValue(const std::string &property, CVariant &result)
 {
   if (property == "volume")
-    result = static_cast<int>(g_application.GetVolume());
+    result = static_cast<int>(g_application.GetVolumePercent());
   else if (property == "muted")
     result = g_application.IsMuted();
   else if (property == "name")

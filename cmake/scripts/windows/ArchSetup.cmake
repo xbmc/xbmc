@@ -45,11 +45,8 @@ set(SYSTEM_DEFINES -DWIN32_LEAN_AND_MEAN -DNOMINMAX -DHAS_DX -D__STDC_CONSTANT_M
                    -DPLT_HTTP_DEFAULT_USER_AGENT="UPnP/1.0 DLNADOC/1.50 Kodi"
                    -DPLT_HTTP_DEFAULT_SERVER="UPnP/1.0 DLNADOC/1.50 Kodi"
                    -DUNICODE -D_UNICODE
+                   -DFRIBIDI_STATIC
                    $<$<CONFIG:Debug>:-DD3D_DEBUG_INFO>)
-
-if(${ARCH} STREQUAL win32)
-  list(APPEND SYSTEM_DEFINES $<$<CONFIG:Debug>:-D_ITERATOR_DEBUG_LEVEL=0>)
-endif()
 
 # Additional SYSTEM_DEFINES
 list(APPEND SYSTEM_DEFINES -DHAS_WIN32_NETWORK -DHAS_FILESYSTEM_SMB)
@@ -73,7 +70,8 @@ link_directories(${DEPENDENCIES_DIR}/lib)
 
 # Additional libraries
 list(APPEND DEPLIBS bcrypt.lib d3d11.lib DInput8.lib DSound.lib winmm.lib Mpr.lib Iphlpapi.lib WS2_32.lib
-                    PowrProf.lib setupapi.lib Shlwapi.lib dwmapi.lib dxguid.lib DelayImp.lib Mincore.lib)
+                    PowrProf.lib setupapi.lib Shlwapi.lib dwmapi.lib dxguid.lib DelayImp.lib version.lib
+                    crypt32.lib)
 
 # NODEFAULTLIB option
 set(_nodefaultlibs_RELEASE libcmt)
@@ -86,7 +84,7 @@ foreach(_lib ${_nodefaultlibs_DEBUG})
 endforeach()
 
 # DELAYLOAD option
-set(_delayloadlibs zlib.dll libmysql.dll libxslt.dll dnssd.dll dwmapi.dll sqlite3.dll
+set(_delayloadlibs zlib.dll libmariadb.dll libxslt.dll dnssd.dll dwmapi.dll sqlite3.dll
                    d3dcompiler_47.dll)
 foreach(_lib ${_delayloadlibs})
   set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /DELAYLOAD:\"${_lib}\"")

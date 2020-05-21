@@ -256,9 +256,14 @@ foreach(addon ${addons})
     if(idx GREATER -1 OR "${ADDONS_TO_BUILD}" STREQUAL "all")
       set(ADDON_FOUND TRUE)
     # Maybe we have a regex
-    elseif(id MATCHES "${ADDONS_TO_BUILD}")
-      message(STATUS "Pattern ${ADDONS_TO_BUILD} matches ${id}, building addon")
-      set(ADDON_FOUND TRUE)
+    else()
+      foreach(ADDONLISTITEM ${ADDONS_TO_BUILD})
+        if(id MATCHES "${ADDONLISTITEM}")
+          message(STATUS "Pattern ${ADDONLISTITEM} matches ${id}, building addon")
+          set(ADDON_FOUND TRUE)
+          break()
+        endif()
+      endforeach()
     endif()
 
     if(ADDON_FOUND)
@@ -388,9 +393,6 @@ foreach(addon ${addons})
                                    DEPENDEES configure
                                    DEPENDERS build
                                    ALWAYS 1)
-
-          # add "kodi-platform" as a dependency to every addon
-          add_dependencies(${id} kodi-platform)
 
           set(${id}_DEPENDS_DIR ${SOURCE_DIR}/depends)
 

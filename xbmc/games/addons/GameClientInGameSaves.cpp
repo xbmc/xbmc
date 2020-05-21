@@ -26,9 +26,10 @@ using namespace GAME;
 #define INGAME_SAVES_EXTENSION_SAVE_RAM ".sav"
 #define INGAME_SAVES_EXTENSION_RTC      ".rtc"
 
-CGameClientInGameSaves::CGameClientInGameSaves(CGameClient* addon, const KodiToAddonFuncTable_Game* dllStruct) :
-  m_gameClient(addon),
-  m_dllStruct(dllStruct)
+CGameClientInGameSaves::CGameClientInGameSaves(CGameClient* addon,
+                                               const AddonInstance_Game* dllStruct)
+  : m_gameClient(addon),
+    m_dllStruct(dllStruct)
 {
   assert(m_gameClient != nullptr);
   assert(m_dllStruct != nullptr);
@@ -75,7 +76,7 @@ void CGameClientInGameSaves::Load(GAME_MEMORY memoryType)
 
   try
   {
-    m_dllStruct->GetMemory(memoryType, &gameMemory, &size);
+    m_dllStruct->toAddon.GetMemory(m_dllStruct, memoryType, &gameMemory, &size);
   }
   catch (...)
   {
@@ -116,7 +117,7 @@ void CGameClientInGameSaves::Save(GAME_MEMORY memoryType)
 
   try
   {
-    m_dllStruct->GetMemory(memoryType, &gameMemory, &size);
+    m_dllStruct->toAddon.GetMemory(m_dllStruct, memoryType, &gameMemory, &size);
   }
   catch (...)
   {

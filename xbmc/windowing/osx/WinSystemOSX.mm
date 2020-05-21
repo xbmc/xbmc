@@ -545,7 +545,8 @@ CGDisplayModeRef GetMode(int width, int height, double refreshrate, int screenId
   double rate;
   RESOLUTION_INFO res;
 
-  CLog::Log(LOGDEBUG, "GetMode looking for suitable mode with %d x %d @ %f Hz on display %d\n", width, height, refreshrate, screenIdx);
+  CLog::Log(LOGDEBUG, "GetMode looking for suitable mode with %d x %d @ %f Hz on display %d", width,
+            height, refreshrate, screenIdx);
 
   CFArrayRef displayModes = GetAllDisplayModes(GetDisplayID(screenIdx));
 
@@ -695,7 +696,7 @@ void CWinSystemOSX::OnTimeout()
 
 bool CWinSystemOSX::InitWindowSystem()
 {
-  CLog::LogF(LOGNOTICE, "Setup SDL");
+  CLog::LogF(LOGINFO, "Setup SDL");
 
   /* Clean up on exit, exit on window close and interrupt */
   std::atexit(SDL_Quit);
@@ -791,10 +792,12 @@ bool CWinSystemOSX::CreateNewWindow(const std::string& name, bool fullScreen, RE
   if (!view)
     return false;
 
-  // if we are not starting up windowed, then hide the initial SDL window
-  // so we do not see it flash before the fade-out and switch to fullscreen.
   if (CDisplaySettings::GetInstance().GetCurrentResolution() != RES_WINDOW)
+  {
+    // If we are not starting up windowed, then hide the initial SDL window
+    // so we do not see it flash before the fade-out and switch to fullscreen.
     ShowHideNSWindow([view window], false);
+  }
 
   // disassociate view from context
   [cur_context clearDrawable];
@@ -870,6 +873,14 @@ bool CWinSystemOSX::ResizeWindow(int newWidth, int newHeight, int newLeft, int n
   NSWindow* window;
 
   view = [context view];
+
+  if (view)
+  {
+    // It seems, that in macOS 10.15 this defaults to YES, but we currently do not support
+    // Retina resolutions properly. Ensure that the view uses a 1 pixel per point framebuffer.
+    view.wantsBestResolutionOpenGLSurface = NO;
+  }
+
   if (view && (newWidth > 0) && (newHeight > 0))
   {
     window = [view window];
@@ -1357,7 +1368,7 @@ void CWinSystemOSX::FillInVideoModes()
     CFArrayRef displayModes = GetAllDisplayModes(GetDisplayID(disp));
     NSString *dispName = screenNameForDisplay(GetDisplayID(disp));
 
-    CLog::Log(LOGNOTICE, "Display %i has name %s", disp, [dispName UTF8String]);
+    CLog::Log(LOGINFO, "Display %i has name %s", disp, [dispName UTF8String]);
 
     if (NULL == displayModes)
       continue;
@@ -1386,7 +1397,8 @@ void CWinSystemOSX::FillInVideoModes()
           // NOTE: The refresh rate will be REPORTED AS 0 for many DVI and notebook displays.
           refreshrate = 60.0;
         }
-        CLog::Log(LOGNOTICE, "Found possible resolution for display %d with %d x %d @ %f Hz\n", disp, w, h, refreshrate);
+        CLog::Log(LOGINFO, "Found possible resolution for display %d with %d x %d @ %f Hz", disp, w,
+                  h, refreshrate);
 
         // only add the resolution if it belongs to "our" screen
         // all others are only logged above...
@@ -1530,7 +1542,8 @@ bool CWinSystemOSX::IsObscured(void)
         {
           std::string appName;
           if (CDarwinUtils::CFStringRefToUTF8String(ownerName, appName))
-            CLog::Log(LOGDEBUG, "WinSystemOSX: Fullscreen window %s obscures XBMC!", appName.c_str());
+            CLog::Log(LOGDEBUG, "WinSystemOSX: Fullscreen window %s obscures Kodi!",
+                      appName.c_str());
           obscureLogged = true;
         }
         m_obscured = true;

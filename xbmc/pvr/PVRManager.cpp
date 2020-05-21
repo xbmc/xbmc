@@ -170,7 +170,7 @@ void CPVRManagerJobQueue::ExecutePendingJobs()
   }
 }
 
-CPVRManager::CPVRManager(void) :
+CPVRManager::CPVRManager() :
     CThread("PVRManager"),
     m_channelGroups(new CPVRChannelGroupsContainer),
     m_recordings(new CPVRRecordings),
@@ -195,7 +195,7 @@ CPVRManager::CPVRManager(void) :
   CLog::LogFC(LOGDEBUG, LOGPVR, "PVR Manager instance created");
 }
 
-CPVRManager::~CPVRManager(void)
+CPVRManager::~CPVRManager()
 {
   m_actionListener.Deinit(*this);
   CServiceBroker::GetAnnouncementManager()->RemoveAnnouncer(this);
@@ -217,7 +217,7 @@ void CPVRManager::Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char* send
   }
 }
 
-std::shared_ptr<CPVRDatabase> CPVRManager::GetTVDatabase(void) const
+std::shared_ptr<CPVRDatabase> CPVRManager::GetTVDatabase() const
 {
   CSingleLock lock(m_critSection);
   if (!m_database || !m_database->IsOpen())
@@ -226,25 +226,25 @@ std::shared_ptr<CPVRDatabase> CPVRManager::GetTVDatabase(void) const
   return m_database;
 }
 
-std::shared_ptr<CPVRChannelGroupsContainer> CPVRManager::ChannelGroups(void) const
+std::shared_ptr<CPVRChannelGroupsContainer> CPVRManager::ChannelGroups() const
 {
   CSingleLock lock(m_critSection);
   return m_channelGroups;
 }
 
-std::shared_ptr<CPVRRecordings> CPVRManager::Recordings(void) const
+std::shared_ptr<CPVRRecordings> CPVRManager::Recordings() const
 {
   CSingleLock lock(m_critSection);
   return m_recordings;
 }
 
-std::shared_ptr<CPVRTimers> CPVRManager::Timers(void) const
+std::shared_ptr<CPVRTimers> CPVRManager::Timers() const
 {
   CSingleLock lock(m_critSection);
   return m_timers;
 }
 
-std::shared_ptr<CPVRClients> CPVRManager::Clients(void) const
+std::shared_ptr<CPVRClients> CPVRManager::Clients() const
 {
   // note: m_addons is const (only set/reset in ctor/dtor). no need for a lock here.
   return m_addons;
@@ -286,7 +286,7 @@ std::shared_ptr<CPVRClient> CPVRManager::GetClient(int iClientId) const
   return client;
 }
 
-std::shared_ptr<CPVRGUIActions> CPVRManager::GUIActions(void) const
+std::shared_ptr<CPVRGUIActions> CPVRManager::GUIActions() const
 {
   // note: m_guiActions is const (only set/reset in ctor/dtor). no need for a lock here.
   return m_guiActions;
@@ -304,7 +304,7 @@ CPVREpgContainer& CPVRManager::EpgContainer()
   return m_epgContainer;
 }
 
-void CPVRManager::Clear(void)
+void CPVRManager::Clear()
 {
   m_pendingUpdates->Clear();
   m_epgContainer.Clear();
@@ -322,7 +322,7 @@ void CPVRManager::Clear(void)
   m_bEpgsCreated = false;
 }
 
-void CPVRManager::ResetProperties(void)
+void CPVRManager::ResetProperties()
 {
   CSingleLock lock(m_critSection);
   Clear();
@@ -363,7 +363,7 @@ void CPVRManager::Start()
   if (!m_addons->HasCreatedClients())
     return;
 
-  CLog::Log(LOGNOTICE, "PVR Manager: Starting");
+  CLog::Log(LOGINFO, "PVR Manager: Starting");
   SetState(ManagerStateStarting);
 
   /* create the pvrmanager thread, which will ensure that all data will be loaded */
@@ -371,7 +371,7 @@ void CPVRManager::Start()
   SetPriority(-1);
 }
 
-void CPVRManager::Stop(void)
+void CPVRManager::Stop()
 {
   CSingleLock initLock(m_startStopMutex);
 
@@ -386,7 +386,7 @@ void CPVRManager::Stop(void)
     CApplicationMessenger::GetInstance().SendMsg(TMSG_MEDIA_STOP);
   }
 
-  CLog::Log(LOGNOTICE, "PVR Manager: Stopping");
+  CLog::Log(LOGINFO, "PVR Manager: Stopping");
   SetState(ManagerStateStopping);
 
   m_addons->Stop();
@@ -403,7 +403,7 @@ void CPVRManager::Stop(void)
 
   ResetProperties();
 
-  CLog::Log(LOGNOTICE, "PVR Manager: Stopped");
+  CLog::Log(LOGINFO, "PVR Manager: Stopped");
   SetState(ManagerStateStopped);
 }
 
@@ -423,7 +423,7 @@ void CPVRManager::Deinit()
   m_addons.reset();
 }
 
-CPVRManager::ManagerState CPVRManager::GetState(void) const
+CPVRManager::ManagerState CPVRManager::GetState() const
 {
   CSingleLock lock(m_managerStateMutex);
   return m_managerState;
@@ -472,7 +472,7 @@ void CPVRManager::PublishEvent(PVREvent event)
   m_events.Publish(event);
 }
 
-void CPVRManager::Process(void)
+void CPVRManager::Process()
 {
   m_addons->Continue();
   m_database->Open();
@@ -483,7 +483,7 @@ void CPVRManager::Process(void)
   while (!LoadComponents(progressHandler) && IsInitialising())
   {
     CLog::Log(LOGWARNING, "PVR Manager failed to load data, retrying");
-    Sleep(1000);
+    CThread::Sleep(1000);
 
     if (progressHandler && progressTimeout.IsTimePast())
     {
@@ -500,7 +500,7 @@ void CPVRManager::Process(void)
 
   if (!IsInitialising())
   {
-    CLog::Log(LOGNOTICE, "PVR Manager: Start aborted");
+    CLog::Log(LOGINFO, "PVR Manager: Start aborted");
     return;
   }
 
@@ -509,7 +509,7 @@ void CPVRManager::Process(void)
   m_pendingUpdates->Start();
 
   SetState(ManagerStateStarted);
-  CLog::Log(LOGNOTICE, "PVR Manager: Started");
+  CLog::Log(LOGINFO, "PVR Manager: Started");
 
   /* main loop */
   CLog::LogFC(LOGDEBUG, LOGPVR, "PVR Manager entering main loop");
@@ -531,6 +531,10 @@ void CPVRManager::Process(void)
       /* try to play channel on startup */
       TriggerPlayChannelOnStartup();
     }
+
+    if (m_addons->AnyClientSupportingRecordingsSize())
+      TriggerRecordingsSizeInProgressUpdate();
+
     /* execute the next pending jobs if there are any */
     try
     {
@@ -549,7 +553,7 @@ void CPVRManager::Process(void)
   CLog::LogFC(LOGDEBUG, LOGPVR, "PVR Manager leaving main loop");
 }
 
-bool CPVRManager::SetWakeupCommand(void)
+bool CPVRManager::SetWakeupCommand()
 {
 #if !defined(TARGET_DARWIN_EMBEDDED) && !defined(TARGET_WINDOWS_STORE)
   if (!m_settings.GetBoolValue(CSettings::SETTING_PVRPOWERMANAGEMENT_ENABLED))
@@ -579,6 +583,8 @@ bool CPVRManager::SetWakeupCommand(void)
 
 void CPVRManager::OnSleep()
 {
+  PublishEvent(PVREvent::SystemSleep);
+
   SetWakeupCommand();
 
   m_addons->OnSystemSleep();
@@ -587,6 +593,8 @@ void CPVRManager::OnSleep()
 void CPVRManager::OnWake()
 {
   m_addons->OnSystemWake();
+
+  PublishEvent(PVREvent::SystemWake);
 
   /* start job to search for missing channel icons */
   TriggerSearchMissingChannelIcons();
@@ -603,7 +611,7 @@ bool CPVRManager::LoadComponents(CPVRGUIProgressHandler* progressHandler)
 {
   /* load at least one client */
   while (IsInitialising() && m_addons && !m_addons->HasCreatedClients())
-    Sleep(50);
+    CThread::Sleep(50);
 
   if (!IsInitialising() || !m_addons->HasCreatedClients())
     return false;
@@ -648,7 +656,7 @@ void CPVRManager::UnloadComponents()
   m_channelGroups->Unload();
 }
 
-void CPVRManager::TriggerPlayChannelOnStartup(void)
+void CPVRManager::TriggerPlayChannelOnStartup()
 {
   if (IsStarted())
   {
@@ -724,7 +732,7 @@ void CPVRManager::OnPlaybackEnded(const CFileItemPtr item)
   OnPlaybackStopped(item);
 }
 
-void CPVRManager::LocalizationChanged(void)
+void CPVRManager::LocalizationChanged()
 {
   CSingleLock lock(m_critSection);
   if (IsStarted())
@@ -734,7 +742,7 @@ void CPVRManager::LocalizationChanged(void)
   }
 }
 
-bool CPVRManager::EpgsCreated(void) const
+bool CPVRManager::EpgsCreated() const
 {
   CSingleLock lock(m_critSection);
   return m_bEpgsCreated;
@@ -751,6 +759,13 @@ void CPVRManager::TriggerRecordingsUpdate()
 {
   m_pendingUpdates->Append("pvr-update-recordings", [this]() {
     return Recordings()->Update();
+  });
+}
+
+void CPVRManager::TriggerRecordingsSizeInProgressUpdate()
+{
+  m_pendingUpdates->Append("pvr-update-recordings-size", [this]() {
+    return Recordings()->UpdateInProgressSize();
   });
 }
 
@@ -810,7 +825,7 @@ void CPVRManager::ConnectionStateChange(CPVRClient* client,
   });
 }
 
-bool CPVRManager::CreateChannelEpgs(void)
+bool CPVRManager::CreateChannelEpgs()
 {
   if (EpgsCreated())
     return true;

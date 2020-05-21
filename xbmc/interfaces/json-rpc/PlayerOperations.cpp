@@ -45,6 +45,25 @@ using namespace PLAYLIST;
 using namespace PVR;
 using namespace KODI::MESSAGING;
 
+namespace
+{
+
+void AppendAudioStreamFlagsAsBooleans(CVariant& list, StreamFlags flags)
+{
+  list["isdefault"] = ((flags & StreamFlags::FLAG_DEFAULT) != 0);
+  list["isoriginal"] = ((flags & StreamFlags::FLAG_ORIGINAL) != 0);
+  list["isimpaired"] = ((flags & StreamFlags::FLAG_VISUAL_IMPAIRED) != 0);
+}
+
+void AppendSubtitleStreamFlagsAsBooleans(CVariant& list, StreamFlags flags)
+{
+  list["isdefault"] = ((flags & StreamFlags::FLAG_DEFAULT) != 0);
+  list["isforced"] = ((flags & StreamFlags::FLAG_FORCED) != 0);
+  list["isimpaired"] = ((flags & StreamFlags::FLAG_HEARING_IMPAIRED) != 0);
+}
+
+} // namespace
+
 JSONRPC_STATUS CPlayerOperations::GetActivePlayers(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   int activePlayers = GetActivePlayers();
@@ -392,11 +411,11 @@ JSONRPC_STATUS CPlayerOperations::Seek(const std::string &method, ITransportLaye
         return FailedToExecute;
 
       const CVariant& value = parameterObject["value"];
-      if (IsType(value, NumberValue) || value.isMember("percentage"))
-        g_application.SeekPercentage(IsType(value, NumberValue) ? value.asFloat() : value["percentage"].asFloat());
-      else if (value.isString() || value.isMember("step"))
+      if (value.isMember("percentage"))
+        g_application.SeekPercentage(value["percentage"].asFloat());
+      else if (value.isMember("step"))
       {
-        std::string step = value.isString() ? value.asString() : value["step"].asString();
+        std::string step = value["step"].asString();
         if (step == "smallforward")
           CBuiltins::GetInstance().Execute("playercontrol(smallskipforward)");
         else if (step == "smallbackward")
@@ -408,10 +427,10 @@ JSONRPC_STATUS CPlayerOperations::Seek(const std::string &method, ITransportLaye
         else
           return InvalidParams;
       }
-      else if (value.isMember("seconds") && value.size() == 1)
+      else if (value.isMember("seconds"))
         g_application.GetAppPlayer().GetSeekHandler().SeekSeconds(static_cast<int>(value["seconds"].asInteger()));
-      else if (value.isObject())
-        g_application.SeekTime(ParseTimeInSeconds(value.isMember("time") ? value["time"] : value));
+      else if (value.isMember("time"))
+        g_application.SeekTime(ParseTimeInSeconds(value["time"]));
       else
         return InvalidParams;
 
@@ -1678,6 +1697,8 @@ JSONRPC_STATUS CPlayerOperations::GetPropertyValue(PlayerType player, const std:
             result["codec"] = info.codecName;
             result["bitrate"] = info.bitrate;
             result["channels"] = info.channels;
+            result["samplerate"] = info.samplerate;
+            AppendAudioStreamFlagsAsBooleans(result, info.flags);
           }
         }
         else
@@ -1696,6 +1717,7 @@ JSONRPC_STATUS CPlayerOperations::GetPropertyValue(PlayerType player, const std:
     switch (player)
     {
       case Video:
+      case Audio:
         if (g_application.GetAppPlayer().HasPlayer())
         {
           for (int index = 0; index < g_application.GetAppPlayer().GetAudioStreamCount(); index++)
@@ -1710,13 +1732,14 @@ JSONRPC_STATUS CPlayerOperations::GetPropertyValue(PlayerType player, const std:
             audioStream["codec"] = info.codecName;
             audioStream["bitrate"] = info.bitrate;
             audioStream["channels"] = info.channels;
+            audioStream["samplerate"] = info.samplerate;
+            AppendAudioStreamFlagsAsBooleans(audioStream, info.flags);
 
             result.append(audioStream);
           }
         }
         break;
 
-      case Audio:
       case Picture:
       default:
         break;
@@ -1819,6 +1842,7 @@ JSONRPC_STATUS CPlayerOperations::GetPropertyValue(PlayerType player, const std:
             result["index"] = index;
             result["name"] = info.name;
             result["language"] = info.language;
+            AppendSubtitleStreamFlagsAsBooleans(result, info.flags);
           }
         }
         else
@@ -1849,6 +1873,7 @@ JSONRPC_STATUS CPlayerOperations::GetPropertyValue(PlayerType player, const std:
             subtitle["index"] = index;
             subtitle["name"] = info.name;
             subtitle["language"] = info.language;
+            AppendSubtitleStreamFlagsAsBooleans(subtitle, info.flags);
 
             result.append(subtitle);
           }

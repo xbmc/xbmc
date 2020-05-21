@@ -148,10 +148,6 @@ msgctxt "#31033"
 msgid "Your rating"
 msgstr "你的評分"
 
-msgctxt "#31034"
-msgid "Extended info"
-msgstr "延伸資訊"
-
 msgctxt "#31035"
 msgid "Pages"
 msgstr "頁"
@@ -159,6 +155,10 @@ msgstr "頁"
 msgctxt "#31036"
 msgid "items"
 msgstr "項目"
+
+msgctxt "#31037"
+msgid "Selected track"
+msgstr "選中的曲目"
 
 msgctxt "#31038"
 msgid "Rewind"
@@ -264,13 +264,21 @@ msgctxt "#31072"
 msgid "Power Options"
 msgstr "電源選項"
 
+msgctxt "#31073"
+msgid "Total length"
+msgstr "總計長度"
+
+msgctxt "#31074"
+msgid "Total duration"
+msgstr "總計時間"
+
 msgctxt "#31075"
 msgid "Movie sets"
 msgstr "電影集"
 
 msgctxt "#31079"
 msgid "Cast not available"
-msgstr "無法取得預報"
+msgstr "無法取得串流"
 
 msgctxt "#31080"
 msgid "Ends at"
@@ -291,10 +299,6 @@ msgstr "視覺效果設定"
 msgctxt "#31089"
 msgid "Available groups"
 msgstr "可用的群組"
-
-msgctxt "#31090"
-msgid "Search trailer"
-msgstr "搜尋預告片"
 
 msgctxt "#31092"
 msgid "Video menu"
@@ -376,10 +380,6 @@ msgctxt "#31114"
 msgid "Search YouTube"
 msgstr "搜尋YouTube"
 
-msgctxt "#31115"
-msgid "Search TheMovieDB"
-msgstr "搜尋TheMovieDB"
-
 msgctxt "#31116"
 msgid "Remove this main menu item"
 msgstr "移除這個主選單項目"
@@ -410,11 +410,7 @@ msgstr "還沒看過的電視劇集"
 
 msgctxt "#31123"
 msgid "Same director"
-msgstr "同一個導演的作品"
-
-msgctxt "#31124"
-msgid "Show images on map"
-msgstr "在地圖上顯示影像"
+msgstr "同一位導演的作品"
 
 msgctxt "#31125"
 msgid "Press up for actor info"
@@ -458,7 +454,7 @@ msgstr "後結束"
 
 msgctxt "#31136"
 msgid "Click here to see latest changes..."
-msgstr "按這裡以檢視最新的變動..."
+msgstr "按這裡以檢視最新的更新項目..."
 
 msgctxt "#31137"
 msgid "PVR info"

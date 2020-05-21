@@ -25,7 +25,7 @@
 
 CRendererMediaCodecSurface::CRendererMediaCodecSurface()
 {
-  CLog::Log(LOGNOTICE, "Instancing CRendererMediaCodecSurface");
+  CLog::Log(LOGINFO, "Instancing CRendererMediaCodecSurface");
 }
 
 CRendererMediaCodecSurface::~CRendererMediaCodecSurface()
@@ -48,7 +48,7 @@ bool CRendererMediaCodecSurface::Register()
 
 bool CRendererMediaCodecSurface::Configure(const VideoPicture &picture, float fps, unsigned int orientation)
 {
-  CLog::Log(LOGNOTICE, "CRendererMediaCodecSurface::Configure");
+  CLog::Log(LOGINFO, "CRendererMediaCodecSurface::Configure");
 
   m_sourceWidth = picture.iWidth;
   m_sourceHeight = picture.iHeight;
@@ -117,10 +117,9 @@ void CRendererMediaCodecSurface::ReleaseBuffer(int idx)
 
 bool CRendererMediaCodecSurface::Supports(ERENDERFEATURE feature)
 {
-  if (feature == RENDERFEATURE_ZOOM ||
-    feature == RENDERFEATURE_STRETCH ||
-    feature == RENDERFEATURE_PIXEL_RATIO ||
-    feature == RENDERFEATURE_ROTATION)
+  if (feature == RENDERFEATURE_ZOOM || feature == RENDERFEATURE_STRETCH ||
+      feature == RENDERFEATURE_PIXEL_RATIO || feature == RENDERFEATURE_VERTICAL_SHIFT ||
+      feature == RENDERFEATURE_ROTATION)
     return true;
 
   return false;

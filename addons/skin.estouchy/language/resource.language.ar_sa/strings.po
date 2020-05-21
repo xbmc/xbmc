@@ -68,6 +68,10 @@ msgctxt "#31038"
 msgid "Login"
 msgstr "تسجيل الدخول"
 
+msgctxt "#31043"
+msgid "PAUSED"
+msgstr "متوقف"
+
 msgctxt "#31044"
 msgid "FAST FORWARD"
 msgstr "تقديم سريع"

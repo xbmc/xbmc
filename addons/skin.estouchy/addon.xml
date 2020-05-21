@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<addon id="skin.estouchy" version="2.0.23" name="Estouchy" provider-name="Team Kodi">
+<addon id="skin.estouchy" version="3.0.2" name="Estouchy" provider-name="Team Kodi">
 	<requires>
-		<import addon="xbmc.gui" version="5.14.0"/>
+		<import addon="xbmc.gui" version="5.15.0"/>
 	</requires>
 	<extension point="xbmc.gui.skin" debugging="false">
 		<res width="1280" height="960" aspect="4:3" folder="xml"/>
@@ -33,6 +33,7 @@
 		<summary lang="hu_HU">Felület érintőképernyős eszközöknek</summary>
 		<summary lang="is_IS">Skinn fyrir tæki með snertiskjá</summary>
 		<summary lang="it_IT">Skin per dispositivi touchscreen</summary>
+		<summary lang="ja_JP">スキンはタッチスクリーンデバイス向けです</summary>
 		<summary lang="ko_KR">터치 스크린 기기를 위한 스킨</summary>
 		<summary lang="lt_LT">Teminė išvaizda liečiamiesiems įrenginiams</summary>
 		<summary lang="lv_LV">Apvalks skārienekrāna ierīcēm</summary>
@@ -52,14 +53,15 @@
 		<summary lang="th_TH">หน้าตาสำหรับอุปกรณ์สัมผัส</summary>
 		<summary lang="tr_TR">Dokunmatik ekranlı aygıtlar için dış görünüm</summary>
 		<summary lang="uk_UA">Скін для сенсорних пристроїв</summary>
+		<summary lang="vi_VN">Giao diện cho thiết bị màn hình cảm ứng</summary>
 		<summary lang="zh_CN">针对触屏设备的皮肤</summary>
 		<summary lang="zh_TW">為具有觸控螢幕的裝置所製作的佈景主題</summary>
 		<description lang="af_ZA">Oortreksel ontwerp om op raakskerm toestelle soos tablette en slimfone te gebruik</description>
-		<description lang="be_BY">Абалонка распрацавана для выкарыстання на сэнсарных прыладах , такіх як планшэты і смартфоны</description>
+		<description lang="be_BY">Абалонка распрацаваная для выкарыстання на сэнсарных прыладах, такіх як планшэты і смартфоны</description>
 		<description lang="bg_BG">Обликът е разработен за ползване на устройства със сензорен екран, като таблети и телефони.</description>
 		<description lang="ca_ES">Aparença dissenyada perquè s'utilitzi en dispositius amb pantalla tàctil com taules i telèfons intel·ligents</description>
 		<description lang="cs_CZ">Vzhled navržený pro použití na zařízeních s dotykovou obrazovkou, jako jsou tablety a chytré telefony</description>
-		<description lang="da_DK">Skins som er designet til brug på touchscreen enheder som tablets og smartphones</description>
+		<description lang="da_DK">Skin der er designet til brug på touchscreen enheder som f.eks. tablets og smartphones</description>
 		<description lang="de_DE">Dieses Skin wurde für die Benutzung mit Touchscreen-Geräten wie Tablets und Handys entworfen</description>
 		<description lang="el_GR">Κέλυφος σχεδιασμένο για να χρησιμοποιηθεί σε συσκευές με οθόνη αφής όπως ταμπλέτες και έξυπνα κινητά.</description>
 		<description lang="en_GB">Skin designed to be used on touchscreen devices like tablets and smartphones</description>
@@ -77,6 +79,7 @@
 		<description lang="hu_HU">Egy érintőképernyős eszközökre, például táblagépekre és okostelefonokra tervezett felület</description>
 		<description lang="is_IS">Skinn sem er hannað til notkunar á tækjum með snertiskjá, eins og til dæmis spjaldtölvum og snjallsímum.</description>
 		<description lang="it_IT">Skin progettata per essere usata su dispositivi touchscreen come tablet e smartphone</description>
+		<description lang="ja_JP">スキンのデザインは、タッチスクリーンデバイスであるタブレットやスマホなどでの使用を想定されています</description>
 		<description lang="ko_KR">태블릿이나 스마트폰과 같은 터치 스크린 기기에서 사용할 수 있게 디자인한 스킨</description>
 		<description lang="lt_LT">Teminė išvaizda pritaikyta naudojimui įrenginiuose su liečiamaisiais ekranais, tokiuose kaip planšetiniai kompiuteriai ar išmanieji telefonai</description>
 		<description lang="ms_MY">Kulit direka untuk digunakan pada peranti berskrin sentuh seperti tablet dan telefon pintar</description>
@@ -95,6 +98,7 @@
 		<description lang="th_TH">หน้าตาที่ออกแบบมาเพื่อใช้งานบนอุปกรณ์หน้าจอสัมผัส เช่น แท็บเล็ตและสมาร์ทโฟน</description>
 		<description lang="tr_TR">Bu dış görünüm tabletler ve akıllı telefonlar gibi dokunmatik ekranlı aygıtlarda kullanılmak üzere tasarlandı</description>
 		<description lang="uk_UA">Ця обкладинка призначена для пристроїв із сенсорним екраном, наприклад планшетів чи смартфонів.</description>
+		<description lang="vi_VN">Giao diện được thiết kế để sử dụng trên thiết bị màn hình cảm ứng như máy tính bảng và điện thoại thông minh</description>
 		<description lang="zh_CN">为触屏设备如平板电脑和智能手机而设计的皮肤</description>
 		<description lang="zh_TW">本佈景主題專為平板及手機等具有觸控螢幕的裝置而設計。</description>
 		<platform>all</platform>

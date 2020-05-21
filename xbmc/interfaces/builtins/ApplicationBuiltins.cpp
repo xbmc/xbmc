@@ -93,7 +93,7 @@ static int NotifyAll(const std::vector<std::string>& params)
  */
 static int SetVolume(const std::vector<std::string>& params)
 {
-  float oldVolume = g_application.GetVolume();
+  float oldVolume = g_application.GetVolumePercent();
   float volume = (float)strtod(params[0].c_str(), nullptr);
 
   g_application.SetVolume(volume);

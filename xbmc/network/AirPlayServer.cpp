@@ -36,6 +36,8 @@
 #include "network/Zeroconf.h"
 #endif // HAS_ZEROCONF
 
+#include <inttypes.h>
+
 #include <plist/plist.h>
 
 using namespace KODI::MESSAGING;
@@ -352,7 +354,7 @@ void CAirPlayServer::Process()
     if (res < 0)
     {
       CLog::Log(LOGERROR, "AIRPLAY Server: Select failed");
-      Sleep(1000);
+      CThread::Sleep(1000);
       Initialize();
     }
     else if (res > 0)
@@ -395,7 +397,7 @@ void CAirPlayServer::Process()
             CLog::Log(LOGERROR, "AIRPLAY Server: Accept of new connection failed: %d", errno);
             if (EBADF == errno)
             {
-              Sleep(1000);
+              CThread::Sleep(1000);
               Initialize();
               break;
             }
@@ -714,7 +716,7 @@ void CAirPlayServer::backupVolume()
   CSingleLock lock(ServerInstanceLock);
 
   if (ServerInstance && ServerInstance->m_origVolume == -1)
-    ServerInstance->m_origVolume = (int)g_application.GetVolume();
+    ServerInstance->m_origVolume = (int)g_application.GetVolumePercent();
 }
 
 void CAirPlayServer::restoreVolume()
@@ -824,7 +826,7 @@ int CAirPlayServer::CTCPClient::ProcessRequest( std::string& responseHeader,
       }
       else if (volume >= 0 && volume <= 1)
       {
-        float oldVolume = g_application.GetVolume();
+        float oldVolume = g_application.GetVolumePercent();
         volume *= 100;
         if(oldVolume != volume && CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_SERVICES_AIRPLAYVOLUMECONTROL))
         {
@@ -1169,7 +1171,7 @@ int CAirPlayServer::CTCPClient::ProcessRequest( std::string& responseHeader,
   }
   else
   {
-    CLog::Log(LOGERROR, "AIRPLAY Server: unhandled request [%s]\n", uri.c_str());
+    CLog::Log(LOGERROR, "AIRPLAY Server: unhandled request [%s]", uri.c_str());
     status = AIRPLAY_STATUS_NOT_IMPLEMENTED;
   }
 

@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2018 Team Kodi
+ *  Copyright (C) 2005-2020 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -11,6 +11,7 @@
 #include "URL.h"
 #include "Util.h"
 #include "filesystem/MultiPathDirectory.h"
+#include "media/MediaLockState.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 
@@ -41,7 +42,7 @@ void CMediaSource::FromNameAndPaths(const std::string &category, const std::stri
   m_iLockMode = LOCK_MODE_EVERYONE;
   m_strLockCode = "0";
   m_iBadPwdCount = 0;
-  m_iHasLock = 0;
+  m_iHasLock = LOCK_STATE_NO_LOCK;
   m_allowSharing = true;
 
   if (URIUtils::IsMultiPath(strPath))

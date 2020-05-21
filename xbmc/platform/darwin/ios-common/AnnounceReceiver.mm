@@ -8,24 +8,29 @@
 
 #import "platform/darwin/ios-common/AnnounceReceiver.h"
 
-#import "Application.h"
-#import "FileItem.h"
+#include "Application.h"
+#include "FileItem.h"
 #include "PlayListPlayer.h"
 #include "ServiceBroker.h"
-#import "TextureCache.h"
-#import "filesystem/SpecialProtocol.h"
-#import "music/MusicDatabase.h"
-#import "music/tags/MusicInfoTag.h"
-#import "playlists/PlayList.h"
-#import "utils/Variant.h"
+#include "TextureCache.h"
+#include "filesystem/SpecialProtocol.h"
+#include "music/MusicDatabase.h"
+#include "music/tags/MusicInfoTag.h"
+#include "playlists/PlayList.h"
+#include "utils/Variant.h"
 
+#import "platform/darwin/ios-common/DarwinEmbedNowPlayingInfoManager.h"
+#if defined(TARGET_DARWIN_IOS)
 #import "platform/darwin/ios/XBMCController.h"
+#elif defined(TARGET_DARWIN_TVOS)
+#import "platform/darwin/tvos/XBMCController.h"
+#endif
 
 #import <UIKit/UIKit.h>
 
-id objectFromVariant(const CVariant &data);
+id objectFromVariant(const CVariant& data);
 
-NSArray *arrayFromVariantArray(const CVariant &data)
+NSArray* arrayFromVariantArray(const CVariant& data)
 {
   if (!data.isArray())
     return nil;
@@ -36,33 +41,34 @@ NSArray *arrayFromVariantArray(const CVariant &data)
   return array;
 }
 
-NSDictionary *dictionaryFromVariantMap(const CVariant &data)
+NSDictionary* dictionaryFromVariantMap(const CVariant& data)
 {
   if (!data.isObject())
     return nil;
   NSMutableDictionary* dict = [[NSMutableDictionary alloc] initWithCapacity:data.size()];
   for (CVariant::const_iterator_map itr = data.begin_map(); itr != data.end_map(); ++itr)
-    [dict setValue:objectFromVariant(itr->second) forKey:[NSString stringWithUTF8String:itr->first.c_str()]];
+    dict[@(itr->first.c_str())] = objectFromVariant(itr->second);
 
   return dict;
 }
 
-id objectFromVariant(const CVariant &data)
+id objectFromVariant(const CVariant& data)
 {
   if (data.isNull())
     return nil;
   if (data.isString())
-    return [NSString stringWithUTF8String:data.asString().c_str()];
+    return @(data.asString().c_str());
   if (data.isWideString())
-    return [NSString stringWithCString:(const char *)data.asWideString().c_str() encoding:NSUnicodeStringEncoding];
+    return [NSString stringWithCString:reinterpret_cast<const char*>(data.asWideString().c_str())
+                              encoding:NSUnicodeStringEncoding];
   if (data.isInteger())
-    return [NSNumber numberWithLongLong:data.asInteger()];
+    return @(data.asInteger());
   if (data.isUnsignedInteger())
-    return [NSNumber numberWithUnsignedLongLong:data.asUnsignedInteger()];
+    return @(data.asUnsignedInteger());
   if (data.isBoolean())
-    return [NSNumber numberWithInt:data.asBoolean()?1:0];
+    return @(data.asBoolean() ? 1 : 0);
   if (data.isDouble())
-    return [NSNumber numberWithDouble:data.asDouble()];
+    return @(data.asDouble());
   if (data.isArray())
     return arrayFromVariantArray(data);
   if (data.isObject())
@@ -71,7 +77,10 @@ id objectFromVariant(const CVariant &data)
   return nil;
 }
 
-void AnnounceBridge(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data)
+void AnnounceBridge(ANNOUNCEMENT::AnnouncementFlag flag,
+                    const char* sender,
+                    const char* message,
+                    const CVariant& data)
 {
   int item_id = -1;
   std::string item_type = "";
@@ -85,7 +94,7 @@ void AnnounceBridge(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender, con
     {
       if (!nonConstData["item"]["id"].isNull())
       {
-        item_id = (int)nonConstData["item"]["id"].asInteger();
+        item_id = static_cast<int>(nonConstData["item"]["id"].asInteger());
       }
 
       if (!nonConstData["item"]["type"].isNull())
@@ -116,70 +125,80 @@ void AnnounceBridge(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender, con
     }
   }
 
-  //LOG(@"AnnounceBridge: [%s], [%s], [%s]", ANNOUNCEMENT::AnnouncementFlagToString(flag), sender, message);
-  NSDictionary *dict = dictionaryFromVariantMap(nonConstData);
-  //LOG(@"data: %@", dict.description);
+  auto dict = dictionaryFromVariantMap(nonConstData);
+
   if (msg == "OnPlay" || msg == "OnResume")
   {
-    NSDictionary *item = [dict valueForKey:@"item"];
-    NSDictionary *player = [dict valueForKey:@"player"];
-    [item setValue:[player valueForKey:@"speed"] forKey:@"speed"];
+    NSMutableDictionary* item = dict[@"item"];
+    NSDictionary* player = dict[@"player"];
+    item[@"speed"] = player[@"speed"];
     std::string thumb = g_application.CurrentFileItem().GetArt("thumb");
     if (!thumb.empty())
     {
       bool needsRecaching;
       std::string cachedThumb(CTextureCache::GetInstance().CheckCachedImage(thumb, needsRecaching));
-      //LOG("thumb: %s, %s", thumb.c_str(), cachedThumb.c_str());
       if (!cachedThumb.empty())
       {
         std::string thumbRealPath = CSpecialProtocol::TranslatePath(cachedThumb);
-        [item setValue:[NSString stringWithUTF8String:thumbRealPath.c_str()] forKey:@"thumb"];
+        item[@"thumb"] = @(thumbRealPath.c_str());
       }
     }
     double duration = g_application.GetTotalTime();
     if (duration > 0)
-      [item setValue:[NSNumber numberWithDouble:duration] forKey:@"duration"];
-    [item setValue:[NSNumber numberWithDouble:g_application.GetTime()] forKey:@"elapsed"];
+      item[@"duration"] = @(duration);
+    item[@"elapsed"] = @(g_application.GetTime());
     int current = CServiceBroker::GetPlaylistPlayer().GetCurrentSong();
     if (current >= 0)
     {
-      [item setValue:[NSNumber numberWithInt:current] forKey:@"current"];
-      [item setValue:[NSNumber numberWithInt:CServiceBroker::GetPlaylistPlayer().GetPlaylist(CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist()).size()] forKey:@"total"];
+      item[@"current"] = @(current);
+      item[@"total"] = @(CServiceBroker::GetPlaylistPlayer()
+                             .GetPlaylist(CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist())
+                             .size());
     }
     if (g_application.CurrentFileItem().HasMusicInfoTag())
     {
-      const std::vector<std::string> &genre = g_application.CurrentFileItem().GetMusicInfoTag()->GetGenre();
+      const auto& genre = g_application.CurrentFileItem().GetMusicInfoTag()->GetGenre();
       if (!genre.empty())
       {
-        NSMutableArray *genreArray = [[NSMutableArray alloc] initWithCapacity:genre.size()];
-        for(std::vector<std::string>::const_iterator it = genre.begin(); it != genre.end(); ++it)
+        NSMutableArray* genreArray = [[NSMutableArray alloc] initWithCapacity:genre.size()];
+        for (auto genreItem : genre)
         {
-          [genreArray addObject:[NSString stringWithUTF8String:it->c_str()]];
+          [genreArray addObject:@(genreItem.c_str())];
         }
-        [item setValue:genreArray forKey:@"genre"];
+        item[@"genre"] = genreArray;
       }
     }
-    //LOG(@"item: %@", item.description);
-    [g_xbmcController performSelectorOnMainThread:@selector(onPlay:) withObject:item  waitUntilDone:NO];
+
+    dispatch_async(dispatch_get_main_queue(), ^{
+      [g_xbmcController.MPNPInfoManager onPlay:item];
+    });
   }
   else if (msg == "OnSpeedChanged" || msg == "OnPause")
   {
-    NSDictionary *item = [dict valueForKey:@"item"];
-    NSDictionary *player = [dict valueForKey:@"player"];
-    [item setValue:[player valueForKey:@"speed"] forKey:@"speed"];
-    [item setValue:[NSNumber numberWithDouble:g_application.GetTime()] forKey:@"elapsed"];
-    //LOG(@"item: %@", item.description);
-    [g_xbmcController performSelectorOnMainThread:@selector(OnSpeedChanged:) withObject:item  waitUntilDone:NO];
+    NSMutableDictionary* item = dict[@"item"];
+    NSDictionary* player = dict[@"player"];
+    item[@"speed"] = player[@"speed"];
+    item[@"elapsed"] = @(g_application.GetTime());
+
+    dispatch_async(dispatch_get_main_queue(), ^{
+      [g_xbmcController.MPNPInfoManager OnSpeedChanged:item];
+    });
     if (msg == "OnPause")
-      [g_xbmcController performSelectorOnMainThread:@selector(onPause:) withObject:[dict valueForKey:@"item"]  waitUntilDone:NO];
+    {
+      dispatch_async(dispatch_get_main_queue(), ^{
+        [g_xbmcController.MPNPInfoManager onPause:item];
+      });
+    }
   }
   else if (msg == "OnStop")
   {
-    [g_xbmcController performSelectorOnMainThread:@selector(onStop:) withObject:[dict valueForKey:@"item"]  waitUntilDone:NO];
+    dispatch_async(dispatch_get_main_queue(), ^{
+      [g_xbmcController.MPNPInfoManager onStop:dict[@"item"]];
+    });
   }
 }
 
-CAnnounceReceiver *CAnnounceReceiver::GetInstance()
+CAnnounceReceiver* CAnnounceReceiver::GetInstance()
 {
   static CAnnounceReceiver announceReceiverInstance;
   return &announceReceiverInstance;
@@ -195,7 +214,10 @@ void CAnnounceReceiver::DeInitialize()
   CServiceBroker::GetAnnouncementManager()->RemoveAnnouncer(GetInstance());
 }
 
-void CAnnounceReceiver::Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data)
+void CAnnounceReceiver::Announce(ANNOUNCEMENT::AnnouncementFlag flag,
+                                 const char* sender,
+                                 const char* message,
+                                 const CVariant& data)
 {
   // can be called from c++, we need an auto poll here.
   @autoreleasepool

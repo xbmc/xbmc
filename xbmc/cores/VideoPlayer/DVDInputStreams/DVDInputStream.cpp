@@ -9,12 +9,13 @@
 #include "DVDInputStream.h"
 
 #include "URL.h"
+#include "cores/VideoPlayer/Interface/Addon/InputStreamConstants.h"
 
 CDVDInputStream::CDVDInputStream(DVDStreamType streamType, const CFileItem& fileitem)
 {
   m_streamType = streamType;
   m_contentLookup = true;
-  m_realtime = fileitem.GetProperty("isrealtimestream").asBoolean(false);
+  m_realtime = fileitem.GetProperty(STREAM_PROPERTY_ISREALTIMESTREAM).asBoolean(false);
   m_item = fileitem;
 }
 

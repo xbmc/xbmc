@@ -55,6 +55,9 @@ void CContextMenuManager::Init()
   m_items = {
       std::make_shared<CONTEXTMENU::CResume>(),
       std::make_shared<CONTEXTMENU::CPlay>(),
+      std::make_shared<CONTEXTMENU::CPlayAndQueue>(),
+      std::make_shared<CONTEXTMENU::CPlayNext>(),
+      std::make_shared<CONTEXTMENU::CQueue>(),
       std::make_shared<CONTEXTMENU::CAddonInfo>(),
       std::make_shared<CONTEXTMENU::CEnableAddon>(),
       std::make_shared<CONTEXTMENU::CDisableAddon>(),

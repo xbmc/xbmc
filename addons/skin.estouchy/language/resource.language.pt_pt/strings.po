@@ -56,6 +56,10 @@ msgctxt "#31014"
 msgid "Episodes"
 msgstr "Episódios"
 
+msgctxt "#31015"
+msgid "Player info"
+msgstr "Informação do leitor"
+
 msgctxt "#31016"
 msgid "Albums"
 msgstr "Álbuns"
@@ -95,6 +99,10 @@ msgstr "Iniciar sessão"
 msgctxt "#31039"
 msgid "Updated:"
 msgstr "Última atualização:"
+
+msgctxt "#31043"
+msgid "PAUSED"
+msgstr "EM PAUSA"
 
 msgctxt "#31044"
 msgid "FAST FORWARD"

@@ -229,6 +229,8 @@ Section "${APP_NAME}" SecAPP
                  "HelpLink" "${WEBSITE}"
   WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\${APP_NAME}" \
                  "URLInfoAbout" "${WEBSITE}"
+  WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\${APP_NAME}" \
+                 "DisplayVersion" "${VERSION_NUMBER}"
 
 SectionEnd
 

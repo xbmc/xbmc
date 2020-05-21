@@ -140,6 +140,7 @@ public:
   void SetProperty(const std::string &strKey, const CVariant &value);
 
   void IncrementProperty(const std::string &strKey, int nVal);
+  void IncrementProperty(const std::string& strKey, int64_t nVal);
   void IncrementProperty(const std::string &strKey, double dVal);
 
   void ClearProperties();

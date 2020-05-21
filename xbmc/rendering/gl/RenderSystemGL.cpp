@@ -7,20 +7,19 @@
  */
 
 #include "RenderSystemGL.h"
+
 #include "filesystem/File.h"
 #include "rendering/MatrixGL.h"
-#include "windowing/GraphicContext.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/DisplaySettings.h"
-#include "utils/log.h"
 #include "utils/GLUtils.h"
-#include "utils/TimeUtils.h"
-#include "utils/SystemInfo.h"
 #include "utils/MathUtils.h"
 #include "utils/StringUtils.h"
-#ifdef TARGET_POSIX
-#include "platform/posix/XTimeUtils.h"
-#endif
+#include "utils/SystemInfo.h"
+#include "utils/TimeUtils.h"
+#include "utils/XTimeUtils.h"
+#include "utils/log.h"
+#include "windowing/GraphicContext.h"
 
 CRenderSystemGL::CRenderSystemGL() : CRenderSystemBase()
 {
@@ -44,7 +43,8 @@ bool CRenderSystemGL::InitRenderSystem()
     m_RenderVersion = ver;
   }
 
-  CLog::Log(LOGNOTICE, "CRenderSystemGL::%s - Version: %s, Major: %d, Minor: %d", __FUNCTION__, ver, m_RenderVersionMajor, m_RenderVersionMinor);
+  CLog::Log(LOGINFO, "CRenderSystemGL::%s - Version: %s, Major: %d, Minor: %d", __FUNCTION__, ver,
+            m_RenderVersionMajor, m_RenderVersionMinor);
 
   m_RenderExtensions  = " ";
   if (m_RenderVersionMajor > 3 ||
@@ -287,7 +287,7 @@ void CRenderSystemGL::PresentRender(bool rendered, bool videoLayer)
   PresentRenderImpl(rendered);
 
   if (!rendered)
-    Sleep(40);
+    KODI::TIME::Sleep(40);
 }
 
 void CRenderSystemGL::SetVSync(bool enable)
@@ -400,20 +400,6 @@ void CRenderSystemGL::CalculateMaxTexturesize()
       break;
     }
   }
-
-#ifdef TARGET_DARWIN_OSX
-  // Max Texture size reported on some apple machines seems incorrect
-  // Displaying a picture with that resolution results in a corrupted output
-  // So force it to a lower value
-  // Problem noticed on:
-  // iMac with ATI Radeon X1600, both on 10.5.8 (GL_VERSION: 2.0 ATI-1.5.48)
-  // and 10.6.2 (GL_VERSION: 2.0 ATI-1.6.6)
-  if (m_RenderRenderer == "ATI Radeon X1600 OpenGL Engine")
-    m_maxTextureSize = 2048;
-  // Mac mini G4 with ATI Radeon 9200 (GL_VERSION: 1.3 ATI-1.5.48)
-  else if (m_RenderRenderer == "ATI Radeon 9200 OpenGL Engine")
-    m_maxTextureSize = 1024;
-#endif
 
   CLog::Log(LOGINFO, "GL: Maximum texture width: %u", m_maxTextureSize);
 }

@@ -98,9 +98,14 @@ public:
    * @param logicalStringSrc    is source string with logical characters order
    * @param visualStringDst     is output string with visual characters order, empty on any error
    * @param forceLTRReadingOrder        force LTR reading order
+   * @param visualToLogicalMap    is output mapping of positions in the visual string to the logical string
    * @return true on success, false otherwise
    */
-  static bool utf32logicalToVisualBiDi(const std::u32string& logicalStringSrc, std::u32string& visualStringDst, bool forceLTRReadingOrder = false, bool failOnBadString = false);
+  static bool utf32logicalToVisualBiDi(const std::u32string& logicalStringSrc,
+                                       std::u32string& visualStringDst,
+                                       bool forceLTRReadingOrder = false,
+                                       bool failOnBadString = false,
+                                       int* visualToLogicalMap = nullptr);
   /**
    * Strictly convert wchar_t string (wstring) to UTF-32 string.
    * No RTL visual-logical transformation is performed.

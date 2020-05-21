@@ -6,12 +6,7 @@ cd $WORKSPACE/build;xcodebuild -target deb -jobs $BUILDTHREADS
 cd $WORKSPACE/build/tools/darwin/packaging/darwin_embedded/
 
 #rename for upload
-#e.x. kodi-20130314-8c2fb31-Frodo-ios.deb
-if [ "$DARWIN_ARM_CPU" == "arm64" ]
-then
-  UPLOAD_FILENAME="kodi-$(getBuildRevDateStr)-ios64.deb"
-else
-  UPLOAD_FILENAME="kodi-$(getBuildRevDateStr)-ios.deb"
-fi
+#e.x. kodi-20130314-8c2fb31-Frodo-ios64.deb
+UPLOAD_FILENAME="kodi-$(getBuildRevDateStr)-ios64.deb"
 mkdir $WORKSPACE/tools/darwin/packaging/ios
 mv *.deb $WORKSPACE/tools/darwin/packaging/ios/$UPLOAD_FILENAME

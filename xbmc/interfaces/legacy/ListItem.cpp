@@ -31,8 +31,6 @@ namespace XBMCAddon
   {
     ListItem::ListItem(const String& label,
                        const String& label2,
-                       const String& iconImage,
-                       const String& thumbnailImage,
                        const String& path,
                        bool offscreen) :
       m_offscreen(offscreen)
@@ -48,10 +46,6 @@ namespace XBMCAddon
         item->SetLabel( label );
       if (!label2.empty())
         item->SetLabel2( label2 );
-      if (!iconImage.empty())
-        CLog::Log(LOGWARNING, "Using iconImage in ListItem constructor results in NOP. Use setArt.");
-      if (!thumbnailImage.empty())
-        CLog::Log(LOGWARNING, "Using thumbnailImage in ListItem constructor results in NOP. Use setArt.");
       if (!path.empty())
         item->SetPath(path);
     }
@@ -105,16 +99,6 @@ namespace XBMCAddon
         XBMCAddonUtils::GuiLock lock(languageHook, m_offscreen);
         item->SetLabel2(label);
       }
-    }
-
-    void ListItem::setIconImage(const String& iconImage)
-    {
-      CLog::Log(LOGWARNING, "setIconImage results in NOP. Use setArt.");
-    }
-
-    void ListItem::setThumbnailImage(const String& thumbFilename)
-    {
-      CLog::Log(LOGWARNING, "setThumbnailImage results in NOP. Use setArt.");
     }
 
     void ListItem::setArt(const Properties& dictionary)
@@ -300,34 +284,6 @@ namespace XBMCAddon
       item->SetContentLookup(enable);
     }
 
-    String ListItem::getdescription()
-    {
-      return item->GetLabel();
-    }
-
-    String ListItem::getduration()
-    {
-      if (item->LoadMusicTag())
-      {
-        std::ostringstream oss;
-        oss << item->GetMusicInfoTag()->GetDuration();
-        return oss.str();
-      }
-
-      if (item->HasVideoInfoTag())
-      {
-        std::ostringstream oss;
-        oss << GetVideoInfoTag()->GetDuration();
-        return oss.str();
-      }
-      return "0";
-    }
-
-    String ListItem::getfilename()
-    {
-      return item->GetPath();
-    }
-
     String ListItem::getPath()
     {
       XBMCAddonUtils::GuiLock lock(languageHook, m_offscreen);
@@ -338,7 +294,7 @@ namespace XBMCAddon
     {
       XBMCAddonUtils::GuiLock lock(languageHook, m_offscreen);
 
-      if (strcmpi(type, "video") == 0)
+      if (StringUtils::CompareNoCase(type, "video") == 0)
       {
         auto& videotag = *GetVideoInfoTag();
         for (const auto& it: infoLabels)
@@ -505,7 +461,7 @@ namespace XBMCAddon
             CLog::Log(LOGERROR,"NEWADDON Unknown Video Info Key \"%s\"", key.c_str());
         }
       }
-      else if (strcmpi(type, "music") == 0)
+      else if (StringUtils::CompareNoCase(type, "music") == 0)
       {
         std::string type;
         for (auto it = infoLabels.begin(); it != infoLabels.end(); ++it)
@@ -598,7 +554,7 @@ namespace XBMCAddon
           musictag.SetLoaded(true);
         }
       }
-      else if (strcmpi(type,"pictures") == 0)
+      else if (StringUtils::CompareNoCase(type, "pictures") == 0)
       {
         for (const auto& it: infoLabels)
         {
@@ -735,14 +691,15 @@ namespace XBMCAddon
     void ListItem::addAvailableArtwork(std::string url, std::string art_type, std::string preview, std::string referrer, std::string cache, bool post, bool isgz, int season)
     {
       XBMCAddonUtils::GuiLock lock(languageHook, m_offscreen);
-      GetVideoInfoTag()->m_strPictureURL.AddElement(url, art_type, preview, referrer, cache, post, isgz, season);
+      GetVideoInfoTag()->m_strPictureURL.AddParsedUrl(url, art_type, preview, referrer, cache, post,
+                                                      isgz, season);
     }
 
     void ListItem::addStreamInfo(const char* cType, const Properties& dictionary)
     {
       XBMCAddonUtils::GuiLock lock(languageHook, m_offscreen);
 
-      if (strcmpi(cType, "video") == 0)
+      if (StringUtils::CompareNoCase(cType, "video") == 0)
       {
         CStreamDetailVideo* video = new CStreamDetailVideo;
         for (const auto& it: dictionary)
@@ -767,7 +724,7 @@ namespace XBMCAddon
         }
         GetVideoInfoTag()->m_streamDetails.AddStream(video);
       }
-      else if (strcmpi(cType, "audio") == 0)
+      else if (StringUtils::CompareNoCase(cType, "audio") == 0)
       {
         CStreamDetailAudio* audio = new CStreamDetailAudio;
         for (const auto& it: dictionary)
@@ -784,7 +741,7 @@ namespace XBMCAddon
         }
         GetVideoInfoTag()->m_streamDetails.AddStream(audio);
       }
-      else if (strcmpi(cType, "subtitle") == 0)
+      else if (StringUtils::CompareNoCase(cType, "subtitle") == 0)
       {
         CStreamDetailSubtitle* subtitle = new CStreamDetailSubtitle;
         for (const auto& it: dictionary)
