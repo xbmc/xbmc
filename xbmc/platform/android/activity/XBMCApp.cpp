@@ -1030,12 +1030,16 @@ void CXBMCApp::onReceive(CJNIIntent intent)
       // If we have unplugged headset and playing content then pause or stop
       if (!newstate && (m_playback_state & PLAYBACK_STATE_PLAYING))
       {
-        if (m_playback_state & PLAYBACK_STATE_CANNOT_PAUSE)
+        if ((m_playback_state & PLAYBACK_STATE_CANNOT_PAUSE))
+        {
           CApplicationMessenger::GetInstance().PostMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1,	
                                                     static_cast<void*>(new CAction(ACTION_STOP)));
+        }
         else
+        {
           CApplicationMessenger::GetInstance().PostMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1,	
                                                     static_cast<void*>(new CAction(ACTION_PAUSE)));
+        }
       }
     }
     else if (action == "android.bluetooth.a2dp.profile.action.CONNECTION_STATE_CHANGED")
