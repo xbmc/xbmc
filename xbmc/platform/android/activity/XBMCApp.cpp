@@ -1023,9 +1023,8 @@ void CXBMCApp::onReceive(CJNIIntent intent)
     {
       newstate = (intent.getIntExtra("state", 0) != 0);
 
-      // If we have unplugged headset and playing content with audio then pause or stop
-      if (!newstate && (m_playback_state & PLAYBACK_STATE_PLAYING) && 
-          (m_playback_state & PLAYBACK_STATE_AUDIO))
+      // If we have unplugged headset and playing content then pause or stop
+      if (!newstate && (m_playback_state & PLAYBACK_STATE_PLAYING))
       {
         if (m_playback_state & PLAYBACK_STATE_CANNOT_PAUSE)
           CApplicationMessenger::GetInstance().PostMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1,	
