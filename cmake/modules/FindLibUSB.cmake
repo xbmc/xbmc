@@ -24,7 +24,7 @@ find_library(LIBUSB_LIBRARY NAMES usb
 set(LIBUSB_VERSION ${PC_LIBUSB_VERSION})
 
 include(FindPackageHandleStandardArgs)
-find_package_handle_standard_args(LIBUSB
+find_package_handle_standard_args(LibUSB
                                   REQUIRED_VARS LIBUSB_LIBRARY LIBUSB_INCLUDE_DIR
                                   VERSION_VAR LIBUSB_VERSION)
 

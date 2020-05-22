@@ -141,6 +141,7 @@ include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(SSE
                                   REQUIRED_VARS _SSE_TRUE _SSE_OK
                                   FAIL_MESSAGE "Could not find hardware support for SSE")
+set(FPHSA_NAME_MISMATCHED ON)
 find_package_handle_standard_args(SSE2
                                   REQUIRED_VARS _SSE2_TRUE _SSE2_OK
                                   FAIL_MESSAGE "Could not find hardware support for SSE2")
@@ -162,6 +163,7 @@ find_package_handle_standard_args(AVX
 find_package_handle_standard_args(AVX2
                                   REQUIRED_VARS _AVX2_TRUE _AVX2_OK
                                   FAIL_MESSAGE "Could not find hardware support for AVX2")
+unset(FPHSA_NAME_MISMATCHED)
 
 mark_as_advanced(SSE2_FOUND SSE3_FOUND SSSE3_FOUND SSE4_1_FOUND SSE4_2_FOUND AVX_FOUND AVX2_FOUND)
 
