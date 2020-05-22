@@ -35,6 +35,7 @@ extern "C"
     char* (*get_hostname)(void* kodiBase);
     bool (*is_local_host)(void* kodiBase, const char* hostname);
     bool (*is_host_on_lan)(void* kodiBase, const char* hostname, bool offLineCheck);
+    char* (*get_user_agent)(void* kodiBase);
   } AddonToKodiFuncTable_kodi_network;
 
 #ifdef __cplusplus

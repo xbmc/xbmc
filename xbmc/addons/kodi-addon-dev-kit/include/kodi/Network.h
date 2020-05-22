@@ -115,6 +115,41 @@ inline std::string GetHostname()
 
 //============================================================================
 /// @ingroup cpp_kodi_network
+/// @brief Returns Kodi's HTTP UserAgent string.
+///
+/// @return HTTP user agent
+///
+///
+/// ------------------------------------------------------------------------
+///
+/// **Example:**
+/// ~~~~~~~~~~~~~{.py}
+/// ..
+/// std::string agent = kodi::network::GetUserAgent()
+/// ..
+/// ~~~~~~~~~~~~~
+///
+/// example output:
+///   Kodi/19.0-ALPHA1 (X11; Linux x86_64) Ubuntu/20.04 App_Bitness/64 Version/19.0-ALPHA1-Git:20200522-0076d136d3-dirty
+///
+inline std::string GetUserAgent()
+{
+  using namespace ::kodi::addon;
+
+  std::string agent;
+  char* string = CAddonBase::m_interface->toKodi->kodi_network->get_user_agent(
+      CAddonBase::m_interface->toKodi->kodiBase);
+  if (string != nullptr)
+  {
+    agent = string;
+    CAddonBase::m_interface->toKodi->free_string(CAddonBase::m_interface->toKodi->kodiBase, string);
+  }
+  return agent;
+}
+//----------------------------------------------------------------------------
+
+//============================================================================
+/// @ingroup cpp_kodi_network
 /// @brief Check given name or ip address corresponds to localhost.
 ///
 /// @param[in] hostname Hostname to check
