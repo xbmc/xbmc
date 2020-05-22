@@ -137,6 +137,9 @@ namespace PVR
 
   class AsyncDeleteRecording : public AsyncRecordingAction
   {
+  public:
+    explicit AsyncDeleteRecording(bool bWatchedOnly = false) : m_bWatchedOnly(bWatchedOnly) {}
+
   private:
     bool DoRun(const std::shared_ptr<CFileItem>& item) override
     {
@@ -153,13 +156,13 @@ namespace PVR
       bool bReturn = true;
       for (const auto& itemToDelete : items)
       {
-        if (itemToDelete->IsUsablePVRRecording())
+        if (itemToDelete->IsUsablePVRRecording() &&
+            (!m_bWatchedOnly || itemToDelete->GetPVRRecordingInfoTag()->GetPlayCount() > 0))
           bReturn &= itemToDelete->GetPVRRecordingInfoTag()->Delete();
-        else
-          CLog::LogF(LOGERROR, "Cannot delete item '%s': no valid recording tag", itemToDelete->GetPath().c_str());
       }
       return bReturn;
     }
+    bool m_bWatchedOnly = false;
   };
 
   class AsyncEmptyRecordingsTrash : public AsyncRecordingAction
@@ -1115,6 +1118,34 @@ namespace PVR
                                                 : CVariant{19112}, // "Delete this recording?"
                                             CVariant{""},
                                             CVariant{item->GetLabel()});
+  }
+
+  bool CPVRGUIActions::DeleteWatchedRecordings(const std::shared_ptr<CFileItem>& item) const
+  {
+    if (!item->m_bIsFolder || item->IsParentFolder())
+      return false;
+
+    if (!ConfirmDeleteWatchedRecordings(item))
+      return false;
+
+    if (!AsyncDeleteRecording(true).Execute(item))
+    {
+      HELPERS::ShowOKDialogText(
+          CVariant{257},
+          CVariant{
+              19111}); // "Error", "PVR backend error. Check the log for more information about this message."
+      return false;
+    }
+
+    return true;
+  }
+
+  bool CPVRGUIActions::ConfirmDeleteWatchedRecordings(const std::shared_ptr<CFileItem>& item) const
+  {
+    return CGUIDialogYesNo::ShowAndGetInput(
+        CVariant{122}, // "Confirm delete"
+        CVariant{19328}, // "Delete all watched recordings in this folder?"
+        CVariant{""}, CVariant{item->GetLabel()});
   }
 
   bool CPVRGUIActions::DeleteAllRecordingsFromTrash() const

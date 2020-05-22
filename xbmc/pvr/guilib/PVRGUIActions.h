@@ -232,6 +232,13 @@ namespace PVR
     bool DeleteRecording(const std::shared_ptr<CFileItem>& item) const;
 
     /*!
+     * @brief Delete all watched recordings contained in the given folder, always showing a confirmation dialog.
+     * @param item containing a recording folder containing the items to delete.
+     * @return true, if the recordings were deleted successfully, false otherwise.
+     */
+    bool DeleteWatchedRecordings(const std::shared_ptr<CFileItem>& item) const;
+
+    /*!
      * @brief Delete all recordings from trash, always showing a confirmation dialog.
      * @return true, if the recordings were permanently deleted successfully, false otherwise.
      */
@@ -485,6 +492,13 @@ namespace PVR
      * @return true, to proceed with delete, false otherwise.
      */
     bool ConfirmDeleteRecording(const std::shared_ptr<CFileItem>& item) const;
+
+    /*!
+     * @brief Open a dialog to confirm delete all watched recordings contained in the given folder.
+     * @param item containing a recording folder containing the items to delete.
+     * @return true, to proceed with delete, false otherwise.
+     */
+    bool ConfirmDeleteWatchedRecordings(const std::shared_ptr<CFileItem>& item) const;
 
     /*!
      * @brief Open a dialog to confirm to permanently remove all deleted recordings.
