@@ -227,7 +227,7 @@ void CGUIDialogContentSettings::OnSettingAction(std::shared_ptr<const CSetting> 
       m_scraper = std::dynamic_pointer_cast<CScraper>(scraperAddon);
 
       SetupView();
-      SetFocus(SETTING_CONTENT_TYPE);
+      SetFocusToSetting(SETTING_CONTENT_TYPE);
     }
   }
   else if (settingId == SETTING_SCRAPER_LIST)
@@ -246,7 +246,7 @@ void CGUIDialogContentSettings::OnSettingAction(std::shared_ptr<const CSetting> 
       m_scraper = std::dynamic_pointer_cast<CScraper>(scraperAddon);
 
       SetupView();
-      SetFocus(SETTING_SCRAPER_LIST);
+      SetFocusToSetting(SETTING_SCRAPER_LIST);
     }
   }
   else if (settingId == SETTING_SCRAPER_SETTINGS)
@@ -399,7 +399,7 @@ void CGUIDialogContentSettings::ToggleState(const std::string &settingid, bool e
   }
 }
 
-void CGUIDialogContentSettings::SetFocus(const std::string &settingid)
+void CGUIDialogContentSettings::SetFocusToSetting(const std::string& settingid)
 {
   BaseSettingControlPtr settingControl = GetSettingControl(settingid);
   if (settingControl != NULL && settingControl->GetControl() != NULL)
