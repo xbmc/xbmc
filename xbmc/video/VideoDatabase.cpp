@@ -7384,7 +7384,55 @@ bool CVideoDatabase::GetMoviesByWhere(const std::string& strBaseDir, const Filte
       strSQLExtra += DatabaseUtils::BuildLimitClause(sorting.limitEnd, sorting.limitStart);
     }
 
-    strSQL = PrepareSQL(strSQL, !extFilter.fields.empty() ? extFilter.fields.c_str() : "*") + strSQLExtra;
+    std::string fields;
+    if (!extFilter.fields.empty() && extFilter.fields != "*")
+      fields = extFilter.fields;
+    else
+    {
+      std::vector<std::string> movieFieldLabels = {
+        "idMovie",
+        "idFile"
+      };
+      for (int i = 0; i < VIDEODB_MAX_COLUMNS; ++i)
+      {
+        if (i != VIDEODB_ID_CAST || (getDetails & VideoDbDetailsCast))
+          movieFieldLabels.emplace_back(StringUtils::Format("c%02d", i));
+        else
+          movieFieldLabels.emplace_back(StringUtils::Format("'' AS c%02d", i));
+      }
+
+      // extra fields in the movie table
+      static const std::vector<std::string> movieExtraFieldLabels = {
+        "idSet",
+        "userrating",
+        "premiered"
+      };
+      movieFieldLabels.insert(movieFieldLabels.end(), movieExtraFieldLabels.begin(), movieExtraFieldLabels.end());
+
+      // fields in the movie_view view
+      static const std::vector<std::string> movieViewFieldLabels = {
+        "strSet",
+        "strSetOverview",
+        "strFileName",
+        "strPath",
+        "playCount",
+        "lastPlayed",
+        "dateAdded",
+        "resumeTimeInSeconds",
+        "totalTimeInSeconds",
+        "playerState",
+        "rating",
+        "votes",
+        // TODO(Montellese): remove "rating_type",
+        // TODO(Montellese): remove "uniqueid_value",
+        // TODO(Montellese): remove "uniqueid_type"
+      };
+      movieFieldLabels.insert(movieFieldLabels.end(), movieViewFieldLabels.begin(), movieViewFieldLabels.end());
+
+      fields = StringUtils::Join(movieFieldLabels, ",");
+    }
+
+    strSQL = StringUtils::Format(strSQL, fields) + strSQLExtra;
 
     int iRowsFound = RunQuery(strSQL);
     if (iRowsFound <= 0)
