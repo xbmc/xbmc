@@ -15,6 +15,17 @@
           <default>true</default>
           <control type="toggle" />
         </setting>
+        <setting id="videoplayer.useprimedecoderforhw" type="boolean" parent="videoplayer.useprimedecoder" label="13438" help="36172">
+          <visible>true</visible>
+          <dependencies>
+            <dependency type="enable">
+              <condition setting="videoplayer.useprimedecoder" operator="is">true</condition>
+            </dependency>
+          </dependencies>
+          <level>3</level>
+          <default>true</default>
+          <control type="toggle" />
+        </setting>
         <setting id="videoplayer.useprimerenderer" type="integer" label="13462" help="13463">
           <visible>false</visible>
           <level>2</level>

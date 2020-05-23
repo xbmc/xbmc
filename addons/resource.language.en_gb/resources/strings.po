@@ -7079,7 +7079,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#13430"
-msgid "Allow hardware acceleration - PRIME"
+msgid "Allow using DRM PRIME decoder"
 msgstr ""
 
 #: system/settings/settings.xml
@@ -7119,7 +7119,10 @@ msgctxt "#13437"
 msgid "Prefer VDPAU video mixer"
 msgstr ""
 
-#empty string with id 13438
+#: system/settings/settings.xml
+msgctxt "#13438"
+msgid "Allow hardware acceleration with DRM PRIME"
+msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#13439"
@@ -18592,7 +18595,7 @@ msgstr ""
 #. Description of setting with label #13430 "Allow hardware acceleration - PRIME"
 #: system/settings/settings.xml
 msgctxt "#36172"
-msgid "Enable PRIME hardware decoding of video files, used if ffmpeg PRIME hwaccel is available."
+msgid "Enable PRIME decoding of video files"
 msgstr ""
 
 #. Description of setting with label #14109 "Short date format"
@@ -18869,7 +18872,11 @@ msgctxt "#36222"
 msgid "Don't import the guide data while playing TV to minimise CPU usage."
 msgstr ""
 
-#empty string with id 36223
+#. Description of setting with label #13438 "Allow Hardware Accelleration with DRM PRIME"
+#: system/settings/settings.xml
+msgctxt "#36223"
+msgid "Enable PRIME hardware decoding of video files, used if ffmpeg PRIME hwaccel is available."
+msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36224"
