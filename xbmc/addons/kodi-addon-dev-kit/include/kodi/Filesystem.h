@@ -334,7 +334,7 @@ public:
     if (!m_handle.handle)
       return std::vector<std::string>();
 
-    int numValues;
+    int numValues = 0;
     char** res(m_handle.get_values(CAddonBase::m_interface->toKodi->kodiBase, m_handle.handle,
                                    param.c_str(), &numValues));
     if (res)
@@ -1589,7 +1589,7 @@ inline bool GetMimeType(const std::string& url,
 {
   using namespace ::kodi::addon;
 
-  char* cMimeType;
+  char* cMimeType = nullptr;
   bool ret = CAddonBase::m_interface->toKodi->kodi_filesystem->get_mime_type(
       CAddonBase::m_interface->toKodi->kodiBase, url.c_str(), &cMimeType, useragent.c_str());
   if (cMimeType != nullptr)
@@ -1630,7 +1630,7 @@ inline bool GetContentType(const std::string& url,
 {
   using namespace ::kodi::addon;
 
-  char* cContent;
+  char* cContent = nullptr;
   bool ret = CAddonBase::m_interface->toKodi->kodi_filesystem->get_content_type(
       CAddonBase::m_interface->toKodi->kodiBase, url.c_str(), &cContent, useragent.c_str());
   if (cContent != nullptr)
@@ -1670,7 +1670,7 @@ inline bool GetCookies(const std::string& url, std::string& cookies)
 {
   using namespace ::kodi::addon;
 
-  char* cCookies;
+  char* cCookies = nullptr;
   bool ret = CAddonBase::m_interface->toKodi->kodi_filesystem->get_cookies(
       CAddonBase::m_interface->toKodi->kodiBase, url.c_str(), &cCookies);
   if (cCookies != nullptr)
@@ -2224,7 +2224,7 @@ public:
                 "kodi::vfs::CURLCreate(...) needed to call before GetPropertyValues!");
       return std::vector<std::string>();
     }
-    int numValues;
+    int numValues = 0;
     char** res(CAddonBase::m_interface->toKodi->kodi_filesystem->get_property_values(
         CAddonBase::m_interface->toKodi->kodiBase, m_file, type, name.c_str(), &numValues));
     if (res)
