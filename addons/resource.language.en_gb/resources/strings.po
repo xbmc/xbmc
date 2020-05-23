@@ -11113,7 +11113,19 @@ msgctxt "#19326"
 msgid "Navigate..."
 msgstr ""
 
-#empty strings from id 19327 to 19498
+#. Label for a context menu entry to delete alle watched recordings contained in a folder
+#: xbmc/pvr/PVRContextMenus.cpp
+msgctxt "#19327"
+msgid "Delete watched"
+msgstr ""
+
+#. delete multiple recordings confirmation message box text
+#: xbmc/pvr/PVRGUIActions.cpp
+msgctxt "#19328"
+msgid "Delete all watched recordings in this folder?"
+msgstr ""
+
+#empty strings from id 19329 to 19498
 
 #. label for epg genre value
 #: xbmc/pvr/epg/Epg.cpp

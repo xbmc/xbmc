@@ -67,6 +67,7 @@ namespace PVR
     DECL_STATICCONTEXTMENUITEM(RenameRecording);
     DECL_CONTEXTMENUITEM(DeleteRecording);
     DECL_STATICCONTEXTMENUITEM(UndeleteRecording);
+    DECL_STATICCONTEXTMENUITEM(DeleteWatchedRecordings);
     DECL_CONTEXTMENUITEM(ToggleTimerState);
     DECL_STATICCONTEXTMENUITEM(RenameTimer);
     DECL_STATICCONTEXTMENUITEM(AddReminder);
@@ -375,7 +376,7 @@ namespace PVR
       if (item.m_bIsFolder)
       {
         const CPVRRecordingsPath path(item.GetPath());
-        return path.IsValid();
+        return path.IsValid() && !path.IsRecordingsRoot();
       }
 
       return false;
@@ -401,6 +402,23 @@ namespace PVR
     bool UndeleteRecording::Execute(const CFileItemPtr& item) const
     {
       return CServiceBroker::GetPVRManager().GUIActions()->UndeleteRecording(item);
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////
+    // Delete watched recordings
+
+    bool DeleteWatchedRecordings::IsVisible(const CFileItem& item) const
+    {
+      // recordings folder?
+      if (item.m_bIsFolder)
+        return CPVRRecordingsPath(item.GetPath()).IsValid();
+
+      return false;
+    }
+
+    bool DeleteWatchedRecordings::Execute(const std::shared_ptr<CFileItem>& item) const
+    {
+      return CServiceBroker::GetPVRManager().GUIActions()->DeleteWatchedRecordings(item);
     }
 
     ///////////////////////////////////////////////////////////////////////////////
@@ -678,27 +696,27 @@ namespace PVR
 
   CPVRContextMenuManager::CPVRContextMenuManager()
   {
-    m_items =
-    {
-      std::make_shared<CONTEXTMENUITEM::PlayEpgTag>(19190), /* Play programme */
-      std::make_shared<CONTEXTMENUITEM::PlayRecording>(19687), /* Play recording */
-      std::make_shared<CONTEXTMENUITEM::ShowInformation>(),
-      std::make_shared<CONTEXTMENUITEM::ShowChannelGuide>(19686), /* Channel guide */
-      std::make_shared<CONTEXTMENUITEM::FindSimilar>(19003), /* Find similar */
-      std::make_shared<CONTEXTMENUITEM::ToggleTimerState>(),
-      std::make_shared<CONTEXTMENUITEM::AddTimerRule>(19061), /* Add timer */
-      std::make_shared<CONTEXTMENUITEM::EditTimerRule>(),
-      std::make_shared<CONTEXTMENUITEM::DeleteTimerRule>(19295), /* Delete timer rule */
-      std::make_shared<CONTEXTMENUITEM::EditTimer>(),
-      std::make_shared<CONTEXTMENUITEM::RenameTimer>(118), /* Rename */
-      std::make_shared<CONTEXTMENUITEM::DeleteTimer>(),
-      std::make_shared<CONTEXTMENUITEM::StartRecording>(264), /* Record */
-      std::make_shared<CONTEXTMENUITEM::StopRecording>(19059), /* Stop recording */
-      std::make_shared<CONTEXTMENUITEM::EditRecording>(21450), /* Edit */
-      std::make_shared<CONTEXTMENUITEM::RenameRecording>(118), /* Rename */
-      std::make_shared<CONTEXTMENUITEM::DeleteRecording>(),
-      std::make_shared<CONTEXTMENUITEM::UndeleteRecording>(19290), /* Undelete */
-      std::make_shared<CONTEXTMENUITEM::AddReminder>(826), /* Set reminder */
+    m_items = {
+        std::make_shared<CONTEXTMENUITEM::PlayEpgTag>(19190), /* Play programme */
+        std::make_shared<CONTEXTMENUITEM::PlayRecording>(19687), /* Play recording */
+        std::make_shared<CONTEXTMENUITEM::ShowInformation>(),
+        std::make_shared<CONTEXTMENUITEM::ShowChannelGuide>(19686), /* Channel guide */
+        std::make_shared<CONTEXTMENUITEM::FindSimilar>(19003), /* Find similar */
+        std::make_shared<CONTEXTMENUITEM::ToggleTimerState>(),
+        std::make_shared<CONTEXTMENUITEM::AddTimerRule>(19061), /* Add timer */
+        std::make_shared<CONTEXTMENUITEM::EditTimerRule>(),
+        std::make_shared<CONTEXTMENUITEM::DeleteTimerRule>(19295), /* Delete timer rule */
+        std::make_shared<CONTEXTMENUITEM::EditTimer>(),
+        std::make_shared<CONTEXTMENUITEM::RenameTimer>(118), /* Rename */
+        std::make_shared<CONTEXTMENUITEM::DeleteTimer>(),
+        std::make_shared<CONTEXTMENUITEM::StartRecording>(264), /* Record */
+        std::make_shared<CONTEXTMENUITEM::StopRecording>(19059), /* Stop recording */
+        std::make_shared<CONTEXTMENUITEM::EditRecording>(21450), /* Edit */
+        std::make_shared<CONTEXTMENUITEM::RenameRecording>(118), /* Rename */
+        std::make_shared<CONTEXTMENUITEM::DeleteRecording>(),
+        std::make_shared<CONTEXTMENUITEM::UndeleteRecording>(19290), /* Undelete */
+        std::make_shared<CONTEXTMENUITEM::DeleteWatchedRecordings>(19327), /* Delete watched */
+        std::make_shared<CONTEXTMENUITEM::AddReminder>(826), /* Set reminder */
     };
   }
 
