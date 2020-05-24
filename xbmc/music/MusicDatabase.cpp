@@ -7175,18 +7175,29 @@ std::string CMusicDatabase::SortnameBuildSQL(const std::string& strAlias,
 std::string CMusicDatabase::AlphanumericSortSQL(const std::string& strField, const SortOrder& sortOrder)
 {
   /*
-  Make sort of initial numbers natural, and case insensitive in SQLite.
-  Collation NOCASE ould be more efficient done in table create.
-  MySQL uses case insensitive utf8_general_ci collation defined for tables.
-  Use PrepareSQL to adjust syntax removing NOCASE and add AS UNSIGNED INTEGER
+  Use custom collation ALPHANUM in SQLite instead of NOCASE. This handles
+  natural number order, case sensitivity and locale UFT-8 order for accents
+  Would more efficient done in table create than per query especially once
+  sorting at db is done for GUI results too.
+  MySQL does not have custom collation defined (yet), but all tables are defined
+  with case insensitive utf8_general_ci collation. Make sort of numbers natural 
+  in SQL. No need to PrepareSQL as syntax is specific to db type.
   */
   std::string DESC;
   if (sortOrder == SortOrderDescending)
     DESC = " DESC";
-  return PrepareSQL("CASE WHEN CAST(%s AS INTEGER) = 0 "
-    "THEN 100000000 ELSE CAST(%s AS INTEGER) END%s, "
-    "%s COLLATE NOCASE%s",
-    strField.c_str(), strField.c_str(), DESC.c_str(), strField.c_str(), DESC.c_str());
+  std::string strSort;
+
+  if (StringUtils::EqualsNoCase(
+          CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_databaseMusic.type,
+          "mysql"))
+    strSort = PrepareSQL("CASE WHEN CAST(%s AS UNSIGNED INTEGER) = 0 "
+                         "THEN 100000000 ELSE CAST(%s AS UNSIGNED INTEGER) END%s, %s%s",
+                         strField.c_str(), strField.c_str(), DESC.c_str(), strField.c_str(),
+                         DESC.c_str());
+  else
+    strSort = PrepareSQL("%s COLLATE ALPHANUM%s", strField.c_str(), DESC.c_str());
+  return strSort;
 }
 
 void CMusicDatabase::UpdateTables(int version)

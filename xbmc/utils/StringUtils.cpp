@@ -1009,7 +1009,7 @@ static const uint16_t* const planemap[256] = {
 
 static wchar_t GetCollationWeight(const wchar_t& r)
 {
-  // Lookup the "weight" of a UFT8 char, equivalent lowercase ascii letter, in the plane map,
+  // Lookup the "weight" of a UTF8 char, equivalent lowercase ascii letter, in the plane map,
   // the character comparison value used by using "accent folding" collation utf8_general_ci
   // in MySQL (AKA utf8mb3_general_ci in MariaDB 10)
   auto index = r >> 8;
@@ -1021,9 +1021,10 @@ static wchar_t GetCollationWeight(const wchar_t& r)
   return static_cast<wchar_t>(plane[r & 0xFF]);
 }
 
-// Compares separately the numeric and alphabetic parts of a string.
+// Compares separately the numeric and alphabetic parts of a wide string.
 // returns negative if left < right, positive if left > right
-// and 0 if they are identical
+// and 0 if they are identical.
+// See also the equivalent StringUtils::AlphaNumericCollation() for UFT8 data
 int64_t StringUtils::AlphaNumericCompare(const wchar_t* left, const wchar_t* right)
 {
   const wchar_t *l = left;
@@ -1038,14 +1039,14 @@ int64_t StringUtils::AlphaNumericCompare(const wchar_t* left, const wchar_t* rig
     if (*l >= L'0' && *l <= L'9' && *r >= L'0' && *r <= L'9')
     {
       ld = l;
-      lnum = 0;
+      lnum = *ld++ - L'0';
       while (*ld >= L'0' && *ld <= L'9' && ld < l + 15)
       { // compare only up to 15 digits
         lnum *= 10;
         lnum += *ld++ - L'0';
       }
       rd = r;
-      rnum = 0;
+      rnum = *rd++ - L'0';
       while (*rd >= L'0' && *rd <= L'9' && rd < r + 15)
       { // compare only up to 15 digits
         rnum *= 10;
@@ -1063,6 +1064,29 @@ int64_t StringUtils::AlphaNumericCompare(const wchar_t* left, const wchar_t* rig
 
     lc = *l;
     rc = *r;
+    // Put ascii punctuation and symbols e.g. !#$&()*+,-./:;<=>?@[\]^_ `{|}~ above the other
+    // alphanumeric ascii, rather than some being mixed between the numbers and letters, and
+    // above all other unicode letters, symbols and punctuation.
+    // (Locale collation of these chars varies across platforms)
+    lsym = (lc >= 32 && lc < L'0') || (lc > L'9' && lc < L'A') || 
+           (lc > L'Z' && lc < L'a') || (lc > L'z' && lc < 128);
+    rsym = (rc >= 32 && rc < L'0') || (rc > L'9' && rc < L'A') || 
+           (rc > L'Z' && rc < L'a') || (rc > L'z' && rc < 128);
+    if (lsym && !rsym)
+      return -1;
+    if (!lsym && rsym)
+      return 1;
+    if (lsym && rsym)
+    {
+      if (lc != rc)
+        return lc - rc;
+      else
+      { // Same symbol advance to next wchar
+        l++; 
+        r++;
+        continue;
+      }
+    }
     if (!g_langInfo.UseLocaleCollation())
     {
       // Apply case sensitive accent folding collation to non-ascii chars.
@@ -1078,20 +1102,9 @@ int64_t StringUtils::AlphaNumericCompare(const wchar_t* left, const wchar_t* rig
       lc += L'a' - L'A';
     if (rc >= L'A' && rc <= L'Z')
       rc += L'a' - L'A';
+
     if (lc != rc)
     {
-      // Put ascii punctuation and symbols e.g. !#$&()*+,-./:;<=>?@[\]^_ `{|}~ above the other
-      // alphanumeric ascii, rather than some being mixed between the numbers and letters, and
-      // above all other unicode letters, symbols and punctuation.
-      // (Locale collation of these chars varies across platforms)
-      lsym = lc < 128 && !(lc >= L'a' && lc <= L'z') && !(lc >= L'0' && lc <= L'9');
-      rsym = rc < 128 && !(rc >= L'a' && rc <= L'z') && !(rc >= L'0' && rc <= L'9');
-      if (lsym && !rsym)
-        return -1;
-      if (!lsym && rsym)
-        return 1;
-
-      // Either both or neither are ascii symbols or punctuation marks
       if (!g_langInfo.UseLocaleCollation())
       {
         // Compare unicode (having applied accent folding collation to non-ascii chars).
@@ -1104,8 +1117,7 @@ int64_t StringUtils::AlphaNumericCompare(const wchar_t* left, const wchar_t* rig
         // platforms this is not langauge specific but just compares unicode
         const std::collate<wchar_t>& coll =
             std::use_facet<std::collate<wchar_t>>(g_langInfo.GetSystemLocale());
-        int cmp_res = 0;
-        cmp_res = coll.compare(&lc, &lc + 1, &rc, &rc + 1);
+        int cmp_res = coll.compare(&lc, &lc + 1, &rc, &rc + 1);
         if (cmp_res != 0)
           return cmp_res;
       }
@@ -1121,6 +1133,179 @@ int64_t StringUtils::AlphaNumericCompare(const wchar_t* left, const wchar_t* rig
     return 1;
   }
   return 0; // files are the same
+}
+
+/*
+  Convert the UTF8 character to which z points into a 31-bit Unicode point.
+  Return how many bytes (0 to 3) of UTF8 data encode the character.
+  This only works right if z points to a well-formed UTF8 string.
+  Byte-0    Byte-1    Byte-2    Byte-3     Value
+  0xxxxxxx                                 00000000 00000000 0xxxxxxx
+  110yyyyy  10xxxxxx                       00000000 00000yyy yyxxxxxx
+  1110zzzz  10yyyyyy  10xxxxxx             00000000 zzzzyyyy yyxxxxxx
+  11110uuu  10uuzzzz  10yyyyyy  10xxxxxx   000uuuuu zzzzyyyy yyxxxxxx
+*/
+static uint32_t UTF8ToUnicode(const unsigned char* z, int nKey, unsigned char& bytes)
+{
+  // Lookup table used decode the first byte of a multi-byte UTF8 character
+  // clang-format off
+  static const unsigned char utf8Trans1[] = {
+    0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07,
+    0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f,
+    0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17,
+    0x18, 0x19, 0x1a, 0x1b, 0x1c, 0x1d, 0x1e, 0x1f,
+    0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07,
+    0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f,
+    0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07,
+    0x00, 0x01, 0x02, 0x03, 0x00, 0x01, 0x00, 0x00,
+  };
+  // clang-format on
+
+  uint32_t c;
+  bytes = 0;
+  c = z[0];
+  if (c >= 0xc0)
+  {
+    c = utf8Trans1[c - 0xc0];
+    int index = 1;
+    while (index < nKey && (z[index] & 0xc0) == 0x80)
+    {
+      c = (c << 6) + (0x3f & z[index]);
+      index++;
+    }
+    if (c < 0x80 || (c & 0xFFFFF800) == 0xD800 || (c & 0xFFFFFFFE) == 0xFFFE)
+      c = 0xFFFD;
+    bytes = static_cast<unsigned char>(index - 1);
+  }
+  return c;
+}
+
+/*
+  SQLite collating function, see sqlite3_create_collation
+  The equivalent of AlphaNumericCompare() but for comparing UTF8 encoded data
+
+  This only processes enough data to find a difference, and avoids expensive data conversions.
+  When sorting in memory item data is converted once to wstring in advance prior to sorting, the
+  SQLite callback function can not do that kind of preparation. Instead, in order to use
+  AlphaNumericCompare(), it would have to repeatedly convert the full input data to wstring for
+  every pair comparison made. That approach was found to be 10 times slower than using this
+  separate routine.
+*/
+int StringUtils::AlphaNumericCollation(int nKey1, const void* pKey1, int nKey2, const void* pKey2)
+{
+  // Get exact matches of shorter text to start of larger test fast
+  int n = std::min(nKey1, nKey2);
+  int r = memcmp(pKey1, pKey2, n);
+  if (r == 0)
+    return nKey1 - nKey2;
+
+  //Not a binary match, so process character at a time
+  const unsigned char* zA = static_cast<const unsigned char*>(pKey1);
+  const unsigned char* zB = static_cast<const unsigned char*>(pKey2);
+  wchar_t lc, rc;
+  unsigned char bytes;
+  int64_t lnum, rnum;
+  bool lsym, rsym;
+  int ld, rd;
+  int i = 0;
+  int j = 0;
+  // Looping Unicode point at a time through potentially 1 to 4 multi-byte encoded UTF8 data
+  while (i < nKey1 && j < nKey2)
+  {
+    // Check if we have numerical values, compare only up to 15 digits
+    if (isdigit(zA[i]) && isdigit(zB[j]))
+    {
+      lnum = zA[i] - '0';
+      ld = i + 1;
+      while (ld < nKey1 && isdigit(zA[ld]) && ld < i + 15)
+      {
+        lnum *= 10;
+        lnum += zA[ld] - '0';
+        ld++;
+      }
+      rnum = zB[j] - '0';
+      rd = j + 1;
+      while (rd < nKey2 && isdigit(zB[rd]) && rd < j + 15)
+      {
+        rnum *= 10;
+        rnum += zB[rd] - '0';
+        rd++;
+      }
+      // do we have numbers?
+      if (lnum != rnum)
+      { // yes - and they're different!
+        return lnum - rnum;
+      }
+      // Advance to after digits
+      i = ld;
+      j = rd;
+      continue;
+    }
+    // Put ascii punctuation and symbols e.g. !#$&()*+,-./:;<=>?@[\]^_ `{|}~ before the other
+    // alphanumeric ascii, rather than some being mixed between the numbers and letters, and
+    // above all other unicode letters, symbols and punctuation.
+    // (Locale collation of these chars varies across platforms)
+    lsym = (zA[i] >= 32 && zA[i] < '0') || (zA[i] > '9' && zA[i] < 'A') ||
+           (zA[i] > 'Z' && zA[i] < 'a') || (zA[i] > 'z' && zA[i] < 128);
+    rsym = (zB[j] >= 32 && zB[j] < '0') || (zB[j] > '9' && zB[j] < 'A') ||
+           (zB[j] > 'Z' && zB[j] < 'a') || (zB[j] > 'z' && zB[j] < 128);
+    if (lsym && !rsym)
+      return -1;
+    if (!lsym && rsym)
+      return 1;
+    if (lsym && rsym)
+    {
+      if (zA[i] != zB[j])
+        return zA[i] - zB[j];
+      else
+      { // Same symbol advance to next
+        i++;
+        j++;
+        continue;
+      }
+    }
+    //Decode single (1 to 4 bytes) UTF8 character to Unicode
+    lc = UTF8ToUnicode(&zA[i], nKey1 - i, bytes);
+    i += bytes;
+    rc = UTF8ToUnicode(&zB[j], nKey2 - j, bytes);
+    j += bytes;
+    if (!g_langInfo.UseLocaleCollation())
+    {
+      // Apply case sensitive accent folding collation to non-ascii chars.
+      // This mimics utf8_general_ci collation, and provides simple collation of LATIN-1 chars
+      // for any platform that doesn't have a language specific collate facet implemented
+      if (lc > 128)
+        lc = GetCollationWeight(lc);
+      if (rc > 128)
+        rc = GetCollationWeight(rc);
+    }
+    // Caseless comparison so convert ascii upper case to lower case
+    if (lc >= 'A' && lc <= 'Z')
+      lc += 'a' - 'A';
+    if (rc >= 'A' && rc <= 'Z')
+      rc += 'a' - 'A';
+
+    if (lc != rc)
+    {
+      if (!g_langInfo.UseLocaleCollation() || (lc <= 128 && rc <= 128))
+        // Compare unicode (having applied accent folding collation to non-ascii chars).
+        return lc - rc;
+      else
+      {
+        // Fetch collation facet from locale to do comparison of wide char although on some
+        // platforms this is not langauge specific but just compares unicode
+        const std::collate<wchar_t>& coll =
+            std::use_facet<std::collate<wchar_t>>(g_langInfo.GetSystemLocale());
+        int cmp_res = coll.compare(&lc, &lc + 1, &rc, &rc + 1);
+        if (cmp_res != 0)
+          return cmp_res;
+      }
+    }
+    i++;
+    j++;
+  }
+  // Compared characters of shortest are the same as longest, length determines order
+  return (nKey1 - nKey2);
 }
 
 int StringUtils::DateStringToYYYYMMDD(const std::string &dateString)

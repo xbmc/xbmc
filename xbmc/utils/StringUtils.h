@@ -245,6 +245,7 @@ public:
   static std::vector<std::string> SplitMulti(const std::vector<std::string> &input, const std::vector<std::string> &delimiters, unsigned int iMaxStrings = 0);
   static int FindNumber(const std::string& strInput, const std::string &strFind);
   static int64_t AlphaNumericCompare(const wchar_t *left, const wchar_t *right);
+  static int AlphaNumericCollation(int nKey1, const void* pKey1, int nKey2, const void* pKey2);
   static long TimeStringToSeconds(const std::string &timeString);
   static void RemoveCRLF(std::string& strLine);
 

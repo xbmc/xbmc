@@ -612,6 +612,12 @@ std::string MysqlDatabase::vprepare(const char *format, va_list args)
   while ((pos = strResult.find(" COLLATE NOCASE", pos)) != std::string::npos)
     strResult.erase(pos++, 15);
 
+  // Remove COLLATE ALPHANUM the SQLite custom collation.
+  // No cutom collation defined for MySQL yet
+  pos = 0;
+  while ((pos = strResult.find(" COLLATE ALPHANUM", pos)) != std::string::npos)
+    strResult.erase(pos++, 15);
+
   return strResult;
 }
 
