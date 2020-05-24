@@ -5545,6 +5545,7 @@ const infomap container_str[]  = {{ "property",         CONTAINER_PROPERTY },
 ///                  _string_,
 ///     @return The video codec of the currently selected video. Common values:
 ///      - <b>3iv2</b>
+///      - <b>av1</b>
 ///      - <b>avc1</b>
 ///      - <b>div2</b>
 ///      - <b>div3</b>
