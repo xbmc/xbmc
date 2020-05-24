@@ -42,6 +42,7 @@ struct Interface_Network
   static bool wake_on_lan(void* kodiBase, const char* mac);
   static char* get_ip_address(void* kodiBase);
   static char* get_hostname(void* kodiBase);
+  static char* get_user_agent(void* kodiBase);
   static bool is_local_host(void* kodiBase, const char* hostname);
   static bool is_host_on_lan(void* kodiBase, const char* hostname, bool offLineCheck);
   static char* dns_lookup(void* kodiBase, const char* url, bool* ret);

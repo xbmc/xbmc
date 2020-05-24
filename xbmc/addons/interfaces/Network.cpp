@@ -14,6 +14,7 @@
 #include "addons/kodi-addon-dev-kit/include/kodi/Network.h"
 #include "network/DNSNameCache.h"
 #include "network/Network.h"
+#include "utils/SystemInfo.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 
@@ -27,6 +28,7 @@ void Interface_Network::Init(AddonGlobalInterface *addonInterface)
   addonInterface->toKodi->kodi_network->wake_on_lan = wake_on_lan;
   addonInterface->toKodi->kodi_network->get_ip_address = get_ip_address;
   addonInterface->toKodi->kodi_network->get_hostname = get_hostname;
+  addonInterface->toKodi->kodi_network->get_user_agent = get_user_agent;
   addonInterface->toKodi->kodi_network->is_local_host = is_local_host;
   addonInterface->toKodi->kodi_network->is_host_on_lan = is_host_on_lan;
   addonInterface->toKodi->kodi_network->dns_lookup = dns_lookup;
@@ -95,6 +97,23 @@ char* Interface_Network::get_hostname(void* kodiBase)
   char* buffer = nullptr;
   if (!hostname.empty())
     buffer = strdup(hostname.c_str());
+  return buffer;
+}
+
+char* Interface_Network::get_user_agent(void* kodiBase)
+{
+  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
+  if (addon == nullptr)
+  {
+    CLog::Log(LOGERROR, "Interface_Network::{} - invalid data (addon='{}')", __FUNCTION__,
+              kodiBase);
+    return nullptr;
+  }
+
+  std::string string = CSysInfo::GetUserAgent();
+  char* buffer = nullptr;
+  if (!string.empty())
+    buffer = strdup(string.c_str());
   return buffer;
 }
 
