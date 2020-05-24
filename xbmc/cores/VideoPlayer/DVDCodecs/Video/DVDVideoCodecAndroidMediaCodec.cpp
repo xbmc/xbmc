@@ -167,7 +167,7 @@ void CMediaCodecVideoBuffer::ReleaseOutputBuffer(bool render, int64_t displayTim
   if (!render || displayTime == 0)
     codec->releaseOutputBuffer(m_bufferId, render);
   else
-    codec->releaseOutputBuffer(m_bufferId, displayTime);
+    codec->releaseOutputBufferAtTime(m_bufferId, displayTime);
   m_bufferId = -1; //mark released
 
   if (xbmc_jnienv()->ExceptionCheck())
