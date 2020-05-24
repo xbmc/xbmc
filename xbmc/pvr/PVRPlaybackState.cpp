@@ -321,14 +321,18 @@ std::shared_ptr<CPVRChannelGroup> CPVRPlaybackState::GetPlayingGroup(bool bRadio
   return CServiceBroker::GetPVRManager().ChannelGroups()->GetSelectedGroup(bRadio);
 }
 
-CDateTime CPVRPlaybackState::GetPlaybackTime() const
+CDateTime CPVRPlaybackState::GetChannelPlaybackTime(int iClientID, int iUniqueChannelID) const
 {
-  // start time valid?
-  time_t startTime = CServiceBroker::GetDataCacheCore().GetStartTime();
-  if (startTime > 0)
-    return CDateTime(startTime + CServiceBroker::GetDataCacheCore().GetPlayTime() / 1000);
-  else
-    return CDateTime::GetUTCDateTime();
+  if (IsPlayingChannel(iClientID, iUniqueChannelID))
+  {
+    // start time valid?
+    time_t startTime = CServiceBroker::GetDataCacheCore().GetStartTime();
+    if (startTime > 0)
+      return CDateTime(startTime + CServiceBroker::GetDataCacheCore().GetPlayTime() / 1000);
+  }
+
+  // not playing / playing live
+  return CDateTime::GetUTCDateTime();
 }
 
 void CPVRPlaybackState::UpdateLastWatched(const std::shared_ptr<CPVRChannel>& channel, const CDateTime& time)
