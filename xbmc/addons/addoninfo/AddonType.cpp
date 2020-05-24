@@ -24,6 +24,16 @@ void CAddonType::SetProvides(const std::string& content)
 {
   if (!content.empty())
   {
+    /*
+     * Normally the "provides" becomes added from xml scan, but for add-ons
+     * stored in the database (e.g. repository contents) it might not be
+     * available. Since this information is available in add-on metadata for the
+     * main type (see extrainfo) we take the function contents and insert it if
+     * empty.
+     */
+    if (GetValue("provides").empty())
+      Insert("provides", content);
+
     for (auto provide : StringUtils::Split(content, ' '))
     {
       TYPE content = CAddonInfo::TranslateSubContent(provide);
