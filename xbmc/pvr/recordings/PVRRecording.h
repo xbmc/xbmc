@@ -369,12 +369,6 @@ namespace PVR
     */
    int64_t GetSizeInBytes() const;
 
-   /*!
-    * @brief set the size in bytes of this recording
-    * @param sizeInBytes The size in bytes
-    */
-   void SetSizeInBytes(int64_t sizeInBytes);
-
   private:
     CDateTime m_recordingTime; /*!< start time of the recording */
     bool m_bGotMetaData;

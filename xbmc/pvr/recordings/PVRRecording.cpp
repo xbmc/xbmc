@@ -606,9 +606,3 @@ int64_t CPVRRecording::GetSizeInBytes() const
   CSingleLock lock(m_critSection);
   return m_sizeInBytes;
 }
-
-void CPVRRecording::SetSizeInBytes(int64_t sizeInBytes)
-{
-  CSingleLock lock(m_critSection);
-  m_sizeInBytes = sizeInBytes;
-}
