@@ -276,7 +276,7 @@ void CGUITextLayout::BidiTransform(std::vector<CGUIString>& lines, bool forceLTR
     }
 
     // Allocate memory for visual to logical map and call bidi
-    int* visualToLogicalMap = new int[lineLength + 1];
+    int* visualToLogicalMap = new (std::nothrow) int[lineLength + 1]();
     std::wstring visualText = BidiFlip(logicalText, forceLTRReadingOrder, visualToLogicalMap);
 
     vecText styledVisualText;
