@@ -769,7 +769,7 @@ int StringUtils::FindNumber(const std::string& strInput, const std::string &strF
 // Plane maps for MySQL utf8_general_ci (now known as utf8mb3_general_ci) collation
 // Derived from https://github.com/MariaDB/server/blob/10.5/strings/ctype-utf8.c
 
-// clang format off
+// clang-format off
 static const uint16_t plane00[] = {
   0x0000, 0x0001, 0x0002, 0x0003, 0x0004, 0x0005, 0x0006, 0x0007, 0x0008, 0x0009, 0x000A, 0x000B, 0x000C, 0x000D, 0x000E, 0x000F,
   0x0010, 0x0011, 0x0012, 0x0013, 0x0014, 0x0015, 0x0016, 0x0017, 0x0018, 0x0019, 0x001A, 0x001B, 0x001C, 0x001D, 0x001E, 0x001F,
@@ -1005,7 +1005,7 @@ static const uint16_t* const planemap[256] = {
     NULL,    NULL,    NULL,    NULL,    NULL,    NULL,    NULL, NULL, NULL,    NULL,    NULL,
     NULL,    NULL,    planeFF
 };
-// clang format on
+// clang-format on
 
 static wchar_t GetCollationWeight(const wchar_t& r)
 {

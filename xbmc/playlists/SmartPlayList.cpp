@@ -45,7 +45,7 @@ typedef struct
   int localizedString;
 } translateField;
 
-//clang format off
+// clang-format off
 static const translateField fields[] = {
   { "none",              FieldNone,                    CDatabaseQueryRule::TEXT_FIELD,     NULL,                                 false, 231 },
   { "filename",          FieldFilename,                CDatabaseQueryRule::TEXT_FIELD,     NULL,                                 false, 561 },
@@ -127,7 +127,7 @@ static const translateField fields[] = {
   { "bitrate",           FieldMusicBitRate,            CDatabaseQueryRule::NUMERIC_FIELD,  NULL,                                 false, 623 },
   { "channels",          FieldNoOfChannels,            CDatabaseQueryRule::NUMERIC_FIELD,  StringValidation::IsPositiveInteger,  false, 253 },
 };
-// clang format on
+// clang-format on
 
 typedef struct
 {
@@ -137,7 +137,7 @@ typedef struct
   int localizedString;
 } group;
 
-//clang format off
+// clang-format off
 static const group groups[] = { { "",               FieldUnknown,   false,    571 },
                                 { "none",           FieldNone,      false,    231 },
                                 { "sets",           FieldSet,       true,   20434 },
@@ -153,7 +153,7 @@ static const group groups[] = { { "",               FieldUnknown,   false,    57
                                 { "tags",           FieldTag,       false,  20459 },
                                 { "originalyears",  FieldOrigYear,  false,  38078 },
                               };
-// clang format on
+// clang-format on
 
 #define RULE_VALUE_SEPARATOR  " / "
 
