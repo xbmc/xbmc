@@ -600,7 +600,8 @@ bool CDRMUtils::OpenDrm(bool needConnector)
     "vc4",
     "virtio_gpu",
     "sun4i-drm",
-    "meson"
+    "meson",
+    "vboxvideo",
   };
 
   for (auto module : modules)
